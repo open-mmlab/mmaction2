@@ -1,0 +1,6 @@
+matplotlib
+mmcv>=0.2.15
+numpy
+six
+torch>=1.1
+torchvision
