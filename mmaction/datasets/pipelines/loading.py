@@ -1,48 +1,70 @@
 import os.path as osp
 
 import av
+import mmcv
 import numpy as np
 
 from ..registry import PIPELINES
 
 
-def sample_clips(num_frames,
-                 clip_len,
-                 frame_interval=1,
-                 num_clips=1,
-                 temporal_jitter=False):
-    """Sample clips from the video.
+@PIPELINES.register_module
+class SampleFrames:
+    """Sample frames from the video.
 
-    Args:
-        num_frames (int): Total frames of the video.
+    Required keys are "filename", added or modified keys are "total_frames"
+    and "frame_inds".
+
+    Attributes:
         clip_len (int): Frames of each sampled output clip.
         frame_interval (int): Temporal interval of adjacent sampled frames.
         num_clips (int): Number of clips to be sampled.
         temporal_jitter (bool): Whether to apply temporal jittering.
-
-    Returns:
-        np.ndarray: Shape (num_clips, clip_len)
     """
-    ori_clip_len = clip_len * frame_interval
-    avg_interval = (num_frames - ori_clip_len) // num_clips
-    if avg_interval > 0:
-        base_offsets = np.arange(num_clips) * avg_interval
-        clip_offsets = base_offsets + np.random.randint(
-            avg_interval, size=num_clips)
-    elif num_frames > max(num_clips, ori_clip_len):
-        clip_offsets = np.sort(
-            np.random.randint(num_frames - ori_clip_len + 1, size=num_clips))
-    else:
-        clip_offsets = np.zeros((num_clips, ))
 
-    frame_inds = clip_offsets + np.arange(clip_len)[None, :] * frame_interval
+    def __init__(self,
+                 clip_len,
+                 frame_interval=1,
+                 num_clips=1,
+                 temporal_jitter=False):
+        self.clip_len = clip_len
+        self.frame_interval = frame_interval
+        self.num_clips = num_clips
+        self.temporal_jitter = temporal_jitter
 
-    if temporal_jitter:
-        perframe_offsets = np.random.randint((num_clips, frame_interval),
-                                             size=clip_len)
-        frame_inds += perframe_offsets
+    def _sample_clips(self, num_frames):
+        ori_clip_len = self.clip_len * self.frame_interval
+        avg_interval = (num_frames - ori_clip_len) // self.num_clips
+        if avg_interval > 0:
+            base_offsets = np.arange(self.num_clips) * avg_interval
+            clip_offsets = base_offsets + np.random.randint(
+                avg_interval, size=self.num_clips)
+        elif num_frames > max(self.num_clips, ori_clip_len):
+            clip_offsets = np.sort(
+                np.random.randint(
+                    num_frames - ori_clip_len + 1, size=self.num_clips))
+        else:
+            clip_offsets = np.zeros((self.num_clips, ))
 
-    return frame_inds
+        return clip_offsets
+
+    def __call__(self, results):
+        video_reader = mmcv.VideoReader(results['filename'])
+        total_frames = len(video_reader)
+        results['total_frames'] = total_frames
+
+        clip_offsets = self._sample_clips(total_frames)
+
+        frame_inds = clip_offsets + np.arange(
+            self.clip_len)[None, :] * self.frame_interval
+
+        if self.temporal_jitter:
+            perframe_offsets = np.random.randint(
+                (self.num_clips, self.frame_interval), size=self.clip_len)
+            frame_inds += perframe_offsets
+
+        results['frame_inds'] = frame_inds
+
+        return results
 
 
 @PIPELINES.register_module
