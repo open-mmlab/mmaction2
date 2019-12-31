@@ -1,6 +1,5 @@
-import os.path as osp
-
 import av
+import decord
 import mmcv
 import numpy as np
 
@@ -11,8 +10,9 @@ from ..registry import PIPELINES
 class SampleFrames:
     """Sample frames from the video.
 
-    Required keys are "filename", added or modified keys are "total_frames"
-    and "frame_inds".
+    Required keys are "filename",
+    added or modified keys are "total_frames" and "frame_inds",
+                               "frame_interval" and "num_clips".
 
     Attributes:
         clip_len (int): Frames of each sampled output clip.
@@ -32,8 +32,22 @@ class SampleFrames:
         self.temporal_jitter = temporal_jitter
 
     def _sample_clips(self, num_frames):
+        """
+        Choose frame indices for the video.
+
+        Calculate the average interval for selected frames, and randomly
+        shift them within offsets between [0, avg_interval]. If the total
+        number of frames is smaller than clips num or origin frames length,
+        it will return all zero indices.
+
+        Args:
+            num_frames: total number of frame in the video.
+
+        Returns: list of sampled frame indices
+        """
         ori_clip_len = self.clip_len * self.frame_interval
-        avg_interval = (num_frames - ori_clip_len) // self.num_clips
+        avg_interval = (num_frames - ori_clip_len + 1) // self.num_clips
+
         if avg_interval > 0:
             base_offsets = np.arange(self.num_clips) * avg_interval
             clip_offsets = base_offsets + np.random.randint(
@@ -54,32 +68,143 @@ class SampleFrames:
 
         clip_offsets = self._sample_clips(total_frames)
 
-        frame_inds = clip_offsets + np.arange(
+        frame_inds = clip_offsets[:, None] + np.arange(
             self.clip_len)[None, :] * self.frame_interval
+        frame_inds = np.concatenate(frame_inds)
 
         if self.temporal_jitter:
             perframe_offsets = np.random.randint(
                 (self.num_clips, self.frame_interval), size=self.clip_len)
             frame_inds += perframe_offsets
 
-        results['frame_inds'] = frame_inds
+        frame_inds = np.mod(frame_inds, total_frames)
 
+        results['frame_inds'] = frame_inds
+        results['clip_len'] = self.clip_len
+        results['frame_interval'] = self.frame_interval
+        results['num_clips'] = self.num_clips
         return results
 
 
 @PIPELINES.register_module
 class PyAVDecode:
+    """Using pyav to decode the video
+
+    Required keys are "filename" and "frame_inds",
+    added or modified keys are "imgs" and "ori_shape".
+
+    Attributes:
+        multi_thread (bool): If set to True, it will
+            apply multi thread processing.
+    """
 
     def __init__(self, multi_thread=False):
         self.multi_thread = multi_thread
 
     def __call__(self, results):
-        if results['data_prefix'] is not None:
-            filename = osp.join(results['data_prefix'],
-                                results['video_info']['filename'])
-        else:
-            filename = results['video_info']['filename']
+        filename = results['filename']
+        frame_inds = results['frame_inds']
 
         container = av.open(filename)
         if self.multi_thread:
             container.streams.video[0].thread_type = 'AUTO'
+
+        imgs = list()
+        # set max indice to make early stop
+        max_inds = max(frame_inds)
+        i = 0
+        for frame in container.decode(video=0):
+            if i > max_inds:
+                break
+            imgs.append(frame.to_rgb().to_ndarray())
+            i += 1
+
+        imgs = np.array(imgs)
+        imgs = imgs[frame_inds]
+        imgs = imgs.transpose([0, 3, 1, 2])
+        results['imgs'] = np.array(imgs)
+        results['ori_shape'] = imgs.shape[-2:]
+        return results
+
+    def __repr__(self):
+        repr_str = self.__class__.__name__
+        repr_str += '(multi_thread={})'.format(self.multi_thread)
+
+
+@PIPELINES.register_module
+class DecordDecode:
+    """Using decord to decode the video
+
+    Required keys are "filename" and "frame_inds",
+    add or modified keys are "imgs" and "ori_shape".
+
+    Attributes:
+        multi_thread (bool): If set to True, it will
+            apply multi thread processing.
+    """
+
+    def __init__(self, multi_thread=False):
+        self.multi_thread = multi_thread
+
+    def __call__(self, results):
+        filename = results['filename']
+        frame_inds = results['frame_inds']
+
+        container = decord.VideoReader(filename)
+        imgs = list()
+
+        for frame_ind in frame_inds:
+            cur_content = container[frame_ind].asnumpy()
+            imgs.append(cur_content)
+        imgs = np.array(imgs)
+
+        imgs = imgs.transpose([0, 3, 1, 2])
+        results['imgs'] = np.array(imgs)
+        results['ori_shape'] = imgs.shape[-2:]
+        return results
+
+    def __repr__(self):
+        repr_str = self.__class__.__name__
+        repr_str += '(multi_thread={})'.format(self.multi_thread)
+
+
+@PIPELINES.register_module
+class OpenCVDecode:
+    """Using OpenCV to decode the video
+
+    Required keys are "filename" and "frame_inds",
+    add or modified keys are "imgs" and "ori_shape".
+
+    Attributes:
+        multi_thread (bool): If set to True, it will
+            apply multi thread processing.
+    """
+
+    def __init__(self, multi_thread=False):
+        self.multi_thread = multi_thread
+
+    def __call__(self, results):
+        filename = results['filename']
+        frame_inds = results['frame_inds']
+
+        container = mmcv.VideoReader(filename)
+        imgs = list()
+
+        if frame_inds.ndim != 1:
+            frame_inds = np.squeeze(frame_inds)
+
+        for frame_ind in frame_inds:
+            cur_content = container[frame_ind]
+            imgs.append(cur_content)
+
+        imgs = np.array(imgs)
+        # mmcv default channel sequence is BGR, so change it to RGB
+        imgs = imgs[:, :, :, ::-1]
+        imgs = imgs.transpose([0, 3, 1, 2])
+        results['imgs'] = np.array(imgs)
+        results['ori_shape'] = imgs.shape[-2:]
+        return results
+
+    def __repr__(self):
+        repr_str = self.__class__.__name__
+        repr_str += '(multi_thread={})'.format(self.multi_thread)

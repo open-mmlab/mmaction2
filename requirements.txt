@@ -1,3 +1,5 @@
+av
+decord
 matplotlib
 mmcv>=0.2.15
 numpy
