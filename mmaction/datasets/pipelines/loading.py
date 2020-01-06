@@ -79,7 +79,7 @@ class SampleFrames:
 
         frame_inds = np.mod(frame_inds, total_frames)
 
-        results['frame_inds'] = frame_inds
+        results['frame_inds'] = frame_inds.astype(np.int)
         results['clip_len'] = self.clip_len
         results['frame_interval'] = self.frame_interval
         results['num_clips'] = self.num_clips
@@ -195,6 +195,11 @@ class OpenCVDecode:
 
         for frame_ind in frame_inds:
             cur_content = container[frame_ind]
+            # last frame may be None in OpenCV
+            # while type(cur_content) == type(None):
+            while isinstance(cur_content, type(None)):
+                frame_ind -= 1
+                cur_content = container[frame_ind]
             imgs.append(cur_content)
 
         imgs = np.array(imgs)

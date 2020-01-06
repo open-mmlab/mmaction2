@@ -330,3 +330,60 @@ class CenterCrop(object):
         repr_str = self.__class__.__name__
         repr_str += '(crop_size={})'.format(self.crop_size)
         return repr_str
+
+
+@PIPELINES.register_module
+class OverSample(object):
+    """Crop an image with multi different position-related scale.
+    Crop the four corners and the center part of the image with the same
+    given crop_size, and flip it horizontally.
+    Required keys are "imgs", added or modified keys are "imgs", "crop_bbox",
+    "img_shape" and "crop_size".
+    Attributes:
+        crop_size(int | tuple): (w, h) of crop size.
+    """
+
+    def __init__(self, crop_size=224):
+        self.crop_size = crop_size if not isinstance(crop_size, int) \
+            else (crop_size, crop_size)
+
+    def __call__(self, results):
+        imgs = results['imgs']
+
+        img_h, img_w = imgs.shape[-2:]
+        crop_w, crop_h = self.crop_size
+
+        w_step = (img_w - crop_w) // 4
+        h_step = (img_h - crop_h) // 4
+
+        offsets = list()
+        offsets.append((0, 0))  # upper left
+        offsets.append((4 * w_step, 0))  # upper right
+        offsets.append((0, 4 * h_step))  # lower left
+        offsets.append((4 * w_step, 4 * h_step))  # lower right
+        offsets.append((2 * w_step, 2 * h_step))  # center
+
+        oversample_group = list()
+        oversample_bbox = list()
+        for x_offset, y_offsets in offsets:
+            crop = imgs[:, :, y_offsets:y_offsets + crop_h,
+                        x_offset:x_offset + crop_w]
+            flip_crop = np.flip(crop, axis=3).copy()
+            bbox = [x_offset, y_offsets, x_offset + crop_w, y_offsets + crop_h]
+            oversample_group.extend(crop)
+            oversample_group.extend(flip_crop)
+            oversample_bbox.extend(bbox)
+
+        crop_bbox = np.array(oversample_bbox)
+        imgs = np.array(oversample_group)
+        results['imgs'] = imgs
+        results['crop_box'] = crop_bbox
+        results['img_shape'] = results['imgs'].shape[-3:]
+        results['crop_size'] = self.crop_size
+
+        return results
+
+    def __repr__(self):
+        repr_str = self.__class__.__name__
+        repr_str += '(crop_size={})'.format(self.crop_size)
+        return repr_str

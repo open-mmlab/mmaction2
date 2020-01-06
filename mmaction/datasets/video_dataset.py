@@ -60,7 +60,6 @@ class VideoDataset(Dataset):
 
     def prepare_train_frames(self, idx):
         results = copy.deepcopy(self.video_infos[idx])
-        print(results)
         return self.pipeline(results)
 
     def prepare_test_frames(self, idx):
