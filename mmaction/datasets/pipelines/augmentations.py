@@ -67,13 +67,13 @@ class MultiScaleCrop(object):
         else:
             w_step = (img_w - crop_w) // 4
             h_step = (img_h - crop_h) // 4
-            candidate_offsets = []
-            candidate_offsets.append((0, 0))  # upper left
-            candidate_offsets.append((4 * w_step, 0))  # upper right
-            candidate_offsets.append((0, 4 * h_step))  # lower left
-            candidate_offsets.append((4 * w_step, 4 * h_step))  # lower right
-            candidate_offsets.append((2 * w_step, 2 * h_step))  # center
-
+            candidate_offsets = [
+                (0, 0),  # upper left
+                (4 * w_step, 0),  # upper right
+                (0, 4 * h_step),  # lower left
+                (4 * w_step, 4 * h_step),  # lower right
+                (2 * w_step, 2 * h_step),  # center
+            ]
             x_offset, y_offset = random.choice(candidate_offsets)
 
         results['crop_bbox'] = np.array(
@@ -82,7 +82,7 @@ class MultiScaleCrop(object):
         results['imgs'] = imgs[:, :, y_offset:y_offset + crop_h,
                                x_offset:x_offset + crop_w]
 
-        results['img_shape'] = results['imgs'].shape[-3:]
+        results['img_shape'] = results['imgs'].shape[-2:]
         results['scales'] = self.scales
         return results
 
@@ -141,7 +141,7 @@ class Resize(object):
 
         imgs = np.array(imgs).transpose([0, 3, 1, 2])
         results['imgs'] = imgs
-        results['img_shape'] = results['imgs'].shape[-3:]
+        results['img_shape'] = results['imgs'].shape[-2:]
         results['keep_ratio'] = self.keep_ratio
         results['scale_fatcor'] = self.scale_factor
 
@@ -210,7 +210,7 @@ class Normalize(object):
         to_rgb (bool): Whether to convert channels from BGR to RGB.
     """
 
-    def __init__(self, mean, std, to_rgb=True):
+    def __init__(self, mean, std, to_rgb=False):
         self.mean = np.array(mean, dtype=np.float32)
         self.std = np.array(std, dtype=np.float32)
         self.to_rgb = to_rgb
@@ -227,7 +227,6 @@ class Normalize(object):
         results['imgs'] = imgs
         results['img_norm_cfg'] = dict(
             mean=self.mean, std=self.std, to_rgb=self.to_rgb)
-
         return results
 
     def __repr__(self):
@@ -253,7 +252,7 @@ class CenterCrop(object):
             self.crop_size = (crop_size, crop_size)
         else:
             self.crop_size = crop_size
-        assert mmcv.is_tuple_of(crop_size, int)
+        assert mmcv.is_tuple_of(self.crop_size, int)
 
     def __call__(self, results):
         imgs = results['imgs']
@@ -267,7 +266,8 @@ class CenterCrop(object):
         bottom = top + crop_h
         results['crop_bbox'] = np.array([left, top, right, bottom])
         results['imgs'] = imgs[:, :, top:bottom, left:right]
-        results['img_shape'] = results['imgs'].shape[-3:]
+        results['img_shape'] = results['imgs'].shape[-2:]
+
         return results
 
     def __repr__(self):
@@ -294,7 +294,7 @@ class ThreeCrop(object):
             self.crop_size = (crop_size, crop_size)
         else:
             self.crop_size = crop_size
-        assert mmcv.is_tuple_of(crop_size, int)
+        assert mmcv.is_tuple_of(self.crop_size, int)
 
     def __call__(self, results):
         imgs = results['imgs']
@@ -330,7 +330,7 @@ class ThreeCrop(object):
         imgs = np.concatenate(img_crops, axis=0)
         results['imgs'] = imgs
         results['crop_bbox'] = crop_bboxes
-        results['img_shape'] = results['imgs'].shape[-3:]
+        results['img_shape'] = results['imgs'].shape[-2:]
 
         return results
 
@@ -358,7 +358,7 @@ class TenCrop(object):
             self.crop_size = (crop_size, crop_size)
         else:
             self.crop_size = crop_size
-        assert mmcv.is_tuple_of(crop_size, int)
+        assert mmcv.is_tuple_of(self.crop_size, int)
 
     def __call__(self, results):
         imgs = results['imgs']
@@ -392,7 +392,7 @@ class TenCrop(object):
         imgs = np.concatenate(img_crops, axis=0)
         results['imgs'] = imgs
         results['crop_box'] = crop_bboxes
-        results['img_shape'] = results['imgs'].shape[-3:]
+        results['img_shape'] = results['imgs'].shape[-2:]
 
         return results
 

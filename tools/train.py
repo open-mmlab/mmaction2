@@ -103,9 +103,8 @@ def main():
         cfg.checkpoint_config.meta = dict(
             mmaction_version=__version__,
             config=cfg.text,
-            CLASSES=datasets[0].CLASSES)
+        )
     # add an attribute for visualization convenience
-    model.CLASSES = datasets[0].CLASSES
     train_model(
         model,
         datasets,

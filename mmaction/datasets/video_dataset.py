@@ -35,15 +35,9 @@ class VideoDataset(Dataset):
         test_mode (bool): store True when building test dataset.
     """
 
-    def __init__(self,
-                 ann_file,
-                 pipeline,
-                 data_prefix=None,
-                 input_size=224,
-                 test_mode=False):
+    def __init__(self, ann_file, pipeline, data_prefix=None, test_mode=False):
         self.ann_file = ann_file
         self.data_prefix = data_prefix
-        self.input_size = input_size
         self.test_mode = test_mode
         self.pipeline = Compose(pipeline)
         self.video_infos = self.load_annotations()

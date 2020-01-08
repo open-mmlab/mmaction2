@@ -101,31 +101,36 @@ class PyAVDecode(object):
         self.multi_thread = multi_thread
 
     def __call__(self, results):
-        filename = results['filename']
-        frame_inds = results['frame_inds']
-
         try:
             import av
         except ImportError:
             raise ImportError('Please run "conda install av -c conda-forge" '
                               'or "pip install av" to install PyAV first.')
 
-        container = av.open(filename)
+        container = av.open(results['filename'])
+        imgs = list()
+
         if self.multi_thread:
             container.streams.video[0].thread_type = 'AUTO'
+        if results['frame_inds'].ndim != 1:
+            results['frame_inds'] = np.squeeze(results['frame_inds'])
 
-        imgs = list()
         # set max indice to make early stop
-        max_inds = max(frame_inds)
+        max_inds = max(results['frame_inds'])
         i = 0
         for frame in container.decode(video=0):
-            if i > max_inds:
+            if i > max_inds + 1:
                 break
             imgs.append(frame.to_rgb().to_ndarray())
             i += 1
 
         imgs = np.array(imgs)
-        imgs = imgs[frame_inds]
+        # the available frame in pyav may be less than its length,
+        # which may raise error
+        if len(imgs) <= max_inds:
+            results['frame_inds'] = np.mod(results['frame_inds'], len(imgs))
+
+        imgs = imgs[results['frame_inds']]
         imgs = imgs.transpose([0, 3, 1, 2])
         results['imgs'] = np.array(imgs)
         results['ori_shape'] = imgs.shape[-2:]
@@ -154,11 +159,14 @@ class DecordDecode(object):
                 'Please run "pip install decord" to install Decord first.')
 
         container = decord.VideoReader(results['filename'])
-
         imgs = list()
+
+        if results['frame_inds'].ndim != 1:
+            results['frame_inds'] = np.squeeze(results['frame_inds'])
+
         for frame_idx in results['frame_inds']:
-            cur_content = container[frame_idx].asnumpy()
-            imgs.append(cur_content)
+            cur_frame = container[frame_idx].asnumpy()
+            imgs.append(cur_frame)
         imgs = np.array(imgs)
 
         imgs = imgs.transpose([0, 3, 1, 2])
@@ -176,19 +184,16 @@ class OpenCVDecode(object):
     """
 
     def __call__(self, results):
-        filename = results['filename']
-        frame_inds = results['frame_inds']
-
-        container = mmcv.VideoReader(filename)
+        container = mmcv.VideoReader(results['filename'])
         imgs = list()
 
-        if frame_inds.ndim != 1:
-            frame_inds = np.squeeze(frame_inds)
+        if results['frame_inds'].ndim != 1:
+            results['frame_inds'] = np.squeeze(results['frame_inds'])
 
-        for frame_ind in frame_inds:
+        for frame_ind in results['frame_inds']:
             cur_frame = container[frame_ind]
             # last frame may be None in OpenCV
-            while cur_frame is None:
+            while isinstance(cur_frame, type(None)):
                 frame_ind -= 1
                 cur_frame = container[frame_ind]
             imgs.append(cur_frame)
