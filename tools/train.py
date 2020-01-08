@@ -10,7 +10,7 @@ from mmcv.runner import init_dist
 from mmaction import __version__
 from mmaction.core import train_model
 from mmaction.datasets import build_dataset
-from mmaction.models import build_model
+from mmaction.models import build_recognizer
 from mmaction.utils import get_root_logger
 
 
@@ -91,7 +91,7 @@ def main():
         logger.info('Set random seed to {}'.format(args.seed))
         set_random_seed(args.seed)
 
-    model = build_model(
+    model = build_recognizer(
         cfg.model, train_cfg=cfg.train_cfg, test_cfg=cfg.test_cfg)
 
     datasets = [build_dataset(cfg.data.train)]
@@ -103,9 +103,8 @@ def main():
         cfg.checkpoint_config.meta = dict(
             mmaction_version=__version__,
             config=cfg.text,
-            CLASSES=datasets[0].CLASSES)
+        )
     # add an attribute for visualization convenience
-    model.CLASSES = datasets[0].CLASSES
     train_model(
         model,
         datasets,
