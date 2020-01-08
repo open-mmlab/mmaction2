@@ -9,42 +9,41 @@ from .registry import DATASETS
 
 @DATASETS.register_module
 class VideoDataset(Dataset):
-    """A PyTorch video dataset for action recognition.
+    """Video dataset for action recognition.
 
-    This class is useful to load video data with multiple decode methods
-    and applies pre-defined data pipeline with data augmentations (Normalize,
-    MultiScaleCrop, Flip, etc.) and formatting operations (ToTensor, Collect,
-    etc.) to return a dict with required values.
+    The dataset loads raw videos and apply specified transforms to return a
+    dict containing the frame tensors and other infomation.
 
-    Inputs:
-        - ann_file (str): Path to an annotation file which store video info.
-        - pipeline (list[dict | callable class]):
-            A sequence of data augmentations and formatting operations.
-        - data_prefix (str): Path to a directory where videos are held.
-        - shorter_edge (int): shorter edge length of input videos.
-        - input_size (int): width, height of input images
-        - num_segments (int): number of extra frame segments
-        - test_mode: store True when building test dataset.
+    The ann_file is a text file with multiple lines, and each line indicate a
+    sample video with the filepath and label, which are split with a
+    whitespace. Example of a annotation file:
 
-    Annotation format:
-        ['video_path' 'video_label'] format for each line
+    ```
+    some/path/000.mp4 1
+    some/path/001.mp4 1
+    some/path/002.mp4 2
+    some/path/003.mp4 2
+    some/path/004.mp4 3
+    some/path/005.mp4 3
+    ```
+
+    Args:
+        ann_file (str): Path to the annotation file.
+        pipeline (list[dict | callable]): A sequence of data transforms.
+        data_prefix (str): Path to a directory where videos are held.
+        input_size (int | tuple[int]): (width, height) of input images.
+        test_mode (bool): store True when building test dataset.
     """
 
     def __init__(self,
                  ann_file,
                  pipeline,
-                 num_classes,
                  data_prefix=None,
-                 shorter_edge=256,
                  input_size=224,
-                 num_segments=1,
                  test_mode=False):
         self.ann_file = ann_file
-        self.num_classes = num_classes
         self.data_prefix = data_prefix
-        self.shorter_edge = shorter_edge
         self.input_size = input_size
-        self.num_segments = num_segments
         self.test_mode = test_mode
         self.pipeline = Compose(pipeline)
         self.video_infos = self.load_annotations()

@@ -1,5 +1,3 @@
-import av
-import decord
 import mmcv
 import numpy as np
 
@@ -7,12 +5,11 @@ from ..registry import PIPELINES
 
 
 @PIPELINES.register_module
-class SampleFrames:
+class SampleFrames(object):
     """Sample frames from the video.
 
-    Required keys are "filename",
-    added or modified keys are "total_frames" and "frame_inds",
-                               "frame_interval" and "num_clips".
+    Required keys are "filename", added or modified keys are "total_frames",
+    "frame_inds", "frame_interval" and "num_clips".
 
     Attributes:
         clip_len (int): Frames of each sampled output clip.
@@ -32,8 +29,7 @@ class SampleFrames:
         self.temporal_jitter = temporal_jitter
 
     def _sample_clips(self, num_frames):
-        """
-        Choose frame indices for the video.
+        """Choose frame indices for the video.
 
         Calculate the average interval for selected frames, and randomly
         shift them within offsets between [0, avg_interval]. If the total
@@ -41,9 +37,10 @@ class SampleFrames:
         it will return all zero indices.
 
         Args:
-            num_frames: total number of frame in the video.
+            num_frames (int): Total number of frame in the video.
 
-        Returns: list of sampled frame indices
+        Returns:
+            np.ndarray: Sampled frame indices.
         """
         ori_clip_len = self.clip_len * self.frame_interval
         avg_interval = (num_frames - ori_clip_len + 1) // self.num_clips
@@ -87,8 +84,10 @@ class SampleFrames:
 
 
 @PIPELINES.register_module
-class PyAVDecode:
-    """Using pyav to decode the video
+class PyAVDecode(object):
+    """Using pyav to decode the video.
+
+    PyAV: https://github.com/mikeboers/PyAV
 
     Required keys are "filename" and "frame_inds",
     added or modified keys are "imgs" and "ori_shape".
@@ -104,6 +103,12 @@ class PyAVDecode:
     def __call__(self, results):
         filename = results['filename']
         frame_inds = results['frame_inds']
+
+        try:
+            import av
+        except ImportError:
+            raise ImportError('Please run "conda install av -c conda-forge" '
+                              'or "pip install av" to install PyAV first.')
 
         container = av.open(filename)
         if self.multi_thread:
@@ -132,29 +137,27 @@ class PyAVDecode:
 
 
 @PIPELINES.register_module
-class DecordDecode:
-    """Using decord to decode the video
+class DecordDecode(object):
+    """Using decord to decode the video.
+
+    Decord: https://github.com/zhreshold/decord
 
     Required keys are "filename" and "frame_inds",
     add or modified keys are "imgs" and "ori_shape".
-
-    Attributes:
-        multi_thread (bool): If set to True, it will
-            apply multi thread processing.
     """
 
-    def __init__(self, multi_thread=False):
-        self.multi_thread = multi_thread
-
     def __call__(self, results):
-        filename = results['filename']
-        frame_inds = results['frame_inds']
+        try:
+            import decord
+        except ImportError:
+            raise ImportError(
+                'Please run "pip install decord" to install Decord first.')
 
-        container = decord.VideoReader(filename)
+        container = decord.VideoReader(results['filename'])
+
         imgs = list()
-
-        for frame_ind in frame_inds:
-            cur_content = container[frame_ind].asnumpy()
+        for frame_idx in results['frame_inds']:
+            cur_content = container[frame_idx].asnumpy()
             imgs.append(cur_content)
         imgs = np.array(imgs)
 
@@ -163,25 +166,14 @@ class DecordDecode:
         results['ori_shape'] = imgs.shape[-2:]
         return results
 
-    def __repr__(self):
-        repr_str = self.__class__.__name__
-        repr_str += '(multi_thread={})'.format(self.multi_thread)
-
 
 @PIPELINES.register_module
-class OpenCVDecode:
-    """Using OpenCV to decode the video
+class OpenCVDecode(object):
+    """Using OpenCV to decode the video.
 
     Required keys are "filename" and "frame_inds",
     add or modified keys are "imgs" and "ori_shape".
-
-    Attributes:
-        multi_thread (bool): If set to True, it will
-            apply multi thread processing.
     """
-
-    def __init__(self, multi_thread=False):
-        self.multi_thread = multi_thread
 
     def __call__(self, results):
         filename = results['filename']
@@ -194,22 +186,17 @@ class OpenCVDecode:
             frame_inds = np.squeeze(frame_inds)
 
         for frame_ind in frame_inds:
-            cur_content = container[frame_ind]
+            cur_frame = container[frame_ind]
             # last frame may be None in OpenCV
-            # while type(cur_content) == type(None):
-            while isinstance(cur_content, type(None)):
+            while cur_frame is None:
                 frame_ind -= 1
-                cur_content = container[frame_ind]
-            imgs.append(cur_content)
+                cur_frame = container[frame_ind]
+            imgs.append(cur_frame)
 
         imgs = np.array(imgs)
-        # mmcv default channel sequence is BGR, so change it to RGB
+        # The default channel order of OpenCV is BGR, thus we change it to RGB
         imgs = imgs[:, :, :, ::-1]
         imgs = imgs.transpose([0, 3, 1, 2])
         results['imgs'] = np.array(imgs)
         results['ori_shape'] = imgs.shape[-2:]
         return results
-
-    def __repr__(self):
-        repr_str = self.__class__.__name__
-        repr_str += '(multi_thread={})'.format(self.multi_thread)

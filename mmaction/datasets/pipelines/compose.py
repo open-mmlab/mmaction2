@@ -6,11 +6,11 @@ from ..registry import PIPELINES
 
 @PIPELINES.register_module
 class Compose(object):
-    """Make data pre-processing pipeline customizable
+    """Compose a data pipeline with a sequence of transforms.
 
     Args:
-        transforms (list[dict | callable class]):
-            Transform Operations with configs in pipelines
+        transforms (list[dict | callable]):
+            Either config dicts of transforms or transform objects.
     """
 
     def __init__(self, transforms):
@@ -23,7 +23,9 @@ class Compose(object):
             elif callable(transform):
                 self.transforms.append(transform)
             else:
-                raise TypeError('transform must be callable or a dict')
+                raise TypeError(
+                    'transform must be callable or a dict, but got {}'.format(
+                        type(transform)))
 
     def __call__(self, data):
         for t in self.transforms:
