@@ -1,3 +1,4 @@
+import copy
 from abc import ABCMeta, abstractmethod
 
 from torch.utils.data import Dataset
@@ -5,8 +6,8 @@ from torch.utils.data import Dataset
 from .pipelines import Compose
 
 
-class BaseDataset(Dataset):
-    """Base class for VideoDatasets and rawframeDatasets.
+class BaseDataset(Dataset, metaclass=ABCMeta):
+    """Base class for datasets.
 
     All datasets to process video should subclass it.
     All subclasses should overwrite:
@@ -14,11 +15,15 @@ class BaseDataset(Dataset):
             from an annotation file.
         Methods:`prepare_train_frames`, providing train data.
         Methods:`prepare_test_frames`, providing test data.
+
+    Args:
+        ann_file (str): Path to the annotation file.
+        pipeline (list[dict | callable]): A sequence of data transforms.
+        data_prefix (str): Path to a directory where videos are held.
+        test_mode (bool): store True when building test dataset.
     """
 
-    __metaclass__ = ABCMeta
-
-    def __init__(self, ann_file, pipeline, data_prefix, test_mode):
+    def __init__(self, ann_file, pipeline, data_prefix=None, test_mode=False):
         super(BaseDataset, self).__init__()
 
         self.ann_file = ann_file
@@ -31,13 +36,13 @@ class BaseDataset(Dataset):
     def load_annotations(self):
         pass
 
-    @abstractmethod
     def prepare_train_frames(self, idx):
-        pass
+        results = copy.deepcopy(self.video_infos[idx])
+        return self.pipeline(results)
 
-    @abstractmethod
     def prepare_test_frames(self, idx):
-        pass
+        results = copy.deepcopy(self.video_infos[idx])
+        return self.pipeline(results)
 
     def __len__(self):
         return len(self.video_infos)

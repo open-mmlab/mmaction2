@@ -13,25 +13,25 @@ class RawframeDataset(BaseDataset):
     dict containing the frame tensors and other information.
 
     The ann_file is a text file with multiple lines, and each line indicates
-    sampled rawframes with the directory, total number and label, which
-    are split with a whitespace. Example of a annotation file:
+    the directory to frames of a video, total frames of the video and
+    the label of a video, which are split with a whitespace.
+    Example of a annotation file:
 
     ```
-    some/path/000.mp4 frameNumber1 1
-    some/path/001.mp4 frameNumber2 1
-    some/path/002.mp4 frameNumber3 2
-    some/path/003.mp4 frameNumber4 2
-    some/path/004.mp4 frameNumber5 3
-    some/path/005.mp4 frameNumber6 3
+    some/directory-1 163 1
+    some/directory-2 122 1
+    some/directory-3 258 2
+    some/directory-4 234 2
+    some/directory-5 295 3
+    some/directory-6 121 3
     ```
 
     Args:
         ann_file (str): Path to the annotation file.
         pipeline (list[dict | callable]): A sequence of data transforms.
         data_prefix (str): Path to a directory where videos are held.
-        input_size (int | tuple[int]): (width, height) of input images.
         test_mode (bool): store True when building test dataset.
-        image_tmpl (str): Template for each filename.
+        filename_tmpl (str): Template for each filename.
     """
 
     def __init__(self,
@@ -39,30 +39,31 @@ class RawframeDataset(BaseDataset):
                  pipeline,
                  data_prefix=None,
                  test_mode=False,
-                 image_tmpl='img_{0:0{width}}.jpg'):
+                 filename_tmpl='img_{:05}.jpg'):
         super(RawframeDataset, self).__init__(ann_file, pipeline, data_prefix,
                                               test_mode)
-        self.image_tmpl = image_tmpl
+        self.filename_tmpl = filename_tmpl
 
     def load_annotations(self):
         video_infos = []
         with open(self.ann_file, 'r') as fin:
             for line in fin:
-                file_dir, total_frames, label = line.split(' ')
-                file_dir = osp.join(self.data_prefix, file_dir)
+                frame_dir, total_frames, label = line.split(' ')
+                if self.data_prefix is not None:
+                    frame_dir = osp.join(self.data_prefix, frame_dir)
                 video_infos.append(
                     dict(
-                        file_dir=file_dir,
+                        frame_dir=frame_dir,
                         total_frames=int(total_frames),
                         label=int(label)))
         return video_infos
 
     def prepare_train_frames(self, idx):
         results = copy.deepcopy(self.video_infos[idx])
-        results['image_tmpl'] = self.image_tmpl
+        results['filename_tmpl'] = self.filename_tmpl
         return self.pipeline(results)
 
     def prepare_test_frames(self, idx):
         results = copy.deepcopy(self.video_infos[idx])
-        results['image_tmpl'] = self.image_tmpl
+        results['filename_tmpl'] = self.filename_tmpl
         return self.pipeline(results)

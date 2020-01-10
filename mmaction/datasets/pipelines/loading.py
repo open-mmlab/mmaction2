@@ -61,7 +61,8 @@ class SampleFrames(object):
         return clip_offsets
 
     def __call__(self, results):
-        if 'total_frames' not in results.keys():
+        if 'total_frames' not in results:
+            # TODO: find a better way to get the total frames number for video
             video_reader = mmcv.VideoReader(results['filename'])
             total_frames = len(video_reader)
             results['total_frames'] = total_frames
@@ -152,7 +153,7 @@ class DecordDecode(object):
     Decord: https://github.com/zhreshold/decord
 
     Required keys are "filename" and "frame_inds",
-    add or modified keys are "imgs" and "ori_shape".
+    added or modified keys are "imgs" and "ori_shape".
     """
 
     def __call__(self, results):
@@ -184,7 +185,7 @@ class OpenCVDecode(object):
     """Using OpenCV to decode the video.
 
     Required keys are "filename" and "frame_inds",
-    add or modified keys are "imgs" and "ori_shape".
+    added or modified keys are "imgs" and "ori_shape".
     """
 
     def __call__(self, results):
@@ -216,21 +217,20 @@ class OpenCVDecode(object):
 class FrameSelector(object):
     """Select raw frames with given indices
 
-    Required keys are "file_dir", "image_tmpl" and "frame_inds",
-    add or modified keys are "imgs" and "ori_shape".
+    Required keys are "file_dir", "filename_tmpl" and "frame_inds",
+    added or modified keys are "imgs" and "ori_shape".
     """
 
     def __call__(self, results):
-        directory = results['file_dir']
-        image_tmpl = results['image_tmpl']
+        directory = results['frame_dir']
+        filename_tmpl = results['filename_tmpl']
         imgs = list()
 
         if results['frame_inds'].ndim != 1:
             results['frame_inds'] = np.squeeze(results['frame_inds'])
 
         for frame_idx in results['frame_inds']:
-            filepath = osp.join(directory,
-                                image_tmpl.format(frame_idx, width=5))
+            filepath = osp.join(directory, filename_tmpl.format(frame_idx))
             cur_frame = mmcv.imread(filepath)
             imgs.append(cur_frame)
 
