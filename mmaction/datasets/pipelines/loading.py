@@ -1,3 +1,5 @@
+import os.path as osp
+
 import mmcv
 import numpy as np
 
@@ -59,12 +61,14 @@ class SampleFrames(object):
         return clip_offsets
 
     def __call__(self, results):
-        video_reader = mmcv.VideoReader(results['filename'])
-        total_frames = len(video_reader)
-        results['total_frames'] = total_frames
+        if 'total_frames' not in results.keys():
+            video_reader = mmcv.VideoReader(results['filename'])
+            total_frames = len(video_reader)
+            results['total_frames'] = total_frames
+        else:
+            total_frames = results['total_frames']
 
         clip_offsets = self._sample_clips(total_frames)
-
         frame_inds = clip_offsets[:, None] + np.arange(
             self.clip_len)[None, :] * self.frame_interval
         frame_inds = np.concatenate(frame_inds)
@@ -204,4 +208,37 @@ class OpenCVDecode(object):
         imgs = imgs.transpose([0, 3, 1, 2])
         results['imgs'] = np.array(imgs)
         results['ori_shape'] = imgs.shape[-2:]
+
+        return results
+
+
+@PIPELINES.register_module
+class FrameSelector(object):
+    """Select raw frames with given indices
+
+    Required keys are "file_dir", "image_tmpl" and "frame_inds",
+    add or modified keys are "imgs" and "ori_shape".
+    """
+
+    def __call__(self, results):
+        directory = results['file_dir']
+        image_tmpl = results['image_tmpl']
+        imgs = list()
+
+        if results['frame_inds'].ndim != 1:
+            results['frame_inds'] = np.squeeze(results['frame_inds'])
+
+        for frame_idx in results['frame_inds']:
+            filepath = osp.join(directory,
+                                image_tmpl.format(frame_idx, width=5))
+            cur_frame = mmcv.imread(filepath)
+            imgs.append(cur_frame)
+
+        imgs = np.array(imgs)
+        # The default channel order of OpenCV is BGR, thus we change it to RGB
+        imgs = imgs[:, :, :, ::-1]
+        imgs = imgs.transpose([0, 3, 1, 2])
+        results['imgs'] = np.array(imgs)
+        results['ori_shape'] = imgs.shape[-2:]
+
         return results
