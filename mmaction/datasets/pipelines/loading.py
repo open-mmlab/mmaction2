@@ -3,6 +3,7 @@ import os.path as osp
 import mmcv
 import numpy as np
 
+from mmaction.utils import FileClient
 from ..registry import PIPELINES
 
 
@@ -113,6 +114,7 @@ class PyAVDecode(object):
                               'or "pip install av" to install PyAV first.')
 
         container = av.open(results['filename'])
+
         imgs = list()
 
         if self.multi_thread:
@@ -219,11 +221,19 @@ class FrameSelector(object):
 
     Required keys are "file_dir", "filename_tmpl" and "frame_inds",
     added or modified keys are "imgs" and "ori_shape".
+
+    Attributes:
+        io_backend (str): io backend where frames are store.
     """
+
+    def __init__(self, io_backend='disk', **kwargs):
+        self.io_backend = io_backend
+        self.file_client = FileClient(self.io_backend, **kwargs)
 
     def __call__(self, results):
         directory = results['frame_dir']
         filename_tmpl = results['filename_tmpl']
+
         imgs = list()
 
         if results['frame_inds'].ndim != 1:
@@ -231,7 +241,8 @@ class FrameSelector(object):
 
         for frame_idx in results['frame_inds']:
             filepath = osp.join(directory, filename_tmpl.format(frame_idx))
-            cur_frame = mmcv.imread(filepath)
+            img_bytes = self.file_client.get(filepath)
+            cur_frame = mmcv.imfrombytes(img_bytes)
             imgs.append(cur_frame)
 
         imgs = np.array(imgs)
