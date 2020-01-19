@@ -13,7 +13,7 @@ if platform.system() != 'Windows':
 
 
 def build_dataloader(dataset,
-                     imgs_per_gpu,
+                     videos_per_gpu,
                      workers_per_gpu,
                      num_gpus=1,
                      dist=True,
@@ -22,14 +22,13 @@ def build_dataloader(dataset,
                      **kwargs):
     if dist:
         rank, world_size = get_dist_info()
-        sampler = DistributedSampler(
-            dataset, world_size, rank, shuffle=shuffle)
+        sampler = DistributedSampler(dataset, world_size, rank)
         shuffle = False
-        batch_size = imgs_per_gpu
+        batch_size = videos_per_gpu
         num_workers = workers_per_gpu
     else:
         sampler = None
-        batch_size = num_gpus * imgs_per_gpu
+        batch_size = num_gpus * videos_per_gpu
         num_workers = num_gpus * workers_per_gpu
 
     data_loader = DataLoader(
@@ -37,7 +36,7 @@ def build_dataloader(dataset,
         batch_size=batch_size,
         sampler=sampler,
         num_workers=num_workers,
-        collate_fn=partial(collate, samples_per_gpu=imgs_per_gpu),
+        collate_fn=partial(collate, samples_per_gpu=videos_per_gpu),
         pin_memory=pin_memory,
         shuffle=shuffle,
         **kwargs)
