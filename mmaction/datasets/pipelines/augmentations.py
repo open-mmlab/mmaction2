@@ -207,18 +207,18 @@ class Normalize(object):
     Attributes:
         mean (np.ndarray): Mean values of different channels.
         std (np.ndarray): Std values of different channels.
-        to_rgb (bool): Whether to convert channels from BGR to RGB.
+        to_bgr (bool): Whether to convert channels from RGB to BGR.
     """
 
-    def __init__(self, mean, std, to_rgb=False):
+    def __init__(self, mean, std, to_bgr=False):
         self.mean = np.array(mean, dtype=np.float32)
         self.std = np.array(std, dtype=np.float32)
-        self.to_rgb = to_rgb
+        self.to_bgr = to_bgr
 
     def __call__(self, results):
         imgs = results['imgs'].astype(np.float32)
 
-        if self.to_rgb:
+        if self.to_bgr:
             imgs = imgs[:, ::-1, ...].copy()
 
         imgs -= self.mean[:, None, None]
@@ -226,13 +226,13 @@ class Normalize(object):
 
         results['imgs'] = imgs
         results['img_norm_cfg'] = dict(
-            mean=self.mean, std=self.std, to_rgb=self.to_rgb)
+            mean=self.mean, std=self.std, to_bgr=self.to_bgr)
         return results
 
     def __repr__(self):
         repr_str = self.__class__.__name__
-        repr_str += '(mean={}, std={}, to_rgb={})'.format(
-            self.mean, self.std, self.to_rgb)
+        repr_str += '(mean={}, std={}, to_bgr={})'.format(
+            self.mean, self.std, self.to_bgr)
         return repr_str
 
 
