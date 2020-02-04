@@ -35,7 +35,7 @@ def batch_processor(model, data, train_mode):
     loss, log_vars = parse_losses(losses)
 
     outputs = dict(
-        loss=loss, log_vars=log_vars, num_samples=len(data['img'].data))
+        loss=loss, log_vars=log_vars, num_samples=len(data['imgs'].data))
 
     return outputs
 
