@@ -1,17 +1,49 @@
-import logging
-
+import torch
 import torch.nn as nn
 import torch.utils.checkpoint as cp
 from mmcv.cnn import constant_init, kaiming_init
-from mmcv.runner import load_checkpoint
+from mmcv.runner import load_checkpoint, _load_checkpoint
 from torch.nn.modules.batchnorm import _BatchNorm
 from torch.nn.modules.utils import _ntuple, _triple
 
 from mmaction.models.common import build_norm_layer
 from mmaction.models.registry import BACKBONES
+from mmaction.utils import get_root_logger
 
+def get_layer_names(layer_params):
+    """get layer name when loading checkpoint."""
+    layer_names = list()
+
+    for layer_param in layer_params:
+        pos = layer_param.rfind('.')
+        layer = layer_param[:pos]
+        if layer not in layer_names:
+            layer_names.append(layer)
+
+    return layer_names
 
 class Bottleneck3d(nn.Module):
+    """Bottleneck3D block for ResNet3D.
+
+    Args:
+        inplanes (int): Number of channels for the input in first conv3d layer.
+        planes (int): Number of channels produced by some norm/conv3d layers.
+        spatial_stride (int): Spatial stride in the conv3d layer, Default 1.
+        temporal_stride (int): Temporal stride in the conv3d layer, Default 1.
+        dilation (int): Spacing between kernel elements, Default 1.
+        downsample (obj): Downsample layer. Default None.
+        style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
+            layer is the 3x3 conv layer, otherwise the stride-two layer is
+            the first 1x1 conv layer. Default 'pytorch'.
+        inflate (bool): Whether to inflate kernel, Default True.
+        inflate_style (str): `3x1x1` or `1x1x1`. which determines the kernel
+            sizes and padding strides for conv1 and conv2 in each block.
+            Default '3x1x1'.
+        norm_cfg (dict): Config for norm layers. required keys are `type`,
+            Default dict(type='BN3d').
+        with_cp (bool): Use checkpoint or not. Using checkpoint will save some
+            memory while slowing down the training speed, Default False.
+    """
     expansion = 4
 
     def __init__(self,
@@ -110,6 +142,18 @@ class Bottleneck3d(nn.Module):
         self.relu = nn.ReLU(inplace=True)
         self.downsample = downsample
 
+    @property
+    def norm1(self):
+        return getattr(self, self.norm1_name)
+
+    @property
+    def norm2(self):
+        return getattr(self, self.norm2_name)
+
+    @property
+    def norm3(self):
+        return getattr(self, self.norm3_name)
+
     def forward(self, x):
 
         def _inner_forward(x):
@@ -155,6 +199,33 @@ def make_res_layer(block,
                    inflate_style='3x1x1',
                    norm_cfg=None,
                    with_cp=False):
+    """Build residual layer for ResNet3D.
+
+    Args:
+        block (nn.Module): Residual module to be built.
+        inplanes (int): Number of channels for the input feature in each block.
+        planes (int): Number of channels for the output feature in each block.
+        blocks (int): Number of residual blocks.
+        spatial_stride (int | Sequence[int]): Spatial strides in residual and
+            conv layers, Default 1.
+        temporal_stride (int | Sequence[int]): Temporal strides in residual and
+            conv layers, Default 1.
+        dilation (int): Spacing between kernel elements, Default 1.
+        style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
+            layer is the 3x3 conv layer, otherwise the stride-two layer is
+            the first 1x1 conv layer. Default 'pytorch'.
+        inflate (int | Sequence[int]): Determine whether to inflate for each
+            block, Default 1.
+        inflate_style (str): `3x1x1` or `1x1x1`. which determines the kernel
+            sizes and padding strides for conv1 and conv2 in each block.
+            Default '3x1x1'.
+        norm_cfg (dict): Config for norm layers, Default None.
+        with_cp (bool): Use checkpoint or not. Using checkpoint will save
+            some memory while slowing down the training speed, Default False.
+
+    Returns:
+        A residual layer for the given config.
+    """
     inflate = inflate if not isinstance(inflate, int) else (inflate, ) * blocks
     assert len(inflate) == blocks
     downsample = None
@@ -207,20 +278,37 @@ class ResNet3d(nn.Module):
 
     Args:
         depth (int): Depth of resnet, from {18, 34, 50, 101, 152}.
-        num_stages (int): Resnet stages, normally 4.
-        strides (Sequence[int]): Strides of the first block of each stage.
+        pretrained (str): Name of pretrained model.
+        pretrained2d (bool): Whether to load pretrained 2D model, Default True.
+        in_channels (int): Channel num of input features, Default 3.
+        num_stages (int): Resnet stages, Default 4.
+        spatial_strides (Sequence[int]):
+            Spatial strides of residual blocks of each stage.
+        temporal_strides (Sequence[int]):
+            Temporal strides of residual blocks of each stage.
         dilations (Sequence[int]): Dilation of each stage.
-        out_indices (Sequence[int]): Output from which stages.
+        conv1_kernel (Sequence[int]): Kernel size of the first conv layer.
+        conv1_stride_t (int): Temporal stride of the first conv layer.
+        pool1_stride_t (int): Temporal stride of the first pooling layer.
         style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
             layer is the 3x3 conv layer, otherwise the stride-two layer is
             the first 1x1 conv layer.
         frozen_stages (int): Stages to be frozen (all param fixed). -1 means
             not freezing any parameters.
-        bn_eval (bool): Whether to set BN layers to eval mode, namely, freeze
-            running stats (mean and var).
-        bn_frozen (bool): Whether to freeze weight and bias of BN layers.
+        inflate (Sequence[int]): Inflate Dims of each block.
+        inflate_stride (Sequence[int]):
+            Inflate stride of each block.
+        inflate_style (str): `3x1x1` or `1x1x1`. which determines the kernel
+            sizes and padding strides for conv1 and conv2 in each block.
+        norm_cfg (dict): Config for norm layers. required keys are `type` and
+            `requires_grad`, Default dict(type='BN3d', requires_grad=True).
+        norm_eval (bool): Whether to set BN layers to eval mode, namely, freeze
+            running stats (mean and var), Default True.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
-            memory while slowing down the training speed.
+            memory while slowing down the training speed, Default False.
+        zero_init_residual (bool):
+            Whether to use zero initialization for residual block,
+            Default True.
     """
 
     arch_settings = {
@@ -233,6 +321,8 @@ class ResNet3d(nn.Module):
 
     def __init__(self,
                  depth,
+                 pretrained,
+                 pretrained2d=True,
                  in_channels=3,
                  num_stages=4,
                  spatial_strides=(1, 2, 2, 2),
@@ -254,6 +344,8 @@ class ResNet3d(nn.Module):
         if depth not in self.arch_settings:
             raise KeyError('invalid depth {} for resnet'.format(depth))
         self.depth = depth
+        self.pretrained = pretrained
+        self.pretrained2d = pretrained2d
         self.in_channels = in_channels
         self.num_stages = num_stages
         assert num_stages >= 1 and num_stages <= 4
@@ -272,6 +364,7 @@ class ResNet3d(nn.Module):
         self.norm_cfg = norm_cfg
         self.norm_eval = norm_eval
         self.with_cp = with_cp
+        self.zero_init_residual = zero_init_residual
 
         self.block, stage_blocks = self.arch_settings[depth]
         self.stage_blocks = stage_blocks[:num_stages]
@@ -310,6 +403,44 @@ class ResNet3d(nn.Module):
     def norm1(self):
         return getattr(self, self.norm1_name)
 
+    def inflate_weights(self, logger):
+        resnet2d = _load_checkpoint(self.pretrained)
+        if 'state_dict' in resnet2d.keys():
+            resnet2d = resnet2d['state_dict']
+        layer_names = get_layer_names(resnet2d.keys())
+
+        for name, module in self.named_modules():
+            if isinstance(module, nn.Conv3d) and name in layer_names:
+                old_weight = resnet2d[name + '.weight'].data
+                new_weight = old_weight.unsqueeze(2).expand_as(
+                    module.weight) / module.weight.data.shape[2]
+                module.weight.data.copy_(new_weight)
+                logger.info(
+                    '{}.weight loaded from weights file into {}'.
+                        format(name, new_weight.shape))
+
+                if hasattr(module, 'bias') and module.bias is not None:
+                    new_bias = resnet2d[name + '.bias'].data
+                    module.bias.data.copy_(new_bias)
+                    logger.info(
+                        '{}.bias loaded from weights file into {}'.
+                            format(name, new_bias))
+
+            elif isinstance(module,
+                            nn.BatchNorm3d) and name in layer_names:
+                param_names = list()
+                for param_name in resnet2d.keys():
+                    if param_name.startswith(name):
+                        param_names.append(param_name)
+
+                for param_name in param_names:
+                    attr = param_name.split('.')[-1]
+                    new_parms = resnet2d[param_name]
+                    logger.info(
+                        '{} loaded from weights file into {}'.format(
+                            param_name, new_parms.shape))
+                    setattr(module, attr, new_parms)
+
     def _make_stem_layer(self):
         self.conv1 = nn.Conv3d(
             self.in_channels,
@@ -341,10 +472,20 @@ class ResNet3d(nn.Module):
             for param in m.parameters():
                 param.requires_grad = False
 
-    def init_weights(self, pretrained=None):
+    def init_weights(self):
         if isinstance(self.pretrained, str):
-            logger = logging.getLogger()
-            load_checkpoint(self, self.pretrained, strict=False, logger=logger)
+            logger = get_root_logger()
+            logger.info('load model from: {}'.format(self.pretrained))
+
+            if self.pretrained2d:
+                # Inflate 2D model into 3D model.
+                self.inflate_weights(logger)
+
+            else:
+                # Directly load 3D model.
+                load_checkpoint(
+                    self, self.pretrained, strict=False, logger=logger)
+
         elif self.pretrained is None:
             for m in self.modules():
                 if isinstance(m, nn.Conv3d):
@@ -356,8 +497,7 @@ class ResNet3d(nn.Module):
                 for m in self.modules():
                     if isinstance(m, Bottleneck3d):
                         constant_init(m.norm3, 0)
-                    # elif isinstance(m, BasicBlock3d):
-                    #     constant_init(m.norm2, 0)
+
         else:
             raise TypeError('pretrained must be a str or None')
 
@@ -380,3 +520,4 @@ class ResNet3d(nn.Module):
             for m in self.modules():
                 if isinstance(m, _BatchNorm):
                     m.eval()
+
