@@ -6,4 +6,5 @@ from .registry import BACKBONES, HEADS, RECOGNIZERS
 
 __all__ = [
     'BACKBONES', 'HEADS', 'RECOGNIZERS', 'build_recognizer', 'build_head',
-    'build_backbone', 'resnet3d', 'I3DClsHead', 'recognizer3d']
+    'build_backbone', 'resnet3d', 'I3DClsHead', 'recognizer3d'
+]

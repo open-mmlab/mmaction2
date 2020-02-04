@@ -17,6 +17,7 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
         num_classes (int): Number of classes to be classified.
         in_channels (int): Number of channels in input feature.
     """
+
     def __init__(self, num_classes, in_channels):
         super(BaseHead, self).__init__()
         self.num_classes = num_classes
