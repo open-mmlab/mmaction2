@@ -246,6 +246,10 @@ class FrameSelector(object):
             results['frame_inds'] = np.squeeze(results['frame_inds'])
 
         for frame_idx in results['frame_inds']:
+            # temporary solution for frame index offset.
+            # TODO: add offset attributes in datasets.
+            if frame_idx == 0:
+                frame_idx += 1
             filepath = osp.join(directory, filename_tmpl.format(frame_idx))
             img_bytes = self.file_client.get(filepath)
             cur_frame = mmcv.imfrombytes(img_bytes)
