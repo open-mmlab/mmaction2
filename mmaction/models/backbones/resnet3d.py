@@ -1,14 +1,14 @@
-import torch
 import torch.nn as nn
 import torch.utils.checkpoint as cp
 from mmcv.cnn import constant_init, kaiming_init
-from mmcv.runner import load_checkpoint, _load_checkpoint
+from mmcv.runner import _load_checkpoint, load_checkpoint
 from torch.nn.modules.batchnorm import _BatchNorm
 from torch.nn.modules.utils import _ntuple, _triple
 
 from mmaction.models.common import build_norm_layer
 from mmaction.models.registry import BACKBONES
 from mmaction.utils import get_root_logger
+
 
 def get_layer_names(layer_params):
     """get layer name when loading checkpoint."""
@@ -21,6 +21,7 @@ def get_layer_names(layer_params):
             layer_names.append(layer)
 
     return layer_names
+
 
 class Bottleneck3d(nn.Module):
     """Bottleneck3D block for ResNet3D.
@@ -279,7 +280,8 @@ class ResNet3d(nn.Module):
     Args:
         depth (int): Depth of resnet, from {18, 34, 50, 101, 152}.
         pretrained (str): Name of pretrained model.
-        pretrained2d (bool): Whether to load pretrained 2D model, Default: True.
+        pretrained2d (bool): Whether to load pretrained 2D model.
+            Default: True.
         in_channels (int): Channel num of input features, Default: 3.
         num_stages (int): Resnet stages, Default: 4.
         spatial_strides (Sequence[int]):
@@ -416,18 +418,17 @@ class ResNet3d(nn.Module):
                     module.weight) / module.weight.data.shape[2]
                 module.weight.data.copy_(new_weight)
                 logger.info(
-                    '{}.weight loaded from weights file into {}'.
-                        format(name, new_weight.shape))
+                    '{}.weight loaded from weights file into {}'.format(
+                        name, new_weight.shape))
 
                 if hasattr(module, 'bias') and module.bias is not None:
                     new_bias = resnet2d[name + '.bias'].data
                     module.bias.data.copy_(new_bias)
                     logger.info(
-                        '{}.bias loaded from weights file into {}'.
-                            format(name, new_bias))
+                        '{}.bias loaded from weights file into {}'.format(
+                            name, new_bias))
 
-            elif isinstance(module,
-                            nn.BatchNorm3d) and name in layer_names:
+            elif isinstance(module, nn.BatchNorm3d) and name in layer_names:
                 param_names = list()
                 for param_name in resnet2d.keys():
                     if param_name.startswith(name):
@@ -436,9 +437,8 @@ class ResNet3d(nn.Module):
                 for param_name in param_names:
                     attr = param_name.split('.')[-1]
                     new_parms = resnet2d[param_name]
-                    logger.info(
-                        '{} loaded from weights file into {}'.format(
-                            param_name, new_parms.shape))
+                    logger.info('{} loaded from weights file into {}'.format(
+                        param_name, new_parms.shape))
                     setattr(module, attr, new_parms)
 
     def _make_stem_layer(self):
@@ -520,4 +520,3 @@ class ResNet3d(nn.Module):
             for m in self.modules():
                 if isinstance(m, _BatchNorm):
                     m.eval()
-

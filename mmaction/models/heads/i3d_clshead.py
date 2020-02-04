@@ -1,4 +1,3 @@
-import time
 import torch.nn as nn
 from mmcv.cnn.weight_init import normal_init
 from torch.nn.modules.utils import _pair
@@ -22,6 +21,7 @@ class I3DClsHead(BaseHead):
         dropout_ratio (float): Probability of dropout layer. Default: 0.5.
         init_std (float): Std value for Initiation. Default: 0.01.
     """
+
     def __init__(self,
                  num_classes,
                  in_channels=2048,
@@ -45,10 +45,9 @@ class I3DClsHead(BaseHead):
         else:
             self.dropout = None
         self.fc_cls = nn.Linear(self.in_channels, self.num_classes)
-        
+
         if self.spatial_type == 'avg':
-            self.avg_pool = nn.AvgPool3d(
-                self.pool_size, stride=1, padding=0)
+            self.avg_pool = nn.AvgPool3d(self.pool_size, stride=1, padding=0)
         else:
             self.avg_pool = None
 

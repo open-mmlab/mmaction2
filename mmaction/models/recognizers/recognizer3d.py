@@ -12,11 +12,8 @@ class Recognizer3D(BaseRecognizer):
         train_cfg (dict): Config for training. Default: None.
         test_cfg (dict): Config for testing. Default: None.
     """
-    def __init__(self,
-                 backbone,
-                 cls_head,
-                 train_cfg=None,
-                 test_cfg=None):
+
+    def __init__(self, backbone, cls_head, train_cfg=None, test_cfg=None):
         super(Recognizer3D, self).__init__(backbone, cls_head, train_cfg,
                                            test_cfg)
 
