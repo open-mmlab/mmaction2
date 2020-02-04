@@ -224,15 +224,21 @@ class FrameSelector(object):
 
     Attributes:
         io_backend (str): io backend where frames are store.
+            Default: 'disk'.
+        kwargs (dict): Args for file client.
     """
 
     def __init__(self, io_backend='disk', **kwargs):
         self.io_backend = io_backend
-        self.file_client = FileClient(self.io_backend, **kwargs)
+        self.kwargs = kwargs
+        self.file_client = None
 
     def __call__(self, results):
         directory = results['frame_dir']
         filename_tmpl = results['filename_tmpl']
+
+        if self.file_client is None:
+            self.file_client = FileClient(self.io_backend, **self.kwargs)
 
         imgs = list()
 
