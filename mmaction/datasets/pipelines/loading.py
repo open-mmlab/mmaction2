@@ -70,6 +70,7 @@ class SampleFrames(object):
         else:
             total_frames = results['total_frames']
 
+        # TODO: index in different mode may be different
         clip_offsets = self._sample_clips(total_frames)
         frame_inds = clip_offsets[:, None] + np.arange(
             self.clip_len)[None, :] * self.frame_interval

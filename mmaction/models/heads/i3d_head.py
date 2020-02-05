@@ -1,3 +1,4 @@
+import mmcv
 import torch.nn as nn
 from mmcv.cnn.weight_init import normal_init
 from torch.nn.modules.utils import _pair
@@ -7,7 +8,7 @@ from .base import BaseHead
 
 
 @HEADS.register_module
-class I3DClsHead(BaseHead):
+class I3DHead(BaseHead):
     """Classification head for I3D.
 
     Attributes:
@@ -30,11 +31,10 @@ class I3DClsHead(BaseHead):
                  temporal_size=4,
                  dropout_ratio=0.5,
                  init_std=0.01):
-        super(I3DClsHead, self).__init__(num_classes, in_channels)
-        if not isinstance(spatial_size, int):
-            self.spatial_size = spatial_size
-        else:
-            self.spatial_size = _pair(spatial_size)
+        super(I3DHead, self).__init__(num_classes, in_channels)
+        self.spatial_size = _pair(spatial_size)
+        assert mmcv.is_tuple_of(self.spatial_size, int)
+
         self.spatial_type = spatial_type
         self.temporal_size = temporal_size
         self.pool_size = (self.temporal_size, ) + self.spatial_size
@@ -55,9 +55,14 @@ class I3DClsHead(BaseHead):
         normal_init(self.fc_cls, std=self.init_std)
 
     def forward(self, x):
+        # [N, in_channels, 4, 7, 7]
         x = self.avg_pool(x)
+        # [N, in_channels, 1, 1, 1]
         if self.dropout is not None:
             x = self.dropout(x)
+        # [N, in_channels, 1, 1, 1]
         x = x.view(x.shape[0], -1)
+        # [N, in_channels]
         cls_score = self.fc_cls(x)
+        # [N, num_classes]
         return cls_score
