@@ -2,6 +2,7 @@ import random
 
 import mmcv
 import numpy as np
+from torch.nn.modules.utils import _pair
 
 from ..registry import PIPELINES
 
@@ -19,7 +20,7 @@ class MultiScaleCrop(object):
 
     Attributes:
         input_size (int | tuple[int]): (w, h) of network input.
-        scales (list[float]): Weight and height scales to be selected.
+        scales (tuple[float]): Weight and height scales to be selected.
         max_wh_scale_gap (int): Maximum gap of w and h scale levels.
             Default: 1.
         random_crop (bool): If set to True, the cropping bbox will be randomly
@@ -33,9 +34,9 @@ class MultiScaleCrop(object):
                  scales=(1, ),
                  max_wh_scale_gap=1,
                  random_crop=False):
+        self.input_size = _pair(input_size)
+        assert mmcv.is_tuple_of(self.input_size, int)
         assert isinstance(scales, tuple)
-        self.input_size = input_size if not isinstance(input_size, int) \
-            else (input_size, input_size)
         self.scales = scales
         self.max_wh_scale_gap = max_wh_scale_gap
         self.random_crop = random_crop
@@ -103,7 +104,12 @@ class Resize(object):
     "keep_ratio", "scale_factor" and "resize_size".
 
     Attributes:
-        scale (int | Tuple[int]): Target spatial size (h, w).
+        scale (float | Tuple[int]): If keep_ratio is True, it serves as scaling
+            factor or maximum size:
+                If it is a float number, the image will be rescaled by this
+                factor, else if it is a tuple of 2 integers, the image will
+                be rescaled as large as possible within the scale.
+            Otherwise, it serves as (w, h) of output size.
         keep_ratio (bool): If set to True, Images will be resized without
             changing the aspect ratio. Otherwise, it will resize images to a
             given size.
@@ -112,10 +118,20 @@ class Resize(object):
     """
 
     def __init__(self, scale, keep_ratio=True, interpolation='bilinear'):
-        if isinstance(scale, (float, int)):
+        if isinstance(scale, float):
             if scale <= 0:
                 raise ValueError(
                     'Invalid scale {}, must be positive.'.format(scale))
+        elif isinstance(scale, tuple):
+            max_long_edge = max(scale)
+            max_short_edge = min(scale)
+            if max_short_edge == -1:
+                # assign np.inf to long edge for rescaling short edge later.
+                scale = (np.inf, max_long_edge)
+        else:
+            raise TypeError(
+                'Scale must be float or tuple of int, but got {}'.format(
+                    type(scale)))
         self.scale = scale
         self.keep_ratio = keep_ratio
         self.interpolation = interpolation
@@ -164,7 +180,8 @@ class Flip(object):
     and "flip_direction".
 
     Attributes:
-         direction (str): Flip imgs horizontally or vertically. Options are
+        flip_ratio (float): Probability of implementing flip. Default: 0.5.
+        direction (str): Flip imgs horizontally or vertically. Options are
             "horiziontal" | "vertival". Default: "horizontal".
     """
 
@@ -248,10 +265,7 @@ class CenterCrop(object):
     """
 
     def __init__(self, crop_size=224):
-        if isinstance(crop_size, int):
-            self.crop_size = (crop_size, crop_size)
-        else:
-            self.crop_size = crop_size
+        self.crop_size = _pair(crop_size)
         assert mmcv.is_tuple_of(self.crop_size, int)
 
     def __call__(self, results):
@@ -290,10 +304,7 @@ class ThreeCrop(object):
     """
 
     def __init__(self, crop_size):
-        if isinstance(crop_size, int):
-            self.crop_size = (crop_size, crop_size)
-        else:
-            self.crop_size = crop_size
+        self.crop_size = _pair(crop_size)
         assert mmcv.is_tuple_of(self.crop_size, int)
 
     def __call__(self, results):
@@ -353,11 +364,8 @@ class TenCrop(object):
         crop_size(tuple[int]): (w, h) of crop size.
     """
 
-    def __init__(self, crop_size=224):
-        if isinstance(crop_size, int):
-            self.crop_size = (crop_size, crop_size)
-        else:
-            self.crop_size = crop_size
+    def __init__(self, crop_size):
+        self.crop_size = _pair(crop_size)
         assert mmcv.is_tuple_of(self.crop_size, int)
 
     def __call__(self, results):

@@ -1,3 +1,4 @@
-from .i3d_clshead import I3DClsHead
+from .i3d_head import I3DHead
+from .tsn_head import TSNHead
 
-__all__ = ['I3DClsHead']
+__all__ = ['TSNHead', 'I3DHead']
