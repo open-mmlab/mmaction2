@@ -82,11 +82,13 @@ class TSNHead(BaseHead):
         # [N, num_segs, in_channels, 1, 1]
         x = self.consensus(x)
         # [N, 1, in_channels, 1, 1]
-        x = x.squeeze()
-        # [N, in_channels]
+        x = x.squeeze(1)
+        # [N, in_channels, 1, 1]
         if self.dropout is not None:
             x = self.dropout(x)
-            # [N, in_channels]
+            # [N, in_channels, 1, 1]
+        x = x.view(x.size(0), -1)
+        # [N, in_channels]
         cls_score = self.fc_cls(x)
         # [N, num_classes]
         return cls_score
