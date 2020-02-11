@@ -50,13 +50,12 @@ class TSNHead(BaseHead):
         assert mmcv.is_tuple_of(self.spatial_size, int)
 
         self.spatial_type = spatial_type
-        self.consensus = consensus
         self.dropout_ratio = dropout_ratio
         self.init_std = init_std
 
-        self.consensus_type = self.consensus.pop('type')
-        if self.consensus_type == 'AvgConsensus':
-            self.consensus = AvgConsensus(**self.consensus)
+        consensus_type = consensus.pop('type')
+        if consensus_type == 'AvgConsensus':
+            self.consensus = AvgConsensus(**consensus)
         else:
             self.consensus = None
 
