@@ -31,6 +31,12 @@ def to_tensor(data):
 
 @PIPELINES.register_module
 class ToTensor(object):
+    """Convert some values in results dict to `torch.Tensor` type
+    in data loader pipeline.
+
+    Attributes:
+        keys (Sequence[str]): Required keys to be converted.
+    """
 
     def __init__(self, keys):
         self.keys = keys
@@ -46,6 +52,11 @@ class ToTensor(object):
 
 @PIPELINES.register_module
 class ImageToTensor(object):
+    """Convert image type to `torch.Tensor` type.
+
+    Attributes:
+        keys (Sequence[str]): Required keys to be converted.
+    """
 
     def __init__(self, keys):
         self.keys = keys
@@ -61,6 +72,12 @@ class ImageToTensor(object):
 
 @PIPELINES.register_module
 class Transpose(object):
+    """Transpose image channels to a given order.
+
+    Attributes:
+        keys (Sequence[str]): Required keys to be converted.
+        order (Sequence[int]): Image channel order.
+    """
 
     def __init__(self, keys, order):
         self.keys = keys
@@ -138,7 +155,6 @@ class FormatShape(object):
 
     Attributes:
         input_format (str): define the final imgs format.
-
     """
 
     def __init__(self, input_format='NCTHW'):
