@@ -261,7 +261,7 @@ class CenterCrop(object):
     and "img_shape".
 
     Attributes:
-        crop_size(tuple[int]): (w, h) of crop size.
+        crop_size(int | tuple[int]): (w, h) of crop size.
     """
 
     def __init__(self, crop_size=224):
@@ -300,7 +300,7 @@ class ThreeCrop(object):
     "img_shape".
 
     Attributes:
-        crop_size(tuple[int]): (w, h) of crop size.
+        crop_size(int | tuple[int]): (w, h) of crop size.
     """
 
     def __init__(self, crop_size):
@@ -361,7 +361,7 @@ class TenCrop(object):
     and "img_shape".
 
     Attributes:
-        crop_size(tuple[int]): (w, h) of crop size.
+        crop_size(int | tuple[int]): (w, h) of crop size.
     """
 
     def __init__(self, crop_size):

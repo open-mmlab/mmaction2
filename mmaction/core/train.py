@@ -11,6 +11,15 @@ from mmaction.utils import get_root_logger
 
 
 def parse_losses(losses):
+    """Parse losses dict for different loss variants.
+
+    Args:
+        losses (dict): Loss dict.
+
+    return:
+        loss (float): Sum of the total loss.
+        log_vars (dict): loss dict for different variants.
+    """
     log_vars = OrderedDict()
     for loss_name, loss_value in losses.items():
         if isinstance(loss_value, torch.Tensor):
@@ -31,6 +40,15 @@ def parse_losses(losses):
 
 
 def batch_processor(model, data, train_mode):
+    """Batch processor function for runner.
+
+    Args:
+        model (nn.Module): The model to be trained.
+        data (dict): input data for training model.
+
+    return:
+        output (dict): output for training model.
+    """
     losses = model(**data)
     loss, log_vars = parse_losses(losses)
 
@@ -46,6 +64,17 @@ def train_model(model,
                 distributed=False,
                 validate=False,
                 logger=None):
+    """train model entry function.
+
+    Args:
+        model (nn.Module): The model to be trained.
+        dataset (obj): Train dataset.
+        cfg (dict): The config dict for training.
+        distributed (bool): Whether to use distributed training.
+            Default: False.
+        validate (bool): Whether to do evaluation. Default: False.
+        logger (obj): Logger for training. Default: None
+    """
     if logger is None:
         logger = get_root_logger(cfg.log_level)
 
@@ -137,6 +166,15 @@ def build_optimizer(model, optimizer_cfg):
 
 
 def _dist_train(model, dataset, cfg, validate=False):
+    """Distributed training function.
+
+    Args:
+        model (nn.Module): The model to be trained.
+        dataset (obj): Train dataset.
+        cfg (dict): The config dict for training.
+        validate (bool): Whether to do evaluation.
+            Default: False.
+    """
     # prepare data loaders
     dataset = dataset if isinstance(dataset, (list, tuple)) else [dataset]
     data_loaders = [
@@ -173,6 +211,15 @@ def _dist_train(model, dataset, cfg, validate=False):
 
 
 def _non_dist_train(model, dataset, cfg, validate=False):
+    """Non-Distributed training function.
+
+    Args:
+        model (nn.Module): The model to be trained.
+        dataset (obj): Train dataset.
+        cfg (dict): The config dict for training.
+        validate (bool): Whether to do evaluation.
+            Default: False.
+    """
     if validate:
         raise NotImplementedError('Built-in validation is not implemented '
                                   'yet in not-distributed training. Use '
