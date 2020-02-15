@@ -1,6 +1,7 @@
 import copy
 import os.path as osp
 
+from mmaction.core import mean_class_accuracy, top_k_accuracy
 from .base import BaseDataset
 from .registry import DATASETS
 
@@ -67,3 +68,51 @@ class RawframeDataset(BaseDataset):
         results = copy.deepcopy(self.video_infos[idx])
         results['filename_tmpl'] = self.filename_tmpl
         return self.pipeline(results)
+
+    def evaluate(self,
+                 results,
+                 metrics='top_k_accuracy',
+                 topk=(1, 5),
+                 logger=None):
+        """Evaluation in rawframe dataset.
+
+        Args:
+            results (list): Output results.
+            metrics (str | sequence[str]): Metrics to be performed.
+                Defaults: 'top_k_accuracy'.
+            logger (obj): Training logger. Defaults: None.
+            topk (int | tuple[int]): K value for top_k_accuracy metric.
+                Defaults: (1, 5).
+
+        return:
+            eval_results (dict): Evaluation results dict.
+        """
+        assert isinstance(results, list), 'results must be a list'
+        assert len(results) == len(self), (
+            'The length of results is not equal to the dataset len: {} != {}'.
+            format(len(results), len(self)))
+
+        assert isinstance(topk, (int, tuple))
+        if isinstance(topk, int):
+            topk = (topk, )
+
+        metrics = metrics if isinstance(metrics, (list, tuple)) else [metrics]
+        allowed_metrics = ['top_k_accuracy', 'mean_class_accuracy']
+        for metric in metrics:
+            if metric not in allowed_metrics:
+                raise KeyError('metric {} is not supported'.format(metric))
+
+        eval_results = {}
+        gt_labels = [ann['label'] for ann in self.video_infos]
+
+        for metric in metrics:
+            if metric == 'top_k_accuracy':
+                top_k_acc = top_k_accuracy(results, gt_labels, topk)
+                for k, acc in zip(topk, top_k_acc):
+                    eval_results['top{}_acc'.format(k)] = acc
+
+            if metric == 'mean_class_accuracy':
+                mean_acc = mean_class_accuracy(results, gt_labels)
+                eval_results['mean_class_accuracy'] = mean_acc
+
+        return eval_results

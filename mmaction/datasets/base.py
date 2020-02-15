@@ -36,6 +36,10 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
     def load_annotations(self):
         pass
 
+    @abstractmethod
+    def evaluate(self, results, metrics, logger):
+        pass
+
     def prepare_train_frames(self, idx):
         results = copy.deepcopy(self.video_infos[idx])
         return self.pipeline(results)

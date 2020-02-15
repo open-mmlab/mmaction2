@@ -5,7 +5,8 @@ import torch
 from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
 from mmcv.runner import DistSamplerSeedHook, Runner, obj_from_dict
 
-from mmaction.core import DistOptimizerHook, Fp16OptimizerHook
+from mmaction.core import (DistEvalHook, DistOptimizerHook, EvalHook,
+                           Fp16OptimizerHook)
 from mmaction.datasets import build_dataloader
 from mmaction.utils import get_root_logger
 
@@ -203,6 +204,10 @@ def _dist_train(model, dataset, cfg, validate=False):
                                    cfg.checkpoint_config, cfg.log_config)
     runner.register_hook(DistSamplerSeedHook())
 
+    if validate:
+        eval_cfg = cfg.get('evaluation', {})
+        runner.register_hook(DistEvalHook(cfg.data.val, **eval_cfg))
+
     if cfg.resume_from:
         runner.resume(cfg.resume_from)
     elif cfg.load_from:
@@ -220,11 +225,6 @@ def _non_dist_train(model, dataset, cfg, validate=False):
         validate (bool): Whether to do evaluation.
             Default: False.
     """
-    if validate:
-        raise NotImplementedError('Built-in validation is not implemented '
-                                  'yet in not-distributed training. Use '
-                                  'distributed training or test.py and '
-                                  '*eval.py scripts instead.')
     # prepare data loaders
     dataset = dataset if isinstance(dataset, (list, tuple)) else [dataset]
     data_loaders = [
@@ -251,6 +251,10 @@ def _non_dist_train(model, dataset, cfg, validate=False):
         optimizer_config = cfg.optimizer_config
     runner.register_training_hooks(cfg.lr_config, optimizer_config,
                                    cfg.checkpoint_config, cfg.log_config)
+
+    if validate:
+        eval_cfg = cfg.get('evaluation', {})
+        runner.register_hook(EvalHook(cfg.data.val, **eval_cfg))
 
     if cfg.resume_from:
         runner.resume(cfg.resume_from)

@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
 
 import torch.nn as nn
+import torch.nn.functional as F
 
 from .. import builder
 
@@ -36,6 +37,30 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
     def extract_feat(self, imgs):
         x = self.backbone(imgs)
         return x
+
+    def average_clip(self, cls_score):
+        """Averaging class score over multiple clips.
+
+        Using different averaging types ('score' or 'prob', which defined
+        in test_cfg) to computed the final averaged class score.
+
+        Args:
+            cls_score (torch.Tensor): Class score to be averaged.
+
+        return:
+            torch.Tensor: Averaged class score.
+        """
+        if 'average_clips' not in self.test_cfg.keys():
+            raise KeyError('"average_clips" must defined in test_cfg\'s keys')
+
+        average_clips = self.test_cfg['average_clips']
+        assert average_clips in ['score', 'prob']
+
+        if average_clips == 'prob':
+            cls_score = F.softmax(cls_score, dim=1).mean(dim=0)
+        elif average_clips == 'score':
+            cls_score = cls_score.mean(dim=0)
+        return cls_score
 
     @abstractmethod
     def forward_train(self, imgs, labels):

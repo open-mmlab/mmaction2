@@ -3,7 +3,9 @@ from functools import partial
 
 from mmcv.parallel import collate
 from mmcv.runner import get_dist_info
-from torch.utils.data import DataLoader, DistributedSampler
+from torch.utils.data import DataLoader
+
+from .sampler import DistributedSampler
 
 if platform.system() != 'Windows':
     # https://github.com/pytorch/pytorch/issues/973
@@ -20,9 +22,32 @@ def build_dataloader(dataset,
                      shuffle=True,
                      pin_memory=True,
                      **kwargs):
+    """Build PyTorch DataLoader.
+
+    In distributed training, each GPU/process has a dataloader.
+    In non-distributed training, there is only one dataloader for all GPUs.
+
+    Args:
+        dataset (Dataset): A PyTorch dataset.
+        videos_per_gpu (int): Number of videos on each GPU, i.e.,
+            batch size of each GPU.
+        workers_per_gpu (int): How many subprocesses to use for data
+            loading for each GPU.
+        num_gpus (int): Number of GPUs. Only used in non-distributed
+            training. Default: 1.
+        dist (bool): Distributed training/test or not. Default: True.
+        shuffle (bool): Whether to shuffle the data at every epoch.
+            Default: True.
+        kwargs (option): any keyword argument to be used to initialize
+            DataLoader.
+
+    Returns:
+        DataLoader: A PyTorch dataloader.
+    """
     if dist:
         rank, world_size = get_dist_info()
-        sampler = DistributedSampler(dataset, world_size, rank)
+        sampler = DistributedSampler(
+            dataset, world_size, rank, shuffle=shuffle)
         shuffle = False
         batch_size = videos_per_gpu
         num_workers = workers_per_gpu
