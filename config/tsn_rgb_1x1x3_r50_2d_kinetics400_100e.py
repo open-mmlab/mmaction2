@@ -11,7 +11,6 @@ model = dict(
         num_classes=400,
         in_channels=2048,
         spatial_type='avg',
-        spatial_size=7,
         consensus=dict(type='AvgConsensus', dim=1),
         dropout_ratio=0.4,
         init_std=0.01))

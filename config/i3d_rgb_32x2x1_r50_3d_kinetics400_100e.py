@@ -14,8 +14,6 @@ model = dict(
         num_classes=400,
         in_channels=2048,
         spatial_type='avg',
-        spatial_size=7,
-        temporal_size=4,
         dropout_ratio=0.5,
         init_std=0.01))
 # model training and testing settings

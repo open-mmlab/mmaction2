@@ -1,7 +1,5 @@
-import mmcv
 import torch.nn as nn
 from mmcv.cnn.weight_init import normal_init
-from torch.nn.modules.utils import _pair
 
 from ..registry import HEADS
 from .base import BaseHead
@@ -27,17 +25,11 @@ class I3DHead(BaseHead):
                  num_classes,
                  in_channels=2048,
                  spatial_type='avg',
-                 spatial_size=7,
-                 temporal_size=4,
                  dropout_ratio=0.5,
                  init_std=0.01):
         super(I3DHead, self).__init__(num_classes, in_channels)
-        self.spatial_size = _pair(spatial_size)
-        assert mmcv.is_tuple_of(self.spatial_size, int)
 
         self.spatial_type = spatial_type
-        self.temporal_size = temporal_size
-        self.pool_size = (self.temporal_size, ) + self.spatial_size
         self.dropout_ratio = dropout_ratio
         self.init_std = init_std
         if self.dropout_ratio != 0:
@@ -47,7 +39,8 @@ class I3DHead(BaseHead):
         self.fc_cls = nn.Linear(self.in_channels, self.num_classes)
 
         if self.spatial_type == 'avg':
-            self.avg_pool = nn.AvgPool3d(self.pool_size, stride=1, padding=0)
+            # use `nn.AdaptiveAvgPool3d` to adaptively match the in_channels.
+            self.avg_pool = nn.AdaptiveAvgPool3d((1, 1, 1))
         else:
             self.avg_pool = None
 
