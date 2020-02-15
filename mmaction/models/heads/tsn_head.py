@@ -1,7 +1,5 @@
-import mmcv
 import torch.nn as nn
 from mmcv.cnn.weight_init import normal_init
-from torch.nn.modules.utils import _pair
 
 from ..registry import HEADS
 from .base import BaseHead
@@ -41,13 +39,10 @@ class TSNHead(BaseHead):
                  num_classes,
                  in_channels=2048,
                  spatial_type='avg',
-                 spatial_size=7,
                  consensus=dict(type='AvgConsensus', dim=1),
                  dropout_ratio=0.4,
                  init_std=0.01):
         super(TSNHead, self).__init__(num_classes, in_channels)
-        self.spatial_size = _pair(spatial_size)
-        assert mmcv.is_tuple_of(self.spatial_size, int)
 
         self.spatial_type = spatial_type
         self.dropout_ratio = dropout_ratio
@@ -60,10 +55,10 @@ class TSNHead(BaseHead):
             self.consensus = None
 
         if self.spatial_type == 'avg':
-            self.avg_pool2d = nn.AvgPool2d(
-                self.spatial_size, stride=1, padding=0)
+            # use `nn.AdaptiveAvgPool2d` to adaptively match the in_channels.
+            self.avg_pool = nn.AdaptiveAvgPool2d((1, 1))
         else:
-            self.avg_pool2d = None
+            self.avg_pool = None
 
         if self.dropout_ratio != 0:
             self.dropout = nn.Dropout(p=self.dropout_ratio)
@@ -76,7 +71,7 @@ class TSNHead(BaseHead):
 
     def forward(self, x, num_segs):
         # [N * num_segs, in_channels, 7, 7]
-        x = self.avg_pool2d(x)
+        x = self.avg_pool(x)
         # [N * num_segs, in_channels, 1, 1]
         x = x.reshape((-1, num_segs) + x.shape[1:])
         # [N, num_segs, in_channels, 1, 1]
