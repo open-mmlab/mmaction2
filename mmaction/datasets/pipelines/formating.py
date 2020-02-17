@@ -150,11 +150,11 @@ class Collect(object):
 class FormatShape(object):
     """Format final imgs shape to the given input_format
 
-    Required keys are "imgs", "num_clips" and "clip_len",
-    added or modified keys are "imgs" and "input_shape".
+    Required keys are "imgs", "num_clips" and "clip_len", added or modified
+    keys are "imgs" and "input_shape".
 
     Attributes:
-        input_format (str): define the final imgs format.
+        input_format (str): define the final imgs format. Default: 'NCTHW'.
     """
 
     def __init__(self, input_format='NCTHW'):

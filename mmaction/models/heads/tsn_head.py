@@ -29,7 +29,6 @@ class TSNHead(BaseHead):
         num_classes (int): Number of classes to be classified.
         in_channels (int): Number of channels in input feature. Default: 1024.
         spatial_type (str): Pooling type in spatial dimension. Default: 'avg'.
-        spatial_size (int): Kernel size in pooling layer. Default: 7.
         consensus (dict): Consensus config dict.
         dropout_ratio (float): Probability of dropout layer. Default: 0.8.
         init_std (float): Std value for Initiation. Default: 0.001.

@@ -17,7 +17,7 @@ def parse_losses(losses):
     Args:
         losses (dict): Loss dict.
 
-    return:
+    Returns:
         loss (float): Sum of the total loss.
         log_vars (dict): loss dict for different variants.
     """
@@ -47,8 +47,8 @@ def batch_processor(model, data, train_mode):
         model (nn.Module): The model to be trained.
         data (dict): input data for training model.
 
-    return:
-        output (dict): output for training model.
+    Returns:
+        dict: output for training model.
     """
     losses = model(**data)
     loss, log_vars = parse_losses(losses)

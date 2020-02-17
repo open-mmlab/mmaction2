@@ -9,9 +9,10 @@ def build_dataset(cfg, default_args=None):
     Args:
         cfg (dict): Config dict. It should at least contain the key "type".
         default_args (dict, optional): Default initialization arguments.
+            Default: None.
 
     Returns:
-        The constructed dataset.
+        Dataset: The constructed dataset.
     """
     if cfg['type'] == 'RepeatDataset':
         dataset = RepeatDataset(

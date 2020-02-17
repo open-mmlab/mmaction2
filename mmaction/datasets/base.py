@@ -20,7 +20,9 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         ann_file (str): Path to the annotation file.
         pipeline (list[dict | callable]): A sequence of data transforms.
         data_prefix (str): Path to a directory where videos are held.
+            Default: None.
         test_mode (bool): store True when building test dataset.
+            Default: False.
     """
 
     def __init__(self, ann_file, pipeline, data_prefix=None, test_mode=False):

@@ -13,10 +13,6 @@ class I3DHead(BaseHead):
         num_classes (int): Number of classes to be classified.
         in_channels (int): Number of channels in input feature. Default: 2048.
         spatial_type (str): Pooling type in spatial dimension. Default: 'avg'.
-        spatial_size (int | tuple[int]): Kernel size in pooling layer.
-            Default: 7.
-        temporal_size (int): Temporal stride in the `nn.AvgPool3d` layer.
-            Default: 4.
         dropout_ratio (float): Probability of dropout layer. Default: 0.5.
         init_std (float): Std value for Initiation. Default: 0.01.
     """

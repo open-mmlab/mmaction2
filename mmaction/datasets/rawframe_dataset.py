@@ -31,8 +31,11 @@ class RawframeDataset(BaseDataset):
         ann_file (str): Path to the annotation file.
         pipeline (list[dict | callable]): A sequence of data transforms.
         data_prefix (str): Path to a directory where videos are held.
+            Default: None.
         test_mode (bool): store True when building test dataset.
+            Default: False.
         filename_tmpl (str): Template for each filename.
+            Default: 'img_{:05}.jpg'.
     """
 
     def __init__(self,
