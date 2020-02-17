@@ -80,7 +80,7 @@ class SampleFrames(object):
 
         if self.temporal_jitter:
             perframe_offsets = np.random.randint(
-                (self.num_clips, self.frame_interval), size=self.clip_len)
+                self.frame_interval, size=len(frame_inds))
             frame_inds += perframe_offsets
 
         frame_inds = np.mod(frame_inds, total_frames)

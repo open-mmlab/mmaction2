@@ -47,9 +47,11 @@ class TSNHead(BaseHead):
         self.dropout_ratio = dropout_ratio
         self.init_std = init_std
 
-        consensus_type = consensus.pop('type')
+        consensus_ = consensus.copy()
+
+        consensus_type = consensus_.pop('type')
         if consensus_type == 'AvgConsensus':
-            self.consensus = AvgConsensus(**consensus)
+            self.consensus = AvgConsensus(**consensus_)
         else:
             self.consensus = None
 
