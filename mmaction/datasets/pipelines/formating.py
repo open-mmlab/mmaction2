@@ -182,3 +182,4 @@ class FormatShape(object):
     def __repr__(self):
         repr_str = self.__class__.__name__
         repr_str += '(input_format={})'.format(self.input_format)
+        return repr_str
