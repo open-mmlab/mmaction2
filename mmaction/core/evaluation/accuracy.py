@@ -8,8 +8,8 @@ def confusion_matrix(y_pred, y_real):
         y_pred (list[int] | np.ndarray[int]): Prediction labels.
         y_real (list[int] | np.ndarray[int]): Ground truth labels.
 
-    return:
-        (np.ndarray): Confusion matrix.
+    Returns:
+        np.ndarray: Confusion matrix.
     """
     if isinstance(y_pred, list):
         y_pred = np.array(y_pred)
@@ -38,8 +38,8 @@ def mean_class_accuracy(scores, labels):
         scores (list[np.ndarray]): Prediction scores for each class.
         labels (list[int]): Ground truth labels.
 
-    return:
-        (np.ndarray): Mean class accuracy.
+    Returns:
+        np.ndarray: Mean class accuracy.
     """
     pred = np.argmax(scores, axis=1)
     cf = confusion_matrix(pred, labels).astype(float)
@@ -58,8 +58,8 @@ def top_k_accuracy(scores, labels, topk=(1, )):
         labels (list[int]): Ground truth labels.
         topk (tuple[int]): K value for top_k_accuracy. Default: (1, ).
 
-    return:
-        (list[float]): Top k accuracy score for each k.
+    Returns:
+        list[float]: Top k accuracy score for each k.
     """
     res = []
     labels = np.array(labels)[:, np.newaxis]

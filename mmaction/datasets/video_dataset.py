@@ -51,7 +51,7 @@ class VideoDataset(BaseDataset):
             topk (tuple[int]): K value for top_k_accuracy metric.
                 Defaults: (1, 5).
 
-        return:
+        Return:
             eval_results (dict): Evaluation results dict.
         """
         assert isinstance(results, list), 'results must be a list'

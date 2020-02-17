@@ -21,7 +21,7 @@ def build_conv_layer(cfg, *args, **kwargs):
             layer args: args needed to instantiate a conv layer.
 
     Returns:
-        layer (nn.Module): created conv layer
+        nn.Module: Created conv layer
     """
     if cfg is None:
         cfg_ = dict(type='Conv')

@@ -17,8 +17,10 @@ class SampleFrames(object):
     Attributes:
         clip_len (int): Frames of each sampled output clip.
         frame_interval (int): Temporal interval of adjacent sampled frames.
-        num_clips (int): Number of clips to be sampled.
+            Default: 1.
+        num_clips (int): Number of clips to be sampled. Default: 1
         temporal_jitter (bool): Whether to apply temporal jittering.
+            Default: False.
     """
 
     def __init__(self,
@@ -100,8 +102,8 @@ class PyAVDecode(object):
     added or modified keys are "imgs" and "ori_shape".
 
     Attributes:
-        multi_thread (bool): If set to True, it will
-            apply multi thread processing.
+        multi_thread (bool): If set to True, it will apply multi
+            thread processing. Default: False.
     """
 
     def __init__(self, multi_thread=False):

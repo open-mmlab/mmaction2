@@ -24,7 +24,7 @@ def single_gpu_test(model, data_loader):
         model (nn.Module): Model to be tested.
         data_loader (nn.Dataloader): Pytorch data loader.
 
-    returns:
+    Returns:
         list: The prediction results.
     """
     model.eval()
@@ -55,8 +55,9 @@ def multi_gpu_test(model, data_loader, tmpdir=None, gpu_collect=True):
         model (nn.Module): Model to be tested.
         data_loader (nn.Dataloader): Pytorch data loader.
         tmpdir (str): Path of directory to save the temporary results from
-            different gpus under cpu mode.
+            different gpus under cpu mode. Default: None
         gpu_collect (bool): Option to use either gpu or cpu to collect results.
+            Default: True
 
     Returns:
         list: The prediction results.
@@ -86,6 +87,20 @@ def multi_gpu_test(model, data_loader, tmpdir=None, gpu_collect=True):
 
 
 def collect_results_cpu(result_part, size, tmpdir=None):
+    """Collect results in cpu mode.
+
+    it saves the results on different gpus to 'tmpdir' and collects
+    them by the rank 0 worker.
+
+    Args:
+        result_part (list): Results to be collected
+        size (int): Result size.
+        tmpdir (str): Path of directory to save the temporary results from
+            different gpus under cpu mode. Default: None
+
+    Returns:
+        list: Ordered results.
+    """
     rank, world_size = get_dist_info()
     # create a tmp dir if it is not specified
     if tmpdir is None:
@@ -128,6 +143,18 @@ def collect_results_cpu(result_part, size, tmpdir=None):
 
 
 def collect_results_gpu(result_part, size):
+    """Collect results in gpu mode.
+
+    it encodes results to gpu tensors and use gpu communication for results
+    collection.
+
+    Args:
+        result_part (list): Results to be collected
+        size (int): Result size.
+
+    Returns:
+        list: Ordered results.
+    """
     rank, world_size = get_dist_info()
     # dump result part to tensor with pickle
     part_tensor = torch.tensor(
