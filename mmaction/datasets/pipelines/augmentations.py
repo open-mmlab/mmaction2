@@ -1,4 +1,5 @@
 import random
+from collections.abc import Sequence
 
 import mmcv
 import numpy as np
@@ -35,8 +36,15 @@ class MultiScaleCrop(object):
                  max_wh_scale_gap=1,
                  random_crop=False):
         self.input_size = _pair(input_size)
-        assert mmcv.is_tuple_of(self.input_size, int)
-        assert isinstance(scales, tuple)
+        if not mmcv.is_tuple_of(self.input_size, int):
+            raise TypeError(
+                'Input_size must be int or tuple of int, but got {}'.format(
+                    type(input_size)))
+
+        if not isinstance(scales, tuple):
+            raise TypeError('Scales must be tuple, but got {}'.format(
+                type(scales)))
+
         self.scales = scales
         self.max_wh_scale_gap = max_wh_scale_gap
         self.random_crop = random_crop
@@ -159,7 +167,7 @@ class Resize(object):
         results['imgs'] = imgs
         results['img_shape'] = results['imgs'].shape[-2:]
         results['keep_ratio'] = self.keep_ratio
-        results['scale_fatcor'] = self.scale_factor
+        results['scale_factor'] = self.scale_factor
 
         return results
 
@@ -184,9 +192,13 @@ class Flip(object):
         direction (str): Flip imgs horizontally or vertically. Options are
             "horiziontal" | "vertival". Default: "horizontal".
     """
+    _directions = ['horizontal', 'vertical']
 
     def __init__(self, flip_ratio=0.5, direction='horizontal'):
-        assert direction in ['horizontal', 'vertical']
+        if direction not in self._directions:
+            raise ValueError(
+                'Direction {} is not supported. Currently support ones are {}'.
+                format(direction, self._directions))
         self.flip_ratio = flip_ratio
         self.direction = direction
 
@@ -222,12 +234,22 @@ class Normalize(object):
     and "img_norm_cfg".
 
     Attributes:
-        mean (np.ndarray): Mean values of different channels.
-        std (np.ndarray): Std values of different channels.
+        mean (Sequence[float]): Mean values of different channels.
+        std (Sequence[float]): Std values of different channels.
         to_bgr (bool): Whether to convert channels from RGB to BGR.
     """
 
     def __init__(self, mean, std, to_bgr=False):
+        if not isinstance(mean, Sequence):
+            raise TypeError(
+                'Mean must be list, tuple or np.ndarray, but got {}'.format(
+                    type(mean)))
+
+        if not isinstance(std, Sequence):
+            raise TypeError(
+                'Std must be list, tuple or np.ndarray, but got {}'.format(
+                    type(std)))
+
         self.mean = np.array(mean, dtype=np.float32)
         self.std = np.array(std, dtype=np.float32)
         self.to_bgr = to_bgr
@@ -264,9 +286,12 @@ class CenterCrop(object):
         crop_size(int | tuple[int]): (w, h) of crop size.
     """
 
-    def __init__(self, crop_size=224):
+    def __init__(self, crop_size):
         self.crop_size = _pair(crop_size)
-        assert mmcv.is_tuple_of(self.crop_size, int)
+        if not mmcv.is_tuple_of(self.crop_size, int):
+            raise TypeError(
+                'Crop_size must be int or tuple of int, but got {}'.format(
+                    type(crop_size)))
 
     def __call__(self, results):
         imgs = results['imgs']
@@ -296,8 +321,8 @@ class ThreeCrop(object):
 
     Crop the images equally into three crops with equal intervals along the
     shorter side.
-    Required keys are "imgs", added or modified keys are "imgs", "crop_box" and
-    "img_shape".
+    Required keys are "imgs", added or modified keys are "imgs", "crop_bbox"
+    and "img_shape".
 
     Attributes:
         crop_size(int | tuple[int]): (w, h) of crop size.
@@ -305,7 +330,10 @@ class ThreeCrop(object):
 
     def __init__(self, crop_size):
         self.crop_size = _pair(crop_size)
-        assert mmcv.is_tuple_of(self.crop_size, int)
+        if not mmcv.is_tuple_of(self.crop_size, int):
+            raise TypeError(
+                'Crop_size must be int or tuple of int, but got {}'.format(
+                    type(crop_size)))
 
     def __call__(self, results):
         imgs = results['imgs']
@@ -366,7 +394,10 @@ class TenCrop(object):
 
     def __init__(self, crop_size):
         self.crop_size = _pair(crop_size)
-        assert mmcv.is_tuple_of(self.crop_size, int)
+        if not mmcv.is_tuple_of(self.crop_size, int):
+            raise TypeError(
+                'Crop_size must be int or tuple of int, but got {}'.format(
+                    type(crop_size)))
 
     def __call__(self, results):
         imgs = results['imgs']
@@ -399,7 +430,7 @@ class TenCrop(object):
         crop_bboxes = np.array(crop_bboxes)
         imgs = np.concatenate(img_crops, axis=0)
         results['imgs'] = imgs
-        results['crop_box'] = crop_bboxes
+        results['crop_bbox'] = crop_bboxes
         results['img_shape'] = results['imgs'].shape[-2:]
 
         return results
