@@ -90,12 +90,18 @@ class RawframeDataset(BaseDataset):
         return:
             eval_results (dict): Evaluation results dict.
         """
-        assert isinstance(results, list), 'results must be a list'
+        if not isinstance(results, list):
+            raise TypeError('results must be a list, but got {}'.format(
+                type(results)))
         assert len(results) == len(self), (
             'The length of results is not equal to the dataset len: {} != {}'.
             format(len(results), len(self)))
 
-        assert isinstance(topk, (int, tuple))
+        if not isinstance(topk, (int, tuple)):
+            raise TypeError(
+                'topk must be int or tuple of int, but got {}'.format(
+                    type(topk)))
+
         if isinstance(topk, int):
             topk = (topk, )
 
