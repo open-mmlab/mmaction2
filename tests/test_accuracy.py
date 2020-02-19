@@ -16,6 +16,18 @@ def test_confusion_matrix():
     assert np.all(confusion_mat == gt_confusion_mat)
 
     with pytest.raises(TypeError):
+        confusion_matrix('0.5', 1)
+
+    with pytest.raises(TypeError):
+        confusion_matrix(0.5, '1')
+
+    with pytest.raises(TypeError):
+        confusion_matrix(['0.5'], 1)
+
+    with pytest.raises(TypeError):
+        confusion_matrix(0.5, ['1'])
+
+    with pytest.raises(TypeError):
         # y_pred must be list or np.ndarray
         confusion_matrix(0.5, [1])
 
@@ -87,9 +99,11 @@ def test_mean_class_accuracy():
 
     mean_cls_acc_0 = [1, 4, 0, 2]
     mean_cls_acc_25 = [2, 0, 4, 3]
+    mean_cls_acc_33 = [2, 2, 2, 3]
     mean_cls_acc_75 = [4, 2, 2, 4]
     mean_cls_acc_100 = [2, 2, 2, 4]
     assert mean_class_accuracy(scores, mean_cls_acc_0) == 0
     assert mean_class_accuracy(scores, mean_cls_acc_25) == 0.25
+    assert mean_class_accuracy(scores, mean_cls_acc_33) == 1 / 3
     assert mean_class_accuracy(scores, mean_cls_acc_75) == 0.75
     assert mean_class_accuracy(scores, mean_cls_acc_100) == 1.0
