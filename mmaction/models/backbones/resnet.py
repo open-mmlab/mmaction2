@@ -17,7 +17,7 @@ class BasicBlock(nn.Module):
         planes (int): Number of channels produced by some norm/conv2d layers.
         stride (int): Stride in the conv layer. Default: 1.
         dilation (int): Spacing between kernel elements. Default: 1.
-        downsample (obj): Downsample layer. Default: None.
+        downsample (nn.Module): Downsample layer. Default: None.
         style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
             layer is the 3x3 conv layer, otherwise the stride-two layer is
             the first 1x1 conv layer. Default: 'pytorch'.
@@ -107,7 +107,7 @@ class Bottleneck(nn.Module):
             Number of channels produced by some norm layes and conv layers
         stride (int): Spatial stride in the conv layer. Default: 1.
         dilation (int): Spacing between kernel elements. Default: 1.
-        downsample (obj): Downsample layer. Default: None.
+        downsample (nn.Module): Downsample layer. Default: None.
         style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
             layer is the 3x3 conv layer, otherwise the stride-two layer is
             the first 1x1 conv layer. Default: 'pytorch'.
@@ -292,8 +292,8 @@ class ResNet(nn.Module):
 
     Args:
         depth (int): Depth of resnet, from {18, 34, 50, 101, 152}.
-        pretrained (str): Name of pretrained model. Default: None.
-        in_channels (int): Channel num of input features, Default: 3.
+        pretrained (str | None): Name of pretrained model. Default: None.
+        in_channels (int): Channel num of input features. Default: 3.
         num_stages (int): Resnet stages. Default: 4.
         strides (Sequence[int]): Strides of the first block of each stage.
         dilations (Sequence[int]): Dilation of each stage.

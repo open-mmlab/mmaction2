@@ -16,7 +16,7 @@ class EvalHook(Hook):
     performing in non-distributed environment.
 
     Attributes:
-        dataset (obj): Evaluation dataset.
+        dataset (Dataset): Evaluation dataset.
         interval (int): Epoch interval for evaluation. Default: 1.
         eval_kwargs (option): arguments for evaluation.
     """
