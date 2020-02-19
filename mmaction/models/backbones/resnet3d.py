@@ -29,21 +29,21 @@ class Bottleneck3d(nn.Module):
     Args:
         inplanes (int): Number of channels for the input in first conv3d layer.
         planes (int): Number of channels produced by some norm/conv3d layers.
-        spatial_stride (int): Spatial stride in the conv3d layer, Default: 1.
-        temporal_stride (int): Temporal stride in the conv3d layer, Default: 1.
-        dilation (int): Spacing between kernel elements, Default: 1.
-        downsample (obj): Downsample layer. Default: None.
+        spatial_stride (int): Spatial stride in the conv3d layer. Default: 1.
+        temporal_stride (int): Temporal stride in the conv3d layer. Default: 1.
+        dilation (int): Spacing between kernel elements. Default: 1.
+        downsample (nn.Module): Downsample layer. Default: None.
         style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
             layer is the 3x3 conv layer, otherwise the stride-two layer is
             the first 1x1 conv layer. Default: 'pytorch'.
-        inflate (bool): Whether to inflate kernel, Default: True.
+        inflate (bool): Whether to inflate kernel. Default: True.
         inflate_style (str): `3x1x1` or `1x1x1`. which determines the kernel
             sizes and padding strides for conv1 and conv2 in each block.
             Default: '3x1x1'.
         norm_cfg (dict): Config for norm layers. required keys are `type`,
             Default: dict(type='BN3d').
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
-            memory while slowing down the training speed, Default: False.
+            memory while slowing down the training speed. Default: False.
     """
     expansion = 4
 
@@ -208,21 +208,21 @@ def make_res_layer(block,
         planes (int): Number of channels for the output feature in each block.
         blocks (int): Number of residual blocks.
         spatial_stride (int | Sequence[int]): Spatial strides in residual and
-            conv layers, Default: 1.
+            conv layers. Default: 1.
         temporal_stride (int | Sequence[int]): Temporal strides in residual and
-            conv layers, Default: 1.
-        dilation (int): Spacing between kernel elements, Default: 1.
+            conv layers. Default: 1.
+        dilation (int): Spacing between kernel elements. Default: 1.
         style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
             layer is the 3x3 conv layer, otherwise the stride-two layer is
             the first 1x1 conv layer. Default: 'pytorch'.
         inflate (int | Sequence[int]): Determine whether to inflate for each
-            block, Default: 1.
+            block. Default: 1.
         inflate_style (str): `3x1x1` or `1x1x1`. which determines the kernel
             sizes and padding strides for conv1 and conv2 in each block.
             Default: '3x1x1'.
-        norm_cfg (dict): Config for norm layers, Default: None.
+        norm_cfg (dict): Config for norm layers. Default: None.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save
-            some memory while slowing down the training speed, Default: False.
+            some memory while slowing down the training speed. Default: False.
 
     Returns:
         A residual layer for the given config.
@@ -279,11 +279,11 @@ class ResNet3d(nn.Module):
 
     Args:
         depth (int): Depth of resnet, from {18, 34, 50, 101, 152}.
-        pretrained (str): Name of pretrained model.
+        pretrained (str | None): Name of pretrained model.
         pretrained2d (bool): Whether to load pretrained 2D model.
             Default: True.
-        in_channels (int): Channel num of input features, Default: 3.
-        num_stages (int): Resnet stages, Default: 4.
+        in_channels (int): Channel num of input features. Default: 3.
+        num_stages (int): Resnet stages. Default: 4.
         spatial_strides (Sequence[int]):
             Spatial strides of residual blocks of each stage.
         temporal_strides (Sequence[int]):
@@ -303,11 +303,11 @@ class ResNet3d(nn.Module):
         inflate_style (str): `3x1x1` or `1x1x1`. which determines the kernel
             sizes and padding strides for conv1 and conv2 in each block.
         norm_cfg (dict): Config for norm layers. required keys are `type` and
-            `requires_grad`, Default: dict(type='BN3d', requires_grad=True).
+            `requires_grad`. Default: dict(type='BN3d', requires_grad=True).
         norm_eval (bool): Whether to set BN layers to eval mode, namely, freeze
-            running stats (mean and var), Default: True.
+            running stats (mean and var). Default: True.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
-            memory while slowing down the training speed, Default: False.
+            memory while slowing down the training speed. Default: False.
         zero_init_residual (bool):
             Whether to use zero initialization for residual block,
             Default: True.

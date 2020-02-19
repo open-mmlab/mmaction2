@@ -69,12 +69,12 @@ def train_model(model,
 
     Args:
         model (nn.Module): The model to be trained.
-        dataset (obj): Train dataset.
+        dataset (Dataset): Train dataset.
         cfg (dict): The config dict for training.
         distributed (bool): Whether to use distributed training.
             Default: False.
         validate (bool): Whether to do evaluation. Default: False.
-        logger (obj): Logger for training. Default: None
+        logger (logging.Logger | None): Logger for training. Default: None
     """
     if logger is None:
         logger = get_root_logger(cfg.log_level)
@@ -171,7 +171,7 @@ def _dist_train(model, dataset, cfg, validate=False):
 
     Args:
         model (nn.Module): The model to be trained.
-        dataset (obj): Train dataset.
+        dataset (Dataset): Train dataset.
         cfg (dict): The config dict for training.
         validate (bool): Whether to do evaluation.
             Default: False.
@@ -223,7 +223,7 @@ def _non_dist_train(model, dataset, cfg, validate=False):
 
     Args:
         model (nn.Module): The model to be trained.
-        dataset (obj): Train dataset.
+        dataset (Dataset): Train dataset.
         cfg (dict): The config dict for training.
         validate (bool): Whether to do evaluation.
             Default: False.
