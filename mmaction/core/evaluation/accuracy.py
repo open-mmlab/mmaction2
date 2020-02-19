@@ -57,7 +57,10 @@ def mean_class_accuracy(scores, labels):
     cls_cnt = cf.sum(axis=1)
     cls_hit = np.diag(cf)
 
-    return np.mean(cls_hit / cls_cnt)
+    mean_class_acc = np.mean(
+        [hit / cnt if cnt else 0.0 for cnt, hit in zip(cls_cnt, cls_hit)])
+
+    return mean_class_acc
 
 
 def top_k_accuracy(scores, labels, topk=(1, )):
