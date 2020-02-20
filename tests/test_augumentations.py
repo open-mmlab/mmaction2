@@ -30,22 +30,6 @@ class TestAugumentations(object):
         return result_img_shape == crop_shape
 
     @staticmethod
-    def check_scale(origin_shape, target_shape, scale_factors, keep_ratio):
-        """Check if the imgs' origin_shape have the correct output imgs'
-         target_shape in given scale_factors in different keep_ratio cases."""
-        if keep_ratio:
-            w = int(origin_shape[0] * scale_factors)
-            h = int(origin_shape[1] * scale_factors)
-            return w == target_shape[0] and h == target_shape[1]
-        else:
-            w = int(origin_shape[0] * scale_factors[0])
-            h = int(origin_shape[1] * scale_factors[1])
-            w_origin = int(target_shape[0] / scale_factors[0])
-            h_origin = int(target_shape[1] / scale_factors[1])
-            return (w == target_shape[0] or w_origin == origin_shape[0]) and \
-                   (h == target_shape[1] or h_origin == origin_shape[1])
-
-    @staticmethod
     def check_flip(origin_imgs, result_imgs, flip_type):
         """Check if the origin_imgs are flipped correctly into result_imgs
         in different flip_types"""
@@ -148,19 +132,25 @@ class TestAugumentations(object):
         resize = Resize(scale=(-1, 256), keep_ratio=True)
         resize_results = resize(results)
         assert self.check_keys_contain(resize_results.keys(), target_keys)
-        assert self.check_scale(imgs.shape[-2:], resize_results['img_shape'],
-                                resize_results['scale_factor'],
-                                resize_results['keep_ratio'])
+        assert resize_results['scale_factor'] == 256 / 240
         assert resize_results['img_shape'] == (256, 341)
+
+        imgs = np.random.rand(2, 3, 240, 320)
+        results = dict(imgs=imgs)
+        resize = Resize(scale=(320, 320), keep_ratio=False)
+        resize_results = resize(results)
+        assert self.check_keys_contain(resize_results.keys(), target_keys)
+        assert np.all(resize_results['scale_factor'] == np.array(
+            [1, 320 / 240, 1, 320 / 240], dtype=np.float32))
+        assert resize_results['img_shape'] == (320, 320)
 
         imgs = np.random.rand(2, 3, 240, 320)
         results = dict(imgs=imgs)
         resize = Resize(scale=(341, 256), keep_ratio=False)
         resize_results = resize(results)
         assert self.check_keys_contain(resize_results.keys(), target_keys)
-        assert self.check_scale(imgs.shape[-2:], resize_results['img_shape'],
-                                resize_results['scale_factor'],
-                                resize_results['keep_ratio'])
+        assert np.all(resize_results['scale_factor'] == np.array(
+            [341 / 320, 256 / 240, 341 / 320, 256 / 240], dtype=np.float32))
         assert resize_results['img_shape'] == (256, 341)
 
         assert repr(resize) == resize.__class__.__name__ +\
