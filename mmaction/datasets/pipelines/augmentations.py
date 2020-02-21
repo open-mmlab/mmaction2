@@ -10,7 +10,7 @@ from ..registry import PIPELINES
 
 @PIPELINES.register_module
 class MultiScaleCrop(object):
-    """Crop an image with a randomly selected scale.
+    """Crop images with a list of randomly selected scales.
 
     Randomly select the w and h scales from a list of scales. Scale of 1 means
     the base size, which is the minimal of image weight and height. The scale
@@ -51,7 +51,7 @@ class MultiScaleCrop(object):
 
     def __call__(self, results):
         imgs = results['imgs']
-        img_h, img_w = imgs.shape[-2:]
+        img_h, img_w = imgs.shape[1:3]
 
         base_size = min(img_h, img_w)
 
@@ -88,10 +88,10 @@ class MultiScaleCrop(object):
         results['crop_bbox'] = np.array(
             [x_offset, y_offset, x_offset + crop_w, y_offset + crop_h],
             dtype=np.int32)
-        results['imgs'] = imgs[:, :, y_offset:y_offset + crop_h,
-                               x_offset:x_offset + crop_w]
+        results['imgs'] = imgs[:, y_offset:y_offset + crop_h,
+                               x_offset:x_offset + crop_w, :]
 
-        results['img_shape'] = results['imgs'].shape[-2:]
+        results['img_shape'] = results['imgs'].shape[1:3]
         results['scales'] = self.scales
         return results
 
@@ -145,7 +145,7 @@ class Resize(object):
         self.interpolation = interpolation
 
     def __call__(self, results):
-        imgs = results['imgs'].transpose([0, 2, 3, 1])
+        imgs = results['imgs']
         if self.keep_ratio:
             tuple_list = [
                 mmcv.imrescale(img, self.scale, return_scale=True)
@@ -163,9 +163,9 @@ class Resize(object):
                 [w_scales[0], h_scales[0], w_scales[0], h_scales[0]],
                 dtype=np.float32)
 
-        imgs = np.array(imgs).transpose([0, 3, 1, 2])
+        imgs = np.array(imgs)
         results['imgs'] = imgs
-        results['img_shape'] = results['imgs'].shape[-2:]
+        results['img_shape'] = results['imgs'].shape[1:3]
         results['keep_ratio'] = self.keep_ratio
         results['scale_factor'] = self.scale_factor
 
@@ -210,9 +210,9 @@ class Flip(object):
 
         if flip:
             if self.direction == 'horizontal':
-                results['imgs'] = np.flip(results['imgs'], axis=3).copy()
-            else:
                 results['imgs'] = np.flip(results['imgs'], axis=2).copy()
+            else:
+                results['imgs'] = np.flip(results['imgs'], axis=1).copy()
 
         results['flip'] = flip
         results['flip_direction'] = self.direction
@@ -258,10 +258,10 @@ class Normalize(object):
         imgs = results['imgs'].astype(np.float32)
 
         if self.to_bgr:
-            imgs = imgs[:, ::-1, ...].copy()
+            imgs = imgs[..., ::-1].copy()
 
-        imgs -= self.mean[:, None, None]
-        imgs /= self.std[:, None, None]
+        imgs -= self.mean
+        imgs /= self.std
 
         results['imgs'] = imgs
         results['img_norm_cfg'] = dict(
@@ -296,7 +296,7 @@ class CenterCrop(object):
     def __call__(self, results):
         imgs = results['imgs']
 
-        img_h, img_w = imgs.shape[-2:]
+        img_h, img_w = imgs.shape[1:3]
         crop_w, crop_h = self.crop_size
 
         left = (img_w - crop_w) // 2
@@ -304,8 +304,8 @@ class CenterCrop(object):
         right = left + crop_w
         bottom = top + crop_h
         results['crop_bbox'] = np.array([left, top, right, bottom])
-        results['imgs'] = imgs[:, :, top:bottom, left:right]
-        results['img_shape'] = results['imgs'].shape[-2:]
+        results['imgs'] = imgs[:, top:bottom, left:right, :]
+        results['img_shape'] = results['imgs'].shape[1:3]
 
         return results
 
@@ -337,7 +337,7 @@ class ThreeCrop(object):
 
     def __call__(self, results):
         imgs = results['imgs']
-        img_h, img_w = imgs.shape[-2:]
+        img_h, img_w = imgs.shape[1:3]
         crop_w, crop_h = self.crop_size
         assert crop_h == img_h or crop_w == img_w
 
@@ -360,8 +360,8 @@ class ThreeCrop(object):
         crop_bboxes = []
         for x_offset, y_offset in offsets:
             bbox = [x_offset, y_offset, x_offset + crop_w, y_offset + crop_h]
-            crop = imgs[:, :, y_offset:y_offset + crop_h,
-                        x_offset:x_offset + crop_w]
+            crop = imgs[:, y_offset:y_offset + crop_h,
+                        x_offset:x_offset + crop_w, :]
             img_crops.append(crop)
             crop_bboxes.extend([bbox for _ in range(imgs.shape[0])])
 
@@ -369,7 +369,7 @@ class ThreeCrop(object):
         imgs = np.concatenate(img_crops, axis=0)
         results['imgs'] = imgs
         results['crop_bbox'] = crop_bboxes
-        results['img_shape'] = results['imgs'].shape[-2:]
+        results['img_shape'] = results['imgs'].shape[1:3]
 
         return results
 
@@ -402,7 +402,7 @@ class TenCrop(object):
     def __call__(self, results):
         imgs = results['imgs']
 
-        img_h, img_w = imgs.shape[-2:]
+        img_h, img_w = imgs.shape[1:3]
         crop_w, crop_h = self.crop_size
 
         w_step = (img_w - crop_w) // 4
@@ -419,9 +419,9 @@ class TenCrop(object):
         img_crops = list()
         crop_bboxes = list()
         for x_offset, y_offsets in offsets:
-            crop = imgs[:, :, y_offsets:y_offsets + crop_h,
-                        x_offset:x_offset + crop_w]
-            flip_crop = np.flip(crop, axis=3).copy()
+            crop = imgs[:, y_offsets:y_offsets + crop_h,
+                        x_offset:x_offset + crop_w, :]
+            flip_crop = np.flip(crop, axis=2).copy()
             bbox = [x_offset, y_offsets, x_offset + crop_w, y_offsets + crop_h]
             img_crops.append(crop)
             img_crops.append(flip_crop)
@@ -431,7 +431,7 @@ class TenCrop(object):
         imgs = np.concatenate(img_crops, axis=0)
         results['imgs'] = imgs
         results['crop_bbox'] = crop_bboxes
-        results['img_shape'] = results['imgs'].shape[-2:]
+        results['img_shape'] = results['imgs'].shape[1:3]
 
         return results
 
