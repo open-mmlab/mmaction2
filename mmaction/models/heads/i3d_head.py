@@ -11,7 +11,7 @@ class I3DHead(BaseHead):
 
     Attributes:
         num_classes (int): Number of classes to be classified.
-        in_channels (int): Number of channels in input feature. Default: 2048.
+        in_channels (int): Number of channels in input feature.
         spatial_type (str): Pooling type in spatial dimension. Default: 'avg'.
         dropout_ratio (float): Probability of dropout layer. Default: 0.5.
         init_std (float): Std value for Initiation. Default: 0.01.
@@ -19,7 +19,7 @@ class I3DHead(BaseHead):
 
     def __init__(self,
                  num_classes,
-                 in_channels=2048,
+                 in_channels,
                  spatial_type='avg',
                  dropout_ratio=0.5,
                  init_std=0.01):

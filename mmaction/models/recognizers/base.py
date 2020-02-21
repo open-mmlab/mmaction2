@@ -54,7 +54,10 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
             raise KeyError('"average_clips" must defined in test_cfg\'s keys')
 
         average_clips = self.test_cfg['average_clips']
-        assert average_clips in ['score', 'prob']
+        if average_clips not in ['score', 'prob']:
+            raise ValueError(
+                '{} is not supported. Currently supported ones are {}'.format(
+                    average_clips, ['score', 'prob']))
 
         if average_clips == 'prob':
             cls_score = F.softmax(cls_score, dim=1).mean(dim=0)
