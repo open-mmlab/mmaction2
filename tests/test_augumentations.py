@@ -33,23 +33,23 @@ class TestAugumentations(object):
     def check_flip(origin_imgs, result_imgs, flip_type):
         """Check if the origin_imgs are flipped correctly into result_imgs
         in different flip_types"""
-        n, c, h, w = origin_imgs.shape
+        n, h, w, c = origin_imgs.shape
         if flip_type == 'horizontal':
             # yapf: disable
             for i in range(n):
-                for j in range(c):
-                    for k in range(h):
-                        for l in range(w):
-                            if result_imgs[i, j, k, l] != origin_imgs[i, j, k, w - 1 - l]:  # noqa:E501
+                for j in range(h):
+                    for k in range(w):
+                        for l in range(c):
+                            if result_imgs[i, j, k, l] != origin_imgs[i, j, w - 1 - k, l]:  # noqa:E501
                                 return False
             # yapf: enable
         else:
             # yapf: disable
             for i in range(n):
-                for j in range(c):
-                    for k in range(h):
-                        for l in range(w):
-                            if result_imgs[i, j, k, l] != origin_imgs[i, j, h - 1 - k, l]:  # noqa:E501
+                for j in range(h):
+                    for k in range(w):
+                        for l in range(c):
+                            if result_imgs[i, j, k, l] != origin_imgs[i, h - 1 - j, k, l]:  # noqa:E501
                                 return False
             # yapf: enable
         return True
@@ -58,10 +58,10 @@ class TestAugumentations(object):
         """Check if the origin_imgs are normalized correctly into result_imgs
          in a given norm_cfg."""
         target_imgs = result_imgs.copy()
-        target_imgs *= norm_cfg['std'][:, None, None]
-        target_imgs += norm_cfg['mean'][:, None, None]
+        target_imgs *= norm_cfg['std']
+        target_imgs += norm_cfg['mean']
         if norm_cfg['to_bgr']:
-            target_imgs = target_imgs[:, ::-1, ...].copy()
+            target_imgs = target_imgs[..., ::-1].copy()
         self.assert_img_equal(origin_imgs, target_imgs)
 
     def test_multi_scale_crop(self):
@@ -82,7 +82,7 @@ class TestAugumentations(object):
 
         target_keys = ['imgs', 'crop_bbox', 'img_shape', 'scales']
 
-        imgs = np.random.rand(2, 3, 256, 341)
+        imgs = np.random.rand(2, 256, 341, 3)
         results = dict(imgs=imgs)
         config = dict(
             input_size=224,
@@ -98,7 +98,7 @@ class TestAugumentations(object):
         assert multi_scale_crop_results['img_shape'] in [(256, 256), (204, 204)
                                                          ]  # noqa: E501
 
-        imgs = np.random.rand(2, 3, 256, 341)
+        imgs = np.random.rand(2, 256, 341, 3)
         results = dict(imgs=imgs)
         config = dict(
             input_size=224,
@@ -127,7 +127,7 @@ class TestAugumentations(object):
 
         target_keys = ['imgs', 'img_shape', 'keep_ratio', 'scale_factor']
 
-        imgs = np.random.rand(2, 3, 240, 320)
+        imgs = np.random.rand(2, 240, 320, 3)
         results = dict(imgs=imgs)
         resize = Resize(scale=(-1, 256), keep_ratio=True)
         resize_results = resize(results)
@@ -135,7 +135,7 @@ class TestAugumentations(object):
         assert resize_results['scale_factor'] == 256 / 240
         assert resize_results['img_shape'] == (256, 341)
 
-        imgs = np.random.rand(2, 3, 240, 320)
+        imgs = np.random.rand(2, 240, 320, 3)
         results = dict(imgs=imgs)
         resize = Resize(scale=(320, 320), keep_ratio=False)
         resize_results = resize(results)
@@ -144,7 +144,7 @@ class TestAugumentations(object):
             [1, 320 / 240, 1, 320 / 240], dtype=np.float32))
         assert resize_results['img_shape'] == (320, 320)
 
-        imgs = np.random.rand(2, 3, 240, 320)
+        imgs = np.random.rand(2, 240, 320, 3)
         results = dict(imgs=imgs)
         resize = Resize(scale=(341, 256), keep_ratio=False)
         resize_results = resize(results)
@@ -163,7 +163,7 @@ class TestAugumentations(object):
 
         target_keys = ['imgs', 'flip_direction']
 
-        imgs = np.random.rand(2, 3, 64, 64)
+        imgs = np.random.rand(2, 64, 64, 3)
         results = dict(imgs=imgs)
         flip = Flip(flip_ratio=1, direction='horizontal')
         flip_results = flip(results)
@@ -172,7 +172,7 @@ class TestAugumentations(object):
                                flip_results['flip_direction'])
         assert flip_results['imgs'].shape == imgs.shape
 
-        imgs = np.random.rand(2, 3, 64, 64)
+        imgs = np.random.rand(2, 64, 64, 3)
         results = dict(imgs=imgs)
         flip = Flip(flip_ratio=1, direction='vertical')
         flip_results = flip(results)
@@ -195,7 +195,7 @@ class TestAugumentations(object):
 
         target_keys = ['imgs', 'img_norm_cfg']
 
-        imgs = np.random.rand(2, 3, 240, 320).astype(np.float32)
+        imgs = np.random.rand(2, 240, 320, 3).astype(np.float32)
         results = dict(imgs=imgs)
         config = dict(
             mean=[123.675, 116.28, 103.53],
@@ -207,7 +207,7 @@ class TestAugumentations(object):
         self.check_normalize(imgs, normalize_results['imgs'],
                              normalize_results['img_norm_cfg'])
 
-        imgs = np.random.rand(2, 3, 240, 320).astype(np.float32)
+        imgs = np.random.rand(2, 240, 320, 3).astype(np.float32)
         results = dict(imgs=imgs)
         config = dict(
             mean=[123.675, 116.28, 103.53],
@@ -234,7 +234,7 @@ class TestAugumentations(object):
         with pytest.raises(TypeError):
             CenterCrop([224, 224])
 
-        imgs = np.random.rand(2, 3, 240, 320)
+        imgs = np.random.rand(2, 240, 320, 3)
         results = dict(imgs=imgs)
         center_crop = CenterCrop(crop_size=224)
         center_crop_results = center_crop(results)
@@ -260,7 +260,7 @@ class TestAugumentations(object):
         with pytest.raises(TypeError):
             ThreeCrop([224, 224])
 
-        imgs = np.random.rand(2, 3, 224, 224)
+        imgs = np.random.rand(2, 224, 224, 3)
         results = dict(imgs=imgs)
         three_crop = ThreeCrop(crop_size=224)
         three_crop_results = three_crop(results)
@@ -284,7 +284,7 @@ class TestAugumentations(object):
         with pytest.raises(TypeError):
             TenCrop([224, 224])
 
-        imgs = np.random.rand(2, 3, 224, 224)
+        imgs = np.random.rand(2, 224, 224, 3)
         results = dict(imgs=imgs)
         ten_crop = TenCrop(crop_size=224)
         ten_crop_results = ten_crop(results)

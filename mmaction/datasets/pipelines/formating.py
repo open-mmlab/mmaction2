@@ -154,27 +154,33 @@ class FormatShape(object):
     keys are "imgs" and "input_shape".
 
     Attributes:
-        input_format (str): define the final imgs format. Default: 'NCTHW'.
+        input_format (str): Define the final imgs format.
     """
 
-    def __init__(self, input_format='NCTHW'):
+    def __init__(self, input_format):
         self.input_format = input_format
+        if self.input_format not in ['NCTHW', 'NCHW']:
+            raise ValueError('The input format {} is invalid.'.format(
+                self.input_format))
 
     def __call__(self, results):
         imgs = results['imgs']
-        # [M x C x H x W]
-        # M = 1 * N_oversample * N_clips * L
+        # [M x H x W x C]
+        # M = 1 * N_crops * N_clips * L
         if self.input_format == 'NCTHW':
             num_clips = results['num_clips']
             clip_len = results['clip_len']
 
             imgs = imgs.reshape((-1, num_clips, clip_len) + imgs.shape[1:])
-            # N_over x N_clips x L x C x H x W
-            imgs = np.transpose(imgs, (0, 1, 3, 2, 4, 5))
-            # N_over x N_clips x C x L x H x W
+            # N_crops x N_clips x L x H x W x C
+            imgs = np.transpose(imgs, (0, 1, 5, 2, 3, 4))
+            # N_crops x N_clips x C x L x H x W
             imgs = imgs.reshape((-1, ) + imgs.shape[2:])
             # M' x C x L x H x W
-            # M' = N_over x N_clips
+            # M' = N_crops x N_clips
+        elif self.input_format == 'NCHW':
+            imgs = np.transpose(imgs, (0, 3, 1, 2))
+            # M x C x H x W
         results['imgs'] = imgs
         results['input_shape'] = imgs.shape
         return results
