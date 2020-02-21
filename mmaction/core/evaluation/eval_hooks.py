@@ -6,7 +6,7 @@ import torch
 import torch.distributed as dist
 from mmcv.parallel import collate, scatter
 from mmcv.runner import Hook, obj_from_dict
-from torch.utils.data import Dataset
+from torch.utils.data import DataLoader, Dataset
 
 
 class EvalHook(Hook):
@@ -42,7 +42,8 @@ class EvalHook(Hook):
         results = []
         prog_bar = mmcv.ProgressBar(len(self.dataset))
         # compute output
-        for i, data in enumerate(self.dataset):
+        data_loader = DataLoader(self.dataset)
+        for i, data in enumerate(data_loader):
             with torch.no_grad():
                 output = runner.model(return_loss=False, **data)
             results.append(output)
