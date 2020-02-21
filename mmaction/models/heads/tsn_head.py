@@ -27,16 +27,16 @@ class TSNHead(BaseHead):
 
     Attributes:
         num_classes (int): Number of classes to be classified.
-        in_channels (int): Number of channels in input feature. Default: 1024.
+        in_channels (int): Number of channels in input feature.
         spatial_type (str): Pooling type in spatial dimension. Default: 'avg'.
         consensus (dict): Consensus config dict.
-        dropout_ratio (float): Probability of dropout layer. Default: 0.8.
-        init_std (float): Std value for Initiation. Default: 0.001.
+        dropout_ratio (float): Probability of dropout layer. Default: 0.4.
+        init_std (float): Std value for Initiation. Default: 0.01.
     """
 
     def __init__(self,
                  num_classes,
-                 in_channels=2048,
+                 in_channels,
                  spatial_type='avg',
                  consensus=dict(type='AvgConsensus', dim=1),
                  dropout_ratio=0.4,
