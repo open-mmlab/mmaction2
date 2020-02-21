@@ -126,8 +126,6 @@ class FileClient(object):
             raise TypeError(
                 'backend {} is not a subclass of BaseStorageBackend'.format(
                     backend))
-        if not callable(getattr(backend, 'get', None)):
-            raise AssertionError('backend must implement `get()`')
 
         cls._backends[name] = backend
 
