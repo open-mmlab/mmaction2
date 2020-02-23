@@ -1,0 +1,35 @@
+image: registry.sensetime.com/eig-research/pytorch:pytorch1.3.1-cuda10.0-devel@sha256:d9cad5ca44aa1c5f1bfafa385d8505800264d8b0b3f5b927d0714d867c8f3be7
+
+stages:
+    - linting
+    - test
+
+before_script:
+  - echo $PATH
+  - gcc --version
+  - python --version
+  - pip --version
+  - nvcc --version
+  - nvidia-smi
+  - python -c "import torch; print(torch.__version__)"
+
+linting:
+  stage: linting
+  script:
+    - pip install flake8 yapf isort
+    - flake8 .
+    - isort -rc --check-only --diff mmaction/ tools/ tests/
+    - yapf -r -d mmaction/ tools/ tests/ configs/
+
+test:
+  stage: test
+  script:
+    - echo "Start building..."
+    - conda install av -c conda-forge -y
+    - pip install pillow==6.2.2
+    - pip install -e .
+    - python -c "import mmaction; print(mmaction.__version__)"
+    - echo "Start testing..."
+    - pip install pytest coverage scikit-learn
+    - coverage run --source mmaction -m pytest tests/
+    - coverage report -m
