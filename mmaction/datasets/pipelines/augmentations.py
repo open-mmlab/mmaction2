@@ -255,11 +255,8 @@ class Normalize(object):
     def __call__(self, results):
         imgs = results['imgs'].astype(np.float32)
 
-        if self.to_bgr:
-            imgs = imgs[..., ::-1].copy()
-
-        imgs -= self.mean
-        imgs /= self.std
+        for img in imgs:
+            mmcv.imnormalize_(img, self.mean, self.std, self.to_bgr)
 
         results['imgs'] = imgs
         results['img_norm_cfg'] = dict(
