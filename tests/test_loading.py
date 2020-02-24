@@ -69,7 +69,8 @@ class TestLoading(object):
         pyav_decode_result = pyav_decode(video_result)
         assert self.check_keys_contain(pyav_decode_result.keys(), target_keys)
         assert pyav_decode_result['ori_shape'] == (256, 340)
-        assert pyav_decode_result['imgs'].shape == (1, 256, 340, 3)
+        assert pyav_decode_result['imgs'].shape == (len(
+            video_result['frame_inds']), 256, 340, 3)
 
         video_result = copy.deepcopy(self.video_results)
         video_result['frame_inds'] = np.arange(1, self.total_frames, 5)
@@ -77,40 +78,62 @@ class TestLoading(object):
         pyav_decode_result = pyav_decode(video_result)
         assert self.check_keys_contain(pyav_decode_result.keys(), target_keys)
         assert pyav_decode_result['ori_shape'] == (256, 340)
-        assert pyav_decode_result['imgs'].shape == (1, 256, 340, 3)
+        assert pyav_decode_result['imgs'].shape == (len(
+            video_result['frame_inds']), 256, 340, 3)
 
     def test_decord_decode(self):
         target_keys = ['frame_inds', 'imgs', 'ori_shape']
 
         video_result = copy.deepcopy(self.video_results)
-        video_result['frame_inds'] = np.arange(1, self.total_frames, 5)
+        video_result['frame_inds'] = np.arange(1, self.total_frames, 3)
         decord_decode = DecordDecode()
         decord_decode_result = decord_decode(video_result)
         assert self.check_keys_contain(decord_decode_result.keys(),
                                        target_keys)
         assert decord_decode_result['ori_shape'] == (256, 340)
-        assert decord_decode_result['imgs'].shape == (1, 256, 340, 3)
+        assert decord_decode_result['imgs'].shape == (len(
+            video_result['frame_inds']), 256, 340, 3)
 
     def test_opencv_decode(self):
         target_keys = ['frame_inds', 'imgs', 'ori_shape']
 
         video_result = copy.deepcopy(self.video_results)
-        video_result['frame_inds'] = np.arange(1, self.total_frames, 5)
+        video_result['frame_inds'] = np.arange(1, self.total_frames, 3)
         opencv_decode = OpenCVDecode()
         opencv_decode_result = opencv_decode(video_result)
         assert self.check_keys_contain(opencv_decode_result.keys(),
                                        target_keys)
         assert opencv_decode_result['ori_shape'] == (256, 340)
-        assert opencv_decode_result['imgs'].shape == (1, 256, 340, 3)
+        assert opencv_decode_result['imgs'].shape == (len(
+            video_result['frame_inds']), 256, 340, 3)
 
     def test_frame_selector(self):
         target_keys = ['frame_inds', 'imgs', 'ori_shape']
 
-        frame_result = copy.deepcopy(self.frame_results)
-        frame_result['frame_inds'] = np.arange(1, self.total_frames, 5)
-        frame_selector = FrameSelector()
-        frame_selector_result = frame_selector(frame_result)
-        assert self.check_keys_contain(frame_selector_result.keys(),
-                                       target_keys)
-        assert frame_selector_result['ori_shape'] == (240, 320)
-        assert frame_selector_result['imgs'].shape == (1, 240, 320, 3)
+        inputs = copy.deepcopy(self.frame_results)
+        inputs['frame_inds'] = np.arange(1, self.total_frames, 5)
+        frame_selector = FrameSelector(io_backend='disk')
+        results = frame_selector(inputs)
+        assert self.check_keys_contain(results.keys(), target_keys)
+        assert results['imgs'].shape == (len(inputs['frame_inds']), 240, 320,
+                                         3)
+        assert results['ori_shape'] == (240, 320)
+
+        inputs = copy.deepcopy(self.frame_results)
+        inputs['frame_inds'] = np.arange(1, self.total_frames, 2)
+        frame_selector = FrameSelector(io_backend='disk')
+        results = frame_selector(inputs)
+        assert self.check_keys_contain(results.keys(), target_keys)
+        assert results['imgs'].shape == (len(inputs['frame_inds']), 240, 320,
+                                         3)
+        assert results['ori_shape'] == (240, 320)
+
+        inputs = copy.deepcopy(self.frame_results)
+        inputs['frame_inds'] = np.arange(1, self.total_frames, 5)
+        frame_selector = FrameSelector(
+            io_backend='disk', decoding_backend='turbojpeg')
+        results = frame_selector(inputs)
+        assert self.check_keys_contain(results.keys(), target_keys)
+        assert results['imgs'].shape == (len(inputs['frame_inds']), 240, 320,
+                                         3)
+        assert results['ori_shape'] == (240, 320)

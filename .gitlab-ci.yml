@@ -25,8 +25,9 @@ test:
   stage: test
   script:
     - echo "Start building..."
+    - apt update && apt install -y libturbojpeg
     - conda install av -c conda-forge -y
-    - pip install pillow==6.2.2
+    - pip install PyTurboJPEG pillow==6.2.2
     - pip install -e .
     - python -c "import mmaction; print(mmaction.__version__)"
     - echo "Start testing..."
