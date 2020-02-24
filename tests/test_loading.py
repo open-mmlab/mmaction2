@@ -69,6 +69,7 @@ class TestLoading(object):
         pyav_decode_result = pyav_decode(video_result)
         assert self.check_keys_contain(pyav_decode_result.keys(), target_keys)
         assert pyav_decode_result['ori_shape'] == (256, 340)
+        assert pyav_decode_result['imgs'].shape == (1, 256, 340, 3)
 
         video_result = copy.deepcopy(self.video_results)
         video_result['frame_inds'] = np.arange(1, self.total_frames, 5)
@@ -76,6 +77,7 @@ class TestLoading(object):
         pyav_decode_result = pyav_decode(video_result)
         assert self.check_keys_contain(pyav_decode_result.keys(), target_keys)
         assert pyav_decode_result['ori_shape'] == (256, 340)
+        assert pyav_decode_result['imgs'].shape == (1, 256, 340, 3)
 
     def test_decord_decode(self):
         target_keys = ['frame_inds', 'imgs', 'ori_shape']
@@ -87,6 +89,7 @@ class TestLoading(object):
         assert self.check_keys_contain(decord_decode_result.keys(),
                                        target_keys)
         assert decord_decode_result['ori_shape'] == (256, 340)
+        assert decord_decode_result['imgs'].shape == (1, 256, 340, 3)
 
     def test_opencv_decode(self):
         target_keys = ['frame_inds', 'imgs', 'ori_shape']
@@ -98,6 +101,7 @@ class TestLoading(object):
         assert self.check_keys_contain(opencv_decode_result.keys(),
                                        target_keys)
         assert opencv_decode_result['ori_shape'] == (256, 340)
+        assert opencv_decode_result['imgs'].shape == (1, 256, 340, 3)
 
     def test_frame_selector(self):
         target_keys = ['frame_inds', 'imgs', 'ori_shape']
@@ -109,3 +113,4 @@ class TestLoading(object):
         assert self.check_keys_contain(frame_selector_result.keys(),
                                        target_keys)
         assert frame_selector_result['ori_shape'] == (240, 320)
+        assert frame_selector_result['imgs'].shape == (1, 240, 320, 3)
