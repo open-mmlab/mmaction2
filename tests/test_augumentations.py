@@ -164,21 +164,23 @@ class TestAugumentations(object):
         target_keys = ['imgs', 'flip_direction']
 
         imgs = np.random.rand(2, 64, 64, 3)
-        results = dict(imgs=imgs)
+        results = dict(imgs=imgs.copy())
         flip = Flip(flip_ratio=1, direction='horizontal')
         flip_results = flip(results)
         assert self.check_keys_contain(flip_results.keys(), target_keys)
         assert self.check_flip(imgs, flip_results['imgs'],
                                flip_results['flip_direction'])
+        assert id(flip_results['imgs']) == id(results['imgs'])
         assert flip_results['imgs'].shape == imgs.shape
 
         imgs = np.random.rand(2, 64, 64, 3)
-        results = dict(imgs=imgs)
+        results = dict(imgs=imgs.copy())
         flip = Flip(flip_ratio=1, direction='vertical')
         flip_results = flip(results)
         assert self.check_keys_contain(flip_results.keys(), target_keys)
         assert self.check_flip(imgs, flip_results['imgs'],
                                flip_results['flip_direction'])
+        assert id(flip_results['imgs']) == id(results['imgs'])
         assert flip_results['imgs'].shape == imgs.shape
 
         assert repr(flip) == flip.__class__.__name__ +\

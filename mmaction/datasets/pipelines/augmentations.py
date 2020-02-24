@@ -209,10 +209,8 @@ class Flip(object):
             flip = False
 
         if flip:
-            if self.direction == 'horizontal':
-                results['imgs'] = np.flip(results['imgs'], axis=2).copy()
-            else:
-                results['imgs'] = np.flip(results['imgs'], axis=1).copy()
+            for img in results['imgs']:
+                mmcv.imflip_(img, self.direction)
 
         results['flip'] = flip
         results['flip_direction'] = self.direction

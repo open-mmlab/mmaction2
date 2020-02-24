@@ -1,7 +1,7 @@
 av
 decord
 matplotlib
-mmcv>=0.2.15
+mmcv>=0.3.2
 numpy
 six
 torch>=1.1
