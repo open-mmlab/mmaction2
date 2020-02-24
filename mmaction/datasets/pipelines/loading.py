@@ -228,10 +228,13 @@ class FrameSelector(object):
         kwargs (dict): Args for file client.
     """
 
-    def __init__(self, io_backend='disk', **kwargs):
+    def __init__(self, io_backend='disk', decoding_backend='cv2', **kwargs):
         self.io_backend = io_backend
+        self.decoding_backend = decoding_backend
         self.kwargs = kwargs
         self.file_client = None
+
+        mmcv.use_backend(self.decoding_backend)
 
     def __call__(self, results):
         directory = results['frame_dir']
@@ -252,13 +255,12 @@ class FrameSelector(object):
                 frame_idx += 1
             filepath = osp.join(directory, filename_tmpl.format(frame_idx))
             img_bytes = self.file_client.get(filepath)
-            cur_frame = mmcv.imfrombytes(img_bytes)
+            # Get frame with channel order RGB directly.
+            cur_frame = mmcv.imfrombytes(img_bytes, channel_order='rgb')
             imgs.append(cur_frame)
 
         imgs = np.array(imgs)
-        # The default channel order of OpenCV is BGR, thus we change it to RGB
-        imgs = imgs[:, :, :, ::-1]
-        results['imgs'] = np.array(imgs)
+        results['imgs'] = imgs
         results['ori_shape'] = imgs.shape[1:3]
 
         return results
