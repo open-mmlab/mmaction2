@@ -1,4 +1,5 @@
 import inspect
+import os.path as osp
 from abc import ABCMeta, abstractmethod
 
 
@@ -68,6 +69,7 @@ class MemcachedBackend(BaseStorageBackend):
 
     def get(self, filepath):
         import mc
+        filepath = osp.abspath(filepath)
         self._client.Get(filepath, self._mc_buffer)
         value_buf = mc.ConvertBuffer(self._mc_buffer)
         return value_buf
