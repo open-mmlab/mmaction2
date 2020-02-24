@@ -146,25 +146,25 @@ class Resize(object):
 
     def __call__(self, results):
         imgs = results['imgs']
+        n, h, w, c = imgs.shape
         if self.keep_ratio:
-            tuple_list = [
-                mmcv.imrescale(img, self.scale, return_scale=True)
-                for img in imgs
-            ]
-            imgs, scale_factors = list(zip(*tuple_list))
-            self.scale_factor = scale_factors[0]
+            new_size, self.scale_factor = mmcv.rescale_size((w, h),
+                                                            self.scale,
+                                                            return_scale=True)
+            out_w, out_h = new_size
         else:
-            tuple_list = [
-                mmcv.imresize(img, self.scale, return_scale=True)
-                for img in imgs
-            ]
-            imgs, w_scales, h_scales = list(zip(*tuple_list))
+            out_w, out_h = self.scale
             self.scale_factor = np.array(
-                [w_scales[0], h_scales[0], w_scales[0], h_scales[0]],
-                dtype=np.float32)
+                [out_w / w, out_h / h, out_w / w, out_h / h], dtype=np.float32)
 
-        imgs = np.array(imgs)
-        results['imgs'] = imgs
+        rimgs = np.empty((n, out_h, out_w, c), dtype=imgs.dtype)
+        for i in range(n):
+            mmcv.imresize(
+                imgs[i], (out_w, out_h),
+                out=rimgs[i],
+                interpolation=self.interpolation)
+
+        results['imgs'] = rimgs
         results['img_shape'] = results['imgs'].shape[1:3]
         results['keep_ratio'] = self.keep_ratio
         results['scale_factor'] = self.scale_factor
