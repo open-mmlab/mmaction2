@@ -1,4 +1,5 @@
-from mmaction.utils import build_from_cfg
+from mmcv.utils import build_from_cfg
+
 from .dataset_wrappers import RepeatDataset
 from .registry import DATASETS
 
