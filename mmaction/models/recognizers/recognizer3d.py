@@ -21,7 +21,6 @@ class Recognizer3D(BaseRecognizer):
 
         x = self.extract_feat(imgs)
         cls_score = self.cls_head(x)
-
         cls_score = self.average_clip(cls_score)
 
         return cls_score.cpu().numpy()

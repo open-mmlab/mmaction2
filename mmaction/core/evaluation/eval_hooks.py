@@ -5,8 +5,8 @@ import mmcv
 import torch
 import torch.distributed as dist
 from mmcv.parallel import collate, scatter
-from mmcv.runner import Hook, obj_from_dict
-from torch.utils.data import DataLoader, Dataset
+from mmcv.runner import Hook
+from torch.utils.data import DataLoader
 
 
 class EvalHook(Hook):
@@ -16,22 +16,18 @@ class EvalHook(Hook):
     performing in non-distributed environment.
 
     Attributes:
-        dataset (Dataset): Evaluation dataset.
+        dataloader (DataLoader): Evaluation data loader.
         interval (int): Epoch interval for evaluation. Default: 1.
-        eval_kwargs (option): arguments for evaluation.
+        eval_kwargs (option): Arguments for evaluation.
     """
 
-    def __init__(self, dataset, interval=1, **eval_kwargs):
-        from mmaction import datasets
-        if isinstance(dataset, Dataset):
-            self.dataset = dataset
-        elif isinstance(dataset, dict):
-            self.dataset = obj_from_dict(dataset, datasets,
-                                         {'test_mode': True})
+    def __init__(self, data_loader, interval=1, **eval_kwargs):
+        if isinstance(data_loader, DataLoader):
+            self.data_loader = data_loader
         else:
-            raise TypeError(
-                'dataset must be a Dataset object or a dict, not {}'.format(
-                    type(dataset)))
+            raise TypeError('data_loader must be a DataLoader, not {}'.format(
+                type(data_loader)))
+        self.dataset = data_loader.dataset
         self.interval = interval
         self.eval_kwargs = eval_kwargs
 
@@ -42,11 +38,10 @@ class EvalHook(Hook):
         results = []
         prog_bar = mmcv.ProgressBar(len(self.dataset))
         # compute output
-        data_loader = DataLoader(self.dataset)
-        for i, data in enumerate(data_loader):
+        for data in self.data_loader:
             with torch.no_grad():
                 output = runner.model(return_loss=False, **data)
-            results.append(output)
+            results.extend(output)
 
             batch_size = data['imgs'].size(0)
             for _ in range(batch_size):

@@ -41,8 +41,9 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
     def average_clip(self, cls_score):
         """Averaging class score over multiple clips.
 
-        Using different averaging types ('score' or 'prob', which defined
-        in test_cfg) to computed the final averaged class score.
+        Using different averaging types ('score' or 'prob' or None,
+        which defined in test_cfg) to computed the final averaged
+        class score.
 
         Args:
             cls_score (torch.Tensor): Class score to be averaged.
@@ -54,10 +55,10 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
             raise KeyError('"average_clips" must defined in test_cfg\'s keys')
 
         average_clips = self.test_cfg['average_clips']
-        if average_clips not in ['score', 'prob']:
+        if average_clips not in ['score', 'prob', None]:
             raise ValueError(
                 '{} is not supported. Currently supported ones are {}'.format(
-                    average_clips, ['score', 'prob']))
+                    average_clips, ['score', 'prob', None]))
 
         if average_clips == 'prob':
             cls_score = F.softmax(cls_score, dim=1).mean(dim=0)

@@ -7,7 +7,7 @@ from mmcv.runner import DistSamplerSeedHook, Runner, obj_from_dict
 
 from mmaction.core import (DistEvalHook, DistOptimizerHook, EvalHook,
                            Fp16OptimizerHook)
-from mmaction.datasets import build_dataloader
+from mmaction.datasets import build_dataloader, build_dataset
 from mmaction.utils import get_root_logger
 
 
@@ -209,7 +209,15 @@ def _dist_train(model, dataset, cfg, validate=False):
 
     if validate:
         eval_cfg = cfg.get('evaluation', {})
-        runner.register_hook(DistEvalHook(cfg.data.val, **eval_cfg))
+        val_dataset = build_dataset(cfg.data.val)
+        val_data_loader = build_dataloader(
+            val_dataset,
+            cfg.data.videos_per_gpu,
+            cfg.data.workers_per_gpu,
+            cfg.gpus,
+            dist=True,
+            shuffle=False)
+        runner.register_hook(DistEvalHook(val_data_loader, **eval_cfg))
 
     if cfg.resume_from:
         runner.resume(cfg.resume_from)
@@ -257,7 +265,15 @@ def _non_dist_train(model, dataset, cfg, validate=False):
 
     if validate:
         eval_cfg = cfg.get('evaluation', {})
-        runner.register_hook(EvalHook(cfg.data.val, **eval_cfg))
+        val_dataset = build_dataset(cfg.data.val)
+        val_data_loader = build_dataloader(
+            val_dataset,
+            cfg.data.videos_per_gpu,
+            cfg.data.workers_per_gpu,
+            cfg.gpus,
+            dist=False,
+            shuffle=False)
+        runner.register_hook(EvalHook(val_data_loader, **eval_cfg))
 
     if cfg.resume_from:
         runner.resume(cfg.resume_from)
