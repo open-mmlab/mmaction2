@@ -1,4 +1,3 @@
-av
 decord
 matplotlib
 mmcv>=0.3.2
