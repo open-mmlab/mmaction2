@@ -1,6 +1,6 @@
 import torch.nn as nn
+from mmcv.utils import build_from_cfg
 
-from mmaction.utils import build_from_cfg
 from .registry import BACKBONES, HEADS, RECOGNIZERS
 
 
