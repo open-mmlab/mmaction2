@@ -234,9 +234,9 @@ class FrameSelector(object):
         self.kwargs = kwargs
         self.file_client = None
 
+    def __call__(self, results):
         mmcv.use_backend(self.decoding_backend)
 
-    def __call__(self, results):
         directory = results['frame_dir']
         filename_tmpl = results['filename_tmpl']
 
