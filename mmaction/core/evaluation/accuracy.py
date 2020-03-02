@@ -17,7 +17,7 @@ def confusion_matrix(y_pred, y_real):
         raise TypeError('y_pred must be list or np.ndarray, but got {}'.format(
             type(y_pred)))
     if not y_pred.dtype == np.int64:
-        raise TypeError("y_pred dtype must be np.int64, but got {}".format(
+        raise TypeError('y_pred dtype must be np.int64, but got {}'.format(
             y_pred.dtype))
 
     if isinstance(y_real, list):
@@ -26,7 +26,7 @@ def confusion_matrix(y_pred, y_real):
         raise TypeError('y_real must be list or np.ndarray, but got {}'.format(
             type(y_real)))
     if not y_real.dtype == np.int64:
-        raise TypeError("y_real dtype must be np.int64, but got {}".format(
+        raise TypeError('y_real dtype must be np.int64, but got {}'.format(
             y_real.dtype))
 
     label_set = np.unique(np.concatenate((y_pred, y_real)))

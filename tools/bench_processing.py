@@ -34,7 +34,7 @@ def main():
     if not os.path.exists(ann_file_bench):
         with open(cfg.ann_file_train) as f:
             lines = f.readlines()[:256]
-            with open(ann_file_bench, "w") as f1:
+            with open(ann_file_bench, 'w') as f1:
                 f1.writelines(lines)
     cfg.data.train.ann_file = ann_file_bench
 
