@@ -48,7 +48,12 @@ train_pipeline = [
     dict(type='ToTensor', keys=['imgs', 'label'])
 ]
 val_pipeline = [
-    dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=3),
+    dict(
+        type='SampleFrames',
+        clip_len=1,
+        frame_interval=1,
+        num_clips=3,
+        test_mode=True),
     dict(type='FrameSelector', io_backend='memcached', **mc_cfg),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
@@ -59,7 +64,12 @@ val_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 test_pipeline = [
-    dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=25),
+    dict(
+        type='SampleFrames',
+        clip_len=1,
+        frame_interval=1,
+        num_clips=25,
+        test_mode=True),
     dict(type='FrameSelector', io_backend='memcached', **mc_cfg),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='TenCrop', crop_size=224),
@@ -81,12 +91,14 @@ data = dict(
         type=dataset_type,
         ann_file=ann_file_val,
         data_prefix=data_root_val,
-        pipeline=val_pipeline),
+        pipeline=val_pipeline,
+        test_mode=True),
     test=dict(
         type=dataset_type,
         ann_file=ann_file_test,
         data_prefix=data_root_val,
-        pipeline=test_pipeline))
+        pipeline=test_pipeline,
+        test_mode=True))
 # optimizer
 optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))

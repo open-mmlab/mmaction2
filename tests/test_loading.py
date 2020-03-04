@@ -39,26 +39,58 @@ class TestLoading(object):
         video_result = copy.deepcopy(self.video_results)
         frame_result = copy.deepcopy(self.frame_results)
         config = dict(
-            clip_len=3, frame_interval=1, num_clips=1, temporal_jitter=False)
+            clip_len=3, frame_interval=1, num_clips=5, temporal_jitter=False)
         sample_frames = SampleFrames(**config)
         sample_frames_results = sample_frames(video_result)
         assert self.check_keys_contain(sample_frames_results.keys(),
                                        target_keys)
-        assert len(sample_frames_results['frame_inds']) == 3
+        assert len(sample_frames_results['frame_inds']) == 15
         sample_frames_results = sample_frames(frame_result)
-        assert len(sample_frames_results['frame_inds']) == 3
+        assert len(sample_frames_results['frame_inds']) == 15
 
         video_result = copy.deepcopy(self.video_results)
         frame_result = copy.deepcopy(self.frame_results)
         config = dict(
-            clip_len=3, frame_interval=1, num_clips=1, temporal_jitter=True)
+            clip_len=4, frame_interval=2, num_clips=5, temporal_jitter=True)
         sample_frames = SampleFrames(**config)
         sample_frames_results = sample_frames(video_result)
         assert self.check_keys_contain(sample_frames_results.keys(),
                                        target_keys)
-        assert len(sample_frames_results['frame_inds']) == 3
+        assert len(sample_frames_results['frame_inds']) == 20
         sample_frames_results = sample_frames(frame_result)
-        assert len(sample_frames_results['frame_inds']) == 3
+        assert len(sample_frames_results['frame_inds']) == 20
+
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        config = dict(
+            clip_len=4,
+            frame_interval=1,
+            num_clips=6,
+            temporal_jitter=False,
+            test_mode=True)
+        sample_frames = SampleFrames(**config)
+        sample_frames_results = sample_frames(video_result)
+        assert self.check_keys_contain(sample_frames_results.keys(),
+                                       target_keys)
+        assert len(sample_frames_results['frame_inds']) == 24
+        sample_frames_results = sample_frames(frame_result)
+        assert len(sample_frames_results['frame_inds']) == 24
+
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        config = dict(
+            clip_len=3,
+            frame_interval=1,
+            num_clips=6,
+            temporal_jitter=False,
+            test_mode=True)
+        sample_frames = SampleFrames(**config)
+        sample_frames_results = sample_frames(video_result)
+        assert self.check_keys_contain(sample_frames_results.keys(),
+                                       target_keys)
+        assert len(sample_frames_results['frame_inds']) == 18
+        sample_frames_results = sample_frames(frame_result)
+        assert len(sample_frames_results['frame_inds']) == 18
 
     def test_pyav_decode(self):
         target_keys = ['frame_inds', 'imgs', 'ori_shape']

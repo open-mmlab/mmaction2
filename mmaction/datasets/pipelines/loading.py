@@ -21,20 +21,24 @@ class SampleFrames(object):
         num_clips (int): Number of clips to be sampled. Default: 1
         temporal_jitter (bool): Whether to apply temporal jittering.
             Default: False.
+        test_mode (bool): Store True when building test or validation dataset.
+            Default: False.
     """
 
     def __init__(self,
                  clip_len,
                  frame_interval=1,
                  num_clips=1,
-                 temporal_jitter=False):
+                 temporal_jitter=False,
+                 test_mode=False):
         self.clip_len = clip_len
         self.frame_interval = frame_interval
         self.num_clips = num_clips
         self.temporal_jitter = temporal_jitter
+        self.test_mode = test_mode
 
-    def _sample_clips(self, num_frames):
-        """Choose frame indices for the video.
+    def _get_train_clips(self, num_frames):
+        """Get clip offsets in train mode.
 
         Calculate the average interval for selected frames, and randomly
         shift them within offsets between [0, avg_interval]. If the total
@@ -45,7 +49,7 @@ class SampleFrames(object):
             num_frames (int): Total number of frame in the video.
 
         Returns:
-            np.ndarray: Sampled frame indices.
+            np.ndarray: Sampled frame indices in train mode.
         """
         ori_clip_len = self.clip_len * self.frame_interval
         avg_interval = (num_frames - ori_clip_len + 1) // self.num_clips
@@ -60,6 +64,46 @@ class SampleFrames(object):
                     num_frames - ori_clip_len + 1, size=self.num_clips))
         else:
             clip_offsets = np.zeros((self.num_clips, ))
+
+        return clip_offsets
+
+    def _get_test_clips(self, num_frames):
+        """Get clip offsets in test mode.
+
+        Calculate the average interval for selected frames, and shift them
+        fixedly by avg_interval/2 . If the total number of frames is not
+        enough, it will return all zero indices.
+
+        Args:
+            num_frames (int): Total number of frame in the video.
+
+        Returns:
+            np.ndarray: Sampled frame indices in test mode.
+        """
+        ori_clip_len = self.clip_len * self.frame_interval
+        avg_interval = (num_frames - ori_clip_len + 1) / float(self.num_clips)
+
+        if num_frames > ori_clip_len - 1:
+            base_offsets = np.arange(self.num_clips) * avg_interval
+            clip_offsets = (base_offsets + avg_interval / 2.0).astype(np.int32)
+        else:
+            clip_offsets = np.zeros((self.num_clips, ))
+
+        return clip_offsets
+
+    def _sample_clips(self, num_frames):
+        """Choose frame indices for the video in a given mode.
+
+        Args:
+            num_frames (int): Total number of frame in the video.
+
+        Returns:
+            np.ndarray: Sampled frame indices.
+        """
+        if self.test_mode:
+            clip_offsets = self._get_test_clips(num_frames)
+        else:
+            clip_offsets = self._get_train_clips(num_frames)
 
         return clip_offsets
 
