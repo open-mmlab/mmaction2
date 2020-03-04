@@ -32,7 +32,7 @@ class RawframeDataset(BaseDataset):
         pipeline (list[dict | callable]): A sequence of data transforms.
         data_prefix (str): Path to a directory where videos are held.
             Default: None.
-        test_mode (bool): store True when building test dataset.
+        test_mode (bool): Store True when building test or validation dataset.
             Default: False.
         filename_tmpl (str): Template for each filename.
             Default: 'img_{:05}.jpg'.
