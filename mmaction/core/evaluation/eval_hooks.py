@@ -25,8 +25,8 @@ class EvalHook(Hook):
         if isinstance(data_loader, DataLoader):
             self.data_loader = data_loader
         else:
-            raise TypeError('data_loader must be a DataLoader, not {}'.format(
-                type(data_loader)))
+            raise TypeError(
+                f'data_loader must be a DataLoader, not {type(data_loader)}')
         self.dataset = data_loader.dataset
         self.interval = interval
         self.eval_kwargs = eval_kwargs
@@ -88,7 +88,7 @@ class DistEvalHook(EvalHook):
                     prog_bar.update()
 
         # store results in temporal pickle for each worker.
-        tmp_file = osp.join(runner.work_dir, 'temp_{}.pkl'.format(runner.rank))
+        tmp_file = osp.join(runner.work_dir, f'temp_{runner.rank}.pkl')
         mmcv.dump(results, tmp_file)
         dist.barrier()
 
@@ -96,7 +96,7 @@ class DistEvalHook(EvalHook):
         if runner.rank == 0:
             print('\n')
             for i in range(1, runner.world_size):
-                tmp_file = osp.join(runner.work_dir, 'temp_{}.pkl'.format(i))
+                tmp_file = osp.join(runner.work_dir, f'temp_{i}.pkl')
                 tmp_results = mmcv.load(tmp_file)
                 for idx in range(i, len(results), runner.world_size):
                     results[idx] = tmp_results[idx]

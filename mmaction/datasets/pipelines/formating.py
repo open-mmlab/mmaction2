@@ -25,8 +25,7 @@ def to_tensor(data):
     elif isinstance(data, float):
         return torch.FloatTensor([data])
     else:
-        raise TypeError('type {} cannot be converted to tensor.'.format(
-            type(data)))
+        raise TypeError(f'type {type(data)} cannot be converted to tensor.')
 
 
 @PIPELINES.register_module
@@ -47,7 +46,7 @@ class ToTensor(object):
         return results
 
     def __repr__(self):
-        return self.__class__.__name__ + '(keys={})'.format(self.keys)
+        return self.__class__.__name__ + f'(keys={self.keys})'
 
 
 @PIPELINES.register_module
@@ -67,7 +66,7 @@ class ImageToTensor(object):
         return results
 
     def __repr__(self):
-        return self.__class__.__name__ + '(keys={})'.format(self.keys)
+        return self.__class__.__name__ + f'(keys={self.keys})'
 
 
 @PIPELINES.register_module
@@ -89,8 +88,8 @@ class Transpose(object):
         return results
 
     def __repr__(self):
-        return self.__class__.__name__ + '(keys={}, order={})'.format(
-            self.keys, self.order)
+        return self.__class__.__name__ + \
+               f'(keys={self.keys}, order={self.order})'
 
 
 @PIPELINES.register_module
@@ -142,8 +141,8 @@ class Collect(object):
         return data
 
     def __repr__(self):
-        return self.__class__.__name__ + '(keys={}, meta_keys={})'.format(
-            self.keys, self.meta_keys)
+        return self.__class__.__name__ + \
+               f'(keys={self.keys}, meta_keys={self.meta_keys})'
 
 
 @PIPELINES.register_module
@@ -160,8 +159,8 @@ class FormatShape(object):
     def __init__(self, input_format):
         self.input_format = input_format
         if self.input_format not in ['NCTHW', 'NCHW']:
-            raise ValueError('The input format {} is invalid.'.format(
-                self.input_format))
+            raise ValueError(
+                f'The input format {self.input_format} is invalid.')
 
     def __call__(self, results):
         imgs = results['imgs']
@@ -187,5 +186,5 @@ class FormatShape(object):
 
     def __repr__(self):
         repr_str = self.__class__.__name__
-        repr_str += '(input_format={})'.format(self.input_format)
+        repr_str += f"(input_format='{self.input_format}')"
         return repr_str

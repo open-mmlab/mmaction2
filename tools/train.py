@@ -85,13 +85,13 @@ def main():
 
     # init logger before other steps
     logger = get_root_logger(cfg.log_level)
-    logger.info('Distributed training: {}'.format(distributed))
-    logger.info('MMAction-Lite Version: {}'.format(__version__))
-    logger.info('Config: {}'.format(cfg.text))
+    logger.info(f'Distributed training: {distributed}')
+    logger.info(f'MMAction-Lite Version: {__version__}')
+    logger.info(f'Config: {cfg.text}')
 
     # set random seeds
     if args.seed is not None:
-        logger.info('Set random seed to {}'.format(args.seed))
+        logger.info(f'Set random seed to {args.seed}')
         set_random_seed(args.seed)
 
     model = build_recognizer(

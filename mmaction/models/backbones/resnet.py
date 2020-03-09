@@ -333,7 +333,7 @@ class ResNet(nn.Module):
                  with_cp=False):
         super(ResNet, self).__init__()
         if depth not in self.arch_settings:
-            raise KeyError('invalid depth {} for resnet'.format(depth))
+            raise KeyError(f'invalid depth {depth} for resnet')
         self.depth = depth
         self.in_channels = in_channels
         self.pretrained = pretrained
@@ -370,7 +370,7 @@ class ResNet(nn.Module):
                 norm_cfg=norm_cfg,
                 with_cp=with_cp)
             self.inplanes = planes * self.block.expansion
-            layer_name = 'layer{}'.format(i + 1)
+            layer_name = f'layer{i + 1}'
             self.add_module(layer_name, res_layer)
             self.res_layers.append(layer_name)
 
@@ -425,7 +425,7 @@ class ResNet(nn.Module):
                     param.requires_grad = False
 
         for i in range(1, self.frozen_stages + 1):
-            m = getattr(self, 'layer{}'.format(i))
+            m = getattr(self, f'layer{i}')
             m.eval()
             for param in m.parameters():
                 param.requires_grad = False

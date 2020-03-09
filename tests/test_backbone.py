@@ -68,7 +68,7 @@ def test_resnet_backbone():
         for param in layer.parameters():
             assert param.requires_grad is False
     for i in range(1, frozen_stages + 1):
-        layer = getattr(self, 'layer{}'.format(i))
+        layer = getattr(self, f'layer{i}')
         for mod in layer.modules():
             if isinstance(mod, _BatchNorm):
                 assert mod.training is False
@@ -137,7 +137,7 @@ def test_resnet3d_backbone():
         for param in layer.parameters():
             assert param.requires_grad is False
     for i in range(1, frozen_stages + 1):
-        layer = getattr(self, 'layer{}'.format(i))
+        layer = getattr(self, f'layer{i}')
         for mod in layer.modules():
             if isinstance(mod, _BatchNorm):
                 assert mod.training is False

@@ -24,9 +24,8 @@ class Compose(object):
             elif callable(transform):
                 self.transforms.append(transform)
             else:
-                raise TypeError(
-                    'transform must be callable or a dict, but got {}'.format(
-                        type(transform)))
+                raise TypeError(f'transform must be callable or a dict, '
+                                f'but got {type(transform)}')
 
     def __call__(self, data):
         for t in self.transforms:

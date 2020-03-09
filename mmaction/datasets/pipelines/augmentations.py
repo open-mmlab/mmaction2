@@ -37,13 +37,11 @@ class MultiScaleCrop(object):
                  random_crop=False):
         self.input_size = _pair(input_size)
         if not mmcv.is_tuple_of(self.input_size, int):
-            raise TypeError(
-                'Input_size must be int or tuple of int, but got {}'.format(
-                    type(input_size)))
+            raise TypeError(f'Input_size must be int or tuple of int, '
+                            f'but got {type(input_size)}')
 
         if not isinstance(scales, tuple):
-            raise TypeError('Scales must be tuple, but got {}'.format(
-                type(scales)))
+            raise TypeError(f'Scales must be tuple, but got {type(scales)}')
 
         self.scales = scales
         self.max_wh_scale_gap = max_wh_scale_gap
@@ -97,10 +95,9 @@ class MultiScaleCrop(object):
 
     def __repr__(self):
         repr_str = self.__class__.__name__
-        repr_str += ('(input_size={}, scales={}, max_wh_scale_gap={}, '
-                     'random_crop={})').format(self.input_size, self.scales,
-                                               self.max_wh_scale_gap,
-                                               self.random_crop)
+        repr_str += (f'(input_size={self.input_size}, scales={self.scales}, '
+                     f'max_wh_scale_gap={self.max_wh_scale_gap}, '
+                     f'random_crop={self.random_crop})')
         return repr_str
 
 
@@ -128,8 +125,7 @@ class Resize(object):
     def __init__(self, scale, keep_ratio=True, interpolation='bilinear'):
         if isinstance(scale, float):
             if scale <= 0:
-                raise ValueError(
-                    'Invalid scale {}, must be positive.'.format(scale))
+                raise ValueError(f'Invalid scale {scale}, must be positive.')
         elif isinstance(scale, tuple):
             max_long_edge = max(scale)
             max_short_edge = min(scale)
@@ -138,8 +134,7 @@ class Resize(object):
                 scale = (np.inf, max_long_edge)
         else:
             raise TypeError(
-                'Scale must be float or tuple of int, but got {}'.format(
-                    type(scale)))
+                f'Scale must be float or tuple of int, but got {type(scale)}')
         self.scale = scale
         self.keep_ratio = keep_ratio
         self.interpolation = interpolation
@@ -173,8 +168,8 @@ class Resize(object):
 
     def __repr__(self):
         repr_str = self.__class__.__name__
-        repr_str += '(scale={}, keep_ratio={}, interpolation={})'. \
-            format(self.scale, self.keep_ratio, self.interpolation)
+        repr_str += f'(scale={self.scale}, keep_ratio={self.keep_ratio}, ' \
+            f"interpolation='{self.interpolation}')"
         return repr_str
 
 
@@ -196,9 +191,8 @@ class Flip(object):
 
     def __init__(self, flip_ratio=0.5, direction='horizontal'):
         if direction not in self._directions:
-            raise ValueError(
-                'Direction {} is not supported. Currently support ones are {}'.
-                format(direction, self._directions))
+            raise ValueError(f'Direction {direction} is not supported. '
+                             f'Currently support ones are {self._directions}')
         self.flip_ratio = flip_ratio
         self.direction = direction
 
@@ -219,8 +213,8 @@ class Flip(object):
 
     def __repr__(self):
         repr_str = self.__class__.__name__
-        repr_str += '(flip_ratio={}, direction={})'.format(
-            self.flip_ratio, self.direction)
+        repr_str += f'(flip_ratio={self.flip_ratio}, ' \
+            f"direction='{self.direction}')"
         return repr_str
 
 
@@ -240,13 +234,12 @@ class Normalize(object):
     def __init__(self, mean, std, to_bgr=False):
         if not isinstance(mean, Sequence):
             raise TypeError(
-                'Mean must be list, tuple or np.ndarray, but got {}'.format(
-                    type(mean)))
+                f'Mean must be list, tuple or np.ndarray, but got {type(mean)}'
+            )
 
         if not isinstance(std, Sequence):
             raise TypeError(
-                'Std must be list, tuple or np.ndarray, but got {}'.format(
-                    type(std)))
+                f'Std must be list, tuple or np.ndarray, but got {type(std)}')
 
         self.mean = np.array(mean, dtype=np.float32)
         self.std = np.array(std, dtype=np.float32)
@@ -265,8 +258,7 @@ class Normalize(object):
 
     def __repr__(self):
         repr_str = self.__class__.__name__
-        repr_str += '(mean={}, std={}, to_bgr={})'.format(
-            self.mean, self.std, self.to_bgr)
+        repr_str += f'(mean={self.mean}, std={self.std}, to_bgr={self.to_bgr})'
         return repr_str
 
 
@@ -284,9 +276,8 @@ class CenterCrop(object):
     def __init__(self, crop_size):
         self.crop_size = _pair(crop_size)
         if not mmcv.is_tuple_of(self.crop_size, int):
-            raise TypeError(
-                'Crop_size must be int or tuple of int, but got {}'.format(
-                    type(crop_size)))
+            raise TypeError(f'Crop_size must be int or tuple of int, '
+                            f'but got {type(crop_size)}')
 
     def __call__(self, results):
         imgs = results['imgs']
@@ -306,7 +297,7 @@ class CenterCrop(object):
 
     def __repr__(self):
         repr_str = self.__class__.__name__
-        repr_str += '(crop_size={})'.format(self.crop_size)
+        repr_str += f'(crop_size={self.crop_size})'
         return repr_str
 
 
@@ -326,9 +317,8 @@ class ThreeCrop(object):
     def __init__(self, crop_size):
         self.crop_size = _pair(crop_size)
         if not mmcv.is_tuple_of(self.crop_size, int):
-            raise TypeError(
-                'Crop_size must be int or tuple of int, but got {}'.format(
-                    type(crop_size)))
+            raise TypeError(f'Crop_size must be int or tuple of int, '
+                            f'but got {type(crop_size)}')
 
     def __call__(self, results):
         imgs = results['imgs']
@@ -370,7 +360,7 @@ class ThreeCrop(object):
 
     def __repr__(self):
         repr_str = self.__class__.__name__
-        repr_str += '(crop_size={})'.format(self.crop_size)
+        repr_str += f'(crop_size={self.crop_size})'
         return repr_str
 
 
@@ -390,9 +380,8 @@ class TenCrop(object):
     def __init__(self, crop_size):
         self.crop_size = _pair(crop_size)
         if not mmcv.is_tuple_of(self.crop_size, int):
-            raise TypeError(
-                'Crop_size must be int or tuple of int, but got {}'.format(
-                    type(crop_size)))
+            raise TypeError(f'Crop_size must be int or tuple of int, '
+                            f'but got {type(crop_size)}')
 
     def __call__(self, results):
         imgs = results['imgs']
@@ -432,5 +421,5 @@ class TenCrop(object):
 
     def __repr__(self):
         repr_str = self.__class__.__name__
-        repr_str += '(crop_size={})'.format(self.crop_size)
+        repr_str += f'(crop_size={self.crop_size})'
         return repr_str

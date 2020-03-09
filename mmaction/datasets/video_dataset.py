@@ -55,22 +55,20 @@ class VideoDataset(BaseDataset):
             eval_results (dict): Evaluation results dict.
         """
         if not isinstance(results, list):
-            raise TypeError('results must be a list, but got {}'.format(
-                type(results)))
+            raise TypeError(f'results must be a list, but got {type(results)}')
         assert len(results) == len(self), (
-            'The length of results is not equal to the dataset len: {} != {}'.
-            format(len(results), len(self)))
+            f'The length of results is not equal to the dataset len: '
+            f'{len(results)} != {len(self)}')
 
         if not isinstance(topk, (int, tuple)):
             raise TypeError(
-                'topk must be int or tuple of int, but got {}'.format(
-                    type(topk)))
+                f'topk must be int or tuple of int, but got {type(topk)}')
 
         metrics = metrics if isinstance(metrics, (list, tuple)) else [metrics]
         allowed_metrics = ['top_k_accuracy', 'mean_class_accuracy']
         for metric in metrics:
             if metric not in allowed_metrics:
-                raise KeyError('metric {} is not supported'.format(metric))
+                raise KeyError(f'metric {metric} is not supported')
 
         eval_results = {}
         gt_labels = [ann['label'] for ann in self.video_infos]
@@ -79,7 +77,7 @@ class VideoDataset(BaseDataset):
             if metric == 'top_k_accuracy':
                 top_k_acc = top_k_accuracy(results, gt_labels, topk)
                 for k, acc in zip(topk, top_k_acc):
-                    eval_results['top{}_acc'.format(k)] = acc
+                    eval_results[f'top{k}_acc'] = acc
 
             if metric == 'mean_class_accuracy':
                 mean_acc = mean_class_accuracy(results, gt_labels)
