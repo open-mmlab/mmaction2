@@ -14,20 +14,20 @@ def confusion_matrix(y_pred, y_real):
     if isinstance(y_pred, list):
         y_pred = np.array(y_pred)
     if not isinstance(y_pred, np.ndarray):
-        raise TypeError('y_pred must be list or np.ndarray, but got {}'.format(
-            type(y_pred)))
+        raise TypeError(
+            f'y_pred must be list or np.ndarray, but got {type(y_pred)}')
     if not y_pred.dtype == np.int64:
-        raise TypeError('y_pred dtype must be np.int64, but got {}'.format(
-            y_pred.dtype))
+        raise TypeError(
+            f'y_pred dtype must be np.int64, but got {y_pred.dtype}')
 
     if isinstance(y_real, list):
         y_real = np.array(y_real)
     if not isinstance(y_real, np.ndarray):
-        raise TypeError('y_real must be list or np.ndarray, but got {}'.format(
-            type(y_real)))
+        raise TypeError(
+            f'y_real must be list or np.ndarray, but got {type(y_real)}')
     if not y_real.dtype == np.int64:
-        raise TypeError('y_real dtype must be np.int64, but got {}'.format(
-            y_real.dtype))
+        raise TypeError(
+            f'y_real dtype must be np.int64, but got {y_real.dtype}')
 
     label_set = np.unique(np.concatenate((y_pred, y_real)))
     num_labels = len(label_set)

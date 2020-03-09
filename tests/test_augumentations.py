@@ -115,8 +115,8 @@ class TestAugumentations(object):
                                                           (204, 204)])
 
         assert repr(multi_scale_crop) == multi_scale_crop.__class__.__name__ +\
-            '(input_size={}, scales={}, max_wh_scale_gap={}, random_crop={})'.\
-            format((224, 224), (1, 0.8), 0, True)
+            f'(input_size={(224, 224)}, scales={(1, 0.8)}, ' \
+            f'max_wh_scale_gap={0}, random_crop={True})'
 
     def test_resize(self):
         with pytest.raises(ValueError):
@@ -154,8 +154,8 @@ class TestAugumentations(object):
         assert resize_results['img_shape'] == (256, 341)
 
         assert repr(resize) == resize.__class__.__name__ +\
-            '(scale={}, keep_ratio={}, interpolation={})'.format(
-            (341, 256), False, 'bilinear')
+            f'(scale={(341, 256)}, keep_ratio={False}, ' \
+            f"interpolation='bilinear')"
 
     def test_flip(self):
         with pytest.raises(ValueError):
@@ -184,7 +184,7 @@ class TestAugumentations(object):
         assert flip_results['imgs'].shape == imgs.shape
 
         assert repr(flip) == flip.__class__.__name__ +\
-            '(flip_ratio={}, direction={})'.format(1, 'vertical')
+            f"(flip_ratio={1}, direction='vertical')"
 
     def test_normalize(self):
         with pytest.raises(TypeError):
@@ -222,9 +222,8 @@ class TestAugumentations(object):
                              normalize_results['img_norm_cfg'])
 
         assert normalize.__repr__() == normalize.__class__.__name__ +\
-            '(mean={}, std={}, to_bgr={})'.format(
-                np.array([123.675, 116.28, 103.53]),
-                np.array([58.395, 57.12, 57.375]), True)
+            f'(mean={np.array([123.675, 116.28, 103.53])}, ' \
+            f'std={np.array([58.395, 57.12, 57.375])}, to_bgr={True})'
 
     def test_center_crop(self):
         with pytest.raises(TypeError):
@@ -250,7 +249,7 @@ class TestAugumentations(object):
         assert center_crop_results['img_shape'] == (224, 224)
 
         assert repr(center_crop) == center_crop.__class__.__name__ + \
-            '(crop_size={})'.format((224, 224))
+            f'(crop_size={(224, 224)})'
 
     def test_three_crop(self):
         with pytest.raises(TypeError):
@@ -274,7 +273,7 @@ class TestAugumentations(object):
         assert three_crop_results['img_shape'] == (224, 224)
 
         assert repr(three_crop) == three_crop.__class__.__name__ +\
-            '(crop_size={})'.format((224, 224))
+            f'(crop_size={(224, 224)})'
 
     def test_ten_crop(self):
         with pytest.raises(TypeError):
@@ -298,4 +297,4 @@ class TestAugumentations(object):
         assert ten_crop_results['img_shape'] == (224, 224)
 
         assert ten_crop.__repr__() == ten_crop.__class__.__name__ +\
-            '(crop_size={})'.format((224, 224))
+            f'(crop_size={(224, 224)})'

@@ -120,7 +120,7 @@ def collect_results_cpu(result_part, size, tmpdir=None):
     else:
         mmcv.mkdir_or_exist(tmpdir)
     # dump the part result to the dir
-    mmcv.dump(result_part, osp.join(tmpdir, 'part_{}.pkl'.format(rank)))
+    mmcv.dump(result_part, osp.join(tmpdir, f'part_{rank}.pkl'))
     dist.barrier()
     # collect all parts
     if rank != 0:
@@ -129,7 +129,7 @@ def collect_results_cpu(result_part, size, tmpdir=None):
         # load results of all parts from tmp dir
         part_list = []
         for i in range(world_size):
-            part_file = osp.join(tmpdir, 'part_{}.pkl'.format(i))
+            part_file = osp.join(tmpdir, f'part_{i}.pkl')
             part_list.append(mmcv.load(part_file))
         # sort the results
         ordered_results = []
@@ -288,13 +288,13 @@ def main():
     rank, _ = get_dist_info()
     if rank == 0:
         if args.out:
-            print('\nwriting results to {}'.format(args.out))
+            print(f'\nwriting results to {args.out}')
             mmcv.dump(outputs, args.out)
         if args.eval:
             kwargs = {} if args.options is None else args.options
             eval_res = dataset.evaluate(outputs, args.eval, **kwargs)
             for name, val in eval_res.items():
-                print('{}: {:.04f}'.format(name, val))
+                print(f'{name}: {val:.04f}')
 
 
 if __name__ == '__main__':

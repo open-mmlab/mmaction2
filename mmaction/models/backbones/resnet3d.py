@@ -344,7 +344,7 @@ class ResNet3d(nn.Module):
                  zero_init_residual=True):
         super().__init__()
         if depth not in self.arch_settings:
-            raise KeyError('invalid depth {} for resnet'.format(depth))
+            raise KeyError(f'invalid depth {depth} for resnet')
         self.depth = depth
         self.pretrained = pretrained
         self.pretrained2d = pretrained2d
@@ -394,7 +394,7 @@ class ResNet3d(nn.Module):
                 inflate_style=self.inflate_style,
                 with_cp=with_cp)
             self.inplanes = planes * self.block.expansion
-            layer_name = 'layer{}'.format(i + 1)
+            layer_name = f'layer{i + 1}'
             self.add_module(layer_name, res_layer)
             self.res_layers.append(layer_name)
 
@@ -417,16 +417,15 @@ class ResNet3d(nn.Module):
                 new_weight = old_weight.unsqueeze(2).expand_as(
                     module.weight) / module.weight.data.shape[2]
                 module.weight.data.copy_(new_weight)
-                logger.info(
-                    '{}.weight loaded from weights file into {}'.format(
-                        name, new_weight.shape))
+                logger.info(f'{name}.weight loaded from weights file into '
+                            f'{new_weight.shape}')
 
                 if hasattr(module, 'bias') and module.bias is not None:
                     new_bias = resnet2d[name + '.bias'].data
                     module.bias.data.copy_(new_bias)
                     logger.info(
-                        '{}.bias loaded from weights file into {}'.format(
-                            name, new_bias))
+                        f'{name}.bias loaded from weights file into {new_bias}'
+                    )
 
             elif isinstance(module, nn.BatchNorm3d) and name in layer_names:
                 param_names = list()
@@ -437,8 +436,8 @@ class ResNet3d(nn.Module):
                 for param_name in param_names:
                     attr = param_name.split('.')[-1]
                     new_parms = resnet2d[param_name]
-                    logger.info('{} loaded from weights file into {}'.format(
-                        param_name, new_parms.shape))
+                    logger.info(f'{param_name} loaded from weights file into '
+                                f'{new_parms.shape}')
                     setattr(module, attr, new_parms)
 
     def _make_stem_layer(self):
@@ -467,7 +466,7 @@ class ResNet3d(nn.Module):
                     param.requires_grad = False
 
         for i in range(1, self.frozen_stages + 1):
-            m = getattr(self, 'layer{}'.format(i))
+            m = getattr(self, f'layer{i}')
             m.eval()
             for param in m.parameters():
                 param.requires_grad = False
@@ -475,7 +474,7 @@ class ResNet3d(nn.Module):
     def init_weights(self):
         if isinstance(self.pretrained, str):
             logger = get_root_logger()
-            logger.info('load model from: {}'.format(self.pretrained))
+            logger.info(f'load model from: {self.pretrained}')
 
             if self.pretrained2d:
                 # Inflate 2D model into 3D model.

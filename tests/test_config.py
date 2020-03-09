@@ -16,7 +16,7 @@ def _get_config_path():
         raise Exception('Cannot find config path')
     config_fpaths = list(glob.glob(osp.join(config_dpath, '*.py')))
     config_names = [os.path.relpath(p, config_dpath) for p in config_fpaths]
-    print('Using {} config files'.format(len(config_names)))
+    print(f'Using {len(config_names)} config files')
     config_fpaths = [
         osp.join(config_dpath, config_fpath) for config_fpath in config_fpaths
     ]
@@ -31,7 +31,7 @@ def test_config_build_recognizer():
 
     for config_fpath in config_fpaths:
         config_mod = mmcv.Config.fromfile(config_fpath)
-        print('Building recognizer, config_fpath = {!r}'.format(config_fpath))
+        print(f'Building recognizer, config_fpath = {config_fpath!r}')
 
         # Remove pretrained keys to allow for testing in an offline environment
         if 'pretrained' in config_mod.model['backbone']:

@@ -31,7 +31,7 @@ def build_conv_layer(cfg, *args, **kwargs):
 
     layer_type = cfg_.pop('type')
     if layer_type not in conv_cfg:
-        raise KeyError('Unrecognized norm type {}'.format(layer_type))
+        raise KeyError(f'Unrecognized norm type {layer_type}')
     else:
         conv_layer = conv_cfg[layer_type]
 
@@ -134,8 +134,8 @@ class ConvModule(nn.Module):
         if self.with_activatation:
             # TODO: introduce `act_cfg` and supports more activation layers
             if self.activation not in ['relu']:
-                raise ValueError('{} is currently not supported.'.format(
-                    self.activation))
+                raise ValueError(
+                    f'{self.activation} is currently not supported.')
             if self.activation == 'relu':
                 self.activate = nn.ReLU(inplace=inplace)
 

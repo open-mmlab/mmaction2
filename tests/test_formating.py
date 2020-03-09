@@ -47,7 +47,7 @@ def test_to_tensor():
         assert torch.equal(results[key].data, origin_results[key])
 
     assert repr(to_tensor) == to_tensor.__class__.__name__ + \
-        '(keys={})'.format(target_keys)
+        f'(keys={target_keys})'
 
 
 def test_image_to_tensor():
@@ -60,7 +60,7 @@ def test_image_to_tensor():
     assert torch.equal(results['imgs'].data, origin_results['imgs'])
 
     assert repr(image_to_tensor) == image_to_tensor.__class__.__name__ + \
-        '(keys={})'.format(keys)
+        f'(keys={keys})'
 
 
 def test_transpose():
@@ -72,7 +72,7 @@ def test_transpose():
     assert results['imgs'].shape == (3, 256, 256)
 
     assert repr(transpose) == transpose.__class__.__name__ + \
-        '(keys={}, order={})'.format(keys, order)
+        f'(keys={keys}, order={order})'
 
 
 def test_collect():
@@ -96,7 +96,7 @@ def test_collect():
         assert results['img_meta'].data[key] == inputs[key]
 
     assert repr(collect) == collect.__class__.__name__ + \
-        '(keys={}, meta_keys={})'.format(keys, collect.meta_keys)
+        f'(keys={keys}, meta_keys={collect.meta_keys})'
 
 
 def test_format_shape():
@@ -121,4 +121,4 @@ def test_format_shape():
     assert check_keys_contain(results.keys(), target_keys)
 
     assert repr(format_shape) == format_shape.__class__.__name__ + \
-        '(input_format={})'.format('NCTHW')
+        f"(input_format='NCTHW')"

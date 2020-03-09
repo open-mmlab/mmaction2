@@ -145,7 +145,7 @@ def _demo_inputs(input_shape=(1, 3, 3, 224, 224), model_type='tsn'):
     elif model_type == 'i3d':
         gt_labels = torch.LongTensor([2] * M)
     else:
-        raise ValueError('Data type {} is not available'.format(model_type))
+        raise ValueError(f'Data type {model_type} is not available')
 
     inputs = {
         'imgs': torch.FloatTensor(imgs),

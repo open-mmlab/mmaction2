@@ -56,9 +56,9 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
 
         average_clips = self.test_cfg['average_clips']
         if average_clips not in ['score', 'prob', None]:
-            raise ValueError(
-                '{} is not supported. Currently supported ones are {}'.format(
-                    average_clips, ['score', 'prob', None]))
+            raise ValueError(f'{average_clips} is not supported. '
+                             f'Currently supported ones are '
+                             f'["score", "prob", None]')
 
         if average_clips == 'prob':
             cls_score = F.softmax(cls_score, dim=1).mean(dim=0)
