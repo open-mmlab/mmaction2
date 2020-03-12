@@ -46,6 +46,14 @@ class TestDataset(object):
             dict(frame_dir=frame_dir, total_frames=5, label=127)
         ] * 2
 
+    def test_dataset_realpath(self):
+        dataset = RawframeDataset(self.frame_ann_file, self.frame_pipeline,
+                                  '.')
+        assert dataset.data_prefix == osp.realpath('.')
+        dataset = RawframeDataset(self.frame_ann_file, self.frame_pipeline,
+                                  's3://good')
+        assert dataset.data_prefix == 's3://good'
+
     def test_video_dataset(self):
         video_dataset = VideoDataset(self.video_ann_file, self.video_pipeline,
                                      self.data_prefix)

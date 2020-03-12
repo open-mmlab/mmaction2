@@ -1,5 +1,4 @@
 import inspect
-import os.path as osp
 from abc import ABCMeta, abstractmethod
 
 
@@ -32,7 +31,7 @@ class CephBackend(BaseStorageBackend):
         self._client = ceph.S3Client()
 
     def get(self, filepath):
-        value = self._client.Get(osp.realpath(filepath))
+        value = self._client.Get(filepath)
         value_buf = memoryview(value)
         return value_buf
 
@@ -69,7 +68,7 @@ class MemcachedBackend(BaseStorageBackend):
 
     def get(self, filepath):
         import mc
-        self._client.Get(osp.realpath(filepath), self._mc_buffer)
+        self._client.Get(filepath, self._mc_buffer)
         value_buf = mc.ConvertBuffer(self._mc_buffer)
         return value_buf
 
