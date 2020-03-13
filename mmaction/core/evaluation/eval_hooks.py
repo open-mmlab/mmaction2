@@ -1,10 +1,5 @@
-import os
 import os.path as osp
 
-import mmcv
-import torch
-import torch.distributed as dist
-from mmcv.parallel import collate, scatter
 from mmcv.runner import Hook
 from torch.utils.data import DataLoader
 
@@ -16,41 +11,38 @@ class EvalHook(Hook):
     performing in non-distributed environment.
 
     Attributes:
-        dataloader (DataLoader): Evaluation data loader.
-        interval (int): Epoch interval for evaluation. Default: 1.
+        dataloader (DataLoader): A PyTorch dataloader.
+        interval (int): Evaluation interval (by epochs). Default: 1.
+        tmpdir (str | None): Temporary directory to save the results of all
+            processes. Default: None.
+        gpu_collect (bool): Whether to use gpu or cpu to collect results.
+            Default: False.
         eval_kwargs (option): Arguments for evaluation.
     """
 
-    def __init__(self, data_loader, interval=1, **eval_kwargs):
-        if isinstance(data_loader, DataLoader):
-            self.data_loader = data_loader
-        else:
+    def __init__(self,
+                 dataloader,
+                 interval=1,
+                 gpu_collect=False,
+                 **eval_kwargs):
+        if not isinstance(dataloader, DataLoader):
             raise TypeError(
-                f'data_loader must be a DataLoader, not {type(data_loader)}')
-        self.dataset = data_loader.dataset
+                'dataloader must be a pytorch DataLoader, but got {}'.format(
+                    type(dataloader)))
+        self.dataloader = dataloader
         self.interval = interval
+        self.gpu_collect = gpu_collect
         self.eval_kwargs = eval_kwargs
 
     def after_train_epoch(self, runner):
         if not self.every_n_epochs(runner, self.interval):
             return
-        runner.model.eval()
-        results = []
-        prog_bar = mmcv.ProgressBar(len(self.dataset))
-        # compute output
-        for data in self.data_loader:
-            with torch.no_grad():
-                output = runner.model(return_loss=False, **data)
-            results.extend(output)
-
-            batch_size = data['imgs'].size(0)
-            for _ in range(batch_size):
-                prog_bar.update()
+        from mmaction.core import single_gpu_test
+        results = single_gpu_test(runner.model, self.dataloader)
         self.evaluate(runner, results)
 
     def evaluate(self, runner, results):
-        results = [res.squeeze() for res in results]
-        eval_res = self.dataset.evaluate(
+        eval_res = self.dataloader.dataset.evaluate(
             results, logger=runner.logger, **self.eval_kwargs)
         for name, val in eval_res.items():
             runner.log_buffer.output[name] = val
@@ -67,41 +59,12 @@ class DistEvalHook(EvalHook):
     def after_train_epoch(self, runner):
         if not self.every_n_epochs(runner, self.interval):
             return
-        runner.model.eval()
-        results = [None for _ in range(len(self.dataset))]
-        if runner.rank == 0:
-            prog_bar = mmcv.ProgressBar(len(self.dataset))
-        for idx in range(runner.rank, len(self.dataset), runner.world_size):
-            data = self.dataset[idx]
-            data_gpu = scatter(
-                collate([data], samples_per_gpu=1),
-                [torch.cuda.current_device()])[0]
-
-            # compute output
-            with torch.no_grad():
-                result = runner.model(return_loss=False, **data_gpu)
-            results[idx] = result
-
-            batch_size = runner.world_size
-            if runner.rank == 0:
-                for _ in range(batch_size):
-                    prog_bar.update()
-
-        # store results in temporal pickle for each worker.
-        tmp_file = osp.join(runner.work_dir, f'temp_{runner.rank}.pkl')
-        mmcv.dump(results, tmp_file)
-        dist.barrier()
-
-        # collect all outputs and eval the results.
+        from mmaction.core import multi_gpu_test
+        results = multi_gpu_test(
+            runner.model,
+            self.dataloader,
+            tmpdir=osp.join(runner.work_dir, '.eval_hook'),
+            gpu_collect=self.gpu_collect)
         if runner.rank == 0:
             print('\n')
-            for i in range(1, runner.world_size):
-                tmp_file = osp.join(runner.work_dir, f'temp_{i}.pkl')
-                tmp_results = mmcv.load(tmp_file)
-                for idx in range(i, len(results), runner.world_size):
-                    results[idx] = tmp_results[idx]
-                os.remove(tmp_file)
             self.evaluate(runner, results)
-            os.remove(osp.join(runner.work_dir, 'temp_0.pkl'))
-
-        return

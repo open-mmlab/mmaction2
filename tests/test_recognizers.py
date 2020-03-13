@@ -65,13 +65,14 @@ def test_tsn():
     recognizer = build_recognizer(
         model, train_cfg=train_cfg, test_cfg=test_cfg)
     score = recognizer.average_clip(cls_score)
-    assert torch.equal(score, cls_score.mean(dim=0))
+    assert torch.equal(score, cls_score.mean(dim=0, keepdim=True))
 
     test_cfg = dict(average_clips='prob')
     recognizer = build_recognizer(
         model, train_cfg=train_cfg, test_cfg=test_cfg)
     score = recognizer.average_clip(cls_score)
-    assert torch.equal(score, F.softmax(cls_score, dim=1).mean(dim=0))
+    assert torch.equal(score,
+                       F.softmax(cls_score, dim=1).mean(dim=0, keepdim=True))
 
 
 def test_i3d():
@@ -115,13 +116,14 @@ def test_i3d():
     recognizer = build_recognizer(
         model, train_cfg=train_cfg, test_cfg=test_cfg)
     score = recognizer.average_clip(cls_score)
-    assert torch.equal(score, cls_score.mean(dim=0))
+    assert torch.equal(score, cls_score.mean(dim=0, keepdim=True))
 
     test_cfg = dict(average_clips='prob')
     recognizer = build_recognizer(
         model, train_cfg=train_cfg, test_cfg=test_cfg)
     score = recognizer.average_clip(cls_score)
-    assert torch.equal(score, F.softmax(cls_score, dim=1).mean(dim=0))
+    assert torch.equal(score,
+                       F.softmax(cls_score, dim=1).mean(dim=0, keepdim=True))
 
 
 def _demo_inputs(input_shape=(1, 3, 3, 224, 224), model_type='tsn'):
