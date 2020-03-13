@@ -61,9 +61,9 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
                              f'["score", "prob", None]')
 
         if average_clips == 'prob':
-            cls_score = F.softmax(cls_score, dim=1).mean(dim=0)
+            cls_score = F.softmax(cls_score, dim=1).mean(dim=0, keepdim=True)
         elif average_clips == 'score':
-            cls_score = cls_score.mean(dim=0)
+            cls_score = cls_score.mean(dim=0, keepdim=True)
         return cls_score
 
     @abstractmethod
