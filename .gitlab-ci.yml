@@ -7,10 +7,9 @@ stages:
 before_script:
   - echo $PATH
   - gcc --version
+  - nvcc --version
   - python --version
   - pip --version
-  - nvcc --version
-  - nvidia-smi
   - python -c "import torch; print(torch.__version__)"
 
 linting:
