@@ -296,5 +296,5 @@ class TestAugumentations(object):
                                ten_crop_results['crop_bbox'][0])
         assert ten_crop_results['img_shape'] == (224, 224)
 
-        assert ten_crop.__repr__() == ten_crop.__class__.__name__ +\
+        assert repr(ten_crop) == ten_crop.__class__.__name__ +\
             f'(crop_size={(224, 224)})'

@@ -6,7 +6,20 @@ import pytest
 import torch
 import torch.nn.functional as F
 
-from mmaction.models import build_recognizer
+from mmaction.models import BaseRecognizer, build_recognizer
+
+
+class ExampleRecognizer(BaseRecognizer):
+
+    def __init__(self, train_cfg, test_cfg):
+        self.train_cfg = train_cfg
+        self.test_cfg = test_cfg
+
+    def forward_train(self, imgs, labels):
+        pass
+
+    def forward_test(self, imgs):
+        pass
 
 
 def _get_recognizer_cfg(fname):
@@ -21,6 +34,30 @@ def _get_recognizer_cfg(fname):
         raise Exception('Cannot find config path')
     config = mmcv.Config.fromfile(config_fpath)
     return config.model, config.train_cfg, config.test_cfg
+
+
+def test_base_recognizer():
+    cls_score = torch.rand(5, 400)
+    with pytest.raises(KeyError):
+        wrong_test_cfg = dict(clip='score')
+        recognizer = ExampleRecognizer(None, wrong_test_cfg)
+        recognizer.average_clip(cls_score)
+
+    with pytest.raises(ValueError):
+        wrong_test_cfg = dict(average_clips='softmax')
+        recognizer = ExampleRecognizer(None, wrong_test_cfg)
+        recognizer.average_clip(cls_score)
+
+    test_cfg = dict(average_clips='score')
+    recognizer = ExampleRecognizer(None, test_cfg)
+    score = recognizer.average_clip(cls_score)
+    assert torch.equal(score, cls_score.mean(dim=0, keepdim=True))
+
+    test_cfg = dict(average_clips='prob')
+    recognizer = ExampleRecognizer(None, test_cfg)
+    score = recognizer.average_clip(cls_score)
+    assert torch.equal(score,
+                       F.softmax(cls_score, dim=1).mean(dim=0, keepdim=True))
 
 
 def test_tsn():
@@ -48,32 +85,6 @@ def test_tsn():
         for one_img in img_list:
             recognizer(one_img, None, return_loss=False)
 
-    cls_score = torch.rand(5, 400)
-    with pytest.raises(KeyError):
-        wrong_test_cfg = dict(clip='score')
-        recognizer = build_recognizer(
-            model, train_cfg=train_cfg, test_cfg=wrong_test_cfg)
-        recognizer.average_clip(cls_score)
-
-    with pytest.raises(ValueError):
-        wrong_test_cfg = dict(average_clips='softmax')
-        recognizer = build_recognizer(
-            model, train_cfg=train_cfg, test_cfg=wrong_test_cfg)
-        recognizer.average_clip(cls_score)
-
-    test_cfg = dict(average_clips='score')
-    recognizer = build_recognizer(
-        model, train_cfg=train_cfg, test_cfg=test_cfg)
-    score = recognizer.average_clip(cls_score)
-    assert torch.equal(score, cls_score.mean(dim=0, keepdim=True))
-
-    test_cfg = dict(average_clips='prob')
-    recognizer = build_recognizer(
-        model, train_cfg=train_cfg, test_cfg=test_cfg)
-    score = recognizer.average_clip(cls_score)
-    assert torch.equal(score,
-                       F.softmax(cls_score, dim=1).mean(dim=0, keepdim=True))
-
 
 def test_i3d():
     model, train_cfg, test_cfg = _get_recognizer_cfg(
@@ -98,32 +109,6 @@ def test_i3d():
         img_list = [g[None, :] for g in imgs]
         for one_img in img_list:
             recognizer(one_img, None, return_loss=False)
-
-    cls_score = torch.rand(5, 400)
-    with pytest.raises(KeyError):
-        wrong_test_cfg = dict(clip='score')
-        recognizer = build_recognizer(
-            model, train_cfg=train_cfg, test_cfg=wrong_test_cfg)
-        recognizer.average_clip(cls_score)
-
-    with pytest.raises(ValueError):
-        wrong_test_cfg = dict(average_clips='softmax')
-        recognizer = build_recognizer(
-            model, train_cfg=train_cfg, test_cfg=wrong_test_cfg)
-        recognizer.average_clip(cls_score)
-
-    test_cfg = dict(average_clips='score')
-    recognizer = build_recognizer(
-        model, train_cfg=train_cfg, test_cfg=test_cfg)
-    score = recognizer.average_clip(cls_score)
-    assert torch.equal(score, cls_score.mean(dim=0, keepdim=True))
-
-    test_cfg = dict(average_clips='prob')
-    recognizer = build_recognizer(
-        model, train_cfg=train_cfg, test_cfg=test_cfg)
-    score = recognizer.average_clip(cls_score)
-    assert torch.equal(score,
-                       F.softmax(cls_score, dim=1).mean(dim=0, keepdim=True))
 
 
 def _demo_inputs(input_shape=(1, 3, 3, 224, 224), model_type='tsn'):
