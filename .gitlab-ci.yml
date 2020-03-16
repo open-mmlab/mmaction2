@@ -1,4 +1,4 @@
-image: registry.sensetime.com/eig-research/pytorch:pytorch1.3.1-cuda10.0-devel@sha256:d9cad5ca44aa1c5f1bfafa385d8505800264d8b0b3f5b927d0714d867c8f3be7
+image: registry.sensetime.com/eig-research/pytorch:pytorch1.3.1-cuda10.1-devel
 
 stages:
     - linting
@@ -25,12 +25,10 @@ test:
   stage: test
   script:
     - echo "Start building..."
-    - apt update && apt install -y libturbojpeg
     - conda install av -c conda-forge -y
-    - pip install PyTurboJPEG pillow==6.2.2
+    - pip install PyTurboJPEG pillow==6.2.2 scikit-learn pytest coverage
     - pip install -e .
     - python -c "import mmaction; print(mmaction.__version__)"
     - echo "Start testing..."
-    - pip install pytest coverage scikit-learn
     - coverage run --source mmaction -m pytest tests/
     - coverage report -m
