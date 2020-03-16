@@ -25,7 +25,8 @@ def build_norm_layer(cfg, num_features, postfix=''):
         name (str): abbreviation + postfix
         layer (nn.Module): created norm layer
     """
-    assert isinstance(cfg, dict) and 'type' in cfg
+    if not (isinstance(cfg, dict) and 'type' in cfg):
+        raise TypeError('cfg must be a dict containing the key "type"')
     cfg_ = cfg.copy()
 
     layer_type = cfg_.pop('type')

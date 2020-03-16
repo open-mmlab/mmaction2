@@ -1,6 +1,7 @@
 import os.path as osp
 
 from mmaction.core import mean_class_accuracy, top_k_accuracy
+from mmaction.utils import print_log
 from .base import BaseDataset
 from .registry import DATASETS
 
@@ -74,13 +75,26 @@ class VideoDataset(BaseDataset):
         gt_labels = [ann['label'] for ann in self.video_infos]
 
         for metric in metrics:
+            msg = f'Evaluating {metric}...'
+            if logger is None:
+                msg = '\n' + msg
+            print_log(msg, logger=logger)
+
             if metric == 'top_k_accuracy':
                 top_k_acc = top_k_accuracy(results, gt_labels, topk)
+                log_msg = []
                 for k, acc in zip(topk, top_k_acc):
                     eval_results[f'top{k}_acc'] = acc
+                    log_msg.append(f'\ntop{k}_acc\t{acc:.4f}')
+                log_msg = ''.join(log_msg)
+                print_log(log_msg, logger=logger)
+                continue
 
             if metric == 'mean_class_accuracy':
                 mean_acc = mean_class_accuracy(results, gt_labels)
                 eval_results['mean_class_accuracy'] = mean_acc
+                log_msg = f'\nmean_acc\t{mean_acc:.4f}'
+                print_log(log_msg, logger=logger)
+                continue
 
         return eval_results

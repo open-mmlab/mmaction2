@@ -1,7 +1,11 @@
 import argparse
+import copy
 import os
+import os.path as osp
 import random
+import time
 
+import mmcv
 import numpy as np
 import torch
 from mmcv import Config
@@ -11,7 +15,7 @@ from mmaction import __version__
 from mmaction.core import train_model
 from mmaction.datasets import build_dataset
 from mmaction.models import build_recognizer
-from mmaction.utils import get_root_logger
+from mmaction.utils import collect_env, get_root_logger
 
 
 def parse_args():
@@ -64,7 +68,6 @@ def main():
     # set cudnn_benchmark
     if cfg.get('cudnn_benchmark', False):
         torch.backends.cudnn.benchmark = True
-
     # update configs according to CLI args
     if args.work_dir is not None:
         cfg.work_dir = args.work_dir
@@ -83,10 +86,26 @@ def main():
         distributed = True
         init_dist(args.launcher, **cfg.dist_params)
 
+    # create work_dir
+    mmcv.mkdir_or_exist(osp.abspath(cfg.work_dir))
     # init logger before other steps
-    logger = get_root_logger(cfg.log_level)
+    timestamp = time.strftime('%Y%m%d_%H%M%S', time.localtime())
+    log_file = osp.join(cfg.work_dir, f'{timestamp}.log')
+    logger = get_root_logger(log_file=log_file, log_level=cfg.log_level)
+
+    # init the meta dict to record some important information such as
+    # environment info and seed, which will be logged
+    meta = dict()
+    # log env info
+    env_info_dict = collect_env()
+    env_info = '\n'.join([f'{k}: {v}' for k, v in env_info_dict.items()])
+    dash_line = '-' * 60 + '\n'
+    logger.info('Environment info:\n' + dash_line + env_info + '\n' +
+                dash_line)
+    meta['env_info'] = env_info
+
+    # log some basic info
     logger.info(f'Distributed training: {distributed}')
-    logger.info(f'MMAction-Lite Version: {__version__}')
     logger.info(f'Config: {cfg.text}')
 
     # set random seeds
@@ -99,7 +118,8 @@ def main():
 
     datasets = [build_dataset(cfg.data.train)]
     if len(cfg.workflow) == 2:
-        datasets.append(build_dataset(cfg.data.val))
+        val_dataset = copy.deepcopy(cfg.data.val)
+        datasets.append(build_dataset(val_dataset))
     if cfg.checkpoint_config is not None:
         # save mmaction version, config file content and class names in
         # checkpoints as meta data
@@ -107,14 +127,14 @@ def main():
             mmaction_version=__version__,
             config=cfg.text,
         )
-    # add an attribute for visualization convenience
     train_model(
         model,
         datasets,
         cfg,
         distributed=distributed,
         validate=args.validate,
-        logger=logger)
+        timestamp=timestamp,
+        meta=meta)
 
 
 if __name__ == '__main__':
