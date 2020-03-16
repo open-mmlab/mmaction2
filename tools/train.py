@@ -2,17 +2,15 @@ import argparse
 import copy
 import os
 import os.path as osp
-import random
 import time
 
 import mmcv
-import numpy as np
 import torch
 from mmcv import Config
 from mmcv.runner import init_dist
 
 from mmaction import __version__
-from mmaction.core import train_model
+from mmaction.core import set_random_seed, train_model
 from mmaction.datasets import build_dataset
 from mmaction.models import build_recognizer
 from mmaction.utils import collect_env, get_root_logger
@@ -36,6 +34,10 @@ def parse_args():
         '(only applicable to non-distributed training)')
     parser.add_argument('--seed', type=int, default=None, help='random seed')
     parser.add_argument(
+        '--deterministic',
+        action='store_true',
+        help='whether to set deterministic options for CUDNN backend.')
+    parser.add_argument(
         '--launcher',
         choices=['none', 'pytorch', 'slurm', 'mpi'],
         default='none',
@@ -50,15 +52,6 @@ def parse_args():
         os.environ['LOCAL_RANK'] = str(args.local_rank)
 
     return args
-
-
-def set_random_seed(seed):
-    random.seed(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)
-    os.environ['PYTHONHASHSEED'] = str(seed)
 
 
 def main():
@@ -110,8 +103,10 @@ def main():
 
     # set random seeds
     if args.seed is not None:
-        logger.info(f'Set random seed to {args.seed}')
-        set_random_seed(args.seed)
+        logger.info('Set random seed to {}, deterministic: {}'.format(
+            args.seed, args.deterministic))
+        set_random_seed(args.seed, deterministic=args.deterministic)
+    cfg.seed = args.seed
 
     model = build_recognizer(
         cfg.model, train_cfg=cfg.train_cfg, test_cfg=cfg.test_cfg)

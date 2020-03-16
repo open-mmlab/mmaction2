@@ -1,6 +1,9 @@
+import os
+import random
 import re
 from collections import OrderedDict
 
+import numpy as np
 import torch
 from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
 from mmcv.runner import DistSamplerSeedHook, Runner, obj_from_dict
@@ -9,6 +12,41 @@ from mmaction.core import (DistEvalHook, DistOptimizerHook, EvalHook,
                            Fp16OptimizerHook)
 from mmaction.datasets import build_dataloader, build_dataset
 from mmaction.utils import get_root_logger
+
+
+def set_random_seed(seed, deterministic=False):
+    """Set random seed.
+
+    Args:
+        seed (int): Seed to be used.
+        deterministic (bool): Whether to set the deterministic option for
+            CUDNN backend, i.e., set `torch.backends.cudnn.deterministic`
+            to True and `torch.backends.cudnn.benchmark` to False.
+            Default: False.
+    """
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    if deterministic:
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+
+
+def worker_init_fn(worker_id):
+    """Worker initialization function in dataloader for determinstic data loading.
+
+    Args:
+        worker_id (int): ID for each worker which is given by dataloader.
+    """
+    worker_seed = GLOBAL_SEED + worker_id
+    random.seed(worker_seed)
+    np.random.seed(worker_seed)
+    torch.manual_seed(worker_seed)
+    torch.cuda.manual_seed(worker_seed)
+    os.environ['PYTHONHASHSEED'] = str(worker_seed)
 
 
 def parse_losses(losses):
@@ -199,8 +237,11 @@ def _dist_train(model,
     dataset = dataset if isinstance(dataset, (list, tuple)) else [dataset]
     data_loaders = [
         build_dataloader(
-            ds, cfg.data.videos_per_gpu, cfg.data.workers_per_gpu, dist=True)
-        for ds in dataset
+            ds,
+            cfg.data.videos_per_gpu,
+            cfg.data.workers_per_gpu,
+            dist=True,
+            seed=cfg.seed) for ds in dataset
     ]
     # put model on gpus
     find_unused_parameters = cfg.get('find_unused_parameters', False)
@@ -274,13 +315,15 @@ def _non_dist_train(model,
     """
     # prepare data loaders
     dataset = dataset if isinstance(dataset, (list, tuple)) else [dataset]
+    global GLOBAL_SEED
+    GLOBAL_SEED = random.randint(cfg.gpus) if cfg.seed is None else cfg.seed
     data_loaders = [
         build_dataloader(
             ds,
             cfg.data.videos_per_gpu,
             cfg.data.workers_per_gpu,
-            cfg.gpus,
-            dist=False) for ds in dataset
+            dist=True,
+            seed=cfg.seed) for ds in dataset
     ]
     # put model on gpus
     model = MMDataParallel(model, device_ids=range(cfg.gpus)).cuda()
