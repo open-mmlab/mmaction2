@@ -1,3 +1,4 @@
+import io
 import os.path as osp
 
 import mmcv
@@ -148,10 +149,16 @@ class PyAVDecode(object):
     Attributes:
         multi_thread (bool): If set to True, it will apply multi
             thread processing. Default: False.
+        io_backend (str): io backend where frames are store.
+            Default: 'disk'.
+        kwargs (dict): Args for file client.
     """
 
-    def __init__(self, multi_thread=False):
+    def __init__(self, multi_thread=False, io_backend='disk', **kwargs):
         self.multi_thread = multi_thread
+        self.io_backend = io_backend
+        self.kwargs = kwargs
+        self.file_client = None
 
     def __call__(self, results):
         try:
@@ -160,7 +167,11 @@ class PyAVDecode(object):
             raise ImportError('Please run "conda install av -c conda-forge" '
                               'or "pip install av" to install PyAV first.')
 
-        container = av.open(results['filename'])
+        if self.file_client is None:
+            self.file_client = FileClient(self.io_backend, **self.kwargs)
+
+        file_obj = io.BytesIO(self.file_client.get(results['filename']))
+        container = av.open(file_obj)
 
         imgs = list()
 
