@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+ARGPARSE_DESCRIPTION="Train recognizer on slurm cluster"
+source $(dirname $0)/argparse.bash || exit 1
+argparse "$@" <<EOF || exit 1
+parser.add_argument('-p', '--partition', default='${PARTITION:-""}', type=str,
+                    help='partition (default: env PARTITION)')
+parser.add_argument('--gpus', default=${GPUS:-8}, type=int,
+                    help='number of gpus to use (default: env GPUS, or 8)')
+parser.add_argument('--gpus_per_node', default=${GPUS_PER_NODE:-8}, type=int,
+                    help='gpus per node (default: env GPUS_PER_NODE, or 8)')
+parser.add_argument('--cpus_per_task', default=${CPUS_PER_TASK:-5}, type=int,
+                    help='cpus per task (default: env CPUS_PER_TASK, or 5)')
+parser.add_argument('-j', '--job_name', default='', type=str,
+                    help='name of job (default: config filename)')
+parser.add_argument('--srun_args', default='${SRUN_ARGS:-""}', type=str,
+                    help='extra args for srun (default: env SRUN_ARGS)')
+parser.add_argument('config', type=str,
+                    help='config file')
+parser.add_argument('py_args', nargs=argparse.REMAINDER,
+                    help='extra args to tools/train.py (can be empty)')
+EOF
+
+BARECONFIG="${CONFIG##*/}"
+JOB_NAME="${JOB_NAME:-${BARECONFIG%.*}}"
+
+echo partition: "${PARTITION}"
+echo jobname: "${JOB_NAME}"
+echo config: "${CONFIG}"
+echo gpus: "${GPUS}"
+echo gpus per node: "${GPUS_PER_NODE}"
+echo cpus per task: "${CPUS_PER_TASK}"
+echo srun args: "${SRUN_ARGS[@]}"
+echo py args: "${PY_ARGS[@]}"
+echo command to run:
+echo ----
+echo srun -p "${PARTITION}" \
+    --job-name="${JOB_NAME}" \
+    --gres=gpu:${GPUS_PER_NODE} \
+    --ntasks=${GPUS} \
+    --ntasks-per-node=${GPUS_PER_NODE} \
+    --cpus-per-task=${CPUS_PER_TASK} \
+    --kill-on-bad-exit=1 \
+    ${SRUN_ARGS} \
+    python -u tools/train.py ${CONFIG} --launcher="slurm" ${PY_ARGS[@]}
+echo ----
+echo
+srun -p "${PARTITION}" \
+    --job-name="${JOB_NAME}" \
+    --gres=gpu:${GPUS_PER_NODE} \
+    --ntasks=${GPUS} \
+    --ntasks-per-node=${GPUS_PER_NODE} \
+    --cpus-per-task=${CPUS_PER_TASK} \
+    --kill-on-bad-exit=1 \
+    ${SRUN_ARGS} \
+    python -u tools/train.py ${CONFIG} --launcher="slurm" ${PY_ARGS[@]}
