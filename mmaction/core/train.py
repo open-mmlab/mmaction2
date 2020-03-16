@@ -63,7 +63,8 @@ def train_model(model,
                 cfg,
                 distributed=False,
                 validate=False,
-                logger=None):
+                timestamp=None,
+                meta=None):
     """train model entry function.
 
     Args:
@@ -75,14 +76,27 @@ def train_model(model,
         validate (bool): Whether to do evaluation. Default: False.
         logger (logging.Logger | None): Logger for training. Default: None
     """
-    if logger is None:
-        logger = get_root_logger(cfg.log_level)
+    logger = get_root_logger(cfg.log_level)
 
     # start training
     if distributed:
-        _dist_train(model, dataset, cfg, validate=validate)
+        _dist_train(
+            model,
+            dataset,
+            cfg,
+            validate=validate,
+            logger=logger,
+            timestamp=timestamp,
+            meta=meta)
     else:
-        _non_dist_train(model, dataset, cfg, validate=validate)
+        _non_dist_train(
+            model,
+            dataset,
+            cfg,
+            validate=validate,
+            logger=logger,
+            timestamp=timestamp,
+            meta=meta)
 
 
 def build_optimizer(model, optimizer_cfg):
@@ -165,7 +179,13 @@ def build_optimizer(model, optimizer_cfg):
         return optimizer_cls(params, **optimizer_cfg)
 
 
-def _dist_train(model, dataset, cfg, validate=False):
+def _dist_train(model,
+                dataset,
+                cfg,
+                validate=False,
+                logger=None,
+                timestamp=None,
+                meta=None):
     """Distributed training function.
 
     Args:
@@ -183,15 +203,26 @@ def _dist_train(model, dataset, cfg, validate=False):
         for ds in dataset
     ]
     # put model on gpus
+    find_unused_parameters = cfg.get('find_unused_parameters', False)
+    # Sets the `find_unused_parameters` parameter in
+    # torch.nn.parallel.DistributedDataParallel
     model = MMDistributedDataParallel(
         model.cuda(),
         device_ids=[torch.cuda.current_device()],
-        broadcast_buffers=False)
+        broadcast_buffers=False,
+        find_unused_parameters=find_unused_parameters)
 
     # build runner
     optimizer = build_optimizer(model, cfg.optimizer)
-    runner = Runner(model, batch_processor, optimizer, cfg.work_dir,
-                    cfg.log_level)
+    runner = Runner(
+        model,
+        batch_processor,
+        optimizer,
+        cfg.work_dir,
+        logger=logger,
+        meta=meta)
+    # an ugly walkaround to make the .log and .log.json filenames the same
+    runner.timestamp = timestamp
 
     # fp16 setting
     fp16_cfg = cfg.get('fp16', None)
@@ -225,7 +256,13 @@ def _dist_train(model, dataset, cfg, validate=False):
     runner.run(data_loaders, cfg.workflow, cfg.total_epochs)
 
 
-def _non_dist_train(model, dataset, cfg, validate=False):
+def _non_dist_train(model,
+                    dataset,
+                    cfg,
+                    validate=False,
+                    logger=None,
+                    timestamp=None,
+                    meta=None):
     """Non-Distributed training function.
 
     Args:
@@ -250,8 +287,16 @@ def _non_dist_train(model, dataset, cfg, validate=False):
 
     # build runner
     optimizer = build_optimizer(model, cfg.optimizer)
-    runner = Runner(model, batch_processor, optimizer, cfg.work_dir,
-                    cfg.log_level)
+    runner = Runner(
+        model,
+        batch_processor,
+        optimizer,
+        cfg.work_dir,
+        logger=logger,
+        meta=meta)
+    # an ugly walkaround to make the .log and .log.json filenames the same
+    runner.timestamp = timestamp
+
     # fp16 setting
     fp16_cfg = cfg.get('fp16', None)
     if fp16_cfg is not None:
