@@ -83,7 +83,7 @@ def multi_gpu_test(model, data_loader, tmpdir=None, gpu_collect=True):
 def collect_results_cpu(result_part, size, tmpdir=None):
     """Collect results in cpu mode.
 
-    it saves the results on different gpus to 'tmpdir' and collects
+    It saves the results on different gpus to 'tmpdir' and collects
     them by the rank 0 worker.
 
     Args:
@@ -139,7 +139,7 @@ def collect_results_cpu(result_part, size, tmpdir=None):
 def collect_results_gpu(result_part, size):
     """Collect results in gpu mode.
 
-    it encodes results to gpu tensors and use gpu communication for results
+    It encodes results to gpu tensors and use gpu communication for results
     collection.
 
     Args:

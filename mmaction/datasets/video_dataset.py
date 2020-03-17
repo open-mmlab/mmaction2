@@ -51,6 +51,8 @@ class VideoDataset(BaseDataset):
             logger (obj): Training logger. Defaults: None.
             topk (tuple[int]): K value for top_k_accuracy metric.
                 Defaults: (1, 5).
+            logger (logging.Logger | None): Logger for recording.
+                Default: None.
 
         Return:
             eval_results (dict): Evaluation results dict.

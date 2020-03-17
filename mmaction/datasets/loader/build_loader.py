@@ -44,9 +44,9 @@ def build_dataloader(dataset,
         shuffle (bool): Whether to shuffle the data at every epoch.
             Default: True.
         seed (int | None): Seed to be used. Default: None.
-        pin_memory (bool): Whether to use pin_memory in dataloader.
-            Default: True.
-        kwargs (option): Any keyword argument to be used to initialize
+        pin_memory (bool): Whether to use pin_memory in DataLoader.
+            Default: True
+        kwargs (dict, optional): Any keyword argument to be used to initialize
             DataLoader.
 
     Returns:

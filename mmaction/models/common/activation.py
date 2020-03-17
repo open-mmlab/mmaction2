@@ -17,7 +17,7 @@ def build_activation_layer(cfg):
     Args:
         cfg (dict): cfg should contain:
             type (str): Identify activation layer type.
-            layer args: args needed to instantiate a activation layer.
+            layer args: Args needed to instantiate a activation layer.
     Returns:
         layer (nn.Module): Created activation layer
     """

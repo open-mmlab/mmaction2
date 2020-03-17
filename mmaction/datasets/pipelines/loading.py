@@ -274,13 +274,14 @@ class OpenCVDecode(object):
 class FrameSelector(object):
     """Select raw frames with given indices
 
-    Required keys are "file_dir", "filename_tmpl" and "frame_inds",
+    Required keys are "frame_dir", "filename_tmpl" and "frame_inds",
     added or modified keys are "imgs" and "ori_shape".
 
     Attributes:
-        io_backend (str): io backend where frames are store.
-            Default: 'disk'.
-        kwargs (dict): Args for file client.
+        io_backend (str): IO backend where frames are stored. Default: 'disk'.
+        decoding_backend (str): Backend used for image decoding.
+            Default: 'cv2'.
+        kwargs (dict, optional): Arguments for FileClient.
     """
 
     def __init__(self, io_backend='disk', decoding_backend='cv2', **kwargs):

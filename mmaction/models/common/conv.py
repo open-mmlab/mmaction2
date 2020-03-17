@@ -14,7 +14,7 @@ def build_conv_layer(cfg, *args, **kwargs):
     Args:
         cfg (None or dict): cfg should contain:
             type (str): identify conv layer type.
-            layer args: args needed to instantiate a conv layer.
+            layer args: Args needed to instantiate a conv layer.
 
     Returns:
         layer (nn.Module): Created conv layer

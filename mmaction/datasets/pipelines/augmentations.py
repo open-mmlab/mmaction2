@@ -117,7 +117,7 @@ class Resize(object):
             Otherwise, it serves as (w, h) of output size.
         keep_ratio (bool): If set to True, Images will be resized without
             changing the aspect ratio. Otherwise, it will resize images to a
-            given size.
+            given size. Default: True.
         interpolation (str): Algorithm used for interpolation:
             "nearest" | "bilinear". Default: "bilinear".
     """
@@ -229,6 +229,7 @@ class Normalize(object):
         mean (Sequence[float]): Mean values of different channels.
         std (Sequence[float]): Std values of different channels.
         to_bgr (bool): Whether to convert channels from RGB to BGR.
+            Default: False.
     """
 
     def __init__(self, mean, std, to_bgr=False):
