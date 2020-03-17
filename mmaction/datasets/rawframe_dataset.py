@@ -87,6 +87,8 @@ class RawframeDataset(BaseDataset):
             logger (obj): Training logger. Defaults: None.
             topk (int | tuple[int]): K value for top_k_accuracy metric.
                 Defaults: (1, 5).
+            logger (logging.Logger | None): Logger for recording.
+                Default: None.
 
         return:
             eval_results (dict): Evaluation results dict.

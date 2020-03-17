@@ -43,7 +43,7 @@ def parse_losses(losses):
 
     Returns:
         loss (float): Sum of the total loss.
-        log_vars (dict): loss dict for different variants.
+        log_vars (dict): Loss dict for different variants.
     """
     log_vars = OrderedDict()
     for loss_name, loss_value in losses.items():
@@ -68,10 +68,11 @@ def batch_processor(model, data, train_mode):
 
     Args:
         model (nn.Module): The model to be trained.
-        data (dict): input data for training model.
+        data (dict): Input data for training model.
+        train_mode (bool): Store True when training model.
 
     Returns:
-        dict: output for training model.
+        dict: Output for training model.
     """
     losses = model(**data)
     loss, log_vars = parse_losses(losses)
@@ -98,7 +99,9 @@ def train_model(model,
         distributed (bool): Whether to use distributed training.
             Default: False.
         validate (bool): Whether to do evaluation. Default: False.
-        logger (logging.Logger | None): Logger for training. Default: None
+        timestamp (str | None): Local time for runner. Default: None.
+        meta (dict | None): Meta dict to record some important information.
+            Default: None
     """
     logger = get_root_logger(cfg.log_level)
 
@@ -216,8 +219,11 @@ def _dist_train(model,
         model (nn.Module): The model to be trained.
         dataset (Dataset): Train dataset.
         cfg (dict): The config dict for training.
-        validate (bool): Whether to do evaluation.
-            Default: False.
+        validate (bool): Whether to do evaluation. Default: False.
+        logger (logging.Logger | None): Logger for training. Default: None.
+        timestamp (str | None): Local time for runner. Default: None.
+        meta (dict | None): Meta dict to record some important information.
+            Default: None.
     """
     # prepare data loaders
     dataset = dataset if isinstance(dataset, (list, tuple)) else [dataset]
@@ -296,8 +302,11 @@ def _non_dist_train(model,
         model (nn.Module): The model to be trained.
         dataset (Dataset): Train dataset.
         cfg (dict): The config dict for training.
-        validate (bool): Whether to do evaluation.
-            Default: False.
+        validate (bool): Whether to do evaluation. Default: False.
+        logger (logging.Logger | None): Logger for training. Default: None.
+        timestamp (str | None): Local time for runner. Default: None.
+        meta (dict | None): Meta dict to record some important information.
+            Default: None.
     """
     # prepare data loaders
     dataset = dataset if isinstance(dataset, (list, tuple)) else [dataset]

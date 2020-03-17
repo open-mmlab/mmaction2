@@ -17,7 +17,7 @@ class EvalHook(Hook):
             processes. Default: None.
         gpu_collect (bool): Whether to use gpu or cpu to collect results.
             Default: False.
-        eval_kwargs (option): Arguments for evaluation.
+        eval_kwargs (dict, optional): Arguments for evaluation.
     """
 
     def __init__(self,

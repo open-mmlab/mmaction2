@@ -14,16 +14,16 @@ def build_norm_layer(cfg, num_features, postfix=''):
 
     Args:
         cfg (dict): cfg should contain:
-            type (str): identify norm layer type.
-            layer args: args needed to instantiate a norm layer.
-            requires_grad (bool): [optional] whether stop gradient updates
-        num_features (int): number of channels from input.
-        postfix (int, str): appended into norm abbreviation to
+            type (str): Identify norm layer type.
+            layer args: Args needed to instantiate a norm layer.
+            requires_grad (bool): [optional] Whether stop gradient updates
+        num_features (int): Number of channels from input.
+        postfix (int, str): Appended into norm abbreviation to
             create named layer.
 
     Returns:
         name (str): abbreviation + postfix
-        layer (nn.Module): created norm layer
+        layer (nn.Module): Created norm layer
     """
     if not (isinstance(cfg, dict) and 'type' in cfg):
         raise TypeError('cfg must be a dict containing the key "type"')

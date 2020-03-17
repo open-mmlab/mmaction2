@@ -99,8 +99,9 @@ class FileClient(object):
 
     Attributes:
         backend (str): The storage backend type. Options are "disk", "ceph" and
-            "memcached".
+            "memcached". Default: 'disk'
         client (:obj:`BaseStorageBackend`): The backend object.
+        kwargs (dict, optional): Arguments for backends.
     """
 
     _backends = {
