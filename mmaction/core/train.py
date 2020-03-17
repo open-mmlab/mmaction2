@@ -35,20 +35,6 @@ def set_random_seed(seed, deterministic=False):
         torch.backends.cudnn.benchmark = False
 
 
-def worker_init_fn(worker_id):
-    """Worker initialization function in dataloader for determinstic data loading.
-
-    Args:
-        worker_id (int): ID for each worker which is given by dataloader.
-    """
-    worker_seed = GLOBAL_SEED + worker_id
-    random.seed(worker_seed)
-    np.random.seed(worker_seed)
-    torch.manual_seed(worker_seed)
-    torch.cuda.manual_seed(worker_seed)
-    os.environ['PYTHONHASHSEED'] = str(worker_seed)
-
-
 def parse_losses(losses):
     """Parse losses dict for different loss variants.
 
@@ -315,8 +301,6 @@ def _non_dist_train(model,
     """
     # prepare data loaders
     dataset = dataset if isinstance(dataset, (list, tuple)) else [dataset]
-    global GLOBAL_SEED
-    GLOBAL_SEED = random.randint(cfg.gpus) if cfg.seed is None else cfg.seed
     data_loaders = [
         build_dataloader(
             ds,
