@@ -203,6 +203,7 @@ class PyAVDecode(object):
     def __repr__(self):
         repr_str = self.__class__.__name__
         repr_str += f'(multi_thread={self.multi_thread})'
+        return repr_str
 
 
 @PIPELINES.register_module
