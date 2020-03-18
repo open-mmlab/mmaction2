@@ -165,6 +165,15 @@ class TestAugumentations(object):
 
         imgs = np.random.rand(2, 64, 64, 3)
         results = dict(imgs=imgs.copy())
+        flip = Flip(flip_ratio=0, direction='horizontal')
+        flip_results = flip(results)
+        assert self.check_keys_contain(flip_results.keys(), target_keys)
+        assert np.equal(imgs, results['imgs']).all()
+        assert id(flip_results['imgs']) == id(results['imgs'])
+        assert flip_results['imgs'].shape == imgs.shape
+
+        imgs = np.random.rand(2, 64, 64, 3)
+        results = dict(imgs=imgs.copy())
         flip = Flip(flip_ratio=1, direction='horizontal')
         flip_results = flip(results)
         assert self.check_keys_contain(flip_results.keys(), target_keys)
@@ -260,6 +269,17 @@ class TestAugumentations(object):
 
         with pytest.raises(TypeError):
             ThreeCrop([224, 224])
+
+        imgs = np.random.rand(2, 240, 120, 3)
+        results = dict(imgs=imgs)
+        three_crop = ThreeCrop(crop_size=120)
+        three_crop_results = three_crop(results)
+
+        target_keys = ['imgs', 'crop_bbox', 'img_shape']
+        assert self.check_keys_contain(three_crop_results.keys(), target_keys)
+        assert self.check_crop(three_crop_results['img_shape'],
+                               three_crop_results['crop_bbox'][0])
+        assert three_crop_results['img_shape'] == (120, 120)
 
         imgs = np.random.rand(2, 224, 224, 3)
         results = dict(imgs=imgs)
