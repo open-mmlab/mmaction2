@@ -1,19 +1,15 @@
-import logging
 import os.path as osp
 import subprocess
 import sys
 from collections import defaultdict
-from tempfile import NamedTemporaryFile
-from unittest.mock import MagicMock
 
 import cv2
 import mmcv
-import pytest
 import torch
 import torchvision
 
 import mmaction
-from mmaction.utils import collect_env, get_root_logger, print_log
+from mmaction.utils import collect_env
 
 
 def test_collect_env():
@@ -68,31 +64,3 @@ def test_collect_env():
 
     assert env_info['MMCV'] == mmcv.__version__
     assert env_info['MMAction'] == mmaction.__version__
-
-
-def test_logger():
-    logger = get_root_logger()
-    assert logger.name == 'mmaction'
-    assert logger.level == 0
-
-    with NamedTemporaryFile('w+t') as f:
-        logger = get_root_logger(log_file=f.name)
-        assert logger.handlers == []
-
-    with pytest.raises(TypeError):
-        print_log('test', 'logger')
-
-    print_log('test')
-    print_log('test', 'root')
-    with NamedTemporaryFile('w+t') as f:
-        logger = get_root_logger(f.name)
-        print_log('test', logger)
-
-    # print with input logger
-    test_logger = MagicMock(spec=logging.Logger)
-    test_logger.log = MagicMock()
-    print_log('Example output.', test_logger)
-    test_logger.log.assert_called_with(logging.INFO, 'Example output.')
-
-    # silent print
-    print_log('Example output.', 'silent')
