@@ -1,8 +1,9 @@
 import copy
 import os.path as osp
 
+from mmcv.utils import print_log
+
 from mmaction.core import mean_class_accuracy, top_k_accuracy
-from mmaction.utils import print_log
 from .base import BaseDataset
 from .registry import DATASETS
 
