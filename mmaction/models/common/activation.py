@@ -7,8 +7,9 @@ activation_cfg = {
     'PReLU': nn.PReLU,
     'RReLU': nn.RReLU,
     'ReLU6': nn.ReLU6,
-    'SELU': nn.SELU,
-    'CELU': nn.CELU
+    # TODO: add support for SELU and CELU
+    # 'SELU': nn.SELU,
+    # 'CELU': nn.CELU
 }
 
 
