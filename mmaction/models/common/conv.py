@@ -1,8 +1,12 @@
 import torch.nn as nn
 
+from .conv2plus1d import Conv2plus1d
+
 conv_cfg = {
     'Conv': nn.Conv2d,
-    'Conv3d': nn.Conv3d
+    'Conv1d': nn.Conv1d,
+    'Conv3d': nn.Conv3d,
+    'Conv(2+1)d': Conv2plus1d
     # 'ConvWS': ConvWS2d,
     # TODO: octave conv
 }

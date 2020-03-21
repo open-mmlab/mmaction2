@@ -11,14 +11,14 @@ from .norm import build_norm_layer
 class ConvModule(nn.Module):
     """A conv block that contains conv/norm/activation layers.
 
-    Args:
-        in_channels (int): Same as nn.Conv2d.
-        out_channels (int): Same as nn.Conv2d.
-        kernel_size (int or tuple[int]): Same as nn.Conv2d.
-        stride (int or tuple[int]): Same as nn.Conv2d.
-        padding (int or tuple[int]): Same as nn.Conv2d.
-        dilation (int or tuple[int]): Same as nn.Conv2d.
-        groups (int): Same as nn.Conv2d.
+    Attributes:
+        in_channels (int): Same as nn.Conv*d.
+        out_channels (int): Same as nn.Conv*d.
+        kernel_size (int or tuple[int]): Same as nn.Conv*d.
+        stride (int or tuple[int]): Same as nn.Conv*d.
+        padding (int or tuple[int]): Same as nn.Conv*d.
+        dilation (int or tuple[int]): Same as nn.Conv*d.
+        groups (int): Same as nn.Conv*d.
         bias (bool or str): If specified as `auto`, it will be decided by the
             norm_cfg. Bias will be set as True if norm_cfg is None, otherwise
             False.
@@ -68,6 +68,10 @@ class ConvModule(nn.Module):
             warnings.warn('ConvModule has norm and bias at the same time')
 
         # build convolution layer
+        if self.conv_cfg and self.conv_cfg['type'] == 'Conv(2+1)d':
+            kwargs = dict(norm_cfg=norm_cfg)
+        else:
+            kwargs = dict()
         self.conv = build_conv_layer(
             conv_cfg,
             in_channels,
@@ -77,8 +81,9 @@ class ConvModule(nn.Module):
             padding=padding,
             dilation=dilation,
             groups=groups,
-            bias=bias)
-        # export the attributes of self.conv to a higher level for convenience
+            bias=bias,
+            **kwargs)
+
         self.in_channels = self.conv.in_channels
         self.out_channels = self.conv.out_channels
         self.kernel_size = self.conv.kernel_size
@@ -113,11 +118,12 @@ class ConvModule(nn.Module):
         return getattr(self, self.norm_name)
 
     def init_weights(self):
-        if self.with_activation and self.act_cfg['type'] == 'LeakyReLU':
-            nonlinearity = 'leaky_relu'
-        else:
-            nonlinearity = 'relu'
-        kaiming_init(self.conv, nonlinearity=nonlinearity)
+        if not hasattr(self.conv, 'init_weights'):
+            if self.with_activation and self.act_cfg['type'] == 'LeakyReLU':
+                nonlinearity = 'leaky_relu'
+            else:
+                nonlinearity = 'relu'
+            kaiming_init(self.conv, nonlinearity=nonlinearity)
         if self.with_norm:
             constant_init(self.norm, 1, bias=0)
 

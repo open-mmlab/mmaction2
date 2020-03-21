@@ -135,7 +135,7 @@ def test_conv_module():
         ConvModule(3, 8, 2, norm_cfg=norm_cfg)
 
     with pytest.raises(AssertionError):
-        # order must be tuple
+        # order elements must be ('conv', 'norm', 'act')
         order = ['conv', 'norm', 'act']
         ConvModule(3, 8, 2, order=order)
 
@@ -158,11 +158,19 @@ def test_conv_module():
     output = self.forward(x)
     assert output.shape == torch.Size([1, 8, 255, 255])
 
-    norm_cfg = dict(type='BN')
+    norm_cfg = dict(type='BN3d')
     act_cfg = dict(type='LeakyReLU')
+    conv_cfg = dict(type='Conv(2+1)d')
     order = ('norm', 'conv', 'act')
-    self = ConvModule(3, 8, 2, norm_cfg=norm_cfg, act_cfg=act_cfg, order=order)
+    self = ConvModule(
+        3,
+        8,
+        2,
+        conv_cfg=conv_cfg,
+        norm_cfg=norm_cfg,
+        act_cfg=act_cfg,
+        order=order)
     self.init_weights()
-    x = torch.rand(1, 3, 256, 256)
+    x = torch.rand(1, 3, 8, 256, 256)
     output = self.forward(x)
-    assert output.shape == torch.Size([1, 8, 255, 255])
+    assert output.shape == torch.Size([1, 8, 7, 255, 255])
