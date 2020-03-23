@@ -188,91 +188,6 @@ class Bottleneck3d(nn.Module):
         return out
 
 
-def make_res_layer(block,
-                   inplanes,
-                   planes,
-                   blocks,
-                   spatial_stride=1,
-                   temporal_stride=1,
-                   dilation=1,
-                   style='pytorch',
-                   inflate=1,
-                   inflate_style='3x1x1',
-                   norm_cfg=None,
-                   with_cp=False):
-    """Build residual layer for ResNet3D.
-
-    Args:
-        block (nn.Module): Residual module to be built.
-        inplanes (int): Number of channels for the input feature in each block.
-        planes (int): Number of channels for the output feature in each block.
-        blocks (int): Number of residual blocks.
-        spatial_stride (int | Sequence[int]): Spatial strides in residual and
-            conv layers. Default: 1.
-        temporal_stride (int | Sequence[int]): Temporal strides in residual and
-            conv layers. Default: 1.
-        dilation (int): Spacing between kernel elements. Default: 1.
-        style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
-            layer is the 3x3 conv layer, otherwise the stride-two layer is
-            the first 1x1 conv layer. Default: 'pytorch'.
-        inflate (int | Sequence[int]): Determine whether to inflate for each
-            block. Default: 1.
-        inflate_style (str): `3x1x1` or `1x1x1`. which determines the kernel
-            sizes and padding strides for conv1 and conv2 in each block.
-            Default: '3x1x1'.
-        norm_cfg (dict): Config for norm layers. Default: None.
-        with_cp (bool): Use checkpoint or not. Using checkpoint will save
-            some memory while slowing down the training speed. Default: False.
-
-    Returns:
-        A residual layer for the given config.
-    """
-    inflate = inflate if not isinstance(inflate, int) else (inflate, ) * blocks
-    assert len(inflate) == blocks
-    downsample = None
-    if spatial_stride != 1 or inplanes != planes * block.expansion:
-        downsample = nn.Sequential(
-            nn.Conv3d(
-                inplanes,
-                planes * block.expansion,
-                kernel_size=1,
-                stride=(temporal_stride, spatial_stride, spatial_stride),
-                bias=False),
-            nn.BatchNorm3d(planes * block.expansion),
-        )
-
-    layers = []
-    layers.append(
-        block(
-            inplanes,
-            planes,
-            spatial_stride,
-            temporal_stride,
-            dilation,
-            downsample,
-            style=style,
-            inflate=(inflate[0] == 1),
-            inflate_style=inflate_style,
-            norm_cfg=norm_cfg,
-            with_cp=with_cp))
-    inplanes = planes * block.expansion
-    for i in range(1, blocks):
-        layers.append(
-            block(
-                inplanes,
-                planes,
-                1,
-                1,
-                dilation,
-                style=style,
-                inflate=(inflate[i] == 1),
-                inflate_style=inflate_style,
-                norm_cfg=norm_cfg,
-                with_cp=with_cp))
-
-    return nn.Sequential(*layers)
-
-
 @BACKBONES.register_module
 class ResNet3d(nn.Module):
     """ResNet 3d backbone.
@@ -283,6 +198,7 @@ class ResNet3d(nn.Module):
         pretrained2d (bool): Whether to load pretrained 2D model.
             Default: True.
         in_channels (int): Channel num of input features. Default: 3.
+        base_channels (int): Channel num of stem output features. Default: 64.
         num_stages (int): Resnet stages. Default: 4.
         spatial_strides (Sequence[int]):
             Spatial strides of residual blocks of each stage.
@@ -327,6 +243,7 @@ class ResNet3d(nn.Module):
                  pretrained2d=True,
                  in_channels=3,
                  num_stages=4,
+                 base_channels=64,
                  spatial_strides=(1, 2, 2, 2),
                  temporal_strides=(1, 1, 1, 1),
                  dilations=(1, 1, 1, 1),
@@ -349,6 +266,7 @@ class ResNet3d(nn.Module):
         self.pretrained = pretrained
         self.pretrained2d = pretrained2d
         self.in_channels = in_channels
+        self.base_channels = base_channels
         self.num_stages = num_stages
         assert num_stages >= 1 and num_stages <= 4
         self.spatial_strides = spatial_strides
@@ -370,7 +288,7 @@ class ResNet3d(nn.Module):
 
         self.block, stage_blocks = self.arch_settings[depth]
         self.stage_blocks = stage_blocks[:num_stages]
-        self.inplanes = 64
+        self.inplanes = self.base_channels
 
         self._make_stem_layer()
 
@@ -379,8 +297,8 @@ class ResNet3d(nn.Module):
             spatial_stride = spatial_strides[i]
             temporal_stride = temporal_strides[i]
             dilation = dilations[i]
-            planes = 64 * 2**i
-            res_layer = make_res_layer(
+            planes = self.base_channels * 2**i
+            res_layer = self.make_res_layer(
                 self.block,
                 self.inplanes,
                 planes,
@@ -398,8 +316,98 @@ class ResNet3d(nn.Module):
             self.add_module(layer_name, res_layer)
             self.res_layers.append(layer_name)
 
-        self.feat_dim = self.block.expansion * 64 * 2**(
+        self.feat_dim = self.block.expansion * self.base_channels * 2**(
             len(self.stage_blocks) - 1)
+
+    def make_res_layer(self,
+                       block,
+                       inplanes,
+                       planes,
+                       blocks,
+                       spatial_stride=1,
+                       temporal_stride=1,
+                       dilation=1,
+                       style='pytorch',
+                       inflate=1,
+                       inflate_style='3x1x1',
+                       norm_cfg=None,
+                       with_cp=False):
+        """Build residual layer for ResNet3D.
+
+        Args:
+            block (nn.Module): Residual module to be built.
+            inplanes (int): Number of channels for the input feature
+                in each block.
+            planes (int): Number of channels for the output feature
+                in each block.
+            blocks (int): Number of residual blocks.
+            spatial_stride (int | Sequence[int]): Spatial strides in
+                residual and conv layers. Default: 1.
+            temporal_stride (int | Sequence[int]): Temporal strides in
+                residual and conv layers. Default: 1.
+            dilation (int): Spacing between kernel elements. Default: 1.
+            style (str): `pytorch` or `caffe`. If set to "pytorch",
+                the stride-two layer is the 3x3 conv layer, otherwise
+                the stride-two layer is the first 1x1 conv layer.
+                Default: 'pytorch'.
+            inflate (int | Sequence[int]): Determine whether to inflate
+                for each block. Default: 1.
+            inflate_style (str): `3x1x1` or `1x1x1`. which determines
+                the kernel sizes and padding strides for conv1 and conv2
+                in each block. Default: '3x1x1'.
+            norm_cfg (dict): Config for norm layers. Default: None.
+            with_cp (bool): Use checkpoint or not. Using checkpoint will save
+                some memory while slowing down the training speed.
+                Default: False.
+
+        Returns:
+            A residual layer for the given config.
+        """
+        inflate = inflate if not isinstance(inflate,
+                                            int) else (inflate, ) * blocks
+        assert len(inflate) == blocks
+        downsample = None
+        if spatial_stride != 1 or inplanes != planes * block.expansion:
+            downsample = nn.Sequential(
+                nn.Conv3d(
+                    inplanes,
+                    planes * block.expansion,
+                    kernel_size=1,
+                    stride=(temporal_stride, spatial_stride, spatial_stride),
+                    bias=False),
+                nn.BatchNorm3d(planes * block.expansion),
+            )
+
+        layers = []
+        layers.append(
+            block(
+                inplanes,
+                planes,
+                spatial_stride,
+                temporal_stride,
+                dilation,
+                downsample,
+                style=style,
+                inflate=(inflate[0] == 1),
+                inflate_style=inflate_style,
+                norm_cfg=norm_cfg,
+                with_cp=with_cp))
+        inplanes = planes * block.expansion
+        for i in range(1, blocks):
+            layers.append(
+                block(
+                    inplanes,
+                    planes,
+                    1,
+                    1,
+                    dilation,
+                    style=style,
+                    inflate=(inflate[i] == 1),
+                    inflate_style=inflate_style,
+                    norm_cfg=norm_cfg,
+                    with_cp=with_cp))
+
+        return nn.Sequential(*layers)
 
     @property
     def norm1(self):
@@ -443,12 +451,13 @@ class ResNet3d(nn.Module):
     def _make_stem_layer(self):
         self.conv1 = nn.Conv3d(
             self.in_channels,
-            64,
+            self.base_channels,
             kernel_size=self.conv1_kernel,
             stride=(self.conv1_stride_t, 2, 2),
             padding=tuple([(k - 1) // 2 for k in _triple(self.conv1_kernel)]),
             bias=False)
-        self.norm1_name, norm1 = build_norm_layer(self.norm_cfg, 64, postfix=1)
+        self.norm1_name, norm1 = build_norm_layer(
+            self.norm_cfg, self.base_channels, postfix=1)
         self.add_module(self.norm1_name, norm1)
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = nn.MaxPool3d(
