@@ -5,6 +5,22 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
+class AvgConsensus(nn.Module):
+    """Average consensus module.
+
+    Attributes:
+        dim (int): Decide which dim consensus function to apply.
+            Default: 1.
+    """
+
+    def __init__(self, dim=1):
+        super(AvgConsensus, self).__init__()
+        self.dim = dim
+
+    def forward(self, input):
+        return input.mean(dim=self.dim, keepdim=True)
+
+
 class BaseHead(nn.Module, metaclass=ABCMeta):
     """Base class for head.
 
