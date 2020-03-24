@@ -2,23 +2,7 @@ import torch.nn as nn
 from mmcv.cnn.weight_init import normal_init
 
 from ..registry import HEADS
-from .base import BaseHead
-
-
-class AvgConsensus(nn.Module):
-    """Average consensus module.
-
-    Attributes:
-        dim (int): Decide which dim consensus function to apply.
-            Default: 1.
-    """
-
-    def __init__(self, dim=1):
-        super(AvgConsensus, self).__init__()
-        self.dim = dim
-
-    def forward(self, input):
-        return input.mean(dim=self.dim, keepdim=True)
+from .base import AvgConsensus, BaseHead
 
 
 @HEADS.register_module
