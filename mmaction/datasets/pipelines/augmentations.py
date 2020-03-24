@@ -25,16 +25,25 @@ class MultiScaleCrop(object):
         max_wh_scale_gap (int): Maximum gap of w and h scale levels.
             Default: 1.
         random_crop (bool): If set to True, the cropping bbox will be randomly
-            sampled, otherwise it will be sampler from 5 fixed regions:
-            "upper left", "upper right", "lower left", "lower right", "center"
+            sampled, otherwise it will be sampler from fixed regions.
             Default: False.
+        num_fixed_crops (int):
+            If set to 5, the cropping bbox will keep 5 basic fixed regions:
+                "upper left", "upper right", "lower left",
+                 "lower right", "center".
+            If set to 13, the cropping bbox will append another 8 fix regions:
+                "center left", "center right", "lower center",
+                "upper center", "upper left quarter", "upper right quarter",
+                "lower left quarter", "lower right quarter".
+            Default: 5.
     """
 
     def __init__(self,
                  input_size,
                  scales=(1, ),
                  max_wh_scale_gap=1,
-                 random_crop=False):
+                 random_crop=False,
+                 num_fixed_crops=5):
         self.input_size = _pair(input_size)
         if not mmcv.is_tuple_of(self.input_size, int):
             raise TypeError(f'Input_size must be int or tuple of int, '
@@ -43,9 +52,14 @@ class MultiScaleCrop(object):
         if not isinstance(scales, tuple):
             raise TypeError(f'Scales must be tuple, but got {type(scales)}')
 
+        if num_fixed_crops not in [5, 13]:
+            raise ValueError(f'Num_fix_crops must be in {[5, 13]}, '
+                             f'but got {num_fixed_crops}')
+
         self.scales = scales
         self.max_wh_scale_gap = max_wh_scale_gap
         self.random_crop = random_crop
+        self.num_fixed_crops = num_fixed_crops
 
     def __call__(self, results):
         imgs = results['imgs']
@@ -81,6 +95,18 @@ class MultiScaleCrop(object):
                 (4 * w_step, 4 * h_step),  # lower right
                 (2 * w_step, 2 * h_step),  # center
             ]
+            if self.num_fixed_crops == 13:
+                extra_candidate_offsets = [
+                    (0, 2 * h_step),  # center left
+                    (4 * w_step, 2 * h_step),  # center right
+                    (2 * w_step, 4 * h_step),  # lower center
+                    (2 * w_step, 0 * h_step),  # upper center
+                    (1 * w_step, 1 * h_step),  # upper left quarter
+                    (3 * w_step, 1 * h_step),  # upper right quarter
+                    (1 * w_step, 3 * h_step),  # lower left quarter
+                    (3 * w_step, 3 * h_step)  # lower right quarter
+                ]
+                candidate_offsets.extend(extra_candidate_offsets)
             x_offset, y_offset = random.choice(candidate_offsets)
 
         results['crop_bbox'] = np.array(
@@ -97,7 +123,8 @@ class MultiScaleCrop(object):
         repr_str = self.__class__.__name__
         repr_str += (f'(input_size={self.input_size}, scales={self.scales}, '
                      f'max_wh_scale_gap={self.max_wh_scale_gap}, '
-                     f'random_crop={self.random_crop})')
+                     f'random_crop={self.random_crop},'
+                     f'num_fixed_crops={self.num_fixed_crops})')
         return repr_str
 
 
