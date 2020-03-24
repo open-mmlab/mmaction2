@@ -80,6 +80,9 @@ class TestAugumentations(object):
                     1,
                 ])
 
+        with pytest.raises(ValueError):
+            MultiScaleCrop(224, num_fixed_crops=6)
+
         target_keys = ['imgs', 'crop_bbox', 'img_shape', 'scales']
 
         imgs = np.random.rand(2, 256, 341, 3)
@@ -95,8 +98,25 @@ class TestAugumentations(object):
                                        target_keys)
         assert self.check_crop(multi_scale_crop_results['img_shape'],
                                multi_scale_crop_results['crop_bbox'])
-        assert multi_scale_crop_results['img_shape'] in [(256, 256), (204, 204)
-                                                         ]  # noqa: E501
+        assert multi_scale_crop_results['img_shape'] in [(256, 256),
+                                                         (204, 204)]
+
+        imgs = np.random.rand(2, 256, 341, 3)
+        results = dict(imgs=imgs)
+        config = dict(
+            input_size=224,
+            scales=(1, 0.8),
+            random_crop=False,
+            max_wh_scale_gap=0,
+            num_fixed_crops=13)
+        multi_scale_crop = MultiScaleCrop(**config)
+        multi_scale_crop_results = multi_scale_crop(results)
+        assert self.check_keys_contain(multi_scale_crop_results.keys(),
+                                       target_keys)
+        assert self.check_crop(multi_scale_crop_results['img_shape'],
+                               multi_scale_crop_results['crop_bbox'])
+        assert multi_scale_crop_results['img_shape'] in [(256, 256),
+                                                         (204, 204)]
 
         imgs = np.random.rand(2, 256, 341, 3)
         results = dict(imgs=imgs)
@@ -115,8 +135,9 @@ class TestAugumentations(object):
                                                           (204, 204)])
 
         assert repr(multi_scale_crop) == multi_scale_crop.__class__.__name__ +\
-            f'(input_size={(224, 224)}, scales={(1, 0.8)}, ' \
-            f'max_wh_scale_gap={0}, random_crop={True})'
+            '(input_size=(224, 224), scales=(1, 0.8), ' \
+            'max_wh_scale_gap=0, random_crop=True,' \
+            'num_fixed_crops=5)'
 
     def test_resize(self):
         with pytest.raises(ValueError):
