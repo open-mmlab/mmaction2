@@ -234,7 +234,8 @@ def _non_dist_train(model,
             ds,
             cfg.data.videos_per_gpu,
             cfg.data.workers_per_gpu,
-            dist=True,
+            cfg.gpus,
+            dist=False,
             seed=cfg.seed) for ds in dataset
     ]
     # put model on gpus
