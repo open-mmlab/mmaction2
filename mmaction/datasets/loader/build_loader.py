@@ -25,6 +25,7 @@ def build_dataloader(dataset,
                      dist=True,
                      shuffle=True,
                      seed=None,
+                     drop_last=False,
                      pin_memory=True,
                      **kwargs):
     """Build PyTorch DataLoader.
@@ -44,6 +45,8 @@ def build_dataloader(dataset,
         shuffle (bool): Whether to shuffle the data at every epoch.
             Default: True.
         seed (int | None): Seed to be used. Default: None.
+        drop_last (bool): Whether to drop the last incomplete batch in epoch.
+            Default: False
         pin_memory (bool): Whether to use pin_memory in DataLoader.
             Default: True
         kwargs (dict, optional): Any keyword argument to be used to initialize
@@ -77,6 +80,7 @@ def build_dataloader(dataset,
         pin_memory=pin_memory,
         shuffle=shuffle,
         worker_init_fn=init_fn,
+        drop_last=drop_last,
         **kwargs)
 
     return data_loader
