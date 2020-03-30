@@ -152,6 +152,7 @@ def _dist_train(model,
             cfg.data.videos_per_gpu,
             cfg.data.workers_per_gpu,
             dist=True,
+            drop_last=cfg.data.get('train_drop_last', False),
             seed=cfg.seed) for ds in dataset
     ]
     # put model on gpus
@@ -236,6 +237,7 @@ def _non_dist_train(model,
             cfg.data.workers_per_gpu,
             cfg.gpus,
             dist=False,
+            drop_last=cfg.data.get('train_drop_last', False),
             seed=cfg.seed) for ds in dataset
     ]
     # put model on gpus
