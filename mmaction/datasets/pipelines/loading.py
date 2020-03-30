@@ -210,7 +210,7 @@ class PyAVDecode(object):
 class DecordDecode(object):
     """Using decord to decode the video.
 
-    Decord: https://github.com/zhreshold/decord
+    Decord: https://github.com/dmlc/decord
 
     Required keys are "filename" and "frame_inds",
     added or modified keys are "imgs" and "ori_shape".
