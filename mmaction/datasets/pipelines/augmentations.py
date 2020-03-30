@@ -437,7 +437,7 @@ class TenCrop(object):
             bbox = [x_offset, y_offsets, x_offset + crop_w, y_offsets + crop_h]
             img_crops.append(crop)
             img_crops.append(flip_crop)
-            crop_bboxes.extend([bbox for _ in range(imgs.shape[0])])
+            crop_bboxes.extend([bbox for _ in range(imgs.shape[0] * 2)])
 
         crop_bboxes = np.array(crop_bboxes)
         imgs = np.concatenate(img_crops, axis=0)

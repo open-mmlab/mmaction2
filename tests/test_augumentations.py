@@ -22,12 +22,44 @@ class TestAugumentations(object):
         return set(target_keys).issubset(set(result_keys))
 
     @staticmethod
-    def check_crop(result_img_shape, result_bbox):
-        """Check if the result_bbox is in correspond to result_img_shape."""
-        crop_w = result_bbox[2] - result_bbox[0]
-        crop_h = result_bbox[3] - result_bbox[1]
-        crop_shape = (crop_h, crop_w)
-        return result_img_shape == crop_shape
+    def check_crop(origin_imgs, result_imgs, result_bbox, num_crops=1):
+        """Check if the result_bbox is in correspond to result_imgs."""
+
+        def check_single_crop(origin_imgs, result_imgs, result_bbox):
+            result_img_shape = (result_imgs.shape[1], result_imgs.shape[2])
+            crop_w = result_bbox[2] - result_bbox[0]
+            crop_h = result_bbox[3] - result_bbox[1]
+            crop_shape = (crop_h, crop_w)
+            if not crop_shape == result_img_shape:
+                return False
+            left, top, right, bottom = result_bbox
+            return np.equal(origin_imgs[:, top:bottom, left:right, :],
+                            result_imgs).all()
+
+        if result_bbox.ndim == 1:
+            return check_single_crop(origin_imgs, result_imgs, result_bbox)
+        elif result_bbox.ndim == 2:
+            num_batch = len(origin_imgs)
+            for i, bbox in enumerate(result_bbox):
+                if num_crops == 10:
+                    if (i / num_batch) % 2 == 0:
+                        flag = check_single_crop(
+                            origin_imgs[i % num_batch:(i + 1) % num_batch],
+                            result_imgs[i:(i + 1)], bbox)
+                    else:
+                        flag = check_single_crop(
+                            origin_imgs[i % num_batch:(i + 1) % num_batch],
+                            np.flip(result_imgs[i:(i + 1)], axis=2), bbox)
+                else:
+                    flag = check_single_crop(
+                        origin_imgs[i % num_batch:(i + 1) % num_batch],
+                        result_imgs[i:(i + 1)], bbox)
+                if not flag:
+                    return False
+            return True
+        else:
+            # bbox has a wrong dimension
+            return False
 
     @staticmethod
     def check_flip(origin_imgs, result_imgs, flip_type):
@@ -96,7 +128,7 @@ class TestAugumentations(object):
         multi_scale_crop_results = multi_scale_crop(results)
         assert self.check_keys_contain(multi_scale_crop_results.keys(),
                                        target_keys)
-        assert self.check_crop(multi_scale_crop_results['img_shape'],
+        assert self.check_crop(imgs, multi_scale_crop_results['imgs'],
                                multi_scale_crop_results['crop_bbox'])
         assert multi_scale_crop_results['img_shape'] in [(256, 256),
                                                          (204, 204)]
@@ -113,7 +145,7 @@ class TestAugumentations(object):
         multi_scale_crop_results = multi_scale_crop(results)
         assert self.check_keys_contain(multi_scale_crop_results.keys(),
                                        target_keys)
-        assert self.check_crop(multi_scale_crop_results['img_shape'],
+        assert self.check_crop(imgs, multi_scale_crop_results['imgs'],
                                multi_scale_crop_results['crop_bbox'])
         assert multi_scale_crop_results['img_shape'] in [(256, 256),
                                                          (204, 204)]
@@ -129,7 +161,7 @@ class TestAugumentations(object):
         multi_scale_crop_results = multi_scale_crop(results)
         assert self.check_keys_contain(multi_scale_crop_results.keys(),
                                        target_keys)
-        assert self.check_crop(multi_scale_crop_results['img_shape'],
+        assert self.check_crop(imgs, multi_scale_crop_results['imgs'],
                                multi_scale_crop_results['crop_bbox'])
         assert (multi_scale_crop_results['img_shape'] in [(256, 256),
                                                           (204, 204)])
@@ -272,7 +304,7 @@ class TestAugumentations(object):
 
         target_keys = ['imgs', 'crop_bbox', 'img_shape']
         assert self.check_keys_contain(center_crop_results.keys(), target_keys)
-        assert self.check_crop(center_crop_results['img_shape'],
+        assert self.check_crop(imgs, center_crop_results['imgs'],
                                center_crop_results['crop_bbox'])
         assert np.all(
             center_crop_results['crop_bbox'] == np.array([48, 8, 272, 232]))
@@ -298,8 +330,8 @@ class TestAugumentations(object):
 
         target_keys = ['imgs', 'crop_bbox', 'img_shape']
         assert self.check_keys_contain(three_crop_results.keys(), target_keys)
-        assert self.check_crop(three_crop_results['img_shape'],
-                               three_crop_results['crop_bbox'][0])
+        assert self.check_crop(imgs, three_crop_results['imgs'],
+                               three_crop_results['crop_bbox'], 3)
         assert three_crop_results['img_shape'] == (120, 120)
 
         imgs = np.random.rand(2, 224, 224, 3)
@@ -309,8 +341,8 @@ class TestAugumentations(object):
 
         target_keys = ['imgs', 'crop_bbox', 'img_shape']
         assert self.check_keys_contain(three_crop_results.keys(), target_keys)
-        assert self.check_crop(three_crop_results['img_shape'],
-                               three_crop_results['crop_bbox'][0])
+        assert self.check_crop(imgs, three_crop_results['imgs'],
+                               three_crop_results['crop_bbox'], 3)
         assert three_crop_results['img_shape'] == (224, 224)
 
         assert repr(three_crop) == three_crop.__class__.__name__ +\
@@ -333,8 +365,8 @@ class TestAugumentations(object):
 
         target_keys = ['imgs', 'crop_bbox', 'img_shape']
         assert self.check_keys_contain(ten_crop_results.keys(), target_keys)
-        assert self.check_crop(ten_crop_results['img_shape'],
-                               ten_crop_results['crop_bbox'][0])
+        assert self.check_crop(imgs, ten_crop_results['imgs'],
+                               ten_crop_results['crop_bbox'], 10)
         assert ten_crop_results['img_shape'] == (224, 224)
 
         assert repr(ten_crop) == ten_crop.__class__.__name__ +\
