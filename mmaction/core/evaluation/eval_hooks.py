@@ -26,9 +26,8 @@ class EvalHook(Hook):
                  gpu_collect=False,
                  **eval_kwargs):
         if not isinstance(dataloader, DataLoader):
-            raise TypeError(
-                'dataloader must be a pytorch DataLoader, but got {}'.format(
-                    type(dataloader)))
+            raise TypeError(f'dataloader must be a pytorch DataLoader, '
+                            f'but got {type(dataloader)}')
         self.dataloader = dataloader
         self.interval = interval
         self.gpu_collect = gpu_collect
