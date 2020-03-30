@@ -112,7 +112,11 @@ data
 *.pkl
 *.pkl.json
 *.log.json
+benchlist.txt
 work_dirs/
 
 # Pytorch
 *.pth
+
+# Profile
+*.prof
