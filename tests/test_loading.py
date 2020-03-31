@@ -4,9 +4,9 @@ import os.path as osp
 
 import numpy as np
 
-from mmaction.datasets.pipelines import (DecordDecode, FrameSelector,
-                                         OpenCVDecode, PyAVDecode,
-                                         SampleFrames)
+from mmaction.datasets.pipelines import (DecordDecode, DenseSampleFrames,
+                                         FrameSelector, OpenCVDecode,
+                                         PyAVDecode, SampleFrames)
 
 
 class TestLoading(object):
@@ -92,6 +92,7 @@ class TestLoading(object):
         sample_frames_results = sample_frames(frame_result)
         assert len(sample_frames_results['frame_inds']) == 18
 
+        video_result = copy.deepcopy(self.video_results)
         frame_result = copy.deepcopy(self.frame_results)
         frame_result['total_frames'] = 30
         config = dict(
@@ -101,9 +102,14 @@ class TestLoading(object):
             temporal_jitter=False,
             test_mode=False)
         sample_frames = SampleFrames(**config)
+        sample_frames_results = sample_frames(video_result)
+        assert self.check_keys_contain(sample_frames_results.keys(),
+                                       target_keys)
+        assert len(sample_frames_results['frame_inds']) == 240
         sample_frames_results = sample_frames(frame_result)
         assert len(sample_frames_results['frame_inds']) == 240
 
+        video_result = copy.deepcopy(self.video_results)
         frame_result = copy.deepcopy(self.frame_results)
         frame_result['total_frames'] = 10
         config = dict(
@@ -113,8 +119,113 @@ class TestLoading(object):
             temporal_jitter=False,
             test_mode=False)
         sample_frames = SampleFrames(**config)
+        sample_frames_results = sample_frames(video_result)
+        assert self.check_keys_contain(sample_frames_results.keys(),
+                                       target_keys)
+        assert len(sample_frames_results['frame_inds']) == 24
         sample_frames_results = sample_frames(frame_result)
         assert len(sample_frames_results['frame_inds']) == 24
+
+    def test_dense_sample_frames(self):
+        target_keys = [
+            'frame_inds', 'clip_len', 'frame_interval', 'num_clips',
+            'total_frames'
+        ]
+
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        config = dict(
+            clip_len=4,
+            frame_interval=1,
+            num_clips=6,
+            temporal_jitter=False,
+            test_mode=True)
+        dense_sample_frames = DenseSampleFrames(**config)
+        dense_sample_frames_results = dense_sample_frames(video_result)
+        assert self.check_keys_contain(dense_sample_frames_results.keys(),
+                                       target_keys)
+        assert len(dense_sample_frames_results['frame_inds']) == 240
+        dense_sample_frames_results = dense_sample_frames(frame_result)
+        assert len(dense_sample_frames_results['frame_inds']) == 240
+
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        config = dict(
+            clip_len=4, frame_interval=1, num_clips=6, temporal_jitter=False)
+        dense_sample_frames = DenseSampleFrames(**config)
+        dense_sample_frames_results = dense_sample_frames(video_result)
+        assert self.check_keys_contain(dense_sample_frames_results.keys(),
+                                       target_keys)
+        assert len(dense_sample_frames_results['frame_inds']) == 24
+        dense_sample_frames_results = dense_sample_frames(frame_result)
+        assert len(dense_sample_frames_results['frame_inds']) == 24
+
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        config = dict(
+            clip_len=4,
+            frame_interval=1,
+            num_clips=6,
+            sample_range=32,
+            temporal_jitter=False,
+            test_mode=True)
+        dense_sample_frames = DenseSampleFrames(**config)
+        dense_sample_frames_results = dense_sample_frames(video_result)
+        assert self.check_keys_contain(dense_sample_frames_results.keys(),
+                                       target_keys)
+        assert len(dense_sample_frames_results['frame_inds']) == 240
+        dense_sample_frames_results = dense_sample_frames(frame_result)
+        assert len(dense_sample_frames_results['frame_inds']) == 240
+
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        config = dict(
+            clip_len=4,
+            frame_interval=1,
+            num_clips=6,
+            sample_range=32,
+            temporal_jitter=False)
+        dense_sample_frames = DenseSampleFrames(**config)
+        dense_sample_frames_results = dense_sample_frames(video_result)
+        assert self.check_keys_contain(dense_sample_frames_results.keys(),
+                                       target_keys)
+        assert len(dense_sample_frames_results['frame_inds']) == 24
+        dense_sample_frames_results = dense_sample_frames(frame_result)
+        assert len(dense_sample_frames_results['frame_inds']) == 24
+
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        config = dict(
+            clip_len=4,
+            frame_interval=1,
+            num_clips=6,
+            sample_range=1000,
+            temporal_jitter=False)
+        dense_sample_frames = DenseSampleFrames(**config)
+        dense_sample_frames_results = dense_sample_frames(video_result)
+        assert self.check_keys_contain(dense_sample_frames_results.keys(),
+                                       target_keys)
+        assert len(dense_sample_frames_results['frame_inds']) == 24
+        dense_sample_frames_results = dense_sample_frames(frame_result)
+        assert len(dense_sample_frames_results['frame_inds']) == 24
+
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        config = dict(
+            clip_len=4,
+            frame_interval=1,
+            num_clips=6,
+            num_sample_positions=5,
+            sample_range=32,
+            temporal_jitter=False,
+            test_mode=True)
+        dense_sample_frames = DenseSampleFrames(**config)
+        dense_sample_frames_results = dense_sample_frames(video_result)
+        assert self.check_keys_contain(dense_sample_frames_results.keys(),
+                                       target_keys)
+        assert len(dense_sample_frames_results['frame_inds']) == 120
+        dense_sample_frames_results = dense_sample_frames(frame_result)
+        assert len(dense_sample_frames_results['frame_inds']) == 120
 
     def test_pyav_decode(self):
         target_keys = ['frame_inds', 'imgs', 'ori_shape']

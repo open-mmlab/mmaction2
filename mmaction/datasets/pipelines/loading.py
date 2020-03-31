@@ -19,7 +19,7 @@ class SampleFrames(object):
         clip_len (int): Frames of each sampled output clip.
         frame_interval (int): Temporal interval of adjacent sampled frames.
             Default: 1.
-        num_clips (int): Number of clips to be sampled. Default: 1
+        num_clips (int): Number of clips to be sampled. Default: 1.
         temporal_jitter (bool): Whether to apply temporal jittering.
             Default: False.
         test_mode (bool): Store True when building test or validation dataset.
@@ -41,10 +41,10 @@ class SampleFrames(object):
     def _get_train_clips(self, num_frames):
         """Get clip offsets in train mode.
 
-        Calculate the average interval for selected frames, and randomly
-        shift them within offsets between [0, avg_interval]. If the total
-        number of frames is smaller than clips num or origin frames length,
-        it will return all zero indices.
+        It will calculate the average interval for selected frames,
+        and randomly shift them within offsets between [0, avg_interval].
+        If the total number of frames is smaller than clips num or origin
+        frames length, it will return all zero indices.
 
         Args:
             num_frames (int): Total number of frame in the video.
@@ -71,6 +71,9 @@ class SampleFrames(object):
     def _get_test_clips(self, num_frames):
         """Get clip offsets in test mode.
 
+        If dense_sample is True, it will choose a sample position and evenly
+        sample 10 index as start positions between [0, sample_position - 1],
+        and shift them using a specific interval.
         Calculate the average interval for selected frames, and shift them
         fixedly by avg_interval/2 . If the total number of frames is not
         enough, it will return all zero indices.
@@ -83,7 +86,6 @@ class SampleFrames(object):
         """
         ori_clip_len = self.clip_len * self.frame_interval
         avg_interval = (num_frames - ori_clip_len + 1) / float(self.num_clips)
-
         if num_frames > ori_clip_len - 1:
             base_offsets = np.arange(self.num_clips) * avg_interval
             clip_offsets = (base_offsets + avg_interval / 2.0).astype(np.int32)
@@ -135,6 +137,90 @@ class SampleFrames(object):
         results['frame_interval'] = self.frame_interval
         results['num_clips'] = self.num_clips
         return results
+
+
+@PIPELINES.register_module
+class DenseSampleFrames(SampleFrames):
+    """Select frames from the video by dense sample strategy.
+
+    Required keys are "filename", added or modified keys are "total_frames",
+    "frame_inds", "frame_interval" and "num_clips".
+
+    Attributes:
+        clip_len (int): Frames of each sampled output clip.
+        frame_interval (int): Temporal interval of adjacent sampled frames.
+            Default: 1.
+        num_clips (int): Number of clips to be sampled. Default: 1.
+        sample_range (int): Total sample range for dense sample.
+            Default: 64.
+        num_sample_positions (int): Number of sample start positions, Which is
+            only used in test mode. Default: 10.
+        temporal_jitter (bool): Whether to apply temporal jittering.
+            Default: False.
+        test_mode (bool): Store True when building test or validation dataset.
+            Default: False.
+    """
+
+    def __init__(self,
+                 clip_len,
+                 frame_interval=1,
+                 num_clips=1,
+                 sample_range=64,
+                 num_sample_positions=10,
+                 temporal_jitter=False,
+                 test_mode=False):
+        super(DenseSampleFrames,
+              self).__init__(clip_len, frame_interval, num_clips,
+                             temporal_jitter, test_mode)
+        self.sample_range = sample_range
+        self.num_sample_positions = num_sample_positions
+
+    def _get_train_clips(self, num_frames):
+        """Get clip offsets by dense sample strategy in train mode.
+
+        It will calculate a sample position and sample interval and set
+        start index 0 when sample_pos == 1 or randomly choose from
+        [0, sample_pos - 1]. Then it will shift the start index by each
+        base offset.
+
+        Args:
+            num_frames (int): Total number of frame in the video.
+
+        Returns:
+            np.ndarray: Sampled frame indices in train mode.
+        """
+        sample_position = max(1, 1 + num_frames - self.sample_range)
+        interval = self.sample_range // self.num_clips
+        start_idx = 0 if sample_position == 1 else np.random.randint(
+            0, sample_position - 1)
+        base_offsets = np.arange(self.num_clips) * interval
+        clip_offsets = (base_offsets + start_idx) % num_frames
+        return clip_offsets
+
+    def _get_test_clips(self, num_frames):
+        """Get clip offsets by dense sample strategy in test mode.
+
+        It will calculate a sample position and sample interval and evenly
+        sample several start indexes as start positions between
+        [0, sample_position-1]. Then it will shift each start index by the
+        base offsets.
+
+        Args:
+            num_frames (int): Total number of frame in the video.
+
+        Returns:
+            np.ndarray: Sampled frame indices in train mode.
+        """
+        sample_position = max(1, 1 + num_frames - self.sample_range)
+        interval = self.sample_range // self.num_clips
+        start_list = np.linspace(
+            0, sample_position - 1, num=self.num_sample_positions, dtype=int)
+        base_offsets = np.arange(self.num_clips) * interval
+        clip_offsets = list()
+        for start_idx in start_list:
+            clip_offsets.extend((base_offsets + start_idx) % num_frames)
+        clip_offsets = np.array(clip_offsets)
+        return clip_offsets
 
 
 @PIPELINES.register_module
