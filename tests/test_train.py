@@ -34,8 +34,10 @@ class ExampleModel(nn.Module):
         super(ExampleModel, self).__init__()
         self.test_cfg = None
         self.conv1 = nn.Conv2d(3, 8, kernel_size=1)
+        self.norm1 = nn.BatchNorm1d(2)
 
     def forward(self, imgs, return_loss=False):
+        self.norm1(torch.rand(3, 2).cuda())
         losses = dict()
         losses['test_loss'] = torch.tensor([0.5], requires_grad=True)
         return losses
@@ -76,4 +78,5 @@ def test_non_dist_train():
         cfg['work_dir'] = tmpdir
         cfg['fp16'] = dict(loss_scale=512.)
         config = Config(cfg)
+        model.fp16_enabled = None
         _non_dist_train(model, dataset, config)
