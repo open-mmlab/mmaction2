@@ -1,8 +1,12 @@
 import numpy as np
 import pytest
 
-from mmaction.datasets.pipelines import (CenterCrop, Flip, MultiScaleCrop,
-                                         Normalize, Resize, TenCrop, ThreeCrop)
+# yapf: disable
+from mmaction.datasets.pipelines import (
+    CenterCrop, FixedSizeRandomCrop, Flip, GivenRangeRandomCrop,
+    MultiScaleCrop, Normalize, Resize, TenCrop, ThreeCrop)
+
+# yapf: enable
 
 
 class TestAugumentations(object):
@@ -95,6 +99,97 @@ class TestAugumentations(object):
         if norm_cfg['to_bgr']:
             target_imgs = target_imgs[..., ::-1].copy()
         self.assert_img_equal(origin_imgs, target_imgs)
+
+    def test_fixed_size_random_crop(self):
+        with pytest.raises(TypeError):
+            FixedSizeRandomCrop(size=(112, 112))
+        with pytest.raises(AssertionError):
+            imgs = np.random.rand(2, 224, 341, 3)
+            results = dict(imgs=imgs)
+            random_crop = FixedSizeRandomCrop(size=320)
+            random_crop_result = random_crop(results)
+
+        target_keys = ['imgs', 'crop_bbox', 'img_shape']
+
+        # General case
+        imgs = np.random.rand(2, 224, 341, 3)
+        results = dict(imgs=imgs)
+        random_crop = FixedSizeRandomCrop(size=224)
+        random_crop_result = random_crop(results)
+        assert self.check_keys_contain(random_crop_result.keys(), target_keys)
+        assert self.check_crop(imgs, random_crop_result['imgs'],
+                               results['crop_bbox'])
+        h, w = random_crop_result['img_shape']
+        assert h == w == 224
+
+        # Test the case that no need for cropping
+        imgs = np.random.rand(2, 224, 224, 3)
+        results = dict(imgs=imgs)
+        random_crop = FixedSizeRandomCrop(size=224)
+        random_crop_result = random_crop(results)
+        assert self.check_keys_contain(random_crop_result.keys(), target_keys)
+        assert self.check_crop(imgs, random_crop_result['imgs'],
+                               results['crop_bbox'])
+        h, w = random_crop_result['img_shape']
+        assert h == w == 224
+
+        # Test the one-side-equal case
+        imgs = np.random.rand(2, 224, 225, 3)
+        results = dict(imgs=imgs)
+        random_crop = FixedSizeRandomCrop(size=224)
+        random_crop_result = random_crop(results)
+        assert self.check_keys_contain(random_crop_result.keys(), target_keys)
+        assert self.check_crop(imgs, random_crop_result['imgs'],
+                               results['crop_bbox'])
+        h, w = random_crop_result['img_shape']
+        assert h == w == 224
+
+        assert repr(random_crop) == random_crop.__class__.__name__ +\
+            f'(size=224)'
+
+    def test_fixed_range_random_crop(self):
+        with pytest.raises(TypeError):
+            GivenRangeRandomCrop(area_range=0.5)
+        with pytest.raises(TypeError):
+            GivenRangeRandomCrop(
+                area_range=(0.08, 1.0), aspect_ratio_range=0.1)
+
+        target_keys = ['imgs', 'crop_bbox', 'img_shape']
+        # There will be a slight difference because of rounding
+        eps = 0.01
+        imgs = np.random.rand(2, 256, 341, 3)
+        results = dict(imgs=imgs)
+
+        with pytest.raises(AssertionError):
+            random_crop = GivenRangeRandomCrop(area_range=(0.9, 0.7))
+            random_crop_result = random_crop(results)
+        with pytest.raises(AssertionError):
+            random_crop = GivenRangeRandomCrop(aspect_ratio_range=(-0.1, 2.0))
+            random_crop_result = random_crop(results)
+
+        random_crop = GivenRangeRandomCrop()
+        random_crop_result = random_crop(results)
+        assert self.check_keys_contain(random_crop_result.keys(), target_keys)
+        assert self.check_crop(imgs, random_crop_result['imgs'],
+                               results['crop_bbox'])
+        h, w = random_crop_result['img_shape']
+        assert ((0.08 - eps <= h * w / 256 / 341)
+                and (h * w / 256 / 341 <= 1 + eps))
+        assert (3. / 4. - eps <= h / w) and (h / w - eps <= 4. / 3.)
+        assert repr(random_crop) == random_crop.__class__.__name__ + \
+            f'(area_range={(0.08, 1.0)}, aspect_ratio_range={(3 / 4, 4 / 3)})'
+
+        random_crop = GivenRangeRandomCrop(
+            area_range=(0.9, 0.9), aspect_ratio_range=(10.0, 10.1))
+        # Test fallback cases by very big area range
+        imgs = np.random.rand(2, 256, 341, 3)
+        results = dict(imgs=imgs)
+        random_crop_result = random_crop(results)
+        assert self.check_keys_contain(random_crop_result.keys(), target_keys)
+        assert self.check_crop(imgs, random_crop_result['imgs'],
+                               results['crop_bbox'])
+        h, w = random_crop_result['img_shape']
+        assert h == w == 256
 
     def test_multi_scale_crop(self):
         with pytest.raises(TypeError):

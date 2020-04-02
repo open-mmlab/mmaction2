@@ -9,6 +9,145 @@ from ..registry import PIPELINES
 
 
 @PIPELINES.register_module
+class FixedSizeRandomCrop(object):
+    """Vanilla square random crop that specifics the output size.
+
+    Attributes:
+        size (int): The output size of the images.
+    """
+
+    def __init__(self, size):
+        if not isinstance(size, int):
+            # size should be a int
+            raise TypeError(f'size must be a int, but got {type(size)}')
+        self.size = size
+
+    def __call__(self, results):
+        imgs = results['imgs']
+        height, width = imgs.shape[1:3]
+        # the cropping size should be less or equal to the origin size
+        assert self.size <= height and self.size <= width
+
+        if (height == self.size and width == self.size):
+            results['crop_bbox'] = np.array([0, 0, self.size, self.size],
+                                            dtype=np.int32)
+            results['img_shape'] = results['imgs'].shape[1:3]
+
+            return results
+
+        y_offset = 0
+        x_offset = 0
+        if height > self.size:
+            y_offset = int(np.random.randint(0, height - self.size))
+        if width > self.size:
+            x_offset = int(np.random.randint(0, width - self.size))
+
+        results['crop_bbox'] = np.array(
+            [x_offset, y_offset, x_offset + self.size, y_offset + self.size],
+            dtype=np.int32)
+        results['imgs'] = imgs[:, y_offset:y_offset + self.size,
+                               x_offset:x_offset + self.size, :]
+
+        results['img_shape'] = results['imgs'].shape[1:3]
+        return results
+
+    def __repr__(self):
+        repr_str = self.__class__.__name__
+        repr_str += f'(size={self.size})'
+        return repr_str
+
+
+@PIPELINES.register_module
+class GivenRangeRandomCrop(object):
+    """Random crop that specifics the area and height-weight
+        ratio range.
+
+    Attributes:
+        area_range (Tuple[float]): The candidate area scales range of
+            output cropped images. Default: (0.08, 1.0).
+        aspect_ratio_range (Tuple[float]): The candidate aspect ratio range of
+            output cropped images. Default: (3 / 4, 4 / 3)
+    """
+
+    def __init__(self,
+                 area_range=(0.08, 1.0),
+                 aspect_ratio_range=(3 / 4, 4 / 3)):
+        self.area_range = area_range
+        self.aspect_ratio_range = aspect_ratio_range
+        # area_range should be a tuple of float
+        if not mmcv.is_tuple_of(self.area_range, float):
+            raise TypeError(f'area_range must be a tuple of float, '
+                            f'but got {type(area_range)}')
+        # aspect_ratio_range should be a tuple of float
+        if not mmcv.is_tuple_of(self.aspect_ratio_range, float):
+            raise TypeError(f'aspect_ratio_range must be a tuple of float, '
+                            f'but got {type(aspect_ratio_range)}')
+
+    @staticmethod
+    def get_crop_bbox(img, area_range, aspect_ratio_range, max_attempts=10):
+        """Get a crop bbox given the area range and aspect ratio range.
+
+        Args:
+            area_range (Tuple[float]): The candidate area scales range of
+                output cropped images. Default: (0.08, 1.0).
+            aspect_ratio_range (Tuple[float]): The candidate aspect
+                ratio range of output cropped images. Default: (3 / 4, 4 / 3).
+                max_attempts (int): The maximum of attempts. Default: 10.
+        Returns:
+            A random crop bbox ggiven the area range and aspect ratio range.
+        """
+        # area_range must be greater than 0 and less than or equal to 1
+        assert 0 < area_range[0] <= area_range[1] <= 1
+        # aspect_ratio_range should not be negative
+        assert 0 < aspect_ratio_range[0] <= aspect_ratio_range[1]
+
+        area = img.shape[1] * img.shape[2]
+
+        min_ar, max_ar = aspect_ratio_range
+        aspect_ratios = np.exp(
+            np.random.uniform(
+                np.log(min_ar), np.log(max_ar), size=max_attempts))
+        target_areas = np.random.uniform(*area_range, size=max_attempts) * area
+        candidate_crop_w = np.round(np.sqrt(target_areas *
+                                            aspect_ratios)).astype(np.int32)
+        candidate_crop_h = np.round(np.sqrt(target_areas /
+                                            aspect_ratios)).astype(np.int32)
+
+        for i in range(max_attempts):
+            crop_w = candidate_crop_w[i]
+            crop_h = candidate_crop_h[i]
+            if crop_h <= img.shape[1] and crop_w <= img.shape[2]:
+                x_offset = random.randint(0, img.shape[2] - crop_w)
+                y_offset = random.randint(0, img.shape[1] - crop_h)
+                return x_offset, y_offset, x_offset + crop_w, y_offset + crop_h
+
+        # Fallback
+        crop_size = min(img.shape[1], img.shape[2])
+        x_offset = (img.shape[2] - crop_size) // 2
+        y_offset = (img.shape[1] - crop_size) // 2
+        return x_offset, y_offset, x_offset + crop_size, y_offset + crop_size
+
+    def __call__(self, results):
+        imgs = results['imgs']
+
+        left, top, right, bottom = self.get_crop_bbox(imgs, self.area_range,
+                                                      self.aspect_ratio_range)
+
+        results['crop_bbox'] = np.array([left, top, right, bottom],
+                                        dtype=np.int32)
+        results['imgs'] = imgs[:, top:bottom, left:right, :]
+
+        results['img_shape'] = results['imgs'].shape[1:3]
+        return results
+
+    def __repr__(self):
+        repr_str = self.__class__.__name__
+        repr_str += (f'(area_range={self.area_range}, '
+                     f'aspect_ratio_range={self.aspect_ratio_range})')
+        return repr_str
+
+
+@PIPELINES.register_module
 class MultiScaleCrop(object):
     """Crop images with a list of randomly selected scales.
 
