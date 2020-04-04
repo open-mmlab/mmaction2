@@ -1,5 +1,3 @@
-from __future__ import division
-
 import torch
 from torch.utils.data import DistributedSampler as _DistributedSampler
 
