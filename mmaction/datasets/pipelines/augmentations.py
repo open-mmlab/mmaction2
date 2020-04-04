@@ -9,7 +9,7 @@ from ..registry import PIPELINES
 
 
 @PIPELINES.register_module
-class FixedSizeRandomCrop(object):
+class RandomCrop(object):
     """Vanilla square random crop that specifics the output size.
 
     Attributes:
@@ -58,7 +58,7 @@ class FixedSizeRandomCrop(object):
 
 
 @PIPELINES.register_module
-class GivenRangeRandomCrop(object):
+class RandomResizedCrop(object):
     """Random crop that specifics the area and height-weight
         ratio range.
 
