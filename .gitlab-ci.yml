@@ -29,5 +29,5 @@ test:
     - pip install -e .
     - python -c "import mmaction; print(mmaction.__version__)"
     - echo "Start testing..."
-    - coverage run --source mmaction -m pytest tests/
+    - coverage run --branch --source mmaction -m pytest tests/
     - coverage report -m
