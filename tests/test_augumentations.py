@@ -2,9 +2,10 @@ import numpy as np
 import pytest
 
 # yapf: disable
-from mmaction.datasets.pipelines import (
-    CenterCrop, FixedSizeRandomCrop, Flip, GivenRangeRandomCrop,
-    MultiScaleCrop, Normalize, Resize, TenCrop, ThreeCrop)
+from mmaction.datasets.pipelines import (CenterCrop, Flip, MultiScaleCrop,
+                                         Normalize, RandomCrop,
+                                         RandomResizedCrop, Resize, TenCrop,
+                                         ThreeCrop)
 
 # yapf: enable
 
@@ -102,11 +103,11 @@ class TestAugumentations(object):
 
     def test_fixed_size_random_crop(self):
         with pytest.raises(TypeError):
-            FixedSizeRandomCrop(size=(112, 112))
+            RandomCrop(size=(112, 112))
         with pytest.raises(AssertionError):
             imgs = np.random.rand(2, 224, 341, 3)
             results = dict(imgs=imgs)
-            random_crop = FixedSizeRandomCrop(size=320)
+            random_crop = RandomCrop(size=320)
             random_crop_result = random_crop(results)
 
         target_keys = ['imgs', 'crop_bbox', 'img_shape']
@@ -114,7 +115,7 @@ class TestAugumentations(object):
         # General case
         imgs = np.random.rand(2, 224, 341, 3)
         results = dict(imgs=imgs)
-        random_crop = FixedSizeRandomCrop(size=224)
+        random_crop = RandomCrop(size=224)
         random_crop_result = random_crop(results)
         assert self.check_keys_contain(random_crop_result.keys(), target_keys)
         assert self.check_crop(imgs, random_crop_result['imgs'],
@@ -125,7 +126,7 @@ class TestAugumentations(object):
         # Test the case that no need for cropping
         imgs = np.random.rand(2, 224, 224, 3)
         results = dict(imgs=imgs)
-        random_crop = FixedSizeRandomCrop(size=224)
+        random_crop = RandomCrop(size=224)
         random_crop_result = random_crop(results)
         assert self.check_keys_contain(random_crop_result.keys(), target_keys)
         assert self.check_crop(imgs, random_crop_result['imgs'],
@@ -136,7 +137,7 @@ class TestAugumentations(object):
         # Test the one-side-equal case
         imgs = np.random.rand(2, 224, 225, 3)
         results = dict(imgs=imgs)
-        random_crop = FixedSizeRandomCrop(size=224)
+        random_crop = RandomCrop(size=224)
         random_crop_result = random_crop(results)
         assert self.check_keys_contain(random_crop_result.keys(), target_keys)
         assert self.check_crop(imgs, random_crop_result['imgs'],
@@ -149,10 +150,9 @@ class TestAugumentations(object):
 
     def test_fixed_range_random_crop(self):
         with pytest.raises(TypeError):
-            GivenRangeRandomCrop(area_range=0.5)
+            RandomResizedCrop(area_range=0.5)
         with pytest.raises(TypeError):
-            GivenRangeRandomCrop(
-                area_range=(0.08, 1.0), aspect_ratio_range=0.1)
+            RandomResizedCrop(area_range=(0.08, 1.0), aspect_ratio_range=0.1)
 
         target_keys = ['imgs', 'crop_bbox', 'img_shape']
         # There will be a slight difference because of rounding
@@ -161,13 +161,13 @@ class TestAugumentations(object):
         results = dict(imgs=imgs)
 
         with pytest.raises(AssertionError):
-            random_crop = GivenRangeRandomCrop(area_range=(0.9, 0.7))
+            random_crop = RandomResizedCrop(area_range=(0.9, 0.7))
             random_crop_result = random_crop(results)
         with pytest.raises(AssertionError):
-            random_crop = GivenRangeRandomCrop(aspect_ratio_range=(-0.1, 2.0))
+            random_crop = RandomResizedCrop(aspect_ratio_range=(-0.1, 2.0))
             random_crop_result = random_crop(results)
 
-        random_crop = GivenRangeRandomCrop()
+        random_crop = RandomResizedCrop()
         random_crop_result = random_crop(results)
         assert self.check_keys_contain(random_crop_result.keys(), target_keys)
         assert self.check_crop(imgs, random_crop_result['imgs'],
@@ -179,7 +179,7 @@ class TestAugumentations(object):
         assert repr(random_crop) == random_crop.__class__.__name__ + \
             f'(area_range={(0.08, 1.0)}, aspect_ratio_range={(3 / 4, 4 / 3)})'
 
-        random_crop = GivenRangeRandomCrop(
+        random_crop = RandomResizedCrop(
             area_range=(0.9, 0.9), aspect_ratio_range=(10.0, 10.1))
         # Test fallback cases by very big area range
         imgs = np.random.rand(2, 256, 341, 3)
