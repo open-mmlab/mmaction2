@@ -29,6 +29,7 @@ def test_config_build_recognizer():
     """
     config_fpaths = _get_config_path()
 
+    # test all config file in `config` directory
     for config_fpath in config_fpaths:
         config_mod = mmcv.Config.fromfile(config_fpath)
         print(f'Building recognizer, config_fpath = {config_fpath!r}')

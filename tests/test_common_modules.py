@@ -22,6 +22,7 @@ def test_build_conv_layer():
         cfg = dict(type='Norm')
         build_conv_layer(cfg)
 
+    # build layer with cfg=None
     args = dict(in_channels=3, out_channels=8, kernel_size=2)
     layer = build_conv_layer(None, **args)
     assert type(layer) == nn.Conv2d
@@ -29,6 +30,7 @@ def test_build_conv_layer():
     assert layer.out_channels == args['out_channels']
     assert layer.kernel_size == (2, 2)
 
+    # build layer indicating cfg
     cfg = dict(type='Conv')
     layer = build_conv_layer(cfg, **args)
     assert type(layer) == nn.Conv2d
@@ -55,6 +57,7 @@ def test_build_activation_layer():
         build_activation_layer(cfg)
 
     with pytest.raises(NotImplementedError):
+        # None in activation_cfg values.
         from mmaction.models.common import activation
         activation_cfg = activation.activation_cfg
         activation_cfg['testReLU'] = None
@@ -64,6 +67,8 @@ def test_build_activation_layer():
     from mmaction.models.common import activation
     activation_cfg = activation.activation_cfg
     activation_cfg.pop('testReLU', None)
+
+    # test each type of activation layer in activation_cfg
     cfg = dict()
     for activation_type in activation_cfg:
         cfg['type'] = activation_type
@@ -88,6 +93,7 @@ def test_build_norm_layer():
         build_norm_layer(cfg, 3)
 
     with pytest.raises(NotImplementedError):
+        # None in norm_cfg values.
         from mmaction.models.common import norm
         norm_cfg = norm.norm_cfg
         norm_cfg['testBN'] = ('testBN', None)
@@ -107,6 +113,8 @@ def test_build_norm_layer():
     from mmaction.models.common import norm
     norm_cfg = norm.norm_cfg
     norm_cfg.pop('testBN', None)
+
+    # test each type of norm layer in norm_cfg
     cfg = dict()
     postfix = '_test'
     for norm_type in norm_cfg:
@@ -144,25 +152,28 @@ def test_conv_module():
         order = ('conv', 'norm')
         ConvModule(3, 8, 2, order=order)
 
-    self = ConvModule(3, 8, 2)
-    self.init_weights()
+    # ConvModule with no norm and act
+    layer = ConvModule(3, 8, 2)
+    layer.init_weights()
     x = torch.rand(1, 3, 256, 256)
-    output = self.forward(x)
+    output = layer.forward(x)
     assert output.shape == torch.Size([1, 8, 255, 255])
 
+    # ConvModule with norm and act
     norm_cfg = dict(type='BN')
     act_cfg = dict(type='LeakyReLU')
-    self = ConvModule(3, 8, 2, norm_cfg=norm_cfg, act_cfg=act_cfg)
-    self.init_weights()
+    layer = ConvModule(3, 8, 2, norm_cfg=norm_cfg, act_cfg=act_cfg)
+    layer.init_weights()
     x = torch.rand(1, 3, 256, 256)
-    output = self.forward(x)
+    output = layer.forward(x)
     assert output.shape == torch.Size([1, 8, 255, 255])
 
+    # test Conv(2+1)d with BN3d and LeakyReLU
     norm_cfg = dict(type='BN3d')
     act_cfg = dict(type='LeakyReLU')
     conv_cfg = dict(type='Conv(2+1)d')
     order = ('norm', 'conv', 'act')
-    self = ConvModule(
+    layer = ConvModule(
         3,
         8,
         2,
@@ -170,7 +181,7 @@ def test_conv_module():
         norm_cfg=norm_cfg,
         act_cfg=act_cfg,
         order=order)
-    self.init_weights()
+    layer.init_weights()
     x = torch.rand(1, 3, 8, 256, 256)
-    output = self.forward(x)
+    output = layer.forward(x)
     assert output.shape == torch.Size([1, 8, 7, 255, 255])

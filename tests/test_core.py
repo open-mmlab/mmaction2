@@ -6,9 +6,11 @@ from mmaction.core.train import parse_losses
 
 def test_parse_loss():
     with pytest.raises(TypeError):
+        # loss must be a tensor or list of tensors
         losses = dict(loss=0.5)
         parse_losses(losses)
 
+    # loss values are a tenor and list of tensors
     a_loss = [torch.randn(5, 5), torch.randn(5, 5)]
     b_loss = torch.randn(5, 5)
     losses = dict(a_loss=a_loss, b_loss=b_loss)
