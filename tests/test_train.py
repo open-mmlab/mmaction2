@@ -1,12 +1,15 @@
+import os
+import random
 import tempfile
 
+import numpy as np
 import pytest
 import torch
 import torch.nn as nn
 from mmcv import Config
 from torch.utils.data import Dataset
 
-from mmaction.core.train import _non_dist_train
+from mmaction.core import set_random_seed, train_model
 from mmaction.datasets.registry import DATASETS
 
 
@@ -46,7 +49,7 @@ class ExampleModel(nn.Module):
 
 @pytest.mark.skipif(
     not torch.cuda.is_available(), reason='requires CUDA support')
-def test_non_dist_train():
+def test_train_model():
     model = ExampleModel()
     dataset = ExampleDataset()
     cfg = dict(
@@ -65,21 +68,47 @@ def test_non_dist_train():
         optimizer_config=dict(grad_clip=dict(max_norm=40, norm_type=2)),
         lr_config=dict(policy='step', step=[40, 80]),
         checkpoint_config=dict(interval=10),
+        log_level='INFO',
         log_config=dict(interval=20, hooks=[dict(type='TextLoggerHook')]))
 
+    # test _non_dist_train
     with tempfile.TemporaryDirectory() as tmpdir:
+        # normal train
         cfg['work_dir'] = tmpdir
         config = Config(cfg)
-        _non_dist_train(model, dataset, config)
+        train_model(model, dataset, config)
 
     with tempfile.TemporaryDirectory() as tmpdir:
+        # train with validation
         cfg['work_dir'] = tmpdir
         config = Config(cfg)
-        _non_dist_train(model, dataset, config, validate=True)
+        train_model(model, dataset, config, validate=True)
 
     with tempfile.TemporaryDirectory() as tmpdir:
+        # train with Fp16OptimizerHook
         cfg['work_dir'] = tmpdir
         cfg['fp16'] = dict(loss_scale=512.)
         config = Config(cfg)
         model.fp16_enabled = None
-        _non_dist_train(model, dataset, config)
+        train_model(model, dataset, config)
+
+
+def test_set_random_seed():
+    set_random_seed(0)
+    a_random = random.randint(0, 10)
+    a_np_random = np.random.rand(2, 2)
+    a_torch_random = torch.rand(2, 2)
+    assert torch.backends.cudnn.deterministic is False
+    assert torch.backends.cudnn.benchmark is False
+    assert os.environ['PYTHONHASHSEED'] == str(0)
+
+    set_random_seed(0, True)
+    b_random = random.randint(0, 10)
+    b_np_random = np.random.rand(2, 2)
+    b_torch_random = torch.rand(2, 2)
+    assert torch.backends.cudnn.deterministic is True
+    assert torch.backends.cudnn.benchmark is False
+
+    assert a_random == b_random
+    assert np.equal(a_np_random, b_np_random).all()
+    assert torch.equal(a_torch_random, b_torch_random)

@@ -52,6 +52,7 @@ class TestFileClient(object):
         ceph_backend = FileClient('ceph')
 
         with pytest.raises(NotImplementedError):
+            # get_text is not implemented
             ceph_backend.get_text(self.text_path)
 
         img_bytes = ceph_backend.get(self.img_path)
@@ -66,6 +67,7 @@ class TestFileClient(object):
         mc_backend = FileClient('memcached', **mc_cfg)
 
         with pytest.raises(NotImplementedError):
+            # get_text is not implemented
             mc_backend.get_text(self.text_path)
 
         img_bytes = mc_backend.get(self.img_path)
@@ -74,13 +76,14 @@ class TestFileClient(object):
 
     def test_register_backend(self):
         with pytest.raises(TypeError):
-
+            # unsupported backend
             class TestClass1(object):
                 pass
 
             FileClient.register_backend('TestClass1', TestClass1)
 
         with pytest.raises(TypeError):
+            # unsupported backend
             FileClient.register_backend('int', 0)
 
         class ExampleBackend(BaseStorageBackend):

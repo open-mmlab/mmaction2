@@ -3,7 +3,7 @@ import os.path as osp
 import numpy as np
 import pytest
 
-from mmaction.datasets import RawframeDataset, VideoDataset
+from mmaction.datasets import RawframeDataset, RepeatDataset, VideoDataset
 
 
 class TestDataset(object):
@@ -64,6 +64,7 @@ class TestDataset(object):
     def test_rawframe_pipeline(self):
         target_keys = ['frame_dir', 'total_frames', 'label', 'filename_tmpl']
 
+        # RawframeDataset not in test mode
         rawframe_dataset = RawframeDataset(
             self.frame_ann_file,
             self.frame_pipeline,
@@ -72,6 +73,7 @@ class TestDataset(object):
         result = rawframe_dataset[0]
         assert self.check_keys_contain(result.keys(), target_keys)
 
+        # RawframeDataset in test mode
         rawframe_dataset = RawframeDataset(
             self.frame_ann_file,
             self.frame_pipeline,
@@ -83,6 +85,7 @@ class TestDataset(object):
     def test_video_pipeline(self):
         target_keys = ['filename', 'label']
 
+        # VideoDataset not in test mode
         video_dataset = VideoDataset(
             self.video_ann_file,
             self.video_pipeline,
@@ -91,6 +94,7 @@ class TestDataset(object):
         result = video_dataset[0]
         assert self.check_keys_contain(result.keys(), target_keys)
 
+        # VideoDataset in test mode
         video_dataset = VideoDataset(
             self.video_ann_file,
             self.video_pipeline,
@@ -105,6 +109,7 @@ class TestDataset(object):
                                            self.data_prefix)
 
         with pytest.raises(TypeError):
+            # results must be a list
             rawframe_dataset.evaluate('0.5')
 
         with pytest.raises(AssertionError):
@@ -112,12 +117,15 @@ class TestDataset(object):
             rawframe_dataset.evaluate([0] * 5)
 
         with pytest.raises(TypeError):
+            # topk must be int or tuple of int
             rawframe_dataset.evaluate([0] * len(rawframe_dataset), topk=1.0)
 
         with pytest.raises(KeyError):
+            # unsupported metric
             rawframe_dataset.evaluate(
                 [0] * len(rawframe_dataset), metrics='iou')
 
+        # evaluate top_k_accuracy and mean_class_accuracy metric
         results = [np.array([0.1, 0.5, 0.4])] * 2
         eval_result = rawframe_dataset.evaluate(
             results, metrics=['top_k_accuracy', 'mean_class_accuracy'])
@@ -129,6 +137,7 @@ class TestDataset(object):
                                      self.data_prefix)
 
         with pytest.raises(TypeError):
+            # results must be a list
             video_dataset.evaluate('0.5')
 
         with pytest.raises(AssertionError):
@@ -136,11 +145,14 @@ class TestDataset(object):
             video_dataset.evaluate([0] * 5)
 
         with pytest.raises(TypeError):
+            # topk must be int or tuple of int
             video_dataset.evaluate([0] * len(video_dataset), topk=1.0)
 
         with pytest.raises(KeyError):
+            # unsupported metric
             video_dataset.evaluate([0] * len(video_dataset), metrics='iou')
 
+        # evaluate top_k_accuracy and mean_class_accuracy metric
         results = [np.array([0.1, 0.5, 0.4])] * 2
         eval_result = video_dataset.evaluate(
             results, metrics=['top_k_accuracy', 'mean_class_accuracy'])
@@ -152,3 +164,18 @@ class TestDataset(object):
                                      self.data_prefix)
         assert len(video_dataset) == 2
         assert type(video_dataset[0]) == dict
+
+    def test_repeat_dataset(self):
+        rawframe_dataset = RawframeDataset(self.frame_ann_file,
+                                           self.frame_pipeline,
+                                           self.data_prefix)
+        repeat_dataset = RepeatDataset(rawframe_dataset, 5)
+        assert len(repeat_dataset) == 10
+        result_a = repeat_dataset[0]
+        result_b = repeat_dataset[2]
+        assert set(result_a.keys()) == set(result_b.keys())
+        for key in result_a:
+            if isinstance(result_a[key], np.ndarray):
+                assert np.equal(result_a[key], result_b[key]).all()
+                continue
+            assert result_a[key] == result_b[key]

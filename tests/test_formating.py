@@ -14,9 +14,11 @@ def check_keys_contain(result_keys, target_keys):
 def test_to_tensor():
     to_tensor = ToTensor(['str'])
     with pytest.raises(TypeError):
+        # str cannot be converted to tensor
         results = dict(str='0')
         to_tensor(results)
 
+    # convert tensor, numpy, squence, int, float to tensor
     target_keys = ['tensor', 'numpy', 'sequence', 'int', 'float']
     to_tensor = ToTensor(target_keys)
     origin_results = dict(
@@ -25,7 +27,6 @@ def test_to_tensor():
         sequence=list(range(10)),
         int=1,
         float=0.1)
-
     results = to_tensor(origin_results)
     assert check_keys_contain(results.keys(), target_keys)
     for key in target_keys:
@@ -58,7 +59,6 @@ def test_image_to_tensor():
     assert results['imgs'].shape == torch.Size([3, 256, 256])
     assert isinstance(results['imgs'], torch.Tensor)
     assert torch.equal(results['imgs'].data, origin_results['imgs'])
-
     assert repr(image_to_tensor) == image_to_tensor.__class__.__name__ + \
         f'(keys={keys})'
 
@@ -70,7 +70,6 @@ def test_transpose():
     transpose = Transpose(keys, order)
     results = transpose(results)
     assert results['imgs'].shape == (3, 256, 256)
-
     assert repr(transpose) == transpose.__class__.__name__ + \
         f'(keys={keys}, order={order})'
 
@@ -94,29 +93,31 @@ def test_collect():
     assert set(results['img_meta'].data.keys()) == set(inputs.keys())
     for key in results['img_meta'].data:
         assert results['img_meta'].data[key] == inputs[key]
-
     assert repr(collect) == collect.__class__.__name__ + \
         f'(keys={keys}, meta_keys={collect.meta_keys})'
 
 
 def test_format_shape():
     with pytest.raises(ValueError):
+        # invalid input format
         FormatShape('NHWC')
 
+    # 'NCHW' input format
     results = dict(
         imgs=np.random.randn(3, 224, 224, 3), num_clips=1, clip_len=3)
     format_shape = FormatShape('NCHW')
     assert format_shape(results)['input_shape'] == (3, 3, 224, 224)
 
+    # `NCTHW` input format with num_clips=1, clip_len=3
     results = dict(
         imgs=np.random.randn(3, 224, 224, 3), num_clips=1, clip_len=3)
     format_shape = FormatShape('NCTHW')
     assert format_shape(results)['input_shape'] == (1, 3, 3, 224, 224)
 
+    # `NCTHW` input format with num_clips=2, clip_len=3
     results = dict(
         imgs=np.random.randn(18, 224, 224, 3), num_clips=2, clip_len=3)
     assert format_shape(results)['input_shape'] == (6, 3, 3, 224, 224)
-
     target_keys = ['imgs', 'input_shape']
     assert check_keys_contain(results.keys(), target_keys)
 

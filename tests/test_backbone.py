@@ -34,8 +34,9 @@ def test_resnet_backbone():
         ResNet(50, strides=(1, ), dilations=(1, 1), num_stages=3)
 
     with pytest.raises(TypeError):
-        self = ResNet(50, pretrained=0)
-        self.init_weights()
+        # pretrain must be a str
+        resnet50 = ResNet(50, pretrained=0)
+        resnet50.init_weights()
 
     with pytest.raises(AssertionError):
         # style must be in ['pytorch', 'caffe']
@@ -45,49 +46,69 @@ def test_resnet_backbone():
         # assert not with_cp
         ResNet(18, with_cp=True)
 
-    self = ResNet(18)
-    self.init_weights()
+    # resnet with depth 18, norm_eval False, initial weights
+    resnet18 = ResNet(18)
+    resnet18.init_weights()
 
-    self = ResNet(50, norm_eval=True)
-    self.init_weights()
-    self.train()
-    assert check_norm_state(self.modules(), False)
+    # resnet with depth 50, norm_eval True
+    resnet50 = ResNet(50, norm_eval=True)
+    resnet50.init_weights()
+    resnet50.train()
+    assert check_norm_state(resnet50.modules(), False)
 
-    self = ResNet(
+    # resnet with depth 50, norm_eval True, pretrained
+    resnet50_pretrain = ResNet(
         pretrained='torchvision://resnet50', depth=50, norm_eval=True)
-    self.init_weights()
-    self.train()
-    assert check_norm_state(self.modules(), False)
+    resnet50_pretrain.init_weights()
+    resnet50_pretrain.train()
+    assert check_norm_state(resnet50_pretrain.modules(), False)
 
+    # resnet with depth 50, norm_eval True, frozen_stages 1
     frozen_stages = 1
-    self = ResNet(50, frozen_stages=frozen_stages)
-    self.init_weights()
-    self.train()
-    assert self.norm1.training is False
-    for layer in [self.conv1, self.norm1]:
+    resnet50_frozen = ResNet(50, frozen_stages=frozen_stages)
+    resnet50_frozen.init_weights()
+    resnet50_frozen.train()
+    assert resnet50_frozen.norm1.training is False
+    for layer in [resnet50_frozen.conv1, resnet50_frozen.norm1]:
         for param in layer.parameters():
             assert param.requires_grad is False
     for i in range(1, frozen_stages + 1):
-        layer = getattr(self, f'layer{i}')
+        layer = getattr(resnet50_frozen, f'layer{i}')
         for mod in layer.modules():
             if isinstance(mod, _BatchNorm):
                 assert mod.training is False
         for param in layer.parameters():
             assert param.requires_grad is False
 
-    self = ResNet(50, norm_eval=False)
-    self.init_weights()
-    self.train()
-
     input_shape = (1, 3, 64, 64)
     imgs = _demo_inputs(input_shape)
-    feat = self(imgs)
+
+    # resnet with depth 18 inference
+    resnet18 = ResNet(18, norm_eval=False)
+    resnet18.init_weights()
+    resnet18.train()
+    feat = resnet18(imgs)
+    assert feat.shape == torch.Size([1, 512, 2, 2])
+
+    # resnet with depth 50 inference
+    resnet50 = ResNet(50, norm_eval=False)
+    resnet50.init_weights()
+    resnet50.train()
+    feat = resnet50(imgs)
+    assert feat.shape == torch.Size([1, 2048, 2, 2])
+
+    # resnet with depth 50 in caffe style inference
+    resnet50_caffe = ResNet(50, style='caffe', norm_eval=False)
+    resnet50_caffe.init_weights()
+    resnet50_caffe.train()
+    feat = resnet50_caffe(imgs)
     assert feat.shape == torch.Size([1, 2048, 2, 2])
 
 
 def test_resnet3d_backbone():
     """Test resnet3d backbone"""
     with pytest.raises(KeyError):
+        # depth must in [50, 101, 152]
         ResNet3d(18, None)
 
     with pytest.raises(AssertionError):
@@ -110,43 +131,66 @@ def test_resnet3d_backbone():
             num_stages=4)
 
     with pytest.raises(TypeError):
-        self = ResNet3d(50, ['resnet', 'bninception'])
-        self.init_weights()
+        # pretrain must be str or None.
+        resnet3d_50 = ResNet3d(50, ['resnet', 'bninception'])
+        resnet3d_50.init_weights()
 
-    self = ResNet3d(50, None, pretrained2d=False, norm_eval=True)
-    self.init_weights()
-    self.train()
-    assert check_norm_state(self.modules(), False)
+    # resnet3d with depth 50, no pretrained, norm_eval True
+    resnet3d_50 = ResNet3d(50, None, pretrained2d=False, norm_eval=True)
+    resnet3d_50.init_weights()
+    resnet3d_50.train()
+    assert check_norm_state(resnet3d_50.modules(), False)
 
-    self = ResNet3d(50, 'torchvision://resnet50', norm_eval=True)
-    self.init_weights()
-    self.train()
-    assert check_norm_state(self.modules(), False)
+    # resnet3d with depth 50, pretrained, norm_eval True
+    resnet3d_50_pretrain = ResNet3d(
+        50, 'torchvision://resnet50', norm_eval=True)
+    resnet3d_50_pretrain.init_weights()
+    resnet3d_50_pretrain.train()
+    assert check_norm_state(resnet3d_50_pretrain.modules(), False)
 
-    self = ResNet3d(50, None, pretrained2d=False, norm_eval=False)
-    self.init_weights()
-    self.train()
-    assert check_norm_state(self.modules(), True)
+    # resnet3d with depth 50, no pretrained, norm_eval False
+    resnet3d_50_no_bn_eval = ResNet3d(
+        50, None, pretrained2d=False, norm_eval=False)
+    resnet3d_50_no_bn_eval.init_weights()
+    resnet3d_50_no_bn_eval.train()
+    assert check_norm_state(resnet3d_50_no_bn_eval.modules(), True)
 
+    # resnet3d with depth 50, no pretrained, frozen_stages, norm_eval False
     frozen_stages = 1
-    self = ResNet3d(50, None, pretrained2d=False, frozen_stages=frozen_stages)
-    self.init_weights()
-    self.train()
-    assert self.norm1.training is False
-    for layer in [self.conv1, self.norm1]:
+    resnet3d_50_frozen = ResNet3d(
+        50, None, pretrained2d=False, frozen_stages=frozen_stages)
+    resnet3d_50_frozen.init_weights()
+    resnet3d_50_frozen.train()
+    assert resnet3d_50_frozen.norm1.training is False
+    for layer in [resnet3d_50_frozen.conv1, resnet3d_50_frozen.norm1]:
         for param in layer.parameters():
             assert param.requires_grad is False
     for i in range(1, frozen_stages + 1):
-        layer = getattr(self, f'layer{i}')
+        layer = getattr(resnet3d_50_frozen, f'layer{i}')
         for mod in layer.modules():
             if isinstance(mod, _BatchNorm):
                 assert mod.training is False
         for param in layer.parameters():
             assert param.requires_grad is False
 
+    # resnet3d with depth 50 inference
     input_shape = (1, 3, 6, 64, 64)
     imgs = _demo_inputs(input_shape)
-    feat = self(imgs)
+    feat = resnet3d_50_frozen(imgs)
+    assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
+
+    # resnet3d with depth 50 in caffe style inference
+    resnet3d_50_caffe = ResNet3d(50, None, pretrained2d=False, style='caffe')
+    resnet3d_50_caffe.init_weights()
+    resnet3d_50_caffe.train()
+    feat = resnet3d_50_caffe(imgs)
+    assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
+
+    resnet3d_50_1x1x1 = ResNet3d(
+        50, None, pretrained2d=False, inflate_style='3x3x3')
+    resnet3d_50_1x1x1.init_weights()
+    resnet3d_50_1x1x1.train()
+    feat = resnet3d_50_1x1x1(imgs)
     assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
 
 

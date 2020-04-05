@@ -9,23 +9,12 @@ from mmaction.core.evaluation import (confusion_matrix, mean_class_accuracy,
 
 
 def test_confusion_matrix():
+    # compare custom confusion_matrix with that in sklearn
     gt_labels = [random.randint(0, 9) for _ in range(200)]
     pred_labels = np.random.randint(10, size=200, dtype=np.int64)
     confusion_mat = confusion_matrix(pred_labels, gt_labels)
     gt_confusion_mat = conf_matrix(gt_labels, pred_labels)
     assert np.all(confusion_mat == gt_confusion_mat)
-
-    with pytest.raises(TypeError):
-        confusion_matrix('0.5', 1)
-
-    with pytest.raises(TypeError):
-        confusion_matrix(0.5, '1')
-
-    with pytest.raises(TypeError):
-        confusion_matrix(['0.5'], 1)
-
-    with pytest.raises(TypeError):
-        confusion_matrix(0.5, ['1'])
 
     with pytest.raises(TypeError):
         # y_pred must be list or np.ndarray
@@ -52,6 +41,7 @@ def test_topk():
         np.array([0.6232, 0.9912, -0.8562, 0.0148, 1.6413])
     ]
 
+    # top1 acc
     k = (1, )
     top1_labels_0 = [3, 1, 1, 1]
     top1_labels_25 = [2, 0, 4, 3]
@@ -69,6 +59,7 @@ def test_topk():
     res = top_k_accuracy(scores, top1_labels_100, k)
     assert res == [1.0]
 
+    # top1 acc, top2 acc
     k = (1, 2)
     top2_labels_0_100 = [3, 1, 1, 1]
     top2_labels_25_75 = [3, 1, 2, 3]
@@ -77,6 +68,7 @@ def test_topk():
     res = top_k_accuracy(scores, top2_labels_25_75, k)
     assert res == [0.25, 0.75]
 
+    # top1 acc, top3 acc, top5 acc
     k = (1, 3, 5)
     top5_labels_0_0_100 = [1, 0, 3, 2]
     top5_labels_0_50_100 = [1, 3, 4, 0]
@@ -97,6 +89,7 @@ def test_mean_class_accuracy():
         np.array([0.6232, 0.9912, -0.8562, 0.0148, 1.6413])
     ]
 
+    # test mean class accuracy in [0, 0.25, 1/3, 0.75, 1.0]
     mean_cls_acc_0 = [1, 4, 0, 2]
     mean_cls_acc_25 = [2, 0, 4, 3]
     mean_cls_acc_33 = [2, 2, 2, 3]

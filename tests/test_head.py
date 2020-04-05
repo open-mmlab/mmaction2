@@ -5,7 +5,7 @@ from mmaction.models.heads import BaseHead, I3DHead, TSNHead
 
 
 class ExampleHead(BaseHead):
-
+    # use a ExampleHead to success BaseHead
     def init_weights(self):
         pass
 
@@ -27,56 +27,58 @@ def test_base_head():
 def test_i3d_head():
     """Test loss method, layer construction, attributes and forward function
      in i3d head."""
-    self = I3DHead(num_classes=4, in_channels=2048)
-    self.init_weights()
+    i3d_head = I3DHead(num_classes=4, in_channels=2048)
+    i3d_head.init_weights()
 
-    assert self.num_classes == 4
-    assert self.dropout_ratio == 0.5
-    assert self.in_channels == 2048
-    assert self.init_std == 0.01
+    assert i3d_head.num_classes == 4
+    assert i3d_head.dropout_ratio == 0.5
+    assert i3d_head.in_channels == 2048
+    assert i3d_head.init_std == 0.01
 
-    assert isinstance(self.dropout, nn.Dropout)
-    assert self.dropout.p == self.dropout_ratio
+    assert isinstance(i3d_head.dropout, nn.Dropout)
+    assert i3d_head.dropout.p == i3d_head.dropout_ratio
 
-    assert isinstance(self.fc_cls, nn.Linear)
-    assert self.fc_cls.in_features == self.in_channels
-    assert self.fc_cls.out_features == self.num_classes
+    assert isinstance(i3d_head.fc_cls, nn.Linear)
+    assert i3d_head.fc_cls.in_features == i3d_head.in_channels
+    assert i3d_head.fc_cls.out_features == i3d_head.num_classes
 
-    assert isinstance(self.avg_pool, nn.AdaptiveAvgPool3d)
-    assert self.avg_pool.output_size == (1, 1, 1)
+    assert isinstance(i3d_head.avg_pool, nn.AdaptiveAvgPool3d)
+    assert i3d_head.avg_pool.output_size == (1, 1, 1)
 
     input_shape = (3, 2048, 4, 7, 7)
     feat = torch.rand(input_shape)
 
-    cls_scores = self(feat)
+    # i3d head inference
+    cls_scores = i3d_head(feat)
     assert cls_scores.shape == torch.Size([3, 4])
 
 
 def test_tsn_head():
     """Test loss method, layer construction, attributes and forward function
      in tsn head."""
-    self = TSNHead(num_classes=4, in_channels=2048)
-    self.init_weights()
+    tsn_head = TSNHead(num_classes=4, in_channels=2048)
+    tsn_head.init_weights()
 
-    assert self.num_classes == 4
-    assert self.dropout_ratio == 0.4
-    assert self.in_channels == 2048
-    assert self.init_std == 0.01
-    assert self.consensus.dim == 1
+    assert tsn_head.num_classes == 4
+    assert tsn_head.dropout_ratio == 0.4
+    assert tsn_head.in_channels == 2048
+    assert tsn_head.init_std == 0.01
+    assert tsn_head.consensus.dim == 1
 
-    assert isinstance(self.dropout, nn.Dropout)
-    assert self.dropout.p == self.dropout_ratio
+    assert isinstance(tsn_head.dropout, nn.Dropout)
+    assert tsn_head.dropout.p == tsn_head.dropout_ratio
 
-    assert isinstance(self.fc_cls, nn.Linear)
-    assert self.fc_cls.in_features == self.in_channels
-    assert self.fc_cls.out_features == self.num_classes
+    assert isinstance(tsn_head.fc_cls, nn.Linear)
+    assert tsn_head.fc_cls.in_features == tsn_head.in_channels
+    assert tsn_head.fc_cls.out_features == tsn_head.num_classes
 
-    assert isinstance(self.avg_pool, nn.AdaptiveAvgPool2d)
-    assert self.avg_pool.output_size == (1, 1)
+    assert isinstance(tsn_head.avg_pool, nn.AdaptiveAvgPool2d)
+    assert tsn_head.avg_pool.output_size == (1, 1)
 
     input_shape = (8, 2048, 7, 7)
     feat = torch.rand(input_shape)
 
+    # tsn head inference
     num_segs = input_shape[0]
-    cls_scores = self(feat, num_segs)
+    cls_scores = tsn_head(feat, num_segs)
     assert cls_scores.shape == torch.Size([1, 4])
