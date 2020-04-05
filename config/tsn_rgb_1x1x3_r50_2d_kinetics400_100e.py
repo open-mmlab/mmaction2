@@ -106,13 +106,12 @@ total_epochs = 100
 checkpoint_config = dict(interval=5)
 evaluation = dict(
     interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
-# yapf:disable
 log_config = dict(
     interval=20,
     hooks=[
-        dict(type='TextLoggerHook')
+        dict(type='TextLoggerHook'),
+        # dict(type='TensorboardLoggerHook'),
     ])
-# yapf:enable
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
