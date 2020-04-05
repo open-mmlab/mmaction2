@@ -2,7 +2,9 @@ from abc import ABCMeta, abstractmethod
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
+
+from ...core import top_k_accuracy
+from ..builder import build_loss
 
 
 class AvgConsensus(nn.Module):
@@ -32,12 +34,14 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
     Attributes:
         num_classes (int): Number of classes to be classified.
         in_channels (int): Number of channels in input feature.
+        loss_cls (dict): Config for building loss.
     """
 
-    def __init__(self, num_classes, in_channels):
+    def __init__(self, num_classes, in_channels, loss_cls):
         super(BaseHead, self).__init__()
         self.num_classes = num_classes
         self.in_channels = in_channels
+        self.loss_cls = build_loss(loss_cls)
 
     @abstractmethod
     def init_weights(self):
@@ -51,6 +55,10 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
         losses = dict()
         if labels.shape == torch.Size([]):
             labels = labels.unsqueeze(0)
-        losses['loss_cls'] = F.cross_entropy(cls_score, labels)
+        losses['loss_cls'] = self.loss_cls(cls_score, labels)
+        top_k_acc = top_k_accuracy(cls_score.detach().cpu().numpy(),
+                                   labels.detach().cpu().numpy(), (1, 5))
+        losses['top1_acc'] = torch.tensor(top_k_acc[0])
+        losses['top5_acc'] = torch.tensor(top_k_acc[1])
 
         return losses
