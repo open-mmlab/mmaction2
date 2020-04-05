@@ -1,5 +1,6 @@
 import tempfile
 
+import pytest
 import torch
 import torch.nn as nn
 from mmcv import Config
@@ -43,6 +44,8 @@ class ExampleModel(nn.Module):
         return losses
 
 
+@pytest.mark.skipif(
+    not torch.cuda.is_available(), reason='requires CUDA support')
 def test_non_dist_train():
     model = ExampleModel()
     dataset = ExampleDataset()
