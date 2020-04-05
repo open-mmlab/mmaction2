@@ -14,7 +14,7 @@ class ExampleHead(BaseHead):
 
 
 def test_base_head():
-    head = ExampleHead(3, 400)
+    head = ExampleHead(3, 400, dict(type='CrossEntropyLoss'))
 
     cls_scores = torch.rand((3, 4))
     # When truth is non-empty then cls loss should be nonzero for random inputs

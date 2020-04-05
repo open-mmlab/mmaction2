@@ -12,6 +12,8 @@ class TSNHead(BaseHead):
     Attributes:
         num_classes (int): Number of classes to be classified.
         in_channels (int): Number of channels in input feature.
+        loss_cls (dict): Config for building loss.
+            Default: dict(type='CrossEntropyLoss')
         spatial_type (str): Pooling type in spatial dimension. Default: 'avg'.
         consensus (dict): Consensus config dict.
         dropout_ratio (float): Probability of dropout layer. Default: 0.4.
@@ -21,11 +23,12 @@ class TSNHead(BaseHead):
     def __init__(self,
                  num_classes,
                  in_channels,
+                 loss_cls=dict(type='CrossEntropyLoss'),
                  spatial_type='avg',
                  consensus=dict(type='AvgConsensus', dim=1),
                  dropout_ratio=0.4,
                  init_std=0.01):
-        super(TSNHead, self).__init__(num_classes, in_channels)
+        super(TSNHead, self).__init__(num_classes, in_channels, loss_cls)
 
         self.spatial_type = spatial_type
         self.dropout_ratio = dropout_ratio
