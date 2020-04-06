@@ -318,8 +318,8 @@ class TestAugumentations(object):
         assert resize_results['img_shape'] == (256, 341)
 
         assert repr(resize) == resize.__class__.__name__ +\
-            f'(scale={(341, 256)}, keep_ratio={False}, ' \
-            f"interpolation='bilinear')"
+            '(scale=(341, 256), keep_ratio=False, ' \
+            "interpolation='bilinear')"
 
     def test_flip(self):
         with pytest.raises(ValueError):
@@ -361,7 +361,7 @@ class TestAugumentations(object):
         assert flip_results['imgs'].shape == imgs.shape
 
         assert repr(flip) == flip.__class__.__name__ +\
-            f"(flip_ratio={1}, direction='vertical')"
+            "(flip_ratio=1, direction='vertical')"
 
     def test_normalize(self):
         with pytest.raises(TypeError):
@@ -404,7 +404,7 @@ class TestAugumentations(object):
 
         assert normalize.__repr__() == normalize.__class__.__name__ +\
             f'(mean={np.array([123.675, 116.28, 103.53])}, ' \
-            f'std={np.array([58.395, 57.12, 57.375])}, to_bgr={True})'
+            f'std={np.array([58.395, 57.12, 57.375])}, to_bgr=True)'
 
     def test_center_crop(self):
         with pytest.raises(TypeError):
@@ -433,7 +433,7 @@ class TestAugumentations(object):
         assert center_crop_results['img_shape'] == (224, 224)
 
         assert repr(center_crop) == center_crop.__class__.__name__ + \
-            f'(crop_size={(224, 224)})'
+            '(crop_size=(224, 224))'
 
     def test_three_crop(self):
         with pytest.raises(TypeError):
@@ -471,7 +471,7 @@ class TestAugumentations(object):
         assert three_crop_results['img_shape'] == (224, 224)
 
         assert repr(three_crop) == three_crop.__class__.__name__ +\
-            f'(crop_size={(224, 224)})'
+            '(crop_size=(224, 224))'
 
     def test_ten_crop(self):
         with pytest.raises(TypeError):
@@ -498,4 +498,4 @@ class TestAugumentations(object):
         assert ten_crop_results['img_shape'] == (224, 224)
 
         assert repr(ten_crop) == ten_crop.__class__.__name__ +\
-            f'(crop_size={(224, 224)})'
+            '(crop_size=(224, 224))'

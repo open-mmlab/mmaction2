@@ -115,6 +115,32 @@ def test_i3d():
             recognizer(one_img, None, return_loss=False)
 
 
+def test_tsm():
+    model, train_cfg, test_cfg = _get_recognizer_cfg(
+        'tsm_rgb_1x1x8_r50_2d_kinetics400_100e.py')
+    model['backbone']['pretrained'] = None
+    # 'type' has been popped in test_config.py
+    model['cls_head']['consensus'] = dict(type='AvgConsensus', dim=1)
+
+    recognizer = build_recognizer(
+        model, train_cfg=train_cfg, test_cfg=test_cfg)  # flake8: E501
+
+    input_shape = (8, 8, 3, 224, 224)
+    mm_inputs = _demo_inputs(input_shape)
+
+    imgs = mm_inputs.pop('imgs')
+
+    gt_labels = mm_inputs['gt_labels']
+    losses = recognizer(imgs, gt_labels)
+    assert isinstance(losses, dict)
+
+    # Test forward test
+    with torch.no_grad():
+        img_list = [g[None, :] for g in imgs]
+        for one_img in img_list:
+            recognizer(one_img, None, return_loss=False)
+
+
 def _demo_inputs(input_shape=(1, 3, 3, 224, 224), model_type='tsn'):
     """
     Create a superset of inputs needed to run test or train batches.
