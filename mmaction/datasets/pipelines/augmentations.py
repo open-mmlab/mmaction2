@@ -12,14 +12,17 @@ from ..registry import PIPELINES
 class RandomCrop(object):
     """Vanilla square random crop that specifics the output size.
 
+    Required keys are "imgs", added or modified keys are "imgs", "crop_bbox"
+    and "img_shape".
+
     Attributes:
         size (int): The output size of the images.
     """
 
     def __init__(self, size):
         if not isinstance(size, int):
-            # size should be a int
-            raise TypeError(f'size must be a int, but got {type(size)}')
+            # size should be an int
+            raise TypeError(f'Size must be an int, but got {type(size)}')
         self.size = size
 
     def __call__(self, results):
@@ -28,7 +31,7 @@ class RandomCrop(object):
         # the cropping size should be less or equal to the origin size
         assert self.size <= height and self.size <= width
 
-        if (height == self.size and width == self.size):
+        if height == self.size and width == self.size:
             results['crop_bbox'] = np.array([0, 0, self.size, self.size],
                                             dtype=np.int32)
             results['img_shape'] = results['imgs'].shape[1:3]
@@ -62,6 +65,9 @@ class RandomResizedCrop(object):
     """Random crop that specifics the area and height-weight
         ratio range.
 
+    Required keys are "imgs", added or modified keys are "imgs", "crop_bbox"
+    and "img_shape".
+
     Attributes:
         area_range (Tuple[float]): The candidate area scales range of
             output cropped images. Default: (0.08, 1.0).
@@ -76,11 +82,11 @@ class RandomResizedCrop(object):
         self.aspect_ratio_range = aspect_ratio_range
         # area_range should be a tuple of float
         if not mmcv.is_tuple_of(self.area_range, float):
-            raise TypeError(f'area_range must be a tuple of float, '
+            raise TypeError(f'Area_range must be a tuple of float, '
                             f'but got {type(area_range)}')
         # aspect_ratio_range should be a tuple of float
         if not mmcv.is_tuple_of(self.aspect_ratio_range, float):
-            raise TypeError(f'aspect_ratio_range must be a tuple of float, '
+            raise TypeError(f'Aspect_ratio_range must be a tuple of float, '
                             f'but got {type(aspect_ratio_range)}')
 
     @staticmethod

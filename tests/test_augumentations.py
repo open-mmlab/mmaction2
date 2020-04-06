@@ -98,14 +98,16 @@ class TestAugumentations(object):
             target_imgs = target_imgs[..., ::-1].copy()
         self.assert_img_equal(origin_imgs, target_imgs)
 
-    def test_fixed_size_random_crop(self):
+    def test_random_crop(self):
         with pytest.raises(TypeError):
+            # size must be an int
             RandomCrop(size=(112, 112))
         with pytest.raises(AssertionError):
+            # "size > height" or "size > width" is not allowed
             imgs = np.random.rand(2, 224, 341, 3)
             results = dict(imgs=imgs)
             random_crop = RandomCrop(size=320)
-            random_crop_result = random_crop(results)
+            random_crop(results)
 
         target_keys = ['imgs', 'crop_bbox', 'img_shape']
 
@@ -145,7 +147,7 @@ class TestAugumentations(object):
         assert repr(random_crop) == random_crop.__class__.__name__ +\
             f'(size=224)'
 
-    def test_fixed_range_random_crop(self):
+    def test_random_resized_crop(self):
         with pytest.raises(TypeError):
             # area_range must be a tuple of float
             RandomResizedCrop(area_range=0.5)
@@ -321,6 +323,7 @@ class TestAugumentations(object):
 
     def test_flip(self):
         with pytest.raises(ValueError):
+            # direction must be in ['horizontal', 'vertical']
             Flip(direction='vertically')
 
         target_keys = ['imgs', 'flip_direction']
@@ -362,10 +365,12 @@ class TestAugumentations(object):
 
     def test_normalize(self):
         with pytest.raises(TypeError):
+            # mean must be list, tuple or np.ndarray
             Normalize(
                 dict(mean=[123.675, 116.28, 103.53]), [58.395, 57.12, 57.375])
 
         with pytest.raises(TypeError):
+            # std must be list, tuple or np.ndarray
             Normalize([123.675, 116.28, 103.53],
                       dict(std=[58.395, 57.12, 57.375]))
 
@@ -403,12 +408,15 @@ class TestAugumentations(object):
 
     def test_center_crop(self):
         with pytest.raises(TypeError):
+            # crop_size must be int or tuple of int
             CenterCrop(0.5)
 
         with pytest.raises(TypeError):
+            # crop_size must be int or tuple of int
             CenterCrop('224')
 
         with pytest.raises(TypeError):
+            # crop_size must be int or tuple of int
             CenterCrop([224, 224])
 
         # center crop with crop_size 224
@@ -429,12 +437,15 @@ class TestAugumentations(object):
 
     def test_three_crop(self):
         with pytest.raises(TypeError):
+            # crop_size must be int or tuple of int
             ThreeCrop(0.5)
 
         with pytest.raises(TypeError):
+            # crop_size must be int or tuple of int
             ThreeCrop('224')
 
         with pytest.raises(TypeError):
+            # crop_size must be int or tuple of int
             ThreeCrop([224, 224])
 
         # three crop with crop_size 120
@@ -464,12 +475,15 @@ class TestAugumentations(object):
 
     def test_ten_crop(self):
         with pytest.raises(TypeError):
+            # crop_size must be int or tuple of int
             TenCrop(0.5)
 
         with pytest.raises(TypeError):
+            # crop_size must be int or tuple of int
             TenCrop('224')
 
         with pytest.raises(TypeError):
+            # crop_size must be int or tuple of int
             TenCrop([224, 224])
 
         # ten crop with crop_size 224
