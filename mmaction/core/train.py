@@ -262,6 +262,7 @@ def _non_dist_train(model,
             **cfg.optimizer_config, **fp16_cfg, distributed=False)
     else:
         optimizer_config = cfg.optimizer_config
+
     runner.register_training_hooks(cfg.lr_config, optimizer_config,
                                    cfg.checkpoint_config, cfg.log_config)
 
