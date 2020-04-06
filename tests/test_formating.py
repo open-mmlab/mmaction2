@@ -79,7 +79,7 @@ def test_collect():
         imgs=np.random.randn(256, 256, 3),
         label=[1],
         filename='test.txt',
-        ori_shape=(256, 256, 3),
+        original_shape=(256, 256, 3),
         img_shape=(256, 256, 3),
         pad_shape=(256, 256, 3),
         flip_direction='vertical',

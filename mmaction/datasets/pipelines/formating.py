@@ -112,7 +112,7 @@ class Collect(object):
 
         - "filename": path to the image file
 
-        - "ori_shape": original shape of the image as a tuple (h, w, c)
+        - "original_shape": original shape of the image as a tuple (h, w, c)
 
         - "pad_shape": image shape after padding
 
@@ -124,7 +124,7 @@ class Collect(object):
 
     def __init__(self,
                  keys,
-                 meta_keys=('filename', 'label', 'ori_shape', 'img_shape',
+                 meta_keys=('filename', 'label', 'original_shape', 'img_shape',
                             'pad_shape', 'flip_direction', 'img_norm_cfg')):
         self.keys = keys
         self.meta_keys = meta_keys

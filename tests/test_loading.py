@@ -253,7 +253,7 @@ class TestLoading(object):
         assert len(dense_sample_frames_results['frame_inds']) == 120
 
     def test_pyav_decode(self):
-        target_keys = ['frame_inds', 'imgs', 'ori_shape']
+        target_keys = ['frame_inds', 'imgs', 'original_shape']
 
         # test PyAV with 2 dim input
         video_result = copy.deepcopy(self.video_results)
@@ -262,7 +262,7 @@ class TestLoading(object):
         pyav_decode = PyAVDecode()
         pyav_decode_result = pyav_decode(video_result)
         assert self.check_keys_contain(pyav_decode_result.keys(), target_keys)
-        assert pyav_decode_result['ori_shape'] == (256, 340)
+        assert pyav_decode_result['original_shape'] == (256, 340)
         assert pyav_decode_result['imgs'].shape == (len(
             video_result['frame_inds']), 256, 340, 3)
 
@@ -272,7 +272,7 @@ class TestLoading(object):
         pyav_decode = PyAVDecode()
         pyav_decode_result = pyav_decode(video_result)
         assert self.check_keys_contain(pyav_decode_result.keys(), target_keys)
-        assert pyav_decode_result['ori_shape'] == (256, 340)
+        assert pyav_decode_result['original_shape'] == (256, 340)
         assert pyav_decode_result['imgs'].shape == (len(
             video_result['frame_inds']), 256, 340, 3)
 
@@ -282,7 +282,7 @@ class TestLoading(object):
         pyav_decode = PyAVDecode(multi_thread=True)
         pyav_decode_result = pyav_decode(video_result)
         assert self.check_keys_contain(pyav_decode_result.keys(), target_keys)
-        assert pyav_decode_result['ori_shape'] == (256, 340)
+        assert pyav_decode_result['original_shape'] == (256, 340)
         assert pyav_decode_result['imgs'].shape == (len(
             video_result['frame_inds']), 256, 340, 3)
 
@@ -290,7 +290,7 @@ class TestLoading(object):
             f'(multi_thread={True})'
 
     def test_decord_decode(self):
-        target_keys = ['frame_inds', 'imgs', 'ori_shape']
+        target_keys = ['frame_inds', 'imgs', 'original_shape']
 
         # test Decord with 2 dim input
         video_result = copy.deepcopy(self.video_results)
@@ -300,7 +300,7 @@ class TestLoading(object):
         decord_decode_result = decord_decode(video_result)
         assert self.check_keys_contain(decord_decode_result.keys(),
                                        target_keys)
-        assert decord_decode_result['ori_shape'] == (256, 340)
+        assert decord_decode_result['original_shape'] == (256, 340)
         assert decord_decode_result['imgs'].shape == (len(
             video_result['frame_inds']), 256, 340, 3)
 
@@ -311,12 +311,12 @@ class TestLoading(object):
         decord_decode_result = decord_decode(video_result)
         assert self.check_keys_contain(decord_decode_result.keys(),
                                        target_keys)
-        assert decord_decode_result['ori_shape'] == (256, 340)
+        assert decord_decode_result['original_shape'] == (256, 340)
         assert decord_decode_result['imgs'].shape == (len(
             video_result['frame_inds']), 256, 340, 3)
 
     def test_opencv_decode(self):
-        target_keys = ['frame_inds', 'imgs', 'ori_shape']
+        target_keys = ['frame_inds', 'imgs', 'original_shape']
 
         # test OpenCV with 2 dim input
         video_result = copy.deepcopy(self.video_results)
@@ -326,7 +326,7 @@ class TestLoading(object):
         opencv_decode_result = opencv_decode(video_result)
         assert self.check_keys_contain(opencv_decode_result.keys(),
                                        target_keys)
-        assert opencv_decode_result['ori_shape'] == (256, 340)
+        assert opencv_decode_result['original_shape'] == (256, 340)
         assert opencv_decode_result['imgs'].shape == (len(
             video_result['frame_inds']), 256, 340, 3)
 
@@ -337,12 +337,12 @@ class TestLoading(object):
         opencv_decode_result = opencv_decode(video_result)
         assert self.check_keys_contain(opencv_decode_result.keys(),
                                        target_keys)
-        assert opencv_decode_result['ori_shape'] == (256, 340)
+        assert opencv_decode_result['original_shape'] == (256, 340)
         assert opencv_decode_result['imgs'].shape == (len(
             video_result['frame_inds']), 256, 340, 3)
 
     def test_frame_selector(self):
-        target_keys = ['frame_inds', 'imgs', 'ori_shape']
+        target_keys = ['frame_inds', 'imgs', 'original_shape']
 
         # test frame selector with 2 dim input
         inputs = copy.deepcopy(self.frame_results)
@@ -353,7 +353,7 @@ class TestLoading(object):
         assert self.check_keys_contain(results.keys(), target_keys)
         assert results['imgs'].shape == (len(inputs['frame_inds']), 240, 320,
                                          3)
-        assert results['ori_shape'] == (240, 320)
+        assert results['original_shape'] == (240, 320)
 
         # test frame selector with 1 dim input
         inputs = copy.deepcopy(self.frame_results)
@@ -363,7 +363,7 @@ class TestLoading(object):
         assert self.check_keys_contain(results.keys(), target_keys)
         assert results['imgs'].shape == (len(inputs['frame_inds']), 240, 320,
                                          3)
-        assert results['ori_shape'] == (240, 320)
+        assert results['original_shape'] == (240, 320)
 
         # test frame selector with 1 dim input
         inputs = copy.deepcopy(self.frame_results)
@@ -373,7 +373,7 @@ class TestLoading(object):
         assert self.check_keys_contain(results.keys(), target_keys)
         assert results['imgs'].shape == (len(inputs['frame_inds']), 240, 320,
                                          3)
-        assert results['ori_shape'] == (240, 320)
+        assert results['original_shape'] == (240, 320)
 
         # test frame selector in turbojpeg decording backend
         inputs = copy.deepcopy(self.frame_results)
@@ -384,4 +384,4 @@ class TestLoading(object):
         assert self.check_keys_contain(results.keys(), target_keys)
         assert results['imgs'].shape == (len(inputs['frame_inds']), 240, 320,
                                          3)
-        assert results['ori_shape'] == (240, 320)
+        assert results['original_shape'] == (240, 320)

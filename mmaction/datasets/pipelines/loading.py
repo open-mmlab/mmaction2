@@ -230,7 +230,7 @@ class PyAVDecode(object):
     PyAV: https://github.com/mikeboers/PyAV
 
     Required keys are "filename" and "frame_inds",
-    added or modified keys are "imgs" and "ori_shape".
+    added or modified keys are "imgs" and "original_shape".
 
     Attributes:
         multi_thread (bool): If set to True, it will apply multi
@@ -283,7 +283,7 @@ class PyAVDecode(object):
 
         imgs = imgs[results['frame_inds']]
         results['imgs'] = np.array(imgs)
-        results['ori_shape'] = imgs.shape[1:3]
+        results['original_shape'] = imgs.shape[1:3]
         return results
 
     def __repr__(self):
@@ -299,7 +299,7 @@ class DecordDecode(object):
     Decord: https://github.com/dmlc/decord
 
     Required keys are "filename" and "frame_inds",
-    added or modified keys are "imgs" and "ori_shape".
+    added or modified keys are "imgs" and "original_shape".
     """
 
     def __call__(self, results):
@@ -321,7 +321,7 @@ class DecordDecode(object):
         imgs = np.array(imgs)
 
         results['imgs'] = np.array(imgs)
-        results['ori_shape'] = imgs.shape[1:3]
+        results['original_shape'] = imgs.shape[1:3]
         return results
 
 
@@ -330,7 +330,7 @@ class OpenCVDecode(object):
     """Using OpenCV to decode the video.
 
     Required keys are "filename" and "frame_inds",
-    added or modified keys are "imgs" and "ori_shape".
+    added or modified keys are "imgs" and "original_shape".
     """
 
     def __call__(self, results):
@@ -352,7 +352,7 @@ class OpenCVDecode(object):
         # The default channel order of OpenCV is BGR, thus we change it to RGB
         imgs = imgs[:, :, :, ::-1]
         results['imgs'] = np.array(imgs)
-        results['ori_shape'] = imgs.shape[1:3]
+        results['original_shape'] = imgs.shape[1:3]
 
         return results
 
@@ -362,7 +362,7 @@ class FrameSelector(object):
     """Select raw frames with given indices
 
     Required keys are "frame_dir", "filename_tmpl" and "frame_inds",
-    added or modified keys are "imgs" and "ori_shape".
+    added or modified keys are "imgs" and "original_shape".
 
     Attributes:
         io_backend (str): IO backend where frames are stored. Default: 'disk'.
@@ -404,6 +404,6 @@ class FrameSelector(object):
 
         imgs = np.array(imgs)
         results['imgs'] = imgs
-        results['ori_shape'] = imgs.shape[1:3]
+        results['original_shape'] = imgs.shape[1:3]
 
         return results
