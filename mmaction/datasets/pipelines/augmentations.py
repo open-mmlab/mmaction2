@@ -21,14 +21,12 @@ class RandomCrop(object):
 
     def __init__(self, size):
         if not isinstance(size, int):
-            # size should be an int
             raise TypeError(f'Size must be an int, but got {type(size)}')
         self.size = size
 
     def __call__(self, results):
         imgs = results['imgs']
         height, width = imgs.shape[1:3]
-        # the cropping size should be less or equal to the origin size
         assert self.size <= height and self.size <= width
 
         if height == self.size and width == self.size:
@@ -80,11 +78,9 @@ class RandomResizedCrop(object):
                  aspect_ratio_range=(3 / 4, 4 / 3)):
         self.area_range = area_range
         self.aspect_ratio_range = aspect_ratio_range
-        # area_range should be a tuple of float
         if not mmcv.is_tuple_of(self.area_range, float):
             raise TypeError(f'Area_range must be a tuple of float, '
                             f'but got {type(area_range)}')
-        # aspect_ratio_range should be a tuple of float
         if not mmcv.is_tuple_of(self.aspect_ratio_range, float):
             raise TypeError(f'Aspect_ratio_range must be a tuple of float, '
                             f'but got {type(aspect_ratio_range)}')
@@ -102,9 +98,7 @@ class RandomResizedCrop(object):
         Returns:
             A random crop bbox ggiven the area range and aspect ratio range.
         """
-        # area_range must be greater than 0 and less than or equal to 1
         assert 0 < area_range[0] <= area_range[1] <= 1
-        # aspect_ratio_range should not be negative
         assert 0 < aspect_ratio_range[0] <= aspect_ratio_range[1]
 
         area = img.shape[1] * img.shape[2]
