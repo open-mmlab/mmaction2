@@ -177,5 +177,9 @@ class TestDataset(object):
         for key in result_a:
             if isinstance(result_a[key], np.ndarray):
                 assert np.equal(result_a[key], result_b[key]).all()
-                continue
-            assert result_a[key] == result_b[key]
+            elif isinstance(result_a[key], list):
+                assert all(
+                    np.array_equal(a, b)
+                    for (a, b) in zip(result_a[key], result_b[key]))
+            else:
+                assert result_a[key] == result_b[key]

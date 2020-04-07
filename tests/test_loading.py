@@ -263,7 +263,7 @@ class TestLoading(object):
         pyav_decode_result = pyav_decode(video_result)
         assert self.check_keys_contain(pyav_decode_result.keys(), target_keys)
         assert pyav_decode_result['original_shape'] == (256, 340)
-        assert pyav_decode_result['imgs'].shape == (len(
+        assert np.array(pyav_decode_result['imgs']).shape == (len(
             video_result['frame_inds']), 256, 340, 3)
 
         # test PyAV with 1 dim input
@@ -273,7 +273,7 @@ class TestLoading(object):
         pyav_decode_result = pyav_decode(video_result)
         assert self.check_keys_contain(pyav_decode_result.keys(), target_keys)
         assert pyav_decode_result['original_shape'] == (256, 340)
-        assert pyav_decode_result['imgs'].shape == (len(
+        assert np.array(pyav_decode_result['imgs']).shape == (len(
             video_result['frame_inds']), 256, 340, 3)
 
         # PyAV with multi thread
@@ -283,7 +283,7 @@ class TestLoading(object):
         pyav_decode_result = pyav_decode(video_result)
         assert self.check_keys_contain(pyav_decode_result.keys(), target_keys)
         assert pyav_decode_result['original_shape'] == (256, 340)
-        assert pyav_decode_result['imgs'].shape == (len(
+        assert np.array(pyav_decode_result['imgs']).shape == (len(
             video_result['frame_inds']), 256, 340, 3)
 
         assert repr(pyav_decode) == pyav_decode.__class__.__name__ + \
@@ -301,7 +301,7 @@ class TestLoading(object):
         assert self.check_keys_contain(decord_decode_result.keys(),
                                        target_keys)
         assert decord_decode_result['original_shape'] == (256, 340)
-        assert decord_decode_result['imgs'].shape == (len(
+        assert np.array(decord_decode_result['imgs']).shape == (len(
             video_result['frame_inds']), 256, 340, 3)
 
         # test Decord with 1 dim input
@@ -312,7 +312,7 @@ class TestLoading(object):
         assert self.check_keys_contain(decord_decode_result.keys(),
                                        target_keys)
         assert decord_decode_result['original_shape'] == (256, 340)
-        assert decord_decode_result['imgs'].shape == (len(
+        assert np.array(decord_decode_result['imgs']).shape == (len(
             video_result['frame_inds']), 256, 340, 3)
 
     def test_opencv_decode(self):
@@ -327,7 +327,7 @@ class TestLoading(object):
         assert self.check_keys_contain(opencv_decode_result.keys(),
                                        target_keys)
         assert opencv_decode_result['original_shape'] == (256, 340)
-        assert opencv_decode_result['imgs'].shape == (len(
+        assert np.array(opencv_decode_result['imgs']).shape == (len(
             video_result['frame_inds']), 256, 340, 3)
 
         # test OpenCV with 1 dim input
@@ -338,7 +338,7 @@ class TestLoading(object):
         assert self.check_keys_contain(opencv_decode_result.keys(),
                                        target_keys)
         assert opencv_decode_result['original_shape'] == (256, 340)
-        assert opencv_decode_result['imgs'].shape == (len(
+        assert np.array(opencv_decode_result['imgs']).shape == (len(
             video_result['frame_inds']), 256, 340, 3)
 
     def test_frame_selector(self):
@@ -351,8 +351,8 @@ class TestLoading(object):
         frame_selector = FrameSelector(io_backend='disk')
         results = frame_selector(inputs)
         assert self.check_keys_contain(results.keys(), target_keys)
-        assert results['imgs'].shape == (len(inputs['frame_inds']), 240, 320,
-                                         3)
+        assert np.array(results['imgs']).shape == (len(inputs['frame_inds']),
+                                                   240, 320, 3)
         assert results['original_shape'] == (240, 320)
 
         # test frame selector with 1 dim input
@@ -361,8 +361,8 @@ class TestLoading(object):
         frame_selector = FrameSelector(io_backend='disk')
         results = frame_selector(inputs)
         assert self.check_keys_contain(results.keys(), target_keys)
-        assert results['imgs'].shape == (len(inputs['frame_inds']), 240, 320,
-                                         3)
+        assert np.array(results['imgs']).shape == (len(inputs['frame_inds']),
+                                                   240, 320, 3)
         assert results['original_shape'] == (240, 320)
 
         # test frame selector with 1 dim input
@@ -371,8 +371,8 @@ class TestLoading(object):
         frame_selector = FrameSelector(io_backend='disk')
         results = frame_selector(inputs)
         assert self.check_keys_contain(results.keys(), target_keys)
-        assert results['imgs'].shape == (len(inputs['frame_inds']), 240, 320,
-                                         3)
+        assert np.array(results['imgs']).shape == (len(inputs['frame_inds']),
+                                                   240, 320, 3)
         assert results['original_shape'] == (240, 320)
 
         # test frame selector in turbojpeg decording backend
@@ -382,6 +382,6 @@ class TestLoading(object):
             io_backend='disk', decoding_backend='turbojpeg')
         results = frame_selector(inputs)
         assert self.check_keys_contain(results.keys(), target_keys)
-        assert results['imgs'].shape == (len(inputs['frame_inds']), 240, 320,
-                                         3)
+        assert np.array(results['imgs']).shape == (len(inputs['frame_inds']),
+                                                   240, 320, 3)
         assert results['original_shape'] == (240, 320)
