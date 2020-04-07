@@ -26,35 +26,28 @@ class RandomCrop(object):
 
     def __call__(self, results):
         imgs = results['imgs']
-        height, width = imgs.shape[1:3]
-        assert self.size <= height and self.size <= width
-
-        if height == self.size and width == self.size:
-            results['crop_bbox'] = np.array([0, 0, self.size, self.size],
-                                            dtype=np.int32)
-            results['img_shape'] = results['imgs'].shape[1:3]
-
-            return results
+        img_h, img_w = imgs[0].shape[:2]
+        assert self.size <= img_h and self.size <= img_w
 
         y_offset = 0
         x_offset = 0
-        if height > self.size:
-            y_offset = int(np.random.randint(0, height - self.size))
-        if width > self.size:
-            x_offset = int(np.random.randint(0, width - self.size))
+        if img_h > self.size:
+            y_offset = int(np.random.randint(0, img_h - self.size))
+        if img_w > self.size:
+            x_offset = int(np.random.randint(0, img_w - self.size))
 
         results['crop_bbox'] = np.array(
-            [x_offset, y_offset, x_offset + self.size, y_offset + self.size],
-            dtype=np.int32)
-        results['imgs'] = imgs[:, y_offset:y_offset + self.size,
-                               x_offset:x_offset + self.size, :]
+            [x_offset, y_offset, x_offset + self.size, y_offset + self.size])
+        results['imgs'] = [
+            img[y_offset:y_offset + self.size,
+                x_offset:x_offset + self.size, :] for img in imgs
+        ]
 
-        results['img_shape'] = results['imgs'].shape[1:3]
+        results['img_shape'] = results['imgs'][0].shape[:2]
         return results
 
     def __repr__(self):
-        repr_str = self.__class__.__name__
-        repr_str += f'(size={self.size})'
+        repr_str = f'{self.__class__.__name__}(size={self.size})'
         return repr_str
 
 
@@ -86,7 +79,7 @@ class RandomResizedCrop(object):
                             f'but got {type(aspect_ratio_range)}')
 
     @staticmethod
-    def get_crop_bbox(img, area_range, aspect_ratio_range, max_attempts=10):
+    def get_crop_bbox(imgs, area_range, aspect_ratio_range, max_attempts=10):
         """Get a crop bbox given the area range and aspect ratio range.
 
         Args:
@@ -101,7 +94,8 @@ class RandomResizedCrop(object):
         assert 0 < area_range[0] <= area_range[1] <= 1
         assert 0 < aspect_ratio_range[0] <= aspect_ratio_range[1]
 
-        area = img.shape[1] * img.shape[2]
+        img_h, img_w = imgs[0].shape[:2]
+        area = img_h * img_w
 
         min_ar, max_ar = aspect_ratio_range
         aspect_ratios = np.exp(
@@ -116,15 +110,15 @@ class RandomResizedCrop(object):
         for i in range(max_attempts):
             crop_w = candidate_crop_w[i]
             crop_h = candidate_crop_h[i]
-            if crop_h <= img.shape[1] and crop_w <= img.shape[2]:
-                x_offset = random.randint(0, img.shape[2] - crop_w)
-                y_offset = random.randint(0, img.shape[1] - crop_h)
+            if crop_h <= img_h and crop_w <= img_w:
+                x_offset = random.randint(0, img_w - crop_w)
+                y_offset = random.randint(0, img_h - crop_h)
                 return x_offset, y_offset, x_offset + crop_w, y_offset + crop_h
 
         # Fallback
-        crop_size = min(img.shape[1], img.shape[2])
-        x_offset = (img.shape[2] - crop_size) // 2
-        y_offset = (img.shape[1] - crop_size) // 2
+        crop_size = min(img_h, img_w)
+        x_offset = (img_w - crop_size) // 2
+        y_offset = (img_h - crop_size) // 2
         return x_offset, y_offset, x_offset + crop_size, y_offset + crop_size
 
     def __call__(self, results):
@@ -133,17 +127,16 @@ class RandomResizedCrop(object):
         left, top, right, bottom = self.get_crop_bbox(imgs, self.area_range,
                                                       self.aspect_ratio_range)
 
-        results['crop_bbox'] = np.array([left, top, right, bottom],
-                                        dtype=np.int32)
-        results['imgs'] = imgs[:, top:bottom, left:right, :]
+        results['crop_bbox'] = np.array([left, top, right, bottom])
+        results['imgs'] = [img[top:bottom, left:right, :] for img in imgs]
 
-        results['img_shape'] = results['imgs'].shape[1:3]
+        results['img_shape'] = results['imgs'][0].shape[:2]
         return results
 
     def __repr__(self):
-        repr_str = self.__class__.__name__
-        repr_str += (f'(area_range={self.area_range}, '
-                     f'aspect_ratio_range={self.aspect_ratio_range})')
+        repr_str = (f'{self.__class__.__name__}('
+                    f'area_range={self.area_range}, '
+                    f'aspect_ratio_range={self.aspect_ratio_range})')
         return repr_str
 
 
@@ -202,7 +195,7 @@ class MultiScaleCrop(object):
 
     def __call__(self, results):
         imgs = results['imgs']
-        img_h, img_w = imgs.shape[1:3]
+        img_h, img_w = imgs[0].shape[:2]
 
         base_size = min(img_h, img_w)
 
@@ -249,21 +242,22 @@ class MultiScaleCrop(object):
             x_offset, y_offset = random.choice(candidate_offsets)
 
         results['crop_bbox'] = np.array(
-            [x_offset, y_offset, x_offset + crop_w, y_offset + crop_h],
-            dtype=np.int32)
-        results['imgs'] = imgs[:, y_offset:y_offset + crop_h,
-                               x_offset:x_offset + crop_w, :]
+            [x_offset, y_offset, x_offset + crop_w, y_offset + crop_h])
+        results['imgs'] = [
+            img[y_offset:y_offset + crop_h, x_offset:x_offset + crop_w, :]
+            for img in imgs
+        ]
 
-        results['img_shape'] = results['imgs'].shape[1:3]
+        results['img_shape'] = results['imgs'][0].shape[:2]
         results['scales'] = self.scales
         return results
 
     def __repr__(self):
-        repr_str = self.__class__.__name__
-        repr_str += (f'(input_size={self.input_size}, scales={self.scales}, '
-                     f'max_wh_scale_gap={self.max_wh_scale_gap}, '
-                     f'random_crop={self.random_crop},'
-                     f'num_fixed_crops={self.num_fixed_crops})')
+        repr_str = (f'{self.__class__.__name__}('
+                    f'input_size={self.input_size}, scales={self.scales}, '
+                    f'max_wh_scale_gap={self.max_wh_scale_gap}, '
+                    f'random_crop={self.random_crop},'
+                    f'num_fixed_crops={self.num_fixed_crops})')
         return repr_str
 
 
@@ -307,7 +301,7 @@ class Resize(object):
 
     def __call__(self, results):
         imgs = results['imgs']
-        n, h, w, c = imgs.shape
+        h, w, c = imgs[0].shape
         if self.keep_ratio:
             new_size, self.scale_factor = mmcv.rescale_size((w, h),
                                                             self.scale,
@@ -318,24 +312,23 @@ class Resize(object):
             self.scale_factor = np.array(
                 [out_w / w, out_h / h, out_w / w, out_h / h], dtype=np.float32)
 
-        rimgs = np.empty((n, out_h, out_w, c), dtype=imgs.dtype)
-        for i in range(n):
+        rimgs = [
             mmcv.imresize(
-                imgs[i], (out_w, out_h),
-                out=rimgs[i],
-                interpolation=self.interpolation)
+                img, (out_w, out_h), interpolation=self.interpolation)
+            for img in imgs
+        ]
 
         results['imgs'] = rimgs
-        results['img_shape'] = results['imgs'].shape[1:3]
+        results['img_shape'] = results['imgs'][0].shape[:2]
         results['keep_ratio'] = self.keep_ratio
         results['scale_factor'] = self.scale_factor
 
         return results
 
     def __repr__(self):
-        repr_str = self.__class__.__name__
-        repr_str += f'(scale={self.scale}, keep_ratio={self.keep_ratio}, ' \
-            f"interpolation='{self.interpolation}')"
+        repr_str = (f'{self.__class__.__name__}('
+                    f'scale={self.scale}, keep_ratio={self.keep_ratio}, '
+                    f"interpolation='{self.interpolation}')")
         return repr_str
 
 
@@ -378,9 +371,9 @@ class Flip(object):
         return results
 
     def __repr__(self):
-        repr_str = self.__class__.__name__
-        repr_str += f'(flip_ratio={self.flip_ratio}, ' \
-            f"direction='{self.direction}')"
+        repr_str = (
+            f'{self.__class__.__name__}('
+            f"flip_ratio={self.flip_ratio}, direction='{self.direction}')")
         return repr_str
 
 
@@ -413,7 +406,11 @@ class Normalize(object):
         self.to_bgr = to_bgr
 
     def __call__(self, results):
-        imgs = results['imgs'].astype(np.float32)
+        n = len(results['imgs'])
+        h, w, c = results['imgs'][0].shape
+        imgs = np.empty((n, h, w, c), dtype=np.float32)
+        for i, img in enumerate(results['imgs']):
+            imgs[i] = img
 
         for img in imgs:
             mmcv.imnormalize_(img, self.mean, self.std, self.to_bgr)
@@ -424,8 +421,8 @@ class Normalize(object):
         return results
 
     def __repr__(self):
-        repr_str = self.__class__.__name__
-        repr_str += f'(mean={self.mean}, std={self.std}, to_bgr={self.to_bgr})'
+        repr_str = (f'{self.__class__.__name__}('
+                    f'mean={self.mean}, std={self.std}, to_bgr={self.to_bgr})')
         return repr_str
 
 
@@ -449,7 +446,7 @@ class CenterCrop(object):
     def __call__(self, results):
         imgs = results['imgs']
 
-        img_h, img_w = imgs.shape[1:3]
+        img_h, img_w = imgs[0].shape[:2]
         crop_w, crop_h = self.crop_size
 
         left = (img_w - crop_w) // 2
@@ -457,14 +454,13 @@ class CenterCrop(object):
         right = left + crop_w
         bottom = top + crop_h
         results['crop_bbox'] = np.array([left, top, right, bottom])
-        results['imgs'] = imgs[:, top:bottom, left:right, :]
-        results['img_shape'] = results['imgs'].shape[1:3]
+        results['imgs'] = [img[top:bottom, left:right, :] for img in imgs]
+        results['img_shape'] = results['imgs'][0].shape[:2]
 
         return results
 
     def __repr__(self):
-        repr_str = self.__class__.__name__
-        repr_str += f'(crop_size={self.crop_size})'
+        repr_str = f'{self.__class__.__name__}(crop_size={self.crop_size})'
         return repr_str
 
 
@@ -489,7 +485,7 @@ class ThreeCrop(object):
 
     def __call__(self, results):
         imgs = results['imgs']
-        img_h, img_w = imgs.shape[1:3]
+        img_h, img_w = imgs[0].shape[:2]
         crop_w, crop_h = self.crop_size
         assert crop_h == img_h or crop_w == img_w
 
@@ -508,26 +504,26 @@ class ThreeCrop(object):
                 (0, h_step),  # middle
             ]
 
-        img_crops = []
+        cropped = []
         crop_bboxes = []
         for x_offset, y_offset in offsets:
             bbox = [x_offset, y_offset, x_offset + crop_w, y_offset + crop_h]
-            crop = imgs[:, y_offset:y_offset + crop_h,
-                        x_offset:x_offset + crop_w, :]
-            img_crops.append(crop)
-            crop_bboxes.extend([bbox for _ in range(imgs.shape[0])])
+            crop = [
+                img[y_offset:y_offset + crop_h, x_offset:x_offset + crop_w, :]
+                for img in imgs
+            ]
+            cropped.extend(crop)
+            crop_bboxes.extend([bbox for _ in range(len(imgs))])
 
         crop_bboxes = np.array(crop_bboxes)
-        imgs = np.concatenate(img_crops, axis=0)
-        results['imgs'] = imgs
+        results['imgs'] = cropped
         results['crop_bbox'] = crop_bboxes
-        results['img_shape'] = results['imgs'].shape[1:3]
+        results['img_shape'] = results['imgs'][0].shape[:2]
 
         return results
 
     def __repr__(self):
-        repr_str = self.__class__.__name__
-        repr_str += f'(crop_size={self.crop_size})'
+        repr_str = f'{self.__class__.__name__}(crop_size={self.crop_size})'
         return repr_str
 
 
@@ -553,7 +549,7 @@ class TenCrop(object):
     def __call__(self, results):
         imgs = results['imgs']
 
-        img_h, img_w = imgs.shape[1:3]
+        img_h, img_w = imgs[0].shape[:2]
         crop_w, crop_h = self.crop_size
 
         w_step = (img_w - crop_w) // 4
@@ -570,23 +566,23 @@ class TenCrop(object):
         img_crops = list()
         crop_bboxes = list()
         for x_offset, y_offsets in offsets:
-            crop = imgs[:, y_offsets:y_offsets + crop_h,
-                        x_offset:x_offset + crop_w, :]
-            flip_crop = np.flip(crop, axis=2).copy()
+            crop = [
+                img[y_offsets:y_offsets + crop_h,
+                    x_offset:x_offset + crop_w, :] for img in imgs
+            ]
+            flip_crop = [np.flip(c, axis=1).copy() for c in crop]
             bbox = [x_offset, y_offsets, x_offset + crop_w, y_offsets + crop_h]
-            img_crops.append(crop)
-            img_crops.append(flip_crop)
+            img_crops.extend(crop)
+            img_crops.extend(flip_crop)
             crop_bboxes.extend([bbox for _ in range(imgs.shape[0] * 2)])
 
         crop_bboxes = np.array(crop_bboxes)
-        imgs = np.concatenate(img_crops, axis=0)
-        results['imgs'] = imgs
+        results['imgs'] = img_crops
         results['crop_bbox'] = crop_bboxes
-        results['img_shape'] = results['imgs'].shape[1:3]
+        results['img_shape'] = results['imgs'][0].shape[:2]
 
         return results
 
     def __repr__(self):
-        repr_str = self.__class__.__name__
-        repr_str += f'(crop_size={self.crop_size})'
+        repr_str = f'{self.__class__.__name__}(crop_size={self.crop_size})'
         return repr_str

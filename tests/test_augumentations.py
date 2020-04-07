@@ -28,15 +28,16 @@ class TestAugumentations(object):
         """Check if the result_bbox is in correspond to result_imgs."""
 
         def check_single_crop(origin_imgs, result_imgs, result_bbox):
-            result_img_shape = (result_imgs.shape[1], result_imgs.shape[2])
+            result_img_shape = result_imgs[0].shape[:2]
             crop_w = result_bbox[2] - result_bbox[0]
             crop_h = result_bbox[3] - result_bbox[1]
             crop_shape = (crop_h, crop_w)
             if not crop_shape == result_img_shape:
                 return False
             left, top, right, bottom = result_bbox
-            return np.equal(origin_imgs[:, top:bottom, left:right, :],
-                            result_imgs).all()
+            return np.array_equal(
+                np.array(origin_imgs)[:, top:bottom, left:right, :],
+                np.array(result_imgs))
 
         if result_bbox.ndim == 1:
             return check_single_crop(origin_imgs, result_imgs, result_bbox)
@@ -44,18 +45,16 @@ class TestAugumentations(object):
             num_batch = len(origin_imgs)
             for i, bbox in enumerate(result_bbox):
                 if num_crops == 10:
-                    if (i / num_batch) % 2 == 0:
-                        flag = check_single_crop(
-                            origin_imgs[i % num_batch:(i + 1) % num_batch],
-                            result_imgs[i:(i + 1)], bbox)
+                    if (i // num_batch) % 2 == 0:
+                        flag = check_single_crop([origin_imgs[i % num_batch]],
+                                                 [result_imgs[i]], bbox)
                     else:
                         flag = check_single_crop(
-                            origin_imgs[i % num_batch:(i + 1) % num_batch],
-                            np.flip(result_imgs[i:(i + 1)], axis=2), bbox)
+                            [origin_imgs[i % num_batch]],
+                            [np.flip(result_imgs[i], axis=1)], bbox)
                 else:
-                    flag = check_single_crop(
-                        origin_imgs[i % num_batch:(i + 1) % num_batch],
-                        result_imgs[i:(i + 1)], bbox)
+                    flag = check_single_crop([origin_imgs[i % num_batch]],
+                                             [result_imgs[i]], bbox)
                 if not flag:
                     return False
             return True
@@ -74,7 +73,7 @@ class TestAugumentations(object):
                 for j in range(h):
                     for k in range(w):
                         for l in range(c):
-                            if result_imgs[i, j, k, l] != origin_imgs[i, j, w - 1 - k, l]:  # noqa:E501
+                            if result_imgs[i][j, k, l] != origin_imgs[i][j, w - 1 - k, l]:  # noqa:E501
                                 return False
             # yapf: enable
         else:
@@ -83,7 +82,7 @@ class TestAugumentations(object):
                 for j in range(h):
                     for k in range(w):
                         for l in range(c):
-                            if result_imgs[i, j, k, l] != origin_imgs[i, h - 1 - j, k, l]:  # noqa:E501
+                            if result_imgs[i][j, k, l] != origin_imgs[i][h - 1 - j, k, l]:  # noqa:E501
                                 return False
             # yapf: enable
         return True
@@ -144,8 +143,8 @@ class TestAugumentations(object):
         h, w = random_crop_result['img_shape']
         assert h == w == 224
 
-        assert repr(random_crop) == random_crop.__class__.__name__ +\
-            f'(size=224)'
+        assert repr(random_crop) == (
+            random_crop.__class__.__name__ + '(size=224)')
 
     def test_random_resized_crop(self):
         with pytest.raises(TypeError):
@@ -179,8 +178,9 @@ class TestAugumentations(object):
         assert ((0.08 - eps <= h * w / 256 / 341)
                 and (h * w / 256 / 341 <= 1 + eps))
         assert (3. / 4. - eps <= h / w) and (h / w - eps <= 4. / 3.)
-        assert repr(random_crop) == random_crop.__class__.__name__ + \
-            f'(area_range={(0.08, 1.0)}, aspect_ratio_range={(3 / 4, 4 / 3)})'
+        assert repr(random_crop) == (
+            random_crop.__class__.__name__ +
+            f'(area_range={(0.08, 1.0)}, aspect_ratio_range={(3 / 4, 4 / 3)})')
 
         random_crop = RandomResizedCrop(
             area_range=(0.9, 0.9), aspect_ratio_range=(10.0, 10.1))
@@ -272,10 +272,10 @@ class TestAugumentations(object):
         assert (multi_scale_crop_results['img_shape'] in [(256, 256),
                                                           (204, 204)])
 
-        assert repr(multi_scale_crop) == multi_scale_crop.__class__.__name__ +\
-            '(input_size=(224, 224), scales=(1, 0.8), ' \
-            'max_wh_scale_gap=0, random_crop=True,' \
-            'num_fixed_crops=5)'
+        assert repr(multi_scale_crop) == (
+            multi_scale_crop.__class__.__name__ +
+            '(input_size=(224, 224), scales=(1, 0.8), ' +
+            'max_wh_scale_gap=0, random_crop=True,' + 'num_fixed_crops=5)')
 
     def test_resize(self):
         with pytest.raises(ValueError):
@@ -317,9 +317,10 @@ class TestAugumentations(object):
             [341 / 320, 256 / 240, 341 / 320, 256 / 240], dtype=np.float32))
         assert resize_results['img_shape'] == (256, 341)
 
-        assert repr(resize) == resize.__class__.__name__ +\
-            '(scale=(341, 256), keep_ratio=False, ' \
-            "interpolation='bilinear')"
+        assert repr(resize) == (
+            resize.__class__.__name__ +
+            f'(scale={(341, 256)}, keep_ratio={False}, ' +
+            f"interpolation='bilinear')")
 
     def test_flip(self):
         with pytest.raises(ValueError):
@@ -334,7 +335,7 @@ class TestAugumentations(object):
         flip = Flip(flip_ratio=0, direction='horizontal')
         flip_results = flip(results)
         assert self.check_keys_contain(flip_results.keys(), target_keys)
-        assert np.equal(imgs, results['imgs']).all()
+        assert np.array_equal(imgs, results['imgs'])
         assert id(flip_results['imgs']) == id(results['imgs'])
         assert flip_results['imgs'].shape == imgs.shape
 
@@ -360,8 +361,9 @@ class TestAugumentations(object):
         assert id(flip_results['imgs']) == id(results['imgs'])
         assert flip_results['imgs'].shape == imgs.shape
 
-        assert repr(flip) == flip.__class__.__name__ +\
-            "(flip_ratio=1, direction='vertical')"
+        assert repr(flip) == (
+            flip.__class__.__name__ +
+            f"(flip_ratio={1}, direction='vertical')")
 
     def test_normalize(self):
         with pytest.raises(TypeError):
@@ -402,9 +404,10 @@ class TestAugumentations(object):
         self.check_normalize(imgs, normalize_results['imgs'],
                              normalize_results['img_norm_cfg'])
 
-        assert normalize.__repr__() == normalize.__class__.__name__ +\
-            f'(mean={np.array([123.675, 116.28, 103.53])}, ' \
-            f'std={np.array([58.395, 57.12, 57.375])}, to_bgr=True)'
+        assert normalize.__repr__() == (
+            normalize.__class__.__name__ +
+            f'(mean={np.array([123.675, 116.28, 103.53])}, ' +
+            f'std={np.array([58.395, 57.12, 57.375])}, to_bgr={True})')
 
     def test_center_crop(self):
         with pytest.raises(TypeError):
@@ -432,8 +435,8 @@ class TestAugumentations(object):
             center_crop_results['crop_bbox'] == np.array([48, 8, 272, 232]))
         assert center_crop_results['img_shape'] == (224, 224)
 
-        assert repr(center_crop) == center_crop.__class__.__name__ + \
-            '(crop_size=(224, 224))'
+        assert repr(center_crop) == (
+            center_crop.__class__.__name__ + f'(crop_size={(224, 224)})')
 
     def test_three_crop(self):
         with pytest.raises(TypeError):
@@ -470,8 +473,8 @@ class TestAugumentations(object):
                                three_crop_results['crop_bbox'], 3)
         assert three_crop_results['img_shape'] == (224, 224)
 
-        assert repr(three_crop) == three_crop.__class__.__name__ +\
-            '(crop_size=(224, 224))'
+        assert repr(three_crop) == (
+            three_crop.__class__.__name__ + f'(crop_size={(224, 224)})')
 
     def test_ten_crop(self):
         with pytest.raises(TypeError):
@@ -486,8 +489,8 @@ class TestAugumentations(object):
             # crop_size must be int or tuple of int
             TenCrop([224, 224])
 
-        # ten crop with crop_size 224
-        imgs = np.random.rand(2, 224, 224, 3)
+        # ten crop with crop_size 256
+        imgs = np.random.rand(2, 256, 256, 3)
         results = dict(imgs=imgs)
         ten_crop = TenCrop(crop_size=224)
         ten_crop_results = ten_crop(results)
@@ -497,5 +500,5 @@ class TestAugumentations(object):
                                ten_crop_results['crop_bbox'], 10)
         assert ten_crop_results['img_shape'] == (224, 224)
 
-        assert repr(ten_crop) == ten_crop.__class__.__name__ +\
-            '(crop_size=(224, 224))'
+        assert repr(ten_crop) == (
+            ten_crop.__class__.__name__ + f'(crop_size={(224, 224)})')

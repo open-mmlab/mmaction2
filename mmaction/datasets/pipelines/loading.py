@@ -275,15 +275,13 @@ class PyAVDecode(object):
             imgs.append(frame.to_rgb().to_ndarray())
             i += 1
 
-        imgs = np.array(imgs)
         # the available frame in pyav may be less than its length,
         # which may raise error
         if len(imgs) <= max_inds:
             results['frame_inds'] = np.mod(results['frame_inds'], len(imgs))
 
-        imgs = imgs[results['frame_inds']]
-        results['imgs'] = np.array(imgs)
-        results['original_shape'] = imgs.shape[1:3]
+        results['imgs'] = [imgs[i] for i in results['frame_inds']]
+        results['original_shape'] = imgs[0].shape[:2]
         return results
 
     def __repr__(self):
@@ -318,10 +316,9 @@ class DecordDecode(object):
         for frame_idx in results['frame_inds']:
             cur_frame = container[frame_idx].asnumpy()
             imgs.append(cur_frame)
-        imgs = np.array(imgs)
 
-        results['imgs'] = np.array(imgs)
-        results['original_shape'] = imgs.shape[1:3]
+        results['imgs'] = imgs
+        results['original_shape'] = imgs[0].shape[:2]
         return results
 
 
@@ -351,8 +348,8 @@ class OpenCVDecode(object):
         imgs = np.array(imgs)
         # The default channel order of OpenCV is BGR, thus we change it to RGB
         imgs = imgs[:, :, :, ::-1]
-        results['imgs'] = np.array(imgs)
-        results['original_shape'] = imgs.shape[1:3]
+        results['imgs'] = list(imgs)
+        results['original_shape'] = imgs[0].shape[:2]
 
         return results
 
@@ -402,8 +399,7 @@ class FrameSelector(object):
             cur_frame = mmcv.imfrombytes(img_bytes, channel_order='rgb')
             imgs.append(cur_frame)
 
-        imgs = np.array(imgs)
         results['imgs'] = imgs
-        results['original_shape'] = imgs.shape[1:3]
+        results['original_shape'] = imgs[0].shape[:2]
 
         return results
