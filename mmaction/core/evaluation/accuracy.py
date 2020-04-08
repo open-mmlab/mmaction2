@@ -32,13 +32,13 @@ def confusion_matrix(y_pred, y_real):
     label_set = np.unique(np.concatenate((y_pred, y_real)))
     num_labels = len(label_set)
     label_map = {label: i for i, label in enumerate(label_set)}
-    conf_mat = np.zeros((num_labels, num_labels), dtype=np.int64)
+    confusion_mat = np.zeros((num_labels, num_labels), dtype=np.int64)
     for rlabel, plabel in zip(y_real, y_pred):
         index_real = label_map[rlabel]
         index_pred = label_map[plabel]
-        conf_mat[index_real][index_pred] += 1
+        confusion_mat[index_real][index_pred] += 1
 
-    return conf_mat
+    return confusion_mat
 
 
 def mean_class_accuracy(scores, labels):
