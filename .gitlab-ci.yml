@@ -25,7 +25,7 @@ test:
   script:
     - echo "Start building..."
     - conda install av -c conda-forge -y
-    - pip install PyTurboJPEG pillow==6.2.2 scikit-learn pytest coverage
+    - pip install PyTurboJPEG pillow==6.2.2 pytest coverage
     - pip install -e .
     - python -c "import mmaction; print(mmaction.__version__)"
     - echo "Start testing..."

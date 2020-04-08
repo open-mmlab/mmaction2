@@ -2,19 +2,33 @@ import random
 
 import numpy as np
 import pytest
-from sklearn.metrics import confusion_matrix as conf_matrix
 
 from mmaction.core.evaluation import (confusion_matrix, mean_class_accuracy,
                                       top_k_accuracy)
 
 
+def gt_confusion_matrix(gt_labels, pred_labels):
+    """Calculate the ground truth confusion matrix"""
+    max_index = max(max(gt_labels), max(pred_labels))
+    confusion_mat = np.zeros((max_index + 1, max_index + 1), dtype=np.int64)
+    for gt, pred in zip(gt_labels, pred_labels):
+        confusion_mat[gt][pred] += 1
+    del_index = []
+    for i in range(max_index):
+        if sum(confusion_mat[i]) == 0 and sum(confusion_mat[:, i]) == 0:
+            del_index.append(i)
+    confusion_mat = np.delete(confusion_mat, del_index, axis=0)
+    confusion_mat = np.delete(confusion_mat, del_index, axis=1)
+    return confusion_mat
+
+
 def test_confusion_matrix():
-    # compare custom confusion_matrix with that in sklearn
-    gt_labels = [random.randint(0, 9) for _ in range(200)]
-    pred_labels = np.random.randint(10, size=200, dtype=np.int64)
+    # custom confusion_matrix
+    gt_labels = [np.int64(random.randint(0, 9)) for _ in range(100)]
+    pred_labels = np.random.randint(10, size=100, dtype=np.int64)
     confusion_mat = confusion_matrix(pred_labels, gt_labels)
-    gt_confusion_mat = conf_matrix(gt_labels, pred_labels)
-    assert np.all(confusion_mat == gt_confusion_mat)
+    gt_confusion_mat = gt_confusion_matrix(gt_labels, pred_labels)
+    assert np.array_equal(confusion_mat, gt_confusion_mat)
 
     with pytest.raises(TypeError):
         # y_pred must be list or np.ndarray
@@ -90,11 +104,11 @@ def test_mean_class_accuracy():
     ]
 
     # test mean class accuracy in [0, 0.25, 1/3, 0.75, 1.0]
-    mean_cls_acc_0 = [1, 4, 0, 2]
-    mean_cls_acc_25 = [2, 0, 4, 3]
-    mean_cls_acc_33 = [2, 2, 2, 3]
-    mean_cls_acc_75 = [4, 2, 2, 4]
-    mean_cls_acc_100 = [2, 2, 2, 4]
+    mean_cls_acc_0 = np.int64([1, 4, 0, 2])
+    mean_cls_acc_25 = np.int64([2, 0, 4, 3])
+    mean_cls_acc_33 = np.int64([2, 2, 2, 3])
+    mean_cls_acc_75 = np.int64([4, 2, 2, 4])
+    mean_cls_acc_100 = np.int64([2, 2, 2, 4])
     assert mean_class_accuracy(scores, mean_cls_acc_0) == 0
     assert mean_class_accuracy(scores, mean_cls_acc_25) == 0.25
     assert mean_class_accuracy(scores, mean_cls_acc_33) == 1 / 3
