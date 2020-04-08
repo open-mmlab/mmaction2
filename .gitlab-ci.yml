@@ -1,4 +1,6 @@
-image: registry.sensetime.com/eig-research/pytorch:pytorch1.3.1-cuda10.1-devel
+variables:
+  PARROTS_IMAGE: registry.sensetime.com/platform/cicuda9:pat0.6.0dev-v0.1.6
+  PYTORCH_IMAGE: registry.sensetime.com/eig-research/pytorch:pytorch1.3.1-cuda10.1-devel
 
 stages:
     - linting
@@ -12,22 +14,38 @@ before_script:
   - pip --version
   - python -c "import torch; print(torch.__version__)"
 
-linting:
+.linting_template: &linting_template_def
   stage: linting
   script:
     - pip install flake8 yapf isort
     - flake8 .
     - isort -rc --check-only --diff mmaction/ tools/ tests/
-    - yapf -r -d mmaction/ tools/ tests/ configs/
+    - yapf -r -d mmaction/ tools/ tests/ configs
 
-test:
+.test_template: &test_template_def
   stage: test
   script:
     - echo "Start building..."
     - conda install av -c conda-forge -y
-    - pip install PyTurboJPEG pillow==6.2.2 pytest coverage
+    - pip install PyTurboJPEG pillow==6.2.1 pytest coverage
     - pip install -e .
     - python -c "import mmaction; print(mmaction.__version__)"
     - echo "Start testing..."
     - coverage run --branch --source mmaction -m pytest tests/
     - coverage report -m
+
+linting:pytorch1.3-cuda10:
+  image: $PYTORCH_IMAGE
+  <<: *linting_template_def
+
+linting:pat0.6.0dev-cuda9:
+  image: $PARROTS_IMAGE
+  <<: *linting_template_def
+
+test:pytorch1.3-cuda10:
+  image: $PYTORCH_IMAGE
+  <<: *test_template_def
+
+test:pat0.6.0dev-cuda9:
+  image: $PARROTS_IMAGE
+  <<: *test_template_def

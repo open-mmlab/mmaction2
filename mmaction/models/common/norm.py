@@ -1,10 +1,12 @@
 import torch.nn as nn
 
+from mmaction.utils import SyncBatchNorm
+
 norm_cfg = {
     # format: layer_type: (abbreviation, module)
     'BN': ('bn', nn.BatchNorm2d),
     'BN3d': ('bn', nn.BatchNorm3d),
-    'SyncBN': ('bn', nn.SyncBatchNorm),
+    'SyncBN': ('bn', SyncBatchNorm),
     'GN': ('gn', nn.GroupNorm),
 }
 

@@ -9,6 +9,7 @@ import torch
 import torchvision
 
 import mmaction
+from .parrots_wrapper import CUDA_HOME, get_build_config
 
 
 def collect_env():
@@ -20,7 +21,6 @@ def collect_env():
     env_info['CUDA available'] = cuda_available
 
     if cuda_available:
-        from torch.utils.cpp_extension import CUDA_HOME
         env_info['CUDA_HOME'] = CUDA_HOME
 
         if CUDA_HOME is not None and osp.isdir(CUDA_HOME):
@@ -44,8 +44,7 @@ def collect_env():
     env_info['GCC'] = gcc
 
     env_info['PyTorch'] = torch.__version__
-    env_info['PyTorch compiling details'] = torch.__config__.show()
-
+    env_info['PyTorch compiling details'] = get_build_config()
     env_info['TorchVision'] = torchvision.__version__
 
     env_info['OpenCV'] = cv2.__version__

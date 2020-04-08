@@ -2,9 +2,9 @@ import numpy as np
 import pytest
 import torch
 import torch.nn as nn
-from torch.nn.modules.batchnorm import _BatchNorm
 
 from mmaction.models import ResNet, ResNet3d, ResNetTSM
+from mmaction.utils import _BatchNorm
 
 
 def check_norm_state(modules, train_state):
@@ -177,22 +177,46 @@ def test_resnet3d_backbone():
     # resnet3d with depth 50 inference
     input_shape = (1, 3, 6, 64, 64)
     imgs = _demo_inputs(input_shape)
-    feat = resnet3d_50_frozen(imgs)
-    assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
+    # parrots 3dconv is only implemented on gpu
+    if torch.__version__ == 'parrots':
+        if torch.cuda.is_available():
+            resnet3d_50_frozen = resnet3d_50_frozen.cuda()
+            imgs_gpu = imgs.cuda()
+            feat = resnet3d_50_frozen(imgs_gpu)
+            assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
+    else:
+        feat = resnet3d_50_frozen(imgs)
+        assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
 
     # resnet3d with depth 50 in caffe style inference
     resnet3d_50_caffe = ResNet3d(50, None, pretrained2d=False, style='caffe')
     resnet3d_50_caffe.init_weights()
     resnet3d_50_caffe.train()
-    feat = resnet3d_50_caffe(imgs)
-    assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
+    # parrots 3dconv is only implemented on gpu
+    if torch.__version__ == 'parrots':
+        if torch.cuda.is_available():
+            resnet3d_50_caffe = resnet3d_50_caffe.cuda()
+            imgs_gpu = imgs.cuda()
+            feat = resnet3d_50_caffe(imgs_gpu)
+            assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
+    else:
+        feat = resnet3d_50_caffe(imgs)
+        assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
 
     resnet3d_50_1x1x1 = ResNet3d(
         50, None, pretrained2d=False, inflate_style='3x3x3')
     resnet3d_50_1x1x1.init_weights()
     resnet3d_50_1x1x1.train()
-    feat = resnet3d_50_1x1x1(imgs)
-    assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
+    # parrots 3dconv is only implemented on gpu
+    if torch.__version__ == 'parrots':
+        if torch.cuda.is_available():
+            resnet3d_50_1x1x1 = resnet3d_50_1x1x1.cuda()
+            imgs_gpu = imgs.cuda()
+            feat = resnet3d_50_1x1x1(imgs_gpu)
+            assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
+    else:
+        feat = resnet3d_50_1x1x1(imgs)
+        assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
 
 
 def test_resnet_tsm_backbone():

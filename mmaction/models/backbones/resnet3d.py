@@ -2,12 +2,11 @@ import torch.nn as nn
 import torch.utils.checkpoint as cp
 from mmcv.cnn import constant_init, kaiming_init
 from mmcv.runner import _load_checkpoint, load_checkpoint
-from torch.nn.modules.batchnorm import _BatchNorm
 from torch.nn.modules.utils import _ntuple, _triple
 
 from mmaction.models.common import build_norm_layer
 from mmaction.models.registry import BACKBONES
-from mmaction.utils import get_root_logger
+from mmaction.utils import _BatchNorm, get_root_logger
 
 
 def get_layer_names(layer_params):
