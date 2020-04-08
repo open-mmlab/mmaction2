@@ -105,14 +105,29 @@ def test_i3d():
     imgs = mm_inputs.pop('imgs')
 
     gt_labels = mm_inputs['gt_labels']
-    losses = recognizer(imgs, gt_labels)
-    assert isinstance(losses, dict)
+    # parrots 3dconv is only implemented on gpu
+    if torch.__version__ == 'parrots':
+        if torch.cuda.is_available():
+            recognizer = recognizer.cuda()
+            imgs = imgs.cuda()
+            gt_labels = gt_labels.cuda()
+            losses = recognizer(imgs, gt_labels)
+            assert isinstance(losses, dict)
 
-    # Test forward test
-    with torch.no_grad():
-        img_list = [g[None, :] for g in imgs]
-        for one_img in img_list:
-            recognizer(one_img, None, return_loss=False)
+            # Test forward test
+            with torch.no_grad():
+                img_list = [g[None, :] for g in imgs]
+                for one_img in img_list:
+                    recognizer(one_img, None, return_loss=False)
+    else:
+        losses = recognizer(imgs, gt_labels)
+        assert isinstance(losses, dict)
+
+        # Test forward test
+        with torch.no_grad():
+            img_list = [g[None, :] for g in imgs]
+            for one_img in img_list:
+                recognizer(one_img, None, return_loss=False)
 
 
 def test_tsm():

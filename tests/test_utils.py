@@ -9,7 +9,7 @@ import torch
 import torchvision
 
 import mmaction
-from mmaction.utils import collect_env
+from mmaction.utils import CUDA_HOME, collect_env, get_build_config
 
 
 def test_collect_env():
@@ -36,7 +36,6 @@ def test_collect_env():
     assert env_info['Python'] == sys.version.replace('\n', '')
     assert env_info['CUDA available'] == cuda_available
     if cuda_available:
-        from torch.utils.cpp_extension import CUDA_HOME
         assert env_info['CUDA_HOME'] == CUDA_HOME
         if CUDA_HOME is not None and osp.isdir(CUDA_HOME):
             try:
@@ -56,7 +55,7 @@ def test_collect_env():
     assert env_info['GCC'] == gcc
 
     assert env_info['PyTorch'] == torch.__version__
-    assert env_info['PyTorch compiling details'] == torch.__config__.show()
+    assert env_info['PyTorch compiling details'] == get_build_config()
 
     assert env_info['TorchVision'] == torchvision.__version__
 

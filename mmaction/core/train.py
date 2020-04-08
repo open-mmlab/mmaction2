@@ -30,7 +30,8 @@ def set_random_seed(seed, deterministic=False):
     torch.cuda.manual_seed_all(seed)
     os.environ['PYTHONHASHSEED'] = str(seed)
     if deterministic:
-        torch.backends.cudnn.deterministic = True
+        if torch.__version__ != 'parrots':
+            torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
 
 
@@ -159,11 +160,15 @@ def _dist_train(model,
     find_unused_parameters = cfg.get('find_unused_parameters', False)
     # Sets the `find_unused_parameters` parameter in
     # torch.nn.parallel.DistributedDataParallel
-    model = MMDistributedDataParallel(
-        model.cuda(),
-        device_ids=[torch.cuda.current_device()],
-        broadcast_buffers=False,
-        find_unused_parameters=find_unused_parameters)
+    if torch.__version__ == 'parrots':
+        model = MMDistributedDataParallel(
+            model.cuda(), broadcast_buffers=False)
+    else:
+        model = MMDistributedDataParallel(
+            model.cuda(),
+            device_ids=[torch.cuda.current_device()],
+            broadcast_buffers=False,
+            find_unused_parameters=find_unused_parameters)
 
     # build runner
     optimizer = build_optimizer(model, cfg.optimizer)

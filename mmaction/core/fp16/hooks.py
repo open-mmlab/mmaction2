@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 from mmcv.runner import OptimizerHook
 
+from mmaction.utils import _BatchNorm
 from ..dist_utils import allreduce_grads
 from .utils import cast_tensor_type
 
@@ -95,7 +96,7 @@ def wrap_fp16_model(model):
 
 
 def patch_norm_fp32(module):
-    if isinstance(module, (nn.modules.batchnorm._BatchNorm, nn.GroupNorm)):
+    if isinstance(module, (_BatchNorm, nn.GroupNorm)):
         module.float()
         module.forward = patch_forward_method(module.forward, torch.half,
                                               torch.float)
