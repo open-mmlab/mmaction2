@@ -1,10 +1,13 @@
 import numpy as np
 import pytest
 
-from mmaction.datasets.pipelines import (CenterCrop, Flip, MultiScaleCrop,
-                                         Normalize, RandomCrop,
+# yapf: disable
+from mmaction.datasets.pipelines import (CenterCrop, Flip, MultiGroupCrop,
+                                         MultiScaleCrop, Normalize, RandomCrop,
                                          RandomResizedCrop, Resize, TenCrop,
                                          ThreeCrop)
+
+# yapf: enable
 
 
 class TestAugumentations(object):
@@ -502,3 +505,42 @@ class TestAugumentations(object):
 
         assert repr(ten_crop) == (
             ten_crop.__class__.__name__ + f'(crop_size={(224, 224)})')
+
+    def test_multi_group_crop(self):
+        with pytest.raises(TypeError):
+            # crop_size must be int or tuple of int
+            MultiGroupCrop(0.5, 1)
+
+        with pytest.raises(TypeError):
+            # crop_size must be int or tuple of int
+            MultiGroupCrop('224', 1)
+
+        with pytest.raises(TypeError):
+            # crop_size must be int or tuple of int
+            MultiGroupCrop([224, 224], 1)
+
+        with pytest.raises(TypeError):
+            # groups must be int
+            MultiGroupCrop(224, '1')
+
+        with pytest.raises(ValueError):
+            # groups must be positive
+            MultiGroupCrop(224, 0)
+
+        target_keys = ['imgs', 'crop_bbox', 'img_shape']
+
+        # multi_group_crop with crop_size 224, groups 3
+        imgs = np.random.rand(2, 256, 341, 3)
+        results = dict(imgs=imgs)
+        multi_group_crop = MultiGroupCrop(224, 3)
+        multi_group_crop_result = multi_group_crop(results)
+        assert self.check_keys_contain(multi_group_crop_result.keys(),
+                                       target_keys)
+        assert self.check_crop(imgs, multi_group_crop_result['imgs'],
+                               multi_group_crop_result['crop_bbox'],
+                               multi_group_crop.groups)
+        assert multi_group_crop_result['img_shape'] == (224, 224)
+
+        assert repr(multi_group_crop) == (
+            multi_group_crop.__class__.__name__ +
+            f'(crop_size={(224, 224)}, groups={3})')

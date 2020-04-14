@@ -3,7 +3,7 @@ import pytest
 import torch
 import torch.nn as nn
 
-from mmaction.models import ResNet, ResNet3d, ResNetTSM
+from mmaction.models import ResNet, ResNet3d, ResNetTIN, ResNetTSM
 from mmaction.utils import _BatchNorm
 
 
@@ -203,6 +203,7 @@ def test_resnet3d_backbone():
         feat = resnet3d_50_caffe(imgs)
         assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
 
+    # resnet3d with depth with 3x3x3 inflate_style inference
     resnet3d_50_1x1x1 = ResNet3d(
         50, None, pretrained2d=False, inflate_style='3x3x3')
     resnet3d_50_1x1x1.init_weights()
@@ -287,6 +288,42 @@ def test_resnet_tsm_backbone():
     assert set(resnet_tsm_dict.keys()) == set(resnet_dict.keys())
     for k in resnet_tsm_dict.keys():
         assert torch.equal(resnet_tsm_dict[k], resnet_dict[k])
+
+
+def test_resnet_tin_backbone():
+    """Test resnet_tin backbone"""
+    with pytest.raises(TypeError):
+        # finetune must be a str or None
+        resnet_tin = ResNetTIN(50, finetune=0)
+        resnet_tin.init_weights()
+
+    with pytest.raises(AssertionError):
+        # num_segments should be positive
+        resnet_tin = ResNetTIN(50, num_segments=-1)
+        resnet_tin.init_weights()
+
+    from mmaction.models.backbones.resnet_tin import \
+        TemporalInterlace, CombineNet
+
+    # resnet_tin with normal config
+    resnet_tin = ResNetTIN(50)
+    resnet_tin.init_weights()
+    for layer_name in resnet_tin.res_layers:
+        layer = getattr(resnet_tin, layer_name)
+        blocks = list(layer.children())
+        for block in blocks:
+            assert isinstance(block.conv1, CombineNet)
+            assert isinstance(block.conv1.net1, TemporalInterlace)
+            assert isinstance(block.conv1.net2, nn.Conv2d)
+            assert block.conv1.net1.num_segments == resnet_tin.num_segments
+            assert block.conv1.net1.shift_div == resnet_tin.shift_div
+
+    input_shape = (8, 3, 64, 64)
+    imgs = _demo_inputs(input_shape)
+
+    # resnet_tin with normal cfg inference
+    feat = resnet_tin(imgs)
+    assert feat.shape == torch.Size([8, 2048, 2, 2])
 
 
 def _demo_inputs(input_shape=(1, 3, 64, 64)):

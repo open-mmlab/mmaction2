@@ -13,6 +13,7 @@ class SubModel(nn.Module):
         super().__init__()
         self.conv1 = nn.Conv2d(2, 2, kernel_size=1, groups=2)
         self.gn = nn.GroupNorm(2, 2)
+        self.fc = nn.Linear(2, 2)
         self.param1 = nn.Parameter(torch.ones(1))
 
     def forward(self, x):
@@ -28,6 +29,7 @@ class ExampleModel(nn.Module):
         self.conv2 = nn.Conv2d(4, 2, kernel_size=1)
         self.bn = nn.BatchNorm2d(2)
         self.sub = SubModel()
+        self.fc = nn.Linear(2, 1)
 
     def forward(self, x):
         return x
@@ -57,7 +59,8 @@ def check_default_optimizer(optimizer, model, prefix=''):
     param_names = [
         'param1', 'conv1.weight', 'conv2.weight', 'conv2.bias', 'bn.weight',
         'bn.bias', 'sub.param1', 'sub.conv1.weight', 'sub.conv1.bias',
-        'sub.gn.weight', 'sub.gn.bias'
+        'sub.gn.weight', 'sub.gn.bias', 'sub.fc.weight', 'sub.fc.bias',
+        'fc.weight', 'fc.bias'
     ]
     param_dict = dict(model.named_parameters())
     assert len(param_groups['params']) == len(param_names)
@@ -128,6 +131,84 @@ def check_optimizer(optimizer,
     sub_gn_bias = param_groups[10]
     assert sub_gn_bias['lr'] == base_lr
     assert sub_gn_bias['weight_decay'] == base_wd * norm_decay_mult
+    # sub.fc1.weight
+    sub_fc_weight = param_groups[11]
+    assert sub_fc_weight['lr'] == base_lr
+    assert sub_fc_weight['weight_decay'] == base_wd
+    # sub.fc1.bias
+    sub_fc_bias = param_groups[12]
+    assert sub_fc_bias['lr'] == base_lr * bias_lr_mult
+    assert sub_fc_bias['weight_decay'] == base_wd * bias_decay_mult
+    # fc1.weight
+    fc_weight = param_groups[13]
+    assert fc_weight['lr'] == base_lr
+    assert fc_weight['weight_decay'] == base_wd
+    # fc1.bias
+    fc_bias = param_groups[14]
+    assert fc_bias['lr'] == base_lr * bias_lr_mult
+    assert fc_bias['weight_decay'] == base_wd * bias_decay_mult
+
+
+def check_tsm_optimizer(optimizer, model, fc_lr5=True):
+    param_groups = optimizer.param_groups
+    assert isinstance(optimizer, torch.optim.SGD)
+    assert optimizer.defaults['lr'] == base_lr
+    assert optimizer.defaults['momentum'] == momentum
+    assert optimizer.defaults['weight_decay'] == base_wd
+    model_parameters = list(model.parameters())
+    # first_conv_weight
+    first_conv_weight = param_groups[0]
+    assert torch.equal(first_conv_weight['params'][0], model_parameters[1])
+    assert first_conv_weight['lr'] == base_lr
+    assert first_conv_weight['weight_decay'] == base_wd
+    # first_conv_bias
+    first_conv_bias = param_groups[1]
+    assert first_conv_bias['params'] == []
+    assert first_conv_bias['lr'] == base_lr * 2
+    assert first_conv_bias['weight_decay'] == 0
+    # normal_weight
+    normal_weight = param_groups[2]
+    assert torch.equal(normal_weight['params'][0], model_parameters[2])
+    assert torch.equal(normal_weight['params'][1], model_parameters[7])
+    assert normal_weight['lr'] == base_lr
+    assert normal_weight['weight_decay'] == base_wd
+    # normal_bias
+    normal_bias = param_groups[3]
+    assert torch.equal(normal_bias['params'][0], model_parameters[3])
+    assert torch.equal(normal_bias['params'][1], model_parameters[8])
+    assert normal_bias['lr'] == base_lr * 2
+    assert normal_bias['weight_decay'] == 0
+    # bn
+    bn = param_groups[4]
+    assert torch.equal(bn['params'][0], model_parameters[4])
+    assert torch.equal(bn['params'][1], model_parameters[5])
+    assert torch.equal(bn['params'][2], model_parameters[9])
+    assert torch.equal(bn['params'][3], model_parameters[10])
+    assert bn['lr'] == base_lr
+    assert bn['weight_decay'] == 0
+    # normal linear weight
+    assert torch.equal(normal_weight['params'][2], model_parameters[11])
+    # normal linear bias
+    assert torch.equal(normal_bias['params'][2], model_parameters[12])
+    # fc_lr5
+    lr5_weight = param_groups[5]
+    lr10_bias = param_groups[6]
+    assert lr5_weight['lr'] == base_lr * 5
+    assert lr5_weight['weight_decay'] == base_wd
+    assert lr10_bias['lr'] == base_lr * 10
+    assert lr10_bias['weight_decay'] == 0
+    if fc_lr5:
+        # lr5_weight
+        assert torch.equal(lr5_weight['params'][0], model_parameters[13])
+        # lr10_bias
+        assert torch.equal(lr10_bias['params'][0], model_parameters[14])
+    else:
+        # lr5_weight
+        assert lr5_weight['params'] == []
+        # lr10_bias
+        assert lr10_bias['params'] == []
+        assert torch.equal(normal_weight['params'][3], model_parameters[13])
+        assert torch.equal(normal_bias['params'][3], model_parameters[14])
 
 
 def test_default_optimizer_constructor():
@@ -254,6 +335,14 @@ def test_default_optimizer_constructor():
     assert param_groups[9]['lr'] == base_lr
     # sub.gn.bias
     assert param_groups[10]['lr'] == base_lr
+    # sub.fc.weight
+    assert param_groups[11]['lr'] == base_lr
+    # sub.fc.bias
+    assert param_groups[12]['lr'] == base_lr * paramwise_cfg['bias_lr_mult']
+    # fc.weight
+    assert param_groups[13]['lr'] == base_lr
+    # fc.bias
+    assert param_groups[14]['lr'] == base_lr * paramwise_cfg['bias_lr_mult']
 
     # paramwise_cfg with pseudo data parallel
     model = PseudoDataParallel()
@@ -393,3 +482,28 @@ def test_build_optimizer():
             dwconv_decay_mult=0.1))
     optimizer = build_optimizer(model, optimizer_cfg)
     check_optimizer(optimizer, model, **optimizer_cfg['paramwise_cfg'])
+
+
+def test_tsm_optimizer_constructor():
+    model = ExampleModel()
+    optimizer_cfg = dict(
+        type='SGD', lr=base_lr, weight_decay=base_wd, momentum=momentum)
+    # fc_lr5 is True
+    paramwise_cfg = dict(fc_lr5=True)
+    optim_constructor_cfg = dict(
+        type='TSMOptimizerConstructor',
+        optimizer_cfg=optimizer_cfg,
+        paramwise_cfg=paramwise_cfg)
+    optim_constructor = build_optimizer_constructor(optim_constructor_cfg)
+    optimizer = optim_constructor(model)
+    check_tsm_optimizer(optimizer, model, **paramwise_cfg)
+
+    # fc_lr5 is False
+    paramwise_cfg = dict(fc_lr5=False)
+    optim_constructor_cfg = dict(
+        type='TSMOptimizerConstructor',
+        optimizer_cfg=optimizer_cfg,
+        paramwise_cfg=paramwise_cfg)
+    optim_constructor = build_optimizer_constructor(optim_constructor_cfg)
+    optimizer = optim_constructor(model)
+    check_tsm_optimizer(optimizer, model, **paramwise_cfg)

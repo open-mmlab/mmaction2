@@ -53,8 +53,7 @@ class RandomCrop(object):
 
 @PIPELINES.register_module
 class RandomResizedCrop(object):
-    """Random crop that specifics the area and height-weight
-        ratio range.
+    """Random crop that specifics the area and height-weight ratio range.
 
     Required keys are "imgs", added or modified keys are "imgs", "crop_bbox"
     and "img_shape".
@@ -585,4 +584,65 @@ class TenCrop(object):
 
     def __repr__(self):
         repr_str = f'{self.__class__.__name__}(crop_size={self.crop_size})'
+        return repr_str
+
+
+@PIPELINES.register_module
+class MultiGroupCrop(object):
+    """Randomly crop the images into several groups.
+
+    Crop the random region with the same given crop_size and bounding box
+    into several groups.
+    Required keys are "imgs", added or modified keys are "imgs", "crop_bbox"
+    and "img_shape".
+
+    Attributes:
+        crop_size(int | tuple[int]): (w, h) of crop size.
+        groups(int): Number of groups.
+    """
+
+    def __init__(self, crop_size, groups):
+        self.crop_size = _pair(crop_size)
+        self.groups = groups
+        if not mmcv.is_tuple_of(self.crop_size, int):
+            raise TypeError(
+                'Crop size must be int or tuple of int, but got {}'.format(
+                    type(crop_size)))
+
+        if not isinstance(groups, int):
+            raise TypeError(f'Groups must be int, but got {type(groups)}.')
+
+        if groups <= 0:
+            raise ValueError('Groups must be positive.')
+
+    def __call__(self, results):
+        imgs = results['imgs']
+        img_h, img_w = imgs[0].shape[:2]
+        crop_w, crop_h = self.crop_size
+
+        img_crops = []
+        crop_bboxes = []
+        for i in range(self.groups):
+            x_offset = random.randint(0, img_w - crop_w)
+            y_offset = random.randint(0, img_h - crop_h)
+
+            bbox = [x_offset, y_offset, x_offset + crop_w, y_offset + crop_h]
+            crop = [
+                img[y_offset:y_offset + crop_h, x_offset:x_offset + crop_w, :]
+                for img in imgs
+            ]
+            img_crops.extend(crop)
+            crop_bboxes.extend([bbox for _ in range(imgs.shape[0])])
+
+        crop_bboxes = np.array(crop_bboxes)
+        results['imgs'] = img_crops
+        results['crop_bbox'] = crop_bboxes
+        results['img_shape'] = results['imgs'][0].shape[:2]
+
+        return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}'
+                    f'(crop_size={self.crop_size}, '
+                    f'groups={self.groups})')
         return repr_str
