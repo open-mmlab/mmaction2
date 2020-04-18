@@ -68,24 +68,22 @@ def test_tsn():
     model, train_cfg, test_cfg = _get_recognizer_cfg(
         'tsn_rgb_1x1x3_r50_2d_kinetics400_100e.py')  # flake8: E501
     model['backbone']['pretrained'] = None
-    # 'type' has been popped in test_config.py
-    model['cls_head']['consensus'] = dict(type='AvgConsensus', dim=1)
 
     recognizer = build_recognizer(
         model, train_cfg=train_cfg, test_cfg=test_cfg)  # flake8: E501
 
-    input_shape = (1, 3, 3, 224, 224)
-    mm_inputs = _demo_inputs(input_shape)
+    input_shape = (1, 3, 3, 32, 32)
+    demo_inputs = generate_demo_inputs(input_shape)
 
-    imgs = mm_inputs.pop('imgs')
+    imgs = demo_inputs['imgs']
+    gt_labels = demo_inputs['gt_labels']
 
-    gt_labels = mm_inputs['gt_labels']
     losses = recognizer(imgs, gt_labels)
     assert isinstance(losses, dict)
 
     # Test forward test
     with torch.no_grad():
-        img_list = [g[None, :] for g in imgs]
+        img_list = [img[None, :] for img in imgs]
         for one_img in img_list:
             recognizer(one_img, None, return_loss=False)
 
@@ -100,11 +98,11 @@ def test_i3d():
         model, train_cfg=train_cfg, test_cfg=test_cfg)
 
     input_shape = (1, 3, 3, 8, 32, 32)
-    mm_inputs = _demo_inputs(input_shape, model_type='i3d')
+    demo_inputs = generate_demo_inputs(input_shape, '3D')
 
-    imgs = mm_inputs.pop('imgs')
+    imgs = demo_inputs['imgs']
+    gt_labels = demo_inputs['gt_labels']
 
-    gt_labels = mm_inputs['gt_labels']
     # parrots 3dconv is only implemented on gpu
     if torch.__version__ == 'parrots':
         if torch.cuda.is_available():
@@ -116,7 +114,7 @@ def test_i3d():
 
             # Test forward test
             with torch.no_grad():
-                img_list = [g[None, :] for g in imgs]
+                img_list = [img[None, :] for img in imgs]
                 for one_img in img_list:
                     recognizer(one_img, None, return_loss=False)
     else:
@@ -125,7 +123,7 @@ def test_i3d():
 
         # Test forward test
         with torch.no_grad():
-            img_list = [g[None, :] for g in imgs]
+            img_list = [img[None, :] for img in imgs]
             for one_img in img_list:
                 recognizer(one_img, None, return_loss=False)
 
@@ -134,36 +132,59 @@ def test_tsm():
     model, train_cfg, test_cfg = _get_recognizer_cfg(
         'tsm_rgb_1x1x8_r50_2d_kinetics400_100e.py')
     model['backbone']['pretrained'] = None
-    # 'type' has been popped in test_config.py
-    model['cls_head']['consensus'] = dict(type='AvgConsensus', dim=1)
 
     recognizer = build_recognizer(
         model, train_cfg=train_cfg, test_cfg=test_cfg)  # flake8: E501
 
-    input_shape = (8, 8, 3, 224, 224)
-    mm_inputs = _demo_inputs(input_shape)
+    input_shape = (1, 8, 3, 32, 32)
+    demo_inputs = generate_demo_inputs(input_shape)
 
-    imgs = mm_inputs.pop('imgs')
+    imgs = demo_inputs['imgs']
+    gt_labels = demo_inputs['gt_labels']
 
-    gt_labels = mm_inputs['gt_labels']
     losses = recognizer(imgs, gt_labels)
     assert isinstance(losses, dict)
 
     # Test forward test
     with torch.no_grad():
-        img_list = [g[None, :] for g in imgs]
+        img_list = [img[None, :] for img in imgs]
         for one_img in img_list:
             recognizer(one_img, None, return_loss=False)
 
 
-def _demo_inputs(input_shape=(1, 3, 3, 224, 224), model_type='tsn'):
+def test_tin():
+    model, train_cfg, test_cfg = _get_recognizer_cfg(
+        'tin_rgb_1x1x8_r50_2d_kinetics400_35e.py')
+    model['backbone']['pretrained'] = None
+
+    recognizer = build_recognizer(
+        model, train_cfg=train_cfg, test_cfg=test_cfg)  # flake8: E501
+
+    input_shape = (1, 8, 3, 32, 32)
+    demo_inputs = generate_demo_inputs(input_shape)
+
+    imgs = demo_inputs['imgs']
+    gt_labels = demo_inputs['gt_labels']
+
+    losses = recognizer(imgs, gt_labels)
+    assert isinstance(losses, dict)
+
+    # Test forward test
+    with torch.no_grad():
+        img_list = [img[None, :] for img in imgs]
+        for one_img in img_list:
+            recognizer(one_img, None, return_loss=False)
+
+
+def generate_demo_inputs(input_shape=(1, 3, 3, 224, 224), model_type='2D'):
     """
     Create a superset of inputs needed to run test or train batches.
 
     Args:
         input_shape (tuple): input batch dimensions.
             Default: (1, 250, 3, 224, 224).
-        model_type (str): Model type for data generation. Default:'tsn'
+        model_type (str): Model type for data generation, from {'2D', '3D'}.
+            Default:'2D'
     """
     if len(input_shape) == 5:
         (N, L, C, H, W) = input_shape
@@ -172,9 +193,9 @@ def _demo_inputs(input_shape=(1, 3, 3, 224, 224), model_type='tsn'):
 
     imgs = np.random.random(input_shape)
 
-    if model_type == 'tsn':
+    if model_type == '2D':
         gt_labels = torch.LongTensor([2] * N)
-    elif model_type == 'i3d':
+    elif model_type == '3D':
         gt_labels = torch.LongTensor([2] * M)
     else:
         raise ValueError(f'Data type {model_type} is not available')
