@@ -5,7 +5,7 @@ model = dict(
         type='ResNet',
         pretrained='torchvision://resnet50',
         depth=50,
-        norm_cfg=dict(type="SyncBN", requires_grad=True),
+        norm_cfg=dict(type='SyncBN', requires_grad=True),
         norm_eval=True),
     cls_head=dict(
         type='TSNHead',
