@@ -56,7 +56,7 @@ class Conv2plus1d(nn.Module):
         # M_i = \floor{\frac{t * d^2 N_i-1 * N_i}
         #   {d^2 * N_i-1 + t * N_i}}
         # where d, t are spatial and temporal kernel, and
-        # N_i, N_i-1 is planes
+        # N_i, N_i-1 are planes
         # and inplanes. https://arxiv.org/pdf/1711.11248.pdf
         mid_channels = 3 * (
             in_channels * out_channels * kernel_size[1] * kernel_size[2])

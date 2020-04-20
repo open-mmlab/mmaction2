@@ -14,21 +14,26 @@ class ConvModule(nn.Module):
     Attributes:
         in_channels (int): Same as nn.Conv*d.
         out_channels (int): Same as nn.Conv*d.
-        kernel_size (int or tuple[int]): Same as nn.Conv*d.
-        stride (int or tuple[int]): Same as nn.Conv*d.
-        padding (int or tuple[int]): Same as nn.Conv*d.
-        dilation (int or tuple[int]): Same as nn.Conv*d.
+        kernel_size (int | tuple[int]): Same as nn.Conv*d.
+        stride (int | tuple[int]): Same as nn.Conv*d.
+        padding (int | tuple[int]): Same as nn.Conv*d.
+        dilation (int | tuple[int]): Same as nn.Conv*d.
         groups (int): Same as nn.Conv*d.
-        bias (bool or str): If specified as `auto`, it will be decided by the
+        bias (bool | str): If specified as `auto`, it will be decided by the
             norm_cfg. Bias will be set as True if norm_cfg is None, otherwise
-            False.
-        conv_cfg (dict): Config dict for convolution layer.
-        norm_cfg (dict): Config dict for normalization layer.
-        act_cfg (dict): Config dict for activation layer, "relu" by default.
+            False. Default: 'auto'.
+        conv_cfg (dict | None): Config dict for convolution layer.
+            Default: None.
+        norm_cfg (dict | None): Config dict for normalization layer.
+            Default: None.
+        act_cfg (dict | None): Config dict for activation layer。
+            Default: dict(type='ReLU').
         inplace (bool): Whether to use inplace mode for activation.
+            Default: True.
         order (tuple[str]): The order of conv/norm/activation layers. It is a
             sequence of "conv", "norm" and "act". Examples are
             ("conv", "norm", "act") and ("act", "conv", "norm").
+            Default: ("conv", "norm", "act").
     """
 
     def __init__(self,

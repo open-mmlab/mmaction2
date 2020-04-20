@@ -4,16 +4,15 @@ model = dict(
     backbone=dict(
         type='ResNet3d',
         pretrained2d=True,
-        pretrained='torchvision://resnet50',
-        depth=50,
+        pretrained='torchvision://resnet34',
+        depth=34,
         conv_cfg=dict(type='Conv3d'),
         norm_eval=False,
-        inflate=((1, 1, 1), (1, 0, 1, 0), (1, 0, 1, 0, 1, 0), (0, 1, 0)),
         zero_init_residual=False),
     cls_head=dict(
         type='I3DHead',
         num_classes=400,
-        in_channels=2048,
+        in_channels=512,
         spatial_type='avg',
         dropout_ratio=0.5,
         init_std=0.01))
@@ -118,7 +117,7 @@ log_config = dict(
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/i3d_rgb_32x2x1_r50_3d_kinetics400_100e/'
+work_dir = './work_dirs/i3d_rgb_32x2x1_r34_3d_kinetics400_100e/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
