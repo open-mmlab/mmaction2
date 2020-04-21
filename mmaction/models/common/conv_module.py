@@ -11,7 +11,7 @@ from .norm import build_norm_layer
 class ConvModule(nn.Module):
     """A conv block that contains conv/norm/activation layers.
 
-    Attributes:
+    Args:
         in_channels (int): Same as nn.Conv*d.
         out_channels (int): Same as nn.Conv*d.
         kernel_size (int | tuple[int]): Same as nn.Conv*d.

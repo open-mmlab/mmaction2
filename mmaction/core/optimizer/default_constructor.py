@@ -10,8 +10,7 @@ from .registry import OPTIMIZER_BUILDERS, OPTIMIZERS
 class DefaultOptimizerConstructor(object):
     """Default constructor for optimizers.
 
-    Attributes:
-        model (:obj:`nn.Module`): The model with parameters to be optimized.
+    Args:
         optimizer_cfg (dict): The config dict of the optimizer.
             Positional fields are:
                 - type: class name of the optimizer.
@@ -30,6 +29,7 @@ class DefaultOptimizerConstructor(object):
               for all weight and bias parameters of normalization layers.
             - dwconv_decay_mult: will be multiplied to the weight decay
               for all weight and bias parameters of depthwise conv layers.
+            Default: None.
 
     Example:
         >>> model = torch.nn.modules.Conv1d(1, 1, 1)
@@ -117,6 +117,14 @@ class DefaultOptimizerConstructor(object):
             self.add_params(params, module)
 
     def __call__(self, model):
+        """Construct an optimizer of the given model.
+
+        The parameters of the given model together with the specific rules
+        defined by paramwise_cfg will be used to construct an optimizer.
+
+        Args:
+            model (nn.Module): The model with parameters to be optimized.
+        """
         if hasattr(model, 'module'):
             model = model.module
 

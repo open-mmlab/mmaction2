@@ -42,7 +42,7 @@ class CephBackend(BaseStorageBackend):
 class MemcachedBackend(BaseStorageBackend):
     """Memcached storage backend.
 
-    Attributes:
+    Args:
         server_list_cfg (str): Config file for memcached server list.
         client_cfg (str): Config file for memcached client.
         sys_path (str | None): Additional path to be appended to `sys.path`.
@@ -97,7 +97,7 @@ class FileClient(object):
     and return it as a binary file. it can also register other backend\
     accessor with a given name and backend class.
 
-    Attributes:
+    Args:
         backend (str): The storage backend type. Options are "disk", "ceph" and
             "memcached". Default: 'disk'
         client (:obj:`BaseStorageBackend`): The backend object.

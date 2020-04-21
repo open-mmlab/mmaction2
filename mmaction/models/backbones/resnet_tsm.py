@@ -12,7 +12,7 @@ class TemporalShift(nn.Module):
     "TSM: Temporal Shift Module for Efficient Video Understanding".
     Link: https://arxiv.org/abs/1811.08383
 
-    Attributes:
+    Args:
         net (nn.module): Module to make temporal shift.
         num_segments (int): Number of frame segments. Default: 3.
         n_div (int): Number of div for shift. Default: 8.
@@ -51,7 +51,7 @@ class TemporalShift(nn.Module):
 class ResNetTSM(ResNet):
     """ResNet backbone for TSM.
 
-    Attributes:
+    Args:
         num_segments (int): Number of frame segments. Default: 8.
         is_shift (bool): Whether to make temporal shift in reset layers.
             Default: True.

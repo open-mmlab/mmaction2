@@ -15,7 +15,7 @@ class SampleFrames(object):
     Required keys are "filename", added or modified keys are "total_frames",
     "frame_inds", "frame_interval" and "num_clips".
 
-    Attributes:
+    Args:
         clip_len (int): Frames of each sampled output clip.
         frame_interval (int): Temporal interval of adjacent sampled frames.
             Default: 1.
@@ -146,7 +146,7 @@ class DenseSampleFrames(SampleFrames):
     Required keys are "filename", added or modified keys are "total_frames",
     "frame_inds", "frame_interval" and "num_clips".
 
-    Attributes:
+    Args:
         clip_len (int): Frames of each sampled output clip.
         frame_interval (int): Temporal interval of adjacent sampled frames.
             Default: 1.
@@ -232,7 +232,7 @@ class PyAVDecode(object):
     Required keys are "filename" and "frame_inds",
     added or modified keys are "imgs" and "original_shape".
 
-    Attributes:
+    Args:
         multi_thread (bool): If set to True, it will apply multi
             thread processing. Default: False.
         io_backend (str): io backend where frames are store.
@@ -361,7 +361,7 @@ class FrameSelector(object):
     Required keys are "frame_dir", "filename_tmpl" and "frame_inds",
     added or modified keys are "imgs" and "original_shape".
 
-    Attributes:
+    Args:
         io_backend (str): IO backend where frames are stored. Default: 'disk'.
         decoding_backend (str): Backend used for image decoding.
             Default: 'cv2'.

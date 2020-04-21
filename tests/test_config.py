@@ -24,9 +24,8 @@ def _get_config_path():
 
 
 def test_config_build_recognizer():
-    """
-    Test that all mmaction models defined in the configs can be initialized.
-    """
+    """Test that all mmaction models defined in the configs
+     can be initialized."""
     config_fpaths = _get_config_path()
 
     # test all config file in `config` directory

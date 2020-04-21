@@ -23,9 +23,10 @@ class ExampleRecognizer(BaseRecognizer):
 
 
 def _get_recognizer_cfg(fname):
-    """
-    Grab configs necessary to create a recognizer. These are deep copied to
-    allow for safe modification of parameters without influencing other tests.
+    """Grab configs necessary to create a recognizer.
+
+    These are deep copied to allow for safe modification of parameters without
+    influencing other tests.
     """
     repo_dpath = osp.dirname(osp.dirname(__file__))
     config_dpath = osp.join(repo_dpath, 'config')
