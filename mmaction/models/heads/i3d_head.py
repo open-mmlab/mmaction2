@@ -9,7 +9,7 @@ from .base import BaseHead
 class I3DHead(BaseHead):
     """Classification head for I3D.
 
-    Attributes:
+    Args:
         num_classes (int): Number of classes to be classified.
         in_channels (int): Number of channels in input feature.
         loss_cls (dict): Config for building loss.

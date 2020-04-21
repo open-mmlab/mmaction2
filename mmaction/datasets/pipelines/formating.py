@@ -33,7 +33,7 @@ class ToTensor(object):
     """Convert some values in results dict to `torch.Tensor` type
     in data loader pipeline.
 
-    Attributes:
+    Args:
         keys (Sequence[str]): Required keys to be converted.
     """
 
@@ -53,7 +53,7 @@ class ToTensor(object):
 class ImageToTensor(object):
     """Convert image type to `torch.Tensor` type.
 
-    Attributes:
+    Args:
         keys (Sequence[str]): Required keys to be converted.
     """
 
@@ -73,7 +73,7 @@ class ImageToTensor(object):
 class Transpose(object):
     """Transpose image channels to a given order.
 
-    Attributes:
+    Args:
         keys (Sequence[str]): Required keys to be converted.
         order (Sequence[int]): Image channel order.
     """
@@ -152,7 +152,7 @@ class FormatShape(object):
     Required keys are "imgs", "num_clips" and "clip_len", added or modified
     keys are "imgs" and "input_shape".
 
-    Attributes:
+    Args:
         input_format (str): Define the final imgs format.
     """
 

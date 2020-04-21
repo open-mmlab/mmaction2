@@ -10,7 +10,7 @@ from ..builder import build_loss
 class AvgConsensus(nn.Module):
     """Average consensus module.
 
-    Attributes:
+    Args:
         dim (int): Decide which dim consensus function to apply.
             Default: 1.
     """
@@ -31,7 +31,7 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
         Methods:`init_weights`, initializing weights in some modules.
         Methods:`forward`, supporting to forward both for training and testing.
 
-    Attributes:
+    Args:
         num_classes (int): Number of classes to be classified.
         in_channels (int): Number of channels in input feature.
         loss_cls (dict): Config for building loss.

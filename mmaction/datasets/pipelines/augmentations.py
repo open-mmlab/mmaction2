@@ -15,7 +15,7 @@ class RandomCrop(object):
     Required keys are "imgs", added or modified keys are "imgs", "crop_bbox"
     and "img_shape".
 
-    Attributes:
+    Args:
         size (int): The output size of the images.
     """
 
@@ -58,7 +58,7 @@ class RandomResizedCrop(object):
     Required keys are "imgs", added or modified keys are "imgs", "crop_bbox"
     and "img_shape".
 
-    Attributes:
+    Args:
         area_range (Tuple[float]): The candidate area scales range of
             output cropped images. Default: (0.08, 1.0).
         aspect_ratio_range (Tuple[float]): The candidate aspect ratio range of
@@ -150,7 +150,7 @@ class MultiScaleCrop(object):
     Required keys are "imgs", added or modified keys are "imgs", "crop_bbox",
     "img_shape" and "scales".
 
-    Attributes:
+    Args:
         input_size (int | tuple[int]): (w, h) of network input.
         scales (tuple[float]): Weight and height scales to be selected.
         max_wh_scale_gap (int): Maximum gap of w and h scale levels.
@@ -267,7 +267,7 @@ class Resize(object):
     Required keys are "imgs", added or modified keys are "imgs", "img_shape",
     "keep_ratio", "scale_factor" and "resize_size".
 
-    Attributes:
+    Args:
         scale (float | Tuple[int]): If keep_ratio is True, it serves as scaling
             factor or maximum size:
                 If it is a float number, the image will be rescaled by this
@@ -340,7 +340,7 @@ class Flip(object):
     Required keys are "imgs", added or modified keys are "imgs"
     and "flip_direction".
 
-    Attributes:
+    Args:
         flip_ratio (float): Probability of implementing flip. Default: 0.5.
         direction (str): Flip imgs horizontally or vertically. Options are
             "horiziontal" | "vertival". Default: "horizontal".
@@ -383,7 +383,7 @@ class Normalize(object):
     Required keys are "imgs", added or modified keys are "imgs"
     and "img_norm_cfg".
 
-    Attributes:
+    Args:
         mean (Sequence[float]): Mean values of different channels.
         std (Sequence[float]): Std values of different channels.
         to_bgr (bool): Whether to convert channels from RGB to BGR.
@@ -432,7 +432,7 @@ class CenterCrop(object):
     Required keys are "imgs", added or modified keys are "imgs", "crop_bbox"
     and "img_shape".
 
-    Attributes:
+    Args:
         crop_size(int | tuple[int]): (w, h) of crop size.
     """
 
@@ -472,7 +472,7 @@ class ThreeCrop(object):
     Required keys are "imgs", added or modified keys are "imgs", "crop_bbox"
     and "img_shape".
 
-    Attributes:
+    Args:
         crop_size(int | tuple[int]): (w, h) of crop size.
     """
 
@@ -535,7 +535,7 @@ class TenCrop(object):
     Required keys are "imgs", added or modified keys are "imgs", "crop_bbox"
     and "img_shape".
 
-    Attributes:
+    Args:
         crop_size(int | tuple[int]): (w, h) of crop size.
     """
 
@@ -596,7 +596,7 @@ class MultiGroupCrop(object):
     Required keys are "imgs", added or modified keys are "imgs", "crop_bbox"
     and "img_shape".
 
-    Attributes:
+    Args:
         crop_size(int | tuple[int]): (w, h) of crop size.
         groups(int): Number of groups.
     """

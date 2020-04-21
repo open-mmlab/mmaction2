@@ -571,8 +571,7 @@ def test_resnet_tin_backbone():
 
 
 def _demo_inputs(input_shape=(1, 3, 64, 64)):
-    """
-    Create a superset of inputs needed to run backbone.
+    """Create a superset of inputs needed to run backbone.
 
     Args:
         input_shape (tuple): input batch dimensions.

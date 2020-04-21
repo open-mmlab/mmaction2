@@ -10,7 +10,7 @@ class Conv2plus1d(nn.Module):
 
     https://arxiv.org/pdf/1711.11248.pdf.
 
-    Attributes:
+    Args:
         in_channels (int): Same as nn.Conv3d.
         out_channels (int): Same as nn.Conv3d.
         kernel_size (int or tuple[int]): Same as nn.Conv3d.

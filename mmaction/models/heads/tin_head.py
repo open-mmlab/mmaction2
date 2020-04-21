@@ -11,7 +11,7 @@ from .base import AvgConsensus, BaseHead
 class TINHead(BaseHead):
     """Class head for TIN.
 
-    Attributes:
+    Args:
         num_classes (int): Number of classes to be classified.
         in_channels (int): Number of channels in input feature.
         finetune (str | None): Name of finetune model. Default: None.

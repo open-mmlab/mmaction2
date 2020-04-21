@@ -9,7 +9,7 @@ from .base import AvgConsensus, BaseHead
 class TSNHead(BaseHead):
     """Class head for TSN.
 
-    Attributes:
+    Args:
         num_classes (int): Number of classes to be classified.
         in_channels (int): Number of channels in input feature.
         loss_cls (dict): Config for building loss.

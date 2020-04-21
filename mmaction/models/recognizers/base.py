@@ -14,7 +14,7 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         Methods:`forward_train`, supporting to forward when training.
         Methods:`forward_test`, supporting to forward when testing.
 
-    Attributes:
+    Args:
         backbone (dict): Backbone modules to extract feature.
         cls_head (dict): Classification head to process feature.
         train_cfg (dict): Config for training. Default: None.
