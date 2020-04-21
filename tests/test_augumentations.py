@@ -1,5 +1,8 @@
+import copy
+
 import numpy as np
 import pytest
+from numpy.testing import assert_array_almost_equal
 
 # yapf: disable
 from mmaction.datasets.pipelines import (CenterCrop, Flip, MultiGroupCrop,
@@ -11,15 +14,6 @@ from mmaction.datasets.pipelines import (CenterCrop, Flip, MultiGroupCrop,
 
 
 class TestAugumentations(object):
-
-    @staticmethod
-    def assert_img_equal(img, ref_img, ratio_thr=0.999):
-        """Check if img and ref_img are matched approximatively."""
-        assert img.shape == ref_img.shape
-        assert img.dtype == ref_img.dtype
-        area = ref_img.shape[-1] * ref_img.shape[-2]
-        diff = np.abs(img.astype('int32') - ref_img.astype('int32'))
-        assert np.sum(diff <= 1) / float(area) > ratio_thr
 
     @staticmethod
     def check_keys_contain(result_keys, target_keys):
@@ -69,7 +63,8 @@ class TestAugumentations(object):
     def check_flip(origin_imgs, result_imgs, flip_type):
         """Check if the origin_imgs are flipped correctly into result_imgs
         in different flip_types"""
-        n, h, w, c = origin_imgs.shape
+        n = len(origin_imgs)
+        h, w, c = origin_imgs[0].shape
         if flip_type == 'horizontal':
             # yapf: disable
             for i in range(n):
@@ -90,7 +85,8 @@ class TestAugumentations(object):
             # yapf: enable
         return True
 
-    def check_normalize(self, origin_imgs, result_imgs, norm_cfg):
+    @staticmethod
+    def check_normalize(origin_imgs, result_imgs, norm_cfg):
         """Check if the origin_imgs are normalized correctly into result_imgs
          in a given norm_cfg."""
         target_imgs = result_imgs.copy()
@@ -98,7 +94,7 @@ class TestAugumentations(object):
         target_imgs += norm_cfg['mean']
         if norm_cfg['to_bgr']:
             target_imgs = target_imgs[..., ::-1].copy()
-        self.assert_img_equal(origin_imgs, target_imgs)
+        assert_array_almost_equal(origin_imgs, target_imgs, decimal=4)
 
     def test_random_crop(self):
         with pytest.raises(TypeError):
@@ -106,7 +102,7 @@ class TestAugumentations(object):
             RandomCrop(size=(112, 112))
         with pytest.raises(AssertionError):
             # "size > height" or "size > width" is not allowed
-            imgs = np.random.rand(2, 224, 341, 3)
+            imgs = list(np.random.rand(2, 224, 341, 3))
             results = dict(imgs=imgs)
             random_crop = RandomCrop(size=320)
             random_crop(results)
@@ -114,7 +110,7 @@ class TestAugumentations(object):
         target_keys = ['imgs', 'crop_bbox', 'img_shape']
 
         # General case
-        imgs = np.random.rand(2, 224, 341, 3)
+        imgs = list(np.random.rand(2, 224, 341, 3))
         results = dict(imgs=imgs)
         random_crop = RandomCrop(size=224)
         random_crop_result = random_crop(results)
@@ -125,7 +121,7 @@ class TestAugumentations(object):
         assert h == w == 224
 
         # Test the case that no need for cropping
-        imgs = np.random.rand(2, 224, 224, 3)
+        imgs = list(np.random.rand(2, 224, 224, 3))
         results = dict(imgs=imgs)
         random_crop = RandomCrop(size=224)
         random_crop_result = random_crop(results)
@@ -136,7 +132,7 @@ class TestAugumentations(object):
         assert h == w == 224
 
         # Test the one-side-equal case
-        imgs = np.random.rand(2, 224, 225, 3)
+        imgs = list(np.random.rand(2, 224, 225, 3))
         results = dict(imgs=imgs)
         random_crop = RandomCrop(size=224)
         random_crop_result = random_crop(results)
@@ -160,7 +156,7 @@ class TestAugumentations(object):
         target_keys = ['imgs', 'crop_bbox', 'img_shape']
         # There will be a slight difference because of rounding
         eps = 0.01
-        imgs = np.random.rand(2, 256, 341, 3)
+        imgs = list(np.random.rand(2, 256, 341, 3))
         results = dict(imgs=imgs)
 
         with pytest.raises(AssertionError):
@@ -188,7 +184,7 @@ class TestAugumentations(object):
         random_crop = RandomResizedCrop(
             area_range=(0.9, 0.9), aspect_ratio_range=(10.0, 10.1))
         # Test fallback cases by very big area range
-        imgs = np.random.rand(2, 256, 341, 3)
+        imgs = list(np.random.rand(2, 256, 341, 3))
         results = dict(imgs=imgs)
         random_crop_result = random_crop(results)
         assert self.check_keys_contain(random_crop_result.keys(), target_keys)
@@ -224,7 +220,7 @@ class TestAugumentations(object):
         target_keys = ['imgs', 'crop_bbox', 'img_shape', 'scales']
 
         # MultiScaleCrop with normal crops.
-        imgs = np.random.rand(2, 256, 341, 3)
+        imgs = list(np.random.rand(2, 256, 341, 3))
         results = dict(imgs=imgs)
         config = dict(
             input_size=224,
@@ -241,7 +237,7 @@ class TestAugumentations(object):
                                                          (204, 204)]
 
         # MultiScaleCrop with more fixed crops.
-        imgs = np.random.rand(2, 256, 341, 3)
+        imgs = list(np.random.rand(2, 256, 341, 3))
         results = dict(imgs=imgs)
         config = dict(
             input_size=224,
@@ -259,7 +255,7 @@ class TestAugumentations(object):
                                                          (204, 204)]
 
         # MultiScaleCrop with random crop.
-        imgs = np.random.rand(2, 256, 341, 3)
+        imgs = list(np.random.rand(2, 256, 341, 3))
         results = dict(imgs=imgs)
         config = dict(
             input_size=224,
@@ -292,7 +288,7 @@ class TestAugumentations(object):
         target_keys = ['imgs', 'img_shape', 'keep_ratio', 'scale_factor']
 
         # scale with -1 to indicate np.inf
-        imgs = np.random.rand(2, 240, 320, 3)
+        imgs = list(np.random.rand(2, 240, 320, 3))
         results = dict(imgs=imgs)
         resize = Resize(scale=(-1, 256), keep_ratio=True)
         resize_results = resize(results)
@@ -301,7 +297,7 @@ class TestAugumentations(object):
         assert resize_results['img_shape'] == (256, 341)
 
         # scale with a normal tuple (320, 320) to indicate np.inf
-        imgs = np.random.rand(2, 240, 320, 3)
+        imgs = list(np.random.rand(2, 240, 320, 3))
         results = dict(imgs=imgs)
         resize = Resize(scale=(320, 320), keep_ratio=False)
         resize_results = resize(results)
@@ -311,7 +307,7 @@ class TestAugumentations(object):
         assert resize_results['img_shape'] == (320, 320)
 
         # scale with a normal tuple (341, 256) to indicate np.inf
-        imgs = np.random.rand(2, 240, 320, 3)
+        imgs = list(np.random.rand(2, 240, 320, 3))
         results = dict(imgs=imgs)
         resize = Resize(scale=(341, 256), keep_ratio=False)
         resize_results = resize(results)
@@ -333,36 +329,38 @@ class TestAugumentations(object):
         target_keys = ['imgs', 'flip_direction']
 
         # do not flip imgs.
-        imgs = np.random.rand(2, 64, 64, 3)
-        results = dict(imgs=imgs.copy())
+        imgs = list(np.random.rand(2, 64, 64, 3))
+        results = dict(imgs=copy.deepcopy(imgs))
         flip = Flip(flip_ratio=0, direction='horizontal')
         flip_results = flip(results)
         assert self.check_keys_contain(flip_results.keys(), target_keys)
         assert np.array_equal(imgs, results['imgs'])
         assert id(flip_results['imgs']) == id(results['imgs'])
-        assert flip_results['imgs'].shape == imgs.shape
+        assert np.shape(flip_results['imgs']) == np.shape(imgs)
 
         # always flip imgs horizontally.
-        imgs = np.random.rand(2, 64, 64, 3)
-        results = dict(imgs=imgs.copy())
+        imgs = list(np.random.rand(2, 64, 64, 3))
+        results = dict(imgs=copy.deepcopy(imgs))
         flip = Flip(flip_ratio=1, direction='horizontal')
         flip_results = flip(results)
         assert self.check_keys_contain(flip_results.keys(), target_keys)
-        assert self.check_flip(imgs, flip_results['imgs'],
-                               flip_results['flip_direction'])
+        if flip_results['flip'] is True:
+            assert self.check_flip(imgs, flip_results['imgs'],
+                                   flip_results['flip_direction'])
         assert id(flip_results['imgs']) == id(results['imgs'])
-        assert flip_results['imgs'].shape == imgs.shape
+        assert np.shape(flip_results['imgs']) == np.shape(imgs)
 
         # always flip imgs vertivally.
-        imgs = np.random.rand(2, 64, 64, 3)
-        results = dict(imgs=imgs.copy())
+        imgs = list(np.random.rand(2, 64, 64, 3))
+        results = dict(imgs=copy.deepcopy(imgs))
         flip = Flip(flip_ratio=1, direction='vertical')
         flip_results = flip(results)
         assert self.check_keys_contain(flip_results.keys(), target_keys)
-        assert self.check_flip(imgs, flip_results['imgs'],
-                               flip_results['flip_direction'])
+        if flip_results['flip'] is True:
+            assert self.check_flip(imgs, flip_results['imgs'],
+                                   flip_results['flip_direction'])
         assert id(flip_results['imgs']) == id(results['imgs'])
-        assert flip_results['imgs'].shape == imgs.shape
+        assert np.shape(flip_results['imgs']) == np.shape(imgs)
 
         assert repr(flip) == (
             flip.__class__.__name__ +
@@ -382,7 +380,7 @@ class TestAugumentations(object):
         target_keys = ['imgs', 'img_norm_cfg']
 
         # normalize imgs in RGB format
-        imgs = np.random.rand(2, 240, 320, 3).astype(np.float32)
+        imgs = list(np.random.rand(2, 240, 320, 3).astype(np.float32))
         results = dict(imgs=imgs)
         config = dict(
             mean=[123.675, 116.28, 103.53],
@@ -395,7 +393,7 @@ class TestAugumentations(object):
                              normalize_results['img_norm_cfg'])
 
         # normalize imgs in BGR format
-        imgs = np.random.rand(2, 240, 320, 3).astype(np.float32)
+        imgs = list(np.random.rand(2, 240, 320, 3).astype(np.float32))
         results = dict(imgs=imgs)
         config = dict(
             mean=[123.675, 116.28, 103.53],
@@ -426,7 +424,7 @@ class TestAugumentations(object):
             CenterCrop([224, 224])
 
         # center crop with crop_size 224
-        imgs = np.random.rand(2, 240, 320, 3)
+        imgs = list(np.random.rand(2, 240, 320, 3))
         results = dict(imgs=imgs)
         center_crop = CenterCrop(crop_size=224)
         center_crop_results = center_crop(results)
@@ -455,7 +453,7 @@ class TestAugumentations(object):
             ThreeCrop([224, 224])
 
         # three crop with crop_size 120
-        imgs = np.random.rand(2, 240, 120, 3)
+        imgs = list(np.random.rand(2, 240, 120, 3))
         results = dict(imgs=imgs)
         three_crop = ThreeCrop(crop_size=120)
         three_crop_results = three_crop(results)
@@ -466,7 +464,7 @@ class TestAugumentations(object):
         assert three_crop_results['img_shape'] == (120, 120)
 
         # three crop with crop_size 224
-        imgs = np.random.rand(2, 224, 224, 3)
+        imgs = list(np.random.rand(2, 224, 224, 3))
         results = dict(imgs=imgs)
         three_crop = ThreeCrop(crop_size=224)
         three_crop_results = three_crop(results)
@@ -493,7 +491,7 @@ class TestAugumentations(object):
             TenCrop([224, 224])
 
         # ten crop with crop_size 256
-        imgs = np.random.rand(2, 256, 256, 3)
+        imgs = list(np.random.rand(2, 256, 256, 3))
         results = dict(imgs=imgs)
         ten_crop = TenCrop(crop_size=224)
         ten_crop_results = ten_crop(results)
@@ -530,7 +528,7 @@ class TestAugumentations(object):
         target_keys = ['imgs', 'crop_bbox', 'img_shape']
 
         # multi_group_crop with crop_size 224, groups 3
-        imgs = np.random.rand(2, 256, 341, 3)
+        imgs = list(np.random.rand(2, 256, 341, 3))
         results = dict(imgs=imgs)
         multi_group_crop = MultiGroupCrop(224, 3)
         multi_group_crop_result = multi_group_crop(results)
