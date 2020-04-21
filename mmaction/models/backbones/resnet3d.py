@@ -642,10 +642,9 @@ class ResNet3d(nn.Module):
 
     def _freeze_stages(self):
         if self.frozen_stages >= 0:
-            self.conv1.bn.eval()
-            for m in [self.conv1.conv, self.conv1.bn]:
-                for param in m.parameters():
-                    param.requires_grad = False
+            self.conv1.eval()
+            for param in self.conv1.parameters():
+                param.requires_grad = False
 
         for i in range(1, self.frozen_stages + 1):
             m = getattr(self, f'layer{i}')
