@@ -1,5 +1,5 @@
 variables:
-  PARROTS_IMAGE: registry.sensetime.com/platform/cicuda9:pat0.6.0dev-v0.1.6
+  PARROTS_IMAGE: registry.sensetime.com/platform/product:pat20200418
   PYTORCH_IMAGE: registry.sensetime.com/eig-research/pytorch:pytorch1.3.1-cuda10.1-devel
 
 stages:
