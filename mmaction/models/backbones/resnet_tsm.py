@@ -15,35 +15,59 @@ class TemporalShift(nn.Module):
     Args:
         net (nn.module): Module to make temporal shift.
         num_segments (int): Number of frame segments. Default: 3.
-        n_div (int): Number of div for shift. Default: 8.
+        shift_div (int): Number of divisions for shift. Default: 8.
     """
 
-    def __init__(self, net, num_segments=3, n_div=8):
+    def __init__(self, net, num_segments=3, shift_div=8):
         super(TemporalShift, self).__init__()
         self.net = net
         self.num_segments = num_segments
-        self.fold_div = n_div
+        self.shift_div = shift_div
 
     def forward(self, x):
-        x = self.shift(x, self.num_segments, fold_div=self.fold_div)
+        x = self.shift(x, self.num_segments, shift_div=self.shift_div)
         return self.net(x)
 
     @staticmethod
-    def shift(x, num_segments, fold_div=3):
+    def shift(x, num_segments, shift_div=3):
         # [N, C, H, W]
         n, c, h, w = x.size()
-        # [N // num_segments, num_segments, C, H, W]
-        x = x.view(-1, num_segments, c, h, w)
 
-        fold = c // fold_div
-        # [N // num_segments, num_segments, C, H, W]
-        out = torch.zeros_like(x)
-        out[:, :-1, :fold, :, :] = x[:, 1:, :fold, :, :]  # shift left
-        out[:, 1:, fold:2 * fold, :, :] = x[:, :-1,
-                                            fold:2 * fold, :, :]  # shift right
-        out[:, :, 2 * fold:, :, :] = x[:, :, 2 * fold:, :, :]  # not shift
+        # [N // num_segments, num_segments, C, H*W]
+        # can't use 5 dimensional array on PPL2D backend for caffe
+        x = x.view(-1, num_segments, c, h * w)
+
+        # get shift fold
+        fold = c // shift_div
+
+        # split c channel into three parts:
+        # left_split, mid_split, right_split
+        left_split = x[:, :, :fold, :]
+        mid_split = x[:, :, fold:2 * fold, :]
+        right_split = x[:, :, 2 * fold:, :]
+
+        # can't use torch.zeros(*A.shape) or torch.zeros_like(A)
+        # because array on caffe inference must be got by computing
+
+        # shift left on num_segments channel in `left_split`
+        zeros = left_split - left_split
+        blank = zeros[:, :1, :, :]
+        left_split = left_split[:, 1:, :, :]
+        left_split = torch.cat((left_split, blank), 1)
+
+        # shift right on num_segments channel in `mid_split`
+        zeros = mid_split - mid_split
+        blank = zeros[:, :1, :, :]
+        mid_split = mid_split[:, :-1, :, :]
+        mid_split = torch.cat((blank, mid_split), 1)
+
+        # right_split: no shift
+
+        # concatenate
+        out = torch.cat((left_split, mid_split, right_split), 2)
 
         # [N, C, H, W]
+        # restore the original dimension
         return out.view(n, c, h, w)
 
 
@@ -99,7 +123,7 @@ class ResNetTSM(ResNet):
                 blocks = list(stage.children())
                 for i, b in enumerate(blocks):
                     blocks[i] = TemporalShift(
-                        b, num_segments=num_segments, n_div=self.shift_div)
+                        b, num_segments=num_segments, shift_div=self.shift_div)
                 return nn.Sequential(*blocks)
 
             self.layer1 = make_block_temporal(self.layer1, num_segment_list[0])
@@ -119,7 +143,7 @@ class ResNetTSM(ResNet):
                         blocks[i].conv1 = TemporalShift(
                             b.conv1,
                             num_segments=num_segments,
-                            n_div=self.shift_div)
+                            shift_div=self.shift_div)
                 return nn.Sequential(*blocks)
 
             self.layer1 = make_block_temporal(self.layer1, num_segment_list[0])

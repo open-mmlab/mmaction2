@@ -483,7 +483,7 @@ def test_resnet_tsm_backbone():
         for block in blocks:
             assert isinstance(block.conv1, TemporalShift)
             assert block.conv1.num_segments == resnet_tsm_50.num_segments
-            assert block.conv1.fold_div == resnet_tsm_50.shift_div
+            assert block.conv1.shift_div == resnet_tsm_50.shift_div
             assert isinstance(block.conv1.net, nn.Conv2d)
 
     # resnet_tsm with depth 50, no pretrained, shift_place is block
@@ -496,7 +496,7 @@ def test_resnet_tsm_backbone():
             assert isinstance(block, TemporalShift)
             assert block.num_segments == resnet_tsm_50_block.num_segments
             assert block.num_segments == resnet_tsm_50_block.num_segments
-            assert block.fold_div == resnet_tsm_50_block.shift_div
+            assert block.shift_div == resnet_tsm_50_block.shift_div
             assert isinstance(block.net, Bottleneck)
 
     # resnet_tsm with depth 50, no pretrained, use temporal_pool
@@ -513,7 +513,7 @@ def test_resnet_tsm_backbone():
             else:
                 assert block.conv1.num_segments == \
                        resnet_tsm_50_temporal_pool.num_segments // 2
-            assert block.conv1.fold_div == resnet_tsm_50_temporal_pool.shift_div  # noqa: E501
+            assert block.conv1.shift_div == resnet_tsm_50_temporal_pool.shift_div  # noqa: E501
             assert isinstance(block.conv1.net, nn.Conv2d)
 
     # compare ResNetTSM with ResNet when using pretrained.
