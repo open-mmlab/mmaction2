@@ -1,5 +1,6 @@
 from collections import OrderedDict
 
+import torch
 import torch.distributed as dist
 from mmcv.runner import OptimizerHook
 from torch._utils import (_flatten_dense_tensors, _take_tensors,
@@ -51,6 +52,9 @@ class DistOptimizerHook(OptimizerHook):
     def after_train_iter(self, runner):
         runner.optimizer.zero_grad()
         runner.outputs['loss'].backward()
+        if torch.__version__ == "parrots":
+            allreduce_grads(runner.model.parameters(), self.coalesce,
+                            self.bucket_size_mb)
         if self.grad_clip is not None:
             self.clip_grads(runner.model.parameters())
         runner.optimizer.step()
