@@ -11,7 +11,7 @@ from mmaction.utils import _BatchNorm, get_root_logger
 
 
 class BasicBlock3d(nn.Module):
-    """BasicBlock3d block for ResNet3D.
+    """BasicBlock 3d block for ResNet3D.
 
     Args:
         inplanes (int): Number of channels for the input in first conv3d layer.
@@ -136,7 +136,7 @@ class BasicBlock3d(nn.Module):
 
 
 class Bottleneck3d(nn.Module):
-    """Bottleneck3D block for ResNet3D.
+    """Bottleneck 3d block for ResNet3D.
 
     Args:
         inplanes (int): Number of channels for the input in first conv3d layer.
@@ -536,6 +536,8 @@ class ResNet3d(nn.Module):
             state_dict_2d (OrderedDict): The state dict of pretrained 2d model.
             module_name_2d (str): The name of corresponding conv module in the
                 2d model.
+            inflated_param_names (list[str]): List of parameters that have been
+                inflated.
         """
         weight_2d_name = module_name_2d + '.weight'
         conv2d_weight = state_dict_2d[weight_2d_name]
@@ -559,6 +561,8 @@ class ResNet3d(nn.Module):
             state_dict_2d (OrderedDict): The state dict of pretrained 2d model.
             module_name_2d (str): The name of corresponding bn module in the
                 2d model.
+            inflated_param_names (list[str]): List of parameters that have been
+                inflated.
         """
         for param_name, param in bn3d.named_parameters():
             param_2d_name = f'{module_name_2d}.{param_name}'
@@ -607,7 +611,6 @@ class ResNet3d(nn.Module):
                     original_conv_name = name
                     # layer{X}.{Y}.conv{n}.bn->layer{X}.{Y}.bn{n}
                     original_bn_name = name.replace('conv', 'bn')
-
                 self._inflate_conv_params(module.conv, state_dict_r2d,
                                           original_conv_name,
                                           inflated_param_names)

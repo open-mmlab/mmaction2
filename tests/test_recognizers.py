@@ -170,6 +170,44 @@ def test_r2plus1d():
                 recognizer(one_img, None, return_loss=False)
 
 
+def test_slowfast():
+    model, train_cfg, test_cfg = _get_recognizer_cfg(
+        'slowfast_32x2x1_r50_3d_kinetics400_256e.py')
+
+    recognizer = build_recognizer(
+        model, train_cfg=train_cfg, test_cfg=test_cfg)
+
+    input_shape = (1, 3, 3, 8, 32, 32)
+    demo_inputs = generate_demo_inputs(input_shape, '3D')
+
+    imgs = demo_inputs['imgs']
+    gt_labels = demo_inputs['gt_labels']
+
+    # parrots 3dconv is only implemented on gpu
+    if torch.__version__ == 'parrots':
+        if torch.cuda.is_available():
+            recognizer = recognizer.cuda()
+            imgs = imgs.cuda()
+            gt_labels = gt_labels.cuda()
+            losses = recognizer(imgs, gt_labels)
+            assert isinstance(losses, dict)
+
+            # Test forward test
+            with torch.no_grad():
+                img_list = [img[None, :] for img in imgs]
+                for one_img in img_list:
+                    recognizer(one_img, None, return_loss=False)
+    else:
+        losses = recognizer(imgs, gt_labels)
+        assert isinstance(losses, dict)
+
+        # Test forward test
+        with torch.no_grad():
+            img_list = [img[None, :] for img in imgs]
+            for one_img in img_list:
+                recognizer(one_img, None, return_loss=False)
+
+
 def test_tsm():
     model, train_cfg, test_cfg = _get_recognizer_cfg(
         'tsm_rgb_1x1x8_r50_2d_kinetics400_100e.py')
