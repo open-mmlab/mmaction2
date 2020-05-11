@@ -3,8 +3,8 @@ import pytest
 import torch
 import torch.nn as nn
 
-from mmaction.models import (ResNet, ResNet2Plus1d, ResNet3d, ResNetTIN,
-                             ResNetTSM)
+from mmaction.models import (ResNet, ResNet2Plus1d, ResNet3d, ResNet3dSlowFast,
+                             ResNetTIN, ResNetTSM)
 from mmaction.utils import _BatchNorm
 
 
@@ -568,6 +568,90 @@ def test_resnet_tin_backbone():
     # resnet_tin with normal cfg inference
     feat = resnet_tin(imgs)
     assert feat.shape == torch.Size([8, 2048, 2, 2])
+
+
+def test_slowfast_backbone():
+    """Test slowfast backbone"""
+    with pytest.raises(TypeError):
+        # cfg should be a dict
+        sf_50 = ResNet3dSlowFast(None, slow_pathway=list(['foo', 'bar']))
+    with pytest.raises(TypeError):
+        # pretrained should be a str
+        sf_50 = ResNet3dSlowFast(dict(foo='bar'))
+        sf_50.init_weights()
+    with pytest.raises(KeyError):
+        # pathway type should be implemented
+        sf_50 = ResNet3dSlowFast(None, slow_pathway=dict(type='resnext'))
+
+    # test slowfast with slow inflated
+    sf_50_inflate = ResNet3dSlowFast(
+        None,
+        slow_pathway=dict(
+            type='resnet3d',
+            depth=50,
+            pretrained='torchvision://resnet50',
+            pretrained2d=True,
+            lateral=True,
+            conv1_kernel=(1, 7, 7),
+            dilations=(1, 1, 1, 1),
+            conv1_stride_t=1,
+            pool1_stride_t=1,
+            inflate=(0, 0, 1, 1)))
+    sf_50_inflate.init_weights()
+    sf_50_inflate.train()
+
+    # test slowfast with no lateral connection
+    sf_50_wo_lateral = ResNet3dSlowFast(
+        None,
+        slow_pathway=dict(
+            type='resnet3d',
+            depth=50,
+            pretrained=None,
+            lateral=False,
+            conv1_kernel=(1, 7, 7),
+            dilations=(1, 1, 1, 1),
+            conv1_stride_t=1,
+            pool1_stride_t=1,
+            inflate=(0, 0, 1, 1)))
+    sf_50_wo_lateral.init_weights()
+    sf_50_wo_lateral.train()
+
+    # slowfast w/o lateral connection inference test
+    input_shape = (1, 3, 8, 64, 64)
+    imgs = _demo_inputs(input_shape)
+    # parrots 3dconv is only implemented on gpu
+    if torch.__version__ == 'parrots':
+        if torch.cuda.is_available():
+            sf_50_wo_lateral = sf_50_wo_lateral.cuda()
+            imgs_gpu = imgs.cuda()
+            feat = sf_50_wo_lateral(imgs_gpu)
+    else:
+        feat = sf_50_wo_lateral(imgs)
+
+    assert isinstance(feat, tuple)
+    assert feat[0].shape == torch.Size([1, 2048, 1, 2, 2])
+    assert feat[1].shape == torch.Size([1, 256, 8, 2, 2])
+
+    # test slowfast with normal config
+    sf_50 = ResNet3dSlowFast(None)
+    sf_50.init_weights()
+    sf_50.train()
+
+    # slowfast inference test
+    input_shape = (1, 3, 8, 64, 64)
+    imgs = _demo_inputs(input_shape)
+    # parrots 3dconv is only implemented on gpu
+    if torch.__version__ == 'parrots':
+        if torch.cuda.is_available():
+            sf_50 = sf_50.cuda()
+            imgs_gpu = imgs.cuda()
+            feat = sf_50(imgs_gpu)
+    else:
+        feat = sf_50(imgs)
+
+    assert isinstance(feat, tuple)
+    assert feat[0].shape == torch.Size([1, 2048, 1, 2, 2])
+    assert feat[1].shape == torch.Size([1, 256, 8, 2, 2])
 
 
 def _demo_inputs(input_shape=(1, 3, 64, 64)):
