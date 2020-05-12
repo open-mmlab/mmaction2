@@ -73,11 +73,33 @@ class TestDataset(object):
         result = rawframe_dataset[0]
         assert self.check_keys_contain(result.keys(), target_keys)
 
+        # RawframeDataset in multi-class tasks
+        rawframe_dataset = RawframeDataset(
+            self.frame_ann_file,
+            self.frame_pipeline,
+            self.data_prefix,
+            multi_class=True,
+            num_classes=400,
+            test_mode=False)
+        result = rawframe_dataset[0]
+        assert self.check_keys_contain(result.keys(), target_keys)
+
         # RawframeDataset in test mode
         rawframe_dataset = RawframeDataset(
             self.frame_ann_file,
             self.frame_pipeline,
             self.data_prefix,
+            test_mode=True)
+        result = rawframe_dataset[0]
+        assert self.check_keys_contain(result.keys(), target_keys)
+
+        # RawframeDataset in multi-class tasks in test mode
+        rawframe_dataset = RawframeDataset(
+            self.frame_ann_file,
+            self.frame_pipeline,
+            self.data_prefix,
+            multi_class=True,
+            num_classes=400,
             test_mode=True)
         result = rawframe_dataset[0]
         assert self.check_keys_contain(result.keys(), target_keys)

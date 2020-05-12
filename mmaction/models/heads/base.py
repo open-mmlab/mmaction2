@@ -35,13 +35,27 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
         num_classes (int): Number of classes to be classified.
         in_channels (int): Number of channels in input feature.
         loss_cls (dict): Config for building loss.
+            Default: dict(type='CrossEntropyLoss').
+        multi_class (bool): Determines whether it is a multi-class
+            recognition task. Default: False.
+        label_smooth_eps (float): Epsilon used in label smooth.
+            Reference: arxiv.org/abs/1906.02629. Default: 0.
+        loss_factor (float): Factor scalar multiplied on the loss.
+            Default: 1.0.
     """
 
-    def __init__(self, num_classes, in_channels, loss_cls):
+    def __init__(self,
+                 num_classes,
+                 in_channels,
+                 loss_cls=dict(type='CrossEntropyLoss', loss_factor=1.0),
+                 multi_class=False,
+                 label_smooth_eps=0.0):
         super(BaseHead, self).__init__()
         self.num_classes = num_classes
         self.in_channels = in_channels
         self.loss_cls = build_loss(loss_cls)
+        self.multi_class = multi_class
+        self.label_smooth_eps = label_smooth_eps
 
     @abstractmethod
     def init_weights(self):
@@ -55,10 +69,16 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
         losses = dict()
         if labels.shape == torch.Size([]):
             labels = labels.unsqueeze(0)
-        losses['loss_cls'] = self.loss_cls(cls_score, labels)
-        top_k_acc = top_k_accuracy(cls_score.detach().cpu().numpy(),
-                                   labels.detach().cpu().numpy(), (1, 5))
-        losses['top1_acc'] = torch.tensor(top_k_acc[0])
-        losses['top5_acc'] = torch.tensor(top_k_acc[1])
 
+        if not self.multi_class:
+            top_k_acc = top_k_accuracy(cls_score.detach().cpu().numpy(),
+                                       labels.detach().cpu().numpy(), (1, 5))
+            losses['top1_acc'] = torch.tensor(top_k_acc[0])
+            losses['top5_acc'] = torch.tensor(top_k_acc[1])
+
+        elif self.label_smooth_eps != 0:
+            labels = ((1 - self.label_smooth_eps) * labels +
+                      self.label_smooth_eps / self.num_classes)
+
+        losses['loss_cls'] = self.loss_cls(cls_score, labels)
         return losses

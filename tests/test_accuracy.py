@@ -3,8 +3,8 @@ import random
 import numpy as np
 import pytest
 
-from mmaction.core.evaluation import (confusion_matrix, mean_class_accuracy,
-                                      top_k_accuracy)
+from mmaction.core.evaluation import (confusion_matrix, mean_average_precision,
+                                      mean_class_accuracy, top_k_accuracy)
 
 
 def gt_confusion_matrix(gt_labels, pred_labels):
@@ -114,3 +114,15 @@ def test_mean_class_accuracy():
     assert mean_class_accuracy(scores, mean_cls_acc_33) == 1 / 3
     assert mean_class_accuracy(scores, mean_cls_acc_75) == 0.75
     assert mean_class_accuracy(scores, mean_cls_acc_100) == 1.0
+
+
+def test_mean_average_precision():
+    # One sample
+    y_true = [np.array([0, 0, 1, 1])]
+    y_scores = [np.array([0.1, 0.4, 0.35, 0.8])]
+    map = mean_average_precision(y_scores, y_true)
+
+    precision = [2.0 / 3.0, 0.5, 1., 1.]
+    recall = [1., 0.5, 0.5, 0.]
+    target = -np.sum(np.diff(recall) * np.array(precision)[:-1])
+    assert target == map

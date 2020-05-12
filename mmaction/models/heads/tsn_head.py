@@ -13,11 +13,15 @@ class TSNHead(BaseHead):
         num_classes (int): Number of classes to be classified.
         in_channels (int): Number of channels in input feature.
         loss_cls (dict): Config for building loss.
-            Default: dict(type='CrossEntropyLoss')
+            Default: dict(type='CrossEntropyLoss').
         spatial_type (str): Pooling type in spatial dimension. Default: 'avg'.
         consensus (dict): Consensus config dict.
         dropout_ratio (float): Probability of dropout layer. Default: 0.4.
         init_std (float): Std value for Initiation. Default: 0.01.
+        multi_class (bool): Determines whether it is a multi-class
+            recognition task. Default: False.
+        label_smooth_eps (float): Epsilon used in label smooth.
+            Reference: arxiv.org/abs/1906.02629. Default: 0.
     """
 
     def __init__(self,
@@ -27,8 +31,15 @@ class TSNHead(BaseHead):
                  spatial_type='avg',
                  consensus=dict(type='AvgConsensus', dim=1),
                  dropout_ratio=0.4,
-                 init_std=0.01):
-        super(TSNHead, self).__init__(num_classes, in_channels, loss_cls)
+                 init_std=0.01,
+                 multi_class=False,
+                 label_smooth_eps=0.0):
+        super(TSNHead, self).__init__(
+            num_classes,
+            in_channels,
+            loss_cls=loss_cls,
+            multi_class=multi_class,
+            label_smooth_eps=label_smooth_eps)
 
         self.spatial_type = spatial_type
         self.dropout_ratio = dropout_ratio
