@@ -70,8 +70,8 @@ class TestAugumentations(object):
             for i in range(n):
                 for j in range(h):
                     for k in range(w):
-                        for l in range(c):
-                            if result_imgs[i][j, k, l] != origin_imgs[i][j, w - 1 - k, l]:  # noqa:E501
+                        for channel in range(c):
+                            if result_imgs[i][j, k, channel] != origin_imgs[i][j, w - 1 - k, channel]:  # noqa:E501
                                 return False
             # yapf: enable
         else:
@@ -79,8 +79,8 @@ class TestAugumentations(object):
             for i in range(n):
                 for j in range(h):
                     for k in range(w):
-                        for l in range(c):
-                            if result_imgs[i][j, k, l] != origin_imgs[i][h - 1 - j, k, l]:  # noqa:E501
+                        for channel in range(c):
+                            if result_imgs[i][j, k, channel] != origin_imgs[i][h - 1 - j, k, channel]:  # noqa:E501
                                 return False
             # yapf: enable
         return True
@@ -319,7 +319,7 @@ class TestAugumentations(object):
         assert repr(resize) == (
             resize.__class__.__name__ +
             f'(scale={(341, 256)}, keep_ratio={False}, ' +
-            f"interpolation='bilinear')")
+            "interpolation='bilinear')")
 
     def test_flip(self):
         with pytest.raises(ValueError):
