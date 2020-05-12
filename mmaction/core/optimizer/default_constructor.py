@@ -43,7 +43,7 @@ class DefaultOptimizerConstructor(object):
 
     def __init__(self, optimizer_cfg, paramwise_cfg=None):
         if not isinstance(optimizer_cfg, dict):
-            raise TypeError(f'optimizer_cfg should be a dict',
+            raise TypeError('optimizer_cfg should be a dict',
                             f'but got {type(optimizer_cfg)}')
         self.optimizer_cfg = optimizer_cfg
         self.paramwise_cfg = {} if paramwise_cfg is None else paramwise_cfg
@@ -61,7 +61,7 @@ class DefaultOptimizerConstructor(object):
                 or 'norm_decay_mult' in self.paramwise_cfg
                 or 'dwconv_decay_mult' in self.paramwise_cfg):
             if self.base_wd is None:
-                raise ValueError(f'base_wd should not be None')
+                raise ValueError('base_wd should not be None')
 
     def add_params(self, params, module):
         """Add all parameters of module to the params list.

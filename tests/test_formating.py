@@ -122,4 +122,4 @@ def test_format_shape():
     assert check_keys_contain(results.keys(), target_keys)
 
     assert repr(format_shape) == format_shape.__class__.__name__ + \
-        f"(input_format='NCTHW')"
+        "(input_format='NCTHW')"
