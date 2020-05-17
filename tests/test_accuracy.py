@@ -2,9 +2,12 @@ import random
 
 import numpy as np
 import pytest
+from numpy.testing import assert_array_almost_equal, assert_array_equal
 
-from mmaction.core.evaluation import (confusion_matrix, mean_average_precision,
-                                      mean_class_accuracy, top_k_accuracy)
+from mmaction.core.evaluation import (average_recall_at_avg_proposals,
+                                      confusion_matrix, mean_average_precision,
+                                      mean_class_accuracy,
+                                      pairwise_temporal_iou, top_k_accuracy)
 
 
 def gt_confusion_matrix(gt_labels, pred_labels):
@@ -126,3 +129,58 @@ def test_mean_average_precision():
     recall = [1., 0.5, 0.5, 0.]
     target = -np.sum(np.diff(recall) * np.array(precision)[:-1])
     assert target == map
+
+
+def test_pairwise_temporal_iou():
+    target_segments = np.array([])
+    candidate_segments = np.array([])
+    with pytest.raises(ValueError):
+        pairwise_temporal_iou(target_segments, candidate_segments)
+
+    target_segments = np.array([[1, 2], [2, 3]])
+    candidate_segments = np.array([[2, 3], [2.5, 3]])
+    temporal_iou = pairwise_temporal_iou(target_segments, candidate_segments)
+    assert_array_equal(temporal_iou, [[0, 1], [0, 0.5]])
+
+
+def test_average_recall_at_avg_proposals():
+    ground_truth1 = {
+        'v_test1': np.array([[0, 1], [1, 2]]),
+        'v_test2': np.array([[0, 1], [1, 2]])
+    }
+    ground_truth2 = {'v_test1': np.array([[0, 1]])}
+    proposals1 = {
+        'v_test1': np.array([[0, 1, 1], [1, 2, 1]]),
+        'v_test2': np.array([[0, 1, 1], [1, 2, 1]])
+    }
+    proposals2 = {
+        'v_test1': np.array([[10, 11, 0.6], [11, 12, 0.4]]),
+        'v_test2': np.array([[10, 11, 0.6], [11, 12, 0.4]])
+    }
+    proposals3 = {
+        'v_test1': np.array([[i, i + 1, 1 / (i + 1)] for i in range(100)])
+    }
+
+    recall, avg_recall, proposals_per_video, auc = (
+        average_recall_at_avg_proposals(ground_truth1, proposals1, 4))
+    assert_array_equal(recall, [[0.] * 49 + [0.5] * 50 + [1.]] * 10)
+    assert_array_equal(avg_recall, [0.] * 49 + [0.5] * 50 + [1.])
+    assert_array_almost_equal(
+        proposals_per_video, np.arange(0.02, 2.02, 0.02), decimal=10)
+    assert auc == 25.5
+
+    recall, avg_recall, proposals_per_video, auc = (
+        average_recall_at_avg_proposals(ground_truth1, proposals2, 4))
+    assert_array_equal(recall, [[0.] * 100] * 10)
+    assert_array_equal(avg_recall, [0.] * 100)
+    assert_array_almost_equal(
+        proposals_per_video, np.arange(0.02, 2.02, 0.02), decimal=10)
+    assert auc == 0
+
+    recall, avg_recall, proposals_per_video, auc = (
+        average_recall_at_avg_proposals(ground_truth2, proposals3, 100))
+    assert_array_equal(recall, [[1.] * 100] * 10)
+    assert_array_equal(avg_recall, ([1.] * 100))
+    assert_array_almost_equal(
+        proposals_per_video, np.arange(1, 101, 1), decimal=10)
+    assert auc == 99.0
