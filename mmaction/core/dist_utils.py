@@ -53,6 +53,10 @@ class DistOptimizerHook(OptimizerHook):
         runner.optimizer.zero_grad()
         runner.outputs['loss'].backward()
         if torch.__version__ == "parrots":
+            # for version < pat20200518
+            # allreduce_grads(runner.model.parameters(), self.coalesce,
+            #                 self.bucket_size_mb)
+            
             # for version >= pat20200518
             runner.model.average_gradients()
         if self.grad_clip is not None:
