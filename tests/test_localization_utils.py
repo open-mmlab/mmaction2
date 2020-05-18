@@ -5,8 +5,8 @@ import pytest
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from mmaction.localization import (generate_bsp_feature,
-                                   generate_candidate_proposals, temporal_iop,
-                                   temporal_iou)
+                                   generate_candidate_proposals, soft_nms,
+                                   temporal_iop, temporal_iou)
 
 
 def test_temporal_iou():
@@ -27,6 +27,14 @@ def test_temporal_iop():
 
     ioa = temporal_iop(anchors_min, anchors_max, box_min, box_max)
     assert_array_almost_equal(ioa, np.array([0.6, 0.6]))
+
+
+def test_soft_nms():
+    proposals = np.array([[0., 1., 1., 1., 0.5, 0.5],
+                          [0., 0.4, 1., 1., 0.4, 0.4],
+                          [0., 0.95, 1., 1., 0.6, 0.6]])
+    proposal_list = soft_nms(proposals, 0.75, 0.65, 0.9, 1)
+    assert_array_equal(proposal_list, [[0., 0.95, 0.6], [0., 0.4, 0.4]])
 
 
 def test_generate_candidate_proposals():
