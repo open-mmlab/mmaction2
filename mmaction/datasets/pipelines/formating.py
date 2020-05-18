@@ -50,6 +50,30 @@ class ToTensor(object):
 
 
 @PIPELINES.register_module
+class ToDataContainer(object):
+    """Convert the data to DataContainer.
+
+    Args:
+        fields (Sequence[dict]): Required fields to be converted
+            with keys and attributes. E.g.
+            fields=(dict(key='gt_bbox', stack=False),).
+    """
+
+    def __init__(self, fields):
+        self.fields = fields
+
+    def __call__(self, results):
+        for field in self.fields:
+            _field = field.copy()
+            key = _field.pop('key')
+            results[key] = DC(results[key], **_field)
+        return results
+
+    def __repr__(self):
+        return self.__class__.__name__ + f'(fields={self.fields})'
+
+
+@PIPELINES.register_module
 class ImageToTensor(object):
     """Convert image type to `torch.Tensor` type.
 
@@ -96,46 +120,59 @@ class Transpose(object):
 class Collect(object):
     """Collect data from the loader relevant to the specific task.
 
-    This is usually the last stage of the data loader pipeline. Typically keys
-    is set to some subset of "img", "gt_labels".
+    This keeps the items in `keys` as it is, and collect items in `meta_keys`
+    into a meta item called `meta_name`.This is usually the last stage of the
+    data loader pipeline.
+    For example, when keys='imgs', meta_keys=('filename', 'label',
+    'original_shape'), meta_name='img_meta', the results will be a dict with
+    keys 'imgs' and 'img_meta', where 'img_meta' is a DataContainer of another
+    dict with keys 'filename', 'label', 'original_shape'.
 
-    The "img_meta" item is always populated.  The contents of the "img_meta"
-    dictionary depends on "meta_keys". By default this includes:
+    Args:
+        keys (Sequence[str]): Required keys to be collected.
+        meta_name (str): The name of the key that contains meta infomation.
+            This key is always populated. Default: "img_meta".
+        meta_keys (Sequence[str]): Keys that are collected under meta_name.
+            The contents of the `meta_name` dictionary depends on `meta_keys`.
+            By default this includes:
+            - "filename": path to the image file
 
-        - "img_shape": shape of the image input to the network as a tuple
+            - "label": label of the image file
+
+            - "original_shape": original shape of the image as a tuple
+                (h, w, c)
+
+            - "img_shape": shape of the image input to the network as a tuple
                 (h, w, c).  Note that images may be zero padded on the
                 bottom/right, if the batch tensor is larger than this shape.
 
-        - "scale_factor": a float indicating the preprocessing scale
+            - "pad_shape": image shape after padding
 
-        - "flip": a boolean indicating if image flip transform was used
+            - "flip_direction": a str in ("horiziontal", "vertival") to
+                indicate if the image is fliped horizontally or vertically.
 
-        - "filename": path to the image file
-
-        - "original_shape": original shape of the image as a tuple (h, w, c)
-
-        - "pad_shape": image shape after padding
-
-        - "img_norm_cfg": a dict of normalization information:
-            - mean - per channel mean subtraction
-            - std - per channel std divisor
-            - to_rgb - bool indicating if bgr was converted to rgb
+            - "img_norm_cfg": a dict of normalization information:
+                - mean - per channel mean subtraction
+                - std - per channel std divisor
+                - to_rgb - bool indicating if bgr was converted to rgb
     """
 
     def __init__(self,
                  keys,
                  meta_keys=('filename', 'label', 'original_shape', 'img_shape',
-                            'pad_shape', 'flip_direction', 'img_norm_cfg')):
+                            'pad_shape', 'flip_direction', 'img_norm_cfg'),
+                 meta_name='img_meta'):
         self.keys = keys
         self.meta_keys = meta_keys
+        self.meta_name = meta_name
 
     def __call__(self, results):
         data = {}
         if len(self.meta_keys) != 0:
-            img_meta = {}
+            meta = {}
             for key in self.meta_keys:
-                img_meta[key] = results[key]
-            data['img_meta'] = DC(img_meta, cpu_only=True)
+                meta[key] = results[key]
+            data[self.meta_name] = DC(meta, cpu_only=True)
         for key in self.keys:
             data[key] = results[key]
         return data

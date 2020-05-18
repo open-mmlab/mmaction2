@@ -2,7 +2,8 @@ from .augmentations import (CenterCrop, Flip, MultiGroupCrop, MultiScaleCrop,
                             Normalize, RandomCrop, RandomResizedCrop, Resize,
                             TenCrop, ThreeCrop)
 from .compose import Compose
-from .formating import Collect, FormatShape, ImageToTensor, ToTensor, Transpose
+from .formating import (Collect, FormatShape, ImageToTensor, ToDataContainer,
+                        ToTensor, Transpose)
 from .loading import (DecordDecode, DenseSampleFrames, FrameSelector,
                       OpenCVDecode, PyAVDecode, SampleFrames)
 
@@ -11,5 +12,5 @@ __all__ = [
     'OpenCVDecode', 'FrameSelector', 'MultiScaleCrop', 'RandomResizedCrop',
     'RandomCrop', 'Resize', 'Flip', 'Normalize', 'ThreeCrop', 'CenterCrop',
     'TenCrop', 'ImageToTensor', 'Transpose', 'Collect', 'FormatShape',
-    'Compose', 'ToTensor', 'MultiGroupCrop'
+    'Compose', 'ToTensor', 'MultiGroupCrop', 'ToDataContainer'
 ]
