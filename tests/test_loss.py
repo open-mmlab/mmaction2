@@ -1,8 +1,11 @@
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from numpy.testing import assert_array_almost_equal
 
-from mmaction.models import BCELossWithLogits, CrossEntropyLoss, NLLLoss
+from mmaction.models import (BCELossWithLogits, BinaryLogisticRegressionLoss,
+                             CrossEntropyLoss, NLLLoss)
 
 
 def test_cross_entropy_loss():
@@ -32,3 +35,17 @@ def test_nll_loss():
     cls_score_log = torch.log(sm(cls_scores))
     output_loss = nll_loss(cls_score_log, gt_labels)
     assert torch.equal(output_loss, F.nll_loss(cls_score_log, gt_labels))
+
+
+def test_binary_logistic_loss():
+    binary_logistic_regression_loss = BinaryLogisticRegressionLoss()
+    reg_score = torch.tensor([0., 1.])
+    label = torch.tensor([0., 1.])
+    output_loss = binary_logistic_regression_loss(reg_score, label, 0.5)
+    assert_array_almost_equal(output_loss.numpy(), np.array([0.]), decimal=4)
+
+    reg_score = torch.tensor([0.3, 0.9])
+    label = torch.tensor([0., 1.])
+    output_loss = binary_logistic_regression_loss(reg_score, label, 0.5)
+    assert_array_almost_equal(
+        output_loss.numpy(), np.array([0.231]), decimal=4)

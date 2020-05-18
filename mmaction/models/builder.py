@@ -1,7 +1,7 @@
 import torch.nn as nn
 from mmcv.utils import build_from_cfg
 
-from .registry import BACKBONES, HEADS, LOSSES, RECOGNIZERS
+from .registry import BACKBONES, HEADS, LOCALIZERS, LOSSES, RECOGNIZERS
 
 
 def build(cfg, registry, default_args=None):
@@ -29,3 +29,7 @@ def build_recognizer(cfg, train_cfg=None, test_cfg=None):
 
 def build_loss(cfg):
     return build(cfg, LOSSES)
+
+
+def build_localizer(cfg):
+    return build(cfg, LOCALIZERS)

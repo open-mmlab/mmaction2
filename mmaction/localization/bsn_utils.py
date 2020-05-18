@@ -9,7 +9,7 @@ def generate_candidate_proposals(video_list,
                                  video_infos,
                                  tem_results_dir,
                                  temporal_scale,
-                                 peak_thres,
+                                 peak_threshold,
                                  tem_results_ext='.csv',
                                  result_dict=None):
     """Generate Candidate Proposals with given temporal evalutation results.
@@ -24,7 +24,7 @@ def generate_candidate_proposals(video_list,
         tem_results_dir (str): Directory to load temporal evaluation
             results.
         temporal_scale (int): The number (scale) on temporal axis.
-        peak_thres (float): The threshold for proposal generation.
+        peak_threshold (float): The threshold for proposal generation.
         tem_results_ext (str): File extension for temporal evaluation
             model output. Default: '.csv'.
         result_dict (dict): The dict to save the results. Default: None.
@@ -59,12 +59,12 @@ def generate_candidate_proposals(video_list,
             if start_scores[idx] > start_scores[
                     idx + 1] and start_scores[idx] > start_scores[idx - 1]:
                 start_bins[idx] = 1
-            elif start_scores[idx] > (peak_thres * max_start):
+            elif start_scores[idx] > (peak_threshold * max_start):
                 start_bins[idx] = 1
             if end_scores[idx] > end_scores[
                     idx + 1] and end_scores[idx] > end_scores[idx - 1]:
                 end_bins[idx] = 1
-            elif end_scores[idx] > (peak_thres * max_end):
+            elif end_scores[idx] > (peak_threshold * max_end):
                 end_bins[idx] = 1
 
         tmin_list = []
