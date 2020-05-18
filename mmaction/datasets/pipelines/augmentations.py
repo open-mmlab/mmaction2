@@ -343,7 +343,7 @@ class Flip(object):
     Args:
         flip_ratio (float): Probability of implementing flip. Default: 0.5.
         direction (str): Flip imgs horizontally or vertically. Options are
-            "horiziontal" | "vertival". Default: "horizontal".
+            "horizontal" | "vertical". Default: "horizontal".
     """
     _directions = ['horizontal', 'vertical']
 

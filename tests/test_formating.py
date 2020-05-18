@@ -1,9 +1,10 @@
 import numpy as np
 import pytest
 import torch
+from mmcv.parallel import DataContainer as DC
 
 from mmaction.datasets.pipelines import (Collect, FormatShape, ImageToTensor,
-                                         ToTensor, Transpose)
+                                         ToDataContainer, ToTensor, Transpose)
 
 
 def check_keys_contain(result_keys, target_keys):
@@ -21,44 +22,73 @@ def test_to_tensor():
     # convert tensor, numpy, squence, int, float to tensor
     target_keys = ['tensor', 'numpy', 'sequence', 'int', 'float']
     to_tensor = ToTensor(target_keys)
-    origin_results = dict(
+    original_results = dict(
         tensor=torch.randn(2, 3),
         numpy=np.random.randn(2, 3),
         sequence=list(range(10)),
         int=1,
         float=0.1)
-    results = to_tensor(origin_results)
+    results = to_tensor(original_results)
     assert check_keys_contain(results.keys(), target_keys)
     for key in target_keys:
         assert isinstance(results[key], torch.Tensor)
-        assert torch.equal(results[key].data, origin_results[key])
+        assert torch.equal(results[key].data, original_results[key])
 
     # Add an additional key which is not in keys.
-    origin_results = dict(
+    original_results = dict(
         tensor=torch.randn(2, 3),
         numpy=np.random.randn(2, 3),
         sequence=list(range(10)),
         int=1,
         float=0.1,
         str='test')
-    results = to_tensor(origin_results)
+    results = to_tensor(original_results)
     assert check_keys_contain(results.keys(), target_keys)
     for key in target_keys:
         assert isinstance(results[key], torch.Tensor)
-        assert torch.equal(results[key].data, origin_results[key])
+        assert torch.equal(results[key].data, original_results[key])
 
     assert repr(to_tensor) == to_tensor.__class__.__name__ + \
         f'(keys={target_keys})'
 
 
+def test_to_data_container():
+    # check user-defined fields
+    fields = (dict(key='key1', stack=True), dict(key='key2'))
+    to_data_container = ToDataContainer(fields=fields)
+    target_keys = ['key1', 'key2']
+    original_results = dict(key1=np.random.randn(10, 20), key2=['a', 'b'])
+    results = to_data_container(original_results.copy())
+    assert check_keys_contain(results.keys(), target_keys)
+    for key in target_keys:
+        assert isinstance(results[key], DC)
+        assert np.all(results[key].data == original_results[key])
+    assert results['key1'].stack
+    assert not results['key2'].stack
+
+    # Add an additional key which is not in keys.
+    original_results = dict(
+        key1=np.random.randn(10, 20), key2=['a', 'b'], key3='value3')
+    results = to_data_container(original_results.copy())
+    assert check_keys_contain(results.keys(), target_keys)
+    for key in target_keys:
+        assert isinstance(results[key], DC)
+        assert np.all(results[key].data == original_results[key])
+    assert results['key1'].stack
+    assert not results['key2'].stack
+
+    assert repr(to_data_container) == (
+        to_data_container.__class__.__name__ + f'(fields={fields})')
+
+
 def test_image_to_tensor():
-    origin_results = dict(imgs=np.random.randn(256, 256, 3))
+    original_results = dict(imgs=np.random.randn(256, 256, 3))
     keys = ['imgs']
     image_to_tensor = ImageToTensor(keys)
-    results = image_to_tensor(origin_results)
+    results = image_to_tensor(original_results)
     assert results['imgs'].shape == torch.Size([3, 256, 256])
     assert isinstance(results['imgs'], torch.Tensor)
-    assert torch.equal(results['imgs'].data, origin_results['imgs'])
+    assert torch.equal(results['imgs'].data, original_results['imgs'])
     assert repr(image_to_tensor) == image_to_tensor.__class__.__name__ + \
         f'(keys={keys})'
 
