@@ -168,13 +168,15 @@ class Collect(object):
 
     def __call__(self, results):
         data = {}
+        for key in self.keys:
+            data[key] = results[key]
+
         if len(self.meta_keys) != 0:
             meta = {}
             for key in self.meta_keys:
                 meta[key] = results[key]
             data[self.meta_name] = DC(meta, cpu_only=True)
-        for key in self.keys:
-            data[key] = results[key]
+
         return data
 
     def __repr__(self):
