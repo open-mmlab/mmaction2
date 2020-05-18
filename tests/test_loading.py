@@ -3,9 +3,14 @@ import os
 import os.path as osp
 
 import numpy as np
+import pytest
+from numpy.testing import assert_array_almost_equal
 
 from mmaction.datasets.pipelines import (DecordDecode, DenseSampleFrames,
-                                         FrameSelector, OpenCVDecode,
+                                         FrameSelector,
+                                         GenerateLocalizationLabels,
+                                         LoadLocalizationFeature,
+                                         LoadProposals, OpenCVDecode,
                                          PyAVDecode, SampleFrames)
 
 
@@ -21,6 +26,12 @@ class TestLoading(object):
         cls.img_path = osp.join(osp.dirname(__file__), 'data/test.jpg')
         cls.video_path = osp.join(osp.dirname(__file__), 'data/test.mp4')
         cls.img_dir = osp.join(osp.dirname(__file__), 'data/test_imgs')
+        cls.raw_feature_dir = osp.join(
+            osp.dirname(__file__), 'data/test_activitynet_features')
+        cls.bsp_feature_dir = osp.join(
+            osp.dirname(__file__), 'data/test_bsp_features')
+        cls.proposals_dir = osp.join(
+            osp.dirname(__file__), 'data/test_proposals')
         cls.total_frames = len(os.listdir(cls.img_dir))
         cls.filename_tmpl = 'img_{:05}.jpg'
         cls.video_results = dict(filename=cls.video_path, label=1)
@@ -29,6 +40,18 @@ class TestLoading(object):
             total_frames=cls.total_frames,
             filename_tmpl=cls.filename_tmpl,
             label=1)
+        cls.action_results = dict(
+            video_name='v_test1',
+            data_prefix=cls.raw_feature_dir,
+            temporal_scale=5,
+            boundary_ratio=0.1,
+            duration_second=10,
+            duration_frame=10,
+            feature_frame=8,
+            annotations=[{
+                'segment': [3.0, 5.0],
+                'label': 'Rock climbing'
+            }])
 
     def test_sample_frames(self):
         target_keys = [
@@ -385,3 +408,86 @@ class TestLoading(object):
         assert np.array(results['imgs']).shape == (len(inputs['frame_inds']),
                                                    240, 320, 3)
         assert results['original_shape'] == (240, 320)
+
+    def test_load_localization_feature(self):
+        target_keys = ['raw_feature']
+
+        action_result = copy.deepcopy(self.action_results)
+
+        # test error cases
+        with pytest.raises(NotImplementedError):
+            load_localization_feature = LoadLocalizationFeature(
+                'unsupport_ext')
+
+        # test normal cases
+        load_localization_feature = LoadLocalizationFeature()
+        load_localization_feature_result = load_localization_feature(
+            action_result)
+        assert self.check_keys_contain(load_localization_feature_result.keys(),
+                                       target_keys)
+        assert load_localization_feature_result['raw_feature'].shape == (400,
+                                                                         5)
+
+    def test_generate_localization_label(self):
+        action_result = copy.deepcopy(self.action_results)
+        action_result['raw_feature'] = np.random.randn(400, 5)
+
+        # test default setting
+        target_keys = ['gt_bbox']
+        generate_localization_labels = GenerateLocalizationLabels()
+        generate_localization_labels_result = generate_localization_labels(
+            action_result)
+        assert self.check_keys_contain(
+            generate_localization_labels_result.keys(), target_keys)
+
+        assert_array_almost_equal(
+            generate_localization_labels_result['gt_bbox'], [[0.375, 0.625]],
+            decimal=4)
+
+    def test_load_proposals(self):
+        target_keys = [
+            'bsp_feature', 'tmin', 'tmax', 'tmin_score', 'tmax_score',
+            'reference_temporal_iou'
+        ]
+
+        action_result = copy.deepcopy(self.action_results)
+
+        # test error cases
+        with pytest.raises(NotImplementedError):
+            load_proposals = LoadProposals(5, self.proposals_dir,
+                                           self.bsp_feature_dir,
+                                           'unsupport_ext')
+
+        with pytest.raises(NotImplementedError):
+            load_proposals = LoadProposals(5, self.proposals_dir,
+                                           self.bsp_feature_dir, '.csv',
+                                           'unsupport_ext')
+
+        # test normal cases
+        load_proposals = LoadProposals(5, self.proposals_dir,
+                                       self.bsp_feature_dir)
+        load_proposals_result = load_proposals(action_result)
+        assert self.check_keys_contain(load_proposals_result.keys(),
+                                       target_keys)
+        assert (load_proposals_result['bsp_feature'].shape[0] == 5)
+        assert load_proposals_result['tmin'].shape == (5, )
+        assert_array_almost_equal(
+            load_proposals_result['tmin'], np.arange(0.1, 0.6, 0.1), decimal=4)
+        assert load_proposals_result['tmax'].shape == (5, )
+        assert_array_almost_equal(
+            load_proposals_result['tmax'], np.arange(0.2, 0.7, 0.1), decimal=4)
+        assert load_proposals_result['tmin_score'].shape == (5, )
+        assert_array_almost_equal(
+            load_proposals_result['tmin_score'],
+            np.arange(0.95, 0.90, -0.01),
+            decimal=4)
+        assert load_proposals_result['tmax_score'].shape == (5, )
+        assert_array_almost_equal(
+            load_proposals_result['tmax_score'],
+            np.arange(0.96, 0.91, -0.01),
+            decimal=4)
+        assert load_proposals_result['reference_temporal_iou'].shape == (5, )
+        assert_array_almost_equal(
+            load_proposals_result['reference_temporal_iou'],
+            np.arange(0.85, 0.80, -0.01),
+            decimal=4)
