@@ -4,7 +4,7 @@ import os.path as osp
 import mmcv
 import numpy as np
 
-from mmaction.utils import FileClient
+from ...utils import FileClient
 from ..registry import PIPELINES
 
 
@@ -356,7 +356,7 @@ class OpenCVDecode(object):
 
 @PIPELINES.register_module
 class FrameSelector(object):
-    """Select raw frames with given indices
+    """Select raw frames with given indices.
 
     Required keys are "frame_dir", "filename_tmpl" and "frame_inds",
     added or modified keys are "imgs" and "original_shape".
@@ -401,5 +401,132 @@ class FrameSelector(object):
 
         results['imgs'] = imgs
         results['original_shape'] = imgs[0].shape[:2]
+
+        return results
+
+
+@PIPELINES.register_module
+class LoadLocalizationFeature(object):
+    """Load Video features for localizer with given video_name list.
+
+    Required keys are "video_name" and "data_prefix",
+    added or modified keys are "raw_feature".
+
+    Args:
+        raw_feature_ext (str): Raw feature file extension.  Default: '.csv'.
+    """
+
+    def __init__(self, raw_feature_ext='.csv'):
+        valid_raw_feature_ext = ('.csv', )
+        if raw_feature_ext not in valid_raw_feature_ext:
+            raise NotImplementedError
+        self.raw_feature_ext = raw_feature_ext
+
+    def __call__(self, results):
+        video_name = results['video_name']
+        data_prefix = results['data_prefix']
+
+        data_path = osp.join(data_prefix, video_name + self.raw_feature_ext)
+        raw_feature = np.loadtxt(
+            data_path, dtype=np.float32, delimiter=',', skiprows=1)
+
+        results['raw_feature'] = np.transpose(raw_feature, (1, 0))
+
+        return results
+
+
+@PIPELINES.register_module
+class GenerateLocalizationLabels(object):
+    """Load video label for localizer with given video_name list.
+
+    Required keys are "duration_frame", "duration_second",
+    "feature_frame", "annotations",
+    added or modified keys are "gt_bbox".
+
+    """
+
+    def __call__(self, results):
+        video_frame = results['duration_frame']
+        video_second = results['duration_second']
+        feature_frame = results['feature_frame']
+        corrected_second = float(feature_frame) / video_frame * video_second
+        annotations = results['annotations']
+
+        gt_bbox = []
+
+        for annotation in annotations:
+            current_start = max(
+                min(1, annotation['segment'][0] / corrected_second), 0)
+            current_end = max(
+                min(1, annotation['segment'][1] / corrected_second), 0)
+            gt_bbox.append([current_start, current_end])
+
+        gt_bbox = np.array(gt_bbox)
+        results['gt_bbox'] = gt_bbox
+        return results
+
+
+@PIPELINES.register_module
+class LoadProposals(object):
+    """Loading proposals with given proposal results.
+
+    Required keys are "video_name"
+    added or modified keys are 'bsp_feature', 'tmin', 'tmax',
+    'tmin_score', 'tmax_score' and 'reference_temporal_iou'.
+
+    Args:
+        top_k (int): The top k proposals to be loaded.
+        pgm_proposals_dir (str): Directory to load proposals.
+        pgm_features_dir (str): Directory to load proposal features.
+        proposal_ext (str): Proposal file extension. Default: '.csv'.
+        feature_ext (str): Feature file extension. Default: '.npy'.
+    """
+
+    def __init__(self,
+                 top_k,
+                 pgm_proposals_dir,
+                 pgm_features_dir,
+                 proposal_ext='.csv',
+                 feature_ext='.npy'):
+        self.top_k = top_k
+        self.pgm_proposals_dir = pgm_proposals_dir
+        self.pgm_features_dir = pgm_features_dir
+        valid_proposal_ext = ('.csv', )
+        if proposal_ext not in valid_proposal_ext:
+            raise NotImplementedError
+        self.proposal_ext = proposal_ext
+        valid_feature_ext = ('.npy', )
+        if feature_ext not in valid_feature_ext:
+            raise NotImplementedError
+        self.feature_ext = feature_ext
+
+    def __call__(self, results):
+        video_name = results['video_name']
+        proposal_path = osp.join(self.pgm_proposals_dir,
+                                 video_name + self.proposal_ext)
+        if self.proposal_ext == '.csv':
+            pgm_proposals = np.loadtxt(
+                proposal_path, dtype=np.float32, delimiter=',', skiprows=1)
+
+        pgm_proposals = np.array(pgm_proposals[:self.top_k])
+        tmin = pgm_proposals[:, 0]
+        tmax = pgm_proposals[:, 1]
+        tmin_score = pgm_proposals[:, 2]
+        tmax_score = pgm_proposals[:, 3]
+        reference_temporal_iou = pgm_proposals[:, 5]
+
+        feature_path = osp.join(self.pgm_features_dir,
+                                video_name + self.feature_ext)
+        if self.feature_ext == '.npy':
+            bsp_feature = np.load(feature_path).astype(np.float32)
+
+        bsp_feature = bsp_feature[:self.top_k, :]
+
+        results['bsp_feature'] = bsp_feature
+        results['tmin'] = tmin
+        results['tmax'] = tmax
+        results['tmin_score'] = tmin_score
+        results['tmax_score'] = tmax_score
+        results['reference_temporal_iou'] = reference_temporal_iou
 
         return results
