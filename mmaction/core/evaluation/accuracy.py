@@ -159,8 +159,6 @@ def pairwise_temporal_iou(candidate_segments, target_segments):
 
     Returns:
         temporal_iou (np.ndarray): 2-dim array [n x m] with IOU ratio.
-    Note: It assumes that target_segments are more scarce that
-        candidate_segments.
     """
     if target_segments.ndim != 2 or candidate_segments.ndim != 2:
         raise ValueError('Dimension of arguments is incorrect')
