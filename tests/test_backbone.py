@@ -468,8 +468,8 @@ def test_resnet_tsm_backbone():
     """Test resnet_tsm backbone"""
     with pytest.raises(NotImplementedError):
         # shift_place must be block or blockres
-        resnet_tsm_50_Block = ResNetTSM(50, shift_place='Block')
-        resnet_tsm_50_Block.init_weights()
+        resnet_tsm_50_block = ResNetTSM(50, shift_place='Block')
+        resnet_tsm_50_block.init_weights()
 
     from mmaction.models.backbones.resnet_tsm import TemporalShift
     from mmaction.models.backbones.resnet import Bottleneck
@@ -574,14 +574,14 @@ def test_slowfast_backbone():
     """Test slowfast backbone"""
     with pytest.raises(TypeError):
         # cfg should be a dict
-        sf_50 = ResNet3dSlowFast(None, slow_pathway=list(['foo', 'bar']))
+        ResNet3dSlowFast(None, slow_pathway=list(['foo', 'bar']))
     with pytest.raises(TypeError):
         # pretrained should be a str
         sf_50 = ResNet3dSlowFast(dict(foo='bar'))
         sf_50.init_weights()
     with pytest.raises(KeyError):
         # pathway type should be implemented
-        sf_50 = ResNet3dSlowFast(None, slow_pathway=dict(type='resnext'))
+        ResNet3dSlowFast(None, slow_pathway=dict(type='resnext'))
 
     # test slowfast with slow inflated
     sf_50_inflate = ResNet3dSlowFast(
