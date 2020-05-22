@@ -8,7 +8,7 @@ from mmcv.runner import get_dist_info, init_dist, load_checkpoint
 
 from mmaction.core import multi_gpu_test, single_gpu_test
 from mmaction.datasets import build_dataloader, build_dataset
-from mmaction.models import build_recognizer
+from mmaction.models import build_model
 
 
 def parse_args():
@@ -18,7 +18,8 @@ def parse_args():
     parser.add_argument('checkpoint', help='checkpoint file')
     parser.add_argument(
         '--gpus', default=1, type=int, help='GPU number used for testing')
-    parser.add_argument('--out', help='output result file in pickle format')
+    parser.add_argument(
+        '--out', default=None, help='output result file in pickle format')
     parser.add_argument(
         '--eval',
         type=str,
@@ -57,17 +58,38 @@ def parse_args():
     return args
 
 
+def merge_configs(cfg1, cfg2):
+    # Merge cfg2 into cfg1
+    # Overwrite cfg1 if repeated, ignore if value is None.
+    cfg1 = {} if cfg1 is None else cfg1.copy()
+    cfg2 = {} if cfg2 is None else cfg2
+    for k, v in cfg2.items():
+        if v:
+            cfg1[k] = v
+    return cfg1
+
+
 def main():
     args = parse_args()
 
-    assert args.out or args.eval or args.show, \
+    cfg = mmcv.Config.fromfile(args.config)
+
+    # Load output_config from cfg
+    output_config = cfg.get('output_config', {})
+    # Overwrite output_config from args.out
+    output_config = merge_configs(output_config, dict(out=args.out))
+
+    # Load eval_config from cfg
+    eval_config = cfg.get('eval_config', {})
+    # Overwrite eval_config from args.eval
+    eval_config = merge_configs(eval_config, dict(metrics=args.eval))
+    # Add options from args.option
+    eval_config = merge_configs(eval_config, args.options)
+
+    assert output_config or eval_config or args.show, \
         ('Please specify at least one operation (save or eval or show the '
          'results) with the argument "--out", "--eval" or "--show"')
 
-    if args.out is not None and not args.out.endswith(('.pkl', '.pickle')):
-        raise ValueError('The output file must be a pkl file.')
-
-    cfg = mmcv.Config.fromfile(args.config)
     # set cudnn benchmark
     if cfg.get('cudnn_benchmark', False):
         torch.backends.cudnn.benchmark = True
@@ -95,7 +117,7 @@ def main():
         shuffle=False)
 
     # build the model and load checkpoint
-    model = build_recognizer(cfg.model, train_cfg=None, test_cfg=cfg.test_cfg)
+    model = build_model(cfg.model, train_cfg=None, test_cfg=cfg.test_cfg)
     load_checkpoint(model, args.checkpoint, map_location='cpu')
 
     if not distributed:
@@ -111,12 +133,12 @@ def main():
 
     rank, _ = get_dist_info()
     if rank == 0:
-        if args.out:
-            print(f'\nwriting results to {args.out}')
-            mmcv.dump(outputs, args.out)
-        if args.eval:
-            kwargs = {} if args.options is None else args.options
-            eval_res = dataset.evaluate(outputs, args.eval, **kwargs)
+        if output_config:
+            out = output_config['out']
+            print(f'\nwriting results to {out}')
+            dataset.dump_results(outputs, **output_config)
+        if eval_config:
+            eval_res = dataset.evaluate(outputs, **eval_config)
             for name, val in eval_res.items():
                 print(f'{name}: {val:.04f}')
 

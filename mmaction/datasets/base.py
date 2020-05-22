@@ -2,6 +2,7 @@ import copy
 import os.path as osp
 from abc import ABCMeta, abstractmethod
 
+import mmcv
 from torch.utils.data import Dataset
 
 from .pipelines import Compose
@@ -55,6 +56,9 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
     @abstractmethod
     def evaluate(self, results, metrics, logger):
         pass
+
+    def dump_results(self, results, out):
+        return mmcv.dump(results, out)
 
     def prepare_train_frames(self, idx):
         results = copy.deepcopy(self.video_infos[idx])
