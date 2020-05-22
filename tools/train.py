@@ -12,7 +12,7 @@ from mmcv.runner import init_dist
 from mmaction import __version__
 from mmaction.core import set_random_seed, train_model
 from mmaction.datasets import build_dataset
-from mmaction.models import build_recognizer
+from mmaction.models import build_model
 from mmaction.utils import collect_env, get_root_logger
 
 
@@ -108,7 +108,7 @@ def main():
         set_random_seed(args.seed, deterministic=args.deterministic)
     cfg.seed = args.seed
 
-    model = build_recognizer(
+    model = build_model(
         cfg.model, train_cfg=cfg.train_cfg, test_cfg=cfg.test_cfg)
 
     datasets = [build_dataset(cfg.data.train)]

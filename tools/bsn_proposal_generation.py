@@ -45,8 +45,8 @@ def generate_proposals(ann_file, tem_results_dir, pgm_proposals_dir,
     num_videos_per_thread = num_videos // pgm_proposals_thread
     processes = []
     manager = mp.Manager()
-    return_dict = manager.dict()
-    kwargs['return_dict'] = return_dict
+    result_dict = manager.dict()
+    kwargs['result_dict'] = result_dict
     for tid in range(pgm_proposals_thread - 1):
         tmp_video_list = range(tid * num_videos_per_thread,
                                (tid + 1) * num_videos_per_thread)
@@ -81,8 +81,8 @@ def generate_proposals(ann_file, tem_results_dir, pgm_proposals_dir,
     os.makedirs(pgm_proposals_dir, exist_ok=True)
     prog_bar = mmcv.ProgressBar(num_videos)
     header = 'tmin,tmax,tmin_score,tmax_score,score,match_iou,match_ioa'
-    for video_name in return_dict.keys():
-        proposals = return_dict[video_name]
+    for video_name in result_dict.keys():
+        proposals = result_dict[video_name]
         proposal_path = osp.join(pgm_proposals_dir, video_name + '.csv')
         np.savetxt(
             proposal_path,
@@ -112,7 +112,7 @@ def generate_features(ann_file, tem_results_dir, pgm_proposals_dir,
     processes = []
     manager = mp.Manager()
     feature_return_dict = manager.dict()
-    kwargs['return_dict'] = feature_return_dict
+    kwargs['result_dict'] = feature_return_dict
     for tid in range(pgm_features_thread - 1):
         tmp_video_list = range(tid * num_videos_per_thread,
                                (tid + 1) * num_videos_per_thread)
