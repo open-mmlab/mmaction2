@@ -274,6 +274,26 @@ class ResNet3dPathway(ResNet3d):
             conv3d.bias.data.copy_(state_dict_2d[bias_2d_name])
             inflated_param_names.append(bias_2d_name)
 
+    def _freeze_stages(self):
+        if self.frozen_stages >= 0:
+            self.conv1.eval()
+            for param in self.conv1.parameters():
+                param.requires_grad = False
+
+        for i in range(1, self.frozen_stages + 1):
+            m = getattr(self, f'layer{i}')
+            m.eval()
+            for param in m.parameters():
+                param.requires_grad = False
+
+            if (i != len(self.res_layers) and self.lateral):
+                # No fusion needed in the final stage
+                lateral_name = self.lateral_connections[i - 1]
+                conv_lateral = getattr(self, lateral_name)
+                conv_lateral.eval()
+                for param in conv_lateral.parameters():
+                    param.requires_grad = False
+
     def init_weights(self):
         # Override the init_weights of i3d
         super(ResNet3dPathway, self).init_weights()

@@ -632,6 +632,40 @@ def test_slowfast_backbone():
     assert feat[0].shape == torch.Size([1, 2048, 1, 2, 2])
     assert feat[1].shape == torch.Size([1, 256, 8, 2, 2])
 
+    # test slowfast with frozen stages config
+    frozen_slow = 3
+    sf_50 = ResNet3dSlowFast(
+        None,
+        slow_pathway=dict(
+            type='resnet3d',
+            depth=50,
+            pretrained=None,
+            pretrained2d=True,
+            lateral=True,
+            conv1_kernel=(1, 7, 7),
+            dilations=(1, 1, 1, 1),
+            conv1_stride_t=1,
+            pool1_stride_t=1,
+            inflate=(0, 0, 1, 1),
+            frozen_stages=frozen_slow))
+    sf_50.init_weights()
+    sf_50.train()
+
+    for stage in range(1, sf_50.slow_path.num_stages):
+        lateral_name = sf_50.slow_path.lateral_connections[stage - 1]
+        conv_lateral = getattr(sf_50.slow_path, lateral_name)
+        for mod in conv_lateral.modules():
+            if isinstance(mod, _BatchNorm):
+                if stage <= frozen_slow:
+                    assert mod.training is False
+                else:
+                    assert mod.training is True
+        for param in conv_lateral.parameters():
+            if stage <= frozen_slow:
+                assert param.requires_grad is False
+            else:
+                assert param.requires_grad is True
+
     # test slowfast with normal config
     sf_50 = ResNet3dSlowFast(None)
     sf_50.init_weights()
