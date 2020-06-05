@@ -11,14 +11,14 @@ from mmaction.localization import (generate_bsp_feature,
 
 
 def load_video_infos(ann_file):
-    '''Load the video annotations.
+    """Load the video annotations.
 
     Args:
         ann_file (str): A json file path of the annotation file.
 
     Returns:
         video_infos (list[dict]): A list containing annotations for videos.
-    '''
+    """
     video_infos = []
     anno_database = mmcv.load(ann_file)
     for video_name in anno_database:

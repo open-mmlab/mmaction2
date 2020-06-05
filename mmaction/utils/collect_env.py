@@ -7,9 +7,9 @@ import cv2
 import mmcv
 import torch
 import torchvision
+from mmcv.utils import CUDA_HOME, get_build_config
 
 import mmaction
-from .parrots_wrapper import CUDA_HOME, get_build_config
 
 
 def collect_env():

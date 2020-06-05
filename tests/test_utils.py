@@ -7,9 +7,10 @@ import cv2
 import mmcv
 import torch
 import torchvision
+from mmcv.utils import CUDA_HOME, get_build_config
 
 import mmaction
-from mmaction.utils import CUDA_HOME, collect_env, get_build_config
+from mmaction.utils import collect_env
 
 
 def test_collect_env():

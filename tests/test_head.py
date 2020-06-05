@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 
-from mmaction.models.heads import (BaseHead, I3DHead, SlowFastHead, TINHead,
-                                   TSMHead, TSNHead)
+from mmaction.models import (BaseHead, I3DHead, SlowFastHead, TINHead, TSMHead,
+                             TSNHead)
 
 
 class ExampleHead(BaseHead):

@@ -1,13 +1,13 @@
 import torch.nn as nn
 import torch.utils.checkpoint as cp
-from mmcv.cnn import constant_init, kaiming_init
+from mmcv.cnn import (ConvModule, build_activation_layer, constant_init,
+                      kaiming_init)
 from mmcv.runner import _load_checkpoint, load_checkpoint
+from mmcv.utils import _BatchNorm
 from torch.nn.modules.utils import _ntuple, _triple
 
-from mmaction.models.common.activation import build_activation_layer
-from mmaction.models.common.conv_module import ConvModule
-from mmaction.models.registry import BACKBONES
-from mmaction.utils import _BatchNorm, get_root_logger
+from ...utils import get_root_logger
+from ..registry import BACKBONES
 
 
 class BasicBlock3d(nn.Module):

@@ -1,4 +1,4 @@
-from mmaction.models.registry import BACKBONES
+from ..registry import BACKBONES
 from .resnet3d import ResNet3d
 
 
@@ -14,7 +14,7 @@ class ResNet2Plus1d(ResNet3d):
     def __init__(self, *args, **kwargs):
         super(ResNet2Plus1d, self).__init__(*args, **kwargs)
         assert self.pretrained2d is False
-        assert self.conv_cfg['type'] == 'Conv(2+1)d'
+        assert self.conv_cfg['type'] == 'Conv2plus1d'
 
     def _freeze_stages(self):
         if self.frozen_stages >= 0:

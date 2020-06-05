@@ -3,8 +3,8 @@ import os.path as osp
 
 import mmcv
 import numpy as np
+from mmcv.fileio import FileClient
 
-from ...utils import FileClient
 from ..registry import PIPELINES
 
 

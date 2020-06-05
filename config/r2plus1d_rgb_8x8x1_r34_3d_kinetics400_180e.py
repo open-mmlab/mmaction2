@@ -7,7 +7,7 @@ model = dict(
         pretrained=None,
         pretrained2d=False,
         norm_eval=False,
-        conv_cfg=dict(type='Conv(2+1)d'),
+        conv_cfg=dict(type='Conv2plus1d'),
         norm_cfg=dict(type='SyncBN', requires_grad=True, eps=1e-3),
         act_cfg=dict(type='ReLU'),
         conv1_kernel=(3, 7, 7),

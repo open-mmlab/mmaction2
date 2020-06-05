@@ -1,8 +1,6 @@
 import torch
-
-from mmaction.utils import SyncBatchNorm, _BatchNorm, _ConvNd
-from .default_constructor import DefaultOptimizerConstructor
-from .registry import OPTIMIZER_BUILDERS
+from mmcv.runner import OPTIMIZER_BUILDERS, DefaultOptimizerConstructor
+from mmcv.utils import SyncBatchNorm, _BatchNorm, _ConvNd
 
 
 @OPTIMIZER_BUILDERS.register_module

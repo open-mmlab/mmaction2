@@ -5,12 +5,11 @@ from collections import OrderedDict
 import numpy as np
 import torch
 from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
-from mmcv.runner import DistSamplerSeedHook, Runner
+from mmcv.runner import DistSamplerSeedHook, Runner, build_optimizer
 
-from mmaction.core import (DistEvalHook, DistOptimizerHook, EvalHook,
-                           Fp16OptimizerHook, build_optimizer)
-from mmaction.datasets import build_dataloader, build_dataset
-from mmaction.utils import get_root_logger
+from ..core import DistEvalHook, DistOptimizerHook, EvalHook, Fp16OptimizerHook
+from ..datasets import build_dataloader, build_dataset
+from ..utils import get_root_logger
 
 
 def set_random_seed(seed, deterministic=False):
