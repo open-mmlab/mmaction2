@@ -2,8 +2,8 @@ import torch
 import torch.nn as nn
 from mmcv.runner import load_checkpoint
 
-from mmaction.models.registry import BACKBONES
-from mmaction.utils.logger import get_root_logger
+from ...utils import get_root_logger
+from ..registry import BACKBONES
 from .resnet import ResNet
 
 

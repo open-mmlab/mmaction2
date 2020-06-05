@@ -4,8 +4,7 @@ import os.path as osp
 import torch
 from mmcv.utils import print_log
 
-from mmaction.core import (mean_average_precision, mean_class_accuracy,
-                           top_k_accuracy)
+from ..core import mean_average_precision, mean_class_accuracy, top_k_accuracy
 from .base import BaseDataset
 from .registry import DATASETS
 

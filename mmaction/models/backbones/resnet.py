@@ -1,11 +1,11 @@
 import torch.nn as nn
 import torch.utils.checkpoint as cp
-from mmcv.cnn import constant_init, kaiming_init
+from mmcv.cnn import build_norm_layer, constant_init, kaiming_init
 from mmcv.runner import load_checkpoint
+from mmcv.utils import _BatchNorm
 
-from mmaction.models.common import build_norm_layer
-from mmaction.models.registry import BACKBONES
-from mmaction.utils import _BatchNorm, get_root_logger
+from ...utils import get_root_logger
+from ..registry import BACKBONES
 
 
 class BasicBlock(nn.Module):

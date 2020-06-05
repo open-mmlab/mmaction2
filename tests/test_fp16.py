@@ -3,8 +3,7 @@ import pytest
 import torch
 import torch.nn as nn
 
-from mmaction.core import auto_fp16, force_fp32
-from mmaction.core.fp16.utils import cast_tensor_type
+from mmaction.core import auto_fp16, cast_tensor_type, force_fp32
 
 
 def test_cast_tensor_type():

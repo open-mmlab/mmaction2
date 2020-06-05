@@ -60,7 +60,6 @@ class DistOptimizerHook(OptimizerHook):
                 # for version < pat20200518
                 allreduce_grads(runner.model.parameters(), self.coalesce,
                                 self.bucket_size_mb)
-
         if self.grad_clip is not None:
             self.clip_grads(runner.model.parameters())
         runner.optimizer.step()

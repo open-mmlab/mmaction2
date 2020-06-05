@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from mmaction.models.registry import BACKBONES
+from ..registry import BACKBONES
 from .resnet import ResNet
 
 

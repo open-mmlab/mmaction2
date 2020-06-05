@@ -2,10 +2,10 @@ import numpy as np
 import pytest
 import torch
 import torch.nn as nn
+from mmcv.utils import _BatchNorm
 
 from mmaction.models import (ResNet, ResNet2Plus1d, ResNet3d, ResNet3dSlowFast,
                              ResNetTIN, ResNetTSM)
-from mmaction.utils import _BatchNorm
 
 
 def check_norm_state(modules, train_state):
@@ -388,7 +388,7 @@ def test_resnet2plus1d_backbone():
     r2plus1d_34_frozen = ResNet2Plus1d(
         34,
         None,
-        conv_cfg=dict(type='Conv(2+1)d'),
+        conv_cfg=dict(type='Conv2plus1d'),
         pretrained2d=False,
         frozen_stages=frozen_stages,
         conv1_kernel=(3, 7, 7),
@@ -426,7 +426,7 @@ def test_resnet2plus1d_backbone():
     r2plus1d_50_frozen = ResNet2Plus1d(
         50,
         None,
-        conv_cfg=dict(type='Conv(2+1)d'),
+        conv_cfg=dict(type='Conv2plus1d'),
         pretrained2d=False,
         conv1_kernel=(3, 7, 7),
         conv1_stride_t=1,

@@ -2,7 +2,7 @@ import torch.nn as nn
 from mmcv.cnn.weight_init import normal_init
 from mmcv.runner import load_checkpoint
 
-from mmaction.utils.logger import get_root_logger
+from ...utils import get_root_logger
 from ..registry import HEADS
 from .base import AvgConsensus, BaseHead
 

@@ -1,10 +1,11 @@
 import tempfile
 from unittest.mock import MagicMock
 
-import mmcv.runner
 import pytest
 import torch
 import torch.nn as nn
+from mmcv.runner import Runner
+from mmcv.utils import get_logger
 from torch.utils.data import DataLoader, Dataset
 
 from mmaction.core import EvalHook
@@ -52,7 +53,8 @@ def test_eval_hook():
     eval_hook = EvalHook(data_loader)
 
     with tempfile.TemporaryDirectory() as tmpdir:
-        runner = mmcv.runner.Runner(
+        logger = get_logger('test_eval')
+        runner = Runner(
             model=model,
             batch_processor=lambda model, x, **kwargs: {
                 'log_vars': {
@@ -60,7 +62,8 @@ def test_eval_hook():
                 },
                 'num_samples': 1
             },
-            work_dir=tmpdir)
+            work_dir=tmpdir,
+            logger=logger)
         runner.register_hook(eval_hook)
         runner.run([loader], [('train', 1)], 1)
         test_dataset.evaluate.assert_called_with([torch.tensor([1])],

@@ -1,13 +1,12 @@
 import torch
 import torch.nn as nn
-from mmcv.cnn import kaiming_init
-from mmcv.runner import load_checkpoint
+from mmcv.cnn import ConvModule, kaiming_init
+from mmcv.runner import _load_checkpoint, load_checkpoint
 from mmcv.utils import print_log
 
-from mmaction.models.backbones.resnet3d import ResNet3d, _load_checkpoint
-from mmaction.models.common.conv_module import ConvModule
-from mmaction.models.registry import BACKBONES
-from mmaction.utils import get_root_logger
+from ...utils import get_root_logger
+from ..registry import BACKBONES
+from .resnet3d import ResNet3d
 
 
 class ResNet3dPathway(ResNet3d):
