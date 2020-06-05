@@ -324,7 +324,7 @@ class ResNet3d(nn.Module):
         norm_cfg (dict): Config for norm layers. required keys are `type` and
             `requires_grad`. Default: dict(type='BN3d', requires_grad=True).
         act_cfg (dict): Config dict for activation layer.
-            Default: dict(type='ReLU').
+            Default: dict(type='ReLU', inplace=True).
         norm_eval (bool): Whether to set BN layers to eval mode, namely, freeze
             running stats (mean and var). Default: True.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
@@ -361,7 +361,7 @@ class ResNet3d(nn.Module):
                  inflate_style='3x1x1',
                  conv_cfg=dict(type='Conv3d'),
                  norm_cfg=dict(type='BN3d', requires_grad=True),
-                 act_cfg=dict(type='ReLU'),
+                 act_cfg=dict(type='ReLU', inplace=True),
                  norm_eval=True,
                  with_cp=False,
                  zero_init_residual=True):
