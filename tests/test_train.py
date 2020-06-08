@@ -98,8 +98,7 @@ def test_set_random_seed():
     a_random = random.randint(0, 10)
     a_np_random = np.random.rand(2, 2)
     a_torch_random = torch.rand(2, 2)
-    if torch.__version__ != 'parrots':
-        assert torch.backends.cudnn.deterministic is False
+    assert torch.backends.cudnn.deterministic is False
     assert torch.backends.cudnn.benchmark is False
     assert os.environ['PYTHONHASHSEED'] == str(0)
 
@@ -107,8 +106,7 @@ def test_set_random_seed():
     b_random = random.randint(0, 10)
     b_np_random = np.random.rand(2, 2)
     b_torch_random = torch.rand(2, 2)
-    if torch.__version__ != 'parrots':
-        assert torch.backends.cudnn.deterministic is True
+    assert torch.backends.cudnn.deterministic is True
     assert torch.backends.cudnn.benchmark is False
 
     assert a_random == b_random

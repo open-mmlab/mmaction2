@@ -29,8 +29,7 @@ def set_random_seed(seed, deterministic=False):
     torch.cuda.manual_seed_all(seed)
     os.environ['PYTHONHASHSEED'] = str(seed)
     if deterministic:
-        if torch.__version__ != 'parrots':
-            torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
 
 

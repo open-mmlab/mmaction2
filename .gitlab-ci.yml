@@ -1,5 +1,5 @@
 variables:
-  PARROTS_IMAGE: registry.sensetime.com/platform/product:pat0.6.0rc0
+  PARROTS_IMAGE: registry.sensetime.com/platform/product:pat20200605
   PYTORCH_IMAGE: registry.sensetime.com/eig-research/pytorch:1.3.1-cuda10.1-cudnn7-devel
 
 stages:
