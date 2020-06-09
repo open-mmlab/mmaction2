@@ -38,9 +38,9 @@ argparse(){
     argparser=$(mktemp 2>/dev/null || mktemp -t argparser)
     cat > "$argparser" <<EOF
 from __future__ import print_function
-import sys
 import argparse
 import os
+import sys
 
 
 class MyArgumentParser(argparse.ArgumentParser):

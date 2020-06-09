@@ -8,25 +8,107 @@ from torch.nn.modules.utils import _pair
 from ..registry import PIPELINES
 
 
+def _init_lazy_if_proper(results, lazy):
+    """Initialize lazy operation properly.
+
+    Make sure that a lazy operation is properly initialized,
+    and avoid a non-lazy operation accidentally getting mixed in.
+
+    Required keys in results are "imgs" if "img_shape" not in results,
+    otherwise, Required keys in results are "img_shape", add or modified keys
+    are "img_shape", "lazy".
+    Add or modified keys in "lazy" are "original_shape", "crop_bbox", "flip",
+    "flip_direction", "interpolation".
+
+    Args:
+        results (dict): A dict stores data pipeline result.
+        lazy (bool): Determine whether to apply lazy operation. Default: False.
+    """
+
+    if 'img_shape' not in results:
+        results['img_shape'] = results['imgs'][0].shape[:2]
+    if lazy:
+        if 'lazy' not in results:
+            img_h, img_w = results['img_shape']
+            lazyop = dict()
+            lazyop['original_shape'] = results['img_shape']
+            lazyop['crop_bbox'] = np.array([0, 0, img_w, img_h],
+                                           dtype=np.float32)
+            lazyop['flip'] = False
+            lazyop['flip_direction'] = None
+            lazyop['interpolation'] = None
+            results['lazy'] = lazyop
+    else:
+        assert 'lazy' not in results, 'Use Fuse after lazy operations'
+
+
+@PIPELINES.register_module
+class Fuse(object):
+    """Fuse lazy operations.
+
+    Fusion order:
+        crop -> resize -> flip
+
+    Required keys are "imgs", "img_shape" and "lazy", added or modified keys
+    are "imgs", "lazy".
+    Required keys in "lazy" are "crop_bbox", "interpolation", "flip_direction".
+    """
+
+    def __call__(self, results):
+        if 'lazy' not in results:
+            raise ValueError('No lazy operation detected')
+        lazyop = results['lazy']
+        imgs = results['imgs']
+
+        # crop
+        left, top, right, bottom = lazyop['crop_bbox'].round().astype(int)
+        imgs = [img[top:bottom, left:right, :] for img in imgs]
+
+        # resize
+        img_h, img_w = results['img_shape']
+        if lazyop['interpolation'] is None:
+            interpolation = 'bilinear'
+        else:
+            interpolation = lazyop['interpolation']
+        imgs = [
+            mmcv.imresize(img, (img_w, img_h), interpolation=interpolation)
+            for img in imgs
+        ]
+
+        # flip
+        if lazyop['flip']:
+            for img in imgs:
+                mmcv.imflip_(img, lazyop['flip_direction'])
+
+        results['imgs'] = imgs
+        del results['lazy']
+
+        return results
+
+
 @PIPELINES.register_module
 class RandomCrop(object):
     """Vanilla square random crop that specifics the output size.
 
-    Required keys are "imgs", added or modified keys are "imgs", "crop_bbox"
-    and "img_shape".
+    Required keys in results are "imgs" and "img_shape", added or
+    modified keys are "imgs", "lazy"; Required keys in "lazy" are "flip",
+    "crop_bbox", added or modified key is "crop_bbox".
 
     Args:
         size (int): The output size of the images.
+        lazy (bool): Determine whether to apply lazy operation. Default: False.
     """
 
-    def __init__(self, size):
+    def __init__(self, size, lazy=False):
         if not isinstance(size, int):
             raise TypeError(f'Size must be an int, but got {type(size)}')
         self.size = size
+        self.lazy = lazy
 
     def __call__(self, results):
-        imgs = results['imgs']
-        img_h, img_w = imgs[0].shape[:2]
+        _init_lazy_if_proper(results, self.lazy)
+
+        img_h, img_w = results['img_shape']
         assert self.size <= img_h and self.size <= img_w
 
         y_offset = 0
@@ -36,18 +118,39 @@ class RandomCrop(object):
         if img_w > self.size:
             x_offset = int(np.random.randint(0, img_w - self.size))
 
-        results['crop_bbox'] = np.array(
-            [x_offset, y_offset, x_offset + self.size, y_offset + self.size])
-        results['imgs'] = [
-            img[y_offset:y_offset + self.size,
-                x_offset:x_offset + self.size, :] for img in imgs
-        ]
+        new_h, new_w = self.size, self.size
 
-        results['img_shape'] = results['imgs'][0].shape[:2]
+        results['crop_bbox'] = np.array(
+            [x_offset, y_offset, x_offset + new_w, y_offset + new_h])
+        results['img_shape'] = (new_h, new_w)
+
+        if not self.lazy:
+            results['imgs'] = [
+                img[y_offset:y_offset + new_h, x_offset:x_offset + new_w, :]
+                for img in results['imgs']
+            ]
+        else:
+            lazyop = results['lazy']
+            if lazyop['flip']:
+                raise NotImplementedError('Put Flip at last for now')
+
+            # record crop_bbox in lazyop dict to ensure only crop once in Fuse
+            lazy_left, lazy_top, lazy_right, lazy_bottom = lazyop['crop_bbox']
+            left = x_offset * (lazy_right - lazy_left) / img_w
+            right = (x_offset + new_w) * (lazy_right - lazy_left) / img_w
+            top = y_offset * (lazy_bottom - lazy_top) / img_h
+            bottom = (y_offset + new_h) * (lazy_bottom - lazy_top) / img_h
+            lazyop['crop_bbox'] = np.array([
+                lazy_left + left, lazy_top + top, lazy_left + right,
+                lazy_top + bottom
+            ],
+                                           dtype=np.float32)
+
         return results
 
     def __repr__(self):
-        repr_str = f'{self.__class__.__name__}(size={self.size})'
+        repr_str = (f'{self.__class__.__name__}(size={self.size}, '
+                    f'lazy={self.lazy})')
         return repr_str
 
 
@@ -55,21 +158,25 @@ class RandomCrop(object):
 class RandomResizedCrop(object):
     """Random crop that specifics the area and height-weight ratio range.
 
-    Required keys are "imgs", added or modified keys are "imgs", "crop_bbox"
-    and "img_shape".
+    Required keys in results are "imgs", "img_shape", "crop_bbox" and "lazy",
+    added or modified keys are "imgs", "crop_bbox" and "lazy"; Required keys
+    in "lazy" are "flip", "crop_bbox", added or modified key is "crop_bbox".
 
     Args:
         area_range (Tuple[float]): The candidate area scales range of
             output cropped images. Default: (0.08, 1.0).
         aspect_ratio_range (Tuple[float]): The candidate aspect ratio range of
-            output cropped images. Default: (3 / 4, 4 / 3)
+            output cropped images. Default: (3 / 4, 4 / 3).
+        lazy (bool): Determine whether to apply lazy operation. Default: False.
     """
 
     def __init__(self,
                  area_range=(0.08, 1.0),
-                 aspect_ratio_range=(3 / 4, 4 / 3)):
+                 aspect_ratio_range=(3 / 4, 4 / 3),
+                 lazy=False):
         self.area_range = area_range
         self.aspect_ratio_range = aspect_ratio_range
+        self.lazy = lazy
         if not mmcv.is_tuple_of(self.area_range, float):
             raise TypeError(f'Area_range must be a tuple of float, '
                             f'but got {type(area_range)}')
@@ -78,22 +185,30 @@ class RandomResizedCrop(object):
                             f'but got {type(aspect_ratio_range)}')
 
     @staticmethod
-    def get_crop_bbox(imgs, area_range, aspect_ratio_range, max_attempts=10):
+    def get_crop_bbox(img_shape,
+                      area_range,
+                      aspect_ratio_range,
+                      max_attempts=10):
         """Get a crop bbox given the area range and aspect ratio range.
 
         Args:
+            img_shape (Tuple[int]): Image shape
             area_range (Tuple[float]): The candidate area scales range of
                 output cropped images. Default: (0.08, 1.0).
             aspect_ratio_range (Tuple[float]): The candidate aspect
                 ratio range of output cropped images. Default: (3 / 4, 4 / 3).
                 max_attempts (int): The maximum of attempts. Default: 10.
+            max_attempts (int): Max attempts times to generate random candidate
+                bounding box. If it doesn't qualified one, the center bounding
+                box will be used.
         Returns:
-            A random crop bbox ggiven the area range and aspect ratio range.
+            (list[int]) A random crop bbox within the area range
+                and aspect ratio range.
         """
         assert 0 < area_range[0] <= area_range[1] <= 1
         assert 0 < aspect_ratio_range[0] <= aspect_ratio_range[1]
 
-        img_h, img_w = imgs[0].shape[:2]
+        img_h, img_w = img_shape
         area = img_h * img_w
 
         min_ar, max_ar = aspect_ratio_range
@@ -121,21 +236,45 @@ class RandomResizedCrop(object):
         return x_offset, y_offset, x_offset + crop_size, y_offset + crop_size
 
     def __call__(self, results):
-        imgs = results['imgs']
+        _init_lazy_if_proper(results, self.lazy)
 
-        left, top, right, bottom = self.get_crop_bbox(imgs, self.area_range,
-                                                      self.aspect_ratio_range)
+        img_h, img_w = results['img_shape']
+
+        left, top, right, bottom = self.get_crop_bbox(
+            (img_h, img_w), self.area_range, self.aspect_ratio_range)
+        new_h, new_w = bottom - top, right - left
 
         results['crop_bbox'] = np.array([left, top, right, bottom])
-        results['imgs'] = [img[top:bottom, left:right, :] for img in imgs]
+        results['img_shape'] = (new_h, new_w)
 
-        results['img_shape'] = results['imgs'][0].shape[:2]
+        if not self.lazy:
+            results['imgs'] = [
+                img[top:bottom, left:right, :] for img in results['imgs']
+            ]
+        else:
+            lazyop = results['lazy']
+            if lazyop['flip']:
+                raise NotImplementedError('Put Flip at last for now')
+
+            # record crop_bbox in lazyop dict to ensure only crop once in Fuse
+            lazy_left, lazy_top, lazy_right, lazy_bottom = lazyop['crop_bbox']
+            left = left * (lazy_right - lazy_left) / img_w
+            right = right * (lazy_right - lazy_left) / img_w
+            top = top * (lazy_bottom - lazy_top) / img_h
+            bottom = bottom * (lazy_bottom - lazy_top) / img_h
+            lazyop['crop_bbox'] = np.array([
+                lazy_left + left, lazy_top + top, lazy_left + right,
+                lazy_top + bottom
+            ],
+                                           dtype=np.float32)
+
         return results
 
     def __repr__(self):
         repr_str = (f'{self.__class__.__name__}('
                     f'area_range={self.area_range}, '
-                    f'aspect_ratio_range={self.aspect_ratio_range})')
+                    f'aspect_ratio_range={self.aspect_ratio_range}, '
+                    f'lazy={self.lazy})')
         return repr_str
 
 
@@ -147,8 +286,9 @@ class MultiScaleCrop(object):
     the base size, which is the minimal of image weight and height. The scale
     level of w and h is controlled to be smaller than a certain value to
     prevent too large or small aspect ratio.
-    Required keys are "imgs", added or modified keys are "imgs", "crop_bbox",
-    "img_shape" and "scales".
+    Required keys are "imgs", "img_shape", added or modified keys are "imgs",
+    "crop_bbox", "img_shape", "lazy" and "scales". Required keys in "lazy" are
+    "crop_bbox", added or modified key is "crop_bbox".
 
     Args:
         input_size (int | tuple[int]): (w, h) of network input.
@@ -167,6 +307,7 @@ class MultiScaleCrop(object):
                 "upper center", "upper left quarter", "upper right quarter",
                 "lower left quarter", "lower right quarter".
             Default: 5.
+        lazy (bool): Determine whether to apply lazy operation. Default: False.
     """
 
     def __init__(self,
@@ -174,7 +315,8 @@ class MultiScaleCrop(object):
                  scales=(1, ),
                  max_wh_scale_gap=1,
                  random_crop=False,
-                 num_fixed_crops=5):
+                 num_fixed_crops=5,
+                 lazy=False):
         self.input_size = _pair(input_size)
         if not mmcv.is_tuple_of(self.input_size, int):
             raise TypeError(f'Input_size must be int or tuple of int, '
@@ -191,13 +333,13 @@ class MultiScaleCrop(object):
         self.max_wh_scale_gap = max_wh_scale_gap
         self.random_crop = random_crop
         self.num_fixed_crops = num_fixed_crops
+        self.lazy = lazy
 
     def __call__(self, results):
-        imgs = results['imgs']
-        img_h, img_w = imgs[0].shape[:2]
+        _init_lazy_if_proper(results, self.lazy)
 
+        img_h, img_w = results['img_shape']
         base_size = min(img_h, img_w)
-
         crop_sizes = [int(base_size * s) for s in self.scales]
 
         candidate_sizes = []
@@ -240,23 +382,44 @@ class MultiScaleCrop(object):
                 candidate_offsets.extend(extra_candidate_offsets)
             x_offset, y_offset = random.choice(candidate_offsets)
 
-        results['crop_bbox'] = np.array(
-            [x_offset, y_offset, x_offset + crop_w, y_offset + crop_h])
-        results['imgs'] = [
-            img[y_offset:y_offset + crop_h, x_offset:x_offset + crop_w, :]
-            for img in imgs
-        ]
+        new_h, new_w = crop_h, crop_w
 
-        results['img_shape'] = results['imgs'][0].shape[:2]
+        results['crop_bbox'] = np.array(
+            [x_offset, y_offset, x_offset + new_w, y_offset + new_h])
+        results['img_shape'] = (new_h, new_w)
         results['scales'] = self.scales
+
+        if not self.lazy:
+            results['imgs'] = [
+                img[y_offset:y_offset + new_h, x_offset:x_offset + new_w, :]
+                for img in results['imgs']
+            ]
+        else:
+            lazyop = results['lazy']
+            if lazyop['flip']:
+                raise NotImplementedError('Put Flip at last for now')
+
+            # record crop_bbox in lazyop dict to ensure only crop once in Fuse
+            lazy_left, lazy_top, lazy_right, lazy_bottom = lazyop['crop_bbox']
+            left = x_offset * (lazy_right - lazy_left) / img_w
+            right = (x_offset + new_w) * (lazy_right - lazy_left) / img_w
+            top = y_offset * (lazy_bottom - lazy_top) / img_h
+            bottom = (y_offset + new_h) * (lazy_bottom - lazy_top) / img_h
+            lazyop['crop_bbox'] = np.array([
+                lazy_left + left, lazy_top + top, lazy_left + right,
+                lazy_top + bottom
+            ],
+                                           dtype=np.float32)
+
         return results
 
     def __repr__(self):
         repr_str = (f'{self.__class__.__name__}('
                     f'input_size={self.input_size}, scales={self.scales}, '
                     f'max_wh_scale_gap={self.max_wh_scale_gap}, '
-                    f'random_crop={self.random_crop},'
-                    f'num_fixed_crops={self.num_fixed_crops})')
+                    f'random_crop={self.random_crop}, '
+                    f'num_fixed_crops={self.num_fixed_crops}, '
+                    f'lazy={self.lazy})')
         return repr_str
 
 
@@ -264,8 +427,9 @@ class MultiScaleCrop(object):
 class Resize(object):
     """Resize images to a specific size.
 
-    Required keys are "imgs", added or modified keys are "imgs", "img_shape",
-    "keep_ratio", "scale_factor" and "resize_size".
+    Required keys are "imgs", "img_shape", added or modified keys are "imgs",
+    "img_shape", "keep_ratio", "scale_factor", "lazy" and "resize_size".
+    Required keys in "lazy" is None, added or modified key is "interpolation".
 
     Args:
         scale (float | Tuple[int]): If keep_ratio is True, it serves as scaling
@@ -279,9 +443,14 @@ class Resize(object):
             given size. Default: True.
         interpolation (str): Algorithm used for interpolation:
             "nearest" | "bilinear". Default: "bilinear".
+        lazy (bool): Determine whether to apply lazy operation. Default: False.
     """
 
-    def __init__(self, scale, keep_ratio=True, interpolation='bilinear'):
+    def __init__(self,
+                 scale,
+                 keep_ratio=True,
+                 interpolation='bilinear',
+                 lazy=False):
         if isinstance(scale, float):
             if scale <= 0:
                 raise ValueError(f'Invalid scale {scale}, must be positive.')
@@ -297,37 +466,47 @@ class Resize(object):
         self.scale = scale
         self.keep_ratio = keep_ratio
         self.interpolation = interpolation
+        self.lazy = lazy
 
     def __call__(self, results):
-        imgs = results['imgs']
-        h, w, c = imgs[0].shape
+        _init_lazy_if_proper(results, self.lazy)
+
+        img_h, img_w = results['img_shape']
+
         if self.keep_ratio:
-            new_size, self.scale_factor = mmcv.rescale_size((w, h),
+            new_size, self.scale_factor = mmcv.rescale_size((img_w, img_h),
                                                             self.scale,
                                                             return_scale=True)
-            out_w, out_h = new_size
+            new_w, new_h = new_size
         else:
-            out_w, out_h = self.scale
+            new_w, new_h = self.scale
             self.scale_factor = np.array(
-                [out_w / w, out_h / h, out_w / w, out_h / h], dtype=np.float32)
+                [new_w / img_w, new_h / img_h, new_w / img_w, new_h / img_h],
+                dtype=np.float32)
 
-        rimgs = [
-            mmcv.imresize(
-                img, (out_w, out_h), interpolation=self.interpolation)
-            for img in imgs
-        ]
-
-        results['imgs'] = rimgs
-        results['img_shape'] = results['imgs'][0].shape[:2]
+        results['img_shape'] = (new_h, new_w)
         results['keep_ratio'] = self.keep_ratio
         results['scale_factor'] = self.scale_factor
+
+        if not self.lazy:
+            results['imgs'] = [
+                mmcv.imresize(
+                    img, (new_w, new_h), interpolation=self.interpolation)
+                for img in results['imgs']
+            ]
+        else:
+            lazyop = results['lazy']
+            if lazyop['flip']:
+                raise NotImplementedError('Put Flip at last for now')
+            lazyop['interpolation'] = self.interpolation
 
         return results
 
     def __repr__(self):
         repr_str = (f'{self.__class__.__name__}('
                     f'scale={self.scale}, keep_ratio={self.keep_ratio}, '
-                    f"interpolation='{self.interpolation}')")
+                    f'interpolation={self.interpolation}, '
+                    f'lazy={self.lazy})')
         return repr_str
 
 
@@ -337,42 +516,57 @@ class Flip(object):
 
     Reverse the order of elements in the given imgs with a specific direction.
     The shape of the imgs is preserved, but the elements are reordered.
-    Required keys are "imgs", added or modified keys are "imgs"
-    and "flip_direction".
+    Required keys are "imgs", "img_shape", added or modified keys are "imgs",
+    "lazy"and "flip_direction". Required keys in "lazy" is None, added or
+    modified key are "flip" and "flip_direction".
 
     Args:
         flip_ratio (float): Probability of implementing flip. Default: 0.5.
         direction (str): Flip imgs horizontally or vertically. Options are
             "horizontal" | "vertical". Default: "horizontal".
+        lazy (bool): Determine whether to apply lazy operation. Default: False.
     """
     _directions = ['horizontal', 'vertical']
 
-    def __init__(self, flip_ratio=0.5, direction='horizontal'):
+    def __init__(self, flip_ratio=0.5, direction='horizontal', lazy=False):
         if direction not in self._directions:
             raise ValueError(f'Direction {direction} is not supported. '
                              f'Currently support ones are {self._directions}')
         self.flip_ratio = flip_ratio
         self.direction = direction
+        self.lazy = lazy
 
     def __call__(self, results):
+        _init_lazy_if_proper(results, self.lazy)
+
         if np.random.rand() < self.flip_ratio:
             flip = True
         else:
             flip = False
 
-        if flip:
-            for img in results['imgs']:
-                mmcv.imflip_(img, self.direction)
-
         results['flip'] = flip
         results['flip_direction'] = self.direction
+
+        if not self.lazy:
+            if flip:
+                for img in results['imgs']:
+                    mmcv.imflip_(img, self.direction)
+            else:
+                results['imgs'] = list(results['imgs'])
+        else:
+            lazyop = results['lazy']
+            if lazyop['flip']:
+                raise NotImplementedError('Use one Flip please')
+            lazyop['flip'] = flip
+            lazyop['flip_direction'] = self.direction
 
         return results
 
     def __repr__(self):
         repr_str = (
             f'{self.__class__.__name__}('
-            f"flip_ratio={self.flip_ratio}, direction='{self.direction}')")
+            f'flip_ratio={self.flip_ratio}, direction={self.direction}, '
+            f'lazy={self.lazy})')
         return repr_str
 
 
@@ -380,7 +574,7 @@ class Flip(object):
 class Normalize(object):
     """Normalize images with the given mean and std value.
 
-    Required keys are "imgs", added or modified keys are "imgs"
+    Required keys are "imgs", "img_shape", added or modified keys are "imgs"
     and "img_norm_cfg".
 
     Args:
@@ -429,37 +623,63 @@ class Normalize(object):
 class CenterCrop(object):
     """Crop the center area from images.
 
-    Required keys are "imgs", added or modified keys are "imgs", "crop_bbox"
-    and "img_shape".
+    Required keys are "imgs", "img_shape", added or modified keys are "imgs",
+    "crop_bbox", "lazy" and "img_shape". Required keys in "lazy" is
+    "crop_bbox", added or modified key is "crop_bbox".
 
     Args:
-        crop_size(int | tuple[int]): (w, h) of crop size.
+        crop_size (int | tuple[int]): (w, h) of crop size.
+        lazy (bool): Determine whether to apply lazy operation. Default: False.
     """
 
-    def __init__(self, crop_size):
+    def __init__(self, crop_size, lazy=False):
         self.crop_size = _pair(crop_size)
+        self.lazy = lazy
         if not mmcv.is_tuple_of(self.crop_size, int):
             raise TypeError(f'Crop_size must be int or tuple of int, '
                             f'but got {type(crop_size)}')
 
     def __call__(self, results):
-        imgs = results['imgs']
+        _init_lazy_if_proper(results, self.lazy)
 
-        img_h, img_w = imgs[0].shape[:2]
+        img_h, img_w = results['img_shape']
         crop_w, crop_h = self.crop_size
 
         left = (img_w - crop_w) // 2
         top = (img_h - crop_h) // 2
         right = left + crop_w
         bottom = top + crop_h
+        new_h, new_w = bottom - top, right - left
+
         results['crop_bbox'] = np.array([left, top, right, bottom])
-        results['imgs'] = [img[top:bottom, left:right, :] for img in imgs]
-        results['img_shape'] = results['imgs'][0].shape[:2]
+        results['img_shape'] = (new_h, new_w)
+
+        if not self.lazy:
+            results['imgs'] = [
+                img[top:bottom, left:right, :] for img in results['imgs']
+            ]
+        else:
+            lazyop = results['lazy']
+            if lazyop['flip']:
+                raise NotImplementedError('Put Flip at last for now')
+
+            # record crop_bbox in lazyop dict to ensure only crop once in Fuse
+            lazy_left, lazy_top, lazy_right, lazy_bottom = lazyop['crop_bbox']
+            left = left * (lazy_right - lazy_left) / img_w
+            right = right * (lazy_right - lazy_left) / img_w
+            top = top * (lazy_bottom - lazy_top) / img_h
+            bottom = bottom * (lazy_bottom - lazy_top) / img_h
+            lazyop['crop_bbox'] = np.array([
+                lazy_left + left, lazy_top + top, lazy_left + right,
+                lazy_top + bottom
+            ],
+                                           dtype=np.float32)
 
         return results
 
     def __repr__(self):
-        repr_str = f'{self.__class__.__name__}(crop_size={self.crop_size})'
+        repr_str = (f'{self.__class__.__name__}(crop_size={self.crop_size}, '
+                    f'lazy={self.lazy})')
         return repr_str
 
 
@@ -469,8 +689,8 @@ class ThreeCrop(object):
 
     Crop the images equally into three crops with equal intervals along the
     shorter side.
-    Required keys are "imgs", added or modified keys are "imgs", "crop_bbox"
-    and "img_shape".
+    Required keys are "imgs", "img_shape", added or modified keys are "imgs",
+    "crop_bbox" and "img_shape".
 
     Args:
         crop_size(int | tuple[int]): (w, h) of crop size.
@@ -483,8 +703,10 @@ class ThreeCrop(object):
                             f'but got {type(crop_size)}')
 
     def __call__(self, results):
+        _init_lazy_if_proper(results, False)
+
         imgs = results['imgs']
-        img_h, img_w = imgs[0].shape[:2]
+        img_h, img_w = results['imgs'][0].shape[:2]
         crop_w, crop_h = self.crop_size
         assert crop_h == img_h or crop_w == img_w
 
@@ -532,8 +754,8 @@ class TenCrop(object):
 
     Crop the four corners and the center part of the image with the same
     given crop_size, and flip it horizontally.
-    Required keys are "imgs", added or modified keys are "imgs", "crop_bbox"
-    and "img_shape".
+    Required keys are "imgs", "img_shape", added or modified keys are "imgs",
+    "crop_bbox" and "img_shape".
 
     Args:
         crop_size(int | tuple[int]): (w, h) of crop size.
@@ -546,9 +768,11 @@ class TenCrop(object):
                             f'but got {type(crop_size)}')
 
     def __call__(self, results):
+        _init_lazy_if_proper(results, False)
+
         imgs = results['imgs']
 
-        img_h, img_w = imgs[0].shape[:2]
+        img_h, img_w = results['imgs'][0].shape[:2]
         crop_w, crop_h = self.crop_size
 
         w_step = (img_w - crop_w) // 4

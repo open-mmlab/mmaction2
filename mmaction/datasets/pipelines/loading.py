@@ -230,7 +230,7 @@ class PyAVDecode(object):
     PyAV: https://github.com/mikeboers/PyAV
 
     Required keys are "filename" and "frame_inds",
-    added or modified keys are "imgs" and "original_shape".
+    added or modified keys are "imgs", "img_shape" and "original_shape".
 
     Args:
         multi_thread (bool): If set to True, it will apply multi
@@ -277,11 +277,10 @@ class PyAVDecode(object):
 
         # the available frame in pyav may be less than its length,
         # which may raise error
-        if len(imgs) <= max_inds:
-            results['frame_inds'] = np.mod(results['frame_inds'], len(imgs))
-
-        results['imgs'] = [imgs[i] for i in results['frame_inds']]
+        results['imgs'] = [imgs[i % len(imgs)] for i in results['frame_inds']]
         results['original_shape'] = imgs[0].shape[:2]
+        results['img_shape'] = imgs[0].shape[:2]
+
         return results
 
     def __repr__(self):
@@ -297,7 +296,7 @@ class DecordDecode(object):
     Decord: https://github.com/dmlc/decord
 
     Required keys are "filename" and "frame_inds",
-    added or modified keys are "imgs" and "original_shape".
+    added or modified keys are "imgs", "img_shape" and "original_shape".
     """
 
     def __call__(self, results):
@@ -319,6 +318,8 @@ class DecordDecode(object):
 
         results['imgs'] = imgs
         results['original_shape'] = imgs[0].shape[:2]
+        results['img_shape'] = imgs[0].shape[:2]
+
         return results
 
 
@@ -327,7 +328,7 @@ class OpenCVDecode(object):
     """Using OpenCV to decode the video.
 
     Required keys are "filename" and "frame_inds",
-    added or modified keys are "imgs" and "original_shape".
+    added or modified keys are "imgs", "img_shape" and "original_shape".
     """
 
     def __call__(self, results):
@@ -350,6 +351,7 @@ class OpenCVDecode(object):
         imgs = imgs[:, :, :, ::-1]
         results['imgs'] = list(imgs)
         results['original_shape'] = imgs[0].shape[:2]
+        results['img_shape'] = imgs[0].shape[:2]
 
         return results
 
@@ -359,7 +361,7 @@ class FrameSelector(object):
     """Select raw frames with given indices.
 
     Required keys are "frame_dir", "filename_tmpl" and "frame_inds",
-    added or modified keys are "imgs" and "original_shape".
+    added or modified keys are "imgs", "img_shape" and "original_shape".
 
     Args:
         io_backend (str): IO backend where frames are stored. Default: 'disk'.
@@ -401,6 +403,7 @@ class FrameSelector(object):
 
         results['imgs'] = imgs
         results['original_shape'] = imgs[0].shape[:2]
+        results['img_shape'] = imgs[0].shape[:2]
 
         return results
 
