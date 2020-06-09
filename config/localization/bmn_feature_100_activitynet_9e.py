@@ -44,26 +44,39 @@ train_pipeline = [
     dict(type='ToTensor', keys=['raw_feature', 'gt_bbox']),
     dict(type='ToDataContainer', fields=[dict(key='gt_bbox', stack=False)])
 ]
+val_pipeline = [
+    dict(type='LoadLocalizationFeature'),
+    dict(type='GenerateLocalizationLabels'),
+    dict(
+        type='Collect',
+        keys=['raw_feature', 'gt_bbox'],
+        meta_name='video_meta',
+        meta_keys=[
+            'video_name', 'duration_second', 'duration_frame', 'annotations',
+            'feature_frame'
+        ]),
+    dict(type='ToTensor', keys=['raw_feature', 'gt_bbox']),
+    dict(type='ToDataContainer', fields=[dict(key='gt_bbox', stack=False)])
+]
 data = dict(
     videos_per_gpu=16,
     workers_per_gpu=4,
-    train_drop_last=True,
+    train_dataloader=dict(drop_last=True),
     test=dict(
         type=dataset_type,
-        ann_file=ann_file_val,
+        ann_file=ann_file_test,
         pipeline=test_pipeline,
-        data_prefix=data_root_val,
-        test_mode=True,
-        temporal_scale=100,
-        boundary_ratio=0.5),
+        data_prefix=data_root_val),
+    val=dict(
+        type=dataset_type,
+        ann_file=ann_file_val,
+        pipeline=val_pipeline,
+        data_prefix=data_root_val),
     train=dict(
         type=dataset_type,
         ann_file=ann_file_train,
         pipeline=train_pipeline,
-        data_prefix=data_root,
-        test_mode=False,
-        temporal_scale=100,
-        boundary_ratio=0.5))
+        data_prefix=data_root))
 
 # optimizer
 optimizer = dict(type='Adam', lr=0.001, weight_decay=0.0001)

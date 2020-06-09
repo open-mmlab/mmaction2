@@ -147,14 +147,15 @@ def _dist_train(model,
     """
     # prepare data loaders
     dataset = dataset if isinstance(dataset, (list, tuple)) else [dataset]
+    dataloader_setting = dict(
+        videos_per_gpu=cfg.data.get('videos_per_gpu', {}),
+        workers_per_gpu=cfg.data.get('workers_per_gpu', {}),
+        dist=True,
+        seed=cfg.seed)
+    dataloader_setting = dict(dataloader_setting,
+                              **cfg.data.get('train_dataloader', {}))
     data_loaders = [
-        build_dataloader(
-            ds,
-            cfg.data.videos_per_gpu,
-            cfg.data.workers_per_gpu,
-            dist=True,
-            drop_last=cfg.data.get('train_drop_last', False),
-            seed=cfg.seed) for ds in dataset
+        build_dataloader(ds, **dataloader_setting) for ds in dataset
     ]
     # put model on gpus
     find_unused_parameters = cfg.get('find_unused_parameters', False)
@@ -194,13 +195,15 @@ def _dist_train(model,
     if validate:
         eval_cfg = cfg.get('evaluation', {})
         val_dataset = build_dataset(cfg.data.val, dict(test_mode=True))
-        val_dataloader = build_dataloader(
-            val_dataset,
-            cfg.data.videos_per_gpu,
-            cfg.data.workers_per_gpu,
-            cfg.gpus,
+        dataloader_setting = dict(
+            videos_per_gpu=cfg.data.get('videos_per_gpu', {}),
+            workers_per_gpu=cfg.data.get('workers_per_gpu', {}),
+            num_gpus=cfg.gpus,
             dist=True,
             shuffle=False)
+        dataloader_setting = dict(dataloader_setting,
+                                  **cfg.data.get('val_dataloader', {}))
+        val_dataloader = build_dataloader(val_dataset, **dataloader_setting)
         runner.register_hook(DistEvalHook(val_dataloader, **eval_cfg))
 
     if cfg.resume_from:
@@ -231,15 +234,15 @@ def _non_dist_train(model,
     """
     # prepare data loaders
     dataset = dataset if isinstance(dataset, (list, tuple)) else [dataset]
+    dataloader_setting = dict(
+        videos_per_gpu=cfg.data.get('videos_per_gpu', {}),
+        workers_per_gpu=cfg.data.get('workers_per_gpu', {}),
+        dist=False,
+        seed=cfg.seed)
+    dataloader_setting = dict(dataloader_setting,
+                              **cfg.data.get('train_dataloader', {}))
     data_loaders = [
-        build_dataloader(
-            ds,
-            cfg.data.videos_per_gpu,
-            cfg.data.workers_per_gpu,
-            cfg.gpus,
-            dist=False,
-            drop_last=cfg.data.get('train_drop_last', False),
-            seed=cfg.seed) for ds in dataset
+        build_dataloader(ds, **dataloader_setting) for ds in dataset
     ]
     # put model on gpus
     model = MMDataParallel(model, device_ids=range(cfg.gpus)).cuda()
@@ -270,13 +273,15 @@ def _non_dist_train(model,
     if validate:
         eval_cfg = cfg.get('evaluation', {})
         val_dataset = build_dataset(cfg.data.val, dict(test_mode=True))
-        val_dataloader = build_dataloader(
-            val_dataset,
-            cfg.data.videos_per_gpu,
-            cfg.data.workers_per_gpu,
-            cfg.gpus,
+        dataloader_setting = dict(
+            videos_per_gpu=cfg.data.get('videos_per_gpu', {}),
+            workers_per_gpu=cfg.data.get('workers_per_gpu', {}),
+            num_gpus=cfg.gpus,
             dist=False,
             shuffle=False)
+        dataloader_setting = dict(dataloader_setting,
+                                  **cfg.data.get('val_dataloader', {}))
+        val_dataloader = build_dataloader(val_dataset, **dataloader_setting)
         runner.register_hook(EvalHook(val_dataloader, **eval_cfg))
 
     if cfg.resume_from:
