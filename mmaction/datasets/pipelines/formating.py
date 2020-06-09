@@ -46,7 +46,7 @@ class ToTensor(object):
         return results
 
     def __repr__(self):
-        return self.__class__.__name__ + f'(keys={self.keys})'
+        return f'{self.__class__.__name__}(keys={self.keys})'
 
 
 @PIPELINES.register_module
@@ -90,7 +90,7 @@ class ImageToTensor(object):
         return results
 
     def __repr__(self):
-        return self.__class__.__name__ + f'(keys={self.keys})'
+        return f'{self.__class__.__name__}(keys={self.keys})'
 
 
 @PIPELINES.register_module
@@ -112,8 +112,8 @@ class Transpose(object):
         return results
 
     def __repr__(self):
-        return self.__class__.__name__ + \
-               f'(keys={self.keys}, order={self.order})'
+        return (f'{self.__class__.__name__}('
+                f'keys={self.keys}, order={self.order})')
 
 
 @PIPELINES.register_module
@@ -180,8 +180,8 @@ class Collect(object):
         return data
 
     def __repr__(self):
-        return self.__class__.__name__ + \
-               f'(keys={self.keys}, meta_keys={self.meta_keys})'
+        return (f'{self.__class__.__name__}('
+                f'keys={self.keys}, meta_keys={self.meta_keys})')
 
 
 @PIPELINES.register_module
