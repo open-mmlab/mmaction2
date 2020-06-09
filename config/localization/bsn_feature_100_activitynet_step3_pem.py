@@ -61,20 +61,40 @@ train_pipeline = [
                 dict(key='reference_temporal_iou', stack=False)))
 ]
 
+val_pipeline = [
+    dict(
+        type='LoadProposals',
+        top_k=1000,
+        pgm_proposals_dir=pgm_proposals_dir,
+        pgm_features_dir=pgm_features_dir),
+    dict(
+        type='Collect',
+        keys=['bsp_feature', 'tmin', 'tmax', 'tmin_score', 'tmax_score'],
+        meta_name='video_meta',
+        meta_keys=[
+            'video_name', 'duration_second', 'duration_frame', 'annotations',
+            'feature_frame'
+        ]),
+    dict(type='ToTensor', keys=['bsp_feature'])
+]
 data = dict(
     videos_per_gpu=16,
     workers_per_gpu=2,
-    train_drop_last=True,
+    train_dataloader=dict(drop_last=True),
+    val_dataloader=dict(videos_per_gpu=1),
     test=dict(
         type=dataset_type,
-        ann_file=ann_file_val,
-        test_mode=True,
+        ann_file=ann_file_test,
         pipeline=test_pipeline,
+        data_prefix=data_root_val),
+    val=dict(
+        type=dataset_type,
+        ann_file=ann_file_val,
+        pipeline=val_pipeline,
         data_prefix=data_root_val),
     train=dict(
         type=dataset_type,
         ann_file=ann_file_train,
-        test_mode=False,
         pipeline=train_pipeline,
         data_prefix=data_root))
 
