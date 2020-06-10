@@ -10,15 +10,6 @@ def readme():
     return content
 
 
-MAJOR = 1
-MINOR = 0
-PATCH = ''
-SUFFIX = 'rc1'
-if PATCH:
-    SHORT_VERSION = '{}.{}.{}{}'.format(MAJOR, MINOR, PATCH, SUFFIX)
-else:
-    SHORT_VERSION = '{}.{}{}'.format(MAJOR, MINOR, SUFFIX)
-
 version_file = 'mmaction/version.py'
 
 
@@ -66,15 +57,20 @@ def get_hash():
 def write_version_py():
     content = """# GENERATED VERSION FILE
 # TIME: {}
-
 __version__ = '{}'
 short_version = '{}'
+version_info = ({})
 """
     sha = get_hash()
+    with open('mmaction/VERSION', 'r') as f:
+        SHORT_VERSION = f.read().strip()
+    VERSION_INFO = ', '.join(SHORT_VERSION.split('.'))
     VERSION = SHORT_VERSION + '+' + sha
 
+    version_file_str = content.format(time.asctime(), VERSION, SHORT_VERSION,
+                                      VERSION_INFO)
     with open(version_file, 'w') as f:
-        f.write(content.format(time.asctime(), VERSION, SHORT_VERSION))
+        f.write(version_file_str)
 
 
 def get_version():
