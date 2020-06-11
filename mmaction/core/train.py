@@ -237,6 +237,7 @@ def _non_dist_train(model,
     dataloader_setting = dict(
         videos_per_gpu=cfg.data.get('videos_per_gpu', {}),
         workers_per_gpu=cfg.data.get('workers_per_gpu', {}),
+        num_gpus=cfg.gpus,
         dist=False,
         seed=cfg.seed)
     dataloader_setting = dict(dataloader_setting,
