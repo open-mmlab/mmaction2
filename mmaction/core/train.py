@@ -193,6 +193,13 @@ def _dist_train(model,
                                    cfg.checkpoint_config, cfg.log_config)
     runner.register_hook(DistSamplerSeedHook())
 
+    # multigrid setting
+    multi_grid_cfg = cfg.get('multi_grid', None)
+    if multi_grid_cfg is not None:
+        print(multi_grid_cfg, type(multi_grid_cfg))
+        multi_grid_scheduler = MultiGridHook(multi_grid_cfg, cfg.data)
+        runner.register_hook(multi_grid_scheduler)
+
     if validate:
         eval_cfg = cfg.get('evaluation', {})
         val_dataset = build_dataset(cfg.data.val, dict(test_mode=True))
