@@ -6,12 +6,13 @@ import numpy as np
 import pytest
 from numpy.testing import assert_array_almost_equal
 
-from mmaction.datasets.pipelines import (DecordDecode, DenseSampleFrames,
-                                         FrameSelector,
+from mmaction.datasets.pipelines import (DecordDecode, DecordInit,
+                                         DenseSampleFrames, FrameSelector,
                                          GenerateLocalizationLabels,
                                          LoadLocalizationFeature,
                                          LoadProposals, OpenCVDecode,
-                                         PyAVDecode, SampleFrames)
+                                         OpenCVInit, PyAVDecode, PyAVInit,
+                                         SampleFrames)
 
 
 class TestLoading(object):
@@ -275,6 +276,14 @@ class TestLoading(object):
         dense_sample_frames_results = dense_sample_frames(frame_result)
         assert len(dense_sample_frames_results['frame_inds']) == 120
 
+    def test_pyav_init(self):
+        target_keys = ['video_reader', 'total_frames']
+        video_result = copy.deepcopy(self.video_results)
+        pyav_init = PyAVInit()
+        pyav_init_result = pyav_init(video_result)
+        assert self.check_keys_contain(pyav_init_result.keys(), target_keys)
+        assert pyav_init_result['total_frames'] == 300
+
     def test_pyav_decode(self):
         target_keys = ['frame_inds', 'imgs', 'original_shape']
 
@@ -282,6 +291,10 @@ class TestLoading(object):
         video_result = copy.deepcopy(self.video_results)
         video_result['frame_inds'] = np.arange(0, self.total_frames,
                                                2)[:, np.newaxis]
+        pyav_init = PyAVInit()
+        pyav_init_result = pyav_init(video_result)
+        video_result['video_reader'] = pyav_init_result['video_reader']
+
         pyav_decode = PyAVDecode()
         pyav_decode_result = pyav_decode(video_result)
         assert self.check_keys_contain(pyav_decode_result.keys(), target_keys)
@@ -292,6 +305,10 @@ class TestLoading(object):
         # test PyAV with 1 dim input
         video_result = copy.deepcopy(self.video_results)
         video_result['frame_inds'] = np.arange(1, self.total_frames, 5)
+        pyav_init = PyAVInit()
+        pyav_init_result = pyav_init(video_result)
+        video_result['video_reader'] = pyav_init_result['video_reader']
+
         pyav_decode = PyAVDecode()
         pyav_decode_result = pyav_decode(video_result)
         assert self.check_keys_contain(pyav_decode_result.keys(), target_keys)
@@ -302,6 +319,10 @@ class TestLoading(object):
         # PyAV with multi thread
         video_result = copy.deepcopy(self.video_results)
         video_result['frame_inds'] = np.arange(1, self.total_frames, 5)
+        pyav_init = PyAVInit()
+        pyav_init_result = pyav_init(video_result)
+        video_result['video_reader'] = pyav_init_result['video_reader']
+
         pyav_decode = PyAVDecode(multi_thread=True)
         pyav_decode_result = pyav_decode(video_result)
         assert self.check_keys_contain(pyav_decode_result.keys(), target_keys)
@@ -312,6 +333,15 @@ class TestLoading(object):
         assert repr(pyav_decode) == pyav_decode.__class__.__name__ + \
             f'(multi_thread={True})'
 
+    def test_decord_init(self):
+        target_keys = ['new_path', 'video_reader', 'total_frames']
+        video_result = copy.deepcopy(self.video_results)
+        decord_init = DecordInit()
+        decord_init_result = decord_init(video_result)
+        assert self.check_keys_contain(decord_init_result.keys(), target_keys)
+        assert decord_init_result['total_frames'] == len(
+            decord_init_result['video_reader'])
+
     def test_decord_decode(self):
         target_keys = ['frame_inds', 'imgs', 'original_shape']
 
@@ -319,6 +349,10 @@ class TestLoading(object):
         video_result = copy.deepcopy(self.video_results)
         video_result['frame_inds'] = np.arange(1, self.total_frames,
                                                3)[:, np.newaxis]
+        decord_init = DecordInit()
+        decord_init_result = decord_init(video_result)
+        video_result['video_reader'] = decord_init_result['video_reader']
+
         decord_decode = DecordDecode()
         decord_decode_result = decord_decode(video_result)
         assert self.check_keys_contain(decord_decode_result.keys(),
@@ -330,6 +364,10 @@ class TestLoading(object):
         # test Decord with 1 dim input
         video_result = copy.deepcopy(self.video_results)
         video_result['frame_inds'] = np.arange(1, self.total_frames, 3)
+        decord_init = DecordInit()
+        decord_init_result = decord_init(video_result)
+        video_result['video_reader'] = decord_init_result['video_reader']
+
         decord_decode = DecordDecode()
         decord_decode_result = decord_decode(video_result)
         assert self.check_keys_contain(decord_decode_result.keys(),
@@ -338,6 +376,15 @@ class TestLoading(object):
         assert np.shape(decord_decode_result['imgs']) == (len(
             video_result['frame_inds']), 256, 340, 3)
 
+    def test_opencv_init(self):
+        target_keys = ['new_path', 'video_reader', 'total_frames']
+        video_result = copy.deepcopy(self.video_results)
+        opencv_init = OpenCVInit()
+        opencv_init_result = opencv_init(video_result)
+        assert self.check_keys_contain(opencv_init_result.keys(), target_keys)
+        assert opencv_init_result['total_frames'] == len(
+            opencv_init_result['video_reader'])
+
     def test_opencv_decode(self):
         target_keys = ['frame_inds', 'imgs', 'original_shape']
 
@@ -345,6 +392,10 @@ class TestLoading(object):
         video_result = copy.deepcopy(self.video_results)
         video_result['frame_inds'] = np.arange(0, self.total_frames,
                                                2)[:, np.newaxis]
+        opencv_init = OpenCVInit()
+        opencv_init_result = opencv_init(video_result)
+        video_result['video_reader'] = opencv_init_result['video_reader']
+
         opencv_decode = OpenCVDecode()
         opencv_decode_result = opencv_decode(video_result)
         assert self.check_keys_contain(opencv_decode_result.keys(),
@@ -356,6 +407,10 @@ class TestLoading(object):
         # test OpenCV with 1 dim input
         video_result = copy.deepcopy(self.video_results)
         video_result['frame_inds'] = np.arange(1, self.total_frames, 3)
+        opencv_init = OpenCVInit()
+        opencv_init_result = opencv_init(video_result)
+        video_result['video_reader'] = opencv_init_result['video_reader']
+
         opencv_decode = OpenCVDecode()
         opencv_decode_result = opencv_decode(video_result)
         assert self.check_keys_contain(opencv_decode_result.keys(),
