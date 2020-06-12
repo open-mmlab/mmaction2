@@ -26,7 +26,7 @@ class I3DHead(BaseHead):
                  spatial_type='avg',
                  dropout_ratio=0.5,
                  init_std=0.01):
-        super(I3DHead, self).__init__(num_classes, in_channels, loss_cls)
+        super().__init__(num_classes, in_channels, loss_cls)
 
         self.spatial_type = spatial_type
         self.dropout_ratio = dropout_ratio

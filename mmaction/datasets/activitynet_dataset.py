@@ -69,10 +69,6 @@ class ActivityNetDataset(BaseDataset):
             Default: None.
         test_mode (bool): Store True when building test or validation dataset.
             Default: False.
-        temporal_scale (int): Total frames selected for each video.
-            Default: 100.
-        boundary_ratio (float): Ratio for determine video boundaries.
-            Default: 0.1.
     """
 
     def __init__(self, ann_file, pipeline, data_prefix=None, test_mode=False):

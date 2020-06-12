@@ -24,7 +24,7 @@ class ExampleDataset(Dataset):
 class ExampleModel(nn.Module):
 
     def __init__(self):
-        super(ExampleModel, self).__init__()
+        super().__init__()
         self.test_cfg = None
 
     def forward(self, imgs, return_loss=False):

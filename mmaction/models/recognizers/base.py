@@ -22,7 +22,7 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
     """
 
     def __init__(self, backbone, cls_head, train_cfg=None, test_cfg=None):
-        super(BaseRecognizer, self).__init__()
+        super().__init__()
         self.backbone = builder.build_backbone(backbone)
         self.cls_head = builder.build_head(cls_head)
 

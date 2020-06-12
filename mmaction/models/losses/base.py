@@ -15,7 +15,7 @@ class BaseWeightedLoss(nn.Module, metaclass=ABCMeta):
     """
 
     def __init__(self, loss_weight=1.0):
-        super(BaseWeightedLoss, self).__init__()
+        super().__init__()
         self.loss_weight = loss_weight
 
     @abstractmethod

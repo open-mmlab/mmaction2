@@ -35,7 +35,7 @@ class ExampleDataset(Dataset):
 class ExampleModel(nn.Module):
 
     def __init__(self):
-        super(ExampleModel, self).__init__()
+        super().__init__()
         self.test_cfg = None
         self.conv1 = nn.Conv2d(3, 8, kernel_size=1)
         self.norm1 = nn.BatchNorm1d(2)

@@ -121,7 +121,7 @@ class CombineNet(nn.Module):
     """
 
     def __init__(self, net1, net2):
-        super(CombineNet, self).__init__()
+        super().__init__()
         self.net1 = net1
         self.net2 = net2
         self.buffer = []
@@ -155,7 +155,7 @@ class WeightNet(nn.Module):
     """
 
     def __init__(self, in_channels, groups):
-        super(WeightNet, self).__init__()
+        super().__init__()
         self.sigmoid = nn.Sigmoid()
         self.groups = groups
 
@@ -200,7 +200,7 @@ class OffsetNet(nn.Module):
     """
 
     def __init__(self, in_channels, groups, num_segments):
-        super(OffsetNet, self).__init__()
+        super().__init__()
         self.sigmoid = nn.Sigmoid()
         # hard code kernel_size and padding according to original repo.
         kernel_size = 3
@@ -253,7 +253,7 @@ class TemporalInterlace(nn.Module):
     """
 
     def __init__(self, in_channels, num_segments=3, shift_div=1):
-        super(TemporalInterlace, self).__init__()
+        super().__init__()
         self.num_segments = num_segments
         self.shift_div = shift_div
         self.in_channels = in_channels
@@ -343,7 +343,7 @@ class ResNetTIN(ResNet):
                  shift_div=4,
                  temporal_pool=False,
                  **kwargs):
-        super(ResNetTIN, self).__init__(depth, **kwargs)
+        super().__init__(depth, **kwargs)
         self.num_segments = num_segments
         self.finetune = finetune
         self.is_dtn = is_dtn
@@ -390,7 +390,7 @@ class ResNetTIN(ResNet):
             self.layer4, num_segment_list[3], shift_div=self.shift_div)
 
     def init_weights(self):
-        super(ResNetTIN, self).init_weights()
+        super().init_weights()
         if self.is_dtn:
             self.make_temporal_interlace()
         if self.finetune is not None:

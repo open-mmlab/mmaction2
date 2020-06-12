@@ -38,7 +38,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
                  test_mode=False,
                  multi_class=False,
                  num_classes=None):
-        super(BaseDataset, self).__init__()
+        super().__init__()
 
         self.ann_file = ann_file
         self.data_prefix = osp.realpath(data_prefix) if osp.isdir(
