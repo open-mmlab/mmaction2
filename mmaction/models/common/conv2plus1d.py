@@ -32,7 +32,7 @@ class Conv2plus1d(nn.Module):
                  groups=1,
                  bias=True,
                  norm_cfg=dict(type='BN3d')):
-        super(Conv2plus1d, self).__init__()
+        super().__init__()
 
         kernel_size = _triple(kernel_size)
         stride = _triple(stride)

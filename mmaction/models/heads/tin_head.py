@@ -39,7 +39,7 @@ class TINHead(BaseHead):
                  init_std=0.001,
                  is_shift=True,
                  temporal_pool=False):
-        super(TINHead, self).__init__(num_classes, in_channels, loss_cls)
+        super().__init__(num_classes, in_channels, loss_cls)
 
         self.finetune = finetune
         self.spatial_type = spatial_type

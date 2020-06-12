@@ -35,7 +35,7 @@ class TSMHead(BaseHead):
                  init_std=0.001,
                  is_shift=True,
                  temporal_pool=False):
-        super(TSMHead, self).__init__(num_classes, in_channels, loss_cls)
+        super().__init__(num_classes, in_channels, loss_cls)
 
         self.spatial_type = spatial_type
         self.dropout_ratio = dropout_ratio

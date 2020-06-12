@@ -169,9 +169,8 @@ class DenseSampleFrames(SampleFrames):
                  num_sample_positions=10,
                  temporal_jitter=False,
                  test_mode=False):
-        super(DenseSampleFrames,
-              self).__init__(clip_len, frame_interval, num_clips,
-                             temporal_jitter, test_mode)
+        super().__init__(clip_len, frame_interval, num_clips, temporal_jitter,
+                         test_mode)
         self.sample_range = sample_range
         self.num_sample_positions = num_sample_positions
 

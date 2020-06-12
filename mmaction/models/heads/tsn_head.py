@@ -34,7 +34,7 @@ class TSNHead(BaseHead):
                  init_std=0.01,
                  multi_class=False,
                  label_smooth_eps=0.0):
-        super(TSNHead, self).__init__(
+        super().__init__(
             num_classes,
             in_channels,
             loss_cls=loss_cls,

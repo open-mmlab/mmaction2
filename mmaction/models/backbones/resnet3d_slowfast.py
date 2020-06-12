@@ -38,7 +38,7 @@ class ResNet3dPathway(ResNet3d):
         self.speed_ratio = speed_ratio
         self.channel_ratio = channel_ratio
         self.fusion_kernel = fusion_kernel
-        super(ResNet3dPathway, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.inplanes = self.base_channels
         if self.lateral:
             self.conv1_lateral = ConvModule(
@@ -295,7 +295,7 @@ class ResNet3dPathway(ResNet3d):
 
     def init_weights(self):
         # Override the init_weights of i3d
-        super(ResNet3dPathway, self).init_weights()
+        super().init_weights()
         for module_name in self.lateral_connections:
             layer = getattr(self, module_name)
             for m in layer.modules():
@@ -394,7 +394,7 @@ class ResNet3dSlowFast(nn.Module):
                      conv1_kernel=(5, 7, 7),
                      conv1_stride_t=1,
                      pool1_stride_t=1)):
-        super(ResNet3dSlowFast, self).__init__()
+        super().__init__()
         self.pretrained = pretrained
         self.resample_rate = resample_rate
         self.speed_ratio = speed_ratio

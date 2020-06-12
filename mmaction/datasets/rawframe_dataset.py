@@ -62,9 +62,8 @@ class RawframeDataset(BaseDataset):
                  filename_tmpl='img_{:05}.jpg',
                  multi_class=False,
                  num_classes=None):
-        super(RawframeDataset,
-              self).__init__(ann_file, pipeline, data_prefix, test_mode,
-                             multi_class, num_classes)
+        super().__init__(ann_file, pipeline, data_prefix, test_mode,
+                         multi_class, num_classes)
         self.filename_tmpl = filename_tmpl
 
     def load_annotations(self):

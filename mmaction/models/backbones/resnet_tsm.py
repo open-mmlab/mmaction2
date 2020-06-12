@@ -19,7 +19,7 @@ class TemporalShift(nn.Module):
     """
 
     def __init__(self, net, num_segments=3, shift_div=8):
-        super(TemporalShift, self).__init__()
+        super().__init__()
         self.net = net
         self.num_segments = num_segments
         self.shift_div = shift_div
@@ -99,7 +99,7 @@ class ResNetTSM(ResNet):
                  shift_place='blockres',
                  temporal_pool=False,
                  **kwargs):
-        super(ResNetTSM, self).__init__(depth, **kwargs)
+        super().__init__(depth, **kwargs)
         self.num_segments = num_segments
         self.is_shift = is_shift
         self.shift_div = shift_div
@@ -155,6 +155,6 @@ class ResNetTSM(ResNet):
             raise NotImplementedError
 
     def init_weights(self):
-        super(ResNetTSM, self).init_weights()
+        super().init_weights()
         if self.is_shift:
             self.make_temporal_shift()

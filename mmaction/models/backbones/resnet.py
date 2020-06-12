@@ -36,7 +36,7 @@ class BasicBlock(nn.Module):
                  style='pytorch',
                  norm_cfg=dict(type='BN'),
                  with_cp=False):
-        super(BasicBlock, self).__init__()
+        super().__init__()
         assert style in ['pytorch', 'caffe']
         self.conv1 = nn.Conv2d(
             inplanes,
@@ -127,7 +127,7 @@ class Bottleneck(nn.Module):
                  style='pytorch',
                  norm_cfg=dict(type='BN'),
                  with_cp=False):
-        super(Bottleneck, self).__init__()
+        super().__init__()
         assert style in ['pytorch', 'caffe']
         self.inplanes = inplanes
         self.planes = planes
@@ -330,7 +330,7 @@ class ResNet(nn.Module):
                  norm_cfg=dict(type='BN', requires_grad=True),
                  norm_eval=True,
                  with_cp=False):
-        super(ResNet, self).__init__()
+        super().__init__()
         if depth not in self.arch_settings:
             raise KeyError(f'invalid depth {depth} for resnet')
         self.depth = depth
@@ -430,7 +430,7 @@ class ResNet(nn.Module):
                 param.requires_grad = False
 
     def train(self, mode=True):
-        super(ResNet, self).train(mode)
+        super().train(mode)
         self._freeze_stages()
         if mode and self.norm_eval:
             for m in self.modules():

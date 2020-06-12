@@ -16,7 +16,7 @@ class AvgConsensus(nn.Module):
     """
 
     def __init__(self, dim=1):
-        super(AvgConsensus, self).__init__()
+        super().__init__()
         self.dim = dim
 
     def forward(self, input):
@@ -50,7 +50,7 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
                  loss_cls=dict(type='CrossEntropyLoss', loss_factor=1.0),
                  multi_class=False,
                  label_smooth_eps=0.0):
-        super(BaseHead, self).__init__()
+        super().__init__()
         self.num_classes = num_classes
         self.in_channels = in_channels
         self.loss_cls = build_loss(loss_cls)

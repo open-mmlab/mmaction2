@@ -28,7 +28,7 @@ class SlowFastHead(BaseHead):
                  dropout_ratio=0.8,
                  init_std=0.01):
 
-        super(SlowFastHead, self).__init__(num_classes, in_channels, loss_cls)
+        super().__init__(num_classes, in_channels, loss_cls)
         self.spatial_type = spatial_type
         self.dropout_ratio = dropout_ratio
         self.init_std = init_std
