@@ -56,7 +56,7 @@ class ResNet3dPathway(ResNet3d):
                 act_cfg=None)
 
         self.lateral_connections = []
-        for i, num_blocks in enumerate(self.stage_blocks):
+        for i in range(len(self.stage_blocks)):
             planes = self.base_channels * 2**i
             self.inplanes = planes * self.block.expansion
 

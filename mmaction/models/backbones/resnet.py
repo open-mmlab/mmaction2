@@ -271,7 +271,7 @@ def make_res_layer(block,
             norm_cfg=norm_cfg,
             with_cp=with_cp))
     inplanes = planes * block.expansion
-    for i in range(1, blocks):
+    for _ in range(1, blocks):
         layers.append(
             block(
                 inplanes,
@@ -411,7 +411,7 @@ class ResNet(nn.Module):
         x = self.norm1(x)
         x = self.relu(x)
         x = self.maxpool(x)
-        for i, layer_name in enumerate(self.res_layers):
+        for layer_name in self.res_layers:
             res_layer = getattr(self, layer_name)
             x = res_layer(x)
         return x

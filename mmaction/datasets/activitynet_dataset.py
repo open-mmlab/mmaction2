@@ -222,7 +222,7 @@ class ActivityNetDataset(BaseDataset):
 
         for metric in metrics:
             if metric == 'AR@AN':
-                recall, avg_recall, proposals_per_video, auc = (
+                recall, _, _, auc = (
                     average_recall_at_avg_proposals(
                         ground_truth,
                         proposal,

@@ -846,7 +846,7 @@ class MultiGroupCrop(object):
 
         img_crops = []
         crop_bboxes = []
-        for i in range(self.groups):
+        for _ in range(self.groups):
             x_offset = random.randint(0, img_w - crop_w)
             y_offset = random.randint(0, img_h - crop_h)
 
