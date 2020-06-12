@@ -1,0 +1,7 @@
+coverage
+flake8
+isort
+pytest
+pytest-runner
+xdoctest >= 0.10.0
+yapf
