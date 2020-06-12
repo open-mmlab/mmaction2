@@ -1,10 +1,13 @@
 import io
+import os
 import os.path as osp
+import shutil
 
 import mmcv
 import numpy as np
 from mmcv.fileio import FileClient
 
+from ...utils import get_random_string, get_shm_dir, get_thread_id
 from ..registry import PIPELINES
 
 
@@ -131,7 +134,6 @@ class SampleFrames(object):
             frame_inds += perframe_offsets
 
         frame_inds = np.mod(frame_inds, total_frames)
-
         results['frame_inds'] = frame_inds.astype(np.int)
         results['clip_len'] = self.clip_len
         results['frame_interval'] = self.frame_interval
@@ -223,24 +225,21 @@ class DenseSampleFrames(SampleFrames):
 
 
 @PIPELINES.register_module
-class PyAVDecode(object):
-    """Using pyav to decode the video.
+class PyAVInit(object):
+    """Using pyav to initialize the video.
 
     PyAV: https://github.com/mikeboers/PyAV
 
-    Required keys are "filename" and "frame_inds",
-    added or modified keys are "imgs", "img_shape" and "original_shape".
+    Required keys are "filename",
+    added or modified keys are "video_reader", and "total_frames".
 
     Args:
-        multi_thread (bool): If set to True, it will apply multi
-            thread processing. Default: False.
         io_backend (str): io backend where frames are store.
             Default: 'disk'.
         kwargs (dict): Args for file client.
     """
 
-    def __init__(self, multi_thread=False, io_backend='disk', **kwargs):
-        self.multi_thread = multi_thread
+    def __init__(self, io_backend='disk', **kwargs):
         self.io_backend = io_backend
         self.kwargs = kwargs
         self.file_client = None
@@ -258,6 +257,31 @@ class PyAVDecode(object):
         file_obj = io.BytesIO(self.file_client.get(results['filename']))
         container = av.open(file_obj)
 
+        results['video_reader'] = container
+        results['total_frames'] = container.streams.video[0].frames
+
+        return results
+
+
+@PIPELINES.register_module
+class PyAVDecode(object):
+    """Using pyav to decode the video.
+
+    PyAV: https://github.com/mikeboers/PyAV
+
+    Required keys are "video_reader" and "frame_inds",
+    added or modified keys are "imgs", "img_shape" and "original_shape".
+
+    Args:
+        multi_thread (bool): If set to True, it will apply multi
+            thread processing. Default: False.
+    """
+
+    def __init__(self, multi_thread=False):
+        self.multi_thread = multi_thread
+
+    def __call__(self, results):
+        container = results['video_reader']
         imgs = list()
 
         if self.multi_thread:
@@ -274,9 +298,13 @@ class PyAVDecode(object):
             imgs.append(frame.to_rgb().to_ndarray())
             i += 1
 
+        results['video_reader'] = None
+        del container
+
         # the available frame in pyav may be less than its length,
         # which may raise error
         results['imgs'] = [imgs[i % len(imgs)] for i in results['frame_inds']]
+
         results['original_shape'] = imgs[0].shape[:2]
         results['img_shape'] = imgs[0].shape[:2]
 
@@ -289,14 +317,22 @@ class PyAVDecode(object):
 
 
 @PIPELINES.register_module
-class DecordDecode(object):
-    """Using decord to decode the video.
+class DecordInit(object):
+    """Using decord to initialize the video_reader.
 
     Decord: https://github.com/dmlc/decord
 
-    Required keys are "filename" and "frame_inds",
-    added or modified keys are "imgs", "img_shape" and "original_shape".
+    Required keys are "filename",
+    added or modified keys are "new_path", "video_reader" and "total_frames".
     """
+
+    def __init__(self, io_backend='disk', num_threads=1, **kwargs):
+        self.io_backend = io_backend
+        self.num_threads = num_threads
+        self.kwargs = kwargs
+        self.file_client = None
+        self.tmp_folder = osp.join(get_shm_dir(), get_random_string())
+        os.mkdir(self.tmp_folder)
 
     def __call__(self, results):
         try:
@@ -305,15 +341,53 @@ class DecordDecode(object):
             raise ImportError(
                 'Please run "pip install decord" to install Decord first.')
 
-        container = decord.VideoReader(results['filename'])
-        imgs = list()
+        if self.io_backend == 'disk':
+            new_path = results['filename']
+        else:
+            if self.file_client is None:
+                self.file_client = FileClient(self.io_backend, **self.kwargs)
 
+            thread_id = get_thread_id()
+            # save the file of same thread at the same place
+            new_path = osp.join(self.tmp_folder, f'tmp_{thread_id}.mp4')
+            with open(new_path, 'wb') as f:
+                f.write(self.file_client.get(results['filename']))
+
+        container = decord.VideoReader(new_path, num_threads=self.num_threads)
+        results['new_path'] = new_path
+        results['video_reader'] = container
+        results['total_frames'] = len(container)
+        return results
+
+    def __del__(self):
+        shutil.rmtree(self.tmp_folder)
+
+
+@PIPELINES.register_module
+class DecordDecode(object):
+    """Using decord to decode the video.
+
+    Decord: https://github.com/dmlc/decord
+
+    Required keys are "video_reader", "filename" and "frame_inds",
+    added or modified keys are "imgs" and "original_shape".
+    """
+
+    def __init__(self, **kwargs):
+        pass
+
+    def __call__(self, results):
+        container = results['video_reader']
+        imgs = list()
         if results['frame_inds'].ndim != 1:
             results['frame_inds'] = np.squeeze(results['frame_inds'])
 
         for frame_idx in results['frame_inds']:
             cur_frame = container[frame_idx].asnumpy()
             imgs.append(cur_frame)
+
+        results['video_reader'] = None
+        del container
 
         results['imgs'] = imgs
         results['original_shape'] = imgs[0].shape[:2]
@@ -323,15 +397,57 @@ class DecordDecode(object):
 
 
 @PIPELINES.register_module
+class OpenCVInit(object):
+    """Using OpenCV to initalize the video_reader.
+
+    Required keys are "filename",
+    added or modified keys are "new_path", "video_reader" and "total_frames".
+    """
+
+    def __init__(self, io_backend='disk', **kwargs):
+        self.io_backend = io_backend
+        self.kwargs = kwargs
+        self.file_client = None
+        self.tmp_folder = osp.join(get_shm_dir(), get_random_string())
+        os.mkdir(self.tmp_folder)
+
+    def __call__(self, results):
+        if self.io_backend == 'disk':
+            new_path = results['filename']
+        else:
+            if self.file_client is None:
+                self.file_client = FileClient(self.io_backend, **self.kwargs)
+
+            thread_id = get_thread_id()
+            # save the file of same thread at the same place
+            new_path = osp.join(self.tmp_folder, f'tmp_{thread_id}.mp4')
+            with open(new_path, 'wb') as f:
+                f.write(self.file_client.get(results['filename']))
+
+        container = mmcv.VideoReader(new_path)
+        results['new_path'] = new_path
+        results['video_reader'] = container
+        results['total_frames'] = len(container)
+
+        return results
+
+    def __del__(self):
+        shutil.rmtree(self.tmp_folder)
+
+
+@PIPELINES.register_module
 class OpenCVDecode(object):
     """Using OpenCV to decode the video.
 
-    Required keys are "filename" and "frame_inds",
+    Required keys are "video_reader", "filename" and "frame_inds",
     added or modified keys are "imgs", "img_shape" and "original_shape".
     """
 
+    def __init__(self):
+        pass
+
     def __call__(self, results):
-        container = mmcv.VideoReader(results['filename'])
+        container = results['video_reader']
         imgs = list()
 
         if results['frame_inds'].ndim != 1:
@@ -344,6 +460,9 @@ class OpenCVDecode(object):
                 frame_ind -= 1
                 cur_frame = container[frame_ind]
             imgs.append(cur_frame)
+
+        results['video_reader'] = None
+        del container
 
         imgs = np.array(imgs)
         # The default channel order of OpenCV is BGR, thus we change it to RGB
