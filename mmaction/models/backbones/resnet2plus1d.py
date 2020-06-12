@@ -31,7 +31,7 @@ class ResNet2Plus1d(ResNet3d):
     def forward(self, x):
         x = self.conv1(x)
         x = self.maxpool(x)
-        for i, layer_name in enumerate(self.res_layers):
+        for layer_name in self.res_layers:
             res_layer = getattr(self, layer_name)
             # no pool2 in R(2+1)d
             x = res_layer(x)

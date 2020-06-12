@@ -171,7 +171,7 @@ class WeightNet(nn.Module):
     def forward(self, x):
         # calculate weight
         # [N, C, T]
-        n, c, t = x.shape
+        n, _, t = x.shape
         # [N, groups, T]
         x = self.conv(x)
         x = x.view(n, self.groups, t)
@@ -221,7 +221,7 @@ class OffsetNet(nn.Module):
     def forward(self, x):
         # calculate offset
         # [N, C, T]
-        n, c, t = x.shape
+        n, _, t = x.shape
         # [N, 1, T]
         x = self.conv(x)
         # [N, T]
