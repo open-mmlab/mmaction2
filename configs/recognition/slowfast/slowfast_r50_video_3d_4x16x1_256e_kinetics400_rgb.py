@@ -1,25 +1,38 @@
-# model settings
 model = dict(
-    type='Recognizer2D',
+    type='Recognizer3D',
     backbone=dict(
-        type='ResNetTSM',
-        pretrained='torchvision://resnet50',
-        depth=50,
-        norm_eval=False,
-        shift_div=8),
+        type='ResNet3dSlowFast',
+        pretrained=None,
+        resample_rate=8,  # tau
+        speed_ratio=8,  # alpha
+        channel_ratio=8,  # beta_inv
+        slow_pathway=dict(
+            type='resnet3d',
+            depth=50,
+            pretrained=None,
+            lateral=True,
+            conv1_kernel=(1, 7, 7),
+            dilations=(1, 1, 1, 1),
+            conv1_stride_t=1,
+            pool1_stride_t=1,
+            inflate=(0, 0, 1, 1)),
+        fast_pathway=dict(
+            type='resnet3d',
+            depth=50,
+            pretrained=None,
+            lateral=False,
+            base_channels=8,
+            conv1_kernel=(5, 7, 7),
+            conv1_stride_t=1,
+            pool1_stride_t=1)),
     cls_head=dict(
-        type='TSMHead',
+        in_channels=2304,  # 2048+256
         num_classes=400,
-        in_channels=2048,
+        type='SlowFastHead',
         spatial_type='avg',
-        consensus=dict(type='AvgConsensus', dim=1),
-        dropout_ratio=0.5,
-        init_std=0.001,
-        is_shift=True))
-# model training and testing settings
+        dropout_ratio=0.5))
 train_cfg = None
 test_cfg = dict(average_clips=None)
-# dataset settings
 dataset_type = 'VideoDataset'
 data_root = 's3://lizz.ssd/datasets/kinetics400_256/'
 data_root_val = 's3://lizz.ssd/datasets/kinetics400_256/'
@@ -34,54 +47,48 @@ mc_cfg = dict(
     sys_path='/mnt/lustre/share/pymc/py3')
 train_pipeline = [
     dict(type='DecordInit', io_backend='petrel', num_threads=1),
-    dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=8),
+    dict(type='SampleFrames', clip_len=32, frame_interval=2, num_clips=1),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
-    dict(
-        type='MultiScaleCrop',
-        input_size=224,
-        scales=(1, 0.875, 0.75, 0.66),
-        random_crop=False,
-        max_wh_scale_gap=1,
-        num_fixed_crops=13),
+    dict(type='RandomResizedCrop'),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
     dict(type='Flip', flip_ratio=0.5),
     dict(type='Normalize', **img_norm_cfg),
-    dict(type='FormatShape', input_format='NCHW'),
+    dict(type='FormatShape', input_format='NCTHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs', 'label'])
 ]
 val_pipeline = [
-    dict(type='DecordInit', io_backend='petrel', num_threads=4),
+    dict(type='DecordInit', io_backend='petrel', num_threads=1),
     dict(
         type='SampleFrames',
-        clip_len=1,
-        frame_interval=1,
-        num_clips=8,
+        clip_len=32,
+        frame_interval=2,
+        num_clips=1,
         test_mode=True),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
     dict(type='Flip', flip_ratio=0),
     dict(type='Normalize', **img_norm_cfg),
-    dict(type='FormatShape', input_format='NCHW'),
+    dict(type='FormatShape', input_format='NCTHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs'])
 ]
 test_pipeline = [
-    dict(type='DecordInit', io_backend='petrel', num_threads=4),
+    dict(type='DecordInit', io_backend='petrel', num_threads=1),
     dict(
         type='SampleFrames',
-        clip_len=1,
-        frame_interval=1,
-        num_clips=8,
+        clip_len=32,
+        frame_interval=2,
+        num_clips=10,
         test_mode=True),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
-    dict(type='CenterCrop', crop_size=224),
+    dict(type='ThreeCrop', crop_size=256),
     dict(type='Flip', flip_ratio=0),
     dict(type='Normalize', **img_norm_cfg),
-    dict(type='FormatShape', input_format='NCHW'),
+    dict(type='FormatShape', input_format='NCTHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs'])
 ]
@@ -104,30 +111,30 @@ data = dict(
         data_prefix=data_root_val,
         pipeline=test_pipeline))
 # optimizer
-optimizer = dict(
-    type='SGD',
-    constructor='TSMOptimizerConstructor',
-    paramwise_cfg=dict(fc_lr5=True),
-    lr=0.02,
-    momentum=0.9,
-    weight_decay=0.0001)
-optimizer_config = dict(grad_clip=dict(max_norm=20, norm_type=2))
+optimizer = dict(type='SGD', lr=0.1, momentum=0.9, weight_decay=0.0001)
+optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
-lr_config = dict(policy='step', step=[20, 40])
-total_epochs = 50
-checkpoint_config = dict(interval=5)
+lr_config = dict(
+    policy='CosineAnealing',
+    min_lr=0,
+    warmup='linear',
+    warmup_ratio=0.01,
+    warmup_byepoch=True,
+    warmup_iters=34)
+total_epochs = 256
+checkpoint_config = dict(interval=4)
+workflow = [('train', 1)]
 evaluation = dict(
     interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
 log_config = dict(
     interval=20,
     hooks=[
         dict(type='TextLoggerHook'),
-        # dict(type='TensorboardLoggerHook'),
+        #    dict(type='TensorboardLoggerHook'),
     ])
-# runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/tsm_video_1x1x8_r50_2d_kinetics400_100e/'
+work_dir = './work_dirs/slowfast_r50_video_3d_4x16x1_256e_kinetics400_rgb'
 load_from = None
 resume_from = None
-workflow = [('train', 1)]
+find_unused_parameters = False
