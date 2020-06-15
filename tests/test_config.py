@@ -11,7 +11,7 @@ from mmaction.models import build_localizer, build_recognizer
 def _get_config_path():
     """ Find the predefined recognizer config path."""
     repo_dir = osp.dirname(osp.dirname(__file__))
-    config_dpath = osp.join(repo_dir, 'config')
+    config_dpath = osp.join(repo_dir, 'configs')
     if not osp.exists(config_dpath):
         raise Exception('Cannot find config path')
     config_fpaths = list(glob.glob(osp.join(config_dpath, '*.py')))
@@ -26,9 +26,12 @@ def _get_config_path():
 def test_config_build_recognizer():
     """Test that all mmaction models defined in the configs
      can be initialized."""
-    config_fpaths = _get_config_path()
-
-    # test all config file in `config` directory
+    repo_dir = osp.dirname(osp.dirname(__file__))
+    config_dpath = osp.join(repo_dir, 'configs/recognition')
+    if not osp.exists(config_dpath):
+        raise Exception('Cannot find config path')
+    config_fpaths = list(glob.glob(osp.join(config_dpath, '*.py')))
+    # test all config file in `configs` directory
     for config_fpath in config_fpaths:
         config_mod = mmcv.Config.fromfile(config_fpath)
         print(f'Building recognizer, config_fpath = {config_fpath!r}')
@@ -47,7 +50,7 @@ def test_config_build_recognizer():
 def _get_config_path_for_localizer():
     """Find the predefined localizer config path for localizer."""
     repo_dir = osp.dirname(osp.dirname(__file__))
-    config_dpath = osp.join(repo_dir, 'config/localization')
+    config_dpath = osp.join(repo_dir, 'configs/localization')
     if not osp.exists(config_dpath):
         raise Exception('Cannot find config path')
     config_fpaths = list(glob.glob(osp.join(config_dpath, '*.py')))
@@ -64,7 +67,7 @@ def test_config_build_localizer():
     can be initialized."""
     config_fpaths = _get_config_path_for_localizer()
 
-    # test all config file in `config/localization` directory
+    # test all config file in `configs/localization` directory
     for config_fpath in config_fpaths:
         config_mod = mmcv.Config.fromfile(config_fpath)
         print(f'Building localizer, config_fpath = {config_fpath!r}')

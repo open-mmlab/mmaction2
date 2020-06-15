@@ -1,13 +1,14 @@
 # model settings
 model = dict(
-    type='BMN',
-    temporal_dim=100,
-    boundary_ratio=0.5,
-    num_samples=32,
-    num_samples_per_bin=3,
-    feat_dim=400,
-    soft_nms_alpha=0.4,
-    soft_nms_low_threshold=0.5,
+    type='PEM',
+    pem_feat_dim=32,
+    pem_hidden_dim=256,
+    pem_u_ratio_m=1,
+    pem_u_ratio_l=2,
+    pem_high_temporal_iou_threshold=0.6,
+    pem_low_temporal_iou_threshold=2.2,
+    soft_nms_alpha=0.75,
+    soft_nms_low_threshold=0.65,
     soft_nms_high_threshold=0.9,
     post_process_top_k=100)
 # model training and testing settings
@@ -21,47 +22,66 @@ ann_file_train = 'data/ActivityNet/anet_anno_train.json'
 ann_file_val = 'data/ActivityNet/anet_anno_val.json'
 ann_file_test = 'data/ActivityNet/anet_anno_test.json'
 
+work_dir = 'work_dirs/bsn_400x100_20e_activitynet_feature/'
+pgm_proposals_dir = f'{work_dir}/pgm_proposals/'
+pgm_features_dir = f'{work_dir}/pgm_features/'
+
 test_pipeline = [
-    dict(type='LoadLocalizationFeature'),
+    dict(
+        type='LoadProposals',
+        top_k=1000,
+        pgm_proposals_dir=pgm_proposals_dir,
+        pgm_features_dir=pgm_features_dir),
     dict(
         type='Collect',
-        keys=['raw_feature'],
+        keys=['bsp_feature', 'tmin', 'tmax', 'tmin_score', 'tmax_score'],
         meta_name='video_meta',
         meta_keys=[
             'video_name', 'duration_second', 'duration_frame', 'annotations',
             'feature_frame'
         ]),
-    dict(type='ToTensor', keys=['raw_feature']),
+    dict(type='ToTensor', keys=['bsp_feature'])
 ]
+
 train_pipeline = [
-    dict(type='LoadLocalizationFeature'),
-    dict(type='GenerateLocalizationLabels'),
+    dict(
+        type='LoadProposals',
+        top_k=500,
+        pgm_proposals_dir=pgm_proposals_dir,
+        pgm_features_dir=pgm_features_dir),
     dict(
         type='Collect',
-        keys=['raw_feature', 'gt_bbox'],
+        keys=['bsp_feature', 'reference_temporal_iou'],
         meta_name='video_meta',
-        meta_keys=['video_name']),
-    dict(type='ToTensor', keys=['raw_feature', 'gt_bbox']),
-    dict(type='ToDataContainer', fields=[dict(key='gt_bbox', stack=False)])
+        meta_keys=[]),
+    dict(type='ToTensor', keys=['bsp_feature', 'reference_temporal_iou']),
+    dict(
+        type='ToDataContainer',
+        fields=(dict(key='bsp_feature', stack=False),
+                dict(key='reference_temporal_iou', stack=False)))
 ]
+
 val_pipeline = [
-    dict(type='LoadLocalizationFeature'),
-    dict(type='GenerateLocalizationLabels'),
+    dict(
+        type='LoadProposals',
+        top_k=1000,
+        pgm_proposals_dir=pgm_proposals_dir,
+        pgm_features_dir=pgm_features_dir),
     dict(
         type='Collect',
-        keys=['raw_feature', 'gt_bbox'],
+        keys=['bsp_feature', 'tmin', 'tmax', 'tmin_score', 'tmax_score'],
         meta_name='video_meta',
         meta_keys=[
             'video_name', 'duration_second', 'duration_frame', 'annotations',
             'feature_frame'
         ]),
-    dict(type='ToTensor', keys=['raw_feature', 'gt_bbox']),
-    dict(type='ToDataContainer', fields=[dict(key='gt_bbox', stack=False)])
+    dict(type='ToTensor', keys=['bsp_feature'])
 ]
 data = dict(
     videos_per_gpu=16,
-    workers_per_gpu=4,
+    workers_per_gpu=2,
     train_dataloader=dict(drop_last=True),
+    val_dataloader=dict(videos_per_gpu=1),
     test=dict(
         type=dataset_type,
         ann_file=ann_file_test,
@@ -79,22 +99,22 @@ data = dict(
         data_prefix=data_root))
 
 # optimizer
-optimizer = dict(type='Adam', lr=0.001, weight_decay=0.0001)
+optimizer = dict(type='Adam', lr=0.01, weight_decay=0.00001)
+
 optimizer_config = dict(grad_clip=None)
 # learning policy
-lr_config = dict(policy='step', step=7)
+lr_config = dict(policy='step', step=10)
 
-total_epochs = 9
-checkpoint_config = dict(interval=1)
+total_epochs = 20
+checkpoint_config = dict(interval=1, filename_tmpl='pem_epoch_{}.pth')
+
 evaluation = dict(interval=1, metrics=['AR@AN'])
+
 log_config = dict(interval=50, hooks=[dict(type='TextLoggerHook')])
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/bmn_feature_100_activitynet_9e/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
-output_config = dict(
-    out='./work_dirs/bmn_feature_100_activitynet_9e/results.json',
-    output_format='json')
+output_config = dict(out=f'{work_dir}/results.json', output_format='json')

@@ -6,7 +6,7 @@ ann_file_train = 'data/ActivityNet/anet_anno_train.json'
 ann_file_val = 'data/ActivityNet/anet_anno_val.json'
 ann_file_test = 'data/ActivityNet/anet_anno_test.json'
 
-work_dir = 'work_dirs/bsn_feature_100/'
+work_dir = 'work_dirs/bsn_400x100_20e_activitynet_feature/'
 tem_results_dir = f'{work_dir}/tem_results/'
 pgm_proposals_dir = f'{work_dir}/pgm_proposals/'
 pgm_features_dir = f'{work_dir}/pgm_features/'

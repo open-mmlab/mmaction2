@@ -1,18 +1,20 @@
 # model settings
 model = dict(
-    type='Recognizer2D',
+    type='Recognizer3D',
     backbone=dict(
-        type='ResNet',
-        pretrained='torchvision://resnet50',
-        depth=50,
-        norm_eval=False),
+        type='ResNet3d',
+        pretrained2d=True,
+        pretrained='torchvision://resnet34',
+        depth=34,
+        conv_cfg=dict(type='Conv3d'),
+        norm_eval=False,
+        zero_init_residual=False),
     cls_head=dict(
-        type='TSNHead',
+        type='I3DHead',
         num_classes=400,
-        in_channels=2048,
+        in_channels=512,
         spatial_type='avg',
-        consensus=dict(type='AvgConsensus', dim=1),
-        dropout_ratio=0.4,
+        dropout_ratio=0.5,
         init_std=0.01))
 # model training and testing settings
 train_cfg = None
@@ -31,56 +33,56 @@ mc_cfg = dict(
     client_cfg='/mnt/lustre/share/memcached_client/client.conf',
     sys_path='/mnt/lustre/share/pymc/py3')
 train_pipeline = [
-    dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=3),
+    dict(type='SampleFrames', clip_len=32, frame_interval=2, num_clips=1),
     dict(type='FrameSelector', io_backend='memcached', **mc_cfg),
     dict(type='Resize', scale=(-1, 256)),
     dict(
         type='MultiScaleCrop',
         input_size=224,
-        scales=(1, 0.875, 0.75, 0.66),
+        scales=(1, 0.8),
         random_crop=False,
-        max_wh_scale_gap=1),
+        max_wh_scale_gap=0),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
     dict(type='Flip', flip_ratio=0.5),
     dict(type='Normalize', **img_norm_cfg),
-    dict(type='FormatShape', input_format='NCHW'),
+    dict(type='FormatShape', input_format='NCTHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs', 'label'])
 ]
 val_pipeline = [
     dict(
         type='SampleFrames',
-        clip_len=1,
-        frame_interval=1,
-        num_clips=3,
+        clip_len=32,
+        frame_interval=2,
+        num_clips=1,
         test_mode=True),
     dict(type='FrameSelector', io_backend='memcached', **mc_cfg),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
     dict(type='Flip', flip_ratio=0),
     dict(type='Normalize', **img_norm_cfg),
-    dict(type='FormatShape', input_format='NCHW'),
+    dict(type='FormatShape', input_format='NCTHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs'])
 ]
 test_pipeline = [
     dict(
         type='SampleFrames',
-        clip_len=1,
-        frame_interval=1,
-        num_clips=25,
+        clip_len=32,
+        frame_interval=2,
+        num_clips=10,
         test_mode=True),
     dict(type='FrameSelector', io_backend='memcached', **mc_cfg),
     dict(type='Resize', scale=(-1, 256)),
-    dict(type='TenCrop', crop_size=224),
+    dict(type='ThreeCrop', crop_size=256),
     dict(type='Flip', flip_ratio=0),
     dict(type='Normalize', **img_norm_cfg),
-    dict(type='FormatShape', input_format='NCHW'),
+    dict(type='FormatShape', input_format='NCTHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
-    videos_per_gpu=32,
+    videos_per_gpu=8,
     workers_per_gpu=4,
     train=dict(
         type=dataset_type,
@@ -94,7 +96,7 @@ data = dict(
         pipeline=val_pipeline),
     test=dict(
         type=dataset_type,
-        ann_file=ann_file_test,
+        ann_file=ann_file_val,
         data_prefix=data_root_val,
         pipeline=test_pipeline))
 # optimizer
@@ -115,7 +117,7 @@ log_config = dict(
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/tsn_rgb_1x1x3_r50_2d_kinetics400_100e/'
+work_dir = './work_dirs/i3d_r34_32x2x1_100e_kinetics400_rgb/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
