@@ -1,0 +1,84 @@
+# Tutorial 1: Finetuning Models
+
+This tutorial provides instructions for users to use the pre-trained models (see [Model zoo](../model_zoo.md))
+to finetune them on other datasets, so that better performance can be get.
+
+There are two steps to finetune a model on a new dataset.
+
+1. Add support for the new dataset. See [Tutorial 2: Adding New Dataset](new_dataset.md).
+1. Modify the configs. This will be discussed in this tutorial.
+
+For example, if the user want to finetune models pre-trained on Kinetics-400 Dataset to another dataset, say UCF101,
+then four parts in the config (see [here](../../config/tsn_rgb_1x1x3_r50_2d_kinetics400_100e.py)) needs attention.
+
+## Modify head
+
+The `num_classes` in the `cls_head` need to be changed to the class number of the new dataset.
+The weights of the pre-trained models are reused except for the final prediction layer.
+So it is safe to change the class number.
+In our case, UCF101 has 101 classes.
+So we change it from 400 (class number of Kinetics400) to 101.
+
+```python
+model = dict(
+    type='Recognizer2D',
+    backbone=dict(
+        type='ResNet',
+        pretrained='torchvision://resnet50',
+        depth=50,
+        norm_eval=False),
+    cls_head=dict(
+        type='TSNHead',
+        num_classes=101,   # change from 400 to 101
+        in_channels=2048,
+        spatial_type='avg',
+        consensus=dict(type='AvgConsensus', dim=1),
+        dropout_ratio=0.4,
+        init_std=0.01))
+```
+
+Note that the `pretrained='torchvision://resnet50'` setting is used for initilizing backbone.
+If you are training a new model from ImageNet-pretrained weights, this is for you.
+However, this setting is not related to our task at hand.
+What we need is `load_from`, which will be discussed later.
+
+## Modify dataset
+
+MMAction supports UCF101, Kinetics-400, MIT, MMIT, THUMOS14,
+Something-Something V1&V2, ActivityNet Dataset.
+The users may need to adapt one of the above dataset to fit for their special datasets.
+In our case, UCF101 is already supported by various dataset types, like `RawframeDataset`,
+so we change the config as follows.
+
+```python
+# dataset settings
+dataset_type = 'RawframeDataset'
+data_root = 'data/ucf101/rawframes_train/'
+data_root_val = 'data/ucf101/rawframes_val/'
+ann_file_train = 'data/ucf101/ucf101_train_list.txt'
+ann_file_val = 'data/ucf101/ucf101_val_list.txt'
+ann_file_test = 'data/ucf101/ucf101_val_list.txt'
+
+```
+
+## Modify training schedule
+
+Finetuning usually requires smaller learning rate and less training epochs.
+
+```python
+# optimizer
+optimizer = dict(type='SGD', lr=0.005, momentum=0.9, weight_decay=0.0001)  # change from 0.01 to 0.005
+optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
+# learning policy
+lr_config = dict(policy='step', step=[40, 80])
+total_epochs = 50 # change from 100 to 50
+checkpoint_config = dict(interval=5)
+```
+
+## Use pre-trained model
+To use the pre-trained model for the whole network, the new config adds the link of pre-trained models in the `load_from`.
+
+```python
+# use the pre-trained model for the whole TSN network
+load_from = 'https://s3.ap-northeast-2.amazonaws.com/open-mmlab/mmaction-lite/models/tsn_rgb_1x1x3_r50_2d_kinetics400_100e_xxx.pth'  # model path can be found in model zoo
+```
