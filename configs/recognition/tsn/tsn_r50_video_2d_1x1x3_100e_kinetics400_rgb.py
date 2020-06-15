@@ -117,7 +117,7 @@ log_config = dict(
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/tsn_video_1x1x3_r50_2d_kinetics400_100e/'
+work_dir = './work_dirs/tsn_r50_video_2d_1x1x3_100e_kinetics400_rgb/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
