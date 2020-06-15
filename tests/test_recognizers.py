@@ -29,7 +29,7 @@ def _get_recognizer_cfg(fname):
     influencing other tests.
     """
     repo_dpath = osp.dirname(osp.dirname(__file__))
-    config_dpath = osp.join(repo_dpath, 'config')
+    config_dpath = osp.join(repo_dpath, 'configs/recognition')
     config_fpath = osp.join(config_dpath, fname)
     if not osp.exists(config_dpath):
         raise Exception('Cannot find config path')
@@ -67,11 +67,11 @@ def test_base_recognizer():
 
 def test_tsn():
     model, train_cfg, test_cfg = _get_recognizer_cfg(
-        'tsn_rgb_1x1x3_r50_2d_kinetics400_100e.py')  # flake8: E501
+        'tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py')
     model['backbone']['pretrained'] = None
 
     recognizer = build_recognizer(
-        model, train_cfg=train_cfg, test_cfg=test_cfg)  # flake8: E501
+        model, train_cfg=train_cfg, test_cfg=test_cfg)
 
     input_shape = (1, 3, 3, 32, 32)
     demo_inputs = generate_demo_inputs(input_shape)
@@ -91,7 +91,7 @@ def test_tsn():
 
 def test_i3d():
     model, train_cfg, test_cfg = _get_recognizer_cfg(
-        'i3d_rgb_32x2x1_r50_3d_kinetics400_100e.py')
+        'i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py')
     model['backbone']['pretrained2d'] = False
     model['backbone']['pretrained'] = None
 
@@ -131,7 +131,7 @@ def test_i3d():
 
 def test_r2plus1d():
     model, train_cfg, test_cfg = _get_recognizer_cfg(
-        'r2plus1d_rgb_8x8x1_r34_3d_kinetics400_180e.py')
+        'r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb.py')
     model['backbone']['pretrained2d'] = False
     model['backbone']['pretrained'] = None
     model['backbone']['norm_cfg'] = dict(type='BN3d')
@@ -172,7 +172,7 @@ def test_r2plus1d():
 
 def test_slowfast():
     model, train_cfg, test_cfg = _get_recognizer_cfg(
-        'slowfast_32x2x1_r50_3d_kinetics400_256e.py')
+        'slowfast/slowfast_r50_3d_4x16x1_256e_kinetics400_rgb.py')
 
     recognizer = build_recognizer(
         model, train_cfg=train_cfg, test_cfg=test_cfg)
@@ -210,11 +210,11 @@ def test_slowfast():
 
 def test_tsm():
     model, train_cfg, test_cfg = _get_recognizer_cfg(
-        'tsm_rgb_1x1x8_r50_2d_kinetics400_100e.py')
+        'tsm/tsm_r50_1x1x8_100e_kinetics400_rgb.py')
     model['backbone']['pretrained'] = None
 
     recognizer = build_recognizer(
-        model, train_cfg=train_cfg, test_cfg=test_cfg)  # flake8: E501
+        model, train_cfg=train_cfg, test_cfg=test_cfg)
 
     input_shape = (1, 8, 3, 32, 32)
     demo_inputs = generate_demo_inputs(input_shape)
@@ -234,11 +234,11 @@ def test_tsm():
 
 def test_tin():
     model, train_cfg, test_cfg = _get_recognizer_cfg(
-        'tin_rgb_1x1x8_r50_2d_kinetics400_35e.py')
+        'tin/tin_r50_1x1x8_35e_kinetics400_rgb.py')
     model['backbone']['pretrained'] = None
 
     recognizer = build_recognizer(
-        model, train_cfg=train_cfg, test_cfg=test_cfg)  # flake8: E501
+        model, train_cfg=train_cfg, test_cfg=test_cfg)
 
     input_shape = (1, 8, 3, 32, 32)
     demo_inputs = generate_demo_inputs(input_shape)

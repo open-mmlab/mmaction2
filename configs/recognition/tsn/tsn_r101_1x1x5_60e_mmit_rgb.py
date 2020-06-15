@@ -2,29 +2,31 @@
 model = dict(
     type='Recognizer2D',
     backbone=dict(
-        type='ResNetTIN',
-        pretrained='torchvision://resnet50',
-        depth=50,
-        norm_eval=False,
-        shift_div=4),
+        type='ResNet',
+        pretrained='torchvision://resnet101',
+        depth=101,
+        norm_eval=False),
     cls_head=dict(
-        type='TINHead',
-        num_classes=400,
+        type='TSNHead',
+        num_classes=313,
         in_channels=2048,
         spatial_type='avg',
         consensus=dict(type='AvgConsensus', dim=1),
+        loss_cls=dict(type='BCELossWithLogits', loss_weight=160.0),
         dropout_ratio=0.5,
-        init_std=0.001))
+        init_std=0.01,
+        multi_class=True,
+        label_smooth_eps=0))
 # model training and testing settings
 train_cfg = None
 test_cfg = dict(average_clips=None)
 # dataset settings
 dataset_type = 'RawframeDataset'
-data_root = 'data/kinetics400/rawframes_train/'
-data_root_val = 'data/kinetics400/rawframes_val/'
-ann_file_train = 'data/kinetics400/kinetics_train_list.txt'
-ann_file_val = 'data/kinetics400/kinetics_val_list.txt'
-ann_file_test = 'data/kinetics400/kinetics_val_list.txt'
+data_root = 'data/Multi_moments_in_time/train'
+data_root_val = 'data/Multi_moments_in_time/val'
+ann_file_train = 'data/mmit_train_anno.txt'
+ann_file_val = 'data/mmit_val_anno.txt'
+ann_file_test = 'data/mmit_val_anno.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 mc_cfg = dict(
@@ -32,7 +34,7 @@ mc_cfg = dict(
     client_cfg='/mnt/lustre/share/memcached_client/client.conf',
     sys_path='/mnt/lustre/share/pymc/py3')
 train_pipeline = [
-    dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=8),
+    dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=5),
     dict(type='FrameSelector', io_backend='memcached', **mc_cfg),
     dict(type='Resize', scale=(-1, 256)),
     dict(
@@ -53,7 +55,7 @@ val_pipeline = [
         type='SampleFrames',
         clip_len=1,
         frame_interval=1,
-        num_clips=8,
+        num_clips=5,
         test_mode=True),
     dict(type='FrameSelector', io_backend='memcached', **mc_cfg),
     dict(type='Resize', scale=(-1, 256)),
@@ -69,7 +71,7 @@ test_pipeline = [
         type='SampleFrames',
         clip_len=1,
         frame_interval=1,
-        num_clips=8,
+        num_clips=5,
         test_mode=True),
     dict(type='FrameSelector', io_backend='memcached', **mc_cfg),
     dict(type='Resize', scale=(-1, 256)),
@@ -80,39 +82,47 @@ test_pipeline = [
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs'])
 ]
+
 data = dict(
-    videos_per_gpu=6,
+    videos_per_gpu=16,
     workers_per_gpu=4,
     train=dict(
         type=dataset_type,
         ann_file=ann_file_train,
         data_prefix=data_root,
-        pipeline=train_pipeline),
+        pipeline=train_pipeline,
+        multi_class=True,
+        num_classes=313),
     val=dict(
         type=dataset_type,
         ann_file=ann_file_val,
         data_prefix=data_root_val,
-        pipeline=val_pipeline),
+        pipeline=val_pipeline,
+        multi_class=True,
+        num_classes=313),
     test=dict(
         type=dataset_type,
         ann_file=ann_file_test,
         data_prefix=data_root_val,
-        pipeline=test_pipeline))
+        pipeline=test_pipeline,
+        multi_class=True,
+        num_classes=313))
 # optimizer
 optimizer = dict(
     type='SGD',
     constructor='TSMOptimizerConstructor',
     paramwise_cfg=dict(fc_lr5=True),
-    lr=0.005,
+    lr=0.02,
     momentum=0.9,
-    weight_decay=0.0001)
+    weight_decay=0.0001,
+)
 optimizer_config = dict(grad_clip=dict(max_norm=20, norm_type=2))
 # learning policy
-lr_config = dict(policy='step', step=[10, 20, 30])
-total_epochs = 35
+lr_config = dict(policy='step', step=[20, 40])
+total_epochs = 60
 checkpoint_config = dict(interval=5)
-evaluation = dict(
-    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
+evaluation = dict(interval=5, metrics=['mean_average_precision'])
+# yapf:disable
 log_config = dict(
     interval=20,
     hooks=[
@@ -122,7 +132,7 @@ log_config = dict(
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/tin_rgb_1x1x8_r50_2d_kinetics400_35e/'
+work_dir = './work_dirs/tsn_r101_1x1x5_60e_mmit_rgb/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
