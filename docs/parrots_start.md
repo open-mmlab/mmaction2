@@ -1,8 +1,9 @@
+# SenseParrots
 ![parrots](imgs/parrots_logo.png)
 
 -----------------------------------
 
-Parrots is a deep learning framework independently developed by the platform group. 
+Parrots is a deep learning framework independently developed by the platform group.
 
 - Compatible with Pytorch interface
 - Support faster training speed
@@ -17,7 +18,7 @@ The goal of Parrots is supporting:
 
 ## Advantage
 
-Parrots can combine [AutoLink](http://autolink.parrots.sensetime.com) and [Pavi](http://pavi.parrots.sensetime.com) for a best model training experience. 
+Parrots can combine [AutoLink](http://autolink.parrots.sensetime.com) and [Pavi](http://pavi.parrots.sensetime.com) for a best model training experience.
 
 Parrots, AutoLink and Pavi can open up the entire process from production to deployment, make the task easier and faster.
 
@@ -120,4 +121,3 @@ Reference: [https://confluence.sensetime.com/pages/viewpage.action?pageId=723102
 Contact: liujie3@sensetime.com
 
 Home page: [https://confluence.sensetime.com/display/PlatformSupport/Parrots](https://confluence.sensetime.com/display/PlatformSupport/Parrots)
-
