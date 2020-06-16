@@ -88,7 +88,7 @@ test_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
-    videos_per_gpu=24,
+    videos_per_gpu=16,
     workers_per_gpu=4,
     train=dict(
         type=dataset_type,
@@ -108,7 +108,7 @@ data = dict(
         pipeline=test_pipeline,
         test_mode=True))
 # optimizer
-optimizer = dict(type='SGD', lr=0.6, momentum=0.9, weight_decay=0.0001)
+optimizer = dict(type='SGD', lr=0.2, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
 lr_config = dict(

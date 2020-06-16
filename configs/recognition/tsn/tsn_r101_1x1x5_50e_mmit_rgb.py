@@ -112,14 +112,14 @@ optimizer = dict(
     type='SGD',
     constructor='TSMOptimizerConstructor',
     paramwise_cfg=dict(fc_lr5=True),
-    lr=0.02,
+    lr=0.01,
     momentum=0.9,
     weight_decay=0.0001,
 )
 optimizer_config = dict(grad_clip=dict(max_norm=20, norm_type=2))
 # learning policy
 lr_config = dict(policy='step', step=[20, 40])
-total_epochs = 60
+total_epochs = 50
 checkpoint_config = dict(interval=5)
 evaluation = dict(interval=5, metrics=['mean_average_precision'])
 # yapf:disable
@@ -132,7 +132,7 @@ log_config = dict(
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/tsn_r101_1x1x5_60e_mmit_rgb/'
+work_dir = './work_dirs/tsn_r101_1x1x5_50e_mmit_rgb/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
