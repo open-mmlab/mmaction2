@@ -50,6 +50,7 @@ pages:
   script:
     - pip install sphinx sphinx_rtd_theme recommonmark
     - cd docs
+    - ./add_models.sh
     - make html
     - cd ..
     - mkdir -p ./public
