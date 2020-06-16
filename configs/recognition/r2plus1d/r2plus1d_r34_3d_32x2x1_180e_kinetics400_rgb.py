@@ -104,16 +104,10 @@ data = dict(
         pipeline=test_pipeline,
         test_mode=True))
 # optimizer
-optimizer = dict(type='SGD', lr=0.15, momentum=0.9, weight_decay=0.0001)
+optimizer = dict(type='SGD', lr=0.075, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
-lr_config = dict(
-    policy='CosineAnealing',
-    min_lr=0,
-    warmup='linear',
-    warmup_ratio=0.1,
-    warmup_byepoch=True,
-    warmup_iters=40)
+lr_config = dict(policy='CosineAnealing', min_lr=0)
 total_epochs = 180
 checkpoint_config = dict(interval=5)
 evaluation = dict(

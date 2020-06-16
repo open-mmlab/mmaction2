@@ -15,7 +15,8 @@ model = dict(
             dilations=(1, 1, 1, 1),
             conv1_stride_t=1,
             pool1_stride_t=1,
-            inflate=(0, 0, 1, 1)),
+            inflate=(0, 0, 1, 1),
+            norm_eval=False),
         fast_pathway=dict(
             type='resnet3d',
             depth=50,
@@ -24,7 +25,8 @@ model = dict(
             base_channels=8,
             conv1_kernel=(5, 7, 7),
             conv1_stride_t=1,
-            pool1_stride_t=1)),
+            pool1_stride_t=1,
+            norm_eval=False)),
     cls_head=dict(
         in_channels=2304,  # 2048+256
         num_classes=400,
@@ -114,13 +116,7 @@ data = dict(
 optimizer = dict(type='SGD', lr=0.1, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
-lr_config = dict(
-    policy='CosineAnealing',
-    min_lr=0,
-    warmup='linear',
-    warmup_ratio=0.01,
-    warmup_byepoch=True,
-    warmup_iters=34)
+lr_config = dict(policy='CosineAnealing', min_lr=0)
 total_epochs = 256
 checkpoint_config = dict(interval=4)
 workflow = [('train', 1)]
