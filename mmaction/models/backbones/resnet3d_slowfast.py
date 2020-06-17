@@ -488,8 +488,6 @@ class ResNet3dSlowFast(nn.Module):
                 conv_lateral = getattr(self.slow_path, lateral_name)
                 x_fast_lateral = conv_lateral(x_fast)
                 x_slow = torch.cat((x_slow, x_fast_lateral), dim=1)
-                print(f'res stage{i} {x_slow.size()} {x_fast.size()}')
 
         out = (x_slow, x_fast)
-        print(out[0].size(), out[1].size())
         return out

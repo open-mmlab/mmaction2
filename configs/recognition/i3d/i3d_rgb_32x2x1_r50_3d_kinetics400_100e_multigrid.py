@@ -23,21 +23,16 @@ test_cfg = dict(average_clips=None)
 multi_grid = dict(
     long_cycle=True,
     short_cycle=True,
-    long_cycle_factors=((4, 2), (2, 2), (2, 1)),
+    long_cycle_factors=((0.25, 0.5**0.5), (0.5, 0.5**0.5), (0.5, 1), (1, 1)),
     short_cycle_factors=(0.5, 0.5**0.5),
     epoch_factor=1.0)
 # dataset settings
 dataset_type = 'RawframeDataset'
-# data_root = 'data/kinetics400/rawframes_train/'
-# data_root_val = 'data/kinetics400/rawframes_val/'
-# ann_file_train = 'data/kinetics400/kinetics_train_list.txt'
-# ann_file_val = 'data/kinetics400/kinetics_val_list.txt'
-# ann_file_test = 'data/kinetics400/kinetics_val_list.txt'
-data_root = '/mnt/lustre/DATAshare2/kinetics_400_train_320_frames'
-data_root_val = '/mnt/lustre/DATAshare2/kinetics_400_val_320_frames'
-ann_file_train = '/mnt/lustre/xusu/refactor/mmaction-lite/tools/Mini_k400_train_100.txt'
-ann_file_val = '/mnt/lustre/xusu/refactor/mmaction-lite/tools/Mini_k400_val_100.txt'
-ann_file_test = ann_file_val
+data_root = 'data/kinetics400/rawframes_train/'
+data_root_val = 'data/kinetics400/rawframes_val/'
+ann_file_train = 'data/kinetics400/kinetics_train_list.txt'
+ann_file_val = 'data/kinetics400/kinetics_val_list.txt'
+ann_file_test = 'data/kinetics400/kinetics_val_list.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 mc_cfg = dict(
