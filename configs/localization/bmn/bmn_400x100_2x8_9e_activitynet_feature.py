@@ -19,7 +19,7 @@ data_root = 'data/activitynet_feature_cuhk/csv_mean_100/'
 data_root_val = 'data/activitynet_feature_cuhk/csv_mean_100/'
 ann_file_train = 'data/ActivityNet/anet_anno_train.json'
 ann_file_val = 'data/ActivityNet/anet_anno_val.json'
-ann_file_test = 'data/ActivityNet/anet_anno_val.json'
+ann_file_test = 'data/ActivityNet/anet_anno_test.json'
 
 test_pipeline = [
     dict(type='LoadLocalizationFeature'),
@@ -88,7 +88,7 @@ optimizer_config = dict(grad_clip=None)
 # learning policy
 lr_config = dict(policy='step', step=7)
 
-total_epochs = 20
+total_epochs = 9
 checkpoint_config = dict(interval=1)
 evaluation = dict(interval=1, metrics=['AR@AN'])
 log_config = dict(interval=50, hooks=[dict(type='TextLoggerHook')])
