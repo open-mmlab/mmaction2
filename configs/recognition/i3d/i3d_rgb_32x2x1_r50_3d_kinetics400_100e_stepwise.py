@@ -20,19 +20,18 @@ model = dict(
 # model training and testing settings
 train_cfg = None
 test_cfg = dict(average_clips=None)
-multi_grid = dict(
-    long_cycle=True,
-    short_cycle=True,
-    long_cycle_factors=((0.25, 0.5**0.5), (0.5, 0.5**0.5), (0.5, 1), (1, 1)),
-    short_cycle_factors=(0.5, 0.5**0.5),
-    epoch_factor=1.0)
 # dataset settings
 dataset_type = 'RawframeDataset'
-data_root = 'data/kinetics400/rawframes_train/'
-data_root_val = 'data/kinetics400/rawframes_val/'
-ann_file_train = 'data/kinetics400/kinetics_train_list.txt'
-ann_file_val = 'data/kinetics400/kinetics_val_list.txt'
-ann_file_test = 'data/kinetics400/kinetics_val_list.txt'
+# data_root = 'data/kinetics400/rawframes_train/'
+# data_root_val = 'data/kinetics400/rawframes_val/'
+# ann_file_train = 'data/kinetics400/kinetics_train_list.txt'
+# ann_file_val = 'data/kinetics400/kinetics_val_list.txt'
+# ann_file_test = 'data/kinetics400/kinetics_val_list.txt'
+data_root = '/mnt/lustre/DATAshare2/kinetics_400_train_320_frames'
+data_root_val = '/mnt/lustre/DATAshare2/kinetics_400_val_320_frames'
+ann_file_train = '/mnt/lustre/DATAshare2/kinetics_train_list_hd320.txt'
+ann_file_val = '/mnt/lustre/DATAshare2/kinetics_val_list_hd320.txt'
+ann_file_test = ann_file_val
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 mc_cfg = dict(
@@ -89,8 +88,8 @@ test_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
-    # videos_per_gpu=8,
-    videos_per_gpu=2,
+    videos_per_gpu=8,
+    # videos_per_gpu=2,
     workers_per_gpu=4,
     train=dict(
         type=dataset_type,
@@ -108,10 +107,11 @@ data = dict(
         data_prefix=data_root_val,
         pipeline=test_pipeline))
 # optimizer
-optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001)
+optimizer = dict(type='SGD', lr=0.03, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
 lr_config = dict(policy='step', step=[40, 80])
+# lr_config = dict(policy='step', step=[10, 20, 30, 40])
 total_epochs = 100
 checkpoint_config = dict(interval=5)
 evaluation = dict(

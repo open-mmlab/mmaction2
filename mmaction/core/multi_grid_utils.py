@@ -1,13 +1,37 @@
 # from pdb import set_trace as st
 
 import numpy as np
-from mmcv.runner import Hook, LrUpdaterHook
+from mmcv.runner import HOOKS, Hook, LrUpdaterHook
 from mmcv.runner.hooks.lr_updater import StepLrUpdaterHook
 from torch.nn.modules.utils import _ntuple
 
 from mmaction.datasets import build_dataloader
 from mmaction.datasets.pipelines.augmentations import Resize
 from mmaction.datasets.pipelines.loading import SampleFrames
+from ..utils import get_root_logger
+
+
+@HOOKS.register_module()
+class FixedStepwiseLrUpdaterHook(StepLrUpdaterHook):
+
+    def __init__(self, ori_step, new_step, step_lr_ratio, gamma=0.1, **kwargs):
+        super().__init__(ori_step, gamma=gamma, **kwargs)
+        self.step_lr_ratio = step_lr_ratio
+        self.new_step = new_step
+
+    def get_lr(self, runner, base_lr):
+        progress = runner.epoch
+        exp = len(self.step)
+        lr_ratio = 1.0
+        for i, s in enumerate(self.step):
+            if progress < s:
+                exp = i
+                break
+        for i, s in enumerate(self.new_step):
+            if progress < s:
+                lr_ratio = self.step_lr_ratio[i]
+                break
+        return base_lr * self.gamma**exp * lr_ratio
 
 
 class MultiGridHook(Hook):
@@ -16,20 +40,30 @@ class MultiGridHook(Hook):
     """
 
     def __init__(self, multi_grid_cfg, data_cfg):
-        print(multi_grid_cfg)
         self.multi_grid_cfg = multi_grid_cfg
         self.data_cfg = data_cfg
+        self.logger = get_root_logger()
+        self.logger.info(multi_grid_cfg)
 
     def before_run(self, runner):
         self._init_schedule(runner, self.multi_grid_cfg, self.data_cfg)
+        step = []
+        step = [s[-1] for s in self.schedule]
+        step[-1] = (step[-2] + step[-1]) // 2
         for hook in runner.hooks:
             if isinstance(hook, StepLrUpdaterHook):
-                hook.step = [0] + [s[-1] for s in self.schedule]
-                # finetune
-                hook.step[-1] = (hook.step[-2] + hook.step[-1]) // 2
+                ori_step = hook.step
+                step_lr_ratio = [s[1][0] for s in self.schedule]
+                new_hook = FixedStepwiseLrUpdaterHook(ori_step, step,
+                                                      step_lr_ratio)
+                runner.register_hook(new_hook)
+                runner.hooks.remove(hook)
 
     def before_train_epoch(self, runner):
         self._update_long_cycle(runner)
+
+    # def before_train_iter(self, runner):
+    #     print(f'inner iter is {runner._inner_iter}')
 
     def _update_long_cycle(self, runner):
         """
@@ -52,19 +86,16 @@ class MultiGridHook(Hook):
         if curr_s != base_s:
             # Change the S-dimension
             resize_list[-1].scale = _ntuple(2)(base_s)
-        if base_s != curr_s or base_t != curr_t:
-            # Now change the bs
-            ds = getattr(runner.data_loader, 'dataset')
-            dataloader = build_dataloader(
-                ds,
-                self.data_cfg.videos_per_gpu * base_b,  # change here
-                self.data_cfg.workers_per_gpu,
-                dist=True,
-                drop_last=self.data_cfg.get('train_drop_last', False))
-            # #TODO: `seed` is skipped since not in cfg.data)
-            runner.data_loader = dataloader
-        else:
-            print('do not need to change')
+
+        ds = getattr(runner.data_loader, 'dataset')
+        dataloader = build_dataloader(
+            ds,
+            self.data_cfg.videos_per_gpu * base_b,  # change here
+            self.data_cfg.workers_per_gpu,
+            dist=True,
+            drop_last=self.data_cfg.get('train_drop_last', False))
+        # #TODO: `seed` is skipped since not in cfg.data)
+        runner.data_loader = dataloader
 
     def _get_long_cycle_schedule(self, runner, cfg):
         # schedule is a list of [step_index, base_shape, epochs]
@@ -95,7 +126,7 @@ class MultiGridHook(Hook):
             ] for s in shapes]
             avg_bs.append(np.mean([s[0] for s in shapes]))
             all_shapes.append(shapes)
-        print(f'all shapes are {all_shapes}')
+        self.logger.info(f'all shapes are {all_shapes}')
         for hook in runner.hooks:
             # search for `steps`, maybe a better way is to read
             # the cfg of optimizer
@@ -111,11 +142,9 @@ class MultiGridHook(Hook):
                 pass
         total_iters = 0
         default_iters = steps[-1]
-        print(f'default steps are {steps}')
         for step_index in range(len(steps) - 1):
             # except the final step
             step_epochs = steps[step_index + 1] - steps[step_index]
-            print(f'step {step_index} have epochs {step_epochs}')
             # number of epochs for this step
             for long_cycle_index, shapes in enumerate(all_shapes):
                 cur_epochs = (
@@ -124,9 +153,7 @@ class MultiGridHook(Hook):
                 total_iters += cur_iters
                 schedule.append((step_index, shapes[-1], cur_epochs))
         iter_saving = default_iters / total_iters
-        print(f'iter saving {iter_saving}')
         final_step_epochs = runner.max_epochs - steps[-1]
-        print(f'final step epoch {final_step_epochs}')
         # the fine-tuning phase to have the same amount of iteration
         # saving as the rest of the training.
         ft_epochs = final_step_epochs / iter_saving * avg_bs[-1]
@@ -148,9 +175,9 @@ class MultiGridHook(Hook):
     def _print_schedule(self, schedule):
         '''logging the schedule.
         '''
-        print("\tLongCycleId\tBase shape\tEpochs\t")
+        self.logger.info("\tLongCycleId\tBase shape\tEpochs\t")
         for s in schedule:
-            print("\t{}\t{}\t{}\t".format(s[0], s[1], s[2]))
+            self.logger.info("\t{}\t{}\t{}\t".format(s[0], s[1], s[2]))
 
     def _get_schedule(self, epoch):
         """Returning the corresponding shape.
