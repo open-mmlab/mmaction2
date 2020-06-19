@@ -6,7 +6,7 @@ from ..registry import HEADS
 from .base import AvgConsensus, BaseHead
 
 
-@HEADS.register_module
+@HEADS.register_module()
 class TSMHead(BaseHead):
     """Class head for TSM.
 

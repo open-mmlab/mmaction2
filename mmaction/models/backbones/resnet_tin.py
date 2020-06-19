@@ -321,7 +321,7 @@ class TemporalInterlace(nn.Module):
         return x_out, x_offset, x_weight
 
 
-@BACKBONES.register_module
+@BACKBONES.register_module()
 class ResNetTIN(ResNet):
     """ResNet backbone for TIN.
 

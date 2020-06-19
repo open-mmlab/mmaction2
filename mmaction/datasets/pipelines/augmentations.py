@@ -42,7 +42,7 @@ def _init_lazy_if_proper(results, lazy):
         assert 'lazy' not in results, 'Use Fuse after lazy operations'
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class Fuse(object):
     """Fuse lazy operations.
 
@@ -86,7 +86,7 @@ class Fuse(object):
         return results
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class RandomCrop(object):
     """Vanilla square random crop that specifics the output size.
 
@@ -154,7 +154,7 @@ class RandomCrop(object):
         return repr_str
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class RandomResizedCrop(object):
     """Random crop that specifics the area and height-weight ratio range.
 
@@ -278,7 +278,7 @@ class RandomResizedCrop(object):
         return repr_str
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class MultiScaleCrop(object):
     """Crop images with a list of randomly selected scales.
 
@@ -423,7 +423,7 @@ class MultiScaleCrop(object):
         return repr_str
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class Resize(object):
     """Resize images to a specific size.
 
@@ -510,7 +510,7 @@ class Resize(object):
         return repr_str
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class Flip(object):
     """Flip the input images with a probability.
 
@@ -570,7 +570,7 @@ class Flip(object):
         return repr_str
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class Normalize(object):
     """Normalize images with the given mean and std value.
 
@@ -619,7 +619,7 @@ class Normalize(object):
         return repr_str
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class CenterCrop(object):
     """Crop the center area from images.
 
@@ -683,7 +683,7 @@ class CenterCrop(object):
         return repr_str
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class ThreeCrop(object):
     """Crop images into three crops.
 
@@ -748,7 +748,7 @@ class ThreeCrop(object):
         return repr_str
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class TenCrop(object):
     """Crop the images into 10 crops (corner + center + flip).
 
@@ -811,7 +811,7 @@ class TenCrop(object):
         return repr_str
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class MultiGroupCrop(object):
     """Randomly crop the images into several groups.
 

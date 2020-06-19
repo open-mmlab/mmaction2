@@ -12,7 +12,7 @@ You need to first implement the new optimizer in a file, e.g., in `mmaction/core
 from .registry import OPTIMIZERS
 from torch.optim import Optimizer
 
-@OPTIMIZERS.register_module
+@OPTIMIZERS.register_module()
 class MyOptimizer(Optimizer):
 
     def __init__(self, a, b, c):
@@ -63,7 +63,7 @@ In `mmaction/core/optimizer/my_optimizer_constructor.py`:
 from .default_constructor import DefaultOptimizerConstructor
 from .registry import OPTIMIZER_BUILDERS
 
-@OPTIMIZER_BUILDERS.register_module
+@OPTIMIZER_BUILDERS.register_module()
 class MyOptimizerConstructor(DefaultOptimizerConstructor):
 
 ```
@@ -107,7 +107,7 @@ import torch.nn as nn
 
 from ..registry import BACKBONES
 
-@BACKBONES.register_module
+@BACKBONES.register_module()
 class ResNet(nn.Module):
 
     def __init__(self, arg1, arg2):
@@ -152,7 +152,7 @@ from ..registry import HEADS
 from .base import BaseHead
 
 
-@HEADS.register_module
+@HEADS.register_module()
 class TSNHead(BaseHead):
 
     def __init__(self, arg1, arg2):
@@ -200,7 +200,7 @@ def my_loss(pred, target):
     return loss
 
 
-@LOSSES.register_module
+@LOSSES.register_module()
 class MyLoss(nn.Module):
 
     def forward(self, pred, target):

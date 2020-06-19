@@ -4,7 +4,7 @@ from ..registry import LOSSES
 from .base import BaseWeightedLoss
 
 
-@LOSSES.register_module
+@LOSSES.register_module()
 class NLLLoss(BaseWeightedLoss):
     """NLL Loss.
 

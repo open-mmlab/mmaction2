@@ -2,7 +2,7 @@ from mmcv.runner import OPTIMIZERS
 from torch.optim import SGD
 
 
-@OPTIMIZERS.register_module
+@OPTIMIZERS.register_module()
 class CopyOfSGD(SGD):
     """A clone of torch.optim.SGD.
 

@@ -307,7 +307,7 @@ Flops: 37.1 GMac
 Params: 28.04 M
 ```
 
-**Note**: This tool is still experimental and we do not guarantee that the number is correct. 
+**Note**: This tool is still experimental and we do not guarantee that the number is correct.
 You may well use the result for simple comparisons, but double check it before you adopt it in technical reports or papers.
 
 (1) FLOPs are related to the input shape while parameters are not. The default input shape is (1, 3, 340, 256) for 2D recognizer, (1, 3, 32, 340, 256) for 3D recognizer.
@@ -469,7 +469,7 @@ In `mmaction/core/optimizer/my_optimizer.py`:
 from .registry import OPTIMIZERS
 from torch.optim import Optimizer
 
-@OPTIMIZERS.register_module
+@OPTIMIZERS.register_module()
 class MyOptimizer(Optimizer):
 
 ```
@@ -495,7 +495,7 @@ In `mmaction/core/optimizer/my_optimizer_constructor.py`:
 from .default_constructor import DefaultOptimizerConstructor
 from .registry import OPTIMIZER_BUILDERS
 
-@OPTIMIZER_BUILDERS.register_module
+@OPTIMIZER_BUILDERS.register_module()
 class MyOptimizerConstructor(DefaultOptimizerConstructor):
 
 ```
@@ -526,7 +526,7 @@ import torch.nn as nn
 
 from ..registry import BACKBONES
 
-@BACKBONES.register_module
+@BACKBONES.register_module()
 class ResNet(nn.Module):
 
     def __init__(self, arg1, arg2):
@@ -555,7 +555,7 @@ from ..registry import HEADS
 from .base import BaseHead
 
 
-@HEADS.register_module
+@HEADS.register_module()
 class TSNHead(BaseHead):
 
     def __init__(self, arg1, arg2):

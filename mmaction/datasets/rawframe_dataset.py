@@ -9,7 +9,7 @@ from .base import BaseDataset
 from .registry import DATASETS
 
 
-@DATASETS.register_module
+@DATASETS.register_module()
 class RawframeDataset(BaseDataset):
     """Rawframe dataset for action recognition.
 

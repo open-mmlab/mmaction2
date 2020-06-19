@@ -6,7 +6,7 @@ from ..registry import LOSSES
 from .binary_logistic_regression_loss import binary_logistic_regression_loss
 
 
-@LOSSES.register_module
+@LOSSES.register_module()
 class BMNLoss(nn.Module):
     """BMN Loss.
 

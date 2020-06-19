@@ -6,7 +6,7 @@ from ..registry import HEADS
 from .base import BaseHead
 
 
-@HEADS.register_module
+@HEADS.register_module()
 class SlowFastHead(BaseHead):
     """The classification head for Slowfast.
 

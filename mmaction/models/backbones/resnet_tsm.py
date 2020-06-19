@@ -71,7 +71,7 @@ class TemporalShift(nn.Module):
         return out.view(n, c, h, w)
 
 
-@BACKBONES.register_module
+@BACKBONES.register_module()
 class ResNetTSM(ResNet):
     """ResNet backbone for TSM.
 
