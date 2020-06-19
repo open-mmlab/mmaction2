@@ -94,7 +94,7 @@ def test_bmn():
     if torch.cuda.is_available():
         localizer_bmn = build_localizer(model_cfg).cuda()
         raw_feature = torch.rand(8, 400, 100).cuda()
-        gt_bbox = torch.Tensor([[[0.1, 0.3], [0.375, 0.625]]] * 8).cuda()
+        gt_bbox = np.array([[[0.1, 0.3], [0.375, 0.625]]] * 8)
         losses = localizer_bmn(raw_feature, gt_bbox)
         assert isinstance(losses, dict)
 

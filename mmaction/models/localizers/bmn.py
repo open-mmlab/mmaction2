@@ -128,6 +128,7 @@ class BMN(nn.Module):
         self.anchors_tmins, self.anchors_tmaxs = self._temporal_anchors(
             -0.5, 1.5)
         self.match_map = self._match_map()
+        self.bm_mask = self._get_bm_mask()
 
     def _match_map(self):
         temporal_gap = 1. / self.tscale
@@ -245,9 +246,9 @@ class BMN(nn.Module):
     def forward_train(self, raw_feature, label_confidence, label_start,
                       label_end):
         confidence_map, start, end = self._forward(raw_feature)
-        bm_mask = self._get_bm_mask().to(raw_feature.device)
         loss = self.loss_cls(confidence_map, start, end, label_confidence,
-                             label_start, label_end, bm_mask)
+                             label_start, label_end,
+                             self.bm_mask.to(raw_feature.device))
         loss_dict = dict(loss=loss[0])
         return loss_dict
 
@@ -256,7 +257,6 @@ class BMN(nn.Module):
         match_score_start_list = []
         match_score_end_list = []
         for every_gt_bbox in gt_bbox:
-            every_gt_bbox = every_gt_bbox.cpu().numpy()
             gt_iou_map = []
             for start, end in every_gt_bbox:
                 current_gt_iou_map = temporal_iou(self.match_map[:, 0],
