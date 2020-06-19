@@ -50,6 +50,7 @@ Support convert model from parrots to caffe.
 
 |model|support|
 |---|---|
+|I3D|yes|
 |TSM2D|yes|
 |SlowFast3D|yes|
 |R2Plus1D|yes|
@@ -58,8 +59,9 @@ Support convert model from parrots to caffe.
 |CSN3D|yes|
 |BSNTEM|yes|
 |BSNPEM|yes|
+|BMN|yes|
 
-note: BSNTEM and BSNPEM only support convert `_forward()`.
+Note: BSNTEM, BSNPEM and BMN only support convert `_forward()`.
 
 #### How to use
 
