@@ -1,7 +1,7 @@
 # BMN
-config | pretrain | AR@100| AUC | gpu_mem(M) | iter time(s) | ckpt | log
--|-|-|-|-|-|- | -
-bmn_400x100_9e_2x8_activitynet_feature | None |75.28|67.22|5420|3.27|[ckpt]()| [log]()
+|config | pretrain | AR@100| AUC | gpu_mem(M) | iter time(s) | ckpt | log|
+|-|-|-|-|-|-|- | -|
+|bmn_400x100_9e_2x8_activitynet_feature | None |75.28|67.22|5420|3.27|[ckpt]()| [log]()|
 
 ### Data
 1. Put the rescaled feature data folder `csv_mean_100` under `$MMACTION/data/activitynet_feature_cuhk/`

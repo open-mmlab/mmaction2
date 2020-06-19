@@ -1,7 +1,7 @@
 # BSN
-config | pretrain | AR@100| AUC | gpu_mem(M) | iter time(s) | ckpt | log
--|-|-|-|-|-|- | -
-bsn_400x100_1x16_20e_activitynet_feature | None |74.91|66.31|41(TEM)+25(PEM)|0.074(TEM)+0.036(PEM)|[ckpt_tem]() [ckpt_pem]| [log_tem]() [log_pem]()
+|config | pretrain | AR@100| AUC | gpu_mem(M) | iter time(s) | ckpt | log|
+|-|-|-|-|-|-|- | -|
+|bsn_400x100_1x16_20e_activitynet_feature | None |74.91|66.31|41(TEM)+25(PEM)|0.074(TEM)+0.036(PEM)|[ckpt_tem]() [ckpt_pem]| [log_tem]() [log_pem]()|
 
 ## Preparation
 ### Data
