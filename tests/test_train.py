@@ -13,7 +13,7 @@ from mmaction.core import set_random_seed, train_model
 from mmaction.datasets.registry import DATASETS
 
 
-@DATASETS.register_module
+@DATASETS.register_module()
 class ExampleDataset(Dataset):
 
     def __init__(self, test_mode=False):

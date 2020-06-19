@@ -10,7 +10,7 @@ from .base import BaseDataset
 from .registry import DATASETS
 
 
-@DATASETS.register_module
+@DATASETS.register_module()
 class ActivityNetDataset(BaseDataset):
     """ActivityNet dataset for temporal action localization.
 

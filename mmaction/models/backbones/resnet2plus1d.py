@@ -2,7 +2,7 @@ from ..registry import BACKBONES
 from .resnet3d import ResNet3d
 
 
-@BACKBONES.register_module
+@BACKBONES.register_module()
 class ResNet2Plus1d(ResNet3d):
     """ResNet (2+1)d backbone.
 

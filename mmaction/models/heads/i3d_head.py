@@ -5,7 +5,7 @@ from ..registry import HEADS
 from .base import BaseHead
 
 
-@HEADS.register_module
+@HEADS.register_module()
 class I3DHead(BaseHead):
     """Classification head for I3D.
 

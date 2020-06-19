@@ -8,7 +8,7 @@ from .base import BaseDataset
 from .registry import DATASETS
 
 
-@DATASETS.register_module
+@DATASETS.register_module()
 class VideoDataset(BaseDataset):
     """Video dataset for action recognition.
 

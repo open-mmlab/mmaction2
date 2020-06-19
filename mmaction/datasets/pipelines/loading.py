@@ -11,7 +11,7 @@ from ...utils import get_random_string, get_shm_dir, get_thread_id
 from ..registry import PIPELINES
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class SampleFrames(object):
     """Sample frames from the video.
 
@@ -141,7 +141,7 @@ class SampleFrames(object):
         return results
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class DenseSampleFrames(SampleFrames):
     """Select frames from the video by dense sample strategy.
 
@@ -224,7 +224,7 @@ class DenseSampleFrames(SampleFrames):
         return clip_offsets
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class PyAVInit(object):
     """Using pyav to initialize the video.
 
@@ -263,7 +263,7 @@ class PyAVInit(object):
         return results
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class PyAVDecode(object):
     """Using pyav to decode the video.
 
@@ -316,7 +316,7 @@ class PyAVDecode(object):
         return repr_str
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class DecordInit(object):
     """Using decord to initialize the video_reader.
 
@@ -363,7 +363,7 @@ class DecordInit(object):
         shutil.rmtree(self.tmp_folder)
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class DecordDecode(object):
     """Using decord to decode the video.
 
@@ -396,7 +396,7 @@ class DecordDecode(object):
         return results
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class OpenCVInit(object):
     """Using OpenCV to initalize the video_reader.
 
@@ -435,7 +435,7 @@ class OpenCVInit(object):
         shutil.rmtree(self.tmp_folder)
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class OpenCVDecode(object):
     """Using OpenCV to decode the video.
 
@@ -474,7 +474,7 @@ class OpenCVDecode(object):
         return results
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class FrameSelector(object):
     """Select raw frames with given indices.
 
@@ -526,7 +526,7 @@ class FrameSelector(object):
         return results
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class LoadLocalizationFeature(object):
     """Load Video features for localizer with given video_name list.
 
@@ -556,7 +556,7 @@ class LoadLocalizationFeature(object):
         return results
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class GenerateLocalizationLabels(object):
     """Load video label for localizer with given video_name list.
 
@@ -587,7 +587,7 @@ class GenerateLocalizationLabels(object):
         return results
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class LoadProposals(object):
     """Loading proposals with given proposal results.
 

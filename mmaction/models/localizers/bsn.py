@@ -9,7 +9,7 @@ from ..registry import LOCALIZERS
 from .utils import post_processing
 
 
-@LOCALIZERS.register_module
+@LOCALIZERS.register_module()
 class TEM(nn.Module):
     """Temporal Evaluation Model for Boundary Sensetive Network.
 
@@ -195,7 +195,7 @@ class TEM(nn.Module):
             return self.forward_test(raw_feature, video_meta)
 
 
-@LOCALIZERS.register_module
+@LOCALIZERS.register_module()
 class PEM(nn.Module):
     """Proposals Evaluation Model for Boundary Sensetive Network.
 

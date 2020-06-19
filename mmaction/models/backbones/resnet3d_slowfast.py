@@ -333,7 +333,7 @@ def build_pathway(cfg, *args, **kwargs):
     return pathway
 
 
-@BACKBONES.register_module
+@BACKBONES.register_module()
 class ResNet3dSlowFast(nn.Module):
     """Slowfast backbone.
 

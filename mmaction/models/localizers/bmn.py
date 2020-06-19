@@ -10,7 +10,7 @@ from ..registry import LOCALIZERS
 from .utils import post_processing
 
 
-@LOCALIZERS.register_module
+@LOCALIZERS.register_module()
 class BMN(nn.Module):
     """Boundary Matching Network for temporal action proposal generation.
 

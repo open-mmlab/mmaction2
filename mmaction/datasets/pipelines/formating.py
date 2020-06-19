@@ -28,7 +28,7 @@ def to_tensor(data):
         raise TypeError(f'type {type(data)} cannot be converted to tensor.')
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class ToTensor(object):
     """Convert some values in results dict to `torch.Tensor` type
     in data loader pipeline.
@@ -49,7 +49,7 @@ class ToTensor(object):
         return f'{self.__class__.__name__}(keys={self.keys})'
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class ToDataContainer(object):
     """Convert the data to DataContainer.
 
@@ -73,7 +73,7 @@ class ToDataContainer(object):
         return self.__class__.__name__ + f'(fields={self.fields})'
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class ImageToTensor(object):
     """Convert image type to `torch.Tensor` type.
 
@@ -93,7 +93,7 @@ class ImageToTensor(object):
         return f'{self.__class__.__name__}(keys={self.keys})'
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class Transpose(object):
     """Transpose image channels to a given order.
 
@@ -116,7 +116,7 @@ class Transpose(object):
                 f'keys={self.keys}, order={self.order})')
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class Collect(object):
     """Collect data from the loader relevant to the specific task.
 
@@ -184,7 +184,7 @@ class Collect(object):
                 f'keys={self.keys}, meta_keys={self.meta_keys})')
 
 
-@PIPELINES.register_module
+@PIPELINES.register_module()
 class FormatShape(object):
     """Format final imgs shape to the given input_format
 

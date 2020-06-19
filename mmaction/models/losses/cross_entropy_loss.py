@@ -4,7 +4,7 @@ from ..registry import LOSSES
 from .base import BaseWeightedLoss
 
 
-@LOSSES.register_module
+@LOSSES.register_module()
 class CrossEntropyLoss(BaseWeightedLoss):
     """Cross Entropy Loss."""
 
@@ -13,7 +13,7 @@ class CrossEntropyLoss(BaseWeightedLoss):
         return loss_cls
 
 
-@LOSSES.register_module
+@LOSSES.register_module()
 class BCELossWithLogits(BaseWeightedLoss):
     """Binary Cross Entropy Loss with logits."""
 

@@ -3,7 +3,7 @@ from mmcv.runner import OPTIMIZER_BUILDERS, DefaultOptimizerConstructor
 from mmcv.utils import SyncBatchNorm, _BatchNorm, _ConvNd
 
 
-@OPTIMIZER_BUILDERS.register_module
+@OPTIMIZER_BUILDERS.register_module()
 class TSMOptimizerConstructor(DefaultOptimizerConstructor):
     """Optimizer constructor in TSM model.
 

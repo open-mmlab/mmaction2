@@ -2,7 +2,7 @@ from ..registry import RECOGNIZERS
 from .base import BaseRecognizer
 
 
-@RECOGNIZERS.register_module
+@RECOGNIZERS.register_module()
 class Recognizer3D(BaseRecognizer):
     """3D recognizer model framework."""
 

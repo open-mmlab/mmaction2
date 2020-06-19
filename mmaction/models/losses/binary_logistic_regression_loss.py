@@ -27,7 +27,7 @@ def binary_logistic_regression_loss(reg_score,
     return loss
 
 
-@LOSSES.register_module
+@LOSSES.register_module()
 class BinaryLogisticRegressionLoss(nn.Module):
     """Binary Logistic Regression Loss
 

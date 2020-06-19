@@ -13,10 +13,10 @@ the arguments of models' forward method is returned, and it will be fed into the
 
 > Since the data in action recognition & localization may not be the same size (image size, gt bbox size, etc.), the `DataContainer` type in MMCV is used to help collect and distribute data of different size. See [here](https://github.com/open-mmlab/mmcv/blob/master/mmcv/parallel/data_container.py) for more details.
 
-The data preparation pipeline and the dataset is decoupled. 
+The data preparation pipeline and the dataset is decoupled.
 Usually a dataset
 defines how to process the annotations while a data pipeline defines all the steps to prepare a data dict.
-A data preparation pipeline consists of a sequence of operations. 
+A data preparation pipeline consists of a sequence of operations.
 Each operation takes a dict as input and also output a dict for the next transformation.
 
 A typical pipeline is shown in the following figure.
@@ -202,7 +202,7 @@ in [TSM: Temporal Shift Module for Efficient Video Understanding](https://arxiv.
   from ..registry import BACKBONES
   from .resnet import ResNet
 
-  @BACKBONES.register_module
+  @BACKBONES.register_module()
   class ResNetTSM(ResNet):
 
       def __init__(self,
