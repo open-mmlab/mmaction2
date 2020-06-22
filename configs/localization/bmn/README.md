@@ -1,4 +1,5 @@
 # BMN
+
 |config | pretrain | AR@100| AUC | gpu_mem(M) | iter time(s) | ckpt | log|
 |-|-|-|-|-|-|- | -|
 |bmn_400x100_9e_2x8_activitynet_feature | None |75.28|67.22|5420|3.27|[ckpt]()| [log]()|
@@ -23,7 +24,7 @@ You can use the following command to train a model.
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 
 # Example: train BMN on ActivityNet features dataset
-python tools/train.py config/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py
+python tools/train.py configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py
 ```
 
 ## Test
@@ -33,5 +34,5 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 
 # Example: test BMN on ActivityNet feature dataset
 # Note: If evaluated, then please make sure the annotation file for test data contains groundtruth.
-python tools/test.py  config/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py checkpoints/SOME_CHECKPOINT.pth --eval AR@AN --out results.json
+python tools/test.py  configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py checkpoints/SOME_CHECKPOINT.pth --eval AR@AN --out results.json
 ```
