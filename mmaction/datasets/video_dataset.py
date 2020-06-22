@@ -19,14 +19,15 @@ class VideoDataset(BaseDataset):
     a sample video with the filepath and label, which are split with a
     whitespace. Example of a annotation file:
 
-    ```
-    some/path/000.mp4 1
-    some/path/001.mp4 1
-    some/path/002.mp4 2
-    some/path/003.mp4 2
-    some/path/004.mp4 3
-    some/path/005.mp4 3
-    ```
+    .. code-block:: txt
+
+        some/path/000.mp4 1
+        some/path/001.mp4 1
+        some/path/002.mp4 2
+        some/path/003.mp4 2
+        some/path/004.mp4 3
+        some/path/005.mp4 3
+
     """
 
     def load_annotations(self):

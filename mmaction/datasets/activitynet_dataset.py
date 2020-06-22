@@ -20,47 +20,47 @@ class ActivityNetDataset(BaseDataset):
     The ann_file is a json file with multiple objects, and each object has a
     key of the name of a video, and value of total frames of the video, total
     seconds of the video, annotations of a video, feature frames (frames
-    covered by features) of the video, fps and rfps.
+    covered by features) of the video, fps and rfps. Example of a
+    annotation file:
 
-    Example of a annotation file:
+    .. code-block:: JSON
 
-    ```
-    {
-        "v_--1DO2V4K74": {
-            "duration_second": 211.53,
-            "duration_frame": 6337,
-            "annotations": [
-                {
-                    "segment": [
-                        30.025882995319815,
-                        205.2318595943838
-                    ],
-                    "label": "Rock climbing"
-                }
-            ],
-            "feature_frame": 6336,
-            "fps": 30.0,
-            "rfps": 29.9579255898
-        },
-        "v_--6bJUbfpnQ": {
-            "duration_second": 26.75,
-            "duration_frame": 647,
-            "annotations": [
-                {
-                    "segment": [
-                        2.578755070202808,
-                        24.914101404056165
-                    ],
-                    "label": "Drinking beer"
-                }
-            ],
-            "feature_frame": 624,
-            "fps": 24.0,
-            "rfps": 24.1869158879
-        },
-        ...
-    }
-    ```
+        {
+            "v_--1DO2V4K74":  {
+                "duration_second": 211.53,
+                "duration_frame": 6337,
+                "annotations": [
+                    {
+                        "segment": [
+                            30.025882995319815,
+                            205.2318595943838
+                        ],
+                        "label": "Rock climbing"
+                    }
+                ],
+                "feature_frame": 6336,
+                "fps": 30.0,
+                "rfps": 29.9579255898
+            },
+            "v_--6bJUbfpnQ": {
+                "duration_second": 26.75,
+                "duration_frame": 647,
+                "annotations": [
+                    {
+                        "segment": [
+                            2.578755070202808,
+                            24.914101404056165
+                        ],
+                        "label": "Drinking beer"
+                    }
+                ],
+                "feature_frame": 624,
+                "fps": 24.0,
+                "rfps": 24.1869158879
+            },
+            ...
+        }
+
 
     Args:
         ann_file (str): Path to the annotation file.
@@ -118,18 +118,13 @@ class ActivityNetDataset(BaseDataset):
                 Defaults: False.
 
         Returns:
-            result_dict (dict): The final result dict.
-                e.g.
-                {
-                    "video-1":[{
-                            "segment": [1.1, 2.0],
-                            "score": 0.9
-                            },{
-                            "segment": [50.5, 120.3],
-                            "score": 0.6
-                            }],
-                    ......
-                }
+            result_dict (dict): The final result dict. E.g.
+
+            .. code-block:: Python
+
+                dict(video-1=[dict(segment=[1.1,2.0]. score=0.9),
+                              dict(segment=[50.1, 129.3], score=0.6)])
+
         """
         result_dict = {}
         print('Convert proposals to json format')
