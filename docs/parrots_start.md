@@ -16,7 +16,7 @@ The goal of Parrots is supporting:
 - Billions of training samples
 - Ten million category sorting tasks
 
-## Advantage
+### Advantage
 
 Parrots can combine [AutoLink](http://autolink.parrots.sensetime.com) and [Pavi](http://pavi.parrots.sensetime.com) for a best model training experience.
 
@@ -26,11 +26,11 @@ Benchmark:
 
 - to do
 
-## Install
+### Install
 
 Reference: [https://confluence.sensetime.com/pages/viewpage.action?pageId=131288226](https://confluence.sensetime.com/pages/viewpage.action?pageId=131288226)
 
-## Pytorch to Parrots
+### Pytorch to Parrots
 
 #### Reference
 
@@ -44,7 +44,7 @@ Parrots currently supports most pytorch interfaces, and most of the time the pyt
 
 
 
-## Model Convert (Parrots to Caffe)
+### Model Convert (Parrots to Caffe)
 
 Support convert model from parrots to caffe.
 
@@ -114,11 +114,11 @@ The python args are illustrated below.
 |--inputsize|size of the input data, for example, "8,8,3,224,224"|required|
 --saveinput|whether to save the generated input data|optional, default:false|
 
-## Model Convert (Parrots to Pytorch)
+### Model Convert (Parrots to Pytorch)
 
 Reference: [https://confluence.sensetime.com/pages/viewpage.action?pageId=72310284](https://confluence.sensetime.com/pages/viewpage.action?pageId=72310284)
 
-## Other support
+### Other support
 
 Contact: liujie3@sensetime.com
 
