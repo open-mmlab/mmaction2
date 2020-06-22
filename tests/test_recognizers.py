@@ -210,7 +210,7 @@ def test_slowfast():
 
 def test_tsm():
     model, train_cfg, test_cfg = _get_recognizer_cfg(
-        'tsm/tsm_r50_1x1x8_100e_kinetics400_rgb.py')
+        'tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py')
     model['backbone']['pretrained'] = None
 
     recognizer = build_recognizer(
