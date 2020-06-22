@@ -21,24 +21,27 @@ class RawframeDataset(BaseDataset):
     the label of a video, which are split with a whitespace.
     Example of a annotation file:
 
-    ```
-    some/directory-1 163 1
-    some/directory-2 122 1
-    some/directory-3 258 2
-    some/directory-4 234 2
-    some/directory-5 295 3
-    some/directory-6 121 3
-    ```
+    .. code-block:: txt
+
+        some/directory-1 163 1
+        some/directory-2 122 1
+        some/directory-3 258 2
+        some/directory-4 234 2
+        some/directory-5 295 3
+        some/directory-6 121 3
+
     Example of a multi-class annotation file:
 
-    ```
-    some/directory-1 163 1 3 5
-    some/directory-2 122 1 2
-    some/directory-3 258 2
-    some/directory-4 234 2 4 6 8
-    some/directory-5 295 3
-    some/directory-6 121 3
-    ```
+
+    .. code-block:: txt
+
+        some/directory-1 163 1 3 5
+        some/directory-2 122 1 2
+        some/directory-3 258 2
+        some/directory-4 234 2 4 6 8
+        some/directory-5 295 3
+        some/directory-6 121 3
+
 
     Args:
         ann_file (str): Path to the annotation file.
