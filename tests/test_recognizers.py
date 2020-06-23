@@ -12,6 +12,11 @@ from mmaction.models import BaseRecognizer, build_recognizer
 class ExampleRecognizer(BaseRecognizer):
 
     def __init__(self, train_cfg, test_cfg):
+        super(BaseRecognizer, self).__init__()
+        # reconstruct `__init__()` method in BaseRecognizer to avoid building
+        # backbone and head which are useless to ExampleRecognizer,
+        # since ExampleRecognizer is only used for model-unrelated methods
+        # (like `average_clip`) testing.
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
 
@@ -50,6 +55,11 @@ def test_base_recognizer():
         wrong_test_cfg = dict(average_clips='softmax')
         recognizer = ExampleRecognizer(None, wrong_test_cfg)
         recognizer.average_clip(cls_score)
+
+    with pytest.raises(ValueError):
+        # Label should not be None
+        recognizer = ExampleRecognizer(None, None)
+        recognizer(torch.tensor(0))
 
     # average_clips='score'
     test_cfg = dict(average_clips='score')

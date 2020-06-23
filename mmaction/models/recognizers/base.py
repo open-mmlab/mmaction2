@@ -74,8 +74,10 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
     def forward_test(self, imgs):
         pass
 
-    def forward(self, imgs, label, return_loss=True):
+    def forward(self, imgs, label=None, return_loss=True):
         if return_loss:
+            if label is None:
+                raise ValueError('Label should not be None.')
             return self.forward_train(imgs, label)
         else:
             return self.forward_test(imgs)
