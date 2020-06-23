@@ -242,7 +242,7 @@ We provide lots of useful tools under `tools/` directory.
 
 You can plot loss/top-k acc curves given a training log file. Run `pip install seaborn` first to install the dependency.
 
-![acc_curve_image](./acc_curve.png)
+![acc_curve_image](imgs/acc_curve.png)
 
 ```shell
 python tools/analyze_logs.py plot_curve ${JSON_LOGS} [--keys ${KEYS}] [--title ${TITLE}] [--legend ${LEGEND}] [--backend ${BACKEND}] [--style ${STYLE}] [--out ${OUT_FILE}]
