@@ -34,7 +34,7 @@ model = dict(
         spatial_type='avg',
         dropout_ratio=0.5))
 train_cfg = None
-test_cfg = dict(average_clips=None)
+test_cfg = dict(average_clips='prob')
 dataset_type = 'VideoDataset'
 data_root = 's3://lizz.ssd/datasets/kinetics400_256/'
 data_root_val = 's3://lizz.ssd/datasets/kinetics400_256/'
