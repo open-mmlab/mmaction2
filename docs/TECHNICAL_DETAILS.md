@@ -21,7 +21,7 @@ Each operation takes a dict as input and also output a dict for the next transfo
 
 A typical pipeline is shown in the following figure.
 With the pipeline going on, each operator can add new keys (marked as green) to the result dict or update the existing keys (marked as orange).
-![pipeline figure](./datapipeline.png)
+![pipeline figure](imgs/data_pipeline.png)
 
 The operations are categorized into data loading, pre-processing, formatting.
 
