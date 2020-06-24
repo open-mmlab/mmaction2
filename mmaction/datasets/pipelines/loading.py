@@ -377,13 +377,17 @@ class DecordDecode(object):
 
     def __call__(self, results):
         container = results['video_reader']
-        imgs = list()
+
         if results['frame_inds'].ndim != 1:
             results['frame_inds'] = np.squeeze(results['frame_inds'])
 
-        for frame_idx in results['frame_inds']:
-            cur_frame = container[frame_idx].asnumpy()
-            imgs.append(cur_frame)
+        frame_dict = dict()
+        frame_inds = results['frame_inds']
+        sorted_frame_inds = np.sort(np.unique(frame_inds))
+        for idx in sorted_frame_inds:
+            cur_frame = container[idx].asnumpy()
+            frame_dict[idx] = cur_frame
+        imgs = [frame_dict[i] for i in frame_inds]
 
         results['video_reader'] = None
         del container
