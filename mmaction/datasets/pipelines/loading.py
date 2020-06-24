@@ -381,13 +381,14 @@ class DecordDecode(object):
         if results['frame_inds'].ndim != 1:
             results['frame_inds'] = np.squeeze(results['frame_inds'])
 
-        frame_dict = dict()
         frame_inds = results['frame_inds']
-        sorted_frame_inds = np.sort(np.unique(frame_inds))
-        for idx in sorted_frame_inds:
-            cur_frame = container[idx].asnumpy()
-            frame_dict[idx] = cur_frame
-        imgs = [frame_dict[i] for i in frame_inds]
+        # Generate frame index mapping in order
+        frame_dict = {
+            idx: container[idx].asnumpy()
+            for idx in np.unique(frame_inds)
+        }
+
+        imgs = [frame_dict[idx] for idx in frame_inds]
 
         results['video_reader'] = None
         del container
