@@ -4,7 +4,7 @@ import os.path as osp
 
 import numpy as np
 import pytest
-from numpy.testing import assert_array_almost_equal
+from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from mmaction.datasets.pipelines import (DecordDecode, DecordInit,
                                          DenseSampleFrames, FrameSelector,
@@ -75,7 +75,7 @@ class TestLoading(object):
         assert len(sample_frames_results['frame_inds']) == 15
 
         # Sample Frame with temporal_jitter
-        # clip_len=3, frame_interval=1, num_clips=5
+        # clip_len=4, frame_interval=2, num_clips=5
         video_result = copy.deepcopy(self.video_results)
         frame_result = copy.deepcopy(self.frame_results)
         config = dict(
@@ -124,8 +124,50 @@ class TestLoading(object):
         sample_frames_results = sample_frames(frame_result)
         assert len(sample_frames_results['frame_inds']) == 18
 
+        # Sample Frame with no temporal_jitter to get clip_offsets
+        # clip_len=1, frame_interval=1, num_clips=8
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        frame_result['total_frames'] = 6
+        config = dict(
+            clip_len=1,
+            frame_interval=1,
+            num_clips=8,
+            temporal_jitter=False,
+            test_mode=True)
+        sample_frames = SampleFrames(**config)
+        sample_frames_results = sample_frames(video_result)
+        assert self.check_keys_contain(sample_frames_results.keys(),
+                                       target_keys)
+        assert len(sample_frames_results['frame_inds']) == 8
+        sample_frames_results = sample_frames(frame_result)
+        assert len(sample_frames_results['frame_inds']) == 8
+        assert_array_equal(sample_frames_results['frame_inds'],
+                           np.array([0, 1, 1, 2, 3, 4, 4, 5]))
+
+        # Sample Frame with no temporal_jitter to get clip_offsets zero
+        # clip_len=6, frame_interval=1, num_clips=1
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        frame_result['total_frames'] = 5
+        config = dict(
+            clip_len=6,
+            frame_interval=1,
+            num_clips=1,
+            temporal_jitter=False,
+            test_mode=True)
+        sample_frames = SampleFrames(**config)
+        sample_frames_results = sample_frames(video_result)
+        assert self.check_keys_contain(sample_frames_results.keys(),
+                                       target_keys)
+        assert len(sample_frames_results['frame_inds']) == 6
+        sample_frames_results = sample_frames(frame_result)
+        assert len(sample_frames_results['frame_inds']) == 6
+        assert_array_equal(sample_frames_results['frame_inds'],
+                           [0, 1, 2, 3, 4, 0])
+
         # Sample Frame with no temporal_jitter to get avg_interval <= 0
-        # clip_len=3, frame_interval=1, num_clips=6
+        # clip_len=12, frame_interval=1, num_clips=20
         video_result = copy.deepcopy(self.video_results)
         frame_result = copy.deepcopy(self.frame_results)
         frame_result['total_frames'] = 30
@@ -143,8 +185,29 @@ class TestLoading(object):
         sample_frames_results = sample_frames(frame_result)
         assert len(sample_frames_results['frame_inds']) == 240
 
-        # Sample Frame with no temporal_jitter to get clip_offsets zeros np
-        # clip_len=3, frame_interval=1, num_clips=6
+        # Sample Frame with no temporal_jitter to get clip_offsets
+        # clip_len=1, frame_interval=1, num_clips=8
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        frame_result['total_frames'] = 6
+        config = dict(
+            clip_len=1,
+            frame_interval=1,
+            num_clips=8,
+            temporal_jitter=False,
+            test_mode=False)
+        sample_frames = SampleFrames(**config)
+        sample_frames_results = sample_frames(video_result)
+        assert self.check_keys_contain(sample_frames_results.keys(),
+                                       target_keys)
+        assert len(sample_frames_results['frame_inds']) == 8
+        sample_frames_results = sample_frames(frame_result)
+        assert len(sample_frames_results['frame_inds']) == 8
+        assert_array_equal(sample_frames_results['frame_inds'],
+                           np.array([0, 1, 2, 2, 3, 4, 4, 5]))
+
+        # Sample Frame with no temporal_jitter to get clip_offsets zero
+        # clip_len=12, frame_interval=1, num_clips=2
         video_result = copy.deepcopy(self.video_results)
         frame_result = copy.deepcopy(self.frame_results)
         frame_result['total_frames'] = 10

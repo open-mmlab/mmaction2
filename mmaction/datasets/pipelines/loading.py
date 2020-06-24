@@ -66,6 +66,9 @@ class SampleFrames(object):
             clip_offsets = np.sort(
                 np.random.randint(
                     num_frames - ori_clip_len + 1, size=self.num_clips))
+        elif avg_interval == 0:
+            ratio = (num_frames - ori_clip_len + 1.0) / self.num_clips
+            clip_offsets = np.around(np.arange(self.num_clips) * ratio)
         else:
             clip_offsets = np.zeros((self.num_clips, ))
 
@@ -94,11 +97,10 @@ class SampleFrames(object):
             clip_offsets = (base_offsets + avg_interval / 2.0).astype(np.int32)
         else:
             clip_offsets = np.zeros((self.num_clips, ))
-
         return clip_offsets
 
     def _sample_clips(self, num_frames):
-        """Choose frame indices for the video in a given mode.
+        """Choose clip offsets for the video in a given mode.
 
         Args:
             num_frames (int): Total number of frame in the video.
