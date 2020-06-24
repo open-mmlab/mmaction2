@@ -384,16 +384,19 @@ class DecordDecode(object):
         if results['frame_inds'].ndim != 1:
             results['frame_inds'] = np.squeeze(results['frame_inds'])
 
+        frame_dict = dict()
         frame_inds = results['frame_inds']
-        sorted_frame_inds = np.argsort(frame_inds)
+        sorted_frame_inds = np.sort(np.unique(frame_inds))
         for idx in sorted_frame_inds:
-            cur_frame = container[frame_inds[idx]].asnumpy()
-            imgs.append(cur_frame)
+            cur_frame = container[idx].asnumpy()
+            frame_dict[idx] = cur_frame
+        for i in frame_inds:
+            imgs[i] = dict[i]
 
         results['video_reader'] = None
         del container
 
-        results['imgs'] = np.array(imgs)[np.argsort(sorted_frame_inds)]
+        results['imgs'] = imgs
         results['original_shape'] = imgs[0].shape[:2]
         results['img_shape'] = imgs[0].shape[:2]
 
