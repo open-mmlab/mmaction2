@@ -380,7 +380,7 @@ class DecordDecode(object):
 
     def __call__(self, results):
         container = results['video_reader']
-        imgs = list()
+
         if results['frame_inds'].ndim != 1:
             results['frame_inds'] = np.squeeze(results['frame_inds'])
 
@@ -390,8 +390,7 @@ class DecordDecode(object):
         for idx in sorted_frame_inds:
             cur_frame = container[idx].asnumpy()
             frame_dict[idx] = cur_frame
-        for i in frame_inds:
-            imgs.append(frame_dict[i])
+        imgs = [frame_dict[i] for i in frame_inds]
 
         results['video_reader'] = None
         del container
