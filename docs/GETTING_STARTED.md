@@ -132,10 +132,102 @@ for key in result:
 A notebook demo can be found in [demo/demo.ipynb](../demo/demo.ipynb)
 
 
+## Build a model
+
+### Build a model with basic components
+
+In MMAction, model components are basically categorized as 4 types.
+
+- recognizer: the whole recognizer model pipeline, usually contains a backbone and cls_head.
+- backbone: usually an FCN network to extract feature maps, e.g., ResNet, BNInception.
+- cls_head: the component for classification task, usually contains an FC layer with some pooling layers.
+- localizer: the model for localization task, currently available: BSN, BMN.
+
+Following some basic pipelines (e.g., `Recognizer2D`), the model structure
+can be customized through config files with no pains.
+
+If we want to implement some new components, e.g., the temporal shift backbone structure as
+in [TSM: Temporal Shift Module for Efficient Video Understanding](https://arxiv.org/abs/1811.08383), there are several things to do.
+
+1. create a new file in `mmaction/models/backbones/resnet_tsm.py`.
+
+  ```python
+  from ..registry import BACKBONES
+  from .resnet import ResNet
+
+  @BACKBONES.register_module()
+  class ResNetTSM(ResNet):
+
+      def __init__(self,
+                   depth,
+                   num_segments=8,
+                   is_shift=True,
+                   shift_div=8,
+                   shift_place='blockres',
+                   temporal_pool=False,
+                   **kwargs):
+          pass
+
+      def forward(self, x):
+          # implementation is ignored
+          pass
+  ```
+
+2. Import the module in `mmaction/models/backbones/__init__.py`
+  ```python
+  from .resnet_tsm import ResNetTSM
+  ```
+
+3. modify the config file from
+
+  ```python
+  backbone=dict(
+      type='ResNet',
+      pretrained='torchvision://resnet50',
+      depth=50,
+      norm_eval=False)
+  ```
+
+  to
+
+  ```python
+  backbone=dict(
+        type='ResNetTSM',
+        pretrained='torchvision://resnet50',
+        depth=50,
+        norm_eval=False,
+        shift_div=8)
+  ```
+
+### Write a new model
+
+To write a new recognition pipeline, you need to inherit from `BaseRecognizer`,
+which defines the following abstract methods.
+
+- `forward_train()`: forward method of the training mode.
+- `forward_test()`: forward method of the testing mode.
+
+[Recognizer2D](../mmaction/models/recognizers/recognizer2d.py) and [Recognizer3D](../mmaction/models/recognizers/recognizer3d.py)
+are good examples which show how to do that.
+
+
 ## Train a model
+
+### Iteration pipeline
 
 MMAction-lite implements distributed training and non-distributed training,
 which uses `MMDistributedDataParallel` and `MMDataParallel` respectively.
+
+We adopt distributed training for both single machine and multiple machines.
+Supposing that the server has 8 GPUs, 8 processes will be started and each process runs on a single GPU.
+
+Each process keeps an isolated model, data loader, and optimizer.
+Model parameters are only synchronized once at the begining.
+After a forward and backward pass, gradients will be allreduced among all GPUs,
+and the optimizer will update model parameters.
+Since the gradients are allreduced, the model parameter stays the same for all processes after the iteration.
+
+### Training setting
 
 All outputs (log files and checkpoints) will be saved to the working directory,
 which is specified by `work_dir` in the config file.
