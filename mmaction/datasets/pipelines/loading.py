@@ -77,9 +77,6 @@ class SampleFrames(object):
     def _get_test_clips(self, num_frames):
         """Get clip offsets in test mode.
 
-        If dense_sample is True, it will choose a sample position and evenly
-        sample 10 index as start positions between [0, sample_position - 1],
-        and shift them using a specific interval.
         Calculate the average interval for selected frames, and shift them
         fixedly by avg_interval/2 . If the total number of frames is not
         enough, it will return all zero indices.
