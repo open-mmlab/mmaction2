@@ -391,7 +391,7 @@ class DecordDecode(object):
             cur_frame = container[idx].asnumpy()
             frame_dict[idx] = cur_frame
         for i in frame_inds:
-            imgs[i] = dict[i]
+            imgs.append(frame_dict[i])
 
         results['video_reader'] = None
         del container
