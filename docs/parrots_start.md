@@ -69,50 +69,50 @@ Use environment variable `MMACTION_MODEL_CONVERT=1` to control execution trainin
 
 1) code prepare
 
-```
-git clone git@gitlab.sz.sensetime.com:open-mmlab/mmaction-lite.git
-git clone git@gitlab.bj.sensetime.com:platform/ParrotsDL/parrots.convert.git
-```
-contact `luopeichao@sensetime.com` for `parrots.convert` permission.
+    ```
+    git clone git@gitlab.sz.sensetime.com:open-mmlab/mmaction-lite.git
+    git clone git@gitlab.bj.sensetime.com:platform/ParrotsDL/parrots.convert.git
+    ```
+    contact `luopeichao@sensetime.com` for `parrots.convert` permission.
 
 2) install mmaction and parrots.convert
 
-```
-cd mmaction-lite
-pip install -e .
-```
-and
-```
-cd parrots.convert
-pip install -e .
-```
+    ```
+    cd mmaction-lite
+    pip install -e .
+    ```
+    and
+    ```
+    cd parrots.convert
+    pip install -e .
+    ```
 
 3) enter work directory
 
-```
-cd parrots.convert/tools/mmaction
-```
+    ```
+    cd parrots.convert/tools/mmaction
+    ```
 
 4) execute ./run.sh
 
-```
-./run.sh Platform --model=SlowFast3D --config=./tests/slowfast/slowfast_32x2x1_r50_3d_kinetics400_256e.py --checkpoint=./tests/slowfast/epoch.pth --mergebn --savedir=caffe_model_slowfast --inputsize="6,3,32,224,224"
-```
+    ```
+    ./run.sh Platform --model=SlowFast3D --config=./tests/slowfast/slowfast_32x2x1_r50_3d_kinetics400_256e.py --checkpoint=./tests/slowfast/epoch.pth --mergebn --savedir=caffe_model_slowfast --inputsize="6,3,32,224,224"
+    ```
 
-the args of **./run.sh**, first is cluster partition, all the following are python args.
+    the args of **./run.sh**, first is cluster partition, all the following are python args.
 
-The python args are illustrated below.
+    The python args are illustrated below.
 
-|args|description|other|
-|---|---|---|
-|--model|The name of the model that needs to be converted|required|
-|--config|path of the config|required|
-|--checkpoint|path of the checkpoint|required|
-|--batchsize|batchsize of the input data|optional, default:8|
-|--mergebn|merger bn layer|optional, default:false|
-|--savedir|the directory where the transformed model is saved|optional, default:caffe_model|
-|--inputsize|size of the input data, for example, "8,8,3,224,224"|required|
---saveinput|whether to save the generated input data|optional, default:false|
+    |args|description|other|
+    |---|---|---|
+    |--model|The name of the model that needs to be converted|required|
+    |--config|path of the config|required|
+    |--checkpoint|path of the checkpoint|required|
+    |--batchsize|batchsize of the input data|optional, default:8|
+    |--mergebn|merger bn layer|optional, default:false|
+    |--savedir|the directory where the transformed model is saved|optional, default:caffe_model|
+    |--inputsize|size of the input data, for example, "8,8,3,224,224"|required|
+    --saveinput|whether to save the generated input data|optional, default:false|
 
 ### Model Convert (Parrots to Pytorch)
 
