@@ -69,27 +69,27 @@ Assume that you have already downloaded the checkpoints to the directory `checkp
 
 1. Test I3D on Kinetics-400 (without saving the test results) and evaluate the top-k accuracy and mean class accuracy.
 
-```shell
-python tools/test.py config/i3d_rgb_32x2x1_r50_3d_kinetics400_100e.py \
-    checkpoints/SOME_CHECKPOINT.pth \
-    --eval top_k_accuracy mean_class_accuracy
-```
+    ```shell
+    python tools/test.py config/i3d_rgb_32x2x1_r50_3d_kinetics400_100e.py \
+        checkpoints/SOME_CHECKPOINT.pth \
+        --eval top_k_accuracy mean_class_accuracy
+    ```
 
 2. Test TSN on Something-Something V1 with 8 GPUS, and evaluate the top-k accuracy.
 
-```shell
-python tools/test.py config/tsn_rgb_1x1x8_r50_2d_sthv1_50e.py \
-    checkpoints/SOME_CHECKPOINT.pth \
-    8 --out results.pkl --eval top_k_accuracy
-```
+    ```shell
+    python tools/test.py config/tsn_rgb_1x1x8_r50_2d_sthv1_50e.py \
+        checkpoints/SOME_CHECKPOINT.pth \
+        8 --out results.pkl --eval top_k_accuracy
+    ```
 
 3. Test I3D on Kinetics-400 in slurm environment and evaluate the top-k accuracy
 
-```shell
-python tools/test.py config/i3d_rgb_32x2x1_r50_3d_kinetics400_100e.py \
-    checkpoints/SOME_CHECKPOINT.pth \
-    --launcher slurm --eval top_k_accuracy
-```
+    ```shell
+    python tools/test.py config/i3d_rgb_32x2x1_r50_3d_kinetics400_100e.py \
+        checkpoints/SOME_CHECKPOINT.pth \
+        --launcher slurm --eval top_k_accuracy
+    ```
 
 ### Video demo
 
@@ -151,12 +151,12 @@ in [TSM: Temporal Shift Module for Efficient Video Understanding](https://arxiv.
 
 1. create a new file in `mmaction/models/backbones/resnet_tsm.py`.
 
-  ```python
-  from ..registry import BACKBONES
-  from .resnet import ResNet
+    ```python
+    from ..registry import BACKBONES
+    from .resnet import ResNet
 
-  @BACKBONES.register_module()
-  class ResNetTSM(ResNet):
+    @BACKBONES.register_module()
+    class ResNetTSM(ResNet):
 
       def __init__(self,
                    depth,
@@ -171,33 +171,31 @@ in [TSM: Temporal Shift Module for Efficient Video Understanding](https://arxiv.
       def forward(self, x):
           # implementation is ignored
           pass
-  ```
+    ```
 
 2. Import the module in `mmaction/models/backbones/__init__.py`
-  ```python
-  from .resnet_tsm import ResNetTSM
-  ```
+    ```python
+    from .resnet_tsm import ResNetTSM
+    ```
 
 3. modify the config file from
 
-  ```python
-  backbone=dict(
+    ```python
+    backbone=dict(
       type='ResNet',
       pretrained='torchvision://resnet50',
       depth=50,
       norm_eval=False)
-  ```
-
-  to
-
-  ```python
-  backbone=dict(
+    ```
+   to
+    ```python
+    backbone=dict(
         type='ResNetTSM',
         pretrained='torchvision://resnet50',
         depth=50,
         norm_eval=False,
         shift_div=8)
-  ```
+    ```
 
 ### Write a new model
 
@@ -403,13 +401,13 @@ Params: 28.04 M
 You may well use the result for simple comparisons, but double check it before you adopt it in technical reports or papers.
 
 (1) FLOPs are related to the input shape while parameters are not. The default input shape is (1, 3, 340, 256) for 2D recognizer, (1, 3, 32, 340, 256) for 3D recognizer.
-(2) Some custom operators are not counted into FLOPs.
-You can add support for new operators by modifying [`mmaction/utils/flops_counter.py`](../mmaction/utils/file_client.py).
+(2) Some custom operators are not counted into FLOPs. You can add support for new operators by modifying [`mmaction/utils/flops_counter.py`](../mmaction/utils/file_client.py).
 
 ### Publish a model
 
-Before you upload a model to AWS, you may want to
-(1) convert model weights to CPU tensors, (2) delete the optimizer states and
+Before you upload a model to AWS, you may want to:
+(1) convert model weights to CPU tensors.
+(2) delete the optimizer states.
 (3) compute the hash of the checkpoint file and append the hash id to the filename.
 
 ```shell
@@ -613,75 +611,75 @@ Here we show how to develop new components with an example of TSN.
 
 1. Create a new file `mmaction/models/backbones/resnet.py`.
 
-```python
-import torch.nn as nn
+    ```python
+    import torch.nn as nn
 
-from ..registry import BACKBONES
+    from ..registry import BACKBONES
 
-@BACKBONES.register_module()
-class ResNet(nn.Module):
+    @BACKBONES.register_module()
+    class ResNet(nn.Module):
 
-    def __init__(self, arg1, arg2):
-        pass
+        def __init__(self, arg1, arg2):
+            pass
 
-    def forward(self, x):  # should return a tuple
-        pass
+        def forward(self, x):  # should return a tuple
+            pass
 
-    def init_weights(self, pretrained=None):
-        pass
-```
+        def init_weights(self, pretrained=None):
+            pass
+    ```
 
 2. Import the module in `mmaction/models/backbones/__init__.py`.
 
-```python
-from .resnet import ResNet
-```
+    ```python
+    from .resnet import ResNet
+    ```
 
 3. Create a new file `mmaction/models/heads/tsn_head.py`.
 
-You can write a new classification head inherit from [BaseHead](../mmaction/models/heads/base.py),
-and overwrite `init_weights(self)` and `forward(self, x)` method.
+    You can write a new classification head inherit from [BaseHead](../mmaction/models/heads/base.py),
+    and overwrite `init_weights(self)` and `forward(self, x)` method.
 
-```python
-from ..registry import HEADS
-from .base import BaseHead
+    ```python
+    from ..registry import HEADS
+    from .base import BaseHead
 
 
-@HEADS.register_module()
-class TSNHead(BaseHead):
+    @HEADS.register_module()
+    class TSNHead(BaseHead):
 
-    def __init__(self, arg1, arg2):
-        pass
+        def __init__(self, arg1, arg2):
+            pass
 
-    def forward(self, x):
-        pass
+        def forward(self, x):
+            pass
 
-    def init_weights(self):
-        pass
-```
+        def init_weights(self):
+            pass
+    ```
 
 4. Import the module in `mmaction/models/heads/__init__.py`
 
-```python
-from .tsn_head import TSNHead
-```
+    ```python
+    from .tsn_head import TSNHead
+    ```
 
 5. Use it in your config file.
 
-Since TSN is a 2D action recognition model, we set its type `Recognizer2D`.
+    Since TSN is a 2D action recognition model, we set its type `Recognizer2D`.
 
-```python
-model = dict(
-    type='Recognizer2D',
-    backbone=dict(
-        type='ResNet',
-        arg1=xxx,
-        arg2=xxx),
-    cls_head=dict(
-        type='TSNHead',
-        arg1=xxx,
-        arg2=xxx))
-```
+    ```python
+    model = dict(
+        type='Recognizer2D',
+        backbone=dict(
+            type='ResNet',
+            arg1=xxx,
+            arg2=xxx),
+        cls_head=dict(
+            type='TSNHead',
+            arg1=xxx,
+            arg2=xxx))
+    ```
 
 ## Tutorials
 
