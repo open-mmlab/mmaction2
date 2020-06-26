@@ -1,9 +1,9 @@
 import argparse
 
 from mmcv import Config
+from mmcv.cnn import get_model_complexity_info
 
 from mmaction.models import build_recognizer
-from mmaction.utils import get_model_complexity_info
 
 
 def parse_args():
