@@ -11,7 +11,7 @@ There are two steps to finetune a model on a new dataset.
 For example, if the user want to finetune models pre-trained on Kinetics-400 Dataset to another dataset, say UCF101,
 then four parts in the config (see [here](../../config/tsn_rgb_1x1x3_r50_2d_kinetics400_100e.py)) needs attention.
 
-## Modify head
+## Modify Head
 
 The `num_classes` in the `cls_head` need to be changed to the class number of the new dataset.
 The weights of the pre-trained models are reused except for the final prediction layer.
@@ -42,7 +42,7 @@ If you are training a new model from ImageNet-pretrained weights, this is for yo
 However, this setting is not related to our task at hand.
 What we need is `load_from`, which will be discussed later.
 
-## Modify dataset
+## Modify Dataset
 
 MMAction supports UCF101, Kinetics-400, MIT, MMIT, THUMOS14,
 Something-Something V1&V2, ActivityNet Dataset.
@@ -61,7 +61,7 @@ ann_file_test = 'data/ucf101/ucf101_val_list.txt'
 
 ```
 
-## Modify training schedule
+## Modify Training Schedule
 
 Finetuning usually requires smaller learning rate and less training epochs.
 
@@ -75,7 +75,7 @@ total_epochs = 50 # change from 100 to 50
 checkpoint_config = dict(interval=5)
 ```
 
-## Use pre-trained model
+## Use Pre-Trained Model
 To use the pre-trained model for the whole network, the new config adds the link of pre-trained models in the `load_from`.
 
 ```python

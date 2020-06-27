@@ -1,6 +1,6 @@
 # Tutorial 2: Adding New Dataset
 
-## Customize datasets by reorganizing data
+## Customize Datasets by Reorganizing Data
 
 ### Reorganize datasets to existing format
 
@@ -195,7 +195,7 @@ dataset_A_train = dict(
 )
 ```
 
-## Customize dataset by mixing dataset
+## Customize Dataset by Mixing Dataset
 
 MMAction also supports to mix dataset for training. Currently it supports to concat and repeat dataset.
 

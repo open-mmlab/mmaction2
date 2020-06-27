@@ -3,7 +3,7 @@
 This page provides basic tutorials about the usage of MMAction.
 For installation instructions, please see [install.md](install.md).
 
-## Prepare datasets
+## Prepare Datasets
 
 It is recommended to symlink the dataset root to `$MMACTION/data`.
 If your folder structure is different, you may need to change the corresponding paths in config files.
@@ -29,7 +29,7 @@ mmaction
 
 For using custom datasets, please refer to [Tutorial 2: Adding New Dataset](tutorials/new_dataset.md)
 
-## Inference with pretrained models
+## Inference with Pre-Trained Models
 
 We provide testing scripts to evaluate a whole dataset (Kinetics400, Something-Something V1&V2, (Multi-)Moments in Time, etc.),
 and provide some high-level apis for easier integration to other projects.
@@ -132,7 +132,7 @@ for key in result:
 A notebook demo can be found in [demo/demo.ipynb](../demo/demo.ipynb)
 
 
-## Build a model
+## Build a Model
 
 ### Build a model with basic components
 
@@ -209,7 +209,7 @@ which defines the following abstract methods.
 are good examples which show how to do that.
 
 
-## Train a model
+## Train a Model
 
 ### Iteration pipeline
 
@@ -324,7 +324,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 ./tools/slurm_train.sh ${PARTITION} ${JOB_NAME} con
 CUDA_VISIBLE_DEVICES=4,5,6,7 ./tools/slurm_train.sh ${PARTITION} ${JOB_NAME} config2.py ${WORK_DIR} 4
 ```
 
-## Useful tools
+## Useful Tools
 
 We provide lots of useful tools under `tools/` directory.
 
