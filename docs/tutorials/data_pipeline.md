@@ -1,6 +1,6 @@
 # Tutorial 3: Custom Data Pipelines
 
-## Design of Data pipelines
+## Design of Data Pipelines
 
 Following typical conventions, we use `Dataset` and `DataLoader` for data loading
 with multiple workers. `Dataset` returns a dict of data items corresponding
@@ -163,7 +163,7 @@ It is **noteworthy** that the first key, commonly `imgs`, will be used as the ma
 - add: input_shape
 - update: imgs
 
-## Extend and use custom pipelines
+## Extend and Use Custom Pipelines
 
 1. Write a new pipeline in any file, e.g., `my_pipeline.py`. It takes a dict as input and return a dict.
 

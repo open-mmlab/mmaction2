@@ -1,6 +1,6 @@
 # Tutorial 4: Adding New Modules
 
-## Customize optimizer
+## Customize Optimizer
 
 An example of customized optimizer is [CopyOfSGD](../mmaction/core/optimizer/copy_of_sgd.py) is defined in `mmaction/core/optimizer/copy_of_sgd.py`.
 More generally, a customized optimizer could be defined as following.
@@ -46,7 +46,7 @@ optimizer = dict(type='Adam', lr=0.0003, weight_decay=0.0001)
 
 The users can directly set arguments following the [API doc](https://pytorch.org/docs/stable/optim.html?highlight=optim#module-torch.optim) of PyTorch.
 
-## Customize optimizer constructor
+## Customize Optimizer Constructor
 
 Some models may have some parameter-specific settings for optimization, e.g. weight decay for BatchNorm layers.
 The users can do those fine-grained parameter tuning through customizing optimizer constructor.
@@ -87,7 +87,7 @@ optimizer = dict(
     weight_decay=0.0001)
 ```
 
-## Develop new components
+## Develop New Components
 
 We basically categorize model components into 4 types.
 
