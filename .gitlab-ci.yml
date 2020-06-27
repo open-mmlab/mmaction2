@@ -3,9 +3,9 @@ variables:
   PYTORCH_IMAGE: registry.sensetime.com/eig-research/pytorch:1.3.1-cuda10.1-cudnn7-devel
 
 stages:
-    - linting
-    - test
-    - deploy
+  - linting
+  - test
+  - deploy
 
 before_script:
   - echo $PATH
@@ -29,9 +29,11 @@ linting:
   script:
     - echo "Start building..."
     - conda install av -c conda-forge -y
-    - pip install decord PyTurboJPEG pillow==6.2.1 pytest coverage yapf
+    - pip install decord PyTurboJPEG pillow==6.2.1 pytest coverage yapf interrogate
     - pip install -e .
     - python -c "import mmaction; print(mmaction.__version__)"
+    - echo "Docstring coverage..."
+    - interrogate -v --ignore-init-method --ignore-module --ignore-nested-functions --ignore-regex "__repr__" mmaction
     - echo "Start testing..."
     - coverage run --branch --source mmaction -m pytest tests/
     - coverage report -m
