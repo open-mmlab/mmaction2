@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from mmcv.cnn.weight_init import normal_init
+from mmcv.cnn import normal_init
 
 from ..registry import HEADS
 from .base import AvgConsensus, BaseHead

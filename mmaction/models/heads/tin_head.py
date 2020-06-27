@@ -1,5 +1,5 @@
 import torch.nn as nn
-from mmcv.cnn.weight_init import normal_init
+from mmcv.cnn import normal_init
 from mmcv.runner import load_checkpoint
 
 from ...utils import get_root_logger
