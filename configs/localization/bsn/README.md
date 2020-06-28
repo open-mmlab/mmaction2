@@ -1,11 +1,14 @@
 # BSN
 
+## Model Zoo
+
+### ActivityNet feature
+
 |config | pretrain | AR@100| AUC | gpu_mem(M) | iter time(s) | ckpt | log|
-|-|-|-|-|-|-|- | -|
+|-|-|-|-|-|-|-|-|
 |bsn_400x100_1x16_20e_activitynet_feature | None |74.65|66.45|41(TEM)+25(PEM)|0.074(TEM)+0.036(PEM)|[ckpt_tem]() [ckpt_pem]| [log_tem]() [log_pem]()|
 
-## Preparation
-### Data
+## Data
 1. Put the rescaled feature data folder `csv_mean_100` under `$MMACTION/data/activitynet_feature_cuhk/`.
 
     The raw feature data could be found at [here](https://github.com/wzmsltw/BSN-boundary-sensitive-network).
@@ -31,7 +34,7 @@ mmaction
 ...
 ```
 
-### Checkpoint
+## Checkpoint
 1. Put the `tem_best.pth.tar` and `pem_best.pth.tar` under `checkpoints/`.
 
     The ckpts could be found at [here]() (TODO).
@@ -55,7 +58,7 @@ Examples:
     python tools/train.py configs/localization/bsn/bsn_pem_400x100_1x16_20e_activitynet_feature.py
     ```
 
-For more details and optional arguments infos, you can refer to **Training setting** part in [GETTING_START](../../../docs/getting_started.md).
+For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](../../../docs/getting_started.md).
 
 ## Inference
 You can use the following commands to inference a model.
@@ -129,4 +132,4 @@ Examples:
     ```shell
     python tools/test.py configs/localization/bsn/bsn_400x100_1x16_20e_activitynet_feature.py checkpoints/SOME_CHECKPOINT.pth --eval AR@AN --out results.json
     ```
-For more details and optional arguments infos, you can refer to **Test a dataset** part in [GETTING_START](../../../docs/getting_started.md).
+For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](../../../docs/getting_started.md).

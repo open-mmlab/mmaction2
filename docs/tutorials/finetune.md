@@ -17,7 +17,7 @@ The `num_classes` in the `cls_head` need to be changed to the class number of th
 The weights of the pre-trained models are reused except for the final prediction layer.
 So it is safe to change the class number.
 In our case, UCF101 has 101 classes.
-So we change it from 400 (class number of Kinetics400) to 101.
+So we change it from 400 (class number of Kinetics-400) to 101.
 
 ```python
 model = dict(
