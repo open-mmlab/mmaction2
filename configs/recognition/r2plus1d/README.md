@@ -6,9 +6,9 @@
 
 |config | pretrain | top1 acc| top5 acc | gpu_mem(M) | iter time(s) | ckpt | log|
 |-|-|-|-|-|-|-|-|
-|[r2plus1d_r34_8x8x1_180e_kinetics400_rgb](r2plus1d_r34_8x8x1_180e_kinetics400_rgb.py) | None |68.68|88.36|5014|0.68|[ckpt]()| [log]()|
-|[r2plus1d_r34_32x2x1_180e_kinetics400_rgb](r2plus1d_r34_32x2x1_180e_kinetics400_rgb.py) | None |74.60|91.59|9003|1.23| [ckpt]() | [log]()|
-|[r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb](r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb.py) | None |x|x|x|x| [ckpt]() | [log]()|
+|[r2plus1d_r34_8x8x1_180e_kinetics400_rgb](/configs/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb.py) | None |68.68|88.36|5014|0.68|[ckpt]()| [log]()|
+|[r2plus1d_r34_32x2x1_180e_kinetics400_rgb](/configs/recognition/r2plus1d/r2plus1d_r34_32x2x1_180e_kinetics400_rgb.py) | None |74.60|91.59|9003|1.23| [ckpt]() | [log]()|
+|[r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb](/configs/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb.py) | None |x|x|x|x| [ckpt]() | [log]()|
 
 ## Data
 
