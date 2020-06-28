@@ -6,6 +6,7 @@ stages:
   - linting
   - test
   - deploy
+  - docstring
 
 before_script:
   - echo $PATH
@@ -29,11 +30,9 @@ linting:
   script:
     - echo "Start building..."
     - conda install av -c conda-forge -y
-    - pip install decord PyTurboJPEG pillow==6.2.1 pytest coverage yapf interrogate
+    - pip install decord PyTurboJPEG pillow==6.2.1 pytest coverage yapf
     - pip install -e .
     - python -c "import mmaction; print(mmaction.__version__)"
-    - echo "Docstring coverage..."
-    - interrogate -v --ignore-init-method --ignore-module --ignore-nested-functions --ignore-regex "__repr__" mmaction
     - echo "Start testing..."
     - coverage run --branch --source mmaction -m pytest tests/
     - coverage report -m
@@ -64,3 +63,11 @@ pages:
       - public
   only:
     - master
+
+docstring:
+  image: $PYTORCH_IMAGE
+  stage: docstring
+  script:
+    - pip install interrogate
+    - echo "Docstring coverage..."
+    - interrogate -vv --fail-under 40 --ignore-init-method --ignore-module --ignore-nested-functions --ignore-regex "__repr__" mmaction
