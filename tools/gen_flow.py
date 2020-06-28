@@ -13,7 +13,8 @@ def flow_to_img(raw_flow, bound=20.):
         bound (float): Bound for the flow-to-image normalization. Default: 20.
 
     Returns:
-        Flow (np.ndarray[uint8]): Normalized flow.
+        Flow (np.ndarray[uint8]): The result list of np.ndarray[uint8], with
+                                shape (w, h).
     """
     flow = np.clip(raw_flow, -bound, bound)
     flow += bound
