@@ -34,7 +34,7 @@ def generate_flow(frames, method='tvl1'):
 
     Returns:
         flow (list[np.ndarray[float]]): The result list of np.ndarray[float],
-                                        with shape (w, h, 2)
+                                        with shape (w, h, 2).
     """
     assert method in ['tvl1', 'farneback']
     gray_frames = [cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY) for frame in frames]
@@ -63,7 +63,8 @@ def extract_dense_flow(path,
                        write_image=False,
                        start_idx=0,
                        method='tvl1'):
-    """Extract dense flow given video or frames, save them as gray-scale images
+    """Extract dense flow given video or frames, save them as gray-scale
+        images.
 
     Args:
         path (str): Location of the video or frames. If use a video as input,
@@ -116,11 +117,11 @@ def extract_dense_flow(path,
         cv2.imwrite(flow_y[i], flow_y_names[i])
 
     if write_image:
-        im_names = [
+        img_names = [
             osp.join(dest, 'img_{:05d}.jpg'.format(ind))
             for ind in range(len(frames))
         ]
-        for frame, name in zip(frames, im_names):
+        for frame, name in zip(frames, img_names):
             cv2.imwrite(name, frame)
 
 
