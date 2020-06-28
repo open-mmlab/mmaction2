@@ -31,7 +31,7 @@ For using custom datasets, please refer to [Tutorial 2: Adding New Dataset](tuto
 
 ## Inference with Pre-Trained Models
 
-We provide testing scripts to evaluate a whole dataset (Kinetics400, Something-Something V1&V2, (Multi-)Moments in Time, etc.),
+We provide testing scripts to evaluate a whole dataset (Kinetics-400, Something-Something V1&V2, (Multi-)Moments in Time, etc.),
 and provide some high-level apis for easier integration to other projects.
 
 ### Test a dataset

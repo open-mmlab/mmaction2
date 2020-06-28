@@ -8,7 +8,7 @@
 |-|-|-|-|-|-|-|-|
 |[tsn_r50_1x1x3_100e_ucf101_rgb](/configs/recognition/tsn/tsn_r50_1x1x3_100e_ucf101_rgb.py) | ResNet50 |80.12|96.09| x | x | [ckpt]() | [log]()|
 
-### Kinetics
+### Kinetics-400
 
 |config | pretrain | top1 acc| top5 acc | gpu_mem(M) | iter time(s) | ckpt | log|
 |-|-|-|-|-|-|-|-|
@@ -88,14 +88,14 @@ You can use the following command to train a model.
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
-Example: train TSN model on Kinetics400 dataset in a deterministic option with periodic validation.
+Example: train TSN model on Kinetics-400 dataset in a deterministic option with periodic validation.
 ```shell
 python tools/train.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
     --work_dir work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb \
     --validate --seed 0 --deterministic
 ```
 
-For more details, you can refer to **Training setting** part in [GETTING_START](../../../docs/GETTING_STARTED.md).
+For more details, you can refer to **Training setting** part in [getting_started](../../../docs/getting_started.md).
 
 ## Test
 
@@ -104,11 +104,11 @@ You can use the following command to test a model.
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-Example: test TSN model on Kinetics400 dataset and dump the result to a json file.
+Example: test TSN model on Kinetics-400 dataset and dump the result to a json file.
 ```shell
 python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
     checkpoints/SOME_CHECKPOINT.pth --eval top_k_accuracy mean_class_accuracy \
     --out result.json
 ```
 
-For more details, you can refer to **Test a dataset** part in [GETTING_START](../../../docs/GETTING_STARTED.md).
+For more details, you can refer to **Test a dataset** part in [getting_started](../../../docs/getting_started.md).
