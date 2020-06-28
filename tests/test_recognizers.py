@@ -182,7 +182,7 @@ def test_r2plus1d():
 
 def test_slowfast():
     model, train_cfg, test_cfg = _get_recognizer_cfg(
-        'slowfast/slowfast_r50_3d_4x16x1_256e_kinetics400_rgb.py')
+        'slowfast/slowfast_r50_4x16x1_256e_kinetics400_rgb.py')
 
     recognizer = build_recognizer(
         model, train_cfg=train_cfg, test_cfg=test_cfg)
