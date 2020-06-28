@@ -1,5 +1,6 @@
 matplotlib
 mmcv-nightly
 numpy
+opencv-contrib-python
 # need older pillow until torchvision is fixed
 Pillow<=6.2.2
