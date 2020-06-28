@@ -1,22 +1,12 @@
-# TSN
+# I3D
+
 |config | pretrain | top1 acc| top5 acc | gpu_mem(M) | iter time(s) | ckpt | log|
 |-|-|-|-|-|-|- | -|
-|tsn_r50_1x1x3_100e_ucf101_rgb | ResNet50 |80.12|96.09| x | x | [ckpt]() | [log]()|
-|tsn_r50_1x1x3_100e_kinetics400_rgb | ResNet50 |70.60|89.26| x | x | [ckpt]() | [log]()|
-|tsn_r50_1x1x5_50e_kinetics400_rgb | ResNet50 |68.64|88.19| x | x | [ckpt]() | [log]()|
-|tsn_r50_dense_1x1x5_50e_kinetics400_rgb | ResNet50 |68.59|88.31| x | x | [ckpt]() | [log]()|
-|tsn_r50_1x1x6_100e_mit_rgb | ResNet50 |26.84|51.6| x | x | [ckpt]() | [log]()|
-|tsn_r50_1x1x8_100e_kinetics400_rgb | ResNet50 |69.41|88.37| x | x | [ckpt]() | [log]()|
-|tsn_r50_dense_1x1x8_100e_kinetics400_rgb | ResNet50 |70.77|89.3| x | x | [ckpt]() | [log]()|
-|tsn_r50_1x1x8_50e_sthv1_rgb | ResNet50 |18.55|44.80| x | x | [ckpt]() | [log]()|
-|tsn_r50_1x1x8_50e_sthv2_rgb | ResNet50 |32.41|64.05| x | x | [ckpt]() | [log]()|
-|tsn_r50_1x1x16_50e_sthv1_rgb | ResNet50 |15.77|39.85| x | x | [ckpt]() | [log]()|
-|tsn_r50_1x1x16_50e_sthv2_rgb | ResNet50 |22.48|49.08| x | x | [ckpt]() | [log]()|
-|tsn_r50_video_1x1x3_100e_kinetics400_rgb | ResNet50 | x | x | x | x | [ckpt]() | [log]()|
-
-|config | pretrain | mAP| gpu_mem(M) | iter time(s) | ckpt | log|
-|-|-|-|-|-|- | -|
-|tsn_r101_1x1x5_60e_mmit_rgb | ResNet101 |61.09| x | x | [ckpt]() | [log]()|
+|i3d_r34_32x2x1_100e_kinetics400_rgb | ResNet34 |68.37|88.15| x | x | [ckpt]() | [log]()|
+|i3d_r50_32x2x1_100e_kinetics400_rgb | ResNet50 |72.68|90.78| x | x | [ckpt]() | [log]()|
+|i3d_r50_dense_32x2x1_100e_kinetics400_rgb | ResNet50 |72.77|90.57| x | x | [ckpt]() | [log]()|
+|i3d_r50_fast_32x2x1_100e_kinetics400_rgb | ResNet50 |72.32|90.72| x | x | [ckpt]() | [log]()|
+|i3d_r50_video_3d_32x2x1_100e_kinetics400_rgb | ResNet50 | x | x | x | x | [ckpt]() | [log]()|
 
 ### Data
 
@@ -59,10 +49,10 @@ You can use the following command to train a model.
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
-Example: train TSN model on Kinetics400 dataset in a deterministic option with periodic validation.
+Example: train I3D model on Kinetics400 dataset in a deterministic option with periodic validation.
 ```shell
-python tools/train.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
-    --work_dir work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb \
+python tools/train.py configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py \
+    --work_dir work_dirs/i3d_r50_32x2x1_100e_kinetics400_rgb \
     --validate --seed 0 --deterministic
 ```
 
@@ -74,9 +64,9 @@ You can use the following command to test a model.
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-Example: test TSN model on Kinetics400 dataset and dump the result to a json file.
+Example: test I3D model on Kinetics400 dataset and dump the result to a json file.
 ```shell
-python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
+python tools/test.py configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py \
     checkpoints/SOME_CHECKPOINT.pth --eval top_k_accuracy mean_class_accuracy \
     --out result.json
 ```
