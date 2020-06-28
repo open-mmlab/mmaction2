@@ -1,16 +1,22 @@
 # TSM
+
+## Kinetics400
 |config | pretrain | top1 acc| top5 acc | gpu_mem(M) | iter time(s) | ckpt | log|
 |-|-|-|-|-|-|- | -|
-|tsm_r50_1x1x8_100e_kinetics400_rgb | ResNet50 |70.24|89.56| x | x | [ckpt]() | [log]()|
-|tsm_r50_dense_1x1x8_100e_kinetics400_rgb | ResNet50 |71.84|90.18| x | x | [ckpt]() | [log]()|
-|tsm_r50_1x1x16_50e_kinetics400_rgb | ResNet50 |71.69|90.4| x | x | [ckpt]() | [log]()|
-|tsm_r50_video_2d_1x1x8_100e_kinetics400_rgb | ResNet50 | x | x | x | x | [ckpt]() | [log]()|
-|tsm_r50_1x1x8_50e_sthv1_rgb | ResNet50 |44.62|75.51| x | x | [ckpt]() | [log]()|
-|tsm_r50_1x1x16_50e_sthv1_rgb | ResNet50 |43.81|74.73| x | x | [ckpt]() | [log]()|
-|tsm_r101_1x1x8_50e_sthv1_rgb| ResNet50 |46.41|74.07| x | x | [ckpt]() | [log]()|
-|tsm_r50_1x1x8_50e_sthv2_rgb | ResNet50 |59.91|84.61| x | x | [ckpt]() | [log]()|
-|tsm_r50_1x1x16_50e_sthv2_rgb | ResNet50 |56.10|84.43| x | x | [ckpt]() | [log]()|
-|tsm_r101_1x1x8_50e_sthv2_rgb | ResNet50 | x | x | x | x | [ckpt]() | [log]()|
+|[tsm_r50_1x1x8_100e_kinetics400_rgb](tsm_r50_1x1x8_50e_kinetics400_rgb.py) | ResNet50 |70.24|89.56| x | x | [ckpt]() | [log]()|
+|[tsm_r50_dense_1x1x8_100e_kinetics400_rgb](tsm_r50_dense_1x1x8_50e_kinetics400_rgb.py) | ResNet50 |71.84|90.18| x | x | [ckpt]() | [log]()|
+|[tsm_r50_1x1x16_50e_kinetics400_rgb](tsm_r50_1x1x16_50e_kinetics400_rgb.py) | ResNet50 |71.69|90.4| x | x | [ckpt]() | [log]()|
+|[tsm_r50_video_1x1x8_100e_kinetics400_rgb](tsm_r50_video_1x1x8_100e_kinetics400_rgb.py) | ResNet50 | x | x | x | x | [ckpt]() | [log]()|
+
+## Something-Something V1&V2
+|config | pretrain | top1 acc| top5 acc | gpu_mem(M) | iter time(s) | ckpt | log|
+|-|-|-|-|-|-|- | -|
+|[tsm_r50_1x1x8_50e_sthv1_rgb](tsm_r50_1x1x8_50e_sthv1_rgb.py) | ResNet50 |44.62|75.51| x | x | [ckpt]() | [log]()|
+|[tsm_r50_1x1x16_50e_sthv1_rgb](tsm_r50_1x1x16_50e_sthv1_rgb.py) | ResNet50 |43.81|74.73| x | x | [ckpt]() | [log]()|
+|[tsm_r101_1x1x8_50e_sthv1_rgb](tsm_r101_1x1x8_50e_sthv1_rgb.py) | ResNet50 |46.41|74.07| x | x | [ckpt]() | [log]()|
+|[tsm_r50_1x1x8_50e_sthv2_rgb](tsm_r50_1x1x8_50e_sthv2_rgb.py) | ResNet50 |59.91|84.61| x | x | [ckpt]() | [log]()|
+|[tsm_r50_1x1x16_50e_sthv2_rgb](tsm_r50_1x1x16_50e_sthv2_rgb.py) | ResNet50 |56.10|84.43| x | x | [ckpt]() | [log]()|
+|[tsm_r101_1x1x8_50e_sthv2_rgb](tsm_r101_1x1x8_50e_sthv2_rgb.py) | ResNet50 | x | x | x | x | [ckpt]() | [log]()|
 
 ### Data
 
