@@ -5,44 +5,45 @@ import cv2
 import numpy as np
 
 
-def FlowToImg(raw_flow, bound=20.):
-    """Convert flow to gray image
+def flow_to_img(raw_flow, bound=20.):
+    """Convert flow to gray image.
 
     Args:
-        raw_flow (np.array float): estimated flow, the shape is [w, h]
-        bound (float): bound for the flow-to-image normalization
+        raw_flow (np.ndarray[float]): Estimated flow with the shape (w, h).
+        bound (float): Bound for the flow-to-image normalization. Default: 20.
 
-    return:
-        flow (np.array uint8): normalized flow
+    Returns:
+        Flow (np.ndarray[uint8]): Normalized flow.
     """
-    flow = raw_flow
-    flow[flow > bound] = bound
-    flow[flow < -bound] = -bound
+    flow = np.clip(raw_flow, -bound, bound)
     flow += bound
     flow *= (255 / float(2 * bound))
     flow = flow.astype(np.uint8)
     return flow
 
 
-def gen_flow(frames, algo='tvl1'):
-    """Estimate flow given frames
+def generate_flow(frames, method='tvl1'):
+    """Estimate flow with given frames.
 
     Args:
-        frames (list): list of rgb frames
-        algo (str): which algorithm to use, in ['tvl1', 'farneback']
+        frames (list[np.ndarray[uint8]]): List of rgb frames, with shape
+                                        (w, h, 3).
+        method (str): Use which method to generate flow. Options are 'tvl1'
+                    and 'farneback'. Default: 'tvl1'.
 
-    return:
-        flow (list): list of flow
+    Returns:
+        flow (list[np.ndarray[float]]): The result list of np.ndarray[float],
+                                        with shape (w, h, 2)
     """
-    assert algo in ['tvl1', 'farneback']
-    gray_frames = [cv2.cvtColor(im, cv2.COLOR_RGB2GRAY) for im in frames]
+    assert method in ['tvl1', 'farneback']
+    gray_frames = [cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY) for frame in frames]
 
-    if algo == 'tvl1':
+    if method == 'tvl1':
         tvl1 = cv2.optflow.DualTVL1OpticalFlow_create()
 
         def op(x, y):
             return tvl1.calc(x, y, None)
-    elif algo == 'farneback':
+    elif method == 'farneback':
 
         def op(x, y):
             return cv2.calcOpticalFlowFarneback(x, y, None, 0.5, 3, 15, 3, 5,
@@ -60,19 +61,21 @@ def extract_dense_flow(path,
                        bound=20.,
                        write_image=False,
                        start_idx=0,
-                       algo='tvl1'):
+                       method='tvl1'):
     """Extract dense flow given video or frames, save them as gray-scale images
 
     Args:
-        path (str): location of the video or frames. If use a video as input,
+        path (str): Location of the video or frames. If use a video as input,
                     pass the location of the video. If use frames as input,
                     pass the template of frames, like '/path/{:05d}.jpg'.
-        dest (str): the directory to store the extracted flow images
-        bound (float): bound for the flow-to-image normalization
-        write_image (bool): whether to save the extracted images to dest
-        start_idx (int): denotes the starting index if use frames as input, the
-                         the first image is path.format(start_idx)
-        algo (str): which algorithm to use, in ['tvl1', 'farneback']
+        dest (str): The directory to store the extracted flow images.
+        bound (float): Bound for the flow-to-image normalization. Default: 20.
+        write_image (bool): Whether to save the extracted images to dest.
+                            Default: False.
+        start_idx (int): The starting frame index if use frames as input, the
+                        first image is path.format(start_idx). Default: 0.
+        method (str): Use which method to generate flow. Options are 'tvl1'
+                        and 'farneback'. Default: 'tvl1'.
     """
 
     if osp.exists(path):
@@ -84,16 +87,16 @@ def extract_dense_flow(path,
             flag, f = vid.read()
     else:
         idx = start_idx
-        im_name = path.format(idx)
-        while osp.exists(im_name):
-            frames.append(cv2.imread(im_name))
+        img_name = path.format(idx)
+        while osp.exists(img_name):
+            frames.append(cv2.imread(img_name))
             idx += 1
-            im_name = path.format(im_name)
+            img_name = path.format(idx)
 
-    flow = gen_flow(frames, algo=algo)
+    flow = generate_flow(frames, method=method)
 
-    flow_x = [FlowToImg(x[:, :, 0], bound) for x in flow]
-    flow_y = [FlowToImg(x[:, :, 1], bound) for x in flow]
+    flow_x = [flow_to_img(x[:, :, 0], bound) for x in flow]
+    flow_y = [flow_to_img(x[:, :, 1], bound) for x in flow]
 
     if not osp.exists(dest):
         os.system('mkdir -p ' + dest)
@@ -106,17 +109,18 @@ def extract_dense_flow(path,
         for ind in range(len(flow_y))
     ]
 
-    for imx, namex in zip(flow_x, flow_x_names):
-        cv2.imwrite(namex, imx)
-    for imy, namey in zip(flow_y, flow_y_names):
-        cv2.imwrite(namey, imy)
+    num_frames = len(flow)
+    for i in range(num_frames):
+        cv2.imwrite(flow_x[i], flow_x_names[i])
+        cv2.imwrite(flow_y[i], flow_y_names[i])
+
     if write_image:
         im_names = [
             osp.join(dest, 'img_{:05d}.jpg'.format(ind))
             for ind in range(len(frames))
         ]
-        for im, name in zip(frames, im_names):
-            cv2.imwrite(name, im)
+        for frame, name in zip(frames, im_names):
+            cv2.imwrite(name, frame)
 
 
 if __name__ == '__main__':
