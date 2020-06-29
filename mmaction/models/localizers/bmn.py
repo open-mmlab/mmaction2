@@ -131,6 +131,7 @@ class BMN(nn.Module):
         self.bm_mask = self._get_bm_mask()
 
     def _match_map(self):
+        """Generate match map."""
         temporal_gap = 1. / self.tscale
         match_map = []
         for idx in range(self.tscale):
@@ -146,6 +147,20 @@ class BMN(nn.Module):
         return match_map
 
     def _temporal_anchors(self, tmin_offset=0., tmax_offset=1.):
+        """Generate temporal anchors.
+
+        Args:
+            tmin_offset (int): Offset for the minimum value of temporal anchor.
+                Default: 0
+            tmax_offset (int): Offset for the maximun value of temporal anchor.
+                Default: 1
+
+        Returns:
+            anchors_tmins (Sequence[float]): The minimum values of temporal
+                anchors.
+            anchors_tmaxs (Sequence[float]): The maximum values of temporal
+                anchors.
+        """
         temporal_gap = 1. / self.tscale
         anchors_tmins = []
         anchors_tmaxs = []
@@ -156,6 +171,14 @@ class BMN(nn.Module):
         return anchors_tmins, anchors_tmaxs
 
     def _forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+
+        Returns:
+            x (torch.Tensor): The output of the module.
+        """
         # x.shape [batch_size, self.feat_dim, self.tscale]
         base_feature = self.x_1d_b(x)
         # base_feature.shape [batch_size, self.hidden_dim_1d, self.tscale]
@@ -175,6 +198,7 @@ class BMN(nn.Module):
         return confidence_map, start, end
 
     def _boundary_matching_layer(self, x):
+        """Generate matching layer."""
         input_size = x.size()
         out = torch.matmul(x,
                            self.sample_mask).reshape(input_size[0],
@@ -184,6 +208,7 @@ class BMN(nn.Module):
         return out
 
     def forward_test(self, raw_feature, video_meta):
+        """Defines the computation performed at every call when testing."""
         confidence_map, start, end = self._forward(raw_feature)
         start_scores = start[0].cpu().numpy()
         end_scores = end[0].cpu().numpy()
@@ -245,6 +270,7 @@ class BMN(nn.Module):
 
     def forward_train(self, raw_feature, label_confidence, label_start,
                       label_end):
+        """Defines the computation performed at every call when training."""
         confidence_map, start, end = self._forward(raw_feature)
         loss = self.loss_cls(confidence_map, start, end, label_confidence,
                              label_start, label_end,
@@ -253,6 +279,7 @@ class BMN(nn.Module):
         return loss_dict
 
     def generate_labels(self, gt_bbox):
+        """Generate training labels."""
         match_score_confidence_list = []
         match_score_start_list = []
         match_score_end_list = []
@@ -320,7 +347,7 @@ class BMN(nn.Module):
 
     def _get_interp1d_bin_mask(self, seg_tmin, seg_tmax, tscale, num_samples,
                                num_samples_per_bin):
-        # generate sample mask for a boundary-matching pair
+        """Generate sample mask for a boundary-matching pair."""
         plen = float(seg_tmax - seg_tmin)
         plen_sample = plen / (num_samples * num_samples_per_bin - 1.0)
         total_samples = [
@@ -345,7 +372,7 @@ class BMN(nn.Module):
         return p_mask
 
     def _get_interp1d_mask(self):
-        # generate sample mask for each point in Boundary-Matching Map
+        """Generate sample mask for each point in Boundary-Matching Map."""
         mask_mat = []
         for start_index in range(self.tscale):
             mask_mat_vector = []
@@ -370,6 +397,7 @@ class BMN(nn.Module):
             torch.tensor(mask_mat).view(self.tscale, -1), requires_grad=False)
 
     def _get_bm_mask(self):
+        """Generate Boundary-Matching Mask."""
         bm_mask = []
         for idx in range(self.tscale):
             mask_vector = [1] * (self.tscale - idx) + [0] * idx

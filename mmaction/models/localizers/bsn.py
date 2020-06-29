@@ -77,6 +77,20 @@ class TEM(nn.Module):
         self.anchors_tmins, self.anchors_tmaxs = self._temporal_anchors()
 
     def _temporal_anchors(self, tmin_offset=0., tmax_offset=1.):
+        """Generate temporal anchors.
+
+        Args:
+            tmin_offset (int): Offset for the minimum value of temporal anchor.
+                Default: 0
+            tmax_offset (int): Offset for the maximun value of temporal anchor.
+                Default: 1
+
+        Returns:
+            anchors_tmins (Sequence[float]): The minimum values of temporal
+                anchors.
+            anchors_tmaxs (Sequence[float]): The maximum values of temporal
+                anchors.
+        """
         temporal_gap = 1. / self.temporal_dim
         anchors_tmins = []
         anchors_tmaxs = []
@@ -87,12 +101,21 @@ class TEM(nn.Module):
         return anchors_tmins, anchors_tmaxs
 
     def _forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+
+        Returns:
+            x (torch.Tensor): The output of the module.
+        """
         x = F.relu(self.conv1_ratio * self.conv1(x))
         x = F.relu(self.conv2_ratio * self.conv2(x))
         x = torch.sigmoid(self.conv3_ratio * self.conv3(x))
         return x
 
     def forward_train(self, raw_feature, label_action, label_start, label_end):
+        """Defines the computation performed at every call when training."""
         tem_output = self._forward(raw_feature)
         score_action = tem_output[:, 0, :]
         score_start = tem_output[:, 1, :]
@@ -113,6 +136,7 @@ class TEM(nn.Module):
         return loss_dict
 
     def forward_test(self, raw_feature, video_meta):
+        """Defines the computation performed at every call when testing."""
         tem_output = self._forward(raw_feature).cpu().numpy()
         batch_action = tem_output[:, 0, :]
         batch_start = tem_output[:, 1, :]
@@ -133,6 +157,7 @@ class TEM(nn.Module):
         return video_results
 
     def generate_labels(self, gt_bbox):
+        """Generate training labels."""
         match_score_action_list = []
         match_score_start_list = []
         match_score_end_list = []
@@ -257,12 +282,21 @@ class PEM(nn.Module):
             bias=True)
 
     def _forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+
+        Returns:
+            x (torch.Tensor): The output of the module.
+        """
         x = torch.cat([data for data in x])
         x = F.relu(self.fc1_ratio * self.fc1(x))
         x = torch.sigmoid(self.fc2_ratio * self.fc2(x))
         return x
 
     def forward_train(self, bsp_feature, reference_temporal_iou):
+        """Defines the computation performed at every call when training."""
         pem_output = self._forward(bsp_feature)
         reference_temporal_iou = torch.cat(
             [data for data in reference_temporal_iou])
@@ -307,6 +341,7 @@ class PEM(nn.Module):
 
     def forward_test(self, bsp_feature, tmin, tmax, tmin_score, tmax_score,
                      video_meta):
+        """Defines the computation performed at every call when testing."""
         pem_output = self._forward(bsp_feature).view(-1).cpu().numpy().reshape(
             -1, 1)
 
