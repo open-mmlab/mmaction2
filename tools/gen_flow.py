@@ -13,8 +13,8 @@ def flow_to_img(raw_flow, bound=20.):
         bound (float): Bound for the flow-to-image normalization. Default: 20.
 
     Returns:
-        Flow (np.ndarray[uint8]): The result list of np.ndarray[uint8], with
-                                shape (w, h).
+        np.ndarray[uint8]: The result list of np.ndarray[uint8], with shape
+                        (w, h).
     """
     flow = np.clip(raw_flow, -bound, bound)
     flow += bound
@@ -33,11 +33,11 @@ def generate_flow(frames, method='tvl1'):
                     and 'farneback'. Default: 'tvl1'.
 
     Returns:
-        flow (list[np.ndarray[float]]): The result list of np.ndarray[float],
-                                        with shape (w, h, 2).
+        list[np.ndarray[float]]: The result list of np.ndarray[float], with
+                                shape (w, h, 2).
     """
     assert method in ['tvl1', 'farneback']
-    gray_frames = [cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY) for frame in frames]
+    gray_frames = [cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) for frame in frames]
 
     if method == 'tvl1':
         tvl1 = cv2.optflow.DualTVL1OpticalFlow_create()
