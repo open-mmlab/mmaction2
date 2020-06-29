@@ -7,6 +7,7 @@ class Recognizer2D(BaseRecognizer):
     """2D recognizer model framework."""
 
     def forward_train(self, imgs, labels):
+        """Defines the computation performed at every call when training."""
         batches = imgs.shape[0]
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
         num_segs = imgs.shape[0] // batches
@@ -19,6 +20,7 @@ class Recognizer2D(BaseRecognizer):
         return loss
 
     def forward_test(self, imgs):
+        """Defines the computation performed at every call when testing."""
         batches = imgs.shape[0]
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
         num_segs = imgs.shape[0] // batches
@@ -35,7 +37,7 @@ class Recognizer2D(BaseRecognizer):
         See `mmaction/tools/get_flops.py`.
 
         Args:
-            imgs (Tensor): Input images.
+            imgs (torch.Tensor): Input images.
 
         Returns:
             Tensor: Class score.

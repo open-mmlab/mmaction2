@@ -17,7 +17,7 @@ def load_video_infos(ann_file):
         ann_file (str): A json file path of the annotation file.
 
     Returns:
-        video_infos (list[dict]): A list containing annotations for videos.
+        list[dict]: A list containing annotations for videos.
     """
     video_infos = []
     anno_database = mmcv.load(ann_file)
@@ -104,7 +104,6 @@ def generate_features(ann_file, tem_results_dir, pgm_proposals_dir,
         pgm_proposals_dir (str): Directory to read generated proposals.
         pgm_features_thread (int): Total number of threads.
         kwargs (dict): Keyword arguments for "generate_bsp_feature".
-
     """
     video_infos = load_video_infos(ann_file)
     num_videos = len(video_infos)

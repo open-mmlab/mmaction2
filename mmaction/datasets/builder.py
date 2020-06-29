@@ -109,6 +109,7 @@ def build_dataloader(dataset,
 
 
 def worker_init_fn(worker_id, num_workers, rank, seed):
+    """Init the random seed for various workers."""
     # The seed of each worker equals to
     # num_worker * rank + worker_id + user_seed
     worker_seed = num_workers * rank + worker_id + seed

@@ -25,6 +25,14 @@ class TemporalShift(nn.Module):
         self.shift_div = shift_div
 
     def forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+
+        Returns:
+            torch.Tensor: The output of the module.
+        """
         x = self.shift(x, self.num_segments, shift_div=self.shift_div)
         return self.net(x)
 
@@ -155,6 +163,8 @@ class ResNetTSM(ResNet):
             raise NotImplementedError
 
     def init_weights(self):
+        """Initiate the parameters either from existing checkpoint or from
+        scratch."""
         super().init_weights()
         if self.is_shift:
             self.make_temporal_shift()

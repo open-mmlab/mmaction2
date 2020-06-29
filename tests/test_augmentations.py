@@ -62,8 +62,8 @@ class TestAugumentations(object):
 
     @staticmethod
     def check_flip(origin_imgs, result_imgs, flip_type):
-        """Check if the origin_imgs are flipped correctly into result_imgs
-        in different flip_types"""
+        """Check if the origin_imgs are flipped correctly into result_imgs in
+        different flip_types."""
         n = len(origin_imgs)
         h, w, c = origin_imgs[0].shape
         if flip_type == 'horizontal':
@@ -89,7 +89,7 @@ class TestAugumentations(object):
     @staticmethod
     def check_normalize(origin_imgs, result_imgs, norm_cfg):
         """Check if the origin_imgs are normalized correctly into result_imgs
-         in a given norm_cfg."""
+        in a given norm_cfg."""
         target_imgs = result_imgs.copy()
         target_imgs *= norm_cfg['std']
         target_imgs += norm_cfg['mean']

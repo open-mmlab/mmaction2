@@ -30,8 +30,8 @@ def to_tensor(data):
 
 @PIPELINES.register_module()
 class ToTensor(object):
-    """Convert some values in results dict to `torch.Tensor` type
-    in data loader pipeline.
+    """Convert some values in results dict to `torch.Tensor` type in data
+    loader pipeline.
 
     Args:
         keys (Sequence[str]): Required keys to be converted.
@@ -41,6 +41,12 @@ class ToTensor(object):
         self.keys = keys
 
     def __call__(self, results):
+        """Performs the ToTensor formating.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         for key in self.keys:
             results[key] = to_tensor(results[key])
         return results
@@ -63,6 +69,12 @@ class ToDataContainer(object):
         self.fields = fields
 
     def __call__(self, results):
+        """Performs the ToDataContainer formating.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         for field in self.fields:
             _field = field.copy()
             key = _field.pop('key')
@@ -85,6 +97,12 @@ class ImageToTensor(object):
         self.keys = keys
 
     def __call__(self, results):
+        """Performs the ImageToTensor formating.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         for key in self.keys:
             results[key] = to_tensor(results[key].transpose(2, 0, 1))
         return results
@@ -107,6 +125,12 @@ class Transpose(object):
         self.order = order
 
     def __call__(self, results):
+        """Performs the Transpose formating.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         for key in self.keys:
             results[key] = results[key].transpose(self.order)
         return results
@@ -167,6 +191,12 @@ class Collect(object):
         self.meta_name = meta_name
 
     def __call__(self, results):
+        """Performs the Collect formating.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         data = {}
         for key in self.keys:
             data[key] = results[key]
@@ -186,7 +216,7 @@ class Collect(object):
 
 @PIPELINES.register_module()
 class FormatShape(object):
-    """Format final imgs shape to the given input_format
+    """Format final imgs shape to the given input_format.
 
     Required keys are "imgs", "num_clips" and "clip_len", added or modified
     keys are "imgs" and "input_shape".
@@ -202,6 +232,12 @@ class FormatShape(object):
                 f'The input format {self.input_format} is invalid.')
 
     def __call__(self, results):
+        """Performs the FormatShape formating.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         imgs = results['imgs']
         # [M x H x W x C]
         # M = 1 * N_crops * N_clips * L

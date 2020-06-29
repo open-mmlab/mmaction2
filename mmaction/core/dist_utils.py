@@ -28,7 +28,7 @@ def _allreduce_coalesced(tensors, world_size, bucket_size_mb=-1):
 
 
 def allreduce_grads(params, coalesce=True, bucket_size_mb=-1):
-    """Allreduce gradients
+    """Allreduce gradients.
 
     Args:
         params (list[torch.Parameters]): List of parameters of a model

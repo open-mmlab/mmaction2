@@ -17,6 +17,8 @@ class ResNet2Plus1d(ResNet3d):
         assert self.conv_cfg['type'] == 'Conv2plus1d'
 
     def _freeze_stages(self):
+        """Prevent all the parameters from being optimized before
+        `self.frozen_stages`."""
         if self.frozen_stages >= 0:
             self.conv1.eval()
             for param in self.conv1.parameters():
@@ -29,6 +31,15 @@ class ResNet2Plus1d(ResNet3d):
                 param.requires_grad = False
 
     def forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+
+        Returns:
+            torch.Tensor: The feature of the input
+                samples extracted by the backbone.
+        """
         x = self.conv1(x)
         x = self.maxpool(x)
         for layer_name in self.res_layers:

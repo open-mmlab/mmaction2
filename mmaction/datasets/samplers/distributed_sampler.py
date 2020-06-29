@@ -3,10 +3,11 @@ from torch.utils.data import DistributedSampler as _DistributedSampler
 
 
 class DistributedSampler(_DistributedSampler):
-    """DistributedSampler inheriting from `torch.utils.data.DistributedSampler`.
+    """DistributedSampler inheriting from
+    `torch.utils.data.DistributedSampler`.
 
-    In pytorch of lower versions, there is no `shuffle` argument. This child
-    class will port one to DistributedSampler.
+    In pytorch of lower versions, there is no `shuffle` argument. This
+    child class will port one to DistributedSampler.
     """
 
     def __init__(self, dataset, num_replicas=None, rank=None, shuffle=True):

@@ -9,7 +9,7 @@ def cast_tensor_type(inputs, src_type, dst_type):
 
     Args:
         inputs: Inputs that to be casted.
-        src_type (torch.dtype): Source type..
+        src_type (torch.dtype): Source type.
         dst_type (torch.dtype): Destination type.
 
     Returns:

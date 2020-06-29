@@ -9,7 +9,7 @@ from mmaction.models import build_localizer, build_recognizer
 
 
 def _get_config_path():
-    """ Find the predefined recognizer config path."""
+    """Find the predefined recognizer config path."""
     repo_dir = osp.dirname(osp.dirname(__file__))
     config_dpath = osp.join(repo_dir, 'configs')
     if not osp.exists(config_dpath):
@@ -24,8 +24,8 @@ def _get_config_path():
 
 
 def test_config_build_recognizer():
-    """Test that all mmaction models defined in the configs
-     can be initialized."""
+    """Test that all mmaction models defined in the configs can be
+    initialized."""
     repo_dir = osp.dirname(osp.dirname(__file__))
     config_dpath = osp.join(repo_dir, 'configs/recognition')
     if not osp.exists(config_dpath):
@@ -63,8 +63,8 @@ def _get_config_path_for_localizer():
 
 
 def test_config_build_localizer():
-    """ Test that all mmaction models defined in the configs
-    can be initialized."""
+    """Test that all mmaction models defined in the configs can be
+    initialized."""
     config_fpaths = _get_config_path_for_localizer()
 
     # test all config file in `configs/localization` directory

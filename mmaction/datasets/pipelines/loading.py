@@ -113,6 +113,12 @@ class SampleFrames(object):
         return clip_offsets
 
     def __call__(self, results):
+        """Perform the SampleFrames loading.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         if 'total_frames' not in results:
             # TODO: find a better way to get the total frames number for video
             video_reader = mmcv.VideoReader(results['filename'])
@@ -244,6 +250,12 @@ class PyAVInit(object):
         self.file_client = None
 
     def __call__(self, results):
+        """Perform the PyAV initiation.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         try:
             import av
         except ImportError:
@@ -280,6 +292,12 @@ class PyAVDecode(object):
         self.multi_thread = multi_thread
 
     def __call__(self, results):
+        """Perform the PyAV loading.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         container = results['video_reader']
         imgs = list()
 
@@ -334,6 +352,12 @@ class DecordInit(object):
         os.mkdir(self.tmp_folder)
 
     def __call__(self, results):
+        """Perform the PyAV loading.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         try:
             import decord
         except ImportError:
@@ -376,6 +400,12 @@ class DecordDecode(object):
         pass
 
     def __call__(self, results):
+        """Perform the Decord loading.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         container = results['video_reader']
 
         if results['frame_inds'].ndim != 1:
@@ -404,8 +434,8 @@ class DecordDecode(object):
 class OpenCVInit(object):
     """Using OpenCV to initalize the video_reader.
 
-    Required keys are "filename",
-    added or modified keys are "new_path", "video_reader" and "total_frames".
+    Required keys are "filename", added or modified keys are "new_path",
+    "video_reader" and "total_frames".
     """
 
     def __init__(self, io_backend='disk', **kwargs):
@@ -416,6 +446,12 @@ class OpenCVInit(object):
         os.mkdir(self.tmp_folder)
 
     def __call__(self, results):
+        """Perform the OpenCV initiation.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         if self.io_backend == 'disk':
             new_path = results['filename']
         else:
@@ -443,14 +479,20 @@ class OpenCVInit(object):
 class OpenCVDecode(object):
     """Using OpenCV to decode the video.
 
-    Required keys are "video_reader", "filename" and "frame_inds",
-    added or modified keys are "imgs", "img_shape" and "original_shape".
+    Required keys are "video_reader", "filename" and "frame_inds", added
+    or modified keys are "imgs", "img_shape" and "original_shape".
     """
 
     def __init__(self):
         pass
 
     def __call__(self, results):
+        """Perform the OpenCV loading.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         container = results['video_reader']
         imgs = list()
 
@@ -499,6 +541,12 @@ class FrameSelector(object):
         self.file_client = None
 
     def __call__(self, results):
+        """Perform the FrameSelector selecting given indices.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         mmcv.use_backend(self.decoding_backend)
 
         directory = results['frame_dir']
@@ -548,6 +596,12 @@ class LoadLocalizationFeature(object):
         self.raw_feature_ext = raw_feature_ext
 
     def __call__(self, results):
+        """Perform the LoadLocalizationFeature loading.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         video_name = results['video_name']
         data_prefix = results['data_prefix']
 
@@ -565,12 +619,17 @@ class GenerateLocalizationLabels(object):
     """Load video label for localizer with given video_name list.
 
     Required keys are "duration_frame", "duration_second",
-    "feature_frame", "annotations",
-    added or modified keys are "gt_bbox".
-
+    "feature_frame", "annotations", added or modified keys are
+    "gt_bbox".
     """
 
     def __call__(self, results):
+        """Perform the GenerateLocalizationLabels loading.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         video_frame = results['duration_frame']
         video_second = results['duration_second']
         feature_frame = results['feature_frame']
@@ -626,6 +685,12 @@ class LoadProposals(object):
         self.feature_ext = feature_ext
 
     def __call__(self, results):
+        """Perform the LoadProposals loading.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         video_name = results['video_name']
         proposal_path = osp.join(self.pgm_proposals_dir,
                                  video_name + self.proposal_ext)

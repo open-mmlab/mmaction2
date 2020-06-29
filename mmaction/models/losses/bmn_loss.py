@@ -34,7 +34,7 @@ class BMNLoss(nn.Module):
             gt_end (torch.Tensor): Groundtruth confidence score for end.
 
         Returns:
-            loss (torch.Tensor): Returned binary logistic loss.
+            torch.Tensor: Returned binary logistic loss.
         """
         loss_start = binary_logistic_regression_loss(pred_start, gt_start)
         loss_end = binary_logistic_regression_loss(pred_end, gt_end)
@@ -59,7 +59,7 @@ class BMNLoss(nn.Module):
                 temporal_iou. Default: 0.3.
 
         Returns:
-            loss (torch.Tensor): Returned proposal evalutaion regression loss.
+            torch.Tensor: Returned proposal evalutaion regression loss.
         """
         u_hmask = (gt_iou_map > high_temporal_iou_threshold).float()
         u_mmask = ((gt_iou_map <= high_temporal_iou_threshold) &
@@ -110,7 +110,7 @@ class BMNLoss(nn.Module):
             eps (float): Epsilon for small value. Default: 1e-5
 
         Returns:
-            loss (torch.Tensor): Returned proposal evalutaion classification
+            torch.Tensor: Returned proposal evalutaion classification
                 loss.
         """
         pmask = (gt_iou_map > threshold).float()
@@ -160,11 +160,11 @@ class BMNLoss(nn.Module):
                 Default: 1.0.
 
         Returns:
-            loss (torch.Tensor): Total loss of BMN model.
-            tem_loss (torch.Tensor): Temporal evaluation loss.
-            pem_reg_loss (torch.Tensor): Proposal evaluation regression loss.
-            pem_cls_loss (torch.Tensor): Proposal evaluation classification
-                loss.
+            tuple([torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]):
+                (loss, tem_loss, pem_reg_loss, pem_cls_loss), loss is the
+                temporal evaluation loss, pem_reg_loss is the proposal
+                evaluation regression loss, pem_cls_loss is the proposal
+                evaluation classification loss.
         """
         pred_bm_reg = pred_bm[:, 0].contiguous()
         pred_bm_cls = pred_bm[:, 1].contiguous()

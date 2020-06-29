@@ -66,9 +66,20 @@ class TSNHead(BaseHead):
         self.fc_cls = nn.Linear(self.in_channels, self.num_classes)
 
     def init_weights(self):
+        """Initiate the parameters from scratch."""
         normal_init(self.fc_cls, std=self.init_std)
 
     def forward(self, x, num_segs):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+            num_segs (int): Number of segments into which a video
+                is divided.
+        Returns:
+            torch.Tensor: The classification scores for input
+                samples.
+        """
         # [N * num_segs, in_channels, 7, 7]
         x = self.avg_pool(x)
         # [N * num_segs, in_channels, 1, 1]

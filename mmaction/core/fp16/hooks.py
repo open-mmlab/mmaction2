@@ -42,6 +42,9 @@ class Fp16OptimizerHook(OptimizerHook):
 
         1. Make a master copy of fp32 weights for optimization.
         2. Convert the main model from fp32 to fp16.
+
+        Args:
+            runner (:obj:`mmcv.Runner`): The underlines training runner.
         """
         # keep a copy of fp32 weights
         runner.optimizer.param_groups = copy.deepcopy(
@@ -70,6 +73,9 @@ class Fp16OptimizerHook(OptimizerHook):
         3. Copy gradients from the model to the fp32 weight copy.
         4. Scale the gradients back and update the fp32 weight copy.
         5. Copy back the params from fp32 weight copy to the fp16 model.
+
+        Args:
+            runner (:obj:`mmcv.Runner`): The underlines training runner.
         """
         # clear grads of last iteration
         runner.model.zero_grad()

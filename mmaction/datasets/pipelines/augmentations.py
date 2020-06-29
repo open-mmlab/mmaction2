@@ -106,6 +106,12 @@ class RandomCrop(object):
         self.lazy = lazy
 
     def __call__(self, results):
+        """Performs the RandomCrop augmentation.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         _init_lazy_if_proper(results, self.lazy)
 
         img_h, img_w = results['img_shape']
@@ -140,10 +146,10 @@ class RandomCrop(object):
             right = (x_offset + new_w) * (lazy_right - lazy_left) / img_w
             top = y_offset * (lazy_bottom - lazy_top) / img_h
             bottom = (y_offset + new_h) * (lazy_bottom - lazy_top) / img_h
-            lazyop['crop_bbox'] = np.array([
-                lazy_left + left, lazy_top + top, lazy_left + right,
-                lazy_top + bottom
-            ],
+            lazyop['crop_bbox'] = np.array([(lazy_left + left),
+                                            (lazy_top + top),
+                                            (lazy_left + right),
+                                            (lazy_top + bottom)],
                                            dtype=np.float32)
 
         return results
@@ -236,6 +242,12 @@ class RandomResizedCrop(object):
         return x_offset, y_offset, x_offset + crop_size, y_offset + crop_size
 
     def __call__(self, results):
+        """Performs the RandomResizeCrop augmentation.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         _init_lazy_if_proper(results, self.lazy)
 
         img_h, img_w = results['img_shape']
@@ -262,10 +274,10 @@ class RandomResizedCrop(object):
             right = right * (lazy_right - lazy_left) / img_w
             top = top * (lazy_bottom - lazy_top) / img_h
             bottom = bottom * (lazy_bottom - lazy_top) / img_h
-            lazyop['crop_bbox'] = np.array([
-                lazy_left + left, lazy_top + top, lazy_left + right,
-                lazy_top + bottom
-            ],
+            lazyop['crop_bbox'] = np.array([(lazy_left + left),
+                                            (lazy_top + top),
+                                            (lazy_left + right),
+                                            (lazy_top + bottom)],
                                            dtype=np.float32)
 
         return results
@@ -336,6 +348,12 @@ class MultiScaleCrop(object):
         self.lazy = lazy
 
     def __call__(self, results):
+        """Performs the MultiScaleCrop augmentation.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         _init_lazy_if_proper(results, self.lazy)
 
         img_h, img_w = results['img_shape']
@@ -405,10 +423,10 @@ class MultiScaleCrop(object):
             right = (x_offset + new_w) * (lazy_right - lazy_left) / img_w
             top = y_offset * (lazy_bottom - lazy_top) / img_h
             bottom = (y_offset + new_h) * (lazy_bottom - lazy_top) / img_h
-            lazyop['crop_bbox'] = np.array([
-                lazy_left + left, lazy_top + top, lazy_left + right,
-                lazy_top + bottom
-            ],
+            lazyop['crop_bbox'] = np.array([(lazy_left + left),
+                                            (lazy_top + top),
+                                            (lazy_left + right),
+                                            (lazy_top + bottom)],
                                            dtype=np.float32)
 
         return results
@@ -469,6 +487,12 @@ class Resize(object):
         self.lazy = lazy
 
     def __call__(self, results):
+        """Performs the Resize augmentation.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         _init_lazy_if_proper(results, self.lazy)
 
         img_h, img_w = results['img_shape']
@@ -537,6 +561,12 @@ class Flip(object):
         self.lazy = lazy
 
     def __call__(self, results):
+        """Performs the Flip augmentation.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         _init_lazy_if_proper(results, self.lazy)
 
         if np.random.rand() < self.flip_ratio:
@@ -599,6 +629,12 @@ class Normalize(object):
         self.to_bgr = to_bgr
 
     def __call__(self, results):
+        """Performs the Normalize augmentation.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         n = len(results['imgs'])
         h, w, c = results['imgs'][0].shape
         imgs = np.empty((n, h, w, c), dtype=np.float32)
@@ -640,6 +676,12 @@ class CenterCrop(object):
                             f'but got {type(crop_size)}')
 
     def __call__(self, results):
+        """Performs the CenterCrop augmentation.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         _init_lazy_if_proper(results, self.lazy)
 
         img_h, img_w = results['img_shape']
@@ -669,10 +711,10 @@ class CenterCrop(object):
             right = right * (lazy_right - lazy_left) / img_w
             top = top * (lazy_bottom - lazy_top) / img_h
             bottom = bottom * (lazy_bottom - lazy_top) / img_h
-            lazyop['crop_bbox'] = np.array([
-                lazy_left + left, lazy_top + top, lazy_left + right,
-                lazy_top + bottom
-            ],
+            lazyop['crop_bbox'] = np.array([(lazy_left + left),
+                                            (lazy_top + top),
+                                            (lazy_left + right),
+                                            (lazy_top + bottom)],
                                            dtype=np.float32)
 
         return results
@@ -703,6 +745,12 @@ class ThreeCrop(object):
                             f'but got {type(crop_size)}')
 
     def __call__(self, results):
+        """Performs the ThreeCrop augmentation.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         _init_lazy_if_proper(results, False)
 
         imgs = results['imgs']
@@ -768,6 +816,12 @@ class TenCrop(object):
                             f'but got {type(crop_size)}')
 
     def __call__(self, results):
+        """Performs the TenCrop augmentation.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         _init_lazy_if_proper(results, False)
 
         imgs = results['imgs']
@@ -840,6 +894,12 @@ class MultiGroupCrop(object):
             raise ValueError('Groups must be positive.')
 
     def __call__(self, results):
+        """Performs the MultiGroupCrop augmentation.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         imgs = results['imgs']
         img_h, img_w = imgs[0].shape[:2]
         crop_w, crop_h = self.crop_size

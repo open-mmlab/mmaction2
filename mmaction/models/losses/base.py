@@ -23,4 +23,15 @@ class BaseWeightedLoss(nn.Module, metaclass=ABCMeta):
         pass
 
     def forward(self, *args, **kwargs):
+        """Defines the computation performed at every call.
+
+        Args:
+            *args: The positional arguments for the corresponding
+                loss.
+            **kwargs: The keyword arguments for the corresponding
+                loss.
+
+        Returns:
+            torch.Tensor: The calculated loss.
+        """
         return self._forward(*args, **kwargs) * self.loss_weight

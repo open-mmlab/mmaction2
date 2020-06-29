@@ -78,6 +78,14 @@ class BasicBlock(nn.Module):
         return getattr(self, self.norm2_name)
 
     def forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+
+        Returns:
+            torch.Tensor: The output of the module.
+        """
         identity = x
 
         out = self.conv1(x)
@@ -185,8 +193,17 @@ class Bottleneck(nn.Module):
         return getattr(self, self.norm3_name)
 
     def forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+
+        Returns:
+            torch.Tensor: The output of the module.
+        """
 
         def _inner_forward(x):
+            """Forward wrapper for utilizing checkpoint."""
             identity = x
 
             out = self.conv1(x)
@@ -244,9 +261,8 @@ def make_res_layer(block,
             memory while slowing down the training speed. Default: False.
 
     Returns:
-        A residual layer for the given config.
+        nn.Module: A residual layer for the given config.
     """
-
     downsample = None
     if stride != 1 or inplanes != planes * block.expansion:
         downsample = nn.Sequential(
@@ -381,6 +397,8 @@ class ResNet(nn.Module):
         return getattr(self, self.norm1_name)
 
     def _make_stem_layer(self):
+        """Construct the stem layers consists of a conv+norm+act module and a
+        pooling layer."""
         self.conv1 = nn.Conv2d(
             self.in_channels,
             64,
@@ -394,6 +412,8 @@ class ResNet(nn.Module):
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
 
     def init_weights(self):
+        """Initiate the parameters either from existing checkpoint or from
+        scratch."""
         if isinstance(self.pretrained, str):
             logger = get_root_logger()
             load_checkpoint(self, self.pretrained, strict=False, logger=logger)
@@ -407,6 +427,15 @@ class ResNet(nn.Module):
             raise TypeError('pretrained must be a str or None')
 
     def forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+
+        Returns:
+            torch.Tensor: The feature of the input
+                samples extracted by the backbone.
+        """
         x = self.conv1(x)
         x = self.norm1(x)
         x = self.relu(x)
@@ -417,6 +446,8 @@ class ResNet(nn.Module):
         return x
 
     def _freeze_stages(self):
+        """Prevent all the parameters from being optimized before
+        `self.frozen_stages`."""
         if self.frozen_stages >= 0:
             self.norm1.eval()
             for m in [self.conv1, self.norm1]:
@@ -430,6 +461,7 @@ class ResNet(nn.Module):
                 param.requires_grad = False
 
     def train(self, mode=True):
+        """Set the optimization status when training."""
         super().train(mode)
         self._freeze_stages()
         if mode and self.norm_eval:

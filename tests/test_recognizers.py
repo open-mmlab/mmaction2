@@ -30,8 +30,8 @@ class ExampleRecognizer(BaseRecognizer):
 def _get_recognizer_cfg(fname):
     """Grab configs necessary to create a recognizer.
 
-    These are deep copied to allow for safe modification of parameters without
-    influencing other tests.
+    These are deep copied to allow for safe modification of parameters
+    without influencing other tests.
     """
     repo_dpath = osp.dirname(osp.dirname(__file__))
     config_dpath = osp.join(repo_dpath, 'configs/recognition')
@@ -267,8 +267,7 @@ def test_tin():
 
 
 def generate_demo_inputs(input_shape=(1, 3, 3, 224, 224), model_type='2D'):
-    """
-    Create a superset of inputs needed to run test or train batches.
+    """Create a superset of inputs needed to run test or train batches.
 
     Args:
         input_shape (tuple): input batch dimensions.

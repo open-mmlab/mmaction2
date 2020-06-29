@@ -18,6 +18,13 @@ class TSMOptimizerConstructor(DefaultOptimizerConstructor):
     """
 
     def add_params(self, params, model):
+        """Add parameters and their corresponding lr and wd to the params.
+
+        Args:
+            params (list): The list to be modified, containing all parameter
+                groups and their corresponding lr and wd configurations.
+            model (nn.Module): The model to be trained with the optimizer.
+        """
         # use fc_lr5 to determine whether to specify higher multi-factor
         # for fc layer weights and bias.
         fc_lr5 = self.paramwise_cfg['fc_lr5']

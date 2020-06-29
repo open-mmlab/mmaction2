@@ -123,7 +123,7 @@ class ResNet3dPathway(ResNet3d):
                 Default: False.
 
         Returns:
-            layer (nn.Module): A residual layer for the given config.
+            nn.Module: A residual layer for the given config.
         """
         inflate = inflate if not isinstance(inflate,
                                             int) else (inflate, ) * blocks
@@ -274,6 +274,8 @@ class ResNet3dPathway(ResNet3d):
             inflated_param_names.append(bias_2d_name)
 
     def _freeze_stages(self):
+        """Prevent all the parameters from being optimized before
+        `self.frozen_stages`."""
         if self.frozen_stages >= 0:
             self.conv1.eval()
             for param in self.conv1.parameters():
@@ -294,6 +296,8 @@ class ResNet3dPathway(ResNet3d):
                     param.requires_grad = False
 
     def init_weights(self):
+        """Initiate the parameters either from existing checkpoint or from
+        scratch."""
         # Override the init_weights of i3d
         super().init_weights()
         for module_name in self.lateral_connections:
@@ -310,7 +314,7 @@ pathway_cfg = {
 
 
 def build_pathway(cfg, *args, **kwargs):
-    """ Build pathway
+    """Build pathway.
 
     Args:
         cfg (None or dict): cfg should contain:
@@ -408,6 +412,8 @@ class ResNet3dSlowFast(nn.Module):
         self.fast_path = build_pathway(fast_pathway)
 
     def init_weights(self):
+        """Initiate the parameters either from existing checkpoint or from
+        scratch."""
         if isinstance(self.pretrained, str):
             logger = get_root_logger()
             msg = f'load model from: {self.pretrained}'
@@ -422,6 +428,15 @@ class ResNet3dSlowFast(nn.Module):
             raise TypeError('pretrained must be a str or None')
 
     def forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+
+        Returns:
+            tuple[torch.Tensor]: The feature of the input
+                samples extracted by the backbone.
+        """
         x_slow = x[:, :, ::self.resample_rate, :, :]
         x_slow = self.slow_path.conv1(x_slow)
         x_slow = self.slow_path.maxpool(x_slow)

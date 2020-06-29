@@ -10,7 +10,7 @@ from mmaction.core import (average_recall_at_avg_proposals, confusion_matrix,
 
 
 def gt_confusion_matrix(gt_labels, pred_labels):
-    """Calculate the ground truth confusion matrix"""
+    """Calculate the ground truth confusion matrix."""
     max_index = max(max(gt_labels), max(pred_labels))
     confusion_mat = np.zeros((max_index + 1, max_index + 1), dtype=np.int64)
     for gt, pred in zip(gt_labels, pred_labels):
