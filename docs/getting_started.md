@@ -67,10 +67,10 @@ Examples:
 
 Assume that you have already downloaded the checkpoints to the directory `checkpoints/`.
 
-1. Test I3D on Kinetics-400 (without saving the test results) and evaluate the top-k accuracy and mean class accuracy.
+1. Test TSN on Kinetics-400 (without saving the test results) and evaluate the top-k accuracy and mean class accuracy.
 
     ```shell
-    python tools/test.py config/i3d_rgb_32x2x1_r50_3d_kinetics400_100e.py \
+    python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
         checkpoints/SOME_CHECKPOINT.pth \
         --eval top_k_accuracy mean_class_accuracy
     ```
@@ -78,15 +78,15 @@ Assume that you have already downloaded the checkpoints to the directory `checkp
 2. Test TSN on Something-Something V1 with 8 GPUS, and evaluate the top-k accuracy.
 
     ```shell
-    python tools/test.py config/tsn_rgb_1x1x8_r50_2d_sthv1_50e.py \
+    python tools/test.py configs/recognition/tsn/tsn_r50_1x1x8_50e_sthv1_rgb.py \
         checkpoints/SOME_CHECKPOINT.pth \
         8 --out results.pkl --eval top_k_accuracy
     ```
 
-3. Test I3D on Kinetics-400 in slurm environment and evaluate the top-k accuracy
+3. Test TSN on Kinetics-400 in slurm environment and evaluate the top-k accuracy
 
     ```shell
-    python tools/test.py config/i3d_rgb_32x2x1_r50_3d_kinetics400_100e.py \
+    python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
         checkpoints/SOME_CHECKPOINT.pth \
         --launcher slurm --eval top_k_accuracy
     ```
@@ -102,7 +102,7 @@ python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} [--device ${
 Examples:
 
 ```shell
-python demo/demo.py config/tsn_rgb_1x1x3_r50_2d_kinetics400_video_100e.py checkpoints/tsn.pth demo/demo.mp4
+python demo/demo.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py checkpoints/tsn.pth demo/demo.mp4
 ```
 
 ### High-level APIs for testing a video.
@@ -112,7 +112,7 @@ Here is an example of building the model and test a given video.
 ```python
 from mmaction.core import init_recognizer, inference_recognizer
 
-config_file = 'config/tsn_rgb_1x1x3_r50_2d_kinetics400_video_100e.py'
+config_file = 'configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py'
 # download the checkpoint from model zoo and put it in `checkpoints/`
 checkpoint_file = 'checkpoints/tsn.pth'
 
@@ -253,7 +253,7 @@ If you want to specify the working directory in the command, you can add an argu
 
 Optional arguments are:
 
-- `--validate` (**strongly recommended**): Perform evaluation at every k (default value is 5, which can be modified like [this](http://gitlab.sz.sensetime.com/open-mmlab/mmaction-lite/blob/master/config/tsn_rgb_1x1x3_r50_2d_kinetics400_100e.py#L107-108)) epochs during the training.
+- `--validate` (**strongly recommended**): Perform evaluation at every k (default value is 5, which can be modified by changing the `interval` value in `evaluation` dict in each config file) epochs during the training.
 - `--work-dir ${WORK_DIR}`: Override the working directory specified in the config file.
 - `--resume-from ${CHECKPOINT_FILE}`: Resume from a previous checkpoint file.
 - `--gpus ${GPU_NUM}`: Number of gpus to use, which is only applicable to non-distributed training.
@@ -270,7 +270,7 @@ Difference between `resume-from` and `load-from`:
 Here is an example of using 8 GPUs to load TSN checkpoint.
 
 ```shell
-./tools/dist_train.sh config/tsn_rgb_1x1x3_r50_2d_kinetics400_100e.py 8 --resume_from work_dirs/tsn_rgb_1x1x3_r50_2d_kinetics400_100e/latest.pth
+./tools/dist_train.sh configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py 8 --resume_from work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb/latest.pth
 ```
 
 ### Train with multiple machines
@@ -284,7 +284,7 @@ If you can run MMAction on a cluster managed with [slurm](https://slurm.schedmd.
 Here is an example of using 16 GPUs to train TSN on the dev partition in a slurm cluster. (use `GPUS_PER_NODE=8` to specify a single slurm cluster node with 8 GPUs.)
 
 ```shell
-GPUS_PER_NODE=8 ./tools/slurm_train.sh dev tsn_r50_k400 config/tsn_rgb_1x1x3_r50_2d_kinetics400_100e.py work_dirs/tsn_rgb_1x1x3_r50_2d_kinetics400_100e 16
+GPUS_PER_NODE=8 ./tools/slurm_train.sh dev tsn_r50_k400 configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb 16
 ```
 
 You can check [slurm_train.sh](../tools/slurm_train.sh) for full arguments and environment variables.
@@ -417,10 +417,10 @@ python tools/publish_model.py ${INPUT_FILENAME} ${OUTPUT_FILENAME}
 E.g.,
 
 ```shell
-python tools/publish_model.py work_dirs/tsn_rgb_1x1x3_r50_2d_kinetics400_100e/latest.pth tsn_rgb_1x1x3_r50_2d_kinetics400_100e.pth
+python tools/publish_model.py work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb/latest.pth tsn_r50_1x1x3_100e_kinetics400_rgb.pth
 ```
 
-The final output filename will be `tsn_rgb_1x1x3_r50_2d_kinetics400_100e-{hash id}.pth`
+The final output filename will be `tsn_r50_1x1x3_100e_kinetics400_rgb-{hash id}.pth`
 
 ## How-to
 
@@ -430,7 +430,7 @@ The simplest way is to convert your dataset to existing dataset formats (Rawfram
 
 Here we show an example of using a custom dataset, assuming it is also in RawframeDataset format.
 
-In `config/my_custom_config.py`
+In `configs/task/method/my_custom_config.py`
 
 ```python
 ...

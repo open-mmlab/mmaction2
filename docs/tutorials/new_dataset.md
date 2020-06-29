@@ -96,7 +96,7 @@ There are two ways to work with custom datasets.
 After the data pre-processing, the users need to further modify the config files to use the dataset.
 Here is an example of using a custom dataset in Rawframe format.
 
-In `config/my_custom_config.py`:
+In `configs/task/method/my_custom_config.py`:
 
 ```python
 ...
