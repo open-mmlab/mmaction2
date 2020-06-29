@@ -105,7 +105,7 @@ class TEM(nn.Module):
             x (torch.Tensor): The input data.
 
         Returns:
-            x (torch.Tensor): The output of the module.
+            torch.Tensor: The output of the module.
         """
         x = F.relu(self.conv1_ratio * self.conv1(x))
         x = F.relu(self.conv2_ratio * self.conv2(x))

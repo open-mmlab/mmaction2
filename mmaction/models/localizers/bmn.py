@@ -175,7 +175,7 @@ class BMN(nn.Module):
             x (torch.Tensor): The input data.
 
         Returns:
-            x (torch.Tensor): The output of the module.
+            torch.Tensor: The output of the module.
         """
         # x.shape [batch_size, self.feat_dim, self.tscale]
         base_feature = self.x_1d_b(x)
