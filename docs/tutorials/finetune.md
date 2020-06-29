@@ -9,7 +9,7 @@ There are two steps to finetune a model on a new dataset.
 1. Modify the configs. This will be discussed in this tutorial.
 
 For example, if the user want to finetune models pre-trained on Kinetics-400 Dataset to another dataset, say UCF101,
-then four parts in the config (see [here](../../config/tsn_rgb_1x1x3_r50_2d_kinetics400_100e.py)) needs attention.
+then four parts in the config (see [here](/docs/config_recognition.md)) needs attention.
 
 ## Modify Head
 
@@ -80,5 +80,5 @@ To use the pre-trained model for the whole network, the new config adds the link
 
 ```python
 # use the pre-trained model for the whole TSN network
-load_from = 'https://s3.ap-northeast-2.amazonaws.com/open-mmlab/mmaction-lite/models/tsn_rgb_1x1x3_r50_2d_kinetics400_100e_xxx.pth'  # model path can be found in model zoo
+load_from = 'https://s3.ap-northeast-2.amazonaws.com/open-mmlab/mmaction-lite/models/tsn_r50_1x1x3_100e_kinetics400_rgb_xxx.pth'  # model path can be found in model zoo
 ```
