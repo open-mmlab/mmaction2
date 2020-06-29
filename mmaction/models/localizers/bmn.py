@@ -4,6 +4,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 
+from ...apis import parse_losses
 from ...localization import temporal_iop, temporal_iou
 from ..builder import build_loss
 from ..registry import LOCALIZERS
@@ -402,3 +403,30 @@ class BMN(nn.Module):
             bm_mask.append(mask_vector)
         bm_mask = torch.tensor(bm_mask, dtype=torch.float)
         return bm_mask
+
+    def train_step(self, data_batch, **kwargs):
+        raw_feature = data_batch['raw_feature']
+        gt_bbox = data_batch['gt_bbox']
+        video_meta = data_batch['video_meta']
+
+        losses = self.forward(raw_feature, gt_bbox, video_meta)
+
+        loss, log_vars = parse_losses(losses)
+
+        outputs = dict(
+            loss=loss,
+            log_vars=log_vars,
+            num_samples=len(next(iter(data_batch.values()))))
+
+        return outputs
+
+    def val_step(self, data_batch, **kwargs):
+        raw_feature = data_batch['raw_feature']
+        video_meta = data_batch['video_meta']
+
+        results = self.forward(
+            raw_feature, video_meta=video_meta, return_loss=False)
+
+        outputs = dict(results=results)
+
+        return outputs

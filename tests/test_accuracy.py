@@ -4,10 +4,9 @@ import numpy as np
 import pytest
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
-from mmaction.core.evaluation import (average_recall_at_avg_proposals,
-                                      confusion_matrix, mean_average_precision,
-                                      mean_class_accuracy,
-                                      pairwise_temporal_iou, top_k_accuracy)
+from mmaction.core import (average_recall_at_avg_proposals, confusion_matrix,
+                           mean_average_precision, mean_class_accuracy,
+                           pairwise_temporal_iou, top_k_accuracy)
 
 
 def gt_confusion_matrix(gt_labels, pred_labels):

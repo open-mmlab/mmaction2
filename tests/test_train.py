@@ -9,7 +9,7 @@ import torch.nn as nn
 from mmcv import Config
 from torch.utils.data import Dataset
 
-from mmaction.core import set_random_seed, train_model
+from mmaction.apis import set_random_seed, train_model
 from mmaction.datasets.registry import DATASETS
 
 
@@ -46,6 +46,19 @@ class ExampleModel(nn.Module):
         losses['test_loss'] = torch.tensor([0.5], requires_grad=True)
         return losses
 
+    def train_step(self, data_batch, optimizer, **kwargs):
+        imgs = data_batch['imgs']
+        losses = self.forward(imgs, True)
+        loss = torch.tensor([0.5], requires_grad=True)
+        outputs = dict(loss=loss, log_vars=losses, num_samples=3)
+        return outputs
+
+    def val_step(self, data_batch, optimizer, **kwargs):
+        imgs = data_batch['imgs']
+        self.forward(imgs, False)
+        outputs = dict(results=0.5)
+        return outputs
+
 
 @pytest.mark.skipif(
     not torch.cuda.is_available(), reason='requires CUDA support')
@@ -55,6 +68,7 @@ def test_train_model():
     cfg = dict(
         seed=0,
         gpus=1,
+        gpu_ids=[0],
         resume_from=None,
         load_from=None,
         workflow=[('train', 1)],
@@ -71,7 +85,6 @@ def test_train_model():
         log_level='INFO',
         log_config=dict(interval=20, hooks=[dict(type='TextLoggerHook')]))
 
-    # test _non_dist_train
     with tempfile.TemporaryDirectory() as tmpdir:
         # normal train
         cfg['work_dir'] = tmpdir

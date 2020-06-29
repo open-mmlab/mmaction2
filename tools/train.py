@@ -10,7 +10,7 @@ from mmcv import Config
 from mmcv.runner import init_dist
 
 from mmaction import __version__
-from mmaction.core import set_random_seed, train_model
+from mmaction.apis import set_random_seed, train_model
 from mmaction.datasets import build_dataset
 from mmaction.models import build_model
 from mmaction.utils import collect_env, get_root_logger
@@ -26,11 +26,17 @@ def parse_args():
         '--validate',
         action='store_true',
         help='whether to evaluate the checkpoint during training')
-    parser.add_argument(
+    group_gpus = parser.add_mutually_exclusive_group()
+    group_gpus.add_argument(
         '--gpus',
         type=int,
-        default=1,
         help='number of gpus to use '
+        '(only applicable to non-distributed training)')
+    group_gpus.add_argument(
+        '--gpu-ids',
+        type=int,
+        nargs='+',
+        help='ids of gpus to use '
         '(only applicable to non-distributed training)')
     parser.add_argument('--seed', type=int, default=None, help='random seed')
     parser.add_argument(
@@ -43,10 +49,6 @@ def parse_args():
         default='none',
         help='job launcher')
     parser.add_argument('--local_rank', type=int, default=0)
-    parser.add_argument(
-        '--autoscale-lr',
-        action='store_true',
-        help='automatically scale lr with the number of gpus')
     args = parser.parse_args()
     if 'LOCAL_RANK' not in os.environ:
         os.environ['LOCAL_RANK'] = str(args.local_rank)
@@ -61,16 +63,22 @@ def main():
     # set cudnn_benchmark
     if cfg.get('cudnn_benchmark', False):
         torch.backends.cudnn.benchmark = True
-    # update configs according to CLI args
+
+    # work_dir is determined in this priority:
+    # CLI > config file > default (base filename)
     if args.work_dir is not None:
+        # update configs according to CLI args if args.work_dir is not None
         cfg.work_dir = args.work_dir
+    elif cfg.get('work_dir', None) is None:
+        # use config filename as default work_dir if cfg.work_dir is None
+        cfg.work_dir = osp.join('./work_dirs',
+                                osp.splitext(osp.basename(args.config))[0])
     if args.resume_from is not None:
         cfg.resume_from = args.resume_from
-    cfg.gpus = args.gpus
-
-    if args.autoscale_lr:
-        # apply the linear scaling rule (https://arxiv.org/abs/1706.02677)
-        cfg.optimizer['lr'] = cfg.optimizer['lr'] * cfg.gpus / 8
+    if args.gpu_ids is not None:
+        cfg.gpu_ids = args.gpu_ids
+    else:
+        cfg.gpu_ids = range(1) if args.gpus is None else range(args.gpus)
 
     # init distributed env first, since logger depends on the dist info.
     if args.launcher == 'none':
@@ -81,6 +89,8 @@ def main():
 
     # create work_dir
     mmcv.mkdir_or_exist(osp.abspath(cfg.work_dir))
+    # dump config
+    cfg.dump(osp.join(cfg.work_dir, osp.basename(args.config)))
     # init logger before other steps
     timestamp = time.strftime('%Y%m%d_%H%M%S', time.localtime())
     log_file = osp.join(cfg.work_dir, f'{timestamp}.log')
@@ -107,6 +117,7 @@ def main():
             args.seed, args.deterministic))
         set_random_seed(args.seed, deterministic=args.deterministic)
     cfg.seed = args.seed
+    meta['seed'] = args.seed
 
     model = build_model(
         cfg.model, train_cfg=cfg.train_cfg, test_cfg=cfg.test_cfg)
@@ -119,9 +130,8 @@ def main():
         # save mmaction version, config file content and class names in
         # checkpoints as meta data
         cfg.checkpoint_config.meta = dict(
-            mmaction_version=__version__,
-            config=cfg.text,
-        )
+            mmaction_version=__version__, config=cfg.text)
+
     train_model(
         model,
         datasets,
