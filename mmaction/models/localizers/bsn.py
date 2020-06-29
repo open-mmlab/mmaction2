@@ -286,7 +286,7 @@ class PEM(nn.Module):
             x (torch.Tensor): The input data.
 
         Returns:
-            x (torch.Tensor): The output of the module.
+            torch.Tensor: The output of the module.
         """
         x = torch.cat([data for data in x])
         x = F.relu(self.fc1_ratio * self.fc1(x))
