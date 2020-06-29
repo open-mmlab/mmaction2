@@ -28,13 +28,13 @@ model = dict(
             pool1_stride_t=1,
             norm_eval=False)),
     cls_head=dict(
+        type='SlowFastHead',
         in_channels=2304,  # 2048+256
         num_classes=400,
-        type='SlowFastHead',
         spatial_type='avg',
         dropout_ratio=0.5))
 train_cfg = None
-test_cfg = dict(average_clips='prob')
+test_cfg = dict(average_clips=None)
 dataset_type = 'VideoDataset'
 data_root = 's3://lizz.ssd/datasets/kinetics400_256/'
 data_root_val = 's3://lizz.ssd/datasets/kinetics400_256/'
