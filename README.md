@@ -1,8 +1,6 @@
 # MMAction: Action understanding Toolbox
 
-## BadgeView
-
-- Documentation site: [![docs](https://img.shields.io/badge/docs-latest-blue)](http://open-mmlab.pages.gitlab.sz.sensetime.com/mmaction-lite/)
+[![docs](https://img.shields.io/badge/docs-latest-blue)](http://open-mmlab.pages.gitlab.sz.sensetime.com/mmaction-lite/)
 - Unittest coverage percentage: (To add badge)
 - Docstring coverage percentage: (To add badge)
 - Support python version: (To add badge)
