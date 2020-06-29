@@ -151,14 +151,12 @@ class BMN(nn.Module):
 
         Args:
             tmin_offset (int): Offset for the minimum value of temporal anchor.
-                Default: 0
+                Default: 0.
             tmax_offset (int): Offset for the maximun value of temporal anchor.
-                Default: 1
+                Default: 1.
 
         Returns:
-            anchors_tmins (Sequence[float]): The minimum values of temporal
-                anchors.
-            anchors_tmaxs (Sequence[float]): The maximum values of temporal
+            tuple[Sequence[float]]: The minimum and maximum values of temporal
                 anchors.
         """
         temporal_gap = 1. / self.tscale
@@ -171,7 +169,7 @@ class BMN(nn.Module):
         return anchors_tmins, anchors_tmaxs
 
     def _forward(self, x):
-        """Defines the computation performed at every call.
+        """Define the computation performed at every call.
 
         Args:
             x (torch.Tensor): The input data.
@@ -208,7 +206,7 @@ class BMN(nn.Module):
         return out
 
     def forward_test(self, raw_feature, video_meta):
-        """Defines the computation performed at every call when testing."""
+        """Define the computation performed at every call when testing."""
         confidence_map, start, end = self._forward(raw_feature)
         start_scores = start[0].cpu().numpy()
         end_scores = end[0].cpu().numpy()
@@ -270,7 +268,7 @@ class BMN(nn.Module):
 
     def forward_train(self, raw_feature, label_confidence, label_start,
                       label_end):
-        """Defines the computation performed at every call when training."""
+        """Define the computation performed at every call when training."""
         confidence_map, start, end = self._forward(raw_feature)
         loss = self.loss_cls(confidence_map, start, end, label_confidence,
                              label_start, label_end,

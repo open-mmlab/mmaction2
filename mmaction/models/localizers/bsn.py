@@ -81,14 +81,12 @@ class TEM(nn.Module):
 
         Args:
             tmin_offset (int): Offset for the minimum value of temporal anchor.
-                Default: 0
+                Default: 0.
             tmax_offset (int): Offset for the maximun value of temporal anchor.
-                Default: 1
+                Default: 1.
 
         Returns:
-            anchors_tmins (Sequence[float]): The minimum values of temporal
-                anchors.
-            anchors_tmaxs (Sequence[float]): The maximum values of temporal
+            tuple[Sequence[float]]: The minimum and maximum values of temporal
                 anchors.
         """
         temporal_gap = 1. / self.temporal_dim
@@ -101,7 +99,7 @@ class TEM(nn.Module):
         return anchors_tmins, anchors_tmaxs
 
     def _forward(self, x):
-        """Defines the computation performed at every call.
+        """Define the computation performed at every call.
 
         Args:
             x (torch.Tensor): The input data.
@@ -115,7 +113,7 @@ class TEM(nn.Module):
         return x
 
     def forward_train(self, raw_feature, label_action, label_start, label_end):
-        """Defines the computation performed at every call when training."""
+        """Define the computation performed at every call when training."""
         tem_output = self._forward(raw_feature)
         score_action = tem_output[:, 0, :]
         score_start = tem_output[:, 1, :]
@@ -136,7 +134,7 @@ class TEM(nn.Module):
         return loss_dict
 
     def forward_test(self, raw_feature, video_meta):
-        """Defines the computation performed at every call when testing."""
+        """Define the computation performed at every call when testing."""
         tem_output = self._forward(raw_feature).cpu().numpy()
         batch_action = tem_output[:, 0, :]
         batch_start = tem_output[:, 1, :]
@@ -282,7 +280,7 @@ class PEM(nn.Module):
             bias=True)
 
     def _forward(self, x):
-        """Defines the computation performed at every call.
+        """Define the computation performed at every call.
 
         Args:
             x (torch.Tensor): The input data.
@@ -296,7 +294,7 @@ class PEM(nn.Module):
         return x
 
     def forward_train(self, bsp_feature, reference_temporal_iou):
-        """Defines the computation performed at every call when training."""
+        """Define the computation performed at every call when training."""
         pem_output = self._forward(bsp_feature)
         reference_temporal_iou = torch.cat(
             [data for data in reference_temporal_iou])
@@ -341,7 +339,7 @@ class PEM(nn.Module):
 
     def forward_test(self, bsp_feature, tmin, tmax, tmin_score, tmax_score,
                      video_meta):
-        """Defines the computation performed at every call when testing."""
+        """Define the computation performed at every call when testing."""
         pem_output = self._forward(bsp_feature).view(-1).cpu().numpy().reshape(
             -1, 1)
 
