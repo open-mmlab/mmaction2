@@ -15,7 +15,7 @@ def post_processing(result, video_info, soft_nms_alpha, soft_nms_low_threshold,
         post_process_top_k (int): Top k values to be considered.
 
     Returns:
-        proposal_list (list[dict]): The updated proposals, e.g.
+        list[dict]: The updated proposals, e.g.
             [{'score': 0.9, 'segment': [0, 1]},
              {'score': 0.8, 'segment': [0, 2]},
             ...].

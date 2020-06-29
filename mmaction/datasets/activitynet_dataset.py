@@ -124,7 +124,6 @@ class ActivityNetDataset(BaseDataset):
 
                 dict(video-1=[dict(segment=[1.1,2.0]. score=0.9),
                               dict(segment=[50.1, 129.3], score=0.6)])
-
         """
         result_dict = {}
         print('Convert proposals to json format')
@@ -197,7 +196,7 @@ class ActivityNetDataset(BaseDataset):
             logger (logging.Logger | None): Training logger. Defaults: None.
 
         Returns:
-            eval_results (dict): Evaluation results for evaluation metrics.
+            dict: Evaluation results for evaluation metrics.
         """
         if not isinstance(results, list):
             raise TypeError(f'results must be a list, but got {type(results)}')

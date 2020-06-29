@@ -1,5 +1,6 @@
-"""This file is for benchmark dataloading process.
-The command line to run this file is:
+"""This file is for benchmark dataloading process. The command line to run this
+file is:
+
 $ python -m cProfile -o program.prof tools/bench_processing.py
 configs/task/method/[config filename]
 

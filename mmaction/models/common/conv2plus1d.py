@@ -83,6 +83,14 @@ class Conv2plus1d(nn.Module):
         self.init_weights()
 
     def forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+
+        Returns:
+            torch.Tensor: The output of the module.
+        """
         x = self.conv_s(x)
         x = self.bn_s(x)
         x = self.relu(x)
@@ -90,6 +98,7 @@ class Conv2plus1d(nn.Module):
         return x
 
     def init_weights(self):
+        """Initiate the parameters from scratch."""
         kaiming_init(self.conv_s)
         kaiming_init(self.conv_t)
         constant_init(self.bn_s, 1, bias=0)

@@ -9,6 +9,7 @@ def binary_logistic_regression_loss(reg_score,
                                     threshold=0.5,
                                     ratio_range=(1.05, 21),
                                     eps=1e-5):
+    """Binary Logistic Regression Loss."""
     label = label.view(-1).to(reg_score.device)
     reg_score = reg_score.contiguous().view(-1)
 
@@ -29,10 +30,10 @@ def binary_logistic_regression_loss(reg_score,
 
 @LOSSES.register_module()
 class BinaryLogisticRegressionLoss(nn.Module):
-    """Binary Logistic Regression Loss
+    """Binary Logistic Regression Loss.
 
-    It will calculate binary logistic regression loss given reg_score and
-    label.
+    It will calculate binary logistic regression loss given reg_score
+    and label.
     """
 
     def forward(self,
@@ -53,7 +54,7 @@ class BinaryLogisticRegressionLoss(nn.Module):
                 eps (float): Epsilon for small value. Default: 1e-5.
 
         Returns:
-                loss (torch.Tensor): Returned binary logistic loss.
+                torch.Tensor: Returned binary logistic loss.
         """
 
         return binary_logistic_regression_loss(reg_score, label, threshold,

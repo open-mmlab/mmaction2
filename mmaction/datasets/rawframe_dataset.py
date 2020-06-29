@@ -120,8 +120,8 @@ class RawframeDataset(BaseDataset):
             logger (logging.Logger | None): Logger for recording.
                 Default: None.
 
-        return:
-            eval_results (dict): Evaluation results dict.
+        Returns:
+            dict: Evaluation results dict.
         """
         if not isinstance(results, list):
             raise TypeError(f'results must be a list, but got {type(results)}')

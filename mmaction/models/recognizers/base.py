@@ -8,7 +8,7 @@ from .. import builder
 
 
 class BaseRecognizer(nn.Module, metaclass=ABCMeta):
-    """Base class for recognizers
+    """Base class for recognizers.
 
     All recognizers should subclass it.
     All subclass should overwrite:

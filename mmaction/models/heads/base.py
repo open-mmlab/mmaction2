@@ -20,6 +20,7 @@ class AvgConsensus(nn.Module):
         self.dim = dim
 
     def forward(self, input):
+        """Defines the computation performed at every call."""
         return input.mean(dim=self.dim, keepdim=True)
 
 
@@ -59,13 +60,26 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
 
     @abstractmethod
     def init_weights(self):
+        """Initiate the parameters either from existing checkpoint or from
+        scratch."""
         pass
 
     @abstractmethod
     def forward(self, x):
+        """Defines the computation performed at every call."""
         pass
 
     def loss(self, cls_score, labels):
+        """Calculate the loss given output ``cls_score`` and target ``labels``.
+
+        Args:
+            cls_score (torch.Tensor): The output of the model.
+            labels (torch.Tensor): The target output of the model.
+
+        Returns:
+            dict: A dict containing field 'loss_cls'(mandatory)
+            and 'top1_acc', 'top5_acc'(optional).
+        """
         losses = dict()
         if labels.shape == torch.Size([]):
             labels = labels.unsqueeze(0)

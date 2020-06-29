@@ -26,8 +26,8 @@ def test_base_head():
 
 
 def test_i3d_head():
-    """Test loss method, layer construction, attributes and forward function
-     in i3d head."""
+    """Test loss method, layer construction, attributes and forward function in
+    i3d head."""
     i3d_head = I3DHead(num_classes=4, in_channels=2048)
     i3d_head.init_weights()
 
@@ -55,8 +55,8 @@ def test_i3d_head():
 
 
 def test_slowfast_head():
-    """Test loss method, layer construction, attributes and forward function
-     in slowfast head."""
+    """Test loss method, layer construction, attributes and forward function in
+    slowfast head."""
     sf_head = SlowFastHead(num_classes=4, in_channels=2304)
     sf_head.init_weights()
 
@@ -87,8 +87,8 @@ def test_slowfast_head():
 
 
 def test_tsn_head():
-    """Test loss method, layer construction, attributes and forward function
-     in tsn head."""
+    """Test loss method, layer construction, attributes and forward function in
+    tsn head."""
     tsn_head = TSNHead(num_classes=4, in_channels=2048)
     tsn_head.init_weights()
 
@@ -151,8 +151,8 @@ def test_tsn_head():
 
 
 def test_tsm_head():
-    """Test loss method, layer construction, attributes and forward function
-    in tsm head."""
+    """Test loss method, layer construction, attributes and forward function in
+    tsm head."""
     tsm_head = TSMHead(num_classes=4, in_channels=2048)
     tsm_head.init_weights()
 
@@ -189,8 +189,8 @@ def test_tsm_head():
 
 
 def test_tin_head():
-    """Test loss method, layer construction, attributes and forward function
-    in tin head."""
+    """Test loss method, layer construction, attributes and forward function in
+    tin head."""
     tin_head = TINHead(num_classes=4, in_channels=2048)
     tin_head.init_weights()
 

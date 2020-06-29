@@ -64,7 +64,7 @@ def extract_dense_flow(path,
                        start_idx=0,
                        method='tvl1'):
     """Extract dense flow given video or frames, save them as gray-scale
-        images.
+    images.
 
     Args:
         path (str): Location of the video or frames. If use a video as input,

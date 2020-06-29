@@ -7,6 +7,7 @@ class Recognizer3D(BaseRecognizer):
     """3D recognizer model framework."""
 
     def forward_train(self, imgs, labels):
+        """Defines the computation performed at every call when training."""
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
 
         x = self.extract_feat(imgs)
@@ -17,6 +18,7 @@ class Recognizer3D(BaseRecognizer):
         return loss
 
     def forward_test(self, imgs):
+        """Defines the computation performed at every call when testing."""
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
 
         x = self.extract_feat(imgs)
@@ -31,7 +33,7 @@ class Recognizer3D(BaseRecognizer):
         See `mmaction/tools/get_flops.py`.
 
         Args:
-            imgs (Tensor): Input images.
+            imgs (torch.Tensor): Input images.
 
         Returns:
             Tensor: Class score.

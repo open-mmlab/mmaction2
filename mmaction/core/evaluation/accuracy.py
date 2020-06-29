@@ -189,8 +189,8 @@ def average_recall_at_avg_proposals(ground_truth,
                                     max_avg_proposals=None,
                                     temporal_iou_thresholds=np.linspace(
                                         0.5, 0.95, 10)):
-    """Computes the average recall given an average number (percentile)
-    of proposals per video.
+    """Computes the average recall given an average number (percentile) of
+    proposals per video.
 
     Args:
         ground_truth (dict): Dict containing the ground truth instances.

@@ -14,7 +14,7 @@ def generate_candidate_proposals(video_list,
                                  result_dict=None):
     """Generate Candidate Proposals with given temporal evalutation results.
     Each proposal file will contain:
-    'tmin,tmax,tmin_score,tmax_score,score,match_iou,match_ioa'
+    'tmin,tmax,tmin_score,tmax_score,score,match_iou,match_ioa'.
 
     Args:
         video_list (list[int]): List of video indexs to generate proposals.

@@ -14,15 +14,15 @@ def temporal_shift(data, offset, temporal_size):
     by a given offsets, which is range from [1, temporal_size].
 
     Args:
-        data (Tensor): Feature map data in shape
+        data (torch.Tensor): Feature map data in shape
             [N, num_segments + 2, C, H, W].
-        offset (Tensor): Data offset used for shifting in shape
+        offset (torch.Tensor): Data offset used for shifting in shape
             [N, num_segments].
         temporal_size (int): Number of temporal size.
             [num_segments + 2].
 
     Returns:
-        (Tensor): Result tensor in shape [N, num_segments, C, H, W].
+        torch.Tensor: Result tensor in shape [N, num_segments, C, H, W].
     """
     # [N, num_segments + 2, C, H, W]
     n = data.shape[0]
@@ -43,19 +43,19 @@ def linear_sampler(data,
                    offset_weight=1.0,
                    extended=True,
                    scale=None):
-    """Differentiable Temporal-wise Frame Sampling, which is essentially
-    a linear interpolation process.
+    """Differentiable Temporal-wise Frame Sampling, which is essentially a
+    linear interpolation process.
 
     It gets the feature map which has been split into several groups
     and shift them by different offsets according to their groups.
     Then compute the weighted sum along with the temporal dimension.
 
     Args:
-        data (Tensor): Split data for certain group in shape
+        data (torch.Tensor): Split data for certain group in shape
             [N, num_segments, C, H, W].
-        offset (Tensor): Data offsets for this group data in shape
+        offset (torch.Tensor): Data offsets for this group data in shape
             [N, num_segments].
-        weight (Tensor): Weight factors for this group data in shape
+        weight (torch.Tensor): Weight factors for this group data in shape
             [N, num_segments].
         offset_weight (float): Offset Weight. Default: 1.0.
         extended (bool): Whether to apply Temporal Extension. Default: True.
@@ -127,6 +127,14 @@ class CombineNet(nn.Module):
         self.buffer = []
 
     def forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+
+        Returns:
+            torch.Tensor: The output of the module.
+        """
         # input shape: [num_batches * num_segments, C, H, W]
         # output x shape: [num_batches * num_segments, C, H, W]
         # x_offset shape: [num_batches, 1, groups]
@@ -169,6 +177,14 @@ class WeightNet(nn.Module):
         self.conv.bias.data[...] = 0
 
     def forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+
+        Returns:
+            torch.Tensor: The output of the module.
+        """
         # calculate weight
         # [N, C, T]
         n, _, t = x.shape
@@ -214,11 +230,21 @@ class OffsetNet(nn.Module):
         self.init_weights()
 
     def init_weights(self):
+        """Initiate the parameters either from existing checkpoint or from
+        scratch."""
         # The bias of the last fc layer is initialized to
         # make the post-sigmoid output start from 1
         self.fc2.bias.data[...] = 0.5108
 
     def forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+
+        Returns:
+            torch.Tensor: The output of the module.
+        """
         # calculate offset
         # [N, C, T]
         n, _, t = x.shape
@@ -265,6 +291,14 @@ class TemporalInterlace(nn.Module):
                                     self.deform_groups)
 
     def forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+
+        Returns:
+            torch.Tensor: The output of the module.
+        """
         # [num_batches * num_segments, C, H, W]
         n, c, h, w = x.size()
         num_batches = n // self.num_segments
@@ -367,7 +401,7 @@ class ResNetTIN(ResNet):
                 shift_div (int): Number of division parts for shift.
 
             Returns:
-                (nn.Sequential): A Sequential container consisted of
+                nn.Sequential: A Sequential container consisted of
                     deformed Interlace blocks.
             """
             blocks = list(stage.children())
@@ -390,6 +424,8 @@ class ResNetTIN(ResNet):
             self.layer4, num_segment_list[3], shift_div=self.shift_div)
 
     def init_weights(self):
+        """Initiate the parameters either from existing checkpoint or from
+        scratch."""
         super().init_weights()
         if self.is_dtn:
             self.make_temporal_interlace()

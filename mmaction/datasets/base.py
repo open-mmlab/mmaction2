@@ -51,27 +51,43 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
 
     @abstractmethod
     def load_annotations(self):
+        """Load the annotation according to ann_file into video_infos."""
         pass
 
     @abstractmethod
     def evaluate(self, results, metrics, logger):
+        """Evaluation for the dataset.
+
+        Args:
+            results (list): Output results.
+            metrics (str | sequence[str]): Metrics to be performed.
+            logger (logging.Logger | None): Logger for recording.
+
+        Returns:
+            dict: Evaluation results dict.
+        """
         pass
 
     def dump_results(self, results, out):
+        """Dump data to json/yaml/pickle strings or files."""
         return mmcv.dump(results, out)
 
     def prepare_train_frames(self, idx):
+        """Prepare the frames for training given the index."""
         results = copy.deepcopy(self.video_infos[idx])
         return self.pipeline(results)
 
     def prepare_test_frames(self, idx):
+        """Prepare the frames for testing given the index."""
         results = copy.deepcopy(self.video_infos[idx])
         return self.pipeline(results)
 
     def __len__(self):
+        """Get the size of the dataset."""
         return len(self.video_infos)
 
     def __getitem__(self, idx):
+        """Get the sample for either training or testing given index."""
         if self.test_mode:
             return self.prepare_test_frames(idx)
         else:

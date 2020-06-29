@@ -44,9 +44,19 @@ class I3DHead(BaseHead):
             self.avg_pool = None
 
     def init_weights(self):
+        """Initiate the parameters from scratch."""
         normal_init(self.fc_cls, std=self.init_std)
 
     def forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+
+        Returns:
+            torch.Tensor: The classification scores for input
+                samples.
+        """
         # [N, in_channels, 4, 7, 7]
         x = self.avg_pool(x)
         # [N, in_channels, 1, 1, 1]

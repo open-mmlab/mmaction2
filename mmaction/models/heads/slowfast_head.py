@@ -45,9 +45,19 @@ class SlowFastHead(BaseHead):
             self.avg_pool = None
 
     def init_weights(self):
+        """Initiate the parameters from scratch."""
         normal_init(self.fc_cls, std=self.init_std)
 
     def forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+
+        Returns:
+            torch.Tensor: The classification scores for input
+                samples.
+        """
         # ([N, channel_fast, T, H, W], [(N, channel_slow, T, H, W)])
         x_fast, x_slow = x
         # ([N, channel_fast, 1, 1, 1], [N, channel_slow, 1, 1, 1])

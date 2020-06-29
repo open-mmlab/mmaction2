@@ -18,7 +18,7 @@ def check_norm_state(modules, train_state):
 
 
 def test_resnet_backbone():
-    """Test resnet backbone"""
+    """Test resnet backbone."""
     with pytest.raises(KeyError):
         # ResNet depth should be in [18, 34, 50, 101, 152]
         ResNet(20)
@@ -108,7 +108,7 @@ def test_resnet_backbone():
 
 
 def test_resnet3d_backbone():
-    """Test resnet3d backbone"""
+    """Test resnet3d backbone."""
     with pytest.raises(AssertionError):
         # In ResNet3d: 1 <= num_stages <= 4
         ResNet3d(34, None, num_stages=0)
@@ -465,7 +465,7 @@ def test_resnet2plus1d_backbone():
 
 
 def test_resnet_tsm_backbone():
-    """Test resnet_tsm backbone"""
+    """Test resnet_tsm backbone."""
     with pytest.raises(NotImplementedError):
         # shift_place must be block or blockres
         resnet_tsm_50_block = ResNetTSM(50, shift_place='Block')
@@ -535,7 +535,7 @@ def test_resnet_tsm_backbone():
 
 
 def test_resnet_tin_backbone():
-    """Test resnet_tin backbone"""
+    """Test resnet_tin backbone."""
     with pytest.raises(TypeError):
         # finetune must be a str or None
         resnet_tin = ResNetTIN(50, finetune=0)
@@ -571,7 +571,7 @@ def test_resnet_tin_backbone():
 
 
 def test_slowfast_backbone():
-    """Test slowfast backbone"""
+    """Test slowfast backbone."""
     with pytest.raises(TypeError):
         # cfg should be a dict
         ResNet3dSlowFast(None, slow_pathway=list(['foo', 'bar']))

@@ -13,8 +13,6 @@ class EvalHook(Hook):
     Args:
         dataloader (DataLoader): A PyTorch dataloader.
         interval (int): Evaluation interval (by epochs). Default: 1.
-        tmpdir (str | None): Temporary directory to save the results of all
-            processes. Default: None.
         gpu_collect (bool): Whether to use gpu or cpu to collect results.
             Default: False.
         eval_kwargs (dict, optional): Arguments for evaluation.
@@ -34,6 +32,7 @@ class EvalHook(Hook):
         self.eval_kwargs = eval_kwargs
 
     def after_train_epoch(self, runner):
+        """Called after every training epoch to evaluate the results."""
         if not self.every_n_epochs(runner, self.interval):
             return
         from mmaction.apis import single_gpu_test
@@ -41,6 +40,12 @@ class EvalHook(Hook):
         self.evaluate(runner, results)
 
     def evaluate(self, runner, results):
+        """Evaluate the results.
+
+        Args:
+            runner (mmcv.Runner): The underlined training runner.
+            results (list): Output results.
+        """
         eval_res = self.dataloader.dataset.evaluate(
             results, logger=runner.logger, **self.eval_kwargs)
         for name, val in eval_res.items():
@@ -53,9 +58,17 @@ class DistEvalHook(EvalHook):
 
     This hook will regularly perform evaluation in a given interval when
     performing in distributed environment.
+
+    Args:
+        dataloader (DataLoader): A PyTorch dataloader.
+        interval (int): Evaluation interval (by epochs). Default: 1.
+        gpu_collect (bool): Whether to use gpu or cpu to collect results.
+            Default: False.
+        eval_kwargs (dict, optional): Arguments for evaluation.
     """
 
     def after_train_epoch(self, runner):
+        """Called after each training epoch to evaluate the model."""
         if not self.every_n_epochs(runner, self.interval):
             return
         from mmaction.apis import multi_gpu_test

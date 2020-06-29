@@ -27,7 +27,6 @@ class VideoDataset(BaseDataset):
         some/path/003.mp4 2
         some/path/004.mp4 3
         some/path/005.mp4 3
-
     """
 
     def load_annotations(self):
@@ -70,7 +69,7 @@ class VideoDataset(BaseDataset):
                 Default: None.
 
         Return:
-            eval_results (dict): Evaluation results dict.
+            dict: Evaluation results dict.
         """
         if not isinstance(results, list):
             raise TypeError(f'results must be a list, but got {type(results)}')

@@ -15,14 +15,12 @@ def get_random_string(length=15):
 
 
 def get_thread_id():
-    """Get current thread id.
-    """
+    """Get current thread id."""
     # use ctype to find thread id
     thread_id = ctypes.CDLL('libc.so.6').syscall(186)
     return thread_id
 
 
 def get_shm_dir():
-    """Get shm dir for temporary usage.
-    """
+    """Get shm dir for temporary usage."""
     return '/dev/shm'

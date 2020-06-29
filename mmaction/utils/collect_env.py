@@ -13,6 +13,7 @@ import mmaction
 
 
 def collect_env():
+    """Collect environment variables."""
     env_info = {}
     env_info['sys.platform'] = sys.platform
     env_info['Python'] = sys.version.replace('\n', '')

@@ -70,6 +70,8 @@ class TINHead(BaseHead):
             self.avg_pool = None
 
     def init_weights(self):
+        """Initiate the parameters either from existing checkpoint or from
+        scratch."""
         if self.finetune is None:
             normal_init(self.fc_cls, std=self.init_std)
         elif isinstance(self.finetune, str):
@@ -79,6 +81,16 @@ class TINHead(BaseHead):
             raise TypeError('finetune must be a str or None.')
 
     def forward(self, x, num_segments):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+            num_segs (int): Number of segments into which a video
+                is divided.
+        Returns:
+            torch.Tensor: The classification scores for input
+                samples.
+        """
         # [N * num_segs, in_channels, 7, 7]
         x = self.avg_pool(x)
         # [N * num_segs, in_channels, 1, 1]
