@@ -15,33 +15,33 @@ We compare our results with some other popular frameworks in terms of speed and 
 - CUDNN 7.6.03
 - NCCL 2.4.08
 
-| Model      | Dataset     | Setting  | Framework     | Top1 Accuracy | Top5 Accuracy | Mean Accuracy | Iter time | Memory | ckpt & log |
-| ---------- | ----------- | -------- | ------------- | ------------- | ------------- | ------------- | --------- | ------ | ---------- |
-| TSN        | Kinetics400 | Setting1 | mmaction-lite |               |               |               |           |        |            |
-|            |             |          | open-mmaction |               |               |               |           |        |            |
-|            |             |          | HAN           |               |               |               |           |        |            |
-|            |             | Setting2 | mmaction-lite |               |               |               |           |        |            |
-|            | Sthv1       | Setting1 | mmaction-lite |               |               |               |           |        |            |
-|            |             |          | open-mmaction |               |               |               |           |        |            |
-|            |             |          | HAN           |               |               |               |           |        |            |
-|            |             | Setting2 | mmaction-lite |               |               |               |           |        |            |
-| TSM        |             | Setting1 | mmaction-lite |               |               |               |           |        |            |
-|            |             |          | open-mmaction |               |               |               |           |        |            |
-|            |             |          | HAN           |               |               |               |           |        |            |
-|            |             | Setting2 | mmaction-lite |               |               |               |           |        |            |
-| TIN        |             | Setting1 | mmaction-lite |               |               |               |           |        |            |
-|            |             |          | open-mmaction |               |               |               |           |        |            |
-|            |             |          | HAN           |               |               |               |           |        |            |
-|            |             | Setting2 | mmaction-lite |               |               |               |           |        |            |
-| PySlowfast |             | Setting1 | mmaction-lite |               |               |               |           |        |            |
-|            |             |          | open-mmaction |               |               |               |           |        |            |
-|            |             |          | PySlowfast    |               |               |               |           |        |            |
-|            |             | Setting2 | mmaction-lite |               |               |               |           |        |            |
-| R(2+1)D    |             | Setting1 | mmaction-lite |               |               |               |           |        |            |
-|            |             |          | open-mmaction |               |               |               |           |        |            |
-|            |             |          | PySlowfast    |               |               |               |           |        |            |
-|            |             | Setting2 | mmaction-lite |               |               |               |           |        |            |
-| R(2+1)D    |             | Setting1 | mmaction-lite |               |               |               |           |        |            |
-|            |             |          | open-mmaction |               |               |               |           |        |            |
-|            |             |          | PySlowfast    |               |               |               |           |        |            |
-|            |             | Setting2 | mmaction-lite |               |               |               |           |        |            |
+| Model      | Dataset     | Setting  | Framework     | Iter time | Memory | ckpt & log |
+| ---------- | ----------- | -------- | ------------- | --------- | ------ | ---------- |
+| TSN        | Kinetics400 | Setting1 | mmaction-lite |           |        |            |
+|            |             |          | open-mmaction |           |        |            |
+|            |             |          | HAN           |           |        |            |
+|            |             | Setting2 | mmaction-lite |           |        |            |
+|            | Sthv1       | Setting1 | mmaction-lite |           |        |            |
+|            |             |          | open-mmaction |           |        |            |
+|            |             |          | HAN           |           |        |            |
+|            |             | Setting2 | mmaction-lite |           |        |            |
+| TSM        |             | Setting1 | mmaction-lite |           |        |            |
+|            |             |          | open-mmaction |           |        |            |
+|            |             |          | HAN           |           |        |            |
+|            |             | Setting2 | mmaction-lite |           |        |            |
+| TIN        |             | Setting1 | mmaction-lite |           |        |            |
+|            |             |          | open-mmaction |           |        |            |
+|            |             |          | HAN           |           |        |            |
+|            |             | Setting2 | mmaction-lite |           |        |            |
+| PySlowfast |             | Setting1 | mmaction-lite |           |        |            |
+|            |             |          | open-mmaction |           |        |            |
+|            |             |          | PySlowfast    |           |        |            |
+|            |             | Setting2 | mmaction-lite |           |        |            |
+| R(2+1)D    |             | Setting1 | mmaction-lite |           |        |            |
+|            |             |          | open-mmaction |           |        |            |
+|            |             |          | PySlowfast    |           |        |            |
+|            |             | Setting2 | mmaction-lite |           |        |            |
+| R(2+1)D    |             | Setting1 | mmaction-lite |           |        |            |
+|            |             |          | open-mmaction |           |        |            |
+|            |             |          | PySlowfast    |           |        |            |
+|            |             | Setting2 | mmaction-lite |           |        |            |
