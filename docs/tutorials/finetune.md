@@ -44,7 +44,7 @@ What we need is `load_from`, which will be discussed later.
 
 ## Modify Dataset
 
-MMAction supports UCF101, Kinetics-400, MIT, MMIT, THUMOS14,
+MMAction supports UCF101, Kinetics-400, Moments in Time, Multi-Moments in Time, THUMOS14,
 Something-Something V1&V2, ActivityNet Dataset.
 The users may need to adapt one of the above dataset to fit for their special datasets.
 In our case, UCF101 is already supported by various dataset types, like `RawframeDataset`,
