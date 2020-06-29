@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 import pytest
 import torch
 import torch.nn as nn
-from mmcv.runner import Runner
+from mmcv.runner import EpochBasedRunner, build_optimizer
 from mmcv.utils import get_logger
 from torch.utils.data import DataLoader, Dataset
 
@@ -26,9 +26,20 @@ class ExampleModel(nn.Module):
     def __init__(self):
         super().__init__()
         self.test_cfg = None
+        self.conv = nn.Conv2d(3, 8, 3)
 
     def forward(self, imgs, return_loss=False):
         return imgs
+
+    def train_step(self, data_batch, optimizer, **kwargs):
+        outputs = {
+            'loss': 0.5,
+            'log_vars': {
+                'accuracy': 0.98
+            },
+            'num_samples': 1
+        }
+        return outputs
 
 
 def test_eval_hook():
@@ -44,24 +55,24 @@ def test_eval_hook():
         ]
         EvalHook(data_loader)
 
+    optimizer_cfg = dict(
+        type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001)
+
     test_dataset = ExampleDataset()
     test_dataset.evaluate = MagicMock(return_value=dict(test='success'))
     loader = DataLoader(test_dataset, batch_size=1)
     model = ExampleModel()
+    optimizer = build_optimizer(model, optimizer_cfg)
     data_loader = DataLoader(
         test_dataset, batch_size=1, sampler=None, num_workers=0, shuffle=False)
     eval_hook = EvalHook(data_loader)
 
     with tempfile.TemporaryDirectory() as tmpdir:
         logger = get_logger('test_eval')
-        runner = Runner(
+        runner = EpochBasedRunner(
             model=model,
-            batch_processor=lambda model, x, **kwargs: {
-                'log_vars': {
-                    'accuracy': 0.98
-                },
-                'num_samples': 1
-            },
+            batch_processor=None,
+            optimizer=optimizer,
             work_dir=tmpdir,
             logger=logger)
         runner.register_hook(eval_hook)

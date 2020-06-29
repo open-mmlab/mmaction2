@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from ...apis import parse_losses
 from ...localization import temporal_iop
 from ..builder import build_loss
 from ..registry import LOCALIZERS
@@ -217,6 +218,33 @@ class TEM(nn.Module):
         else:
             return self.forward_test(raw_feature, video_meta)
 
+    def train_step(self, data_batch, **kwargs):
+        raw_feature = data_batch['raw_feature']
+        gt_bbox = data_batch['gt_bbox']
+        video_meta = data_batch['video_meta']
+
+        losses = self.forward(raw_feature, gt_bbox, video_meta)
+
+        loss, log_vars = parse_losses(losses)
+
+        outputs = dict(
+            loss=loss,
+            log_vars=log_vars,
+            num_samples=len(next(iter(data_batch.values()))))
+
+        return outputs
+
+    def val_step(self, data_batch, **kwargs):
+        raw_feature = data_batch['raw_feature']
+        video_meta = data_batch['video_meta']
+
+        results = self.forward(
+            raw_feature, video_meta=video_meta, return_loss=False)
+
+        outputs = dict(results=results)
+
+        return outputs
+
 
 @LOCALIZERS.register_module()
 class PEM(nn.Module):
@@ -378,3 +406,39 @@ class PEM(nn.Module):
         else:
             return self.forward_test(bsp_feature, tmin, tmax, tmin_score,
                                      tmax_score, video_meta)
+
+    def train_step(self, data_batch, **kwargs):
+        bsp_feature = data_batch['bsp_feature']
+        reference_temporal_iou = data_batch['reference_temporal_iou']
+
+        losses = self.forward(bsp_feature, reference_temporal_iou)
+
+        loss, log_vars = parse_losses(losses)
+
+        outputs = dict(
+            loss=loss,
+            log_vars=log_vars,
+            num_samples=len(next(iter(data_batch.values()))))
+
+        return outputs
+
+    def val_step(self, data_batch, **kwargs):
+        bsp_feature = data_batch['bsp_feature']
+        tmin, tmax = data_batch['tmin'], data_batch['tmax']
+        tmin_score, tmax_score = data_batch['tmin_score'], data_batch[
+            'tmax_score']
+        video_meta = data_batch['video_meta']
+
+        results = self.forward(
+            bsp_feature,
+            None,
+            tmin,
+            tmax,
+            tmin_score,
+            tmax_score,
+            video_meta,
+            return_loss=False)
+
+        outputs = dict(results=results)
+
+        return outputs

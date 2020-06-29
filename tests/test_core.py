@@ -1,7 +1,7 @@
 import pytest
 import torch
 
-from mmaction.core.train import parse_losses
+from mmaction.apis import parse_losses
 
 
 def test_parse_loss():
@@ -26,3 +26,11 @@ def test_parse_loss():
     assert log_vars['a_loss'] == r_a_loss
     assert log_vars['b_loss'] == r_b_loss
     assert log_vars['loss'] == r_loss
+
+    ones_loss = torch.ones(5, 5)
+    losses = dict(ones_loss=ones_loss)
+    loss, _ = parse_losses(losses)
+
+    loss.requires_grad_(True)
+    assert float(loss.item()) == 1.0
+    loss.backward()

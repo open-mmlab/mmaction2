@@ -3,6 +3,7 @@ from abc import ABCMeta, abstractmethod
 import torch.nn as nn
 import torch.nn.functional as F
 
+from ...apis import parse_losses
 from .. import builder
 
 
@@ -81,3 +82,27 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
             return self.forward_train(imgs, label)
         else:
             return self.forward_test(imgs)
+
+    def train_step(self, data_batch, optimizer, **kwargs):
+        imgs = data_batch['imgs']
+        label = data_batch['label']
+
+        losses = self.forward(imgs, label)
+
+        loss, log_vars = parse_losses(losses)
+
+        outputs = dict(
+            loss=loss,
+            log_vars=log_vars,
+            num_samples=len(next(iter(data_batch.values()))))
+
+        return outputs
+
+    def val_step(self, data_batch, optimizer, **kwargs):
+        imgs = data_batch['imgs']
+
+        results = self.forward(imgs, None, return_loss=False)
+
+        outputs = dict(results=results)
+
+        return outputs

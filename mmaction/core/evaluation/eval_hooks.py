@@ -36,7 +36,7 @@ class EvalHook(Hook):
     def after_train_epoch(self, runner):
         if not self.every_n_epochs(runner, self.interval):
             return
-        from mmaction.core import single_gpu_test
+        from mmaction.apis import single_gpu_test
         results = single_gpu_test(runner.model, self.dataloader)
         self.evaluate(runner, results)
 
@@ -58,7 +58,7 @@ class DistEvalHook(EvalHook):
     def after_train_epoch(self, runner):
         if not self.every_n_epochs(runner, self.interval):
             return
-        from mmaction.core import multi_gpu_test
+        from mmaction.apis import multi_gpu_test
         results = multi_gpu_test(
             runner.model,
             self.dataloader,
