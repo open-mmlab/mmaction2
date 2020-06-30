@@ -397,7 +397,7 @@ class TestLoading(object):
             f'(multi_thread={True})'
 
     def test_decord_init(self):
-        target_keys = ['new_path', 'video_reader', 'total_frames']
+        target_keys = ['video_reader', 'total_frames']
         video_result = copy.deepcopy(self.video_results)
         decord_init = DecordInit()
         decord_init_result = decord_init(video_result)
