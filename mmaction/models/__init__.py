@@ -1,5 +1,5 @@
 from .backbones import (ResNet, ResNet2Plus1d, ResNet3d, ResNet3dSlowFast,
-                        ResNetTIN, ResNetTSM)
+                        ResNet3dSlowOnly, ResNetTIN, ResNetTSM)
 from .builder import (build_backbone, build_head, build_localizer, build_model,
                       build_recognizer)
 from .common import Conv2plus1d
@@ -16,6 +16,7 @@ __all__ = [
     'ResNet2Plus1d', 'I3DHead', 'TSNHead', 'BaseHead', 'BaseRecognizer',
     'LOSSES', 'CrossEntropyLoss', 'NLLLoss', 'ResNetTSM', 'TSMHead',
     'ResNetTIN', 'TINHead', 'ResNet3dSlowFast', 'SlowFastHead', 'Conv2plus1d',
-    'BCELossWithLogits', 'LOCALIZERS', 'build_localizer', 'PEM', 'TEM',
-    'BinaryLogisticRegressionLoss', 'BMN', 'BMNLoss', 'build_model'
+    'ResNet3dSlowOnly', 'BCELossWithLogits', 'LOCALIZERS', 'build_localizer',
+    'PEM', 'TEM', 'BinaryLogisticRegressionLoss', 'BMN', 'BMNLoss',
+    'build_model'
 ]

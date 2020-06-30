@@ -52,7 +52,7 @@ class ResNet3dPathway(ResNet3d):
                 padding=((fusion_kernel - 1) // 2, 0, 0),
                 bias=False,
                 conv_cfg=self.conv_cfg,
-                norm_cfg=self.norm_cfg,
+                norm_cfg=None,
                 act_cfg=None)
 
         self.lateral_connections = []
@@ -73,7 +73,7 @@ class ResNet3dPathway(ResNet3d):
                         padding=((fusion_kernel - 1) // 2, 0, 0),
                         bias=False,
                         conv_cfg=self.conv_cfg,
-                        norm_cfg=self.norm_cfg,
+                        norm_cfg=None,
                         act_cfg=None))
                 self.lateral_connections.append(lateral_name)
 
