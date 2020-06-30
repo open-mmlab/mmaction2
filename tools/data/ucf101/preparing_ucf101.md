@@ -11,7 +11,7 @@ First of all, you can run the following script to prepare annotations.
 bash download_annotations.sh
 ```
 
-## Prepare Videos
+## Step 2. Prepare Videos
 
 Then, you can run the following script to prepare videos.
 
@@ -19,7 +19,7 @@ Then, you can run the following script to prepare videos.
 bash download_videos.sh
 ```
 
-## Extract RGB and Flow
+## Step 3. Extract RGB and Flow
 
 This part is **optional** if you only want to use the video loader.
 
@@ -47,7 +47,7 @@ mkdir /mnt/SSD/ucf101_extracted/
 ln -s /mnt/SSD/ucf101_extracted/ ../../../data/ucf101/rawframes
 ```
 
-## Generate File List
+## Step 4. Generate File List
 
 you can run the follow script to generate file list in the format of rawframes and videos.
 
@@ -55,7 +55,7 @@ you can run the follow script to generate file list in the format of rawframes a
 bash generate_filelist.sh
 ```
 
-## Directory Structure
+## Step 5. Check Directory Structure
 
 After the whole data process for UCF-101 preparation,
 you will get the rawframes (RGB + Flow), videos and annotation files for UCF-101.
