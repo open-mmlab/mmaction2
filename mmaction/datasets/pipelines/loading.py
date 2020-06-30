@@ -322,7 +322,7 @@ class DecordInit(object):
     Decord: https://github.com/dmlc/decord
 
     Required keys are "filename",
-    added or modified keys are "new_path", "video_reader" and "total_frames".
+    added or modified keys are "video_reader" and "total_frames".
     """
 
     def __init__(self, io_backend='disk', num_threads=1, **kwargs):
@@ -330,8 +330,6 @@ class DecordInit(object):
         self.num_threads = num_threads
         self.kwargs = kwargs
         self.file_client = None
-        self.tmp_folder = osp.join(get_shm_dir(), get_random_string())
-        os.mkdir(self.tmp_folder)
 
     def __call__(self, results):
         try:
@@ -340,26 +338,14 @@ class DecordInit(object):
             raise ImportError(
                 'Please run "pip install decord" to install Decord first.')
 
-        if self.io_backend == 'disk':
-            new_path = results['filename']
-        else:
-            if self.file_client is None:
-                self.file_client = FileClient(self.io_backend, **self.kwargs)
+        if self.file_client is None:
+            self.file_client = FileClient(self.io_backend, **self.kwargs)
 
-            thread_id = get_thread_id()
-            # save the file of same thread at the same place
-            new_path = osp.join(self.tmp_folder, f'tmp_{thread_id}.mp4')
-            with open(new_path, 'wb') as f:
-                f.write(self.file_client.get(results['filename']))
-
-        container = decord.VideoReader(new_path, num_threads=self.num_threads)
-        results['new_path'] = new_path
+        file_obj = io.BytesIO(self.file_client.get(results['filename']))
+        container = decord.VideoReader(file_obj, num_threads=self.num_threads)
         results['video_reader'] = container
         results['total_frames'] = len(container)
         return results
-
-    def __del__(self):
-        shutil.rmtree(self.tmp_folder)
 
 
 @PIPELINES.register_module()
@@ -412,7 +398,10 @@ class OpenCVInit(object):
         self.io_backend = io_backend
         self.kwargs = kwargs
         self.file_client = None
-        self.tmp_folder = osp.join(get_shm_dir(), get_random_string())
+        random_string = get_random_string()
+        thread_id = get_thread_id()
+        self.tmp_folder = osp.join(get_shm_dir(),
+                                   f'{random_string}_{thread_id}')
         os.mkdir(self.tmp_folder)
 
     def __call__(self, results):
