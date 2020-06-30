@@ -5,7 +5,7 @@ import torch.nn as nn
 from mmcv.utils import _BatchNorm
 
 from mmaction.models import (ResNet, ResNet2Plus1d, ResNet3d, ResNet3dSlowFast,
-                             ResNetTIN, ResNetTSM)
+                             ResNet3dSlowOnly, ResNetTIN, ResNetTSM)
 
 
 def check_norm_state(modules, train_state):
@@ -571,7 +571,7 @@ def test_resnet_tin_backbone():
 
 
 def test_slowfast_backbone():
-    """Test slowfast backbone."""
+    """Test SlowFast backbone."""
     with pytest.raises(TypeError):
         # cfg should be a dict
         ResNet3dSlowFast(None, slow_pathway=list(['foo', 'bar']))
@@ -686,6 +686,31 @@ def test_slowfast_backbone():
     assert isinstance(feat, tuple)
     assert feat[0].shape == torch.Size([1, 2048, 1, 2, 2])
     assert feat[1].shape == torch.Size([1, 256, 8, 2, 2])
+
+
+def test_slowonly_backbone():
+    """Test SlowOnly backbone."""
+    with pytest.raises(AssertionError):
+        # SlowOnly should contain no lateral connection
+        ResNet3dSlowOnly(50, None, lateral=True)
+
+    # test SlowOnly with normal config
+    so_50 = ResNet3dSlowOnly(50, None)
+    so_50.init_weights()
+    so_50.train()
+
+    # SlowOnly inference test
+    input_shape = (1, 3, 8, 64, 64)
+    imgs = _demo_inputs(input_shape)
+    # parrots 3dconv is only implemented on gpu
+    if torch.__version__ == 'parrots':
+        if torch.cuda.is_available():
+            so_50 = so_50.cuda()
+            imgs_gpu = imgs.cuda()
+            feat = so_50(imgs_gpu)
+    else:
+        feat = so_50(imgs)
+    assert feat.shape == torch.Size([1, 2048, 8, 2, 2])
 
 
 def _demo_inputs(input_shape=(1, 3, 64, 64)):
