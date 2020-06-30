@@ -106,7 +106,7 @@ venv.bak/
 
 # custom
 mmaction/version.py
-data
+/data
 .vscode
 .idea
 *.pkl
