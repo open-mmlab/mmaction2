@@ -25,7 +25,7 @@ This part is **optional** if you only want to use the video loader.
 
 Before extracting, please refer to [install.md](/docs/install.md) for installing [dense_flow](https://github.com/yjxiong/dense_flow).
 
-If you have plenty of SSD, then we recommend extracting frames there for better I/O performance. The extracted frames (RGB + Flow) will take up about 100GB.
+If you have plenty of SSD space, then we recommend extracting frames there for better I/O performance. The extracted frames (RGB + Flow) will take up about 100GB.
 
 If you didn't install dense_flow in the installation or only want to play with RGB frames (since extracting optical flow can be time-comsuming), consider running the following script to extract **RGB-only** frames.
 
