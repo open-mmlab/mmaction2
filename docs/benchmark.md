@@ -21,3 +21,13 @@ We compare our results with some other popular frameworks in terms of speed and 
 |            | Kinetics400 | 8x8x1(video) | mmaction-lite |           |        |            |
 | R(2+1)D    | Kinetics400 | 32x2x1(frame) | mmaction-lite |           |        |            |
 |            | Kinetics400 | 8x8x1(frame) | mmaction-lite |           |        |            |
+
+
+### Localizers
+
+| Model      | Dataset     | Setting  | Framework     | Iter time | Memory | ckpt & log |
+| ---------- | ----------- | -------- | ------------- | --------- | ------ | ---------- |
+| BSN       | ActivityNet | bsn_400x100_1x16_20e_activitynet_feature | mmaction-lite |0.074(TEM)+0.040(PEM)|41(TEM)+25(PEM)|            |
+| BSN       | ActivityNet | bsn_400x100_1x16_20e_activitynet_feature | [repo](https://github.com/wzmsltw/BSN-boundary-sensitive-network.pytorch) |0.101(TEM)+0.040(PEM)|54(TEM)+34(PEM)|            |
+| BMN       | ActivityNet | bsn_400x100_2x8_9e_activitynet_feature | mmaction-lite |3.27|5420|            |
+| BMN       | ActivityNet | bsn_400x100_2x8_9e_activitynet_feature | [repo](https://github.com/JJBOY/BMN-Boundary-Matching-Network) |3.30|5780|            |
