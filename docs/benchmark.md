@@ -35,7 +35,7 @@ We compare our results with some other popular frameworks in terms of speed and 
 |            | Kinetics400 | slowonly_r50_8x8x1_256e_kinetics400_rgb(video) | mmaction-lite |0.50|5820|ready|
 |            | Kinetics400 | slowonly_r50_8x8x1_256e_kinetics400_rgb(video)| PySlowfast    |1.29|6400|ready|
 | R(2+1)D    | Kinetics400 | r2plus1d_r34_8x8x1_180e_kinetics400_rgb(frame) | mmaction-lite |0.48|3998|ready|
-|            | Kinetics400 | r2plus1d_r34_8x8x1_180e_kinetics400_rgb(frame) | mmaction-lite |1.2855|12974|ready|
+|            | Kinetics400 | r2plus1d_r34_8x8x1_180e_kinetics400_rgb(frame) | mmaction-lite |1.29|12974|ready|
 
 
 ### Localizers
