@@ -4,7 +4,7 @@ We compare our results with some other popular frameworks in terms of speed and 
 
 ## Results
 
-| Model      | Dataset     | Setting  | Framework     | Iter time | Memory | ckpt & log |
+| Model      | Dataset     | Setting  | Framework     | Iter time | Memory | log |
 | ---------- | ----------- | -------- | ------------- | --------- | ------ | ---------- |
 | TSN        | Kinetics400 | Setting1 | mmaction-lite |           |        |            |
 |            |             |          | open-mmaction |           |        |            |
