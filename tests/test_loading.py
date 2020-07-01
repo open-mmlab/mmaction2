@@ -225,6 +225,26 @@ class TestLoading(object):
         sample_frames_results = sample_frames(frame_result)
         assert len(sample_frames_results['frame_inds']) == 24
 
+        # Sample Frame using twice sample
+        # clip_len=12, frame_interval=1, num_clips=2
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        frame_result['total_frames'] = 40
+        config = dict(
+            clip_len=12,
+            frame_interval=1,
+            num_clips=2,
+            temporal_jitter=False,
+            twice_sample=True,
+            test_mode=True)
+        sample_frames = SampleFrames(**config)
+        sample_frames_results = sample_frames(video_result)
+        assert self.check_keys_contain(sample_frames_results.keys(),
+                                       target_keys)
+        assert len(sample_frames_results['frame_inds']) == 48
+        sample_frames_results = sample_frames(frame_result)
+        assert len(sample_frames_results['frame_inds']) == 48
+
     def test_dense_sample_frames(self):
         target_keys = [
             'frame_inds', 'clip_len', 'frame_interval', 'num_clips',
