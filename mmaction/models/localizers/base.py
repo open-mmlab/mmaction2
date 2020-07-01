@@ -37,7 +37,8 @@ class BaseLocalizer(nn.Module, metaclass=ABCMeta):
         else:
             return self.forward_test(imgs)
 
-    def _parse_losses(self, losses):
+    @staticmethod
+    def _parse_losses(losses):
         """Parse the raw outputs (losses) of the network.
 
         Args:
