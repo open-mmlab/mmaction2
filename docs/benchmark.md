@@ -33,15 +33,11 @@ We compare our results with some other popular frameworks in terms of speed and 
 |            |             |          | open-mmaction |           |        |            |
 |            |             |          | HAN           |           |        |            |
 |            |             | Setting2 | mmaction-lite |           |        |            |
-| PySlowfast |             | Setting1 | mmaction-lite |           |        |            |
-|            |             |          | open-mmaction |           |        |            |
-|            |             |          | PySlowfast    |           |        |            |
-|            |             | Setting2 | mmaction-lite |           |        |            |
-| R(2+1)D    |             | Setting1 | mmaction-lite |           |        |            |
-|            |             |          | open-mmaction |           |        |            |
-|            |             |          | PySlowfast    |           |        |            |
-|            |             | Setting2 | mmaction-lite |           |        |            |
-| R(2+1)D    |             | Setting1 | mmaction-lite |           |        |            |
-|            |             |          | open-mmaction |           |        |            |
-|            |             |          | PySlowfast    |           |        |            |
-|            |             | Setting2 | mmaction-lite |           |        |            |
+| Slowfast   | Kinetics400 | 4x16x1(video) | mmaction-lite |           |        |            |
+|            | Kinetics400 | 4x16x1(video) | PySlowfast    |           |        |            |
+|            | Kinetics400 | 8x8x1(video) | mmaction-lite |           |        |            |
+| Slowonly   | Kinetics400 | 4x16x1(video) | mmaction-lite |           |        |            |
+|            | Kinetics400 | 4x16x1(video)| PySlowfast    |           |        |            |
+|            | Kinetics400 | 8x8x1(video) | mmaction-lite |           |        |            |
+| R(2+1)D    | Kinetics400 | 32x2x1(frame) | mmaction-lite |           |        |            |
+|            | Kinetics400 | 8x8x1(frame) | mmaction-lite |           |        |            |

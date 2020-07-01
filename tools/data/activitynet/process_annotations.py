@@ -1,7 +1,5 @@
-"""
-This file processes the annotation files and generates proper
-annotation files for localizers.
-"""
+"""This file processes the annotation files and generates proper annotation
+files for localizers."""
 import json
 
 import numpy as np
