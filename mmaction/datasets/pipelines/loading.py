@@ -25,6 +25,9 @@ class SampleFrames(object):
         num_clips (int): Number of clips to be sampled. Default: 1.
         temporal_jitter (bool): Whether to apply temporal jittering.
             Default: False.
+        twice_sample (bool): Whether to use twice sample when testing.
+            If set to True, it will sample frames with and without fixed shift,
+            which is commonly used for testing in TSM model. Default: False.
         test_mode (bool): Store True when building test or validation dataset.
             Default: False.
     """
@@ -34,11 +37,13 @@ class SampleFrames(object):
                  frame_interval=1,
                  num_clips=1,
                  temporal_jitter=False,
+                 twice_sample=False,
                  test_mode=False):
         self.clip_len = clip_len
         self.frame_interval = frame_interval
         self.num_clips = num_clips
         self.temporal_jitter = temporal_jitter
+        self.twice_sample = twice_sample
         self.test_mode = test_mode
 
     def _get_train_clips(self, num_frames):
@@ -78,8 +83,9 @@ class SampleFrames(object):
         """Get clip offsets in test mode.
 
         Calculate the average interval for selected frames, and shift them
-        fixedly by avg_interval/2 . If the total number of frames is not
-        enough, it will return all zero indices.
+        fixedly by avg_interval/2. If set twice_sample True, it will sample
+        frames together without fixed shift. If the total number of frames is
+        not enough, it will return all zero indices.
 
         Args:
             num_frames (int): Total number of frame in the video.
@@ -92,6 +98,8 @@ class SampleFrames(object):
         if num_frames > ori_clip_len - 1:
             base_offsets = np.arange(self.num_clips) * avg_interval
             clip_offsets = (base_offsets + avg_interval / 2.0).astype(np.int32)
+            if self.twice_sample:
+                clip_offsets = np.concatenate([clip_offsets, base_offsets])
         else:
             clip_offsets = np.zeros((self.num_clips, ))
         return clip_offsets
@@ -176,8 +184,12 @@ class DenseSampleFrames(SampleFrames):
                  num_sample_positions=10,
                  temporal_jitter=False,
                  test_mode=False):
-        super().__init__(clip_len, frame_interval, num_clips, temporal_jitter,
-                         test_mode)
+        super().__init__(
+            clip_len,
+            frame_interval,
+            num_clips,
+            temporal_jitter,
+            test_mode=test_mode)
         self.sample_range = sample_range
         self.num_sample_positions = num_sample_positions
 
