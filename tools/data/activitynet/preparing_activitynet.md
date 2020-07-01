@@ -2,7 +2,7 @@
 
 For basic dataset information, please refer to the official [website](http://activity-net.org/).
 Here, we use the ActivityNet rescaled feature provided in this [repo](https://github.com/wzmsltw/BSN-boundary-sensitive-network#code-and-data-preparation).
-Before we start, please make sure that current working directory is `$MMACTION/tools/data_preparation/activitynet/`.
+Before we start, please make sure that current working directory is `$MMACTION/tools/data/activitynet/`.
 
 ## Step 1. Download Annotations
 First of all, you can run the following script to download annotation files.
