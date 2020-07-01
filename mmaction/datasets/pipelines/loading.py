@@ -142,6 +142,7 @@ class SampleFrames(object):
                 self.frame_interval, size=len(frame_inds))
             frame_inds += perframe_offsets
 
+        frame_inds = frame_inds.reshape((self.num_clips, self.clip_len))
         if self.oob_proc == 'loop':
             frame_inds = np.mod(frame_inds, total_frames)
         elif self.oob_proc == 'repeat_last':
@@ -152,6 +153,7 @@ class SampleFrames(object):
             frame_inds = new_inds
         else:
             raise NotImplementedError
+        frame_inds = np.concatenate(frame_inds)
         results['frame_inds'] = frame_inds.astype(np.int)
         results['clip_len'] = self.clip_len
         results['frame_interval'] = self.frame_interval
