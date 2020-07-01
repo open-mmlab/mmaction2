@@ -15,8 +15,8 @@ train_cfg = None
 test_cfg = dict(average_clips='score')
 # dataset settings
 dataset_type = 'ActivityNetDataset'
-data_root = 'data/activitynet_feature_cuhk/csv_mean_100/'
-data_root_val = 'data/activitynet_feature_cuhk/csv_mean_100/'
+data_root = 'data/ActivityNet/activitynet_feature_cuhk/csv_mean_100/'
+data_root_val = 'data/ActivityNet/activitynet_feature_cuhk/csv_mean_100/'
 ann_file_train = 'data/ActivityNet/anet_anno_train.json'
 ann_file_val = 'data/ActivityNet/anet_anno_val.json'
 ann_file_test = 'data/ActivityNet/anet_anno_test.json'
