@@ -16,6 +16,8 @@
 |[tsn_r50_1x1x5_50e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_1x1x5_50e_kinetics400_rgb.py) | ResNet50 |68.64|88.19| x | x | [ckpt]() | [log]()|
 |[tsn_r50_dense_1x1x5_50e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_dense_1x1x5_50e_kinetics400_rgb.py) | ResNet50 |68.59|88.31| x | x | [ckpt]() | [log]()|
 |[tsn_r50_1x1x8_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_1x1x8_100e_kinetics400_rgb.py) | ResNet50 |69.41|88.37| x | x | [ckpt]() | [log]()|
+|[tsn_r50_shortedge_1x1x3_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_shortedge_1x1x3_100e_kinetics400_rgb.py) | ResNet50 |70.91|89.51| x | x | [ckpt]() | [log]() |
+|[tsn_r50_shortedge_1x1x8_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_shortedge_1x1x8_100e_kinetics400_rgb.py) | ResNet50 |72.41|90.55| x | x | [ckpt]() | [log]() |
 |[tsn_r50_dense_1x1x8_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_dense_1x1x8_100e_kinetics400_rgb.py) | ResNet50 |70.77|89.3| x | x | [ckpt]() | [log]()|
 |[tsn_r50_video_1x1x3_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_video_1x1x3_100e_kinetics400_rgb.py) | ResNet50 | x | x | x | x | [ckpt]() | [log]()|
 
