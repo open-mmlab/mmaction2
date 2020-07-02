@@ -7,10 +7,10 @@ import time
 import mmcv
 import torch
 from mmcv import Config
-from mmcv.runner import init_dist
+from mmcv.runner import init_dist, set_random_seed
 
 from mmaction import __version__
-from mmaction.apis import set_random_seed, train_model
+from mmaction.apis import train_model
 from mmaction.datasets import build_dataset
 from mmaction.models import build_model
 from mmaction.utils import collect_env, get_root_logger
