@@ -206,7 +206,7 @@ class TEM(BaseLocalizer):
                 gt_bbox=None,
                 video_meta=None,
                 return_loss=True):
-        """Define the computation performed at every call"""
+        """Define the computation performed at every call."""
         if return_loss:
             label_action, label_start, label_end = (
                 self.generate_labels(gt_bbox))
@@ -375,7 +375,7 @@ class PEM(BaseLocalizer):
                 tmax_score=None,
                 video_meta=None,
                 return_loss=True):
-        """Define the computation performed at every call"""
+        """Define the computation performed at every call."""
         if return_loss:
             return self.forward_train(bsp_feature, reference_temporal_iou)
         else:

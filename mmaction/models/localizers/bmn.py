@@ -332,7 +332,7 @@ class BMN(BaseLocalizer):
                 gt_bbox=None,
                 video_meta=None,
                 return_loss=True):
-        """Define the computation performed at every call"""
+        """Define the computation performed at every call."""
         if return_loss:
             label_confidence, label_start, label_end = (
                 self.generate_labels(gt_bbox))
