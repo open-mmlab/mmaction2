@@ -165,7 +165,7 @@ class SampleFrames(object):
             new_inds = (safe_inds * frame_inds + (unsafe_inds.T * last_ind).T)
             frame_inds = new_inds
         else:
-            raise NotImplementedError
+            raise ValueError('Illegal out_of_bound option.')
         frame_inds = np.concatenate(frame_inds)
         results['frame_inds'] = frame_inds.astype(np.int)
         results['clip_len'] = self.clip_len
