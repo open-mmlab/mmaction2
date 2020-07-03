@@ -14,8 +14,10 @@ from .utils import post_processing
 class TEM(BaseLocalizer):
     """Temporal Evaluation Model for Boundary Sensetive Network.
 
-    Paper reference: http://arxiv.org/abs/1806.02964
-    Code reference: https://github.com/wzmsltw/BSN-boundary-sensitive-network
+    `Paper reference <http://arxiv.org/abs/1806.02964>`_
+
+    `Code reference
+    <https://github.com/wzmsltw/BSN-boundary-sensitive-network>`_
 
     Args:
         tem_feat_dim (int): Feature dimension.
@@ -224,8 +226,10 @@ class TEM(BaseLocalizer):
 class PEM(BaseLocalizer):
     """Proposals Evaluation Model for Boundary Sensetive Network.
 
-    Paper reference: http://arxiv.org/abs/1806.02964
-    Code reference: https://github.com/wzmsltw/BSN-boundary-sensitive-network
+    `Paper reference <http://arxiv.org/abs/1806.02964>`_
+
+    `Code reference
+    <https://github.com/wzmsltw/BSN-boundary-sensitive-network>`_
 
     Args:
         pem_feat_dim (int): Feature dimension.

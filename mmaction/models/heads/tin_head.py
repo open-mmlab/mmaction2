@@ -88,8 +88,7 @@ class TINHead(BaseHead):
             num_segs (int): Number of segments into which a video
                 is divided.
         Returns:
-            torch.Tensor: The classification scores for input
-                samples.
+            torch.Tensor: The classification scores for input samples.
         """
         # [N * num_segs, in_channels, 7, 7]
         x = self.avg_pool(x)

@@ -21,7 +21,7 @@ class TSNHead(BaseHead):
         multi_class (bool): Determines whether it is a multi-class
             recognition task. Default: False.
         label_smooth_eps (float): Epsilon used in label smooth.
-            Reference: arxiv.org/abs/1906.02629. Default: 0.
+            Reference: https://arxiv.org/abs/1906.02629. Default: 0.
     """
 
     def __init__(self,
@@ -77,8 +77,7 @@ class TSNHead(BaseHead):
             num_segs (int): Number of segments into which a video
                 is divided.
         Returns:
-            torch.Tensor: The classification scores for input
-                samples.
+            torch.Tensor: The classification scores for input samples.
         """
         # [N * num_segs, in_channels, 7, 7]
         x = self.avg_pool(x)

@@ -15,8 +15,9 @@ from .utils import post_processing
 class BMN(BaseLocalizer):
     """Boundary Matching Network for temporal action proposal generation.
 
-    Paper reference: https://arxiv.org/abs/1907.09702
-    Code reference: https://github.com/JJBOY/BMN-Boundary-Matching-Network
+    `Paper reference <https://arxiv.org/abs/1907.09702>`_
+
+    `Code reference <https://github.com/JJBOY/BMN-Boundary-Matching-Network>`_
 
     Args:
         temporal_dimension (int): Total frames selected for each video.

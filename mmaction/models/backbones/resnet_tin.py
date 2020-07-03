@@ -269,8 +269,8 @@ class OffsetNet(nn.Module):
 class TemporalInterlace(nn.Module):
     """Temporal interlace module.
 
-    This module is proposed in "Temporal Interlacing Network".
-    Link: https://arxiv.org/abs/2001.06499
+    This module is proposed in `Temporal Interlacing Network
+    <https://arxiv.org/abs/2001.06499>`_
 
     Args:
         in_channels (int): Channel num of input features.

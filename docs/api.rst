@@ -3,7 +3,26 @@ API Reference
 
 mmaction.core
 -------------
-.. automodule:: mmaction.core
+
+optimizer
+^^^^^^^^^^^
+.. automodule:: mmaction.core.optimizer
+    :members:
+
+evaluation
+^^^^^^^^^^^
+.. automodule:: mmaction.core.evaluation
+    :members:
+
+fp16
+^^^^^^^^^^^
+.. automodule:: mmaction.core.fp16
+    :members:
+
+
+dist utils
+^^^^^^^^^^^
+.. automodule:: mmaction.core.dist_utils
     :members:
 
 
@@ -43,11 +62,32 @@ losses
 
 mmaction.datasets
 -----------------
+
+datasets
+^^^^^^
 .. automodule:: mmaction.datasets
+    :members:
+
+
+pipelines
+^^^^^^
+.. automodule:: mmaction.datasets.pipeline
+    :members:
+
+
+samplers
+^^^^^^
+.. automodule:: mmaction.datasets.samplers
     :members:
 
 
 mmaction.utils
 ---------------
 .. automodule:: mmaction.utils
+    :members:
+
+
+mmaction.localization
+---------------
+.. automodule:: mmaction.localization
     :members:

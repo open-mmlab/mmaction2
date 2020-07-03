@@ -341,8 +341,8 @@ def build_pathway(cfg, *args, **kwargs):
 class ResNet3dSlowFast(nn.Module):
     """Slowfast backbone.
 
-    This module is proposed in "SlowFast Networks for Video Recognition".
-    Link: https://arxiv.org/abs/1812.03982
+    This module is proposed in `SlowFast Networks for Video Recognition
+    <https://arxiv.org/abs/1812.03982>`_
 
     Args:
         depth (int): Depth of resnet, from {18, 34, 50, 101, 152}.
@@ -362,16 +362,23 @@ class ResNet3dSlowFast(nn.Module):
             and:
             type (str): type of backbone the pathway bases on.
             lateral (bool): determine whether to build lateral connection
-                for the pathway.
-            Default: dict(type='ResNetPathway', lateral=True, depth=50,
-                pretrained=None, conv1_kernel=(1, 7, 7),
-                dilations=(1, 1, 1, 1), conv1_stride_t=1,
-                pool1_stride_t=1, inflate=(0, 0, 1, 1)).
+            for the pathway.Default:
+                .. code-block:: Python
+
+                    dict(type='ResNetPathway', lateral=True, depth=50,
+                        pretrained=None, conv1_kernel=(1, 7, 7),
+                        dilations=(1, 1, 1, 1), conv1_stride_t=1,
+                        pool1_stride_t=1, inflate=(0, 0, 1, 1))
+
         fast_pathway (dict): Configuration of fast branch, similar to
-            `slow_pathway`.
-            Default: dict(type='ResNetPathway', lateral=False, depth=50,
-                pretrained=None, base_channels=8, conv1_kernel=(5, 7, 7),
-                conv1_stride_t=1, pool1_stride_t=1).
+            `slow_pathway`. Default:
+                .. code-block:: Python
+
+                    dict(type='ResNetPathway', lateral=False, depth=50,
+                        pretrained=None, base_channels=8,
+                        conv1_kernel=(5, 7, 7), conv1_stride_t=1,
+                        zpool1_stride_t=1).
+
     """
 
     def __init__(self,
@@ -435,7 +442,7 @@ class ResNet3dSlowFast(nn.Module):
 
         Returns:
             tuple[torch.Tensor]: The feature of the input
-                samples extracted by the backbone.
+            samples extracted by the backbone.
         """
         x_slow = x[:, :, ::self.resample_rate, :, :]
         x_slow = self.slow_path.conv1(x_slow)

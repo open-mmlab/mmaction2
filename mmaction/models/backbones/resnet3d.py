@@ -703,7 +703,7 @@ class ResNet3d(nn.Module):
 
         Returns:
             torch.Tensor: The feature of the input
-                samples extracted by the backbone.
+            samples extracted by the backbone.
         """
         x = self.conv1(x)
         x = self.maxpool(x)

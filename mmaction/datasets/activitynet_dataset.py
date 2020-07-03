@@ -118,7 +118,7 @@ class ActivityNetDataset(BaseDataset):
                 Defaults: False.
 
         Returns:
-            result_dict (dict): The final result dict. E.g.
+            dict: The final result dict. E.g.
 
             .. code-block:: Python
 

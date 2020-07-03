@@ -203,15 +203,15 @@ def average_recall_at_avg_proposals(ground_truth,
             thresholds. Default: np.linspace(0.5, 0.95, 10).
 
     Returns:
-        recall (np.ndarray): recall[i,j] is recall at i-th temporal_iou
-            threshold at the j-th average number (percentile) of average
-            number of proposals per video.
-        average_recall (np.ndarray): Recall averaged over a list of
-            temporal_iou threshold (1D array). This is equivalent to
-            recall.mean(axis=0).
-        proposals_per_video (np.ndarray): Average number of proposals per
-            video.
-        auc (float): Area under AR@AN curve.
+        tuple([np.ndarray, np.ndarray, np.ndarray, float]):
+            (recall, average_recall, proposals_per_video, auc).
+            In recall, recall[i,j] is recall at i-th temporal_iou threshold at
+            the j-th average number (percentile) of average number of
+            proposals per video. The average_recall is recall averaged
+            over a list of temporal_iou threshold (1D array). This is
+            equivalent to recall.mean(axis=0). The proposals_per_video is the
+            average number of proposals per video. The auc is the area under
+            AR@AN curve.
     """
 
     total_num_videos = len(ground_truth)

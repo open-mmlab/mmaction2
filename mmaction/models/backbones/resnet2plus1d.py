@@ -7,8 +7,8 @@ class ResNet2Plus1d(ResNet3d):
     """ResNet (2+1)d backbone.
 
     This model is proposed in
-    "A Closer Look at Spatiotemporal Convolutions for Action Recognition".
-    Link: https://arxiv.org/abs/1711.11248
+    `A Closer Look at Spatiotemporal Convolutions for Action Recognition
+    <https://arxiv.org/abs/1711.11248>`_
     """
 
     def __init__(self, *args, **kwargs):
@@ -38,7 +38,7 @@ class ResNet2Plus1d(ResNet3d):
 
         Returns:
             torch.Tensor: The feature of the input
-                samples extracted by the backbone.
+            samples extracted by the backbone.
         """
         x = self.conv1(x)
         x = self.maxpool(x)
