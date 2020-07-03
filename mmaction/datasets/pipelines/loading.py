@@ -25,10 +25,11 @@ class SampleFrames(object):
         num_clips (int): Number of clips to be sampled. Default: 1.
         temporal_jitter (bool): Whether to apply temporal jittering.
             Default: False.
+        out_of_bound_opt (str): The way to deal with out of bounds frame
+            indexes. Available options are 'loop', 'repeat_last'.
+            Default: 'loop'.
         test_mode (bool): Store True when building test or validation dataset.
             Default: False.
-        oob_proc (str): The way to deal with out of bounds frame indexes.
-            Available options are 'loop', 'repeat_last'. Default: 'loop'.
     """
 
     def __init__(self,
@@ -36,14 +37,15 @@ class SampleFrames(object):
                  frame_interval=1,
                  num_clips=1,
                  temporal_jitter=False,
-                 test_mode=False,
-                 oob_proc='loop'):
+                 out_of_bound_opt='loop',
+                 test_mode=False):
         self.clip_len = clip_len
         self.frame_interval = frame_interval
         self.num_clips = num_clips
         self.temporal_jitter = temporal_jitter
+        self.out_of_bound_opt = out_of_bound_opt
         self.test_mode = test_mode
-        self.oob_proc = oob_proc
+        assert self.out_of_bound_opt in ['loop', 'repeat_last']
 
     def _get_train_clips(self, num_frames):
         """Get clip offsets in train mode.
@@ -142,10 +144,10 @@ class SampleFrames(object):
                 self.frame_interval, size=len(frame_inds))
             frame_inds += perframe_offsets
 
-        frame_inds = frame_inds.reshape((self.num_clips, self.clip_len))
-        if self.oob_proc == 'loop':
+        frame_inds = frame_inds.reshape((-1, self.clip_len))
+        if self.out_of_bound_opt == 'loop':
             frame_inds = np.mod(frame_inds, total_frames)
-        elif self.oob_proc == 'repeat_last':
+        elif self.out_of_bound_opt == 'repeat_last':
             safe_inds = frame_inds < total_frames
             unsafe_inds = 1 - safe_inds
             last_ind = np.max(safe_inds * frame_inds, axis=1)
