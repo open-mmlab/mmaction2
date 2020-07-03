@@ -23,7 +23,7 @@ bash download_videos.sh
 
 This part is **optional** if you only want to use the video loader.
 
-Before extracting, please refer to [install.md](/docs/install.md) for installing [dense_flow](https://github.com/yjxiong/dense_flow).
+Before extracting, please refer to [install.md](/docs/install.md) for installing [dense_flow](https://github.com/innerlee/denseflow).
 
 If you have plenty of SSD space, then we recommend extracting frames there for better I/O performance. The extracted frames (RGB + Flow) will take up about 100GB.
 
@@ -33,10 +33,10 @@ If you didn't install dense_flow in the installation or only want to play with R
 bash extract_rgb_frames.sh
 ```
 
-If both are required, run the following script to extract frames.
+If both are required, run the following script to extract frames using "tvl1" algorithm.
 
 ```shell
-bash extract_frames.sh
+bash extract_frames.sh tvl1
 ```
 
 Then, You can run the following script to soft link the extracted frames.
