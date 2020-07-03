@@ -27,6 +27,14 @@ Before extracting, please refer to [install.md](/docs/install.md) for installing
 
 If you have plenty of SSD space, then we recommend extracting frames there for better I/O performance. The extracted frames (RGB + Flow) will take up about 100GB.
 
+You can run the following script to soft link SSD.
+
+```shell
+# execute these two line (Assume the SSD is mounted at "/mnt/SSD/")
+mkdir /mnt/SSD/ucf101_extracted/
+ln -s /mnt/SSD/ucf101_extracted/ ../../../data/ucf101/rawframes
+```
+
 If you didn't install dense_flow in the installation or only want to play with RGB frames (since extracting optical flow can be time-comsuming), consider running the following script to extract **RGB-only** frames.
 
 ```shell
@@ -37,14 +45,6 @@ If both are required, run the following script to extract frames using "tvl1" al
 
 ```shell
 bash extract_frames.sh tvl1
-```
-
-Then, You can run the following script to soft link the extracted frames.
-
-```shell
-# execute these two line (Assume the SSD is mounted at "/mnt/SSD/")
-mkdir /mnt/SSD/ucf101_extracted/
-ln -s /mnt/SSD/ucf101_extracted/ ../../../data/ucf101/rawframes
 ```
 
 ## Step 4. Generate File List
