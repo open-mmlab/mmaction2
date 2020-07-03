@@ -202,13 +202,10 @@ class DenseSampleFrames(SampleFrames):
                  sample_range=64,
                  num_sample_positions=10,
                  temporal_jitter=False,
+                 out_of_bound_opt='loop',
                  test_mode=False):
-        super().__init__(
-            clip_len,
-            frame_interval,
-            num_clips,
-            temporal_jitter,
-            test_mode=test_mode)
+        super().__init__(clip_len, frame_interval, num_clips, temporal_jitter,
+                         out_of_bound_opt=out_of_bound_opt, test_mode=test_mode)
         self.sample_range = sample_range
         self.num_sample_positions = num_sample_positions
 
