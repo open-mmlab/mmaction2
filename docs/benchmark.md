@@ -29,11 +29,22 @@ We compare our results with some other popular frameworks in terms of speed and 
 |            | Kinetics400 | r2plus1d_r34_8x8x1_180e_kinetics400_rgb(video) | mmaction-lite |0.8340(0.0725)|10339|    |
 
 
+| Model      | MMAction    |  [temporal-shift-module](https://github.com/mit-han-lab/temporal-shift-modulen)     |
+| ---------- | :---------: | :---------:|
+| TSM        | 0.30      | 0.38 |
+
+
+| Model      | MMAction    | [PySlowFast](https://github.com/facebookresearch/SlowFast) |
+| ---------- | :---------: | :----------: |
+| Slowfast(4x16x1)| 0.80 | 1.40 |
+| Slowfast(8x8x1) | 1.05 | 1.41 |
+| Slowonly(4x16x1)| 0.30 | 1.03 |
+| Slowonly(8x8x1) | 0.50 | 1.29 |
+| R(2+1)D         | 0.48 | 1.29 |
+
 ### Localizers
 
-| Model      | Dataset     | Setting  | Framework     | Iter time | Memory | ckpt & log |
-| ---------- | ----------- | -------- | ------------- | --------- | ------ | ---------- |
-| BSN       | ActivityNet | bsn_400x100_1x16_20e_activitynet_feature | mmaction-lite |0.074(TEM)+0.040(PEM)|41(TEM)+25(PEM)|            |
-| BSN       | ActivityNet | bsn_400x100_1x16_20e_activitynet_feature | [repo](https://github.com/wzmsltw/BSN-boundary-sensitive-network.pytorch) |0.101(TEM)+0.040(PEM)|54(TEM)+34(PEM)|            |
-| BMN       | ActivityNet | bsn_400x100_2x8_9e_activitynet_feature | mmaction-lite |3.27|5420|            |
-| BMN       | ActivityNet | bsn_400x100_2x8_9e_activitynet_feature | [repo](https://github.com/JJBOY/BMN-Boundary-Matching-Network) |3.30|5780|            |
+| Model | MMAction     | [BSN-boundary-sensitive-network](https://github.com/wzmsltw/BSN-boundary-sensitive-network.pytorch)  |
+| :----------------------------: | :-----------: | :--------: |
+| BSN(400x100,1x16) | 0.074(TEM)+0.040(PEM) | 0.101(TEM)+0.040(PEM) |
+| BSN(400x100,2x8) | 3.27 | 3.30 |
