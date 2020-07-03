@@ -18,7 +18,7 @@ class ExampleDataset(Dataset):
 
     def evaluate(self, results, logger=None):
         eval_results = dict()
-        eval_results['test'] = 1
+        eval_results['acc'] = 1
         return eval_results
 
     def __getitem__(self, idx):
@@ -70,7 +70,7 @@ def test_train_model():
         load_from=None,
         workflow=[('train', 1)],
         total_epochs=5,
-        evaluation=dict(interval=1),
+        evaluation=dict(interval=1, key_indicator='acc'),
         data=dict(
             videos_per_gpu=1,
             workers_per_gpu=0,
@@ -78,7 +78,7 @@ def test_train_model():
         optimizer=dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001),
         optimizer_config=dict(grad_clip=dict(max_norm=40, norm_type=2)),
         lr_config=dict(policy='step', step=[40, 80]),
-        checkpoint_config=dict(interval=10),
+        checkpoint_config=dict(interval=1),
         log_level='INFO',
         log_config=dict(interval=20, hooks=[dict(type='TextLoggerHook')]))
 
