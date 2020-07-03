@@ -5,8 +5,9 @@ import pytest
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from mmaction.core import (average_recall_at_avg_proposals, confusion_matrix,
-                           mean_average_precision, mean_class_accuracy,
-                           pairwise_temporal_iou, top_k_accuracy)
+                           get_weighted_score, mean_average_precision,
+                           mean_class_accuracy, pairwise_temporal_iou,
+                           top_k_accuracy)
 
 
 def gt_confusion_matrix(gt_labels, pred_labels):
@@ -183,3 +184,26 @@ def test_average_recall_at_avg_proposals():
     assert_array_almost_equal(
         proposals_per_video, np.arange(1, 101, 1), decimal=10)
     assert auc == 99.0
+
+
+def test_get_weighted_score():
+    score_a = [
+        np.array([-0.2203, -0.7538, 1.8789, 0.4451, -0.2526]),
+        np.array([-0.0413, 0.6366, 1.1155, 0.3484, 0.0395]),
+        np.array([0.0365, 0.5158, 1.1067, -0.9276, -0.2124]),
+        np.array([0.6232, 0.9912, -0.8562, 0.0148, 1.6413])
+    ]
+    score_b = [
+        np.array([-0.0413, 0.6366, 1.1155, 0.3484, 0.0395]),
+        np.array([0.0365, 0.5158, 1.1067, -0.9276, -0.2124]),
+        np.array([0.6232, 0.9912, -0.8562, 0.0148, 1.6413]),
+        np.array([-0.2203, -0.7538, 1.8789, 0.4451, -0.2526])
+    ]
+    weighted_score = get_weighted_score([score_a], [1])
+    assert np.all(np.isclose(np.array(score_a), np.array(weighted_score)))
+    coeff_a, coeff_b = 2., 1.
+    weighted_score = get_weighted_score([score_a, score_b], [coeff_a, coeff_b])
+    ground_truth = [
+        x * coeff_a + y * coeff_b for x, y in zip(score_a, score_b)
+    ]
+    assert np.all(np.isclose(np.array(ground_truth), np.array(weighted_score)))
