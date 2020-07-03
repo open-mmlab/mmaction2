@@ -10,10 +10,11 @@
 - [mmcv](https://github.com/open-mmlab/mmcv) 0.5.7+
 - Numpy
 - ffmpeg (4.2 is preferred)
-- [decord](https://github.com/dmlc/decord) (optional): install CPU version by `pip install decord` and install GPU version from source
+- [decord](https://github.com/dmlc/decord) (optional): Install CPU version by `pip install decord` and install GPU version from source
 - [PyAV](https://github.com/mikeboers/PyAV) (optional): `conda install av -c conda-forge -y`
 - [PyTurboJPEG](https://github.com/lilohuang/PyTurboJPEG) (optional): `pip install PyTurboJPEG`
-- [Pillow-SIMD](https://docs.fast.ai/performance.html#pillow-simd) (optional): install it by the following scripts.
+- [denseflow](https://github.com/innerlee/denseflow) (optional): See [here](https://github.com/innerlee/setup) for simple install scripts.
+- [Pillow-SIMD](https://docs.fast.ai/performance.html#pillow-simd) (optional): Install it by the following scripts.
 ```shell
 conda uninstall -y --force pillow pil jpeg libtiff libjpeg-turbo
 pip   uninstall -y         pillow pil jpeg libtiff libjpeg-turbo
