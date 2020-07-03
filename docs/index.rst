@@ -5,6 +5,7 @@ Welcome to MMAction's documentation!
    :maxdepth: 2
 
    getting_started.md
+   benchmark.md
    install.md
    config.md
    parrots_start.md
