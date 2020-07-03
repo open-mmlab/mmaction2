@@ -80,7 +80,11 @@ class TestLoading(object):
         video_result = copy.deepcopy(self.video_results)
         frame_result = copy.deepcopy(self.frame_results)
         config = dict(
-            clip_len=5, frame_interval=1, num_clips=5, temporal_jitter=False)
+            clip_len=5,
+            frame_interval=1,
+            num_clips=5,
+            temporal_jitter=False,
+            out_of_bound_opt='repeat_last')
         sample_frames = SampleFrames(**config)
         sample_frames_results = sample_frames(video_result)
 
