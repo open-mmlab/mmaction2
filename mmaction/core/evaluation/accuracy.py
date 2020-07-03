@@ -305,3 +305,30 @@ def average_recall_at_avg_proposals(ground_truth,
     area_under_curve = np.trapz(avg_recall, proposals_per_video)
     auc = 100. * float(area_under_curve) / proposals_per_video[-1]
     return recall, avg_recall, proposals_per_video, auc
+
+
+def get_weighted_score(score_list, coeff_list):
+    """Get weighted score with given scores and coefficients.
+
+    Given n predictions by different classifier: [score_1, score_2, ...,
+    score_n] (score_list) and their coefficients: [coeff_1, coeff_2, ...,
+    coeff_n] (coeff_list), return weighted score: weighted_score =
+    score_1 * coeff_1 + score_2 * coeff_2 + ... + score_n * coeff_n
+
+    Args:
+        score_list (list[list[np.ndarray]]): List of list of scores, with shape
+            n(number of predictions) X num_samples X num_classes
+        coeff_list (list[float]): List of coefficients, with shape n.
+
+    Return:
+        list[np.ndarray]: List of weighted scores.
+    """
+    assert len(score_list) == len(coeff_list)
+    num_samples = len(score_list[0])
+    for i in range(1, len(score_list)):
+        assert len(score_list[i]) == num_samples
+
+    scores = np.array(score_list)  # (num_coeff, num_samples, num_classes)
+    coeff = np.array(coeff_list)  # (num_coeff, )
+    weighted_scores = list(np.dot(scores.T, coeff).T)
+    return weighted_scores
