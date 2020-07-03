@@ -433,8 +433,8 @@ class ResNet(nn.Module):
             x (torch.Tensor): The input data.
 
         Returns:
-            torch.Tensor: The feature of the input
-                samples extracted by the backbone.
+            torch.Tensor: The feature of the input samples extracted
+            by the backbone.
         """
         x = self.conv1(x)
         x = self.norm1(x)

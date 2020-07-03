@@ -13,12 +13,13 @@ class BMNLoss(nn.Module):
     From paper https://arxiv.org/abs/1907.09702,
     code https://github.com/JJBOY/BMN-Boundary-Matching-Network.
     It will calculate loss for BMN Model. This loss is a weighted sum of
-    1) temporal evaluation loss based on confidence score of start and
+
+        1) temporal evaluation loss based on confidence score of start and
         end positions.
-    2) proposal evaluation regression loss based on confidence scores of
+        2) proposal evaluation regression loss based on confidence scores of
         candidate proposals.
-    3) proposal evaluation classification loss based on classification results
-        of candidate proposals.
+        3) proposal evaluation classification loss based on classification
+        results of candidate proposals.
     """
 
     def tem_loss(self, pred_start, pred_end, gt_start, gt_end):
@@ -59,7 +60,7 @@ class BMNLoss(nn.Module):
                 temporal_iou. Default: 0.3.
 
         Returns:
-            torch.Tensor: Returned proposal evalutaion regression loss.
+            torch.Tensor: Proposal evalutaion regression loss.
         """
         u_hmask = (gt_iou_map > high_temporal_iou_threshold).float()
         u_mmask = ((gt_iou_map <= high_temporal_iou_threshold) &
@@ -110,8 +111,7 @@ class BMNLoss(nn.Module):
             eps (float): Epsilon for small value. Default: 1e-5
 
         Returns:
-            torch.Tensor: Returned proposal evalutaion classification
-                loss.
+            torch.Tensor: Proposal evalutaion classification loss.
         """
         pmask = (gt_iou_map > threshold).float()
         nmask = (gt_iou_map <= threshold).float()
@@ -161,10 +161,10 @@ class BMNLoss(nn.Module):
 
         Returns:
             tuple([torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]):
-                (loss, tem_loss, pem_reg_loss, pem_cls_loss), loss is the
-                temporal evaluation loss, pem_reg_loss is the proposal
-                evaluation regression loss, pem_cls_loss is the proposal
-                evaluation classification loss.
+                (loss, tem_loss, pem_reg_loss, pem_cls_loss). Loss is the bmn
+                loss, tem_loss is the temporal evaluation loss, pem_reg_loss is
+                the proposal evaluation regression loss, pem_cls_loss is the
+                proposal evaluation classification loss.
         """
         pred_bm_reg = pred_bm[:, 0].contiguous()
         pred_bm_cls = pred_bm[:, 1].contiguous()

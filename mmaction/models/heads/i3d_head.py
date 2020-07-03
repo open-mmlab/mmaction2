@@ -54,8 +54,7 @@ class I3DHead(BaseHead):
             x (torch.Tensor): The input data.
 
         Returns:
-            torch.Tensor: The classification scores for input
-                samples.
+            torch.Tensor: The classification scores for input samples.
         """
         # [N, in_channels, 4, 7, 7]
         x = self.avg_pool(x)
