@@ -148,8 +148,8 @@ class ResNetTSM(ResNet):
                 blocks = list(stage.children())
                 for i, b in enumerate(blocks):
                     if i % n_round == 0:
-                        blocks[i].conv1 = TemporalShift(
-                            b.conv1,
+                        blocks[i].conv1.conv = TemporalShift(
+                            b.conv1.conv,
                             num_segments=num_segments,
                             shift_div=self.shift_div)
                 return nn.Sequential(*blocks)

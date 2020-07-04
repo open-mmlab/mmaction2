@@ -471,10 +471,10 @@ class ResNet3d(nn.Module):
                 for each block. Default: 1.
             inflate_style (str): ``3x1x1`` or ``1x1x1``. which determines
                 the kernel sizes and padding strides for conv1 and conv2
-                in each block. Default: ``3x1x1``.
+                in each block. Default: '3x1x1'.
+            conv_cfg (dict): Config for norm layers. Default: None.
             norm_cfg (dict): Config for norm layers. Default: None.
             act_cfg (dict): Config for activate layers. Default: None.
-            conv_cfg (dict): Config for norm layers. Default: None.
             with_cp (bool): Use checkpoint or not. Using checkpoint will save
                 some memory while slowing down the training speed.
                 Default: False.
