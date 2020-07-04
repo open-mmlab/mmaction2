@@ -6,8 +6,8 @@ from .resnet3d import ResNet3d
 class ResNet2Plus1d(ResNet3d):
     """ResNet (2+1)d backbone.
 
-    This model is proposed in `A Closer Look at Spatiotemporal
-    Convolutions for Action Recognition
+    This model is proposed in
+    `A Closer Look at Spatiotemporal Convolutions for Action Recognition
     <https://arxiv.org/abs/1711.11248>`_
     """
 
