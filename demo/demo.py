@@ -2,7 +2,7 @@ import argparse
 
 import torch
 
-from mmaction.core import inference_recognizer, init_recognizer
+from mmaction.apis import inference_recognizer, init_recognizer
 
 
 def parse_args():
