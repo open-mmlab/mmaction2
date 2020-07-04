@@ -1,3 +1,4 @@
+import csv
 import fnmatch
 import glob
 import json
@@ -199,4 +200,35 @@ def parse_sthv2_splits(level):
         items = json.loads(fin.read())
         test_list = [line_to_map(item, test_mode=True) for item in items]
 
+    return ((train_list, val_list, test_list), )
+
+
+def parse_mit_splits(level):
+    """Parse Moments in Time dataset into "train", "val" splits.
+
+    Args:
+        level: directory level of data.
+
+    Returns:
+        list: "train", "val", "test" splits of Moments in Time.
+    """
+    # Read the annotations
+    class_mapping = {}
+    with open('data/mit/annotations/moments_categories.txt') as f_cat:
+        for line in f_cat.readlines():
+            cat, digit = line.rstrip().split(',')
+            class_mapping[cat] = int(digit)
+
+    def line_to_map(x, test=False):
+        vid = '.'.join(x[0].split('.')[:-1])
+        label = class_mapping[x[0].split('/')[0]]
+        return vid, label
+
+    csv_reader = csv.reader(open('data/mit/annotations/trainingSet.csv'))
+    train_list = [line_to_map(x) for x in csv_reader]
+
+    csv_reader = csv.reader(open('data/mit/annotations/validationSet.csv'))
+    val_list = [line_to_map(x) for x in csv_reader]
+
+    test_list = val_list  # no test for mit
     return ((train_list, val_list, test_list), )

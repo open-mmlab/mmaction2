@@ -378,7 +378,6 @@ class ResNet3dSlowFast(nn.Module):
                         pretrained=None, base_channels=8,
                         conv1_kernel=(5, 7, 7), conv1_stride_t=1,
                         zpool1_stride_t=1).
-
     """
 
     def __init__(self,

@@ -3,8 +3,8 @@ import glob
 import os.path as osp
 import random
 
-from tools.data.parse_file_list import (parse_directory, parse_sthv1_splits,
-                                        parse_sthv2_splits,
+from tools.data.parse_file_list import (parse_directory, parse_mit_splits,
+                                        parse_sthv1_splits, parse_sthv2_splits,
                                         parse_ucf101_splits)
 
 
@@ -15,7 +15,7 @@ def parse_args():
         type=str,
         choices=[
             'ucf101', 'kinetics400', 'thumos14', 'sthv1', 'sthv2',
-            'activitynet'
+            'activitynet', 'mit'
         ],
         help='dataset to be built file list')
     parser.add_argument(
@@ -147,7 +147,6 @@ def main():
             video_list = glob.glob(osp.join(args.frame_path, '*', '*'))
         else:
             raise ValueError(f'level must be 1 or 2, but got {args.level}')
-
         frame_info = {}
         for video in video_list:
             video_path = osp.relpath(video.split('.')[0], args.frame_path)
@@ -159,12 +158,15 @@ def main():
         splits = parse_sthv1_splits(args.level)
     elif args.dataset == 'sthv2':
         splits = parse_sthv2_splits(args.level)
+    elif args.dataset == 'mit':
+        splits = parse_mit_splits(args.level)
     else:
         raise ValueError(f"Supported datasets are 'ucf101, sthv1, sthv2',"
                          f'but got {args.dataset}')
     assert len(splits) == args.num_split
 
     out_path = args.out_root_path + args.dataset
+
     if len(splits) > 1:
         for i, split in enumerate(splits):
             file_lists = build_file_list(

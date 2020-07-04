@@ -121,14 +121,10 @@ if __name__ == '__main__':
 
     print('Reading videos from folder: ', args.src_dir)
     print('Extension of videos: ', args.ext)
-    if args.level == 2:
-        # search for two-level directory
-        fullpath_list = glob.glob(args.src_dir + '/*/*.' + args.ext)
-        done_fullpath_list = glob.glob(args.out_dir + '/*/*')
-    elif args.level == 1:
-        # search for one-level directory
-        fullpath_list = glob.glob(args.src_dir + '/*.' + args.ext)
-        done_fullpath_list = glob.glob(args.out_dir + '/*')
+
+    fullpath_list = glob.glob(args.src_dir + '/*' * args.level + '.' +
+                              args.ext)
+    done_fullpath_list = glob.glob(args.out_dir + '/*' * args.level)
     print('Total number of videos found: ', len(fullpath_list))
 
     if args.resume:
