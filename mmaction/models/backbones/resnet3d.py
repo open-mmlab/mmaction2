@@ -20,19 +20,19 @@ class BasicBlock3d(nn.Module):
         temporal_stride (int): Temporal stride in the conv3d layer. Default: 1.
         dilation (int): Spacing between kernel elements. Default: 1.
         downsample (nn.Module): Downsample layer. Default: None.
-        style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
-            layer is the 3x3 conv layer, otherwise the stride-two layer is
-            the first 1x1 conv layer. Default: 'pytorch'.
+        style (str): ``pytorch`` or ``caffe``. If set to "pytorch", the
+            stride-two layer is the 3x3 conv layer, otherwise the stride-two
+            layer is the first 1x1 conv layer. Default: 'pytorch'.
         inflate (bool): Whether to inflate kernel. Default: True.
-        inflate_style (str): `3x1x1` or `1x1x1`. which determines the kernel
-            sizes and padding strides for conv1 and conv2 in each block.
+        inflate_style (str): ``3x1x1`` or ``1x1x1``. which determines the
+            kernel sizes and padding strides for conv1 and conv2 in each block.
             Default: '3x1x1'.
         conv_cfg (dict): Config dict for convolution layer.
-            Default: dict(type='Conv3d').
-        norm_cfg (dict): Config for norm layers. required keys are `type`,
-            Default: dict(type='BN3d').
+            Default: ``dict(type='Conv3d')``.
+        norm_cfg (dict): Config for norm layers. required keys are ``type``,
+            Default: ``dict(type='BN3d')``.
         act_cfg (dict): Config dict for activation layer.
-            Default: dict(type='ReLU').
+            Default: ``dict(type='ReLU')``.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
             memory while slowing down the training speed. Default: False.
     """
@@ -147,19 +147,19 @@ class Bottleneck3d(nn.Module):
         temporal_stride (int): Temporal stride in the conv3d layer. Default: 1.
         dilation (int): Spacing between kernel elements. Default: 1.
         downsample (nn.Module): Downsample layer. Default: None.
-        style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
-            layer is the 3x3 conv layer, otherwise the stride-two layer is
-            the first 1x1 conv layer. Default: 'pytorch'.
+        style (str): ``pytorch`` or ``caffe``. If set to "pytorch", the
+            stride-two layer is the 3x3 conv layer, otherwise the stride-two
+            layer is the first 1x1 conv layer. Default: 'pytorch'.
         inflate (bool): Whether to inflate kernel. Default: True.
-        inflate_style (str): `3x1x1` or `1x1x1`. which determines the kernel
-            sizes and padding strides for conv1 and conv2 in each block.
+        inflate_style (str): ``3x1x1`` or ``1x1x1``. which determines the
+            kernel sizes and padding strides for conv1 and conv2 in each block.
             Default: '3x1x1'.
         conv_cfg (dict): Config dict for convolution layer.
-            Default: dict(type='Conv3d').
-        norm_cfg (dict): Config for norm layers. required keys are `type`,
-            Default: dict(type='BN3d').
+            Default: ``dict(type='Conv3d')``.
+        norm_cfg (dict): Config for norm layers. required keys are ``type``,
+            Default: ``dict(type='BN3d')``.
         act_cfg (dict): Config dict for activation layer.
-            Default: dict(type='ReLU').
+            Default: ``dict(type='ReLU')``.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
             memory while slowing down the training speed. Default: False.
     """
@@ -301,34 +301,35 @@ class ResNet3d(nn.Module):
         num_stages (int): Resnet stages. Default: 4.
         spatial_strides (Sequence[int]):
             Spatial strides of residual blocks of each stage.
-            Default: (1, 2, 2, 2).
+            Default: ``(1, 2, 2, 2)``.
         temporal_strides (Sequence[int]):
             Temporal strides of residual blocks of each stage.
-            Default: (1, 1, 1, 1).
+            Default: ``(1, 1, 1, 1)``.
         dilations (Sequence[int]): Dilation of each stage.
-            Default: (1, 1, 1, 1).
+            Default: ``(1, 1, 1, 1)``.
         conv1_kernel (Sequence[int]): Kernel size of the first conv layer.
-            Default: (5, 7, 7).
+            Default: ``(5, 7, 7)``.
         conv1_stride_t (int): Temporal stride of the first conv layer.
             Default: 2.
         pool1_stride_t (int): Temporal stride of the first pooling layer.
             Default: 2.
-        style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
-            layer is the 3x3 conv layer, otherwise the stride-two layer is
-            the first 1x1 conv layer. Default: 'pytorch'.
+        style (str): ``pytorch`` or ``caffe``. If set to "pytorch", the
+            stride-two layer is the 3x3 conv layer, otherwise the stride-two
+            layer is the first 1x1 conv layer. Default: 'pytorch'.
         frozen_stages (int): Stages to be frozen (all param fixed). -1 means
             not freezing any parameters. Default: -1.
         inflate (Sequence[int]): Inflate Dims of each block.
             Default: (1, 1, 1, 1).
-        inflate_style (str): `3x1x1` or `1x1x1`. which determines the kernel
-            sizes and padding strides for conv1 and conv2 in each block.
+        inflate_style (str): ``3x1x1`` or ``1x1x1``. which determines the
+            kernel sizes and padding strides for conv1 and conv2 in each block.
             Default: '3x1x1'.
-        conv_cfg (dict): Config for conv layers. required keys are `type`
-            Default: dict(type='Conv3d').
-        norm_cfg (dict): Config for norm layers. required keys are `type` and
-            `requires_grad`. Default: dict(type='BN3d', requires_grad=True).
+        conv_cfg (dict): Config for conv layers. required keys are ``type``
+            Default: ``dict(type='Conv3d')``.
+        norm_cfg (dict): Config for norm layers. required keys are ``type`` and
+            ``requires_grad``.
+            Default: ``dict(type='BN3d', requires_grad=True)``.
         act_cfg (dict): Config dict for activation layer.
-            Default: dict(type='ReLU', inplace=True).
+            Default: ``dict(type='ReLU', inplace=True)``.
         norm_eval (bool): Whether to set BN layers to eval mode, namely, freeze
             running stats (mean and var). Default: True.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
@@ -462,15 +463,15 @@ class ResNet3d(nn.Module):
             temporal_stride (int | Sequence[int]): Temporal strides in
                 residual and conv layers. Default: 1.
             dilation (int): Spacing between kernel elements. Default: 1.
-            style (str): `pytorch` or `caffe`. If set to "pytorch",
+            style (str): ``pytorch`` or ``caffe``. If set to ``pytorch``,
                 the stride-two layer is the 3x3 conv layer, otherwise
                 the stride-two layer is the first 1x1 conv layer.
-                Default: 'pytorch'.
+                Default: ``pytorch``.
             inflate (int | Sequence[int]): Determine whether to inflate
                 for each block. Default: 1.
-            inflate_style (str): `3x1x1` or `1x1x1`. which determines
+            inflate_style (str): ``3x1x1`` or ``1x1x1``. which determines
                 the kernel sizes and padding strides for conv1 and conv2
-                in each block. Default: '3x1x1'.
+                in each block. Default: ``3x1x1``.
             norm_cfg (dict): Config for norm layers. Default: None.
             act_cfg (dict): Config for activate layers. Default: None.
             conv_cfg (dict): Config for norm layers. Default: None.
@@ -651,7 +652,7 @@ class ResNet3d(nn.Module):
 
     def _freeze_stages(self):
         """Prevent all the parameters from being optimized before
-        `self.frozen_stages`."""
+        ``self.frozen_stages``."""
         if self.frozen_stages >= 0:
             self.conv1.eval()
             for param in self.conv1.parameters():

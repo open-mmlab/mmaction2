@@ -144,9 +144,9 @@ class Transpose(object):
 class Collect(object):
     """Collect data from the loader relevant to the specific task.
 
-    This keeps the items in `keys` as it is, and collect items in `meta_keys`
-    into a meta item called `meta_name`.This is usually the last stage of the
-    data loader pipeline.
+    This keeps the items in ``keys`` as it is, and collect items in
+    ``meta_keys`` into a meta item called ``meta_name``.This is usually
+    the last stage of the data loader pipeline.
     For example, when keys='imgs', meta_keys=('filename', 'label',
     'original_shape'), meta_name='img_meta', the results will be a dict with
     keys 'imgs' and 'img_meta', where 'img_meta' is a DataContainer of another
@@ -157,7 +157,8 @@ class Collect(object):
         meta_name (str): The name of the key that contains meta infomation.
             This key is always populated. Default: "img_meta".
         meta_keys (Sequence[str]): Keys that are collected under meta_name.
-            The contents of the `meta_name` dictionary depends on `meta_keys`.
+            The contents of the ``meta_name`` dictionary depends on
+            ``meta_keys``.
             By default this includes:
 
             - "filename": path to the image file

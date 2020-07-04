@@ -6,7 +6,7 @@ import torch.nn as nn
 class BaseWeightedLoss(nn.Module, metaclass=ABCMeta):
     """Base class for loss.
 
-    All subclass should overwrite the `_forward()` method which returns the
+    All subclass should overwrite the ``_forward()`` method which returns the
     normal loss without loss weights.
 
     Args:

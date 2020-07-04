@@ -13,6 +13,7 @@ class Fp16OptimizerHook(OptimizerHook):
     """FP16 optimizer hook.
 
     The steps of fp16 optimizer is as follows.
+
     1. Scale the loss value.
     2. BP in the fp16 model.
     2. Copy gradients from fp16 model to fp32 weights.

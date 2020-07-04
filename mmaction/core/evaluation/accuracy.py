@@ -158,7 +158,7 @@ def pairwise_temporal_iou(candidate_segments, target_segments):
             [n x 2:=[init, end]].
 
     Returns:
-        temporal_iou (np.ndarray): 2-dim array [n x m] with IOU ratio.
+        temporal_iou (np.ndarray): 2-dim array [n x m] with IoU ratio.
     """
     if target_segments.ndim != 2 or candidate_segments.ndim != 2:
         raise ValueError('Dimension of arguments is incorrect')
@@ -204,14 +204,14 @@ def average_recall_at_avg_proposals(ground_truth,
 
     Returns:
         tuple([np.ndarray, np.ndarray, np.ndarray, float]):
-            (recall, average_recall, proposals_per_video, auc).
-            In recall, recall[i,j] is recall at i-th temporal_iou threshold at
-            the j-th average number (percentile) of average number of
+            (recall, average_recall, proposals_per_video, auc)
+            In recall, ``recall[i,j]`` is recall at i-th temporal_iou threshold
+            at the j-th average number (percentile) of average number of
             proposals per video. The average_recall is recall averaged
             over a list of temporal_iou threshold (1D array). This is
-            equivalent to recall.mean(axis=0). The proposals_per_video is the
-            average number of proposals per video. The auc is the area under
-            AR@AN curve.
+            equivalent to ``recall.mean(axis=0)``. The ``proposals_per_video``
+            is the average number of proposals per video. The auc is the area
+            under AR@AN curve.
     """
 
     total_num_videos = len(ground_truth)
