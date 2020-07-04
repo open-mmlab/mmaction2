@@ -163,8 +163,8 @@ def generate_bsp_feature(video_list,
 
     Returns:
         bsp_feature_dict (dict): A dict contains video_name as keys and
-            bsp_feature as value. If result_dict is not None, save the
-            results to it.
+        bsp_feature as value. If result_dict is not None, save the
+        results to it.
     """
     if tem_results_ext not in ('.csv') or pgm_proposal_ext not in ('.csv'):
         raise NotImplementedError

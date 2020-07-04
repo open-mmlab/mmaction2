@@ -208,8 +208,8 @@ class RandomResizedCrop(object):
                 bounding box. If it doesn't qualified one, the center bounding
                 box will be used.
         Returns:
-            (list[int]) A random crop bbox within the area range
-                and aspect ratio range.
+            (list[int]) A random crop bbox within the area range and aspect
+            ratio range.
         """
         assert 0 < area_range[0] <= area_range[1] <= 1
         assert 0 < aspect_ratio_range[0] <= aspect_ratio_range[1]
@@ -310,14 +310,12 @@ class MultiScaleCrop(object):
         random_crop (bool): If set to True, the cropping bbox will be randomly
             sampled, otherwise it will be sampler from fixed regions.
             Default: False.
-        num_fixed_crops (int):
-            If set to 5, the cropping bbox will keep 5 basic fixed regions:
-                "upper left", "upper right", "lower left",
-                 "lower right", "center".
-            If set to 13, the cropping bbox will append another 8 fix regions:
-                "center left", "center right", "lower center",
-                "upper center", "upper left quarter", "upper right quarter",
-                "lower left quarter", "lower right quarter".
+        num_fixed_crops (int): If set to 5, the cropping bbox will keep 5
+            basic fixed regions: "upper left", "upper right", "lower left",
+            "lower right", "center".If set to 13, the cropping bbox will append
+            another 8 fix regions: "center left", "center right",
+            "lower center", "upper center", "upper left quarter",
+            "upper right quarter", "lower left quarter", "lower right quarter".
             Default: 5.
         lazy (bool): Determine whether to apply lazy operation. Default: False.
     """
@@ -452,9 +450,9 @@ class Resize(object):
     Args:
         scale (float | Tuple[int]): If keep_ratio is True, it serves as scaling
             factor or maximum size:
-                If it is a float number, the image will be rescaled by this
-                factor, else if it is a tuple of 2 integers, the image will
-                be rescaled as large as possible within the scale.
+            If it is a float number, the image will be rescaled by this
+            factor, else if it is a tuple of 2 integers, the image will
+            be rescaled as large as possible within the scale.
             Otherwise, it serves as (w, h) of output size.
         keep_ratio (bool): If set to True, Images will be resized without
             changing the aspect ratio. Otherwise, it will resize images to a

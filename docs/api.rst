@@ -71,7 +71,7 @@ datasets
 
 pipelines
 ^^^^^^
-.. automodule:: mmaction.datasets.pipeline
+.. automodule:: mmaction.datasets.pipelines
     :members:
 
 
