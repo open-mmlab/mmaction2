@@ -44,7 +44,7 @@ bash extract_rgb_frames.sh
 If both are required, run the following script to extract frames using "tvl1" algorithm.
 
 ```shell
-bash extract_frames.sh tvl1
+bash extract_frames.sh
 ```
 
 ## Step 4. Generate File List
@@ -52,7 +52,7 @@ bash extract_frames.sh tvl1
 you can run the follow script to generate file list in the format of rawframes and videos.
 
 ```shell
-bash generate_filelist.sh
+bash generate_{rawframes, videos}_filelist.sh
 ```
 
 ## Step 5. Check Directory Structure
