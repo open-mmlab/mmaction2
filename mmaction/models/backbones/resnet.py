@@ -17,11 +17,11 @@ class BasicBlock(nn.Module):
         stride (int): Stride in the conv layer. Default: 1.
         dilation (int): Spacing between kernel elements. Default: 1.
         downsample (nn.Module): Downsample layer. Default: None.
-        style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
-            layer is the 3x3 conv layer, otherwise the stride-two layer is
-            the first 1x1 conv layer. Default: 'pytorch'.
-        norm_cfg (dict): Config for norm layers. required keys are `type`,
-            Default: dict(type='BN').
+        style (str): ``pytorch`` or ``caffe``. If set to "pytorch", the
+            stride-two layer is the 3x3 conv layer, otherwise the stride-two
+            layer is the first 1x1 conv layer. Default: 'pytorch'.
+        norm_cfg (dict): Config for norm layers. required keys are ``type``,
+            Default: ``dict(type='BN')``.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
             memory while slowing down the training speed. Default: False.
     """
@@ -115,11 +115,11 @@ class Bottleneck(nn.Module):
         stride (int): Spatial stride in the conv layer. Default: 1.
         dilation (int): Spacing between kernel elements. Default: 1.
         downsample (nn.Module): Downsample layer. Default: None.
-        style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
-            layer is the 3x3 conv layer, otherwise the stride-two layer is
-            the first 1x1 conv layer. Default: 'pytorch'.
-        norm_cfg (dict): Config for norm layers. required keys are `type`,
-            Default: dict(type='BN').
+        style (str): ``pytorch`` or ``caffe``. If set to "pytorch", the
+            stride-two layer is the 3x3 conv layer, otherwise the stride-two
+            layer is the first 1x1 conv layer. Default: 'pytorch'.
+        norm_cfg (dict): Config for norm layers. required keys are ``type``,
+            Default: ``dict(type='BN')``.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
             memory while slowing down the training speed. Default: False.
     """
@@ -252,10 +252,10 @@ def make_res_layer(block,
         blocks (int): Number of residual blocks.
         stride (int): Stride in the conv layer. Default: 1.
         dilation (int): Spacing between kernel elements. Default: 1.
-        style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
-            layer is the 3x3 conv layer, otherwise the stride-two layer is
-            the first 1x1 conv layer. Default: 'pytorch'.
-        norm_cfg (dict): Config for norm layers. required keys are `type`,
+        style (str): ``pytorch`` or ``caffe``. If set to "pytorch", the
+            stride-two layer is the 3x3 conv layer, otherwise the stride-two
+            layer is the first 1x1 conv layer. Default: 'pytorch'.
+        norm_cfg (dict): Config for norm layers. required keys are ``type``,
             Default: None.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
             memory while slowing down the training speed. Default: False.
@@ -312,14 +312,15 @@ class ResNet(nn.Module):
         num_stages (int): Resnet stages. Default: 4.
         strides (Sequence[int]): Strides of the first block of each stage.
         dilations (Sequence[int]): Dilation of each stage.
-        style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
-            layer is the 3x3 conv layer, otherwise the stride-two layer is
-            the first 1x1 conv layer. Default: `pytorch`.
+        style (str): ``pytorch`` or ``caffe``. If set to "pytorch", the
+            stride-two layer is the 3x3 conv layer, otherwise the stride-two
+            layer is the first 1x1 conv layer. Default: ``pytorch``.
         frozen_stages (int): Stages to be frozen (all param fixed). -1 means
             not freezing any parameters. Default: -1.
         norm_cfg (dict):
-            Config for norm layers. required keys are `type` and
-            `requires_grad`. Default: dict(type='BN', requires_grad=True).
+            Config for norm layers. required keys are ``type`` and
+            ``requires_grad``.
+            Default: ``dict(type='BN', requires_grad=True)``.
         norm_eval (bool): Whether to set BN layers to eval mode, namely, freeze
             running stats (mean and var). Default: True.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
@@ -447,7 +448,7 @@ class ResNet(nn.Module):
 
     def _freeze_stages(self):
         """Prevent all the parameters from being optimized before
-        `self.frozen_stages`."""
+        ``self.frozen_stages``."""
         if self.frozen_stages >= 0:
             self.norm1.eval()
             for m in [self.conv1, self.norm1]:

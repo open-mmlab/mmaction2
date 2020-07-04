@@ -17,7 +17,7 @@ class Conv2plus1d(nn.Module):
         padding (int or tuple[int]): Same as nn.Conv3d.
         dilation (int or tuple[int]): Same as nn.Conv3d.
         groups (int): Same as nn.Conv3d.
-        bias (bool or str): If specified as `auto`, it will be decided by the
+        bias (bool or str): If specified as ``auto``, it will be decided by the
             norm_cfg. Bias will be set as True if norm_cfg is None, otherwise
             False.
     """

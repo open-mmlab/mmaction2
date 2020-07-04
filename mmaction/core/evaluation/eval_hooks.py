@@ -22,13 +22,12 @@ class EvalHook(Hook):
         save_best (bool): Whether to save best checkpoint during evaluation.
             Default: True.
         key_indicator (str | None): Key indicator to measure the best
-            checkpoint during evaluation when `save_best` is set to True.
+            checkpoint during evaluation when ``save_best`` is set to True.
             Options are the evaluation metrics to the test dataset. e.g.,
-            - "top1_acc", "top5_acc", "mean_class_accuracy",
-            "mean_average_precision" for action recognition dataset
-            (RawframeDataset and VideoDataset).
-            - "AR@AN", "auc" for action localization dataset
-            (ActivityNetDataset). Default: 'top1_acc'.
+             ``top1_acc``, ``top5_acc``, ``mean_class_accuracy``,
+            ``mean_average_precision`` for action recognition dataset
+            (RawframeDataset and VideoDataset). ``AR@AN``, ``auc`` for action
+            localization dataset (ActivityNetDataset). Default: `top1_acc`.
         rule (str | None): Comparison rule for best score. If set to None,
             it will infer a reasonable rule. Default: 'None'.
         eval_kwargs (dict, optional): Arguments for evaluation.
@@ -140,6 +139,17 @@ class DistEvalHook(EvalHook):
         interval (int): Evaluation interval (by epochs). Default: 1.
         gpu_collect (bool): Whether to use gpu or cpu to collect results.
             Default: False.
+        save_best (bool): Whether to save best checkpoint during evaluation.
+            Default: True.
+        key_indicator (str | None): Key indicator to measure the best
+            checkpoint during evaluation when ``save_best`` is set to True.
+            Options are the evaluation metrics to the test dataset. e.g.,
+            ``top1_acc``, ``top5_acc``, ``mean_class_accuracy``,
+            ``mean_average_precision`` for action recognition dataset
+            (RawframeDataset and VideoDataset). ``AR@AN``, ``auc`` for action
+            localization dataset (ActivityNetDataset). Default: `top1_acc`.
+        rule (str | None): Comparison rule for best score. If set to None,
+            it will infer a reasonable rule. Default: 'None'.
         eval_kwargs (dict, optional): Arguments for evaluation.
     """
 

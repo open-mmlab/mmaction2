@@ -4,12 +4,12 @@ from mmcv.utils import get_logger
 
 
 def get_root_logger(log_file=None, log_level=logging.INFO):
-    """Use `get_logger` method in mmcv to get the root logger.
+    """Use ``get_logger`` method in mmcv to get the root logger.
 
     The logger will be initialized if it has not been initialized. By default a
-    StreamHandler will be added. If `log_file` is specified, a FileHandler will
-    also be added. The name of the root logger is the top-level package name,
-    e.g., "mmaction".
+    StreamHandler will be added. If ``log_file`` is specified, a FileHandler
+    will also be added. The name of the root logger is the top-level package
+    name, e.g., "mmaction".
 
     Args:
         log_file (str | None): The log filename. If specified, a FileHandler

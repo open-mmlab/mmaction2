@@ -15,9 +15,9 @@ from .utils import post_processing
 class BMN(BaseLocalizer):
     """Boundary Matching Network for temporal action proposal generation.
 
-    `Paper reference <https://arxiv.org/abs/1907.09702>`_
-
-    `Code reference <https://github.com/JJBOY/BMN-Boundary-Matching-Network>`_
+    Please refer `BMN: Boundary-Matching Network for Temporal Action Proposal
+    Generation <https://arxiv.org/abs/1907.09702>`_.
+    Code Reference https://github.com/JJBOY/BMN-Boundary-Matching-Network
 
     Args:
         temporal_dimension (int): Total frames selected for each video.
@@ -30,7 +30,7 @@ class BMN(BaseLocalizer):
         soft_nms_high_threshold (float): Soft NMS high threshold.
         post_process_top_k (int): Top k proposals in post process.
         loss_cls (dict): Config for building loss.
-            Default: dict(type='BMNLoss').
+            Default: ``dict(type='BMNLoss')``.
         hidden_dim_1d (int): Hidden dim for 1d conv. Default: 256.
         hidden_dim_2d (int): Hidden dim for 2d conv. Default: 128.
         hidden_dim_3d (int): Hidden dim for 3d conv. Default: 512.
