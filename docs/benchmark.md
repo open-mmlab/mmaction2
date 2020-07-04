@@ -30,7 +30,7 @@ We compare our results with some other popular frameworks in terms of speed.
 
 ### MMAction vs [MMAction(old-version)](https://github.com/open-mmlab/mmaction)
 
-| architecture | depth | clip len x frame interval x num clips | MMAction(s) | MMAction(old)(s) | config |
+| architecture | depth | clip len x frame interval x num clips | MMAction(s/iter) | MMAction(old)(s/iter) | config |
 | :----------: | :---: | :-----------------------------------: | :---------: | :--------------: | :----: |
 | TSN | R50 | 1 x 1 x 3 | 0.29 | 0.36 | [tsn_r50_1x1x3_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py) |
 | I3D | R50 | 32 x 2 x 1| 0.45 | 0.58 | [i3d_r50_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py) |
@@ -59,3 +59,11 @@ We compare our results with some other popular frameworks in terms of speed.
 | :----------: | :---------: | :-------------------------------: | :----: |
 | BSN | 0.074(TEM)+0.040(PEM) | 0.101(TEM)+0.040(PEM) | [TEM + PEM + PGM](/configs/localization/bsn)
 | BMN | 3.27 | 3.30 | [BMN](/configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py)
+
+
+
+| Model | MMAction(s/iter) | MMAction(old)(s/iter) | temporal-shift-module(s/iter) | PySlowFast |
+| :---: | :--------------: | :-------------------: | :---------------------------: | :--------: |
+| TSN ([tsn_r50_1x1x3_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py)) | 0.29 | 0.36 | None | None |
+| I3D ([i3d_r50_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py)) | 0.45 | 0.58 | None | None |
+|
