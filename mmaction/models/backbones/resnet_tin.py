@@ -411,7 +411,8 @@ class ResNetTIN(ResNet):
                         b.conv1.in_channels,
                         num_segments=num_segments,
                         shift_div=shift_div)
-                    blocks[i].conv1 = CombineNet(tds, blocks[i].conv1)
+                    blocks[i].conv1.conv = CombineNet(tds,
+                                                      blocks[i].conv1.conv)
             return nn.Sequential(*blocks)
 
         self.layer1 = make_block_interlace(
