@@ -2,31 +2,23 @@
 
 We compare our results with some other popular frameworks in terms of speed.
 
-## Results
+## Hardware
 
-| Model      | Dataset     | Setting  | Framework     | Iter time | Memory | log |
-| ---------- | ----------- | -------- | ------------- | --------- | ------ | ---------- |
-| TSN        | Kinetics400 | tsn_r50_1x1x3_100e_kinetics400_rgb | mmaction-lite |0.2966|8339|ready|
-|            | Kinetics400 | tsn_r50_1x1x3_100e_kinetics400_rgb(video) | mmaction-lite |0.4165|8339|ready|
-|            | Kinetics400 | tsn_r50_1x1x3_100e_kinetics400_rgb | open-mmaction |0.3659|8245|ready|
-| I3D        | Kinetics400 | i3d_r50_32x2x1_100e_kinetics400_rgb| mmaction-lite |0.4528|5169|ready|
-|            | Kinetics400 | i3d_r50_32x2x1_100e_kinetics400_rgb(video)| mmaction-lite |0.4795|5169|ready|
-|            | Kinetics400 | i3d_r50_fast32x2x1_100e_kinetics400_rgb| mmaction-lite |0.3886|5169|ready
-|            | Kinetics400 | i3d_r50_32x2x1_100e_kinetics400_rgb| open-mmaction |0.5873|5065|ready|
-| TSM        | Kinetics400 | tsm_r50_1x1x8_100e_kinetics400_rgb | mmaction-lite |0.3052|7077|ready|
-|            | Kinetics400 | tsm_r50_1x1x8_100e_kinetics400_rgb(video) | mmaction-lite |0.3027|7077|ready|
-|            | Kinetics400 | tsm_r50_1x1x8_100e_kinetics400_rgb | HAN           |0.3843|9337|ready|
-| Slowfast   | Kinetics400 | slowfast_r50_4x16x1_256e_kinetics400_rgb(video) | mmaction-lite |0.80|6203|ready|
-|            | Kinetics400 | slowfast_r50_4x16x1_256e_kinetics400_rgb(video) | PySlowfast    |1.40|6850|ready|
-|            | Kinetics400 | slowfast_r50_8x8x1_256e_kinetics400_rgb(video) | mmaction-lite |1.05|9062|ready|
-|            | Kinetics400 | slowfast_r50_8x8x1_256e_kinetics400_rgb(video) | PySlowfast |1.41|10230|ready|
-| Slowonly   | Kinetics400 | slowonly_r50_4x16x1_256e_kinetics400_rgb(video) | mmaction-lite |0.30|3158|ready|
-|            | Kinetics400 | slowonly_r50_4x16x1_256e_kinetics400_rgb(video)| PySlowfast    |1.03|3481|ready|
-|            | Kinetics400 | slowonly_r50_8x8x1_256e_kinetics400_rgb(video) | mmaction-lite |0.50|5820|ready|
-|            | Kinetics400 | slowonly_r50_8x8x1_256e_kinetics400_rgb(video)| PySlowfast    |1.29|6400|ready|
-| R(2+1)D    | Kinetics400 | r2plus1d_r34_8x8x1_180e_kinetics400_rgb(frame) | mmaction-lite |0.48|3998|ready|
-|            | Kinetics400 | r2plus1d_r34_8x8x1_180e_kinetics400_rgb(frame) | mmaction-lite |1.29|12974|ready|
-|            | Kinetics400 | r2plus1d_r34_8x8x1_180e_kinetics400_rgb(video) | mmaction-lite |0.8340(0.0725)|10339|    |
+- 8 NVIDIA Tesla V100 (32G) GPUs
+- Intel(R) Xeon(R) Gold 6148 CPU @ 2.40GHz
+
+## Software Environment
+
+- Python 3.7
+- PyTorch 1.4
+- CUDA 10.1
+- CUDNN 7.6.03
+- NCCL 2.4.08
+
+Here we compare our MMAction repo with other Video understanding toolboxes in the same data and model settings
+by the training time per iteration.
+
+## Recognizers
 
 | Model | MMAction (s/iter) | MMAction V0.1 (s/iter) | temporal-shift-module (s/iter) | PySlowFast (s/iter) |
 | :---: | :---------------: | :--------------------: | :----------------------------: | :-----------------: |
