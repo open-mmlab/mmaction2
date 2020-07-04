@@ -87,7 +87,7 @@ def parse_args():
         '--ext',
         type=str,
         default='avi',
-        choices=['avi', 'mp4'],
+        choices=['avi', 'mp4', 'webm'],
         help='video file extensions')
     parser.add_argument(
         '--new_width', type=int, default=0, help='resize image width')
