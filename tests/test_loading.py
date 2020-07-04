@@ -91,7 +91,7 @@ class TestLoading(object):
         def check_monotonous(arr):
             length = arr.shape[0]
             for i in range(length - 1):
-                if arr[i] > arr[i - 1]:
+                if arr[i] > arr[i + 1]:
                     return False
             return True
 
