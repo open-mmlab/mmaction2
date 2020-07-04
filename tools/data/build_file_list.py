@@ -3,7 +3,9 @@ import glob
 import os.path as osp
 import random
 
-from tools.data.parse_file_list import parse_directory, parse_ucf101_splits
+from tools.data.parse_file_list import (parse_directory, parse_sthv1_splits,
+                                        parse_sthv2_splits,
+                                        parse_ucf101_splits)
 
 
 def parse_args():
@@ -153,9 +155,13 @@ def main():
 
     if args.dataset == 'ucf101':
         splits = parse_ucf101_splits(args.level)
+    elif args.dataset == 'sthv1':
+        splits = parse_sthv1_splits(args.level)
+    elif args.dataset == 'sthv2':
+        splits = parse_sthv2_splits(args.level)
     else:
-        raise ValueError(
-            f"Supported datasets are 'ucf101', but got {args.dataset}")
+        raise ValueError(f"Supported datasets are 'ucf101, sthv1, sthv2',"
+                         f'but got {args.dataset}')
     assert len(splits) == args.num_split
 
     out_path = args.out_root_path + args.dataset
