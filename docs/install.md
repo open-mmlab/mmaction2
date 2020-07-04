@@ -60,16 +60,23 @@ If you build PyTorch from source instead of installing the prebuilt pacakge, you
 c. Clone the mmaction repository
 
 ```shell
-git clone git@gitlab.sz.sensetime.com:open-mmlab/mmaction-lite.git
-cd mmaction-lite
+git clone https://github.com/open-mmlab/mmaction.git
+cd mmaction
 ```
 
 d. Install build requirements and then install mmaction
 
 ```shell
 pip install -r requirements/build.txt
-python setup.py develop
+pip install -v -e .  # or "python setup.py develop"
 ```
+
+If you build mmaction on macOS, replace the last command with
+
+```
+CC=clang CXX=clang++ CFLAGS='-stdlib=libc++' pip install -e .
+```
+
 
 Note:
 
@@ -93,28 +100,19 @@ The code can be built for CPU only environment (where CUDA isn't available).
 
 In CPU mode you can run the demo/demo.py for example.
 
-### Prepare datasets
+### Another option: Docker Image
 
-It is recommended to symlink the dataset root to `$MMACTION/data`
-If your folder structure is different, you may need to change the corresponding paths in config files.
+We provide a [Dockerfile](/docker/Dockerfile) to build an image.
 
+```shell
+# build an image with PyTorch 1.5, CUDA 10.1
+docker build -t mmaction docker/
 ```
-mmaction
-├── mmaction
-├── tools
-├── config
-├── data
-│   ├── kinetics400
-│   │   ├── rawframes_train
-│   │   ├── rawframes_val
-│   │   ├── kinetics_train_list.txt
-│   │   ├── kinetics_val_list.txt
-│   ├── ucf101
-│   │   ├── rawframes_train
-│   │   ├── rawframes_val
-│   │   ├── ucf101_train_list.txt
-│   │   ├── ucf101_val_list.txt
 
+Run it with
+
+```shell
+docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmaction/data mmaction
 ```
 
 ### A from-scratch setup script
