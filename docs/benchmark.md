@@ -2,18 +2,7 @@
 
 We compare our results with some other popular frameworks in terms of speed and performance.
 
-### Hardware
-
-- 8 NVIDIA Tesla V100 (32G) GPUs
-- Intel(R) Xeon(R) Gold 6148 CPU @ 2.40GHz
-
-### Software environment
-
-- Python 3.7
-- PyTorch 1.4
-- CUDA 10.1
-- CUDNN 7.6.03
-- NCCL 2.4.08
+## Results
 
 | Model      | Dataset     | Setting  | Framework     | Iter time | Memory | ckpt & log |
 | ---------- | ----------- | -------- | ------------- | --------- | ------ | ---------- |
@@ -45,3 +34,18 @@ We compare our results with some other popular frameworks in terms of speed and 
 |            |             |          | open-mmaction |           |        |            |
 |            |             |          | PySlowfast    |           |        |            |
 |            |             | Setting2 | mmaction-lite |           |        |            |
+
+## Benchmark Settings
+
+### Software Environment
+
+- Python 3.7
+- PyTorch 1.4
+- CUDA 10.1
+- CUDNN 7.6.03
+- NCCL 2.4.08
+
+### Hardware
+
+- 8 NVIDIA Tesla V100 (32G) GPUs
+- Intel(R) Xeon(R) Gold 6148 CPU @ 2.40GHz
