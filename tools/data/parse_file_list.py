@@ -43,7 +43,7 @@ def parse_directory(path,
 
         Args:
             directory (str): Data directory to be search.
-            prefix_list (list): List or prefix
+            prefix_list (list): List or prefix.
 
         Returns:
             list (int): Number list of the file with the prefix.
@@ -77,7 +77,8 @@ def parse_ucf101_splits(level):
     """Parse UCF-101 dataset into "train", "val", "test" splits.
 
     Args:
-        level: directory level of data.
+        level (int): Directory level of data. 1 for the single-level directory,
+            2 for the two-level directory.
 
     Returns:
         list: "train", "val", "test" splits of UCF-101.
@@ -94,7 +95,7 @@ def parse_ucf101_splits(level):
         """A function to map line string to vid and label.
 
         Args:
-            line (str): a long directory path, which is a text path.
+            line (str): A long directory path, which is a text path.
 
         Returns:
             tuple[str, str]: (vid, label), vid is the video id,
@@ -121,10 +122,11 @@ def parse_ucf101_splits(level):
 def parse_sthv1_splits(level):
     """Parse Something-Something dataset V1 into "train", "val" splits.
     Args:
-        level: directory level of data.
+        level (int): Directory level of data. 1 for the single-level directory,
+            2 for the two-level directory.
 
     Returns:
-        list: "train", "val", "test" splits of Something-Something dataset V1.
+        list: "train", "val", "test" splits of Something-Something V1 dataset.
     """
     # Read the annotations
     # yapf: disable
@@ -164,10 +166,11 @@ def parse_sthv2_splits(level):
     """Parse Something-Something dataset V2 into "train", "val" splits.
 
     Args:
-        level: directory level of data.
+        level (int): Directory level of data. 1 for the single-level directory,
+            2 for the two-level directory.
 
     Returns:
-        list: "train", "val", "test" splits of Something-Something dataset V2.
+        list: "train", "val", "test" splits of Something-Something V2 dataset.
     """
     # Read the annotations
     # yapf: disable
@@ -228,6 +231,86 @@ def parse_mmit_splits(level):
     val_list = [line_to_map(x) for x in csv_reader]
 
     test_list = val_list  # not test for mit
+    return ((train_list, val_list, test_list), )
+
+
+def parse_kinetics_splits(level):
+    """Parse Kinetics-400 dataset into "train", "val", "test" splits.
+
+    Args:
+        level (int): Directory level of data. 1 for the single-level directory,
+            2 for the two-level directory.
+
+    Returns:
+        list: "train", "val", "test" splits of Kinetics-400.
+    """
+
+    def convert_label(s, keep_whitespaces=False):
+        """Convert label name to a formal string.
+
+        Remove redundant '"' and convert whitespace to '_'.
+
+        Args:
+            s (str): String to be converted.
+            keep_whitespaces(bool): Whether to keep whitespace. Default: False.
+
+        Returns:
+            str: Converted string.
+        """
+        if not keep_whitespaces:
+            return s.replace('"', '').replace(' ', '_')
+        else:
+            return s.replace('"', '')
+
+    def line_to_map(x, test=False):
+        """A function to map line string to vid and label.
+
+        Args:
+            x (str): A single line from Kinetics-400 csv file.
+            test (bool): Indicate whether the line comes from test
+                annotation file.
+
+        Returns:
+            tuple[str, str]: (vid, label), vid is the video id,
+                label is the video label.
+        """
+        if test:
+            # vid = f'{x[0]}_{int(x[1]):06d}_{int(x[2]):06d}'
+            vid = f'{x[1]}_{int(float(x[2])):06d}_{int(float(x[3])):06d}'
+            label = -1  # label unknown
+            return vid, label
+        else:
+            vid = f'{x[1]}_{int(float(x[2])):06d}_{int(float(x[3])):06d}'
+            if level == 2:
+                vid = f'{convert_label(x[0])}/{vid}'
+            else:
+                assert level == 1
+            label = class_mapping[convert_label(x[0])]
+            return vid, label
+
+    train_file = 'data/kinetics400/annotations/kinetics_train.csv'
+    val_file = 'data/kinetics400/annotations/kinetics_val.csv'
+    test_file = 'data/kinetics400/annotations/kinetics_test.csv'
+
+    csv_reader = csv.reader(open(train_file))
+    # skip the first line
+    next(csv_reader)
+
+    labels_sorted = sorted(set([convert_label(row[0]) for row in csv_reader]))
+    class_mapping = {label: i for i, label in enumerate(labels_sorted)}
+
+    csv_reader = csv.reader(open(train_file))
+    next(csv_reader)
+    train_list = [line_to_map(x) for x in csv_reader]
+
+    csv_reader = csv.reader(open(val_file))
+    next(csv_reader)
+    val_list = [line_to_map(x) for x in csv_reader]
+
+    csv_reader = csv.reader(open(test_file))
+    next(csv_reader)
+    test_list = [line_to_map(x, test=True) for x in csv_reader]
+
     return ((train_list, val_list, test_list), )
 
 
