@@ -574,6 +574,7 @@ class FrameSelector(object):
 
         directory = results['frame_dir']
         filename_tmpl = results['filename_tmpl']
+        modality = results['modality']
 
         if self.file_client is None:
             self.file_client = FileClient(self.io_backend, **self.kwargs)
@@ -588,11 +589,24 @@ class FrameSelector(object):
             # TODO: add offset attributes in datasets.
             if frame_idx == 0:
                 frame_idx += 1
-            filepath = osp.join(directory, filename_tmpl.format(frame_idx))
-            img_bytes = self.file_client.get(filepath)
-            # Get frame with channel order RGB directly.
-            cur_frame = mmcv.imfrombytes(img_bytes, channel_order='rgb')
-            imgs.append(cur_frame)
+            if modality == 'RGB':
+                filepath = osp.join(directory, filename_tmpl.format(frame_idx))
+                img_bytes = self.file_client.get(filepath)
+                # Get frame with channel order RGB directly.
+                cur_frame = mmcv.imfrombytes(img_bytes, channel_order='rgb')
+                imgs.append(cur_frame)
+            elif modality == 'Flow':
+                x_filepath = osp.join(directory,
+                                      filename_tmpl.format('x', frame_idx))
+                y_filepath = osp.join(directory,
+                                      filename_tmpl.format('y', frame_idx))
+                x_img_bytes = self.file_client.get(x_filepath)
+                x_frame = mmcv.imfrombytes(x_img_bytes, flag='grayscale')
+                y_img_bytes = self.file_client.get(y_filepath)
+                y_frame = mmcv.imfrombytes(y_img_bytes, flag='grayscale')
+                imgs.extend([x_frame, y_frame])
+            else:
+                raise NotImplementedError
 
         results['imgs'] = imgs
         results['original_shape'] = imgs[0].shape[:2]

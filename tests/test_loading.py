@@ -1,5 +1,4 @@
 import copy
-import os
 import os.path as osp
 
 import numpy as np
@@ -33,13 +32,21 @@ class TestLoading(object):
             osp.dirname(__file__), 'data/test_bsp_features')
         cls.proposals_dir = osp.join(
             osp.dirname(__file__), 'data/test_proposals')
-        cls.total_frames = len(os.listdir(cls.img_dir))
+        cls.total_frames = 5
         cls.filename_tmpl = 'img_{:05}.jpg'
+        cls.flow_filename_tmpl = '{}_{:05d}.jpg'
         cls.video_results = dict(filename=cls.video_path, label=1)
         cls.frame_results = dict(
             frame_dir=cls.img_dir,
             total_frames=cls.total_frames,
             filename_tmpl=cls.filename_tmpl,
+            modality='RGB',
+            label=1)
+        cls.flow_frame_results = dict(
+            frame_dir=cls.img_dir,
+            total_frames=cls.total_frames,
+            filename_tmpl=cls.flow_filename_tmpl,
+            modality='Flow',
             label=1)
         cls.action_results = dict(
             video_name='v_test1',
@@ -537,7 +544,7 @@ class TestLoading(object):
             video_result['frame_inds']), 256, 340, 3)
 
     def test_frame_selector(self):
-        target_keys = ['frame_inds', 'imgs', 'original_shape']
+        target_keys = ['frame_inds', 'imgs', 'original_shape', 'modality']
 
         # test frame selector with 2 dim input
         inputs = copy.deepcopy(self.frame_results)
@@ -568,6 +575,16 @@ class TestLoading(object):
         assert self.check_keys_contain(results.keys(), target_keys)
         assert np.shape(results['imgs']) == (len(inputs['frame_inds']), 240,
                                              320, 3)
+        assert results['original_shape'] == (240, 320)
+
+        # test frame selector with 1 dim input for flow images
+        inputs = copy.deepcopy(self.flow_frame_results)
+        inputs['frame_inds'] = np.arange(1, self.total_frames, 2)
+        frame_selector = FrameSelector(io_backend='disk')
+        results = frame_selector(inputs)
+        assert self.check_keys_contain(results.keys(), target_keys)
+        assert np.shape(results['imgs']) == (len(inputs['frame_inds']) * 2,
+                                             240, 320)
         assert results['original_shape'] == (240, 320)
 
         # test frame selector in turbojpeg decording backend
