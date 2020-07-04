@@ -62,7 +62,7 @@ class Fuse(object):
 
         # crop
         left, top, right, bottom = lazyop['crop_bbox'].round().astype(int)
-        imgs = [img[top:bottom, left:right, :] for img in imgs]
+        imgs = [img[top:bottom, left:right] for img in imgs]
 
         # resize
         img_h, img_w = results['img_shape']
@@ -132,7 +132,7 @@ class RandomCrop(object):
 
         if not self.lazy:
             results['imgs'] = [
-                img[y_offset:y_offset + new_h, x_offset:x_offset + new_w, :]
+                img[y_offset:y_offset + new_h, x_offset:x_offset + new_w]
                 for img in results['imgs']
             ]
         else:
@@ -261,7 +261,7 @@ class RandomResizedCrop(object):
 
         if not self.lazy:
             results['imgs'] = [
-                img[top:bottom, left:right, :] for img in results['imgs']
+                img[top:bottom, left:right] for img in results['imgs']
             ]
         else:
             lazyop = results['lazy']
@@ -407,7 +407,7 @@ class MultiScaleCrop(object):
 
         if not self.lazy:
             results['imgs'] = [
-                img[y_offset:y_offset + new_h, x_offset:x_offset + new_w, :]
+                img[y_offset:y_offset + new_h, x_offset:x_offset + new_w]
                 for img in results['imgs']
             ]
         else:
@@ -443,9 +443,10 @@ class MultiScaleCrop(object):
 class Resize(object):
     """Resize images to a specific size.
 
-    Required keys are "imgs", "img_shape", added or modified keys are "imgs",
-    "img_shape", "keep_ratio", "scale_factor", "lazy" and "resize_size".
-    Required keys in "lazy" is None, added or modified key is "interpolation".
+    Required keys are "imgs", "img_shape", "modality", added or modified
+    keys are "imgs", "img_shape", "keep_ratio", "scale_factor", "lazy",
+    "resize_size". Required keys in "lazy" is None, added or modified key is
+    "interpolation".
 
     Args:
         scale (float | Tuple[int]): If keep_ratio is True, it serves as scaling
@@ -491,24 +492,24 @@ class Resize(object):
             results (dict): The resulting dict to be modified and passed
                 to the next transform in pipeline.
         """
+
         _init_lazy_if_proper(results, self.lazy)
 
+        if 'scale_factor' not in results:
+            results['scale_factor'] = np.array([1, 1], dtype=np.float32)
         img_h, img_w = results['img_shape']
 
         if self.keep_ratio:
-            new_size, self.scale_factor = mmcv.rescale_size((img_w, img_h),
-                                                            self.scale,
-                                                            return_scale=True)
-            new_w, new_h = new_size
+            new_w, new_h = mmcv.rescale_size((img_w, img_h), self.scale)
         else:
             new_w, new_h = self.scale
-            self.scale_factor = np.array(
-                [new_w / img_w, new_h / img_h, new_w / img_w, new_h / img_h],
-                dtype=np.float32)
+
+        self.scale_factor = np.array([new_w / img_w, new_h / img_h],
+                                     dtype=np.float32)
 
         results['img_shape'] = (new_h, new_w)
         results['keep_ratio'] = self.keep_ratio
-        results['scale_factor'] = self.scale_factor
+        results['scale_factor'] = results['scale_factor'] * self.scale_factor
 
         if not self.lazy:
             results['imgs'] = [
@@ -538,9 +539,9 @@ class Flip(object):
 
     Reverse the order of elements in the given imgs with a specific direction.
     The shape of the imgs is preserved, but the elements are reordered.
-    Required keys are "imgs", "img_shape", added or modified keys are "imgs",
-    "lazy"and "flip_direction". Required keys in "lazy" is None, added or
-    modified key are "flip" and "flip_direction".
+    Required keys are "imgs", "img_shape", "modality", added or modified
+    keys are "imgs", "lazy" and "flip_direction". Required keys in "lazy" is
+    None, added or modified key are "flip" and "flip_direction".
 
     Args:
         flip_ratio (float): Probability of implementing flip. Default: 0.5.
@@ -566,6 +567,9 @@ class Flip(object):
                 to the next transform in pipeline.
         """
         _init_lazy_if_proper(results, self.lazy)
+        modality = results['modality']
+        if modality == 'Flow':
+            assert self.direction == 'horizontal'
 
         if np.random.rand() < self.flip_ratio:
             flip = True
@@ -577,8 +581,15 @@ class Flip(object):
 
         if not self.lazy:
             if flip:
-                for img in results['imgs']:
+                for i, img in enumerate(results['imgs']):
                     mmcv.imflip_(img, self.direction)
+                lt = len(results['imgs'])
+                for i in range(0, lt, 2):
+                    # flow with even indexes are x_flow, which need to be
+                    # inverted when doing horizontal flip
+                    if modality == 'Flow':
+                        results['imgs'][i] = mmcv.iminvert(results['imgs'][i])
+
             else:
                 results['imgs'] = list(results['imgs'])
         else:
@@ -602,17 +613,21 @@ class Flip(object):
 class Normalize(object):
     """Normalize images with the given mean and std value.
 
-    Required keys are "imgs", "img_shape", added or modified keys are "imgs"
-    and "img_norm_cfg".
+    Required keys are "imgs", "img_shape", "modality", added or modified
+    keys are "imgs" and "img_norm_cfg". If modality is 'Flow', additional
+    keys "scale_factor" is required
 
     Args:
         mean (Sequence[float]): Mean values of different channels.
         std (Sequence[float]): Std values of different channels.
         to_bgr (bool): Whether to convert channels from RGB to BGR.
             Default: False.
+        adjust_magnitude (bool): Indicate whether to adjust the flow magnitude
+            on 'scale_factor' when modality is 'Flow'. Default: False.
+
     """
 
-    def __init__(self, mean, std, to_bgr=False):
+    def __init__(self, mean, std, to_bgr=False, adjust_magnitude=False):
         if not isinstance(mean, Sequence):
             raise TypeError(
                 f'Mean must be list, tuple or np.ndarray, but got {type(mean)}'
@@ -625,31 +640,60 @@ class Normalize(object):
         self.mean = np.array(mean, dtype=np.float32)
         self.std = np.array(std, dtype=np.float32)
         self.to_bgr = to_bgr
+        self.adjust_magnitude = adjust_magnitude
 
     def __call__(self, results):
-        """Performs the Normalize augmentation.
+        modality = results['modality']
 
-        Args:
-            results (dict): The resulting dict to be modified and passed
-                to the next transform in pipeline.
-        """
-        n = len(results['imgs'])
-        h, w, c = results['imgs'][0].shape
-        imgs = np.empty((n, h, w, c), dtype=np.float32)
-        for i, img in enumerate(results['imgs']):
-            imgs[i] = img
+        if modality == 'RGB':
+            n = len(results['imgs'])
+            h, w, c = results['imgs'][0].shape
+            imgs = np.empty((n, h, w, c), dtype=np.float32)
+            for i, img in enumerate(results['imgs']):
+                imgs[i] = img
 
-        for img in imgs:
-            mmcv.imnormalize_(img, self.mean, self.std, self.to_bgr)
+            for img in imgs:
+                mmcv.imnormalize_(img, self.mean, self.std, self.to_bgr)
 
-        results['imgs'] = imgs
-        results['img_norm_cfg'] = dict(
-            mean=self.mean, std=self.std, to_bgr=self.to_bgr)
-        return results
+            results['imgs'] = imgs
+            results['img_norm_cfg'] = dict(
+                mean=self.mean, std=self.std, to_bgr=self.to_bgr)
+            return results
+        elif modality == 'Flow':
+            num_imgs = len(results['imgs'])
+            assert num_imgs % 2 == 0
+            assert self.mean.shape[0] == 2
+            assert self.std.shape[0] == 2
+            n = num_imgs // 2
+            h, w = results['imgs'][0].shape
+            x_flow = np.empty((n, h, w), dtype=np.float32)
+            y_flow = np.empty((n, h, w), dtype=np.float32)
+            for i in range(n):
+                x_flow[i] = results['imgs'][2 * i]
+                y_flow[i] = results['imgs'][2 * i + 1]
+            x_flow = (x_flow - self.mean[0]) / self.std[0]
+            y_flow = (y_flow - self.mean[1]) / self.std[1]
+            if self.adjust_magnitude:
+                x_flow = x_flow * results['scale_factor'][0]
+                y_flow = y_flow * results['scale_factor'][1]
+            imgs = np.stack([x_flow, y_flow], axis=-1)
+            results['imgs'] = imgs
+            args = dict(
+                mean=self.mean,
+                std=self.std,
+                to_bgr=self.to_bgr,
+                adjust_magnitude=self.adjust_magnitude)
+            results['img_norm_cfg'] = args
+            return results
+        else:
+            raise NotImplementedError
 
     def __repr__(self):
         repr_str = (f'{self.__class__.__name__}('
-                    f'mean={self.mean}, std={self.std}, to_bgr={self.to_bgr})')
+                    f'mean={self.mean}, '
+                    f'std={self.std}, '
+                    f'to_bgr={self.to_bgr}, '
+                    f'adjust_magnitude={self.adjust_magnitude})')
         return repr_str
 
 
@@ -696,7 +740,7 @@ class CenterCrop(object):
 
         if not self.lazy:
             results['imgs'] = [
-                img[top:bottom, left:right, :] for img in results['imgs']
+                img[top:bottom, left:right] for img in results['imgs']
             ]
         else:
             lazyop = results['lazy']
@@ -776,7 +820,7 @@ class ThreeCrop(object):
         for x_offset, y_offset in offsets:
             bbox = [x_offset, y_offset, x_offset + crop_w, y_offset + crop_h]
             crop = [
-                img[y_offset:y_offset + crop_h, x_offset:x_offset + crop_w, :]
+                img[y_offset:y_offset + crop_h, x_offset:x_offset + crop_w]
                 for img in imgs
             ]
             cropped.extend(crop)
@@ -842,8 +886,8 @@ class TenCrop(object):
         crop_bboxes = list()
         for x_offset, y_offsets in offsets:
             crop = [
-                img[y_offsets:y_offsets + crop_h,
-                    x_offset:x_offset + crop_w, :] for img in imgs
+                img[y_offsets:y_offsets + crop_h, x_offset:x_offset + crop_w]
+                for img in imgs
             ]
             flip_crop = [np.flip(c, axis=1).copy() for c in crop]
             bbox = [x_offset, y_offsets, x_offset + crop_w, y_offsets + crop_h]
@@ -910,7 +954,7 @@ class MultiGroupCrop(object):
 
             bbox = [x_offset, y_offset, x_offset + crop_w, y_offset + crop_h]
             crop = [
-                img[y_offset:y_offset + crop_h, x_offset:x_offset + crop_w, :]
+                img[y_offset:y_offset + crop_h, x_offset:x_offset + crop_w]
                 for img in imgs
             ]
             img_crops.extend(crop)

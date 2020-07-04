@@ -1,5 +1,6 @@
 import copy
 
+import mmcv
 import numpy as np
 import pytest
 from numpy.testing import assert_array_almost_equal
@@ -517,35 +518,48 @@ class TestAugumentations(object):
             # scale must be tuple of int
             Resize('224')
 
-        target_keys = ['imgs', 'img_shape', 'keep_ratio', 'scale_factor']
+        target_keys = [
+            'imgs', 'img_shape', 'keep_ratio', 'scale_factor', 'modality'
+        ]
+
+        # test resize for flow images
+        imgs = list(np.random.rand(2, 240, 320))
+        results = dict(imgs=imgs, modality='Flow')
+        resize = Resize(scale=(160, 80), keep_ratio=False)
+        resize_results = resize(results)
+        assert self.check_keys_contain(resize_results.keys(), target_keys)
+        assert np.all(resize_results['scale_factor'] == np.array(
+            [.5, 1. / 3.], dtype=np.float32))
+        assert resize_results['img_shape'] == (80, 160)
 
         # scale with -1 to indicate np.inf
         imgs = list(np.random.rand(2, 240, 320, 3))
-        results = dict(imgs=imgs)
+        results = dict(imgs=imgs, modality='RGB')
         resize = Resize(scale=(-1, 256), keep_ratio=True)
         resize_results = resize(results)
         assert self.check_keys_contain(resize_results.keys(), target_keys)
-        assert resize_results['scale_factor'] == 256 / 240
+        assert np.all(resize_results['scale_factor'] == np.array(
+            [341 / 320, 256 / 240], dtype=np.float32))
         assert resize_results['img_shape'] == (256, 341)
 
         # scale with a normal tuple (320, 320) to indicate np.inf
         imgs = list(np.random.rand(2, 240, 320, 3))
-        results = dict(imgs=imgs)
+        results = dict(imgs=imgs, modality='RGB')
         resize = Resize(scale=(320, 320), keep_ratio=False)
         resize_results = resize(results)
         assert self.check_keys_contain(resize_results.keys(), target_keys)
         assert np.all(resize_results['scale_factor'] == np.array(
-            [1, 320 / 240, 1, 320 / 240], dtype=np.float32))
+            [1, 320 / 240], dtype=np.float32))
         assert resize_results['img_shape'] == (320, 320)
 
         # scale with a normal tuple (341, 256) to indicate np.inf
         imgs = list(np.random.rand(2, 240, 320, 3))
-        results = dict(imgs=imgs)
+        results = dict(imgs=imgs, modality='RGB')
         resize = Resize(scale=(341, 256), keep_ratio=False)
         resize_results = resize(results)
         assert self.check_keys_contain(resize_results.keys(), target_keys)
         assert np.all(resize_results['scale_factor'] == np.array(
-            [341 / 320, 256 / 240, 341 / 320, 256 / 240], dtype=np.float32))
+            [341 / 320, 256 / 240], dtype=np.float32))
         assert resize_results['img_shape'] == (256, 341)
 
         assert repr(resize) == (
@@ -562,41 +576,44 @@ class TestAugumentations(object):
             # scale must be tuple of int
             Resize('224', lazy=True)
 
-        target_keys = ['imgs', 'img_shape', 'keep_ratio', 'scale_factor']
+        target_keys = [
+            'imgs', 'img_shape', 'keep_ratio', 'scale_factor', 'modality'
+        ]
 
         # scale with -1 to indicate np.inf
         imgs = list(np.random.rand(2, 240, 320, 3))
-        results = dict(imgs=imgs)
+        results = dict(imgs=imgs, modality='RGB')
         resize = Resize(scale=(-1, 256), keep_ratio=True, lazy=True)
         resize_results = resize(results)
         assert id(imgs) == id(resize_results['imgs'])
         assert self.check_keys_contain(resize_results.keys(), target_keys)
         resize_results_fuse = Fuse()(resize_results)
-        assert resize_results_fuse['scale_factor'] == 256 / 240
+        assert np.all(resize_results_fuse['scale_factor'] == np.array(
+            [341 / 320, 256 / 240], dtype=np.float32))
         assert resize_results_fuse['img_shape'] == (256, 341)
 
         # scale with a normal tuple (320, 320) to indicate np.inf
         imgs = list(np.random.rand(2, 240, 320, 3))
-        results = dict(imgs=imgs)
+        results = dict(imgs=imgs, modality='RGB')
         resize = Resize(scale=(320, 320), keep_ratio=False, lazy=True)
         resize_results = resize(results)
         assert id(imgs) == id(resize_results['imgs'])
         assert self.check_keys_contain(resize_results.keys(), target_keys)
         resize_results_fuse = Fuse()(resize_results)
         assert np.all(resize_results_fuse['scale_factor'] == np.array(
-            [1, 320 / 240, 1, 320 / 240], dtype=np.float32))
+            [1, 320 / 240], dtype=np.float32))
         assert resize_results_fuse['img_shape'] == (320, 320)
 
         # scale with a normal tuple (341, 256) to indicate np.inf
         imgs = list(np.random.rand(2, 240, 320, 3))
-        results = dict(imgs=imgs)
+        results = dict(imgs=imgs, modality='RGB')
         resize = Resize(scale=(341, 256), keep_ratio=False, lazy=True)
         resize_results = resize(results)
         assert id(imgs) == id(resize_results['imgs'])
         assert self.check_keys_contain(resize_results.keys(), target_keys)
         resize_results_fuse = Fuse()(resize_results)
         assert np.all(resize_results_fuse['scale_factor'] == np.array(
-            [341 / 320, 256 / 240, 341 / 320, 256 / 240], dtype=np.float32))
+            [341 / 320, 256 / 240], dtype=np.float32))
         assert resize_results_fuse['img_shape'] == (256, 341)
 
         assert repr(resize) == (f'{resize.__class__.__name__ }'
@@ -608,11 +625,11 @@ class TestAugumentations(object):
             # direction must be in ['horizontal', 'vertical']
             Flip(direction='vertically')
 
-        target_keys = ['imgs', 'flip_direction']
+        target_keys = ['imgs', 'flip_direction', 'modality']
 
         # do not flip imgs.
         imgs = list(np.random.rand(2, 64, 64, 3))
-        results = dict(imgs=copy.deepcopy(imgs))
+        results = dict(imgs=copy.deepcopy(imgs), modality='RGB')
         flip = Flip(flip_ratio=0, direction='horizontal')
         flip_results = flip(results)
         assert self.check_keys_contain(flip_results.keys(), target_keys)
@@ -622,7 +639,7 @@ class TestAugumentations(object):
 
         # always flip imgs horizontally.
         imgs = list(np.random.rand(2, 64, 64, 3))
-        results = dict(imgs=copy.deepcopy(imgs))
+        results = dict(imgs=copy.deepcopy(imgs), modality='RGB')
         flip = Flip(flip_ratio=1, direction='horizontal')
         flip_results = flip(results)
         assert self.check_keys_contain(flip_results.keys(), target_keys)
@@ -632,9 +649,31 @@ class TestAugumentations(object):
         assert id(flip_results['imgs']) == id(results['imgs'])
         assert np.shape(flip_results['imgs']) == np.shape(imgs)
 
+        # flip flow images horizontally
+        imgs = [
+            np.arange(16).reshape(4, 4).astype(np.float32),
+            np.arange(16, 32).reshape(4, 4).astype(np.float32)
+        ]
+        results = dict(imgs=copy.deepcopy(imgs), modality='Flow')
+        flip = Flip(flip_ratio=1, direction='horizontal')
+        flip_results = flip(results)
+        assert self.check_keys_contain(flip_results.keys(), target_keys)
+        imgs = [x.reshape(4, 4, 1) for x in imgs]
+        flip_results['imgs'] = [
+            x.reshape(4, 4, 1) for x in flip_results['imgs']
+        ]
+        if flip_results['flip'] is True:
+            assert self.check_flip([imgs[0]],
+                                   [mmcv.iminvert(flip_results['imgs'][0])],
+                                   flip_results['flip_direction'])
+            assert self.check_flip([imgs[1]], [flip_results['imgs'][1]],
+                                   flip_results['flip_direction'])
+        assert id(flip_results['imgs']) == id(results['imgs'])
+        assert np.shape(flip_results['imgs']) == np.shape(imgs)
+
         # always flip imgs vertivally.
         imgs = list(np.random.rand(2, 64, 64, 3))
-        results = dict(imgs=copy.deepcopy(imgs))
+        results = dict(imgs=copy.deepcopy(imgs), modality='RGB')
         flip = Flip(flip_ratio=1, direction='vertical')
         flip_results = flip(results)
         assert self.check_keys_contain(flip_results.keys(), target_keys)
@@ -652,12 +691,12 @@ class TestAugumentations(object):
         with pytest.raises(ValueError):
             Flip(direction='vertically', lazy=True)
 
-        target_keys = ['imgs', 'flip_direction']
+        target_keys = ['imgs', 'flip_direction', 'modality']
 
         # do not flip imgs.
         imgs = list(np.random.rand(2, 64, 64, 3))
         imgs_tmp = imgs.copy()
-        results = dict(imgs=imgs_tmp)
+        results = dict(imgs=imgs_tmp, modality='RGB')
         flip = Flip(flip_ratio=0, direction='horizontal', lazy=True)
         flip_results = flip(results)
         assert id(imgs_tmp) == id(flip_results['imgs'])
@@ -670,7 +709,7 @@ class TestAugumentations(object):
         # always flip imgs horizontally.
         imgs = list(np.random.rand(2, 64, 64, 3))
         imgs_tmp = imgs.copy()
-        results = dict(imgs=imgs_tmp)
+        results = dict(imgs=imgs_tmp, modality='RGB')
         flip = Flip(flip_ratio=1, direction='horizontal', lazy=True)
         flip_results = flip(results)
         assert id(imgs_tmp) == id(flip_results['imgs'])
@@ -684,7 +723,7 @@ class TestAugumentations(object):
         # always flip imgs vertivally.
         imgs = list(np.random.rand(2, 64, 64, 3))
         imgs_tmp = imgs.copy()
-        results = dict(imgs=imgs_tmp)
+        results = dict(imgs=imgs_tmp, modality='RGB')
         flip = Flip(flip_ratio=1, direction='vertical', lazy=True)
         flip_results = flip(results)
         assert id(imgs_tmp) == id(flip_results['imgs'])
@@ -710,11 +749,11 @@ class TestAugumentations(object):
             Normalize([123.675, 116.28, 103.53],
                       dict(std=[58.395, 57.12, 57.375]))
 
-        target_keys = ['imgs', 'img_norm_cfg']
+        target_keys = ['imgs', 'img_norm_cfg', 'modality']
 
         # normalize imgs in RGB format
         imgs = list(np.random.rand(2, 240, 320, 3).astype(np.float32))
-        results = dict(imgs=imgs)
+        results = dict(imgs=imgs, modality='RGB')
         config = dict(
             mean=[123.675, 116.28, 103.53],
             std=[58.395, 57.12, 57.375],
@@ -725,9 +764,24 @@ class TestAugumentations(object):
         self.check_normalize(imgs, normalize_results['imgs'],
                              normalize_results['img_norm_cfg'])
 
+        # normalize flow imgs
+        imgs = list(np.random.rand(4, 240, 320).astype(np.float32))
+        results = dict(imgs=imgs, modality='Flow')
+        config = dict(mean=[128, 128], std=[128, 128])
+        normalize = Normalize(**config)
+        normalize_results = normalize(results)
+        assert self.check_keys_contain(normalize_results.keys(), target_keys)
+        assert normalize_results['imgs'].shape == (2, 240, 320, 2)
+        x_components = np.array(imgs[0::2])
+        y_components = np.array(imgs[1::2])
+        x_components = (x_components - config['mean'][0]) / config['std'][0]
+        y_components = (y_components - config['mean'][1]) / config['std'][1]
+        result_imgs = np.stack([x_components, y_components], axis=-1)
+        assert np.all(np.isclose(result_imgs, normalize_results['imgs']))
+
         # normalize imgs in BGR format
         imgs = list(np.random.rand(2, 240, 320, 3).astype(np.float32))
-        results = dict(imgs=imgs)
+        results = dict(imgs=imgs, modality='RGB')
         config = dict(
             mean=[123.675, 116.28, 103.53],
             std=[58.395, 57.12, 57.375],
@@ -741,7 +795,8 @@ class TestAugumentations(object):
         assert normalize.__repr__() == (
             normalize.__class__.__name__ +
             f'(mean={np.array([123.675, 116.28, 103.53])}, ' +
-            f'std={np.array([58.395, 57.12, 57.375])}, to_bgr={True})')
+            f'std={np.array([58.395, 57.12, 57.375])}, to_bgr={True}, '
+            f'adjust_magnitude={False})')
 
     def test_center_crop(self):
         with pytest.raises(TypeError):
