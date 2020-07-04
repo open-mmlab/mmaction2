@@ -20,7 +20,7 @@ The codes are adapted from the [official crawler](https://github.com/activitynet
 bash download_videos.sh
 ```
 
-If you have already have a backup of the kinetics-400 dataset using the [official crawler](https://github.com/activitynet/ActivityNet/tree/master/Crawler/Kinetics),
+If you have already have a backup of the kinetics-400 dataset using the download script above,
 you only need to replace all whitespaces in the class name for ease of processing either by [detox](http://manpages.ubuntu.com/manpages/bionic/man1/detox.1.html)
 
 ```shell
@@ -57,10 +57,10 @@ If you didn't install dense_flow in the installation or only want to play with R
 bash extract_rgb_frames.sh
 ```
 
-If both are required, run the following script to extract frames using "tvl1" algorithm.
+If both are required, run the following script to extract frames.
 
 ```shell
-bash extract_frames.sh tvl1
+bash extract_frames.sh
 ```
 
 ## Step 4. Generate File List
@@ -68,7 +68,7 @@ bash extract_frames.sh tvl1
 you can run the follow scripts to generate file list in the format of videos and rawframes, respectively.
 
 ```shell
-bash generate_video_filelist.sh
+bash generate_videos_filelist.sh
 # execute the command below when rawframes are ready
 bash generate_rawframes_filelist.sh
 ```

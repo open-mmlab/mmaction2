@@ -30,6 +30,7 @@ You can run the following script to soft link SSD.
 # execute these two line (Assume the SSD is mounted at "/mnt/SSD/")
 mkdir /mnt/SSD/sthv2_extracted/
 ln -s /mnt/SSD/sthv2_extracted/ ../../../data/sthv2/rawframes
+```
 
 If you didn't install dense_flow in the installation or only want to play with RGB frames (since extracting optical flow can be time-comsuming), consider running the following script to extract **RGB-only** frames.
 
@@ -42,7 +43,7 @@ If both are required, run the following script to extract frames.
 
 ```shell
 cd $MMACTION/tools/data/sthv2/
-bash extract_frames.sh tvl1
+bash extract_frames.sh
 ```
 
 ## Step 4. Generate File List
@@ -51,7 +52,7 @@ you can run the follow script to generate file list in the format of rawframes a
 
 ```shell
 cd $MMACTION/tools/data/sthv2/
-bash generate_filelist.sh
+bash generate_{rawframes, videos}_filelist.sh
 ```
 
 ## Step 5. Check Directory Structure
