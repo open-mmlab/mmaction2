@@ -28,6 +28,9 @@ class SampleFrames(object):
         twice_sample (bool): Whether to use twice sample when testing.
             If set to True, it will sample frames with and without fixed shift,
             which is commonly used for testing in TSM model. Default: False.
+        out_of_bound_opt (str): The way to deal with out of bounds frame
+            indexes. Available options are 'loop', 'repeat_last'.
+            Default: 'loop'.
         test_mode (bool): Store True when building test or validation dataset.
             Default: False.
     """
@@ -38,13 +41,19 @@ class SampleFrames(object):
                  num_clips=1,
                  temporal_jitter=False,
                  twice_sample=False,
+                 out_of_bound_opt='loop',
                  test_mode=False):
+
         self.clip_len = clip_len
         self.frame_interval = frame_interval
         self.num_clips = num_clips
         self.temporal_jitter = temporal_jitter
         self.twice_sample = twice_sample
+        self.out_of_bound_opt = out_of_bound_opt
         self.test_mode = test_mode
+        assert self.out_of_bound_opt in ['loop', 'repeat_last']
+
+        assert self.out_of_bound_opt in ['loop', 'repeat_last']
 
     def _get_train_clips(self, num_frames):
         """Get clip offsets in train mode.
@@ -146,7 +155,18 @@ class SampleFrames(object):
                 self.frame_interval, size=len(frame_inds))
             frame_inds += perframe_offsets
 
-        frame_inds = np.mod(frame_inds, total_frames)
+        frame_inds = frame_inds.reshape((-1, self.clip_len))
+        if self.out_of_bound_opt == 'loop':
+            frame_inds = np.mod(frame_inds, total_frames)
+        elif self.out_of_bound_opt == 'repeat_last':
+            safe_inds = frame_inds < total_frames
+            unsafe_inds = 1 - safe_inds
+            last_ind = np.max(safe_inds * frame_inds, axis=1)
+            new_inds = (safe_inds * frame_inds + (unsafe_inds.T * last_ind).T)
+            frame_inds = new_inds
+        else:
+            raise ValueError('Illegal out_of_bound option.')
+        frame_inds = np.concatenate(frame_inds)
         results['frame_inds'] = frame_inds.astype(np.int)
         results['clip_len'] = self.clip_len
         results['frame_interval'] = self.frame_interval
@@ -183,12 +203,14 @@ class DenseSampleFrames(SampleFrames):
                  sample_range=64,
                  num_sample_positions=10,
                  temporal_jitter=False,
+                 out_of_bound_opt='loop',
                  test_mode=False):
         super().__init__(
             clip_len,
             frame_interval,
             num_clips,
             temporal_jitter,
+            out_of_bound_opt=out_of_bound_opt,
             test_mode=test_mode)
         self.sample_range = sample_range
         self.num_sample_positions = num_sample_positions

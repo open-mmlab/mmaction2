@@ -74,6 +74,40 @@ class TestLoading(object):
         sample_frames_results = sample_frames(frame_result)
         assert len(sample_frames_results['frame_inds']) == 15
 
+        # Sample Frame with no temporal_jitter
+        # clip_len=5, frame_interval=1, num_clips=5,
+        # out_of_bound_opt='repeat_last'
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        config = dict(
+            clip_len=5,
+            frame_interval=1,
+            num_clips=5,
+            temporal_jitter=False,
+            out_of_bound_opt='repeat_last')
+        sample_frames = SampleFrames(**config)
+        sample_frames_results = sample_frames(video_result)
+
+        def check_monotonous(arr):
+            length = arr.shape[0]
+            for i in range(length - 1):
+                if arr[i] > arr[i + 1]:
+                    return False
+            return True
+
+        assert self.check_keys_contain(sample_frames_results.keys(),
+                                       target_keys)
+        assert len(sample_frames_results['frame_inds']) == 25
+        frame_inds = sample_frames_results['frame_inds'].reshape([5, 5])
+        for i in range(5):
+            assert check_monotonous(frame_inds[i])
+
+        sample_frames_results = sample_frames(frame_result)
+        assert len(sample_frames_results['frame_inds']) == 25
+        frame_inds = sample_frames_results['frame_inds'].reshape([5, 5])
+        for i in range(5):
+            assert check_monotonous(frame_inds[i])
+
         # Sample Frame with temporal_jitter
         # clip_len=4, frame_interval=2, num_clips=5
         video_result = copy.deepcopy(self.video_results)
