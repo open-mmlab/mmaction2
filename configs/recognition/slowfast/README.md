@@ -70,7 +70,7 @@ Example: test SlowFast model on Kinetics-400 dataset and dump the result to a js
 ```shell
 python tools/test.py configs/recognition/slowfast/slowfast_r50_3d_4x16x1_256e_kinetics400_rgb.py \
     checkpoints/SOME_CHECKPOINT.pth --eval top_k_accuracy mean_class_accuracy \
-    --out result.json
+    --out result.json --average_clips=prob
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](../../../docs/getting_started.md).
