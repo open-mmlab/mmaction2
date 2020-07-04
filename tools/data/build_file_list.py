@@ -4,7 +4,8 @@ import os.path as osp
 import random
 
 from tools.data.parse_file_list import (parse_directory, parse_mit_splits,
-                                        parse_sthv1_splits, parse_sthv2_splits,
+                                        parse_mmit_splits, parse_sthv1_splits,
+                                        parse_sthv2_splits,
                                         parse_ucf101_splits)
 
 
@@ -14,12 +15,12 @@ def parse_args():
         'dataset',
         type=str,
         choices=[
-            'ucf101', 'kinetics400', 'thumos14', 'sthv1', 'sthv2',
-            'activitynet', 'mit'
+            'ucf101', 'kinetics400', 'thumos14', 'sthv1', 'sthv2', 'mit',
+            'mmit', 'activitynet'
         ],
         help='dataset to be built file list')
     parser.add_argument(
-        'frame_path', type=str, help='root directory for the frames')
+        'frame_path', type=str, help='root directory for the frames or videos')
     parser.add_argument(
         '--rgb_prefix', type=str, default='img_', help='prefix of rgb frames')
     parser.add_argument(
@@ -100,14 +101,41 @@ def build_file_list(splits, frame_info, shuffle=False):
             if item[0] not in frame_info:
                 continue
             elif frame_info[item[0]][1] > 0:
+                # rawframes
                 rgb_cnt = frame_info[item[0]][1]
                 flow_cnt = frame_info[item[0]][2]
-                rgb_list.append(f'{item[0]} {rgb_cnt} {item[1]}\n')
-                flow_list.append(f'{item[0]} {flow_cnt} {item[1]}\n')
+                if isinstance(item[1], int):
+                    rgb_list.append(f'{item[0]} {rgb_cnt} {item[1]}\n')
+                    flow_list.append(f'{item[0]} {flow_cnt} {item[1]}\n')
+                elif isinstance(item[1], list):
+                    # only for multi-label datasets like mmit
+                    rgb_list.append(f'{item[0]} {rgb_cnt} ' +
+                                    ' '.join([str(digit)
+                                              for digit in item[1]]) + '\n')
+                    rgb_list.append(f'{item[0]} {flow_cnt} ' +
+                                    ' '.join([str(digit)
+                                              for digit in item[1]]) + '\n')
+                else:
+                    raise ValueError(
+                        'frame_info should be ' +
+                        '[`vid`(str), `label`(int)|`labels(list[int])`')
             else:
-                rgb_list.append(f'{item[0]} {item[1]}\n')
-                flow_list.append(f'{item[0]} {item[1]}\n')
-
+                # videos
+                if isinstance(item[1], int):
+                    rgb_list.append(f'{frame_info[item[0]][0]} {item[1]}\n')
+                    flow_list.append(f'{frame_info[item[0]][0]} {item[1]}\n')
+                elif isinstance(item[1], list):
+                    # only for multi-label datasets like mmit
+                    rgb_list.append(f'{frame_info[item[0]][0]} ' +
+                                    ' '.join([str(digit)
+                                              for digit in item[1]]) + '\n')
+                    flow_list.append(
+                        f'{frame_info[item[0]][0]} ' +
+                        ' '.join([str(digit) for digit in item[1]]) + '\n')
+                else:
+                    raise ValueError(
+                        'frame_info should be ' +
+                        '[`vid`(str), `label`(int)|`labels(list[int])`')
         if shuffle:
             random.shuffle(rgb_list)
             random.shuffle(flow_list)
@@ -138,7 +166,7 @@ def main():
             flow_x_prefix=args.flow_x_prefix,
             flow_y_prefix=args.flow_y_prefix,
             level=args.level)
-    else:
+    elif args.format == 'videos':
         if args.level == 1:
             # search for one-level directory
             video_list = glob.glob(osp.join(args.frame_path, '*'))
@@ -149,8 +177,12 @@ def main():
             raise ValueError(f'level must be 1 or 2, but got {args.level}')
         frame_info = {}
         for video in video_list:
-            video_path = osp.relpath(video.split('.')[0], args.frame_path)
-            frame_info[video_path] = (video, -1, -1)
+            video_path = osp.relpath(video, args.frame_path)
+            # video_id: (video_relative_path, -1, -1)
+            frame_info['.'.join(video_path.split('.')[:-1])] = (video_path, -1,
+                                                                -1)
+    else:
+        raise NotImplementedError('only rawframes and videos are supported')
 
     if args.dataset == 'ucf101':
         splits = parse_ucf101_splits(args.level)
@@ -160,9 +192,12 @@ def main():
         splits = parse_sthv2_splits(args.level)
     elif args.dataset == 'mit':
         splits = parse_mit_splits(args.level)
+    elif args.dataset == 'mmit':
+        splits = parse_mmit_splits(args.level)
     else:
-        raise ValueError(f"Supported datasets are 'ucf101, sthv1, sthv2',"
-                         f'but got {args.dataset}')
+        raise ValueError(
+            f"Supported datasets are 'ucf101, sthv1, sthv2',"
+            f"'mmit', 'mit', 'kinetics400' but got {args.dataset}")
     assert len(splits) == args.num_split
 
     out_path = args.out_root_path + args.dataset

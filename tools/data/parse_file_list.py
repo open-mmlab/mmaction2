@@ -25,6 +25,10 @@ def parse_directory(path,
             default: `flow_y_`.
         level (int): Directory level for glob searching. Options are 1 and 2.
             default: 1.
+
+    Returns:
+        dict: frame info dict with video id as key and tuple(path(str),
+            rgb_num(int), flow_x_num(int)) as value.
     """
     print(f'parse frames under folder {path}')
     if level == 1:
@@ -116,7 +120,6 @@ def parse_ucf101_splits(level):
 
 def parse_sthv1_splits(level):
     """Parse Something-Something dataset V1 into "train", "val" splits.
-
     Args:
         level: directory level of data.
 
@@ -199,7 +202,32 @@ def parse_sthv2_splits(level):
     with open(test_file, 'r') as fin:
         items = json.loads(fin.read())
         test_list = [line_to_map(item, test_mode=True) for item in items]
+    return ((train_list, val_list, test_list), )
 
+
+def parse_mmit_splits(level):
+    """Parse Multi-Moments in Time dataset into "train", "val" splits.
+
+    Args:
+        level: directory level of data.
+
+    Returns:
+        list: "train", "val", "test" splits of Multi-Moments in Time.
+    """
+
+    # Read the annotations
+    def line_to_map(x):
+        vid = '.'.join(x[0].split('.')[:-1])
+        labels = [int(digit) for digit in x[1:]]
+        return vid, labels
+
+    csv_reader = csv.reader(open('data/mmit/annotations/trainingSet.csv'))
+    train_list = [line_to_map(x) for x in csv_reader]
+
+    csv_reader = csv.reader(open('data/mmit/annotations/validationSet.csv'))
+    val_list = [line_to_map(x) for x in csv_reader]
+
+    test_list = val_list  # not test for mit
     return ((train_list, val_list, test_list), )
 
 
