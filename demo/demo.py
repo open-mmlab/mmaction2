@@ -2,7 +2,7 @@ import argparse
 
 import torch
 
-from mmaction.core import inference_recognizer, init_recognizer
+from mmaction.apis import inference_recognizer, init_recognizer
 
 
 def parse_args():
@@ -24,8 +24,11 @@ def main():
     # build the recognizer from a config file and checkpoint file
     model = init_recognizer(args.config, args.checkpoint, device=device)
     # test a single video
-    top5_label = inference_recognizer(model, args.video, args.label)
-    print(f'The top-5 labels with corresponding scores are:\n{top5_label}')
+    results = inference_recognizer(model, args.video, args.label)
+
+    # print(f'The top-5 labels with corresponding scores are:')
+    for result in results:
+        print(f'{result[0]}: ', result[1])
 
 
 if __name__ == '__main__':

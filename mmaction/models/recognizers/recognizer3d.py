@@ -30,7 +30,7 @@ class Recognizer3D(BaseRecognizer):
     def forward_dummy(self, imgs):
         """Used for computing network FLOPs.
 
-        See `mmaction/tools/get_flops.py`.
+        See ``mmaction/tools/get_flops.py``.
 
         Args:
             imgs (torch.Tensor): Input images.

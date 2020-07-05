@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch.utils.checkpoint as cp
-from mmcv.cnn import build_norm_layer, constant_init, kaiming_init
-from mmcv.runner import load_checkpoint
+from mmcv.cnn import ConvModule, constant_init, kaiming_init
+from mmcv.runner import _load_checkpoint, load_checkpoint
 from mmcv.utils import _BatchNorm
 
 from ...utils import get_root_logger
@@ -20,8 +20,12 @@ class BasicBlock(nn.Module):
         style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
             layer is the 3x3 conv layer, otherwise the stride-two layer is
             the first 1x1 conv layer. Default: 'pytorch'.
-        norm_cfg (dict): Config for norm layers. required keys are `type`,
-            Default: dict(type='BN').
+        conv_cfg (dict): Config for norm layers. Default: dict(type='Conv').
+        norm_cfg (dict):
+            Config for norm layers. required keys are `type` and
+            `requires_grad`. Default: dict(type='BN2d', requires_grad=True).
+        act_cfg (dict): Config for activate layers.
+            Default: dict(type='ReLU', inplace=True).
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
             memory while slowing down the training speed. Default: False.
     """
@@ -34,48 +38,43 @@ class BasicBlock(nn.Module):
                  dilation=1,
                  downsample=None,
                  style='pytorch',
-                 norm_cfg=dict(type='BN'),
+                 conv_cfg=dict(type='Conv'),
+                 norm_cfg=dict(type='BN', requires_grad=True),
+                 act_cfg=dict(type='ReLU', inplace=True),
                  with_cp=False):
         super().__init__()
         assert style in ['pytorch', 'caffe']
-        self.conv1 = nn.Conv2d(
+        self.conv1 = ConvModule(
             inplanes,
             planes,
             kernel_size=3,
             stride=stride,
             padding=dilation,
             dilation=dilation,
-            bias=False)
+            bias=False,
+            conv_cfg=conv_cfg,
+            norm_cfg=norm_cfg,
+            act_cfg=act_cfg)
 
-        self.norm1_name, norm1 = build_norm_layer(norm_cfg, planes, postfix=1)
-        self.add_module(self.norm1_name, norm1)
-        self.relu = nn.ReLU(inplace=True)
-        self.conv2 = nn.Conv2d(
+        self.conv2 = ConvModule(
             planes,
             planes,
             kernel_size=3,
             stride=1,
             padding=1,
             dilation=1,
-            bias=False)
+            bias=False,
+            conv_cfg=conv_cfg,
+            norm_cfg=norm_cfg,
+            act_cfg=None)
 
-        self.norm2_name, norm2 = build_norm_layer(norm_cfg, planes, postfix=2)
-        self.add_module(self.norm2_name, norm2)
-
+        self.relu = nn.ReLU(inplace=True)
         self.downsample = downsample
         self.style = style
         self.stride = stride
         self.dilation = dilation
         self.norm_cfg = norm_cfg
         assert not with_cp
-
-    @property
-    def norm1(self):
-        return getattr(self, self.norm1_name)
-
-    @property
-    def norm2(self):
-        return getattr(self, self.norm2_name)
 
     def forward(self, x):
         """Defines the computation performed at every call.
@@ -89,16 +88,12 @@ class BasicBlock(nn.Module):
         identity = x
 
         out = self.conv1(x)
-        out = self.norm1(out)
-        out = self.relu(out)
-
         out = self.conv2(out)
-        out = self.norm2(out)
 
         if self.downsample is not None:
             identity = self.downsample(x)
 
-        out += identity
+        out = out + identity
         out = self.relu(out)
 
         return out
@@ -118,8 +113,12 @@ class Bottleneck(nn.Module):
         style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
             layer is the 3x3 conv layer, otherwise the stride-two layer is
             the first 1x1 conv layer. Default: 'pytorch'.
-        norm_cfg (dict): Config for norm layers. required keys are `type`,
-            Default: dict(type='BN').
+        conv_cfg (dict): Config for norm layers. Default: dict(type='Conv').
+        norm_cfg (dict):
+            Config for norm layers. required keys are `type` and
+            `requires_grad`. Default: dict(type='BN2d', requires_grad=True).
+        act_cfg (dict): Config for activate layers.
+            Default: dict(type='ReLU', inplace=True).
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
             memory while slowing down the training speed. Default: False.
     """
@@ -133,7 +132,9 @@ class Bottleneck(nn.Module):
                  dilation=1,
                  downsample=None,
                  style='pytorch',
-                 norm_cfg=dict(type='BN'),
+                 conv_cfg=dict(type='Conv'),
+                 norm_cfg=dict(type='BN', requires_grad=True),
+                 act_cfg=dict(type='ReLU', inplace=True),
                  with_cp=False):
         super().__init__()
         assert style in ['pytorch', 'caffe']
@@ -145,33 +146,35 @@ class Bottleneck(nn.Module):
         else:
             self.conv1_stride = stride
             self.conv2_stride = 1
-        self.conv1 = nn.Conv2d(
+        self.conv1 = ConvModule(
             inplanes,
             planes,
             kernel_size=1,
             stride=self.conv1_stride,
-            bias=False)
-        self.conv2 = nn.Conv2d(
+            bias=False,
+            conv_cfg=conv_cfg,
+            norm_cfg=norm_cfg,
+            act_cfg=act_cfg)
+        self.conv2 = ConvModule(
             planes,
             planes,
             kernel_size=3,
             stride=self.conv2_stride,
             padding=dilation,
             dilation=dilation,
-            bias=False)
+            bias=False,
+            conv_cfg=conv_cfg,
+            norm_cfg=norm_cfg,
+            act_cfg=act_cfg)
 
-        self.norm1_name, norm1 = build_norm_layer(norm_cfg, planes, postfix=1)
-        self.norm2_name, norm2 = build_norm_layer(norm_cfg, planes, postfix=2)
-
-        self.add_module(self.norm1_name, norm1)
-        self.add_module(self.norm2_name, norm2)
-
-        self.conv3 = nn.Conv2d(
-            planes, planes * self.expansion, kernel_size=1, bias=False)
-        self.norm3_name, norm3 = build_norm_layer(
-            norm_cfg, planes * self.expansion, postfix=3)
-
-        self.add_module(self.norm3_name, norm3)
+        self.conv3 = ConvModule(
+            planes,
+            planes * self.expansion,
+            kernel_size=1,
+            bias=False,
+            conv_cfg=conv_cfg,
+            norm_cfg=norm_cfg,
+            act_cfg=None)
 
         self.relu = nn.ReLU(inplace=True)
         self.downsample = downsample
@@ -179,18 +182,6 @@ class Bottleneck(nn.Module):
         self.dilation = dilation
         self.norm_cfg = norm_cfg
         self.with_cp = with_cp
-
-    @property
-    def norm1(self):
-        return getattr(self, self.norm1_name)
-
-    @property
-    def norm2(self):
-        return getattr(self, self.norm2_name)
-
-    @property
-    def norm3(self):
-        return getattr(self, self.norm3_name)
 
     def forward(self, x):
         """Defines the computation performed at every call.
@@ -207,20 +198,13 @@ class Bottleneck(nn.Module):
             identity = x
 
             out = self.conv1(x)
-            out = self.norm1(out)
-            out = self.relu(out)
-
             out = self.conv2(out)
-            out = self.norm2(out)
-            out = self.relu(out)
-
             out = self.conv3(out)
-            out = self.norm3(out)
 
             if self.downsample is not None:
                 identity = self.downsample(x)
 
-            out += identity
+            out = out + identity
 
             return out
 
@@ -241,7 +225,9 @@ def make_res_layer(block,
                    stride=1,
                    dilation=1,
                    style='pytorch',
+                   conv_cfg=None,
                    norm_cfg=None,
+                   act_cfg=None,
                    with_cp=False):
     """Build residual layer for ResNet.
 
@@ -255,8 +241,9 @@ def make_res_layer(block,
         style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
             layer is the 3x3 conv layer, otherwise the stride-two layer is
             the first 1x1 conv layer. Default: 'pytorch'.
-        norm_cfg (dict): Config for norm layers. required keys are `type`,
-            Default: None.
+        conv_cfg (dict): Config for norm layers. Default: None.
+        norm_cfg (dict): Config for norm layers. Default: None.
+        act_cfg (dict): Config for activate layers. Default: None.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
             memory while slowing down the training speed. Default: False.
 
@@ -265,15 +252,15 @@ def make_res_layer(block,
     """
     downsample = None
     if stride != 1 or inplanes != planes * block.expansion:
-        downsample = nn.Sequential(
-            nn.Conv2d(
-                inplanes,
-                planes * block.expansion,
-                kernel_size=1,
-                stride=stride,
-                bias=False),
-            nn.BatchNorm2d(planes * block.expansion),
-        )
+        downsample = ConvModule(
+            inplanes,
+            planes * block.expansion,
+            kernel_size=1,
+            stride=stride,
+            bias=False,
+            conv_cfg=conv_cfg,
+            norm_cfg=norm_cfg,
+            act_cfg=None)
 
     layers = []
     layers.append(
@@ -284,7 +271,9 @@ def make_res_layer(block,
             dilation,
             downsample,
             style=style,
+            conv_cfg=conv_cfg,
             norm_cfg=norm_cfg,
+            act_cfg=act_cfg,
             with_cp=with_cp))
     inplanes = planes * block.expansion
     for _ in range(1, blocks):
@@ -295,7 +284,9 @@ def make_res_layer(block,
                 1,
                 dilation,
                 style=style,
+                conv_cfg=conv_cfg,
                 norm_cfg=norm_cfg,
+                act_cfg=act_cfg,
                 with_cp=with_cp))
 
     return nn.Sequential(*layers)
@@ -312,14 +303,17 @@ class ResNet(nn.Module):
         num_stages (int): Resnet stages. Default: 4.
         strides (Sequence[int]): Strides of the first block of each stage.
         dilations (Sequence[int]): Dilation of each stage.
-        style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
-            layer is the 3x3 conv layer, otherwise the stride-two layer is
-            the first 1x1 conv layer. Default: `pytorch`.
+        style (str): ``pytorch`` or ``caffe``. If set to "pytorch", the
+            stride-two layer is the 3x3 conv layer, otherwise the stride-two
+            layer is the first 1x1 conv layer. Default: ``pytorch``.
         frozen_stages (int): Stages to be frozen (all param fixed). -1 means
             not freezing any parameters. Default: -1.
+        conv_cfg (dict): Config for norm layers. Default: dict(type='Conv').
         norm_cfg (dict):
             Config for norm layers. required keys are `type` and
-            `requires_grad`. Default: dict(type='BN', requires_grad=True).
+            `requires_grad`. Default: dict(type='BN2d', requires_grad=True).
+        act_cfg (dict): Config for activate layers.
+            Default: dict(type='ReLU', inplace=True).
         norm_eval (bool): Whether to set BN layers to eval mode, namely, freeze
             running stats (mean and var). Default: True.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
@@ -337,13 +331,16 @@ class ResNet(nn.Module):
     def __init__(self,
                  depth,
                  pretrained=None,
+                 torchvision_pretrain=True,
                  in_channels=3,
                  num_stages=4,
                  strides=(1, 2, 2, 2),
                  dilations=(1, 1, 1, 1),
                  style='pytorch',
                  frozen_stages=-1,
-                 norm_cfg=dict(type='BN', requires_grad=True),
+                 conv_cfg=dict(type='Conv'),
+                 norm_cfg=dict(type='BN2d', requires_grad=True),
+                 act_cfg=dict(type='ReLU', inplace=True),
                  norm_eval=True,
                  with_cp=False):
         super().__init__()
@@ -352,6 +349,7 @@ class ResNet(nn.Module):
         self.depth = depth
         self.in_channels = in_channels
         self.pretrained = pretrained
+        self.torchvision_pretrain = torchvision_pretrain
         self.num_stages = num_stages
         assert num_stages >= 1 and num_stages <= 4
         self.strides = strides
@@ -359,7 +357,9 @@ class ResNet(nn.Module):
         assert len(strides) == len(dilations) == num_stages
         self.style = style
         self.frozen_stages = frozen_stages
+        self.conv_cfg = conv_cfg
         self.norm_cfg = norm_cfg
+        self.act_cfg = act_cfg
         self.norm_eval = norm_eval
         self.with_cp = with_cp
 
@@ -382,7 +382,9 @@ class ResNet(nn.Module):
                 stride=stride,
                 dilation=dilation,
                 style=self.style,
+                conv_cfg=conv_cfg,
                 norm_cfg=norm_cfg,
+                act_cfg=act_cfg,
                 with_cp=with_cp)
             self.inplanes = planes * self.block.expansion
             layer_name = f'layer{i + 1}'
@@ -392,31 +394,96 @@ class ResNet(nn.Module):
         self.feat_dim = self.block.expansion * 64 * 2**(
             len(self.stage_blocks) - 1)
 
-    @property
-    def norm1(self):
-        return getattr(self, self.norm1_name)
-
     def _make_stem_layer(self):
         """Construct the stem layers consists of a conv+norm+act module and a
         pooling layer."""
-        self.conv1 = nn.Conv2d(
+        self.conv1 = ConvModule(
             self.in_channels,
             64,
             kernel_size=7,
             stride=2,
             padding=3,
-            bias=False)
-        self.norm1_name, norm1 = build_norm_layer(self.norm_cfg, 64, postfix=1)
-        self.add_module(self.norm1_name, norm1)
-        self.relu = nn.ReLU(inplace=True)
+            bias=False,
+            conv_cfg=self.conv_cfg,
+            norm_cfg=self.norm_cfg,
+            act_cfg=self.act_cfg)
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
+
+    def _load_conv_params(self, conv, state_dict_tv, module_name_tv,
+                          loaded_param_names):
+        weight_tv_name = module_name_tv + '.weight'
+        conv.weight.data.copy_(state_dict_tv[weight_tv_name])
+        loaded_param_names.append(weight_tv_name)
+
+        if getattr(conv, 'bias') is not None:
+            bias_tv_name = module_name_tv + '.bias'
+            conv.bias.data.copy_(state_dict_tv[bias_tv_name])
+            loaded_param_names.append(bias_tv_name)
+
+    def _load_bn_params(self, bn, state_dict_tv, module_name_tv,
+                        loaded_param_names):
+        for param_name, param in bn.named_parameters():
+            param_tv_name = f'{module_name_tv}.{param_name}'
+            param_tv = state_dict_tv[param_tv_name]
+            param.data.copy_(param_tv)
+            loaded_param_names.append(param_tv_name)
+
+        for param_name, param in bn.named_buffers():
+            param_tv_name = f'{module_name_tv}.{param_name}'
+            # some buffers like num_batches_tracked may not exist
+            if param_tv_name in state_dict_tv:
+                param_tv = state_dict_tv[param_tv_name]
+                param.data.copy_(param_tv)
+                loaded_param_names.append(param_tv_name)
+
+    def _load_torchvision_checkpoint(self,
+                                     pretrained,
+                                     strict=False,
+                                     logger=None):
+        state_dict_torchvision = _load_checkpoint(self.pretrained)
+        if 'state_dict' in state_dict_torchvision:
+            state_dict_torchvision = state_dict_torchvision['state_dict']
+
+        loaded_param_names = []
+        for name, module in self.named_modules():
+            if isinstance(module, ConvModule):
+                # we use a ConvModule to wrap conv+bn+relu layers, thus the
+                # name mapping is needed
+                if 'downsample' in name:
+                    # layer{X}.{Y}.downsample.conv->layer{X}.{Y}.downsample.0
+                    original_conv_name = name + '.0'
+                    # layer{X}.{Y}.downsample.bn->layer{X}.{Y}.downsample.1
+                    original_bn_name = name + '.1'
+                else:
+                    # layer{X}.{Y}.conv{n}.conv->layer{X}.{Y}.conv{n}
+                    original_conv_name = name
+                    # layer{X}.{Y}.conv{n}.bn->layer{X}.{Y}.bn{n}
+                    original_bn_name = name.replace('conv', 'bn')
+                self._load_conv_params(module.conv, state_dict_torchvision,
+                                       original_conv_name, loaded_param_names)
+                self._load_bn_params(module.bn, state_dict_torchvision,
+                                     original_bn_name, loaded_param_names)
+
+        # check if any parameters in the 2d checkpoint are not loaded
+        remaining_names = set(
+            state_dict_torchvision.keys()) - set(loaded_param_names)
+        if remaining_names:
+            logger.info(
+                f'These parameters in pretrained checkpoint are not loaded'
+                f': {remaining_names}')
 
     def init_weights(self):
         """Initiate the parameters either from existing checkpoint or from
         scratch."""
         if isinstance(self.pretrained, str):
             logger = get_root_logger()
-            load_checkpoint(self, self.pretrained, strict=False, logger=logger)
+            if self.torchvision_pretrain:
+                # torchvision's
+                self._load_torchvision_checkpoint(
+                    self.pretrained, strict=False, logger=logger)
+            else:
+                # ours
+                load_checkpoint(self.pretrained, strict=False, logger=logger)
         elif self.pretrained is None:
             for m in self.modules():
                 if isinstance(m, nn.Conv2d):
@@ -433,12 +500,10 @@ class ResNet(nn.Module):
             x (torch.Tensor): The input data.
 
         Returns:
-            torch.Tensor: The feature of the input
-                samples extracted by the backbone.
+            torch.Tensor: The feature of the input samples extracted
+            by the backbone.
         """
         x = self.conv1(x)
-        x = self.norm1(x)
-        x = self.relu(x)
         x = self.maxpool(x)
         for layer_name in self.res_layers:
             res_layer = getattr(self, layer_name)
@@ -447,10 +512,10 @@ class ResNet(nn.Module):
 
     def _freeze_stages(self):
         """Prevent all the parameters from being optimized before
-        `self.frozen_stages`."""
+        ``self.frozen_stages``."""
         if self.frozen_stages >= 0:
-            self.norm1.eval()
-            for m in [self.conv1, self.norm1]:
+            self.conv1.bn.eval()
+            for m in self.conv1.modules():
                 for param in m.parameters():
                     param.requires_grad = False
 

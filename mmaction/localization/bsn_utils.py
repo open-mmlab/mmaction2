@@ -30,9 +30,8 @@ def generate_candidate_proposals(video_list,
         result_dict (dict): The dict to save the results. Default: None.
 
     Returns:
-        proposal_dict (dict): A dict contains video_name as keys and
-            proposal list as value. If result_dict is not None, save the
-            results to it.
+        dict: A dict contains video_name as keys and proposal list as value.
+        If result_dict is not None, save the results to it.
     """
     if tem_results_ext not in ('.csv'):
         raise NotImplementedError
@@ -164,8 +163,8 @@ def generate_bsp_feature(video_list,
 
     Returns:
         bsp_feature_dict (dict): A dict contains video_name as keys and
-            bsp_feature as value. If result_dict is not None, save the
-            results to it.
+        bsp_feature as value. If result_dict is not None, save the
+        results to it.
     """
     if tem_results_ext not in ('.csv') or pgm_proposal_ext not in ('.csv'):
         raise NotImplementedError

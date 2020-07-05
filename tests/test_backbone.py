@@ -70,8 +70,8 @@ def test_resnet_backbone():
     resnet50_frozen = ResNet(50, frozen_stages=frozen_stages)
     resnet50_frozen.init_weights()
     resnet50_frozen.train()
-    assert resnet50_frozen.norm1.training is False
-    for layer in [resnet50_frozen.conv1, resnet50_frozen.norm1]:
+    assert resnet50_frozen.conv1.bn.training is False
+    for layer in resnet50_frozen.conv1.modules():
         for param in layer.parameters():
             assert param.requires_grad is False
     for i in range(1, frozen_stages + 1):
@@ -481,10 +481,10 @@ def test_resnet_tsm_backbone():
         layer = getattr(resnet_tsm_50, layer_name)
         blocks = list(layer.children())
         for block in blocks:
-            assert isinstance(block.conv1, TemporalShift)
-            assert block.conv1.num_segments == resnet_tsm_50.num_segments
-            assert block.conv1.shift_div == resnet_tsm_50.shift_div
-            assert isinstance(block.conv1.net, nn.Conv2d)
+            assert isinstance(block.conv1.conv, TemporalShift)
+            assert block.conv1.conv.num_segments == resnet_tsm_50.num_segments
+            assert block.conv1.conv.shift_div == resnet_tsm_50.shift_div
+            assert isinstance(block.conv1.conv.net, nn.Conv2d)
 
     # resnet_tsm with depth 50, no pretrained, shift_place is block
     resnet_tsm_50_block = ResNetTSM(50, shift_place='block')
@@ -506,32 +506,15 @@ def test_resnet_tsm_backbone():
         layer = getattr(resnet_tsm_50_temporal_pool, layer_name)
         blocks = list(layer.children())
         for block in blocks:
-            assert isinstance(block.conv1, TemporalShift)
+            assert isinstance(block.conv1.conv, TemporalShift)
             if layer_name == 'layer1':
-                assert block.conv1.num_segments == \
+                assert block.conv1.conv.num_segments == \
                        resnet_tsm_50_temporal_pool.num_segments
             else:
-                assert block.conv1.num_segments == \
+                assert block.conv1.conv.num_segments == \
                        resnet_tsm_50_temporal_pool.num_segments // 2
-            assert block.conv1.shift_div == resnet_tsm_50_temporal_pool.shift_div  # noqa: E501
-            assert isinstance(block.conv1.net, nn.Conv2d)
-
-    # compare ResNetTSM with ResNet when using pretrained.
-    resnet_tsm_50_no_shift = ResNetTSM(
-        50, is_shift=False, pretrained='torchvision://resnet50')
-    resnet_tsm_50_no_shift.init_weights()
-    resnet_tsm_dict = {
-        k: v
-        for k, v in resnet_tsm_50_no_shift.named_parameters()
-    }
-
-    resnet = ResNet(50, pretrained='torchvision://resnet50')
-    resnet.init_weights()
-    resnet_dict = {k: v for k, v in resnet.named_parameters()}
-
-    assert set(resnet_tsm_dict.keys()) == set(resnet_dict.keys())
-    for k in resnet_tsm_dict.keys():
-        assert torch.equal(resnet_tsm_dict[k], resnet_dict[k])
+            assert block.conv1.conv.shift_div == resnet_tsm_50_temporal_pool.shift_div  # noqa: E501
+            assert isinstance(block.conv1.conv.net, nn.Conv2d)
 
 
 def test_resnet_tin_backbone():
@@ -556,11 +539,11 @@ def test_resnet_tin_backbone():
         layer = getattr(resnet_tin, layer_name)
         blocks = list(layer.children())
         for block in blocks:
-            assert isinstance(block.conv1, CombineNet)
-            assert isinstance(block.conv1.net1, TemporalInterlace)
-            assert isinstance(block.conv1.net2, nn.Conv2d)
-            assert block.conv1.net1.num_segments == resnet_tin.num_segments
-            assert block.conv1.net1.shift_div == resnet_tin.shift_div
+            assert isinstance(block.conv1.conv, CombineNet)
+            assert isinstance(block.conv1.conv.net1, TemporalInterlace)
+            assert (
+                block.conv1.conv.net1.num_segments == resnet_tin.num_segments)
+            assert block.conv1.conv.net1.shift_div == resnet_tin.shift_div
 
     input_shape = (8, 3, 64, 64)
     imgs = _demo_inputs(input_shape)

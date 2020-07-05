@@ -70,7 +70,7 @@ Example: test R(2+1)D model on Kinetics-400 dataset and dump the result to a jso
 ```shell
 python tools/test.py configs/recognition/r2plus1d/r2plus1d_r34_3d_8x8x1_180e_kinetics400_rgb.py \
     checkpoints/SOME_CHECKPOINT.pth --eval top_k_accuracy mean_class_accuracy \
-    --out result.json
+    --out result.json --average_clips=prob
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](../../../docs/getting_started.md).

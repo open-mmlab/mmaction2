@@ -269,8 +269,8 @@ class OffsetNet(nn.Module):
 class TemporalInterlace(nn.Module):
     """Temporal interlace module.
 
-    This module is proposed in "Temporal Interlacing Network".
-    Link: https://arxiv.org/abs/2001.06499
+    This module is proposed in `Temporal Interlacing Network
+    <https://arxiv.org/abs/2001.06499>`_
 
     Args:
         in_channels (int): Channel num of input features.
@@ -411,7 +411,8 @@ class ResNetTIN(ResNet):
                         b.conv1.in_channels,
                         num_segments=num_segments,
                         shift_div=shift_div)
-                    blocks[i].conv1 = CombineNet(tds, blocks[i].conv1)
+                    blocks[i].conv1.conv = CombineNet(tds,
+                                                      blocks[i].conv1.conv)
             return nn.Sequential(*blocks)
 
         self.layer1 = make_block_interlace(

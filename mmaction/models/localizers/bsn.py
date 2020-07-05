@@ -14,15 +14,18 @@ from .utils import post_processing
 class TEM(BaseLocalizer):
     """Temporal Evaluation Model for Boundary Sensetive Network.
 
-    Paper reference: http://arxiv.org/abs/1806.02964
-    Code reference: https://github.com/wzmsltw/BSN-boundary-sensitive-network
+    Please refer `BSN: Boundary Sensitive Network for Temporal Action
+    Proposal Generation <http://arxiv.org/abs/1806.02964>`_.
+
+    Code reference
+    https://github.com/wzmsltw/BSN-boundary-sensitive-network
 
     Args:
         tem_feat_dim (int): Feature dimension.
         tem_hidden_dim (int): Hidden layer dimension.
         tem_match_threshold (float): Temporal evaluation match threshold.
         loss_cls (dict): Config for building loss.
-            Default: dict(type='BinaryLogisticRegressionLoss').
+            Default: ``dict(type='BinaryLogisticRegressionLoss')``.
         loss_weight (float): Weight term for action_loss. Default: 2.
         output_dim (int): Output dimension. Default: 3.
         conv1_ratio (float): Ratio of conv1 layer output. Default: 1.0.
@@ -224,8 +227,11 @@ class TEM(BaseLocalizer):
 class PEM(BaseLocalizer):
     """Proposals Evaluation Model for Boundary Sensetive Network.
 
-    Paper reference: http://arxiv.org/abs/1806.02964
-    Code reference: https://github.com/wzmsltw/BSN-boundary-sensitive-network
+    Please refer `BSN: Boundary Sensitive Network for Temporal Action
+    Proposal Generation <http://arxiv.org/abs/1806.02964>`_.
+
+    Code reference
+    https://github.com/wzmsltw/BSN-boundary-sensitive-network
 
     Args:
         pem_feat_dim (int): Feature dimension.

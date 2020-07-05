@@ -1,0 +1,104 @@
+# Preparing Moments in Time
+
+For basic dataset information, you can refer to the dataset [website](http://moments.csail.mit.edu/).
+Before we start, please make sure that the directory is located at `$MMACTION/tools/data/mit/`.
+
+## Step 1. Prepare Annotations and Videos
+
+First of all, you can run the following script to download the videos along with the annotations.
+
+```shell
+bash download_data.sh
+```
+
+## Step 2. Extract RGB and Flow
+
+This part is **optional** if you only want to use the video loader.
+
+Before extracting, please refer to [install.md](/docs/install.md) for installing [dense_flow](https://github.com/innerlee/denseflow).
+
+
+If you didn't install dense_flow in the installation or only want to play with RGB frames (since extracting optical flow can be time-comsuming), consider running the following script to extract **RGB-only** frames.
+
+Fist, You can run the following script to soft link the extracted frames.
+
+```shell
+# execute these two line (Assume the SSD is mounted at "/mnt/SSD/")
+mkdir /mnt/SSD/mit_extracted/
+ln -s /mnt/SSD/mit_extracted/ ../../../data/mit/rawframes
+```
+
+```shell
+bash extract_rgb_frames.sh
+```
+
+If both are required, run the following script to extract frames.
+
+```shell
+bash extract_frames.sh
+```
+
+## Step 4. Generate File List
+
+you can run the follow script to generate file list in the format of rawframes and videos.
+
+```shell
+bash generate_{rawframes, videos}_filelist.sh
+```
+
+## Step 5. Check Directory Structure
+
+After the whole data process for Moments in Time preparation,
+you will get the rawframes (RGB + Flow), videos and annotation files for Moments in Time.
+
+In the context of the whole project (for Moments in Time only), the folder structure will look like:
+
+```
+mmaction
+├── data
+│   └── mit
+│       ├── annotations
+│       │   ├── license.txt
+│       │   ├── moments_categories.txt
+│       │   ├── README.txt
+│       │   ├── trainingSet.csv
+│       │   └── validationSet.csv
+│       ├── mit_train_rawframe_anno.txt
+│       ├── mit_train_video_anno.txt
+│       ├── mit_val_rawframe_anno.txt
+│       ├── mit_val_video_anno.txt
+│       ├── rawframes
+│       │   ├── training
+│       │   │   ├── adult+female+singing
+│       │   │   │   ├── 0P3XG_vf91c_35
+│       │   │   │   │   ├── flow_x_00001.jpg
+│       │   │   │   │   ├── flow_x_00002.jpg
+│       │   │   │   │   ├── ...
+│       │   │   │   │   ├── flow_y_00001.jpg
+│       │   │   │   │   ├── flow_y_00002.jpg
+│       │   │   │   │   ├── ...
+│       │   │   │   │   ├── img_00001.jpg
+│       │   │   │   │   └── img_00002.jpg
+│       │   │   │   └── yt-zxQfALnTdfc_56
+│       │   │   │   │   ├── ...
+│       │   │   └── yawning
+│       │   │       ├── _8zmP1e-EjU_2
+│       │   │       │   ├── ...
+│       │   └── validation
+│       │   │       ├── ...
+│       └── videos
+│           ├── training
+│           │   ├── adult+female+singing
+│           │   │   ├── 0P3XG_vf91c_35.mp4
+│           │   │   ├── ...
+│           │   │   └── yt-zxQfALnTdfc_56.mp4
+│           │   └── yawning
+│           │       ├── ...
+│           └── validation
+│           │   ├── ...
+└── mmaction
+└── ...
+
+```
+
+For training and evaluating on Moments in Time, please refer to [getting_started.md](/docs/getting_started.md).

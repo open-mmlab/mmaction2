@@ -9,8 +9,8 @@ class TemporalShift(nn.Module):
     """Temporal shift module.
 
     This module is proposed in
-    "TSM: Temporal Shift Module for Efficient Video Understanding".
-    Link: https://arxiv.org/abs/1811.08383
+    `TSM: Temporal Shift Module for Efficient Video Understanding
+    <https://arxiv.org/abs/1811.08383>`_
 
     Args:
         net (nn.module): Module to make temporal shift.
@@ -91,9 +91,9 @@ class ResNetTSM(ResNet):
         shift_place (str): Places in resnet layers for shift, which is chosen
             from ['block', 'blockres'].
             If set to 'block', it will apply temporal shift to all child blocks
-                in each resnet layer.
+            in each resnet layer.
             If set to 'blockres', it will apply temporal shift to each `conv1`
-                layer of all child blocks in each resnet layer.
+            layer of all child blocks in each resnet layer.
             Default: 'blockres'.
         temporal_pool (bool): Whether to add temporal pooling. Default: False.
         **kwargs (keyword arguments, optional): Arguments for ResNet.
@@ -148,8 +148,8 @@ class ResNetTSM(ResNet):
                 blocks = list(stage.children())
                 for i, b in enumerate(blocks):
                     if i % n_round == 0:
-                        blocks[i].conv1 = TemporalShift(
-                            b.conv1,
+                        blocks[i].conv1.conv = TemporalShift(
+                            b.conv1.conv,
                             num_segments=num_segments,
                             shift_div=self.shift_div)
                 return nn.Sequential(*blocks)

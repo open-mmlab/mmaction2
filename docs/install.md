@@ -10,10 +10,11 @@
 - [mmcv](https://github.com/open-mmlab/mmcv) 0.5.7+
 - Numpy
 - ffmpeg (4.2 is preferred)
-- [decord](https://github.com/dmlc/decord) (optional): install CPU version by `pip install decord` and install GPU version from source
+- [decord](https://github.com/dmlc/decord) (optional): Install CPU version by `pip install decord` and install GPU version from source
 - [PyAV](https://github.com/mikeboers/PyAV) (optional): `conda install av -c conda-forge -y`
 - [PyTurboJPEG](https://github.com/lilohuang/PyTurboJPEG) (optional): `pip install PyTurboJPEG`
-- [Pillow-SIMD](https://docs.fast.ai/performance.html#pillow-simd) (optional): install it by the following scripts.
+- [denseflow](https://github.com/innerlee/denseflow) (optional): See [here](https://github.com/innerlee/setup) for simple install scripts.
+- [Pillow-SIMD](https://docs.fast.ai/performance.html#pillow-simd) (optional): Install it by the following scripts.
 ```shell
 conda uninstall -y --force pillow pil jpeg libtiff libjpeg-turbo
 pip   uninstall -y         pillow pil jpeg libtiff libjpeg-turbo
@@ -59,16 +60,23 @@ If you build PyTorch from source instead of installing the prebuilt pacakge, you
 c. Clone the mmaction repository
 
 ```shell
-git clone git@gitlab.sz.sensetime.com:open-mmlab/mmaction-lite.git
-cd mmaction-lite
+git clone https://github.com/open-mmlab/mmaction.git
+cd mmaction
 ```
 
 d. Install build requirements and then install mmaction
 
 ```shell
 pip install -r requirements/build.txt
-python setup.py develop
+pip install -v -e .  # or "python setup.py develop"
 ```
+
+If you build mmaction on macOS, replace the last command with
+
+```
+CC=clang CXX=clang++ CFLAGS='-stdlib=libc++' pip install -e .
+```
+
 
 Note:
 
@@ -92,28 +100,19 @@ The code can be built for CPU only environment (where CUDA isn't available).
 
 In CPU mode you can run the demo/demo.py for example.
 
-### Prepare datasets
+### Another option: Docker Image
 
-It is recommended to symlink the dataset root to `$MMACTION/data`
-If your folder structure is different, you may need to change the corresponding paths in config files.
+We provide a [Dockerfile](/docker/Dockerfile) to build an image.
 
+```shell
+# build an image with PyTorch 1.5, CUDA 10.1
+docker build -t mmaction docker/
 ```
-mmaction
-├── mmaction
-├── tools
-├── config
-├── data
-│   ├── kinetics400
-│   │   ├── rawframes_train
-│   │   ├── rawframes_val
-│   │   ├── kinetics_train_list.txt
-│   │   ├── kinetics_val_list.txt
-│   ├── ucf101
-│   │   ├── rawframes_train
-│   │   ├── rawframes_val
-│   │   ├── ucf101_train_list.txt
-│   │   ├── ucf101_val_list.txt
 
+Run it with
+
+```shell
+docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmaction/data mmaction
 ```
 
 ### A from-scratch setup script
@@ -136,16 +135,10 @@ ln -s $KINETICS400_ROOT data
 
 ### Using multiple MMAction versions
 
-If there are more than one mmaction on your machine, and you want to use them alternatively, the recommended way is to create multiple conda environments and use different environments for different versions.
+The train and test scripts already modify the `PYTHONPATH` to ensure the script use the MMAction in the current directory.
 
-Another way is to insert the following code to the main scripts (`train.py`, `test.py` or any other scripts you run)
-```python
-import os.path as osp
-import sys
-sys.path.insert(0, osp.join(osp.dirname(osp.abspath(__file__)), '../'))
-```
+To use the default MMAction installed in the environment rather than that you are working with, you can remove the following line in those scripts.
 
-Or run the following command in the terminal of corresponding folder to temporally use the current one.
 ```shell
-export PYTHONPATH=`pwd`:$PYTHONPATH
+PYTHONPATH="$(dirname $0)/..":$PYTHONPATH
 ```

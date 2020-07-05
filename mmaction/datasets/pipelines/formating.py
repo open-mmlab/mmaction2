@@ -144,9 +144,9 @@ class Transpose(object):
 class Collect(object):
     """Collect data from the loader relevant to the specific task.
 
-    This keeps the items in `keys` as it is, and collect items in `meta_keys`
-    into a meta item called `meta_name`.This is usually the last stage of the
-    data loader pipeline.
+    This keeps the items in ``keys`` as it is, and collect items in
+    ``meta_keys`` into a meta item called ``meta_name``.This is usually
+    the last stage of the data loader pipeline.
     For example, when keys='imgs', meta_keys=('filename', 'label',
     'original_shape'), meta_name='img_meta', the results will be a dict with
     keys 'imgs' and 'img_meta', where 'img_meta' is a DataContainer of another
@@ -157,25 +157,28 @@ class Collect(object):
         meta_name (str): The name of the key that contains meta infomation.
             This key is always populated. Default: "img_meta".
         meta_keys (Sequence[str]): Keys that are collected under meta_name.
-            The contents of the `meta_name` dictionary depends on `meta_keys`.
+            The contents of the ``meta_name`` dictionary depends on
+            ``meta_keys``.
             By default this includes:
+
             - "filename": path to the image file
 
             - "label": label of the image file
 
             - "original_shape": original shape of the image as a tuple
-                (h, w, c)
+            (h, w, c)
 
             - "img_shape": shape of the image input to the network as a tuple
-                (h, w, c).  Note that images may be zero padded on the
-                bottom/right, if the batch tensor is larger than this shape.
+            (h, w, c).  Note that images may be zero padded on the
+            bottom/right, if the batch tensor is larger than this shape.
 
             - "pad_shape": image shape after padding
 
             - "flip_direction": a str in ("horiziontal", "vertival") to
-                indicate if the image is fliped horizontally or vertically.
+            indicate if the image is fliped horizontally or vertically.
 
             - "img_norm_cfg": a dict of normalization information:
+
                 - mean - per channel mean subtraction
                 - std - per channel std divisor
                 - to_rgb - bool indicating if bgr was converted to rgb
@@ -227,7 +230,7 @@ class FormatShape(object):
 
     def __init__(self, input_format):
         self.input_format = input_format
-        if self.input_format not in ['NCTHW', 'NCHW']:
+        if self.input_format not in ['NCTHW', 'NCHW', 'NCHW_Flow']:
             raise ValueError(
                 f'The input format {self.input_format} is invalid.')
 
@@ -255,6 +258,19 @@ class FormatShape(object):
         elif self.input_format == 'NCHW':
             imgs = np.transpose(imgs, (0, 3, 1, 2))
             # M x C x H x W
+        elif self.input_format == 'NCHW_Flow':
+            num_clips = results['num_clips']
+            clip_len = results['clip_len']
+            imgs = imgs.reshape((-1, num_clips, clip_len) + imgs.shape[1:])
+            # N_crops x N_clips x L x H x W x C
+            imgs = np.transpose(imgs, (0, 1, 2, 5, 3, 4))
+            # N_crops x N_clips x L x C x H x W
+            imgs = imgs.reshape((-1, imgs.shape[2] * imgs.shape[3]) +
+                                imgs.shape[4:])
+            # M' x C' x H x W
+            # M' = N_crops x N_clips
+            # C' = L x C
+
         results['imgs'] = imgs
         results['input_shape'] = imgs.shape
         return results

@@ -13,10 +13,13 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
 
     All datasets to process video should subclass it.
     All subclasses should overwrite:
-        Methods:`load_annotations`, supporting to load information
-            from an annotation file.
-        Methods:`prepare_train_frames`, providing train data.
-        Methods:`prepare_test_frames`, providing test data.
+
+    - Methods:`load_annotations`, supporting to load information from an
+    annotation file.
+
+    - Methods:`prepare_train_frames`, providing train data.
+
+    - Methods:`prepare_test_frames`, providing test data.
 
     Args:
         ann_file (str): Path to the annotation file.

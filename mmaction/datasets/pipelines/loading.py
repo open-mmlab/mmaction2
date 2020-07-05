@@ -25,6 +25,12 @@ class SampleFrames(object):
         num_clips (int): Number of clips to be sampled. Default: 1.
         temporal_jitter (bool): Whether to apply temporal jittering.
             Default: False.
+        twice_sample (bool): Whether to use twice sample when testing.
+            If set to True, it will sample frames with and without fixed shift,
+            which is commonly used for testing in TSM model. Default: False.
+        out_of_bound_opt (str): The way to deal with out of bounds frame
+            indexes. Available options are 'loop', 'repeat_last'.
+            Default: 'loop'.
         test_mode (bool): Store True when building test or validation dataset.
             Default: False.
     """
@@ -34,12 +40,20 @@ class SampleFrames(object):
                  frame_interval=1,
                  num_clips=1,
                  temporal_jitter=False,
+                 twice_sample=False,
+                 out_of_bound_opt='loop',
                  test_mode=False):
+
         self.clip_len = clip_len
         self.frame_interval = frame_interval
         self.num_clips = num_clips
         self.temporal_jitter = temporal_jitter
+        self.twice_sample = twice_sample
+        self.out_of_bound_opt = out_of_bound_opt
         self.test_mode = test_mode
+        assert self.out_of_bound_opt in ['loop', 'repeat_last']
+
+        assert self.out_of_bound_opt in ['loop', 'repeat_last']
 
     def _get_train_clips(self, num_frames):
         """Get clip offsets in train mode.
@@ -78,8 +92,9 @@ class SampleFrames(object):
         """Get clip offsets in test mode.
 
         Calculate the average interval for selected frames, and shift them
-        fixedly by avg_interval/2 . If the total number of frames is not
-        enough, it will return all zero indices.
+        fixedly by avg_interval/2. If set twice_sample True, it will sample
+        frames together without fixed shift. If the total number of frames is
+        not enough, it will return all zero indices.
 
         Args:
             num_frames (int): Total number of frame in the video.
@@ -92,6 +107,8 @@ class SampleFrames(object):
         if num_frames > ori_clip_len - 1:
             base_offsets = np.arange(self.num_clips) * avg_interval
             clip_offsets = (base_offsets + avg_interval / 2.0).astype(np.int32)
+            if self.twice_sample:
+                clip_offsets = np.concatenate([clip_offsets, base_offsets])
         else:
             clip_offsets = np.zeros((self.num_clips, ))
         return clip_offsets
@@ -138,7 +155,18 @@ class SampleFrames(object):
                 self.frame_interval, size=len(frame_inds))
             frame_inds += perframe_offsets
 
-        frame_inds = np.mod(frame_inds, total_frames)
+        frame_inds = frame_inds.reshape((-1, self.clip_len))
+        if self.out_of_bound_opt == 'loop':
+            frame_inds = np.mod(frame_inds, total_frames)
+        elif self.out_of_bound_opt == 'repeat_last':
+            safe_inds = frame_inds < total_frames
+            unsafe_inds = 1 - safe_inds
+            last_ind = np.max(safe_inds * frame_inds, axis=1)
+            new_inds = (safe_inds * frame_inds + (unsafe_inds.T * last_ind).T)
+            frame_inds = new_inds
+        else:
+            raise ValueError('Illegal out_of_bound option.')
+        frame_inds = np.concatenate(frame_inds)
         results['frame_inds'] = frame_inds.astype(np.int)
         results['clip_len'] = self.clip_len
         results['frame_interval'] = self.frame_interval
@@ -175,9 +203,15 @@ class DenseSampleFrames(SampleFrames):
                  sample_range=64,
                  num_sample_positions=10,
                  temporal_jitter=False,
+                 out_of_bound_opt='loop',
                  test_mode=False):
-        super().__init__(clip_len, frame_interval, num_clips, temporal_jitter,
-                         test_mode)
+        super().__init__(
+            clip_len,
+            frame_interval,
+            num_clips,
+            temporal_jitter,
+            out_of_bound_opt=out_of_bound_opt,
+            test_mode=test_mode)
         self.sample_range = sample_range
         self.num_sample_positions = num_sample_positions
 
@@ -540,6 +574,7 @@ class FrameSelector(object):
 
         directory = results['frame_dir']
         filename_tmpl = results['filename_tmpl']
+        modality = results['modality']
 
         if self.file_client is None:
             self.file_client = FileClient(self.io_backend, **self.kwargs)
@@ -554,11 +589,24 @@ class FrameSelector(object):
             # TODO: add offset attributes in datasets.
             if frame_idx == 0:
                 frame_idx += 1
-            filepath = osp.join(directory, filename_tmpl.format(frame_idx))
-            img_bytes = self.file_client.get(filepath)
-            # Get frame with channel order RGB directly.
-            cur_frame = mmcv.imfrombytes(img_bytes, channel_order='rgb')
-            imgs.append(cur_frame)
+            if modality == 'RGB':
+                filepath = osp.join(directory, filename_tmpl.format(frame_idx))
+                img_bytes = self.file_client.get(filepath)
+                # Get frame with channel order RGB directly.
+                cur_frame = mmcv.imfrombytes(img_bytes, channel_order='rgb')
+                imgs.append(cur_frame)
+            elif modality == 'Flow':
+                x_filepath = osp.join(directory,
+                                      filename_tmpl.format('x', frame_idx))
+                y_filepath = osp.join(directory,
+                                      filename_tmpl.format('y', frame_idx))
+                x_img_bytes = self.file_client.get(x_filepath)
+                x_frame = mmcv.imfrombytes(x_img_bytes, flag='grayscale')
+                y_img_bytes = self.file_client.get(y_filepath)
+                y_frame = mmcv.imfrombytes(y_img_bytes, flag='grayscale')
+                imgs.extend([x_frame, y_frame])
+            else:
+                raise NotImplementedError
 
         results['imgs'] = imgs
         results['original_shape'] = imgs[0].shape[:2]

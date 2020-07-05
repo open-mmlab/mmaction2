@@ -10,8 +10,8 @@ class BaseLocalizer(nn.Module, metaclass=ABCMeta):
     """Base class for localizers.
 
     All localizers should subclass it. All subclass should overwrite:
-    Methods:`forward_train`, supporting to forward when training.
-    Methods:`forward_test`, supporting to forward when testing.
+    Methods:``forward_train``, supporting to forward when training.
+    Methods:``forward_test``, supporting to forward when testing.
     """
 
     def __init__(self):
@@ -29,6 +29,7 @@ class BaseLocalizer(nn.Module, metaclass=ABCMeta):
         pass
 
     def forward(self, imgs, label=None, return_loss=True):
+        """Define the computation performed at every call."""
         if return_loss:
             if label is None:
                 raise ValueError('Label should not be None.')

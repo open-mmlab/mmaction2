@@ -8,13 +8,14 @@ class TSMOptimizerConstructor(DefaultOptimizerConstructor):
     """Optimizer constructor in TSM model.
 
     This constructor builds optimizer in different ways from the default one.
+
     1. Parameters of the first conv layer have default lr and weight decay.
     2. Parameters of BN layers have default lr and zero weight decay.
     3. If the field "fc_lr5" in paramwise_cfg is set to True, the parameters
        of the last fc layer in cls_head have 5x lr multiplier and 10x weight
        decay multiplier.
     4. Weights of other layers have default lr and weight decay, and biases
-       have a 2x lr multiplier and zero weight decay
+       have a 2x lr multiplier and zero weight decay.
     """
 
     def add_params(self, params, model):

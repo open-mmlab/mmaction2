@@ -5,7 +5,7 @@ from .registry import DATASETS
 class RepeatDataset(object):
     """A wrapper of repeated dataset.
 
-    The length of repeated dataset will be `times` larger than the original
+    The length of repeated dataset will be ``times`` larger than the original
     dataset. This is useful when the data loading time is long but the dataset
     is small. Using RepeatDataset can reduce the data loading time between
     epochs.

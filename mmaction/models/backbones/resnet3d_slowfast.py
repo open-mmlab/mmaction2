@@ -13,14 +13,14 @@ class ResNet3dPathway(ResNet3d):
     """A pathway of Slowfast based on ResNet3d.
 
     Args:
-        *args (arguments): Arguments same as :class:`ResNet3d`.
+        *args (arguments): Arguments same as :class:``ResNet3d``.
         lateral (bool): Determines whether to enable the lateral connection
             from another pathway. Default: False.
         speed_ratio (int): Speed ratio indicating the ratio between time
             dimension of the fast and slow pathway, corresponding to the
-            `alpha` in the paper. Default: 8.
+            ``alpha`` in the paper. Default: 8.
         channel_ratio (int): Reduce the channel number of fast pathway
-            by `channel_ratio`, corresponding to `beta` in the paper.
+            by ``channel_ratio``, corresponding to ``beta`` in the paper.
             Default: 8.
         fusion_kernel (int): The kernel size of lateral fusion.
             Default: 5.
@@ -106,15 +106,15 @@ class ResNet3dPathway(ResNet3d):
             temporal_stride (int | Sequence[int]): Temporal strides in
                 residual and conv layers. Default: 1.
             dilation (int): Spacing between kernel elements. Default: 1.
-            style (str): `pytorch` or `caffe`. If set to 'pytorch',
+            style (str): ``pytorch`` or ``caffe``. If set to ``pytorch``,
                 the stride-two layer is the 3x3 conv layer,
                 otherwise the stride-two layer is the first 1x1 conv layer.
-                Default: 'pytorch'.
+                Default: ``pytorch``.
             inflate (int | Sequence[int]): Determine whether to inflate
                 for each block. Default: 1.
-            inflate_style (str): `3x1x1` or `1x1x1`. which determines
+            inflate_style (str): ``3x1x1`` or ``1x1x1``. which determines
                 the kernel sizes and padding strides for conv1 and
-                conv2 in each block. Default: '3x1x1'.
+                conv2 in each block. Default: ``3x1x1``.
             conv_cfg (dict): Config for conv layers. Default: None.
             norm_cfg (dict): Config for norm layers. Default: None.
             act_cfg (dict): Config for activate layers. Default: None.
@@ -188,7 +188,7 @@ class ResNet3dPathway(ResNet3d):
         The differences between resnet3d and resnet2d mainly lie in an extra
         axis of conv kernel. To utilize the pretrained parameters in 2d model,
         the weight of conv2d models should be inflated to fit in the shapes of
-        the 3d counterpart. For pathway the `lateral_connection` part should
+        the 3d counterpart. For pathway the ``lateral_connection`` part should
         not be inflated from 2d weights.
 
         Args:
@@ -341,37 +341,36 @@ def build_pathway(cfg, *args, **kwargs):
 class ResNet3dSlowFast(nn.Module):
     """Slowfast backbone.
 
-    This module is proposed in "SlowFast Networks for Video Recognition".
-    Link: https://arxiv.org/abs/1812.03982
+    This module is proposed in `SlowFast Networks for Video Recognition
+    <https://arxiv.org/abs/1812.03982>`_
 
     Args:
         depth (int): Depth of resnet, from {18, 34, 50, 101, 152}.
         pretrained (str): The file path to a pretrained model.
-        resample_rate (int): A large temporal stride `resample_rate`
+        resample_rate (int): A large temporal stride ``resample_rate``
             on input frames, corresponding to the :math:`\tau` in the paper.
-            i.e., it processes only one out of `resample_rate` frames.
+            i.e., it processes only one out of ``resample_rate`` frames.
             Default: 16.
         speed_ratio (int): Speed ratio indicating the ratio between time
             dimension of the fast and slow pathway, corresponding to the
             :math:`\alpha` in the paper. Default: 8.
         channel_ratio (int): Reduce the channel number of fast pathway
-            by `channel_ratio`, corresponding to :math:`\beta` in the paper.
+            by ``channel_ratio``, corresponding to :math:`\beta` in the paper.
             Default: 8.
         slow_pathway (dict): Configuration of slow branch, should contain
             necessary arguments for building the specific type of pathway
             and:
             type (str): type of backbone the pathway bases on.
             lateral (bool): determine whether to build lateral connection
-                for the pathway.
-            Default: dict(type='ResNetPathway', lateral=True, depth=50,
-                pretrained=None, conv1_kernel=(1, 7, 7),
-                dilations=(1, 1, 1, 1), conv1_stride_t=1,
-                pool1_stride_t=1, inflate=(0, 0, 1, 1)).
+            for the pathway.Default:``dict(type='ResNetPathway',
+            lateral=True, depth=50, pretrained=None, conv1_kernel=(1, 7, 7),
+            dilations=(1, 1, 1, 1), conv1_stride_t=1, pool1_stride_t=1,
+            inflate=(0, 0, 1, 1))``.
+
         fast_pathway (dict): Configuration of fast branch, similar to
-            `slow_pathway`.
-            Default: dict(type='ResNetPathway', lateral=False, depth=50,
-                pretrained=None, base_channels=8, conv1_kernel=(5, 7, 7),
-                conv1_stride_t=1, pool1_stride_t=1).
+            `slow_pathway`. Default: ``dict(type='ResNetPathway',
+            lateral=False, depth=50, pretrained=None, base_channels=8,
+            conv1_kernel=(5, 7, 7), conv1_stride_t=1, zpool1_stride_t=1).``.
     """
 
     def __init__(self,
@@ -435,7 +434,7 @@ class ResNet3dSlowFast(nn.Module):
 
         Returns:
             tuple[torch.Tensor]: The feature of the input
-                samples extracted by the backbone.
+            samples extracted by the backbone.
         """
         x_slow = x[:, :, ::self.resample_rate, :, :]
         x_slow = self.slow_path.conv1(x_slow)

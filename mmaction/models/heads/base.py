@@ -29,8 +29,8 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
 
     All Head should subclass it.
     All subclass should overwrite:
-        Methods:`init_weights`, initializing weights in some modules.
-        Methods:`forward`, supporting to forward both for training and testing.
+    - Methods:``init_weights``, initializing weights in some modules.
+    - Methods:``forward``, supporting to forward both for training and testing.
 
     Args:
         num_classes (int): Number of classes to be classified.

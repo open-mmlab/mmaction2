@@ -20,7 +20,7 @@ linting:
   image: $PYTORCH_IMAGE
   stage: linting
   script:
-    - pip install flake8 yapf isort
+    - pip install flake8 yapf isort==4.3.21
     - flake8 .
     - isort -rc --check-only --diff mmaction/ tools/ tests/
     - yapf -r -d mmaction/ tools/ tests/ configs

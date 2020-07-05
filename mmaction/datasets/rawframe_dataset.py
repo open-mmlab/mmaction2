@@ -55,6 +55,8 @@ class RawframeDataset(BaseDataset):
         multi_class (bool): Determines whether it is a multi-class
             recognition dataset. Default: False.
         num_classes (int): Number of classes in the dataset. Default: None.
+        modality (str): Modality of data. Support 'RGB', 'Flow'.
+                            Default: 'Flow'.
     """
 
     def __init__(self,
@@ -64,10 +66,13 @@ class RawframeDataset(BaseDataset):
                  test_mode=False,
                  filename_tmpl='img_{:05}.jpg',
                  multi_class=False,
-                 num_classes=None):
+                 num_classes=None,
+                 modality='RGB'):
         super().__init__(ann_file, pipeline, data_prefix, test_mode,
                          multi_class, num_classes)
+        assert modality in ['RGB', 'Flow']
         self.filename_tmpl = filename_tmpl
+        self.modality = modality
 
     def load_annotations(self):
         video_infos = []
@@ -96,11 +101,13 @@ class RawframeDataset(BaseDataset):
     def prepare_train_frames(self, idx):
         results = copy.deepcopy(self.video_infos[idx])
         results['filename_tmpl'] = self.filename_tmpl
+        results['modality'] = self.modality
         return self.pipeline(results)
 
     def prepare_test_frames(self, idx):
         results = copy.deepcopy(self.video_infos[idx])
         results['filename_tmpl'] = self.filename_tmpl
+        results['modality'] = self.modality
         return self.pipeline(results)
 
     def evaluate(self,
