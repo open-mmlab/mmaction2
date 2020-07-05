@@ -1,10 +1,9 @@
 # MMAction: Action understanding Toolbox
 
 [![docs](https://img.shields.io/badge/docs-latest-blue)](http://open-mmlab.pages.gitlab.sz.sensetime.com/mmaction-lite/)
-- Unittest coverage percentage: (To add badge)
-- Docstring coverage percentage: (To add badge)
-- Support python version: (To add badge)
-- Pypi package: (To add badge)
+[![codecov](https://codecov.io/gh/open-mmlab/mmaction/branch/master/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmaction)
+[![python](https://img.shields.io/pypi/pyversions/mmaction.svg?style=plastic)](https://pypi.org/project/mmaction)
+[![pypi](https://img.shields.io/pypi/v/mmaction)](https://pypi.org/project/mmaction)
 
 <div align="left">
   <img src="demo/demo.gif" width="600px"/>
