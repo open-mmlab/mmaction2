@@ -17,9 +17,15 @@
 |[tsn_r50_dense_1x1x5_50e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_dense_1x1x5_50e_kinetics400_rgb.py) | ResNet50 |68.59|88.31| x | x | [ckpt]() | [log]()|
 |[tsn_r50_1x1x8_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_1x1x8_100e_kinetics400_rgb.py) | ResNet50 |69.41|88.37| x | x | [ckpt]() | [log]()|
 |[tsn_r50_320p_1x1x3_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_320p_1x1x3_100e_kinetics400_rgb.py) | ResNet50 |70.91|89.51| x | x | [ckpt]() | [log]() |
+|[tsn_r50_320p_1x1x3_110e_kinetics400_flow](/configs/recognition/tsn/tsn_r50_320p_1x1x3_110e_kinetics400_flow.py) | ResNet50 |55.70|79.85| x | x | [ckpt]() | [log]() |
+|tsn_r50_320p_1x1x3_kinetics400_twostream [1: 1]* | ResNet50 |72.76|90.52| x | x | x | x |
 |[tsn_r50_320p_1x1x8_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_320p_1x1x8_100e_kinetics400_rgb.py) | ResNet50 |72.41|90.55| x | x | [ckpt]() | [log]() |
+|[tsn_r50_320p_1x1x8_110e_kinetics400_flow](/configs/recognition/tsn/tsn_r50_320p_1x1x8_110e_kinetics400_flow.py) | ResNet50 |57.76|80.99| x | x | [ckpt]() | [log]() |
+|tsn_r50_320p_1x1x8_kinetics400_twostream [1: 1]* | ResNet50 |74.64|91.77| x | x | x | x |
 |[tsn_r50_dense_1x1x8_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_dense_1x1x8_100e_kinetics400_rgb.py) | ResNet50 |70.77|89.3| x | x | [ckpt]() | [log]()|
 |[tsn_r50_video_1x1x3_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_video_1x1x3_100e_kinetics400_rgb.py) | ResNet50 | x | x | x | x | [ckpt]() | [log]()|
+
+*We combine rgb and flow score with coefficients 1: 1 to get the two-stream prediction (without applying softmax).
 
 ### Something-Something V1
 
