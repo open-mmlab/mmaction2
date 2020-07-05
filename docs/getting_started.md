@@ -3,7 +3,7 @@
 This page provides basic tutorials about the usage of MMAction.
 For installation instructions, please see [install.md](install.md).
 
-## Prepare Datasets
+## Datasets
 
 It is recommended to symlink the dataset root to `$MMACTION/data`.
 If your folder structure is different, you may need to change the corresponding paths in config files.

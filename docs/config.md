@@ -17,7 +17,7 @@ We follow the style below to name config files. Contributors are advised to foll
 - `[misc]`: miscellaneous setting/plugins of model, e.g. `dense`, `2d`, `3d`, etc.
 - `{data setting}`: frame sample setting in `{clip_len}x{frame_interval}x{num_clips}` format.
 - `[gpu x batch_per_gpu]`: GPUs and samples per GPU.
-- `{schedule}`: training schedule, e.g. `20e` means 12 epochs.
+- `{schedule}`: training schedule, e.g. `20e` means 20 epochs.
 - `{dataset}`: dataset name, e.g. `kinetics400`, `mmit`, etc.
 - `{modality}`: frame modality, e.g. `rgb`, `flow`, etc.
 
