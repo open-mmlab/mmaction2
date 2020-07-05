@@ -8,7 +8,6 @@ Welcome to MMAction's documentation!
    benchmark.md
    install.md
    config.md
-   parrots_start.md
    api.rst
 
 

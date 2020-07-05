@@ -52,7 +52,7 @@ pages:
     - pip install mmcv
     - pip install sphinx sphinx_rtd_theme recommonmark sphinx-markdown-tables
     - cd docs
-    - ./add_models.sh
+    - ./merge_docs.sh
     - make html
     - cd ..
     - mkdir -p ./public
