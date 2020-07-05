@@ -313,9 +313,10 @@ class ResNet3d(nn.Module):
             Default: 2.
         pool1_stride_t (int): Temporal stride of the first pooling layer.
             Default: 2.
-        style (str): ``pytorch`` or ``caffe``. If set to "pytorch", the
-            stride-two layer is the 3x3 conv layer, otherwise the stride-two
-            layer is the first 1x1 conv layer. Default: 'pytorch'.
+        with_pool2 (bool): Whether to use pool2. Default: True.
+        style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
+            layer is the 3x3 conv layer, otherwise the stride-two layer is
+            the first 1x1 conv layer. Default: 'pytorch'.
         frozen_stages (int): Stages to be frozen (all param fixed). -1 means
             not freezing any parameters. Default: -1.
         inflate (Sequence[int]): Inflate Dims of each block.
@@ -360,6 +361,7 @@ class ResNet3d(nn.Module):
                  conv1_kernel=(5, 7, 7),
                  conv1_stride_t=2,
                  pool1_stride_t=2,
+                 with_pool2=True,
                  style='pytorch',
                  frozen_stages=-1,
                  inflate=(1, 1, 1, 1),
@@ -388,6 +390,7 @@ class ResNet3d(nn.Module):
         self.conv1_kernel = conv1_kernel
         self.conv1_stride_t = conv1_stride_t
         self.pool1_stride_t = pool1_stride_t
+        self.with_pool2 = with_pool2
         self.style = style
         self.frozen_stages = frozen_stages
         self.stage_inflations = _ntuple(num_stages)(inflate)
@@ -545,8 +548,10 @@ class ResNet3d(nn.Module):
                 inflated.
         """
         weight_2d_name = module_name_2d + '.weight'
+
         conv2d_weight = state_dict_2d[weight_2d_name]
         kernel_t = conv3d.weight.data.shape[2]
+
         new_weight = conv2d_weight.data.unsqueeze(2).expand_as(
             conv3d.weight) / kernel_t
         conv3d.weight.data.copy_(new_weight)
@@ -616,11 +621,30 @@ class ResNet3d(nn.Module):
                     original_conv_name = name
                     # layer{X}.{Y}.conv{n}.bn->layer{X}.{Y}.bn{n}
                     original_bn_name = name.replace('conv', 'bn')
-                self._inflate_conv_params(module.conv, state_dict_r2d,
-                                          original_conv_name,
-                                          inflated_param_names)
-                self._inflate_bn_params(module.bn, state_dict_r2d,
-                                        original_bn_name, inflated_param_names)
+                if original_conv_name + '.weight' not in state_dict_r2d:
+                    logger.warning(f'Module not exist in the state_dict_r2d'
+                                   f': {original_conv_name}')
+                else:
+                    shape_2d = state_dict_r2d[original_conv_name +
+                                              '.weight'].shape
+                    shape_3d = module.conv.weight.data.shape
+                    if shape_2d != shape_3d[:2] + shape_3d[3:]:
+                        logger.warning(f'Weight shape mismatch for '
+                                       f': {original_conv_name} : '
+                                       f'3d weight shape: {shape_3d}; '
+                                       f'2d weight shape: {shape_2d}. ')
+                    else:
+                        self._inflate_conv_params(module.conv, state_dict_r2d,
+                                                  original_conv_name,
+                                                  inflated_param_names)
+
+                if original_bn_name + '.weight' not in state_dict_r2d:
+                    logger.warning(f'Module not exist in the state_dict_r2d'
+                                   f': {original_bn_name}')
+                else:
+                    self._inflate_bn_params(module.bn, state_dict_r2d,
+                                            original_bn_name,
+                                            inflated_param_names)
 
         # check if any parameters in the 2d checkpoint are not loaded
         remaining_names = set(
@@ -711,7 +735,7 @@ class ResNet3d(nn.Module):
         for i, layer_name in enumerate(self.res_layers):
             res_layer = getattr(self, layer_name)
             x = res_layer(x)
-            if i == 0:
+            if i == 0 and self.with_pool2:
                 x = self.pool2(x)
         return x
 
