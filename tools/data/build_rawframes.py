@@ -18,8 +18,11 @@ def extract_frame(vid_item, dev_id=0):
         bool: Whether generate optical flow successfully.
     """
     full_path, vid_path, vid_id, method, task = vid_item
-    vid_name = vid_path.split('.')[0].split('/')[0]
-    out_full_path = osp.join(args.out_dir, vid_name)
+    if ('/' in vid_path):
+        vid_name = vid_path.split('.')[0].split('/')[0]
+        out_full_path = osp.join(args.out_dir, vid_name)
+    else:
+        out_full_path = args.out_dir
 
     if task == 'rgb':
         cmd = osp.join(f'denseflow {full_path} -b=20 -s=0 -o={out_full_path}'
