@@ -7,7 +7,7 @@
 |config | pretrain | top1 acc| top5 acc | gpu_mem(M) | iter time(s) | ckpt | log|
 |-|-|-|-|-|-|-|-|
 |[tsm_r50_1x1x8_100e_kinetics400_rgb](/configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py) | ResNet50 |70.24|89.56| x | x | [ckpt]() | [log]()|
-|[tsm_r50_dense_1x1x8_100e_kinetics400_rgb](/configs/recognition/tsm/tsm_r50_dense_1x1x8_50e_kinetics400_rgb.py) | ResNet50 |71.84|90.18| x | x | [ckpt]() | [log]()|
+|[tsm_r50_dense_1x1x8_100e_kinetics400_rgb](/configs/recognition/tsm/tsm_r50_dense_1x1x8_100e_kinetics400_rgb.py) | ResNet50 |71.84|90.18| x | x | [ckpt]() | [log]()|
 |[tsm_r50_1x1x16_50e_kinetics400_rgb](/configs/recognition/tsm/tsm_r50_1x1x16_50e_kinetics400_rgb.py) | ResNet50 |71.69|90.4| x | x | [ckpt]() | [log]()|
 |[tsm_r50_video_1x1x8_100e_kinetics400_rgb](/configs/recognition/tsm/tsm_r50_video_1x1x8_100e_kinetics400_rgb.py) | ResNet50 | x | x | x | x | [ckpt]() | [log]()|
 

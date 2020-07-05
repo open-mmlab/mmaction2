@@ -2,20 +2,18 @@
 model = dict(
     type='Recognizer2D',
     backbone=dict(
-        type='ResNetTSM',
+        type='ResNet',
         pretrained='torchvision://resnet50',
         depth=50,
-        norm_eval=False,
-        shift_div=8),
+        norm_eval=False),
     cls_head=dict(
-        type='TSMHead',
+        type='TSNHead',
         num_classes=400,
         in_channels=2048,
         spatial_type='avg',
         consensus=dict(type='AvgConsensus', dim=1),
         dropout_ratio=0.5,
-        init_std=0.001,
-        is_shift=True))
+        init_std=0.001))
 # model training and testing settings
 train_cfg = None
 test_cfg = dict(average_clips=None)
@@ -33,7 +31,7 @@ mc_cfg = dict(
     client_cfg='/mnt/lustre/share/memcached_client/client.conf',
     sys_path='/mnt/lustre/share/pymc/py3')
 train_pipeline = [
-    dict(type='DenseSampleFrames', clip_len=1, frame_interval=1, num_clips=8),
+    dict(type='DenseSampleFrames', clip_len=1, frame_interval=1, num_clips=5),
     dict(type='FrameSelector', io_backend='memcached', **mc_cfg),
     dict(type='Resize', scale=(-1, 256)),
     dict(
@@ -83,7 +81,7 @@ test_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
-    videos_per_gpu=8,
+    videos_per_gpu=16,
     workers_per_gpu=4,
     val_dataloader=dict(videos_per_gpu=4),
     train=dict(
@@ -102,17 +100,11 @@ data = dict(
         data_prefix=data_root_val,
         pipeline=test_pipeline))
 # optimizer
-optimizer = dict(
-    type='SGD',
-    constructor='TSMOptimizerConstructor',
-    paramwise_cfg=dict(fc_lr5=True),
-    lr=0.02,
-    momentum=0.9,
-    weight_decay=0.0005)
+optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=dict(max_norm=20, norm_type=2))
 # learning policy
-lr_config = dict(policy='step', step=[20, 40])
-total_epochs = 50
+lr_config = dict(policy='step', step=[40, 80])
+total_epochs = 100
 checkpoint_config = dict(interval=1)
 evaluation = dict(
     interval=2, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
@@ -125,7 +117,7 @@ log_config = dict(
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/tsm_r50_dense_1x1x8_50e_kinetics400_rgb/'
+work_dir = './work_dirs/tsn_r50_dense_1x1x5_100e_kinetics400_rgb/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
