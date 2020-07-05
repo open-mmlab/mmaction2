@@ -43,6 +43,7 @@ train_pipeline = [
         max_wh_scale_gap=1,
         num_fixed_crops=13),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
+    dict(type='Flip', flip_ratio=0.5),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
