@@ -40,7 +40,7 @@ mc_cfg = dict(
     client_cfg='/mnt/lustre/share/memcached_client/client.conf',
     sys_path='/mnt/lustre/share/pymc/py3')
 train_pipeline = [
-    dict(type='SampleFrames', clip_len=8, frame_interval=8, num_clips=1),
+    dict(type='SampleFrames', clip_len=32, frame_interval=2, num_clips=1),
     dict(type='FrameSelector', io_backend='memcached', **mc_cfg),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='RandomResizedCrop'),
@@ -54,8 +54,8 @@ train_pipeline = [
 val_pipeline = [
     dict(
         type='SampleFrames',
-        clip_len=8,
-        frame_interval=8,
+        clip_len=32,
+        frame_interval=2,
         num_clips=1,
         test_mode=True),
     dict(type='FrameSelector', io_backend='memcached', **mc_cfg),
@@ -70,8 +70,8 @@ val_pipeline = [
 test_pipeline = [
     dict(
         type='SampleFrames',
-        clip_len=8,
-        frame_interval=8,
+        clip_len=32,
+        frame_interval=2,
         num_clips=10,
         test_mode=True),
     dict(type='FrameSelector', io_backend='memcached', **mc_cfg),
