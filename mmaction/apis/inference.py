@@ -59,7 +59,7 @@ def inference_recognizer(model, video_path, label_path):
     test_pipeline = cfg.data.test.pipeline
     test_pipeline = Compose(test_pipeline)
     # prepare data
-    data = dict(filename=video_path, label=label)
+    data = dict(filename=video_path, label=label, modality='RGB')
     data = test_pipeline(data)
     data = collate([data], samples_per_gpu=1)
     if next(model.parameters()).is_cuda:
