@@ -56,7 +56,7 @@ class RawframeDataset(BaseDataset):
             recognition dataset. Default: False.
         num_classes (int): Number of classes in the dataset. Default: None.
         modality (str): Modality of data. Support 'RGB', 'Flow'.
-                            Default: 'Flow'.
+                            Default: 'RGB'.
     """
 
     def __init__(self,
@@ -69,10 +69,8 @@ class RawframeDataset(BaseDataset):
                  num_classes=None,
                  modality='RGB'):
         super().__init__(ann_file, pipeline, data_prefix, test_mode,
-                         multi_class, num_classes)
-        assert modality in ['RGB', 'Flow']
+                         multi_class, num_classes, modality)
         self.filename_tmpl = filename_tmpl
-        self.modality = modality
 
     def load_annotations(self):
         video_infos = []

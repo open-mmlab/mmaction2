@@ -32,6 +32,8 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
             dataset. Default: False.
         num_classes (int): Number of classes of the dataset, used in
             multi-class datasets. Default: None.
+        modality (str): Modality of data. Support 'RGB', 'Flow'.
+            Default: 'RGB'.
     """
 
     def __init__(self,
@@ -40,7 +42,8 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
                  data_prefix=None,
                  test_mode=False,
                  multi_class=False,
-                 num_classes=None):
+                 num_classes=None,
+                 modality='RGB'):
         super().__init__()
 
         self.ann_file = ann_file
@@ -49,6 +52,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         self.test_mode = test_mode
         self.multi_class = multi_class
         self.num_classes = num_classes
+        self.modality = modality
         self.pipeline = Compose(pipeline)
         self.video_infos = self.load_annotations()
 
@@ -78,11 +82,13 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
     def prepare_train_frames(self, idx):
         """Prepare the frames for training given the index."""
         results = copy.deepcopy(self.video_infos[idx])
+        results['modality'] = self.modality
         return self.pipeline(results)
 
     def prepare_test_frames(self, idx):
         """Prepare the frames for testing given the index."""
         results = copy.deepcopy(self.video_infos[idx])
+        results['modality'] = self.modality
         return self.pipeline(results)
 
     def __len__(self):
