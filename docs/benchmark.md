@@ -15,8 +15,16 @@ We compare our results with some popular frameworks and official releases in ter
 - CUDNN 7.6.03
 - NCCL 2.4.08
 
+## Comparision Rules
+
 Here we compare our MMAction repo with other Video understanding toolboxes in the same data and model settings
 by the training time per iteration.
+
+To ensure the fairness of the comparison, the comparison experiments will be conducted under the same hardware environment and using the same dataset.
+For each model setting, we keep the same data preprocessing methods to make sure the same feature input.
+In addition, we also use MemCache, a distributed cached system, to load the data for the same IO time.
+
+The time we measured is the average training time for an iteration, including data processing and model trianing.
 
 ## Recognizers
 
