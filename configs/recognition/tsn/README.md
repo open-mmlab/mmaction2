@@ -6,24 +6,24 @@
 
 |config | backbone | pretrain | top1 acc| top5 acc | gpu_mem(M) | ckpt | log|
 |-|-|-|-|-|-|-|-|
-|[tsn_r50_1x1x3_100e_ucf101_rgb](/configs/recognition/tsn/tsn_r50_1x1x3_80e_ucf101_rgb.py) | ResNet50 | ImageNet |80.12|96.09| x| [ckpt]() | [log]()|
+|[tsn_r50_1x1x3_100e_ucf101_rgb](/configs/recognition/tsn/tsn_r50_1x1x3_80e_ucf101_rgb.py) | ResNet50 | ImageNet |80.12|96.09|8332| [ckpt]() | [log]()|
 
 ### Kinetics-400
 
 |config | backbone|pretrain | top1 acc| top5 acc | gpu_mem(M)| ckpt | log|
 |-|-|-|-|-|-|-|-|
-|[tsn_r50_1x1x3_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py) | ResNet50 | ImageNet|70.60|89.26| x  | [ckpt]() | [log]()|
-|[tsn_r50_1x1x5_50e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_1x1x5_50e_kinetics400_rgb.py) | ResNet50| ImageNet |68.64|88.19| x  | [ckpt]() | [log]()|
-|[tsn_r50_dense_1x1x5_50e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_dense_1x1x5_100e_kinetics400_rgb.py) | ResNet50| ImageNet |68.59|88.31| x | [ckpt]() | [log]()|
+|[tsn_r50_1x1x3_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py) | ResNet50 | ImageNet|70.60|89.26|8344| [ckpt]() | [log]()|
+|[tsn_r50_1x1x5_50e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_1x1x5_50e_kinetics400_rgb.py) | ResNet50| ImageNet |68.64|88.19|7031| [ckpt]() | [log]()|
+|[tsn_r50_dense_1x1x5_50e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_dense_1x1x5_100e_kinetics400_rgb.py) | ResNet50| ImageNet |68.59|88.31|7028| [ckpt]() | [log]()|
 |[tsn_r50_1x1x8_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_1x1x8_100e_kinetics400_rgb.py) | ResNet50| ImageNet |69.41|88.37| x | [ckpt]() | [log]()|
 |[tsn_r50_320p_1x1x3_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_320p_1x1x3_100e_kinetics400_rgb.py) | ResNet50| ImageNet |70.91|89.51| 8344 | [ckpt]() | [log]() |
 |[tsn_r50_320p_1x1x3_110e_kinetics400_flow](/configs/recognition/tsn/tsn_r50_320p_1x1x3_110e_kinetics400_flow.py) | ResNet50 | ImageNet|55.70|79.85| 8471 | [ckpt]() | [log]() |
 |tsn_r50_320p_1x1x3_kinetics400_twostream [1: 1]* | ResNet50 | ImageNet|72.76|90.52| x | [ckpt]() | [log]()  |
-|[tsn_r50_320p_1x1x8_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_320p_1x1x8_100e_kinetics400_rgb.py) | ResNet50| ImageNet |72.41|90.55| 8344  | [ckpt]() | [log]() |
-|[tsn_r50_320p_1x1x8_110e_kinetics400_flow](/configs/recognition/tsn/tsn_r50_320p_1x1x8_110e_kinetics400_flow.py) | ResNet50 | ImageNet|57.76|80.99| 8473 | [ckpt]() | [log]() |
+|[tsn_r50_320p_1x1x8_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_320p_1x1x8_100e_kinetics400_rgb.py) | ResNet50| ImageNet |72.41|90.55|8344| [ckpt]() | [log]() |
+|[tsn_r50_320p_1x1x8_110e_kinetics400_flow](/configs/recognition/tsn/tsn_r50_320p_1x1x8_110e_kinetics400_flow.py) | ResNet50 | ImageNet|57.76|80.99|8473| [ckpt]() | [log]() |
 |tsn_r50_320p_1x1x8_kinetics400_twostream [1: 1]* | ResNet50| ImageNet |74.64|91.77| x | [ckpt]() | [log]()  |
-|[tsn_r50_dense_1x1x8_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_dense_1x1x8_100e_kinetics400_rgb.py) | ResNet50 | ImageNet|70.77|89.3| x  | [ckpt]() | [log]()|
-|[tsn_r50_video_1x1x3_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_video_1x1x3_100e_kinetics400_rgb.py) | ResNet50| ImageNet | x | x | x | [ckpt]() | [log]()|
+|[tsn_r50_dense_1x1x8_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_dense_1x1x8_100e_kinetics400_rgb.py) | ResNet50 | ImageNet|70.77|89.3|8344| [ckpt]() | [log]()|
+|[tsn_r50_video_1x1x3_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_video_1x1x3_100e_kinetics400_rgb.py) | ResNet50| ImageNet | x | x |8339| [ckpt]() | [log]()|
 
 *We combine rgb and flow score with coefficients 1: 1 to get the two-stream prediction (without applying softmax).
 

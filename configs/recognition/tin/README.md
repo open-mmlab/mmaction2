@@ -5,8 +5,8 @@
 ### Kinetics-400
 |config | backbone| pretrain | top1 acc| top5 acc | gpu_mem(M)| ckpt | log|
 |-|-|-|-|-|-|-|-|
-|[tin_r50_1x1x8_35e_kinetics400_rgb](/configs/recognition/tin/tin_r50_1x1x8_35e_kinetics400_rgb.py) | ResNet50| ImageNet |69.44|89.19| x| [ckpt]() | [log]()|
-|[tin_r50_finetune_1x1x8_35e_kinetics400_rgb](/configs/recognition/tin/tin_r50_finetune_1x1x8_35e_kinetics400_rgb.py) | ResNet50| ImageNet |71.00|89.98| x | [ckpt]() | [log]()|
+|[tin_r50_1x1x8_35e_kinetics400_rgb](/configs/recognition/tin/tin_r50_1x1x8_35e_kinetics400_rgb.py) | ResNet50| ImageNet |69.44|89.19| 6173| [ckpt]() | [log]()|
+|[tin_r50_finetune_1x1x8_35e_kinetics400_rgb](/configs/recognition/tin/tin_r50_finetune_1x1x8_35e_kinetics400_rgb.py) | ResNet50| ImageNet |71.00|89.98| 6174 | [ckpt]() | [log]()|
 |[tin_r50_video_2d_1x1x8_35e_kinetics400_rgb](/configs/recognition/tin/tin_r50_video_1x1x8_35e_kinetics400_rgb.py) | ResNet50 | ImageNet | x | x | x | [ckpt]() | [log]()|
 
 ### Something-Something V1
