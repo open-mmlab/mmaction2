@@ -4,13 +4,13 @@
 
 ### Kinetics-400
 
-|config | pretrain | top1 acc| top5 acc | gpu_mem(M) | iter time(s) | ckpt | log|
+|config | backbone |pretrain| top1 acc| top5 acc | gpu_mem(M)| ckpt | log|
 |-|-|-|-|-|-|-|-|
-|[i3d_r34_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r34_32x2x1_100e_kinetics400_rgb.py) | ResNet34 |68.37|88.15| x | x | [ckpt]() | [log]()|
-|[i3d_r50_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py) | ResNet50 |72.68|90.78| x | x | [ckpt]() | [log]()|
-|[i3d_r50_dense_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_dense_32x2x1_100e_kinetics400_rgb.py) | ResNet50 |72.77|90.57| x | x | [ckpt]() | [log]()|
-|[i3d_r50_fast_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_fast_32x2x1_100e_kinetics400_rgb.py) | ResNet50 |72.32|90.72| x | x | [ckpt]() | [log]()|
-|[i3d_r50_video_3d_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_video_32x2x1_100e_kinetics400_rgb.py) | ResNet50 | x | x | x | x | [ckpt]() | [log]()|
+|[i3d_r34_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r34_32x2x1_100e_kinetics400_rgb.py) | ResNet34|ImageNet |68.37|88.15| x| [ckpt]() | [log]()|
+|[i3d_r50_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py) | ResNet50|ImageNet |72.68|90.78| x |[ckpt]() | [log]()|
+|[i3d_r50_dense_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_dense_32x2x1_100e_kinetics400_rgb.py) | ResNet50| ImageNet|72.77|90.57| x| [ckpt]() | [log]()|
+|[i3d_r50_fast_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_fast_32x2x1_100e_kinetics400_rgb.py) | ResNet50 |ImageNet|72.32|90.72| x| [ckpt]() | [log]()|
+|[i3d_r50_video_3d_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_video_32x2x1_100e_kinetics400_rgb.py) | ResNet50| ImageNet| x | x | x| [ckpt]() | [log]()|
 
 For more details on data preparation, you can refer to [preparing_kinetics400](/tools/data/kinetics400/preparing_kinetics400.md).
 

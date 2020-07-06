@@ -3,24 +3,21 @@
 ## Model Zoo
 
 ### Kinetics-400
-
-|config | pretrain | top1 acc| top5 acc | gpu_mem(M) | iter time(s) | ckpt | log|
+|config | backbone| pretrain | top1 acc| top5 acc | gpu_mem(M)| ckpt | log|
 |-|-|-|-|-|-|-|-|
-|[tin_r50_1x1x8_35e_kinetics400_rgb](/configs/recognition/tin/tin_r50_1x1x8_35e_kinetics400_rgb.py) | ResNet50 |69.44|89.19| x | x | [ckpt]() | [log]()|
-|[tin_r50_finetune_1x1x8_35e_kinetics400_rgb](/configs/recognition/tin/tin_r50_finetune_1x1x8_35e_kinetics400_rgb.py) | TSM |71.00|89.98| x | x | [ckpt]() | [log]()|
-|[tin_r50_video_2d_1x1x8_35e_kinetics400_rgb](/configs/recognition/tin/tin_r50_video_1x1x8_35e_kinetics400_rgb.py) | ResNet50 | x | x | x | x | [ckpt]() | [log]()|
+|[tin_r50_1x1x8_35e_kinetics400_rgb](/configs/recognition/tin/tin_r50_1x1x8_35e_kinetics400_rgb.py) | ResNet50| ImageNet |69.44|89.19| x| [ckpt]() | [log]()|
+|[tin_r50_finetune_1x1x8_35e_kinetics400_rgb](/configs/recognition/tin/tin_r50_finetune_1x1x8_35e_kinetics400_rgb.py) | ResNet50| ImageNet |71.00|89.98| x | [ckpt]() | [log]()|
+|[tin_r50_video_2d_1x1x8_35e_kinetics400_rgb](/configs/recognition/tin/tin_r50_video_1x1x8_35e_kinetics400_rgb.py) | ResNet50 | ImageNet | x | x | x | [ckpt]() | [log]()|
 
 ### Something-Something V1
-
-|config | pretrain | top1 acc| top5 acc | gpu_mem(M) | iter time(s) | ckpt | log|
+|config | backbone| pretrain | top1 acc| top5 acc | gpu_mem(M) | ckpt | log|
 |-|-|-|-|-|-|-|-|
-|[tin_r50_1x1x8_35e_sthv1_rgb](/configs/recognition/tin/tin_r50_1x1x8_35e_sthv1_rgb.py) | ResNet50 |41.59|71.94| x | x | [ckpt]() | [log]()|
+|[tin_r50_1x1x8_35e_sthv1_rgb](/configs/recognition/tin/tin_r50_1x1x8_35e_sthv1_rgb.py) | ResNet50 |ImageNet|41.59|71.94| x | [ckpt]() | [log]()|
 
 ### Something-Something V2
-
-|config | pretrain | top1 acc| top5 acc | gpu_mem(M) | iter time(s) | ckpt | log|
+|config | backbone | pretrain| top1 acc| top5 acc | gpu_mem(M)  | ckpt | log|
 |-|-|-|-|-|-|-|-|
-|[tin_r50_1x1x8_35e_sthv2_rgb](/configs/recognition/tin/tin_r50_1x1x8_35e_sthv2_rgb.py) | ResNet50 |53.08|82.02| x | x | [ckpt]() | [log]()|
+|[tin_r50_1x1x8_35e_sthv2_rgb](/configs/recognition/tin/tin_r50_1x1x8_35e_sthv2_rgb.py) | ResNet50|ImageNet |53.08|82.02| x | [ckpt]() | [log]()|
 
 For more details on data preparation, you can refer to [preparing_kinetics400](/tools/data/kinetics400/preparing_kinetics400.md),
 [preparing_sthv1](/tools/data/sthv1/preparing_sthv1.md), [preparing_sthv2](/tools/data/sthv2/preparing_sthv2.md).
