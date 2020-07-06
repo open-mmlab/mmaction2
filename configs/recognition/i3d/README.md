@@ -4,13 +4,20 @@
 
 ### Kinetics-400
 
-|config | backbone |pretrain| top1 acc| top5 acc | gpu_mem(M)| ckpt | log|
-|-|-|-|-|-|-|-|-|
-|[i3d_r34_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r34_32x2x1_100e_kinetics400_rgb.py) | ResNet34|ImageNet |68.37|88.15|3176| [ckpt]() | [log]()|
-|[i3d_r50_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py) | ResNet50|ImageNet |72.68|90.78|5170|[ckpt]() | [log]()|
-|[i3d_r50_dense_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_dense_32x2x1_100e_kinetics400_rgb.py) | ResNet50| ImageNet|72.77|90.57|5170| [ckpt]() | [log]()|
-|[i3d_r50_fast_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_fast_32x2x1_100e_kinetics400_rgb.py) | ResNet50 |ImageNet|72.32|90.72|5170| [ckpt]() | [log]()|
-|[i3d_r50_video_3d_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_video_32x2x1_100e_kinetics400_rgb.py) | ResNet50| ImageNet| x | x | x| [ckpt]() | [log]()|
+|config | gpus | backbone |pretrain| top1 acc| top5 acc | inference_time(video/s) | gpu_mem(M)| ckpt | log|
+|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+|[i3d_r34_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r34_32x2x1_100e_kinetics400_rgb.py) |x| ResNet34|ImageNet |68.37|88.15|1.6 (320x3 frames)| 3176| [ckpt]() | [log]()|
+|[i3d_r50_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py) |x| ResNet50|ImageNet |72.68|90.78|1.7 (320x3 frames)| 5170|[ckpt]() | [log]()|
+|[i3d_r50_dense_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_dense_32x2x1_100e_kinetics400_rgb.py) |x| ResNet50| ImageNet|72.77|90.57|1.7 (320x3 frames)| 5170| [ckpt]() | [log]()|
+|[i3d_r50_fast_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_fast_32x2x1_100e_kinetics400_rgb.py) |x| ResNet50 |ImageNet|72.32|90.72|1.8 (320x3 frames)| 5170| [ckpt]() | [log]()|
+|[i3d_r50_video_3d_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_video_32x2x1_100e_kinetics400_rgb.py) |x| ResNet50| ImageNet| x | x | x| x| [ckpt]() | [log]()|
+
+Notes:
+1. The **gpus** indicates the number of gpu we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
+According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
+e.g., lr=0.01 for 4 GPUs * 2 video/gpu and lr=0.08 for 16 GPUs * 4 video/gpu.
+2. The **inference_time** is got by this [benchmark script](/tools/benchmark.py), where we use the sampling frames strategy of the test setting and only care about the model inference time,
+not including the IO time and pre-processing time. For each setting, we use 1 gpu and set batch size (videos per gpu) to 1 to calculate the inference time.
 
 For more details on data preparation, you can refer to Kinetics400 in [Data Preparation](/docs/data_preparation.md).
 
