@@ -76,7 +76,7 @@ test_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
-    videos_per_gpu=8,
+    videos_per_gpu=12,
     workers_per_gpu=4,
     train=dict(
         type=dataset_type,
