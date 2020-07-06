@@ -31,27 +31,27 @@
 
 |config | pretrain | top1 acc| top5 acc | gpu_mem(M) | iter time(s) | ckpt | log|
 |-|-|-|-|-|-|-|-|
-|[tsn_r50_1x1x8_50e_sthv1_rgb](/configs/recognition/tsn/tsn_r50_1x1x8_50e_sthv1_rgb.py) | ResNet50 |18.55|44.80| x | x | [ckpt]() | [log]()|
-|[tsn_r50_1x1x16_50e_sthv1_rgb](/configs/recognition/tsn/tsn_r50_1x1x16_50e_sthv1_rgb.py) | ResNet50 |15.77|39.85| x | x | [ckpt]() | [log]()|
+|[tsn_r50_1x1x8_50e_sthv1_rgb](/configs/recognition/tsn/tsn_r50_1x1x8_50e_sthv1_rgb.py) | ResNet50 |18.55|44.80| 10978 | x | [ckpt]() | [log]()|
+|[tsn_r50_1x1x16_50e_sthv1_rgb](/configs/recognition/tsn/tsn_r50_1x1x16_50e_sthv1_rgb.py) | ResNet50 |15.77|39.85| 5691 | x | [ckpt]() | [log]()|
 
 ### Something-Something V2
 
 |config | pretrain | top1 acc| top5 acc | gpu_mem(M) | iter time(s) | ckpt | log|
 |-|-|-|-|-|-|-|-|
-|[tsn_r50_1x1x8_50e_sthv2_rgb](/configs/recognition/tsn/tsn_r50_1x1x8_50e_sthv2_rgb.py) | ResNet50 |32.41|64.05| x | x | [ckpt]() | [log]()|
-|[tsn_r50_1x1x16_50e_sthv2_rgb](/configs/recognition/tsn/tsn_r50_1x1x16_50e_sthv2_rgb.py) | ResNet50 |22.48|49.08| x | x | [ckpt]() | [log]()|
+|[tsn_r50_1x1x8_50e_sthv2_rgb](/configs/recognition/tsn/tsn_r50_1x1x8_50e_sthv2_rgb.py) | ResNet50 |32.41|64.05| 10978 | x | [ckpt]() | [log]()|
+|[tsn_r50_1x1x16_50e_sthv2_rgb](/configs/recognition/tsn/tsn_r50_1x1x16_50e_sthv2_rgb.py) | ResNet50 |22.48|49.08| 5698 | x | [ckpt]() | [log]()|
 
 ### Moments in Time
 
 |config | pretrain | top1 acc| top5 acc | gpu_mem(M) | iter time(s) | ckpt | log|
 |-|-|-|-|-|-|-|-|
-|[tsn_r50_1x1x6_100e_mit_rgb](/configs/recognition/tsn/tsn_r50_1x1x6_100e_mit_rgb.py) | ResNet50 |26.84|51.6| x | x | [ckpt]() | [log]()|
+|[tsn_r50_1x1x6_100e_mit_rgb](/configs/recognition/tsn/tsn_r50_1x1x6_100e_mit_rgb.py) | ResNet50 |26.84|51.6| 8339 | x | [ckpt]() | [log]()|
 
 ### Multi-Moments in Time
 
 |config | pretrain | mAP| gpu_mem(M) | iter time(s) | ckpt | log|
 |-|-|-|-|-|-|-|
-|[tsn_r101_1x1x5_50e_mmit_rgb](/configs/recognition/tsn/tsn_r101_1x1x5_50e_mmit_rgb.py) | ResNet101 |61.09| x | x | [ckpt]() | [log]()|
+|[tsn_r101_1x1x5_50e_mmit_rgb](/configs/recognition/tsn/tsn_r101_1x1x5_50e_mmit_rgb.py) | ResNet101 |61.09| 10467 | x | [ckpt]() | [log]()|
 
 For more details on data preparation, you can refer to [preparing_ucf101](/tools/data/ucf101/preparing_ucf101.md),
 [preparing_kinetics400](/tools/data/kinetics400/preparing_kinetics400.md), [preparing_sthv1](/tools/data/sthv1/preparing_sthv1.md),
