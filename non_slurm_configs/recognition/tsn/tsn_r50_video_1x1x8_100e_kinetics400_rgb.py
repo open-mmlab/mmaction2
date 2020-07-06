@@ -19,15 +19,15 @@ train_cfg = None
 test_cfg = dict(average_clips=None)
 # dataset settings
 dataset_type = 'VideoDataset'
-data_root = 'data/kinetics400/'
-data_root_val = 'data/kinetics400/'
-ann_file_train = 'data/kinetics400/k400_train.txt'
-ann_file_val = 'data/kinetics400/k400_val.txt'
-ann_file_test = 'data/kinetics400/k400_val.txt'
+data_root = 'data/kinetics400/videos_train'
+data_root_val = 'data/kinetics400/videos_val'
+ann_file_train = 'data/kinetics400/kinetics400_train_list_videos.txt'
+ann_file_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
+ann_file_test = 'data/kinetics400/kinetics400_val_list_videos.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
-    dict(type='DecordInit', io_backend='petrel'),
+    dict(type='DecordInit'),
     dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=8),
     dict(type='DecordDecode'),
     dict(
@@ -44,7 +44,7 @@ train_pipeline = [
     dict(type='ToTensor', keys=['imgs', 'label'])
 ]
 val_pipeline = [
-    dict(type='DecordInit', io_backend='petrel'),
+    dict(type='DecordInit'),
     dict(
         type='SampleFrames',
         clip_len=1,
@@ -61,7 +61,7 @@ val_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 test_pipeline = [
-    dict(type='DecordInit', io_backend='petrel'),
+    dict(type='DecordInit'),
     dict(
         type='SampleFrames',
         clip_len=1,
