@@ -6,14 +6,13 @@ cat  ../configs/recognition/*/*.md > recognition_models.md
 cat  ./tutorials/finetune.md ./tutorials/new_dataset.md ./tutorials/data_pipeline.md ./tutorials/new_modules.md > tutorials.md
 
 cat  ../tools/data/*/*.md > prepare_data.md
-cat  ../tools/data/*/*.md > prepare_data.md
 
 sed -i 's/#/##&/' localization_models.md
 sed -i 's/#/##&/' recognition_models.md
 
 sed -i 's/#/#&/' tutorials.md
 
-sed 's/# Preparing/# /' prepare_data.md
+sed -i 's/# Preparing/# /g' prepare_data.md
 sed -i 's/#/##&/' prepare_data.md
 
 sed -i '1i\# Tutorials' tutorials.md
