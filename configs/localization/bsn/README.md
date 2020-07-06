@@ -4,9 +4,9 @@
 
 ### ActivityNet feature
 
-|config | gpus| pretrain | AR@100| AUC | gpu_mem(M) | iter time(s) | ckpt | log|
-|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|bsn_400x100_1x16_20e_activitynet_feature |x| None |74.65|66.45|41(TEM)+25(PEM)|0.074(TEM)+0.036(PEM)|[ckpt_tem]() [ckpt_pem]()| [log_tem]() [log_pem]()|
+|config | gpus| pretrain | AR@100| AUC | gpu_mem(M) | iter time(s) | ckpt | log| json|
+|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+|bsn_400x100_1x16_20e_activitynet_feature |x| None |74.65|66.45|41(TEM)+25(PEM)|0.074(TEM)+0.036(PEM)|[ckpt_tem]() [ckpt_pem]()| [log_tem]() [log_pem]()| [json_tem]()  [json_pem]()||
 
 Notes:
 1. The **gpus** indicates the number of gpu we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
