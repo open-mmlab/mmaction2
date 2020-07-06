@@ -6,16 +6,16 @@
 
 |config | backbone | pretrain | top1 acc| top5 acc | gpu_mem(M)| ckpt | log|
 |-|-|-|-|-|-|-|-|
-|[tsm_r50_1x1x8_100e_kinetics400_rgb](/configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py) | ResNet50| ImageNet |70.24|89.56| x  | [ckpt]() | [log]()|
-|[tsm_r50_dense_1x1x8_100e_kinetics400_rgb](/configs/recognition/tsm/tsm_r50_dense_1x1x8_100e_kinetics400_rgb.py) | ResNet50 | ImageNet|71.84|90.18| x | [ckpt]() | [log]()|
-|[tsm_r50_1x1x16_50e_kinetics400_rgb](/configs/recognition/tsm/tsm_r50_1x1x16_50e_kinetics400_rgb.py) | ResNet50| ImageNet |71.69|90.4| x  | [ckpt]() | [log]()|
-|[tsm_r50_video_1x1x8_100e_kinetics400_rgb](/configs/recognition/tsm/tsm_r50_video_1x1x8_100e_kinetics400_rgb.py) | ResNet50| ImageNet | x | x | x | [ckpt]() | [log]()|
+|[tsm_r50_1x1x8_100e_kinetics400_rgb](/configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py) | ResNet50| ImageNet |70.24|89.56| 7079 | [ckpt]() | [log]()|
+|[tsm_r50_dense_1x1x8_100e_kinetics400_rgb](/configs/recognition/tsm/tsm_r50_dense_1x1x8_100e_kinetics400_rgb.py) | ResNet50 | ImageNet|71.84|90.18| 7079 | [ckpt]() | [log]()|
+|[tsm_r50_1x1x16_50e_kinetics400_rgb](/configs/recognition/tsm/tsm_r50_1x1x16_50e_kinetics400_rgb.py) | ResNet50| ImageNet |71.69|90.4| 10404 | [ckpt]() | [log]()|
+|[tsm_r50_video_1x1x8_100e_kinetics400_rgb](/configs/recognition/tsm/tsm_r50_video_1x1x8_100e_kinetics400_rgb.py) | ResNet50| ImageNet | x | x | 7077 | [ckpt]() | [log]()|
 
 ### Something-Something V1
 
 |config | backbone| pretrain | top1 acc| top5 acc | gpu_mem(M)  | ckpt | log|
 |-|-|-|-|-|-|-|-|
-|[tsm_r50_1x1x8_50e_sthv1_rgb](/configs/recognition/tsm/tsm_r50_1x1x8_50e_sthv1_rgb.py) | ResNet50 | ImageNet|44.62|75.51| x| [ckpt]() | [log]()|
+|[tsm_r50_1x1x8_50e_sthv1_rgb](/configs/recognition/tsm/tsm_r50_1x1x8_50e_sthv1_rgb.py) | ResNet50 | ImageNet|44.62|75.51| 7077| [ckpt]() | [log]()|
 |[tsm_r50_1x1x16_50e_sthv1_rgb](/configs/recognition/tsm/tsm_r50_1x1x16_50e_sthv1_rgb.py) | ResNet50 | ImageNet|43.81|74.73| x | [ckpt]() | [log]()|
 |[tsm_r101_1x1x8_50e_sthv1_rgb](/configs/recognition/tsm/tsm_r101_1x1x8_50e_sthv1_rgb.py) | ResNet101| ImageNet |46.41|74.07| x | [ckpt]() | [log]()|
 
@@ -24,8 +24,8 @@
 |config | backbone | pretrain| top1 acc| top5 acc | gpu_mem(M)  | ckpt | log|
 |-|-|-|-|-|-|-|-|
 |[tsm_r50_1x1x8_50e_sthv2_rgb](/configs/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb.py) | ResNet50| ImageNet |59.91|84.61| x| [ckpt]() | [log]()|
-|[tsm_r50_1x1x16_50e_sthv2_rgb](/configs/recognition/tsm/tsm_r50_1x1x16_50e_sthv2_rgb.py) | ResNet50| ImageNet |56.10|84.43| x| [ckpt]() | [log]()|
-|[tsm_r101_1x1x8_50e_sthv2_rgb](/configs/recognition/tsm/tsm_r101_1x1x8_50e_sthv2_rgb.py) | ResNet101 | ImageNet| x | x | x | [ckpt]() | [log]()|
+|[tsm_r50_1x1x16_50e_sthv2_rgb](/configs/recognition/tsm/tsm_r50_1x1x16_50e_sthv2_rgb.py) | ResNet50| ImageNet |56.10|84.43| 10400| [ckpt]() | [log]()|
+|[tsm_r101_1x1x8_50e_sthv2_rgb](/configs/recognition/tsm/tsm_r101_1x1x8_50e_sthv2_rgb.py) | ResNet101 | ImageNet|59.12|85.74| 9784 | [ckpt]() | [log]()|
 
 For more details on data preparation, you can refer to Kinetics400, Something-Something V1 and Something-Something V2 in [Data Preparation](/docs/data_preparation.md).
 
