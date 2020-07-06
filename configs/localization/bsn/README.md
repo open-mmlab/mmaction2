@@ -30,7 +30,7 @@ Examples:
     python tools/train.py configs/localization/bsn/bsn_pem_400x100_1x16_20e_activitynet_feature.py
     ```
 
-For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](../../../docs/getting_started.md).
+For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md).
 
 ## Inference
 You can use the following commands to inference a model.
@@ -104,4 +104,4 @@ Examples:
     ```shell
     python tools/test.py configs/localization/bsn/bsn_400x100_1x16_20e_activitynet_feature.py checkpoints/SOME_CHECKPOINT.pth --eval AR@AN --out results.json
     ```
-For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](../../../docs/getting_started.md).
+For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md).

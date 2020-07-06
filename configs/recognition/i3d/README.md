@@ -27,7 +27,7 @@ python tools/train.py configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rg
     --validate --seed 0 --deterministic
 ```
 
-For more details, you can refer to **Training setting** part in [getting_started](../../../docs/getting_started.md).
+For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md).
 
 ## Test
 You can use the following command to test a model.
@@ -42,4 +42,4 @@ python tools/test.py configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb
     --out result.json
 ```
 
-For more details, you can refer to **Test a dataset** part in [getting_started](../../../docs/getting_started.md).
+For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md).

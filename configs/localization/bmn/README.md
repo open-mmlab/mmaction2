@@ -21,7 +21,7 @@ Example: train BMN model on ActivityNet features dataset.
 ```shell
 python tools/train.py configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py
 ```
-For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](../../../docs/getting_started.md).
+For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md) .
 
 ## Test
 You can use the following command to test a model.
@@ -34,4 +34,4 @@ Example: test BMN on ActivityNet feature dataset.
 # Note: If evaluated, then please make sure the annotation file for test data contains groundtruth.
 python tools/test.py configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py checkpoints/SOME_CHECKPOINT.pth --eval AR@AN --out results.json
 ```
-For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](../../../docs/getting_started.md).
+For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md) .
