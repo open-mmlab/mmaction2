@@ -9,7 +9,7 @@
 |[bmn_400x100_9e_2x8_activitynet_feature](/configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py) | None |75.28|67.22|5420|3.27|[ckpt]()| [log]()|
 
 
-For more details on data preparation, you can refer to [Prepaing Activitynet](../../../tools/data/activitynet/preparing_activitynet.md).
+For more details on data preparation, you can refer to [Prepaing Activitynet](/tools/data/activitynet/preparing_activitynet.md).
 
 ## Train
 You can use the following command to train a model.

@@ -27,40 +27,8 @@
 |[tsm_r50_1x1x16_50e_sthv2_rgb](/configs/recognition/tsm/tsm_r50_1x1x16_50e_sthv2_rgb.py) | ResNet50 |56.10|84.43| x | x | [ckpt]() | [log]()|
 |[tsm_r101_1x1x8_50e_sthv2_rgb](/configs/recognition/tsm/tsm_r101_1x1x8_50e_sthv2_rgb.py) | ResNet50 | x | x | x | x | [ckpt]() | [log]()|
 
-## Data
-
-1. Make a dataset folder under the path `$MMACTION/data`.
-2. Put the data sub folders (commonly including `rawframes_train/` + `rawframes_val/` or `video_train` + `video_val`) under `$MMACTION/data/dataset_name`.
-It is recommended to symlink the dataset root to the corresponding folders.
-3. Put the annotation (commonly including `ann_file_train.txt` + `ann_file_val.txt`) files under `$MMACTION/data/dataset_path` under `$MMACTION/data/dataset_name`.
-4. Finally, make sure your folder structure same with the tree structure below.
-If your folder structure is different, you can also change the corresponding paths in config files.
-```
-mmaction
-├── mmaction
-├── tools
-├── config
-├── data
-│   ├── kinetics400
-│   │   ├── rawframes_train
-│   │   ├── rawframes_val
-│   │   ├── kinetics_train_list.txt
-│   │   ├── kinetics_val_list.txt
-│   ├── ucf101
-│   │   ├── rawframes_train
-│   │   ├── rawframes_val
-│   │   ├── ucf101_train_list.txt
-│   │   ├── ucf101_val_list.txt
-│   ├── sth-v1
-│   │   ├── rawframes_train
-│   │   ├── rawframes_val
-│   │   ├── sth-v1_train_list.txt
-│   │   ├── sth-v1_val_list.txt
-...
-```
-
-## Checkpoint
-Put the checkpoint required under `$MMACTION/checkpoints`. The checkpoints can be found at [here]().
+For more details on data preparation, you can refer to [preparing_kinetics400](/tools/data/kinetics400/preparing_kinetics400.md),
+[preparing_sthv1](/tools/data/sthv1/preparing_sthv1.md), [preparing_sthv2](/tools/data/sthv2/preparing_sthv2.md)
 
 ## Train
 You can use the following command to train a model.
