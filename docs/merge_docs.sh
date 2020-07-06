@@ -21,10 +21,15 @@ sed -i '1i\## Action Localization Models' localization_models.md
 sed -i '1i\## Action Recognition Models' recognition_models.md
 
 sed -i '1i\## Preparing Datasets' prepare_data.md
-LINE_NUMBER_MATCHING=$(sed -n '/## Inference with Pre-Trained Models/=' getting_started.md) && sed -i "$((${LINE_NUMBER_MATCHING} - 1)) r prepare_data.md" getting_started.md
+cat prepare_data.md >> data_preparation.md
 
+sed -i 's/](\/docs\//](/g' recognition_models.md # remove /docs/ for link used in doc site
+sed -i 's/](\/docs\//](/g' localization_models.md
+sed -i 's/](\/docs\//](/g' data_preparation.md
 sed -i 's=](/=](http://gitlab.sz.sensetime.com/open-mmlab/mmaction-lite/tree/master/=g' recognition_models.md
 sed -i 's=](/=](http://gitlab.sz.sensetime.com/open-mmlab/mmaction-lite/tree/master/=g' localization_models.md
+sed -i 's=](/=](http://gitlab.sz.sensetime.com/open-mmlab/mmaction-lite/tree/master/=g' data_preparation.md
+
 cat localization_models.md recognition_models.md > modelzoo.md
 sed -i '1i\# Modelzoo' modelzoo.md
 

@@ -7,6 +7,7 @@ Welcome to MMAction's documentation!
    getting_started.md
    benchmark.md
    install.md
+   data_preparation.md
    config.md
    api.rst
 
