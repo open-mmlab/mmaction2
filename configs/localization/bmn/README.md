@@ -8,35 +8,8 @@
 |-|-|-|-|-|-|-|-|
 |[bmn_400x100_9e_2x8_activitynet_feature](/configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py) | None |75.28|67.22|5420|3.27|[ckpt]()| [log]()|
 
-## Data
-1. Put the rescaled feature data folder `csv_mean_100` under `$MMACTION/data/activitynet_feature_cuhk/`.
 
-    The raw feature data could be found at [here](https://github.com/wzmsltw/BSN-boundary-sensitive-network).
-
-2. Put the annotaion files under `$MMACTION/data/ActivityNet`.
-
-    The annotation files could be found at [here]().
-
-3. Finally, make sure your folder structure same with the tree structure below.
-If your folder structure is different, you can also change the corresponding paths in config files.
-```
-mmaction
-├── mmaction
-├── tools
-├── config
-├── data
-│   ├── activitynet_feature_cuhk
-│   │   ├── csv_mean_100
-│   ├── ActivityNet
-│   │   ├── anet_anno_train.json
-│   │   ├── anet_anno_val.json
-│   │   ├── anet_anno_test.json
-...
-```
-
-## Checkpoint
-Put the `tem_best.pth.tar` and `pem_best.pth.tar` under `checkpoints/`.
-The ckpts could be found at [here]().
+For more details on data preparation, you can refer to [Prepaing Activitynet](../../../tools/data/activitynet/preparing_activitynet.md).
 
 ## Train
 You can use the following command to train a model.
