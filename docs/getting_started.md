@@ -26,6 +26,7 @@ mmaction
 │   │   ├── ucf101_val_list.txt
 
 ```
+For more information on data preparation, please see [data_preparation.md](data_preparation.md)
 
 For using custom datasets, please refer to [Tutorial 2: Adding New Dataset](tutorials/new_dataset.md)
 

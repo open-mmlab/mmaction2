@@ -10,7 +10,7 @@
 |[slowfast_r50_8x8x1_256e_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb.py) | ResNet50 |None|76.36|92.56|9062| [ckpt]() | [log]()|
 |[slowfast_r50_video_4x16x1_256e_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb.py) | ResNet50|None |x|x|x| [ckpt]() | [log]()|
 
-For more details on data preparation, you can refer to [preparing_kinetics400](/tools/data/kinetics400/preparing_kinetics400.md).
+For more details on data preparation, you can refer to Kinetics400 in [Data Preparation](/docs/data_preparation.md).
 
 ## Train
 You can use the following command to train a model.

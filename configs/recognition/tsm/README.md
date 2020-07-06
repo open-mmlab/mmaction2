@@ -27,8 +27,7 @@
 |[tsm_r50_1x1x16_50e_sthv2_rgb](/configs/recognition/tsm/tsm_r50_1x1x16_50e_sthv2_rgb.py) | ResNet50| ImageNet |56.10|84.43| x| [ckpt]() | [log]()|
 |[tsm_r101_1x1x8_50e_sthv2_rgb](/configs/recognition/tsm/tsm_r101_1x1x8_50e_sthv2_rgb.py) | ResNet101 | ImageNet| x | x | x | [ckpt]() | [log]()|
 
-For more details on data preparation, you can refer to [preparing_kinetics400](/tools/data/kinetics400/preparing_kinetics400.md),
-[preparing_sthv1](/tools/data/sthv1/preparing_sthv1.md), [preparing_sthv2](/tools/data/sthv2/preparing_sthv2.md)
+For more details on data preparation, you can refer to Kinetics400, Something-Something V1 and Something-Something V2 in [Data Preparation](/docs/data_preparation.md).
 
 ## Train
 You can use the following command to train a model.

@@ -10,7 +10,7 @@
 |[r2plus1d_r34_32x2x1_180e_kinetics400_rgb](/configs/recognition/r2plus1d/r2plus1d_r34_32x2x1_180e_kinetics400_rgb.py) | ResNet34|None |74.60|91.59|12975| [ckpt]() | [log]()|
 |[r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb](/configs/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb.py) | ResNet34|None |x|x|x| [ckpt]() | [log]()|
 
-For more details on data preparation, you can refer to [preparing_kinetics400](/tools/data/kinetics400/preparing_kinetics400.md).
+For more details on data preparation, you can refer to Kinetics400 in [Data Preparation](/docs/data_preparation.md).
 
 ## Train
 You can use the following command to train a model.

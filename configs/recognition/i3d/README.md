@@ -12,7 +12,7 @@
 |[i3d_r50_fast_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_fast_32x2x1_100e_kinetics400_rgb.py) | ResNet50 |ImageNet|72.32|90.72| x| [ckpt]() | [log]()|
 |[i3d_r50_video_3d_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_video_32x2x1_100e_kinetics400_rgb.py) | ResNet50| ImageNet| x | x | x| [ckpt]() | [log]()|
 
-For more details on data preparation, you can refer to [preparing_kinetics400](/tools/data/kinetics400/preparing_kinetics400.md).
+For more details on data preparation, you can refer to Kinetics400 in [Data Preparation](/docs/data_preparation.md).
 
 ## Train
 You can use the following command to train a model.
