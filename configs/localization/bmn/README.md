@@ -4,9 +4,9 @@
 
 ### ActivityNet feature
 
-|config | gpus | pretrain | AR@100| AUC | gpu_mem(M) | iter time(s) | ckpt | log|
-|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[bmn_400x100_9e_2x8_activitynet_feature](/configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py) |x| None |75.28|67.22|5420|3.27|[ckpt]()| [log]()|
+|config | gpus | pretrain | AR@100| AUC | gpu_mem(M) | iter time(s) | ckpt | log| json|
+|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+|[bmn_400x100_9e_2x8_activitynet_feature](/configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py) |x| None |75.28|67.22|5420|3.27|[ckpt]()| [log]()| [json]()|
 
 Notes:
 1. The **gpus** indicates the number of gpu we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.

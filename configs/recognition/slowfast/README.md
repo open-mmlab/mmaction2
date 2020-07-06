@@ -4,11 +4,11 @@
 
 ### Kinetics-400
 
-|config | gpus | backbone |pretrain| top1 acc| top5 acc | inference_time(video/s) | gpu_mem(M) | ckpt | log|
-|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[slowfast_r50_4x16x1_256e_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r50_4x16x1_256e_kinetics400_rgb.py) |x| ResNet50|None |75.3|92.2|1.6 (320x3 frames)|6203|[ckpt]()| [log]()|
-|[slowfast_r50_8x8x1_256e_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb.py) |x| ResNet50 |None|76.36|92.56|1.3 (320x3 frames)|9062| [ckpt]() | [log]()|
-|[slowfast_r50_video_4x16x1_256e_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb.py) |x| ResNet50|None |x|x|x|x| [ckpt]() | [log]()|
+|config | gpus | backbone |pretrain| top1 acc| top5 acc | inference_time(video/s) | gpu_mem(M) | ckpt | log| json|
+|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+|[slowfast_r50_4x16x1_256e_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r50_4x16x1_256e_kinetics400_rgb.py) |x| ResNet50|None |75.3|92.2|1.6 (320x3 frames)|6203|[ckpt]()| [log]()| [json]()|
+|[slowfast_r50_8x8x1_256e_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb.py) |x| ResNet50 |None|76.36|92.56|1.3 (320x3 frames)|9062| [ckpt]() | [log]()| [json]()|
+|[slowfast_r50_video_4x16x1_256e_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb.py) |x| ResNet50|None |x|x|x|x| [ckpt]() | [log]()| [json]()|
 
 Notes:
 1. The **gpus** indicates the number of gpu we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
