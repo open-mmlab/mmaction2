@@ -36,12 +36,8 @@ ann_file_val = 'data/kinetics400/k400_val.txt'
 ann_file_test = 'data/kinetics400/k400_val.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
-mc_cfg = dict(
-    server_list_cfg='/mnt/lustre/share/memcached_client/server_list.conf',
-    client_cfg='/mnt/lustre/share/memcached_client/client.conf',
-    sys_path='/mnt/lustre/share/pymc/py3')
 train_pipeline = [
-    dict(type='DecordInit', io_backend='petrel', num_threads=1),
+    dict(type='DecordInit'),
     dict(type='SampleFrames', clip_len=8, frame_interval=8, num_clips=1),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
@@ -54,7 +50,7 @@ train_pipeline = [
     dict(type='ToTensor', keys=['imgs', 'label'])
 ]
 val_pipeline = [
-    dict(type='DecordInit', io_backend='petrel', num_threads=1),
+    dict(type='DecordInit'),
     dict(
         type='SampleFrames',
         clip_len=8,
@@ -71,7 +67,7 @@ val_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 test_pipeline = [
-    dict(type='DecordInit', io_backend='petrel', num_threads=1),
+    dict(type='DecordInit'),
     dict(
         type='SampleFrames',
         clip_len=8,
