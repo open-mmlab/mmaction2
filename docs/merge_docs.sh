@@ -29,6 +29,7 @@ sed -i 's/](\/docs\//](/g' data_preparation.md
 sed -i 's=](/=](http://gitlab.sz.sensetime.com/open-mmlab/mmaction-lite/tree/master/=g' recognition_models.md
 sed -i 's=](/=](http://gitlab.sz.sensetime.com/open-mmlab/mmaction-lite/tree/master/=g' localization_models.md
 sed -i 's=](/=](http://gitlab.sz.sensetime.com/open-mmlab/mmaction-lite/tree/master/=g' data_preparation.md
+sed -i 's=](/=](http://gitlab.sz.sensetime.com/open-mmlab/mmaction-lite/tree/master/=g' benchmark.md
 
 cat localization_models.md recognition_models.md > modelzoo.md
 sed -i '1i\# Modelzoo' modelzoo.md
