@@ -14,14 +14,14 @@ The supported datasets are listed below.
 We provide shell scripts for data preparation under the path `$MMACTION/tools/data/`.
 To ease usage, we provide tutorials of data deployment for each dataset.
 
-- [UCF101](https://www.crcv.ucf.edu/data/UCF101.php): See [preparing_ucf101.md](/tools/data/ucf101/preparing_ucf101.md).
-- [Kinetics400](https://deepmind.com/research/open-source/kinetics): See [preparing_kinetics400.md](/tools/data/kinetics400/preparing_kinetics400.md)
-- [THUMOS14](https://www.crcv.ucf.edu/THUMOS14/download.html): See [preparing_thumos14.md](/tools/data/thumos14/preparing_thumos14.md)
-- [Something-Something V1](https://20bn.com/datasets/something-something/v1): See [preparing_sthv1.md](/tools/data/sthv1/preparing_sthv1.md)
-- [Something-Something V2](https://20bn.com/datasets/something-something): See [preparing_sthv2.md](/tools/data/sthv2/preparing_sthv2.md)
-- [Moments in Time](http://moments.csail.mit.edu/): See [preparing_mit.md](/tools/data/mit/preparing_mit.md)
-- [Multi-Moments in Time](http://moments.csail.mit.edu/challenge_iccv_2019.html): See [preparing_mmit.md](/tools/data/mmit/preparing_mmit.md)
-- [ActivityNet_feature](): See [praparing_activitynet.md](/tools/data/activitynet/preparing_activitynet.md)
+- [UCF101](https://www.crcv.ucf.edu/data/UCF101.php): See [preparing_ucf101.md](/tools/data/ucf101/).
+- [Kinetics400](https://deepmind.com/research/open-source/kinetics): See [preparing_kinetics400.md](/tools/data/kinetics400/)
+- [THUMOS14](https://www.crcv.ucf.edu/THUMOS14/download.html): See [preparing_thumos14.md](/tools/data/thumos14/)
+- [Something-Something V1](https://20bn.com/datasets/something-something/v1): See [preparing_sthv1.md](/tools/data/sthv1/)
+- [Something-Something V2](https://20bn.com/datasets/something-something): See [preparing_sthv2.md](/tools/data/sthv2/)
+- [Moments in Time](http://moments.csail.mit.edu/): See [preparing_mit.md](/tools/data/mit/)
+- [Multi-Moments in Time](http://moments.csail.mit.edu/challenge_iccv_2019.html): See [preparing_mmit.md](/tools/data/mmit/)
+- [ActivityNet_feature](): See [praparing_activitynet.md](/tools/data/activitynet/)
 
 Now, you can switch to [getting_started.md](getting_started.md) to train and test the model.
 
