@@ -6,7 +6,7 @@
 
 |config | gpus | pretrain | AR@100| AUC | gpu_mem(M) | iter time(s) | ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[bmn_400x100_9e_2x8_activitynet_feature](/configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py) |2| None |75.28|67.22|5420|3.27|[ckpt]()| [log]()| [json]()|
+|[bmn_400x100_9e_2x8_activitynet_feature](/configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py) |2| None |75.28|67.22|5420|3.27|[ckpt](https://open-mmlab.s3.ap-northeast-2.amazonaws.com/mmaction/mmaction-v1/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature_20200619-42a3b111.pth)| [log](https://open-mmlab.s3.ap-northeast-2.amazonaws.com/mmaction/mmaction-v1/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature.log)| [json](https://open-mmlab.s3.ap-northeast-2.amazonaws.com/mmaction/mmaction-v1/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature.log.json)|
 
 Notes:
 1. The **gpus** indicates the number of gpu we used to get the checkpoint.
