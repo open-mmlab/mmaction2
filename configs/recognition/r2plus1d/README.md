@@ -32,7 +32,7 @@ python tools/train.py configs/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kinet
     --validate --seed 0 --deterministic
 ```
 
-For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md).
+For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
 
 ## Test
 You can use the following command to test a model.
@@ -47,4 +47,4 @@ python tools/test.py configs/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kineti
     --out result.json --average_clips=prob
 ```
 
-For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md).
+For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
