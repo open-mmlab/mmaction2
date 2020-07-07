@@ -19,11 +19,11 @@ train_cfg = None
 test_cfg = dict(average_clips=None)
 # dataset settings
 dataset_type = 'RawframeDataset'
-data_root = 'data/Moments_in_Time/rawframes_train'
-data_root_val = 'data/Moments_in_Time/rawframes_val'
-ann_file_train = 'data/Moments_in_Time/mit_train_anno.txt'
-ann_file_val = 'data/Moments_in_Time/mit_val_anno.txt'
-ann_file_test = 'data/Moments_in_Time/mit_val_anno.txt'
+data_root = 'data/mit/rawframes/training'
+data_root_val = '/data/mit/rawframes/validation/'
+ann_file_train = 'data/mit/mit_train_list_rawframes.txt'
+ann_file_val = 'data/mit/mit_val_list_rawframes.txt'
+ann_file_test = 'data/mit/mit_val_list_rawframes.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
