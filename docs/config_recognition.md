@@ -1,6 +1,6 @@
 # Config System for Action Recognition
 
-We incorporate modular and inheritance design into our config system,
+We incorporate modular design into our config system,
 which is convenient to conduct various experiments.
 
 ## An Example of TSN
@@ -41,10 +41,7 @@ img_norm_cfg = dict(  # Config of image normalition used in data pipeline
     mean=[123.675, 116.28, 103.53],  # Mean values of different channels to normalize
     std=[58.395, 57.12, 57.375],  # Std values of different channels to normalize
     to_bgr=False)  # Whether to convert channels from RGB to BGR
-mc_cfg = dict(  # Config of memcached setting
-    server_list_cfg='/mnt/lustre/share/memcached_client/server_list.conf',  # Path to server list config
-    client_cfg='/mnt/lustre/share/memcached_client/client.conf',  # Path to client config
-    sys_path='/mnt/lustre/share/pymc/py3')  # Path to `pymc` in python3 version
+
 train_pipeline = [  # List of training pipeline steps
     dict(  # Config of SampleFrames
         type='SampleFrames',  # Sample frames pipeline, sampling frames from video
@@ -52,9 +49,7 @@ train_pipeline = [  # List of training pipeline steps
         frame_interval=1,  # Temporal interval of adjacent sampled frames
         num_clips=3),  # Number of clips to be sampled
     dict(  # Config of FrameSelector
-        type='FrameSelector',  # Frame selector pipeline, selecting raw frames with given indices
-        io_backend='memcached',  # Storage backend type
-        **mc_cfg),  # Config of memcached
+        type='FrameSelector'),  # Frame selector pipeline, selecting raw frames with given indices
     dict(  # Config of Resize
         type='Resize',  # Resize pipeline
         scale=(-1, 256)),  # The scale to resize images
@@ -93,9 +88,7 @@ val_pipeline = [  # List of validation pipeline steps
         num_clips=3,  # Number of clips to be sampled
         test_mode=True),  # Whether to set test mode in sampling
     dict(  # Config of FrameSelector
-        type='FrameSelector',  # Frame selector pipeline, selecting raw frames with given indices
-        io_backend='memcached',  # Storage backend type
-        **mc_cfg),  # Config of memcached
+        type='FrameSelector'),  # Frame selector pipeline, selecting raw frames with given indices
     dict(  # Config of Resize
         type='Resize',  # Resize pipeline
         scale=(-1, 256)),  # The scale to resize images
@@ -127,9 +120,7 @@ test_pipeline = [  # List of testing pipeline steps
         num_clips=25,  # Number of clips to be sampled
         test_mode=True),  # Whether to set test mode in sampling
     dict(  # Config of FrameSelector
-        type='FrameSelector',  # Frame selector pipeline, selecting raw frames with given indices
-        io_backend='memcached',  # Storage backend type
-        **mc_cfg),  # Config of memcached
+        type='FrameSelector'),  # Frame selector pipeline, selecting raw frames with given indices
     dict(  # Config of Resize
         type='Resize',  # Resize pipeline
         scale=(-1, 256)),  # The scale to resize images

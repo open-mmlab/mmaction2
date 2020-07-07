@@ -15,7 +15,7 @@ A pipeline consists of a sequence of operations. Each operation takes a dict as 
 
 We present a typical pipeline in the following figure. The blue blocks are pipeline operations.
 With the pipeline going on, each operator can add new keys (marked as green) to the result dict or update the existing keys (marked as orange).
-![pipeline figure](../imgs/data_pipeline.png)
+![pipeline figure](/docs/imgs/data_pipeline.png)
 
 The operations are categorized into data loading, pre-processing and formatting.
 

@@ -26,7 +26,7 @@ def main():
     # test a single video
     results = inference_recognizer(model, args.video, args.label)
 
-    # print(f'The top-5 labels with corresponding scores are:')
+    print('The top-5 labels with corresponding scores are:')
     for result in results:
         print(f'{result[0]}: ', result[1])
 

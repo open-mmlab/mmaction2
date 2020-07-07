@@ -1,6 +1,6 @@
 # Config System for Action localization
 
-We incorporate modular and inheritance design into our config system,
+We incorporate modular design into our config system,
 which is convenient to conduct various experiments.
 
 ## An Example of BMN
