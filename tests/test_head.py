@@ -1,8 +1,7 @@
 import torch
 import torch.nn as nn
 
-from mmaction.models import (BaseHead, I3DHead, SlowFastHead, TINHead, TSMHead,
-                             TSNHead)
+from mmaction.models import BaseHead, I3DHead, SlowFastHead, TSMHead, TSNHead
 
 
 class ExampleHead(BaseHead):
@@ -185,46 +184,4 @@ def test_tsm_head():
     tsm_head = TSMHead(num_classes=4, in_channels=2048, temporal_pool=True)
     tsm_head.init_weights()
     cls_scores = tsm_head(feat, num_segs)
-    assert cls_scores.shape == torch.Size([2, 4])
-
-
-def test_tin_head():
-    """Test loss method, layer construction, attributes and forward function in
-    tin head."""
-    tin_head = TINHead(num_classes=4, in_channels=2048)
-    tin_head.init_weights()
-
-    assert tin_head.num_classes == 4
-    assert tin_head.in_channels == 2048
-    assert tin_head.spatial_type == 'avg'
-    assert tin_head.dropout_ratio == 0.5
-    assert tin_head.init_std == 0.001
-    assert tin_head.is_shift is True
-    assert tin_head.temporal_pool is False
-    assert tin_head.consensus.dim == 1
-
-    assert isinstance(tin_head.dropout, nn.Dropout)
-    assert tin_head.dropout.p == tin_head.dropout_ratio
-
-    assert isinstance(tin_head.fc_cls, nn.Linear)
-    assert tin_head.fc_cls.in_features == tin_head.in_channels
-    assert tin_head.fc_cls.out_features == tin_head.num_classes
-
-    assert isinstance(tin_head.avg_pool, nn.AdaptiveAvgPool2d)
-    assert tin_head.avg_pool.output_size == 1
-
-    input_shape = (8, 2048, 7, 7)
-    feat = torch.rand(input_shape)
-
-    # tin head inference
-    num_segs = input_shape[0]
-    cls_scores = tin_head(feat, num_segs)
-    assert cls_scores.shape == torch.Size([1, 4])
-
-    # tin head with temporal_pool True inference
-    tin_temporal_pool = TINHead(
-        num_classes=4, in_channels=2048, temporal_pool=True)
-    tin_temporal_pool.init_weights()
-    num_segs = input_shape[0]
-    cls_scores = tin_temporal_pool(feat, num_segs)
     assert cls_scores.shape == torch.Size([2, 4])

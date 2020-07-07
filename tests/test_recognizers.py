@@ -242,30 +242,6 @@ def test_tsm():
             recognizer(one_img, None, return_loss=False)
 
 
-def test_tin():
-    model, train_cfg, test_cfg = _get_recognizer_cfg(
-        'tin/tin_r50_1x1x8_35e_kinetics400_rgb.py')
-    model['backbone']['pretrained'] = None
-
-    recognizer = build_recognizer(
-        model, train_cfg=train_cfg, test_cfg=test_cfg)
-
-    input_shape = (1, 8, 3, 32, 32)
-    demo_inputs = generate_demo_inputs(input_shape)
-
-    imgs = demo_inputs['imgs']
-    gt_labels = demo_inputs['gt_labels']
-
-    losses = recognizer(imgs, gt_labels)
-    assert isinstance(losses, dict)
-
-    # Test forward test
-    with torch.no_grad():
-        img_list = [img[None, :] for img in imgs]
-        for one_img in img_list:
-            recognizer(one_img, None, return_loss=False)
-
-
 def generate_demo_inputs(input_shape=(1, 3, 3, 224, 224), model_type='2D'):
     """Create a superset of inputs needed to run test or train batches.
 
