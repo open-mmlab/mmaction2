@@ -258,14 +258,14 @@ If you want to specify the working directory in the command, you can add an argu
 Optional arguments are:
 
 - `--validate` (**strongly recommended**): Perform evaluation at every k (default value is 5, which can be modified by changing the `interval` value in `evaluation` dict in each config file) epochs during the training.
-- `--work-dir ${WORK_DIR}`: Override the working directory specified in the config file.
-- `--resume-from ${CHECKPOINT_FILE}`: Resume from a previous checkpoint file.
+- `--work_dir ${WORK_DIR}`: Override the working directory specified in the config file.
+- `--resume_from ${CHECKPOINT_FILE}`: Resume from a previous checkpoint file.
 - `--gpus ${GPU_NUM}`: Number of gpus to use, which is only applicable to non-distributed training.
+- `--gpu_ids ${GPU_IDS}`: IDs of gpus to use, which is only applicable to non-distributed training.
 - `--seed ${SEED}`: Seed id for random state in python, numpy and pytorch to generate random numbers.
 - `--deterministic`: If specified, it will set deterministic options for CUDNN backend.
 - `JOB_LAUNCHER`: Items for distributed job initialization launcher. Allowed choices are `none`, `pytorch`, `slurm`, `mpi`. Especially, if set to none, it will test in a non-distributed mode.
 - `LOCAL_RANK`: ID for local rank. If not specified, it will be set to 0.
-- `--autoscale-lr`: If specified, it will automatically scale lr with the number of gpus by [Linear Scaling Rule](https://arxiv.org/abs/1706.02677).
 
 Difference between `resume-from` and `load-from`:
 `resume-from` loads both the model weights and optimizer status, and the epoch is also inherited from the specified checkpoint. It is usually used for resuming the training process that is interrupted accidentally.
@@ -294,7 +294,7 @@ GPUS=16 ./tools/slurm_train.sh dev tsn_r50_k400 configs/recognition/tsn/tsn_r50_
 You can check [slurm_train.sh](/tools/slurm_train.sh) for full arguments and environment variables.
 
 If you have just multiple machines connected with ethernet, you can refer to
-pytorch [launch utility](https://pytorch.org/docs/stable/distributed_deprecated.html#launch-utility).
+pytorch [launch utility](https://pytorch.org/docs/stable/distributed.html#launch-utility).
 Usually it is slow if you do not have high speed networking like infiniband.
 
 ### Launch multiple jobs on a single machine

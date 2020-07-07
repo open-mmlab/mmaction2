@@ -21,7 +21,7 @@ To ease usage, we provide tutorials of data deployment for each dataset.
 - [Something-Something V2](https://20bn.com/datasets/something-something): See [preparing_sthv2.md](/tools/data/sthv2/)
 - [Moments in Time](http://moments.csail.mit.edu/): See [preparing_mit.md](/tools/data/mit/)
 - [Multi-Moments in Time](http://moments.csail.mit.edu/challenge_iccv_2019.html): See [preparing_mmit.md](/tools/data/mmit/)
-- [ActivityNet_feature](): See [praparing_activitynet.md](/tools/data/activitynet/)
+- ActivityNet_feature: See [praparing_activitynet.md](/tools/data/activitynet/)
 
 Now, you can switch to [getting_started.md](getting_started.md) to train and test the model.
 
