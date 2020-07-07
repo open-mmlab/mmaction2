@@ -112,7 +112,7 @@ optimizer = dict(
     type='SGD',
     constructor='TSMOptimizerConstructor',
     paramwise_cfg=dict(fc_lr5=True),
-    lr=0.01,
+    lr=0.01,  # this lr is used for 8 gpus
     momentum=0.9,
     weight_decay=0.0001,
 )

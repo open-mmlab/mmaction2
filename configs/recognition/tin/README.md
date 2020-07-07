@@ -6,8 +6,8 @@
 
 |config | gpus | backbone| pretrain | top1 acc| top5 acc | inference_time(video/s) | gpu_mem(M)| ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[tin_r50_1x1x8_35e_kinetics400_rgb](/configs/recognition/tin/tin_r50_1x1x8_35e_kinetics400_rgb.py) |x| ResNet50| ImageNet |69.44|89.19|16.5 (8x1 frames)| 6173| [ckpt]() | [log]()| [json]()|
-|[tin_r50_finetune_1x1x8_35e_kinetics400_rgb](/configs/recognition/tin/tin_r50_finetune_1x1x8_35e_kinetics400_rgb.py) |x| ResNet50| ImageNet |71.00|89.98| x | 6174 | [ckpt]() | [log]()| [json]()|
+|[tin_r50_1x1x8_35e_kinetics400_rgb](/configs/recognition/tin/tin_r50_1x1x8_35e_kinetics400_rgb.py) |8| ResNet50| ImageNet |69.44|89.19|16.5 (8x1 frames)| 6173| [ckpt]() | [log]()| [json]()|
+|[tin_r50_finetune_1x1x8_35e_kinetics400_rgb](/configs/recognition/tin/tin_r50_finetune_1x1x8_35e_kinetics400_rgb.py) |8| ResNet50| ImageNet |71.00|89.98| x | 6174 | [ckpt]() | [log]()| [json]()|
 |[tin_r50_video_2d_1x1x8_35e_kinetics400_rgb](/configs/recognition/tin/tin_r50_video_1x1x8_35e_kinetics400_rgb.py) |x| ResNet50 | ImageNet | x | x | x | x | [ckpt]() | [log]()| [json]()|
 
 ### Something-Something V1
