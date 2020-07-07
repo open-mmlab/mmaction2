@@ -5,7 +5,7 @@
 ### Kinetics-400
 
 |config | gpus | backbone |pretrain| top1 acc| top5 acc | inference_time(video/s) | gpu_mem(M)| ckpt | log| json|
-|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
 |[i3d_r34_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r34_32x2x1_100e_kinetics400_rgb.py) |x| ResNet34|ImageNet |68.37|88.15|1.6 (320x3 frames)| 3176| [ckpt]() | [log]()| [json]()|
 |[i3d_r50_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py) |x| ResNet50|ImageNet |72.68|90.78|1.7 (320x3 frames)| 5170|[ckpt]() | [log]()| [json]()|
 |[i3d_r50_dense_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_dense_32x2x1_100e_kinetics400_rgb.py) |x| ResNet50| ImageNet|72.77|90.57|1.7 (320x3 frames)| 5170| [ckpt]() | [log]()| [json]()|
