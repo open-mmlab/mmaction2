@@ -133,7 +133,7 @@ for result in results:
     print(f'{result[0]}: ', result[1])
 ```
 
-A notebook demo can be found in [demo/demo.ipynb](../demo/demo.ipynb)
+A notebook demo can be found in [demo/demo.ipynb](/demo/demo.ipynb)
 
 
 ## Build a Model
@@ -209,7 +209,7 @@ which defines the following abstract methods.
 - `forward_train()`: forward method of the training mode.
 - `forward_test()`: forward method of the testing mode.
 
-[Recognizer2D](../mmaction/models/recognizers/recognizer2d.py) and [Recognizer3D](../mmaction/models/recognizers/recognizer3d.py)
+[Recognizer2D](/mmaction/models/recognizers/recognizer2d.py) and [Recognizer3D](/mmaction/models/recognizers/recognizer3d.py)
 are good examples which show how to do that.
 
 
@@ -291,7 +291,7 @@ Here is an example of using 16 GPUs to train TSN on the dev partition in a slurm
 GPUS=16 ./tools/slurm_train.sh dev tsn_r50_k400 configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb
 ```
 
-You can check [slurm_train.sh](../tools/slurm_train.sh) for full arguments and environment variables.
+You can check [slurm_train.sh](/tools/slurm_train.sh) for full arguments and environment variables.
 
 If you have just multiple machines connected with ethernet, you can refer to
 pytorch [launch utility](https://pytorch.org/docs/stable/distributed_deprecated.html#launch-utility).
@@ -405,7 +405,7 @@ Params: 28.04 M
 You may well use the result for simple comparisons, but double check it before you adopt it in technical reports or papers.
 
 (1) FLOPs are related to the input shape while parameters are not. The default input shape is (1, 3, 340, 256) for 2D recognizer, (1, 3, 32, 340, 256) for 3D recognizer.
-(2) Some custom operators are not counted into FLOPs. You can add support for new operators by modifying [`mmaction/utils/flops_counter.py`](../mmaction/utils/file_client.py).
+(2) Some custom operators are not counted into FLOPs. You can add support for new operators by modifying [`mmaction/utils/flops_counter.py`](/mmaction/utils/file_client.py).
 
 ### Publish a model
 
@@ -543,9 +543,9 @@ There are two ways to work with custom datasets.
 
 - online conversion
 
-  You can write a new Dataset class inherited from [BaseDataset](../mmaction/datasets/base.py), and overwrite two methods
+  You can write a new Dataset class inherited from [BaseDataset](/mmaction/datasets/base.py), and overwrite two methods
   `load_annotations(self)` and `evaluate(self, results, metrics, logger)`,
-  like [RawframeDataset](../mmaction/datasets/rawframe_dataset.py), [VideoDataset](../mmaction/datasets/video_dataset.py) or [ActivityNetDataset](../mmaction/datasets/activitynet_dataset.py).
+  like [RawframeDataset](/mmaction/datasets/rawframe_dataset.py), [VideoDataset](/mmaction/datasets/video_dataset.py) or [ActivityNetDataset](/mmaction/datasets/activitynet_dataset.py).
 
 - offline conversion
 
@@ -554,7 +554,7 @@ There are two ways to work with custom datasets.
 
 ### Customize optimizer
 
-An example of customized optimizer is [CopyOfSGD](../mmaction/core/optimizer/copy_of_sgd.py).
+An example of customized optimizer is [CopyOfSGD](/mmaction/core/optimizer/copy_of_sgd.py).
 More generally, a customized optimizer could be defined as following.
 
 In `mmaction/core/optimizer/my_optimizer.py`:
@@ -580,7 +580,7 @@ Especially, If you want to construct a optimizer based on a specified model and 
 You can write a new optimizer constructor inherit from [DefaultOptimizerConstructor](https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/optimizer/default_constructor.py)
 and overwrite the `add_params(self, params, module)` method.
 
-An example of customized optimizer constructor is [TSMOptimizerConstructor](../mmaction/core/optimizer/tsm_optimizer_constructor.py).
+An example of customized optimizer constructor is [TSMOptimizerConstructor](/mmaction/core/optimizer/tsm_optimizer_constructor.py).
 More generally, a customized optimizer constructor could be defined as following.
 
 In `mmaction/core/optimizer/my_optimizer_constructor.py`:
@@ -641,7 +641,7 @@ Here we show how to develop new components with an example of TSN.
 
 3. Create a new file `mmaction/models/heads/tsn_head.py`.
 
-    You can write a new classification head inherit from [BaseHead](../mmaction/models/heads/base.py),
+    You can write a new classification head inherit from [BaseHead](/mmaction/models/heads/base.py),
     and overwrite `init_weights(self)` and `forward(self, x)` method.
 
     ```python
