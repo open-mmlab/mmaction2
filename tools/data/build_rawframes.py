@@ -25,28 +25,42 @@ def extract_frame(vid_item, dev_id=0):
         out_full_path = args.out_dir
 
     if task == 'rgb':
-        cmd = osp.join(f'denseflow {full_path} -b=20 -s=0 -o={out_full_path}'
-                       f' --nw {args.new_width} --nh {args.new_height} '
-                       f'-v')
-        print(cmd)
+        if args.new_short == 0:
+            cmd = osp.join(
+                f'denseflow {full_path} -b=20 -s=0 -o={out_full_path}'
+                f' -nw={args.new_width} -nh={args.new_height} -v')
+        else:
+            cmd = osp.join(
+                f'denseflow {full_path} -b=20 -s=0 -o={out_full_path}'
+                f' -ns={args.new_short} -v')
         os.system(cmd)
     elif task == 'flow':
-        cmd = osp.join(
-            f'denseflow {full_path} -a={method} -b=20 -s=1 -o={out_full_path}'
-            f' --nw {args.new_width} --nh {args.new_height} '
-            f'-v')
+        if args.new_short == 0:
+            cmd = osp.join(
+                f'denseflow {full_path} -a={method} -b=20 -s=1 -o={out_full_path}'  # noqa: E501
+                f' -nw={args.new_width} --nh={args.new_height} -v')
+        else:
+            cmd = osp.join(
+                f'denseflow {full_path} -a={method} -b=20 -s=1 -o={out_full_path}'  # noqa: E501
+                f' -ns={args.new_short} -v')
         os.system(cmd)
     else:
-        cmd = osp.join(
-            f'denseflow {full_path} -a={method} -b=20 -s=0 -o={out_full_path}'
-            f' --nw {args.new_width} --nh {args.new_height} '
-            f'-v')
-        os.system(cmd)
-        cmd = osp.join(
-            f'denseflow {full_path} -a={method} -b=20 -s=1 -o={out_full_path}'
-            f' --nw {args.new_width} --nh {args.new_height} '
-            f'-v')
-        os.system(cmd)
+        if args.new_short == 0:
+            cmd_rgb = osp.join(
+                f'denseflow {full_path} -b=20 -s=0 -o={out_full_path}'
+                f' -nw={args.new_width} -nh={args.new_height} -v')
+            cmd_flow = osp.join(
+                f'denseflow {full_path} -a={method} -b=20 -s=1 -o={out_full_path}'  # noqa: E501
+                f' -nw={args.new_width} -nh={args.new_height} -v')
+        else:
+            cmd_rgb = osp.join(
+                f'denseflow {full_path} -b=20 -s=0 -o={out_full_path}'
+                f' -ns={args.new_short} -v')
+            cmd_flow = osp.join(
+                f'denseflow {full_path} -a={method} -b=20 -s=1 -o={out_full_path}'  # noqa: E501
+                f' -ns={args.new_short} -v')
+        os.system(cmd_rgb)
+        os.system(cmd_flow)
 
     print(f'{task} {vid_id} {vid_path} {method} done')
     sys.stdout.flush()
@@ -96,6 +110,11 @@ def parse_args():
         '--new_width', type=int, default=0, help='resize image width')
     parser.add_argument(
         '--new_height', type=int, default=0, help='resize image height')
+    parser.add_argument(
+        '--new_short',
+        type=int,
+        default=0,
+        help='resize image short side length keeping ratio')
     parser.add_argument('--num_gpu', type=int, default=8, help='number of GPU')
     parser.add_argument(
         '--resume',
