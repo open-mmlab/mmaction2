@@ -124,8 +124,8 @@ conda create -n open-mmlab python=3.7 -y
 conda activate open-mmlab
 
 conda install -c pytorch pytorch torchvision -y
-git clone git@gitlab.sz.sensetime.com:open-mmlab/mmaction-lite.git
-cd mmaction-lite
+git clone https://github.com/open-mmlab/mmaction.git
+cd mmaction
 pip install -r requirements/build.txt
 python setup.py develop
 

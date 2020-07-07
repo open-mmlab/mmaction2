@@ -20,7 +20,7 @@ def parse_args():
         ],
         help='dataset to be built file list')
     parser.add_argument(
-        'frame_path', type=str, help='root directory for the frames or videos')
+        'src_folder', type=str, help='root directory for the frames or videos')
     parser.add_argument(
         '--rgb_prefix', type=str, default='img_', help='prefix of rgb frames')
     parser.add_argument(
@@ -160,7 +160,7 @@ def main():
 
     if args.format == 'rawframes':
         frame_info = parse_directory(
-            args.frame_path,
+            args.src_folder,
             key_func=key_func,
             rgb_prefix=args.rgb_prefix,
             flow_x_prefix=args.flow_x_prefix,
@@ -169,15 +169,15 @@ def main():
     elif args.format == 'videos':
         if args.level == 1:
             # search for one-level directory
-            video_list = glob.glob(osp.join(args.frame_path, '*'))
+            video_list = glob.glob(osp.join(args.src_folder, '*'))
         elif args.level == 2:
             # search for two-level directory
-            video_list = glob.glob(osp.join(args.frame_path, '*', '*'))
+            video_list = glob.glob(osp.join(args.src_folder, '*', '*'))
         else:
             raise ValueError(f'level must be 1 or 2, but got {args.level}')
         frame_info = {}
         for video in video_list:
-            video_path = osp.relpath(video, args.frame_path)
+            video_path = osp.relpath(video, args.src_folder)
             # video_id: (video_relative_path, -1, -1)
             frame_info['.'.join(video_path.split('.')[:-1])] = (video_path, -1,
                                                                 -1)

@@ -1,7 +1,7 @@
 # Getting Started
 
 This page provides basic tutorials about the usage of MMAction.
-For installation instructions, please see [install.md](install.md).
+For installation instructions, please see [install.md](/docs/install.md).
 
 ## Datasets
 
@@ -26,9 +26,9 @@ mmaction
 │   │   ├── ucf101_val_list.txt
 
 ```
-For more information on data preparation, please see [data_preparation.md](data_preparation.md)
+For more information on data preparation, please see [data_preparation.md](/docs/data_preparation.md)
 
-For using custom datasets, please refer to [Tutorial 2: Adding New Dataset](tutorials/new_dataset.md)
+For using custom datasets, please refer to [Tutorial 2: Adding New Dataset](/docs/tutorials/new_dataset.md)
 
 ## Inference with Pre-Trained Models
 
@@ -49,12 +49,14 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--out ${RESULT_FILE}] [-
     [--proc_per_gpu ${NUM_PROC_PER_GPU}] [--gpu_collect] [--tmpdir ${TMPDIR}] [--average_clips ${AVG_TYPE}] \
     [--launcher ${JOB_LAUNCHER}] [--local_rank ${LOCAL_RANK}]
 
+# multi-gpu testing
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${GPU_NUM} [--out ${RESULT_FILE}] [--eval ${EVAL_METRICS}] \
     [--proc_per_gpu ${NUM_PROC_PER_GPU}] [--gpu_collect] [--tmpdir ${TMPDIR}] [--average_clips ${AVG_TYPE}] \
     [--launcher ${JOB_LAUNCHER}] [--local_rank ${LOCAL_RANK}]
 ```
 
 Optional arguments:
+- `GPU_NUM`: Number of GPU used to test model. If not specified, it will be set to 1.
 - `RESULT_FILE`: Filename of the output results. If not specified, the results will not be saved to a file.
 - `EVAL_METRICS`: Items to be evaluated on the results. Allowed values depend on the dataset, e.g., `top_k_accuracy`, `mean_class_accuracy` are available for all datasets in recognition, `mean_average_precision` for Multi-Moments in Time, `AR@AN` for ActivityNet, etc.
 - `NUM_PROC_PER_GPU`: Number of processes per GPU. If not specified, only one process will be assigned for a single gpu.
@@ -103,7 +105,7 @@ python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} [--device ${
 Examples:
 
 ```shell
-python demo/demo.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py checkpoints/tsn.pth demo/demo.mp4
+python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.p checkpoints/tsn.pth demo/demo.mp4
 ```
 
 ### High-level APIs for testing a video.
@@ -111,11 +113,11 @@ python demo/demo.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.p
 Here is an example of building the model and test a given video.
 
 ```python
-from mmaction.core import init_recognizer, inference_recognizer
+from mmaction.apis import init_recognizer, inference_recognizer
 
 config_file = 'configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py'
 # download the checkpoint from model zoo and put it in `checkpoints/`
-checkpoint_file = 'checkpoints/tsn.pth'
+checkpoint_file = 'checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth'
 
  # build the model from a config file and a checkpoint file
 model = init_recognizer(config_file, checkpoint_file, device='cpu')
@@ -123,14 +125,15 @@ model = init_recognizer(config_file, checkpoint_file, device='cpu')
 # test a single video and show the result:
 video = 'demo/demo.mp4'
 labels = 'demo/label_map.txt'
-result = inference_recognizer(model, video, labels)
+results = inference_recognizer(model, video, labels)
 
 # show the results
-for key in result:
-    print(f'{key}: ', result[key])
+print(f'The top-5 labels with corresponding scores are:')
+for result in results:
+    print(f'{result[0]}: ', result[1])
 ```
 
-A notebook demo can be found in [demo/demo.ipynb](../demo/demo.ipynb)
+A notebook demo can be found in [demo/demo.ipynb](/demo/demo.ipynb)
 
 
 ## Build a Model
@@ -206,7 +209,7 @@ which defines the following abstract methods.
 - `forward_train()`: forward method of the training mode.
 - `forward_test()`: forward method of the testing mode.
 
-[Recognizer2D](../mmaction/models/recognizers/recognizer2d.py) and [Recognizer3D](../mmaction/models/recognizers/recognizer3d.py)
+[Recognizer2D](/mmaction/models/recognizers/recognizer2d.py) and [Recognizer3D](/mmaction/models/recognizers/recognizer3d.py)
 are good examples which show how to do that.
 
 
@@ -288,7 +291,7 @@ Here is an example of using 16 GPUs to train TSN on the dev partition in a slurm
 GPUS=16 ./tools/slurm_train.sh dev tsn_r50_k400 configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb
 ```
 
-You can check [slurm_train.sh](../tools/slurm_train.sh) for full arguments and environment variables.
+You can check [slurm_train.sh](/tools/slurm_train.sh) for full arguments and environment variables.
 
 If you have just multiple machines connected with ethernet, you can refer to
 pytorch [launch utility](https://pytorch.org/docs/stable/distributed_deprecated.html#launch-utility).
@@ -333,7 +336,7 @@ We provide lots of useful tools under `tools/` directory.
 
 You can plot loss/top-k acc curves given a training log file. Run `pip install seaborn` first to install the dependency.
 
-![acc_curve_image](imgs/acc_curve.png)
+![acc_curve_image](/docs/imgs/acc_curve.png)
 
 ```shell
 python tools/analyze_logs.py plot_curve ${JSON_LOGS} [--keys ${KEYS}] [--title ${TITLE}] [--legend ${LEGEND}] [--backend ${BACKEND}] [--style ${STYLE}] [--out ${OUT_FILE}]
@@ -402,7 +405,7 @@ Params: 28.04 M
 You may well use the result for simple comparisons, but double check it before you adopt it in technical reports or papers.
 
 (1) FLOPs are related to the input shape while parameters are not. The default input shape is (1, 3, 340, 256) for 2D recognizer, (1, 3, 32, 340, 256) for 3D recognizer.
-(2) Some custom operators are not counted into FLOPs. You can add support for new operators by modifying [`mmaction/utils/flops_counter.py`](../mmaction/utils/file_client.py).
+(2) Some custom operators are not counted into FLOPs. You can add support for new operators by modifying [`mmaction/utils/flops_counter.py`](/mmaction/utils/file_client.py).
 
 ### Publish a model
 
@@ -540,9 +543,9 @@ There are two ways to work with custom datasets.
 
 - online conversion
 
-  You can write a new Dataset class inherited from [BaseDataset](../mmaction/datasets/base.py), and overwrite two methods
+  You can write a new Dataset class inherited from [BaseDataset](/mmaction/datasets/base.py), and overwrite two methods
   `load_annotations(self)` and `evaluate(self, results, metrics, logger)`,
-  like [RawframeDataset](../mmaction/datasets/rawframe_dataset.py), [VideoDataset](../mmaction/datasets/video_dataset.py) or [ActivityNetDataset](../mmaction/datasets/activitynet_dataset.py).
+  like [RawframeDataset](/mmaction/datasets/rawframe_dataset.py), [VideoDataset](/mmaction/datasets/video_dataset.py) or [ActivityNetDataset](/mmaction/datasets/activitynet_dataset.py).
 
 - offline conversion
 
@@ -551,7 +554,7 @@ There are two ways to work with custom datasets.
 
 ### Customize optimizer
 
-An example of customized optimizer is [CopyOfSGD](../mmaction/core/optimizer/copy_of_sgd.py).
+An example of customized optimizer is [CopyOfSGD](/mmaction/core/optimizer/copy_of_sgd.py).
 More generally, a customized optimizer could be defined as following.
 
 In `mmaction/core/optimizer/my_optimizer.py`:
@@ -574,10 +577,10 @@ from .my_optimizer import MyOptimizer
 Then you can use `MyOptimizer` in `optimizer` field of config files.
 
 Especially, If you want to construct a optimizer based on a specified model and param-wise config,
-You can write a new optimizer constructor inherit from [DefaultOptimizerConstructor](../mmaction/core/optimizer/default_constructor.py)
+You can write a new optimizer constructor inherit from [DefaultOptimizerConstructor](https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/optimizer/default_constructor.py)
 and overwrite the `add_params(self, params, module)` method.
 
-An example of customized optimizer constructor is [TSMOptimizerConstructor](../mmaction/core/optimizer/tsm_optimizer_constructor.py).
+An example of customized optimizer constructor is [TSMOptimizerConstructor](/mmaction/core/optimizer/tsm_optimizer_constructor.py).
 More generally, a customized optimizer constructor could be defined as following.
 
 In `mmaction/core/optimizer/my_optimizer_constructor.py`:
@@ -638,7 +641,7 @@ Here we show how to develop new components with an example of TSN.
 
 3. Create a new file `mmaction/models/heads/tsn_head.py`.
 
-    You can write a new classification head inherit from [BaseHead](../mmaction/models/heads/base.py),
+    You can write a new classification head inherit from [BaseHead](/mmaction/models/heads/base.py),
     and overwrite `init_weights(self)` and `forward(self, x)` method.
 
     ```python
@@ -684,5 +687,5 @@ Here we show how to develop new components with an example of TSN.
 
 ## Tutorials
 
-Currently, we provide some tutorials for users to [finetune model](tutorials/finetune.md),
-[add new dataset](tutorials/new_dataset.md), [add new modules](tutorials/new_modules.md).
+Currently, we provide some tutorials for users to [finetune model](/docs/tutorials/finetune.md),
+[add new dataset](/docs/tutorials/new_dataset.md), [add new modules](/docs/tutorials/new_modules.md).

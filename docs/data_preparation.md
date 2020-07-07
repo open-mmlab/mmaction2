@@ -21,7 +21,7 @@ To ease usage, we provide tutorials of data deployment for each dataset.
 - [Something-Something V2](https://20bn.com/datasets/something-something): See [preparing_sthv2.md](/tools/data/sthv2/preparing_sthv2.md)
 - [Moments in Time](http://moments.csail.mit.edu/): See [preparing_mit.md](/tools/data/mit/preparing_mit.md)
 - [Multi-Moments in Time](http://moments.csail.mit.edu/challenge_iccv_2019.html): See [preparing_mmit.md](/tools/data/mmit/preparing_mmit.md)
-- [ActivityNet_feature](): See[praparing_activitynet.md](/tools/data/activitynet/praparing_activitynet.md)
+- [ActivityNet_feature](): See[praparing_activitynet.md](/tools/data/activitynet/preparing_activitynet.md)
 
 Now, you can switch to [getting_started.md](/docs/getting_started.md) to train and test the model.
 
@@ -66,7 +66,7 @@ python build_rawframes.py ${SRC_FOLDER} ${OUT_FOLDER} [--task ${TASK}] [--level 
 
 The recommended practice is
 
-1. set `$OUT_FOLDER` to be an folder located in SSD.
+1. set `$OUT_FOLDER` to be a folder located in SSD.
 2. symlink the link `$OUT_FOLDER` to `$MMACTION/data/$DATASET/rawframes`.
 
 ```shell

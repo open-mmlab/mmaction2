@@ -1,11 +1,11 @@
 # Tutorial 1: Finetuning Models
 
-This tutorial provides instructions for users to use the pre-trained models (see [Model zoo](../model_zoo.md))
+This tutorial provides instructions for users to use the pre-trained models
 to finetune them on other datasets, so that better performance can be get.
 
 There are two steps to finetune a model on a new dataset.
 
-1. Add support for the new dataset. See [Tutorial 2: Adding New Dataset](new_dataset.md).
+1. Add support for the new dataset. See [Tutorial 2: Adding New Dataset](/docs/tutorials/new_dataset.md).
 1. Modify the configs. This will be discussed in this tutorial.
 
 For example, if the user want to finetune models pre-trained on Kinetics-400 Dataset to another dataset, say UCF101,
@@ -80,5 +80,5 @@ To use the pre-trained model for the whole network, the new config adds the link
 
 ```python
 # use the pre-trained model for the whole TSN network
-load_from = 'https://s3.ap-northeast-2.amazonaws.com/open-mmlab/mmaction-lite/models/tsn_r50_1x1x3_100e_kinetics400_rgb_xxx.pth'  # model path can be found in model zoo
+load_from = 'https://open-mmlab.s3.ap-northeast-2.amazonaws.com/mmaction/mmaction-v1/recognition/tsn_r50_1x1x3_100e_kinetics400_rgb/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth'  # model path can be found in model zoo
 ```
