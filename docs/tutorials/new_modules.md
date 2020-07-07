@@ -2,7 +2,7 @@
 
 ## Customize Optimizer
 
-An example of customized optimizer is [CopyOfSGD](../../mmaction/core/optimizer/copy_of_sgd.py) is defined in `mmaction/core/optimizer/copy_of_sgd.py`.
+An example of customized optimizer is [CopyOfSGD](/mmaction/core/optimizer/copy_of_sgd.py) is defined in `mmaction/core/optimizer/copy_of_sgd.py`.
 More generally, a customized optimizer could be defined as following.
 
 Assume you want to add an optimizer named as `MyOptimizer`, which has arguments `a`, `b` and `c`.
@@ -54,7 +54,7 @@ The users can do those fine-grained parameter tuning through customizing optimiz
 You can write a new optimizer constructor inherit from [DefaultOptimizerConstructor](https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/optimizer/default_constructor.py)
 and overwrite the `add_params(self, params, module)` method.
 
-An example of customized optimizer constructor is [TSMOptimizerConstructor](../../mmaction/core/optimizer/tsm_optimizer_constructor.py).
+An example of customized optimizer constructor is [TSMOptimizerConstructor](/mmaction/core/optimizer/tsm_optimizer_constructor.py).
 More generally, a customized optimizer constructor could be defined as following.
 
 In `mmaction/core/optimizer/my_optimizer_constructor.py`:
@@ -144,7 +144,7 @@ Here we show how to develop a new head with the example of TSNHead as the follow
 
 1. Create a new file `mmaction/models/heads/tsn_head.py`.
 
-    You can write a new classification head inheriting from [BaseHead](../../mmaction/models/heads/base.py),
+    You can write a new classification head inheriting from [BaseHead](/mmaction/models/heads/base.py),
     and overwrite `init_weights(self)` and `forward(self, x)` method.
 
     ```python

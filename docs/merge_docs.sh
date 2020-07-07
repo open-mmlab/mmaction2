@@ -31,6 +31,8 @@ sed -i 's=](/=](http://gitlab.sz.sensetime.com/open-mmlab/mmaction-lite/tree/mas
 sed -i 's=](/=](http://gitlab.sz.sensetime.com/open-mmlab/mmaction-lite/tree/master/=g' data_preparation.md
 sed -i 's=](/=](http://gitlab.sz.sensetime.com/open-mmlab/mmaction-lite/tree/master/=g' benchmark.md
 sed -i 's=](/=](http://gitlab.sz.sensetime.com/open-mmlab/mmaction-lite/tree/master/=g' getting_started.md
+sed -i 's=](/=](http://gitlab.sz.sensetime.com/open-mmlab/mmaction-lite/tree/master/=g' install.md
+sed -i 's=](/=](http://gitlab.sz.sensetime.com/open-mmlab/mmaction-lite/tree/master/=g' tutorials.md
 
 cat localization_models.md recognition_models.md > modelzoo.md
 sed -i '1i\# Modelzoo' modelzoo.md
