@@ -84,9 +84,9 @@ There are two ways to work with custom datasets.
 
 - online conversion
 
-  You can write a new Dataset class inherited from [BaseDataset](../../mmaction/datasets/base.py), and overwrite three methods
+  You can write a new Dataset class inherited from [BaseDataset](/mmaction/datasets/base.py), and overwrite three methods
   `load_annotations(self)`, `evaluate(self, results, metrics, logger)` and `dump_results(self, results, out)`,
-  like [RawframeDataset](../../mmaction/datasets/rawframe_dataset.py),  [VideoDataset](../../mmaction/datasets/video_dataset.py) or [ActivityNetDataset](../../mmaction/datasets/activitynet_dataset.py).
+  like [RawframeDataset](/mmaction/datasets/rawframe_dataset.py),  [VideoDataset](/mmaction/datasets/video_dataset.py) or [ActivityNetDataset](/mmaction/datasets/activitynet_dataset.py).
 
 - offline conversion
 
