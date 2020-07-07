@@ -41,33 +41,33 @@ This project is released under the [Apache 2.0 license](LICENSE).
 
 ## Benchmark and Model Zoo
 
-Benchmark with other repos are available on [benchmark.md](/docs/benchmark.md).
+Benchmark with other repos are available on [benchmark.md](docs/benchmark.md).
 
 Results and models are available in the **README.md** of each method's config directory.
 
 Supported methods for action recognition:
-- [x] [TSN](/configs/recognition/tsn/README.md)
-- [x] [TSM](/configs/recognition/tsm/README.md)
-- [x] [R(2+1)d](/configs/recognition/r2plus1d/README.md)
-- [x] [I3D](/configs/recognition/i3d/README.md)
-- [x] [SlowOnly](/configs/recognition/slowonly/README.md)
-- [x] [SlowFast](/configs/recognition/slowfast/README.md)
+- [x] [TSN](configs/recognition/tsn/README.md)
+- [x] [TSM](configs/recognition/tsm/README.md)
+- [x] [R(2+1)d](configs/recognition/r2plus1d/README.md)
+- [x] [I3D](configs/recognition/i3d/README.md)
+- [x] [SlowOnly](configs/recognition/slowonly/README.md)
+- [x] [SlowFast](configs/recognition/slowfast/README.md)
 
 Supported methods for action localization:
-- [x] [BMN](/configs/localization/bmn/README.md)
-- [x] [BSN](/configs/localization/bsn/README.md)
+- [x] [BMN](configs/localization/bmn/README.md)
+- [x] [BSN](configs/localization/bsn/README.md)
 
 ## Installation
 
-Please refer to [install.md](/docs/install.md) for installation.
+Please refer to [install.md](docs/install.md) for installation.
 
 ## Data Preparation
 
-Please refer to [data_preparation.md](/docs/data_preparation.md) for a general knowledge of data preparation.
+Please refer to [data_preparation.md](docs/data_preparation.md) for a general knowledge of data preparation.
 
 ## Get Started
 
-Please see [getting_started.md](/docs/getting_started.md) for the basic usage of MMAction.
+Please see [getting_started.md](docs/getting_started.md) for the basic usage of MMAction.
 
 ## Contributing
 
