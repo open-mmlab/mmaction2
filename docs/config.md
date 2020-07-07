@@ -47,11 +47,11 @@ In addition, we use `img_norm_cfg` as intermediate variables to construct data a
 ```python
 ...
 dataset_type = 'RawframeDataset'
-data_root = 'data/kinetics400/rawframes_train/'
-data_root_val = 'data/kinetics400/rawframes_val/'
-ann_file_train = 'data/kinetics400/kinetics_train_list.txt'
-ann_file_val = 'data/kinetics400/kinetics_val_list.txt'
-ann_file_test = 'data/kinetics400/kinetics_val_list.txt'
+data_root = 'data/kinetics400/rawframes_train'
+data_root_val = 'data/kinetics400/rawframes_val'
+ann_file_train = 'data/kinetics400/kinetics400_train_list_rawframes.txt'
+ann_file_val = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
+ann_file_test = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
 
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)

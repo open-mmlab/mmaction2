@@ -21,11 +21,11 @@ train_cfg = None
 test_cfg = dict(average_clips=None)
 # dataset settings
 dataset_type = 'RawframeDataset'
-data_root = 'data/sth-v2/rawframes_train/'
-data_root_val = 'data/sth-v2/rawframes_val/'
-ann_file_train = 'data/sth-v2/sth-v2_train_list.txt'
-ann_file_val = 'data/sth-v2/sth-v2_val_list.txt'
-ann_file_test = 'data/sth-v2/sth-v2_val_list.txt'
+data_root = 'data/sthv2/rawframes'
+data_root_val = 'data/sthv2/rawframes'
+ann_file_train = 'data/sthv2/sthv2_train_list_rawframes.txt'
+ann_file_val = 'data/sthv2/sthv2_val_list_rawframes.txt'
+ann_file_test = 'data/sthv2/sthv2_val_list_rawframes.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [

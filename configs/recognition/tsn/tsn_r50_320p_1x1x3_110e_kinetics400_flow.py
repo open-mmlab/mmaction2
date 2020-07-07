@@ -19,8 +19,8 @@ train_cfg = None
 test_cfg = dict(average_clips=None)
 # dataset settings
 dataset_type = 'RawframeDataset'
-data_root = 'data/kinetics400/rawframes_train/'
-data_root_val = 'data/kinetics400/rawframes_val/'
+data_root = 'data/kinetics400/rawframes_train_320p'
+data_root_val = 'data/kinetics400/rawframes_val_320p'
 ann_file_train = 'data/kinetics400/kinetics_flow_train_list.txt'
 ann_file_val = 'data/kinetics400/kinetics_flow_val_list.txt'
 ann_file_test = 'data/kinetics400/kinetics_flow_val_list.txt'
