@@ -11,11 +11,13 @@
 |[tin_r50_video_2d_1x1x8_35e_kinetics400_rgb](/configs/recognition/tin/tin_r50_video_1x1x8_35e_kinetics400_rgb.py) |x| ResNet50 | ImageNet | x | x | x | x | [ckpt]() | [log]()| [json]()|
 
 ### Something-Something V1
+
 |config | gpus | backbone| pretrain | top1 acc| top5 acc | gpu_mem(M) | ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
 |[tin_r50_1x1x8_35e_sthv1_rgb](/configs/recognition/tin/tin_r50_1x1x8_35e_sthv1_rgb.py) |x| ResNet50 |ImageNet|41.59|71.94| x | [ckpt]() | [log]()| [json]()|
 
 ### Something-Something V2
+
 |config | gpus | backbone | pretrain| top1 acc| top5 acc | gpu_mem(M)  | ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
 |[tin_r50_1x1x8_35e_sthv2_rgb](/configs/recognition/tin/tin_r50_1x1x8_35e_sthv2_rgb.py) |x| ResNet50|ImageNet |53.08|82.02| x | [ckpt]() | [log]()| [json]()|
