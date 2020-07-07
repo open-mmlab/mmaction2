@@ -47,7 +47,8 @@ You can use the following command to extract frames.
 ```shell
 python build_rawframes.py ${SRC_FOLDER} ${OUT_FOLDER} [--task ${TASK}] [--level ${LEVEL}] \
     [--num_worker ${NUM_WORKER}] [--flow_type ${FLOW_TYPE}] [--out_format ${OUT_FORMAT}] \
-    [--ext ${EXT}] [--new_width ${NEW_WIDTH}] [--new_height ${NEW_HEIGHT}] [--resume]
+    [--ext ${EXT}] [--new_width ${NEW_WIDTH}] [--new_height ${NEW_HEIGHT}] [--new_short ${NEW_SHORT}]
+    [--resume]
 ```
 
 - `SRC_FOLDER`: Folder of the original video.
@@ -60,6 +61,7 @@ python build_rawframes.py ${SRC_FOLDER} ${OUT_FOLDER} [--task ${TASK}] [--level 
 - `EXT`: Video file extension, e.g., `avi`, `mp4`.
 - `NEW_WIDTH`: Resized image width of output.
 - `NEW_HEIGHT`: Resized image height of output.
+- `NEW_SHORT`: Resized image short side length keeping ratio.
 - `--resume`: Whether to resume optical flow extraction instead of overwriting.
 
 The recommended practice is
