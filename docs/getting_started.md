@@ -294,7 +294,7 @@ GPUS=16 ./tools/slurm_train.sh dev tsn_r50_k400 configs/recognition/tsn/tsn_r50_
 You can check [slurm_train.sh](../tools/slurm_train.sh) for full arguments and environment variables.
 
 If you have just multiple machines connected with ethernet, you can refer to
-pytorch [launch utility](https://pytorch.orgstable/distributed_deprecated.html#launch-utility).
+pytorch [launch utility](https://pytorch.org/docs/stable/distributed_deprecated.html#launch-utility).
 Usually it is slow if you do not have high speed networking like infiniband.
 
 ### Launch multiple jobs on a single machine
