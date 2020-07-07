@@ -5,7 +5,7 @@
 ### ActivityNet feature
 
 |config | gpus | pretrain | AR@100| AUC | gpu_mem(M) | iter time(s) | ckpt | log| json|
-|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
 |[bmn_400x100_9e_2x8_activitynet_feature](/configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py) |x| None |75.28|67.22|5420|3.27|[ckpt]()| [log]()| [json]()|
 
 Notes:
