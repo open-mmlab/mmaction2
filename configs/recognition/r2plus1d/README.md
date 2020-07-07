@@ -6,8 +6,8 @@
 
 |config | gpus | backbone | pretrain| top1 acc| top5 acc | inference_time(video/s) | gpu_mem(M) | ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[r2plus1d_r34_8x8x1_180e_kinetics400_rgb](/configs/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb.py) |x| ResNet34|None |68.68|88.36|1.6 (80x3 frames)|5019|[ckpt]()| [log]()| [json]()|
-|[r2plus1d_r34_32x2x1_180e_kinetics400_rgb](/configs/recognition/r2plus1d/r2plus1d_r34_32x2x1_180e_kinetics400_rgb.py) |x| ResNet34|None |74.60|91.59|0.5 (320x3 frames)|12975| [ckpt]() | [log]()| [json]()|
+|[r2plus1d_r34_8x8x1_180e_kinetics400_rgb](/configs/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb.py) |8x2| ResNet34|None |68.68|88.36|1.6 (80x3 frames)|5019|[ckpt]()| [log]()| [json]()|
+|[r2plus1d_r34_32x2x1_180e_kinetics400_rgb](/configs/recognition/r2plus1d/r2plus1d_r34_32x2x1_180e_kinetics400_rgb.py) |8x2| ResNet34|None |74.60|91.59|0.5 (320x3 frames)|12975| [ckpt]() | [log]()| [json]()|
 |[r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb](/configs/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb.py) |x| ResNet34|None |x|x|x|x| [ckpt]() | [log]()| [json]()|
 
 Notes:

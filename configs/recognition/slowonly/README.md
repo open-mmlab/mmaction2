@@ -6,8 +6,8 @@
 
 |config | gpus | backbone |pretrain| top1 acc| top5 acc | inference_time(video/s) | gpu_mem(M) | ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[slowonly_r50_4x16x1_256e_kinetics400_rgb](/configs/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_rgb.py)|x| ResNet50 | None |73.02|90.77|4.0 (40x3 frames)|3168|[ckpt]()| [log]()| [json]()|
-|[slowonly_r50_8x8x1_256e_kinetics400_rgb](/configs/recognition/slowonly/slowonly_r50_8x8x1_256e_kinetics400_rgb.py) |x| ResNet50 | None |74.93|91.92|2.3 (80x3 frames)|5820| [ckpt]() | [log]()| [json]()|
+|[slowonly_r50_4x16x1_256e_kinetics400_rgb](/configs/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_rgb.py)|8x2| ResNet50 | None |73.02|90.77|4.0 (40x3 frames)|3168|[ckpt]()| [log]()| [json]()|
+|[slowonly_r50_8x8x1_256e_kinetics400_rgb](/configs/recognition/slowonly/slowonly_r50_8x8x1_256e_kinetics400_rgb.py) |8x3| ResNet50 | None |74.93|91.92|2.3 (80x3 frames)|5820| [ckpt]() | [log]()| [json]()|
 |[slowonly_r50_4x16x1_256e_kinetics400_flow](/configs/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_flow.py)|x| ResNet50  | ImageNet |61.79|83.62|x|8450| [ckpt]() | [log]() | [json]()|
 |[slowonly_r50_8x8x1_196e_kinetics400_flow](/configs/recognition/slowonly/slowonly_r50_8x8x1_196e_kinetics400_flow.py) |x| ResNet50 | ImageNet |65.76|86.25|x|8455| [ckpt]() | [log]() | [json]()|
 |[slowonly_r50_video_4x16x1_256e_kinetics400_rgb](/configs/recognition/slowonly/slowonly_r50_video_4x16x1_256e_kinetics400_rgb.py)|x| ResNet50  | None |x|x|x|x| [ckpt]() | [log]()| [json]()|

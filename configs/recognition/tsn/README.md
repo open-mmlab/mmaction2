@@ -31,27 +31,27 @@
 
 |config | gpus| backbone |pretrain| top1 acc| top5 acc | gpu_mem(M) | ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[tsn_r50_1x1x8_50e_sthv1_rgb](/configs/recognition/tsn/tsn_r50_1x1x8_50e_sthv1_rgb.py) |x| ResNet50 | ImageNet|18.55|44.80| 10978 | [ckpt]() | [log]()| [json]()|
+|[tsn_r50_1x1x8_50e_sthv1_rgb](/configs/recognition/tsn/tsn_r50_1x1x8_50e_sthv1_rgb.py) |8x1| ResNet50 | ImageNet|18.55|44.80| 10978 | [ckpt]() | [log]()| [json]()|
 |[tsn_r50_1x1x16_50e_sthv1_rgb](/configs/recognition/tsn/tsn_r50_1x1x16_50e_sthv1_rgb.py) |x| ResNet50| ImageNet |15.77|39.85| 5691 | [ckpt]() | [log]()| [json]()|
 
 ### Something-Something V2
 
 |config | gpus| backbone| pretrain | top1 acc| top5 acc | gpu_mem(M) | ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[tsn_r50_1x1x8_50e_sthv2_rgb](/configs/recognition/tsn/tsn_r50_1x1x8_50e_sthv2_rgb.py) |x| ResNet50| ImageNet |32.41|64.05| 10978 | [ckpt]() | [log]()| [json]()|
+|[tsn_r50_1x1x8_50e_sthv2_rgb](/configs/recognition/tsn/tsn_r50_1x1x8_50e_sthv2_rgb.py) |8x2| ResNet50| ImageNet |32.41|64.05| 10978 | [ckpt]() | [log]()| [json]()|
 |[tsn_r50_1x1x16_50e_sthv2_rgb](/configs/recognition/tsn/tsn_r50_1x1x16_50e_sthv2_rgb.py) |x| ResNet50| ImageNet |22.48|49.08|5698| [ckpt]() | [log]()| [json]()|
 
 ### Moments in Time
 
 |config | gpus| backbone | pretrain | top1 acc| top5 acc | gpu_mem(M)| ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[tsn_r50_1x1x6_100e_mit_rgb](/configs/recognition/tsn/tsn_r50_1x1x6_100e_mit_rgb.py) |x| ResNet50| ImageNet |26.84|51.6| 8339| [ckpt]() | [log]()| [json]()|
+|[tsn_r50_1x1x6_100e_mit_rgb](/configs/recognition/tsn/tsn_r50_1x1x6_100e_mit_rgb.py) |8x2| ResNet50| ImageNet |26.84|51.6| 8339| [ckpt]() | [log]()| [json]()|
 
 ### Multi-Moments in Time
 
 |config | gpus| backbone | pretrain | mAP| gpu_mem(M) | ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[tsn_r101_1x1x5_50e_mmit_rgb](/configs/recognition/tsn/tsn_r101_1x1x5_50e_mmit_rgb.py) |x| ResNet101| ImageNet |61.09| 10467 | [ckpt]() | [log]()| [json]()|
+|[tsn_r101_1x1x5_50e_mmit_rgb](/configs/recognition/tsn/tsn_r101_1x1x5_50e_mmit_rgb.py) |8x2| ResNet101| ImageNet |61.09| 10467 | [ckpt]() | [log]()| [json]()|
 
 Notes:
 1. The **gpus** indicates the number of gpu we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
