@@ -20,6 +20,8 @@ sed -i 's/.md](\/tools\/data\/ucf101\/preparing_ucf101.md/](#ucf-101/g' data_pre
 
 sed -i 's/#/##&/' localization_models.md
 sed -i 's/#/##&/' recognition_models.md
+sed -i 's/md###t/html#t/g' localization_models.md
+sed -i 's/md###t/html#t/g' recognition_models.md
 
 sed -i 's/#/#&/' tutorials.md
 
