@@ -79,7 +79,7 @@ python tools/train.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb
     --validate --seed 0 --deterministic
 ```
 
-For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md).
+For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
 
 ## Test
 
@@ -95,4 +95,4 @@ python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.
     --out result.json
 ```
 
-For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md).
+For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset#test-a-dataset).
