@@ -73,7 +73,8 @@ data = dict(
         data_prefix=data_root))
 
 # optimizer
-optimizer = dict(type='Adam', lr=0.001, weight_decay=0.0001)
+optimizer = dict(
+    type='Adam', lr=0.001, weight_decay=0.0001)  # this lr is used for 1 gpus
 
 optimizer_config = dict(grad_clip=None)
 # learning policy
