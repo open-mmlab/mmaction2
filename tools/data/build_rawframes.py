@@ -27,37 +27,37 @@ def extract_frame(vid_item, dev_id=0):
     if task == 'rgb':
         if args.new_short == 0:
             cmd = osp.join(
-                f'denseflow {full_path} -b=20 -s=0 -o={out_full_path}'
+                f"denseflow '{full_path}' -b=20 -s=0 -o='{out_full_path}'"
                 f' -nw={args.new_width} -nh={args.new_height} -v')
         else:
             cmd = osp.join(
-                f'denseflow {full_path} -b=20 -s=0 -o={out_full_path}'
+                f"denseflow '{full_path}' -b=20 -s=0 -o='{out_full_path}'"
                 f' -ns={args.new_short} -v')
         os.system(cmd)
     elif task == 'flow':
         if args.new_short == 0:
             cmd = osp.join(
-                f'denseflow {full_path} -a={method} -b=20 -s=1 -o={out_full_path}'  # noqa: E501
+                f"denseflow '{full_path}' -a={method} -b=20 -s=1 -o='{out_full_path}'"  # noqa: E501
                 f' -nw={args.new_width} --nh={args.new_height} -v')
         else:
             cmd = osp.join(
-                f'denseflow {full_path} -a={method} -b=20 -s=1 -o={out_full_path}'  # noqa: E501
+                f"denseflow '{full_path}' -a={method} -b=20 -s=1 -o='{out_full_path}'"  # noqa: E501
                 f' -ns={args.new_short} -v')
         os.system(cmd)
     else:
         if args.new_short == 0:
             cmd_rgb = osp.join(
-                f'denseflow {full_path} -b=20 -s=0 -o={out_full_path}'
+                f"denseflow '{full_path}' -b=20 -s=0 -o='{out_full_path}'"
                 f' -nw={args.new_width} -nh={args.new_height} -v')
             cmd_flow = osp.join(
-                f'denseflow {full_path} -a={method} -b=20 -s=1 -o={out_full_path}'  # noqa: E501
+                f"denseflow '{full_path}' -a={method} -b=20 -s=1 -o='{out_full_path}'"  # noqa: E501
                 f' -nw={args.new_width} -nh={args.new_height} -v')
         else:
             cmd_rgb = osp.join(
-                f'denseflow {full_path} -b=20 -s=0 -o={out_full_path}'
+                f"denseflow '{full_path}' -b=20 -s=0 -o='{out_full_path}'"
                 f' -ns={args.new_short} -v')
             cmd_flow = osp.join(
-                f'denseflow {full_path} -a={method} -b=20 -s=1 -o={out_full_path}'  # noqa: E501
+                f"denseflow '{full_path}' -a={method} -b=20 -s=1 -o='{out_full_path}'"  # noqa: E501
                 f' -ns={args.new_short} -v')
         os.system(cmd_rgb)
         os.system(cmd_flow)
