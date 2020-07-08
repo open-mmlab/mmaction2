@@ -1,22 +1,19 @@
 <div align="center">
-  <img src="docs/imgs/mmaction-logo.png" width="600"/>
+  <img src="docs/imgs/mmaction-logo.png" width="500"/>
 </div>
 
 ## Introduction
 
-<div align="left">
-  <img src="demo/demo.gif" width="600px"/>
-</div>
-
-[![docs](https://img.shields.io/badge/docs-latest-blue)](http://open-mmlab.pages.gitlab.sz.sensetime.com/mmaction-lite/)
-[![codecov](https://codecov.io/gh/open-mmlab/mmaction/branch/master/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmaction)
-[![python](https://img.shields.io/pypi/pyversions/mmaction.svg?style=plastic)](https://pypi.org/project/mmaction)
-[![pypi](https://img.shields.io/pypi/v/mmaction)](https://pypi.org/project/mmaction)
+<div align="left"><a href="http://open-mmlab.pages.gitlab.sz.sensetime.com/mmaction-lite/"><img src="https://img.shields.io/badge/docs-latest-blue"/></a><a href="https://codecov.io/gh/open-mmlab/mmaction"><img src="https://codecov.io/gh/open-mmlab/mmaction/branch/master/graph/badge.svg"/></a><a href="https://pypi.org/project/mmaction"><img src="https://img.shields.io/pypi/pyversions/mmaction.svg?style=plastic"/></a><a href="https://pypi.org/project/mmaction"><img src="https://img.shields.io/pypi/v/mmaction"/></a></div>
 
 The master branch works with **PyTorch 1.3+**.
 
 MMAction is an open-source toolbox for action understanding based on PyTorch.
 It is a part of the [OpenMMLab project](https://github.com/open-mmlab) developed by [Multimedia Laboratory, CUHK](http://mmlab.ie.cuhk.edu.hk/).
+
+<div align="center">
+  <img src="demo/demo.gif" width="600px"/>
+</div>
 
 ### Major Features
 
