@@ -33,7 +33,7 @@ It is a part of the [OpenMMLab project](https://github.com/open-mmlab) developed
 
   MMAction implements popular frameworks for action understanding:
 
-  - For action recognition, various algorithms are implemented, including TSN, TSM, R(2+1)D, I3D, SlowFast.
+  - For action recognition, various algorithms are implemented, including TSN, TSM, R(2+1)D, I3D, SlowOnly, SlowFast.
 
   - For temporal action localization, we implement BSN, BMN.
 
@@ -50,7 +50,7 @@ Results and models are available in the **README.md** of each method's config di
 Supported methods for action recognition:
 - [x] [TSN](configs/recognition/tsn/README.md)
 - [x] [TSM](configs/recognition/tsm/README.md)
-- [x] [R(2+1)d](configs/recognition/r2plus1d/README.md)
+- [x] [R(2+1)D](configs/recognition/r2plus1d/README.md)
 - [x] [I3D](configs/recognition/i3d/README.md)
 - [x] [SlowOnly](configs/recognition/slowonly/README.md)
 - [x] [SlowFast](configs/recognition/slowfast/README.md)
