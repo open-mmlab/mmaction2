@@ -1,15 +1,17 @@
-# MMAction: Action Understanding Toolbox
+<div align="center">
+  <img src="docs/imgs/mmaction-logo.png" width="600"/>
+</div>
 
-[![docs](https://img.shields.io/badge/docs-latest-blue)](http://open-mmlab.pages.gitlab.sz.sensetime.com/mmaction-lite/)
-[![codecov](https://codecov.io/gh/open-mmlab/mmaction/branch/master/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmaction)
-[![python](https://img.shields.io/pypi/pyversions/mmaction.svg?style=plastic)](https://pypi.org/project/mmaction)
-[![pypi](https://img.shields.io/pypi/v/mmaction)](https://pypi.org/project/mmaction)
+## Introduction
 
 <div align="left">
   <img src="demo/demo.gif" width="600px"/>
 </div>
 
-## Introduction
+[![docs](https://img.shields.io/badge/docs-latest-blue)](http://open-mmlab.pages.gitlab.sz.sensetime.com/mmaction-lite/)
+[![codecov](https://codecov.io/gh/open-mmlab/mmaction/branch/master/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmaction)
+[![python](https://img.shields.io/pypi/pyversions/mmaction.svg?style=plastic)](https://pypi.org/project/mmaction)
+[![pypi](https://img.shields.io/pypi/v/mmaction)](https://pypi.org/project/mmaction)
 
 The master branch works with **PyTorch 1.3+**.
 
