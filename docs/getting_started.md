@@ -404,7 +404,7 @@ Params: 28.04 M
 You may well use the result for simple comparisons, but double check it before you adopt it in technical reports or papers.
 
 (1) FLOPs are related to the input shape while parameters are not. The default input shape is (1, 3, 340, 256) for 2D recognizer, (1, 3, 32, 340, 256) for 3D recognizer.
-(2) Some custom operators are not counted into FLOPs. You can add support for new operators by modifying [`mmaction/utils/flops_counter.py`](/mmaction/utils/file_client.py).
+(2) Some operators are not counted into FLOPs like GN and custom operators. Refer to [`mmcv.cnn.get_model_complexity_info()`](https://github.com/open-mmlab/mmcv/blob/master/mmcv/cnn/utils/flops_counter.py) for details.
 
 ### Publish a model
 

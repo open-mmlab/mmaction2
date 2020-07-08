@@ -1,9 +1,13 @@
 import argparse
 
 from mmcv import Config
-from mmcv.cnn import get_model_complexity_info
 
 from mmaction.models import build_recognizer
+
+try:
+    from mmcv.cnn import get_model_complexity_info
+except ImportError:
+    raise ImportError('Please upgrade mmcv to >0.6.2')
 
 
 def parse_args():
