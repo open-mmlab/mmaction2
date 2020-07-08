@@ -28,21 +28,16 @@ def parse_args():
         ' "top_k_accuracy", "mean_class_accuracy" for video dataset')
     parser.add_argument('--show', action='store_true', help='show results')
     parser.add_argument(
-        '--proc_per_gpu',
-        default=1,
-        type=int,
-        help='Number of processes per GPU')
-    parser.add_argument(
-        '--gpu_collect',
+        '--gpu-collect',
         action='store_true',
         help='whether to use gpu to collect results')
     parser.add_argument(
         '--tmpdir',
         help='tmp directory used for collecting results from multiple '
-        'workers, available when gpu_collect is not specified')
+        'workers, available when gpu-collect is not specified')
     parser.add_argument('--options', nargs='+', help='custom options')
     parser.add_argument(
-        '--average_clips',
+        '--average-clips',
         choices=['score', 'prob'],
         default='score',
         help='average type when averaging test clips')

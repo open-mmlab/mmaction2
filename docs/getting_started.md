@@ -46,12 +46,12 @@ You can use the following commands to test a dataset.
 ```shell
 # single-gpu testing
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--out ${RESULT_FILE}] [--eval ${EVAL_METRICS}] \
-    [--proc_per_gpu ${NUM_PROC_PER_GPU}] [--gpu_collect] [--tmpdir ${TMPDIR}] [--average_clips ${AVG_TYPE}] \
+    [--gpu-collect] [--tmpdir ${TMPDIR}] [--average-clips ${AVG_TYPE}] \
     [--launcher ${JOB_LAUNCHER}] [--local_rank ${LOCAL_RANK}]
 
 # multi-gpu testing
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${GPU_NUM} [--out ${RESULT_FILE}] [--eval ${EVAL_METRICS}] \
-    [--proc_per_gpu ${NUM_PROC_PER_GPU}] [--gpu_collect] [--tmpdir ${TMPDIR}] [--average_clips ${AVG_TYPE}] \
+    [--gpu-collect] [--tmpdir ${TMPDIR}] [--average-clips ${AVG_TYPE}] \
     [--launcher ${JOB_LAUNCHER}] [--local_rank ${LOCAL_RANK}]
 ```
 
@@ -59,9 +59,8 @@ Optional arguments:
 - `GPU_NUM`: Number of GPU used to test model. If not specified, it will be set to 1.
 - `RESULT_FILE`: Filename of the output results. If not specified, the results will not be saved to a file.
 - `EVAL_METRICS`: Items to be evaluated on the results. Allowed values depend on the dataset, e.g., `top_k_accuracy`, `mean_class_accuracy` are available for all datasets in recognition, `mean_average_precision` for Multi-Moments in Time, `AR@AN` for ActivityNet, etc.
-- `NUM_PROC_PER_GPU`: Number of processes per GPU. If not specified, only one process will be assigned for a single gpu.
-- `--gpu_collect`: If specified, recognition results will be collected using gpu communication. Otherwise, it will save the results on different gpus to `TMPDIR` and collect them by the rank 0 worker.
-- `TMPDIR`: Temporary directory used for collecting results from multiple workers, available when `--gpu_collect` is not specified.
+- `--gpu-collect`: If specified, recognition results will be collected using gpu communication. Otherwise, it will save the results on different gpus to `TMPDIR` and collect them by the rank 0 worker.
+- `TMPDIR`: Temporary directory used for collecting results from multiple workers, available when `--gpu-collect` is not specified.
 - `AVG_TYPE`: Items to average the test clips. If set to `prob`, it will apply softmax before averaging the clip scores. Otherwise, it will directly average the clip scores.
 - `JOB_LAUNCHER`: Items for distributed job initialization launcher. Allowed choices are `none`, `pytorch`, `slurm`, `mpi`. Especially, if set to none, it will test in a non-distributed mode.
 - `LOCAL_RANK`: ID for local rank. If not specified, it will be set to 0.
@@ -247,7 +246,7 @@ According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you ne
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
-If you want to specify the working directory in the command, you can add an argument `--work_dir ${YOUR_WORK_DIR}`.
+If you want to specify the working directory in the command, you can add an argument `--work-dir ${YOUR_WORK_DIR}`.
 
 ### Train with multiple GPUs
 
@@ -258,10 +257,10 @@ If you want to specify the working directory in the command, you can add an argu
 Optional arguments are:
 
 - `--validate` (**strongly recommended**): Perform evaluation at every k (default value is 5, which can be modified by changing the `interval` value in `evaluation` dict in each config file) epochs during the training.
-- `--work_dir ${WORK_DIR}`: Override the working directory specified in the config file.
-- `--resume_from ${CHECKPOINT_FILE}`: Resume from a previous checkpoint file.
+- `--work-dir ${WORK_DIR}`: Override the working directory specified in the config file.
+- `--resume-from ${CHECKPOINT_FILE}`: Resume from a previous checkpoint file.
 - `--gpus ${GPU_NUM}`: Number of gpus to use, which is only applicable to non-distributed training.
-- `--gpu_ids ${GPU_IDS}`: IDs of gpus to use, which is only applicable to non-distributed training.
+- `--gpu-ids ${GPU_IDS}`: IDs of gpus to use, which is only applicable to non-distributed training.
 - `--seed ${SEED}`: Seed id for random state in python, numpy and pytorch to generate random numbers.
 - `--deterministic`: If specified, it will set deterministic options for CUDNN backend.
 - `JOB_LAUNCHER`: Items for distributed job initialization launcher. Allowed choices are `none`, `pytorch`, `slurm`, `mpi`. Especially, if set to none, it will test in a non-distributed mode.
@@ -274,7 +273,7 @@ Difference between `resume-from` and `load-from`:
 Here is an example of using 8 GPUs to load TSN checkpoint.
 
 ```shell
-./tools/dist_train.sh configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py 8 --resume_from work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb/latest.pth
+./tools/dist_train.sh configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py 8 --resume-from work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb/latest.pth
 ```
 
 ### Train with multiple machines

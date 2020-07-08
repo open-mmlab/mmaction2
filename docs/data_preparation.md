@@ -46,8 +46,8 @@ You can use the following command to extract frames.
 
 ```shell
 python build_rawframes.py ${SRC_FOLDER} ${OUT_FOLDER} [--task ${TASK}] [--level ${LEVEL}] \
-    [--num_worker ${NUM_WORKER}] [--flow_type ${FLOW_TYPE}] [--out_format ${OUT_FORMAT}] \
-    [--ext ${EXT}] [--new_width ${NEW_WIDTH}] [--new_height ${NEW_HEIGHT}] [--new_short ${NEW_SHORT}]
+    [--num-worker ${NUM_WORKER}] [--flow-type ${FLOW_TYPE}] [--out-format ${OUT_FORMAT}] \
+    [--ext ${EXT}] [--new-width ${NEW_WIDTH}] [--new-height ${NEW_HEIGHT}] [--new-short ${NEW_SHORT}]
     [--resume]
 ```
 
@@ -79,9 +79,9 @@ We provide a convenient script to generate annotation file list. You can use the
 
 ```shell
 cd $MMACTION
-python tools/data/build_file_list.py ${DATASET} ${SRC_FOLDER} [--rgb_prefix ${RGB_PREFIX}] \
-    [--flow_x_prefix ${FLOW_X_PREFIX}] [--flow_y_prefix ${FLOW_Y_PREFIX}] [--num_split ${NUM_SPLIT}] \
-    [--subset ${SUBSET}] [--level ${LEVEL}] [--format ${FORMAT}] [--out_root_path ${OUT_ROOT_PATH}] \
+python tools/data/build_file_list.py ${DATASET} ${SRC_FOLDER} [--rgb-prefix ${RGB_PREFIX}] \
+    [--flow-x-prefix ${FLOW_X_PREFIX}] [--flow-y-prefix ${FLOW_Y_PREFIX}] [--num-split ${NUM_SPLIT}] \
+    [--subset ${SUBSET}] [--level ${LEVEL}] [--format ${FORMAT}] [--out-root-path ${OUT_ROOT_PATH}] \
     [--shuffle]
 ```
 

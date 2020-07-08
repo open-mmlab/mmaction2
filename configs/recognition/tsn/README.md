@@ -75,7 +75,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 Example: train TSN model on Kinetics-400 dataset in a deterministic option with periodic validation.
 ```shell
 python tools/train.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
-    --work_dir work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb \
+    --work-dir work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb \
     --validate --seed 0 --deterministic
 ```
 
