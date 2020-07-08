@@ -7,8 +7,8 @@ We compare our results with some popular frameworks and official releases in ter
 Here we compare our MMAction repo with other video understanding toolboxes in the same data and model settings
 by the training time per iteration. Here, we use
 - commit id [7f3490d](https://github.com/open-mmlab/mmaction/tree/7f3490d3db6a67fe7b87bfef238b757403b670e3)(1/5/2020) of MMAction V0.1
-- commit id [8d53d6f](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd) of Temporal-Shift-Module
-- commit id [133e40f](https://github.com/facebookresearch/SlowFast/tree/133e40f8349ce37b0e6168639da0811a413579c8) of PySlowFast
+- commit id [8d53d6f](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd)(5/5/2020) of Temporal-Shift-Module
+- commit id [133e40f](https://github.com/facebookresearch/SlowFast/tree/133e40f8349ce37b0e6168639da0811a413579c8)(30/5/2020) of PySlowFast
 - commit id [f13707f](https://github.com/wzmsltw/BSN-boundary-sensitive-network/tree/f13707fbc362486e93178c39f9c4d398afe2cb2f)(12/12/2018) of BSN(boundary sensitive network)
 
 To ensure the fairness of the comparison, the comparison experiments were conducted under the same hardware environment and using the same dataset.
