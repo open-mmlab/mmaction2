@@ -80,8 +80,8 @@ def extract_dense_flow(path,
                         and 'farneback'. Default: 'tvl1'.
     """
 
+    frames = []
     if osp.exists(path):
-        frames = []
         vid = cv2.VideoCapture(path)
         flag, f = vid.read()
         while flag:

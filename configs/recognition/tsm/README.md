@@ -42,7 +42,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 Example: train TSM model on Kinetics-400 dataset in a deterministic option with periodic validation.
 ```shell
 python tools/train.py configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py \
-    --work_dir work_dirs/tsm_r50_1x1x8_100e_kinetics400_rgb \
+    --work-dir work_dirs/tsm_r50_1x1x8_100e_kinetics400_rgb \
     --validate --seed 0 --deterministic
 ```
 

@@ -28,7 +28,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 Example: train I3D model on Kinetics-400 dataset in a deterministic option with periodic validation.
 ```shell
 python tools/train.py configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py \
-    --work_dir work_dirs/i3d_r50_32x2x1_100e_kinetics400_rgb \
+    --work-dir work_dirs/i3d_r50_32x2x1_100e_kinetics400_rgb \
     --validate --seed 0 --deterministic
 ```
 

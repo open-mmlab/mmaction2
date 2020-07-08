@@ -19,9 +19,9 @@ from mmaction.utils import collect_env, get_root_logger
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a recognizer')
     parser.add_argument('config', help='train config file path')
-    parser.add_argument('--work_dir', help='the dir to save logs and models')
+    parser.add_argument('--work-dir', help='the dir to save logs and models')
     parser.add_argument(
-        '--resume_from', help='the checkpoint file to resume from')
+        '--resume-from', help='the checkpoint file to resume from')
     parser.add_argument(
         '--validate',
         action='store_true',
@@ -33,7 +33,7 @@ def parse_args():
         help='number of gpus to use '
         '(only applicable to non-distributed training)')
     group_gpus.add_argument(
-        '--gpu_ids',
+        '--gpu-ids',
         type=int,
         nargs='+',
         help='ids of gpus to use '

@@ -64,7 +64,7 @@ bash extract_frames.sh
 ```
 
 These two commands above can generate images with size 340x256, if you want to generate images with short edge 320 (320p),
-you can change the args `--new_width 340 --new_height 256` to `--new_short 320`.
+you can change the args `--new-width 340 --new-height 256` to `--new-short 320`.
 More details can be found in [data_preparation](/docs/data_preparation.md)
 
 ## Step 4. Generate File List

@@ -22,19 +22,19 @@ def parse_args():
     parser.add_argument(
         'src_folder', type=str, help='root directory for the frames or videos')
     parser.add_argument(
-        '--rgb_prefix', type=str, default='img_', help='prefix of rgb frames')
+        '--rgb-prefix', type=str, default='img_', help='prefix of rgb frames')
     parser.add_argument(
-        '--flow_x_prefix',
+        '--flow-x-prefix',
         type=str,
         default='flow_x_',
         help='prefix of flow x frames')
     parser.add_argument(
-        '--flow_y_prefix',
+        '--flow-y-prefix',
         type=str,
         default='flow_y_',
         help='prefix of flow y frames')
     parser.add_argument(
-        '--num_split',
+        '--num-split',
         type=int,
         default=3,
         help='number of split to file list')
@@ -57,7 +57,7 @@ def parse_args():
         choices=['rawframes', 'videos'],
         help='data format')
     parser.add_argument(
-        '--out_root_path',
+        '--out-root-path',
         type=str,
         default='data/',
         help='root path for output')

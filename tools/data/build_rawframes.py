@@ -84,18 +84,18 @@ def parse_args():
         default=2,
         help='directory level of data')
     parser.add_argument(
-        '--num_worker',
+        '--num-worker',
         type=int,
         default=8,
         help='number of workers to build rawframes')
     parser.add_argument(
-        '--flow_type',
+        '--flow-type',
         type=str,
         default=None,
         choices=[None, 'tvl1', 'warp_tvl1', 'farn', 'brox'],
         help='flow type to be generated')
     parser.add_argument(
-        '--out_format',
+        '--out-format',
         type=str,
         default='jpg',
         choices=['jpg', 'h5', 'png'],
@@ -107,15 +107,15 @@ def parse_args():
         choices=['avi', 'mp4', 'webm'],
         help='video file extensions')
     parser.add_argument(
-        '--new_width', type=int, default=0, help='resize image width')
+        '--new-width', type=int, default=0, help='resize image width')
     parser.add_argument(
-        '--new_height', type=int, default=0, help='resize image height')
+        '--new-height', type=int, default=0, help='resize image height')
     parser.add_argument(
-        '--new_short',
+        '--new-short',
         type=int,
         default=0,
         help='resize image short side length keeping ratio')
-    parser.add_argument('--num_gpu', type=int, default=8, help='number of GPU')
+    parser.add_argument('--num-gpu', type=int, default=8, help='number of GPU')
     parser.add_argument(
         '--resume',
         action='store_true',

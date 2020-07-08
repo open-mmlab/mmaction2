@@ -29,7 +29,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 Example: train SlowOnly model on Kinetics-400 dataset in a deterministic option with periodic validation.
 ```shell
 python tools/train.py configs/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_rgb.py \
-    --work_dir work_dirs/slowonly_r50_4x16x1_256e_kinetics400_rgb \
+    --work-dir work_dirs/slowonly_r50_4x16x1_256e_kinetics400_rgb \
     --validate --seed 0 --deterministic
 ```
 
@@ -45,7 +45,7 @@ Example: test SlowOnly model on Kinetics-400 dataset and dump the result to a js
 ```shell
 python tools/test.py configs/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_rgb.py \
     checkpoints/SOME_CHECKPOINT.pth --eval top_k_accuracy mean_class_accuracy \
-    --out result.json --average_clips=prob
+    --out result.json --average-clips=prob
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
