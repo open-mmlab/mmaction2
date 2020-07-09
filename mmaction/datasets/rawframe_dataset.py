@@ -98,14 +98,14 @@ class RawframeDataset(BaseDataset):
         return video_infos
 
     def prepare_train_frames(self, idx):
-        """Prepare frames for training."""
+        """Prepare the frames for training given the index."""
         results = copy.deepcopy(self.video_infos[idx])
         results['filename_tmpl'] = self.filename_tmpl
         results['modality'] = self.modality
         return self.pipeline(results)
 
     def prepare_test_frames(self, idx):
-        """Prepare frames for testing."""
+        """Prepare the frames for testing given the index."""
         results = copy.deepcopy(self.video_infos[idx])
         results['filename_tmpl'] = self.filename_tmpl
         results['modality'] = self.modality
@@ -131,6 +131,7 @@ class RawframeDataset(BaseDataset):
         Returns:
             dict: Evaluation results dict.
         """
+
         if not isinstance(results, list):
             raise TypeError(f'results must be a list, but got {type(results)}')
         assert len(results) == len(self), (
