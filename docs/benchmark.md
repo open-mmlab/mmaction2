@@ -13,7 +13,7 @@ by the training time per iteration. Here, we use
 
 To ensure the fairness of the comparison, the comparison experiments were conducted under the same hardware environment and using the same dataset.
 For each model setting, we kept the same data preprocessing methods to make sure the same feature input.
-In addition, we also used MemCache, a distributed cached system, to load the data for the same IO time.
+In addition, we also used MemCache, a distributed cached system, to load the data for the same IO time except for fair comparisons with Pyslowfast which uses raw videos directly from disk.
 
 The time we measured is the average training time for an iteration, including data processing and model training.
 The training speed is measure with s/iter. The lower, the better.
