@@ -42,7 +42,7 @@ It is a part of the [OpenMMLab project](https://github.com/open-mmlab) developed
 
   The toolbox directly supports multiple datasets, UCF101, Kinetics-400, Something-Something V1&V2, Moments in Time, Multi-Moments in Time, THUMOS14, etc.
 
-- **Support for multiple action undestanding frameworks**
+- **Support for multiple action understanding frameworks**
 
   MMAction implements popular frameworks for action understanding:
 
