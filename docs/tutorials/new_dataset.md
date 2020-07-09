@@ -94,7 +94,7 @@ There are two ways to work with custom datasets.
   a pickle or json file, then you can simply use `RawframeDataset`, `VideoDataset` or `ActivityNetDataset`.
 
 After the data pre-processing, the users need to further modify the config files to use the dataset.
-Here is an example of using a custom dataset in Rawframe format.
+Here is an example of using a custom dataset in rawframe format.
 
 In `configs/task/method/my_custom_config.py`:
 

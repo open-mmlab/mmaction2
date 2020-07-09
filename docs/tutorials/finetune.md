@@ -37,7 +37,7 @@ model = dict(
         init_std=0.01))
 ```
 
-Note that the `pretrained='torchvision://resnet50'` setting is used for initilizing backbone.
+Note that the `pretrained='torchvision://resnet50'` setting is used for initializing backbone.
 If you are training a new model from ImageNet-pretrained weights, this is for you.
 However, this setting is not related to our task at hand.
 What we need is `load_from`, which will be discussed later.

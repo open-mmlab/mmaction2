@@ -34,9 +34,9 @@ test_cfg = dict(average_clips=None) # Config for testing hyperparameters for TSN
 dataset_type = 'RawframeDataset'  # Type of dataset for training, valiation and testing
 data_root = 'data/kinetics400/rawframes_train/'  # Root path to data for training
 data_root_val = 'data/kinetics400/rawframes_val/'  # Root path to data for validation and testing
-ann_file_train = 'data/kinetics400/kinetics_train_list.txt'  # Path to the annotation file for training
-ann_file_val = 'data/kinetics400/kinetics_val_list.txt'  # Path to the annotation file for validation
-ann_file_test = 'data/kinetics400/kinetics_val_list.txt'  # Path to the annotation file for testing
+ann_file_train = 'data/kinetics400/kinetics400_train_list_rawframes.txt'  # Path to the annotation file for training
+ann_file_val = 'data/kinetics400/kinetics400_val_list_rawframes.txt'  # Path to the annotation file for validation
+ann_file_test = 'data/kinetics400/kinetics400_val_list_rawframes.txt'  # Path to the annotation file for testing
 img_norm_cfg = dict(  # Config of image normalition used in data pipeline
     mean=[123.675, 116.28, 103.53],  # Mean values of different channels to normalize
     std=[58.395, 57.12, 57.375],  # Std values of different channels to normalize
