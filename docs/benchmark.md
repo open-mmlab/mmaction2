@@ -10,6 +10,7 @@ by the training time per iteration. Here, we use
 - commit id [8d53d6f](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd)(5/5/2020) of Temporal-Shift-Module
 - commit id [133e40f](https://github.com/facebookresearch/SlowFast/tree/133e40f8349ce37b0e6168639da0811a413579c8)(30/5/2020) of PySlowFast
 - commit id [f13707f](https://github.com/wzmsltw/BSN-boundary-sensitive-network/tree/f13707fbc362486e93178c39f9c4d398afe2cb2f)(12/12/2018) of BSN(boundary sensitive network)
+- commit id [45d0514](https://github.com/JJBOY/BMN-Boundary-Matching-Network/tree/45d05146822b85ca672b65f3d030509583d0135a)(17/10/2019) of BMN(boundary matching network)
 
 To ensure the fairness of the comparison, the comparison experiments were conducted under the same hardware environment and using the same dataset.
 For each model setting, we kept the same data preprocessing methods to make sure the same feature input.
@@ -34,10 +35,10 @@ The training speed is measure with s/iter. The lower, the better.
 
 ## Localizers
 
-| Model | MMAction (s/iter) | BSN(boundary sensitive network) (s/iter) |
-| :--- | :---------------: | :-------------------------------------: |
-| BSN ([TEM + PEM + PGM](/configs/localization/bsn)) | **0.074(TEM)+0.040(PEM)** | 0.101(TEM)+0.040(PEM) |
-| BMN ([bmn_400x100_2x8_9e_activitynet_feature](/configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py)) | **3.27** | 3.30 |
+| Model | MMAction (s/iter) | BSN(boundary sensitive network) (s/iter) |BMN(boundary matching network) (s/iter)|
+| :--- | :---------------: | :-------------------------------------: | :-------------------------------------: |
+| BSN ([TEM + PEM + PGM](/configs/localization/bsn)) | **0.074(TEM)+0.040(PEM)** | 0.101(TEM)+0.040(PEM) | x |
+| BMN ([bmn_400x100_2x8_9e_activitynet_feature](/configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py)) | **3.27** | x | 3.30 |
 
 ## Hardware
 
