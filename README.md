@@ -88,7 +88,7 @@ Please see [getting_started.md](docs/getting_started.md) for the basic usage of 
 
 We appreciate all contributions to improve MMAction. Please refer to [CONTRIBUTING.md in MMDetection](https://github.com/open-mmlab/mmdetection/blob/master/.github/CONTRIBUTING.md) for the contributing guideline.
 
-## Acknowledgemnet
+## Acknowledgement
 
 MMAction is an open source project that is contributed by researchers and engineers from various colleges and companies.
 We appreciate all the contributors who implement their methods or add new features, as well as users who give valuable feedbacks.
