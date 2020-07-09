@@ -30,6 +30,7 @@ class VideoDataset(BaseDataset):
     """
 
     def load_annotations(self):
+        """Load annotation file to get video information."""
         video_infos = []
         with open(self.ann_file, 'r') as fin:
             for line in fin:
