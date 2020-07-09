@@ -27,7 +27,7 @@ def main():
 
     # init logger before other steps
     logger = get_root_logger()
-    logger.info(f'MMAction-Lite Version: {__version__}')
+    logger.info(f'MMAction Version: {__version__}')
     logger.info(f'Config: {cfg.text}')
 
     # create bench data list

@@ -216,7 +216,7 @@ are good examples which show how to do that.
 
 ### Iteration pipeline
 
-MMAction-lite implements distributed training and non-distributed training,
+MMAction implements distributed training and non-distributed training,
 which uses `MMDistributedDataParallel` and `MMDataParallel` respectively.
 
 We adopt distributed training for both single machine and multiple machines.
@@ -401,7 +401,7 @@ Params: 28.04 M
 ```
 
 **Note**: This tool is still experimental and we do not guarantee that the number is correct.
-You may well use the result for simple comparisons, but double check it before you adopt it in technical reports or papers.
+You may use the result for simple comparisons well, but double check it before you adopt it in technical reports or papers.
 
 (1) FLOPs are related to the input shape while parameters are not. The default input shape is (1, 3, 340, 256) for 2D recognizer, (1, 3, 32, 340, 256) for 3D recognizer.
 (2) Some operators are not counted into FLOPs like GN and custom operators. Refer to [`mmcv.cnn.get_model_complexity_info()`](https://github.com/open-mmlab/mmcv/blob/master/mmcv/cnn/utils/flops_counter.py) for details.
