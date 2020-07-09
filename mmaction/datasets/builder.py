@@ -56,7 +56,7 @@ def build_dataloader(dataset,
     In non-distributed training, there is only one dataloader for all GPUs.
 
     Args:
-        dataset (Dataset): A PyTorch dataset.
+        dataset (:obj:`Dataset`): A PyTorch dataset.
         videos_per_gpu (int): Number of videos on each GPU, i.e.,
             batch size of each GPU.
         workers_per_gpu (int): How many subprocesses to use for data

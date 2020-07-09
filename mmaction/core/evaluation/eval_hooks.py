@@ -114,7 +114,7 @@ class EvalHook(Hook):
         """Evaluate the results.
 
         Args:
-            runner (mmcv.Runner): The underlined training runner.
+            runner (:obj:`mmcv.Runner`): The underlined training runner.
             results (list): Output results.
         """
         eval_res = self.dataloader.dataset.evaluate(
