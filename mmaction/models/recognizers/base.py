@@ -35,10 +35,19 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         self.init_weights()
 
     def init_weights(self):
+        """Initialize the model network weights."""
         self.backbone.init_weights()
         self.cls_head.init_weights()
 
     def extract_feat(self, imgs):
+        """Extract features through a backbone.
+
+        Args:
+            imgs (torch.Tensor): The input images.
+
+        Returns:
+            torch.tensor: The extracted features.
+        """
         x = self.backbone(imgs)
         return x
 
@@ -124,6 +133,32 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
             return self.forward_test(imgs)
 
     def train_step(self, data_batch, optimizer, **kwargs):
+        """The iteration step during training.
+
+        This method defines an iteration step during training, except for the
+        back propagation and optimizer updating, which are done in an optimizer
+        hook. Note that in some complicated cases or models, the whole process
+        including back propagation and optimizer updating is also defined in
+        this method, such as GAN.
+
+        Args:
+            data_batch (dict): The output of dataloader.
+            optimizer (:obj:`torch.optim.Optimizer` | dict): The optimizer of
+                runner is passed to ``train_step()``. This argument is unused
+                and reserved.
+
+        Returns:
+            dict: It should contain at least 3 keys: ``loss``, ``log_vars``,
+                ``num_samples``.
+                ``loss`` is a tensor for back propagation, which can be a
+                weighted sum of multiple losses.
+                ``log_vars`` contains all the variables to be sent to the
+                logger.
+                ``num_samples`` indicates the batch size (when the model is
+                DDP, it means the batch size on each GPU), which is used for
+                averaging the logs.
+
+        """
         imgs = data_batch['imgs']
         label = data_batch['label']
 
@@ -139,6 +174,12 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         return outputs
 
     def val_step(self, data_batch, optimizer, **kwargs):
+        """The iteration step during validation.
+
+        This method shares the same signature as :func:`train_step`, but used
+        during val epochs. Note that the evaluation after training epochs is
+        not implemented with this method, but an evaluation hook.
+        """
         imgs = data_batch['imgs']
 
         results = self.forward(imgs, None, return_loss=False)

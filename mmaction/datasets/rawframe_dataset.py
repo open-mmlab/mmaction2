@@ -73,6 +73,7 @@ class RawframeDataset(BaseDataset):
         self.filename_tmpl = filename_tmpl
 
     def load_annotations(self):
+        """Load annotation file to get video information."""
         video_infos = []
         with open(self.ann_file, 'r') as fin:
             for line in fin:
@@ -97,12 +98,14 @@ class RawframeDataset(BaseDataset):
         return video_infos
 
     def prepare_train_frames(self, idx):
+        """Prepare frames for training."""
         results = copy.deepcopy(self.video_infos[idx])
         results['filename_tmpl'] = self.filename_tmpl
         results['modality'] = self.modality
         return self.pipeline(results)
 
     def prepare_test_frames(self, idx):
+        """Prepare frames for testing."""
         results = copy.deepcopy(self.video_infos[idx])
         results['filename_tmpl'] = self.filename_tmpl
         results['modality'] = self.modality

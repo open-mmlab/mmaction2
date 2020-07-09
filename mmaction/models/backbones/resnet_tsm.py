@@ -38,6 +38,16 @@ class TemporalShift(nn.Module):
 
     @staticmethod
     def shift(x, num_segments, shift_div=3):
+        """Perform temporal shift operation on the feature.
+
+        Args:
+            x (torch.Tensor): The input feature to be shifted.
+            num_segments (int): Number of frame segments.
+            shift_div (int): Number of divisions for shift. Default: 3.
+
+        Returns:
+            torch.Tensor: The shifted feature.
+        """
         # [N, C, H, W]
         n, c, h, w = x.size()
 
@@ -115,6 +125,7 @@ class ResNetTSM(ResNet):
         self.temporal_pool = temporal_pool
 
     def make_temporal_shift(self):
+        """Make temporal shift for some layers."""
         if self.temporal_pool:
             num_segment_list = [
                 self.num_segments, self.num_segments // 2,
@@ -128,6 +139,15 @@ class ResNetTSM(ResNet):
         if self.shift_place == 'block':
 
             def make_block_temporal(stage, num_segments):
+                """Make temporal shift on some blocks.
+
+                Args:
+                    stage (nn.Module): Model layers to be shifted.
+                    num_segments (int): Number of frame segments.
+
+                Returns:
+                    nn.Module: The shifted blocks.
+                """
                 blocks = list(stage.children())
                 for i, b in enumerate(blocks):
                     blocks[i] = TemporalShift(
@@ -145,6 +165,15 @@ class ResNetTSM(ResNet):
                 n_round = 2
 
             def make_block_temporal(stage, num_segments):
+                """Make temporal shift on some blocks.
+
+                Args:
+                    stage (nn.Module): Model layers to be shifted.
+                    num_segments (int): Number of frame segments.
+
+                Returns:
+                    nn.Module: The shifted blocks.
+                """
                 blocks = list(stage.children())
                 for i, b in enumerate(blocks):
                     if i % n_round == 0:
