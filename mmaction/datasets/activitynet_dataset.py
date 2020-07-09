@@ -75,6 +75,7 @@ class ActivityNetDataset(BaseDataset):
         super().__init__(ann_file, pipeline, data_prefix, test_mode)
 
     def load_annotations(self):
+        """Load the annotation according to ann_file into video_infos."""
         video_infos = []
         anno_database = mmcv.load(self.ann_file)
         for video_name in anno_database:
@@ -84,20 +85,23 @@ class ActivityNetDataset(BaseDataset):
         return video_infos
 
     def prepare_test_frames(self, idx):
+        """Prepare the frames for testing given the index."""
         results = copy.deepcopy(self.video_infos[idx])
         results['data_prefix'] = self.data_prefix
         return self.pipeline(results)
 
     def prepare_train_frames(self, idx):
+        """Prepare the frames for training given the index."""
         results = copy.deepcopy(self.video_infos[idx])
         results['data_prefix'] = self.data_prefix
         return self.pipeline(results)
 
     def __len__(self):
+        """Get the size of the dataset."""
         return len(self.video_infos)
 
     def _import_ground_truth(self):
-        # Read ground truth data.
+        """Read ground truth data from video_infos."""
         ground_truth = {}
         for video_info in self.video_infos:
             video_id = video_info['video_name'][2:]
@@ -137,7 +141,7 @@ class ActivityNetDataset(BaseDataset):
         return result_dict
 
     def _import_proposals(self, results):
-        # Read predictions.
+        """Read predictions from results."""
         proposals = {}
         num_proposals = 0
         for result in results:
@@ -152,6 +156,7 @@ class ActivityNetDataset(BaseDataset):
         return proposals, num_proposals
 
     def dump_results(self, results, out, output_format, version='VERSION 1.3'):
+        """Dump data to json/csv files."""
         if output_format == 'json':
             result_dict = self.proposals2json(results)
             output_dict = {
