@@ -33,7 +33,7 @@ mkdir /mnt/SSD/sthv1_extracted/
 ln -s /mnt/SSD/sthv1_extracted/ ../../../data/sthv1/rawframes
 ```
 
-If you didn't install dense_flow in the installation or only want to play with RGB frames (since extracting optical flow can be time-comsuming), consider running the following script to extract **RGB-only** frames.
+If you didn't install dense_flow in the installation or only want to play with RGB frames (since extracting optical flow can be time-consuming), consider running the following script to extract **RGB-only** frames.
 
 ```shell
 cd $MMACTION/tools/data/sthv1/

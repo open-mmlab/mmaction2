@@ -18,7 +18,7 @@ This part is **optional** if you only want to use the video loader.
 Before extracting, please refer to [install.md](/docs/install.md) for installing [dense_flow](https://github.com/open-mmlab/denseflow).
 
 
-If you didn't install dense_flow in the installation or only want to play with RGB frames (since extracting optical flow can be time-comsuming), consider running the following script to extract **RGB-only** frames.
+If you didn't install dense_flow in the installation or only want to play with RGB frames (since extracting optical flow can be time-consuming), consider running the following script to extract **RGB-only** frames.
 
 Fist, You can run the following script to soft link the extracted frames.
 

@@ -25,7 +25,7 @@ mkdir /mnt/SSD/mmit_extracted/
 ln -s /mnt/SSD/mmit_extracted/ ../../../data/mmit/rawframes
 ```
 
-If you didn't install dense_flow in the installation or only want to play with RGB frames (since extracting optical flow can be time-comsuming), consider running the following script to extract **RGB-only** frames.
+If you didn't install dense_flow in the installation or only want to play with RGB frames (since extracting optical flow can be time-consuming), consider running the following script to extract **RGB-only** frames.
 
 ```shell
 bash extract_rgb_frames.sh

@@ -51,7 +51,7 @@ mkdir /mnt/SSD/kinetics400_extracted_val/
 ln -s /mnt/SSD/kinetics400_extracted_val/ ../../../data/kinetics400/rawframes_val/
 ```
 
-If you didn't install dense_flow in the installation or only want to play with RGB frames (since extracting optical flow can be time-comsuming), consider running the following script to extract **RGB-only** frames.
+If you didn't install dense_flow in the installation or only want to play with RGB frames (since extracting optical flow can be time-consuming), consider running the following script to extract **RGB-only** frames.
 
 ```shell
 bash extract_rgb_frames.sh
