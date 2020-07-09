@@ -4,7 +4,23 @@
 
 ## Introduction
 
-<div align="left"><a href="http://open-mmlab.pages.gitlab.sz.sensetime.com/mmaction-lite/"><img src="https://img.shields.io/badge/docs-latest-blue"/></a><a href="https://codecov.io/gh/open-mmlab/mmaction"><img src="https://codecov.io/gh/open-mmlab/mmaction/branch/master/graph/badge.svg"/></a><a href="https://pypi.org/project/mmaction"><img src="https://img.shields.io/pypi/pyversions/mmaction.svg?style=plastic"/></a><a href="https://pypi.org/project/mmaction"><img src="https://img.shields.io/pypi/v/mmaction"/></a></div>
+<div align="left">
+	<a href="http://open-mmlab.pages.gitlab.sz.sensetime.com/mmaction-lite/">
+		<img src="https://img.shields.io/badge/docs-latest-blue"/>
+	</a>
+	<a href="https://codecov.io/gh/open-mmlab/mmaction">
+		<img src="https://codecov.io/gh/open-mmlab/mmaction/branch/master/graph/badge.svg"/>
+	</a>
+	<a href="https://pypi.org/project/mmaction">
+		<img src="https://img.shields.io/pypi/pyversions/mmaction.svg?style=plastic"/>
+	</a>
+	<a href="https://pypi.org/project/mmaction">
+		<img src="https://img.shields.io/pypi/v/mmaction"/>
+	</a>
+	<a href="https://github.com/open-mmlab/mmaction/blob/master/LICENSE">
+	    <img src="https://img.shields.io/github/license/open-mmlab/mmaction.svg">
+	</a>
+</div>
 
 The master branch works with **PyTorch 1.3+**.
 

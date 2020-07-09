@@ -49,7 +49,7 @@ pages:
   image: $PYTORCH_IMAGE
   stage: deploy
   script:
-    - pip install mmcv
+    - pip install mmcv-full
     - pip install sphinx sphinx_rtd_theme recommonmark sphinx-markdown-tables
     - cd docs
     - ./merge_docs.sh
