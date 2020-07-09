@@ -20,7 +20,8 @@ class Recognizer2D(BaseRecognizer):
         return loss
 
     def forward_test(self, imgs):
-        """Defines the computation performed at every call when testing."""
+        """Defines the computation performed at every call
+        when evaluation and testing."""
         batches = imgs.shape[0]
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
         num_segs = imgs.shape[0] // batches
