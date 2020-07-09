@@ -18,7 +18,8 @@ class Recognizer3D(BaseRecognizer):
         return loss
 
     def forward_test(self, imgs):
-        """Defines the computation performed at every call when testing."""
+        """Defines the computation performed at every call
+        when evaluation and testing."""
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
 
         x = self.extract_feat(imgs)
