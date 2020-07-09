@@ -60,8 +60,7 @@ More generally, a customized optimizer constructor could be defined as following
 In `mmaction/core/optimizer/my_optimizer_constructor.py`:
 
 ```python
-from .default_constructor import DefaultOptimizerConstructor
-from .registry import OPTIMIZER_BUILDERS
+from mmcv.runner import OPTIMIZER_BUILDERS, DefaultOptimizerConstructor
 
 @OPTIMIZER_BUILDERS.register_module()
 class MyOptimizerConstructor(DefaultOptimizerConstructor):
