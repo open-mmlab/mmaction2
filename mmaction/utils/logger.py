@@ -19,6 +19,6 @@ def get_root_logger(log_file=None, log_level=logging.INFO):
             "Error" and be silent most of the time.
 
     Returns:
-        logging.Logger: The root logger.
+        :obj:`logging.Logger`: The root logger.
     """
     return get_logger(__name__.split('.')[0], log_file, log_level)
