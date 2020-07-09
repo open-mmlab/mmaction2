@@ -26,7 +26,6 @@ def parse_args():
         nargs='+',
         help='evaluation metrics, which depends on the dataset, e.g.,'
         ' "top_k_accuracy", "mean_class_accuracy" for video dataset')
-    parser.add_argument('--show', action='store_true', help='show results')
     parser.add_argument(
         '--gpu-collect',
         action='store_true',
@@ -81,9 +80,9 @@ def main():
     # Add options from args.option
     eval_config = merge_configs(eval_config, args.options)
 
-    assert output_config or eval_config or args.show, \
-        ('Please specify at least one operation (save or eval or show the '
-         'results) with the argument "--out", "--eval" or "--show"')
+    assert output_config or eval_config, \
+        ('Please specify at least one operation (save or eval the '
+         'results) with the argument "--out" or "--eval"')
 
     # set cudnn benchmark
     if cfg.get('cudnn_benchmark', False):
