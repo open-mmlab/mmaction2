@@ -5,6 +5,9 @@
 ## Introduction
 
 <div align="left">
+	<a href="http://open-mmlab.pages.gitlab.sz.sensetime.com/mmaction-lite/">
+	    <img src="https://mmaction.readthedocs.io/en/latest/"/>
+	</a>
 	<a href="https://github.com/open-mmlab/mmaction/blob/master/LICENSE">
 	    <img src="https://img.shields.io/github/license/open-mmlab/mmaction.svg">
 	</a>
