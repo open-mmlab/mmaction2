@@ -65,6 +65,7 @@ html_static_path = ['_static']
 
 master_doc = 'index'
 
+
 def builder_inited_handler(app):
     subprocess.run(['./merge_docs.sh'])
 
