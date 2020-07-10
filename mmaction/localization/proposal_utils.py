@@ -37,7 +37,7 @@ def temporal_iop(proposal_min, proposal_max, gt_min, gt_max):
     Returns:
         scores (list[float]): List of intersection over anchor scores.
     """
-    len_anchors = proposal_max - proposal_min
+    len_anchors = np.array(proposal_max - proposal_min)
     int_tmin = np.maximum(proposal_min, gt_min)
     int_tmax = np.minimum(proposal_max, gt_max)
     inter_len = np.maximum(int_tmax - int_tmin, 0.)
