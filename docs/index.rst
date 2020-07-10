@@ -9,8 +9,6 @@ Welcome to MMAction's documentation!
    install.md
    data_preparation.md
    config.md
-   config_localization.md
-   config_recognition.md
    api.rst
 
 
