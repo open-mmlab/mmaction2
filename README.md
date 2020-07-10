@@ -5,8 +5,8 @@
 ## Introduction
 
 <div align="left">
-	<a href="http://open-mmlab.pages.gitlab.sz.sensetime.com/mmaction-lite/">
-	    <img src="https://mmaction.readthedocs.io/en/latest/"/>
+	<a href='https://mmaction.readthedocs.io/en/latest/?badge=latest'>
+	    <img src='https://readthedocs.org/projects/mmaction/badge/?version=latest' alt='Documentation Status' />
 	</a>
 	<a href="https://github.com/open-mmlab/mmaction/blob/master/LICENSE">
 	    <img src="https://img.shields.io/github/license/open-mmlab/mmaction.svg">
