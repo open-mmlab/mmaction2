@@ -65,7 +65,7 @@ jobs:
           CUDA_ARCH: ${{matrix.cuda_arch}}
         run: |
           rm -rf .eggs
-          python setup.py check -m -s
+          python setup.py check -m
       - name: Run unittests and generate coverage report
         run: |
           coverage run --branch --source mmaction -m pytest tests/
