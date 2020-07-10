@@ -49,7 +49,8 @@ This project is released under the [Apache 2.0 license](LICENSE).
 
 Benchmark with other repos are available on [benchmark.md](docs/benchmark.md).
 
-Results and models are available in the **README.md** of each method's config directory.
+Results and models are available in the *README.md* of each method's config directory.
+A summary can be found in the [**model zoo**](https://mmaction.readthedocs.io/en/latest/modelzoo.html) page.
 
 Supported methods for action recognition:
 - [x] [TSN](configs/recognition/tsn/README.md)
