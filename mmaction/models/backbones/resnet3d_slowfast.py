@@ -348,7 +348,7 @@ class ResNet3dSlowFast(nn.Module):
         depth (int): Depth of resnet, from {18, 34, 50, 101, 152}.
         pretrained (str): The file path to a pretrained model.
         resample_rate (int): A large temporal stride ``resample_rate``
-            on input frames, corresponding to the  :math:`\\tau`  in the paper.
+            on input frames, corresponding to the :math:`\\tau` in the paper.
             i.e., it processes only one out of ``resample_rate`` frames.
             Default: 16.
         speed_ratio (int): Speed ratio indicating the ratio between time
