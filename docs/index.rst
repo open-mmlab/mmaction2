@@ -9,11 +9,8 @@ Welcome to MMAction's documentation!
    install.md
    data_preparation.md
    config.md
-   model_zoo.md
-   tutorials/finetune.md
-   tutorials/data_pipeline.md
-   tutorials/new_dataset.md
-   tutorials/new_modules.md
+   config_localization.md
+   config_recognition.md
    api.rst
 
 
