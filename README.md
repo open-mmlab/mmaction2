@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="docs/imgs/mmaction-logo.png" width="500"/>
+  <img src="docs/imgs/mmaction2-logo.png" width="500"/>
 </div>
 
 ## Introduction
