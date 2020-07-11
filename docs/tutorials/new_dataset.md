@@ -197,7 +197,7 @@ dataset_A_train = dict(
 
 ## Customize Dataset by Mixing Dataset
 
-MMAction also supports to mix dataset for training. Currently it supports to repeat dataset.
+MMAction2 also supports to mix dataset for training. Currently it supports to repeat dataset.
 
 ### Repeat dataset
 

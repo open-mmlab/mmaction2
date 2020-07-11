@@ -5,17 +5,17 @@
 ## Introduction
 
 <div align="left">
-	<a href='https://mmaction.readthedocs.io/en/latest/?badge=latest'>
-	    <img src='https://readthedocs.org/projects/mmaction/badge/?version=latest' alt='Documentation Status' />
+	<a href='https://mmaction2.readthedocs.io/en/latest/?badge=latest'>
+	    <img src='https://readthedocs.org/projects/mmaction2/badge/?version=latest' alt='Documentation Status' />
 	</a>
-	<a href="https://github.com/open-mmlab/mmaction/blob/master/LICENSE">
-	    <img src="https://img.shields.io/github/license/open-mmlab/mmaction.svg">
+	<a href="https://github.com/open-mmlab/mmaction2/blob/master/LICENSE">
+	    <img src="https://img.shields.io/github/license/open-mmlab/mmaction2.svg">
 	</a>
 </div>
 
 The master branch works with **PyTorch 1.3+**.
 
-MMAction is an open-source toolbox for action understanding based on PyTorch.
+MMAction2 is an open-source toolbox for action understanding based on PyTorch.
 It is a part of the [OpenMMLab project](https://github.com/open-mmlab) developed by [Multimedia Laboratory, CUHK](http://mmlab.ie.cuhk.edu.hk/).
 
 <div align="center">
@@ -35,7 +35,7 @@ It is a part of the [OpenMMLab project](https://github.com/open-mmlab) developed
 
 - **Support for multiple action understanding frameworks**
 
-  MMAction implements popular frameworks for action understanding:
+  MMAction2 implements popular frameworks for action understanding:
 
   - For action recognition, various algorithms are implemented, including TSN, TSM, R(2+1)D, I3D, SlowOnly, SlowFast.
 
@@ -79,10 +79,10 @@ There are also tutorials for [finetuning models](docs/tutorials/finetune.md), [a
 
 ## Contributing
 
-We appreciate all contributions to improve MMAction. Please refer to [CONTRIBUTING.md](.github/CONTRIBUTING.md) for the contributing guideline.
+We appreciate all contributions to improve MMAction2. Please refer to [CONTRIBUTING.md](.github/CONTRIBUTING.md) for the contributing guideline.
 
 ## Acknowledgement
 
-MMAction is an open source project that is contributed by researchers and engineers from various colleges and companies.
+MMAction2 is an open source project that is contributed by researchers and engineers from various colleges and companies.
 We appreciate all the contributors who implement their methods or add new features, as well as users who give valuable feedbacks.
 We wish that the toolbox and benchmark could serve the growing research community by providing a flexible toolkit to reimplement existing methods and develop their own new models.

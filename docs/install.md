@@ -23,7 +23,7 @@ CFLAGS="${CFLAGS} -mavx2" pip install --upgrade --no-cache-dir --force-reinstall
 conda install -y jpeg libtiff
 ```
 
-### Install mmaction
+### Install mmaction2
 
 a. Create a conda virtual environment and activate it.
 
@@ -57,21 +57,21 @@ conda install pytorch=1.3.1 cudatoolkit=9.2 torchvision=0.4.2 -c pytorch
 
 If you build PyTorch from source instead of installing the prebuilt package, you can use more CUDA versions such as 9.0.
 
-c. Clone the mmaction repository
+c. Clone the mmaction2 repository
 
 ```shell
-git clone https://github.com/open-mmlab/mmaction.git
-cd mmaction
+git clone https://github.com/open-mmlab/mmaction2.git
+cd mmaction2
 ```
 
-d. Install build requirements and then install mmaction
+d. Install build requirements and then install mmaction2
 
 ```shell
 pip install -r requirements/build.txt
 pip install -v -e .  # or "python setup.py develop"
 ```
 
-If you build mmaction on macOS, replace the last command with
+If you build mmaction2 on macOS, replace the last command with
 
 ```
 CC=clang CXX=clang++ CFLAGS='-stdlib=libc++' pip install -e .
@@ -83,7 +83,7 @@ Note:
 1. The git commit id will be written to the version number with step d, e.g. 0.6.0+2e7045c. The version will also be saved in trained models.
 It is recommended that you run step d each time you pull some updates from github. If C++/CUDA codes are modified, then this step is compulsory.
 
-2. Following the above instructions, mmaction is installed on `dev` mode, any local modifications made to the code will take effect without the need to reinstall it (unless you submit some commits and want to update the version number).
+2. Following the above instructions, mmaction2 is installed on `dev` mode, any local modifications made to the code will take effect without the need to reinstall it (unless you submit some commits and want to update the version number).
 
 3. If you would like to use `opencv-python-headless` instead of `opencv-python`,
 you can install it before installing MMCV.
@@ -117,7 +117,7 @@ docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmaction/data mmaction
 
 ### A from-scratch setup script
 
-Here is a full script for setting up mmaction with conda and link the dataset path (supposing that your Kinetics-400 dataset path is $KINETICS400_ROOT).
+Here is a full script for setting up mmaction2 with conda and link the dataset path (supposing that your Kinetics-400 dataset path is $KINETICS400_ROOT).
 
 ```shell
 conda create -n open-mmlab python=3.7 -y
@@ -133,11 +133,11 @@ mkdir data
 ln -s $KINETICS400_ROOT data
 ```
 
-### Using multiple MMAction versions
+### Using multiple MMAction2 versions
 
-The train and test scripts already modify the `PYTHONPATH` to ensure the script use the MMAction in the current directory.
+The train and test scripts already modify the `PYTHONPATH` to ensure the script use the MMAction2 in the current directory.
 
-To use the default MMAction installed in the environment rather than that you are working with, you can remove the following line in those scripts.
+To use the default MMAction2 installed in the environment rather than that you are working with, you can remove the following line in those scripts.
 
 ```shell
 PYTHONPATH="$(dirname $0)/..":$PYTHONPATH
