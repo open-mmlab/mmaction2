@@ -23,15 +23,13 @@ The training speed is measure with s/iter. The lower, the better.
 
 | Model | MMAction2 (s/iter) | MMAction (s/iter) | Temporal-Shift-Module (s/iter) | PySlowFast (s/iter) |
 | :--- | :---------------: | :--------------------: | :----------------------------: | :-----------------: |
-| TSN ([tsn_r50_1x1x3_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py))   | **0.29** | 0.36 | 0.45 | x |
-| I3D ([i3d_r50_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py)) | **0.45** | 0.58 | x | x |
-| I3D ([i3d_r50_8x8x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_8x8x1_100e_kinetics400_rgb.py))   | **0.32** | x | x | 0.56 |
-| TSM ([tsm_r50_1x1x8_50e_kinetics400_rgb](/configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py))     | **0.30** | x | 0.38 | x |
-| Slowonly ([slowonly_r50_4x16x1_256e_kinetics400_rgb](/configs/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_rgb.py)) | **0.30** | x | x | 1.03 |
-| Slowonly ([slowonly_r50_8x8x1_256e_kinetics400_rgb](/configs/recognition/slowonly/slowonly_r50_8x8x1_256e_kinetics400_rgb.py))   | **0.50** | x | x | 1.29 |
-| Slowfast ([slowfast_r50_4x16x1_256e_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r50_4x16x1_256e_kinetics400_rgb.py)) | **0.80** | x | x | 1.40 |
-| Slowfast ([slowfast_r50_8x8x1_256e_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb.py))   | **1.05** | x | x | 1.41 |
-| R(2+1)D ([r2plus1d_r34_8x8x1_180e_kinetics400_rgb](/configs/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb.py))    | **0.48** | x | x | x |
+| [TSN](/configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py) | **0.29** | 0.36 | 0.45 | x |
+| [I3D (setting1)](/configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py) | **0.45** | 0.58 | x | x |
+| [I3D (setting2)](/configs/recognition/i3d/i3d_r50_8x8x1_100e_kinetics400_rgb.py) | **0.32** | x | x | 0.56 |
+| [TSM](/configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py) | **0.30** | x | 0.38 | x |
+| [Slowonly](/configs/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_rgb.py) | **0.30** | x | x | 1.03 |
+| [Slowfast](/configs/recognition/slowfast/slowfast_r50_4x16x1_256e_kinetics400_rgb.py) | **0.80** | x | x | 1.40 |
+| [R(2+1)D](/configs/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb.py) | **0.48** | x | x | x |
 
 ## Localizers
 
