@@ -2,6 +2,8 @@
   <img src="docs/imgs/mmaction-logo.png" width="500"/>
 </div>
 
+Documentation: https://mmaction2.readthedocs.io/
+
 ## Introduction
 
 <div align="left">
