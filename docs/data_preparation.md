@@ -2,7 +2,7 @@
 
 ## Notes on Video Data Format
 
-MMAction supports two types of data format: raw frames and video. The former is widely used in previous projects such as [TSN](https://github.com/yjxiong/temporal-segment-networks).
+MMAction2 supports two types of data format: raw frames and video. The former is widely used in previous projects such as [TSN](https://github.com/yjxiong/temporal-segment-networks).
 This is fast when SSD is available but fails to scale to the fast-growing datasets.
 (For example, the newest edition of [Kinetics](https://deepmind.com/research/open-source/open-source-datasets/kinetics/) has 650K  videos and the total frames will take up several TBs.)
 The latter saves much space but has to do the computation intensive video decoding at execution time

@@ -1,4 +1,4 @@
-Welcome to MMAction's documentation!
+Welcome to MMAction2's documentation!
 ====================================
 
 .. toctree::

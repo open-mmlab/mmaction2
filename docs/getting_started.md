@@ -1,6 +1,6 @@
 # Getting Started
 
-This page provides basic tutorials about the usage of MMAction.
+This page provides basic tutorials about the usage of MMAction2.
 For installation instructions, please see [install.md](install.md).
 
 ## Datasets

@@ -6,7 +6,7 @@ cat  ../configs/recognition/*/*.md > recognition_models.md
 cat  ./tutorials/finetune.md ./tutorials/new_dataset.md ./tutorials/data_pipeline.md ./tutorials/new_modules.md > tutorials.md
 
 sed -i 's/](\/docs\//](/g' ../tools/data/*/*.md
-sed -i 's=](/=](https://github.com/open-mmlab/mmaction/tree/master/=g' ../tools/data/*/*.md
+sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' ../tools/data/*/*.md
 cat  ../tools/data/*/*.md > prepare_data.md
 
 sed -i 's/.md](\/tools\/data\/activitynet\/preparing_activitynet.md/](#activitynet/g' data_preparation.md
@@ -41,12 +41,12 @@ sed -i 's/](new_dataset.md)/](#tutorial-2-adding-new-dataset)/g' tutorials.md
 
 sed -i 's/](\/docs\//](/g' recognition_models.md # remove /docs/ for link used in doc site
 sed -i 's/](\/docs\//](/g' localization_models.md
-sed -i 's=](/=](https://github.com/open-mmlab/mmaction/tree/master/=g' recognition_models.md
-sed -i 's=](/=](https://github.com/open-mmlab/mmaction/tree/master/=g' localization_models.md
-sed -i 's=](/=](https://github.com/open-mmlab/mmaction/tree/master/=g' benchmark.md
-sed -i 's=](/=](https://github.com/open-mmlab/mmaction/tree/master/=g' getting_started.md
-sed -i 's=](/=](https://github.com/open-mmlab/mmaction/tree/master/=g' install.md
-sed -i 's=](/=](https://github.com/open-mmlab/mmaction/tree/master/=g' tutorials.md
+sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' recognition_models.md
+sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' localization_models.md
+sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' benchmark.md
+sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' getting_started.md
+sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' install.md
+sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' tutorials.md
 
 
 cat localization_models.md recognition_models.md > modelzoo.md
