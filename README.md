@@ -2,8 +2,6 @@
   <img src="docs/imgs/mmaction-logo.png" width="500"/>
 </div>
 
-Documentation: https://mmaction2.readthedocs.io/
-
 ## Introduction
 
 <div align="left">
@@ -15,7 +13,7 @@ Documentation: https://mmaction2.readthedocs.io/
 	</a>
 </div>
 
-The master branch works with **PyTorch 1.3+**.
+The master branch works with **PyTorch 1.3+**. Documentation: https://mmaction2.readthedocs.io/
 
 MMAction2 is an open-source toolbox for action understanding based on PyTorch.
 It is a part of the [OpenMMLab project](https://github.com/open-mmlab) developed by [Multimedia Laboratory, CUHK](http://mmlab.ie.cuhk.edu.hk/).
