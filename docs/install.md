@@ -23,7 +23,7 @@ CFLAGS="${CFLAGS} -mavx2" pip install --upgrade --no-cache-dir --force-reinstall
 conda install -y jpeg libtiff
 ```
 
-### Install mmaction2
+### Install MMAction2
 
 a. Create a conda virtual environment and activate it.
 

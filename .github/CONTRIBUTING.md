@@ -1,4 +1,4 @@
-# Contributing to mmaction2
+# Contributing to MMAction2
 
 All kinds of contributions are welcome, including but not limited to the following.
 
