@@ -3,18 +3,18 @@
 </div>
 
 <div align="left">
-    <a href="https://mmaction2.readthedocs.io/">
-		<img src="https://img.shields.io/badge/docs-latest-blue"/>
-	</a>
-	<a href='https://mmaction2.readthedocs.io/en/latest/?badge=latest'>
-	    <img src='https://readthedocs.org/projects/mmaction2/badge/?version=latest' alt='Documentation Status' />
-	</a>
+    <a href='https://mmaction2.readthedocs.io/en/latest/?badge=latest'>
+        <img src='https://readthedocs.org/projects/mmaction2/badge/?version=latest' alt='Documentation Status' />
+    </a>
+    <a href='https://github.com/open-mmlab/mmaction2/actions'>
+        <img src='https://github.com/open-mmlab/mmaction2/workflows/build/badge.svg' />
+    </a>
     <a href="https://codecov.io/gh/open-mmlab/mmaction2">
         <img src="https://codecov.io/gh/open-mmlab/mmaction2/branch/master/graph/badge.svg" />
     </a>
     <a href="https://github.com/open-mmlab/mmaction2/blob/master/LICENSE">
-	    <img src="https://img.shields.io/github/license/open-mmlab/mmaction2.svg">
-	</a>
+        <img src="https://img.shields.io/github/license/open-mmlab/mmaction2.svg">
+    </a>
 </div>
 
 Documentation: https://mmaction2.readthedocs.io/.
