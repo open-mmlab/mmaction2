@@ -18,7 +18,7 @@ def test_collect_env():
     target_keys = [
         'sys.platform', 'Python', 'CUDA available', 'GCC', 'PyTorch',
         'PyTorch compiling details', 'TorchVision', 'OpenCV', 'MMCV',
-        'MMAction'
+        'MMAction2'
     ]
     cuda_available = torch.cuda.is_available()
     if cuda_available:
@@ -63,4 +63,4 @@ def test_collect_env():
     assert env_info['OpenCV'] == cv2.__version__
 
     assert env_info['MMCV'] == mmcv.__version__
-    assert env_info['MMAction'] == mmaction.__version__
+    assert env_info['MMAction2'] == mmaction.__version__

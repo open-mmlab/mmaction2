@@ -13,7 +13,7 @@
 
 <!-- /TOC -->
 
-We use python files as our config system. You can find all the provided configs under `$MMAction/configs`.
+We use python files as our config system. You can find all the provided configs under `$MMAction2/configs`.
 
 ## Config File Naming Convention
 

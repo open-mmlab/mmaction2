@@ -12,10 +12,10 @@ RUN apt-get update && apt-get install -y git ninja-build libglib2.0-0 libsm6 lib
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install mmaction
+# Install mmaction2
 RUN conda clean --all
-RUN git clone https://github.com/open-mmlab/mmaction2.git /mmaction
-WORKDIR /mmaction
+RUN git clone https://github.com/open-mmlab/mmaction2.git /mmaction2
+WORKDIR /mmaction2
 ENV FORCE_CUDA="1"
 RUN pip install cython --no-cache-dir
 RUN pip install --no-cache-dir -e .

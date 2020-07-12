@@ -6,7 +6,7 @@ from mmaction.apis import inference_recognizer, init_recognizer
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='MMAction demo')
+    parser = argparse.ArgumentParser(description='MMAction2 demo')
     parser.add_argument('config', help='test config file path')
     parser.add_argument('checkpoint', help='checkpoint file')
     parser.add_argument('video', help='video file')

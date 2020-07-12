@@ -63,7 +63,7 @@ you will get the rawframes (RGB + Flow), videos and annotation files for UCF-101
 In the context of the whole project (for UCF-101 only), the folder structure will look like:
 
 ```
-mmaction
+mmaction2
 ├── mmaction
 ├── tools
 ├── configs

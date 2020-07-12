@@ -86,7 +86,7 @@ In the context of the whole project (for Kinetics-400 only), the *minimal* folde
 (*minimal* means that some data are not necessary: for example, you may want to evaluate kinetics-400 using the original video format.)
 
 ```
-mmaction
+mmaction2
 ├── mmaction
 ├── tools
 ├── configs

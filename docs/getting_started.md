@@ -139,7 +139,7 @@ A notebook demo can be found in [demo/demo.ipynb](/demo/demo.ipynb)
 
 ### Build a model with basic components
 
-In MMAction, model components are basically categorized as 4 types.
+In MMAction2, model components are basically categorized as 4 types.
 
 - recognizer: the whole recognizer model pipeline, usually contains a backbone and cls_head.
 - backbone: usually an FCN network to extract feature maps, e.g., ResNet, BNInception.
@@ -216,7 +216,7 @@ are good examples which show how to do that.
 
 ### Iteration pipeline
 
-MMAction implements distributed training and non-distributed training,
+MMAction2 implements distributed training and non-distributed training,
 which uses `MMDistributedDataParallel` and `MMDataParallel` respectively.
 
 We adopt distributed training for both single machine and multiple machines.
@@ -278,7 +278,7 @@ Here is an example of using 8 GPUs to load TSN checkpoint.
 
 ### Train with multiple machines
 
-If you can run MMAction on a cluster managed with [slurm](https://slurm.schedmd.com/), you can use the script `slurm_train.sh`. (This script also supports single machine training.)
+If you can run MMAction2 on a cluster managed with [slurm](https://slurm.schedmd.com/), you can use the script `slurm_train.sh`. (This script also supports single machine training.)
 
 ```shell
 [GPUS=${GPUS}] ./tools/slurm_train.sh ${PARTITION} ${JOB_NAME} ${CONFIG_FILE} ${WORK_DIR}

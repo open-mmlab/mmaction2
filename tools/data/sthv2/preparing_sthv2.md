@@ -63,7 +63,7 @@ you will get the rawframes (RGB + Flow), videos and annotation files for Somethi
 In the context of the whole project (for Something-Something V2 only), the folder structure will look like:
 
 ```
-mmaction
+mmaction2
 ├── mmaction
 ├── tools
 ├── configs

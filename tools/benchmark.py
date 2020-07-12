@@ -13,7 +13,7 @@ from mmaction.models import build_model
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='MMAction benchmark a recognizer')
+        description='MMAction2 benchmark a recognizer')
     parser.add_argument('config', help='test config file path')
     parser.add_argument(
         '--log-interval', default=10, help='interval of logging')

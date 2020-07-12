@@ -32,7 +32,7 @@ you will get the features and annotation files.
 In the context of the whole project (for ActivityNet only), the folder structure will look like:
 
 ```
-mmaction
+mmaction2
 ├── mmaction
 ├── tools
 ├── configs

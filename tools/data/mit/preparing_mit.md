@@ -54,7 +54,7 @@ you will get the rawframes (RGB + Flow), videos and annotation files for Moments
 In the context of the whole project (for Moments in Time only), the folder structure will look like:
 
 ```
-mmaction
+mmaction2
 ├── data
 │   └── mit
 │       ├── annotations
