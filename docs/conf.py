@@ -18,9 +18,9 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'MMAction'
+project = 'MMAction2'
 copyright = '2020, OpenMMLab'
-author = 'MMAction Authors'
+author = 'MMAction2 Authors'
 
 # The full version, including alpha/beta/rc tags
 with open('../mmaction/VERSION', 'r') as f:

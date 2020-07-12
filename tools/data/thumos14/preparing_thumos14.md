@@ -68,7 +68,7 @@ you will get the rawframes (RGB + Flow), videos and annotation files for THUMOS'
 In the context of the whole project (for THUMOS'14 only), the folder structure will look like:
 
 ```
-mmaction
+mmaction2
 ├── mmaction
 ├── tools
 ├── configs

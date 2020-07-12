@@ -13,7 +13,7 @@ from mmaction.models import build_model
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='MMAction test (and eval) a model')
+        description='MMAction2 test (and eval) a model')
     parser.add_argument('config', help='test config file path')
     parser.add_argument('checkpoint', help='checkpoint file')
     parser.add_argument(

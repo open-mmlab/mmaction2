@@ -1,3 +1,3 @@
-# These must be installed before building mmaction
+# These must be installed before building mmaction2
 numpy
 torch>=1.3

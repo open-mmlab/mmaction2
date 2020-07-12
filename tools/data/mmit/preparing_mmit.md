@@ -53,7 +53,7 @@ you will get the rawframes (RGB + Flow), videos and annotation files for Multi-M
 In the context of the whole project (for Multi-Moments in Time only), the folder structure will look like:
 
 ```
-mmaction/
+mmaction2/
 └── data
     └── mmit
         ├── annotations
