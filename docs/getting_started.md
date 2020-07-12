@@ -5,7 +5,7 @@ For installation instructions, please see [install.md](install.md).
 
 ## Datasets
 
-It is recommended to symlink the dataset root to `$MMACTION/data`.
+It is recommended to symlink the dataset root to `$MMACTION2/data`.
 If your folder structure is different, you may need to change the corresponding paths in config files.
 
 ```

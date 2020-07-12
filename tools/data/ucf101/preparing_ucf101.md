@@ -1,7 +1,7 @@
 # Preparing UCF-101
 
 For basic dataset information, you can refer to the dataset [website](https://www.crcv.ucf.edu/data/UCF101.php).
-Before we start, please make sure that the directory is located at `$MMACTION/tools/data/ucf101/`.
+Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/ucf101/`.
 
 ## Step 1. Prepare Annotations
 
@@ -35,10 +35,16 @@ mkdir /mnt/SSD/ucf101_extracted/
 ln -s /mnt/SSD/ucf101_extracted/ ../../../data/ucf101/rawframes
 ```
 
-If you didn't install dense_flow in the installation or only want to play with RGB frames (since extracting optical flow can be time-consuming), consider running the following script to extract **RGB-only** frames.
+If you only want to play with RGB frames (since extracting optical flow can be time-consuming), consider running the following script to extract **RGB-only** frames using denseflow.
 
 ```shell
 bash extract_rgb_frames.sh
+```
+
+If you didn't install denseflow, you can still extract RGB frames using OpenCV by the following script, but it will keep the original size of the images.
+
+```shell
+bash extract_rgb_frames_opencv.sh
 ```
 
 If both are required, run the following script to extract frames using "tvl1" algorithm.

@@ -1,7 +1,7 @@
 # Preparing Kinetics-400
 
 For basic dataset information, please refer to the official [website](https://deepmind.com/research/open-source/open-source-datasets/kinetics/).
-Before we start, please make sure that the directory is located at `$MMACTION/tools/data/kinetics400/`.
+Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/kinetics400/`.
 
 ## Step 1. Prepare Annotations
 
@@ -51,10 +51,16 @@ mkdir /mnt/SSD/kinetics400_extracted_val/
 ln -s /mnt/SSD/kinetics400_extracted_val/ ../../../data/kinetics400/rawframes_val/
 ```
 
-If you didn't install dense_flow in the installation or only want to play with RGB frames (since extracting optical flow can be time-consuming), consider running the following script to extract **RGB-only** frames.
+If you only want to play with RGB frames (since extracting optical flow can be time-consuming), consider running the following script to extract **RGB-only** frames using denseflow.
 
 ```shell
 bash extract_rgb_frames.sh
+```
+
+If you didn't install denseflow, you can still extract RGB frames using OpenCV by the following script, but it will keep the original size of the images.
+
+```shell
+bash extract_rgb_frames_opencv.sh
 ```
 
 If both are required, run the following script to extract frames.
@@ -63,7 +69,7 @@ If both are required, run the following script to extract frames.
 bash extract_frames.sh
 ```
 
-These two commands above can generate images with size 340x256, if you want to generate images with short edge 320 (320p),
+These three commands above can generate images with size 340x256, if you want to generate images with short edge 320 (320p),
 you can change the args `--new-width 340 --new-height 256` to `--new-short 320`.
 More details can be found in [data_preparation](/docs/data_preparation.md)
 

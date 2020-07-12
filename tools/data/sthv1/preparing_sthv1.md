@@ -1,20 +1,20 @@
 # Preparing Something-Something V1
 
 For basic dataset information, you can refer to the dataset [website](https://20bn.com/datasets/something-something/v1).
-Before we start, please make sure that the directory is located at `$MMACTION/tools/data/sthv1/`.
+Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/sthv1/`.
 
 ## Step 1. Prepare Annotations
 
-First of all, you have to sign in and download annotations to `$MMACTION/data/sthv1/annotations` on the official [website](https://20bn.com/datasets/something-something/v1).
+First of all, you have to sign in and download annotations to `$MMACTION2/data/sthv1/annotations` on the official [website](https://20bn.com/datasets/something-something/v1).
 
 ## Step 2. Prepare Videos
 
-Then, you can download all data parts to `$MMACTION/data/sthv1/` and use the following command to extract.
+Then, you can download all data parts to `$MMACTION2/data/sthv1/` and use the following command to extract.
 
 ```shell
-cd $MMACTION/data/sthv1/
+cd $MMACTION2/data/sthv1/
 cat 20bn-something-something-v1-?? | tar zx
-cd $MMACTION/tools/data/sthv1/
+cd $MMACTION2/tools/data/sthv1/
 ```
 
 ## Step 3. Extract RGB and Flow
@@ -33,17 +33,24 @@ mkdir /mnt/SSD/sthv1_extracted/
 ln -s /mnt/SSD/sthv1_extracted/ ../../../data/sthv1/rawframes
 ```
 
-If you didn't install dense_flow in the installation or only want to play with RGB frames (since extracting optical flow can be time-consuming), consider running the following script to extract **RGB-only** frames.
+If you only want to play with RGB frames (since extracting optical flow can be time-consuming), consider running the following script to extract **RGB-only** frames using denseflow.
 
 ```shell
-cd $MMACTION/tools/data/sthv1/
+cd $MMACTION2/tools/data/sthv1/
 bash extract_rgb_frames.sh
+```
+
+If you didn't install denseflow, you can still extract RGB frames using OpenCV by the following script, but it will keep the original size of the images.
+
+```shell
+cd $MMACTION2/tools/data/sthv1/
+bash extract_rgb_frames_opencv.sh
 ```
 
 If both are required, run the following script to extract frames.
 
 ```shell
-cd $MMACTION/tools/data/sthv1/
+cd $MMACTION2/tools/data/sthv1/
 bash extract_frames.sh
 ```
 
@@ -52,7 +59,7 @@ bash extract_frames.sh
 you can run the follow script to generate file list in the format of rawframes and videos.
 
 ```shell
-cd $MMACTION/tools/data/sthv1/
+cd $MMACTION2/tools/data/sthv1/
 bash generate_{rawframes, videos}_filelist.sh
 ```
 

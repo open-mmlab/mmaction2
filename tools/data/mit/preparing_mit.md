@@ -1,7 +1,7 @@
 # Preparing Moments in Time
 
 For basic dataset information, you can refer to the dataset [website](http://moments.csail.mit.edu/).
-Before we start, please make sure that the directory is located at `$MMACTION/tools/data/mit/`.
+Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/mit/`.
 
 ## Step 1. Prepare Annotations and Videos
 
@@ -17,10 +17,7 @@ This part is **optional** if you only want to use the video loader.
 
 Before extracting, please refer to [install.md](/docs/install.md) for installing [dense_flow](https://github.com/open-mmlab/denseflow).
 
-
-If you didn't install dense_flow in the installation or only want to play with RGB frames (since extracting optical flow can be time-consuming), consider running the following script to extract **RGB-only** frames.
-
-Fist, You can run the following script to soft link the extracted frames.
+If you have plenty of SSD space, then we recommend extracting frames there for better I/O performance. And you can run the following script to soft link the extracted frames.
 
 ```shell
 # execute these two line (Assume the SSD is mounted at "/mnt/SSD/")
@@ -28,8 +25,16 @@ mkdir /mnt/SSD/mit_extracted/
 ln -s /mnt/SSD/mit_extracted/ ../../../data/mit/rawframes
 ```
 
+If you only want to play with RGB frames (since extracting optical flow can be time-consuming), consider running the following script to extract **RGB-only** frames using denseflow.
+
 ```shell
 bash extract_rgb_frames.sh
+```
+
+If you didn't install denseflow, you can still extract RGB frames using OpenCV by the following script, but it will keep the original size of the images.
+
+```shell
+bash extract_rgb_frames_opencv.sh
 ```
 
 If both are required, run the following script to extract frames.

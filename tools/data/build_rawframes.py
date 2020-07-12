@@ -3,7 +3,11 @@ import glob
 import os
 import os.path as osp
 import sys
+import warnings
 from multiprocessing import Pool
+
+import mmcv
+import numpy as np
 
 
 def extract_frame(vid_item, dev_id=0):
@@ -19,21 +23,50 @@ def extract_frame(vid_item, dev_id=0):
     """
     full_path, vid_path, vid_id, method, task = vid_item
     if ('/' in vid_path):
-        vid_name = vid_path.split('.')[0].split('/')[0]
-        out_full_path = osp.join(args.out_dir, vid_name)
+        act_name = osp.basename(osp.dirname(vid_path))
+        out_full_path = osp.join(args.out_dir, act_name)
     else:
         out_full_path = args.out_dir
 
     if task == 'rgb':
-        if args.new_short == 0:
-            cmd = osp.join(
-                f"denseflow '{full_path}' -b=20 -s=0 -o='{out_full_path}'"
-                f' -nw={args.new_width} -nh={args.new_height} -v')
+        if args.use_opencv:
+            # Not like using denseflow,
+            # Use OpenCV will not make a sub directory with the video name
+            video_name = osp.splitext(osp.basename(vid_path))[0]
+            out_full_path = osp.join(out_full_path, video_name)
+
+            vr = mmcv.VideoReader(full_path)
+            for i in range(len(vr)):
+                if vr[i] is not None:
+                    w, h, c = np.shape(vr[i])
+                    if args.new_short == 0:
+                        out_img = mmcv.imresize(vr[i], (args.new_width,
+                                                        args.new_height))
+                    else:
+                        if min(h, w) == h:
+                            new_h = args.new_short
+                            new_w = int((new_h / h) * w)
+                        else:
+                            new_w = args.new_short
+                            new_h = int((new_w / w) * h)
+                        out_img = mmcv.imresize(vr[i], (new_h, new_w))
+                    mmcv.imwrite(out_img,
+                                 f'{out_full_path}/img_{i + 1:05d}.jpg')
+                else:
+                    warnings.warn(
+                        'Length inconsistent!'
+                        f'Early stop with {i + 1} out of {len(vr)} frames.')
+                    break
         else:
-            cmd = osp.join(
-                f"denseflow '{full_path}' -b=20 -s=0 -o='{out_full_path}'"
-                f' -ns={args.new_short} -v')
-        os.system(cmd)
+            if args.new_short == 0:
+                cmd = osp.join(
+                    f"denseflow '{full_path}' -b=20 -s=0 -o='{out_full_path}'"
+                    f' -nw={args.new_width} -nh={args.new_height} -v')
+            else:
+                cmd = osp.join(
+                    f"denseflow '{full_path}' -b=20 -s=0 -o='{out_full_path}'"
+                    f' -ns={args.new_short} -v')
+            os.system(cmd)
     elif task == 'flow':
         if args.new_short == 0:
             cmd = osp.join(
@@ -106,6 +139,10 @@ def parse_args():
         default='avi',
         choices=['avi', 'mp4', 'webm'],
         help='video file extensions')
+    parser.add_argument(
+        '--use-opencv',
+        action='store_true',
+        help='Whether to use opencv to extract rgb frames')
     parser.add_argument(
         '--new-width', type=int, default=0, help='resize image width')
     parser.add_argument(

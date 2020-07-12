@@ -1,14 +1,14 @@
 # Preparing THUMOS'14
 
 For basic dataset information, you can refer to the dataset [website](https://www.crcv.ucf.edu/THUMOS14/download.html).
-Before we start, please make sure that the directory is located at `$MMACTION/tools/data/thumos14/`.
+Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/thumos14/`.
 
 ## Step 1. Prepare Annotations
 
 First of all, run the following script to prepare annotations.
 
 ```shell
-cd $MMACTION/tools/data/thumos14/
+cd $MMACTION2/tools/data/thumos14/
 bash download_annotations.sh
 ```
 
@@ -17,7 +17,7 @@ bash download_annotations.sh
 Then, you can run the following script to prepare videos.
 
 ```shell
-cd $MMACTION/tools/data/thumos14/
+cd $MMACTION2/tools/data/thumos14/
 bash download_videos.sh
 ```
 
@@ -37,17 +37,24 @@ mkdir /mnt/SSD/thumos14_extracted/
 ln -s /mnt/SSD/thumos14_extracted/ ../data/thumos14/rawframes/
 ```
 
-If you didn't install dense_flow in the installation or only want to play with RGB frames (since extracting optical flow can be time-consuming), consider running the following script to extract **RGB-only** frames.
+If you only want to play with RGB frames (since extracting optical flow can be time-consuming), consider running the following script to extract **RGB-only** frames using denseflow.
 
 ```shell
-cd $MMACTION/tools/data/thumos14/
+cd $MMACTION2/tools/data/thumos14/
 bash extract_rgb_frames.sh
+```
+
+If you didn't install denseflow, you can still extract RGB frames using OpenCV by the following script, but it will keep the original size of the images.
+
+```shell
+cd $MMACTION2/tools/data/thumos14/
+bash extract_rgb_frames_opencv.sh
 ```
 
 If both are required, run the following script to extract frames.
 
 ```shell
-cd $MMACTION/tools/data/thumos14/
+cd $MMACTION2/tools/data/thumos14/
 bash extract_frames.sh tvl1
 ```
 
@@ -56,7 +63,7 @@ bash extract_frames.sh tvl1
 You can run the follow script to fetch pre-computed tag proposals.
 
 ```shell
-cd $MMACTION/tools/data/thumos14/
+cd $MMACTION2/tools/data/thumos14/
 bash fetch_tag_proposals.sh
 ```
 
