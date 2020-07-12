@@ -7,6 +7,7 @@ import warnings
 from multiprocessing import Pool
 
 import mmcv
+import numpy as np
 
 
 def extract_frame(vid_item, dev_id=0):
@@ -29,10 +30,28 @@ def extract_frame(vid_item, dev_id=0):
 
     if task == 'rgb':
         if args.use_opencv:
+            # Not like using denseflow,
+            # Use OpenCV will not make a sub directory with the video name
+            video_name = vid_path.split('.')[0].split('/')[-1]
+            out_full_path = osp.join(out_full_path, video_name)
+
             vr = mmcv.VideoReader(full_path)
             for i in range(len(vr)):
                 if vr[i] is not None:
-                    mmcv.imwrite(vr[i], f'{out_full_path}/img_{i + 1:05d}.jpg')
+                    w, h, c = np.shape(vr[i])
+                    if args.new_short == 0:
+                        out_img = mmcv.imresize(vr[i], (args.new_width,
+                                                        args.new_height))
+                    else:
+                        if min(h, w) == h:
+                            new_h = args.new_short
+                            new_w = int((new_h / h) * w)
+                        else:
+                            new_w = args.new_short
+                            new_h = int((new_w / w) * h)
+                        out_img = mmcv.imresize(vr[i], (new_h, new_w))
+                    mmcv.imwrite(out_img,
+                                 f'{out_full_path}/img_{i + 1:05d}.jpg')
                 else:
                     warnings.warn(
                         'Length inconsistent!'

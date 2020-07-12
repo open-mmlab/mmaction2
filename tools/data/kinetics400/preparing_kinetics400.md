@@ -69,7 +69,7 @@ If both are required, run the following script to extract frames.
 bash extract_frames.sh
 ```
 
-These two commands above can generate images with size 340x256, if you want to generate images with short edge 320 (320p),
+These three commands above can generate images with size 340x256, if you want to generate images with short edge 320 (320p),
 you can change the args `--new-width 340 --new-height 256` to `--new-short 320`.
 More details can be found in [data_preparation](/docs/data_preparation.md)
 
