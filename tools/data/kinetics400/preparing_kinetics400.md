@@ -1,7 +1,7 @@
 # Preparing Kinetics-400
 
 For basic dataset information, please refer to the official [website](https://deepmind.com/research/open-source/open-source-datasets/kinetics/).
-Before we start, please make sure that the directory is located at `$MMACTION/tools/data/kinetics400/`.
+Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/kinetics400/`.
 
 ## Step 1. Prepare Annotations
 

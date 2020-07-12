@@ -1,7 +1,7 @@
 # Preparing Moments in Time
 
 For basic dataset information, you can refer to the dataset [website](http://moments.csail.mit.edu/).
-Before we start, please make sure that the directory is located at `$MMACTION/tools/data/mit/`.
+Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/mit/`.
 
 ## Step 1. Prepare Annotations and Videos
 

@@ -1,7 +1,7 @@
 # Preparing UCF-101
 
 For basic dataset information, you can refer to the dataset [website](https://www.crcv.ucf.edu/data/UCF101.php).
-Before we start, please make sure that the directory is located at `$MMACTION/tools/data/ucf101/`.
+Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/ucf101/`.
 
 ## Step 1. Prepare Annotations
 

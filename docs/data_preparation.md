@@ -11,7 +11,7 @@ To make video decoding faster, we support several efficient video loading librar
 ## Supported Datasets
 
 The supported datasets are listed below.
-We provide shell scripts for data preparation under the path `$MMACTION/tools/data/`.
+We provide shell scripts for data preparation under the path `$MMACTION2/tools/data/`.
 To ease usage, we provide tutorials of data deployment for each dataset.
 
 - [UCF101](https://www.crcv.ucf.edu/data/UCF101.php): See [preparing_ucf101.md](/tools/data/ucf101/preparing_ucf101.md).
@@ -28,7 +28,7 @@ Now, you can switch to [getting_started.md](getting_started.md) to train and tes
 ## Getting Data
 
 The following guide is helpful when you want to experiment with custom dataset.
-Similar to the datasets stated above, it is recommended organizing in `$MMACTION/data/$DATASET`.
+Similar to the datasets stated above, it is recommended organizing in `$MMACTION2/data/$DATASET`.
 
 ### Prepare videos
 
@@ -67,10 +67,10 @@ python build_rawframes.py ${SRC_FOLDER} ${OUT_FOLDER} [--task ${TASK}] [--level 
 The recommended practice is
 
 1. set `$OUT_FOLDER` to be a folder located in SSD.
-2. symlink the link `$OUT_FOLDER` to `$MMACTION/data/$DATASET/rawframes`.
+2. symlink the link `$OUT_FOLDER` to `$MMACTION2/data/$DATASET/rawframes`.
 
 ```shell
-ln -s ${YOUR_FOLDER} $MMACTION/data/$DATASET/rawframes
+ln -s ${YOUR_FOLDER} $MMACTION2/data/$DATASET/rawframes
 ```
 
 ### Generate file list
@@ -78,7 +78,7 @@ ln -s ${YOUR_FOLDER} $MMACTION/data/$DATASET/rawframes
 We provide a convenient script to generate annotation file list. You can use the following command to extract frames.
 
 ```shell
-cd $MMACTION
+cd $MMACTION2
 python tools/data/build_file_list.py ${DATASET} ${SRC_FOLDER} [--rgb-prefix ${RGB_PREFIX}] \
     [--flow-x-prefix ${FLOW_X_PREFIX}] [--flow-y-prefix ${FLOW_Y_PREFIX}] [--num-split ${NUM_SPLIT}] \
     [--subset ${SUBSET}] [--level ${LEVEL}] [--format ${FORMAT}] [--out-root-path ${OUT_ROOT_PATH}] \
@@ -87,8 +87,8 @@ python tools/data/build_file_list.py ${DATASET} ${SRC_FOLDER} [--rgb-prefix ${RG
 
 - `DATASET`: Dataset to be prepared, e.g., `ucf101`, `kinetics400`, `thumos14`, `sthv1`, `sthv2`, etc.
 - `SRC_FOLDER`: Folder of the corresponding data format:
-  - "$MMACTION/data/$DATASET/rawframes" if `--format rawframes`.
-  - "$MMACTION/data/$DATASET/videos" if `--format videos`.
+  - "$MMACTION2/data/$DATASET/rawframes" if `--format rawframes`.
+  - "$MMACTION2/data/$DATASET/videos" if `--format videos`.
 - `RGB_PREFIX`: Name prefix of rgb frames.
 - `FLOW_X_PREFIX`: Name prefix of x flow frames.
 - `FLOW_Y_PREFIX`: Name prefix of y flow frames.
