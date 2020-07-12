@@ -3,7 +3,10 @@ import glob
 import os
 import os.path as osp
 import sys
+import warnings
 from multiprocessing import Pool
+
+import mmcv
 
 
 def extract_frame(vid_item, dev_id=0):
@@ -25,15 +28,26 @@ def extract_frame(vid_item, dev_id=0):
         out_full_path = args.out_dir
 
     if task == 'rgb':
-        if args.new_short == 0:
-            cmd = osp.join(
-                f"denseflow '{full_path}' -b=20 -s=0 -o='{out_full_path}'"
-                f' -nw={args.new_width} -nh={args.new_height} -v')
+        if args.use_opencv:
+            vr = mmcv.VideoReader(full_path)
+            for i in range(len(vr)):
+                if vr[i] is not None:
+                    mmcv.imwrite(vr[i], f'{out_full_path}/img_{i + 1:05d}.jpg')
+                else:
+                    warnings.warn(
+                        'Length inconsistent!'
+                        f'Early stop with {i + 1} out of {len(vr)} frames.')
+                    break
         else:
-            cmd = osp.join(
-                f"denseflow '{full_path}' -b=20 -s=0 -o='{out_full_path}'"
-                f' -ns={args.new_short} -v')
-        os.system(cmd)
+            if args.new_short == 0:
+                cmd = osp.join(
+                    f"denseflow '{full_path}' -b=20 -s=0 -o='{out_full_path}'"
+                    f' -nw={args.new_width} -nh={args.new_height} -v')
+            else:
+                cmd = osp.join(
+                    f"denseflow '{full_path}' -b=20 -s=0 -o='{out_full_path}'"
+                    f' -ns={args.new_short} -v')
+            os.system(cmd)
     elif task == 'flow':
         if args.new_short == 0:
             cmd = osp.join(
@@ -106,6 +120,10 @@ def parse_args():
         default='avi',
         choices=['avi', 'mp4', 'webm'],
         help='video file extensions')
+    parser.add_argument(
+        '--use-opencv',
+        action='store_true',
+        help='Whether to use opencv to extract rgb frames')
     parser.add_argument(
         '--new-width', type=int, default=0, help='resize image width')
     parser.add_argument(
