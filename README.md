@@ -110,7 +110,7 @@ We wish that the toolbox and benchmark could serve the growing research communit
 ## Contact
 If you have any question, please file an issue or contact the authors:
 
-* Jintao Lin linjintao@sensetime.com
-* Xuanyi Li lixuanyi@sensetime.com
-* Su Xu xusu@sensetime.com
-* Haodong Duan duanhaodong@sensetime.com
+* [<img src="https://github.com/dreamerlin.png" width="24" height="24" alt="@dreamerlin"> @dreamerlin](https://github.com/dreamerlin) Jintao Lin
+* [<img src="https://github.com/JoannaLXY.png" width="24" height="24" alt="@JoannaLXY"> @JoannaLXY](https://github.com/JoannaLXY) Xuanyi Li
+* [<img src="https://github.com/SuX97.png" width="24" height="24" alt="@SuX97"> @SuX97](https://github.com/SuX97) Su Xu
+* [<img src="https://github.com/kennymckormick.png" width="24" height="24" alt="@kennymckormick"> @kennymckormick](https://github.com/kennymckormick) Haodong Duan
