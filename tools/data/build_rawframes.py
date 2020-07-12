@@ -23,8 +23,8 @@ def extract_frame(vid_item, dev_id=0):
     """
     full_path, vid_path, vid_id, method, task = vid_item
     if ('/' in vid_path):
-        vid_name = vid_path.split('.')[0].split('/')[0]
-        out_full_path = osp.join(args.out_dir, vid_name)
+        act_name = osp.splitext(vid_path)[0].split('/')[0]
+        out_full_path = osp.join(args.out_dir, act_name)
     else:
         out_full_path = args.out_dir
 
@@ -32,7 +32,7 @@ def extract_frame(vid_item, dev_id=0):
         if args.use_opencv:
             # Not like using denseflow,
             # Use OpenCV will not make a sub directory with the video name
-            video_name = vid_path.split('.')[0].split('/')[-1]
+            video_name = osp.splitext(osp.basename(vid_path))[0]
             out_full_path = osp.join(out_full_path, video_name)
 
             vr = mmcv.VideoReader(full_path)
