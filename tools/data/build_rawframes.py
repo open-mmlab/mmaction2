@@ -23,7 +23,7 @@ def extract_frame(vid_item, dev_id=0):
     """
     full_path, vid_path, vid_id, method, task = vid_item
     if ('/' in vid_path):
-        act_name = osp.splitext(vid_path)[0].split('/')[0]
+        act_name = osp.split(osp.splitext(vid_path)[0])[0]
         out_full_path = osp.join(args.out_dir, act_name)
     else:
         out_full_path = args.out_dir
