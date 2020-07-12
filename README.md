@@ -60,7 +60,7 @@ This project is released under the [Apache 2.0 license](LICENSE).
 ## Benchmark and Model Zoo
 
 MMAction2 supports various models and is more efficient in training.
-We compare with other popular codebases and the results are shown as below.
+We compare with other popular codebases and the [results](https://mmaction2.readthedocs.io/en/latest/benchmark.html) are shown as below.
 
 | Model | MMAction2 (s/iter) | MMAction (s/iter) | Temporal-Shift-Module (s/iter) | PySlowFast (s/iter) |
 | :--- | :---------------: | :--------------------: | :----------------------------: | :-----------------: |
