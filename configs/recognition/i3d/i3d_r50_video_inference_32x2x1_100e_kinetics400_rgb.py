@@ -1,18 +1,21 @@
 # model settings
 model = dict(
-    type='Recognizer2D',
+    type='Recognizer3D',
     backbone=dict(
-        type='ResNet',
+        type='ResNet3d',
+        pretrained2d=True,
         pretrained='torchvision://resnet50',
         depth=50,
-        norm_eval=False),
+        conv_cfg=dict(type='Conv3d'),
+        norm_eval=False,
+        inflate=((1, 1, 1), (1, 0, 1, 0), (1, 0, 1, 0, 1, 0), (0, 1, 0)),
+        zero_init_residual=False),
     cls_head=dict(
-        type='TSNHead',
+        type='I3DHead',
         num_classes=400,
         in_channels=2048,
         spatial_type='avg',
-        consensus=dict(type='AvgConsensus', dim=1),
-        dropout_ratio=0.4,
+        dropout_ratio=0.5,
         init_std=0.01))
 # model training and testing settings
 test_cfg = dict(average_clips=None)
@@ -24,15 +27,15 @@ test_pipeline = [
     dict(type='DecordInit', num_threads=1),
     dict(
         type='SampleFrames',
-        clip_len=1,
-        frame_interval=1,
-        num_clips=25,
+        clip_len=32,
+        frame_interval=2,
+        num_clips=1,
         test_mode=True),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
-    dict(type='TenCrop', crop_size=224),
+    dict(type='ThreeCrop', crop_size=256),
     dict(type='Normalize', **img_norm_cfg),
-    dict(type='FormatShape', input_format='NCHW'),
+    dict(type='FormatShape', input_format='NCTHW'),
     dict(type='Collect', keys=['imgs'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs'])
 ]
