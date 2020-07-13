@@ -184,7 +184,7 @@ class TestLoading(object):
         sample_frames_results = sample_frames(frame_result)
         assert len(sample_frames_results['frame_inds']) == 8
         assert_array_equal(sample_frames_results['frame_inds'],
-                           np.array([0, 1, 1, 2, 3, 4, 4, 5]))
+                           np.array([1, 2, 2, 3, 4, 5, 5, 6]))
 
         # Sample Frame with no temporal_jitter to get clip_offsets zero
         # clip_len=6, frame_interval=1, num_clips=1
@@ -205,7 +205,7 @@ class TestLoading(object):
         sample_frames_results = sample_frames(frame_result)
         assert len(sample_frames_results['frame_inds']) == 6
         assert_array_equal(sample_frames_results['frame_inds'],
-                           [0, 1, 2, 3, 4, 0])
+                           [1, 2, 3, 4, 5, 1])
 
         # Sample Frame with no temporal_jitter to get avg_interval <= 0
         # clip_len=12, frame_interval=1, num_clips=20
@@ -245,7 +245,7 @@ class TestLoading(object):
         sample_frames_results = sample_frames(frame_result)
         assert len(sample_frames_results['frame_inds']) == 8
         assert_array_equal(sample_frames_results['frame_inds'],
-                           np.array([0, 1, 2, 2, 3, 4, 4, 5]))
+                           np.array([1, 2, 3, 3, 4, 5, 5, 6]))
 
         # Sample Frame with no temporal_jitter to get clip_offsets zero
         # clip_len=12, frame_interval=1, num_clips=2
@@ -413,7 +413,7 @@ class TestLoading(object):
 
         # test PyAV with 2 dim input
         video_result = copy.deepcopy(self.video_results)
-        video_result['frame_inds'] = np.arange(0, self.total_frames,
+        video_result['frame_inds'] = np.arange(1, self.total_frames,
                                                2)[:, np.newaxis]
         pyav_init = PyAVInit()
         pyav_init_result = pyav_init(video_result)
@@ -514,7 +514,7 @@ class TestLoading(object):
 
         # test OpenCV with 2 dim input
         video_result = copy.deepcopy(self.video_results)
-        video_result['frame_inds'] = np.arange(0, self.total_frames,
+        video_result['frame_inds'] = np.arange(1, self.total_frames,
                                                2)[:, np.newaxis]
         opencv_init = OpenCVInit()
         opencv_init_result = opencv_init(video_result)
@@ -548,7 +548,7 @@ class TestLoading(object):
 
         # test frame selector with 2 dim input
         inputs = copy.deepcopy(self.frame_results)
-        inputs['frame_inds'] = np.arange(0, self.total_frames, 2)[:,
+        inputs['frame_inds'] = np.arange(1, self.total_frames, 2)[:,
                                                                   np.newaxis]
         frame_selector = FrameSelector(io_backend='disk')
         results = frame_selector(inputs)
