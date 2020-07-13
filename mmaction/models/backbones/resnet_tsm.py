@@ -97,6 +97,7 @@ class ResNetTSM(ResNet):
         num_segments (int): Number of frame segments. Default: 8.
         is_shift (bool): Whether to make temporal shift in reset layers.
             Default: True.
+        with_non_local (bool):
         shift_div (int): Number of div for shift. Default: 8.
         shift_place (str): Places in resnet layers for shift, which is chosen
             from ['block', 'blockres'].
@@ -113,6 +114,7 @@ class ResNetTSM(ResNet):
                  depth,
                  num_segments=8,
                  is_shift=True,
+                 with_non_local=False,
                  shift_div=8,
                  shift_place='blockres',
                  temporal_pool=False,
@@ -123,6 +125,7 @@ class ResNetTSM(ResNet):
         self.shift_div = shift_div
         self.shift_place = shift_place
         self.temporal_pool = temporal_pool
+        self.with_non_local = with_non_local
 
     def make_temporal_shift(self):
         """Make temporal shift for some layers."""
@@ -232,5 +235,7 @@ class ResNetTSM(ResNet):
         super().init_weights()
         if self.is_shift:
             self.make_temporal_shift()
+        if self.with_non_local:
+            self.make_non_local()
         if self.temporal_pool:
             self.make_temporal_pool()

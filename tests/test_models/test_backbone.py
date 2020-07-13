@@ -8,6 +8,7 @@ from mmcv.utils import _BatchNorm
 
 from mmaction.models import (ResNet, ResNet2Plus1d, ResNet3d, ResNet3dSlowFast,
                              ResNet3dSlowOnly, ResNetTSM)
+from mmaction.models.backbones import NL3DWrapper
 
 
 def check_norm_state(modules, train_state):
@@ -476,6 +477,9 @@ def test_resnet_tsm_backbone():
     from mmaction.models.backbones.resnet_tsm import TemporalShift
     from mmaction.models.backbones.resnet import Bottleneck
 
+    input_shape = (8, 3, 64, 64)
+    imgs = _demo_inputs(input_shape)
+
     # resnet_tsm with depth 50
     resnet_tsm_50 = ResNetTSM(50)
     resnet_tsm_50.init_weights()
@@ -524,9 +528,21 @@ def test_resnet_tsm_backbone():
             assert block.conv1.conv.shift_div == resnet_tsm_50_temporal_pool.shift_div  # noqa: E501
             assert isinstance(block.conv1.conv.net, nn.Conv2d)
 
-    input_shape = (8, 3, 64, 64)
-    imgs = _demo_inputs(input_shape)
+    # resnet_tsm with non-local module
+    resnet_tsm_nonlocal = ResNetTSM(50, with_non_local=True)
+    resnet_tsm_nonlocal.init_weights()
+    for layer_name in ['layer2', 'layer3']:
+        layer = getattr(resnet_tsm_nonlocal, layer_name)
+        isinstance(layer, nn.Sequential)
+        if len(layer) == 4:
+            assert (isinstance(layer[0], NL3DWrapper)
+                    and isinstance(layer[2], NL3DWrapper))
+        elif len(layer) == 6:
+            assert (isinstance(layer[0], NL3DWrapper)
+                    and isinstance(layer[2], NL3DWrapper)
+                    and isinstance(layer[4], NL3DWrapper))
 
+    # TSM forword
     feat = resnet_tsm_50(imgs)
     assert feat.shape == torch.Size([8, 2048, 2, 2])
 
