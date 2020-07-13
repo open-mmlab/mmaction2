@@ -30,6 +30,7 @@ def test_init_recognizer():
     else:
         assert next(model.parameters()).is_cuda is False
     assert model.cfg.model.backbone.pretrained is None
+    del model
 
 
 def test_inference_recognizer():
@@ -43,3 +44,4 @@ def test_inference_recognizer():
     scores = [item[1] for item in top5_label]
     assert len(top5_label) == 5
     assert scores == sorted(scores, reverse=True)
+    del model
