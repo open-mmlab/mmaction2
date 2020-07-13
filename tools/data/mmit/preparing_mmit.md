@@ -15,7 +15,7 @@ bash download_data.sh
 
 This part is **optional** if you only want to use the video loader.
 
-Before extracting, please refer to [install.md](/docs/install.md) for installing [dense_flow](https://github.com/open-mmlab/denseflow).
+Before extracting, please refer to [install.md](/docs/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
 
 First, you can run the following script to soft link SSD.
 

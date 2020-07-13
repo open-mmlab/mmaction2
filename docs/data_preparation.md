@@ -41,8 +41,8 @@ Note that the videos should be arranged in either
 
 ### Extract frames
 
-To extract both frames and optical flow, [dense_flow](https://github.com/open-mmlab/denseflow) is needed,
-since the benefit of using denseflow is to make sure that the number of flows and the number of frames do math exactly.
+To extract both frames and optical flow, [denseflow](https://github.com/open-mmlab/denseflow) is needed,
+since the benefit of using denseflow is to make sure that the number of flows and the number of frames do match exactly.
 You can use the following command to extract frames.
 
 ```shell
