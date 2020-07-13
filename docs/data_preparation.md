@@ -41,9 +41,9 @@ Note that the videos should be arranged in either
 
 ### Extract frames
 
-To extract both frames and optical flow, [denseflow](https://github.com/open-mmlab/denseflow) is needed,
-since the benefit of using denseflow is to make sure that the number of flows and the number of frames do match exactly.
-You can use the following command to extract frames.
+To extract both frames and optical flow, you can use the tool [denseflow](https://github.com/open-mmlab/denseflow) we wrote.
+Since different frame extraction tools produce different number of frames,
+it is beneficial to use the same tool to do both frame extraction and the flow computation, to avoid mismatching of frame counts.
 
 ```shell
 python build_rawframes.py ${SRC_FOLDER} ${OUT_FOLDER} [--task ${TASK}] [--level ${LEVEL}] \
