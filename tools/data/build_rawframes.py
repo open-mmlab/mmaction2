@@ -140,10 +140,6 @@ def parse_args():
         choices=['avi', 'mp4', 'webm'],
         help='video file extensions')
     parser.add_argument(
-        '--use-opencv',
-        action='store_true',
-        help='Whether to use opencv to extract rgb frames')
-    parser.add_argument(
         '--new-width', type=int, default=0, help='resize image width')
     parser.add_argument(
         '--new-height', type=int, default=0, help='resize image height')
@@ -158,6 +154,10 @@ def parse_args():
         action='store_true',
         default=False,
         help='resume optical flow extraction instead of overwriting')
+    parser.add_argument(
+        '--use-opencv',
+        action='store_true',
+        help='Whether to use opencv to extract rgb frames')
     args = parser.parse_args()
 
     return args

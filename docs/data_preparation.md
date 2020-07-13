@@ -41,14 +41,15 @@ Note that the videos should be arranged in either
 
 ### Extract frames
 
-To extract frames and optical flow, [dense_flow](https://github.com/open-mmlab/denseflow) is needed.
+To extract both frames and optical flow, [dense_flow](https://github.com/open-mmlab/denseflow) is needed,
+since the benefit of using denseflow is to make sure that the number of flows and the number of frames do math exactly.
 You can use the following command to extract frames.
 
 ```shell
 python build_rawframes.py ${SRC_FOLDER} ${OUT_FOLDER} [--task ${TASK}] [--level ${LEVEL}] \
     [--num-worker ${NUM_WORKER}] [--flow-type ${FLOW_TYPE}] [--out-format ${OUT_FORMAT}] \
     [--ext ${EXT}] [--new-width ${NEW_WIDTH}] [--new-height ${NEW_HEIGHT}] [--new-short ${NEW_SHORT}]
-    [--resume]
+    [--resume] [--use-opencv]
 ```
 
 - `SRC_FOLDER`: Folder of the original video.
@@ -63,6 +64,7 @@ python build_rawframes.py ${SRC_FOLDER} ${OUT_FOLDER} [--task ${TASK}] [--level 
 - `NEW_HEIGHT`: Resized image height of output.
 - `NEW_SHORT`: Resized image short side length keeping ratio.
 - `--resume`: Whether to resume optical flow extraction instead of overwriting.
+- `--use-opencv`: Whether to use OpenCV to extract rgb frames.
 
 The recommended practice is
 
