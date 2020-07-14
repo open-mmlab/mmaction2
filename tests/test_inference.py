@@ -41,7 +41,7 @@ def test_inference_recognizer():
 
     for ops in model.cfg.data.test.pipeline:
         if ops['type'] == 'TenCrop':
-            # Use CenterCrop to reduce memory
+            # Use CenterCrop to reduce memory in order to pass CI
             ops['type'] = 'CenterCrop'
 
     top5_label = inference_recognizer(model, video_path, label_path)
