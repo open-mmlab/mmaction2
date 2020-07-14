@@ -364,7 +364,7 @@ class SampleProposalFrames(SampleFrames):
             base_offsets = np.arange(num_segments) * avg_interval
             offsets = (base_offsets + avg_interval / 2.0).astype(np.int32)
         else:
-            offsets = np.zeros((num_segments, ))
+            clip_offsets = np.zeros((num_segments, ))
 
         return offsets
 
@@ -479,6 +479,11 @@ class SampleProposalFrames(SampleFrames):
                 to the next transform in pipeline.
         """
         total_frames = results['total_frames']
+            
+        clip_offsets = self._sample_clips(total_frames)
+        frame_inds = clip_offsets[:, None] + np.arange(
+            self.clip_len)[None, :] * self.frame_interval
+        frame_inds = np.concatenate(frame_inds)
 
         clip_offsets = self._sample_clips(total_frames, results['out_props'])
         frame_inds = clip_offsets[:, None] + np.arange(
@@ -496,7 +501,6 @@ class SampleProposalFrames(SampleFrames):
             frame_inds += perframe_offsets
 
         frame_inds = np.mod(frame_inds, total_frames)
-
         results['frame_inds'] = np.array(frame_inds).astype(np.int)
         results['clip_len'] = self.clip_len
         results['frame_interval'] = self.frame_interval
