@@ -2,6 +2,7 @@ import io
 import os
 import os.path as osp
 import shutil
+from collections.abc import Sequence
 
 import mmcv
 import numpy as np
@@ -310,7 +311,7 @@ class SampleProposalFrames(SampleFrames):
         if isinstance(aug_ratio, (int, float)):
             self.aug_ratio = (aug_ratio, aug_ratio)
         else:
-            assert isinstance(aug_ratio, (tuple, list))
+            assert isinstance(aug_ratio, Sequence)
             assert len(aug_ratio) == 2
             self.aug_ratio = aug_ratio
         assert mode in ['train', 'val', 'test']
