@@ -283,7 +283,7 @@ class SampleProposalFrames(SampleFrames):
                  num_clips=1,
                  temporal_jitter=False,
                  test_mode=False,
-                 random_shift=False):
+                 train_mode=True):
         super().__init__(clip_len, frame_interval, num_clips, temporal_jitter,
                          test_mode)
         self.body_segments = body_segments
@@ -294,11 +294,11 @@ class SampleProposalFrames(SampleFrames):
             assert isinstance(aug_ratio, (tuple, list))
             assert len(aug_ratio) == 2
             self.aug_ratio = aug_ratio
-        self.random_shift = random_shift
+        self.train_mode = train_mode
         self.test_mode = test_mode
         self.test_interval = test_interval
 
-    def _sample_indices(self, valid_length, num_segments):
+    def _get_train_indices(self, valid_length, num_segments):
         average_duration = (valid_length + 1) // num_segments
         if average_duration > 0:
             offsets = np.multiply(
@@ -324,7 +324,7 @@ class SampleProposalFrames(SampleFrames):
 
         return offsets
 
-    def _get_train_clips(self, proposal, num_frames):
+    def _get_proposal_clips(self, proposal, num_frames):
         start_frame = proposal.start_frame + 1
         end_frame = proposal.end_frame
 
@@ -341,18 +341,18 @@ class SampleProposalFrames(SampleFrames):
             self.clip_len + 1
         valid_ending_length = valid_ending - end_frame - self.clip_len + 1
 
-        starting_offsets = self._sample_indices(
-            valid_starting_length, self.aug_segments[0]) if self.random_shift \
+        starting_offsets = self._get_train_indices(
+            valid_starting_length, self.aug_segments[0]) if self.train_mode \
             else self._get_val_indices(valid_starting_length,
                                        self.aug_segments[0])
         starting_offsets += valid_starting
-        course_offsets = self._sample_indices(
-            valid_length, self.body_segments) if self.random_shift \
+        course_offsets = self._get_train_indices(
+            valid_length, self.body_segments) if self.train_mode \
             else self._get_val_indices(valid_length, self.body_segments)
         course_offsets += start_frame
         # yapf: disable
-        ending_offsets = self._sample_indices(
-            valid_ending_length, self.aug_segments[1]) if self.random_shift \
+        ending_offsets = self._get_train_indices(
+            valid_ending_length, self.aug_segments[1]) if self.train_mode \
             else self._get_val_indices(valid_ending_length, self.aug_segments[1])  # noqa:E501
         # yapf: enable
         ending_offsets += end_frame
@@ -360,6 +360,22 @@ class SampleProposalFrames(SampleFrames):
         offsets = np.concatenate(
             (starting_offsets, course_offsets, ending_offsets))
         return offsets
+
+    def _get_train_clips(self, num_frames, proposals):
+        frame_inds = []
+        for idx, proposal in enumerate(proposals):
+            clip_offsets = self._get_proposal_clips(proposal[0][1], num_frames)
+
+            proposal_frame_inds = clip_offsets[:, None] + np.arange(
+                self.clip_len)[None, :] * self.frame_interval
+            proposal_frame_inds = np.concatenate(proposal_frame_inds)
+            if self.temporal_jitter:
+                perframe_offsets = np.random.randint(
+                    self.frame_interval, size=len(proposal_frame_inds))
+                proposal_frame_inds += perframe_offsets
+            proposal_frame_inds = np.mod(proposal_frame_inds, num_frames)
+            frame_inds.extend(proposal_frame_inds)
+        return frame_inds
 
     def _get_test_clips(self, num_frames):
         return np.arange(
@@ -375,20 +391,8 @@ class SampleProposalFrames(SampleFrames):
             frame_inds = np.concatenate(frame_inds)
             frame_inds = np.mod(frame_inds, total_frames)
         else:
-            frame_inds = []
-            for idx, proposal in enumerate(results['out_props']):
-                clip_offsets = self._get_train_clips(proposal[0][1],
-                                                     total_frames)
-
-                proposal_frame_inds = clip_offsets[:, None] + np.arange(
-                    self.clip_len)[None, :] * self.frame_interval
-                proposal_frame_inds = np.concatenate(proposal_frame_inds)
-                if self.temporal_jitter:
-                    perframe_offsets = np.random.randint(
-                        self.frame_interval, size=len(proposal_frame_inds))
-                    proposal_frame_inds += perframe_offsets
-                proposal_frame_inds = np.mod(proposal_frame_inds, total_frames)
-                frame_inds.extend(proposal_frame_inds)
+            frame_inds = self._get_train_clips(total_frames,
+                                               results['out_props'])
 
             results['frame_inds'] = np.array(frame_inds).astype(np.int)
             results['clip_len'] = self.clip_len
