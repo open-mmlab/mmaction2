@@ -480,7 +480,7 @@ class SampleProposalFrames(SampleFrames):
         """
         total_frames = results['total_frames']
 
-        clip_offsets = self._sample_clips(total_frames)
+        clip_offsets = self._sample_clips(total_frames, results['out_props'])
         frame_inds = clip_offsets[:, None] + np.arange(
             self.clip_len)[None, :] * self.frame_interval
         frame_inds = np.concatenate(frame_inds)
