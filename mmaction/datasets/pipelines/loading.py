@@ -23,8 +23,6 @@ class SampleFrames(object):
         frame_interval (int): Temporal interval of adjacent sampled frames.
             Default: 1.
         num_clips (int): Number of clips to be sampled. Default: 1.
-        start_index (int): Specify a start index for frames in consideration of
-            different filename format. Default: 1.
         temporal_jitter (bool): Whether to apply temporal jittering.
             Default: False.
         twice_sample (bool): Whether to use twice sample when testing.
@@ -41,7 +39,6 @@ class SampleFrames(object):
                  clip_len,
                  frame_interval=1,
                  num_clips=1,
-                 start_index=1,
                  temporal_jitter=False,
                  twice_sample=False,
                  out_of_bound_opt='loop',
@@ -50,7 +47,6 @@ class SampleFrames(object):
         self.clip_len = clip_len
         self.frame_interval = frame_interval
         self.num_clips = num_clips
-        self.start_index = start_index
         self.temporal_jitter = temporal_jitter
         self.twice_sample = twice_sample
         self.out_of_bound_opt = out_of_bound_opt
@@ -148,6 +144,7 @@ class SampleFrames(object):
         else:
             total_frames = results['total_frames']
 
+        # TODO: index in different mode may be different
         clip_offsets = self._sample_clips(total_frames)
         frame_inds = clip_offsets[:, None] + np.arange(
             self.clip_len)[None, :] * self.frame_interval
@@ -169,7 +166,7 @@ class SampleFrames(object):
             frame_inds = new_inds
         else:
             raise ValueError('Illegal out_of_bound option.')
-        frame_inds = np.concatenate(frame_inds) + self.start_index
+        frame_inds = np.concatenate(frame_inds)
         results['frame_inds'] = frame_inds.astype(np.int)
         results['clip_len'] = self.clip_len
         results['frame_interval'] = self.frame_interval
@@ -189,8 +186,6 @@ class DenseSampleFrames(SampleFrames):
         frame_interval (int): Temporal interval of adjacent sampled frames.
             Default: 1.
         num_clips (int): Number of clips to be sampled. Default: 1.
-        start_index (int): Specify a start index for frames in consideration of
-            different filename format. Default: 1.
         sample_range (int): Total sample range for dense sample.
             Default: 64.
         num_sample_positions (int): Number of sample start positions, Which is
@@ -205,7 +200,6 @@ class DenseSampleFrames(SampleFrames):
                  clip_len,
                  frame_interval=1,
                  num_clips=1,
-                 start_index=1,
                  sample_range=64,
                  num_sample_positions=10,
                  temporal_jitter=False,
@@ -215,7 +209,6 @@ class DenseSampleFrames(SampleFrames):
             clip_len,
             frame_interval,
             num_clips,
-            start_index,
             temporal_jitter,
             out_of_bound_opt=out_of_bound_opt,
             test_mode=test_mode)
@@ -268,6 +261,136 @@ class DenseSampleFrames(SampleFrames):
             clip_offsets.extend((base_offsets + start_idx) % num_frames)
         clip_offsets = np.array(clip_offsets)
         return clip_offsets
+
+
+@PIPELINES.register_module()
+class SampleProposalFrames(SampleFrames):
+
+    def __init__(self,
+                 clip_len,
+                 body_segments,
+                 aug_segments,
+                 aug_ratio,
+                 frame_interval=1,
+                 test_interval=6,
+                 num_clips=1,
+                 temporal_jitter=False,
+                 test_mode=False,
+                 random_shift=False):
+        super().__init__(clip_len, frame_interval, num_clips, temporal_jitter,
+                         test_mode)
+        self.body_segments = body_segments
+        self.aug_segments = aug_segments
+        if isinstance(aug_ratio, (int, float)):
+            self.aug_ratio = (aug_ratio, aug_ratio)
+        else:
+            assert isinstance(aug_ratio, (tuple, list))
+            assert len(aug_ratio) == 2
+            self.aug_ratio = aug_ratio
+        self.random_shift = random_shift
+        self.test_mode = test_mode
+        self.test_interval = test_interval
+
+    def _sample_indices(self, valid_length, num_segments):
+        average_duration = (valid_length + 1) // num_segments
+        if average_duration > 0:
+            offsets = np.multiply(
+                                  list(range(num_segments)),
+                                  average_duration) + \
+                                  np.random.randint(average_duration,
+                                                    size=num_segments)
+        elif valid_length > num_segments:
+            offsets = np.sort(
+                np.random.randint(valid_length, size=num_segments))
+        else:
+            offsets = np.zeros((num_segments, ))
+
+        return offsets
+
+    def _get_val_indices(self, valid_length, num_segments):
+        if valid_length > num_segments:
+            tick = valid_length / float(num_segments)
+            offsets = np.array(
+                [int(tick / 2.0 + tick * x) for x in range(num_segments)])
+        else:
+            offsets = np.zeros((num_segments, ))
+
+        return offsets
+
+    def _get_train_clips(self, proposal, num_frames):
+        start_frame = proposal.start_frame + 1
+        end_frame = proposal.end_frame
+
+        duration = end_frame - start_frame + 1
+        assert duration != 0
+        valid_length = duration - self.clip_len
+
+        valid_starting = max(1,
+                             start_frame - int(duration * self.aug_ratio[0]))
+        valid_ending = min(num_frames - self.clip_len + 1,
+                           end_frame + int(duration * self.aug_ratio[1]))
+
+        valid_starting_length = start_frame - valid_starting - \
+            self.clip_len + 1
+        valid_ending_length = valid_ending - end_frame - self.clip_len + 1
+
+        starting_offsets = self._sample_indices(
+            valid_starting_length, self.aug_segments[0]) if self.random_shift \
+            else self._get_val_indices(valid_starting_length,
+                                       self.aug_segments[0])
+        starting_offsets += valid_starting
+        course_offsets = self._sample_indices(
+            valid_length, self.body_segments) if self.random_shift \
+            else self._get_val_indices(valid_length, self.body_segments)
+        course_offsets += start_frame
+        # yapf: disable
+        ending_offsets = self._sample_indices(
+            valid_ending_length, self.aug_segments[1]) if self.random_shift \
+            else self._get_val_indices(valid_ending_length, self.aug_segments[1])  # noqa:E501
+        # yapf: enable
+        ending_offsets += end_frame
+
+        offsets = np.concatenate(
+            (starting_offsets, course_offsets, ending_offsets))
+        return offsets
+
+    def _get_test_clips(self, num_frames):
+        return np.arange(
+            0, num_frames - self.clip_len, self.test_interval, dtype=int) + 1
+
+    def __call__(self, results):
+        total_frames = results['total_frames']
+
+        if self.test_mode:
+            clip_offsets = self._get_test_clips(total_frames)
+            frame_inds = clip_offsets[:, None] + np.arange(
+                self.clip_len)[None, :] * self.frame_interval
+            frame_inds = np.concatenate(frame_inds)
+            frame_inds = np.mod(frame_inds, total_frames)
+        else:
+            frame_inds = []
+            for idx, proposal in enumerate(results['out_props']):
+                clip_offsets = self._get_train_clips(proposal[0][1],
+                                                     total_frames)
+
+                proposal_frame_inds = clip_offsets[:, None] + np.arange(
+                    self.clip_len)[None, :] * self.frame_interval
+                proposal_frame_inds = np.concatenate(proposal_frame_inds)
+                if self.temporal_jitter:
+                    perframe_offsets = np.random.randint(
+                        self.frame_interval, size=len(proposal_frame_inds))
+                    proposal_frame_inds += perframe_offsets
+                proposal_frame_inds = np.mod(proposal_frame_inds, total_frames)
+                frame_inds.extend(proposal_frame_inds)
+
+            results['frame_inds'] = np.array(frame_inds).astype(np.int)
+            results['clip_len'] = self.clip_len
+            results['frame_interval'] = self.frame_interval
+            results['num_clips'] = self.body_segments + \
+                self.aug_segments[0] + self.aug_segments[1]
+            results['num_proposals'] = len(results['out_props'])
+
+        return results
 
 
 @PIPELINES.register_module()
@@ -592,6 +715,10 @@ class FrameSelector(object):
             results['frame_inds'] = np.squeeze(results['frame_inds'])
 
         for frame_idx in results['frame_inds']:
+            # temporary solution for frame index offset.
+            # TODO: add offset attributes in datasets.
+            if frame_idx == 0:
+                frame_idx += 1
             if modality == 'RGB':
                 filepath = osp.join(directory, filename_tmpl.format(frame_idx))
                 img_bytes = self.file_client.get(filepath)
