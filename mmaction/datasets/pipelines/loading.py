@@ -491,7 +491,7 @@ class SampleProposalFrames(SampleFrames):
             frame_inds += perframe_offsets
 
         frame_inds = np.mod(frame_inds, total_frames)
-        
+
         results['frame_inds'] = np.array(frame_inds).astype(np.int)
         results['clip_len'] = self.clip_len
         results['frame_interval'] = self.frame_interval
