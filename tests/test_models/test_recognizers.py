@@ -33,7 +33,7 @@ def _get_recognizer_cfg(fname):
     These are deep copied to allow for safe modification of parameters
     without influencing other tests.
     """
-    repo_dpath = osp.dirname(osp.dirname(__file__))
+    repo_dpath = osp.dirname(osp.dirname(osp.dirname(__file__)))
     config_dpath = osp.join(repo_dpath, 'configs/recognition')
     config_fpath = osp.join(config_dpath, fname)
     if not osp.exists(config_dpath):
