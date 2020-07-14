@@ -281,15 +281,14 @@ class SampleProposalFrames(SampleFrames):
     Args:
         clip_len (int): Frames of each sampled output clip.
         body_segments (int): Number of segments in course period.
-        aug_segments (list): Number of segments in starting and ending period.
-        aug_ratio (int/list): The ratio of the length of augmentation to
-            that of the proposal.
+        aug_segments (list[int]): Number of segments in starting and
+            ending period.
+        aug_ratio (int | float | Sequence[int | float]): The ratio
+            of the length of augmentation to that of the proposal.
         frame_interval (int): Temporal interval of adjacent sampled frames.
             Default: 1.
         test_interval (int): Temporal interval of adjacent sampled frames
-            in test mode.
-            Default: 6.
-        num_clips (int): Number of clips to be sampled. Default: 1.
+            in test mode. Default: 6.
         temporal_jitter (bool): Whether to apply temporal jittering.
             Default: False.
         mode (str): Choose 'train', 'val' or 'test' mode.
@@ -303,10 +302,9 @@ class SampleProposalFrames(SampleFrames):
                  aug_ratio,
                  frame_interval=1,
                  test_interval=6,
-                 num_clips=1,
                  temporal_jitter=False,
                  mode='train'):
-        super().__init__(clip_len, frame_interval, num_clips, temporal_jitter)
+        super().__init__(clip_len, frame_interval, temporal_jitter)
         self.body_segments = body_segments
         self.aug_segments = aug_segments
         if isinstance(aug_ratio, (int, float)):
