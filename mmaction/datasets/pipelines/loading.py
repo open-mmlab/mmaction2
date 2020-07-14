@@ -292,6 +292,7 @@ class SampleProposalFrames(SampleFrames):
             assert isinstance(aug_ratio, (tuple, list))
             assert len(aug_ratio) == 2
             self.aug_ratio = aug_ratio
+        assert mode in ['train', 'val', 'test']
         self.mode = mode
         self.test_interval = test_interval
 
@@ -299,7 +300,8 @@ class SampleProposalFrames(SampleFrames):
         average_duration = (valid_length + 1) // num_segments
         if average_duration > 0:
             base_offsets = np.arange(num_segments) * average_duration
-            offsets = base_offsets + np.random.randint(average_duration, size=num_segments)
+            offsets = base_offsets + np.random.randint(
+                average_duration, size=num_segments)
         elif valid_length > num_segments:
             offsets = np.sort(
                 np.random.randint(valid_length, size=num_segments))
@@ -312,9 +314,9 @@ class SampleProposalFrames(SampleFrames):
         if valid_length > num_segments:
             avg_interval = valid_length / float(num_segments)
             base_offsets = np.arange(num_segments) * avg_interval
-            clip_offsets = (base_offsets + avg_interval / 2.0).astype(np.int32)
+            offsets = (base_offsets + avg_interval / 2.0).astype(np.int32)
         else:
-            clip_offsets = np.zeros((num_segments, ))
+            offsets = np.zeros((num_segments, ))
 
         return offsets
 
@@ -336,13 +338,19 @@ class SampleProposalFrames(SampleFrames):
         valid_ending_length = valid_ending - end_frame - self.clip_len + 1
 
         if self.mode == 'train':
-            starting_offsets = self._get_train_indices(valid_starting_length, self.aug_segments[0])
-            course_offsets = self._get_train_indices(valid_length, self.body_segments)
-            ending_offsets = self._get_train_indices(valid_ending_length, self.aug_segments[1])
-        elif self.mode == 'test':
-            starting_offsets = self._get_val_indices(valid_starting_length, self.aug_segments[0])
-            course_offsets = self._get_val_indices(valid_length, self.body_segments)
-            ending_offsets = self._get_val_indices(valid_ending_length, self.aug_segments[1])
+            starting_offsets = self._get_train_indices(valid_starting_length,
+                                                       self.aug_segments[0])
+            course_offsets = self._get_train_indices(valid_length,
+                                                     self.body_segments)
+            ending_offsets = self._get_train_indices(valid_ending_length,
+                                                     self.aug_segments[1])
+        elif self.mode == 'val':
+            starting_offsets = self._get_val_indices(valid_starting_length,
+                                                     self.aug_segments[0])
+            course_offsets = self._get_val_indices(valid_length,
+                                                   self.body_segments)
+            ending_offsets = self._get_val_indices(valid_ending_length,
+                                                   self.aug_segments[1])
         starting_offsets += valid_starting
         course_offsets += start_frame
         ending_offsets += end_frame
@@ -354,7 +362,8 @@ class SampleProposalFrames(SampleFrames):
     def _get_train_clips(self, num_frames, proposals):
         clip_offsets = []
         for proposal in proposals:
-            proposal_clip_offsets = self._get_proposal_clips(proposal[0][1], num_frames)
+            proposal_clip_offsets = self._get_proposal_clips(
+                proposal[0][1], num_frames)
             clip_offsets.extend(proposal_clip_offsets)
 
         return clip_offsets
@@ -381,7 +390,7 @@ class SampleProposalFrames(SampleFrames):
 
     def __call__(self, results):
         total_frames = results['total_frames']
-            
+
         clip_offsets = self._sample_clips(total_frames)
         frame_inds = clip_offsets[:, None] + np.arange(
             self.clip_len)[None, :] * self.frame_interval
@@ -393,7 +402,7 @@ class SampleProposalFrames(SampleFrames):
             frame_inds += perframe_offsets
 
         frame_inds = np.mod(frame_inds, total_frames)
-        
+
         results['frame_inds'] = np.array(frame_inds).astype(np.int)
         results['clip_len'] = self.clip_len
         results['frame_interval'] = self.frame_interval
