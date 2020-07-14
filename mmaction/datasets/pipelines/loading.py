@@ -272,6 +272,29 @@ class DenseSampleFrames(SampleFrames):
 
 @PIPELINES.register_module()
 class SampleProposalFrames(SampleFrames):
+    """Sample frames from proposals in the video.
+
+    Required keys are "total_frames" and "out_props", added or modified keys
+    are "frame_inds", "frame_interval", "num_clips", 'clip_len'
+    and 'num_proposals'.
+
+    Args:
+        clip_len (int): Frames of each sampled output clip.
+        body_segments (int): Number of segments in course period.
+        aug_segments (list): Number of segments in starting and ending period.
+        aug_ratio (int/list): The ratio of the length of augmentation to
+            that of the proposal.
+        frame_interval (int): Temporal interval of adjacent sampled frames.
+            Default: 1.
+        test_interval (int): Temporal interval of adjacent sampled frames
+            in test mode.
+            Default: 6.
+        num_clips (int): Number of clips to be sampled. Default: 1.
+        temporal_jitter (bool): Whether to apply temporal jittering.
+            Default: False.
+        mode (str): Choose 'train', 'val' or 'test' mode.
+            Default: 'train'.
+    """
 
     def __init__(self,
                  clip_len,
@@ -297,20 +320,46 @@ class SampleProposalFrames(SampleFrames):
         self.test_interval = test_interval
 
     def _get_train_indices(self, valid_length, num_segments):
-        average_duration = (valid_length + 1) // num_segments
-        if average_duration > 0:
-            base_offsets = np.arange(num_segments) * average_duration
+        """Get indices of different stages of proposals in train mode.
+
+        It will calculate the average interval for each segment,
+        and randomly shift them within offsets between [0, average_duration].
+        If the total number of frames is smaller than num segments, it will
+        return all zero indices.
+
+        Args:
+            valid_length (int): The length of the starting point's
+                valid interval.
+            num_segments (int): Total number of segments.
+
+        Returns:
+            np.ndarray: Sampled frame indices in train mode.
+        """
+        avg_interval = (valid_length + 1) // num_segments
+        if avg_interval > 0:
+            base_offsets = np.arange(num_segments) * avg_interval
             offsets = base_offsets + np.random.randint(
-                average_duration, size=num_segments)
-        elif valid_length > num_segments:
-            offsets = np.sort(
-                np.random.randint(valid_length, size=num_segments))
+                avg_interval, size=num_segments)
         else:
             offsets = np.zeros((num_segments, ))
 
         return offsets
 
     def _get_val_indices(self, valid_length, num_segments):
+        """Get indices of different stages of proposals in validation mode.
+
+        It will calculate the average interval for each segment.
+        If the total number of valid length is smaller than num segments,
+        it will return all zero indices.
+
+        Args:
+            valid_length (int): The length of the starting point's
+                valid interval.
+            num_segments (int): Total number of segments.
+
+        Returns:
+            np.ndarray: Sampled frame indices in validation mode.
+        """
         if valid_length > num_segments:
             avg_interval = valid_length / float(num_segments)
             base_offsets = np.arange(num_segments) * avg_interval
@@ -321,6 +370,18 @@ class SampleProposalFrames(SampleFrames):
         return offsets
 
     def _get_proposal_clips(self, proposal, num_frames):
+        """Get clip offsets in train mode.
+
+        It will calculate sampled frame indices in the proposal's three
+        stages: starting, course and ending stage.
+
+        Args:
+            proposal (object): The proposal object.
+            num_frames (int): Total number of frame in the video.
+
+        Returns:
+            np.ndarray: Sampled frame indices in train mode.
+        """
         start_frame = proposal.start_frame + 1
         end_frame = proposal.end_frame
 
@@ -360,6 +421,18 @@ class SampleProposalFrames(SampleFrames):
         return offsets
 
     def _get_train_clips(self, num_frames, proposals):
+        """Get clip offsets in train mode.
+
+        It will calculate sampled frame indices of each proposal, and then
+        assemble them.
+
+        Args:
+            num_frames (int): Total number of frame in the video.
+            proposals (list): Proposals fetched.
+
+        Returns:
+            np.ndarray: Sampled frame indices in train mode.
+        """
         clip_offsets = []
         for proposal in proposals:
             proposal_clip_offsets = self._get_proposal_clips(
@@ -369,14 +442,25 @@ class SampleProposalFrames(SampleFrames):
         return clip_offsets
 
     def _get_test_clips(self, num_frames):
+        """Get clip offsets in test mode.
+
+        It will calculate sampled frame indices based on test interval.
+
+        Args:
+            num_frames (int): Total number of frame in the video.
+
+        Returns:
+            np.ndarray: Sampled frame indices in test mode.
+        """
         return np.arange(
             0, num_frames - self.clip_len, self.test_interval, dtype=int) + 1
 
-    def _sample_clips(self, num_frames):
+    def _sample_clips(self, num_frames, proposals):
         """Choose clip offsets for the video in a given mode.
 
         Args:
             num_frames (int): Total number of frame in the video.
+            proposals (list): Proposals fetched.
 
         Returns:
             np.ndarray: Sampled frame indices.
@@ -384,14 +468,20 @@ class SampleProposalFrames(SampleFrames):
         if self.mode == 'test':
             clip_offsets = self._get_test_clips(num_frames)
         else:
-            clip_offsets = self._get_train_clips(num_frames)
+            clip_offsets = self._get_train_clips(num_frames, proposals)
 
         return clip_offsets
 
     def __call__(self, results):
+        """Perform the SampleFrames loading.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         total_frames = results['total_frames']
 
-        clip_offsets = self._sample_clips(total_frames)
+        clip_offsets = self._sample_clips(total_frames, results['out_props'])
         frame_inds = clip_offsets[:, None] + np.arange(
             self.clip_len)[None, :] * self.frame_interval
         frame_inds = np.concatenate(frame_inds)
