@@ -24,8 +24,6 @@ class SampleFrames(object):
         frame_interval (int): Temporal interval of adjacent sampled frames.
             Default: 1.
         num_clips (int): Number of clips to be sampled. Default: 1.
-        start_index (int): Specify a start index for frames in consideration of
-            different filename format. Default: 1.
         temporal_jitter (bool): Whether to apply temporal jittering.
             Default: False.
         twice_sample (bool): Whether to use twice sample when testing.
@@ -42,7 +40,6 @@ class SampleFrames(object):
                  clip_len,
                  frame_interval=1,
                  num_clips=1,
-                 start_index=1,
                  temporal_jitter=False,
                  twice_sample=False,
                  out_of_bound_opt='loop',
@@ -51,7 +48,6 @@ class SampleFrames(object):
         self.clip_len = clip_len
         self.frame_interval = frame_interval
         self.num_clips = num_clips
-        self.start_index = start_index
         self.temporal_jitter = temporal_jitter
         self.twice_sample = twice_sample
         self.out_of_bound_opt = out_of_bound_opt
@@ -149,6 +145,7 @@ class SampleFrames(object):
         else:
             total_frames = results['total_frames']
 
+        # TODO: index in different mode may be different
         clip_offsets = self._sample_clips(total_frames)
         frame_inds = clip_offsets[:, None] + np.arange(
             self.clip_len)[None, :] * self.frame_interval
@@ -170,7 +167,7 @@ class SampleFrames(object):
             frame_inds = new_inds
         else:
             raise ValueError('Illegal out_of_bound option.')
-        frame_inds = np.concatenate(frame_inds) + self.start_index
+        frame_inds = np.concatenate(frame_inds)
         results['frame_inds'] = frame_inds.astype(np.int)
         results['clip_len'] = self.clip_len
         results['frame_interval'] = self.frame_interval
@@ -190,8 +187,6 @@ class DenseSampleFrames(SampleFrames):
         frame_interval (int): Temporal interval of adjacent sampled frames.
             Default: 1.
         num_clips (int): Number of clips to be sampled. Default: 1.
-        start_index (int): Specify a start index for frames in consideration of
-            different filename format. Default: 1.
         sample_range (int): Total sample range for dense sample.
             Default: 64.
         num_sample_positions (int): Number of sample start positions, Which is
@@ -206,7 +201,6 @@ class DenseSampleFrames(SampleFrames):
                  clip_len,
                  frame_interval=1,
                  num_clips=1,
-                 start_index=1,
                  sample_range=64,
                  num_sample_positions=10,
                  temporal_jitter=False,
@@ -216,7 +210,6 @@ class DenseSampleFrames(SampleFrames):
             clip_len,
             frame_interval,
             num_clips,
-            start_index,
             temporal_jitter,
             out_of_bound_opt=out_of_bound_opt,
             test_mode=test_mode)
@@ -825,6 +818,10 @@ class FrameSelector(object):
             results['frame_inds'] = np.squeeze(results['frame_inds'])
 
         for frame_idx in results['frame_inds']:
+            # temporary solution for frame index offset.
+            # TODO: add offset attributes in datasets.
+            if frame_idx == 0:
+                frame_idx += 1
             if modality == 'RGB':
                 filepath = osp.join(directory, filename_tmpl.format(frame_idx))
                 img_bytes = self.file_client.get(filepath)
