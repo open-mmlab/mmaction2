@@ -83,6 +83,7 @@ class TestLoading(object):
             }])
         cls.proposal_results = dict(
             frame_dir=cls.img_dir,
+<<<<<<< d69898689ff52a5675da948ebfcc4a0c149a9158
             video_id='test_imgs',
             total_frames=cls.total_frames,
             filename_tmpl=cls.filename_tmpl,
@@ -90,6 +91,14 @@ class TestLoading(object):
                          ExampleSSNInstance(1, 4, 10, 1, 1, 1)], 0],
                        [['test_imgs',
                          ExampleSSNInstance(6, 9, 10, 2, 1, 1)], 0]])
+=======
+            total_frames=cls.total_frames,
+            filename_tmpl=cls.filename_tmpl,
+            proposals=[
+                SSNInstance(1, 4, 10, 1, 1, 1),
+                SSNInstance(6, 9, 10, 2, 1, 1)
+            ])
+>>>>>>> Revise and add several unittests.
 
     def test_sample_frames(self):
         target_keys = [
