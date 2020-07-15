@@ -698,29 +698,45 @@ class Normalize(object):
 
 @PIPELINES.register_module()
 class ColorJitter(object):
-    """
+    """Randomly change the brightness, contrast, saturation and hue of images.
+
+    If specified to apply color space augmentation, it will distort the image
+    color space by changing brightness, contrast and saturation. Then, it will
+    add some random distort to the images in different color channels.
+    Note that the input images should be in original range [0, 255] and in RGB
+    channel sequence.
+
+    Required keys are "imgs", added or modified keys are "imgs", "eig_val",
+    "eig_vec", "alpha_std" and "color_space_aug".
+
+    Args:
+        color_space_aug (bool): Whether to apply color space augmentations. If
+            specified, it will change the brightness, contrast, saturation and
+            hue of images. Default: False.
+        alpha_std (bool): Std in a normal Gaussian distribution of the alpha.
+
 
     """
 
     def __init__(self,
                  color_space_aug=False,
-                 alphastd=0.1,
-                 eigval=None,
-                 eigvec=None):
-        if eigval is None:
+                 alpha_std=0.1,
+                 eig_val=None,
+                 eig_vec=None):
+        if eig_val is None:
             # note that the data range should be [0, 255]
-            self.eigval = np.array([55.46, 4.794, 1.148])
+            self.eig_val = np.array([55.46, 4.794, 1.148])
         else:
-            self.eigval = eigval
+            self.eig_val = eig_val
 
-        if eigvec is None:
-            self.eigvec = np.array([[-0.5675, 0.7192, 0.4009],
-                                    [-0.5808, -0.0045, -0.8140],
-                                    [-0.5836, -0.6948, 0.4203]])
+        if eig_vec is None:
+            self.eig_vec = np.array([[-0.5675, 0.7192, 0.4009],
+                                     [-0.5808, -0.0045, -0.8140],
+                                     [-0.5836, -0.6948, 0.4203]])
         else:
-            self.eigvec = eigvec
+            self.eig_vec = eig_vec
 
-        self.alphastd = alphastd
+        self.alpha_std = alpha_std
         self.color_space_aug = color_space_aug
 
     @staticmethod
@@ -784,15 +800,15 @@ class ColorJitter(object):
                 out.append(img)
         else:
             out = imgs
-        alpha = np.random.normal(0, self.alphastd, size=(3, ))
-        rgb = np.array(np.dot(self.eigvec * alpha,
-                              self.eigval)).astype(np.float32)
+        alpha = np.random.normal(0, self.alpha_std, size=(3, ))
+        rgb = np.array(np.dot(self.eig_vec * alpha,
+                              self.eig_val)).astype(np.float32)
         rgb = np.expand_dims(np.expand_dims(rgb, 0), 0)
 
         results['imgs'] = [img + rgb for img in out]
-        results['eigval'] = self.eigval
-        results['eigvec'] = self.eigvec
-        results['alphastd'] = self.alphastd
+        results['eig_val'] = self.eig_val
+        results['eig_vec'] = self.eig_vec
+        results['alpha_std'] = self.alpha_std
         results['color_space_aug'] = self.color_space_aug
 
         return results
@@ -800,9 +816,9 @@ class ColorJitter(object):
     def __repr__(self):
         repr_str = (f'{self.__class__.__name__}('
                     f'color_space_aug={self.color_space_aug}, '
-                    f'alphastd={self.alphastd}, '
-                    f'eigval={self.eigval}, '
-                    f'eigvec={self.eigvec})')
+                    f'alpha_std={self.alpha_std}, '
+                    f'eig_val={self.eig_val}, '
+                    f'eig_vec={self.eig_vec})')
         return repr_str
 
 
