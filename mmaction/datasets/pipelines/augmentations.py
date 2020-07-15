@@ -713,9 +713,13 @@ class ColorJitter(object):
         color_space_aug (bool): Whether to apply color space augmentations. If
             specified, it will change the brightness, contrast, saturation and
             hue of images. Default: False.
-        alpha_std (bool): Std in a normal Gaussian distribution of the alpha.
-
-
+        alpha_std (float): Std in the normal Gaussian distribution of alpha.
+        eig_val (np.ndarray | None): Eigenvalues of [1 x 3] size for RGB
+            channel jitter. If set to None, it will use the default
+            eigenvalues. Default: None.
+        eig_vec (np.ndarray | None): Eigenvectors of [3 x 3] size for RGB
+            channel jitter. If set to None, it will use the default
+            eigenvectors. Default: None.
     """
 
     def __init__(self,
@@ -741,6 +745,7 @@ class ColorJitter(object):
 
     @staticmethod
     def brightnetss(imgs, delta):
+        """Brightness distortion."""
         if random.uniform(0, 1) > 0.5:
             delta = np.array(delta).astype(np.float32)
             imgs = imgs + delta
@@ -748,6 +753,7 @@ class ColorJitter(object):
 
     @staticmethod
     def contrast(imgs, alpha):
+        """Contrast distortion"""
         if random.uniform(0, 1) > 0.5:
             alpha = np.array(alpha).astype(np.float32)
             imgs = imgs * alpha
@@ -755,6 +761,7 @@ class ColorJitter(object):
 
     @staticmethod
     def saturation(imgs, alpha):
+        """Saturation distortion."""
         if random.uniform(0, 1) > 0.5:
             gray = imgs * np.array([0.114, 0.587, 0.299]).astype(np.float32)
             gray = np.sum(gray, 2, keepdims=True)
@@ -765,6 +772,7 @@ class ColorJitter(object):
 
     @staticmethod
     def hue(img, alpha):
+        """Hue distortion"""
         if random.uniform(0, 1) > 0.5:
             u = np.cos(alpha * np.pi)
             w = np.sin(alpha * np.pi)
@@ -775,6 +783,7 @@ class ColorJitter(object):
                               [1.0, -1.107, 1.705]])
             t = np.dot(np.dot(ityiq, bt), tyiq).T
             t = np.array(t).astype(np.float32)
+            # Here we use np.flip to suit our RGB images cases.
             t = np.flip(t)
             img = np.dot(img, t)
         return img
