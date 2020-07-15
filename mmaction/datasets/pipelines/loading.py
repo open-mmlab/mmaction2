@@ -497,7 +497,8 @@ class SampleProposalFrames(SampleFrames):
         results['frame_interval'] = self.frame_interval
         results['num_clips'] = self.body_segments + \
             self.aug_segments[0] + self.aug_segments[1]
-        results['num_proposals'] = len(results['out_props'])
+        if self.mode in ['train', 'val']:
+            results['num_proposals'] = len(results['out_props'])
 
         return results
 
