@@ -274,11 +274,11 @@ class FormatShape(object):
             num_proposals = results['num_proposals']
             num_clips = results['num_clips']
             clip_len = results['clip_len']
-            imgs = imgs.reshape((-1, num_proposals, num_clips * clip_len) +
+            imgs = imgs.reshape((num_proposals, num_clips * clip_len) +
                                 imgs.shape[1:])
             # P x M x H x W x C
             # M = N_clips x L
-            imgs = np.transpose(imgs, (0, 1, 2, 5, 3, 4))
+            imgs = np.transpose(imgs, (0, 1, 4, 2, 3))
             # P x M x C x H x W
 
         results['imgs'] = imgs

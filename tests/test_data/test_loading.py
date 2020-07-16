@@ -450,6 +450,7 @@ class TestLoading(object):
             frame_interval=1,
             body_segments=2,
             aug_segments=(1, 1),
+            aug_ratio=0.5,
             temporal_jitter=False)
         sample_frames = SampleProposalFrames(**config)
         sample_frames_results = sample_frames(proposal_result)
@@ -466,6 +467,7 @@ class TestLoading(object):
             frame_interval=1,
             body_segments=2,
             aug_segments=(1, 1),
+            aug_ratio=0.5,
             temporal_jitter=True)
         sample_frames = SampleProposalFrames(**config)
         sample_frames_results = sample_frames(proposal_result)
@@ -482,6 +484,7 @@ class TestLoading(object):
             frame_interval=1,
             body_segments=2,
             aug_segments=(1, 1),
+            aug_ratio=0.5,
             temporal_jitter=False,
             mode='val')
         sample_frames = SampleProposalFrames(**config)
@@ -493,7 +496,15 @@ class TestLoading(object):
         # Sample Frame with no temporal_jitter in test mode
         # test_interval=2
         proposal_result = copy.deepcopy(self.proposal_results)
-        config = dict(test_interval=2, temporal_jitter=False, mode='test')
+        config = dict(
+            clip_len=1,
+            frame_interval=1,
+            body_segments=2,
+            aug_segments=(1, 1),
+            aug_ratio=0.5,
+            test_interval=2,
+            temporal_jitter=False,
+            mode='test')
         sample_frames = SampleProposalFrames(**config)
         sample_frames_results = sample_frames(proposal_result)
         assert self.check_keys_contain(sample_frames_results.keys(),
