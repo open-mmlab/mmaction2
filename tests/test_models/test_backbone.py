@@ -8,7 +8,8 @@ from mmcv.utils import _BatchNorm
 
 from mmaction.models import (ResNet, ResNet2Plus1d, ResNet3d, ResNet3dSlowFast,
                              ResNet3dSlowOnly, ResNetTSM)
-from mmaction.models.backbones import NL3DWrapper
+from mmaction.models.backbones.resnet import NL3DWrapper as NL3D1
+from mmaction.models.backbones.resnet3d import NL3DWrapper as NL3D2
 
 
 def check_norm_state(modules, train_state):
@@ -375,6 +376,24 @@ def test_resnet3d_backbone():
         feat = resnet3d_34_1x1x1(imgs)
         assert feat.shape == torch.Size([1, 512, 1, 2, 2])
 
+    # resnet3d with non-local module
+    resnet3d_nonlocal = ResNet3d(
+        50, None, pretrained2d=False, with_non_local=True)
+    resnet3d_nonlocal.init_weights()
+    for layer_name in ['layer2', 'layer3']:
+        layer = getattr(resnet3d_nonlocal, layer_name)
+        isinstance(layer, nn.Sequential)
+        if len(layer) == 4:
+            assert (isinstance(layer[0], NL3D2)
+                    and isinstance(layer[2], NL3D2))
+        elif len(layer) == 6:
+            assert (isinstance(layer[0], NL3D2)
+                    and isinstance(layer[2], NL3D2)
+                    and isinstance(layer[4], NL3D2))
+
+    feat = resnet3d_nonlocal(imgs)
+    assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
+
 
 def test_resnet2plus1d_backbone():
     # Test r2+1d backbone
@@ -535,12 +554,15 @@ def test_resnet_tsm_backbone():
         layer = getattr(resnet_tsm_nonlocal, layer_name)
         isinstance(layer, nn.Sequential)
         if len(layer) == 4:
-            assert (isinstance(layer[0], NL3DWrapper)
-                    and isinstance(layer[2], NL3DWrapper))
+            assert (isinstance(layer[0], NL3D1)
+                    and isinstance(layer[2], NL3D1))
         elif len(layer) == 6:
-            assert (isinstance(layer[0], NL3DWrapper)
-                    and isinstance(layer[2], NL3DWrapper)
-                    and isinstance(layer[4], NL3DWrapper))
+            assert (isinstance(layer[0], NL3D1)
+                    and isinstance(layer[2], NL3D1)
+                    and isinstance(layer[4], NL3D1))
+
+    feat = resnet_tsm_nonlocal(imgs)
+    assert feat.shape == torch.Size([8, 2048, 2, 2])
 
     # TSM forword
     feat = resnet_tsm_50(imgs)

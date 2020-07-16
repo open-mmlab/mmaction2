@@ -1,13 +1,38 @@
 import torch.nn as nn
 import torch.utils.checkpoint as cp
-from mmcv.cnn import (ConvModule, build_activation_layer, constant_init,
-                      kaiming_init)
+from mmcv.cnn import (ConvModule, NonLocal3d, build_activation_layer,
+                      constant_init, kaiming_init)
 from mmcv.runner import _load_checkpoint, load_checkpoint
 from mmcv.utils import _BatchNorm
 from torch.nn.modules.utils import _ntuple, _triple
 
 from ...utils import get_root_logger
 from ..registry import BACKBONES
+
+
+class NL3DWrapper(nn.Module):
+    """3D Non-local wrapper for ResNet50.
+
+    Wrap ResNet layers with 3D NonLocal modules.
+
+    Args:
+        block (nn.Module): Residual blocks to be built.
+        num_segments (int): Number of frame segments.
+    """
+
+    def __init__(self, block):
+        super(NL3DWrapper, self).__init__()
+        self.block = block
+        self.non_local = NonLocal3d(
+            self.block.conv3.norm.num_features,
+            sub_sample=True,
+            norm_cfg=dict(type='BN3d', requires_grad=True),
+            mode='dot_product')
+
+    def forward(self, x):
+        x = self.block(x)
+        x = self.non_local(x)
+        return x
 
 
 class BasicBlock3d(nn.Module):
@@ -371,7 +396,8 @@ class ResNet3d(nn.Module):
                  act_cfg=dict(type='ReLU', inplace=True),
                  norm_eval=True,
                  with_cp=False,
-                 zero_init_residual=True):
+                 zero_init_residual=True,
+                 with_non_local=False):
         super().__init__()
         if depth not in self.arch_settings:
             raise KeyError(f'invalid depth {depth} for resnet')
@@ -405,6 +431,8 @@ class ResNet3d(nn.Module):
         self.block, stage_blocks = self.arch_settings[depth]
         self.stage_blocks = stage_blocks[:num_stages]
         self.inplanes = self.base_channels
+
+        self.with_non_local = with_non_local
 
         self._make_stem_layer()
 
@@ -688,6 +716,16 @@ class ResNet3d(nn.Module):
             for param in m.parameters():
                 param.requires_grad = False
 
+    def make_non_local(self):
+        # This part is for ResNet50
+        self.layer2 = nn.Sequential(
+            NL3DWrapper(self.layer2[0]), self.layer2[1],
+            NL3DWrapper(self.layer2[2]), self.layer2[3])
+        self.layer3 = nn.Sequential(
+            NL3DWrapper(self.layer3[0]), self.layer3[1],
+            NL3DWrapper(self.layer3[2]), self.layer3[3],
+            NL3DWrapper(self.layer3[4]), self.layer3[5])
+
     def init_weights(self):
         """Initiate the parameters either from existing checkpoint or from
         scratch."""
@@ -719,6 +757,9 @@ class ResNet3d(nn.Module):
                         constant_init(m.conv2.bn, 0)
         else:
             raise TypeError('pretrained must be a str or None')
+
+        if self.with_non_local:
+            self.make_non_local()
 
     def forward(self, x):
         """Defines the computation performed at every call.

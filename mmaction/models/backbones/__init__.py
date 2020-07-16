@@ -1,4 +1,4 @@
-from .resnet import NL3DWrapper, ResNet
+from .resnet import ResNet
 from .resnet2plus1d import ResNet2Plus1d
 from .resnet3d import ResNet3d
 from .resnet3d_slowfast import ResNet3dSlowFast
@@ -7,5 +7,5 @@ from .resnet_tsm import ResNetTSM
 
 __all__ = [
     'ResNet', 'ResNet3d', 'ResNetTSM', 'ResNet2Plus1d', 'ResNet3dSlowFast',
-    'ResNet3dSlowOnly', 'NL3DWrapper'
+    'ResNet3dSlowOnly'
 ]

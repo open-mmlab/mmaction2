@@ -9,7 +9,7 @@ from ..registry import BACKBONES
 
 
 class NL3DWrapper(nn.Module):
-    """3D Non-local wrapper.
+    """3D Non-local wrapper for ResNet50.
 
     Wrap ResNet layers with 3D NonLocal modules.
 
@@ -529,6 +529,7 @@ class ResNet(nn.Module):
                 f': {remaining_names}')
 
     def make_non_local(self):
+        # This part is for ResNet50
         self.layer2 = nn.Sequential(
             NL3DWrapper(self.layer2[0], self.num_segments), self.layer2[1],
             NL3DWrapper(self.layer2[2], self.num_segments), self.layer2[3])
