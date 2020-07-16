@@ -12,7 +12,23 @@ from mmaction.datasets.pipelines import (DecordDecode, DecordInit,
                                          LoadProposals, OpenCVDecode,
                                          OpenCVInit, PyAVDecode, PyAVInit,
                                          SampleFrames, SampleProposalFrames)
-from mmaction.datasets.ssn_dataset import SSNInstance
+
+
+class ExampleSSNInstance(object):
+
+    def __init__(self,
+                 start_frame,
+                 end_frame,
+                 num_frames,
+                 label=None,
+                 best_iou=None,
+                 overlap_self=None):
+        self.start_frame = start_frame
+        self.end_frame = min(end_frame, num_frames)
+        self.label = label if label is not None else -1
+        self.coverage = (end_frame - start_frame) / num_frames
+        self.best_iou = best_iou
+        self.overlap_self = overlap_self
 
 
 class TestLoading(object):
@@ -67,12 +83,13 @@ class TestLoading(object):
             }])
         cls.proposal_results = dict(
             frame_dir=cls.img_dir,
+            video_id='test_imgs',
             total_frames=cls.total_frames,
             filename_tmpl=cls.filename_tmpl,
-            proposals=[
-                SSNInstance(1, 4, 10, 1, 1, 1),
-                SSNInstance(6, 9, 10, 2, 1, 1)
-            ])
+            out_props=[[['test_imgs',
+                         ExampleSSNInstance(1, 4, 10, 1, 1, 1)], 0],
+                       [['test_imgs',
+                         ExampleSSNInstance(6, 9, 10, 2, 1, 1)], 0]])
 
     def test_sample_frames(self):
         target_keys = [
