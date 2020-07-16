@@ -24,7 +24,9 @@ class SampleFrames(object):
             Default: 1.
         num_clips (int): Number of clips to be sampled. Default: 1.
         start_index (int): Specify a start index for frames in consideration of
-            different filename format. Default: 1.
+            different filename format. However, when taking videos as input,
+            it should be set to 0, since frames loaded from videos count
+            from 0. Default: 1.
         temporal_jitter (bool): Whether to apply temporal jittering.
             Default: False.
         twice_sample (bool): Whether to use twice sample when testing.
