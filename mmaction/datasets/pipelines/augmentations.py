@@ -698,7 +698,7 @@ class Normalize(object):
 
 @PIPELINES.register_module()
 class ColorJitter(object):
-    """Randomly change the brightness, contrast, saturation and hue of images,
+    """Randomly distort the brightness, contrast, saturation and hue of images,
     and add PCA based noise into images.
 
     Code Reference:
@@ -835,9 +835,10 @@ class ColorJitter(object):
             contrast_alpha = np.random.uniform(0.6, 1.4)
             saturation_alpha = np.random.uniform(0.6, 1.4)
             hue_alpha = np.random.uniform(-18, 18)
+            jitter_coin = np.random.uniform(0, 1)
             for img in imgs:
                 img = self.brightness(img, delta=bright_delta)
-                if np.random.uniform(0, 1) > 0.5:
+                if jitter_coin > 0.5:
                     img = self.contrast(img, alpha=contrast_alpha)
                     img = self.saturation(img, alpha=saturation_alpha)
                     img = self.hue(img, alpha=hue_alpha)
