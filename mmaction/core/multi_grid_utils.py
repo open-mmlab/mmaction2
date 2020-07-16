@@ -36,7 +36,8 @@ class FixedStepwiseLrUpdaterHook(StepLrUpdaterHook):
 
 class MultiGridHook(Hook):
     """MultiGridHook.
-        https://arxiv.org/abs/1912.00998.
+
+    https://arxiv.org/abs/1912.00998.
     """
 
     def __init__(self, multi_grid_cfg, data_cfg):
@@ -66,9 +67,10 @@ class MultiGridHook(Hook):
     #     print(f'inner iter is {runner._inner_iter}')
 
     def _update_long_cycle(self, runner):
-        """
-        Before every epoch, check if long cycle shape should change. If it
-            should, change the runner's optimizer and pipelines accordingly.
+        """Before every epoch, check if long cycle shape should change.
+
+        If it should, change the runner's optimizer and pipelines
+        accordingly.
         """
         base_b, base_t, base_s = self._get_schedule(runner.epoch)
         resize_list = []  # use a list to find the final `Resize`
@@ -173,15 +175,13 @@ class MultiGridHook(Hook):
         return final_schedule
 
     def _print_schedule(self, schedule):
-        '''logging the schedule.
-        '''
+        """logging the schedule."""
         self.logger.info("\tLongCycleId\tBase shape\tEpochs\t")
         for s in schedule:
             self.logger.info("\t{}\t{}\t{}\t".format(s[0], s[1], s[2]))
 
     def _get_schedule(self, epoch):
-        """Returning the corresponding shape.
-        """
+        """Returning the corresponding shape."""
         for s in self.schedule:
             if epoch < s[-1]:
                 return s[1]

@@ -16,6 +16,7 @@ def train_model(model,
                 timestamp=None,
                 meta=None):
     """Train model entry function.
+
     Args:
         model (nn.Module): The model to be trained.
         dataset (:obj:`Dataset`): Train dataset.

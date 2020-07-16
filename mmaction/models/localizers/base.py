@@ -134,9 +134,10 @@ class BaseLocalizer(nn.Module, metaclass=ABCMeta):
     def val_step(self, data_batch, optimizer, **kwargs):
         """The iteration step during validation.
 
-        This method shares the same signature as :func:`train_step`, but used
-        during val epochs. Note that the evaluation after training epochs is
-        not implemented with this method, but an evaluation hook.
+        This method shares the same signature as :func:`train_step`, but
+        used during val epochs. Note that the evaluation after training
+        epochs is not implemented with this method, but an evaluation
+        hook.
         """
         results = self.forward(return_loss=False, **data_batch)
 
