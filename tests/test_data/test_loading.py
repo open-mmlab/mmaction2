@@ -84,7 +84,7 @@ class TestLoading(object):
         cls.proposal_results = dict(
             frame_dir=cls.img_dir,
             video_id='test_imgs',
-            total_frames=cls.total_frames,
+            total_frames=10,
             filename_tmpl=cls.filename_tmpl,
             out_props=[[['test_imgs',
                          ExampleSSNInstance(1, 4, 10, 1, 1, 1)], 0],
