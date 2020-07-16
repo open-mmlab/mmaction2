@@ -698,7 +698,12 @@ class Normalize(object):
 
 @PIPELINES.register_module()
 class ColorJitter(object):
-    """Randomly change the brightness, contrast, saturation and hue of images.
+    """Randomly change the brightness, contrast, saturation and hue of images,
+    and add PCA based noise into images.
+
+    Code Reference:
+    https://gluon-cv.mxnet.io/_modules/gluoncv/data/transforms/experimental/image.html
+    https://mxnet.apache.org/api/python/docs/_modules/mxnet/image/image.html#LightingAug
 
     If specified to apply color space augmentation, it will distort the image
     color space by changing brightness, contrast and saturation. Then, it will
@@ -744,36 +749,72 @@ class ColorJitter(object):
         self.color_space_aug = color_space_aug
 
     @staticmethod
-    def brightnetss(imgs, delta):
-        """Brightness distortion."""
-        if random.uniform(0, 1) > 0.5:
+    def brightness(img, delta):
+        """Brightness distortion.
+
+        Args:
+            img (np.ndarray): An input image.
+            delta (float): Delta value to distort brightness.
+                It ranges from [-32, 32).
+
+        Returns:
+            np.ndarray: A brightness distorted image.
+        """
+        if np.random.uniform(0, 1) > 0.5:
             delta = np.array(delta).astype(np.float32)
-            imgs = imgs + delta
-        return imgs
+            img = img + delta
+        return img
 
     @staticmethod
-    def contrast(imgs, alpha):
-        """Contrast distortion"""
-        if random.uniform(0, 1) > 0.5:
+    def contrast(img, alpha):
+        """Contrast distortion.
+
+        Args:
+            img (np.ndarray): An input image.
+            alpha (float): Alpha value to distort contrast.
+                It ranges from [0.6, 1.4).
+
+        Returns:
+            np.ndarray: A contrast distorted image.
+        """
+        if np.random.uniform(0, 1) > 0.5:
             alpha = np.array(alpha).astype(np.float32)
-            imgs = imgs * alpha
-        return imgs
+            img = img * alpha
+        return img
 
     @staticmethod
-    def saturation(imgs, alpha):
-        """Saturation distortion."""
-        if random.uniform(0, 1) > 0.5:
-            gray = imgs * np.array([0.114, 0.587, 0.299]).astype(np.float32)
+    def saturation(img, alpha):
+        """Saturation distortion.
+
+        Args:
+            img (np.ndarray): An input image.
+            alpha (float): Alpha value to distort the saturation.
+                It ranges from [0.6, 1.4).
+
+        Returns:
+            np.ndarray: A saturation distorted image.
+        """
+        if np.random.uniform(0, 1) > 0.5:
+            gray = img * np.array([0.299, 0.587, 0.114]).astype(np.float32)
             gray = np.sum(gray, 2, keepdims=True)
             gray *= (1.0 - alpha)
-            imgs = imgs * alpha
-            imgs = imgs + gray
-        return imgs
+            img = img * alpha
+            img = img + gray
+        return img
 
     @staticmethod
     def hue(img, alpha):
-        """Hue distortion"""
-        if random.uniform(0, 1) > 0.5:
+        """Hue distortion.
+
+        Args:
+            img (np.ndarray): An input image.
+            alpha (float): Alpha value to control the degree of rotation
+                for hue. It ranges from [-18, 18).
+
+        Returns:
+            np.ndarray: A hue distorted image.
+        """
+        if np.random.uniform(0, 1) > 0.5:
             u = np.cos(alpha * np.pi)
             w = np.sin(alpha * np.pi)
             bt = np.array([[1.0, 0.0, 0.0], [0.0, u, -w], [0.0, w, u]])
@@ -783,8 +824,6 @@ class ColorJitter(object):
                               [1.0, -1.107, 1.705]])
             t = np.dot(np.dot(ityiq, bt), tyiq).T
             t = np.array(t).astype(np.float32)
-            # Here we use np.flip to suit our RGB images cases.
-            t = np.flip(t)
             img = np.dot(img, t)
         return img
 
@@ -795,10 +834,10 @@ class ColorJitter(object):
             bright_delta = np.random.uniform(-32, 32)
             contrast_alpha = np.random.uniform(0.6, 1.4)
             saturation_alpha = np.random.uniform(0.6, 1.4)
-            hue_alpha = random.uniform(-18, 18)
+            hue_alpha = np.random.uniform(-18, 18)
             for img in imgs:
-                img = self.brightnetss(img, delta=bright_delta)
-                if random.uniform(0, 1) > 0.5:
+                img = self.brightness(img, delta=bright_delta)
+                if np.random.uniform(0, 1) > 0.5:
                     img = self.contrast(img, alpha=contrast_alpha)
                     img = self.saturation(img, alpha=saturation_alpha)
                     img = self.hue(img, alpha=hue_alpha)
@@ -809,10 +848,12 @@ class ColorJitter(object):
                 out.append(img)
         else:
             out = imgs
+
+        # Add PCA based noise
         alpha = np.random.normal(0, self.alpha_std, size=(3, ))
         rgb = np.array(np.dot(self.eig_vec * alpha,
                               self.eig_val)).astype(np.float32)
-        rgb = np.expand_dims(np.expand_dims(rgb, 0), 0)
+        rgb = rgb[None, None, ...]
 
         results['imgs'] = [img + rgb for img in out]
         results['eig_val'] = self.eig_val
