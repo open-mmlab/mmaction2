@@ -24,7 +24,9 @@ class SampleFrames(object):
             Default: 1.
         num_clips (int): Number of clips to be sampled. Default: 1.
         start_index (int): Specify a start index for frames in consideration of
-            different filename format. Default: 1.
+            different filename format. However, when taking videos as input,
+            it should be set to 0, since frames loaded from videos count
+            from 0. Default: 1.
         temporal_jitter (bool): Whether to apply temporal jittering.
             Default: False.
         twice_sample (bool): Whether to use twice sample when testing.
@@ -55,8 +57,6 @@ class SampleFrames(object):
         self.twice_sample = twice_sample
         self.out_of_bound_opt = out_of_bound_opt
         self.test_mode = test_mode
-        assert self.out_of_bound_opt in ['loop', 'repeat_last']
-
         assert self.out_of_bound_opt in ['loop', 'repeat_last']
 
     def _get_train_clips(self, num_frames):
