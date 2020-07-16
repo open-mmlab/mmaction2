@@ -23,15 +23,19 @@ class TestLoading(object):
 
     @classmethod
     def setup_class(cls):
-        cls.img_path = osp.join(osp.dirname(__file__), 'data/test.jpg')
-        cls.video_path = osp.join(osp.dirname(__file__), 'data/test.mp4')
-        cls.img_dir = osp.join(osp.dirname(__file__), 'data/test_imgs')
+        cls.img_path = osp.join(
+            osp.dirname(osp.dirname(__file__)), 'data/test.jpg')
+        cls.video_path = osp.join(
+            osp.dirname(osp.dirname(__file__)), 'data/test.mp4')
+        cls.img_dir = osp.join(
+            osp.dirname(osp.dirname(__file__)), 'data/test_imgs')
         cls.raw_feature_dir = osp.join(
-            osp.dirname(__file__), 'data/test_activitynet_features')
+            osp.dirname(osp.dirname(__file__)),
+            'data/test_activitynet_features')
         cls.bsp_feature_dir = osp.join(
-            osp.dirname(__file__), 'data/test_bsp_features')
+            osp.dirname(osp.dirname(__file__)), 'data/test_bsp_features')
         cls.proposals_dir = osp.join(
-            osp.dirname(__file__), 'data/test_proposals')
+            osp.dirname(osp.dirname(__file__)), 'data/test_proposals')
         cls.total_frames = 5
         cls.filename_tmpl = 'img_{:05}.jpg'
         cls.flow_filename_tmpl = '{}_{:05d}.jpg'
