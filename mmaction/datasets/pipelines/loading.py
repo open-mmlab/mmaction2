@@ -436,7 +436,8 @@ class SampleProposalFrames(SampleFrames):
         for proposal in proposals:
             proposal_clip_offsets = self._get_proposal_clips(
                 proposal[0][1], num_frames)
-            clip_offsets = np.concatenate([clip_offsets, proposal_clip_offsets])
+            clip_offsets = np.concatenate([clip_offsets,
+                                           proposal_clip_offsets])
 
         return clip_offsets
 
