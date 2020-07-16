@@ -31,7 +31,7 @@ def test_config_build_recognizer():
     if not osp.exists(config_dpath):
         raise Exception('Cannot find config path')
     config_fpaths = list(glob.glob(osp.join(config_dpath, '*.py')))
-    # test all config file in `config` directory
+    # test all config file in `configs` directory
     for config_fpath in config_fpaths:
         config_mod = mmcv.Config.fromfile(config_fpath)
         print(f'Building recognizer, config_fpath = {config_fpath!r}')
