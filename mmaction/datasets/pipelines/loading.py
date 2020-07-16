@@ -436,8 +436,8 @@ class SampleProposalFrames(SampleFrames):
         for proposal in proposals:
             proposal_clip_offsets = self._get_proposal_clips(
                 proposal[0][1], num_frames)
-            clip_offsets = np.concatenate(
-                [clip_offsets, proposal_clip_offsets])
+            clip_offsets = np.concatenate([clip_offsets,
+                                           proposal_clip_offsets])
 
         return clip_offsets
 
@@ -480,16 +480,6 @@ class SampleProposalFrames(SampleFrames):
                 to the next transform in pipeline.
         """
         total_frames = results['total_frames']
-
-        clip_offsets = self._sample_clips(total_frames, results['out_props'])
-        frame_inds = clip_offsets[:, None] + np.arange(
-            self.clip_len)[None, :] * self.frame_interval
-        frame_inds = np.concatenate(frame_inds)
-
-        clip_offsets = self._sample_clips(total_frames, results['out_props'])
-        frame_inds = clip_offsets[:, None] + np.arange(
-            self.clip_len)[None, :] * self.frame_interval
-        frame_inds = np.concatenate(frame_inds)
 
         clip_offsets = self._sample_clips(total_frames, results['out_props'])
         frame_inds = clip_offsets[:, None] + np.arange(
