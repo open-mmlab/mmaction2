@@ -57,8 +57,6 @@ class SampleFrames(object):
         self.test_mode = test_mode
         assert self.out_of_bound_opt in ['loop', 'repeat_last']
 
-        assert self.out_of_bound_opt in ['loop', 'repeat_last']
-
     def _get_train_clips(self, num_frames):
         """Get clip offsets in train mode.
 
