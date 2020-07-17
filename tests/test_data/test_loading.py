@@ -84,12 +84,12 @@ class TestLoading(object):
         cls.proposal_results = dict(
             frame_dir=cls.img_dir,
             video_id='test_imgs',
-            total_frames=10,
+            total_frames=cls.total_frames,
             filename_tmpl=cls.filename_tmpl,
             out_props=[[['test_imgs',
                          ExampleSSNInstance(1, 4, 10, 1, 1, 1)], 0],
                        [['test_imgs',
-                         ExampleSSNInstance(6, 9, 10, 2, 1, 1)], 0]])
+                         ExampleSSNInstance(2, 5, 10, 2, 1, 1)], 0]])
 
     def test_sample_frames(self):
         target_keys = [
@@ -462,6 +462,7 @@ class TestLoading(object):
         # clip_len=1, frame_interval=1
         # body_segments=2, aug_segments=(1, 1)
         proposal_result = copy.deepcopy(self.proposal_results)
+        proposal_result['total_frames'] = 9
         config = dict(
             clip_len=1,
             frame_interval=1,
@@ -479,6 +480,7 @@ class TestLoading(object):
         # clip_len=1, frame_interval=1
         # body_segments=2, aug_segments=(1, 1)
         proposal_result = copy.deepcopy(self.proposal_results)
+        proposal_result['total_frames'] = 9
         config = dict(
             clip_len=1,
             frame_interval=1,
@@ -496,6 +498,7 @@ class TestLoading(object):
         # clip_len=1, frame_interval=1
         # body_segments=2, aug_segments=(1, 1)
         proposal_result = copy.deepcopy(self.proposal_results)
+        proposal_result['total_frames'] = 9
         config = dict(
             clip_len=1,
             frame_interval=1,
@@ -513,6 +516,7 @@ class TestLoading(object):
         # Sample Frame with no temporal_jitter in test mode
         # test_interval=2
         proposal_result = copy.deepcopy(self.proposal_results)
+        proposal_result['total_frames'] = 10
         config = dict(
             clip_len=1,
             frame_interval=1,
@@ -527,6 +531,41 @@ class TestLoading(object):
         assert self.check_keys_contain(sample_frames_results.keys(),
                                        target_keys)
         assert len(sample_frames_results['frame_inds']) == 5
+
+        # Sample Frame with no temporal_jitter to get clip_offsets zero
+        # clip_len=6, frame_interval=1, num_clips=1
+        proposal_result = copy.deepcopy(self.proposal_results)
+        proposal_result['total_frames'] = 3
+        config = dict(
+            clip_len=1,
+            frame_interval=1,
+            body_segments=2,
+            aug_segments=(1, 1),
+            aug_ratio=0.5,
+            temporal_jitter=False)
+        sample_frames = SampleProposalFrames(**config)
+        sample_frames_results = sample_frames(proposal_result)
+        assert self.check_keys_contain(sample_frames_results.keys(),
+                                       target_keys)
+        assert len(sample_frames_results['frame_inds']) == 8
+
+        # Sample Frame with no temporal_jitter to
+        # get clip_offsets zero in val mode
+        # clip_len=6, frame_interval=1, num_clips=1
+        proposal_result = copy.deepcopy(self.proposal_results)
+        proposal_result['total_frames'] = 3
+        config = dict(
+            clip_len=1,
+            frame_interval=1,
+            body_segments=2,
+            aug_segments=(1, 1),
+            aug_ratio=0.5,
+            temporal_jitter=False)
+        sample_frames = SampleProposalFrames(**config)
+        sample_frames_results = sample_frames(proposal_result)
+        assert self.check_keys_contain(sample_frames_results.keys(),
+                                       target_keys)
+        assert len(sample_frames_results['frame_inds']) == 8
 
     def test_pyav_init(self):
         target_keys = ['video_reader', 'total_frames']
