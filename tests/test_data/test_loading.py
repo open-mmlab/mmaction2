@@ -553,21 +553,22 @@ class TestLoading(object):
         # Sample Frame with no temporal_jitter to
         # get clip_offsets zero in val mode
         # clip_len=1, frame_interval=1
-        # body_segments=8, aug_segments=(4, 4)
+        # body_segments=4, aug_segments=(2, 2)
         proposal_result = copy.deepcopy(self.proposal_results)
         proposal_result['total_frames'] = 3
         config = dict(
             clip_len=1,
             frame_interval=1,
-            body_segments=8,
-            aug_segments=(4, 4),
+            body_segments=4,
+            aug_segments=(2, 2),
             aug_ratio=0.5,
-            temporal_jitter=False)
+            temporal_jitter=False,
+            mode='val')
         sample_frames = SampleProposalFrames(**config)
         sample_frames_results = sample_frames(proposal_result)
         assert self.check_keys_contain(sample_frames_results.keys(),
                                        target_keys)
-        assert len(sample_frames_results['frame_inds']) == 32
+        assert len(sample_frames_results['frame_inds']) == 16
 
     def test_pyav_init(self):
         target_keys = ['video_reader', 'total_frames']
