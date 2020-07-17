@@ -509,8 +509,8 @@ class OpenCVInit(object):
 class OpenCVDecode(object):
     """Using OpenCV to decode the video.
 
-    Required keys are "video_reader", "filename" and "frame_inds", added
-    or modified keys are "imgs", "img_shape" and "original_shape".
+    Required keys are "video_reader", "filename" and "frame_inds", added or
+    modified keys are "imgs", "img_shape" and "original_shape".
     """
 
     def __init__(self):
@@ -658,9 +658,8 @@ class LoadLocalizationFeature(object):
 class GenerateLocalizationLabels(object):
     """Load video label for localizer with given video_name list.
 
-    Required keys are "duration_frame", "duration_second",
-    "feature_frame", "annotations", added or modified keys are
-    "gt_bbox".
+    Required keys are "duration_frame", "duration_second", "feature_frame",
+    "annotations", added or modified keys are "gt_bbox".
     """
 
     def __call__(self, results):

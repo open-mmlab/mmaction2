@@ -624,7 +624,6 @@ class Normalize(object):
             Default: False.
         adjust_magnitude (bool): Indicate whether to adjust the flow magnitude
             on 'scale_factor' when modality is 'Flow'. Default: False.
-
     """
 
     def __init__(self, mean, std, to_bgr=False, adjust_magnitude=False):
