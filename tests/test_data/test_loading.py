@@ -565,7 +565,7 @@ class TestLoading(object):
         sample_frames_results = sample_frames(proposal_result)
         assert self.check_keys_contain(sample_frames_results.keys(),
                                        target_keys)
-        assert len(sample_frames_results['frame_inds']) == 8
+        assert len(sample_frames_results['frame_inds']) == 16
 
     def test_pyav_init(self):
         target_keys = ['video_reader', 'total_frames']
