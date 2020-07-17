@@ -86,8 +86,8 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
 
     @abstractmethod
     def forward_test(self, imgs):
-        """Defines the computation performed at every call
-        when evaluation and testing."""
+        """Defines the computation performed at every call when evaluation and
+        testing."""
         pass
 
     @staticmethod
@@ -160,7 +160,6 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
                 ``num_samples`` indicates the batch size (when the model is
                 DDP, it means the batch size on each GPU), which is used for
                 averaging the logs.
-
         """
         imgs = data_batch['imgs']
         label = data_batch['label']
