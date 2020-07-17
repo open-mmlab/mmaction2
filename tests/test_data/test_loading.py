@@ -557,8 +557,8 @@ class TestLoading(object):
         config = dict(
             clip_len=1,
             frame_interval=1,
-            body_segments=2,
-            aug_segments=(1, 1),
+            body_segments=4,
+            aug_segments=(2, 2),
             aug_ratio=0.5,
             temporal_jitter=False)
         sample_frames = SampleProposalFrames(**config)
