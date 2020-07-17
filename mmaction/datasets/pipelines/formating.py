@@ -230,7 +230,7 @@ class FormatShape(object):
 
     def __init__(self, input_format):
         self.input_format = input_format
-        if self.input_format not in ['NCTHW', 'NCHW', 'NCHW_Flow']:
+        if self.input_format not in ['NCTHW', 'NCHW', 'NCHW_Flow', 'NPTCHW']:
             raise ValueError(
                 f'The input format {self.input_format} is invalid.')
 
@@ -270,6 +270,16 @@ class FormatShape(object):
             # M' x C' x H x W
             # M' = N_crops x N_clips
             # C' = L x C
+        elif self.input_format == 'NPTCHW':
+            num_proposals = results['num_proposals']
+            num_clips = results['num_clips']
+            clip_len = results['clip_len']
+            imgs = imgs.reshape((num_proposals, num_clips * clip_len) +
+                                imgs.shape[1:])
+            # P x M x H x W x C
+            # M = N_clips x L
+            imgs = np.transpose(imgs, (0, 1, 4, 2, 3))
+            # P x M x C x H x W
 
         results['imgs'] = imgs
         results['input_shape'] = imgs.shape
