@@ -1,4 +1,4 @@
- repos:
+repos:
   - repo: https://gitlab.com/pycqa/flake8.git
     rev: 3.8.3
     hooks:
