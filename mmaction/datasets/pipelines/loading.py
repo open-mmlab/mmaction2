@@ -2,11 +2,11 @@ import io
 import os
 import os.path as osp
 import shutil
-from collections.abc import Sequence
 
 import mmcv
 import numpy as np
 from mmcv.fileio import FileClient
+from torch.nn.modules.utils import _pair
 
 from ...utils import get_random_string, get_shm_dir, get_thread_id
 from ..registry import PIPELINES
@@ -284,7 +284,7 @@ class SampleProposalFrames(SampleFrames):
         body_segments (int): Number of segments in course period.
         aug_segments (list[int]): Number of segments in starting and
             ending period.
-        aug_ratio (int | float | Sequence[int | float]): The ratio
+        aug_ratio (int | float | tuple[int | float]): The ratio
             of the length of augmentation to that of the proposal.
         frame_interval (int): Temporal interval of adjacent sampled frames.
             Default: 1.
@@ -308,15 +308,16 @@ class SampleProposalFrames(SampleFrames):
         super().__init__(clip_len, frame_interval, temporal_jitter)
         self.body_segments = body_segments
         self.aug_segments = aug_segments
-        if isinstance(aug_ratio, (int, float)):
-            self.aug_ratio = (aug_ratio, aug_ratio)
-        else:
-            assert isinstance(aug_ratio, Sequence)
-            assert len(aug_ratio) == 2
-            self.aug_ratio = aug_ratio
+        self.aug_ratio = _pair(aug_ratio)
+        if not mmcv.is_tuple_of(self.aug_ratio, (int, float)):
+            raise TypeError(f'aug_ratio should be int, float'
+                            f'or tuple of int and float, '
+                            f'but got {type(aug_ratio)}')
+        assert len(self.aug_ratio) == 2
         assert mode in ['train', 'val', 'test']
         self.mode = mode
         self.test_interval = test_interval
+        self.temporal_jitter = temporal_jitter
 
     def _get_train_indices(self, valid_length, num_segments):
         """Get indices of different stages of proposals in train mode.
@@ -359,7 +360,7 @@ class SampleProposalFrames(SampleFrames):
         Returns:
             np.ndarray: Sampled frame indices in validation mode.
         """
-        if valid_length > num_segments:
+        if valid_length >= num_segments:
             avg_interval = valid_length / float(num_segments)
             base_offsets = np.arange(num_segments) * avg_interval
             offsets = (base_offsets + avg_interval / 2.0).astype(np.int32)
