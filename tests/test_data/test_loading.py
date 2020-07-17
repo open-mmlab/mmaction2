@@ -458,6 +458,20 @@ class TestLoading(object):
             'total_frames'
         ]
 
+        # test error cases
+        with pytest.raises(TypeError):
+            proposal_result = copy.deepcopy(self.proposal_results)
+            config = dict(
+                clip_len=1,
+                frame_interval=1,
+                body_segments=2,
+                aug_segments=('error', 'error'),
+                aug_ratio=0.5,
+                temporal_jitter=False)
+            sample_frames = SampleProposalFrames(**config)
+            sample_frames_results = sample_frames(proposal_result)
+
+        # test normal cases
         # Sample Frame with no temporal_jitter
         # clip_len=1, frame_interval=1
         # body_segments=2, aug_segments=(1, 1)
