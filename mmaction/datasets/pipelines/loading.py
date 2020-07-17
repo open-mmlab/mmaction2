@@ -305,9 +305,10 @@ class SampleProposalFrames(SampleFrames):
                  test_interval=6,
                  temporal_jitter=False,
                  mode='train'):
-        super().__init__(clip_len, 
-                         frame_interval=frame_interval,
-                         temporal_jitter=temporal_jitter)
+        super().__init__(
+            clip_len,
+            frame_interval=frame_interval,
+            temporal_jitter=temporal_jitter)
         self.body_segments = body_segments
         self.aug_segments = aug_segments
         self.aug_ratio = _pair(aug_ratio)
@@ -438,8 +439,8 @@ class SampleProposalFrames(SampleFrames):
         for proposal in proposals:
             proposal_clip_offsets = self._get_proposal_clips(
                 proposal[0][1], num_frames)
-            clip_offsets = np.concatenate([clip_offsets,
-                                           proposal_clip_offsets])
+            clip_offsets = np.concatenate(
+                [clip_offsets, proposal_clip_offsets])
 
         return clip_offsets
 
