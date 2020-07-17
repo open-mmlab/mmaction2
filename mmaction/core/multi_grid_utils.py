@@ -1,18 +1,29 @@
-# from pdb import set_trace as st
-
 import numpy as np
+from mmcv.cnn import build_norm_layer
 from mmcv.runner import HOOKS, Hook, LrUpdaterHook
 from mmcv.runner.hooks.lr_updater import StepLrUpdaterHook
 from torch.nn.modules.utils import _ntuple
 
-from mmaction.datasets import build_dataloader
+from mmaction.datasets.builder import build_dataloader
 from mmaction.datasets.pipelines.augmentations import Resize
 from mmaction.datasets.pipelines.loading import SampleFrames
+from mmaction.models.common import SubBatchBN3d
 from ..utils import get_root_logger
 
 
 @HOOKS.register_module()
 class FixedStepwiseLrUpdaterHook(StepLrUpdaterHook):
+    """StepLrUpdater that change lr with an extra factor ``step_lr_ratio``.
+
+    Args:
+        ori_step (list[int]): Same as that of mmcv.
+        new_step (list[int]): The real steps caused by multi-grid
+            training.
+        step_lr_ratio (list[int]): The extra factor to be multiplied
+            at each new step.
+        gamma (float): Same as that of mmcv.
+        **kwargs (dict): Same as that of mmcv.
+    """
 
     def __init__(self, ori_step, new_step, step_lr_ratio, gamma=0.1, **kwargs):
         super().__init__(ori_step, gamma=gamma, **kwargs)
@@ -27,9 +38,9 @@ class FixedStepwiseLrUpdaterHook(StepLrUpdaterHook):
             if progress < s:
                 exp = i
                 break
-        for i, s in enumerate(self.new_step):
-            if progress < s:
-                lr_ratio = self.step_lr_ratio[i]
+        for new_i, new_s in enumerate(self.new_step):
+            if progress < new_s:
+                lr_ratio = self.step_lr_ratio[new_i]
                 break
         return base_lr * self.gamma**exp * lr_ratio
 
@@ -40,11 +51,13 @@ class MultiGridHook(Hook):
     https://arxiv.org/abs/1912.00998.
     """
 
-    def __init__(self, multi_grid_cfg, data_cfg):
-        self.multi_grid_cfg = multi_grid_cfg
-        self.data_cfg = data_cfg
+    def __init__(self, cfg):
+        self.cfg = cfg
+        self.multi_grid_cfg = cfg.get('multi_grid', None)
+        self.data_cfg = cfg.get('data', None)
+        assert (self.multi_grid_cfg is not None and self.data_cfg is not None)
         self.logger = get_root_logger()
-        self.logger.info(multi_grid_cfg)
+        self.logger.info(self.multi_grid_cfg)
 
     def before_run(self, runner):
         self._init_schedule(runner, self.multi_grid_cfg, self.data_cfg)
@@ -55,6 +68,8 @@ class MultiGridHook(Hook):
             if isinstance(hook, StepLrUpdaterHook):
                 ori_step = hook.step
                 step_lr_ratio = [s[1][0] for s in self.schedule]
+                print(f'step_lr_ratio  {step_lr_ratio} '
+                      f'ori_step {ori_step} new_step {step}')
                 new_hook = FixedStepwiseLrUpdaterHook(ori_step, step,
                                                       step_lr_ratio)
                 runner.register_hook(new_hook)
@@ -62,9 +77,6 @@ class MultiGridHook(Hook):
 
     def before_train_epoch(self, runner):
         self._update_long_cycle(runner)
-
-    # def before_train_iter(self, runner):
-    #     print(f'inner iter is {runner._inner_iter}')
 
     def _update_long_cycle(self, runner):
         """Before every epoch, check if long cycle shape should change.
@@ -89,15 +101,33 @@ class MultiGridHook(Hook):
             # Change the S-dimension
             resize_list[-1].scale = _ntuple(2)(base_s)
 
+        # swap the dataloader with a new one
         ds = getattr(runner.data_loader, 'dataset')
         dataloader = build_dataloader(
             ds,
             self.data_cfg.videos_per_gpu * base_b,  # change here
             self.data_cfg.workers_per_gpu,
             dist=True,
-            drop_last=self.data_cfg.get('train_drop_last', False))
-        # #TODO: `seed` is skipped since not in cfg.data)
+            drop_last=self.data_cfg.get('train_drop_last', False),
+            seed=self.cfg.seed)
         runner.data_loader = dataloader
+
+        # rebuild all the sub_batch_bn layers
+        if curr_t != base_t or curr_s != base_s:
+            num_modifies = self.modify_num_splits(runner.model, base_b)
+            self.logger.info(f'{num_modifies} subbns modified.')
+
+    def modify_num_splits(self, module, base_b):
+        count = 0
+        for child in module.children():
+            if isinstance(child, SubBatchBN3d):
+                child = build_norm_layer(
+                    dict(type='SubBatchBN3d', num_splits=base_b),
+                    child.num_features)
+                count += 1
+            else:
+                count += self.modify_num_splits(child, base_b)
+        return count
 
     def _get_long_cycle_schedule(self, runner, cfg):
         # schedule is a list of [step_index, base_shape, epochs]
@@ -144,7 +174,8 @@ class MultiGridHook(Hook):
                 pass
         total_iters = 0
         default_iters = steps[-1]
-        for step_index in range(len(steps) - 1):
+        steps = [0] + steps
+        for step_index in range((len(steps) - 1)):
             # except the final step
             step_epochs = steps[step_index + 1] - steps[step_index]
             # number of epochs for this step

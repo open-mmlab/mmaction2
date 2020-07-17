@@ -7,6 +7,7 @@ model = dict(
         pretrained=None,
         depth=50,
         conv_cfg=dict(type='Conv3d'),
+        norm_cfg=dict(type='SubBatchBN3d', num_splits=1),
         norm_eval=False,
         inflate=((1, 1, 1), (1, 0, 1, 0), (1, 0, 1, 0, 1, 0), (0, 1, 0)),
         zero_init_residual=False),
@@ -116,9 +117,9 @@ data = dict(
 optimizer = dict(type='SGD', lr=0.03, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
-lr_config = dict(policy='step', step=[40, 80])
-total_epochs = 100
-checkpoint_config = dict(interval=5)
+lr_config = dict(policy='step', step=[2, 5, 7])
+total_epochs = 10
+checkpoint_config = dict(interval=1)
 evaluation = dict(
     interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
 log_config = dict(
@@ -128,9 +129,10 @@ log_config = dict(
         # dict(type='TensorboardLoggerHook'),
     ])
 # runtime settings
-dist_params = dict(backend='nccl')
+dist_params = dict(backend='nccl', port=29501)
 log_level = 'INFO'
 work_dir = './work_dirs/i3d_rgb_32x2x1_r50_3d_kinetics400_100e/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
+find_unused_parameters = True

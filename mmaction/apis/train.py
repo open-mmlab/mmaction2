@@ -91,8 +91,7 @@ def train_model(model,
     # multigrid setting
     multi_grid_cfg = cfg.get('multi_grid', None)
     if multi_grid_cfg is not None:
-        print(multi_grid_cfg, type(multi_grid_cfg))
-        multi_grid_scheduler = MultiGridHook(multi_grid_cfg, cfg.data)
+        multi_grid_scheduler = MultiGridHook(cfg)
         runner.register_hook(multi_grid_scheduler)
 
     if validate:
