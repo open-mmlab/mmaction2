@@ -530,6 +530,7 @@ class TestLoading(object):
         # Sample Frame with no temporal_jitter in test mode
         # test_interval=2
         proposal_result = copy.deepcopy(self.proposal_results)
+        proposal_result['out_props'] = None
         proposal_result['total_frames'] = 10
         config = dict(
             clip_len=1,

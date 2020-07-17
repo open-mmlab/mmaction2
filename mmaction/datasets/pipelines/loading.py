@@ -305,10 +305,9 @@ class SampleProposalFrames(SampleFrames):
                  test_interval=6,
                  temporal_jitter=False,
                  mode='train'):
-        super().__init__(
-            clip_len,
-            frame_interval=frame_interval,
-            temporal_jitter=temporal_jitter)
+        super().__init__(clip_len,
+                         frame_interval=frame_interval,
+                         temporal_jitter=temporal_jitter)
         self.body_segments = body_segments
         self.aug_segments = aug_segments
         self.aug_ratio = _pair(aug_ratio)
@@ -439,8 +438,8 @@ class SampleProposalFrames(SampleFrames):
         for proposal in proposals:
             proposal_clip_offsets = self._get_proposal_clips(
                 proposal[0][1], num_frames)
-            clip_offsets = np.concatenate(
-                [clip_offsets, proposal_clip_offsets])
+            clip_offsets = np.concatenate([clip_offsets,
+                                           proposal_clip_offsets])
 
         return clip_offsets
 
@@ -463,7 +462,8 @@ class SampleProposalFrames(SampleFrames):
 
         Args:
             num_frames (int): Total number of frame in the video.
-            proposals (list): Proposals fetched.
+            proposals (list | None): Proposals fetched.
+                It is set to None in test mode.
 
         Returns:
             np.ndarray: Sampled frame indices.
@@ -471,6 +471,7 @@ class SampleProposalFrames(SampleFrames):
         if self.mode == 'test':
             clip_offsets = self._get_test_clips(num_frames)
         else:
+            assert proposals is not None
             clip_offsets = self._get_train_clips(num_frames, proposals)
 
         return clip_offsets
@@ -484,7 +485,8 @@ class SampleProposalFrames(SampleFrames):
         """
         total_frames = results['total_frames']
 
-        clip_offsets = self._sample_clips(total_frames, results['out_props'])
+        out_props = results.get('out_props', None)
+        clip_offsets = self._sample_clips(total_frames, out_props)
         frame_inds = clip_offsets[:, None] + np.arange(
             self.clip_len)[None, :] * self.frame_interval
         frame_inds = np.concatenate(frame_inds)
