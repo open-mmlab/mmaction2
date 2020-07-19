@@ -24,7 +24,9 @@ class SampleFrames(object):
             Default: 1.
         num_clips (int): Number of clips to be sampled. Default: 1.
         start_index (int): Specify a start index for frames in consideration of
-            different filename format. Default: 1.
+            different filename format. However, when taking videos as input,
+            it should be set to 0, since frames loaded from videos count
+            from 0. Default: 1.
         temporal_jitter (bool): Whether to apply temporal jittering.
             Default: False.
         twice_sample (bool): Whether to use twice sample when testing.
@@ -55,8 +57,6 @@ class SampleFrames(object):
         self.twice_sample = twice_sample
         self.out_of_bound_opt = out_of_bound_opt
         self.test_mode = test_mode
-        assert self.out_of_bound_opt in ['loop', 'repeat_last']
-
         assert self.out_of_bound_opt in ['loop', 'repeat_last']
 
     def _get_train_clips(self, num_frames):
@@ -509,8 +509,8 @@ class OpenCVInit(object):
 class OpenCVDecode(object):
     """Using OpenCV to decode the video.
 
-    Required keys are "video_reader", "filename" and "frame_inds", added
-    or modified keys are "imgs", "img_shape" and "original_shape".
+    Required keys are "video_reader", "filename" and "frame_inds", added or
+    modified keys are "imgs", "img_shape" and "original_shape".
     """
 
     def __init__(self):
@@ -658,9 +658,8 @@ class LoadLocalizationFeature(object):
 class GenerateLocalizationLabels(object):
     """Load video label for localizer with given video_name list.
 
-    Required keys are "duration_frame", "duration_second",
-    "feature_frame", "annotations", added or modified keys are
-    "gt_bbox".
+    Required keys are "duration_frame", "duration_second", "feature_frame",
+    "annotations", added or modified keys are "gt_bbox".
     """
 
     def __call__(self, results):

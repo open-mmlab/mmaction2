@@ -40,9 +40,8 @@ def create_video_folders(dataset, output_dir, tmp_dir):
 
 
 def construct_video_filename(row, label_to_dir, trim_format='%06d'):
-    """Given a dataset row, this function constructs the
-       output filename for a given video.
-    """
+    """Given a dataset row, this function constructs the output filename for a
+    given video."""
     basename = '%s_%s_%s.mp4' % (row['video-id'],
                                  trim_format % row['start-time'],
                                  trim_format % row['end-time'])
