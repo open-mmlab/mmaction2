@@ -1,3 +1,5 @@
+import copy
+
 import numpy as np
 import pytest
 import torch
@@ -505,6 +507,12 @@ def test_resnet_tsm_backbone():
     for layer_name in resnet_tsm_50_temporal_pool.res_layers:
         layer = getattr(resnet_tsm_50_temporal_pool, layer_name)
         blocks = list(layer.children())
+
+        if layer_name == 'layer2':
+            assert len(blocks) == 2
+            assert isinstance(blocks[1], nn.MaxPool3d)
+            blocks = copy.deepcopy(blocks[0])
+
         for block in blocks:
             assert isinstance(block.conv1.conv, TemporalShift)
             if layer_name == 'layer1':
@@ -515,6 +523,15 @@ def test_resnet_tsm_backbone():
                        resnet_tsm_50_temporal_pool.num_segments // 2
             assert block.conv1.conv.shift_div == resnet_tsm_50_temporal_pool.shift_div  # noqa: E501
             assert isinstance(block.conv1.conv.net, nn.Conv2d)
+
+    input_shape = (8, 3, 64, 64)
+    imgs = _demo_inputs(input_shape)
+
+    feat = resnet_tsm_50(imgs)
+    assert feat.shape == torch.Size([8, 2048, 2, 2])
+
+    feat = resnet_tsm_50_temporal_pool(imgs)
+    assert feat.shape == torch.Size([4, 2048, 2, 2])
 
 
 def test_slowfast_backbone():
