@@ -26,6 +26,7 @@ class NL3DWrapper(nn.Module):
         self.non_local = NonLocal3d(
             self.block.conv3.norm.num_features,
             sub_sample=True,
+            use_scale=False,
             norm_cfg=dict(type='BN3d', requires_grad=True),
             mode='dot_product')
 
