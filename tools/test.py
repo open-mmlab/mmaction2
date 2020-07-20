@@ -17,8 +17,6 @@ def parse_args():
     parser.add_argument('config', help='test config file path')
     parser.add_argument('checkpoint', help='checkpoint file')
     parser.add_argument(
-        '--gpus', default=1, type=int, help='GPU number used for testing')
-    parser.add_argument(
         '--out', default=None, help='output result file in pickle format')
     parser.add_argument(
         '--eval',

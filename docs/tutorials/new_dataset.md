@@ -4,6 +4,8 @@
 
 ### Reorganize datasets to existing format
 
+The simplest way is to convert your dataset to existing dataset formats (RawframeDataset or VideoDataset).
+
 There are three kinds of annotation files.
 
 - rawframe annotation
@@ -104,9 +106,26 @@ In `configs/task/method/my_custom_config.py`:
 dataset_type = 'RawframeDataset'
 data_root = 'path/to/your/root'
 data_root_val = 'path/to/your/root_val'
-ann_file_train = 'path/to/your/ann_train/data'
-ann_file_val = 'path/to/your/ann_val/data'
-ann_file_test = 'path/to/your/ann_test/data'
+ann_file_train = 'data/custom/custom_train_list.txt'
+ann_file_val = 'data/custom/custom_val_list.txt'
+ann_file_test = 'data/custom/custom_val_list.txt'
+...
+data = dict(
+    videos_per_gpu=32,
+    workers_per_gpu=4,
+    train=dict(
+        type=dataset_type,
+        ann_file=ann_file_train,
+        ...),
+    val=dict(
+        type=dataset_type,
+        ann_file=ann_file_val,
+        ...),
+    test=dict(
+        type=dataset_type,
+        ann_file=ann_file_test,
+        ...))
+...
 ```
 
 We use this way to support Rawframe dataset.
