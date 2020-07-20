@@ -191,9 +191,46 @@ class ResNetTSM(ResNet):
         else:
             raise NotImplementedError
 
+    def make_temporal_pool(self):
+        """Make temporal pooling between layer1 and layer2, using a 3D max
+        pooling layer."""
+
+        class TemporalPool(nn.Module):
+            """Temporal pool module.
+
+            Wrap layer2 in ResNet50 with a 3D max pooling layer.
+
+            Args:
+                net (nn.Module): Module to make temporal pool.
+                num_segments (int): Number of frame segments.
+            """
+
+            def __init__(self, net, num_segments):
+                super().__init__()
+                self.net = net
+                self.num_segments = num_segments
+                self.max_pool3d = nn.MaxPool3d(
+                    kernel_size=(3, 1, 1), stride=(2, 1, 1), padding=(1, 0, 0))
+
+            def forward(self, x):
+                # [N, C, H, W]
+                n, c, h, w = x.size()
+                # [N // num_segments, C, num_segments, H, W]
+                x = x.view(n // self.num_segments, self.num_segments, c, h,
+                           w).transpose(1, 2)
+                # [N // num_segmnets, C, num_segments // 2, H, W]
+                x = self.max_pool3d(x)
+                # [N // 2, C, H, W]
+                x = x.transpose(1, 2).contiguous().view(n // 2, c, h, w)
+                return self.net(x)
+
+        self.layer2 = TemporalPool(self.layer2, self.num_segments)
+
     def init_weights(self):
         """Initiate the parameters either from existing checkpoint or from
         scratch."""
         super().init_weights()
         if self.is_shift:
             self.make_temporal_shift()
+        if self.temporal_pool:
+            self.make_temporal_pool()
