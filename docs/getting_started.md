@@ -46,12 +46,12 @@ You can use the following commands to test a dataset.
 ```shell
 # single-gpu testing
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--out ${RESULT_FILE}] [--eval ${EVAL_METRICS}] \
-    [--gpu-collect] [--tmpdir ${TMPDIR}] [--average-clips ${AVG_TYPE}] \
+    [--gpu-collect] [--tmpdir ${TMPDIR}] [--options ${OPTIONS}] [--average-clips ${AVG_TYPE}] \
     [--launcher ${JOB_LAUNCHER}] [--local_rank ${LOCAL_RANK}]
 
 # multi-gpu testing
-python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${GPU_NUM} [--out ${RESULT_FILE}] [--eval ${EVAL_METRICS}] \
-    [--gpu-collect] [--tmpdir ${TMPDIR}] [--average-clips ${AVG_TYPE}] \
+./tools/dist_test.sh ${CONFIG_FILE} ${CHECKPOINT_FILE} ${GPU_NUM} [--out ${RESULT_FILE}] [--eval ${EVAL_METRICS}] \
+    [--gpu-collect] [--tmpdir ${TMPDIR}] [--options ${OPTIONS}] [--average-clips ${AVG_TYPE}] \
     [--launcher ${JOB_LAUNCHER}] [--local_rank ${LOCAL_RANK}]
 ```
 
@@ -61,6 +61,7 @@ Optional arguments:
 - `EVAL_METRICS`: Items to be evaluated on the results. Allowed values depend on the dataset, e.g., `top_k_accuracy`, `mean_class_accuracy` are available for all datasets in recognition, `mean_average_precision` for Multi-Moments in Time, `AR@AN` for ActivityNet, etc.
 - `--gpu-collect`: If specified, recognition results will be collected using gpu communication. Otherwise, it will save the results on different gpus to `TMPDIR` and collect them by the rank 0 worker.
 - `TMPDIR`: Temporary directory used for collecting results from multiple workers, available when `--gpu-collect` is not specified.
+- `OPTIONS`: Custom options used for evaluation. Allowed values depend on the arguments of the `evaluate` function in dataset.
 - `AVG_TYPE`: Items to average the test clips. If set to `prob`, it will apply softmax before averaging the clip scores. Otherwise, it will directly average the clip scores.
 - `JOB_LAUNCHER`: Items for distributed job initialization launcher. Allowed choices are `none`, `pytorch`, `slurm`, `mpi`. Especially, if set to none, it will test in a non-distributed mode.
 - `LOCAL_RANK`: ID for local rank. If not specified, it will be set to 0.
@@ -80,7 +81,7 @@ Assume that you have already downloaded the checkpoints to the directory `checkp
 2. Test TSN on Something-Something V1 with 8 GPUS, and evaluate the top-k accuracy.
 
     ```shell
-    python tools/test.py configs/recognition/tsn/tsn_r50_1x1x8_50e_sthv1_rgb.py \
+    ./tools/dist_test.py configs/recognition/tsn/tsn_r50_1x1x8_50e_sthv1_rgb.py \
         checkpoints/SOME_CHECKPOINT.pth \
         8 --out results.pkl --eval top_k_accuracy
     ```
@@ -423,265 +424,7 @@ E.g.,
 python tools/publish_model.py work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb/latest.pth tsn_r50_1x1x3_100e_kinetics400_rgb.pth
 ```
 
-The final output filename will be `tsn_r50_1x1x3_100e_kinetics400_rgb-{hash id}.pth`
-
-## How-to
-
-### Use my own datasets
-
-The simplest way is to convert your dataset to existing dataset formats (RawframeDataset or VideoDataset).
-
-Here we show an example of using a custom dataset, assuming it is also in RawframeDataset format.
-
-In `configs/task/method/my_custom_config.py`
-
-```python
-...
-# dataset settings
-dataset_type = 'RawframeDataset'
-ann_file_train = 'data/custom/custom_train_list.txt'
-ann_file_val = 'data/custom/custom_val_list.txt'
-ann_file_test = 'data/custom/custom_val_list.txt'
-...
-data = dict(
-    videos_per_gpu=32,
-    workers_per_gpu=4,
-    train=dict(
-        type=dataset_type,
-        ann_file=ann_file_train,
-        ...),
-    val=dict(
-        type=dataset_type,
-        ann_file=ann_file_val,
-        ...),
-    test=dict(
-        type=dataset_type,
-        ann_file=ann_file_test,
-        ...))
-...
-```
-
-There are three kinds of annotation files.
-
-- rawframe annotation
-
-  The annotation of a rawframe dataset is a text file with multiple lines,
-  and each line indicates `frame_directory` (relative path) of a video,
-  `total_frames` of a video and the `label` of a video, which are split with a whitespace.
-
-  Here is an example.
-  ```
-  some/directory-1 163 1
-  some/directory-2 122 1
-  some/directory-3 258 2
-  some/directory-4 234 2
-  some/directory-5 295 3
-  some/directory-6 121 3
-  ```
-
-- video annotation
-
-  The annotation of a video dataset is a text file with multiple lines,
-  and each line indicates a sample video with the `filepath` (relative path) and `label`,
-  which are split with a whitespace.
-
-  Here is an example.
-  ```
-  some/path/000.mp4 1
-  some/path/001.mp4 1
-  some/path/002.mp4 2
-  some/path/003.mp4 2
-  some/path/004.mp4 3
-  some/path/005.mp4 3
-  ```
-
-- ActivityNet annotation
-  The annotation of ActivityNet dataset is a json file. Each key is a video name
-  and the corresponding value is the meta data and annotation for the video.
-
-  Here is an example.
-  ```
-  {
-    "video1": {
-        "duration_second": 211.53,
-        "duration_frame": 6337,
-        "annotations": [
-            {
-                "segment": [
-                    30.025882995319815,
-                    205.2318595943838
-                ],
-                "label": "Rock climbing"
-            }
-        ],
-        "feature_frame": 6336,
-        "fps": 30.0,
-        "rfps": 29.9579255898
-    },
-    "video2": {
-        "duration_second": 26.75,
-        "duration_frame": 647,
-        "annotations": [
-            {
-                "segment": [
-                    2.578755070202808,
-                    24.914101404056165
-                ],
-                "label": "Drinking beer"
-            }
-        ],
-        "feature_frame": 624,
-        "fps": 24.0,
-        "rfps": 24.1869158879
-    }
-  }
-  ```
-
-
-There are two ways to work with custom datasets.
-
-- online conversion
-
-  You can write a new Dataset class inherited from [BaseDataset](/mmaction/datasets/base.py), and overwrite two methods
-  `load_annotations(self)` and `evaluate(self, results, metrics, logger)`,
-  like [RawframeDataset](/mmaction/datasets/rawframe_dataset.py), [VideoDataset](/mmaction/datasets/video_dataset.py) or [ActivityNetDataset](/mmaction/datasets/activitynet_dataset.py).
-
-- offline conversion
-
-  You can convert the annotation format to the expected format above and save it to
-  a pickle or json file, then you can simply use `RawframeDataset`, `VideoDataset` or `ActivityNetDataset`.
-
-### Customize optimizer
-
-An example of customized optimizer is [CopyOfSGD](/mmaction/core/optimizer/copy_of_sgd.py).
-More generally, a customized optimizer could be defined as following.
-
-In `mmaction/core/optimizer/my_optimizer.py`:
-
-```python
-from .registry import OPTIMIZERS
-from torch.optim import Optimizer
-
-@OPTIMIZERS.register_module()
-class MyOptimizer(Optimizer):
-
-```
-
-In `mmaction/core/optimizer/__init__.py`:
-
-```python
-from .my_optimizer import MyOptimizer
-```
-
-Then you can use `MyOptimizer` in `optimizer` field of config files.
-
-Especially, If you want to construct a optimizer based on a specified model and param-wise config,
-You can write a new optimizer constructor inherit from [DefaultOptimizerConstructor](https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/optimizer/default_constructor.py)
-and overwrite the `add_params(self, params, module)` method.
-
-An example of customized optimizer constructor is [TSMOptimizerConstructor](/mmaction/core/optimizer/tsm_optimizer_constructor.py).
-More generally, a customized optimizer constructor could be defined as following.
-
-In `mmaction/core/optimizer/my_optimizer_constructor.py`:
-
-```python
-from mmcv.runner import OPTIMIZER_BUILDERS, DefaultOptimizerConstructor
-
-@OPTIMIZER_BUILDERS.register_module()
-class MyOptimizerConstructor(DefaultOptimizerConstructor):
-
-```
-
-In `mmaction/core/optimizer/__init__.py`:
-
-```python
-from .my_optimizer_constructor import MyOptimizerConstructor
-```
-
-Then you can use `MyOptimizerConstructor` in `optimizer` field of config files.
-
-### Develop new components
-
-We basically categorize model components into 4 types.
-
-- recognizer: the whole recognizer model pipeline, usually contains a backbone and cls_head.
-- backbone: usually an FCN network to extract feature maps, e.g., ResNet, BNInception.
-- cls_head: the component for classification task, usually contains an FC layer with some pooling layers.
-- localizer: the model for localization task, currently available: BSN, BMN.
-
-Here we show how to develop new components with an example of TSN.
-
-1. Create a new file `mmaction/models/backbones/resnet.py`.
-
-    ```python
-    import torch.nn as nn
-
-    from ..registry import BACKBONES
-
-    @BACKBONES.register_module()
-    class ResNet(nn.Module):
-
-        def __init__(self, arg1, arg2):
-            pass
-
-        def forward(self, x):  # should return a tuple
-            pass
-
-        def init_weights(self, pretrained=None):
-            pass
-    ```
-
-2. Import the module in `mmaction/models/backbones/__init__.py`.
-
-    ```python
-    from .resnet import ResNet
-    ```
-
-3. Create a new file `mmaction/models/heads/tsn_head.py`.
-
-    You can write a new classification head inherit from [BaseHead](/mmaction/models/heads/base.py),
-    and overwrite `init_weights(self)` and `forward(self, x)` method.
-
-    ```python
-    from ..registry import HEADS
-    from .base import BaseHead
-
-
-    @HEADS.register_module()
-    class TSNHead(BaseHead):
-
-        def __init__(self, arg1, arg2):
-            pass
-
-        def forward(self, x):
-            pass
-
-        def init_weights(self):
-            pass
-    ```
-
-4. Import the module in `mmaction/models/heads/__init__.py`
-
-    ```python
-    from .tsn_head import TSNHead
-    ```
-
-5. Use it in your config file.
-
-    Since TSN is a 2D action recognition model, we set its type `Recognizer2D`.
-
-    ```python
-    model = dict(
-        type='Recognizer2D',
-        backbone=dict(
-            type='ResNet',
-            arg1=xxx,
-            arg2=xxx),
-        cls_head=dict(
-            type='TSNHead',
-            arg1=xxx,
-            arg2=xxx))
-    ```
+The final output filename will be `tsn_r50_1x1x3_100e_kinetics400_rgb-{hash id}.pth`.
 
 ## Tutorials
 
