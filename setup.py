@@ -64,7 +64,8 @@ version_info = ({})
     sha = get_hash()
     with open('mmaction/VERSION', 'r') as f:
         SHORT_VERSION = f.read().strip()
-    VERSION_INFO = ', '.join(SHORT_VERSION.split('.'))
+    VERSION_INFO = ', '.join(
+        [x if x.isdigit() else f'"{x}"' for x in SHORT_VERSION.split('.')])
     VERSION = SHORT_VERSION + '+' + sha
 
     version_file_str = content.format(time.asctime(), VERSION, SHORT_VERSION,
@@ -109,6 +110,8 @@ def parse_requirements(fname='requirements.txt', with_version=True):
             info = {'line': line}
             if line.startswith('-e '):
                 info['package'] = line.split('#egg=')[1]
+            elif '@git+' in line:
+                info['package'] = line
             else:
                 # Remove versioning from the package
                 pat = '(' + '|'.join(['>=', '==', '>']) + ')'
@@ -160,8 +163,10 @@ if __name__ == '__main__':
     setup(
         name='mmaction',
         version=get_version(),
-        description='Open MMLab Action Recognition Toolbox',
+        description='OpenMMLab Action Understanding Toolbox',
         long_description=readme(),
+        maintainer='MMAction Authors',
+        maintainer_email='openmmlab@gmail.com',
         packages=find_packages(exclude=('configs', 'tools', 'demo')),
         package_data={'mmaction.ops': ['*/*.so']},
         classifiers=[
