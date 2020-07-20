@@ -561,15 +561,26 @@ def test_resnet_tsm_backbone():
                     and isinstance(layer[2], NL3D1)
                     and isinstance(layer[4], NL3D1))
 
-    feat = resnet_tsm_nonlocal(imgs)
-    assert feat.shape == torch.Size([8, 2048, 2, 2])
+    resnet_tsm_50_full = ResNetTSM(50, with_non_local=True, temporal_pool=True)
+    resnet_tsm_50_full.init_weights()
 
     # TSM forword
     feat = resnet_tsm_50(imgs)
     assert feat.shape == torch.Size([8, 2048, 2, 2])
 
+    # TSM with non-local forward
+    feat = resnet_tsm_nonlocal(imgs)
+    assert feat.shape == torch.Size([8, 2048, 2, 2])
+
+    # TSM with temporal pool forward
     feat = resnet_tsm_50_temporal_pool(imgs)
     assert feat.shape == torch.Size([4, 2048, 2, 2])
+
+    # TSM with temporal pool + non-local forward
+    input_shape = (16, 3, 32, 32)
+    imgs = _demo_inputs(input_shape)
+    feat = resnet_tsm_50_full(imgs)
+    assert feat.shape == torch.Size([8, 2048, 1, 1])
 
 
 def test_slowfast_backbone():
