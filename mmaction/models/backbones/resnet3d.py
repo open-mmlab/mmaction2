@@ -17,7 +17,6 @@ class NL3DWrapper(nn.Module):
 
     Args:
         block (nn.Module): Residual blocks to be built.
-        num_segments (int): Number of frame segments.
     """
 
     def __init__(self, block):
@@ -28,7 +27,7 @@ class NL3DWrapper(nn.Module):
             sub_sample=True,
             use_scale=False,
             norm_cfg=dict(type='BN3d', requires_grad=True),
-            mode='dot_product')
+            mode='embedded_gaussian')
 
     def forward(self, x):
         x = self.block(x)

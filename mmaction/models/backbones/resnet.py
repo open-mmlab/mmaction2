@@ -26,7 +26,7 @@ class NL3DWrapper(nn.Module):
             sub_sample=True,
             use_scale=False,
             norm_cfg=dict(type='BN3d', requires_grad=True),
-            mode='dot_product')
+            mode='embedded_gaussian')
         self.num_segments = num_segments
 
     def forward(self, x):
