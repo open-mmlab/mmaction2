@@ -81,8 +81,7 @@ class MultiGridHook(Hook):
     def _update_long_cycle(self, runner):
         """Before every epoch, check if long cycle shape should change.
 
-        If it should, change the runner's optimizer and pipelines
-        accordingly.
+        If it should, change the runner's optimizer and pipelines accordingly.
         """
         base_b, base_t, base_s = self._get_schedule(runner.epoch)
         resize_list = []  # use a list to find the final `Resize`
@@ -207,9 +206,9 @@ class MultiGridHook(Hook):
 
     def _print_schedule(self, schedule):
         """logging the schedule."""
-        self.logger.info("\tLongCycleId\tBase shape\tEpochs\t")
+        self.logger.info('\tLongCycleId\tBase shape\tEpochs\t')
         for s in schedule:
-            self.logger.info("\t{}\t{}\t{}\t".format(s[0], s[1], s[2]))
+            self.logger.info('\t{}\t{}\t{}\t'.format(s[0], s[1], s[2]))
 
     def _get_schedule(self, epoch):
         """Returning the corresponding shape."""

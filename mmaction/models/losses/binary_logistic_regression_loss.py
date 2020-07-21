@@ -32,8 +32,8 @@ def binary_logistic_regression_loss(reg_score,
 class BinaryLogisticRegressionLoss(nn.Module):
     """Binary Logistic Regression Loss.
 
-    It will calculate binary logistic regression loss given reg_score
-    and label.
+    It will calculate binary logistic regression loss given reg_score and
+    label.
     """
 
     def forward(self,

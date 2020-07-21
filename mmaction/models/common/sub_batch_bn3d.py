@@ -22,9 +22,9 @@ class SubBatchBN3d(nn.Module):
 
     def init_weights(self, cfg):
         # Keep only one set of weight and bias.
-        if cfg.get("affine", True):
+        if cfg.get('affine', True):
             self.affine = True
-            cfg["affine"] = False
+            cfg['affine'] = False
             # constant init
             self.weight = torch.nn.Parameter(torch.ones(self.num_features))
             self.bias = torch.nn.Parameter(torch.zeros(self.num_features))
