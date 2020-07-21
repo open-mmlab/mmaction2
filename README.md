@@ -3,7 +3,10 @@
 </div>
 
 <div align="left">
-    <a href='https://mmaction2.readthedocs.io/en/latest/?badge=latest'>
+    <a href='https://pypi.org/project/mmaction2/'>
+        <img alt="PyPI" src="https://img.shields.io/pypi/v/mmaction2">
+    </a>
+    <a href='https://mmaction2.readthedocs.io/en/latest/'>
         <img src='https://readthedocs.org/projects/mmaction2/badge/?version=latest' alt='Documentation Status' />
     </a>
     <a href='https://github.com/open-mmlab/mmaction2/actions'>

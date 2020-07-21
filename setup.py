@@ -178,6 +178,7 @@ if __name__ == '__main__':
             'Programming Language :: Python :: 3.6',
             'Programming Language :: Python :: 3.7',
         ],
+        url='https://github.com/open-mmlab/mmaction2',
         license='Apache License 2.0',
         setup_requires=parse_requirements('requirements/build.txt'),
         tests_require=parse_requirements('requirements/tests.txt'),
