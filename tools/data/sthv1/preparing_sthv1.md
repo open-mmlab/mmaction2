@@ -7,9 +7,11 @@ Before we start, please make sure that the directory is located at `$MMACTION2/t
 
 First of all, you have to sign in and download annotations to `$MMACTION2/data/sthv1/annotations` on the official [website](https://20bn.com/datasets/something-something/v1).
 
-## Step 2. Prepare Videos
+## Step 2. Prepare RGB Frames
 
-Then, you can download all data parts to `$MMACTION2/data/sthv1/` and use the following command to extract.
+Since the [sthv1 website](https://20bn.com/datasets/something-something/v1) doesn't provide the original video data and only extracted RGB frames are available, you have to directly download RGB frames from [sthv1 website](https://20bn.com/datasets/something-something/v1).
+
+You can download all RGB frame parts on [sthv1 website](https://20bn.com/datasets/something-something/v1) to `$MMACTION2/data/sthv1/` and use the following command to extract.
 
 ```shell
 cd $MMACTION2/data/sthv1/
@@ -17,9 +19,35 @@ cat 20bn-something-something-v1-?? | tar zx
 cd $MMACTION2/tools/data/sthv1/
 ```
 
-## Step 3. Extract RGB and Flow
+For users who only want to use RGB frames, you can skip to step 4 to generate file lists in the format of rawframes. Since the prefix of official JPGs is "%05d.jpg" (e.g., "00001.jpg"), you have to add "filename_tmpl='{:05}.jpg'" to the dict of data.train, data.val and data.test in the config files related with sthv1 like this:
 
-This part is **optional** if you only want to use the video loader.
+```
+data = dict(
+    videos_per_gpu=6,
+    workers_per_gpu=4,
+    train=dict(
+        type=dataset_type,
+        ann_file=ann_file_train,
+        data_prefix=data_root,
+        filename_tmpl='{:05}.jpg',
+        pipeline=train_pipeline),
+    val=dict(
+        type=dataset_type,
+        ann_file=ann_file_val,
+        data_prefix=data_root_val,
+        filename_tmpl='{:05}.jpg',
+        pipeline=val_pipeline),
+    test=dict(
+        type=dataset_type,
+        ann_file=ann_file_test,
+        data_prefix=data_root_val,
+        filename_tmpl='{:05}.jpg',
+        pipeline=test_pipeline))
+```
+
+## Step 3. Extract Flow
+
+This part is **optional** if you only want to use RGB frames.
 
 Before extracting, please refer to [install.md](/docs/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
 
@@ -33,40 +61,26 @@ mkdir /mnt/SSD/sthv1_extracted/
 ln -s /mnt/SSD/sthv1_extracted/ ../../../data/sthv1/rawframes
 ```
 
-If you only want to play with RGB frames (since extracting optical flow can be time-consuming), consider running the following script to extract **RGB-only** frames using denseflow.
+Then, you can run the following script to extract optical flow based on RGB frames.
 
 ```shell
 cd $MMACTION2/tools/data/sthv1/
-bash extract_rgb_frames.sh
-```
-
-If you didn't install denseflow, you can still extract RGB frames using OpenCV by the following script, but it will keep the original size of the images.
-
-```shell
-cd $MMACTION2/tools/data/sthv1/
-bash extract_rgb_frames_opencv.sh
-```
-
-If both are required, run the following script to extract frames.
-
-```shell
-cd $MMACTION2/tools/data/sthv1/
-bash extract_frames.sh
+bash extract_flow.sh
 ```
 
 ## Step 4. Generate File List
 
-you can run the follow script to generate file list in the format of rawframes and videos.
+you can run the follow script to generate file list in the format of rawframes.
 
 ```shell
 cd $MMACTION2/tools/data/sthv1/
-bash generate_{rawframes, videos}_filelist.sh
+bash generate_rawframes_filelist.sh
 ```
 
 ## Step 5. Check Directory Structure
 
 After the whole data process for Something-Something V1 preparation,
-you will get the rawframes (RGB + Flow), videos and annotation files for Something-Something V1.
+you will get the rawframes (RGB + Flow), and annotation files for Something-Something V1.
 
 In the context of the whole project (for Something-Something V1 only), the folder structure will look like:
 
@@ -78,12 +92,7 @@ mmaction
 ├── data
 │   ├── sthv1
 │   │   ├── sthv1_{train,val}_list_rawframes.txt
-│   │   ├── sthv1_{train,val}_list_videos.txt
 │   │   ├── annotations
-│   |   ├── videos
-│   |   |   ├── 100000.mp4
-│   |   |   ├── 100001.mp4
-│   |   |   ├──...
 │   |   ├── rawframes
 │   |   |   ├── 100000
 │   |   |   |   ├── img_00001.jpg

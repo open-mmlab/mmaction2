@@ -68,14 +68,24 @@ def extract_frame(vid_item, dev_id=0):
                     f' -ns={args.new_short} -v')
             os.system(cmd)
     elif task == 'flow':
-        if args.new_short == 0:
-            cmd = osp.join(
-                f"denseflow '{full_path}' -a={method} -b=20 -s=1 -o='{out_full_path}'"  # noqa: E501
-                f' -nw={args.new_width} --nh={args.new_height} -v')
+        if args.input_frames:
+            if args.new_short == 0:
+                cmd = osp.join(
+                    f"denseflow '{full_path}' -a={method} -b=20 -s=1 -o='{out_full_path}'"  # noqa: E501
+                    f' -nw={args.new_width} --nh={args.new_height} -v --if')
+            else:
+                cmd = osp.join(
+                    f"denseflow '{full_path}' -a={method} -b=20 -s=1 -o='{out_full_path}'"  # noqa: E501
+                    f' -ns={args.new_short} -v --if')
         else:
-            cmd = osp.join(
-                f"denseflow '{full_path}' -a={method} -b=20 -s=1 -o='{out_full_path}'"  # noqa: E501
-                f' -ns={args.new_short} -v')
+            if args.new_short == 0:
+                cmd = osp.join(
+                    f"denseflow '{full_path}' -a={method} -b=20 -s=1 -o='{out_full_path}'"  # noqa: E501
+                    f' -nw={args.new_width} --nh={args.new_height} -v')
+            else:
+                cmd = osp.join(
+                    f"denseflow '{full_path}' -a={method} -b=20 -s=1 -o='{out_full_path}'"  # noqa: E501
+                    f' -ns={args.new_short} -v')
         os.system(cmd)
     else:
         if args.new_short == 0:
@@ -158,6 +168,10 @@ def parse_args():
         '--use-opencv',
         action='store_true',
         help='Whether to use opencv to extract rgb frames')
+    parser.add_argument(
+        '--input-frames',
+        action='store_true',
+        help='Whether to extract flow frames based on rgb frames')
     args = parser.parse_args()
 
     return args
@@ -178,13 +192,18 @@ if __name__ == '__main__':
                 print(f'Creating folder: {new_dir}')
                 os.makedirs(new_dir)
 
-    print('Reading videos from folder: ', args.src_dir)
-    print('Extension of videos: ', args.ext)
-
-    fullpath_list = glob.glob(args.src_dir + '/*' * args.level + '.' +
-                              args.ext)
-    done_fullpath_list = glob.glob(args.out_dir + '/*' * args.level)
-    print('Total number of videos found: ', len(fullpath_list))
+    if args.input_frames:
+        print('Reading rgb frames from folder: ', args.src_dir)
+        fullpath_list = glob.glob(args.src_dir + '/*' * args.level)
+        done_fullpath_list = glob.glob(args.out_dir + '/*' * args.level)
+        print('Total number of rgb frame folders found: ', len(fullpath_list))
+    else:
+        print('Reading videos from folder: ', args.src_dir)
+        print('Extension of videos: ', args.ext)
+        fullpath_list = glob.glob(args.src_dir + '/*' * args.level + '.' +
+                                  args.ext)
+        done_fullpath_list = glob.glob(args.out_dir + '/*' * args.level)
+        print('Total number of videos found: ', len(fullpath_list))
 
     if args.resume:
         fullpath_list = set(fullpath_list).difference(set(done_fullpath_list))
