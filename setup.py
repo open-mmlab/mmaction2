@@ -159,7 +159,7 @@ def parse_requirements(fname='requirements.txt', with_version=True):
 if __name__ == '__main__':
     write_version_py()
     setup(
-        name='mmaction',
+        name='mmaction2',
         version=get_version(),
         description='OpenMMLab Action Understanding Toolbox and Benchmark',
         maintainer='MMAction Authors',
