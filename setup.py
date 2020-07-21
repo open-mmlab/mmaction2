@@ -3,13 +3,6 @@ import subprocess
 import time
 from setuptools import find_packages, setup
 
-
-def readme():
-    with open('README.md', encoding='utf-8') as f:
-        content = f.read()
-    return content
-
-
 version_file = 'mmaction/version.py'
 
 
@@ -168,8 +161,7 @@ if __name__ == '__main__':
     setup(
         name='mmaction',
         version=get_version(),
-        description='OpenMMLab Action Understanding Toolbox',
-        long_description=readme(),
+        description='OpenMMLab Action Understanding Toolbox and Benchmark',
         maintainer='MMAction Authors',
         maintainer_email='openmmlab@gmail.com',
         packages=find_packages(exclude=('configs', 'tools', 'demo')),
