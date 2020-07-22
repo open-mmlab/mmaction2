@@ -1,14 +1,25 @@
 import copy
+import sys
+from unittest.mock import MagicMock, patch
 
 import numpy as np
 import pytest
 import torch
 import torch.nn as nn
 from mmcv.utils import _BatchNorm
+from torch.autograd import Function
 
 from mmaction.models import (ResNet, ResNet2Plus1d, ResNet3d, ResNet3dCSN,
-                             ResNet3dSlowFast, ResNet3dSlowOnly, ResNetTSM)
+                             ResNet3dSlowFast, ResNet3dSlowOnly, ResNetTIN, ResNetTSM)
 from mmaction.models.backbones.resnet_tsm import NL3DWrapper
+
+sys.modules['cuda_shift'] = MagicMock()
+
+
+class MockShiftFeatureFunc(Function):
+
+    def forward(self, data, shift):
+        return data
 
 
 def check_norm_state(modules, train_state):
@@ -803,6 +814,41 @@ def test_resnet_csn_backbone():
     resnet3d_csn_ip.train(False)
     for module in resnet3d_csn_ip.children():
         assert module.training is False
+
+
+@patch('cuda_shift.rtc_wrap.ShiftFeatureFunc', MockShiftFeatureFunc)
+@pytest.mark.skipif(
+    not torch.cuda.is_available(), reason='requires CUDA support')
+def test_resnet_tin_backbone():
+    """Test resnet_tin backbone."""
+    with pytest.raises(AssertionError):
+        # num_segments should be positive
+        resnet_tin = ResNetTIN(50, num_segments=-1)
+        resnet_tin.init_weights()
+
+    from mmaction.models.backbones.resnet_tin import \
+        TemporalInterlace, CombineNet
+
+    # resnet_tin with normal config
+    resnet_tin = ResNetTIN(50)
+    resnet_tin.init_weights()
+    for layer_name in resnet_tin.res_layers:
+        layer = getattr(resnet_tin, layer_name)
+        blocks = list(layer.children())
+        for block in blocks:
+            assert isinstance(block.conv1.conv, CombineNet)
+            assert isinstance(block.conv1.conv.net1, TemporalInterlace)
+            assert (
+                block.conv1.conv.net1.num_segments == resnet_tin.num_segments)
+            assert block.conv1.conv.net1.shift_div == resnet_tin.shift_div
+
+    input_shape = (8, 3, 64, 64)
+    imgs = _demo_inputs(input_shape).cuda()
+    resnet_tin = resnet_tin.cuda()
+
+    # resnet_tin with normal cfg inference
+    feat = resnet_tin(imgs)
+    assert feat.shape == torch.Size([8, 2048, 2, 2])
 
 
 def _demo_inputs(input_shape=(1, 3, 64, 64)):
