@@ -9,6 +9,7 @@ model = dict(
         conv_cfg=dict(type='Conv3d'),
         norm_eval=False,
         inflate=(1, 1, 1, 1),
+        with_pool2=False,
         zero_init_residual=False),
     cls_head=dict(
         type='I3DHead',

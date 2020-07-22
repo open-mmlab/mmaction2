@@ -131,7 +131,11 @@ python tools/run_net.py   --cfg configs/Kinetics/SLOW_4x16_R50.yaml   DATA.PATH_
 You may reproduce the result by writting a simple script to parse out the value of the field 'time_diff'.
 
 ### R2plus1D
+<<<<<<< HEAD
 + **mmaction2**
+=======
++ **mmaction2**:
+>>>>>>> Add more stats for fast video; Note that our I3D has pool2 but PySlowFast doesn't☠️
 ```shell
 bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_r2plus1d configs/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb.py work_dirs/benchmark_r2plus1d_video
 ```
