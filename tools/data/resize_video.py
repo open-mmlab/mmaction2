@@ -18,14 +18,14 @@ def resize_videos(vid_item):
     """
     full_path, vid_path = vid_item
     out_full_path = osp.join(args.out_dir, vid_path)
-    if '/' in vid_path:
-        dir_name = '/'.join(vid_path.split('/')[:-1])
-        if not osp.exists(osp.join(args.out_dir, dir_name)):
-            os.makedirs(osp.join(args.out_dir, dir_name))
+    dir_name = osp.dirname(vid_path)
+    out_dir = osp.join(args.out_dir, dir_name)
+    if not osp.exists(out_dir):
+        os.makedirs(out_dir)
     result = os.popen(
         f"""ffprobe -hide_banner -loglevel panic -select_streams v:0 -show_entries stream=width,height -of csv=p=0 {full_path}"""  # noqa:E501
     )
-    w, h = [int(d) for d in result.readline().rstrip('\n').split(',')]
+    w, h = [int(d) for d in result.readline().rstrip().split(',')]
     if w > h:
         cmd = f"""ffmpeg -hide_banner -i {full_path} -vf {'mpdecimate,' if args.remove_dup else ''}scale=-2:{args.scale} -vsync vfr -c:v libx264 {'-g 16' if args.fast else ''} -an {out_full_path} -y"""  # noqa:E501
     else:
@@ -38,7 +38,7 @@ def resize_videos(vid_item):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='Generate the resized cache of origin videos')
+        description='Generate the resized cache of original videos')
     parser.add_argument('src_dir', type=str, help='source video directory')
     parser.add_argument('out_dir', type=str, help='output video directory')
     parser.add_argument(
@@ -69,10 +69,7 @@ def parse_args():
         default=256,
         help='resize image short side length keeping ratio')
     parser.add_argument(
-        '--num-worker',
-        type=int,
-        default=8,
-        help='number of workers to build rawframes')
+        '--num-worker', type=int, default=8, help='number of workers')
     args = parser.parse_args()
 
     return args
@@ -95,9 +92,11 @@ if __name__ == '__main__':
           len(done_fullpath_list))
     if args.level == 2:
         vid_list = list(
-            map(lambda p: osp.join('/'.join(p.split('/')[-2:])),
+            map(
+                lambda p: osp.join(
+                    osp.basename(osp.dirname(p)), osp.basename(p)),
                 fullpath_list))
     elif args.level == 1:
-        vid_list = list(map(lambda p: p.split('/')[-1], fullpath_list))
+        vid_list = list(map(lambda p: osp.basename(p), fullpath_list))
     pool = Pool(args.num_worker)
     pool.map(resize_videos, zip(fullpath_list, vid_list))
