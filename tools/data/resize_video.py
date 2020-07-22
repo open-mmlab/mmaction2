@@ -43,8 +43,7 @@ def parse_args():
     parser.add_argument('out_dir', type=str, help='output video directory')
     parser.add_argument(
         '--fast',
-        type=bool,
-        default=True,
+        action='store_true',
         help='whether to generate a faster cache')
     parser.add_argument(
         '--level',
@@ -54,8 +53,7 @@ def parse_args():
         help='directory level of data')
     parser.add_argument(
         '--remove-dup',
-        type=bool,
-        default=False,
+        action='store_true',
         help='whether to remove duplicated frames')
     parser.add_argument(
         '--ext',
