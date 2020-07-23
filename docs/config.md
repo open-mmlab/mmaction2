@@ -158,7 +158,7 @@ optimizer_config = dict(  # Config used to build the optimizer hook
     grad_clip=None)  # Most of the methods do not use gradient clip
 # learning policy
 lr_config = dict(  # Learning rate scheduler config used to register LrUpdater hook
-    policy='step',  # Policy of scheduler, also support CosineAnealing, Cyclic, etc. Refer to details of supported LrUpdater from https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/lr_updater.py#L9
+    policy='step',  # Policy of scheduler, also support CosineAnnealing, Cyclic, etc. Refer to details of supported LrUpdater from https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/lr_updater.py#L9
     step=7)  # Steps to decay the learning rate
 
 total_epochs = 9  # Total epochs to train the model
@@ -364,7 +364,7 @@ optimizer_config = dict(  # Config used to build the optimizer hook
     grad_clip=dict(max_norm=40, norm_type=2))  # Use gradient clip
 # learning policy
 lr_config = dict(  # Learning rate scheduler config used to register LrUpdater hook
-    policy='step',  # Policy of scheduler, also support CosineAnealing, Cyclic, etc. Refer to details of supported LrUpdater from https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/lr_updater.py#L9
+    policy='step',  # Policy of scheduler, also support CosineAnnealing, Cyclic, etc. Refer to details of supported LrUpdater from https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/lr_updater.py#L9
     step=[40, 80])  # Steps to decay the learning rate
 total_epochs = 100  # Total epochs to train the model
 checkpoint_config = dict(  # Config to set the checkpoint hook, Refer to https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/checkpoint.py for implementation
