@@ -1,4 +1,4 @@
-from mmcv.cnn import ConvModule, NonLocal3d, constant_init, kaiming_init
+from mmcv.cnn import ConvModule, constant_init, kaiming_init
 from mmcv.runner import _load_checkpoint, load_checkpoint
 from mmcv.utils import _BatchNorm
 from torch import nn as nn
@@ -6,38 +6,6 @@ from torch.utils import checkpoint as cp
 
 from ...utils import get_root_logger
 from ..registry import BACKBONES
-
-
-class NL3DWrapper(nn.Module):
-    """3D Non-local wrapper for ResNet50.
-
-    Wrap ResNet layers with 3D NonLocal modules.
-
-    Args:
-        block (nn.Module): Residual blocks to be built.
-        num_segments (int): Number of frame segments.
-    """
-
-    def __init__(self, block, num_segments):
-        super(NL3DWrapper, self).__init__()
-        self.block = block
-        self.non_local = NonLocal3d(
-            self.block.conv3.norm.num_features,
-            sub_sample=True,
-            use_scale=False,
-            norm_cfg=dict(type='BN3d', requires_grad=True),
-            mode='embedded_gaussian')
-        self.num_segments = num_segments
-
-    def forward(self, x):
-        x = self.block(x)
-
-        n, c, h, w = x.size()
-        x = x.view(n // self.num_segments, self.num_segments, c, h,
-                   w).transpose(1, 2)
-        x = self.non_local(x)
-        x = x.transpose(1, 2).contiguous().view(n, c, h, w)
-        return x
 
 
 class BasicBlock(nn.Module):
@@ -528,16 +496,6 @@ class ResNet(nn.Module):
             logger.info(
                 f'These parameters in pretrained checkpoint are not loaded'
                 f': {remaining_names}')
-
-    def make_non_local(self):
-        # This part is for ResNet50
-        self.layer2 = nn.Sequential(
-            NL3DWrapper(self.layer2[0], self.num_segments), self.layer2[1],
-            NL3DWrapper(self.layer2[2], self.num_segments), self.layer2[3])
-        self.layer3 = nn.Sequential(
-            NL3DWrapper(self.layer3[0], self.num_segments), self.layer3[1],
-            NL3DWrapper(self.layer3[2], self.num_segments), self.layer3[3],
-            NL3DWrapper(self.layer3[4], self.num_segments), self.layer3[5])
 
     def init_weights(self):
         """Initiate the parameters either from existing checkpoint or from

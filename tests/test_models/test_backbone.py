@@ -8,8 +8,7 @@ from mmcv.utils import _BatchNorm
 
 from mmaction.models import (ResNet, ResNet2Plus1d, ResNet3d, ResNet3dSlowFast,
                              ResNet3dSlowOnly, ResNetTSM)
-from mmaction.models.backbones.resnet import NL3DWrapper as NL3D1
-from mmaction.models.backbones.resnet3d import NL3DWrapper as NL3D2
+from mmaction.models.backbones.resnet_tsm import NL3DWrapper
 
 
 def check_norm_state(modules, train_state):
@@ -377,19 +376,24 @@ def test_resnet3d_backbone():
         assert feat.shape == torch.Size([1, 512, 1, 2, 2])
 
     # resnet3d with non-local module
+    non_local_cfg = dict(
+        sub_sample=True,
+        use_scale=False,
+        norm_cfg=dict(type='BN3d', requires_grad=True),
+        mode='embedded_gaussian')
+    non_local = ((0, 0, 0), (1, 0, 1, 0), (1, 0, 1, 0, 1, 0), (0, 0, 0))
     resnet3d_nonlocal = ResNet3d(
-        50, None, pretrained2d=False, with_non_local=True)
+        50,
+        None,
+        pretrained2d=False,
+        non_local=non_local,
+        non_local_cfg=non_local_cfg)
     resnet3d_nonlocal.init_weights()
     for layer_name in ['layer2', 'layer3']:
         layer = getattr(resnet3d_nonlocal, layer_name)
-        isinstance(layer, nn.Sequential)
-        if len(layer) == 4:
-            assert (isinstance(layer[0], NL3D2)
-                    and isinstance(layer[2], NL3D2))
-        elif len(layer) == 6:
-            assert (isinstance(layer[0], NL3D2)
-                    and isinstance(layer[2], NL3D2)
-                    and isinstance(layer[4], NL3D2))
+        for i, _ in enumerate(layer):
+            if i % 2 == 0:
+                assert hasattr(layer[i], 'non_local_block')
 
     feat = resnet3d_nonlocal(imgs)
     assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
@@ -548,20 +552,26 @@ def test_resnet_tsm_backbone():
             assert isinstance(block.conv1.conv.net, nn.Conv2d)
 
     # resnet_tsm with non-local module
-    resnet_tsm_nonlocal = ResNetTSM(50, with_non_local=True)
+    non_local_cfg = dict(
+        sub_sample=True,
+        use_scale=False,
+        norm_cfg=dict(type='BN3d', requires_grad=True),
+        mode='embedded_gaussian')
+    non_local = ((0, 0, 0), (1, 0, 1, 0), (1, 0, 1, 0, 1, 0), (0, 0, 0))
+    resnet_tsm_nonlocal = ResNetTSM(
+        50, non_local=non_local, non_local_cfg=non_local_cfg)
     resnet_tsm_nonlocal.init_weights()
     for layer_name in ['layer2', 'layer3']:
         layer = getattr(resnet_tsm_nonlocal, layer_name)
-        isinstance(layer, nn.Sequential)
-        if len(layer) == 4:
-            assert (isinstance(layer[0], NL3D1)
-                    and isinstance(layer[2], NL3D1))
-        elif len(layer) == 6:
-            assert (isinstance(layer[0], NL3D1)
-                    and isinstance(layer[2], NL3D1)
-                    and isinstance(layer[4], NL3D1))
+        for i, _ in enumerate(layer):
+            if i % 2 == 0:
+                assert isinstance(layer[i], NL3DWrapper)
 
-    resnet_tsm_50_full = ResNetTSM(50, with_non_local=True, temporal_pool=True)
+    resnet_tsm_50_full = ResNetTSM(
+        50,
+        non_local=non_local,
+        non_local_cfg=non_local_cfg,
+        temporal_pool=True)
     resnet_tsm_50_full.init_weights()
 
     # TSM forword
