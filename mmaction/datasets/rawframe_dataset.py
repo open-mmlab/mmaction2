@@ -52,6 +52,8 @@ class RawframeDataset(BaseDataset):
             Default: False.
         filename_tmpl (str): Template for each filename.
             Default: 'img_{:05}.jpg'.
+        with_offset (bool): Determines whether the offset information is in
+            ann_file. If not, frame_idx starts from 1. Default: False.
         multi_class (bool): Determines whether it is a multi-class
             recognition dataset. Default: False.
         num_classes (int): Number of classes in the dataset. Default: None.
@@ -65,12 +67,14 @@ class RawframeDataset(BaseDataset):
                  data_prefix=None,
                  test_mode=False,
                  filename_tmpl='img_{:05}.jpg',
+                 with_offset=False,
                  multi_class=False,
                  num_classes=None,
                  modality='RGB'):
         super().__init__(ann_file, pipeline, data_prefix, test_mode,
                          multi_class, num_classes, modality)
         self.filename_tmpl = filename_tmpl
+        self.with_offset = with_offset
 
     def load_annotations(self):
         """Load annotation file to get video information."""
@@ -78,23 +82,34 @@ class RawframeDataset(BaseDataset):
         with open(self.ann_file, 'r') as fin:
             for line in fin:
                 line_split = line.strip().split()
-                if self.multi_class:
-                    assert self.num_classes is not None
-                    (frame_dir, total_frames,
-                     label) = (line_split[0], line_split[1], line_split[2:])
-                    label = list(map(int, label))
-                    onehot = torch.zeros(self.num_classes)
-                    onehot[label] = 1.0
-                else:
-                    frame_dir, total_frames, label = line_split
-                    label = int(label)
+                item = {}
+                idx = 0
+                frame_dir = line_split[idx]
                 if self.data_prefix is not None:
                     frame_dir = osp.join(self.data_prefix, frame_dir)
-                video_infos.append(
-                    dict(
-                        frame_dir=frame_dir,
-                        total_frames=int(total_frames),
-                        label=onehot if self.multi_class else label))
+                item['frame_dir'] = frame_dir
+                idx += 1
+                if self.with_offset:
+                    item['offset'] = int(line_split[idx])
+                    item['total_frames'] = int(line_split[idx + 1])
+                    idx += 2
+                else:
+                    item['total_frames'] = int(line_split[idx])
+                    idx += 1
+                label = [int(x) for x in line_split[idx:]]
+                assert len(label), 'missing label in line: {}'.format(line)
+                if len(label) == 1:
+                    item['label'] = label[0]
+                else:
+                    assert self.multi_class, (
+                        'found multiple labels in line'
+                        '{}, however multi_class == False'.format(line))
+                    assert self.num_classes is not None
+                    onehot = torch.zeros(self.num_classes)
+                    onehot[label] = 1.0
+                    item['label'] = onehot
+                video_infos.append(item)
+
         return video_infos
 
     def prepare_train_frames(self, idx):
