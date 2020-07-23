@@ -74,7 +74,7 @@ class TestDataset(object):
 
     def test_rawframe_dataset_multi_label(self):
         rawframe_dataset = RawframeDataset(
-            self.frame_ann_file_multi_labels,
+            self.frame_ann_file_multi_label,
             self.frame_pipeline,
             self.data_prefix,
             multi_class=True,
