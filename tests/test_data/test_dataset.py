@@ -22,6 +22,8 @@ class TestDataset(object):
     def setup_class(cls):
         cls.data_prefix = osp.join(osp.dirname(osp.dirname(__file__)), 'data')
         cls.frame_ann_file = osp.join(cls.data_prefix, 'frame_test_list.txt')
+        cls.frame_ann_file_with_offset = osp.join(
+            cls.data_prefix, 'frame_test_list_with_offset.txt')
         cls.video_ann_file = osp.join(cls.data_prefix, 'video_test_list.txt')
         cls.action_ann_file = osp.join(cls.data_prefix,
                                        'action_test_anno.json')
@@ -57,7 +59,7 @@ class TestDataset(object):
 
     def test_rawframe_dataset_with_offset(self):
         rawframe_dataset = RawframeDataset(
-            self.frame_ann_file,
+            self.frame_ann_file_with_offset,
             self.frame_pipeline,
             self.data_prefix,
             with_offset=True)
