@@ -85,10 +85,11 @@ class TestDataset(object):
         label0[[1]] = 1.0
         label1 = torch.zeros(100)
         label1[[3, 5]] = 1.0
-        assert rawframe_infos == [
-            dict(frame_dir=frame_dir, total_frames=5, label=label0),
-            dict(frame_dir=frame_dir, total_frames=5, label=label1)
-        ]
+        labels = [label0, label1]
+        for info, label in zip(rawframe_infos, labels):
+            assert info['frame_dir'] == frame_dir
+            assert info['total_frames'] == 5
+            assert info['label'] == label
 
     def test_dataset_realpath(self):
         dataset = RawframeDataset(self.frame_ann_file, self.frame_pipeline,

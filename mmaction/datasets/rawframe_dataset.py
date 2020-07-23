@@ -99,18 +99,22 @@ class RawframeDataset(BaseDataset):
                 line_split = line.strip().split()
                 video_info = {}
                 idx = 0
+                # idx for frame_dir
                 frame_dir = line_split[idx]
                 if self.data_prefix is not None:
                     frame_dir = osp.join(self.data_prefix, frame_dir)
                 video_info['frame_dir'] = frame_dir
                 idx += 1
                 if self.with_offset:
+                    # idx for offset and total_frames
                     video_info['offset'] = int(line_split[idx])
                     video_info['total_frames'] = int(line_split[idx + 1])
                     idx += 2
                 else:
+                    # idx for total_frames
                     video_info['total_frames'] = int(line_split[idx])
                     idx += 1
+                # idx for label[s]
                 label = [int(x) for x in line_split[idx:]]
                 assert len(label), f'missing label in line: {line}'
                 if self.multi_class:
