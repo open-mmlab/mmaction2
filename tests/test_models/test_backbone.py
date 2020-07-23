@@ -8,6 +8,7 @@ from mmcv.utils import _BatchNorm
 
 from mmaction.models import (ResNet, ResNet2Plus1d, ResNet3d, ResNet3dSlowFast,
                              ResNet3dSlowOnly, ResNetTSM)
+from mmaction.models.backbones.resnet_tsm import NL3DWrapper
 
 
 def check_norm_state(modules, train_state):
@@ -374,6 +375,29 @@ def test_resnet3d_backbone():
         feat = resnet3d_34_1x1x1(imgs)
         assert feat.shape == torch.Size([1, 512, 1, 2, 2])
 
+    # resnet3d with non-local module
+    non_local_cfg = dict(
+        sub_sample=True,
+        use_scale=False,
+        norm_cfg=dict(type='BN3d', requires_grad=True),
+        mode='embedded_gaussian')
+    non_local = ((0, 0, 0), (1, 0, 1, 0), (1, 0, 1, 0, 1, 0), (0, 0, 0))
+    resnet3d_nonlocal = ResNet3d(
+        50,
+        None,
+        pretrained2d=False,
+        non_local=non_local,
+        non_local_cfg=non_local_cfg)
+    resnet3d_nonlocal.init_weights()
+    for layer_name in ['layer2', 'layer3']:
+        layer = getattr(resnet3d_nonlocal, layer_name)
+        for i, _ in enumerate(layer):
+            if i % 2 == 0:
+                assert hasattr(layer[i], 'non_local_block')
+
+    feat = resnet3d_nonlocal(imgs)
+    assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
+
 
 def test_resnet2plus1d_backbone():
     # Test r2+1d backbone
@@ -476,6 +500,9 @@ def test_resnet_tsm_backbone():
     from mmaction.models.backbones.resnet_tsm import TemporalShift
     from mmaction.models.backbones.resnet import Bottleneck
 
+    input_shape = (8, 3, 64, 64)
+    imgs = _demo_inputs(input_shape)
+
     # resnet_tsm with depth 50
     resnet_tsm_50 = ResNetTSM(50)
     resnet_tsm_50.init_weights()
@@ -524,14 +551,46 @@ def test_resnet_tsm_backbone():
             assert block.conv1.conv.shift_div == resnet_tsm_50_temporal_pool.shift_div  # noqa: E501
             assert isinstance(block.conv1.conv.net, nn.Conv2d)
 
-    input_shape = (8, 3, 64, 64)
-    imgs = _demo_inputs(input_shape)
+    # resnet_tsm with non-local module
+    non_local_cfg = dict(
+        sub_sample=True,
+        use_scale=False,
+        norm_cfg=dict(type='BN3d', requires_grad=True),
+        mode='embedded_gaussian')
+    non_local = ((0, 0, 0), (1, 0, 1, 0), (1, 0, 1, 0, 1, 0), (0, 0, 0))
+    resnet_tsm_nonlocal = ResNetTSM(
+        50, non_local=non_local, non_local_cfg=non_local_cfg)
+    resnet_tsm_nonlocal.init_weights()
+    for layer_name in ['layer2', 'layer3']:
+        layer = getattr(resnet_tsm_nonlocal, layer_name)
+        for i, _ in enumerate(layer):
+            if i % 2 == 0:
+                assert isinstance(layer[i], NL3DWrapper)
 
+    resnet_tsm_50_full = ResNetTSM(
+        50,
+        non_local=non_local,
+        non_local_cfg=non_local_cfg,
+        temporal_pool=True)
+    resnet_tsm_50_full.init_weights()
+
+    # TSM forword
     feat = resnet_tsm_50(imgs)
     assert feat.shape == torch.Size([8, 2048, 2, 2])
 
+    # TSM with non-local forward
+    feat = resnet_tsm_nonlocal(imgs)
+    assert feat.shape == torch.Size([8, 2048, 2, 2])
+
+    # TSM with temporal pool forward
     feat = resnet_tsm_50_temporal_pool(imgs)
     assert feat.shape == torch.Size([4, 2048, 2, 2])
+
+    # TSM with temporal pool + non-local forward
+    input_shape = (16, 3, 32, 32)
+    imgs = _demo_inputs(input_shape)
+    feat = resnet_tsm_50_full(imgs)
+    assert feat.shape == torch.Size([8, 2048, 1, 1])
 
 
 def test_slowfast_backbone():

@@ -88,6 +88,8 @@ class ResNet3dPathway(ResNet3d):
                        style='pytorch',
                        inflate=1,
                        inflate_style='3x1x1',
+                       non_local=0,
+                       non_local_cfg=dict(),
                        conv_cfg=None,
                        norm_cfg=None,
                        act_cfg=None,
@@ -115,6 +117,11 @@ class ResNet3dPathway(ResNet3d):
             inflate_style (str): ``3x1x1`` or ``1x1x1``. which determines
                 the kernel sizes and padding strides for conv1 and
                 conv2 in each block. Default: ``3x1x1``.
+            non_local (int | Sequence[int]): Determine whether to apply
+                non-local module in the corresponding block of each stages.
+                Default: 0.
+            non_local_cfg (dict): Config for non-local module.
+                Default: ``dict()``.
             conv_cfg (dict): Config for conv layers. Default: None.
             norm_cfg (dict): Config for norm layers. Default: None.
             act_cfg (dict): Config for activate layers. Default: None.
@@ -127,7 +134,9 @@ class ResNet3dPathway(ResNet3d):
         """
         inflate = inflate if not isinstance(inflate,
                                             int) else (inflate, ) * blocks
-        assert len(inflate) == blocks
+        non_local = non_local if not isinstance(
+            non_local, int) else (non_local, ) * blocks
+        assert len(inflate) == blocks and len(non_local) == blocks
         if self.lateral:
             lateral_inplanes = inplanes * 2 // self.channel_ratio
         else:
@@ -158,6 +167,8 @@ class ResNet3dPathway(ResNet3d):
                 style=style,
                 inflate=(inflate[0] == 1),
                 inflate_style=inflate_style,
+                non_local=(non_local[0] == 1),
+                non_local_cfg=non_local_cfg,
                 conv_cfg=conv_cfg,
                 norm_cfg=norm_cfg,
                 act_cfg=act_cfg,
@@ -175,6 +186,8 @@ class ResNet3dPathway(ResNet3d):
                     style=style,
                     inflate=(inflate[i] == 1),
                     inflate_style=inflate_style,
+                    non_local=(non_local[i] == 1),
+                    non_local_cfg=non_local_cfg,
                     conv_cfg=conv_cfg,
                     norm_cfg=norm_cfg,
                     act_cfg=act_cfg,

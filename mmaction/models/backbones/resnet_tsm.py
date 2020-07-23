@@ -1,8 +1,40 @@
 import torch
 import torch.nn as nn
+from mmcv.cnn import NonLocal3d
+from torch.nn.modules.utils import _ntuple
 
 from ..registry import BACKBONES
 from .resnet import ResNet
+
+
+class NL3DWrapper(nn.Module):
+    """3D Non-local wrapper for ResNet50.
+
+    Wrap ResNet layers with 3D NonLocal modules.
+
+    Args:
+        block (nn.Module): Residual blocks to be built.
+        num_segments (int): Number of frame segments.
+        non_local_cfg (dict): Config for non-local layers. Default: ``dict()``.
+    """
+
+    def __init__(self, block, num_segments, non_local_cfg=dict()):
+        super(NL3DWrapper, self).__init__()
+        self.block = block
+        self.non_local_cfg = non_local_cfg
+        self.non_local_block = NonLocal3d(self.block.conv3.norm.num_features,
+                                          **self.non_local_cfg)
+        self.num_segments = num_segments
+
+    def forward(self, x):
+        x = self.block(x)
+
+        n, c, h, w = x.size()
+        x = x.view(n // self.num_segments, self.num_segments, c, h,
+                   w).transpose(1, 2)
+        x = self.non_local_block(x)
+        x = x.transpose(1, 2).contiguous().view(n, c, h, w)
+        return x
 
 
 class TemporalShift(nn.Module):
@@ -97,6 +129,9 @@ class ResNetTSM(ResNet):
         num_segments (int): Number of frame segments. Default: 8.
         is_shift (bool): Whether to make temporal shift in reset layers.
             Default: True.
+        non_local (Sequence[int]): Determine whether to apply non-local module
+            in the corresponding block of each stages. Default: (0, 0, 0, 0).
+        non_local_cfg (dict): Config for non-local module. Default: ``dict()``.
         shift_div (int): Number of div for shift. Default: 8.
         shift_place (str): Places in resnet layers for shift, which is chosen
             from ['block', 'blockres'].
@@ -113,6 +148,8 @@ class ResNetTSM(ResNet):
                  depth,
                  num_segments=8,
                  is_shift=True,
+                 non_local=(0, 0, 0, 0),
+                 non_local_cfg=dict(),
                  shift_div=8,
                  shift_place='blockres',
                  temporal_pool=False,
@@ -123,6 +160,9 @@ class ResNetTSM(ResNet):
         self.shift_div = shift_div
         self.shift_place = shift_place
         self.temporal_pool = temporal_pool
+        self.non_local = non_local
+        self.non_local_stages = _ntuple(self.num_stages)(non_local)
+        self.non_local_cfg = non_local_cfg
 
     def make_temporal_shift(self):
         """Make temporal shift for some layers."""
@@ -226,11 +266,29 @@ class ResNetTSM(ResNet):
 
         self.layer2 = TemporalPool(self.layer2, self.num_segments)
 
+    def make_non_local(self):
+        # This part is for ResNet50
+        for i in range(self.num_stages):
+            non_local_stage = self.non_local_stages[i]
+            if sum(non_local_stage) == 0:
+                continue
+
+            layer_name = f'layer{i + 1}'
+            res_layer = getattr(self, layer_name)
+
+            for idx, non_local in enumerate(non_local_stage):
+                if non_local:
+                    res_layer[idx] = NL3DWrapper(res_layer[idx],
+                                                 self.num_segments,
+                                                 self.non_local_cfg)
+
     def init_weights(self):
         """Initiate the parameters either from existing checkpoint or from
         scratch."""
         super().init_weights()
         if self.is_shift:
             self.make_temporal_shift()
+        if len(self.non_local_cfg) != 0:
+            self.make_non_local()
         if self.temporal_pool:
             self.make_temporal_pool()
