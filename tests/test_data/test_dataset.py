@@ -55,6 +55,18 @@ class TestDataset(object):
             dict(frame_dir=frame_dir, total_frames=5, label=127)
         ] * 2
 
+    def test_rawframe_dataset_with_offset(self):
+        rawframe_dataset = RawframeDataset(
+            self.frame_ann_file,
+            self.frame_pipeline,
+            self.data_prefix,
+            with_offset=True)
+        rawframe_infos = rawframe_dataset.video_infos
+        frame_dir = osp.join(self.data_prefix, 'test_imgs')
+        assert rawframe_infos == [
+            dict(frame_dir=frame_dir, offset=2, total_frames=5, label=127)
+        ] * 2
+
     def test_dataset_realpath(self):
         dataset = RawframeDataset(self.frame_ann_file, self.frame_pipeline,
                                   '.')
