@@ -42,6 +42,21 @@ class RawframeDataset(BaseDataset):
         some/directory-5 295 3
         some/directory-6 121 3
 
+    Example of a with_offset annotation file (clips from long videos), each
+    line indicates the directory to frames of a video, the index of the start
+    frame, total frames of the video clip and the label of a video clip, which
+    are split with a whitespace.
+
+
+    .. code-block:: txt
+
+        some/directory-1 12 163 3
+        some/directory-2 213 122 4
+        some/directory-3 100 258 5
+        some/directory-4 98 234 2
+        some/directory-5 0 295 3
+        some/directory-6 50 121 3
+
 
     Args:
         ann_file (str): Path to the annotation file.
@@ -82,32 +97,31 @@ class RawframeDataset(BaseDataset):
         with open(self.ann_file, 'r') as fin:
             for line in fin:
                 line_split = line.strip().split()
-                item = {}
+                video_info = {}
                 idx = 0
                 frame_dir = line_split[idx]
                 if self.data_prefix is not None:
                     frame_dir = osp.join(self.data_prefix, frame_dir)
-                item['frame_dir'] = frame_dir
+                video_info['frame_dir'] = frame_dir
                 idx += 1
                 if self.with_offset:
-                    item['offset'] = int(line_split[idx])
-                    item['total_frames'] = int(line_split[idx + 1])
+                    video_info['offset'] = int(line_split[idx])
+                    video_info['total_frames'] = int(line_split[idx + 1])
                     idx += 2
                 else:
-                    item['total_frames'] = int(line_split[idx])
+                    video_info['total_frames'] = int(line_split[idx])
                     idx += 1
                 label = [int(x) for x in line_split[idx:]]
-                assert len(label), 'missing label in line: {}'.format(line)
-
+                assert len(label), f'missing label in line: {line}'
                 if self.multi_class:
                     assert self.num_classes is not None
                     onehot = torch.zeros(self.num_classes)
                     onehot[label] = 1.0
-                    item['label'] = onehot
+                    video_info['label'] = onehot
                 else:
                     assert len(label) == 1
-                    item['label'] = label[0]
-                video_infos.append(item)
+                    video_info['label'] = label[0]
+                video_infos.append(video_info)
 
         return video_infos
 

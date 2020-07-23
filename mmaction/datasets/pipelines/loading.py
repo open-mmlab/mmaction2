@@ -591,9 +591,7 @@ class FrameSelector(object):
         if results['frame_inds'].ndim != 1:
             results['frame_inds'] = np.squeeze(results['frame_inds'])
 
-        offset = 0
-        if 'offset' in results:
-            offset = results['offset']
+        offset = results.get('offset', 0)
 
         for frame_idx in results['frame_inds']:
             frame_idx += offset
