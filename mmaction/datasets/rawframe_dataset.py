@@ -98,16 +98,15 @@ class RawframeDataset(BaseDataset):
                     idx += 1
                 label = [int(x) for x in line_split[idx:]]
                 assert len(label), 'missing label in line: {}'.format(line)
-                if len(label) == 1:
-                    item['label'] = label[0]
-                else:
-                    assert self.multi_class, (
-                        'found multiple labels in line'
-                        '{}, however multi_class == False'.format(line))
+
+                if self.multi_class:
                     assert self.num_classes is not None
                     onehot = torch.zeros(self.num_classes)
                     onehot[label] = 1.0
                     item['label'] = onehot
+                else:
+                    assert len(label) == 1
+                    item['label'] = label[0]
                 video_infos.append(item)
 
         return video_infos

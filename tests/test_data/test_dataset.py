@@ -5,6 +5,7 @@ import tempfile
 import mmcv
 import numpy as np
 import pytest
+import torch
 from numpy.testing import assert_array_equal
 
 from mmaction.datasets import (ActivityNetDataset, RawframeDataset,
@@ -24,6 +25,8 @@ class TestDataset(object):
         cls.frame_ann_file = osp.join(cls.data_prefix, 'frame_test_list.txt')
         cls.frame_ann_file_with_offset = osp.join(
             cls.data_prefix, 'frame_test_list_with_offset.txt')
+        cls.frame_ann_file_multi_label = osp.join(
+            cls.data_prefix, 'frame_test_list_multi_label.txt')
         cls.video_ann_file = osp.join(cls.data_prefix, 'video_test_list.txt')
         cls.action_ann_file = osp.join(cls.data_prefix,
                                        'action_test_anno.json')
@@ -68,6 +71,24 @@ class TestDataset(object):
         assert rawframe_infos == [
             dict(frame_dir=frame_dir, offset=2, total_frames=5, label=127)
         ] * 2
+
+    def test_rawframe_dataset_multi_label(self):
+        rawframe_dataset = RawframeDataset(
+            self.frame_ann_file_multi_labels,
+            self.frame_pipeline,
+            self.data_prefix,
+            multi_class=True,
+            num_classes=100)
+        rawframe_infos = rawframe_dataset.video_infos
+        frame_dir = osp.join(self.data_prefix, 'test_imgs')
+        label0 = torch.zeros(100)
+        label0[[1]] = 1.0
+        label1 = torch.zeros(100)
+        label1[[3, 5]] = 1.0
+        assert rawframe_infos == [
+            dict(frame_dir=frame_dir, total_frames=5, label=label0),
+            dict(frame_dir=frame_dir, total_frames=5, label=label1)
+        ]
 
     def test_dataset_realpath(self):
         dataset = RawframeDataset(self.frame_ann_file, self.frame_pipeline,
