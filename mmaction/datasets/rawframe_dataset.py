@@ -71,10 +71,10 @@ class RawframeDataset(BaseDataset):
                  multi_class=False,
                  num_classes=None,
                  modality='RGB'):
-        super().__init__(ann_file, pipeline, data_prefix, test_mode,
-                         multi_class, num_classes, modality)
         self.filename_tmpl = filename_tmpl
         self.with_offset = with_offset
+        super().__init__(ann_file, pipeline, data_prefix, test_mode,
+                         multi_class, num_classes, modality)
 
     def load_annotations(self):
         """Load annotation file to get video information."""
