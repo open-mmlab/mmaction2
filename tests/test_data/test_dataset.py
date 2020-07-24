@@ -89,7 +89,7 @@ class TestDataset(object):
         for info, label in zip(rawframe_infos, labels):
             assert info['frame_dir'] == frame_dir
             assert info['total_frames'] == 5
-            assert info['label'] == label
+            assert torch.all(info['label'] == label)
 
     def test_dataset_realpath(self):
         dataset = RawframeDataset(self.frame_ann_file, self.frame_pipeline,
