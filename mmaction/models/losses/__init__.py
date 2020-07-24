@@ -3,8 +3,9 @@ from .binary_logistic_regression_loss import BinaryLogisticRegressionLoss
 from .bmn_loss import BMNLoss
 from .cross_entropy_loss import BCELossWithLogits, CrossEntropyLoss
 from .nll_loss import NLLLoss
+from .ssn_loss import SSNLoss
 
 __all__ = [
     'BaseWeightedLoss', 'CrossEntropyLoss', 'NLLLoss', 'BCELossWithLogits',
-    'BinaryLogisticRegressionLoss', 'BMNLoss'
+    'BinaryLogisticRegressionLoss', 'BMNLoss', 'SSNLoss'
 ]
