@@ -50,7 +50,7 @@ class BMN(BaseLocalizer):
                  hidden_dim_1d=256,
                  hidden_dim_2d=128,
                  hidden_dim_3d=512):
-        super().__init__()
+        super(BaseLocalizer, self).__init__()
 
         self.tscale = temporal_dim
         self.boundary_ratio = boundary_ratio
