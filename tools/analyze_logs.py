@@ -147,7 +147,7 @@ def load_json_logs(json_logs):
                     log_dict[epoch] = defaultdict(list)
                 for k, v in log.items():
                     log_dict[epoch][k].append(v)
-            return log_dicts
+    return log_dicts
 
 
 def main():
