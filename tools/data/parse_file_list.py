@@ -362,3 +362,90 @@ def parse_mit_splits(level):
 
     splits = ((train_list, val_list, test_list), )
     return splits
+
+
+def parse_hmdb51_split(level):
+    train_file_template = 'data/hmdb51/annotations/trainlist{:02d}.txt'
+    test_file_template = 'data/hmdb51/annotations/testlist{:02d}.txt'
+    class_index_file = 'data/hmdb51/annotations/classInd.txt'
+
+    def generate_class_index_file():
+        frame_path = 'data/hmdb51/rawframes'
+        annotation_dir = 'data/hmdb51/annotations'
+
+        class_list = os.listdir(frame_path).sort()
+        class_dict = dict()
+        with open(class_index_file, 'w') as f:
+            content = []
+            for class_id, class_name in enumerate(class_list):
+                class_dict[class_name] = class_id + 1
+                cur_line = ' '.join([str(class_id + 1), class_name])
+                content.append(cur_line)
+            content = '\n'.join(content)
+            f.write(content)
+
+        for i in range(1, 4):
+            with open(train_file_template.format(i), 'w') as fout:
+                content = []
+                for class_name in class_dict:
+                    filename = class_name + f'_train_split{i}.txt'
+                    filename_path = osp.join(annotation_dir, filename)
+                    with open(filename_path, 'r') as fin:
+                        for line in fin:
+                            video_info = line.strip().split()
+                            video_name = video_info[0]
+                            if video_info[1] == '1':
+                                target_line = ' '.join([
+                                    osp.join(class_name, video_name),
+                                    str(class_dict[class_name])
+                                ])
+                                content.append(target_line)
+                content = '\n'.join(content)
+                fout.write(content)
+
+        for i in range(1, 4):
+            with open(test_file_template.format(i), 'w') as fout:
+                content = []
+                for class_name in class_dict:
+                    filename = class_name + f'_test_split{i}.txt'
+                    filename_path = osp.join(annotation_dir, filename)
+                    with open(filename_path, 'r') as fin:
+                        for line in fin:
+                            video_info = line.strip().split()
+                            video_name = video_info[0]
+                            if video_info[1] == '2':
+                                target_line = ' '.join([
+                                    osp.join(class_name, video_name),
+                                    str(class_dict[class_name])
+                                ])
+                                content.append(target_line)
+                content = '\n'.join(content)
+                fout.write(content)
+
+    if not osp.exists(class_index_file):
+        generate_class_index_file()
+
+    with open(class_index_file, 'r') as fin:
+        class_index = [x.strip().split() for x in fin]
+    class_mapping = {x[1]: int(x[0]) - 1 for x in class_index}
+
+    def line_to_map(line):
+        items = line.strip().split()
+        vid = osp.splitext(items[0])[0]
+        if level == 1:
+            vid = osp.basename(vid)
+        elif level == 2:
+            vid = osp.join(osp.basename(osp.dirname(vid)), osp.basename(vid))
+        label = class_mapping[osp.dirname(items[0])]
+        return vid, label
+
+    splits = []
+    for i in range(1, 4):
+        with open(train_file_template.format(i), 'r') as fin:
+            train_list = [line_to_map(x) for x in fin]
+
+        with open(test_file_template.format(i), 'r') as fin:
+            test_list = [line_to_map(x) for x in fin]
+        splits.append((train_list, test_list))
+
+    return splits

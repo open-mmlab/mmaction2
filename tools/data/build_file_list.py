@@ -16,7 +16,7 @@ def parse_args():
         type=str,
         choices=[
             'ucf101', 'kinetics400', 'thumos14', 'sthv1', 'sthv2', 'mit',
-            'mmit', 'activitynet'
+            'mmit', 'activitynet', 'hmdb51'
         ],
         help='dataset to be built file list')
     parser.add_argument(
