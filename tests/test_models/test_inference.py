@@ -18,11 +18,11 @@ def test_init_recognizer():
 
     with pytest.raises(RuntimeError):
         # input data type should be consist with the dataset type
-        init_recognizer(dict(config_file=frame_config_file))
+        init_recognizer(frame_config_file)
 
     with pytest.raises(RuntimeError):
         # input data type should be consist with the dataset type
-        init_recognizer(dict(config_file=video_config_file), use_frames=True)
+        init_recognizer(video_config_file, use_frames=True)
 
     if torch.cuda.is_available():
         device = 'cuda:0'

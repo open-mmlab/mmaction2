@@ -1,4 +1,4 @@
-#! /usr/bin/bash env
+#!/usr/bin/env bash
 
 cd ../
 python build_rawframes.py ../../data/kinetics400/videos_train/ ../../data/kinetics400/rawframes_train/ --level 2  --ext mp4 --task rgb  --new-width 340 --new-height 256
