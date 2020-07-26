@@ -5,8 +5,8 @@ import torch
 import torch.distributed as dist
 import torch.nn as nn
 import torch.nn.functional as F
+from mmcv.runner import auto_fp16
 
-from ...core import auto_fp16
 from .. import builder
 
 
