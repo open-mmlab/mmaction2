@@ -129,9 +129,6 @@ device = torch.device(device)
 model = init_recognizer(config_file, checkpoint_file, device=device)
 
 # test a single video and show the result:
-# The real path for the video to get in this scripts will be `osp.path(data_prefix, video)`.
-# This detail can be found in `rawframe_dataset.py` and `video_dataset.py`.
-# `data_prefix` is set in config files and we set it None for our provided inference configs.
 video = 'demo/demo.mp4'
 labels = 'demo/label_map.txt'
 results = inference_recognizer(model, video, labels)
@@ -161,9 +158,6 @@ device = torch.device(device)
 model = init_recognizer(config_file, checkpoint_file, device=device, use_frames=True)
 
 # test rawframe directory of a single video and show the result:
-# The real path for the rawframe directory to get in this scripts will be `osp.path(data_prefix, video)`.
-# This detail can be found in `rawframe_dataset.py` and `video_dataset.py`.
-# `data_prefix` is set in config files and we set it None for our provided inference configs.
 video = 'SOME_DIR_PATH/'
 labels = 'demo/label_map.txt'
 results = inference_recognizer(model, video, labels, use_frames=True)
@@ -173,6 +167,19 @@ print(f'The top-5 labels with corresponding scores are:')
 for result in results:
     print(f'{result[0]}: ', result[1])
 ```
+
+**Note**: We define `data_prefix` in config files and set it None as default for our provided inference configs.
+If the `data_prefix` is not None, the path for the video file (or rawframe directory) to get will be `osp.path(data_prefix, video)`.
+Here, the `video` is the param in the demo scripts above.
+This detail can be found in `rawframe_dataset.py` and `video_dataset.py`. For example,
+
+* When video (rawframes) path is `SOME_DIR_PATH/VIDEO.mp4` (`SOME_DIR_PATH/VIDEO_NAME/img_xxxxx.jpg`), and `data_prefix` is None in the config file,
+the param `video` should be `SOME_DIR_PATH/VIDEO.mp4` (`SOME_DIR_PATH/VIDEO_NAME`).
+
+* When video (rawframes) path is `SOME_DIR_PATH/VIDEO.mp4` (`SOME_DIR_PATH/VIDEO_NAME/img_xxxxx.jpg`), and `data_prefix` is `SOME_DIR_PATH` in the config file,
+the param `video` should be `VIDEO.mp4` (`VIDEO_NAME`).
+
+* When rawframes path is `VIDEO_NAME/img_xxxxx.jpg`, and `data_prefix` is None in the config file, the param `video` should be `VIDEO_NAME`.
 
 A notebook demo can be found in [demo/demo.ipynb](/demo/demo.ipynb)
 
