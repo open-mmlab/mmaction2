@@ -157,7 +157,7 @@ device = torch.device(device)
  # build the model from a config file and a checkpoint file
 model = init_recognizer(config_file, checkpoint_file, device=device, use_frames=True)
 
-# test a single video and show the result:
+# test rawframe directory of a single video and show the result:
 video = 'SOME_DIR_PATH/'
 labels = 'demo/label_map.txt'
 results = inference_recognizer(model, video, labels, use_frames=True)
