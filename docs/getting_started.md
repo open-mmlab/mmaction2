@@ -108,24 +108,59 @@ Examples:
 python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.p checkpoints/tsn.pth demo/demo.mp4
 ```
 
-### High-level APIs for testing a video.
+### High-level APIs for testing a video and rawframes.
 
-Here is an example of building the model and test a given video.
+Here is an example of building the model and testing a given video.
 
 ```python
+import torch
+
 from mmaction.apis import init_recognizer, inference_recognizer
 
 config_file = 'configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py'
 # download the checkpoint from model zoo and put it in `checkpoints/`
 checkpoint_file = 'checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth'
 
+# assign the desired device.
+device = 'cuda:0' # or 'cpu'
+device = torch.device(device)
+
  # build the model from a config file and a checkpoint file
-model = init_recognizer(config_file, checkpoint_file, device='cpu')
+model = init_recognizer(config_file, checkpoint_file, device=device)
 
 # test a single video and show the result:
 video = 'demo/demo.mp4'
 labels = 'demo/label_map.txt'
 results = inference_recognizer(model, video, labels)
+
+# show the results
+print(f'The top-5 labels with corresponding scores are:')
+for result in results:
+    print(f'{result[0]}: ', result[1])
+```
+
+Here is an example of building the model and testing with a given rawframes directory.
+
+```python
+import torch
+
+from mmaction.apis import init_recognizer, inference_recognizer
+
+config_file = 'configs/recognition/tsn/tsn_r50_inference_1x1x3_100e_kinetics400_rgb.py'
+# download the checkpoint from model zoo and put it in `checkpoints/`
+checkpoint_file = 'checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth'
+
+# assign the desired device.
+device = 'cuda:0' # or 'cpu'
+device = torch.device(device)
+
+ # build the model from a config file and a checkpoint file
+model = init_recognizer(config_file, checkpoint_file, device=device, use_frames=True)
+
+# test a single video and show the result:
+video = 'SOME_DIR_PATH/'
+labels = 'demo/label_map.txt'
+results = inference_recognizer(model, video, labels, use_frames=True)
 
 # show the results
 print(f'The top-5 labels with corresponding scores are:')
