@@ -3,6 +3,10 @@
 For basic dataset information, you can refer to the dataset [website](https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/).
 Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/hmdb51/`.
 
+To run the bash scripts below, you need to install `unrar`. you can install it by `sudo apt-get install unrar`,
+or refer to [this repo](https://github.com/innerlee/setup) by following the usage and taking [`zzunrar.sh`](https://github.com/innerlee/setup/blob/master/zzunrar.sh)
+script for easy installation without sudo.
+
 ## Step 1. Prepare Annotations
 
 First of all, you can run the following script to prepare annotations.

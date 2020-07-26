@@ -8,13 +8,13 @@ if [[ ! -d "${DATA_DIR}" ]]; then
 fi
 
 cd ${DATA_DIR}
-wget http://serre-lab.clps.brown.edu/wp-content/uploads/2013/10/test_train_splits.rar
+wget http://serre-lab.clps.brown.edu/wp-content/uploads/2013/10/test_train_splits.rar --no-check-certificate
 
 # sudo apt-get install unrar
 unrar x test_train_splits.rar
 rm test_train_splits.rar
 
-mv testTrainMulti_7030_splits/*.txt ./annotations
+mv  testTrainMulti_7030_splits/*.txt ./
 rmdir testTrainMulti_7030_splits
 
 cd -
