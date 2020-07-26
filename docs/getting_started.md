@@ -129,6 +129,9 @@ device = torch.device(device)
 model = init_recognizer(config_file, checkpoint_file, device=device)
 
 # test a single video and show the result:
+# The real path for the video to get in this scripts will be `osp.path(data_prefix, video)`.
+# This detail can be found in `rawframe_dataset.py` and `video_dataset.py`.
+# `data_prefix` is set in config files and we set it None for our provided inference configs.
 video = 'demo/demo.mp4'
 labels = 'demo/label_map.txt'
 results = inference_recognizer(model, video, labels)
@@ -158,6 +161,9 @@ device = torch.device(device)
 model = init_recognizer(config_file, checkpoint_file, device=device, use_frames=True)
 
 # test rawframe directory of a single video and show the result:
+# The real path for the rawframe directory to get in this scripts will be `osp.path(data_prefix, video)`.
+# This detail can be found in `rawframe_dataset.py` and `video_dataset.py`.
+# `data_prefix` is set in config files and we set it None for our provided inference configs.
 video = 'SOME_DIR_PATH/'
 labels = 'demo/label_map.txt'
 results = inference_recognizer(model, video, labels, use_frames=True)
