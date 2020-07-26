@@ -26,6 +26,21 @@
 
 Here, We use [1: 1] to indicate that we combine rgb and flow score with coefficients 1: 1 to get the two-stream prediction (without applying softmax).
 
+### Kinetics-400 Data Benchmark (8-gpus, ResNet50, ImageNet pretrain; 3 segments)
+
+|                            config                            |   resolution   | training augmentation | testing protocol | top1 acc | top5 acc |   ckpt   |   log   |   json   |
+| :----------------------------------------------------------: | :------------: | :-------------------: | :--------------: | :------: | :------: | :------: | :-----: | :------: |
+| [tsn_fix_multi_train](/configs/recognition/tsn/data_benchmark/tsn_fix_multi_train.py) |    340x256     |    MultiScaleCrop     |   25x10 frames   |  70.60   |  89.26   | [ckpt]() | [log]() | [json]() |
+|                              x                               |    340x256     |    MultiScaleCrop     |   25x3 frames    |  70.52   |  89.39   |    x     |    x    |    x     |
+| [tsn_fix_resize_train](/configs/recognition/tsn/data_benchmark/tsn_fix_resize_train.py) |    340x256     |   RandomResizedCrop   |   25x10 frames   |  70.11   |  89.01   | [ckpt]() | [log]() | [json]() |
+|                              x                               |    340x256     |   RandomResizedCrop   |   25x3 frames    |  69.95   |  89.02   |    x     |    x    |    x     |
+| [tsn_se_multi_train](/configs/recognition/tsn/data_benchmark/tsn_se_multi_train.py) | short-side 320 |    MultiScaleCrop     |   25x10 frames   |  70.32   |  89.25   | [ckpt]() | [log]() | [json]() |
+|                              x                               | short-side 320 |    MultiScaleCrop     |   25x3 frames    |  70.54   |  89.39   |    x     |    x    |    x     |
+| [tsn_se_resize_train](/configs/recognition/tsn/data_benchmark/tsn_se_resize_train.py) | short-side 320 |   RandomResizedCrop   |   25x10 frames   |  70.44   |  89.23   | [ckpt]() | [log]() | [json]() |
+|                              x                               | short-side 320 |   RandomResizedCrop   |   25x3 frames    |  70.91   |  89.51   |    x     |    x    |    x     |
+
+
+
 ### Something-Something V1
 
 |config|resolution | gpus| backbone |pretrain| top1 acc| top5 acc | reference top1 acc | reference top5 acc | gpu_mem(M) | ckpt | log| json|
