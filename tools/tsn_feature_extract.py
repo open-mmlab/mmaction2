@@ -2,6 +2,7 @@ import argparse
 import os.path as osp
 import pickle
 
+import numpy as np
 import torch
 from tqdm import tqdm
 
@@ -25,6 +26,13 @@ def parse_args():
     parser.add_argument('--clip-len', type=int, default=1, help='clip length')
     parser.add_argument('--modality', default='RGB')
     parser.add_argument('--ckpt', help='checkpoint for feature extraction')
+    parser.add_argument(
+        '--part',
+        type=int,
+        default=0,
+        help='which part of dataset to forward(alldata[part::tot])')
+    parser.add_argument(
+        '--tot', type=int, default=1, help='how many parts exist')
     args = parser.parse_args()
     return args
 
@@ -41,13 +49,19 @@ def main():
     args.img_norm_cfg = rgb_norm_cfg if args.is_rgb else flow_norm_cfg
     args.f_tmpl = 'image_{:05d}.jpg' if args.is_rgb else 'flow_{}_{:05d}.jpg'
     args.in_channels = args.clip_len * (3 if args.is_rgb else 2)
+    mc_cfg = dict(
+        server_list_cfg='/mnt/lustre/share/memcached_client/server_list.conf',
+        client_cfg='/mnt/lustre/share/memcached_client/client.conf',
+        sys_path='/mnt/lustre/share/pymc/py3')
+    # max batch_size for one forward
+    args.batch_size = 200
 
     data_pipeline = [
         dict(
             type='UntrimSampleFrames',
             clip_len=args.clip_len,
             frame_interval=args.frame_interval),
-        dict(type='FrameSelector'),
+        dict(type='FrameSelector', io_backend='memcached', **mc_cfg),
         dict(type='Resize', scale=(-1, 256)),
         dict(type='CenterCrop', crop_size=256),
         dict(type='Normalize', **args.img_norm_cfg),
@@ -78,6 +92,8 @@ def main():
 
     data = open(args.data_list).readlines()
     data = [x.strip() for x in data]
+    data = data[args.part::args.tot]
+
     for item in tqdm(data):
         item = item.split()
         frame_dir, length, output_file = item
@@ -99,8 +115,21 @@ def main():
             1,
         ) + shape[1:])
         imgs = imgs.cuda()
-        with torch.no_grad():
-            feat = model.forward(imgs, return_loss=False)
+
+        def forward_data(model, data):
+            # chop large data into pieces
+            results = []
+            start_idx = 0
+            num_clip = data.shape[0]
+            while start_idx < num_clip:
+                with torch.no_grad():
+                    part = data[start_idx:start_idx + args.batch_size]
+                    feat = model.forward(part, return_loss=False)
+                    results.append(feat)
+                    start_idx += args.batch_size
+            return np.concatenate(results)
+
+        feat = forward_data(model, imgs)
         with open(output_file, 'wb') as fout:
             pickle.dump(feat, fout)
 
