@@ -39,7 +39,9 @@ Here, We use [1: 1] to indicate that we combine rgb and flow score with coeffici
 | [tsn_se_resize_train](/configs/recognition/tsn/data_benchmark/tsn_se_resize_train.py) | short-side 320 |   RandomResizedCrop   |   25x10 frames   |  70.44   |  89.23   | [ckpt]() | [log]() | [json]() |
 |                              x                               | short-side 320 |   RandomResizedCrop   |   25x3 frames    |  70.91   |  89.51   |    x     |    x    |    x     |
 
+Notes:
 
+1. In data benchmark, we compare: 1. Different data preprocessing methods: (1) Resize video to 340x256, (2) Resize the short edge of video to 320px; 2. Different data augmentation methods: (1) MultiScaleCrop, (2) RandomResizedCrop; 3. Different testing protocols: (1) 25 clips x 10 crops, (2) 25 clips x 3 crops
 
 ### Something-Something V1
 
