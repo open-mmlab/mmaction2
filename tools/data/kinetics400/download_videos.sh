@@ -1,4 +1,4 @@
-#! /usr/bin/bash env
+#!/usr/bin/env bash
 
 # set up environment
 conda env create -f environment.yml

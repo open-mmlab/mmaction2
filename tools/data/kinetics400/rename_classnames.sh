@@ -1,4 +1,4 @@
-#! /usr/bin/bash env
+#!/usr/bin/env bash
 
 # Rename classname for convenience
 cd ../../../data/kinetics400/

@@ -91,6 +91,7 @@ def inference_recognizer(model, video_path, label_path, use_frames=False):
         data = dict(
             frame_dir=video_path,
             total_frames=len(os.listdir(video_path)),
+            # assuming files in ``video_path`` are all named with ``filename_tmpl``  # noqa: E501
             label=-1,
             filename_tmpl=filename_tmpl,
             modality=modality)

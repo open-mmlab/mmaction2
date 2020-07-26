@@ -1,4 +1,4 @@
-#! /usr/bin/bash env
+#!/usr/bin/env bash
 
 cd ../../../
 PYTHONPATH=. python tools/data/build_file_list.py kinetics400 data/kinetics400/rawframes_train/ --level 2 --format rawframes --num-split 1 --subset train --shuffle

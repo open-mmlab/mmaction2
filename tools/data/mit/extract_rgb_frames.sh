@@ -1,4 +1,4 @@
-#! /usr/bin/bash env
+#!/usr/bin/env bash
 
 cd ../
 python build_rawframes.py ../../data/mit/videos/training ../../data/mit/rawframes/training/ --level 2 --ext mp4 --task rgb

@@ -1,4 +1,4 @@
-#! /usr/bin/bash env
+#!/usr/bin/env bash
 
 PROP_DIR="../../../data/thumos14/proposals"
 

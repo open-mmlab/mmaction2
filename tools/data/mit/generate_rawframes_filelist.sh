@@ -1,4 +1,4 @@
-#! /usr/bin/bash env
+#!/usr/bin/env bash
 
 cd ../../../
 PYTHONPATH=. python tools/data/build_file_list.py mit data/mit/rawframes/training/ --level 2 --format rawframes --num-split 1 --subset train --shuffle
