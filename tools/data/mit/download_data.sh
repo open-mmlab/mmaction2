@@ -2,6 +2,11 @@
 
 DATA_DIR="../../../data/mit/"
 
+if [[ ! -d "${DATA_DIR}" ]]; then
+  echo "${DATA_DIR} does not exist. Creating";
+  mkdir -p ${DATA_DIR}
+fi
+
 cd ${DATA_DIR}
 
 wget http://data.csail.mit.edu/soundnet/actions3/split1/Moments_in_Time_Raw.zip
@@ -19,4 +24,4 @@ fi
 
 mv *.txt annotations && mv *.csv annotations
 
-cd "../../../tools/data/mit"
+cd "../../tools/data/mit"

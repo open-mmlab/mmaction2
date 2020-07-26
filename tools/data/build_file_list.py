@@ -152,11 +152,11 @@ def main():
     if args.level == 2:
         # search for two-level directory
         def key_func(x):
-            return '/'.join(x.split('/')[-2:])
+            return osp.join(osp.basename(osp.dirname(x)), osp.basename(x))
     else:
         # Only search for one-level directory
         def key_func(x):
-            return x.split('/')[-1]
+            return osp.basename(x)
 
     if args.format == 'rawframes':
         frame_info = parse_directory(
@@ -179,8 +179,7 @@ def main():
         for video in video_list:
             video_path = osp.relpath(video, args.src_folder)
             # video_id: (video_relative_path, -1, -1)
-            frame_info['.'.join(video_path.split('.')[:-1])] = (video_path, -1,
-                                                                -1)
+            frame_info[osp.splitext(video_path)[0]] = (video_path, -1, -1)
     else:
         raise NotImplementedError('only rawframes and videos are supported')
 
