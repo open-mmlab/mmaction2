@@ -3,7 +3,8 @@ import glob
 import os.path as osp
 import random
 
-from tools.data.parse_file_list import (parse_directory, parse_kinetics_splits,
+from tools.data.parse_file_list import (parse_directory, parse_hmdb51_split,
+                                        parse_kinetics_splits,
                                         parse_mit_splits, parse_mmit_splits,
                                         parse_sthv1_splits, parse_sthv2_splits,
                                         parse_ucf101_splits)
@@ -16,7 +17,7 @@ def parse_args():
         type=str,
         choices=[
             'ucf101', 'kinetics400', 'thumos14', 'sthv1', 'sthv2', 'mit',
-            'mmit', 'activitynet'
+            'mmit', 'activitynet', 'hmdb51'
         ],
         help='dataset to be built file list')
     parser.add_argument(
@@ -195,6 +196,8 @@ def main():
         splits = parse_mmit_splits(args.level)
     elif args.dataset == 'kinetics400':
         splits = parse_kinetics_splits(args.level)
+    elif args.dataset == 'hmdb51':
+        splits = parse_hmdb51_split(args.level)
     else:
         raise ValueError(
             f"Supported datasets are 'ucf101, sthv1, sthv2',"
