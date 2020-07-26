@@ -1,6 +1,6 @@
 # Preparing UCF-101
 
-For basic dataset information, you can refer to the dataset [website](https://www.crcv.ucf.edu/data/UCF101.php).
+For basic dataset information, you can refer to the dataset [website](https://www.crcv.ucf.edu/research/data-sets/ucf101/).
 Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/ucf101/`.
 
 ## Step 1. Prepare Annotations
@@ -58,7 +58,8 @@ bash extract_frames.sh
 you can run the follow script to generate file list in the format of rawframes and videos.
 
 ```shell
-bash generate_{rawframes, videos}_filelist.sh
+bash generate_videos_filelist.sh
+bash generate_rawframes_filelist.sh
 ```
 
 ## Step 5. Check Directory Structure

@@ -3,10 +3,11 @@ import fnmatch
 import glob
 import json
 import os
+import os.path as osp
 
 
 def parse_directory(path,
-                    key_func=lambda x: x[-11:],
+                    key_func=lambda x: osp.basename(x),
                     rgb_prefix='img_',
                     flow_x_prefix='flow_x_',
                     flow_y_prefix='flow_y_',
@@ -16,7 +17,7 @@ def parse_directory(path,
     Args:
         path (str): Folder path to parse frames.
         key_func (callable): Function to do key mapping.
-            default: lambda x: x[-11:].
+            default: lambda x: osp.basename(x).
         rgb_prefix (str): Prefix of generated rgb frames name.
             default: 'img_'.
         flow_x_prefix (str): Prefix of generated flow x name.
@@ -32,9 +33,9 @@ def parse_directory(path,
     """
     print(f'parse frames under folder {path}')
     if level == 1:
-        frame_folders = glob.glob(os.path.join(path, '*'))
+        frame_folders = glob.glob(osp.join(path, '*'))
     elif level == 2:
-        frame_folders = glob.glob(os.path.join(path, '*', '*'))
+        frame_folders = glob.glob(osp.join(path, '*', '*'))
     else:
         raise ValueError('level can be only 1 or 2')
 
@@ -101,10 +102,14 @@ def parse_ucf101_splits(level):
             tuple[str, str]: (vid, label), vid is the video id,
                 label is the video label.
         """
-        items = line.strip().split(' ')
-        vid = items[0].split('.')[0]
-        vid = '/'.join(vid.split('/')[-level:])
-        label = class_mapping[items[0].split('/')[0]]
+        items = line.strip().split()
+        vid = osp.splitext(items[0])[0]
+        if level == 1:
+            vid = osp.basename(vid)
+            label = items[0]
+        elif level == 2:
+            vid = osp.join(osp.basename(osp.dirname(vid)), osp.basename(vid))
+            label = class_mapping[osp.dirname(items[0])]
         return vid, label
 
     splits = []
@@ -143,7 +148,10 @@ def parse_sthv1_splits(level):
     def line_to_map(line, test_mode=False):
         items = line.strip().split(';')
         vid = items[0]
-        vid = '/'.join(vid.split('/')[-level:])
+        if level == 1:
+            vid = osp.basename(vid)
+        elif level == 2:
+            vid = osp.join(osp.basename(osp.dirname(vid)), osp.basename(vid))
         if test_mode:
             return vid
         else:
@@ -159,7 +167,8 @@ def parse_sthv1_splits(level):
     with open(test_file, 'r') as fin:
         test_list = [line_to_map(x, test_mode=True) for x in fin]
 
-    return ((train_list, val_list, test_list), )
+    splits = ((train_list, val_list, test_list), )
+    return splits
 
 
 def parse_sthv2_splits(level):
@@ -185,7 +194,10 @@ def parse_sthv2_splits(level):
 
     def line_to_map(item, test_mode=False):
         vid = item['id']
-        vid = '/'.join(vid.split('/')[-level:])
+        if level == 1:
+            vid = osp.basename(vid)
+        elif level == 2:
+            vid = osp.join(osp.basename(osp.dirname(vid)), osp.basename(vid))
         if test_mode:
             return vid
         else:
@@ -205,7 +217,9 @@ def parse_sthv2_splits(level):
     with open(test_file, 'r') as fin:
         items = json.loads(fin.read())
         test_list = [line_to_map(item, test_mode=True) for item in items]
-    return ((train_list, val_list, test_list), )
+
+    splits = ((train_list, val_list, test_list), )
+    return splits
 
 
 def parse_mmit_splits(level):
@@ -220,7 +234,7 @@ def parse_mmit_splits(level):
 
     # Read the annotations
     def line_to_map(x):
-        vid = '.'.join(x[0].split('.')[:-1])
+        vid = osp.splitext(x[0])[0]
         labels = [int(digit) for digit in x[1:]]
         return vid, labels
 
@@ -231,7 +245,9 @@ def parse_mmit_splits(level):
     val_list = [line_to_map(x) for x in csv_reader]
 
     test_list = val_list  # not test for mit
-    return ((train_list, val_list, test_list), )
+
+    splits = ((train_list, val_list, test_list), )
+    return splits
 
 
 def parse_kinetics_splits(level):
@@ -311,7 +327,8 @@ def parse_kinetics_splits(level):
     next(csv_reader)
     test_list = [line_to_map(x, test=True) for x in csv_reader]
 
-    return ((train_list, val_list, test_list), )
+    splits = ((train_list, val_list, test_list), )
+    return splits
 
 
 def parse_mit_splits(level):
@@ -331,8 +348,8 @@ def parse_mit_splits(level):
             class_mapping[cat] = int(digit)
 
     def line_to_map(x, test=False):
-        vid = '.'.join(x[0].split('.')[:-1])
-        label = class_mapping[x[0].split('/')[0]]
+        vid = osp.splitext(x[0])[0]
+        label = class_mapping[osp.dirname(x[0])]
         return vid, label
 
     csv_reader = csv.reader(open('data/mit/annotations/trainingSet.csv'))
@@ -342,4 +359,6 @@ def parse_mit_splits(level):
     val_list = [line_to_map(x) for x in csv_reader]
 
     test_list = val_list  # no test for mit
-    return ((train_list, val_list, test_list), )
+
+    splits = ((train_list, val_list, test_list), )
+    return splits

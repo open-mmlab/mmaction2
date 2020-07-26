@@ -8,8 +8,8 @@ if [[ ! -d "${DATA_DIR}" ]]; then
 fi
 cd ${DATA_DIR}
 
-wget http://crcv.ucf.edu/THUMOS14/Validation_set/TH14_Temporal_annotations_validation.zip
-wget http://crcv.ucf.edu/THUMOS14/test_set/TH14_Temporal_annotations_test.zip
+wget http://crcv.ucf.edu/THUMOS14/Validation_set/TH14_Temporal_annotations_validation.zip --no-check-certificate
+wget http://crcv.ucf.edu/THUMOS14/test_set/TH14_Temporal_annotations_test.zip --no-check-certificate
 
 if [ ! -d "./annotations_val" ]; then
   mkdir ./annotations_val
@@ -23,3 +23,5 @@ unzip -j TH14_Temporal_annotations_test.zip -d annotations_test
 
 rm TH14_Temporal_annotations_validation.zip
 rm TH14_Temporal_annotations_test.zip
+
+cd "../../tools/data/thumos14/"
