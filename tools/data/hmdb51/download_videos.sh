@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 DATA_DIR="../../../data/hmdb51/"
 
 if [[ ! -d "${DATA_DIR}" ]]; then
