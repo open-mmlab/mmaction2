@@ -106,9 +106,10 @@ def parse_ucf101_splits(level):
         vid = osp.splitext(items[0])[0]
         if level == 1:
             vid = osp.basename(vid)
+            label = items[0]
         elif level == 2:
             vid = osp.join(osp.basename(osp.dirname(vid)), osp.basename(vid))
-        label = class_mapping[osp.dirname(items[0])]
+            label = class_mapping[osp.dirname(items[0])]
         return vid, label
 
     splits = []
