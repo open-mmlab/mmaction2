@@ -290,6 +290,10 @@ class SampleProposalFrames(SampleFrames):
             Default: 1.
         test_interval (int): Temporal interval of adjacent sampled frames
             in test mode. Default: 6.
+        start_index (int): Specify a start index for frames in consideration of
+            different filename format. However, when taking videos as input,
+            it should be set to 0, since frames loaded from videos count
+            from 0. Default: 1.
         temporal_jitter (bool): Whether to apply temporal jittering.
             Default: False.
         mode (str): Choose 'train', 'val' or 'test' mode.
@@ -303,11 +307,13 @@ class SampleProposalFrames(SampleFrames):
                  aug_ratio,
                  frame_interval=1,
                  test_interval=6,
+                 start_index=1,
                  temporal_jitter=False,
                  mode='train'):
         super().__init__(
             clip_len,
             frame_interval=frame_interval,
+            start_index=start_index,
             temporal_jitter=temporal_jitter)
         self.body_segments = body_segments
         self.aug_segments = aug_segments
@@ -397,8 +403,8 @@ class SampleProposalFrames(SampleFrames):
         valid_ending = min(num_frames - ori_clip_len + 1,
                            end_frame + int(duration * self.aug_ratio[1]))
 
-        valid_starting_length = start_frame - valid_starting - \
-            ori_clip_len + 1
+        valid_starting_length = (
+            start_frame - valid_starting - ori_clip_len + 1)
         valid_ending_length = valid_ending - end_frame - ori_clip_len + 1
 
         if self.mode == 'train':
@@ -499,13 +505,13 @@ class SampleProposalFrames(SampleFrames):
                 self.frame_interval, size=len(frame_inds))
             frame_inds += perframe_offsets
 
-        frame_inds = np.mod(frame_inds, total_frames)
+        frame_inds = np.mod(frame_inds, total_frames) + self.start_index
 
         results['frame_inds'] = np.array(frame_inds).astype(np.int)
         results['clip_len'] = self.clip_len
         results['frame_interval'] = self.frame_interval
-        results['num_clips'] = self.body_segments + \
-            self.aug_segments[0] + self.aug_segments[1]
+        results['num_clips'] = (
+            self.body_segments + self.aug_segments[0] + self.aug_segments[1])
         if self.mode in ['train', 'val']:
             results['num_proposals'] = len(results['out_props'])
 
