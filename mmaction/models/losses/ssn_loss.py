@@ -3,14 +3,17 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from ..registry import LOSSES
-from .OHEMHingeLoss import OHEMHingeLoss
+from .ohem_hinge_loss import OHEMHingeLoss
 
 
 @LOSSES.register_module()
 class SSNLoss(nn.Module):
 
-    def activity_loss(self, activity_score, labels, activity_indexer):
-        """Activity Loss.
+    def activity_loss(self,
+                      activity_score,
+                      labels,
+                      activity_indexer):
+        """Activity Loss
 
         It will calculate activity loss given activity_score and label.
 
@@ -33,7 +36,7 @@ class SSNLoss(nn.Module):
                           positive_per_video,
                           incomplete_per_video,
                           ohem_ratio=0.17):
-        """Completeness Loss.
+        """Completeness Loss
 
         It will calculate completeness loss given completeness_score and label.
 
@@ -66,20 +69,24 @@ class SSNLoss(nn.Module):
         # yapf:enable
 
         positive_loss = OHEMHingeLoss.apply(
-            positive_pred, gt[:, :positive_per_video].contiguous().view(-1), 1,
+            positive_pred,
+            gt[:, :positive_per_video].contiguous(
+            ).view(-1), 1,
             1.0, positive_per_video)
         incomplete_loss = OHEMHingeLoss.apply(
-            incomplete_pred, gt[:, positive_per_video:].contiguous().view(-1),
-            -1, ohem_ratio, incomplete_per_video)
+            incomplete_pred,
+            gt[:, positive_per_video:].contiguous(
+            ).view(-1), -1,
+            ohem_ratio, incomplete_per_video)
         num_positives = positive_pred.size(0)
         num_incompletes = int(incomplete_pred.size(0) * ohem_ratio)
 
         return ((positive_loss + incomplete_loss) /
                 float(num_positives + num_incompletes))
 
-    def classwise_regression_loss(self, bbox_pred, labels, bbox_targets,
-                                  regression_indexer):
-        """Classwise Regression Loss.
+    def classwise_regression_loss(self, bbox_pred, labels,
+                                  bbox_targets, regression_indexer):
+        """Classwise Regression Loss
 
         It will calculate classwise_regression loss given
         class_reg_pred and targets.
@@ -102,16 +109,22 @@ class SSNLoss(nn.Module):
 
         class_idx = gt.data - 1
         classwise_pred = pred[:, class_idx, :]
-        classwise_reg_pred = torch.cat(
-            (torch.diag(classwise_pred[:, :, 0]).view(
-                -1, 1), torch.diag(classwise_pred[:, :, 1]).view(-1, 1)),
+        classwise_reg_pred = torch.cat((
+            torch.diag(classwise_pred[:, :, 0]).view(-1, 1),
+            torch.diag(classwise_pred[:, :, 1]).view(-1, 1)),
             dim=1)
-        loss = F.smooth_l1_loss(
-            classwise_reg_pred.view(-1), reg_target.view(-1)) * 2
+        loss = F.smooth_l1_loss(classwise_reg_pred.view(-1),
+                                reg_target.view(-1)) * 2
         return loss
 
-    def forward(self, activity_score, completeness_score, bbox_pred,
-                proposal_type, labels, bbox_targets, train_cfg):
+    def forward(self,
+                activity_score,
+                completeness_score,
+                bbox_pred,
+                proposal_type,
+                labels,
+                bbox_targets,
+                train_cfg):
         """Calculate Boundary Matching Network Loss.
 
         Args:
@@ -146,8 +159,9 @@ class SSNLoss(nn.Module):
         total_ratio = (
             self.sampler.positive_ratio + self.sampler.background_ratio +
             self.sampler.incomplete_ratio)
-        positive_per_video = int(self.sampler.num_per_video *
-                                 (self.sampler.positive_ratio / total_ratio))
+        positive_per_video = int(
+            self.sampler.num_per_video *
+            (self.sampler.positive_ratio / total_ratio))
         background_per_video = int(
             self.sampler.num_per_video *
             (self.sampler.background_ratio / total_ratio))
@@ -155,14 +169,16 @@ class SSNLoss(nn.Module):
             self.sampler.num_per_video - positive_per_video -
             background_per_video)
 
-        losses['loss_activity'] = self.activity_loss(activity_score, labels,
-                                                     activity_indexer),
+        losses['loss_activity'] = self.activity_loss(
+            activity_score,
+            labels,
+            activity_indexer),
         losses['loss_activity'] = torch.tensor(
-            device=activity_score.device, requires_grad=True)
+            device=activity_score.device,
+            requires_grad=True)
 
         losses['loss_completeness'] = self.completeness_loss(
-            completeness_score,
-            labels,
+            completeness_score, labels,
             completeness_indexer,
             positive_per_video,
             incomplete_per_video,
@@ -179,9 +195,8 @@ class SSNLoss(nn.Module):
             losses['loss_reg'] = self.classwise_regression_loss(
                 bbox_pred, labels, bbox_targets, regression_indexer)
             losses['loss_reg'] *= self.loss_weight.reg_loss_weight
-            losses['loss_reg'] = torch.tensor(
-                losses['loss_completeness'],
-                device=bbox_pred.device,
-                requires_grad=True)
+            losses['loss_reg'] = torch.tensor(losses['loss_completeness'],
+                                              device=bbox_pred.device,
+                                              requires_grad=True)
 
         return losses
