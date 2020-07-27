@@ -1,7 +1,7 @@
 import torch.nn as nn
 from mmcv.utils import build_from_cfg
 
-from .registry import BACKBONES, HEADS, LOCALIZERS, LOSSES, RECOGNIZERS
+from .registry import BACKBONES, HEADS, LOCALIZERS, LOSSES, NECKS, RECOGNIZERS
 
 
 def build(cfg, registry, default_args=None):
@@ -61,3 +61,8 @@ def build_model(cfg, train_cfg=None, test_cfg=None):
         return build_localizer(cfg)
     elif obj_type in RECOGNIZERS:
         return build_recognizer(cfg, train_cfg, test_cfg)
+
+
+def build_neck(cfg):
+    """Build neck."""
+    return build(cfg, NECKS)

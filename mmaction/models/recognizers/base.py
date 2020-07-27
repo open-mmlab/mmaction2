@@ -26,9 +26,16 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         test_cfg (dict): Config for testing. Default: None.
     """
 
-    def __init__(self, backbone, cls_head, train_cfg=None, test_cfg=None):
+    def __init__(self,
+                 backbone,
+                 cls_head,
+                 neck=None,
+                 train_cfg=None,
+                 test_cfg=None):
         super().__init__()
         self.backbone = builder.build_backbone(backbone)
+        if neck is not None:
+            self.neck = builder.build_neck(neck)
         self.cls_head = builder.build_head(cls_head)
 
         self.train_cfg = train_cfg
@@ -41,6 +48,8 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         """Initialize the model network weights."""
         self.backbone.init_weights()
         self.cls_head.init_weights()
+        if hasattr(self, 'neck'):
+            self.neck.init_weights()
 
     @auto_fp16()
     def extract_feat(self, imgs):
