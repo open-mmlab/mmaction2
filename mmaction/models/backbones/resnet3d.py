@@ -389,6 +389,7 @@ class ResNet3d(nn.Module):
                  in_channels=3,
                  num_stages=4,
                  base_channels=64,
+                 out_indices=(3, ),
                  spatial_strides=(1, 2, 2, 2),
                  temporal_strides=(1, 1, 1, 1),
                  dilations=(1, 1, 1, 1),
@@ -419,6 +420,8 @@ class ResNet3d(nn.Module):
         self.base_channels = base_channels
         self.num_stages = num_stages
         assert num_stages >= 1 and num_stages <= 4
+        self.out_indices = out_indices
+        assert max(out_indices) < num_stages
         self.spatial_strides = spatial_strides
         self.temporal_strides = temporal_strides
         self.dilations = dilations
@@ -791,12 +794,18 @@ class ResNet3d(nn.Module):
         """
         x = self.conv1(x)
         x = self.maxpool(x)
+        outs = []
         for i, layer_name in enumerate(self.res_layers):
             res_layer = getattr(self, layer_name)
             x = res_layer(x)
             if i == 0 and self.with_pool2:
                 x = self.pool2(x)
-        return x
+            if i in self.out_indices:
+                outs.append(x)
+        if len(outs) == 1:
+            return outs[0]
+        else:
+            return tuple(outs)
 
     def train(self, mode=True):
         """Set the optimization status when training."""
