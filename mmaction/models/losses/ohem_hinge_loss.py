@@ -62,4 +62,4 @@ class OHEMHingeLoss(torch.autograd.Function):
                 loc = idx + group * ctx.group_size
                 grad_in[loc, labels[loc] - 1] = slopes[loc] * \
                     grad_output.data[0]
-        return torch.autograd.Variable(grad_in.cuda()), None, None, None, None
+        return torch.autograd.Variable(grad_in), None, None, None, None
