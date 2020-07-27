@@ -102,11 +102,3 @@ We appreciate all contributions to improve MMAction2. Please refer to [CONTRIBUT
 MMAction2 is an open source project that is contributed by researchers and engineers from various colleges and companies.
 We appreciate all the contributors who implement their methods or add new features, as well as users who give valuable feedbacks.
 We wish that the toolbox and benchmark could serve the growing research community by providing a flexible toolkit to reimplement existing methods and develop their own new models.
-
-## Contact
-If you have any question, please file an issue or contact the authors:
-
-* [<img src="https://github.com/dreamerlin.png" width="24" height="24" alt="@dreamerlin"> @dreamerlin](https://github.com/dreamerlin) Jintao Lin
-* [<img src="https://github.com/JoannaLXY.png" width="24" height="24" alt="@JoannaLXY"> @JoannaLXY](https://github.com/JoannaLXY) Xuanyi Li
-* [<img src="https://github.com/SuX97.png" width="24" height="24" alt="@SuX97"> @SuX97](https://github.com/SuX97) Su Xu
-* [<img src="https://github.com/kennymckormick.png" width="24" height="24" alt="@kennymckormick"> @kennymckormick](https://github.com/kennymckormick) Haodong Duan
