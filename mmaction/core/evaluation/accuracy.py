@@ -1,4 +1,10 @@
+# -*- coding: utf-8 -*-
+# coding: utf-8
+
 import numpy as np
+import torch
+#import torchsnooper
+import json
 
 
 def confusion_matrix(y_pred, y_real):
@@ -30,6 +36,7 @@ def confusion_matrix(y_pred, y_real):
             f'y_real dtype must be np.int64, but got {y_real.dtype}')
 
     label_set = np.unique(np.concatenate((y_pred, y_real)))
+    print('label_set',label_set)
     num_labels = len(label_set)
     label_map = {label: i for i, label in enumerate(label_set)}
     confusion_mat = np.zeros((num_labels, num_labels), dtype=np.int64)
@@ -41,6 +48,7 @@ def confusion_matrix(y_pred, y_real):
     return confusion_mat
 
 
+#@torchsnooper.snoop()
 def mean_class_accuracy(scores, labels):
     """Calculate mean class accuracy.
 
@@ -51,6 +59,7 @@ def mean_class_accuracy(scores, labels):
     Returns:
         np.ndarray: Mean class accuracy.
     """
+    
     pred = np.argmax(scores, axis=1)
     cf = confusion_matrix(pred, labels).astype(float)
 
@@ -61,6 +70,43 @@ def mean_class_accuracy(scores, labels):
         [hit / cnt if cnt else 0.0 for cnt, hit in zip(cls_cnt, cls_hit)])
 
     return mean_class_acc
+
+#@torchsnooper.snoop()
+def personal_PR(scores, labels):
+    """Calculate Percision/Recall.
+       Save scores and labels.
+
+    Args:
+        scores (list[np.ndarray]): Prediction prob not scores for each class.
+        labels (list[int]): Ground truth labels.
+
+    Returns:
+        np.ndarray: Percision for each class.
+        np.ndarray: Recall for each class.
+        np.ndarray: Mean class Percision.
+        np.ndarray: Mean class Recall.
+    """
+    np.save("prob_scores_raw.npy",scores)
+    for i in range(len(labels)):
+        labels[i] = labels[i].numpy().tolist()
+    y_true = np.array(labels)
+    np.save("prob_y_true.npy",y_true)
+    # top1 , get y_pred
+    pred = np.argmax(scores, axis=1)
+    y_pred = np.zeros_like(scores)
+    for i in range(len(pred)):
+        y_pred[i,pred[i]] = 1
+    TP = np.sum(np.logical_and(np.equal(y_true, 1), np.equal(y_pred, 1)),axis=0) 
+    FP = np.sum(np.logical_and(np.equal(y_true, 0), np.equal(y_pred, 1)),axis=0)  
+    FN = np.sum(np.logical_and(np.equal(y_true, 1), np.equal(y_pred, 0)),axis=0)  
+    P=TP/(TP+FP)
+    R=TP/(TP+FN)
+    TP = np.sum(np.logical_and(np.equal(y_true, 1), np.equal(y_pred, 1))) 
+    FP = np.sum(np.logical_and(np.equal(y_true, 0), np.equal(y_pred, 1)))  
+    FN = np.sum(np.logical_and(np.equal(y_true, 1), np.equal(y_pred, 0))) 
+    total_P=TP/(TP+FP) 
+    total_R=TP/(TP+FN) 
+    return P, R, total_P, total_R
 
 
 def top_k_accuracy(scores, labels, topk=(1, )):
@@ -158,7 +204,7 @@ def pairwise_temporal_iou(candidate_segments, target_segments):
             [n x 2:=[init, end]].
 
     Returns:
-        temporal_iou (np.ndarray): 2-dim array [n x m] with IoU ratio.
+        temporal_iou (np.ndarray): 2-dim array [n x m] with IOU ratio.
     """
     if target_segments.ndim != 2 or candidate_segments.ndim != 2:
         raise ValueError('Dimension of arguments is incorrect')
@@ -189,8 +235,8 @@ def average_recall_at_avg_proposals(ground_truth,
                                     max_avg_proposals=None,
                                     temporal_iou_thresholds=np.linspace(
                                         0.5, 0.95, 10)):
-    """Computes the average recall given an average number (percentile) of
-    proposals per video.
+    """Computes the average recall given an average number (percentile)
+    of proposals per video.
 
     Args:
         ground_truth (dict): Dict containing the ground truth instances.
@@ -203,15 +249,15 @@ def average_recall_at_avg_proposals(ground_truth,
             thresholds. Default: np.linspace(0.5, 0.95, 10).
 
     Returns:
-        tuple([np.ndarray, np.ndarray, np.ndarray, float]):
-            (recall, average_recall, proposals_per_video, auc)
-            In recall, ``recall[i,j]`` is recall at i-th temporal_iou threshold
-            at the j-th average number (percentile) of average number of
-            proposals per video. The average_recall is recall averaged
-            over a list of temporal_iou threshold (1D array). This is
-            equivalent to ``recall.mean(axis=0)``. The ``proposals_per_video``
-            is the average number of proposals per video. The auc is the area
-            under AR@AN curve.
+        recall (np.ndarray): recall[i,j] is recall at i-th temporal_iou
+            threshold at the j-th average number (percentile) of average
+            number of proposals per video.
+        average_recall (np.ndarray): Recall averaged over a list of
+            temporal_iou threshold (1D array). This is equivalent to
+            recall.mean(axis=0).
+        proposals_per_video (np.ndarray): Average number of proposals per
+            video.
+        auc (float): Area under AR@AN curve.
     """
 
     total_num_videos = len(ground_truth)
@@ -305,30 +351,3 @@ def average_recall_at_avg_proposals(ground_truth,
     area_under_curve = np.trapz(avg_recall, proposals_per_video)
     auc = 100. * float(area_under_curve) / proposals_per_video[-1]
     return recall, avg_recall, proposals_per_video, auc
-
-
-def get_weighted_score(score_list, coeff_list):
-    """Get weighted score with given scores and coefficients.
-
-    Given n predictions by different classifier: [score_1, score_2, ...,
-    score_n] (score_list) and their coefficients: [coeff_1, coeff_2, ...,
-    coeff_n] (coeff_list), return weighted score: weighted_score =
-    score_1 * coeff_1 + score_2 * coeff_2 + ... + score_n * coeff_n
-
-    Args:
-        score_list (list[list[np.ndarray]]): List of list of scores, with shape
-            n(number of predictions) X num_samples X num_classes
-        coeff_list (list[float]): List of coefficients, with shape n.
-
-    Return:
-        list[np.ndarray]: List of weighted scores.
-    """
-    assert len(score_list) == len(coeff_list)
-    num_samples = len(score_list[0])
-    for i in range(1, len(score_list)):
-        assert len(score_list[i]) == num_samples
-
-    scores = np.array(score_list)  # (num_coeff, num_samples, num_classes)
-    coeff = np.array(coeff_list)  # (num_coeff, )
-    weighted_scores = list(np.dot(scores.T, coeff).T)
-    return weighted_scores
