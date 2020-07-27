@@ -384,8 +384,8 @@ class SampleProposalFrames(SampleFrames):
         Returns:
             np.ndarray: Sampled frame indices in train mode.
         """
-        start_frame = proposal.start_frame + 1
-        end_frame = proposal.end_frame
+        start_frame = proposal.start_frame
+        end_frame = proposal.end_frame - 1
         ori_clip_len = self.clip_len * self.frame_interval
 
         duration = end_frame - start_frame + 1
