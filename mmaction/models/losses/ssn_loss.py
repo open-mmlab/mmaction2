@@ -13,6 +13,14 @@ class SSNLoss(nn.Module):
         """Activity Loss.
 
         It will calculate activity loss given activity_score and label.
+
+        Args：
+            activity_score (torch.Tensor): Predicted activity score.
+            labels (torch.Tensor): Groundtruth class label.
+            activity_indexer (torch.Tensor): Index slices of proposals.
+
+        Returns:
+            torch.Tensor: Returned cross entropy loss.
         """
         pred = activity_score[activity_indexer, :]
         gt = labels[activity_indexer]
@@ -28,11 +36,26 @@ class SSNLoss(nn.Module):
         """Completeness Loss.
 
         It will calculate completeness loss given completeness_score and label.
+
+        Args：
+            completeness_score (torch.Tensor): Predicted completeness score.
+            labels (torch.Tensor): Groundtruth class label.
+            completeness_indexer (torch.Tensor): Index slices of positive and
+                incomplete proposals.
+            positive_per_video (int): Number of positive proposals sampled
+                per video.
+            incomplete_per_video (int): Number of incomplete proposals sampled
+                pre video.
+            ohem_ratio (float): Ratio of online hard example mining.
+                Default: 0.17.
+
+        Returns:
+            torch.Tensor: Returned class-wise completeness loss.
         """
         pred = completeness_score[completeness_indexer, :]
         gt = labels[completeness_indexer]
 
-        pred_dim = pred.size()[1]
+        pred_dim = pred.size(1)
         pred = pred.view(-1, positive_per_video + incomplete_per_video,
                          pred_dim)
         gt = gt.view(-1, positive_per_video + incomplete_per_video)
@@ -49,7 +72,7 @@ class SSNLoss(nn.Module):
             incomplete_pred, gt[:, positive_per_video:].contiguous().view(-1),
             -1, ohem_ratio, incomplete_per_video)
         num_positives = positive_pred.size(0)
-        num_incompletes = int(incomplete_pred.size()[0] * ohem_ratio)
+        num_incompletes = int(incomplete_pred.size(0) * ohem_ratio)
 
         return ((positive_loss + incomplete_loss) /
                 float(num_positives + num_incompletes))
@@ -58,8 +81,20 @@ class SSNLoss(nn.Module):
                                   regression_indexer):
         """Classwise Regression Loss.
 
-        It will calculate classwise_regression loss given class_reg_pred and
-        targets.
+        It will calculate classwise_regression loss given
+        class_reg_pred and targets.
+
+        Args：
+            bbox_pred (torch.Tensor): Predicted interval center and span
+                of positive proposals.
+            labels (torch.Tensor): Groundtruth class label.
+            bbox_targets (torch.Tensor): Groundtruth center and span
+                of positive proposals.
+            regression_indexer (torch.Tensor): Index slices of
+                positive proposals.
+
+        Returns:
+            torch.Tensor: Returned class-wise regression loss.
         """
         pred = bbox_pred[regression_indexer, :, :]
         gt = labels[regression_indexer]
@@ -77,7 +112,26 @@ class SSNLoss(nn.Module):
 
     def forward(self, activity_score, completeness_score, bbox_pred,
                 proposal_type, labels, bbox_targets, train_cfg):
+        """Calculate Boundary Matching Network Loss.
 
+        Args:
+            activity_score (torch.Tensor): Predicted activity score.
+            completeness_score (torch.Tensor): Predicted completeness score.
+            bbox_pred (torch.Tensor): Predicted interval center and span
+                of positive proposals.
+            proposal_type (torch.Tensor): Type index slices of proposals.
+            labels (torch.Tensor): Groundtruth class label.
+            bbox_targets (torch.Tensor): Groundtruth center and span
+                of positive proposals.
+            train_cfg (dict): Config for testing.
+
+        Returns:
+            dict([torch.Tensor, torch.Tensor, torch.Tensor]):
+                (loss_activity, loss_completeness, loss_reg).
+                Loss_activity is the activity loss, loss_completeness is
+                the class-wise completeness loss,
+                loss_reg is the class-wise regression loss.
+        """
         self.sampler = train_cfg.ssn.sampler
         self.loss_weight = train_cfg.ssn.loss_weight
         losses = dict()

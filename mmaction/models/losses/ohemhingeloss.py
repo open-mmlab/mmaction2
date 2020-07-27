@@ -5,20 +5,34 @@ class OHEMHingeLoss(torch.autograd.Function):
     """This class is the core implementation for the completeness loss in
     paper.
 
-    It compute class-wise hinge loss and performs online hard negative mining
+    It compute class-wise hinge loss and performs online hard example mining
     (OHEM).
     """
 
     @staticmethod
     def forward(ctx, pred, labels, is_positive, ohem_ratio, group_size):
-        num_samples = pred.size()[0]
+        """Calculate OHEM hinge loss.
+
+        Args:
+            pred (torch.Tensor): Predicted completeness score.
+            labels (torch.Tensor): Groundtruth class label.
+            is_positive (int): Set to 1 when proposals are positive and
+                set to -1 when proposals are incomplete.
+            ohem_ratio (float): Groundtruth temporal_iou score for start.
+            group_size (int): Number of proposals sampled
+                per video.
+
+        Returns:
+            torch.Tensor: Returned class-wise hinge loss.
+        """
+        num_samples = pred.size(0)
         if num_samples != len(labels):
             raise ValueError(f'Number of samples should be equal to that'
                              f'of labels, but got {num_samples} samples and'
                              f'{len(labels)} labels.')
 
-        losses = torch.zeros(num_samples)
-        slopes = torch.zeros(num_samples)
+        losses = torch.zeros(num_samples, device=pred.device)
+        slopes = torch.zeros(num_samples, device=pred.device)
         for i in range(num_samples):
             losses[i] = max(0, 1 - is_positive * pred[i, labels[i] - 1])
             slopes[i] = -is_positive if losses[i] != 0 else 0
@@ -26,7 +40,7 @@ class OHEMHingeLoss(torch.autograd.Function):
         losses = losses.view(-1, group_size).contiguous()
         sorted_losses, indices = torch.sort(losses, dim=1, descending=True)
         keep_length = int(group_size * ohem_ratio)
-        loss = torch.zeros(1)
+        loss = torch.zeros(1, device=pred.device)
         for i in range(losses.size(0)):
             loss += sorted_losses[i, :keep_length].sum()
         ctx.loss_index = indices[:, :keep_length]
@@ -42,7 +56,7 @@ class OHEMHingeLoss(torch.autograd.Function):
         labels = ctx.labels
         slopes = ctx.slopes
 
-        grad_in = torch.zeros(ctx.shape)
+        grad_in = torch.zeros(ctx.shape, device=ctx.losses.device)
         for group in range(ctx.num_groups):
             for idx in ctx.loss_index[group]:
                 loc = idx + group * ctx.group_size
