@@ -43,18 +43,18 @@ We provide the training log based on which we calculate the average iter time, w
 | Model  |input| io backend | batch size | MMAction2 (s/iter) | MMAction (s/iter) | Temporal-Shift-Module (s/iter) | PySlowFast (s/iter) |
 | :--- | :---------------:|:---------------:| :---------------:| :---------------:  | :--------------------: | :----------------------------: | :-----------------: |
 | [TSN](/configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py)| 256p rawframes |MemCached| 32x8|**[TODO]()** | [TODO]() | [TODO]() | x |
-| [TSN](/configs/recognition/tsn/tsn_r50_video_1x1x3_100e_kinetics400_rgb.py)| 256p videos |Disk| 32x8|**[1.42(8339M)]()** | x | x | x |
-| [TSN](/configs/recognition/tsn/tsn_r50_video_1x1x3_100e_kinetics400_rgb.py)| 256p fast videos |Disk| 32x8|**[0.61(8339M)]()** | x | x | x |
-|[I3D heavy](/configs/recognition/i3d/i3d_r50_video_heavy_8x8x1_100e_kinetics400_rgb.py)|256p videos|Disk |8x8| **[0.34(4742M)]()** | x | x | [0.44(4700M)]() |
-|[I3D heavy](/configs/recognition/i3d/i3d_r50_video_heavy_8x8x1_100e_kinetics400_rgb.py)|256p fast videos|Disk |8x8| **[0.35(4742M)]()** | x | x | [0.36(4700M)]() |
+| [TSN](/configs/recognition/tsn/tsn_r50_video_1x1x3_100e_kinetics400_rgb.py)| 256p videos |Disk| 32x8|**[1.42(8339M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/tsn_256p_videos_disk_32x8.zip)** | x | x | x |
+| [TSN](/configs/recognition/tsn/tsn_r50_video_1x1x3_100e_kinetics400_rgb.py)| 256p fast videos |Disk| 32x8|**[0.61(8339M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/tsn_256p_fast_videos_disk_32x8.zip)** | x | x | x |
+|[I3D heavy](/configs/recognition/i3d/i3d_r50_video_heavy_8x8x1_100e_kinetics400_rgb.py)|256p videos|Disk |8x8| **[0.34(4742M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/i3d_heavy_256p_videos_disk_8x8.zip)** | x | x | [0.44(4700M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/pyslowfast/pysf_i3d_r50_8x8_video.log) |
+|[I3D heavy](/configs/recognition/i3d/i3d_r50_video_heavy_8x8x1_100e_kinetics400_rgb.py)|256p fast videos|Disk |8x8| **[0.35(4742M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/i3d_heavy_256p_fast_videos_disk_8x8.zip)** | x | x | [0.36(4700M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/pyslowfast/pysf_i3d_r50_8x8_fast_video.log) |
 | [I3D](/configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py)|256p rawframes|MemCached|8x8| **[TODO]()** | [TODO]() | x | x |
 | [TSM](/configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py) |256p rawframes|MemCached| 8x8|**[TODO]()** | x | [TODO]() | x |
-| [Slowonly](/configs/recognition/slowonly/slowonly_r50_video_4x16x1_256e_kinetics400_rgb.py)|256p videos|Disk|8x8 | **[0.32(3168M)]()** | x | x | [0.34(3481M)]() |
-| [Slowonly](/configs/recognition/slowonly/slowonly_r50_video_4x16x1_256e_kinetics400_rgb.py)|256p fast videos|Disk|8x8 | **[0.25(3168M)]()** | x | x | [0.28(3481M)]() |
-| [Slowfast](/configs/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb.py)|256p videos|Disk|8x8 | **[0.69(6210M)]()** | x | x | [1.04(7117M)]() |
-| [Slowfast](/configs/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb.py)|256p fast videos|Disk|8x8 | **[0.68(6201M)]()** | x | x | [0.96(7116M)]() |
-| [R(2+1)D](/configs/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb.py)|256p fast videos |Disk| 8x8|**[0.45(5237M)]()** | x | x | x |
-| [R(2+1)D](/configs/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb.py)|256p videos |Disk| 8x8|**[0.44(5237M)]()** | x | x | x |
+| [Slowonly](/configs/recognition/slowonly/slowonly_r50_video_4x16x1_256e_kinetics400_rgb.py)|256p videos|Disk|8x8 | **[0.32(3168M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/slowonly_256p_videos_disk_8x8.zip)** | x | x | [0.34(3481M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/pyslowfast/pysf_slowonly_r50_4x16_video.log) |
+| [Slowonly](/configs/recognition/slowonly/slowonly_r50_video_4x16x1_256e_kinetics400_rgb.py)|256p fast videos|Disk|8x8 | **[0.25(3168M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/slowonly_256p_fast_videos_disk_8x8.zip)** | x | x | [0.28(3481M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/pyslowfast/pysf_slowonly_r50_4x16_fast_video.log) |
+| [Slowfast](/configs/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb.py)|256p videos|Disk|8x8 | **[0.69(6210M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/slowfast_256p_videos_disk_8x8.zip)** | x | x | [1.04(7117M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/pyslowfast/pysf_slowfast_r50_4x16_video.log) |
+| [Slowfast](/configs/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb.py)|256p fast videos|Disk|8x8 | **[0.68(6201M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/slowfast_256p_fast_videos_disk_8x8.zip)** | x | x | [0.96(7116M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/pyslowfast/pysf_slowfast_r50_4x16_fast_video.log) |
+| [R(2+1)D](/configs/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb.py)|256p videos |Disk| 8x8|**[0.44(5237M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/r2plus1d_256p_videos_disk_8x8.zip)** | x | x | x |
+| [R(2+1)D](/configs/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb.py)|256p fast videos |Disk| 8x8|**[0.45(5237M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/r2plus1d_256p_fast_videos_disk_8x8.zip)** | x | x | x |
 
 ### Localizers
 
@@ -68,20 +68,29 @@ We provide the training log based on which we calculate the average iter time, w
 ### TSN
 + **mmaction2**:
 ```shell
+# rawframes
+bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_tsn configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py work_dirs/benchmark_tsn_rawframes
 
+# videos
+bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_tsn configs/recognition/tsn/tsn_r50_video_1x1x3_100e_kinetics400_rgb.py work_dirs/benchmark_tsn_video
 ```
 + **mmaction**:
 ```shell
-blablabla
+TODO
 ```
 
 + **Temporal-Shift-Module**:
 ```shell
+TODO
 ```
 
 ### I3D(video)
 + **mmaction2**:
 ```shell
+# rawframes
+bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_i3d configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py work_dirs/benchmark_i3d_rawframes
+
+# videos
 bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_i3d configs/recognition/i3d/i3d_r50_video_heavy_8x8x1_100e_kinetics400_rgb.py work_dirs/benchmark_i3d_video
 ```
 
@@ -94,10 +103,12 @@ You may reproduce the result by writting a simple script to parse out the value 
 ### I3D(rawframe)
 + **mmaction2**:
 ```shell
+TODO
 ```
 
 + **mmaction**:
 ```shell
+TODO
 ```
 
 ### SlowFast
