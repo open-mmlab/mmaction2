@@ -139,9 +139,9 @@ class SSNLoss(nn.Module):
         proposal_type = proposal_type.view(-1)
         labels = labels.view(-1)
         activity_indexer = ((proposal_type == 0) +
-                            (proposal_type == 2)).nonzero().squeeze()
+                            (proposal_type == 2)).nonzero().squeeze(1)
         completeness_indexer = ((proposal_type == 0) +
-                                (proposal_type == 1)).nonzero().squeeze()
+                                (proposal_type == 1)).nonzero().squeeze(1)
 
         total_ratio = (
             self.sampler.positive_ratio + self.sampler.background_ratio +
@@ -176,7 +176,7 @@ class SSNLoss(nn.Module):
             requires_grad=True)
 
         if bbox_pred is not None:
-            regression_indexer = (proposal_type == 0).nonzero().squeeze()
+            regression_indexer = (proposal_type == 0).nonzero().squeeze(1)
             bbox_targets = bbox_targets.view(-1, 2)
             losses['loss_reg'] = self.classwise_regression_loss(
                 bbox_pred, labels, bbox_targets, regression_indexer)
