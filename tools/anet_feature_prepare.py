@@ -65,7 +65,7 @@ def merge_feat(name):
         lines.append(line0)
         for line in feat:
             lines.append(','.join(['{:.4f}'.format(x) for x in line]))
-        with open(osp.join(args.dest, name.replace('pkl', 'csv')), 'w') as f:
+        with open(osp.join(args.dest, name.replace('.pkl', '.csv')), 'w') as f:
             f.write('\n'.join(lines))
 
 
