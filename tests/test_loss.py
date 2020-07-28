@@ -176,7 +176,7 @@ def test_ssn_loss():
         F.smooth_l1_loss(classwise_reg_pred.view(-1), reg_target.view(-1)) * 2)
 
     # test ssn_loss
-    proposal_type = ([[0, 1, 1, 1, 1, 1, 1, 2]])
+    proposal_type = torch.tensor([[0, 1, 1, 1, 1, 1, 1, 2]])
     train_cfg = ConfigDict(
         dict(
             ssn=dict(
