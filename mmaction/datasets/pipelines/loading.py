@@ -403,9 +403,9 @@ class SampleProposalFrames(SampleFrames):
         valid_ending = min(num_frames - ori_clip_len + 1,
                            end_frame + int(duration * self.aug_ratio[1]))
 
-        valid_starting_length = (
-            start_frame - valid_starting - ori_clip_len + 1)
-        valid_ending_length = valid_ending - end_frame - ori_clip_len + 1
+        valid_starting_length = (start_frame - valid_starting +
+                                 1) - ori_clip_len
+        valid_ending_length = (valid_ending - end_frame + 1) - ori_clip_len
 
         if self.mode == 'train':
             starting_offsets = self._get_train_indices(valid_starting_length,
@@ -464,7 +464,7 @@ class SampleProposalFrames(SampleFrames):
         """
         ori_clip_len = self.clip_len * self.frame_interval
         return np.arange(
-            0, num_frames - ori_clip_len, self.test_interval, dtype=int) + 1
+            0, num_frames - ori_clip_len, self.test_interval, dtype=int)
 
     def _sample_clips(self, num_frames, proposals):
         """Choose clip offsets for the video in a given mode.
