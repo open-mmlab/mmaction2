@@ -89,7 +89,7 @@ class SampleFrames(object):
             ratio = (num_frames - ori_clip_len + 1.0) / self.num_clips
             clip_offsets = np.around(np.arange(self.num_clips) * ratio)
         else:
-            clip_offsets = np.zeros((self.num_clips, ), dtype=np.int32)
+            clip_offsets = np.zeros((self.num_clips, ), dtype=np.int)
 
         return clip_offsets
 
@@ -111,11 +111,11 @@ class SampleFrames(object):
         avg_interval = (num_frames - ori_clip_len + 1) / float(self.num_clips)
         if num_frames > ori_clip_len - 1:
             base_offsets = np.arange(self.num_clips) * avg_interval
-            clip_offsets = (base_offsets + avg_interval / 2.0).astype(np.int32)
+            clip_offsets = (base_offsets + avg_interval / 2.0).astype(np.int)
             if self.twice_sample:
                 clip_offsets = np.concatenate([clip_offsets, base_offsets])
         else:
-            clip_offsets = np.zeros((self.num_clips, ), dtype=np.int32)
+            clip_offsets = np.zeros((self.num_clips, ), dtype=np.int)
         return clip_offsets
 
     def _sample_clips(self, num_frames):
@@ -349,7 +349,7 @@ class SampleProposalFrames(SampleFrames):
             offsets = base_offsets + np.random.randint(
                 avg_interval, size=num_segments)
         else:
-            offsets = np.zeros((num_segments, ), dtype=np.int32)
+            offsets = np.zeros((num_segments, ), dtype=np.int)
 
         return offsets
 
@@ -371,9 +371,9 @@ class SampleProposalFrames(SampleFrames):
         if valid_length >= num_segments:
             avg_interval = valid_length / float(num_segments)
             base_offsets = np.arange(num_segments) * avg_interval
-            offsets = (base_offsets + avg_interval / 2.0).astype(np.int32)
+            offsets = (base_offsets + avg_interval / 2.0).astype(np.int)
         else:
-            offsets = np.zeros((num_segments, ), dtype=np.int32)
+            offsets = np.zeros((num_segments, ), dtype=np.int)
 
         return offsets
 
@@ -464,7 +464,7 @@ class SampleProposalFrames(SampleFrames):
         """
         ori_clip_len = self.clip_len * self.frame_interval
         return np.arange(
-            0, num_frames - ori_clip_len, self.test_interval, dtype=int)
+            0, num_frames - ori_clip_len, self.test_interval, dtype=np.int)
 
     def _sample_clips(self, num_frames, proposals):
         """Choose clip offsets for the video in a given mode.
