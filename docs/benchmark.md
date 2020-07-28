@@ -42,13 +42,13 @@ We provide the training log based on which we calculate the average iter time, w
 
 | Model  |input| io backend | batch size | MMAction2 (s/iter) | MMAction (s/iter) | Temporal-Shift-Module (s/iter) | PySlowFast (s/iter) |
 | :--- | :---------------:|:---------------:| :---------------:| :---------------:  | :--------------------: | :----------------------------: | :-----------------: |
-| [TSN](/configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py)| 256p rawframes |MemCached| 32x8|**[TODO]()** | [TODO]() | [TODO]() | x |
+| [TSN](/configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py)| 256p rawframes |MemCached| 32x8|**[~~1.01(8339M)~~]()** | [TODO]() | [0.42(10733M)]() | x |
 | [TSN](/configs/recognition/tsn/tsn_r50_video_1x1x3_100e_kinetics400_rgb.py)| 256p videos |Disk| 32x8|**[1.42(8339M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/tsn_256p_videos_disk_32x8.zip)** | x | x | x |
 | [TSN](/configs/recognition/tsn/tsn_r50_video_1x1x3_100e_kinetics400_rgb.py)| 256p fast videos |Disk| 32x8|**[0.61(8339M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/tsn_256p_fast_videos_disk_32x8.zip)** | x | x | x |
 |[I3D heavy](/configs/recognition/i3d/i3d_r50_video_heavy_8x8x1_100e_kinetics400_rgb.py)|256p videos|Disk |8x8| **[0.34(4742M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/i3d_heavy_256p_videos_disk_8x8.zip)** | x | x | [0.44(4700M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/pyslowfast/pysf_i3d_r50_8x8_video.log) |
 |[I3D heavy](/configs/recognition/i3d/i3d_r50_video_heavy_8x8x1_100e_kinetics400_rgb.py)|256p fast videos|Disk |8x8| **[0.35(4742M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/i3d_heavy_256p_fast_videos_disk_8x8.zip)** | x | x | [0.36(4700M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/pyslowfast/pysf_i3d_r50_8x8_fast_video.log) |
-| [I3D](/configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py)|256p rawframes|MemCached|8x8| **[TODO]()** | [TODO]() | x | x |
-| [TSM](/configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py) |256p rawframes|MemCached| 8x8|**[TODO]()** | x | [TODO]() | x |
+| [I3D](/configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py)|256p rawframes|MemCached|8x8| **[~~2.70(5169M)~~]()** | [TODO]() | x | x |
+| [TSM](/configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py) |256p rawframes|MemCached| 8x8|**[~~0.67(7075M)~~]()** | x | [0.41(9340M)]() | x |
 | [Slowonly](/configs/recognition/slowonly/slowonly_r50_video_4x16x1_256e_kinetics400_rgb.py)|256p videos|Disk|8x8 | **[0.32(3168M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/slowonly_256p_videos_disk_8x8.zip)** | x | x | [0.34(3481M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/pyslowfast/pysf_slowonly_r50_4x16_video.log) |
 | [Slowonly](/configs/recognition/slowonly/slowonly_r50_video_4x16x1_256e_kinetics400_rgb.py)|256p fast videos|Disk|8x8 | **[0.25(3168M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/slowonly_256p_fast_videos_disk_8x8.zip)** | x | x | [0.28(3481M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/pyslowfast/pysf_slowonly_r50_4x16_fast_video.log) |
 | [Slowfast](/configs/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb.py)|256p videos|Disk|8x8 | **[0.69(6210M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/slowfast_256p_videos_disk_8x8.zip)** | x | x | [1.04(7117M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/pyslowfast/pysf_slowfast_r50_4x16_video.log) |
@@ -74,6 +74,9 @@ bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_tsn configs/recognition/ts
 # videos
 bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_tsn configs/recognition/tsn/tsn_r50_video_1x1x3_100e_kinetics400_rgb.py work_dirs/benchmark_tsn_video
 ```
+
+To reproduce the result, you may need to refer to [this](https://mmcv.readthedocs.io/en/latest/api.html?highlight=memcached#mmcv.fileio.FileClient.backend) to use MemCached as io backend.
+
 + **mmaction**:
 ```shell
 TODO
@@ -81,10 +84,10 @@ TODO
 
 + **Temporal-Shift-Module**:
 ```shell
-TODO
+python main.py kinetics RGB --arch resnet50 --num_segments 3 --gd 20 --lr 0.02 --wd 1e-4 --lr_steps 20 40 --epochs 1 --batch-size 256 -j 32 --dropout 0.5 --consensus_type=avg --eval-freq=10 --npb --print-freq 1
 ```
 
-### I3D(video)
+### I3D
 + **mmaction2**:
 ```shell
 # rawframes
@@ -94,22 +97,16 @@ bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_i3d configs/recognition/i3
 bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_i3d configs/recognition/i3d/i3d_r50_video_heavy_8x8x1_100e_kinetics400_rgb.py work_dirs/benchmark_i3d_video
 ```
 
++ **mmaction**:
+```shell
+TODO
+```
+
 + **PySlowFast**:
 ```shell
 python tools/run_net.py   --cfg configs/Kinetics/I3D_8x8_R50.yaml   DATA.PATH_TO_DATA_DIR ${DATA_ROOT}   NUM_GPUS 8 TRAIN.BATCH_SIZE 64 TRAIN.AUTO_RESUME False LOG_PERIOD 1 SOLVER.MAX_EPOCH 1 > pysf_i3d_r50_8x8_video.log
 ```
 You may reproduce the result by writting a simple script to parse out the value of the field 'time_diff'.
-
-### I3D(rawframe)
-+ **mmaction2**:
-```shell
-TODO
-```
-
-+ **mmaction**:
-```shell
-TODO
-```
 
 ### SlowFast
 + **mmaction2**:
