@@ -158,7 +158,9 @@ class SSNLoss(nn.Module):
         losses['loss_activity'] = self.activity_loss(activity_score, labels,
                                                      activity_indexer),
         losses['loss_activity'] = torch.tensor(
-            device=activity_score.device, requires_grad=True)
+            losses['loss_activity'],
+            device=activity_score.device,
+            requires_grad=True)
 
         losses['loss_completeness'] = self.completeness_loss(
             completeness_score,
