@@ -123,7 +123,7 @@ class SSNLoss(nn.Module):
             labels (torch.Tensor): Groundtruth class label.
             bbox_targets (torch.Tensor): Groundtruth center and span
                 of positive proposals.
-            train_cfg (dict): Config for testing.
+            train_cfg (dict): Config for training.
 
         Returns:
             dict([torch.Tensor, torch.Tensor, torch.Tensor]):
