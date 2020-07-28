@@ -399,13 +399,12 @@ class SampleProposalFrames(SampleFrames):
         assert duration != 0
         valid_length = duration - ori_clip_len
 
-        valid_starting = max(1,
+        valid_starting = max(0,
                              start_frame - int(duration * self.aug_ratio[0]))
         valid_ending = min(num_frames - ori_clip_len + 1,
-                           end_frame + int(duration * self.aug_ratio[1]))
+                           end_frame - 1 + int(duration * self.aug_ratio[1]))
 
-        valid_starting_length = (start_frame - valid_starting +
-                                 1) - ori_clip_len
+        valid_starting_length = (start_frame - valid_starting - ori_clip_len)
         valid_ending_length = (valid_ending - end_frame + 1) - ori_clip_len
 
         if self.mode == 'train':
