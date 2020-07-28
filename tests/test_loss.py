@@ -2,6 +2,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from mmcv import ConfigDict
 from numpy.testing import assert_array_almost_equal
 
 from mmaction.models import (BCELossWithLogits, BinaryLogisticRegressionLoss,
@@ -176,15 +177,16 @@ def test_ssn_loss():
 
     # test ssn_loss
     proposal_type = ([[0, 1, 1, 1, 1, 1, 1, 2]])
-    train_cfg = dict(
-        ssn=dict(
-            sampler=dict(
-                num_per_video=8,
-                positive_ratio=1,
-                background_ratio=1,
-                incomplete_ratio=6,
-                add_gt_as_proposals=True),
-            loss_weight=dict(comp_loss_weight=0.1, reg_loss_weight=0.1)))
+    train_cfg = ConfigDict(
+        dict(
+            ssn=dict(
+                sampler=dict(
+                    num_per_video=8,
+                    positive_ratio=1,
+                    background_ratio=1,
+                    incomplete_ratio=6,
+                    add_gt_as_proposals=True),
+                loss_weight=dict(comp_loss_weight=0.1, reg_loss_weight=0.1))))
     output_loss = ssn_loss(activity_score, completeness_score, bbox_pred,
                            proposal_type, labels, bbox_targets, train_cfg)
     assert torch.equal(output_loss['loss_activity'], output_activity_loss)
