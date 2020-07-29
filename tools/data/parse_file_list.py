@@ -373,7 +373,7 @@ def parse_hmdb51_split(level):
         frame_path = 'data/hmdb51/rawframes'
         annotation_dir = 'data/hmdb51/annotations'
 
-        class_list = os.listdir(frame_path).sort()
+        class_list = sorted(os.listdir(frame_path))
         class_dict = dict()
         with open(class_index_file, 'w') as f:
             content = []
@@ -388,7 +388,7 @@ def parse_hmdb51_split(level):
             with open(train_file_template.format(i), 'w') as fout:
                 content = []
                 for class_name in class_dict:
-                    filename = class_name + f'_train_split{i}.txt'
+                    filename = class_name + f'_test_split{i}.txt'
                     filename_path = osp.join(annotation_dir, filename)
                     with open(filename_path, 'r') as fin:
                         for line in fin:
