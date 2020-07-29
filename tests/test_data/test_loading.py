@@ -45,12 +45,14 @@ class TestLoading(object):
             total_frames=cls.total_frames,
             filename_tmpl=cls.filename_tmpl,
             modality='RGB',
+            offset=0,
             label=1)
         cls.flow_frame_results = dict(
             frame_dir=cls.img_dir,
             total_frames=cls.total_frames,
             filename_tmpl=cls.flow_filename_tmpl,
             modality='Flow',
+            offset=0,
             label=1)
         cls.action_results = dict(
             video_name='v_test1',
