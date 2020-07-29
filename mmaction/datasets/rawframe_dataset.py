@@ -68,7 +68,7 @@ class RawframeDataset(BaseDataset):
         filename_tmpl (str): Template for each filename.
             Default: 'img_{:05}.jpg'.
         with_offset (bool): Determines whether the offset information is in
-            ann_file. If not, frame_idx starts from 1. Default: False.
+            ann_file. Default: False.
         multi_class (bool): Determines whether it is a multi-class
             recognition dataset. Default: False.
         num_classes (int): Number of classes in the dataset. Default: None.
