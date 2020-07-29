@@ -189,7 +189,7 @@ def test_ssn_loss():
                 loss_weight=dict(comp_loss_weight=0.1, reg_loss_weight=0.1))))
     output_loss = ssn_loss(activity_score, completeness_score, bbox_pred,
                            proposal_type, labels, bbox_targets, train_cfg)
-    assert torch.equal(output_loss['loss_activity'].data, output_activity_loss)
-    assert torch.equal(output_loss['loss_completeness'].data,
+    assert torch.equal(output_loss['loss_activity'], output_activity_loss)
+    assert torch.equal(output_loss['loss_completeness'],
                        output_completeness_loss * 0.1)
-    assert torch.equal(output_loss['loss_reg'].data, output_reg_loss * 0.1)
+    assert torch.equal(output_loss['loss_reg'], output_reg_loss * 0.1)

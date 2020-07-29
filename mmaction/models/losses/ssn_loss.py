@@ -158,9 +158,7 @@ class SSNLoss(nn.Module):
         losses['loss_activity'] = self.activity_loss(activity_score, labels,
                                                      activity_indexer),
         losses['loss_activity'] = torch.tensor(
-            losses['loss_activity'],
-            device=activity_score.device,
-            requires_grad=True)
+            losses['loss_activity'], device=activity_score.device)
 
         losses['loss_completeness'] = self.completeness_loss(
             completeness_score,
@@ -171,9 +169,7 @@ class SSNLoss(nn.Module):
             ohem_ratio=positive_per_video / incomplete_per_video)
         losses['loss_completeness'] *= self.loss_weight.comp_loss_weight
         losses['loss_completeness'] = torch.tensor(
-            losses['loss_completeness'],
-            device=completeness_score.device,
-            requires_grad=True)
+            losses['loss_completeness'], device=completeness_score.device)
 
         if bbox_pred is not None:
             regression_indexer = (proposal_type == 0).nonzero().squeeze(1)
@@ -182,8 +178,6 @@ class SSNLoss(nn.Module):
                 bbox_pred, labels, bbox_targets, regression_indexer)
             losses['loss_reg'] *= self.loss_weight.reg_loss_weight
             losses['loss_reg'] = torch.tensor(
-                losses['loss_completeness'],
-                device=bbox_pred.device,
-                requires_grad=True)
+                losses['loss_reg'], device=bbox_pred.device)
 
         return losses
