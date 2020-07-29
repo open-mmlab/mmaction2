@@ -48,7 +48,7 @@ The master branch works with **PyTorch 1.3+**.
 
   MMAction2 implements popular frameworks for action understanding:
 
-  - For action recognition, various algorithms are implemented, including TSN, TSM, R(2+1)D, I3D, SlowOnly, SlowFast.
+  - For action recognition, various algorithms are implemented, including TSN, TSM, R(2+1)D, I3D, SlowOnly, SlowFast, Non-local.
 
   - For temporal action localization, we implement BSN, BMN.
 
