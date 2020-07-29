@@ -156,7 +156,7 @@ class SSNLoss(nn.Module):
             background_per_video)
 
         losses['loss_activity'] = self.activity_loss(activity_score, labels,
-                                                     activity_indexer),
+                                                     activity_indexer)
         losses['loss_activity'] = torch.tensor(
             losses['loss_activity'], device=activity_score.device)
 
