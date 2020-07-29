@@ -153,3 +153,12 @@ def test_format_shape():
 
     assert repr(format_shape) == format_shape.__class__.__name__ + \
         "(input_format='NCTHW')"
+
+    # 'NPTCHW' input format
+    results = dict(
+        imgs=np.random.randn(72, 224, 224, 3),
+        num_clips=9,
+        clip_len=1,
+        num_proposals=8)
+    format_shape = FormatShape('NPTCHW')
+    assert format_shape(results)['input_shape'] == (8, 9, 3, 224, 224)
