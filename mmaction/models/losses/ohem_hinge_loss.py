@@ -42,7 +42,6 @@ class OHEMHingeLoss(torch.autograd.Function):
         loss = torch.zeros(1, device=pred.device)
         for i in range(losses.size(0)):
             loss += sorted_losses[i, :keep_length].sum()
-            print(loss)
         ctx.loss_index = indices[:, :keep_length]
         ctx.labels = labels
         ctx.slopes = slopes
@@ -60,6 +59,6 @@ class OHEMHingeLoss(torch.autograd.Function):
         for group in range(ctx.num_groups):
             for idx in ctx.loss_index[group]:
                 loc = idx + group * ctx.group_size
-                grad_in[loc, labels[loc] - 1] = (
-                    slopes[loc] * grad_output.data[0])
+                grad_in[loc, labels[loc] - 1] = (slopes[loc] *
+                                                 grad_output.data[0])
         return torch.autograd.Variable(grad_in), None, None, None, None
