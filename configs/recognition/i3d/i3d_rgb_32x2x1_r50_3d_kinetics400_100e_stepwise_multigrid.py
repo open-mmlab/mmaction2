@@ -26,7 +26,7 @@ multi_grid = dict(
     short_cycle=True,
     long_cycle_factors=((0.25, 0.5**0.5), (0.5, 0.5**0.5), (0.5, 1), (1, 1)),
     short_cycle_factors=(0.5, 0.5**0.5),
-    epoch_factor=1.0)
+    epoch_factor=1.5)
 # dataset settings
 dataset_type = 'RawframeDataset'
 # data_root = 'data/kinetics400/rawframes_train/'
@@ -117,16 +117,18 @@ data = dict(
 optimizer = dict(type='SGD', lr=0.03, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
-lr_config = dict(policy='step', step=[2, 5, 7])
-total_epochs = 10
+# lr_config = dict(policy='step', step=[0, 5, 10, 15])
+# total_epochs = 20
+lr_config = dict(policy='step', step=[0, 94, 154, 196])
+total_epochs = 239
 checkpoint_config = dict(interval=1)
 evaluation = dict(
-    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
+    interval=2, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
 log_config = dict(
     interval=20,
     hooks=[
         dict(type='TextLoggerHook'),
-        # dict(type='TensorboardLoggerHook'),
+        dict(type='TensorboardLoggerHook'),
     ])
 # runtime settings
 dist_params = dict(backend='nccl', port=29501)

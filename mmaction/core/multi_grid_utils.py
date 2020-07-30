@@ -12,8 +12,9 @@ from ..utils import get_root_logger
 
 
 @HOOKS.register_module()
-class FixedStepwiseLrUpdaterHook(StepLrUpdaterHook):
-    """StepLrUpdater that change lr with an extra factor ``step_lr_ratio``.
+class RelativeStepLrUpdaterHook(LrUpdaterHook):
+    """RelativeStepLrUpdaterHook that change lr with an extra factor
+    ``step_lr_ratio``.
 
     Args:
         ori_step (list[int]): Same as that of mmcv.
@@ -25,24 +26,18 @@ class FixedStepwiseLrUpdaterHook(StepLrUpdaterHook):
         **kwargs (dict): Same as that of mmcv.
     """
 
-    def __init__(self, ori_step, new_step, step_lr_ratio, gamma=0.1, **kwargs):
-        super().__init__(ori_step, gamma=gamma, **kwargs)
-        self.step_lr_ratio = step_lr_ratio
-        self.new_step = new_step
+    def __init__(self, runner, step, lrs, **kwargs):
+        super().__init__(**kwargs)
+        assert len(step) == (len(lrs) - 1)
+        self.step = step
+        self.lrs = lrs
+        super().before_run(runner)
 
     def get_lr(self, runner, base_lr):
-        progress = runner.epoch
-        exp = len(self.step)
-        lr_ratio = 1.0
-        for i, s in enumerate(self.step):
-            if progress < s:
-                exp = i
-                break
-        for new_i, new_s in enumerate(self.new_step):
-            if progress < new_s:
-                lr_ratio = self.step_lr_ratio[new_i]
-                break
-        return base_lr * self.gamma**exp * lr_ratio
+        progress = runner.epoch if self.by_epoch else runner.iter
+        for i in range(len(self.step)):
+            if progress < self.step[i]:
+                return self.lrs[i]
 
 
 class MultiGridHook(Hook):
@@ -63,17 +58,15 @@ class MultiGridHook(Hook):
         self._init_schedule(runner, self.multi_grid_cfg, self.data_cfg)
         step = []
         step = [s[-1] for s in self.schedule]
-        step[-1] = (step[-2] + step[-1]) // 2
-        for hook in runner.hooks:
+        step[-1] = (step[-2] + step[-1]) // 2  # add finetune stage
+        for index, hook in enumerate(runner.hooks):
             if isinstance(hook, StepLrUpdaterHook):
-                ori_step = hook.step
-                step_lr_ratio = [s[1][0] for s in self.schedule]
-                print(f'step_lr_ratio  {step_lr_ratio} '
-                      f'ori_step {ori_step} new_step {step}')
-                new_hook = FixedStepwiseLrUpdaterHook(ori_step, step,
-                                                      step_lr_ratio)
-                runner.register_hook(new_hook)
-                runner.hooks.remove(hook)
+                base_lr = hook.base_lr[0]
+                gamma = hook.gamma
+                lrs = [base_lr * gamma**s[0] * s[1][0] for s in self.schedule]
+                lrs = lrs[:-1] + [lrs[-2], lrs[-1]]  # finetune-stage lrs
+                new_hook = RelativeStepLrUpdaterHook(runner, step, lrs)
+                runner.hooks[index] = new_hook
 
     def before_train_epoch(self, runner):
         self._update_long_cycle(runner)
@@ -83,6 +76,7 @@ class MultiGridHook(Hook):
 
         If it should, change the runner's optimizer and pipelines accordingly.
         """
+        modified = False
         base_b, base_t, base_s = self._get_schedule(runner.epoch)
         resize_list = []  # use a list to find the final `Resize`
         for trans in runner.data_loader.dataset.pipeline.transforms:
@@ -92,11 +86,13 @@ class MultiGridHook(Hook):
                 curr_t = trans.clip_len
                 if base_t != curr_t:
                     # Change the T-dimension
+                    modified = True
                     trans.clip_len = base_t
                     trans.frame_interval = (curr_t *
                                             trans.frame_interval) / base_t
         curr_s = min(resize_list[-1].scale)  # Assume it's square
         if curr_s != base_s:
+            modified = True
             # Change the S-dimension
             resize_list[-1].scale = _ntuple(2)(base_s)
 
@@ -112,7 +108,7 @@ class MultiGridHook(Hook):
         runner.data_loader = dataloader
 
         # rebuild all the sub_batch_bn layers
-        if curr_t != base_t or curr_s != base_s:
+        if modified:
             num_modifies = self.modify_num_splits(runner.model, base_b)
             self.logger.info(f'{num_modifies} subbns modified.')
 
@@ -173,7 +169,6 @@ class MultiGridHook(Hook):
                 pass
         total_iters = 0
         default_iters = steps[-1]
-        steps = [0] + steps
         for step_index in range((len(steps) - 1)):
             # except the final step
             step_epochs = steps[step_index + 1] - steps[step_index]
