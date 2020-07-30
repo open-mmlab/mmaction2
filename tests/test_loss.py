@@ -5,6 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from mmcv import ConfigDict
 from numpy.testing import assert_array_almost_equal
+from torch.autograd import Variable
 
 from mmaction.models import (BCELossWithLogits, BinaryLogisticRegressionLoss,
                              BMNLoss, CrossEntropyLoss, NLLLoss, OHEMHingeLoss,
@@ -123,7 +124,7 @@ def test_ohem_hinge_loss():
     loss = OHEMHingeLoss.apply(pred, gt, 1, 1.0, num_video)
     assert_array_almost_equal(
         loss.detach().numpy(), np.array([0.0552]), decimal=4)
-    loss.backward()
+    loss.backward(Variable(torch.ones([1])))
     assert_array_almost_equal(
         np.array(pred.grad),
         np.array([[
