@@ -490,4 +490,5 @@ class ResNet3dSlowFast(nn.Module):
                 x_slow = torch.cat((x_slow, x_fast_lateral), dim=1)
 
         out = (x_slow, x_fast)
+
         return out

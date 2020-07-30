@@ -23,15 +23,16 @@ def test_conv2plus1d():
 
 
 def test_sub_batch_bn3d():
-    num_feature = 64
+    num_features = 64
     num_splits = 6
     # subbn3d without affine
     cfg = {'num_splits': num_splits, 'affine': False}
-    subbn3d_no_affine = SubBatchBN3d(num_feature, **cfg)
+    subbn3d_no_affine = SubBatchBN3d(num_features, **cfg)
     # test training
     subbn3d_no_affine.train()
-    assert (subbn3d_no_affine.split_bn.num_feature == num_feature * num_splits)
-    x = torch.rand(1, num_feature, 8, 14, 14)
+    assert (subbn3d_no_affine.split_bn.num_features == num_features *
+            num_splits)
+    x = torch.rand(12, num_features, 8, 14, 14)
     output = subbn3d_no_affine(x)
     subbn3d_no_affine.aggregate_stats()
     assert torch.equal(
@@ -46,7 +47,7 @@ def test_sub_batch_bn3d():
 
     # subbn3d with affine
     cfg = {'num_splits': 6, 'affine': True}
-    subbn3d_affine = SubBatchBN3d(num_feature, **cfg)
+    subbn3d_affine = SubBatchBN3d(num_features, **cfg)
     assert torch.equal(subbn3d_affine.weight,
                        torch.ones_like(subbn3d_affine.weight))
     assert torch.equal(subbn3d_affine.bias,

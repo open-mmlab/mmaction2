@@ -26,7 +26,7 @@ multi_grid = dict(
     short_cycle=True,
     long_cycle_factors=((0.25, 0.5**0.5), (0.5, 0.5**0.5), (0.5, 1), (1, 1)),
     short_cycle_factors=(0.5, 0.5**0.5),
-    epoch_factor=1.5)
+    epoch_factor=1.0)
 # dataset settings
 dataset_type = 'RawframeDataset'
 # data_root = 'data/kinetics400/rawframes_train/'
@@ -48,15 +48,17 @@ mc_cfg = dict(
 train_pipeline = [
     dict(type='SampleFrames', clip_len=32, frame_interval=2, num_clips=1),
     dict(type='FrameSelector', io_backend='memcached', **mc_cfg),
-    dict(type='Resize', scale=(-1, 256)),
+    dict(type='Resize', scale=(-1, 256), lazy=True),
     dict(
         type='MultiScaleCrop',
         input_size=224,
         scales=(1, 0.8),
         random_crop=False,
-        max_wh_scale_gap=0),
-    dict(type='Resize', scale=(224, 224), keep_ratio=False),
-    dict(type='Flip', flip_ratio=0.5),
+        max_wh_scale_gap=0,
+        lazy=True),
+    dict(type='Resize', scale=(224, 224), keep_ratio=False, lazy=True),
+    dict(type='Flip', flip_ratio=0.5, lazy=True),
+    dict(type='Fuse'),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
@@ -119,11 +121,11 @@ optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
 # lr_config = dict(policy='step', step=[0, 5, 10, 15])
 # total_epochs = 20
-lr_config = dict(policy='step', step=[0, 94, 154, 196])
-total_epochs = 239
-checkpoint_config = dict(interval=1)
+lr_config = dict(policy='step', step=[0, 40, 80])
+total_epochs = 100
+checkpoint_config = dict(interval=5)
 evaluation = dict(
-    interval=2, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
+    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
 log_config = dict(
     interval=20,
     hooks=[
