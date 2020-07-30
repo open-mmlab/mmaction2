@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -110,7 +111,7 @@ def test_bmn_loss():
 
 
 def test_ohem_hinge_loss():
-    # Normal case
+    # test normal case
     pred = torch.tensor([[
         0.5161, 0.5228, 0.7748, 0.0573, 0.1113, 0.8862, 0.1752, 0.9448, 0.0253,
         0.1009, 0.4371, 0.2232, 0.0412, 0.3487, 0.3350, 0.9294, 0.7122, 0.3072,
@@ -131,9 +132,10 @@ def test_ohem_hinge_loss():
         ]]),
         decimal=4)
 
-    # Abnormal case
-    gt = torch.tensor([8, 10])
-    loss = OHEMHingeLoss.apply(pred, gt, 1, 1.0, num_video)
+    # test error case
+    with pytest.raises(ValueError):
+        gt = torch.tensor([8, 10])
+        loss = OHEMHingeLoss.apply(pred, gt, 1, 1.0, num_video)
 
 
 def test_ssn_loss():
