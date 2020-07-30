@@ -3,8 +3,8 @@ import pytest
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from numpy.testing import assert_array_almost_equal
 from mmcv import ConfigDict
+from numpy.testing import assert_array_almost_equal
 
 from mmaction.models import (BCELossWithLogits, BinaryLogisticRegressionLoss,
                              BMNLoss, CrossEntropyLoss, NLLLoss, OHEMHingeLoss,
@@ -112,10 +112,12 @@ def test_bmn_loss():
 
 def test_ohem_hinge_loss():
     # test normal case
-    pred = torch.tensor([[0.5161, 0.5228, 0.7748, 0.0573, 0.1113, 0.8862,
-                          0.1752, 0.9448, 0.0253, 0.1009, 0.4371, 0.2232,
-                          0.0412, 0.3487, 0.3350, 0.9294, 0.7122, 0.3072,
-                          0.2942, 0.7679]], requires_grad=True)
+    pred = torch.tensor([[
+        0.5161, 0.5228, 0.7748, 0.0573, 0.1113, 0.8862, 0.1752, 0.9448, 0.0253,
+        0.1009, 0.4371, 0.2232, 0.0412, 0.3487, 0.3350, 0.9294, 0.7122, 0.3072,
+        0.2942, 0.7679
+    ]],
+                        requires_grad=True)
     gt = torch.tensor([8])
     num_video = 1
     loss = OHEMHingeLoss.apply(pred, gt, 1, 1.0, num_video)
@@ -124,9 +126,11 @@ def test_ohem_hinge_loss():
     loss.backward()
     assert_array_almost_equal(
         np.array(pred.grad),
-        np.array([[0.,  0.,  0.,  0.,  0.,  0.,  0., -1., 0.,
-                   0.,  0.,  0.,  0.,  0., 0.,  0.,  0.,  0.,
-                   0.,  0.]]), decimal=4)
+        np.array([[
+            0., 0., 0., 0., 0., 0., 0., -1., 0., 0., 0., 0., 0., 0., 0., 0.,
+            0., 0., 0., 0.
+        ]]),
+        decimal=4)
 
     # test error case
     with pytest.raises(ValueError):
@@ -141,11 +145,12 @@ def test_ssn_loss():
     activity_score = torch.rand((8, 21))
     labels = torch.LongTensor([8] * 8).squeeze()
     activity_indexer = torch.tensor([0, 7])
-    output_activity_loss = ssn_loss.activity_loss(
-        activity_score, labels, activity_indexer)
-    assert torch.equal(output_activity_loss,
-                       F.cross_entropy(activity_score[activity_indexer, :],
-                                       labels[activity_indexer]))
+    output_activity_loss = ssn_loss.activity_loss(activity_score, labels,
+                                                  activity_indexer)
+    assert torch.equal(
+        output_activity_loss,
+        F.cross_entropy(activity_score[activity_indexer, :],
+                        labels[activity_indexer]))
 
     # test completeness_loss
     completeness_score = torch.rand((8, 20), requires_grad=True)
@@ -154,14 +159,13 @@ def test_ssn_loss():
     positive_per_video = 1
     incomplete_per_video = 6
     output_completeness_loss = ssn_loss.completeness_loss(
-        completeness_score, labels, completeness_indexer,
-        positive_per_video, incomplete_per_video)
+        completeness_score, labels, completeness_indexer, positive_per_video,
+        incomplete_per_video)
 
     pred = completeness_score[completeness_indexer, :]
     gt = labels[completeness_indexer]
     pred_dim = pred.size(1)
-    pred = pred.view(-1, positive_per_video + incomplete_per_video,
-                     pred_dim)
+    pred = pred.view(-1, positive_per_video + incomplete_per_video, pred_dim)
     gt = gt.view(-1, positive_per_video + incomplete_per_video)
     # yapf:disable
     positive_pred = pred[:, :positive_per_video, :].contiguous().view(-1, pred_dim)  # noqa:E501
@@ -172,8 +176,8 @@ def test_ssn_loss():
         positive_pred, gt[:, :positive_per_video].contiguous().view(-1), 1,
         1.0, positive_per_video)
     incomplete_loss = OHEMHingeLoss.apply(
-        incomplete_pred, gt[:, positive_per_video:].contiguous().view(-1),
-        -1, ohem_ratio, incomplete_per_video)
+        incomplete_pred, gt[:, positive_per_video:].contiguous().view(-1), -1,
+        ohem_ratio, incomplete_per_video)
     num_positives = positive_pred.size(0)
     num_incompletes = int(incomplete_pred.size(0) * ohem_ratio)
     assert_loss = ((positive_loss + incomplete_loss) /
@@ -186,20 +190,19 @@ def test_ssn_loss():
     bbox_targets = torch.rand((8, 2))
     regression_indexer = torch.tensor([0])
     output_reg_loss = ssn_loss.classwise_regression_loss(
-        bbox_pred, labels, bbox_targets,
-        regression_indexer)
+        bbox_pred, labels, bbox_targets, regression_indexer)
 
     pred = bbox_pred[regression_indexer, :, :]
     gt = labels[regression_indexer]
     reg_target = bbox_targets[regression_indexer, :]
     class_idx = gt.data - 1
     classwise_pred = pred[:, class_idx, :]
-    classwise_reg_pred = torch.cat(
-        (torch.diag(classwise_pred[:, :, 0]).view(-1, 1),
-         torch.diag(classwise_pred[:, :, 1]).view(-1, 1)),
-        dim=1)
-    assert torch.equal(output_reg_loss, F.smooth_l1_loss(
-           classwise_reg_pred.view(-1), reg_target.view(-1)) * 2)
+    classwise_reg_pred = torch.cat((torch.diag(classwise_pred[:, :, 0]).view(
+        -1, 1), torch.diag(classwise_pred[:, :, 1]).view(-1, 1)),
+                                   dim=1)
+    assert torch.equal(
+        output_reg_loss,
+        F.smooth_l1_loss(classwise_reg_pred.view(-1), reg_target.view(-1)) * 2)
 
     # test ssn_loss
     proposal_type = torch.tensor([[0, 1, 1, 1, 1, 1, 1, 2]])
@@ -212,14 +215,10 @@ def test_ssn_loss():
                     background_ratio=1,
                     incomplete_ratio=6,
                     add_gt_as_proposals=True),
-                loss_weight=dict(
-                    comp_loss_weight=0.1,
-                    reg_loss_weight=0.1))))
+                loss_weight=dict(comp_loss_weight=0.1, reg_loss_weight=0.1))))
     output_loss = ssn_loss(activity_score, completeness_score, bbox_pred,
                            proposal_type, labels, bbox_targets, train_cfg)
-    assert torch.equal(output_loss['loss_activity'],
-                       output_activity_loss)
+    assert torch.equal(output_loss['loss_activity'], output_activity_loss)
     assert torch.equal(output_loss['loss_completeness'],
                        output_completeness_loss * 0.1)
-    assert torch.equal(output_loss['loss_reg'],
-                       output_reg_loss * 0.1)
+    assert torch.equal(output_loss['loss_reg'], output_reg_loss * 0.1)
