@@ -18,9 +18,8 @@ class OHEMHingeLoss(torch.autograd.Function):
             labels (torch.Tensor): Groundtruth class label.
             is_positive (int): Set to 1 when proposals are positive and
                 set to -1 when proposals are incomplete.
-            ohem_ratio (float): Groundtruth temporal_iou score for start.
-            group_size (int): Number of proposals sampled
-                per video.
+            ohem_ratio (float): Ratio of hard examples.
+            group_size (int): Number of proposals sampled per video.
 
         Returns:
             torch.Tensor: Returned class-wise hinge loss.
@@ -61,6 +60,6 @@ class OHEMHingeLoss(torch.autograd.Function):
         for group in range(ctx.num_groups):
             for idx in ctx.loss_index[group]:
                 loc = idx + group * ctx.group_size
-                grad_in[loc, labels[loc] - 1] = slopes[loc] * \
-                    grad_output.data[0]
+                grad_in[loc, labels[loc] - 1] = (
+                    slopes[loc] * grad_output.data[0])
         return torch.autograd.Variable(grad_in), None, None, None, None
