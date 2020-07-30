@@ -27,8 +27,8 @@ class OHEMHingeLoss(torch.autograd.Function):
         """
         num_samples = pred.size(0)
         if num_samples != len(labels):
-            raise ValueError(f'Number of samples should be equal to that'
-                             f'of labels, but got {num_samples} samples and'
+            raise ValueError(f'Number of samples should be equal to that '
+                             f'of labels, but got {num_samples} samples and '
                              f'{len(labels)} labels.')
 
         losses = torch.zeros(num_samples, device=pred.device)
@@ -43,6 +43,7 @@ class OHEMHingeLoss(torch.autograd.Function):
         loss = torch.zeros(1, device=pred.device)
         for i in range(losses.size(0)):
             loss += sorted_losses[i, :keep_length].sum()
+            print(loss)
         ctx.loss_index = indices[:, :keep_length]
         ctx.labels = labels
         ctx.slopes = slopes
@@ -56,7 +57,7 @@ class OHEMHingeLoss(torch.autograd.Function):
         labels = ctx.labels
         slopes = ctx.slopes
 
-        grad_in = torch.zeros(ctx.shape, device=ctx.losses.device)
+        grad_in = torch.zeros(ctx.shape, device=ctx.slopes.device)
         for group in range(ctx.num_groups):
             for idx in ctx.loss_index[group]:
                 loc = idx + group * ctx.group_size

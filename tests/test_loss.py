@@ -109,6 +109,33 @@ def test_bmn_loss():
     assert_array_almost_equal(output_loss[3].numpy(), output_pem_cls_loss)
 
 
+def test_ohem_hinge_loss():
+    # Normal case
+    pred = torch.tensor([[
+        0.5161, 0.5228, 0.7748, 0.0573, 0.1113, 0.8862, 0.1752, 0.9448, 0.0253,
+        0.1009, 0.4371, 0.2232, 0.0412, 0.3487, 0.3350, 0.9294, 0.7122, 0.3072,
+        0.2942, 0.7679
+    ]],
+                        requires_grad=True)
+    gt = torch.tensor([8])
+    num_video = 1
+    loss = OHEMHingeLoss.apply(pred, gt, 1, 1.0, num_video)
+    assert_array_almost_equal(
+        loss.detach().numpy(), np.array([0.0552]), decimal=4)
+    grad = torch.autograd.grad(loss, pred)[0]
+    assert_array_almost_equal(
+        np.array(grad),
+        np.array([[
+            0., 0., 0., 0., 0., 0., 0., -1., 0., 0., 0., 0., 0., 0., 0., 0.,
+            0., 0., 0., 0.
+        ]]),
+        decimal=4)
+
+    # Abnormal case
+    gt = torch.tensor([8, 10])
+    loss = OHEMHingeLoss.apply(pred, gt, 1, 1.0, num_video)
+
+
 def test_ssn_loss():
     ssn_loss = SSNLoss()
 
@@ -124,7 +151,7 @@ def test_ssn_loss():
                         labels[activity_indexer]))
 
     # test completeness_loss
-    completeness_score = torch.rand((8, 20))
+    completeness_score = torch.rand((8, 20), requires_grad=True)
     labels = torch.LongTensor([8] * 8).squeeze()
     completeness_indexer = torch.tensor([0, 1, 2, 3, 4, 5, 6])
     positive_per_video = 1
