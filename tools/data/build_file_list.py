@@ -150,19 +150,9 @@ def build_file_list(splits, frame_info, shuffle=False):
 def main():
     args = parse_args()
 
-    if args.level == 2:
-        # search for two-level directory
-        def key_func(x):
-            return osp.join(osp.basename(osp.dirname(x)), osp.basename(x))
-    else:
-        # Only search for one-level directory
-        def key_func(x):
-            return osp.basename(x)
-
     if args.format == 'rawframes':
         frame_info = parse_directory(
             args.src_folder,
-            key_func=key_func,
             rgb_prefix=args.rgb_prefix,
             flow_x_prefix=args.flow_x_prefix,
             flow_y_prefix=args.flow_y_prefix,
@@ -191,9 +181,9 @@ def main():
     elif args.dataset == 'sthv2':
         splits = parse_sthv2_splits(args.level)
     elif args.dataset == 'mit':
-        splits = parse_mit_splits(args.level)
+        splits = parse_mit_splits()
     elif args.dataset == 'mmit':
-        splits = parse_mmit_splits(args.level)
+        splits = parse_mmit_splits()
     elif args.dataset == 'kinetics400':
         splits = parse_kinetics_splits(args.level)
     elif args.dataset == 'hmdb51':
