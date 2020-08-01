@@ -21,7 +21,10 @@ def parse_args():
     parser.add_argument(
         '--device', type=str, default='cuda:0', help='CPU/CUDA device option')
     parser.add_argument(
-        '--fps', default=30, help='fps value of the output video')
+        '--fps',
+        default=30,
+        help='specify fps value of the output video when using rawframes to '
+        'generate video')
     parser.add_argument(
         '--font-size',
         default=20,
