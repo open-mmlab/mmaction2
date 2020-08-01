@@ -24,7 +24,7 @@ def parse_args():
         '--fps',
         default=30,
         help='specify fps value of the output video when using rawframes to '
-        'generate video')
+        'generate file')
     parser.add_argument(
         '--font-size',
         default=20,
@@ -94,7 +94,7 @@ def get_output(video_path,
 
     video_clips = CompositeVideoClip([video_clips, text_clips])
 
-    out_type = osp.splitext(osp.basename(out_filename))[1][1:]
+    out_type = osp.splitext(out_filename)[1][1:]
     if out_type == 'gif':
         video_clips.write_gif(out_filename)
     else:
