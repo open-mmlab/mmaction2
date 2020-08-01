@@ -6,7 +6,7 @@ from .common import Conv2plus1d
 from .heads import BaseHead, I3DHead, SlowFastHead, TSMHead, TSNHead
 from .localizers import BMN, PEM, TEM
 from .losses import (BCELossWithLogits, BinaryLogisticRegressionLoss, BMNLoss,
-                     CrossEntropyLoss, NLLLoss)
+                     CrossEntropyLoss, NLLLoss, OHEMHingeLoss, SSNLoss)
 from .recognizers import BaseRecognizer, recognizer2d, recognizer3d
 from .registry import BACKBONES, HEADS, LOCALIZERS, LOSSES, RECOGNIZERS
 
@@ -17,5 +17,6 @@ __all__ = [
     'BaseRecognizer', 'LOSSES', 'CrossEntropyLoss', 'NLLLoss', 'ResNetTSM',
     'ResNet3dSlowFast', 'SlowFastHead', 'Conv2plus1d', 'ResNet3dSlowOnly',
     'BCELossWithLogits', 'LOCALIZERS', 'build_localizer', 'PEM', 'TEM',
-    'BinaryLogisticRegressionLoss', 'BMN', 'BMNLoss', 'build_model'
+    'BinaryLogisticRegressionLoss', 'BMN', 'BMNLoss', 'build_model',
+    'OHEMHingeLoss', 'SSNLoss'
 ]
