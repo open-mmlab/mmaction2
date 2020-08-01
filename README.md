@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="docs/imgs/mmaction2-logo.png" width="500"/>
+  <img src="docs/imgs/mmaction2_logo.png" width="500"/>
 </div>
 
 <div align="left">
@@ -30,7 +30,7 @@ It is a part of the [OpenMMLab](http://openmmlab.org/) project.
 The master branch works with **PyTorch 1.3+**.
 
 <div align="center">
-  <img src="demo/demo.gif" width="600px"/>
+  <img src="docs/imgs/mmaction2_overview.gif" width="600px"/>
 </div>
 
 ### Major Features
