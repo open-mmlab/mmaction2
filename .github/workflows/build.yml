@@ -71,7 +71,7 @@ jobs:
           sudo apt-get install -y ninja-build
       - name: Install Pillow
         if: ${{matrix.torchvision == '0.4.2+cpu'}}
-        run: pip install Pillow==6.2.2
+        run: pip install Pillow
       - name: Install TurboJpeg lib
         run: sudo apt-get install -y libturbojpeg
       - name: Install PyTorch
