@@ -171,21 +171,19 @@ def pairwise_temporal_iou(candidate_segments, target_segments):
     """Compute intersection over union between segments.
 
     Args:
-        candidate_segments (np.ndarray): 2-dim array in format
-            [m x 2:=[init, end]].
+        candidate_segments (np.ndarray): 1-dim/2-dim array in format
+            [init, end]/[m x 2:=[init, end]].
         target_segments (np.ndarray): 2-dim array in format
             [n x 2:=[init, end]].
 
     Returns:
         temporal_iou (np.ndarray): 2-dim array [n x m] with IoU ratio.
     """
-    if target_segments.ndim != 2 or candidate_segments.ndim != 2:
+    if target_segments.ndim != 2 or candidate_segments.ndim not in [1, 2]:
         raise ValueError('Dimension of arguments is incorrect')
 
-    n, m = target_segments.shape[0], candidate_segments.shape[0]
-    temporal_iou = np.empty((n, m))
-    for i in range(m):
-        candidate_segment = candidate_segments[i, :]
+    if candidate_segments.ndim == 1:
+        candidate_segment = candidate_segments
         tt1 = np.maximum(candidate_segment[0], target_segments[:, 0])
         tt2 = np.minimum(candidate_segment[1], target_segments[:, 1])
         # Intersection including Non-negative overlap score.
@@ -196,8 +194,25 @@ def pairwise_temporal_iou(candidate_segments, target_segments):
                           segments_intersection)
         # Compute overlap as the ratio of the intersection
         # over union of two segments.
-        temporal_iou[:, i] = (
-            segments_intersection.astype(float) / segments_union)
+        temporal_iou = segments_intersection.astype(float) / segments_union
+        return temporal_iou
+    else:
+        n, m = target_segments.shape[0], candidate_segments.shape[0]
+        temporal_iou = np.empty((n, m))
+        for i in range(m):
+            candidate_segment = candidate_segments[i, :]
+            tt1 = np.maximum(candidate_segment[0], target_segments[:, 0])
+            tt2 = np.minimum(candidate_segment[1], target_segments[:, 1])
+            # Intersection including Non-negative overlap score.
+            segments_intersection = (tt2 - tt1).clip(0)
+            # Segment union.
+            segments_union = ((target_segments[:, 1] - target_segments[:, 0]) +
+                              (candidate_segment[1] - candidate_segment[0]) -
+                              segments_intersection)
+            # Compute overlap as the ratio of the intersection
+            # over union of two segments.
+            temporal_iou[:, i] = (
+                segments_intersection.astype(float) / segments_union)
 
     return temporal_iou
 
@@ -351,3 +366,108 @@ def get_weighted_score(score_list, coeff_list):
     coeff = np.array(coeff_list)  # (num_coeff, )
     weighted_scores = list(np.dot(scores.T, coeff).T)
     return weighted_scores
+
+
+def softmax(x, dim=1):
+    """Compute softmax values for each sets of scores in x."""
+    e_x = np.exp(x - np.max(x, axis=dim, keepdims=True))
+    return e_x / e_x.sum(axis=dim, keepdims=True)
+
+
+def interpolated_prec_rec(prec, rec):
+    """Interpolated AP - VOCdevkit from VOC 2011.
+    """
+    mprec = np.hstack([[0], prec, [0]])
+    mrec = np.hstack([[0], rec, [1]])
+    for i in range(len(mprec) - 1)[::-1]:
+        mprec[i] = max(mprec[i], mprec[i + 1])
+    idx = np.where(mrec[1::] != mrec[0:-1])[0] + 1
+    ap = np.sum((mrec[idx] - mrec[idx - 1]) * mprec[idx])
+    return ap
+
+
+def compute_average_precision_detection(ground_truth,
+                                        prediction,
+                                        tiou_thresholds=(np.linspace(
+                                            0.5, 0.95, 10))):
+    """Compute average precision (detection task) between ground truth and
+    predictions data frames. If multiple predictions occurs for the same
+    predicted segment, only the one with highest score is matches as true
+    positive. This code is greatly inspired by Pascal VOC devkit.
+
+    Parameters
+    ----------
+    ground_truth : df
+        Data frame containing the ground truth instances.
+        Required fields: ['video-id', 't-start', 't-end']
+    prediction : df
+        Data frame containing the prediction instances.
+        Required fields: ['video-id, 't-start', 't-end', 'score']
+    tiou_thresholds : 1darray, optional
+        Temporal intersection over union threshold.
+
+    Outputs
+    -------
+    ap : float
+        Average precision score.
+    """
+    ap = np.zeros(len(tiou_thresholds))
+    if prediction.empty:
+        return ap
+
+    npos = float(len(ground_truth))
+    lock_gt = np.ones((len(tiou_thresholds), len(ground_truth))) * -1
+    # Sort predictions by decreasing score order.
+    sort_idx = prediction['score'].values.argsort()[::-1]
+    prediction = prediction.loc[sort_idx].reset_index(drop=True)
+
+    # Initialize true positive and false positive vectors.
+    tp = np.zeros((len(tiou_thresholds), len(prediction)))
+    fp = np.zeros((len(tiou_thresholds), len(prediction)))
+
+    # Adaptation to query faster
+    ground_truth_gbvn = ground_truth.groupby('video-id')
+
+    # Assigning true positive to truly grount truth instances.
+    for idx, this_pred in prediction.iterrows():
+
+        try:
+            # Check if there is at least one ground truth in the video.
+            ground_truth_videoid = ground_truth_gbvn.get_group(
+                this_pred['video-id'])
+        except Exception:
+            fp[:, idx] = 1
+            continue
+
+        this_gt = ground_truth_videoid.reset_index()
+        tiou_arr = pairwise_temporal_iou(
+            this_pred[['t-start', 't-end']].values,
+            this_gt[['t-start', 't-end']].values)
+        # We would like to retrieve the predictions with highest tiou score.
+        tiou_sorted_idx = tiou_arr.argsort()[::-1]
+        for tidx, tiou_thr in enumerate(tiou_thresholds):
+            for jdx in tiou_sorted_idx:
+                if tiou_arr[jdx] < tiou_thr:
+                    fp[tidx, idx] = 1
+                    break
+                if lock_gt[tidx, this_gt.loc[jdx]['index']] >= 0:
+                    continue
+                # Assign as true positive after the filters above.
+                tp[tidx, idx] = 1
+                lock_gt[tidx, this_gt.loc[jdx]['index']] = idx
+                break
+
+            if fp[tidx, idx] == 0 and tp[tidx, idx] == 0:
+                fp[tidx, idx] = 1
+
+    tp_cumsum = np.cumsum(tp, axis=1).astype(np.float)
+    fp_cumsum = np.cumsum(fp, axis=1).astype(np.float)
+    recall_cumsum = tp_cumsum / npos
+
+    precision_cumsum = tp_cumsum / (tp_cumsum + fp_cumsum)
+
+    for tidx in range(len(tiou_thresholds)):
+        ap[tidx] = interpolated_prec_rec(precision_cumsum[tidx, :],
+                                         recall_cumsum[tidx, :])
+
+    return ap
