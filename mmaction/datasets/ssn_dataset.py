@@ -4,12 +4,16 @@ import os.path as osp
 
 import mmcv
 import numpy as np
+import pandas as pd
+from terminaltables import AsciiTable
 from torch.nn.modules.utils import _pair
 
-from ..localization import (load_localize_proposal_file,
-                            process_localize_proposal_list, temporal_iou)
+from ..localization import (detections_to_df, eval_ap_parallel,
+                            load_localize_proposal_file, perform_regression,
+                            process_norm_proposal_file, results_to_detections,
+                            temporal_iou, temporal_nms)
 from ..localization.ssn_utils import parse_frame_folder
-from ..models.utils import get_root_logger
+from ..utils import get_root_logger
 from .base import BaseDataset
 from .registry import DATASETS
 
@@ -141,7 +145,7 @@ class SSNDataset(BaseDataset):
         video_centric (bool): Whether to sample proposals just from
             this video or sample proposals randomly from the entire dataset.
             Default: True.
-        reg_normalize_constants (list): Regression target normlizing constants,
+        reg_normalize_constants (list): Regression target normalized constants,
             including mean and standard deviation of location and duration.
         body_segments (int): Number of segments in course period.
             Default: 5.
@@ -188,8 +192,8 @@ class SSNDataset(BaseDataset):
 
         if filter_gt or not test_mode:
             valid_inds = self._filter_records()
-        self.logger(f'{len(valid_inds)} out of {len(self.video_infos)} '
-                    f'videos are valid.')
+        self.logger.info(f'{len(valid_inds)} out of {len(self.video_infos)} '
+                         f'videos are valid.')
         self.video_infos = [self.video_infos[i] for i in valid_inds]
 
         # construct three pools:
@@ -272,8 +276,8 @@ class SSNDataset(BaseDataset):
                                  f'Converting from {self.ann_file}')
                 frame_dict = parse_frame_folder(
                     self.data_prefix, key_func=lambda x: osp.basename(x))
-                process_localize_proposal_list(self.ann_file,
-                                               self.proposal_file, frame_dict)
+                process_norm_proposal_file(self.ann_file, self.proposal_file,
+                                           frame_dict)
                 self.logger.info('Finished conversion.')
         else:
             self.proposal_file = self.ann_file
@@ -322,9 +326,57 @@ class SSNDataset(BaseDataset):
                     proposals=proposals))
         return video_infos
 
-    def evaluate(self, results, metrics, logger):
-        # TODO
-        pass
+    def evaluate(self, dataset, results, metrics='mAP', eval='thumos14'):
+        detections = results_to_detections(dataset, results,
+                                           **self.test_cfg.ssn.evaluater)
+
+        if not self.no_regression:
+            self.logger.info('Performing location regression')
+            for class_idx in range(len(detections)):
+                detections[class_idx] = {
+                    k: perform_regression(v)
+                    for k, v in detections[class_idx].items()
+                }
+            self.logger.info('Regression finished')
+
+        self.logger.info('Performing NMS')
+        for class_idx in range(len(detections)):
+            detections[class_idx] = {
+                k: temporal_nms(v, self.test_cfg.ssn.evaluater.nms)
+                for k, v in detections[class_idx].items()
+            }
+        self.logger.info('NMS finished')
+
+        iou_range = np.arange(0.1, 1.0, .1)
+
+        # get gt
+        all_gt = pd.DataFrame(
+            dataset.get_all_gt(),
+            columns=['video-id', 'class_idx', 't-start', 't-end'])
+        gt_by_cls = [
+            all_gt[all_gt.cls == class_idx].reset_index(
+                drop=True).drop('class_idx', 1)
+            for class_idx in range(len(detections))
+        ]
+        plain_detections = [
+            detections_to_df(detections, class_idx)
+            for class_idx in range(len(detections))
+        ]
+        ap_values = eval_ap_parallel(plain_detections, gt_by_cls, iou_range)
+        map_iou = ap_values.mean(axis=0)
+        self.logger.info('Evaluation finished')
+
+        # display
+        display_title = 'Temporal detection performance ({})'.format(eval)
+        display_data = [['IoU thresh'], ['mean AP']]
+
+        for i in range(len(iou_range)):
+            display_data[0].append('{:.02f}'.format(iou_range[i]))
+            display_data[1].append('{:.04f}'.format(map_iou[i]))
+        table = AsciiTable(display_data, display_title)
+        table.justify_columns[-1] = 'right'
+        table.inner_footing_row_border = True
+        self.logger.info(table.table)
 
     def construct_proposal_pools(self):
         """Construct positve proposal pool, incomplete proposal pool and
@@ -353,7 +405,7 @@ class SSNDataset(BaseDataset):
         gt_list = []
         for video_info in self.video_infos:
             vid = video_info['video_id']
-            # gt_list: [[video_id, class_id,relative_start, relative_end],]
+            # gt_list: [[video_id, class_idx,relative_start, relative_end],]
             gt_list.extend([[
                 vid, gt.label - 1, gt.start_frame / video_info['total_frames'],
                 gt.end_frame / video_info['total_frames']
@@ -565,10 +617,9 @@ class SSNDataset(BaseDataset):
         return starting_scale_factor, ending_scale_factor, stage_split
 
     def _compute_reg_normalize_constants(self):
-        """Compute regression target normlizing constants."""
+        """Compute regression target normalized constants."""
         if self.verbose:
-            self.logger.info(
-                'Computing regression target normlizing constants')
+            self.logger.info('Compute regression target normalized constants')
         targets = []
         for video_info in self.video_infos:
             positives = self.get_positives(
@@ -583,6 +634,8 @@ class SSNDataset(BaseDataset):
         """Prepare the frames for training given the index."""
         results = copy.deepcopy(self.video_infos[idx])
         results['filename_tmpl'] = self.filename_tmpl
+        results['modality'] = 'RGB'
+
         if self.video_centric:
             # yapf: disable
             results['out_proposals'] = self._video_centric_sampling(self.video_infos[idx])  # noqa: E501
@@ -653,6 +706,7 @@ class SSNDataset(BaseDataset):
         """Prepare the frames for testing given the index."""
         results = copy.deepcopy(self.video_infos[idx])
         results['filename_tmpl'] = self.filename_tmpl
+        results['modality'] = 'RGB'
 
         proposals = results['proposals']
         num_frames = results['total_frames']

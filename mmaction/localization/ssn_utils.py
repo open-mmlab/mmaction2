@@ -77,8 +77,7 @@ def load_localize_proposal_file(filename):
     return [parse_group(video_info) for video_info in video_infos]
 
 
-def process_localize_proposal_list(norm_proposal_list, out_list_name,
-                                   frame_dict):
+def process_norm_proposal_file(norm_proposal_list, out_list_name, frame_dict):
     norm_proposals = load_localize_proposal_file(norm_proposal_list)
 
     processed_proposal_list = []
@@ -271,7 +270,7 @@ def temporal_nms(detections, thresh):
     return detections[keep, :]
 
 
-def detection_to_df(detections, class_idx):
+def detections_to_df(detections, class_idx):
     detection_list = []
     for vid, dets in detections[class_idx].items():
         detection_list.extend([[vid, class_idx] + x[:3]
