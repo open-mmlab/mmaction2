@@ -26,7 +26,7 @@ Examples:
 
 1. train BSN(TEM) on ActivityNet features dataset.
     ```shell
-    python tools/train.py configs/localization/bsn/bsn_400x100_1x16_20e_activitynet_feature.py
+    python tools/train.py configs/localization/bsn/bsn_tem_400x100_1x16_20e_activitynet_feature.py
     ```
 
 2. train BSN(PEM) on PGM results.
@@ -70,7 +70,7 @@ Examples:
 3. Inference BSN(PEM) with evaluation metric 'AR@AN' and output the results.
     ```shell
     # Note: If evaluated, then please make sure the annotation file for test data contains groundtruth.
-    python tools/test.py configs/localization/bsn/bsn_400x100_1x16_20e_activitynet_feature.py  checkpoints/SOME_CHECKPOINT.pth  --eval AR@AN --out results.json
+    python tools/test.py configs/localization/bsn/bsn_pem_400x100_1x16_20e_activitynet_feature.py  checkpoints/SOME_CHECKPOINT.pth  --eval AR@AN --out results.json
     ```
 
 ## Test
@@ -106,6 +106,6 @@ Examples:
 
 3. Test a PEM model with with evaluation metric 'AR@AN' and output the results.
     ```shell
-    python tools/test.py configs/localization/bsn/bsn_400x100_1x16_20e_activitynet_feature.py checkpoints/SOME_CHECKPOINT.pth --eval AR@AN --out results.json
+    python tools/test.py configs/localization/bsn/bsn_pem_400x100_1x16_20e_activitynet_feature.py checkpoints/SOME_CHECKPOINT.pth --eval AR@AN --out results.json
     ```
 For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
