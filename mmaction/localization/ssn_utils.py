@@ -2,7 +2,17 @@ import fnmatch
 import glob
 import os
 import os.path as osp
+import sys
 from itertools import groupby
+from multiprocessing import Pool
+
+import mmcv
+import numpy as np
+import pandas as pd
+
+from ..core.evaluation.accuracy import (compute_average_precision_detection,
+                                        np_softmax)
+from . import temporal_iou
 
 
 def load_localize_proposal_file(filename):
@@ -102,7 +112,8 @@ def process_localize_proposal_list(norm_proposal_list, out_list_name,
             f'# {idx}\n{frame_path}\n{num_frames}\n1'
             f'\n{len(gts)}\n{gts_dump}{len(proposals)}\n{proposals_dump}')
 
-    open(out_list_name, 'w').writelines(processed_proposal_list)
+    with open(out_list_name, 'w') as f:
+        f.writelines(processed_proposal_list)
 
 
 def parse_frame_folder(path,
@@ -144,3 +155,161 @@ def parse_frame_folder(path,
 
     print('Frame folder analysis done')
     return frame_dict
+
+
+def results_to_detections(dataset,
+                          outputs,
+                          top_k=2000,
+                          nms=0.2,
+                          softmax_before_filter=True,
+                          cls_score_dict=None,
+                          cls_top_k=2):
+    num_class = outputs[0][1].shape[1] - 1
+    detections = [dict() for i in range(num_class)]
+
+    for idx in range(len(dataset)):
+        video_id = dataset.video_infos[idx]['video_id']
+        relative_proposals = outputs[idx][0]
+        if len(relative_proposals[0].shape) == 3:
+            relative_proposals = np.squeeze(relative_proposals, 0)
+
+        action_scores = outputs[idx][1]
+        complete_scores = outputs[idx][2]
+        regression_scores = outputs[idx][3]
+        if regression_scores is None:
+            regression_scores = np.zeros(
+                len(relative_proposals), num_class, 2, dtype=np.float32)
+        regression_scores = regression_scores.reshape((-1, num_class, 2))
+
+        if top_k <= 0 and cls_score_dict is None:
+            combined_scores = (
+                np_softmax(action_scores[:, 1:], dim=1) *
+                np.exp(complete_scores))
+            for i in range(num_class):
+                center_scores = regression_scores[:, i, 0][:, None]
+                duration_scores = regression_scores[:, i, 1][:, None]
+                detections[i][video_id] = np.concatenate(
+                    (relative_proposals, combined_scores[:, i][:, None],
+                     center_scores, duration_scores),
+                    axis=1)
+        elif cls_score_dict is None:
+            combined_scores = (
+                np_softmax(action_scores[:, 1:], dim=1) *
+                np.exp(complete_scores))
+            keep_idx = np.argsort(combined_scores.ravel())[-top_k:]
+            for k in keep_idx:
+                class_idx = k % num_class
+                proposal_idx = k // num_class
+                new_item = [
+                    relative_proposals[proposal_idx,
+                                       0], relative_proposals[proposal_idx, 1],
+                    combined_scores[proposal_idx, class_idx],
+                    regression_scores[proposal_idx, class_idx,
+                                      0], regression_scores[proposal_idx,
+                                                            class_idx, 1]
+                ]
+                if video_id not in detections[class_idx]:
+                    detections[class_idx][video_id] = np.array([new_item])
+                else:
+                    detections[class_idx][video_id] = np.vstack(
+                        [detections[class_idx][video_id], new_item])
+        else:
+            cls_score_dict = mmcv.load(cls_score_dict)
+            if softmax_before_filter:
+                combined_scores = np_softmax(
+                    action_scores[:, 1:], dim=1) * np.exp(complete_scores)
+            else:
+                combined_scores = (
+                    action_scores[:, 1:] * np.exp(complete_scores))
+            video_cls_score = cls_score_dict[video_id]
+
+            for video_cls in np.argsort(video_cls_score, )[-cls_top_k:]:
+                center_scores = regression_scores[:, video_cls, 0][:, None]
+                duration_scores = regression_scores[:, video_cls, 1][:, None]
+                detections[video_cls][video_id] = np.concatenate(
+                    (relative_proposals, combined_scores[:, video_cls][:,
+                                                                       None],
+                     center_scores, duration_scores),
+                    axis=1)
+
+    return detections
+
+
+def perform_regression(detections):
+    starts = detections[:, 0]
+    ends = detections[:, 1]
+    centers = (starts + ends) / 2
+    durations = ends - starts
+
+    new_centers = centers + durations * detections[:, 3]
+    new_durations = durations * np.exp(detections[:, 4])
+
+    new_detections = np.concatenate(
+        (np.clip(new_centers - new_durations / 2, 0,
+                 1)[:, None], np.clip(new_centers + new_durations / 2, 0,
+                                      1)[:, None], detections[:, 2:]),
+        axis=1)
+    return new_detections
+
+
+def temporal_nms(detections, thresh):
+    starts = detections[:, 0]
+    ends = detections[:, 1]
+    scores = detections[:, 2]
+
+    order = scores.argsort()[::-1]
+
+    keep = []
+    while order.size > 0:
+        i = order[0]
+        keep.append(i)
+        ious = temporal_iou(starts[order[1:]], ends[order[1:]], starts[i],
+                            ends[i])
+        idxs = np.where(ious <= thresh)[0]
+        order = order[idxs + 1]
+
+    return detections[keep, :]
+
+
+def detection_to_df(detections, class_idx):
+    detection_list = []
+    for vid, dets in detections[class_idx].items():
+        detection_list.extend([[vid, class_idx] + x[:3]
+                               for x in dets.tolist()])
+    df = pd.DataFrame(
+        detection_list,
+        columns=['video-id', 'class_idx', 't-start', 't-end', 'score'])
+    return df
+
+
+def eval_ap(iou, iou_idx, class_idx, gt, prediction):
+    ap = compute_average_precision_detection(gt, prediction, iou)
+    sys.stdout.flush()
+    return class_idx, iou_idx, ap
+
+
+def eval_ap_parallel(detections, gt_by_cls, iou_range, worker=32):
+    ap_values = np.zeros((len(detections), len(iou_range)))
+
+    def callback(rst):
+        sys.stdout.flush()
+        ap_values[rst[0], rst[1]] = rst[2][0]
+
+    pool = Pool(worker)
+    jobs = []
+    for iou_idx, min_overlap in enumerate(iou_range):
+        for class_idx in range(len(detections)):
+            jobs.append(
+                pool.apply_async(
+                    eval_ap,
+                    args=(
+                        [min_overlap],
+                        iou_idx,
+                        class_idx,
+                        gt_by_cls[class_idx],
+                        detections[class_idx],
+                    ),
+                    callback=callback))
+    pool.close()
+    pool.join()
+    return ap_values
