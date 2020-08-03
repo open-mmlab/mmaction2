@@ -22,6 +22,11 @@ conda install -yc conda-forge libjpeg-turbo
 CFLAGS="${CFLAGS} -mavx2" pip install --upgrade --no-cache-dir --force-reinstall --no-binary :all: --compile pillow-simd
 conda install -y jpeg libtiff
 ```
+- [moviepy](https://zulko.github.io/moviepy/) (optional): Used in `demo.py` to generate output file and see [here](https://zulko.github.io/moviepy/install.html) for official installation.  **Note**(according to [this](https://github.com/Zulko/moviepy/issues/693)) that:
+    * For Windows users, [ImageMagick](https://www.imagemagick.org/script/index.php) will not be automatically detected by MoviePy,
+you should go into the `moviepy/config_defaults.py` file and provide the path to the ImageMagick binary called `magick`.
+    * For Linux users, you may need to modify the `/etc/ImageMagick-6/policy.xml` file by commenting out
+`<policy domain="path" rights="none" pattern="@*" />` to `<!-- <policy domain="path" rights="none" pattern="@*" /> -->`, if [ImageMagick](https://www.imagemagick.org/script/index.php) is not detected by `moviepy`.
 
 ### Install MMAction2
 
