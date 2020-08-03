@@ -49,19 +49,16 @@ def main():
     args.img_norm_cfg = rgb_norm_cfg if args.is_rgb else flow_norm_cfg
     args.f_tmpl = 'image_{:05d}.jpg' if args.is_rgb else 'flow_{}_{:05d}.jpg'
     args.in_channels = args.clip_len * (3 if args.is_rgb else 2)
-    mc_cfg = dict(
-        server_list_cfg='/mnt/lustre/share/memcached_client/server_list.conf',
-        client_cfg='/mnt/lustre/share/memcached_client/client.conf',
-        sys_path='/mnt/lustre/share/pymc/py3')
     # max batch_size for one forward
     args.batch_size = 200
 
+    # define the data pipeline for Untrimmed Videos
     data_pipeline = [
         dict(
             type='UntrimSampleFrames',
             clip_len=args.clip_len,
             frame_interval=args.frame_interval),
-        dict(type='FrameSelector', io_backend='memcached', **mc_cfg),
+        dict(type='FrameSelector'),
         dict(type='Resize', scale=(-1, 256)),
         dict(type='CenterCrop', crop_size=256),
         dict(type='Normalize', **args.img_norm_cfg),
@@ -71,6 +68,7 @@ def main():
     ]
     data_pipeline = Compose(data_pipeline)
 
+    # define TSN R50 model, the model is used as the feature extractor
     model = dict(
         type='Recognizer2D',
         backbone=dict(
@@ -85,6 +83,7 @@ def main():
             spatial_type='avg',
             consensus=dict(type='AvgConsensus', dim=1)))
     model = build_model(model, test_cfg=dict(average_clips=None))
+    # load pretrained weight into the feature extractor
     state_dict = torch.load(args.ckpt)['state_dict']
     model.load_state_dict(state_dict)
     model = model.cuda()
@@ -94,6 +93,7 @@ def main():
     data = [x.strip() for x in data]
     data = data[args.part::args.tot]
 
+    # enumerate Untrimmed videos, extract feature from each of them
     for item in tqdm(data):
         item = item.split()
         frame_dir, length, output_file = item
@@ -101,7 +101,8 @@ def main():
         output_file = osp.join(args.output_prefix, output_file)
         assert output_file.endswith('.pkl')
         length = int(length)
-        # just use pseudo label here
+
+        # prepare a psuedo sample
         tmpl = dict(
             frame_dir=frame_dir,
             total_frames=length,
@@ -110,6 +111,9 @@ def main():
         sample = data_pipeline(tmpl)
         imgs = sample['imgs']
         shape = imgs.shape
+        # the original shape should be N_seg * C * H * W, resize it to N_seg *
+        # 1 * C * H * W so that the network return feature of each frame (No
+        # score average among segments)
         imgs = imgs.reshape((
             shape[0],
             1,
@@ -117,7 +121,7 @@ def main():
         imgs = imgs.cuda()
 
         def forward_data(model, data):
-            # chop large data into pieces
+            # chop large data into pieces and extract feature from them
             results = []
             start_idx = 0
             num_clip = data.shape[0]
