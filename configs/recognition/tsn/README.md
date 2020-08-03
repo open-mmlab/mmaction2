@@ -28,6 +28,8 @@ Here, We use [1: 1] to indicate that we combine rgb and flow score with coeffici
 
 ### Kinetics-400 Data Benchmark (8-gpus, ResNet50, ImageNet pretrain; 3 segments)
 
+In data benchmark, we compare: 1. Different data preprocessing methods: (1) Resize video to 340x256, (2) Resize the short edge of video to 320px; 2. Different data augmentation methods: (1) MultiScaleCrop, (2) RandomResizedCrop; 3. Different testing protocols: (1) 25 clips x 10 crops, (2) 25 clips x 3 crops. In config names, **fix**(fix_ratio) and **se**(shortedge) denotes 340x256 data and short-edge 320px data respectively.
+
 |                            config                            |   resolution   | training augmentation | testing protocol | top1 acc | top5 acc |   ckpt   |   log   |   json   |
 | :----------------------------------------------------------: | :------------: | :-------------------: | :--------------: | :------: | :------: | :------: | :-----: | :------: |
 | [tsn_fix_multi_train](/configs/recognition/tsn/data_benchmark/tsn_fix_multi_train.py) |    340x256     |    MultiScaleCrop     |   25x10 frames   |  70.60   |  89.26   | [ckpt]() | [log]() | [json]() |
@@ -38,10 +40,6 @@ Here, We use [1: 1] to indicate that we combine rgb and flow score with coeffici
 |                              x                               | short-side 320 |    MultiScaleCrop     |   25x3 frames    |  70.54   |  89.39   |    x     |    x    |    x     |
 | [tsn_se_resize_train](/configs/recognition/tsn/data_benchmark/tsn_se_resize_train.py) | short-side 320 |   RandomResizedCrop   |   25x10 frames   |  70.44   |  89.23   | [ckpt]() | [log]() | [json]() |
 |                              x                               | short-side 320 |   RandomResizedCrop   |   25x3 frames    |  70.91   |  89.51   |    x     |    x    |    x     |
-
-Notes:
-
-1. In data benchmark, we compare: 1. Different data preprocessing methods: (1) Resize video to 340x256, (2) Resize the short edge of video to 320px; 2. Different data augmentation methods: (1) MultiScaleCrop, (2) RandomResizedCrop; 3. Different testing protocols: (1) 25 clips x 10 crops, (2) 25 clips x 3 crops
 
 ### Something-Something V1
 
