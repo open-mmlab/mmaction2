@@ -23,11 +23,13 @@ def parse_args():
     parser.add_argument(
         '--fps',
         default=30,
+        type=int,
         help='specify fps value of the output video when using rawframes to '
         'generate file')
     parser.add_argument(
         '--font-size',
         default=20,
+        type=int,
         help='font size of the label test in output video')
     parser.add_argument(
         '--font-color',
