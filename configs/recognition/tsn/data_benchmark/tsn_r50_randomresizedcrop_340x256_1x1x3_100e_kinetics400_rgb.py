@@ -19,11 +19,11 @@ train_cfg = None
 test_cfg = dict(average_clips=None)
 # dataset settings
 dataset_type = 'RawframeDataset'
-data_root = 'data/kinetics400/rawframes_train_320p'
-data_root_val = 'data/kinetics400/rawframes_val_320p'
-ann_file_train = 'data/kinetics400/kinetics400_train_list_rawframes_320p.txt'
-ann_file_val = 'data/kinetics400/kinetics400_val_list_rawframes_320p.txt'
-ann_file_test = 'data/kinetics400/kinetics400_val_list_rawframes_320p.txt'
+data_root = 'data/kinetics400/rawframes_train'
+data_root_val = 'data/kinetics400/rawframes_val'
+ann_file_train = 'data/kinetics400/kinetics400_train_list_rawframes.txt'
+ann_file_val = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
+ann_file_test = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
@@ -47,7 +47,7 @@ val_pipeline = [
         test_mode=True),
     dict(type='FrameSelector'),
     dict(type='Resize', scale=(-1, 256)),
-    dict(type='CenterCrop', crop_size=256),
+    dict(type='CenterCrop', crop_size=224),
     dict(type='Flip', flip_ratio=0),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
@@ -63,7 +63,7 @@ test_pipeline = [
         test_mode=True),
     dict(type='FrameSelector'),
     dict(type='Resize', scale=(-1, 256)),
-    dict(type='ThreeCrop', crop_size=256),
+    dict(type='TenCrop', crop_size=224),
     dict(type='Flip', flip_ratio=0),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
@@ -89,9 +89,7 @@ data = dict(
         data_prefix=data_root_val,
         pipeline=test_pipeline))
 # optimizer
-optimizer = dict(
-    type='SGD', lr=0.01, momentum=0.9,
-    weight_decay=0.0001)  # this lr is used for 8 gpus
+optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
 lr_config = dict(policy='step', step=[40, 80])
@@ -100,15 +98,14 @@ checkpoint_config = dict(interval=5)
 evaluation = dict(
     interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
 log_config = dict(
-    interval=20,
-    hooks=[
+    interval=20, hooks=[
         dict(type='TextLoggerHook'),
-        # dict(type='TensorboardLoggerHook'),
     ])
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/tsn_320p_randomresizedcrop_train/'
+work_dir = ('./work_dirs/tsn_r50_randomresizedcrop_340x256_1x1x3'
+            '_100e_kinetics400_rgb')
 load_from = None
 resume_from = None
-workflow = [('train', 1)]
+workflow = [('train', 5)]

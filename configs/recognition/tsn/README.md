@@ -32,13 +32,13 @@ In data benchmark, we compare: 1. Different data preprocessing methods: (1) Resi
 
 |                            config                            |   resolution   | training augmentation | testing protocol | top1 acc | top5 acc |   ckpt   |   log   |   json   |
 | :----------------------------------------------------------: | :------------: | :-------------------: | :--------------: | :------: | :------: | :------: | :-----: | :------: |
-| [tsn_340x256_multiscalecrop_train](data_benchmark/tsn_340x256_multiscalecrop_train.py) |    340x256     |    MultiScaleCrop     |   25x10 frames   |  70.60   |  89.26   | [ckpt]() | [log]() | [json]() |
+| [tsn_r50_multiscalecrop_340x256_1x1x3_100e_kinetics400_rgb](data_benchmark/tsn_r50_multiscalecrop_340x256_1x1x3_100e_kinetics400_rgb.py) |    340x256     |    MultiScaleCrop     |   25x10 frames   |  70.60   |  89.26   | [ckpt]() | [log]() | [json]() |
 |                              x                               |    340x256     |    MultiScaleCrop     |   25x3 frames    |  70.52   |  89.39   |    x     |    x    |    x     |
-| [tsn_340x256_randomresizedcrop_train](data_benchmark/tsn_340x256_randomresizedcrop_train.py) |    340x256     |   RandomResizedCrop   |   25x10 frames   |  70.11   |  89.01   | [ckpt]() | [log]() | [json]() |
+| [tsn_r50_randomresizedcrop_340x256_1x1x3_100e_kinetics400_rgb](data_benchmark/tsn_r50_randomresizedcrop_340x256_1x1x3_100e_kinetics400_rgb.py) |    340x256     |   RandomResizedCrop   |   25x10 frames   |  70.11   |  89.01   | [ckpt]() | [log]() | [json]() |
 |                              x                               |    340x256     |   RandomResizedCrop   |   25x3 frames    |  69.95   |  89.02   |    x     |    x    |    x     |
-| [tsn_320p_multiscalecrop_train](data_benchmark/tsn_320p_multiscalecrop_train.py) | short-side 320 |    MultiScaleCrop     |   25x10 frames   |  70.32   |  89.25   | [ckpt]() | [log]() | [json]() |
+| [tsn_r50_multiscalecrop_320p_1x1x3_100e_kinetics400_rgb](data_benchmark/tsn_r50_multiscalecrop_320p_1x1x3_100e_kinetics400_rgb.py) | short-side 320 |    MultiScaleCrop     |   25x10 frames   |  70.32   |  89.25   | [ckpt]() | [log]() | [json]() |
 |                              x                               | short-side 320 |    MultiScaleCrop     |   25x3 frames    |  70.54   |  89.39   |    x     |    x    |    x     |
-| [tsn_320p_randomresizedcrop_train](data_benchmark/tsn_320p_randomresizedcrop_train.py) | short-side 320 |   RandomResizedCrop   |   25x10 frames   |  70.44   |  89.23   | [ckpt]() | [log]() | [json]() |
+| [tsn_r50_randomresizedcrop_320p_1x1x3_100e_kinetics400_rgb](data_benchmark/tsn_r50_randomresizedcrop_320p_1x1x3_100e_kinetics400_rgb.py) | short-side 320 |   RandomResizedCrop   |   25x10 frames   |  70.44   |  89.23   | [ckpt]() | [log]() | [json]() |
 |                              x                               | short-side 320 |   RandomResizedCrop   |   25x3 frames    |  70.91   |  89.51   |    x     |    x    |    x     |
 
 ### Something-Something V1

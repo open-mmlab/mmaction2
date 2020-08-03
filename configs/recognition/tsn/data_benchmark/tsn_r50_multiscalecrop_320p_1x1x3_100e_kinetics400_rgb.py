@@ -109,7 +109,8 @@ log_config = dict(
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/tsn_320p_multiscalecrop_train/'
+work_dir = ('./work_dirs/tsn_r50_multiscalecrop_320p_1x1x3'
+            '_100e_kinetics400_rgb/')
 load_from = None
 resume_from = None
 workflow = [('train', 5)]
