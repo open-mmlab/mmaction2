@@ -19,18 +19,23 @@ train_cfg = None
 test_cfg = dict(average_clips=None)
 # dataset settings
 dataset_type = 'RawframeDataset'
-data_root = 'data/kinetics400/rawframes_train'
-data_root_val = 'data/kinetics400/rawframes_val'
-ann_file_train = 'data/kinetics400/kinetics400_train_list_rawframes.txt'
-ann_file_val = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
-ann_file_test = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
+data_root = 'data/kinetics400/rawframes_train_320p'
+data_root_val = 'data/kinetics400/rawframes_val_320p'
+ann_file_train = 'data/kinetics400/kinetics400_train_list_rawframes_320p.txt'
+ann_file_val = 'data/kinetics400/kinetics400_val_list_rawframes_320p.txt'
+ann_file_test = 'data/kinetics400/kinetics400_val_list_rawframes_320p.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
     dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=3),
     dict(type='FrameSelector'),
     dict(type='Resize', scale=(-1, 256)),
-    dict(type='RandomResizedCrop'),
+    dict(
+        type='MultiScaleCrop',
+        input_size=224,
+        scales=(1, 0.875, 0.75, 0.66),
+        random_crop=False,
+        max_wh_scale_gap=1),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
     dict(type='Flip', flip_ratio=0.5),
     dict(type='Normalize', **img_norm_cfg),
@@ -104,7 +109,7 @@ log_config = dict(
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/tsn_fix_resize_train'
+work_dir = './work_dirs/tsn_320p_multiscalecrop_train/'
 load_from = None
 resume_from = None
 workflow = [('train', 5)]

@@ -30,12 +30,7 @@ train_pipeline = [
     dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=3),
     dict(type='FrameSelector'),
     dict(type='Resize', scale=(-1, 256)),
-    dict(
-        type='MultiScaleCrop',
-        input_size=224,
-        scales=(1, 0.875, 0.75, 0.66),
-        random_crop=False,
-        max_wh_scale_gap=1),
+    dict(type='RandomResizedCrop'),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
     dict(type='Flip', flip_ratio=0.5),
     dict(type='Normalize', **img_norm_cfg),
@@ -94,9 +89,7 @@ data = dict(
         data_prefix=data_root_val,
         pipeline=test_pipeline))
 # optimizer
-optimizer = dict(
-    type='SGD', lr=0.01, momentum=0.9,
-    weight_decay=0.0001)  # this lr is used for 8 gpus
+optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
 lr_config = dict(policy='step', step=[40, 80])
@@ -105,15 +98,13 @@ checkpoint_config = dict(interval=5)
 evaluation = dict(
     interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
 log_config = dict(
-    interval=20,
-    hooks=[
+    interval=20, hooks=[
         dict(type='TextLoggerHook'),
-        # dict(type='TensorboardLoggerHook'),
     ])
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/tsn_fix_multi_train/'
+work_dir = './work_dirs/tsn_340x256_randomresizedcrop_train'
 load_from = None
 resume_from = None
-workflow = [('train', 1)]
+workflow = [('train', 5)]
