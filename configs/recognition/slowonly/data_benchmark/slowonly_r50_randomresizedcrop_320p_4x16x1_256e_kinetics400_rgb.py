@@ -108,7 +108,8 @@ log_config = dict(
     ])
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/slowonly_320p_randomresizedcrop'
+work_dir = ('./work_dirs/slowonly_r50_randomresizedcrop_320p_4x16x1'
+            '_256e_kinetics400_rgb')
 load_from = None
 resume_from = None
 find_unused_parameters = False

@@ -16,8 +16,8 @@ In data benchmark, we compare two different data preprocessing methods: (1) Resi
 
 | config                                                       |   resolution   | gpus | backbone | Input | pretrain | top1 acc | top5 acc |  testing protocol  |   ckpt   |   log   |   json   |
 | :----------------------------------------------------------- | :------------: | :--: | :------: | :---: | :------: | :------: | :------: | :----------------: | :------: | :-----: | :------: |
-| [slowonly_340x256_randomresizedcrop.py](data_benchmark/slowonly_340x256_randomresizedcrop.py) |    340x256     | 8x2  | ResNet50 | 4x16  |   None   |  73.02   |  90.77   | 10 clips x 3 crops | [ckpt]() | [log]() | [json]() |
-| [slowonly_320p_randomresizedcrop.py](data_benchmark/slowonly_320p_randomresizedcrop.py) | short-side 320 | 8x2  | ResNet50 | 4x16  |   None   |  71.61   |  90.05   | 10 clips x 3 crops | [ckpt]() | [log]() | [json]() |
+| [slowonly_r50_randomresizedcrop_340x256_4x16x1_256e_kinetics400_rgb](data_benchmark/slowonly_r50_randomresizedcrop_340x256_4x16x1_256e_kinetics400_rgb.py) |    340x256     | 8x2  | ResNet50 | 4x16  |   None   |  73.02   |  90.77   | 10 clips x 3 crops | [ckpt]() | [log]() | [json]() |
+| [slowonly_r50_randomresizedcrop_320p_4x16x1_256e_kinetics400_rgb](data_benchmark/slowonly_r50_randomresizedcrop_320p_4x16x1_256e_kinetics400_rgb.py) | short-side 320 | 8x2  | ResNet50 | 4x16  |   None   |  71.61   |  90.05   | 10 clips x 3 crops | [ckpt]() | [log]() | [json]() |
 
 Notes:
 
