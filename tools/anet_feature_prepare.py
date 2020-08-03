@@ -21,7 +21,20 @@ def parse_args():
 
 
 def pool_feature(data, num_prop=100, num_sample_bin=3, pool_type='mean'):
-    # the range of x will be [0, ..., len]
+    """Pool features with arbitrary temporal length.
+
+    Args:
+        data (list[np.ndarray] or np.ndarray): features of an untrimmed video,
+            with arbitrary temporal length.
+        num_prop (int): The temporal dim of pooled feature. Default: 100.
+        num_sample_bin (int): How many points to sample to get the feature
+            vector at one timestamp. Default: 3.
+        pool_type (str): Type of pooling to pool features. Choices are
+            ['mean', 'max']. Default: 'mean'.
+
+    Returns:
+        np.ndarray: The pooled feature with shape num_prop x feature_dim.
+    """
     if len(data) == 1:
         return np.concatenate([data] * num_prop)
     x_range = list(range(len(data)))
@@ -50,6 +63,7 @@ def pool_feature(data, num_prop=100, num_sample_bin=3, pool_type='mean'):
 
 
 def merge_feat(name):
+    # concatenate rgb feat and flow feat for a single sample
     global args
     rgb_feat = load(osp.join(args.rgb, name))
     flow_feat = load(osp.join(args.flow, name))
