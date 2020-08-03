@@ -58,7 +58,7 @@ def main():
             type='UntrimSampleFrames',
             clip_len=args.clip_len,
             frame_interval=args.frame_interval),
-        dict(type='FrameSelector', io_backend='memcached', **mc_cfg),
+        dict(type='FrameSelector'),
         dict(type='Resize', scale=(-1, 256)),
         dict(type='CenterCrop', crop_size=256),
         dict(type='Normalize', **args.img_norm_cfg),
