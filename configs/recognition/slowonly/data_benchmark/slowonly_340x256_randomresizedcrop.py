@@ -108,7 +108,7 @@ log_config = dict(
     ])
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/slowonly_fix_resize'
+work_dir = './work_dirs/slowonly_340x256_randomresizedcrop'
 load_from = None
 resume_from = None
 find_unused_parameters = False
