@@ -13,6 +13,7 @@
 
 ### Kinetics-400 Data Benchmark
 In data benchmark, we compare two different data preprocessing methods: (1) Resize video to 340x256, (2) Resize the short edge of video to 320px. In config names, **fix**(fix_ratio) and **se**(shortedge) denotes 340x256 data and short-edge 320px data respectively.
+
 | config                                                       |   resolution   | gpus | backbone | Input | pretrain | top1 acc | top5 acc |  testing protocol  |   ckpt   |   log   |   json   |
 | :----------------------------------------------------------- | :------------: | :--: | :------: | :---: | :------: | :------: | :------: | :----------------: | :------: | :-----: | :------: |
 | [slowonly_fix_resize.py](data_benchmark/slowonly_fix_resize.py) |    340x256     | 8x2  | ResNet50 | 4x16  |   None   |  73.02   |  90.77   | 10 clips x 3 crops | [ckpt]() | [log]() | [json]() |
