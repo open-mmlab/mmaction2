@@ -137,6 +137,8 @@ def main():
         print(f'{result[0]}: ', result[1])
 
     if args.out_filename is not None:
+        if args.target_resolution is not None:
+            args.target_resolution = tuple(args.target_resolution)
         get_output(
             args.video,
             args.out_filename,
@@ -144,7 +146,7 @@ def main():
             fps=args.fps,
             font_size=args.font_size,
             font_color=args.font_color,
-            target_resolution=tuple(args.target_resolution),
+            target_resolution=args.target_resolution,
             resize_algorithm=args.resize_algorithm,
             use_frames=args.use_frames)
 
