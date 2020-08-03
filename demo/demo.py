@@ -34,6 +34,13 @@ def parse_args():
         default='white',
         help='font color of the label test in output video')
     parser.add_argument(
+        '--target-resolution',
+        nargs=2,
+        default=None,
+        type=int,
+        help='Set to (desired_height, desired_width) for resizing the frames '
+        'when using a video as input')
+    parser.add_argument(
         '--resize-algorithm',
         default='bicubic',
         help='resize algorithm applied to generate video')
@@ -48,6 +55,7 @@ def get_output(video_path,
                fps=30,
                font_size=20,
                font_color='white',
+               target_resolution=None,
                resize_algorithm='bicubic',
                use_frames=False):
     """Get demo output using ``moviepy``.
@@ -65,9 +73,14 @@ def get_output(video_path,
         fps (int): Number of picture frames to read per second. Default: 30.
         font_size (int): Font size of the label. Default: 20.
         font_color (str): Font color of the label. Default: 'white'.
-        resize_algorithm (str): The algorithm used for resizing.
-            Default: 'bicubic'. For more information,
-            see https://ffmpeg.org/ffmpeg-scaler.html.
+        target_resolution (None | tuple[int, int]): Same as that in
+            ``VideoFileClip``. Set to (desired_height, desired_width) to have
+            ffmpeg resize the frames before returning them. If either
+            dimension is None, the frames are resized by keeping the existing
+            aspect ratio. Default: None.
+        resize_algorithm (str): Same as that in ``VideoFileClip``.
+            The algorithm used for resizing. Default: 'bicubic'. For more
+            information, see https://ffmpeg.org/ffmpeg-scaler.html.
         use_frames: Determine Whether to use rawframes as input. Default:False.
     """
 
@@ -83,7 +96,9 @@ def get_output(video_path,
         video_clips = ImageSequenceClip(frame_list, fps=fps)
     else:
         video_clips = VideoFileClip(
-            video_path, resize_algorithm=resize_algorithm)
+            video_path,
+            target_resolution=target_resolution,
+            resize_algorithm=resize_algorithm)
 
     duration_video_clip = video_clips.duration
     text_clips = TextClip(label, fontsize=font_size, color=font_color)
@@ -124,8 +139,10 @@ def main():
             args.video,
             args.out_filename,
             results[0][0],
+            fps=args.fps,
             font_size=args.font_size,
             font_color=args.font_color,
+            target_resolution=tuple(args.target_resolution),
             resize_algorithm=args.resize_algorithm,
             use_frames=args.use_frames)
 
