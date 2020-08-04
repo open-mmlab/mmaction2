@@ -109,7 +109,7 @@ Optional arguments:
 - `FPS`: FPS value of the output video when using rawframes as input. If not specified, it wll be set to 30.
 - `FONT_SIZE`: Font size of the label added in the video. If not specified, it wll be set to 20.
 - `FONT_COLOR`: Font color of the label added in the video. If not specified, it will be `white`.
-- `TARGET_RESOLUTION`: Resolution(desired_height, desired_width) for resizing the frames before output when using a video as input. If not specified, it will be None and the frames are resized by keeping the existing aspect ratio.
+- `TARGET_RESOLUTION`: Resolution(desired_width, desired_height) for resizing the frames before output when using a video as input. If not specified, it will be None and the frames are resized by keeping the existing aspect ratio.
 - `RESIZE_ALGORITHM`: Resize algorithm used for resizing. If not specified, it will be set to `bicubic`.
 - `OUT_FILE`: Path to the output file which can be a video format or gif format. If not specified, it will be set to `None` and does not generate the output file.
 
@@ -157,7 +157,7 @@ Assume that you are located at `$MMACTION2` and have already downloaded the chec
     # The demo.mp4 and label_map.txt are both from Kinetics-400
     python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
         checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
-        demo/demo.mp4 demo/label_map.txt --target-resolution 256 340 --resize-algorithm bilinear \
+        demo/demo.mp4 demo/label_map.txt --target-resolution 340 256 --resize-algorithm bilinear \
         --out-filename demo/demo_out.mp4
     ```
 
