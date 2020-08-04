@@ -76,7 +76,7 @@ def get_output(video_path,
         fps (int): Number of picture frames to read per second. Default: 30.
         font_size (int): Font size of the label. Default: 20.
         font_color (str): Font color of the label. Default: 'white'.
-        target_resolution (None | tuple[int, int]): Set to
+        target_resolution (None | tuple[int | None]): Set to
             (desired_width desired_height) to have resized frames. If either
             dimension is None, the frames are resized by keeping the existing
             aspect ratio. Default: None.
