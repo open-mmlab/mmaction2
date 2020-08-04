@@ -40,7 +40,7 @@ def parse_args():
         nargs=2,
         default=None,
         type=int,
-        help='Target resolution for resizing the frames '
+        help='Target resolution (w, h) for resizing the frames '
         'when using a video as input')
     parser.add_argument(
         '--resize-algorithm',
@@ -76,7 +76,7 @@ def get_output(video_path,
         font_size (int): Font size of the label. Default: 20.
         font_color (str): Font color of the label. Default: 'white'.
         target_resolution (None | tuple[int, int]): Same as that in
-            ``VideoFileClip``. Set to (desired_height, desired_width) to have
+            ``VideoFileClip``. Set to (desired_width desired_height) to have
             ffmpeg resize the frames before returning them. If either
             dimension is None, the frames are resized by keeping the existing
             aspect ratio. Default: None.
@@ -97,6 +97,9 @@ def get_output(video_path,
             [osp.join(video_path, x) for x in os.listdir(video_path)])
         video_clips = ImageSequenceClip(frame_list, fps=fps)
     else:
+        # revert the order to suit ``VideoFileClip``.
+        # (weight, height) -> (height, weight)
+        target_resolution = (target_resolution[1], target_resolution[0])
         video_clips = VideoFileClip(
             video_path,
             target_resolution=target_resolution,
