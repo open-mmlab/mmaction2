@@ -161,6 +161,16 @@ Assume that you are located at `$MMACTION2` and have already downloaded the chec
         --out-filename demo/demo_out.mp4
     ```
 
+    ```shell
+    # The demo.mp4 and label_map.txt are both from Kinetics-400
+    # If either dimension is set to -1, the frames are resized by keeping the existing aspect ratio
+    # For --target-resolution 170 -1, original resolution (340, 256) -> target resolution (170, 128)
+    python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
+        checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
+        demo/demo.mp4 demo/label_map.txt --target-resolution 170 -1 --resize-algorithm bilinear \
+        --out-filename demo/demo_out.mp4
+    ```
+
 6. Recognize a video file as input by using a TSN model, then generate an mp4 file with a label in a red color and 10px fontsize.
 
     ```shell
