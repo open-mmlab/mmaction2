@@ -52,7 +52,17 @@ Here, We use [1: 1] to indicate that we combine rgb and flow score with coeffici
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
 |[tsn_r101_1x1x5_50e_mmit_rgb](/configs/recognition/tsn/tsn_r101_1x1x5_50e_mmit_rgb.py)|short-side 256 |8x2| ResNet101| ImageNet |61.09| 10467 | [ckpt](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tsn/tsn_r101_1x1x5_50e_mmit_rgb/tsn_r101_1x1x5_50e_mmit_rgb_20200618-642f450d.pth) | [log](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tsn/tsn_r101_1x1x5_50e_mmit_rgb/tsn_mmit.log)| [json](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tsn/tsn_r101_1x1x5_50e_mmit_rgb/tsn_r101_f6_mmit_61.1.log.json)|
 
+### ActivityNet v1.3
+
+| config                                                       | resolution | gpus | backbone |  pretrain   | top1 acc | top5 acc | gpu_mem(M) | ckpt | log  | json |
+| :----------------------------------------------------------- | :--------: | :--: | :------: | :---------: | :------: | :------: | :--------: | :--: | :--: | :--: |
+| [tsn_r50_320p_1x1x8_50e_anet_video_rgb](activitynet/tsn_r50_320p_1x1x8_50e_anet_video_rgb.py) |  340x256   | 8x1  | ResNet50 | Kinetics400 |  73.97   |  93.46   |    5692    |  x   |  x   |  x   |
+| [tsn_r50_320p_1x1x8_50e_anet_clip_rgb](activitynet/tsn_r50_320p_1x1x8_50e_anet_clip_rgb.py) |  340x256   | 8x1  | ResNet50 | Kinetics400 |  76.07   |  94.10   |    5692    |  x   |  x   |  x   |
+| [tsn_r50_320p_1x1x8_150e_anet_video_flow](activitynet/tsn_r50_320p_1x1x8_150e_anet_video_flow.py) |  340x256   | 8x2  | ResNet50 | Kinetics400 |  58.70   |  84.72   |    5780    |  x   |  x   |  x   |
+| [tsn_r50_320p_1x1x8_150e_anet_clip_flow](activitynet/tsn_r50_320p_1x1x8_150e_anet_clip_flow.py) |  340x256   | 8x2  | ResNet50 | Kinetics400 |  59.51   |  82.69   |    5780    |  x   |  x   |  x   |
+
 Notes:
+
 1. The **gpus** indicates the number of gpu we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
 According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
 e.g., lr=0.01 for 4 GPUs * 2 video/gpu and lr=0.08 for 16 GPUs * 4 video/gpu.
