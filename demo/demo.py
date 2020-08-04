@@ -40,7 +40,7 @@ def parse_args():
         nargs=2,
         default=None,
         type=int,
-        help='Set to (desired_height, desired_width) for resizing the frames '
+        help='Target resolution for resizing the frames '
         'when using a video as input')
     parser.add_argument(
         '--resize-algorithm',
