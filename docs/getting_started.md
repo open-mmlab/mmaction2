@@ -117,7 +117,7 @@ Examples:
 
 Assume that you are located at `$MMACTION2` and have already downloaded the checkpoints to the directory `checkpoints/`
 
-1. Recognize a video file as input by using a TSN model.
+1. Recognize a video file as input by using a TSN model on cuda by default.
 
     ```shell
     # The demo.mp4 and label_map.txt are both from Kinetics-400
@@ -126,12 +126,12 @@ Assume that you are located at `$MMACTION2` and have already downloaded the chec
         demo/demo.mp4 demo/label_map.txt
     ```
 
-2. Recognize a list of rawframes as input by using a TSN model.
+2. Recognize a list of rawframes as input by using a TSN model on cpu.
 
     ```shell
     python demo/demo.py configs/recognition/tsn/tsn_r50_inference_1x1x3_100e_kinetics400_rgb.py \
         checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
-        PATH_TO_FRAMES/ LABEL_FILE --use-frames
+        PATH_TO_FRAMES/ LABEL_FILE --use-frames --device cpu
     ```
 
 3. Recognize a video file as input by using a TSN model and then generate an mp4 file.
