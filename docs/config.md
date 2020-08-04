@@ -1,4 +1,4 @@
-# Config System e
+# Config System
 <!-- TOC -->
 
 - [Config System](#config-system)
