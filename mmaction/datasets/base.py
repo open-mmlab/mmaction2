@@ -32,6 +32,10 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
             dataset. Default: False.
         num_classes (int): Number of classes of the dataset, used in
             multi-class datasets. Default: None.
+        start_index (int): Specify a start index for frames in consideration of
+            different filename format. However, when taking videos as input,
+            it should be set to 0, since frames loaded from videos count
+            from 0. Default: 1.
         modality (str): Modality of data. Support 'RGB', 'Flow'.
             Default: 'RGB'.
     """
@@ -43,6 +47,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
                  test_mode=False,
                  multi_class=False,
                  num_classes=None,
+                 start_index=1,
                  modality='RGB'):
         super().__init__()
 
@@ -52,6 +57,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         self.test_mode = test_mode
         self.multi_class = multi_class
         self.num_classes = num_classes
+        self.start_index = start_index
         self.modality = modality
         self.pipeline = Compose(pipeline)
         self.video_infos = self.load_annotations()
@@ -83,12 +89,14 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         """Prepare the frames for training given the index."""
         results = copy.deepcopy(self.video_infos[idx])
         results['modality'] = self.modality
+        results['start_index'] = self.start_index
         return self.pipeline(results)
 
     def prepare_test_frames(self, idx):
         """Prepare the frames for testing given the index."""
         results = copy.deepcopy(self.video_infos[idx])
         results['modality'] = self.modality
+        results['start_index'] = self.start_index
         return self.pipeline(results)
 
     def __len__(self):

@@ -30,7 +30,6 @@ test_pipeline = [
         clip_len=32,
         frame_interval=2,
         num_clips=1,
-        start_index=0,
         test_mode=True),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),

@@ -64,6 +64,7 @@ class TestLoading(object):
             frame_dir=cls.img_dir,
             total_frames=cls.total_frames,
             filename_tmpl=cls.filename_tmpl,
+            start_index=1,
             modality='RGB',
             offset=0,
             label=1)
@@ -91,6 +92,7 @@ class TestLoading(object):
             video_id='test_imgs',
             total_frames=cls.total_frames,
             filename_tmpl=cls.filename_tmpl,
+            start_index=1,
             out_props=[[['test_imgs',
                          ExampleSSNInstance(1, 4, 10, 1, 1, 1)], 0],
                        [['test_imgs',
@@ -230,7 +232,6 @@ class TestLoading(object):
             clip_len=1,
             frame_interval=1,
             num_clips=8,
-            start_index=0,
             temporal_jitter=False,
             test_mode=True)
         sample_frames = SampleFrames(**config)
@@ -241,7 +242,7 @@ class TestLoading(object):
         sample_frames_results = sample_frames(frame_result)
         assert len(sample_frames_results['frame_inds']) == 8
         assert_array_equal(sample_frames_results['frame_inds'],
-                           np.array([0, 1, 1, 2, 3, 4, 4, 5]))
+                           np.array([1, 2, 2, 3, 4, 5, 5, 6]))
 
         # Sample Frame with no temporal_jitter to get clip_offsets zero
         # clip_len=6, frame_interval=1, num_clips=1
@@ -460,7 +461,7 @@ class TestLoading(object):
     def test_sample_proposal_frames(self):
         target_keys = [
             'frame_inds', 'clip_len', 'frame_interval', 'num_clips',
-            'total_frames'
+            'total_frames', 'start_index'
         ]
 
         # test error cases
