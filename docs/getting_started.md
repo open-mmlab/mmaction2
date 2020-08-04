@@ -129,7 +129,7 @@ Assume that you are located at `$MMACTION2` and have already downloaded the chec
 2. Recognize a list of rawframes as input by using a TSN model.
 
     ```shell
-    python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
+    python demo/demo.py configs/recognition/tsn/tsn_r50_inference_1x1x3_100e_kinetics400_rgb.py \
         checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
         PATH_TO_FRAMES/ LABEL_FILE --use-frames
     ```
@@ -146,7 +146,7 @@ Assume that you are located at `$MMACTION2` and have already downloaded the chec
 4. Recognize a list of rawframes as input by using a TSN model and then generate a gif file.
 
     ```shell
-    python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
+    python demo/demo.py configs/recognition/tsn/tsn_r50_inference_1x1x3_100e_kinetics400_rgb.py \
         checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
         PATH_TO_FRAMES/ LABEL_FILE --use-frames --out-filename demo/demo_out.gif
     ```
@@ -174,7 +174,7 @@ Assume that you are located at `$MMACTION2` and have already downloaded the chec
 7. Recognize a list of rawframes as input by using a TSN model and then generate an mp4 file with 24 fps.
 
     ```shell
-    python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
+    python demo/demo.py configs/recognition/tsn/tsn_r50_inference_1x1x3_100e_kinetics400_rgb.py \
         checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
         PATH_TO_FRAMES/ LABEL_FILE --use-frames --fps 24 --out-filename demo/demo_out.gif
     ```
