@@ -91,7 +91,8 @@ data = dict(
         data_prefix=data_root_val,
         pipeline=test_pipeline))
 # optimizer
-optimizer = dict(type='SGD', lr=0.0005, momentum=0.9, weight_decay=0.0001)
+optimizer = dict(
+    type='SGD', lr=0.0005, momentum=0.9, weight_decay=0.0001)  # 0.0005 for 32g
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
 lr_config = dict(
@@ -99,7 +100,7 @@ lr_config = dict(
     step=[32, 48],
     warmup='linear',
     warmup_ratio=0.1,
-    warmup_byepoch=True,
+    warmup_by_epoch=True,
     warmup_iters=16)
 total_epochs = 58
 checkpoint_config = dict(interval=2)
