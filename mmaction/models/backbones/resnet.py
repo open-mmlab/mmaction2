@@ -316,6 +316,7 @@ class ResNet(nn.Module):
             Default: dict(type='ReLU', inplace=True).
         norm_eval (bool): Whether to set BN layers to eval mode, namely, freeze
             running stats (mean and var). Default: True.
+        partial_bn (bool): Whether to use partial bn. Default: False.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
             memory while slowing down the training speed. Default: False.
     """
@@ -342,6 +343,7 @@ class ResNet(nn.Module):
                  norm_cfg=dict(type='BN2d', requires_grad=True),
                  act_cfg=dict(type='ReLU', inplace=True),
                  norm_eval=True,
+                 partial_bn=False,
                  with_cp=False):
         super().__init__()
         if depth not in self.arch_settings:
@@ -361,6 +363,7 @@ class ResNet(nn.Module):
         self.norm_cfg = norm_cfg
         self.act_cfg = act_cfg
         self.norm_eval = norm_eval
+        self.partial_bn = partial_bn
         self.with_cp = with_cp
 
         self.block, stage_blocks = self.arch_settings[depth]
@@ -551,6 +554,19 @@ class ResNet(nn.Module):
             for param in m.parameters():
                 param.requires_grad = False
 
+    def _partial_bn(self):
+        logger = get_root_logger()
+        logger.info('Freezing BatchNorm2D except the first one.')
+        count_bn = 0
+        for m in self.modules():
+            if isinstance(m, nn.BatchNorm2d):
+                count_bn += 1
+                if count_bn >= 2:
+                    m.eval()
+                    # shutdown update in frozen mode
+                    m.weight.requires_grad = False
+                    m.bias.requires_grad = False
+
     def train(self, mode=True):
         """Set the optimization status when training."""
         super().train(mode)
@@ -559,3 +575,5 @@ class ResNet(nn.Module):
             for m in self.modules():
                 if isinstance(m, _BatchNorm):
                     m.eval()
+        if mode and self.partial_bn:
+            self._partial_bn()

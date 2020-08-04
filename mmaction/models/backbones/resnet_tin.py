@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 
-from ...utils import get_root_logger
 from ..registry import BACKBONES
 from .resnet_tsm import ResNetTSM
 
@@ -310,7 +309,6 @@ class ResNetTIN(ResNetTSM):
         num_segments (int): Number of frame segments. Default: 8.
         is_tin (bool): Whether to apply temporal interlace. Default: True.
         shift_div (int): Number of division parts for shift. Default: 4.
-        partial_bn (bool): Whether to use partial bn. Default: False.
         kwargs (dict, optional): Arguments for ResNet.
     """
 
@@ -319,13 +317,11 @@ class ResNetTIN(ResNetTSM):
                  num_segments=8,
                  is_tin=True,
                  shift_div=4,
-                 partial_bn=False,
                  **kwargs):
         super().__init__(depth, **kwargs)
         self.num_segments = num_segments
         self.is_tin = is_tin
         self.shift_div = shift_div
-        self.partial_bn = partial_bn
 
     def make_temporal_interlace(self):
         """Make temporal interlace for some layers."""
@@ -376,18 +372,3 @@ class ResNetTIN(ResNetTSM):
             self.make_temporal_interlace()
         if len(self.non_local_cfg) != 0:
             self.make_non_local()
-
-    def train(self, mode=True):
-        super().train(mode)
-        if mode and self.partial_bn:
-            logger = get_root_logger()
-            logger.info('Freezing BatchNorm2D except the first one.')
-            count_bn = 0
-            for m in self.modules():
-                if isinstance(m, nn.BatchNorm2d):
-                    count_bn += 1
-                    if count_bn >= 2:
-                        m.eval()
-                        # shutdown update in frozen mode
-                        m.weight.requires_grad = False
-                        m.bias.requires_grad = False
