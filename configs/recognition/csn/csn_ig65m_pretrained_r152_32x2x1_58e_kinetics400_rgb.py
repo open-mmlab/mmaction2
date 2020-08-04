@@ -113,7 +113,7 @@ log_config = dict(
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/csn_r152_32x2x1_58e_kinetics400_rgb'
+work_dir = './work_dirs/csn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
