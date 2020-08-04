@@ -23,16 +23,26 @@ def parse_args():
     parser.add_argument(
         '--fps',
         default=30,
+        type=int,
         help='specify fps value of the output video when using rawframes to '
         'generate file')
     parser.add_argument(
         '--font-size',
         default=20,
+        type=int,
         help='font size of the label test in output video')
     parser.add_argument(
         '--font-color',
         default='white',
         help='font color of the label test in output video')
+    parser.add_argument(
+        '--target-resolution',
+        nargs=2,
+        default=None,
+        type=int,
+        help='Target resolution (w, h) for resizing the frames when using a '
+        'video as input. If either dimension is set to -1, the frames are '
+        'resized by keeping the existing aspect ratio')
     parser.add_argument(
         '--resize-algorithm',
         default='bicubic',
@@ -48,6 +58,7 @@ def get_output(video_path,
                fps=30,
                font_size=20,
                font_color='white',
+               target_resolution=None,
                resize_algorithm='bicubic',
                use_frames=False):
     """Get demo output using ``moviepy``.
@@ -65,9 +76,13 @@ def get_output(video_path,
         fps (int): Number of picture frames to read per second. Default: 30.
         font_size (int): Font size of the label. Default: 20.
         font_color (str): Font color of the label. Default: 'white'.
-        resize_algorithm (str): The algorithm used for resizing.
-            Default: 'bicubic'. For more information,
-            see https://ffmpeg.org/ffmpeg-scaler.html.
+        target_resolution (None | tuple[int | None]): Set to
+            (desired_width desired_height) to have resized frames. If either
+            dimension is None, the frames are resized by keeping the existing
+            aspect ratio. Default: None.
+        resize_algorithm (str): Support "bicubic", "bilinear", "neighbor",
+            "lanczos", etc. Default: 'bicubic'. For more information,
+            see https://ffmpeg.org/ffmpeg-scaler.html
         use_frames: Determine Whether to use rawframes as input. Default:False.
     """
 
@@ -82,8 +97,13 @@ def get_output(video_path,
             [osp.join(video_path, x) for x in os.listdir(video_path)])
         video_clips = ImageSequenceClip(frame_list, fps=fps)
     else:
+        # revert the order to suit ``VideoFileClip``.
+        # (weight, height) -> (height, weight)
+        target_resolution = (target_resolution[1], target_resolution[0])
         video_clips = VideoFileClip(
-            video_path, resize_algorithm=resize_algorithm)
+            video_path,
+            target_resolution=target_resolution,
+            resize_algorithm=resize_algorithm)
 
     duration_video_clip = video_clips.duration
     text_clips = TextClip(label, fontsize=font_size, color=font_color)
@@ -120,12 +140,22 @@ def main():
         print(f'{result[0]}: ', result[1])
 
     if args.out_filename is not None:
+
+        if args.target_resolution is not None:
+            if args.target_resolution[0] == -1:
+                args.target_resolution[0] = None
+            if args.target_resolution[1] == -1:
+                args.target_resolution[1] = None
+            args.target_resolution = tuple(args.target_resolution)
+
         get_output(
             args.video,
             args.out_filename,
             results[0][0],
+            fps=args.fps,
             font_size=args.font_size,
             font_color=args.font_color,
+            target_resolution=args.target_resolution,
             resize_algorithm=args.resize_algorithm,
             use_frames=args.use_frames)
 
