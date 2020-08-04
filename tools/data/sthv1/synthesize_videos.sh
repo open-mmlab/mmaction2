@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 cd ../
-python build_videos.py ../../data/sthv1/rawframes/ ../../data/sthv1/videos/ --fps 12 --level 1
+python build_videos.py ../../data/sthv1/rawframes/ ../../data/sthv1/videos/ --fps 12 --level 2 --start-idx 1 --filename-tmpl '%05d'
 echo "Genearte videos"
 
 cd sthv1/

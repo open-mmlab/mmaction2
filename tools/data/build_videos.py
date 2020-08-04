@@ -2,9 +2,8 @@ import argparse
 import glob
 import os
 import os.path as osp
+import sys
 from multiprocessing import Pool
-
-import cv2
 
 
 def synthesize_video(frame_dir_item, dev_id=0):
@@ -21,25 +20,19 @@ def synthesize_video(frame_dir_item, dev_id=0):
     full_path, frame_dir_path, frame_dir_id = frame_dir_item
     out_full_path = args.out_dir
 
-    imgs = os.listdir(full_path)
-    img_data = cv2.imread(osp.join(full_path, imgs[0]))
-    size = (img_data.shape[1], img_data.shape[0])
+    img_name_tmpl = args.filename_tmpl + '.' + args.in_format
+    img_path = osp.join(full_path, img_name_tmpl)
 
-    if args.ext == 'mp4':
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        out_vid_name = frame_dir_path + '.mp4'
-        out_vid_path = osp.join(out_full_path, out_vid_name)
-    else:
-        raise TypeError(f'The extension {args.ext} is not supported.')
+    out_vid_name = frame_dir_path + '.' + args.ext
+    out_vid_path = osp.join(out_full_path, out_vid_name)
 
-    videoWrite = cv2.VideoWriter(out_vid_path, fourcc, args.fps, size)
+    cmd = osp.join(
+        f"ffmpeg -start_number {args.start_idx} -r {args.fps} -i '{img_path}' "
+        f"-vcodec {args.vcodec} '{out_vid_path}'")
+    os.system(cmd)
 
-    for img in imgs:
-        img_data = cv2.imread(osp.join(full_path, img), 1)
-        videoWrite.write(img_data)
-
-    videoWrite.release()
     print(f'{frame_dir_id} {frame_dir_path} done')
+    sys.stdout.flush()
     return True
 
 
@@ -67,10 +60,19 @@ def parse_args():
         choices=['jpg', 'png'],
         help='input format')
     parser.add_argument(
+        '--start-idx', type=int, default=0, help='starting index of rawframes')
+    parser.add_argument(
+        '--filename-tmpl',
+        type=str,
+        default='img_%05d',
+        help='filename template of rawframes')
+    parser.add_argument(
+        '--vcodec', type=str, default='mpeg4', help='coding method of videos')
+    parser.add_argument(
         '--ext',
         type=str,
         default='mp4',
-        choices=['mp4'],
+        choices=['mp4', 'avi'],
         help='video file extensions')
     parser.add_argument('--num-gpu', type=int, default=8, help='number of GPU')
     parser.add_argument(
