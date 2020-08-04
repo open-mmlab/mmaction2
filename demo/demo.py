@@ -40,8 +40,9 @@ def parse_args():
         nargs=2,
         default=None,
         type=int,
-        help='Target resolution (w, h) for resizing the frames '
-        'when using a video as input')
+        help='Target resolution (w, h) for resizing the frames when using a '
+        'video as input. If either dimension is set to -1, the frames are '
+        'resized by keeping the existing aspect ratio')
     parser.add_argument(
         '--resize-algorithm',
         default='bicubic',
@@ -139,8 +140,14 @@ def main():
         print(f'{result[0]}: ', result[1])
 
     if args.out_filename is not None:
+
         if args.target_resolution is not None:
+            if args.target_resolution[0] == -1:
+                args.target_resolution[0] = None
+            if args.target_resolution[1] == -1:
+                args.target_resolution[1] = None
             args.target_resolution = tuple(args.target_resolution)
+
         get_output(
             args.video,
             args.out_filename,
