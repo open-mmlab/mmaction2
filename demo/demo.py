@@ -75,14 +75,13 @@ def get_output(video_path,
         fps (int): Number of picture frames to read per second. Default: 30.
         font_size (int): Font size of the label. Default: 20.
         font_color (str): Font color of the label. Default: 'white'.
-        target_resolution (None | tuple[int, int]): Same as that in
-            ``VideoFileClip``. Set to (desired_width desired_height) to have
-            ffmpeg resize the frames before returning them. If either
+        target_resolution (None | tuple[int, int]): Set to
+            (desired_width desired_height) to have resized frames. If either
             dimension is None, the frames are resized by keeping the existing
             aspect ratio. Default: None.
-        resize_algorithm (str): Same as that in ``VideoFileClip``.
-            The algorithm used for resizing. Default: 'bicubic'. For more
-            information, see https://ffmpeg.org/ffmpeg-scaler.html.
+        resize_algorithm (str): Support "bicubic", "bilinear", "neighbor",
+            "lanczos", etc. Default: 'bicubic'. For more information,
+            see https://ffmpeg.org/ffmpeg-scaler.html
         use_frames: Determine Whether to use rawframes as input. Default:False.
     """
 
