@@ -196,7 +196,7 @@ class TestDataset(object):
         video_dataset = VideoDataset(
             self.video_ann_file,
             self.video_pipeline,
-            self.data_prefix,
+            start_index=self.data_prefix,
             test_mode=True)
         result = video_dataset[0]
         assert self.check_keys_contain(result.keys(), target_keys)
