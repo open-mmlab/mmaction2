@@ -1,5 +1,5 @@
 import numpy as np
-from mmcv.cnn import build_norm_layer
+import torch.nn as nn
 from mmcv.runner import HOOKS, Hook, LrUpdaterHook
 from mmcv.runner.hooks.lr_updater import StepLrUpdaterHook
 from torch.nn.modules.utils import _ntuple
@@ -9,6 +9,29 @@ from mmaction.datasets.pipelines.augmentations import Resize
 from mmaction.datasets.pipelines.loading import SampleFrames
 from mmaction.models.common import SubBatchBN3d
 from ..utils import get_root_logger
+
+
+def modify_num_splits(module, num_splits):
+    """Recursively modify the number of splits of subbn3ds in module.
+
+    Args:
+        module (nn.Module): The module to be modified.
+        num_splits (int): The targeted number of splits.
+
+    Returns:
+        int: The number of subbn3d modules modified.
+    """
+    count = 0
+    for child in module.children():
+        if isinstance(child, SubBatchBN3d):
+            new_split_bn = nn.BatchNorm3d(child.num_features *
+                                          num_splits).cuda()
+            child.num_splits = num_splits
+            child.split_bn = new_split_bn
+            count += 1
+        else:
+            count += modify_num_splits(child, num_splits)
+    return count
 
 
 @HOOKS.register_module()
@@ -55,6 +78,8 @@ class MultiGridHook(Hook):
         self.logger.info(self.multi_grid_cfg)
 
     def before_run(self, runner):
+        """Called before running, change the StepLrUpdaterHook to
+        RelativeStepLrHook."""
         self._init_schedule(runner, self.multi_grid_cfg, self.data_cfg)
         step = []
         step = [s[-1] for s in self.schedule]
@@ -65,16 +90,19 @@ class MultiGridHook(Hook):
                 gamma = hook.gamma
                 lrs = [base_lr * gamma**s[0] * s[1][0] for s in self.schedule]
                 lrs = lrs[:-1] + [lrs[-2], lrs[-1]]  # finetune-stage lrs
+                # print(f'real steps: {step}, real lrs: {lrs}')
                 new_hook = RelativeStepLrUpdaterHook(runner, step, lrs)
                 runner.hooks[index] = new_hook
 
     def before_train_epoch(self, runner):
+        """Before training epoch, update the runner based on long-cycle
+        schedule."""
         self._update_long_cycle(runner)
 
     def _update_long_cycle(self, runner):
         """Before every epoch, check if long cycle shape should change.
 
-        If it should, change the runner's optimizer and pipelines accordingly.
+        If it should, change the pipelines accordingly.
         """
         modified = False
         base_b, base_t, base_s = self._get_schedule(runner.epoch)
@@ -103,26 +131,17 @@ class MultiGridHook(Hook):
             self.data_cfg.videos_per_gpu * base_b,  # change here
             self.data_cfg.workers_per_gpu,
             dist=True,
-            drop_last=self.data_cfg.get('train_drop_last', False),
-            seed=self.cfg.seed)
+            drop_last=self.data_cfg.get('train_drop_last', True),
+            seed=self.cfg.seed,
+            short_cycle=True,
+            multi_grid_cfg=self.multi_grid_cfg,
+            base_s=base_s)
         runner.data_loader = dataloader
 
         # rebuild all the sub_batch_bn layers
         if modified:
-            num_modifies = self.modify_num_splits(runner.model, base_b)
-            self.logger.info(f'{num_modifies} subbns modified.')
-
-    def modify_num_splits(self, module, base_b):
-        count = 0
-        for child in module.children():
-            if isinstance(child, SubBatchBN3d):
-                child = build_norm_layer(
-                    dict(type='SubBatchBN3d', num_splits=base_b),
-                    child.num_features)
-                count += 1
-            else:
-                count += self.modify_num_splits(child, base_b)
-        return count
+            num_modifies = modify_num_splits(runner.model, base_b)
+            self.logger.info(f'{num_modifies} subbns modified to {base_b}.')
 
     def _get_long_cycle_schedule(self, runner, cfg):
         # schedule is a list of [step_index, base_shape, epochs]
@@ -155,12 +174,11 @@ class MultiGridHook(Hook):
             all_shapes.append(shapes)
         self.logger.info(f'all shapes are {all_shapes}')
         for hook in runner.hooks:
-            # search for `steps`, maybe a better way is to read
-            # the cfg of optimizer
             if isinstance(hook, LrUpdaterHook):
                 if isinstance(hook, StepLrUpdaterHook):
                     steps = hook.step if isinstance(hook.step,
                                                     list) else [hook.step]
+                    steps = [0] + steps
                     break
                 else:
                     raise NotImplementedError(
@@ -185,7 +203,7 @@ class MultiGridHook(Hook):
         # saving as the rest of the training.
         ft_epochs = final_step_epochs / iter_saving * avg_bs[-1]
         schedule.append((step_index + 1, all_shapes[-1][2], ft_epochs))
-        # Obtrain final schedule given desired cfg.MULTIGRID.EPOCH_FACTOR.
+
         x = (
             runner.max_epochs * cfg.epoch_factor / sum(s[-1]
                                                        for s in schedule))
@@ -213,6 +231,13 @@ class MultiGridHook(Hook):
         return self.schedule[-1][1]
 
     def _init_schedule(self, runner, multi_grid_cfg, data_cfg):
+        """Initialize the multi-grid shcedule.
+
+        Args:
+            runner (mmcv.Runner): The runner within which to train.
+            multi_grid_cfg (mmcv.ConfigDict): The multi-grid config.
+            data_cfg (mmcv.ConfigDict): The data config.
+        """
         self.default_bs = data_cfg.videos_per_gpu
         data_cfg = data_cfg.get('train', None)
         final_resize_cfg = [
@@ -228,10 +253,8 @@ class MultiGridHook(Hook):
             aug for aug in data_cfg.pipeline if aug.type == 'SampleFrames'
         ][0]
         self.default_t = sample_frame_cfg.clip_len
-        self.default_span = (
-            sample_frame_cfg.clip_len * sample_frame_cfg.frame_interval)
         if multi_grid_cfg.long_cycle:
             self.schedule = self._get_long_cycle_schedule(
                 runner, multi_grid_cfg)
         else:
-            raise ValueError('There should be at lease long cycle.')
+            raise ValueError('There should be at least long cycle.')

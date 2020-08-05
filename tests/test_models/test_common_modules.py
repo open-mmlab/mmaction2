@@ -46,7 +46,7 @@ def test_sub_batch_bn3d():
     assert output.size() == x.size()
 
     # subbn3d with affine
-    cfg = {'num_splits': 6, 'affine': True}
+    cfg = {'num_splits': 6}
     subbn3d_affine = SubBatchBN3d(num_features, **cfg)
     assert torch.equal(subbn3d_affine.weight,
                        torch.ones_like(subbn3d_affine.weight))

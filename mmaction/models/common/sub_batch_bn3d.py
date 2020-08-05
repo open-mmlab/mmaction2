@@ -9,23 +9,20 @@ class SubBatchBN3d(nn.Module):
     def __init__(self, num_features, **cfg):
         super(SubBatchBN3d, self).__init__()
         self.num_features = num_features
+        self.cfg_ = cfg.copy()
         if 'num_splits' in cfg:
-            self.cfg_ = cfg.copy()
             self.num_splits = self.cfg_.pop('num_splits')
         else:
             self.num_splits = 1
-
         self.bn = nn.BatchNorm3d(num_features, **self.cfg_)
         self.num_features_split = self.num_features * self.num_splits
         self.split_bn = nn.BatchNorm3d(self.num_features_split, **self.cfg_)
         self.init_weights(cfg)
 
     def init_weights(self, cfg):
-        # Keep only one set of weight and bias.
         if cfg.get('affine', True):
             self.affine = True
             cfg['affine'] = False
-            # constant init
             self.weight = torch.nn.Parameter(torch.ones(self.num_features))
             self.bias = torch.nn.Parameter(torch.zeros(self.num_features))
         else:

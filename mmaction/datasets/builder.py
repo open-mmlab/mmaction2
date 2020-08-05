@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader
 
 from .dataset_wrappers import RepeatDataset
 from .registry import DATASETS
-from .samplers import DistributedSampler
+from .samplers import DistributedSampler, ShortCycleBatchSampler
 
 if platform.system() != 'Windows':
     # https://github.com/pytorch/pytorch/issues/973
@@ -49,6 +49,8 @@ def build_dataloader(dataset,
                      seed=None,
                      drop_last=False,
                      pin_memory=True,
+                     short_cycle=False,
+                     multi_grid_cfg=None,
                      **kwargs):
     """Build PyTorch DataLoader.
 
@@ -71,6 +73,8 @@ def build_dataloader(dataset,
             Default: False
         pin_memory (bool): Whether to use pin_memory in DataLoader.
             Default: True
+        short_cycle (bool): Whether to use a short_cycle sampler.
+            Default: False.
         kwargs (dict, optional): Any keyword argument to be used to initialize
             DataLoader.
 
@@ -84,6 +88,11 @@ def build_dataloader(dataset,
         shuffle = False
         batch_size = videos_per_gpu
         num_workers = workers_per_gpu
+        if short_cycle:
+            assert 'base_s' in kwargs.keys()
+            base_s = kwargs.pop('base_s')
+            sampler = ShortCycleBatchSampler(sampler, batch_size, drop_last,
+                                             multi_grid_cfg, base_s)
     else:
         sampler = None
         batch_size = num_gpus * videos_per_gpu
