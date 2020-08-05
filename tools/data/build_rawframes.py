@@ -10,13 +10,12 @@ import mmcv
 import numpy as np
 
 
-def extract_frame(vid_item, dev_id=0):
+def extract_frame(vid_item):
     """Generate optical flow using dense flow.
 
     Args:
         vid_item (list): Video item containing video full path,
             video (short) path, video id.
-        dev_id (int): Device id.
 
     Returns:
         bool: Whether generate optical flow successfully.
