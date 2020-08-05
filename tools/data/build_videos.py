@@ -6,13 +6,12 @@ import sys
 from multiprocessing import Pool
 
 
-def synthesize_video(frame_dir_item, dev_id=0):
+def synthesize_video(frame_dir_item):
     """Generate videos using opencv-python.
 
     Args:
         frame_dir_item (list): Rawframe item containing raw frame directory
             full path, rawframe directory (short) path, rawframe directory id.
-        dev_id (int): Device id.
 
     Returns:
         bool: Whether synthesize video successfully.
