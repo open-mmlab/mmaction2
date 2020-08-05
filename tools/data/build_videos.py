@@ -6,8 +6,8 @@ import sys
 from multiprocessing import Pool
 
 
-def synthesize_video(frame_dir_item):
-    """Generate videos using opencv-python.
+def encode_video(frame_dir_item):
+    """Encode frames to video using ffmpeg.
 
     Args:
         frame_dir_item (list): Rawframe item containing raw frame directory
@@ -122,5 +122,5 @@ if __name__ == '__main__':
         frame_dir_list = list(map(lambda p: osp.basename(p), fullpath_list))
 
     pool = Pool(args.num_worker)
-    pool.map(synthesize_video,
+    pool.map(encode_video,
              zip(fullpath_list, frame_dir_list, range(len(frame_dir_list))))
