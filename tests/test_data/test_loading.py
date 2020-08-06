@@ -484,7 +484,7 @@ class TestLoading(object):
         sample_frames_results = sample_frames(video_result)
         assert self.check_keys_contain(sample_frames_results.keys(),
                                        target_keys)
-        frame_inds = np.array(list(range(8, 300, 8)))
+        frame_inds = np.array(list(range(8, 300, 16)))
         assert len(sample_frames_results['frame_inds']) == frame_inds.shape[0]
         assert_array_equal(sample_frames_results['frame_inds'], frame_inds)
 
