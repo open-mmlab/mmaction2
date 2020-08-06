@@ -4,11 +4,12 @@ model = dict(
     backbone=dict(
         type='ResNet3dCSN',
         pretrained2d=False,
-        pretrained='modelzoo/irCSN_152_ig65m_from_scratch_lite_new.pth',
+        pretrained=  # noqa: E251
+        'https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/csn/ircsn_from_scratch_r152_ig65m.pth',  # noqa: E501
         depth=152,
-        with_pool2=False,
         bottleneck_mode='ir',
-        norm_eval=False,
+        norm_eval=True,
+        bn_frozen=True,
         zero_init_residual=False),
     cls_head=dict(
         type='I3DHead',
@@ -92,7 +93,8 @@ data = dict(
         data_prefix=data_root_val,
         pipeline=test_pipeline))
 # optimizer
-optimizer = dict(type='SGD', lr=0.0005, momentum=0.9, weight_decay=0.0001)
+optimizer = dict(
+    type='SGD', lr=0.0005, momentum=0.9, weight_decay=0.0001)  # 0.0005 for 32g
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
 lr_config = dict(
@@ -100,7 +102,7 @@ lr_config = dict(
     step=[32, 48],
     warmup='linear',
     warmup_ratio=0.1,
-    warmup_byepoch=True,
+    warmup_by_epoch=True,
     warmup_iters=16)
 total_epochs = 58
 checkpoint_config = dict(interval=2)
@@ -113,7 +115,7 @@ log_config = dict(
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/csn_r152_32x2x1_58e_kinetics400_rgb'
+work_dir = './work_dirs/csn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb'  # noqa: E501
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
