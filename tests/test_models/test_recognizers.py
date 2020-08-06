@@ -244,7 +244,7 @@ def test_tsm():
 
 def test_csn():
     model, train_cfg, test_cfg = _get_recognizer_cfg(
-        'csn/csn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb.py')
+        'csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb.py')
     model['backbone']['pretrained2d'] = False
     model['backbone']['pretrained'] = None
 
