@@ -468,6 +468,7 @@ class TestLoading(object):
             filename_tmpl=None,
             modality='RGB',
             label=1)
+        video_result = copy.deepcopy(self.video_results)
 
         config = dict(clip_len=1, frame_interval=16, start_index=0)
         sample_frames = UntrimSampleFrames(**config)
@@ -477,6 +478,15 @@ class TestLoading(object):
         assert len(sample_frames_results['frame_inds']) == 6
         assert_array_equal(sample_frames_results['frame_inds'],
                            np.array([8, 24, 40, 56, 72, 88]))
+
+        config = dict(clip_len=1, frame_interval=16, start_index=0)
+        sample_frames = UntrimSampleFrames(**config)
+        sample_frames_results = sample_frames(video_result)
+        assert self.check_keys_contain(sample_frames_results.keys(),
+                                       target_keys)
+        frame_inds = np.array(list(range(8, 300, 8)))
+        assert len(sample_frames_results['frame_inds']) == frame_inds.shape[0]
+        assert_array_equal(sample_frames_results['frame_inds'], frame_inds)
 
         config = dict(clip_len=1, frame_interval=16, start_index=1)
         sample_frames = UntrimSampleFrames(**config)
