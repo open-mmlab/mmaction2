@@ -737,13 +737,21 @@ def test_slowonly_backbone():
 
 
 def test_resnet_csn_backbone():
-    """Test resnet_csn backbone"""
+    """Test resnet_csn backbone."""
     with pytest.raises(ValueError):
         # Bottleneck mode must be "ip" or "ir"
         ResNet3dCSN(152, None, bottleneck_mode='id')
 
     input_shape = (2, 3, 6, 64, 64)
     imgs = _demo_inputs(input_shape)
+
+    resnet3d_csn_frozen = ResNet3dCSN(
+        152, None, bn_frozen=True, norm_eval=True)
+    resnet3d_csn_frozen.train()
+    for m in resnet3d_csn_frozen.modules():
+        if isinstance(m, _BatchNorm):
+            for param in m.parameters():
+                assert param.requires_grad is False
 
     # Interaction-preserved channel-separated bottleneck block
     resnet3d_csn_ip = ResNet3dCSN(152, None, bottleneck_mode='ip')

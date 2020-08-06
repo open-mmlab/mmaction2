@@ -42,6 +42,21 @@ class RawframeDataset(BaseDataset):
         some/directory-5 295 3
         some/directory-6 121 3
 
+    Example of a with_offset annotation file (clips from long videos), each
+    line indicates the directory to frames of a video, the index of the start
+    frame, total frames of the video clip and the label of a video clip, which
+    are split with a whitespace.
+
+
+    .. code-block:: txt
+
+        some/directory-1 12 163 3
+        some/directory-2 213 122 4
+        some/directory-3 100 258 5
+        some/directory-4 98 234 2
+        some/directory-5 0 295 3
+        some/directory-6 50 121 3
+
 
     Args:
         ann_file (str): Path to the annotation file.
@@ -52,6 +67,8 @@ class RawframeDataset(BaseDataset):
             Default: False.
         filename_tmpl (str): Template for each filename.
             Default: 'img_{:05}.jpg'.
+        with_offset (bool): Determines whether the offset information is in
+            ann_file. Default: False.
         multi_class (bool): Determines whether it is a multi-class
             recognition dataset. Default: False.
         num_classes (int): Number of classes in the dataset. Default: None.
@@ -65,12 +82,14 @@ class RawframeDataset(BaseDataset):
                  data_prefix=None,
                  test_mode=False,
                  filename_tmpl='img_{:05}.jpg',
+                 with_offset=False,
                  multi_class=False,
                  num_classes=None,
                  modality='RGB'):
+        self.filename_tmpl = filename_tmpl
+        self.with_offset = with_offset
         super().__init__(ann_file, pipeline, data_prefix, test_mode,
                          multi_class, num_classes, modality)
-        self.filename_tmpl = filename_tmpl
 
     def load_annotations(self):
         """Load annotation file to get video information."""
@@ -78,23 +97,36 @@ class RawframeDataset(BaseDataset):
         with open(self.ann_file, 'r') as fin:
             for line in fin:
                 line_split = line.strip().split()
-                if self.multi_class:
-                    assert self.num_classes is not None
-                    (frame_dir, total_frames,
-                     label) = (line_split[0], line_split[1], line_split[2:])
-                    label = list(map(int, label))
-                    onehot = torch.zeros(self.num_classes)
-                    onehot[label] = 1.0
-                else:
-                    frame_dir, total_frames, label = line_split
-                    label = int(label)
+                video_info = {}
+                idx = 0
+                # idx for frame_dir
+                frame_dir = line_split[idx]
                 if self.data_prefix is not None:
                     frame_dir = osp.join(self.data_prefix, frame_dir)
-                video_infos.append(
-                    dict(
-                        frame_dir=frame_dir,
-                        total_frames=int(total_frames),
-                        label=onehot if self.multi_class else label))
+                video_info['frame_dir'] = frame_dir
+                idx += 1
+                if self.with_offset:
+                    # idx for offset and total_frames
+                    video_info['offset'] = int(line_split[idx])
+                    video_info['total_frames'] = int(line_split[idx + 1])
+                    idx += 2
+                else:
+                    # idx for total_frames
+                    video_info['total_frames'] = int(line_split[idx])
+                    idx += 1
+                # idx for label[s]
+                label = [int(x) for x in line_split[idx:]]
+                assert len(label), f'missing label in line: {line}'
+                if self.multi_class:
+                    assert self.num_classes is not None
+                    onehot = torch.zeros(self.num_classes)
+                    onehot[label] = 1.0
+                    video_info['label'] = onehot
+                else:
+                    assert len(label) == 1
+                    video_info['label'] = label[0]
+                video_infos.append(video_info)
+
         return video_infos
 
     def prepare_train_frames(self, idx):

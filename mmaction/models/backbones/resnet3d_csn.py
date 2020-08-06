@@ -1,5 +1,6 @@
 import torch.nn as nn
 from mmcv.cnn import ConvModule
+from mmcv.utils import _BatchNorm
 
 from ..registry import BACKBONES
 from .resnet3d import Bottleneck3d, ResNet3d
@@ -110,6 +111,7 @@ class ResNet3dCSN(ResNet3d):
                  norm_cfg=dict(type='BN3d', requires_grad=True, eps=1e-3),
                  inflate_style='3x3x3',
                  bottleneck_mode='ir',
+                 bn_frozen=False,
                  **kwargs):
         self.arch_settings = {
             # 18: (BasicBlock3d, (2, 2, 2, 2)),
@@ -118,6 +120,7 @@ class ResNet3dCSN(ResNet3d):
             101: (CSNBottleneck3d, (3, 4, 23, 3)),
             152: (CSNBottleneck3d, (3, 8, 36, 3))
         }
+        self.bn_frozen = bn_frozen
         if bottleneck_mode not in ['ip', 'ir']:
             raise ValueError(f'Bottleneck mode must be "ip" or "ir",'
                              f'but got {bottleneck_mode}.')
@@ -140,3 +143,14 @@ class ResNet3dCSN(ResNet3d):
             res_layer = getattr(self, layer_name)
             x = res_layer(x)
         return x
+
+    def train(self, mode=True):
+        super(ResNet3d, self).train()
+        self._freeze_stages()
+        if mode and self.norm_eval:
+            for m in self.modules():
+                if isinstance(m, _BatchNorm):
+                    m.eval()
+                    if self.bn_frozen:
+                        for param in m.parameters():
+                            param.requires_grad = False
