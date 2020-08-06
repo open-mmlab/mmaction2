@@ -7,9 +7,9 @@ model = dict(
         pretrained=  # noqa: E251
         'https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/csn/ircsn_from_scratch_r152_ig65m.pth',  # noqa: E501
         depth=152,
+        with_pool2=False,
         bottleneck_mode='ir',
-        norm_eval=True,
-        bn_frozen=True,
+        norm_eval=False,
         zero_init_residual=False),
     cls_head=dict(
         type='I3DHead',
@@ -115,7 +115,7 @@ log_config = dict(
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/csn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb'  # noqa: E501
+work_dir = './work_dirs/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]

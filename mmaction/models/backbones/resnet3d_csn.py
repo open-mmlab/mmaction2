@@ -136,14 +136,6 @@ class ResNet3dCSN(ResNet3d):
             bottleneck_mode=bottleneck_mode,
             **kwargs)
 
-    def forward(self, x):
-        x = self.conv1(x)
-        x = self.maxpool(x)
-        for i, layer_name in enumerate(self.res_layers):
-            res_layer = getattr(self, layer_name)
-            x = res_layer(x)
-        return x
-
     def train(self, mode=True):
         super(ResNet3d, self).train()
         self._freeze_stages()
