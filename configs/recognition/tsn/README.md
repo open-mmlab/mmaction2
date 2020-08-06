@@ -71,10 +71,10 @@ In data benchmark, we compare: 1. Different data preprocessing methods: (1) Resi
 
 | config                                                       | resolution | gpus | backbone |  pretrain   | top1 acc | top5 acc | gpu_mem(M) | ckpt | log  | json |
 | :----------------------------------------------------------- | :--------: | :--: | :------: | :---------: | :------: | :------: | :--------: | :--: | :--: | :--: |
-| [tsn_r50_320p_1x1x8_50e_anet_video_rgb](activitynet/tsn_r50_320p_1x1x8_50e_anet_video_rgb.py) |  340x256   | 8x1  | ResNet50 | Kinetics400 |  73.97   |  93.46   |    5692    |  x   |  x   |  x   |
-| [tsn_r50_320p_1x1x8_50e_anet_clip_rgb](activitynet/tsn_r50_320p_1x1x8_50e_anet_clip_rgb.py) |  340x256   | 8x1  | ResNet50 | Kinetics400 |  76.07   |  94.10   |    5692    |  x   |  x   |  x   |
-| [tsn_r50_320p_1x1x8_150e_anet_video_flow](activitynet/tsn_r50_320p_1x1x8_150e_anet_video_flow.py) |  340x256   | 8x2  | ResNet50 | Kinetics400 |  58.70   |  84.72   |    5780    |  x   |  x   |  x   |
-| [tsn_r50_320p_1x1x8_150e_anet_clip_flow](activitynet/tsn_r50_320p_1x1x8_150e_anet_clip_flow.py) |  340x256   | 8x2  | ResNet50 | Kinetics400 |  59.51   |  82.69   |    5780    |  x   |  x   |  x   |
+| [tsn_r50_320p_1x1x8_50e_activitynet_video_rgb](activitynet/tsn_r50_320p_1x1x8_50e_activitynet_video_rgb.py) |  340x256   | 8x1  | ResNet50 | Kinetics400 |  73.97   |  93.46   |    5692    |  x   |  x   |  x   |
+| [tsn_r50_320p_1x1x8_50e_activitynet_clip_rgb](activitynet/tsn_r50_320p_1x1x8_50e_activitynet_clip_rgb.py) |  340x256   | 8x1  | ResNet50 | Kinetics400 |  76.07   |  94.10   |    5692    |  x   |  x   |  x   |
+| [tsn_r50_320p_1x1x8_150e_activitynet_video_flow](activitynet/tsn_r50_320p_1x1x8_150e_activitynet_video_flow.py) |  340x256   | 8x2  | ResNet50 | Kinetics400 |  58.70   |  84.72   |    5780    |  x   |  x   |  x   |
+| [tsn_r50_320p_1x1x8_150e_activitynet_clip_flow](activitynet/tsn_r50_320p_1x1x8_150e_activitynet_clip_flow.py) |  340x256   | 8x2  | ResNet50 | Kinetics400 |  59.51   |  82.69   |    5780    |  x   |  x   |  x   |
 
 Notes:
 

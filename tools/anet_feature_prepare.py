@@ -20,34 +20,34 @@ def parse_args():
     return args
 
 
-def pool_feature(data, num_prop=100, num_sample_bin=3, pool_type='mean'):
+def pool_feature(data, num_proposals=100, num_sample_bins=3, pool_type='mean'):
     """Pool features with arbitrary temporal length.
 
     Args:
-        data (list[np.ndarray] or np.ndarray): features of an untrimmed video,
+        data (list[np.ndarray] | np.ndarray): Features of an untrimmed video,
             with arbitrary temporal length.
-        num_prop (int): The temporal dim of pooled feature. Default: 100.
-        num_sample_bin (int): How many points to sample to get the feature
+        num_proposals (int): The temporal dim of pooled feature. Default: 100.
+        num_sample_bins (int): How many points to sample to get the feature
             vector at one timestamp. Default: 3.
         pool_type (str): Type of pooling to pool features. Choices are
             ['mean', 'max']. Default: 'mean'.
 
     Returns:
-        np.ndarray: The pooled feature with shape num_prop x feature_dim.
+        np.ndarray: The pooled feature with shape num_proposals x feature_dim.
     """
     if len(data) == 1:
-        return np.concatenate([data] * num_prop)
+        return np.concatenate([data] * num_proposals)
     x_range = list(range(len(data)))
     f = scipy.interpolate.interp1d(x_range, data, axis=0)
     eps = 1e-4
     st, ed = eps, len(data) - 1 - eps
-    anchor_size = (ed - st) / num_prop
+    anchor_size = (ed - st) / num_proposals
     ptr = st
     feature = []
-    for i in range(num_prop):
+    for i in range(num_proposals):
         x_new = [
-            ptr + i / num_sample_bin * anchor_size
-            for i in range(num_sample_bin)
+            ptr + i / num_sample_bins * anchor_size
+            for i in range(num_sample_bins)
         ]
         y_new = f(x_new)
         if pool_type == 'mean':
@@ -75,10 +75,10 @@ def merge_feat(name):
     elif args.output_format == 'csv':
         feat = feat.tolist()
         lines = []
-        line0 = ','.join(['f{}'.format(i) for i in range(400)])
+        line0 = ','.join([f'f{i}' for i in range(400)])
         lines.append(line0)
         for line in feat:
-            lines.append(','.join(['{:.4f}'.format(x) for x in line]))
+            lines.append(','.join([f'{x:.4f}' for x in line]))
         with open(osp.join(args.dest, name.replace('.pkl', '.csv')), 'w') as f:
             f.write('\n'.join(lines))
 
