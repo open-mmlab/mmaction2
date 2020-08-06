@@ -2,9 +2,9 @@ import argparse
 import os.path as osp
 import pickle
 
+import mmcv
 import numpy as np
 import torch
-from tqdm import tqdm
 
 from mmaction.datasets.pipelines import Compose
 from mmaction.models import build_model
@@ -16,8 +16,8 @@ def parse_args():
     parser.add_argument('--output-prefix', default='', help='output prefix')
     parser.add_argument(
         '--data-list',
-        help='video list of the \
-        dataset, the format should be `frame_dir num_frames output_file`')
+        help='video list of the dataset, the format should be '
+        '`frame_dir num_frames output_file`')
     parser.add_argument(
         '--frame-interval',
         type=int,
@@ -94,9 +94,9 @@ def main():
     data = data[args.part::args.tot]
 
     # enumerate Untrimmed videos, extract feature from each of them
-    for item in tqdm(data):
-        item = item.split()
-        frame_dir, length, output_file = item
+    prog_bar = mmcv.ProgressBar(len(data))
+    for item in data:
+        frame_dir, length, output_file = item.split()
         frame_dir = osp.join(args.data_prefix, frame_dir)
         output_file = osp.join(args.output_prefix, output_file)
         assert output_file.endswith('.pkl')
@@ -114,10 +114,7 @@ def main():
         # the original shape should be N_seg * C * H * W, resize it to N_seg *
         # 1 * C * H * W so that the network return feature of each frame (No
         # score average among segments)
-        imgs = imgs.reshape((
-            shape[0],
-            1,
-        ) + shape[1:])
+        imgs = imgs.reshape((shape[0], 1) + shape[1:])
         imgs = imgs.cuda()
 
         def forward_data(model, data):
@@ -136,6 +133,7 @@ def main():
         feat = forward_data(model, imgs)
         with open(output_file, 'wb') as fout:
             pickle.dump(feat, fout)
+        prog_bar.update()
 
 
 if __name__ == '__main__':
