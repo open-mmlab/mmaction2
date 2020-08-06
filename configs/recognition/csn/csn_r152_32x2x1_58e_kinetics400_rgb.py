@@ -6,6 +6,7 @@ model = dict(
         pretrained2d=False,
         pretrained='modelzoo/irCSN_152_ig65m_from_scratch_lite_new.pth',
         depth=152,
+        with_pool2=False,
         bottleneck_mode='ir',
         norm_eval=False,
         zero_init_residual=False),
