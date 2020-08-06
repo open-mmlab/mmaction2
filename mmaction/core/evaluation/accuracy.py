@@ -412,37 +412,37 @@ def compute_average_precision_detection(ground_truth,
         Average precision score.
     """
     ap = np.zeros(len(tiou_thresholds))
-    if prediction.empty:
+    if len(prediction) < 1:
         return ap
 
-    npos = float(len(ground_truth))
-    lock_gt = np.ones((len(tiou_thresholds), len(ground_truth))) * -1
+    npos = 0.
+    lock_gt = dict()
+    for key in ground_truth.keys():
+        lock_gt[key] = np.ones(
+            (len(tiou_thresholds), len(ground_truth[key]))) * -1
+        npos += len(ground_truth[key])
+
     # Sort predictions by decreasing score order.
-    sort_idx = prediction['score'].values.argsort()[::-1]
-    prediction = prediction.loc[sort_idx].reset_index(drop=True)
+    prediction = np.array(prediction)
+    scores = prediction[:, 4].astype(float)
+    sort_idx = np.argsort(scores)[::-1]
+    prediction = prediction[sort_idx]
 
     # Initialize true positive and false positive vectors.
     tp = np.zeros((len(tiou_thresholds), len(prediction)))
     fp = np.zeros((len(tiou_thresholds), len(prediction)))
 
-    # Adaptation to query faster
-    ground_truth_gbvn = ground_truth.groupby('video-id')
-
     # Assigning true positive to truly grount truth instances.
-    for idx, this_pred in prediction.iterrows():
+    for idx, this_pred in enumerate(prediction):
 
-        try:
-            # Check if there is at least one ground truth in the video.
-            ground_truth_videoid = ground_truth_gbvn.get_group(
-                this_pred['video-id'])
-        except Exception:
+        # Check if there is at least one ground truth in the video.
+        if (this_pred[0] in ground_truth.keys()):
+            this_gt = np.array(ground_truth[this_pred[0]], dtype=float)
+        else:
             fp[:, idx] = 1
             continue
 
-        this_gt = ground_truth_videoid.reset_index()
-        tiou_arr = pairwise_temporal_iou(
-            this_pred[['t-start', 't-end']].values,
-            this_gt[['t-start', 't-end']].values)
+        tiou_arr = pairwise_temporal_iou(this_pred[2:4].astype(float), this_gt)
         # We would like to retrieve the predictions with highest tiou score.
         tiou_sorted_idx = tiou_arr.argsort()[::-1]
         for tidx, tiou_thr in enumerate(tiou_thresholds):
@@ -450,11 +450,11 @@ def compute_average_precision_detection(ground_truth,
                 if tiou_arr[jdx] < tiou_thr:
                     fp[tidx, idx] = 1
                     break
-                if lock_gt[tidx, this_gt.loc[jdx]['index']] >= 0:
+                if lock_gt[this_pred[0]][tidx, jdx] >= 0:
                     continue
                 # Assign as true positive after the filters above.
                 tp[tidx, idx] = 1
-                lock_gt[tidx, this_gt.loc[jdx]['index']] = idx
+                lock_gt[this_pred[0]][tidx, jdx] = idx
                 break
 
             if fp[tidx, idx] == 0 and tp[tidx, idx] == 0:

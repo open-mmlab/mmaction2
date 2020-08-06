@@ -4,14 +4,12 @@ import os.path as osp
 
 import mmcv
 import numpy as np
-import pandas as pd
 from terminaltables import AsciiTable
 from torch.nn.modules.utils import _pair
 
-from ..localization import (detections_to_df, eval_ap_parallel,
-                            load_localize_proposal_file, perform_regression,
-                            process_norm_proposal_file, results_to_detections,
-                            temporal_iou, temporal_nms)
+from ..localization import (eval_ap_parallel, load_localize_proposal_file,
+                            perform_regression, process_norm_proposal_file,
+                            results_to_detections, temporal_iou, temporal_nms)
 from ..localization.ssn_utils import parse_frame_folder
 from ..utils import get_root_logger
 from .base import BaseDataset
@@ -159,6 +157,7 @@ class SSNDataset(BaseDataset):
             Default: 1.
         filter_gt (bool): Whether to filter videos with no annotation
             during training. Default: True.
+        no_regression (bool): Whether to perform regression.
         verbose (bool): Whether to print full information or not.
             Default: False.
     """
@@ -179,6 +178,7 @@ class SSNDataset(BaseDataset):
                  clip_len=1,
                  frame_interval=1,
                  filter_gt=True,
+                 no_regression=False,
                  verbose=False):
         self.logger = get_root_logger()
         super(SSNDataset, self).__init__(ann_file, pipeline, data_prefix,
@@ -240,6 +240,7 @@ class SSNDataset(BaseDataset):
 
         # test mode or not
         self.filter_gt = filter_gt
+        self.no_regression = no_regression
         self.test_mode = test_mode
 
         # yapf: disable
@@ -326,7 +327,12 @@ class SSNDataset(BaseDataset):
                     proposals=proposals))
         return video_infos
 
-    def evaluate(self, dataset, results, metrics='mAP', eval='thumos14'):
+    def evaluate(self,
+                 dataset,
+                 results,
+                 metrics='mAP',
+                 eval='thumos14',
+                 **kwargs):
         detections = results_to_detections(dataset, results,
                                            **self.test_cfg.ssn.evaluater)
 
@@ -349,30 +355,32 @@ class SSNDataset(BaseDataset):
 
         iou_range = np.arange(0.1, 1.0, .1)
 
-        # get gt
-        all_gt = pd.DataFrame(
-            dataset.get_all_gt(),
-            columns=['video-id', 'class_idx', 't-start', 't-end'])
-        gt_by_cls = [
-            all_gt[all_gt.cls == class_idx].reset_index(
-                drop=True).drop('class_idx', 1)
-            for class_idx in range(len(detections))
-        ]
-        plain_detections = [
-            detections_to_df(detections, class_idx)
-            for class_idx in range(len(detections))
-        ]
-        ap_values = eval_ap_parallel(plain_detections, gt_by_cls, iou_range)
+        # get gts
+        all_gts = dataset.get_all_gts()
+        for class_idx in range(len(detections)):
+            if (class_idx not in all_gts.keys()):
+                all_gts[class_idx] = dict()
+
+        # get predictions
+        plain_detections = {}
+        for class_idx in range(len(detections)):
+            detection_list = []
+            for vid, dets in detections[class_idx].items():
+                detection_list.extend([[vid, class_idx] + x[:3]
+                                       for x in dets.tolist()])
+            plain_detections[class_idx] = detection_list
+
+        ap_values = eval_ap_parallel(plain_detections, all_gts, iou_range)
         map_iou = ap_values.mean(axis=0)
         self.logger.info('Evaluation finished')
 
         # display
-        display_title = 'Temporal detection performance ({})'.format(eval)
+        display_title = f'Temporal detection performance ({eval})'
         display_data = [['IoU thresh'], ['mean AP']]
 
         for i in range(len(iou_range)):
-            display_data[0].append('{:.02f}'.format(iou_range[i]))
-            display_data[1].append('{:.04f}'.format(map_iou[i]))
+            display_data[0].append(f'{iou_range[i]:.02f}')
+            display_data[1].append(f'{map_iou[i]:.04f}')
         table = AsciiTable(display_data, display_title)
         table.justify_columns[-1] = 'right'
         table.inner_footing_row_border = True
@@ -400,18 +408,30 @@ class SSNDataset(BaseDataset):
             self.background_pool.extend([video_info['video_id'], proposal]
                                         for proposal in backgrounds)
 
-    def get_all_gt(self):
+    def get_all_gts(self):
         """Fetch groundtruth instances of the entire dataset."""
-        gt_list = []
+        gts = {}
         for video_info in self.video_infos:
             vid = video_info['video_id']
-            # gt_list: [[video_id, class_idx,relative_start, relative_end],]
-            gt_list.extend([[
-                vid, gt.label - 1, gt.start_frame / video_info['total_frames'],
-                gt.end_frame / video_info['total_frames']
-            ] for gt in video_info['gts']])
+            for gt in video_info['gts']:
+                class_idx = gt.label - 1
+                # gt_info: [relative_start, relative_end]
+                gt_info = [
+                    gt.start_frame / video_info['total_frames'],
+                    gt.end_frame / video_info['total_frames']
+                ]
+                if class_idx not in gts.keys():
+                    gts[class_idx] = dict()
+                    gts[class_idx][vid] = []
+                    gts[class_idx][vid].append(gt_info)
+                else:
+                    if vid in gts[class_idx].keys():
+                        gts[class_idx][vid].append(gt_info)
+                    else:
+                        gts[class_idx][vid] = []
+                        gts[class_idx][vid].append(gt_info)
 
-        return gt_list
+        return gts
 
     def _filter_records(self):
         """Filter videos with no groundtruth during training."""

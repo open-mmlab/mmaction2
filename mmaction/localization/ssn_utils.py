@@ -8,7 +8,6 @@ from multiprocessing import Pool
 
 import mmcv
 import numpy as np
-import pandas as pd
 
 from ..core.evaluation.accuracy import (compute_average_precision_detection,
                                         np_softmax)
@@ -122,7 +121,7 @@ def parse_frame_folder(path,
                        flow_y_prefix='flow_y_',
                        level=1):
     """Parse directories holding extracted frames from standard benchmarks."""
-    print('parse frames under folder {}'.format(path))
+    print(f'parse frames under folder {path}')
     if level == 1:
         frame_folders = glob.glob(os.path.join(path, '*'))
     elif level == 2:
@@ -148,7 +147,7 @@ def parse_frame_folder(path,
             raise ValueError('x and y direction have different number '
                              'of flow images. video: ' + frame_folder)
         if i % 200 == 0:
-            print('{} videos parsed'.format(i))
+            print(f'{i} videos parsed')
 
         frame_dict[key] = (frame_folder, num_all[0], num_flow_x)
 
@@ -163,8 +162,8 @@ def results_to_detections(dataset,
                           softmax_before_filter=True,
                           cls_score_dict=None,
                           cls_top_k=2):
-    num_class = outputs[0][1].shape[1] - 1
-    detections = [dict() for i in range(num_class)]
+    num_classes = outputs[0][1].shape[1] - 1
+    detections = [dict() for i in range(num_classes)]
 
     for idx in range(len(dataset)):
         video_id = dataset.video_infos[idx]['video_id']
@@ -177,14 +176,14 @@ def results_to_detections(dataset,
         regression_scores = outputs[idx][3]
         if regression_scores is None:
             regression_scores = np.zeros(
-                len(relative_proposals), num_class, 2, dtype=np.float32)
-        regression_scores = regression_scores.reshape((-1, num_class, 2))
+                len(relative_proposals), num_classes, 2, dtype=np.float32)
+        regression_scores = regression_scores.reshape((-1, num_classes, 2))
 
         if top_k <= 0 and cls_score_dict is None:
             combined_scores = (
                 np_softmax(action_scores[:, 1:], dim=1) *
                 np.exp(complete_scores))
-            for i in range(num_class):
+            for i in range(num_classes):
                 center_scores = regression_scores[:, i, 0][:, None]
                 duration_scores = regression_scores[:, i, 1][:, None]
                 detections[i][video_id] = np.concatenate(
@@ -197,8 +196,8 @@ def results_to_detections(dataset,
                 np.exp(complete_scores))
             keep_idx = np.argsort(combined_scores.ravel())[-top_k:]
             for k in keep_idx:
-                class_idx = k % num_class
-                proposal_idx = k // num_class
+                class_idx = k % num_classes
+                proposal_idx = k // num_classes
                 new_item = [
                     relative_proposals[proposal_idx,
                                        0], relative_proposals[proposal_idx, 1],
@@ -270,17 +269,6 @@ def temporal_nms(detections, thresh):
     return detections[keep, :]
 
 
-def detections_to_df(detections, class_idx):
-    detection_list = []
-    for vid, dets in detections[class_idx].items():
-        detection_list.extend([[vid, class_idx] + x[:3]
-                               for x in dets.tolist()])
-    df = pd.DataFrame(
-        detection_list,
-        columns=['video-id', 'class_idx', 't-start', 't-end', 'score'])
-    return df
-
-
 def eval_ap(iou, iou_idx, class_idx, gt, prediction):
     ap = compute_average_precision_detection(gt, prediction, iou)
     sys.stdout.flush()
@@ -301,13 +289,8 @@ def eval_ap_parallel(detections, gt_by_cls, iou_range, worker=32):
             jobs.append(
                 pool.apply_async(
                     eval_ap,
-                    args=(
-                        [min_overlap],
-                        iou_idx,
-                        class_idx,
-                        gt_by_cls[class_idx],
-                        detections[class_idx],
-                    ),
+                    args=([min_overlap], iou_idx, class_idx,
+                          gt_by_cls[class_idx], detections[class_idx]),
                     callback=callback))
     pool.close()
     pool.join()
