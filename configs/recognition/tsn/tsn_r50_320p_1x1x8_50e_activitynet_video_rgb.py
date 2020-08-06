@@ -19,11 +19,11 @@ train_cfg = None
 test_cfg = dict(average_clips=None)
 # dataset settings
 dataset_type = 'RawframeDataset'
-data_root = 'data/anet/rgb'
-data_root_val = 'data/anet/rgb'
-ann_file_train = 'data/anet/anet_train_video.txt'
-ann_file_val = 'data/anet/anet_val_video.txt'
-ann_file_test = 'data/anet/anet_val_video.txt'
+data_root = 'data/ActivityNet/rgb'
+data_root_val = 'data/ActivityNet/rgb'
+ann_file_train = 'data/ActivityNet/anet_train_clip.txt'
+ann_file_val = 'data/ActivityNet/anet_val_clip.txt'
+ann_file_test = 'data/ActivityNet/anet_val_clip.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
