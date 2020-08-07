@@ -6,10 +6,11 @@ import mmcv
 import numpy as np
 import pytest
 import torch
+from mmcv import ConfigDict
 from numpy.testing import assert_array_equal
 
 from mmaction.datasets import (ActivityNetDataset, RawframeDataset,
-                               RepeatDataset, VideoDataset)
+                               RepeatDataset, SSNDataset, VideoDataset)
 
 
 class TestDataset(object):
@@ -30,6 +31,8 @@ class TestDataset(object):
         cls.video_ann_file = osp.join(cls.data_prefix, 'video_test_list.txt')
         cls.action_ann_file = osp.join(cls.data_prefix,
                                        'action_test_anno.json')
+        cls.proposal_ann_file = osp.join(cls.data_prefix,
+                                         'proposal_test_list.txt')
 
         cls.frame_pipeline = [
             dict(
@@ -49,6 +52,63 @@ class TestDataset(object):
             dict(type='OpenCVDecode')
         ]
         cls.action_pipeline = []
+        cls.proposal_pipeline = [
+            dict(
+                type='SSNSampleFrames',
+                clip_len=1,
+                body_segments=5,
+                aug_segments=(2, 2),
+                aug_ratio=0.5),
+            dict(type='FrameSelector', io_backend='disk')
+        ]
+        cls.proposal_pipeline = [
+            dict(
+                type='SampleProposalFrames',
+                clip_len=1,
+                body_segments=5,
+                aug_segments=(2, 2),
+                aug_ratio=0.5),
+            dict(type='FrameSelector', io_backend='disk')
+        ]
+        cls.proposal_test_pipeline = [
+            dict(
+                type='SampleProposalFrames',
+                clip_len=1,
+                body_segments=5,
+                aug_segments=(2, 2),
+                aug_ratio=0.5,
+                mode='test'),
+            dict(type='FrameSelector', io_backend='disk')
+        ]
+
+        cls.proposal_train_cfg = ConfigDict(
+            dict(
+                ssn=dict(
+                    assigner=dict(
+                        positive_iou_threshold=0.7,
+                        background_iou_threshold=0.01,
+                        incomplete_iou_threshold=0.5,
+                        background_coverage_threshold=0.02,
+                        incomplete_overlap_threshold=0.01),
+                    sampler=dict(
+                        num_per_video=8,
+                        positive_ratio=1,
+                        background_ratio=1,
+                        incomplete_ratio=6,
+                        add_gt_as_proposals=True),
+                    loss_weight=dict(
+                        comp_loss_weight=0.1, reg_loss_weight=0.1),
+                    debug=False)))
+        cls.proposal_test_cfg = ConfigDict(
+            dict(
+                ssn=dict(
+                    sampler=dict(test_interval=6, batch_size=16),
+                    evaluater=dict(
+                        top_k=2000,
+                        nms=0.2,
+                        softmax_before_filter=True,
+                        cls_score_dict=None,
+                        cls_top_k=2))))
 
     def test_rawframe_dataset(self):
         rawframe_dataset = RawframeDataset(self.frame_ann_file,
@@ -220,6 +280,40 @@ class TestDataset(object):
             self.data_prefix,
             test_mode=True)
         result = action_dataset[0]
+        assert self.check_keys_contain(result.keys(), target_keys)
+
+    def test_proposal_pipeline(self):
+        target_keys = [
+            'frame_dir', 'video_id', 'total_frames', 'gts', 'proposals',
+            'filename_tmpl', 'modality', 'out_proposals', 'reg_targets',
+            'proposal_scale_factor', 'proposal_labels', 'proposal_type'
+        ]
+
+        # SSN Dataset not in test mode
+        proposal_dataset = SSNDataset(
+            self.proposal_ann_file,
+            self.proposal_pipeline,
+            self.proposal_train_cfg,
+            self.proposal_test_cfg,
+            data_prefix=self.data_prefix)
+        result = proposal_dataset[0]
+        assert self.check_keys_contain(result.keys(), target_keys)
+
+        target_keys = [
+            'frame_dir', 'video_id', 'total_frames', 'gts', 'proposals',
+            'filename_tmpl', 'modality', 'relative_proposal_list',
+            'scale_factor_list', 'proposal_tick_list', 'reg_norm_consts'
+        ]
+
+        # SSN Dataset in test mode
+        proposal_dataset = SSNDataset(
+            self.proposal_ann_file,
+            self.proposal_test_pipeline,
+            self.proposal_train_cfg,
+            self.proposal_test_cfg,
+            data_prefix=self.data_prefix,
+            test_mode=True)
+        result = proposal_dataset[0]
         assert self.check_keys_contain(result.keys(), target_keys)
 
     def test_rawframe_evaluate(self):
@@ -446,3 +540,14 @@ class TestDataset(object):
                 load_obj,
                 np.array([[1, 2, 3, 4, 5], [6, 7, 8, 9, 10]],
                          dtype=np.float32))
+
+    def test_ssn_dataset(self):
+        ssn_dataset = SSNDataset(
+            self.proposal_ann_file,
+            self.proposal_pipeline,
+            self.proposal_train_cfg,
+            self.proposal_test_cfg,
+            data_prefix=self.data_prefix)
+        ssn_infos = ssn_dataset.video_infos
+        assert ssn_infos[0]['video_id'] == 'test_imgs'
+        assert ssn_infos[0]['total_frames'] == 5

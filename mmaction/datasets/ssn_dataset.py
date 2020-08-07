@@ -4,7 +4,6 @@ import os.path as osp
 
 import mmcv
 import numpy as np
-from terminaltables import AsciiTable
 from torch.nn.modules.utils import _pair
 
 from ..localization import (eval_ap_parallel, load_localize_proposal_file,
@@ -381,6 +380,10 @@ class SSNDataset(BaseDataset):
         for i in range(len(iou_range)):
             display_data[0].append(f'{iou_range[i]:.02f}')
             display_data[1].append(f'{map_iou[i]:.04f}')
+        try:
+            from terminaltables import AsciiTable
+        except ImportError:
+            raise ImportError('Please install terminaltables')
         table = AsciiTable(display_data, display_title)
         table.justify_columns[-1] = 'right'
         table.inner_footing_row_border = True
@@ -514,7 +517,7 @@ class SSNDataset(BaseDataset):
         """Sample proposals from the this video instance.
 
         Args:
-            record (dict): Information of the video instance(video_info[idx]).
+            record (dict): In ion of the video instance(video_info[idx]).
                 key: frame_dir, video_id, total_frames,
                      gts: List of groundtruth instances(:obj:`SSNInstance`).
                      proposals: List of proposal instances(:obj:`SSNInstance`).
