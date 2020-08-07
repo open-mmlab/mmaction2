@@ -8,7 +8,10 @@ model = dict(
         depth=50,
         conv_cfg=dict(type='Conv3d'),
         norm_eval=False,
-        inflate=((1, 1, 1), (1, 0, 1, 0), (1, 0, 1, 0, 1, 0), (0, 1, 0)),
+        inflate=(1, 1, 1, 1),
+        conv1_stride_t=1,
+        pool1_stride_t=1,
+        with_pool2=True,
         zero_init_residual=False),
     cls_head=dict(
         type='I3DHead',
@@ -21,18 +24,17 @@ model = dict(
 train_cfg = None
 test_cfg = dict(average_clips=None)
 # dataset settings
-dataset_type = 'VideoDataset'
-data_root = 'data/kinetics400/videos_train'
-data_root_val = 'data/kinetics400/videos_val'
-ann_file_train = 'data/kinetics400/kinetics400_train_list_videos.txt'
-ann_file_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
-ann_file_test = 'data/kinetics400/kinetics400_val_list_videos.txt'
+dataset_type = 'RawframeDataset'
+data_root = 'data/kinetics400/rawframes_train'
+data_root_val = 'data/kinetics400/rawframes_val'
+ann_file_train = 'data/kinetics400/kinetics400_train_list_rawframes.txt'
+ann_file_val = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
+ann_file_test = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
-    dict(type='DecordInit'),
     dict(type='SampleFrames', clip_len=8, frame_interval=8, num_clips=1),
-    dict(type='DecordDecode'),
+    dict(type='FrameSelector'),
     dict(type='Resize', scale=(-1, 256)),
     dict(
         type='MultiScaleCrop',
@@ -48,14 +50,13 @@ train_pipeline = [
     dict(type='ToTensor', keys=['imgs', 'label'])
 ]
 val_pipeline = [
-    dict(type='DecordInit'),
     dict(
         type='SampleFrames',
         clip_len=8,
         frame_interval=8,
         num_clips=1,
         test_mode=True),
-    dict(type='DecordDecode'),
+    dict(type='FrameSelector'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
     dict(type='Flip', flip_ratio=0),
@@ -65,14 +66,13 @@ val_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 test_pipeline = [
-    dict(type='DecordInit'),
     dict(
         type='SampleFrames',
         clip_len=8,
         frame_interval=8,
         num_clips=10,
         test_mode=True),
-    dict(type='DecordDecode'),
+    dict(type='FrameSelector'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='ThreeCrop', crop_size=256),
     dict(type='Flip', flip_ratio=0),
@@ -119,7 +119,7 @@ log_config = dict(
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/i3d_r50_video_3d_32x2x1_100e_kinetics400_rgb/'
+work_dir = './work_dirs/i3d_r50_heavy_8x8x1_100e_kinetics400_rgb/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]

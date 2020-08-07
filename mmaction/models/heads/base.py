@@ -41,8 +41,6 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
             recognition task. Default: False.
         label_smooth_eps (float): Epsilon used in label smooth.
             Reference: arxiv.org/abs/1906.02629. Default: 0.
-        loss_factor (float): Factor scalar multiplied on the loss.
-            Default: 1.0.
     """
 
     def __init__(self,

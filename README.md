@@ -60,9 +60,26 @@ The master branch works with **PyTorch 1.3+**.
 
 This project is released under the [Apache 2.0 license](LICENSE).
 
-## Model Zoo
+## Benchmark
+| Model  |input| io backend | batch size x gpus | MMAction2 (s/iter) | MMAction (s/iter) | Temporal-Shift-Module (s/iter) | PySlowFast (s/iter) |
+| :--- | :---------------:|:---------------:| :---------------:| :---------------:  | :--------------------: | :----------------------------: | :-----------------: |
+| [TSN](/configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py)| 256p rawframes |MemCached| 32x8|**[0.32(8339M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/tsn_256p_rawframes_memcahed_32x8.zip)** | [0.38(8245M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction/tsn_256p_rawframes_memcached_32x8.zip)| [0.42(10733M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/temporal_shift_module/tsn_256p_rawframes_memcached_32x8.zip)| x |
+| [TSN](/configs/recognition/tsn/tsn_r50_video_1x1x3_100e_kinetics400_rgb.py)| 256p videos |Disk| 32x8|**[1.42(8339M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/tsn_256p_videos_disk_32x8.zip)** | x | x | x |
+| [TSN](/configs/recognition/tsn/tsn_r50_video_1x1x3_100e_kinetics400_rgb.py)| 256p fast videos |Disk| 32x8|**[0.61(8339M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/tsn_256p_fast_videos_disk_32x8.zip)** | x | x | x |
+|[I3D heavy](/configs/recognition/i3d/i3d_r50_video_heavy_8x8x1_100e_kinetics400_rgb.py)|256p videos|Disk |8x8| **[0.34(4742M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/i3d_heavy_256p_videos_disk_8x8.zip)** | x | x | [0.44(4700M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/pyslowfast/pysf_i3d_r50_8x8_video.log) |
+|[I3D heavy](/configs/recognition/i3d/i3d_r50_video_heavy_8x8x1_100e_kinetics400_rgb.py)|256p fast videos|Disk |8x8| **[0.35(4742M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/i3d_heavy_256p_fast_videos_disk_8x8.zip)** | x | x | [0.36(4700M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/pyslowfast/pysf_i3d_r50_8x8_fast_video.log) |
+| [I3D](/configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py)|256p rawframes|MemCached|8x8| **[0.43(5169M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/i3d_256p_rawframes_memcahed_8x8.zip)** | [0.56(5065M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction/i3d_256p_rawframes_memcached_8x8.zip) | x | x |
+| [TSM](/configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py) |256p rawframes|MemCached| 8x8|**[0.31(7075M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/tsm_256p_rawframes_memcahed_8x8.zip)** | x | [0.41(9340M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/temporal_shift_module/tsm_256p_rawframes_memcached_8x8.zip) | x |
+| [Slowonly](/configs/recognition/slowonly/slowonly_r50_video_4x16x1_256e_kinetics400_rgb.py)|256p videos|Disk|8x8 | **[0.32(3168M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/slowonly_256p_videos_disk_8x8.zip)** | x | x | [0.34(3481M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/pyslowfast/pysf_slowonly_r50_4x16_video.log) |
+| [Slowonly](/configs/recognition/slowonly/slowonly_r50_video_4x16x1_256e_kinetics400_rgb.py)|256p fast videos|Disk|8x8 | **[0.25(3168M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/slowonly_256p_fast_videos_disk_8x8.zip)** | x | x | [0.28(3481M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/pyslowfast/pysf_slowonly_r50_4x16_fast_video.log) |
+| [Slowfast](/configs/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb.py)|256p videos|Disk|8x8 | **[0.69(6210M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/slowfast_256p_videos_disk_8x8.zip)** | x | x | [1.04(7117M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/pyslowfast/pysf_slowfast_r50_4x16_video.log) |
+| [Slowfast](/configs/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb.py)|256p fast videos|Disk|8x8 | **[0.68(6201M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/slowfast_256p_fast_videos_disk_8x8.zip)** | x | x | [0.96(7116M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/pyslowfast/pysf_slowfast_r50_4x16_fast_video.log) |
+| [R(2+1)D](/configs/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb.py)|256p videos |Disk| 8x8|**[0.45(5237M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/r2plus1d_256p_videos_disk_8x8.zip)** | x | x | x |
+| [R(2+1)D](/configs/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb.py)|256p fast videos |Disk| 8x8|**[0.44(5237M)](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/benchmark/recognition/mmaction2/r2plus1d_256p_fast_videos_disk_8x8.zip)** | x | x | x |
 
+Details can be found in [benchmark](docs/benchmark.md).
 
+## ModelZoo
 Supported methods for action recognition:
 - [x] [TSN](configs/recognition/tsn/README.md)
 - [x] [TSM](configs/recognition/tsm/README.md)
