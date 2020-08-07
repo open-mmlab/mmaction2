@@ -23,23 +23,23 @@ def resize_videos(vid_item):
     if not osp.exists(out_dir):
         os.makedirs(out_dir)
     result = os.popen(
-        f"""ffprobe -hide_banner -loglevel panic -select_streams v:0 -show_entries stream=width,height -of csv=p=0 {full_path}"""  # noqa:E501
+        f"""ffprobe -hide_banner -loglevel error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 {full_path}"""  # noqa:E501
     )
     w, h = [int(d) for d in result.readline().rstrip().split(',')]
     if w > h:
-        cmd = f"""ffmpeg -hide_banner -i {full_path} \
-            -vf {'mpdecimate,' if args.remove_dup else ''}\
-            scale=-2:{args.scale} \
-            {'-vsync vfr' if args.remove_dip else ''} \
-            -c:v libx264 {'-g 16' if args.fast else ''} \
-            -an {out_full_path} -y"""
+        cmd = (f"""ffmpeg -hide_banner -loglevel error -i {full_path} """
+               f"""-vf {'mpdecimate,' if args.remove_dup else ''}"""
+               f"""scale=-2:{args.scale} """
+               f"""{'-vsync vfr' if args.remove_dup else ''} """
+               f"""-c:v libx264 {'-g 16' if args.fast else ''} """
+               f"""-an {out_full_path} -y""")
     else:
-        cmd = f"""ffmpeg -hide_banner -i {full_path} \
-            -vf {'mpdecimate,' if args.remove_dup else ''}\
-            scale={args.scale}:-2 \
-            {'-vsync vfr' if args.remove_dip else ''} \
-            -c:v libx264 {'-g 16' if args.fast else ''} \
-            -an {out_full_path} -y"""
+        cmd = (f"""ffmpeg -hide_banner -loglevel error -i {full_path} """
+               f"""-vf {'mpdecimate,' if args.remove_dup else ''}"""
+               f"""scale={args.scale}:-2 """
+               f"""{'-vsync vfr' if args.remove_dup else ''} """
+               f"""-c:v libx264 {'-g 16' if args.fast else ''} """
+               f"""-an {out_full_path} -y""")
     os.popen(cmd)
     print(f'{vid_path} done')
     sys.stdout.flush()
