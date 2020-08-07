@@ -1,6 +1,7 @@
 import copy
 import os.path as osp
 
+import mmcv
 import numpy as np
 import pytest
 from numpy.testing import assert_array_almost_equal, assert_array_equal
@@ -56,7 +57,9 @@ class TestLoading(object):
         cls.total_frames = 5
         cls.filename_tmpl = 'img_{:05}.jpg'
         cls.flow_filename_tmpl = '{}_{:05d}.jpg'
-        cls.video_results = dict(filename=cls.video_path, label=1)
+        video_total_frames = len(mmcv.VideoReader(cls.video_path))
+        cls.video_results = dict(
+            filename=cls.video_path, label=1, total_frames=video_total_frames)
         cls.frame_results = dict(
             frame_dir=cls.img_dir,
             total_frames=cls.total_frames,
