@@ -27,9 +27,19 @@ def resize_videos(vid_item):
     )
     w, h = [int(d) for d in result.readline().rstrip().split(',')]
     if w > h:
-        cmd = f"""ffmpeg -hide_banner -i {full_path} -vf {'mpdecimate,' if args.remove_dup else ''}scale=-2:{args.scale} -vsync vfr -c:v libx264 {'-g 16' if args.fast else ''} -an {out_full_path} -y"""  # noqa:E501
+        cmd = f"""ffmpeg -hide_banner -i {full_path} \
+            -vf {'mpdecimate,' if args.remove_dup else ''}\
+            scale=-2:{args.scale} \
+            {'-vsync vfr' if args.remove_dip else ''} \
+            -c:v libx264 {'-g 16' if args.fast else ''} \
+            -an {out_full_path} -y"""
     else:
-        cmd = f"""ffmpeg -hide_banner -i {full_path} -vf {'mpdecimate,' if args.remove_dup else ''}scale={args.scale}:-2 -vsync vfr -c:v libx264 {'-g 16' if args.fast else ''} -an {out_full_path} -y"""  # noqa:E501
+        cmd = f"""ffmpeg -hide_banner -i {full_path} \
+            -vf {'mpdecimate,' if args.remove_dup else ''}\
+            scale={args.scale}:-2 \
+            {'-vsync vfr' if args.remove_dip else ''} \
+            -c:v libx264 {'-g 16' if args.fast else ''} \
+            -an {out_full_path} -y"""
     os.popen(cmd)
     print(f'{vid_path} done')
     sys.stdout.flush()
