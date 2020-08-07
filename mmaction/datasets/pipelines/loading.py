@@ -16,7 +16,7 @@ from ..registry import PIPELINES
 class SampleFrames(object):
     """Sample frames from the video.
 
-    Required keys are "filename", added or modified keys are "total_frames",
+    Required keys are "filename", "total_frames", added or modified keys are
     "frame_inds", "frame_interval" and "num_clips".
 
     Args:
