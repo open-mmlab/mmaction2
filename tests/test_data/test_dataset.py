@@ -551,3 +551,38 @@ class TestDataset(object):
         ssn_infos = ssn_dataset.video_infos
         assert ssn_infos[0]['video_id'] == 'test_imgs'
         assert ssn_infos[0]['total_frames'] == 5
+
+    def test_ssn_evaluate(self):
+        ssn_dataset = SSNDataset(
+            self.proposal_ann_file,
+            self.proposal_pipeline,
+            self.proposal_train_cfg,
+            self.proposal_test_cfg,
+            data_prefix=self.data_prefix)
+
+        with pytest.raises(TypeError):
+            # results must be a list
+            ssn_dataset.evaluate('0.5')
+
+        with pytest.raises(AssertionError):
+            # The length of results must be equal to the dataset len
+            ssn_dataset.evaluate([0] * 5)
+
+        with pytest.raises(KeyError):
+            # unsupported metric
+            ssn_dataset.evaluate([0] * len(ssn_dataset), metrics='iou')
+
+        # evaluate mAP metric
+        results_relative_proposal_list = np.random.randn(16, 2)
+        results_activity_scores = np.random.randn(16, 21)
+        results_completeness_scores = np.random.randn(16, 20)
+        results_bbox_preds = np.random.randn(16, 20, 2)
+        results = [[
+            results_relative_proposal_list, results_activity_scores,
+            results_completeness_scores, results_bbox_preds
+        ]]
+        eval_result = ssn_dataset.evaluate(results, metrics=['mAP'])
+        assert set(eval_result) == set([
+            'mAP@0.10', 'mAP@0.20', 'mAP@0.30', 'mAP@0.40', 'mAP@0.50',
+            'mAP@0.50', 'mAP@0.60', 'mAP@0.70', 'mAP@0.80', 'mAP@0.90'
+        ])

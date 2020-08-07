@@ -326,13 +326,20 @@ class SSNDataset(BaseDataset):
                     proposals=proposals))
         return video_infos
 
-    def evaluate(self,
-                 dataset,
-                 results,
-                 metrics='mAP',
-                 eval='thumos14',
-                 **kwargs):
-        detections = results_to_detections(dataset, results,
+    def evaluate(self, results, metrics='mAP', eval='thumos14', **kwargs):
+        if not isinstance(results, list):
+            raise TypeError(f'results must be a list, but got {type(results)}')
+        assert len(results) == len(self), (
+            f'The length of results is not equal to the dataset len: '
+            f'{len(results)} != {len(self)}')
+
+        metrics = metrics if isinstance(metrics, (list, tuple)) else [metrics]
+        allowed_metrics = ['mAP']
+        for metric in metrics:
+            if metric not in allowed_metrics:
+                raise KeyError(f'metric {metric} is not supported')
+
+        detections = results_to_detections(self, results,
                                            **self.test_cfg.ssn.evaluater)
 
         if not self.no_regression:
@@ -352,10 +359,8 @@ class SSNDataset(BaseDataset):
             }
         self.logger.info('NMS finished')
 
-        iou_range = np.arange(0.1, 1.0, .1)
-
         # get gts
-        all_gts = dataset.get_all_gts()
+        all_gts = self.get_all_gts()
         for class_idx in range(len(detections)):
             if (class_idx not in all_gts.keys()):
                 all_gts[class_idx] = dict()
@@ -369,25 +374,19 @@ class SSNDataset(BaseDataset):
                                        for x in dets.tolist()])
             plain_detections[class_idx] = detection_list
 
-        ap_values = eval_ap_parallel(plain_detections, all_gts, iou_range)
-        map_iou = ap_values.mean(axis=0)
-        self.logger.info('Evaluation finished')
+        eval_results = {}
+        for metric in metrics:
+            if metric == 'mAP':
+                iou_range = np.arange(0.1, 1.0, .1)
+                ap_values = eval_ap_parallel(plain_detections, all_gts,
+                                             iou_range)
+                map_iou = ap_values.mean(axis=0)
+                self.logger.info('Evaluation finished')
 
-        # display
-        display_title = f'Temporal detection performance ({eval})'
-        display_data = [['IoU thresh'], ['mean AP']]
+                for i in range(len(iou_range)):
+                    eval_results[f'mAP@{iou_range[i]:.02f}'] = map_iou[i]
 
-        for i in range(len(iou_range)):
-            display_data[0].append(f'{iou_range[i]:.02f}')
-            display_data[1].append(f'{map_iou[i]:.04f}')
-        try:
-            from terminaltables import AsciiTable
-        except ImportError:
-            raise ImportError('Please install terminaltables')
-        table = AsciiTable(display_data, display_title)
-        table.justify_columns[-1] = 'right'
-        table.inner_footing_row_border = True
-        self.logger.info(table.table)
+        return eval_results
 
     def construct_proposal_pools(self):
         """Construct positve proposal pool, incomplete proposal pool and
