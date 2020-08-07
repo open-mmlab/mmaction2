@@ -147,6 +147,8 @@ def main():
             if args.target_resolution[1] == -1:
                 args.target_resolution[1] = None
             args.target_resolution = tuple(args.target_resolution)
+        else:
+            args.target_resolution = (None, None)
 
         get_output(
             args.video,
