@@ -794,8 +794,8 @@ class OpenCVDecode(object):
 
 
 @PIPELINES.register_module()
-class SelectFrames(object):
-    """Select raw frames with given indices.
+class PickFrames(object):
+    """Pick raw frames with given indices.
 
     Required keys are "frame_dir", "filename_tmpl" and "frame_inds",
     added or modified keys are "imgs", "img_shape" and "original_shape".
@@ -814,7 +814,7 @@ class SelectFrames(object):
         self.file_client = None
 
     def __call__(self, results):
-        """Perform the FrameSelector selecting given indices.
+        """Perform the ``PickFrames`` to pick frames given indices.
 
         Args:
             results (dict): The resulting dict to be modified and passed
@@ -865,12 +865,12 @@ class SelectFrames(object):
 
 
 @PIPELINES.register_module()
-class FrameSelector(SelectFrames):
-    """Deprecated class for ``SelectFrames``."""
+class FrameSelector(PickFrames):
+    """Deprecated class for ``PickFrames``."""
 
     def __init__(self, *args, **kwargs):
         warnings.warn('"FrameSelector" is deprecated, please switch to'
-                      '"SelectFrames"')
+                      '"PickFrames"')
         super().__init__(*args, **kwargs)
 
 
