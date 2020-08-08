@@ -59,7 +59,10 @@ class TestLoading(object):
         cls.flow_filename_tmpl = '{}_{:05d}.jpg'
         video_total_frames = len(mmcv.VideoReader(cls.video_path))
         cls.video_results = dict(
-            filename=cls.video_path, label=1, total_frames=video_total_frames)
+            filename=cls.video_path,
+            label=1,
+            total_frames=video_total_frames,
+            start_index=0)
         cls.frame_results = dict(
             frame_dir=cls.img_dir,
             total_frames=cls.total_frames,
@@ -103,6 +106,12 @@ class TestLoading(object):
             'frame_inds', 'clip_len', 'frame_interval', 'num_clips',
             'total_frames'
         ]
+
+        with pytest.warns(UserWarning):
+            # start_index has been deprecated
+            config = dict(
+                clip_len=3, frame_interval=1, num_clips=5, start_index=1)
+            SampleFrames(**config)
 
         # Sample Frame with no temporal_jitter
         # clip_len=3, frame_interval=1, num_clips=5

@@ -2,6 +2,7 @@ import io
 import os
 import os.path as osp
 import shutil
+import warnings
 
 import mmcv
 import numpy as np
@@ -34,6 +35,9 @@ class SampleFrames(object):
             Default: 'loop'.
         test_mode (bool): Store True when building test or validation dataset.
             Default: False.
+        start_index (None): This argument is deprecated and moved to dataset
+            class (``BaseDataset``, ``VideoDatset``, ``RawframeDataset``, etc),
+            see this: https://github.com/open-mmlab/mmaction2/pull/89.
     """
 
     def __init__(self,
@@ -43,7 +47,8 @@ class SampleFrames(object):
                  temporal_jitter=False,
                  twice_sample=False,
                  out_of_bound_opt='loop',
-                 test_mode=False):
+                 test_mode=False,
+                 start_index=None):
 
         self.clip_len = clip_len
         self.frame_interval = frame_interval
@@ -53,6 +58,11 @@ class SampleFrames(object):
         self.out_of_bound_opt = out_of_bound_opt
         self.test_mode = test_mode
         assert self.out_of_bound_opt in ['loop', 'repeat_last']
+
+        if start_index is not None:
+            warnings.warn('No longer support "start_index" in "SampleFrames", '
+                          'it should be set in dataset class, see this pr: '
+                          'https://github.com/open-mmlab/mmaction2/pull/89')
 
     def _get_train_clips(self, num_frames):
         """Get clip offsets in train mode.
