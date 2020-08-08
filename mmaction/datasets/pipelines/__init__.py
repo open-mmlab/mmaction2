@@ -7,7 +7,7 @@ from .formating import (Collect, FormatShape, ImageToTensor, ToDataContainer,
 from .loading import (DecordDecode, DecordInit, DenseSampleFrames,
                       FrameSelector, GenerateLocalizationLabels,
                       LoadLocalizationFeature, LoadProposals, OpenCVDecode,
-                      OpenCVInit, PickFrames, PyAVDecode, PyAVInit,
+                      OpenCVInit, PyAVDecode, PyAVInit, RawFrameDecode,
                       SampleFrames, SampleProposalFrames)
 
 __all__ = [
@@ -18,5 +18,5 @@ __all__ = [
     'Collect', 'FormatShape', 'Compose', 'ToTensor', 'ToDataContainer',
     'GenerateLocalizationLabels', 'LoadLocalizationFeature', 'LoadProposals',
     'DecordInit', 'OpenCVInit', 'PyAVInit', 'SampleProposalFrames',
-    'PickFrames'
+    'RawFrameDecode'
 ]
