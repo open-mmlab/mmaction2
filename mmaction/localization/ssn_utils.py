@@ -2,19 +2,24 @@ import fnmatch
 import glob
 import os
 import os.path as osp
-import sys
 from itertools import groupby
-from multiprocessing import Pool
 
-import mmcv
 import numpy as np
 
-from ..core.evaluation.accuracy import (compute_average_precision_detection,
-                                        np_softmax)
+from ..core import compute_average_precision_detection, np_softmax
 from . import temporal_iou
 
 
 def load_localize_proposal_file(filename):
+    """Load the proposal file and split it into many parts which contain one
+    video's information separately.
+
+    Args:
+        filename(str): Path to the proposal file.
+
+    Returns:
+        list: List of all videos' information.
+    """
     lines = list(open(filename))
 
     # Split the proposal file into many parts which contain one video's
@@ -24,8 +29,9 @@ def load_localize_proposal_file(filename):
     video_infos = [[x.strip() for x in list(g)] for k, g in groups if not k]
 
     def parse_group(video_info):
-        """Template information of a video in a standard file:
+        """Parse the video's information.
 
+        Template information of a video in a standard file:
             # index
             video_id
             num_frames
@@ -38,6 +44,7 @@ def load_localize_proposal_file(filename):
             label, best_iou, overlap_self, start_frame, end_frame
             label, best_iou, overlap_self, start_frame, end_frame
             ...
+
         Example of a standard annotation file:
         .. code-block:: txt
             # 0
@@ -54,6 +61,17 @@ def load_localize_proposal_file(filename):
             8 0.0833 0.0833 3945 5671
             8 0.0960 0.0960 4173 5671
             8 0.0614 0.0614 3327 5671
+
+        Args:
+            video_info (list): Information of the video.
+
+        Returns:
+            tuple[str, int, list, list]:
+                video_id (str): Name of the video.
+                num_frames (int): Number of frames in the video.
+                gt_boxes (list): List of the information of gt boxes.
+                proposal_boxes (list): List of the information of
+                    proposal boxes.
         """
         offset = 0
         video_id = video_info[offset]
@@ -76,51 +94,68 @@ def load_localize_proposal_file(filename):
     return [parse_group(video_info) for video_info in video_infos]
 
 
-def process_norm_proposal_file(norm_proposal_list, out_list_name, frame_dict):
-    norm_proposals = load_localize_proposal_file(norm_proposal_list)
+def process_norm_proposal_file(norm_proposal_file, proposal_file, frame_dict):
+    """Process the normalized proposal file and denormalize it.
+
+    Args:
+        norm_proposal_file (str): Name of normalized proposal file.
+        proposal_file (str): Name of proposal file.
+        frame_dict (dict): Information of frame folders.
+    """
+    norm_proposals = load_localize_proposal_file(norm_proposal_file)
 
     processed_proposal_list = []
-    for idx, proposal in enumerate(norm_proposals):
-        video_id = proposal[0]
+    for idx, norm_proposal in enumerate(norm_proposals):
+        video_id = norm_proposal[0]
         frame_info = frame_dict[video_id]
         num_frames = frame_info[1]
         frame_path = osp.basename(frame_info[0])
 
-        gts = [[
+        gt = [[
             int(x[0]),
             int(float(x[1]) * num_frames),
             int(float(x[2]) * num_frames)
-        ] for x in proposal[2]]
+        ] for x in norm_proposal[2]]
 
-        proposals = [[
+        proposal = [[
             int(x[0]),
             float(x[1]),
             float(x[2]),
             int(float(x[3]) * num_frames),
             int(float(x[4]) * num_frames)
-        ] for x in proposal[3]]
+        ] for x in norm_proposal[3]]
 
-        gts_dump = '\n'.join(['{} {} {}'.format(*x) for x in gts])
-        gts_dump += '\n' if len(gts) else ''
-        proposals_dump = '\n'.join(
+        gt_dump = '\n'.join(['{} {} {}'.format(*x) for x in gt])
+        gt_dump += '\n' if len(gt) else ''
+        proposal_dump = '\n'.join(
             ['{} {:.04f} {:.04f} {} {}'.format(*x) for x in proposal])
-        proposals_dump += '\n' if len(proposal) else ''
+        proposal_dump += '\n' if len(proposal) else ''
 
         processed_proposal_list.append(
             f'# {idx}\n{frame_path}\n{num_frames}\n1'
-            f'\n{len(gts)}\n{gts_dump}{len(proposals)}\n{proposals_dump}')
+            f'\n{len(gt)}\n{gt_dump}{len(proposal)}\n{proposal_dump}')
 
-    with open(out_list_name, 'w') as f:
+    with open(proposal_file, 'w') as f:
         f.writelines(processed_proposal_list)
 
 
 def parse_frame_folder(path,
-                       key_func=lambda x: x[-11:],
                        rgb_prefix='img_',
                        flow_x_prefix='flow_x_',
                        flow_y_prefix='flow_y_',
                        level=1):
-    """Parse directories holding extracted frames from standard benchmarks."""
+    """Parse directories holding extracted frames from standard benchmarks.
+
+    Args:
+        path (str): Path of frame root folder.
+        rgb_prefix (str): Prefix of rgb frames. Default: 'img_'.
+        flow_x_prefix (str): Prefix of flow x frames. Default: 'flow_x_'.
+        flow_y_prefix (str): Prefix of flow y frames. Default: 'flow_y_'.
+        level (int): Directory level of data.
+
+    Returns:
+        dict: Information of frame folders.
+    """
     print(f'parse frames under folder {path}')
     if level == 1:
         frame_folders = glob.glob(os.path.join(path, '*'))
@@ -139,7 +174,7 @@ def parse_frame_folder(path,
     for i, frame_folder in enumerate(frame_folders):
         num_all = count_files(frame_folder,
                               (rgb_prefix, flow_x_prefix, flow_y_prefix))
-        key = key_func(frame_folder)
+        key = osp.basename(frame_folder)
 
         num_flow_x = num_all[1]
         num_flow_y = num_all[2]
@@ -156,30 +191,42 @@ def parse_frame_folder(path,
 
 
 def results_to_detections(dataset,
-                          outputs,
+                          results,
                           top_k=2000,
-                          nms=0.2,
                           softmax_before_filter=True,
-                          cls_score_dict=None,
-                          cls_top_k=2):
-    num_classes = outputs[0][1].shape[1] - 1
-    detections = [dict() for i in range(num_classes)]
+                          cls_top_k=2,
+                          **kwargs):
+    """Convert prediction results into detections.
+
+    Args:
+        dataset (:obj:`SSNDataset`): Instance of SSNDataset.
+        results (list): Prediction results.
+        top_k (int): Number of top results. Default: 2000.
+        softmax_before_filter (bool): Whether to perform softmax operations
+            before filtering results. Default: True.
+        cls_top_k (int): Number of top results for each class. Default: 2.
+
+    Returns:
+        list: Detection results.
+    """
+    num_classes = results[0][1].shape[1] - 1
+    detections = [dict()] * num_classes
 
     for idx in range(len(dataset)):
         video_id = dataset.video_infos[idx]['video_id']
-        relative_proposals = outputs[idx][0]
+        relative_proposals = results[idx][0]
         if len(relative_proposals[0].shape) == 3:
             relative_proposals = np.squeeze(relative_proposals, 0)
 
-        action_scores = outputs[idx][1]
-        complete_scores = outputs[idx][2]
-        regression_scores = outputs[idx][3]
+        action_scores = results[idx][1]
+        complete_scores = results[idx][2]
+        regression_scores = results[idx][3]
         if regression_scores is None:
             regression_scores = np.zeros(
                 len(relative_proposals), num_classes, 2, dtype=np.float32)
         regression_scores = regression_scores.reshape((-1, num_classes, 2))
 
-        if top_k <= 0 and cls_score_dict is None:
+        if top_k <= 0:
             combined_scores = (
                 np_softmax(action_scores[:, 1:], dim=1) *
                 np.exp(complete_scores))
@@ -190,7 +237,7 @@ def results_to_detections(dataset,
                     (relative_proposals, combined_scores[:, i][:, None],
                      center_scores, duration_scores),
                     axis=1)
-        elif cls_score_dict is None:
+        else:
             combined_scores = (
                 np_softmax(action_scores[:, 1:], dim=1) *
                 np.exp(complete_scores))
@@ -211,29 +258,19 @@ def results_to_detections(dataset,
                 else:
                     detections[class_idx][video_id] = np.vstack(
                         [detections[class_idx][video_id], new_item])
-        else:
-            cls_score_dict = mmcv.load(cls_score_dict)
-            if softmax_before_filter:
-                combined_scores = np_softmax(
-                    action_scores[:, 1:], dim=1) * np.exp(complete_scores)
-            else:
-                combined_scores = (
-                    action_scores[:, 1:] * np.exp(complete_scores))
-            video_cls_score = cls_score_dict[video_id]
-
-            for video_cls in np.argsort(video_cls_score, )[-cls_top_k:]:
-                center_scores = regression_scores[:, video_cls, 0][:, None]
-                duration_scores = regression_scores[:, video_cls, 1][:, None]
-                detections[video_cls][video_id] = np.concatenate(
-                    (relative_proposals, combined_scores[:, video_cls][:,
-                                                                       None],
-                     center_scores, duration_scores),
-                    axis=1)
 
     return detections
 
 
 def perform_regression(detections):
+    """Perform regression on detection results.
+
+    Args:
+        detections (list): Detection results before regression.
+
+    Returns:
+        list: Detection results after regression.
+    """
     starts = detections[:, 0]
     ends = detections[:, 1]
     centers = (starts + ends) / 2
@@ -250,7 +287,16 @@ def perform_regression(detections):
     return new_detections
 
 
-def temporal_nms(detections, thresh):
+def temporal_nms(detections, threshold):
+    """Parse the video's information.
+
+    Args:
+        detections (list): Detection results before NMS.
+        threshold (float): Threshold of NMS.
+
+    Returns:
+        list: Detection results after NMS.
+    """
     starts = detections[:, 0]
     ends = detections[:, 1]
     scores = detections[:, 2]
@@ -263,35 +309,30 @@ def temporal_nms(detections, thresh):
         keep.append(i)
         ious = temporal_iou(starts[order[1:]], ends[order[1:]], starts[i],
                             ends[i])
-        idxs = np.where(ious <= thresh)[0]
+        idxs = np.where(ious <= threshold)[0]
         order = order[idxs + 1]
 
     return detections[keep, :]
 
 
-def eval_ap(iou, iou_idx, class_idx, gt, prediction):
-    ap = compute_average_precision_detection(gt, prediction, iou)
-    sys.stdout.flush()
-    return class_idx, iou_idx, ap
+def eval_ap(detections, gt_by_cls, iou_range):
+    """Evaluate average precisions.
 
+    Args:
+        detections (dict): Results of detections.
+        gt_by_cls (dict): Information of groudtruth.
+        iou_range (list): Ranges of iou.
 
-def eval_ap_parallel(detections, gt_by_cls, iou_range, worker=32):
+    Returns:
+        list: Average precision values of classes at ious.
+    """
     ap_values = np.zeros((len(detections), len(iou_range)))
 
-    def callback(rst):
-        sys.stdout.flush()
-        ap_values[rst[0], rst[1]] = rst[2][0]
-
-    pool = Pool(worker)
-    jobs = []
     for iou_idx, min_overlap in enumerate(iou_range):
         for class_idx in range(len(detections)):
-            jobs.append(
-                pool.apply_async(
-                    eval_ap,
-                    args=([min_overlap], iou_idx, class_idx,
-                          gt_by_cls[class_idx], detections[class_idx]),
-                    callback=callback))
-    pool.close()
-    pool.join()
+            ap = compute_average_precision_detection(gt_by_cls[class_idx],
+                                                     detections[class_idx],
+                                                     [min_overlap])
+            ap_values[class_idx, iou_idx] = ap
+
     return ap_values

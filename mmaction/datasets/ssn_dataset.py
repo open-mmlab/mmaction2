@@ -6,7 +6,7 @@ import mmcv
 import numpy as np
 from torch.nn.modules.utils import _pair
 
-from ..localization import (eval_ap_parallel, load_localize_proposal_file,
+from ..localization import (eval_ap, load_localize_proposal_file,
                             perform_regression, process_norm_proposal_file,
                             results_to_detections, temporal_iou, temporal_nms)
 from ..localization.ssn_utils import parse_frame_folder
@@ -55,10 +55,6 @@ class SSNInstance:
             positive_threshold (float): Minimum threshold of overlap of
                 positive/foreground proposals and groundtruths.
         """
-        # Background proposals do not have regression targets.
-        if self.best_iou < positive_threshold:
-            return
-
         # Find the groundtruth instance with the highest IOU.
         ious = [
             temporal_iou(self.start_frame, self.end_frame, gt.start_frame,
@@ -79,26 +75,25 @@ class SSNInstance:
         #     logarithm of the groundtruth duration over proposal duration
 
         self.loc_reg = (gt_center - proposal_center) / proposal_size
-        if gt_size / proposal_size > 0:
-            self.size_reg = math.log(gt_size / proposal_size)
-        else:
-            print(gt_size, proposal_size, self.start_frame, self.end_frame)
-            raise ValueError('gt_size / proposal_size should be valid.')
+        self.size_reg = math.log(gt_size / proposal_size)
         self.regression_targets = ([self.loc_reg, self.size_reg]
                                    if self.loc_reg is not None else [0., 0.])
 
 
 @DATASETS.register_module()
 class SSNDataset(BaseDataset):
-    """Proposal frame dataset for Structured Segment Networks. Based on
-    proposal information, the dataset loads raw frames and apply specified
-    transforms to return a dict containing the frame tensors and other
-    information. The ann_file is a text file with multiple lines and each
+    """Proposal frame dataset for Structured Segment Networks.
+
+    Based on proposal information, the dataset loads raw frames and apply
+    specified transforms to return a dict containing the frame tensors and
+    other information.
+
+    The ann_file is a text file with multiple lines and each
     video's information takes up several lines. This file can be a normalized
     file with percent or standard file with specific frame indexes. If the file
     is a normalized file, it will be converted into a standard file first.
-    Template information of a video in a standard file:
 
+    Template information of a video in a standard file:
     .. code-block:: txt
         # index
         video_id
@@ -139,6 +134,10 @@ class SSNDataset(BaseDataset):
             Default: False.
         filename_tmpl (str): Template for each filename.
             Default: 'img_{:05}.jpg'.
+        start_index (int): Specify a start index for frames in consideration of
+            different filename format. Default: 1.
+        modality (str): Modality of data. Support 'RGB', 'Flow'.
+            Default: 'RGB'.
         video_centric (bool): Whether to sample proposals just from
             this video or sample proposals randomly from the entire dataset.
             Default: True.
@@ -156,7 +155,7 @@ class SSNDataset(BaseDataset):
             Default: 1.
         filter_gt (bool): Whether to filter videos with no annotation
             during training. Default: True.
-        no_regression (bool): Whether to perform regression.
+        no_regression (bool): Whether to perform regression. Default: False.
         verbose (bool): Whether to print full information or not.
             Default: False.
     """
@@ -169,6 +168,8 @@ class SSNDataset(BaseDataset):
                  data_prefix=None,
                  test_mode=False,
                  filename_tmpl='img_{:05d}.jpg',
+                 start_index=1,
+                 modality='RGB',
                  video_centric=True,
                  reg_normalize_constants=None,
                  body_segments=5,
@@ -180,12 +181,18 @@ class SSNDataset(BaseDataset):
                  no_regression=False,
                  verbose=False):
         self.logger = get_root_logger()
-        super(SSNDataset, self).__init__(ann_file, pipeline, data_prefix,
-                                         test_mode)
+        super(SSNDataset, self).__init__(
+            ann_file,
+            pipeline,
+            data_prefix=data_prefix,
+            test_mode=test_mode,
+            start_index=start_index,
+            modality=modality)
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
         self.assigner = train_cfg.ssn.assigner
         self.sampler = train_cfg.ssn.sampler
+        self.evaluater = test_cfg.ssn.evaluater
         self.verbose = verbose
         self.filename_tmpl = filename_tmpl
 
@@ -274,8 +281,7 @@ class SSNDataset(BaseDataset):
             if not osp.exists(self.proposal_file):
                 self.logger.info(f'{self.proposal_file} does not exist.'
                                  f'Converting from {self.ann_file}')
-                frame_dict = parse_frame_folder(
-                    self.data_prefix, key_func=lambda x: osp.basename(x))
+                frame_dict = parse_frame_folder(self.data_prefix)
                 process_norm_proposal_file(self.ann_file, self.proposal_file,
                                            frame_dict)
                 self.logger.info('Finished conversion.')
@@ -326,7 +332,22 @@ class SSNDataset(BaseDataset):
                     proposals=proposals))
         return video_infos
 
-    def evaluate(self, results, metrics='mAP', eval='thumos14', **kwargs):
+    def evaluate(self,
+                 results,
+                 metrics='mAP',
+                 eval_dataset='thumos14',
+                 **kwargs):
+        """Evaluation in SSN proposal dataset.
+
+        Args:
+            results (list[dict]): Output results.
+            metrics (str | sequence[str]): Metrics to be performed.
+                Defaults: 'mAP'.
+            eval_dataset (str): Dataset to be evaluated.
+
+        Returns:
+            dict: Evaluation results for evaluation metrics.
+        """
         if not isinstance(results, list):
             raise TypeError(f'results must be a list, but got {type(results)}')
         assert len(results) == len(self), (
@@ -339,8 +360,7 @@ class SSNDataset(BaseDataset):
             if metric not in allowed_metrics:
                 raise KeyError(f'metric {metric} is not supported')
 
-        detections = results_to_detections(self, results,
-                                           **self.test_cfg.ssn.evaluater)
+        detections = results_to_detections(self, results, **self.evaluater)
 
         if not self.no_regression:
             self.logger.info('Performing location regression')
@@ -354,7 +374,7 @@ class SSNDataset(BaseDataset):
         self.logger.info('Performing NMS')
         for class_idx in range(len(detections)):
             detections[class_idx] = {
-                k: temporal_nms(v, self.test_cfg.ssn.evaluater.nms)
+                k: temporal_nms(v, self.evaluater.nms)
                 for k, v in detections[class_idx].items()
             }
         self.logger.info('NMS finished')
@@ -362,7 +382,7 @@ class SSNDataset(BaseDataset):
         # get gts
         all_gts = self.get_all_gts()
         for class_idx in range(len(detections)):
-            if (class_idx not in all_gts.keys()):
+            if (class_idx not in all_gts):
                 all_gts[class_idx] = dict()
 
         # get predictions
@@ -377,14 +397,14 @@ class SSNDataset(BaseDataset):
         eval_results = {}
         for metric in metrics:
             if metric == 'mAP':
-                iou_range = np.arange(0.1, 1.0, .1)
-                ap_values = eval_ap_parallel(plain_detections, all_gts,
-                                             iou_range)
-                map_iou = ap_values.mean(axis=0)
-                self.logger.info('Evaluation finished')
+                if eval_dataset == 'thumos14':
+                    iou_range = np.arange(0.1, 1.0, .1)
+                    ap_values = eval_ap(plain_detections, all_gts, iou_range)
+                    map_ious = ap_values.mean(axis=0)
+                    self.logger.info('Evaluation finished')
 
-                for i in range(len(iou_range)):
-                    eval_results[f'mAP@{iou_range[i]:.02f}'] = map_iou[i]
+                    for iou, map_iou in zip(iou_range, map_ious):
+                        eval_results[f'mAP@{iou:.02f}'] = map_iou
 
         return eval_results
 
@@ -422,12 +442,12 @@ class SSNDataset(BaseDataset):
                     gt.start_frame / video_info['total_frames'],
                     gt.end_frame / video_info['total_frames']
                 ]
-                if class_idx not in gts.keys():
+                if class_idx not in gts:
                     gts[class_idx] = dict()
                     gts[class_idx][vid] = []
                     gts[class_idx][vid].append(gt_info)
                 else:
-                    if vid in gts[class_idx].keys():
+                    if vid in gts[class_idx]:
                         gts[class_idx][vid].append(gt_info)
                     else:
                         gts[class_idx][vid] = []
@@ -516,7 +536,7 @@ class SSNDataset(BaseDataset):
         """Sample proposals from the this video instance.
 
         Args:
-            record (dict): In ion of the video instance(video_info[idx]).
+            record (dict): Information of the video instance(video_info[idx]).
                 key: frame_dir, video_id, total_frames,
                      gts: List of groundtruth instances(:obj:`SSNInstance`).
                      proposals: List of proposal instances(:obj:`SSNInstance`).
@@ -549,7 +569,10 @@ class SSNDataset(BaseDataset):
                 dataset_pool (list): Proposals of the entire dataset.
 
             Returns:
-                list[(video_id, :obj:`SSNInstance`), proposal_type]
+                list[(str, :obj:`SSNInstance`), int]:
+                    video_id (str): Name of the video.
+                    :obj:`SSNInstance`: Instance of class SSNInstance.
+                    proposal_type (int): Type of proposal.
             """
 
             if len(video_pool) == 0:
@@ -585,12 +608,24 @@ class SSNDataset(BaseDataset):
         """Randomly sample proposals from the entire dataset."""
         out_proposals = []
 
-        out_proposals.extend([(x, 0) for x in np.random.choice(
-            self.positive_pool, self.positive_per_video, replace=False)])
-        out_proposals.extend([(x, 1) for x in np.random.choice(
-            self.incomplete_pool, self.incomplete_per_video, replace=False)])
-        out_proposals.extend([(x, 2) for x in np.random.choice(
-            self.background_pool, self.background_per_video, replace=False)])
+        positive_idx = np.random.choice(
+            len(self.positive_pool),
+            self.positive_per_video,
+            replace=len(self.positive_pool) < self.positive_per_video)
+        out_proposals.extend([(self.positive_pool[x], 0)
+                              for x in positive_idx])
+        incomplete_idx = np.random.choice(
+            len(self.incomplete_pool),
+            self.incomplete_per_video,
+            replace=len(self.incomplete_pool) < self.incomplete_per_video)
+        out_proposals.extend([(self.incomplete_pool[x], 1)
+                              for x in incomplete_idx])
+        background_idx = np.random.choice(
+            len(self.background_pool),
+            self.background_per_video,
+            replace=len(self.background_pool) < self.background_per_video)
+        out_proposals.extend([(self.background_pool[x], 2)
+                              for x in background_idx])
 
         return out_proposals
 
@@ -656,7 +691,8 @@ class SSNDataset(BaseDataset):
         """Prepare the frames for training given the index."""
         results = copy.deepcopy(self.video_infos[idx])
         results['filename_tmpl'] = self.filename_tmpl
-        results['modality'] = 'RGB'
+        results['modality'] = self.modality
+        results['start_index'] = self.start_index
 
         if self.video_centric:
             # yapf: disable
@@ -701,9 +737,6 @@ class SSNDataset(BaseDataset):
                 raise TypeError(f'proposal_label must be an int,'
                                 f'but got {type(label)}')
             out_proposal_labels.append(label)
-            if not isinstance(proposal[1], int):
-                raise TypeError(f'proposal_type must be an int,'
-                                f'but got {type(proposal[1])}')
             out_proposal_type.append(proposal[1])
 
             reg_targets = proposal[0][1].regression_targets
@@ -728,7 +761,8 @@ class SSNDataset(BaseDataset):
         """Prepare the frames for testing given the index."""
         results = copy.deepcopy(self.video_infos[idx])
         results['filename_tmpl'] = self.filename_tmpl
-        results['modality'] = 'RGB'
+        results['modality'] = self.modality
+        results['start_index'] = self.start_index
 
         proposals = results['proposals']
         num_frames = results['total_frames']
