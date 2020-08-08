@@ -508,7 +508,8 @@ class ResNet(nn.Module):
                     self.pretrained, strict=False, logger=logger)
             else:
                 # ours
-                load_checkpoint(self.pretrained, strict=False, logger=logger)
+                load_checkpoint(
+                    self, self.pretrained, strict=False, logger=logger)
         elif self.pretrained is None:
             for m in self.modules():
                 if isinstance(m, nn.Conv2d):
