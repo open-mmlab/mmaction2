@@ -27,7 +27,7 @@ ann_file_test = 'data/ucf101/ucf101_val_split_{1,2,3}_rawframes.txt'
 img_norm_cfg = dict(mean=[104, 117, 128], std=[1, 1, 1], to_bgr=False)
 train_pipeline = [
     dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=3),
-    dict(type='FrameSelector'),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(
         type='MultiScaleCrop',
@@ -49,7 +49,7 @@ val_pipeline = [
         frame_interval=1,
         num_clips=3,
         test_mode=True),
-    dict(type='FrameSelector'),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
     dict(type='Flip', flip_ratio=0),
@@ -65,7 +65,7 @@ test_pipeline = [
         frame_interval=1,
         num_clips=25,
         test_mode=True),
-    dict(type='FrameSelector'),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='TenCrop', crop_size=224),
     dict(type='Flip', flip_ratio=0),

@@ -25,7 +25,7 @@ img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
     dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=3),
-    dict(type='FrameSelector', io_backend='disk'),
+    dict(type='RawFrameDecode', io_backend='disk'),
     dict(type='Resize', scale=(-1, 256)),
     dict(
         type='MultiScaleCrop',
@@ -47,7 +47,7 @@ val_pipeline = [
         frame_interval=1,
         num_clips=3,
         test_mode=True),
-    dict(type='FrameSelector', io_backend='disk'),
+    dict(type='RawFrameDecode', io_backend='disk'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
     dict(type='Flip', flip_ratio=0),
@@ -63,7 +63,7 @@ test_pipeline = [
         frame_interval=1,
         num_clips=25,
         test_mode=True),
-    dict(type='FrameSelector', io_backend='disk'),
+    dict(type='RawFrameDecode', io_backend='disk'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='TenCrop', crop_size=224),
     dict(type='Flip', flip_ratio=0),
@@ -96,7 +96,7 @@ For each operation, we list the related dict fields that are added/updated/remov
 - add: imgs, original_shape
 - update: *frame_inds
 
-`FrameSelector`
+`RawFrameDecode`
 - add: imgs, original_shape
 - update: *frame_inds
 
@@ -191,7 +191,7 @@ It is **noteworthy** that the first key, commonly `imgs`, will be used as the ma
          mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
     train_pipeline = [
         dict(type='DenseSampleFrames', clip_len=8, frame_interval=8, num_clips=1),
-        dict(type='FrameSelector', io_backend='disk'),
+        dict(type='RawFrameDecode', io_backend='disk'),
         dict(type='MyTransform'),       # use a custom pipeline
         dict(type='Normalize', **img_norm_cfg),
         dict(type='FormatShape', input_format='NCTHW'),

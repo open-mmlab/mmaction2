@@ -12,7 +12,8 @@ from mmaction.datasets.pipelines import (DecordDecode, DecordInit,
                                          LoadLocalizationFeature,
                                          LoadProposals, OpenCVDecode,
                                          OpenCVInit, PyAVDecode, PyAVInit,
-                                         SampleFrames, SampleProposalFrames)
+                                         RawFrameDecode, SampleFrames,
+                                         SampleProposalFrames)
 
 
 class ExampleSSNInstance(object):
@@ -830,7 +831,12 @@ class TestLoading(object):
         assert np.shape(opencv_decode_result['imgs']) == (len(
             video_result['frame_inds']), 256, 340, 3)
 
-    def test_frame_selector(self):
+    def test_rawframe_selector(self):
+
+        with pytest.warns(UserWarning):
+            FrameSelector(io_backend='disk')
+
+    def test_rawframe_decode(self):
         target_keys = ['frame_inds', 'imgs', 'original_shape', 'modality']
 
         # test frame selector with 2 dim input when start_index = 0
@@ -840,7 +846,7 @@ class TestLoading(object):
         # since the test images start with index 1, we plus 1 to frame_inds
         # in order to pass the CI
         inputs['frame_inds'] = inputs['frame_inds'] + 1
-        frame_selector = FrameSelector(io_backend='disk')
+        frame_selector = RawFrameDecode(io_backend='disk')
         results = frame_selector(inputs)
         assert self.check_keys_contain(results.keys(), target_keys)
         assert np.shape(results['imgs']) == (len(inputs['frame_inds']), 240,
@@ -851,7 +857,7 @@ class TestLoading(object):
         inputs = copy.deepcopy(self.frame_results)
         inputs['frame_inds'] = np.arange(1, self.total_frames, 2)[:,
                                                                   np.newaxis]
-        frame_selector = FrameSelector(io_backend='disk')
+        frame_selector = RawFrameDecode(io_backend='disk')
         results = frame_selector(inputs)
         assert self.check_keys_contain(results.keys(), target_keys)
         assert np.shape(results['imgs']) == (len(inputs['frame_inds']), 240,
@@ -864,7 +870,7 @@ class TestLoading(object):
         # since the test images start with index 1, we plus 1 to frame_inds
         # in order to pass the CI
         inputs['frame_inds'] = inputs['frame_inds'] + 1
-        frame_selector = FrameSelector(io_backend='disk')
+        frame_selector = RawFrameDecode(io_backend='disk')
         results = frame_selector(inputs)
         assert self.check_keys_contain(results.keys(), target_keys)
         assert np.shape(results['imgs']) == (len(inputs['frame_inds']), 240,
@@ -874,7 +880,7 @@ class TestLoading(object):
         # test frame selector with 1 dim input
         inputs = copy.deepcopy(self.frame_results)
         inputs['frame_inds'] = np.arange(1, self.total_frames, 5)
-        frame_selector = FrameSelector(io_backend='disk')
+        frame_selector = RawFrameDecode(io_backend='disk')
         results = frame_selector(inputs)
         assert self.check_keys_contain(results.keys(), target_keys)
         assert np.shape(results['imgs']) == (len(inputs['frame_inds']), 240,
@@ -887,7 +893,7 @@ class TestLoading(object):
         # since the test images start with index 1, we plus 1 to frame_inds
         # in order to pass the CI
         inputs['frame_inds'] = inputs['frame_inds'] + 1
-        frame_selector = FrameSelector(io_backend='disk')
+        frame_selector = RawFrameDecode(io_backend='disk')
         results = frame_selector(inputs)
         assert self.check_keys_contain(results.keys(), target_keys)
         assert np.shape(results['imgs']) == (len(inputs['frame_inds']), 240,
@@ -897,7 +903,7 @@ class TestLoading(object):
         # test frame selector with 1 dim input
         inputs = copy.deepcopy(self.frame_results)
         inputs['frame_inds'] = np.arange(1, self.total_frames, 2)
-        frame_selector = FrameSelector(io_backend='disk')
+        frame_selector = RawFrameDecode(io_backend='disk')
         results = frame_selector(inputs)
         assert self.check_keys_contain(results.keys(), target_keys)
         assert np.shape(results['imgs']) == (len(inputs['frame_inds']), 240,
@@ -911,7 +917,7 @@ class TestLoading(object):
         # since the test images start with index 1, we plus 1 to frame_inds
         # in order to pass the CI
         inputs['frame_inds'] = inputs['frame_inds'] + 1
-        frame_selector = FrameSelector(io_backend='disk')
+        frame_selector = RawFrameDecode(io_backend='disk')
         results = frame_selector(inputs)
         assert self.check_keys_contain(results.keys(), target_keys)
         assert np.shape(results['imgs']) == (len(inputs['frame_inds']) * 2,
@@ -921,7 +927,7 @@ class TestLoading(object):
         # test frame selector with 1 dim input for flow images
         inputs = copy.deepcopy(self.flow_frame_results)
         inputs['frame_inds'] = np.arange(1, self.total_frames, 2)
-        frame_selector = FrameSelector(io_backend='disk')
+        frame_selector = RawFrameDecode(io_backend='disk')
         results = frame_selector(inputs)
         assert self.check_keys_contain(results.keys(), target_keys)
         assert np.shape(results['imgs']) == (len(inputs['frame_inds']) * 2,
@@ -935,7 +941,7 @@ class TestLoading(object):
         # since the test images start with index 1, we plus 1 to frame_inds
         # in order to pass the CI
         inputs['frame_inds'] = inputs['frame_inds'] + 1
-        frame_selector = FrameSelector(
+        frame_selector = RawFrameDecode(
             io_backend='disk', decoding_backend='turbojpeg')
         results = frame_selector(inputs)
         assert self.check_keys_contain(results.keys(), target_keys)
@@ -946,7 +952,7 @@ class TestLoading(object):
         # test frame selector in turbojpeg decording backend
         inputs = copy.deepcopy(self.frame_results)
         inputs['frame_inds'] = np.arange(1, self.total_frames, 5)
-        frame_selector = FrameSelector(
+        frame_selector = RawFrameDecode(
             io_backend='disk', decoding_backend='turbojpeg')
         results = frame_selector(inputs)
         assert self.check_keys_contain(results.keys(), target_keys)

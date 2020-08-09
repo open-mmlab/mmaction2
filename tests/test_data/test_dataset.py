@@ -37,7 +37,7 @@ class TestDataset(object):
                 clip_len=32,
                 frame_interval=2,
                 num_clips=1),
-            dict(type='FrameSelector', io_backend='disk')
+            dict(type='RawFrameDecode', io_backend='disk')
         ]
         cls.video_pipeline = [
             dict(type='OpenCVInit'),

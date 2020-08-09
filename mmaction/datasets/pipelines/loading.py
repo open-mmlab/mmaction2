@@ -2,6 +2,7 @@ import io
 import os
 import os.path as osp
 import shutil
+import warnings
 
 import mmcv
 import numpy as np
@@ -793,8 +794,8 @@ class OpenCVDecode(object):
 
 
 @PIPELINES.register_module()
-class FrameSelector(object):
-    """Select raw frames with given indices.
+class RawFrameDecode(object):
+    """Load and decode frames with given indices.
 
     Required keys are "frame_dir", "filename_tmpl" and "frame_inds",
     added or modified keys are "imgs", "img_shape" and "original_shape".
@@ -813,7 +814,7 @@ class FrameSelector(object):
         self.file_client = None
 
     def __call__(self, results):
-        """Perform the FrameSelector selecting given indices.
+        """Perform the ``RawFrameDecode`` to pick frames given indices.
 
         Args:
             results (dict): The resulting dict to be modified and passed
@@ -861,6 +862,16 @@ class FrameSelector(object):
         results['img_shape'] = imgs[0].shape[:2]
 
         return results
+
+
+@PIPELINES.register_module()
+class FrameSelector(RawFrameDecode):
+    """Deprecated class for ``RawFrameDecode``."""
+
+    def __init__(self, *args, **kwargs):
+        warnings.warn('"FrameSelector" is deprecated, please switch to'
+                      '"RawFrameDecode"')
+        super().__init__(*args, **kwargs)
 
 
 @PIPELINES.register_module()
