@@ -49,7 +49,7 @@
 
 * Use `xxInit()` method to get total_frames (https://github.com/open-mmlab/mmaction2/pull/90)
 * Polish benchmark (https://github.com/open-mmlab/mmaction2/pull/43)
-* Use `RawFrameDecode` to replace `FrameSelector (https://github.com/open-mmlab/mmaction2/pull/91)
+* Use `RawFrameDecode` to replace `FrameSelector` (https://github.com/open-mmlab/mmaction2/pull/91)
 * Move `start_index` from `SampleFrames` to dataset level (https://github.com/open-mmlab/mmaction2/pull/89)
 
 ## v0.5.0 Initial Release (2020-07-21)
