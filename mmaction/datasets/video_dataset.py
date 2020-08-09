@@ -27,7 +27,20 @@ class VideoDataset(BaseDataset):
         some/path/003.mp4 2
         some/path/004.mp4 3
         some/path/005.mp4 3
+
+
+    Args:
+        ann_file (str): Path to the annotation file.
+        pipeline (list[dict | callable]): A sequence of data transforms.
+        start_index (int): Specify a start index for frames in consideration of
+            different filename format. However, when taking videos as input,
+            it should be set to 0, since frames loaded from videos count
+            from 0. Default: 0.
+        **kwargs: Keyword arguments for ``BaseDataset``.
     """
+
+    def __init__(self, ann_file, pipeline, start_index=0, **kwargs):
+        super().__init__(ann_file, pipeline, start_index=start_index, **kwargs)
 
     def load_annotations(self):
         """Load annotation file to get video information."""

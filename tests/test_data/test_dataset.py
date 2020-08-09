@@ -59,6 +59,7 @@ class TestDataset(object):
         assert rawframe_infos == [
             dict(frame_dir=frame_dir, total_frames=5, label=127)
         ] * 2
+        assert rawframe_dataset.start_index == 1
 
     def test_rawframe_dataset_with_offset(self):
         rawframe_dataset = RawframeDataset(
@@ -71,6 +72,7 @@ class TestDataset(object):
         assert rawframe_infos == [
             dict(frame_dir=frame_dir, offset=2, total_frames=5, label=127)
         ] * 2
+        assert rawframe_dataset.start_index == 1
 
     def test_rawframe_dataset_multi_label(self):
         rawframe_dataset = RawframeDataset(
@@ -90,6 +92,7 @@ class TestDataset(object):
             assert info['frame_dir'] == frame_dir
             assert info['total_frames'] == 5
             assert torch.all(info['label'] == label)
+        assert rawframe_dataset.start_index == 1
 
     def test_dataset_realpath(self):
         dataset = RawframeDataset(self.frame_ann_file, self.frame_pipeline,
@@ -100,14 +103,20 @@ class TestDataset(object):
         assert dataset.data_prefix == 's3://good'
 
     def test_video_dataset(self):
-        video_dataset = VideoDataset(self.video_ann_file, self.video_pipeline,
-                                     self.data_prefix)
+        video_dataset = VideoDataset(
+            self.video_ann_file,
+            self.video_pipeline,
+            data_prefix=self.data_prefix)
         video_infos = video_dataset.video_infos
         video_filename = osp.join(self.data_prefix, 'test.mp4')
         assert video_infos == [dict(filename=video_filename, label=0)] * 2
+        assert video_dataset.start_index == 0
 
     def test_rawframe_pipeline(self):
-        target_keys = ['frame_dir', 'total_frames', 'label', 'filename_tmpl']
+        target_keys = [
+            'frame_dir', 'total_frames', 'label', 'filename_tmpl',
+            'start_index', 'modality'
+        ]
 
         # RawframeDataset not in test mode
         rawframe_dataset = RawframeDataset(
@@ -129,6 +138,17 @@ class TestDataset(object):
         result = rawframe_dataset[0]
         assert self.check_keys_contain(result.keys(), target_keys)
 
+        # RawframeDataset with offset
+        rawframe_dataset = RawframeDataset(
+            self.frame_ann_file_with_offset,
+            self.frame_pipeline,
+            self.data_prefix,
+            with_offset=True,
+            num_classes=400,
+            test_mode=False)
+        result = rawframe_dataset[0]
+        assert self.check_keys_contain(result.keys(), target_keys + ['offset'])
+
         # RawframeDataset in test mode
         rawframe_dataset = RawframeDataset(
             self.frame_ann_file,
@@ -149,14 +169,25 @@ class TestDataset(object):
         result = rawframe_dataset[0]
         assert self.check_keys_contain(result.keys(), target_keys)
 
+        # RawframeDataset with offset
+        rawframe_dataset = RawframeDataset(
+            self.frame_ann_file_with_offset,
+            self.frame_pipeline,
+            self.data_prefix,
+            with_offset=True,
+            num_classes=400,
+            test_mode=True)
+        result = rawframe_dataset[0]
+        assert self.check_keys_contain(result.keys(), target_keys + ['offset'])
+
     def test_video_pipeline(self):
-        target_keys = ['filename', 'label']
+        target_keys = ['filename', 'label', 'start_index', 'modality']
 
         # VideoDataset not in test mode
         video_dataset = VideoDataset(
             self.video_ann_file,
             self.video_pipeline,
-            self.data_prefix,
+            data_prefix=self.data_prefix,
             test_mode=False)
         result = video_dataset[0]
         assert self.check_keys_contain(result.keys(), target_keys)
@@ -165,7 +196,7 @@ class TestDataset(object):
         video_dataset = VideoDataset(
             self.video_ann_file,
             self.video_pipeline,
-            self.data_prefix,
+            data_prefix=self.data_prefix,
             test_mode=True)
         result = video_dataset[0]
         assert self.check_keys_contain(result.keys(), target_keys)
@@ -221,8 +252,10 @@ class TestDataset(object):
             ['top1_acc', 'top5_acc', 'mean_class_accuracy'])
 
     def test_video_evaluate(self):
-        video_dataset = VideoDataset(self.video_ann_file, self.video_pipeline,
-                                     self.data_prefix)
+        video_dataset = VideoDataset(
+            self.video_ann_file,
+            self.video_pipeline,
+            data_prefix=self.data_prefix)
 
         with pytest.raises(TypeError):
             # results must be a list
@@ -248,10 +281,14 @@ class TestDataset(object):
             ['top1_acc', 'top5_acc', 'mean_class_accuracy'])
 
     def test_base_dataset(self):
-        video_dataset = VideoDataset(self.video_ann_file, self.video_pipeline,
-                                     self.data_prefix)
+        video_dataset = VideoDataset(
+            self.video_ann_file,
+            self.video_pipeline,
+            data_prefix=self.data_prefix,
+            start_index=3)
         assert len(video_dataset) == 2
         assert type(video_dataset[0]) == dict
+        assert video_dataset.start_index == 3
 
     def test_repeat_dataset(self):
         rawframe_dataset = RawframeDataset(self.frame_ann_file,

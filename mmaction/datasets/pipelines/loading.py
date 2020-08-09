@@ -17,18 +17,14 @@ from ..registry import PIPELINES
 class SampleFrames(object):
     """Sample frames from the video.
 
-    Required keys are "filename", "total_frames", added or modified keys are
-    "frame_inds", "frame_interval" and "num_clips".
+    Required keys are "filename", "total_frames", "start_index" , added or
+    modified keys are "frame_inds", "frame_interval" and "num_clips".
 
     Args:
         clip_len (int): Frames of each sampled output clip.
         frame_interval (int): Temporal interval of adjacent sampled frames.
             Default: 1.
         num_clips (int): Number of clips to be sampled. Default: 1.
-        start_index (int): Specify a start index for frames in consideration of
-            different filename format. However, when taking videos as input,
-            it should be set to 0, since frames loaded from videos count
-            from 0. Default: 1.
         temporal_jitter (bool): Whether to apply temporal jittering.
             Default: False.
         twice_sample (bool): Whether to use twice sample when testing.
@@ -39,27 +35,34 @@ class SampleFrames(object):
             Default: 'loop'.
         test_mode (bool): Store True when building test or validation dataset.
             Default: False.
+        start_index (None): This argument is deprecated and moved to dataset
+            class (``BaseDataset``, ``VideoDatset``, ``RawframeDataset``, etc),
+            see this: https://github.com/open-mmlab/mmaction2/pull/89.
     """
 
     def __init__(self,
                  clip_len,
                  frame_interval=1,
                  num_clips=1,
-                 start_index=1,
                  temporal_jitter=False,
                  twice_sample=False,
                  out_of_bound_opt='loop',
-                 test_mode=False):
+                 test_mode=False,
+                 start_index=None):
 
         self.clip_len = clip_len
         self.frame_interval = frame_interval
         self.num_clips = num_clips
-        self.start_index = start_index
         self.temporal_jitter = temporal_jitter
         self.twice_sample = twice_sample
         self.out_of_bound_opt = out_of_bound_opt
         self.test_mode = test_mode
         assert self.out_of_bound_opt in ['loop', 'repeat_last']
+
+        if start_index is not None:
+            warnings.warn('No longer support "start_index" in "SampleFrames", '
+                          'it should be set in dataset class, see this pr: '
+                          'https://github.com/open-mmlab/mmaction2/pull/89')
 
     def _get_train_clips(self, num_frames):
         """Get clip offsets in train mode.
@@ -165,7 +168,9 @@ class SampleFrames(object):
             frame_inds = new_inds
         else:
             raise ValueError('Illegal out_of_bound option.')
-        frame_inds = np.concatenate(frame_inds) + self.start_index
+
+        start_index = results['start_index']
+        frame_inds = np.concatenate(frame_inds) + start_index
         results['frame_inds'] = frame_inds.astype(np.int)
         results['clip_len'] = self.clip_len
         results['frame_interval'] = self.frame_interval
@@ -185,8 +190,6 @@ class DenseSampleFrames(SampleFrames):
         frame_interval (int): Temporal interval of adjacent sampled frames.
             Default: 1.
         num_clips (int): Number of clips to be sampled. Default: 1.
-        start_index (int): Specify a start index for frames in consideration of
-            different filename format. Default: 1.
         sample_range (int): Total sample range for dense sample.
             Default: 64.
         num_sample_positions (int): Number of sample start positions, Which is
@@ -201,7 +204,6 @@ class DenseSampleFrames(SampleFrames):
                  clip_len,
                  frame_interval=1,
                  num_clips=1,
-                 start_index=1,
                  sample_range=64,
                  num_sample_positions=10,
                  temporal_jitter=False,
@@ -211,7 +213,6 @@ class DenseSampleFrames(SampleFrames):
             clip_len,
             frame_interval,
             num_clips,
-            start_index,
             temporal_jitter,
             out_of_bound_opt=out_of_bound_opt,
             test_mode=test_mode)
@@ -285,10 +286,6 @@ class SampleProposalFrames(SampleFrames):
             Default: 1.
         test_interval (int): Temporal interval of adjacent sampled frames
             in test mode. Default: 6.
-        start_index (int): Specify a start index for frames in consideration of
-            different filename format. However, when taking videos as input,
-            it should be set to 0, since frames loaded from videos count
-            from 0. Default: 1.
         temporal_jitter (bool): Whether to apply temporal jittering.
             Default: False.
         mode (str): Choose 'train', 'val' or 'test' mode.
@@ -302,13 +299,11 @@ class SampleProposalFrames(SampleFrames):
                  aug_ratio,
                  frame_interval=1,
                  test_interval=6,
-                 start_index=1,
                  temporal_jitter=False,
                  mode='train'):
         super().__init__(
             clip_len,
             frame_interval=frame_interval,
-            start_index=start_index,
             temporal_jitter=temporal_jitter)
         self.body_segments = body_segments
         self.aug_segments = aug_segments
@@ -500,7 +495,8 @@ class SampleProposalFrames(SampleFrames):
                 self.frame_interval, size=len(frame_inds))
             frame_inds += perframe_offsets
 
-        frame_inds = np.mod(frame_inds, total_frames) + self.start_index
+        start_index = results['start_index']
+        frame_inds = np.mod(frame_inds, total_frames) + start_index
 
         results['frame_inds'] = np.array(frame_inds).astype(np.int)
         results['clip_len'] = self.clip_len
