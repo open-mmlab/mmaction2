@@ -2,6 +2,7 @@
 
 cat  ../configs/localization/*/*.md > localization_models.md
 cat  ../configs/recognition/*/*.md > recognition_models.md
+copy ../NEWS.md changelog.md
 
 cat  ./tutorials/finetune.md ./tutorials/new_dataset.md ./tutorials/data_pipeline.md ./tutorials/new_modules.md > tutorials.md
 

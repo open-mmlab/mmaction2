@@ -9,6 +9,7 @@ Welcome to MMAction2's documentation!
    install.md
    data_preparation.md
    config.md
+   changelog.md
    api.rst
 
 
