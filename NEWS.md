@@ -45,7 +45,7 @@
 * Fix bsn configs filename in README.md (https://github.com/open-mmlab/mmaction2/pull/74)
 * Update docs for demo (https://github.com/open-mmlab/mmaction2/pull/81)
 
-### Misc
+### Notable Changes
 
 * Use `xxInit()` method to get total_frames (https://github.com/open-mmlab/mmaction2/pull/90)
 * Polish benchmark (https://github.com/open-mmlab/mmaction2/pull/43)
