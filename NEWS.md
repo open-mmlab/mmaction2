@@ -1,7 +1,7 @@
 
 # MMAction2 Release Notes
 
-## v0.6.0 (Current)
+## v0.6.0 (Master)
 
 ### Models
 * Add NonLocal module in TSM and I3D (https://github.com/open-mmlab/mmaction2/pull/41)
@@ -52,4 +52,4 @@
 * Use `RawFrameDecode` to replace `FrameSelector (https://github.com/open-mmlab/mmaction2/pull/91)
 * Move `start_index` from `SampleFrames` to dataset level (https://github.com/open-mmlab/mmaction2/pull/89)
 
-## v0.5.0 Initial Release
+## v0.5.0 Initial Release (2020-07-21)
