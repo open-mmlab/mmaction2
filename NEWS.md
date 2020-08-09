@@ -1,12 +1,13 @@
 
 # MMAction2 Release Notes
 
-## v0.6.0 (Master)
+## Master
 
 ### Models
 * Add NonLocal module in TSM and I3D [#41](https://github.com/open-mmlab/mmaction2/pull/41)
-* Add SSN pipeline [#33](https://github.com/open-mmlab/mmaction2/pull/33)
-* Add SSN losses [#52](https://github.com/open-mmlab/mmaction2/pull/52)
+* Support SSN
+    - Add pipeline [#33](https://github.com/open-mmlab/mmaction2/pull/33)
+    - Add losses [#52](https://github.com/open-mmlab/mmaction2/pull/52)
 * Add CSN model [#87](https://github.com/open-mmlab/mmaction2/pull/87)
 
 ### Datasets
