@@ -5,10 +5,10 @@
 ### ActivityNet feature
 
 |config |feature | gpus | pretrain | AR@100| AUC | gpu_mem(M) | iter time(s) | ckpt | log| json|
-|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|---|
+|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:-:|
 |[bmn_400x100_9e_2x8_activitynet_feature](/configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py) |cuhk_mean_100 |2| None |75.28|67.22|5420|3.27|[ckpt](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature_20200619-42a3b111.pth)| [log](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature.log)| [json](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature.log.json)|
-| |mmaction_video |2| None |75.43|67.22|5420|3.27|| | |
-| |mmaction_clip |2| None |75.35|67.38|5420|3.27|| | |
+| |mmaction_video |2| None |75.43|67.22|5420|3.27|[ckpt](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809-c9fd14d2.pth)| [log](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809.log) | [json](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809.json) |
+| |mmaction_clip |2| None |75.35|67.38|5420|3.27|[ckpt](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809-10d803ce.pth)| [log](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809.log) | [json](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809.json) |
 
 Notes:
 1. The **gpus** indicates the number of gpu we used to get the checkpoint.
