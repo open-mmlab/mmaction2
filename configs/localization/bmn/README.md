@@ -4,14 +4,17 @@
 
 ### ActivityNet feature
 
-|config | gpus | pretrain | AR@100| AUC | gpu_mem(M) | iter time(s) | ckpt | log| json|
-|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[bmn_400x100_9e_2x8_activitynet_feature](/configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py) |2| None |75.28|67.22|5420|3.27|[ckpt](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature_20200619-42a3b111.pth)| [log](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature.log)| [json](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature.log.json)|
+|config |feature | gpus | pretrain | AR@100| AUC | gpu_mem(M) | iter time(s) | ckpt | log| json|
+|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:-:|
+|[bmn_400x100_9e_2x8_activitynet_feature](/configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py) |cuhk_mean_100 |2| None |75.28|67.22|5420|3.27|[ckpt](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature_20200619-42a3b111.pth)| [log](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature.log)| [json](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature.log.json)|
+| |mmaction_video |2| None |75.43|67.22|5420|3.27|[ckpt](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809-c9fd14d2.pth)| [log](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809.log) | [json](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809.json) |
+| |mmaction_clip |2| None |75.35|67.38|5420|3.27|[ckpt](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809-10d803ce.pth)| [log](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809.log) | [json](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809.json) |
 
 Notes:
 1. The **gpus** indicates the number of gpu we used to get the checkpoint.
 According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
 e.g., lr=0.01 for 4 GPUs * 2 video/gpu and lr=0.08 for 16 GPUs * 4 video/gpu.
+2. For feature column, cuhk_mean_100 denotes the widely used cuhk activitynet feature extracted by [anet2016-cuhk](https://github.com/yjxiong/anet2016-cuhk), mmaction_video and mmaction_clip denote feature extracted by mmaction, with video-level activitynet finetuned model or clip-level activitynet finetuned model respectively.
 
 For more details on data preparation, you can refer to ActivityNet feature in [Data Preparation](/docs/data_preparation.md).
 
