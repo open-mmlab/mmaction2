@@ -6,23 +6,44 @@ from ..registry import HEADS
 
 
 def parse_stage_config(stage_cfg):
+    """Parse config of STPP for three stages.
+
+    Args:
+        stage_cfg (int | tuple[int]):
+            Config of structured temporal pyramid pooling.
+
+    Returns:
+        tuple[tuple[int], int]:
+            Config of structured temporal pyramid pooling and
+            total number of parts(number of multipliers).
+    """
     if isinstance(stage_cfg, int):
         return (stage_cfg, ), stage_cfg
-    elif isinstance(stage_cfg, (tuple, list)):
+    elif isinstance(stage_cfg, tuple):
         return stage_cfg, sum(stage_cfg)
     else:
         raise ValueError(f'Incorrect STPP config {stage_cfg}')
 
 
 class STPPTrain(nn.Module):
+    """Structured temporal pyramid pooling for SSN at training.
+
+    Args:
+        with_context (bool): Whether to predict actioness score with
+            context. Default: True.
+        stpp_stage (tuple): Config of structured temporal pyramid pooling.
+            Default: (1, (1, 2), 1).
+        num_segments_list (tuple): Number of segments to be sampled
+            in three stages. Default: (2, 5, 2).
+    """
 
     def __init__(self,
-                 with_standalong_classifier=False,
+                 with_context=True,
                  stpp_stage=(1, (1, 2), 1),
                  num_segments_list=(2, 5, 2)):
         super(STPPTrain, self).__init__()
 
-        self.with_standalong_classifier = with_standalong_classifier
+        self.with_context = with_context
 
         starting_part, starting_multiplier = parse_stage_config(stpp_stage[0])
         course_part, course_multiplier = parse_stage_config(stpp_stage[1])
@@ -37,6 +58,18 @@ class STPPTrain(nn.Module):
         self.num_segments_list = num_segments_list
 
     def forward(self, x, scale_factors):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+            scale_factors (list): Ratios of the effective sampling lengths
+                to augmented lengths.
+
+        Returns:
+            tuple[torch.Tensor, torch.Tensor]:
+                Features for predicting activity scores and
+                completeness scores.
+        """
         x0 = self.num_segments_list[0]
         x1 = x0 + self.num_segments_list[1]
         num_segments = x1 + self.num_segments_list[2]
@@ -47,9 +80,22 @@ class STPPTrain(nn.Module):
 
         scale_factors = scale_factors.view(-1, 2)
 
-        def extract_stpp_feature(stage_feat, stage_parts, num_multiplier,
-                                 scale_factors):
-            stage_stpp = []
+        def extract_stage_feature(stage_feat, stage_parts, num_multiplier,
+                                  scale_factors):
+            """Extract stage feature based on structured temporal pyramid
+            pooling.
+
+            Args:
+                stage_feat (torch.Tensor): Stage features to be STPP.
+                stage_parts (tuple): Config of STPP.
+                num_multiplier (int): Total number of parts in the stage.
+                scale_factors (list): Ratios of the effective sampling lengths
+                    to augmented lengths.
+
+            Returns:
+                torch.Tensor: Features of the stage.
+            """
+            stage_stpp_feat = []
             stage_len = stage_feat.size(1)
             for stage_part in stage_parts:
                 ticks = torch.arange(0, stage_len + 1e-5,
@@ -62,21 +108,24 @@ class STPPTrain(nn.Module):
                     if scale_factors is not None:
                         part_feat = (
                             part_feat * scale_factors.view(num_samples, 1))
-                    stage_stpp.append(part_feat)
-            return stage_stpp
+                    stage_stpp_feat.append(part_feat)
+            return stage_stpp_feat
 
-        feature_parts = []
-        feature_parts.extend(
-            extract_stpp_feature(x[:, :x0, :], self.stpp_stages[0],
-                                 self.multiplier_list[0], scale_factors[:, 0]))
-        feature_parts.extend(
-            extract_stpp_feature(x[:, x0:x1, :], self.stpp_stages[1],
-                                 self.multiplier_list[1], None))
-        feature_parts.extend(
-            extract_stpp_feature(x[:, x1:, :], self.stpp_stages[2],
-                                 self.multiplier_list[2], scale_factors[:, 1]))
-        stpp_feat = torch.cat(feature_parts, dim=1)
-        if not self.with_standalong_classifier:
+        stage_stpp_feats = []
+        stage_stpp_feats.extend(
+            extract_stage_feature(x[:, :x0, :], self.stpp_stages[0],
+                                  self.multiplier_list[0], scale_factors[:,
+                                                                         0]))
+        stage_stpp_feats.extend(
+            extract_stage_feature(x[:, x0:x1, :], self.stpp_stages[1],
+                                  self.multiplier_list[1], None))
+        stage_stpp_feats.extend(
+            extract_stage_feature(x[:, x1:, :], self.stpp_stages[2],
+                                  self.multiplier_list[2], scale_factors[:,
+                                                                         1]))
+        stpp_feat = torch.cat(stage_stpp_feats, dim=1)
+
+        if self.with_context:
             return stpp_feat, stpp_feat
         else:
             course_feat = x[:, x0:x1, :].mean(dim=1)
@@ -84,15 +133,26 @@ class STPPTrain(nn.Module):
 
 
 class STPPTest(nn.Module):
+    """Structured temporal pyramid pooling for SSN at testing.
+
+    Args:
+        num_classes (int): Number of classes to be classified.
+        with_context (bool): Whether to predict actioness score with
+            context. Default: True.
+        with_regression (bool): Whether to perform regression or not.
+            Default: True.
+        stpp_stage (tuple): Config of structured temporal pyramid pooling.
+            Default: (1, (1, 2), 1).
+    """
 
     def __init__(self,
                  num_classes,
-                 with_standalong_classifier=False,
+                 with_context=True,
                  with_regression=True,
                  stpp_stage=(1, (1, 2), 1)):
         super(STPPTest, self).__init__()
 
-        self.with_standalong_classifier = with_standalong_classifier
+        self.with_context = with_context
 
         self.activity_score_len = num_classes + 1
         self.complete_score_len = num_classes
@@ -105,16 +165,21 @@ class STPPTest(nn.Module):
 
         self.feat_multiplier = (
             starting_multiplier + course_multiplier + ending_multiplier)
-        self.feat_dim = self.activity_score_len + \
-            self.feat_multiplier * (self.complete_score_len +
-                                    self.reg_score_len)
+        if self.with_regression:
+            self.feat_dim = (
+                self.activity_score_len + self.feat_multiplier *
+                (self.complete_score_len + self.reg_score_len))
+        else:
+            self.feat_dim = (
+                self.activity_score_len +
+                self.feat_multiplier * self.complete_score_len)
         self.stpp_stage = (starting_parts, course_parts, ending_parts)
 
-        if self.with_standalong_classifier:
-            self.activity_slice = slice(0, self.activity_score_len)
-        else:
+        if self.with_context:
             self.activity_slice = slice(
                 0, self.activity_score_len * self.feat_multiplier)
+        else:
+            self.activity_slice = slice(0, self.activity_score_len)
 
         self.complete_slice = slice(
             self.activity_slice.stop, self.activity_slice.stop +
@@ -124,6 +189,20 @@ class STPPTest(nn.Module):
             self.reg_score_len * self.feat_multiplier)
 
     def forward(self, x, proposal_ticks, scale_factors):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+            proposal_ticks (list): Ticks of proposals to be STPP.
+            scale_factors (list): Ratios of the effective sampling lengths
+                to augmented lengths.
+
+        Returns:
+            tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+                out_activity_scores (torch.Tensor): Activity scores
+                out_complete_scores (torch.Tensor): Completeness scores.
+                out_reg_scores (torch.Tensor): Regression scores.
+        """
         assert x.size(1) == self.feat_dim
         num_ticks = proposal_ticks.size(0)
 
@@ -145,6 +224,18 @@ class STPPTest(nn.Module):
 
         def pyramids_pooling(out_scores, index, raw_scores, ticks,
                              scale_factors, score_len, stpp_stage):
+            """Perform pyramids pooling.
+
+            Args:
+                out_scores (torch.Tensor): Scores to be returned.
+                index (int): Index of output scores.
+                raw_scores (torch.Tensor): Raw scores before STPP.
+                ticks (int): Ticks of raw scores.
+                scale_factors (list): Ratios of the effective sampling lengths
+                    to augmented lengths.
+                score_len (int): Length of the score.
+                stpp_stage (tuple): Config of STPP.
+            """
             offset = 0
             for stage_idx, stage_cfg in enumerate(stpp_stage):
                 if stage_idx == 0:
@@ -154,21 +245,22 @@ class STPPTest(nn.Module):
                 else:
                     scale_factor = 1.0
 
-                num_stages = sum(stage_cfg)
+                sum_parts = sum(stage_cfg)
                 tick_left = float(ticks[stage_idx])
                 tick_right = float(
                     max(ticks[stage_idx] + 1, ticks[stage_idx + 1]))
 
                 if tick_right <= 0 or tick_left >= raw_scores.size(0):
-                    offset += num_stages
+                    offset += sum_parts
                     continue
-                for n_part in stage_cfg:
+                for num_parts in stage_cfg:
                     part_ticks = torch.arange(
                         tick_left,
-                        tick_right + 1e-5, (tick_right - tick_left) / n_part,
+                        tick_right + 1e-5,
+                        (tick_right - tick_left) / num_parts,
                         dtype=torch.float)
 
-                    for i in range(n_part):
+                    for i in range(num_parts):
                         part_tick_left = int(part_ticks[i])
                         part_tick_right = int(part_ticks[i + 1])
                         if part_tick_right - part_tick_left >= 1:
@@ -183,13 +275,13 @@ class STPPTest(nn.Module):
 
         for i in range(num_ticks):
             ticks = proposal_ticks[i]
-            if self.with_standalong_classifier:
-                out_activity_scores[i, :] = raw_activity_scores[
-                    ticks[1]:max(ticks[1] + 1, ticks[2]), :].mean(dim=0)
-            else:
+            if self.with_context:
                 pyramids_pooling(out_activity_scores, i, raw_activity_scores,
                                  ticks, scale_factors[i],
                                  self.activity_score_len, self.stpp_stage)
+            else:
+                out_activity_scores[i, :] = raw_activity_scores[
+                    ticks[1]:max(ticks[1] + 1, ticks[2]), :].mean(dim=0)
 
             pyramids_pooling(out_complete_scores, i, raw_complete_scores,
                              ticks, scale_factors[i], self.complete_score_len,
@@ -203,9 +295,22 @@ class STPPTest(nn.Module):
         return out_activity_scores, out_complete_scores, out_reg_scores
 
 
-@HEADS.register_module
+@HEADS.register_module()
 class SSNHead(nn.Module):
-    """SSN's classification head."""
+    """The classification head for SSN.
+
+    Args:
+        dropout_ratio (float): Probability of dropout layer. Default: 0.8.
+        in_channels_activity (int): Number of channels in input
+            activity feature. Default: 3072.
+        in_channels_complete (int): Number of channels in input
+            complete feature. Default: 3072.
+        num_classes (int): Number of classes to be classified. Default: 20.
+        consensus (dict): Config of segmental consensus.
+        with_regression (bool): Whether to perform regression or not.
+            Default: True.
+        init_std (float): Std value for Initiation. Default: 0.001.
+    """
 
     def __init__(self,
                  dropout_ratio=0.8,
@@ -217,8 +322,7 @@ class SSNHead(nn.Module):
                      standalong_classifier=True,
                      stpp_cfg=(1, 1, 1),
                      num_seg=(2, 5, 2)),
-                 with_bg=False,
-                 with_reg=True,
+                 with_regression=True,
                  init_std=0.001):
 
         super(SSNHead, self).__init__()
@@ -226,13 +330,8 @@ class SSNHead(nn.Module):
         self.dropout_ratio = dropout_ratio
         self.in_channels_activity = in_channels_activity
         self.in_channels_complete = in_channels_complete
-        if with_bg:
-            self.num_classes = num_classes - 1
-        else:
-            self.num_classes = num_classes
-
-        self.with_bg = with_bg
-        self.with_reg = with_reg
+        self.num_classes = num_classes
+        self.with_regression = with_regression
         self.init_std = init_std
 
         if self.dropout_ratio != 0:
@@ -250,23 +349,33 @@ class SSNHead(nn.Module):
 
         self.activity_fc = nn.Linear(in_channels_activity, num_classes + 1)
         self.completeness_fc = nn.Linear(in_channels_complete, num_classes)
-        if self.with_reg:
+        if self.with_regression:
             self.regressor_fc = nn.Linear(in_channels_complete,
                                           num_classes * 2)
 
     def init_weights(self):
+        """Initiate the parameters from scratch."""
         normal_init(self.activity_fc, std=self.init_std)
         normal_init(self.completeness_fc, std=self.init_std)
-        if self.with_reg:
+        if self.with_regression:
             normal_init(self.regressor_fc, std=self.init_std)
 
     def prepare_test_fc(self, stpp_feat_multiplier):
-        # Reorganize the shape of fc to improve testing efficiency.
+        """Reorganize the shape of fully connected layer at testing, in order
+        to improve testing efficiency.
+
+        Args:
+            stpp_feat_multiplier (int): Total number of parts.
+
+        Returns:
+            bool: Whether the shape transformation is ready for testing.
+        """
+
         in_features = self.activity_fc.in_features
         out_features = (
             self.activity_fc.out_features +
             self.completeness_fc.out_features * stpp_feat_multiplier)
-        if self.with_reg:
+        if self.with_regression:
             out_features += (
                 self.regressor_fc.out_features * stpp_feat_multiplier)
         self.test_fc = nn.Linear(in_features, out_features)
@@ -283,7 +392,7 @@ class SSNHead(nn.Module):
         weight = torch.cat((self.activity_fc.weight.data, complete_weight))
         bias = torch.cat((self.activity_fc.bias.data, complete_bias))
 
-        if self.with_reg:
+        if self.with_regression:
             reg_weight = self.regressor_fc.weight.data.view(
                 self.regressor_fc.out_features,
                 stpp_feat_multiplier, self.activity_fc.in_features).transpose(
@@ -299,6 +408,7 @@ class SSNHead(nn.Module):
         return True
 
     def forward(self, x, test_mode=False):
+        """Defines the computation performed at every call."""
         if not test_mode:
             x, proposal_scale_factor = x
             activity_feat, completeness_feat = self.consensus(
@@ -310,13 +420,14 @@ class SSNHead(nn.Module):
 
             activity_scores = self.activity_fc(activity_feat)
             complete_scores = self.completeness_fc(completeness_feat)
-            if self.with_reg:
-                bbox_pred = self.regressor_fc(completeness_feat)
+            if self.with_regression:
+                bbox_preds = self.regressor_fc(completeness_feat)
+                bbox_preds = bbox_preds.view(-1,
+                                             self.completeness_fc.out_features,
+                                             2)
             else:
-                bbox_pred = None
-            bbox_pred = bbox_pred.view(-1, self.completeness_fc.out_features,
-                                       2)
-            return activity_scores, complete_scores, bbox_pred
+                bbox_preds = None
+            return activity_scores, complete_scores, bbox_preds
         else:
             x, proposal_tick_list, scale_factor_list = x
             test_scores = self.test_fc(x)

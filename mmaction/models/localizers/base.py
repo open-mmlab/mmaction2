@@ -51,14 +51,12 @@ class BaseLocalizer(nn.Module, metaclass=ABCMeta):
         """Defines the computation performed at testing."""
         pass
 
-    def forward(self, imgs, label=None, return_loss=True):
+    def forward(self, imgs, return_loss=True, **kwargs):
         """Define the computation performed at every call."""
         if return_loss:
-            if label is None:
-                raise ValueError('Label should not be None.')
-            return self.forward_train(imgs, label)
+            return self.forward_train(imgs, **kwargs)
         else:
-            return self.forward_test(imgs)
+            return self.forward_test(imgs, **kwargs)
 
     @staticmethod
     def _parse_losses(losses):

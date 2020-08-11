@@ -21,8 +21,8 @@ class SSN(BaseLocalizer):
             Default: 0.5.
         loss_cls (dict): Config for building loss.
             Default: ``dict(type='SSNLoss')``.
-        train_cfg (dict): Config for training.
-        test_cfg (dict): Config for testing.
+        train_cfg (dict): Config for training. Default: None.
+        test_cfg (dict): Config for testing. Default: None.
     """
 
     def __init__(self,
@@ -42,15 +42,17 @@ class SSN(BaseLocalizer):
 
         self.spatial_type = spatial_type
         if self.spatial_type == 'avg':
-            self.avg_pool = nn.AdaptiveAvgPool2d((1, 1))
+            self.pool = nn.AvgPool2d((7, 7), stride=1, padding=0)
         elif self.spatial_type == 'max':
-            self.avg_pool = nn.AdaptiveMaxPool2d((1, 1))
+            self.pool = nn.MaxPool2d((7, 7), stride=1, padding=0)
         else:
-            self.avg_pool = None
+            self.pool = None
 
         self.dropout_ratio = dropout_ratio
         if self.dropout_ratio != 0:
             self.dropout = nn.Dropout(p=self.dropout_ratio)
+        else:
+            self.dropout = None
         self.loss_cls = builder.build_loss(loss_cls)
 
     def forward_train(self, imgs, proposal_scale_factor, proposal_type,
@@ -60,15 +62,15 @@ class SSN(BaseLocalizer):
 
         x = self.extract_feat(imgs)
 
-        if self.avg_pool:
-            x = self.avg_pool(x)
+        if self.pool:
+            x = self.pool(x)
         if self.dropout is not None:
             x = self.dropout(x)
 
-        activity_score, completeness_score, bbox_pred = self.cls_head(
+        activity_scores, completeness_scores, bbox_preds = self.cls_head(
             (x, proposal_scale_factor))
 
-        loss = self.loss_cls(activity_score, completeness_score, bbox_pred,
+        loss = self.loss_cls(activity_scores, completeness_scores, bbox_preds,
                              proposal_type, proposal_labels, reg_targets,
                              self.train_cfg)
         loss_dict = dict(**loss)
@@ -76,7 +78,7 @@ class SSN(BaseLocalizer):
         return loss_dict
 
     def forward_test(self, imgs, relative_proposal_list, scale_factor_list,
-                     proposal_tick_list, reg_stats, **kwargs):
+                     proposal_tick_list, reg_norm_consts, **kwargs):
         """Define the computation performed at every call when testing."""
         num_crops = imgs.shape[0]
         imgs = imgs.reshape((num_crops, -1, self.in_channels) + imgs.shape[3:])
@@ -87,9 +89,9 @@ class SSN(BaseLocalizer):
         for idx in range(0, num_ticks, minibatch_size):
             chunk = imgs[:, idx:idx +
                          minibatch_size, :, :, :].view((-1, ) + imgs.shape[2:])
-            x = self.extract_feat(chunk.cuda())
-            if self.avg_pool:
-                x = self.avg_pool(x)
+            x = self.extract_feat(chunk)
+            if self.pool:
+                x = self.pool(x)
             # Merge crop to save memory.
             x = x.reshape((num_crops, x.size(0) // num_crops, -1)).mean(dim=0)
             output.append(x)
@@ -98,7 +100,7 @@ class SSN(BaseLocalizer):
         relative_proposal_list = relative_proposal_list.squeeze(0)
         proposal_tick_list = proposal_tick_list.squeeze(0)
         scale_factor_list = scale_factor_list.squeeze(0)
-        reg_stats = reg_stats.squeeze(0)
+        reg_norm_consts = reg_norm_consts.squeeze(0)
 
         if not self.is_test_prepared:
             self.is_test_prepared = self.cls_head.prepare_test_fc(
@@ -111,17 +113,17 @@ class SSN(BaseLocalizer):
         if bbox_preds is not None:
             bbox_preds = bbox_preds.view(-1, self.cls_head.num_classes, 2)
             bbox_preds[:, :, 0] = (
-                bbox_preds[:, :, 0] * reg_stats[1, 0] + reg_stats[0, 0])
+                bbox_preds[:, :, 0] * reg_norm_consts[1, 0] +
+                reg_norm_consts[0, 0])
             bbox_preds[:, :, 1] = (
-                bbox_preds[:, :, 1] * reg_stats[1, 1] + reg_stats[0, 1])
+                bbox_preds[:, :, 1] * reg_norm_consts[1, 1] +
+                reg_norm_consts[0, 1])
 
-        return (relative_proposal_list.cpu().numpy(),
-                activity_scores.cpu().numpy(),
-                completeness_scores.cpu().numpy(), bbox_preds.cpu().numpy())
-
-    def forward(self, imgs, return_loss=True, **kwargs):
-        """Define the computation performed at every call."""
-        if return_loss:
-            return self.forward_train(imgs, **kwargs)
+            return (relative_proposal_list.cpu().numpy(),
+                    activity_scores.cpu().numpy(),
+                    completeness_scores.cpu().numpy(),
+                    bbox_preds.cpu().numpy())
         else:
-            return self.forward_test(imgs, **kwargs)
+            return (relative_proposal_list.cpu().numpy(),
+                    activity_scores.cpu().numpy(),
+                    completeness_scores.cpu().numpy(), None)
