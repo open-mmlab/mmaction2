@@ -19,11 +19,11 @@ cat 20bn-something-something-v1-?? | tar zx
 cd $MMACTION2/tools/data/sthv1/
 ```
 
-For users who only want to use RGB frames, you can skip to step 4 to generate file lists in the format of rawframes. Since the prefix of official JPGs is "%05d.jpg" (e.g., "00001.jpg"), you have to add "filename_tmpl='{:05}.jpg'" to the dict of data.train, data.val and data.test in the config files related with sthv1 like this:
+For users who only want to use RGB frames, you can skip to step 5 to generate file lists in the format of rawframes. Since the prefix of official JPGs is "%05d.jpg" (e.g., "00001.jpg"), we add "filename_tmpl='{:05}.jpg'" to the dict of `data.train`, `data.val` and `data.test` in the config files related with sthv1 like this:
 
 ```
 data = dict(
-    videos_per_gpu=6,
+    videos_per_gpu=16,
     workers_per_gpu=4,
     train=dict(
         type=dataset_type,
@@ -68,9 +68,20 @@ cd $MMACTION2/tools/data/sthv1/
 bash extract_flow.sh
 ```
 
-## Step 4. Generate File List
+## Step 4. Encode Videos
 
-you can run the follow script to generate file list in the format of rawframes.
+This part is **optional** if you only want to use RGB frames.
+
+You can run the following script to encode videos.
+
+```shell
+cd $MMACTION2/tools/data/sthv1/
+bash encode_videos.sh
+```
+
+## Step 5. Generate File List
+
+You can run the follow script to generate file list in the format of rawframes.
 
 ```shell
 cd $MMACTION2/tools/data/sthv1/

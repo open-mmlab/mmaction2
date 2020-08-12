@@ -29,7 +29,7 @@ ann_file_test = 'data/kinetics400/kinetics_flow_val_list.txt'
 img_norm_cfg = dict(mean=[128, 128], std=[128, 128])
 train_pipeline = [
     dict(type='SampleFrames', clip_len=8, frame_interval=8, num_clips=1),
-    dict(type='FrameSelector'),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='RandomResizedCrop'),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
@@ -46,7 +46,7 @@ val_pipeline = [
         frame_interval=8,
         num_clips=1,
         test_mode=True),
-    dict(type='FrameSelector'),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=256),
     dict(type='Flip', flip_ratio=0),
@@ -62,7 +62,7 @@ test_pipeline = [
         frame_interval=8,
         num_clips=10,
         test_mode=True),
-    dict(type='FrameSelector'),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='ThreeCrop', crop_size=256),
     dict(type='Flip', flip_ratio=0),

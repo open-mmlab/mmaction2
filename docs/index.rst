@@ -5,8 +5,8 @@ Welcome to MMAction2's documentation!
    :maxdepth: 2
 
    getting_started.md
-   benchmark.md
    install.md
+   benchmark.md
    data_preparation.md
    config.md
    api.rst

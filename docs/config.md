@@ -236,8 +236,8 @@ train_pipeline = [  # List of training pipeline steps
         clip_len=1,  # Frames of each sampled output clip
         frame_interval=1,  # Temporal interval of adjacent sampled frames
         num_clips=3),  # Number of clips to be sampled
-    dict(  # Config of FrameSelector
-        type='FrameSelector'),  # Frame selector pipeline, selecting raw frames with given indices
+    dict(  # Config of RawFrameDecode
+        type='RawFrameDecode'),  # Load and decode Frames pipeline, picking raw frames with given indices
     dict(  # Config of Resize
         type='Resize',  # Resize pipeline
         scale=(-1, 256)),  # The scale to resize images
@@ -275,8 +275,8 @@ val_pipeline = [  # List of validation pipeline steps
         frame_interval=1,  # Temporal interval of adjacent sampled frames
         num_clips=3,  # Number of clips to be sampled
         test_mode=True),  # Whether to set test mode in sampling
-    dict(  # Config of FrameSelector
-        type='FrameSelector'),  # Frame selector pipeline, selecting raw frames with given indices
+    dict(  # Config of RawFrameDecode
+        type='RawFrameDecode'),  # Load and decode Frames pipeline, picking raw frames with given indices
     dict(  # Config of Resize
         type='Resize',  # Resize pipeline
         scale=(-1, 256)),  # The scale to resize images
@@ -307,8 +307,8 @@ test_pipeline = [  # List of testing pipeline steps
         frame_interval=1,  # Temporal interval of adjacent sampled frames
         num_clips=25,  # Number of clips to be sampled
         test_mode=True),  # Whether to set test mode in sampling
-    dict(  # Config of FrameSelector
-        type='FrameSelector'),  # Frame selector pipeline, selecting raw frames with given indices
+    dict(  # Config of RawFrameDecode
+        type='RawFrameDecode'),  # Load and decode Frames pipeline, picking raw frames with given indices
     dict(  # Config of Resize
         type='Resize',  # Resize pipeline
         scale=(-1, 256)),  # The scale to resize images
@@ -420,7 +420,7 @@ img_norm_cfg = dict(
 
 train_pipeline = [
     dict(type='SampleFrames', clip_len=32, frame_interval=2, num_clips=1),
-    dict(type='FrameSelector'),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(
         type='MultiScaleCrop',
@@ -442,7 +442,7 @@ val_pipeline = [
         frame_interval=2,
         num_clips=1,
         test_mode=True),
-    dict(type='FrameSelector'),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
     dict(type='Flip', flip_ratio=0),
@@ -458,7 +458,7 @@ test_pipeline = [
         frame_interval=2,
         num_clips=10,
         test_mode=True),
-    dict(type='FrameSelector'),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='ThreeCrop', crop_size=256),
     dict(type='Flip', flip_ratio=0),
