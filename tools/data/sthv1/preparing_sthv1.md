@@ -19,7 +19,7 @@ cat 20bn-something-something-v1-?? | tar zx
 cd $MMACTION2/tools/data/sthv1/
 ```
 
-For users who only want to use RGB frames, you can skip to step 5 to generate file lists in the format of rawframes. Since the prefix of official JPGs is "%05d.jpg" (e.g., "00001.jpg"), we add "filename_tmpl='{:05}.jpg'" to the dict of data.train, data.val and data.test in the config files related with sthv1 like this:
+For users who only want to use RGB frames, you can skip to step 5 to generate file lists in the format of rawframes. Since the prefix of official JPGs is "%05d.jpg" (e.g., "00001.jpg"), we add "filename_tmpl='{:05}.jpg'" to the dict of `data.train`, `data.val` and `data.test` in the config files related with sthv1 like this:
 
 ```
 data = dict(
