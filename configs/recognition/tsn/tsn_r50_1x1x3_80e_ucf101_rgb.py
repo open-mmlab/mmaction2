@@ -21,9 +21,10 @@ test_cfg = dict(average_clips=None)
 dataset_type = 'RawframeDataset'
 data_root = 'data/ucf101/rawframes/'
 data_root_val = 'data/ucf101/rawframes/'
-ann_file_train = 'data/ucf101/ucf101_train_split_{1,2,3}_rawframes.txt'
-ann_file_val = 'data/ucf101/ucf101_val_split_{1,2,3}_rawframes.txt'
-ann_file_test = 'data/ucf101/ucf101_val_split_{1,2,3}_rawframes.txt'
+split = 1
+ann_file_train = f'data/ucf101/ucf101_train_split_{split}_rawframes.txt'
+ann_file_val = f'data/ucf101/ucf101_val_split_{split}_rawframes.txt'
+ann_file_test = f'data/ucf101/ucf101_val_split_{split}_rawframes.txt'
 img_norm_cfg = dict(mean=[104, 117, 128], std=[1, 1, 1], to_bgr=False)
 train_pipeline = [
     dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=3),
