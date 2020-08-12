@@ -30,9 +30,9 @@ def parse_args():
         '--part',
         type=int,
         default=0,
-        help='which part of dataset to forward(alldata[part::tot])')
+        help='which part of dataset to forward(alldata[part::total])')
     parser.add_argument(
-        '--tot', type=int, default=1, help='how many parts exist')
+        '--total', type=int, default=1, help='how many parts exist')
     args = parser.parse_args()
     return args
 
@@ -55,7 +55,7 @@ def main():
     # define the data pipeline for Untrimmed Videos
     data_pipeline = [
         dict(
-            type='UntrimSampleFrames',
+            type='UntrimmedSampleFrames',
             clip_len=args.clip_len,
             frame_interval=args.frame_interval),
         dict(type='FrameSelector'),
@@ -91,7 +91,7 @@ def main():
 
     data = open(args.data_list).readlines()
     data = [x.strip() for x in data]
-    data = data[args.part::args.tot]
+    data = data[args.part::args.total]
 
     # enumerate Untrimmed videos, extract feature from each of them
     prog_bar = mmcv.ProgressBar(len(data))

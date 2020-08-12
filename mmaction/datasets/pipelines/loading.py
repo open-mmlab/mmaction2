@@ -179,14 +179,14 @@ class SampleFrames(object):
 
 
 @PIPELINES.register_module()
-class UntrimSampleFrames(object):
+class UntrimmedSampleFrames(object):
     """Sample frames from the untrimmed video.
 
     Required keys are "filename", added or modified keys are "total_frames",
     "frame_inds", "frame_interval" and "num_clips".
 
     Args:
-        clip_len (int): The length of sampled clips. Default: 1. (5 for Flow)
+        clip_len (int): The length of sampled clips. Default: 1.
         frame_interval (int): Temporal interval of adjacent sampled frames.
             Default: 16.
         start_index (int): Specify a start index for frames in consideration of

@@ -12,7 +12,7 @@ from mmaction.datasets.pipelines import (DecordDecode, DecordInit,
                                          LoadProposals, OpenCVDecode,
                                          OpenCVInit, PyAVDecode, PyAVInit,
                                          SampleFrames, SampleProposalFrames,
-                                         UntrimSampleFrames)
+                                         UntrimmedSampleFrames)
 
 
 class ExampleSSNInstance(object):
@@ -471,7 +471,7 @@ class TestLoading(object):
         video_result = copy.deepcopy(self.video_results)
 
         config = dict(clip_len=1, frame_interval=16, start_index=0)
-        sample_frames = UntrimSampleFrames(**config)
+        sample_frames = UntrimmedSampleFrames(**config)
         sample_frames_results = sample_frames(frame_result)
         assert self.check_keys_contain(sample_frames_results.keys(),
                                        target_keys)
@@ -480,7 +480,7 @@ class TestLoading(object):
                            np.array([8, 24, 40, 56, 72, 88]))
 
         config = dict(clip_len=1, frame_interval=16, start_index=0)
-        sample_frames = UntrimSampleFrames(**config)
+        sample_frames = UntrimmedSampleFrames(**config)
         sample_frames_results = sample_frames(video_result)
         assert self.check_keys_contain(sample_frames_results.keys(),
                                        target_keys)
@@ -489,7 +489,7 @@ class TestLoading(object):
         assert_array_equal(sample_frames_results['frame_inds'], frame_inds)
 
         config = dict(clip_len=1, frame_interval=16, start_index=1)
-        sample_frames = UntrimSampleFrames(**config)
+        sample_frames = UntrimmedSampleFrames(**config)
         sample_frames_results = sample_frames(frame_result)
         assert self.check_keys_contain(sample_frames_results.keys(),
                                        target_keys)
@@ -498,7 +498,7 @@ class TestLoading(object):
                            np.array([8, 24, 40, 56, 72, 88]) + 1)
 
         config = dict(clip_len=3, frame_interval=16, start_index=0)
-        sample_frames = UntrimSampleFrames(**config)
+        sample_frames = UntrimmedSampleFrames(**config)
         sample_frames_results = sample_frames(frame_result)
         assert self.check_keys_contain(sample_frames_results.keys(),
                                        target_keys)

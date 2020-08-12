@@ -40,9 +40,9 @@ def pool_feature(data, num_proposals=100, num_sample_bins=3, pool_type='mean'):
     x_range = list(range(len(data)))
     f = scipy.interpolate.interp1d(x_range, data, axis=0)
     eps = 1e-4
-    st, ed = eps, len(data) - 1 - eps
-    anchor_size = (ed - st) / num_proposals
-    ptr = st
+    start, end = eps, len(data) - 1 - eps
+    anchor_size = (end - start) / num_proposals
+    ptr = start
     feature = []
     for i in range(num_proposals):
         x_new = [
