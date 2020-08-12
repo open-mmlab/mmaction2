@@ -21,7 +21,7 @@ test_cfg = dict(average_clips=None)
 dataset_type = 'RawframeDataset'
 data_root = 'data/ucf101/rawframes/'
 data_root_val = 'data/ucf101/rawframes/'
-split = 1
+split = 1  # official train/test splits. valid numbers: 1, 2, 3
 ann_file_train = f'data/ucf101/ucf101_train_split_{split}_rawframes.txt'
 ann_file_val = f'data/ucf101/ucf101_val_split_{split}_rawframes.txt'
 ann_file_test = f'data/ucf101/ucf101_val_split_{split}_rawframes.txt'
@@ -113,7 +113,7 @@ log_config = dict(
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = f'./work_dirs/tsn_r50_1x1x3_80e_ucf101_split{split}_rgb/'
+work_dir = f'./work_dirs/tsn_r50_1x1x3_80e_ucf101_split_{split}_rgb/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
