@@ -21,13 +21,14 @@ test_cfg = dict(average_clips=None)
 dataset_type = 'RawframeDataset'
 data_root = 'data/ucf101/rawframes/'
 data_root_val = 'data/ucf101/rawframes/'
-ann_file_train = 'data/ucf101/ucf101_train_split_{1,2,3}_rawframes.txt'
-ann_file_val = 'data/ucf101/ucf101_val_split_{1,2,3}_rawframes.txt'
-ann_file_test = 'data/ucf101/ucf101_val_split_{1,2,3}_rawframes.txt'
+split = 1  # official train/test splits. valid numbers: 1, 2, 3
+ann_file_train = f'data/ucf101/ucf101_train_split_{split}_rawframes.txt'
+ann_file_val = f'data/ucf101/ucf101_val_split_{split}_rawframes.txt'
+ann_file_test = f'data/ucf101/ucf101_val_split_{split}_rawframes.txt'
 img_norm_cfg = dict(mean=[104, 117, 128], std=[1, 1, 1], to_bgr=False)
 train_pipeline = [
     dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=3),
-    dict(type='FrameSelector'),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(
         type='MultiScaleCrop',
@@ -49,7 +50,7 @@ val_pipeline = [
         frame_interval=1,
         num_clips=3,
         test_mode=True),
-    dict(type='FrameSelector'),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
     dict(type='Flip', flip_ratio=0),
@@ -65,7 +66,7 @@ test_pipeline = [
         frame_interval=1,
         num_clips=25,
         test_mode=True),
-    dict(type='FrameSelector'),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='TenCrop', crop_size=224),
     dict(type='Flip', flip_ratio=0),
@@ -112,7 +113,7 @@ log_config = dict(
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/tsn_r50_1x1x3_80e_ucf101_rgb/'
+work_dir = f'./work_dirs/tsn_r50_1x1x3_80e_ucf101_split_{split}_rgb/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]

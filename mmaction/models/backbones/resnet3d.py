@@ -368,8 +368,10 @@ class ResNet3d(nn.Module):
         non_local (Sequence[int]): Determine whether to apply non-local module
             in the corresponding block of each stages. Default: (0, 0, 0, 0).
         non_local_cfg (dict): Config for non-local module. Default: ``dict()``.
-        zero_init_residual (bool): Whether to use zero initialization for
-            residual block, Default: True.
+        zero_init_residual (bool):
+            Whether to use zero initialization for residual block,
+            Default: True.
+        kwargs (dict, optional): Key arguments for "make_res_layer".
     """
 
     arch_settings = {
@@ -405,7 +407,8 @@ class ResNet3d(nn.Module):
                  with_cp=False,
                  non_local=(0, 0, 0, 0),
                  non_local_cfg=dict(),
-                 zero_init_residual=True):
+                 zero_init_residual=True,
+                 **kwargs):
         super().__init__()
         if depth not in self.arch_settings:
             raise KeyError(f'invalid depth {depth} for resnet')
@@ -467,7 +470,8 @@ class ResNet3d(nn.Module):
                 non_local_cfg=self.non_local_cfg,
                 inflate=self.stage_inflations[i],
                 inflate_style=self.inflate_style,
-                with_cp=with_cp)
+                with_cp=with_cp,
+                **kwargs)
             self.inplanes = planes * self.block.expansion
             layer_name = f'layer{i + 1}'
             self.add_module(layer_name, res_layer)
@@ -492,7 +496,8 @@ class ResNet3d(nn.Module):
                        norm_cfg=None,
                        act_cfg=None,
                        conv_cfg=None,
-                       with_cp=False):
+                       with_cp=False,
+                       **kwargs):
         """Build residual layer for ResNet3D.
 
         Args:
@@ -565,7 +570,8 @@ class ResNet3d(nn.Module):
                 norm_cfg=norm_cfg,
                 conv_cfg=conv_cfg,
                 act_cfg=act_cfg,
-                with_cp=with_cp))
+                with_cp=with_cp,
+                **kwargs))
         inplanes = planes * block.expansion
         for i in range(1, blocks):
             layers.append(
@@ -583,7 +589,8 @@ class ResNet3d(nn.Module):
                     norm_cfg=norm_cfg,
                     conv_cfg=conv_cfg,
                     act_cfg=act_cfg,
-                    with_cp=with_cp))
+                    with_cp=with_cp,
+                    **kwargs))
 
         return nn.Sequential(*layers)
 

@@ -21,6 +21,8 @@ class TSMHead(BaseHead):
         init_std (float): Std value for Initiation. Default: 0.01.
         is_shift (bool): Indicating whether the feature is shifted.
             Default: True.
+        multi_class (bool): Determines whether it is a multi-class
+                    recognition task. Default: False.
         temporal_pool (bool): Indicating whether feature is temporal pooled.
             Default: False.
     """
@@ -34,8 +36,9 @@ class TSMHead(BaseHead):
                  dropout_ratio=0.8,
                  init_std=0.001,
                  is_shift=True,
+                 multi_class=False,
                  temporal_pool=False):
-        super().__init__(num_classes, in_channels, loss_cls)
+        super().__init__(num_classes, in_channels, loss_cls, multi_class)
 
         self.spatial_type = spatial_type
         self.dropout_ratio = dropout_ratio
