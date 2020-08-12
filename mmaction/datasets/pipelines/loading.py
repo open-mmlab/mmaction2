@@ -182,7 +182,7 @@ class SampleFrames(object):
 class UntrimmedSampleFrames(object):
     """Sample frames from the untrimmed video.
 
-    Required keys are "filename", added or modified keys are "total_frames",
+    Required keys are "filename", "total_frames", added or modified keys are
     "frame_inds", "frame_interval" and "num_clips".
 
     Args:
@@ -208,13 +208,7 @@ class UntrimmedSampleFrames(object):
             results (dict): The resulting dict to be modified and passed
                 to the next transform in pipeline.
         """
-        if 'total_frames' not in results:
-            # TODO: find a better way to get the total frames number for video
-            video_reader = mmcv.VideoReader(results['filename'])
-            total_frames = len(video_reader)
-            results['total_frames'] = total_frames
-        else:
-            total_frames = results['total_frames']
+        total_frames = results['total_frames']
 
         clip_centers = np.arange(self.frame_interval // 2, total_frames,
                                  self.frame_interval)
