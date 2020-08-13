@@ -7,9 +7,9 @@ from .formating import (Collect, FormatShape, ImageToTensor, ToDataContainer,
 from .loading import (DecordDecode, DecordInit, DenseSampleFrames,
                       FrameSelector, GenerateLocalizationLabels,
                       LoadLocalizationFeature, LoadProposals, OpenCVDecode,
-                      OpenCVInit, PyAVDecode, PyAVInit, SampleFrames,
-                      SampleProposalFrames, UntrimmedSampleFrames,
-                      RawFrameDecode)
+                      OpenCVInit, PyAVDecode, PyAVInit, RawFrameDecode,
+                      SampleFrames, SampleProposalFrames,
+                      UntrimmedSampleFrames)
 
 __all__ = [
     'SampleFrames', 'PyAVDecode', 'DecordDecode', 'DenseSampleFrames',
