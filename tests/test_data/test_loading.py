@@ -97,10 +97,11 @@ class TestLoading(object):
             total_frames=cls.total_frames,
             filename_tmpl=cls.filename_tmpl,
             start_index=1,
-            out_props=[[['test_imgs',
-                         ExampleSSNInstance(1, 4, 10, 1, 1, 1)], 0],
-                       [['test_imgs',
-                         ExampleSSNInstance(2, 5, 10, 2, 1, 1)], 0]])
+            out_proposals=[[[
+                'test_imgs',
+                ExampleSSNInstance(1, 4, 10, 1, 1, 1)
+            ], 0], [['test_imgs',
+                     ExampleSSNInstance(2, 5, 10, 2, 1, 1)], 0]])
 
     def test_sample_frames(self):
         target_keys = [
@@ -574,7 +575,7 @@ class TestLoading(object):
         # Sample Frame with no temporal_jitter in test mode
         # test_interval=2
         proposal_result = copy.deepcopy(self.proposal_results)
-        proposal_result['out_props'] = None
+        proposal_result['out_proposals'] = None
         proposal_result['total_frames'] = 10
         config = dict(
             clip_len=1,
