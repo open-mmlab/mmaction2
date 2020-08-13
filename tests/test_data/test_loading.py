@@ -18,6 +18,7 @@ from mmaction.datasets.pipelines import (DecordDecode, DecordInit,
                                          UntrimmedSampleFrames)
 # yapf: enable
 
+
 class ExampleSSNInstance(object):
 
     def __init__(self,
