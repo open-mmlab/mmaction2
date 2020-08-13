@@ -484,6 +484,7 @@ class SampleProposalFrames(SampleFrames):
         """
         total_frames = results['total_frames']
 
+        assert 'out_props' not in results
         out_proposals = results.get('out_proposals', None)
         clip_offsets = self._sample_clips(total_frames, out_proposals)
         frame_inds = clip_offsets[:, None] + np.arange(
