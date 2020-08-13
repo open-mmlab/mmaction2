@@ -6,6 +6,7 @@ import numpy as np
 import pytest
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
+# yapf: disable
 from mmaction.datasets.pipelines import (DecordDecode, DecordInit,
                                          DenseSampleFrames, FrameSelector,
                                          GenerateLocalizationLabels,
@@ -13,7 +14,10 @@ from mmaction.datasets.pipelines import (DecordDecode, DecordInit,
                                          LoadProposals, OpenCVDecode,
                                          OpenCVInit, PyAVDecode, PyAVInit,
                                          RawFrameDecode, SampleFrames,
-                                         SampleProposalFrames)
+                                         SampleProposalFrames,
+                                         UntrimmedSampleFrames)
+
+# yapf: enable
 
 
 class ExampleSSNInstance(object):
@@ -496,6 +500,61 @@ class TestLoading(object):
         assert len(dense_sample_frames_results['frame_inds']) == 120
         dense_sample_frames_results = dense_sample_frames(frame_result)
         assert len(dense_sample_frames_results['frame_inds']) == 120
+
+    def test_untrim_sample_frames(self):
+
+        target_keys = [
+            'frame_inds', 'clip_len', 'frame_interval', 'num_clips',
+            'total_frames'
+        ]
+
+        frame_result = dict(
+            frame_dir=None,
+            total_frames=100,
+            filename_tmpl=None,
+            modality='RGB',
+            label=1)
+        video_result = copy.deepcopy(self.video_results)
+
+        config = dict(clip_len=1, frame_interval=16, start_index=0)
+        sample_frames = UntrimmedSampleFrames(**config)
+        sample_frames_results = sample_frames(frame_result)
+        assert self.check_keys_contain(sample_frames_results.keys(),
+                                       target_keys)
+        assert len(sample_frames_results['frame_inds']) == 6
+        assert_array_equal(sample_frames_results['frame_inds'],
+                           np.array([8, 24, 40, 56, 72, 88]))
+
+        config = dict(clip_len=1, frame_interval=16, start_index=0)
+        sample_frames = UntrimmedSampleFrames(**config)
+        sample_frames_results = sample_frames(video_result)
+        assert self.check_keys_contain(sample_frames_results.keys(),
+                                       target_keys)
+        frame_inds = np.array(list(range(8, 300, 16)))
+        assert len(sample_frames_results['frame_inds']) == frame_inds.shape[0]
+        assert_array_equal(sample_frames_results['frame_inds'], frame_inds)
+
+        config = dict(clip_len=1, frame_interval=16, start_index=1)
+        sample_frames = UntrimmedSampleFrames(**config)
+        sample_frames_results = sample_frames(frame_result)
+        assert self.check_keys_contain(sample_frames_results.keys(),
+                                       target_keys)
+        assert len(sample_frames_results['frame_inds']) == 6
+        assert_array_equal(sample_frames_results['frame_inds'],
+                           np.array([8, 24, 40, 56, 72, 88]) + 1)
+
+        config = dict(clip_len=3, frame_interval=16, start_index=0)
+        sample_frames = UntrimmedSampleFrames(**config)
+        sample_frames_results = sample_frames(frame_result)
+        assert self.check_keys_contain(sample_frames_results.keys(),
+                                       target_keys)
+        assert len(sample_frames_results['frame_inds']) == 18
+        assert_array_equal(
+            sample_frames_results['frame_inds'],
+            np.array([
+                7, 8, 9, 23, 24, 25, 39, 40, 41, 55, 56, 57, 71, 72, 73, 87,
+                88, 89
+            ]))
 
     def test_sample_proposal_frames(self):
         target_keys = [

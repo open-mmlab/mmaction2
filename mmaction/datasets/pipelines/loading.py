@@ -179,6 +179,55 @@ class SampleFrames(object):
 
 
 @PIPELINES.register_module()
+class UntrimmedSampleFrames(object):
+    """Sample frames from the untrimmed video.
+
+    Required keys are "filename", "total_frames", added or modified keys are
+    "frame_inds", "frame_interval" and "num_clips".
+
+    Args:
+        clip_len (int): The length of sampled clips. Default: 1.
+        frame_interval (int): Temporal interval of adjacent sampled frames.
+            Default: 16.
+        start_index (int): Specify a start index for frames in consideration of
+            different filename format. However, when taking videos as input,
+            it should be set to 0, since frames loaded from videos count
+            from 0. Default: 1.
+    """
+
+    def __init__(self, clip_len=1, frame_interval=16, start_index=1):
+
+        self.clip_len = clip_len
+        self.frame_interval = frame_interval
+        self.start_index = start_index
+
+    def __call__(self, results):
+        """Perform the SampleFrames loading.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        total_frames = results['total_frames']
+
+        clip_centers = np.arange(self.frame_interval // 2, total_frames,
+                                 self.frame_interval)
+        num_clips = clip_centers.shape[0]
+        frame_inds = clip_centers[:, None] + np.arange(
+            -(self.clip_len // 2), self.clip_len -
+            (self.clip_len // 2))[None, :]
+        # clip frame_inds to legal range
+        frame_inds = np.clip(frame_inds, 0, total_frames - 1)
+
+        frame_inds = np.concatenate(frame_inds) + self.start_index
+        results['frame_inds'] = frame_inds.astype(np.int)
+        results['clip_len'] = self.clip_len
+        results['frame_interval'] = self.frame_interval
+        results['num_clips'] = num_clips
+        return results
+
+
+@PIPELINES.register_module()
 class DenseSampleFrames(SampleFrames):
     """Select frames from the video by dense sample strategy.
 
