@@ -12,9 +12,9 @@ from mmaction.datasets.pipelines import (DecordDecode, DecordInit,
                                          LoadLocalizationFeature,
                                          LoadProposals, OpenCVDecode,
                                          OpenCVInit, PyAVDecode, PyAVInit,
-                                         SampleFrames, SampleProposalFrames,
-                                         UntrimmedSampleFrames,
-                                         RawFrameDecode)
+                                         RawFrameDecode, SampleFrames,
+                                         SampleProposalFrames,
+                                         UntrimmedSampleFrames)
 
 
 class ExampleSSNInstance(object):
