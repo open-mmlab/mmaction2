@@ -98,7 +98,7 @@ you can install it before installing MMCV.
 5. Some dependencies are optional. Running `python setup.py develop` will only install the minimum runtime requirements.
 To use optional dependencies like `decord`, either install them with `pip install -r requirements/optional.txt`
 or specify desired extras when calling `pip` (e.g. `pip install -v -e .[optional]`,
-valid keys for the `[optional]` field are `all`, `tests`, `build`, and `optional`) like `pip install -v -e. optional`.
+valid keys for the `[optional]` field are `all`, `tests`, `build`, and `optional`) like `pip install -v -e .[tests,build]`.
 
 ### Install with CPU only
 The code can be built for CPU only environment (where CUDA isn't available).
