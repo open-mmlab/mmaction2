@@ -271,9 +271,9 @@ class DenseSampleFrames(SampleFrames):
 class SampleProposalFrames(SampleFrames):
     """Sample frames from proposals in the video.
 
-    Required keys are "total_frames" and "out_props", added or modified keys
-    are "frame_inds", "frame_interval", "num_clips", 'clip_len'
-    and 'num_proposals'.
+    Required keys are "total_frames" and "out_proposals", added or
+    modified keys are "frame_inds", "frame_interval", "num_clips",
+    'clip_len' and 'num_proposals'.
 
     Args:
         clip_len (int): Frames of each sampled output clip.
@@ -484,8 +484,11 @@ class SampleProposalFrames(SampleFrames):
         """
         total_frames = results['total_frames']
 
-        out_props = results.get('out_props', None)
-        clip_offsets = self._sample_clips(total_frames, out_props)
+        assert 'out_props' not in results, (
+            "'out_props' is out of date, please use 'out_proposals'")
+
+        out_proposals = results.get('out_proposals', None)
+        clip_offsets = self._sample_clips(total_frames, out_proposals)
         frame_inds = clip_offsets[:, None] + np.arange(
             self.clip_len)[None, :] * self.frame_interval
         frame_inds = np.concatenate(frame_inds)
@@ -504,7 +507,7 @@ class SampleProposalFrames(SampleFrames):
         results['num_clips'] = (
             self.body_segments + self.aug_segments[0] + self.aug_segments[1])
         if self.mode in ['train', 'val']:
-            results['num_proposals'] = len(results['out_props'])
+            results['num_proposals'] = len(results['out_proposals'])
 
         return results
 
