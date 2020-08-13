@@ -6,12 +6,17 @@ import numpy as np
 import pytest
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
-from mmaction.datasets.pipelines import (
-    DecordDecode, DecordInit, DenseSampleFrames, FrameSelector,
-    GenerateLocalizationLabels, LoadLocalizationFeature, LoadProposals,
-    OpenCVDecode, OpenCVInit, PyAVDecode, PyAVInit, RawFrameDecode,
-    SampleFrames, SampleProposalFrames, UntrimmedSampleFrames)
-
+# yapf: disable
+from mmaction.datasets.pipelines import (DecordDecode, DecordInit,
+                                         DenseSampleFrames, FrameSelector,
+                                         GenerateLocalizationLabels,
+                                         LoadLocalizationFeature,
+                                         LoadProposals, OpenCVDecode,
+                                         OpenCVInit, PyAVDecode, PyAVInit,
+                                         RawFrameDecode, SampleFrames,
+                                         SampleProposalFrames,
+                                         UntrimmedSampleFrames)
+# yapf: enable
 
 class ExampleSSNInstance(object):
 
