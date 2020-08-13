@@ -13,7 +13,7 @@ from mmaction.datasets.pipelines import (DecordDecode, DecordInit,
                                          LoadProposals, OpenCVDecode,
                                          OpenCVInit, PyAVDecode, PyAVInit,
                                          SampleFrames, SampleProposalFrames,
-                                         UntrimmedSampleFrames, 
+                                         UntrimmedSampleFrames,
                                          RawFrameDecode)
 
 
