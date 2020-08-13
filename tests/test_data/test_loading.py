@@ -16,6 +16,7 @@ from mmaction.datasets.pipelines import (DecordDecode, DecordInit,
                                          RawFrameDecode, SampleFrames,
                                          SampleProposalFrames,
                                          UntrimmedSampleFrames)
+
 # yapf: enable
 
 
