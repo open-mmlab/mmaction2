@@ -69,10 +69,10 @@ We provide the training log based on which we calculate the average iter time, w
 + **mmaction2**
 ```shell
 # rawframes
-bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_tsn configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py work_dirs/benchmark_tsn_rawframes
+bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_tsn configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py --work-dir work_dirs/benchmark_tsn_rawframes
 
 # videos
-bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_tsn configs/recognition/tsn/tsn_r50_video_1x1x3_100e_kinetics400_rgb.py work_dirs/benchmark_tsn_video
+bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_tsn configs/recognition/tsn/tsn_r50_video_1x1x3_100e_kinetics400_rgb.py --work-dir work_dirs/benchmark_tsn_video
 ```
 
 + **mmaction**
@@ -89,10 +89,10 @@ python main.py kinetics RGB --arch resnet50 --num_segments 3 --gd 20 --lr 0.02 -
 + **mmaction2**
 ```shell
 # rawframes
-bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_i3d configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py work_dirs/benchmark_i3d_rawframes
+bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_i3d configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py --work-dir work_dirs/benchmark_i3d_rawframes
 
 # videos
-bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_i3d configs/recognition/i3d/i3d_r50_video_heavy_8x8x1_100e_kinetics400_rgb.py work_dirs/benchmark_i3d_video
+bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_i3d configs/recognition/i3d/i3d_r50_video_heavy_8x8x1_100e_kinetics400_rgb.py --work-dir work_dirs/benchmark_i3d_video
 ```
 
 + **mmaction**
@@ -109,7 +109,7 @@ You may reproduce the result by writting a simple script to parse out the value 
 ### SlowFast
 + **mmaction2**
 ```shell
-bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_slowfast configs/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb.py work_dirs/benchmark_slowfast_video
+bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_slowfast configs/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb.py --work-dir work_dirs/benchmark_slowfast_video
 ```
 
 + **PySlowFast**
@@ -121,7 +121,7 @@ You may reproduce the result by writting a simple script to parse out the value 
 ### SlowOnly
 + **mmaction2**
 ```shell
-bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_slowonly configs/recognition/slowonly/slowonly_r50_video_4x16x1_256e_kinetics400_rgb.py work_dirs/benchmark_slowonly_video
+bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_slowonly configs/recognition/slowonly/slowonly_r50_video_4x16x1_256e_kinetics400_rgb.py --work-dir work_dirs/benchmark_slowonly_video
 ```
 
 + **PySlowFast**
@@ -133,5 +133,5 @@ You may reproduce the result by writting a simple script to parse out the value 
 ### R2plus1D
 + **mmaction2**
 ```shell
-bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_r2plus1d configs/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb.py work_dirs/benchmark_r2plus1d_video
+bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_r2plus1d configs/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb.py --work-dir work_dirs/benchmark_r2plus1d_video
 ```
