@@ -2,27 +2,16 @@
   <img src="docs/imgs/mmaction2_logo.png" width="500"/>
 </div>
 
-<div align="left">
-    <a href='https://pypi.org/project/mmaction2/'>
-        <img alt="PyPI" src="https://img.shields.io/pypi/v/mmaction2">
-    </a>
-    <a href='https://mmaction2.readthedocs.io/en/latest/'>
-        <img src='https://readthedocs.org/projects/mmaction2/badge/?version=latest' alt='Documentation Status' />
-    </a>
-    <a href='https://github.com/open-mmlab/mmaction2/actions'>
-        <img src='https://github.com/open-mmlab/mmaction2/workflows/build/badge.svg' />
-    </a>
-    <a href="https://codecov.io/gh/open-mmlab/mmaction2">
-        <img src="https://codecov.io/gh/open-mmlab/mmaction2/branch/master/graph/badge.svg" />
-    </a>
-    <a href="https://github.com/open-mmlab/mmaction2/blob/master/LICENSE">
-        <img src="https://img.shields.io/github/license/open-mmlab/mmaction2.svg">
-    </a>
-</div>
-
-Documentation: https://mmaction2.readthedocs.io/.
-
 ## Introduction
+
+[![Documentation](https://readthedocs.org/projects/mmaction2/badge/?version=latest)](https://mmaction2.readthedocs.io/en/latest/)
+[![actions](https://github.com/open-mmlab/mmaction2/workflows/build/badge.svg)](https://github.com/open-mmlab/mmaction2/actions)
+[![codecov](https://codecov.io/gh/open-mmlab/mmaction2/branch/master/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmaction2)
+[![PyPI](https://img.shields.io/pypi/v/mmaction2)](https://pypi.org/project/mmaction2/)
+[![LICENSE](https://img.shields.io/github/license/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/blob/master/LICENSE)
+[![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
+[![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
+
 
 MMAction2 is an open-source toolbox for action understanding based on PyTorch.
 It is a part of the [OpenMMLab](http://openmmlab.org/) project.
