@@ -41,7 +41,7 @@ train_pipeline = [
         keys=['raw_feature', 'gt_bbox'],
         meta_name='video_meta',
         meta_keys=['video_name']),
-    dict(type='ToTensor', keys=['raw_feature']),
+    dict(type='ToTensor', keys=['raw_feature', 'gt_bbox']),
     dict(
         type='ToDataContainer',
         fields=[dict(key='gt_bbox', stack=False, cpu_only=True)])
@@ -57,7 +57,7 @@ val_pipeline = [
             'video_name', 'duration_second', 'duration_frame', 'annotations',
             'feature_frame'
         ]),
-    dict(type='ToTensor', keys=['raw_feature']),
+    dict(type='ToTensor', keys=['raw_feature', 'gt_bbox']),
     dict(
         type='ToDataContainer',
         fields=[dict(key='gt_bbox', stack=False, cpu_only=True)])
