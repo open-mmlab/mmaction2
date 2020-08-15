@@ -155,16 +155,33 @@ def build_file_list(splits, frame_info, shuffle=False):
 
 
 def lines2dictlist(lines, format):
+    """Convert lines in 'txt' format to dictions in 'json' format. Currently
+    support single-label and multi-label.
+
+    Args:
+        lines (list): List of lines in 'txt' label format.
+            'frame_dir num_frame label' (rawframes + single-label)
+            'frame_dir num_frame label1 label2 ...' (rawframes + multi-label)
+            'filename label' (videos + single-label)
+            'filename label1 label2 ...' (videos + multi-label)
+        format (str): Data format, choices are 'rawframes' and 'videos'.
+
+    Returns:
+        list: list of dictions
+    """
     lines = [x.split() for x in lines]
     if format == 'rawframes':
-        assert len(lines[0]) == 3
         data = [
-            dict(frame_dir=line[0], total_frames=line[1], label=line[2])
-            for line in lines
+            dict(
+                frame_dir=line[0],
+                total_frames=int(line[1]),
+                label=[int(x) for x in line[2:]]) for line in lines
         ]
     elif format == 'videos':
-        assert len(lines[0]) == 2
-        data = [dict(filename=line[0], label=line[1]) for line in lines]
+        data = [
+            dict(filename=line[0], label=[int(x) for x in line[1:]])
+            for line in lines
+        ]
     return data
 
 
