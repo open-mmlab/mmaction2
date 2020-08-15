@@ -137,7 +137,7 @@ class ResNet3dCSN(ResNet3d):
             **kwargs)
 
     def train(self, mode=True):
-        super(ResNet3d, self).train()
+        super(ResNet3d, self).train(mode)
         self._freeze_stages()
         if mode and self.norm_eval:
             for m in self.modules():
