@@ -797,6 +797,13 @@ def test_resnet_csn_backbone():
         feat = resnet3d_csn_ir(imgs)
         assert feat.shape == torch.Size([2, 2048, 1, 2, 2])
 
+    # Set training status = False
+    resnet3d_csn_ip = ResNet3dCSN(152, None, bottleneck_mode='ip')
+    resnet3d_csn_ip.init_weights()
+    resnet3d_csn_ip.train(False)
+    for module in resnet3d_csn_ip.children():
+        assert module.training is False
+
 
 def _demo_inputs(input_shape=(1, 3, 64, 64)):
     """Create a superset of inputs needed to run backbone.
