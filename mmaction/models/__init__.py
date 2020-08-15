@@ -1,5 +1,6 @@
 from .backbones import (ResNet, ResNet2Plus1d, ResNet3d, ResNet3dCSN,
-                        ResNet3dSlowFast, ResNet3dSlowOnly, ResNetTIN, ResNetTSM)
+                        ResNet3dSlowFast, ResNet3dSlowOnly, ResNetTIN,
+                        ResNetTSM)
 from .builder import (build_backbone, build_head, build_localizer, build_model,
                       build_recognizer)
 from .common import Conv2plus1d

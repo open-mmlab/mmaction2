@@ -1,13 +1,9 @@
 import torch
 import torch.nn as nn
+from mmcv.ops import tin_shift
 
 from ..registry import BACKBONES
 from .resnet_tsm import ResNetTSM
-
-try:
-    from .cuda_shift import ShiftFeatureFunc
-except ImportError:
-    pass
 
 
 def linear_sampler(data, offset):
@@ -33,8 +29,8 @@ def linear_sampler(data, offset):
 
     # data, data0, data1: [N, num_segments, C, H * W]
     data = data.view(n, t, c, h * w).contiguous()
-    data0 = ShiftFeatureFunc.apply(data, offset0)
-    data1 = ShiftFeatureFunc.apply(data, offset1)
+    data0 = tin_shift(data, offset0)
+    data1 = tin_shift(data, offset1)
 
     # weight0, weight1: [N, num_segments]
     weight0 = 1 - (offset - offset0.float())

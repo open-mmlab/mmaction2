@@ -1,25 +1,15 @@
 import copy
-import sys
-from unittest.mock import MagicMock, patch
 
 import numpy as np
 import pytest
 import torch
 import torch.nn as nn
 from mmcv.utils import _BatchNorm
-from torch.autograd import Function
 
 from mmaction.models import (ResNet, ResNet2Plus1d, ResNet3d, ResNet3dCSN,
-                             ResNet3dSlowFast, ResNet3dSlowOnly, ResNetTIN, ResNetTSM)
+                             ResNet3dSlowFast, ResNet3dSlowOnly, ResNetTIN,
+                             ResNetTSM)
 from mmaction.models.backbones.resnet_tsm import NL3DWrapper
-
-sys.modules['cuda_shift'] = MagicMock()
-
-
-class MockShiftFeatureFunc(Function):
-
-    def forward(self, data, shift):
-        return data
 
 
 def check_norm_state(modules, train_state):
@@ -831,7 +821,6 @@ def test_resnet_csn_backbone():
         assert module.training is False
 
 
-@patch('cuda_shift.rtc_wrap.ShiftFeatureFunc', MockShiftFeatureFunc)
 @pytest.mark.skipif(
     not torch.cuda.is_available(), reason='requires CUDA support')
 def test_resnet_tin_backbone():
