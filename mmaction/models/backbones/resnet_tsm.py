@@ -31,7 +31,7 @@ class NL3DWrapper(nn.Module):
 
         n, c, h, w = x.size()
         x = x.view(n // self.num_segments, self.num_segments, c, h,
-                   w).transpose(1, 2)
+                   w).transpose(1, 2).contiguous()
         x = self.non_local_block(x)
         x = x.transpose(1, 2).contiguous().view(n, c, h, w)
         return x
