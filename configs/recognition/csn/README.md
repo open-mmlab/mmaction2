@@ -6,8 +6,8 @@
 
 |config | resolution | gpus | backbone |pretrain| top1 acc| top5 acc | inference_time(video/s) | gpu_mem(M)| ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb.py]()|short-side 320|8x4| ResNet152 | IG65M|82.40|95.82|x|x|[ckpt]()|[log]()|[json]()|
-|[ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py]()|short-side 320|8x4| ResNet152 | IG65M|x|x|x|x|[ckpt]()|[log]()|[json]()|
+|[ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb.py]()|short-side 320|8x4| ResNet152 | IG65M|80.14|94.93|x|x|[ckpt]()|[log]()|[json]()|
+|[ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py]()|short-side 320|8x4| ResNet152 | IG65M|82.76|95.68|x|x|[ckpt]()|[log]()|[json]()|
 
 Notes:
 
