@@ -3,8 +3,8 @@ import time
 
 import torch
 from mmcv import Config
+from mmcv.cnn import fuse_conv_bn
 from mmcv.parallel import MMDataParallel
-from tools.fuse_conv_bn import fuse_module
 
 from mmaction.core import wrap_fp16_model
 from mmaction.datasets import build_dataloader, build_dataset
@@ -51,7 +51,7 @@ def main():
     if fp16_cfg is not None:
         wrap_fp16_model(model)
     if args.fuse_conv_bn:
-        model = fuse_module(model)
+        model = fuse_conv_bn(model)
 
     model = MMDataParallel(model, device_ids=[0])
 
