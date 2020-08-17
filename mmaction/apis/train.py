@@ -3,7 +3,7 @@ from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
 from mmcv.runner import (DistSamplerSeedHook, EpochBasedRunner, OptimizerHook,
                          build_optimizer)
 
-from ..core import DistEvalHook, EvalHook, Fp16OptimizerHook
+from ..core import DistEvalHook, EvalHook, Fp16OptimizerHook, MultiGridHook
 from ..datasets import build_dataloader, build_dataset
 from ..utils import get_root_logger
 
@@ -87,6 +87,12 @@ def train_model(model,
                                    cfg.get('momentum_config', None))
     if distributed:
         runner.register_hook(DistSamplerSeedHook())
+
+    # multigrid setting
+    multi_grid_cfg = cfg.get('multi_grid', None)
+    if multi_grid_cfg is not None:
+        multi_grid_scheduler = MultiGridHook(cfg)
+        runner.register_hook(multi_grid_scheduler)
 
     if validate:
         eval_cfg = cfg.get('evaluation', {})
