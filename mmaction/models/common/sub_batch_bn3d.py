@@ -32,9 +32,14 @@ class SubBatchBN3d(nn.Module):
         """Calculate the aggregated mean and stds.
 
         Args:
-            means (tensor): mean values.
-            stds (tensor): standard deviations.
+            means (torch.Tensor): mean values.
+            stds (torch.Tensor): standard deviations.
             n (int): number of sets of means and stds.
+
+        Returns:
+            tuple[torch.Tensor, torch.Tensor]: (mean, std). mean is the
+                aggregated mean of all split batchnorms. std is the
+                aggregated std of all split batchnorms.
         """
         mean = means.view(n, -1).sum(0) / n
         std = (
@@ -51,11 +56,9 @@ class SubBatchBN3d(nn.Module):
             (
                 self.bn.running_mean.data,
                 self.bn.running_var.data,
-            ) = self._get_aggregated_mean_std(
-                self.split_bn.running_mean,
-                self.split_bn.running_var,
-                self.num_splits,
-            )
+            ) = self._get_aggregated_mean_std(self.split_bn.running_mean,
+                                              self.split_bn.running_var,
+                                              self.num_splits)
 
     def forward(self, x):
         if self.training:
