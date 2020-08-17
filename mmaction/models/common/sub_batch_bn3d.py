@@ -5,6 +5,13 @@ from mmcv.cnn import NORM_LAYERS
 
 @NORM_LAYERS.register_module()
 class SubBatchBN3d(nn.Module):
+    """SubBatchBN3d that splits a norm batchnorm3d into a 'split_bn' and a
+    normal 'bn'. This is used when the batchsize is changed in runtime.
+
+    Args:
+        num_features (int): The number of channels of the input feature.
+        **cfg (dict): Other kwargs required for a batchnorm layer.
+    """
 
     def __init__(self, num_features, **cfg):
         super(SubBatchBN3d, self).__init__()
@@ -20,6 +27,10 @@ class SubBatchBN3d(nn.Module):
         self.init_weights(cfg)
 
     def init_weights(self, cfg):
+        """Initialize the weight of the module.
+
+        Only keep one set of weight and bias for affine after normalization.
+        """
         if cfg.get('affine', True):
             self.affine = True
             cfg['affine'] = False
@@ -53,14 +64,20 @@ class SubBatchBN3d(nn.Module):
         Call this before eval.
         """
         if self.split_bn.track_running_stats:
-            (
-                self.bn.running_mean.data,
-                self.bn.running_var.data,
-            ) = self._get_aggregated_mean_std(self.split_bn.running_mean,
-                                              self.split_bn.running_var,
-                                              self.num_splits)
+            (self.bn.running_mean.data,
+             self.bn.running_var.data) = self._get_aggregated_mean_std(
+                 self.split_bn.running_mean, self.split_bn.running_var,
+                 self.num_splits)
 
     def forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+
+        Returns:
+            tuple[torch.Tensor]: The normalized feature map.
+        """
         if self.training:
             n, c, t, h, w = x.shape
             x = x.view(n // self.num_splits, c * self.num_splits, t, h, w)
