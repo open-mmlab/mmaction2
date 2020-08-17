@@ -5,7 +5,7 @@ import mmcv
 from mmcv.runner import Hook
 from torch.utils.data import DataLoader
 
-from mmaction.models import SubBatchBN3d
+from mmaction.models.common import SubBatchBN3d
 from mmaction.utils import get_root_logger
 
 
