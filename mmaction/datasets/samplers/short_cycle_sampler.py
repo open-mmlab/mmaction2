@@ -1,18 +1,17 @@
-from pdb import set_trace as st
-
 import numpy as np
 from torch._six import int_classes as _int_classes
 from torch.utils.data.sampler import Sampler
 
 
 class ShortCycleBatchSampler(Sampler):
-    """Extend Sampler to support "short cycle" sampling.
+    """Extend Sampler to support "short cycle" sampling. The Sampler input can
+    be both distributed or non-distributed.
 
     See paper "A Multigrid Method for Efficiently Training Video Models", Wu et
     al., 2019 (https://arxiv.org/abs/1912.00998) for details.
     """
 
-    def __init__(self, sampler, batch_size, drop_last, multi_grid_cfg, base_s):
+    def __init__(self, sampler, batch_size, drop_last, multi_grid_cfg):
         if not isinstance(sampler, Sampler):
             raise ValueError(
                 'sampler should be an instance of '
@@ -28,8 +27,7 @@ class ShortCycleBatchSampler(Sampler):
         self.drop_last = drop_last
 
         bs_factor = [
-            int(round((base_s / (s * multi_grid_cfg.default_s))**2))
-            for s in multi_grid_cfg.short_cycle_factors
+            int(round(1 / s**2)) for s in multi_grid_cfg.short_cycle_factors
         ]
 
         self.batch_sizes = [
@@ -37,7 +35,6 @@ class ShortCycleBatchSampler(Sampler):
             batch_size * bs_factor[1],
             batch_size,
         ]
-        st()
 
     def __iter__(self):
         counter = 0
@@ -45,9 +42,7 @@ class ShortCycleBatchSampler(Sampler):
         batch = []
         for idx in self.sampler:
             batch.append((idx, counter % 3))
-            st()
             if len(batch) == batch_size:
-                st()
                 yield batch
                 counter += 1
                 batch_size = self.batch_sizes[counter % 3]

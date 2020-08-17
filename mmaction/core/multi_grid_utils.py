@@ -36,8 +36,7 @@ def modify_num_splits(module, num_splits):
 
 @HOOKS.register_module()
 class RelativeStepLrUpdaterHook(LrUpdaterHook):
-    """RelativeStepLrUpdaterHook that change lr with an extra factor
-    ``step_lr_ratio``.
+    """RelativeStepLrUpdaterHook.
 
     Args:
         ori_step (list[int]): Same as that of mmcv.
@@ -90,7 +89,6 @@ class MultiGridHook(Hook):
                 gamma = hook.gamma
                 lrs = [base_lr * gamma**s[0] * s[1][0] for s in self.schedule]
                 lrs = lrs[:-1] + [lrs[-2], lrs[-1]]  # finetune-stage lrs
-                # print(f'real steps: {step}, real lrs: {lrs}')
                 new_hook = RelativeStepLrUpdaterHook(runner, step, lrs)
                 runner.hooks[index] = new_hook
 
@@ -130,12 +128,11 @@ class MultiGridHook(Hook):
             ds,
             self.data_cfg.videos_per_gpu * base_b,  # change here
             self.data_cfg.workers_per_gpu,
-            dist=True,
+            dist=self.cfg.get('dist', True),
             drop_last=self.data_cfg.get('train_drop_last', True),
             seed=self.cfg.seed,
-            short_cycle=True,
-            multi_grid_cfg=self.multi_grid_cfg,
-            base_s=base_s)
+            short_cycle=self.multi_grid_cfg.short_cycle,
+            multi_grid_cfg=self.multi_grid_cfg)
         runner.data_loader = dataloader
 
         # rebuild all the sub_batch_bn layers
@@ -156,14 +153,10 @@ class MultiGridHook(Hook):
                 # shape = [#frames, scale]
                 shapes = [[
                     base_t,
-                    int(round(self.default_s * cfg.short_cycle_factors[0])),
-                ],
-                          [
-                              base_t,
-                              int(
-                                  round(self.default_s *
-                                        cfg.short_cycle_factors[1]))
-                          ], [base_t, base_s]]
+                    int(round(base_s * cfg.short_cycle_factors[0])),
+                ], [base_t,
+                    int(round(base_s * cfg.short_cycle_factors[1]))],
+                          [base_t, base_s]]
             else:
                 shapes = [[base_t, base_s]]
             # calculate the batchsize, shape = [batchsize, #frames, scale]
@@ -172,7 +165,6 @@ class MultiGridHook(Hook):
             ] for s in shapes]
             avg_bs.append(np.mean([s[0] for s in shapes]))
             all_shapes.append(shapes)
-        self.logger.info(f'all shapes are {all_shapes}')
         for hook in runner.hooks:
             if isinstance(hook, LrUpdaterHook):
                 if isinstance(hook, StepLrUpdaterHook):
@@ -234,9 +226,9 @@ class MultiGridHook(Hook):
         """Initialize the multi-grid shcedule.
 
         Args:
-            runner (mmcv.Runner): The runner within which to train.
-            multi_grid_cfg (mmcv.ConfigDict): The multi-grid config.
-            data_cfg (mmcv.ConfigDict): The data config.
+            runner (obj: `mmcv.Runner`): The runner within which to train.
+            multi_grid_cfg (obj: `mmcv.ConfigDict`): The multi-grid config.
+            data_cfg (obj: `mmcv.ConfigDict`): The data config.
         """
         self.default_bs = data_cfg.videos_per_gpu
         data_cfg = data_cfg.get('train', None)

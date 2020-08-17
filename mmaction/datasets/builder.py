@@ -75,6 +75,8 @@ def build_dataloader(dataset,
             Default: True
         short_cycle (bool): Whether to use a short_cycle sampler.
             Default: False.
+        multi_grid_cfg (dict): The config for multi-grid training.
+            Default: None.
         kwargs (dict, optional): Any keyword argument to be used to initialize
             DataLoader.
 
@@ -89,10 +91,9 @@ def build_dataloader(dataset,
         batch_size = videos_per_gpu
         num_workers = workers_per_gpu
         if short_cycle:
-            assert 'base_s' in kwargs.keys()
-            base_s = kwargs.pop('base_s')
+            assert multi_grid_cfg is not None
             sampler = ShortCycleBatchSampler(sampler, batch_size, drop_last,
-                                             multi_grid_cfg, base_s)
+                                             multi_grid_cfg)
     else:
         sampler = None
         batch_size = num_gpus * videos_per_gpu
@@ -104,10 +105,11 @@ def build_dataloader(dataset,
 
     data_loader = DataLoader(
         dataset,
-        batch_size=batch_size,
+        batch_size=batch_size if not short_cycle else 1,
         sampler=sampler,
         num_workers=num_workers,
-        collate_fn=partial(collate, samples_per_gpu=videos_per_gpu),
+        collate_fn=partial(collate, samples_per_gpu=videos_per_gpu)
+        if not short_cycle else None,
         pin_memory=pin_memory,
         shuffle=shuffle,
         worker_init_fn=init_fn,

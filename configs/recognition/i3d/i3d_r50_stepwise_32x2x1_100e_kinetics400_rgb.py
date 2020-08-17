@@ -7,7 +7,7 @@ model = dict(
         pretrained=None,
         depth=50,
         conv_cfg=dict(type='Conv3d'),
-        norm_cfg=dict(type='SubBatchBN3d'),
+        norm_cfg=dict(type='BN3d'),
         norm_eval=False,
         inflate=((1, 1, 1), (1, 0, 1, 0), (1, 0, 1, 0, 1, 0), (0, 1, 0)),
         zero_init_residual=False),
@@ -21,13 +21,6 @@ model = dict(
 # model training and testing settings
 train_cfg = None
 test_cfg = dict(average_clips=None)
-multi_grid = dict(
-    default_s=224,
-    long_cycle=True,
-    short_cycle=True,
-    long_cycle_factors=((0.25, 0.5**0.5), (0.5, 0.5**0.5), (0.5, 1), (1, 1)),
-    short_cycle_factors=(0.5, 0.5**0.5),
-    epoch_factor=1.0)
 # dataset settings
 dataset_type = 'RawframeDataset'
 data_root = 'data/kinetics400/rawframes_train'
@@ -123,12 +116,12 @@ log_config = dict(
     interval=20,
     hooks=[
         dict(type='TextLoggerHook'),
-        dict(type='TensorboardLoggerHook'),
+        # dict(type='TensorboardLoggerHook'),
     ])
 # runtime settings
 dist_params = dict(backend='nccl', port=29501)
 log_level = 'INFO'
-work_dir = './work_dirs/i3d_r50_multigrid_32x3x1_100e_kinetics400_rgb/'
+work_dir = './work_dirs/i3d_r50_stepwise_32x2x1_100e_kinetics400_rgb/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
