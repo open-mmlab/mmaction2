@@ -5,7 +5,6 @@ import mmcv
 from mmcv.runner import Hook
 from torch.utils.data import DataLoader
 
-from mmaction.models.common import SubBatchBN3d
 from mmaction.utils import get_root_logger
 
 
@@ -121,6 +120,7 @@ class EvalHook(Hook):
         Returns:
             count (int): number of SubBN module found.
         """
+        from mmaction.models import SubBatchBN3d
         count = 0
         for child in module.children():
             if isinstance(child, SubBatchBN3d):
