@@ -3,7 +3,7 @@ from abc import ABCMeta, abstractmethod
 import torch
 import torch.nn as nn
 
-from ...core import top_k_accuracy
+from ...core.evaluation.accuracy import top_k_accuracy
 from ..builder import build_loss
 
 
