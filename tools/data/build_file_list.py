@@ -167,7 +167,9 @@ def lines2dictlist(lines, format):
         format (str): Data format, choices are 'rawframes' and 'videos'.
 
     Returns:
-        list: list of dictions
+        list[diction]: For rawframes format, each diction has keys: frame_dir,
+            total_frames, label; for videos format, each diction has keys:
+            filename, label.
     """
     lines = [x.split() for x in lines]
     if format == 'rawframes':
