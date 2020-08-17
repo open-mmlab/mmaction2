@@ -6,8 +6,8 @@
 
 |config | resolution | gpus | backbone |pretrain| top1 acc| top5 acc | inference_time(video/s) | gpu_mem(M)| ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb.py]()|short-side 320|8x4| ResNet152 | IG65M|80.14|94.93|x|x|[ckpt]()|[log]()|[json]()|
-|[ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py]()|short-side 320|8x4| ResNet152 | IG65M|82.76|95.68|x|x|[ckpt]()|[log]()|[json]()|
+|[ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb.py](/configs/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb.py)|short-side 320|8x4| ResNet152 | IG65M|80.14|94.93|x|x|[ckpt](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb_20200803-fc66ce8d.pth)|[log](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb/20200728_031952.log)|[json](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb/20200728_031952.log.json)|
+|[ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py](/configs/recognition/csn/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py)|short-side 320|8x4| ResNet152 | IG65M|82.76|95.68|x|x|[ckpt](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb_20200812-9037a758.pth)|[log](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb/20200809_053132.log)|[json](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb/20200809_053132.log.json)|
 
 Notes:
 
@@ -47,7 +47,7 @@ Example: test CSN model on Kinetics-400 dataset and dump the result to a json fi
 ```shell
 python tools/test.py configs/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb.py \
     checkpoints/SOME_CHECKPOINT.pth --eval top_k_accuracy mean_class_accuracy \
-    --out result.json
+    --out result.json --average-clips prob
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
