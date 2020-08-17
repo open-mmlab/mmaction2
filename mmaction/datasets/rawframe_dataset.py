@@ -1,11 +1,14 @@
 import copy
 import os.path as osp
+from copy import deepcopy
 
 import torch
+from mmcv.parallel import collate
 from mmcv.utils import print_log
 
 from ..core import mean_average_precision, mean_class_accuracy, top_k_accuracy
 from .base import BaseDataset
+from .pipelines import Resize
 from .registry import DATASETS
 
 
@@ -86,11 +89,14 @@ class RawframeDataset(BaseDataset):
                  multi_class=False,
                  num_classes=None,
                  start_index=1,
-                 modality='RGB'):
+                 modality='RGB',
+                 **kwargs):
         self.filename_tmpl = filename_tmpl
         self.with_offset = with_offset
         super().__init__(ann_file, pipeline, data_prefix, test_mode,
                          multi_class, num_classes, start_index, modality)
+        if kwargs.get('short_cycle_factors', None) is not None:
+            self.short_cycle_factors = kwargs['short_cycle_factors']
 
     def load_annotations(self):
         """Load annotation file to get video information."""
@@ -132,11 +138,34 @@ class RawframeDataset(BaseDataset):
 
     def prepare_train_frames(self, idx):
         """Prepare the frames for training given the index."""
-        results = copy.deepcopy(self.video_infos[idx])
-        results['filename_tmpl'] = self.filename_tmpl
-        results['modality'] = self.modality
-        results['start_index'] = self.start_index
-        return self.pipeline(results)
+
+        def pipeline_for_a_sample(idx):
+            results = copy.deepcopy(self.video_infos[idx])
+            results['filename_tmpl'] = self.filename_tmpl
+            results['modality'] = self.modality
+            results['start_index'] = self.start_index
+            return self.pipeline(results)
+
+        if isinstance(idx, list):
+            # Using a BatchSampler now, meaning short-cycle
+            collated_batch = []
+            last_resize = None
+            for trans in self.pipeline.transforms:
+                if isinstance(trans, Resize):
+                    last_resize = trans
+            origin_scale = deepcopy(last_resize.scale)
+            for sample_idx, short_cycle_idx in idx:
+                if short_cycle_idx in [0, 1]:
+                    scale_ratio = self.short_cycle_factors[short_cycle_idx]
+                    target_scale = tuple(
+                        [int(round(scale_ratio * s)) for s in origin_scale])
+                    last_resize.scale = target_scale
+                collated_batch.append(pipeline_for_a_sample(sample_idx))
+                last_resize.scale = origin_scale
+            return collate(collated_batch)
+        else:
+            # Using a Sampeler now
+            return pipeline_for_a_sample(idx)
 
     def prepare_test_frames(self, idx):
         """Prepare the frames for testing given the index."""
