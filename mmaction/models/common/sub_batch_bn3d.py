@@ -29,7 +29,7 @@ class SubBatchBN3d(nn.Module):
     def init_weights(self, cfg):
         """Initialize the weight of the module.
 
-        Only keep one set of weight and bias for affine after normalization.
+        Only keeps one set of weight and bias for affine after normalization.
         """
         if cfg.get('affine', True):
             self.affine = True
@@ -89,3 +89,22 @@ class SubBatchBN3d(nn.Module):
             x = x * self.weight.view((-1, 1, 1, 1))
             x = x + self.bias.view((-1, 1, 1, 1))
         return x
+
+
+def aggregate_sub_bn_stats(module):
+    """Recursively find all SubBN modules and aggregate sub-BN stats.
+
+    Args:
+        module (nn.Module)
+    Returns:
+        count (int): number of SubBN module found.
+    """
+    from mmaction.models import SubBatchBN3d
+    count = 0
+    for child in module.children():
+        if isinstance(child, SubBatchBN3d):
+            child.aggregate_stats()
+            count += 1
+        else:
+            count += aggregate_sub_bn_stats(child)
+    return count

@@ -1,5 +1,4 @@
 import numpy as np
-from torch._six import int_classes as _int_classes
 from torch.utils.data.sampler import Sampler
 
 
@@ -7,28 +6,17 @@ class ShortCycleBatchSampler(Sampler):
     """Extend Sampler to support "short cycle" sampling. The Sampler input can
     be both distributed or non-distributed.
 
-    See paper "A Multigrid Method for Efficiently Training Video Models", Wu et
-    al., 2019 (https://arxiv.org/abs/1912.00998) for details.
+    See paper `A Multigrid Method for Efficiently Training Video Models
+        <https://arxiv.org/abs/1912.00998>`_ for details.
 
     Args:
-        sampler (obj: `torch.Sampler`): The default sampler to be warpped.
+        sampler (:obj: `torch.Sampler`): The default sampler to be warpped.
         batch_size (int): The batchsize before short-cycle modification.
         drop_last (bool): Whether to drop the last incomplete batch in epoch.
         multi_grid_cfg (dict): The config dict for multi-grid trainingl.
     """
 
     def __init__(self, sampler, batch_size, drop_last, multi_grid_cfg):
-        if not isinstance(sampler, Sampler):
-            raise ValueError(
-                'sampler should be an instance of '
-                'torch.utils.data.Sampler, but got sampler={}'.format(sampler))
-        if (not isinstance(batch_size, _int_classes)
-                or isinstance(batch_size, bool) or batch_size <= 0):
-            raise ValueError('batch_size should be a positive integer value, '
-                             'but got batch_size={}'.format(batch_size))
-        if not isinstance(drop_last, bool):
-            raise ValueError('drop_last should be a boolean value, but got '
-                             'drop_last={}'.format(drop_last))
         self.sampler = sampler
         self.drop_last = drop_last
 
@@ -37,9 +25,7 @@ class ShortCycleBatchSampler(Sampler):
         ]
 
         self.batch_sizes = [
-            batch_size * bs_factor[0],
-            batch_size * bs_factor[1],
-            batch_size,
+            batch_size * bs_factor[0], batch_size * bs_factor[1], batch_size
         ]
 
     def __iter__(self):

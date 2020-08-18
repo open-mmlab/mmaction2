@@ -789,6 +789,7 @@ class ResNet3d(nn.Module):
             torch.Tensor: The feature of the input
             samples extracted by the backbone.
         """
+        print(f'input size {x.size()}')
         x = self.conv1(x)
         x = self.maxpool(x)
         for i, layer_name in enumerate(self.res_layers):

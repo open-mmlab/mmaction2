@@ -8,8 +8,6 @@ import torch
 import torch.distributed as dist
 from mmcv.runner import get_dist_info
 
-from mmaction.models.common import SubBatchBN3d
-
 
 def single_gpu_test(model, data_loader):
     """Test model with a single gpu.
@@ -24,6 +22,8 @@ def single_gpu_test(model, data_loader):
         list: The prediction results.
     """
     model.eval()
+    from mmaction.models import aggregate_sub_bn_stats
+    aggregate_sub_bn_stats(model)
     results = []
     dataset = data_loader.dataset
     prog_bar = mmcv.ProgressBar(len(dataset))
@@ -37,24 +37,6 @@ def single_gpu_test(model, data_loader):
         for _ in range(batch_size):
             prog_bar.update()
     return results
-
-
-def aggregate_sub_bn_stats(module):
-    """Recursively find all SubBN modules and aggregate sub-BN stats.
-
-    Args:
-        module (nn.Module)
-    Returns:
-        count (int): number of SubBN module found.
-    """
-    count = 0
-    for child in module.children():
-        if isinstance(child, SubBatchBN3d):
-            child.aggregate_stats()
-            count += 1
-        else:
-            count += aggregate_sub_bn_stats(child)
-    return count
 
 
 def multi_gpu_test(model, data_loader, tmpdir=None, gpu_collect=True):
@@ -78,8 +60,9 @@ def multi_gpu_test(model, data_loader, tmpdir=None, gpu_collect=True):
         list: The prediction results.
     """
     model.eval()
-    count = aggregate_sub_bn_stats(model)
-    print(f'{count} subbns aggregated')
+    from mmaction.models import aggregate_sub_bn_stats
+    aggregate_sub_bn_stats(model)
+
     results = []
     dataset = data_loader.dataset
     rank, world_size = get_dist_info()

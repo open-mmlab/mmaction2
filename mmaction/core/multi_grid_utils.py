@@ -1,13 +1,10 @@
 import numpy as np
 import torch.nn as nn
-from mmcv.runner import HOOKS, Hook, LrUpdaterHook
-from mmcv.runner.hooks.lr_updater import StepLrUpdaterHook
+from mmcv.runner import HOOKS, Hook
+from mmcv.runner.hooks.lr_updater import LrUpdaterHook, StepLrUpdaterHook
 from torch.nn.modules.utils import _ntuple
 
-from mmaction.datasets.builder import build_dataloader
-from mmaction.datasets.pipelines.augmentations import Resize
-from mmaction.datasets.pipelines.loading import SampleFrames
-from mmaction.models.common import SubBatchBN3d
+from mmaction.datasets.pipelines import Resize, SampleFrames
 from ..utils import get_root_logger
 
 
@@ -23,6 +20,7 @@ def modify_num_splits(module, num_splits):
     """
     count = 0
     for child in module.children():
+        from mmaction.models import SubBatchBN3d
         if isinstance(child, SubBatchBN3d):
             new_split_bn = nn.BatchNorm3d(child.num_features *
                                           num_splits).cuda()
@@ -39,12 +37,9 @@ class RelativeStepLrUpdaterHook(LrUpdaterHook):
     """RelativeStepLrUpdaterHook.
 
     Args:
-        ori_step (list[int]): Same as that of mmcv.
-        new_step (list[int]): The real steps caused by multi-grid
-            training.
-        step_lr_ratio (list[int]): The extra factor to be multiplied
-            at each new step.
-        gamma (float): Same as that of mmcv.
+        runner (:obj:`mmcv.Runner`): The runner instance used.
+        step (list[int]): The list of epochs at which decrease
+            the learning rate.
         **kwargs (dict): Same as that of mmcv.
     """
 
@@ -56,6 +51,7 @@ class RelativeStepLrUpdaterHook(LrUpdaterHook):
         super().before_run(runner)
 
     def get_lr(self, runner, base_lr):
+        """Similar to that of mmcv."""
         progress = runner.epoch if self.by_epoch else runner.iter
         for i in range(len(self.step)):
             if progress < self.step[i]:
@@ -63,9 +59,13 @@ class RelativeStepLrUpdaterHook(LrUpdaterHook):
 
 
 class MultiGridHook(Hook):
-    """MultiGridHook.
+    """A multigrid method for efficiently training video models.
 
-    https://arxiv.org/abs/1912.00998.
+        This hook defines multigrid training schedule and update cfg
+        accordingly, which is proposed in `A Multigrid Method for Efficiently
+        Training Video Models <https://arxiv.org/abs/1912.00998>`_.
+    Args:
+        cfg (:obj:`mmcv.ConfigDictg`): The whole config for the experiment.
     """
 
     def __init__(self, cfg):
@@ -124,13 +124,14 @@ class MultiGridHook(Hook):
 
         # swap the dataloader with a new one
         ds = getattr(runner.data_loader, 'dataset')
+        from mmaction.datasets import build_dataloader
         dataloader = build_dataloader(
             ds,
             self.data_cfg.videos_per_gpu * base_b,  # change here
             self.data_cfg.workers_per_gpu,
             dist=self.cfg.get('dist', True),
             drop_last=self.data_cfg.get('train_drop_last', True),
-            seed=self.cfg.seed,
+            seed=self.cfg.get('seed', None),
             short_cycle=self.multi_grid_cfg.short_cycle,
             multi_grid_cfg=self.multi_grid_cfg)
         runner.data_loader = dataloader
@@ -141,7 +142,7 @@ class MultiGridHook(Hook):
             self.logger.info(f'{num_modifies} subbns modified to {base_b}.')
 
     def _get_long_cycle_schedule(self, runner, cfg):
-        # schedule is a list of [step_index, base_shape, epochs]
+        # `schedule` is a list of [step_index, base_shape, epochs]
         schedule = []
         avg_bs = []
         all_shapes = []
@@ -192,8 +193,9 @@ class MultiGridHook(Hook):
         iter_saving = default_iters / total_iters
         final_step_epochs = runner.max_epochs - steps[-1]
         # the fine-tuning phase to have the same amount of iteration
-        # saving as the rest of the training.
+        # saving as the rest of the training
         ft_epochs = final_step_epochs / iter_saving * avg_bs[-1]
+        # in `schedule` we ignore the shape of ShortCycle
         schedule.append((step_index + 1, all_shapes[-1][-1], ft_epochs))
 
         x = (
@@ -226,9 +228,9 @@ class MultiGridHook(Hook):
         """Initialize the multi-grid shcedule.
 
         Args:
-            runner (obj: `mmcv.Runner`): The runner within which to train.
-            multi_grid_cfg (obj: `mmcv.ConfigDict`): The multi-grid config.
-            data_cfg (obj: `mmcv.ConfigDict`): The data config.
+            runner (:obj: `mmcv.Runner`): The runner within which to train.
+            multi_grid_cfg (:obj: `mmcv.ConfigDict`): The multi-grid config.
+            data_cfg (:obj: `mmcv.ConfigDict`): The data config.
         """
         self.default_bs = data_cfg.videos_per_gpu
         data_cfg = data_cfg.get('train', None)

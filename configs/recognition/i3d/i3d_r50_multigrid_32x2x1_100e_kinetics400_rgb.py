@@ -7,7 +7,7 @@ model = dict(
         pretrained=None,
         depth=50,
         conv_cfg=dict(type='Conv3d'),
-        norm_cfg=dict(type='BN3d'),
+        norm_cfg=dict(type='SubBatchBN3d'),
         norm_eval=False,
         inflate=((1, 1, 1), (1, 0, 1, 0), (1, 0, 1, 0, 1, 0), (0, 1, 0)),
         zero_init_residual=False),
@@ -22,7 +22,6 @@ model = dict(
 train_cfg = None
 test_cfg = dict(average_clips=None)
 multi_grid = dict(
-    default_s=224,
     long_cycle=True,
     short_cycle=True,
     long_cycle_factors=((0.25, 0.5**0.5), (0.5, 0.5**0.5), (0.5, 1), (1, 1)),
@@ -71,7 +70,11 @@ val_pipeline = [
         frame_interval=2,
         num_clips=1,
         test_mode=True),
-    dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
+    dict(
+        type='RawFrameDecode',
+        decoding_backend='turbojpeg',
+        io_backend='memcached',
+        **mc_cfg),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
     dict(type='Flip', flip_ratio=0),
@@ -87,7 +90,11 @@ test_pipeline = [
         frame_interval=2,
         num_clips=10,
         test_mode=True),
-    dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
+    dict(
+        type='RawFrameDecode',
+        decoding_backend='turbojpeg',
+        io_backend='memcached',
+        **mc_cfg),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='ThreeCrop', crop_size=256),
     dict(type='Flip', flip_ratio=0),
@@ -119,16 +126,16 @@ data = dict(
 optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
-lr_config = dict(policy='step', step=[40, 80])
-total_epochs = 100
+lr_config = dict(policy='step', step=[10, 15])
+total_epochs = 20
 checkpoint_config = dict(interval=1)
 evaluation = dict(
     interval=1, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
 log_config = dict(
-    interval=20,
+    interval=1,
     hooks=[
         dict(type='TextLoggerHook'),
-        dict(type='TensorboardLoggerHook'),
+        # dict(type='PaviLoggerHook'),
     ])
 # runtime settings
 dist_params = dict(backend='nccl', port=29501)

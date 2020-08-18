@@ -7,7 +7,7 @@ model = dict(
         pretrained=None,
         depth=50,
         conv_cfg=dict(type='Conv3d'),
-        norm_cfg=dict(type='BN3d'),
+        norm_cfg=dict(type='SubBatchBN3d'),
         norm_eval=False,
         inflate=((1, 1, 1), (1, 0, 1, 0), (1, 0, 1, 0, 1, 0), (0, 1, 0)),
         zero_init_residual=False),
@@ -22,7 +22,6 @@ model = dict(
 train_cfg = None
 test_cfg = dict(average_clips=None)
 multi_grid = dict(
-    default_s=224,
     long_cycle=True,
     short_cycle=False,
     long_cycle_factors=((0.25, 0.5**0.5), (0.5, 0.5**0.5), (0.5, 1), (1, 1)),
@@ -103,8 +102,7 @@ data = dict(
         type=dataset_type,
         ann_file=ann_file_train,
         data_prefix=data_root,
-        pipeline=train_pipeline,
-        short_cycle_factors=multi_grid['short_cycle_factors']),
+        pipeline=train_pipeline),
     val=dict(
         type=dataset_type,
         ann_file=ann_file_val,
@@ -128,7 +126,7 @@ log_config = dict(
     interval=20,
     hooks=[
         dict(type='TextLoggerHook'),
-        dict(type='TensorboardLoggerHook'),
+        # dict(type='TensorboardLoggerHook'),
     ])
 # runtime settings
 dist_params = dict(backend='nccl', port=29501)

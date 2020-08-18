@@ -143,7 +143,6 @@ def test_format_shape():
         imgs=np.random.randn(3, 224, 224, 3), num_clips=1, clip_len=3)
     format_shape = FormatShape('NCTHW')
     assert format_shape(results)['input_shape'] == (1, 3, 3, 224, 224)
-
     # `NCTHW` input format with num_clips=2, clip_len=3
     results = dict(
         imgs=np.random.randn(18, 224, 224, 3), num_clips=2, clip_len=3)
@@ -153,6 +152,12 @@ def test_format_shape():
 
     assert repr(format_shape) == format_shape.__class__.__name__ + \
         "(input_format='NCTHW')"
+
+    # `CTHW` input format with num_clips=1, clip_len=3
+    results = dict(
+        imgs=np.random.randn(3, 224, 224, 3), num_clips=1, clip_len=3)
+    format_shape = FormatShape('CTHW')
+    assert format_shape(results)['input_shape'] == (3, 3, 224, 224)
 
     # 'NPTCHW' input format
     results = dict(

@@ -95,8 +95,7 @@ class RawframeDataset(BaseDataset):
         self.with_offset = with_offset
         super().__init__(ann_file, pipeline, data_prefix, test_mode,
                          multi_class, num_classes, start_index, modality)
-        if kwargs.get('short_cycle_factors', None) is not None:
-            self.short_cycle_factors = kwargs['short_cycle_factors']
+        self.short_cycle_factors = kwargs.get('short_cycle_factors', None)
 
     def load_annotations(self):
         """Load annotation file to get video information."""
@@ -158,6 +157,7 @@ class RawframeDataset(BaseDataset):
             origin_scale = deepcopy(last_resize.scale)
             for sample_idx, short_cycle_idx in idx:
                 if short_cycle_idx in [0, 1]:
+                    # 0 and 1 is hard-coded as PySlowFast
                     scale_ratio = self.short_cycle_factors[short_cycle_idx]
                     target_scale = tuple(
                         [int(round(scale_ratio * s)) for s in origin_scale])
@@ -166,7 +166,7 @@ class RawframeDataset(BaseDataset):
                 last_resize.scale = origin_scale
             return collate(collated_batch)
         else:
-            # Using a Sampeler now
+            # Using a vanilla Sampler now
             return pipeline_for_a_sample(idx)
 
     def prepare_test_frames(self, idx):

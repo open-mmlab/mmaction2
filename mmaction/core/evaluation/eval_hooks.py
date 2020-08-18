@@ -99,8 +99,10 @@ class EvalHook(Hook):
             self.key_indicator = self.best_json['key_indicator']
 
         from mmaction.apis import single_gpu_test
-        num_sub_bn3d_aggregated = self.aggregate_sub_bn_stats(runner.model)
+        from mmaction.models.common import aggregate_sub_bn_stats
+        num_sub_bn3d_aggregated = aggregate_sub_bn_stats(runner.model)
         self.logger.info(f'{num_sub_bn3d_aggregated} aggregated.')
+
         results = single_gpu_test(runner.model, self.dataloader)
         key_score = self.evaluate(runner, results)
         if (self.save_best and self.compare_func(key_score, self.best_score)):
@@ -111,24 +113,6 @@ class EvalHook(Hook):
             self.best_json['best_ckpt'] = current_ckpt_path
             self.best_json['key_indicator'] = self.key_indicator
             mmcv.dump(self.best_json, json_path)
-
-    def aggregate_sub_bn_stats(self, module):
-        """Recursively find all SubBN modules and aggregate sub-BN stats.
-
-        Args:
-            module (nn.Module)
-        Returns:
-            count (int): number of SubBN module found.
-        """
-        from mmaction.models import SubBatchBN3d
-        count = 0
-        for child in module.children():
-            if isinstance(child, SubBatchBN3d):
-                child.aggregate_stats()
-                count += 1
-            else:
-                count += self.aggregate_sub_bn_stats(child)
-        return count
 
     def evaluate(self, runner, results):
         """Evaluate the results.
@@ -189,8 +173,8 @@ class DistEvalHook(EvalHook):
             self.key_indicator = self.best_json['key_indicator']
 
         from mmaction.apis import multi_gpu_test
-
-        num_sub_bn3d_aggregated = self.aggregate_sub_bn_stats(runner.model)
+        from mmaction.models.common import aggregate_sub_bn_stats
+        num_sub_bn3d_aggregated = aggregate_sub_bn_stats(runner.model)
         self.logger.info(f'{num_sub_bn3d_aggregated} aggregated.')
 
         results = multi_gpu_test(
