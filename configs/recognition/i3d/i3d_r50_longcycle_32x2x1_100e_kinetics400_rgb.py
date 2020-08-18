@@ -24,7 +24,7 @@ test_cfg = dict(average_clips=None)
 multi_grid = dict(
     default_s=224,
     long_cycle=True,
-    short_cycle=True,
+    short_cycle=False,
     long_cycle_factors=((0.25, 0.5**0.5), (0.5, 0.5**0.5), (0.5, 1), (1, 1)),
     short_cycle_factors=(0.5, 0.5**0.5),
     epoch_factor=1.0)
@@ -60,7 +60,7 @@ train_pipeline = [
     dict(type='Flip', flip_ratio=0.5, lazy=True),
     dict(type='Fuse'),
     dict(type='Normalize', **img_norm_cfg),
-    dict(type='FormatShape', input_format='CTHW'),
+    dict(type='FormatShape', input_format='NCTHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs', 'label'])
 ]

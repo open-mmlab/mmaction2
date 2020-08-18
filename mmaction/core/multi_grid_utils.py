@@ -194,7 +194,7 @@ class MultiGridHook(Hook):
         # the fine-tuning phase to have the same amount of iteration
         # saving as the rest of the training.
         ft_epochs = final_step_epochs / iter_saving * avg_bs[-1]
-        schedule.append((step_index + 1, all_shapes[-1][2], ft_epochs))
+        schedule.append((step_index + 1, all_shapes[-1][-1], ft_epochs))
 
         x = (
             runner.max_epochs * cfg.epoch_factor / sum(s[-1]
@@ -213,7 +213,7 @@ class MultiGridHook(Hook):
         """logging the schedule."""
         self.logger.info('\tLongCycleId\tBase shape\tEpochs\t')
         for s in schedule:
-            self.logger.info('\t{}\t{}\t{}\t'.format(s[0], s[1], s[2]))
+            self.logger.info(f'\t{s[0]}\t{s[1]}\t{s[2]}\t')
 
     def _get_schedule(self, epoch):
         """Returning the corresponding shape."""
