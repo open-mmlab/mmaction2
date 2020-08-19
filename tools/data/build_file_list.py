@@ -4,6 +4,7 @@ import json
 import os.path as osp
 import random
 
+from tools.data.anno_txt2json import lines2dictlist
 from tools.data.parse_file_list import (parse_directory, parse_hmdb51_split,
                                         parse_kinetics_splits,
                                         parse_mit_splits, parse_mmit_splits,
@@ -152,39 +153,6 @@ def build_file_list(splits, frame_info, shuffle=False):
     train_rgb_list, train_flow_list = build_list(splits[0])
     test_rgb_list, test_flow_list = build_list(splits[1])
     return (train_rgb_list, test_rgb_list), (train_flow_list, test_flow_list)
-
-
-def lines2dictlist(lines, format):
-    """Convert lines in 'txt' format to dictions in 'json' format. Currently
-    support single-label and multi-label.
-
-    Args:
-        lines (list): List of lines in 'txt' label format.
-            'frame_dir num_frame label' (rawframes + single-label)
-            'frame_dir num_frame label1 label2 ...' (rawframes + multi-label)
-            'filename label' (videos + single-label)
-            'filename label1 label2 ...' (videos + multi-label)
-        format (str): Data format, choices are 'rawframes' and 'videos'.
-
-    Returns:
-        list[diction]: For rawframes format, each diction has keys: frame_dir,
-            total_frames, label; for videos format, each diction has keys:
-            filename, label.
-    """
-    lines = [x.split() for x in lines]
-    if format == 'rawframes':
-        data = [
-            dict(
-                frame_dir=line[0],
-                total_frames=int(line[1]),
-                label=[int(x) for x in line[2:]]) for line in lines
-        ]
-    elif format == 'videos':
-        data = [
-            dict(filename=line[0], label=[int(x) for x in line[1:]])
-            for line in lines
-        ]
-    return data
 
 
 def main():
