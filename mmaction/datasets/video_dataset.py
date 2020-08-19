@@ -84,6 +84,7 @@ class VideoDataset(BaseDataset):
             for i in range(num_videos):
                 assert len(video_infos[i]['label']) == 1
                 video_infos[i]['label'] = video_infos[i]['label'][0]
+        return video_infos
 
     def evaluate(self,
                  results,

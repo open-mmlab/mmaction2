@@ -148,6 +148,7 @@ class RawframeDataset(BaseDataset):
             for i in range(num_videos):
                 assert len(video_infos[i]['label']) == 1
                 video_infos[i]['label'] = video_infos[i]['label'][0]
+        return video_infos
 
     def prepare_train_frames(self, idx):
         """Prepare the frames for training given the index."""
