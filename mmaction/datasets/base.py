@@ -3,6 +3,8 @@ import os.path as osp
 from abc import ABCMeta, abstractmethod
 
 import mmcv
+import torch
+from mmcv import load
 from torch.utils.data import Dataset
 
 from .pipelines import Compose
@@ -66,6 +68,27 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
     def load_annotations(self):
         """Load the annotation according to ann_file into video_infos."""
         pass
+
+    # json annotations already looks like video_infos, so for each dataset,
+    # this func should be the same
+    def load_json_annotations(self):
+        """Load json annotation file to get video information."""
+        video_infos = load(self.ann_file)
+        num_videos = len(video_infos)
+        for i in range(num_videos):
+            if self.data_prefix is not None:
+                frame_dir = video_infos[i]['frame_dir']
+                frame_dir = osp.join(self.data_prefix, frame_dir)
+                video_infos[i]['frame_dir'] = frame_dir
+            if self.multi_class:
+                assert self.num_classes is not None
+                onehot = torch.zeros(self.num_classes)
+                onehot[video_infos[i]['label']] = 1.
+                video_infos[i]['label'] = onehot
+            else:
+                assert len(video_infos[i]['label']) == 1
+                video_infos[i]['label'] = video_infos[i]['label'][0]
+        return video_infos
 
     @abstractmethod
     def evaluate(self, results, metrics, logger):

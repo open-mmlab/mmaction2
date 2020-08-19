@@ -2,7 +2,6 @@ import copy
 import os.path as osp
 
 import torch
-from mmcv import load
 from mmcv.utils import print_log
 
 from ..core import mean_average_precision, mean_class_accuracy, top_k_accuracy
@@ -131,23 +130,6 @@ class RawframeDataset(BaseDataset):
                     video_info['label'] = label[0]
                 video_infos.append(video_info)
 
-        return video_infos
-
-    def load_json_annotations(self):
-        """Load json annotation file to get video information."""
-        video_infos = load(self.ann_file)
-        num_videos = len(video_infos)
-        # only need to process label here
-        if self.multi_class:
-            assert self.num_classes is not None
-            for i in range(num_videos):
-                onehot = torch.zeros(self.num_classes)
-                onehot[video_infos[i]['label']] = 1.0
-                video_infos[i]['label'] = onehot
-        else:
-            for i in range(num_videos):
-                assert len(video_infos[i]['label']) == 1
-                video_infos[i]['label'] = video_infos[i]['label'][0]
         return video_infos
 
     def prepare_train_frames(self, idx):
