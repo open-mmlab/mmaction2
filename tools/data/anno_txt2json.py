@@ -64,7 +64,7 @@ if __name__ == '__main__':
     args = parse_args()
     lines = open(args.annofile).readlines()
     lines = [x.strip() for x in lines]
-    result = lines2dictlist(lines)
+    result = lines2dictlist(lines, args.format)
     if args.output is None:
         args.output = args.annofile.replace('.txt', '.json')
     dump(result, args.output)
