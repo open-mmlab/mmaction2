@@ -75,11 +75,12 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         """Load json annotation file to get video information."""
         video_infos = load(self.ann_file)
         num_videos = len(video_infos)
+        path_key = 'frame_dir' if 'frame_dir' in video_infos[0] else 'filename'
         for i in range(num_videos):
             if self.data_prefix is not None:
-                frame_dir = video_infos[i]['frame_dir']
-                frame_dir = osp.join(self.data_prefix, frame_dir)
-                video_infos[i]['frame_dir'] = frame_dir
+                path_value = video_infos[i][path_key]
+                path_value = osp.join(self.data_prefix, path_value)
+                video_infos[i][path_key] = path_value
             if self.multi_class:
                 assert self.num_classes is not None
                 onehot = torch.zeros(self.num_classes)
