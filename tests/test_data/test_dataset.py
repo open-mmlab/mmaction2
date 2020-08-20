@@ -287,7 +287,6 @@ class TestDataset(object):
             data_prefix=self.data_prefix,
             start_index=3)
         assert len(video_dataset) == 2
-        assert type(video_dataset[0]) == dict
         assert video_dataset.start_index == 3
 
     def test_repeat_dataset(self):
