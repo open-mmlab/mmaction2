@@ -27,8 +27,8 @@ def parse_args():
 
 
 def lines2dictlist(lines, format):
-    """Convert lines in 'txt' format to dictions in 'json' format. Currently
-    support single-label and multi-label.
+    """Convert lines in 'txt' format to dictionaries in 'json' format.
+    Currently support single-label and multi-label.
 
     Example of a single-label rawframes annotation txt file:
 
