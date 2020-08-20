@@ -1,5 +1,15 @@
 # TIN
 
+## Introduction
+```
+@article{shao2020temporal,
+    title={Temporal Interlacing Network},
+    author={Hao Shao and Shengju Qian and Yu Liu},
+    year={2020},
+    journal={AAAI},
+}
+```
+
 ## Model Zoo
 
 ### Something-Something V1
