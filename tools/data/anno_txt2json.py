@@ -1,19 +1,19 @@
 import argparse
 
-from mmcv import dump
+import mmcv
 
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='Convert txt anno list to json')
+        description='Convert txt annotation list to json')
     parser.add_argument(
-        'annofile', type=str, help='the txt annofile to convert')
+        'annofile', type=str, help='the txt annotation file to convert')
     parser.add_argument(
         '--format',
         type=str,
         default='rawframes',
         choices=['rawframes', 'videos'],
-        help='the format of the txt annofile')
+        help='the format of the txt annotation file')
     parser.add_argument(
         '--output',
         type=str,
@@ -30,12 +30,44 @@ def lines2dictlist(lines, format):
     """Convert lines in 'txt' format to dictions in 'json' format. Currently
     support single-label and multi-label.
 
+    Example of a single-label rawframes annotation txt file:
+
+    .. code-block:: txt
+
+        (frame_dir num_frames label)
+        some/directory-1 163 1
+        some/directory-2 122 1
+        some/directory-3 258 2
+
+    Example of a multi-label rawframes annotation txt file:
+
+    .. code-block:: txt
+
+        (frame_dir num_frames label1 label2 ...)
+        some/directory-1 163 1 3 5
+        some/directory-2 122 1 2
+        some/directory-3 258 2
+
+    Example of a single-label videos annotation txt file:
+
+    .. code-block:: txt
+
+        (filename label)
+        some/path/000.mp4 1
+        some/path/001.mp4 1
+        some/path/002.mp4 2
+
+    Example of a multi-label videos annotation txt file:
+
+    .. code-block:: txt
+
+        (filename label1 label2 ...)
+        some/path/000.mp4 1 3 5
+        some/path/001.mp4 1 4 8
+        some/path/002.mp4 2 4 9
+
     Args:
         lines (list): List of lines in 'txt' label format.
-            'frame_dir num_frame label' (rawframes + single-label)
-            'frame_dir num_frame label1 label2 ...' (rawframes + multi-label)
-            'filename label' (videos + single-label)
-            'filename label1 label2 ...' (videos + multi-label)
         format (str): Data format, choices are 'rawframes' and 'videos'.
 
     Returns:
@@ -67,4 +99,4 @@ if __name__ == '__main__':
     result = lines2dictlist(lines, args.format)
     if args.output is None:
         args.output = args.annofile.replace('.txt', '.json')
-    dump(result, args.output)
+    mmcv.dump(result, args.output)

@@ -4,7 +4,6 @@ from abc import ABCMeta, abstractmethod
 
 import mmcv
 import torch
-from mmcv import load
 from torch.utils.data import Dataset
 
 from .pipelines import Compose
@@ -73,7 +72,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
     # this func should be the same
     def load_json_annotations(self):
         """Load json annotation file to get video information."""
-        video_infos = load(self.ann_file)
+        video_infos = mmcv.load(self.ann_file)
         num_videos = len(video_infos)
         path_key = 'frame_dir' if 'frame_dir' in video_infos[0] else 'filename'
         for i in range(num_videos):
