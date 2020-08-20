@@ -1,5 +1,22 @@
 # TSM
 
+## Introduction
+```
+@inproceedings{lin2019tsm,
+  title={TSM: Temporal Shift Module for Efficient Video Understanding},
+  author={Lin, Ji and Gan, Chuang and Han, Song},
+  booktitle={Proceedings of the IEEE International Conference on Computer Vision},
+  year={2019}
+}
+
+@article{NonLocal2018,
+  author =   {Xiaolong Wang and Ross Girshick and Abhinav Gupta and Kaiming He},
+  title =    {Non-local Neural Networks},
+  journal =  {CVPR},
+  year =     {2018}
+}
+```
+
 ## Model Zoo
 
 ### Kinetics-400
@@ -13,6 +30,9 @@
 |[tsm_r50_dense_1x1x8_100e_kinetics400_rgb](/configs/recognition/tsm/tsm_r50_dense_1x1x8_100e_kinetics400_rgb.py) |short-side 256|8| ResNet50 | ImageNet|73.38|91.02|x|x|x|7079|[ckpt](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tsm/tsm_r50_dense_256p_1x1x8_100e_kinetics400_rgb/tsm_r50_dense_256p_1x1x8_100e_kinetics400_rgb_20200727-e1e0c785.pth)|[log](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tsm/tsm_r50_dense_256p_1x1x8_100e_kinetics400_rgb/20200725_032043.log)|[json](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tsm/tsm_r50_dense_256p_1x1x8_100e_kinetics400_rgb/20200725_032043.log.json)|
 |[tsm_r50_1x1x16_50e_kinetics400_rgb](/configs/recognition/tsm/tsm_r50_1x1x16_50e_kinetics400_rgb.py) |340x256|8| ResNet50| ImageNet |71.69|90.4|[70.67](https://github.com/mit-han-lab/temporal-shift-module/blob/8d53d6fda40bea2f1b37a6095279c4b454d672bd/scripts/train_tsm_kinetics_rgb_16f.sh)|[89.98](https://github.com/mit-han-lab/temporal-shift-module/blob/8d53d6fda40bea2f1b37a6095279c4b454d672bd/scripts/train_tsm_kinetics_rgb_16f.sh)|47.0 (16x1 frames)| 10404  | [ckpt](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_kinetics400_rgb/tsm_r50_1x1x16_50e_kinetics400_rgb_20200607-f731bffc.pth) | [log](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_kinetics400_rgb/20200607_221310.log)| [json](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_kinetics400_rgb/20200607_221310.log.json)|
 |[tsm_r50_1x1x16_50e_kinetics400_rgb](/configs/recognition/tsm/tsm_r50_1x1x16_50e_kinetics400_rgb.py) |short-side 256|8| ResNet50| ImageNet |72.01|90.57|x|x|x|10398|[ckpt](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tsm/tsm_r50_256p_1x1x16_50e_kinetics400_rgb/tsm_r50_256p_1x1x16_50e_kinetics400_rgb_20200727-b414aa3c.pth)|[log](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tsm/tsm_r50_256p_1x1x16_50e_kinetics400_rgb/20200725_031232.log)|[json](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tsm/tsm_r50_256p_1x1x16_50e_kinetics400_rgb/20200725_031232.log.json)|
+|[tsm_nl_embedded_gaussian_r50_1x1x8_50e_kinetics400_rgb](/configs/recognition/tsm/tsm_nl_embedded_gaussian_r50_1x1x8_50e_kinetics400_rgb.py)|short-side 320|8x4| ResNet50| ImageNet |72.03|90.25|71.81|90.36|x|8931|[ckpt](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tsm/tsm_nl_embedded_gaussian_r50_1x1x8_50e_kinetics400_rgb/tsm_nl_embedded_gaussian_r50_1x1x8_50e_kinetics400_rgb_20200724-f00f1336.pth)|[log](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tsm/tsm_nl_embedded_gaussian_r50_1x1x8_50e_kinetics400_rgb/20200724_120023.log)|[json](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tsm/tsm_nl_embedded_gaussian_r50_1x1x8_50e_kinetics400_rgb/20200724_120023.log.json)|
+|[tsm_nl_gaussian_r50_1x1x8_50e_kinetics400_rgb](/configs/recognition/tsm/tsm_nl_gaussian_r50_1x1x8_50e_kinetics400_rgb.py)|short-side 320|8x4| ResNet50| ImageNet |70.70|89.90|x|x|x|10125|[ckpt](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tsm/tsm_nl_gaussian_r50_1x1x8_50e_kinetics400_rgb/tsm_nl_gaussian_r50_1x1x8_50e_kinetics400_rgb_20200816-b93fd297.pth)|[log](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tsm/tsm_nl_gaussian_r50_1x1x8_50e_kinetics400_rgb/20200815_210253.log)|[json](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tsm/tsm_nl_gaussian_r50_1x1x8_50e_kinetics400_rgb/20200815_210253.log.json)|
+|[tsm_nl_dot_product_r50_1x1x8_50e_kinetics400_rgb](/configs/recognition/tsm/tsm_nl_dot_product_r50_1x1x8_50e_kinetics400_rgb.py)|short-side 320|8x4|ResNet50| ImageNet |71.60|90.34|x|x|x|8358|[ckpt](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tsm/tsm_nl_dot_product_r50_1x1x8_50e_kinetics400_rgb/tsm_nl_dot_product_r50_1x1x8_50e_kinetics400_rgb_20200724-d8ad84d2.pth)|[log](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tsm/tsm_nl_dot_product_r50_1x1x8_50e_kinetics400_rgb/20200723_220442.log)|[json](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tsm/tsm_nl_dot_product_r50_1x1x8_50e_kinetics400_rgb/20200723_220442.log.json)|
 
 ### Something-Something V1
 
