@@ -1,5 +1,16 @@
 # R2plus1D
 
+## Introduction
+```
+@inproceedings{tran2018closer,
+  title={A closer look at spatiotemporal convolutions for action recognition},
+  author={Tran, Du and Wang, Heng and Torresani, Lorenzo and Ray, Jamie and LeCun, Yann and Paluri, Manohar},
+  booktitle={Proceedings of the IEEE conference on Computer Vision and Pattern Recognition},
+  pages={6450--6459},
+  year={2018}
+}
+```
+
 ## Model Zoo
 
 ### Kinetics-400
