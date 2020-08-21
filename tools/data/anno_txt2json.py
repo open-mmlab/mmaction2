@@ -71,7 +71,7 @@ def lines2dictlist(lines, format):
         format (str): Data format, choices are 'rawframes' and 'videos'.
 
     Returns:
-        list[diction]: For rawframes format, each diction has keys: frame_dir,
+        list[dict]: For rawframes format, each dict has keys: frame_dir,
             total_frames, label; for videos format, each diction has keys:
             filename, label.
     """
