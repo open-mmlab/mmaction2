@@ -1,5 +1,16 @@
 # SlowFast
 
+## Introduction
+```
+@inproceedings{feichtenhofer2019slowfast,
+  title={Slowfast networks for video recognition},
+  author={Feichtenhofer, Christoph and Fan, Haoqi and Malik, Jitendra and He, Kaiming},
+  booktitle={Proceedings of the IEEE international conference on computer vision},
+  pages={6202--6211},
+  year={2019}
+}
+```
+
 ## Model Zoo
 
 ### Kinetics-400

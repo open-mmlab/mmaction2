@@ -1,5 +1,16 @@
 # BMN
 
+## Introduction
+```
+@inproceedings{lin2019bmn,
+  title={Bmn: Boundary-matching network for temporal action proposal generation},
+  author={Lin, Tianwei and Liu, Xiao and Li, Xin and Ding, Errui and Wen, Shilei},
+  booktitle={Proceedings of the IEEE International Conference on Computer Vision},
+  pages={3889--3898},
+  year={2019}
+}
+```
+
 ## Model Zoo
 
 ### ActivityNet feature

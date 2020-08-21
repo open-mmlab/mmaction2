@@ -1,5 +1,16 @@
 # BSN
 
+## Introduction
+```
+@inproceedings{lin2018bsn,
+  title={Bsn: Boundary sensitive network for temporal action proposal generation},
+  author={Lin, Tianwei and Zhao, Xu and Su, Haisheng and Wang, Chongjing and Yang, Ming},
+  booktitle={Proceedings of the European Conference on Computer Vision (ECCV)},
+  pages={3--19},
+  year={2018}
+}
+```
+
 ## Model Zoo
 
 ### ActivityNet feature
