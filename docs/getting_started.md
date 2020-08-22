@@ -468,7 +468,7 @@ You can plot loss/top-k acc curves given a training log file. Run `pip install s
 ![acc_curve_image](imgs/acc_curve.png)
 
 ```shell
-python tools/analyze_logs.py plot_curve ${JSON_LOGS} [--keys ${KEYS}] [--title ${TITLE}] [--legend ${LEGEND}] [--backend ${BACKEND}] [--style ${STYLE}] [--out ${OUT_FILE}]
+python tools/analysis/analyze_logs.py plot_curve ${JSON_LOGS} [--keys ${KEYS}] [--title ${TITLE}] [--legend ${LEGEND}] [--backend ${BACKEND}] [--style ${STYLE}] [--out ${OUT_FILE}]
 ```
 
 Examples:
@@ -476,31 +476,31 @@ Examples:
 - Plot the classification loss of some run.
 
 ```shell
-python tools/analyze_logs.py plot_curve log.json --keys loss_cls --legend loss_cls
+python tools/analysis/analyze_logs.py plot_curve log.json --keys loss_cls --legend loss_cls
 ```
 
 - Plot the top-1 acc and top-5 acc of some run, and save the figure to a pdf.
 
 ```shell
-python tools/analyze_logs.py plot_curve log.json --keys top1_acc top5_acc --out results.pdf
+python tools/analysis/analyze_logs.py plot_curve log.json --keys top1_acc top5_acc --out results.pdf
 ```
 
 - Compare the top-1 acc of two runs in the same figure.
 
 ```shell
-python tools/analyze_logs.py plot_curve log1.json log2.json --keys top1_acc --legend run1 run2
+python tools/analysis/analyze_logs.py plot_curve log1.json log2.json --keys top1_acc --legend run1 run2
 ```
 
 You can also compute the average training speed.
 
 ```shell
-python tools/analyze_logs.py cal_train_time ${JSON_LOGS} [--include-outliers]
+python tools/analysis/analyze_logs.py cal_train_time ${JSON_LOGS} [--include-outliers]
 ```
 
 - Compute the average training speed for a config file
 
 ```shell
-python tools/analyze_logs.py cal_train_time work_dirs/some_exp/20200422_153324.log.json
+python tools/analysis/analyze_logs.py cal_train_time work_dirs/some_exp/20200422_153324.log.json
 ```
 
 The output is expected to be like the following.
@@ -519,7 +519,7 @@ average iter time: 0.9330 s/iter
 We provide a script adapted from [flops-counter.pytorch](https://github.com/sovrasov/flops-counter.pytorch) to compute the FLOPs and params of a given model.
 
 ```shell
-python tools/get_flops.py ${CONFIG_FILE} [--shape ${INPUT_SHAPE}]
+python tools/analysis/get_flops.py ${CONFIG_FILE} [--shape ${INPUT_SHAPE}]
 ```
 
 We will get the result like this

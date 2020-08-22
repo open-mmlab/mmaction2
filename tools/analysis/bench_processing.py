@@ -1,7 +1,7 @@
 """This file is for benchmark dataloading process. The command line to run this
 file is:
 
-$ python -m cProfile -o program.prof tools/bench_processing.py
+$ python -m cProfile -o program.prof tools/analysis/bench_processing.py
 configs/task/method/[config filename]
 
 It use cProfile to record cpu running time and output to program.prof
