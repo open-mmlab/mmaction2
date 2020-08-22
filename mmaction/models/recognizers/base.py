@@ -164,7 +164,7 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         imgs = data_batch['imgs']
         label = data_batch['label']
 
-        losses = self.forward(imgs, label)
+        losses = self(imgs, label)
 
         loss, log_vars = self._parse_losses(losses)
 
@@ -183,9 +183,15 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         not implemented with this method, but an evaluation hook.
         """
         imgs = data_batch['imgs']
+        label = data_batch['label']
 
-        results = self.forward(imgs, None, return_loss=False)
+        losses = self(imgs, label)
 
-        outputs = dict(results=results)
+        loss, log_vars = self._parse_losses(losses)
+
+        outputs = dict(
+            loss=loss,
+            log_vars=log_vars,
+            num_samples=len(next(iter(data_batch.values()))))
 
         return outputs

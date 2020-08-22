@@ -3,6 +3,7 @@ import copy
 import os
 import os.path as osp
 import time
+import warnings
 
 import mmcv
 import torch
@@ -124,6 +125,10 @@ def main():
 
     datasets = [build_dataset(cfg.data.train)]
     if len(cfg.workflow) == 2:
+        if args.validate:
+            warnings.warn('val workflow is duplicated with `--validate`, '
+                          'it is recommended to use `--validate`. see '
+                          'https://github.com/open-mmlab/mmaction2/pull/123')
         val_dataset = copy.deepcopy(cfg.data.val)
         datasets.append(build_dataset(val_dataset))
     if cfg.checkpoint_config is not None:
