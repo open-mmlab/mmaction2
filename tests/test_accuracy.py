@@ -53,9 +53,9 @@ def test_confusion_matrix():
     pred_labels = np.random.randint(10, size=100, dtype=np.int64)
 
     for normalize in [None, 'true', 'pred', 'all']:
-        cmtx = confusion_matrix(pred_labels, gt_labels, normalize)
-        gt_cmtx = gt_confusion_matrix(gt_labels, pred_labels, normalize)
-        assert_array_equal(cmtx, gt_cmtx)
+        cf_mat = confusion_matrix(pred_labels, gt_labels, normalize)
+        gt_cf_mat = gt_confusion_matrix(gt_labels, pred_labels, normalize)
+        assert_array_equal(cf_mat, gt_cf_mat)
 
     with pytest.raises(ValueError):
         # normalize must be in ['true', 'pred', 'all', None]

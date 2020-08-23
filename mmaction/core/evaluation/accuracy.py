@@ -71,10 +71,10 @@ def mean_class_accuracy(scores, labels):
         np.ndarray: Mean class accuracy.
     """
     pred = np.argmax(scores, axis=1)
-    cmtx = confusion_matrix(pred, labels).astype(float)
+    cf_mat = confusion_matrix(pred, labels).astype(float)
 
-    cls_cnt = cmtx.sum(axis=1)
-    cls_hit = np.diag(cmtx)
+    cls_cnt = cf_mat.sum(axis=1)
+    cls_hit = np.diag(cf_mat)
 
     mean_class_acc = np.mean(
         [hit / cnt if cnt else 0.0 for cnt, hit in zip(cls_cnt, cls_hit)])
