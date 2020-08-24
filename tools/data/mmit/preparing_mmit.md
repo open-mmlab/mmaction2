@@ -11,6 +11,15 @@ First of all, you can run the following script to prepare annotations.
 bash download_data.sh
 ```
 
+```shell
+bash download_data.sh
+```
+For better IO speed, you can also resize the original videos into smaller, more densely encoded cache by:
+```
+python ../resize_videos.py ../../../data/mmit/videos/ ../../../data/mmit/videos_256p_dense_cache --dense --level 2
+```
+
+
 ## Step 2. Extract RGB and Flow
 
 This part is **optional** if you only want to use the video loader.
