@@ -6,6 +6,7 @@ import torch
 from mmcv.cnn import fuse_conv_bn
 from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
 from mmcv.runner import get_dist_info, init_dist, load_checkpoint
+from mmcv.runner.fp16_utils import wrap_fp16_model
 
 from mmaction.apis import multi_gpu_test, single_gpu_test
 from mmaction.datasets import build_dataloader, build_dataset
@@ -116,6 +117,9 @@ def main():
 
     # build the model and load checkpoint
     model = build_model(cfg.model, train_cfg=None, test_cfg=cfg.test_cfg)
+    fp16_cfg = cfg.get('fp16', None)
+    if fp16_cfg is not None:
+        wrap_fp16_model(model)
     load_checkpoint(model, args.checkpoint, map_location='cpu')
 
     if args.fuse_conv_bn:
