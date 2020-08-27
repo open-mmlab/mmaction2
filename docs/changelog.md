@@ -10,6 +10,7 @@
 - Enhance demo by supporting rawframe inference ([#59](https://github.com/open-mmlab/mmaction2/pull/59)),
   output video/gif ([#72](https://github.com/open-mmlab/mmaction2/pull/72)),
 - Support encode videos from frames ([#84](https://github.com/open-mmlab/mmaction2/pull/84))
+- Support FP16 training ([#25](https://github.com/open-mmlab/mmaction2/pull/25))
 
 **Bug Fixes**
 - `CosineAnnealing` Typo ([#47](https://github.com/open-mmlab/mmaction2/pull/47))
