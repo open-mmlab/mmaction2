@@ -7,7 +7,7 @@
 - PyTorch 1.3+
 - CUDA 9.2+ (If you build PyTorch from source, CUDA 9.0 is also compatible)
 - GCC 5+
-- [mmcv](https://github.com/open-mmlab/mmcv) 0.5.7+
+- [mmcv](https://github.com/open-mmlab/mmcv) 1.1.1+
 - Numpy
 - ffmpeg (4.2 is preferred)
 - [decord](https://github.com/dmlc/decord) (optional): Install CPU version by `pip install decord` and install GPU version from source
