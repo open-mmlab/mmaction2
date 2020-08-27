@@ -1,5 +1,5 @@
 matplotlib
-mmcv
+mmcv>=1.1.1
 numpy
 opencv-contrib-python
 Pillow
