@@ -1,8 +1,9 @@
 import copy
 
+import mmcv
 import numpy as np
+import pytest
 import torch
-from mmcv import ConfigDict
 
 from mmaction.models import build_localizer
 from mmaction.models.localizers.utils import post_processing
@@ -171,7 +172,7 @@ def test_post_processing():
 
 
 def test_ssn_train():
-    train_cfg = ConfigDict(
+    train_cfg = mmcv.ConfigDict(
         dict(
             ssn=dict(
                 assigner=dict(
@@ -198,21 +199,19 @@ def test_ssn_train():
         cls_head=dict(
             type='SSNHead',
             dropout_ratio=0.,
-            in_channels_activity=512,
-            in_channels_complete=1536,
+            in_channels=512,
             num_classes=20,
             consensus=dict(
                 type='STPPTrain',
-                with_context=False,
                 stpp_stage=(1, 1, 1),
                 num_segments_list=(2, 5, 2)),
-            with_regression=True),
+            use_regression=True),
         train_cfg=train_cfg)
     dropout_cfg = copy.deepcopy(base_model_cfg)
     dropout_cfg['dropout_ratio'] = 0
     dropout_cfg['cls_head']['dropout_ratio'] = 0.5
     non_regression_cfg = copy.deepcopy(base_model_cfg)
-    non_regression_cfg['cls_head']['with_regression'] = False
+    non_regression_cfg['cls_head']['use_regression'] = False
 
     imgs = torch.rand(1, 8, 9, 3, 224, 224)
     proposal_scale_factor = torch.Tensor([[[1.0345, 1.0345], [1.0028, 0.0028],
@@ -270,7 +269,7 @@ def test_ssn_train():
 
 
 def test_ssn_test():
-    test_cfg = ConfigDict(
+    test_cfg = mmcv.ConfigDict(
         dict(
             ssn=dict(
                 sampler=dict(test_interval=6, batch_size=16),
@@ -289,47 +288,40 @@ def test_ssn_test():
         cls_head=dict(
             type='SSNHead',
             dropout_ratio=0.,
-            in_channels_activity=512,
-            in_channels_complete=1536,
+            in_channels=512,
             num_classes=20,
-            consensus=dict(
-                type='STPPTest', with_context=False, stpp_stage=(1, 1, 1)),
-            with_regression=True),
+            consensus=dict(type='STPPTest', stpp_stage=(1, 1, 1)),
+            use_regression=True),
         test_cfg=test_cfg)
     maxpool_model_cfg = copy.deepcopy(base_model_cfg)
     maxpool_model_cfg['spatial_type'] = 'max'
     non_regression_cfg = copy.deepcopy(base_model_cfg)
-    non_regression_cfg['cls_head']['with_regression'] = False
-    non_regression_cfg['cls_head']['consensus']['with_regression'] = False
+    non_regression_cfg['cls_head']['use_regression'] = False
+    non_regression_cfg['cls_head']['consensus']['use_regression'] = False
+    tuple_stage_cfg = copy.deepcopy(base_model_cfg)
+    tuple_stage_cfg['cls_head']['consensus']['stpp_stage'] = (1, (1, 2), 1)
+    str_stage_cfg = copy.deepcopy(base_model_cfg)
+    str_stage_cfg['cls_head']['consensus']['stpp_stage'] = ('error', )
 
     imgs = torch.rand(1, 8, 3, 224, 224)
-    relative_proposal_list = torch.Tensor([[[0.7339, 0.8749], [0.7332, 0.8921],
-                                            [0.7339, 0.9688], [0.7095, 0.8968],
-                                            [0.7313, 0.9118], [0.7379, 0.8523],
-                                            [0.7302, 0.9915], [0.6887,
-                                                               0.8749]]])
-    scale_factor_list = torch.Tensor([[[1.0000, 1.0000], [1.0000, 1.0000],
-                                       [1.0000, 0.2661], [1.0000, 1.0000],
-                                       [1.0000, 0.9773], [1.0000, 1.0000],
-                                       [1.0000, 0.0652], [1.0000, 1.0000]]])
-    proposal_tick_list = torch.LongTensor([[[700, 775, 923, 998],
-                                            [690, 774, 942, 1025],
-                                            [651, 775, 1023, 1056],
-                                            [650, 749, 947, 1045],
-                                            [676, 772, 962, 1056],
-                                            [718, 779, 900, 960],
-                                            [633, 771, 1047, 1056],
-                                            [628, 727, 923, 1022]]])
+    relative_proposal_list = torch.Tensor([[[0.2500, 0.6250], [0.3750,
+                                                               0.7500]]])
+    scale_factor_list = torch.Tensor([[[1.0000, 1.0000], [1.0000, 0.2661]]])
+    proposal_tick_list = torch.LongTensor([[[1, 2, 5, 7], [20, 30, 60, 80]]])
     reg_norm_consts = torch.Tensor([[[-0.0603, 0.0325], [0.0752, 0.1596]]])
 
     localizer_ssn = build_localizer(base_model_cfg)
     localizer_ssn_maxpool = build_localizer(maxpool_model_cfg)
     localizer_ssn_non_regression = build_localizer(non_regression_cfg)
+    localizer_ssn_tuple_stage_cfg = build_localizer(tuple_stage_cfg)
+    with pytest.raises(ValueError):
+        build_localizer(str_stage_cfg)
 
     if torch.cuda.is_available():
         localizer_ssn = localizer_ssn.cuda()
         localizer_ssn_maxpool = localizer_ssn_maxpool.cuda()
         localizer_ssn_non_regression = localizer_ssn_non_regression.cuda()
+        localizer_ssn_tuple_stage_cfg = localizer_ssn_tuple_stage_cfg.cuda()
         imgs = imgs.cuda()
         relative_proposal_list = relative_proposal_list.cuda()
         scale_factor_list = scale_factor_list.cuda()
@@ -357,6 +349,15 @@ def test_ssn_test():
 
         # Test SSN model without regression
         localizer_ssn_non_regression(
+            imgs,
+            relative_proposal_list=relative_proposal_list,
+            scale_factor_list=scale_factor_list,
+            proposal_tick_list=proposal_tick_list,
+            reg_norm_consts=reg_norm_consts,
+            return_loss=False)
+
+        # Test SSN model with tuple stage cfg.
+        localizer_ssn_tuple_stage_cfg(
             imgs,
             relative_proposal_list=relative_proposal_list,
             scale_factor_list=scale_factor_list,

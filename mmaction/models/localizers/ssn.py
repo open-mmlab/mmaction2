@@ -104,7 +104,7 @@ class SSN(BaseLocalizer):
 
         if not self.is_test_prepared:
             self.is_test_prepared = self.cls_head.prepare_test_fc(
-                self.cls_head.consensus.feat_multiplier)
+                self.cls_head.consensus.num_multipliers)
 
         (output, activity_scores, completeness_scores,
          bbox_preds) = self.cls_head(
