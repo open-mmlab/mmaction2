@@ -1,6 +1,6 @@
 ## Changelog
 
-### v0.6.0 (20/8/2020)
+### v0.6.0 (30/8/2020)
 
 **Highlights**
 - Support NonLocal module in TSM and I3D ([#41](https://github.com/open-mmlab/mmaction2/pull/41))
@@ -15,17 +15,19 @@
 - `CosineAnnealing` Typo ([#47](https://github.com/open-mmlab/mmaction2/pull/47))
 - Bug fix in analyze_log ([#54](https://github.com/open-mmlab/mmaction2/pull/54))
 - Fix configs for localization test ([#67](https://github.com/open-mmlab/mmaction2/pull/67))
+- Fix configs of SlowOnly by fixing lr to 8 gpus ([#136](https://github.com/open-mmlab/mmaction2/pull/136))
 - Fix the bug of generating HMDB51 class index file ([#69](https://github.com/open-mmlab/mmaction2/pull/69))
 - Fix the bug of using `loac_checkpoint()` in ResNet ([#93](https://github.com/open-mmlab/mmaction2/pull/93))
 - Fix the bug of `--work-dir` when using slurm training script ([#110](https://github.com/open-mmlab/mmaction2/pull/110))
 - Correct the sthv1/sthv2 rawframes filelist generate command ([#71](https://github.com/open-mmlab/mmaction2/pull/71))
 
 **New Features**
+- Support PyTorch 1.6 ([#117](https://github.com/open-mmlab/mmaction2/pull/117))
 - Support `with_offset` for rawframe dataset ([#48](https://github.com/open-mmlab/mmaction2/pull/48))
 - Update Slowfast modelzoo ([#51](https://github.com/open-mmlab/mmaction2/pull/51))
 - Update TSN, TSM video checkpoints ([#50](https://github.com/open-mmlab/mmaction2/pull/50))
 - Add data benchmark for TSN ([#57](https://github.com/open-mmlab/mmaction2/pull/57))
-- Add slowonly data benchmark ([#77](https://github.com/open-mmlab/mmaction2/pull/77))
+- Add data benchmark for SlowOnly ([#77](https://github.com/open-mmlab/mmaction2/pull/77))
 - Add BSN/BMN performance results with feature extracted by our codebase ([#99](https://github.com/open-mmlab/mmaction2/pull/99))
 
 **Improvements**
@@ -33,7 +35,9 @@
 - Improve data preparation scripts ([#58](https://github.com/open-mmlab/mmaction2/pull/58))
 - Improve unittest coverage and minor fix ([#62](https://github.com/open-mmlab/mmaction2/pull/62))
 - Support `multi-class` in TSMHead ([#104](https://github.com/open-mmlab/mmaction2/pull/104))
+- Support using `val_step()` to validate data for each `val` workflow ([#123](https://github.com/open-mmlab/mmaction2/pull/123))
 - Use `xxInit()` method to get `total_frames` and make `total_frames` a required key ([#90](https://github.com/open-mmlab/mmaction2/pull/90))
+- Add paper introduction in model readme ([#140](https://github.com/open-mmlab/mmaction2/pull/140))
 
 ### v0.5.0 (9/7/2020)
 
