@@ -11,6 +11,12 @@ First of all, you can run the following script to download the videos along with
 bash download_data.sh
 ```
 
+For better decoding speed, you can resize the original videos into smaller sized, densely encoded version by:
+
+```
+python ../resize_videos.py ../../../data/mit/videos/ ../../../data/mit/videos_256p_dense_cache --dense --level 2
+```
+
 ## Step 2. Extract RGB and Flow
 
 This part is **optional** if you only want to use the video loader.

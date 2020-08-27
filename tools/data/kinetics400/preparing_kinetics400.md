@@ -35,6 +35,12 @@ or running
 bash rename_classnames.sh
 ```
 
+For better decoding speed, you can resize the original videos into smaller sized, densely encoded version by:
+
+```
+python ../resize_videos.py ../../../data/kinetics400/videos_train/ ../../../data/kinetics400/videos_train_256p_dense_cache --dense --level 2
+```
+
 ## Step 3. Extract RGB and Flow
 
 This part is **optional** if you only want to use the video loader.
