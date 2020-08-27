@@ -580,16 +580,14 @@ class TestDataset(object):
         assert ssn_infos[0]['total_frames'] == 5
 
         # test ssn datatset with normalized proposal file
-        data_prefix = osp.join(self.data_prefix, 'test_normalized_proposals')
-        ssn_dataset = SSNDataset(
-            self.proposal_norm_ann_file,
-            self.proposal_pipeline,
-            self.proposal_train_cfg,
-            self.proposal_test_cfg,
-            data_prefix=data_prefix)
-        ssn_infos = ssn_dataset.video_infos
-        assert ssn_infos[0]['video_id'] == 'test_imgs'
-        assert ssn_infos[0]['total_frames'] == 10
+        with pytest.raises(Exception):
+            ssn_dataset = SSNDataset(
+                self.proposal_norm_ann_file,
+                self.proposal_pipeline,
+                self.proposal_train_cfg,
+                self.proposal_test_cfg,
+                data_prefix=self.data_prefix)
+            ssn_infos = ssn_dataset.video_infos
 
         # test ssn dataset with reg_normalize_constants
         ssn_dataset = SSNDataset(

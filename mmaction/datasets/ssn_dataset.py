@@ -1,15 +1,13 @@
 import copy
-import math
 import os.path as osp
 
 import mmcv
 import numpy as np
 from torch.nn.modules.utils import _pair
 
+from ..core import softmax
 from ..localization import (eval_ap, load_localize_proposal_file,
-                            perform_regression, process_norm_proposal_file,
-                            results_to_detections, temporal_iou, temporal_nms)
-from ..localization.ssn_utils import parse_frame_folder
+                            perform_regression, temporal_iou, temporal_nms)
 from ..utils import get_root_logger
 from .base import BaseDataset
 from .registry import DATASETS
@@ -37,7 +35,7 @@ class SSNInstance:
                  best_iou=0,
                  overlap_self=0):
         self.start_frame = start_frame
-        self.end_frame = min(end_frame, num_video_frames + 1)
+        self.end_frame = min(end_frame, num_video_frames)
         self.num_video_frames = num_video_frames
         self.label = label if label is not None else -1
         self.coverage = (end_frame - start_frame) / num_video_frames
@@ -75,7 +73,7 @@ class SSNInstance:
         #     logarithm of the groundtruth duration over proposal duration
 
         self.loc_reg = (gt_center - proposal_center) / proposal_size
-        self.size_reg = math.log(gt_size / proposal_size)
+        self.size_reg = np.log(gt_size / proposal_size)
         self.regression_targets = ([self.loc_reg, self.size_reg]
                                    if self.loc_reg is not None else [0., 0.])
 
@@ -128,8 +126,9 @@ class SSNDataset(BaseDataset):
     Args:
         ann_file (str): Path to the annotation file.
         pipeline (list[dict | callable]): A sequence of data transforms.
+        train_cfg (dict): Config for training.
+        test_cfg (dict): Config for testing.
         data_prefix (str): Path to a directory where videos are held.
-            Default: None.
         test_mode (bool): Store True when building test or validation dataset.
             Default: False.
         filename_tmpl (str): Template for each filename.
@@ -155,7 +154,7 @@ class SSNDataset(BaseDataset):
             Default: 1.
         filter_gt (bool): Whether to filter videos with no annotation
             during training. Default: True.
-        no_regression (bool): Whether to perform regression. Default: False.
+        use_regression (bool): Whether to perform regression. Default: True.
         verbose (bool): Whether to print full information or not.
             Default: False.
     """
@@ -165,7 +164,7 @@ class SSNDataset(BaseDataset):
                  pipeline,
                  train_cfg,
                  test_cfg,
-                 data_prefix=None,
+                 data_prefix,
                  test_mode=False,
                  filename_tmpl='img_{:05d}.jpg',
                  start_index=1,
@@ -178,10 +177,10 @@ class SSNDataset(BaseDataset):
                  clip_len=1,
                  frame_interval=1,
                  filter_gt=True,
-                 no_regression=False,
+                 use_regression=True,
                  verbose=False):
         self.logger = get_root_logger()
-        super(SSNDataset, self).__init__(
+        super().__init__(
             ann_file,
             pipeline,
             data_prefix=data_prefix,
@@ -197,7 +196,10 @@ class SSNDataset(BaseDataset):
         self.filename_tmpl = filename_tmpl
 
         if filter_gt or not test_mode:
-            valid_inds = self._filter_records()
+            valid_inds = [
+                i for i, video_info in enumerate(self.video_infos)
+                if len(video_info['gts']) > 0
+            ]
         self.logger.info(f'{len(valid_inds)} out of {len(self.video_infos)} '
                          f'videos are valid.')
         self.video_infos = [self.video_infos[i] for i in valid_inds]
@@ -246,7 +248,7 @@ class SSNDataset(BaseDataset):
 
         # test mode or not
         self.filter_gt = filter_gt
-        self.no_regression = no_regression
+        self.use_regression = use_regression
         self.test_mode = test_mode
 
         # yapf: disable
@@ -279,12 +281,8 @@ class SSNDataset(BaseDataset):
         if 'normalized_' in self.ann_file:
             self.proposal_file = self.ann_file.replace('normalized_', '')
             if not osp.exists(self.proposal_file):
-                self.logger.info(f'{self.proposal_file} does not exist.'
-                                 f'Converting from {self.ann_file}')
-                frame_dict = parse_frame_folder(self.data_prefix)
-                process_norm_proposal_file(self.ann_file, self.proposal_file,
-                                           frame_dict)
-                self.logger.info('Finished conversion.')
+                raise Exception(f'Please refer to `$MMACTION2/tools/data` to'
+                                f'denormalize {self.ann_file}.')
         else:
             self.proposal_file = self.ann_file
         proposal_infos = load_localize_proposal_file(self.proposal_file)
@@ -299,7 +297,7 @@ class SSNDataset(BaseDataset):
             # gts:start, end, num_frames, class_label, tIoU=1
             gts = []
             for x in proposal_info[2]:
-                if int(x[2]) > int(x[1]):
+                if int(x[2]) > int(x[1]) and int(x[1]) < num_frames:
                     ssn_instance = SSNInstance(
                         int(x[1]),
                         int(x[2]),
@@ -307,12 +305,11 @@ class SSNDataset(BaseDataset):
                         label=int(x[0]),
                         best_iou=1.0)
                     gts.append(ssn_instance)
-            gts = list(filter(lambda x: x.start_frame < num_frames, gts))
             # proposals:start, end, num_frames, class_label
             # tIoU=best_iou, overlap_self
             proposals = []
             for x in proposal_info[3]:
-                if int(x[4]) > int(x[3]):
+                if int(x[4]) > int(x[3]) and int(x[3]) < num_frames:
                     ssn_instance = SSNInstance(
                         int(x[3]),
                         int(x[4]),
@@ -321,8 +318,6 @@ class SSNDataset(BaseDataset):
                         best_iou=float(x[1]),
                         overlap_self=float(x[2]))
                     proposals.append(ssn_instance)
-            proposals = list(
-                filter(lambda x: x.start_frame < num_frames, proposals))
             video_infos.append(
                 dict(
                     frame_dir=frame_dir,
@@ -331,6 +326,77 @@ class SSNDataset(BaseDataset):
                     gts=gts,
                     proposals=proposals))
         return video_infos
+
+    def results_to_detections(self,
+                              results,
+                              top_k=2000,
+                              softmax_before_filter=True,
+                              cls_top_k=2,
+                              **kwargs):
+        """Convert prediction results into detections.
+
+        Args:
+            results (list): Prediction results.
+            top_k (int): Number of top results. Default: 2000.
+            softmax_before_filter (bool): Whether to perform softmax operations
+                before filtering results. Default: True.
+            cls_top_k (int): Number of top results for each class. Default: 2.
+
+        Returns:
+            list: Detection results.
+        """
+        num_classes = results[0][1].shape[1] - 1
+        detections = [dict() for _ in range(num_classes)]
+
+        for idx in range(len(self)):
+            video_id = self.video_infos[idx]['video_id']
+            relative_proposals = results[idx][0]
+            if len(relative_proposals[0].shape) == 3:
+                relative_proposals = np.squeeze(relative_proposals, 0)
+
+            action_scores = results[idx][1]
+            complete_scores = results[idx][2]
+            regression_scores = results[idx][3]
+            if regression_scores is None:
+                regression_scores = np.zeros(
+                    len(relative_proposals), num_classes, 2, dtype=np.float32)
+            regression_scores = regression_scores.reshape((-1, num_classes, 2))
+
+            if top_k <= 0:
+                combined_scores = (
+                    softmax(action_scores[:, 1:], dim=1) *
+                    np.exp(complete_scores))
+                for i in range(num_classes):
+                    center_scores = regression_scores[:, i, 0][:, None]
+                    duration_scores = regression_scores[:, i, 1][:, None]
+                    detections[i][video_id] = np.concatenate(
+                        (relative_proposals, combined_scores[:, i][:, None],
+                         center_scores, duration_scores),
+                        axis=1)
+            else:
+                combined_scores = (
+                    softmax(action_scores[:, 1:], dim=1) *
+                    np.exp(complete_scores))
+                keep_idx = np.argsort(combined_scores.ravel())[-top_k:]
+                for k in keep_idx:
+                    class_idx = k % num_classes
+                    proposal_idx = k // num_classes
+                    new_item = [
+                        relative_proposals[proposal_idx, 0],
+                        relative_proposals[proposal_idx,
+                                           1], combined_scores[proposal_idx,
+                                                               class_idx],
+                        regression_scores[proposal_idx, class_idx,
+                                          0], regression_scores[proposal_idx,
+                                                                class_idx, 1]
+                    ]
+                    if video_id not in detections[class_idx]:
+                        detections[class_idx][video_id] = np.array([new_item])
+                    else:
+                        detections[class_idx][video_id] = np.vstack(
+                            [detections[class_idx][video_id], new_item])
+
+        return detections
 
     def evaluate(self,
                  results,
@@ -360,9 +426,9 @@ class SSNDataset(BaseDataset):
             if metric not in allowed_metrics:
                 raise KeyError(f'metric {metric} is not supported')
 
-        detections = results_to_detections(self, results, **self.evaluater)
+        detections = self.results_to_detections(results, **self.evaluater)
 
-        if not self.no_regression:
+        if self.use_regression:
             self.logger.info('Performing location regression')
             for class_idx in range(len(detections)):
                 detections[class_idx] = {
@@ -442,27 +508,10 @@ class SSNDataset(BaseDataset):
                     gt.start_frame / video_info['total_frames'],
                     gt.end_frame / video_info['total_frames']
                 ]
-                if class_idx not in gts:
-                    gts[class_idx] = dict()
-                    gts[class_idx][vid] = []
-                    gts[class_idx][vid].append(gt_info)
-                else:
-                    if vid in gts[class_idx]:
-                        gts[class_idx][vid].append(gt_info)
-                    else:
-                        gts[class_idx][vid] = []
-                        gts[class_idx][vid].append(gt_info)
+                gts.setdefault(class_idx, {}).setdefault(vid,
+                                                         []).append(gt_info)
 
         return gts
-
-    def _filter_records(self):
-        """Filter videos with no groundtruth during training."""
-        valid_inds = []
-        for i, video_info in enumerate(self.video_infos):
-            if len(video_info['gts']) > 0:
-                valid_inds.append(i)
-
-        return valid_inds
 
     def get_positives(self, gts, proposals, positive_threshold, with_gt=True):
         """Get positive/foreground proposals.
@@ -667,10 +716,12 @@ class SSNDataset(BaseDataset):
         ending_scale_factor = (valid_ending_length + ori_clip_len + 1) / (
             duration * self.aug_ratio[1])
 
-        # yapf: disable
-        stage_split = [self.aug_segments[0], self.aug_segments[0] + self.body_segments,  # noqa: E501
-                       self.aug_segments[0] + self.body_segments + self.aug_segments[1]]  # noqa: E501
-        # yapf: enable
+        aug_start, aug_end = self.aug_segments
+        stage_split = [
+            aug_start, aug_start + self.body_segments,
+            aug_start + self.body_segments + aug_end
+        ]
+
         return starting_scale_factor, ending_scale_factor, stage_split
 
     def _compute_reg_normalize_constants(self):
@@ -799,10 +850,10 @@ class SSNDataset(BaseDataset):
                 (real_relative_ending - relative_proposal[1]) /
                 relative_ending_duration)
 
-            proposal_ticks = (int(real_relative_starting * num_sampled_frames),
-                              int(relative_proposal[0] * num_sampled_frames),
-                              int(relative_proposal[1] * num_sampled_frames),
-                              int(real_relative_ending * num_sampled_frames))
+            proposal_ranges = (real_relative_starting, *relative_proposal,
+                               real_relative_ending)
+            proposal_ticks = (np.array(proposal_ranges) *
+                              num_sampled_frames).astype(np.int32)
 
             relative_proposal_list.append(relative_proposal)
             proposal_tick_list.append(proposal_ticks)
@@ -813,7 +864,8 @@ class SSNDataset(BaseDataset):
             relative_proposal_list, dtype=np.float32)
         results['scale_factor_list'] = np.array(
             scale_factor_list, dtype=np.float32)
-        results['proposal_tick_list'] = np.array(proposal_tick_list)
+        results['proposal_tick_list'] = np.array(
+            proposal_tick_list, dtype=np.int32)
         results['reg_norm_consts'] = self.reg_norm_consts
 
         return self.pipeline(results)
