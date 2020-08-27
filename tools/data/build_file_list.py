@@ -1,8 +1,10 @@
 import argparse
 import glob
+import json
 import os.path as osp
 import random
 
+from tools.data.anno_txt2json import lines2dictlist
 from tools.data.parse_file_list import (parse_directory, parse_hmdb51_split,
                                         parse_kinetics_splits,
                                         parse_mit_splits, parse_mmit_splits,
@@ -62,6 +64,12 @@ def parse_args():
         type=str,
         default='data/',
         help='root path for output')
+    parser.add_argument(
+        '--output-format',
+        type=str,
+        default='txt',
+        choices=['txt', 'json'],
+        help='built file list format')
     parser.add_argument(
         '--shuffle',
         action='store_true',
@@ -201,17 +209,24 @@ def main():
         for i, split in enumerate(splits):
             file_lists = build_file_list(
                 split, frame_info, shuffle=args.shuffle)
-
-            filename = f'{args.dataset}_train_split_{i+1}_{args.format}.txt'
-            with open(osp.join(out_path, filename), 'w') as f:
-                f.writelines(file_lists[0][0])
-
-            filename = f'{args.dataset}_val_split_{i+1}_{args.format}.txt'
-            with open(osp.join(out_path, filename), 'w') as f:
-                f.writelines(file_lists[0][1])
+            train_name = f'{args.dataset}_train_split_{i+1}_{args.format}.txt'
+            val_name = f'{args.dataset}_val_split_{i+1}_{args.format}.txt'
+            if args.output_format == 'txt':
+                with open(osp.join(out_path, train_name), 'w') as f:
+                    f.writelines(file_lists[0][0])
+                with open(osp.join(out_path, val_name), 'w') as f:
+                    f.writelines(file_lists[0][1])
+            elif args.output_format == 'json':
+                train_list = lines2dictlist(file_lists[0][0])
+                val_list = lines2dictlist(file_lists[0][1])
+                train_name = train_name.replace('.txt', '.json')
+                val_name = val_name.replace('.txt', '.json')
+                with open(osp.join(out_path, train_name), 'w') as f:
+                    json.dump(train_list, f)
+                with open(osp.join(out_path, val_name), 'w') as f:
+                    json.dump(val_list, f)
     else:
         lists = build_file_list(splits[0], frame_info, shuffle=args.shuffle)
-        filename = f'{args.dataset}_{args.subset}_list_{args.format}.txt'
 
         if args.subset == 'train':
             ind = 0
@@ -223,8 +238,15 @@ def main():
             raise ValueError(f"subset must be in ['train', 'val', 'test'], "
                              f'but got {args.subset}.')
 
-        with open(osp.join(out_path, filename), 'w') as f:
-            f.writelines(lists[0][ind])
+        filename = f'{args.dataset}_{args.subset}_list_{args.format}.txt'
+        if args.output_format == 'txt':
+            with open(osp.join(out_path, filename), 'w') as f:
+                f.writelines(lists[0][ind])
+        elif args.output_format == 'json':
+            data_list = lines2dictlist(lists[0][ind])
+            filename = filename.replace('.txt', '.json')
+            with open(osp.join(out_path, filename), 'w') as f:
+                json.dump(data_list, f)
 
 
 if __name__ == '__main__':
