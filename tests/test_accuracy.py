@@ -10,7 +10,7 @@ from mmaction.core import (average_recall_at_avg_proposals, confusion_matrix,
                            top_k_accuracy)
 
 
-def gt_confusion_matrix(gt_labels, pred_labels):
+def gt_confusion_matrix(gt_labels, pred_labels, normalize=None):
     """Calculate the ground truth confusion matrix."""
     max_index = max(max(gt_labels), max(pred_labels))
     confusion_mat = np.zeros((max_index + 1, max_index + 1), dtype=np.int64)
@@ -22,6 +22,28 @@ def gt_confusion_matrix(gt_labels, pred_labels):
             del_index.append(i)
     confusion_mat = np.delete(confusion_mat, del_index, axis=0)
     confusion_mat = np.delete(confusion_mat, del_index, axis=1)
+
+    if normalize is not None:
+        confusion_mat = np.array(confusion_mat, dtype=np.float)
+    m, n = confusion_mat.shape
+    if normalize == 'true':
+        for i in range(m):
+            s = np.sum(confusion_mat[i], dtype=float)
+            if s == 0:
+                continue
+            confusion_mat[i, :] = confusion_mat[i, :] / s
+            print(confusion_mat[i, :])
+    elif normalize == 'pred':
+        for i in range(n):
+            s = sum(confusion_mat[:, i])
+            if s == 0:
+                continue
+            confusion_mat[:, i] = confusion_mat[:, i] / s
+    elif normalize == 'all':
+        s = np.sum(confusion_mat)
+        if s != 0:
+            confusion_mat /= s
+
     return confusion_mat
 
 
@@ -29,9 +51,15 @@ def test_confusion_matrix():
     # custom confusion_matrix
     gt_labels = [np.int64(random.randint(0, 9)) for _ in range(100)]
     pred_labels = np.random.randint(10, size=100, dtype=np.int64)
-    confusion_mat = confusion_matrix(pred_labels, gt_labels)
-    gt_confusion_mat = gt_confusion_matrix(gt_labels, pred_labels)
-    assert np.array_equal(confusion_mat, gt_confusion_mat)
+
+    for normalize in [None, 'true', 'pred', 'all']:
+        cf_mat = confusion_matrix(pred_labels, gt_labels, normalize)
+        gt_cf_mat = gt_confusion_matrix(gt_labels, pred_labels, normalize)
+        assert_array_equal(cf_mat, gt_cf_mat)
+
+    with pytest.raises(ValueError):
+        # normalize must be in ['true', 'pred', 'all', None]
+        confusion_matrix([1], [1], 'unsupport')
 
     with pytest.raises(TypeError):
         # y_pred must be list or np.ndarray

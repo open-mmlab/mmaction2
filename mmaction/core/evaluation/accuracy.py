@@ -1,16 +1,24 @@
 import numpy as np
 
 
-def confusion_matrix(y_pred, y_real):
+def confusion_matrix(y_pred, y_real, normalize=None):
     """Compute confusion matrix.
 
     Args:
         y_pred (list[int] | np.ndarray[int]): Prediction labels.
         y_real (list[int] | np.ndarray[int]): Ground truth labels.
+        normalize (str | None): Normalizes confusion matrix over the true
+            (rows), predicted (columns) conditions or all the population.
+            If None, confusion matrix will not be normalized. Options are
+            "true", "pred", "all", None. Default: None.
 
     Returns:
         np.ndarray: Confusion matrix.
     """
+    if normalize not in ['true', 'pred', 'all', None]:
+        raise ValueError("normalize must be one of {'true', 'pred', "
+                         "'all', None}")
+
     if isinstance(y_pred, list):
         y_pred = np.array(y_pred)
     if not isinstance(y_pred, np.ndarray):
@@ -38,6 +46,17 @@ def confusion_matrix(y_pred, y_real):
         index_pred = label_map[plabel]
         confusion_mat[index_real][index_pred] += 1
 
+    with np.errstate(all='ignore'):
+        if normalize == 'true':
+            confusion_mat = (
+                confusion_mat / confusion_mat.sum(axis=1, keepdims=True))
+        elif normalize == 'pred':
+            confusion_mat = (
+                confusion_mat / confusion_mat.sum(axis=0, keepdims=True))
+        elif normalize == 'all':
+            confusion_mat = (confusion_mat / confusion_mat.sum())
+        confusion_mat = np.nan_to_num(confusion_mat)
+
     return confusion_mat
 
 
@@ -52,10 +71,10 @@ def mean_class_accuracy(scores, labels):
         np.ndarray: Mean class accuracy.
     """
     pred = np.argmax(scores, axis=1)
-    cf = confusion_matrix(pred, labels).astype(float)
+    cf_mat = confusion_matrix(pred, labels).astype(float)
 
-    cls_cnt = cf.sum(axis=1)
-    cls_hit = np.diag(cf)
+    cls_cnt = cf_mat.sum(axis=1)
+    cls_hit = np.diag(cf_mat)
 
     mean_class_acc = np.mean(
         [hit / cnt if cnt else 0.0 for cnt, hit in zip(cls_cnt, cls_hit)])
