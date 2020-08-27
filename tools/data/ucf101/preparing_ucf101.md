@@ -19,7 +19,8 @@ Then, you can run the following script to prepare videos.
 bash download_videos.sh
 ```
 
-For better IO speed, you can also resize the original videos into smaller, more densely encoded cache by:
+For better decoding speed, you can resize the original videos into smaller sized, densely encoded version by:
+
 ```
 python ../resize_videos.py ../../../data/ucf101/videos/ ../../../data/ucf101/videos_256p_dense_cache --dense --level 2 --ext avi
 ```

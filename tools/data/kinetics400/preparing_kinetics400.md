@@ -35,7 +35,8 @@ or running
 bash rename_classnames.sh
 ```
 
-For better IO speed, you can also resize the original videos into smaller, more densely encoded cache by:
+For better decoding speed, you can resize the original videos into smaller sized, densely encoded version by:
+
 ```
 python ../resize_videos.py ../../../data/kinetics400/videos_train/ ../../../data/kinetics400/videos_train_256p_dense_cache --dense --level 2
 ```
