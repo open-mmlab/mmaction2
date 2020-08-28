@@ -18,10 +18,8 @@ class TSNHead(BaseHead):
         consensus (dict): Consensus config dict.
         dropout_ratio (float): Probability of dropout layer. Default: 0.4.
         init_std (float): Std value for Initiation. Default: 0.01.
-        multi_class (bool): Determines whether it is a multi-class
-            recognition task. Default: False.
-        label_smooth_eps (float): Epsilon used in label smooth.
-            Reference: https://arxiv.org/abs/1906.02629. Default: 0.
+        kwargs (dict, optional): Any keyword argument to be used to initialize
+            the head.
     """
 
     def __init__(self,
@@ -32,14 +30,8 @@ class TSNHead(BaseHead):
                  consensus=dict(type='AvgConsensus', dim=1),
                  dropout_ratio=0.4,
                  init_std=0.01,
-                 multi_class=False,
-                 label_smooth_eps=0.0):
-        super().__init__(
-            num_classes,
-            in_channels,
-            loss_cls=loss_cls,
-            multi_class=multi_class,
-            label_smooth_eps=label_smooth_eps)
+                 **kwargs):
+        super().__init__(num_classes, in_channels, loss_cls=loss_cls, **kwargs)
 
         self.spatial_type = spatial_type
         self.dropout_ratio = dropout_ratio
