@@ -18,6 +18,8 @@ class SlowFastHead(BaseHead):
         spatial_type (str): Pooling type in spatial dimension. Default: 'avg'.
         dropout_ratio (float): Probability of dropout layer. Default: 0.8.
         init_std (float): Std value for Initiation. Default: 0.01.
+        kwargs (dict, optional): Any keyword argument to be used to initialize
+            the head.
     """
 
     def __init__(self,
@@ -26,9 +28,10 @@ class SlowFastHead(BaseHead):
                  loss_cls=dict(type='CrossEntropyLoss'),
                  spatial_type='avg',
                  dropout_ratio=0.8,
-                 init_std=0.01):
+                 init_std=0.01,
+                 **kwargs):
 
-        super().__init__(num_classes, in_channels, loss_cls)
+        super().__init__(num_classes, in_channels, loss_cls, **kwargs)
         self.spatial_type = spatial_type
         self.dropout_ratio = dropout_ratio
         self.init_std = init_std
