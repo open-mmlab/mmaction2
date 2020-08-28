@@ -31,7 +31,7 @@ class SlowFastHead(BaseHead):
                  init_std=0.01,
                  **kwargs):
 
-        super().__init__(num_classes, in_channels, loss_cls, kwargs)
+        super().__init__(num_classes, in_channels, loss_cls, **kwargs)
         self.spatial_type = spatial_type
         self.dropout_ratio = dropout_ratio
         self.init_std = init_std
