@@ -110,8 +110,8 @@ def extract_dense_flow(path,
 
     num_frames = len(flow)
     for i in range(num_frames):
-        cv2.imwrite(flow_x[i], flow_x_names[i])
-        cv2.imwrite(flow_y[i], flow_y_names[i])
+        cv2.imwrite(flow_x_names[i], flow_x[i])
+        cv2.imwrite(flow_y_names[i], flow_y[i])
 
     if save_rgb:
         img_names = [
