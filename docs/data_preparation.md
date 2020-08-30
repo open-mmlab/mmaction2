@@ -76,6 +76,25 @@ The recommended practice is
 ln -s ${YOUR_FOLDER} $MMACTION2/data/$DATASET/rawframes
 ```
 
+#### Alternative to denseflow
+
+In case your device doesn't fulfill the installation requirement of [denseflow](https://github.com/open-mmlab/denseflow)(like Nvidia driver version), or you just want to see some quick demos about flow extraction, we provide a python script `tools/flow_extraction.py` as an alternative to denseflow. You can use it for rgb frames and optical flow extraction from one or several videos. Note that the speed of the script is much slower than denseflow, since it runs optical flow algorithms on CPU.
+
+```shell
+python tools/flow_extraction.py --input ${INPUT} [--prefix ${PREFIX}] [--dest ${DEST}] [--rgb-tmpl ${RGB_TMPL}] \
+    [--flow-tmpl ${FLOW_TMPL}] [--start-idx ${START_IDX}] [--method ${METHOD}] [--bound ${BOUND}] [--save-rgb]
+```
+
+- `INPUT`:  Videos for frame extraction, can be single video or a video list, the video list should be a txt file and just consists of filenames without directories.
+- `PREFIX`: The prefix of input videos, used when input is a video list.
+- `DEST`: The destination to save extracted frames.
+- `RGB_TMPL`: The template filename of rgb frames.
+- `FLOW_TMPL`: The template filename of flow frames.
+- `START_IDX`: The start index of extracted frames.
+- `METHOD`: The method used to generate flow.
+- `BOUND`: The maximum of optical flow.
+- `SAVE_RGB`: Also save extracted rgb frames.
+
 ### Generate file list
 
 We provide a convenient script to generate annotation file list. You can use the following command to extract frames.
