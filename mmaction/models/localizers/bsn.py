@@ -45,7 +45,8 @@ class TEM(BaseLocalizer):
                  conv1_ratio=1,
                  conv2_ratio=1,
                  conv3_ratio=0.01):
-        super().__init__()
+        super(BaseLocalizer, self).__init__()
+
         self.temporal_dim = temporal_dim
         self.boundary_ratio = boundary_ratio
         self.feat_dim = tem_feat_dim
@@ -264,7 +265,7 @@ class PEM(BaseLocalizer):
                  fc1_ratio=0.1,
                  fc2_ratio=0.1,
                  output_dim=1):
-        super().__init__()
+        super(BaseLocalizer, self).__init__()
 
         self.feat_dim = pem_feat_dim
         self.hidden_dim = pem_hidden_dim

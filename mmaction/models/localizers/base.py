@@ -5,6 +5,8 @@ import torch
 import torch.distributed as dist
 import torch.nn as nn
 
+from .. import builder
+
 
 class BaseLocalizer(nn.Module, metaclass=ABCMeta):
     """Base class for localizers.
@@ -14,12 +16,30 @@ class BaseLocalizer(nn.Module, metaclass=ABCMeta):
     Methods:``forward_test``, supporting to forward when testing.
     """
 
-    def __init__(self):
+    def __init__(self, backbone, cls_head, train_cfg=None, test_cfg=None):
         super().__init__()
+        self.backbone = builder.build_backbone(backbone)
+        self.cls_head = builder.build_head(cls_head)
+
+        self.train_cfg = train_cfg
+        self.test_cfg = test_cfg
+        self.init_weights()
 
     def init_weights(self):
         """Weight initialization for model."""
-        pass
+        self.backbone.init_weights()
+        self.cls_head.init_weights()
+
+    def extract_feat(self, imgs):
+        """Extract features through a backbone.
+
+        Args:
+            imgs (torch.Tensor): The input images.
+        Returns:
+            torch.tensor: The extracted features.
+        """
+        x = self.backbone(imgs)
+        return x
 
     @abstractmethod
     def forward_train(self, imgs, labels):
@@ -31,14 +51,12 @@ class BaseLocalizer(nn.Module, metaclass=ABCMeta):
         """Defines the computation performed at testing."""
         pass
 
-    def forward(self, imgs, label=None, return_loss=True):
+    def forward(self, imgs, return_loss=True, **kwargs):
         """Define the computation performed at every call."""
         if return_loss:
-            if label is None:
-                raise ValueError('Label should not be None.')
-            return self.forward_train(imgs, label)
+            return self.forward_train(imgs, **kwargs)
         else:
-            return self.forward_test(imgs)
+            return self.forward_test(imgs, **kwargs)
 
     @staticmethod
     def _parse_losses(losses):
