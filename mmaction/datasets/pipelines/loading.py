@@ -443,7 +443,7 @@ class SampleProposalFrames(SampleFrames):
         valid_ending = min(num_frames - ori_clip_len + 1,
                            end_frame - 1 + int(duration * self.aug_ratio[1]))
 
-        valid_starting_length = (start_frame - valid_starting - ori_clip_len)
+        valid_starting_length = start_frame - valid_starting - ori_clip_len
         valid_ending_length = (valid_ending - end_frame + 1) - ori_clip_len
 
         if self.mode == 'train':
@@ -532,9 +532,6 @@ class SampleProposalFrames(SampleFrames):
                 to the next transform in pipeline.
         """
         total_frames = results['total_frames']
-
-        assert 'out_props' not in results, (
-            "'out_props' is out of date, please use 'out_proposals'")
 
         out_proposals = results.get('out_proposals', None)
         clip_offsets = self._sample_clips(total_frames, out_proposals)
