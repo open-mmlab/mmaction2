@@ -4,7 +4,7 @@
 
 **Highlights**
 - Support NonLocal module in TSM and I3D ([#41](https://github.com/open-mmlab/mmaction2/pull/41))
-- Support SSN ([#33](https://github.com/open-mmlab/mmaction2/pull/33), [#52](https://github.com/open-mmlab/mmaction2/pull/52))
+- Support SSN ([#33](https://github.com/open-mmlab/mmaction2/pull/33), [#37](https://github.com/open-mmlab/mmaction2/pull/37), [#52](https://github.com/open-mmlab/mmaction2/pull/52), [#55](https://github.com/open-mmlab/mmaction2/pull/55))
 - Support CSN model ([#87](https://github.com/open-mmlab/mmaction2/pull/87))
 - Support hmdb51 dataset preparation ([#60](https://github.com/open-mmlab/mmaction2/pull/60))
 - Enhance demo by supporting rawframe inference ([#59](https://github.com/open-mmlab/mmaction2/pull/59)),
@@ -35,10 +35,13 @@
 - Polish data preparation codes ([#70](https://github.com/open-mmlab/mmaction2/pull/70))
 - Improve data preparation scripts ([#58](https://github.com/open-mmlab/mmaction2/pull/58))
 - Improve unittest coverage and minor fix ([#62](https://github.com/open-mmlab/mmaction2/pull/62))
+- Support json annotation files ([#119](https://github.com/open-mmlab/mmaction2/pull/119))
 - Support `multi-class` in TSMHead ([#104](https://github.com/open-mmlab/mmaction2/pull/104))
 - Support using `val_step()` to validate data for each `val` workflow ([#123](https://github.com/open-mmlab/mmaction2/pull/123))
 - Use `xxInit()` method to get `total_frames` and make `total_frames` a required key ([#90](https://github.com/open-mmlab/mmaction2/pull/90))
 - Add paper introduction in model readme ([#140](https://github.com/open-mmlab/mmaction2/pull/140))
+- Adjust the directory structure of `tools/` and rename some scripts files ([#142](https://github.com/open-mmlab/mmaction2/pull/142))
+
 
 ### v0.5.0 (9/7/2020)
 
