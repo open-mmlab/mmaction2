@@ -241,6 +241,29 @@ class TestDataset(object):
         result = rawframe_dataset[0]
         assert self.check_keys_contain(result.keys(), target_keys + ['offset'])
 
+        # Test RawframeDataset with BatchSampler
+        self.frame_pipeline = [
+            dict(
+                type='SampleFrames',
+                clip_len=32,
+                frame_interval=2,
+                num_clips=1),
+            dict(type='RawFrameDecode', io_backend='disk'),
+            dict(type='Resize', scale=(224, 224), keep_ratio=False),
+            dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
+            dict(type='ToTensor', keys=['imgs', 'label'])
+        ]
+        rawframe_dataset = RawframeDataset(
+            self.frame_ann_file,
+            self.frame_pipeline,
+            self.data_prefix,
+            num_classes=400,
+            test_mode=False,
+            short_cycle_factors=(0.5, 0.5))
+        result = rawframe_dataset[[(0, 0)]]
+        target_keys = ['imgs', 'label']
+        assert self.check_keys_contain(result.keys(), target_keys)
+
     def test_video_pipeline(self):
         target_keys = ['filename', 'label', 'start_index', 'modality']
 

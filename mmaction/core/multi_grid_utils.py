@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 import torch.nn as nn
 from mmcv.runner import HOOKS, Hook
 from mmcv.runner.hooks.lr_updater import LrUpdaterHook, StepLrUpdaterHook
@@ -8,10 +9,15 @@ from mmaction.datasets.pipelines import Resize, SampleFrames
 from ..utils import get_root_logger
 
 
-def modify_num_splits(module, num_splits):
+def modify_num_splits(logger, module, num_splits):
     """Recursively modify the number of splits of subbn3ds in module.
 
+    Inheritates the running_mean and running_var from last split_bn, while
+        spares the num_batch_tracked. This operation may result in incorrect
+        calculation of mean and var by EMA.
+
     Args:
+        logger (:obj:`logging.Logger`): The logger to log infomation.
         module (nn.Module): The module to be modified.
         num_splits (int): The targeted number of splits.
 
@@ -22,13 +28,27 @@ def modify_num_splits(module, num_splits):
     for child in module.children():
         from mmaction.models import SubBatchBN3d
         if isinstance(child, SubBatchBN3d):
-            new_split_bn = nn.BatchNorm3d(child.num_features *
-                                          num_splits).cuda()
+            new_split_bn = nn.BatchNorm3d(
+                child.num_features * num_splits, affine=False).cuda()
+            new_state_dict = new_split_bn.state_dict()
+            for param_name, param in child.split_bn.state_dict().items():
+                origin_param_shape = param.size()
+                new_param_shape = new_state_dict[param_name].size()
+                if (len(origin_param_shape) == 1 and len(new_param_shape) == 1
+                        and new_param_shape[0] > origin_param_shape[0]
+                        and new_param_shape[0] % origin_param_shape[0] == 0):
+                    new_state_dict[param_name] = torch.cat(
+                        [param] *
+                        (new_param_shape[0] // origin_param_shape[0]))
+                    logger.info(f'{param_name} modified to {new_param_shape}')
+                else:
+                    logger.info(f'skip {param_name}')
             child.num_splits = num_splits
+            new_split_bn.load_state_dict(new_state_dict)
             child.split_bn = new_split_bn
             count += 1
         else:
-            count += modify_num_splits(child, num_splits)
+            count += modify_num_splits(logger, child, num_splits)
     return count
 
 
@@ -45,7 +65,7 @@ class RelativeStepLrUpdaterHook(LrUpdaterHook):
 
     def __init__(self, runner, step, lrs, **kwargs):
         super().__init__(**kwargs)
-        assert len(step) == (len(lrs) - 1)
+        assert len(step) == (len(lrs))
         self.step = step
         self.lrs = lrs
         super().before_run(runner)
@@ -82,13 +102,15 @@ class MultiGridHook(Hook):
         self._init_schedule(runner, self.multi_grid_cfg, self.data_cfg)
         step = []
         step = [s[-1] for s in self.schedule]
-        step[-1] = (step[-2] + step[-1]) // 2  # add finetune stage
+        step.insert(-1, (step[-2] + step[-1]) // 2)  # add finetune stage
         for index, hook in enumerate(runner.hooks):
             if isinstance(hook, StepLrUpdaterHook):
                 base_lr = hook.base_lr[0]
                 gamma = hook.gamma
                 lrs = [base_lr * gamma**s[0] * s[1][0] for s in self.schedule]
-                lrs = lrs[:-1] + [lrs[-2], lrs[-1]]  # finetune-stage lrs
+                lrs = lrs[:-1] + [lrs[-2], lrs[-1] * gamma
+                                  ]  # finetune-stage lrs
+                self.logger.info(f'lrs: {lrs}, steps: {step}')
                 new_hook = RelativeStepLrUpdaterHook(runner, step, lrs)
                 runner.hooks[index] = new_hook
 
@@ -96,6 +118,12 @@ class MultiGridHook(Hook):
         """Before training epoch, update the runner based on long-cycle
         schedule."""
         self._update_long_cycle(runner)
+
+    def after_train_epoch(self, runner):
+        """After training epoch, aggregate the stats from split_bns to bns."""
+        from mmaction.models.common import aggregate_sub_bn_stats
+        num_sub_bn3d_aggregated = aggregate_sub_bn_stats(runner.model)
+        self.logger.info(f'{num_sub_bn3d_aggregated} aggregated.')
 
     def _update_long_cycle(self, runner):
         """Before every epoch, check if long cycle shape should change.
@@ -127,7 +155,7 @@ class MultiGridHook(Hook):
         from mmaction.datasets import build_dataloader
         dataloader = build_dataloader(
             ds,
-            self.data_cfg.videos_per_gpu * base_b,  # change here
+            self.data_cfg.videos_per_gpu * base_b,
             self.data_cfg.workers_per_gpu,
             dist=self.cfg.get('dist', True),
             drop_last=self.data_cfg.get('train_drop_last', True),
@@ -138,7 +166,7 @@ class MultiGridHook(Hook):
 
         # rebuild all the sub_batch_bn layers
         if modified:
-            num_modifies = modify_num_splits(runner.model, base_b)
+            num_modifies = modify_num_splits(self.logger, runner.model, base_b)
             self.logger.info(f'{num_modifies} subbns modified to {base_b}.')
 
     def _get_long_cycle_schedule(self, runner, cfg):

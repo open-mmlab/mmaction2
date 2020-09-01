@@ -22,8 +22,6 @@ def single_gpu_test(model, data_loader):
         list: The prediction results.
     """
     model.eval()
-    from mmaction.models import aggregate_sub_bn_stats
-    aggregate_sub_bn_stats(model)
     results = []
     dataset = data_loader.dataset
     prog_bar = mmcv.ProgressBar(len(dataset))
@@ -60,9 +58,6 @@ def multi_gpu_test(model, data_loader, tmpdir=None, gpu_collect=True):
         list: The prediction results.
     """
     model.eval()
-    from mmaction.models import aggregate_sub_bn_stats
-    aggregate_sub_bn_stats(model)
-
     results = []
     dataset = data_loader.dataset
     rank, world_size = get_dist_info()

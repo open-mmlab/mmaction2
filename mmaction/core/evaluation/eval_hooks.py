@@ -99,10 +99,6 @@ class EvalHook(Hook):
             self.key_indicator = self.best_json['key_indicator']
 
         from mmaction.apis import single_gpu_test
-        from mmaction.models.common import aggregate_sub_bn_stats
-        num_sub_bn3d_aggregated = aggregate_sub_bn_stats(runner.model)
-        self.logger.info(f'{num_sub_bn3d_aggregated} aggregated.')
-
         results = single_gpu_test(runner.model, self.dataloader)
         key_score = self.evaluate(runner, results)
         if (self.save_best and self.compare_func(key_score, self.best_score)):
@@ -173,10 +169,6 @@ class DistEvalHook(EvalHook):
             self.key_indicator = self.best_json['key_indicator']
 
         from mmaction.apis import multi_gpu_test
-        from mmaction.models.common import aggregate_sub_bn_stats
-        num_sub_bn3d_aggregated = aggregate_sub_bn_stats(runner.model)
-        self.logger.info(f'{num_sub_bn3d_aggregated} aggregated.')
-
         results = multi_gpu_test(
             runner.model,
             self.dataloader,

@@ -36,7 +36,11 @@ mc_cfg = dict(
     sys_path='/mnt/lustre/share/pymc/py3')
 train_pipeline = [
     dict(type='SampleFrames', clip_len=32, frame_interval=2, num_clips=1),
-    dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
+    dict(
+        type='RawFrameDecode',
+        io_backend='memcached',
+        decoding_backend='turbojpeg',
+        **mc_cfg),
     dict(type='Resize', scale=(-1, 256), lazy=True),
     dict(
         type='MultiScaleCrop',

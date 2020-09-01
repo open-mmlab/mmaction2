@@ -59,6 +59,7 @@ train_pipeline = [
     dict(type='Flip', flip_ratio=0.5, lazy=True),
     dict(type='Fuse'),
     dict(type='Normalize', **img_norm_cfg),
+    # multi-grid use BatchSampler now, use CTHW
     dict(type='FormatShape', input_format='CTHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs', 'label'])
@@ -111,6 +112,7 @@ data = dict(
         ann_file=ann_file_train,
         data_prefix=data_root,
         pipeline=train_pipeline,
+        # short_cycle_factors should be specific here
         short_cycle_factors=multi_grid['short_cycle_factors']),
     val=dict(
         type=dataset_type,
@@ -126,16 +128,16 @@ data = dict(
 optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
-lr_config = dict(policy='step', step=[10, 15])
-total_epochs = 20
-checkpoint_config = dict(interval=1)
+lr_config = dict(policy='step', step=[40, 80])
+total_epochs = 100
+checkpoint_config = dict(interval=5)
 evaluation = dict(
-    interval=1, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
+    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
 log_config = dict(
-    interval=1,
+    interval=20,
     hooks=[
         dict(type='TextLoggerHook'),
-        # dict(type='PaviLoggerHook'),
+        # dict(type='TensorBoardLoggerHook'),
     ])
 # runtime settings
 dist_params = dict(backend='nccl', port=29501)

@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 import torch
 import torch.nn as nn
 from mmcv.cnn import NORM_LAYERS
@@ -5,7 +7,7 @@ from mmcv.cnn import NORM_LAYERS
 
 @NORM_LAYERS.register_module()
 class SubBatchBN3d(nn.Module):
-    """SubBatchBN3d that splits a norm batchnorm3d into a 'split_bn' and a
+    """SubBatchBN3d that splits a normal batchnorm3d into a 'split_bn' and a
     normal 'bn'. This is used when the batchsize is changed in runtime.
 
     Args:
@@ -16,13 +18,16 @@ class SubBatchBN3d(nn.Module):
     def __init__(self, num_features, **cfg):
         super(SubBatchBN3d, self).__init__()
         self.num_features = num_features
-        self.cfg_ = cfg.copy()
-        if 'num_splits' in cfg:
+        # cfg_ is for .bn and .split_bn
+        self.cfg_ = deepcopy(cfg)
+        if 'num_splits' in self.cfg_:
             self.num_splits = self.cfg_.pop('num_splits')
         else:
             self.num_splits = 1
-        self.bn = nn.BatchNorm3d(num_features, **self.cfg_)
         self.num_features_split = self.num_features * self.num_splits
+        # only keep one set of affine params, not in .bn or .split_bn
+        self.cfg_['affine'] = False
+        self.bn = nn.BatchNorm3d(num_features, **self.cfg_)
         self.split_bn = nn.BatchNorm3d(self.num_features_split, **self.cfg_)
         self.init_weights(cfg)
 
@@ -32,15 +37,14 @@ class SubBatchBN3d(nn.Module):
         Only keeps one set of weight and bias for affine after normalization.
         """
         if cfg.get('affine', True):
-            self.affine = True
-            cfg['affine'] = False
             self.weight = torch.nn.Parameter(torch.ones(self.num_features))
             self.bias = torch.nn.Parameter(torch.zeros(self.num_features))
+            self.affine = True
         else:
             self.affine = False
 
     def _get_aggregated_mean_std(self, means, stds, n):
-        """Calculate the aggregated mean and stds.
+        """Calculate the aggregated bn buffers.
 
         Args:
             means (torch.Tensor): mean values.
@@ -68,6 +72,8 @@ class SubBatchBN3d(nn.Module):
              self.bn.running_var.data) = self._get_aggregated_mean_std(
                  self.split_bn.running_mean, self.split_bn.running_var,
                  self.num_splits)
+        self.bn.num_batches_tracked = self.split_bn.num_batches_tracked.detach(
+        )
 
     def forward(self, x):
         """Defines the computation performed at every call.
