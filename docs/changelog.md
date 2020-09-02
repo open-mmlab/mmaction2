@@ -14,9 +14,9 @@
 - Support HMDB51 dataset preparation ([#60](https://github.com/open-mmlab/mmaction2/pull/60))
 - Support encoding videos from frames ([#84](https://github.com/open-mmlab/mmaction2/pull/84))
 - Support FP16 training ([#25](https://github.com/open-mmlab/mmaction2/pull/25))
-- Support PyTorch 1.6 ([#117](https://github.com/open-mmlab/mmaction2/pull/117))
-- Support `with_offset` for rawframe dataset ([#48](https://github.com/open-mmlab/mmaction2/pull/48))
 - Enhance demo by supporting rawframe inference ([#59](https://github.com/open-mmlab/mmaction2/pull/59)), output video/gif ([#72](https://github.com/open-mmlab/mmaction2/pull/72))
+
+**ModelZoo**
 - Update Slowfast modelzoo ([#51](https://github.com/open-mmlab/mmaction2/pull/51))
 - Update TSN, TSM video checkpoints ([#50](https://github.com/open-mmlab/mmaction2/pull/50))
 - Add data benchmark for TSN ([#57](https://github.com/open-mmlab/mmaction2/pull/57))
@@ -27,6 +27,8 @@
 - Polish data preparation codes ([#70](https://github.com/open-mmlab/mmaction2/pull/70))
 - Improve data preparation scripts ([#58](https://github.com/open-mmlab/mmaction2/pull/58))
 - Improve unittest coverage and minor fix ([#62](https://github.com/open-mmlab/mmaction2/pull/62))
+- Support PyTorch 1.6 in CI ([#117](https://github.com/open-mmlab/mmaction2/pull/117))
+- Support `with_offset` for rawframe dataset ([#48](https://github.com/open-mmlab/mmaction2/pull/48))
 - Support json annotation files ([#119](https://github.com/open-mmlab/mmaction2/pull/119))
 - Support `multi-class` in TSMHead ([#104](https://github.com/open-mmlab/mmaction2/pull/104))
 - Support using `val_step()` to validate data for each `val` workflow ([#123](https://github.com/open-mmlab/mmaction2/pull/123))
