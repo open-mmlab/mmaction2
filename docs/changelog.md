@@ -1,16 +1,13 @@
 ## Changelog
 
-### v0.6.0 (30/8/2020)
+### v0.6.0 (2/9/2020)
 
 **Highlights**
-- Support NonLocal module in TSM and I3D ([#41](https://github.com/open-mmlab/mmaction2/pull/41))
-- Support SSN ([#33](https://github.com/open-mmlab/mmaction2/pull/33), [#37](https://github.com/open-mmlab/mmaction2/pull/37), [#52](https://github.com/open-mmlab/mmaction2/pull/52), [#55](https://github.com/open-mmlab/mmaction2/pull/55))
-- Support CSN model ([#87](https://github.com/open-mmlab/mmaction2/pull/87))
-- Support hmdb51 dataset preparation ([#60](https://github.com/open-mmlab/mmaction2/pull/60))
-- Enhance demo by supporting rawframe inference ([#59](https://github.com/open-mmlab/mmaction2/pull/59)),
-  output video/gif ([#72](https://github.com/open-mmlab/mmaction2/pull/72)),
-- Support encode videos from frames ([#84](https://github.com/open-mmlab/mmaction2/pull/84))
-- Support FP16 training ([#25](https://github.com/open-mmlab/mmaction2/pull/25))
+- Support more action recognition methods: TIN, CSN
+- Support more action localization methods: SSN
+- Support NonLocal method
+- Support FP16 training
+- Support hmdb51 dataset
 
 **Bug Fixes**
 - `CosineAnnealing` Typo ([#47](https://github.com/open-mmlab/mmaction2/pull/47))
@@ -23,8 +20,16 @@
 - Correct the sthv1/sthv2 rawframes filelist generate command ([#71](https://github.com/open-mmlab/mmaction2/pull/71))
 
 **New Features**
+- Support NonLocal module and provide ckpt in TSM and I3D ([#41](https://github.com/open-mmlab/mmaction2/pull/41))
+- Support SSN ([#33](https://github.com/open-mmlab/mmaction2/pull/33), [#37](https://github.com/open-mmlab/mmaction2/pull/37), [#52](https://github.com/open-mmlab/mmaction2/pull/52), [#55](https://github.com/open-mmlab/mmaction2/pull/55))
+- Support CSN ([#87](https://github.com/open-mmlab/mmaction2/pull/87))
+- Support TIN ([#53](https://github.com/open-mmlab/mmaction2/pull/53))
+- Support hmdb51 dataset preparation ([#60](https://github.com/open-mmlab/mmaction2/pull/60))
+- Support encode videos from frames ([#84](https://github.com/open-mmlab/mmaction2/pull/84))
+- Support FP16 training ([#25](https://github.com/open-mmlab/mmaction2/pull/25))
 - Support PyTorch 1.6 ([#117](https://github.com/open-mmlab/mmaction2/pull/117))
 - Support `with_offset` for rawframe dataset ([#48](https://github.com/open-mmlab/mmaction2/pull/48))
+- Enhance demo by supporting rawframe inference ([#59](https://github.com/open-mmlab/mmaction2/pull/59)), output video/gif ([#72](https://github.com/open-mmlab/mmaction2/pull/72))
 - Update Slowfast modelzoo ([#51](https://github.com/open-mmlab/mmaction2/pull/51))
 - Update TSN, TSM video checkpoints ([#50](https://github.com/open-mmlab/mmaction2/pull/50))
 - Add data benchmark for TSN ([#57](https://github.com/open-mmlab/mmaction2/pull/57))
