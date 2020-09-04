@@ -47,9 +47,9 @@ class SubBatchBN3d(nn.Module):
         """Calculate the aggregated bn buffers.
 
         Args:
-            means (torch.Tensor): mean values.
-            stds (torch.Tensor): standard deviations.
-            n (int): number of sets of means and stds.
+            means (torch.Tensor): Mean values.
+            stds (torch.Tensor): Standard deviations.
+            n (int): Number of sets of means and stds.
 
         Returns:
             tuple[torch.Tensor, torch.Tensor]: (mean, std). mean is the
@@ -101,7 +101,8 @@ def aggregate_sub_bn_stats(module):
     """Recursively find all SubBN modules and aggregate sub-BN stats.
 
     Args:
-        module (nn.Module)
+        module (nn.Module): Module to be recursively searched.
+
     Returns:
         count (int): number of SubBN module found.
     """

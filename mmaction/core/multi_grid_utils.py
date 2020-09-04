@@ -9,7 +9,7 @@ from mmaction.datasets.pipelines import Resize, SampleFrames
 from ..utils import get_root_logger
 
 
-def modify_num_splits(logger, module, num_splits):
+def modify_subbn3d_num_splits(logger, module, num_splits):
     """Recursively modify the number of splits of subbn3ds in module.
 
     Inheritates the running_mean and running_var from last split_bn, while
@@ -48,7 +48,7 @@ def modify_num_splits(logger, module, num_splits):
             child.split_bn = new_split_bn
             count += 1
         else:
-            count += modify_num_splits(logger, child, num_splits)
+            count += modify_subbn3d_num_splits(logger, child, num_splits)
     return count
 
 
@@ -58,23 +58,23 @@ class RelativeStepLrUpdaterHook(LrUpdaterHook):
 
     Args:
         runner (:obj:`mmcv.Runner`): The runner instance used.
-        step (list[int]): The list of epochs at which decrease
+        steps (list[int]): The list of epochs at which decrease
             the learning rate.
         **kwargs (dict): Same as that of mmcv.
     """
 
-    def __init__(self, runner, step, lrs, **kwargs):
+    def __init__(self, runner, steps, lrs, **kwargs):
         super().__init__(**kwargs)
-        assert len(step) == (len(lrs))
-        self.step = step
+        assert len(steps) == (len(lrs))
+        self.steps = steps
         self.lrs = lrs
         super().before_run(runner)
 
     def get_lr(self, runner, base_lr):
         """Similar to that of mmcv."""
         progress = runner.epoch if self.by_epoch else runner.iter
-        for i in range(len(self.step)):
-            if progress < self.step[i]:
+        for i in range(len(self.steps)):
+            if progress < self.steps[i]:
                 return self.lrs[i]
 
 
@@ -84,6 +84,7 @@ class MultiGridHook(Hook):
         This hook defines multigrid training schedule and update cfg
         accordingly, which is proposed in `A Multigrid Method for Efficiently
         Training Video Models <https://arxiv.org/abs/1912.00998>`_.
+
     Args:
         cfg (:obj:`mmcv.ConfigDictg`): The whole config for the experiment.
     """
@@ -100,9 +101,9 @@ class MultiGridHook(Hook):
         """Called before running, change the StepLrUpdaterHook to
         RelativeStepLrHook."""
         self._init_schedule(runner, self.multi_grid_cfg, self.data_cfg)
-        step = []
-        step = [s[-1] for s in self.schedule]
-        step.insert(-1, (step[-2] + step[-1]) // 2)  # add finetune stage
+        steps = []
+        steps = [s[-1] for s in self.schedule]
+        steps.insert(-1, (steps[-2] + steps[-1]) // 2)  # add finetune stage
         for index, hook in enumerate(runner.hooks):
             if isinstance(hook, StepLrUpdaterHook):
                 base_lr = hook.base_lr[0]
@@ -110,8 +111,8 @@ class MultiGridHook(Hook):
                 lrs = [base_lr * gamma**s[0] * s[1][0] for s in self.schedule]
                 lrs = lrs[:-1] + [lrs[-2], lrs[-1] * gamma
                                   ]  # finetune-stage lrs
-                self.logger.info(f'lrs: {lrs}, steps: {step}')
-                new_hook = RelativeStepLrUpdaterHook(runner, step, lrs)
+                self.logger.info(f'lrs: {lrs}, steps: {steps}')
+                new_hook = RelativeStepLrUpdaterHook(runner, steps, lrs)
                 runner.hooks[index] = new_hook
 
     def before_train_epoch(self, runner):
@@ -167,7 +168,8 @@ class MultiGridHook(Hook):
 
         # rebuild all the sub_batch_bn layers
         if modified:
-            num_modifies = modify_num_splits(self.logger, runner.model, base_b)
+            num_modifies = modify_subbn3d_num_splits(self.logger, runner.model,
+                                                     base_b)
             self.logger.info(f'{num_modifies} subbns modified to {base_b}.')
 
     def _get_long_cycle_schedule(self, runner, cfg):
@@ -183,7 +185,7 @@ class MultiGridHook(Hook):
                 # shape = [#frames, scale]
                 shapes = [[
                     base_t,
-                    int(round(self.default_s * cfg.short_cycle_factors[0])),
+                    int(round(self.default_s * cfg.short_cycle_factors[0]))
                 ],
                           [
                               base_t,
@@ -213,7 +215,7 @@ class MultiGridHook(Hook):
                 pass
         total_iters = 0
         default_iters = steps[-1]
-        for step_index in range((len(steps) - 1)):
+        for step_index in range(len(steps) - 1):
             # except the final step
             step_epochs = steps[step_index + 1] - steps[step_index]
             # number of epochs for this step

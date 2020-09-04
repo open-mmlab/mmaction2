@@ -98,8 +98,8 @@ def build_dataloader(dataset,
                                              multi_grid_cfg, crop_size)
     else:
         if short_cycle:
-            raise NotImplementedError('Short cycle using non-dist \
-                default sampler is not supported')
+            raise NotImplementedError('Short cycle using non-dist'
+                                      'default sampler is not supported')
         sampler = None
         batch_size = num_gpus * videos_per_gpu
         num_workers = num_gpus * workers_per_gpu

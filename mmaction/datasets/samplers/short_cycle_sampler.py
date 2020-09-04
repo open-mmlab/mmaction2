@@ -13,7 +13,7 @@ class ShortCycleBatchSampler(Sampler):
         sampler (:obj: `torch.Sampler`): The default sampler to be warpped.
         batch_size (int): The batchsize before short-cycle modification.
         drop_last (bool): Whether to drop the last incomplete batch in epoch.
-        multi_grid_cfg (dict): The config dict for multi-grid trainingl.
+        multi_grid_cfg (dict): The config dict for multi-grid training.
         crop_size (int): The actual spatial scale.
     """
 
