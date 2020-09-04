@@ -75,8 +75,8 @@ Supported methods for action recognition:
 - [x] [I3D](configs/recognition/i3d/README.md)
 - [x] [SlowOnly](configs/recognition/slowonly/README.md)
 - [x] [SlowFast](configs/recognition/slowfast/README.md)
-- [x] [CSN](configs/recognition/csn)
-- [x] [TIN](configs/recognition/tin)
+- [x] [CSN](configs/recognition/csn/README.md)
+- [x] [TIN](configs/recognition/tin/README.md)
 
 Supported methods for action localization:
 - [x] [BMN](configs/localization/bmn/README.md)
