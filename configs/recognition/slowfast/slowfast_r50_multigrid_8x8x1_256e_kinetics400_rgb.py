@@ -43,7 +43,8 @@ multi_grid = dict(
     short_cycle=True,
     long_cycle_factors=((0.25, 0.5**0.5), (0.5, 0.5**0.5), (0.5, 1), (1, 1)),
     short_cycle_factors=(0.5, 0.5**0.5),
-    epoch_factor=1.5)
+    epoch_factor=1.5,
+    default_s=(224, 224))
 dataset_type = 'RawframeDataset'
 data_root = 'data/kinetics400/rawframes_train'
 data_root_val = 'data/kinetics400/rawframes_val'
@@ -120,7 +121,8 @@ data = dict(
         ann_file=ann_file_train,
         data_prefix=data_root,
         pipeline=train_pipeline,
-        short_cycle_factors=multi_grid['short_cycle_factors']),
+        short_cycle_factors=multi_grid['short_cycle_factors'],
+        default_s=multi_grid['default_s']),
     val=dict(
         type=dataset_type,
         ann_file=ann_file_val,
@@ -133,7 +135,7 @@ data = dict(
         pipeline=test_pipeline))
 # optimizer
 optimizer = dict(
-    type='SGD', lr=0.2, momentum=0.9,
+    type='SGD', lr=0.1, momentum=0.9,
     weight_decay=0.0001)  # this lr is used for 8 gpus
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy

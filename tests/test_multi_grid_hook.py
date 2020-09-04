@@ -137,23 +137,3 @@ def test_multi_grid_hook():
                 cfg.lr_config, log_config=cfg.log_config)
             runner.register_hook(multi_grid_hook)
             runner.run([loader], [('train', 1)], 2)
-
-    # test longcycle
-    cfg = mmcv.Config.fromfile(
-        'configs/recognition/i3d/i3d_r50_longcycle_32x2x1_100e_kinetics400_rgb.py'  # noqa: E501
-    )
-    # Skip the subbn3d since it is hardcoded to use cuda
-    cfg.model.backbone.norm_cfg = dict(type='BN3d')
-    multi_grid_hook = MultiGridHook(cfg)
-    with tempfile.TemporaryDirectory() as tmpdir:
-        logger = get_logger('test_longcycle')
-        runner = EpochBasedRunner(
-            model=model,
-            batch_processor=None,
-            optimizer=optimizer,
-            work_dir=tmpdir,
-            logger=logger)
-        runner.register_training_hooks(
-            cfg.lr_config, log_config=cfg.log_config)
-        runner.register_hook(multi_grid_hook)
-        runner.run([loader], [('train', 1)], 2)

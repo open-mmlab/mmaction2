@@ -14,14 +14,23 @@ class ShortCycleBatchSampler(Sampler):
         batch_size (int): The batchsize before short-cycle modification.
         drop_last (bool): Whether to drop the last incomplete batch in epoch.
         multi_grid_cfg (dict): The config dict for multi-grid trainingl.
+        crop_size (int): The actual spatial scale.
     """
 
-    def __init__(self, sampler, batch_size, drop_last, multi_grid_cfg):
+    def __init__(self, sampler, batch_size, drop_last, multi_grid_cfg,
+                 crop_size):
         self.sampler = sampler
         self.drop_last = drop_last
 
         bs_factor = [
             int(round(1 / s**2)) for s in multi_grid_cfg.short_cycle_factors
+        ]
+
+        bs_factor = [
+            int(
+                round(
+                    (float(crop_size) / (s * multi_grid_cfg.default_s[0]))**2))
+            for s in multi_grid_cfg.short_cycle_factors
         ]
 
         self.batch_sizes = [

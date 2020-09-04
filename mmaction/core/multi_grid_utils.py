@@ -161,7 +161,8 @@ class MultiGridHook(Hook):
             drop_last=self.data_cfg.get('train_drop_last', True),
             seed=self.cfg.get('seed', None),
             short_cycle=self.multi_grid_cfg.short_cycle,
-            multi_grid_cfg=self.multi_grid_cfg)
+            multi_grid_cfg=self.multi_grid_cfg,
+            crop_size=base_s)
         runner.data_loader = dataloader
 
         # rebuild all the sub_batch_bn layers
@@ -182,10 +183,14 @@ class MultiGridHook(Hook):
                 # shape = [#frames, scale]
                 shapes = [[
                     base_t,
-                    int(round(base_s * cfg.short_cycle_factors[0])),
-                ], [base_t,
-                    int(round(base_s * cfg.short_cycle_factors[1]))],
-                          [base_t, base_s]]
+                    int(round(self.default_s * cfg.short_cycle_factors[0])),
+                ],
+                          [
+                              base_t,
+                              int(
+                                  round(self.default_s *
+                                        cfg.short_cycle_factors[1]))
+                          ], [base_t, base_s]]
             else:
                 shapes = [[base_t, base_s]]
             # calculate the batchsize, shape = [batchsize, #frames, scale]

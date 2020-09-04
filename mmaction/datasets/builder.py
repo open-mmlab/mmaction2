@@ -51,6 +51,7 @@ def build_dataloader(dataset,
                      pin_memory=True,
                      short_cycle=False,
                      multi_grid_cfg=None,
+                     crop_size=224,
                      **kwargs):
     """Build PyTorch DataLoader.
 
@@ -77,6 +78,7 @@ def build_dataloader(dataset,
             Default: False.
         multi_grid_cfg (dict | None): The config for multi-grid training.
             Default: None.
+        crop_size (int): The actual spatial scale. Default: 224.
         kwargs (dict, optional): Any keyword argument to be used to initialize
             DataLoader.
 
@@ -93,11 +95,11 @@ def build_dataloader(dataset,
         if short_cycle:
             assert multi_grid_cfg is not None
             sampler = ShortCycleBatchSampler(sampler, batch_size, drop_last,
-                                             multi_grid_cfg)
+                                             multi_grid_cfg, crop_size)
     else:
         if short_cycle:
-            raise NotImplementedError('Short cycle using default sampler \
-                is not supported')
+            raise NotImplementedError('Short cycle using non-dist \
+                default sampler is not supported')
         sampler = None
         batch_size = num_gpus * videos_per_gpu
         num_workers = num_gpus * workers_per_gpu

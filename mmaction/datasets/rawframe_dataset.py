@@ -1,6 +1,5 @@
 import copy
 import os.path as osp
-from copy import deepcopy
 
 import torch
 from mmcv.parallel import collate
@@ -96,6 +95,7 @@ class RawframeDataset(BaseDataset):
         super().__init__(ann_file, pipeline, data_prefix, test_mode,
                          multi_class, num_classes, start_index, modality)
         self.short_cycle_factors = kwargs.get('short_cycle_factors', None)
+        self.default_s = kwargs.get('default_s', (224, 224))
 
     def load_annotations(self):
         """Load annotation file to get video information."""
@@ -154,7 +154,8 @@ class RawframeDataset(BaseDataset):
             for trans in self.pipeline.transforms:
                 if isinstance(trans, Resize):
                     last_resize = trans
-            origin_scale = deepcopy(last_resize.scale)
+            origin_scale = self.default_s
+            long_cycle_scale = last_resize.scale
             for sample_idx, short_cycle_idx in idx:
                 if short_cycle_idx in [0, 1]:
                     # 0 and 1 is hard-coded as PySlowFast
@@ -163,7 +164,7 @@ class RawframeDataset(BaseDataset):
                         [int(round(scale_ratio * s)) for s in origin_scale])
                     last_resize.scale = target_scale
                 collated_batch.append(pipeline_for_a_sample(sample_idx))
-                last_resize.scale = origin_scale
+                last_resize.scale = long_cycle_scale
             return collate(collated_batch)
         else:
             # Using a vanilla Sampler now

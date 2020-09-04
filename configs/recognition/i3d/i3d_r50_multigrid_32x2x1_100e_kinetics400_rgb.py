@@ -26,7 +26,8 @@ multi_grid = dict(
     short_cycle=True,
     long_cycle_factors=((0.25, 0.5**0.5), (0.5, 0.5**0.5), (0.5, 1), (1, 1)),
     short_cycle_factors=(0.5, 0.5**0.5),
-    epoch_factor=1.0)
+    epoch_factor=1.5,
+    default_s=(224, 224))
 # dataset settings
 dataset_type = 'RawframeDataset'
 data_root = 'data/kinetics400/rawframes_train'
@@ -114,6 +115,7 @@ data = dict(
         pipeline=train_pipeline,
         # short_cycle_factors should be specific here
         short_cycle_factors=multi_grid['short_cycle_factors']),
+    default_s=multi_grid['default_s'],
     val=dict(
         type=dataset_type,
         ann_file=ann_file_val,
