@@ -66,7 +66,7 @@ def inference_recognizer(model, video_path, label_path, use_frames=False):
     Returns:
         dict[tuple(str, float)]: Top-5 recognition result dict.
     """
-    if not osp.exists(video_path):
+    if not (osp.exists(video_path) or video_path.startswith('http')):
         raise RuntimeError(f"'{video_path}' is missing")
 
     if osp.isfile(video_path) and use_frames:
