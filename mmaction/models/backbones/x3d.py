@@ -202,7 +202,7 @@ class X3d(nn.Module):
                  pretrained=None,
                  in_channels=3,
                  num_stages=4,
-                 spatial_strides=(1, 2, 2, 2),
+                 spatial_strides=(2, 2, 2, 2),
                  frozen_stages=-1,
                  se_style='half',
                  se_ratio=1 / 16,
