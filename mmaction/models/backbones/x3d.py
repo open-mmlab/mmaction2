@@ -1,3 +1,5 @@
+# pylint: disable=no-name-in-module
+# isort:maintain_block
 import torch.nn as nn
 import torch.utils.checkpoint as cp
 from mmcv.cnn import (ConvModule, build_activation_layer, constant_init,
@@ -8,8 +10,10 @@ from mmcv.utils import _BatchNorm
 from ...utils import get_root_logger
 from ..registry import BACKBONES
 
+# pylint: enable=no-name-in-module
+# isort:end_maintain_block
 
-# SEModule for 3D ConvNet
+
 class SEModule(nn.Module):
 
     def __init__(self, channels, reduction):
@@ -256,7 +260,7 @@ class X3d(nn.Module):
             res_layer = self.make_res_layer(
                 self.block,
                 self.layer_inplanes,
-                self.inplanes,
+                inplanes,
                 planes,
                 num_blocks,
                 spatial_stride=spatial_stride,
@@ -338,10 +342,10 @@ class X3d(nn.Module):
         if spatial_stride != 1 or layer_inplanes != inplanes:
             downsample = ConvModule(
                 layer_inplanes,
-                planes,
                 inplanes,
                 kernel_size=1,
                 stride=(1, spatial_stride, spatial_stride),
+                padding=0,
                 bias=False,
                 conv_cfg=conv_cfg,
                 norm_cfg=norm_cfg,
@@ -363,7 +367,7 @@ class X3d(nn.Module):
                 inplanes,
                 spatial_stride=spatial_stride,
                 downsample=downsample,
-                se_ratio=se_ratio if use_se[0] else 0,
+                se_ratio=se_ratio if use_se[0] else None,
                 use_swish=use_swish,
                 norm_cfg=norm_cfg,
                 conv_cfg=conv_cfg,
@@ -378,7 +382,7 @@ class X3d(nn.Module):
                     planes,
                     inplanes,
                     spatial_stride=1,
-                    se_ratio=se_ratio if use_se[i] else 0,
+                    se_ratio=se_ratio if use_se[i] else None,
                     use_swish=use_swish,
                     norm_cfg=norm_cfg,
                     conv_cfg=conv_cfg,
