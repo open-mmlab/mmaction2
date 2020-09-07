@@ -11,7 +11,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='MMAction2 demo')
     parser.add_argument('config', help='test config file path')
     parser.add_argument('checkpoint', help='checkpoint file')
-    parser.add_argument('video', help='video file or rawframes directory')
+    parser.add_argument('video', help='video file/url or rawframes directory')
     parser.add_argument('label', help='label file')
     parser.add_argument(
         '--use-frames',
@@ -85,6 +85,9 @@ def get_output(video_path,
             see https://ffmpeg.org/ffmpeg-scaler.html
         use_frames: Determine Whether to use rawframes as input. Default:False.
     """
+
+    if video_path.startswith(('http://', 'https://')):
+        raise NotImplementedError
 
     try:
         from moviepy.editor import (ImageSequenceClip, TextClip, VideoFileClip,

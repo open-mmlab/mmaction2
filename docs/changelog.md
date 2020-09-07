@@ -1,5 +1,19 @@
 ## Changelog
 
+### v0.7.0 (30/9/2020)
+
+**Highlights**
+
+**New Features**
+
+**ModelZoo**
+
+**Improvements**
+- support to run a demo with a video url ([#165](https://github.com/open-mmlab/mmaction2/pull/165))
+
+**Bug Fixes**
+
+
 ### v0.6.0 (2/9/2020)
 
 **Highlights**
