@@ -57,16 +57,16 @@ def inference_recognizer(model, video_path, label_path, use_frames=False):
 
     Args:
         model (nn.Module): The loaded recognizer.
-        video_path (str): The video file path or the rawframes directory path.
-            If ``use_frames`` is set to True, it should be rawframes directory
-            path. Otherwise, it should be video file path.
+        video_path (str): The video file path/url or the rawframes directory
+            path. If ``use_frames`` is set to True, it should be rawframes
+            directory path. Otherwise, it should be video file path.
         label_path (str): The label file path.
         use_frames (bool): Whether to use rawframes as input. Default:False.
 
     Returns:
         dict[tuple(str, float)]: Top-5 recognition result dict.
     """
-    if not osp.exists(video_path):
+    if not (osp.exists(video_path) or video_path.startswith('http')):
         raise RuntimeError(f"'{video_path}' is missing")
 
     if osp.isfile(video_path) and use_frames:
