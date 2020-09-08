@@ -9,7 +9,7 @@ model = dict(
         shift_div=4),
     cls_head=dict(
         type='TSMHead',
-        num_classes=174,
+        num_classes=339,
         in_channels=2048,
         spatial_type='avg',
         consensus=dict(type='AvgConsensus', dim=1),
@@ -21,16 +21,16 @@ train_cfg = None
 test_cfg = dict(average_clips=None)
 # dataset settings
 dataset_type = 'RawframeDataset'
-data_root = 'data/sth-v1/rawframes_train/'
-data_root_val = 'data/sth-v1/rawframes_val/'
-ann_file_train = 'data/sth-v1/sth-v1_train_list.txt'
-ann_file_val = 'data/sth-v1/sth-v1_val_list.txt'
-ann_file_test = 'data/sth-v1/sth-v1_val_list.txt'
+data_root = 'data/sth-v2/rawframes_train/'
+data_root_val = 'data/sth-v2/rawframes_val/'
+ann_file_train = 'data/sth-v2/sth-v2_train_list.txt'
+ann_file_val = 'data/sth-v2/sth-v2_val_list.txt'
+ann_file_test = 'data/sth-v2/sth-v2_val_list.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
     dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=8),
-    dict(type='FrameSelector'),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(
         type='MultiScaleCrop',
@@ -51,7 +51,7 @@ val_pipeline = [
         frame_interval=1,
         num_clips=8,
         test_mode=True),
-    dict(type='FrameSelector'),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
     dict(type='Normalize', **img_norm_cfg),
@@ -66,7 +66,7 @@ test_pipeline = [
         frame_interval=1,
         num_clips=8,
         test_mode=True),
-    dict(type='FrameSelector'),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
     dict(type='Normalize', **img_norm_cfg),
@@ -107,15 +107,15 @@ optimizer_config = dict(grad_clip=dict(max_norm=20, norm_type=2))
 # learning policy
 lr_config = dict(
     policy='CosineAnnealing',
-    min_lr_ratio=0.5,
+    by_epoch=False,
     warmup='linear',
-    warmup_ratio=0.1,
+    warmup_iters=1,
     warmup_by_epoch=True,
-    warmup_iters=1)
+    min_lr=0)
 total_epochs = 40
 checkpoint_config = dict(interval=1)
 evaluation = dict(
-    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
+    interval=2, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
 log_config = dict(
     interval=20,
     hooks=[
@@ -125,7 +125,7 @@ log_config = dict(
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/tin_r50_1x1x8_40e_sthv1_rgb/'
+work_dir = './work_dirs/tin_r50_1x1x8_40e_sthv2_rgb/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
