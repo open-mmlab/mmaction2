@@ -315,7 +315,7 @@ class ResNet(nn.Module):
         act_cfg (dict): Config for activate layers.
             Default: dict(type='ReLU', inplace=True).
         norm_eval (bool): Whether to set BN layers to eval mode, namely, freeze
-            running stats (mean and var). Default: True.
+            running stats (mean and var). Default: False.
         partial_bn (bool): Whether to use partial bn. Default: False.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
             memory while slowing down the training speed. Default: False.
@@ -342,7 +342,7 @@ class ResNet(nn.Module):
                  conv_cfg=dict(type='Conv'),
                  norm_cfg=dict(type='BN2d', requires_grad=True),
                  act_cfg=dict(type='ReLU', inplace=True),
-                 norm_eval=True,
+                 norm_eval=False,
                  partial_bn=False,
                  with_cp=False):
         super().__init__()
