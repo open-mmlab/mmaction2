@@ -87,7 +87,7 @@ def test_resnet_backbone():
             assert param.requires_grad is False
 
     # resnet with depth 50, partial batchnorm
-    resnet_pbn = ResNet(50, partial_bn=True)
+    resnet_pbn = ResNet(50, norm_eval=True, partial_bn=True)
     resnet_pbn.train()
     count_bn = 0
     for m in resnet_pbn.modules():
