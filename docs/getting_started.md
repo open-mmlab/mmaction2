@@ -291,7 +291,7 @@ the param `video` should be `VIDEO.mp4` (`VIDEO_NAME`).
 
 * When rawframes path is `VIDEO_NAME/img_xxxxx.jpg`, and `data_prefix` is None in the config file, the param `video` should be `VIDEO_NAME`.
 
-* In the video url case, it is the same with that of giving a video file path.
+* For the video url case, you can also pass a url instead of a video file path..
 
 A notebook demo can be found in [demo/demo.ipynb](/demo/demo.ipynb)
 
