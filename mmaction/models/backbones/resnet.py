@@ -557,10 +557,11 @@ class ResNet(nn.Module):
     def _partial_bn(self):
         logger = get_root_logger()
         logger.info('Freezing BatchNorm2D except the first one.')
-        for layer_name in self.res_layers:
-            res_layer = getattr(self, layer_name)
-            for m in res_layer.modules():
-                if isinstance(m, nn.BatchNorm2d):
+        count_bn = 0
+        for m in self.modules():
+            if isinstance(m, nn.BatchNorm2d):
+                count_bn += 1
+                if count_bn >= 2:
                     m.eval()
                     # shutdown update in frozen mode
                     m.weight.requires_grad = False

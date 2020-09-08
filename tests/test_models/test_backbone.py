@@ -89,14 +89,18 @@ def test_resnet_backbone():
     # resnet with depth 50, partial batchnorm
     resnet_pbn = ResNet(50, partial_bn=True)
     resnet_pbn.train()
-    assert resnet_pbn.conv1.bn.weight.requires_grad is True
-    assert resnet_pbn.conv1.bn.bias.requires_grad is True
-    for layer_name in resnet_pbn.res_layers:
-        res_layer = getattr(resnet_pbn, layer_name)
-        for m in res_layer.modules():
-            if isinstance(m, nn.BatchNorm2d):
+    count_bn = 0
+    for m in resnet_pbn.modules():
+        if isinstance(m, nn.BatchNorm2d):
+            count_bn += 1
+            if count_bn >= 2:
                 assert m.weight.requires_grad is False
                 assert m.bias.requires_grad is False
+                assert m.training is False
+            else:
+                assert m.weight.requires_grad is True
+                assert m.bias.requires_grad is True
+                assert m.training is True
 
     input_shape = (1, 3, 64, 64)
     imgs = _demo_inputs(input_shape)
