@@ -10,7 +10,7 @@ from mmcv.runner import EpochBasedRunner, build_optimizer
 from mmcv.utils import get_logger
 from torch.utils.data import DataLoader, Dataset
 
-from mmaction.core import MultiGridHook
+from mmaction.core import MultiGridHook, SubBatchBN3dAggregationHook
 from mmaction.datasets import RawframeDataset
 
 
@@ -88,6 +88,8 @@ def test_multi_grid_hook():
     # Skip the subbn3d since it is hardcoded to use cuda
     cfg.model.backbone.norm_cfg = dict(type='BN3d')
     multi_grid_hook = MultiGridHook(cfg)
+    subbn_aggre_hook = SubBatchBN3dAggregationHook()
+
     with tempfile.TemporaryDirectory() as tmpdir:
         logger = get_logger('test_multi_grid')
         runner = EpochBasedRunner(
@@ -99,6 +101,7 @@ def test_multi_grid_hook():
         runner.register_training_hooks(
             cfg.lr_config, log_config=cfg.log_config)
         runner.register_hook(multi_grid_hook)
+        runner.register_hook(subbn_aggre_hook, priority='HIGH')
         runner.run([loader], [('train', 1)], 2)
 
     with pytest.raises(NotImplementedError):

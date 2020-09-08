@@ -37,6 +37,7 @@ def modify_subbn3d_num_splits(logger, module, num_splits):
                 if (len(origin_param_shape) == 1 and len(new_param_shape) == 1
                         and new_param_shape[0] > origin_param_shape[0]
                         and new_param_shape[0] % origin_param_shape[0] == 0):
+                    # inflate by concat
                     new_state_dict[param_name] = torch.cat(
                         [param] *
                         (new_param_shape[0] // origin_param_shape[0]))
@@ -76,6 +77,14 @@ class RelativeStepLrUpdaterHook(LrUpdaterHook):
         for i in range(len(self.steps)):
             if progress < self.steps[i]:
                 return self.lrs[i]
+
+
+class SubBatchBN3dAggregationHook(Hook):
+
+    def after_train_epoch(self, runner):
+        """After training epoch, aggregate the stats from split_bns to bns."""
+        from mmaction.models.common import aggregate_sub_bn_stats
+        aggregate_sub_bn_stats(runner.model)
 
 
 class MultiGridHook(Hook):
@@ -120,12 +129,6 @@ class MultiGridHook(Hook):
         schedule."""
         self._update_long_cycle(runner)
 
-    def after_train_epoch(self, runner):
-        """After training epoch, aggregate the stats from split_bns to bns."""
-        from mmaction.models.common import aggregate_sub_bn_stats
-        num_sub_bn3d_aggregated = aggregate_sub_bn_stats(runner.model)
-        self.logger.info(f'{num_sub_bn3d_aggregated} aggregated.')
-
     def _update_long_cycle(self, runner):
         """Before every epoch, check if long cycle shape should change.
 
@@ -165,6 +168,9 @@ class MultiGridHook(Hook):
             multi_grid_cfg=self.multi_grid_cfg,
             crop_size=base_s)
         runner.data_loader = dataloader
+
+        # the self._max_epochs is changed, therefore update here
+        runner._max_iters = runner._max_epochs * len(runner.data_loader)
 
         # rebuild all the sub_batch_bn layers
         if modified:
@@ -236,6 +242,7 @@ class MultiGridHook(Hook):
         x = (
             runner.max_epochs * cfg.epoch_factor / sum(s[-1]
                                                        for s in schedule))
+        runner._max_epochs = int(runner._max_epochs * cfg.epoch_factor)
         final_schedule = []
         total_epochs = 0
         for s in schedule:
