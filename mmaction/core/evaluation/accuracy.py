@@ -180,10 +180,11 @@ def pairwise_temporal_iou(candidate_segments, target_segments):
         t_iou (np.ndarray): 1-dim array [n] /
             2-dim array [n x m] with IoU ratio.
     """
-    if target_segments.ndim != 2 or candidate_segments.ndim not in [1, 2]:
+    candidate_segments_ndim = candidate_segments.ndim
+    if target_segments.ndim != 2 or candidate_segments_ndim not in [1, 2]:
         raise ValueError('Dimension of arguments is incorrect')
 
-    if candidate_segments.ndim == 1:
+    if candidate_segments_ndim == 1:
         candidate_segments = candidate_segments[np.newaxis, :]
 
     n, m = target_segments.shape[0], candidate_segments.shape[0]
@@ -201,6 +202,9 @@ def pairwise_temporal_iou(candidate_segments, target_segments):
         # Compute overlap as the ratio of the intersection
         # over union of two segments.
         t_iou[:, i] = (segments_intersection.astype(float) / segments_union)
+
+    if candidate_segments_ndim == 1:
+        t_iou = np.squeeze(t_iou, axis=1)
 
     return t_iou
 
