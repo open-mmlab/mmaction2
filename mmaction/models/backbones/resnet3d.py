@@ -362,7 +362,7 @@ class ResNet3d(nn.Module):
         act_cfg (dict): Config dict for activation layer.
             Default: ``dict(type='ReLU', inplace=True)``.
         norm_eval (bool): Whether to set BN layers to eval mode, namely, freeze
-            running stats (mean and var). Default: True.
+            running stats (mean and var). Default: False.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
             memory while slowing down the training speed. Default: False.
         non_local (Sequence[int]): Determine whether to apply non-local module
@@ -403,7 +403,7 @@ class ResNet3d(nn.Module):
                  conv_cfg=dict(type='Conv3d'),
                  norm_cfg=dict(type='BN3d', requires_grad=True),
                  act_cfg=dict(type='ReLU', inplace=True),
-                 norm_eval=True,
+                 norm_eval=False,
                  with_cp=False,
                  non_local=(0, 0, 0, 0),
                  non_local_cfg=dict(),

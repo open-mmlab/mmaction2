@@ -92,14 +92,15 @@ def test_resnet_backbone():
     count_bn = 0
     for m in resnet_pbn.modules():
         if isinstance(m, nn.BatchNorm2d):
-            assert m.training is False
             count_bn += 1
             if count_bn >= 2:
                 assert m.weight.requires_grad is False
                 assert m.bias.requires_grad is False
+                assert m.training is False
             else:
                 assert m.weight.requires_grad is True
                 assert m.bias.requires_grad is True
+                assert m.training is True
 
     input_shape = (1, 3, 64, 64)
     imgs = _demo_inputs(input_shape)
