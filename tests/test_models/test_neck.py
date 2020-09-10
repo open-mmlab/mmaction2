@@ -65,24 +65,24 @@ def test_tpn():
     tpn_cfg_ = copy.deepcopy(tpn_cfg)
     tpn_cascade = TPN(**tpn_cfg_)
     feat, loss_aux = tpn_cascade(x, target)
-    assert feat.shape == torch.Size([32, 2048, 3, 2, 2])
+    assert feat.shape == torch.Size([32, 2048, 1, 2, 2])
     assert len(loss_aux) == 1
 
     # ResNetTPN with 'parallel' flow_type
     tpn_cfg_ = copy.deepcopy(tpn_cfg)
     tpn_parallel = TPN(flow_type='parallel', **tpn_cfg_)
     feat, loss_aux = tpn_parallel(x, target)
-    assert feat.shape == torch.Size([32, 2048, 3, 2, 2])
+    assert feat.shape == torch.Size([32, 2048, 1, 2, 2])
     assert len(loss_aux) == 1
 
     # ResNetTPN with 'cascade' flow_type and target is None
     feat, loss_aux = tpn_cascade(x, None)
-    assert feat.shape == torch.Size([32, 2048, 3, 2, 2])
+    assert feat.shape == torch.Size([32, 2048, 1, 2, 2])
     assert len(loss_aux) == 0
 
     # ResNetTPN with 'parallel' flow_type and target is None
     feat, loss_aux = tpn_parallel(x, None)
-    assert feat.shape == torch.Size([32, 2048, 3, 2, 2])
+    assert feat.shape == torch.Size([32, 2048, 1, 2, 2])
     assert len(loss_aux) == 0
 
 

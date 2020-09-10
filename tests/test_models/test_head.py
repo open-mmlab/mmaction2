@@ -200,18 +200,20 @@ def test_tpn_head():
     assert tpn_head.avg_pool3d.output_size == (1, 1, 1)
     assert tpn_head.avg_pool2d is None
 
-    input_shape = (16, 2048, 3, 7, 7)
+    input_shape = (4, 2048, 7, 7)
     feat = torch.rand(input_shape)
 
     # tpn head inference with num_segs
-    num_segs = 8
+    num_segs = 2
     cls_scores = tpn_head(feat, num_segs)
     assert isinstance(tpn_head.avg_pool2d, nn.AvgPool3d)
     assert tpn_head.avg_pool2d.kernel_size == (1, 7, 7)
     assert cls_scores.shape == torch.Size([2, 4])
 
     # tpn head inference with no num_segs
+    input_shape = (2, 2048, 3, 7, 7)
+    feat = torch.rand(input_shape)
     cls_scores = tpn_head(feat)
     assert isinstance(tpn_head.avg_pool2d, nn.AvgPool3d)
     assert tpn_head.avg_pool2d.kernel_size == (1, 7, 7)
-    assert cls_scores.shape == torch.Size([16, 4])
+    assert cls_scores.shape == torch.Size([2, 4])

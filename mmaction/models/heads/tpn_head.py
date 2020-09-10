@@ -52,21 +52,18 @@ class TPNHead(TSNHead):
             # [N, in_channels, 3, 7, 7]
             x = self.avg_pool3d(x)
         else:
-            # [N * num_segs, in_channels, 3, 7, 7]
+            # [N * num_segs, in_channels, 7, 7]
             x = self.avg_pool2d(x)
-            # [N * num_segs, in_channels, 3, 1, 1]
+            # [N * num_segs, in_channels, 1, 1]
             x = x.reshape((-1, num_segs) + x.shape[1:])
-            # [N, num_segs, in_channels, 3, 1, 1]
+            # [N, num_segs, in_channels, 1, 1]
             x = self.consensus(x)
-            # [N, 1, in_channels, 3, 1, 1]
+            # [N, 1, in_channels, 1, 1]
             x = x.squeeze(1)
-            # [N, 1, in_channels, 1, 1, 1]
-            if self.avg_pool3d is not None:
-                x = self.avg_pool3d(x)
-            # [N, in_channels, 1, 1, 1]
+            # [N, in_channels, 1, 1]
         if self.dropout is not None:
             x = self.dropout(x)
-            # [N, in_channels, 1, 1, 1]
+            # [N, in_channels, 1, 1]
         x = x.view(x.size(0), -1)
         # [N, in_channels]
         cls_score = self.fc_cls(x)

@@ -28,7 +28,6 @@
 |[slowonly_r50_8x8x1_196e_kinetics400_flow](/configs/recognition/slowonly/slowonly_r50_8x8x1_256e_kinetics400_flow.py) |short-side 320|8x4| ResNet50 | ImageNet |65.76|86.25|x|8455| [ckpt](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_8x8x1_256e_kinetics400_flow/slowonly_r50_8x8x1_256e_kinetics400_flow_20200704-6b384243.pth) | [log](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_8x8x1_256e_kinetics400_flow/slowonly_r50_8x8x1_196e_kinetics400_flow_65.8_86.3.log) | [json](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_8x8x1_256e_kinetics400_flow/slowonly_r50_8x8x1_196e_kinetics400_flow_65.8_86.3.log.json)|
 
 ### Kinetics-400 Data Benchmark
-
 In data benchmark, we compare two different data preprocessing methods: (1) Resize video to 340x256, (2) Resize the short edge of video to 320px, (3) Resize the short edge of video to 256px.
 
 | config                                                       |   resolution   | gpus | backbone | Input | pretrain | top1 acc | top5 acc |  testing protocol  |                             ckpt                             |                             log                              |                             json                             |
