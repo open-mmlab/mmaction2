@@ -153,12 +153,12 @@ import os.path as osp
 
 import mmcv
 
-from .base import BaseDatset
+from .base import BaseDataset
 from .registry import DATASETS
 
 
 @DATASETS.register_module()
-class MyDataset(BaseDatset):
+class MyDataset(BaseDataset):
 
     def __init__(self,
                  ann_file,
