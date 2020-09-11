@@ -119,5 +119,6 @@ log_config = dict(
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 work_dir = './work_dirs/tin_tsm_finetune_r50_1x1x8_50e_kinetics400_rgb/'
-load_from = 'modelzoo/tsm_r50_1x1x8_50e_kinetics400_rgb_20200607-af7fb746.pth'
+# load_from = 'modelzoo/tsm_r50_1x1x8_50e_kinetics400_rgb_20200607-af7fb746.pth'  # noqa: E501
+load_from = 'https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/tsm_r50_1x1x8_50e_kinetics400_rgb_20200607-af7fb746.pth'  # noqa: E501
 resume_from = None
