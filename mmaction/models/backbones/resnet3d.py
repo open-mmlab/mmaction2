@@ -328,6 +328,7 @@ class ResNet3d(nn.Module):
             Default: True.
         in_channels (int): Channel num of input features. Default: 3.
         base_channels (int): Channel num of stem output features. Default: 64.
+        out_indices (Sequence[int]): Indices of output feature. Default: (3, ).
         num_stages (int): Resnet stages. Default: 4.
         spatial_strides (Sequence[int]):
             Spatial strides of residual blocks of each stage.

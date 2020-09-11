@@ -8,12 +8,39 @@ from ..registry import NECKS
 
 
 class Identity(nn.Module):
+    """Identity mapping."""
 
     def forward(self, x):
         return x
 
 
 class DownSample(nn.Module):
+    """DownSample modules.
+
+    It uses convolution and maxpooling to downsample the input feature,
+    and specifies downsample position to determine `pool-conv` or `conv-pool`.
+
+    Args:
+        in_channels (int): Channel number of input features.
+        out_channels (int): Channel number of output feature.
+        kernel_size (int | tuple[int]): Same as :class:`ConvModule`.
+            Default: (3, 1, 1).
+        stride (int | tuple[int]): Same as :class:`ConvModule`.
+            Default: (1, 1, 1).
+        padding (int | tuple[int]): Same as :class:`ConvModule`.
+            Default: (1, 0, 0).
+        groups (int): Same as :class:`ConvModule`. Default: 1.
+        bias (bool | str): Same as :class:`ConvModule`. Default: False.
+        conv_cfg (dict | None): Same as :class:`ConvModule`.
+            Default: dict(type='Conv3d').
+        norm_cfg (dict | None): Same as :class:`ConvModule`. Default: None.
+        act_cfg (dict | None): Same as :class:`ConvModule`. Default: None.
+        downsample_position (str): Type of downsample position. Options are
+            'before' and 'after'. Default: 'after'.
+        downsample_scale (int | tuple[int]): downsample scale for maxpooling.
+            It will be used for kernel size and stride of maxpooling.
+            Default: (1, 2, 2).
+    """
 
     def __init__(self,
                  in_channels,
@@ -56,11 +83,27 @@ class DownSample(nn.Module):
 
 
 class LevelFusion(nn.Module):
+    """Level Fusion module.
+
+    This module is used to aggregate the hierarchical features dynamic in
+    visual tempos and consistent in spatial semantics. The top/bottom features
+    for top-down/bottom-up flow would be combined to achieve two additional
+    options, namely 'Cascade Flow' or 'Parallel Flow'. While applying a
+    bottom-up flow after a top-down flow will lead to the cascade flow,
+    applying them simultaneously will result in the parallel flow.
+
+    Args:
+        in_channels (tuple[int]): Channel numbers of input features tuple.
+        mid_channels (tuple[int]): Channel numbers of middle features tuple.
+        out_channels (int): Channel numbers of output features.
+        downsample_scales (tuple[int | tuple[int]]): downsample scales for
+            each :class:`DownSample` module. Default: ((1, 1, 1), (1, 1, 1)).
+    """
 
     def __init__(self,
-                 in_channels=(1024, 1024),
-                 mid_channels=(1024, 1024),
-                 out_channels=2048,
+                 in_channels,
+                 mid_channels,
+                 out_channels,
                  downsample_scales=((1, 1, 1), (1, 1, 1))):
         super(LevelFusion, self).__init__()
         num_stages = len(in_channels)
@@ -101,8 +144,19 @@ class LevelFusion(nn.Module):
 
 
 class SpatialModulation(nn.Module):
+    """Spatial Semantic Modulation.
 
-    def __init__(self, in_channels=(1024, 2048), out_channels=2048):
+    This module is used to align spatial semantics of features in the
+    multi-depth pyramid. For each but the top-level feature, a stack
+    of convolutions with level-specific stride are applied to it, matching
+    its spatial shape and receptive field with the top one.
+
+    Args:
+        in_channels (tuple[int]): Channel numbers of input features tuple.
+        out_channels (int): Channel numbers of output features tuple.
+    """
+
+    def __init__(self, in_channels, out_channels):
         super(SpatialModulation, self).__init__()
 
         self.spatial_modulation = nn.ModuleList()
@@ -142,6 +196,19 @@ class SpatialModulation(nn.Module):
 
 
 class AuxHead(nn.Module):
+    """Auxiliary Head.
+
+    This auxiliary head is appended to receive stronger supervision,
+    leading to enhanced semantics.
+
+    Args:
+        in_channels (int): Channel number of input features.
+        out_channels (int): Channel number of output features.
+        loss_weight (float): weight of loss for the auxiliary head.
+            Default: 0.5.
+        loss_cls (dict): loss_cls (dict): Config for building loss.
+            Default: ``dict(type='CrossEntropyLoss')``.
+    """
 
     def __init__(self,
                  in_channels,
@@ -190,6 +257,16 @@ class AuxHead(nn.Module):
 
 
 class TemporalModulation(nn.Module):
+    """Temporal Rate Modulation.
+
+    The module is used to equip TPN with a similar flexibility for temporal
+    tempo modulation as in the input-level frame pyramid.
+
+    Args:
+        in_channels (int): Channel number of input features.
+        out_channels (int): Channel number of output features.
+        downsample_scale (int): Dowansample scale for maxpooling. Default: 8.
+    """
 
     def __init__(self, in_channels, out_channels, downsample_scale=8):
         super(TemporalModulation, self).__init__()
@@ -215,10 +292,35 @@ class TemporalModulation(nn.Module):
 
 @NECKS.register_module()
 class TPN(nn.Module):
+    """TPN neck.
+
+    This module is proposed in `Temporal Pyramid Network for Action Recognition
+    <https://arxiv.org/pdf/2004.03548.pdf>`_
+
+    Args:
+        in_channels (tuple[int]): Channel numbers of input features tuple.
+        out_channels (int): Channel number of output feature.
+        spatial_modulation_cfg (dict | None): Config for spatial modulation
+            layers. Required keys are `in_channels` and `out_channels`.
+            Default: None.
+        temporal_modulation_cfg (dict | None): Config for temporal modulation
+            layers. Default: None.
+        upsample_cfg (dict | None): Config for upsample layers. The keys are
+            same as that in :class:``nn.Upsample``. Default: None.
+        downsample_cfg (dict | None): Config for downsample layers.
+            Default: None.
+        level_fusion_cfg (dict | None): Config for level fusion layers.
+            Required keys are 'in_channels', 'mid_channels', 'out_channels'.
+            Default: None.
+        aux_head_cfg (dict | None): Config for aux head layers.
+            Required keys are 'out_channels'. Default: None.
+        flow_type (str): Flow type to combine the features. Options are
+            'cascade' and 'parallel'. Default: 'cascade'.
+    """
 
     def __init__(self,
-                 in_channels=(256, 512, 1024, 2048),
-                 out_channels=256,
+                 in_channels,
+                 out_channels,
                  spatial_modulation_cfg=None,
                  temporal_modulation_cfg=None,
                  upsample_cfg=None,
@@ -328,7 +430,7 @@ class TPN(nn.Module):
                 outs[i - 1] = outs[i - 1] + self.upsample_ops[i - 1](outs[i])
 
         # Get top-down outs
-        top_down_outs = self.level_fusion_2(outs)
+        top_down_outs = self.level_fusion_1(outs)
 
         # Build bottom-up flow using downsample operation
         if self.flow_type == 'cascade':
@@ -340,7 +442,7 @@ class TPN(nn.Module):
                 outs[i + 1] = outs[i + 1] + self.downsample_ops[i](outs[i])
 
         # Get bottom-up outs
-        botton_up_outs = self.level_fusion_1(outs)
+        botton_up_outs = self.level_fusion_2(outs)
 
         # fuse two pyramid outs
         outs = self.pyramid_fusion(

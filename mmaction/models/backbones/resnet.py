@@ -302,6 +302,7 @@ class ResNet(nn.Module):
         in_channels (int): Channel num of input features. Default: 3.
         num_stages (int): Resnet stages. Default: 4.
         strides (Sequence[int]): Strides of the first block of each stage.
+        out_indices (Sequence[int]): Indices of output feature. Default: (3, ).
         dilations (Sequence[int]): Dilation of each stage.
         style (str): ``pytorch`` or ``caffe``. If set to "pytorch", the
             stride-two layer is the 3x3 conv layer, otherwise the stride-two
