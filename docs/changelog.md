@@ -5,11 +5,12 @@
 **Highlights**
 
 **New Features**
+- Support to run real-time action recognition from web camera ([#171](https://github.com/open-mmlab/mmaction2/pull/171))
 
 **ModelZoo**
 
 **Improvements**
-- support to run a demo with a video url ([#165](https://github.com/open-mmlab/mmaction2/pull/165))
+- Support to run a demo with a video url ([#165](https://github.com/open-mmlab/mmaction2/pull/165))
 
 **Bug Fixes**
 

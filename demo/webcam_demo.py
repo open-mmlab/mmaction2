@@ -143,6 +143,8 @@ def main():
             pipeline_.remove(step)
     test_pipeline = Compose(pipeline_)
 
+    assert sample_length > 0
+
     print('Press "Esc", "q" or "Q" to exit')
     predict_webcam_video()
 
