@@ -191,7 +191,7 @@ Assume that you are located at `$MMACTION2` and have already downloaded the chec
 
 ### Webcam demo
 
-We provide a demo script to implement read-time action recognition from web camera.
+We provide a demo script to implement real-time action recognition from web camera.
 
 ```shell
 python demo/webcam_demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${LABEL_FILE} \
@@ -203,7 +203,7 @@ Optional arguments:
 - `DEVICE_TYPE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`. If not specified, it will be set to `cuda:0`.
 - `CAMERA_ID`: ID of camera device If not specified, it will be set to 0.
 - `THRESHOLD`: Threshold of prediction score for action recognition. Only label with score higher than the threshold will be shown. If not specified, it will be set to 0.
-- `SAMPLE_LENGHTH`: Number of frames to be sampled from web camera. If not specified, it will be calculated from the config file by `clip_len x num_clips`.
+- `SAMPLE_LENGTH`: Number of frames to be sampled from web camera. If not specified, it will be calculated from the config file by `clip_len x num_clips`.
 - `AVERAGE_SIZE`: Number of latest clips to be averaged for prediction. If not specified, it will be set to 1.
 
 Examples:
