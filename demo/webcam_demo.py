@@ -81,23 +81,18 @@ def predict_webcam_video():
             windows.popleft()
         if len(score_cache) == average_size:
             scores_avg = scores_sum / average_size
-            if len(label) >= 5:
-                num_selected_labels = 5
-            else:
-                num_selected_labels = len(label)
+            num_selected_labels = min(len(label), 5)
 
             scores_tuples = tuple(zip(label, scores_avg))
             scores_sorted = sorted(
                 scores_tuples, key=itemgetter(1), reverse=True)
             results = scores_sorted[:num_selected_labels]
 
-            num_shown = 0
-            for result in results:
+            for i, result in enumerate(results):
                 selected_label, score = result
                 if score < threshold:
-                    continue
-                location = (0, 40 + num_shown * 20)
-                num_shown += 1
+                    break
+                location = (0, 40 + i * 20)
                 text = selected_label + ': ' + str(round(score, 2))
                 cv2.putText(frame, text, location, FONTFACE, FONTSCALE,
                             FONTCOLOR, THICKNESS, LINETYPE)
