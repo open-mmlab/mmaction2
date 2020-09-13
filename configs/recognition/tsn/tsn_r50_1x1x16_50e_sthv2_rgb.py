@@ -8,7 +8,7 @@ model = dict(
         norm_eval=False),
     cls_head=dict(
         type='TSNHead',
-        num_classes=339,
+        num_classes=174,
         in_channels=2048,
         spatial_type='avg',
         consensus=dict(type='AvgConsensus', dim=1),
