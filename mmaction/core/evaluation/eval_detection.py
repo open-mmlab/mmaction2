@@ -8,26 +8,18 @@ from .utils import interpolated_prec_rec, segment_iou
 
 
 class ANETdetection(object):
-    GROUND_TRUTH_FIELDS = ['database', 'taxonomy', 'version']
-    PREDICTION_FIELDS = ['results', 'version', 'external_data']
 
     def __init__(self,
                  ground_truth_filename=None,
                  prediction_filename=None,
-                 ground_truth_fields=GROUND_TRUTH_FIELDS,
-                 prediction_fields=PREDICTION_FIELDS,
                  tiou_thresholds=np.linspace(0.5, 0.95, 10),
-                 subset='validation',
                  verbose=False):
         if not ground_truth_filename:
             raise IOError('Please input a valid ground truth file.')
         if not prediction_filename:
             raise IOError('Please input a valid prediction file.')
-        self.subset = subset
         self.tiou_thresholds = tiou_thresholds
         self.verbose = verbose
-        self.gt_fields = ground_truth_fields
-        self.pred_fields = prediction_fields
         self.ap = None
         # Import ground truth and predictions.
         self.ground_truth, self.activity_index = self._import_ground_truth(
@@ -35,7 +27,9 @@ class ANETdetection(object):
         self.prediction = self._import_prediction(prediction_filename)
 
         if self.verbose:
-            print('[INIT] Loaded annotations from {} subset.'.format(subset))
+            print('[INIT] Loaded ground_truth from '
+                  f'{self.ground_truth_filename}, prediction from '
+                  f'{self.prediction_filename}.')
             nr_gt = len(self.ground_truth)
             print('\tNumber of ground truth instances: {}'.format(nr_gt))
             nr_pred = len(self.prediction)
@@ -44,8 +38,8 @@ class ANETdetection(object):
                 self.tiou_thresholds))
 
     def _import_ground_truth(self, ground_truth_filename):
-        """Reads ground truth file, checks if it is well formatted, and returns
-        the ground truth instances and the activity classes.
+        """Reads ground truth file, returns the ground truth instances and the
+        activity classes.
 
         Parameters
         ----------
@@ -62,15 +56,9 @@ class ANETdetection(object):
         with open(ground_truth_filename, 'r') as fobj:
             data = json.load(fobj)
         # Checking format
-        if not all([field in list(data.keys()) for field in self.gt_fields]):
-            raise IOError('Please input a valid ground truth file.')
-
-        # Read ground truth data.
         activity_index, cidx = {}, 0
         video_lst, t_start_lst, t_end_lst, label_lst = [], [], [], []
-        for videoid, v in data['database'].items():
-            if self.subset != v['subset']:
-                continue
+        for videoid, v in data.items():
             for ann in v['annotations']:
                 if ann['label'] not in activity_index:
                     activity_index[ann['label']] = cidx
@@ -89,8 +77,7 @@ class ANETdetection(object):
         return ground_truth, activity_index
 
     def _import_prediction(self, prediction_filename):
-        """Reads prediction file, checks if it is well formatted, and returns
-        the prediction instances.
+        """Reads prediction file, returns the prediction instances.
 
         Parameters
         ----------
@@ -104,10 +91,6 @@ class ANETdetection(object):
         """
         with open(prediction_filename, 'r') as fobj:
             data = json.load(fobj)
-        # Checking format...
-        if not all([field in list(data.keys()) for field in self.pred_fields]):
-            raise IOError('Please input a valid prediction file.')
-
         # Read predictions.
         video_lst, t_start_lst, t_end_lst = [], [], []
         label_lst, score_lst = [], []
@@ -142,7 +125,7 @@ class ANETdetection(object):
             return pd.DataFrame()
 
     def wrapper_compute_average_precision(self):
-        """Computes average precision for each class in the subset."""
+        """Computes average precision for each class."""
         ap = np.zeros((len(self.tiou_thresholds), len(self.activity_index)))
 
         # Adaptation to query faster
@@ -174,9 +157,7 @@ class ANETdetection(object):
         self.mAP = self.ap.mean(axis=1)
         self.average_mAP = self.mAP.mean()
 
-        if self.verbose:
-            print('[RESULTS] Performance on ActivityNet detection task.')
-            print('\tAverage-mAP: {}'.format(self.average_mAP))
+        return self.mAP, self.average_mAP
 
 
 def compute_average_precision_detection(ground_truth,
@@ -223,7 +204,6 @@ def compute_average_precision_detection(ground_truth,
 
     # Assigning true positive to truly grount truth instances.
     for idx, this_pred in prediction.iterrows():
-
         try:
             # Check if there is at least one ground truth in the video
             # associated.
