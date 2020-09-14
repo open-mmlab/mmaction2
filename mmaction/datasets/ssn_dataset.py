@@ -3,9 +3,9 @@ import os.path as osp
 
 import mmcv
 import numpy as np
+from scipy.special import softmax
 from torch.nn.modules.utils import _pair
 
-from ..core import softmax
 from ..localization import (eval_ap, load_localize_proposal_file,
                             perform_regression, temporal_iou, temporal_nms)
 from ..utils import get_root_logger
@@ -364,7 +364,7 @@ class SSNDataset(BaseDataset):
 
             if top_k <= 0:
                 combined_scores = (
-                    softmax(action_scores[:, 1:], dim=1) *
+                    softmax(action_scores[:, 1:], axis=1) *
                     np.exp(complete_scores))
                 for i in range(num_classes):
                     center_scores = regression_scores[:, i, 0][:, None]
@@ -375,7 +375,7 @@ class SSNDataset(BaseDataset):
                         axis=1)
             else:
                 combined_scores = (
-                    softmax(action_scores[:, 1:], dim=1) *
+                    softmax(action_scores[:, 1:], axis=1) *
                     np.exp(complete_scores))
                 keep_idx = np.argsort(combined_scores.ravel())[-top_k:]
                 for k in keep_idx:
