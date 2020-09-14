@@ -189,6 +189,33 @@ Assume that you are located at `$MMACTION2` and have already downloaded the chec
         PATH_TO_FRAMES/ LABEL_FILE --use-frames --fps 24 --out-filename demo/demo_out.gif
     ```
 
+### Webcam demo
+
+We provide a demo script to implement real-time action recognition from web camera.
+
+```shell
+python demo/webcam_demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${LABEL_FILE} \
+    [--device ${DEVICE_TYPE}] [--camera-id ${CAMERA_ID}] [--threshold ${THRESHOLD}] \
+    [--sample-length ${SAMPLE_LENGHTH}] [--average-size ${AVERAGE_SIZE}]
+```
+
+Optional arguments:
+- `DEVICE_TYPE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`. If not specified, it will be set to `cuda:0`.
+- `CAMERA_ID`: ID of camera device If not specified, it will be set to 0.
+- `THRESHOLD`: Threshold of prediction score for action recognition. Only label with score higher than the threshold will be shown. If not specified, it will be set to 0.
+- `SAMPLE_LENGTH`: Number of frames to be sampled from web camera. If not specified, it will be calculated from the config file by `clip_len x num_clips`.
+- `AVERAGE_SIZE`: Number of latest clips to be averaged for prediction. If not specified, it will be set to 1.
+
+Examples:
+
+Assume that you are located at `$MMACTION2` and have already downloaded the checkpoints to the directory `checkpoints/`
+
+```shell
+python demo/webcam_demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
+  checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth demo/label_map.txt --sample-length 1 \
+  --average-size 5 --threshold 0.2
+```
+
 ### High-level APIs for testing a video and rawframes.
 
 Here is an example of building the model and testing a given video.
