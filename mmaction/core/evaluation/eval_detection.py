@@ -130,9 +130,6 @@ class ANETdetection(object):
         for pred in self.prediction:
             prediction_by_label[pred['label']].append(pred)
 
-        for i in range(len(self.activity_index)):
-            print(len(ground_truth_by_label[i]), len(prediction_by_label[i]))
-
         results = [
             compute_average_precision_detection(
                 ground_truth=ground_truth_by_label[i],
