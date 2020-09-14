@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from joblib import Parallel, delayed
 
-from .utils import interpolated_prec_rec, segment_iou
+from .accuracy import interpolated_prec_rec, segment_iou
 
 
 class ANETdetection(object):
@@ -18,6 +18,8 @@ class ANETdetection(object):
             raise IOError('Please input a valid ground truth file.')
         if not prediction_filename:
             raise IOError('Please input a valid prediction file.')
+        self.ground_truth_filename = ground_truth_filename
+        self.prediction_filename = prediction_filename
         self.tiou_thresholds = tiou_thresholds
         self.verbose = verbose
         self.ap = None
@@ -63,7 +65,8 @@ class ANETdetection(object):
                 if ann['label'] not in activity_index:
                     activity_index[ann['label']] = cidx
                     cidx += 1
-                video_lst.append(videoid)
+                # old video_anno
+                video_lst.append(videoid[2:])
                 t_start_lst.append(float(ann['segment'][0]))
                 t_end_lst.append(float(ann['segment'][1]))
                 label_lst.append(activity_index[ann['label']])
