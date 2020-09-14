@@ -113,7 +113,7 @@ log_config = dict(
     ])
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = ('./work_dirs/slowonly_r50_8x8x1_150e_imagenet_pretrain'
+work_dir = ('./work_dirs/slowonly_imagenet_pretrained_r50_8x8x1_150e'
             '_kinetics400_rgb')
 load_from = None
 resume_from = None
