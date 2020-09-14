@@ -38,7 +38,7 @@ e.g., lr=0.01 for 4 GPUs * 2 video/gpu and lr=0.08 for 16 GPUs * 4 video/gpu.
 2. For feature column, cuhk_mean_100 denotes the widely used cuhk activitynet feature extracted by [anet2016-cuhk](https://github.com/yjxiong/anet2016-cuhk), mmaction_video and mmaction_clip denote feature extracted by mmaction, with video-level activitynet finetuned model or clip-level activitynet finetuned model respectively.
 3. We evaluate the action detection performance of BMN, using  [anet_cuhk_2017](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/cuhk_anet17_pred.json) submission for ActivityNet2017 Untrimmed Video Classification Track to assign label for each action proposal.
 
-*We train BMN with the official repo, evaluate its proposal generation and action detection performance with [anet_cuhk_2017](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/cuhk_anet17_pred.json) for label assigning.
+*We train BMN with the [official repo](https://github.com/JJBOY/BMN-Boundary-Matching-Network), evaluate its proposal generation and action detection performance with [anet_cuhk_2017](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/cuhk_anet17_pred.json) for label assigning.
 
 For more details on data preparation, you can refer to ActivityNet feature in [Data Preparation](/docs/data_preparation.md).
 

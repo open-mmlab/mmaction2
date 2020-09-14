@@ -5,7 +5,7 @@ import numpy as np
 from .accuracy import interpolated_prec_rec, segment_iou
 
 
-class ANETdetection(object):
+class ANetDetection(object):
 
     def __init__(self,
                  ground_truth_filename=None,
@@ -30,12 +30,11 @@ class ANETdetection(object):
             print('[INIT] Loaded ground_truth from '
                   f'{self.ground_truth_filename}, prediction from '
                   f'{self.prediction_filename}.')
-            nr_gt = len(self.ground_truth)
-            print('\tNumber of ground truth instances: {}'.format(nr_gt))
-            nr_pred = len(self.prediction)
-            print('\tNumber of predictions: {}'.format(nr_pred))
-            print('\tFixed threshold for tiou score: {}'.format(
-                self.tiou_thresholds))
+            num_gts = len(self.ground_truth)
+            print(f'Number of ground truth instances: {num_gts}')
+            num_preds = len(self.prediction)
+            print(f'Number of predictions: {num_preds}')
+            print(f'Fixed threshold for tiou score: {self.tiou_thresholds}')
 
     def _import_ground_truth(self, ground_truth_filename):
         """Reads ground truth file, returns the ground truth instances and the
@@ -48,34 +47,34 @@ class ANETdetection(object):
 
         Outputs
         -------
-        ground_truth : df
-            Data frame containing the ground truth instances.
+        ground_truth : list
+            List containing the ground truth instances (dictionaries).
         activity_index : dict
             Dictionary containing class index.
         """
-        with open(ground_truth_filename, 'r') as fobj:
-            data = json.load(fobj)
+        with open(ground_truth_filename, 'r') as f:
+            data = json.load(f)
         # Checking format
-        activity_index, cidx = {}, 0
-        video_lst, t_start_lst, t_end_lst, label_lst = [], [], [], []
-        for videoid, v in data.items():
-            for ann in v['annotations']:
-                if ann['label'] not in activity_index:
-                    activity_index[ann['label']] = cidx
-                    cidx += 1
+        activity_index, class_idx = {}, 0
+        video_list, t_start_list, t_end_list, label_list = [], [], [], []
+        for video_id, video_info in data.items():
+            for anno in video_info['annotations']:
+                if anno['label'] not in activity_index:
+                    activity_index[anno['label']] = class_idx
+                    class_idx += 1
                 # old video_anno
-                video_lst.append(videoid[2:])
-                t_start_lst.append(float(ann['segment'][0]))
-                t_end_lst.append(float(ann['segment'][1]))
-                label_lst.append(activity_index[ann['label']])
+                video_list.append(video_id[2:])
+                t_start_list.append(float(anno['segment'][0]))
+                t_end_list.append(float(anno['segment'][1]))
+                label_list.append(activity_index[anno['label']])
 
         ground_truth = [{
             'video-id': vid,
             't-start': tst,
             't-end': ted,
             'label': lb
-        } for vid, tst, ted, lb in zip(video_lst, t_start_lst, t_end_lst,
-                                       label_lst)]
+        } for vid, tst, ted, lb in zip(video_list, t_start_list, t_end_list,
+                                       label_list)]
 
         return ground_truth, activity_index
 
@@ -89,30 +88,30 @@ class ANETdetection(object):
 
         Outputs
         -------
-        prediction : df
-            Data frame containing the prediction instances.
+        prediction : list
+            List containing the prediction instances (dictionaries).
         """
-        with open(prediction_filename, 'r') as fobj:
-            data = json.load(fobj)
+        with open(prediction_filename, 'r') as f:
+            data = json.load(f)
         # Read predictions.
-        video_lst, t_start_lst, t_end_lst = [], [], []
-        label_lst, score_lst = [], []
-        for videoid, v in data['results'].items():
-            for result in v:
+        video_list, t_start_list, t_end_list = [], [], []
+        label_list, score_list = [], []
+        for video_id, video_info in data['results'].items():
+            for result in video_info:
                 label = self.activity_index[result['label']]
-                video_lst.append(videoid)
-                t_start_lst.append(float(result['segment'][0]))
-                t_end_lst.append(float(result['segment'][1]))
-                label_lst.append(label)
-                score_lst.append(result['score'])
+                video_list.append(video_id)
+                t_start_list.append(float(result['segment'][0]))
+                t_end_list.append(float(result['segment'][1]))
+                label_list.append(label)
+                score_list.append(result['score'])
         prediction = [{
             'video-id': vid,
             't-start': tst,
             't-end': ted,
             'label': lb,
             'score': sc
-        } for vid, tst, ted, lb, sc in zip(video_lst, t_start_lst, t_end_lst,
-                                           label_lst, score_lst)]
+        } for vid, tst, ted, lb, sc in zip(video_list, t_start_list,
+                                           t_end_list, label_list, score_list)]
         return prediction
 
     def wrapper_compute_average_precision(self):
@@ -182,17 +181,20 @@ def compute_average_precision_detection(ground_truth,
     ap : float
         Average precision score.
     """
-    ap = np.zeros(len(tiou_thresholds))
+    num_thresholds = len(tiou_thresholds)
+    num_gts = len(ground_truth)
+    num_preds = len(prediction)
+    ap = np.zeros(num_thresholds)
     if len(prediction) == 0:
         return ap
 
-    npos = float(len(ground_truth))
-    lock_gt = np.ones((len(tiou_thresholds), len(ground_truth))) * -1
+    num_positive = float(num_gts)
+    lock_gt = np.ones((num_thresholds, num_gts)) * -1
     # Sort predictions by decreasing score order.
     prediction.sort(key=lambda x: -x['score'])
     # Initialize true positive and false positive vectors.
-    tp = np.zeros((len(tiou_thresholds), len(prediction)))
-    fp = np.zeros((len(tiou_thresholds), len(prediction)))
+    tp = np.zeros((num_thresholds, num_preds))
+    fp = np.zeros((num_thresholds, num_preds))
 
     # Adaptation to query faster
     ground_truth_gbvn = {}
@@ -232,7 +234,7 @@ def compute_average_precision_detection(ground_truth,
 
     tp_cumsum = np.cumsum(tp, axis=1).astype(np.float)
     fp_cumsum = np.cumsum(fp, axis=1).astype(np.float)
-    recall_cumsum = tp_cumsum / npos
+    recall_cumsum = tp_cumsum / num_positive
 
     precision_cumsum = tp_cumsum / (tp_cumsum + fp_cumsum)
 
