@@ -115,20 +115,6 @@ class ANETdetection(object):
                                            label_lst, score_lst)]
         return prediction
 
-    def _get_predictions_with_label(self, prediction_by_label, label_name,
-                                    cidx):
-        """Get all predicitons of the given label.
-
-        Return empty DataFrame if there is no predcitions with the given label.
-        """
-        return []
-        if cidx in prediction_by_label.groups.keys():
-            return prediction_by_label.get_group(cidx).reset_index(drop=True)
-        else:
-            print('Warning: No predictions of label \'%s\' were provdied.' %
-                  label_name)
-            return []
-
     def wrapper_compute_average_precision(self):
         """Computes average precision for each class."""
         ap = np.zeros((len(self.tiou_thresholds), len(self.activity_index)))
@@ -143,6 +129,9 @@ class ANETdetection(object):
             ground_truth_by_label[gt['label']].append(gt)
         for pred in self.prediction:
             prediction_by_label[pred['label']].append(pred)
+
+        for i in range(len(self.activity_index)):
+            print(len(ground_truth_by_label[i]), len(prediction_by_label[i]))
 
         results = [
             compute_average_precision_detection(
@@ -197,20 +186,21 @@ def compute_average_precision_detection(ground_truth,
         Average precision score.
     """
     ap = np.zeros(len(tiou_thresholds))
-    if prediction.empty:
+    if len(prediction) == 0:
         return ap
 
     npos = float(len(ground_truth))
     lock_gt = np.ones((len(tiou_thresholds), len(ground_truth))) * -1
     # Sort predictions by decreasing score order.
-    prediction = prediction.sort(key=lambda x: -x['score'])
+    prediction.sort(key=lambda x: -x['score'])
     # Initialize true positive and false positive vectors.
     tp = np.zeros((len(tiou_thresholds), len(prediction)))
     fp = np.zeros((len(tiou_thresholds), len(prediction)))
 
     # Adaptation to query faster
     ground_truth_gbvn = {}
-    for item in ground_truth:
+    for i, item in enumerate(ground_truth):
+        item['index'] = i
         if item['video-id'] not in ground_truth_gbvn:
             ground_truth_gbvn[item['video-id']] = []
         ground_truth_gbvn[item['video-id']].append(item)
