@@ -490,8 +490,8 @@ def segment_iou(target_segment, candidate_segments):
         + (target_segment[1] - target_segment[0]) - segments_intersection
     # Compute overlap as the ratio of the intersection
     # over union of two segments.
-    tIoU = segments_intersection.astype(float) / segments_union
-    return tIoU
+    t_iou = segments_intersection.astype(float) / segments_union
+    return t_iou
 
 
 def interpolated_prec_rec(prec, rec):
