@@ -282,13 +282,16 @@ def test_ssn_test():
     base_model_cfg = dict(
         type='SSN',
         backbone=dict(
-            type='ResNet', pretrained=None, depth=18, norm_eval=True),
+            type='BNInception',
+            pretrained=None,
+            norm_eval=False,
+            partial_bn=True),
         spatial_type='avg',
         dropout_ratio=0.8,
         cls_head=dict(
             type='SSNHead',
             dropout_ratio=0.,
-            in_channels=512,
+            in_channels=1024,
             num_classes=20,
             consensus=dict(type='STPPTest', stpp_stage=(1, 1, 1)),
             use_regression=True),
