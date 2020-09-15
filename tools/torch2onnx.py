@@ -60,8 +60,7 @@ def torch2onnx(input, model):
         # Using a higher version of onnx opset
         opset_version=11,
         input_names=input_names,
-        output_names=output_names,
-    )
+        output_names=output_names)
     model = onnx.load(exported_name)
     onnx.checker.check_model(model)
 
