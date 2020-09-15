@@ -2,7 +2,7 @@ import json
 
 import numpy as np
 
-from .accuracy import interpolated_prec_rec, pairwise_temporal_iou
+from .accuracy import interpolated_precision_recall, pairwise_temporal_iou
 
 
 class ANetDetection(object):
@@ -240,7 +240,7 @@ def compute_average_precision_detection(ground_truth,
     precision_cumsum = tp_cumsum / (tp_cumsum + fp_cumsum)
 
     for tidx in range(len(tiou_thresholds)):
-        ap[tidx] = interpolated_prec_rec(precision_cumsum[tidx, :],
-                                         recall_cumsum[tidx, :])
+        ap[tidx] = interpolated_precision_recall(precision_cumsum[tidx, :],
+                                                 recall_cumsum[tidx, :])
 
     return ap

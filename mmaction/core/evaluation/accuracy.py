@@ -465,15 +465,3 @@ def average_precision_at_temporal_iou(ground_truth,
                                                   recall_cumsum[t_idx, :])
 
     return ap
-
-
-def interpolated_prec_rec(prec, rec):
-    """Interpolated AP - VOCdevkit from VOC 2011.
-    """
-    mprec = np.hstack([[0], prec, [0]])
-    mrec = np.hstack([[0], rec, [1]])
-    for i in range(len(mprec) - 1)[::-1]:
-        mprec[i] = max(mprec[i], mprec[i + 1])
-    idx = np.where(mrec[1::] != mrec[0:-1])[0] + 1
-    ap = np.sum((mrec[idx] - mrec[idx - 1]) * mprec[idx])
-    return ap
