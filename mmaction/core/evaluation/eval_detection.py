@@ -1,7 +1,7 @@
 import json
 
 import numpy as np
-from mmcv.utils import get_root_logger, print_log
+from mmcv.utils import get_logger, print_log
 
 from .accuracy import interpolated_precision_recall, pairwise_temporal_iou
 
@@ -30,7 +30,7 @@ class ANetDetection(object):
         self.tiou_thresholds = tiou_thresholds
         self.verbose = verbose
         self.ap = None
-        self.logger = get_root_logger()
+        self.logger = get_logger()
         # Import ground truth and predictions.
         self.ground_truth, self.activity_index = self._import_ground_truth(
             ground_truth_filename)
