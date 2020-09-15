@@ -88,7 +88,6 @@ if __name__ == '__main__':
 
     model_cfg, test_pipeline, test_cfg = _get_cfg(config_path)
 
-    # hyperparams for recognizers
     model = build_model(model_cfg, train_cfg=None, test_cfg=test_cfg).cuda()
     if not args.is_localizer:
         try:
@@ -103,7 +102,7 @@ if __name__ == '__main__':
                         s = trans['scale']
                     elif isinstance(trans['scale'], tuple):
                         s = max(trans['scale'])
-            # #crop x (#batch * #clips) x #channel x clip_len x height x width
+            # #crop x (#batch * #clip) x #channel x clip_len x height x width
             dummy_input = torch.randn(1, 1 * n, 3, t, s, s).cuda()
         # squeeze the t-dimension for 2d model
         dummy_input = dummy_input.squeeze(3)
