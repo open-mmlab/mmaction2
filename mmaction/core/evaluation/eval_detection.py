@@ -2,7 +2,7 @@ import json
 
 import numpy as np
 
-from .accuracy import interpolated_prec_rec, segment_iou
+from .accuracy import interpolated_prec_rec, pairwise_temporal_iou
 
 
 class ANetDetection(object):
@@ -212,9 +212,10 @@ def compute_average_precision_detection(ground_truth,
             fp[:, idx] = 1
             continue
 
-        tiou_arr = segment_iou(
+        tiou_arr = pairwise_temporal_iou(
             np.array([pred['t-start'], pred['t-end']]),
             np.array([np.array([gt['t-start'], gt['t-end']]) for gt in gts]))
+        tiou_arr = tiou_arr.reshape(-1)
         # We would like to retrieve the predictions with highest tiou score.
         tiou_sorted_idx = tiou_arr.argsort()[::-1]
         for tidx, tiou_thr in enumerate(tiou_thresholds):
