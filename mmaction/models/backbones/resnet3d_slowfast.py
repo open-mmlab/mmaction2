@@ -457,11 +457,18 @@ class ResNet3dSlowFast(nn.Module):
             tuple[torch.Tensor]: The feature of the input
             samples extracted by the backbone.
         """
-        x_slow = x[:, :, ::self.resample_rate, :, :]
+        x_slow = nn.functional.interpolate(
+            x,
+            mode='nearest',
+            scale_factor=(1.0 / self.resample_rate, 1.0, 1.0))
         x_slow = self.slow_path.conv1(x_slow)
         x_slow = self.slow_path.maxpool(x_slow)
 
-        x_fast = x[:, :, ::self.resample_rate // self.speed_ratio, :, :]
+        x_fast = nn.functional.interpolate(
+            x,
+            mode='nearest',
+            scale_factor=(1.0 / (self.resample_rate // self.speed_ratio), 1.0,
+                          1.0))
         x_fast = self.fast_path.conv1(x_fast)
         x_fast = self.fast_path.maxpool(x_fast)
 
