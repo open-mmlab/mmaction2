@@ -12,9 +12,7 @@ from ..utils import get_root_logger
 def modify_subbn3d_num_splits(logger, module, num_splits):
     """Recursively modify the number of splits of subbn3ds in module.
 
-    Inheritates the running_mean and running_var from last split_bn, while
-        spares the num_batch_tracked. This operation may result in incorrect
-        calculation of mean and var by EMA.
+    Inheritates the running_mean and running_var from last subbn.bn.
 
     Args:
         logger (:obj:`logging.Logger`): The logger to log infomation.
@@ -31,7 +29,7 @@ def modify_subbn3d_num_splits(logger, module, num_splits):
             new_split_bn = nn.BatchNorm3d(
                 child.num_features * num_splits, affine=False).cuda()
             new_state_dict = new_split_bn.state_dict()
-            for param_name, param in child.split_bn.state_dict().items():
+            for param_name, param in child.bn.state_dict().items():
                 origin_param_shape = param.size()
                 new_param_shape = new_state_dict[param_name].size()
                 if (len(origin_param_shape) == 1 and len(new_param_shape) == 1
