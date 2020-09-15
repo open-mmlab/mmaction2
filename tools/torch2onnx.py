@@ -1,16 +1,42 @@
+import argparse
 import os.path as osp
 import sys
 
 import mmcv
 import onnx
 import torch
+import torch.nn as nn
 from mmcv.runner import load_checkpoint
 
 from mmaction.models import build_model
 
+sys.path.append('../')
 
-def _get_recognizer_cfg(config_path):
-    """Grab configs necessary to create a recognizer."""
+
+class RecognizerWarpper(nn.Module):
+    """Warpper that only inferences the part in computation graph."""
+
+    def __init__(self, recognizer):
+        super().__init__()
+        self.recognizer = recognizer
+
+    def forward(self, x):
+        return self.recognizer.forward_dummy(x)
+
+
+class LocalizerWarpper(nn.Module):
+    """Warpper that only inferences the part in computation graph."""
+
+    def __init__(self, localizer):
+        super().__init__()
+        self.localizer = localizer
+
+    def forward(self, x):
+        return self.localizer._forward(x)
+
+
+def _get_cfg(config_path):
+    """Grab configs necessary to create a model."""
     if not osp.exists(config_path):
         raise FileNotFoundError('Cannot find config path')
     config = mmcv.Config.fromfile(config_path)
@@ -18,58 +44,80 @@ def _get_recognizer_cfg(config_path):
 
 
 def torch2onnx(input, model):
+    exported_name = osp.basename(args.checkpoint).replace('.pth', '.onnx')
     input_names = ['input']
     output_names = ['output']
     torch.onnx.export(
         model,
         input,
-        'exported_model.onnx',
-        verbose=True,
+        exported_name,
+        verbose=False,
+        # Using a higher version of onnx opset
+        opset_version=11,
         input_names=input_names,
         output_names=output_names,
-        dynamic_axes={
-            'input': [0],
-            'output': [0]
-        })
-    model = onnx.load('exported_onnx_model.onnx')
+    )
+    model = onnx.load(exported_name)
     onnx.checker.check_model(model)
-    print(onnx.helper.printable_graph(model.graph))
 
 
-def torch2caffe(input, model):
-    try:
-        import spring.nart.tools.pytorch as pytorch
-    except ImportError as e:
-        print(f'Cannot import nart tool: {e}')
-        return
-    with pytorch.convert_mode():
-        pytorch.convert(
-            model, [input],
-            'exported_caffe_model',
-            input_names=['input'],
-            output_names=['output'])
+def parse_args():
+    parser = argparse.ArgumentParser(description='Export a model to onnx')
+    parser.add_argument('config', help='Train config file path')
+    parser.add_argument('checkpoint', help='Checkpoint file path')
+    parser.add_argument(
+        '--is-localizer',
+        action='store_true',
+        default=False,
+        help='Determine whether the model is a localizer')
+    parser.add_argument(
+        '--input-size',
+        type=int,
+        nargs='+',
+        default=None,
+        help='Input dimension, mandatory for localizers')
+    args = parser.parse_args()
+    args.input_size = tuple(args.input_size) if args.input_size else None
+    return args
 
 
 if __name__ == '__main__':
-    try:
-        config_path = sys.argv[1]
-        checkpoint_path = sys.argv[2]
-    except BaseException as e:
-        print(f'{e}:\nPlease indicate the config file and checkpoint path.')
-    model_cfg, test_pipeline, test_cfg = _get_recognizer_cfg(config_path)
-    t = None
-    s = None
-    for trans in test_pipeline:
-        if trans['type'] == 'SampleFrames':
-            t = trans['clip_len']
-        elif trans['type'] == 'Resize':
-            if isinstance(trans['scale'], int):
-                s = trans['scale']
-            elif isinstance(trans['scale'], tuple):
-                s = max(trans['scale'])
+    args = parse_args()
+    config_path = args.config
+    checkpoint_path = args.checkpoint
 
-    dummy_input = torch.randn(1, 3, t, s, s).cuda()
+    model_cfg, test_pipeline, test_cfg = _get_cfg(config_path)
+
+    # hyperparams for recognizers
     model = build_model(model_cfg, train_cfg=None, test_cfg=test_cfg).cuda()
-    load_checkpoint(model, checkpoint_path)
-    torch2onnx(dummy_input, model)
-    torch2caffe(dummy_input, model)
+    if not args.is_localizer:
+        try:
+            dummy_input = torch.randn(args.input_size).cuda()
+        except TypeError:
+            for trans in test_pipeline:
+                if trans['type'] == 'SampleFrames':
+                    t = trans['clip_len']
+                    n = trans['num_clips']
+                elif trans['type'] == 'Resize':
+                    if isinstance(trans['scale'], int):
+                        s = trans['scale']
+                    elif isinstance(trans['scale'], tuple):
+                        s = max(trans['scale'])
+            # #crop x (#batch * #clips) x #channel x clip_len x height x width
+            dummy_input = torch.randn(1, 1 * n, 3, t, s, s).cuda()
+        # squeeze the t-dimension for 2d model
+        dummy_input = dummy_input.squeeze(3)
+        warpped_model = RecognizerWarpper(model)
+    else:
+        try:
+            # #batch x #channel x length
+            dummy_input = torch.randn(args.input_size).cuda()
+        except TypeError as e:
+            print(f'{e}\nplease specify the input size for localizer.')
+            exit()
+        warpped_model = LocalizerWarpper(model)
+    load_checkpoint(
+        getattr(warpped_model,
+                'recognizer' if not args.is_localizer else 'localizer'),
+        checkpoint_path)
+    torch2onnx(dummy_input, warpped_model)
