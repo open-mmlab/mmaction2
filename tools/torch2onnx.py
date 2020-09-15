@@ -1,20 +1,25 @@
 import argparse
 import os.path as osp
 import sys
+import warnings
 
 import mmcv
-import onnx
 import torch
 import torch.nn as nn
 from mmcv.runner import load_checkpoint
 
 from mmaction.models import build_model
 
+try:
+    import onnx
+except ImportError:
+    warnings.warn('Please install onnx to support onnx exporting.')
+
 sys.path.append('../')
 
 
-class RecognizerWarpper(nn.Module):
-    """Warpper that only inferences the part in computation graph."""
+class RecognizerWrapper(nn.Module):
+    """Wrapper that only inferences the part in computation graph."""
 
     def __init__(self, recognizer):
         super().__init__()
@@ -24,8 +29,8 @@ class RecognizerWarpper(nn.Module):
         return self.recognizer.forward_dummy(x)
 
 
-class LocalizerWarpper(nn.Module):
-    """Warpper that only inferences the part in computation graph."""
+class LocalizerWrapper(nn.Module):
+    """Wrapper that only inferences the part in computation graph."""
 
     def __init__(self, localizer):
         super().__init__()
@@ -106,7 +111,7 @@ if __name__ == '__main__':
             dummy_input = torch.randn(1, 1 * n, 3, t, s, s).cuda()
         # squeeze the t-dimension for 2d model
         dummy_input = dummy_input.squeeze(3)
-        warpped_model = RecognizerWarpper(model)
+        wrapped_model = RecognizerWrapper(model)
     else:
         try:
             # #batch x #channel x length
@@ -114,9 +119,9 @@ if __name__ == '__main__':
         except TypeError as e:
             print(f'{e}\nplease specify the input size for localizer.')
             exit()
-        warpped_model = LocalizerWarpper(model)
+        wrapped_model = LocalizerWrapper(model)
     load_checkpoint(
-        getattr(warpped_model,
+        getattr(wrapped_model,
                 'recognizer' if not args.is_localizer else 'localizer'),
         checkpoint_path)
-    torch2onnx(dummy_input, warpped_model)
+    torch2onnx(dummy_input, wrapped_model)
