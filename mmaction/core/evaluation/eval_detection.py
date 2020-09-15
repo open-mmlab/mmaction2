@@ -1,11 +1,20 @@
 import json
 
 import numpy as np
+from mmcv.utils import get_root_logger, print_log
 
 from .accuracy import interpolated_precision_recall, pairwise_temporal_iou
 
 
 class ANetDetection(object):
+    """class to Evaluate detection results on ActivityNet.
+
+    Args:
+        ground_truth_filename (str): The filename of groundtruth.
+        prediction_filename (str): The filename of action detection results.
+        tiou_thresholds (np.ndarray): The thresholds of t_iou to evaluate.
+        verbose (bool): Print verbose logs.
+    """
 
     def __init__(self,
                  ground_truth_filename=None,
@@ -21,60 +30,53 @@ class ANetDetection(object):
         self.tiou_thresholds = tiou_thresholds
         self.verbose = verbose
         self.ap = None
+        self.logger = get_root_logger()
         # Import ground truth and predictions.
         self.ground_truth, self.activity_index = self._import_ground_truth(
             ground_truth_filename)
         self.prediction = self._import_prediction(prediction_filename)
 
         if self.verbose:
-            print('[INIT] Loaded ground_truth from '
-                  f'{self.ground_truth_filename}, prediction from '
-                  f'{self.prediction_filename}.')
-            num_gts = len(self.ground_truth)
-            print(f'Number of ground truth instances: {num_gts}')
-            num_preds = len(self.prediction)
-            print(f'Number of predictions: {num_preds}')
-            print(f'Fixed threshold for tiou score: {self.tiou_thresholds}')
+            log_msg = (
+                '[INIT] Loaded ground_truth from '
+                f'{self.ground_truth_filename}, prediction from '
+                f'{self.prediction_filename}.\n'
+                f'Number of ground truth instances: {len(self.ground_truth)}\n'
+                f'Number of predictions: {len(self.prediction)}\n'
+                f'Fixed threshold for tiou score: {self.tiou_thresholds}')
+            print_log(log_msg, logger=self.logger)
 
     def _import_ground_truth(self, ground_truth_filename):
-        """Reads ground truth file, returns the ground truth instances and the
-        activity classes.
+        """This function reads ground truth file, returns the ground truth
+        instances and the activity classes.
 
-        Parameters
-        ----------
-        ground_truth_filename : str
-            Full path to the ground truth json file.
+        Args:
+            ground_truth_filename (str): Full path to the ground truth json
+                file.
 
-        Outputs
-        -------
-        ground_truth : list
-            List containing the ground truth instances (dictionaries).
-        activity_index : dict
-            Dictionary containing class index.
+        Returns:
+            tuple[list, dict]: (ground_truth, activity_index).
+                ground_truth contains the ground truth instances, which is in a
+                    dict format.
+                activity_index contains classes index.
         """
         with open(ground_truth_filename, 'r') as f:
             data = json.load(f)
         # Checking format
         activity_index, class_idx = {}, 0
-        video_list, t_start_list, t_end_list, label_list = [], [], [], []
+        ground_truth = []
         for video_id, video_info in data.items():
             for anno in video_info['annotations']:
                 if anno['label'] not in activity_index:
                     activity_index[anno['label']] = class_idx
                     class_idx += 1
                 # old video_anno
-                video_list.append(video_id[2:])
-                t_start_list.append(float(anno['segment'][0]))
-                t_end_list.append(float(anno['segment'][1]))
-                label_list.append(activity_index[anno['label']])
-
-        ground_truth = [{
-            'video-id': vid,
-            't-start': tst,
-            't-end': ted,
-            'label': lb
-        } for vid, tst, ted, lb in zip(video_list, t_start_list, t_end_list,
-                                       label_list)]
+                ground_truth_item = {}
+                ground_truth_item['video-id'] = video_id[2:]
+                ground_truth_item['t-start'] = float(anno['segment'][0])
+                ground_truth_item['t-end'] = float(anno['segment'][1])
+                ground_truth_item['label'] = activity_index[anno['label']]
+                ground_truth.append(ground_truth_item)
 
         return ground_truth, activity_index
 
@@ -94,24 +96,17 @@ class ANetDetection(object):
         with open(prediction_filename, 'r') as f:
             data = json.load(f)
         # Read predictions.
-        video_list, t_start_list, t_end_list = [], [], []
-        label_list, score_list = [], []
+        prediction = []
         for video_id, video_info in data['results'].items():
             for result in video_info:
-                label = self.activity_index[result['label']]
-                video_list.append(video_id)
-                t_start_list.append(float(result['segment'][0]))
-                t_end_list.append(float(result['segment'][1]))
-                label_list.append(label)
-                score_list.append(result['score'])
-        prediction = [{
-            'video-id': vid,
-            't-start': tst,
-            't-end': ted,
-            'label': lb,
-            'score': sc
-        } for vid, tst, ted, lb, sc in zip(video_list, t_start_list,
-                                           t_end_list, label_list, score_list)]
+                prediction_item = dict()
+                prediction_item['video-id'] = video_id
+                prediction_item['label'] = self.activity_index[result['label']]
+                prediction_item['t-start'] = float(result['segment'][0])
+                prediction_item['t-end'] = float(result['segment'][1])
+                prediction_item['score'] = result['score']
+                prediction.append(prediction_item)
+
         return prediction
 
     def wrapper_compute_average_precision(self):
@@ -129,16 +124,11 @@ class ANetDetection(object):
         for pred in self.prediction:
             prediction_by_label[pred['label']].append(pred)
 
-        results = [
-            compute_average_precision_detection(
-                ground_truth=ground_truth_by_label[i],
-                prediction=prediction_by_label[i],
-                tiou_thresholds=self.tiou_thresholds)
-            for i in range(len(self.activity_index))
-        ]
-
         for i in range(len(self.activity_index)):
-            ap[:, i] = results[i]
+            ap_result = compute_average_precision_detection(
+                ground_truth_by_label[i], prediction_by_label[i],
+                self.tiou_thresholds)
+            ap[:, i] = ap_result
 
         return ap
 
@@ -197,17 +187,15 @@ def compute_average_precision_detection(ground_truth,
     fp = np.zeros((num_thresholds, num_preds))
 
     # Adaptation to query faster
-    ground_truth_gbvn = {}
+    ground_truth_by_videoid = {}
     for i, item in enumerate(ground_truth):
         item['index'] = i
-        if item['video-id'] not in ground_truth_gbvn:
-            ground_truth_gbvn[item['video-id']] = []
-        ground_truth_gbvn[item['video-id']].append(item)
+        ground_truth_by_videoid.setdefault(item['video-id'], []).append(item)
 
     # Assigning true positive to truly grount truth instances.
     for idx, pred in enumerate(prediction):
-        if pred['video-id'] in ground_truth_gbvn:
-            gts = ground_truth_gbvn[pred['video-id']]
+        if pred['video-id'] in ground_truth_by_videoid:
+            gts = ground_truth_by_videoid[pred['video-id']]
         else:
             fp[:, idx] = 1
             continue
@@ -218,20 +206,20 @@ def compute_average_precision_detection(ground_truth,
         tiou_arr = tiou_arr.reshape(-1)
         # We would like to retrieve the predictions with highest tiou score.
         tiou_sorted_idx = tiou_arr.argsort()[::-1]
-        for tidx, tiou_thr in enumerate(tiou_thresholds):
-            for jdx in tiou_sorted_idx:
-                if tiou_arr[jdx] < tiou_thr:
-                    fp[tidx, idx] = 1
+        for t_idx, tiou_threshold in enumerate(tiou_thresholds):
+            for j_idx in tiou_sorted_idx:
+                if tiou_arr[j_idx] < tiou_threshold:
+                    fp[t_idx, idx] = 1
                     break
-                if lock_gt[tidx, gts[jdx]['index']] >= 0:
+                if lock_gt[t_idx, gts[j_idx]['index']] >= 0:
                     continue
                 # Assign as true positive after the filters above.
-                tp[tidx, idx] = 1
-                lock_gt[tidx, gts[jdx]['index']] = idx
+                tp[t_idx, idx] = 1
+                lock_gt[t_idx, gts[j_idx]['index']] = idx
                 break
 
-            if fp[tidx, idx] == 0 and tp[tidx, idx] == 0:
-                fp[tidx, idx] = 1
+            if fp[t_idx, idx] == 0 and tp[t_idx, idx] == 0:
+                fp[t_idx, idx] = 1
 
     tp_cumsum = np.cumsum(tp, axis=1).astype(np.float)
     fp_cumsum = np.cumsum(fp, axis=1).astype(np.float)
@@ -239,8 +227,8 @@ def compute_average_precision_detection(ground_truth,
 
     precision_cumsum = tp_cumsum / (tp_cumsum + fp_cumsum)
 
-    for tidx in range(len(tiou_thresholds)):
-        ap[tidx] = interpolated_precision_recall(precision_cumsum[tidx, :],
-                                                 recall_cumsum[tidx, :])
+    for t_idx in range(len(tiou_thresholds)):
+        ap[t_idx] = interpolated_precision_recall(precision_cumsum[t_idx, :],
+                                                  recall_cumsum[t_idx, :])
 
     return ap
