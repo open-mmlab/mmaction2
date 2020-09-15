@@ -1,6 +1,5 @@
 import argparse
 import os.path as osp
-import sys
 import warnings
 
 import mmcv
@@ -14,8 +13,6 @@ try:
     import onnx
 except ImportError:
     warnings.warn('Please install onnx to support onnx exporting.')
-
-sys.path.append('../')
 
 
 class RecognizerWrapper(nn.Module):
