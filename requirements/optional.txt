@@ -1,3 +1,4 @@
 av
 decord
+onnx
 PyTurboJPEG
