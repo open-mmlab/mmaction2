@@ -96,7 +96,7 @@ Please refer to [data_preparation.md](docs/data_preparation.md) for a general kn
 ## Get Started
 
 Please see [getting_started.md](docs/getting_started.md) for the basic usage of MMAction2.
-There are also tutorials for [finetuning models](docs/tutorials/finetune.md), [adding new dataset](docs/tutorials/new_dataset.md), [designing data pipeline](docs/tutorials/data_pipeline.md), and [adding new modules](docs/tutorials/new_modules.md).
+There are also tutorials for [finetuning models](docs/tutorials/finetune.md), [adding new dataset](docs/tutorials/new_dataset.md), [designing data pipeline](docs/tutorials/data_pipeline.md), [exporting model to onnx](docs/tutorials/export_model.md) and [adding new modules](docs/tutorials/new_modules.md).
 
 A Colab tutorial is also provided. You may preview the notebook [here](demo/mmaction2_tutorial.ipynb) or directly [run](https://colab.research.google.com/github/open-mmlab/mmaction2/blob/master/demo/mmaction2_tutorial.ipynb) on Colab.
 

@@ -6,6 +6,7 @@
 
 **New Features**
 - Support to run real-time action recognition from web camera ([#171](https://github.com/open-mmlab/mmaction2/pull/171))
+- Support to export the pytorch models to onnx ones. ([#160](https://github.com/open-mmlab/mmaction2/pull/160))
 
 **ModelZoo**
 
