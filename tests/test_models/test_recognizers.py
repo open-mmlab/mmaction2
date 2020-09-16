@@ -64,7 +64,7 @@ def test_base_recognizer():
     # average_clips='score'
     test_cfg = dict(average_clips='score')
     recognizer = ExampleRecognizer(None, test_cfg)
-    score = recognizer.average_clip(cls_score)
+    score = recognizer.average_clip(cls_score, num_segs=5)
     assert torch.equal(score, cls_score.mean(dim=0, keepdim=True))
 
     # average_clips='prob'

@@ -20,11 +20,12 @@ class Recognizer3D(BaseRecognizer):
     def forward_test(self, imgs):
         """Defines the computation performed at every call when evaluation and
         testing."""
+        num_segs = imgs.shape[1]
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
 
         x = self.extract_feat(imgs)
         cls_score = self.cls_head(x)
-        cls_score = self.average_clip(cls_score)
+        cls_score = self.average_clip(cls_score, num_segs)
 
         return cls_score.cpu().numpy()
 

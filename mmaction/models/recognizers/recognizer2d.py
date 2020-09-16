@@ -14,9 +14,7 @@ class Recognizer2D(BaseRecognizer):
 
         x = self.extract_feat(imgs)
         cls_score = self.cls_head(x, num_segs)
-        # print('before squeeze', type(labels))
         gt_labels = labels.squeeze()
-        # print('after squeeze', type(gt_labels))
         loss = self.cls_head.loss(cls_score, gt_labels)
 
         return loss
