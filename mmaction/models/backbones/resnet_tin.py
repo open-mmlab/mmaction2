@@ -8,7 +8,7 @@ from .resnet_tsm import ResNetTSM
 
 try:
     from mmcv.ops import tin_shift
-except ImportError:
+except (ImportError, ModuleNotFoundError):
     warnings.warn('Please install mmcv-full to support "tin_shift"')
 
 
