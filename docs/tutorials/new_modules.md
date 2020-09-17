@@ -219,7 +219,7 @@ To use it, modify the `loss_xxx` field. Since MyLoss is for regression, we can u
 loss_bbox=dict(type='MyLoss'))
 ```
 
-## Add a new learning rate scheduler(updater)
+## Add new learning rate scheduler (updater)
 The default manner of constructing a lr updater(namely, 'scheduler' by pytorch convention), is to modify the config such as:
 ```python
 ...
@@ -239,7 +239,7 @@ In the api for [`train.py`](../../mmaction/apis/train.py), it will register the 
 ```
 So far, the supported updaters can be find in [mmcv](https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/lr_updater.py), but if you want to customize a new learning rate updater, you may follow the steps below:
 
-1. First, write your own LrUpdaterHook somewhere in the codebase. The snippet followed is an example of cumtomized lr updater that uses learning rate based on a specific learning rate ratio: `lrs`, by which the learning rate decreases at each `steps`:
+1. First, write your own LrUpdaterHook in `$MMAction2/mmaction/core/lr`. The snippet followed is an example of cumtomized lr updater that uses learning rate based on a specific learning rate ratio: `lrs`, by which the learning rate decreases at each `steps`:
 ```python
 @HOOKS.register_module()
 # Register it here
