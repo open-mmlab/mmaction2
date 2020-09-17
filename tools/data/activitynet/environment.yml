@@ -1,0 +1,36 @@
+name: activitynet
+channels:
+  - anaconda
+  - menpo
+  - conda-forge
+  - defaults
+dependencies:
+  - ca-certificates=2020.1.1
+  - certifi=2020.4.5.1
+  - ffmpeg=2.8.6
+  - libcxx=10.0.0
+  - libedit=3.1.20181209
+  - libffi=3.3
+  - ncurses=6.2
+  - openssl=1.1.1g
+  - pip=20.0.2
+  - python=3.7.7
+  - readline=8.0
+  - setuptools=46.4.0
+  - sqlite=3.31.1
+  - tk=8.6.8
+  - wheel=0.34.2
+  - xz=5.2.5
+  - zlib=1.2.11
+  - pip:
+    - decorator==4.4.2
+    - intel-openmp==2019.0
+    - joblib==0.15.1
+    - mkl==2019.0
+    - numpy==1.18.4
+    - olefile==0.46
+    - pandas==1.0.3
+    - python-dateutil==2.8.1
+    - pytz==2020.1
+    - six==1.14.0
+    - youtube-dl==2020.5.8
