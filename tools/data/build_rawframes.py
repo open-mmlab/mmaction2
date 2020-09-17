@@ -39,8 +39,12 @@ def extract_frame(vid_item):
                 if vr[i] is not None:
                     w, h, c = np.shape(vr[i])
                     if args.new_short == 0:
-                        out_img = mmcv.imresize(vr[i], (args.new_width,
-                                                        args.new_height))
+                        if args.new_width == 0 or args.new_height == 0:
+                            # Keep original shape
+                            out_img = vr[i]
+                        else:
+                            out_img = mmcv.imresize(vr[i], (args.new_width,
+                                                            args.new_height))
                     else:
                         if min(h, w) == h:
                             new_h = args.new_short

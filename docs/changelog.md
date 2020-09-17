@@ -14,6 +14,7 @@
 - Support to run a demo with a video url ([#165](https://github.com/open-mmlab/mmaction2/pull/165))
 
 **Bug Fixes**
+- Fix the bug when using OpenCV to extract only RGB frames with original shape ([#184](https://github.com/open-mmlab/mmaction2/pull/187))
 
 
 ### v0.6.0 (2/9/2020)
