@@ -38,7 +38,29 @@ Some videos in the ActivityNet dataset might be no longer available on YouTube, 
 bash download_videos.sh
 ```
 
-###
+## Step 3. Extract RGB and Flow
+Before extracting, please refer to [install.md](/docs/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
+
+Use following scripts to extract both RGB and Flow.
+
+```shell
+bash extract_frames.sh
+```
+
+These three commands above can generate images with size 340x256, if you want to generate images with short edge 320 (320p),
+you can change the args `--new-width 340 --new-height 256` to `--new-short 320`.
+More details can be found in [data_preparation](/docs/data_preparation.md)
+
+## Step 4. Generate File List for ActivityNet Finetuning
+
+With extracted frames, you can generate lists used for ActivityNet Finetuning.
+
+```shell
+bash generate_videos_filelist.sh
+# execute the command below when rawframes are ready
+bash generate_rawframes_filelist.sh
+```
+
 
 ## Final Step. Check Directory Structure
 
