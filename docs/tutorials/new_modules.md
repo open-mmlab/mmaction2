@@ -218,3 +218,52 @@ To use it, modify the `loss_xxx` field. Since MyLoss is for regression, we can u
 ```python
 loss_bbox=dict(type='MyLoss'))
 ```
+
+## Add new learning rate scheduler (updater)
+The default manner of constructing a lr updater(namely, 'scheduler' by pytorch convention), is to modify the config such as:
+```python
+...
+lr_config = dict(policy='step', step=[20, 40])
+...
+```
+In the api for [`train.py`](../../mmaction/apis/train.py), it will register the learning rate updater hook based on the config at:
+```python
+...
+    runner.register_training_hooks(
+        cfg.lr_config,
+        optimizer_config,
+        cfg.checkpoint_config,
+        cfg.log_config,
+        cfg.get('momentum_config', None))
+...
+```
+So far, the supported updaters can be find in [mmcv](https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/lr_updater.py), but if you want to customize a new learning rate updater, you may follow the steps below:
+
+1. First, write your own LrUpdaterHook in `$MMAction2/mmaction/core/lr`. The snippet followed is an example of cumtomized lr updater that uses learning rate based on a specific learning rate ratio: `lrs`, by which the learning rate decreases at each `steps`:
+```python
+@HOOKS.register_module()
+# Register it here
+class RelativeStepLrUpdaterHook(LrUpdaterHook):
+    # You should inheritate it from mmcv.LrUpdaterHook
+    def __init__(self, runner, steps, lrs, **kwargs):
+        super().__init__(**kwargs)
+        assert len(steps) == (len(lrs))
+        self.steps = steps
+        self.lrs = lrs
+
+    def get_lr(self, runner, base_lr):
+        # Only this function is required to override
+        # This function is called before each training epoch, return the specific learning rate here.
+        progress = runner.epoch if self.by_epoch else runner.iter
+        for i in range(len(self.steps)):
+            if progress < self.steps[i]:
+                return self.lrs[i]
+```
+
+2. Modify your config:
+In your config file, swap the original `lr_config` by:
+```python
+lr_config = dict(policy='RelativeStep', steps=[20, 40, 60], lrs=[0.1, 0.01, 0.001])
+```
+
+More examples can be found in [mmcv](https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/lr_updater.py).

@@ -12,6 +12,7 @@
 
 **Improvements**
 - Support to run a demo with a video url ([#165](https://github.com/open-mmlab/mmaction2/pull/165))
+- Add tutorial for adding a new learning rate updater ([#181](https://github.com/open-mmlab/mmaction2/pull/181))
 
 **Bug Fixes**
 - Fix the bug when using OpenCV to extract only RGB frames with original shape ([#184](https://github.com/open-mmlab/mmaction2/pull/187))
