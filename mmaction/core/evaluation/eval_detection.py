@@ -7,13 +7,16 @@ from .accuracy import interpolated_precision_recall, pairwise_temporal_iou
 
 
 class ANetDetection(object):
-    """class to Evaluate detection results on ActivityNet.
+    """Class to evaluate detection results on ActivityNet.
 
     Args:
         ground_truth_filename (str): The filename of groundtruth.
+            Default: None.
         prediction_filename (str): The filename of action detection results.
-        tiou_thresholds (np.ndarray): The thresholds of t_iou to evaluate.
-        verbose (bool): Print verbose logs.
+            Default: None.
+        tiou_thresholds (np.ndarray): The thresholds of temporal iou to
+            evaluate. Default: ``np.linspace(0.5, 0.95, 10)``.
+        verbose (bool): Whether to print verbose logs. Default: False.
     """
 
     def __init__(self,
@@ -47,8 +50,8 @@ class ANetDetection(object):
             print_log(log_msg, logger=self.logger)
 
     def _import_ground_truth(self, ground_truth_filename):
-        """This function reads ground truth file, returns the ground truth
-        instances and the activity classes.
+        """Read ground truth file and return the ground truth instances and the
+        activity classes.
 
         Args:
             ground_truth_filename (str): Full path to the ground truth json
@@ -81,17 +84,13 @@ class ANetDetection(object):
         return ground_truth, activity_index
 
     def _import_prediction(self, prediction_filename):
-        """Reads prediction file, returns the prediction instances.
+        """Read prediction file and return the prediction instances.
 
-        Parameters
-        ----------
-        prediction_filename : str
-            Full path to the prediction json file.
+        Args:
+            prediction_filename (str): Full path to the prediction json file.
 
-        Outputs
-        -------
-        prediction : list
-            List containing the prediction instances (dictionaries).
+        Returns:
+            List: List containing the prediction instances (dictionaries).
         """
         with open(prediction_filename, 'r') as f:
             data = json.load(f)
@@ -155,21 +154,19 @@ def compute_average_precision_detection(ground_truth,
     predicted segment, only the one with highest score is matches as true
     positive. This code is greatly inspired by Pascal VOC devkit.
 
-    Parameters
-    ----------
-    ground_truth : list
-        List containing the ground truth instances (dictionaries).
-        Required keys: ['video-id', 't-start', 't-end']
-    prediction : list
-        List containing the prediction instances (dictionaries).
-        Required keys: ['video-id, 't-start', 't-end', 'score']
-    tiou_thresholds : 1darray, optional
-        Temporal intersection over union threshold.
+    Args:
+        ground_truth (list[dict]): List containing the ground truth instances
+            (dictionaries). Required keys are 'video-id', 't-start' and
+            't-end'.
+        prediction (list[dict]): List containing the prediction instances
+            (dictionaries). Required keys are: 'video-id', 't-start', 't-end'
+            and 'score'.
+        tiou_thresholds (np.ndarray): A 1darray indicates the temporal
+            intersection over union threshold, which is optional.
+            Default: ``np.linspace(0.5, 0.95, 10)``.
 
-    Outputs
-    -------
-    ap : float
-        Average precision score.
+    Returns:
+        Float: ap, Average precision score.
     """
     num_thresholds = len(tiou_thresholds)
     num_gts = len(ground_truth)
