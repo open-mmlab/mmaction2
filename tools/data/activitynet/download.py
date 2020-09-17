@@ -1,15 +1,19 @@
 # This scripts is copied from
 # https://github.com/activitynet/ActivityNet/blob/master/Crawler/Kinetics/download.py  # noqa: E501
-import argparse
-import json
 import os
 import subprocess
+
+import mmcv
 
 import ssl  # isort:skip
 
 from joblib import Parallel, delayed  # isort:skip
 
 ssl._create_default_https_context = ssl._create_unverified_context
+data_file = '../../../data/ActivityNet'
+video_list = f'{data_file}/video_info_new.csv'
+anno_file = f'{data_file}/anet_anno_action.json'
+output_dir = f'{data_file}/videos'
 
 
 def download_clip(video_identifier,
@@ -45,10 +49,10 @@ def download_clip(video_identifier,
             try:
                 subprocess.check_output(
                     command, shell=True, stderr=subprocess.STDOUT)
-            except subprocess.CalledProcessError as err:
+            except subprocess.CalledProcessError:
                 attempts += 1
                 if attempts == num_attempts:
-                    return status, err.output
+                    return status, 'Fail'
             else:
                 break
     # Check if the video was successfully saved.
@@ -83,11 +87,11 @@ def parse_activitynet_annotations(input_csv):
     """
     lines = open(input_csv).readlines()
     lines = lines[1:]
-    youtube_ids = [x.split(',')[0] for x in lines]
+    youtube_ids = [x.split(',')[0][2:] for x in lines]
     return youtube_ids
 
 
-def main(input_csv, output_dir, num_jobs=24):
+def main(input_csv, output_dir, anno_file, num_jobs=24):
     # Reading and parsing ActivityNet.
     youtube_ids = parse_activitynet_annotations(input_csv)
 
@@ -105,23 +109,12 @@ def main(input_csv, output_dir, num_jobs=24):
             for index in youtube_ids)
 
     # Save download report.
-    with open('download_report.json', 'w') as fobj:
-        fobj.write(json.dumps(status_lst))
+    mmcv.dump(status_lst, 'download_report.json')
+    annotation = mmcv.load(anno_file)
+    downloaded = {status[0]: status[1] for status in status_lst}
+    annotation = {k: v for k, v in annotation.items() if downloaded[k[2:]]}
+    mmcv.dump(annotation, anno_file.replace('.json', '_new.json'))
 
 
 if __name__ == '__main__':
-    description = 'Helper script for downloading ActivityNet videos.'
-    p = argparse.ArgumentParser(description=description)
-    p.add_argument(
-        'input_csv',
-        type=str,
-        help=('CSV file containing the following format: '
-              'video,numFrame,seconds,fps,rfps,subset,featureFrame'
-              'video follows the format: v_YoutubeID'))
-    p.add_argument(
-        'output_dir',
-        type=str,
-        help='Output directory where videos will be saved.')
-    p.add_argument('-n', '--num-jobs', type=int, default=24)
-    # help='CSV file of the previous version of Kinetics.')
-    main(**vars(p.parse_args()))
+    main(video_list, output_dir, anno_file, 24)

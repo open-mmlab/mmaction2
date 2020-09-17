@@ -1,7 +1,8 @@
 # Preparing ActivityNet
 
 For basic dataset information, please refer to the official [website](http://activity-net.org/).
-Here, we use the ActivityNet rescaled feature provided in this [repo](https://github.com/wzmsltw/BSN-boundary-sensitive-network#code-and-data-preparation).
+For action detection, you can either use the ActivityNet rescaled feature provided in this [repo](https://github.com/wzmsltw/BSN-boundary-sensitive-network#code-and-data-preparation) or extract feature with mmaction2 (which has better performance).
+We release both pipeline.
 Before we start, please make sure that current working directory is `$MMACTION2/tools/data/activitynet/`.
 
 ## Step 1. Download Annotations
@@ -10,13 +11,15 @@ First of all, you can run the following script to download annotation files.
 bash download_annotations.sh
 ```
 
-## Step 2. Prepare Videos Features
+## Option 1: Use the ActivityNet rescaled feature provided in this [repo](https://github.com/wzmsltw/BSN-boundary-sensitive-network#code-and-data-preparation)
+
+### Step 2. Prepare Videos Features
 Then, you can run the following script to download activitynet features.
 ```shell
 bash download_features.sh
 ```
 
-## Step 3. Process Annotation Files
+### Step 3. Process Annotation Files
 Next, you can run the following script to process the downloaded annotation files for training and testing.
 It first merges the two annotation files together and then seperates the annoations by `train`, `val` and `test`.
 
@@ -24,7 +27,20 @@ It first merges the two annotation files together and then seperates the annoati
 python process_annotations.py
 ```
 
-## Step 4. Check Directory Structure
+## Option 2: Extract ActivityNet feature using MMAction2.
+
+### Step 2. Prepare Videos.
+Then, you can run the following script to prepare videos.
+The codes are adapted from the [official crawler](https://github.com/activitynet/ActivityNet/tree/master/Crawler/Kinetics). Note that this might take a long time.
+Some videos in the ActivityNet dataset might be no longer available on YouTube, so that after video downloading, the downloading scripts update the annotation file to make sure every video in it exists.
+
+```shell
+bash download_videos.sh
+```
+
+###
+
+## Final Step. Check Directory Structure
 
 After the whole data pipeline for ActivityNet preparation,
 you will get the features and annotation files.
