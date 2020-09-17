@@ -9,6 +9,7 @@ import mmcv
 import torch
 from mmcv import Config
 from mmcv.runner import init_dist, set_random_seed
+from mmcv.utils import get_git_hash
 
 from mmaction import __version__
 from mmaction.apis import train_model
@@ -135,7 +136,7 @@ def main():
         # save mmaction version, config file content and class names in
         # checkpoints as meta data
         cfg.checkpoint_config.meta = dict(
-            mmaction_version=__version__, config=cfg.text)
+            mmaction_version=__version__ + get_git_hash()[:7], config=cfg.text)
 
     train_model(
         model,

@@ -21,10 +21,17 @@ sys.path.insert(0, os.path.abspath('..'))
 project = 'MMAction2'
 copyright = '2020, OpenMMLab'
 author = 'MMAction2 Authors'
+version_file = '../mmaction/version.py'
+
+
+def get_version():
+    with open(version_file, 'r') as f:
+        exec(compile(f.read(), version_file, 'exec'))
+    return locals()['__version__']
+
 
 # The full version, including alpha/beta/rc tags
-with open('../mmaction/VERSION', 'r') as f:
-    release = f.read().strip()
+release = get_version()
 
 # -- General configuration ---------------------------------------------------
 
@@ -48,10 +55,7 @@ templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # -- Options for HTML output -------------------------------------------------
-source_suffix = {
-    '.rst': 'restructuredtext',
-    '.md': 'markdown',
-}
+source_suffix = {'.rst': 'restructuredtext', '.md': 'markdown'}
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
