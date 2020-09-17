@@ -35,7 +35,7 @@ model = dict(
         dropout_ratio=0.5))
 
 # model training and testing settings
-test_cfg = dict(average_clips=None)
+test_cfg = dict(average_clips='prob')
 # dataset settings
 dataset_type = 'VideoDataset'
 img_norm_cfg = dict(

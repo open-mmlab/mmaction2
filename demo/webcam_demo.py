@@ -3,6 +3,7 @@ from collections import deque
 from operator import itemgetter
 
 import cv2
+import mmcv
 import numpy as np
 import torch
 from mmcv.parallel import collate, scatter
@@ -19,6 +20,11 @@ LINETYPE = 1
 EXCLUED_STEPS = [
     'OpenCVInit', 'OpenCVDecode', 'DecordInit', 'DecordDecode', 'PyAVInit',
     'PyAVDecode', 'RawFrameDecode', 'FrameSelector'
+]
+
+NEED_PREPARED_MODELS = [
+    'ResNetTSM', 'ResNetTIN', 'ResNet3dCSN', 'ResNet3d', 'ResNet2Plus1d',
+    'ResNet3dSlowFast', 'ResNet3dSlowOnly'
 ]
 
 
@@ -40,7 +46,8 @@ def parse_args():
         '--sample-length',
         type=int,
         default=0,
-        help='number of sampled frames')
+        help='number of sampled frames, it is only used for recognizers '
+        'which need no frame preparation')
     parser.add_argument(
         '--average-size',
         type=int,
@@ -51,11 +58,14 @@ def parse_args():
 
 
 def predict_webcam_video():
-    data = dict(img_shape=None, modality='RGB')
-
     windows = deque()
     score_cache = deque()
     scores_sum = np.zeros(len(label))
+
+    if need_preparation:
+        is_prepared = False
+        print('This model needs some preparation time')
+        prog_bar = mmcv.ProgressBar(sample_length)
 
     while True:
         ret, frame = camera.read()
@@ -64,6 +74,14 @@ def predict_webcam_video():
         if data['img_shape'] is None:
             data['img_shape'] = frame.shape[:2]
 
+        if need_preparation and not is_prepared:
+            prog_bar.update()
+            if len(windows) != sample_length:
+                continue
+            else:
+                is_prepared = True
+                print('\nFinish preparation, Inference begin')
+
         cur_windows = list(np.array(windows))
         cur_data = data.copy()
         cur_data['imgs'] = cur_windows
@@ -71,6 +89,7 @@ def predict_webcam_video():
         cur_data = collate([cur_data], samples_per_gpu=1)
         if next(model.parameters()).is_cuda:
             cur_data = scatter(cur_data, [device])[0]
+
         with torch.no_grad():
             scores = model(return_loss=False, **cur_data)[0]
 
@@ -108,17 +127,25 @@ def predict_webcam_video():
 
 
 def main():
-    global label, device, model, test_pipeline, \
-        camera, sample_length, average_size, threshold
+    global label, device, model, test_pipeline, camera, sample_length, \
+        average_size, threshold, data, need_preparation
 
     args = parse_args()
     device = torch.device(args.device)
     model = init_recognizer(args.config, args.checkpoint, device=device)
     camera = cv2.VideoCapture(args.camera_id)
 
+    data = dict(img_shape=None, modality='RGB', label=-1)
+
     sample_length = args.sample_length
     average_size = args.average_size
     threshold = args.threshold
+    need_preparation = model.cfg.model.backbone.type in NEED_PREPARED_MODELS
+
+    if need_preparation and sample_length != 0:
+        raise ValueError(
+            'sample_length should not be specified when testing some '
+            'recognizer, which need enough frames for preparation')
 
     with open(args.label, 'r') as f:
         label = [line.strip() for line in f]
@@ -132,6 +159,8 @@ def main():
             # Remove step to sample frames
             if sample_length == 0:
                 sample_length = step['clip_len'] * step['num_clips']
+                data['num_clips'] = step['num_clips']
+                data['clip_len'] = step['clip_len']
             pipeline_.remove(step)
         if step['type'] in EXCLUED_STEPS:
             # remove step to decode frames
