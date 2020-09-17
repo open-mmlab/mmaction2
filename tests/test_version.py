@@ -1,8 +1,15 @@
-import mmaction
+from mmaction import digit_version
 
 
-def test_version():
-    version = mmaction.__version__
-    assert isinstance(version, str)
-    assert isinstance(mmaction.short_version, str)
-    assert mmaction.short_version in version and '+' in version
+def test_version_check():
+    assert digit_version('1.0.5') > digit_version('1.0.5rc0')
+    assert digit_version('1.0.5') > digit_version('1.0.4rc0')
+    assert digit_version('1.0.5') > digit_version('1.0rc0')
+    assert digit_version('1.0.0') > digit_version('0.6.2')
+    assert digit_version('1.0.0') > digit_version('0.2.16')
+    assert digit_version('1.0.5rc0') > digit_version('1.0.0rc0')
+    assert digit_version('1.0.0rc1') > digit_version('1.0.0rc0')
+    assert digit_version('1.0.0rc2') > digit_version('1.0.0rc0')
+    assert digit_version('1.0.0rc2') > digit_version('1.0.0rc1')
+    assert digit_version('1.0.1rc1') > digit_version('1.0.0rc1')
+    assert digit_version('1.0.0') > digit_version('1.0.0rc1')
