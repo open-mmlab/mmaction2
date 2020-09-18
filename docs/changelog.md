@@ -7,8 +7,10 @@
 **New Features**
 - Support to run real-time action recognition from web camera ([#171](https://github.com/open-mmlab/mmaction2/pull/171))
 - Support to export the pytorch models to onnx ones. ([#160](https://github.com/open-mmlab/mmaction2/pull/160))
+- Support to report mAP for ActivityNet with [CUHK17_activitynet_pred](http://activity-net.org/challenges/2017/evaluation.html). ([#176](https://github.com/open-mmlab/mmaction2/pull/176))
 
 **ModelZoo**
+- Add finetuning setting for SlowOnly. ([#173](https://github.com/open-mmlab/mmaction2/pull/173))
 
 **Improvements**
 - Support to run a demo with a video url ([#165](https://github.com/open-mmlab/mmaction2/pull/165))
