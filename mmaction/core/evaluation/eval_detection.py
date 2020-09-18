@@ -6,7 +6,7 @@ from mmcv.utils import get_logger, print_log
 from .accuracy import interpolated_precision_recall, pairwise_temporal_iou
 
 
-class ANetDetection(object):
+class ActivityNetDetection(object):
     """Class to evaluate detection results on ActivityNet.
 
     Args:

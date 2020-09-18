@@ -5,7 +5,7 @@ import os.path as osp
 import mmcv
 import numpy as np
 
-from mmaction.core import ANetDetection
+from mmaction.core import ActivityNetDetection
 
 args = None
 
@@ -72,7 +72,7 @@ def main():
     args = parse_args()
     func = cls_funcs[args.cls]
     func()
-    anet_detection = ANetDetection(
+    anet_detection = ActivityNetDetection(
         args.gt,
         args.det_output,
         tiou_thresholds=np.linspace(0.5, 0.95, 10),
