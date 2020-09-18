@@ -70,7 +70,7 @@ def merge_feat(name):
     flow_feat = pool_feature(flow_feat)
     feat = np.concatenate([rgb_feat, flow_feat], axis=-1)
     if not osp.exists(args.dest):
-        os.system('mkdir -p {args.dest}')
+        os.system(f'mkdir -p {args.dest}')
     if args.output_format == 'pkl':
         dump(feat, osp.join(args.dest, name))
     elif args.output_format == 'csv':

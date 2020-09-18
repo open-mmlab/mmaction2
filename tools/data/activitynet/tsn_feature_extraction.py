@@ -112,6 +112,7 @@ def main():
             frame_dir=frame_dir,
             total_frames=length,
             filename_tmpl=args.f_tmpl,
+            start_index=0,
             modality=args.modality)
         sample = data_pipeline(tmpl)
         imgs = sample['imgs']
