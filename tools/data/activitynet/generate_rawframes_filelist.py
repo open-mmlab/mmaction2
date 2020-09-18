@@ -88,14 +88,11 @@ def generate_rawframes_filelist():
             lines.append(newline)
         return lines
 
-    train_clips = [
-        clip_list(k, anet_annotations[k], train_vids[k])
-        for k in train_vids.keys()
-    ]
-    val_clips = [
-        clip_list(k, anet_annotations[k], val_vids[k])
-        for k in val_vids.keys()
-    ]
+    train_clips, val_clips = [], []
+    for k in train_vids.keys():
+        train_clips.extend(clip_list(k, anet_annotations[k], train_vids[k]))
+    for k in val_vids.keys():
+        val_clips.extend(clip_list(k, anet_annotations[k], val_vids[k]))
 
     with open(osp.join(data_file, 'anet_train_clip.txt'), 'w') as fout:
         fout.write('\n'.join(train_clips))
