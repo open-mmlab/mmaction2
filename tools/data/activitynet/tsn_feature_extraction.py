@@ -100,7 +100,8 @@ def main():
         os.system(f'mkdir -p {args.output_prefix}')
 
     for item in data:
-        frame_dir, length, output_file = item.split()
+        frame_dir, length, label = item.split()
+        output_file = osp.basename(frame_dir) + '.pkl'
         frame_dir = osp.join(args.data_prefix, frame_dir)
         output_file = osp.join(args.output_prefix, output_file)
         assert output_file.endswith('.pkl')
