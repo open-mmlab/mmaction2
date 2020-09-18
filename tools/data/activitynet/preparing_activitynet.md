@@ -38,7 +38,7 @@ Some videos in the ActivityNet dataset might be no longer available on YouTube, 
 bash download_videos.sh
 ```
 
-## Step 3. Extract RGB and Flow
+### Step 3. Extract RGB and Flow
 Before extracting, please refer to [install.md](/docs/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
 
 Use following scripts to extract both RGB and Flow.
@@ -51,14 +51,36 @@ These three commands above can generate images with size 340x256, if you want to
 you can change the args `--new-width 340 --new-height 256` to `--new-short 320`.
 More details can be found in [data_preparation](/docs/data_preparation.md)
 
-## Step 4. Generate File List for ActivityNet Finetuning
-
+### Step 4. Generate File List for ActivityNet Finetuning
 With extracted frames, you can generate video-level or clip-level lists of rawframes, which can be used for ActivityNet Finetuning.
 
 ```shell
 python generate_rawframes_filelist.py
 ```
 
+### Step 5. Finetune TSN models on ActivityNet
+You can use ActivityNet configs in `configs/recognition/tsn` to finetune TSN models on ActivityNet.
+You need to use Kinetics models for pretraining.
+Both RGB models and Flow models are supported.
+
+### Step 6. Extract ActivityNet Feature with finetuned ckpts
+After finetuning TSN on ActivityNet, you can use it to extract both RGB and Flow feature.
+
+```shell
+python tsn_feature_extraction.py --data-prefix ../../../data/ActivityNet/rawframes --data-list ../../../data/ActivityNet/anet_train_video.txt --output_prefix ../../../data/ActivityNet/rgb_feat --modality RGB --ckpt /path/to/rgb_checkpoint.pth
+
+python tsn_feature_extraction.py --data-prefix ../../../data/ActivityNet/rawframes --data-list ../../../data/ActivityNet/anet_val_video.txt --output_prefix ../../../data/ActivityNet/rgb_feat --modality RGB --ckpt /path/to/rgb_checkpoint.pth
+
+python tsn_feature_extraction.py --data-prefix ../../../data/ActivityNet/rawframes --data-list ../../../data/ActivityNet/anet_train_video.txt --output_prefix ../../../data/ActivityNet/flow_feat --modality Flow --ckpt /path/to/flow_checkpoint.pth
+
+python tsn_feature_extraction.py --data-prefix ../../../data/ActivityNet/rawframes --data-list ../../../data/ActivityNet/anet_val_video.txt --output_prefix ../../../data/ActivityNet/flow_feat --modality Flow --ckpt /path/to/flow_checkpoint.pth
+```
+
+After feature extraction, you can use our post processing scripts to concat RGB and Flow feature, generate the 100-t X 400-d feature for Action Detection.
+
+```shell
+python activitynet_feature_postprocessing --rgb ../../../data/ActivityNet/rgb_feat --flow ../../../data/ActivityNet/flow_feat --dest ../../../data/ActivityNet/mmaction_feat
+```
 
 ## Final Step. Check Directory Structure
 
