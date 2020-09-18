@@ -53,12 +53,10 @@ More details can be found in [data_preparation](/docs/data_preparation.md)
 
 ## Step 4. Generate File List for ActivityNet Finetuning
 
-With extracted frames, you can generate lists used for ActivityNet Finetuning.
+With extracted frames, you can generate video-level or clip-level lists of rawframes, which can be used for ActivityNet Finetuning.
 
 ```shell
-bash generate_videos_filelist.sh
-# execute the command below when rawframes are ready
-bash generate_rawframes_filelist.sh
+python generate_rawframes_filelist.py
 ```
 
 
