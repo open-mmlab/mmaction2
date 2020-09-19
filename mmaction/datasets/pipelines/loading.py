@@ -621,7 +621,7 @@ class PyAVDecode(object):
         self.multi_thread = multi_thread
 
     def __call__(self, results):
-        """Perform the PyAV loading.
+        """Perform the PyAV decoding.
 
         Args:
             results (dict): The resulting dict to be modified and passed
@@ -679,7 +679,7 @@ class DecordInit(object):
         self.file_client = None
 
     def __call__(self, results):
-        """Perform the PyAV loading.
+        """Perform the Decord initiation.
 
         Args:
             results (dict): The resulting dict to be modified and passed
@@ -715,7 +715,7 @@ class DecordDecode(object):
         pass
 
     def __call__(self, results):
-        """Perform the Decord loading.
+        """Perform the Decord decoding.
 
         Args:
             results (dict): The resulting dict to be modified and passed
@@ -805,7 +805,7 @@ class OpenCVDecode(object):
         pass
 
     def __call__(self, results):
-        """Perform the OpenCV loading.
+        """Perform the OpenCV decoding.
 
         Args:
             results (dict): The resulting dict to be modified and passed
