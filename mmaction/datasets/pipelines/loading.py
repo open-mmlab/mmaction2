@@ -621,7 +621,7 @@ class PyAVDecode(object):
         self.multi_thread = multi_thread
 
     def __call__(self, results):
-        """Perform the PyAV loading.
+        """Perform the PyAV decoding.
 
         Args:
             results (dict): The resulting dict to be modified and passed
