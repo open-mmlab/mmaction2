@@ -204,7 +204,7 @@ Optional arguments:
 - `CAMERA_ID`: ID of camera device If not specified, it will be set to 0.
 - `THRESHOLD`: Threshold of prediction score for action recognition. Only label with score higher than the threshold will be shown. If not specified, it will be set to 0.
 - `SAMPLE_LENGTH`: Number of frames to be sampled from web camera. If not specified, it will be calculated from the config file by `clip_len x num_clips`.
-    This argument is only applied for recognizers which need no enough frame for preparation.
+    This argument is only applied for recognizers which need no frame stuffing.
 - `AVERAGE_SIZE`: Number of latest clips to be averaged for prediction. If not specified, it will be set to 1.
 
 Examples:
@@ -233,8 +233,8 @@ python demo/webcam_demo.py configs/recognition/i3d/i3d_r50_video_inference_32x2x
 **Note:** Considering the efficiency difference for users' hardware, Some modifications might be done to suit the case.
 Users can change:
 1). `SampleFrames` step (especially the number of `clip_len` and `num_clips`) of `test_pipeline` in the config file.
-2). Change the suitable Crop methods like `TenCrop`, `ThreeCrop`, `CenterCrop`, etc. in `test_pipeline` of the config file.
-3). Change the number for `--average-size`. The smaller, the faster.
+2). Change to the suitable Crop methods like `TenCrop`, `ThreeCrop`, `CenterCrop`, etc. in `test_pipeline` of the config file.
+3). Change the number of `--average-size` and `--sample-length`. The smaller, the faster.
 
 ### High-level APIs for testing a video and rawframes.
 

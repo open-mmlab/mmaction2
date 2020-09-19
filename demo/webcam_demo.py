@@ -3,7 +3,6 @@ from collections import deque
 from operator import itemgetter
 
 import cv2
-import mmcv
 import numpy as np
 import torch
 from mmcv.parallel import collate, scatter
@@ -22,7 +21,7 @@ EXCLUED_STEPS = [
     'PyAVDecode', 'RawFrameDecode', 'FrameSelector'
 ]
 
-NEED_PREPARED_MODELS = [
+NEED_STUFF = [
     'ResNetTSM', 'ResNetTIN', 'ResNet3dCSN', 'ResNet3d', 'ResNet2Plus1d',
     'ResNet3dSlowFast', 'ResNet3dSlowOnly'
 ]
@@ -47,7 +46,7 @@ def parse_args():
         type=int,
         default=0,
         help='number of sampled frames, it is only used for recognizers '
-        'which need no frame preparation')
+        'which need no frame stuffing')
     parser.add_argument(
         '--average-size',
         type=int,
@@ -62,10 +61,8 @@ def predict_webcam_video():
     score_cache = deque()
     scores_sum = np.zeros(len(label))
 
-    if need_preparation:
-        is_prepared = False
-        print('This model needs some preparation time')
-        prog_bar = mmcv.ProgressBar(sample_length)
+    if need_stuff:
+        is_buffer_full = False
 
     while True:
         ret, frame = camera.read()
@@ -74,13 +71,12 @@ def predict_webcam_video():
         if data['img_shape'] is None:
             data['img_shape'] = frame.shape[:2]
 
-        if need_preparation and not is_prepared:
-            prog_bar.update()
-            if len(windows) != sample_length:
-                continue
-            else:
-                is_prepared = True
-                print('\nFinish preparation, Inference begin')
+        if need_stuff and not is_buffer_full:
+            print('Stuffing frames at first ...')
+            windows_item = windows.popleft()
+            windows_items = [windows_item] * sample_length
+            windows.extend(windows_items)
+            is_buffer_full = True
 
         cur_windows = list(np.array(windows))
         cur_data = data.copy()
@@ -128,7 +124,7 @@ def predict_webcam_video():
 
 def main():
     global label, device, model, test_pipeline, camera, sample_length, \
-        average_size, threshold, data, need_preparation
+        average_size, threshold, data, need_stuff
 
     args = parse_args()
     device = torch.device(args.device)
@@ -140,12 +136,12 @@ def main():
     sample_length = args.sample_length
     average_size = args.average_size
     threshold = args.threshold
-    need_preparation = model.cfg.model.backbone.type in NEED_PREPARED_MODELS
+    need_stuff = model.cfg.model.backbone.type in NEED_STUFF
 
-    if need_preparation and sample_length != 0:
+    if need_stuff and sample_length != 0:
         raise ValueError(
             'sample_length should not be specified when testing some '
-            'recognizer, which need enough frames for preparation')
+            'recognizer, which need to stuff frames at first')
 
     with open(args.label, 'r') as f:
         label = [line.strip() for line in f]
