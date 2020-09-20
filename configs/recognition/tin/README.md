@@ -28,7 +28,9 @@
 
 |config | resolution | gpus | backbone| pretrain | top1 acc| top5 acc | gpu_mem(M)  | ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[tin_tsm_finetune_r50_1x1x8_50e_kinetics400_rgb](/configs/recognition/tin/tin_tsm_finetune_r50_1x1x8_50e_kinetics400_rgb.py)|short-side 256|8x4| ResNet50 | TSM-ImageNet | 70.89 | 89.89 | 6187 | [ckpt](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tin/tin_tsm_finetune_r50_1x1x8_50e_kinetics400_rgb/tin_tsm_finetune_r50_1x1x8_50e_kinetics400_rgb_20200810-4a146a70.pth) | [log](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tin/tin_tsm_finetune_r50_1x1x8_50e_kinetics400_rgb/20200809_142447.log) | [json](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tin/tin_tsm_finetune_r50_1x1x8_50e_kinetics400_rgb/20200809_142447.log.json) |
+|[tin_tsm_finetune_r50_1x1x8_50e_kinetics400_rgb](/configs/recognition/tin/tin_tsm_finetune_r50_1x1x8_50e_kinetics400_rgb.py)|short-side 256|8x4| ResNet50 | TSM-Kinetics400 | 70.89 | 89.89 | 6187 | [ckpt](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tin/tin_tsm_finetune_r50_1x1x8_50e_kinetics400_rgb/tin_tsm_finetune_r50_1x1x8_50e_kinetics400_rgb_20200810-4a146a70.pth) | [log](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tin/tin_tsm_finetune_r50_1x1x8_50e_kinetics400_rgb/20200809_142447.log) | [json](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tin/tin_tsm_finetune_r50_1x1x8_50e_kinetics400_rgb/20200809_142447.log.json) |
+
+Here, we use `finetune` to indicate that we use [TSM model](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/tsm_r50_1x1x8_50e_kinetics400_rgb_20200607-af7fb746.pth) trained on Kinetics-400 to finetune the TIN model on Kinetics-400.
 
 Notes:
 1. The **reference topk acc** are got by training the [original repo #1aacd0c](https://github.com/deepcs233/TIN/tree/1aacd0c4c30d5e1d334bf023e55b855b59f158db) with no [AverageMeter issue](https://github.com/deepcs233/TIN/issues/4).
