@@ -455,8 +455,8 @@ class SSNDataset(BaseDataset):
         plain_detections = {}
         for class_idx in range(len(detections)):
             detection_list = []
-            for vid, dets in detections[class_idx].items():
-                detection_list.extend([[vid, class_idx] + x[:3]
+            for video, dets in detections[class_idx].items():
+                detection_list.extend([[video, class_idx] + x[:3]
                                        for x in dets.tolist()])
             plain_detections[class_idx] = detection_list
 
@@ -500,7 +500,7 @@ class SSNDataset(BaseDataset):
         """Fetch groundtruth instances of the entire dataset."""
         gts = {}
         for video_info in self.video_infos:
-            vid = video_info['video_id']
+            video = video_info['video_id']
             for gt in video_info['gts']:
                 class_idx = gt.label - 1
                 # gt_info: [relative_start, relative_end]
@@ -508,7 +508,7 @@ class SSNDataset(BaseDataset):
                     gt.start_frame / video_info['total_frames'],
                     gt.end_frame / video_info['total_frames']
                 ]
-                gts.setdefault(class_idx, {}).setdefault(vid,
+                gts.setdefault(class_idx, {}).setdefault(video,
                                                          []).append(gt_info)
 
         return gts

@@ -86,11 +86,11 @@ def extract_dense_flow(path,
 
     frames = []
     assert osp.exists(path)
-    vid = cv2.VideoCapture(path)
-    flag, f = vid.read()
+    video = cv2.VideoCapture(path)
+    flag, f = video.read()
     while flag:
         frames.append(f)
-        flag, f = vid.read()
+        flag, f = video.read()
 
     flow = generate_flow(frames, method=method)
 

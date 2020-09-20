@@ -102,18 +102,18 @@ def main(input_csv, output_dir, anno_file, num_jobs=24):
         os.makedirs(output_dir)
     # Download all clips.
     if num_jobs == 1:
-        status_lst = []
+        status_list = []
         for index in youtube_ids:
-            status_lst.append(download_clip_wrapper(index, output_dir))
+            status_list.append(download_clip_wrapper(index, output_dir))
     else:
-        status_lst = Parallel(n_jobs=num_jobs)(
+        status_list = Parallel(n_jobs=num_jobs)(
             delayed(download_clip_wrapper)(index, output_dir)
             for index in youtube_ids)
 
     # Save download report.
-    mmcv.dump(status_lst, 'download_report.json')
+    mmcv.dump(status_list, 'download_report.json')
     annotation = mmcv.load(anno_file)
-    downloaded = {status[0]: status[1] for status in status_lst}
+    downloaded = {status[0]: status[1] for status in status_list}
     annotation = {k: v for k, v in annotation.items() if downloaded[k]}
     anno_file_bak = anno_file.replace('.json', '_bak.json')
     os.system(f'mv {anno_file} {anno_file_bak}')

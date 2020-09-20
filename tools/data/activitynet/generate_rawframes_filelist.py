@@ -20,50 +20,51 @@ def generate_rawframes_filelist():
     attr_names = [x.lower() for x in attr_names]
     attr_types = [int, float, float, float, str, int]
 
-    vidannos = {}
+    video_annos = {}
     for line in videos[1:]:
         name = line[0]
         data = {}
         for attr_name, attr_type, attr_val in zip(attr_names, attr_types,
                                                   line[1:]):
             data[attr_name] = attr_type(attr_val)
-        vidannos[name] = data
+        video_annos[name] = data
 
     # only keep downloaded videos
-    vidannos = {k: v for k, v in vidannos.items() if k in anet_annotations}
+    video_annos = {
+        k: v
+        for k, v in video_annos.items() if k in anet_annotations
+    }
     # update numframe
-    for vid in vidannos.keys():
-        pth = osp.join(rawframe_dir, vid)
+    for video in video_annos:
+        pth = osp.join(rawframe_dir, video)
         num_imgs = len(os.listdir(pth))
         # one more rgb img than flow
         assert (num_imgs - 1) % 3 == 0
         num_frames = (num_imgs - 1) // 3
-        vidannos[vid]['numframe'] = num_frames
+        video_annos[video]['numframe'] = num_frames
 
-    anet_labels = open('action_name.csv')
-    anet_labels = [x.strip() for x in anet_labels]
+    anet_labels = open('action_name.csv').readlines()
+    anet_labels = [x.strip() for x in anet_labels[1:]]
 
-    train_vids = {
-        k: vid
-        for k, vid in vidannos.items() if vid['subset'] == 'training'
-    }
-    val_vids = {
-        k: vid
-        for k, vid in vidannos.items() if vid['subset'] == 'validation'
-    }
+    train_videos, val_videos = {}, {}
+    for k, video in video_annos.items():
+        if video['subset'] == 'training':
+            train_videos[k] = video
+        elif video['subset'] == 'validation':
+            val_videos[k] = video
 
-    def simple_label(vidix):
-        anno = anet_annotations[vidix]
-        lb = anno['annotations'][0]['label']
-        return anet_labels.index(lb)
+    def simple_label(video_idx):
+        anno = anet_annotations[video_idx]
+        label = anno['annotations'][0]['label']
+        return anet_labels.index(label)
 
     train_lines = [
-        k + ' ' + str(train_vids[k]['numframe']) + ' ' + str(simple_label(k))
-        for k in train_vids.keys()
+        k + ' ' + str(train_videos[k]['numframe']) + ' ' +
+        str(simple_label(k)) for k in train_videos
     ]
     val_lines = [
-        k + ' ' + str(val_vids[k]['numframe']) + ' ' + str(simple_label(k))
-        for k in val_vids.keys()
+        k + ' ' + str(val_videos[k]['numframe']) + ' ' + str(simple_label(k))
+        for k in val_videos
     ]
 
     with open(osp.join(data_file, 'anet_train_video.txt'), 'w') as fout:
@@ -72,27 +73,27 @@ def generate_rawframes_filelist():
         fout.write('\n'.join(val_lines))
 
     def clip_list(k, anno, vidanno):
-        n_second = anno['duration_second']
-        n_frame = vidanno['numframe']
-        fps = n_frame / n_second
+        num_seconds = anno['duration_second']
+        num_frames = vidanno['numframe']
+        fps = num_frames / num_seconds
         segs = anno['annotations']
         lines = []
         for seg in segs:
             segment = seg['segment']
-            lb = seg['label']
-            lb = anet_labels.index(lb)
+            label = seg['label']
+            label = anet_labels.index(label)
             start, end = int(segment[0] * fps), int(segment[1] * fps)
-            if end > n_frame - 1:
-                end = n_frame - 1
-            newline = f'{k} {start} {end - start + 1} {lb}'
+            if end > num_frames - 1:
+                end = num_frames - 1
+            newline = f'{k} {start} {end - start + 1} {label}'
             lines.append(newline)
         return lines
 
     train_clips, val_clips = [], []
-    for k in train_vids.keys():
-        train_clips.extend(clip_list(k, anet_annotations[k], train_vids[k]))
-    for k in val_vids.keys():
-        val_clips.extend(clip_list(k, anet_annotations[k], val_vids[k]))
+    for k in train_videos:
+        train_clips.extend(clip_list(k, anet_annotations[k], train_videos[k]))
+    for k in val_videos:
+        val_clips.extend(clip_list(k, anet_annotations[k], val_videos[k]))
 
     with open(osp.join(data_file, 'anet_train_clip.txt'), 'w') as fout:
         fout.write('\n'.join(train_clips))
