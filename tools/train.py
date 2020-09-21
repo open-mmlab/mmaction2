@@ -8,13 +8,13 @@ import warnings
 import mmcv
 import torch
 from mmcv import Config
-from mmcv.runner import init_dist, set_random_seed
+from mmcv.runner import get_git_hash, init_dist, set_random_seed
 
 from mmaction import __version__
 from mmaction.apis import train_model
 from mmaction.datasets import build_dataset
 from mmaction.models import build_model
-from mmaction.utils import collect_env, get_root_logger, get_short_git_hash
+from mmaction.utils import collect_env, get_root_logger
 
 
 def parse_args():
@@ -135,7 +135,7 @@ def main():
         # save mmaction version, config file content and class names in
         # checkpoints as meta data
         cfg.checkpoint_config.meta = dict(
-            mmaction_version=__version__ + get_short_git_hash(),
+            mmaction_version=__version__ + get_git_hash(digits=7),
             config=cfg.text)
 
     train_model(
