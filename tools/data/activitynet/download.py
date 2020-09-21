@@ -1,5 +1,6 @@
 # This scripts is copied from
 # https://github.com/activitynet/ActivityNet/blob/master/Crawler/Kinetics/download.py  # noqa: E501
+# The code is licensed under the MIT licence.
 import os
 import subprocess
 
