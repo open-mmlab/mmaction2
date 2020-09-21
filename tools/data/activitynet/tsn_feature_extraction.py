@@ -1,4 +1,5 @@
 import argparse
+import os
 import os.path as osp
 import pickle
 
@@ -23,8 +24,7 @@ def parse_args():
         type=int,
         default=16,
         help='the sampling frequency of frame in the untrimed video')
-    parser.add_argument('--clip-len', type=int, default=1, help='clip length')
-    parser.add_argument('--modality', default='RGB')
+    parser.add_argument('--modality', default='RGB', choices=['RGB', 'Flow'])
     parser.add_argument('--ckpt', help='checkpoint for feature extraction')
     parser.add_argument(
         '--part',
@@ -40,6 +40,7 @@ def parse_args():
 def main():
     args = parse_args()
     args.is_rgb = args.modality == 'RGB'
+    args.clip_len = 1 if args.is_rgb else 5
     args.input_format = 'NCHW' if args.is_rgb else 'NCHW_Flow'
     rgb_norm_cfg = dict(
         mean=[123.675, 116.28, 103.53],
@@ -47,7 +48,7 @@ def main():
         to_bgr=False)
     flow_norm_cfg = dict(mean=[128, 128], std=[128, 128])
     args.img_norm_cfg = rgb_norm_cfg if args.is_rgb else flow_norm_cfg
-    args.f_tmpl = 'image_{:05d}.jpg' if args.is_rgb else 'flow_{}_{:05d}.jpg'
+    args.f_tmpl = 'img_{:05d}.jpg' if args.is_rgb else 'flow_{}_{:05d}.jpg'
     args.in_channels = args.clip_len * (3 if args.is_rgb else 2)
     # max batch_size for one forward
     args.batch_size = 200
@@ -95,8 +96,12 @@ def main():
 
     # enumerate Untrimmed videos, extract feature from each of them
     prog_bar = mmcv.ProgressBar(len(data))
+    if not osp.exists(args.output_prefix):
+        os.system(f'mkdir -p {args.output_prefix}')
+
     for item in data:
-        frame_dir, length, output_file = item.split()
+        frame_dir, length, label = item.split()
+        output_file = osp.basename(frame_dir) + '.pkl'
         frame_dir = osp.join(args.data_prefix, frame_dir)
         output_file = osp.join(args.output_prefix, output_file)
         assert output_file.endswith('.pkl')
@@ -107,6 +112,7 @@ def main():
             frame_dir=frame_dir,
             total_frames=length,
             filename_tmpl=args.f_tmpl,
+            start_index=0,
             modality=args.modality)
         sample = data_pipeline(tmpl)
         imgs = sample['imgs']

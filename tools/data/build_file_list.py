@@ -127,7 +127,7 @@ def build_file_list(splits, frame_info, shuffle=False):
                 else:
                     raise ValueError(
                         'frame_info should be ' +
-                        '[`vid`(str), `label`(int)|`labels(list[int])`')
+                        '[`video`(str), `label`(int)|`labels(list[int])`')
             else:
                 # videos
                 if isinstance(item[1], int):
@@ -144,7 +144,7 @@ def build_file_list(splits, frame_info, shuffle=False):
                 else:
                     raise ValueError(
                         'frame_info should be ' +
-                        '[`vid`(str), `label`(int)|`labels(list[int])`')
+                        '[`video`(str), `label`(int)|`labels(list[int])`')
         if shuffle:
             random.shuffle(rgb_list)
             random.shuffle(flow_list)

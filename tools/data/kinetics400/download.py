@@ -1,5 +1,6 @@
 # This scripts is copied from
 # https://github.com/activitynet/ActivityNet/blob/master/Crawler/Kinetics/download.py  # noqa: E501
+# The code is licensed under the MIT licence.
 import argparse
 import glob
 import json
@@ -183,12 +184,12 @@ def main(input_csv,
 
     # Download all clips.
     if num_jobs == 1:
-        status_lst = []
+        status_list = []
         for i, row in dataset.iterrows():
-            status_lst.append(
+            status_list.append(
                 download_clip_wrapper(row, label_to_dir, trim_format, tmp_dir))
     else:
-        status_lst = Parallel(
+        status_list = Parallel(
             n_jobs=num_jobs)(delayed(download_clip_wrapper)(
                 row, label_to_dir, trim_format, tmp_dir)
                              for i, row in dataset.iterrows())
@@ -198,7 +199,7 @@ def main(input_csv,
 
     # Save download report.
     with open('download_report.json', 'w') as fobj:
-        fobj.write(json.dumps(status_lst))
+        fobj.write(json.dumps(status_list))
 
 
 if __name__ == '__main__':

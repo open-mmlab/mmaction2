@@ -15,7 +15,7 @@ def parse_args():
     parser.add_argument('--rgb', default='', help='rgb feature root')
     parser.add_argument('--flow', default='', help='flow feature root')
     parser.add_argument('--dest', default='', help='dest root')
-    parser.add_argument('--output-format', default='pkl', help='clip length')
+    parser.add_argument('--output-format', default='csv')
     args = parser.parse_args()
     return args
 
@@ -64,12 +64,13 @@ def pool_feature(data, num_proposals=100, num_sample_bins=3, pool_type='mean'):
 
 def merge_feat(name):
     # concatenate rgb feat and flow feat for a single sample
-    global args
     rgb_feat = load(osp.join(args.rgb, name))
     flow_feat = load(osp.join(args.flow, name))
     rgb_feat = pool_feature(rgb_feat)
     flow_feat = pool_feature(flow_feat)
     feat = np.concatenate([rgb_feat, flow_feat], axis=-1)
+    if not osp.exists(args.dest):
+        os.system(f'mkdir -p {args.dest}')
     if args.output_format == 'pkl':
         dump(feat, osp.join(args.dest, name))
     elif args.output_format == 'csv':

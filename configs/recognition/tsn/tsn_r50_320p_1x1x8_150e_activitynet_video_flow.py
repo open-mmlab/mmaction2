@@ -80,6 +80,7 @@ data = dict(
         filename_tmpl='flow_{}_{:05d}.jpg',
         with_offset=True,
         modality='Flow',
+        start_index=0,
         pipeline=train_pipeline),
     val=dict(
         type=dataset_type,
@@ -88,6 +89,7 @@ data = dict(
         filename_tmpl='flow_{}_{:05d}.jpg',
         with_offset=True,
         modality='Flow',
+        start_index=0,
         pipeline=val_pipeline),
     test=dict(
         type=dataset_type,
@@ -96,6 +98,7 @@ data = dict(
         filename_tmpl='flow_{}_{:05d}.jpg',
         with_offset=True,
         modality='Flow',
+        start_index=0,
         pipeline=test_pipeline))
 # optimizer
 optimizer = dict(type='SGD', lr=0.001, momentum=0.9, weight_decay=0.0001)
