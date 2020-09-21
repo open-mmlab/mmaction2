@@ -7,6 +7,8 @@ from mmcv.parallel import DataContainer as DC
 
 from ..registry import PIPELINES
 
+# from pdb import set_trace as st
+
 
 def to_tensor(data):
     """Convert objects of various python types to :obj:`torch.Tensor`.
@@ -223,7 +225,9 @@ class FormatShape(object):
 
     def __init__(self, input_format):
         self.input_format = input_format
-        if self.input_format not in ['NCTHW', 'NCHW', 'NCHW_Flow', 'NPTCHW']:
+        if self.input_format not in [
+                'NCTHW', 'NCHW', 'NCHW_Flow', 'NPTCHW', 'HW->NCHW'
+        ]:
             raise ValueError(
                 f'The input format {self.input_format} is invalid.')
 
@@ -251,6 +255,11 @@ class FormatShape(object):
         elif self.input_format == 'NCHW':
             imgs = np.transpose(imgs, (0, 3, 1, 2))
             # M x C x H x W
+        elif self.input_format == 'HW->NCHW':
+            # HW -> NCHW
+            (h, w) = imgs.shape
+            imgs = imgs.reshape(1, h, w)
+
         elif self.input_format == 'NCHW_Flow':
             num_clips = results['num_clips']
             clip_len = results['clip_len']

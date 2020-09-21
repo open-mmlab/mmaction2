@@ -436,8 +436,12 @@ class ResNet(nn.Module):
 
         if getattr(conv, 'bias') is not None:
             bias_tv_name = module_name_tv + '.bias'
-            conv.bias.data.copy_(state_dict_tv[bias_tv_name])
-            loaded_param_names.append(bias_tv_name)
+            try:
+                conv.bias.data.copy_(state_dict_tv[bias_tv_name])
+                loaded_param_names.append(bias_tv_name)
+            except RuntimeError as e:
+                print(f'{e}: The param shape is not true.')
+                pass
 
     def _load_bn_params(self, bn, state_dict_tv, module_name_tv,
                         loaded_param_names):

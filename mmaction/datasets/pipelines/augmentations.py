@@ -1,11 +1,14 @@
 import random
 from collections.abc import Sequence
 
+import librosa
 import mmcv
 import numpy as np
 from torch.nn.modules.utils import _pair
 
 from ..registry import PIPELINES
+
+# from pdb import set_trace as st
 
 
 def _init_lazy_if_proper(results, lazy):
@@ -1152,4 +1155,46 @@ class MultiGroupCrop(object):
         repr_str = (f'{self.__class__.__name__}'
                     f'(crop_size={self.crop_size}, '
                     f'groups={self.groups})')
+        return repr_str
+
+
+@PIPELINES.register_module()
+class AudioAmplify(object):
+    """Normalize images with the given mean and std value."""
+
+    def __init__(self, ratio):
+        self.ratio = ratio
+
+    def __call__(self, results):
+        # Amplify the signal
+        # Signal = Signal * self.ratio
+        assert 'imgs' in results.keys()
+        results['imgs'] *= self.ratio
+        results['amplify_ratio'] = self.ratio
+
+        return results
+
+    def __repr__(self):
+        repr_str = f'{self.__class__.__name__} (ratio={self.ratio})'
+        return repr_str
+
+
+@PIPELINES.register_module()
+class MelLogTransform(object):
+    """MelLogTransform."""
+
+    def __init__(self, n_fft):
+        # try import librosa
+        self.n_fft = n_fft
+
+    def __call__(self, results):
+        # required field: imgs, sr(sample_rate)
+        signal = results['imgs']
+        sample_rate = results['sample_rate']
+        mel_log = librosa.feature.melspectrogram(y=signal, sr=sample_rate)
+        results['imgs'] = mel_log
+        return results
+
+    def __repr__(self):
+        repr_str = f'{self.__class__.__name__} (n_fft={self.n_fft})'
         return repr_str

@@ -1,11 +1,11 @@
-from .augmentations import (CenterCrop, ColorJitter, Flip, Fuse,
-                            MultiGroupCrop, MultiScaleCrop, Normalize,
-                            RandomCrop, RandomResizedCrop, Resize, TenCrop,
-                            ThreeCrop)
+from .augmentations import (AudioAmplify, ColorJitter, CenterCrop, Flip, Fuse,
+                            MelLogTransform, MultiGroupCrop, MultiScaleCrop,
+                            Normalize, RandomCrop, RandomResizedCrop, Resize,
+                            TenCrop, ThreeCrop)
 from .compose import Compose
 from .formating import (Collect, FormatShape, ImageToTensor, ToDataContainer,
                         ToTensor, Transpose)
-from .loading import (DecordDecode, DecordInit, DenseSampleFrames,
+from .loading import (AudioDecode, DecordDecode, DecordInit, DenseSampleFrames,
                       FrameSelector, GenerateLocalizationLabels,
                       LoadLocalizationFeature, LoadProposals, OpenCVDecode,
                       OpenCVInit, PyAVDecode, PyAVInit, RawFrameDecode,
@@ -20,6 +20,6 @@ __all__ = [
     'Collect', 'FormatShape', 'Compose', 'ToTensor', 'ToDataContainer',
     'GenerateLocalizationLabels', 'LoadLocalizationFeature', 'LoadProposals',
     'DecordInit', 'OpenCVInit', 'PyAVInit', 'SampleProposalFrames',
-    'UntrimmedSampleFrames', 'RawFrameDecode', 'DecordInit', 'OpenCVInit',
-    'PyAVInit', 'SampleProposalFrames', 'ColorJitter'
+    'UntrimmedSampleFrames', 'RawFrameDecode', 'AudioAmplify',
+    'MelLogTransform', 'AudioDecode', 'ColorJitter'
 ]
