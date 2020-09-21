@@ -79,7 +79,7 @@ python tsn_feature_extraction.py --data-prefix ../../../data/ActivityNet/rawfram
 After feature extraction, you can use our post processing scripts to concat RGB and Flow feature, generate the 100-t X 400-d feature for Action Detection.
 
 ```shell
-python activitynet_feature_postprocessing --rgb ../../../data/ActivityNet/rgb_feat --flow ../../../data/ActivityNet/flow_feat --dest ../../../data/ActivityNet/mmaction_feat
+python activitynet_feature_postprocessing.py --rgb ../../../data/ActivityNet/rgb_feat --flow ../../../data/ActivityNet/flow_feat --dest ../../../data/ActivityNet/mmaction_feat
 ```
 
 ## Final Step. Check Directory Structure
