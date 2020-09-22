@@ -43,7 +43,7 @@ def generate_rawframes_filelist():
         num_frames = (num_imgs - 1) // 3
         video_annos[video]['numframe'] = num_frames
 
-    anet_labels = open('action_name.csv').readlines()
+    anet_labels = open(action_name_list).readlines()
     anet_labels = [x.strip() for x in anet_labels[1:]]
 
     train_videos, val_videos = {}, {}

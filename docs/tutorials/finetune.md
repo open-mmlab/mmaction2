@@ -58,7 +58,6 @@ data_root_val = 'data/ucf101/rawframes_val/'
 ann_file_train = 'data/ucf101/ucf101_train_list.txt'
 ann_file_val = 'data/ucf101/ucf101_val_list.txt'
 ann_file_test = 'data/ucf101/ucf101_val_list.txt'
-
 ```
 
 ## Modify Training Schedule
