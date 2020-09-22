@@ -29,6 +29,8 @@ class BMN(BaseLocalizer):
         soft_nms_low_threshold (float): Soft NMS low threshold.
         soft_nms_high_threshold (float): Soft NMS high threshold.
         post_process_top_k (int): Top k proposals in post process.
+        feature_extraction_interval (int):
+            Interval used in feature extraction. Default: 16.
         loss_cls (dict): Config for building loss.
             Default: ``dict(type='BMNLoss')``.
         hidden_dim_1d (int): Hidden dim for 1d conv. Default: 256.

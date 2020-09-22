@@ -246,6 +246,8 @@ class PEM(BaseLocalizer):
         soft_nms_low_threshold (float): Soft NMS low threshold.
         soft_nms_high_threshold (float): Soft NMS high threshold.
         post_process_top_k (int): Top k proposals in post process.
+        feature_extraction_interval (int):
+            Interval used in feature extraction. Default: 16.
         fc1_ratio (float): Ratio for fc1 layer output. Default: 0.1.
         fc2_ratio (float): Ratio for fc2 layer output. Default: 0.1.
         output_dim (int): Output dimension. Default: 1.
