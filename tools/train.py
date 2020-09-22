@@ -8,8 +8,8 @@ import warnings
 import mmcv
 import torch
 from mmcv import Config
-from mmcv.utils import get_git_hash
 from mmcv.runner import init_dist, set_random_seed
+from mmcv.utils import get_git_hash
 
 from mmaction import __version__
 from mmaction.apis import train_model
