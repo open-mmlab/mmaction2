@@ -46,6 +46,7 @@ class BMN(BaseLocalizer):
                  soft_nms_low_threshold,
                  soft_nms_high_threshold,
                  post_process_top_k,
+                 feature_extraction_interval=16,
                  loss_cls=dict(type='BMNLoss'),
                  hidden_dim_1d=256,
                  hidden_dim_2d=128,
@@ -61,6 +62,7 @@ class BMN(BaseLocalizer):
         self.soft_nms_low_threshold = soft_nms_low_threshold
         self.soft_nms_high_threshold = soft_nms_high_threshold
         self.post_process_top_k = post_process_top_k
+        self.feature_extraction_interval = feature_extraction_interval
         self.loss_cls = build_loss(loss_cls)
         self.hidden_dim_1d = hidden_dim_1d
         self.hidden_dim_2d = hidden_dim_2d
@@ -260,7 +262,8 @@ class BMN(BaseLocalizer):
                                         self.soft_nms_alpha,
                                         self.soft_nms_low_threshold,
                                         self.soft_nms_high_threshold,
-                                        self.post_process_top_k)
+                                        self.post_process_top_k,
+                                        self.feature_extraction_interval)
         output = [
             dict(
                 video_name=video_info['video_name'],
