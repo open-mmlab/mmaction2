@@ -1,6 +1,7 @@
 import argparse
 from collections import deque
 from operator import itemgetter
+from threading import Thread
 
 import cv2
 import numpy as np
@@ -21,11 +22,6 @@ EXCLUED_STEPS = [
     'PyAVDecode', 'RawFrameDecode', 'FrameSelector'
 ]
 
-NEED_STUFF = [
-    'ResNetTSM', 'ResNetTIN', 'ResNet3dCSN', 'ResNet3d', 'ResNet2Plus1d',
-    'ResNet3dSlowFast', 'ResNet3dSlowOnly'
-]
-
 
 def parse_args():
     parser = argparse.ArgumentParser(description='MMAction2 webcam demo')
@@ -42,12 +38,6 @@ def parse_args():
         default=0,
         help='recognition score threshold')
     parser.add_argument(
-        '--sample-length',
-        type=int,
-        default=0,
-        help='number of sampled frames, it is only used for recognizers '
-        'which need no frame stuffing')
-    parser.add_argument(
         '--average-size',
         type=int,
         default=1,
@@ -56,29 +46,56 @@ def parse_args():
     return args
 
 
-def predict_webcam_video():
-    windows = deque()
-    score_cache = deque()
-    scores_sum = np.zeros(len(label))
+def show_results():
+    print('Press "Esc", "q" or "Q" to exit')
 
-    if need_stuff:
-        is_buffer_full = False
-
+    text_info = {}
     while True:
+        msg = 'Waiting for inference result ...'
         ret, frame = camera.read()
-        # BGR to RGB
-        windows.append(np.array(frame[:, :, ::-1]))
-        if data['img_shape'] is None:
-            data['img_shape'] = frame.shape[:2]
+        frame_queue.append(np.array(frame[:, :, ::-1]))
 
-        if need_stuff and not is_buffer_full:
-            print('Stuffing frames at first ...')
-            windows_item = windows.popleft()
-            windows_items = [windows_item] * sample_length
-            windows.extend(windows_items)
-            is_buffer_full = True
+        if len(result_queue) != 0:
+            text_info = {}
+            results = result_queue.popleft()
+            for i, result in enumerate(results):
+                selected_label, score = result
+                if score < threshold:
+                    break
+                location = (0, 40 + i * 20)
+                text = selected_label + ': ' + str(round(score, 2))
+                text_info[location] = text
+                cv2.putText(frame, text, location, FONTFACE, FONTSCALE,
+                            FONTCOLOR, THICKNESS, LINETYPE)
 
-        cur_windows = list(np.array(windows))
+        elif len(text_info):
+            for location, text in text_info.items():
+                cv2.putText(frame, text, location, FONTFACE, FONTSCALE,
+                            FONTCOLOR, THICKNESS, LINETYPE)
+
+        else:
+            cv2.putText(frame, msg, (0, 40), FONTFACE, FONTSCALE, FONTCOLOR,
+                        THICKNESS, LINETYPE)
+
+        cv2.imshow('camera', frame)
+        ch = cv2.waitKey(1)
+
+        if ch == 27 or ch == ord('q') or ch == ord('Q'):
+            break
+
+
+def inference():
+    score_cache = deque()
+    scores_sum = 0
+    while True:
+        cur_windows = []
+
+        while len(cur_windows) == 0:
+            if len(frame_queue) == sample_length:
+                cur_windows = list(np.array(frame_queue))
+                if data['img_shape'] is None:
+                    data['img_shape'] = frame_queue.popleft().shape[:2]
+
         cur_data = data.copy()
         cur_data['imgs'] = cur_windows
         cur_data = test_pipeline(cur_data)
@@ -92,8 +109,6 @@ def predict_webcam_video():
         score_cache.append(scores)
         scores_sum += scores
 
-        if len(windows) == sample_length:
-            windows.popleft()
         if len(score_cache) == average_size:
             scores_avg = scores_sum / average_size
             num_selected_labels = min(len(label), 5)
@@ -103,60 +118,39 @@ def predict_webcam_video():
                 scores_tuples, key=itemgetter(1), reverse=True)
             results = scores_sorted[:num_selected_labels]
 
-            for i, result in enumerate(results):
-                selected_label, score = result
-                if score < threshold:
-                    break
-                location = (0, 40 + i * 20)
-                text = selected_label + ': ' + str(round(score, 2))
-                cv2.putText(frame, text, location, FONTFACE, FONTSCALE,
-                            FONTCOLOR, THICKNESS, LINETYPE)
-
+            result_queue.append(results)
             scores_sum -= score_cache.popleft()
-            cv2.imshow('camera', frame)
-            ch = cv2.waitKey(1)
 
-            if ch == 27 or ch == ord('q') or ch == ord('Q'):
-                break
     camera.release()
     cv2.destroyAllWindows()
 
 
 def main():
-    global label, device, model, test_pipeline, camera, sample_length, \
-        average_size, threshold, data, need_stuff
+    global frame_queue, camera, frame, results, threshold, sample_length, \
+        data, test_pipeline, model, device, average_size, label, result_queue
 
     args = parse_args()
+    average_size = args.average_size
+    threshold = args.threshold
+
     device = torch.device(args.device)
     model = init_recognizer(args.config, args.checkpoint, device=device)
     camera = cv2.VideoCapture(args.camera_id)
-
     data = dict(img_shape=None, modality='RGB', label=-1)
-
-    sample_length = args.sample_length
-    average_size = args.average_size
-    threshold = args.threshold
-    need_stuff = model.cfg.model.backbone.type in NEED_STUFF
-
-    if need_stuff and sample_length != 0:
-        raise ValueError(
-            'sample_length should not be specified when testing some '
-            'recognizer, which need to stuff frames at first')
 
     with open(args.label, 'r') as f:
         label = [line.strip() for line in f]
 
     # prepare test pipeline from non-camera pipeline
     cfg = model.cfg
+    sample_length = 0
     pipeline = cfg.test_pipeline
     pipeline_ = pipeline.copy()
     for step in pipeline:
         if 'SampleFrames' in step['type']:
-            # Remove step to sample frames
-            if sample_length == 0:
-                sample_length = step['clip_len'] * step['num_clips']
-                data['num_clips'] = step['num_clips']
-                data['clip_len'] = step['clip_len']
+            sample_length = step['clip_len'] * step['num_clips']
+            data['num_clips'] = step['num_clips']
+            data['clip_len'] = step['clip_len']
             pipeline_.remove(step)
         if step['type'] in EXCLUED_STEPS:
             # remove step to decode frames
@@ -165,8 +159,18 @@ def main():
 
     assert sample_length > 0
 
-    print('Press "Esc", "q" or "Q" to exit')
-    predict_webcam_video()
+    try:
+        frame_queue = deque(maxlen=sample_length)
+        result_queue = deque(maxlen=1)
+        pw = Thread(target=show_results, args=(), daemon=True)
+        pr = Thread(target=inference, args=(), daemon=True)
+        pw.start()
+        pr.start()
+        while True:
+            if not pw.is_alive():
+                exit(0)
+    except KeyboardInterrupt:
+        pass
 
 
 if __name__ == '__main__':
