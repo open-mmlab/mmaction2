@@ -14,6 +14,7 @@ def post_processing(result, video_info, soft_nms_alpha, soft_nms_low_threshold,
         soft_nms_low_threshold (float): Low threshold for soft nms.
         soft_nms_high_threshold (float): High threshold for soft nms.
         post_process_top_k (int): Top k values to be considered.
+        feature_extraction_interval (int): Interval used in feature extraction.
 
     Returns:
         list[dict]: The updated proposals, e.g.
