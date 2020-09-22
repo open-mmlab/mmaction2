@@ -13,7 +13,8 @@ from mmaction.datasets.pipelines import Compose
 
 FONTFACE = cv2.FONT_HERSHEY_COMPLEX_SMALL
 FONTSCALE = 1
-FONTCOLOR = (255, 255, 255)  # BGR
+FONTCOLOR = (255, 255, 255)  # BGR, white
+MSGCOLOR = (128, 128, 128)  # BGR, gray
 THICKNESS = 1
 LINETYPE = 1
 
@@ -35,7 +36,7 @@ def parse_args():
     parser.add_argument(
         '--threshold',
         type=float,
-        default=0,
+        default=0.01,
         help='recognition score threshold')
     parser.add_argument(
         '--average-size',
@@ -51,7 +52,7 @@ def show_results():
 
     text_info = {}
     while True:
-        msg = 'Waiting for inference result ...'
+        msg = 'Waiting for action ...'
         ret, frame = camera.read()
         frame_queue.append(np.array(frame[:, :, ::-1]))
 
@@ -74,7 +75,7 @@ def show_results():
                             FONTCOLOR, THICKNESS, LINETYPE)
 
         else:
-            cv2.putText(frame, msg, (0, 40), FONTFACE, FONTSCALE, FONTCOLOR,
+            cv2.putText(frame, msg, (0, 40), FONTFACE, FONTSCALE, MSGCOLOR,
                         THICKNESS, LINETYPE)
 
         cv2.imshow('camera', frame)
