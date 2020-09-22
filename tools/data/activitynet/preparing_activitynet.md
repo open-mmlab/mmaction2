@@ -99,11 +99,15 @@ mmaction2
 │   │   ├── anet_anno_{train,val,test,full}.json
 │   │   ├── anet_anno_action.json
 │   │   ├── video_info_new.csv
-│   │   ├── activitynet_feature_cuhk
+│   │   ├── activitynet_feature_cuhk (if Option 1 used)
 │   │   │   ├── csv_mean_100
 │   │   │   │   ├── v___c8enCfzqw.csv
 │   │   │   │   ├── v___dXUJsj3yo.csv
 │   │   │   |   ├── ..
+│   │   ├── mmaction_feat (if Option 2 used)
+│   │   │   ├── v___c8enCfzqw.csv
+│   │   │   ├── v___dXUJsj3yo.csv
+│   │   │   ├── ..
 ```
 
 For training and evaluating on ActivityNet, please refer to [getting_started.md](/docs/getting_started.md).
