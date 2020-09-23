@@ -9,7 +9,7 @@ model = dict(
         shift_div=8),
     cls_head=dict(
         type='TSMHead',
-        num_classes=339,
+        num_classes=174,
         in_channels=2048,
         spatial_type='avg',
         consensus=dict(type='AvgConsensus', dim=1),
