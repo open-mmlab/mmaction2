@@ -120,7 +120,8 @@ def main():
         set_random_seed(args.seed, deterministic=args.deterministic)
     cfg.seed = args.seed
     meta['seed'] = args.seed
-    meta['cfg_name'] = osp.basename(args.config)
+    meta['config_name'] = osp.basename(args.config)
+    meta['work_dir'] = osp.abspath(cfg.work_dir)
 
     model = build_model(
         cfg.model, train_cfg=cfg.train_cfg, test_cfg=cfg.test_cfg)
