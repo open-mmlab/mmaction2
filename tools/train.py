@@ -121,7 +121,7 @@ def main():
     cfg.seed = args.seed
     meta['seed'] = args.seed
     meta['config_name'] = osp.basename(args.config)
-    meta['work_dir'] = osp.abspath(cfg.work_dir)
+    meta['work_dir'] = osp.basename(cfg.work_dir.rstrip('/\\'))
 
     model = build_model(
         cfg.model, train_cfg=cfg.train_cfg, test_cfg=cfg.test_cfg)
