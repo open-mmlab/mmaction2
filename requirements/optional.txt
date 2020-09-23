@@ -1,4 +1,5 @@
 av
 decord
 onnx
+onnxruntime
 PyTurboJPEG
