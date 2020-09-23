@@ -17,8 +17,7 @@ model = dict(
         init_std=0.001,
         is_shift=True))
 # model training and testing settings
-train_cfg = None
-test_cfg = dict(average_clips=None)
+test_cfg = dict(average_clips='prob')
 # dataset settings
 dataset_type = 'VideoDataset'
 img_norm_cfg = dict(

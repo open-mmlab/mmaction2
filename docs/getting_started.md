@@ -196,25 +196,42 @@ We provide a demo script to implement real-time action recognition from web came
 ```shell
 python demo/webcam_demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${LABEL_FILE} \
     [--device ${DEVICE_TYPE}] [--camera-id ${CAMERA_ID}] [--threshold ${THRESHOLD}] \
-    [--sample-length ${SAMPLE_LENGHTH}] [--average-size ${AVERAGE_SIZE}]
+    [--average-size ${AVERAGE_SIZE}]
 ```
 
 Optional arguments:
 - `DEVICE_TYPE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`. If not specified, it will be set to `cuda:0`.
 - `CAMERA_ID`: ID of camera device If not specified, it will be set to 0.
 - `THRESHOLD`: Threshold of prediction score for action recognition. Only label with score higher than the threshold will be shown. If not specified, it will be set to 0.
-- `SAMPLE_LENGTH`: Number of frames to be sampled from web camera. If not specified, it will be calculated from the config file by `clip_len x num_clips`.
 - `AVERAGE_SIZE`: Number of latest clips to be averaged for prediction. If not specified, it will be set to 1.
 
 Examples:
 
 Assume that you are located at `$MMACTION2` and have already downloaded the checkpoints to the directory `checkpoints/`
 
+1. Recognize the action from web camera as input by using a TSN model on cpu, averaging the score per 5 times
+    and outputting result labels with score higher than 0.2.
+
 ```shell
 python demo/webcam_demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
-  checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth demo/label_map.txt --sample-length 1 \
+  checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth demo/label_map.txt --average-size 5 \
+  --threshold 0.2 --device cpu
+```
+
+2. Recognize the action from web camera as input by using a I3D model on gpu by default, averaging the score per 5 times
+    and outputting result labels with score higher than 0.2.
+
+```shell
+python demo/webcam_demo.py configs/recognition/i3d/i3d_r50_video_inference_32x2x1_100e_kinetics400_rgb.py \
+  checkpoints/i3d_r50_32x2x1_100e_kinetics400_rgb_20200614-c25ef9a4.pth demo/label_map.txt \
   --average-size 5 --threshold 0.2
 ```
+
+**Note:** Considering the efficiency difference for users' hardware, Some modifications might be done to suit the case.
+Users can change:
+1). `SampleFrames` step (especially the number of `clip_len` and `num_clips`) of `test_pipeline` in the config file.
+2). Change to the suitable Crop methods like `TenCrop`, `ThreeCrop`, `CenterCrop`, etc. in `test_pipeline` of the config file.
+3). Change the number of `--average-size`. The smaller, the faster.
 
 ### High-level APIs for testing a video and rawframes.
 
