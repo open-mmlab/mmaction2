@@ -22,7 +22,7 @@
 
 |config | resolution | gpus | backbone| pretrain | top1 acc| top5 acc | reference top1 acc | reference top5 acc | gpu_mem(M)  | ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[tin_r50_1x1x8_40e_sthv2_rgb](/configs/recognition/tin/tin_r50_1x1x8_40e_sthv2_rgb.py)|height 240|8x4| ResNet50 | ImageNet | 56.38 | 83.53 | 56.38 | 83.50 | 6185 | [ckpt](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tin/tin_r50_1x1x8_40e_sthv2_rgb/tin_r50_1x1x8_40e_sthv2_rgb_20200809-c0840aa1.pth) | [log](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tin/tin_r50_1x1x8_40e_sthv2_rgb/20200809_023414.log) | [json](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tin/tin_r50_1x1x8_40e_sthv2_rgb/20200809_023414.log.json) |
+|[tin_r50_1x1x8_40e_sthv2_rgb](/configs/recognition/tin/tin_r50_1x1x8_40e_sthv2_rgb.py)|height 240|8x4| ResNet50 | ImageNet | 56.70 | 83.62 | 56.48 | 83.45 | 6185 | [ckpt](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tin/tin_r50_1x1x8_40e_sthv2_rgb/tin_r50_1x1x8_40e_sthv2_rgb_20200912-b27a7337.pth) | [log](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tin/tin_r50_1x1x8_40e_sthv2_rgb/20200912_225451.log) | [json](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/recognition/tin/tin_r50_1x1x8_40e_sthv2_rgb/20200912_225451.log.json) |
 
 ### Kinetics-400
 
