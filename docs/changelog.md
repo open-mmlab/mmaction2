@@ -15,6 +15,7 @@
 **Improvements**
 - Support to run a demo with a video url ([#165](https://github.com/open-mmlab/mmaction2/pull/165))
 - Add tutorial for adding a new learning rate updater ([#181](https://github.com/open-mmlab/mmaction2/pull/181))
+- Add config name in meta info ([#183](https://github.com/open-mmlab/mmaction2/pull/183))
 - Remove git hash in `__version__` ([#189](https://github.com/open-mmlab/mmaction2/pull/189))
 - Check mmcv version ([#189](https://github.com/open-mmlab/mmaction2/pull/189))
 
