@@ -25,9 +25,9 @@
 
 |config |feature | gpus | AR@100| AUC | AP@0.5 | AP@0.75 | AP@0.95 | mAP | gpu_mem(M) | iter time(s) | ckpt | log| json|
 |:-:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:-:|---|:-:|:-:|---|
-|[bmn_400x100_9e_2x8_activitynet_feature](/configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py) |cuhk_mean_100 |2|75.28|67.22|42.47|31.31|9.92|30.34|5420|3.27|[ckpt](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature_20200619-42a3b111.pth)| [log](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature.log)| [json](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature.log.json)|
-| |mmaction_video |2|75.43|67.22|42.62|31.56|10.86|30.77|5420|3.27|[ckpt](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809-c9fd14d2.pth)| [log](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809.log) | [json](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809.json) |
-| |mmaction_clip |2|75.35|67.38|43.08|32.19|10.73|31.15|5420|3.27|[ckpt](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809-10d803ce.pth)| [log](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809.log) | [json](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809.json) |
+|[bmn_400x100_9e_2x8_activitynet_feature](/configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py) |cuhk_mean_100 |2|75.28|67.22|42.47|31.31|9.92|30.34|5420|3.27|[ckpt](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature_20200619-42a3b111.pth)| [log](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature.log)| [json](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature.log.json)|
+| |mmaction_video |2|75.43|67.22|42.62|31.56|10.86|30.77|5420|3.27|[ckpt](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809-c9fd14d2.pth)| [log](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809.log) | [json](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809.json) |
+| |mmaction_clip |2|75.35|67.38|43.08|32.19|10.73|31.15|5420|3.27|[ckpt](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809-10d803ce.pth)| [log](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809.log) | [json](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809.json) |
 | [BMN-official](https://github.com/JJBOY/BMN-Boundary-Matching-Network) (for reference)* |cuhk_mean_100 |-|75.27|67.49|42.22|30.98|9.22|30.00|-|-|-| - | - |
 
 - Notes:
@@ -36,9 +36,9 @@
 According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
 e.g., lr=0.01 for 4 GPUs * 2 video/gpu and lr=0.08 for 16 GPUs * 4 video/gpu.
 2. For feature column, cuhk_mean_100 denotes the widely used cuhk activitynet feature extracted by [anet2016-cuhk](https://github.com/yjxiong/anet2016-cuhk), mmaction_video and mmaction_clip denote feature extracted by mmaction, with video-level activitynet finetuned model or clip-level activitynet finetuned model respectively.
-3. We evaluate the action detection performance of BMN, using  [anet_cuhk_2017](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/cuhk_anet17_pred.json) submission for ActivityNet2017 Untrimmed Video Classification Track to assign label for each action proposal.
+3. We evaluate the action detection performance of BMN, using  [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) submission for ActivityNet2017 Untrimmed Video Classification Track to assign label for each action proposal.
 
-*We train BMN with the [official repo](https://github.com/JJBOY/BMN-Boundary-Matching-Network), evaluate its proposal generation and action detection performance with [anet_cuhk_2017](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/cuhk_anet17_pred.json) for label assigning.
+*We train BMN with the [official repo](https://github.com/JJBOY/BMN-Boundary-Matching-Network), evaluate its proposal generation and action detection performance with [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) for label assigning.
 
 For more details on data preparation, you can refer to ActivityNet feature in [Data Preparation](/docs/data_preparation.md).
 
@@ -65,7 +65,7 @@ Example: test BMN on ActivityNet feature dataset.
 # Note: If evaluated, then please make sure the annotation file for test data contains groundtruth.
 python tools/test.py configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py checkpoints/SOME_CHECKPOINT.pth --eval AR@AN --out results.json
 ```
-You can also test the action detection performance of the model, with [anet_cuhk_2017](https://openmmlab.oss-accelerate.aliyuncs.com/mmaction/localization/cuhk_anet17_pred.json) prediction file and generated proposal file (`results.json` in last command).
+You can also test the action detection performance of the model, with [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) prediction file and generated proposal file (`results.json` in last command).
 ```shell
 python tools/analysis/report_map.py --proposal path/to/proposal_file
 ```
