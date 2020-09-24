@@ -18,6 +18,7 @@
 - Add config name in meta info ([#183](https://github.com/open-mmlab/mmaction2/pull/183))
 - Remove git hash in `__version__` ([#189](https://github.com/open-mmlab/mmaction2/pull/189))
 - Check mmcv version ([#189](https://github.com/open-mmlab/mmaction2/pull/189))
+- Update url with 'https://download.openmmlab.com' ([#208](https://github.com/open-mmlab/mmaction2/pull/208))
 
 **Bug Fixes**
 - Fix the bug when using OpenCV to extract only RGB frames with original shape ([#184](https://github.com/open-mmlab/mmaction2/pull/187))
