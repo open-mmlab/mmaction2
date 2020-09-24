@@ -1,5 +1,7 @@
 # pylint: disable=no-name-in-module
 # isort:maintain_block
+import math
+
 import torch.nn as nn
 import torch.utils.checkpoint as cp
 from mmcv.cnn import (ConvModule, build_activation_layer, constant_init,
@@ -19,13 +21,22 @@ class SEModule(nn.Module):
     def __init__(self, channels, reduction):
         super(SEModule, self).__init__()
         self.avg_pool = nn.AdaptiveAvgPool3d(1)
-        self.bottleneck = int(channels * reduction)
+        self.bottleneck = self._round_width(channels, reduction)
         self.fc1 = nn.Conv3d(
             channels, self.bottleneck, kernel_size=1, padding=0)
         self.relu = nn.ReLU()
         self.fc2 = nn.Conv3d(
             self.bottleneck, channels, kernel_size=1, padding=0)
         self.sigmoid = nn.Sigmoid()
+
+    def _round_width(self, width, multiplier, min_width=8, divisor=8):
+        width *= multiplier
+        min_width = min_width or divisor
+        width_out = max(min_width,
+                        int(width + divisor / 2) // divisor * divisor)
+        if width_out < 0.9 * width:
+            width_out += divisor
+        return int(width_out)
 
     def forward(self, x):
         module_input = x
@@ -96,7 +107,7 @@ class BlockX3d(nn.Module):
             bias=False,
             conv_cfg=self.conv_cfg,
             norm_cfg=self.norm_cfg,
-            act_cfg=self.act_cfg_swish if self.use_swish else self.act_cfg)
+            act_cfg=self.act_cfg)
         # Here we use the channel-wise conv
         self.conv2 = ConvModule(
             in_channels=planes,
@@ -226,8 +237,12 @@ class X3d(nn.Module):
         self.stage_blocks = [1, 2, 5, 3]
 
         # apply parameters gamma_w and gamma_d
-        self.base_channels = int(self.base_channels * self.gamma_w)
-        self.stage_blocks = [int(self.gamma_d * x) for x in self.stage_blocks]
+        self.base_channels = self._round_width(self.base_channels,
+                                               self.gamma_w)
+
+        self.stage_blocks = [
+            self._round_repeats(x, self.gamma_d) for x in self.stage_blocks
+        ]
 
         self.num_stages = num_stages
         assert num_stages >= 1 and num_stages <= 4
@@ -289,6 +304,26 @@ class X3d(nn.Module):
             norm_cfg=self.norm_cfg,
             act_cfg=self.act_cfg)
         self.feat_dim = int(self.feat_dim * self.gamma_b)
+
+    def _round_width(self, width, multiplier, min_depth=8, divisor=8):
+        """Round width of filters based on width multiplier."""
+        if not multiplier:
+            return width
+
+        width *= multiplier
+        min_depth = min_depth or divisor
+        new_filters = max(min_depth,
+                          int(width + divisor / 2) // divisor * divisor)
+        if new_filters < 0.9 * width:
+            new_filters += divisor
+        return int(new_filters)
+
+    def _round_repeats(self, repeats, multiplier):
+        """Round number of layers based on depth multiplier."""
+        multiplier = multiplier
+        if not multiplier:
+            return repeats
+        return int(math.ceil(multiplier * repeats))
 
     # the module is parameterized with gamma_b
     # no temporal_stride
@@ -403,12 +438,12 @@ class X3d(nn.Module):
             padding=(0, 1, 1),
             bias=False,
             conv_cfg=self.conv_cfg,
-            norm_cfg=self.norm_cfg,
-            act_cfg=self.act_cfg)
+            norm_cfg=None,
+            act_cfg=None)
         self.conv1_t = ConvModule(
             self.base_channels,
             self.base_channels,
-            kernel_size=(3, 1, 1),
+            kernel_size=(5, 1, 1),
             stride=(1, 1, 1),
             padding=(1, 0, 0),
             groups=self.base_channels,

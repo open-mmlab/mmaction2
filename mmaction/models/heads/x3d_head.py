@@ -70,14 +70,16 @@ class X3dHead(BaseHead):
         assert self.pool is not None
         x = self.pool(x)
         # [N, in_channels, 1, 1, 1]
-        if self.dropout is not None:
-            x = self.dropout(x)
         # [N, in_channels, 1, 1, 1]
         x = x.view(x.shape[0], -1)
         # [N, in_channels]
         x = self.fc1(x)
         # [N, 2048]
         x = self.relu(x)
+
+        if self.dropout is not None:
+            x = self.dropout(x)
+
         cls_score = self.fc2(x)
         # [N, num_classes]
         return cls_score
