@@ -74,16 +74,16 @@ Optionally you can choose to compile mmcv from source by the following command
 ```shell script
 git clone https://github.com/open-mmlab/mmcv.git
 cd mmcv
-pip install -e .  # package mmcv, which contains no cuda ops, will be installed after this step
-# or MMCV_WITH_OPS=1 pip install -e .  (package mmcv-full, which contains cuda ops, will be installed after this step)
+MMCV_WITH_OPS=1 pip install -e .  # package mmcv-full, which contains cuda ops, will be installed after this step
+# OR pip install -e .  # package mmcv, which contains no cuda ops, will be installed after this step
 cd ..
 ```
 
 Or directly run
 
 ```shell script
-pip install mmcv
-# alternative: pip install mmcv-full
+pip install mmcv-full
+# alternative: pip install mmcv
 ```
 
 **Important:** You need to run `pip uninstall mmcv` first if you have mmcv installed. If mmcv and mmcv-full are both installed, there will be `ModuleNotFoundError`.
@@ -136,11 +136,13 @@ In CPU mode you can run the demo/demo.py for example.
 We provide a [Dockerfile](/docker/Dockerfile) to build an image.
 
 ```shell
-# build an image with PyTorch 1.6.0, CUDA 10.1
-docker build -t mmaction2 docker/
+# build an image with PyTorch 1.6.0, CUDA 10.1, CUDNN 7.
+docker build -f ./docker/Dockerfile --rm -t mmaction2 .
 ```
 
-Run it with
+**Important:** Make sure you've installed the [nvidia-container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker).
+
+Run it with command:
 
 ```shell
 docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmaction2/data mmaction2
