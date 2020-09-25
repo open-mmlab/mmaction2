@@ -14,7 +14,7 @@ def cuhk17_top1():
     """Assign label for each proposal with the cuhk17 result, which is the #2
     entry in http://activity-net.org/challenges/2017/evaluation.html."""
     if not osp.exists('cuhk_anet17_pred.json'):
-        os.system('wget https://openmmlab.oss-accelerate.aliyuncs.com/'
+        os.system('wget https://download.openmmlab.com/'
                   'mmaction/localization/cuhk_anet17_pred.json')
     proposal = mmcv.load(args.proposal)
     results = proposal['results']
