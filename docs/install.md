@@ -129,11 +129,7 @@ valid keys for the `[optional]` field are `all`, `tests`, `build`, and `optional
 ### Install with CPU only
 The code can be built for CPU only environment (where CUDA isn't available).
 
-In CPU mode you can run the demo/demo.py for example. However some functionality is gone in this mode:
-
-- TIN
-
-So if you try to run inference with a TIN model you will get an error.
+In CPU mode you can run the demo/demo.py for example.
 
 ### Another option: Docker Image
 
