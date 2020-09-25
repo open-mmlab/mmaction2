@@ -99,15 +99,30 @@ mmaction2
 │   │   ├── anet_anno_{train,val,test,full}.json
 │   │   ├── anet_anno_action.json
 │   │   ├── video_info_new.csv
-│   │   ├── activitynet_feature_cuhk (if Option 1 used)
+
+(if Option 1 used)
+│   │   ├── activitynet_feature_cuhk
 │   │   │   ├── csv_mean_100
 │   │   │   │   ├── v___c8enCfzqw.csv
 │   │   │   │   ├── v___dXUJsj3yo.csv
 │   │   │   |   ├── ..
-│   │   ├── mmaction_feat (if Option 2 used)
+
+(if Option 2 used)
+│   │   ├── mmaction_feat
 │   │   │   ├── v___c8enCfzqw.csv
 │   │   │   ├── v___dXUJsj3yo.csv
 │   │   │   ├── ..
+│   │   ├── rawframes
+│   │   │   ├── v___c8enCfzqw
+│   │   │   │   ├── img_00000.jpg
+│   │   │   │   ├── flow_x_00000.jpg
+│   │   │   │   ├── flow_y_00000.jpg
+│   │   │   │   ├── ..
+│   │   │   ├── ..
+│   │   ├── anet_train_video.txt
+│   │   ├── anet_val_video.txt
+│   │   ├── anet_train_clip.txt
+│   │   ├── anet_val_clip.txt
 ```
 
 For training and evaluating on ActivityNet, please refer to [getting_started.md](/docs/getting_started.md).
