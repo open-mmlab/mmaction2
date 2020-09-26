@@ -43,8 +43,8 @@ def parse_args():
     parser.add_argument('--options', nargs='+', help='custom options')
     parser.add_argument(
         '--average-clips',
-        choices=['score', 'prob'],
-        default='score',
+        choices=['score', 'prob', None],
+        default=None,
         help='average type when averaging test clips')
     parser.add_argument(
         '--launcher',

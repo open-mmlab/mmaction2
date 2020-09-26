@@ -81,15 +81,14 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
             return cls_score
 
         batch_size = cls_score.shape[0]
-        cls_scores = cls_score.view(batch_size // num_segs, num_segs, -1)
-        output = torch.zeros((cls_scores.shape[0], cls_scores.shape[2]),
-                             device=cls_scores.device)
-        for i in range(len(cls_scores)):
-            if average_clips == 'prob':
-                output[i] = F.softmax(cls_scores[i], dim=1).mean(dim=0)
-            elif average_clips == 'score':
-                output[i] = cls_scores[i].mean(dim=0)
-        return output
+        cls_score = cls_score.view(batch_size // num_segs, num_segs, -1)
+
+        if average_clips == 'prob':
+            cls_score = F.softmax(cls_score, dim=2).mean(dim=1)
+        elif average_clips == 'score':
+            cls_score = cls_score.mean(dim=1)
+
+        return cls_score
 
     @abstractmethod
     def forward_train(self, imgs, labels):
