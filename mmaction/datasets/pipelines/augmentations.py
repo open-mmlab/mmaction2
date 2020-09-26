@@ -717,7 +717,8 @@ class ColorJitter(object):
     Args:
         color_space_aug (bool): Whether to apply color space augmentations. If
             specified, it will change the brightness, contrast, saturation and
-            hue of images. Default: False.
+            hue of images, then add PCA based noise to images. Otherwise, it
+            will directly add PCA based noise to images. Default: False.
         alpha_std (float): Std in the normal Gaussian distribution of alpha.
         eig_val (np.ndarray | None): Eigenvalues of [1 x 3] size for RGB
             channel jitter. If set to None, it will use the default
