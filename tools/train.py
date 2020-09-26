@@ -141,6 +141,8 @@ def main():
             mmaction_version=__version__ + get_git_hash(digits=7),
             config=cfg.text)
 
+    meta['config'] = cfg.pretty_text
+
     train_model(
         model,
         datasets,
