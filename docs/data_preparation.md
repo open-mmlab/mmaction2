@@ -23,6 +23,7 @@ To ease usage, we provide tutorials of data deployment for each dataset.
 - [Moments in Time](http://moments.csail.mit.edu/): See [preparing_mit.md](/tools/data/mit/preparing_mit.md)
 - [Multi-Moments in Time](http://moments.csail.mit.edu/challenge_iccv_2019.html): See [preparing_mmit.md](/tools/data/mmit/preparing_mmit.md)
 - ActivityNet_feature: See [praparing_activitynet.md](/tools/data/activitynet/preparing_activitynet.md)
+- [UCF101-24](http://www.thumos.info/download.html): See [preparing_ucf101_24.md](/tools/data/ucf101_24/preparing_ucf101_24.md)
 
 Now, you can switch to [getting_started.md](getting_started.md) to train and test the model.
 
