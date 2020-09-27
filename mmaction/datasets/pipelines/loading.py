@@ -967,6 +967,8 @@ class AudioDecode(object):
     """
 
     def __init__(self):
+        np.warnings.filterwarnings(
+            'ignore', category=np.VisibleDeprecationWarning)
         pass
 
     def __call__(self, results):

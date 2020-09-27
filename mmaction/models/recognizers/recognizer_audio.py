@@ -8,6 +8,7 @@ class RecognizerAudio(BaseRecognizer):
 
     def forward_train(self, audios, labels):
         """Defines the computation performed at every call when training."""
+        audios = audios.reshape((-1, ) + audios.shape[2:])
         x = self.extract_feat(audios)
         cls_score = self.cls_head(x)
         gt_labels = labels.squeeze()
@@ -18,6 +19,7 @@ class RecognizerAudio(BaseRecognizer):
     def forward_test(self, audios):
         """Defines the computation performed at every call when evaluation and
         testing."""
+        audios = audios.reshape((-1, ) + audios.shape[2:])
         x = self.extract_feat(audios)
         cls_score = self.cls_head(x)
         cls_score = self.average_clip(cls_score)
@@ -51,6 +53,7 @@ class RecognizerAudio(BaseRecognizer):
                 averaging the logs.
         """
         audios = data_batch['audios']
+        print(audios.size())
         label = data_batch['label']
 
         losses = self(audios, label)

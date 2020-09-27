@@ -301,7 +301,7 @@ class FormatAudioShape(object):
 
     def __init__(self, input_format):
         self.input_format = input_format
-        if self.input_format not in ['NTF']:
+        if self.input_format not in ['NCTF']:
             raise ValueError(
                 f'The input format {self.input_format} is invalid.')
 
@@ -313,10 +313,10 @@ class FormatAudioShape(object):
                 to the next transform in pipeline.
         """
         audios = results['audios']
-        # clip x sample x freq -> batch x sample x freq x freq
-        if self.input_format == 'NTF':
-            pass
-
+        # clip x sample x freq -> clip x channel x sample x freq
+        if self.input_format == 'NCTF':
+            clip, sample, freq = audios.shape
+            audios = audios.reshape(clip, 1, sample, freq)
         results['audios'] = audios
         results['input_shape'] = audios.shape
         return results

@@ -18,18 +18,22 @@ data_root_val = 'data/ugc/audios'
 ann_file_train = 'data/ugc/ugc_train_list_audio.txt'
 ann_file_val = 'data/ugc/ugc_val_list_audio.txt'
 ann_file_test = 'data/ugc/ugc_val_list_audio.txt'
+mc_cfg = dict(
+    server_list_cfg='/mnt/lustre/share/memcached_client/server_list.conf',
+    client_cfg='/mnt/lustre/share/memcached_client/client.conf',
+    sys_path='/mnt/lustre/share/pymc/py3')
 train_pipeline = [
-    dict(type='AudioDecodeInit'),
+    dict(type='AudioDecodeInit', io_backend='memcached', **mc_cfg),
     dict(type='SampleFrames', clip_len=64, frame_interval=1, num_clips=1),
     dict(type='AudioDecode'),
     # dict(type='AudioAmplify', ratio=1.5),
     dict(type='MelSpectrogram'),
-    dict(type='FormatAudioShape', input_format='NTF'),
+    dict(type='FormatAudioShape', input_format='NCTF'),
     dict(type='Collect', keys=['audios', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['audios', 'label'])
 ]
 val_pipeline = [
-    dict(type='AudioDecodeInit'),
+    dict(type='AudioDecodeInit', io_backend='memcached', **mc_cfg),
     dict(
         type='SampleFrames',
         clip_len=64,
@@ -39,28 +43,28 @@ val_pipeline = [
     dict(type='AudioDecode'),
     # dict(type='AudioAmplify'),
     dict(type='MelSpectrogram'),
-    dict(type='FormatAudioShape', input_format='NTF'),
+    dict(type='FormatAudioShape', input_format='NCTF'),
     dict(type='Collect', keys=['audios', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['audios', 'label'])
 ]
 test_pipeline = [
-    dict(type='AudioDecodeInit'),
+    dict(type='AudioDecodeInit', io_backend='memcached', **mc_cfg),
     dict(
         type='SampleFrames',
         clip_len=64,
         frame_interval=1,
         num_clips=1,
         test_mode=True),
-    dict(type='AudioDecodeInit'),
+    dict(type='AudioDecode'),
     # dict(type='AudioAmplify'),
     dict(type='MelSpectrogram'),
-    dict(type='FormatAudioShape', input_format='NTF'),
+    dict(type='FormatAudioShape', input_format='NCTF'),
     dict(type='Collect', keys=['audios', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['audios', 'label'])
 ]
 data = dict(
-    videos_per_gpu=32,
-    workers_per_gpu=0,
+    videos_per_gpu=16,
+    workers_per_gpu=4,
     train=dict(
         type=dataset_type,
         ann_file=ann_file_train,
@@ -88,7 +92,7 @@ checkpoint_config = dict(interval=5)
 evaluation = dict(
     interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
 log_config = dict(
-    interval=20,
+    interval=2,
     hooks=[
         dict(type='TextLoggerHook'),
         # dict(type='TensorboardLoggerHook'),
