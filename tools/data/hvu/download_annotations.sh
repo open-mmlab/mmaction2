@@ -12,9 +12,9 @@ git clone https://github.com/holistic-video-understanding/HVU-Dataset.git
 cd HVU-Dataset
 unzip -o HVU_Train_V1.0.zip
 unzip -o HVU_Val_V1.0.zip
-mv HVU_Train_V1.0.csv ${DATA_DIR}/hvu_train.csv
-mv HVU_Val_V1.0.csv ${DATA_DIR}/hvu_val.csv
-mv HVU_Tags_Categories_V1.0.csv ${DATA_DIR}/hvu_categories.csv
-
 cd ..
+mv HVU-Dataset/HVU_Train_V1.0.csv ${DATA_DIR}/hvu_train.csv
+mv HVU-Dataset/HVU_Val_V1.0.csv ${DATA_DIR}/hvu_val.csv
+mv HVU-Dataset/HVU_Tags_Categories_V1.0.csv ${DATA_DIR}/hvu_categories.csv
+
 rm -rf HVU-Dataset
