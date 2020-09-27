@@ -45,8 +45,6 @@ In data benchmark, we compare two different data preprocessing methods: (1) Resi
 | [slowonly_r101_8x8x1_196e_kinetics400_rgb](/configs/recognition/slowonly/slowonly_r101_8x8x1_196e_kinetics400_rgb.py) |       x        | ResNet101 |   None   |        :x:         |   76.5   |   92.7   |            x            |     x      | [ckpt](https://download.openmmlab.com/mmaction/recognition/slowonly/omni/slowonly_r101_without_omni_8x8x1_kinetics400_rgb_20200926-0c730aef.pth) |                              x                               |                              x                               |
 |                              x                               |       x        | ResNet101 |   None   | :heavy_check_mark: |   80.4   |   94.4   |            x            |     x      | [ckpt](https://download.openmmlab.com/mmaction/recognition/slowonly/omni/slowonly_r101_omni_8x8x1_kinetics400_rgb_20200926-b5dbb701.pth) |                              x                               |                              x                               |
 
-$^1$ We obtain the pretrain model from [torch-hub](https://pytorch.org/hub/facebookresearch_semi-supervised-ImageNet1K-models_resnext/), the pretrain model we used is `resnet50_swsl`
-
 Notes:
 
 1. The **gpus** indicates the number of gpu we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
