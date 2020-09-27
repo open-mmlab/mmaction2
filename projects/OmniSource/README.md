@@ -4,7 +4,7 @@
 
 In ECCV, 2020. [Paper](arxiv.org/abs/2003.13042)
 
-![image-20200926161442601](\pipeline.png)
+![pipeline](pipeline.png)
 
 ### Release
 
