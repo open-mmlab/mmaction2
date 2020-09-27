@@ -255,11 +255,6 @@ class FormatShape(object):
         elif self.input_format == 'NCHW':
             imgs = np.transpose(imgs, (0, 3, 1, 2))
             # M x C x H x W
-        elif self.input_format == 'HW->NCHW':
-            # HW -> NCHW
-            (h, w) = imgs.shape
-            imgs = imgs.reshape(1, h, w)
-
         elif self.input_format == 'NCHW_Flow':
             num_clips = results['num_clips']
             clip_len = results['clip_len']
@@ -285,6 +280,45 @@ class FormatShape(object):
 
         results['imgs'] = imgs
         results['input_shape'] = imgs.shape
+        return results
+
+    def __repr__(self):
+        repr_str = self.__class__.__name__
+        repr_str += f"(input_format='{self.input_format}')"
+        return repr_str
+
+
+@PIPELINES.register_module()
+class FormatAudioShape(object):
+    """Format final audio shape to the given input_format.
+
+    Required keys are "imgs", "num_clips" and "clip_len", added or modified
+    keys are "imgs" and "input_shape".
+
+    Args:
+        input_format (str): Define the final imgs format.
+    """
+
+    def __init__(self, input_format):
+        self.input_format = input_format
+        if self.input_format not in ['NTF']:
+            raise ValueError(
+                f'The input format {self.input_format} is invalid.')
+
+    def __call__(self, results):
+        """Performs the FormatShape formating.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        audios = results['audios']
+        # clip x sample x freq -> batch x sample x freq x freq
+        if self.input_format == 'NTF':
+            pass
+
+        results['audios'] = audios
+        results['input_shape'] = audios.shape
         return results
 
     def __repr__(self):

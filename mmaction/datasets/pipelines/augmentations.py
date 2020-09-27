@@ -1,7 +1,6 @@
 import random
 from collections.abc import Sequence
 
-import librosa
 import mmcv
 import numpy as np
 from torch.nn.modules.utils import _pair
@@ -1166,10 +1165,8 @@ class AudioAmplify(object):
         self.ratio = ratio
 
     def __call__(self, results):
-        # Amplify the signal
-        # Signal = Signal * self.ratio
-        assert 'imgs' in results.keys()
-        results['imgs'] *= self.ratio
+        assert 'audios' in results.keys()
+        results['audios'] *= self.ratio
         results['amplify_ratio'] = self.ratio
 
         return results
@@ -1180,19 +1177,52 @@ class AudioAmplify(object):
 
 
 @PIPELINES.register_module()
-class MelLogTransform(object):
-    """MelLogTransform."""
+class MelSpectrogram(object):
+    """MelSpectrogram.
 
-    def __init__(self, n_fft):
-        # try import librosa
-        self.n_fft = n_fft
+    Args:
+        window_size (int): in milisecond.
+        step_size (int): in milisecond.
+        n_mel (int): n_mel.
+    """
+
+    def __init__(self,
+                 window_size=32,
+                 step_size=16,
+                 n_mel=80,
+                 truncate_length=128):
+        self.window_size = window_size
+        self.step_size = step_size
+        self.n_mel = n_mel
+        self.truncate_length = truncate_length
 
     def __call__(self, results):
-        # required field: imgs, sr(sample_rate)
-        signal = results['imgs']
+        try:
+            import librosa
+        except ImportError:
+            raise ImportError('Install librosa first.')
+        signals = results['audios']
         sample_rate = results['sample_rate']
-        mel_log = librosa.feature.melspectrogram(y=signal, sr=sample_rate)
-        results['imgs'] = mel_log
+        n_fft = int(round(sample_rate * self.window_size / 1000))
+        hop_size = int(round(sample_rate * self.step_size / 1000))
+        melspectrograms = list()
+        for clip_idx in range(results['num_clips']):
+            clip_signal = signals[clip_idx]
+            mel = librosa.feature.melspectrogram(
+                y=clip_signal,
+                sr=sample_rate,
+                n_fft=n_fft,
+                hop_length=hop_size,
+                n_mels=self.n_mel)
+            if mel.shape[-1] >= self.truncate_length:
+                mel = mel[:, :self.truncate_length]
+            else:
+                mel = np.pad(
+                    mel, ((0, 0), (0, self.truncate_length - mel.shape[-1])),
+                    mode='edge')
+            melspectrograms.append(mel)
+
+        results['audios'] = np.array(melspectrograms)
         return results
 
     def __repr__(self):

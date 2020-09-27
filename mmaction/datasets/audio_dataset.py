@@ -12,53 +12,49 @@ from .registry import DATASETS
 class AudioDataset(BaseDataset):
     """Audio dataset for video recognition.
 
-    .. code-block:: txt
-
-        some/path/000.mp3 1
-        some/path/001.mp3 1
-
     Args:
-        ann_file (str): Path to the annotation file.
-        pipeline (list[dict | callable]): A sequence of data transforms.
-        start_index (int): Specify a start index for frames in consideration of
-            different filename format. However, when taking videos as input,
-            it should be set to 0, since frames loaded from videos count
-            from 0. Default: 0.
-        **kwargs: Keyword arguments for ``BaseDataset``.
+        ann_file ():
+        pipeline ():
+        suffix (string):
     """
 
-    def __init__(self,
-                 ann_file,
-                 pipeline,
-                 start_index=0,
-                 modality='Audio',
-                 **kwargs):
-        super().__init__(ann_file, pipeline, start_index=start_index, **kwargs)
+    def __init__(self, ann_file, pipeline, suffix='.wav', **kwargs):
+        self.suffix = suffix
+        super().__init__(ann_file, pipeline, modality='Audio', **kwargs)
 
     def load_annotations(self):
         """Load annotation file to get video information."""
         if self.ann_file.endswith('.json'):
             return self.load_json_annotations()
-
         video_infos = []
         with open(self.ann_file, 'r') as fin:
             for line in fin:
                 line_split = line.strip().split()
+                video_info = {}
+                idx = 0
+                filename = line_split[idx]
+                if self.data_prefix is not None:
+                    if not filename.endswith(self.suffix):
+                        filename = osp.join(self.data_prefix,
+                                            filename) + self.suffix
+                video_info['audiopath'] = filename
+                idx += 1
+                # idx for total_frames
+                video_info['total_frames'] = int(line_split[idx])
+                idx += 1
+                # idx for label[s]
+                label = [int(x) for x in line_split[idx:]]
+                assert len(label), f'missing label in line: {line}'
                 if self.multi_class:
                     assert self.num_classes is not None
-                    filename, label = line_split[0], line_split[1:]
-                    label = list(map(int, label))
                     onehot = torch.zeros(self.num_classes)
                     onehot[label] = 1.0
+                    video_info['label'] = onehot
                 else:
-                    filename, label = line_split
-                    label = int(label)
-                if self.data_prefix is not None:
-                    filename = osp.join(self.data_prefix, filename)
-                video_infos.append(
-                    dict(
-                        filename=filename,
-                        label=onehot if self.multi_class else label))
+                    assert len(label) == 1
+                    video_info['label'] = label[0]
+                video_infos.append(video_info)
+
         return video_infos
 
     def evaluate(self,

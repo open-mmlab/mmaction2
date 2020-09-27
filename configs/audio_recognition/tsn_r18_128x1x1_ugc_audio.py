@@ -1,11 +1,11 @@
 # model settings
 model = dict(
     type='RecognizerAudio',
-    backbone=dict(type='ResNet', depth=50, in_channels=1, norm_eval=False),
+    backbone=dict(type='ResNet', depth=18, in_channels=1, norm_eval=False),
     cls_head=dict(
         type='TSNHeadAudio',
         num_classes=212,
-        in_channels=2048,
+        in_channels=512,
         dropout_ratio=0.4,
         init_std=0.01))
 # model training and testing settings
@@ -19,31 +19,47 @@ ann_file_train = 'data/ugc/ugc_train_list_audio.txt'
 ann_file_val = 'data/ugc/ugc_val_list_audio.txt'
 ann_file_test = 'data/ugc/ugc_val_list_audio.txt'
 train_pipeline = [
+    dict(type='AudioDecodeInit'),
+    dict(type='SampleFrames', clip_len=64, frame_interval=1, num_clips=1),
     dict(type='AudioDecode'),
-    dict(type='AudioAmplify', ratio=1.5),
-    dict(type='MelLogTransform', n_fft=40),
-    dict(type='FormatShape', input_format='HW->NCHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs', 'label'])
+    # dict(type='AudioAmplify', ratio=1.5),
+    dict(type='MelSpectrogram'),
+    dict(type='FormatAudioShape', input_format='NTF'),
+    dict(type='Collect', keys=['audios', 'label'], meta_keys=[]),
+    dict(type='ToTensor', keys=['audios', 'label'])
 ]
 val_pipeline = [
+    dict(type='AudioDecodeInit'),
+    dict(
+        type='SampleFrames',
+        clip_len=64,
+        frame_interval=1,
+        num_clips=1,
+        test_mode=True),
     dict(type='AudioDecode'),
-    dict(type='AudioAmplify', ratio=1.5),
-    dict(type='MelLogTransform', n_fft=40),
-    dict(type='FormatShape', input_format='HW->NCHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs', 'label'])
+    # dict(type='AudioAmplify'),
+    dict(type='MelSpectrogram'),
+    dict(type='FormatAudioShape', input_format='NTF'),
+    dict(type='Collect', keys=['audios', 'label'], meta_keys=[]),
+    dict(type='ToTensor', keys=['audios', 'label'])
 ]
 test_pipeline = [
-    dict(type='AudioDecode'),
-    dict(type='AudioAmplify', ratio=1.5),
-    dict(type='MelLogTransform', n_fft=40),
-    dict(type='FormatShape', input_format='HW->NCHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs', 'label'])
+    dict(type='AudioDecodeInit'),
+    dict(
+        type='SampleFrames',
+        clip_len=64,
+        frame_interval=1,
+        num_clips=1,
+        test_mode=True),
+    dict(type='AudioDecodeInit'),
+    # dict(type='AudioAmplify'),
+    dict(type='MelSpectrogram'),
+    dict(type='FormatAudioShape', input_format='NTF'),
+    dict(type='Collect', keys=['audios', 'label'], meta_keys=[]),
+    dict(type='ToTensor', keys=['audios', 'label'])
 ]
 data = dict(
-    videos_per_gpu=4,
+    videos_per_gpu=32,
     workers_per_gpu=0,
     train=dict(
         type=dataset_type,
@@ -66,8 +82,8 @@ optimizer = dict(
     weight_decay=0.0001)  # this lr is used for 8 gpus
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
-lr_config = dict(policy='step', step=[40, 80])
-total_epochs = 100
+lr_config = dict(policy='step', step=[10, 15])
+total_epochs = 20
 checkpoint_config = dict(interval=5)
 evaluation = dict(
     interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
@@ -80,7 +96,7 @@ log_config = dict(
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/tsn_ugc_audio/'
+work_dir = './work_dirs/tsn_r18_128x1x1_ugc_audio/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]

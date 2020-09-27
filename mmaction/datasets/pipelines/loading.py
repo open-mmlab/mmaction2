@@ -4,7 +4,7 @@ import os.path as osp
 import shutil
 import warnings
 
-import librosa
+# import librosa
 import mmcv
 import numpy as np
 from mmcv.fileio import FileClient
@@ -913,93 +913,7 @@ class RawFrameDecode(object):
 
 
 @PIPELINES.register_module()
-class MultiModalityDecode(object):
-    """MultiModalityDecode.
-
-    Args:
-        io_backend (str): IO backend where frames are stored. Default: 'disk'.
-        decoding_backend (str): Backend used for image decoding.
-            Default: 'cv2'.
-        kwargs (dict, optional): Arguments for FileClient.
-    """
-
-    def __init__(self, io_backend='disk', decoding_backend='cv2', **kwargs):
-        self.io_backend = io_backend
-        self.decoding_backend = decoding_backend
-        self.kwargs = kwargs
-        self.file_client = None
-
-    def __call__(self, results):
-        """Perform the ``MultiModalityDecode`` to pick data given indices.
-
-        Args:
-            results (dict): The resulting dict to be modified and passed
-                to the next transform in pipeline.
-        """
-        mmcv.use_backend(self.decoding_backend)
-
-        directory_frames = results['frame_dir']
-        # directory_audio = results['audio_dir']
-        filename_tmpl = results['filename_tmpl']
-        modality = results['modality']
-        # e.g. 'RGB+Audio+Flow'
-        modalities = modality.split('+')
-
-        if self.file_client is None:
-            self.file_client = FileClient(self.io_backend, **self.kwargs)
-
-        imgs = list()
-        optical_flows = list()
-        audios = list()
-
-        if results['frame_inds'].ndim != 1:
-            results['frame_inds'] = np.squeeze(results['frame_inds'])
-
-        offset = results.get('offset', 0)
-
-        for frame_idx in results['frame_inds']:
-            frame_idx += offset
-            if 'RGB' in modalities:
-                filepath = osp.join(directory_frames,
-                                    filename_tmpl.format(frame_idx))
-                img_bytes = self.file_client.get(filepath)
-                # Get frame with channel order RGB directly.
-                cur_frame = mmcv.imfrombytes(img_bytes, channel_order='rgb')
-                imgs.append(cur_frame)
-                results['imgs'] = imgs
-                results['original_shape'] = imgs[0].shape[:2]
-                results['img_shape'] = imgs[0].shape[:2]
-
-            elif 'Flow' in modalities:
-                x_filepath = osp.join(directory_frames,
-                                      filename_tmpl.format('x', frame_idx))
-                y_filepath = osp.join(directory_frames,
-                                      filename_tmpl.format('y', frame_idx))
-                x_img_bytes = self.file_client.get(x_filepath)
-                x_frame = mmcv.imfrombytes(x_img_bytes, flag='grayscale')
-                y_img_bytes = self.file_client.get(y_filepath)
-                y_frame = mmcv.imfrombytes(y_img_bytes, flag='grayscale')
-                optical_flows.extend([x_frame, y_frame])
-                results['imgs'] = optical_flows
-                results['original_shape'] = optical_flows[0].shape[:2]
-                results['img_shape'] = optical_flows[0].shape[:2]
-
-            elif 'Audio' in modalities:
-                wav_filepath = osp.join(results['filename'])
-                y, sr = librosa.load(wav_filepath)
-                duration = y.shape[0]
-                audios.extend(y[int(frame_idx *
-                                    (results['total_frames'] / duration))])
-                results['y'] = y
-                results['sr'] = sr
-            else:
-                raise NotImplementedError
-
-        return results
-
-
-@PIPELINES.register_module()
-class AudioDecode(object):
+class AudioDecodeInit(object):
     """Using librosa to initialize the audio_reader.
 
     Required keys are "filename", added or modified keys are "total_frames",
@@ -1009,9 +923,11 @@ class AudioDecode(object):
     def __init__(self,
                  io_backend='disk',
                  decoding_backend='librosa',
+                 sample_rate=16000,
                  **kwargs):
         self.io_backend = io_backend
         self.decoding_backend = decoding_backend
+        self.sample_rate = sample_rate
         self.kwargs = kwargs
         self.file_client = None
 
@@ -1029,60 +945,60 @@ class AudioDecode(object):
 
         if self.file_client is None:
             self.file_client = FileClient(self.io_backend, **self.kwargs)
-        file_obj = io.BytesIO(self.file_client.get(results['filename']))
-        y, sr = librosa.load(file_obj)
-        duration = y.shape[0] / sr
-        results['duration'] = duration
+        try:
+            file_obj = io.BytesIO(self.file_client.get(results['audiopath']))
+            y, sr = librosa.load(file_obj, sr=self.sample_rate)
+        except BaseException:
+            # Generate a ramdom dummy input
+            y = np.random.randn(20.0 * self.sample_rate, )
+            sr = self.sample_rate
+
         results['length'] = y.shape[0]
         results['sample_rate'] = sr
-        results['imgs'] = y
+        results['audios'] = y
         return results
 
 
 @PIPELINES.register_module()
-class AudioSelector(object):
+class AudioDecode(object):
     """Sample the audio w.r.t.
 
     frames selected.
     """
 
-    def __init__(self, frame_span=100, **kwargs):
-        self.frame_span = frame_span
-        self.kwargs = kwargs
+    def __init__(self):
+        pass
 
     def __call__(self, results):
-        """Perform the ``AudioSelector`` to pick audio clips.
+        """Perform the ``AudioDecode`` to pick audio clips.
 
         Args:
             results (dict): The resulting dict to be modified and passed
                 to the next transform in pipeline.
         """
-        # fps = results['total_frames'] / results['duration']
-        audio_clips = results['imgs']
-        resampled_clip = list()
-        if results['frame_inds'].ndim != 1:
-            results['frame_inds'] = np.squeeze(results['frame_inds'])
-        offset = results.get('offset', 0)
+        audio = results['audios']
+        frame_inds = results['frame_inds']
+        num_clips = results['num_clips']
+        resampled_clips = list()
 
-        if results['clip_len'] == 1:
-            # sparse sampling like TSN
-            for frame_idx in results['frame_inds']:
-                frame_idx += offset
-                start_idx = max(0, frame_idx - self.frame_span)
-                end_idx = min(frame_idx + self.frame_span,
-                              results['total_frames'])
-                resampled_clip.extend(audio_clips[start_idx:end_idx +
-                                                  1, :].copy())
+        frame_inds = frame_inds.reshape(num_clips, -1)
+        for clip_idx in range(num_clips):
+            clip_frame_inds = frame_inds[clip_idx]
+            start_idx = max(
+                0,
+                int(
+                    round((clip_frame_inds[0] + 1) / results['total_frames'] *
+                          results['length'])))
+            end_idx = min(
+                results['length'],
+                int(
+                    round((clip_frame_inds[-1] + 1) / results['total_frames'] *
+                          results['length'])))
+            cropped_audio = audio[start_idx:end_idx]
+            resampled_clips.append(cropped_audio)
 
-        else:
-            # dense sampling like I3D
-            start_idx = max(results['frame_inds'])
-            end_idx = min(results['frame_inds'])
-            resampled_clip = audio_clips[start_idx:end_idx + 1, :].copy()
-
-        results['imgs'] = resampled_clip
-        results['audio_shape'] = resampled_clip.shape
-
+        results['audios'] = np.array(resampled_clips)
+        results['audios_shape'] = results['audios'].shape
         return results
 
 
