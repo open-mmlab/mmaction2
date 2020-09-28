@@ -7,7 +7,7 @@ import onnxruntime as rt
 import torch
 from mmcv.runner import load_checkpoint
 
-from mmaction.models import build_localizer, build_recognizer
+from mmaction.models import build_model
 
 try:
     from mmcv.onnx.symbolic import register_extra_symbolics
@@ -16,9 +16,10 @@ except ModuleNotFoundError:
 
 
 def _convert_batchnorm(module):
+    """Convert the syncBNs into normal BN3ds."""
     module_output = module
     if isinstance(module, torch.nn.SyncBatchNorm):
-        module_output = torch.nn.BatchNorm2d(module.num_features, module.eps,
+        module_output = torch.nn.BatchNorm3d(module.num_features, module.eps,
                                              module.momentum, module.affine,
                                              module.track_running_stats)
         if module.affine:
@@ -41,24 +42,26 @@ def pytorch2onnx(model,
                  opset_version=11,
                  show=False,
                  output_file='tmp.onnx',
-                 verify=False,
-                 normalize_cfg=None):
+                 verify=False):
+    """Convert pytorch model to onnx model.
+
+    Args:
+        input_shape (tuple[int]): The input tensor shape of the model.
+        opset_version (int): Opset version of onnx used. Default: 11.
+        show (bool): Determines whether to print the onnx model architecture.
+            Default: False.
+        output_file (str): Output onnx model name. Default: 'tmp.onnx'.
+        verify (bool): Determines whether to verify the onnx model.
+            Default: False.
+    """
     model.cpu().eval()
 
     one_img = torch.randn(input_shape)
 
-    # onnx.export does not support kwargs
-    if hasattr(model, 'dummy_forward'):
-        model.forward = model.dummy_forward
-    elif hasattr(model, '_forward') and args.is_localizer:
-        model.forward = model._forward
-    else:
-        raise NotImplementedError(
-            'Please implement the forward method for exporting.')
-
     register_extra_symbolics(opset_version)
     torch.onnx.export(
-        model, ([one_img]),
+        model,
+        one_img,
         output_file,
         export_params=True,
         keep_initializers_as_inputs=True,
@@ -73,7 +76,7 @@ def pytorch2onnx(model,
 
         # check the numerical value
         # get pytorch output
-        pytorch_result = model([one_img])
+        pytorch_result = model(one_img)[0].detach().numpy()
 
         # get onnx output
         input_all = [node.name for node in onnx_model.graph.input]
@@ -81,23 +84,23 @@ def pytorch2onnx(model,
             node.name for node in onnx_model.graph.initializer
         ]
         net_feed_input = list(set(input_all) - set(input_initializer))
-        assert (len(net_feed_input) == 1)
+        assert len(net_feed_input) == 1
         sess = rt.InferenceSession(output_file)
         onnx_result = sess.run(None,
-                               {net_feed_input[0]: one_img.detach().numpy()})
-        # only compare a part of result
+                               {net_feed_input[0]: one_img.detach().numpy()
+                                })[0]
+        # only compare part of results
         assert np.allclose(
-            pytorch_result[0][:, 4], onnx_result[:, 4]
+            pytorch_result[:, 4], onnx_result[:, 4]
         ), 'The outputs are different between Pytorch and ONNX'
         print('The numerical values are same between Pytorch and ONNX')
 
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='Convert MMAction models to ONNX')
+        description='Convert MMAction2 models to ONNX')
     parser.add_argument('config', help='test config file path')
     parser.add_argument('checkpoint', help='checkpoint file')
-    parser.add_argument('--input-img', type=str, help='Images for input')
     parser.add_argument('--show', action='store_true', help='show onnx graph')
     parser.add_argument('--output-file', type=str, default='tmp.onnx')
     parser.add_argument('--opset-version', type=int, default=11)
@@ -124,32 +127,32 @@ if __name__ == '__main__':
 
     assert args.opset_version == 11, 'MMAction2 only support opset 11 now'
 
-    normalize_cfg = {
-        'mean': np.array(args.mean, dtype=np.float32),
-        'std': np.array(args.std, dtype=np.float32)
-    }
-
     cfg = mmcv.Config.fromfile(args.config)
     # import modules from string list.
 
-    cfg.model.pretrained = None
+    if not args.is_localizer:
+        cfg.model.backbone.pretrained = None
 
     # build the model
-    if args.is_localizer:
-        model = build_localizer(
-            cfg.model, train_cfg=None, test_cfg=cfg.test_cfg)
-    else:
-        model = build_recognizer(
-            cfg.model, train_cfg=None, test_cfg=cfg.test_cfg)
+    model = build_model(cfg.model, train_cfg=None, test_cfg=cfg.test_cfg)
     model = _convert_batchnorm(model)
+
+    # onnx.export does not support kwargs
+    if hasattr(model, 'forward_dummy'):
+        model.forward = model.forward_dummy
+    elif hasattr(model, '_forward') and args.is_localizer:
+        model.forward = model._forward
+    else:
+        raise NotImplementedError(
+            'Please implement the forward method for exporting.')
+
     checkpoint = load_checkpoint(model, args.checkpoint, map_location='cpu')
 
     # conver model to onnx file
     pytorch2onnx(
         model,
-        args.input_shape,
+        args.shape,
         opset_version=args.opset_version,
         show=args.show,
         output_file=args.output_file,
-        verify=args.verify,
-        normalize_cfg=normalize_cfg)
+        verify=args.verify)

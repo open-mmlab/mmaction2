@@ -18,24 +18,19 @@ For simple exporting, you can use the [script](../../tools/torch2onnx.py) here. 
 ### Prerequisite
 First, install onnx.
 ```shell
-pip install onnx
+pip install onnx onnxruntime
 ```
 
 ### Recognizers
 For recognizers, if your model are trained with a config from mmaction2 and intend to inference it according to the test pipeline, simply run:
 ```shell
-python tools/torch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH
-```
-
-Otherwise, if you want to customize the input tensor shape, you can modify the `test_pipeline` in your config `$CONFIG_PATH`, or run:
-```shell
-python tools/torch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --input-size $BATCHS $CROPS $CHANNELS $CLIP_LENGTH $HEIGHT $WIDTH
+python tools/torch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --verify
 ```
 
 ### Localizer
 For localizers, we *only* support customized input size, since our abstractions for localizers(eg. SSN, BMN) are not unified. Please run:
 ```shell
-python tools/torch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --is-localizer --input-size $INPUT_SIZE
+python tools/torch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --is-localizer --shape $SHAPE --verify
 ```
 
 Please fire an issue if you discover any checkpoints that are not perfectly exported or suffer some loss in accuracy.
