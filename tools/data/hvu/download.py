@@ -78,10 +78,10 @@ def download_clip(video_identifier,
                 try:
                     subprocess.check_output(
                         command, shell=True, stderr=subprocess.STDOUT)
-                except subprocess.CalledProcessError as err:
+                except subprocess.CalledProcessError:
                     attempts += 1
                     if attempts == num_attempts:
-                        return status, err.output
+                        return status, 'Downloading Failed'
                 else:
                     break
 
