@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 DATA_DIR="../../../data/hvu/annotations"
 
 if [[ ! -d "${DATA_DIR}" ]]; then

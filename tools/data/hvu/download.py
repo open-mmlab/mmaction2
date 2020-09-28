@@ -1,17 +1,18 @@
-# This scripts is copied from
-# https://github.com/activitynet/ActivityNet/blob/master/Crawler/Kinetics/download.py  # noqa: E501
+# ------------------------------------------------------------------------------
+# Adapted from https://github.com/activitynet/ActivityNet/
+# Original licence: Copyright (c) Microsoft, under the MIT License.
+# ------------------------------------------------------------------------------
+
 import argparse
 import glob
 import os
 import shutil
+import ssl
 import subprocess
+import uuid
 
 import mmcv
-
-import ssl  # isort:skip
-import uuid  # isort:skip
-
-from joblib import Parallel, delayed  # isort:skip
+from joblib import Parallel, delayed
 
 ssl._create_default_https_context = ssl._create_unverified_context
 args = None
