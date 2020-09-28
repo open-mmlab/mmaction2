@@ -2,12 +2,16 @@ import argparse
 
 import mmcv
 import numpy as np
-import onnx
-import onnxruntime as rt
 import torch
 from mmcv.runner import load_checkpoint
 
 from mmaction.models import build_model
+
+try:
+    import onnx
+    import onnxruntime as rt
+except ImportError as e:
+    raise ImportError(f'Please install onnx and onnxruntime first. {e}')
 
 try:
     from mmcv.onnx.symbolic import register_extra_symbolics
