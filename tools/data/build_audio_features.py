@@ -6,7 +6,6 @@ import sys
 from multiprocessing import Pool
 
 import librosa
-import librosa.filters
 import lws
 import numpy as np
 from scipy.io import wavfile
@@ -16,6 +15,7 @@ sys.path.append('..')
 
 
 class AudioConfig:
+    """All methods related to audio feature extraction."""
 
     def __init__(self,
                  frame_rate=30,
@@ -197,7 +197,7 @@ def extract_audio_feature(wav_path, audio_tools, mel_out_dir):
         try:
             wav = audio_tools.read_audio(wav_path)
 
-            spectrogram = audio_tools.audioaudio_to_spectrogram(wav)
+            spectrogram = audio_tools.audio_to_spectrogram(wav)
 
             np.save(
                 mel_filename,
@@ -209,25 +209,32 @@ def extract_audio_feature(wav_path, audio_tools, mel_out_dir):
 
 
 if __name__ == '__main__':
-    audio_tools = AudioConfig(fft_size=1024, hop_size=256)
+    audio_tools = AudioConfig(
+        fft_size=512, hop_size=256)  # window_size:32ms hop_size:16ms
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--audio-home-path', default=None)
-    parser.add_argument('--spectrogram-save-path', default='None')
-    parser.add_argument('--level', default=1)
+    parser.add_argument('audio_home_path', type=str)
+    parser.add_argument('spectrogram_save_path', type=str)
+    parser.add_argument('--level', type=int, default=1)
     parser.add_argument('--ext', default='.m4a')
-
     parser.add_argument('--num-workers', type=int, default=4)
-
+    parser.add_argument('--part', type=str, default='1/1')
     args = parser.parse_args()
 
     if not osp.exists(args.spectrogram_save_path):
         os.makedirs(args.spectrogram_save_path)
 
-    files = glob.glob(args.audio_home_path + '*/' * args.level, '*.mp3')
+    files = glob.glob(
+        osp.join(args.audio_home_path, '*/' * args.level, '*' + args.ext))
+    print(f'found {len(files)} files.')
+    files = sorted(files)
+    if args.part is not None:
+        [this_part, num_parts] = [int(i) for i in args.part.split('/')]
+        part_len = len(files) // num_parts
 
     p = Pool(args.num_workers)
-    for file in tqdm(files):
+    for file in tqdm(files[part_len * (this_part - 1):(
+            part_len * this_part) if this_part != num_parts else len(files)]):
         p.apply_async(
             extract_audio_feature,
             args=(file, audio_tools, args.spectrogram_save_path))
