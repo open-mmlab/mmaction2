@@ -71,7 +71,7 @@ In data benchmark, we compare:
 |                              x                               | short-side 320 | ResNet50 | IG-1B [1] |        :x:         |   73.1   |   90.4   |            x            |    8344    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/omni/tsn_1G1B_pretrained_r50_without_omni_1x1x3_kinetics400_rgb_20200926-c133dd49.pth) |                              x                               |                              x                               |
 |                              x                               | short-side 320 | ResNet50 | IG-1B [1] | :heavy_check_mark: |   75.7   |   91.9   |            x            |    8344    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/omni/tsn_1G1B_pretrained_r50_omni_1x1x3_kinetics400_rgb_20200926-2863fed0.pth) |                              x                               |                              x                               |
 
-[1] We obtain the pretrain model from [torch-hub](https://pytorch.org/hub/facebookresearch_semi-supervised-ImageNet1K-models_resnext/), the pretrain model we used is `resnet50_swsl`
+[1] We obtain the pre-trained model from [torch-hub](https://pytorch.org/hub/facebookresearch_semi-supervised-ImageNet1K-models_resnext/), the pretrain model we used is `resnet50_swsl`
 
 ### Something-Something V1
 
