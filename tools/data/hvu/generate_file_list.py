@@ -123,12 +123,12 @@ if __name__ == '__main__':
         downloaded_set = set(downloaded)
     else:
         parse_result = parse_directory(args.src_dir)
-        downloaded_set = set(parse_result.keys())
+        downloaded_set = set(parse_result)
 
     def parse_line(line):
         tags, youtube_id, start, end = line
         start, end = int(float(start) * 10), int(float(end) * 10)
-        newname = '{}_{:06d}_{:06d}'.format(youtube_id, start, end)
+        newname = f'{youtube_id}_{start:06d}_{end:06d}'
         tags = tags.split('|')
         all_tags = {}
         for tag in tags:

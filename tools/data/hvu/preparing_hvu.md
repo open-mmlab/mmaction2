@@ -53,11 +53,10 @@ bash generate_rawframes_filelist.sh
 
 ## Step 5. Folder Structure
 
-After the whole data pipeline for Kinetics-400 preparation.
-you can get the rawframes (RGB + Flow), videos and annotation files for Kinetics-400.
+After the whole data pipeline for HVU preparation.
+you can get the rawframes (RGB + Flow), videos and annotation files for HVU.
 
-In the context of the whole project (for Kinetics-400 only), the *minimal* folder structure will look like:
-(*minimal* means that some data are not necessary: for example, you may want to evaluate kinetics-400 using the original video format.)
+In the context of the whole project (for HVU only), the full folder structure will look like:
 
 ```
 mmaction2
