@@ -2,7 +2,8 @@ from mmaction.localization import soft_nms
 
 
 def post_processing(result, video_info, soft_nms_alpha, soft_nms_low_threshold,
-                    soft_nms_high_threshold, post_process_top_k):
+                    soft_nms_high_threshold, post_process_top_k,
+                    feature_extraction_interval):
     """Post process for temporal proposals generation.
 
     Args:
@@ -13,6 +14,7 @@ def post_processing(result, video_info, soft_nms_alpha, soft_nms_low_threshold,
         soft_nms_low_threshold (float): Low threshold for soft nms.
         soft_nms_high_threshold (float): High threshold for soft nms.
         post_process_top_k (int): Top k values to be considered.
+        feature_extraction_interval (int): Interval used in feature extraction.
 
     Returns:
         list[dict]: The updated proposals, e.g.
@@ -26,8 +28,9 @@ def post_processing(result, video_info, soft_nms_alpha, soft_nms_low_threshold,
 
     result = result[result[:, -1].argsort()[::-1]]
     video_duration = float(
-        video_info['duration_frame'] // 16 *
-        16) / video_info['duration_frame'] * video_info['duration_second']
+        video_info['duration_frame'] // feature_extraction_interval *
+        feature_extraction_interval
+    ) / video_info['duration_frame'] * video_info['duration_second']
     proposal_list = []
 
     for j in range(min(post_process_top_k, len(result))):

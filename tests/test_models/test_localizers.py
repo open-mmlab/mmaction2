@@ -150,7 +150,7 @@ def test_post_processing():
         duration_second=100,
         duration_frame=960,
         feature_frame=960)
-    proposal_list = post_processing(result, video_info, 0.75, 0.65, 0.9, 2)
+    proposal_list = post_processing(result, video_info, 0.75, 0.65, 0.9, 2, 16)
     assert isinstance(proposal_list[0], dict)
     assert proposal_list[0]['score'] == 0.6
     assert proposal_list[0]['segment'] == [0., 95.0]
@@ -165,7 +165,7 @@ def test_post_processing():
         duration_second=100,
         duration_frame=960,
         feature_frame=960)
-    proposal_list = post_processing(result, video_info, 0.75, 0.65, 0.9, 1)
+    proposal_list = post_processing(result, video_info, 0.75, 0.65, 0.9, 1, 16)
     assert isinstance(proposal_list[0], dict)
     assert proposal_list[0]['score'] == 0.5
     assert proposal_list[0]['segment'] == [0., 100.0]

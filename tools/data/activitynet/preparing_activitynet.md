@@ -79,7 +79,7 @@ python tsn_feature_extraction.py --data-prefix ../../../data/ActivityNet/rawfram
 After feature extraction, you can use our post processing scripts to concat RGB and Flow feature, generate the 100-t X 400-d feature for Action Detection.
 
 ```shell
-python activitynet_feature_postprocessing --rgb ../../../data/ActivityNet/rgb_feat --flow ../../../data/ActivityNet/flow_feat --dest ../../../data/ActivityNet/mmaction_feat
+python activitynet_feature_postprocessing.py --rgb ../../../data/ActivityNet/rgb_feat --flow ../../../data/ActivityNet/flow_feat --dest ../../../data/ActivityNet/mmaction_feat
 ```
 
 ## Final Step. Check Directory Structure
@@ -99,11 +99,30 @@ mmaction2
 │   │   ├── anet_anno_{train,val,test,full}.json
 │   │   ├── anet_anno_action.json
 │   │   ├── video_info_new.csv
+
+(if Option 1 used)
 │   │   ├── activitynet_feature_cuhk
 │   │   │   ├── csv_mean_100
 │   │   │   │   ├── v___c8enCfzqw.csv
 │   │   │   │   ├── v___dXUJsj3yo.csv
 │   │   │   |   ├── ..
+
+(if Option 2 used)
+│   │   ├── mmaction_feat
+│   │   │   ├── v___c8enCfzqw.csv
+│   │   │   ├── v___dXUJsj3yo.csv
+│   │   │   ├── ..
+│   │   ├── rawframes
+│   │   │   ├── v___c8enCfzqw
+│   │   │   │   ├── img_00000.jpg
+│   │   │   │   ├── flow_x_00000.jpg
+│   │   │   │   ├── flow_y_00000.jpg
+│   │   │   │   ├── ..
+│   │   │   ├── ..
+│   │   ├── anet_train_video.txt
+│   │   ├── anet_val_video.txt
+│   │   ├── anet_train_clip.txt
+│   │   ├── anet_val_clip.txt
 ```
 
 For training and evaluating on ActivityNet, please refer to [getting_started.md](/docs/getting_started.md).
