@@ -445,7 +445,7 @@ class X3d(nn.Module):
             self.base_channels,
             kernel_size=(5, 1, 1),
             stride=(1, 1, 1),
-            padding=(1, 0, 0),
+            padding=(2, 0, 0),
             groups=self.base_channels,
             bias=False,
             conv_cfg=self.conv_cfg,
