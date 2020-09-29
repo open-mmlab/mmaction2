@@ -45,6 +45,8 @@ jobs:
       - name: Install Pillow
         run: pip install Pillow==6.2.2
         if: ${{matrix.torchvision == '0.4.2'}}
+      - name: Install onnx, onnxruntime
+        run: pip install onnx onnxruntime
       - name: Install TurboJpeg lib
         run: sudo apt-get install -y libturbojpeg
       - name: Install PyTorch
