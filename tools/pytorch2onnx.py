@@ -16,7 +16,7 @@ except ImportError as e:
 try:
     from mmcv.onnx.symbolic import register_extra_symbolics
 except ModuleNotFoundError:
-    raise NotImplementedError('please update mmcv to version>=v1.0.4')
+    raise NotImplementedError('please update mmcv to version>=1.0.4')
 
 
 def _convert_batchnorm(module):
@@ -50,6 +50,7 @@ def pytorch2onnx(model,
     """Convert pytorch model to onnx model.
 
     Args:
+        model (:obj:`nn.Module`): The pytorch model to be exported.
         input_shape (tuple[int]): The input tensor shape of the model.
         opset_version (int): Opset version of onnx used. Default: 11.
         show (bool): Determines whether to print the onnx model architecture.
@@ -129,7 +130,7 @@ def parse_args():
 if __name__ == '__main__':
     args = parse_args()
 
-    assert args.opset_version == 11, 'MMAction2 only support opset 11 now'
+    assert args.opset_version == 11, 'MMAction2 only supports opset 11 now'
 
     cfg = mmcv.Config.fromfile(args.config)
     # import modules from string list.

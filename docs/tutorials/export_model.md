@@ -36,13 +36,13 @@ Optional arguments:
 + `--opset-version`: Determines the operation set version of onnx, we recommand you to use a higher version such as 11 for compatibility. If not specified, it wll be set to `11`.
 
 ### Recognizers
-For recognizers, if your model are trained with a config from mmaction2 and intend to inference it according to the test pipeline, simply run:
+For recognizers, please run:
 ```shell
 python tools/torch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --verify
 ```
 
 ### Localizer
-For localizers, we *only* support customized input size, since our abstractions for localizers(eg. SSN, BMN) are not unified. Please run:
+For localizers, please run:
 ```shell
 python tools/torch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --is-localizer --shape $SHAPE --verify
 ```
