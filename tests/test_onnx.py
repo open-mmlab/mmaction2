@@ -1,5 +1,5 @@
 import torch.nn as nn
-from tools.pytorch2onnx import pytorch2onnx
+from tools.pytorch2onnx import _convert_batchnorm, pytorch2onnx
 
 
 class TestModel(nn.Module):
@@ -7,7 +7,7 @@ class TestModel(nn.Module):
     def __init__(self):
         super().__init__()
         self.conv = nn.Conv3d(1, 2, 1)
-        self.bn = nn.BatchNorm3d(2)
+        self.bn = nn.SyncBatchNorm(2)
 
     def forward(self, x):
         return self.bn(self.conv(x))
@@ -18,5 +18,6 @@ class TestModel(nn.Module):
 
 def test_onnx_exporting():
     model = TestModel()
+    model = _convert_batchnorm(model)
     # test exporting
     pytorch2onnx(model, (1, 1, 1, 1, 1))
