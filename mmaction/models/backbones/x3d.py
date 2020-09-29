@@ -4,7 +4,7 @@ import math
 
 import torch.nn as nn
 import torch.utils.checkpoint as cp
-from mmcv.cnn import (ConvModule, build_activation_layer, constant_init,
+from mmcv.cnn import (ConvModule, Swish, build_activation_layer, constant_init,
                       kaiming_init)
 from mmcv.runner import load_checkpoint
 from mmcv.utils import _BatchNorm
@@ -119,7 +119,9 @@ class BlockX3d(nn.Module):
             bias=False,
             conv_cfg=self.conv_cfg,
             norm_cfg=self.norm_cfg,
-            act_cfg=self.act_cfg_swish if self.use_swish else self.act_cfg)
+            act_cfg=None)
+
+        self.swish = Swish()
 
         self.conv3 = ConvModule(
             in_channels=planes,
@@ -148,6 +150,8 @@ class BlockX3d(nn.Module):
             out = self.conv2(out)
             if self.se_ratio is not None:
                 out = self.se_module(out)
+
+            out = self.swish(out)
 
             out = self.conv3(out)
 
