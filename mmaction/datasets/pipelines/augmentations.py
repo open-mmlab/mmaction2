@@ -1165,6 +1165,13 @@ class AudioAmplify(object):
         self.ratio = ratio
 
     def __call__(self, results):
+        """Perfrom the audio amplification.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+
         assert 'audios' in results.keys()
         results['audios'] *= self.ratio
         results['amplify_ratio'] = self.ratio
@@ -1178,25 +1185,30 @@ class AudioAmplify(object):
 
 @PIPELINES.register_module()
 class MelSpectrogram(object):
-    """MelSpectrogram.
+    """MelSpectrogram. Transfer a audio wave into a melspectogram figure.
 
     Args:
-        window_size (int): in milisecond.
-        step_size (int): in milisecond.
-        n_mel (int): n_mel.
+        window_size (int): The window size in milisecond. Default: 32.
+        step_size (int): The step size in milisecond. Default: 16.
+        n_mel (int): Number of mels. Default: 80.
+        fix_length (int): The sample length of melspectrogram maybe not
+            exactly as wished due to different fps, fix the length for batch
+            collation by truncating or padding. Default: 128.
     """
 
-    def __init__(self,
-                 window_size=32,
-                 step_size=16,
-                 n_mel=80,
-                 truncate_length=128):
+    def __init__(self, window_size=32, step_size=16, n_mel=80, fix_length=128):
         self.window_size = window_size
         self.step_size = step_size
         self.n_mel = n_mel
-        self.truncate_length = truncate_length
+        self.fix_length = fix_length
 
     def __call__(self, results):
+        """Perfrom MelSpectrogram transformation.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         try:
             import librosa
         except ImportError:
@@ -1214,11 +1226,11 @@ class MelSpectrogram(object):
                 n_fft=n_fft,
                 hop_length=hop_size,
                 n_mels=self.n_mel)
-            if mel.shape[-1] >= self.truncate_length:
-                mel = mel[:, :self.truncate_length]
+            if mel.shape[-1] >= self.fix_length:
+                mel = mel[:, :self.fix_length]
             else:
                 mel = np.pad(
-                    mel, ((0, 0), (0, self.truncate_length - mel.shape[-1])),
+                    mel, ((0, 0), (0, self.fix_length - mel.shape[-1])),
                     mode='edge')
             melspectrograms.append(mel)
 

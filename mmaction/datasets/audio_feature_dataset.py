@@ -9,18 +9,18 @@ from .registry import DATASETS
 
 
 @DATASETS.register_module()
-class AudioDataset(BaseDataset):
-    """Audio dataset for video recognition. Extracts the audio feature on-the-
-    fly.
+class AudioFeatureDataset(BaseDataset):
+    """Audio feature dataset for video recognition. Reads the features
+    extracted off-line.
 
     Args:
         ann_file (str): Path to the annotation file.
         pipeline (list[dict | callable]): A sequence of data transforms.
-        suffix (str): The suffix of the audio file. Default: '.wav'.
+        suffix (str): The suffix of the audio file. Default: '.npy'.
         kwargs (dict): Other keyword args for `BaseDataset`.
     """
 
-    def __init__(self, ann_file, pipeline, suffix='.wav', **kwargs):
+    def __init__(self, ann_file, pipeline, suffix='.npy', **kwargs):
         self.suffix = suffix
         super().__init__(ann_file, pipeline, modality='Audio', **kwargs)
 
@@ -39,6 +39,8 @@ class AudioDataset(BaseDataset):
                     if not filename.endswith(self.suffix):
                         filename = osp.join(self.data_prefix,
                                             filename) + self.suffix
+                    else:
+                        filename = osp.join(self.data_prefix, filename)
                 video_info['audiopath'] = filename
                 idx += 1
                 # idx for total_frames

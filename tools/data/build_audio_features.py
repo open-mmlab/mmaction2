@@ -14,8 +14,16 @@ from tqdm import tqdm
 sys.path.append('..')
 
 
-class AudioConfig:
-    """All methods related to audio feature extraction."""
+class AudioTools:
+    """All methods related to audio feature extraction.
+
+    Args:
+        frame_rate (int): The frame rate per second of the video. Default: 30.
+        sample_rate (int): The sample rate for audio sampling. Default: 16000.
+        num_mels (int): Number of channels of the melspectrogram. Default: 80.
+        fft_size (int): fft_size / sample_rate is window size. Default: 1280.
+        hop_size (int): hop_size / sample_rate is step size. Default: 320.
+    """
 
     def __init__(self,
                  frame_rate=30,
@@ -41,14 +49,20 @@ class AudioConfig:
         self.norm_audio = True
 
     def load_wav(self, path):
+        """Load an audio file into numpy array."""
         return librosa.core.load(path, sr=self.sample_rate)[0]
 
     def audio_normalize(self, samples, desired_rms=0.1, eps=1e-4):
+        """RMS normalize the audio data."""
         rms = np.maximum(eps, np.sqrt(np.mean(samples**2)))
         samples = samples * (desired_rms / rms)
         return samples
 
     def generate_spectrogram_magphase(self, audio, with_phase=False):
+        """Separate a complex-valued spectrogram D into its.
+
+        magnitude (S) and phase (P) components, so that D = S * P.
+        """
         spectro = librosa.core.stft(
             audio,
             hop_length=self.get_hop_size(),
@@ -63,10 +77,12 @@ class AudioConfig:
             return spectro_mag
 
     def save_wav(self, wav, path):
+        """Save the wav to disk."""
         wav *= 32767 / max(0.01, np.max(np.abs(wav)))
         wavfile.write(path, self.sample_rate, wav.astype(np.int16))
 
     def trim(self, quantized):
+        """Trim the audio wavfile."""
         start, end = self.start_and_end_indices(quantized,
                                                 self.silence_threshold)
         return quantized[start:end]
@@ -99,6 +115,7 @@ class AudioConfig:
         return quantized[start:end], mel[start:end, :]
 
     def start_and_end_indices(self, quantized, silence_threshold=2):
+        """Trim the audio file when reaches the silence threshold."""
         for start in range(quantized.size):
             if abs(quantized[start] - 127) > silence_threshold:
                 break
@@ -112,6 +129,7 @@ class AudioConfig:
         return start, end
 
     def melspectrogram(self, y):
+        """Generate the melspectrogram."""
         D = self._lws_processor().stft(y).T
         S = self._amp_to_db(self._linear_to_mel(np.abs(D))) - self.ref_level_db
         if not self.allow_clipping_in_normalization:
@@ -119,6 +137,7 @@ class AudioConfig:
         return self._normalize(S)
 
     def get_hop_size(self):
+        """Calculate the hop size."""
         hop_size = self.hop_size
         if hop_size is None:
             assert self.frame_shift_ms is not None
@@ -191,6 +210,7 @@ class AudioConfig:
 
 def extract_audio_feature(wav_path, audio_tools, mel_out_dir):
     file_name = osp.basename(wav_path[:-4])
+    file_name = '_'.join(file_name.split('_')[:-2])  # FIXME
     # Write the spectrograms to disk:
     mel_filename = os.path.join(mel_out_dir, file_name + '.npy')
     if not os.path.exists(mel_filename):
@@ -209,7 +229,7 @@ def extract_audio_feature(wav_path, audio_tools, mel_out_dir):
 
 
 if __name__ == '__main__':
-    audio_tools = AudioConfig(
+    audio_tools = AudioTools(
         fft_size=512, hop_size=256)  # window_size:32ms hop_size:16ms
 
     parser = argparse.ArgumentParser()

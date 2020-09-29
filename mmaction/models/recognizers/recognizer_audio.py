@@ -53,9 +53,7 @@ class RecognizerAudio(BaseRecognizer):
                 averaging the logs.
         """
         audios = data_batch['audios']
-        print(audios.size())
         label = data_batch['label']
-
         losses = self(audios, label)
 
         loss, log_vars = self._parse_losses(losses)

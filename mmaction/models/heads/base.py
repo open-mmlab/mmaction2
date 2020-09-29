@@ -93,6 +93,5 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
         elif self.label_smooth_eps != 0:
             labels = ((1 - self.label_smooth_eps) * labels +
                       self.label_smooth_eps / self.num_classes)
-
         losses['loss_cls'] = self.loss_cls(cls_score, labels)
         return losses

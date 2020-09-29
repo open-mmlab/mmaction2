@@ -4,7 +4,6 @@ import os.path as osp
 import shutil
 import warnings
 
-# import librosa
 import mmcv
 import numpy as np
 from mmcv.fileio import FileClient
@@ -949,13 +948,55 @@ class AudioDecodeInit(object):
             file_obj = io.BytesIO(self.file_client.get(results['audiopath']))
             y, sr = librosa.load(file_obj, sr=self.sample_rate)
         except BaseException:
-            # Generate a ramdom dummy input
-            y = np.random.randn(20.0 * self.sample_rate, )
+            # Generate a ramdom dummy 10s input
+            y = np.random.randn(10.0 * self.sample_rate, )
             sr = self.sample_rate
 
         results['length'] = y.shape[0]
         results['sample_rate'] = sr
         results['audios'] = y
+        return results
+
+
+@PIPELINES.register_module()
+class LoadAudioFeature(object):
+    """Load offline extracted audio feature.
+
+    Required keys are "filename", added or modified keys are "total_frames",
+    "sample_rate", "imgs".
+    """
+
+    def __init__(self, **kwargs):
+        self.kwargs = kwargs
+
+    def __call__(self, results):
+        """Perform the numpy loading.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        try:
+            feature_map = np.load(results['audiopath'])
+        except FileNotFoundError as e:
+            # Generate a ramdom dummy 10s input
+            # Some videos do not have audio stream
+            print(e)
+            feature_map = np.random.randn(640, 80).astype(np.float32)
+            with open('notfound_error.txt', 'a+') as f:
+                f.write('{}\n'.format(results['audiopath']))
+        except ValueError as e:
+            print(e)
+            with open('pickle_error.txt', 'a+') as f:
+                f.write('{}\n'.format(results['audiopath']))
+            feature_map = np.random.randn(640, 80).astype(np.float32)
+        except BaseException as e:
+            print(e)
+            with open('unknown_error.txt', 'a+') as f:
+                f.write('{} {}\n'.format(results['audiopath'], e))
+            feature_map = np.random.randn(640, 80).astype(np.float32)
+        results['length'] = feature_map.shape[0]
+        results['audios'] = feature_map
         return results
 
 
@@ -1012,6 +1053,64 @@ class FrameSelector(RawFrameDecode):
         warnings.warn('"FrameSelector" is deprecated, please switch to'
                       '"RawFrameDecode"')
         super().__init__(*args, **kwargs)
+
+
+@PIPELINES.register_module()
+class AudioFeatureSelector(object):
+    """Sample the audio feature w.r.t.
+
+    frames selected.
+    """
+
+    def __init__(self, fixed_length=128):
+        self.fixed_length = fixed_length
+
+    def __call__(self, results):
+        """Perform the ``AudioFeatureSelector`` to pick audio feature clips.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        audio = results['audios']
+        frame_inds = results['frame_inds']
+        num_clips = results['num_clips']
+        resampled_clips = list()
+
+        frame_inds = frame_inds.reshape(num_clips, -1)
+        for clip_idx in range(num_clips):
+            clip_frame_inds = frame_inds[clip_idx]
+            start_idx = max(
+                0,
+                int(
+                    round((clip_frame_inds[0] + 1) / results['total_frames'] *
+                          results['length'])))
+            end_idx = min(
+                results['length'],
+                int(
+                    round((clip_frame_inds[-1] + 1) / results['total_frames'] *
+                          results['length'])))
+            cropped_audio = audio[start_idx:end_idx, :]
+            if cropped_audio.shape[0] >= self.fixed_length:
+                truncated_audio = cropped_audio[:self.fixed_length, :]
+            else:
+                try:
+                    truncated_audio = np.pad(
+                        cropped_audio,
+                        ((0, self.fixed_length - cropped_audio.shape[0]),
+                         (0, 0)),
+                        mode='edge')
+                except ValueError as e:
+                    print(e)
+                    truncated_audio = np.random.randn(128,
+                                                      80).astype(np.float32)
+                    with open('pad_error.txt', 'a+') as f:
+                        f.write('{}\n'.format(results['audiopath']))
+
+            resampled_clips.append(truncated_audio)
+        results['audios'] = np.array(resampled_clips)
+        results['audios_shape'] = results['audios'].shape
+        return results
 
 
 @PIPELINES.register_module()
