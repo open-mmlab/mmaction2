@@ -25,7 +25,8 @@ class X3dHead(BaseHead):
                  loss_cls=dict(type='CrossEntropyLoss'),
                  spatial_type='avg',
                  dropout_ratio=0.5,
-                 init_std=0.01):
+                 init_std=0.01,
+                 fc1_bias=True):
         super().__init__(num_classes, in_channels, loss_cls)
 
         self.spatial_type = spatial_type
@@ -38,8 +39,10 @@ class X3dHead(BaseHead):
         self.in_channels = in_channels
         self.mid_channels = 2048
         self.num_classes = num_classes
+        self.fc1_bias = fc1_bias
 
-        self.fc1 = nn.Linear(self.in_channels, self.mid_channels)
+        self.fc1 = nn.Linear(
+            self.in_channels, self.mid_channels, bias=self.fc1_bias)
         self.fc2 = nn.Linear(self.mid_channels, self.num_classes)
 
         self.relu = nn.ReLU()
