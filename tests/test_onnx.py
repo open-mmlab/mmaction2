@@ -19,4 +19,4 @@ class TestModel(nn.Module):
 def test_onnx_exporting():
     model = TestModel()
     # test exporting
-    pytorch2onnx(model, (1, 1, 1, 1, 1), verify=True)
+    pytorch2onnx(model, (1, 1, 1, 1, 1))
