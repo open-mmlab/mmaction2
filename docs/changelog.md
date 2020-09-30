@@ -3,19 +3,22 @@
 ### v0.7.0 (30/9/2020)
 
 **Highlights**
+- Support TPN
+- Support JHMDB, UCF101-24, HVU dataset preparation
+- support onnx
 
 **New Features**
 - Support the data pre-processing pipeline for the HVU Dataset ([#277](https://github.com/open-mmlab/mmaction2/pull/227/))
 - Support to run real-time action recognition from web camera ([#171](https://github.com/open-mmlab/mmaction2/pull/171))
-- Support to export pytorch models to onnx ([#160](https://github.com/open-mmlab/mmaction2/pull/160))
+- Support to export pytorch models to onnx ones ([#160](https://github.com/open-mmlab/mmaction2/pull/160))
 - Support UCF101-24 preparation ([#219](https://github.com/open-mmlab/mmaction2/pull/219))
-- Support to report mAP for ActivityNet with [CUHK17_activitynet_pred](http://activity-net.org/challenges/2017/evaluation.html). ([#176](https://github.com/open-mmlab/mmaction2/pull/176))
-- Add the data pipeline for ActivityNet, which includes downloading videos, extracting RGB and Flow frames, finetuning TSN and extracting feature. ([#190](https://github.com/open-mmlab/mmaction2/pull/190))
+- Support to report mAP for ActivityNet with [CUHK17_activitynet_pred](http://activity-net.org/challenges/2017/evaluation.html) ([#176](https://github.com/open-mmlab/mmaction2/pull/176))
+- Add the data pipeline for ActivityNet, which includes downloading videos, extracting RGB and Flow frames, finetuning TSN and extracting feature ([#190](https://github.com/open-mmlab/mmaction2/pull/190))
 - Support JHMDB preparation ([#220](https://github.com/open-mmlab/mmaction2/pull/220))
 
 **ModelZoo**
-- Add finetuning setting for SlowOnly. ([#173](https://github.com/open-mmlab/mmaction2/pull/173))
-- Add TSN and SlowOnly models trained with [OmniSource](https://arxiv.org/abs/2003.13042), which achieve 75.7% Top-1 with TSN-R50-3seg and 80.4% Top-1 with SlowOnly-R101-8x8. ([#215](https://github.com/open-mmlab/mmaction2/pull/215))
+- Add finetuning setting for SlowOnly ([#173](https://github.com/open-mmlab/mmaction2/pull/173))
+- Add TSN and SlowOnly models trained with [OmniSource](https://arxiv.org/abs/2003.13042), which achieve 75.7% Top-1 with TSN-R50-3seg and 80.4% Top-1 with SlowOnly-R101-8x8 ([#215](https://github.com/open-mmlab/mmaction2/pull/215))
 
 **Improvements**
 - Support to run a demo with a video url ([#165](https://github.com/open-mmlab/mmaction2/pull/165))
