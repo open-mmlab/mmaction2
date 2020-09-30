@@ -701,6 +701,8 @@ class ColorJitter(object):
     """Randomly distort the brightness, contrast, saturation and hue of images,
     and add PCA based noise into images.
 
+    Note: The input images should be in RGB channel order.
+
     Code Reference:
     https://gluon-cv.mxnet.io/_modules/gluoncv/data/transforms/experimental/image.html
     https://mxnet.apache.org/api/python/docs/_modules/mxnet/image/image.html#LightingAug
@@ -735,14 +737,15 @@ class ColorJitter(object):
                  eig_vec=None):
         if eig_val is None:
             # note that the data range should be [0, 255]
-            self.eig_val = np.array([55.46, 4.794, 1.148])
+            self.eig_val = np.array([55.46, 4.794, 1.148], dtype=np.float32)
         else:
             self.eig_val = eig_val
 
         if eig_vec is None:
             self.eig_vec = np.array([[-0.5675, 0.7192, 0.4009],
                                      [-0.5808, -0.0045, -0.8140],
-                                     [-0.5836, -0.6948, 0.4203]])
+                                     [-0.5836, -0.6948, 0.4203]],
+                                    dtype=np.float32)
         else:
             self.eig_vec = eig_vec
 
@@ -762,8 +765,7 @@ class ColorJitter(object):
             np.ndarray: A brightness distorted image.
         """
         if np.random.rand() > 0.5:
-            delta = np.array(delta).astype(np.float32)
-            img = img + delta
+            img = img + np.float32(delta)
         return img
 
     @staticmethod
@@ -779,8 +781,7 @@ class ColorJitter(object):
             np.ndarray: A contrast distorted image.
         """
         if np.random.rand() > 0.5:
-            alpha = np.array(alpha).astype(np.float32)
-            img = img * alpha
+            img = img * np.float32(alpha)
         return img
 
     @staticmethod
@@ -796,7 +797,7 @@ class ColorJitter(object):
             np.ndarray: A saturation distorted image.
         """
         if np.random.rand() > 0.5:
-            gray = img * np.array([0.299, 0.587, 0.114]).astype(np.float32)
+            gray = img * np.array([0.299, 0.587, 0.114], dtype=np.float32)
             gray = np.sum(gray, 2, keepdims=True)
             gray *= (1.0 - alpha)
             img = img * alpha
@@ -818,13 +819,16 @@ class ColorJitter(object):
         if np.random.rand() > 0.5:
             u = np.cos(alpha * np.pi)
             w = np.sin(alpha * np.pi)
-            bt = np.array([[1.0, 0.0, 0.0], [0.0, u, -w], [0.0, w, u]])
+            bt = np.array([[1.0, 0.0, 0.0], [0.0, u, -w], [0.0, w, u]],
+                          dtype=np.float32)
             tyiq = np.array([[0.299, 0.587, 0.114], [0.596, -0.274, -0.321],
-                             [0.211, -0.523, 0.311]])
+                             [0.211, -0.523, 0.311]],
+                            dtype=np.float32)
             ityiq = np.array([[1.0, 0.956, 0.621], [1.0, -0.272, -0.647],
-                              [1.0, -1.107, 1.705]])
+                              [1.0, -1.107, 1.705]],
+                             dtype=np.float32)
             t = np.dot(np.dot(ityiq, bt), tyiq).T
-            t = np.array(t).astype(np.float32)
+            t = np.array(t, dtype=np.float32)
             img = np.dot(img, t)
         return img
 
@@ -853,8 +857,8 @@ class ColorJitter(object):
 
         # Add PCA based noise
         alpha = np.random.normal(0, self.alpha_std, size=(3, ))
-        rgb = np.array(np.dot(self.eig_vec * alpha,
-                              self.eig_val)).astype(np.float32)
+        rgb = np.array(
+            np.dot(self.eig_vec * alpha, self.eig_val), dtype=np.float32)
         rgb = rgb[None, None, ...]
 
         results['imgs'] = [img + rgb for img in out]

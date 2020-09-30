@@ -799,13 +799,15 @@ class TestAugumentations(object):
             f'adjust_magnitude={False})')
 
     def test_color_jitter(self):
-        imgs = list(np.random.rand(3, 240, 320, 3))
+        imgs = list(
+            np.random.randint(0, 255, size=(3, 240, 320, 3), dtype=np.uint8))
         results = dict(imgs=imgs)
 
-        eig_val = np.array([55.46, 4.794, 1.148])
+        eig_val = np.array([55.46, 4.794, 1.148], dtype=np.float32)
         eig_vec = np.array([[-0.5675, 0.7192, 0.4009],
                             [-0.5808, -0.0045, -0.8140],
-                            [-0.5836, -0.6948, 0.4203]])
+                            [-0.5836, -0.6948, 0.4203]],
+                           dtype=np.float32)
 
         color_jitter = ColorJitter()
         assert_array_equal(color_jitter.eig_val, eig_val)
@@ -827,7 +829,8 @@ class TestAugumentations(object):
         custom_eig_val = np.ones(3, )
         custom_eig_vec = np.ones((3, 3))
 
-        imgs = list(np.random.rand(3, 240, 320, 3))
+        imgs = list(
+            np.random.randint(0, 255, size=(3, 240, 320, 3), dtype=np.uint8))
         results = dict(imgs=imgs)
         custom_color_jitter = ColorJitter(True, 0.5, custom_eig_val,
                                           custom_eig_vec)
