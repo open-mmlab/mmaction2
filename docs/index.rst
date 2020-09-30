@@ -7,8 +7,13 @@ Welcome to MMAction2's documentation!
    install.md
    getting_started.md
    benchmark.md
-   data_preparation.md
    config.md
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Datasets
+
+   data_preparation.md
 
 .. toctree::
    :maxdepth: 2
@@ -26,7 +31,6 @@ Welcome to MMAction2's documentation!
    tutorials/data_pipeline.md
    tutorials/new_modules.md
    tutorials/export_model.md
-
 
 .. toctree::
    :maxdepth: 2
