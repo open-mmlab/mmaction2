@@ -25,7 +25,6 @@ We provide a python script to export the pytorch model trained by MMaction2 to O
 ```shell
 python tools/pytorch2onnx.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--shape ${SHAPE}] \
     [--verify] [--show] [--output-file ${OUTPUT_FILE}]  [--is-localizer] [--opset-version ${VERSION}]
-\
 ```
 Optional arguments:
 + `--shape`: The shape of input tensor to the model. For 2D recognizer(e.g. TSN), the input should be `$batch $clip $channel $height $width`(e.g. `1 1 3 224 224`); For 3D recognizer(e.g. I3D), the input should be `$batch $clip $channel $time $height $width`(e.g. `1 1 3 32 224 224`); For localizer such as BSN, the input for each module is different, please check the `forward` function for it. If not specified, it wll be set to `1 1 3 224 224`.
