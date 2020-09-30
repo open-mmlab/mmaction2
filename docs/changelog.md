@@ -26,7 +26,7 @@
 - Check mmcv version ([#189](https://github.com/open-mmlab/mmaction2/pull/189))
 - Update url with 'https://download.openmmlab.com' ([#208](https://github.com/open-mmlab/mmaction2/pull/208))
 - Update Docker file to support PyTorch 1.6 and update `install.md` ([#209](https://github.com/open-mmlab/mmaction2/pull/209))
-- Polish readsthedocs display ([#217](https://github.com/open-mmlab/mmaction2/pull/217))
+- Polish readsthedocs display ([#217](https://github.com/open-mmlab/mmaction2/pull/217), [#229](https://github.com/open-mmlab/mmaction2/pull/229))
 
 **Bug Fixes**
 - Fix the bug when using OpenCV to extract only RGB frames with original shape ([#184](https://github.com/open-mmlab/mmaction2/pull/187))
