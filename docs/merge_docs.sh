@@ -51,13 +51,3 @@ sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' tutorial
 
 cat localization_models.md recognition_models.md > modelzoo.md
 sed -i '1i\# Modelzoo' modelzoo.md
-
-cat index.rst | grep -q "modelzoo.md"
-if [ $? -ne 0 ] ;then
-    sed -i '/api.rst/i\   modelzoo.md' index.rst
-fi
-
-cat index.rst | grep -q "tutorials.md"
-if [ $? -ne 0 ] ;then
-    sed -i '/api.rst/i\   tutorials.md' index.rst
-fi
