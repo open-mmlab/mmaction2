@@ -6,7 +6,8 @@
 
 **New Features**
 - Support to run real-time action recognition from web camera ([#171](https://github.com/open-mmlab/mmaction2/pull/171))
-- Support to export the pytorch models to onnx ones. ([#160](https://github.com/open-mmlab/mmaction2/pull/160))
+- Support to export pytorch models to onnx ([#160](https://github.com/open-mmlab/mmaction2/pull/160))
+- Support UCF101-24 preparation ([#219](https://github.com/open-mmlab/mmaction2/pull/219))
 - Support to report mAP for ActivityNet with [CUHK17_activitynet_pred](http://activity-net.org/challenges/2017/evaluation.html). ([#176](https://github.com/open-mmlab/mmaction2/pull/176))
 - Add the data pipeline for ActivityNet, which includes downloading videos, extracting RGB and Flow frames, finetuning TSN and extracting feature. ([#190](https://github.com/open-mmlab/mmaction2/pull/190))
 
