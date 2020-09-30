@@ -5,6 +5,7 @@
 **Highlights**
 
 **New Features**
+- Support the data pre-processing pipeline for the HVU Dataset ([#277](https://github.com/open-mmlab/mmaction2/pull/227/))
 - Support to run real-time action recognition from web camera ([#171](https://github.com/open-mmlab/mmaction2/pull/171))
 - Support to export pytorch models to onnx ([#160](https://github.com/open-mmlab/mmaction2/pull/160))
 - Support UCF101-24 preparation ([#219](https://github.com/open-mmlab/mmaction2/pull/219))

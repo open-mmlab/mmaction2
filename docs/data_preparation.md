@@ -22,9 +22,10 @@ To ease usage, we provide tutorials of data deployment for each dataset.
 - [Something-Something V2](https://20bn.com/datasets/something-something): See [preparing_sthv2.md](/tools/data/sthv2/preparing_sthv2.md)
 - [Moments in Time](http://moments.csail.mit.edu/): See [preparing_mit.md](/tools/data/mit/preparing_mit.md)
 - [Multi-Moments in Time](http://moments.csail.mit.edu/challenge_iccv_2019.html): See [preparing_mmit.md](/tools/data/mmit/preparing_mmit.md)
-- ActivityNet_feature: See [praparing_activitynet.md](/tools/data/activitynet/preparing_activitynet.md)
+- [ActivityNet](http://activity-net.org/): See [praparing_activitynet.md](/tools/data/activitynet/preparing_activitynet.md)
 - [UCF101-24](http://www.thumos.info/download.html): See [preparing_ucf101_24.md](/tools/data/ucf101_24/preparing_ucf101_24.md)
 - [JHMDB](http://jhmdb.is.tue.mpg.de/): See [preparing_jhmdb](/tools/data/jhmdb/preparing_jhmdb.md)
+- [HVU](https://github.com/holistic-video-understanding/HVU-Dataset): See [preparing_hvu.md](/tools/data/hvu/preparing_hvu.md)
 
 Now, you can switch to [getting_started.md](getting_started.md) to train and test the model.
 
