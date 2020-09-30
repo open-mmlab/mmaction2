@@ -33,7 +33,7 @@ def modify_subbn3d_num_splits(logger, module, num_splits):
                 origin_param_shape = param.size()
                 new_param_shape = new_state_dict[param_name].size()
                 if (len(origin_param_shape) == 1 and len(new_param_shape) == 1
-                        and new_param_shape[0] > origin_param_shape[0]
+                        and new_param_shape[0] >= origin_param_shape[0]
                         and new_param_shape[0] % origin_param_shape[0] == 0):
                     # inflate by concat
                     new_state_dict[param_name] = torch.cat(
@@ -132,7 +132,6 @@ class MultiGridHook(Hook):
 
         If it should, change the pipelines accordingly.
         """
-        modified = False
         base_b, base_t, base_s = self._get_schedule(runner.epoch)
         resize_list = []  # use a list to find the final `Resize`
         for trans in runner.data_loader.dataset.pipeline.transforms:
@@ -142,13 +141,11 @@ class MultiGridHook(Hook):
                 curr_t = trans.clip_len
                 if base_t != curr_t:
                     # Change the T-dimension
-                    modified = True
                     trans.clip_len = base_t
                     trans.frame_interval = (curr_t *
                                             trans.frame_interval) / base_t
         curr_s = min(resize_list[-1].scale)  # Assume it's square
         if curr_s != base_s:
-            modified = True
             # Change the S-dimension
             resize_list[-1].scale = _ntuple(2)(base_s)
 
@@ -171,10 +168,9 @@ class MultiGridHook(Hook):
         runner._max_iters = runner._max_epochs * len(runner.data_loader)
 
         # rebuild all the sub_batch_bn layers
-        if modified:
-            num_modifies = modify_subbn3d_num_splits(self.logger, runner.model,
-                                                     base_b)
-            self.logger.info(f'{num_modifies} subbns modified to {base_b}.')
+        num_modifies = modify_subbn3d_num_splits(self.logger, runner.model,
+                                                 base_b)
+        self.logger.info(f'{num_modifies} subbns modified to {base_b}.')
 
     def _get_long_cycle_schedule(self, runner, cfg):
         # `schedule` is a list of [step_index, base_shape, epochs]

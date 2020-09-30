@@ -83,7 +83,7 @@ def test_multi_grid_hook():
 
     # test multigrid
     cfg = mmcv.Config.fromfile(
-        'configs/recognition/i3d/i3d_r50_multigrid_32x2x1_100e_kinetics400_rgb.py'  # noqa: E501
+        'configs/recognition/slowfast/slowfast_r50_multigrid_8x8x1_256e_kinetics400_rgb.py'  # noqa: E501
     )
     # Skip the subbn3d since it is hardcoded to use cuda
     cfg.model.backbone.norm_cfg = dict(type='BN3d')
@@ -124,7 +124,7 @@ def test_multi_grid_hook():
     with pytest.raises(ValueError):
         # Multigrid should have at least longcycle
         cfg = mmcv.Config.fromfile(
-            'configs/recognition/i3d/i3d_r50_multigrid_32x2x1_100e_kinetics400_rgb.py'  # noqa: E501
+            'configs/recognition/slowfast/slowfast_r50_multigrid_8x8x1_256e_kinetics400_rgb.py'  # noqa: E501
         )
         cfg.multi_grid.long_cycle = False
         multi_grid_hook = MultiGridHook(cfg)
