@@ -55,7 +55,7 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         x = self.backbone(imgs)
         return x
 
-    def average_clip(self, cls_score):
+    def average_clip(self, cls_score, num_segs=1):
         """Averaging class score over multiple clips.
 
         Using different averaging types ('score' or 'prob' or None,
@@ -77,10 +77,17 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
                              f'Currently supported ones are '
                              f'["score", "prob", None]')
 
+        if average_clips is None:
+            return cls_score
+
+        batch_size = cls_score.shape[0]
+        cls_score = cls_score.view(batch_size // num_segs, num_segs, -1)
+
         if average_clips == 'prob':
-            cls_score = F.softmax(cls_score, dim=1).mean(dim=0, keepdim=True)
+            cls_score = F.softmax(cls_score, dim=2).mean(dim=1)
         elif average_clips == 'score':
-            cls_score = cls_score.mean(dim=0, keepdim=True)
+            cls_score = cls_score.mean(dim=1)
+
         return cls_score
 
     @abstractmethod

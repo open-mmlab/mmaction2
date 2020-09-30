@@ -43,8 +43,8 @@ def parse_args():
     parser.add_argument('--options', nargs='+', help='custom options')
     parser.add_argument(
         '--average-clips',
-        choices=['score', 'prob'],
-        default='score',
+        choices=['score', 'prob', None],
+        default=None,
         help='average type when averaging test clips')
     parser.add_argument(
         '--launcher',
@@ -111,12 +111,14 @@ def main():
     mmcv.mkdir_or_exist(osp.abspath(cfg.work_dir))
     # build the dataloader
     dataset = build_dataset(cfg.data.test, dict(test_mode=True))
-    data_loader = build_dataloader(
-        dataset,
-        videos_per_gpu=1,
-        workers_per_gpu=cfg.data.workers_per_gpu,
+    dataloader_setting = dict(
+        videos_per_gpu=cfg.data.get('videos_per_gpu', {}),
+        workers_per_gpu=cfg.data.get('workers_per_gpu', {}),
         dist=distributed,
         shuffle=False)
+    dataloader_setting = dict(dataloader_setting,
+                              **cfg.data.get('test_dataloader', {}))
+    data_loader = build_dataloader(dataset, **dataloader_setting)
 
     # build the model and load checkpoint
     model = build_model(cfg.model, train_cfg=None, test_cfg=cfg.test_cfg)
