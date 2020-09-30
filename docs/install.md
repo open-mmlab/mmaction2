@@ -62,14 +62,40 @@ conda install pytorch=1.3.1 cudatoolkit=9.2 torchvision=0.4.2 -c pytorch
 
 If you build PyTorch from source instead of installing the prebuilt package, you can use more CUDA versions such as 9.0.
 
-c. Clone the mmaction2 repository
+c. Install mmcv, we recommend you to install the pre-build mmcv as below.
+
+```shell
+pip install mmcv-full==latest+torch1.5.0+cu101 -f http://download.openmmlab.com/mmcv/dist/index.html
+```
+
+See [here](https://github.com/open-mmlab/mmcv#install-with-pip) for different versions of MMCV compatible to different PyTorch and CUDA versions.
+Optionally you can choose to compile mmcv from source by the following command
+
+```shell script
+git clone https://github.com/open-mmlab/mmcv.git
+cd mmcv
+MMCV_WITH_OPS=1 pip install -e .  # package mmcv-full, which contains cuda ops, will be installed after this step
+# OR pip install -e .  # package mmcv, which contains no cuda ops, will be installed after this step
+cd ..
+```
+
+Or directly run
+
+```shell script
+pip install mmcv-full
+# alternative: pip install mmcv
+```
+
+**Important:** You need to run `pip uninstall mmcv` first if you have mmcv installed. If mmcv and mmcv-full are both installed, there will be `ModuleNotFoundError`.
+
+d. Clone the mmaction2 repository
 
 ```shell
 git clone https://github.com/open-mmlab/mmaction2.git
 cd mmaction2
 ```
 
-d. Install build requirements and then install mmaction2
+d. Install build requirements and then install mmaction2.
 
 ```shell
 pip install -r requirements/build.txt
@@ -110,14 +136,16 @@ In CPU mode you can run the demo/demo.py for example.
 We provide a [Dockerfile](/docker/Dockerfile) to build an image.
 
 ```shell
-# build an image with PyTorch 1.5, CUDA 10.1
-docker build -t mmaction docker/
+# build an image with PyTorch 1.6.0, CUDA 10.1, CUDNN 7.
+docker build -f ./docker/Dockerfile --rm -t mmaction2 .
 ```
 
-Run it with
+**Important:** Make sure you've installed the [nvidia-container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker).
+
+Run it with command:
 
 ```shell
-docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmaction/data mmaction
+docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmaction2/data mmaction2
 ```
 
 ### A from-scratch setup script
@@ -128,9 +156,15 @@ Here is a full script for setting up mmaction2 with conda and link the dataset p
 conda create -n open-mmlab python=3.7 -y
 conda activate open-mmlab
 
+# install latest pytorch prebuilt with the default prebuilt CUDA version (usually the latest)
 conda install -c pytorch pytorch torchvision -y
-git clone https://github.com/open-mmlab/mmaction.git
-cd mmaction
+
+# install the latest mmcv or mmcv-full, here we take mmcv as example
+pip install mmcv
+
+# install mmaction2
+git clone https://github.com/open-mmlab/mmaction2.git
+cd mmaction2
 pip install -r requirements/build.txt
 python setup.py develop
 

@@ -45,12 +45,14 @@ jobs:
       - name: Install Pillow
         run: pip install Pillow==6.2.2
         if: ${{matrix.torchvision == '0.4.2'}}
+      - name: Install onnx
+        run: pip install onnx
       - name: Install TurboJpeg lib
         run: sudo apt-get install -y libturbojpeg
       - name: Install PyTorch
         run: pip install torch==${{matrix.torch}}+cpu torchvision==${{matrix.torchvision}}+cpu -f https://download.pytorch.org/whl/torch_stable.html
       - name: Install MMCV
-        run: pip install mmcv-full==latest+torch${{matrix.torch}}+cpu -f https://openmmlab.oss-accelerate.aliyuncs.com/mmcv/dist/index.html
+        run: pip install mmcv-full==latest+torch${{matrix.torch}}+cpu -f https://download.openmmlab.com/mmcv/dist/index.html
       - name: Install unittest dependencies
         run: pip install -r requirements/tests.txt -r requirements/optional.txt
       - name: Build and install
@@ -119,7 +121,7 @@ jobs:
         run: pip install torch==${{matrix.torch}} torchvision==${{matrix.torchvision}} -f https://download.pytorch.org/whl/torch_stable.html
       - name: Install mmaction dependencies
         run: |
-          pip install mmcv-full==${{matrix.mmcv}} -f https://openmmlab.oss-accelerate.aliyuncs.com/mmcv/dist/index.html
+          pip install mmcv-full==${{matrix.mmcv}} -f https://download.openmmlab.com/mmcv/dist/index.html
           pip install -r requirements.txt
       - name: Build and install
         run: |

@@ -7,11 +7,13 @@
 **New Features**
 - Support to run real-time action recognition from web camera ([#171](https://github.com/open-mmlab/mmaction2/pull/171))
 - Support to export pytorch models to onnx ([#160](https://github.com/open-mmlab/mmaction2/pull/160))
-- Support to report mAP for ActivityNet with [CUHK17_activitynet_pred](http://activity-net.org/challenges/2017/evaluation.html) ([#176](https://github.com/open-mmlab/mmaction2/pull/176))
 - Support UCF101-24 preparation ([#219](https://github.com/open-mmlab/mmaction2/pull/219))
+- Support to report mAP for ActivityNet with [CUHK17_activitynet_pred](http://activity-net.org/challenges/2017/evaluation.html). ([#176](https://github.com/open-mmlab/mmaction2/pull/176))
+- Add the data pipeline for ActivityNet, which includes downloading videos, extracting RGB and Flow frames, finetuning TSN and extracting feature. ([#190](https://github.com/open-mmlab/mmaction2/pull/190))
 
 **ModelZoo**
 - Add finetuning setting for SlowOnly. ([#173](https://github.com/open-mmlab/mmaction2/pull/173))
+- Add TSN and SlowOnly models trained with [OmniSource](https://arxiv.org/abs/2003.13042), which achieve 75.7% Top-1 with TSN-R50-3seg and 80.4% Top-1 with SlowOnly-R101-8x8. ([#215](https://github.com/open-mmlab/mmaction2/pull/215))
 
 **Improvements**
 - Support to run a demo with a video url ([#165](https://github.com/open-mmlab/mmaction2/pull/165))
@@ -19,6 +21,9 @@
 - Add config name in meta info ([#183](https://github.com/open-mmlab/mmaction2/pull/183))
 - Remove git hash in `__version__` ([#189](https://github.com/open-mmlab/mmaction2/pull/189))
 - Check mmcv version ([#189](https://github.com/open-mmlab/mmaction2/pull/189))
+- Update url with 'https://download.openmmlab.com' ([#208](https://github.com/open-mmlab/mmaction2/pull/208))
+- Update Docker file to support PyTorch 1.6 and update `install.md` ([#209](https://github.com/open-mmlab/mmaction2/pull/209))
+- Polish readsthedocs display ([#217](https://github.com/open-mmlab/mmaction2/pull/217))
 
 **Bug Fixes**
 - Fix the bug when using OpenCV to extract only RGB frames with original shape ([#184](https://github.com/open-mmlab/mmaction2/pull/187))
