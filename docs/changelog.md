@@ -10,6 +10,7 @@
 - Support UCF101-24 preparation ([#219](https://github.com/open-mmlab/mmaction2/pull/219))
 - Support to report mAP for ActivityNet with [CUHK17_activitynet_pred](http://activity-net.org/challenges/2017/evaluation.html). ([#176](https://github.com/open-mmlab/mmaction2/pull/176))
 - Add the data pipeline for ActivityNet, which includes downloading videos, extracting RGB and Flow frames, finetuning TSN and extracting feature. ([#190](https://github.com/open-mmlab/mmaction2/pull/190))
+- Support JHMDB preparation ([#220](https://github.com/open-mmlab/mmaction2/pull/220))
 
 **ModelZoo**
 - Add finetuning setting for SlowOnly. ([#173](https://github.com/open-mmlab/mmaction2/pull/173))
