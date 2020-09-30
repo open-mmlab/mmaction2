@@ -2,55 +2,37 @@
 # Adapted from https://github.com/activitynet/ActivityNet/
 # Original licence: Copyright (c) Microsoft, under the MIT License.
 # ------------------------------------------------------------------------------
+
 import argparse
 import glob
-import json
 import os
 import shutil
 import ssl
 import subprocess
 import uuid
-from collections import OrderedDict
 
-import pandas as pd
+import mmcv
 from joblib import Parallel, delayed
 
 ssl._create_default_https_context = ssl._create_unverified_context
+args = None
 
 
 def create_video_folders(dataset, output_dir, tmp_dir):
-    """Creates a directory for each label name in the dataset."""
-    if 'label-name' not in dataset.columns:
-        this_dir = os.path.join(output_dir, 'test')
-        if not os.path.exists(this_dir):
-            os.makedirs(this_dir)
-        # I should return a dict but ...
-        return this_dir
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     if not os.path.exists(tmp_dir):
         os.makedirs(tmp_dir)
 
-    label_to_dir = {}
-    for label_name in dataset['label-name'].unique():
-        this_dir = os.path.join(output_dir, label_name)
-        if not os.path.exists(this_dir):
-            os.makedirs(this_dir)
-        label_to_dir[label_name] = this_dir
-    return label_to_dir
 
-
-def construct_video_filename(row, label_to_dir, trim_format='%06d'):
+def construct_video_filename(item, trim_format, output_dir):
     """Given a dataset row, this function constructs the output filename for a
     given video."""
-    basename = '%s_%s_%s.mp4' % (row['video-id'],
-                                 trim_format % row['start-time'],
-                                 trim_format % row['end-time'])
-    if not isinstance(label_to_dir, dict):
-        dirname = label_to_dir
-    else:
-        dirname = label_to_dir[row['label-name']]
-    output_filename = os.path.join(dirname, basename)
+    youtube_id, start_time, end_time = item
+    start_time, end_time = int(start_time * 10), int(end_time * 10)
+    basename = '%s_%s_%s.mp4' % (youtube_id, trim_format % start_time,
+                                 trim_format % end_time)
+    output_filename = os.path.join(output_dir, basename)
     return output_filename
 
 
@@ -58,7 +40,7 @@ def download_clip(video_identifier,
                   output_filename,
                   start_time,
                   end_time,
-                  tmp_dir='/tmp/kinetics',
+                  tmp_dir='/tmp/hvu',
                   num_attempts=5,
                   url_base='https://www.youtube.com/watch?v='):
     """Download a video from youtube if exists and is not blocked.
@@ -80,7 +62,6 @@ def download_clip(video_identifier,
     assert len(video_identifier) == 11, 'video_identifier must have length 11'
 
     status = False
-    # Construct command line for getting the direct video link.
     tmp_filename = os.path.join(tmp_dir, '%s.%%(ext)s' % uuid.uuid4())
 
     if not os.path.exists(output_filename):
@@ -98,10 +79,10 @@ def download_clip(video_identifier,
                 try:
                     subprocess.check_output(
                         command, shell=True, stderr=subprocess.STDOUT)
-                except subprocess.CalledProcessError as err:
+                except subprocess.CalledProcessError:
                     attempts += 1
                     if attempts == num_attempts:
-                        return status, err.output
+                        return status, 'Downloading Failed'
                 else:
                     break
 
@@ -119,8 +100,8 @@ def download_clip(video_identifier,
         try:
             subprocess.check_output(
                 command, shell=True, stderr=subprocess.STDOUT)
-        except subprocess.CalledProcessError as err:
-            return status, err.output
+        except subprocess.CalledProcessError:
+            return status, 'Trimming Failed'
 
     # Check if the video was successfully saved.
     status = os.path.exists(output_filename)
@@ -128,88 +109,78 @@ def download_clip(video_identifier,
     return status, 'Downloaded'
 
 
-def download_clip_wrapper(row, label_to_dir, trim_format, tmp_dir):
+def download_clip_wrapper(item, trim_format, tmp_dir, output_dir):
     """Wrapper for parallel processing purposes."""
-    output_filename = construct_video_filename(row, label_to_dir, trim_format)
+    output_filename = construct_video_filename(item, trim_format, output_dir)
     clip_id = os.path.basename(output_filename).split('.mp4')[0]
     if os.path.exists(output_filename):
         status = tuple([clip_id, True, 'Exists'])
         return status
 
+    youtube_id, start_time, end_time = item
     downloaded, log = download_clip(
-        row['video-id'],
-        output_filename,
-        row['start-time'],
-        row['end-time'],
-        tmp_dir=tmp_dir)
+        youtube_id, output_filename, start_time, end_time, tmp_dir=tmp_dir)
+
     status = tuple([clip_id, downloaded, log])
     return status
 
 
-def parse_kinetics_annotations(input_csv, ignore_is_cc=False):
+def parse_hvu_annotations(input_csv):
     """Returns a parsed DataFrame.
     arguments:
     ---------
     input_csv: str
         Path to CSV file containing the following columns:
-          'YouTube Identifier,Start time,End time,Class label'
+          'Tags, youtube_id, time_start, time_end'
     returns:
     -------
-    dataset: DataFrame
-        Pandas with the following columns:
-            'video-id', 'start-time', 'end-time', 'label-name'
+    dataset: List of tuples. Each tuple consists of
+        (youtube_id, time_start, time_end). The type of time is float.
     """
-    df = pd.read_csv(input_csv)
-    if 'youtube_id' in df.columns:
-        columns = OrderedDict([('youtube_id', 'video-id'),
-                               ('time_start', 'start-time'),
-                               ('time_end', 'end-time'),
-                               ('label', 'label-name')])
-        df.rename(columns=columns, inplace=True)
-        if ignore_is_cc:
-            df = df.loc[:, df.columns.tolist()[:-1]]
-    return df
+    lines = open(input_csv).readlines()
+    lines = [x.strip().split(',')[1:] for x in lines[1:]]
+
+    lines = [(x[0], float(x[1]), float(x[2])) for x in lines]
+
+    return lines
 
 
 def main(input_csv,
          output_dir,
          trim_format='%06d',
          num_jobs=24,
-         tmp_dir='/tmp/kinetics'):
-    # Reading and parsing Kinetics.
-    dataset = parse_kinetics_annotations(input_csv)
+         tmp_dir='/tmp/hvu'):
+    # Reading and parsing HVU.
+    dataset = parse_hvu_annotations(input_csv)
 
     # Creates folders where videos will be saved later.
-    label_to_dir = create_video_folders(dataset, output_dir, tmp_dir)
+    create_video_folders(dataset, output_dir, tmp_dir)
 
     # Download all clips.
     if num_jobs == 1:
-        status_list = []
-        for i, row in dataset.iterrows():
-            status_list.append(
-                download_clip_wrapper(row, label_to_dir, trim_format, tmp_dir))
+        status_lst = []
+        for item in dataset:
+            status_lst.append(
+                download_clip_wrapper(item, trim_format, tmp_dir, output_dir))
     else:
-        status_list = Parallel(
-            n_jobs=num_jobs)(delayed(download_clip_wrapper)(
-                row, label_to_dir, trim_format, tmp_dir)
-                             for i, row in dataset.iterrows())
+        status_lst = Parallel(n_jobs=num_jobs)(
+            delayed(download_clip_wrapper)(item, trim_format, tmp_dir,
+                                           output_dir) for item in dataset)
 
     # Clean tmp dir.
     shutil.rmtree(tmp_dir)
-
     # Save download report.
-    with open('download_report.json', 'w') as fobj:
-        fobj.write(json.dumps(status_list))
+    mmcv.dump(status_lst, 'download_report.json')
 
 
 if __name__ == '__main__':
-    description = 'Helper script for downloading and trimming kinetics videos.'
+    description = 'Helper script for downloading and trimming HVU videos.'
     p = argparse.ArgumentParser(description=description)
     p.add_argument(
         'input_csv',
         type=str,
         help=('CSV file containing the following format: '
-              'YouTube Identifier,Start time,End time,Class label'))
+              'Tags, youtube_id, time_start, time_end'))
     p.add_argument(
         'output_dir',
         type=str,
@@ -221,8 +192,9 @@ if __name__ == '__main__':
         default='%06d',
         help=('This will be the format for the '
               'filename of trimmed videos: '
-              'videoid_%0xd(start_time)_%0xd(end_time).mp4'))
+              'videoid_%0xd(start_time)_%0xd(end_time).mp4. '
+              'Note that the start_time is multiplied by 10 since '
+              'decimal exists somewhere. '))
     p.add_argument('-n', '--num-jobs', type=int, default=24)
-    p.add_argument('-t', '--tmp-dir', type=str, default='/tmp/kinetics')
-    # help='CSV file of the previous version of Kinetics.')
+    p.add_argument('-t', '--tmp-dir', type=str, default='/tmp/hvu')
     main(**vars(p.parse_args()))
