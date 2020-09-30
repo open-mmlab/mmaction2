@@ -761,7 +761,7 @@ class ColorJitter(object):
         Returns:
             np.ndarray: A brightness distorted image.
         """
-        if np.random.uniform(0, 1) > 0.5:
+        if np.random.rand() > 0.5:
             delta = np.array(delta).astype(np.float32)
             img = img + delta
         return img
@@ -778,7 +778,7 @@ class ColorJitter(object):
         Returns:
             np.ndarray: A contrast distorted image.
         """
-        if np.random.uniform(0, 1) > 0.5:
+        if np.random.rand() > 0.5:
             alpha = np.array(alpha).astype(np.float32)
             img = img * alpha
         return img
@@ -795,7 +795,7 @@ class ColorJitter(object):
         Returns:
             np.ndarray: A saturation distorted image.
         """
-        if np.random.uniform(0, 1) > 0.5:
+        if np.random.rand() > 0.5:
             gray = img * np.array([0.299, 0.587, 0.114]).astype(np.float32)
             gray = np.sum(gray, 2, keepdims=True)
             gray *= (1.0 - alpha)
@@ -815,7 +815,7 @@ class ColorJitter(object):
         Returns:
             np.ndarray: A hue distorted image.
         """
-        if np.random.uniform(0, 1) > 0.5:
+        if np.random.rand() > 0.5:
             u = np.cos(alpha * np.pi)
             w = np.sin(alpha * np.pi)
             bt = np.array([[1.0, 0.0, 0.0], [0.0, u, -w], [0.0, w, u]])
@@ -836,7 +836,7 @@ class ColorJitter(object):
             contrast_alpha = np.random.uniform(0.6, 1.4)
             saturation_alpha = np.random.uniform(0.6, 1.4)
             hue_alpha = np.random.uniform(-18, 18)
-            jitter_coin = np.random.uniform(0, 1)
+            jitter_coin = np.random.rand()
             for img in imgs:
                 img = self.brightness(img, delta=bright_delta)
                 if jitter_coin > 0.5:
