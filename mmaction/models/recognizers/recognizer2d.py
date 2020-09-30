@@ -17,7 +17,8 @@ class Recognizer2D(BaseRecognizer):
         x = self.extract_feat(imgs)
         if hasattr(self, 'neck'):
             x = [
-                each.reshape((-1, num_segs) + each.shape[1:]).transpose(1, 2)
+                each.reshape((-1, num_segs) +
+                             each.shape[1:]).transpose(1, 2).contiguous()
                 for each in x
             ]
             x, _ = self.neck(x, labels.squeeze())
@@ -43,7 +44,8 @@ class Recognizer2D(BaseRecognizer):
         x = self.extract_feat(imgs)
         if hasattr(self, 'neck'):
             x = [
-                each.reshape((-1, num_segs) + each.shape[1:]).transpose(1, 2)
+                each.reshape((-1, num_segs) +
+                             each.shape[1:]).transpose(1, 2).contiguous()
                 for each in x
             ]
             x, loss_aux = self.neck(x)

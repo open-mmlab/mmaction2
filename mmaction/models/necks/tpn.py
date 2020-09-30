@@ -55,7 +55,7 @@ class DownSample(nn.Module):
                  act_cfg=None,
                  downsample_position='after',
                  downsample_scale=(1, 2, 2)):
-        super(DownSample, self).__init__()
+        super().__init__()
         self.conv = ConvModule(
             in_channels,
             out_channels,
@@ -105,7 +105,7 @@ class LevelFusion(nn.Module):
                  mid_channels,
                  out_channels,
                  downsample_scales=((1, 1, 1), (1, 1, 1))):
-        super(LevelFusion, self).__init__()
+        super().__init__()
         num_stages = len(in_channels)
 
         self.downsamples = nn.ModuleList()
@@ -157,7 +157,7 @@ class SpatialModulation(nn.Module):
     """
 
     def __init__(self, in_channels, out_channels):
-        super(SpatialModulation, self).__init__()
+        super().__init__()
 
         self.spatial_modulation = nn.ModuleList()
         for channel in in_channels:
@@ -215,7 +215,7 @@ class AuxHead(nn.Module):
                  out_channels,
                  loss_weight=0.5,
                  loss_cls=dict(type='CrossEntropyLoss')):
-        super(AuxHead, self).__init__()
+        super().__init__()
 
         self.conv = ConvModule(
             in_channels,
@@ -265,11 +265,11 @@ class TemporalModulation(nn.Module):
     Args:
         in_channels (int): Channel number of input features.
         out_channels (int): Channel number of output features.
-        downsample_scale (int): Dowansample scale for maxpooling. Default: 8.
+        downsample_scale (int): Downsample scale for maxpooling. Default: 8.
     """
 
     def __init__(self, in_channels, out_channels, downsample_scale=8):
-        super(TemporalModulation, self).__init__()
+        super().__init__()
 
         self.conv = ConvModule(
             in_channels,
@@ -328,7 +328,7 @@ class TPN(nn.Module):
                  level_fusion_cfg=None,
                  aux_head_cfg=None,
                  flow_type='cascade'):
-        super(TPN, self).__init__()
+        super().__init__()
         assert isinstance(in_channels, tuple)
         assert isinstance(out_channels, int)
         self.in_channels = in_channels
