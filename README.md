@@ -77,6 +77,7 @@ Supported methods for action recognition:
 - [x] [SlowFast](configs/recognition/slowfast/README.md)
 - [x] [CSN](configs/recognition/csn/README.md)
 - [x] [TIN](configs/recognition/tin/README.md)
+- [x] [TPN](configs/recognition/tpn/README.md)
 
 Supported methods for action localization:
 - [x] [BMN](configs/localization/bmn/README.md)

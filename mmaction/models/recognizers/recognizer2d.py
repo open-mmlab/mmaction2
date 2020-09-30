@@ -12,12 +12,25 @@ class Recognizer2D(BaseRecognizer):
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
         num_segs = imgs.shape[0] // batches
 
+        losses = dict()
+
         x = self.extract_feat(imgs)
+        if hasattr(self, 'neck'):
+            x = [
+                each.reshape((-1, num_segs) +
+                             each.shape[1:]).transpose(1, 2).contiguous()
+                for each in x
+            ]
+            x, _ = self.neck(x, labels.squeeze())
+            x = x.squeeze(2)
+            num_segs = 1
+
         cls_score = self.cls_head(x, num_segs)
         gt_labels = labels.squeeze()
-        loss = self.cls_head.loss(cls_score, gt_labels)
+        loss_cls = self.cls_head.loss(cls_score, gt_labels)
+        losses.update(loss_cls)
 
-        return loss
+        return losses
 
     def forward_test(self, imgs):
         """Defines the computation performed at every call when evaluation and
@@ -26,7 +39,20 @@ class Recognizer2D(BaseRecognizer):
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
         num_segs = imgs.shape[0] // batches
 
+        losses = dict()
+
         x = self.extract_feat(imgs)
+        if hasattr(self, 'neck'):
+            x = [
+                each.reshape((-1, num_segs) +
+                             each.shape[1:]).transpose(1, 2).contiguous()
+                for each in x
+            ]
+            x, loss_aux = self.neck(x)
+            x = x.squeeze(2)
+            losses.update(loss_aux)
+            num_segs = 1
+
         cls_score = self.cls_head(x, num_segs)
         cls_score = self.average_clip(cls_score)
 

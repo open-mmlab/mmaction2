@@ -1,6 +1,7 @@
-from .augmentations import (CenterCrop, Flip, Fuse, MultiGroupCrop,
-                            MultiScaleCrop, Normalize, RandomCrop,
-                            RandomResizedCrop, Resize, TenCrop, ThreeCrop)
+from .augmentations import (CenterCrop, ColorJitter, Flip, Fuse,
+                            MultiGroupCrop, MultiScaleCrop, Normalize,
+                            RandomCrop, RandomResizedCrop, Resize, TenCrop,
+                            ThreeCrop)
 from .compose import Compose
 from .formating import (Collect, FormatShape, ImageToTensor, ToDataContainer,
                         ToTensor, Transpose)
@@ -19,5 +20,6 @@ __all__ = [
     'Collect', 'FormatShape', 'Compose', 'ToTensor', 'ToDataContainer',
     'GenerateLocalizationLabels', 'LoadLocalizationFeature', 'LoadProposals',
     'DecordInit', 'OpenCVInit', 'PyAVInit', 'SampleProposalFrames',
-    'UntrimmedSampleFrames', 'RawFrameDecode'
+    'UntrimmedSampleFrames', 'RawFrameDecode', 'DecordInit', 'OpenCVInit',
+    'PyAVInit', 'SampleProposalFrames', 'ColorJitter'
 ]
