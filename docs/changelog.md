@@ -5,7 +5,7 @@
 **Highlights**
 - Support TPN
 - Support JHMDB, UCF101-24, HVU dataset preparation
-- support onnx
+- support onnx model conversion
 
 **New Features**
 - Support the data pre-processing pipeline for the HVU Dataset ([#277](https://github.com/open-mmlab/mmaction2/pull/227/))
