@@ -13,7 +13,7 @@ Open Neural Network Exchange [(ONNX)](https://onnx.ai/) is an open ecosystem tha
 + BSN(tem, pem)
 
 ## Usage
-For simple exporting, you can use the [script](../../tools/torch2onnx.py) here. Note that the package `onnx` and `onnxruntime` are required for verification after exporting.
+For simple exporting, you can use the [script](/tools/pytorch2onnx.py) here. Note that the package `onnx` and `onnxruntime` are required for verification after exporting.
 
 ### Prerequisite
 First, install onnx.

@@ -9,7 +9,7 @@ There are two steps to finetune a model on a new dataset.
 1. Modify the configs. This will be discussed in this tutorial.
 
 For example, if the user want to finetune models pre-trained on Kinetics-400 Dataset to another dataset, say UCF101,
-then four parts in the config (see [here](../config_recognition.md)) needs attention.
+then four parts in the config (see [here](../config.md)) needs attention.
 
 ## Modify Head
 
