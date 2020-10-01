@@ -7,7 +7,8 @@ class ImageDataset(VideoDataset):
     """Image dataset for action recognition, used in the Project OmniSource.
 
     The dataset loads image list and apply specified transforms to return a
-    dict containing the image tensors and other information.
+    dict containing the image tensors and other information. For the
+    ImageDataset
 
     The ann_file is a text file with multiple lines, and each line indicates
     the image path and the image label, which are split with a whitespace.
