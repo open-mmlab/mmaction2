@@ -40,6 +40,14 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
 
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
+
+        # aux_info is the list of tensor names beyond 'imgs' and 'label' which
+        # will be used in train_step and val_step, data_batch should contain
+        # these tensors
+        self.aux_info = []
+        if 'aux_info' in train_cfg:
+            self.aux_info = train_cfg['aux_info']
+
         self.init_weights()
 
         self.fp16_enabled = False
@@ -100,7 +108,7 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         return cls_score
 
     @abstractmethod
-    def forward_train(self, imgs, labels):
+    def forward_train(self, imgs, labels, aux_info):
         """Defines the computation performed at every call when training."""
         pass
 
@@ -184,7 +192,11 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         imgs = data_batch['imgs']
         label = data_batch['label']
 
-        losses = self(imgs, label)
+        aux_info = {}
+        for item in aux_info:
+            aux_info[item] = data_batch[item]
+
+        losses = self(imgs, label, aux_info)
 
         loss, log_vars = self._parse_losses(losses)
 
@@ -205,7 +217,11 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         imgs = data_batch['imgs']
         label = data_batch['label']
 
-        losses = self(imgs, label)
+        aux_info = {}
+        for item in aux_info:
+            aux_info[item] = data_batch[item]
+
+        losses = self(imgs, label, aux_info)
 
         loss, log_vars = self._parse_losses(losses)
 

@@ -6,7 +6,7 @@ from .base import BaseRecognizer
 class Recognizer2D(BaseRecognizer):
     """2D recognizer model framework."""
 
-    def forward_train(self, imgs, labels):
+    def forward_train(self, imgs, labels, aux_info):
         """Defines the computation performed at every call when training."""
         batches = imgs.shape[0]
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
@@ -27,7 +27,8 @@ class Recognizer2D(BaseRecognizer):
 
         cls_score = self.cls_head(x, num_segs)
         gt_labels = labels.squeeze()
-        loss_cls = self.cls_head.loss(cls_score, gt_labels)
+        # aux_info is used for loss calculation
+        loss_cls = self.cls_head.loss(cls_score, gt_labels, aux_info)
         losses.update(loss_cls)
 
         return losses
