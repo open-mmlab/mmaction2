@@ -18,7 +18,7 @@ model = dict(
         is_shift=False))
 # model training and testing settings
 train_cfg = None
-test_cfg = dict(average_clips=None)
+test_cfg = dict(average_clips='score')
 # dataset settings
 dataset_type = 'RawframeDataset'
 data_root = 'data/sth-v1/rawframes_train/'

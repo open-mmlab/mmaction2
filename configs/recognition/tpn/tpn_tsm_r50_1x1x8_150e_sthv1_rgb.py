@@ -32,7 +32,7 @@ model = dict(
         dropout_ratio=0.5,
         init_std=0.01))
 train_cfg = None
-test_cfg = dict(average_clips=None)
+test_cfg = dict(average_clips='score')
 dataset_type = 'RawframeDataset'
 data_root = 'data/sthv1/rawframes'
 data_root_val = 'data/sthv1/rawframes'
