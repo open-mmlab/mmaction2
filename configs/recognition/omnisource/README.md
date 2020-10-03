@@ -2,7 +2,7 @@
 
 [Haodong Duan](https://github.com/kennymckormick), [Yue Zhao](https://github.com/zhaoyue-zephyrus), [Yuanjun Xiong](https://github.com/yjxiong), Wentao Liu, [Dahua Lin](https://github.com/lindahua)
 
-In ECCV, 2020. [Paper](arxiv.org/abs/2003.13042)
+In ECCV, 2020. [Paper](https://arxiv.org/abs/2003.13042)
 
 ![pipeline](pipeline.png)
 
