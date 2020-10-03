@@ -8,27 +8,6 @@ This is fast when SSD is available but fails to scale to the fast-growing datase
 The latter saves much space but has to do the computation intensive video decoding at execution time
 To make video decoding faster, we support several efficient video loading libraries, such as [decord](https://github.com/zhreshold/decord), [PyAV](https://github.com/PyAV-Org/PyAV), etc.
 
-## Supported Datasets
-
-The supported datasets are listed below.
-We provide shell scripts for data preparation under the path `$MMACTION2/tools/data/`.
-To ease usage, we provide tutorials of data deployment for each dataset.
-
-- [UCF101](https://www.crcv.ucf.edu/research/data-sets/ucf101/): See [preparing_ucf101.md](/tools/data/ucf101/preparing_ucf101.md).
-- [HMDB51](https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/): See [preparing_hmdb51.md](/tools/data/hmdb51/preparing_hmdb51.md).
-- [Kinetics400](https://deepmind.com/research/open-source/kinetics): See [preparing_kinetics400.md](/tools/data/kinetics400/preparing_kinetics400.md)
-- [THUMOS14](https://www.crcv.ucf.edu/THUMOS14/download.html): See [preparing_thumos14.md](/tools/data/thumos14/preparing_thumos14.md)
-- [Something-Something V1](https://20bn.com/datasets/something-something/v1): See [preparing_sthv1.md](/tools/data/sthv1/preparing_sthv1.md)
-- [Something-Something V2](https://20bn.com/datasets/something-something): See [preparing_sthv2.md](/tools/data/sthv2/preparing_sthv2.md)
-- [Moments in Time](http://moments.csail.mit.edu/): See [preparing_mit.md](/tools/data/mit/preparing_mit.md)
-- [Multi-Moments in Time](http://moments.csail.mit.edu/challenge_iccv_2019.html): See [preparing_mmit.md](/tools/data/mmit/preparing_mmit.md)
-- [ActivityNet](http://activity-net.org/): See [praparing_activitynet.md](/tools/data/activitynet/preparing_activitynet.md)
-- [UCF101-24](http://www.thumos.info/download.html): See [preparing_ucf101_24.md](/tools/data/ucf101_24/preparing_ucf101_24.md)
-- [JHMDB](http://jhmdb.is.tue.mpg.de/): See [preparing_jhmdb.md](/tools/data/jhmdb/preparing_jhmdb.md)
-- [HVU](https://github.com/holistic-video-understanding/HVU-Dataset): See [preparing_hvu.md](/tools/data/hvu/preparing_hvu.md)
-
-Now, you can switch to [getting_started.md](getting_started.md) to train and test the model.
-
 ## Getting Data
 
 The following guide is helpful when you want to experiment with custom dataset.
@@ -123,3 +102,5 @@ python tools/data/build_file_list.py ${DATASET} ${SRC_FOLDER} [--rgb-prefix ${RG
 - `FORMAT`: Source data format to generate file list. Allowed choices are `rawframes`, `videos`.
 - `OUT_ROOT_PATH`: Root path for output
 - `--shuffle`: Whether to shuffle the file list.
+
+Now, you can go to [getting_started.md](getting_started.md) to train and test the model.

@@ -14,6 +14,7 @@ Welcome to MMAction2's documentation!
    :caption: Datasets
 
    data_preparation.md
+   supported_datasets.md
 
 .. toctree::
    :maxdepth: 2
