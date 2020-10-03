@@ -1,5 +1,5 @@
 Welcome to MMAction2's documentation!
-====================================
+=====================================
 
 .. toctree::
    :maxdepth: 2
