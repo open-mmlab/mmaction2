@@ -16,11 +16,11 @@ class HVULoss(BaseWeightedLoss):
         category_nums (list[int]): Number of tags for each category. Default:
             [739, 117, 291, 69, 1679, 248].
         category_loss_weights (list[float]): Loss weights of categories, it
-            applies only if `type == 'individual'`. The loss weights will be
-            normalized so that the sum equals to 1, so that you can give any
+            applies only if `loss_type == 'individual'`. The loss weights will
+            be normalized so that the sum equals to 1, so that you can give any
             positive number as loss weight. Default: [1, 1, 1, 1, 1, 1].
-        type (str): The loss type we calculate, we can either calculate the
-            BCELoss for all tags, or calculate the BCELoss for tags in each
+        loss_type (str): The loss type we calculate, we can either calculate
+            the BCELoss for all tags, or calculate the BCELoss for tags in each
             category. Choices are ['individual', 'all']. Default: 'all'.
         with_mask (bool): Since some tag categories are missing for some video
             clips. If `with_mask == True`, we will not calculate loss for these
@@ -36,7 +36,7 @@ class HVULoss(BaseWeightedLoss):
                  ],
                  category_nums=[739, 117, 291, 69, 1679, 248],
                  category_loss_weights=[1, 1, 1, 1, 1, 1],
-                 type='all',
+                 loss_type='all',
                  with_mask=False,
                  loss_weight=1.0):
 
@@ -46,13 +46,13 @@ class HVULoss(BaseWeightedLoss):
         self.category_loss_weights = category_loss_weights
         for loss_weight in self.category_loss_weights:
             assert loss_weight >= 0
-        self.type = type
+        self.loss_type = loss_type
         self.with_mask = with_mask
         self.category_startidx = [0]
         for i in range(len(self.category_nums) - 1):
             self.category_startidx.append(self.category_startidx[-1] +
                                           self.category_nums[i])
-        assert self.type in ['individual', 'all']
+        assert self.loss_type in ['individual', 'all']
 
     def _forward(self, cls_score, label, aux_info):
         """Forward function.
@@ -72,7 +72,7 @@ class HVULoss(BaseWeightedLoss):
         mask = aux_info['mask']
         category_mask = aux_info['category_mask']
 
-        if self.type == 'all':
+        if self.loss_type == 'all':
             loss_cls = F.binary_cross_entropy_with_logits(
                 cls_score, label, reduction='none')
             if self.with_mask:
@@ -84,7 +84,7 @@ class HVULoss(BaseWeightedLoss):
                 return dict(loss_cls=w_loss_cls)
             else:
                 return dict(loss_cls=torch.mean(loss_cls))
-        elif self.type == 'individual':
+        elif self.loss_type == 'individual':
             losses = {}
             loss_weights = {}
             for name, num, start_idx in zip(self.categories,
