@@ -162,23 +162,16 @@ class Collect(object):
             By default this includes:
 
             - "filename": path to the image file
-
             - "label": label of the image file
-
             - "original_shape": original shape of the image as a tuple
-            (h, w, c)
-
+                (h, w, c)
             - "img_shape": shape of the image input to the network as a tuple
-            (h, w, c).  Note that images may be zero padded on the
-            bottom/right, if the batch tensor is larger than this shape.
-
+                (h, w, c).  Note that images may be zero padded on the
+                bottom/right, if the batch tensor is larger than this shape.
             - "pad_shape": image shape after padding
-
             - "flip_direction": a str in ("horiziontal", "vertival") to
-            indicate if the image is fliped horizontally or vertically.
-
+                indicate if the image is fliped horizontally or vertically.
             - "img_norm_cfg": a dict of normalization information:
-
                 - mean - per channel mean subtraction
                 - std - per channel std divisor
                 - to_rgb - bool indicating if bgr was converted to rgb
