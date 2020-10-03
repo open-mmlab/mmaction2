@@ -193,7 +193,7 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         label = data_batch['label']
 
         aux_info = {}
-        for item in aux_info:
+        for item in self.aux_info:
             assert item in data_batch
             aux_info[item] = data_batch[item]
 
@@ -219,7 +219,7 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         label = data_batch['label']
 
         aux_info = {}
-        for item in aux_info:
+        for item in self.aux_info:
             aux_info[item] = data_batch[item]
 
         losses = self(imgs, label, aux_info)
