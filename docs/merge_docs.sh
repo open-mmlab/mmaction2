@@ -2,12 +2,6 @@
 
 cat  ../configs/localization/*/*.md > localization_models.md
 cat  ../configs/recognition/*/*.md > recognition_models.md
-
-sed -i 's/](\/docs\//](/g' ./tutorials/*.md
-sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' ./tutorials/*.md
-
-sed -i 's/](\/docs\//](/g' ../tools/data/*/*.md
-sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' ../tools/data/*/*.md
 cat  ../tools/data/*/*.md > prepare_data.md
 
 sed -i 's/#/##&/' localization_models.md
@@ -32,3 +26,7 @@ sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' getting_
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' install.md
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' config.md
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' changelog.md
+sed -i 's/](\/docs\//](/g' ./tutorials/*.md
+sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' ./tutorials/*.md
+sed -i 's/](\/docs\//](/g' supported_datasets.md
+sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' supported_datasets.md
