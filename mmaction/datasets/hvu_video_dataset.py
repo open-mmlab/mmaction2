@@ -45,7 +45,6 @@ class HVUVideoDataset(BaseDataset):
 
     def __init__(self, ann_file, pipeline, tag_categories, tag_category_nums,
                  **kwargs):
-        super().__init__(ann_file, pipeline, start_index=0, **kwargs)
         assert len(tag_categories) == len(tag_category_nums)
         self.tag_categories = tag_categories
         self.tag_category_nums = tag_category_nums
@@ -63,6 +62,7 @@ class HVUVideoDataset(BaseDataset):
             k: v
             for k, v in zip(tag_categories, self.start_idx)
         }
+        super().__init__(ann_file, pipeline, start_index=0, **kwargs)
 
     def load_annotations(self):
         """Load annotation file to get video information."""

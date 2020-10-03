@@ -154,12 +154,12 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
 
         return loss, log_vars
 
-    def forward(self, imgs, label=None, return_loss=True):
+    def forward(self, imgs, label=None, aux_info=dict(), return_loss=True):
         """Define the computation performed at every call."""
         if return_loss:
             if label is None:
                 raise ValueError('Label should not be None.')
-            return self.forward_train(imgs, label)
+            return self.forward_train(imgs, label, aux_info)
         else:
             return self.forward_test(imgs)
 
