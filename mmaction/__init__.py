@@ -5,15 +5,15 @@ from .version import __version__, short_version
 
 version_info = parse_version_info(__version__)
 
-mmcv_minimum_version = digit_version('1.1.1')
-mmcv_maximum_version = digit_version('1.2')
+mmcv_minimum_version = '1.1.1'
+mmcv_maximum_version = '1.2'
 mmcv_version = digit_version(mmcv.__version__)
 
-assert mmcv_minimum_version <= mmcv_version, \
+assert digit_version(mmcv_minimum_version) <= mmcv_version, \
         f'MMCV=={mmcv.__version__} is used but incompatible. ' \
         f'Please install mmcv>={mmcv_minimum_version}.'
 
-assert mmcv_maximum_version > mmcv_version, \
+assert digit_version(mmcv_maximum_version) > mmcv_version, \
         f'MMCV=={mmcv.__version__} is used but incompatible. ' \
         f'Please install mmcv<{mmcv_maximum_version}.'
 
