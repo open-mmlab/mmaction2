@@ -59,11 +59,17 @@ class HVUDataset(BaseDataset):
         **kwargs: Keyword arguments for ``BaseDataset``.
     """
 
-    def __init__(self, ann_file, pipeline, tag_categories, tag_category_nums,
+    def __init__(self,
+                 ann_file,
+                 pipeline,
+                 tag_categories,
+                 tag_category_nums,
+                 filename_tmpl=None,
                  **kwargs):
         assert len(tag_categories) == len(tag_category_nums)
         self.tag_categories = tag_categories
         self.tag_category_nums = tag_category_nums
+        self.filename_tmpl = filename_tmpl
         self.num_categories = len(self.tag_categories)
         self.num_tags = sum(self.tag_category_nums)
         self.category2num = {
@@ -78,7 +84,12 @@ class HVUDataset(BaseDataset):
             k: v
             for k, v in zip(tag_categories, self.start_idx)
         }
-        super().__init__(ann_file, pipeline, start_index=0, **kwargs)
+        self.start_index = 0
+        if 'start_index' in kwargs:
+            self.start_index = kwargs['start_index']
+        self.dataset_type = None
+        super().__init__(
+            ann_file, pipeline, start_index=self.start_index, **kwargs)
 
     def load_annotations(self):
         """Load annotation file to get video information."""
@@ -88,9 +99,13 @@ class HVUDataset(BaseDataset):
     def load_json_annotations(self):
         video_infos = mmcv.load(self.ann_file)
         num_videos = len(video_infos)
+
         video_info0 = video_infos[0]
         assert ('filename' in video_info0) != ('frame_dir' in video_info0)
         path_key = 'filename' if 'filename' in video_info0 else 'frame_dir'
+        self.dataset_type = 'video' if path_key == 'filename' else 'rawframe'
+        if self.dataset_type == 'rawframe':
+            assert self.filename_tmpl is not None
 
         for i in range(num_videos):
             path_value = video_infos[i][path_key]
@@ -101,6 +116,10 @@ class HVUDataset(BaseDataset):
             # We will convert label to torch tensors in the pipeline
             video_infos[i]['categories'] = self.tag_categories
             video_infos[i]['category_nums'] = self.tag_category_nums
+            if self.dataset_type == 'rawframe':
+                video_infos[i]['filename_tmpl'] = self.filename_tmpl
+                video_infos[i]['start_index'] = self.start_index
+                video_infos[i]['modality'] = self.modality
 
         return video_infos
 
