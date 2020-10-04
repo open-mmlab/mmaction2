@@ -1,7 +1,7 @@
 import os.path as osp
 
 import mmcv
-import torch
+import numpy as np
 from mmcv.utils import print_log
 
 from ..core import mean_average_precision
@@ -80,21 +80,9 @@ class HVUVideoDataset(BaseDataset):
                 path_value = osp.join(self.data_prefix, path_value)
             video_infos[i][path_key] = path_value
 
-            tags_by_category = video_infos[i]['label']
-            onehot = torch.zeros(self.num_tags)
-            onehot_mask = torch.zeros(self.num_tags)
-            category_mask = torch.zeros(self.num_categories)
-            for category, tags in tags_by_category.items():
-                category_mask[self.tag_categories.index(category)] = 1.
-                start_idx = self.category2startidx[category]
-                category_num = self.category2num[category]
-                tags = [idx + start_idx for idx in tags]
-                onehot[tags] = 1.
-                onehot_mask[start_idx:category_num] = 1.
-
-            video_infos[i]['label'] = onehot
-            video_infos[i]['mask'] = onehot_mask
-            video_infos[i]['category_mask'] = category_mask
+            # We will convert label to torch tensors in the pipeline
+            video_infos[i]['categories'] = self.tag_categories
+            video_infos[i]['category_nums'] = self.tag_category_nums
 
         return video_infos
 
@@ -128,24 +116,31 @@ class HVUVideoDataset(BaseDataset):
         assert metric == 'mean_average_precision'
 
         gt_labels = [ann['label'] for ann in self.video_infos]
-        gt_category_masks = [ann['category_mask'] for ann in self.video_infos]
-        gt_labels = [label.cpu().numpy() for label in gt_labels]
-        gt_category_masks = [mask.cpu().numpy() for mask in gt_category_masks]
 
         eval_results = {}
         for i, category in enumerate(self.tag_categories):
+
             start_idx = self.category2startidx[category]
             num = self.category2num[category]
             preds = [
                 result[start_idx:start_idx + num]
                 for video_idx, result in enumerate(results)
-                if gt_category_masks[video_idx][i]
+                if category in gt_labels[video_idx]
             ]
             gts = [
-                gt_label[start_idx:start_idx + num]
+                gt_label[category]
                 for video_idx, gt_label in enumerate(gt_labels)
-                if gt_category_masks[video_idx][i]
+                if category in gt_label
             ]
+
+            # convert label list to ndarray
+            def label2array(label):
+                arr = np.zeros(num, dtype=np.float32)
+                arr[label] = 1.
+                return arr
+
+            gts = [label2array(item) for item in gts]
+
             mAP = mean_average_precision(preds, gts)
             eval_results[f'{category}_mAP'] = mAP
             log_msg = f'\n{category}_mAP\t{mAP:.4f}'
