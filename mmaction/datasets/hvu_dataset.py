@@ -86,7 +86,7 @@ class HVUDataset(BaseDataset):
         }
         self.start_index = 0
         if 'start_index' in kwargs:
-            self.start_index = kwargs['start_index']
+            self.start_index = kwargs.pop('start_index')
         self.dataset_type = None
         super().__init__(
             ann_file, pipeline, start_index=self.start_index, **kwargs)
