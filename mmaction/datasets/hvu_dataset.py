@@ -10,21 +10,37 @@ from .registry import DATASETS
 
 
 @DATASETS.register_module()
-class HVUVideoDataset(BaseDataset):
-    """HVU Video dataset, which support the recognition tags of multiple
-    categories.
+class HVUDataset(BaseDataset):
+    """HVU dataset, which support the recognition tags of multiple categories.
+    Accept both video annotation files or rawframe annotation files.
 
-    The dataset loads raw videos and apply specified transforms to return a
-    dict containing the frame tensors and other information.
+    The dataset loads videos or raw frames and apply specified transforms to
+    return a dict containing the frame tensors and other information.
 
     The ann_file is a json file with multiple dictionaries, and each dictionary
     indicates a sample video with the filename and tags, the tags are organized
-    as different categories. Example of a dictionary:
+    as different categories. Example of a video dictionary:
 
     .. code-block:: txt
 
         {
             'filename': 'gD_G1b0wV5I_001015_001035.mp4',
+            'label': {
+                'concept': [250, 131, 42, 51, 57, 155, 122],
+                'object': [1570, 508],
+                'event': [16],
+                'action': [180],
+                'scene': [206]
+            }
+        }
+
+    Example of a rawframe dictionary:
+
+    .. code-block:: txt
+
+        {
+            'frame_dir': 'gD_G1b0wV5I_001015_001035',
+            'total_frames': 61
             'label': {
                 'concept': [250, 131, 42, 51, 57, 155, 122],
                 'object': [1570, 508],
@@ -72,7 +88,9 @@ class HVUVideoDataset(BaseDataset):
     def load_json_annotations(self):
         video_infos = mmcv.load(self.ann_file)
         num_videos = len(video_infos)
-        path_key = 'filename'
+        video_info0 = video_infos[0]
+        assert ('filename' in video_info0) != ('frame_dir' in video_info0)
+        path_key = 'filename' if 'filename' in video_info0 else 'frame_dir'
 
         for i in range(num_videos):
             path_value = video_infos[i][path_key]
