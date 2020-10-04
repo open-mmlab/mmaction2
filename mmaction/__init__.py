@@ -15,6 +15,6 @@ assert mmcv_minimum_version <= mmcv_version, \
 
 assert mmcv_maximum_version > mmcv_version, \
         f'MMCV=={mmcv.__version__} is used but incompatible. ' \
-        f'Please install mmcv>={mmcv_minimum_version}.'
+        f'Please install mmcv<{mmcv_maximum_version}.'
 
 __all__ = ['__version__', 'short_version', 'version_info']
