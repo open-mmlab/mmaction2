@@ -153,7 +153,7 @@ def parse_args():
         choices=['avi', 'mp4', 'webm'],
         help='video file extensions')
     parser.add_argument(
-        '--mix',
+        '--mixed-ext',
         action='store_true',
         default=False,
         help='process video files with mixed extensions')
