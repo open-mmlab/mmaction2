@@ -207,7 +207,7 @@ if __name__ == '__main__':
         print('Total number of rgb frame folders found: ', len(fullpath_list))
     else:
         print('Reading videos from folder: ', args.src_dir)
-        if args.mix:
+        if args.mixed_ext:
             print('Extension of videos is mixed')
             fullpath_list = glob.glob(args.src_dir + '/*' * args.level)
             done_fullpath_list = glob.glob(args.out_dir + '/*' * args.level)

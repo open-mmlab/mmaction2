@@ -26,7 +26,7 @@ Note that this might take a long time.
 bash download_videos.sh
 ```
 
-Note that if you happen to have sudoer or have [GNU parallel](https://www.gnu.org/software/parallel/) [<sup>1</sup>](#1) on your machine,
+Note that if you happen to have sudoer or have [GNU parallel](https://www.gnu.org/software/parallel/) on your machine,
 you can speed up the procedure by downloading in parallel.
 
 ```shell
@@ -74,7 +74,7 @@ If both are required, run the following script to extract frames.
 bash extract_frames.sh
 ```
 
-## Step 5. Fetching Proposal Files and Other Metadata Files
+## Step 5. Fetching Proposal Files
 
 The scripts are adapted from FAIR's [Long-Term Feature Banks](https://github.com/facebookresearch/video-long-term-feature-banks).
 
@@ -120,6 +120,6 @@ mmaction2
 
 For training and evaluating on AVA, please refer to [getting_started](/docs/getting_started.md).
 
-Reference
+## Reference
 
-<a class="anchor" id="1">[1] O. Tange (2018): GNU Parallel 2018, March 2018, https://doi.org/10.5281/zenodo.1146014 </a>
+1. O. Tange (2018): GNU Parallel 2018, March 2018, https://doi.org/10.5281/zenodo.1146014
