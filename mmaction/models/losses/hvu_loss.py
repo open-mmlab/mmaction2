@@ -121,6 +121,6 @@ class HVULoss(BaseWeightedLoss):
             loss_cls = sum([losses[k] * loss_weights[k] for k in losses])
             losses['loss_cls'] = loss_cls
             # We also trace the loss weights
-            losses.update({k + '_weight': v for k, v in loss_weights.item()})
+            losses.update({k + '_weight': v for k, v in loss_weights.items()})
             # Note that the loss weights are just for reference.
             return losses
