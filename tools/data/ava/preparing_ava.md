@@ -119,3 +119,7 @@ mmaction2
 ```
 
 For training and evaluating on AVA, please refer to [getting_started](/docs/getting_started.md).
+
+Reference
+
+<a class="anchor" id="1">[1] O. Tange (2018): GNU Parallel 2018, March 2018, https://doi.org/10.5281/zenodo.1146014 </a>
