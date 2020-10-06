@@ -98,14 +98,13 @@ class HVULoss(BaseWeightedLoss):
 
                 idx = self.categories.index(name)
                 if self.with_mask:
-                    category_mask = category_mask[:, idx].reshape(-1)
+                    category_mask_i = category_mask[:, idx].reshape(-1)
                     # there should be at least one sample which contains tags
                     # in thie category
-                    if torch.sum(category_mask) < 0.5:
+                    if torch.sum(category_mask_i) < 0.5:
                         continue
-
-                    category_loss = torch.sum(category_loss * category_mask)
-                    category_loss = category_loss / torch.sum(category_mask)
+                    category_loss = torch.sum(category_loss * category_mask_i)
+                    category_loss = category_loss / torch.sum(category_mask_i)
                 else:
                     category_loss = torch.mean(category_loss)
                 # We name the loss of each category as 'LOSS', since we only
