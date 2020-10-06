@@ -5,10 +5,10 @@ from .compose import Compose
 from .formating import (Collect, FormatShape, ImageToTensor, ToDataContainer,
                         ToTensor, Transpose)
 from .loading import (DecordDecode, DecordInit, DenseSampleFrames,
-                      FrameSelector, GenerateLocalizationLabels,
+                      FrameSelector, GenerateLocalizationLabels, ImageDecode,
                       LoadLocalizationFeature, LoadProposals, OpenCVDecode,
-                      OpenCVInit, PyAVDecode, PyAVInit, RawFrameDecode,
-                      SampleFrames, SampleProposalFrames,
+                      OpenCVInit, PseudoClipBuilder, PyAVDecode, PyAVInit,
+                      RawFrameDecode, SampleFrames, SampleProposalFrames,
                       UntrimmedSampleFrames)
 
 __all__ = [
@@ -19,5 +19,6 @@ __all__ = [
     'Collect', 'FormatShape', 'Compose', 'ToTensor', 'ToDataContainer',
     'GenerateLocalizationLabels', 'LoadLocalizationFeature', 'LoadProposals',
     'DecordInit', 'OpenCVInit', 'PyAVInit', 'SampleProposalFrames',
-    'UntrimmedSampleFrames', 'RawFrameDecode'
+    'UntrimmedSampleFrames', 'RawFrameDecode', 'ImageDecode',
+    'PseudoClipBuilder'
 ]
