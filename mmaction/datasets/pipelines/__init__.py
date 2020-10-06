@@ -7,6 +7,7 @@ from .formating import (Collect, FormatAudioShape, FormatShape, ImageToTensor,
                         ToDataContainer, ToTensor, Transpose)
 from .loading import (AudioDecode, AudioDecodeInit, AudioFeatureSelector,
                       DecordDecode, DecordInit, DenseSampleFrames,
+                      ImageDecode, PseudoClipBuilder,
                       FrameSelector, GenerateLocalizationLabels,
                       LoadAudioFeature, LoadHVULabel, LoadLocalizationFeature,
                       LoadProposals, OpenCVDecode, OpenCVInit, PyAVDecode,
@@ -24,5 +25,6 @@ __all__ = [
     'UntrimmedSampleFrames', 'RawFrameDecode', 'DecordInit', 'OpenCVInit',
     'PyAVInit', 'SampleProposalFrames', 'ColorJitter', 'LoadHVULabel',
     'AudioAmplify', 'MelSpectrogram', 'AudioDecode', 'FormatAudioShape',
-    'LoadAudioFeature', 'AudioFeatureSelector', 'AudioDecodeInit'
+    'LoadAudioFeature', 'AudioFeatureSelector', 'AudioDecodeInit',
+    'ImageDecode', 'PseudoClipBuilder'
 ]
