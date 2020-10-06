@@ -63,7 +63,7 @@ class LoadHVULabel(object):
             category_num = self.category2num[category]
             tags = [idx + start_idx for idx in tags]
             onehot[tags] = 1.
-            onehot_mask[start_idx:category_num] = 1.
+            onehot_mask[start_idx:category_num + start_idx] = 1.
 
         results['label'] = onehot
         results['mask'] = onehot_mask
