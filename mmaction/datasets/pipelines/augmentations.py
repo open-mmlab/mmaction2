@@ -534,6 +534,85 @@ class Resize(object):
 
 
 @PIPELINES.register_module()
+class RandomRescale(object):
+    """Randomly resize images so that the short_edge is resized to a specific
+    size in a given range. The scale ratio is unchanged after resizing.
+
+    Required keys are "imgs", "img_shape", "modality", added or modified
+    keys are "imgs", "img_shape", "keep_ratio", "scale_factor", "lazy",
+    "resize_size", "short_edge". Required keys in "lazy" is None, added or
+    modified key is "interpolation".
+
+    Args:
+        scale_range (Tuple[int]): The range of short edge length. A closed
+            interval.
+        interpolation (str): Algorithm used for interpolation:
+            "nearest" | "bilinear". Default: "bilinear".
+        lazy (bool): Determine whether to apply lazy operation. Default: False.
+    """
+
+    def __init__(self, scale_range, interpolation='bilinear', lazy=False):
+        self.scale_range = scale_range
+        # make sure scale_range is legal
+        assert len(scale_range) == 2
+        assert type(scale_range[0]) is int
+        assert type(scale_range[1]) is int
+        assert scale_range[0] < scale_range[1]
+
+        self.keep_ratio = True
+        self.interpolation = interpolation
+        self.lazy = lazy
+
+    def __call__(self, results):
+        """Performs the Resize augmentation.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+
+        _init_lazy_if_proper(results, self.lazy)
+
+        if 'scale_factor' not in results:
+            results['scale_factor'] = np.array([1, 1], dtype=np.float32)
+        img_h, img_w = results['img_shape']
+
+        short_edge = np.random.randint(self.scale_range[0],
+                                       self.scale_range[1] + 1)
+        new_w, new_h = mmcv.rescale_size((img_w, img_h), (np.Inf, short_edge))
+
+        self.scale_factor = np.array([new_w / img_w, new_h / img_h],
+                                     dtype=np.float32)
+
+        results['img_shape'] = (new_h, new_w)
+        results['keep_ratio'] = self.keep_ratio
+        results['short_edge'] = short_edge
+        results['scale_factor'] = results['scale_factor'] * self.scale_factor
+
+        if not self.lazy:
+            results['imgs'] = [
+                mmcv.imresize(
+                    img, (new_w, new_h), interpolation=self.interpolation)
+                for img in results['imgs']
+            ]
+        else:
+            lazyop = results['lazy']
+            if lazyop['flip']:
+                raise NotImplementedError('Put Flip at last for now')
+            lazyop['interpolation'] = self.interpolation
+
+        return results
+
+    def __repr__(self):
+        scale_range = self.scale_range
+        repr_str = (f'{self.__class__.__name__}('
+                    f'scale_range=({scale_range[0]}, {scale_range[1]}), '
+                    f'interpolation={self.interpolation}, '
+                    f'lazy={self.lazy})')
+        return repr_str
+
+
+@PIPELINES.register_module()
 class Flip(object):
     """Flip the input images with a probability.
 
