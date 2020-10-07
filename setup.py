@@ -104,7 +104,7 @@ if __name__ == '__main__':
         maintainer='MMAction2 Authors',
         maintainer_email='openmmlab@gmail.com',
         packages=find_packages(exclude=('configs', 'tools', 'demo')),
-        package_data={'mmaction.ops': ['*/*.so']},
+        keywords='computer vision, action understanding',
         classifiers=[
             'Development Status :: 4 - Beta',
             'License :: OSI Approved :: Apache Software License',
@@ -113,6 +113,7 @@ if __name__ == '__main__':
             'Programming Language :: Python :: 3.5',
             'Programming Language :: Python :: 3.6',
             'Programming Language :: Python :: 3.7',
+            'Programming Language :: Python :: 3.8',
         ],
         url='https://github.com/open-mmlab/mmaction2',
         license='Apache License 2.0',
