@@ -102,6 +102,8 @@ class HVULoss(BaseWeightedLoss):
                     # there should be at least one sample which contains tags
                     # in thie category
                     if torch.sum(category_mask_i) < 0.5:
+                        losses[f'{name}_LOSS'] = torch.tensor(.0).cuda()
+                        loss_weights[f'{name}_LOSS'] = .0
                         continue
                     category_loss = torch.sum(category_loss * category_mask_i)
                     category_loss = category_loss / torch.sum(category_mask_i)
