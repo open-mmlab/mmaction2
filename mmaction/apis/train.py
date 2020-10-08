@@ -1,10 +1,12 @@
+import copy as cp
+
 import torch
 from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
 from mmcv.runner import (DistSamplerSeedHook, EpochBasedRunner, OptimizerHook,
                          build_optimizer)
 from mmcv.runner.hooks import Fp16OptimizerHook
 
-from ..core import DistEpochEvalHook, EpochEvalHook
+from ..core import DistEpochEvalHook, EpochEvalHook, OmniSourceRunner
 from ..datasets import build_dataloader, build_dataset
 from ..utils import get_root_logger
 
@@ -33,19 +35,47 @@ def train_model(model,
 
     # prepare data loaders
     dataset = dataset if isinstance(dataset, (list, tuple)) else [dataset]
-    dataloader_setting = dict(
-        videos_per_gpu=cfg.data.get('videos_per_gpu', 2),
-        workers_per_gpu=cfg.data.get('workers_per_gpu', 0),
-        # cfg.gpus will be ignored if distributed
-        num_gpus=len(cfg.gpu_ids),
-        dist=distributed,
-        seed=cfg.seed)
-    dataloader_setting = dict(dataloader_setting,
-                              **cfg.data.get('train_dataloader', {}))
 
-    data_loaders = [
-        build_dataloader(ds, **dataloader_setting) for ds in dataset
-    ]
+    if cfg.omnisource:
+        # The option can override videos_per_gpu
+        omni_videos_per_gpu = cfg.get('omni_videos_per_gpu', None)
+        dataloader_setting_tmpl = dict(
+            videos_per_gpu=cfg.data.get('videos_per_gpu', {}),
+            workers_per_gpu=cfg.data.get('workers_per_gpu', {}),
+            num_gpus=len(cfg.gpu_ids),
+            dist=distributed,
+            seed=cfg.seed)
+        if omni_videos_per_gpu is None:
+            dataloader_setting = dict(dataloader_setting_tmpl,
+                                      **cfg.data.get('train_dataloader', {}))
+            data_loaders = [
+                build_dataloader(ds, **dataloader_setting) for ds in dataset
+            ]
+        else:
+            dataloader_settings = []
+            for videos_per_gpu in omni_videos_per_gpu:
+                dataloader_setting = cp.deepcopy(dataloader_setting_tmpl)
+                dataloader_setting['videos_per_gpu'] = videos_per_gpu
+                dataloader_settings.append(dataloader_setting)
+            data_loaders = [
+                build_dataloader(ds, **setting)
+                for ds, setting in zip(dataset, dataloader_settings)
+            ]
+
+    else:
+        dataloader_setting = dict(
+            videos_per_gpu=cfg.data.get('videos_per_gpu', 2),
+            workers_per_gpu=cfg.data.get('workers_per_gpu', 0),
+            # cfg.gpus will be ignored if distributed
+            num_gpus=len(cfg.gpu_ids),
+            dist=distributed,
+            seed=cfg.seed)
+        dataloader_setting = dict(dataloader_setting,
+                                  **cfg.data.get('train_dataloader', {}))
+
+        data_loaders = [
+            build_dataloader(ds, **dataloader_setting) for ds in dataset
+        ]
 
     # put model on gpus
     if distributed:
@@ -63,12 +93,21 @@ def train_model(model,
 
     # build runner
     optimizer = build_optimizer(model, cfg.optimizer)
-    runner = EpochBasedRunner(
-        model,
-        optimizer=optimizer,
-        work_dir=cfg.work_dir,
-        logger=logger,
-        meta=meta)
+
+    if cfg.omnisource:
+        runner = OmniSourceRunner(
+            model,
+            optimizer=optimizer,
+            work_dir=cfg.work_dir,
+            logger=logger,
+            meta=meta)
+    else:
+        runner = EpochBasedRunner(
+            model,
+            optimizer=optimizer,
+            work_dir=cfg.work_dir,
+            logger=logger,
+            meta=meta)
     # an ugly workaround to make .log and .log.json filenames the same
     runner.timestamp = timestamp
 
