@@ -31,14 +31,11 @@ class LoadHVULabel(object):
         self.category_nums = category_nums
         self.num_categories = len(self.categories)
         self.num_tags = sum(self.category_nums)
-        self.category2num = {k: v for k, v in zip(categories, category_nums)}
+        self.category2num = dict(zip(categories, category_nums))
         self.start_idx = [0]
         for i in range(self.num_categories - 1):
             self.start_idx.append(self.start_idx[-1] + self.category_nums[i])
-        self.category2startidx = {
-            k: v
-            for k, v in zip(categories, self.start_idx)
-        }
+        self.category2startidx = dict(zip(categories, self.start_idx))
         self.hvu_initialized = True
 
     def __call__(self, results):

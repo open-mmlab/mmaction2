@@ -11,10 +11,10 @@ from .registry import DATASETS
 
 @DATASETS.register_module()
 class HVUDataset(BaseDataset):
-    """HVU dataset, which support the recognition tags of multiple categories.
+    """HVU dataset, which supports the recognition tags of multiple categories.
     Accept both video annotation files or rawframe annotation files.
 
-    The dataset loads videos or raw frames and apply specified transforms to
+    The dataset loads videos or raw frames and applies specified transforms to
     return a dict containing the frame tensors and other information.
 
     The ann_file is a json file with multiple dictionaries, and each dictionary
@@ -56,6 +56,8 @@ class HVUDataset(BaseDataset):
         pipeline (list[dict | callable]): A sequence of data transforms.
         tag_categories (list[str]): List of category names of tags.
         tag_category_nums (list[int]): List of number of tags in each category.
+        filename_tmpl: Template for each filename. `filename_tmpl is None`
+            indicates video dataset is used. Default: None.
         **kwargs: Keyword arguments for ``BaseDataset``.
     """
 
@@ -72,21 +74,13 @@ class HVUDataset(BaseDataset):
         self.filename_tmpl = filename_tmpl
         self.num_categories = len(self.tag_categories)
         self.num_tags = sum(self.tag_category_nums)
-        self.category2num = {
-            k: v
-            for k, v in zip(tag_categories, tag_category_nums)
-        }
+        self.category2num = dict(zip(tag_categories, tag_category_nums))
         self.start_idx = [0]
         for i in range(self.num_categories - 1):
             self.start_idx.append(self.start_idx[-1] +
                                   self.tag_category_nums[i])
-        self.category2startidx = {
-            k: v
-            for k, v in zip(tag_categories, self.start_idx)
-        }
-        self.start_index = 0
-        if 'start_index' in kwargs:
-            self.start_index = kwargs.pop('start_index')
+        self.category2startidx = dict(zip(tag_categories, self.start_idx))
+        self.start_index = kwargs.pop('start_index', 0)
         self.dataset_type = None
         super().__init__(
             ann_file, pipeline, start_index=self.start_index, **kwargs)

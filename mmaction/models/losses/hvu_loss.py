@@ -1,8 +1,8 @@
-import torch  # isort: skip
-import torch.nn.functional as F  # isort: skip
+import torch
+import torch.nn.functional as F
 
-from ..registry import LOSSES  # isort: skip
-from .base import BaseWeightedLoss  # isort: skip
+from ..registry import LOSSES
+from .base import BaseWeightedLoss
 
 
 @LOSSES.register_module()
@@ -13,15 +13,15 @@ class HVULoss(BaseWeightedLoss):
         categories (list[str]): Names of tag categories, tags are organized in
             this order. Default: ['action', 'attribute', 'concept', 'event',
             'object', 'scene'].
-        category_nums (list[int]): Number of tags for each category. Default:
-            [739, 117, 291, 69, 1679, 248].
-        category_loss_weights (list[float]): Loss weights of categories, it
+        category_nums (tuple[int]): Number of tags for each category. Default:
+            (739, 117, 291, 69, 1679, 248).
+        category_loss_weights (tuple[float]): Loss weights of categories, it
             applies only if `loss_type == 'individual'`. The loss weights will
             be normalized so that the sum equals to 1, so that you can give any
-            positive number as loss weight. Default: [1, 1, 1, 1, 1, 1].
+            positive number as loss weight. Default: (1, 1, 1, 1, 1, 1).
         loss_type (str): The loss type we calculate, we can either calculate
             the BCELoss for all tags, or calculate the BCELoss for tags in each
-            category. Choices are ['individual', 'all']. Default: 'all'.
+            category. Choices are 'individual' or 'all'. Default: 'all'.
         with_mask (bool): Since some tag categories are missing for some video
             clips. If `with_mask == True`, we will not calculate loss for these
             missing categories. Otherwise, these missing categories are treated
@@ -34,8 +34,8 @@ class HVULoss(BaseWeightedLoss):
                      'action', 'attribute', 'concept', 'event', 'object',
                      'scene'
                  ],
-                 category_nums=[739, 117, 291, 69, 1679, 248],
-                 category_loss_weights=[1, 1, 1, 1, 1, 1],
+                 category_nums=(739, 117, 291, 69, 1679, 248),
+                 category_loss_weights=(1, 1, 1, 1, 1, 1),
                  loss_type='all',
                  with_mask=False,
                  loss_weight=1.0):
@@ -44,6 +44,7 @@ class HVULoss(BaseWeightedLoss):
         self.categories = categories
         self.category_nums = category_nums
         self.category_loss_weights = category_loss_weights
+        assert len(self.category_nums) == len(self.category_loss_weights)
         for loss_weight in self.category_loss_weights:
             assert loss_weight >= 0
         self.loss_type = loss_type
