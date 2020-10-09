@@ -12,6 +12,10 @@ from mmaction.utils import get_root_logger
 class EvalHook(Hook):
     """Non-Distributed evaluation hook.
 
+    Notes:
+        If new arguments are added for EvalHook, tools/test.py,
+        tools/eval_metric.py may be effected.
+
     This hook will regularly perform evaluation in a given interval when
     performing in non-distributed environment.
 
@@ -22,8 +26,6 @@ class EvalHook(Hook):
             If None, whether to evaluate is merely decided by ``interval``.
             Default: None.
         interval (int): Evaluation interval (by epochs). Default: 1.
-        gpu_collect (bool): Whether to use gpu or cpu to collect results.
-            Default: False.
         save_best (bool): Whether to save best checkpoint during evaluation.
             Default: True.
         key_indicator (str | None): Key indicator to measure the best
@@ -56,6 +58,9 @@ class EvalHook(Hook):
         if not isinstance(dataloader, DataLoader):
             raise TypeError(f'dataloader must be a pytorch DataLoader, '
                             f'but got {type(dataloader)}')
+        if not isinstance(save_best, bool):
+            raise TypeError("'save_best' should be a boolean")
+
         if save_best and not key_indicator:
             raise ValueError('key_indicator should not be None, when '
                              'save_best is set to True.')

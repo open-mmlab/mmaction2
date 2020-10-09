@@ -91,6 +91,17 @@ def _build_demo_runner():
     not torch.cuda.is_available(), reason='requires CUDA support')
 def test_eval_hook():
     with pytest.raises(TypeError):
+        # `save_best` should be a boolean
+        test_dataset = ExampleModel()
+        data_loader = DataLoader(
+            test_dataset,
+            batch_size=1,
+            sampler=None,
+            num_workers=0,
+            shuffle=False)
+        EvalHook(data_loader, save_best='True')
+
+    with pytest.raises(TypeError):
         # dataloader must be a pytorch DataLoader
         test_dataset = ExampleModel()
         data_loader = [
