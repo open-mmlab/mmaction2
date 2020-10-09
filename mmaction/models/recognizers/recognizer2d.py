@@ -35,7 +35,15 @@ class Recognizer2D(BaseRecognizer):
     def forward_test(self, imgs):
         """Defines the computation performed at every call when evaluation and
         testing."""
+        test_crops = self.test_cfg.get('test_crops', None)
+        twice_sample = self.test_cfg.get('twice_sample', False)
+
         batches = imgs.shape[0]
+        if test_crops is not None:
+            if twice_sample:
+                test_crops = test_crops * 2
+            imgs = imgs.reshape((batches * test_crops, -1) + imgs.shape[2:])
+
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
         num_segs = imgs.shape[0] // batches
 
