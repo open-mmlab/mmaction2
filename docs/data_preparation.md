@@ -1,5 +1,7 @@
 # Data Preparation
 
+The supported datasets are listed in [supported_datasets.md](/docs/supported_datasets.md).
+
 ## Notes on Video Data Format
 
 MMAction2 supports two types of data format: raw frames and video. The former is widely used in previous projects such as [TSN](https://github.com/yjxiong/temporal-segment-networks).
