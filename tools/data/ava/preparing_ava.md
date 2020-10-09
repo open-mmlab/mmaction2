@@ -36,7 +36,7 @@ bash download_videos_parallel.sh
 
 ## Step 3. Cut Videos
 
-Cut each video from its 15th to 30th minute.
+Cut each video from its 15th to 30th minute and make them at 30 fps.
 
 ```shell
 bash cut_videos.sh
@@ -66,6 +66,12 @@ If you didn't install denseflow, you can still extract RGB frames using OpenCV b
 
 ```shell
 bash extract_rgb_frames_opencv.sh
+```
+
+Or using ffmpeg to extract RGB frames by the following script.
+
+```shell
+bash extract_rgb_frames_ffmpeg.sh
 ```
 
 If both are required, run the following script to extract frames.
