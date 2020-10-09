@@ -62,7 +62,8 @@ class Recognizer2D(BaseRecognizer):
             num_segs = 1
 
         cls_score = self.cls_head(x, num_segs)
-        cls_score = self.average_clip(cls_score)
+        if test_crops is not None:
+            cls_score = self.average_clip(cls_score, test_crops)
 
         return cls_score.cpu().numpy()
 

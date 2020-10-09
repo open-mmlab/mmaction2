@@ -72,7 +72,7 @@ class TSMHead(BaseHead):
         """Initiate the parameters from scratch."""
         normal_init(self.fc_cls, std=self.init_std)
 
-    def forward(self, x, **kwargs):
+    def forward(self, x, num_segments):
         """Defines the computation performed at every call.
 
         Args:
