@@ -3,8 +3,7 @@ import time
 import warnings
 
 import mmcv
-from mmcv.runner.base_runner import EpochBasedRunner
-from mmcv.runner.builder import RUNNERS
+from mmcv.runner import EpochBasedRunner, Hook
 from mmcv.runner.utils import get_host_info
 
 
@@ -17,7 +16,18 @@ def cycle(iterable):
             iterator = iter(iterable)
 
 
-@RUNNERS.register_module()
+class OmniSourceDistSamplerSeedHook(Hook):
+
+    def before_epoch(self, runner):
+        for data_loader in runner.data_loaders:
+            if hasattr(data_loader.sampler, 'set_epoch'):
+                # in case the data loader uses `SequentialSampler` in Pytorch
+                data_loader.sampler.set_epoch(runner.epoch)
+            elif hasattr(data_loader.batch_sampler.sampler, 'set_epoch'):
+                # batch sampler in pytorch wraps the sampler as its attributes.
+                data_loader.batch_sampler.sampler.set_epoch(runner.epoch)
+
+
 class OmniSourceRunner(EpochBasedRunner):
     """OmniSource Epoch-based Runner.
 

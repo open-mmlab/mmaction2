@@ -6,7 +6,8 @@ from mmcv.runner import (DistSamplerSeedHook, EpochBasedRunner, OptimizerHook,
                          build_optimizer)
 from mmcv.runner.hooks import Fp16OptimizerHook
 
-from ..core import DistEpochEvalHook, EpochEvalHook, OmniSourceRunner
+from ..core import (DistEpochEvalHook, EpochEvalHook, OmniSourceRunner,
+                    OmniSourceDistSamplerSeedHook)
 from ..datasets import build_dataloader, build_dataset
 from ..utils import get_root_logger
 
@@ -38,7 +39,7 @@ def train_model(model,
 
     if cfg.omnisource:
         # The option can override videos_per_gpu
-        omni_videos_per_gpu = cfg.get('omni_videos_per_gpu', None)
+        omni_videos_per_gpu = cfg.data.get('omni_videos_per_gpu', None)
         dataloader_setting_tmpl = dict(
             videos_per_gpu=cfg.data.get('videos_per_gpu', {}),
             workers_per_gpu=cfg.data.get('workers_per_gpu', {}),
@@ -126,7 +127,10 @@ def train_model(model,
                                    cfg.checkpoint_config, cfg.log_config,
                                    cfg.get('momentum_config', None))
     if distributed:
-        runner.register_hook(DistSamplerSeedHook())
+        if cfg.omnisource:
+            runner.register_hook(OmniSourceDistSamplerSeedHook())
+        else:
+            runner.register_hook(DistSamplerSeedHook())
 
     if validate:
         eval_cfg = cfg.get('evaluation', {})
