@@ -112,7 +112,8 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         results['start_index'] = self.start_index
 
         # prepare tensor in getitem
-        if self.multi_class:
+        # If HVU, type(results['label']) is dict
+        if self.multi_class and type(results['label']) is list:
             onehot = torch.zeros(self.num_classes)
             onehot[results['label']] = 1.
             results['label'] = onehot
@@ -126,7 +127,8 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         results['start_index'] = self.start_index
 
         # prepare tensor in getitem
-        if self.multi_class:
+        # If HVU, type(results['label']) is dict
+        if self.multi_class and type(results['label']) is list:
             onehot = torch.zeros(self.num_classes)
             onehot[results['label']] = 1.
             results['label'] = onehot
