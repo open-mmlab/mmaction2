@@ -169,15 +169,14 @@ data = dict(
         test_mode=True,
         pipeline=test_pipeline))
 # optimizer
-optimizer = dict(type='SGD', lr=0.001, momentum=0.9, weight_decay=1e-6) # this lr is used for 8 gpus
+optimizer = dict(
+    type='SGD', lr=0.001, momentum=0.9,
+    weight_decay=1e-6)  # this lr is used for 8 gpus
 optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
 # learning policy
 lr_config = dict(policy='step', step=[200, 400])
 checkpoint_config = dict(interval=5)
-log_config = dict(
-    interval=5, hooks=[
-        dict(type='TextLoggerHook')
-    ])
+log_config = dict(interval=5, hooks=[dict(type='TextLoggerHook')])
 # runtime settings
 total_epochs = 450
 dist_params = dict(backend='nccl')
