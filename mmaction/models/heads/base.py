@@ -67,15 +67,12 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
         """Defines the computation performed at every call."""
         pass
 
-    def loss(self, cls_score, labels, aux_info):
-        """Calculate the loss given output ``cls_score``, target ``labels`` and
-        auxiliary tensors ``aux_info``.
+    def loss(self, cls_score, labels, **kwargs):
+        """Calculate the loss given output ``cls_score``, target ``labels``.
 
         Args:
             cls_score (torch.Tensor): The output of the model.
             labels (torch.Tensor): The target output of the model.
-            aux_info (dict[torch.Tensor]): The auxiliary tensors used to
-                calculate loss.
 
         Returns:
             dict: A dict containing field 'loss_cls'(mandatory)
@@ -97,7 +94,7 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
             labels = ((1 - self.label_smooth_eps) * labels +
                       self.label_smooth_eps / self.num_classes)
 
-        loss_cls = self.loss_cls(cls_score, labels, aux_info)
+        loss_cls = self.loss_cls(cls_score, labels, **kwargs)
         # loss_cls may be dictionary or single tensor
         if type(loss_cls) is dict:
             losses.update(loss_cls)
