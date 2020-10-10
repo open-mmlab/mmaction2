@@ -1159,10 +1159,13 @@ class MultiGroupCrop(object):
 
 @PIPELINES.register_module()
 class AudioAmplify(object):
-    """Normalize images with the given mean and std value."""
+    """Amplify the waveform."""
 
     def __init__(self, ratio):
-        self.ratio = ratio
+        if isinstance(ratio, float):
+            self.ratio = ratio
+        else:
+            raise TypeError('Amplification ratio should be float.')
 
     def __call__(self, results):
         """Perfrom the audio amplification.
@@ -1185,7 +1188,7 @@ class AudioAmplify(object):
 
 @PIPELINES.register_module()
 class MelSpectrogram(object):
-    """MelSpectrogram. Transfer a audio wave into a melspectogram figure.
+    """MelSpectrogram. Transfer an audio wave into a melspectogram figure.
 
     Args:
         window_size (int): The window size in milisecond. Default: 32.
@@ -1197,10 +1200,15 @@ class MelSpectrogram(object):
     """
 
     def __init__(self, window_size=32, step_size=16, n_mel=80, fix_length=128):
-        self.window_size = window_size
-        self.step_size = step_size
-        self.n_mel = n_mel
-        self.fix_length = fix_length
+        if all(
+                isinstance(x, int)
+                for x in [window_size, step_size, n_mel, fix_length]):
+            self.window_size = window_size
+            self.step_size = step_size
+            self.n_mel = n_mel
+            self.fix_length = fix_length
+        else:
+            raise TypeError('All arguments should be int.')
 
     def __call__(self, results):
         """Perfrom MelSpectrogram transformation.

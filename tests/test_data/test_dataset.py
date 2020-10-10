@@ -9,7 +9,8 @@ import torch
 from mmcv import ConfigDict
 from numpy.testing import assert_array_equal
 
-from mmaction.datasets import (ActivityNetDataset, RawframeDataset,
+from mmaction.datasets import (ActivityNetDataset, AudioDataset,
+                               AudioFeatureDataset, RawframeDataset,
                                RepeatDataset, SSNDataset, VideoDataset)
 
 
@@ -35,6 +36,9 @@ class TestDataset(object):
                                          'proposal_test_list.txt')
         cls.proposal_norm_ann_file = osp.join(cls.data_prefix,
                                               'proposal_normalized_list.txt')
+        cls.audio_anno_file = osp.join(cls.data_prefix, 'audio_test_list.txt')
+        cls.audio_feature_anno_file = osp.join(cls.data_prefix,
+                                               'audio_feature_test_list.txt')
 
         cls.frame_pipeline = [
             dict(
@@ -43,6 +47,25 @@ class TestDataset(object):
                 frame_interval=2,
                 num_clips=1),
             dict(type='RawFrameDecode', io_backend='disk')
+        ]
+        cls.audio_pipeline = [
+            dict(type='AudioDecodeInit', io_backend='disk'),
+            dict(
+                type='SampleFrames',
+                clip_len=32,
+                frame_interval=2,
+                num_clips=1),
+            dict(type='AudioDecode'),
+            dict(type - 'MelSpectrogram'),
+        ]
+        cls.audio_feature_pipeline = [
+            dict(type='LoadAudioFeature'),
+            dict(
+                type='SampleFrames',
+                clip_len=32,
+                frame_interval=2,
+                num_clips=1),
+            dict(type='AudioFeatureSelector')
         ]
         cls.video_pipeline = [
             dict(type='OpenCVInit'),
@@ -121,6 +144,26 @@ class TestDataset(object):
             dict(frame_dir=frame_dir, total_frames=5, label=127)
         ] * 2
         assert rawframe_dataset.start_index == 1
+
+    def test_audio_dataset(self):
+        audio_dataset = AudioDataset(
+            self.frame_ann_file,
+            self.frame_pipeline,
+            data_prefix=self.data_prefix)
+        audio_infos = audio_dataset.video_infos
+        wav_path = osp.join(self.data_prefix, 'test.wav')
+        assert audio_infos == [dict(audiopath=wav_path, label=127)] * 2
+
+    def test_audio_feature_dataset(self):
+        audio_dataset = AudioFeatureDataset(
+            self.frame_ann_file,
+            self.frame_pipeline,
+            data_prefix=self.data_prefix)
+        audio_infos = audio_dataset.video_infos
+        feature_path = osp.join(self.data_prefix, 'test.npy')
+        assert audio_infos == [
+            dict(audiopath=feature_path, total_frames=100, label=127)
+        ] * 2
 
     def test_rawframe_dataset_with_offset(self):
         rawframe_dataset = RawframeDataset(
@@ -240,6 +283,54 @@ class TestDataset(object):
             test_mode=True)
         result = rawframe_dataset[0]
         assert self.check_keys_contain(result.keys(), target_keys + ['offset'])
+
+    def test_audio_pipeline(self):
+        target_keys = [
+            'audiopath', 'label', 'start_index', 'modality', 'audios_shape',
+            'length', 'sample_rate', 'total_frames'
+        ]
+
+        # Audio dataset not in test mode
+        audio_dataset = AudioDataset(
+            self.frame_ann_file,
+            self.frame_pipeline,
+            data_prefix=self.data_prefix,
+            test_mode=False)
+        result = audio_dataset[0]
+        assert self.check_keys_contain(result.keys(), target_keys)
+
+        # Audio dataset in test mode
+        audio_dataset = AudioDataset(
+            self.frame_ann_file,
+            self.frame_pipeline,
+            data_prefix=self.data_prefix,
+            test_mode=True)
+        result = audio_dataset[0]
+        assert self.check_keys_contain(result.keys(), target_keys)
+
+    def test_audio_feature_pipeline(self):
+        target_keys = [
+            'audiopath', 'label', 'start_index', 'modality', 'audios',
+            'total_frames'
+        ]
+
+        # Audio feature dataset not in test mode
+        audio_feature_dataset = AudioFeatureDataset(
+            self.frame_ann_file,
+            self.frame_pipeline,
+            data_prefix=self.data_prefix,
+            test_mode=False)
+        result = audio_feature_dataset[0]
+        assert self.check_keys_contain(result.keys(), target_keys)
+
+        # Audio dataset in test mode
+        audio_feature_dataset = AudioFeatureDataset(
+            self.frame_ann_file,
+            self.frame_pipeline,
+            data_prefix=self.data_prefix,
+            test_mode=True)
+        result = audio_feature_dataset[0]
+        assert self.check_keys_contain(result.keys(), target_keys)
 
     def test_video_pipeline(self):
         target_keys = ['filename', 'label', 'start_index', 'modality']

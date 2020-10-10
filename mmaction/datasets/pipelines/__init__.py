@@ -5,12 +5,12 @@ from .augmentations import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
 from .compose import Compose
 from .formating import (Collect, FormatAudioShape, FormatShape, ImageToTensor,
                         ToDataContainer, ToTensor, Transpose)
-from .loading import (AudioDecode, AudioFeatureSelector, DecordDecode,
-                      DecordInit, DenseSampleFrames, FrameSelector,
-                      GenerateLocalizationLabels, LoadAudioFeature,
-                      LoadLocalizationFeature, LoadProposals, OpenCVDecode,
-                      OpenCVInit, PyAVDecode, PyAVInit, RawFrameDecode,
-                      SampleFrames, SampleProposalFrames,
+from .loading import (AudioDecode, AudioDecodeInit, AudioFeatureSelector,
+                      DecordDecode, DecordInit, DenseSampleFrames,
+                      FrameSelector, GenerateLocalizationLabels,
+                      LoadAudioFeature, LoadLocalizationFeature, LoadProposals,
+                      OpenCVDecode, OpenCVInit, PyAVDecode, PyAVInit,
+                      RawFrameDecode, SampleFrames, SampleProposalFrames,
                       UntrimmedSampleFrames)
 
 __all__ = [
@@ -23,5 +23,5 @@ __all__ = [
     'DecordInit', 'OpenCVInit', 'PyAVInit', 'SampleProposalFrames',
     'UntrimmedSampleFrames', 'RawFrameDecode', 'AudioAmplify',
     'MelSpectrogram', 'AudioDecode', 'FormatAudioShape', 'ColorJitter',
-    'LoadAudioFeature', 'AudioFeatureSelector'
+    'LoadAudioFeature', 'AudioFeatureSelector', 'AudioDecodeInit'
 ]

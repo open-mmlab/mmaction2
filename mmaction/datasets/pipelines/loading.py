@@ -12,8 +12,6 @@ from torch.nn.modules.utils import _pair
 from ...utils import get_random_string, get_shm_dir, get_thread_id
 from ..registry import PIPELINES
 
-# from pdb import set_trace as st
-
 
 @PIPELINES.register_module()
 class SampleFrames(object):
@@ -927,6 +925,7 @@ class AudioDecodeInit(object):
         self.io_backend = io_backend
         self.decoding_backend = decoding_backend
         self.sample_rate = sample_rate
+
         self.kwargs = kwargs
         self.file_client = None
 
@@ -960,11 +959,7 @@ class AudioDecodeInit(object):
 
 @PIPELINES.register_module()
 class LoadAudioFeature(object):
-    """Load offline extracted audio feature.
-
-    Required keys are "filename", added or modified keys are "total_frames",
-    "sample_rate", "imgs".
-    """
+    """Load offline extracted audio features."""
 
     def __init__(self, **kwargs):
         self.kwargs = kwargs
@@ -978,22 +973,9 @@ class LoadAudioFeature(object):
         """
         try:
             feature_map = np.load(results['audiopath'])
-        except FileNotFoundError as e:
+        except BaseException:
             # Generate a ramdom dummy 10s input
             # Some videos do not have audio stream
-            print(e)
-            feature_map = np.random.randn(640, 80).astype(np.float32)
-            with open('notfound_error.txt', 'a+') as f:
-                f.write('{}\n'.format(results['audiopath']))
-        except ValueError as e:
-            print(e)
-            with open('pickle_error.txt', 'a+') as f:
-                f.write('{}\n'.format(results['audiopath']))
-            feature_map = np.random.randn(640, 80).astype(np.float32)
-        except BaseException as e:
-            print(e)
-            with open('unknown_error.txt', 'a+') as f:
-                f.write('{} {}\n'.format(results['audiopath'], e))
             feature_map = np.random.randn(640, 80).astype(np.float32)
         results['length'] = feature_map.shape[0]
         results['audios'] = feature_map
@@ -1010,20 +992,13 @@ class AudioDecode(object):
     def __init__(self):
         np.warnings.filterwarnings(
             'ignore', category=np.VisibleDeprecationWarning)
-        pass
 
     def __call__(self, results):
-        """Perform the ``AudioDecode`` to pick audio clips.
-
-        Args:
-            results (dict): The resulting dict to be modified and passed
-                to the next transform in pipeline.
-        """
+        """Perform the ``AudioDecode`` to pick audio clips."""
         audio = results['audios']
         frame_inds = results['frame_inds']
         num_clips = results['num_clips']
         resampled_clips = list()
-
         frame_inds = frame_inds.reshape(num_clips, -1)
         for clip_idx in range(num_clips):
             clip_frame_inds = frame_inds[clip_idx]
@@ -1042,10 +1017,8 @@ class AudioDecode(object):
 
         results['audios'] = np.array(resampled_clips)
         results['audios_shape'] = results['audios'].shape
-        return results
 
 
-@PIPELINES.register_module()
 class FrameSelector(RawFrameDecode):
     """Deprecated class for ``RawFrameDecode``."""
 
@@ -1100,12 +1073,9 @@ class AudioFeatureSelector(object):
                         ((0, self.fixed_length - cropped_audio.shape[0]),
                          (0, 0)),
                         mode='edge')
-                except ValueError as e:
-                    print(e)
+                except ValueError:
                     truncated_audio = np.random.randn(128,
                                                       80).astype(np.float32)
-                    with open('pad_error.txt', 'a+') as f:
-                        f.write('{}\n'.format(results['audiopath']))
 
             resampled_clips.append(truncated_audio)
         results['audios'] = np.array(resampled_clips)
