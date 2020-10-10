@@ -122,9 +122,6 @@ class RawframeDataset(BaseDataset):
                 assert len(label), f'missing label in line: {line}'
                 if self.multi_class:
                     assert self.num_classes is not None
-                    onehot = torch.zeros(self.num_classes)
-                    onehot[label] = 1.0
-                    video_info['label'] = onehot
                 else:
                     assert len(label) == 1
                     video_info['label'] = label[0]
@@ -138,6 +135,13 @@ class RawframeDataset(BaseDataset):
         results['filename_tmpl'] = self.filename_tmpl
         results['modality'] = self.modality
         results['start_index'] = self.start_index
+
+        # prepare tensor in getitem
+        if self.multi_class:
+            onehot = torch.zeros(self.num_classes)
+            onehot[results['label']] = 1.
+            results['label'] = onehot
+
         return self.pipeline(results)
 
     def prepare_test_frames(self, idx):
@@ -146,6 +150,13 @@ class RawframeDataset(BaseDataset):
         results['filename_tmpl'] = self.filename_tmpl
         results['modality'] = self.modality
         results['start_index'] = self.start_index
+
+        # prepare tensor in getitem
+        if self.multi_class:
+            onehot = torch.zeros(self.num_classes)
+            onehot[results['label']] = 1.
+            results['label'] = onehot
+
         return self.pipeline(results)
 
     def evaluate(self,
