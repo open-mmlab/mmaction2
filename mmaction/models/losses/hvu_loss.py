@@ -26,6 +26,8 @@ class HVULoss(BaseWeightedLoss):
             clips. If `with_mask == True`, we will not calculate loss for these
             missing categories. Otherwise, these missing categories are treated
             as negative samples.
+        reduction (str): Reduction way. Choices are 'mean' or 'sum'. Default:
+            'mean'.
         loss_weight (float): The loss weight. Default: 1.0.
     """
 
@@ -38,6 +40,7 @@ class HVULoss(BaseWeightedLoss):
                  category_loss_weights=(1, 1, 1, 1, 1, 1),
                  loss_type='all',
                  with_mask=False,
+                 reduction='mean',
                  loss_weight=1.0):
 
         super().__init__(loss_weight)
@@ -49,11 +52,13 @@ class HVULoss(BaseWeightedLoss):
             assert loss_weight >= 0
         self.loss_type = loss_type
         self.with_mask = with_mask
+        self.reduction = reduction
         self.category_startidx = [0]
         for i in range(len(self.category_nums) - 1):
             self.category_startidx.append(self.category_startidx[-1] +
                                           self.category_nums[i])
         assert self.loss_type in ['individual', 'all']
+        assert self.reduction in ['mean', 'sum']
 
     def _forward(self, cls_score, label, mask, category_mask):
         """Forward function.
@@ -76,12 +81,14 @@ class HVULoss(BaseWeightedLoss):
                 cls_score, label, reduction='none')
             if self.with_mask:
                 w_loss_cls = mask * loss_cls
-                w_loss_cls = torch.sum(
-                    w_loss_cls, dim=1) / torch.sum(
-                        mask, dim=1)
+                w_loss_cls = torch.sum(w_loss_cls, dim=1)
+                if self.reduction == 'mean':
+                    w_loss_cls = w_loss_cls / torch.sum(mask, dim=1)
                 w_loss_cls = torch.mean(w_loss_cls)
                 return dict(loss_cls=w_loss_cls)
             else:
+                if self.reduction == 'sum':
+                    loss_cls = torch.sum(loss_cls, dim=-1)
                 return dict(loss_cls=torch.mean(loss_cls))
         elif self.loss_type == 'individual':
             losses = {}
@@ -93,7 +100,10 @@ class HVULoss(BaseWeightedLoss):
                 category_label = label[:, start_idx:start_idx + num]
                 category_loss = F.binary_cross_entropy_with_logits(
                     category_score, category_label, reduction='none')
-                category_loss = torch.mean(category_loss, dim=1)
+                if self.reduction == 'mean':
+                    category_loss = torch.mean(category_loss, dim=1)
+                elif self.reduction == 'sum':
+                    category_loss = torch.sum(category_loss, dim=1)
 
                 idx = self.categories.index(name)
                 if self.with_mask:
