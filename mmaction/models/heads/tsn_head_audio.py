@@ -64,12 +64,11 @@ class TSNHeadAudio(BaseHead):
         """
         # [N * num_segs, in_channels, h, w]
         x = self.avg_pool(x)
-        x = x.squeeze()
         # [N, in_channels, 1, 1]
+        x = x.view(x.size(0), -1)
+        # [N, in_channels]
         if self.dropout is not None:
             x = self.dropout(x)
-            # [N, in_channels, 1, 1]
-        x = x.view(x.size(0), -1)
         # [N, in_channels]
         cls_score = self.fc_cls(x)
         # [N, num_classes]

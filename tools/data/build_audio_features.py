@@ -210,7 +210,6 @@ class AudioTools:
 
 def extract_audio_feature(wav_path, audio_tools, mel_out_dir):
     file_name = osp.basename(wav_path[:-4])
-    file_name = '_'.join(file_name.split('_')[:-2])  # FIXME
     # Write the spectrograms to disk:
     mel_filename = os.path.join(mel_out_dir, file_name + '.npy')
     if not os.path.exists(mel_filename):

@@ -6,6 +6,15 @@ from .base import BaseRecognizer
 class RecognizerAudio(BaseRecognizer):
     """Audio recognizer model framework."""
 
+    def forward(self, audios, label=None, return_loss=True):
+        """Define the computation performed at every call."""
+        if return_loss:
+            if label is None:
+                raise ValueError('Label should not be None.')
+            return self.forward_train(audios, label)
+        else:
+            return self.forward_test(audios)
+
     def forward_train(self, audios, labels):
         """Defines the computation performed at every call when training."""
         audios = audios.reshape((-1, ) + audios.shape[2:])
@@ -54,6 +63,7 @@ class RecognizerAudio(BaseRecognizer):
         """
         audios = data_batch['audios']
         label = data_batch['label']
+
         losses = self(audios, label)
 
         loss, log_vars = self._parse_losses(losses)

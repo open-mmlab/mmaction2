@@ -1226,11 +1226,11 @@ class MelSpectrogram(object):
                 n_fft=n_fft,
                 hop_length=hop_size,
                 n_mels=self.n_mel)
-            if mel.shape[-1] >= self.fix_length:
-                mel = mel[:, :self.fix_length]
+            if mel.shape[0] >= self.fix_length:
+                mel = mel[:self.fix_length, :]
             else:
                 mel = np.pad(
-                    mel, ((0, 0), (0, self.fix_length - mel.shape[-1])),
+                    mel, ((0, self.fix_length - mel.shape[-1]), (0, 0)),
                     mode='edge')
             melspectrograms.append(mel)
 
