@@ -1,6 +1,7 @@
 import copy
 import os.path as osp
 
+import numpy as np
 import torch
 from mmcv.utils import print_log
 
@@ -159,6 +160,12 @@ class RawframeDataset(BaseDataset):
 
         return self.pipeline(results)
 
+    @staticmethod
+    def label2array(num, label):
+        arr = np.zeros(num, dtype=np.float32)
+        arr[label] = 1.
+        return arr
+
     def evaluate(self,
                  results,
                  metrics='top_k_accuracy',
@@ -228,7 +235,10 @@ class RawframeDataset(BaseDataset):
                 continue
 
             if metric == 'mean_average_precision':
-                gt_labels = [label.cpu().numpy() for label in gt_labels]
+                gt_labels = [
+                    self.label2array(self.num_classes, label)
+                    for label in gt_labels
+                ]
                 mAP = mean_average_precision(results, gt_labels)
                 eval_results['mean_average_precision'] = mAP
                 log_msg = f'\nmean_average_precision\t{mAP:.4f}'
