@@ -55,23 +55,21 @@ class HVULoss(BaseWeightedLoss):
                                           self.category_nums[i])
         assert self.loss_type in ['individual', 'all']
 
-    def _forward(self, cls_score, label, aux_info):
+    def _forward(self, cls_score, label, mask, category_mask):
         """Forward function.
 
         Args:
             cls_score (torch.Tensor): The class score.
             label (torch.Tensor): The ground truth label.
-            aux_info (dict[torch.Tensor]): Other auxiliary tensors needed for
-                loss calculation. For HVU Loss, `aux_info` should contain
-                `mask` and `category_mask`
+            mask (torch.Tensor): The mask of tags. 0 indicates that the
+                category of this tag is missing in the label of the video.
+            category_mask (torch.Tensor): The category mask. For each sample,
+                it's a tensor with length `len(self.categories)`, denotes that
+                if the category is labeled for this video.
 
         Returns:
             torch.Tensor: The returned CrossEntropy loss.
         """
-        assert 'mask' in aux_info
-        assert 'category_mask' in aux_info
-        mask = aux_info['mask']
-        category_mask = aux_info['category_mask']
 
         if self.loss_type == 'all':
             loss_cls = F.binary_cross_entropy_with_logits(

@@ -117,6 +117,12 @@ class HVUDataset(BaseDataset):
 
         return video_infos
 
+    @staticmethod
+    def label2array(num, label):
+        arr = np.zeros(num, dtype=np.float32)
+        arr[label] = 1.
+        return arr
+
     def evaluate(self, results, metrics='mean_average_precision', logger=None):
         """Evaluation in HVU Video Dataset. We only support evaluating mAP for
         each tag categories. Since some tag categories are missing for some
@@ -159,18 +165,11 @@ class HVUDataset(BaseDataset):
                 if category in gt_labels[video_idx]
             ]
             gts = [
-                gt_label[category]
-                for video_idx, gt_label in enumerate(gt_labels)
+                gt_label[category] for gt_label in gt_labels
                 if category in gt_label
             ]
 
-            # convert label list to ndarray
-            def label2array(label):
-                arr = np.zeros(num, dtype=np.float32)
-                arr[label] = 1.
-                return arr
-
-            gts = [label2array(item) for item in gts]
+            gts = [self.label2array(num, item) for item in gts]
 
             mAP = mean_average_precision(preds, gts)
             eval_results[f'{category}_mAP'] = mAP

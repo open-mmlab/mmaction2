@@ -108,7 +108,7 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         return cls_score
 
     @abstractmethod
-    def forward_train(self, imgs, labels, aux_info):
+    def forward_train(self, imgs, labels, **kwargs):
         """Defines the computation performed at every call when training."""
         pass
 
@@ -154,14 +154,14 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
 
         return loss, log_vars
 
-    def forward(self, imgs, label=None, aux_info=dict(), return_loss=True):
+    def forward(self, imgs, label=None, return_loss=True, **kwargs):
         """Define the computation performed at every call."""
         if return_loss:
             if label is None:
                 raise ValueError('Label should not be None.')
-            return self.forward_train(imgs, label, aux_info)
+            return self.forward_train(imgs, label, **kwargs)
         else:
-            return self.forward_test(imgs)
+            return self.forward_test(imgs, **kwargs)
 
     def train_step(self, data_batch, optimizer, **kwargs):
         """The iteration step during training.
@@ -197,7 +197,7 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
             assert item in data_batch
             aux_info[item] = data_batch[item]
 
-        losses = self(imgs, label, aux_info)
+        losses = self(imgs, label, return_loss=True, **aux_info)
 
         loss, log_vars = self._parse_losses(losses)
 
@@ -222,7 +222,7 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         for item in self.aux_info:
             aux_info[item] = data_batch[item]
 
-        losses = self(imgs, label, aux_info)
+        losses = self(imgs, label, return_loss=True, **aux_info)
 
         loss, log_vars = self._parse_losses(losses)
 

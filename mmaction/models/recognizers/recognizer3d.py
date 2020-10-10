@@ -6,7 +6,7 @@ from .base import BaseRecognizer
 class Recognizer3D(BaseRecognizer):
     """3D recognizer model framework."""
 
-    def forward_train(self, imgs, labels, aux_info):
+    def forward_train(self, imgs, labels, **kwargs):
         """Defines the computation performed at every call when training."""
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
         losses = dict()
@@ -18,8 +18,7 @@ class Recognizer3D(BaseRecognizer):
 
         cls_score = self.cls_head(x)
         gt_labels = labels.squeeze()
-        # aux_info is used for loss calculation
-        loss_cls = self.cls_head.loss(cls_score, gt_labels, aux_info)
+        loss_cls = self.cls_head.loss(cls_score, gt_labels, **kwargs)
         losses.update(loss_cls)
 
         return losses
