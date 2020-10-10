@@ -10,7 +10,7 @@ The data are provided from [MOC](https://github.com/MCG-NJU/MOC-Detector/blob/ma
 
 After downloading the `JHMDB.tar.gz` file and put it in `$MMACTION2/tools/data/jhmdb/`, you can run the following command to extract.
 
-```shell script
+```shell
 tar -zxvf JHMDB.tar.gz
 ```
 
@@ -18,7 +18,7 @@ If you have plenty of SSD space, then we recommend extracting frames there for b
 
 You can run the following script to soft link SSD.
 
-```shell script
+```shell
 # execute these two line (Assume the SSD is mounted at "/mnt/SSD/")
 mkdir /mnt/SSD/JHMDB/
 ln -s /mnt/SSD/JHMDB/ ../../../data/jhmdb

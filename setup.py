@@ -13,12 +13,7 @@ version_file = 'mmaction/version.py'
 def get_version():
     with open(version_file, 'r') as f:
         exec(compile(f.read(), version_file, 'exec'))
-    import sys
-    # return short version for sdist
-    if 'sdist' in sys.argv or 'bdist_wheel' in sys.argv:
-        return locals()['short_version']
-    else:
-        return locals()['__version__']
+    return locals()['__version__']
 
 
 def parse_requirements(fname='requirements.txt', with_version=True):
@@ -109,15 +104,15 @@ if __name__ == '__main__':
         maintainer='MMAction2 Authors',
         maintainer_email='openmmlab@gmail.com',
         packages=find_packages(exclude=('configs', 'tools', 'demo')),
-        package_data={'mmaction.ops': ['*/*.so']},
+        keywords='computer vision, action understanding',
         classifiers=[
             'Development Status :: 4 - Beta',
             'License :: OSI Approved :: Apache Software License',
             'Operating System :: OS Independent',
             'Programming Language :: Python :: 3',
-            'Programming Language :: Python :: 3.5',
             'Programming Language :: Python :: 3.6',
             'Programming Language :: Python :: 3.7',
+            'Programming Language :: Python :: 3.8',
         ],
         url='https://github.com/open-mmlab/mmaction2',
         license='Apache License 2.0',

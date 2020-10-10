@@ -12,7 +12,7 @@ The data are provided from [MOC](https://github.com/MCG-NJU/MOC-Detector/blob/ma
 
 After downloading the `UCF101_v2.tar.gz` file and put it in `$MMACTION2/tools/data/ucf101_24/`, you can run the following command to extract.
 
-```shell script
+```shell
 tar -zxvf UCF101_v2.tar.gz
 ```
 

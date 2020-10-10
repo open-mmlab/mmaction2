@@ -71,7 +71,7 @@ pip install mmcv-full==latest+torch1.5.0+cu101 -f http://download.openmmlab.com/
 See [here](https://github.com/open-mmlab/mmcv#install-with-pip) for different versions of MMCV compatible to different PyTorch and CUDA versions.
 Optionally you can choose to compile mmcv from source by the following command
 
-```shell script
+```shell
 git clone https://github.com/open-mmlab/mmcv.git
 cd mmcv
 MMCV_WITH_OPS=1 pip install -e .  # package mmcv-full, which contains cuda ops, will be installed after this step
@@ -81,7 +81,7 @@ cd ..
 
 Or directly run
 
-```shell script
+```shell
 pip install mmcv-full
 # alternative: pip install mmcv
 ```

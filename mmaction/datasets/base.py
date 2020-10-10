@@ -17,9 +17,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
 
     - Methods:`load_annotations`, supporting to load information from an
     annotation file.
-
     - Methods:`prepare_train_frames`, providing train data.
-
     - Methods:`prepare_test_frames`, providing test data.
 
     Args:
