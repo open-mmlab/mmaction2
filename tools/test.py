@@ -98,7 +98,10 @@ def main():
     if cfg.test_cfg is None:
         cfg.test_cfg = dict(average_clips=args.average_clips)
     else:
-        cfg.test_cfg.average_clips = args.average_clips
+        # You can set average_clips during testing, it will override the
+        # original settting
+        if args.average_clips is not None:
+            cfg.test_cfg.average_clips = args.average_clips
 
     # init distributed env first, since logger depends on the dist info.
     if args.launcher == 'none':

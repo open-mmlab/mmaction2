@@ -36,7 +36,7 @@ model = dict(
         dropout_ratio=0.5,
         init_std=0.01))
 train_cfg = None
-test_cfg = dict(average_clips=None)
+test_cfg = dict(average_clips='prob')
 dataset_type = 'RawframeDataset'
 data_root = 'data/kinetics400/rawframes_train'
 data_root_val = 'data/kinetics400/rawframes_val'
