@@ -28,9 +28,10 @@ test_cfg = dict(
 model = dict(
     type='SSN',
     backbone=dict(
-        type='BNInception',
-        pretrained='open-mmlab://bninception_caffe',
-        bn_eval=False,
+        type='ResNet',
+        pretrained='torchvision://resnet50',
+        depth=50,
+        norm_eval=False,
         partial_bn=True),
     spatial_type='avg',
     dropout_ratio=0.8,
@@ -38,7 +39,7 @@ model = dict(
     cls_head=dict(
         type='SSNHead',
         dropout_ratio=0.,
-        in_channels=1024,
+        in_channels=2048,
         num_classes=20,
         consensus=dict(
             type='STPPTrain',
@@ -172,14 +173,14 @@ data = dict(
         test_mode=True,
         pipeline=test_pipeline))
 # optimizer
-optimizer = dict(type='SGD', lr=0.001, momentum=0.9, weight_decay=1e-6)
+optimizer = dict(type='SGD', lr=0.001, momentum=0.9, weight_decay=1e-6) # this lr is used for 8 gpus
 optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
 # learning policy
 lr_config = dict(policy='step', step=[200, 400])
 checkpoint_config = dict(interval=5)
 log_config = dict(
     interval=1, hooks=[
-        dict(type='TextLoggerHook'),
+        dict(type='TextLoggerHook')
     ])
 # runtime settings
 total_epochs = 1
