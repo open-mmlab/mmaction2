@@ -32,7 +32,6 @@ cat prepare_data.md >> supported_datasets.md
 
 sed -i 's/](\/docs\//](/g' recognition_models.md # remove /docs/ for link used in doc site
 sed -i 's/](\/docs\//](/g' localization_models.md
-sed -i 's/](\/docs\//](/g' data_preparation.md
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' recognition_models.md
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' localization_models.md
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' benchmark.md
