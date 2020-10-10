@@ -5,7 +5,6 @@ import tempfile
 import mmcv
 import numpy as np
 import pytest
-import torch
 from mmcv import ConfigDict
 from numpy.testing import assert_array_equal
 
@@ -144,15 +143,13 @@ class TestDataset(object):
             num_classes=100)
         rawframe_infos = rawframe_dataset.video_infos
         frame_dir = osp.join(self.data_prefix, 'test_imgs')
-        label0 = torch.zeros(100)
-        label0[[1]] = 1.0
-        label1 = torch.zeros(100)
-        label1[[3, 5]] = 1.0
+        label0 = [1]
+        label1 = [3, 5]
         labels = [label0, label1]
         for info, label in zip(rawframe_infos, labels):
             assert info['frame_dir'] == frame_dir
             assert info['total_frames'] == 5
-            assert torch.all(info['label'] == label)
+            assert set(info['label']) == set(label)
         assert rawframe_dataset.start_index == 1
 
     def test_dataset_realpath(self):

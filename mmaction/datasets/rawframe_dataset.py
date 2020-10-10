@@ -123,6 +123,7 @@ class RawframeDataset(BaseDataset):
                 assert len(label), f'missing label in line: {line}'
                 if self.multi_class:
                     assert self.num_classes is not None
+                    video_info['label'] = label
                 else:
                     assert len(label) == 1
                     video_info['label'] = label[0]

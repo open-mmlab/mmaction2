@@ -45,7 +45,7 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         # will be used in train_step and val_step, data_batch should contain
         # these tensors
         self.aux_info = []
-        if 'aux_info' in train_cfg:
+        if train_cfg is not None and 'aux_info' in train_cfg:
             self.aux_info = train_cfg['aux_info']
 
         self.init_weights()
