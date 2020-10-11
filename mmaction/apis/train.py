@@ -150,13 +150,13 @@ def train_model(model,
 
     # All hooks are registered now, for omnisource experiments, we need to
     # override the `end_of_epoch` method for each hook.
-    if cfg.omnisource:
-
-        def new_end_of_epoch(runner):
-            return runner.inner_iter + 1 == len(runner.main_loader)
-
-        for hook in runner._hooks:
-            hook.end_of_epoch = new_end_of_epoch
+    # if cfg.omnisource:
+    #
+    #     def new_end_of_epoch(runner):
+    #         return runner.inner_iter + 1 == len(runner.main_loader)
+    #
+    #     for hook in runner._hooks:
+    #         hook.end_of_epoch = new_end_of_epoch
 
     if cfg.resume_from:
         runner.resume(cfg.resume_from)
