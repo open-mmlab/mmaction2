@@ -75,7 +75,6 @@ def test_hvu_loss():
     scene_loss = torch.sum(scene_loss, dim=1)
     scene_loss = torch.mean(scene_loss)
 
-    scene_loss = F.binary_cross_entropy_with_logits(pred[1:, 2:], gt[1:, 2:])
     loss1 = (action_loss + scene_loss) / 2
     assert torch.eq(loss['loss_cls'], loss1)
 
