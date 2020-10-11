@@ -61,6 +61,8 @@ class OmniSourceRunner(EpochBasedRunner):
         self.mode = 'train'
         self.data_loaders = data_loaders
         self.main_loader = self.data_loaders[0]
+        # Add aliasing
+        self.data_loader = self.main_loader
         self.aux_loaders = self.data_loaders[1:]
         self.aux_iters = [cycle(loader) for loader in self.aux_loaders]
 
