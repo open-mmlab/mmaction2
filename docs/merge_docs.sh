@@ -1,5 +1,18 @@
 #!/usr/bin/env bash
 
+sed -i 's/(\/tools\/data\/activitynet\/preparing_activitynet.md/(#activitynet/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/kinetics400\/preparing_kinetics400.md/(#kinetics-400/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/mit\/preparing_mit.md/(#moments-in-time/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/mmit\/preparing_mmit.md/(#multi-moments-in-time/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/sthv1\/preparing_sthv1.md/(#something-something-v1/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/sthv2\/preparing_sthv2.md/(#something-something-v2/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/thumos14\/preparing_thumos14.md/(#thumos-14/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/ucf101\/preparing_ucf101.md/(#ucf-101/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/ucf101_24\/preparing_ucf101_24.md/(#ucf101-24/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/jhmdb\/preparing_jhmdb.md/(#jhmdb/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/hvu\/preparing_hvu.md/(#hvu/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/hmdb51\/preparing_hmdb51.md/(#hmdb51/g' supported_datasets.md
+
 cat  ../configs/localization/*/*.md > localization_models.md
 cat  ../configs/recognition/*/*.md > recognition_models.md
 cat  ../tools/data/*/*.md > prepare_data.md

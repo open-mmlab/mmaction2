@@ -93,6 +93,7 @@ Please refer to [install.md](docs/install.md) for installation.
 ## Data Preparation
 
 Please refer to [data_preparation.md](docs/data_preparation.md) for a general knowledge of data preparation.
+The supported datasets are listed in [supported_datasets.md](docs/supported_datasets.md)
 
 ## Get Started
 
