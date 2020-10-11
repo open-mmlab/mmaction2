@@ -6,7 +6,7 @@ from .compose import Compose
 from .formating import (Collect, FormatShape, ImageToTensor, ToDataContainer,
                         ToTensor, Transpose)
 from .loading import (DecordDecode, DecordInit, DenseSampleFrames,
-                      FrameSelector, GenerateLocalizationLabels,
+                      FrameSelector, GenerateLocalizationLabels, LoadHVULabel,
                       LoadLocalizationFeature, LoadProposals, OpenCVDecode,
                       OpenCVInit, PyAVDecode, PyAVInit, RawFrameDecode,
                       SampleFrames, SampleProposalFrames,
@@ -21,5 +21,5 @@ __all__ = [
     'GenerateLocalizationLabels', 'LoadLocalizationFeature', 'LoadProposals',
     'DecordInit', 'OpenCVInit', 'PyAVInit', 'SampleProposalFrames',
     'UntrimmedSampleFrames', 'RawFrameDecode', 'DecordInit', 'OpenCVInit',
-    'PyAVInit', 'SampleProposalFrames', 'ColorJitter'
+    'PyAVInit', 'SampleProposalFrames', 'ColorJitter', 'LoadHVULabel'
 ]
