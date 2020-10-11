@@ -51,7 +51,7 @@ class OmniSourceRunner(EpochBasedRunner):
         # so that we can differentiate them.
         if 'log_vars' in outputs:
             log_vars = outputs['log_vars']
-            log_vars = {k + '/' + source: v for k, v in log_vars.items()}
+            log_vars = {k + source: v for k, v in log_vars.items()}
             self.log_buffer.update(log_vars, outputs['num_samples'])
 
         self.outputs = outputs
