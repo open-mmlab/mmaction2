@@ -41,7 +41,7 @@ def test_hvu_loss():
         with_mask=True)
     loss = loss_all_mask(pred, gt, mask, category_mask)
     loss1 = F.binary_cross_entropy_with_logits(pred, gt, reduction='none')
-    loss1 = torch.sum(loss1, dim=1) / torch.sum(mask, dim=1)
+    loss1 = torch.sum(loss1 * mask, dim=1) / torch.sum(mask, dim=1)
     loss1 = torch.mean(loss1)
     assert torch.eq(loss['loss_cls'], loss1)
 
@@ -55,7 +55,7 @@ def test_hvu_loss():
     action_loss = F.binary_cross_entropy_with_logits(pred[:1, :2], gt[:1, :2])
     scene_loss = F.binary_cross_entropy_with_logits(pred[1:, 2:], gt[1:, 2:])
     loss1 = (action_loss + scene_loss) / 2
-    assert torch.eq(loss, loss1)
+    assert torch.eq(loss['loss_cls'], loss1)
 
     loss_ind_nomask_sum = HVULoss(
         categories=categories,
@@ -77,7 +77,7 @@ def test_hvu_loss():
 
     scene_loss = F.binary_cross_entropy_with_logits(pred[1:, 2:], gt[1:, 2:])
     loss1 = (action_loss + scene_loss) / 2
-    assert torch.eq(loss, loss1)
+    assert torch.eq(loss['loss_cls'], loss1)
 
 
 def test_cross_entropy_loss():
