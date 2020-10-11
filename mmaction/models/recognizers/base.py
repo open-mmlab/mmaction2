@@ -26,9 +26,16 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         test_cfg (dict): Config for testing. Default: None.
     """
 
-    def __init__(self, backbone, cls_head, train_cfg=None, test_cfg=None):
+    def __init__(self,
+                 backbone,
+                 cls_head,
+                 neck=None,
+                 train_cfg=None,
+                 test_cfg=None):
         super().__init__()
         self.backbone = builder.build_backbone(backbone)
+        if neck is not None:
+            self.neck = builder.build_neck(neck)
         self.cls_head = builder.build_head(cls_head)
 
         self.train_cfg = train_cfg
@@ -41,6 +48,8 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         """Initialize the model network weights."""
         self.backbone.init_weights()
         self.cls_head.init_weights()
+        if hasattr(self, 'neck'):
+            self.neck.init_weights()
 
     @auto_fp16()
     def extract_feat(self, imgs):
@@ -55,7 +64,7 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         x = self.backbone(imgs)
         return x
 
-    def average_clip(self, cls_score):
+    def average_clip(self, cls_score, num_segs=1):
         """Averaging class score over multiple clips.
 
         Using different averaging types ('score' or 'prob' or None,
@@ -77,10 +86,17 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
                              f'Currently supported ones are '
                              f'["score", "prob", None]')
 
+        if average_clips is None:
+            return cls_score
+
+        batch_size = cls_score.shape[0]
+        cls_score = cls_score.view(batch_size // num_segs, num_segs, -1)
+
         if average_clips == 'prob':
-            cls_score = F.softmax(cls_score, dim=1).mean(dim=0, keepdim=True)
+            cls_score = F.softmax(cls_score, dim=2).mean(dim=1)
         elif average_clips == 'score':
-            cls_score = cls_score.mean(dim=0, keepdim=True)
+            cls_score = cls_score.mean(dim=1)
+
         return cls_score
 
     @abstractmethod

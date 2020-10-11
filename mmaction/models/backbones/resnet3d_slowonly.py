@@ -27,6 +27,7 @@ class ResNet3dSlowOnly(ResNet3dPathway):
                  conv1_stride_t=1,
                  pool1_stride_t=1,
                  inflate=(0, 0, 1, 1),
+                 with_pool2=False,
                  **kwargs):
         super().__init__(
             *args,
@@ -35,23 +36,7 @@ class ResNet3dSlowOnly(ResNet3dPathway):
             conv1_stride_t=conv1_stride_t,
             pool1_stride_t=pool1_stride_t,
             inflate=inflate,
+            with_pool2=with_pool2,
             **kwargs)
 
         assert not self.lateral
-
-    def forward(self, x):
-        """Defines the computation performed at every call.
-
-        Args:
-            x (torch.Tensor): The input data.
-
-        Returns:
-            torch.Tensor: The feature of the input samples
-            extracted by the backbone.
-        """
-        x = self.conv1(x)
-        x = self.maxpool(x)
-        for i, layer_name in enumerate(self.res_layers):
-            res_layer = getattr(self, layer_name)
-            x = res_layer(x)
-        return x

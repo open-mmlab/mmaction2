@@ -697,6 +697,188 @@ class Normalize(object):
 
 
 @PIPELINES.register_module()
+class ColorJitter(object):
+    """Randomly distort the brightness, contrast, saturation and hue of images,
+    and add PCA based noise into images.
+
+    Note: The input images should be in RGB channel order.
+
+    Code Reference:
+    https://gluon-cv.mxnet.io/_modules/gluoncv/data/transforms/experimental/image.html
+    https://mxnet.apache.org/api/python/docs/_modules/mxnet/image/image.html#LightingAug
+
+    If specified to apply color space augmentation, it will distort the image
+    color space by changing brightness, contrast and saturation. Then, it will
+    add some random distort to the images in different color channels.
+    Note that the input images should be in original range [0, 255] and in RGB
+    channel sequence.
+
+    Required keys are "imgs", added or modified keys are "imgs", "eig_val",
+    "eig_vec", "alpha_std" and "color_space_aug".
+
+    Args:
+        color_space_aug (bool): Whether to apply color space augmentations. If
+            specified, it will change the brightness, contrast, saturation and
+            hue of images, then add PCA based noise to images. Otherwise, it
+            will directly add PCA based noise to images. Default: False.
+        alpha_std (float): Std in the normal Gaussian distribution of alpha.
+        eig_val (np.ndarray | None): Eigenvalues of [1 x 3] size for RGB
+            channel jitter. If set to None, it will use the default
+            eigenvalues. Default: None.
+        eig_vec (np.ndarray | None): Eigenvectors of [3 x 3] size for RGB
+            channel jitter. If set to None, it will use the default
+            eigenvectors. Default: None.
+    """
+
+    def __init__(self,
+                 color_space_aug=False,
+                 alpha_std=0.1,
+                 eig_val=None,
+                 eig_vec=None):
+        if eig_val is None:
+            # note that the data range should be [0, 255]
+            self.eig_val = np.array([55.46, 4.794, 1.148], dtype=np.float32)
+        else:
+            self.eig_val = eig_val
+
+        if eig_vec is None:
+            self.eig_vec = np.array([[-0.5675, 0.7192, 0.4009],
+                                     [-0.5808, -0.0045, -0.8140],
+                                     [-0.5836, -0.6948, 0.4203]],
+                                    dtype=np.float32)
+        else:
+            self.eig_vec = eig_vec
+
+        self.alpha_std = alpha_std
+        self.color_space_aug = color_space_aug
+
+    @staticmethod
+    def brightness(img, delta):
+        """Brightness distortion.
+
+        Args:
+            img (np.ndarray): An input image.
+            delta (float): Delta value to distort brightness.
+                It ranges from [-32, 32).
+
+        Returns:
+            np.ndarray: A brightness distorted image.
+        """
+        if np.random.rand() > 0.5:
+            img = img + np.float32(delta)
+        return img
+
+    @staticmethod
+    def contrast(img, alpha):
+        """Contrast distortion.
+
+        Args:
+            img (np.ndarray): An input image.
+            alpha (float): Alpha value to distort contrast.
+                It ranges from [0.6, 1.4).
+
+        Returns:
+            np.ndarray: A contrast distorted image.
+        """
+        if np.random.rand() > 0.5:
+            img = img * np.float32(alpha)
+        return img
+
+    @staticmethod
+    def saturation(img, alpha):
+        """Saturation distortion.
+
+        Args:
+            img (np.ndarray): An input image.
+            alpha (float): Alpha value to distort the saturation.
+                It ranges from [0.6, 1.4).
+
+        Returns:
+            np.ndarray: A saturation distorted image.
+        """
+        if np.random.rand() > 0.5:
+            gray = img * np.array([0.299, 0.587, 0.114], dtype=np.float32)
+            gray = np.sum(gray, 2, keepdims=True)
+            gray *= (1.0 - alpha)
+            img = img * alpha
+            img = img + gray
+        return img
+
+    @staticmethod
+    def hue(img, alpha):
+        """Hue distortion.
+
+        Args:
+            img (np.ndarray): An input image.
+            alpha (float): Alpha value to control the degree of rotation
+                for hue. It ranges from [-18, 18).
+
+        Returns:
+            np.ndarray: A hue distorted image.
+        """
+        if np.random.rand() > 0.5:
+            u = np.cos(alpha * np.pi)
+            w = np.sin(alpha * np.pi)
+            bt = np.array([[1.0, 0.0, 0.0], [0.0, u, -w], [0.0, w, u]],
+                          dtype=np.float32)
+            tyiq = np.array([[0.299, 0.587, 0.114], [0.596, -0.274, -0.321],
+                             [0.211, -0.523, 0.311]],
+                            dtype=np.float32)
+            ityiq = np.array([[1.0, 0.956, 0.621], [1.0, -0.272, -0.647],
+                              [1.0, -1.107, 1.705]],
+                             dtype=np.float32)
+            t = np.dot(np.dot(ityiq, bt), tyiq).T
+            t = np.array(t, dtype=np.float32)
+            img = np.dot(img, t)
+        return img
+
+    def __call__(self, results):
+        imgs = results['imgs']
+        out = []
+        if self.color_space_aug:
+            bright_delta = np.random.uniform(-32, 32)
+            contrast_alpha = np.random.uniform(0.6, 1.4)
+            saturation_alpha = np.random.uniform(0.6, 1.4)
+            hue_alpha = np.random.uniform(-18, 18)
+            jitter_coin = np.random.rand()
+            for img in imgs:
+                img = self.brightness(img, delta=bright_delta)
+                if jitter_coin > 0.5:
+                    img = self.contrast(img, alpha=contrast_alpha)
+                    img = self.saturation(img, alpha=saturation_alpha)
+                    img = self.hue(img, alpha=hue_alpha)
+                else:
+                    img = self.saturation(img, alpha=saturation_alpha)
+                    img = self.hue(img, alpha=hue_alpha)
+                    img = self.contrast(img, alpha=contrast_alpha)
+                out.append(img)
+        else:
+            out = imgs
+
+        # Add PCA based noise
+        alpha = np.random.normal(0, self.alpha_std, size=(3, ))
+        rgb = np.array(
+            np.dot(self.eig_vec * alpha, self.eig_val), dtype=np.float32)
+        rgb = rgb[None, None, ...]
+
+        results['imgs'] = [img + rgb for img in out]
+        results['eig_val'] = self.eig_val
+        results['eig_vec'] = self.eig_vec
+        results['alpha_std'] = self.alpha_std
+        results['color_space_aug'] = self.color_space_aug
+
+        return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'color_space_aug={self.color_space_aug}, '
+                    f'alpha_std={self.alpha_std}, '
+                    f'eig_val={self.eig_val}, '
+                    f'eig_vec={self.eig_vec})')
+        return repr_str
+
+
+@PIPELINES.register_module()
 class CenterCrop(object):
     """Crop the center area from images.
 
