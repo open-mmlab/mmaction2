@@ -28,10 +28,11 @@ class RecognizerAudio(BaseRecognizer):
     def forward_test(self, audios):
         """Defines the computation performed at every call when evaluation and
         testing."""
+        num_segs = audios.shape[1]
         audios = audios.reshape((-1, ) + audios.shape[2:])
         x = self.extract_feat(audios)
         cls_score = self.cls_head(x)
-        cls_score = self.average_clip(cls_score)
+        cls_score = self.average_clip(cls_score, num_segs)
 
         return cls_score.cpu().numpy()
 

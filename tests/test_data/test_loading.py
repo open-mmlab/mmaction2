@@ -77,11 +77,13 @@ class TestLoading(object):
             total_frames=video_total_frames,
             start_index=0)
         cls.audio_results = dict(
+            audios=np.random.randn(1280, ),
             audiopath=cls.wav_path,
             total_frames=cls.audio_total_frames,
             label=1,
             start_index=0)
         cls.audio_feature_results = dict(
+            audios=np.random.randn(128, 80),
             audiopath=cls.audio_spec_path,
             total_frames=cls.audio_total_frames,
             label=1,
@@ -1167,11 +1169,11 @@ class TestLoading(object):
 
     def test_audio_decode(self):
         target_keys = ['frame_inds', 'audios', 'modality']
-        # test frame selector with 2 dim input
         inputs = copy.deepcopy(self.audio_results)
         inputs['frame_inds'] = np.arange(0, self.audio_total_frames,
                                          2)[:, np.newaxis]
-        audio_selector = AudioDecode(io_backend='disk')
+        inputs['num_clips'] = 1
+        audio_selector = AudioDecode()
         results = audio_selector(inputs)
         assert self.check_keys_contain(results.keys(), target_keys)
 
@@ -1185,9 +1187,10 @@ class TestLoading(object):
     def test_audio_feature_selector(self):
         target_keys = ['audios']
         # test frame selector with 2 dim input
-        inputs = copy.deepcopy(self.audio_results)
+        inputs = copy.deepcopy(self.audio_feature_results)
         inputs['frame_inds'] = np.arange(0, self.audio_total_frames,
                                          2)[:, np.newaxis]
+        inputs['num_clips'] = 1
         audio_feature_selector = AudioFeatureSelector()
         results = audio_feature_selector(inputs)
         assert self.check_keys_contain(results.keys(), target_keys)

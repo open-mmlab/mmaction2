@@ -344,15 +344,15 @@ def test_tpn():
 
 
 def test_audio_recognizer():
-    model, train_cfg, test_cfg = _get_recognizer_cfg(
-        '/tsn_r50_64x1x1_kinetics400_audio_feature.py')
+    model, train_cfg, test_cfg = _get_audio_recognizer_cfg(
+        'tsn_r50_64x1x1_kinetics400_audio_feature.py')
     model['backbone']['pretrained'] = None
 
     recognizer = build_recognizer(
         model, train_cfg=train_cfg, test_cfg=test_cfg)
 
-    input_shape = (8, 1, 128, 80)
-    demo_inputs = generate_demo_inputs(input_shape)
+    input_shape = (1, 3, 1, 128, 80)
+    demo_inputs = generate_demo_inputs(input_shape, model_type='audio')
 
     audios = demo_inputs['imgs']
     gt_labels = demo_inputs['gt_labels']
@@ -387,6 +387,8 @@ def generate_demo_inputs(input_shape=(1, 3, 3, 224, 224), model_type='2D'):
         gt_labels = torch.LongTensor([2] * N)
     elif model_type == '3D':
         gt_labels = torch.LongTensor([2] * M)
+    elif model_type == 'audio':
+        gt_labels = torch.LongTensor([2] * L)
     else:
         raise ValueError(f'Data type {model_type} is not available')
 

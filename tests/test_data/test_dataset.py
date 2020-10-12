@@ -36,9 +36,9 @@ class TestDataset(object):
                                          'proposal_test_list.txt')
         cls.proposal_norm_ann_file = osp.join(cls.data_prefix,
                                               'proposal_normalized_list.txt')
-        cls.audio_anno_file = osp.join(cls.data_prefix, 'audio_test_list.txt')
-        cls.audio_feature_anno_file = osp.join(cls.data_prefix,
-                                               'audio_feature_test_list.txt')
+        cls.audio_ann_file = osp.join(cls.data_prefix, 'audio_test_list.txt')
+        cls.audio_feature_ann_file = osp.join(cls.data_prefix,
+                                              'audio_feature_test_list.txt')
 
         cls.frame_pipeline = [
             dict(
@@ -55,8 +55,7 @@ class TestDataset(object):
                 clip_len=32,
                 frame_interval=2,
                 num_clips=1),
-            dict(type='AudioDecode'),
-            dict(type - 'MelSpectrogram'),
+            dict(type='AudioDecode')
         ]
         cls.audio_feature_pipeline = [
             dict(type='LoadAudioFeature'),
@@ -84,7 +83,7 @@ class TestDataset(object):
                 body_segments=5,
                 aug_segments=(2, 2),
                 aug_ratio=0.5),
-            dict(type='FrameSelector', io_backend='disk')
+            dict(type='RawFrameDecode', io_backend='disk')
         ]
         cls.proposal_test_pipeline = [
             dict(
@@ -94,7 +93,7 @@ class TestDataset(object):
                 aug_segments=(2, 2),
                 aug_ratio=0.5,
                 mode='test'),
-            dict(type='FrameSelector', io_backend='disk')
+            dict(type='RawFrameDecode', io_backend='disk')
         ]
 
         cls.proposal_train_cfg = ConfigDict(
@@ -147,22 +146,24 @@ class TestDataset(object):
 
     def test_audio_dataset(self):
         audio_dataset = AudioDataset(
-            self.frame_ann_file,
-            self.frame_pipeline,
+            self.audio_ann_file,
+            self.audio_pipeline,
             data_prefix=self.data_prefix)
         audio_infos = audio_dataset.video_infos
         wav_path = osp.join(self.data_prefix, 'test.wav')
-        assert audio_infos == [dict(audiopath=wav_path, label=127)] * 2
+        assert audio_infos == [
+            dict(audiopath=wav_path, total_frames=5, label=127)
+        ] * 2
 
     def test_audio_feature_dataset(self):
         audio_dataset = AudioFeatureDataset(
-            self.frame_ann_file,
-            self.frame_pipeline,
+            self.audio_ann_file,
+            self.audio_pipeline,
             data_prefix=self.data_prefix)
         audio_infos = audio_dataset.video_infos
         feature_path = osp.join(self.data_prefix, 'test.npy')
         assert audio_infos == [
-            dict(audiopath=feature_path, total_frames=100, label=127)
+            dict(audiopath=feature_path, total_frames=5, label=127)
         ] * 2
 
     def test_rawframe_dataset_with_offset(self):
@@ -292,8 +293,8 @@ class TestDataset(object):
 
         # Audio dataset not in test mode
         audio_dataset = AudioDataset(
-            self.frame_ann_file,
-            self.frame_pipeline,
+            self.audio_ann_file,
+            self.audio_pipeline,
             data_prefix=self.data_prefix,
             test_mode=False)
         result = audio_dataset[0]
@@ -301,8 +302,8 @@ class TestDataset(object):
 
         # Audio dataset in test mode
         audio_dataset = AudioDataset(
-            self.frame_ann_file,
-            self.frame_pipeline,
+            self.audio_ann_file,
+            self.audio_pipeline,
             data_prefix=self.data_prefix,
             test_mode=True)
         result = audio_dataset[0]
@@ -316,8 +317,8 @@ class TestDataset(object):
 
         # Audio feature dataset not in test mode
         audio_feature_dataset = AudioFeatureDataset(
-            self.frame_ann_file,
-            self.frame_pipeline,
+            self.audio_feature_ann_file,
+            self.audio_feature_pipeline,
             data_prefix=self.data_prefix,
             test_mode=False)
         result = audio_feature_dataset[0]
@@ -325,8 +326,8 @@ class TestDataset(object):
 
         # Audio dataset in test mode
         audio_feature_dataset = AudioFeatureDataset(
-            self.frame_ann_file,
-            self.frame_pipeline,
+            self.audio_feature_ann_file,
+            self.audio_feature_pipeline,
             data_prefix=self.data_prefix,
             test_mode=True)
         result = audio_feature_dataset[0]
@@ -758,3 +759,61 @@ class TestDataset(object):
             'mAP@0.10', 'mAP@0.20', 'mAP@0.30', 'mAP@0.40', 'mAP@0.50',
             'mAP@0.50', 'mAP@0.60', 'mAP@0.70', 'mAP@0.80', 'mAP@0.90'
         ])
+
+    def test_audio_evaluate(self):
+        audio_dataset = AudioDataset(
+            self.audio_ann_file,
+            self.audio_pipeline,
+            data_prefix=self.data_prefix)
+
+        with pytest.raises(TypeError):
+            # results must be a list
+            audio_dataset.evaluate('0.5')
+
+        with pytest.raises(AssertionError):
+            # The length of results must be equal to the dataset len
+            audio_dataset.evaluate([0] * 5)
+
+        with pytest.raises(TypeError):
+            # topk must be int or tuple of int
+            audio_dataset.evaluate([0] * len(audio_dataset), topk=1.0)
+
+        with pytest.raises(KeyError):
+            # unsupported metric
+            audio_dataset.evaluate([0] * len(audio_dataset), metrics='iou')
+
+        # evaluate top_k_accuracy and mean_class_accuracy metric
+        results = [np.array([0.1, 0.5, 0.4])] * 2
+        eval_result = audio_dataset.evaluate(
+            results, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+        assert set(eval_result.keys()) == set(
+            ['top1_acc', 'top5_acc', 'mean_class_accuracy'])
+
+    def test_audio_feature_evaluate(self):
+        audio_dataset = AudioFeatureDataset(
+            self.audio_feature_ann_file,
+            self.audio_feature_pipeline,
+            data_prefix=self.data_prefix)
+
+        with pytest.raises(TypeError):
+            # results must be a list
+            audio_dataset.evaluate('0.5')
+
+        with pytest.raises(AssertionError):
+            # The length of results must be equal to the dataset len
+            audio_dataset.evaluate([0] * 5)
+
+        with pytest.raises(TypeError):
+            # topk must be int or tuple of int
+            audio_dataset.evaluate([0] * len(audio_dataset), topk=1.0)
+
+        with pytest.raises(KeyError):
+            # unsupported metric
+            audio_dataset.evaluate([0] * len(audio_dataset), metrics='iou')
+
+        # evaluate top_k_accuracy and mean_class_accuracy metric
+        results = [np.array([0.1, 0.5, 0.4])] * 2
+        eval_result = audio_dataset.evaluate(
+            results, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+        assert set(eval_result.keys()) == set(
+            ['top1_acc', 'top5_acc', 'mean_class_accuracy'])

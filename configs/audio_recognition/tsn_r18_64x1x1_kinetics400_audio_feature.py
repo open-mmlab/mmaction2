@@ -1,10 +1,10 @@
 # model settings
 model = dict(
     type='RecognizerAudio',
-    backbone=dict(type='ResNet', depth=50, in_channels=1, norm_eval=False),
+    backbone=dict(type='ResNet', depth=18, in_channels=1, norm_eval=False),
     cls_head=dict(
         type='TSNHeadAudio',
-        num_classes=400,
+        num_classes=512,
         in_channels=2048,
         dropout_ratio=0.5,
         init_std=0.01))
@@ -90,7 +90,7 @@ log_config = dict(
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/tsn_r50_64x1x1_kinetics400_audio_feature/'
+work_dir = './work_dirs/tsn_r18_64x1x1_kinetics400_audio_feature/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]

@@ -7,8 +7,6 @@ from torch.nn.modules.utils import _pair
 
 from ..registry import PIPELINES
 
-# from pdb import set_trace as st
-
 
 def _init_lazy_if_proper(results, lazy):
     """Initialize lazy operation properly.

@@ -8,7 +8,9 @@
 
 |config | n_fft | gpus | backbone |pretrain| top1 acc| top5 acc | inference_time(video/s) | gpu_mem(M)| ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[tsn_r50_64x1x1_kinetics400_audio_feature.py](/configs/audio_recognition/tsn_r50_64x1x1_kinetics400_audio_feature.py)|1024|8| ResNet50 | None |||x|x|[ckpt]()|[log]()|[json]()|
+|[tsn_r18_64x1x1_kinetics400_audio_feature](/configs/audio_recognition/tsn_r50_64x1x1_kinetics400_audio_feature.py)|1024|8| ResNet18 | None |19.7|35.75|x|1897|[ckpt]()|[log]()|[json]()|
+|[tsn_r50_64x1x1_kinetics400_audio_feature + tsn_r50_1x1x3_100e_kinetics400_rgb]()|1024|8| ResNet(18+50) | None |70.01|88.71|x|x|x|x|x|
+
 Notes:
 
 1. The **gpus** indicates the number of gpu (32G V100) we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8x4 gpus as default.

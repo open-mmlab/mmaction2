@@ -5,11 +5,15 @@ import os.path as osp
 import sys
 from multiprocessing import Pool
 
-import librosa
-import lws
 import numpy as np
 from scipy.io import wavfile
-from tqdm import tqdm
+
+try:
+    import librosa
+    import lws
+    from tqdm import tqdm
+except ImportError:
+    print('Please import librosa, lws and tqdm first.')
 
 sys.path.append('..')
 
