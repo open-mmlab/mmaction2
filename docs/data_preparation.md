@@ -107,7 +107,7 @@ Now, you can go to [getting_started.md](getting_started.md) to train and test th
 
 ### Audio Preparation
 
-We also provide a simple script for audio waveform extraction and melspectrogram generation.
+We also provide a simple script for audio waveform extraction and mel-spectrogram generation.
 
 ```shell
 cd $MMACTION2

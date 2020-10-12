@@ -45,6 +45,8 @@ jobs:
       - name: Install Pillow
         run: pip install Pillow==6.2.2
         if: ${{matrix.torchvision == '0.4.2'}}
+      - name: Install soundfile lib
+        run: sudo apt-get install libsndfile1
       - name: Install onnx
         run: pip install onnx
       - name: Install librosa and soundfile
