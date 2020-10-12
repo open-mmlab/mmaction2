@@ -49,7 +49,6 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
                  start_index=1,
                  modality='RGB'):
         super().__init__()
-
         self.ann_file = ann_file
         self.data_prefix = osp.realpath(data_prefix) if osp.isdir(
             data_prefix) else data_prefix

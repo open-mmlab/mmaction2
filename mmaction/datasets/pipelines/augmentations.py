@@ -87,6 +87,213 @@ class Fuse:
 
 
 @PIPELINES.register_module()
+class RandomScale:
+
+    def __init__(self, scales, mode='range', **kwargs):
+        self.mode = mode
+        if self.mode not in ['range', 'value']:
+            raise ValueError(f"mode should be 'range' or 'value', "
+                             f'but got {self.mode}')
+        self.scale = self.select_scale(scales)
+        self.kwargs = kwargs
+
+    def select_scale(self, scales):
+        num_scales = len(scales)
+        if num_scales == 1:
+            # specify a fixed scale
+            scale = scales[0]
+        elif num_scales == 2:
+            if self.mode == 'range':
+                scale_long = [max(s) for s in scales]
+                scale_short = [min(s) for s in scales]
+                long_edge = np.random.randint(
+                    min(scale_long),
+                    max(scale_long) + 1)
+                short_edge = np.random.randint(
+                    min(scale_short),
+                    max(scale_short) + 1)
+                scale = (long_edge, short_edge)
+            elif self.mode == 'value':
+                scale = random.choice(scales)
+        else:
+            if self.mode != 'value':
+                raise ValueError("Only 'value' mode supports more than "
+                                 '2 image scales')
+            scale = random.choice(scales)
+
+        return scale
+
+    def __call__(self, results):
+        resize = Resize(self.scale, **self.kwargs)
+        results = resize(results)
+        return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'scales={self.scales}, mode={self.mode})')
+        return repr_str
+
+
+@PIPELINES.register_module()
+class BoxRescale:
+
+    def __call__(self, results):
+        img_h, img_w = results['img_shape']
+        scale_factor = results['scale_factor']
+        scale_factor = np.array([
+            scale_factor[0], scale_factor[1], scale_factor[0], scale_factor[1]
+        ])
+
+        proposals = results['proposals']
+        entity_boxes = results['ann']['entity_boxes']
+        img_scale = np.array([img_w, img_h, img_w, img_h])
+        entity_boxes = (entity_boxes * img_scale).astype(np.float32)
+        results['ann']['entity_boxes'] = entity_boxes * scale_factor
+
+        if proposals is not None:
+            if proposals.shape[1] not in (4, 5):
+                raise AssertionError('proposals shape should be in (n, 4) or '
+                                     f'(n, 5), but got {proposals.shape}')
+            if proposals.shape[1] == 5:
+                scores = proposals[:, 4].astype(np.float32)
+                proposals = proposals[:, :4]
+            else:
+                scores = None
+            proposals = (proposals * img_scale).astype(np.float32)
+            results['proposals'] = proposals * scale_factor
+            results['scores'] = scores
+
+        return results
+
+
+@PIPELINES.register_module()
+class BoxCrop:
+
+    def __call__(self, results):
+        proposals = results['proposals']
+        entity_boxes = results['ann']['entity_boxes']
+        crop_bboxes = results['crop_bbox']
+
+        if crop_bboxes is None:
+            return results
+        x1, y1, _, _ = crop_bboxes
+
+        assert entity_boxes.shape[-1] % 4 == 0
+        entity_boxes_ = entity_boxes.copy()
+        entity_boxes_[..., 0::2] = entity_boxes[..., 0::2] - x1
+        entity_boxes_[..., 1::2] = entity_boxes[..., 1::2] - y1
+        results['ann']['entity_boxes'] = entity_boxes_
+
+        if proposals is not None:
+            assert proposals.shape[-1] % 4 == 0
+            proposals_ = proposals.copy()
+            proposals_[..., 0::2] = proposals[..., 0::2] - x1
+            proposals_[..., 1::2] = proposals[..., 1::2] - y1
+            results['proposals'] = proposals_
+        return results
+
+
+@PIPELINES.register_module()
+class BoxFlip:
+    _directions = ['horizontal', 'vertical']
+
+    def __init__(self, direction='horizontal'):
+        if direction not in self._directions:
+            raise ValueError(f'Direction {direction} is not supported. '
+                             f'Currently support ones are {self._directions}')
+        self.direction = direction
+
+    def __call__(self, results):
+        proposals = results['proposals']
+        entity_boxes = results['ann']['entity_boxes']
+        img_h, img_w = results['img_shape']
+
+        if self.direction == 'horizontal':
+            assert entity_boxes.shape[-1] % 4 == 0
+            entity_boxes_ = entity_boxes.copy()
+            entity_boxes_[..., 0::4] = img_w - entity_boxes[..., 2::4] - 1
+            entity_boxes_[..., 2::4] = img_w - entity_boxes[..., 0::4] - 1
+            if proposals is not None:
+                assert proposals.shape[-1] % 4 == 0
+                proposals_ = proposals.copy()
+                proposals_[..., 0::4] = img_w - proposals[..., 2::4] - 1
+                proposals_[..., 2::4] = img_w - proposals[..., 0::4] - 1
+            else:
+                proposals_ = None
+        else:
+            assert entity_boxes.shape[-1] % 4 == 0
+            entity_boxes_ = entity_boxes.copy()
+            entity_boxes_[..., 1::4] = img_h - entity_boxes[..., 3::4] - 1
+            entity_boxes_[..., 3::4] = img_h - entity_boxes[..., 1::4] - 1
+            if proposals is not None:
+                assert proposals.shape[-1] % 4 == 0
+                proposals_ = proposals.copy()
+                proposals_[..., 1::4] = img_h - proposals[..., 3::4] - 1
+                proposals_[..., 3::4] = img_h - proposals[..., 1::4] - 1
+            else:
+                proposals_ = None
+
+        results['proposals'] = proposals_
+        results['ann']['entity_boxes'] = entity_boxes_
+        return results
+
+    def __repr__(self):
+        repr_str = f'{self.__class__.__name__}(direction={self.direction})'
+        return repr_str
+
+
+@PIPELINES.register_module()
+class BoxClip:
+
+    def __call__(self, results):
+        proposals = results['proposals']
+        entity_boxes = results['ann']['entity_boxes']
+        img_h, img_w = results['img_shape']
+
+        entity_boxes[:, 0::2] = np.clip(entity_boxes[:, 0::2], 0, img_w - 1)
+        entity_boxes[:, 1::2] = np.clip(entity_boxes[:, 1::2], 0, img_h - 1)
+        if proposals is not None:
+            proposals[:, 0::2] = np.clip(proposals[:, 0::2], 0, img_w - 1)
+            proposals[:, 1::2] = np.clip(proposals[:, 1::2], 0, img_h - 1)
+
+        results['ann']['entity_boxes'] = entity_boxes
+        results['proposals'] = proposals
+        return results
+
+
+@PIPELINES.register_module()
+class BoxPad:
+
+    def __init__(self, max_num_gts=None):
+        self.max_num_gts = max_num_gts
+
+    def __call__(self, results):
+        if self.max_num_gts is None:
+            return results
+
+        proposals = results['proposals']
+        entity_boxes = results['ann']['entity_boxes']
+        num_gts = entity_boxes.shape[0]
+
+        padded_entity_boxes = np.zeros((self.max_num_gts, 4), dtype=np.float32)
+        padded_entity_boxes[:num_gts, :] = entity_boxes
+        if proposals is not None:
+            padded_proposals = np.zeros((self.max_num_gts, 4),
+                                        dtype=np.float32)
+            padded_proposals[:num_gts, :] = proposals
+        else:
+            padded_proposals = None
+
+        results['proposals'] = padded_proposals
+        results['ann']['entity_boxes'] = entity_boxes
+        return results
+
+    def __repr__(self):
+        repr_str = f'{self.__class__.__name__}(max_num_gts={self.max_num_gts})'
+        return repr_str
+
+
+@PIPELINES.register_module()
 class RandomCrop:
     """Vanilla square random crop that specifics the output size.
 

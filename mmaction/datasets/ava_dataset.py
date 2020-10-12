@@ -1,4 +1,5 @@
 import copy
+import os.path as osp
 from collections import defaultdict
 
 import mmcv
@@ -18,17 +19,21 @@ class AVADataset(BaseDataset):
     def __init__(self,
                  ann_file,
                  exclude_file,
-                 label_file,
                  pipeline,
+                 label_file=None,
+                 filename_tmpl='img_{:05}.jpg',
                  proposal_file=None,
                  data_prefix=None,
                  test_mode=False,
                  modality='RGB',
-                 timestamp_start=900,
-                 timestamp_end=1800):
+                 num_max_proposals=1000,
+                 timestamp_start=60 * 14,
+                 timestamp_end=60 * 29):
         self.exclude_file = exclude_file
         self.label_file = label_file
         self.proposal_file = proposal_file
+        self.filename_tmpl = filename_tmpl
+        self.num_max_proposals = num_max_proposals
         self.timestamp_start = timestamp_start
         self.timestamp_end = timestamp_end
         self.logger = get_root_logger()
@@ -58,12 +63,18 @@ class AVADataset(BaseDataset):
                     lambda x: np.array_equal(x['entity_box'], img_record[
                         'entity_box']), img_records))
             num_selected_records = len(selected_records)
-            img_records = list(set(img_records) - set(selected_records))
+            img_records = list(
+                filter(
+                    lambda x: not np.array_equal(x['entity_box'], img_record[
+                        'entity_box']), img_records))
             assert len(img_records) + num_selected_records == num_img_records
 
             bboxes.append(img_record['entity_box'])
-            valid_labels = np.array([selected_record['label']]
-                                    for selected_record in selected_records)
+            valid_labels = np.array([
+                selected_record['label']
+                for selected_record in selected_records
+            ])
+
             padded_labels = np.pad(
                 valid_labels, (0, self._NUM_CLASSES - valid_labels.shape[0]),
                 'constant',
@@ -78,7 +89,7 @@ class AVADataset(BaseDataset):
     def filter_exclude_file(self):
         valid_indexes = []
         if self.exclude_file is None:
-            valid_indexes = list(np.range(self.video_infos))
+            valid_indexes = list(range(len(self.video_infos)))
         else:
             exclude_video_infos = [
                 x.strip().split(',') for x in open(self.exclude_file)
@@ -122,10 +133,16 @@ class AVADataset(BaseDataset):
             video_id, timestamp = img_key.split(',')
             bboxes, labels, entity_ids = self.parse_img_record(
                 records_dict_by_img[img_key])
-            ann = dict(bboxes=bboxes, labels=labels, entity_ids=entity_ids)
+            ann = dict(
+                entity_boxes=bboxes, labels=labels, entity_ids=entity_ids)
+            frame_dir = video_id
+            if self.data_prefix is not None:
+                frame_dir = osp.join(self.data_prefix, frame_dir)
             video_info = dict(
+                frame_dir=frame_dir,
                 video_id=video_id,
-                timestamp=timestamp,
+                timestamp=int(timestamp),
+                img_key=img_key,
                 shot_info=shot_info,
                 fps=self._FPS,
                 ann=ann)
@@ -136,15 +153,29 @@ class AVADataset(BaseDataset):
     def prepare_train_frames(self, idx):
         """Prepare the frames for training given the index."""
         results = copy.deepcopy(self.video_infos[idx])
+        img_key = results['img_key']
+
         results['filename_tmpl'] = self.filename_tmpl
         results['modality'] = self.modality
         results['start_index'] = self.start_index
+        results['timestamp_start'] = self.timestamp_start
+        results['timestamp_end'] = self.timestamp_end
+        results['proposals'] = self.proposals[img_key][:self.num_max_proposals]
+
         return self.pipeline(results)
 
     def prepare_test_frames(self, idx):
         """Prepare the frames for testing given the index."""
         results = copy.deepcopy(self.video_infos[idx])
+        img_key = results['img_key']
+
         results['filename_tmpl'] = self.filename_tmpl
         results['modality'] = self.modality
         results['start_index'] = self.start_index
+        results['timestamp_start'] = self.timestamp_start
+        results['timestamp_end'] = self.timestamp_end
+        results['proposals'] = self.proposals[img_key][:self.num_max_proposals]
         return self.pipeline(results)
+
+    def evaluate(self, results, metrics, logger):
+        raise NotImplementedError
