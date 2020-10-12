@@ -11,7 +11,16 @@ from .registry import DATASETS
 @DATASETS.register_module()
 class AudioDataset(BaseDataset):
     """Audio dataset for video recognition. Extracts the audio feature on-the-
-    fly.
+    fly. Annotation file can be that of the rawframe dataset, or:
+
+    .. code-block:: txt
+
+        some/directory-1.wav 163 1
+        some/directory-2.wav 122 1
+        some/directory-3.wav 258 2
+        some/directory-4.wav 234 2
+        some/directory-5.wav 295 3
+        some/directory-6.wav 121 3
 
     Args:
         ann_file (str): Path to the annotation file.
@@ -41,7 +50,7 @@ class AudioDataset(BaseDataset):
                                             filename) + self.suffix
                     else:
                         filename = osp.join(self.data_prefix, filename)
-                video_info['audiopath'] = filename
+                video_info['audio_path'] = filename
                 idx += 1
                 # idx for total_frames
                 video_info['total_frames'] = int(line_split[idx])

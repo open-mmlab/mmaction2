@@ -4,6 +4,8 @@ import os
 import os.path as osp
 from multiprocessing import Pool
 
+import mmcv
+
 
 def extract_audio_wav(line):
     """Extract the audio wave from video streams using FFMPEG."""
@@ -44,9 +46,7 @@ def parse_args():
 if __name__ == '__main__':
     args = parse_args()
 
-    if not osp.isdir(args.out_dir):
-        print(f'Creating folder: {args.out_dir}')
-        os.makedirs(args.out_dir)
+    mmcv.mkdir_or_exist(args.out_dir)
 
     print('Reading videos from folder: ', args.src_dir)
     print('Extension of videos: ', args.ext)

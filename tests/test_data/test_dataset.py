@@ -152,7 +152,7 @@ class TestDataset(object):
         audio_infos = audio_dataset.video_infos
         wav_path = osp.join(self.data_prefix, 'test.wav')
         assert audio_infos == [
-            dict(audiopath=wav_path, total_frames=100, label=127)
+            dict(audio_path=wav_path, total_frames=100, label=127)
         ] * 2
 
     def test_audio_feature_dataset(self):
@@ -163,7 +163,7 @@ class TestDataset(object):
         audio_infos = audio_dataset.video_infos
         feature_path = osp.join(self.data_prefix, 'test.npy')
         assert audio_infos == [
-            dict(audiopath=feature_path, total_frames=100, label=127)
+            dict(audio_path=feature_path, total_frames=100, label=127)
         ] * 2
 
     def test_rawframe_dataset_with_offset(self):
@@ -287,7 +287,7 @@ class TestDataset(object):
 
     def test_audio_pipeline(self):
         target_keys = [
-            'audiopath', 'label', 'start_index', 'modality', 'audios_shape',
+            'audio_path', 'label', 'start_index', 'modality', 'audios_shape',
             'length', 'sample_rate', 'total_frames'
         ]
 
@@ -311,7 +311,7 @@ class TestDataset(object):
 
     def test_audio_feature_pipeline(self):
         target_keys = [
-            'audiopath', 'label', 'start_index', 'modality', 'audios',
+            'audio_path', 'label', 'start_index', 'modality', 'audios',
             'total_frames'
         ]
 
@@ -815,5 +815,5 @@ class TestDataset(object):
         results = [np.array([0.1, 0.5, 0.4])] * 2
         eval_result = audio_dataset.evaluate(
             results, metrics=['top_k_accuracy', 'mean_class_accuracy'])
-        assert set(eval_result.keys()) == set(
+        assert set(eval_result) == set(
             ['top1_acc', 'top5_acc', 'mean_class_accuracy'])

@@ -78,13 +78,13 @@ class TestLoading(object):
             start_index=0)
         cls.audio_results = dict(
             audios=np.random.randn(1280, ),
-            audiopath=cls.wav_path,
+            audio_path=cls.wav_path,
             total_frames=cls.audio_total_frames,
             label=1,
             start_index=0)
         cls.audio_feature_results = dict(
             audios=np.random.randn(128, 80),
-            audiopath=cls.audio_spec_path,
+            audio_path=cls.audio_spec_path,
             total_frames=cls.audio_total_frames,
             label=1,
             start_index=0)

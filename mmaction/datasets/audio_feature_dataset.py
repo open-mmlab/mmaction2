@@ -11,12 +11,21 @@ from .registry import DATASETS
 @DATASETS.register_module()
 class AudioFeatureDataset(BaseDataset):
     """Audio feature dataset for video recognition. Reads the features
-    extracted off-line.
+    extracted off-line.Annotation file can be that of the rawframe dataset, or:
+
+    .. code-block:: txt
+
+        some/directory-1.npy 163 1
+        some/directory-2.npy 122 1
+        some/directory-3.npy 258 2
+        some/directory-4.npy 234 2
+        some/directory-5.npy 295 3
+        some/directory-6.npy 121 3
 
     Args:
         ann_file (str): Path to the annotation file.
         pipeline (list[dict | callable]): A sequence of data transforms.
-        suffix (str): The suffix of the audio file. Default: '.npy'.
+        suffix (str): The suffix of the audio feature file. Default: '.npy'.
         kwargs (dict): Other keyword args for `BaseDataset`.
     """
 
@@ -41,7 +50,7 @@ class AudioFeatureDataset(BaseDataset):
                                             filename) + self.suffix
                     else:
                         filename = osp.join(self.data_prefix, filename)
-                video_info['audiopath'] = filename
+                video_info['audio_path'] = filename
                 idx += 1
                 # idx for total_frames
                 video_info['total_frames'] = int(line_split[idx])

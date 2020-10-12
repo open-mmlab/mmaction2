@@ -7,7 +7,7 @@ from .base import BaseHead
 
 @HEADS.register_module()
 class TSNHeadAudio(BaseHead):
-    """Class head for TSN.
+    """Classification head for TSN on audio.
 
     Args:
         num_classes (int): Number of classes to be classified.
@@ -15,7 +15,6 @@ class TSNHeadAudio(BaseHead):
         loss_cls (dict): Config for building loss.
             Default: dict(type='CrossEntropyLoss').
         spatial_type (str): Pooling type in spatial dimension. Default: 'avg'.
-        consensus (dict): Consensus config dict.
         dropout_ratio (float): Probability of dropout layer. Default: 0.4.
         init_std (float): Std value for Initiation. Default: 0.01.
         kwargs (dict, optional): Any keyword argument to be used to initialize

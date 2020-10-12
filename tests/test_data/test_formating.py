@@ -168,7 +168,7 @@ def test_format_shape():
 def test_format_audio_shape():
     with pytest.raises(ValueError):
         # invalid input format
-        FormatAudioShape('NHWC')
+        FormatAudioShape('XXXX')
 
     # 'NCTF' input format
     results = dict(audios=np.random.randn(3, 128, 8))

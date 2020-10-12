@@ -1037,9 +1037,11 @@ class TestAugumentations(object):
         with pytest.raises(TypeError):
             # ratio should be float
             MelSpectrogram(window_size=12.5)
-        audio = (np.random.rand(512, ))
+        audio = (np.random.rand(1, 160000))
 
         results = dict(audios=audio, sample_rate=16000)
+        results['num_clips'] = 1
+        results['sample_rate'] = 16000
         mel = MelSpectrogram()
         results = mel(results)
         assert self.check_keys_contain(results.keys(), target_keys)

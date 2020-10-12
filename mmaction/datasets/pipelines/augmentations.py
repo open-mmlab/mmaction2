@@ -1173,7 +1173,7 @@ class AudioAmplify(object):
                 to the next transform in pipeline.
         """
 
-        assert 'audios' in results.keys()
+        assert 'audios' in results
         results['audios'] *= self.ratio
         results['amplify_ratio'] = self.ratio
 
@@ -1191,20 +1191,24 @@ class MelSpectrogram(object):
     Args:
         window_size (int): The window size in milisecond. Default: 32.
         step_size (int): The step size in milisecond. Default: 16.
-        n_mel (int): Number of mels. Default: 80.
-        fix_length (int): The sample length of melspectrogram maybe not
+        n_mels (int): Number of mels. Default: 80.
+        fixed_length (int): The sample length of melspectrogram maybe not
             exactly as wished due to different fps, fix the length for batch
             collation by truncating or padding. Default: 128.
     """
 
-    def __init__(self, window_size=32, step_size=16, n_mel=80, fix_length=128):
+    def __init__(self,
+                 window_size=32,
+                 step_size=16,
+                 n_mels=80,
+                 fixed_length=128):
         if all(
                 isinstance(x, int)
-                for x in [window_size, step_size, n_mel, fix_length]):
+                for x in [window_size, step_size, n_mels, fixed_length]):
             self.window_size = window_size
             self.step_size = step_size
-            self.n_mel = n_mel
-            self.fix_length = fix_length
+            self.n_mels = n_mels
+            self.fixed_length = fixed_length
         else:
             raise TypeError('All arguments should be int.')
 
@@ -1222,7 +1226,7 @@ class MelSpectrogram(object):
         signals = results['audios']
         sample_rate = results['sample_rate']
         n_fft = int(round(sample_rate * self.window_size / 1000))
-        hop_size = int(round(sample_rate * self.step_size / 1000))
+        hop_length = int(round(sample_rate * self.step_size / 1000))
         melspectrograms = list()
         for clip_idx in range(results['num_clips']):
             clip_signal = signals[clip_idx]
@@ -1230,13 +1234,13 @@ class MelSpectrogram(object):
                 y=clip_signal,
                 sr=sample_rate,
                 n_fft=n_fft,
-                hop_length=hop_size,
-                n_mels=self.n_mel)
-            if mel.shape[0] >= self.fix_length:
-                mel = mel[:self.fix_length, :]
+                hop_length=hop_length,
+                n_mels=self.n_mels)
+            if mel.shape[0] >= self.fixed_length:
+                mel = mel[:self.fixed_length, :]
             else:
                 mel = np.pad(
-                    mel, ((0, self.fix_length - mel.shape[-1]), (0, 0)),
+                    mel, ((0, mel.shape[-1] - self.fixed_length), (0, 0)),
                     mode='edge')
             melspectrograms.append(mel)
 

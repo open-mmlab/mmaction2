@@ -20,6 +20,8 @@ sys.path.append('..')
 
 class AudioTools:
     """All methods related to audio feature extraction.
+        Reference:
+            <https://github.com/r9y9/deepvoice3_pytorch>`_
 
     Args:
         frame_rate (int): The frame rate per second of the video. Default: 30.
@@ -149,10 +151,14 @@ class AudioTools:
         return hop_size
 
     def _lws_processor(self):
+        """Please refer to <https://pypi.org/project/lws/1.2.6/>`_"""
         return lws.lws(self.fft_size, self.get_hop_size(), mode='speech')
 
     def lws_num_frames(self, length, fsize, fshift):
-        """Compute number of time frames of lws spectrogram."""
+        """Compute number of time frames of lws spectrogram.
+
+        Please refer to <https://pypi.org/project/lws/1.2.6/>`_.
+        """
         pad = (fsize - fshift)
         if length % fshift == 0:
             M = (length + pad * 2 - fsize) // fshift + 1
@@ -161,7 +167,10 @@ class AudioTools:
         return M
 
     def lws_pad_lr(self, x, fsize, fshift):
-        """Compute left and right padding lws internally uses."""
+        """Compute left and right padding lws internally uses.
+
+        Please refer to <https://pypi.org/project/lws/1.2.6/>`_.
+        """
         M = self.lws_num_frames(len(x), fsize, fshift)
         pad = (fsize - fshift)
         T = len(x) + 2 * pad
@@ -228,7 +237,7 @@ def extract_audio_feature(wav_path, audio_tools, mel_out_dir):
                 allow_pickle=False)
 
         except BaseException:
-            print('Read audio[{}] failed'.format(wav_path))
+            print(f'Read audio[{wav_path}] failed.')
 
 
 if __name__ == '__main__':

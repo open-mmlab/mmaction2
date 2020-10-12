@@ -944,7 +944,7 @@ class AudioDecodeInit(object):
         if self.file_client is None:
             self.file_client = FileClient(self.io_backend, **self.kwargs)
         try:
-            file_obj = io.BytesIO(self.file_client.get(results['audiopath']))
+            file_obj = io.BytesIO(self.file_client.get(results['audio_path']))
             y, sr = librosa.load(file_obj, sr=self.sample_rate)
         except BaseException:
             # Generate a ramdom dummy 10s input
@@ -972,7 +972,7 @@ class LoadAudioFeature(object):
                 to the next transform in pipeline.
         """
         try:
-            feature_map = np.load(results['audiopath'])
+            feature_map = np.load(results['audio_path'])
         except BaseException:
             # Generate a ramdom dummy 10s input
             # Some videos do not have audio stream
