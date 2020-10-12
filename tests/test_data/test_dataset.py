@@ -49,7 +49,7 @@ class TestDataset(object):
             dict(type='RawFrameDecode', io_backend='disk')
         ]
         cls.audio_pipeline = [
-            dict(type='AudioDecodeInit', io_backend='disk'),
+            dict(type='AudioDecodeInit'),
             dict(
                 type='SampleFrames',
                 clip_len=32,
@@ -152,18 +152,18 @@ class TestDataset(object):
         audio_infos = audio_dataset.video_infos
         wav_path = osp.join(self.data_prefix, 'test.wav')
         assert audio_infos == [
-            dict(audiopath=wav_path, total_frames=5, label=127)
+            dict(audiopath=wav_path, total_frames=100, label=127)
         ] * 2
 
     def test_audio_feature_dataset(self):
         audio_dataset = AudioFeatureDataset(
-            self.audio_ann_file,
-            self.audio_pipeline,
+            self.audio_feature_ann_file,
+            self.audio_feature_pipeline,
             data_prefix=self.data_prefix)
         audio_infos = audio_dataset.video_infos
         feature_path = osp.join(self.data_prefix, 'test.npy')
         assert audio_infos == [
-            dict(audiopath=feature_path, total_frames=5, label=127)
+            dict(audiopath=feature_path, total_frames=100, label=127)
         ] * 2
 
     def test_rawframe_dataset_with_offset(self):

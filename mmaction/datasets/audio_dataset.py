@@ -39,6 +39,8 @@ class AudioDataset(BaseDataset):
                     if not filename.endswith(self.suffix):
                         filename = osp.join(self.data_prefix,
                                             filename) + self.suffix
+                    else:
+                        filename = osp.join(self.data_prefix, filename)
                 video_info['audiopath'] = filename
                 idx += 1
                 # idx for total_frames

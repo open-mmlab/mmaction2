@@ -1168,11 +1168,12 @@ class TestLoading(object):
         assert self.check_keys_contain(results.keys(), target_keys)
 
     def test_audio_decode(self):
-        target_keys = ['frame_inds', 'audios', 'modality']
+        target_keys = ['frame_inds', 'audios']
         inputs = copy.deepcopy(self.audio_results)
         inputs['frame_inds'] = np.arange(0, self.audio_total_frames,
                                          2)[:, np.newaxis]
         inputs['num_clips'] = 1
+        inputs['length'] = 1280
         audio_selector = AudioDecode()
         results = audio_selector(inputs)
         assert self.check_keys_contain(results.keys(), target_keys)
@@ -1191,6 +1192,7 @@ class TestLoading(object):
         inputs['frame_inds'] = np.arange(0, self.audio_total_frames,
                                          2)[:, np.newaxis]
         inputs['num_clips'] = 1
+        inputs['length'] = 1280
         audio_feature_selector = AudioFeatureSelector()
         results = audio_feature_selector(inputs)
         assert self.check_keys_contain(results.keys(), target_keys)

@@ -1,2 +1,2 @@
-test.npy 100 127
-test.npy 100 127
+test 100 127
+test 100 127

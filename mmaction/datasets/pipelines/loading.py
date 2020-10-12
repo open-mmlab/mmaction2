@@ -1018,6 +1018,8 @@ class AudioDecode(object):
         results['audios'] = np.array(resampled_clips)
         results['audios_shape'] = results['audios'].shape
 
+        return results
+
 
 class FrameSelector(RawFrameDecode):
     """Deprecated class for ``RawFrameDecode``."""
