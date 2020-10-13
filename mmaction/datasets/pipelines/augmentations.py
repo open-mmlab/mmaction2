@@ -1157,7 +1157,14 @@ class MultiGroupCrop(object):
 
 @PIPELINES.register_module()
 class AudioAmplify(object):
-    """Amplify the waveform."""
+    """Amplify the waveform.
+
+    Args:
+        ratio (float): The ratio used to amplify the audio waveform.
+
+    Required keys are "audios", added or modified keys are "audios",
+        "amplify_ratio".
+    """
 
     def __init__(self, ratio):
         if isinstance(ratio, float):
@@ -1180,7 +1187,7 @@ class AudioAmplify(object):
         return results
 
     def __repr__(self):
-        repr_str = f'{self.__class__.__name__} (ratio={self.ratio})'
+        repr_str = f'{self.__class__.__name__}(ratio={self.ratio})'
         return repr_str
 
 
@@ -1218,6 +1225,9 @@ class MelSpectrogram(object):
         Args:
             results (dict): The resulting dict to be modified and passed
                 to the next transform in pipeline.
+
+        Required keys are "audios", "sample_rate", "num_clips",
+            added or modified keys are "audios".
         """
         try:
             import librosa
@@ -1248,5 +1258,9 @@ class MelSpectrogram(object):
         return results
 
     def __repr__(self):
-        repr_str = f'{self.__class__.__name__} (n_fft={self.n_fft})'
+        repr_str = (f'{self.__class__.__name__}'
+                    f'(window_size={self.window_size}), '
+                    f'step_size={self.step_size}, '
+                    f'n_mels={self.n_mels}, '
+                    f'fixed_length={self.fixed_length})')
         return repr_str

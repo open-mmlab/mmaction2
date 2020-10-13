@@ -310,9 +310,8 @@ class FormatAudioShape(object):
         """
         audios = results['audios']
         # clip x sample x freq -> clip x channel x sample x freq
-        if self.input_format == 'NCTF':
-            clip, sample, freq = audios.shape
-            audios = audios.reshape(clip, 1, sample, freq)
+        clip, sample, freq = audios.shape
+        audios = audios.reshape(clip, 1, sample, freq)
         results['audios'] = audios
         results['input_shape'] = audios.shape
         return results

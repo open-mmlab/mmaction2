@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 
-from mmaction.models import (BaseHead, I3DHead, SlowFastHead, TPNHead, TSMHead,
-                             TSNHead, TSNHeadAudio)
+from mmaction.models import (AudioTSNHead, BaseHead, I3DHead, SlowFastHead,
+                             TPNHead, TSMHead, TSNHead)
 
 
 class ExampleHead(BaseHead):
@@ -153,7 +153,7 @@ def test_tsn_head():
 def test_tsn_head_audio():
     """Test loss method, layer construction, attributes and forward function in
     tsn head."""
-    tsn_head_audio = TSNHeadAudio(num_classes=4, in_channels=5)
+    tsn_head_audio = AudioTSNHead(num_classes=4, in_channels=5)
     tsn_head_audio.init_weights()
 
     assert tsn_head_audio.num_classes == 4

@@ -174,3 +174,5 @@ def test_format_audio_shape():
     results = dict(audios=np.random.randn(3, 128, 8))
     format_shape = FormatAudioShape('NCTF')
     assert format_shape(results)['input_shape'] == (3, 1, 128, 8)
+    assert repr(format_shape) == format_shape.__class__.__name__ + \
+        "(input_format='NCTF')"

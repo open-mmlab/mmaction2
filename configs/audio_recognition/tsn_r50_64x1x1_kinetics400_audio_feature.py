@@ -1,9 +1,9 @@
 # model settings
 model = dict(
-    type='RecognizerAudio',
+    type='AudioRecognizer',
     backbone=dict(type='ResNet', depth=50, in_channels=1, norm_eval=False),
     cls_head=dict(
-        type='TSNHeadAudio',
+        type='AudioTSNHead',
         num_classes=400,
         in_channels=2048,
         dropout_ratio=0.5,

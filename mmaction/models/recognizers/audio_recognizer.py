@@ -3,7 +3,7 @@ from .base import BaseRecognizer
 
 
 @RECOGNIZERS.register_module()
-class RecognizerAudio(BaseRecognizer):
+class AudioRecognizer(BaseRecognizer):
     """Audio recognizer model framework."""
 
     def forward(self, audios, label=None, return_loss=True):

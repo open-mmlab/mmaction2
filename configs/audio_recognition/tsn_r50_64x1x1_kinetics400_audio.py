@@ -1,9 +1,9 @@
 # model settings
 model = dict(
-    type='RecognizerAudio',
+    type='AudioRecognizer',
     backbone=dict(type='ResNet', depth=50, in_channels=1, norm_eval=False),
     cls_head=dict(
-        type='TSNHeadAudio',
+        type='AudioTSNHead',
         num_classes=400,
         in_channels=2048,
         dropout_ratio=0.5,
@@ -23,7 +23,7 @@ train_pipeline = [
     dict(type='SampleFrames', clip_len=64, frame_interval=1, num_clips=1),
     dict(type='AudioDecode'),
     dict(type='AudioAmplify', ratio=1.5),
-    dict(type='MelLogSpectrogram', n_fft=80),
+    dict(type='MelLogSpectrogram'),
     dict(type='FormatAudioShape', input_format='NCTF'),
     dict(type='Collect', keys=['audios', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['audios'])
@@ -38,7 +38,7 @@ val_pipeline = [
         test_mode=True),
     dict(type='AudioDecode'),
     dict(type='AudioAmplify', ratio=1.5),
-    dict(type='MelLogSpectrogram', n_fft=80),
+    dict(type='MelLogSpectrogram'),
     dict(type='FormatAudioShape', input_format='NCTF'),
     dict(type='Collect', keys=['audios', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['audios'])
@@ -53,7 +53,7 @@ test_pipeline = [
         test_mode=True),
     dict(type='AudioDecodeInit'),
     dict(type='AudioAmplify', ratio=1.5),
-    dict(type='MelLogSpectrogram', n_fft=80),
+    dict(type='MelLogSpectrogram'),
     dict(type='FormatAudioShape', input_format='NCTF'),
     dict(type='Collect', keys=['audios', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['audios'])

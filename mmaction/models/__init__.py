@@ -4,13 +4,13 @@ from .backbones import (ResNet, ResNet2Plus1d, ResNet3d, ResNet3dCSN,
 from .builder import (build_backbone, build_head, build_localizer, build_loss,
                       build_model, build_neck, build_recognizer)
 from .common import Conv2plus1d
-from .heads import (BaseHead, I3DHead, SlowFastHead, TPNHead, TSMHead, TSNHead,
-                    TSNHeadAudio)
+from .heads import (AudioTSNHead, BaseHead, I3DHead, SlowFastHead, TPNHead,
+                    TSMHead, TSNHead)
 from .localizers import BMN, PEM, TEM
 from .losses import (BCELossWithLogits, BinaryLogisticRegressionLoss, BMNLoss,
                      CrossEntropyLoss, NLLLoss, OHEMHingeLoss, SSNLoss)
 from .necks import TPN
-from .recognizers import (BaseRecognizer, RecognizerAudio, recognizer2d,
+from .recognizers import (AudioRecognizer, BaseRecognizer, recognizer2d,
                           recognizer3d)
 from .registry import BACKBONES, HEADS, LOCALIZERS, LOSSES, RECOGNIZERS
 
@@ -23,5 +23,5 @@ __all__ = [
     'BCELossWithLogits', 'LOCALIZERS', 'build_localizer', 'PEM', 'TEM',
     'BinaryLogisticRegressionLoss', 'BMN', 'BMNLoss', 'build_model',
     'OHEMHingeLoss', 'SSNLoss', 'ResNet3dCSN', 'ResNetTIN', 'TPN', 'TPNHead',
-    'build_loss', 'build_neck', 'RecognizerAudio', 'TSNHeadAudio'
+    'build_loss', 'build_neck', 'AudioRecognizer', 'AudioTSNHead'
 ]

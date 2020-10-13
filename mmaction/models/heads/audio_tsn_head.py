@@ -6,7 +6,7 @@ from .base import BaseHead
 
 
 @HEADS.register_module()
-class TSNHeadAudio(BaseHead):
+class AudioTSNHead(BaseHead):
     """Classification head for TSN on audio.
 
     Args:

@@ -913,17 +913,17 @@ class RawFrameDecode(object):
 class AudioDecodeInit(object):
     """Using librosa to initialize the audio_reader.
 
-    Required keys are "filename", added or modified keys are "total_frames",
-    "sample_rate", "imgs".
+    Args:
+        io_backend (str): io backend where frames are store.
+            Default: 'disk'.
+        sample_rate (int): Audio sampling times per second. Default: 16000.
+
+    Required keys are "audio_path", added or modified keys are "length",
+    "sample_rate", "audios".
     """
 
-    def __init__(self,
-                 io_backend='disk',
-                 decoding_backend='librosa',
-                 sample_rate=16000,
-                 **kwargs):
+    def __init__(self, io_backend='disk', sample_rate=16000, **kwargs):
         self.io_backend = io_backend
-        self.decoding_backend = decoding_backend
         self.sample_rate = sample_rate
 
         self.kwargs = kwargs
@@ -959,10 +959,14 @@ class AudioDecodeInit(object):
 
 @PIPELINES.register_module()
 class LoadAudioFeature(object):
-    """Load offline extracted audio features."""
+    """Load offline extracted audio features.
 
-    def __init__(self, **kwargs):
-        self.kwargs = kwargs
+    Required keys are "audio_path", added or modified keys are "length",
+    audios".
+    """
+
+    def __init__(self):
+        pass
 
     def __call__(self, results):
         """Perform the numpy loading.
@@ -984,9 +988,10 @@ class LoadAudioFeature(object):
 
 @PIPELINES.register_module()
 class AudioDecode(object):
-    """Sample the audio w.r.t.
+    """Sample the audio w.r.t. the frames selected.
 
-    frames selected.
+    Required keys are "frame_inds", "num_clips", "total_frames", "length",
+    added or modified keys are "audios", "audios_shape".
     """
 
     def __init__(self):
@@ -1032,9 +1037,15 @@ class FrameSelector(RawFrameDecode):
 
 @PIPELINES.register_module()
 class AudioFeatureSelector(object):
-    """Sample the audio feature w.r.t.
+    """Sample the audio feature w.r.t. the frames selected.
 
-    frames selected.
+    Args:
+        fixed_length (int): As the features selected by frames sampled may
+            not be extactly the same, `fixed_length` will truncate or pad them
+            into the same size. Default: 128.
+
+    Required keys are "audios", "frame_inds", "num_clips", "length",
+        "total_frames", added or modified keys are "audios", "audios_shape".
     """
 
     def __init__(self, fixed_length=128):
