@@ -8,7 +8,7 @@ import pytest
 from mmcv import ConfigDict
 from numpy.testing import assert_array_equal
 
-from mmaction.datasets import (ActivityNetDataset, RawframeDataset,
+from mmaction.datasets import (ActivityNetDataset, HVUDataset, RawframeDataset,
                                RepeatDataset, SSNDataset, VideoDataset)
 
 
@@ -28,6 +28,10 @@ class TestDataset(object):
         cls.frame_ann_file_multi_label = osp.join(
             cls.data_prefix, 'frame_test_list_multi_label.txt')
         cls.video_ann_file = osp.join(cls.data_prefix, 'video_test_list.txt')
+        cls.hvu_video_ann_file = osp.join(cls.data_prefix,
+                                          'hvu_video_test_anno.json')
+        cls.hvu_frame_ann_file = osp.join(cls.data_prefix,
+                                          'hvu_frame_test_anno.json')
         cls.action_ann_file = osp.join(cls.data_prefix,
                                        'action_test_anno.json')
         cls.proposal_ann_file = osp.join(cls.data_prefix,
@@ -109,6 +113,54 @@ class TestDataset(object):
                         nms=0.2,
                         softmax_before_filter=True,
                         cls_top_k=2))))
+
+        cls.hvu_categories = [
+            'action', 'attribute', 'concept', 'event', 'object', 'scene'
+        ]
+
+        cls.hvu_category_nums = [739, 117, 291, 69, 1679, 248]
+        cls.filename_tmpl = 'img_{:05d}.jpg'
+
+    def test_hvu_dataset(self):
+        hvu_frame_dataset = HVUDataset(
+            ann_file=self.hvu_frame_ann_file,
+            pipeline=self.frame_pipeline,
+            tag_categories=self.hvu_categories,
+            tag_category_nums=self.hvu_category_nums,
+            filename_tmpl=self.filename_tmpl,
+            data_prefix=self.data_prefix)
+        hvu_frame_infos = hvu_frame_dataset.video_infos
+        frame_dir = osp.join(self.data_prefix, 'test_imgs')
+        assert hvu_frame_infos == [
+            dict(
+                frame_dir=frame_dir,
+                total_frames=5,
+                label=dict(
+                    concept=[250, 131, 42, 51, 57, 155, 122],
+                    object=[1570, 508],
+                    event=[16],
+                    action=[180],
+                    scene=[206]))
+        ] * 2
+
+        hvu_video_dataset = HVUDataset(
+            ann_file=self.hvu_video_ann_file,
+            pipeline=self.video_pipeline,
+            tag_categories=self.hvu_categories,
+            tag_category_nums=self.hvu_category_nums,
+            data_prefix=self.data_prefix)
+        hvu_video_infos = hvu_video_dataset.video_infos
+        filename = osp.join(self.data_prefix, 'test.mp4')
+        assert hvu_video_infos == [
+            dict(
+                filename=filename,
+                label=dict(
+                    concept=[250, 131, 42, 51, 57, 155, 122],
+                    object=[1570, 508],
+                    event=[16],
+                    action=[180],
+                    scene=[206]))
+        ] * 2
 
     def test_rawframe_dataset(self):
         rawframe_dataset = RawframeDataset(self.frame_ann_file,
