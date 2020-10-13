@@ -5,7 +5,8 @@ import numpy as np
 import torch
 from mmcv.utils import print_log
 
-from ..core import mean_average_precision, mean_class_accuracy, top_k_accuracy
+from ..core import (mean_average_precision, mean_class_accuracy,
+                    mmit_mean_average_precision, top_k_accuracy)
 from .base import BaseDataset
 from .registry import DATASETS
 
@@ -235,12 +236,17 @@ class RawframeDataset(BaseDataset):
                 print_log(log_msg, logger=logger)
                 continue
 
-            if metric == 'mean_average_precision':
+            if metric in [
+                    'mean_average_precision', 'mmit_mean_average_precision'
+            ]:
                 gt_labels = [
                     self.label2array(self.num_classes, label)
                     for label in gt_labels
                 ]
-                mAP = mean_average_precision(results, gt_labels)
+                if metric == 'mean_average_precision':
+                    mAP = mean_average_precision(results, gt_labels)
+                elif metric == 'mmit_mean_average_precision':
+                    mAP = mmit_mean_average_precision(results, gt_labels)
                 eval_results['mean_average_precision'] = mAP
                 log_msg = f'\nmean_average_precision\t{mAP:.4f}'
                 print_log(log_msg, logger=logger)
