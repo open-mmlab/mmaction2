@@ -42,7 +42,7 @@ class TemporalShift(nn.Module):
 
     This module is proposed in
     `TSM: Temporal Shift Module for Efficient Video Understanding
-    <https://.org/abs/1811.08383>`_
+    <https://arxiv.org/abs/1811.08383>`_
 
     Args:
         net (nn.module): Module to make temporal shift.
