@@ -156,7 +156,7 @@ class TestDataset(object):
             tag_category_nums=self.hvu_category_nums,
             data_prefix=self.data_prefix)
         hvu_video_infos = hvu_video_dataset.video_infos
-        filename = osp.join(self.data_prefix, 'test.mp4')
+        filename = osp.join(self.data_prefix, 'tmp.mp4')
         assert hvu_video_infos == [
             dict(
                 filename=filename,
