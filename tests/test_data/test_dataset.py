@@ -128,7 +128,8 @@ class TestDataset(object):
             tag_categories=self.hvu_categories,
             tag_category_nums=self.hvu_category_nums,
             filename_tmpl=self.filename_tmpl,
-            data_prefix=self.data_prefix)
+            data_prefix=self.data_prefix,
+            start_index=1)
         hvu_frame_infos = hvu_frame_dataset.video_infos
         frame_dir = osp.join(self.data_prefix, 'test_imgs')
         assert hvu_frame_infos == [
@@ -140,7 +141,12 @@ class TestDataset(object):
                     object=[1570, 508],
                     event=[16],
                     action=[180],
-                    scene=[206]))
+                    scene=[206]),
+                categories=self.hvu_categories,
+                category_nums=self.hvu_category_nums,
+                filename_tmpl=self.filename_tmpl,
+                start_index=1,
+                modality='RGB')
         ] * 2
 
         hvu_video_dataset = HVUDataset(
@@ -159,7 +165,9 @@ class TestDataset(object):
                     object=[1570, 508],
                     event=[16],
                     action=[180],
-                    scene=[206]))
+                    scene=[206]),
+                categories=self.hvu_categories,
+                category_nums=self.hvu_category_nums)
         ] * 2
 
     def test_rawframe_dataset(self):
