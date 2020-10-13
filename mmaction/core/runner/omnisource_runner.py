@@ -149,8 +149,7 @@ class OmniSourceRunner(EpochBasedRunner):
                 epoch_runner = getattr(self, mode)
             else:
                 raise TypeError(
-                    'mode in workflow must be a str, but got {}'.format(
-                        type(mode)))
+                    f'mode in workflow must be a str, but got {mode}')
 
             for _ in range(epochs):
                 if mode == 'train' and self.epoch >= self._max_epochs:

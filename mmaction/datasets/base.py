@@ -2,6 +2,7 @@ import copy
 import os.path as osp
 import random
 from abc import ABCMeta, abstractmethod
+from collections import defaultdict
 
 import mmcv
 import torch
@@ -41,13 +42,13 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         modality (str): Modality of data. Support 'RGB', 'Flow'.
             Default: 'RGB'.
         sample_by_class (bool): Sampling by class, should be set `True` when
-            you want to perform inter-class data balancing. Only compatible
-            with `multi_class == False`. Only applies for training. Default:
-            False.
-        power (float): We support sampling data with the probability
-            proportional to the power of its label frequency (freq ^ power).
-            `power == 1` indicates uniformly sampling all data; `power == 0`
-            indicates uniformly sampling all classes. Default: None.
+            performing inter-class data balancing. Only compatible with
+            `multi_class == False`. Only applies for training. Default: False.
+        power (float | None): We support sampling data with the probability
+            proportional to the power of its label frequency (freq ^ power)
+            when sampling data. `power == 1` indicates uniformly sampling all
+            data; `power == 0` indicates uniformly sampling all classes.
+            Default: None.
     """
 
     def __init__(self,
@@ -108,11 +109,9 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         return video_infos
 
     def parse_by_class(self):
-        video_infos_by_class = {}
+        video_infos_by_class = defaultdict(list)
         for item in self.video_infos:
             label = item['label']
-            if label not in video_infos_by_class:
-                video_infos_by_class[label] = []
             video_infos_by_class[label].append(item)
         return video_infos_by_class
 

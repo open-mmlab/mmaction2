@@ -44,10 +44,8 @@ class RawVideoDataset(BaseDataset):
     Args:
         ann_file (str): Path to the annotation file.
         pipeline (list[dict | callable]): A sequence of data transforms.
-        start_index (int): Specify a start index for frames in consideration of
-            different filename format. However, when taking videos as input,
-            it should be set to 0, since frames loaded from videos count
-            from 0. Default: 0.
+        clipname_tmpl (str): The template of clip name in the raw video.
+            Default: 'part_{}.mp4'.
         **kwargs: Keyword arguments for ``BaseDataset``.
     """
 
