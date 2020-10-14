@@ -7,7 +7,7 @@
 
 **Bug Fixes**
 - Fix the potential bug for default value in dataset_setting ([#245](https://github.com/open-mmlab/mmaction2/pull/245))
-
+- Fix the invalid config url in slowonly README data benchmark ([#249](https://github.com/open-mmlab/mmaction2/pull/249))
 
 ### v0.7.0 (30/9/2020)
 
