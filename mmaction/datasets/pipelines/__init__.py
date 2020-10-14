@@ -21,4 +21,5 @@ __all__ = [
     'GenerateLocalizationLabels', 'LoadLocalizationFeature', 'LoadProposals',
     'DecordInit', 'OpenCVInit', 'PyAVInit', 'SampleProposalFrames',
     'UntrimmedSampleFrames', 'RawFrameDecode', 'ImageDecode',
-    'PseudoClipBuilder', 'ColorJitter']
+    'PseudoClipBuilder', 'ColorJitter'
+]
