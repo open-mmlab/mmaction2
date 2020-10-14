@@ -1,24 +1,41 @@
 ## Changelog
 
+### v0.8.0 (master)
+
+**Improvements**
+- Set default values of 'average_clips' in each config file so that there is no need to set it explicitly during testing in most cases ([#232](https://github.com/open-mmlab/mmaction2/pull/232))
+
+
 ### v0.7.0 (30/9/2020)
 
 **Highlights**
+- Support TPN
+- Support JHMDB, UCF101-24, HVU dataset preparation
+- support onnx model conversion
 
 **New Features**
-- Support to run real-time action recognition from web camera ([#171](https://github.com/open-mmlab/mmaction2/pull/171))
-- Support to export the pytorch models to onnx ones. ([#160](https://github.com/open-mmlab/mmaction2/pull/160))
-- Support to report mAP for ActivityNet with [CUHK17_activitynet_pred](http://activity-net.org/challenges/2017/evaluation.html). ([#176](https://github.com/open-mmlab/mmaction2/pull/176))
+- Support the data pre-processing pipeline for the HVU Dataset ([#277](https://github.com/open-mmlab/mmaction2/pull/227/))
+- Support real-time action recognition from web camera ([#171](https://github.com/open-mmlab/mmaction2/pull/171))
+- Support onnx ([#160](https://github.com/open-mmlab/mmaction2/pull/160))
+- Support UCF101-24 preparation ([#219](https://github.com/open-mmlab/mmaction2/pull/219))
+- Support evaluating mAP for ActivityNet with [CUHK17_activitynet_pred](http://activity-net.org/challenges/2017/evaluation.html) ([#176](https://github.com/open-mmlab/mmaction2/pull/176))
+- Add the data pipeline for ActivityNet, including downloading videos, extracting RGB and Flow frames, finetuning TSN and extracting feature ([#190](https://github.com/open-mmlab/mmaction2/pull/190))
+- Support JHMDB preparation ([#220](https://github.com/open-mmlab/mmaction2/pull/220))
 
 **ModelZoo**
-- Add finetuning setting for SlowOnly. ([#173](https://github.com/open-mmlab/mmaction2/pull/173))
+- Add finetuning setting for SlowOnly ([#173](https://github.com/open-mmlab/mmaction2/pull/173))
+- Add TSN and SlowOnly models trained with [OmniSource](https://arxiv.org/abs/2003.13042), which achieve 75.7% Top-1 with TSN-R50-3seg and 80.4% Top-1 with SlowOnly-R101-8x8 ([#215](https://github.com/open-mmlab/mmaction2/pull/215))
 
 **Improvements**
-- Support to run a demo with a video url ([#165](https://github.com/open-mmlab/mmaction2/pull/165))
+- Support demo with video url ([#165](https://github.com/open-mmlab/mmaction2/pull/165))
+- Support multi-batch when testing ([#184](https://github.com/open-mmlab/mmaction2/pull/184))
 - Add tutorial for adding a new learning rate updater ([#181](https://github.com/open-mmlab/mmaction2/pull/181))
 - Add config name in meta info ([#183](https://github.com/open-mmlab/mmaction2/pull/183))
 - Remove git hash in `__version__` ([#189](https://github.com/open-mmlab/mmaction2/pull/189))
 - Check mmcv version ([#189](https://github.com/open-mmlab/mmaction2/pull/189))
 - Update url with 'https://download.openmmlab.com' ([#208](https://github.com/open-mmlab/mmaction2/pull/208))
+- Update Docker file to support PyTorch 1.6 and update `install.md` ([#209](https://github.com/open-mmlab/mmaction2/pull/209))
+- Polish readsthedocs display ([#217](https://github.com/open-mmlab/mmaction2/pull/217), [#229](https://github.com/open-mmlab/mmaction2/pull/229))
 
 **Bug Fixes**
 - Fix the bug when using OpenCV to extract only RGB frames with original shape ([#184](https://github.com/open-mmlab/mmaction2/pull/187))

@@ -302,6 +302,7 @@ class ResNet(nn.Module):
         in_channels (int): Channel num of input features. Default: 3.
         num_stages (int): Resnet stages. Default: 4.
         strides (Sequence[int]): Strides of the first block of each stage.
+        out_indices (Sequence[int]): Indices of output feature. Default: (3, ).
         dilations (Sequence[int]): Dilation of each stage.
         style (str): ``pytorch`` or ``caffe``. If set to "pytorch", the
             stride-two layer is the 3x3 conv layer, otherwise the stride-two
@@ -335,6 +336,7 @@ class ResNet(nn.Module):
                  torchvision_pretrain=True,
                  in_channels=3,
                  num_stages=4,
+                 out_indices=(3, ),
                  strides=(1, 2, 2, 2),
                  dilations=(1, 1, 1, 1),
                  style='pytorch',
@@ -354,6 +356,8 @@ class ResNet(nn.Module):
         self.torchvision_pretrain = torchvision_pretrain
         self.num_stages = num_stages
         assert num_stages >= 1 and num_stages <= 4
+        self.out_indices = out_indices
+        assert max(out_indices) < num_stages
         self.strides = strides
         self.dilations = dilations
         assert len(strides) == len(dilations) == num_stages
@@ -534,10 +538,16 @@ class ResNet(nn.Module):
         """
         x = self.conv1(x)
         x = self.maxpool(x)
-        for layer_name in self.res_layers:
+        outs = []
+        for i, layer_name in enumerate(self.res_layers):
             res_layer = getattr(self, layer_name)
             x = res_layer(x)
-        return x
+            if i in self.out_indices:
+                outs.append(x)
+        if len(outs) == 1:
+            return outs[0]
+        else:
+            return tuple(outs)
 
     def _freeze_stages(self):
         """Prevent all the parameters from being optimized before

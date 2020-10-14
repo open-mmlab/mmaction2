@@ -323,7 +323,7 @@ for result in results:
 ```
 
 **Note**: We define `data_prefix` in config files and set it None as default for our provided inference configs.
-If the `data_prefix` is not None, the path for the video file (or rawframe directory) to get will be `osp.path(data_prefix, video)`.
+If the `data_prefix` is not None, the path for the video file (or rawframe directory) to get will be `data_prefix/video`.
 Here, the `video` is the param in the demo scripts above.
 This detail can be found in `rawframe_dataset.py` and `video_dataset.py`. For example,
 

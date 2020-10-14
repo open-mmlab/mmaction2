@@ -246,6 +246,8 @@ class PEM(BaseLocalizer):
         soft_nms_low_threshold (float): Soft NMS low threshold.
         soft_nms_high_threshold (float): Soft NMS high threshold.
         post_process_top_k (int): Top k proposals in post process.
+        feature_extraction_interval (int):
+            Interval used in feature extraction. Default: 16.
         fc1_ratio (float): Ratio for fc1 layer output. Default: 0.1.
         fc2_ratio (float): Ratio for fc2 layer output. Default: 0.1.
         output_dim (int): Output dimension. Default: 1.
@@ -262,6 +264,7 @@ class PEM(BaseLocalizer):
                  soft_nms_low_threshold,
                  soft_nms_high_threshold,
                  post_process_top_k,
+                 feature_extraction_interval=16,
                  fc1_ratio=0.1,
                  fc2_ratio=0.1,
                  output_dim=1):
@@ -277,6 +280,7 @@ class PEM(BaseLocalizer):
         self.soft_nms_low_threshold = soft_nms_low_threshold
         self.soft_nms_high_threshold = soft_nms_high_threshold
         self.post_process_top_k = post_process_top_k
+        self.feature_extraction_interval = feature_extraction_interval
         self.fc1_ratio = fc1_ratio
         self.fc2_ratio = fc2_ratio
         self.output_dim = output_dim
@@ -365,7 +369,8 @@ class PEM(BaseLocalizer):
                                         self.soft_nms_alpha,
                                         self.soft_nms_low_threshold,
                                         self.soft_nms_high_threshold,
-                                        self.post_process_top_k)
+                                        self.post_process_top_k,
+                                        self.feature_extraction_interval)
         output = [
             dict(
                 video_name=video_info['video_name'],

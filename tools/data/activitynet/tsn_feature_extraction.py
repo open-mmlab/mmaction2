@@ -58,7 +58,8 @@ def main():
         dict(
             type='UntrimmedSampleFrames',
             clip_len=args.clip_len,
-            frame_interval=args.frame_interval),
+            frame_interval=args.frame_interval,
+            start_index=0),
         dict(type='FrameSelector'),
         dict(type='Resize', scale=(-1, 256)),
         dict(type='CenterCrop', crop_size=256),

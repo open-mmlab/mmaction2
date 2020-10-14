@@ -226,7 +226,7 @@ The default manner of constructing a lr updater(namely, 'scheduler' by pytorch c
 lr_config = dict(policy='step', step=[20, 40])
 ...
 ```
-In the api for [`train.py`](../../mmaction/apis/train.py), it will register the learning rate updater hook based on the config at:
+In the api for [`train.py`](/mmaction/apis/train.py), it will register the learning rate updater hook based on the config at:
 ```python
 ...
     runner.register_training_hooks(
