@@ -109,36 +109,8 @@ val_pipeline = [
             'proposal_type'
         ])
 ]
-test_pipeline = [
-    dict(
-        type='SampleProposalFrames',
-        clip_len=1,
-        body_segments=5,
-        aug_segments=(2, 2),
-        aug_ratio=0.5,
-        mode='test'),
-    dict(type='RawFrameDecode'),
-    dict(type='Resize', scale=(340, 256), keep_ratio=True),
-    dict(type='CenterCrop', crop_size=224),
-    dict(type='Flip', flip_ratio=0),
-    dict(type='Normalize', **img_norm_cfg),
-    dict(type='FormatShape', input_format='NCHW'),
-    dict(
-        type='Collect',
-        keys=[
-            'imgs', 'relative_proposal_list', 'scale_factor_list',
-            'proposal_tick_list', 'reg_norm_consts'
-        ],
-        meta_keys=[]),
-    dict(
-        type='ToTensor',
-        keys=[
-            'imgs', 'relative_proposal_list', 'scale_factor_list',
-            'proposal_tick_list', 'reg_norm_consts'
-        ])
-]
 data = dict(
-    videos_per_gpu=2,
+    videos_per_gpu=1,
     workers_per_gpu=2,
     train=dict(
         type=dataset_type,
@@ -162,16 +134,7 @@ data = dict(
         aug_segments=(2, 2),
         aug_ratio=0.5,
         test_mode=False,
-        pipeline=train_pipeline),
-    test=dict(
-        type=dataset_type,
-        ann_file=ann_file_test,
-        data_prefix=data_root,
-        train_cfg=train_cfg,
-        test_cfg=test_cfg,
-        aug_ratio=0.5,
-        test_mode=True,
-        pipeline=test_pipeline))
+        pipeline=val_pipeline))
 # optimizer
 optimizer = dict(
     type='SGD', lr=0.001, momentum=0.9,
@@ -182,7 +145,7 @@ lr_config = dict(policy='step', step=[200, 400])
 checkpoint_config = dict(interval=5)
 log_config = dict(interval=1, hooks=[dict(type='TextLoggerHook')])
 # runtime settings
-total_epochs = 1
+total_epochs = 450
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 work_dir = './work_dirs/ssn_bninception_450e_thumos14_rgb'
