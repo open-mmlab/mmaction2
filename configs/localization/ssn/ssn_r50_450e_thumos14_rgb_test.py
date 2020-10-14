@@ -104,7 +104,7 @@ log_config = dict(interval=5, hooks=[dict(type='TextLoggerHook')])
 total_epochs = 450
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/ssn_bninception_450e_thumos14_rgb'
+work_dir = './work_dirs/ssn_r50_1x5_450e_thumos14_rgb'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
