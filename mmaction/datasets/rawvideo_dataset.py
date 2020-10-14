@@ -1,4 +1,6 @@
+import copy
 import os.path as osp
+import random
 
 from .base import BaseDataset
 from .registry import DATASETS
@@ -44,6 +46,8 @@ class RawVideoDataset(BaseDataset):
     Args:
         ann_file (str): Path to the annotation file.
         pipeline (list[dict | callable]): A sequence of data transforms.
+        sampling_strategy (str): The strategy to sample clips from raw videos.
+            Choices are 'random' or 'positive'. Default: 'positive'.
         clipname_tmpl (str): The template of clip name in the raw video.
             Default: 'part_{}.mp4'.
         **kwargs: Keyword arguments for ``BaseDataset``.
@@ -53,9 +57,11 @@ class RawVideoDataset(BaseDataset):
                  ann_file,
                  pipeline,
                  clipname_tmpl='part_{}.mp4',
+                 sampling_strategy='positive',
                  **kwargs):
         super().__init__(ann_file, pipeline, start_index=0, **kwargs)
         assert self.multi_class is False
+        self.sampling_strategy = sampling_strategy
         self.clipname_tmpl = clipname_tmpl
 
     def load_annotations(self):
@@ -81,3 +87,32 @@ class RawVideoDataset(BaseDataset):
                         num_clips=num_clips,
                         positive_clip_inds=positive_clip_inds))
         return video_infos
+
+    def sample_clip(self, results):
+        """Sample a clip from the raw video given the sampling strategy."""
+        assert self.sampling_strategy in ['postive', 'random']
+        if self.sampling_strategy == 'positive':
+            assert len(results['positive_clip_inds'])
+            ind = random.choice(results['positive_clip_inds'])
+        else:
+            ind = random.randint(0, results['num_clips'] - 1)
+        clipname = self.clipname_tmpl.format(ind)
+        filename = osp.join(self.video_dir, clipname)
+        results['filename'] = filename
+        return results
+
+    def prepare_train_frames(self, idx):
+        """Prepare the frames for training given the index."""
+        results = copy.deepcopy(self.video_infos[idx])
+        results = self.sample_clips(results)
+        results['modality'] = self.modality
+        results['start_index'] = self.start_index
+        return self.pipeline(results)
+
+    def prepare_test_frames(self, idx):
+        """Prepare the frames for testing given the index."""
+        results = copy.deepcopy(self.video_infos[idx])
+        results = self.sample_clips(results)
+        results['modality'] = self.modality
+        results['start_index'] = self.start_index
+        return self.pipeline(results)
