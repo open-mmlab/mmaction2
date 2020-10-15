@@ -11,7 +11,8 @@ from .registry import DATASETS
 @DATASETS.register_module()
 class AudioFeatureDataset(BaseDataset):
     """Audio feature dataset for video recognition. Reads the features
-    extracted off-line.Annotation file can be that of the rawframe dataset, or:
+    extracted off-line. Annotation file can be that of the rawframe dataset,
+    or:
 
     .. code-block:: txt
 

@@ -579,7 +579,7 @@ class PyAVInit(object):
         self.file_client = None
 
     def __call__(self, results):
-        """Perform the PyAV initiation.
+        """Perform the PyAV initialization.
 
         Args:
             results (dict): The resulting dict to be modified and passed
@@ -679,7 +679,7 @@ class DecordInit(object):
         self.file_client = None
 
     def __call__(self, results):
-        """Perform the Decord initiation.
+        """Perform the Decord initialization.
 
         Args:
             results (dict): The resulting dict to be modified and passed
@@ -764,7 +764,7 @@ class OpenCVInit(object):
         os.mkdir(self.tmp_folder)
 
     def __call__(self, results):
-        """Perform the OpenCV initiation.
+        """Perform the OpenCV initialization.
 
         Args:
             results (dict): The resulting dict to be modified and passed
@@ -911,7 +911,7 @@ class RawFrameDecode(object):
 
 @PIPELINES.register_module()
 class AudioDecodeInit(object):
-    """Using librosa to initialize the audio_reader.
+    """Using librosa to initialize the audio reader.
 
     Args:
         io_backend (str): io backend where frames are store.
@@ -930,7 +930,7 @@ class AudioDecodeInit(object):
         self.file_client = None
 
     def __call__(self, results):
-        """Perform the librosa initiating.
+        """Perform the librosa initialization.
 
         Args:
             results (dict): The resulting dict to be modified and passed
