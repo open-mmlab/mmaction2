@@ -2,6 +2,7 @@ import argparse
 import os
 import os.path as osp
 
+import mmcv
 import torch
 from mmcv import Config, DictAction
 from mmcv.cnn import fuse_conv_bn
