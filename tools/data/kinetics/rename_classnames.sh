@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 # Rename classname for convenience
-cd ../../../data/kinetics400/
+DATASET=$1
+cd ../../../data/${DATASET}/
 ls ./videos_train | while read class; do \
   newclass=`echo $class | tr " " "_" | tr "(" "-" | tr ")" "-" `;
   if [ "${class}" != "${newclass}" ]
@@ -18,4 +19,4 @@ ls ./videos_val | while read class; do \
   fi
 done
 
-cd ../../tools/data/kinetics400/
+cd ../../tools/data/${DATASET}/
