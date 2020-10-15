@@ -268,7 +268,7 @@ def parse_kinetics_splits(level, dataset):
             choices are "kinetics400", "kinetics600" and "kinetics700".
 
     Returns:
-        list: "train", "val", "test" splits of Kinetics-400.
+        list: "train", "val", "test" splits of Kinetics.
     """
 
     def convert_label(s, keep_whitespaces=False):
@@ -292,7 +292,7 @@ def parse_kinetics_splits(level, dataset):
         """A function to map line string to video and label.
 
         Args:
-            x (str): A single line from Kinetics-400 csv file.
+            x (str): A single line from Kinetics csv file.
             test (bool): Indicate whether the line comes from test
                 annotation file.
 
