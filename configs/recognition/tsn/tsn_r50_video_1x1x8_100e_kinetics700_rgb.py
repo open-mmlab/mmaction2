@@ -8,7 +8,7 @@ model = dict(
         norm_eval=False),
     cls_head=dict(
         type='TSNHead',
-        num_classes=600,
+        num_classes=700,
         in_channels=2048,
         spatial_type='avg',
         consensus=dict(type='AvgConsensus', dim=1),
@@ -19,11 +19,11 @@ train_cfg = None
 test_cfg = dict(average_clips=None)
 # dataset settings
 dataset_type = 'VideoDataset'
-data_root = 'data/kinetics600/videos_train'
-data_root_val = 'data/kinetics600/videos_val'
-ann_file_train = 'data/kinetics600/kinetics600_train_list_videos.txt'
-ann_file_val = 'data/kinetics600/kinetics600_val_list_videos.txt'
-ann_file_test = 'data/kinetics600/kinetics600_val_list_videos.txt'
+data_root = 'data/kinetics700/videos_train'
+data_root_val = 'data/kinetics700/videos_val'
+ann_file_train = 'data/kinetics700/kinetics700_train_list_videos.txt'
+ann_file_val = 'data/kinetics700/kinetics700_val_list_videos.txt'
+ann_file_test = 'data/kinetics700/kinetics700_val_list_videos.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
@@ -110,7 +110,7 @@ log_config = dict(
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/tsn_r50_1x1x3_100e_kinetics600_rgb/'
+work_dir = './work_dirs/tsn_r50_1x1x3_100e_kinetics700_rgb/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
