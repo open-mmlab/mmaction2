@@ -49,8 +49,10 @@ def parse_args():
         '--cfg-options',
         nargs='+',
         action=DictAction,
+        default={},
         help='override some settings in the used config, the key-value pair '
-        'in xxx=yyy format will be merged into config file.')
+        'in xxx=yyy format will be merged into config file. For example, '
+        "'--cfg-options model.backbone.depth=18 model.backbone.with_cp=True'")
     parser.add_argument(
         '--launcher',
         choices=['none', 'pytorch', 'slurm', 'mpi'],
@@ -68,8 +70,9 @@ def main():
     args = parse_args()
 
     cfg = Config.fromfile(args.config)
-    if args.cfg_options is not None:
-        cfg.merge_from_dict(args.cfg_options)
+
+    cfg.merge_from_dict(args.cfg_options)
+
     # set cudnn_benchmark
     if cfg.get('cudnn_benchmark', False):
         torch.backends.cudnn.benchmark = True

@@ -46,8 +46,10 @@ def parse_args():
         '--cfg-options',
         nargs='+',
         action=DictAction,
+        default={},
         help='override some settings in the used config, the key-value pair '
-        'in xxx=yyy format will be merged into config file.')
+        'in xxx=yyy format will be merged into config file. For example, '
+        "'--cfg-options model.backbone.depth=18 model.backbone.with_cp=True'")
     parser.add_argument(
         '--average-clips',
         choices=['score', 'prob', None],
@@ -81,8 +83,7 @@ def main():
 
     cfg = Config.fromfile(args.config)
 
-    if args.cfg_options is not None:
-        cfg.merge_from_dict(args.cfg_options)
+    cfg.merge_from_dict(args.cfg_options)
 
     # Load output_config from cfg
     output_config = cfg.get('output_config', {})
