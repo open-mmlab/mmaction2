@@ -24,8 +24,13 @@ def main(annotation_file, category):
         else:
             return None
 
-    data = [parse_item(item, category) for item in data]
-    data = [item for item in data if item is not None]
+    result = []
+    for item in data:
+        label = item['label']
+        if category in label:
+            item['label'] = label[category]
+            result.append(item)
+
     mmcv.dump(data, target_file)
 
 
