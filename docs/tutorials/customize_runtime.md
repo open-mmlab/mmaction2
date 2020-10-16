@@ -1,6 +1,6 @@
 # Tutorial 6: Customize Runtime Settings
 
-In this tutorial, we will introduce some methods about how to customize optimization Methods, training schedules, workflow and hooks when running your own settings for the project.
+In this tutorial, we will introduce some methods about how to customize optimization methods, training schedules, workflow and hooks when running your own settings for the project.
 
 ## Customize Optimization Methods
 
@@ -144,7 +144,7 @@ We list some common settings that could stabilize the training or accelerate the
 
 ## Customize Training Schedules
 
-By default we use step learning rate with 1x schedule, this calls [`StepLRHook`](https://github.com/open-mmlab/mmcv/blob/f48241a65aebfe07db122e9db320c31b685dc674/mmcv/runner/hooks/lr_updater.py#L153) in MMCV.
+we use step learning rate with default value in config files, this calls [`StepLRHook`](https://github.com/open-mmlab/mmcv/blob/f48241a65aebfe07db122e9db320c31b685dc674/mmcv/runner/hooks/lr_updater.py#L153) in MMCV.
 We support many other learning rate schedule [here](https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/lr_updater.py), such as `CosineAnnealing` and `Poly` schedule. Here are some examples
 
 - Poly schedule:
@@ -165,6 +165,8 @@ We support many other learning rate schedule [here](https://github.com/open-mmla
     ```
 
 ## Customize Workflow
+
+By defult, we recommend users to use `EvalHook` to do evaluation after training epoch, but they can still use `val` workflow as an alternative.
 
 Workflow is a list of (phase, epochs) to specify the running order and epochs. By default it is set to be
 
@@ -195,9 +197,9 @@ Therefore, the only difference between `[('train', 1), ('val', 1)]` and ``[('tra
 
 #### 1. Implement a new hook
 
-There are some occasions when the users might need to implement a new hook. MMAction2 supports customized hooks in training (#xxx) since xxxx, thus the users could implement a hook directly in mmaction2
+There are some occasions when the users might need to implement a new hook. MMAction2 supports customized hooks in training (#xxx) since xxxx, thus the users could implement a hook directly in MMAction2
 or their mmaction2-based codebases and use the hook by only modifying the config in training. Before vxxxx, the users need to modify the code to get the hook registered before training starts.
-Here we give an example of creating a new hook in mmaction2 and using it in training.
+Here we give an example of creating a new hook in MMAction2 and using it in training.
 
 ```python
 from mmcv.runner import HOOKS, Hook
@@ -280,7 +282,7 @@ mmcv_hooks = [
 
 ### Modify default runtime hooks
 
-There are some common hooks that are not registered through `custom_hooks`, they are
+There are some common hooks that are not registered through `custom_hooks` but has been registered by default when importing MMCV,  they are
 
 - log_config
 - checkpoint_config
