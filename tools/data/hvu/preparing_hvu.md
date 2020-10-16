@@ -55,7 +55,7 @@ bash generate_rawframes_filelist.sh
 
 This part is **optional** if you don't want to train models on HVU for a specific tag category.
 
-Thhe file list generated in step 4 contain labels of different categories. These file lists can only be
+The file list generated in step 4 contains labels of different categories. These file lists can only be
 handled with HVUDataset and used for multi-task learning of different tag categories. The component
 `LoadHVULabel` is needed to load the multi-category tags, and the `HVULoss` should be used to train
 the model.
