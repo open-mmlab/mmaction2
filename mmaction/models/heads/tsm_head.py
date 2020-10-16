@@ -13,6 +13,7 @@ class TSMHead(BaseHead):
     Args:
         num_classes (int): Number of classes to be classified.
         in_channels (int): Number of channels in input feature.
+        num_segments (int): Number of frame segments. Default: 8.
         loss_cls (dict): Config for building loss.
             Default: dict(type='CrossEntropyLoss')
         spatial_type (str): Pooling type in spatial dimension. Default: 'avg'.
@@ -77,6 +78,7 @@ class TSMHead(BaseHead):
 
         Args:
             x (torch.Tensor): The input data.
+            num_segments (int): Number of frame segments. Default: 8.
 
         Returns:
             torch.Tensor: The classification scores for input samples.
