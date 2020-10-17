@@ -51,7 +51,7 @@ bash generate_videos_filelist.sh
 bash generate_rawframes_filelist.sh
 ```
 
-## Step 5. Generate File List for each individual tag categories.
+## Step 5. Generate File List for Each Individual Tag Categories.
 
 This part is **optional** if you don't want to train models on HVU for a specific tag category.
 
