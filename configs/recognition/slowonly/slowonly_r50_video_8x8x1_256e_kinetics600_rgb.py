@@ -13,24 +13,23 @@ model = dict(
     cls_head=dict(
         type='I3DHead',
         in_channels=2048,
-        num_classes=400,
+        num_classes=600,
         spatial_type='avg',
         dropout_ratio=0.5))
 train_cfg = None
 test_cfg = dict(average_clips='prob')
 dataset_type = 'VideoDataset'
-data_root = 'data/kinetics400/videos_train'
-data_root_val = 'data/kinetics400/videos_val'
-ann_file_train = 'data/kinetics400/kinetics400_train_list_videos.txt'
-ann_file_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
-ann_file_test = 'data/kinetics400/kinetics400_val_list_videos.txt'
+data_root = 'data/kinetics600/videos_train'
+data_root_val = 'data/kinetics600/videos_val'
+ann_file_train = 'data/kinetics600/kinetics600_train_list_videos.txt'
+ann_file_val = 'data/kinetics600/kinetics600_val_list_videos.txt'
+ann_file_test = 'data/kinetics600/kinetics600_val_list_videos.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
     dict(type='DecordInit'),
-    dict(type='SampleFrames', clip_len=4, frame_interval=16, num_clips=1),
+    dict(type='SampleFrames', clip_len=8, frame_interval=8, num_clips=1),
     dict(type='DecordDecode'),
-    dict(type='Resize', scale=(-1, 256)),
     dict(type='RandomResizedCrop'),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
     dict(type='Flip', flip_ratio=0.5),
@@ -43,12 +42,11 @@ val_pipeline = [
     dict(type='DecordInit'),
     dict(
         type='SampleFrames',
-        clip_len=4,
-        frame_interval=16,
+        clip_len=8,
+        frame_interval=8,
         num_clips=1,
         test_mode=True),
     dict(type='DecordDecode'),
-    dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
     dict(type='Flip', flip_ratio=0),
     dict(type='Normalize', **img_norm_cfg),
@@ -60,12 +58,11 @@ test_pipeline = [
     dict(type='DecordInit'),
     dict(
         type='SampleFrames',
-        clip_len=4,
-        frame_interval=16,
+        clip_len=8,
+        frame_interval=8,
         num_clips=10,
         test_mode=True),
     dict(type='DecordDecode'),
-    dict(type='Resize', scale=(-1, 256)),
     dict(type='ThreeCrop', crop_size=256),
     dict(type='Flip', flip_ratio=0),
     dict(type='Normalize', **img_norm_cfg),
@@ -74,7 +71,7 @@ test_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
-    videos_per_gpu=24,
+    videos_per_gpu=12,
     workers_per_gpu=4,
     train=dict(
         type=dataset_type,
@@ -93,7 +90,7 @@ data = dict(
         pipeline=test_pipeline))
 # optimizer
 optimizer = dict(
-    type='SGD', lr=0.3, momentum=0.9,
+    type='SGD', lr=0.15, momentum=0.9,
     weight_decay=0.0001)  # this lr is used for 8 gpus
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
@@ -111,7 +108,7 @@ log_config = dict(
     ])
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/slowonly_r50_video_4x16x1_256e_kinetics400_rgb'
+work_dir = './work_dirs/slowonly_r50_video_8x8x1_256e_kinetics600_rgb'
 load_from = None
 resume_from = None
 find_unused_parameters = False

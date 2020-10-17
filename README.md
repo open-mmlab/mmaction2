@@ -84,7 +84,7 @@ Supported methods for action localization:
 - [x] [BSN](configs/localization/bsn/README.md)
 
 Results and models are available in the *README.md* of each method's config directory.
-A summary can be found in the [**model zoo**](https://mmaction2.readthedocs.io/en/latest/modelzoo.html) page.
+A summary can be found in the [**model zoo**](https://mmaction2.readthedocs.io/en/latest/recognition_models.html) page.
 
 ## Installation
 
