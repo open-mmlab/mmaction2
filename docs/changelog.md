@@ -4,7 +4,7 @@
 
 **Improvements**
 - Set default values of 'average_clips' in each config file so that there is no need to set it explicitly during testing in most cases ([#232](https://github.com/open-mmlab/mmaction2/pull/232))
-- Modify Kinetics data tools to support the preparation of Kinetics-600 and Kinetics-700 too ([#254](https://github.com/open-mmlab/mmaction2/pull/254))
+- Support data preparation for Kinetics-600 and Kinetics-700 ([#254](https://github.com/open-mmlab/mmaction2/pull/254))
 
 **Bug Fixes**
 - Fix the potential bug for default value in dataset_setting ([#245](https://github.com/open-mmlab/mmaction2/pull/245))

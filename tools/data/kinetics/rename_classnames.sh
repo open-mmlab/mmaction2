@@ -2,6 +2,13 @@
 
 # Rename classname for convenience
 DATASET=$1
+if [ "$DATASET" == "kinetics400" ] || [ "$1" == "kinetics600" ] || [ "$1" == "kinetics700" ]; then
+        echo "We are processing $DATASET"
+else
+        echo "Bad Argument, we only support kinetics400, kinetics600 or kinetics700"
+        exit 0
+fi
+
 cd ../../../data/${DATASET}/
 ls ./videos_train | while read class; do \
   newclass=`echo $class | tr " " "_" | tr "(" "-" | tr ")" "-" `;
