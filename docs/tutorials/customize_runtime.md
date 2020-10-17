@@ -197,8 +197,6 @@ Therefore, the only difference between `[('train', 1), ('val', 1)]` and ``[('tra
 
 #### 1. Implement a new hook
 
-There are some occasions when the users might need to implement a new hook. MMAction2 supports customized hooks in training (#xxx) since xxxx, thus the users could implement a hook directly in MMAction2
-or their mmaction2-based codebases and use the hook by only modifying the config in training. Before vxxxx, the users need to modify the code to get the hook registered before training starts.
 Here we give an example of creating a new hook in MMAction2 and using it in training.
 
 ```python
