@@ -36,7 +36,6 @@ def train_model(model,
 
     # prepare data loaders
     dataset = dataset if isinstance(dataset, (list, tuple)) else [dataset]
-
     if cfg.omnisource:
         # The option can override videos_per_gpu
         omni_videos_per_gpu = cfg.data.get('omni_videos_per_gpu', None)
@@ -136,8 +135,8 @@ def train_model(model,
         eval_cfg = cfg.get('evaluation', {})
         val_dataset = build_dataset(cfg.data.val, dict(test_mode=True))
         dataloader_setting = dict(
-            videos_per_gpu=cfg.data.get('videos_per_gpu', {}),
-            workers_per_gpu=cfg.data.get('workers_per_gpu', {}),
+            videos_per_gpu=cfg.data.get('videos_per_gpu', 2),
+            workers_per_gpu=cfg.data.get('workers_per_gpu', 0),
             # cfg.gpus will be ignored if distributed
             num_gpus=len(cfg.gpu_ids),
             dist=distributed,
