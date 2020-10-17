@@ -74,6 +74,18 @@ In data benchmark, we compare:
 
 [1] We obtain the pre-trained model from [torch-hub](https://pytorch.org/hub/facebookresearch_semi-supervised-ImageNet1K-models_resnext/), the pretrain model we used is `resnet50_swsl`
 
+### Kinetics-600
+
+| config                                                       |   resolution   | gpus | backbone | pretrain | top1 acc | top5 acc | inference_time(video/s) | gpu_mem(M) |                             ckpt                             |                             log                              |                             json                             |
+| :----------------------------------------------------------- | :------------: | :--: | :------: | :------: | :------: | :------: | :---------------------: | :--------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| [tsn_r50_video_1x1x8_100e_kinetics600_rgb](/configs/recognition/tsn/tsn_r50_video_1x1x8_100e_kinetics600_rgb.py) | short-side 256 | 8x2  | ResNet50 | ImageNet |   74.8   |   92.3   |   11.1 (25x3 frames)    |    8344    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_video_1x1x8_100e_kinetics600_rgb/tsn_r50_video_1x1x8_100e_kinetics600_rgb_20201015-4db3c461.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_video_1x1x8_100e_kinetics600_rgb/tsn_r50_video_1x1x8_100e_kinetics600_rgb_20201015.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_video_1x1x8_100e_kinetics600_rgb/tsn_r50_video_1x1x8_100e_kinetics600_rgb_20201015.json) |
+
+### Kinetics-700
+
+| config                                                       |   resolution   | gpus | backbone | pretrain | top1 acc | top5 acc | inference_time(video/s) | gpu_mem(M) |                             ckpt                             |                             log                              |                             json                             |
+| :----------------------------------------------------------- | :------------: | :--: | :------: | :------: | :------: | :------: | :---------------------: | :--------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| [tsn_r50_video_1x1x8_100e_kinetics700_rgb](/configs/recognition/tsn/tsn_r50_video_1x1x8_100e_kinetics700_rgb.py) | short-side 256 | 8x2  | ResNet50 | ImageNet |   61.7   |   83.6   |   11.1 (25x3 frames)    |    8344    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_video_1x1x8_100e_kinetics700_rgb/tsn_r50_video_1x1x8_100e_kinetics700_rgb_20201015-e381a6c7.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_video_1x1x8_100e_kinetics700_rgb/tsn_r50_video_1x1x8_100e_kinetics700_rgb_20201015.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_video_1x1x8_100e_kinetics700_rgb/tsn_r50_video_1x1x8_100e_kinetics700_rgb_20201015.json) |
+
 ### Something-Something V1
 
 |config|resolution | gpus| backbone |pretrain| top1 acc| top5 acc | reference top1 acc | reference top5 acc | gpu_mem(M) | ckpt | log| json|
