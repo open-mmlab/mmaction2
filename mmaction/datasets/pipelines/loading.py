@@ -1167,7 +1167,7 @@ class AudioDecode(object):
 class PseudoClipBuilder(object):
     """Build pseudo clips with one single image by repeating it n times.
 
-    Required key is "imgs", added or modified key is "imgs".
+    Required key is "imgs", added or modified key is "imgs", "num_clips".
 
     Args:
         clip_len (int): Frames of the generated pseudo clips.
@@ -1182,6 +1182,7 @@ class PseudoClipBuilder(object):
         im = results['imgs'][0]
         for i in range(1, self.clip_len):
             results['imgs'].append(np.copy(im))
+        results['num_clips'] = self.clip_len
         return results
 
 
