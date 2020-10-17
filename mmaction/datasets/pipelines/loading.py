@@ -1182,7 +1182,8 @@ class PseudoClipBuilder(object):
         im = results['imgs'][0]
         for i in range(1, self.clip_len):
             results['imgs'].append(np.copy(im))
-        results['num_clips'] = self.clip_len
+        results['clip_len'] = self.clip_len
+        results['num_clips'] = 1
         return results
 
 
