@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 sed -i 's/(\/tools\/data\/activitynet\/preparing_activitynet.md/(#activitynet/g' supported_datasets.md
-sed -i 's/(\/tools\/data\/kinetics400\/preparing_kinetics400.md/(#kinetics-400/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/kinetics\/preparing_kinetics.md/(#kinetics/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/mit\/preparing_mit.md/(#moments-in-time/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/mmit\/preparing_mmit.md/(#multi-moments-in-time/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/sthv1\/preparing_sthv1.md/(#something-something-v1/g' supported_datasets.md
