@@ -1,4 +1,5 @@
 import os.path as osp
+import warnings
 from math import inf
 
 import mmcv
@@ -123,6 +124,11 @@ class EvalHook(Hook):
             runner.log_buffer.output[name] = val
         runner.log_buffer.ready = True
         if self.key_indicator is not None:
+            if self.key_indicator not in eval_res:
+                warnings.warn('The key indicator for evaluation is not '
+                              'included in evaluation result, please specify '
+                              'it in config file')
+                return None
             return eval_res[self.key_indicator]
         else:
             return None
@@ -177,7 +183,7 @@ class DistEvalHook(EvalHook):
         if runner.rank == 0:
             print('\n')
             key_score = self.evaluate(runner, results)
-            if (self.save_best
+            if (self.save_best and key_score is not None
                     and self.compare_func(key_score, self.best_score)):
                 self.best_score = key_score
                 self.logger.info(
