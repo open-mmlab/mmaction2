@@ -12,4 +12,9 @@ fi
 
 wget https://s3.amazonaws.com/ava-dataset/annotations/ava_file_names_trainval_v2.1.txt -P ${ANNO_DIR}
 
-python download_videos_parallel.py ${ANNO_DIR}/ava_file_names_trainval_v2.1.txt ${DATA_DIR}
+# sudo apt-get install parallel
+# parallel downloading to speed up
+awk '{print "https://s3.amazonaws.com/ava-dataset/trainval/"$0}' ${ANNO_DIR}/ava_file_names_trainval_v2.1.txt |
+parallel -j 8 wget -c -q {} -P ${DATA_DIR}
+
+echo "Downloading finished."

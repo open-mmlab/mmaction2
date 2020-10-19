@@ -26,12 +26,17 @@ Note that this might take a long time.
 bash download_videos.sh
 ```
 
+Or you can use the following command to downloading AVA videos in parallel using a python script.
+```shell
+bash download_videos_parallel.sh
+```
+
 Note that if you happen to have sudoer or have [GNU parallel](https://www.gnu.org/software/parallel/) on your machine,
 you can speed up the procedure by downloading in parallel.
 
 ```shell
 # sudo apt-get install parallel
-bash download_videos_parallel.sh
+bash download_videos_gnu_parallel.sh
 ```
 
 ## Step 3. Cut Videos
