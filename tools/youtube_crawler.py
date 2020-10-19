@@ -21,7 +21,11 @@ def get_page(url):
 
 def get_title(page):
     reg = re.compile(r'<title>(.*?)YouTube', re.S)
-    title = reg.findall(page)[0].replace('-', '')
+    title = reg.findall(page)
+    if title:
+        title = title[0].replace('-', '')
+    else:
+        title = ''
     return title
 
 

@@ -1,4 +1,5 @@
 import io
+import json
 import os
 import os.path as osp
 import shutil
@@ -951,6 +952,89 @@ class LoadLocalizationFeature(object):
             data_path, dtype=np.float32, delimiter=',', skiprows=1)
 
         results['raw_feature'] = np.transpose(raw_feature, (1, 0))
+
+        return results
+
+
+@PIPELINES.register_module()
+class LoadFrameLevelAuxiliaryFeature(object):
+    """Load frame level aux-feature.
+        Required keys are "featurepath" and "frame_inds",
+        added or modified keys are "features", "sampled_inds", "input_shape".
+        Args:
+            # FIXME
+    """
+
+    def __init__(self, raw_feature_ext='.json', feature_name='text'):
+        valid_raw_feature_ext = ('.json')
+        valid_feature_name = ('scene', 'object', 'action', 'text')
+        if raw_feature_ext not in valid_raw_feature_ext:
+            raise NotImplementedError
+        if feature_name not in valid_feature_name:
+            raise NotImplementedError
+        self.raw_feature_ext = raw_feature_ext
+        self.feature_name = feature_name
+
+    def __call__(self, results):
+        """Perform the ``LoadFrameLevelAuxiliaryFeature`` to pick frames given
+        indices.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        path = results[f'{self.feature_name}_feature_path']
+
+        if self.raw_feature_ext == 'json':
+            with open(path, 'r') as f:
+                data_dict = json.load(f)
+            # JSON file of features extracted should look like this:
+            # data_dict = {
+            #   'frame': [frame_ind_1,frame_ind_2,...],
+            #   'feature': [[feature_1],[feature_2],...], ...}
+            # A dict contains key 'frame' and 'feature'.
+        else:
+            raise NotImplementedError
+
+        raw_frame_inds = data_dict['frame']
+        raw_features = data_dict['feature']
+        if len(raw_frame_inds) != len(raw_features):
+            assert len(raw_frame_inds) != 0
+            raw_frame_inds = raw_frame_inds[:len(raw_features)]
+
+        tot = len(raw_frame_inds)
+        sampled_features = list()
+        sampled_inds = list()
+        frame_inds = results['frame_inds']
+
+        # binary search the largest index in [raw_frame_inds]
+        # which is not larger that each index to be sampled.
+        # Philosophy behind it is that we want to tolerant features
+        # extracted at different fps.
+
+        for i in frame_inds:
+            idx = -1
+            left = 0
+            right = tot - 1
+            while (1):
+                if right - left <= 1:
+                    if i >= raw_frame_inds[right]:
+                        idx = right
+                    else:
+                        idx = left
+                    break
+                mid = (left + right) // 2
+                if i > raw_frame_inds[mid]:
+                    left = mid
+                else:
+                    right = mid
+            sampled_inds.append(raw_frame_inds[idx])
+            sampled_features.append(raw_features[idx])
+
+        sampled_features = np.array(sampled_features)
+        results['features'] = sampled_features
+        results['sampled_inds'] = sampled_inds
+        results['input_shape'] = sampled_features.shape
 
         return results
 
