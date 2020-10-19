@@ -271,7 +271,7 @@ def extract_audio_feature(wav_path, audio_tools, mel_out_dir):
                 allow_pickle=False)
 
         except BaseException:
-            print(f'Read audio[{wav_path}] failed.')
+            print(f'Read audio [{wav_path}] failed.')
 
 
 if __name__ == '__main__':

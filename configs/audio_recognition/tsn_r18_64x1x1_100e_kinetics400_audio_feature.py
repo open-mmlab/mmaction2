@@ -4,8 +4,8 @@ model = dict(
     backbone=dict(type='ResNet', depth=18, in_channels=1, norm_eval=False),
     cls_head=dict(
         type='AudioTSNHead',
-        num_classes=512,
-        in_channels=2048,
+        num_classes=400,
+        in_channels=512,
         dropout_ratio=0.5,
         init_std=0.01))
 # model training and testing settings

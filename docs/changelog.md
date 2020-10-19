@@ -3,7 +3,7 @@
 ### v0.8.0 (master)
 
 **Highlights**
-- Support audio recognition
+- Support video recognition with audio modality
 
 **Improvements**
 - Set default values of 'average_clips' in each config file so that there is no need to set it explicitly during testing in most cases ([#232](https://github.com/open-mmlab/mmaction2/pull/232))
