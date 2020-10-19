@@ -49,7 +49,7 @@ def _get_audio_recognizer_cfg(fname):
     influencing other tests.
     """
     repo_dpath = osp.dirname(osp.dirname(osp.dirname(__file__)))
-    config_dpath = osp.join(repo_dpath, 'configs/audio_recognition')
+    config_dpath = osp.join(repo_dpath, 'configs/recognition_audio/')
     config_fpath = osp.join(config_dpath, fname)
     if not osp.exists(config_dpath):
         raise Exception('Cannot find config path')
@@ -345,7 +345,7 @@ def test_tpn():
 
 def test_audio_recognizer():
     model, train_cfg, test_cfg = _get_audio_recognizer_cfg(
-        'tsn_r50_64x1x1_100e_kinetics400_audio_feature.py')
+        'resnet/tsn_r50_64x1x1_100e_kinetics400_audio_feature.py')
     model['backbone']['pretrained'] = None
 
     recognizer = build_recognizer(

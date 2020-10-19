@@ -948,7 +948,7 @@ class AudioDecodeInit(object):
             y, sr = librosa.load(file_obj, sr=self.sample_rate)
         else:
             # Generate a random dummy 10s input
-            y = np.random.randn(10.0 * self.sample_rate, )
+            y = np.random.randn(int(round(10.0 * self.sample_rate)), )
             sr = self.sample_rate
 
         results['length'] = y.shape[0]
