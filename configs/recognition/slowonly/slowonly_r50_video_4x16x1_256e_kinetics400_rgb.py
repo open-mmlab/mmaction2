@@ -17,7 +17,7 @@ model = dict(
         spatial_type='avg',
         dropout_ratio=0.5))
 train_cfg = None
-test_cfg = dict(average_clips=None)
+test_cfg = dict(average_clips='prob')
 dataset_type = 'VideoDataset'
 data_root = 'data/kinetics400/videos_train'
 data_root_val = 'data/kinetics400/videos_val'
@@ -74,7 +74,7 @@ test_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
-    videos_per_gpu=8,
+    videos_per_gpu=24,
     workers_per_gpu=4,
     train=dict(
         type=dataset_type,
@@ -93,7 +93,7 @@ data = dict(
         pipeline=test_pipeline))
 # optimizer
 optimizer = dict(
-    type='SGD', lr=0.1, momentum=0.9,
+    type='SGD', lr=0.3, momentum=0.9,
     weight_decay=0.0001)  # this lr is used for 8 gpus
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy

@@ -31,7 +31,7 @@ The master branch works with **PyTorch 1.3+**.
 
 - **Support for various datasets**
 
-  The toolbox directly supports multiple datasets, UCF101, Kinetics-400, Something-Something V1&V2, Moments in Time, Multi-Moments in Time, THUMOS14, etc.
+  The toolbox directly supports multiple datasets, UCF101, Kinetics-[400/600/700], Something-Something V1&V2, Moments in Time, Multi-Moments in Time, THUMOS14, etc.
 
 - **Support for multiple action understanding frameworks**
 
@@ -84,7 +84,7 @@ Supported methods for action localization:
 - [x] [BSN](configs/localization/bsn/README.md)
 
 Results and models are available in the *README.md* of each method's config directory.
-A summary can be found in the [**model zoo**](https://mmaction2.readthedocs.io/en/latest/modelzoo.html) page.
+A summary can be found in the [**model zoo**](https://mmaction2.readthedocs.io/en/latest/recognition_models.html) page.
 
 ## Installation
 
@@ -93,6 +93,7 @@ Please refer to [install.md](docs/install.md) for installation.
 ## Data Preparation
 
 Please refer to [data_preparation.md](docs/data_preparation.md) for a general knowledge of data preparation.
+The supported datasets are listed in [supported_datasets.md](docs/supported_datasets.md)
 
 ## Get Started
 

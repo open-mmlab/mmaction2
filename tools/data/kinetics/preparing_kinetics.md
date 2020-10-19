@@ -1,14 +1,14 @@
-# Preparing Kinetics-400
+# Preparing Kinetics-[400/600/700]
 
-For basic dataset information, please refer to the official [website](https://deepmind.com/research/open-source/open-source-datasets/kinetics/).
-Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/kinetics400/`.
+For basic dataset information, please refer to the official [website](https://deepmind.com/research/open-source/open-source-datasets/kinetics/). The scripts can be used for preparing kinetics400, kinetics600, kinetics700. To prepare different version of kinetics, you need to replace `${DATASET}` in the following examples with the specific dataset name. The choices of dataset names are `kinetics400`, `kinetics600` and `kinetics700`.
+Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/${DATASET}/`.
 
 ## Step 1. Prepare Annotations
 
 First of all, you can run the following script to prepare annotations.
 
 ```shell
-bash download_annotations.sh
+bash download_annotations.sh ${DATASET}
 ```
 
 ## Step 2. Prepare Videos
@@ -17,28 +17,28 @@ Then, you can run the following script to prepare videos.
 The codes are adapted from the [official crawler](https://github.com/activitynet/ActivityNet/tree/master/Crawler/Kinetics). Note that this might take a long time.
 
 ```shell
-bash download_videos.sh
+bash download_videos.sh ${DATASET}
 ```
 
-If you have already have a backup of the kinetics-400 dataset using the download script above,
+If you have already have a backup of the dataset using the download script above,
 you only need to replace all whitespaces in the class name for ease of processing either by [detox](http://manpages.ubuntu.com/manpages/bionic/man1/detox.1.html)
 
 ```shell
 # sudo apt-get install detox
-detox -r ../../../data/kinetics400/videos_train/
-detox -r ../../../data/kinetics400/videos_val/
+detox -r ../../../data/${DATASET}/videos_train/
+detox -r ../../../data/${DATASET}/videos_val/
 ```
 
 or running
 
 ```shell
-bash rename_classnames.sh
+bash rename_classnames.sh ${DATASET}
 ```
 
 For better decoding speed, you can resize the original videos into smaller sized, densely encoded version by:
 
-```
-python ../resize_videos.py ../../../data/kinetics400/videos_train/ ../../../data/kinetics400/videos_train_256p_dense_cache --dense --level 2
+```bash
+python ../resize_videos.py ../../../data/${DATASET}/videos_train/ ../../../data/${DATASET}/videos_train_256p_dense_cache --dense --level 2
 ```
 
 ## Step 3. Extract RGB and Flow
@@ -51,28 +51,28 @@ If you have plenty of SSD space, then we recommend extracting frames there for b
 
 ```shell
 # execute these two line (Assume the SSD is mounted at "/mnt/SSD/")
-mkdir /mnt/SSD/kinetics400_extracted_train/
-ln -s /mnt/SSD/kinetics400_extracted_train/ ../../../data/kinetics400/rawframes_train/
-mkdir /mnt/SSD/kinetics400_extracted_val/
-ln -s /mnt/SSD/kinetics400_extracted_val/ ../../../data/kinetics400/rawframes_val/
+mkdir /mnt/SSD/${DATASET}_extracted_train/
+ln -s /mnt/SSD/${DATASET}_extracted_train/ ../../../data/${DATASET}/rawframes_train/
+mkdir /mnt/SSD/${DATASET}_extracted_val/
+ln -s /mnt/SSD/${DATASET}_extracted_val/ ../../../data/${DATASET}/rawframes_val/
 ```
 
 If you only want to play with RGB frames (since extracting optical flow can be time-consuming), consider running the following script to extract **RGB-only** frames using denseflow.
 
 ```shell
-bash extract_rgb_frames.sh
+bash extract_rgb_frames.sh ${DATASET}
 ```
 
 If you didn't install denseflow, you can still extract RGB frames using OpenCV by the following script, but it will keep the original size of the images.
 
 ```shell
-bash extract_rgb_frames_opencv.sh
+bash extract_rgb_frames_opencv.sh ${DATASET}
 ```
 
 If both are required, run the following script to extract frames.
 
 ```shell
-bash extract_frames.sh
+bash extract_frames.sh ${DATASET}
 ```
 
 These three commands above can generate images with size 340x256, if you want to generate images with short edge 320 (320p),
@@ -84,18 +84,18 @@ More details can be found in [data_preparation](/docs/data_preparation.md)
 you can run the follow scripts to generate file list in the format of videos and rawframes, respectively.
 
 ```shell
-bash generate_videos_filelist.sh
+bash generate_videos_filelist.sh ${DATASET}
 # execute the command below when rawframes are ready
-bash generate_rawframes_filelist.sh
+bash generate_rawframes_filelist.sh ${DATASET}
 ```
 
 ## Step 5. Folder Structure
 
-After the whole data pipeline for Kinetics-400 preparation.
-you can get the rawframes (RGB + Flow), videos and annotation files for Kinetics-400.
+After the whole data pipeline for Kinetics preparation.
+you can get the rawframes (RGB + Flow), videos and annotation files for Kinetics.
 
-In the context of the whole project (for Kinetics-400 only), the *minimal* folder structure will look like:
-(*minimal* means that some data are not necessary: for example, you may want to evaluate kinetics-400 using the original video format.)
+In the context of the whole project (for Kinetics only), the *minimal* folder structure will look like:
+(*minimal* means that some data are not necessary: for example, you may want to evaluate kinetics using the original video format.)
 
 ```
 mmaction2
@@ -103,9 +103,9 @@ mmaction2
 ├── tools
 ├── configs
 ├── data
-│   ├── kinetics400
-│   │   ├── kinetics400_train_list_videos.txt
-│   │   ├── kinetics400_val_list_videos.txt
+│   ├── ${DATASET}
+│   │   ├── ${DATASET}_train_list_videos.txt
+│   │   ├── ${DATASET}_val_list_videos.txt
 │   │   ├── annotations
 │   │   ├── videos_train
 │   │   ├── videos_val
@@ -121,4 +121,4 @@ mmaction2
 
 ```
 
-For training and evaluating on Kinetics-400, please refer to [getting_started](/docs/getting_started.md).
+For training and evaluating on Kinetics, please refer to [getting_started](/docs/getting_started.md).
