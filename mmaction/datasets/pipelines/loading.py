@@ -943,11 +943,11 @@ class AudioDecodeInit(object):
 
         if self.file_client is None:
             self.file_client = FileClient(self.io_backend, **self.kwargs)
-        try:
+        if osp.exists(results['audio_path']):
             file_obj = io.BytesIO(self.file_client.get(results['audio_path']))
             y, sr = librosa.load(file_obj, sr=self.sample_rate)
-        except BaseException:
-            # Generate a ramdom dummy 10s input
+        else:
+            # Generate a random dummy 10s input
             y = np.random.randn(10.0 * self.sample_rate, )
             sr = self.sample_rate
 
@@ -975,10 +975,10 @@ class LoadAudioFeature(object):
             results (dict): The resulting dict to be modified and passed
                 to the next transform in pipeline.
         """
-        try:
+        if osp.exists(results['audio_path']):
             feature_map = np.load(results['audio_path'])
-        except BaseException:
-            # Generate a ramdom dummy 10s input
+        else:
+            # Generate a random dummy 10s input
             # Some videos do not have audio stream
             feature_map = np.random.randn(640, 80).astype(np.float32)
         results['length'] = feature_map.shape[0]
@@ -990,13 +990,17 @@ class LoadAudioFeature(object):
 class AudioDecode(object):
     """Sample the audio w.r.t. the frames selected.
 
+    Args:
+        fixed_length (int): As the audio clip selected by frames sampled may
+            not be extactly the same, `fixed_length` will truncate or pad them
+            into the same size. Default: 32000.
+
     Required keys are "frame_inds", "num_clips", "total_frames", "length",
     added or modified keys are "audios", "audios_shape".
     """
 
-    def __init__(self):
-        np.warnings.filterwarnings(
-            'ignore', category=np.VisibleDeprecationWarning)
+    def __init__(self, fixed_length=32000):
+        self.fixed_length = fixed_length
 
     def __call__(self, results):
         """Perform the ``AudioDecode`` to pick audio clips."""
@@ -1018,7 +1022,15 @@ class AudioDecode(object):
                     round((clip_frame_inds[-1] + 1) / results['total_frames'] *
                           results['length'])))
             cropped_audio = audio[start_idx:end_idx]
-            resampled_clips.append(cropped_audio)
+            if cropped_audio.shape[0] >= self.fixed_length:
+                truncated_audio = cropped_audio[:self.fixed_length]
+            else:
+                truncated_audio = np.pad(
+                    cropped_audio,
+                    ((0, self.fixed_length - cropped_audio.shape[0])),
+                    mode='constant')
+
+            resampled_clips.append(truncated_audio)
 
         results['audios'] = np.array(resampled_clips)
         results['audios_shape'] = results['audios'].shape
@@ -1080,15 +1092,10 @@ class AudioFeatureSelector(object):
             if cropped_audio.shape[0] >= self.fixed_length:
                 truncated_audio = cropped_audio[:self.fixed_length, :]
             else:
-                try:
-                    truncated_audio = np.pad(
-                        cropped_audio,
-                        ((0, self.fixed_length - cropped_audio.shape[0]),
-                         (0, 0)),
-                        mode='edge')
-                except ValueError:
-                    truncated_audio = np.random.randn(128,
-                                                      80).astype(np.float32)
+                truncated_audio = np.pad(
+                    cropped_audio,
+                    ((0, self.fixed_length - cropped_audio.shape[0]), (0, 0)),
+                    mode='constant')
 
             resampled_clips.append(truncated_audio)
         results['audios'] = np.array(resampled_clips)

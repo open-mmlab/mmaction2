@@ -1167,6 +1167,15 @@ class TestLoading(object):
         results = audio_decode_init(inputs)
         assert self.check_keys_contain(results.keys(), target_keys)
 
+        # test when no audio file exists
+        inputs = copy.deepcopy(self.audio_results)
+        inputs['audio_path'] = 'foo/foo/bar.wav'
+        audio_decode_init = AudioDecodeInit()
+        results = audio_decode_init(inputs)
+        assert self.check_keys_contain(results.keys(), target_keys)
+        assert results['audios'].shape == (10.0 *
+                                           audio_decode_init.sample_rate, )
+
     def test_audio_decode(self):
         target_keys = ['frame_inds', 'audios']
         inputs = copy.deepcopy(self.audio_results)
@@ -1183,6 +1192,14 @@ class TestLoading(object):
         inputs = copy.deepcopy(self.audio_feature_results)
         load_audio_feature = LoadAudioFeature()
         results = load_audio_feature(inputs)
+        assert self.check_keys_contain(results.keys(), target_keys)
+
+        # test when no audio feature file exists
+        inputs = copy.deepcopy(self.audio_feature_results)
+        inputs['audio_path'] = 'foo/foo/bar.npy'
+        load_audio_feature = LoadAudioFeature()
+        results = load_audio_feature(inputs)
+        assert results['audios'].shape == (640, 80)
         assert self.check_keys_contain(results.keys(), target_keys)
 
     def test_audio_feature_selector(self):
