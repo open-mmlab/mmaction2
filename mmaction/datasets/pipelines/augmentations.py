@@ -1264,3 +1264,70 @@ class MelSpectrogram(object):
                     f'n_mels={self.n_mels}, '
                     f'fixed_length={self.fixed_length})')
         return repr_str
+
+
+@PIPELINES.register_module()
+class MeanProcessingForClip(object):
+    """Subtract the corresponding mean values (pixel-wise) for each image in
+    the clip.
+
+    Required keys are "imgs", "num_clips", added or modified keys are "imgs".
+    The args "mean" and "mean_file" cannot be None at the same time.
+
+    Args:
+        mean (None | ndarray): Mean values of different pixels or
+            channels. Default: None.
+        mean_file (None | str): The npy file of mean values.
+            Default: None.
+        transpose_axes (None | Tuple[int] | List[int]): The arg 'axes' of
+            transpose to reverse or permute the mean values. Default: None.
+    """
+
+    def __init__(self, mean=None, mean_file=None, transpose_axes=None):
+        self.mean = mean
+        self.mean_file = mean_file
+        self.transpose_axes = transpose_axes
+
+        if self.mean_file is not None:
+            self.mean = np.load(self.mean_file)
+        if not isinstance(self.mean, np.ndarray):
+            raise TypeError(
+                f'Mean must be np.ndarray after trying to load mean file, '
+                f'but got {type(self.mean)}')
+        if self.transpose_axes is not None:
+            self.mean = self.mean.transpose(self.transpose_axes)
+        self.is_multisampling = False
+
+    def __call__(self, results):
+        """Performs the MeanProcessingForClip augmentation.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        num_clips = results['num_clips']
+
+        if num_clips > 1 and (not self.is_multisampling):
+            self.is_multisampling = True
+            self.mean = np.repeat(self.mean, num_clips, axis=0)
+
+        n = len(results['imgs'])
+        h, w, c = results['imgs'][0].shape
+        imgs = np.empty((n, h, w, c), dtype=np.float32)
+
+        if self.mean.shape != (n, h, w, c):
+            raise ValueError(
+                'The shape of mean values and imgs mismatch in pixel-wise')
+
+        imgs = np.subtract(results['imgs'], self.mean)
+        results['imgs'] = imgs
+        results['mean'] = self.mean
+        return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'mean={self.mean}, '
+                    f'mean_file={self.mean_file}, '
+                    f'transpose_axes={self.transpose_axes}, '
+                    f'is_multisampling={self.is_multisampling})')
+        return repr_str

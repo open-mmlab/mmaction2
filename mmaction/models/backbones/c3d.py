@@ -23,6 +23,7 @@ class C3D(nn.Module):
         act_cfg (dict): Config dict for activation layer.
             Default: ``dict(type='ReLU')``.
         dropout_ratio (float): Probability of dropout layer. Default: 0.5.
+        init_std (float): Std value for Initiation of fc layers. Default: 0.01.
     """
 
     def __init__(self,
@@ -32,6 +33,7 @@ class C3D(nn.Module):
                  norm_cfg=None,
                  act_cfg=dict(type='ReLU'),
                  dropout_ratio=0.5,
+                 init_std=0.005,
                  **kwargs):
         super().__init__()
         self.pretrained = pretrained
@@ -40,6 +42,7 @@ class C3D(nn.Module):
         self.norm_cfg = norm_cfg
         self.act_cfg = act_cfg
         self.dropout_ratio = dropout_ratio
+        self.init_std = init_std
 
         c3d_conv_param = dict(
             kernel_size=(3, 3, 3),
@@ -87,7 +90,7 @@ class C3D(nn.Module):
                 if isinstance(m, nn.Conv3d):
                     kaiming_init(m)
                 elif isinstance(m, nn.Linear):
-                    normal_init(m, std=0.01)
+                    normal_init(m, std=self.init_std)
                 elif isinstance(m, _BatchNorm):
                     constant_init(m, 1)
 
@@ -123,10 +126,12 @@ class C3D(nn.Module):
         x = self.conv5b(x)
         x = self.pool5(x)
 
-        x = x.view(-1, 8192)
+        x = x.flatten(start_dim=1)
         x = self.relu(self.fc6(x))
         x = self.dropout(x)
         x = self.relu(self.fc7(x))
-        x = self.dropout(x)
 
         return x
+
+    def train(self, mode=True):
+        super(C3D, self).train(mode)

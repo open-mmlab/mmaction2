@@ -7,9 +7,9 @@ from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 # yapf: disable
 from mmaction.datasets.pipelines import (AudioAmplify, CenterCrop, ColorJitter,
-                                         Flip, Fuse, MelSpectrogram,
-                                         MultiGroupCrop, MultiScaleCrop,
-                                         Normalize, RandomCrop,
+                                         Flip, Fuse, MeanProcessingForClip,
+                                         MelSpectrogram, MultiGroupCrop,
+                                         MultiScaleCrop, Normalize, RandomCrop,
                                          RandomResizedCrop, Resize, TenCrop,
                                          ThreeCrop)
 
@@ -1062,3 +1062,44 @@ class TestAugumentations(object):
                              f'step_size={mel.step_size}, '
                              f'n_mels={mel.n_mels}, '
                              f'fixed_length={mel.fixed_length})')
+
+    def test_mean_processing_for_clip(self):
+        with pytest.raises(TypeError):
+            # Mean must be list, tuple or np.ndarray
+            MeanProcessingForClip(None, None, None)
+
+        target_keys = ['imgs', 'num_clips']
+
+        # the mean should be repeated if num_clips > 1
+        imgs = np.random.rand(4, 256, 256, 3)
+        results = dict(imgs=imgs, num_clips=2)
+        config = dict(
+            mean=np.random.rand(2, 256, 256, 3),
+            mean_file=None,
+            transpose_axes=None)
+        mpfc = MeanProcessingForClip(**config)
+        mpfc_results = mpfc(results)
+        assert mpfc.mean.shape == imgs.shape
+        assert self.check_keys_contain(mpfc_results.keys(), target_keys)
+        assert mpfc_results['imgs'].shape == imgs.shape
+
+        # mean.shape should match imgs.shape
+        imgs = np.random.rand(3, 256, 256, 3)
+        results = dict(imgs=imgs, num_clips=1)
+        config = dict(
+            mean=np.random.rand(3, 128, 256, 3),
+            mean_file=None,
+            transpose_axes=None)
+        mpfc = MeanProcessingForClip(**config)
+        with pytest.raises(ValueError):
+            # The shape of mean values and imgs mismatch in pixel-wise
+            mpfc(results)
+
+        # 'mean' should be reshape by transpose
+        target_mean_shape = (16, 112, 112, 3)
+        config = dict(
+            mean=np.random.rand(3, 16, 112, 112),
+            mean_file=None,
+            transpose_axes=(1, 2, 3, 0))
+        mpfc = MeanProcessingForClip(**config)
+        assert mpfc.mean.shape == target_mean_shape

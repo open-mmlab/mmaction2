@@ -17,6 +17,7 @@ from .registry import BACKBONES, HEADS, LOCALIZERS, LOSSES, RECOGNIZERS
 
 __all__ = [
     'BACKBONES', 'HEADS', 'RECOGNIZERS', 'build_recognizer', 'build_head',
+<<<<<<< HEAD
     'build_backbone', 'recognizer2d', 'recognizer3d', 'C3D', 'ResNet', 'ResNet3d',
     'ResNet2Plus1d', 'I3DHead', 'TSNHead', 'TSMHead', 'BaseHead',
     'BaseRecognizer', 'LOSSES', 'CrossEntropyLoss', 'NLLLoss', 'HVULoss',
@@ -26,4 +27,14 @@ __all__ = [
     'build_model', 'OHEMHingeLoss', 'SSNLoss', 'ResNet3dCSN', 'ResNetTIN',
     'TPN', 'TPNHead', 'build_loss', 'build_neck', 'AudioRecognizer',
     'AudioTSNHead'
+=======
+    'build_backbone', 'recognizer2d', 'recognizer3d', 'C3D', 'ResNet',
+    'ResNet3d', 'ResNet2Plus1d', 'I3DHead', 'TSNHead', 'TSMHead', 'BaseHead',
+    'BaseRecognizer', 'LOSSES', 'CrossEntropyLoss', 'NLLLoss', 'ResNetTSM',
+    'ResNet3dSlowFast', 'SlowFastHead', 'Conv2plus1d', 'ResNet3dSlowOnly',
+    'BCELossWithLogits', 'LOCALIZERS', 'build_localizer', 'PEM', 'TEM',
+    'BinaryLogisticRegressionLoss', 'BMN', 'BMNLoss', 'build_model',
+    'OHEMHingeLoss', 'SSNLoss', 'ResNet3dCSN', 'ResNetTIN', 'TPN', 'TPNHead',
+    'build_loss', 'build_neck', 'AudioRecognizer', 'AudioTSNHead'
+>>>>>>> badcb77... Finish the C3D and update corresponding documents
 ]
