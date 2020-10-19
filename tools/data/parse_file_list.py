@@ -258,15 +258,17 @@ def parse_mmit_splits():
     return splits
 
 
-def parse_kinetics_splits(level):
-    """Parse Kinetics-400 dataset into "train", "val", "test" splits.
+def parse_kinetics_splits(level, dataset):
+    """Parse Kinetics dataset into "train", "val", "test" splits.
 
     Args:
         level (int): Directory level of data. 1 for the single-level directory,
             2 for the two-level directory.
+        dataset (str): Denotes the version of Kinetics that needs to be parsed,
+            choices are "kinetics400", "kinetics600" and "kinetics700".
 
     Returns:
-        list: "train", "val", "test" splits of Kinetics-400.
+        list: "train", "val", "test" splits of Kinetics.
     """
 
     def convert_label(s, keep_whitespaces=False):
@@ -290,7 +292,7 @@ def parse_kinetics_splits(level):
         """A function to map line string to video and label.
 
         Args:
-            x (str): A single line from Kinetics-400 csv file.
+            x (str): A single line from Kinetics csv file.
             test (bool): Indicate whether the line comes from test
                 annotation file.
 
@@ -312,9 +314,9 @@ def parse_kinetics_splits(level):
             label = class_mapping[convert_label(x[0])]
             return video, label
 
-    train_file = 'data/kinetics400/annotations/kinetics_train.csv'
-    val_file = 'data/kinetics400/annotations/kinetics_val.csv'
-    test_file = 'data/kinetics400/annotations/kinetics_test.csv'
+    train_file = f'data/{dataset}/annotations/kinetics_train.csv'
+    val_file = f'data/{dataset}/annotations/kinetics_val.csv'
+    test_file = f'data/{dataset}/annotations/kinetics_test.csv'
 
     csv_reader = csv.reader(open(train_file))
     # skip the first line

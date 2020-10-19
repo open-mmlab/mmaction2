@@ -31,7 +31,7 @@ The master branch works with **PyTorch 1.3+**.
 
 - **Support for various datasets**
 
-  The toolbox directly supports multiple datasets, UCF101, Kinetics-400, Something-Something V1&V2, Moments in Time, Multi-Moments in Time, THUMOS14, etc.
+  The toolbox directly supports multiple datasets, UCF101, Kinetics-[400/600/700], Something-Something V1&V2, Moments in Time, Multi-Moments in Time, THUMOS14, etc.
 
 - **Support for multiple action understanding frameworks**
 
