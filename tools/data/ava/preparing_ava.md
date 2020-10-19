@@ -14,7 +14,7 @@ bash download_annotations.sh
 This command will download `ava_v2.1.zip` for AVA `v2.1` annotation. If you need the AVA `v2.2` annotation, you can try the following script.
 
 ```shell
-VERSIO=2.2 bash download_annotations.sh
+VERSION=2.2 bash download_annotations.sh
 ```
 
 ## Step 2. Prepare Videos

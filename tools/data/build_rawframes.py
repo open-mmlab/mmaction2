@@ -155,7 +155,6 @@ def parse_args():
     parser.add_argument(
         '--mixed-ext',
         action='store_true',
-        default=False,
         help='process video files with mixed extensions')
     parser.add_argument(
         '--new-width', type=int, default=0, help='resize image width')
