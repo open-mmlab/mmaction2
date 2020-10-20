@@ -46,7 +46,7 @@ jobs:
         run: pip install Pillow==6.2.2
         if: ${{matrix.torchvision == '0.4.2'}}
       - name: Install soundfile lib
-        run: sudo apt-get install libsndfile1
+        run: sudo apt-get install -y libsndfile1
       - name: Install onnx
         run: pip install onnx
       - name: Install librosa and soundfile
@@ -122,9 +122,9 @@ jobs:
       - name: Install TurboJpeg lib
         run: sudo apt-get install -y libturbojpeg
       - name: Install soundfile lib
-        run: sudo apt-get install libsndfile1
+        run: sudo apt-get install -y libsndfile1
       - name: Install librosa and soundfile
-        run: pip install librosa soundfile
+        run: pip install -y librosa soundfile
       - name: Install PyTorch
         run: pip install torch==${{matrix.torch}} torchvision==${{matrix.torchvision}} -f https://download.pytorch.org/whl/torch_stable.html
       - name: Install mmaction dependencies

@@ -1,6 +1,14 @@
-# Audio Recognition
+# Resnet for Audio
 
 ## Introduction
+```
+@article{xiao2020audiovisual,
+  title={Audiovisual SlowFast Networks for Video Recognition},
+  author={Xiao, Fanyi and Lee, Yong Jae and Grauman, Kristen and Malik, Jitendra and Feichtenhofer, Christoph},
+  journal={arXiv preprint arXiv:2001.08740},
+  year={2020}
+}
+```
 
 ## Model Zoo
 

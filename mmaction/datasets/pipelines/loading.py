@@ -948,7 +948,7 @@ class AudioDecodeInit(object):
             y, sr = librosa.load(file_obj, sr=self.sample_rate)
         else:
             # Generate a random dummy 10s input
-            y = np.random.randn(int(round(10.0 * self.sample_rate)), )
+            y = np.random.rand(int(round(10.0 * self.sample_rate)), )
             sr = self.sample_rate
 
         results['length'] = y.shape[0]
@@ -980,7 +980,7 @@ class LoadAudioFeature(object):
         else:
             # Generate a random dummy 10s input
             # Some videos do not have audio stream
-            feature_map = np.random.randn(640, 80).astype(np.float32)
+            feature_map = np.random.rand(640, 80).astype(np.float32)
         results['length'] = feature_map.shape[0]
         results['audios'] = feature_map
         return results
