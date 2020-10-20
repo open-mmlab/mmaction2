@@ -57,7 +57,7 @@ Example: test ResNet model on Kinetics-400 audio dataset and dump the result to 
 ```shell
 python tools/test.py configs/audio_recognition/tsn_r50_64x1x1_100e_kinetics400_audio_feature.py \
     checkpoints/SOME_CHECKPOINT.pth --eval top_k_accuracy mean_class_accuracy \
-    --out result.json --average-clips prob
+    --out result.json
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
