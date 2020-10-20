@@ -3,7 +3,8 @@ import pytest
 import torch
 from mmcv.parallel import DataContainer as DC
 
-from mmaction.datasets.pipelines import (Collect, FormatShape, ImageToTensor,
+from mmaction.datasets.pipelines import (Collect, FormatAudioShape,
+                                         FormatShape, ImageToTensor,
                                          ToDataContainer, ToTensor, Transpose)
 
 
@@ -162,3 +163,16 @@ def test_format_shape():
         num_proposals=8)
     format_shape = FormatShape('NPTCHW')
     assert format_shape(results)['input_shape'] == (8, 9, 3, 224, 224)
+
+
+def test_format_audio_shape():
+    with pytest.raises(ValueError):
+        # invalid input format
+        FormatAudioShape('XXXX')
+
+    # 'NCTF' input format
+    results = dict(audios=np.random.randn(3, 128, 8))
+    format_shape = FormatAudioShape('NCTF')
+    assert format_shape(results)['input_shape'] == (3, 1, 128, 8)
+    assert repr(format_shape) == format_shape.__class__.__name__ + \
+        "(input_format='NCTF')"

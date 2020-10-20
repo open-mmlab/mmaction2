@@ -104,3 +104,34 @@ python tools/data/build_file_list.py ${DATASET} ${SRC_FOLDER} [--rgb-prefix ${RG
 - `--shuffle`: Whether to shuffle the file list.
 
 Now, you can go to [getting_started.md](getting_started.md) to train and test the model.
+
+### Audio Preparation
+
+We also provide a simple script for audio waveform extraction and mel-spectrogram generation.
+
+```shell
+cd $MMACTION2
+python tools/data/extract_audio.py ${ROOT} ${DST_ROOT} [--ext ${EXT}] [--num-workers ${N_WORKERS}] \
+    [--level ${LEVEL}]
+```
+
+- `ROOT`: The root directory of the videos.
+- `DST_ROOT`: The destination root directory of the audios.
+- `EXT`: Extention of the video files. e.g., `.mp4`.
+- `N_WORKERS`: Number of processes to be used.
+
+After extracting audios, you are free to decode and generate the spectrogram on-the-fly such as [this](/configs/audio_recognition/tsn_r50_64x1x1_kinetics400_audio.py). As for the annotations, you can directly use those of the rawframes as long as you keep the relative position of audio files same as the rawframes directory. However, extracting spectrogram on-the-fly is slow and bad for prototype iteration. Therefore, we also provide a script (and many useful tools to play with) for you to generation spectrogram off-line.
+
+```shell
+cd $MMACTION2
+python tools/data/build_audio_features.py ${AUDIO_HOME_PATH} ${SPECTROGRAM_SAVE_PATH} [--level ${LEVEL}] \
+    [--ext $EXT] [--num-workers $N_WORKERS] [--part $PART]
+```
+
+- `AUDIO_HOME_PATH`: The root directory of the audio files.
+- `SPECTROGRAM_SAVE_PATH`: The destination root directory of the audio features.
+- `EXT`: Extention of the audio files. e.g., `.m4a`.
+- `N_WORKERS`: Number of processes to be used.
+- `PART`: Determines how many parts to be splited and which part to run. e.g., `2/5` means splitting all files into 5-fold and executing the 2nd part. This is useful if you have several machines.
+
+The annotations for audio spectrogram features are identical to those of rawframes. You can simply make a copy of `dataset_[train/val]_list_rawframes.txt` and rename it as `dataset_[train/val]_list_audio_feature.txt`
