@@ -922,12 +922,26 @@ class AudioDecodeInit(object):
     "sample_rate", "audios".
     """
 
-    def __init__(self, io_backend='disk', sample_rate=16000, **kwargs):
+    def __init__(self,
+                 io_backend='disk',
+                 sample_rate=16000,
+                 pad_method='zero',
+                 **kwargs):
         self.io_backend = io_backend
         self.sample_rate = sample_rate
-
+        if pad_method in ['random', 'zero']:
+            self.pad_method = pad_method
+        else:
+            raise NotImplementedError
         self.kwargs = kwargs
         self.file_client = None
+
+    def _zero_pad(self, shape):
+        return np.zeros(shape, dtype=np.float32)
+
+    def _random_pad(self, shape):
+        # librosa load raw audio file into a distribution of -1~+1
+        return np.random.rand(shape).astype(np.float32) * 2 - 1
 
     def __call__(self, results):
         """Perform the librosa initialization.
@@ -948,7 +962,8 @@ class AudioDecodeInit(object):
             y, sr = librosa.load(file_obj, sr=self.sample_rate)
         else:
             # Generate a random dummy 10s input
-            y = np.random.rand(int(round(10.0 * self.sample_rate)), )
+            pad_func = getattr(self, f'_{self.pad_method}_pad')
+            y = pad_func(int(round(10.0 * self.sample_rate)))
             sr = self.sample_rate
 
         results['length'] = y.shape[0]
@@ -965,8 +980,17 @@ class LoadAudioFeature(object):
     audios".
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, pad_method='zero'):
+        if pad_method not in ['zero', 'random']:
+            raise NotImplementedError
+        self.pad_method = pad_method
+
+    def _zero_pad(self, shape):
+        return np.zeros(shape, dtype=np.float32)
+
+    def _random_pad(self, shape):
+        # spectrogram is normalized into a distribution of 0~1
+        return np.random.rand(shape).astype(np.float32)
 
     def __call__(self, results):
         """Perform the numpy loading.
@@ -980,7 +1004,9 @@ class LoadAudioFeature(object):
         else:
             # Generate a random dummy 10s input
             # Some videos do not have audio stream
-            feature_map = np.random.rand(640, 80).astype(np.float32)
+            pad_func = getattr(self, f'_{self.pad_method}_pad')
+            feature_map = pad_func((640, 80))
+
         results['length'] = feature_map.shape[0]
         results['audios'] = feature_map
         return results

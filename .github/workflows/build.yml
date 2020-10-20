@@ -124,7 +124,7 @@ jobs:
       - name: Install soundfile lib
         run: sudo apt-get install -y libsndfile1
       - name: Install librosa and soundfile
-        run: pip install -y librosa soundfile
+        run: pip install librosa soundfile
       - name: Install PyTorch
         run: pip install torch==${{matrix.torch}} torchvision==${{matrix.torchvision}} -f https://download.pytorch.org/whl/torch_stable.html
       - name: Install mmaction dependencies
