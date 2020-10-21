@@ -630,6 +630,17 @@ python tools/publish_model.py work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb/lates
 
 The final output filename will be `tsn_r50_1x1x3_100e_kinetics400_rgb-{hash id}.pth`.
 
+### Evaluate metrics on result file
+
+We provide a convenient script [tools/analysis/eval_metric.py](/tools/analysis/eval_metric.py) to evaluate metrics of the results saved in a file.
+
+The saved result file is created on [tools/test.py](/tools/test.py) by setting the arguments `--out ${RESULT_FILE}` to indicate the result file,
+which stores the final output of the whole model.
+
+```shell
+python tools/analysis/eval_metric.py ${CONFIG_FILE} ${RESULT_FILE} [--eval ${EVAL_METRICS}] [--cfg-options ${CFG_OPTIONS}] [--eval-options ${EVAL_OPTIONS}]
+```
+
 ## Tutorials
 
 Currently, we provide some tutorials for users to [finetune model](tutorials/finetune.md),
