@@ -97,7 +97,9 @@ class RawVideoDataset(BaseDataset):
         else:
             ind = random.randint(0, results['num_clips'] - 1)
         clipname = self.clipname_tmpl.format(ind)
-        filename = osp.join(self.video_dir, clipname)
+
+        # ugly fix for training on SH36
+        filename = '_'.join(results['video_dir'], clipname)
         results['filename'] = filename
         return results
 
