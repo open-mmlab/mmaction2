@@ -98,8 +98,12 @@ class RawVideoDataset(BaseDataset):
             ind = random.randint(0, results['num_clips'] - 1)
         clipname = self.clipname_tmpl.format(ind)
 
-        # ugly fix for training on SH36
-        filename = '_'.join(results['video_dir'], clipname)
+        # if the first char of self.clipname_tmpl is a letter, use osp.join;
+        # otherwise, directly concat them
+        if self.clipname_tmpl[0].isalpha():
+            filename = osp.join(results['video_dir'], clipname)
+        else:
+            filename = results['video_dir'] + clipname
         results['filename'] = filename
         return results
 
