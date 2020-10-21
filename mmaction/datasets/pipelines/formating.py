@@ -282,3 +282,41 @@ class FormatShape(object):
         repr_str = self.__class__.__name__
         repr_str += f"(input_format='{self.input_format}')"
         return repr_str
+
+
+@PIPELINES.register_module()
+class FormatAudioShape(object):
+    """Format final audio shape to the given input_format.
+
+    Required keys are "imgs", "num_clips" and "clip_len", added or modified
+    keys are "imgs" and "input_shape".
+
+    Args:
+        input_format (str): Define the final imgs format.
+    """
+
+    def __init__(self, input_format):
+        self.input_format = input_format
+        if self.input_format not in ['NCTF']:
+            raise ValueError(
+                f'The input format {self.input_format} is invalid.')
+
+    def __call__(self, results):
+        """Performs the FormatShape formating.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        audios = results['audios']
+        # clip x sample x freq -> clip x channel x sample x freq
+        clip, sample, freq = audios.shape
+        audios = audios.reshape(clip, 1, sample, freq)
+        results['audios'] = audios
+        results['input_shape'] = audios.shape
+        return results
+
+    def __repr__(self):
+        repr_str = self.__class__.__name__
+        repr_str += f"(input_format='{self.input_format}')"
+        return repr_str

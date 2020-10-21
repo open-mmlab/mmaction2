@@ -1,15 +1,16 @@
-from .augmentations import (CenterCrop, ColorJitter, Flip, Fuse,
-                            MultiGroupCrop, MultiScaleCrop, Normalize,
-                            RandomCrop, RandomResizedCrop, Resize, TenCrop,
-                            ThreeCrop)
+from .augmentations import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
+                            MelSpectrogram, MultiGroupCrop, MultiScaleCrop,
+                            Normalize, RandomCrop, RandomResizedCrop, Resize,
+                            TenCrop, ThreeCrop)
 from .compose import Compose
 from .formating import (Collect, FormatShape, ImageToTensor, ToDataContainer,
-                        ToTensor, Transpose)
+                        ToTensor, Transpose, FormatAudioShape)
 from .loading import (DecordDecode, DecordInit, DenseSampleFrames,
                       FrameSelector, GenerateLocalizationLabels, LoadHVULabel,
                       LoadLocalizationFeature, LoadProposals, OpenCVDecode,
                       OpenCVInit, PyAVDecode, PyAVInit, RawFrameDecode,
-                      SampleFrames, SampleProposalFrames,
+                      SampleFrames, SampleProposalFrames, AudioDecode,
+                      AudioDecodeInit, AudioFeatureSelector, LoadAudioFeature,
                       UntrimmedSampleFrames)
 
 __all__ = [
@@ -21,5 +22,7 @@ __all__ = [
     'GenerateLocalizationLabels', 'LoadLocalizationFeature', 'LoadProposals',
     'DecordInit', 'OpenCVInit', 'PyAVInit', 'SampleProposalFrames',
     'UntrimmedSampleFrames', 'RawFrameDecode', 'DecordInit', 'OpenCVInit',
-    'PyAVInit', 'SampleProposalFrames', 'ColorJitter', 'LoadHVULabel'
+    'PyAVInit', 'SampleProposalFrames', 'ColorJitter', 'LoadHVULabel',
+    'AudioAmplify', 'MelSpectrogram', 'AudioDecode', 'FormatAudioShape', 
+    'LoadAudioFeature', 'AudioFeatureSelector', 'AudioDecodeInit'
 ]

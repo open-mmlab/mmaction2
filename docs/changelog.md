@@ -2,6 +2,9 @@
 
 ### v0.8.0 (master)
 
+**Highlights**
+- Support video recognition with audio modality
+
 **New Features**
 - Support the training of video recognition dataset with multiple tag categories ([#235](https://github.com/open-mmlab/mmaction2/pull/235))
 
