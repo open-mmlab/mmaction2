@@ -39,8 +39,6 @@ class Recognizer2D(BaseRecognizer):
         twice_sample = self.test_cfg.get('twice_sample', False)
 
         batches = imgs.shape[0]
-        if test_crops is not None and twice_sample:
-            test_crops = test_crops * 2
 
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
         num_segs = imgs.shape[0] // batches
@@ -61,6 +59,8 @@ class Recognizer2D(BaseRecognizer):
 
         cls_score = self.cls_head(x, num_segs)
         if test_crops is not None:
+            if twice_sample:
+                test_crops = test_crops * 2
             cls_score = self.average_clip(cls_score, test_crops)
 
         return cls_score.cpu().numpy()
