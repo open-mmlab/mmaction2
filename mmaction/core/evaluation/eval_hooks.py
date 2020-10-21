@@ -21,10 +21,10 @@ class EpochEvalHook(Hook):
 
     Args:
         dataloader (DataLoader): A PyTorch dataloader.
-        start (int, optional): Evaluation starting epoch. It enables evaluation
-            before the training starts if ``start`` <= the resuming epoch.
-            If None, whether to evaluate is merely decided by ``interval``.
-            Default: None.
+        start (int | None, optional): Evaluation starting epoch. It enables
+            evaluation before the training starts if ``start`` <= the resuming
+            epoch. If None, whether to evaluate is merely decided by
+            ``interval``. Default: None.
         interval (int): Evaluation interval (by epochs). Default: 1.
         save_best (bool): Whether to save best checkpoint during evaluation.
             Default: True.
@@ -190,13 +190,11 @@ class DistEpochEvalHook(EpochEvalHook):
 
     Args:
         dataloader (DataLoader): A PyTorch dataloader.
-        start (int, optional): Evaluation starting epoch. It enables evaluation
-            before the training starts if ``start`` <= the resuming epoch.
-            If None, whether to evaluate is merely decided by ``interval``.
-            Default: None.
+        start (int | None, optional): Evaluation starting epoch. It enables
+            evaluation before the training starts if ``start`` <= the resuming
+            epoch. If None, whether to evaluate is merely decided by
+            ``interval``. Default: None.
         interval (int): Evaluation interval (by epochs). Default: 1.
-        tmpdir (str | None): Temporary directory to save the results of all
-            processes. Default: None.
         save_best (bool): Whether to save best checkpoint during evaluation.
             Default: True.
         key_indicator (str | None): Key indicator to measure the best
@@ -210,6 +208,10 @@ class DistEpochEvalHook(EpochEvalHook):
         rule (str | None): Comparison rule for best score. Options are None,
             'greater' and 'less'. If set to None, it will infer a reasonable
             rule. Default: 'None'.
+        tmpdir (str | None): Temporary directory to save the results of all
+            processes. Default: None.
+        gpu_collect (bool): Whether to use gpu or cpu to collect results.
+            Default: False.
         **eval_kwargs: Evaluation arguments fed into the evaluate function of
             the dataset.
     """
