@@ -51,7 +51,7 @@ This project is released under the [Apache 2.0 license](LICENSE).
 
 ## Changelog
 
-v0.6.0 was released in 2/9/2020. Please refer to [changelog.md](docs/changelog.md) for details and release history.
+v0.7.0 was released in 30/9/2020. Please refer to [changelog.md](docs/changelog.md) for details and release history.
 
 ## Benchmark
 | Model  |input| io backend | batch size x gpus | MMAction2 (s/iter) | MMAction (s/iter) | Temporal-Shift-Module (s/iter) | PySlowFast (s/iter) |
@@ -82,6 +82,7 @@ Supported methods for action recognition:
 Supported methods for action localization:
 - [x] [BMN](configs/localization/bmn/README.md)
 - [x] [BSN](configs/localization/bsn/README.md)
+- [x] [SSN](configs/localization/ssn/README.md)
 
 Results and models are available in the *README.md* of each method's config directory.
 A summary can be found in the [**model zoo**](https://mmaction2.readthedocs.io/en/latest/recognition_models.html) page.
