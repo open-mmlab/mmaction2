@@ -126,7 +126,7 @@ class RawVideoDataset(BaseDataset):
     def prepare_train_frames(self, idx):
         """Prepare the frames for training given the index."""
         results = copy.deepcopy(self.video_infos[idx])
-        results = self.sample_clips(results)
+        results = self.sample_clip(results)
         results['modality'] = self.modality
         results['start_index'] = self.start_index
         return self.pipeline(results)
@@ -134,7 +134,7 @@ class RawVideoDataset(BaseDataset):
     def prepare_test_frames(self, idx):
         """Prepare the frames for testing given the index."""
         results = copy.deepcopy(self.video_infos[idx])
-        results = self.sample_clips(results)
+        results = self.sample_clip(results)
         results['modality'] = self.modality
         results['start_index'] = self.start_index
         return self.pipeline(results)
