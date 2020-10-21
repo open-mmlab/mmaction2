@@ -256,6 +256,22 @@ def test_tsm():
         for one_img in img_list:
             recognizer(one_img, None, return_loss=False)
 
+    # test twice sample + 3 crops
+    input_shape = (2, 48, 3, 32, 32)
+    demo_inputs = generate_demo_inputs(input_shape)
+
+    imgs = demo_inputs['imgs']
+
+    test_cfg = dict(average_clips='prob', test_crops=3, twice_sample=True)
+    recognizer = build_recognizer(
+        model, train_cfg=train_cfg, test_cfg=test_cfg)
+
+    # Test forward test
+    with torch.no_grad():
+        img_list = [img[None, :] for img in imgs]
+        for one_img in img_list:
+            recognizer(one_img, None, return_loss=False)
+
 
 def test_csn():
     model, train_cfg, test_cfg = _get_recognizer_cfg(
