@@ -3,15 +3,15 @@ from .augmentations import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
                             Normalize, RandomCrop, RandomResizedCrop, Resize,
                             TenCrop, ThreeCrop)
 from .compose import Compose
-from .formating import (Collect, FormatShape, ImageToTensor, ToDataContainer,
-                        ToTensor, Transpose, FormatAudioShape)
-from .loading import (DecordDecode, DecordInit, DenseSampleFrames,
-                      FrameSelector, GenerateLocalizationLabels, LoadHVULabel,
-                      LoadLocalizationFeature, LoadProposals, OpenCVDecode,
-                      OpenCVInit, PyAVDecode, PyAVInit, RawFrameDecode,
-                      SampleFrames, SampleProposalFrames, AudioDecode,
-                      AudioDecodeInit, AudioFeatureSelector, LoadAudioFeature,
-                      UntrimmedSampleFrames)
+from .formating import (Collect, FormatAudioShape, FormatShape, ImageToTensor,
+                        ToDataContainer, ToTensor, Transpose)
+from .loading import (AudioDecode, AudioDecodeInit, AudioFeatureSelector,
+                      DecordDecode, DecordInit, DenseSampleFrames,
+                      FrameSelector, GenerateLocalizationLabels,
+                      LoadAudioFeature, LoadHVULabel, LoadLocalizationFeature,
+                      LoadProposals, OpenCVDecode, OpenCVInit, PyAVDecode,
+                      PyAVInit, RawFrameDecode, SampleFrames,
+                      SampleProposalFrames, UntrimmedSampleFrames)
 
 __all__ = [
     'SampleFrames', 'PyAVDecode', 'DecordDecode', 'DenseSampleFrames',
@@ -23,6 +23,6 @@ __all__ = [
     'DecordInit', 'OpenCVInit', 'PyAVInit', 'SampleProposalFrames',
     'UntrimmedSampleFrames', 'RawFrameDecode', 'DecordInit', 'OpenCVInit',
     'PyAVInit', 'SampleProposalFrames', 'ColorJitter', 'LoadHVULabel',
-    'AudioAmplify', 'MelSpectrogram', 'AudioDecode', 'FormatAudioShape', 
+    'AudioAmplify', 'MelSpectrogram', 'AudioDecode', 'FormatAudioShape',
     'LoadAudioFeature', 'AudioFeatureSelector', 'AudioDecodeInit'
 ]

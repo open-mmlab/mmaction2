@@ -8,9 +8,10 @@ import pytest
 from mmcv import ConfigDict
 from numpy.testing import assert_array_equal
 
-from mmaction.datasets import (ActivityNetDataset, HVUDataset, RawframeDataset,
-                               AudioDataset, AudioFeatureDataset,
-                               RepeatDataset, SSNDataset, VideoDataset)
+from mmaction.datasets import (ActivityNetDataset, AudioDataset,
+                               AudioFeatureDataset, HVUDataset,
+                               RawframeDataset, RepeatDataset, SSNDataset,
+                               VideoDataset)
 
 
 class TestDataset(object):
