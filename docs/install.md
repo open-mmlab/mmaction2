@@ -10,7 +10,7 @@
 - [mmcv](https://github.com/open-mmlab/mmcv) 1.1.1+
 - Numpy
 - ffmpeg (4.2 is preferred)
-- [decord](https://github.com/dmlc/decord) (optional): Install CPU version by `pip install decord` and install GPU version from source
+- [decord](https://github.com/dmlc/decord) (optional, 0.4.1+): Install CPU version by `pip install decord==0.4.1` and install GPU version from source
 - [PyAV](https://github.com/mikeboers/PyAV) (optional): `conda install av -c conda-forge -y`
 - [PyTurboJPEG](https://github.com/lilohuang/PyTurboJPEG) (optional): `pip install PyTurboJPEG`
 - [denseflow](https://github.com/open-mmlab/denseflow) (optional): See [here](https://github.com/innerlee/setup) for simple install scripts.
