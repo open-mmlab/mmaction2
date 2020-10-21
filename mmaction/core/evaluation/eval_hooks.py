@@ -9,11 +9,11 @@ from torch.utils.data import DataLoader
 from mmaction.utils import get_root_logger
 
 
-class EvalHook(Hook):
-    """Non-Distributed evaluation hook.
+class EpochEvalHook(Hook):
+    """Non-Distributed evaluation hook based on epochs.
 
     Notes:
-        If new arguments are added for EvalHook, tools/test.py,
+        If new arguments are added for EpochEvalHook, tools/test.py,
         tools/eval_metric.py may be effected.
 
     This hook will regularly perform evaluation in a given interval when
@@ -182,8 +182,8 @@ class EvalHook(Hook):
             return None
 
 
-class DistEvalHook(EvalHook):
-    """Distributed evaluation hook.
+class DistEpochEvalHook(EpochEvalHook):
+    """Distributed evaluation hook based on epochs.
 
     This hook will regularly perform evaluation in a given interval when
     performing in distributed environment.

@@ -11,7 +11,7 @@ from mmcv.runner import EpochBasedRunner, build_optimizer
 from mmcv.utils import get_logger
 from torch.utils.data import DataLoader, Dataset
 
-from mmaction.core import DistEvalHook, EvalHook
+from mmaction.core import DistEpochEvalHook, EpochEvalHook
 
 
 class ExampleDataset(Dataset):
@@ -99,7 +99,7 @@ def test_eval_hook():
             sampler=None,
             num_workers=0,
             shuffle=False)
-        EvalHook(data_loader, save_best='True')
+        EpochEvalHook(data_loader, save_best='True')
 
     with pytest.raises(TypeError):
         # dataloader must be a pytorch DataLoader
@@ -112,7 +112,7 @@ def test_eval_hook():
                 num_worker=0,
                 shuffle=False)
         ]
-        EvalHook(data_loader)
+        EpochEvalHook(data_loader)
 
     with pytest.raises(ValueError):
         # when `save_best` is True, `key_indicator` should not be None
@@ -123,7 +123,7 @@ def test_eval_hook():
             sampler=None,
             num_workers=0,
             shuffle=False)
-        EvalHook(data_loader, key_indicator=None)
+        EpochEvalHook(data_loader, key_indicator=None)
 
     with pytest.raises(KeyError):
         # rule must be in keys of rule_map
@@ -134,7 +134,7 @@ def test_eval_hook():
             sampler=None,
             num_workers=0,
             shuffle=False)
-        EvalHook(data_loader, save_best=False, rule='unsupport')
+        EpochEvalHook(data_loader, save_best=False, rule='unsupport')
 
     with pytest.raises(ValueError):
         # key_indicator must be valid when rule_map is None
@@ -145,7 +145,7 @@ def test_eval_hook():
             sampler=None,
             num_workers=0,
             shuffle=False)
-        EvalHook(data_loader, key_indicator='unsupport')
+        EpochEvalHook(data_loader, key_indicator='unsupport')
 
     optimizer_cfg = dict(
         type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001)
@@ -156,7 +156,7 @@ def test_eval_hook():
     optimizer = build_optimizer(model, optimizer_cfg)
 
     data_loader = DataLoader(test_dataset, batch_size=1)
-    eval_hook = EvalHook(data_loader, save_best=False)
+    eval_hook = EpochEvalHook(data_loader, save_best=False)
     with tempfile.TemporaryDirectory() as tmpdir:
         logger = get_logger('test_eval')
         runner = EpochBasedRunner(
@@ -176,7 +176,7 @@ def test_eval_hook():
     loader = DataLoader(EvalDataset(), batch_size=1)
     model = ExampleModel()
     data_loader = DataLoader(EvalDataset(), batch_size=1)
-    eval_hook = EvalHook(
+    eval_hook = EpochEvalHook(
         data_loader, interval=1, save_best=True, key_indicator='acc')
 
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -200,7 +200,7 @@ def test_eval_hook():
         assert best_json['key_indicator'] == 'acc'
 
     data_loader = DataLoader(EvalDataset(), batch_size=1)
-    eval_hook = EvalHook(
+    eval_hook = EpochEvalHook(
         data_loader,
         interval=1,
         save_best=True,
@@ -227,7 +227,7 @@ def test_eval_hook():
         assert best_json['key_indicator'] == 'score'
 
     data_loader = DataLoader(EvalDataset(), batch_size=1)
-    eval_hook = EvalHook(data_loader, rule='less', key_indicator='acc')
+    eval_hook = EpochEvalHook(data_loader, rule='less', key_indicator='acc')
     with tempfile.TemporaryDirectory() as tmpdir:
         logger = get_logger('test_eval')
         runner = EpochBasedRunner(
@@ -249,7 +249,7 @@ def test_eval_hook():
         assert best_json['key_indicator'] == 'acc'
 
     data_loader = DataLoader(EvalDataset(), batch_size=1)
-    eval_hook = EvalHook(data_loader, key_indicator='acc')
+    eval_hook = EpochEvalHook(data_loader, key_indicator='acc')
     with tempfile.TemporaryDirectory() as tmpdir:
         logger = get_logger('test_eval')
         runner = EpochBasedRunner(
@@ -272,7 +272,7 @@ def test_eval_hook():
 
         resume_from = osp.join(tmpdir, 'latest.pth')
         loader = DataLoader(ExampleDataset(), batch_size=1)
-        eval_hook = EvalHook(data_loader, key_indicator='acc')
+        eval_hook = EpochEvalHook(data_loader, key_indicator='acc')
         runner = EpochBasedRunner(
             model=model,
             batch_processor=None,
@@ -295,22 +295,23 @@ def test_eval_hook():
 
 @patch('mmaction.apis.single_gpu_test', MagicMock)
 @patch('mmaction.apis.multi_gpu_test', MagicMock)
-@pytest.mark.parametrize('EvalHookParam', (EvalHook, DistEvalHook))
-def test_start_param(EvalHookParam):
+@pytest.mark.parametrize('EpochEvalHookParam',
+                         (EpochEvalHook, DistEpochEvalHook))
+def test_start_param(EpochEvalHookParam):
     # create dummy data
     dataloader = DataLoader(torch.ones((5, 2)))
 
     # 0.1. dataloader is not a DataLoader object
     with pytest.raises(TypeError):
-        EvalHookParam(dataloader=MagicMock(), interval=-1)
+        EpochEvalHookParam(dataloader=MagicMock(), interval=-1)
 
     # 0.2. negative interval
     with pytest.raises(ValueError):
-        EvalHookParam(dataloader, interval=-1)
+        EpochEvalHookParam(dataloader, interval=-1)
 
     # 1. start=None, interval=1: perform evaluation after each epoch.
     runner = _build_demo_runner()
-    evalhook = EvalHookParam(dataloader, interval=1, save_best=False)
+    evalhook = EpochEvalHookParam(dataloader, interval=1, save_best=False)
     evalhook.evaluate = MagicMock()
     runner.register_hook(evalhook)
     runner.run([dataloader], [('train', 1)], 2)
@@ -318,7 +319,8 @@ def test_start_param(EvalHookParam):
 
     # 2. start=1, interval=1: perform evaluation after each epoch.
     runner = _build_demo_runner()
-    evalhook = EvalHookParam(dataloader, start=1, interval=1, save_best=False)
+    evalhook = EpochEvalHookParam(
+        dataloader, start=1, interval=1, save_best=False)
     evalhook.evaluate = MagicMock()
     runner.register_hook(evalhook)
     runner.run([dataloader], [('train', 1)], 2)
@@ -326,7 +328,7 @@ def test_start_param(EvalHookParam):
 
     # 3. start=None, interval=2: perform evaluation after epoch 2, 4, 6, etc
     runner = _build_demo_runner()
-    evalhook = EvalHookParam(dataloader, interval=2, save_best=False)
+    evalhook = EpochEvalHookParam(dataloader, interval=2, save_best=False)
     evalhook.evaluate = MagicMock()
     runner.register_hook(evalhook)
     runner.run([dataloader], [('train', 1)], 2)
@@ -334,7 +336,8 @@ def test_start_param(EvalHookParam):
 
     # 4. start=1, interval=2: perform evaluation after epoch 1, 3, 5, etc
     runner = _build_demo_runner()
-    evalhook = EvalHookParam(dataloader, start=1, interval=2, save_best=False)
+    evalhook = EpochEvalHookParam(
+        dataloader, start=1, interval=2, save_best=False)
     evalhook.evaluate = MagicMock()
     runner.register_hook(evalhook)
     runner.run([dataloader], [('train', 1)], 3)
@@ -343,7 +346,7 @@ def test_start_param(EvalHookParam):
     # 5. start=0/negative, interval=1: perform evaluation after each epoch and
     #    before epoch 1.
     runner = _build_demo_runner()
-    evalhook = EvalHookParam(dataloader, start=0, save_best=False)
+    evalhook = EpochEvalHookParam(dataloader, start=0, save_best=False)
     evalhook.evaluate = MagicMock()
     runner.register_hook(evalhook)
     runner.run([dataloader], [('train', 1)], 2)
@@ -351,7 +354,7 @@ def test_start_param(EvalHookParam):
 
     runner = _build_demo_runner()
     with pytest.warns(UserWarning):
-        evalhook = EvalHookParam(dataloader, start=-2, save_best=False)
+        evalhook = EpochEvalHookParam(dataloader, start=-2, save_best=False)
     evalhook.evaluate = MagicMock()
     runner.register_hook(evalhook)
     runner.run([dataloader], [('train', 1)], 2)
@@ -360,7 +363,7 @@ def test_start_param(EvalHookParam):
     # 6. resuming from epoch i, start = x (x<=i), interval =1: perform
     #    evaluation after each epoch and before the first epoch.
     runner = _build_demo_runner()
-    evalhook = EvalHookParam(dataloader, start=1, save_best=False)
+    evalhook = EpochEvalHookParam(dataloader, start=1, save_best=False)
     evalhook.evaluate = MagicMock()
     runner.register_hook(evalhook)
     runner._epoch = 2
@@ -370,7 +373,7 @@ def test_start_param(EvalHookParam):
     # 7. resuming from epoch i, start = i+1/None, interval =1: perform
     #    evaluation after each epoch.
     runner = _build_demo_runner()
-    evalhook = EvalHookParam(dataloader, start=2, save_best=False)
+    evalhook = EpochEvalHookParam(dataloader, start=2, save_best=False)
     evalhook.evaluate = MagicMock()
     runner.register_hook(evalhook)
     runner._epoch = 1
