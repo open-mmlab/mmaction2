@@ -1119,6 +1119,7 @@ class AudioDecode(object):
         return results
 
 
+@PIPELINES.register_module()
 class FrameSelector(RawFrameDecode):
     """Deprecated class for ``RawFrameDecode``."""
 
