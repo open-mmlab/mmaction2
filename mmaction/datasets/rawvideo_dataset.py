@@ -65,6 +65,12 @@ class RawVideoDataset(BaseDataset):
         assert self.multi_class is False
         self.sampling_strategy = sampling_strategy
         self.clipname_tmpl = clipname_tmpl
+        # If positive, we should only keep those raw videos with positive
+        # clips
+        if self.sampling_strategy == 'positive':
+            self.video_infos = [
+                x for x in self.video_infos if len(x['positive_clip_inds'])
+            ]
 
     # do not support multi_class
     def load_annotations(self):
@@ -106,7 +112,7 @@ class RawVideoDataset(BaseDataset):
 
     def sample_clip(self, results):
         """Sample a clip from the raw video given the sampling strategy."""
-        assert self.sampling_strategy in ['postive', 'random']
+        assert self.sampling_strategy in ['positive', 'random']
         if self.sampling_strategy == 'positive':
             assert len(results['positive_clip_inds'])
             ind = random.choice(results['positive_clip_inds'])
