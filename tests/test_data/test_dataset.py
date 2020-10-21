@@ -5,13 +5,13 @@ import tempfile
 import mmcv
 import numpy as np
 import pytest
-import torch
 from mmcv import ConfigDict
 from numpy.testing import assert_array_equal
 
 from mmaction.datasets import (ActivityNetDataset, AudioDataset,
-                               AudioFeatureDataset, RawframeDataset,
-                               RepeatDataset, SSNDataset, VideoDataset)
+                               AudioFeatureDataset, HVUDataset,
+                               RawframeDataset, RepeatDataset, SSNDataset,
+                               VideoDataset)
 
 
 class TestDataset(object):
@@ -30,6 +30,10 @@ class TestDataset(object):
         cls.frame_ann_file_multi_label = osp.join(
             cls.data_prefix, 'frame_test_list_multi_label.txt')
         cls.video_ann_file = osp.join(cls.data_prefix, 'video_test_list.txt')
+        cls.hvu_video_ann_file = osp.join(cls.data_prefix,
+                                          'hvu_video_test_anno.json')
+        cls.hvu_frame_ann_file = osp.join(cls.data_prefix,
+                                          'hvu_frame_test_anno.json')
         cls.action_ann_file = osp.join(cls.data_prefix,
                                        'action_test_anno.json')
         cls.proposal_ann_file = osp.join(cls.data_prefix,
@@ -133,6 +137,62 @@ class TestDataset(object):
                         softmax_before_filter=True,
                         cls_top_k=2))))
 
+        cls.hvu_categories = [
+            'action', 'attribute', 'concept', 'event', 'object', 'scene'
+        ]
+
+        cls.hvu_category_nums = [739, 117, 291, 69, 1679, 248]
+        cls.filename_tmpl = 'img_{:05d}.jpg'
+
+    def test_hvu_dataset(self):
+        hvu_frame_dataset = HVUDataset(
+            ann_file=self.hvu_frame_ann_file,
+            pipeline=self.frame_pipeline,
+            tag_categories=self.hvu_categories,
+            tag_category_nums=self.hvu_category_nums,
+            filename_tmpl=self.filename_tmpl,
+            data_prefix=self.data_prefix,
+            start_index=1)
+        hvu_frame_infos = hvu_frame_dataset.video_infos
+        frame_dir = osp.join(self.data_prefix, 'test_imgs')
+        assert hvu_frame_infos == [
+            dict(
+                frame_dir=frame_dir,
+                total_frames=5,
+                label=dict(
+                    concept=[250, 131, 42, 51, 57, 155, 122],
+                    object=[1570, 508],
+                    event=[16],
+                    action=[180],
+                    scene=[206]),
+                categories=self.hvu_categories,
+                category_nums=self.hvu_category_nums,
+                filename_tmpl=self.filename_tmpl,
+                start_index=1,
+                modality='RGB')
+        ] * 2
+
+        hvu_video_dataset = HVUDataset(
+            ann_file=self.hvu_video_ann_file,
+            pipeline=self.video_pipeline,
+            tag_categories=self.hvu_categories,
+            tag_category_nums=self.hvu_category_nums,
+            data_prefix=self.data_prefix)
+        hvu_video_infos = hvu_video_dataset.video_infos
+        filename = osp.join(self.data_prefix, 'tmp.mp4')
+        assert hvu_video_infos == [
+            dict(
+                filename=filename,
+                label=dict(
+                    concept=[250, 131, 42, 51, 57, 155, 122],
+                    object=[1570, 508],
+                    event=[16],
+                    action=[180],
+                    scene=[206]),
+                categories=self.hvu_categories,
+                category_nums=self.hvu_category_nums)
+        ] * 2
+
     def test_rawframe_dataset(self):
         rawframe_dataset = RawframeDataset(self.frame_ann_file,
                                            self.frame_pipeline,
@@ -188,15 +248,13 @@ class TestDataset(object):
             num_classes=100)
         rawframe_infos = rawframe_dataset.video_infos
         frame_dir = osp.join(self.data_prefix, 'test_imgs')
-        label0 = torch.zeros(100)
-        label0[[1]] = 1.0
-        label1 = torch.zeros(100)
-        label1[[3, 5]] = 1.0
+        label0 = [1]
+        label1 = [3, 5]
         labels = [label0, label1]
         for info, label in zip(rawframe_infos, labels):
             assert info['frame_dir'] == frame_dir
             assert info['total_frames'] == 5
-            assert torch.all(info['label'] == label)
+            assert set(info['label']) == set(label)
         assert rawframe_dataset.start_index == 1
 
     def test_dataset_realpath(self):

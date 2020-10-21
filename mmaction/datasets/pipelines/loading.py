@@ -6,11 +6,66 @@ import warnings
 
 import mmcv
 import numpy as np
+import torch
 from mmcv.fileio import FileClient
 from torch.nn.modules.utils import _pair
 
 from ...utils import get_random_string, get_shm_dir, get_thread_id
 from ..registry import PIPELINES
+
+
+@PIPELINES.register_module()
+class LoadHVULabel(object):
+    """Convert the HVU label from dictionaries to torch tensors.
+
+    Required keys are "label", "categories", "category_nums", added or modified
+    keys are "label", "mask" and "category_mask".
+    """
+
+    def __init__(self, **kwargs):
+        self.hvu_initialized = False
+
+    def init_hvu_info(self, categories, category_nums):
+        assert len(categories) == len(category_nums)
+        self.categories = categories
+        self.category_nums = category_nums
+        self.num_categories = len(self.categories)
+        self.num_tags = sum(self.category_nums)
+        self.category2num = dict(zip(categories, category_nums))
+        self.start_idx = [0]
+        for i in range(self.num_categories - 1):
+            self.start_idx.append(self.start_idx[-1] + self.category_nums[i])
+        self.category2startidx = dict(zip(categories, self.start_idx))
+        self.hvu_initialized = True
+
+    def __call__(self, results):
+        """Convert the label dictionary to 3 tensors: "label", "mask" and
+        "category_mask".
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+
+        if not self.hvu_initialized:
+            self.init_hvu_info(results['categories'], results['category_nums'])
+
+        onehot = torch.zeros(self.num_tags)
+        onehot_mask = torch.zeros(self.num_tags)
+        category_mask = torch.zeros(self.num_categories)
+
+        for category, tags in results['label'].items():
+            category_mask[self.categories.index(category)] = 1.
+            start_idx = self.category2startidx[category]
+            category_num = self.category2num[category]
+            tags = [idx + start_idx for idx in tags]
+            onehot[tags] = 1.
+            onehot_mask[start_idx:category_num + start_idx] = 1.
+
+        results['label'] = onehot
+        results['mask'] = onehot_mask
+        results['category_mask'] = category_mask
+        return results
 
 
 @PIPELINES.register_module()

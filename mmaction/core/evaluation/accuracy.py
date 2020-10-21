@@ -104,17 +104,46 @@ def top_k_accuracy(scores, labels, topk=(1, )):
     return res
 
 
+def mmit_mean_average_precision(scores, labels):
+    """Mean average precision for multi-label recognition. Used for reporting
+    MMIT style mAP on Multi-Moments in Times. The difference is that this
+    method calculates average-precision for each sample and averages them among
+    samples.
+
+    Args:
+        scores (list[np.ndarray]): Prediction scores of different classes for
+            each sample.
+        labels (list[np.ndarray]): Ground truth many-hot vector for each
+            sample.
+
+    Returns:
+        np.float: The MMIT style mean average precision.
+    """
+    results = []
+    for i in range(len(scores)):
+        precision, recall, _ = binary_precision_recall_curve(
+            scores[i], labels[i])
+        ap = -np.sum(np.diff(recall) * np.array(precision)[:-1])
+        results.append(ap)
+    return np.mean(results)
+
+
 def mean_average_precision(scores, labels):
     """Mean average precision for multi-label recognition.
 
     Args:
-        scores (list[np.ndarray]): Prediction scores for each class.
-        labels (list[np.ndarray]): Ground truth many-hot vector.
+        scores (list[np.ndarray]): Prediction scores of different classes for
+            each sample.
+        labels (list[np.ndarray]): Ground truth many-hot vector for each
+            sample.
 
     Returns:
         np.float: The mean average precision.
     """
     results = []
+    scores = np.stack(scores).T
+    labels = np.stack(labels).T
+
     for i in range(len(scores)):
         precision, recall, _ = binary_precision_recall_curve(
             scores[i], labels[i])

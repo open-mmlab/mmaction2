@@ -26,9 +26,10 @@ class EvalHook(Hook):
             checkpoint during evaluation when ``save_best`` is set to True.
             Options are the evaluation metrics to the test dataset. e.g.,
              ``top1_acc``, ``top5_acc``, ``mean_class_accuracy``,
-            ``mean_average_precision`` for action recognition dataset
-            (RawframeDataset and VideoDataset). ``AR@AN``, ``auc`` for action
-            localization dataset (ActivityNetDataset). Default: `top1_acc`.
+            ``mean_average_precision``, ``mmit_mean_average_precision``
+            for action recognition dataset (RawframeDataset and VideoDataset).
+            ``AR@AN``, ``auc`` for action localization dataset
+            (ActivityNetDataset). Default: `top1_acc`.
         rule (str | None): Comparison rule for best score. If set to None,
             it will infer a reasonable rule. Default: 'None'.
         eval_kwargs (dict, optional): Arguments for evaluation.
@@ -150,10 +151,11 @@ class DistEvalHook(EvalHook):
         key_indicator (str | None): Key indicator to measure the best
             checkpoint during evaluation when ``save_best`` is set to True.
             Options are the evaluation metrics to the test dataset. e.g.,
-            ``top1_acc``, ``top5_acc``, ``mean_class_accuracy``,
-            ``mean_average_precision`` for action recognition dataset
-            (RawframeDataset and VideoDataset). ``AR@AN``, ``auc`` for action
-            localization dataset (ActivityNetDataset). Default: `top1_acc`.
+             ``top1_acc``, ``top5_acc``, ``mean_class_accuracy``,
+            ``mean_average_precision``, ``mmit_mean_average_precision``
+            for action recognition dataset (RawframeDataset and VideoDataset).
+            ``AR@AN``, ``auc`` for action localization dataset
+            (ActivityNetDataset). Default: `top1_acc`.
         rule (str | None): Comparison rule for best score. If set to None,
             it will infer a reasonable rule. Default: 'None'.
         eval_kwargs (dict, optional): Arguments for evaluation.

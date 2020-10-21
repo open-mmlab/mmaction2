@@ -4,6 +4,7 @@ import os.path as osp
 import mmcv
 import numpy as np
 import pytest
+import torch
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 # yapf: disable
@@ -12,7 +13,7 @@ from mmaction.datasets.pipelines import (AudioDecode, AudioDecodeInit,
                                          DecordInit, DenseSampleFrames,
                                          FrameSelector,
                                          GenerateLocalizationLabels,
-                                         LoadAudioFeature,
+                                         LoadAudioFeature, LoadHVULabel,
                                          LoadLocalizationFeature,
                                          LoadProposals, OpenCVDecode,
                                          OpenCVInit, PyAVDecode, PyAVInit,
@@ -126,6 +127,51 @@ class TestLoading(object):
                 ExampleSSNInstance(1, 4, 10, 1, 1, 1)
             ], 0], [['test_imgs',
                      ExampleSSNInstance(2, 5, 10, 2, 1, 1)], 0]])
+        cls.hvu_label_example1 = dict(
+            categories=['action', 'object', 'scene', 'concept'],
+            category_nums=[2, 5, 3, 2],
+            label=dict(action=[0], object=[2, 3], scene=[0, 1]))
+        cls.hvu_label_example2 = dict(
+            categories=['action', 'object', 'scene', 'concept'],
+            category_nums=[2, 5, 3, 2],
+            label=dict(action=[1], scene=[1, 2], concept=[1]))
+
+    def test_load_hvu_label(self):
+        hvu_label_example1 = copy.deepcopy(self.hvu_label_example1)
+        hvu_label_example2 = copy.deepcopy(self.hvu_label_example2)
+        categories = hvu_label_example1['categories']
+        category_nums = hvu_label_example1['category_nums']
+        num_tags = sum(category_nums)
+        num_categories = len(categories)
+
+        loader = LoadHVULabel()
+
+        result1 = loader(hvu_label_example1)
+        label1 = torch.zeros(num_tags)
+        mask1 = torch.zeros(num_tags)
+        category_mask1 = torch.zeros(num_categories)
+
+        label1[[0, 4, 5, 7, 8]] = 1.
+        mask1[:10] = 1.
+        category_mask1[:3] = 1.
+
+        assert torch.all(torch.eq(label1, result1['label']))
+        assert torch.all(torch.eq(mask1, result1['mask']))
+        assert torch.all(torch.eq(category_mask1, result1['category_mask']))
+
+        result2 = loader(hvu_label_example2)
+        label2 = torch.zeros(num_tags)
+        mask2 = torch.zeros(num_tags)
+        category_mask2 = torch.zeros(num_categories)
+
+        label2[[1, 8, 9, 11]] = 1.
+        mask2[:2] = 1.
+        mask2[7:] = 1.
+        category_mask2[[0, 2, 3]] = 1.
+
+        assert torch.all(torch.eq(label2, result2['label']))
+        assert torch.all(torch.eq(mask2, result2['mask']))
+        assert torch.all(torch.eq(category_mask2, result2['category_mask']))
 
     def test_sample_frames(self):
         target_keys = [

@@ -8,10 +8,10 @@ from .formating import (Collect, FormatAudioShape, FormatShape, ImageToTensor,
 from .loading import (AudioDecode, AudioDecodeInit, AudioFeatureSelector,
                       DecordDecode, DecordInit, DenseSampleFrames,
                       FrameSelector, GenerateLocalizationLabels,
-                      LoadAudioFeature, LoadLocalizationFeature, LoadProposals,
-                      OpenCVDecode, OpenCVInit, PyAVDecode, PyAVInit,
-                      RawFrameDecode, SampleFrames, SampleProposalFrames,
-                      UntrimmedSampleFrames)
+                      LoadAudioFeature, LoadHVULabel, LoadLocalizationFeature,
+                      LoadProposals, OpenCVDecode, OpenCVInit, PyAVDecode,
+                      PyAVInit, RawFrameDecode, SampleFrames,
+                      SampleProposalFrames, UntrimmedSampleFrames)
 
 __all__ = [
     'SampleFrames', 'PyAVDecode', 'DecordDecode', 'DenseSampleFrames',
@@ -21,7 +21,8 @@ __all__ = [
     'Collect', 'FormatShape', 'Compose', 'ToTensor', 'ToDataContainer',
     'GenerateLocalizationLabels', 'LoadLocalizationFeature', 'LoadProposals',
     'DecordInit', 'OpenCVInit', 'PyAVInit', 'SampleProposalFrames',
-    'UntrimmedSampleFrames', 'RawFrameDecode', 'AudioAmplify',
-    'MelSpectrogram', 'AudioDecode', 'FormatAudioShape', 'ColorJitter',
+    'UntrimmedSampleFrames', 'RawFrameDecode', 'DecordInit', 'OpenCVInit',
+    'PyAVInit', 'SampleProposalFrames', 'ColorJitter', 'LoadHVULabel',
+    'AudioAmplify', 'MelSpectrogram', 'AudioDecode', 'FormatAudioShape',
     'LoadAudioFeature', 'AudioFeatureSelector', 'AudioDecodeInit'
 ]
