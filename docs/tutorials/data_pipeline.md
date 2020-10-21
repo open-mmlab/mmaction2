@@ -142,10 +142,6 @@ For each operation, we list the related dict fields that are added/updated/remov
 - add: crop_bbox, img_shape
 - update: imgs
 
-`MeanProcessingForClip`
-- add: mean
-- update: imgs
-
 ### Formatting
 
 `ToTensor`

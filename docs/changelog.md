@@ -3,6 +3,7 @@
 ### v0.8.0 (master)
 
 **Highlights**
+- Support C3D
 - Support video recognition with audio modality
 
 **New Features**

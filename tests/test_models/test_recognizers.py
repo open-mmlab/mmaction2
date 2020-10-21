@@ -369,7 +369,7 @@ def test_audio_recognizer():
 
 def test_c3d():
     model, train_cfg, test_cfg = _get_recognizer_cfg(
-        'c3d/c3d_sports1m_16x1x1_30e_ucf101_rgb.py')
+        'c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb.py')
     model['backbone']['pretrained'] = None
 
     recognizer = build_recognizer(

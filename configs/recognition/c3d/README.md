@@ -20,19 +20,17 @@ eid = {arXiv:1412.0767}
 }
 ```
 
-Before train or test the C3D model, you should download the [mean file](https://download.openmmlab.com/mmaction/recognition/c3d/c3d_train01_16_128_171_mean.npy), which is ported from [here](https://github.com/facebookarchive/C3D/blob/master/C3D-v1.0/examples/c3d_finetuning/train01_16_128_171_mean.binaryproto).
-
 ## Model Zoo
 
 ### UCF-101
 
 | config | resolution | gpus | backbone | pretrain | top1 acc | top5 acc | testing protocol| inference_time(video/s)  | gpu_mem(M) | ckpt | log | json |
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[c3d_sports1m_16x1x1_30e_ucf101_rgb.py](/configs/recognition/c3d/c3d_sports1m_16x1x1_30e_ucf101_rgb.py)|128x171|8| c3d | sports1m | 83.37 | 96.25 | 10 clips x 1 crop | x | 6053 | [ckpt](https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_30e_ucf101_rgb/c3d_sports1m_16x1x1_30e_ucf101_rgb_20201016-e0d4bd99.pth)|[log](https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_30e_ucf101_rgb/20201016_101722.log)|[json](https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_30e_ucf101_rgb/20201016_101722.log.json)|
+|[c3d_sports1m_16x1x1_45e_ucf101_rgb.py](/configs/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb.py)|128x171|8| c3d | sports1m | 83.27 | 95.90 | 10 clips x 1 crop | x | 6053 | [ckpt](https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb/c3d_sports1m_16x1x1_45e_ucf101_rgb_20201021-26655025.pth)|[log](https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb/20201021_140429.log)|[json](https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb/20201021_140429.log.json)|
 
 Notes:
 
-1. The author of C3D used SVM to classify videos on UCF-101, while we simply used a linear classifier.
+1. The author of C3D normalized UCF-101 with volume mean and used SVM to classify videos, while we normalized the dataset with RGB mean value and used a linear classifier.
 2. The **gpus** indicates the number of gpu (32G V100) we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
 According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
 e.g., lr=0.01 for 4 GPUs * 2 video/gpu and lr=0.08 for 16 GPUs * 4 video/gpu.
@@ -51,7 +49,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 
 Example: train C3D model on UCF-101 dataset in a deterministic option with periodic validation.
 ```shell
-python tools/train.py configs/recognition/c3d/c3d_sports1m_16x1x1_30e_ucf101_rgb.py \
+python tools/train.py configs/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb.py \
     --validate --seed 0 --deterministic
 ```
 
@@ -66,7 +64,7 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 
 Example: test C3D model on UCF-101 dataset and dump the result to a json file.
 ```shell
-python tools/test.py configs/recognition/c3d/c3d_sports1m_16x1x1_30e_ucf101_rgb.py \
+python tools/test.py configs/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb.py \
     checkpoints/SOME_CHECKPOINT.pth --eval top_k_accuracy
 ```
 
