@@ -110,6 +110,9 @@ class SSN(BaseLocalizer):
          bbox_preds) = self.cls_head(
              (output, proposal_tick_list, scale_factor_list), test_mode=True)
 
+        relative_proposal_list = relative_proposal_list.cpu().numpy()
+        activity_scores = activity_scores.cpu().numpy()
+        completeness_scores = completeness_scores.cpu().numpy()
         if bbox_preds is not None:
             bbox_preds = bbox_preds.view(-1, self.cls_head.num_classes, 2)
             bbox_preds[:, :, 0] = (
@@ -118,12 +121,14 @@ class SSN(BaseLocalizer):
             bbox_preds[:, :, 1] = (
                 bbox_preds[:, :, 1] * reg_norm_consts[1, 1] +
                 reg_norm_consts[0, 1])
+            bbox_preds = bbox_preds.cpu().numpy()
 
-            return (relative_proposal_list.cpu().numpy(),
-                    activity_scores.cpu().numpy(),
-                    completeness_scores.cpu().numpy(),
-                    bbox_preds.cpu().numpy())
-        else:
-            return (relative_proposal_list.cpu().numpy(),
-                    activity_scores.cpu().numpy(),
-                    completeness_scores.cpu().numpy(), None)
+        result = [
+            dict(
+                relative_proposal_list=relative_proposal_list,
+                activity_scores=activity_scores,
+                completeness_scores=completeness_scores,
+                bbox_preds=bbox_preds)
+        ]
+
+        return result

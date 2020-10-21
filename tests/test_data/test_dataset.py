@@ -735,10 +735,13 @@ class TestDataset(object):
         results_activity_scores = np.random.randn(16, 21)
         results_completeness_scores = np.random.randn(16, 20)
         results_bbox_preds = np.random.randn(16, 20, 2)
-        results = [[
-            results_relative_proposal_list, results_activity_scores,
-            results_completeness_scores, results_bbox_preds
-        ]]
+        results = [
+            dict(
+                relative_proposal_list=results_relative_proposal_list,
+                activity_scores=results_activity_scores,
+                completeness_scores=results_completeness_scores,
+                bbox_preds=results_bbox_preds)
+        ]
         eval_result = ssn_dataset.evaluate(results, metrics=['mAP'])
         assert set(eval_result) == set([
             'mAP@0.10', 'mAP@0.20', 'mAP@0.30', 'mAP@0.40', 'mAP@0.50',
@@ -750,10 +753,13 @@ class TestDataset(object):
         results_activity_scores = np.random.randn(16, 21)
         results_completeness_scores = np.random.randn(16, 20)
         results_bbox_preds = np.random.randn(16, 20, 2)
-        results = [[
-            results_relative_proposal_list, results_activity_scores,
-            results_completeness_scores, results_bbox_preds
-        ]]
+        results = [
+            dict(
+                relative_proposal_list=results_relative_proposal_list,
+                activity_scores=results_activity_scores,
+                completeness_scores=results_completeness_scores,
+                bbox_preds=results_bbox_preds)
+        ]
         eval_result = ssn_dataset_topall.evaluate(results, metrics=['mAP'])
         assert set(eval_result) == set([
             'mAP@0.10', 'mAP@0.20', 'mAP@0.30', 'mAP@0.40', 'mAP@0.50',
