@@ -207,8 +207,9 @@ class DistEvalHook(EvalHook):
             for action recognition dataset (RawframeDataset and VideoDataset).
             ``AR@AN``, ``auc`` for action localization dataset
             (ActivityNetDataset). Default: `top1_acc`.
-        rule (str | None): Comparison rule for best score. If set to None,
-            it will infer a reasonable rule. Default: 'None'.
+        rule (str | None): Comparison rule for best score. Options are None,
+            'greater' and 'less'. If set to None, it will infer a reasonable
+            rule. Default: 'None'.
         **eval_kwargs: Evaluation arguments fed into the evaluate function of
             the dataset.
     """
