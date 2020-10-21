@@ -2,6 +2,8 @@ import copy
 import os.path as osp
 import random
 
+import mmcv
+
 from .base import BaseDataset
 from .registry import DATASETS
 
@@ -64,6 +66,7 @@ class RawVideoDataset(BaseDataset):
         self.sampling_strategy = sampling_strategy
         self.clipname_tmpl = clipname_tmpl
 
+    # do not support multi_class
     def load_annotations(self):
         """Load annotation file to get video information."""
         if self.ann_file.endswith('.json'):
@@ -86,6 +89,19 @@ class RawVideoDataset(BaseDataset):
                         label=label,
                         num_clips=num_clips,
                         positive_clip_inds=positive_clip_inds))
+        return video_infos
+
+    # do not support multi_class
+    def load_json_annotations(self):
+        """Load json annotation file to get video information."""
+        video_infos = mmcv.load(self.ann_file)
+        num_videos = len(video_infos)
+        path_key = 'video_dir'
+        for i in range(num_videos):
+            if self.data_prefix is not None:
+                path_value = video_infos[i][path_key]
+                path_value = osp.join(self.data_prefix, path_value)
+                video_infos[i][path_key] = path_value
         return video_infos
 
     def sample_clip(self, results):
