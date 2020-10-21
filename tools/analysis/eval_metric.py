@@ -51,7 +51,7 @@ def main():
 
     kwargs = {} if args.eval_options is None else args.eval_options
     eval_kwargs = cfg.get('evaluation', {}).copy()
-    # hard-code way to remove EvalHook args
+    # hard-code way to remove EpochEvalHook args
     for key in [
             'interval', 'tmpdir', 'start', 'gpu_collect', 'save_best', 'rule',
             'key_indicator'
