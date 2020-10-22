@@ -34,4 +34,11 @@ class BaseWeightedLoss(nn.Module, metaclass=ABCMeta):
         Returns:
             torch.Tensor: The calculated loss.
         """
-        return self._forward(*args, **kwargs) * self.loss_weight
+        ret = self._forward(*args, **kwargs)
+        if type(ret) is dict:
+            for k in ret:
+                if 'loss' in k:
+                    ret[k] *= self.loss_weight
+        else:
+            ret *= self.loss_weight
+        return ret

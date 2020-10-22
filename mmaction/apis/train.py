@@ -4,7 +4,7 @@ from mmcv.runner import (DistSamplerSeedHook, EpochBasedRunner, OptimizerHook,
                          build_optimizer)
 from mmcv.runner.hooks import Fp16OptimizerHook
 
-from ..core import DistEvalHook, EvalHook
+from ..core import DistEpochEvalHook, EpochEvalHook
 from ..datasets import build_dataloader, build_dataset
 from ..utils import get_root_logger
 
@@ -102,7 +102,7 @@ def train_model(model,
         dataloader_setting = dict(dataloader_setting,
                                   **cfg.data.get('val_dataloader', {}))
         val_dataloader = build_dataloader(val_dataset, **dataloader_setting)
-        eval_hook = DistEvalHook if distributed else EvalHook
+        eval_hook = DistEpochEvalHook if distributed else EpochEvalHook
         runner.register_hook(eval_hook(val_dataloader, **eval_cfg))
 
     if cfg.resume_from:

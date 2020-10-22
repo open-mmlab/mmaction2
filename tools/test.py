@@ -21,7 +21,9 @@ def parse_args():
     parser.add_argument('config', help='test config file path')
     parser.add_argument('checkpoint', help='checkpoint file')
     parser.add_argument(
-        '--out', default=None, help='output result file in pickle format')
+        '--out',
+        default=None,
+        help='output result file in pkl/yaml/json format')
     parser.add_argument(
         '--fuse-conv-bn',
         action='store_true',

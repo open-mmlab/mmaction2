@@ -1,0 +1,22 @@
+[
+  {
+    "filename":"tmp.mp4",
+    "label":{
+        "concept":[250, 131, 42, 51, 57, 155, 122],
+        "object":[1570, 508],
+        "event":[16],
+        "action":[180],
+        "scene":[206]
+    }
+  },
+  {
+    "filename":"tmp.mp4",
+    "label":{
+        "concept":[250, 131, 42, 51, 57, 155, 122],
+        "object":[1570, 508],
+        "event":[16],
+        "action":[180],
+        "scene":[206]
+    }
+  }
+]

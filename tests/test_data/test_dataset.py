@@ -5,12 +5,13 @@ import tempfile
 import mmcv
 import numpy as np
 import pytest
-import torch
 from mmcv import ConfigDict
 from numpy.testing import assert_array_equal
 
-from mmaction.datasets import (ActivityNetDataset, RawframeDataset,
-                               RepeatDataset, SSNDataset, VideoDataset)
+from mmaction.datasets import (ActivityNetDataset, AudioDataset,
+                               AudioFeatureDataset, HVUDataset,
+                               RawframeDataset, RepeatDataset, SSNDataset,
+                               VideoDataset)
 
 
 class TestDataset(object):
@@ -29,12 +30,19 @@ class TestDataset(object):
         cls.frame_ann_file_multi_label = osp.join(
             cls.data_prefix, 'frame_test_list_multi_label.txt')
         cls.video_ann_file = osp.join(cls.data_prefix, 'video_test_list.txt')
+        cls.hvu_video_ann_file = osp.join(cls.data_prefix,
+                                          'hvu_video_test_anno.json')
+        cls.hvu_frame_ann_file = osp.join(cls.data_prefix,
+                                          'hvu_frame_test_anno.json')
         cls.action_ann_file = osp.join(cls.data_prefix,
                                        'action_test_anno.json')
         cls.proposal_ann_file = osp.join(cls.data_prefix,
                                          'proposal_test_list.txt')
         cls.proposal_norm_ann_file = osp.join(cls.data_prefix,
                                               'proposal_normalized_list.txt')
+        cls.audio_ann_file = osp.join(cls.data_prefix, 'audio_test_list.txt')
+        cls.audio_feature_ann_file = osp.join(cls.data_prefix,
+                                              'audio_feature_test_list.txt')
 
         cls.frame_pipeline = [
             dict(
@@ -43,6 +51,24 @@ class TestDataset(object):
                 frame_interval=2,
                 num_clips=1),
             dict(type='RawFrameDecode', io_backend='disk')
+        ]
+        cls.audio_pipeline = [
+            dict(type='AudioDecodeInit'),
+            dict(
+                type='SampleFrames',
+                clip_len=32,
+                frame_interval=2,
+                num_clips=1),
+            dict(type='AudioDecode')
+        ]
+        cls.audio_feature_pipeline = [
+            dict(type='LoadAudioFeature'),
+            dict(
+                type='SampleFrames',
+                clip_len=32,
+                frame_interval=2,
+                num_clips=1),
+            dict(type='AudioFeatureSelector')
         ]
         cls.video_pipeline = [
             dict(type='OpenCVInit'),
@@ -61,7 +87,7 @@ class TestDataset(object):
                 body_segments=5,
                 aug_segments=(2, 2),
                 aug_ratio=0.5),
-            dict(type='FrameSelector', io_backend='disk')
+            dict(type='RawFrameDecode', io_backend='disk')
         ]
         cls.proposal_test_pipeline = [
             dict(
@@ -71,7 +97,7 @@ class TestDataset(object):
                 aug_segments=(2, 2),
                 aug_ratio=0.5,
                 mode='test'),
-            dict(type='FrameSelector', io_backend='disk')
+            dict(type='RawFrameDecode', io_backend='disk')
         ]
 
         cls.proposal_train_cfg = ConfigDict(
@@ -111,6 +137,62 @@ class TestDataset(object):
                         softmax_before_filter=True,
                         cls_top_k=2))))
 
+        cls.hvu_categories = [
+            'action', 'attribute', 'concept', 'event', 'object', 'scene'
+        ]
+
+        cls.hvu_category_nums = [739, 117, 291, 69, 1679, 248]
+        cls.filename_tmpl = 'img_{:05d}.jpg'
+
+    def test_hvu_dataset(self):
+        hvu_frame_dataset = HVUDataset(
+            ann_file=self.hvu_frame_ann_file,
+            pipeline=self.frame_pipeline,
+            tag_categories=self.hvu_categories,
+            tag_category_nums=self.hvu_category_nums,
+            filename_tmpl=self.filename_tmpl,
+            data_prefix=self.data_prefix,
+            start_index=1)
+        hvu_frame_infos = hvu_frame_dataset.video_infos
+        frame_dir = osp.join(self.data_prefix, 'test_imgs')
+        assert hvu_frame_infos == [
+            dict(
+                frame_dir=frame_dir,
+                total_frames=5,
+                label=dict(
+                    concept=[250, 131, 42, 51, 57, 155, 122],
+                    object=[1570, 508],
+                    event=[16],
+                    action=[180],
+                    scene=[206]),
+                categories=self.hvu_categories,
+                category_nums=self.hvu_category_nums,
+                filename_tmpl=self.filename_tmpl,
+                start_index=1,
+                modality='RGB')
+        ] * 2
+
+        hvu_video_dataset = HVUDataset(
+            ann_file=self.hvu_video_ann_file,
+            pipeline=self.video_pipeline,
+            tag_categories=self.hvu_categories,
+            tag_category_nums=self.hvu_category_nums,
+            data_prefix=self.data_prefix)
+        hvu_video_infos = hvu_video_dataset.video_infos
+        filename = osp.join(self.data_prefix, 'tmp.mp4')
+        assert hvu_video_infos == [
+            dict(
+                filename=filename,
+                label=dict(
+                    concept=[250, 131, 42, 51, 57, 155, 122],
+                    object=[1570, 508],
+                    event=[16],
+                    action=[180],
+                    scene=[206]),
+                categories=self.hvu_categories,
+                category_nums=self.hvu_category_nums)
+        ] * 2
+
     def test_rawframe_dataset(self):
         rawframe_dataset = RawframeDataset(self.frame_ann_file,
                                            self.frame_pipeline,
@@ -121,6 +203,28 @@ class TestDataset(object):
             dict(frame_dir=frame_dir, total_frames=5, label=127)
         ] * 2
         assert rawframe_dataset.start_index == 1
+
+    def test_audio_dataset(self):
+        audio_dataset = AudioDataset(
+            self.audio_ann_file,
+            self.audio_pipeline,
+            data_prefix=self.data_prefix)
+        audio_infos = audio_dataset.video_infos
+        wav_path = osp.join(self.data_prefix, 'test.wav')
+        assert audio_infos == [
+            dict(audio_path=wav_path, total_frames=100, label=127)
+        ] * 2
+
+    def test_audio_feature_dataset(self):
+        audio_dataset = AudioFeatureDataset(
+            self.audio_feature_ann_file,
+            self.audio_feature_pipeline,
+            data_prefix=self.data_prefix)
+        audio_infos = audio_dataset.video_infos
+        feature_path = osp.join(self.data_prefix, 'test.npy')
+        assert audio_infos == [
+            dict(audio_path=feature_path, total_frames=100, label=127)
+        ] * 2
 
     def test_rawframe_dataset_with_offset(self):
         rawframe_dataset = RawframeDataset(
@@ -144,15 +248,13 @@ class TestDataset(object):
             num_classes=100)
         rawframe_infos = rawframe_dataset.video_infos
         frame_dir = osp.join(self.data_prefix, 'test_imgs')
-        label0 = torch.zeros(100)
-        label0[[1]] = 1.0
-        label1 = torch.zeros(100)
-        label1[[3, 5]] = 1.0
+        label0 = [1]
+        label1 = [3, 5]
         labels = [label0, label1]
         for info, label in zip(rawframe_infos, labels):
             assert info['frame_dir'] == frame_dir
             assert info['total_frames'] == 5
-            assert torch.all(info['label'] == label)
+            assert set(info['label']) == set(label)
         assert rawframe_dataset.start_index == 1
 
     def test_dataset_realpath(self):
@@ -240,6 +342,54 @@ class TestDataset(object):
             test_mode=True)
         result = rawframe_dataset[0]
         assert self.check_keys_contain(result.keys(), target_keys + ['offset'])
+
+    def test_audio_pipeline(self):
+        target_keys = [
+            'audio_path', 'label', 'start_index', 'modality', 'audios_shape',
+            'length', 'sample_rate', 'total_frames'
+        ]
+
+        # Audio dataset not in test mode
+        audio_dataset = AudioDataset(
+            self.audio_ann_file,
+            self.audio_pipeline,
+            data_prefix=self.data_prefix,
+            test_mode=False)
+        result = audio_dataset[0]
+        assert self.check_keys_contain(result.keys(), target_keys)
+
+        # Audio dataset in test mode
+        audio_dataset = AudioDataset(
+            self.audio_ann_file,
+            self.audio_pipeline,
+            data_prefix=self.data_prefix,
+            test_mode=True)
+        result = audio_dataset[0]
+        assert self.check_keys_contain(result.keys(), target_keys)
+
+    def test_audio_feature_pipeline(self):
+        target_keys = [
+            'audio_path', 'label', 'start_index', 'modality', 'audios',
+            'total_frames'
+        ]
+
+        # Audio feature dataset not in test mode
+        audio_feature_dataset = AudioFeatureDataset(
+            self.audio_feature_ann_file,
+            self.audio_feature_pipeline,
+            data_prefix=self.data_prefix,
+            test_mode=False)
+        result = audio_feature_dataset[0]
+        assert self.check_keys_contain(result.keys(), target_keys)
+
+        # Audio dataset in test mode
+        audio_feature_dataset = AudioFeatureDataset(
+            self.audio_feature_ann_file,
+            self.audio_feature_pipeline,
+            data_prefix=self.data_prefix,
+            test_mode=True)
+        result = audio_feature_dataset[0]
+        assert self.check_keys_contain(result.keys(), target_keys)
 
     def test_video_pipeline(self):
         target_keys = ['filename', 'label', 'start_index', 'modality']
@@ -643,10 +793,13 @@ class TestDataset(object):
         results_activity_scores = np.random.randn(16, 21)
         results_completeness_scores = np.random.randn(16, 20)
         results_bbox_preds = np.random.randn(16, 20, 2)
-        results = [[
-            results_relative_proposal_list, results_activity_scores,
-            results_completeness_scores, results_bbox_preds
-        ]]
+        results = [
+            dict(
+                relative_proposal_list=results_relative_proposal_list,
+                activity_scores=results_activity_scores,
+                completeness_scores=results_completeness_scores,
+                bbox_preds=results_bbox_preds)
+        ]
         eval_result = ssn_dataset.evaluate(results, metrics=['mAP'])
         assert set(eval_result) == set([
             'mAP@0.10', 'mAP@0.20', 'mAP@0.30', 'mAP@0.40', 'mAP@0.50',
@@ -658,12 +811,73 @@ class TestDataset(object):
         results_activity_scores = np.random.randn(16, 21)
         results_completeness_scores = np.random.randn(16, 20)
         results_bbox_preds = np.random.randn(16, 20, 2)
-        results = [[
-            results_relative_proposal_list, results_activity_scores,
-            results_completeness_scores, results_bbox_preds
-        ]]
+        results = [
+            dict(
+                relative_proposal_list=results_relative_proposal_list,
+                activity_scores=results_activity_scores,
+                completeness_scores=results_completeness_scores,
+                bbox_preds=results_bbox_preds)
+        ]
         eval_result = ssn_dataset_topall.evaluate(results, metrics=['mAP'])
         assert set(eval_result) == set([
             'mAP@0.10', 'mAP@0.20', 'mAP@0.30', 'mAP@0.40', 'mAP@0.50',
             'mAP@0.50', 'mAP@0.60', 'mAP@0.70', 'mAP@0.80', 'mAP@0.90'
         ])
+
+    def test_audio_evaluate(self):
+        audio_dataset = AudioDataset(
+            self.audio_ann_file,
+            self.audio_pipeline,
+            data_prefix=self.data_prefix)
+
+        with pytest.raises(TypeError):
+            # results must be a list
+            audio_dataset.evaluate('0.5')
+
+        with pytest.raises(AssertionError):
+            # The length of results must be equal to the dataset len
+            audio_dataset.evaluate([0] * 5)
+
+        with pytest.raises(TypeError):
+            # topk must be int or tuple of int
+            audio_dataset.evaluate([0] * len(audio_dataset), topk=1.0)
+
+        with pytest.raises(KeyError):
+            # unsupported metric
+            audio_dataset.evaluate([0] * len(audio_dataset), metrics='iou')
+
+        # evaluate top_k_accuracy and mean_class_accuracy metric
+        results = [np.array([0.1, 0.5, 0.4])] * 2
+        eval_result = audio_dataset.evaluate(
+            results, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+        assert set(eval_result.keys()) == set(
+            ['top1_acc', 'top5_acc', 'mean_class_accuracy'])
+
+    def test_audio_feature_evaluate(self):
+        audio_dataset = AudioFeatureDataset(
+            self.audio_feature_ann_file,
+            self.audio_feature_pipeline,
+            data_prefix=self.data_prefix)
+
+        with pytest.raises(TypeError):
+            # results must be a list
+            audio_dataset.evaluate('0.5')
+
+        with pytest.raises(AssertionError):
+            # The length of results must be equal to the dataset len
+            audio_dataset.evaluate([0] * 5)
+
+        with pytest.raises(TypeError):
+            # topk must be int or tuple of int
+            audio_dataset.evaluate([0] * len(audio_dataset), topk=1.0)
+
+        with pytest.raises(KeyError):
+            # unsupported metric
+            audio_dataset.evaluate([0] * len(audio_dataset), metrics='iou')
+
+        # evaluate top_k_accuracy and mean_class_accuracy metric
+        results = [np.array([0.1, 0.5, 0.4])] * 2
+        eval_result = audio_dataset.evaluate(
+            results, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+        assert set(eval_result) == set(
+            ['top1_acc', 'top5_acc', 'mean_class_accuracy'])

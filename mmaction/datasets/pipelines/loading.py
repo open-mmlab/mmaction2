@@ -6,11 +6,66 @@ import warnings
 
 import mmcv
 import numpy as np
+import torch
 from mmcv.fileio import FileClient
 from torch.nn.modules.utils import _pair
 
 from ...utils import get_random_string, get_shm_dir, get_thread_id
 from ..registry import PIPELINES
+
+
+@PIPELINES.register_module()
+class LoadHVULabel(object):
+    """Convert the HVU label from dictionaries to torch tensors.
+
+    Required keys are "label", "categories", "category_nums", added or modified
+    keys are "label", "mask" and "category_mask".
+    """
+
+    def __init__(self, **kwargs):
+        self.hvu_initialized = False
+
+    def init_hvu_info(self, categories, category_nums):
+        assert len(categories) == len(category_nums)
+        self.categories = categories
+        self.category_nums = category_nums
+        self.num_categories = len(self.categories)
+        self.num_tags = sum(self.category_nums)
+        self.category2num = dict(zip(categories, category_nums))
+        self.start_idx = [0]
+        for i in range(self.num_categories - 1):
+            self.start_idx.append(self.start_idx[-1] + self.category_nums[i])
+        self.category2startidx = dict(zip(categories, self.start_idx))
+        self.hvu_initialized = True
+
+    def __call__(self, results):
+        """Convert the label dictionary to 3 tensors: "label", "mask" and
+        "category_mask".
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+
+        if not self.hvu_initialized:
+            self.init_hvu_info(results['categories'], results['category_nums'])
+
+        onehot = torch.zeros(self.num_tags)
+        onehot_mask = torch.zeros(self.num_tags)
+        category_mask = torch.zeros(self.num_categories)
+
+        for category, tags in results['label'].items():
+            category_mask[self.categories.index(category)] = 1.
+            start_idx = self.category2startidx[category]
+            category_num = self.category2num[category]
+            tags = [idx + start_idx for idx in tags]
+            onehot[tags] = 1.
+            onehot_mask[start_idx:category_num + start_idx] = 1.
+
+        results['label'] = onehot
+        results['mask'] = onehot_mask
+        results['category_mask'] = category_mask
+        return results
 
 
 @PIPELINES.register_module()
@@ -579,7 +634,7 @@ class PyAVInit(object):
         self.file_client = None
 
     def __call__(self, results):
-        """Perform the PyAV initiation.
+        """Perform the PyAV initialization.
 
         Args:
             results (dict): The resulting dict to be modified and passed
@@ -679,7 +734,7 @@ class DecordInit(object):
         self.file_client = None
 
     def __call__(self, results):
-        """Perform the Decord initiation.
+        """Perform the Decord initialization.
 
         Args:
             results (dict): The resulting dict to be modified and passed
@@ -764,7 +819,7 @@ class OpenCVInit(object):
         os.mkdir(self.tmp_folder)
 
     def __call__(self, results):
-        """Perform the OpenCV initiation.
+        """Perform the OpenCV initialization.
 
         Args:
             results (dict): The resulting dict to be modified and passed
@@ -910,6 +965,161 @@ class RawFrameDecode(object):
 
 
 @PIPELINES.register_module()
+class AudioDecodeInit(object):
+    """Using librosa to initialize the audio reader.
+
+    Args:
+        io_backend (str): io backend where frames are store.
+            Default: 'disk'.
+        sample_rate (int): Audio sampling times per second. Default: 16000.
+
+    Required keys are "audio_path", added or modified keys are "length",
+    "sample_rate", "audios".
+    """
+
+    def __init__(self,
+                 io_backend='disk',
+                 sample_rate=16000,
+                 pad_method='zero',
+                 **kwargs):
+        self.io_backend = io_backend
+        self.sample_rate = sample_rate
+        if pad_method in ['random', 'zero']:
+            self.pad_method = pad_method
+        else:
+            raise NotImplementedError
+        self.kwargs = kwargs
+        self.file_client = None
+
+    def _zero_pad(self, shape):
+        return np.zeros(shape, dtype=np.float32)
+
+    def _random_pad(self, shape):
+        # librosa load raw audio file into a distribution of -1~+1
+        return np.random.rand(shape).astype(np.float32) * 2 - 1
+
+    def __call__(self, results):
+        """Perform the librosa initialization.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        try:
+            import librosa
+        except ImportError:
+            raise ImportError('Please install librosa first.')
+
+        if self.file_client is None:
+            self.file_client = FileClient(self.io_backend, **self.kwargs)
+        if osp.exists(results['audio_path']):
+            file_obj = io.BytesIO(self.file_client.get(results['audio_path']))
+            y, sr = librosa.load(file_obj, sr=self.sample_rate)
+        else:
+            # Generate a random dummy 10s input
+            pad_func = getattr(self, f'_{self.pad_method}_pad')
+            y = pad_func(int(round(10.0 * self.sample_rate)))
+            sr = self.sample_rate
+
+        results['length'] = y.shape[0]
+        results['sample_rate'] = sr
+        results['audios'] = y
+        return results
+
+
+@PIPELINES.register_module()
+class LoadAudioFeature(object):
+    """Load offline extracted audio features.
+
+    Required keys are "audio_path", added or modified keys are "length",
+    audios".
+    """
+
+    def __init__(self, pad_method='zero'):
+        if pad_method not in ['zero', 'random']:
+            raise NotImplementedError
+        self.pad_method = pad_method
+
+    def _zero_pad(self, shape):
+        return np.zeros(shape, dtype=np.float32)
+
+    def _random_pad(self, shape):
+        # spectrogram is normalized into a distribution of 0~1
+        return np.random.rand(shape).astype(np.float32)
+
+    def __call__(self, results):
+        """Perform the numpy loading.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        if osp.exists(results['audio_path']):
+            feature_map = np.load(results['audio_path'])
+        else:
+            # Generate a random dummy 10s input
+            # Some videos do not have audio stream
+            pad_func = getattr(self, f'_{self.pad_method}_pad')
+            feature_map = pad_func((640, 80))
+
+        results['length'] = feature_map.shape[0]
+        results['audios'] = feature_map
+        return results
+
+
+@PIPELINES.register_module()
+class AudioDecode(object):
+    """Sample the audio w.r.t. the frames selected.
+
+    Args:
+        fixed_length (int): As the audio clip selected by frames sampled may
+            not be extactly the same, `fixed_length` will truncate or pad them
+            into the same size. Default: 32000.
+
+    Required keys are "frame_inds", "num_clips", "total_frames", "length",
+    added or modified keys are "audios", "audios_shape".
+    """
+
+    def __init__(self, fixed_length=32000):
+        self.fixed_length = fixed_length
+
+    def __call__(self, results):
+        """Perform the ``AudioDecode`` to pick audio clips."""
+        audio = results['audios']
+        frame_inds = results['frame_inds']
+        num_clips = results['num_clips']
+        resampled_clips = list()
+        frame_inds = frame_inds.reshape(num_clips, -1)
+        for clip_idx in range(num_clips):
+            clip_frame_inds = frame_inds[clip_idx]
+            start_idx = max(
+                0,
+                int(
+                    round((clip_frame_inds[0] + 1) / results['total_frames'] *
+                          results['length'])))
+            end_idx = min(
+                results['length'],
+                int(
+                    round((clip_frame_inds[-1] + 1) / results['total_frames'] *
+                          results['length'])))
+            cropped_audio = audio[start_idx:end_idx]
+            if cropped_audio.shape[0] >= self.fixed_length:
+                truncated_audio = cropped_audio[:self.fixed_length]
+            else:
+                truncated_audio = np.pad(
+                    cropped_audio,
+                    ((0, self.fixed_length - cropped_audio.shape[0])),
+                    mode='constant')
+
+            resampled_clips.append(truncated_audio)
+
+        results['audios'] = np.array(resampled_clips)
+        results['audios_shape'] = results['audios'].shape
+
+        return results
+
+
+@PIPELINES.register_module()
 class FrameSelector(RawFrameDecode):
     """Deprecated class for ``RawFrameDecode``."""
 
@@ -917,6 +1127,62 @@ class FrameSelector(RawFrameDecode):
         warnings.warn('"FrameSelector" is deprecated, please switch to'
                       '"RawFrameDecode"')
         super().__init__(*args, **kwargs)
+
+
+@PIPELINES.register_module()
+class AudioFeatureSelector(object):
+    """Sample the audio feature w.r.t. the frames selected.
+
+    Args:
+        fixed_length (int): As the features selected by frames sampled may
+            not be extactly the same, `fixed_length` will truncate or pad them
+            into the same size. Default: 128.
+
+    Required keys are "audios", "frame_inds", "num_clips", "length",
+        "total_frames", added or modified keys are "audios", "audios_shape".
+    """
+
+    def __init__(self, fixed_length=128):
+        self.fixed_length = fixed_length
+
+    def __call__(self, results):
+        """Perform the ``AudioFeatureSelector`` to pick audio feature clips.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        audio = results['audios']
+        frame_inds = results['frame_inds']
+        num_clips = results['num_clips']
+        resampled_clips = list()
+
+        frame_inds = frame_inds.reshape(num_clips, -1)
+        for clip_idx in range(num_clips):
+            clip_frame_inds = frame_inds[clip_idx]
+            start_idx = max(
+                0,
+                int(
+                    round((clip_frame_inds[0] + 1) / results['total_frames'] *
+                          results['length'])))
+            end_idx = min(
+                results['length'],
+                int(
+                    round((clip_frame_inds[-1] + 1) / results['total_frames'] *
+                          results['length'])))
+            cropped_audio = audio[start_idx:end_idx, :]
+            if cropped_audio.shape[0] >= self.fixed_length:
+                truncated_audio = cropped_audio[:self.fixed_length, :]
+            else:
+                truncated_audio = np.pad(
+                    cropped_audio,
+                    ((0, self.fixed_length - cropped_audio.shape[0]), (0, 0)),
+                    mode='constant')
+
+            resampled_clips.append(truncated_audio)
+        results['audios'] = np.array(resampled_clips)
+        results['audios_shape'] = results['audios'].shape
+        return results
 
 
 @PIPELINES.register_module()

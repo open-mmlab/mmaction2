@@ -5,11 +5,13 @@ model = dict(
         type='ResNetTSM',
         pretrained='torchvision://resnet50',
         depth=50,
+        num_segments=16,
         norm_eval=False,
         shift_div=8),
     cls_head=dict(
         type='TSMHead',
         num_classes=400,
+        num_segments=16,
         in_channels=2048,
         spatial_type='avg',
         consensus=dict(type='AvgConsensus', dim=1),

@@ -42,6 +42,21 @@ def _get_recognizer_cfg(fname):
     return config.model, config.train_cfg, config.test_cfg
 
 
+def _get_audio_recognizer_cfg(fname):
+    """Grab configs necessary to create a audio recognizer.
+
+    These are deep copied to allow for safe modification of parameters without
+    influencing other tests.
+    """
+    repo_dpath = osp.dirname(osp.dirname(osp.dirname(__file__)))
+    config_dpath = osp.join(repo_dpath, 'configs/recognition_audio/')
+    config_fpath = osp.join(config_dpath, fname)
+    if not osp.exists(config_dpath):
+        raise Exception('Cannot find config path')
+    config = mmcv.Config.fromfile(config_fpath)
+    return config.model, config.train_cfg, config.test_cfg
+
+
 def test_base_recognizer():
     cls_score = torch.rand(5, 400)
     with pytest.raises(KeyError):
@@ -241,6 +256,22 @@ def test_tsm():
         for one_img in img_list:
             recognizer(one_img, None, return_loss=False)
 
+    # test twice sample + 3 crops
+    input_shape = (2, 48, 3, 32, 32)
+    demo_inputs = generate_demo_inputs(input_shape)
+
+    imgs = demo_inputs['imgs']
+
+    test_cfg = dict(average_clips='prob', test_crops=3, twice_sample=True)
+    recognizer = build_recognizer(
+        model, train_cfg=train_cfg, test_cfg=test_cfg)
+
+    # Test forward test
+    with torch.no_grad():
+        img_list = [img[None, :] for img in imgs]
+        for one_img in img_list:
+            recognizer(one_img, None, return_loss=False)
+
 
 def test_csn():
     model, train_cfg, test_cfg = _get_recognizer_cfg(
@@ -328,6 +359,54 @@ def test_tpn():
             recognizer(one_img, None, return_loss=False)
 
 
+def test_audio_recognizer():
+    model, train_cfg, test_cfg = _get_audio_recognizer_cfg(
+        'resnet/tsn_r50_64x1x1_100e_kinetics400_audio_feature.py')
+    model['backbone']['pretrained'] = None
+
+    recognizer = build_recognizer(
+        model, train_cfg=train_cfg, test_cfg=test_cfg)
+
+    input_shape = (1, 3, 1, 128, 80)
+    demo_inputs = generate_demo_inputs(input_shape, model_type='audio')
+
+    audios = demo_inputs['imgs']
+    gt_labels = demo_inputs['gt_labels']
+
+    losses = recognizer(audios, gt_labels)
+    assert isinstance(losses, dict)
+
+    # Test forward test
+    with torch.no_grad():
+        audio_list = [audio[None, :] for audio in audios]
+        for one_spectro in audio_list:
+            recognizer(one_spectro, None, return_loss=False)
+
+
+def test_c3d():
+    model, train_cfg, test_cfg = _get_recognizer_cfg(
+        'c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb.py')
+    model['backbone']['pretrained'] = None
+
+    recognizer = build_recognizer(
+        model, train_cfg=train_cfg, test_cfg=test_cfg)
+
+    input_shape = (1, 3, 3, 16, 112, 112)
+    demo_inputs = generate_demo_inputs(input_shape, '3D')
+
+    imgs = demo_inputs['imgs']
+    gt_labels = demo_inputs['gt_labels']
+
+    losses = recognizer(imgs, gt_labels)
+    assert isinstance(losses, dict)
+
+    # Test forward test
+    with torch.no_grad():
+        img_list = [img[None, :] for img in imgs]
+        for one_img in img_list:
+            recognizer(one_img, None, return_loss=False)
+
+
 def generate_demo_inputs(input_shape=(1, 3, 3, 224, 224), model_type='2D'):
     """Create a superset of inputs needed to run test or train batches.
 
@@ -348,6 +427,8 @@ def generate_demo_inputs(input_shape=(1, 3, 3, 224, 224), model_type='2D'):
         gt_labels = torch.LongTensor([2] * N)
     elif model_type == '3D':
         gt_labels = torch.LongTensor([2] * M)
+    elif model_type == 'audio':
+        gt_labels = torch.LongTensor([2] * L)
     else:
         raise ValueError(f'Data type {model_type} is not available')
 

@@ -67,8 +67,8 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
         """Defines the computation performed at every call."""
         pass
 
-    def loss(self, cls_score, labels):
-        """Calculate the loss given output ``cls_score`` and target ``labels``.
+    def loss(self, cls_score, labels, **kwargs):
+        """Calculate the loss given output ``cls_score``, target ``labels``.
 
         Args:
             cls_score (torch.Tensor): The output of the model.
@@ -94,5 +94,11 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
             labels = ((1 - self.label_smooth_eps) * labels +
                       self.label_smooth_eps / self.num_classes)
 
-        losses['loss_cls'] = self.loss_cls(cls_score, labels)
+        loss_cls = self.loss_cls(cls_score, labels, **kwargs)
+        # loss_cls may be dictionary or single tensor
+        if type(loss_cls) is dict:
+            losses.update(loss_cls)
+        else:
+            losses['loss_cls'] = loss_cls
+
         return losses

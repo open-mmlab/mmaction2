@@ -6,7 +6,7 @@ from .base import BaseRecognizer
 class Recognizer2D(BaseRecognizer):
     """2D recognizer model framework."""
 
-    def forward_train(self, imgs, labels):
+    def forward_train(self, imgs, labels, **kwargs):
         """Defines the computation performed at every call when training."""
         batches = imgs.shape[0]
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
@@ -27,7 +27,7 @@ class Recognizer2D(BaseRecognizer):
 
         cls_score = self.cls_head(x, num_segs)
         gt_labels = labels.squeeze()
-        loss_cls = self.cls_head.loss(cls_score, gt_labels)
+        loss_cls = self.cls_head.loss(cls_score, gt_labels, **kwargs)
         losses.update(loss_cls)
 
         return losses
@@ -35,7 +35,11 @@ class Recognizer2D(BaseRecognizer):
     def forward_test(self, imgs):
         """Defines the computation performed at every call when evaluation and
         testing."""
+        test_crops = self.test_cfg.get('test_crops', None)
+        twice_sample = self.test_cfg.get('twice_sample', False)
+
         batches = imgs.shape[0]
+
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
         num_segs = imgs.shape[0] // batches
 
@@ -54,7 +58,10 @@ class Recognizer2D(BaseRecognizer):
             num_segs = 1
 
         cls_score = self.cls_head(x, num_segs)
-        cls_score = self.average_clip(cls_score)
+        if test_crops is not None:
+            if twice_sample:
+                test_crops = test_crops * 2
+            cls_score = self.average_clip(cls_score, test_crops)
 
         return cls_score.cpu().numpy()
 
