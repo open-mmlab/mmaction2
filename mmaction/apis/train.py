@@ -38,6 +38,7 @@ def train_model(model,
     dataset = dataset if isinstance(dataset, (list, tuple)) else [dataset]
     if cfg.omnisource:
         # The option can override videos_per_gpu
+        train_ratio = cfg.data.get('train_ratio', None)
         omni_videos_per_gpu = cfg.data.get('omni_videos_per_gpu', None)
         dataloader_setting_tmpl = dict(
             videos_per_gpu=cfg.data.get('videos_per_gpu', {}),
@@ -161,4 +162,11 @@ def train_model(model,
         runner.resume(cfg.resume_from)
     elif cfg.load_from:
         runner.load_checkpoint(cfg.load_from)
-    runner.run(data_loaders, cfg.workflow, cfg.total_epochs)
+    if cfg.omnisource:
+        runner.run(
+            data_loaders,
+            cfg.workflow,
+            cfg.total_epochs,
+            train_ratio=train_ratio)
+    else:
+        runner.run(data_loaders, cfg.workflow, cfg.total_epochs)
