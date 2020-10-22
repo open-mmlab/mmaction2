@@ -80,7 +80,7 @@ Assume that you have already downloaded the checkpoints to the directory `checkp
 2. Test TSN on Something-Something V1 with 8 GPUS, and evaluate the top-k accuracy.
 
     ```shell
-    ./tools/dist_test.py configs/recognition/tsn/tsn_r50_1x1x8_50e_sthv1_rgb.py \
+    ./tools/dist_test.sh configs/recognition/tsn/tsn_r50_1x1x8_50e_sthv1_rgb.py \
         checkpoints/SOME_CHECKPOINT.pth \
         8 --out results.pkl --eval top_k_accuracy
     ```

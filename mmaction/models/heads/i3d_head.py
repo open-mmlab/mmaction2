@@ -60,7 +60,8 @@ class I3DHead(BaseHead):
             torch.Tensor: The classification scores for input samples.
         """
         # [N, in_channels, 4, 7, 7]
-        x = self.avg_pool(x)
+        if self.avg_pool is not None:
+            x = self.avg_pool(x)
         # [N, in_channels, 1, 1, 1]
         if self.dropout is not None:
             x = self.dropout(x)

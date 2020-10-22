@@ -383,6 +383,30 @@ def test_audio_recognizer():
             recognizer(one_spectro, None, return_loss=False)
 
 
+def test_c3d():
+    model, train_cfg, test_cfg = _get_recognizer_cfg(
+        'c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb.py')
+    model['backbone']['pretrained'] = None
+
+    recognizer = build_recognizer(
+        model, train_cfg=train_cfg, test_cfg=test_cfg)
+
+    input_shape = (1, 3, 3, 16, 112, 112)
+    demo_inputs = generate_demo_inputs(input_shape, '3D')
+
+    imgs = demo_inputs['imgs']
+    gt_labels = demo_inputs['gt_labels']
+
+    losses = recognizer(imgs, gt_labels)
+    assert isinstance(losses, dict)
+
+    # Test forward test
+    with torch.no_grad():
+        img_list = [img[None, :] for img in imgs]
+        for one_img in img_list:
+            recognizer(one_img, None, return_loss=False)
+
+
 def generate_demo_inputs(input_shape=(1, 3, 3, 224, 224), model_type='2D'):
     """Create a superset of inputs needed to run test or train batches.
 

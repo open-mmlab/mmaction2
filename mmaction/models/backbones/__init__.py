@@ -1,3 +1,4 @@
+from .c3d import C3D
 from .resnet import ResNet
 from .resnet2plus1d import ResNet2Plus1d
 from .resnet3d import ResNet3d
@@ -8,6 +9,6 @@ from .resnet_tin import ResNetTIN
 from .resnet_tsm import ResNetTSM
 
 __all__ = [
-    'ResNet', 'ResNet3d', 'ResNetTSM', 'ResNet2Plus1d', 'ResNet3dSlowFast',
-    'ResNet3dSlowOnly', 'ResNet3dCSN', 'ResNetTIN'
+    'C3D', 'ResNet', 'ResNet3d', 'ResNetTSM', 'ResNet2Plus1d',
+    'ResNet3dSlowFast', 'ResNet3dSlowOnly', 'ResNet3dCSN', 'ResNetTIN'
 ]

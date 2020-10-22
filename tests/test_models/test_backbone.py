@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 from mmcv.utils import _BatchNorm
 
-from mmaction.models import (ResNet, ResNet2Plus1d, ResNet3d, ResNet3dCSN,
+from mmaction.models import (C3D, ResNet, ResNet2Plus1d, ResNet3d, ResNet3dCSN,
                              ResNet3dSlowFast, ResNet3dSlowOnly, ResNetTIN,
                              ResNetTSM)
 from mmaction.models.backbones.resnet_tsm import NL3DWrapper
@@ -820,6 +820,26 @@ def test_resnet_csn_backbone():
     resnet3d_csn_ip.train(False)
     for module in resnet3d_csn_ip.children():
         assert module.training is False
+
+
+def test_c3d_backbone():
+    """Test c3d backbone."""
+    input_shape = (1, 3, 16, 112, 112)
+    imgs = _demo_inputs(input_shape)
+
+    # c3d inference test
+    c3d = C3D()
+    c3d.init_weights()
+    c3d.train()
+    feat = c3d(imgs)
+    assert feat.shape == torch.Size([1, 4096])
+
+    # c3d with bn inference test
+    c3d_bn = C3D(norm_cfg=dict(type='BN3d'))
+    c3d_bn.init_weights()
+    c3d_bn.train()
+    feat = c3d_bn(imgs)
+    assert feat.shape == torch.Size([1, 4096])
 
 
 @pytest.mark.skipif(
