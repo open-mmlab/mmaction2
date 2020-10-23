@@ -24,12 +24,13 @@ EXCLUED_STEPS = [
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='MMAction2 webcam demo')
+    parser = argparse.ArgumentParser(
+        description='MMAction2 untrimmed video demo')
     parser.add_argument('video', default='sample_video.mp4', help='video file')
     parser.add_argument('config', help='test config file path')
     parser.add_argument('checkpoint', help='checkpoint file')
     parser.add_argument('label', help='label file')
-    parser.add_argument('--out-filename', default=None, help='out file name')
+    parser.add_argument('--out-filename', default=None, help='output filename')
     parser.add_argument(
         '--input-step', type=int, default=1, help='internal between predict')
     parser.add_argument(
@@ -43,29 +44,32 @@ def parse_args():
     return args
 
 
-def show_results(fps=15):
+def show_results():
     cap = cv2.VideoCapture(video_path)
-    frameCount = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    frameWidth = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    frameHeight = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    msg = ' '
+    num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fps = cap.get(cv2.CAP_PROP_FPS)
+
+    msg = 'Preparing action recognition ...'
     text_info = {}
-    fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
-    frame_size = (frameWidth, frameHeight)
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    frame_size = (frame_width, frame_height)
     ind = 0
     video_writer = cv2.VideoWriter(out_file, fourcc, fps, frame_size)
-    while ind < frameCount:
+    while ind < num_frames:
         ind += 1
         ret, frame = cap.read()
         frame_queue.append(np.array(frame)[:, :, ::-1])
         ret, scores = inference()
-        if ret is True:
+        if ret:
             num_selected_labels = min(len(label), 5)
             scores_tuples = tuple(zip(label, scores))
             scores_sorted = sorted(
                 scores_tuples, key=itemgetter(1), reverse=True)
             results = scores_sorted[:num_selected_labels]
             result_queue.append(results)
+
         if len(result_queue) != 0:
             text_info = {}
             results = result_queue.popleft()
@@ -92,11 +96,12 @@ def show_results(fps=15):
 
 def inference():
     if len(frame_queue) != sample_length:
-        return (False, None)
+        return False, None
+
     cur_windows = list(np.array(frame_queue))
     if data['img_shape'] is None:
         data['img_shape'] = frame_queue.popleft().shape[:2]
-    for i in range(input_step):
+    for _ in range(input_step):
         frame_queue.popleft()
     cur_data = data.copy()
     cur_data['imgs'] = cur_windows
@@ -110,14 +115,15 @@ def inference():
 
 
 def main():
-    global frame_queue, frame, results, threshold, sample_length, \
-        data, test_pipeline, model, out_file, video_path, device, \
-        input_step, label, result_queue
+    global frame_queue, threshold, sample_length, data, test_pipeline, model, \
+        out_file, video_path, device, input_step, label, result_queue
+
     args = parse_args()
     input_step = args.input_step
     threshold = args.threshold
     video_path = args.video
-    out_file = args.out_file
+    out_file = args.out_filename
+
     device = torch.device(args.device)
     model = init_recognizer(args.config, args.checkpoint, device=device)
     data = dict(img_shape=None, modality='RGB', label=-1)
@@ -140,12 +146,9 @@ def main():
             pipeline_.remove(step)
     test_pipeline = Compose(pipeline_)
     assert sample_length > 0
-    try:
-        frame_queue = deque(maxlen=sample_length)
-        result_queue = deque(maxlen=1)
-        show_results()
-    except KeyboardInterrupt:
-        pass
+    frame_queue = deque(maxlen=sample_length)
+    result_queue = deque(maxlen=1)
+    show_results()
 
 
 if __name__ == '__main__':
