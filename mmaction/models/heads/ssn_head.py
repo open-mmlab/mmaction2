@@ -192,8 +192,7 @@ class STPPTest(nn.Module):
 
             sum_parts = sum(stage_cfg)
             tick_left = ticks[stage_idx]
-            tick_right = max(ticks[stage_idx] + 1,
-                             ticks[stage_idx + 1]).float()
+            tick_right = float(max(ticks[stage_idx] + 1, ticks[stage_idx + 1]))
 
             if tick_right <= 0 or tick_left >= raw_scores.size(0):
                 offset += sum_parts

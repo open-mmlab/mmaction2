@@ -117,7 +117,7 @@ optimizer_config = dict(grad_clip=dict(max_norm=20, norm_type=2))
 lr_config = dict(policy='step', step=[20, 40])
 total_epochs = 50
 checkpoint_config = dict(interval=5)
-evaluation = dict(interval=5, metrics=['mean_average_precision'])
+evaluation = dict(interval=5, metrics=['mmit_mean_average_precision'])
 # yapf:disable
 log_config = dict(
     interval=20,

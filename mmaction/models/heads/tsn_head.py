@@ -72,8 +72,9 @@ class TSNHead(BaseHead):
             torch.Tensor: The classification scores for input samples.
         """
         # [N * num_segs, in_channels, 7, 7]
-        x = self.avg_pool(x)
-        # [N * num_segs, in_channels, 1, 1]
+        if self.avg_pool is not None:
+            x = self.avg_pool(x)
+            # [N * num_segs, in_channels, 1, 1]
         x = x.reshape((-1, num_segs) + x.shape[1:])
         # [N, num_segs, in_channels, 1, 1]
         x = self.consensus(x)

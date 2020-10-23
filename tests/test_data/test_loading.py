@@ -4,12 +4,16 @@ import os.path as osp
 import mmcv
 import numpy as np
 import pytest
+import torch
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 # yapf: disable
-from mmaction.datasets.pipelines import (DecordDecode, DecordInit,
-                                         DenseSampleFrames, FrameSelector,
+from mmaction.datasets.pipelines import (AudioDecode, AudioDecodeInit,
+                                         AudioFeatureSelector, DecordDecode,
+                                         DecordInit, DenseSampleFrames,
+                                         FrameSelector,
                                          GenerateLocalizationLabels,
+                                         LoadAudioFeature, LoadHVULabel,
                                          LoadLocalizationFeature,
                                          LoadProposals, OpenCVDecode,
                                          OpenCVInit, PyAVDecode, PyAVInit,
@@ -50,6 +54,10 @@ class TestLoading(object):
             osp.dirname(osp.dirname(__file__)), 'data/test.jpg')
         cls.video_path = osp.join(
             osp.dirname(osp.dirname(__file__)), 'data/test.mp4')
+        cls.wav_path = osp.join(
+            osp.dirname(osp.dirname(__file__)), 'data/test.wav')
+        cls.audio_spec_path = osp.join(
+            osp.dirname(osp.dirname(__file__)), 'data/test.npy')
         cls.img_dir = osp.join(
             osp.dirname(osp.dirname(__file__)), 'data/test_imgs')
         cls.raw_feature_dir = osp.join(
@@ -63,10 +71,23 @@ class TestLoading(object):
         cls.filename_tmpl = 'img_{:05}.jpg'
         cls.flow_filename_tmpl = '{}_{:05d}.jpg'
         video_total_frames = len(mmcv.VideoReader(cls.video_path))
+        cls.audio_total_frames = video_total_frames
         cls.video_results = dict(
             filename=cls.video_path,
             label=1,
             total_frames=video_total_frames,
+            start_index=0)
+        cls.audio_results = dict(
+            audios=np.random.randn(1280, ),
+            audio_path=cls.wav_path,
+            total_frames=cls.audio_total_frames,
+            label=1,
+            start_index=0)
+        cls.audio_feature_results = dict(
+            audios=np.random.randn(128, 80),
+            audio_path=cls.audio_spec_path,
+            total_frames=cls.audio_total_frames,
+            label=1,
             start_index=0)
         cls.frame_results = dict(
             frame_dir=cls.img_dir,
@@ -106,6 +127,51 @@ class TestLoading(object):
                 ExampleSSNInstance(1, 4, 10, 1, 1, 1)
             ], 0], [['test_imgs',
                      ExampleSSNInstance(2, 5, 10, 2, 1, 1)], 0]])
+        cls.hvu_label_example1 = dict(
+            categories=['action', 'object', 'scene', 'concept'],
+            category_nums=[2, 5, 3, 2],
+            label=dict(action=[0], object=[2, 3], scene=[0, 1]))
+        cls.hvu_label_example2 = dict(
+            categories=['action', 'object', 'scene', 'concept'],
+            category_nums=[2, 5, 3, 2],
+            label=dict(action=[1], scene=[1, 2], concept=[1]))
+
+    def test_load_hvu_label(self):
+        hvu_label_example1 = copy.deepcopy(self.hvu_label_example1)
+        hvu_label_example2 = copy.deepcopy(self.hvu_label_example2)
+        categories = hvu_label_example1['categories']
+        category_nums = hvu_label_example1['category_nums']
+        num_tags = sum(category_nums)
+        num_categories = len(categories)
+
+        loader = LoadHVULabel()
+
+        result1 = loader(hvu_label_example1)
+        label1 = torch.zeros(num_tags)
+        mask1 = torch.zeros(num_tags)
+        category_mask1 = torch.zeros(num_categories)
+
+        label1[[0, 4, 5, 7, 8]] = 1.
+        mask1[:10] = 1.
+        category_mask1[:3] = 1.
+
+        assert torch.all(torch.eq(label1, result1['label']))
+        assert torch.all(torch.eq(mask1, result1['mask']))
+        assert torch.all(torch.eq(category_mask1, result1['category_mask']))
+
+        result2 = loader(hvu_label_example2)
+        label2 = torch.zeros(num_tags)
+        mask2 = torch.zeros(num_tags)
+        category_mask2 = torch.zeros(num_categories)
+
+        label2[[1, 8, 9, 11]] = 1.
+        mask2[:2] = 1.
+        mask2[7:] = 1.
+        category_mask2[[0, 2, 3]] = 1.
+
+        assert torch.all(torch.eq(label2, result2['label']))
+        assert torch.all(torch.eq(mask2, result2['mask']))
+        assert torch.all(torch.eq(category_mask2, result2['category_mask']))
 
     def test_sample_frames(self):
         target_keys = [
@@ -1139,3 +1205,57 @@ class TestLoading(object):
             load_proposals_result['reference_temporal_iou'],
             np.arange(0.85, 0.80, -0.01),
             decimal=4)
+
+    def test_audio_decode_init(self):
+        target_keys = ['audios', 'length', 'sample_rate']
+        inputs = copy.deepcopy(self.audio_results)
+        audio_decode_init = AudioDecodeInit()
+        results = audio_decode_init(inputs)
+        assert self.check_keys_contain(results.keys(), target_keys)
+
+        # test when no audio file exists
+        inputs = copy.deepcopy(self.audio_results)
+        inputs['audio_path'] = 'foo/foo/bar.wav'
+        audio_decode_init = AudioDecodeInit()
+        results = audio_decode_init(inputs)
+        assert self.check_keys_contain(results.keys(), target_keys)
+        assert results['audios'].shape == (10.0 *
+                                           audio_decode_init.sample_rate, )
+
+    def test_audio_decode(self):
+        target_keys = ['frame_inds', 'audios']
+        inputs = copy.deepcopy(self.audio_results)
+        inputs['frame_inds'] = np.arange(0, self.audio_total_frames,
+                                         2)[:, np.newaxis]
+        inputs['num_clips'] = 1
+        inputs['length'] = 1280
+        audio_selector = AudioDecode()
+        results = audio_selector(inputs)
+        assert self.check_keys_contain(results.keys(), target_keys)
+
+    def test_load_audio_feature(self):
+        target_keys = ['audios']
+        inputs = copy.deepcopy(self.audio_feature_results)
+        load_audio_feature = LoadAudioFeature()
+        results = load_audio_feature(inputs)
+        assert self.check_keys_contain(results.keys(), target_keys)
+
+        # test when no audio feature file exists
+        inputs = copy.deepcopy(self.audio_feature_results)
+        inputs['audio_path'] = 'foo/foo/bar.npy'
+        load_audio_feature = LoadAudioFeature()
+        results = load_audio_feature(inputs)
+        assert results['audios'].shape == (640, 80)
+        assert self.check_keys_contain(results.keys(), target_keys)
+
+    def test_audio_feature_selector(self):
+        target_keys = ['audios']
+        # test frame selector with 2 dim input
+        inputs = copy.deepcopy(self.audio_feature_results)
+        inputs['frame_inds'] = np.arange(0, self.audio_total_frames,
+                                         2)[:, np.newaxis]
+        inputs['num_clips'] = 1
+        inputs['length'] = 1280
+        audio_feature_selector = AudioFeatureSelector()
+        results = audio_feature_selector(inputs)
+        assert self.check_keys_contain(results.keys(), target_keys)

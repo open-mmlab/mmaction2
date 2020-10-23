@@ -1153,3 +1153,114 @@ class MultiGroupCrop(object):
                     f'(crop_size={self.crop_size}, '
                     f'groups={self.groups})')
         return repr_str
+
+
+@PIPELINES.register_module()
+class AudioAmplify(object):
+    """Amplify the waveform.
+
+    Args:
+        ratio (float): The ratio used to amplify the audio waveform.
+
+    Required keys are "audios", added or modified keys are "audios",
+        "amplify_ratio".
+    """
+
+    def __init__(self, ratio):
+        if isinstance(ratio, float):
+            self.ratio = ratio
+        else:
+            raise TypeError('Amplification ratio should be float.')
+
+    def __call__(self, results):
+        """Perfrom the audio amplification.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+
+        assert 'audios' in results
+        results['audios'] *= self.ratio
+        results['amplify_ratio'] = self.ratio
+
+        return results
+
+    def __repr__(self):
+        repr_str = f'{self.__class__.__name__}(ratio={self.ratio})'
+        return repr_str
+
+
+@PIPELINES.register_module()
+class MelSpectrogram(object):
+    """MelSpectrogram. Transfer an audio wave into a melspectogram figure.
+
+    Args:
+        window_size (int): The window size in milisecond. Default: 32.
+        step_size (int): The step size in milisecond. Default: 16.
+        n_mels (int): Number of mels. Default: 80.
+        fixed_length (int): The sample length of melspectrogram maybe not
+            exactly as wished due to different fps, fix the length for batch
+            collation by truncating or padding. Default: 128.
+    """
+
+    def __init__(self,
+                 window_size=32,
+                 step_size=16,
+                 n_mels=80,
+                 fixed_length=128):
+        if all(
+                isinstance(x, int)
+                for x in [window_size, step_size, n_mels, fixed_length]):
+            self.window_size = window_size
+            self.step_size = step_size
+            self.n_mels = n_mels
+            self.fixed_length = fixed_length
+        else:
+            raise TypeError('All arguments should be int.')
+
+    def __call__(self, results):
+        """Perfrom MelSpectrogram transformation.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+
+        Required keys are "audios", "sample_rate", "num_clips",
+            added or modified keys are "audios".
+        """
+        try:
+            import librosa
+        except ImportError:
+            raise ImportError('Install librosa first.')
+        signals = results['audios']
+        sample_rate = results['sample_rate']
+        n_fft = int(round(sample_rate * self.window_size / 1000))
+        hop_length = int(round(sample_rate * self.step_size / 1000))
+        melspectrograms = list()
+        for clip_idx in range(results['num_clips']):
+            clip_signal = signals[clip_idx]
+            mel = librosa.feature.melspectrogram(
+                y=clip_signal,
+                sr=sample_rate,
+                n_fft=n_fft,
+                hop_length=hop_length,
+                n_mels=self.n_mels)
+            if mel.shape[0] >= self.fixed_length:
+                mel = mel[:self.fixed_length, :]
+            else:
+                mel = np.pad(
+                    mel, ((0, mel.shape[-1] - self.fixed_length), (0, 0)),
+                    mode='edge')
+            melspectrograms.append(mel)
+
+        results['audios'] = np.array(melspectrograms)
+        return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}'
+                    f'(window_size={self.window_size}), '
+                    f'step_size={self.step_size}, '
+                    f'n_mels={self.n_mels}, '
+                    f'fixed_length={self.fixed_length})')
+        return repr_str

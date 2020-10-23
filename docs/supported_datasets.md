@@ -2,7 +2,7 @@
 
 - [UCF101](https://www.crcv.ucf.edu/research/data-sets/ucf101/): See [preparing_ucf101](/tools/data/ucf101/preparing_ucf101.md).
 - [HMDB51](https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/): See [preparing_hmdb51](/tools/data/hmdb51/preparing_hmdb51.md).
-- [Kinetics400](https://deepmind.com/research/open-source/kinetics): See [preparing_kinetics400](/tools/data/kinetics400/preparing_kinetics400.md)
+- [Kinetics-[400/600/700]](https://deepmind.com/research/open-source/kinetics): See [preparing_kinetics](/tools/data/kinetics/preparing_kinetics.md)
 - [THUMOS14](https://www.crcv.ucf.edu/THUMOS14/download.html): See [preparing_thumos14](/tools/data/thumos14/preparing_thumos14.md)
 - [Something-Something V1](https://20bn.com/datasets/something-something/v1): See [preparing_sthv1](/tools/data/sthv1/preparing_sthv1.md)
 - [Something-Something V2](https://20bn.com/datasets/something-something): See [preparing_sthv2](/tools/data/sthv2/preparing_sthv2.md)

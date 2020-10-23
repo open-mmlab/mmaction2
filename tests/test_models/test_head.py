@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 
-from mmaction.models import (BaseHead, I3DHead, SlowFastHead, TPNHead, TSMHead,
-                             TSNHead)
+from mmaction.models import (AudioTSNHead, BaseHead, I3DHead, SlowFastHead,
+                             TPNHead, TSMHead, TSNHead)
 
 
 class ExampleHead(BaseHead):
@@ -148,6 +148,36 @@ def test_tsn_head():
     num_segs = input_shape[0]
     cls_scores = tsn_head(feat, num_segs)
     assert cls_scores.shape == torch.Size([1, 4])
+
+
+def test_tsn_head_audio():
+    """Test loss method, layer construction, attributes and forward function in
+    tsn head."""
+    tsn_head_audio = AudioTSNHead(num_classes=4, in_channels=5)
+    tsn_head_audio.init_weights()
+
+    assert tsn_head_audio.num_classes == 4
+    assert tsn_head_audio.dropout_ratio == 0.4
+    assert tsn_head_audio.in_channels == 5
+    assert tsn_head_audio.init_std == 0.01
+    assert tsn_head_audio.spatial_type == 'avg'
+
+    assert isinstance(tsn_head_audio.dropout, nn.Dropout)
+    assert tsn_head_audio.dropout.p == tsn_head_audio.dropout_ratio
+
+    assert isinstance(tsn_head_audio.fc_cls, nn.Linear)
+    assert tsn_head_audio.fc_cls.in_features == tsn_head_audio.in_channels
+    assert tsn_head_audio.fc_cls.out_features == tsn_head_audio.num_classes
+
+    assert isinstance(tsn_head_audio.avg_pool, nn.AdaptiveAvgPool2d)
+    assert tsn_head_audio.avg_pool.output_size == (1, 1)
+
+    input_shape = (8, 5, 7, 7)
+    feat = torch.rand(input_shape)
+
+    # tsn head inference
+    cls_scores = tsn_head_audio(feat)
+    assert cls_scores.shape == torch.Size([8, 4])
 
 
 def test_tsm_head():

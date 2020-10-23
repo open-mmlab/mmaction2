@@ -37,7 +37,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
             different filename format. However, when taking videos as input,
             it should be set to 0, since frames loaded from videos count
             from 0. Default: 1.
-        modality (str): Modality of data. Support 'RGB', 'Flow'.
+        modality (str): Modality of data. Support 'RGB', 'Flow', 'Audio'.
             Default: 'RGB'.
         sample_by_class (bool): Sampling by class, should be set `True` when
             performing inter-class data balancing. Only compatible with
@@ -92,15 +92,12 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         num_videos = len(video_infos)
         path_key = 'frame_dir' if 'frame_dir' in video_infos[0] else 'filename'
         for i in range(num_videos):
+            path_value = video_infos[i][path_key]
             if self.data_prefix is not None:
-                path_value = video_infos[i][path_key]
                 path_value = osp.join(self.data_prefix, path_value)
-                video_infos[i][path_key] = path_value
+            video_infos[i][path_key] = path_value
             if self.multi_class:
                 assert self.num_classes is not None
-                onehot = torch.zeros(self.num_classes)
-                onehot[video_infos[i]['label']] = 1.
-                video_infos[i]['label'] = onehot
             else:
                 assert len(video_infos[i]['label']) == 1
                 video_infos[i]['label'] = video_infos[i]['label'][0]
@@ -141,6 +138,14 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
             results = copy.deepcopy(self.video_infos[idx])
         results['modality'] = self.modality
         results['start_index'] = self.start_index
+
+        # prepare tensor in getitem
+        # If HVU, type(results['label']) is dict
+        if self.multi_class and type(results['label']) is list:
+            onehot = torch.zeros(self.num_classes)
+            onehot[results['label']] = 1.
+            results['label'] = onehot
+
         return self.pipeline(results)
 
     def prepare_test_frames(self, idx):
@@ -153,6 +158,14 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
             results = copy.deepcopy(self.video_infos[idx])
         results['modality'] = self.modality
         results['start_index'] = self.start_index
+
+        # prepare tensor in getitem
+        # If HVU, type(results['label']) is dict
+        if self.multi_class and type(results['label']) is list:
+            onehot = torch.zeros(self.num_classes)
+            onehot[results['label']] = 1.
+            results['label'] = onehot
+
         return self.pipeline(results)
 
     def __len__(self):

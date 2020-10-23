@@ -4,6 +4,7 @@ import os.path as osp
 
 import mmcv
 import torch
+from mmcv import Config, DictAction
 from mmcv.cnn import fuse_conv_bn
 from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
 from mmcv.runner import get_dist_info, init_dist, load_checkpoint
@@ -20,7 +21,9 @@ def parse_args():
     parser.add_argument('config', help='test config file path')
     parser.add_argument('checkpoint', help='checkpoint file')
     parser.add_argument(
-        '--out', default=None, help='output result file in pickle format')
+        '--out',
+        default=None,
+        help='output result file in pkl/yaml/json format')
     parser.add_argument(
         '--fuse-conv-bn',
         action='store_true',
@@ -41,6 +44,14 @@ def parse_args():
         help='tmp directory used for collecting results from multiple '
         'workers, available when gpu-collect is not specified')
     parser.add_argument('--options', nargs='+', help='custom options')
+    parser.add_argument(
+        '--cfg-options',
+        nargs='+',
+        action=DictAction,
+        default={},
+        help='override some settings in the used config, the key-value pair '
+        'in xxx=yyy format will be merged into config file. For example, '
+        "'--cfg-options model.backbone.depth=18 model.backbone.with_cp=True'")
     parser.add_argument(
         '--average-clips',
         choices=['score', 'prob', None],
@@ -72,7 +83,9 @@ def merge_configs(cfg1, cfg2):
 def main():
     args = parse_args()
 
-    cfg = mmcv.Config.fromfile(args.config)
+    cfg = Config.fromfile(args.config)
+
+    cfg.merge_from_dict(args.cfg_options)
 
     # Load output_config from cfg
     output_config = cfg.get('output_config', {})

@@ -18,8 +18,8 @@ def parse_args():
         'dataset',
         type=str,
         choices=[
-            'ucf101', 'kinetics400', 'thumos14', 'sthv1', 'sthv2', 'mit',
-            'mmit', 'activitynet', 'hmdb51'
+            'ucf101', 'kinetics400', 'kinetics600', 'kinetics700', 'thumos14',
+            'sthv1', 'sthv2', 'mit', 'mmit', 'activitynet', 'hmdb51'
         ],
         help='dataset to be built file list')
     parser.add_argument(
@@ -192,14 +192,15 @@ def main():
         splits = parse_mit_splits()
     elif args.dataset == 'mmit':
         splits = parse_mmit_splits()
-    elif args.dataset == 'kinetics400':
-        splits = parse_kinetics_splits(args.level)
+    elif args.dataset in ['kinetics400', 'kinetics600', 'kinetics700']:
+        splits = parse_kinetics_splits(args.level, args.dataset)
     elif args.dataset == 'hmdb51':
         splits = parse_hmdb51_split(args.level)
     else:
         raise ValueError(
             f"Supported datasets are 'ucf101, sthv1, sthv2',"
-            f"'mmit', 'mit', 'kinetics400' but got {args.dataset}")
+            f"'mmit', 'mit', 'kinetics400', 'kinetics600', 'kinetics700' but "
+            f'got {args.dataset}')
 
     assert len(splits) == args.num_split
 

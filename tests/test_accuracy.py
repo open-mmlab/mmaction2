@@ -5,8 +5,8 @@ import pytest
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from mmaction.core import (average_recall_at_avg_proposals, confusion_matrix,
-                           get_weighted_score, mean_average_precision,
-                           mean_class_accuracy, pairwise_temporal_iou,
+                           get_weighted_score, mean_class_accuracy,
+                           mmit_mean_average_precision, pairwise_temporal_iou,
                            top_k_accuracy)
 
 
@@ -147,11 +147,11 @@ def test_mean_class_accuracy():
     assert mean_class_accuracy(scores, mean_cls_acc_100) == 1.0
 
 
-def test_mean_average_precision():
+def test_mmit_mean_average_precision():
     # One sample
     y_true = [np.array([0, 0, 1, 1])]
     y_scores = [np.array([0.1, 0.4, 0.35, 0.8])]
-    map = mean_average_precision(y_scores, y_true)
+    map = mmit_mean_average_precision(y_scores, y_true)
 
     precision = [2.0 / 3.0, 0.5, 1., 1.]
     recall = [1., 0.5, 0.5, 0.]

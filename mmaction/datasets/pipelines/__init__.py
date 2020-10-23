@@ -1,16 +1,17 @@
-from .augmentations import (CenterCrop, ColorJitter, Flip, Fuse,
-                            MultiGroupCrop, MultiScaleCrop, Normalize,
-                            RandomCrop, RandomResizedCrop, Resize, TenCrop,
-                            ThreeCrop)
+from .augmentations import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
+                            MelSpectrogram, MultiGroupCrop, MultiScaleCrop,
+                            Normalize, RandomCrop, RandomResizedCrop, Resize,
+                            TenCrop, ThreeCrop)
 from .compose import Compose
-from .formating import (Collect, FormatShape, ImageToTensor, ToDataContainer,
-                        ToTensor, Transpose)
-from .loading import (DecordDecode, DecordInit, DenseSampleFrames,
-                      FrameSelector, GenerateLocalizationLabels, ImageDecode,
-                      LoadLocalizationFeature, LoadProposals, OpenCVDecode,
-                      OpenCVInit, PseudoClipBuilder, PyAVDecode, PyAVInit,
-                      RawFrameDecode, SampleFrames, SampleProposalFrames,
-                      UntrimmedSampleFrames)
+from .formating import (Collect, FormatAudioShape, FormatShape, ImageToTensor,
+                        ToDataContainer, ToTensor, Transpose)
+from .loading import (AudioDecode, AudioDecodeInit, AudioFeatureSelector,
+                      DecordDecode, DecordInit, DenseSampleFrames,
+                      FrameSelector, GenerateLocalizationLabels,
+                      LoadAudioFeature, LoadHVULabel, LoadLocalizationFeature,
+                      LoadProposals, OpenCVDecode, OpenCVInit, PyAVDecode,
+                      PyAVInit, RawFrameDecode, SampleFrames, PseudoClipBuilder,
+                      SampleProposalFrames, UntrimmedSampleFrames)
 
 __all__ = [
     'SampleFrames', 'PyAVDecode', 'DecordDecode', 'DenseSampleFrames',
@@ -20,6 +21,9 @@ __all__ = [
     'Collect', 'FormatShape', 'Compose', 'ToTensor', 'ToDataContainer',
     'GenerateLocalizationLabels', 'LoadLocalizationFeature', 'LoadProposals',
     'DecordInit', 'OpenCVInit', 'PyAVInit', 'SampleProposalFrames',
-    'UntrimmedSampleFrames', 'RawFrameDecode', 'ImageDecode',
-    'PseudoClipBuilder', 'ColorJitter'
+    'UntrimmedSampleFrames', 'RawFrameDecode', 'DecordInit', 'OpenCVInit',
+    'PyAVInit', 'SampleProposalFrames', 'ColorJitter', 'LoadHVULabel',
+    'AudioAmplify', 'MelSpectrogram', 'AudioDecode', 'FormatAudioShape',
+    'LoadAudioFeature', 'AudioFeatureSelector', 'AudioDecodeInit',
+    'PseudoClipBuilder'
 ]

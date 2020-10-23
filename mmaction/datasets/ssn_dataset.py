@@ -345,18 +345,18 @@ class SSNDataset(BaseDataset):
         Returns:
             list: Detection results.
         """
-        num_classes = results[0][1].shape[1] - 1
+        num_classes = results[0]['activity_scores'].shape[1] - 1
         detections = [dict() for _ in range(num_classes)]
 
         for idx in range(len(self)):
             video_id = self.video_infos[idx]['video_id']
-            relative_proposals = results[idx][0]
+            relative_proposals = results[idx]['relative_proposal_list']
             if len(relative_proposals[0].shape) == 3:
                 relative_proposals = np.squeeze(relative_proposals, 0)
 
-            action_scores = results[idx][1]
-            complete_scores = results[idx][2]
-            regression_scores = results[idx][3]
+            activity_scores = results[idx]['activity_scores']
+            completeness_scores = results[idx]['completeness_scores']
+            regression_scores = results[idx]['bbox_preds']
             if regression_scores is None:
                 regression_scores = np.zeros(
                     len(relative_proposals), num_classes, 2, dtype=np.float32)
@@ -364,8 +364,8 @@ class SSNDataset(BaseDataset):
 
             if top_k <= 0:
                 combined_scores = (
-                    softmax(action_scores[:, 1:], dim=1) *
-                    np.exp(complete_scores))
+                    softmax(activity_scores[:, 1:], dim=1) *
+                    np.exp(completeness_scores))
                 for i in range(num_classes):
                     center_scores = regression_scores[:, i, 0][:, None]
                     duration_scores = regression_scores[:, i, 1][:, None]
@@ -375,8 +375,8 @@ class SSNDataset(BaseDataset):
                         axis=1)
             else:
                 combined_scores = (
-                    softmax(action_scores[:, 1:], dim=1) *
-                    np.exp(complete_scores))
+                    softmax(activity_scores[:, 1:], dim=1) *
+                    np.exp(completeness_scores))
                 keep_idx = np.argsort(combined_scores.ravel())[-top_k:]
                 for k in keep_idx:
                     class_idx = k % num_classes
