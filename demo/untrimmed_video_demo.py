@@ -1,8 +1,10 @@
 import argparse
+import random
 from collections import deque
 from operator import itemgetter
 
 import cv2
+import mmcv
 import numpy as np
 import torch
 from mmcv.parallel import collate, scatter
@@ -30,9 +32,12 @@ def parse_args():
     parser.add_argument('config', help='test config file path')
     parser.add_argument('checkpoint', help='checkpoint file')
     parser.add_argument('label', help='label file')
-    parser.add_argument('--out-filename', default=None, help='output filename')
+    parser.add_argument('--out-file', default=None, help='output filename')
     parser.add_argument(
-        '--input-step', type=int, default=1, help='internal between predict')
+        '--input-step',
+        type=int,
+        default=1,
+        help='input step for sampling frames')
     parser.add_argument(
         '--device', type=str, default='cuda:0', help='CPU/CUDA device option')
     parser.add_argument(
@@ -55,13 +60,24 @@ def show_results():
     text_info = {}
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     frame_size = (frame_width, frame_height)
+
     ind = 0
     video_writer = cv2.VideoWriter(out_file, fourcc, fps, frame_size)
+    prog_bar = mmcv.ProgressBar(num_frames)
+    backup_frames = []
+
     while ind < num_frames:
         ind += 1
+        prog_bar.update()
         ret, frame = cap.read()
-        frame_queue.append(np.array(frame)[:, :, ::-1])
+        backup_frames.append(frame)
+        if len(backup_frames) == input_step or ind == num_frames:
+            chosen_frame = random.choice(backup_frames)
+            backup_frames = []
+            frame_queue.append(np.array(chosen_frame)[:, :, ::-1])
+
         ret, scores = inference()
+
         if ret:
             num_selected_labels = min(len(label), 5)
             scores_tuples = tuple(zip(label, scores))
@@ -101,8 +117,7 @@ def inference():
     cur_windows = list(np.array(frame_queue))
     if data['img_shape'] is None:
         data['img_shape'] = frame_queue.popleft().shape[:2]
-    for _ in range(input_step):
-        frame_queue.popleft()
+    frame_queue.popleft()
     cur_data = data.copy()
     cur_data['imgs'] = cur_windows
     cur_data = test_pipeline(cur_data)
@@ -122,7 +137,7 @@ def main():
     input_step = args.input_step
     threshold = args.threshold
     video_path = args.video
-    out_file = args.out_filename
+    out_file = args.out_file
 
     device = torch.device(args.device)
     model = init_recognizer(args.config, args.checkpoint, device=device)
