@@ -27,7 +27,7 @@ EXCLUED_STEPS = [
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='MMAction2 untrimmed video demo')
+        description='MMAction2 predict different labels in a long video demo')
     parser.add_argument('video', default='sample_video.mp4', help='video file')
     parser.add_argument('config', help='test config file path')
     parser.add_argument('checkpoint', help='checkpoint file')
@@ -75,7 +75,8 @@ def show_results():
             # provide a quick show at the beginning
             frame_queue.extend(backup_frames)
             backup_frames = []
-        elif len(backup_frames) == input_step or ind == num_frames:
+        elif ((len(backup_frames) == input_step and ind > sample_length)
+              or ind == num_frames):
             # pick a frame from the backup
             # when the backup is full or reach the last frame
             chosen_frame = random.choice(backup_frames)
