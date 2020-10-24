@@ -74,7 +74,6 @@ def parse_directory(path,
                              f'of flow images in video directory: {frame_dir}')
         if i % 200 == 0:
             print(f'{i} videos parsed')
-
         frame_dict[dir_name] = (frame_dir, total_num[0], num_x)
 
     print('frame directory analysis done')
@@ -214,7 +213,7 @@ def parse_sthv2_splits(level):
         else:
             template = item['template'].replace('[', '')
             template = template.replace(']', '')
-            label = class_mapping[template]
+            label = int(class_mapping[template])
             return video, label
 
     with open(train_file, 'r') as fin:
