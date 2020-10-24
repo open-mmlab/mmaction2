@@ -14,6 +14,7 @@ Then, you can download all data parts to `$MMACTION2/data/sthv2/` and use the fo
 ```shell
 cd $MMACTION2/data/sthv2/
 cat 20bn-something-something-v2-?? | tar zx
+cd $MMACTION2/tools/data/sthv2/
 ```
 
 ## Step 3. Extract RGB and Flow
@@ -80,11 +81,11 @@ mmaction2
 │   │   ├── sthv2_{train,val}_list_videos.txt
 │   │   ├── annotations
 │   |   ├── videos
-│   |   |   ├── 100000.mp4
-│   |   |   ├── 100001.mp4
+│   |   |   ├── 1.mp4
+│   |   |   ├── 2.mp4
 │   |   |   ├──...
 │   |   ├── rawframes
-│   |   |   ├── 100000
+│   |   |   ├── 1
 │   |   |   |   ├── img_00001.jpg
 │   |   |   |   ├── img_00002.jpg
 │   |   |   |   ├── ...
@@ -94,7 +95,7 @@ mmaction2
 │   |   |   |   ├── flow_y_00001.jpg
 │   |   |   |   ├── flow_y_00002.jpg
 │   |   |   |   ├── ...
-│   |   |   ├── 100001
+│   |   |   ├── 2
 │   |   |   ├── ...
 
 ```

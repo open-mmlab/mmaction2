@@ -85,7 +85,7 @@ You can run the follow script to generate file list in the format of rawframes.
 
 ```shell
 cd $MMACTION2/tools/data/sthv1/
-bash generate_rawframes_filelist.sh
+bash generate_{rawframes, videos}_filelist.sh
 ```
 
 ## Step 5. Check Directory Structure
@@ -96,18 +96,23 @@ you will get the rawframes (RGB + Flow), and annotation files for Something-Some
 In the context of the whole project (for Something-Something V1 only), the folder structure will look like:
 
 ```
-mmaction
+mmaction2
 ├── mmaction
 ├── tools
 ├── configs
 ├── data
 │   ├── sthv1
 │   │   ├── sthv1_{train,val}_list_rawframes.txt
+│   │   ├── sthv1_{train,val}_list_videos.txt
 │   │   ├── annotations
+│   |   ├── videos
+│   |   |   ├── 1.mp4
+│   |   |   ├── 2.mp4
+│   |   |   ├──...
 │   |   ├── rawframes
-│   |   |   ├── 100000
-│   |   |   |   ├── img_00001.jpg
-│   |   |   |   ├── img_00002.jpg
+│   |   |   ├── 1
+│   |   |   |   ├── 00001.jpg
+│   |   |   |   ├── 00002.jpg
 │   |   |   |   ├── ...
 │   |   |   |   ├── flow_x_00001.jpg
 │   |   |   |   ├── flow_x_00002.jpg
@@ -115,7 +120,7 @@ mmaction
 │   |   |   |   ├── flow_y_00001.jpg
 │   |   |   |   ├── flow_y_00002.jpg
 │   |   |   |   ├── ...
-│   |   |   ├── 100001
+│   |   |   ├── 2
 │   |   |   ├── ...
 
 ```
