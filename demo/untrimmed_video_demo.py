@@ -70,11 +70,17 @@ def show_results():
         ind += 1
         prog_bar.update()
         ret, frame = cap.read()
-        backup_frames.append(frame)
-        if len(backup_frames) == input_step or ind == num_frames:
+        backup_frames.append(np.array(frame)[:, :, ::-1])
+        if ind == sample_length:
+            # provide a quick show at the beginning
+            frame_queue.extend(backup_frames)
+            backup_frames = []
+        elif len(backup_frames) == input_step or ind == num_frames:
+            # pick a frame from the backup
+            # when the backup is full or reach the last frame
             chosen_frame = random.choice(backup_frames)
             backup_frames = []
-            frame_queue.append(np.array(chosen_frame)[:, :, ::-1])
+            frame_queue.append(chosen_frame)
 
         ret, scores = inference()
 
@@ -112,6 +118,7 @@ def show_results():
 
 def inference():
     if len(frame_queue) != sample_length:
+        # Do no inference when there is no enough frames
         return False, None
 
     cur_windows = list(np.array(frame_queue))
