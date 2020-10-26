@@ -66,7 +66,7 @@ For more details, you can refer to **Test a dataset** part in [getting_started](
 For multi-modality fusion, you can use the simple [script](/tools/analysis/report_accuracy.py), the standard usage is:
 
 ```shell
-python tools/analysis/report_accuracy.py --scores ${AUDIO_RESULT.PKL} ${VISUAL_RESULT.PKL}   --datalist data/kinetics400/kinetics400_val_list_rawframes.txt  --coefficient 1 1
+python tools/analysis/report_accuracy.py --scores ${AUDIO_RESULT.PKL} ${VISUAL_RESULT.PKL} --datalist data/kinetics400/kinetics400_val_list_rawframes.txt --coefficient 1 1
 ```
 
 + AUDIO_RESULT.PKL: The saved output file of `tools/test.py` by the argument `--out`.
