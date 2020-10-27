@@ -6,8 +6,8 @@ from mmcv.runner import (DistSamplerSeedHook, EpochBasedRunner, OptimizerHook,
                          build_optimizer)
 from mmcv.runner.hooks import Fp16OptimizerHook
 
-from ..core import (DistEpochEvalHook, EpochEvalHook, OmniSourceRunner,
-                    OmniSourceDistSamplerSeedHook)
+from ..core import (DistEpochEvalHook, EpochEvalHook,
+                    OmniSourceDistSamplerSeedHook, OmniSourceRunner)
 from ..datasets import build_dataloader, build_dataset
 from ..utils import get_root_logger
 
