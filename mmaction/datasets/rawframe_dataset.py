@@ -201,7 +201,7 @@ class RawframeDataset(BaseDataset):
     def evaluate(self,
                  results,
                  metrics='top_k_accuracy',
-                 topk=(1, 5),
+                 metric_dict=dict(topk=(1, 5)),
                  logger=None):
         """Evaluation in rawframe dataset.
 
@@ -210,8 +210,8 @@ class RawframeDataset(BaseDataset):
             metrics (str | sequence[str]): Metrics to be performed.
                 Defaults: 'top_k_accuracy'.
             logger (obj): Training logger. Defaults: None.
-            topk (int | tuple[int]): K value for top_k_accuracy metric.
-                Defaults: (1, 5).
+            metric_dict (dict): Dict for metric options.
+                Default: ``dict(topk=(1, 5))``.
             logger (logging.Logger | None): Logger for recording.
                 Default: None.
 
@@ -224,13 +224,6 @@ class RawframeDataset(BaseDataset):
         assert len(results) == len(self), (
             f'The length of results is not equal to the dataset len: '
             f'{len(results)} != {len(self)}')
-
-        if not isinstance(topk, (int, tuple)):
-            raise TypeError(
-                f'topk must be int or tuple of int, but got {type(topk)}')
-
-        if isinstance(topk, int):
-            topk = (topk, )
 
         metrics = metrics if isinstance(metrics, (list, tuple)) else [metrics]
         allowed_metrics = [
@@ -250,6 +243,13 @@ class RawframeDataset(BaseDataset):
             print_log(msg, logger=logger)
 
             if metric == 'top_k_accuracy':
+                topk = metric_dict.get('topk')
+                if not isinstance(topk, (int, tuple)):
+                    raise TypeError('topk must be int or tuple of int, '
+                                    f'but got {type(topk)}')
+                if isinstance(topk, int):
+                    topk = (topk, )
+
                 top_k_acc = top_k_accuracy(results, gt_labels, topk)
                 log_msg = []
                 for k, acc in zip(topk, top_k_acc):

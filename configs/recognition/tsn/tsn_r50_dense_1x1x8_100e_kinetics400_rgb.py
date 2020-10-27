@@ -104,7 +104,7 @@ lr_config = dict(policy='step', step=[40, 80])
 total_epochs = 100
 checkpoint_config = dict(interval=1)
 evaluation = dict(
-    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
+    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
 log_config = dict(
     interval=20,
     hooks=[

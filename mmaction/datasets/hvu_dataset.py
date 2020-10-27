@@ -123,7 +123,11 @@ class HVUDataset(BaseDataset):
         arr[label] = 1.
         return arr
 
-    def evaluate(self, results, metrics='mean_average_precision', logger=None):
+    def evaluate(self,
+                 results,
+                 metrics='mean_average_precision',
+                 metric_dict=None,
+                 logger=None):
         """Evaluation in HVU Video Dataset. We only support evaluating mAP for
         each tag categories. Since some tag categories are missing for some
         videos, we can not evaluate mAP for all tags.
@@ -132,6 +136,7 @@ class HVUDataset(BaseDataset):
             results (list): Output results.
             metrics (str | sequence[str]): Metrics to be performed.
                 Defaults: 'mean_average_precision'.
+            metric_dict (dict | None): Dict for metric options. Default: None.
             logger (logging.Logger | None): Logger for recording.
                 Default: None.
 

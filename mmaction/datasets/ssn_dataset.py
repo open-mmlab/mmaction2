@@ -401,15 +401,17 @@ class SSNDataset(BaseDataset):
     def evaluate(self,
                  results,
                  metrics='mAP',
-                 eval_dataset='thumos14',
-                 **kwargs):
+                 metric_dict=dict(eval_dataset='thumos14'),
+                 logger=None):
         """Evaluation in SSN proposal dataset.
 
         Args:
             results (list[dict]): Output results.
             metrics (str | sequence[str]): Metrics to be performed.
                 Defaults: 'mAP'.
-            eval_dataset (str): Dataset to be evaluated.
+            metric_dict (dict): Dict for metric options.
+            logger (logging.Logger | None): Logger for recording.
+                Default: None.
 
         Returns:
             dict: Evaluation results for evaluation metrics.
@@ -463,6 +465,7 @@ class SSNDataset(BaseDataset):
         eval_results = {}
         for metric in metrics:
             if metric == 'mAP':
+                eval_dataset = metric_dict.get('eval_dataset')
                 if eval_dataset == 'thumos14':
                     iou_range = np.arange(0.1, 1.0, .1)
                     ap_values = eval_ap(plain_detections, all_gts, iou_range)

@@ -185,8 +185,9 @@ class ActivityNetDataset(BaseDataset):
     def evaluate(self,
                  results,
                  metrics='AR@AN',
-                 max_avg_proposals=100,
-                 temporal_iou_thresholds=np.linspace(0.5, 0.95, 10),
+                 metric_dict=dict(
+                     max_avg_proposals=100,
+                     temporal_iou_thresholds=np.linspace(0.5, 0.95, 10)),
                  logger=None):
         """Evaluation in feature dataset.
 
@@ -194,10 +195,7 @@ class ActivityNetDataset(BaseDataset):
             results (list[dict]): Output results.
             metrics (str | sequence[str]): Metrics to be performed.
                 Defaults: 'AR@AN'.
-            max_avg_proposals (int): Max number of proposals to evaluate.
-                Defaults: 100.
-            temporal_iou_thresholds (list | np.ndarray): Temporal IoU threshold
-                for positive samples. Defaults: np.linspace(0.5, 0.95, 10).
+            metric_dict (dict): Dict for metric options.
             logger (logging.Logger | None): Training logger. Defaults: None.
 
         Returns:
@@ -215,15 +213,18 @@ class ActivityNetDataset(BaseDataset):
             if metric not in allowed_metrics:
                 raise KeyError(f'metric {metric} is not supported')
 
-        if isinstance(temporal_iou_thresholds, list):
-            temporal_iou_thresholds = np.array(temporal_iou_thresholds)
-
         eval_results = {}
         ground_truth = self._import_ground_truth()
         proposal, num_proposals = self._import_proposals(results)
 
         for metric in metrics:
             if metric == 'AR@AN':
+                temporal_iou_thresholds = metric_dict.get(
+                    'temporal_iou_thresholds')
+                max_avg_proposals = metric_dict.get('max_avg_proposals')
+                if isinstance(temporal_iou_thresholds, list):
+                    temporal_iou_thresholds = np.array(temporal_iou_thresholds)
+
                 recall, _, _, auc = (
                     average_recall_at_avg_proposals(
                         ground_truth,
