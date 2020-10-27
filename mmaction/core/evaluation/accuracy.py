@@ -149,6 +149,7 @@ def mean_average_precision(scores, labels):
             scores[i], labels[i])
         ap = -np.sum(np.diff(recall) * np.array(precision)[:-1])
         results.append(ap)
+    results = [x for x in results if not np.isnan(x)]
     return np.mean(results)
 
 
