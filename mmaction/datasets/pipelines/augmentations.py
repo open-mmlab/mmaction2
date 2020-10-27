@@ -1106,9 +1106,8 @@ class MultiGroupCrop:
         self.crop_size = _pair(crop_size)
         self.groups = groups
         if not mmcv.is_tuple_of(self.crop_size, int):
-            raise TypeError(
-                'Crop size must be int or tuple of int, but got {}'.format(
-                    type(crop_size)))
+            raise TypeError('Crop size must be int or tuple of int, '
+                            f'but got {type(crop_size)}')
 
         if not isinstance(groups, int):
             raise TypeError(f'Groups must be int, but got {type(groups)}.')
