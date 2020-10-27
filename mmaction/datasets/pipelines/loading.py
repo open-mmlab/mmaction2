@@ -963,6 +963,7 @@ class RawFrameDecode(object):
 
         return results
 
+
 @PIPELINES.register_module()
 class ImageDecode(object):
     """Load and decode images.
@@ -985,7 +986,7 @@ class ImageDecode(object):
 
     def __call__(self, results):
         """Perform the ``RawFrameDecode`` to pick frames given indices.
-        
+
         Args:
             results (dict): The resulting dict to be modified and passed
                 to the next transform in pipeline.
@@ -1007,8 +1008,8 @@ class ImageDecode(object):
         results['original_shape'] = imgs[0].shape[:2]
         results['img_shape'] = imgs[0].shape[:2]
         return results
-      
-      
+
+
 class AudioDecodeInit(object):
     """Using librosa to initialize the audio reader.
 
@@ -1110,6 +1111,7 @@ class LoadAudioFeature(object):
         results['audios'] = feature_map
         return results
 
+
 @PIPELINES.register_module()
 class PseudoClipBuilder(object):
     """Build pseudo clips with one single image by repeating it n times.
@@ -1132,8 +1134,7 @@ class PseudoClipBuilder(object):
         results['clip_len'] = self.clip_len
         results['num_clips'] = 1
         return results
-      
-      
+
 
 @PIPELINES.register_module()
 class AudioDecode(object):
