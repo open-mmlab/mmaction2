@@ -56,7 +56,7 @@ class HVUDataset(BaseDataset):
         pipeline (list[dict | callable]): A sequence of data transforms.
         tag_categories (list[str]): List of category names of tags.
         tag_category_nums (list[int]): List of number of tags in each category.
-        filename_tmpl: Template for each filename. `filename_tmpl is None`
+        filename_tmpl (str | None): Template for each filename. If set to None,
             indicates video dataset is used. Default: None.
         **kwargs: Keyword arguments for ``BaseDataset``.
     """

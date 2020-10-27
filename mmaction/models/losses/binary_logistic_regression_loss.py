@@ -46,7 +46,7 @@ class BinaryLogisticRegressionLoss(nn.Module):
 
         Args:
                 reg_score (torch.Tensor): Predicted score by model.
-                gt_label (torch.Tensor): Groundtruth labels.
+                label (torch.Tensor): Groundtruth labels.
                 threshold (float): Threshold for positive instances.
                     Default: 0.5.
                 ratio_range (tuple): Lower bound and upper bound for ratio.

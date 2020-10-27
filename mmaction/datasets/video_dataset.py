@@ -73,7 +73,7 @@ class VideoDataset(BaseDataset):
                  metrics='top_k_accuracy',
                  topk=(1, 5),
                  logger=None):
-        """Evaluation in rawframe dataset.
+        """Evaluation in video dataset.
 
         Args:
             results (list): Output results.

@@ -427,9 +427,9 @@ def average_precision_at_temporal_iou(ground_truth,
         ground_truth (dict): Dict containing the ground truth instances.
             Key: 'video_id'
             Value (np.ndarry): 1D array of 't-start' and 't-end'.
-        proposals (np.ndarray): 2D array containing the information of proposal
-            instances, including 'video_id', 'class_id', 't-start', 't-end' and
-            'score'.
+        prediction (np.ndarray): 2D array containing the information of
+            proposal instances, including 'video_id', 'class_id', 't-start',
+            't-end' and 'score'.
         temporal_iou_thresholds (np.ndarray): 1D array with temporal_iou
             thresholds. Default: np.linspace(0.5, 0.95, 10).
 

@@ -20,7 +20,7 @@ class SSNInstance:
         start_frame (int): Index of the proposal's start frame.
         end_frame (int): Index of the proposal's end frame.
         num_video_frames (int): Total frames of the video.
-        label (int): The category label of the proposal. Default: None.
+        label (int | None): The category label of the proposal. Default: None.
         best_iou (float): The highest IOU with the groundtruth instance.
             Default: 0.
         overlap_self (float): Percent of the proposal's own span contained

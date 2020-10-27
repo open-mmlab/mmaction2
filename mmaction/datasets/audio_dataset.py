@@ -75,7 +75,7 @@ class AudioDataset(BaseDataset):
                  metrics='top_k_accuracy',
                  topk=(1, 5),
                  logger=None):
-        """Evaluation in rawframe dataset.
+        """Evaluation in audio dataset.
 
         Args:
             results (list): Output results.
