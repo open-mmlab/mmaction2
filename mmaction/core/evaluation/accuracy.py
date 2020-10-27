@@ -375,7 +375,7 @@ def get_weighted_score(score_list, coeff_list):
             n(number of predictions) X num_samples X num_classes
         coeff_list (list[float]): List of coefficients, with shape n.
 
-    Return:
+    Returns:
         list[np.ndarray]: List of weighted scores.
     """
     assert len(score_list) == len(coeff_list)

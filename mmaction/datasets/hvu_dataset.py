@@ -135,7 +135,7 @@ class HVUDataset(BaseDataset):
             logger (logging.Logger | None): Logger for recording.
                 Default: None.
 
-        Return:
+        Returns:
             dict: Evaluation results dict.
         """
         if not isinstance(results, list):

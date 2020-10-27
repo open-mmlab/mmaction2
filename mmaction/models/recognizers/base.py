@@ -82,7 +82,7 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         Args:
             cls_score (torch.Tensor): Class score to be averaged.
 
-        return:
+        Returns:
             torch.Tensor: Averaged class score.
         """
         if 'average_clips' not in self.test_cfg.keys():
