@@ -21,8 +21,10 @@
 **Bug Fixes**
 - Register `FrameSelector` in `PIPELINES` ([#268](https://github.com/open-mmlab/mmaction2/pull/268))
 - Fix the potential bug for default value in dataset_setting ([#245](https://github.com/open-mmlab/mmaction2/pull/245))
+- Fix the data preparation bug for `something-something` dataset ([#278](https://github.com/open-mmlab/mmaction2/pull/278))
 - Fix the invalid config url in slowonly README data benchmark ([#249](https://github.com/open-mmlab/mmaction2/pull/249))
 - Validate that the performance of models trained with videos have no significant difference comparing to the performance of models trained with rawframes ([#256](https://github.com/open-mmlab/mmaction2/pull/256))
+- Correct the `img_norm_cfg` used by TSN-3seg-R50 UCF-101 model, improve the Top-1 accuracy by 3% ([#273](https://github.com/open-mmlab/mmaction2/pull/273))
 
 **ModelZoo**
 - Add Baselines for Kinetics-600 and Kinetics-700, including TSN-R50-8seg and SlowOnly-R50-8x8 ([#259](https://github.com/open-mmlab/mmaction2/pull/259))
