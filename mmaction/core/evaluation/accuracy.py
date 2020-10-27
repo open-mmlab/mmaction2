@@ -389,12 +389,6 @@ def get_weighted_score(score_list, coeff_list):
     return weighted_scores
 
 
-def softmax(x, dim=1):
-    """Compute softmax values for each sets of scores in x."""
-    e_x = np.exp(x - np.max(x, axis=dim, keepdims=True))
-    return e_x / e_x.sum(axis=dim, keepdims=True)
-
-
 def interpolated_precision_recall(precision, recall):
     """Interpolated AP - VOCdevkit from VOC 2011.
 
