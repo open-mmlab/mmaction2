@@ -965,7 +965,7 @@ class RawFrameDecode(object):
 
 
 @PIPELINES.register_module()
-class ImageDecode(object):
+class ImageDecode:
     """Load and decode images.
 
     Required key is "filename", added or modified keys are "imgs", "img_shape"
@@ -1165,7 +1165,7 @@ class AudioDecode(object):
 
 
 @PIPELINES.register_module()
-class PseudoClipBuilder(object):
+class PseudoClipBuilder:
     """Build pseudo clips with one single image by repeating it n times.
 
     Required key is "imgs", added or modified key is "imgs", "num_clips".

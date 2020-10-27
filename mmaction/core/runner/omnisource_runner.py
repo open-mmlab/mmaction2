@@ -117,6 +117,8 @@ class OmniSourceRunner(EpochBasedRunner):
                 running order and epochs. E.g, [('train', 2)] means running 2
                 epochs for training iteratively. Note that val epoch is not
                 supported for this runner for simplicity.
+            max_epochs (int | None): The max epochs that training lasts,
+                deprecated now. Default: None.
         """
         assert isinstance(data_loaders, list)
         assert mmcv.is_list_of(workflow, tuple)

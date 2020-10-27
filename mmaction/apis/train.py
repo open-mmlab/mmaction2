@@ -42,8 +42,8 @@ def train_model(model,
         train_ratio = cfg.data.get('train_ratio', None)
         omni_videos_per_gpu = cfg.data.get('omni_videos_per_gpu', None)
         dataloader_setting_tmpl = dict(
-            videos_per_gpu=cfg.data.get('videos_per_gpu', {}),
-            workers_per_gpu=cfg.data.get('workers_per_gpu', {}),
+            videos_per_gpu=cfg.data.get('videos_per_gpu', 1),
+            workers_per_gpu=cfg.data.get('workers_per_gpu', 1),
             num_gpus=len(cfg.gpu_ids),
             dist=distributed,
             seed=cfg.seed)
