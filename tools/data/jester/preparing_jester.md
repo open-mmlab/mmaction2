@@ -82,11 +82,11 @@ bash encode_videos.sh
 
 ## Step 5. Generate File List
 
-You can run the follow script to generate file list in the format of rawframes.
+You can run the follow script to generate file list in the format of rawframes and videos.
 
 ```shell
 cd $MMACTION2/tools/data/jester/
-bash generate_rawframes_filelist.sh
+bash generate_{rawframes, videos}_filelist.sh
 ```
 
 ## Step 5. Check Directory Structure
@@ -104,7 +104,12 @@ mmaction2
 ├── data
 │   ├── jester
 │   │   ├── jester_{train,val}_list_rawframes.txt
+│   │   ├── jester_{train,val}_list_videos.txt
 │   │   ├── annotations
+│   |   ├── videos
+│   |   |   ├── 1.mp4
+│   |   |   ├── 2.mp4
+│   |   |   ├──...
 │   |   ├── rawframes
 │   |   |   ├── 1
 │   |   |   |   ├── 00001.jpg
