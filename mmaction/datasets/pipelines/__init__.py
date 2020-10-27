@@ -1,7 +1,7 @@
 from .augmentations import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
                             MelSpectrogram, MultiGroupCrop, MultiScaleCrop,
-                            Normalize, RandomCrop, RandomResizedCrop, Resize,
-                            TenCrop, ThreeCrop)
+                            Normalize, RandomCrop, RandomRescale,
+                            RandomResizedCrop, Resize, TenCrop, ThreeCrop)
 from .compose import Compose
 from .formating import (Collect, FormatAudioShape, FormatShape, ImageToTensor,
                         ToDataContainer, ToTensor, Transpose)
@@ -24,5 +24,6 @@ __all__ = [
     'UntrimmedSampleFrames', 'RawFrameDecode', 'DecordInit', 'OpenCVInit',
     'PyAVInit', 'SampleProposalFrames', 'ColorJitter', 'LoadHVULabel',
     'AudioAmplify', 'MelSpectrogram', 'AudioDecode', 'FormatAudioShape',
-    'LoadAudioFeature', 'AudioFeatureSelector', 'AudioDecodeInit'
+    'LoadAudioFeature', 'AudioFeatureSelector', 'AudioDecodeInit',
+    'RandomRescale'
 ]
