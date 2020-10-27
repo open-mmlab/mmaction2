@@ -129,7 +129,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
             logger (logging.Logger | None): Logger for recording.
                 Default: None.
 
-        Return:
+        Returns:
             dict: Evaluation results dict.
         """
         # Protect ``metric_dict`` since it use immutable value as default
