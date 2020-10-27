@@ -534,7 +534,7 @@ class Resize(object):
 
 
 @PIPELINES.register_module()
-class RandomRescale(object):
+class RandomRescale:
     """Randomly resize images so that the short_edge is resized to a specific
     size in a given range. The scale ratio is unchanged after resizing.
 
