@@ -33,8 +33,8 @@ def generate_candidate_proposals(video_list,
         dict: A dict contains video_name as keys and proposal list as value.
         If result_dict is not None, save the results to it.
     """
-    if tem_results_ext not in ('.csv', ):
-        raise NotImplementedError
+    if tem_results_ext != '.csv':
+        raise NotImplementedError('Only support csv format now.')
 
     tscale = temporal_scale
     tgap = 1. / tscale
@@ -166,8 +166,8 @@ def generate_bsp_feature(video_list,
         bsp_feature as value. If result_dict is not None, save the
         results to it.
     """
-    if tem_results_ext not in ('.csv', ) or pgm_proposal_ext not in ('.csv', ):
-        raise NotImplementedError
+    if tem_results_ext != '.csv' or pgm_proposal_ext != '.csv':
+        raise NotImplementedError('Only support csv format now.')
 
     bsp_feature_dict = {}
     for video_index in video_list:
