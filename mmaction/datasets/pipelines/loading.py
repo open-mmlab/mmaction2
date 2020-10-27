@@ -965,6 +965,51 @@ class RawFrameDecode(object):
 
 
 @PIPELINES.register_module()
+class ImageDecode(object):
+    """Load and decode images.
+
+    Required key is "filename", added or modified keys are "imgs", "img_shape"
+    and "original_shape".
+
+    Args:
+        io_backend (str): IO backend where frames are stored. Default: 'disk'.
+        decoding_backend (str): Backend used for image decoding.
+            Default: 'cv2'.
+        kwargs (dict, optional): Arguments for FileClient.
+    """
+
+    def __init__(self, io_backend='disk', decoding_backend='cv2', **kwargs):
+        self.io_backend = io_backend
+        self.decoding_backend = decoding_backend
+        self.kwargs = kwargs
+        self.file_client = None
+
+    def __call__(self, results):
+        """Perform the ``RawFrameDecode`` to pick frames given indices.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        mmcv.use_backend(self.decoding_backend)
+
+        filename = results['filename']
+
+        if self.file_client is None:
+            self.file_client = FileClient(self.io_backend, **self.kwargs)
+
+        imgs = list()
+        img_bytes = self.file_client.get(filename)
+
+        im = mmcv.imfrombytes(img_bytes, channel_order='rgb')
+        imgs.append(im)
+
+        results['imgs'] = imgs
+        results['original_shape'] = imgs[0].shape[:2]
+        results['img_shape'] = imgs[0].shape[:2]
+        return results
+
+
 class AudioDecodeInit(object):
     """Using librosa to initialize the audio reader.
 
@@ -1065,6 +1110,7 @@ class LoadAudioFeature(object):
         results['length'] = feature_map.shape[0]
         results['audios'] = feature_map
         return results
+
 
 @PIPELINES.register_module()
 class ImageDecode(object):
