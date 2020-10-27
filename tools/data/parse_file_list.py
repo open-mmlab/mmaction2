@@ -142,10 +142,10 @@ def parse_jester_splits(level):
         list: "train", "val", "test" splits of Jester dataset.
     """
     # Read the annotations
-    class_index_file = 'data/sthv1/annotations/jester-v1-labels.csv'
-    train_file = 'data/sthv1/annotations/jester-v1-train.csv'
-    val_file = 'data/sthv1/annotations/jester-v1-validation.csv'
-    test_file = 'data/sthv1/annotations/jester-v1-test.csv'
+    class_index_file = 'data/jester/annotations/jester-v1-labels.csv'
+    train_file = 'data/jester/annotations/jester-v1-train.csv'
+    val_file = 'data/jester/annotations/jester-v1-validation.csv'
+    test_file = 'data/jester/annotations/jester-v1-test.csv'
 
     with open(class_index_file, 'r') as fin:
         class_index = [x.strip() for x in fin]

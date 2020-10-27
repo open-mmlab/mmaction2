@@ -16,7 +16,6 @@ You can download all RGB frame parts on [jester website](https://20bn.com/datase
 ```shell
 cd $MMACTION2/data/jester/
 cat 20bn-jester-v1-?? | tar zx
-mv 20bn-jester-v1 rawframes
 cd $MMACTION2/tools/data/jester/
 ```
 
