@@ -15,7 +15,7 @@ from ..registry import PIPELINES
 
 
 @PIPELINES.register_module()
-class LoadHVULabel(object):
+class LoadHVULabel:
     """Convert the HVU label from dictionaries to torch tensors.
 
     Required keys are "label", "categories", "category_nums", added or modified
@@ -69,7 +69,7 @@ class LoadHVULabel(object):
 
 
 @PIPELINES.register_module()
-class SampleFrames(object):
+class SampleFrames:
     """Sample frames from the video.
 
     Required keys are "filename", "total_frames", "start_index" , added or
@@ -234,7 +234,7 @@ class SampleFrames(object):
 
 
 @PIPELINES.register_module()
-class UntrimmedSampleFrames(object):
+class UntrimmedSampleFrames:
     """Sample frames from the untrimmed video.
 
     Required keys are "filename", "total_frames", added or modified keys are
@@ -478,7 +478,7 @@ class SampleProposalFrames(SampleFrames):
         stages: starting, course and ending stage.
 
         Args:
-            proposal (object): The proposal object.
+            proposal (obj): The proposal object.
             num_frames (int): Total number of frame in the video.
 
         Returns:
@@ -614,7 +614,7 @@ class SampleProposalFrames(SampleFrames):
 
 
 @PIPELINES.register_module()
-class PyAVInit(object):
+class PyAVInit:
     """Using pyav to initialize the video.
 
     PyAV: https://github.com/mikeboers/PyAV
@@ -659,7 +659,7 @@ class PyAVInit(object):
 
 
 @PIPELINES.register_module()
-class PyAVDecode(object):
+class PyAVDecode:
     """Using pyav to decode the video.
 
     PyAV: https://github.com/mikeboers/PyAV
@@ -718,7 +718,7 @@ class PyAVDecode(object):
 
 
 @PIPELINES.register_module()
-class DecordInit(object):
+class DecordInit:
     """Using decord to initialize the video_reader.
 
     Decord: https://github.com/dmlc/decord
@@ -757,7 +757,7 @@ class DecordInit(object):
 
 
 @PIPELINES.register_module()
-class DecordDecode(object):
+class DecordDecode:
     """Using decord to decode the video.
 
     Decord: https://github.com/dmlc/decord
@@ -801,7 +801,7 @@ class DecordDecode(object):
 
 
 @PIPELINES.register_module()
-class OpenCVInit(object):
+class OpenCVInit:
     """Using OpenCV to initalize the video_reader.
 
     Required keys are "filename", added or modified keys are "new_path",
@@ -849,7 +849,7 @@ class OpenCVInit(object):
 
 
 @PIPELINES.register_module()
-class OpenCVDecode(object):
+class OpenCVDecode:
     """Using OpenCV to decode the video.
 
     Required keys are "video_reader", "filename" and "frame_inds", added or
@@ -894,7 +894,7 @@ class OpenCVDecode(object):
 
 
 @PIPELINES.register_module()
-class RawFrameDecode(object):
+class RawFrameDecode:
     """Load and decode frames with given indices.
 
     Required keys are "frame_dir", "filename_tmpl" and "frame_inds",
@@ -965,7 +965,7 @@ class RawFrameDecode(object):
 
 
 @PIPELINES.register_module()
-class AudioDecodeInit(object):
+class AudioDecodeInit:
     """Using librosa to initialize the audio reader.
 
     Args:
@@ -1028,7 +1028,7 @@ class AudioDecodeInit(object):
 
 
 @PIPELINES.register_module()
-class LoadAudioFeature(object):
+class LoadAudioFeature:
     """Load offline extracted audio features.
 
     Required keys are "audio_path", added or modified keys are "length",
@@ -1068,7 +1068,7 @@ class LoadAudioFeature(object):
 
 
 @PIPELINES.register_module()
-class AudioDecode(object):
+class AudioDecode:
     """Sample the audio w.r.t. the frames selected.
 
     Args:
@@ -1130,7 +1130,7 @@ class FrameSelector(RawFrameDecode):
 
 
 @PIPELINES.register_module()
-class AudioFeatureSelector(object):
+class AudioFeatureSelector:
     """Sample the audio feature w.r.t. the frames selected.
 
     Args:
@@ -1186,7 +1186,7 @@ class AudioFeatureSelector(object):
 
 
 @PIPELINES.register_module()
-class LoadLocalizationFeature(object):
+class LoadLocalizationFeature:
     """Load Video features for localizer with given video_name list.
 
     Required keys are "video_name" and "data_prefix",
@@ -1222,7 +1222,7 @@ class LoadLocalizationFeature(object):
 
 
 @PIPELINES.register_module()
-class GenerateLocalizationLabels(object):
+class GenerateLocalizationLabels:
     """Load video label for localizer with given video_name list.
 
     Required keys are "duration_frame", "duration_second", "feature_frame",
@@ -1257,7 +1257,7 @@ class GenerateLocalizationLabels(object):
 
 
 @PIPELINES.register_module()
-class LoadProposals(object):
+class LoadProposals:
     """Loading proposals with given proposal results.
 
     Required keys are "video_name"

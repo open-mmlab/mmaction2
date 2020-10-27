@@ -24,7 +24,7 @@ from mmaction.datasets.pipelines import (AudioDecode, AudioDecodeInit,
 # yapf: enable
 
 
-class ExampleSSNInstance(object):
+class ExampleSSNInstance:
 
     def __init__(self,
                  start_frame,
@@ -41,7 +41,7 @@ class ExampleSSNInstance(object):
         self.overlap_self = overlap_self
 
 
-class TestLoading(object):
+class TestLoading:
 
     @staticmethod
     def check_keys_contain(result_keys, target_keys):

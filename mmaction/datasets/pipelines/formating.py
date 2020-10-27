@@ -29,7 +29,7 @@ def to_tensor(data):
 
 
 @PIPELINES.register_module()
-class ToTensor(object):
+class ToTensor:
     """Convert some values in results dict to `torch.Tensor` type in data
     loader pipeline.
 
@@ -56,7 +56,7 @@ class ToTensor(object):
 
 
 @PIPELINES.register_module()
-class ToDataContainer(object):
+class ToDataContainer:
     """Convert the data to DataContainer.
 
     Args:
@@ -86,7 +86,7 @@ class ToDataContainer(object):
 
 
 @PIPELINES.register_module()
-class ImageToTensor(object):
+class ImageToTensor:
     """Convert image type to `torch.Tensor` type.
 
     Args:
@@ -112,7 +112,7 @@ class ImageToTensor(object):
 
 
 @PIPELINES.register_module()
-class Transpose(object):
+class Transpose:
     """Transpose image channels to a given order.
 
     Args:
@@ -141,7 +141,7 @@ class Transpose(object):
 
 
 @PIPELINES.register_module()
-class Collect(object):
+class Collect:
     """Collect data from the loader relevant to the specific task.
 
     This keeps the items in ``keys`` as it is, and collect items in
@@ -211,7 +211,7 @@ class Collect(object):
 
 
 @PIPELINES.register_module()
-class FormatShape(object):
+class FormatShape:
     """Format final imgs shape to the given input_format.
 
     Required keys are "imgs", "num_clips" and "clip_len", added or modified
@@ -285,7 +285,7 @@ class FormatShape(object):
 
 
 @PIPELINES.register_module()
-class FormatAudioShape(object):
+class FormatAudioShape:
     """Format final audio shape to the given input_format.
 
     Required keys are "imgs", "num_clips" and "clip_len", added or modified

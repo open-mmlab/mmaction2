@@ -43,7 +43,7 @@ def _init_lazy_if_proper(results, lazy):
 
 
 @PIPELINES.register_module()
-class Fuse(object):
+class Fuse:
     """Fuse lazy operations.
 
     Fusion order:
@@ -87,7 +87,7 @@ class Fuse(object):
 
 
 @PIPELINES.register_module()
-class RandomCrop(object):
+class RandomCrop:
     """Vanilla square random crop that specifics the output size.
 
     Required keys in results are "imgs" and "img_shape", added or
@@ -161,7 +161,7 @@ class RandomCrop(object):
 
 
 @PIPELINES.register_module()
-class RandomResizedCrop(object):
+class RandomResizedCrop:
     """Random crop that specifics the area and height-weight ratio range.
 
     Required keys in results are "imgs", "img_shape", "crop_bbox" and "lazy",
@@ -291,7 +291,7 @@ class RandomResizedCrop(object):
 
 
 @PIPELINES.register_module()
-class MultiScaleCrop(object):
+class MultiScaleCrop:
     """Crop images with a list of randomly selected scales.
 
     Randomly select the w and h scales from a list of scales. Scale of 1 means
@@ -440,7 +440,7 @@ class MultiScaleCrop(object):
 
 
 @PIPELINES.register_module()
-class Resize(object):
+class Resize:
     """Resize images to a specific size.
 
     Required keys are "imgs", "img_shape", "modality", added or modified
@@ -534,7 +534,7 @@ class Resize(object):
 
 
 @PIPELINES.register_module()
-class Flip(object):
+class Flip:
     """Flip the input images with a probability.
 
     Reverse the order of elements in the given imgs with a specific direction.
@@ -610,7 +610,7 @@ class Flip(object):
 
 
 @PIPELINES.register_module()
-class Normalize(object):
+class Normalize:
     """Normalize images with the given mean and std value.
 
     Required keys are "imgs", "img_shape", "modality", added or modified
@@ -697,7 +697,7 @@ class Normalize(object):
 
 
 @PIPELINES.register_module()
-class ColorJitter(object):
+class ColorJitter:
     """Randomly distort the brightness, contrast, saturation and hue of images,
     and add PCA based noise into images.
 
@@ -879,7 +879,7 @@ class ColorJitter(object):
 
 
 @PIPELINES.register_module()
-class CenterCrop(object):
+class CenterCrop:
     """Crop the center area from images.
 
     Required keys are "imgs", "img_shape", added or modified keys are "imgs",
@@ -949,7 +949,7 @@ class CenterCrop(object):
 
 
 @PIPELINES.register_module()
-class ThreeCrop(object):
+class ThreeCrop:
     """Crop images into three crops.
 
     Crop the images equally into three crops with equal intervals along the
@@ -1020,7 +1020,7 @@ class ThreeCrop(object):
 
 
 @PIPELINES.register_module()
-class TenCrop(object):
+class TenCrop:
     """Crop the images into 10 crops (corner + center + flip).
 
     Crop the four corners and the center part of the image with the same
@@ -1089,7 +1089,7 @@ class TenCrop(object):
 
 
 @PIPELINES.register_module()
-class MultiGroupCrop(object):
+class MultiGroupCrop:
     """Randomly crop the images into several groups.
 
     Crop the random region with the same given crop_size and bounding box
@@ -1156,7 +1156,7 @@ class MultiGroupCrop(object):
 
 
 @PIPELINES.register_module()
-class AudioAmplify(object):
+class AudioAmplify:
     """Amplify the waveform.
 
     Args:
@@ -1192,7 +1192,7 @@ class AudioAmplify(object):
 
 
 @PIPELINES.register_module()
-class MelSpectrogram(object):
+class MelSpectrogram:
     """MelSpectrogram. Transfer an audio wave into a melspectogram figure.
 
     Args:

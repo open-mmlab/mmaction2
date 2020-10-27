@@ -7,7 +7,7 @@ from ...utils import get_root_logger
 from .accuracy import interpolated_precision_recall, pairwise_temporal_iou
 
 
-class ActivityNetDetection(object):
+class ActivityNetDetection:
     """Class to evaluate detection results on ActivityNet.
 
     Args:
