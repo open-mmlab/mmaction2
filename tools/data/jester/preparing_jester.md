@@ -1,5 +1,16 @@
 # Preparing Jester
 
+## Introduction
+```
+@InProceedings{Materzynska_2019_ICCV,
+  author = {Materzynska, Joanna and Berger, Guillaume and Bax, Ingo and Memisevic, Roland},
+  title = {The Jester Dataset: A Large-Scale Video Dataset of Human Gestures},
+  booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV) Workshops},
+  month = {Oct},
+  year = {2019}
+}
+```
+
 For basic dataset information, you can refer to the dataset [website](https://20bn.com/datasets/jester/v1).
 Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/jester/`.
 
