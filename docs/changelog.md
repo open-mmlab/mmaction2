@@ -9,6 +9,7 @@
 **New Features**
 - Support the training of video recognition dataset with multiple tag categories ([#235](https://github.com/open-mmlab/mmaction2/pull/235))
 - Support specify a start epoch to conduct evaluation ([216](https://github.com/open-mmlab/mmaction2/pull/216))
+- Support joint training with multiple training datasets of multiple formats, including images, untrimmed videos, etc. ([#242](https://github.com/open-mmlab/mmaction2/pull/242))
 
 **Improvements**
 - Set default values of 'average_clips' in each config file so that there is no need to set it explicitly during testing in most cases ([#232](https://github.com/open-mmlab/mmaction2/pull/232))
