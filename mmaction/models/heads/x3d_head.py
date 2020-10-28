@@ -6,7 +6,7 @@ from .base import BaseHead
 
 
 @HEADS.register_module()
-class X3dHead(BaseHead):
+class X3DHead(BaseHead):
     """Classification head for I3D.
 
     Args:

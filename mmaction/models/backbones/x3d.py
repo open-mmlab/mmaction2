@@ -48,8 +48,8 @@ class SEModule(nn.Module):
         return module_input * x
 
 
-class BlockX3d(nn.Module):
-    """BlockX3d 3d building block for X3D.
+class BlockX3D(nn.Module):
+    """BlockX3D 3d building block for X3D.
 
     Args:
         inplanes (int): Number of channels for the input in first conv3d layer.
@@ -57,8 +57,8 @@ class BlockX3d(nn.Module):
         outplanes (int): Number of channels produced by final the conv3d layer.
         spatial_stride (int): Spatial stride in the conv3d layer. Default: 1.
         downsample (nn.Module | None): Downsample layer. Default: None.
-        se_ratio (float): The reduction ratio of squeeze and excitation unit.
-            `se_ratio == None` indicates not using SE unit. Default: None.
+        se_ratio (float | None): The reduction ratio of squeeze and excitation
+            unit. If set as None, it means not using SE unit. Default: None.
         use_swish (bool): Whether to use swish as the activation function
             before and after the 3x3x3 conv. Default: True.
         conv_cfg (dict): Config dict for convolution layer.
@@ -169,28 +169,28 @@ class BlockX3d(nn.Module):
         return out
 
 
-# We do not support initialize with 2D pretrain weight for X3d
+# We do not support initialize with 2D pretrain weight for X3D
 @BACKBONES.register_module()
-class X3d(nn.Module):
-    """X3d backbone. https://arxiv.org/pdf/2004.04730.pdf.
+class X3D(nn.Module):
+    """X3D backbone. https://arxiv.org/pdf/2004.04730.pdf.
 
     Args:
         gamma_w (float): Global channel width expansion factor. Default: 1.
         gamma_b (float): Bottleneck channel width expansion factor. Default: 1.
         gamma_d (float): Network depth expansion factor. Default: 1.
-        pretrained (str | None): Name of pretrained model.
+        pretrained (str | None): Name of pretrained model. Default: None.
         in_channels (int): Channel num of input features. Default: 3.
         num_stages (int): Resnet stages. Default: 4.
         spatial_strides (Sequence[int]):
             Spatial strides of residual blocks of each stage.
             Default: ``(1, 2, 2, 2)``.
-        frozen_stages (int): Stages to be frozen (all param fixed). -1 means
-            not freezing any parameters. Default: -1.
-        se_style (str): The style of inserting SE modules into BlockX3d, 'half'
+        frozen_stages (int): Stages to be frozen (all param fixed). If set to
+            -1, it means not freezing any parameters. Default: -1.
+        se_style (str): The style of inserting SE modules into BlockX3D, 'half'
             denotes insert into half of the blocks, while 'all' denotes insert
             into all blocks. Default: 'half'.
-        se_ratio (float): The reduction ratio of squeeze and excitation unit.
-            `se_ratio == None` indicates not using SE unit. Default: None.
+        se_ratio (float | None): The reduction ratio of squeeze and excitation
+            unit. If set as None, it means not using SE unit. Default: 1 / 16.
         use_swish (bool): Whether to use swish as the activation function
             before and after the 3x3x3 conv. Default: True.
         conv_cfg (dict): Config for conv layers. required keys are ``type``
@@ -211,9 +211,9 @@ class X3d(nn.Module):
     """
 
     def __init__(self,
-                 gamma_w=1,
-                 gamma_b=1,
-                 gamma_d=1,
+                 gamma_w=1.0,
+                 gamma_b=1.0,
+                 gamma_d=1.0,
                  pretrained=None,
                  in_channels=3,
                  num_stages=4,
@@ -267,7 +267,7 @@ class X3d(nn.Module):
         self.with_cp = with_cp
         self.zero_init_residual = zero_init_residual
 
-        self.block = BlockX3d
+        self.block = BlockX3D
         self.stage_blocks = self.stage_blocks[:num_stages]
         self.layer_inplanes = self.base_channels
         self._make_stem_layer()
@@ -354,18 +354,18 @@ class X3d(nn.Module):
             block (nn.Module): Residual module to be built.
             layer_inplanes (int): Number of channels for the input feature
                 of the res layer.
-            inplanes (int): Number of channels for the input feature
-                in each block. Base_channel * gamma_w.
-            planes (int): Number of channels for the output feature
-                in each block. Base_channel * gamma_w * gamma_b.
+            inplanes (int): Number of channels for the input feature in each
+                block, which equals to base_channels * gamma_w.
+            planes (int): Number of channels for the output feature in each
+                block, which equals to base_channel * gamma_w * gamma_b.
             blocks (int): Number of residual blocks.
-            spatial_stride (int): Spatial strides in
-                residual and conv layers. Default: 1.
-            se_style (str): The style of inserting SE modules into BlockX3d,
+            spatial_stride (int): Spatial strides in residual and conv layers.
+                Default: 1.
+            se_style (str): The style of inserting SE modules into BlockX3D,
                 'half' denotes insert into half of the blocks, while 'all'
                 denotes insert into all blocks. Default: 'half'.
-            se_ratio (float): The reduction ratio of squeeze and excitation
-                unit. `se_ratio == None` indicates not using SE unit.
+            se_ratio (float | None): The reduction ratio of squeeze and
+                excitation unit. If set as None, it means not using SE unit.
                 Default: None.
             use_swish (bool): Whether to use swish as the activation function
                 before and after the 3x3x3 conv. Default: True.
@@ -493,7 +493,7 @@ class X3d(nn.Module):
 
             if self.zero_init_residual:
                 for m in self.modules():
-                    if isinstance(m, BlockX3d):
+                    if isinstance(m, BlockX3D):
                         constant_init(m.conv3.bn, 0)
         else:
             raise TypeError('pretrained must be a str or None')

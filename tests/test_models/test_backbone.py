@@ -6,9 +6,9 @@ import torch
 import torch.nn as nn
 from mmcv.utils import _BatchNorm
 
-from mmaction.models import (C3D, ResNet, ResNet2Plus1d, ResNet3d, ResNet3dCSN,
-                             ResNet3dSlowFast, ResNet3dSlowOnly, ResNetTIN,
-                             ResNetTSM, X3d)
+from mmaction.models import (C3D, X3D, ResNet, ResNet2Plus1d, ResNet3d,
+                             ResNet3dCSN, ResNet3dSlowFast, ResNet3dSlowOnly,
+                             ResNetTIN, ResNetTSM)
 from mmaction.models.backbones.resnet_tsm import NL3DWrapper
 
 
@@ -130,16 +130,16 @@ def test_resnet_backbone():
 def test_x3d_backbone():
     """Test resnet3d backbone."""
     with pytest.raises(AssertionError):
-        # In X3d: 1 <= num_stages <= 4
-        X3d(gamma_w=1.0, gamma_b=2.25, gamma_d=2.2, num_stages=0)
+        # In X3D: 1 <= num_stages <= 4
+        X3D(gamma_w=1.0, gamma_b=2.25, gamma_d=2.2, num_stages=0)
 
     with pytest.raises(AssertionError):
-        # In X3d: 1 <= num_stages <= 4
-        X3d(gamma_w=1.0, gamma_b=2.25, gamma_d=2.2, num_stages=5)
+        # In X3D: 1 <= num_stages <= 4
+        X3D(gamma_w=1.0, gamma_b=2.25, gamma_d=2.2, num_stages=5)
 
     with pytest.raises(AssertionError):
         # len(spatial_strides) == num_stages
-        X3d(gamma_w=1.0,
+        X3D(gamma_w=1.0,
             gamma_b=2.25,
             gamma_d=2.2,
             spatial_strides=(1, 2),
@@ -147,43 +147,43 @@ def test_x3d_backbone():
 
     with pytest.raises(AssertionError):
         # se_style in ['half', 'all']
-        X3d(gamma_w=1.0, gamma_b=2.25, gamma_d=2.2, se_style=None)
+        X3D(gamma_w=1.0, gamma_b=2.25, gamma_d=2.2, se_style=None)
 
     with pytest.raises(AssertionError):
         # se_ratio should be None or > 0
-        X3d(gamma_w=1.0,
+        X3D(gamma_w=1.0,
             gamma_b=2.25,
             gamma_d=2.2,
             se_style='half',
             se_ratio=0)
 
     # x3d_s, no pretrained, norm_eval True
-    x3d_s = X3d(gamma_w=1.0, gamma_b=2.25, gamma_d=2.2, norm_eval=True)
+    x3d_s = X3D(gamma_w=1.0, gamma_b=2.25, gamma_d=2.2, norm_eval=True)
     x3d_s.init_weights()
     x3d_s.train()
     assert check_norm_state(x3d_s.modules(), False)
 
     # x3d_l, no pretrained, norm_eval True
-    x3d_l = X3d(gamma_w=1.0, gamma_b=2.25, gamma_d=5.0, norm_eval=True)
+    x3d_l = X3D(gamma_w=1.0, gamma_b=2.25, gamma_d=5.0, norm_eval=True)
     x3d_l.init_weights()
     x3d_l.train()
     assert check_norm_state(x3d_l.modules(), False)
 
     # x3d_s, no pretrained, norm_eval False
-    x3d_s = X3d(gamma_w=1.0, gamma_b=2.25, gamma_d=2.2, norm_eval=False)
+    x3d_s = X3D(gamma_w=1.0, gamma_b=2.25, gamma_d=2.2, norm_eval=False)
     x3d_s.init_weights()
     x3d_s.train()
     assert check_norm_state(x3d_s.modules(), True)
 
     # x3d_l, no pretrained, norm_eval False
-    x3d_l = X3d(gamma_w=1.0, gamma_b=2.25, gamma_d=5.0, norm_eval=False)
+    x3d_l = X3D(gamma_w=1.0, gamma_b=2.25, gamma_d=5.0, norm_eval=False)
     x3d_l.init_weights()
     x3d_l.train()
     assert check_norm_state(x3d_l.modules(), True)
 
     # x3d_s, no pretrained, frozen_stages, norm_eval False
     frozen_stages = 1
-    x3d_s_frozen = X3d(
+    x3d_s_frozen = X3D(
         gamma_w=1.0,
         gamma_b=2.25,
         gamma_d=2.2,

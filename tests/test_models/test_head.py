@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 from mmaction.models import (AudioTSNHead, BaseHead, I3DHead, SlowFastHead,
-                             TPNHead, TSMHead, TSNHead, X3dHead)
+                             TPNHead, TSMHead, TSNHead, X3DHead)
 
 
 class ExampleHead(BaseHead):
@@ -57,12 +57,12 @@ def test_i3d_head():
 def test_x3d_head():
     """Test loss method, layer construction, attributes and forward function in
     x3d head."""
-    x3d_head = X3dHead(in_channels=432, num_classes=4, fc1_bias=False)
+    x3d_head = X3DHead(in_channels=432, num_classes=4, fc1_bias=False)
     x3d_head.init_weights()
 
     assert x3d_head.num_classes == 4
     assert x3d_head.dropout_ratio == 0.5
-    assert x3d_head.in_channels == 100
+    assert x3d_head.in_channels == 432
     assert x3d_head.init_std == 0.01
 
     assert isinstance(x3d_head.dropout, nn.Dropout)

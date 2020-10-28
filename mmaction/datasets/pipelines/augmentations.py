@@ -544,7 +544,7 @@ class RandomRescale:
     modified key is "interpolation".
 
     Args:
-        scale_range (Tuple[int]): The range of short edge length. A closed
+        scale_range (tuple[int]): The range of short edge length. A closed
             interval.
         interpolation (str): Algorithm used for interpolation:
             "nearest" | "bilinear". Default: "bilinear".
