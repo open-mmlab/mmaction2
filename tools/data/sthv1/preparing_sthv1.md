@@ -1,5 +1,7 @@
 # Preparing Something-Something V1
 
+## Introduction
+
 ```
 @misc{goyal2017something,
       title={The "something something" video database for learning and evaluating visual common sense},

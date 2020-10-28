@@ -1,5 +1,7 @@
 # Preparing JHMDB
 
+## Introduction
+
 ```
 @inproceedings{Jhuang:ICCV:2013,
     title = {Towards understanding action recognition},

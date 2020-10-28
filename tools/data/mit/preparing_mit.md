@@ -1,5 +1,7 @@
 # Preparing Moments in Time
 
+## Introduction
+
 ```
 @article{monfortmoments,
     title={Moments in Time Dataset: one million videos for event understanding},

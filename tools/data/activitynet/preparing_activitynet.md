@@ -1,5 +1,7 @@
 # Preparing ActivityNet
 
+## Introduction
+
 ```
 @article{Heilbron2015ActivityNetAL,
   title={ActivityNet: A large-scale video benchmark for human activity understanding},
