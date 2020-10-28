@@ -539,29 +539,26 @@ class RandomRescale:
     size in a given range. The scale ratio is unchanged after resizing.
 
     Required keys are "imgs", "img_shape", "modality", added or modified
-    keys are "imgs", "img_shape", "keep_ratio", "scale_factor", "lazy",
-    "resize_size", "short_edge". Required keys in "lazy" is None, added or
-    modified key is "interpolation".
+    keys are "imgs", "img_shape", "keep_ratio", "scale_factor", "resize_size",
+    "short_edge".
 
     Args:
         scale_range (tuple[int]): The range of short edge length. A closed
             interval.
         interpolation (str): Algorithm used for interpolation:
             "nearest" | "bilinear". Default: "bilinear".
-        lazy (bool): Determine whether to apply lazy operation. Default: False.
     """
 
-    def __init__(self, scale_range, interpolation='bilinear', lazy=False):
+    def __init__(self, scale_range, interpolation='bilinear'):
         self.scale_range = scale_range
         # make sure scale_range is legal
         assert len(scale_range) == 2
-        assert type(scale_range[0]) is int
-        assert type(scale_range[1]) is int
+        assert mmcv.is_tuple_of(scale_range, int)
         assert scale_range[0] < scale_range[1]
+        assert np.all([x > 0 for x in scale_range])
 
         self.keep_ratio = True
         self.interpolation = interpolation
-        self.lazy = lazy
 
     def __call__(self, results):
         """Performs the Resize augmentation.
@@ -570,8 +567,6 @@ class RandomRescale:
             results (dict): The resulting dict to be modified and passed
                 to the next transform in pipeline.
         """
-
-        _init_lazy_if_proper(results, self.lazy)
 
         if 'scale_factor' not in results:
             results['scale_factor'] = np.array([1, 1], dtype=np.float32)
@@ -589,17 +584,11 @@ class RandomRescale:
         results['short_edge'] = short_edge
         results['scale_factor'] = results['scale_factor'] * self.scale_factor
 
-        if not self.lazy:
-            results['imgs'] = [
-                mmcv.imresize(
-                    img, (new_w, new_h), interpolation=self.interpolation)
-                for img in results['imgs']
-            ]
-        else:
-            lazyop = results['lazy']
-            if lazyop['flip']:
-                raise NotImplementedError('Put Flip at last for now')
-            lazyop['interpolation'] = self.interpolation
+        results['imgs'] = [
+            mmcv.imresize(
+                img, (new_w, new_h), interpolation=self.interpolation)
+            for img in results['imgs']
+        ]
 
         return results
 
@@ -607,8 +596,7 @@ class RandomRescale:
         scale_range = self.scale_range
         repr_str = (f'{self.__class__.__name__}('
                     f'scale_range=({scale_range[0]}, {scale_range[1]}), '
-                    f'interpolation={self.interpolation}, '
-                    f'lazy={self.lazy})')
+                    f'interpolation={self.interpolation})')
         return repr_str
 
 
