@@ -94,7 +94,7 @@ bash encode_videos.sh
 
 ## Step 5. Generate File List
 
-You can run the follow script to generate file list in the format of rawframes.
+You can run the follow script to generate file list in the format of rawframes and videos.
 
 ```shell
 cd $MMACTION2/tools/data/sthv1/
