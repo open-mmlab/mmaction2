@@ -1,8 +1,8 @@
-from .augmentations import (AudioAmplify, BoxClip, BoxCrop, BoxFlip, BoxPad, BoxRescale,
-                            CenterCrop, ColorJitter, Flip, Fuse, MelSpectrogram,
-                            MultiGroupCrop, MultiScaleCrop, Normalize,
-                            RandomCrop, RandomResizedCrop, RandomScale, Resize,
-                            TenCrop, ThreeCrop)
+from .augmentations import (AudioAmplify, BoxClip, BoxCrop, BoxFlip, BoxPad,
+                            BoxRescale, CenterCrop, ColorJitter, Flip, Fuse,
+                            MelSpectrogram, MultiGroupCrop, MultiScaleCrop,
+                            Normalize, RandomCrop, RandomResizedCrop,
+                            RandomScale, Resize, TenCrop, ThreeCrop)
 from .compose import Compose
 from .formating import (Collect, FormatAudioShape, FormatShape, ImageToTensor,
                         ToDataContainer, ToTensor, Transpose)

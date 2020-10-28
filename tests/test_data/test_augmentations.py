@@ -7,8 +7,8 @@ from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 # yapf: disable
 from mmaction.datasets.pipelines import (AudioAmplify, BoxClip, BoxCrop,
-                                         BoxFlip, BoxRescale, CenterCrop,
-                                         ColorJitter, Flip, Fuse,
+                                         BoxFlip, BoxPad, BoxRescale,
+                                         CenterCrop, ColorJitter, Flip, Fuse,
                                          MelSpectrogram, MultiGroupCrop,
                                          MultiScaleCrop, Normalize, RandomCrop,
                                          RandomResizedCrop, RandomScale,
@@ -1188,10 +1188,63 @@ class TestAugumentations:
         target_keys = ['ann', 'proposals', 'img_shape']
         results = dict(
             proposals=np.array([[-9.304, -9.688001, 207.079995, 333.928002]]),
-            img_shape=(520, 480),
+            img_shape=(335, 210),
             ann=dict(
                 entity_boxes=np.array(
                     [[-2.584, -7.608002, 212.120004, 338.920019]])))
-        BoxClip()
-        assert target_keys
-        assert results
+
+        box_clip = BoxClip()
+        results_ = copy.deepcopy(results)
+        results_ = box_clip(results_)
+
+        self.check_keys_contain(results_.keys(), target_keys)
+        assert_array_equal(results_['ann']['entity_boxes'],
+                           np.array([[0., 0., 209., 334.]]))
+        assert_array_equal(results_['proposals'],
+                           np.array([[0., 0., 207.079995, 333.928002]]))
+
+        results_ = copy.deepcopy(results)
+        results_['proposals'] = None
+        results_ = box_clip(results_)
+        assert results_['proposals'] is None
+
+    def test_box_pad(self):
+        target_keys = ['ann', 'proposals', 'img_shape']
+        results = dict(
+            proposals=np.array([[-9.304, -9.688001, 207.079995, 333.928002],
+                                [-2.584, -7.608002, 212.120004, 338.920019]]),
+            img_shape=(335, 210),
+            ann=dict(
+                entity_boxes=np.array([[
+                    -2.584, -7.608002, 212.120004, 338.920019
+                ], [-9.304, -9.688001, 207.079995, 333.928002]])))
+
+        box_pad_none = BoxPad()
+        results_ = copy.deepcopy(results)
+        results_ = box_pad_none(results_)
+        self.check_keys_contain(results_.keys(), target_keys)
+        assert_array_equal(results_['proposals'], results['proposals'])
+        assert_array_equal(results_['ann']['entity_boxes'],
+                           results['ann']['entity_boxes'])
+
+        box_pad = BoxPad(3)
+        results_ = copy.deepcopy(results)
+        results_ = box_pad(results_)
+        self.check_keys_contain(results_.keys(), target_keys)
+        assert_array_equal(
+            results_['proposals'],
+            np.array([[-9.304, -9.688001, 207.079995, 333.928002],
+                      [-2.584, -7.608002, 212.120004, 338.920019],
+                      [0., 0., 0., 0.]],
+                     dtype=np.float32))
+        assert_array_equal(
+            results_['ann']['entity_boxes'],
+            np.array([[-2.584, -7.608002, 212.120004, 338.920019],
+                      [-9.304, -9.688001, 207.079995, 333.928002],
+                      [0., 0., 0., 0.]],
+                     dtype=np.float32))
+
+        results_ = copy.deepcopy(results)
+        results_['proposals'] = None
+        results_ = box_pad(results_)
+        assert results_['proposals'] is None

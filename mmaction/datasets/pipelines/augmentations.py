@@ -285,7 +285,7 @@ class BoxPad:
             padded_proposals = None
 
         results['proposals'] = padded_proposals
-        results['ann']['entity_boxes'] = entity_boxes
+        results['ann']['entity_boxes'] = padded_entity_boxes
         return results
 
     def __repr__(self):
