@@ -56,7 +56,7 @@ class DistributedPowerSampler(_DistributedSampler):
         video_infos_by_class = self.dataset.video_infos_by_class
         num_classes = self.dataset.num_classes
         # For simplicity, discontinuous labels are not permitted
-        assert set(video_infos_by_class.keys()) == set(range(num_classes))
+        assert set(video_infos_by_class) == set(range(num_classes))
         counts = [len(video_infos_by_class[i]) for i in range(num_classes)]
         counts = [cnt**self.power for cnt in counts]
 

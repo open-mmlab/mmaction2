@@ -101,8 +101,7 @@ def main():
         init_dist(args.launcher, **cfg.dist_params)
 
     # The flag is used to determine whether it is omnisource training
-    if cfg.get('omnisource', False) is False:
-        cfg.omnisource = False
+    cfg.setdefault('omnisource', False)
 
     # create work_dir
     mmcv.mkdir_or_exist(osp.abspath(cfg.work_dir))

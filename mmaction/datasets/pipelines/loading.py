@@ -1001,8 +1001,8 @@ class ImageDecode:
         imgs = list()
         img_bytes = self.file_client.get(filename)
 
-        im = mmcv.imfrombytes(img_bytes, channel_order='rgb')
-        imgs.append(im)
+        img = mmcv.imfrombytes(img_bytes, channel_order='rgb')
+        imgs.append(img)
 
         results['imgs'] = imgs
         results['original_shape'] = imgs[0].shape[:2]
@@ -1168,7 +1168,8 @@ class AudioDecode(object):
 class PseudoClipBuilder:
     """Build pseudo clips with one single image by repeating it n times.
 
-    Required key is "imgs", added or modified key is "imgs", "num_clips".
+    Required key is "imgs", added or modified key is "imgs", "num_clips",
+        "clip_len".
 
     Args:
         clip_len (int): Frames of the generated pseudo clips.
