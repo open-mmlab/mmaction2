@@ -37,44 +37,33 @@ def train_model(model,
     # prepare data loaders
     dataset = dataset if isinstance(dataset, (list, tuple)) else [dataset]
 
+    dataloader_setting = dict(
+        videos_per_gpu=cfg.data.get('videos_per_gpu', 1),
+        workers_per_gpu=cfg.data.get('workers_per_gpu', 1),
+        num_gpus=len(cfg.gpu_ids),
+        dist=distributed,
+        seed=cfg.seed)
+    dataloader_setting = dict(dataloader_setting,
+                              **cfg.data.get('train_dataloader', {}))
+
     if cfg.omnisource:
         # The option can override videos_per_gpu
         train_ratio = cfg.data.get('train_ratio', None)
         omni_videos_per_gpu = cfg.data.get('omni_videos_per_gpu', None)
-        dataloader_setting_tmpl = dict(
-            videos_per_gpu=cfg.data.get('videos_per_gpu', 1),
-            workers_per_gpu=cfg.data.get('workers_per_gpu', 1),
-            num_gpus=len(cfg.gpu_ids),
-            dist=distributed,
-            seed=cfg.seed)
         if omni_videos_per_gpu is None:
-            dataloader_setting = dict(dataloader_setting_tmpl,
-                                      **cfg.data.get('train_dataloader', {}))
-            data_loaders = [
-                build_dataloader(ds, **dataloader_setting) for ds in dataset
-            ]
+            dataloader_settings = [dataloader_setting] * len(dataset)
         else:
             dataloader_settings = []
             for videos_per_gpu in omni_videos_per_gpu:
-                dataloader_setting = cp.deepcopy(dataloader_setting_tmpl)
-                dataloader_setting['videos_per_gpu'] = videos_per_gpu
-                dataloader_settings.append(dataloader_setting)
-            data_loaders = [
-                build_dataloader(ds, **setting)
-                for ds, setting in zip(dataset, dataloader_settings)
-            ]
+                this_setting = cp.deepcopy(dataloader_setting)
+                this_setting['videos_per_gpu'] = videos_per_gpu
+                dataloader_settings.append(this_setting)
+        data_loaders = [
+            build_dataloader(ds, **setting)
+            for ds, setting in zip(dataset, dataloader_settings)
+        ]
 
     else:
-        dataloader_setting = dict(
-            videos_per_gpu=cfg.data.get('videos_per_gpu', 2),
-            workers_per_gpu=cfg.data.get('workers_per_gpu', 0),
-            # cfg.gpus will be ignored if distributed
-            num_gpus=len(cfg.gpu_ids),
-            dist=distributed,
-            seed=cfg.seed)
-        dataloader_setting = dict(dataloader_setting,
-                                  **cfg.data.get('train_dataloader', {}))
-
         data_loaders = [
             build_dataloader(ds, **dataloader_setting) for ds in dataset
         ]
@@ -96,20 +85,13 @@ def train_model(model,
     # build runner
     optimizer = build_optimizer(model, cfg.optimizer)
 
-    if cfg.omnisource:
-        runner = OmniSourceRunner(
-            model,
-            optimizer=optimizer,
-            work_dir=cfg.work_dir,
-            logger=logger,
-            meta=meta)
-    else:
-        runner = EpochBasedRunner(
-            model,
-            optimizer=optimizer,
-            work_dir=cfg.work_dir,
-            logger=logger,
-            meta=meta)
+    Runner = OmniSourceRunner if cfg.omnisource else EpochBasedRunner
+    runner = Runner(
+        model,
+        optimizer=optimizer,
+        work_dir=cfg.work_dir,
+        logger=logger,
+        meta=meta)
     # an ugly workaround to make .log and .log.json filenames the same
     runner.timestamp = timestamp
 
@@ -153,11 +135,7 @@ def train_model(model,
         runner.resume(cfg.resume_from)
     elif cfg.load_from:
         runner.load_checkpoint(cfg.load_from)
+    runner_kwargs = dict()
     if cfg.omnisource:
-        runner.run(
-            data_loaders,
-            cfg.workflow,
-            cfg.total_epochs,
-            train_ratio=train_ratio)
-    else:
-        runner.run(data_loaders, cfg.workflow, cfg.total_epochs)
+        runner_kwargs = dict(train_ratio=train_ratio)
+    runner.run(data_loaders, cfg.workflow, cfg.total_epochs, **runner_kwargs)
