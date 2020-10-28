@@ -255,7 +255,9 @@ class X3d(nn.Module):
         self.frozen_stages = frozen_stages
 
         self.se_style = se_style
+        assert self.se_style in ['all', 'half']
         self.se_ratio = se_ratio
+        assert (self.se_ratio is None) or (self.se_ratio > 0)
         self.use_swish = use_swish
 
         self.conv_cfg = conv_cfg
@@ -460,8 +462,11 @@ class X3d(nn.Module):
         """Prevent all the parameters from being optimized before
         ``self.frozen_stages``."""
         if self.frozen_stages >= 0:
-            self.conv1.eval()
-            for param in self.conv1.parameters():
+            self.conv1_s.eval()
+            self.conv1_t.eval()
+            for param in self.conv1_s.parameters():
+                param.requires_grad = False
+            for param in self.conv1_t.parameters():
                 param.requires_grad = False
 
         for i in range(1, self.frozen_stages + 1):

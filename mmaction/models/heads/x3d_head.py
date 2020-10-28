@@ -17,6 +17,7 @@ class X3dHead(BaseHead):
         spatial_type (str): Pooling type in spatial dimension. Default: 'avg'.
         dropout_ratio (float): Probability of dropout layer. Default: 0.5.
         init_std (float): Std value for Initiation. Default: 0.01.
+        fc1_bias (bool): If the first fc layer has bias. Default: False.
     """
 
     def __init__(self,
@@ -26,7 +27,7 @@ class X3dHead(BaseHead):
                  spatial_type='avg',
                  dropout_ratio=0.5,
                  init_std=0.01,
-                 fc1_bias=True):
+                 fc1_bias=False):
         super().__init__(num_classes, in_channels, loss_cls)
 
         self.spatial_type = spatial_type

@@ -5,6 +5,7 @@
 **Highlights**
 - Support C3D
 - Support video recognition with audio modality
+- Support X3d
 
 **New Features**
 - Support the training of video recognition dataset with multiple tag categories ([#235](https://github.com/open-mmlab/mmaction2/pull/235))
@@ -29,6 +30,7 @@
 
 **ModelZoo**
 - Add Baselines for Kinetics-600 and Kinetics-700, including TSN-R50-8seg and SlowOnly-R50-8x8 ([#259](https://github.com/open-mmlab/mmaction2/pull/259))
+- Add X3d models ported from [SlowFast](https://github.com/facebookresearch/SlowFast/) ([#288](https://github.com/open-mmlab/mmaction2/pull/288))
 
 ### v0.7.0 (30/9/2020)
 
