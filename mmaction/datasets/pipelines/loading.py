@@ -67,6 +67,11 @@ class LoadHVULabel:
         results['category_mask'] = category_mask
         return results
 
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'hvu_initialized={self.hvu_initialized})')
+        return repr_str
+
 
 @PIPELINES.register_module()
 class SampleFrames:
@@ -232,6 +237,9 @@ class SampleFrames:
         results['num_clips'] = self.num_clips
         return results
 
+    def __repr__(self):
+        pass
+
 
 @PIPELINES.register_module()
 class UntrimmedSampleFrames:
@@ -280,6 +288,9 @@ class UntrimmedSampleFrames:
         results['frame_interval'] = self.frame_interval
         results['num_clips'] = num_clips
         return results
+
+    def __repr__(self):
+        pass
 
 
 @PIPELINES.register_module()
@@ -369,6 +380,9 @@ class DenseSampleFrames(SampleFrames):
             clip_offsets.extend((base_offsets + start_idx) % num_frames)
         clip_offsets = np.array(clip_offsets)
         return clip_offsets
+
+    def __repr__(self):
+        pass
 
 
 @PIPELINES.register_module()
@@ -612,6 +626,9 @@ class SampleProposalFrames(SampleFrames):
 
         return results
 
+    def __repr__(self):
+        pass
+
 
 @PIPELINES.register_module()
 class PyAVInit:
@@ -656,6 +673,9 @@ class PyAVInit:
         results['total_frames'] = container.streams.video[0].frames
 
         return results
+
+    def __repr__(self):
+        pass
 
 
 @PIPELINES.register_module()
@@ -755,6 +775,9 @@ class DecordInit:
         results['total_frames'] = len(container)
         return results
 
+    def __repr__(self):
+        pass
+
 
 @PIPELINES.register_module()
 class DecordDecode:
@@ -765,9 +788,6 @@ class DecordDecode:
     Required keys are "video_reader", "filename" and "frame_inds",
     added or modified keys are "imgs" and "original_shape".
     """
-
-    def __init__(self, **kwargs):
-        pass
 
     def __call__(self, results):
         """Perform the Decord decoding.
@@ -847,6 +867,9 @@ class OpenCVInit:
     def __del__(self):
         shutil.rmtree(self.tmp_folder)
 
+    def __repr__(self):
+        pass
+
 
 @PIPELINES.register_module()
 class OpenCVDecode:
@@ -855,9 +878,6 @@ class OpenCVDecode:
     Required keys are "video_reader", "filename" and "frame_inds", added or
     modified keys are "imgs", "img_shape" and "original_shape".
     """
-
-    def __init__(self):
-        pass
 
     def __call__(self, results):
         """Perform the OpenCV decoding.
@@ -963,6 +983,9 @@ class RawFrameDecode:
 
         return results
 
+    def __repr__(self):
+        pass
+
 
 @PIPELINES.register_module()
 class AudioDecodeInit:
@@ -1026,6 +1049,9 @@ class AudioDecodeInit:
         results['audios'] = y
         return results
 
+    def __repr__(self):
+        pass
+
 
 @PIPELINES.register_module()
 class LoadAudioFeature:
@@ -1065,6 +1091,9 @@ class LoadAudioFeature:
         results['length'] = feature_map.shape[0]
         results['audios'] = feature_map
         return results
+
+    def __repr__(self):
+        pass
 
 
 @PIPELINES.register_module()
@@ -1117,6 +1146,9 @@ class AudioDecode:
         results['audios_shape'] = results['audios'].shape
 
         return results
+
+    def __repr__(self):
+        pass
 
 
 @PIPELINES.register_module()
@@ -1184,6 +1216,9 @@ class AudioFeatureSelector:
         results['audios_shape'] = results['audios'].shape
         return results
 
+    def __repr__(self):
+        pass
+
 
 @PIPELINES.register_module()
 class LoadLocalizationFeature:
@@ -1219,6 +1254,9 @@ class LoadLocalizationFeature:
         results['raw_feature'] = np.transpose(raw_feature, (1, 0))
 
         return results
+
+    def __repr__(self):
+        pass
 
 
 @PIPELINES.register_module()
@@ -1326,3 +1364,6 @@ class LoadProposals:
         results['reference_temporal_iou'] = reference_temporal_iou
 
         return results
+
+    def __repr__(self):
+        pass

@@ -312,8 +312,8 @@ class MultiScaleCrop:
             Default: False.
         num_fixed_crops (int): If set to 5, the cropping bbox will keep 5
             basic fixed regions: "upper left", "upper right", "lower left",
-            "lower right", "center".If set to 13, the cropping bbox will append
-            another 8 fix regions: "center left", "center right",
+            "lower right", "center". If set to 13, the cropping bbox will
+            append another 8 fix regions: "center left", "center right",
             "lower center", "upper center", "upper left quarter",
             "upper right quarter", "lower left quarter", "lower right quarter".
             Default: 5.
