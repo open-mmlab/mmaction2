@@ -814,6 +814,60 @@ class PyAVDecode:
         return repr_str
 
 
+class FFmpegDecodeMotionVector(object):
+    """
+        Ref:
+            https://github.com/chaoyuaw/pytorch-coviar.
+    """
+
+    def __init__(self, residual=False, gop_size=16):
+        self.residual = residual
+        self.gop_size = gop_size
+
+    def _clip_and_scale(self, img, size):
+        return (img * (127.5 / size) + 128).astype(np.int32)
+
+    def __call__(self, results):
+        try:
+            import coviar.load
+        except ImportError:
+            print('Please install coviar first.')
+        if results['frame_inds'].ndim != 1:
+            results['frame_inds'] = np.squeeze(results['frame_inds'])
+        frame_inds = results['frame_inds']
+        video_path = results['filename']
+        motion_vectors = list()
+        for clip_idx in range(len(frame_inds)):
+            clip_mvs = list()
+            for frame_idx in frame_inds[clip_idx]:
+                gop_idx = frame_idx // self.gop_size
+                gop_pos = frame_idx % self.gop_size
+                if gop_pos == 0:
+                    gop_idx = -1
+                    gop_pos = self.gop_size
+                mv = coviar.load(video_path, gop_idx, gop_pos,
+                                 2 if self.residual else 1, False)
+
+                if mv is None:
+                    mv = np.zeros((256, 256, 2))
+                else:
+                    # FIXME: 20 is the scale of mv, should be tested,
+                    # but it's ok as long as it is a linearly proportional
+                    mv = self._clip_and_scale(mv, 20)
+                    mv = (np.minimum(np.maximum(mv, 0), 255)).astype(np.uint8)
+                clip_mvs.append(mv)
+            motion_vectors.append(clip_mvs)
+
+        results['motion_vectors'] = motion_vectors
+
+        return results
+
+    def __repr__(self):
+        repr_str = self.__class__.__name__
+        repr_str += f'(residual={self.residual})'
+        return repr_str
+
+
 @PIPELINES.register_module()
 class DecordInit:
     """Using decord to initialize the video_reader.
