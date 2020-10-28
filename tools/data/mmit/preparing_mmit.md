@@ -1,5 +1,18 @@
 # Preparing Multi-Moments in Time
 
+## Introduction
+
+```
+@misc{monfort2019multimoments,
+    title={Multi-Moments in Time: Learning and Interpreting Models for Multi-Action Video Understanding},
+    author={Mathew Monfort and Kandan Ramakrishnan and Alex Andonian and Barry A McNamara and Alex Lascelles, Bowen Pan, Quanfu Fan, Dan Gutfreund, Rogerio Feris, Aude Oliva},
+    year={2019},
+    eprint={1911.00232},
+    archivePrefix={arXiv},
+    primaryClass={cs.CV}
+}
+```
+
 For basic dataset information, you can refer to the dataset [website](http://moments.csail.mit.edu).
 Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/mmit/`.
 

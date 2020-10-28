@@ -1,5 +1,18 @@
 # Preparing Something-Something V1
 
+## Introduction
+
+```
+@misc{goyal2017something,
+      title={The "something something" video database for learning and evaluating visual common sense},
+      author={Raghav Goyal and Samira Ebrahimi Kahou and Vincent Michalski and Joanna Materzyńska and Susanne Westphal and Heuna Kim and Valentin Haenel and Ingo Fruend and Peter Yianilos and Moritz Mueller-Freitag and Florian Hoppe and Christian Thurau and Ingo Bax and Roland Memisevic},
+      year={2017},
+      eprint={1706.04261},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
+```
+
 For basic dataset information, you can refer to the dataset [website](https://20bn.com/datasets/something-something/v1).
 Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/sthv1/`.
 
