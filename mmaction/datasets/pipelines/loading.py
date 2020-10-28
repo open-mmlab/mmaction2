@@ -458,6 +458,13 @@ class SampleAVAFrames(SampleFrames):
         results['frame_interval'] = self.frame_interval
         return results
 
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'clip_len={self.clip_len}, '
+                    f'frame_interval={self.frame_interval}, '
+                    f'test_mode={self.test_mode})')
+        return repr_str
+
 
 @PIPELINES.register_module()
 class SampleProposalFrames(SampleFrames):

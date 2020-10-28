@@ -1065,26 +1065,37 @@ class TestAugumentations:
                              f'fixed_length={mel.fixed_length})')
 
     def test_random_scale(self):
-        scales = [(200, 64), (250, 80)]
+        scales = ((200, 64), (250, 80))
         with pytest.raises(ValueError):
             RandomScale(scales, 'unsupport')
 
         with pytest.raises(ValueError):
-            RandomScale([(800, 256), (1000, 320), (800, 320)])
+            random_scale = RandomScale([(800, 256), (1000, 320), (800, 320)])
+            random_scale({})
 
         imgs = list(np.random.rand(2, 340, 256, 3))
         results = dict(imgs=imgs, img_shape=(340, 256))
-        random_scale_range = RandomScale(scales)
-        random_scale_range(results)
-        assert 200 <= random_scale_range.scale[0] <= 250
-        assert 64 <= random_scale_range.scale[1] <= 80
 
+        results_ = copy.deepcopy(results)
+        random_scale_range = RandomScale(scales)
+        results_ = random_scale_range(results_)
+        assert 200 <= results_['scale'][0] <= 250
+        assert 64 <= results_['scale'][1] <= 80
+
+        results_ = copy.deepcopy(results)
         random_scale_value = RandomScale(scales, 'value')
-        random_scale_value(results)
-        assert random_scale_value.scale in scales
+        results_ = random_scale_value(results_)
+        assert results_['scale'] in scales
 
         random_scale_single = RandomScale([(200, 64)])
-        assert random_scale_single.scale == (200, 64)
+        results_ = copy.deepcopy(results)
+        results_ = random_scale_single(results_)
+        assert results_['scale'] == (200, 64)
+
+        assert repr(random_scale_range) == (
+            f'{random_scale_range.__class__.__name__}'
+            f'(scales={((200, 64), (250, 80))}, '
+            'mode=range)')
 
     def test_box_rescale(self):
         target_keys = ['img_shape', 'scale_factor', 'ann', 'proposals']
@@ -1184,6 +1195,9 @@ class TestAugumentations:
         results_ = box_flip(results_)
         assert results_['proposals'] is None
 
+        assert repr(box_flip) == (f'{box_flip.__class__.__name__}'
+                                  '(direction=horizontal)')
+
     def test_box_clip(self):
         target_keys = ['ann', 'proposals', 'img_shape']
         results = dict(
@@ -1248,3 +1262,6 @@ class TestAugumentations:
         results_['proposals'] = None
         results_ = box_pad(results_)
         assert results_['proposals'] is None
+
+        assert repr(box_pad) == (f'{box_pad.__class__.__name__}'
+                                 '(max_num_gts=3)')

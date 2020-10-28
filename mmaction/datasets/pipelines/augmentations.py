@@ -94,7 +94,7 @@ class RandomScale:
         if self.mode not in ['range', 'value']:
             raise ValueError(f"mode should be 'range' or 'value', "
                              f'but got {self.mode}')
-        self.scale = self.select_scale(scales)
+        self.scales = scales
         self.kwargs = kwargs
 
     def select_scale(self, scales):
@@ -124,7 +124,9 @@ class RandomScale:
         return scale
 
     def __call__(self, results):
-        resize = Resize(self.scale, **self.kwargs)
+        scale = self.select_scale(self.scales)
+        results['scale'] = scale
+        resize = Resize(scale, **self.kwargs)
         results = resize(results)
         return results
 
