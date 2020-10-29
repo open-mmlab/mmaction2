@@ -76,7 +76,7 @@ class RawframeDataset(BaseDataset):
         num_classes (int | None): Number of classes in the dataset.
             Default: None.
         modality (str): Modality of data. Support 'RGB', 'Flow'.
-                            Default: 'RGB'.
+            Default: 'RGB'.
     """
 
     def __init__(self,

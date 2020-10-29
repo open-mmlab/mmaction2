@@ -1158,11 +1158,11 @@ class MultiGroupCrop:
 class AudioAmplify:
     """Amplify the waveform.
 
+    Required keys are "audios", added or modified keys are "audios",
+    "amplify_ratio".
+
     Args:
         ratio (float): The ratio used to amplify the audio waveform.
-
-    Required keys are "audios", added or modified keys are "audios",
-        "amplify_ratio".
     """
 
     def __init__(self, ratio):
@@ -1194,6 +1194,9 @@ class AudioAmplify:
 class MelSpectrogram:
     """MelSpectrogram. Transfer an audio wave into a melspectogram figure.
 
+    Required keys are "audios", "sample_rate", "num_clips", added or modified
+    keys are "audios".
+
     Args:
         window_size (int): The window size in milisecond. Default: 32.
         step_size (int): The step size in milisecond. Default: 16.
@@ -1219,14 +1222,11 @@ class MelSpectrogram:
             raise TypeError('All arguments should be int.')
 
     def __call__(self, results):
-        """Perfrom MelSpectrogram transformation.
+        """Perform MelSpectrogram transformation.
 
         Args:
             results (dict): The resulting dict to be modified and passed
                 to the next transform in pipeline.
-
-        Required keys are "audios", "sample_rate", "num_clips",
-            added or modified keys are "audios".
         """
         try:
             import librosa

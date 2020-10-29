@@ -125,7 +125,7 @@ class Transpose:
         self.order = order
 
     def __call__(self, results):
-        """Performs the Transpose formating.
+        """Performs the Transpose formatting.
 
         Args:
             results (dict): The resulting dict to be modified and passed
@@ -302,7 +302,7 @@ class FormatAudioShape:
                 f'The input format {self.input_format} is invalid.')
 
     def __call__(self, results):
-        """Performs the FormatShape formating.
+        """Performs the FormatShape formatting.
 
         Args:
             results (dict): The resulting dict to be modified and passed

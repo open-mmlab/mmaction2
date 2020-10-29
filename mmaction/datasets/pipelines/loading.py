@@ -1033,13 +1033,13 @@ class RawFrameDecode:
 class AudioDecodeInit:
     """Using librosa to initialize the audio reader.
 
+    Required keys are "audio_path", added or modified keys are "length",
+    "sample_rate", "audios".
+
     Args:
         io_backend (str): io backend where frames are store.
             Default: 'disk'.
         sample_rate (int): Audio sampling times per second. Default: 16000.
-
-    Required keys are "audio_path", added or modified keys are "length",
-    "sample_rate", "audios".
     """
 
     def __init__(self,
@@ -1150,7 +1150,7 @@ class AudioDecode:
 
     Args:
         fixed_length (int): As the audio clip selected by frames sampled may
-            not be extactly the same, `fixed_length` will truncate or pad them
+            not be exactly the same, `fixed_length` will truncate or pad them
             into the same size. Default: 32000.
 
     Required keys are "frame_inds", "num_clips", "total_frames", "length",
@@ -1215,13 +1215,13 @@ class FrameSelector(RawFrameDecode):
 class AudioFeatureSelector:
     """Sample the audio feature w.r.t. the frames selected.
 
+    Required keys are "audios", "frame_inds", "num_clips", "length",
+    "total_frames", added or modified keys are "audios", "audios_shape".
+
     Args:
         fixed_length (int): As the features selected by frames sampled may
             not be extactly the same, `fixed_length` will truncate or pad them
             into the same size. Default: 128.
-
-    Required keys are "audios", "frame_inds", "num_clips", "length",
-        "total_frames", added or modified keys are "audios", "audios_shape".
     """
 
     def __init__(self, fixed_length=128):
@@ -1276,8 +1276,8 @@ class AudioFeatureSelector:
 class LoadLocalizationFeature:
     """Load Video features for localizer with given video_name list.
 
-    Required keys are "video_name" and "data_prefix",
-    added or modified keys are "raw_feature".
+    Required keys are "video_name" and "data_prefix", added or modified keys
+    are "raw_feature".
 
     Args:
         raw_feature_ext (str): Raw feature file extension.  Default: '.csv'.
@@ -1352,9 +1352,8 @@ class GenerateLocalizationLabels:
 class LoadProposals:
     """Loading proposals with given proposal results.
 
-    Required keys are "video_name"
-    added or modified keys are 'bsp_feature', 'tmin', 'tmax',
-    'tmin_score', 'tmax_score' and 'reference_temporal_iou'.
+    Required keys are "video_name", added or modified keys are 'bsp_feature',
+    'tmin', 'tmax', 'tmin_score', 'tmax_score' and 'reference_temporal_iou'.
 
     Args:
         top_k (int): The top k proposals to be loaded.

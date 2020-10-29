@@ -82,7 +82,7 @@ class SSNInstance:
 class SSNDataset(BaseDataset):
     """Proposal frame dataset for Structured Segment Networks.
 
-    Based on proposal information, the dataset loads raw frames and apply
+    Based on proposal information, the dataset loads raw frames and applies
     specified transforms to return a dict containing the frame tensors and
     other information.
 
@@ -557,8 +557,7 @@ class SSNDataset(BaseDataset):
             background_iou_threshold (float): Maximum threshold of overlap
                 of background proposals and groundtruths.
             background_coverage_threshold (float): Minimum coverage
-                of background proposals in video duration.
-                Default: 0.01.
+                of background proposals in video duration. Default: 0.01.
             incomplete_overlap_threshold (float): Minimum percent of incomplete
                 proposals' own span contained in a groundtruth instance.
                 Default: 0.7.
@@ -587,8 +586,8 @@ class SSNDataset(BaseDataset):
         Args:
             record (dict): Information of the video instance(video_info[idx]).
                 key: frame_dir, video_id, total_frames,
-                     gts: List of groundtruth instances(:obj:`SSNInstance`).
-                     proposals: List of proposal instances(:obj:`SSNInstance`).
+                gts: List of groundtruth instances(:obj:`SSNInstance`).
+                proposals: List of proposal instances(:obj:`SSNInstance`).
         """
         positives = self.get_positives(record['gts'], record['proposals'],
                                        self.assigner.positive_iou_threshold,
