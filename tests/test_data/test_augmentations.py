@@ -306,7 +306,7 @@ class TestAugumentations(object):
         # There will be a slight difference because of rounding
         eps = 0.01
         imgs = list(np.random.rand(2, 256, 340, 3))
-        results = dict(imgs=imgs)
+        results = dict(imgs=imgs, img_shape=(256, 340), modality='RGB')
 
         random_rescale = RandomRescale(scale_range=(300, 400))
         random_rescale_result = random_rescale(results)
