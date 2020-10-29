@@ -296,11 +296,11 @@ class TestAugumentations(object):
 
         with pytest.raises(AssertionError):
             # scale_range[0] > scale_range[1], which is wrong
-            RandomRescale(area_range=(320, 256))
+            RandomRescale(scale_range=(320, 256))
 
         with pytest.raises(AssertionError):
             # scale_range[0] <= 0, which is wrong
-            RandomRescale(area_range=(0, 320))
+            RandomRescale(scale_range=(0, 320))
 
         target_keys = ['imgs', 'short_edge', 'img_shape']
         # There will be a slight difference because of rounding
@@ -320,7 +320,7 @@ class TestAugumentations(object):
         assert np.abs(h / 256 - w / 340) < eps
         assert 300 / 256 - eps <= h / 256 <= 400 / 256 + eps
         assert repr(random_rescale) == (f'{random_rescale.__class__.__name__}'
-                                        f'(area_range={(300, 400)}, '
+                                        f'(scale_range={(300, 400)}, '
                                         'interpolation=bilinear)')
 
     def test_random_resized_crop_lazy(self):
