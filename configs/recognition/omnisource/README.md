@@ -29,35 +29,34 @@ We benchmark the OmniSource framework on the released subset, results are listed
   overflow:hidden;padding:10px 5px;word-break:normal;}
 .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
   font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg .tg-9wq8{border-color:inherit;text-align:center;vertical-align:middle}
 .tg .tg-c3ow{border-color:inherit;text-align:center;vertical-align:top}
 </style>
 <table class="tg">
 <thead>
   <tr>
-    <th class="tg-9wq8">Model</th>
-    <th class="tg-9wq8" colspan="3">Baseline</th>
-    <th class="tg-9wq8" colspan="3">+GG-img</th>
-    <th class="tg-9wq8" colspan="3">+[GG-IG]-img</th>
-    <th class="tg-9wq8" colspan="3">+IG-vid</th>
-    <th class="tg-9wq8" colspan="3">+KRaw</th>
-    <th class="tg-9wq8" colspan="3">OmniSource</th>
+    <th class="tg-c3ow">Model</th>
+    <th class="tg-c3ow" colspan="3">Baseline</th>
+    <th class="tg-c3ow" colspan="3">+GG-img</th>
+    <th class="tg-c3ow" colspan="3">+[GG-IG]-img</th>
+    <th class="tg-c3ow" colspan="3">+IG-vid</th>
+    <th class="tg-c3ow" colspan="3">+KRaw</th>
+    <th class="tg-c3ow" colspan="3">OmniSource</th>
   </tr>
 </thead>
 <tbody>
   <tr>
-    <td class="tg-9wq8" rowspan="2">TSN-8seg<br>ResNet50</td>
-    <td class="tg-9wq8" colspan="3">77.8 / 93.8</td>
-    <td class="tg-9wq8" colspan="3">78.6 / 93.9</td>
-    <td class="tg-9wq8" colspan="3">79.2 / 93.9</td>
-    <td class="tg-9wq8" colspan="3">81.2 / 95.3</td>
-    <td class="tg-9wq8" colspan="3">79.2 / 93.5</td>
-    <td class="tg-9wq8" colspan="3">81.9 / 95.1</td>
+    <td class="tg-c3ow" rowspan="2">TSN-8seg<br>ResNet50</td>
+    <td class="tg-c3ow" colspan="3">77.4 / 93.6</td>
+    <td class="tg-c3ow" colspan="3">78.0 / 93.6</td>
+    <td class="tg-c3ow" colspan="3">78.6 / 93.6</td>
+    <td class="tg-c3ow" colspan="3">80.6 / 95.0</td>
+    <td class="tg-c3ow" colspan="3">78.6 / 93.2</td>
+    <td class="tg-c3ow" colspan="3">81.3 / 94.8</td>
   </tr>
   <tr>
-    <td class="tg-9wq8"></td>
-    <td class="tg-9wq8"></td>
-    <td class="tg-9wq8"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
     <td class="tg-c3ow"></td>
     <td class="tg-c3ow"></td>
     <td class="tg-c3ow"></td>
@@ -75,13 +74,13 @@ We benchmark the OmniSource framework on the released subset, results are listed
     <td class="tg-c3ow"></td>
   </tr>
   <tr>
-    <td class="tg-9wq8" rowspan="2">SlowOnly-8x8<br>ResNet50</td>
-    <td class="tg-9wq8" colspan="3">79.0 / 94.1</td>
-    <td class="tg-9wq8" colspan="3">81.4 / 95.3</td>
-    <td class="tg-9wq8" colspan="3">81.9 / 95.5</td>
-    <td class="tg-9wq8" colspan="3">83.0 / 95.9</td>
-    <td class="tg-9wq8" colspan="3">80.9 / 94.8</td>
-    <td class="tg-9wq8" colspan="3">83.5 / 96.1</td>
+    <td class="tg-c3ow" rowspan="2">SlowOnly-8x8<br>ResNet50</td>
+    <td class="tg-c3ow" colspan="3">78.6 / 93.9</td>
+    <td class="tg-c3ow" colspan="3">80.8 / 95.0</td>
+    <td class="tg-c3ow" colspan="3">81.3 / 95.2</td>
+    <td class="tg-c3ow" colspan="3">82.4 / 95.6</td>
+    <td class="tg-c3ow" colspan="3">80.3 / 94.5</td>
+    <td class="tg-c3ow" colspan="3">82.9 / 95.8</td>
   </tr>
   <tr>
     <td class="tg-c3ow"></td>
