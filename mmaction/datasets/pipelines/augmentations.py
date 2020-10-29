@@ -551,9 +551,9 @@ class RandomRescale:
 
     def __init__(self, scale_range, interpolation='bilinear'):
         self.scale_range = scale_range
-        # make sure scale_range is legal
-        assert len(scale_range) == 2
+        # make sure scale_range is legal, first make sure the type is OK
         assert mmcv.is_tuple_of(scale_range, int)
+        assert len(scale_range) == 2
         assert scale_range[0] < scale_range[1]
         assert np.all([x > 0 for x in scale_range])
 
