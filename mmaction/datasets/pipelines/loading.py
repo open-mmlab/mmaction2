@@ -756,7 +756,7 @@ class PyAVInit:
 
 
 @PIPELINES.register_module()
-class PyAVDecode:
+class PyAVDecodeMotionVector(object):
     """Using pyav to decode the video.
 
     PyAV: https://github.com/mikeboers/PyAV
@@ -764,6 +764,154 @@ class PyAVDecode:
     Required keys are "video_reader" and "frame_inds",
     added or modified keys are "imgs", "img_shape" and "original_shape".
 
+    Args:
+        multi_thread (bool): If set to True, it will apply multi
+            thread processing. Default: False.
+    """
+
+    def __init__(self, multi_thread=False):
+        self.multi_thread = multi_thread
+
+    def parse_vectors(self, mv, vectors, height, width):
+        """Parse the returned vector."""
+        (w, h, src_x, src_y, dst_x,
+         dst_y) = (vectors['w'], vectors['h'], vectors['src_x'],
+                   vectors['src_y'], vectors['dst_x'], vectors['dst_y'])
+        val_x = dst_x - src_x
+        val_y = dst_y - src_y
+        start_x = (-1 * w / 2).astype(np.int8) + dst_x
+        start_y = (-1 * h / 2).astype(np.int8) + dst_y
+        end_x = start_x + w.astype(np.int8)
+        end_y = start_y + h.astype(np.int8)
+        for row in range(len(vectors)):
+            if (start_x[row] >= 0 and end_x[row] < width and start_y[row] >= 0
+                    and end_y[row] < height):
+                mv[start_y[row]:end_y[row], start_x[row]:end_x[row],
+                   0] = val_x[row]
+                mv[start_y[row]:end_y[row], start_x[row]:end_x[row],
+                   1] = val_y[row]
+        return mv
+
+    def __call__(self, results):
+        """Perform the PyAV decoding.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        container = results['video_reader']
+        imgs = list()
+
+        if self.multi_thread:
+            container.streams.video[0].thread_type = 'AUTO'
+        if results['frame_inds'].ndim != 1:
+            results['frame_inds'] = np.squeeze(results['frame_inds'])
+
+        # set max indice to make early stop
+        max_inds = max(results['frame_inds'])
+        i = 0
+        stream = container.streams.video[0]
+        codec_context = stream.codec_context
+        codec_context.options = {'flags2': '+export_mvs'}
+        # import imageio
+        for packet in container.demux(stream):
+            for frame in packet.decode():
+                if i > max_inds + 1:
+                    break
+                i += 1
+                height = frame.height
+                width = frame.width
+                mv = np.zeros((height, width, 2), dtype=np.int8)
+                vectors = frame.side_data.get('MOTION_VECTORS')
+                if frame.key_frame:
+                    # Key frame don't have motion vectors
+                    assert vectors is None
+                else:
+                    assert len(vectors) > 0
+                    mv = self.parse_vectors(mv, vectors.to_ndarray(), height,
+                                            width)
+                # imageio.imwrite(f'tmp/gray/{i}.jpg',
+                # np.abs(mv[:, :, 0]) + np.abs(mv[:, :, 1]))
+                imgs.append(mv)
+
+        results['video_reader'] = None
+        del container
+
+        # the available frame in pyav may be less than its length,
+        # which may raise error
+        results['mvs'] = np.array(
+            [imgs[i % len(imgs)] for i in results['frame_inds']])
+        print(np.max(results['mvs']))
+        return results
+
+    def __repr__(self):
+        repr_str = self.__class__.__name__
+        repr_str += f'(multi_thread={self.multi_thread})'
+        return repr_str
+
+
+@PIPELINES.register_module()
+class FFmpegDecodeMotionVector(object):
+    """
+        Ref:
+            https://github.com/chaoyuaw/pytorch-coviar.
+    """
+
+    def __init__(self, residual=False, gop_size=16):
+        self.residual = residual
+        self.gop_size = gop_size
+
+    def _clip_and_scale(self, img, size):
+        return (img * (127.5 / size) + 128).astype(np.int32)
+
+    def __call__(self, results):
+        try:
+            import coviar.load
+        except ImportError:
+            print('Please install coviar first.')
+        if results['frame_inds'].ndim != 1:
+            results['frame_inds'] = np.squeeze(results['frame_inds'])
+        frame_inds = results['frame_inds']
+        video_path = results['filename']
+        motion_vectors = list()
+        for clip_idx in range(len(frame_inds)):
+            clip_mvs = list()
+            for frame_idx in frame_inds[clip_idx]:
+                gop_idx = frame_idx // self.gop_size
+                gop_pos = frame_idx % self.gop_size
+                if gop_pos == 0:
+                    gop_idx = -1
+                    gop_pos = self.gop_size
+                mv = coviar.load(video_path, gop_idx, gop_pos,
+                                 2 if self.residual else 1, False)
+
+                if mv is None:
+                    mv = np.zeros((256, 256, 2))
+                else:
+                    # FIXME: 20 is the scale of mv, should be tested,
+                    # but it's ok as long as it is a linearly proportional
+                    mv = self._clip_and_scale(mv, 20)
+                    mv = (np.minimum(np.maximum(mv, 0), 255)).astype(np.uint8)
+                clip_mvs.append(mv)
+            motion_vectors.append(clip_mvs)
+
+        results['motion_vectors'] = np.array(motion_vectors)
+
+        return results
+
+    def __repr__(self):
+        repr_str = self.__class__.__name__
+        repr_str += f'(residual={self.residual}'
+        repr_str += f'gop_size={self.gop_size})'
+        return repr_str
+
+
+class PyAVDecode(object):
+    """Using pyav to decode the video.
+
+    PyAV: https://github.com/mikeboers/PyAV
+    Required keys are "video_reader" and "frame_inds",
+    added or modified keys are "imgs", "img_shape" and "original_shape".
     Args:
         multi_thread (bool): If set to True, it will apply multi
             thread processing. Default: False.
@@ -811,60 +959,6 @@ class PyAVDecode:
     def __repr__(self):
         repr_str = self.__class__.__name__
         repr_str += f'(multi_thread={self.multi_thread})'
-        return repr_str
-
-
-class FFmpegDecodeMotionVector(object):
-    """
-        Ref:
-            https://github.com/chaoyuaw/pytorch-coviar.
-    """
-
-    def __init__(self, residual=False, gop_size=16):
-        self.residual = residual
-        self.gop_size = gop_size
-
-    def _clip_and_scale(self, img, size):
-        return (img * (127.5 / size) + 128).astype(np.int32)
-
-    def __call__(self, results):
-        try:
-            import coviar.load
-        except ImportError:
-            print('Please install coviar first.')
-        if results['frame_inds'].ndim != 1:
-            results['frame_inds'] = np.squeeze(results['frame_inds'])
-        frame_inds = results['frame_inds']
-        video_path = results['filename']
-        motion_vectors = list()
-        for clip_idx in range(len(frame_inds)):
-            clip_mvs = list()
-            for frame_idx in frame_inds[clip_idx]:
-                gop_idx = frame_idx // self.gop_size
-                gop_pos = frame_idx % self.gop_size
-                if gop_pos == 0:
-                    gop_idx = -1
-                    gop_pos = self.gop_size
-                mv = coviar.load(video_path, gop_idx, gop_pos,
-                                 2 if self.residual else 1, False)
-
-                if mv is None:
-                    mv = np.zeros((256, 256, 2))
-                else:
-                    # FIXME: 20 is the scale of mv, should be tested,
-                    # but it's ok as long as it is a linearly proportional
-                    mv = self._clip_and_scale(mv, 20)
-                    mv = (np.minimum(np.maximum(mv, 0), 255)).astype(np.uint8)
-                clip_mvs.append(mv)
-            motion_vectors.append(clip_mvs)
-
-        results['motion_vectors'] = motion_vectors
-
-        return results
-
-    def __repr__(self):
-        repr_str = self.__class__.__name__
-        repr_str += f'(residual={self.residual})'
         return repr_str
 
 

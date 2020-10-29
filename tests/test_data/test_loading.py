@@ -19,7 +19,7 @@ from mmaction.datasets.pipelines import (AudioDecode, AudioDecodeInit,
                                          OpenCVInit, PyAVDecode, PyAVInit,
                                          RawFrameDecode, SampleAVAFrames,
                                          SampleFrames, SampleProposalFrames,
-                                         UntrimmedSampleFrames)
+                                         UntrimmedSampleFrames, PyAVDecodeMotionVector)
 
 # yapf: enable
 
@@ -1466,3 +1466,17 @@ class TestLoading:
         assert repr(audio_feature_selector) == (
             f'{audio_feature_selector.__class__.__name__}('
             f'fix_length={128})')
+
+    def test_pyav_decode_motion_vector(self):
+        pyav_init = PyAVInit()
+        pyav = PyAVDecodeMotionVector()
+
+        # test pyav
+        results = {
+            'filename':
+            osp.join(osp.dirname(osp.dirname(__file__)), 'data/test.mp4'),
+            'frame_inds':
+            np.arange(0, 32, 1)[:, np.newaxis]
+        }
+        results = pyav_init(results)
+        results = pyav(results)
