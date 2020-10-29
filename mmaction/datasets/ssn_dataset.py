@@ -448,7 +448,7 @@ class SSNDataset(BaseDataset):
         # get gts
         all_gts = self.get_all_gts()
         for class_idx in range(len(detections)):
-            if (class_idx not in all_gts):
+            if class_idx not in all_gts:
                 all_gts[class_idx] = dict()
 
         # get predictions

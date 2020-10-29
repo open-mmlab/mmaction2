@@ -238,7 +238,15 @@ class SampleFrames:
         return results
 
     def __repr__(self):
-        pass
+        repr_str = (f'{self.__class__.__name__}('
+                    f'clip_len={self.clip_len}, '
+                    f'frame_interval={self.frame_interval}, '
+                    f'num_clips={self.num_clips}, '
+                    f'temporal_jitter={self.temporal_jitter}, '
+                    f'twice_sample={self.twice_sample}, '
+                    f'out_of_bound_opt={self.out_of_bound_opt}, '
+                    f'test_mode={self.test_mode})')
+        return repr_str
 
 
 @PIPELINES.register_module()
@@ -252,17 +260,20 @@ class UntrimmedSampleFrames:
         clip_len (int): The length of sampled clips. Default: 1.
         frame_interval (int): Temporal interval of adjacent sampled frames.
             Default: 16.
-        start_index (int): Specify a start index for frames in consideration of
-            different filename format. However, when taking videos as input,
-            it should be set to 0, since frames loaded from videos count
-            from 0. Default: 1.
+        start_index (None): This argument is deprecated and moved to dataset
+            class (``BaseDataset``, ``VideoDatset``, ``RawframeDataset``, etc),
+            see this: https://github.com/open-mmlab/mmaction2/pull/89.
     """
 
-    def __init__(self, clip_len=1, frame_interval=16, start_index=1):
+    def __init__(self, clip_len=1, frame_interval=16, start_index=None):
 
         self.clip_len = clip_len
         self.frame_interval = frame_interval
-        self.start_index = start_index
+
+        if start_index is not None:
+            warnings.warn('No longer support "start_index" in "SampleFrames", '
+                          'it should be set in dataset class, see this pr: '
+                          'https://github.com/open-mmlab/mmaction2/pull/89')
 
     def __call__(self, results):
         """Perform the SampleFrames loading.
@@ -272,6 +283,7 @@ class UntrimmedSampleFrames:
                 to the next transform in pipeline.
         """
         total_frames = results['total_frames']
+        start_index = results['start_index']
 
         clip_centers = np.arange(self.frame_interval // 2, total_frames,
                                  self.frame_interval)
@@ -282,7 +294,7 @@ class UntrimmedSampleFrames:
         # clip frame_inds to legal range
         frame_inds = np.clip(frame_inds, 0, total_frames - 1)
 
-        frame_inds = np.concatenate(frame_inds) + self.start_index
+        frame_inds = np.concatenate(frame_inds) + start_index
         results['frame_inds'] = frame_inds.astype(np.int)
         results['clip_len'] = self.clip_len
         results['frame_interval'] = self.frame_interval
@@ -290,7 +302,10 @@ class UntrimmedSampleFrames:
         return results
 
     def __repr__(self):
-        pass
+        repr_str = (f'{self.__class__.__name__}('
+                    f'clip_len={self.clip_len}, '
+                    f'frame_interval={self.frame_interval})')
+        return repr_str
 
 
 @PIPELINES.register_module()
@@ -382,7 +397,16 @@ class DenseSampleFrames(SampleFrames):
         return clip_offsets
 
     def __repr__(self):
-        pass
+        repr_str = (f'{self.__class__.__name__}('
+                    f'clip_len={self.clip_len}, '
+                    f'frame_interval={self.frame_interval}, '
+                    f'num_clips={self.num_clips}, '
+                    f'sample_range={self.sample_range}, '
+                    f'num_sample_positions={self.num_sample_positions}, '
+                    f'temporal_jitter={self.temporal_jitter}, '
+                    f'out_of_bound_opt={self.out_of_bound_opt}, '
+                    f'test_mode={self.test_mode})')
+        return repr_str
 
 
 @PIPELINES.register_module()
@@ -627,7 +651,16 @@ class SampleProposalFrames(SampleFrames):
         return results
 
     def __repr__(self):
-        pass
+        repr_str = (f'{self.__class__.__name__}('
+                    f'clip_len={self.clip_len}, '
+                    f'body_segments={self.body_segments}, '
+                    f'aug_segments={self.aug_segments}, '
+                    f'aug_ratio={self.aug_ratio}, '
+                    f'frame_interval={self.frame_interval}, '
+                    f'test_interval={self.test_interval}, '
+                    f'temporal_jitter={self.temporal_jitter}, '
+                    f'mode={self.mode})')
+        return repr_str
 
 
 @PIPELINES.register_module()
@@ -675,7 +708,8 @@ class PyAVInit:
         return results
 
     def __repr__(self):
-        pass
+        repr_str = f'{self.__class__.__name__}(io_backend=disk)'
+        return repr_str
 
 
 @PIPELINES.register_module()
@@ -776,7 +810,10 @@ class DecordInit:
         return results
 
     def __repr__(self):
-        pass
+        repr_str = (f'{self.__class__.__name__}('
+                    f'io_backend={self.io_backend}, '
+                    f'num_threads={self.num_threads})')
+        return repr_str
 
 
 @PIPELINES.register_module()
@@ -868,7 +905,9 @@ class OpenCVInit:
         shutil.rmtree(self.tmp_folder)
 
     def __repr__(self):
-        pass
+        repr_str = (f'{self.__class__.__name__}('
+                    f'io_backend={self.io_backend})')
+        return repr_str
 
 
 @PIPELINES.register_module()
@@ -984,7 +1023,10 @@ class RawFrameDecode:
         return results
 
     def __repr__(self):
-        pass
+        repr_str = (f'{self.__class__.__name__}('
+                    f'io_backend={self.io_backend}, '
+                    f'decoding_backend={self.decoding_backend})')
+        return repr_str
 
 
 @PIPELINES.register_module()
@@ -1050,7 +1092,11 @@ class AudioDecodeInit:
         return results
 
     def __repr__(self):
-        pass
+        repr_str = (f'{self.__class__.__name__}('
+                    f'io_backend={self.io_backend}, '
+                    f'sample_rate={self.sample_rate}, '
+                    f'pad_method={self.pad_method})')
+        return repr_str
 
 
 @PIPELINES.register_module()
@@ -1093,7 +1139,9 @@ class LoadAudioFeature:
         return results
 
     def __repr__(self):
-        pass
+        repr_str = (f'{self.__class__.__name__}('
+                    f'pad_method={self.pad_method})')
+        return repr_str
 
 
 @PIPELINES.register_module()
@@ -1148,7 +1196,9 @@ class AudioDecode:
         return results
 
     def __repr__(self):
-        pass
+        repr_str = (f'{self.__class__.__name__}('
+                    f'fix_length={self.fixed_length})')
+        return repr_str
 
 
 @PIPELINES.register_module()
@@ -1217,7 +1267,9 @@ class AudioFeatureSelector:
         return results
 
     def __repr__(self):
-        pass
+        repr_str = (f'{self.__class__.__name__}('
+                    f'fix_length={self.fixed_length})')
+        return repr_str
 
 
 @PIPELINES.register_module()
@@ -1256,7 +1308,9 @@ class LoadLocalizationFeature:
         return results
 
     def __repr__(self):
-        pass
+        repr_str = (f'{self.__class__.__name__}('
+                    f'raw_feature_ext={self.raw_feature_ext})')
+        return repr_str
 
 
 @PIPELINES.register_module()
@@ -1366,4 +1420,10 @@ class LoadProposals:
         return results
 
     def __repr__(self):
-        pass
+        repr_str = (f'{self.__class__.__name__}('
+                    f'top_k={self.top_k}, '
+                    f'pgm_proposals_dir={self.pgm_proposals_dir}, '
+                    f'pgm_features_dir={self.pgm_features_dir}, '
+                    f'proposal_ext={self.proposal_ext}, '
+                    f'feature_ext={self.feature_ext})')
+        return repr_str
