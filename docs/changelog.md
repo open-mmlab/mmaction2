@@ -7,6 +7,7 @@
 - Support video recognition with audio modality
 
 **New Features**
+- Support AVA dataset preparation ([#266](https://github.com/open-mmlab/mmaction2/pull/266))
 - Support the training of video recognition dataset with multiple tag categories ([#235](https://github.com/open-mmlab/mmaction2/pull/235))
 - Support specify a start epoch to conduct evaluation ([216](https://github.com/open-mmlab/mmaction2/pull/216))
 
