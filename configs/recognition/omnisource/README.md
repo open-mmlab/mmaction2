@@ -6,7 +6,7 @@ In ECCV, 2020. [Paper](https://arxiv.org/abs/2003.13042)
 
 ![pipeline](pipeline.png)
 
-### Release
+### Kinetics-400 Model Release
 
 We currently released 4 models trained with OmniSource framework, including both 2D and 3D architectures. We compare the performance of models trained with or without OmniSource in the following table.
 
@@ -17,7 +17,101 @@ We currently released 4 models trained with OmniSource framework, including both
 | SlowOnly |   RGB    |  Scratch   | ResNet50  | 4x16  | short-side 320 |          72.9 / 76.8 (+ 3.9)          |          90.9 / 92.5 (+ 1.6)           | [Baseline](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_rgb/slowonly_r50_4x16x1_256e_kinetics400_rgb_20200704-a69556c6.pth) / [OmniSource](https://download.openmmlab.com/mmaction/recognition/slowonly/omni/slowonly_r50_omni_4x16x1_kinetics400_rgb_20200926-51b1f7ea.pth) |
 | SlowOnly |   RGB    |  Scratch   | ResNet101 |  8x8  | short-side 320 |          76.5 / 80.4 (+ 3.9)          |          92.7 / 94.4 (+ 1.7)           | [Baseline](https://download.openmmlab.com/mmaction/recognition/slowonly/omni/slowonly_r101_without_omni_8x8x1_kinetics400_rgb_20200926-0c730aef.pth) / [OmniSource](https://download.openmmlab.com/mmaction/recognition/slowonly/omni/slowonly_r101_omni_8x8x1_kinetics400_rgb_20200926-b5dbb701.pth) |
 
-We will soon release the web dataset and training code used by OmniSource.
+### Benchmark on Mini-Kinetics
+
+We release a subset of web dataset used in the OmniSource paper. Specifically, we release the web data in the 200 classes of [Mini-Kinetics](https://arxiv.org/pdf/1712.04851.pdf). The statistics of those datasets is detailed in [preparing_omnisource](/tools/data/omnisource/preparing_omnisource.md). To obtain those data, you need to fill in a [data request form](https://docs.google.com/forms/d/e/1FAIpQLSd8_GlmHzG8FcDbW-OEu__G7qLgOSYZpH-i5vYVJcu7wcb_TQ/viewform?usp=sf_link). After we received your request, the download link of these data will be send to you. For more details on the released OmniSource web dataset, please refer to [preparing_omnisource](/tools/data/omnisource/preparing_omnisource.md).
+
+We benchmark the OmniSource framework on the released subset, results are listed in the following table (we report the Top-1 and Top-5 accuracy on Mini-Kinetics validation). The benchmark can be used as a baseline for video recognition with web data.
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-9wq8{border-color:inherit;text-align:center;vertical-align:middle}
+.tg .tg-c3ow{border-color:inherit;text-align:center;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-9wq8">Model</th>
+    <th class="tg-9wq8" colspan="3">Baseline</th>
+    <th class="tg-9wq8" colspan="3">+GG-img</th>
+    <th class="tg-9wq8" colspan="3">+[GG-IG]-img</th>
+    <th class="tg-9wq8" colspan="3">+IG-vid</th>
+    <th class="tg-9wq8" colspan="3">+KRaw</th>
+    <th class="tg-9wq8" colspan="3">OmniSource</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-9wq8" rowspan="2">TSN-8seg<br>ResNet50</td>
+    <td class="tg-9wq8" colspan="3">77.8 / 93.8</td>
+    <td class="tg-9wq8" colspan="3">78.6 / 93.9</td>
+    <td class="tg-9wq8" colspan="3">79.2 / 93.9</td>
+    <td class="tg-9wq8" colspan="3">81.2 / 95.3</td>
+    <td class="tg-9wq8" colspan="3">79.2 / 93.5</td>
+    <td class="tg-9wq8" colspan="3">81.9 / 95.1</td>
+  </tr>
+  <tr>
+    <td class="tg-9wq8"></td>
+    <td class="tg-9wq8"></td>
+    <td class="tg-9wq8"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+  </tr>
+  <tr>
+    <td class="tg-9wq8" rowspan="2">SlowOnly-8x8<br>ResNet50</td>
+    <td class="tg-9wq8" colspan="3">79.0 / 94.1</td>
+    <td class="tg-9wq8" colspan="3">81.4 / 95.3</td>
+    <td class="tg-9wq8" colspan="3">81.9 / 95.5</td>
+    <td class="tg-9wq8" colspan="3">83.0 / 95.9</td>
+    <td class="tg-9wq8" colspan="3">80.9 / 94.8</td>
+    <td class="tg-9wq8" colspan="3">83.5 / 96.1</td>
+  </tr>
+  <tr>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"></td>
+  </tr>
+</tbody>
+</table>
+
+We also list the benchmark in the original paper which run on Kinetics-400 for comparison:
+
+|         Model          |  Baseline   |   +GG-img   | +[GG-IG]-img |   +IG-vid   |    +KRaw    | OmniSource  |
+| :--------------------: | :---------: | :---------: | :----------: | :---------: | :---------: | :---------: |
+|   TSN-3seg-ResNet50    | 70.6 / 89.4 | 71.5 / 89.5 | 72.0 / 90.0  | 72.0 / 90.3 | 71.7 / 89.6 | 73.6 / 91.0 |
+| SlowOnly-4x16-ResNet50 | 73.8 / 90.9 | 74.5 / 91.4 | 75.2 / 91.6  | 75.2 / 91.7 | 74.5 / 91.1 | 76.6 / 92.5 |
 
 ### Citing OmniSource
 
