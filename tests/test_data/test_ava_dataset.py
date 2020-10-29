@@ -53,7 +53,7 @@ class TestAVADataset(object):
         assert ava_infos[0]['video_id'] == '0f39OWEqJ24'
         assert ava_infos[0]['timestamp'] == 902
         assert ava_infos[0]['img_key'] == '0f39OWEqJ24,0902'
-        assert ava_infos[0]['shot_info'] == (0, 27000)
+        assert ava_infos[0]['shot_info'] == (0, 26880)
         assert ava_infos[0]['fps'] == 30
         assert len(ava_infos[0]['ann']) == 3
         target_labels = np.array([12, 17, 79] + [
@@ -115,8 +115,8 @@ class TestAVADataset(object):
         assert result['filename_tmpl'] == 'img_{:05}.jpg'
         assert result['modality'] == 'RGB'
         assert result['start_index'] == 1
-        assert result['timestamp_start'] == 840
-        assert result['timestamp_end'] == 1740
+        assert result['timestamp_start'] == 902
+        assert result['timestamp_end'] == 1798
         assert_array_equal(result['proposals'],
                            np.array([[0.011, 0.157, 0.655, 0.983, 0.998163]]))
 

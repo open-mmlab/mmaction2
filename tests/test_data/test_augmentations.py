@@ -1165,9 +1165,9 @@ class TestAugumentations:
                     [[-2.584, -7.608002, 212.120004, 338.920019]])))
 
         with pytest.raises(ValueError):
-            BoxFlip('unsupport')
+            BoxFlip(0, 'unsupport')
 
-        box_flip = BoxFlip()
+        box_flip = BoxFlip(flip_ratio=1)
         results_ = copy.deepcopy(results)
         results_ = box_flip(results_)
         self.check_keys_contain(results_.keys(), target_keys)
@@ -1178,7 +1178,7 @@ class TestAugumentations:
             results_['proposals'],
             np.array([[271.920005, -9.688001, 488.304, 333.928002]]))
 
-        box_flip = BoxFlip('vertical')
+        box_flip = BoxFlip(flip_ratio=1, direction='vertical')
         results_ = copy.deepcopy(results)
         results_ = box_flip(results_)
         self.check_keys_contain(results_.keys(), target_keys)
@@ -1196,7 +1196,7 @@ class TestAugumentations:
         assert results_['proposals'] is None
 
         assert repr(box_flip) == (f'{box_flip.__class__.__name__}'
-                                  '(direction=horizontal)')
+                                  '(flip_ratio=0.5, direction=horizontal)')
 
     def test_box_clip(self):
         target_keys = ['ann', 'proposals', 'img_shape']

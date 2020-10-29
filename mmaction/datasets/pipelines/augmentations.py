@@ -88,6 +88,22 @@ class Fuse:
 
 @PIPELINES.register_module()
 class RandomScale:
+    """Resize images by a random scale.
+
+    Required keys are "imgs", "img_shape", "modality", added or modified
+    keys are "imgs", "img_shape", "keep_ratio", "scale_factor", "lazy",
+    "scale", "resize_size". Required keys in "lazy" is None, added or
+    modified key is "interpolation".
+
+    Args:
+        scales (tuple[int]): Tuple of scales to be chosen for resize.
+        mode (str): Selection mode for choosing the scale. Options are "range"
+            and "value". If set to "range", The short edge will be randomly
+            chosen from the range of minimum and maximum on the shorter one
+            in all tuples. Otherwise, the longer edge will be randomly chosen
+            from the range of minimum and maximum on the longer one in all
+            tuples. Default: 'range'.
+    """
 
     def __init__(self, scales, mode='range', **kwargs):
         self.mode = mode
@@ -138,6 +154,13 @@ class RandomScale:
 
 @PIPELINES.register_module()
 class BoxRescale:
+    """Rescale the entity box and proposals according to the image shape.
+
+    Required keys are "img_shape", "scale_factor", "proposals",
+    "ann.entity_boxes", added or modified keys are "ann.entity_boxes". If
+    original "proposals" is not None, "proposals" and "scores" will be added or
+    modified.
+    """
 
     def __call__(self, results):
         img_h, img_w = results['img_shape']
@@ -170,6 +193,12 @@ class BoxRescale:
 
 @PIPELINES.register_module()
 class BoxCrop:
+    """Crop the entity boxes and proposals according to the cropped images.
+
+    Required keys are "proposals", "ann.entity_boxes", "crop_bbox", added or
+    modified keys are "ann.entity_boxes". If original "proposals" is not None,
+    "proposals" will be modified.
+    """
 
     def __call__(self, results):
         proposals = results['proposals']
@@ -197,55 +226,89 @@ class BoxCrop:
 
 @PIPELINES.register_module()
 class BoxFlip:
+    """Flip the entity boxes and proposals with a probability.
+
+    Reverse the order of elements in the given bounding boxes and proposals
+    with a specific direction. The shape of them are preserved, but the
+    elements are reordered.
+
+    Required keys are "proposals", "img_shape", "ann.entity_boxes", added or
+    modified keys are "flip", "flip_direction", "ann.entity_boxes". If
+    "proposals" is not, it will also be modified.
+
+    Args:
+        flip_ratio (float): Probability of implementing flip. Default: 0.5.
+        direction (str): Flip imgs horizontally or vertically. Options are
+            "horizontal" | "vertical". Default: "horizontal".
+    """
+
     _directions = ['horizontal', 'vertical']
 
-    def __init__(self, direction='horizontal'):
+    def __init__(self, flip_ratio=0.5, direction='horizontal'):
         if direction not in self._directions:
             raise ValueError(f'Direction {direction} is not supported. '
                              f'Currently support ones are {self._directions}')
+        self.flip_ratio = flip_ratio
         self.direction = direction
 
     def __call__(self, results):
+        if np.random.rand() < self.flip_ratio:
+            flip = True
+        else:
+            flip = False
+
+        results['flip'] = flip
+        results['flip_direction'] = self.direction
+
         proposals = results['proposals']
         entity_boxes = results['ann']['entity_boxes']
         img_h, img_w = results['img_shape']
 
-        if self.direction == 'horizontal':
-            assert entity_boxes.shape[-1] % 4 == 0
-            entity_boxes_ = entity_boxes.copy()
-            entity_boxes_[..., 0::4] = img_w - entity_boxes[..., 2::4] - 1
-            entity_boxes_[..., 2::4] = img_w - entity_boxes[..., 0::4] - 1
-            if proposals is not None:
-                assert proposals.shape[-1] % 4 == 0
-                proposals_ = proposals.copy()
-                proposals_[..., 0::4] = img_w - proposals[..., 2::4] - 1
-                proposals_[..., 2::4] = img_w - proposals[..., 0::4] - 1
+        if flip:
+            if self.direction == 'horizontal':
+                assert entity_boxes.shape[-1] % 4 == 0
+                entity_boxes_ = entity_boxes.copy()
+                entity_boxes_[..., 0::4] = img_w - entity_boxes[..., 2::4] - 1
+                entity_boxes_[..., 2::4] = img_w - entity_boxes[..., 0::4] - 1
+                if proposals is not None:
+                    assert proposals.shape[-1] % 4 == 0
+                    proposals_ = proposals.copy()
+                    proposals_[..., 0::4] = img_w - proposals[..., 2::4] - 1
+                    proposals_[..., 2::4] = img_w - proposals[..., 0::4] - 1
+                else:
+                    proposals_ = None
             else:
-                proposals_ = None
-        else:
-            assert entity_boxes.shape[-1] % 4 == 0
-            entity_boxes_ = entity_boxes.copy()
-            entity_boxes_[..., 1::4] = img_h - entity_boxes[..., 3::4] - 1
-            entity_boxes_[..., 3::4] = img_h - entity_boxes[..., 1::4] - 1
-            if proposals is not None:
-                assert proposals.shape[-1] % 4 == 0
-                proposals_ = proposals.copy()
-                proposals_[..., 1::4] = img_h - proposals[..., 3::4] - 1
-                proposals_[..., 3::4] = img_h - proposals[..., 1::4] - 1
-            else:
-                proposals_ = None
+                assert entity_boxes.shape[-1] % 4 == 0
+                entity_boxes_ = entity_boxes.copy()
+                entity_boxes_[..., 1::4] = img_h - entity_boxes[..., 3::4] - 1
+                entity_boxes_[..., 3::4] = img_h - entity_boxes[..., 1::4] - 1
+                if proposals is not None:
+                    assert proposals.shape[-1] % 4 == 0
+                    proposals_ = proposals.copy()
+                    proposals_[..., 1::4] = img_h - proposals[..., 3::4] - 1
+                    proposals_[..., 3::4] = img_h - proposals[..., 1::4] - 1
+                else:
+                    proposals_ = None
 
-        results['proposals'] = proposals_
-        results['ann']['entity_boxes'] = entity_boxes_
+            results['proposals'] = proposals_
+            results['ann']['entity_boxes'] = entity_boxes_
         return results
 
     def __repr__(self):
-        repr_str = f'{self.__class__.__name__}(direction={self.direction})'
+        repr_str = (f'{self.__class__.__name__}('
+                    f'flip_ratio={self.flip_ratio}, '
+                    f'direction={self.direction})')
         return repr_str
 
 
 @PIPELINES.register_module()
 class BoxClip:
+    """Clip (limit) the values in the entity boxes and proposals.
+
+    Required keys are "img_shape", "proposals" and "ann.entity_boxes", added or
+    modified keys are "ann.entity_boxes". If "proposals" is None, it will also
+    be modified.
+    """
 
     def __call__(self, results):
         proposals = results['proposals']
@@ -265,6 +328,16 @@ class BoxClip:
 
 @PIPELINES.register_module()
 class BoxPad:
+    """Pad entity boxes and proposals with zeros.
+
+    Required keys are "proposals" and "ann.entity_boxes", added or modified
+    keys are "ann.entity_boxes". If "proposals" is not None, it is also
+    modified.
+
+    Args:
+        max_num_gts (int | None): maximum of ground truth proposals.
+            Default: None.
+    """
 
     def __init__(self, max_num_gts=None):
         self.max_num_gts = max_num_gts
