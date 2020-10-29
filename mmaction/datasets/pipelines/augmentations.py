@@ -567,29 +567,15 @@ class RandomRescale:
             results (dict): The resulting dict to be modified and passed
                 to the next transform in pipeline.
         """
-
-        if 'scale_factor' not in results:
-            results['scale_factor'] = np.array([1, 1], dtype=np.float32)
-        img_h, img_w = results['img_shape']
-
         short_edge = np.random.randint(self.scale_range[0],
                                        self.scale_range[1] + 1)
-        new_w, new_h = mmcv.rescale_size((img_w, img_h), (np.Inf, short_edge))
+        resize = Resize((-1, short_edge),
+                        keep_ratio=True,
+                        interpolation=self.interpolation,
+                        lazy=False)
+        results = resize(results)
 
-        self.scale_factor = np.array([new_w / img_w, new_h / img_h],
-                                     dtype=np.float32)
-
-        results['img_shape'] = (new_h, new_w)
-        results['keep_ratio'] = self.keep_ratio
         results['short_edge'] = short_edge
-        results['scale_factor'] = results['scale_factor'] * self.scale_factor
-
-        results['imgs'] = [
-            mmcv.imresize(
-                img, (new_w, new_h), interpolation=self.interpolation)
-            for img in results['imgs']
-        ]
-
         return results
 
     def __repr__(self):
