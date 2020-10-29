@@ -1,5 +1,17 @@
 # Preparing ActivityNet
 
+## Introduction
+
+```
+@article{Heilbron2015ActivityNetAL,
+  title={ActivityNet: A large-scale video benchmark for human activity understanding},
+  author={Fabian Caba Heilbron and Victor Escorcia and Bernard Ghanem and Juan Carlos Niebles},
+  journal={2015 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  year={2015},
+  pages={961-970}
+}
+```
+
 For basic dataset information, please refer to the official [website](http://activity-net.org/).
 For action detection, you can either use the ActivityNet rescaled feature provided in this [repo](https://github.com/wzmsltw/BSN-boundary-sensitive-network#code-and-data-preparation) or extract feature with mmaction2 (which has better performance).
 We release both pipeline.

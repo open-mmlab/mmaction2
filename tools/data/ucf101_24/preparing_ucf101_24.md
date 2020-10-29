@@ -1,5 +1,17 @@
 # Preparing UCF101-24
 
+## Introduction
+
+```
+@article{Soomro2012UCF101AD,
+  title={UCF101: A Dataset of 101 Human Actions Classes From Videos in The Wild},
+  author={K. Soomro and A. Zamir and M. Shah},
+  journal={ArXiv},
+  year={2012},
+  volume={abs/1212.0402}
+}
+```
+
 For basic dataset information, you can refer to the dataset [website](http://www.thumos.info/download.html).
 Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/ucf101_24/`.
 
