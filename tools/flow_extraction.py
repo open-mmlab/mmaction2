@@ -81,7 +81,7 @@ def extract_dense_flow(path,
         flow_tmpl (str): The template of Flow frame names, Default:
             '{}_{:05d}.jpg'.
         method (str): Use which method to generate flow. Options are 'tvl1'
-                        and 'farneback'. Default: 'tvl1'.
+            and 'farneback'. Default: 'tvl1'.
     """
 
     frames = []

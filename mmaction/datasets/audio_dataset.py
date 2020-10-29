@@ -75,7 +75,7 @@ class AudioDataset(BaseDataset):
                  metrics='top_k_accuracy',
                  topk=(1, 5),
                  logger=None):
-        """Evaluation in rawframe dataset.
+        """Evaluation in audio dataset.
 
         Args:
             results (list): Output results.
@@ -87,7 +87,7 @@ class AudioDataset(BaseDataset):
             logger (logging.Logger | None): Logger for recording.
                 Default: None.
 
-        Return:
+        Returns:
             dict: Evaluation results dict.
         """
         if not isinstance(results, list):

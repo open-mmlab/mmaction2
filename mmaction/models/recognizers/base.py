@@ -22,8 +22,8 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
     Args:
         backbone (dict): Backbone modules to extract feature.
         cls_head (dict): Classification head to process feature.
-        train_cfg (dict): Config for training. Default: None.
-        test_cfg (dict): Config for testing. Default: None.
+        train_cfg (dict | None): Config for training. Default: None.
+        test_cfg (dict | None): Config for testing. Default: None.
     """
 
     def __init__(self,
@@ -82,7 +82,7 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         Args:
             cls_score (torch.Tensor): Class score to be averaged.
 
-        return:
+        Returns:
             torch.Tensor: Averaged class score.
         """
         if 'average_clips' not in self.test_cfg.keys():

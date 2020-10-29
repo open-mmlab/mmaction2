@@ -21,8 +21,8 @@ class SSN(BaseLocalizer):
             Default: 0.5.
         loss_cls (dict): Config for building loss.
             Default: ``dict(type='SSNLoss')``.
-        train_cfg (dict): Config for training. Default: None.
-        test_cfg (dict): Config for testing. Default: None.
+        train_cfg (dict | None): Config for training. Default: None.
+        test_cfg (dict | None): Config for testing. Default: None.
     """
 
     def __init__(self,

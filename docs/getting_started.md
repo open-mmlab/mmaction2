@@ -9,10 +9,10 @@ It is recommended to symlink the dataset root to `$MMACTION2/data`.
 If your folder structure is different, you may need to change the corresponding paths in config files.
 
 ```
-mmaction
+mmaction2
 ├── mmaction
 ├── tools
-├── config
+├── configs
 ├── data
 │   ├── kinetics400
 │   │   ├── rawframes_train
@@ -24,7 +24,7 @@ mmaction
 │   │   ├── rawframes_val
 │   │   ├── ucf101_train_list.txt
 │   │   ├── ucf101_val_list.txt
-
+│   ├── ...
 ```
 For more information on data preparation, please see [data_preparation.md](data_preparation.md)
 
@@ -644,4 +644,5 @@ python tools/analysis/eval_metric.py ${CONFIG_FILE} ${RESULT_FILE} [--eval ${EVA
 ## Tutorials
 
 Currently, we provide some tutorials for users to [finetune model](tutorials/finetune.md),
-[add new dataset](tutorials/new_dataset.md), [add new modules](tutorials/new_modules.md).
+[add new dataset](tutorials/new_dataset.md), [customize data pipelines](tutorials/data_pipeline.md),
+[add new modules](tutorials/new_modules.md), [export a model to ONNX](tutorials/export_model.md) and [customize runtime settings](tutorials/customize_runtime.md).
