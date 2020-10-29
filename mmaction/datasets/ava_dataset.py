@@ -12,6 +12,66 @@ from .registry import DATASETS
 
 @DATASETS.register_module()
 class AVADataset(BaseDataset):
+    """AVA dataset for spatial temporal detection.
+
+    Based on official AVA annotation files, the dataset loads raw frames,
+    bounding boxes, proposals and applies specified transformations to return
+    a dict containing the frame tensors and other information.
+
+    This datasets can load information from the following files:
+
+    .. code-block:: txt
+
+        ann_file -> ava_{train, val}_{v2.1, v2.2}.csv
+        exclude_file -> ava_{train, val}_excluded_timestamps_{v2.1, v2.2}.csv
+        label_file -> ava_action_list_{v2.1, v2.2}.pbtxt /
+                      ava_action_list_{v2.1, v2.2}_for_activitynet_2019.pbtxt
+        proposal_file -> ava_dense_proposals_{train, val}.FAIR.recall_93.9.pkl
+
+    Particularly, the proposal_file is a pickle file which contains
+    ``img_key`` (in format of ``{video_id},{timestamp}``). Example of a pickle
+    file:
+
+    .. code-block:: JSON
+
+        {
+            ...
+            '0f39OWEqJ24,0902':
+                array([[0.011   , 0.157   , 0.655   , 0.983   , 0.998163]]),
+            '0f39OWEqJ24,0912':
+                array([[0.054   , 0.088   , 0.91    , 0.998   , 0.068273],
+                       [0.016   , 0.161   , 0.519   , 0.974   , 0.984025],
+                       [0.493   , 0.283   , 0.981   , 0.984   , 0.983621]]),
+            ...
+        }
+
+    Args:
+        ann_file (str): Path to the annotation file like
+            ``ava_{train, val}_{v2.1, v2.2}.csv``.
+        exclude_file (str): Path to the excluded timestamp file like
+            ``ava_{train, val}_excluded_timestamps_{v2.1, v2.2}.csv``.
+        pipeline (list[dict | callable]): A sequence of data transforms.
+        label_file (str): Path to the label file like
+            ``ava_action_list_{v2.1, v2.2}.pbtxt`` or
+            ``ava_action_list_{v2.1, v2.2}_for_activitynet_2019.pbtxt``.
+            Default: None.
+        filename_tmpl (str): Template for each filename.
+            Default: 'img_{:05}.jpg'.
+        proposal_file (str): Path to the proposal file like
+            ``ava_dense_proposals_{train, val}.FAIR.recall_93.9.pkl``.
+            Default: None.
+        data_prefix (str): Path to a directory where videos are held.
+            Default: None.
+        test_mode (bool): Store True when building test or validation dataset.
+            Default: False.
+        modality (str): Modality of data. Support 'RGB', 'Flow'.
+                        Default: 'RGB'.
+        num_max_proposals (int): Max proposals number to store. Default: 1000.
+        timestamp_start (int): The start point of included timestamps. The
+            default value is referred from the official website. Default: 902.
+        timestamp_end (int): The end point of included timestamps. The
+            default value is referred from the official website. Default: 1798.
+    """
 
     _FPS = 30
     _NUM_CLASSES = 81
@@ -27,8 +87,8 @@ class AVADataset(BaseDataset):
                  test_mode=False,
                  modality='RGB',
                  num_max_proposals=1000,
-                 timestamp_start=60 * 14,
-                 timestamp_end=60 * 29):
+                 timestamp_start=902,
+                 timestamp_end=1798):
         self.exclude_file = exclude_file
         self.label_file = label_file
         self.proposal_file = proposal_file
