@@ -3,6 +3,8 @@ import os.path as osp
 import sys
 from subprocess import check_output
 
+import mmcv
+
 
 def get_duration(vid_name):
     command = f'ffprobe -i {vid_name} 2>&1 | grep "Duration"'
@@ -21,12 +23,11 @@ def trim(vid_name):
         return
 
     i = 0
-    name, suffix = vid_name.split('.')
+    name, _ = osp.splitext(vid_name)
 
     # We output 10-second clips into the folder `name`
     dest = name
-    if not osp.exists(dest):
-        os.system('mkdir -p {}'.format(dest))
+    mmcv.mkdir_or_exist(dest)
 
     command_tmpl = ('ffmpeg -y loglevel error -i {} -ss {} -t {} -crf 18 '
                     '-c:v libx264 {}/part_{}.mp4')
@@ -34,9 +35,8 @@ def trim(vid_name):
         os.system(command_tmpl.format(vid_name, i * 10, 10, dest, i))
         i += 1
 
-    # remove the raw video after decomposing it into 10-second clips to save
-    # space
-    os.system(f'rm {vid_name}')
+    # remove a raw video after decomposing it into 10-second clip to save space
+    os.remove(vid_name)
 
 
 if __name__ == '__main__':
