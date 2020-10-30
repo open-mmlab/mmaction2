@@ -87,7 +87,7 @@ The data should be placed in `data/OmniSource/`. When data preparation finished,
 data/OmniSource/
 ├── annotations
 │   ├── googleimage_200
-│   │   └── tsn_8seg_googleimage_200_wodup.txt	   Postive file list of images crawled from Google, filtered by the teacher model, after de-duplication.
+│   │   └── tsn_8seg_googleimage_200_wodup.txt    Postive file list of images crawled from Google, filtered by the teacher model, after de-duplication.
 │   ├── insimage_200
 │   │   └── tsn_8seg_insimage_200_wodup.txt
 │   ├── insvideo_200
@@ -96,9 +96,9 @@ data/OmniSource/
 │   │   ├── k200_train.txt
 │   │   └── k200_val.txt
 │   ├── kinetics_raw_200
-│   │   └── slowonly_8x8_kinetics_raw_200.json		Kinetics Raw Clips filtered by the teacher model.
+│   │   └── slowonly_8x8_kinetics_raw_200.json    Kinetics Raw Clips filtered by the teacher model.
 │   └── webimage_200
-│       └── tsn_8seg_webimage_200_wodup.txt				The union of `tsn_8seg_googleimage_200_wodup.txt` and `tsn_8seg_insimage_200_wodup.txt`
+│       └── tsn_8seg_webimage_200_wodup.txt       The union of `tsn_8seg_googleimage_200_wodup.txt` and `tsn_8seg_insimage_200_wodup.txt`
 ├── googleimage_200
 │   ├── 000
 |   │   ├── 00
@@ -120,7 +120,7 @@ data/OmniSource/
 │   └── 199
 ├── insvideo_200
 │   ├── 000
-|	  │   ├── abseil
+|   │   ├── abseil
 |   │   │   ├── B00arxogubl.mp4
 |   │   │   ├── ...
 |   │   │   └── BzYsP0HIvbt.mp4
