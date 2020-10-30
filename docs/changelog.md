@@ -5,6 +5,7 @@
 **Highlights**
 - Support C3D
 - Support video recognition with audio modality
+- Support HVU
 - Support X3D
 
 **New Features**
@@ -33,6 +34,7 @@
 
 **ModelZoo**
 - Add Baselines for Kinetics-600 and Kinetics-700, including TSN-R50-8seg and SlowOnly-R50-8x8 ([#259](https://github.com/open-mmlab/mmaction2/pull/259))
+- Add Baselines for HVU, including TSN-R18-8seg on 6 tag categories of HVU ([#287](https://github.com/open-mmlab/mmaction2/pull/287))
 - Add X3D models ported from [SlowFast](https://github.com/facebookresearch/SlowFast/) ([#288](https://github.com/open-mmlab/mmaction2/pull/288))
 
 ### v0.7.0 (30/9/2020)
