@@ -16,7 +16,7 @@ from mmaction.datasets.pipelines import (AudioAmplify, CenterCrop, ColorJitter,
 # yapf: enable
 
 
-class TestAugumentations(object):
+class TestAugumentations:
 
     @staticmethod
     def check_keys_contain(result_keys, target_keys):

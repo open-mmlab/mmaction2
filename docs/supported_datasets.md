@@ -12,6 +12,7 @@
 - [UCF101-24](http://www.thumos.info/download.html): See [preparing_ucf101_24](/tools/data/ucf101_24/preparing_ucf101_24.md)
 - [JHMDB](http://jhmdb.is.tue.mpg.de/): See [preparing_jhmdb](/tools/data/jhmdb/preparing_jhmdb.md)
 - [HVU](https://github.com/holistic-video-understanding/HVU-Dataset): See [preparing_hvu](/tools/data/hvu/preparing_hvu.md)
+- [Jester](https://20bn.com/datasets/jester/v1): See [preparing_jester](/tools/data/jester/preparing_jester.md)
 
 The supported datasets are listed above.
 We provide shell scripts for data preparation under the path `$MMACTION2/tools/data/`.

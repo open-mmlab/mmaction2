@@ -1,5 +1,20 @@
 # Preparing Moments in Time
 
+## Introduction
+
+```
+@article{monfortmoments,
+    title={Moments in Time Dataset: one million videos for event understanding},
+    author={Monfort, Mathew and Andonian, Alex and Zhou, Bolei and Ramakrishnan, Kandan and Bargal, Sarah Adel and Yan, Tom and Brown, Lisa and Fan, Quanfu and Gutfruend, Dan and Vondrick, Carl and others},
+    journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
+    year={2019},
+    issn={0162-8828},
+    pages={1--8},
+    numpages={8},
+    doi={10.1109/TPAMI.2019.2901464},
+}
+```
+
 For basic dataset information, you can refer to the dataset [website](http://moments.csail.mit.edu/).
 Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/mit/`.
 

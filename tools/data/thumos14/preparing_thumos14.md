@@ -1,5 +1,18 @@
 # Preparing THUMOS'14
 
+## Introduction
+
+```
+@misc{THUMOS14,
+    author = "Jiang, Y.-G. and Liu, J. and Roshan Zamir, A. and Toderici, G. and Laptev,
+    I. and Shah, M. and Sukthankar, R.",
+    title = "{THUMOS} Challenge: Action Recognition with a Large
+    Number of Classes",
+    howpublished = "\url{http://crcv.ucf.edu/THUMOS14/}",
+    Year = {2014}
+}
+```
+
 For basic dataset information, you can refer to the dataset [website](https://www.crcv.ucf.edu/THUMOS14/download.html).
 Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/thumos14/`.
 

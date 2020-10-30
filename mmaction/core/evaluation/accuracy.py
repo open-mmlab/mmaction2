@@ -201,9 +201,9 @@ def pairwise_temporal_iou(candidate_segments, target_segments):
 
     Args:
         candidate_segments (np.ndarray): 1-dim/2-dim array in format
-            [init, end]/[m x 2:=[init, end]].
+            ``[init, end]/[m x 2:=[init, end]]``.
         target_segments (np.ndarray): 2-dim array in format
-            [n x 2:=[init, end]].
+            ``[n x 2:=[init, end]]``.
 
     Returns:
         t_iou (np.ndarray): 1-dim array [n] /
@@ -255,7 +255,7 @@ def average_recall_at_avg_proposals(ground_truth,
         max_avg_proposals (int | None): Max number of proposals for one video.
             Default: None.
         temporal_iou_thresholds (np.ndarray): 1D array with temporal_iou
-            thresholds. Default: np.linspace(0.5, 0.95, 10).
+            thresholds. Default: ``np.linspace(0.5, 0.95, 10)``.
 
     Returns:
         tuple([np.ndarray, np.ndarray, np.ndarray, float]):
@@ -266,7 +266,7 @@ def average_recall_at_avg_proposals(ground_truth,
             over a list of temporal_iou threshold (1D array). This is
             equivalent to ``recall.mean(axis=0)``. The ``proposals_per_video``
             is the average number of proposals per video. The auc is the area
-            under AR@AN curve.
+            under ``AR@AN`` curve.
     """
 
     total_num_videos = len(ground_truth)
@@ -375,7 +375,7 @@ def get_weighted_score(score_list, coeff_list):
             n(number of predictions) X num_samples X num_classes
         coeff_list (list[float]): List of coefficients, with shape n.
 
-    Return:
+    Returns:
         list[np.ndarray]: List of weighted scores.
     """
     assert len(score_list) == len(coeff_list)
@@ -426,12 +426,12 @@ def average_precision_at_temporal_iou(ground_truth,
     Args:
         ground_truth (dict): Dict containing the ground truth instances.
             Key: 'video_id'
-            Value (np.ndarry): 1D array of 't-start' and 't-end'.
-        proposals (np.ndarray): 2D array containing the information of proposal
-            instances, including 'video_id', 'class_id', 't-start', 't-end' and
-            'score'.
+            Value (np.ndarray): 1D array of 't-start' and 't-end'.
+        prediction (np.ndarray): 2D array containing the information of
+            proposal instances, including 'video_id', 'class_id', 't-start',
+            't-end' and 'score'.
         temporal_iou_thresholds (np.ndarray): 1D array with temporal_iou
-            thresholds. Default: np.linspace(0.5, 0.95, 10).
+            thresholds. Default: ``np.linspace(0.5, 0.95, 10)``.
 
     Returns:
         np.ndarray: 1D array of average precision score.

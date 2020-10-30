@@ -24,7 +24,7 @@ from mmaction.datasets.pipelines import (AudioDecode, AudioDecodeInit,
 # yapf: enable
 
 
-class ExampleSSNInstance(object):
+class ExampleSSNInstance:
 
     def __init__(self,
                  start_frame,
@@ -41,7 +41,7 @@ class ExampleSSNInstance(object):
         self.overlap_self = overlap_self
 
 
-class TestLoading(object):
+class TestLoading:
 
     @staticmethod
     def check_keys_contain(result_keys, target_keys):
@@ -579,6 +579,7 @@ class TestLoading(object):
             total_frames=100,
             filename_tmpl=None,
             modality='RGB',
+            start_index=0,
             label=1)
         video_result = copy.deepcopy(self.video_results)
 
@@ -600,9 +601,11 @@ class TestLoading(object):
         assert len(sample_frames_results['frame_inds']) == frame_inds.shape[0]
         assert_array_equal(sample_frames_results['frame_inds'], frame_inds)
 
-        config = dict(clip_len=1, frame_interval=16, start_index=1)
+        config = dict(clip_len=1, frame_interval=16)
         sample_frames = UntrimmedSampleFrames(**config)
-        sample_frames_results = sample_frames(frame_result)
+        frame_result_ = copy.deepcopy(frame_result)
+        frame_result_['start_index'] = 1
+        sample_frames_results = sample_frames(frame_result_)
         assert self.check_keys_contain(sample_frames_results.keys(),
                                        target_keys)
         assert len(sample_frames_results['frame_inds']) == 6

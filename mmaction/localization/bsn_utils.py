@@ -27,14 +27,14 @@ def generate_candidate_proposals(video_list,
         peak_threshold (float): The threshold for proposal generation.
         tem_results_ext (str): File extension for temporal evaluation
             model output. Default: '.csv'.
-        result_dict (dict): The dict to save the results. Default: None.
+        result_dict (dict | None): The dict to save the results. Default: None.
 
     Returns:
         dict: A dict contains video_name as keys and proposal list as value.
-        If result_dict is not None, save the results to it.
+            If result_dict is not None, save the results to it.
     """
-    if tem_results_ext not in ('.csv'):
-        raise NotImplementedError
+    if tem_results_ext != '.csv':
+        raise NotImplementedError('Only support csv format now.')
 
     tscale = temporal_scale
     tgap = 1. / tscale
@@ -159,15 +159,15 @@ def generate_bsp_feature(video_list,
         tem_results_ext (str): File extension for temporal evaluation
             model output. Default: '.csv'.
         pgm_proposal_ext (str): File extension for proposals. Default: '.csv'.
-        result_dict (dict): The dict to save the results. Default: None.
+        result_dict (dict | None): The dict to save the results. Default: None.
 
     Returns:
         bsp_feature_dict (dict): A dict contains video_name as keys and
-        bsp_feature as value. If result_dict is not None, save the
-        results to it.
+            bsp_feature as value. If result_dict is not None, save the
+            results to it.
     """
-    if tem_results_ext not in ('.csv') or pgm_proposal_ext not in ('.csv'):
-        raise NotImplementedError
+    if tem_results_ext != '.csv' or pgm_proposal_ext != '.csv':
+        raise NotImplementedError('Only support csv format now.')
 
     bsp_feature_dict = {}
     for video_index in video_list:

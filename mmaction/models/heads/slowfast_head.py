@@ -8,7 +8,7 @@ from .base import BaseHead
 
 @HEADS.register_module()
 class SlowFastHead(BaseHead):
-    """The classification head for Slowfast.
+    """The classification head for SlowFast.
 
     Args:
         num_classes (int): Number of classes to be classified.

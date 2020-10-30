@@ -1,5 +1,18 @@
 # Preparing JHMDB
 
+## Introduction
+
+```
+@inproceedings{Jhuang:ICCV:2013,
+    title = {Towards understanding action recognition},
+    author = {H. Jhuang and J. Gall and S. Zuffi and C. Schmid and M. J. Black},
+    booktitle = {International Conf. on Computer Vision (ICCV)},
+    month = Dec,
+    pages = {3192-3199},
+    year = {2013}
+}
+```
+
 For basic dataset information, you can refer to the dataset [website](http://jhmdb.is.tue.mpg.de/).
 Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/jhmdb/`.
 

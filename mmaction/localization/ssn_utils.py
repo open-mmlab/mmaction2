@@ -42,7 +42,9 @@ def load_localize_proposal_file(filename):
             ...
 
         Example of a standard annotation file:
+
         .. code-block:: txt
+
             # 0
             video_validation_0000202
             5666

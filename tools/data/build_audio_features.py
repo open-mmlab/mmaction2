@@ -120,8 +120,8 @@ class AudioTools:
         """Adjust time resolution by repeating features.
 
         Args:
-            quantized (ndarray): (T,)
-            mel (ndarray): (N, D)
+            quantized (np.ndarray): (T,)
+            mel (np.ndarray): (N, D)
 
         Returns:
             tuple: Tuple of (T,) and (T, D)

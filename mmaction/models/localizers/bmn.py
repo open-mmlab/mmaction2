@@ -20,7 +20,7 @@ class BMN(BaseLocalizer):
     Code Reference https://github.com/JJBOY/BMN-Boundary-Matching-Network
 
     Args:
-        temporal_dimension (int): Total frames selected for each video.
+        temporal_dim (int): Total frames selected for each video.
         boundary_ratio (float): Ratio for determining video boundaries.
         num_samples (int): Number of samples for each proposal.
         num_samples_per_bin (int): Number of bin samples for each sample.

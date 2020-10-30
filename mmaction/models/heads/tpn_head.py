@@ -39,7 +39,7 @@ class TPNHead(TSNHead):
 
         Args:
             x (torch.Tensor): The input data.
-            num_segs (int): Number of segments into which a video
+            num_segs (int | None): Number of segments into which a video
                 is divided. Default: None.
         Returns:
             torch.Tensor: The classification scores for input samples.
