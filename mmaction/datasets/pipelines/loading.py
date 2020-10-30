@@ -1011,7 +1011,7 @@ class ImageDecode:
 
 
 @PIPELINES.register_module()
-class AudioDecodeInit(object):
+class AudioDecodeInit:
     """Using librosa to initialize the audio reader.
 
     Args:

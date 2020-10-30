@@ -75,7 +75,7 @@ class RawframeDataset(BaseDataset):
             recognition dataset. Default: False.
         num_classes (int): Number of classes in the dataset. Default: None.
         modality (str): Modality of data. Support 'RGB', 'Flow'.
-                            Default: 'RGB'.
+            Default: 'RGB'.
         sample_by_class (bool): Sampling by class, should be set `True` when
             performing inter-class data balancing. Only compatible with
             `multi_class == False`. Only applies for training. Default: False.
