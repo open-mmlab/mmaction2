@@ -89,7 +89,7 @@ class AVADataset(BaseDataset):
                  num_max_proposals=1000,
                  timestamp_start=902,
                  timestamp_end=1798):
-        # since it inherits from `BaseDataset`, some arguments 
+        # since it inherits from `BaseDataset`, some arguments
         # should be assigned before performing `load_annotations()`
         self.exclude_file = exclude_file
         self.label_file = label_file
