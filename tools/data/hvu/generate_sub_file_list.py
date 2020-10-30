@@ -16,14 +16,6 @@ def main(annotation_file, category):
 
     target_file = osp.join(dirname, basename)
 
-    def parse_item(item, category):
-        label = item['label']
-        if category in label:
-            item['label'] = label[category]
-            return item
-        else:
-            return None
-
     result = []
     for item in data:
         label = item['label']

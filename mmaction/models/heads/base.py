@@ -19,9 +19,9 @@ class AvgConsensus(nn.Module):
         super().__init__()
         self.dim = dim
 
-    def forward(self, input):
+    def forward(self, x):
         """Defines the computation performed at every call."""
-        return input.mean(dim=self.dim, keepdim=True)
+        return x.mean(dim=self.dim, keepdim=True)
 
 
 class BaseHead(nn.Module, metaclass=ABCMeta):

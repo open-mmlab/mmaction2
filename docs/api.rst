@@ -1,6 +1,11 @@
 API Reference
 =============
 
+mmaction.apis
+-------------
+.. automodule:: mmaction.apis
+    :members:
+
 mmaction.core
 -------------
 
@@ -19,9 +24,21 @@ lr
 .. automodule:: mmaction.core.lr
     :members:
 
+mmaction.localization
+---------------------
+
+localization
+^^^^^^^^^^^^
+.. automodule:: mmaction.localization
+    :members:
 
 mmaction.models
 ---------------
+
+models
+^^^^^^
+.. automodule:: mmaction.models
+    :members:
 
 recognizers
 ^^^^^^^^^^^
@@ -48,11 +65,15 @@ heads
 .. automodule:: mmaction.models.heads
     :members:
 
+necks
+^^^^^
+.. automodule:: mmaction.models.necks
+    :members:
+
 losses
 ^^^^^^
 .. automodule:: mmaction.models.losses
     :members:
-
 
 mmaction.datasets
 -----------------
@@ -62,24 +83,20 @@ datasets
 .. automodule:: mmaction.datasets
     :members:
 
-
 pipelines
 ^^^^^^^^^
 .. automodule:: mmaction.datasets.pipelines
     :members:
-
 
 samplers
 ^^^^^^^^
 .. automodule:: mmaction.datasets.samplers
     :members:
 
-
 mmaction.utils
 --------------
 .. automodule:: mmaction.utils
     :members:
-
 
 mmaction.localization
 ---------------------

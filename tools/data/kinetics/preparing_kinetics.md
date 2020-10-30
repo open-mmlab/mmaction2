@@ -1,5 +1,18 @@
 # Preparing Kinetics-[400/600/700]
 
+## Introduction
+
+```
+@inproceedings{inproceedings,
+  author = {Carreira, J. and Zisserman, Andrew},
+  year = {2017},
+  month = {07},
+  pages = {4724-4733},
+  title = {Quo Vadis, Action Recognition? A New Model and the Kinetics Dataset},
+  doi = {10.1109/CVPR.2017.502}
+}
+```
+
 For basic dataset information, please refer to the official [website](https://deepmind.com/research/open-source/open-source-datasets/kinetics/). The scripts can be used for preparing kinetics400, kinetics600, kinetics700. To prepare different version of kinetics, you need to replace `${DATASET}` in the following examples with the specific dataset name. The choices of dataset names are `kinetics400`, `kinetics600` and `kinetics700`.
 Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/${DATASET}/`.
 

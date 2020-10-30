@@ -63,7 +63,7 @@ class RawframeDataset(BaseDataset):
     Args:
         ann_file (str): Path to the annotation file.
         pipeline (list[dict | callable]): A sequence of data transforms.
-        data_prefix (str): Path to a directory where videos are held.
+        data_prefix (str | None): Path to a directory where videos are held.
             Default: None.
         test_mode (bool): Store True when building test or validation dataset.
             Default: False.
@@ -73,9 +73,10 @@ class RawframeDataset(BaseDataset):
             ann_file. Default: False.
         multi_class (bool): Determines whether it is a multi-class
             recognition dataset. Default: False.
-        num_classes (int): Number of classes in the dataset. Default: None.
+        num_classes (int | None): Number of classes in the dataset.
+            Default: None.
         modality (str): Modality of data. Support 'RGB', 'Flow'.
-                            Default: 'RGB'.
+            Default: 'RGB'.
     """
 
     def __init__(self,
