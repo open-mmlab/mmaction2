@@ -410,6 +410,63 @@ class DenseSampleFrames(SampleFrames):
 
 
 @PIPELINES.register_module()
+class SampleAVAFrames(SampleFrames):
+
+    def __init__(self, clip_len, frame_interval=2, test_mode=False):
+
+        super().__init__(clip_len, frame_interval, test_mode=test_mode)
+
+    def _get_clips(self, center_index, skip_offsets, shot_info):
+        frame_inds = list()
+        ori_clip_len = self.clip_len * self.frame_interval
+
+        cur = center_index - self.frame_interval
+        length = len(
+            range(-self.frame_interval,
+                  -(ori_clip_len + 1) // self.frame_interval,
+                  -self.frame_interval))
+
+        for i in range(length):
+            frame_inds.append(cur + skip_offsets[i])
+            if cur - self.frame_interval >= shot_info[0]:
+                cur -= self.frame_interval
+
+        cur = center_index
+        length = len(
+            range(0, (ori_clip_len + 1) // self.frame_interval,
+                  self.frame_interval))
+        for i in range(length):
+            frame_inds.append(cur + skip_offsets[i])
+            if cur + self.frame_interval < shot_info[1]:
+                cur += self.frame_interval
+
+        return frame_inds
+
+    def __call__(self, results):
+        fps = results['fps']
+        timestamp = results['timestamp']
+        timestamp_start = results['timestamp_start']
+        shot_info = results['shot_info']
+
+        center_index = fps * (timestamp - timestamp_start) + 1
+        skip_offsets = np.random.randint(
+            self.frame_interval, size=self.clip_len)
+        frame_inds = self._get_clips(center_index, skip_offsets, shot_info)
+
+        results['frame_inds'] = np.array(frame_inds, dtype=np.int)
+        results['clip_len'] = self.clip_len
+        results['frame_interval'] = self.frame_interval
+        return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'clip_len={self.clip_len}, '
+                    f'frame_interval={self.frame_interval}, '
+                    f'test_mode={self.test_mode})')
+        return repr_str
+
+
+@PIPELINES.register_module()
 class SampleProposalFrames(SampleFrames):
     """Sample frames from proposals in the video.
 

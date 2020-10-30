@@ -1,7 +1,9 @@
-from .augmentations import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
+from .augmentations import (AudioAmplify, CenterCrop, ColorJitter,
+                            EntityBoxClip, EntityBoxCrop, EntityBoxFlip,
+                            EntityBoxPad, EntityBoxRescale, Flip, Fuse,
                             MelSpectrogram, MultiGroupCrop, MultiScaleCrop,
-                            Normalize, RandomCrop, RandomResizedCrop, Resize,
-                            TenCrop, ThreeCrop)
+                            Normalize, RandomCrop, RandomResizedCrop,
+                            RandomScale, Resize, TenCrop, ThreeCrop)
 from .compose import Compose
 from .formating import (Collect, FormatAudioShape, FormatShape, ImageToTensor,
                         ToDataContainer, ToTensor, Transpose)
@@ -11,7 +13,7 @@ from .loading import (AudioDecode, AudioDecodeInit, AudioFeatureSelector,
                       GenerateLocalizationLabels, ImageDecode,
                       LoadAudioFeature, LoadHVULabel, LoadLocalizationFeature,
                       LoadProposals, OpenCVDecode, OpenCVInit, PyAVDecode,
-                      PyAVInit, RawFrameDecode, SampleFrames,
+                      PyAVInit, RawFrameDecode, SampleAVAFrames, SampleFrames,
                       SampleProposalFrames, UntrimmedSampleFrames)
 
 __all__ = [
@@ -24,7 +26,9 @@ __all__ = [
     'DecordInit', 'OpenCVInit', 'PyAVInit', 'SampleProposalFrames',
     'UntrimmedSampleFrames', 'RawFrameDecode', 'DecordInit', 'OpenCVInit',
     'PyAVInit', 'SampleProposalFrames', 'ColorJitter', 'LoadHVULabel',
-    'AudioAmplify', 'MelSpectrogram', 'AudioDecode', 'FormatAudioShape',
-    'LoadAudioFeature', 'AudioFeatureSelector', 'AudioDecodeInit',
-    'ImageDecode', 'BuildPseudoClip'
+    'SampleAVAFrames', 'AudioAmplify', 'MelSpectrogram', 'AudioDecode',
+    'FormatAudioShape', 'LoadAudioFeature', 'AudioFeatureSelector',
+    'AudioDecodeInit', 'EntityBoxPad', 'EntityBoxFlip', 'EntityBoxCrop',
+    'EntityBoxRescale', 'EntityBoxClip', 'RandomScale', 'ImageDecode',
+    'BuildPseudoClip'
 ]

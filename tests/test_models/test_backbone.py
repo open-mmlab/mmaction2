@@ -514,8 +514,8 @@ def test_resnet_tsm_backbone():
         resnet_tsm_50_block = ResNetTSM(50, shift_place='Block')
         resnet_tsm_50_block.init_weights()
 
-    from mmaction.models.backbones.resnet_tsm import TemporalShift
     from mmaction.models.backbones.resnet import Bottleneck
+    from mmaction.models.backbones.resnet_tsm import TemporalShift
 
     input_shape = (8, 3, 64, 64)
     imgs = _demo_inputs(input_shape)
@@ -851,8 +851,8 @@ def test_resnet_tin_backbone():
         resnet_tin = ResNetTIN(50, num_segments=-1)
         resnet_tin.init_weights()
 
-    from mmaction.models.backbones.resnet_tin import \
-        TemporalInterlace, CombineNet
+    from mmaction.models.backbones.resnet_tin import (CombineNet,
+                                                      TemporalInterlace)
 
     # resnet_tin with normal config
     resnet_tin = ResNetTIN(50)
