@@ -41,4 +41,4 @@ class ImageDataset(VideoDataset):
     """
 
     def __init__(self, ann_file, pipeline, **kwargs):
-        super().__init__(ann_file, pipeline, start_index=None, **kwargs)
+        super().__init__(ann_file, pipeline, **kwargs)

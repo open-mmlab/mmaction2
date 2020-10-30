@@ -123,7 +123,6 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
             results (list): Output results.
             metrics (str | sequence[str]): Metrics to be performed.
                 Defaults: 'top_k_accuracy'.
-            logger (obj): Training logger. Defaults: None.
             metric_dict (dict): Dict for metric options.
                 Default: ``dict(topk=(1, 5))``.
             logger (logging.Logger | None): Logger for recording.
@@ -132,7 +131,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         Returns:
             dict: Evaluation results dict.
         """
-        # Protect ``metric_dict`` since it use immutable value as default
+        # Protect ``metric_dict`` since it uses immutable value as default
         metric_dict = copy.deepcopy(metric_dict)
 
         if not isinstance(results, list):

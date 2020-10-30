@@ -416,6 +416,9 @@ class SSNDataset(BaseDataset):
         Returns:
             dict: Evaluation results for evaluation metrics.
         """
+        # Protect ``metric_dict`` since it uses immutable value as default
+        metric_dict = copy.deepcopy(metric_dict)
+
         if not isinstance(results, list):
             raise TypeError(f'results must be a list, but got {type(results)}')
         assert len(results) == len(self), (
