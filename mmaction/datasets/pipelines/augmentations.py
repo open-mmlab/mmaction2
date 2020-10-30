@@ -816,6 +816,59 @@ class Resize:
 
 
 @PIPELINES.register_module()
+class RandomRescale:
+    """Randomly resize images so that the short_edge is resized to a specific
+    size in a given range. The scale ratio is unchanged after resizing.
+
+    Required keys are "imgs", "img_shape", "modality", added or modified
+    keys are "imgs", "img_shape", "keep_ratio", "scale_factor", "resize_size",
+    "short_edge".
+
+    Args:
+        scale_range (tuple[int]): The range of short edge length. A closed
+            interval.
+        interpolation (str): Algorithm used for interpolation:
+            "nearest" | "bilinear". Default: "bilinear".
+    """
+
+    def __init__(self, scale_range, interpolation='bilinear'):
+        self.scale_range = scale_range
+        # make sure scale_range is legal, first make sure the type is OK
+        assert mmcv.is_tuple_of(scale_range, int)
+        assert len(scale_range) == 2
+        assert scale_range[0] < scale_range[1]
+        assert np.all([x > 0 for x in scale_range])
+
+        self.keep_ratio = True
+        self.interpolation = interpolation
+
+    def __call__(self, results):
+        """Performs the Resize augmentation.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        short_edge = np.random.randint(self.scale_range[0],
+                                       self.scale_range[1] + 1)
+        resize = Resize((-1, short_edge),
+                        keep_ratio=True,
+                        interpolation=self.interpolation,
+                        lazy=False)
+        results = resize(results)
+
+        results['short_edge'] = short_edge
+        return results
+
+    def __repr__(self):
+        scale_range = self.scale_range
+        repr_str = (f'{self.__class__.__name__}('
+                    f'scale_range=({scale_range[0]}, {scale_range[1]}), '
+                    f'interpolation={self.interpolation})')
+        return repr_str
+
+
+@PIPELINES.register_module()
 class Flip:
     """Flip the input images with a probability.
 
