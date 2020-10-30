@@ -23,10 +23,6 @@ data_root_val = 'data/kinetics400/rawframes_val'
 ann_file_test = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
-mc_cfg = dict(
-    server_list_cfg='/mnt/lustre/share/memcached_client/server_list.conf',
-    client_cfg='/mnt/lustre/share/memcached_client/client.conf',
-    sys_path='/mnt/lustre/share/pymc/py3')
 test_pipeline = [
     dict(
         type='SampleFrames',
