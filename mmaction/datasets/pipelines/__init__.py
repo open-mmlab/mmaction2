@@ -9,8 +9,9 @@ from .compose import Compose
 from .formating import (Collect, FormatAudioShape, FormatShape, ImageToTensor,
                         ToDataContainer, ToTensor, Transpose)
 from .loading import (AudioDecode, AudioDecodeInit, AudioFeatureSelector,
-                      DecordDecode, DecordInit, DenseSampleFrames,
-                      FrameSelector, GenerateLocalizationLabels,
+                      BuildPseudoClip, DecordDecode, DecordInit,
+                      DenseSampleFrames, FrameSelector,
+                      GenerateLocalizationLabels, ImageDecode,
                       LoadAudioFeature, LoadHVULabel, LoadLocalizationFeature,
                       LoadProposals, OpenCVDecode, OpenCVInit, PyAVDecode,
                       PyAVInit, RawFrameDecode, SampleAVAFrames, SampleFrames,
@@ -29,5 +30,6 @@ __all__ = [
     'SampleAVAFrames', 'AudioAmplify', 'MelSpectrogram', 'AudioDecode',
     'FormatAudioShape', 'LoadAudioFeature', 'AudioFeatureSelector',
     'AudioDecodeInit', 'EntityBoxPad', 'EntityBoxFlip', 'EntityBoxCrop',
-    'EntityBoxRescale', 'EntityBoxClip', 'RandomScale', 'RandomRescale'
+    'EntityBoxRescale', 'EntityBoxClip', 'RandomScale', 'ImageDecode',
+    'BuildPseudoClip', 'RandomRescale'
 ]
