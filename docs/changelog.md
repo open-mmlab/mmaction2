@@ -1,6 +1,6 @@
 ## Changelog
 
-### v0.8.0 (master)
+### v0.8.0 (31/10/2020)
 
 **Highlights**
 - Support [OmniSource](https://arxiv.org/abs/2003.13042)
