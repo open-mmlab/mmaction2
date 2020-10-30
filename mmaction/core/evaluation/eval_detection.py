@@ -1,19 +1,20 @@
 import json
 
 import numpy as np
-from mmcv.utils import get_logger, print_log
+from mmcv.utils import print_log
 
+from ...utils import get_root_logger
 from .accuracy import interpolated_precision_recall, pairwise_temporal_iou
 
 
-class ActivityNetDetection(object):
+class ActivityNetDetection:
     """Class to evaluate detection results on ActivityNet.
 
     Args:
-        ground_truth_filename (str): The filename of groundtruth.
+        ground_truth_filename (str | None): The filename of groundtruth.
             Default: None.
-        prediction_filename (str): The filename of action detection results.
-            Default: None.
+        prediction_filename (str | None): The filename of action detection
+            results. Default: None.
         tiou_thresholds (np.ndarray): The thresholds of temporal iou to
             evaluate. Default: ``np.linspace(0.5, 0.95, 10)``.
         verbose (bool): Whether to print verbose logs. Default: False.
@@ -33,7 +34,7 @@ class ActivityNetDetection(object):
         self.tiou_thresholds = tiou_thresholds
         self.verbose = verbose
         self.ap = None
-        self.logger = get_logger()
+        self.logger = get_root_logger()
         # Import ground truth and predictions.
         self.ground_truth, self.activity_index = self._import_ground_truth(
             ground_truth_filename)

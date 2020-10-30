@@ -16,7 +16,7 @@ class BasicBlock(nn.Module):
         planes (int): Number of channels produced by some norm/conv2d layers.
         stride (int): Stride in the conv layer. Default: 1.
         dilation (int): Spacing between kernel elements. Default: 1.
-        downsample (nn.Module): Downsample layer. Default: None.
+        downsample (nn.Module | None): Downsample layer. Default: None.
         style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
             layer is the 3x3 conv layer, otherwise the stride-two layer is
             the first 1x1 conv layer. Default: 'pytorch'.
@@ -109,7 +109,7 @@ class Bottleneck(nn.Module):
             Number of channels produced by some norm layes and conv layers
         stride (int): Spatial stride in the conv layer. Default: 1.
         dilation (int): Spacing between kernel elements. Default: 1.
-        downsample (nn.Module): Downsample layer. Default: None.
+        downsample (nn.Module | None): Downsample layer. Default: None.
         style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
             layer is the 3x3 conv layer, otherwise the stride-two layer is
             the first 1x1 conv layer. Default: 'pytorch'.
@@ -241,9 +241,9 @@ def make_res_layer(block,
         style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
             layer is the 3x3 conv layer, otherwise the stride-two layer is
             the first 1x1 conv layer. Default: 'pytorch'.
-        conv_cfg (dict): Config for norm layers. Default: None.
-        norm_cfg (dict): Config for norm layers. Default: None.
-        act_cfg (dict): Config for activate layers. Default: None.
+        conv_cfg (dict | None): Config for norm layers. Default: None.
+        norm_cfg (dict | None): Config for norm layers. Default: None.
+        act_cfg (dict | None): Config for activate layers. Default: None.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
             memory while slowing down the training speed. Default: False.
 

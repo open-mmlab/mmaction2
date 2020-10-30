@@ -20,7 +20,7 @@ class SSNInstance:
         start_frame (int): Index of the proposal's start frame.
         end_frame (int): Index of the proposal's end frame.
         num_video_frames (int): Total frames of the video.
-        label (int): The category label of the proposal. Default: None.
+        label (int | None): The category label of the proposal. Default: None.
         best_iou (float): The highest IOU with the groundtruth instance.
             Default: 0.
         overlap_self (float): Percent of the proposal's own span contained
@@ -82,7 +82,7 @@ class SSNInstance:
 class SSNDataset(BaseDataset):
     """Proposal frame dataset for Structured Segment Networks.
 
-    Based on proposal information, the dataset loads raw frames and apply
+    Based on proposal information, the dataset loads raw frames and applies
     specified transforms to return a dict containing the frame tensors and
     other information.
 
@@ -448,7 +448,7 @@ class SSNDataset(BaseDataset):
         # get gts
         all_gts = self.get_all_gts()
         for class_idx in range(len(detections)):
-            if (class_idx not in all_gts):
+            if class_idx not in all_gts:
                 all_gts[class_idx] = dict()
 
         # get predictions
@@ -557,8 +557,7 @@ class SSNDataset(BaseDataset):
             background_iou_threshold (float): Maximum threshold of overlap
                 of background proposals and groundtruths.
             background_coverage_threshold (float): Minimum coverage
-                of background proposals in video duration.
-                Default: 0.01.
+                of background proposals in video duration. Default: 0.01.
             incomplete_overlap_threshold (float): Minimum percent of incomplete
                 proposals' own span contained in a groundtruth instance.
                 Default: 0.7.
@@ -587,8 +586,8 @@ class SSNDataset(BaseDataset):
         Args:
             record (dict): Information of the video instance(video_info[idx]).
                 key: frame_dir, video_id, total_frames,
-                     gts: List of groundtruth instances(:obj:`SSNInstance`).
-                     proposals: List of proposal instances(:obj:`SSNInstance`).
+                gts: List of groundtruth instances(:obj:`SSNInstance`).
+                proposals: List of proposal instances(:obj:`SSNInstance`).
         """
         positives = self.get_positives(record['gts'], record['proposals'],
                                        self.assigner.positive_iou_threshold,

@@ -23,13 +23,13 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
     Args:
         ann_file (str): Path to the annotation file.
         pipeline (list[dict | callable]): A sequence of data transforms.
-        data_prefix (str): Path to a directory where videos are held.
+        data_prefix (str | None): Path to a directory where videos are held.
             Default: None.
         test_mode (bool): Store True when building test or validation dataset.
             Default: False.
         multi_class (bool): Determines whether the dataset is a multi-class
             dataset. Default: False.
-        num_classes (int): Number of classes of the dataset, used in
+        num_classes (int | None): Number of classes of the dataset, used in
             multi-class datasets. Default: None.
         start_index (int): Specify a start index for frames in consideration of
             different filename format. However, when taking videos as input,

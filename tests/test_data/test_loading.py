@@ -17,14 +17,14 @@ from mmaction.datasets.pipelines import (AudioDecode, AudioDecodeInit,
                                          LoadLocalizationFeature,
                                          LoadProposals, OpenCVDecode,
                                          OpenCVInit, PyAVDecode, PyAVInit,
-                                         RawFrameDecode, SampleFrames,
-                                         SampleProposalFrames,
+                                         RawFrameDecode, SampleAVAFrames,
+                                         SampleFrames, SampleProposalFrames,
                                          UntrimmedSampleFrames)
 
 # yapf: enable
 
 
-class ExampleSSNInstance(object):
+class ExampleSSNInstance:
 
     def __init__(self,
                  start_frame,
@@ -41,7 +41,7 @@ class ExampleSSNInstance(object):
         self.overlap_self = overlap_self
 
 
-class TestLoading(object):
+class TestLoading:
 
     @staticmethod
     def check_keys_contain(result_keys, target_keys):
@@ -127,6 +127,10 @@ class TestLoading(object):
                 ExampleSSNInstance(1, 4, 10, 1, 1, 1)
             ], 0], [['test_imgs',
                      ExampleSSNInstance(2, 5, 10, 2, 1, 1)], 0]])
+
+        cls.ava_results = dict(
+            fps=30, timestamp=902, timestamp_start=840, shot_info=(0, 27000))
+
         cls.hvu_label_example1 = dict(
             categories=['action', 'object', 'scene', 'concept'],
             category_nums=[2, 5, 3, 2],
@@ -579,6 +583,7 @@ class TestLoading(object):
             total_frames=100,
             filename_tmpl=None,
             modality='RGB',
+            start_index=0,
             label=1)
         video_result = copy.deepcopy(self.video_results)
 
@@ -600,9 +605,11 @@ class TestLoading(object):
         assert len(sample_frames_results['frame_inds']) == frame_inds.shape[0]
         assert_array_equal(sample_frames_results['frame_inds'], frame_inds)
 
-        config = dict(clip_len=1, frame_interval=16, start_index=1)
+        config = dict(clip_len=1, frame_interval=16)
         sample_frames = UntrimmedSampleFrames(**config)
-        sample_frames_results = sample_frames(frame_result)
+        frame_result_ = copy.deepcopy(frame_result)
+        frame_result_['start_index'] = 1
+        sample_frames_results = sample_frames(frame_result_)
         assert self.check_keys_contain(sample_frames_results.keys(),
                                        target_keys)
         assert len(sample_frames_results['frame_inds']) == 6
@@ -621,6 +628,19 @@ class TestLoading(object):
                 7, 8, 9, 23, 24, 25, 39, 40, 41, 55, 56, 57, 71, 72, 73, 87,
                 88, 89
             ]))
+
+    def test_sample_ava_frames(self):
+        target_keys = [
+            'fps', 'timestamp', 'timestamp_start', 'shot_info', 'frame_inds',
+            'clip_len', 'frame_interval'
+        ]
+        config = dict(clip_len=32, frame_interval=2)
+        sample_ava_dataset = SampleAVAFrames(**config)
+        ava_result = sample_ava_dataset(results=self.ava_results)
+        assert self.check_keys_contain(ava_result.keys(), target_keys)
+        assert ava_result['clip_len'] == 32
+        assert ava_result['frame_interval'] == 2
+        assert len(ava_result['frame_inds']) == 32
 
     def test_sample_proposal_frames(self):
         target_keys = [

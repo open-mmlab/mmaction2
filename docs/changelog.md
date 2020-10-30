@@ -6,10 +6,13 @@
 - Support [OmniSource](https://arxiv.org/abs/2003.13042)
 - Support C3D
 - Support video recognition with audio modality
+- Support X3D
 
 **New Features**
+- Support AVA dataset preparation ([#266](https://github.com/open-mmlab/mmaction2/pull/266))
 - Support the training of video recognition dataset with multiple tag categories ([#235](https://github.com/open-mmlab/mmaction2/pull/235))
-- Support specify a start epoch to conduct evaluation ([216](https://github.com/open-mmlab/mmaction2/pull/216))
+- Support specify a start epoch to conduct evaluation ([#216](https://github.com/open-mmlab/mmaction2/pull/216))
+- Implement X3D models, support testing with model weights converted from SlowFast ([#288](https://github.com/open-mmlab/mmaction2/pull/288))
 
 **Improvements**
 - Set default values of 'average_clips' in each config file so that there is no need to set it explicitly during testing in most cases ([#232](https://github.com/open-mmlab/mmaction2/pull/232))
@@ -33,6 +36,7 @@
 **ModelZoo**
 - Add Baselines for Kinetics-600 and Kinetics-700, including TSN-R50-8seg and SlowOnly-R50-8x8 ([#259](https://github.com/open-mmlab/mmaction2/pull/259))
 - Add OmniSource benchmark on MiniKineitcs ([#296](https://github.com/open-mmlab/mmaction2/pull/296))
+- Add X3D models ported from [SlowFast](https://github.com/facebookresearch/SlowFast/) ([#288](https://github.com/open-mmlab/mmaction2/pull/288))
 
 ### v0.7.0 (30/9/2020)
 
