@@ -8,8 +8,6 @@ import torch
 import torch.distributed as dist
 from mmcv.runner import get_dist_info
 
-from ..utils import get_random_string, get_shm_dir, get_thread_id
-
 
 def single_gpu_test(model, data_loader):
     """Test model with a single gpu.
@@ -109,10 +107,8 @@ def collect_results_cpu(result_part, size, tmpdir=None):
                                 dtype=torch.uint8,
                                 device='cuda')
         if rank == 0:
-            random_string = get_random_string()
-            thread_id = get_thread_id()
-            tmpdir = osp.join(get_shm_dir(), f'{random_string}_{thread_id}')
-            tmpdir = tempfile.mkdtemp(dir=tmpdir)
+            mmcv.mkdir_or_exist('.dist_test')
+            tmpdir = tempfile.mkdtemp(dir='.dist_test')
             tmpdir = torch.tensor(
                 bytearray(tmpdir.encode()), dtype=torch.uint8, device='cuda')
             dir_tensor[:len(tmpdir)] = tmpdir
