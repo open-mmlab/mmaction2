@@ -1,10 +1,10 @@
 import copy
 import os.path as osp
-import random
 from abc import ABCMeta, abstractmethod
 from collections import defaultdict
 
 import mmcv
+import numpy as np
 import torch
 from torch.utils.data import Dataset
 
@@ -133,7 +133,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         if self.sample_by_class:
             # Then, the idx is the class index
             samples = self.video_infos_by_class[idx]
-            results = copy.deepcopy(random.choice(samples))
+            results = copy.deepcopy(np.random.choice(samples))
         else:
             results = copy.deepcopy(self.video_infos[idx])
         results['modality'] = self.modality
@@ -153,7 +153,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         if self.sample_by_class:
             # Then, the idx is the class index
             samples = self.video_infos_by_class[idx]
-            results = copy.deepcopy(random.choice(samples))
+            results = copy.deepcopy(np.random.choice(samples))
         else:
             results = copy.deepcopy(self.video_infos[idx])
         results['modality'] = self.modality

@@ -6,13 +6,13 @@ from .compose import Compose
 from .formating import (Collect, FormatAudioShape, FormatShape, ImageToTensor,
                         ToDataContainer, ToTensor, Transpose)
 from .loading import (AudioDecode, AudioDecodeInit, AudioFeatureSelector,
-                      DecordDecode, DecordInit, DenseSampleFrames,
-                      FrameSelector, GenerateLocalizationLabels, ImageDecode,
+                      BuildPseudoClip, DecordDecode, DecordInit,
+                      DenseSampleFrames, FrameSelector,
+                      GenerateLocalizationLabels, ImageDecode,
                       LoadAudioFeature, LoadHVULabel, LoadLocalizationFeature,
-                      LoadProposals, OpenCVDecode, OpenCVInit,
-                      PseudoClipBuilder, PyAVDecode, PyAVInit, RawFrameDecode,
-                      SampleFrames, SampleProposalFrames,
-                      UntrimmedSampleFrames)
+                      LoadProposals, OpenCVDecode, OpenCVInit, PyAVDecode,
+                      PyAVInit, RawFrameDecode, SampleFrames,
+                      SampleProposalFrames, UntrimmedSampleFrames)
 
 __all__ = [
     'SampleFrames', 'PyAVDecode', 'DecordDecode', 'DenseSampleFrames',
@@ -26,5 +26,5 @@ __all__ = [
     'PyAVInit', 'SampleProposalFrames', 'ColorJitter', 'LoadHVULabel',
     'AudioAmplify', 'MelSpectrogram', 'AudioDecode', 'FormatAudioShape',
     'LoadAudioFeature', 'AudioFeatureSelector', 'AudioDecodeInit',
-    'ImageDecode', 'PseudoClipBuilder'
+    'ImageDecode', 'BuildPseudoClip'
 ]

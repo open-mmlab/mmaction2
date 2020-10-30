@@ -1,6 +1,5 @@
 import copy
 import os.path as osp
-import random
 
 import numpy as np
 import torch
@@ -157,7 +156,7 @@ class RawframeDataset(BaseDataset):
         if self.sample_by_class:
             # Then, the idx is the class index
             samples = self.video_infos_by_class[idx]
-            results = copy.deepcopy(random.choice(samples))
+            results = copy.deepcopy(np.random.choice(samples))
         else:
             results = copy.deepcopy(self.video_infos[idx])
         results['filename_tmpl'] = self.filename_tmpl
@@ -177,7 +176,7 @@ class RawframeDataset(BaseDataset):
         if self.sample_by_class:
             # Then, the idx is the class index
             samples = self.video_infos_by_class[idx]
-            results = copy.deepcopy(random.choice(samples))
+            results = copy.deepcopy(np.random.choice(samples))
         else:
             results = copy.deepcopy(self.video_infos[idx])
         results['filename_tmpl'] = self.filename_tmpl

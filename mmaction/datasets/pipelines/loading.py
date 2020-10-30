@@ -985,7 +985,7 @@ class ImageDecode:
         self.file_client = None
 
     def __call__(self, results):
-        """Perform the ``RawFrameDecode`` to pick frames given indices.
+        """Perform the ``ImageDecode`` to load image given the file path.
 
         Args:
             results (dict): The resulting dict to be modified and passed
@@ -1165,7 +1165,7 @@ class AudioDecode(object):
 
 
 @PIPELINES.register_module()
-class PseudoClipBuilder:
+class BuildPseudoClip:
     """Build pseudo clips with one single image by repeating it n times.
 
     Required key is "imgs", added or modified key is "imgs", "num_clips",
