@@ -21,16 +21,8 @@ We currently released 4 models trained with OmniSource framework, including both
 
 We release a subset of web dataset used in the OmniSource paper. Specifically, we release the web data in the 200 classes of [Mini-Kinetics](https://arxiv.org/pdf/1712.04851.pdf). The statistics of those datasets is detailed in [preparing_omnisource](/tools/data/omnisource/preparing_omnisource.md). To obtain those data, you need to fill in a [data request form](https://docs.google.com/forms/d/e/1FAIpQLSd8_GlmHzG8FcDbW-OEu__G7qLgOSYZpH-i5vYVJcu7wcb_TQ/viewform?usp=sf_link). After we received your request, the download link of these data will be send to you. For more details on the released OmniSource web dataset, please refer to [preparing_omnisource](/tools/data/omnisource/preparing_omnisource.md).
 
-We benchmark the OmniSource framework on the released subset, results are listed in the following table (we report the Top-1 and Top-5 accuracy on Mini-Kinetics validation). The benchmark can be used as a baseline for video recognition with web data.
+We benchmark the OmniSource framework on the released subset, results are listed in the following table (we report the Top-1 and Top-5 accuracy on Mini-Kinetics validation). The cbenchmark can be used as a baseline for video recognition with web data.
 
-<style type="text/css">
-.tg  {border-collapse:collapse;border-spacing:0;}
-.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-  overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg .tg-c3ow{border-color:inherit;text-align:center;vertical-align:top}
-</style>
 <table class="tg">
 <thead>
   <tr>
@@ -54,24 +46,22 @@ We benchmark the OmniSource framework on the released subset, results are listed
     <td class="tg-c3ow" colspan="3">81.3 / 94.8</td>
   </tr>
   <tr>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/baseline/tsn_r50_1x1x8_100e_minikinetics_rgb_20201030-b4eaf92b.pth">ckpt</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/baseline/tsn_r50_1x1x8_100e_minikinetics_rgb_20201030.json">json</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/baseline/tsn_r50_1x1x8_100e_minikinetics_rgb_20201030.log">log</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/googleimage/tsn_r50_1x1x8_100e_minikinetics_googleimage_rgb_20201030-23966b4b.pth">ckpt</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/googleimage/tsn_r50_1x1x8_100e_minikinetics_googleimage_rgb_20201030.json">json</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/googleimage/tsn_r50_1x1x8_100e_minikinetics_googleimage_rgb_20201030.log">log</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/webimage/tsn_r50_1x1x8_100e_minikinetics_webimage_rgb_20201030-66f5e046.pth">ckpt</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/webimage/tsn_r50_1x1x8_100e_minikinetics_webimage_rgb_20201030.json">json</a></td><td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/webimage/tsn_r50_1x1x8_100e_minikinetics_webimage_rgb_20201030.log">log</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/insvideo/tsn_r50_1x1x8_100e_minikinetics_insvideo_rgb_20201030-011f984d.pth">ckpt</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/insvideo/tsn_r50_1x1x8_100e_minikinetics_insvideo_rgb_20201030.json">json</a></td><td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/insvideo/tsn_r50_1x1x8_100e_minikinetics_insvideo_rgb_20201030.log">log</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/kineticsraw/tsn_r50_1x1x8_100e_minikinetics_kineticsraw_rgb_20201030-59f5d064.pth">ckpt</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/kineticsraw/tsn_r50_1x1x8_100e_minikinetics_kineticsraw_rgb_20201030.json">json</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/kineticsraw/tsn_r50_1x1x8_100e_minikinetics_kineticsraw_rgb_20201030.log">log</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/omnisource/tsn_r50_1x1x8_100e_minikinetics_omnisource_rgb_20201030-0f56ef51.pth">ckpt</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/omnisource/tsn_r50_1x1x8_100e_minikinetics_omnisource_rgb_20201030.json">json</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/omnisource/tsn_r50_1x1x8_100e_minikinetics_omnisource_rgb_20201030.log">log</a></td>
   </tr>
   <tr>
     <td class="tg-c3ow" rowspan="2">SlowOnly-8x8<br>ResNet50</td>
@@ -83,24 +73,24 @@ We benchmark the OmniSource framework on the released subset, results are listed
     <td class="tg-c3ow" colspan="3">82.9 / 95.8</td>
   </tr>
   <tr>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
-    <td class="tg-c3ow"></td>
+    <td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/baseline/slowonly_r50_8x8x1_256e_minikinetics_rgb_20201030-168eb098.pth">ckpt</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/baseline/slowonly_r50_8x8x1_256e_minikinetics_rgb_20201030.json">json</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/baseline/slowonly_r50_8x8x1_256e_minikinetics_rgb_20201030.log">log</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/googleimage/slowonly_r50_8x8x1_256e_minikinetics_googleimage_rgb_20201030-7da6dfc3.pth">ckpt</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/googleimage/slowonly_r50_8x8x1_256e_minikinetics_googleimage_rgb_20201030.json">json</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/googleimage/slowonly_r50_8x8x1_256e_minikinetics_googleimage_rgb_20201030.log">log</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/webimage/slowonly_r50_8x8x1_256e_minikinetics_webimage_rgb_20201030-c36616e9.pth">ckpt</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/webimage/slowonly_r50_8x8x1_256e_minikinetics_webimage_rgb_20201030.json">json</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/webimage/slowonly_r50_8x8x1_256e_minikinetics_webimage_rgb_20201030.log">log</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/insvideo/slowonly_r50_8x8x1_256e_minikinetics_insvideo_rgb_20201030-e2890e8d.pth">ckpt</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/insvideo/slowonly_r50_8x8x1_256e_minikinetics_insvideo_rgb_20201030.json">json</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/insvideo/slowonly_r50_8x8x1_256e_minikinetics_insvideo_rgb_20201030.log">log</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/kineticsraw/slowonly_r50_8x8x1_256e_minikinetics_kineticsraw_rgb_20201030-62974bac.pth">ckpt</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/kineticsraw/slowonly_r50_8x8x1_256e_minikinetics_kineticsraw_rgb_20201030.json">json</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/kineticsraw/slowonly_r50_8x8x1_256e_minikinetics_kineticsraw_rgb_20201030.log">log</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/omnisource/slowonly_r50_8x8x1_256e_minikinetics_omnisource_rgb_20201030-284cfd3b.pth">ckpt</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/omnisource/slowonly_r50_8x8x1_256e_minikinetics_omnisource_rgb_20201030.json">json</a></td>
+<td class="tg-c3ow"><a href="https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/omnisource/slowonly_r50_8x8x1_256e_minikinetics_omnisource_rgb_20201030.log">log</a></td>
   </tr>
 </tbody>
 </table>
