@@ -17,6 +17,7 @@ model = dict(
         spatial_type='avg',
         multi_class=True,
         consensus=dict(type='AvgConsensus', dim=1),
+        loss_cls=dict(type='BCELossWithLogits', loss_weight=333.),
         dropout_ratio=0.4,
         init_std=0.01))
 # model training and testing settings
@@ -111,8 +112,7 @@ optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 lr_config = dict(policy='step', step=[40, 80])
 total_epochs = 100
 checkpoint_config = dict(interval=1)
-evaluation = dict(
-    interval=2, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
+evaluation = dict(interval=2, metrics=['mean_average_precision'])
 log_config = dict(
     interval=20, hooks=[
         dict(type='TextLoggerHook'),
