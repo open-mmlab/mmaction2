@@ -12,8 +12,9 @@ from mmaction.datasets.pipelines import (AudioAmplify, CenterCrop, ColorJitter,
                                          EntityBoxRescale, Flip, Fuse,
                                          MelSpectrogram, MultiGroupCrop,
                                          MultiScaleCrop, Normalize, RandomCrop,
-                                         RandomResizedCrop, RandomScale,
-                                         Resize, TenCrop, ThreeCrop, RandomRescale)
+                                         RandomRescale, RandomResizedCrop,
+                                         RandomScale, Resize, TenCrop,
+                                         ThreeCrop)
 
 # yapf: enable
 

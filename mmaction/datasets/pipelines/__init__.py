@@ -2,8 +2,9 @@ from .augmentations import (AudioAmplify, CenterCrop, ColorJitter,
                             EntityBoxClip, EntityBoxCrop, EntityBoxFlip,
                             EntityBoxPad, EntityBoxRescale, Flip, Fuse,
                             MelSpectrogram, MultiGroupCrop, MultiScaleCrop,
-                            Normalize, RandomCrop, RandomRescale, RandomScale,
-                            RandomResizedCrop, Resize, TenCrop, ThreeCrop)
+                            Normalize, RandomCrop, RandomRescale,
+                            RandomResizedCrop, RandomScale, Resize, TenCrop,
+                            ThreeCrop)
 from .compose import Compose
 from .formating import (Collect, FormatAudioShape, FormatShape, ImageToTensor,
                         ToDataContainer, ToTensor, Transpose)
