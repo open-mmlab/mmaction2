@@ -106,7 +106,7 @@ lr_config = dict(policy='step', step=[40, 80])
 total_epochs = 100
 checkpoint_config = dict(interval=1)
 evaluation = dict(
-    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
+    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
 log_config = dict(
     interval=20, hooks=[
         dict(type='TextLoggerHook'),
@@ -116,4 +116,4 @@ log_level = 'INFO'
 work_dir = './work_dirs/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb'
 load_from = None
 resume_from = None
-workflow = [('train', 5)]
+workflow = [('train', 1)]

@@ -19,7 +19,7 @@ model = dict(
         dropout_ratio=0.5))
 # model training and testing settings
 train_cfg = None
-test_cfg = dict(average_clips=None)
+test_cfg = dict(average_clips='prob')
 # dataset settings
 dataset_type = 'VideoDataset'
 
@@ -131,9 +131,9 @@ optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 lr_config = dict(policy='CosineAnnealing', min_lr=0)
 total_epochs = 256
 checkpoint_config = dict(interval=8)
-workflow = [('train', 8)]
+workflow = [('train', 1)]
 evaluation = dict(
-    interval=8, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
+    interval=8, metrics=['top_k_accuracy', 'mean_class_accuracy'])
 log_config = dict(
     interval=20, hooks=[
         dict(type='TextLoggerHook'),
