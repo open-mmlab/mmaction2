@@ -9,7 +9,7 @@ import torch
 from mmcv.utils import print_log
 from torch.utils.data import Dataset
 
-from ..core import mean_class_accuracy, top_k_accuracy
+from ..core import mean_average_precision, mean_class_accuracy, top_k_accuracy
 from .pipelines import Compose
 
 
@@ -112,6 +112,12 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
             video_infos_by_class[label].append(item)
         return video_infos_by_class
 
+    @staticmethod
+    def label2array(num, label):
+        arr = np.zeros(num, dtype=np.float32)
+        arr[label] = 1.
+        return arr
+
     def evaluate(self,
                  results,
                  metrics='top_k_accuracy',
@@ -141,7 +147,9 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
             f'{len(results)} != {len(self)}')
 
         metrics = metrics if isinstance(metrics, (list, tuple)) else [metrics]
-        allowed_metrics = ['top_k_accuracy', 'mean_class_accuracy']
+        allowed_metrics = [
+            'top_k_accuracy', 'mean_class_accuracy', 'mean_average_precision'
+        ]
         for metric in metrics:
             if metric not in allowed_metrics:
                 raise KeyError(f'metric {metric} is not supported')
@@ -150,7 +158,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         gt_labels = [ann['label'] for ann in self.video_infos]
 
         for metric in metrics:
-            msg = f'Evaluating {metric}...'
+            msg = f'Evaluating {metric} ...'
             if logger is None:
                 msg = '\n' + msg
             print_log(msg, logger=logger)
@@ -176,6 +184,17 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
                 mean_acc = mean_class_accuracy(results, gt_labels)
                 eval_results['mean_class_accuracy'] = mean_acc
                 log_msg = f'\nmean_acc\t{mean_acc:.4f}'
+                print_log(log_msg, logger=logger)
+                continue
+
+            if metric == 'mean_average_precision':
+                gt_labels = [
+                    self.label2array(self.num_classes, label)
+                    for label in gt_labels
+                ]
+                mAP = mean_average_precision(results, gt_labels)
+                eval_results['mean_average_precision'] = mAP
+                log_msg = f'\nmean_average_precision\t{mAP:.4f}'
                 print_log(log_msg, logger=logger)
                 continue
 

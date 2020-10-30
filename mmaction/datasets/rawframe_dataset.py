@@ -192,12 +192,6 @@ class RawframeDataset(BaseDataset):
 
         return self.pipeline(results)
 
-    @staticmethod
-    def label2array(num, label):
-        arr = np.zeros(num, dtype=np.float32)
-        arr[label] = 1.
-        return arr
-
     def evaluate(self,
                  results,
                  metrics='top_k_accuracy',
@@ -238,7 +232,7 @@ class RawframeDataset(BaseDataset):
         gt_labels = [ann['label'] for ann in self.video_infos]
 
         for metric in metrics:
-            msg = f'Evaluating {metric}...'
+            msg = f'Evaluating {metric} ...'
             if logger is None:
                 msg = '\n' + msg
             print_log(msg, logger=logger)
