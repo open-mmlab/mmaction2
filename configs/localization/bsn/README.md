@@ -44,7 +44,7 @@ Examples:
     ```
 
 2. train BSN(PEM) on PGM results.
-    ```python
+    ```shell
     python tools/train.py configs/localization/bsn/bsn_pem_400x100_1x16_20e_activitynet_feature.py
     ```
 

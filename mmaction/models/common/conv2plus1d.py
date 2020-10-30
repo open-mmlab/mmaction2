@@ -12,12 +12,12 @@ class Conv2plus1d(nn.Module):
     Args:
         in_channels (int): Same as nn.Conv3d.
         out_channels (int): Same as nn.Conv3d.
-        kernel_size (int or tuple[int]): Same as nn.Conv3d.
-        stride (int or tuple[int]): Same as nn.Conv3d.
-        padding (int or tuple[int]): Same as nn.Conv3d.
-        dilation (int or tuple[int]): Same as nn.Conv3d.
+        kernel_size (int | tuple[int]): Same as nn.Conv3d.
+        stride (int | tuple[int]): Same as nn.Conv3d.
+        padding (int | tuple[int]): Same as nn.Conv3d.
+        dilation (int | tuple[int]): Same as nn.Conv3d.
         groups (int): Same as nn.Conv3d.
-        bias (bool or str): If specified as ``auto``, it will be decided by the
+        bias (bool | str): If specified as ``auto``, it will be decided by the
             norm_cfg. Bias will be set as True if norm_cfg is None, otherwise
             False.
     """

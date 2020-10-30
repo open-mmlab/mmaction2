@@ -96,7 +96,7 @@ from .my_optimizer import MyOptimizer
 
 
 @OPTIMIZER_BUILDERS.register_module()
-class MyOptimizerConstructor(object):
+class MyOptimizerConstructor:
 
     def __init__(self, optimizer_cfg, paramwise_cfg=None):
         pass

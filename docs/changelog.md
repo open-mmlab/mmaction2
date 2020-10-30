@@ -6,10 +6,12 @@
 - Support C3D
 - Support video recognition with audio modality
 - Support HVU
+- Support X3D
 
 **New Features**
 - Support the training of video recognition dataset with multiple tag categories ([#235](https://github.com/open-mmlab/mmaction2/pull/235))
-- Support specify a start epoch to conduct evaluation ([216](https://github.com/open-mmlab/mmaction2/pull/216))
+- Support specify a start epoch to conduct evaluation ([#216](https://github.com/open-mmlab/mmaction2/pull/216))
+- Implement X3D models, support testing with model weights converted from SlowFast ([#288](https://github.com/open-mmlab/mmaction2/pull/288))
 
 **Improvements**
 - Set default values of 'average_clips' in each config file so that there is no need to set it explicitly during testing in most cases ([#232](https://github.com/open-mmlab/mmaction2/pull/232))
@@ -18,6 +20,8 @@
 - Add `cfg-options` in arguments to override some settings in the used config for convenience ([#212](https://github.com/open-mmlab/mmaction2/pull/212))
 - Rename the old evaluating protocol `mean_average_precision` as `mmit_mean_average_precision` since it is only used on MMIT and is not the `mAP` we usually talk about. Add `mean_average_precision`, which is the real `mAP` ([#235](https://github.com/open-mmlab/mmaction2/pull/235))
 - Add accurate setting (Three crop * 2 clip) and report corresponding performance for TSM model ([#241](https://github.com/open-mmlab/mmaction2/pull/241))
+- Add citations in each preparing_dataset.md in `tools/data/dataset` ([#289](https://github.com/open-mmlab/mmaction2/pull/289))
+- Update the performance of audio-visual fusion on Kinetics-400 ([#281](https://github.com/open-mmlab/mmaction2/pull/281))
 
 **Bug Fixes**
 - Register `FrameSelector` in `PIPELINES` ([#268](https://github.com/open-mmlab/mmaction2/pull/268))
@@ -30,6 +34,7 @@
 **ModelZoo**
 - Add Baselines for Kinetics-600 and Kinetics-700, including TSN-R50-8seg and SlowOnly-R50-8x8 ([#259](https://github.com/open-mmlab/mmaction2/pull/259))
 - Add Baselines for HVU, including TSN-R18-8seg on 6 tag categories of HVU ([#287](https://github.com/open-mmlab/mmaction2/pull/287))
+- Add X3D models ported from [SlowFast](https://github.com/facebookresearch/SlowFast/) ([#288](https://github.com/open-mmlab/mmaction2/pull/288))
 
 ### v0.7.0 (30/9/2020)
 

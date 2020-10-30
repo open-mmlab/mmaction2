@@ -1,5 +1,16 @@
 # Preparing HVU
 
+## Introduction
+
+```
+@article{Diba2019LargeSH,
+  title={Large Scale Holistic Video Understanding},
+  author={Ali Diba and M. Fayyaz and Vivek Sharma and Manohar Paluri and Jurgen Gall and R. Stiefelhagen and L. Gool},
+  journal={arXiv: Computer Vision and Pattern Recognition},
+  year={2019}
+}
+```
+
 For basic dataset information, please refer to the official [project](https://github.com/holistic-video-understanding/HVU-Dataset/) and the [paper](https://arxiv.org/abs/1904.11451).
 Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/hvu/`.
 

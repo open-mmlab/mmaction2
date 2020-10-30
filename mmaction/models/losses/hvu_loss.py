@@ -10,7 +10,7 @@ class HVULoss(BaseWeightedLoss):
     """Calculate the BCELoss for HVU.
 
     Args:
-        categories (list[str]): Names of tag categories, tags are organized in
+        categories (tuple[str]): Names of tag categories, tags are organized in
             this order. Default: ['action', 'attribute', 'concept', 'event',
             'object', 'scene'].
         category_nums (tuple[int]): Number of tags for each category. Default:
@@ -32,10 +32,8 @@ class HVULoss(BaseWeightedLoss):
     """
 
     def __init__(self,
-                 categories=[
-                     'action', 'attribute', 'concept', 'event', 'object',
-                     'scene'
-                 ],
+                 categories=('action', 'attribute', 'concept', 'event',
+                             'object', 'scene'),
                  category_nums=(739, 117, 291, 69, 1679, 248),
                  category_loss_weights=(1, 1, 1, 1, 1, 1),
                  loss_type='all',

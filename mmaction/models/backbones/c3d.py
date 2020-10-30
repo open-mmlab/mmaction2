@@ -16,12 +16,14 @@ class C3D(nn.Module):
         style (str): ``pytorch`` or ``caffe``. If set to "pytorch", the
             stride-two layer is the 3x3 conv layer, otherwise the stride-two
             layer is the first 1x1 conv layer. Default: 'pytorch'.
-        conv_cfg (dict): Config dict for convolution layer. If set to None, it
-            uses ``dict(type='Conv3d')`` to construct layers. Default: None.
-        norm_cfg (dict): Config for norm layers. required keys are ``type``,
+        conv_cfg (dict | None): Config dict for convolution layer.
+            If set to None, it uses ``dict(type='Conv3d')`` to construct
+            layers. Default: None.
+        norm_cfg (dict | None): Config for norm layers. required keys are
+            ``type``, Default: None.
+        act_cfg (dict | None): Config dict for activation layer. If set to
+            None, it uses ``dict(type='ReLU')`` to construct layers.
             Default: None.
-        act_cfg (dict): Config dict for activation layer. If set to None, it
-            uses ``dict(type='ReLU')`` to construct layers. Default: None.
         dropout_ratio (float): Probability of dropout layer. Default: 0.5.
         init_std (float): Std value for Initiation of fc layers. Default: 0.01.
     """

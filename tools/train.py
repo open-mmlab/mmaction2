@@ -126,8 +126,8 @@ def main():
 
     # set random seeds
     if args.seed is not None:
-        logger.info('Set random seed to {}, deterministic: {}'.format(
-            args.seed, args.deterministic))
+        logger.info(f'Set random seed to {args.seed}, '
+                    f'deterministic: {args.deterministic}')
         set_random_seed(args.seed, deterministic=args.deterministic)
     cfg.seed = args.seed
     meta['seed'] = args.seed
