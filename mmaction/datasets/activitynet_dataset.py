@@ -65,7 +65,7 @@ class ActivityNetDataset(BaseDataset):
     Args:
         ann_file (str): Path to the annotation file.
         pipeline (list[dict | callable]): A sequence of data transforms.
-        data_prefix (str): Path to a directory where videos are held.
+        data_prefix (str | None): Path to a directory where videos are held.
             Default: None.
         test_mode (bool): Store True when building test or validation dataset.
             Default: False.

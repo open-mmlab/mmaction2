@@ -14,7 +14,7 @@ from mmaction.datasets import (ActivityNetDataset, AudioDataset,
                                VideoDataset)
 
 
-class TestDataset(object):
+class TestDataset:
 
     @staticmethod
     def check_keys_contain(result_keys, target_keys):

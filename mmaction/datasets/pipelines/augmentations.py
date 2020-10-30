@@ -43,7 +43,7 @@ def _init_lazy_if_proper(results, lazy):
 
 
 @PIPELINES.register_module()
-class Fuse(object):
+class Fuse:
     """Fuse lazy operations.
 
     Fusion order:
@@ -87,7 +87,289 @@ class Fuse(object):
 
 
 @PIPELINES.register_module()
-class RandomCrop(object):
+class RandomScale:
+    """Resize images by a random scale.
+
+    Required keys are "imgs", "img_shape", "modality", added or modified
+    keys are "imgs", "img_shape", "keep_ratio", "scale_factor", "lazy",
+    "scale", "resize_size". Required keys in "lazy" is None, added or
+    modified key is "interpolation".
+
+    Args:
+        scales (tuple[int]): Tuple of scales to be chosen for resize.
+        mode (str): Selection mode for choosing the scale. Options are "range"
+            and "value". If set to "range", The short edge will be randomly
+            chosen from the range of minimum and maximum on the shorter one
+            in all tuples. Otherwise, the longer edge will be randomly chosen
+            from the range of minimum and maximum on the longer one in all
+            tuples. Default: 'range'.
+    """
+
+    def __init__(self, scales, mode='range', **kwargs):
+        self.mode = mode
+        if self.mode not in ['range', 'value']:
+            raise ValueError(f"mode should be 'range' or 'value', "
+                             f'but got {self.mode}')
+        self.scales = scales
+        self.kwargs = kwargs
+
+    def select_scale(self, scales):
+        num_scales = len(scales)
+        if num_scales == 1:
+            # specify a fixed scale
+            scale = scales[0]
+        elif num_scales == 2:
+            if self.mode == 'range':
+                scale_long = [max(s) for s in scales]
+                scale_short = [min(s) for s in scales]
+                long_edge = np.random.randint(
+                    min(scale_long),
+                    max(scale_long) + 1)
+                short_edge = np.random.randint(
+                    min(scale_short),
+                    max(scale_short) + 1)
+                scale = (long_edge, short_edge)
+            elif self.mode == 'value':
+                scale = random.choice(scales)
+        else:
+            if self.mode != 'value':
+                raise ValueError("Only 'value' mode supports more than "
+                                 '2 image scales')
+            scale = random.choice(scales)
+
+        return scale
+
+    def __call__(self, results):
+        scale = self.select_scale(self.scales)
+        results['scale'] = scale
+        resize = Resize(scale, **self.kwargs)
+        results = resize(results)
+        return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'scales={self.scales}, mode={self.mode})')
+        return repr_str
+
+
+@PIPELINES.register_module()
+class EntityBoxRescale:
+    """Rescale the entity box and proposals according to the image shape.
+
+    Required keys are "img_shape", "scale_factor", "proposals",
+    "ann.entity_boxes", added or modified keys are "ann.entity_boxes". If
+    original "proposals" is not None, "proposals" and "scores" will be added or
+    modified.
+    """
+
+    def __call__(self, results):
+        img_h, img_w = results['img_shape']
+        scale_factor = results['scale_factor']
+        scale_factor = np.array([
+            scale_factor[0], scale_factor[1], scale_factor[0], scale_factor[1]
+        ])
+
+        proposals = results['proposals']
+        entity_boxes = results['ann']['entity_boxes']
+        img_scale = np.array([img_w, img_h, img_w, img_h])
+        entity_boxes = (entity_boxes * img_scale).astype(np.float32)
+        results['ann']['entity_boxes'] = entity_boxes * scale_factor
+
+        if proposals is not None:
+            if proposals.shape[1] not in (4, 5):
+                raise AssertionError('proposals shape should be in (n, 4) or '
+                                     f'(n, 5), but got {proposals.shape}')
+            if proposals.shape[1] == 5:
+                scores = proposals[:, 4].astype(np.float32)
+                proposals = proposals[:, :4]
+            else:
+                scores = None
+            proposals = (proposals * img_scale).astype(np.float32)
+            results['proposals'] = proposals * scale_factor
+            results['scores'] = scores
+
+        return results
+
+
+@PIPELINES.register_module()
+class EntityBoxCrop:
+    """Crop the entity boxes and proposals according to the cropped images.
+
+    Required keys are "proposals", "ann.entity_boxes", "crop_bbox", added or
+    modified keys are "ann.entity_boxes". If original "proposals" is not None,
+    "proposals" will be modified.
+    """
+
+    def __call__(self, results):
+        proposals = results['proposals']
+        entity_boxes = results['ann']['entity_boxes']
+        crop_bboxes = results['crop_bbox']
+
+        if crop_bboxes is None:
+            return results
+        x1, y1, _, _ = crop_bboxes
+
+        assert entity_boxes.shape[-1] % 4 == 0
+        entity_boxes_ = entity_boxes.copy()
+        entity_boxes_[..., 0::2] = entity_boxes[..., 0::2] - x1
+        entity_boxes_[..., 1::2] = entity_boxes[..., 1::2] - y1
+        results['ann']['entity_boxes'] = entity_boxes_
+
+        if proposals is not None:
+            assert proposals.shape[-1] % 4 == 0
+            proposals_ = proposals.copy()
+            proposals_[..., 0::2] = proposals[..., 0::2] - x1
+            proposals_[..., 1::2] = proposals[..., 1::2] - y1
+            results['proposals'] = proposals_
+        return results
+
+
+@PIPELINES.register_module()
+class EntityBoxFlip:
+    """Flip the entity boxes and proposals with a probability.
+
+    Reverse the order of elements in the given bounding boxes and proposals
+    with a specific direction. The shape of them are preserved, but the
+    elements are reordered.
+
+    Required keys are "proposals", "img_shape", "ann.entity_boxes", added or
+    modified keys are "flip", "flip_direction", "ann.entity_boxes". If
+    "proposals" is not, it will also be modified.
+
+    Args:
+        flip_ratio (float): Probability of implementing flip. Default: 0.5.
+        direction (str): Flip imgs horizontally or vertically. Options are
+            "horizontal" | "vertical". Default: "horizontal".
+    """
+
+    _directions = ['horizontal', 'vertical']
+
+    def __init__(self, flip_ratio=0.5, direction='horizontal'):
+        if direction not in self._directions:
+            raise ValueError(f'Direction {direction} is not supported. '
+                             f'Currently support ones are {self._directions}')
+        self.flip_ratio = flip_ratio
+        self.direction = direction
+
+    def __call__(self, results):
+        if np.random.rand() < self.flip_ratio:
+            flip = True
+        else:
+            flip = False
+
+        results['flip'] = flip
+        results['flip_direction'] = self.direction
+
+        proposals = results['proposals']
+        entity_boxes = results['ann']['entity_boxes']
+        img_h, img_w = results['img_shape']
+
+        if flip:
+            if self.direction == 'horizontal':
+                assert entity_boxes.shape[-1] % 4 == 0
+                entity_boxes_ = entity_boxes.copy()
+                entity_boxes_[..., 0::4] = img_w - entity_boxes[..., 2::4] - 1
+                entity_boxes_[..., 2::4] = img_w - entity_boxes[..., 0::4] - 1
+                if proposals is not None:
+                    assert proposals.shape[-1] % 4 == 0
+                    proposals_ = proposals.copy()
+                    proposals_[..., 0::4] = img_w - proposals[..., 2::4] - 1
+                    proposals_[..., 2::4] = img_w - proposals[..., 0::4] - 1
+                else:
+                    proposals_ = None
+            else:
+                assert entity_boxes.shape[-1] % 4 == 0
+                entity_boxes_ = entity_boxes.copy()
+                entity_boxes_[..., 1::4] = img_h - entity_boxes[..., 3::4] - 1
+                entity_boxes_[..., 3::4] = img_h - entity_boxes[..., 1::4] - 1
+                if proposals is not None:
+                    assert proposals.shape[-1] % 4 == 0
+                    proposals_ = proposals.copy()
+                    proposals_[..., 1::4] = img_h - proposals[..., 3::4] - 1
+                    proposals_[..., 3::4] = img_h - proposals[..., 1::4] - 1
+                else:
+                    proposals_ = None
+
+            results['proposals'] = proposals_
+            results['ann']['entity_boxes'] = entity_boxes_
+        return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'flip_ratio={self.flip_ratio}, '
+                    f'direction={self.direction})')
+        return repr_str
+
+
+@PIPELINES.register_module()
+class EntityBoxClip:
+    """Clip (limit) the values in the entity boxes and proposals.
+
+    Required keys are "img_shape", "proposals" and "ann.entity_boxes", added or
+    modified keys are "ann.entity_boxes". If "proposals" is None, it will also
+    be modified.
+    """
+
+    def __call__(self, results):
+        proposals = results['proposals']
+        entity_boxes = results['ann']['entity_boxes']
+        img_h, img_w = results['img_shape']
+
+        entity_boxes[:, 0::2] = np.clip(entity_boxes[:, 0::2], 0, img_w - 1)
+        entity_boxes[:, 1::2] = np.clip(entity_boxes[:, 1::2], 0, img_h - 1)
+        if proposals is not None:
+            proposals[:, 0::2] = np.clip(proposals[:, 0::2], 0, img_w - 1)
+            proposals[:, 1::2] = np.clip(proposals[:, 1::2], 0, img_h - 1)
+
+        results['ann']['entity_boxes'] = entity_boxes
+        results['proposals'] = proposals
+        return results
+
+
+@PIPELINES.register_module()
+class EntityBoxPad:
+    """Pad entity boxes and proposals with zeros.
+
+    Required keys are "proposals" and "ann.entity_boxes", added or modified
+    keys are "ann.entity_boxes". If "proposals" is not None, it is also
+    modified.
+
+    Args:
+        max_num_gts (int | None): maximum of ground truth proposals.
+            Default: None.
+    """
+
+    def __init__(self, max_num_gts=None):
+        self.max_num_gts = max_num_gts
+
+    def __call__(self, results):
+        if self.max_num_gts is None:
+            return results
+
+        proposals = results['proposals']
+        entity_boxes = results['ann']['entity_boxes']
+        num_gts = entity_boxes.shape[0]
+
+        padded_entity_boxes = np.zeros((self.max_num_gts, 4), dtype=np.float32)
+        padded_entity_boxes[:num_gts, :] = entity_boxes
+        if proposals is not None:
+            padded_proposals = np.zeros((self.max_num_gts, 4),
+                                        dtype=np.float32)
+            padded_proposals[:num_gts, :] = proposals
+        else:
+            padded_proposals = None
+
+        results['proposals'] = padded_proposals
+        results['ann']['entity_boxes'] = padded_entity_boxes
+        return results
+
+    def __repr__(self):
+        repr_str = f'{self.__class__.__name__}(max_num_gts={self.max_num_gts})'
+        return repr_str
+
+
+@PIPELINES.register_module()
+class RandomCrop:
     """Vanilla square random crop that specifics the output size.
 
     Required keys in results are "imgs" and "img_shape", added or
@@ -161,7 +443,7 @@ class RandomCrop(object):
 
 
 @PIPELINES.register_module()
-class RandomResizedCrop(object):
+class RandomResizedCrop:
     """Random crop that specifics the area and height-weight ratio range.
 
     Required keys in results are "imgs", "img_shape", "crop_bbox" and "lazy",
@@ -291,7 +573,7 @@ class RandomResizedCrop(object):
 
 
 @PIPELINES.register_module()
-class MultiScaleCrop(object):
+class MultiScaleCrop:
     """Crop images with a list of randomly selected scales.
 
     Randomly select the w and h scales from a list of scales. Scale of 1 means
@@ -312,8 +594,8 @@ class MultiScaleCrop(object):
             Default: False.
         num_fixed_crops (int): If set to 5, the cropping bbox will keep 5
             basic fixed regions: "upper left", "upper right", "lower left",
-            "lower right", "center".If set to 13, the cropping bbox will append
-            another 8 fix regions: "center left", "center right",
+            "lower right", "center". If set to 13, the cropping bbox will
+            append another 8 fix regions: "center left", "center right",
             "lower center", "upper center", "upper left quarter",
             "upper right quarter", "lower left quarter", "lower right quarter".
             Default: 5.
@@ -440,7 +722,7 @@ class MultiScaleCrop(object):
 
 
 @PIPELINES.register_module()
-class Resize(object):
+class Resize:
     """Resize images to a specific size.
 
     Required keys are "imgs", "img_shape", "modality", added or modified
@@ -534,7 +816,60 @@ class Resize(object):
 
 
 @PIPELINES.register_module()
-class Flip(object):
+class RandomRescale:
+    """Randomly resize images so that the short_edge is resized to a specific
+    size in a given range. The scale ratio is unchanged after resizing.
+
+    Required keys are "imgs", "img_shape", "modality", added or modified
+    keys are "imgs", "img_shape", "keep_ratio", "scale_factor", "resize_size",
+    "short_edge".
+
+    Args:
+        scale_range (tuple[int]): The range of short edge length. A closed
+            interval.
+        interpolation (str): Algorithm used for interpolation:
+            "nearest" | "bilinear". Default: "bilinear".
+    """
+
+    def __init__(self, scale_range, interpolation='bilinear'):
+        self.scale_range = scale_range
+        # make sure scale_range is legal, first make sure the type is OK
+        assert mmcv.is_tuple_of(scale_range, int)
+        assert len(scale_range) == 2
+        assert scale_range[0] < scale_range[1]
+        assert np.all([x > 0 for x in scale_range])
+
+        self.keep_ratio = True
+        self.interpolation = interpolation
+
+    def __call__(self, results):
+        """Performs the Resize augmentation.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        short_edge = np.random.randint(self.scale_range[0],
+                                       self.scale_range[1] + 1)
+        resize = Resize((-1, short_edge),
+                        keep_ratio=True,
+                        interpolation=self.interpolation,
+                        lazy=False)
+        results = resize(results)
+
+        results['short_edge'] = short_edge
+        return results
+
+    def __repr__(self):
+        scale_range = self.scale_range
+        repr_str = (f'{self.__class__.__name__}('
+                    f'scale_range=({scale_range[0]}, {scale_range[1]}), '
+                    f'interpolation={self.interpolation})')
+        return repr_str
+
+
+@PIPELINES.register_module()
+class Flip:
     """Flip the input images with a probability.
 
     Reverse the order of elements in the given imgs with a specific direction.
@@ -610,7 +945,7 @@ class Flip(object):
 
 
 @PIPELINES.register_module()
-class Normalize(object):
+class Normalize:
     """Normalize images with the given mean and std value.
 
     Required keys are "imgs", "img_shape", "modality", added or modified
@@ -697,7 +1032,7 @@ class Normalize(object):
 
 
 @PIPELINES.register_module()
-class ColorJitter(object):
+class ColorJitter:
     """Randomly distort the brightness, contrast, saturation and hue of images,
     and add PCA based noise into images.
 
@@ -879,7 +1214,7 @@ class ColorJitter(object):
 
 
 @PIPELINES.register_module()
-class CenterCrop(object):
+class CenterCrop:
     """Crop the center area from images.
 
     Required keys are "imgs", "img_shape", added or modified keys are "imgs",
@@ -949,7 +1284,7 @@ class CenterCrop(object):
 
 
 @PIPELINES.register_module()
-class ThreeCrop(object):
+class ThreeCrop:
     """Crop images into three crops.
 
     Crop the images equally into three crops with equal intervals along the
@@ -1020,7 +1355,7 @@ class ThreeCrop(object):
 
 
 @PIPELINES.register_module()
-class TenCrop(object):
+class TenCrop:
     """Crop the images into 10 crops (corner + center + flip).
 
     Crop the four corners and the center part of the image with the same
@@ -1089,7 +1424,7 @@ class TenCrop(object):
 
 
 @PIPELINES.register_module()
-class MultiGroupCrop(object):
+class MultiGroupCrop:
     """Randomly crop the images into several groups.
 
     Crop the random region with the same given crop_size and bounding box
@@ -1106,9 +1441,8 @@ class MultiGroupCrop(object):
         self.crop_size = _pair(crop_size)
         self.groups = groups
         if not mmcv.is_tuple_of(self.crop_size, int):
-            raise TypeError(
-                'Crop size must be int or tuple of int, but got {}'.format(
-                    type(crop_size)))
+            raise TypeError('Crop size must be int or tuple of int, '
+                            f'but got {type(crop_size)}')
 
         if not isinstance(groups, int):
             raise TypeError(f'Groups must be int, but got {type(groups)}.')
@@ -1156,14 +1490,14 @@ class MultiGroupCrop(object):
 
 
 @PIPELINES.register_module()
-class AudioAmplify(object):
+class AudioAmplify:
     """Amplify the waveform.
+
+    Required keys are "audios", added or modified keys are "audios",
+    "amplify_ratio".
 
     Args:
         ratio (float): The ratio used to amplify the audio waveform.
-
-    Required keys are "audios", added or modified keys are "audios",
-        "amplify_ratio".
     """
 
     def __init__(self, ratio):
@@ -1192,8 +1526,11 @@ class AudioAmplify(object):
 
 
 @PIPELINES.register_module()
-class MelSpectrogram(object):
+class MelSpectrogram:
     """MelSpectrogram. Transfer an audio wave into a melspectogram figure.
+
+    Required keys are "audios", "sample_rate", "num_clips", added or modified
+    keys are "audios".
 
     Args:
         window_size (int): The window size in milisecond. Default: 32.
@@ -1220,14 +1557,11 @@ class MelSpectrogram(object):
             raise TypeError('All arguments should be int.')
 
     def __call__(self, results):
-        """Perfrom MelSpectrogram transformation.
+        """Perform MelSpectrogram transformation.
 
         Args:
             results (dict): The resulting dict to be modified and passed
                 to the next transform in pipeline.
-
-        Required keys are "audios", "sample_rate", "num_clips",
-            added or modified keys are "audios".
         """
         try:
             import librosa

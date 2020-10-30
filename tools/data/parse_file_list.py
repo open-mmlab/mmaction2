@@ -131,6 +131,53 @@ def parse_ucf101_splits(level):
     return splits
 
 
+def parse_jester_splits(level):
+    """Parse Jester into "train", "val" splits.
+
+    Args:
+        level (int): Directory level of data. 1 for the single-level directory,
+            2 for the two-level directory.
+
+    Returns:
+        list: "train", "val", "test" splits of Jester dataset.
+    """
+    # Read the annotations
+    class_index_file = 'data/jester/annotations/jester-v1-labels.csv'
+    train_file = 'data/jester/annotations/jester-v1-train.csv'
+    val_file = 'data/jester/annotations/jester-v1-validation.csv'
+    test_file = 'data/jester/annotations/jester-v1-test.csv'
+
+    with open(class_index_file, 'r') as fin:
+        class_index = [x.strip() for x in fin]
+    class_mapping = {class_index[idx]: idx for idx in range(len(class_index))}
+
+    def line_to_map(line, test_mode=False):
+        items = line.strip().split(';')
+        video = items[0]
+        if level == 1:
+            video = osp.basename(video)
+        elif level == 2:
+            video = osp.join(
+                osp.basename(osp.dirname(video)), osp.basename(video))
+        if test_mode:
+            return video
+        else:
+            label = class_mapping[items[1]]
+            return video, label
+
+    with open(train_file, 'r') as fin:
+        train_list = [line_to_map(x) for x in fin]
+
+    with open(val_file, 'r') as fin:
+        val_list = [line_to_map(x) for x in fin]
+
+    with open(test_file, 'r') as fin:
+        test_list = [line_to_map(x, test_mode=True) for x in fin]
+
+    splits = ((train_list, val_list, test_list), )
+    return splits
+
+
 def parse_sthv1_splits(level):
     """Parse Something-Something dataset V1 into "train", "val" splits.
 

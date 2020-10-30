@@ -1,5 +1,17 @@
 # Preparing HMDB51
 
+## Introduction
+
+```
+@article{Kuehne2011HMDBAL,
+  title={HMDB: A large video database for human motion recognition},
+  author={Hilde Kuehne and Hueihan Jhuang and E. Garrote and T. Poggio and Thomas Serre},
+  journal={2011 International Conference on Computer Vision},
+  year={2011},
+  pages={2556-2563}
+}
+```
+
 For basic dataset information, you can refer to the dataset [website](https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/).
 Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/hmdb51/`.
 
