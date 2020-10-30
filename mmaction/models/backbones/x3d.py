@@ -1,5 +1,3 @@
-# pylint: disable=no-name-in-module
-# isort:maintain_block
 import math
 
 import torch.nn as nn
@@ -12,14 +10,11 @@ from mmcv.utils import _BatchNorm
 from ...utils import get_root_logger
 from ..registry import BACKBONES
 
-# pylint: enable=no-name-in-module
-# isort:end_maintain_block
-
 
 class SEModule(nn.Module):
 
     def __init__(self, channels, reduction):
-        super(SEModule, self).__init__()
+        super().__init__()
         self.avg_pool = nn.AdaptiveAvgPool3d(1)
         self.bottleneck = self._round_width(channels, reduction)
         self.fc1 = nn.Conv3d(
