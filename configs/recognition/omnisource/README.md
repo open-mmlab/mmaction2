@@ -23,7 +23,7 @@ We release a subset of web dataset used in the OmniSource paper. Specifically, w
 
 We benchmark the OmniSource framework on the released subset, results are listed in the following table (we report the Top-1 and Top-5 accuracy on Mini-Kinetics validation). The cbenchmark can be used as a baseline for video recognition with web data.
 
-<table class="tg">
+<table>
 <thead>
   <tr>
     <th class="tg-c3ow">Model</th>
