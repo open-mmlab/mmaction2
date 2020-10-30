@@ -99,6 +99,7 @@ class AVADataset(BaseDataset):
         self.logger = get_root_logger()
         super().__init__(
             ann_file, pipeline, data_prefix, test_mode, modality=modality)
+
         if self.proposal_file is not None:
             self.proposals = mmcv.load(self.proposal_file)
         else:

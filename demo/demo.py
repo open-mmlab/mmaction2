@@ -90,8 +90,8 @@ def get_output(video_path,
         raise NotImplementedError
 
     try:
-        from moviepy.editor import (ImageSequenceClip, TextClip, VideoFileClip,
-                                    CompositeVideoClip)
+        from moviepy.editor import (CompositeVideoClip, ImageSequenceClip,
+                                    TextClip, VideoFileClip)
     except ImportError:
         raise ImportError('Please install moviepy to enable output file.')
 

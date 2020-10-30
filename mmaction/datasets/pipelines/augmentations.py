@@ -153,7 +153,7 @@ class RandomScale:
 
 
 @PIPELINES.register_module()
-class BoxRescale:
+class EntityBoxRescale:
     """Rescale the entity box and proposals according to the image shape.
 
     Required keys are "img_shape", "scale_factor", "proposals",
@@ -192,7 +192,7 @@ class BoxRescale:
 
 
 @PIPELINES.register_module()
-class BoxCrop:
+class EntityBoxCrop:
     """Crop the entity boxes and proposals according to the cropped images.
 
     Required keys are "proposals", "ann.entity_boxes", "crop_bbox", added or
@@ -225,7 +225,7 @@ class BoxCrop:
 
 
 @PIPELINES.register_module()
-class BoxFlip:
+class EntityBoxFlip:
     """Flip the entity boxes and proposals with a probability.
 
     Reverse the order of elements in the given bounding boxes and proposals
@@ -302,7 +302,7 @@ class BoxFlip:
 
 
 @PIPELINES.register_module()
-class BoxClip:
+class EntityBoxClip:
     """Clip (limit) the values in the entity boxes and proposals.
 
     Required keys are "img_shape", "proposals" and "ann.entity_boxes", added or
@@ -327,7 +327,7 @@ class BoxClip:
 
 
 @PIPELINES.register_module()
-class BoxPad:
+class EntityBoxPad:
     """Pad entity boxes and proposals with zeros.
 
     Required keys are "proposals" and "ann.entity_boxes", added or modified

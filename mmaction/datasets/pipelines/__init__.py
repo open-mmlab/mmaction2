@@ -1,5 +1,6 @@
-from .augmentations import (AudioAmplify, BoxClip, BoxCrop, BoxFlip, BoxPad,
-                            BoxRescale, CenterCrop, ColorJitter, Flip, Fuse,
+from .augmentations import (AudioAmplify, CenterCrop, ColorJitter,
+                            EntityBoxClip, EntityBoxCrop, EntityBoxFlip,
+                            EntityBoxPad, EntityBoxRescale, Flip, Fuse,
                             MelSpectrogram, MultiGroupCrop, MultiScaleCrop,
                             Normalize, RandomCrop, RandomResizedCrop,
                             RandomScale, Resize, TenCrop, ThreeCrop)
@@ -26,6 +27,6 @@ __all__ = [
     'PyAVInit', 'SampleProposalFrames', 'ColorJitter', 'LoadHVULabel',
     'SampleAVAFrames', 'AudioAmplify', 'MelSpectrogram', 'AudioDecode',
     'FormatAudioShape', 'LoadAudioFeature', 'AudioFeatureSelector',
-    'AudioDecodeInit', 'BoxPad', 'BoxFlip', 'BoxCrop', 'BoxRescale', 'BoxClip',
-    'RandomScale'
+    'AudioDecodeInit', 'EntityBoxPad', 'EntityBoxFlip', 'EntityBoxCrop',
+    'EntityBoxRescale', 'EntityBoxClip', 'RandomScale'
 ]

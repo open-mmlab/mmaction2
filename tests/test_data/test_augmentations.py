@@ -6,9 +6,10 @@ import pytest
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 # yapf: disable
-from mmaction.datasets.pipelines import (AudioAmplify, BoxClip, BoxCrop,
-                                         BoxFlip, BoxPad, BoxRescale,
-                                         CenterCrop, ColorJitter, Flip, Fuse,
+from mmaction.datasets.pipelines import (AudioAmplify, CenterCrop, ColorJitter,
+                                         EntityBoxClip, EntityBoxCrop,
+                                         EntityBoxFlip, EntityBoxPad,
+                                         EntityBoxRescale, Flip, Fuse,
                                          MelSpectrogram, MultiGroupCrop,
                                          MultiScaleCrop, Normalize, RandomCrop,
                                          RandomResizedCrop, RandomScale,
@@ -101,7 +102,8 @@ class TestAugumentations:
         assert_array_almost_equal(origin_imgs, target_imgs, decimal=4)
 
     def test_init_lazy(self):
-        from mmaction.datasets.pipelines.augmentations import _init_lazy_if_proper  # noqa: E501
+        from mmaction.datasets.pipelines.augmentations import \
+            _init_lazy_if_proper  # noqa: E501
         with pytest.raises(AssertionError):
             # use lazy operation but "lazy" not in results
             result = dict(lazy=dict(), img_shape=[64, 64])
@@ -1106,12 +1108,12 @@ class TestAugumentations:
             ann=dict(entity_boxes=np.array([[0.031, 0.162, 0.67, 0.995]])))
 
         with pytest.raises(AssertionError):
-            box_scale = BoxRescale()
+            box_scale = EntityBoxRescale()
             results_ = copy.deepcopy(results)
             results_['proposals'] = np.array([[0.011, 0.157, 0.655]])
             box_scale(results_)
 
-        box_scale = BoxRescale()
+        box_scale = EntityBoxRescale()
         results_ = copy.deepcopy(results)
         results_ = box_scale(results_)
         self.check_keys_contain(results_.keys(), target_keys + ['scores'])
@@ -1139,7 +1141,7 @@ class TestAugumentations:
                 entity_boxes=np.array(
                     [[10.416000, 67.391998, 225.120004, 413.920019]])))
 
-        box_crop = BoxCrop()
+        box_crop = EntityBoxCrop()
         results_ = copy.deepcopy(results)
         results_ = box_crop(results_)
         self.check_keys_contain(results_.keys(), target_keys)
@@ -1165,9 +1167,9 @@ class TestAugumentations:
                     [[-2.584, -7.608002, 212.120004, 338.920019]])))
 
         with pytest.raises(ValueError):
-            BoxFlip(0, 'unsupport')
+            EntityBoxFlip(0, 'unsupport')
 
-        box_flip = BoxFlip(flip_ratio=1)
+        box_flip = EntityBoxFlip(flip_ratio=1)
         results_ = copy.deepcopy(results)
         results_ = box_flip(results_)
         self.check_keys_contain(results_.keys(), target_keys)
@@ -1178,7 +1180,7 @@ class TestAugumentations:
             results_['proposals'],
             np.array([[271.920005, -9.688001, 488.304, 333.928002]]))
 
-        box_flip = BoxFlip(flip_ratio=1, direction='vertical')
+        box_flip = EntityBoxFlip(flip_ratio=1, direction='vertical')
         results_ = copy.deepcopy(results)
         results_ = box_flip(results_)
         self.check_keys_contain(results_.keys(), target_keys)
@@ -1189,7 +1191,7 @@ class TestAugumentations:
             results_['proposals'],
             np.array([[-9.304, 185.071998, 207.079995, 528.688001]]))
 
-        box_flip = BoxFlip()
+        box_flip = EntityBoxFlip()
         results_ = copy.deepcopy(results)
         results_['proposals'] = None
         results_ = box_flip(results_)
@@ -1207,7 +1209,7 @@ class TestAugumentations:
                 entity_boxes=np.array(
                     [[-2.584, -7.608002, 212.120004, 338.920019]])))
 
-        box_clip = BoxClip()
+        box_clip = EntityBoxClip()
         results_ = copy.deepcopy(results)
         results_ = box_clip(results_)
 
@@ -1233,7 +1235,7 @@ class TestAugumentations:
                     -2.584, -7.608002, 212.120004, 338.920019
                 ], [-9.304, -9.688001, 207.079995, 333.928002]])))
 
-        box_pad_none = BoxPad()
+        box_pad_none = EntityBoxPad()
         results_ = copy.deepcopy(results)
         results_ = box_pad_none(results_)
         self.check_keys_contain(results_.keys(), target_keys)
@@ -1241,7 +1243,7 @@ class TestAugumentations:
         assert_array_equal(results_['ann']['entity_boxes'],
                            results['ann']['entity_boxes'])
 
-        box_pad = BoxPad(3)
+        box_pad = EntityBoxPad(3)
         results_ = copy.deepcopy(results)
         results_ = box_pad(results_)
         self.check_keys_contain(results_.keys(), target_keys)
