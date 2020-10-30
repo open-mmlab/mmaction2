@@ -1,8 +1,10 @@
 import copy
 import os.path as osp
 from abc import ABCMeta, abstractmethod
+from collections import defaultdict
 
 import mmcv
+import numpy as np
 import torch
 from torch.utils.data import Dataset
 
@@ -37,6 +39,14 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
             from 0. Default: 1.
         modality (str): Modality of data. Support 'RGB', 'Flow', 'Audio'.
             Default: 'RGB'.
+        sample_by_class (bool): Sampling by class, should be set `True` when
+            performing inter-class data balancing. Only compatible with
+            `multi_class == False`. Only applies for training. Default: False.
+        power (float | None): We support sampling data with the probability
+            proportional to the power of its label frequency (freq ^ power)
+            when sampling data. `power == 1` indicates uniformly sampling all
+            data; `power == 0` indicates uniformly sampling all classes.
+            Default: None.
     """
 
     def __init__(self,
@@ -47,7 +57,9 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
                  multi_class=False,
                  num_classes=None,
                  start_index=1,
-                 modality='RGB'):
+                 modality='RGB',
+                 sample_by_class=False,
+                 power=None):
         super().__init__()
 
         self.ann_file = ann_file
@@ -58,8 +70,14 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         self.num_classes = num_classes
         self.start_index = start_index
         self.modality = modality
+        self.sample_by_class = sample_by_class
+        self.power = power
+        assert not (self.multi_class and self.sample_by_class)
+
         self.pipeline = Compose(pipeline)
         self.video_infos = self.load_annotations()
+        if self.sample_by_class:
+            self.video_infos_by_class = self.parse_by_class()
 
     @abstractmethod
     def load_annotations(self):
@@ -85,6 +103,13 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
                 video_infos[i]['label'] = video_infos[i]['label'][0]
         return video_infos
 
+    def parse_by_class(self):
+        video_infos_by_class = defaultdict(list)
+        for item in self.video_infos:
+            label = item['label']
+            video_infos_by_class[label].append(item)
+        return video_infos_by_class
+
     @abstractmethod
     def evaluate(self, results, metrics, logger):
         """Evaluation for the dataset.
@@ -105,7 +130,12 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
 
     def prepare_train_frames(self, idx):
         """Prepare the frames for training given the index."""
-        results = copy.deepcopy(self.video_infos[idx])
+        if self.sample_by_class:
+            # Then, the idx is the class index
+            samples = self.video_infos_by_class[idx]
+            results = copy.deepcopy(np.random.choice(samples))
+        else:
+            results = copy.deepcopy(self.video_infos[idx])
         results['modality'] = self.modality
         results['start_index'] = self.start_index
 
@@ -120,7 +150,12 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
 
     def prepare_test_frames(self, idx):
         """Prepare the frames for testing given the index."""
-        results = copy.deepcopy(self.video_infos[idx])
+        if self.sample_by_class:
+            # Then, the idx is the class index
+            samples = self.video_infos_by_class[idx]
+            results = copy.deepcopy(np.random.choice(samples))
+        else:
+            results = copy.deepcopy(self.video_infos[idx])
         results['modality'] = self.modality
         results['start_index'] = self.start_index
 

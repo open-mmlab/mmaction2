@@ -1087,6 +1087,52 @@ class RawFrameDecode:
 
 
 @PIPELINES.register_module()
+class ImageDecode:
+    """Load and decode images.
+
+    Required key is "filename", added or modified keys are "imgs", "img_shape"
+    and "original_shape".
+
+    Args:
+        io_backend (str): IO backend where frames are stored. Default: 'disk'.
+        decoding_backend (str): Backend used for image decoding.
+            Default: 'cv2'.
+        kwargs (dict, optional): Arguments for FileClient.
+    """
+
+    def __init__(self, io_backend='disk', decoding_backend='cv2', **kwargs):
+        self.io_backend = io_backend
+        self.decoding_backend = decoding_backend
+        self.kwargs = kwargs
+        self.file_client = None
+
+    def __call__(self, results):
+        """Perform the ``ImageDecode`` to load image given the file path.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        mmcv.use_backend(self.decoding_backend)
+
+        filename = results['filename']
+
+        if self.file_client is None:
+            self.file_client = FileClient(self.io_backend, **self.kwargs)
+
+        imgs = list()
+        img_bytes = self.file_client.get(filename)
+
+        img = mmcv.imfrombytes(img_bytes, channel_order='rgb')
+        imgs.append(img)
+
+        results['imgs'] = imgs
+        results['original_shape'] = imgs[0].shape[:2]
+        results['img_shape'] = imgs[0].shape[:2]
+        return results
+
+
+@PIPELINES.register_module()
 class AudioDecodeInit:
     """Using librosa to initialize the audio reader.
 
@@ -1249,7 +1295,31 @@ class AudioDecode:
 
         results['audios'] = np.array(resampled_clips)
         results['audios_shape'] = results['audios'].shape
+        return results
 
+
+@PIPELINES.register_module()
+class BuildPseudoClip:
+    """Build pseudo clips with one single image by repeating it n times.
+
+    Required key is "imgs", added or modified key is "imgs", "num_clips",
+        "clip_len".
+
+    Args:
+        clip_len (int): Frames of the generated pseudo clips.
+    """
+
+    def __init__(self, clip_len):
+        self.clip_len = clip_len
+
+    def __call__(self, results):
+        # the input should be one single image
+        assert len(results['imgs']) == 1
+        im = results['imgs'][0]
+        for i in range(1, self.clip_len):
+            results['imgs'].append(np.copy(im))
+        results['clip_len'] = self.clip_len
+        results['num_clips'] = 1
         return results
 
     def __repr__(self):
