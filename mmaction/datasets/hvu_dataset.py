@@ -144,7 +144,7 @@ class HVUDataset(BaseDataset):
         Returns:
             dict: Evaluation results dict.
         """
-        # Protect ``metric_dict`` since it uses immutable value as default
+        # Protect ``metric_dict`` since it uses mutable value as default
         metric_dict = copy.deepcopy(metric_dict)
 
         if not isinstance(results, list):
