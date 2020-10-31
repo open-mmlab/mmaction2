@@ -1,5 +1,6 @@
 import copy
 import os.path as osp
+import warnings
 
 import mmcv
 import numpy as np
@@ -402,7 +403,8 @@ class SSNDataset(BaseDataset):
                  results,
                  metrics='mAP',
                  metric_options=dict(mAP=dict(eval_dataset='thumos14')),
-                 logger=None):
+                 logger=None,
+                 **deprecated_kwargs):
         """Evaluation in SSN proposal dataset.
 
         Args:
@@ -414,12 +416,22 @@ class SSNDataset(BaseDataset):
                 Default: ``dict(mAP=dict(eval_dataset='thumos14'))``.
             logger (logging.Logger | None): Logger for recording.
                 Default: None.
+            deprecated_kwargs (dict): Used for containing deprecated arguments.
+                See 'https://github.com/open-mmlab/mmaction2/pull/286'.
 
         Returns:
             dict: Evaluation results for evaluation metrics.
         """
         # Protect ``metric_options`` since it uses mutable value as default
         metric_options = copy.deepcopy(metric_options)
+
+        if deprecated_kwargs != {}:
+            warnings.warn(
+                'Option arguments for metrics has been changed to '
+                "`metric_options`, See 'https://github.com/open-mmlab/mmaction2/pull/286' "  # noqa: E501
+                'for more details')
+            metric_options['mAP'] = dict(metric_options['mAP'],
+                                         **deprecated_kwargs)
 
         if not isinstance(results, list):
             raise TypeError(f'results must be a list, but got {type(results)}')

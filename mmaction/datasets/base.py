@@ -1,5 +1,6 @@
 import copy
 import os.path as osp
+import warnings
 from abc import ABCMeta, abstractmethod
 from collections import defaultdict
 
@@ -123,7 +124,8 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
                  results,
                  metrics='top_k_accuracy',
                  metric_options=dict(top_k_accuracy=dict(topk=(1, 5))),
-                 logger=None):
+                 logger=None,
+                 **deprecated_kwargs):
         """Perform evaluation for common datasets.
 
         Args:
@@ -135,12 +137,22 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
                 Default: ``dict(top_k_accuracy=dict(topk=(1, 5)))``.
             logger (logging.Logger | None): Logger for recording.
                 Default: None.
+            deprecated_kwargs (dict): Used for containing deprecated arguments.
+                See 'https://github.com/open-mmlab/mmaction2/pull/286'.
 
         Returns:
             dict: Evaluation results dict.
         """
         # Protect ``metric_options`` since it uses mutable value as default
         metric_options = copy.deepcopy(metric_options)
+
+        if deprecated_kwargs != {}:
+            warnings.warn(
+                'Option arguments for metrics has been changed to '
+                "`metric_options`, See 'https://github.com/open-mmlab/mmaction2/pull/286' "  # noqa: E501
+                'for more details')
+            metric_options['top_k_accuracy'] = dict(
+                metric_options['top_k_accuracy'], **deprecated_kwargs)
 
         if not isinstance(results, list):
             raise TypeError(f'results must be a list, but got {type(results)}')

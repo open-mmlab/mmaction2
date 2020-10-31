@@ -1,6 +1,7 @@
 import copy
 import os
 import os.path as osp
+import warnings
 
 import mmcv
 import numpy as np
@@ -192,7 +193,8 @@ class ActivityNetDataset(BaseDataset):
                     max_avg_proposals=100,
                     temporal_iou_thresholds=np.linspace(0.5, 0.95, 10))
             },
-            logger=None):
+            logger=None,
+            **deprecated_kwargs):
         """Evaluation in feature dataset.
 
         Args:
@@ -205,12 +207,22 @@ class ActivityNetDataset(BaseDataset):
                 default: ``{'AR@AN': dict(max_avg_proposals=100,
                 temporal_iou_thresholds=np.linspace(0.5, 0.95, 10))}``.
             logger (logging.Logger | None): Training logger. Defaults: None.
+            deprecated_kwargs (dict): Used for containing deprecated arguments.
+                See 'https://github.com/open-mmlab/mmaction2/pull/286'.
 
         Returns:
             dict: Evaluation results for evaluation metrics.
         """
         # Protect ``metric_options`` since it uses mutable value as default
         metric_options = copy.deepcopy(metric_options)
+
+        if deprecated_kwargs != {}:
+            warnings.warn(
+                'Option arguments for metrics has been changed to '
+                "`metric_options`, See 'https://github.com/open-mmlab/mmaction2/pull/286' "  # noqa: E501
+                'for more details')
+            metric_options['AR@AN'] = dict(metric_options['AR@AN'],
+                                           **deprecated_kwargs)
 
         if not isinstance(results, list):
             raise TypeError(f'results must be a list, but got {type(results)}')
