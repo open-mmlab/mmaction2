@@ -51,7 +51,7 @@ This project is released under the [Apache 2.0 license](LICENSE).
 
 ## Changelog
 
-v0.7.0 was released in 30/9/2020. Please refer to [changelog.md](docs/changelog.md) for details and release history.
+v0.8.0 was released in 31/10/2020. Please refer to [changelog.md](docs/changelog.md) for details and release history.
 
 ## Benchmark
 | Model  |input| io backend | batch size x gpus | MMAction2 (s/iter) | MMAction (s/iter) | Temporal-Shift-Module (s/iter) | PySlowFast (s/iter) |

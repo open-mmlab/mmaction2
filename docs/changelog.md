@@ -1,6 +1,6 @@
 ## Changelog
 
-### v0.8.0 (master)
+### v0.8.0 (31/10/2020)
 
 **Highlights**
 - Support [OmniSource](https://arxiv.org/abs/2003.13042)
@@ -13,7 +13,7 @@
 - Support AVA dataset preparation ([#266](https://github.com/open-mmlab/mmaction2/pull/266))
 - Support the training of video recognition dataset with multiple tag categories ([#235](https://github.com/open-mmlab/mmaction2/pull/235))
 - Support joint training with multiple training datasets of multiple formats, including images, untrimmed videos, etc. ([#242](https://github.com/open-mmlab/mmaction2/pull/242))
-- Support specify a start epoch to conduct evaluation ([#216](https://github.com/open-mmlab/mmaction2/pull/216))
+- Support to specify a start epoch to conduct evaluation ([#216](https://github.com/open-mmlab/mmaction2/pull/216))
 - Implement X3D models, support testing with model weights converted from SlowFast ([#288](https://github.com/open-mmlab/mmaction2/pull/288))
 
 **Improvements**
@@ -27,6 +27,7 @@
 - Add citations in each preparing_dataset.md in `tools/data/dataset` ([#289](https://github.com/open-mmlab/mmaction2/pull/289))
 - Update the performance of audio-visual fusion on Kinetics-400 ([#281](https://github.com/open-mmlab/mmaction2/pull/281))
 - Support data preparation of OmniSource web datasets, including GoogleImage, InsImage, InsVideo and KineticsRawVideo ([#294](https://github.com/open-mmlab/mmaction2/pull/294))
+- Use `metric_options` dict to provide metric args in `evaluate` ([#286](https://github.com/open-mmlab/mmaction2/pull/286))
 
 **Bug Fixes**
 - Register `FrameSelector` in `PIPELINES` ([#268](https://github.com/open-mmlab/mmaction2/pull/268))
