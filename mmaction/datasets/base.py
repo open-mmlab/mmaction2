@@ -130,7 +130,8 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
             results (list): Output results.
             metrics (str | sequence[str]): Metrics to be performed.
                 Defaults: 'top_k_accuracy'.
-            metric_options (dict): Dict for metric options.
+            metric_options (dict): Dict for metric options. Options are
+                ``topk`` for ``top_k_accuracy``.
                 Default: ``dict(top_k_accuracy=dict(topk=(1, 5)))``.
             logger (logging.Logger | None): Logger for recording.
                 Default: None.
@@ -167,7 +168,9 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
             print_log(msg, logger=logger)
 
             if metric == 'top_k_accuracy':
-                topk = metric_options['top_k_accuracy'].get('topk')
+                topk = metric_options.setdefault('top_k_accuracy',
+                                                 {}).setdefault(
+                                                     'topk', (1, 5))
                 if not isinstance(topk, (int, tuple)):
                     raise TypeError('topk must be int or tuple of int, '
                                     f'but got {type(topk)}')

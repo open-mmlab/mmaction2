@@ -409,7 +409,8 @@ class SSNDataset(BaseDataset):
             results (list[dict]): Output results.
             metrics (str | sequence[str]): Metrics to be performed.
                 Defaults: 'mAP'.
-            metric_options (dict): Dict for metric options.
+            metric_options (dict): Dict for metric options. Options are
+                ``eval_dataset`` for ``mAP``.
             logger (logging.Logger | None): Logger for recording.
                 Default: None.
 
@@ -468,7 +469,8 @@ class SSNDataset(BaseDataset):
         eval_results = {}
         for metric in metrics:
             if metric == 'mAP':
-                eval_dataset = metric_options['mAP'].get('eval_dataset')
+                eval_dataset = metric_options.setdefault('mAP', {}).setdefault(
+                    'eval_dataset', 'thumos14')
                 if eval_dataset == 'thumos14':
                     iou_range = np.arange(0.1, 1.0, .1)
                     ap_values = eval_ap(plain_detections, all_gts, iou_range)

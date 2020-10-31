@@ -199,7 +199,9 @@ class ActivityNetDataset(BaseDataset):
             results (list[dict]): Output results.
             metrics (str | sequence[str]): Metrics to be performed.
                 Defaults: 'AR@AN'.
-            metric_options (dict): Dict for metric options.
+            metric_options (dict): Dict for metric options. Options are
+                ``max_avg_proposals``, ``temporal_iou_thresholds`` for
+                ``AR@AN``.
             logger (logging.Logger | None): Training logger. Defaults: None.
 
         Returns:
@@ -226,10 +228,11 @@ class ActivityNetDataset(BaseDataset):
 
         for metric in metrics:
             if metric == 'AR@AN':
-                temporal_iou_thresholds = metric_options['AR@AN'].get(
-                    'temporal_iou_thresholds')
-                max_avg_proposals = metric_options['AR@AN'].get(
-                    'max_avg_proposals')
+                temporal_iou_thresholds = metric_options.setdefault(
+                    'AR@AN', {}).setdefault('temporal_iou_thresholds',
+                                            np.linspace(0.5, 0.95, 10))
+                max_avg_proposals = metric_options.setdefault(
+                    'AR@AN', {}).setdefault('max_avg_proposals', 100)
                 if isinstance(temporal_iou_thresholds, list):
                     temporal_iou_thresholds = np.array(temporal_iou_thresholds)
 
