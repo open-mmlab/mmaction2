@@ -127,7 +127,7 @@ class HVUDataset(BaseDataset):
     def evaluate(self,
                  results,
                  metrics='mean_average_precision',
-                 metric_dict=None,
+                 metric_options=None,
                  logger=None):
         """Evaluation in HVU Video Dataset. We only support evaluating mAP for
         each tag categories. Since some tag categories are missing for some
@@ -137,15 +137,16 @@ class HVUDataset(BaseDataset):
             results (list): Output results.
             metrics (str | sequence[str]): Metrics to be performed.
                 Defaults: 'mean_average_precision'.
-            metric_dict (dict | None): Dict for metric options. Default: None.
+            metric_options (dict | None): Dict for metric options.
+                Default: None.
             logger (logging.Logger | None): Logger for recording.
                 Default: None.
 
         Returns:
             dict: Evaluation results dict.
         """
-        # Protect ``metric_dict`` since it uses mutable value as default
-        metric_dict = copy.deepcopy(metric_dict)
+        # Protect ``metric_options`` since it uses mutable value as default
+        metric_options = copy.deepcopy(metric_options)
 
         if not isinstance(results, list):
             raise TypeError(f'results must be a list, but got {type(results)}')

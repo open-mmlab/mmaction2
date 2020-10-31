@@ -122,7 +122,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
     def evaluate(self,
                  results,
                  metrics='top_k_accuracy',
-                 metric_dict=dict(topk=(1, 5)),
+                 metric_options=dict(top_k_accuracy=dict(topk=(1, 5))),
                  logger=None):
         """Perform evaluation for common datasets.
 
@@ -130,16 +130,16 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
             results (list): Output results.
             metrics (str | sequence[str]): Metrics to be performed.
                 Defaults: 'top_k_accuracy'.
-            metric_dict (dict): Dict for metric options.
-                Default: ``dict(topk=(1, 5))``.
+            metric_options (dict): Dict for metric options.
+                Default: ``dict(top_k_accuracy=dict(topk=(1, 5)))``.
             logger (logging.Logger | None): Logger for recording.
                 Default: None.
 
         Returns:
             dict: Evaluation results dict.
         """
-        # Protect ``metric_dict`` since it uses mutable value as default
-        metric_dict = copy.deepcopy(metric_dict)
+        # Protect ``metric_options`` since it uses mutable value as default
+        metric_options = copy.deepcopy(metric_options)
 
         if not isinstance(results, list):
             raise TypeError(f'results must be a list, but got {type(results)}')
@@ -167,7 +167,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
             print_log(msg, logger=logger)
 
             if metric == 'top_k_accuracy':
-                topk = metric_dict.get('topk')
+                topk = metric_options['top_k_accuracy'].get('topk')
                 if not isinstance(topk, (int, tuple)):
                     raise TypeError('topk must be int or tuple of int, '
                                     f'but got {type(topk)}')

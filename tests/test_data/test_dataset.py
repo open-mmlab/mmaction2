@@ -496,7 +496,8 @@ class TestDataset:
         with pytest.raises(TypeError):
             # topk must be int or tuple of int
             rawframe_dataset.evaluate(
-                [0] * len(rawframe_dataset), metric_dict=dict(topk=1.0))
+                [0] * len(rawframe_dataset),
+                metric_options=dict(top_k_accuracy=dict(topk=1.)))
 
         with pytest.raises(KeyError):
             # unsupported metric
@@ -527,7 +528,8 @@ class TestDataset:
         with pytest.raises(TypeError):
             # topk must be int or tuple of int
             video_dataset.evaluate(
-                [0] * len(video_dataset), metric_dict=dict(topk=1.0))
+                [0] * len(video_dataset),
+                metric_options=dict(top_k_accuracy=dict(topk=1.)))
 
         with pytest.raises(KeyError):
             # unsupported metric
@@ -843,7 +845,8 @@ class TestDataset:
         with pytest.raises(TypeError):
             # topk must be int or tuple of int
             audio_dataset.evaluate(
-                [0] * len(audio_dataset), metric_dict=dict(topk=1.0))
+                [0] * len(audio_dataset),
+                metric_options=dict(top_k_accuracy=dict(topk=1.)))
 
         with pytest.raises(KeyError):
             # unsupported metric
@@ -873,7 +876,8 @@ class TestDataset:
         with pytest.raises(TypeError):
             # topk must be int or tuple of int
             audio_dataset.evaluate(
-                [0] * len(audio_dataset), metric_dict=dict(topk=1.0))
+                [0] * len(audio_dataset),
+                metric_options=dict(top_k_accuracy=dict(topk=1.)))
 
         with pytest.raises(KeyError):
             # unsupported metric

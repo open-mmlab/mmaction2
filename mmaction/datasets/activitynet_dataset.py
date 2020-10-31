@@ -182,27 +182,31 @@ class ActivityNetDataset(BaseDataset):
             raise ValueError(
                 f'The output format {output_format} is not supported.')
 
-    def evaluate(self,
-                 results,
-                 metrics='AR@AN',
-                 metric_dict=dict(
-                     max_avg_proposals=100,
-                     temporal_iou_thresholds=np.linspace(0.5, 0.95, 10)),
-                 logger=None):
+    def evaluate(
+            self,
+            results,
+            metrics='AR@AN',
+            metric_options={
+                'AR@AN':
+                dict(
+                    max_avg_proposals=100,
+                    temporal_iou_thresholds=np.linspace(0.5, 0.95, 10))
+            },
+            logger=None):
         """Evaluation in feature dataset.
 
         Args:
             results (list[dict]): Output results.
             metrics (str | sequence[str]): Metrics to be performed.
                 Defaults: 'AR@AN'.
-            metric_dict (dict): Dict for metric options.
+            metric_options (dict): Dict for metric options.
             logger (logging.Logger | None): Training logger. Defaults: None.
 
         Returns:
             dict: Evaluation results for evaluation metrics.
         """
-        # Protect ``metric_dict`` since it uses mutable value as default
-        metric_dict = copy.deepcopy(metric_dict)
+        # Protect ``metric_options`` since it uses mutable value as default
+        metric_options = copy.deepcopy(metric_options)
 
         if not isinstance(results, list):
             raise TypeError(f'results must be a list, but got {type(results)}')
@@ -222,9 +226,10 @@ class ActivityNetDataset(BaseDataset):
 
         for metric in metrics:
             if metric == 'AR@AN':
-                temporal_iou_thresholds = metric_dict.get(
+                temporal_iou_thresholds = metric_options['AR@AN'].get(
                     'temporal_iou_thresholds')
-                max_avg_proposals = metric_dict.get('max_avg_proposals')
+                max_avg_proposals = metric_options['AR@AN'].get(
+                    'max_avg_proposals')
                 if isinstance(temporal_iou_thresholds, list):
                     temporal_iou_thresholds = np.array(temporal_iou_thresholds)
 
