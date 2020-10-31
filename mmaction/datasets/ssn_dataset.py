@@ -411,6 +411,7 @@ class SSNDataset(BaseDataset):
                 Defaults: 'mAP'.
             metric_options (dict): Dict for metric options. Options are
                 ``eval_dataset`` for ``mAP``.
+                Default: ``dict(mAP=dict(eval_dataset='thumos14'))``.
             logger (logging.Logger | None): Logger for recording.
                 Default: None.
 

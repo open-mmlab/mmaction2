@@ -202,6 +202,8 @@ class ActivityNetDataset(BaseDataset):
             metric_options (dict): Dict for metric options. Options are
                 ``max_avg_proposals``, ``temporal_iou_thresholds`` for
                 ``AR@AN``.
+                default: ``{'AR@AN': dict(max_avg_proposals=100,
+                temporal_iou_thresholds=np.linspace(0.5, 0.95, 10))}``.
             logger (logging.Logger | None): Training logger. Defaults: None.
 
         Returns:
