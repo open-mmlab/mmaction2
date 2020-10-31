@@ -147,12 +147,13 @@ class RawVideoDataset(BaseDataset):
 
     # Since the dataset is only used for joint training, we do not implement
     # the evaluate function.
-    def evaluate(self, results, metrics, logger):
+    def evaluate(self, results, metrics, metric_options, logger):
         """Evaluation for the dataset.
 
         Args:
             results (list): Output results.
             metrics (str | sequence[str]): Metrics to be performed.
+            metric_options (dict): Dict for metric options.
             logger (logging.Logger | None): Logger for recording.
 
         Returns:

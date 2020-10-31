@@ -105,7 +105,7 @@ total_epochs = 196
 checkpoint_config = dict(interval=4)
 workflow = [('train', 1)]
 evaluation = dict(
-    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
+    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
 log_config = dict(
     interval=20, hooks=[
         dict(type='TextLoggerHook'),

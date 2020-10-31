@@ -1,6 +1,7 @@
 import copy
 import os
 import os.path as osp
+import warnings
 
 import mmcv
 import numpy as np
@@ -182,27 +183,47 @@ class ActivityNetDataset(BaseDataset):
             raise ValueError(
                 f'The output format {output_format} is not supported.')
 
-    def evaluate(self,
-                 results,
-                 metrics='AR@AN',
-                 max_avg_proposals=100,
-                 temporal_iou_thresholds=np.linspace(0.5, 0.95, 10),
-                 logger=None):
+    def evaluate(
+            self,
+            results,
+            metrics='AR@AN',
+            metric_options={
+                'AR@AN':
+                dict(
+                    max_avg_proposals=100,
+                    temporal_iou_thresholds=np.linspace(0.5, 0.95, 10))
+            },
+            logger=None,
+            **deprecated_kwargs):
         """Evaluation in feature dataset.
 
         Args:
             results (list[dict]): Output results.
             metrics (str | sequence[str]): Metrics to be performed.
                 Defaults: 'AR@AN'.
-            max_avg_proposals (int): Max number of proposals to evaluate.
-                Defaults: 100.
-            temporal_iou_thresholds (list | np.ndarray): Temporal IoU threshold
-                for positive samples. Defaults: np.linspace(0.5, 0.95, 10).
+            metric_options (dict): Dict for metric options. Options are
+                ``max_avg_proposals``, ``temporal_iou_thresholds`` for
+                ``AR@AN``.
+                default: ``{'AR@AN': dict(max_avg_proposals=100,
+                temporal_iou_thresholds=np.linspace(0.5, 0.95, 10))}``.
             logger (logging.Logger | None): Training logger. Defaults: None.
+            deprecated_kwargs (dict): Used for containing deprecated arguments.
+                See 'https://github.com/open-mmlab/mmaction2/pull/286'.
 
         Returns:
             dict: Evaluation results for evaluation metrics.
         """
+        # Protect ``metric_options`` since it uses mutable value as default
+        metric_options = copy.deepcopy(metric_options)
+
+        if deprecated_kwargs != {}:
+            warnings.warn(
+                'Option arguments for metrics has been changed to '
+                "`metric_options`, See 'https://github.com/open-mmlab/mmaction2/pull/286' "  # noqa: E501
+                'for more details')
+            metric_options['AR@AN'] = dict(metric_options['AR@AN'],
+                                           **deprecated_kwargs)
+
         if not isinstance(results, list):
             raise TypeError(f'results must be a list, but got {type(results)}')
         assert len(results) == len(self), (
@@ -215,15 +236,20 @@ class ActivityNetDataset(BaseDataset):
             if metric not in allowed_metrics:
                 raise KeyError(f'metric {metric} is not supported')
 
-        if isinstance(temporal_iou_thresholds, list):
-            temporal_iou_thresholds = np.array(temporal_iou_thresholds)
-
         eval_results = {}
         ground_truth = self._import_ground_truth()
         proposal, num_proposals = self._import_proposals(results)
 
         for metric in metrics:
             if metric == 'AR@AN':
+                temporal_iou_thresholds = metric_options.setdefault(
+                    'AR@AN', {}).setdefault('temporal_iou_thresholds',
+                                            np.linspace(0.5, 0.95, 10))
+                max_avg_proposals = metric_options.setdefault(
+                    'AR@AN', {}).setdefault('max_avg_proposals', 100)
+                if isinstance(temporal_iou_thresholds, list):
+                    temporal_iou_thresholds = np.array(temporal_iou_thresholds)
+
                 recall, _, _, auc = (
                     average_recall_at_avg_proposals(
                         ground_truth,

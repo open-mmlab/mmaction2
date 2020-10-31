@@ -240,5 +240,5 @@ class AVADataset(BaseDataset):
         results['proposals'] = self.proposals[img_key][:self.num_max_proposals]
         return self.pipeline(results)
 
-    def evaluate(self, results, metrics, logger):
+    def evaluate(self, results, metrics, metric_options, logger):
         raise NotImplementedError
