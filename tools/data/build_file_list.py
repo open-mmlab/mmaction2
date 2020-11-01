@@ -218,8 +218,8 @@ def main():
                 with open(osp.join(out_path, val_name), 'w') as f:
                     f.writelines(file_lists[0][1])
             elif args.output_format == 'json':
-                train_list = lines2dictlist(file_lists[0][0])
-                val_list = lines2dictlist(file_lists[0][1])
+                train_list = lines2dictlist(file_lists[0][0], args.format)
+                val_list = lines2dictlist(file_lists[0][1], args.format)
                 train_name = train_name.replace('.txt', '.json')
                 val_name = val_name.replace('.txt', '.json')
                 with open(osp.join(out_path, train_name), 'w') as f:
@@ -244,7 +244,7 @@ def main():
             with open(osp.join(out_path, filename), 'w') as f:
                 f.writelines(lists[0][ind])
         elif args.output_format == 'json':
-            data_list = lines2dictlist(lists[0][ind])
+            data_list = lines2dictlist(lists[0][ind], args.format)
             filename = filename.replace('.txt', '.json')
             with open(osp.join(out_path, filename), 'w') as f:
                 json.dump(data_list, f)
