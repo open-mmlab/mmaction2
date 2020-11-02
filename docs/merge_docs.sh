@@ -13,6 +13,7 @@ sed -i 's/(\/tools\/data\/jhmdb\/preparing_jhmdb.md/(#jhmdb/g' supported_dataset
 sed -i 's/(\/tools\/data\/hvu\/preparing_hvu.md/(#hvu/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/hmdb51\/preparing_hmdb51.md/(#hmdb51/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/jester\/preparing_jester.md/(#jester/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/ava\/preparing_ava.md/(#ava/g' supported_datasets.md
 
 cat  ../configs/localization/*/*.md > localization_models.md
 cat  ../configs/recognition/*/*.md > recognition_models.md

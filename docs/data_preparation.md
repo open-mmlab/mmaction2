@@ -31,8 +31,8 @@ it is beneficial to use the same tool to do both frame extraction and the flow c
 ```shell
 python build_rawframes.py ${SRC_FOLDER} ${OUT_FOLDER} [--task ${TASK}] [--level ${LEVEL}] \
     [--num-worker ${NUM_WORKER}] [--flow-type ${FLOW_TYPE}] [--out-format ${OUT_FORMAT}] \
-    [--ext ${EXT}] [--new-width ${NEW_WIDTH}] [--new-height ${NEW_HEIGHT}] [--new-short ${NEW_SHORT}]
-    [--resume] [--use-opencv]
+    [--ext ${EXT}] [--new-width ${NEW_WIDTH}] [--new-height ${NEW_HEIGHT}] [--new-short ${NEW_SHORT}] \
+    [--resume] [--use-opencv] [--mixed-ext]
 ```
 
 - `SRC_FOLDER`: Folder of the original video.
@@ -48,6 +48,7 @@ python build_rawframes.py ${SRC_FOLDER} ${OUT_FOLDER} [--task ${TASK}] [--level 
 - `NEW_SHORT`: Resized image short side length keeping ratio.
 - `--resume`: Whether to resume optical flow extraction instead of overwriting.
 - `--use-opencv`: Whether to use OpenCV to extract rgb frames.
+- `--mixed-ext`: Indicate whether process video files with mixed extensions.
 
 The recommended practice is
 

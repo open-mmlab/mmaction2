@@ -81,7 +81,7 @@ def generate_proposals(ann_file, tem_results_dir, pgm_proposals_dir,
     os.makedirs(pgm_proposals_dir, exist_ok=True)
     prog_bar = mmcv.ProgressBar(num_videos)
     header = 'tmin,tmax,tmin_score,tmax_score,score,match_iou,match_ioa'
-    for video_name in result_dict.keys():
+    for video_name in result_dict:
         proposals = result_dict[video_name]
         proposal_path = osp.join(pgm_proposals_dir, video_name + '.csv')
         np.savetxt(
@@ -102,6 +102,7 @@ def generate_features(ann_file, tem_results_dir, pgm_proposals_dir,
             all videos to be processed.
         tem_results_dir (str): Directory to read tem results.
         pgm_proposals_dir (str): Directory to read generated proposals.
+        pgm_features_dir (str): Directory to save generated features.
         pgm_features_thread (int): Total number of threads.
         kwargs (dict): Keyword arguments for "generate_bsp_feature".
     """

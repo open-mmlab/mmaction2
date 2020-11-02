@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader
 
 from .dataset_wrappers import RepeatDataset
 from .registry import DATASETS
-from .samplers import DistributedSampler
+from .samplers import DistributedPowerSampler, DistributedSampler
 
 if platform.system() != 'Windows':
     # https://github.com/pytorch/pytorch/issues/973
@@ -26,7 +26,7 @@ def build_dataset(cfg, default_args=None):
 
     Args:
         cfg (dict): Config dict. It should at least contain the key "type".
-        default_args (dict, optional): Default initialization arguments.
+        default_args (dict | None, optional): Default initialization arguments.
             Default: None.
 
     Returns:
@@ -78,9 +78,16 @@ def build_dataloader(dataset,
         DataLoader: A PyTorch dataloader.
     """
     rank, world_size = get_dist_info()
+    sample_by_class = getattr(dataset, 'sample_by_class', False)
+    power = getattr(dataset, 'power', None)
+
     if dist:
-        sampler = DistributedSampler(
-            dataset, world_size, rank, shuffle=shuffle)
+        if sample_by_class:
+            assert power is not None
+            sampler = DistributedPowerSampler(dataset, world_size, rank, power)
+        else:
+            sampler = DistributedSampler(
+                dataset, world_size, rank, shuffle=shuffle)
         shuffle = False
         batch_size = videos_per_gpu
         num_workers = workers_per_gpu

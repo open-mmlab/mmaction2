@@ -115,7 +115,7 @@ lr_config = dict(
 total_epochs = 40
 checkpoint_config = dict(interval=1)
 evaluation = dict(
-    interval=2, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
+    interval=2, metrics=['top_k_accuracy', 'mean_class_accuracy'])
 log_config = dict(
     interval=20,
     hooks=[

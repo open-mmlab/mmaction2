@@ -1,5 +1,6 @@
 import copy
 import os.path as osp
+import warnings
 
 import mmcv
 import numpy as np
@@ -20,7 +21,7 @@ class SSNInstance:
         start_frame (int): Index of the proposal's start frame.
         end_frame (int): Index of the proposal's end frame.
         num_video_frames (int): Total frames of the video.
-        label (int): The category label of the proposal. Default: None.
+        label (int | None): The category label of the proposal. Default: None.
         best_iou (float): The highest IOU with the groundtruth instance.
             Default: 0.
         overlap_self (float): Percent of the proposal's own span contained
@@ -82,7 +83,7 @@ class SSNInstance:
 class SSNDataset(BaseDataset):
     """Proposal frame dataset for Structured Segment Networks.
 
-    Based on proposal information, the dataset loads raw frames and apply
+    Based on proposal information, the dataset loads raw frames and applies
     specified transforms to return a dict containing the frame tensors and
     other information.
 
@@ -401,19 +402,37 @@ class SSNDataset(BaseDataset):
     def evaluate(self,
                  results,
                  metrics='mAP',
-                 eval_dataset='thumos14',
-                 **kwargs):
+                 metric_options=dict(mAP=dict(eval_dataset='thumos14')),
+                 logger=None,
+                 **deprecated_kwargs):
         """Evaluation in SSN proposal dataset.
 
         Args:
             results (list[dict]): Output results.
             metrics (str | sequence[str]): Metrics to be performed.
                 Defaults: 'mAP'.
-            eval_dataset (str): Dataset to be evaluated.
+            metric_options (dict): Dict for metric options. Options are
+                ``eval_dataset`` for ``mAP``.
+                Default: ``dict(mAP=dict(eval_dataset='thumos14'))``.
+            logger (logging.Logger | None): Logger for recording.
+                Default: None.
+            deprecated_kwargs (dict): Used for containing deprecated arguments.
+                See 'https://github.com/open-mmlab/mmaction2/pull/286'.
 
         Returns:
             dict: Evaluation results for evaluation metrics.
         """
+        # Protect ``metric_options`` since it uses mutable value as default
+        metric_options = copy.deepcopy(metric_options)
+
+        if deprecated_kwargs != {}:
+            warnings.warn(
+                'Option arguments for metrics has been changed to '
+                "`metric_options`, See 'https://github.com/open-mmlab/mmaction2/pull/286' "  # noqa: E501
+                'for more details')
+            metric_options['mAP'] = dict(metric_options['mAP'],
+                                         **deprecated_kwargs)
+
         if not isinstance(results, list):
             raise TypeError(f'results must be a list, but got {type(results)}')
         assert len(results) == len(self), (
@@ -448,7 +467,7 @@ class SSNDataset(BaseDataset):
         # get gts
         all_gts = self.get_all_gts()
         for class_idx in range(len(detections)):
-            if (class_idx not in all_gts):
+            if class_idx not in all_gts:
                 all_gts[class_idx] = dict()
 
         # get predictions
@@ -463,6 +482,8 @@ class SSNDataset(BaseDataset):
         eval_results = {}
         for metric in metrics:
             if metric == 'mAP':
+                eval_dataset = metric_options.setdefault('mAP', {}).setdefault(
+                    'eval_dataset', 'thumos14')
                 if eval_dataset == 'thumos14':
                     iou_range = np.arange(0.1, 1.0, .1)
                     ap_values = eval_ap(plain_detections, all_gts, iou_range)
@@ -557,8 +578,7 @@ class SSNDataset(BaseDataset):
             background_iou_threshold (float): Maximum threshold of overlap
                 of background proposals and groundtruths.
             background_coverage_threshold (float): Minimum coverage
-                of background proposals in video duration.
-                Default: 0.01.
+                of background proposals in video duration. Default: 0.01.
             incomplete_overlap_threshold (float): Minimum percent of incomplete
                 proposals' own span contained in a groundtruth instance.
                 Default: 0.7.
@@ -587,8 +607,8 @@ class SSNDataset(BaseDataset):
         Args:
             record (dict): Information of the video instance(video_info[idx]).
                 key: frame_dir, video_id, total_frames,
-                     gts: List of groundtruth instances(:obj:`SSNInstance`).
-                     proposals: List of proposal instances(:obj:`SSNInstance`).
+                gts: List of groundtruth instances(:obj:`SSNInstance`).
+                proposals: List of proposal instances(:obj:`SSNInstance`).
         """
         positives = self.get_positives(record['gts'], record['proposals'],
                                        self.assigner.positive_iou_threshold,

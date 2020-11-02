@@ -100,6 +100,9 @@ def main():
         distributed = True
         init_dist(args.launcher, **cfg.dist_params)
 
+    # The flag is used to determine whether it is omnisource training
+    cfg.setdefault('omnisource', False)
+
     # create work_dir
     mmcv.mkdir_or_exist(osp.abspath(cfg.work_dir))
     # dump config
@@ -126,8 +129,8 @@ def main():
 
     # set random seeds
     if args.seed is not None:
-        logger.info('Set random seed to {}, deterministic: {}'.format(
-            args.seed, args.deterministic))
+        logger.info(f'Set random seed to {args.seed}, '
+                    f'deterministic: {args.deterministic}')
         set_random_seed(args.seed, deterministic=args.deterministic)
     cfg.seed = args.seed
     meta['seed'] = args.seed
@@ -137,8 +140,17 @@ def main():
     model = build_model(
         cfg.model, train_cfg=cfg.train_cfg, test_cfg=cfg.test_cfg)
 
-    datasets = [build_dataset(cfg.data.train)]
+    if cfg.omnisource:
+        # If omnisource flag is set, cfg.data.train should be a list
+        assert type(cfg.data.train) is list
+        datasets = [build_dataset(dataset) for dataset in cfg.data.train]
+    else:
+        datasets = [build_dataset(cfg.data.train)]
+
     if len(cfg.workflow) == 2:
+        # For simplicity, omnisource is not compatiable with val workflow,
+        # we recommend you to use `--validate`
+        assert not cfg.omnisource
         if args.validate:
             warnings.warn('val workflow is duplicated with `--validate`, '
                           'it is recommended to use `--validate`. see '

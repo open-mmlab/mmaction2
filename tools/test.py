@@ -1,6 +1,7 @@
 import argparse
 import os
 import os.path as osp
+import warnings
 
 import mmcv
 import torch
@@ -43,7 +44,21 @@ def parse_args():
         '--tmpdir',
         help='tmp directory used for collecting results from multiple '
         'workers, available when gpu-collect is not specified')
-    parser.add_argument('--options', nargs='+', help='custom options')
+    parser.add_argument(
+        '--options',
+        nargs='+',
+        action=DictAction,
+        default={},
+        help='custom options for evaluation, the key-value pair in xxx=yyy '
+        'format will be kwargs for dataset.evaluate() function (deprecate), '
+        'change to --eval-options instead.')
+    parser.add_argument(
+        '--eval-options',
+        nargs='+',
+        action=DictAction,
+        default={},
+        help='custom options for evaluation, the key-value pair in xxx=yyy '
+        'format will be kwargs for dataset.evaluate() function')
     parser.add_argument(
         '--cfg-options',
         nargs='+',
@@ -66,6 +81,14 @@ def parse_args():
     args = parser.parse_args()
     if 'LOCAL_RANK' not in os.environ:
         os.environ['LOCAL_RANK'] = str(args.local_rank)
+
+    if args.options and args.eval_options:
+        raise ValueError(
+            '--options and --eval-options cannot be both '
+            'specified, --options is deprecated in favor of --eval-options')
+    if args.options:
+        warnings.warn('--options is deprecated in favor of --eval-options')
+        args.eval_options = args.options
     return args
 
 
@@ -96,8 +119,8 @@ def main():
     eval_config = cfg.get('eval_config', {})
     # Overwrite eval_config from args.eval
     eval_config = merge_configs(eval_config, dict(metrics=args.eval))
-    # Add options from args.option
-    eval_config = merge_configs(eval_config, args.options)
+    # Add options from args.eval_options
+    eval_config = merge_configs(eval_config, args.eval_options)
 
     assert output_config or eval_config, \
         ('Please specify at least one operation (save or eval the '

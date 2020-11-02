@@ -20,8 +20,8 @@ def init_recognizer(config,
     Args:
         config (str | :obj:`mmcv.Config`): Config file path or the config
             object.
-        checkpoint (str, optional): Checkpoint path. If left as None, the model
-            will not load any weights. Default: None.
+        checkpoint (str | None, optional): Checkpoint path. If left as None,
+            the model will not load any weights. Default: None.
         device (str | :obj:`torch.device`): The desired device of returned
             tensor. Default: 'cuda:0'.
         use_frames (bool): Whether to use rawframes as input. Default:False.

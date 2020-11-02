@@ -1,3 +1,3 @@
-from .distributed_sampler import DistributedSampler
+from .distributed_sampler import DistributedPowerSampler, DistributedSampler
 
-__all__ = ['DistributedSampler']
+__all__ = ['DistributedSampler', 'DistributedPowerSampler']

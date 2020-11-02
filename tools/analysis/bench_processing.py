@@ -53,7 +53,7 @@ def main():
     for i, data in enumerate(data_loader):
         if i == 5:
             prog_bar.start()
-        for img in data['imgs']:
+        for _ in data['imgs']:
             if i < 5:
                 continue
             prog_bar.update()

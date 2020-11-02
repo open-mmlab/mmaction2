@@ -15,7 +15,7 @@ from ..registry import PIPELINES
 
 
 @PIPELINES.register_module()
-class LoadHVULabel(object):
+class LoadHVULabel:
     """Convert the HVU label from dictionaries to torch tensors.
 
     Required keys are "label", "categories", "category_nums", added or modified
@@ -67,9 +67,14 @@ class LoadHVULabel(object):
         results['category_mask'] = category_mask
         return results
 
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'hvu_initialized={self.hvu_initialized})')
+        return repr_str
+
 
 @PIPELINES.register_module()
-class SampleFrames(object):
+class SampleFrames:
     """Sample frames from the video.
 
     Required keys are "filename", "total_frames", "start_index" , added or
@@ -232,9 +237,20 @@ class SampleFrames(object):
         results['num_clips'] = self.num_clips
         return results
 
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'clip_len={self.clip_len}, '
+                    f'frame_interval={self.frame_interval}, '
+                    f'num_clips={self.num_clips}, '
+                    f'temporal_jitter={self.temporal_jitter}, '
+                    f'twice_sample={self.twice_sample}, '
+                    f'out_of_bound_opt={self.out_of_bound_opt}, '
+                    f'test_mode={self.test_mode})')
+        return repr_str
+
 
 @PIPELINES.register_module()
-class UntrimmedSampleFrames(object):
+class UntrimmedSampleFrames:
     """Sample frames from the untrimmed video.
 
     Required keys are "filename", "total_frames", added or modified keys are
@@ -244,17 +260,20 @@ class UntrimmedSampleFrames(object):
         clip_len (int): The length of sampled clips. Default: 1.
         frame_interval (int): Temporal interval of adjacent sampled frames.
             Default: 16.
-        start_index (int): Specify a start index for frames in consideration of
-            different filename format. However, when taking videos as input,
-            it should be set to 0, since frames loaded from videos count
-            from 0. Default: 1.
+        start_index (None): This argument is deprecated and moved to dataset
+            class (``BaseDataset``, ``VideoDatset``, ``RawframeDataset``, etc),
+            see this: https://github.com/open-mmlab/mmaction2/pull/89.
     """
 
-    def __init__(self, clip_len=1, frame_interval=16, start_index=1):
+    def __init__(self, clip_len=1, frame_interval=16, start_index=None):
 
         self.clip_len = clip_len
         self.frame_interval = frame_interval
-        self.start_index = start_index
+
+        if start_index is not None:
+            warnings.warn('No longer support "start_index" in "SampleFrames", '
+                          'it should be set in dataset class, see this pr: '
+                          'https://github.com/open-mmlab/mmaction2/pull/89')
 
     def __call__(self, results):
         """Perform the SampleFrames loading.
@@ -264,6 +283,7 @@ class UntrimmedSampleFrames(object):
                 to the next transform in pipeline.
         """
         total_frames = results['total_frames']
+        start_index = results['start_index']
 
         clip_centers = np.arange(self.frame_interval // 2, total_frames,
                                  self.frame_interval)
@@ -274,12 +294,18 @@ class UntrimmedSampleFrames(object):
         # clip frame_inds to legal range
         frame_inds = np.clip(frame_inds, 0, total_frames - 1)
 
-        frame_inds = np.concatenate(frame_inds) + self.start_index
+        frame_inds = np.concatenate(frame_inds) + start_index
         results['frame_inds'] = frame_inds.astype(np.int)
         results['clip_len'] = self.clip_len
         results['frame_interval'] = self.frame_interval
         results['num_clips'] = num_clips
         return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'clip_len={self.clip_len}, '
+                    f'frame_interval={self.frame_interval})')
+        return repr_str
 
 
 @PIPELINES.register_module()
@@ -369,6 +395,75 @@ class DenseSampleFrames(SampleFrames):
             clip_offsets.extend((base_offsets + start_idx) % num_frames)
         clip_offsets = np.array(clip_offsets)
         return clip_offsets
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'clip_len={self.clip_len}, '
+                    f'frame_interval={self.frame_interval}, '
+                    f'num_clips={self.num_clips}, '
+                    f'sample_range={self.sample_range}, '
+                    f'num_sample_positions={self.num_sample_positions}, '
+                    f'temporal_jitter={self.temporal_jitter}, '
+                    f'out_of_bound_opt={self.out_of_bound_opt}, '
+                    f'test_mode={self.test_mode})')
+        return repr_str
+
+
+@PIPELINES.register_module()
+class SampleAVAFrames(SampleFrames):
+
+    def __init__(self, clip_len, frame_interval=2, test_mode=False):
+
+        super().__init__(clip_len, frame_interval, test_mode=test_mode)
+
+    def _get_clips(self, center_index, skip_offsets, shot_info):
+        frame_inds = list()
+        ori_clip_len = self.clip_len * self.frame_interval
+
+        cur = center_index - self.frame_interval
+        length = len(
+            range(-self.frame_interval,
+                  -(ori_clip_len + 1) // self.frame_interval,
+                  -self.frame_interval))
+
+        for i in range(length):
+            frame_inds.append(cur + skip_offsets[i])
+            if cur - self.frame_interval >= shot_info[0]:
+                cur -= self.frame_interval
+
+        cur = center_index
+        length = len(
+            range(0, (ori_clip_len + 1) // self.frame_interval,
+                  self.frame_interval))
+        for i in range(length):
+            frame_inds.append(cur + skip_offsets[i])
+            if cur + self.frame_interval < shot_info[1]:
+                cur += self.frame_interval
+
+        return frame_inds
+
+    def __call__(self, results):
+        fps = results['fps']
+        timestamp = results['timestamp']
+        timestamp_start = results['timestamp_start']
+        shot_info = results['shot_info']
+
+        center_index = fps * (timestamp - timestamp_start) + 1
+        skip_offsets = np.random.randint(
+            self.frame_interval, size=self.clip_len)
+        frame_inds = self._get_clips(center_index, skip_offsets, shot_info)
+
+        results['frame_inds'] = np.array(frame_inds, dtype=np.int)
+        results['clip_len'] = self.clip_len
+        results['frame_interval'] = self.frame_interval
+        return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'clip_len={self.clip_len}, '
+                    f'frame_interval={self.frame_interval}, '
+                    f'test_mode={self.test_mode})')
+        return repr_str
 
 
 @PIPELINES.register_module()
@@ -478,7 +573,7 @@ class SampleProposalFrames(SampleFrames):
         stages: starting, course and ending stage.
 
         Args:
-            proposal (object): The proposal object.
+            proposal (obj): The proposal object.
             num_frames (int): Total number of frame in the video.
 
         Returns:
@@ -612,9 +707,21 @@ class SampleProposalFrames(SampleFrames):
 
         return results
 
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'clip_len={self.clip_len}, '
+                    f'body_segments={self.body_segments}, '
+                    f'aug_segments={self.aug_segments}, '
+                    f'aug_ratio={self.aug_ratio}, '
+                    f'frame_interval={self.frame_interval}, '
+                    f'test_interval={self.test_interval}, '
+                    f'temporal_jitter={self.temporal_jitter}, '
+                    f'mode={self.mode})')
+        return repr_str
+
 
 @PIPELINES.register_module()
-class PyAVInit(object):
+class PyAVInit:
     """Using pyav to initialize the video.
 
     PyAV: https://github.com/mikeboers/PyAV
@@ -657,9 +764,13 @@ class PyAVInit(object):
 
         return results
 
+    def __repr__(self):
+        repr_str = f'{self.__class__.__name__}(io_backend=disk)'
+        return repr_str
+
 
 @PIPELINES.register_module()
-class PyAVDecode(object):
+class PyAVDecode:
     """Using pyav to decode the video.
 
     PyAV: https://github.com/mikeboers/PyAV
@@ -718,7 +829,7 @@ class PyAVDecode(object):
 
 
 @PIPELINES.register_module()
-class DecordInit(object):
+class DecordInit:
     """Using decord to initialize the video_reader.
 
     Decord: https://github.com/dmlc/decord
@@ -755,9 +866,15 @@ class DecordInit(object):
         results['total_frames'] = len(container)
         return results
 
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'io_backend={self.io_backend}, '
+                    f'num_threads={self.num_threads})')
+        return repr_str
+
 
 @PIPELINES.register_module()
-class DecordDecode(object):
+class DecordDecode:
     """Using decord to decode the video.
 
     Decord: https://github.com/dmlc/decord
@@ -765,9 +882,6 @@ class DecordDecode(object):
     Required keys are "video_reader", "filename" and "frame_inds",
     added or modified keys are "imgs" and "original_shape".
     """
-
-    def __init__(self, **kwargs):
-        pass
 
     def __call__(self, results):
         """Perform the Decord decoding.
@@ -801,7 +915,7 @@ class DecordDecode(object):
 
 
 @PIPELINES.register_module()
-class OpenCVInit(object):
+class OpenCVInit:
     """Using OpenCV to initalize the video_reader.
 
     Required keys are "filename", added or modified keys are "new_path",
@@ -847,17 +961,19 @@ class OpenCVInit(object):
     def __del__(self):
         shutil.rmtree(self.tmp_folder)
 
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'io_backend={self.io_backend})')
+        return repr_str
+
 
 @PIPELINES.register_module()
-class OpenCVDecode(object):
+class OpenCVDecode:
     """Using OpenCV to decode the video.
 
     Required keys are "video_reader", "filename" and "frame_inds", added or
     modified keys are "imgs", "img_shape" and "original_shape".
     """
-
-    def __init__(self):
-        pass
 
     def __call__(self, results):
         """Perform the OpenCV decoding.
@@ -894,7 +1010,7 @@ class OpenCVDecode(object):
 
 
 @PIPELINES.register_module()
-class RawFrameDecode(object):
+class RawFrameDecode:
     """Load and decode frames with given indices.
 
     Required keys are "frame_dir", "filename_tmpl" and "frame_inds",
@@ -963,18 +1079,70 @@ class RawFrameDecode(object):
 
         return results
 
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'io_backend={self.io_backend}, '
+                    f'decoding_backend={self.decoding_backend})')
+        return repr_str
+
 
 @PIPELINES.register_module()
-class AudioDecodeInit(object):
+class ImageDecode:
+    """Load and decode images.
+
+    Required key is "filename", added or modified keys are "imgs", "img_shape"
+    and "original_shape".
+
+    Args:
+        io_backend (str): IO backend where frames are stored. Default: 'disk'.
+        decoding_backend (str): Backend used for image decoding.
+            Default: 'cv2'.
+        kwargs (dict, optional): Arguments for FileClient.
+    """
+
+    def __init__(self, io_backend='disk', decoding_backend='cv2', **kwargs):
+        self.io_backend = io_backend
+        self.decoding_backend = decoding_backend
+        self.kwargs = kwargs
+        self.file_client = None
+
+    def __call__(self, results):
+        """Perform the ``ImageDecode`` to load image given the file path.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        mmcv.use_backend(self.decoding_backend)
+
+        filename = results['filename']
+
+        if self.file_client is None:
+            self.file_client = FileClient(self.io_backend, **self.kwargs)
+
+        imgs = list()
+        img_bytes = self.file_client.get(filename)
+
+        img = mmcv.imfrombytes(img_bytes, channel_order='rgb')
+        imgs.append(img)
+
+        results['imgs'] = imgs
+        results['original_shape'] = imgs[0].shape[:2]
+        results['img_shape'] = imgs[0].shape[:2]
+        return results
+
+
+@PIPELINES.register_module()
+class AudioDecodeInit:
     """Using librosa to initialize the audio reader.
+
+    Required keys are "audio_path", added or modified keys are "length",
+    "sample_rate", "audios".
 
     Args:
         io_backend (str): io backend where frames are store.
             Default: 'disk'.
         sample_rate (int): Audio sampling times per second. Default: 16000.
-
-    Required keys are "audio_path", added or modified keys are "length",
-    "sample_rate", "audios".
     """
 
     def __init__(self,
@@ -1026,9 +1194,16 @@ class AudioDecodeInit(object):
         results['audios'] = y
         return results
 
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'io_backend={self.io_backend}, '
+                    f'sample_rate={self.sample_rate}, '
+                    f'pad_method={self.pad_method})')
+        return repr_str
+
 
 @PIPELINES.register_module()
-class LoadAudioFeature(object):
+class LoadAudioFeature:
     """Load offline extracted audio features.
 
     Required keys are "audio_path", added or modified keys are "length",
@@ -1066,14 +1241,19 @@ class LoadAudioFeature(object):
         results['audios'] = feature_map
         return results
 
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'pad_method={self.pad_method})')
+        return repr_str
+
 
 @PIPELINES.register_module()
-class AudioDecode(object):
+class AudioDecode:
     """Sample the audio w.r.t. the frames selected.
 
     Args:
         fixed_length (int): As the audio clip selected by frames sampled may
-            not be extactly the same, `fixed_length` will truncate or pad them
+            not be exactly the same, `fixed_length` will truncate or pad them
             into the same size. Default: 32000.
 
     Required keys are "frame_inds", "num_clips", "total_frames", "length",
@@ -1115,8 +1295,37 @@ class AudioDecode(object):
 
         results['audios'] = np.array(resampled_clips)
         results['audios_shape'] = results['audios'].shape
-
         return results
+
+
+@PIPELINES.register_module()
+class BuildPseudoClip:
+    """Build pseudo clips with one single image by repeating it n times.
+
+    Required key is "imgs", added or modified key is "imgs", "num_clips",
+        "clip_len".
+
+    Args:
+        clip_len (int): Frames of the generated pseudo clips.
+    """
+
+    def __init__(self, clip_len):
+        self.clip_len = clip_len
+
+    def __call__(self, results):
+        # the input should be one single image
+        assert len(results['imgs']) == 1
+        im = results['imgs'][0]
+        for i in range(1, self.clip_len):
+            results['imgs'].append(np.copy(im))
+        results['clip_len'] = self.clip_len
+        results['num_clips'] = 1
+        return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'fix_length={self.fixed_length})')
+        return repr_str
 
 
 @PIPELINES.register_module()
@@ -1130,16 +1339,16 @@ class FrameSelector(RawFrameDecode):
 
 
 @PIPELINES.register_module()
-class AudioFeatureSelector(object):
+class AudioFeatureSelector:
     """Sample the audio feature w.r.t. the frames selected.
+
+    Required keys are "audios", "frame_inds", "num_clips", "length",
+    "total_frames", added or modified keys are "audios", "audios_shape".
 
     Args:
         fixed_length (int): As the features selected by frames sampled may
             not be extactly the same, `fixed_length` will truncate or pad them
             into the same size. Default: 128.
-
-    Required keys are "audios", "frame_inds", "num_clips", "length",
-        "total_frames", added or modified keys are "audios", "audios_shape".
     """
 
     def __init__(self, fixed_length=128):
@@ -1184,13 +1393,18 @@ class AudioFeatureSelector(object):
         results['audios_shape'] = results['audios'].shape
         return results
 
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'fix_length={self.fixed_length})')
+        return repr_str
+
 
 @PIPELINES.register_module()
-class LoadLocalizationFeature(object):
+class LoadLocalizationFeature:
     """Load Video features for localizer with given video_name list.
 
-    Required keys are "video_name" and "data_prefix",
-    added or modified keys are "raw_feature".
+    Required keys are "video_name" and "data_prefix", added or modified keys
+    are "raw_feature".
 
     Args:
         raw_feature_ext (str): Raw feature file extension.  Default: '.csv'.
@@ -1220,9 +1434,14 @@ class LoadLocalizationFeature(object):
 
         return results
 
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'raw_feature_ext={self.raw_feature_ext})')
+        return repr_str
+
 
 @PIPELINES.register_module()
-class GenerateLocalizationLabels(object):
+class GenerateLocalizationLabels:
     """Load video label for localizer with given video_name list.
 
     Required keys are "duration_frame", "duration_second", "feature_frame",
@@ -1257,12 +1476,11 @@ class GenerateLocalizationLabels(object):
 
 
 @PIPELINES.register_module()
-class LoadProposals(object):
+class LoadProposals:
     """Loading proposals with given proposal results.
 
-    Required keys are "video_name"
-    added or modified keys are 'bsp_feature', 'tmin', 'tmax',
-    'tmin_score', 'tmax_score' and 'reference_temporal_iou'.
+    Required keys are "video_name", added or modified keys are 'bsp_feature',
+    'tmin', 'tmax', 'tmin_score', 'tmax_score' and 'reference_temporal_iou'.
 
     Args:
         top_k (int): The top k proposals to be loaded.
@@ -1326,3 +1544,12 @@ class LoadProposals(object):
         results['reference_temporal_iou'] = reference_temporal_iou
 
         return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'top_k={self.top_k}, '
+                    f'pgm_proposals_dir={self.pgm_proposals_dir}, '
+                    f'pgm_features_dir={self.pgm_features_dir}, '
+                    f'proposal_ext={self.proposal_ext}, '
+                    f'feature_ext={self.feature_ext})')
+        return repr_str
