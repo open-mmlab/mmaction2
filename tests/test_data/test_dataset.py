@@ -141,7 +141,7 @@ class TestDataset:
             'action', 'attribute', 'concept', 'event', 'object', 'scene'
         ]
 
-        cls.hvu_category_nums = [739, 117, 291, 69, 1679, 248]
+        cls.hvu_category_nums = [739, 117, 291, 69, 1678, 248]
         cls.filename_tmpl = 'img_{:05d}.jpg'
 
     def test_hvu_dataset(self):
