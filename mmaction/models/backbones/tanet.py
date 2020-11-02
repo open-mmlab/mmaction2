@@ -1,3 +1,4 @@
+import torch.nn as nn
 from torch.utils import checkpoint as cp
 
 from ..common import TAM
@@ -19,15 +20,17 @@ class TABlock(nn.Module):
             If set to None, it uses ```dict()``` to constrcut TAM.
             Default: None.
     """
+
     def __init__(self, block, num_segments, tam_cfg=None):
         super().__init__()
         if tam_cfg is None:
             tam_cfg = dict()
         self.block = block
         self.num_segments = num_segments
-        self.tam = TAM(in_channels=block.conv1.out_channels,
-                       num_segments=num_segments,
-                       **tam_cfg)
+        self.tam = TAM(
+            in_channels=block.conv1.out_channels,
+            num_segments=num_segments,
+            **tam_cfg)
 
     def forward(self, x):
         if isinstance(self.block, Bottleneck):
@@ -79,6 +82,7 @@ class TANet(ResNet):
         **kwargs (keyword arguments, optional): Arguments for ResNet except
             ```depth```.
     """
+
     def __init__(self, depth, num_segments, tam_cfg=None, **kwargs):
         super().__init__(depth, **kwargs)
         assert num_segments >= 3
@@ -93,6 +97,7 @@ class TANet(ResNet):
 
     def make_tam_modeling(self):
         """Replace ResNet-Block with TA-Block."""
+
         def make_tam_block(stage, num_segments, tam_cfg=None):
             if tam_cfg is None:
                 tam_cfg = dict()
