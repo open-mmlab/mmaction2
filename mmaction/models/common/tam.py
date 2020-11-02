@@ -29,6 +29,7 @@ class TAM(nn.Module):
         init_std (float): Std value for initiation of nn.Linear. Default:
             0.001.
     """
+
     def __init__(self,
                  in_channels,
                  num_segments,
@@ -59,12 +60,13 @@ class TAM(nn.Module):
             nn.Softmax(-1))
 
         self.L = nn.Sequential(
-            nn.Conv1d(in_channels,
-                      in_channels // beta,
-                      conv1d_kernel_size,
-                      stride=1,
-                      padding=conv1d_kernel_size // 2,
-                      bias=False), nn.ReLU(inplace=True),
+            nn.Conv1d(
+                in_channels,
+                in_channels // beta,
+                conv1d_kernel_size,
+                stride=1,
+                padding=conv1d_kernel_size // 2,
+                bias=False), nn.ReLU(inplace=True),
             nn.Conv1d(in_channels // beta, in_channels, 1, bias=False),
             nn.Sigmoid())
 
@@ -97,8 +99,8 @@ class TAM(nn.Module):
         x = x.permute(0, 2, 1, 3, 4).contiguous()
 
         # [num_batches * c, num_segments, 1, 1]
-        theta_out = F.adaptive_avg_pool2d(x.view(-1, num_segments, h, w),
-                                          (1, 1))
+        theta_out = F.adaptive_avg_pool2d(
+            x.view(-1, num_segments, h, w), (1, 1))
 
         # [num_batches * c, 1, adaptive_kernel_size, 1]
         conv_kernel = self.G(theta_out.view(-1, num_segments)).view(
@@ -112,12 +114,13 @@ class TAM(nn.Module):
         new_x = x * local_activation
 
         # [1, num_batches * c, num_segments, h * w]
-        y = F.conv2d(new_x.view(1, num_batches * c, num_segments, h * w),
-                     conv_kernel,
-                     bias=None,
-                     stride=(self.adaptive_convolution_stride, 1),
-                     padding=(self.adaptive_convolution_padding, 0),
-                     groups=num_batches * c)
+        y = F.conv2d(
+            new_x.view(1, num_batches * c, num_segments, h * w),
+            conv_kernel,
+            bias=None,
+            stride=(self.adaptive_convolution_stride, 1),
+            padding=(self.adaptive_convolution_padding, 0),
+            groups=num_batches * c)
 
         # [n, c, h, w]
         y = y.view(num_batches, c, num_segments, h, w)
