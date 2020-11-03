@@ -1204,6 +1204,60 @@ class ImageDecode:
 
 
 @PIPELINES.register_module()
+class TubeSampleFrames:
+
+    def __call__(self, results):
+        _, indice = results['indice']
+        total_frames = results['total_frames']
+        modality = results['modality']
+        tube_length = results['tube_length']
+
+        if modality == 'RGB':
+            num_inputs = 1
+        else:
+            num_inputs = 5
+
+        frame_inds = list()
+
+        for i in range(tube_length + num_inputs - 1):
+            frame_ind = min(indice + i, total_frames)
+            frame_inds.append(frame_ind)
+
+        results['frame_inds'] = np.array(frame_inds, dtype=np.int)
+        return results
+
+
+@PIPELINES.register_module()
+class TubeDecode(RawFrameDecode):
+
+    def __call__(self, results):
+        mmcv.use_backend(self.decoding_backend)
+
+        directory = results['frame_dir']
+        filename_tmpl = results['filename_tmpl']
+
+        if self.file_client is None:
+            self.file_client = FileClient(self.io_backend, **self.kwargs)
+
+        imgs = list()
+
+        if results['frame_inds'].ndim != 1:
+            results['frame_inds'] = np.squeeze(results['frame_inds'])
+
+        for frame_idx in results['frame_inds']:
+            filepath = osp.join(directory, filename_tmpl.format(frame_idx))
+            img_bytes = self.file_client.get(filepath)
+            cur_frame = mmcv.imfrombytes(img_bytes, channel_order='rgb')
+            imgs.append(cur_frame)
+
+        results['imgs'] = imgs
+        results['original_shape'] = imgs[0].shape[:2]
+        results['img_shape'] = imgs[0].shape[:2]
+
+        return results
+
+
+@PIPELINES.register_module()
 class AudioDecodeInit:
     """Using librosa to initialize the audio reader.
 

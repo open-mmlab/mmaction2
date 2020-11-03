@@ -5,11 +5,11 @@ import numpy as np
 import pytest
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
-from mmaction.core import (ActivityNetDetection,
+from mmaction.core import (ActivityNetDetection, area2d,
                            average_recall_at_avg_proposals, confusion_matrix,
-                           get_weighted_score, mean_average_precision,
+                           get_weighted_score, iou2d, mean_average_precision,
                            mean_class_accuracy, mmit_mean_average_precision,
-                           pairwise_temporal_iou, top_k_accuracy)
+                           overlap2d, pairwise_temporal_iou, top_k_accuracy)
 
 
 def gt_confusion_matrix(gt_labels, pred_labels, normalize=None):
@@ -276,3 +276,9 @@ def test_mean_average_precision():
 
     content_for_unittest(scores, label1, result1)
     content_for_unittest(scores, label2, result2)
+
+
+def test_pass():
+    area2d
+    iou2d
+    overlap2d

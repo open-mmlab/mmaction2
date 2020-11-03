@@ -1,10 +1,12 @@
 import random
+from collections import defaultdict
 from collections.abc import Sequence
 
 import mmcv
 import numpy as np
 from torch.nn.modules.utils import _pair
 
+from ...core import iou2d
 from ..registry import PIPELINES
 
 
@@ -869,6 +871,342 @@ class RandomRescale:
 
 
 @PIPELINES.register_module()
+class CuboidCrop:
+
+    def __init__(self, cuboid_settings):
+        self.cuboid_settings = cuboid_settings
+
+    def sample_cuboids(self, tubes, img_h, img_w):
+        tubes = sum(tubes.values(), [])
+        sampled_cuboids = []
+        for cuboid_setting in self.cuboid_settings:
+            trial = 0
+            sample = 0
+            max_trials = cuboid_setting['max_trials']
+            max_sample = cuboid_setting['max_sample']
+            sampler = cuboid_setting['sampler']
+
+            min_scale = sampler.get('min_scale', 1)
+            max_scale = sampler.get('max_scale', 1)
+            min_aspect = sampler.get('min_aspect', 1)
+            max_aspect = sampler.get('max_aspect', 1)
+
+            while trial < max_trials and sample < max_sample:
+                # sample a normalized box
+                scale = np.random.uniform(min_scale, max_scale)
+                aspect = np.random.uniform(min_aspect, max_aspect)
+
+                w = scale * np.sqrt(aspect)
+                h = scale / np.sqrt(aspect)
+                if w > 1 or h > 1:
+                    continue
+                x = np.random.uniform(0, 1 - w)
+                y = np.random.uniform(0, 1 - h)
+
+                # rescale the box
+                sampled_cuboid = np.array(
+                    [x * img_w, y * img_h, (x + w) * img_w, (y + h) * img_h],
+                    dtype=np.float32)
+                # check constraint
+                trial += 1
+                if 'constraints' not in cuboid_setting:
+                    sampled_cuboids.append(sampled_cuboid)
+                    sample += 1
+                    continue
+
+                contraints = cuboid_setting['constraints']
+                min_jaccard_overlap = contraints.get('min_jaccard_overlap',
+                                                     np.inf)
+                max_jaccard_overlap = contraints.get('max_jaccard_overlap',
+                                                     np.inf)
+                ious = np.array(
+                    [np.mean(iou2d(tube, sampled_cuboid)) for tube in tubes])
+
+                if ious.size == 0:
+                    # empty gt
+                    sample += 1
+                    continue
+
+                if ious.max() >= min_jaccard_overlap or ious.min(
+                ) >= max_jaccard_overlap:
+                    sampled_cuboids.append(sampled_cuboid)
+                    sample += 1
+                    continue
+
+        return sampled_cuboids
+
+    def __call__(self, results):
+        img_h, img_w = results['img_shape']
+        gt_bboxes = results['gt_bboxes']
+        imgs = results['imgs']
+
+        candidate_cuboids = self.sample_cuboids(gt_bboxes, img_h, img_w)
+        if len(candidate_cuboids) == 0:
+            return results
+
+        cuboid = random.choice(candidate_cuboids)
+        x1, y1, x2, y2 = map(int, cuboid.tolist())
+
+        for i in range(len(imgs)):
+            # TODO: Why plus 1
+            imgs[i] = imgs[i][y1:y2, x1:x2, :]
+        out_tubes = defaultdict(list)
+        width = x2 - x1
+        height = y2 - y1
+
+        for label_index in gt_bboxes:
+            for tube in gt_bboxes[label_index]:
+                tube -= np.array([[x1, y1, x1, y1]], dtype=np.float32)
+
+                # check if valid
+                x_center = 0.5 * (tube[:, 0] + tube[:, 2])
+                y_center = 0.5 * (tube[:, 1] + tube[:, 3])
+
+                if np.any([
+                        x_center < 0, y_center < 0, x_center > width,
+                        y_center > height
+                ]):
+                    continue
+
+                # clip box
+                tube[:, 0] = np.maximum(0, tube[:, 0])
+                tube[:, 1] = np.maximum(0, tube[:, 1])
+                tube[:, 2] = np.minimum(width, tube[:, 2])
+                tube[:, 3] = np.minimum(height, tube[:, 3])
+
+                out_tubes[label_index].append(tube)
+
+        results['imgs'] = imgs
+        results['img_shape'] = imgs[0].shape[:2]
+        results['gt_bboxes'] = out_tubes
+        return results
+
+    def __repr__(self):
+        pass
+
+
+@PIPELINES.register_module()
+class TubeExpand:
+
+    def __init__(self,
+                 expand_ratio=0.5,
+                 max_expand_ratio=4.0,
+                 mean_values=None):
+        self.expand_ratio = expand_ratio
+        self.max_expand_ratio = max_expand_ratio
+        if mean_values is not None:
+            self.mean_values = np.array(mean_values)
+        else:
+            self.mean_values = None
+
+    def __call__(self, results):
+        imgs = results['imgs']
+        gt_bboxes = results['gt_bboxes']
+        img_h, img_w = results['img_shape']
+
+        expand = False
+        if np.random.rand() < self.expand_ratio:
+            expand = True
+
+        results['expand'] = expand
+
+        if expand:
+            expand_scale = np.random.uniform(1, self.max_expand_ratio)
+            h = int(img_h * expand_scale)
+            w = int(img_w * expand_scale)
+            outs = [
+                np.zeros((h, w, 3), dtype=np.float32)
+                for _ in range(len(results['imgs']))
+            ]
+            y_offset = h - img_h
+            x_offset = w - img_w
+
+            if self.mean_values is not None:
+                outs = [out + self.mean_values for out in outs]
+            for img, out in zip(imgs, outs):
+                out[y_offset:y_offset + img_h, x_offset:x_offset + img_w] = img
+
+            for label_index in gt_bboxes:
+                for tube in gt_bboxes[label_index]:
+                    tube += np.array([[x_offset, y_offset, x_offset, y_offset]
+                                      ],
+                                     dtype=np.float32)
+
+            results['imgs'] = outs
+            results['img_shape'] = outs[0].shape[:2]
+            results['gt_bboxes'] = gt_bboxes
+
+        return results
+
+    def __repr__(self):
+        pass
+
+
+@PIPELINES.register_module()
+class TubeResize:
+
+    def __init__(self, resize_scale, output_stride=4):
+        self.resize_h, self.resize_w = resize_scale
+        self.output_stride = output_stride
+        self.output_h = self.resize_h // self.output_stride
+        self.output_w = self.resize_w // self.output_stride
+
+    def __call__(self, results):
+        gt_bboxes = results['gt_bboxes']
+        origin_h, origin_w = results['img_shape']
+        imgs = results['imgs']
+
+        for label_index in gt_bboxes:
+            for tube in gt_bboxes[label_index]:
+                tube[:, 0::2] = tube[:, 0::2] / origin_w * self.output_w
+                tube[:, 1::2] = tube[:, 1::2] / origin_h * self.output_h
+
+        imgs = [
+            mmcv.imresize(img, (self.resize_w, self.resize_h)) for img in imgs
+        ]
+
+        results['imgs'] = imgs
+        results['img_shape'] = imgs[0].shape[:2]
+        results['gt_bboxes'] = gt_bboxes
+        results['box_output_shape'] = (self.output_h, self.output_w)
+
+        return results
+
+    def __repr__(self):
+        pass
+
+
+@PIPELINES.register_module()
+class MOCTubeExtract:
+
+    def __init__(self, max_objs):
+        self.max_objs = max_objs
+
+    @staticmethod
+    def gaussian_radius(det_size, min_overlap=0.7):
+
+        def solve(a, b, c):
+            return (np.sqrt(b**2 - 4 * a * c) + b) / 2
+
+        h, w = det_size
+
+        r1 = solve(1, h + w, w * h * (1 - min_overlap) / (1 + min_overlap))
+        r2 = solve(4, 2 * (h + w), w * h * (1 - min_overlap))
+        r3 = solve(4 * min_overlap, -2 * (h + w) * min_overlap,
+                   w * h * (min_overlap - 1))
+        return min(r1, r2, r3)
+
+    @staticmethod
+    def gaussian2d(shape, sigma=1):
+        m, n = [(s - 1) / 2. for s in shape]
+        y, x = np.ogrid[-m:m + 1, -n:n + 1]
+
+        h = np.exp(-(x**2 + y**2) / (2 * sigma**2))
+        h[h < np.finfo(h.dtype).eps * h.max()] = 0
+
+        return h
+
+    def write_umich_gaussian(self, heatmap, center, radius, k=1):
+        diameter = 2 * radius + 1
+        gaussian = self.gaussian2d((diameter, diameter), sigma=diameter / 6)
+
+        x, y = center[0], center[1]
+        h, w = heatmap.shape[:2]
+
+        left, right = min(x, radius), min(w - x, radius + 1)
+        top, bottom = min(y, radius), min(h - y, radius + 1)
+
+        masked_heatmap = heatmap[y - top:y + bottom, x - left:x + right]
+        masked_gaussian = gaussian[radius - top:radius + bottom,
+                                   radius - left:radius + right]
+        if min(masked_gaussian.shape) > 0 and min(masked_heatmap.shape) > 0:
+            np.maximum(masked_heatmap, masked_gaussian * k, out=masked_heatmap)
+
+        return heatmap
+
+    def __call__(self, results):
+        gt_bboxes = results['gt_bboxes']
+        tube_length = results['tube_length']
+        num_classes = results['num_classes']
+        output_h, output_w = results['box_output_shape']
+
+        # hm is ground truth gaussian heatmap at each center location
+        hm = np.zeros((num_classes, output_h, output_w), dtype=np.float32)
+        # wh is gt_bboxes's height and width in i_th frame
+        wh = np.zeros((self.max_objs, tube_length * 2), dtype=np.float32)
+        # mov is gt movement from i_th frame to key frame
+        mov = np.zeros((self.max_objs, tube_length * 2), dtype=np.float32)
+        # index is key frame's boox center position
+        index = np.zeros(self.max_objs, dtype=np.int32)
+        # index_all are all frame's bbox center position
+        index_all = np.zeros((self.max_objs, tube_length * 2), dtype=np.int32)
+        # mask indicate how many objects in this tube
+        masks = np.zeros(self.max_objs, dtype=np.uint8)
+
+        num_objs = 0
+        for label_index in gt_bboxes:
+            for tube in gt_bboxes[label_index]:
+                key_index = tube_length // 2
+
+                # height and width of key frame's bbox (on the feature map)
+                key_h, key_w = tube[key_index, 3] - tube[key_index, 1], tube[
+                    key_index, 2] - tube[key_index, 0]
+
+                # create gaussian heatmap
+                radius = max(
+                    0,
+                    int(
+                        self.gaussian_radius(
+                            (np.ceil(key_h), np.ceil(key_w)))))
+
+                # gt_bbox's center in the key frame
+                key_center_h = (tube[key_index, 0] + tube[key_index, 2]) / 2
+                key_center_w = (tube[key_index, 1] + tube[key_index, 3]) / 2
+                key_center = np.array([key_center_h, key_center_w],
+                                      dtype=np.int32)
+
+                # inplace write truth gaussian heatmap into center location
+                self.write_umich_gaussian(hm[label_index], key_center, radius)
+
+                for i in range(tube_length):
+                    # gt_bbox's center in the i_th frame
+                    center_h = (tube[i, 0] + tube[i, 2]) / 2
+                    center_w = (tube[i, 1] + tube[i, 3]) / 2
+                    center = np.array([center_h, center_w], dtype=np.int32)
+
+                    wh[num_objs, i * 2:i * 2 + 2] = np.array(
+                        [tube[i, 2] - tube[i, 0], tube[i, 3] - tube[i, 1]],
+                        dtype=np.float32)
+                    mov[num_objs, i * 2:i * 2 + 2] = np.array([
+                        (tube[i, 0] + tube[i, 2]) / 2 - key_center[0],
+                        (tube[i, 1] + tube[i, 3]) / 2 - key_center[1]
+                    ],
+                                                              dtype=np.float32)
+                    index_all[num_objs,
+                              i * 2:i * 2 + 2] = np.array([
+                                  center[1] * output_w + center[0],
+                                  center[1] * output_w + center[0]
+                              ],
+                                                          dtype=np.float32)
+
+                index[num_objs] = key_center[1] * output_w + key_center[0]
+                masks[num_objs] = 1
+                num_objs = num_objs + 1
+
+        results['hm'] = hm
+        results['wh'] = wh
+        results['mov'] = mov
+        results['masks'] = masks
+        results['index'] = index
+        results['index_all'] = index_all
+
+        return results
+
+    def __repr__(self):
+        pass
+
+
+@PIPELINES.register_module()
 class Flip:
     """Flip the input images with a probability.
 
@@ -919,11 +1257,13 @@ class Flip:
                 for i, img in enumerate(results['imgs']):
                     mmcv.imflip_(img, self.direction)
                 lt = len(results['imgs'])
-                for i in range(0, lt, 2):
-                    # flow with even indexes are x_flow, which need to be
-                    # inverted when doing horizontal flip
-                    if modality == 'Flow':
-                        results['imgs'][i] = mmcv.iminvert(results['imgs'][i])
+                if modality == 'Flow':
+                    for i in range(0, lt, 2):
+                        # flow with even indexes are x_flow, which need to be
+                        # inverted when doing horizontal flip
+                        if modality == 'Flow':
+                            results['imgs'][i] = mmcv.iminvert(
+                                results['imgs'][i])
 
             else:
                 results['imgs'] = list(results['imgs'])
@@ -942,6 +1282,61 @@ class Flip:
             f'flip_ratio={self.flip_ratio}, direction={self.direction}, '
             f'lazy={self.lazy})')
         return repr_str
+
+
+@PIPELINES.register_module()
+class TubeFlip(Flip):
+
+    def __call__(self, results):
+        modality = results['modality']
+        if modality == 'Flow':
+            assert self.direction == 'horizontal'
+
+        if np.random.rand() < self.flip_ratio:
+            flip = True
+        else:
+            flip = False
+
+        results['flip'] = flip
+        results['flip_direction'] = self.direction
+
+        if flip:
+            for i, img in enumerate(results['imgs']):
+                mmcv.imflip_(img, self.direction)
+                if modality == 'Flow':
+                    results['imgs'][i, :, :,
+                                    2] = mmcv.iminvert(results['imgs'][i, :, :,
+                                                                       2])
+
+        return results
+
+
+@PIPELINES.register_module()
+class BoxFlip(Flip):
+
+    def __call__(self, results):
+        flip = results['flip']
+        direction = results['flip_direction']
+        img_h, img_w = results['resolution']
+
+        if not flip:
+            return results
+
+        gt_boxes = results['gt_bboxes']
+        gt_boxes_ = defaultdict(list)
+        for label_index in gt_boxes:
+            for tube in gt_boxes[label_index]:
+                tube_ = tube.copy()
+                if direction == 'horizontal':
+                    tube_[:, 0] = img_w - tube[:, 2]
+                    tube_[:, 2] = img_w - tube[:, 0]
+                else:
+                    tube_[:, 1] = img_h - tube[:, 3]
+                    tube_[:, 3] = img_h - tube[:, 1]
+                gt_boxes_[label_index].append(tube_)
+        results['gt_bboxes'] = gt_boxes_
+
+        return results
 
 
 @PIPELINES.register_module()
@@ -1069,7 +1464,8 @@ class ColorJitter:
                  color_space_aug=False,
                  alpha_std=0.1,
                  eig_val=None,
-                 eig_vec=None):
+                 eig_vec=None,
+                 apply_pca_noise=True):
         if eig_val is None:
             # note that the data range should be [0, 255]
             self.eig_val = np.array([55.46, 4.794, 1.148], dtype=np.float32)
@@ -1086,6 +1482,7 @@ class ColorJitter:
 
         self.alpha_std = alpha_std
         self.color_space_aug = color_space_aug
+        self.apply_pca_noise = apply_pca_noise
 
     @staticmethod
     def brightness(img, delta):
@@ -1190,17 +1587,20 @@ class ColorJitter:
         else:
             out = imgs
 
-        # Add PCA based noise
-        alpha = np.random.normal(0, self.alpha_std, size=(3, ))
-        rgb = np.array(
-            np.dot(self.eig_vec * alpha, self.eig_val), dtype=np.float32)
-        rgb = rgb[None, None, ...]
+        if self.apply_pca_noise:
+            # Add PCA based noise
+            alpha = np.random.normal(0, self.alpha_std, size=(3, ))
+            rgb = np.array(
+                np.dot(self.eig_vec * alpha, self.eig_val), dtype=np.float32)
+            rgb = rgb[None, None, ...]
+            out = [img + rgb for img in out]
 
-        results['imgs'] = [img + rgb for img in out]
+        results['imgs'] = out
         results['eig_val'] = self.eig_val
         results['eig_vec'] = self.eig_vec
         results['alpha_std'] = self.alpha_std
         results['color_space_aug'] = self.color_space_aug
+        results['apply_pca_noise'] = self.apply_pca_noise
 
         return results
 
@@ -1209,7 +1609,8 @@ class ColorJitter:
                     f'color_space_aug={self.color_space_aug}, '
                     f'alpha_std={self.alpha_std}, '
                     f'eig_val={self.eig_val}, '
-                    f'eig_vec={self.eig_vec})')
+                    f'eig_vec={self.eig_vec}, '
+                    f'apply_pca_noise={self.apply_pca_noise})')
         return repr_str
 
 

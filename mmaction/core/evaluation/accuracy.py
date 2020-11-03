@@ -1,6 +1,37 @@
 import numpy as np
 
 
+def overlap2d(origin_box, target_box):
+    x_min = np.maximum(origin_box[:, 0], target_box[:, 0])
+    y_min = np.maximum(origin_box[:, 1], target_box[:, 1])
+    x_max = np.minimum(origin_box[:, 2], target_box[:, 2])
+    y_max = np.minimum(origin_box[:, 3], target_box[:, 3])
+
+    width = np.maximum(0, x_max - x_min)
+    height = np.maximum(0, y_max - y_min)
+
+    return width * height
+
+
+def area2d(box):
+    width = box[:, 2] - box[:, 0]
+    height = box[:, 3] - box[:, 1]
+
+    return width * height
+
+
+def iou2d(origin_box, target_box):
+    if origin_box.ndim == 1:
+        origin_box = origin_box[None, :]
+    if target_box.ndim == 1:
+        target_box = target_box[None, :]
+
+    assert len(target_box) == 1
+    overlap = overlap2d(origin_box, target_box)
+
+    return overlap / (area2d(origin_box) + area2d(target_box) - overlap)
+
+
 def confusion_matrix(y_pred, y_real, normalize=None):
     """Compute confusion matrix.
 

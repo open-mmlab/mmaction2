@@ -1,13 +1,15 @@
-from .augmentations import (AudioAmplify, CenterCrop, ColorJitter,
-                            EntityBoxClip, EntityBoxCrop, EntityBoxFlip,
-                            EntityBoxPad, EntityBoxRescale, Flip, Fuse,
-                            MelSpectrogram, MultiGroupCrop, MultiScaleCrop,
-                            Normalize, RandomCrop, RandomRescale,
-                            RandomResizedCrop, RandomScale, Resize, TenCrop,
-                            ThreeCrop)
+from .augmentations import (AudioAmplify, BoxFlip, CenterCrop, ColorJitter,
+                            CuboidCrop, EntityBoxClip, EntityBoxCrop,
+                            EntityBoxFlip, EntityBoxPad, EntityBoxRescale,
+                            Flip, Fuse, MelSpectrogram, MOCTubeExtract,
+                            MultiGroupCrop, MultiScaleCrop, Normalize,
+                            RandomCrop, RandomRescale, RandomResizedCrop,
+                            RandomScale, Resize, TenCrop, ThreeCrop,
+                            TubeExpand, TubeFlip, TubeResize)
 from .compose import Compose
-from .formating import (Collect, FormatAudioShape, FormatShape, ImageToTensor,
-                        ToDataContainer, ToTensor, Transpose)
+from .formating import (Collect, FormatAudioShape, FormatShape,
+                        FormatTubeShape, ImageToTensor, ToDataContainer,
+                        ToTensor, Transpose)
 from .loading import (AudioDecode, AudioDecodeInit, AudioFeatureSelector,
                       BuildPseudoClip, DecordDecode, DecordInit,
                       DenseSampleFrames, FrameSelector,
@@ -16,7 +18,7 @@ from .loading import (AudioDecode, AudioDecodeInit, AudioFeatureSelector,
                       LoadProposals, OpenCVDecode, OpenCVInit, PyAVDecode,
                       PyAVDecodeMotionVector, PyAVInit, RawFrameDecode,
                       SampleAVAFrames, SampleFrames, SampleProposalFrames,
-                      UntrimmedSampleFrames)
+                      TubeDecode, TubeSampleFrames, UntrimmedSampleFrames)
 
 __all__ = [
     'SampleFrames', 'PyAVDecode', 'DecordDecode', 'DenseSampleFrames',
@@ -32,5 +34,7 @@ __all__ = [
     'FormatAudioShape', 'LoadAudioFeature', 'AudioFeatureSelector',
     'AudioDecodeInit', 'EntityBoxPad', 'EntityBoxFlip', 'EntityBoxCrop',
     'EntityBoxRescale', 'EntityBoxClip', 'RandomScale', 'ImageDecode',
-    'BuildPseudoClip', 'RandomRescale', 'PyAVDecodeMotionVector'
+    'BuildPseudoClip', 'RandomRescale', 'CuboidCrop', 'TubeExpand',
+    'TubeResize', 'MOCTubeExtract', 'TubeFlip', 'BoxFlip', 'FormatTubeShape',
+    'TubeDecode', 'TubeSampleFrames', 'PyAVDecodeMotionVector'
 ]

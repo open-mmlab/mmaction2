@@ -12,6 +12,7 @@ from torch.utils.data import Dataset
 
 from ..core import (mean_average_precision, mean_class_accuracy,
                     mmit_mean_average_precision, top_k_accuracy)
+from ..utils import get_root_logger
 from .pipelines import Compose
 
 
@@ -78,6 +79,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         self.sample_by_class = sample_by_class
         self.power = power
         assert not (self.multi_class and self.sample_by_class)
+        self.logger = get_root_logger()
 
         self.pipeline = Compose(pipeline)
         self.video_infos = self.load_annotations()
