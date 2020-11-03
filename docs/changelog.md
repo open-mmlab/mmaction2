@@ -1,5 +1,10 @@
 ## Changelog
 
+### master
+
+**Bug Fixes**
+- Fix the bug of HVU object `num_classes` from 1679 to 1678 ([#307](https://github.com/open-mmlab/mmaction2/pull/307))
+
 ### v0.8.0 (31/10/2020)
 
 **Highlights**
