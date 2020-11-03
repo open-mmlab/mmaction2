@@ -1,9 +1,7 @@
 import argparse
 import os
-import os.path as osp
 import warnings
 
-import mmcv
 import torch
 from mmcv import Config, DictAction
 from mmcv.cnn import fuse_conv_bn
@@ -146,8 +144,6 @@ def main():
         distributed = True
         init_dist(args.launcher, **cfg.dist_params)
 
-    # create work_dir
-    mmcv.mkdir_or_exist(osp.abspath(cfg.work_dir))
     # build the dataloader
     dataset = build_dataset(cfg.data.test, dict(test_mode=True))
     dataloader_setting = dict(
