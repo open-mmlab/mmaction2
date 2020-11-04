@@ -42,6 +42,7 @@ def train_model(model,
         workers_per_gpu=cfg.data.get('workers_per_gpu', 1),
         num_gpus=len(cfg.gpu_ids),
         dist=distributed,
+        shuffle=cfg.data.get('shuffle', True),
         seed=cfg.seed)
     dataloader_setting = dict(dataloader_setting,
                               **cfg.data.get('train_dataloader', {}))

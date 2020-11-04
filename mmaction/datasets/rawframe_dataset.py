@@ -96,6 +96,7 @@ class RawframeDataset(BaseDataset):
                  start_index=1,
                  modality='RGB',
                  sample_by_class=False,
+                 progressive_resampling=False,
                  power=None):
         self.filename_tmpl = filename_tmpl
         self.with_offset = with_offset
@@ -109,6 +110,7 @@ class RawframeDataset(BaseDataset):
             start_index,
             modality,
             sample_by_class=sample_by_class,
+            progressive_resampling=progressive_resampling,
             power=power)
 
     def load_annotations(self):

@@ -1,5 +1,6 @@
 import copy
 import os.path as osp
+import random
 import warnings
 from abc import ABCMeta, abstractmethod
 from collections import defaultdict
@@ -63,6 +64,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
                  start_index=1,
                  modality='RGB',
                  sample_by_class=False,
+                 progressive_resampling=False,
                  power=None):
         super().__init__()
 
@@ -75,6 +77,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         self.start_index = start_index
         self.modality = modality
         self.sample_by_class = sample_by_class
+        self.progressive_resampling = progressive_resampling
         self.power = power
         assert not (self.multi_class and self.sample_by_class)
 
@@ -82,6 +85,31 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         self.video_infos = self.load_annotations()
         if self.sample_by_class:
             self.video_infos_by_class = self.parse_by_class()
+        if self.progressive_resampling:
+            self.video_infos = self.parse_progressive_resampling()
+
+    def parse_progressive_resampling(self):
+        # import pdb
+        """PR training proposed for longtail data."""
+        self.video_infos_new = list()
+        self.split = 5
+        self.video_infos.sort(key=lambda x: x['total_frames'])
+        split_origin_len = (len(self.video_infos) // self.split)
+        print(f'split origin len {split_origin_len}')
+        self.video_infos_splis = [
+            self.video_infos[0:split_origin_len * (i + 1)]
+            for i in range(self.split)
+        ]
+        for i in range(len(self.video_infos_splis)):
+            # pdb.set_trace()
+            video_list = self.video_infos_splis[i]
+            resample_times = 2**i
+            video_list = video_list * resample_times
+            random.shuffle(video_list)
+            self.video_infos_new += video_list
+        print('Change in iteration per epoch '
+              f'{len(self.video_infos_new)  / len(self.video_infos)}')
+        return self.video_infos_new
 
     @abstractmethod
     def load_annotations(self):
