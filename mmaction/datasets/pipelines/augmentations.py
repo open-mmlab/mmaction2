@@ -948,7 +948,6 @@ class CuboidCrop:
         x1, y1, x2, y2 = map(int, cuboid.tolist())
 
         for i in range(len(imgs)):
-            # TODO: Why plus 1
             imgs[i] = imgs[i][y1:y2, x1:x2, :]
         out_tubes = defaultdict(list)
         width = x2 - x1
@@ -1079,7 +1078,7 @@ class TubeResize:
 @PIPELINES.register_module()
 class MOCTubeExtract:
 
-    def __init__(self, max_objs):
+    def __init__(self, max_objs=128):
         self.max_objs = max_objs
 
     @staticmethod

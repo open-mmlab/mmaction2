@@ -278,7 +278,29 @@ def test_mean_average_precision():
     content_for_unittest(scores, label2, result2)
 
 
-def test_pass():
-    area2d
-    iou2d
-    overlap2d
+def test_overlap2d():
+    origin_box = np.array([[2, 2, 4, 4], [2, 2, 4, 4], [2, 2, 4, 4]])
+    target_box = np.array([[3, 3, 5, 5], [2, 2, 5, 5], [4, 4, 6, 6]])
+
+    overlap = overlap2d(origin_box, target_box)
+    assert_array_equal(overlap, np.array([1, 4, 0]))
+
+
+def test_area2d():
+    box = np.array([[2, 2, 4, 4], [2, 2, 2, 2], [4, 4, 2, 2]])
+    area = area2d(box)
+    assert_array_equal(area, np.array([4, 0, 4]))
+
+
+def test_iou2d():
+    origin_boxes = np.array([[2, 2, 4, 4], [2, 2, 4, 4], [2, 2, 4, 4]])
+    target_boxes = np.array([[3, 3, 5, 5], [2, 2, 5, 5], [4, 4, 6, 6]])
+    gts = [1 / 7, 4 / 9, 0.]
+
+    with pytest.raises(AssertionError):
+        # box should be on 1 dimension
+        iou2d(origin_boxes, target_boxes)
+
+    for gt, origin_box, target_box in zip(gts, origin_boxes, target_boxes):
+        iou = iou2d(origin_box, target_box)
+        assert gt == iou

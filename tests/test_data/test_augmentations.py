@@ -7,14 +7,15 @@ from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 # yapf: disable
 from mmaction.datasets.pipelines import (AudioAmplify, CenterCrop, ColorJitter,
-                                         EntityBoxClip, EntityBoxCrop,
-                                         EntityBoxFlip, EntityBoxPad,
-                                         EntityBoxRescale, Flip, Fuse,
-                                         MelSpectrogram, MultiGroupCrop,
-                                         MultiScaleCrop, Normalize, RandomCrop,
-                                         RandomRescale, RandomResizedCrop,
-                                         RandomScale, Resize, TenCrop,
-                                         ThreeCrop)
+                                         CuboidCrop, EntityBoxClip,
+                                         EntityBoxCrop, EntityBoxFlip,
+                                         EntityBoxPad, EntityBoxRescale, Flip,
+                                         Fuse, MelSpectrogram, MOCTubeExtract,
+                                         MultiGroupCrop, MultiScaleCrop,
+                                         Normalize, RandomCrop, RandomRescale,
+                                         RandomResizedCrop, RandomScale,
+                                         Resize, TenCrop, ThreeCrop,
+                                         TubeExpand, TubeResize)
 
 # yapf: enable
 
@@ -1155,7 +1156,8 @@ class TestAugumentations:
         box_scale = EntityBoxRescale()
         results_ = copy.deepcopy(results)
         results_ = box_scale(results_)
-        self.check_keys_contain(results_.keys(), target_keys + ['scores'])
+        assert self.check_keys_contain(results_.keys(),
+                                       target_keys + ['scores'])
         assert_array_almost_equal(
             results_['proposals'],
             np.array([[3.696000, 65.311999, 220.079995, 408.928002]]))
@@ -1167,7 +1169,7 @@ class TestAugumentations:
         results_ = copy.deepcopy(results)
         results_['proposals'] = None
         results_ = box_scale(results_)
-        self.check_keys_contain(results_.keys(), target_keys)
+        assert self.check_keys_contain(results_.keys(), target_keys)
         assert results_['proposals'] is None
 
     def test_box_crop(self):
@@ -1183,7 +1185,7 @@ class TestAugumentations:
         box_crop = EntityBoxCrop()
         results_ = copy.deepcopy(results)
         results_ = box_crop(results_)
-        self.check_keys_contain(results_.keys(), target_keys)
+        assert self.check_keys_contain(results_.keys(), target_keys)
         assert_array_almost_equal(
             results_['ann']['entity_boxes'],
             np.array([[-2.584, -7.608002, 212.120004, 338.920019]]))
@@ -1211,7 +1213,7 @@ class TestAugumentations:
         box_flip = EntityBoxFlip(flip_ratio=1)
         results_ = copy.deepcopy(results)
         results_ = box_flip(results_)
-        self.check_keys_contain(results_.keys(), target_keys)
+        assert self.check_keys_contain(results_.keys(), target_keys)
         assert_array_almost_equal(
             results_['ann']['entity_boxes'],
             np.array([[266.879996, -7.608002, 481.584, 338.920019]]))
@@ -1222,7 +1224,7 @@ class TestAugumentations:
         box_flip = EntityBoxFlip(flip_ratio=1, direction='vertical')
         results_ = copy.deepcopy(results)
         results_ = box_flip(results_)
-        self.check_keys_contain(results_.keys(), target_keys)
+        assert self.check_keys_contain(results_.keys(), target_keys)
         assert_array_almost_equal(
             results_['ann']['entity_boxes'],
             np.array([[-2.584, 180.079981, 212.120004, 526.608002]]))
@@ -1252,7 +1254,7 @@ class TestAugumentations:
         results_ = copy.deepcopy(results)
         results_ = box_clip(results_)
 
-        self.check_keys_contain(results_.keys(), target_keys)
+        assert self.check_keys_contain(results_.keys(), target_keys)
         assert_array_equal(results_['ann']['entity_boxes'],
                            np.array([[0., 0., 209., 334.]]))
         assert_array_equal(results_['proposals'],
@@ -1277,7 +1279,7 @@ class TestAugumentations:
         box_pad_none = EntityBoxPad()
         results_ = copy.deepcopy(results)
         results_ = box_pad_none(results_)
-        self.check_keys_contain(results_.keys(), target_keys)
+        assert self.check_keys_contain(results_.keys(), target_keys)
         assert_array_equal(results_['proposals'], results['proposals'])
         assert_array_equal(results_['ann']['entity_boxes'],
                            results['ann']['entity_boxes'])
@@ -1285,7 +1287,7 @@ class TestAugumentations:
         box_pad = EntityBoxPad(3)
         results_ = copy.deepcopy(results)
         results_ = box_pad(results_)
-        self.check_keys_contain(results_.keys(), target_keys)
+        assert self.check_keys_contain(results_.keys(), target_keys)
         assert_array_equal(
             results_['proposals'],
             np.array([[-9.304, -9.688001, 207.079995, 333.928002],
@@ -1306,3 +1308,146 @@ class TestAugumentations:
 
         assert repr(box_pad) == (f'{box_pad.__class__.__name__}'
                                  '(max_num_gts=3)')
+
+    def test_cuboid_crop(self):
+        target_keys = ['imgs', 'img_shape', 'gt_bboxes']
+
+        common_cuboid_sampler = dict(
+            min_scale=0.3, max_scale=1.0, min_aspect=0.5, max_aspect=2.0)
+        cuboid_settings = [
+            dict(sampler=dict(), max_trials=1, max_sample=1),
+            dict(
+                sampler=common_cuboid_sampler,
+                constraints=dict(min_jaccard_overlap=0.1),
+                max_trials=50,
+                max_sample=1),
+            dict(
+                sampler=common_cuboid_sampler,
+                constraints=dict(min_jaccard_overlap=0.5),
+                max_trials=50,
+                max_sample=1),
+            dict(
+                sampler=common_cuboid_sampler,
+                constraints=dict(min_jaccard_overlap=0.9),
+                max_trials=50,
+                max_sample=1),
+            dict(
+                sampler=common_cuboid_sampler,
+                constraints=dict(max_jaccard_overlap=1.0),
+                max_trials=50,
+                max_sample=1)
+        ]
+
+        imgs = list(np.random.rand(3, 240, 320, 3))
+        gt_bboxes = {
+            23: [
+                np.array([[77., 0., 185., 168.], [78., 1., 185., 168.],
+                          [78., 1., 186., 169.]],
+                         dtype=np.float32)
+            ]
+        }
+        img_shape = (240, 320)
+
+        results = dict(imgs=imgs, gt_bboxes=gt_bboxes, img_shape=img_shape)
+
+        cuboid_results = copy.deepcopy(results)
+        cuboid = CuboidCrop(cuboid_settings)
+
+        cuboid_results = cuboid(cuboid_results)
+        assert self.check_keys_contain(cuboid_results.keys(), target_keys)
+
+    def test_tube_expand(self):
+        target_keys = ['imgs', 'gt_bboxes', 'img_shape', 'expand']
+        mean_values = [119.91659325, 114.0342201, 104.0136177]
+
+        imgs = list(np.random.rand(3, 240, 320, 3))
+        gt_bboxes = {
+            23: [
+                np.array([[77., 0., 185., 168.], [78., 1., 185., 168.],
+                          [78., 1., 186., 169.]],
+                         dtype=np.float32)
+            ]
+        }
+        results = dict(imgs=imgs, img_shape=(240, 320), gt_bboxes=gt_bboxes)
+
+        tube_expand = TubeExpand(expand_ratio=1, mean_values=mean_values)
+        results_ = copy.deepcopy(results)
+        results_ = tube_expand(results_)
+
+        assert self.check_keys_contain(results_.keys(), target_keys)
+        assert results_['expand']
+        assert 1 <= results_['img_shape'][
+            0] / 240 <= tube_expand.max_expand_ratio
+        assert 1 <= results_['img_shape'][
+            1] / 320 <= tube_expand.max_expand_ratio
+
+        tube_expand = TubeExpand(expand_ratio=1)
+        results_ = copy.deepcopy(results)
+        results_ = tube_expand(results_)
+
+        assert self.check_keys_contain(results_.keys(), target_keys)
+        assert results_['expand']
+        assert 1 <= results_['img_shape'][
+            0] / 240 <= tube_expand.max_expand_ratio
+        assert 1 <= results_['img_shape'][
+            1] / 320 <= tube_expand.max_expand_ratio
+
+        tube_expand = TubeExpand(expand_ratio=0)
+        results_ = copy.deepcopy(results)
+        results_ = tube_expand(results_)
+        assert not results_['expand']
+
+    def test_tube_resize(self):
+        target_keys = ['imgs', 'gt_bboxes', 'img_shape', 'box_output_shape']
+
+        imgs = list(np.random.rand(3, 240, 320, 3))
+        gt_bboxes = {
+            23: [
+                np.array([[77., 0., 185., 168.], [78., 1., 185., 168.],
+                          [78., 1., 186., 169.]],
+                         dtype=np.float32)
+            ]
+        }
+        results = dict(imgs=imgs, img_shape=(240, 320), gt_bboxes=gt_bboxes)
+
+        tube_resize = TubeResize((288, 288))
+        results_ = copy.deepcopy(results)
+        assert tube_resize.output_h == 72
+        assert tube_resize.output_w == 72
+        results_ = tube_resize(results_)
+        assert self.check_keys_contain(results_.keys(), target_keys)
+        assert results_['img_shape'] == (288, 288)
+        assert results_['box_output_shape'] == (72, 72)
+
+    def test_moc_tube_extract(self):
+        target_keys = [
+            'gt_bboxes', 'tube_length', 'num_classes', 'box_output_shape',
+            'hm', 'wh', 'mov', 'masks', 'index', 'index_all'
+        ]
+
+        gt_bboxes = {
+            23: [
+                np.array([[77., 0., 185., 168.], [78., 1., 185., 168.],
+                          [78., 1., 186., 169.]],
+                         dtype=np.float32)
+            ]
+        }
+        results = dict(
+            gt_bboxes=gt_bboxes,
+            tube_length=3,
+            num_classes=24,
+            box_output_shape=(72, 72))
+
+        moc_tube_extract = MOCTubeExtract()
+        results_ = copy.deepcopy(results)
+        results_ = moc_tube_extract(results_)
+        assert self.check_keys_contain(results_.keys(), target_keys)
+
+        assert results_['hm'].shape == (24, 72, 72)
+        assert results_['wh'].shape == (128, 6)
+        assert results_['mov'].shape == (128, 6)
+        assert_array_equal(results_['masks'], np.array([1] + [0] * 127))
+        assert_array_equal(results_['index'], np.array([6179] + [0] * 127))
+        assert_array_equal(
+            results_['index_all'],
+            np.array([[6179] * 4 + [6252, 6252]] + [[0] * 6] * 127))
