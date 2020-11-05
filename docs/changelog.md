@@ -1,5 +1,18 @@
 ## Changelog
 
+###v 0.9.0 (master)
+
+**Highlights**
+
+**New Features**
+
+**Improvements**
+
+**Bug Fixes**
+- Fix a bug in BaseDataset when `data_prefix` is None ([#314](https://github.com/open-mmlab/mmaction2/pull/314))
+
+**ModelZoo**
+
 ### v0.8.0 (31/10/2020)
 
 **Highlights**
