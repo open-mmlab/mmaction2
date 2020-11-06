@@ -6,16 +6,17 @@ import pytest
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 # yapf: disable
-from mmaction.datasets.pipelines import (AudioAmplify, CenterCrop, ColorJitter,
-                                         CuboidCrop, EntityBoxClip,
-                                         EntityBoxCrop, EntityBoxFlip,
-                                         EntityBoxPad, EntityBoxRescale, Flip,
-                                         Fuse, MelSpectrogram, MOCTubeExtract,
+from mmaction.datasets.pipelines import (AudioAmplify, BoxFlip, CenterCrop,
+                                         ColorJitter, CuboidCrop,
+                                         EntityBoxClip, EntityBoxCrop,
+                                         EntityBoxFlip, EntityBoxPad,
+                                         EntityBoxRescale, Flip, Fuse,
+                                         MelSpectrogram, MOCTubeExtract,
                                          MultiGroupCrop, MultiScaleCrop,
                                          Normalize, RandomCrop, RandomRescale,
                                          RandomResizedCrop, RandomScale,
-                                         Resize, TenCrop, ThreeCrop, TubePad,
-                                         TubeResize)
+                                         Resize, TenCrop, ThreeCrop, TubeFlip,
+                                         TubePad, TubeResize)
 
 # yapf: enable
 
@@ -1140,7 +1141,7 @@ class TestAugumentations:
             f'(scales={((200, 64), (250, 80))}, '
             'mode=range)')
 
-    def test_box_rescale(self):
+    def test_entity_box_rescale(self):
         target_keys = ['img_shape', 'scale_factor', 'ann', 'proposals']
         results = dict(
             img_shape=(520, 480),
@@ -1173,7 +1174,7 @@ class TestAugumentations:
         assert self.check_keys_contain(results_.keys(), target_keys)
         assert results_['proposals'] is None
 
-    def test_box_crop(self):
+    def test_entity_box_crop(self):
         target_keys = ['ann', 'proposals', 'crop_bbox']
         results = dict(
             proposals=np.array([[3.696000, 65.311999, 220.079995,
@@ -1199,7 +1200,7 @@ class TestAugumentations:
         results_ = box_crop(results_)
         assert results_['proposals'] is None
 
-    def test_box_flip(self):
+    def test_entity_box_flip(self):
         target_keys = ['ann', 'proposals', 'img_shape']
         results = dict(
             proposals=np.array([[-9.304, -9.688001, 207.079995, 333.928002]]),
@@ -1242,7 +1243,7 @@ class TestAugumentations:
         assert repr(box_flip) == (f'{box_flip.__class__.__name__}'
                                   '(flip_ratio=0.5, direction=horizontal)')
 
-    def test_box_clip(self):
+    def test_entity_box_clip(self):
         target_keys = ['ann', 'proposals', 'img_shape']
         results = dict(
             proposals=np.array([[-9.304, -9.688001, 207.079995, 333.928002]]),
@@ -1266,7 +1267,7 @@ class TestAugumentations:
         results_ = box_clip(results_)
         assert results_['proposals'] is None
 
-    def test_box_pad(self):
+    def test_entity_box_pad(self):
         target_keys = ['ann', 'proposals', 'img_shape']
         results = dict(
             proposals=np.array([[-9.304, -9.688001, 207.079995, 333.928002],
@@ -1462,3 +1463,107 @@ class TestAugumentations:
 
         assert repr(moc_tube_extract) == (
             f'{moc_tube_extract.__class__.__name__}(max_objs=128)')
+
+    def test_tube_flip(self):
+        target_keys = ['imgs', 'flip_direction', 'modality', 'flip']
+
+        # do not flip imgs
+        imgs = list(np.random.rand(2, 64, 64, 3))
+        results = dict(imgs=copy.deepcopy(imgs), modality='RGB')
+        tube_flip = TubeFlip(flip_ratio=0)
+        tube_flip_results = tube_flip(results)
+        assert self.check_keys_contain(tube_flip_results.keys(), target_keys)
+        assert_array_equal(tube_flip_results['imgs'], imgs)
+        assert id(tube_flip_results['imgs']) == id(results['imgs'])
+
+        # always flip imgs horizontally
+        imgs = list(np.random.rand(2, 64, 64, 3))
+        results = dict(imgs=copy.deepcopy(imgs), modality='RGB')
+        tube_flip = TubeFlip(flip_ratio=0, direction='horizontal')
+        tube_flip_results = tube_flip(results)
+        assert self.check_keys_contain(tube_flip_results.keys(), target_keys)
+        if tube_flip_results['flip'] is True:
+            assert self.check_flip(imgs, tube_flip_results['imgs'],
+                                   tube_flip_results['flip_direction'])
+        assert id(tube_flip_results['imgs']) == id(results['imgs'])
+
+        # flip flow images horizontally
+        imgs = list(np.random.rand(2, 64, 64, 2))
+        results = dict(imgs=copy.deepcopy(imgs), modality='Flow')
+        with pytest.raises(AssertionError):
+            TubeFlip(flip_ratio=1, direction='vertical')(results)
+        tube_flip = TubeFlip(flip_ratio=0, direction='horizontal')
+        assert self.check_keys_contain(tube_flip_results.keys(), target_keys)
+        tube_flip_results = tube_flip(results)
+        if tube_flip_results['flip'] is True:
+            assert self.check_flip(imgs, tube_flip_results['imgs'],
+                                   tube_flip_results['flip_direction'])
+        assert id(tube_flip_results['imgs']) == id(results['imgs'])
+
+        # always flip imgs vertivally.
+        imgs = list(np.random.rand(2, 64, 64, 3))
+        results = dict(imgs=copy.deepcopy(imgs), modality='RGB')
+        tube_flip = TubeFlip(flip_ratio=1, direction='vertical')
+        assert self.check_keys_contain(tube_flip_results.keys(), target_keys)
+        tube_flip_results = tube_flip(results)
+        if tube_flip_results['flip'] is True:
+            assert self.check_flip(imgs, tube_flip_results['imgs'],
+                                   results['flip_direction'])
+        assert id(tube_flip_results['imgs']) == id(results['imgs'])
+
+    def test_box_flip(self):
+        target_keys = ['flip', 'flip_direction', 'resolution', 'gt_bboxes']
+
+        gt_bboxes = {
+            23: [
+                np.array([[77., 0., 185., 168.], [78., 1., 185., 168.],
+                          [78., 1., 186., 169.]],
+                         dtype=np.float32)
+            ]
+        }
+        results = dict(
+            flip=True,
+            flip_direction='horizontal',
+            resolution=(240, 320),
+            gt_bboxes=gt_bboxes)
+        gt_tube = gt_bboxes[23][0]
+
+        def check_box_flip(boxes, direction, img_shape):
+            img_h, img_w = img_shape
+            for label_index in boxes:
+                for tube in boxes[label_index]:
+                    if direction == 'horizontal':
+                        assert_array_equal(tube[:, 1], gt_tube[:, 1])
+                        assert_array_equal(tube[:, 3], gt_tube[:, 3])
+                        assert_array_equal(gt_tube[:, 0], img_w - tube[:, 2])
+                        assert_array_equal(gt_tube[:, 2], img_w - tube[:, 0])
+                    else:
+                        assert_array_equal(tube[:, 0], gt_tube[:, 0])
+                        assert_array_equal(tube[:, 2], gt_tube[:, 2])
+                        assert_array_equal(gt_tube[:, 1], img_h - tube[:, 3])
+                        assert_array_equal(gt_tube[:, 3], img_h - tube[:, 1])
+
+        box_flip = BoxFlip()
+
+        # do not flip
+        results_ = copy.deepcopy(results)
+        results_['flip'] = False
+        assert id(results_) == id(box_flip(results_))
+        assert self.check_keys_contain(results_.keys(), target_keys)
+
+        # flip horizontally
+        results_ = copy.deepcopy(results)
+        results_['flip'] = True
+        results_ = box_flip(results_)
+        check_box_flip(results_['gt_bboxes'], results_['flip_direction'],
+                       results_['resolution'])
+        assert self.check_keys_contain(results_.keys(), target_keys)
+
+        # flip vertically
+        results_ = copy.deepcopy(results)
+        results_['flip'] = True
+        results_['flip_direction'] = 'vertical'
+        results_ = box_flip(results_)
+        check_box_flip(results_['gt_bboxes'], results_['flip_direction'],
+                       results_['resolution'])
+        assert self.check_keys_contain(results_.keys(), target_keys)
