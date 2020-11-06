@@ -993,7 +993,9 @@ class CuboidCrop:
         return results
 
     def __repr__(self):
-        pass
+        repr_str = (f'{self.__class__.__name__}('
+                    f'cuboid_settings={self.cuboid_settings})')
+        return repr_str
 
 
 @PIPELINES.register_module()
@@ -1069,7 +1071,11 @@ class TubePad:
         return results
 
     def __repr__(self):
-        pass
+        repr_str = (f'{self.__class__.__name__}('
+                    f'expand_ratio={self.expand_ratio}, '
+                    f'max_expand_ratio={self.max_expand_ratio}, '
+                    f'mean_values={self.mean_values})')
+        return repr_str
 
 
 @PIPELINES.register_module()
@@ -1118,7 +1124,10 @@ class TubeResize:
         return results
 
     def __repr__(self):
-        pass
+        repr = (f'{self.__class__.__name__}('
+                f'resize_scale={(self.resize_h, self.resize_w)}, '
+                f'output_stride={self.output_stride})')
+        return repr
 
 
 @PIPELINES.register_module()
@@ -1257,7 +1266,8 @@ class MOCTubeExtract:
         return results
 
     def __repr__(self):
-        pass
+        repr = f'{self.__class__.__name__}(max_objs={self.max_objs})'
+        return repr
 
 
 @PIPELINES.register_module()

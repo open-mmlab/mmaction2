@@ -1357,6 +1357,9 @@ class TestAugumentations:
         cuboid_results = cuboid(cuboid_results)
         assert self.check_keys_contain(cuboid_results.keys(), target_keys)
 
+        assert repr(cuboid) == (
+            f'{cuboid.__class__.__name__}(cuboid_settings={cuboid_settings})')
+
     def test_tube_pad(self):
         target_keys = ['imgs', 'gt_bboxes', 'img_shape', 'pad']
         mean_values = [119.91659325, 114.0342201, 104.0136177]
@@ -1394,6 +1397,10 @@ class TestAugumentations:
         results_ = tube_pad(results_)
         assert not results_['pad']
 
+        assert repr(tube_pad) == (
+            f'{tube_pad.__class__.__name__}(expand_ratio={0}, '
+            f'max_expand_ratio={4.0}, mean_values=None)')
+
     def test_tube_resize(self):
         target_keys = ['imgs', 'gt_bboxes', 'img_shape', 'box_output_shape']
 
@@ -1415,6 +1422,10 @@ class TestAugumentations:
         assert self.check_keys_contain(results_.keys(), target_keys)
         assert results_['img_shape'] == (288, 288)
         assert results_['box_output_shape'] == (72, 72)
+
+        assert repr(tube_resize) == (
+            f'{tube_resize.__class__.__name__}(resize_scale={(288, 288)}, '
+            'output_stride=4)')
 
     def test_moc_tube_extract(self):
         target_keys = [
@@ -1448,3 +1459,6 @@ class TestAugumentations:
         assert_array_equal(
             results_['index_all'],
             np.array([[6179] * 4 + [6252, 6252]] + [[0] * 6] * 127))
+
+        assert repr(moc_tube_extract) == (
+            f'{moc_tube_extract.__class__.__name__}(max_objs=128)')
