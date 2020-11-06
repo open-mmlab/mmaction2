@@ -1,0 +1,18 @@
+[
+  {
+    "filename":"test.mp4",
+    "label":{
+        "action": [2],
+        "scene": [2],
+        "object": [1]
+    }
+  },
+  {
+    "filename":"test.avi",
+    "label":{
+        "action": [1],
+        "scene": [1],
+        "object": [2]
+    }
+  }
+]
