@@ -872,6 +872,19 @@ class RandomRescale:
 
 @PIPELINES.register_module()
 class CuboidCrop:
+    """Crop cuboid candidates and randomly sample one to form tubelet.
+
+    Required keys in results are "img_shape", "gt_bboxes" and "imgs", added or
+    modified keys are "imgs", "img_shape" and "gt_bboxes".
+
+    Args:
+        cuboid_settings (list[dict]): Setting dict for cropping cuboid
+            candidates. Each dict may contain keys like "max_trials",
+            "max_sample", "sampler" ("sample" is also a dict which contains
+            keys like "min_scale", "max_scale", "min_aspect", "max_aspect"),
+            "constraints" ("constraints" is also a dict which contains keys
+            like "min_jaccard_overlap", "max_jaccard_overlap").
+    """
 
     def __init__(self, cuboid_settings):
         self.cuboid_settings = cuboid_settings
@@ -957,7 +970,6 @@ class CuboidCrop:
             for tube in gt_bboxes[label_index]:
                 tube -= np.array([[x1, y1, x1, y1]], dtype=np.float32)
 
-                # check if valid
                 x_center = 0.5 * (tube[:, 0] + tube[:, 2])
                 y_center = 0.5 * (tube[:, 1] + tube[:, 3])
 
@@ -985,7 +997,22 @@ class CuboidCrop:
 
 
 @PIPELINES.register_module()
-class TubeExpand:
+class TubePad:
+    """Pad mean values into the input images with a expanding ratio for output
+    images in a certain probability.
+
+    Required keys are "imgs", "gt_bboxes", "img_shape", added or modified keys
+    are "pad", "imgs", "img_shape", "gt_bboxes".
+
+    Args:
+        expand_ratio (float): Probability of implementing tube padding.
+            Default: 0.5.
+        max_expand_ratio (float): Max expand ratio indicating expand ratio
+            range ([1, ``max_expand_ratio``]) to randomly sample from.
+            Default: 4.0.
+        mean_values (Sequence[float] | None): Mean values of different
+            channels. Default: None.
+    """
 
     def __init__(self,
                  expand_ratio=0.5,
@@ -994,6 +1021,10 @@ class TubeExpand:
         self.expand_ratio = expand_ratio
         self.max_expand_ratio = max_expand_ratio
         if mean_values is not None:
+            if not isinstance(mean_values, Sequence):
+                raise TypeError(
+                    'Mean must be list, tuple or np.ndarray, but got '
+                    f'{type(mean_values)}')
             self.mean_values = np.array(mean_values)
         else:
             self.mean_values = None
@@ -1003,13 +1034,13 @@ class TubeExpand:
         gt_bboxes = results['gt_bboxes']
         img_h, img_w = results['img_shape']
 
-        expand = False
+        pad = False
         if np.random.rand() < self.expand_ratio:
-            expand = True
+            pad = True
 
-        results['expand'] = expand
+        results['pad'] = pad
 
-        if expand:
+        if pad:
             expand_scale = np.random.uniform(1, self.max_expand_ratio)
             h = int(img_h * expand_scale)
             w = int(img_w * expand_scale)
@@ -1043,9 +1074,24 @@ class TubeExpand:
 
 @PIPELINES.register_module()
 class TubeResize:
+    """Resize images and bounding boxes to a specific size.
+
+    Required keys are "gt_bboxes", "img_shape", "imgs", added or modified keys
+    are "imgs", "img_shape", "gt_bboxes", "box_output_shape".
+
+    Args:
+        resize_scale (int | tuple[int]): (w, h) for target shape.
+        output_stride (int): Output stride used for scaling target boxes shape.
+    """
 
     def __init__(self, resize_scale, output_stride=4):
+        resize_scale = _pair(resize_scale)
+        if not mmcv.is_tuple_of(resize_scale, int):
+            raise TypeError('resize_scale must be int or tuple of int, '
+                            f'but got {resize_scale}')
+
         self.resize_h, self.resize_w = resize_scale
+
         self.output_stride = output_stride
         self.output_h = self.resize_h // self.output_stride
         self.output_w = self.resize_w // self.output_stride
@@ -1077,6 +1123,15 @@ class TubeResize:
 
 @PIPELINES.register_module()
 class MOCTubeExtract:
+    """Extract required features for MOC.
+
+    Extract required features for MOC, including gaussian heatmap, gt_bboxes'
+    height and width feature, gt_bboxes' movement feature, center position for
+    key frame and all frames.
+
+    Args:
+        max_objs (int): Number of max objects. Default: 128.
+    """
 
     def __init__(self, max_objs=128):
         self.max_objs = max_objs
@@ -1131,7 +1186,7 @@ class MOCTubeExtract:
 
         # hm is ground truth gaussian heatmap at each center location
         hm = np.zeros((num_classes, output_h, output_w), dtype=np.float32)
-        # wh is gt_bboxes's height and width in i_th frame
+        # wh is gt_bboxes' height and width in i_th frame
         wh = np.zeros((self.max_objs, tube_length * 2), dtype=np.float32)
         # mov is gt movement from i_th frame to key frame
         mov = np.zeros((self.max_objs, tube_length * 2), dtype=np.float32)
@@ -1285,6 +1340,14 @@ class Flip:
 
 @PIPELINES.register_module()
 class TubeFlip(Flip):
+    """Flip the images in a tube with a probability.
+
+    Reverse the order of elements in the given imgs with a specific direction.
+    The shape of the imgs is preserved, but the elements are reordered.
+    Required keys are "imgs", "img_shape", "modality", added or modified keys
+    are "imgs", "lazy" and "flip_direction". Required keys in "lazy" is None,
+    added or modified key are "flip" and "flip_direction".
+    """
 
     def __call__(self, results):
         modality = results['modality']
@@ -1312,6 +1375,11 @@ class TubeFlip(Flip):
 
 @PIPELINES.register_module()
 class BoxFlip(Flip):
+    """Flip the boxes in a tube when the images are flipped.
+
+    Required keys are "flip", "flip_direction", "resolution", "gt_bboxes",
+    added or modified keys are "gt_bboxes".
+    """
 
     def __call__(self, results):
         flip = results['flip']
@@ -1457,6 +1525,7 @@ class ColorJitter:
         eig_vec (np.ndarray | None): Eigenvectors of [3 x 3] size for RGB
             channel jitter. If set to None, it will use the default
             eigenvectors. Default: None.
+        apply_pca_noise (bool): Whether to apply pca noise. Default: True.
     """
 
     def __init__(self,

@@ -14,8 +14,8 @@ from mmaction.datasets.pipelines import (AudioAmplify, CenterCrop, ColorJitter,
                                          MultiGroupCrop, MultiScaleCrop,
                                          Normalize, RandomCrop, RandomRescale,
                                          RandomResizedCrop, RandomScale,
-                                         Resize, TenCrop, ThreeCrop,
-                                         TubeExpand, TubeResize)
+                                         Resize, TenCrop, ThreeCrop, TubePad,
+                                         TubeResize)
 
 # yapf: enable
 
@@ -897,7 +897,8 @@ class TestAugumentations:
                                       f'color_space_aug={False}, '
                                       f'alpha_std={0.1}, '
                                       f'eig_val={eig_val}, '
-                                      f'eig_vec={eig_vec})')
+                                      f'eig_vec={eig_vec}, '
+                                      f'apply_pca_noise={True})')
 
     def test_center_crop(self):
         with pytest.raises(TypeError):
@@ -1356,8 +1357,8 @@ class TestAugumentations:
         cuboid_results = cuboid(cuboid_results)
         assert self.check_keys_contain(cuboid_results.keys(), target_keys)
 
-    def test_tube_expand(self):
-        target_keys = ['imgs', 'gt_bboxes', 'img_shape', 'expand']
+    def test_tube_pad(self):
+        target_keys = ['imgs', 'gt_bboxes', 'img_shape', 'pad']
         mean_values = [119.91659325, 114.0342201, 104.0136177]
 
         imgs = list(np.random.rand(3, 240, 320, 3))
@@ -1370,32 +1371,28 @@ class TestAugumentations:
         }
         results = dict(imgs=imgs, img_shape=(240, 320), gt_bboxes=gt_bboxes)
 
-        tube_expand = TubeExpand(expand_ratio=1, mean_values=mean_values)
+        tube_pad = TubePad(expand_ratio=1, mean_values=mean_values)
         results_ = copy.deepcopy(results)
-        results_ = tube_expand(results_)
+        results_ = tube_pad(results_)
 
         assert self.check_keys_contain(results_.keys(), target_keys)
-        assert results_['expand']
-        assert 1 <= results_['img_shape'][
-            0] / 240 <= tube_expand.max_expand_ratio
-        assert 1 <= results_['img_shape'][
-            1] / 320 <= tube_expand.max_expand_ratio
+        assert results_['pad']
+        assert 1 <= results_['img_shape'][0] / 240 <= tube_pad.max_expand_ratio
+        assert 1 <= results_['img_shape'][1] / 320 <= tube_pad.max_expand_ratio
 
-        tube_expand = TubeExpand(expand_ratio=1)
+        tube_pad = TubePad(expand_ratio=1)
         results_ = copy.deepcopy(results)
-        results_ = tube_expand(results_)
+        results_ = tube_pad(results_)
 
         assert self.check_keys_contain(results_.keys(), target_keys)
-        assert results_['expand']
-        assert 1 <= results_['img_shape'][
-            0] / 240 <= tube_expand.max_expand_ratio
-        assert 1 <= results_['img_shape'][
-            1] / 320 <= tube_expand.max_expand_ratio
+        assert results_['pad']
+        assert 1 <= results_['img_shape'][0] / 240 <= tube_pad.max_expand_ratio
+        assert 1 <= results_['img_shape'][1] / 320 <= tube_pad.max_expand_ratio
 
-        tube_expand = TubeExpand(expand_ratio=0)
+        tube_pad = TubePad(expand_ratio=0)
         results_ = copy.deepcopy(results)
-        results_ = tube_expand(results_)
-        assert not results_['expand']
+        results_ = tube_pad(results_)
+        assert not results_['pad']
 
     def test_tube_resize(self):
         target_keys = ['imgs', 'gt_bboxes', 'img_shape', 'box_output_shape']

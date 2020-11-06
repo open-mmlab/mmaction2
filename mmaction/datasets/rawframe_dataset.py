@@ -72,6 +72,10 @@ class RawframeDataset(BaseDataset):
             recognition dataset. Default: False.
         num_classes (int | None): Number of classes in the dataset.
             Default: None.
+        start_index (int): Specify a start index for frames in consideration of
+            different filename format. However, when taking videos as input,
+            it should be set to 0, since frames loaded from videos count
+            from 0. Default: 1.
         modality (str): Modality of data. Support 'RGB', 'Flow'.
             Default: 'RGB'.
         sample_by_class (bool): Sampling by class, should be set `True` when

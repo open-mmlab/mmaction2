@@ -324,6 +324,11 @@ class FormatAudioShape:
 
 @PIPELINES.register_module()
 class FormatTubeShape:
+    """Format images in a tube into a certain length.
+
+    Required keys are "imgs", "tube_length", "img_shape", "modality", added or
+    modified keys are "imgs".
+    """
 
     def __call__(self, results):
         imgs = results['imgs']

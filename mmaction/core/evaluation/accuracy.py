@@ -2,6 +2,15 @@ import numpy as np
 
 
 def overlap2d(origin_box, target_box):
+    """Compute the overlaps between original boxes and target boxes.
+
+    Args:
+        origin_box (np.ndarray): Original bounding boxes.
+        target_box (np.ndarray): Target bounding boxes.
+
+    Returns:
+        np.ndarray: Overlap between the boxes pairs.
+    """
     x_min = np.maximum(origin_box[:, 0], target_box[:, 0])
     y_min = np.maximum(origin_box[:, 1], target_box[:, 1])
     x_max = np.minimum(origin_box[:, 2], target_box[:, 2])
@@ -14,6 +23,14 @@ def overlap2d(origin_box, target_box):
 
 
 def area2d(box):
+    """Calculate bounding boxes area.
+
+    Args:
+        box (np.ndarray): Bounding boxes in [x1, y1, x2, y2] format.
+
+    Returns:
+        np.ndarray: Area for bounding boxes.
+    """
     width = box[:, 2] - box[:, 0]
     height = box[:, 3] - box[:, 1]
 
@@ -21,6 +38,15 @@ def area2d(box):
 
 
 def iou2d(origin_box, target_box):
+    """Compute the IoU between original boxes and target boxes.
+
+    Args:
+        origin_box (np.ndarray): Original bounding boxes.
+        target_box (np.ndarray): Target bounding boxes.
+
+    Returns:
+        np.ndarray: IoU between the boxes pairs.
+    """
     if origin_box.ndim == 1:
         origin_box = origin_box[None, :]
     if target_box.ndim == 1:

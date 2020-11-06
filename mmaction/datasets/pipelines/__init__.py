@@ -4,8 +4,8 @@ from .augmentations import (AudioAmplify, BoxFlip, CenterCrop, ColorJitter,
                             Flip, Fuse, MelSpectrogram, MOCTubeExtract,
                             MultiGroupCrop, MultiScaleCrop, Normalize,
                             RandomCrop, RandomRescale, RandomResizedCrop,
-                            RandomScale, Resize, TenCrop, ThreeCrop,
-                            TubeExpand, TubeFlip, TubeResize)
+                            RandomScale, Resize, TenCrop, ThreeCrop, TubeFlip,
+                            TubePad, TubeResize)
 from .compose import Compose
 from .formating import (Collect, FormatAudioShape, FormatShape,
                         FormatTubeShape, ImageToTensor, ToDataContainer,
@@ -34,7 +34,7 @@ __all__ = [
     'FormatAudioShape', 'LoadAudioFeature', 'AudioFeatureSelector',
     'AudioDecodeInit', 'EntityBoxPad', 'EntityBoxFlip', 'EntityBoxCrop',
     'EntityBoxRescale', 'EntityBoxClip', 'RandomScale', 'ImageDecode',
-    'BuildPseudoClip', 'RandomRescale', 'CuboidCrop', 'TubeExpand',
-    'TubeResize', 'MOCTubeExtract', 'TubeFlip', 'BoxFlip', 'FormatTubeShape',
-    'TubeDecode', 'TubeSampleFrames', 'PyAVDecodeMotionVector'
+    'BuildPseudoClip', 'RandomRescale', 'CuboidCrop', 'TubePad', 'TubeResize',
+    'MOCTubeExtract', 'TubeFlip', 'BoxFlip', 'FormatTubeShape', 'TubeDecode',
+    'TubeSampleFrames', 'PyAVDecodeMotionVector'
 ]

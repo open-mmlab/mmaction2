@@ -1085,7 +1085,8 @@ class RawFrameDecode:
     """Load and decode frames with given indices.
 
     Required keys are "frame_dir", "filename_tmpl" and "frame_inds",
-    added or modified keys are "imgs", "img_shape" and "original_shape".
+    "modality", added or modified keys are "imgs", "img_shape" and
+    "original_shape".
 
     Args:
         io_backend (str): IO backend where frames are stored. Default: 'disk'.
@@ -1205,6 +1206,14 @@ class ImageDecode:
 
 @PIPELINES.register_module()
 class TubeSampleFrames:
+    """Sample frames from the video in a tube.
+
+    It will sample a number of frames continuously from a certain starting
+    frame index.
+
+    Required keys are "indice", "total_frames", "modality", "tube_length",
+    added or modified keys are "frame_inds".
+    """
 
     def __call__(self, results):
         _, indice = results['indice']
@@ -1229,6 +1238,15 @@ class TubeSampleFrames:
 
 @PIPELINES.register_module()
 class TubeDecode(RawFrameDecode):
+    """Load and decode frames with given indices.
+
+    Required keys are "frame_dir", "filename_tmpl" and "frame_inds",
+    added or modified keys are "imgs", "img_shape" and "original_shape".
+
+    Different from :obj:`RawFrameDecode`, the flow frames will be read in the
+    same way with RGB frames due to the original "UCF101-24" and "JHMDB" flow
+    files.
+    """
 
     def __call__(self, results):
         mmcv.use_backend(self.decoding_backend)

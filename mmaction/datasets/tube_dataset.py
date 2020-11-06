@@ -9,6 +9,43 @@ from .registry import DATASETS
 
 @DATASETS.register_module()
 class TubeDataset(BaseDataset):
+    """Tube dataset for frame-level spatial temporal detection.
+
+    Based on original "UCF101-24" and "JHMDB" annotation files, the dataset
+    loads labels ('labels'), ground truth tubes ('gttubes'), frames number for
+    each video ('nframes'), train video file list ('train_videos'), test video
+    file list ('test_videos') and resolution for each video ('resolution'),
+    and applies specified transformations to return a dict containing frame
+    tensors and other information.
+
+    Specifically, it can save arranged information into a pickle file to
+    accelerate loading.
+
+    Args:
+        ann_file (str): Path to the annotation file.
+        pipeline (list[dict | callable]): A sequence of data transforms.
+        preload_ann_file (str | None): Path to a pickle file, which has saved
+            arranged information. Default: None.
+        save_preload (bool): Whether to save the arranged information to a
+            file. Default: False.
+        num_classes (int): Number class of the dataset. Default: 24.
+        data_prefix (str | None): Path to a directory where videos are held.
+            Default: None.
+        test_mode (bool): Store True when building test or validation dataset.
+            Default: False.
+        encoding (str): Encode style to load pickle file.
+            Default: 'iso-8859-1'.
+        filename_tmpl (str): Template for each filename. Default: '{:05}.jpg'.
+        split (int): Index of split to indicate the data part for train and
+            test videos. Default: 1.
+        tube_length (int): Length of tube to form the tubelet. Default: 7.
+        start_index (int): Specify a start index for frames in consideration of
+            different filename format. However, when taking videos as input,
+            it should be set to 0, since frames loaded from videos count
+            from 0. Default: 1.
+        modality (str): Modality of data. Support 'RGB', 'Flow'.
+            Default: 'RGB'.
+    """
 
     def __init__(self,
                  ann_file,
