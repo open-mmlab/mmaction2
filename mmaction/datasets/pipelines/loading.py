@@ -417,28 +417,11 @@ class SampleAVAFrames(SampleFrames):
         super().__init__(clip_len, frame_interval, test_mode=test_mode)
 
     def _get_clips(self, center_index, skip_offsets, shot_info):
-        frame_inds = list()
-        ori_clip_len = self.clip_len * self.frame_interval
-
-        cur = center_index - self.frame_interval
-        length = len(
-            range(-self.frame_interval,
-                  -(ori_clip_len + 1) // self.frame_interval,
-                  -self.frame_interval))
-
-        for i in range(length):
-            frame_inds.append(cur + skip_offsets[i])
-            if cur - self.frame_interval >= shot_info[0]:
-                cur -= self.frame_interval
-
-        cur = center_index
-        length = len(
-            range(0, (ori_clip_len + 1) // self.frame_interval,
-                  self.frame_interval))
-        for i in range(length):
-            frame_inds.append(cur + skip_offsets[i])
-            if cur + self.frame_interval < shot_info[1]:
-                cur += self.frame_interval
+        start = center_index - (self.clip_len // 2) * self.frame_interval
+        end = center_index + ((self.clip_len + 1) // 2) * self.frame_interval
+        frame_inds = list(range(start, end, self.frame_interval))
+        frame_inds = frame_inds + skip_offsets
+        frame_inds = np.clip(frame_inds, shot_info[0], shot_info[1] - 1)
 
         return frame_inds
 
@@ -449,8 +432,10 @@ class SampleAVAFrames(SampleFrames):
         shot_info = results['shot_info']
 
         center_index = fps * (timestamp - timestamp_start) + 1
+
         skip_offsets = np.random.randint(
-            self.frame_interval, size=self.clip_len)
+            -self.frame_interval // 2, (self.frame_interval + 1) // 2,
+            size=self.clip_len)
         frame_inds = self._get_clips(center_index, skip_offsets, shot_info)
 
         results['frame_inds'] = np.array(frame_inds, dtype=np.int)
