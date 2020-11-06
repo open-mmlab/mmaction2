@@ -67,8 +67,9 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         super().__init__()
 
         self.ann_file = ann_file
-        self.data_prefix = osp.realpath(data_prefix) if osp.isdir(
-            data_prefix) else data_prefix
+        self.data_prefix = osp.realpath(
+            data_prefix) if data_prefix is not None and osp.isdir(
+                data_prefix) else data_prefix
         self.test_mode = test_mode
         self.multi_class = multi_class
         self.num_classes = num_classes
