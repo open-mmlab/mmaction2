@@ -96,19 +96,21 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         self.video_infos.sort(key=lambda x: x['total_frames'])
         split_origin_len = (len(self.video_infos) // self.split)
         print(f'split origin len {split_origin_len}')
-        self.video_infos_splis = [
+        self.video_infos_splits = [
             self.video_infos[0:split_origin_len * (i + 1)]
             for i in range(self.split)
         ]
-        for i in range(len(self.video_infos_splis)):
+        for i in range(len(self.video_infos_splits)):
             # pdb.set_trace()
-            video_list = self.video_infos_splis[i]
+            video_list = self.video_infos_splits[i]
             resample_times = 2**i
             video_list = video_list * resample_times
             random.shuffle(video_list)
+            print(f'{len(video_list)} + '
+                  f'{len(self.video_infos_new)}, {resample_times}')
             self.video_infos_new += video_list
-        print('Change in iteration per epoch '
-              f'{len(self.video_infos_new)  / len(self.video_infos)}')
+        print(f'{len(self.video_infos_new), len(self.video_infos)}'
+              f' {len(self.video_infos_new)  / len(self.video_infos)}')
         return self.video_infos_new
 
     @abstractmethod

@@ -2,19 +2,13 @@
 model = dict(
     type='Recognizer3D',
     backbone=dict(
-        type='ResNet2Plus1d',
-        depth=50,
-        pretrained=None,
+        type='ResNet3d',
         pretrained2d=False,
+        pretrained=None,
+        depth=50,
+        conv_cfg=dict(type='Conv3d'),
         norm_eval=False,
-        conv_cfg=dict(type='Conv2plus1d'),
-        norm_cfg=dict(type='BN3d', requires_grad=True),
-        conv1_kernel=(3, 7, 7),
-        conv1_stride_t=1,
-        pool1_stride_t=1,
-        inflate=(1, 1, 1, 1),
-        spatial_strides=(1, 2, 2, 2),
-        temporal_strides=(1, 2, 2, 2),
+        inflate=((1, 1, 1), (1, 0, 1, 0), (1, 0, 1, 0, 1, 0), (0, 1, 0)),
         zero_init_residual=False),
     cls_head=dict(
         type='I3DHead',
@@ -129,21 +123,18 @@ optimizer = dict(
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
 lr_config = dict(policy='CosineAnnealing', min_lr=0)
-total_epochs = 200
+total_epochs = 400
 checkpoint_config = dict(interval=5)
 evaluation = dict(
     interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
 log_config = dict(
     interval=20,
-    hooks=[
-        dict(type='TextLoggerHook'),
-        dict(type='TensorboardLoggerHook'),
-    ])
+    hooks=[dict(type='TextLoggerHook'),
+           dict(type='TensorboardLoggerHook')])
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/r2plus1d_r50_8x8x1_200e_ugc_rgb/'
+work_dir = './work_dirs/i3d_r50_2x_8x8x1_400e_ugc_rgb/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
-find_unused_parameters = False

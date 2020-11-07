@@ -49,7 +49,7 @@ test_pipeline = [
         type='SampleFrames',
         clip_len=64,
         frame_interval=1,
-        num_clips=1,
+        num_clips=30,
         test_mode=True),
     dict(type='AudioFeatureSelector'),
     dict(type='FormatAudioShape', input_format='NCTF'),
@@ -81,12 +81,12 @@ optimizer = dict(
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
 lr_config = dict(policy='CosineAnnealing', min_lr=0)
-total_epochs = 100
+total_epochs = 200
 checkpoint_config = dict(interval=5)
 evaluation = dict(
     interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
 log_config = dict(
-    interval=2,
+    interval=20,
     hooks=[
         dict(type='TextLoggerHook'),
         dict(type='TensorboardLoggerHook'),
@@ -94,7 +94,7 @@ log_config = dict(
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/tsn_r18_64x1x1_100e_ugc_audio_feature/'
+work_dir = './work_dirs/tsn_r18_64x1x1_dense_200e_ugc_audio_feature/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]

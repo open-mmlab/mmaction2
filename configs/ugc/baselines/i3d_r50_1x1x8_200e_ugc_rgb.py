@@ -78,7 +78,8 @@ val_pipeline = [
 ]
 test_pipeline = [
     dict(
-        type='SampleFrames',
+        # type='SampleFrames',
+        type='DenseSampleFrames',
         clip_len=1,
         frame_interval=1,
         num_clips=8,  # 25
