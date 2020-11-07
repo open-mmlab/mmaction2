@@ -100,7 +100,6 @@ test_pipeline = [
 
 data = dict(
     videos_per_gpu=12,
-    omni_videos_per_gpu=[12, 12],
     workers_per_gpu=2,
     train=[
         dict(

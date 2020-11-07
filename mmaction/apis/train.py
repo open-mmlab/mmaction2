@@ -48,7 +48,7 @@ def train_model(model,
 
     if cfg.omnisource:
         # The option can override videos_per_gpu
-        train_ratio = cfg.data.get('train_ratio', None)
+        train_ratio = cfg.data.get('train_ratio', [1] * len(dataset))
         omni_videos_per_gpu = cfg.data.get('omni_videos_per_gpu', None)
         if omni_videos_per_gpu is None:
             dataloader_settings = [dataloader_setting] * len(dataset)
