@@ -81,6 +81,7 @@ Supported methods for action recognition:
 - [x] [TIN](configs/recognition/tin/README.md)
 - [x] [TPN](configs/recognition/tpn/README.md)
 - [x] [C3D](configs/recognition/c3d/README.md)
+- [x] [X3D](configs/recognition/x3d/README.md)
 - [x] [OmniSource](configs/recognition/omnisource/README.md)
 - [x] [MultiModality: Audio](configs/recognition_audio/resnet/README.md)
 
