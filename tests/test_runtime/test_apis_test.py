@@ -16,9 +16,7 @@ class OldStyleModel(nn.Module):
         self.cnt = 0
 
     def forward(self, return_loss, **kwargs):
-        result = [
-            self.cnt,
-        ]
+        result = [self.cnt]
         self.cnt += 1
         return result
 
