@@ -246,7 +246,7 @@ class TestDataset:
         mAP = hvu_video_eval_dataset.evaluate(results)
         assert np.isclose(mAP['action_mAP'], 1.0)
         assert np.isclose(mAP['scene_mAP'], 0.5)
-        assert np.isclose(mAP['object_mAP'], 1.75)
+        assert np.isclose(mAP['object_mAP'], 0.75)
 
     def test_rawframe_dataset(self):
         rawframe_dataset = RawframeDataset(self.frame_ann_file,
