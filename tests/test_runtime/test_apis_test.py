@@ -80,7 +80,8 @@ def test_multi_gpu_test():
 @patch('mmcv.runner.get_dist_info', Mock(return_value=(0, 1)))
 @patch('torch.distributed.broadcast', MagicMock)
 @patch('torch.distributed.barrier', Mock)
-@pytest.mark.skipif(sys.version_info[:2] == (3, 8))
+@pytest.mark.skipif(
+    sys.version_info[:2] == (3, 8), reason='Not for python 3.8')
 def test_collect_results_cpu():
 
     def content_for_unittest():
