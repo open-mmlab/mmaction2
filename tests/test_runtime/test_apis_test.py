@@ -1,4 +1,4 @@
-from unittest.mock import Mock, patch
+from unittest.mock import MagicMock, Mock, patch
 
 import torch
 import torch.nn as nn
@@ -55,8 +55,6 @@ def test_single_gpu_test():
 
 def mock_tensor_without_cuda(*args, **kwargs):
     if 'device' not in kwargs:
-        print(*args)
-        print(args)
         return torch.Tensor(*args)
     return torch.IntTensor(*args, device='cpu')
 
@@ -78,19 +76,27 @@ def test_multi_gpu_test():
 
 
 @patch('mmcv.runner.get_dist_info', Mock(return_value=(0, 1)))
-@patch('torch.distributed.broadcast', Mock)
-@patch(
-    'torch.full',
-    Mock(
-        return_value=torch.full((512, ), 32, dtype=torch.uint8, device='cpu')))
-@patch('torch.tensor', mock_tensor_without_cuda)
+@patch('torch.distributed.broadcast', MagicMock)
 @patch('torch.distributed.barrier', Mock)
 def test_collect_results_cpu():
-    results_part = list(range(8))
-    size = 8
 
-    results = collect_results_cpu(results_part, size)
-    assert results == list(range(8))
+    def content_for_unittest():
+        results_part = list(range(8))
+        size = 8
 
-    results = collect_results_cpu(results_part, size, 'unittest')
-    assert results == list(range(8))
+        results = collect_results_cpu(results_part, size)
+        assert results == list(range(8))
+
+        results = collect_results_cpu(results_part, size, 'unittest')
+        assert results == list(range(8))
+
+    if not torch.cuda.is_available():
+        with patch(
+                'torch.full',
+                Mock(
+                    return_value=torch.full(
+                        (512, ), 32, dtype=torch.uint8, device='cpu'))):
+            with patch('torch.tensor', mock_tensor_without_cuda):
+                content_for_unittest()
+    else:
+        content_for_unittest()
