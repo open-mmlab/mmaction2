@@ -26,6 +26,9 @@ class ExampleRecognizer(BaseRecognizer):
     def forward_test(self, imgs):
         pass
 
+    def forward_gradcam(self, imgs):
+        pass
+
 
 def _get_recognizer_cfg(fname):
     """Grab configs necessary to create a recognizer.
