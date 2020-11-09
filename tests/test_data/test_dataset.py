@@ -10,8 +10,8 @@ from numpy.testing import assert_array_equal
 
 from mmaction.datasets import (ActivityNetDataset, AudioDataset,
                                AudioFeatureDataset, HVUDataset,
-                               RawframeDataset, RepeatDataset, SSNDataset,
-                               VideoDataset)
+                               RawframeDataset, RawVideoDataset, RepeatDataset,
+                               SSNDataset, VideoDataset)
 
 
 class TestDataset:
@@ -45,6 +45,11 @@ class TestDataset:
         cls.audio_ann_file = osp.join(cls.data_prefix, 'audio_test_list.txt')
         cls.audio_feature_ann_file = osp.join(cls.data_prefix,
                                               'audio_feature_test_list.txt')
+        cls.rawvideo_test_anno_txt = osp.join(cls.data_prefix,
+                                              'rawvideo_test_anno.txt')
+        cls.rawvideo_test_anno_json = osp.join(cls.data_prefix,
+                                               'rawvideo_test_anno.json')
+        cls.rawvideo_pipeline = []
 
         cls.frame_pipeline = [
             dict(
@@ -149,6 +154,28 @@ class TestDataset:
         cls.hvu_category_nums_for_eval = [3, 3, 3]
 
         cls.filename_tmpl = 'img_{:05d}.jpg'
+
+    def test_rawvideo_dataset(self):
+        # Try to load txt file
+        rawvideo_dataset = RawVideoDataset(
+            ann_file=self.rawvideo_test_anno_txt,
+            pipeline=self.rawvideo_pipeline,
+            clipname_tmpl='part_{}.mp4',
+            sampling_strategy='positive',
+            data_prefix=self.data_prefix)
+        result = rawvideo_dataset.prepare_train_frames(0)
+        clipname = osp.join(self.data_prefix, 'test_rawvideo_dataset',
+                            'part_0.mp4')
+        assert result['filename'] == clipname
+
+        # Try to load json file
+        rawvideo_dataset = RawVideoDataset(
+            ann_file=self.rawvideo_test_anno_json,
+            pipeline=self.rawvideo_pipeline,
+            clipname_tmpl='part_{}.mp4',
+            sampling_strategy='random',
+            data_prefix=self.data_prefix)
+        result = rawvideo_dataset.prepare_test_frames(0)
 
     def test_hvu_dataset(self):
         hvu_frame_dataset = HVUDataset(
