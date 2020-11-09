@@ -5,6 +5,7 @@
 **Highlights**
 
 **New Features**
+- Add GradCAM utils for recognizer.
 
 **Improvements**
 - Add random seed for building filelists ([#323](https://github.com/open-mmlab/mmaction2/pull/323))

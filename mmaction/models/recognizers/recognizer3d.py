@@ -54,3 +54,15 @@ class Recognizer3D(BaseRecognizer):
         x = self.extract_feat(imgs)
         outs = (self.cls_head(x), )
         return outs
+
+    def forward_gradcam(self, imgs):
+        """"""
+        imgs = imgs.reshape((-1, ) + imgs.shape[2:])
+
+        x = self.extract_feat(imgs)
+        if hasattr(self, 'neck'):
+            x, _ = self.neck(x)
+
+        cls_score = self.cls_head(x)
+
+        return cls_score
