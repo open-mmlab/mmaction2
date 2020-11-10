@@ -87,7 +87,6 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
     @abstractmethod
     def load_annotations(self):
         """Load the annotation according to ann_file into video_infos."""
-        pass
 
     # json annotations already looks like video_infos, so for each dataset,
     # this func should be the same

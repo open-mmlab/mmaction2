@@ -60,12 +60,10 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
     def init_weights(self):
         """Initiate the parameters either from existing checkpoint or from
         scratch."""
-        pass
 
     @abstractmethod
     def forward(self, x):
         """Defines the computation performed at every call."""
-        pass
 
     def loss(self, cls_score, labels, **kwargs):
         """Calculate the loss given output ``cls_score``, target ``labels``.

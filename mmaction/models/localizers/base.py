@@ -44,12 +44,10 @@ class BaseLocalizer(nn.Module, metaclass=ABCMeta):
     @abstractmethod
     def forward_train(self, imgs, labels):
         """Defines the computation performed at training."""
-        pass
 
     @abstractmethod
     def forward_test(self, imgs):
         """Defines the computation performed at testing."""
-        pass
 
     def forward(self, imgs, return_loss=True, **kwargs):
         """Define the computation performed at every call."""
