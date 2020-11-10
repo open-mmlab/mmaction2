@@ -298,7 +298,6 @@ def test_tsm():
     # test twice sample + 3 crops
     input_shape = (2, 48, 3, 32, 32)
     demo_inputs = generate_demo_inputs(input_shape)
-
     imgs = demo_inputs['imgs']
 
     test_cfg = dict(average_clips='prob', test_crops=3, twice_sample=True)

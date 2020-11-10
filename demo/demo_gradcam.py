@@ -51,7 +51,19 @@ def parse_args():
 
 
 def build_inputs(model, video_path, use_frames=False):
-    """build inputs, codes from `inference_recognizer`"""
+    """build inputs for GradCAM.
+
+    Note that, building inputs for GradCAM is exactly the same as building
+    inputs for Recognizer test stage. Codes from `inference_recognizer`.
+
+    Args:
+        model (nn.Module): Recognizer model.
+        video_path (str): video file/url or rawframes directory.
+        use_frames (bool): whether to use rawframes as input.
+    Returns:
+        dict: Both GradCAM inputs and Recognizer test stage inputs,
+            including two keys, ``imgs`` and ``label``.
+    """
     if not (osp.exists(video_path) or video_path.startswith('http')):
         raise RuntimeError(f"'{video_path}' is missing")
 
@@ -101,7 +113,26 @@ def _resize_frames(frame_list,
                    scale,
                    keep_ratio=True,
                    interpolation='bilinear'):
-    """resize frames according to given scale."""
+    """resize frames according to given scale.
+
+    Codes are modified from `mmaction2/datasets/pipelines/augmentation.py`,
+    `Resize` class.
+
+    Args:
+        frame_list (list[np.ndarray]): frames to be resized.
+        scale (tuple[int]): If keep_ratio is True, it serves as scaling
+            factor or maximum size: the image will be rescaled as large
+            as possible within the scale. Otherwise, it serves as (w, h)
+            of output size.
+        keep_ratio (bool): If set to True, Images will be resized without
+            changing the aspect ratio. Otherwise, it will resize images to a
+            given size. Default: True.
+        interpolation (str): Algorithm used for interpolation:
+            "nearest" | "bilinear". Default: "bilinear".
+    Returns:
+        list[np.ndarray]: Both GradCAM and Recognizer test stage inputs,
+            including two keys, ``imgs`` and ``label``.
+    """
     if scale is None or (scale[0] == -1 and scale[1] == -1):
         return frame_list
     scale = tuple(scale)
@@ -147,7 +178,7 @@ def main():
         frames_batches = (results[0] * 255.).numpy().astype(np.uint8)
         frames = frames_batches.reshape(-1, *frames_batches.shape[-3:])
 
-        frame_list = [frame for frame in frames]
+        frame_list = list(frames)
         frame_list = _resize_frames(
             frame_list,
             args.target_resolution,

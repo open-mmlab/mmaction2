@@ -28,28 +28,19 @@ def _get_target_shapes(input_shape, num_classes=400, model_type='2D'):
     if model_type not in ['2D', '3D']:
         raise ValueError(f'Data type {model_type} is not available')
 
-    input_shape = list(input_shape).copy()
-    preds_target_shape = [input_shape[0], num_classes]
+    preds_target_shape = (input_shape[0], num_classes)
     if model_type == '3D':
         # input shape (batch_size, num_crops*num_clips, C, clip_len, H, W)
         # target shape (batch_size*num_crops*num_clips, clip_len, H, W, C)
-        blended_imgs_target_shape = [
-            input_shape[0] * input_shape[1],
-            input_shape[3],
-            input_shape[4],
-            input_shape[5],
-            input_shape[2],
-        ]
+        blended_imgs_target_shape = (input_shape[0] * input_shape[1],
+                                     input_shape[3], input_shape[4],
+                                     input_shape[5], input_shape[2])
     else:
         # input shape (batch_size, num_segments, C, H, W)
         # target shape (batch_size, num_segments, H, W, C)
-        blended_imgs_target_shape = [
-            input_shape[0],
-            input_shape[1],
-            input_shape[3],
-            input_shape[4],
-            input_shape[2],
-        ]
+        blended_imgs_target_shape = (input_shape[0], input_shape[1],
+                                     input_shape[3], input_shape[4],
+                                     input_shape[2])
 
     return blended_imgs_target_shape, preds_target_shape
 
@@ -58,20 +49,17 @@ def _generate_gradcam_inputs(input_shape=(1, 3, 3, 224, 224), model_type='2D'):
     """Create a superset of inputs needed to run gradcam.
 
     Args:
-        input_shape (tuple): input batch dimensions.
-            Default: (1, 250, 3, 224, 224).
+        input_shape (tuple[int]): input batch dimensions.
+            Default: (1, 3, 3, 224, 224).
         model_type (str): Model type for data generation, from {'2D', '3D'}.
             Default:'2D'
+    return:
+        dict: model inputs, including two keys, ``imgs`` and ``label``.
     """
-    if len(input_shape) == 5:
-        (N, L, C, H, W) = input_shape
-    elif len(input_shape) == 6:
-        (N, M, C, L, H, W) = input_shape
-
     imgs = np.random.random(input_shape)
 
     if model_type in ['2D', '3D']:
-        gt_labels = torch.LongTensor([2] * N)
+        gt_labels = torch.LongTensor([2] * input_shape[0])
     else:
         raise ValueError(f'Data type {model_type} is not available')
 
@@ -98,12 +86,12 @@ def _do_test_2D_models(recognizer,
         input_shape, num_classes=num_classes, model_type='2D')
 
     blended_imgs, preds = gradcam(demo_inputs)
-    assert list(blended_imgs.size()) == blended_imgs_target_shape
-    assert list(preds.size()) == preds_target_shape
+    assert blended_imgs.size() == blended_imgs_target_shape
+    assert preds.size() == preds_target_shape
 
     blended_imgs, preds = gradcam(demo_inputs, True)
-    assert list(blended_imgs.size()) == blended_imgs_target_shape
-    assert list(preds.size()) == preds_target_shape
+    assert blended_imgs.size() == blended_imgs_target_shape
+    assert preds.size() == preds_target_shape
 
 
 def _do_test_3D_models(recognizer,
@@ -123,22 +111,22 @@ def _do_test_3D_models(recognizer,
             gradcam = GradCAM(recognizer, target_layer_name)
 
             blended_imgs, preds = gradcam(demo_inputs)
-            assert list(blended_imgs.size()) == blended_imgs_target_shape
-            assert list(preds.size()) == preds_target_shape
+            assert blended_imgs.size() == blended_imgs_target_shape
+            assert preds.size() == preds_target_shape
 
             blended_imgs, preds = gradcam(demo_inputs, True)
-            assert list(blended_imgs.size()) == blended_imgs_target_shape
-            assert list(preds.size()) == preds_target_shape
+            assert blended_imgs.size() == blended_imgs_target_shape
+            assert preds.size() == preds_target_shape
     else:
         gradcam = GradCAM(recognizer, target_layer_name)
 
         blended_imgs, preds = gradcam(demo_inputs)
-        assert list(blended_imgs.size()) == blended_imgs_target_shape
-        assert list(preds.size()) == preds_target_shape
+        assert blended_imgs.size() == blended_imgs_target_shape
+        assert preds.size() == preds_target_shape
 
         blended_imgs, preds = gradcam(demo_inputs, True)
-        assert list(blended_imgs.size()) == blended_imgs_target_shape
-        assert list(preds.size()) == preds_target_shape
+        assert blended_imgs.size() == blended_imgs_target_shape
+        assert preds.size() == preds_target_shape
 
 
 def test_tsn():

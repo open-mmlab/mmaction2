@@ -105,7 +105,7 @@ Assume that you are located at `$MMACTION2` and have already downloaded the chec
 
 ### Video GradCAM Demo
 
-We provide a demo script to visualize GradCAM result using a single video.
+We provide a demo script to visualize GradCAM results using a single video.
 
 ```shell
 python demo/demo_gradcam.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} [--use-frames] \
