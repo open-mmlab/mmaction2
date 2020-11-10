@@ -5,6 +5,7 @@
 **Highlights**
 
 **New Features**
+- Automatically add modelzoo statistics to readthedocs ([#327](https://github.com/open-mmlab/mmaction2/pull/327))
 
 **Improvements**
 - Add random seed for building filelists ([#323](https://github.com/open-mmlab/mmaction2/pull/323))
