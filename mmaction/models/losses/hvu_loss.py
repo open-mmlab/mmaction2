@@ -135,3 +135,6 @@ class HVULoss(BaseWeightedLoss):
             })
             # Note that the loss weights are just for reference.
             return losses
+        else:
+            raise ValueError("loss_type should be 'all' or 'individual', "
+                             f'but got {self.loss_type}')
