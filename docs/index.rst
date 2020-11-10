@@ -20,6 +20,7 @@ Welcome to MMAction2's documentation!
    :maxdepth: 2
    :caption: Model Zoo
 
+   modelzoo.md
    recognition_models.md
    localization_models.md
 
@@ -32,6 +33,7 @@ Welcome to MMAction2's documentation!
    tutorials/data_pipeline.md
    tutorials/new_modules.md
    tutorials/export_model.md
+   tutorials/customize_runtime.md
 
 .. toctree::
    :maxdepth: 2
