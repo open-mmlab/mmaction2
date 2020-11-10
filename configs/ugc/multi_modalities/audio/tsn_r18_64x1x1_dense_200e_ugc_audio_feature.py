@@ -49,7 +49,7 @@ test_pipeline = [
         type='SampleFrames',
         clip_len=64,
         frame_interval=1,
-        num_clips=30,
+        num_clips=10,
         test_mode=True),
     dict(type='AudioFeatureSelector'),
     dict(type='FormatAudioShape', input_format='NCTF'),
@@ -57,7 +57,7 @@ test_pipeline = [
     dict(type='ToTensor', keys=['audios', 'label'])
 ]
 data = dict(
-    videos_per_gpu=320,
+    videos_per_gpu=1,  # 320
     workers_per_gpu=4,
     train=dict(
         type=dataset_type,

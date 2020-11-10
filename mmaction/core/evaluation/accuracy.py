@@ -78,7 +78,44 @@ def mean_class_accuracy(scores, labels):
 
     mean_class_acc = np.mean(
         [hit / cnt if cnt else 0.0 for cnt, hit in zip(cls_cnt, cls_hit)])
+    cat_map = dict()
+    import json
+    with open('catagories_en.json', 'rb') as f:
+        cat_map = json.load(f)
+    cat_map_new = {value: key for key, value in cat_map.items()}
+    acc_list = [
+        hit / cnt if cnt else 0.0 for cnt, hit in zip(cls_cnt, cls_hit)
+    ]
+    acc_idx_list = np.array(acc_list).argsort()
+    # print(acc_list)
+    # print(acc_idx_list)
+    worst_top_10 = acc_idx_list[:10]
+    # best_top_10 = np.flipud(acc_idx_list[-10:])
+    best_top_10 = acc_idx_list[-10:]
+    xs = []
+    ys = []
+    print('Worst')
+    for i in worst_top_10:
+        # print(cat_map_new[i], acc_list[i])
+        xs.append(cat_map_new[i])
+        ys.append(acc_list[i])
+    print('Best')
+    for i in best_top_10:
+        # print(cat_map_new[i], acc_list[i])
+        xs.append(cat_map_new[i])
+        ys.append(acc_list[i])
 
+    import matplotlib.pyplot as plt
+    plt.figure(figsize=(14.86, 9.6))
+    plt.barh(range(len(ys)), ys, tick_label=xs)
+    # plt.ylabel('Categories', fontdict={'size': 16})
+    plt.xlabel('Accuracy', fontdict={'size': 16})
+    plt.xticks(size=14)
+    plt.yticks(size=16)
+
+    plt.grid(b=1, axis='x')
+    plt.yticks(rotation=45)
+    plt.savefig('fused_good_bad_case.png')
     return mean_class_acc
 
 

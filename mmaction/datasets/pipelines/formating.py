@@ -311,6 +311,8 @@ class FormatAudioShape:
         audios = results['audios']
         # clip x sample x freq -> clip x channel x sample x freq
         clip, sample, freq = audios.shape
+        # import pdb
+        # pdb.set_trace()
         audios = audios.reshape(clip, 1, sample, freq)
         results['audios'] = audios
         results['input_shape'] = audios.shape

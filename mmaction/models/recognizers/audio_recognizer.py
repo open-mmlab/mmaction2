@@ -30,9 +30,13 @@ class AudioRecognizer(BaseRecognizer):
         testing."""
         num_segs = audios.shape[1]
         audios = audios.reshape((-1, ) + audios.shape[2:])
+        # import pdb
+        # pdb.set_trace()
         x = self.extract_feat(audios)
         cls_score = self.cls_head(x)
+        # pdb.set_trace()
         cls_score = self.average_clip(cls_score, num_segs)
+        # pdb.set_trace()
 
         return cls_score.cpu().numpy()
 
