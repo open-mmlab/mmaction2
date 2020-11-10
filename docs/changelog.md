@@ -8,6 +8,7 @@
 - Automatically add modelzoo statistics to readthedocs ([#327](https://github.com/open-mmlab/mmaction2/pull/327))
 
 **Improvements**
+- Support PyTorch 1.7 in CI ([#312](https://github.com/open-mmlab/mmaction2/pull/312))
 - Add random seed for building filelists ([#323](https://github.com/open-mmlab/mmaction2/pull/323))
 - Move docs about demo to `demo/README.md` ([#329](https://github.com/open-mmlab/mmaction2/pull/329))
 
