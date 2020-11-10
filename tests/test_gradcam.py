@@ -147,8 +147,7 @@ def test_tsn():
     recognizer = build_recognizer(config.model, test_cfg=config.test_cfg)
     recognizer.cfg = config
 
-    # 25(num_clips) * 10(TenCrop) = 250
-    input_shape = (1, 250, 3, 32, 32)
+    input_shape = (1, 25, 3, 32, 32)
     target_layer_name = 'backbone/layer4/1/relu'
 
     _do_test_2D_models(recognizer, target_layer_name, input_shape)
@@ -162,8 +161,7 @@ def test_i3d():
     recognizer = build_recognizer(config.model, test_cfg=config.test_cfg)
     recognizer.cfg = config
 
-    # 10(num_clips) * 3(ThreeCrop) = 30
-    input_shape = [1, 30, 3, 32, 32, 32]
+    input_shape = [1, 1, 3, 32, 32, 32]
     target_layer_name = 'backbone/layer4/1/relu'
 
     _do_test_3D_models(recognizer, target_layer_name, input_shape)
@@ -178,8 +176,7 @@ def test_r2plus1d():
     recognizer = build_recognizer(config.model, test_cfg=config.test_cfg)
     recognizer.cfg = config
 
-    # 10(num_clips) * 3(ThreeCrop) = 30
-    input_shape = (1, 30, 3, 8, 32, 32)
+    input_shape = (1, 3, 3, 8, 32, 32)
     target_layer_name = 'backbone/layer4/1/relu'
 
     _do_test_3D_models(recognizer, target_layer_name, input_shape)
@@ -191,8 +188,7 @@ def test_slowfast():
     recognizer = build_recognizer(config.model, test_cfg=config.test_cfg)
     recognizer.cfg = config
 
-    # 10(num_clips) * 3(ThreeCrop) = 30
-    input_shape = (1, 30, 3, 32, 32, 32)
+    input_shape = (1, 1, 3, 32, 32, 32)
     target_layer_name = 'backbone/slow_path/layer4/1/relu'
 
     _do_test_3D_models(recognizer, target_layer_name, input_shape)
@@ -225,8 +221,7 @@ def test_csn():
 
     recognizer = build_recognizer(config.model, test_cfg=config.test_cfg)
     recognizer.cfg = config
-    # 10(num_clips) * 3(ThreeCrop) = 30
-    input_shape = (1, 30, 3, 32, 32, 32)
+    input_shape = (1, 1, 3, 32, 32, 32)
     target_layer_name = 'backbone/layer4/1/relu'
 
     _do_test_3D_models(recognizer, target_layer_name, input_shape)
@@ -247,7 +242,7 @@ def test_tpn():
     config.model['backbone']['pretrained'] = None
     recognizer = build_recognizer(config.model, test_cfg=config.test_cfg)
     recognizer.cfg = config
-    input_shape = (1, 30, 3, 8, 32, 32)
+    input_shape = (1, 3, 3, 8, 32, 32)
     _do_test_3D_models(recognizer, target_layer_name, input_shape)
 
 
@@ -256,7 +251,7 @@ def test_c3d():
     config.model['backbone']['pretrained'] = None
     recognizer = build_recognizer(config.model, test_cfg=config.test_cfg)
     recognizer.cfg = config
-    input_shape = (1, 3, 3, 16, 112, 112)
+    input_shape = (1, 1, 3, 16, 112, 112)
     target_layer_name = 'backbone/conv5a/activate'
     _do_test_3D_models(recognizer, target_layer_name, input_shape, 101)
 
@@ -280,6 +275,6 @@ def test_x3d():
     config.model['backbone']['pretrained'] = None
     recognizer = build_recognizer(config.model, test_cfg=config.test_cfg)
     recognizer.cfg = config
-    input_shape = (1, 10, 3, 13, 32, 32)
+    input_shape = (1, 1, 3, 13, 32, 32)
     target_layer_name = 'backbone/layer4/1/relu'
     _do_test_3D_models(recognizer, target_layer_name, input_shape)
