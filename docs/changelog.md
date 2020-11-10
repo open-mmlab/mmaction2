@@ -5,6 +5,7 @@
 **Highlights**
 
 **New Features**
+- Automatically add modelzoo statistics to readthedocs ([#327](https://github.com/open-mmlab/mmaction2/pull/327))
 - Add GradCAM utils for recognizer.
 
 **Improvements**
