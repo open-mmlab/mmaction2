@@ -16,11 +16,11 @@ train_org = [x.strip().split() for x in train_org]
 train = [x for x in train_org if x[0] + '.mp4' in videos]
 train = [x[0] + '.mp4 ' + x[1] for x in train]
 with open(train_file, 'w') as fout:
-    fout.write('\n'.join(train_org))
+    fout.write('\n'.join(train))
 
 val_org = open(val_file_org).readlines()
 val_org = [x.strip().split() for x in val_org]
 val = [x for x in val_org if x[0] + '.mp4' in videos]
 val = [x[0] + '.mp4 ' + x[1] for x in val]
 with open(val_file, 'w') as fout:
-    fout.write('\n'.join(val_org))
+    fout.write('\n'.join(val))
