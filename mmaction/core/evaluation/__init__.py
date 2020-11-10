@@ -1,9 +1,10 @@
-from .accuracy import (area2d, average_precision_at_temporal_iou,
+from .accuracy import (average_precision_at_temporal_iou,
                        average_recall_at_avg_proposals, confusion_matrix,
                        get_weighted_score, interpolated_precision_recall,
-                       iou2d, mean_average_precision, mean_class_accuracy,
-                       mmit_mean_average_precision, overlap2d,
-                       pairwise_temporal_iou, softmax, top_k_accuracy)
+                       mean_average_precision, mean_class_accuracy,
+                       mmit_mean_average_precision, pairwise_temporal_iou,
+                       softmax, top_k_accuracy)
+from .bbox_overlaps import area2d, iou2d, overlap2d
 from .eval_detection import ActivityNetDetection
 from .eval_hooks import DistEpochEvalHook, EpochEvalHook
 
