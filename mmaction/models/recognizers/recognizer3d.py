@@ -56,7 +56,9 @@ class Recognizer3D(BaseRecognizer):
         return outs
 
     def forward_gradcam(self, imgs):
-        """"""
+        """Defines the computation performed at every call when using gradcam
+        utils."""
+        num_segs = imgs.shape[1]
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
 
         x = self.extract_feat(imgs)
@@ -64,5 +66,6 @@ class Recognizer3D(BaseRecognizer):
             x, _ = self.neck(x)
 
         cls_score = self.cls_head(x)
+        cls_score = self.average_clip(cls_score, num_segs)
 
         return cls_score

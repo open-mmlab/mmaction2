@@ -85,8 +85,10 @@ class Recognizer2D(BaseRecognizer):
         return outs
 
     def forward_gradcam(self, imgs):
-        """Defines the computation performed at every call when evaluation and
-        testing."""
+        """Defines the computation performed at every call when using gradcam
+        utils."""
+        test_crops = self.test_cfg.get('test_crops', None)
+        twice_sample = self.test_cfg.get('twice_sample', False)
 
         batches = imgs.shape[0]
 
@@ -108,5 +110,9 @@ class Recognizer2D(BaseRecognizer):
             num_segs = 1
 
         cls_score = self.cls_head(x, num_segs)
+        if test_crops is not None:
+            if twice_sample:
+                test_crops = test_crops * 2
+            cls_score = self.average_clip(cls_score, test_crops)
 
         return cls_score

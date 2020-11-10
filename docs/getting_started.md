@@ -195,8 +195,8 @@ We provide a demo script to visualize GradCAM result using a single video.
 
 ```shell
 python demo/demo_gradcam.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} [--use-frames] \
-    [--device ${DEVICE_TYPE}] [--target-layer-name ${TARGET_LAYER_NAME}] \
-    [--fps {FPS}] [--out-filename {OUT_FILE}]
+    [--device ${DEVICE_TYPE}] [--target-layer-name ${TARGET_LAYER_NAME}] [--fps {FPS}] \
+    [--target-resolution ${TARGET_RESOLUTION}] [--resize-algorithm {RESIZE_ALGORITHM}] [--out-filename {OUT_FILE}]
 ```
 
 - `--use-frames`: If specified, the demo will take rawframes as input. Otherwise, it will take a video as input.
@@ -204,6 +204,8 @@ python demo/demo_gradcam.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} [--u
 - `FPS`: FPS value of the output video when using rawframes as input. If not specified, it wll be set to 30.
 - `OUT_FILE`: Path to the output file which can be a video format or gif format. If not specified, it will be set to `None` and does not generate the output file.
 - `TARGET_LAYER_NAME`: Layer name to generate GradCAM localization map.
+- `TARGET_RESOLUTION`: Resolution(desired_width, desired_height) for resizing the frames before output when using a video as input. If not specified, it will be None and the frames are resized by keeping the existing aspect ratio.
+- `RESIZE_ALGORITHM`: Resize algorithm used for resizing. If not specified, it will be set to `bilinear`.
 
 Examples:
 

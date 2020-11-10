@@ -2,9 +2,11 @@ import argparse
 import os
 import os.path as osp
 
+import mmcv
 import numpy as np
 import torch
 from mmcv.parallel import collate, scatter
+from moviepy.editor import ImageSequenceClip
 
 from mmaction.apis import init_recognizer
 from mmaction.datasets.pipelines import Compose
@@ -31,6 +33,18 @@ def parse_args():
         help='GradCAM target layer name')
     parser.add_argument('--out-filename', default=None, help='output filename')
     parser.add_argument('--fps', default=5, type=int)
+    parser.add_argument(
+        '--target-resolution',
+        nargs=2,
+        default=None,
+        type=int,
+        help='Target resolution (w, h) for resizing the frames when using a '
+        'video as input. If either dimension is set to -1, the frames are '
+        'resized by keeping the existing aspect ratio')
+    parser.add_argument(
+        '--resize-algorithm',
+        default='bilinear',
+        help='resize algorithm applied to generate video & gif')
 
     args = parser.parse_args()
     return args
@@ -83,6 +97,34 @@ def build_inputs(model, video_path, use_frames=False):
     return data
 
 
+def _resize_frames(frame_list,
+                   scale,
+                   keep_ratio=True,
+                   interpolation='bilinear'):
+    """resize frames according to given scale."""
+    if scale is None or (scale[0] == -1 and scale[1] == -1):
+        return frame_list
+    scale = tuple(scale)
+    max_long_edge = max(scale)
+    max_short_edge = min(scale)
+    if max_short_edge == -1:
+        scale = (np.inf, max_long_edge)
+
+    img_h, img_w, _ = frame_list[0].shape
+
+    if keep_ratio:
+        new_w, new_h = mmcv.rescale_size((img_w, img_h), scale)
+    else:
+        new_w, new_h = scale
+
+    frame_list = [
+        mmcv.imresize(img, (new_w, new_h), interpolation=interpolation)
+        for img in frame_list
+    ]
+
+    return frame_list
+
+
 def main():
     args = parse_args()
 
@@ -101,12 +143,16 @@ def main():
     results = gradcam(inputs)
 
     if args.out_filename is not None:
-        from moviepy.editor import ImageSequenceClip
-
         # frames_batches shape [B, T, H, W, 3], in RGB order
         frames_batches = (results[0] * 255.).numpy().astype(np.uint8)
         frames = frames_batches.reshape(-1, *frames_batches.shape[-3:])
+
         frame_list = [frame for frame in frames]
+        frame_list = _resize_frames(
+            frame_list,
+            args.target_resolution,
+            interpolation=args.resize_algorithm)
+
         video_clips = ImageSequenceClip(frame_list, fps=args.fps)
         out_type = osp.splitext(args.out_filename)[1][1:]
         if out_type == 'gif':
