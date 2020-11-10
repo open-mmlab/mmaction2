@@ -62,8 +62,8 @@ def test_activitynet_detection():
     ])
     average_mAP = 0.6177579365079365
 
-    assert np.all(np.isclose(results[0], mAP))
-    assert np.isclose(results[1], average_mAP)
+    assert_array_almost_equal(results[0], mAP)
+    assert_array_almost_equal(results[1], average_mAP)
 
 
 def test_confusion_matrix():
