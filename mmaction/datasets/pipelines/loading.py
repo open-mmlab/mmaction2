@@ -24,6 +24,7 @@ class LoadHVULabel:
 
     def __init__(self, **kwargs):
         self.hvu_initialized = False
+        self.kwargs = kwargs
 
     def init_hvu_info(self, categories, category_nums):
         assert len(categories) == len(category_nums)

@@ -467,10 +467,7 @@ class ResNet(nn.Module):
                 param.data.copy_(param_tv)
                 loaded_param_names.append(param_tv_name)
 
-    def _load_torchvision_checkpoint(self,
-                                     pretrained,
-                                     strict=False,
-                                     logger=None):
+    def _load_torchvision_checkpoint(self, logger=None):
         """Initiate the parameters from torchvision pretrained checkpoint."""
         state_dict_torchvision = _load_checkpoint(self.pretrained)
         if 'state_dict' in state_dict_torchvision:
@@ -511,8 +508,7 @@ class ResNet(nn.Module):
             logger = get_root_logger()
             if self.torchvision_pretrain:
                 # torchvision's
-                self._load_torchvision_checkpoint(
-                    self.pretrained, strict=False, logger=logger)
+                self._load_torchvision_checkpoint(logger)
             else:
                 # ours
                 load_checkpoint(

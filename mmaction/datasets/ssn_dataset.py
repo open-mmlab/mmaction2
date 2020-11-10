@@ -46,13 +46,11 @@ class SSNInstance:
         self.size_reg = None
         self.regression_targets = [0., 0.]
 
-    def compute_regression_targets(self, gt_list, positive_threshold):
+    def compute_regression_targets(self, gt_list):
         """Compute regression targets of positive proposals.
 
         Args:
             gt_list (list): The list of groundtruth instances.
-            positive_threshold (float): Minimum threshold of overlap of
-                positive/foreground proposals and groundtruths.
         """
         # Find the groundtruth instance with the highest IOU.
         ious = [
@@ -328,20 +326,12 @@ class SSNDataset(BaseDataset):
                     proposals=proposals))
         return video_infos
 
-    def results_to_detections(self,
-                              results,
-                              top_k=2000,
-                              softmax_before_filter=True,
-                              cls_top_k=2,
-                              **kwargs):
+    def results_to_detections(self, results, top_k=2000):
         """Convert prediction results into detections.
 
         Args:
             results (list): Prediction results.
             top_k (int): Number of top results. Default: 2000.
-            softmax_before_filter (bool): Whether to perform softmax operations
-                before filtering results. Default: True.
-            cls_top_k (int): Number of top results for each class. Default: 2.
 
         Returns:
             list: Detection results.
@@ -558,7 +548,7 @@ class SSNDataset(BaseDataset):
             positives.extend(gts)
 
         for proposal in positives:
-            proposal.compute_regression_targets(gts, positive_threshold)
+            proposal.compute_regression_targets(gts)
 
         return positives
 
