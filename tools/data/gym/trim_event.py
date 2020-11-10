@@ -39,7 +39,7 @@ for k, v in annotation.items():
             '"%s"' % video_path, '-ss',
             str(start_time), '-t',
             str(end_time - start_time), '-c:v', 'libx264', '-c:a', 'copy',
-            '-threads', '1', '-loglevel', 'panic',
+            '-threads', '8', '-loglevel', 'panic',
             '"%s"' % osp.join(event_root, output_filename)
         ]
         command = ' '.join(command)
