@@ -33,7 +33,6 @@ sed -i 's/#/##&/' prepare_data.md
 
 sed -i '1i\## Action Localization Models' localization_models.md
 sed -i '1i\## Action Recognition Models' recognition_models.md
-sed -i '1i\# Demo' demo.md
 
 cat prepare_data.md >> supported_datasets.md
 
