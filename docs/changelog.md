@@ -9,6 +9,7 @@
 
 **Improvements**
 - Add random seed for building filelists ([#323](https://github.com/open-mmlab/mmaction2/pull/323))
+- Move docs about demo to `demo/README.md` ([#329](https://github.com/open-mmlab/mmaction2/pull/329))
 
 **Bug Fixes**
 - Fix a bug in BaseDataset when `data_prefix` is None ([#314](https://github.com/open-mmlab/mmaction2/pull/314))
