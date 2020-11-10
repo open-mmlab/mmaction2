@@ -119,20 +119,20 @@ Assume that you are located at `$MMACTION2` and have already downloaded the chec
 1. Recognize the action from web camera as input by using a TSN model on cpu, averaging the score per 5 times
     and outputting result labels with score higher than 0.2.
 
-```shell
-python demo/webcam_demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
-  checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth demo/label_map.txt --average-size 5 \
-  --threshold 0.2 --device cpu
-```
+    ```shell
+    python demo/webcam_demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
+      checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth demo/label_map.txt --average-size 5 \
+      --threshold 0.2 --device cpu
+    ```
 
 2. Recognize the action from web camera as input by using a I3D model on gpu by default, averaging the score per 5 times
     and outputting result labels with score higher than 0.2.
 
-```shell
-python demo/webcam_demo.py configs/recognition/i3d/i3d_r50_video_inference_32x2x1_100e_kinetics400_rgb.py \
-  checkpoints/i3d_r50_32x2x1_100e_kinetics400_rgb_20200614-c25ef9a4.pth demo/label_map.txt \
-  --average-size 5 --threshold 0.2
-```
+    ```shell
+    python demo/webcam_demo.py configs/recognition/i3d/i3d_r50_video_inference_32x2x1_100e_kinetics400_rgb.py \
+      checkpoints/i3d_r50_32x2x1_100e_kinetics400_rgb_20200614-c25ef9a4.pth demo/label_map.txt \
+      --average-size 5 --threshold 0.2
+    ```
 
 **Note:** Considering the efficiency difference for users' hardware, Some modifications might be done to suit the case.
 Users can change:
