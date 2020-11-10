@@ -1,5 +1,10 @@
 ## Demo
 
+### Demo link
+
+  * [Video demo](#video-demo): A demo script to predict the recognition result using a single video
+  * [Webcam demo](#webcam-demo): A demo script to implement real-time action recognition from web camera
+
 ### Video demo
 
 We provide a demo script to predict the recognition result using a single video.
