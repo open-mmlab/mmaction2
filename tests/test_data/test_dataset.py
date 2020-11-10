@@ -6,7 +6,7 @@ import mmcv
 import numpy as np
 import pytest
 from mmcv import ConfigDict
-from numpy.testing import assert_array_equal
+from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from mmaction.datasets import (ActivityNetDataset, AudioDataset,
                                AudioFeatureDataset, HVUDataset,
@@ -163,7 +163,7 @@ class TestDataset:
             clipname_tmpl='part_{}.mp4',
             sampling_strategy='positive',
             data_prefix=self.data_prefix)
-        result = rawvideo_dataset.prepare_train_frames(0)
+        result = rawvideo_dataset[0]
         clipname = osp.join(self.data_prefix, 'test_rawvideo_dataset',
                             'part_0.mp4')
         assert result['filename'] == clipname
@@ -174,8 +174,9 @@ class TestDataset:
             pipeline=self.rawvideo_pipeline,
             clipname_tmpl='part_{}.mp4',
             sampling_strategy='random',
-            data_prefix=self.data_prefix)
-        result = rawvideo_dataset.prepare_test_frames(0)
+            data_prefix=self.data_prefix,
+            test_mode=True)
+        result = rawvideo_dataset[0]
 
     def test_hvu_dataset(self):
         hvu_frame_dataset = HVUDataset(
@@ -244,9 +245,9 @@ class TestDataset:
             ])
         ]
         mAP = hvu_video_eval_dataset.evaluate(results)
-        assert np.isclose(mAP['action_mAP'], 1.0)
-        assert np.isclose(mAP['scene_mAP'], 0.5)
-        assert np.isclose(mAP['object_mAP'], 0.75)
+        assert_array_almost_equal(mAP['action_mAP'], 1.0)
+        assert_array_almost_equal(mAP['scene_mAP'], 0.5)
+        assert_array_almost_equal(mAP['object_mAP'], 0.75)
 
     def test_rawframe_dataset(self):
         rawframe_dataset = RawframeDataset(self.frame_ann_file,
