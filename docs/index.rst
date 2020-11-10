@@ -6,6 +6,7 @@ Welcome to MMAction2's documentation!
 
    install.md
    getting_started.md
+   demo.md
    benchmark.md
    config.md
 
