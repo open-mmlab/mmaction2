@@ -49,7 +49,19 @@ Then, you need to trim events into subactions based on the annotation of GYM wit
 python trim_subaction.py
 ```
 
-## Step 5. Generate file list for GYM99 based on extracted subactions.
+## Step 5. Extract RGB and Flow
+
+This part is **optional** if you only want to use the video loader for RGB model training.
+
+Before extracting, please refer to [install.md](/docs/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
+
+Run the following script to extract both rgb and flow using "tvl1" algorithm.
+
+```shell
+bash extract_frames.sh
+```
+
+## Step 6. Generate file list for GYM99 based on extracted subactions.
 
 You can use the following script to generate train / val lists for GYM99.
 
@@ -57,8 +69,7 @@ You can use the following script to generate train / val lists for GYM99.
 python generate_file_list.py
 ```
 
-
-## Step 6. Folder Structure
+## Step 7. Folder Structure
 
 After the whole data pipeline for GYM preparation. You can get the subaction clips, event clips, raw videos and GYM99 train/val lists.
 
