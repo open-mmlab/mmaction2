@@ -148,7 +148,8 @@ class TEM(BaseLocalizer):
         video_meta_list = [dict(x) for x in video_meta]
 
         video_results = []
-        for batch_idx in range(len(batch_action)):
+
+        for batch_idx, _ in enumerate(batch_action):
             video_name = video_meta_list[batch_idx]['video_name']
             video_action = batch_action[batch_idx]
             video_start = batch_start[batch_idx]

@@ -159,7 +159,7 @@ def eval_ap(detections, gt_by_cls, iou_range):
     ap_values = np.zeros((len(detections), len(iou_range)))
 
     for iou_idx, min_overlap in enumerate(iou_range):
-        for class_idx in range(len(detections)):
+        for class_idx, _ in enumerate(detections):
             ap = average_precision_at_temporal_iou(gt_by_cls[class_idx],
                                                    detections[class_idx],
                                                    [min_overlap])

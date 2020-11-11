@@ -447,7 +447,7 @@ class SSNDataset(BaseDataset):
             self.logger.info('Regression finished')
 
         self.logger.info('Performing NMS')
-        for class_idx in range(len(detections)):
+        for class_idx, _ in enumerate(detections):
             detections[class_idx] = {
                 k: temporal_nms(v, self.evaluater.nms)
                 for k, v in detections[class_idx].items()
@@ -456,13 +456,13 @@ class SSNDataset(BaseDataset):
 
         # get gts
         all_gts = self.get_all_gts()
-        for class_idx in range(len(detections)):
+        for class_idx, _ in enumerate(detections):
             if class_idx not in all_gts:
                 all_gts[class_idx] = dict()
 
         # get predictions
         plain_detections = {}
-        for class_idx in range(len(detections)):
+        for class_idx, _ in enumerate(detections):
             detection_list = []
             for video, dets in detections[class_idx].items():
                 detection_list.extend([[video, class_idx] + x[:3]

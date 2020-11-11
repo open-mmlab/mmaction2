@@ -120,9 +120,8 @@ def mmit_mean_average_precision(scores, labels):
         np.float: The MMIT style mean average precision.
     """
     results = []
-    for i in range(len(scores)):
-        precision, recall, _ = binary_precision_recall_curve(
-            scores[i], labels[i])
+    for score, label in zip(scores, labels):
+        precision, recall, _ = binary_precision_recall_curve(score, label)
         ap = -np.sum(np.diff(recall) * np.array(precision)[:-1])
         results.append(ap)
     return np.mean(results)
@@ -144,9 +143,8 @@ def mean_average_precision(scores, labels):
     scores = np.stack(scores).T
     labels = np.stack(labels).T
 
-    for i in range(len(scores)):
-        precision, recall, _ = binary_precision_recall_curve(
-            scores[i], labels[i])
+    for score, label in zip(scores, labels):
+        precision, recall, _ = binary_precision_recall_curve(score, label)
         ap = -np.sum(np.diff(recall) * np.array(precision)[:-1])
         results.append(ap)
     results = [x for x in results if not np.isnan(x)]
