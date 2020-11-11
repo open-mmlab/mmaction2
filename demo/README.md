@@ -28,7 +28,8 @@ Optional arguments:
 
 Examples:
 
-Assume that you are located at `$MMACTION2` and have already downloaded the checkpoints to the directory `checkpoints/`
+Assume that you are located at `$MMACTION2` and have already downloaded the checkpoints to the directory `checkpoints/`,
+or use checkpoint url from `configs/` to directly load corresponding checkpoint, which will be automatically saved in `$HOME/.cahe/torch/checkpoints`.
 
 1. Recognize a video file as input by using a TSN model on cuda by default.
 
@@ -39,7 +40,16 @@ Assume that you are located at `$MMACTION2` and have already downloaded the chec
         demo/demo.mp4 demo/label_map.txt
     ```
 
-2. Recognize a list of rawframes as input by using a TSN model on cpu.
+2. Recognize a video file as input by using a TSN model on cuda by default, loading checkpoint from url.
+
+    ```shell
+    # The demo.mp4 and label_map.txt are both from Kinetics-400
+    python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
+        https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
+        demo/demo.mp4 demo/label_map.txt
+    ```
+
+3. Recognize a list of rawframes as input by using a TSN model on cpu.
 
     ```shell
     python demo/demo.py configs/recognition/tsn/tsn_r50_inference_1x1x3_100e_kinetics400_rgb.py \
@@ -47,7 +57,7 @@ Assume that you are located at `$MMACTION2` and have already downloaded the chec
         PATH_TO_FRAMES/ LABEL_FILE --use-frames --device cpu
     ```
 
-3. Recognize a video file as input by using a TSN model and then generate an mp4 file.
+4. Recognize a video file as input by using a TSN model and then generate an mp4 file.
 
     ```shell
     # The demo.mp4 and label_map.txt are both from Kinetics-400
@@ -56,7 +66,7 @@ Assume that you are located at `$MMACTION2` and have already downloaded the chec
         demo/demo.mp4 demo/label_map.txt --out-filename demo/demo_out.mp4
     ```
 
-4. Recognize a list of rawframes as input by using a TSN model and then generate a gif file.
+5. Recognize a list of rawframes as input by using a TSN model and then generate a gif file.
 
     ```shell
     python demo/demo.py configs/recognition/tsn/tsn_r50_inference_1x1x3_100e_kinetics400_rgb.py \
@@ -64,7 +74,7 @@ Assume that you are located at `$MMACTION2` and have already downloaded the chec
         PATH_TO_FRAMES/ LABEL_FILE --use-frames --out-filename demo/demo_out.gif
     ```
 
-5. Recognize a video file as input by using a TSN model, then generate an mp4 file with a given resolution and resize algorithm.
+6. Recognize a video file as input by using a TSN model, then generate an mp4 file with a given resolution and resize algorithm.
 
     ```shell
     # The demo.mp4 and label_map.txt are both from Kinetics-400
@@ -84,7 +94,7 @@ Assume that you are located at `$MMACTION2` and have already downloaded the chec
         --out-filename demo/demo_out.mp4
     ```
 
-6. Recognize a video file as input by using a TSN model, then generate an mp4 file with a label in a red color and 10px fontsize.
+7. Recognize a video file as input by using a TSN model, then generate an mp4 file with a label in a red color and 10px fontsize.
 
     ```shell
     # The demo.mp4 and label_map.txt are both from Kinetics-400
@@ -94,7 +104,7 @@ Assume that you are located at `$MMACTION2` and have already downloaded the chec
         --out-filename demo/demo_out.mp4
     ```
 
-7. Recognize a list of rawframes as input by using a TSN model and then generate an mp4 file with 24 fps.
+8. Recognize a list of rawframes as input by using a TSN model and then generate an mp4 file with 24 fps.
 
     ```shell
     python demo/demo.py configs/recognition/tsn/tsn_r50_inference_1x1x3_100e_kinetics400_rgb.py \
@@ -153,7 +163,8 @@ Optional arguments:
 
 Examples:
 
-Assume that you are located at `$MMACTION2` and have already downloaded the checkpoints to the directory `checkpoints/`
+Assume that you are located at `$MMACTION2` and have already downloaded the checkpoints to the directory `checkpoints/`,
+or use checkpoint url from `configs/` to directly load corresponding checkpoint, which will be automatically saved in `$HOME/.cahe/torch/checkpoints`.
 
 1. Recognize the action from web camera as input by using a TSN model on cpu, averaging the score per 5 times
     and outputting result labels with score higher than 0.2.
@@ -164,7 +175,16 @@ Assume that you are located at `$MMACTION2` and have already downloaded the chec
       --threshold 0.2 --device cpu
     ```
 
-2. Recognize the action from web camera as input by using a I3D model on gpu by default, averaging the score per 5 times
+2. Recognize the action from web camera as input by using a TSN model on cpu, averaging the score per 5 times
+    and outputting result labels with score higher than 0.2, loading checkpoint from url.
+
+    ```shell
+    python demo/webcam_demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
+      https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
+      demo/label_map.txt --average-size 5 --threshold 0.2 --device cpu
+    ```
+
+3. Recognize the action from web camera as input by using a I3D model on gpu by default, averaging the score per 5 times
     and outputting result labels with score higher than 0.2.
 
     ```shell

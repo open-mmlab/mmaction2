@@ -62,7 +62,7 @@ def test_inference_recognizer():
         inference_recognizer(model, 'demo/', label_path)
 
     for ops in model.cfg.data.test.pipeline:
-        if ops['type'] == 'TenCrop':
+        if ops['type'] in ('TenCrop', 'ThreeCrop'):
             # Use CenterCrop to reduce memory in order to pass CI
             ops['type'] = 'CenterCrop'
 

@@ -5,9 +5,9 @@ import pytest
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from mmaction.core import (average_recall_at_avg_proposals, confusion_matrix,
-                           get_weighted_score, mean_class_accuracy,
-                           mmit_mean_average_precision, pairwise_temporal_iou,
-                           top_k_accuracy)
+                           get_weighted_score, mean_average_precision,
+                           mean_class_accuracy, mmit_mean_average_precision,
+                           pairwise_temporal_iou, top_k_accuracy)
 
 
 def gt_confusion_matrix(gt_labels, pred_labels, normalize=None):
@@ -235,3 +235,25 @@ def test_get_weighted_score():
         x * coeff_a + y * coeff_b for x, y in zip(score_a, score_b)
     ]
     assert np.all(np.isclose(np.array(ground_truth), np.array(weighted_score)))
+
+
+def test_mean_average_precision():
+
+    def content_for_unittest(scores, labels, result):
+        gt = mean_average_precision(scores, labels)
+        assert gt == result
+
+    scores = [
+        np.array([0.1, 0.2, 0.3, 0.4]),
+        np.array([0.2, 0.3, 0.4, 0.1]),
+        np.array([0.3, 0.4, 0.1, 0.2]),
+        np.array([0.4, 0.1, 0.2, 0.3])
+    ]
+
+    label1 = np.array([[1, 1, 0, 0], [1, 0, 1, 1], [1, 0, 1, 0], [1, 1, 0, 1]])
+    result1 = 2 / 3
+    label2 = np.array([[0, 1, 0, 1], [0, 1, 1, 0], [1, 0, 1, 0], [0, 0, 1, 1]])
+    result2 = np.mean([0.5, 0.5833333333333333, 0.8055555555555556, 1.0])
+
+    content_for_unittest(scores, label1, result1)
+    content_for_unittest(scores, label2, result2)

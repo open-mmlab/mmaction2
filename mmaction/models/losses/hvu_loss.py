@@ -14,7 +14,7 @@ class HVULoss(BaseWeightedLoss):
             this order. Default: ['action', 'attribute', 'concept', 'event',
             'object', 'scene'].
         category_nums (tuple[int]): Number of tags for each category. Default:
-            (739, 117, 291, 69, 1679, 248).
+            (739, 117, 291, 69, 1678, 248).
         category_loss_weights (tuple[float]): Loss weights of categories, it
             applies only if `loss_type == 'individual'`. The loss weights will
             be normalized so that the sum equals to 1, so that you can give any
@@ -34,7 +34,7 @@ class HVULoss(BaseWeightedLoss):
     def __init__(self,
                  categories=('action', 'attribute', 'concept', 'event',
                              'object', 'scene'),
-                 category_nums=(739, 117, 291, 69, 1679, 248),
+                 category_nums=(739, 117, 291, 69, 1678, 248),
                  category_loss_weights=(1, 1, 1, 1, 1, 1),
                  loss_type='all',
                  with_mask=False,

@@ -71,6 +71,7 @@ def test_train_model():
         workflow=[('train', 1)],
         total_epochs=5,
         evaluation=dict(interval=1, key_indicator='acc'),
+        omnisource=False,
         data=dict(
             videos_per_gpu=1,
             workers_per_gpu=0,
