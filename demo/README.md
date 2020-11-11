@@ -28,7 +28,7 @@ Optional arguments:
 Examples:
 
 Assume that you are located at `$MMACTION2` and have already downloaded the checkpoints to the directory `checkpoints/`,
-or use checkpoint url from `configs/` to directly load corresponding checkpoint.
+or use checkpoint url from `configs/` to directly load corresponding checkpoint, which will be automatically saved in `$HOME/.cahe/torch/checkpoints`.
 
 1. Recognize a video file as input by using a TSN model on cuda by default.
 
@@ -130,7 +130,7 @@ Optional arguments:
 Examples:
 
 Assume that you are located at `$MMACTION2` and have already downloaded the checkpoints to the directory `checkpoints/`,
-or use checkpoint url from `configs/` to directly load corresponding checkpoint.
+or use checkpoint url from `configs/` to directly load corresponding checkpoint, which will be automatically saved in `$HOME/.cahe/torch/checkpoints`.
 
 1. Recognize the action from web camera as input by using a TSN model on cpu, averaging the score per 5 times
     and outputting result labels with score higher than 0.2.
