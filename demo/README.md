@@ -133,15 +133,24 @@ python demo/demo_gradcam.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} [--u
 
 Examples:
 
-Assume that you are located at `$MMACTION2` and have already downloaded the checkpoints to the directory `checkpoints/`
+Assume that you are located at `$MMACTION2` and have already downloaded the checkpoints to the directory `checkpoints/`,
+or use checkpoint url from `configs/` to directly load corresponding checkpoint, which will be automatically saved in `$HOME/.cahe/torch/checkpoints`.
 
-1. Get GradCAM results by a I3D model, using a video file as input and then generate an gif file with 10 fps.
+1. Get GradCAM results of a I3D model, using a video file as input and then generate an gif file with 10 fps.
 
 ```shell
 python demo/demo_gradcam.py configs/recognition/i3d/i3d_r50_video_inference_32x2x1_100e_kinetics400_rgb.py \
     checkpoints/i3d_r50_video_32x2x1_100e_kinetics400_rgb_20200826-e31c6f52.pth demo/demo.mp4 \
     --target-layer-name backbone/layer4/1/relu --fps 10 \
     --out-filename demo/demo_gradcam.gif
+```
+
+2. Get GradCAM results of a TSM model, using a video file as input and then generate an gif file, loading checkpoint from url.
+
+```shell
+python demo/demo_gradcam.py configs/recognition/tsm/tsm_r50_video_inference_1x1x8_100e_kinetics400_rgb.py \
+    https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x8_100e_kinetics400_rgb/tsm_r50_video_1x1x8_100e_kinetics400_rgb_20200702-a77f4328.pth \
+    demo/demo.mp4 --target-layer-name backbone/layer4/1/relu --out-filename demo/demo_gradcam_tsm.gif
 ```
 
 

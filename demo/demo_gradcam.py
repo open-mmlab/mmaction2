@@ -6,7 +6,6 @@ import mmcv
 import numpy as np
 import torch
 from mmcv.parallel import collate, scatter
-from moviepy.editor import ImageSequenceClip
 
 from mmaction.apis import init_recognizer
 from mmaction.datasets.pipelines import Compose
@@ -17,7 +16,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='MMAction2 GradCAM demo')
 
     parser.add_argument('config', help='test config file path')
-    parser.add_argument('checkpoint', help='checkpoint file')
+    parser.add_argument('checkpoint', help='checkpoint file/url')
     parser.add_argument('video', help='video file/url or rawframes directory')
     parser.add_argument(
         '--use-frames',
@@ -162,7 +161,7 @@ def main():
     # assign the desired device.
     device = torch.device(args.device)
 
-    # build the recognizer from a config file and checkpoint file
+    # build the recognizer from a config file and checkpoint file/url
     model = init_recognizer(
         args.config,
         args.checkpoint,
@@ -174,6 +173,11 @@ def main():
     results = gradcam(inputs)
 
     if args.out_filename is not None:
+        try:
+            from moviepy.editor import ImageSequenceClip
+        except ImportError:
+            raise ImportError('Please install moviepy to enable output file.')
+
         # frames_batches shape [B, T, H, W, 3], in RGB order
         frames_batches = (results[0] * 255.).numpy().astype(np.uint8)
         frames = frames_batches.reshape(-1, *frames_batches.shape[-3:])

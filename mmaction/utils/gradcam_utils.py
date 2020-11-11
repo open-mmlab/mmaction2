@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import torch
 import torch.nn.functional as F
 
@@ -26,8 +25,6 @@ class GradCAM:
                 heatmap. For more information, please visit:
                 https://matplotlib.org/3.3.0/tutorials/colors/colormaps.html
         """
-        self.model = model
-        self.model.eval()
         if isinstance(model, Recognizer2D):
             self.is_recognizer2d = True
         elif isinstance(model, Recognizer3D):
@@ -36,8 +33,12 @@ class GradCAM:
             raise ValueError(
                 'GradCAM utils only support Recognizer2D & Recognizer3D.')
 
+        self.model = model
+        self.model.eval()
         self.target_gradients = None
         self.target_activations = None
+
+        import matplotlib.pyplot as plt
         self.colormap = plt.get_cmap(colormap)
         self.data_mean = torch.tensor(model.cfg.img_norm_cfg['mean'])
         self.data_std = torch.tensor(model.cfg.img_norm_cfg['std'])
@@ -66,7 +67,7 @@ class GradCAM:
         target_layer.register_forward_hook(get_activations)
         target_layer.register_backward_hook(get_gradients)
 
-    def _calculate_localization_map(self, inputs, use_labels):
+    def _calculate_localization_map(self, inputs, use_labels, delta=1e-20):
         """Calculate localization map for all inputs with Grad-CAM.
 
         Args:
@@ -74,6 +75,9 @@ class GradCAM:
                 at least including two keys, ``imgs`` and ``label``.
             use_labels (bool): Whether to use given labels to generate
                 localization map. Labels are in ``inputs['label']``.
+            delta (float): used in localization map normalization,
+                must be small enough. Please make sure
+                `localization_map_max - localization_map_min >> delta`
         Returns:
             tuple[torch.Tensor, torch.Tensor]: (localization_map, preds)
                 localization_map (torch.Tensor): the localization map for
@@ -140,9 +144,6 @@ class GradCAM:
             localization_map_min, shape=(b, 1, 1, 1, 1))
         localization_map_max = torch.reshape(
             localization_map_max, shape=(b, 1, 1, 1, 1))
-        # delta must be small enough.
-        # make sure `localization_map_max - localization_map_min >> delta`
-        delta = 1e-20
         localization_map = (localization_map - localization_map_min) / (
             localization_map_max - localization_map_min + delta)
         localization_map = localization_map.data
@@ -213,7 +214,6 @@ class GradCAM:
                 localization maps and model inputs.
             preds (torch.Tensor): Model predictions for inputs.
         """
-        imgs = inputs['imgs']
 
         # localization_map shape [B, T, H, W]
         # preds shape [batch_size, num_classes]
@@ -221,10 +221,11 @@ class GradCAM:
             inputs, use_labels=use_labels)
 
         # blended_imgs shape [B, T, H, W, 3]
-        blended_imgs = self._alpha_blending(localization_map, imgs, alpha)
+        blended_imgs = self._alpha_blending(localization_map, inputs['imgs'],
+                                            alpha)
 
         # blended_imgs shape [B, T, H, W, 3]
         # preds shape [batch_size, num_classes]
-        # 2D: B = batch_size, T = num_segments
-        # 3D: B = batch_size * num_crops * num_clips, T = clip_len
+        # Recognizer2D: B = batch_size, T = num_segments
+        # Recognizer3D: B = batch_size * num_crops * num_clips, T = clip_len
         return blended_imgs, preds
