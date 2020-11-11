@@ -117,8 +117,6 @@ dist_params = dict(backend='nccl')
 log_level = 'INFO'
 work_dir = ('./work_dirs/'
             'slowonly_kinetics_pretrained_r50_4x16x1_120e_gym99_flow')
-# You need to download this checkpoint and save it to `modelzoo` first
-# The ckpt is availabel in mmaction2 slowonly modelzoo
 load_from = ('https://download.openmmlab.com/mmaction/recognition/slowonly/'
              'slowonly_r50_4x16x1_256e_kinetics400_flow/'
              'slowonly_r50_4x16x1_256e_kinetics400_flow_20200704-decb8568.pth')
