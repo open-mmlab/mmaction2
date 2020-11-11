@@ -2,13 +2,11 @@
 # https://github.com/activitynet/ActivityNet/blob/master/Crawler/Kinetics/download.py  # noqa: E501
 # The code is licensed under the MIT licence.
 import os
+import ssl
 import subprocess
 
 import mmcv
-
-import ssl  # isort:skip
-
-from joblib import Parallel, delayed  # isort:skip
+from joblib import Parallel, delayed
 
 ssl._create_default_https_context = ssl._create_unverified_context
 data_file = '../../../data/ActivityNet'
