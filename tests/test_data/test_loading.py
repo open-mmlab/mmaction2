@@ -642,6 +642,15 @@ class TestLoading:
         assert ava_result['frame_interval'] == 2
         assert len(ava_result['frame_inds']) == 32
 
+        # add test case in Issue #306
+        config = dict(clip_len=8, frame_interval=8)
+        sample_ava_dataset = SampleAVAFrames(**config)
+        ava_result = sample_ava_dataset(results=self.ava_results)
+        assert self.check_keys_contain(ava_result.keys(), target_keys)
+        assert ava_result['clip_len'] == 8
+        assert ava_result['frame_interval'] == 8
+        assert len(ava_result['frame_inds']) == 8
+
     def test_sample_proposal_frames(self):
         target_keys = [
             'frame_inds', 'clip_len', 'frame_interval', 'num_clips',

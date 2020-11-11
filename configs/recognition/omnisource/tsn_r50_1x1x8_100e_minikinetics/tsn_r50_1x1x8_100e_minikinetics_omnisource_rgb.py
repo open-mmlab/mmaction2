@@ -20,6 +20,8 @@ test_cfg = dict(average_clips=None)
 omnisource = True
 # dataset settings
 dataset_type = 'VideoDataset'
+# The flag indicates using joint training
+omnisource = True
 
 data_root = 'data/OmniSource/kinetics_200_train'
 data_root_val = 'data/OmniSource/kinetics_200_val'
@@ -33,7 +35,7 @@ ann_file_web = ('data/OmniSource/annotations/webimage_200/'
 ann_file_iv = ('data/OmniSource/annotations/insvideo_200/'
                'slowonly_8x8_insvideo_200_wodup.txt')
 ann_file_kraw = ('data/OmniSource/annotations/kinetics_raw_200/'
-                 'slowonly_8x8_kinetics_raw_200.txt')
+                 'slowonly_8x8_kinetics_raw_200.json')
 
 ann_file_val = 'data/OmniSource/annotations/kinetics_200/k200_val.txt'
 ann_file_test = 'data/OmniSource/annotations/kinetics_200/k200_val.txt'

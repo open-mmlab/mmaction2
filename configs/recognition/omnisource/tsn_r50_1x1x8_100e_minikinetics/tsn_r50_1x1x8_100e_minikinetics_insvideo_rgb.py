@@ -20,10 +20,12 @@ test_cfg = dict(average_clips=None)
 omnisource = True
 # dataset settings
 dataset_type = 'VideoDataset'
+# The flag indicates using joint training
+omnisource = True
 
 data_root = 'data/OmniSource/kinetics_200_train'
 data_root_val = 'data/OmniSource/kinetics_200_val'
-iv_root = 'data/OmniSource/insvideo'
+iv_root = 'data/OmniSource/insvideo_200'
 
 ann_file_train = 'data/OmniSource/annotations/kinetics_200/k200_train.txt'
 ann_file_iv = ('data/OmniSource/annotations/insvideo_200/'
@@ -98,7 +100,6 @@ test_pipeline = [
 
 data = dict(
     videos_per_gpu=12,
-    omni_videos_per_gpu=[12, 12],
     workers_per_gpu=2,
     train=[
         dict(

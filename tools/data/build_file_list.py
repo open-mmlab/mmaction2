@@ -4,6 +4,7 @@ import json
 import os.path as osp
 import random
 
+from mmcv.runner import set_random_seed
 from tools.data.anno_txt2json import lines2dictlist
 from tools.data.parse_file_list import (parse_directory, parse_hmdb51_split,
                                         parse_jester_splits,
@@ -71,6 +72,7 @@ def parse_args():
         default='txt',
         choices=['txt', 'json'],
         help='built file list format')
+    parser.add_argument('--seed', type=int, default=None, help='random seed')
     parser.add_argument(
         '--shuffle',
         action='store_true',
@@ -158,6 +160,10 @@ def build_file_list(splits, frame_info, shuffle=False):
 
 def main():
     args = parse_args()
+
+    if args.seed is not None:
+        print(f'Set random seed to {args.seed}')
+        set_random_seed(args.seed)
 
     if args.format == 'rawframes':
         frame_info = parse_directory(

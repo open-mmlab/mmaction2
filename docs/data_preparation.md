@@ -87,7 +87,7 @@ cd $MMACTION2
 python tools/data/build_file_list.py ${DATASET} ${SRC_FOLDER} [--rgb-prefix ${RGB_PREFIX}] \
     [--flow-x-prefix ${FLOW_X_PREFIX}] [--flow-y-prefix ${FLOW_Y_PREFIX}] [--num-split ${NUM_SPLIT}] \
     [--subset ${SUBSET}] [--level ${LEVEL}] [--format ${FORMAT}] [--out-root-path ${OUT_ROOT_PATH}] \
-    [--shuffle]
+    [--seed ${SEED}] [--shuffle]
 ```
 
 - `DATASET`: Dataset to be prepared, e.g., `ucf101`, `kinetics400`, `thumos14`, `sthv1`, `sthv2`, etc.
@@ -102,6 +102,7 @@ python tools/data/build_file_list.py ${DATASET} ${SRC_FOLDER} [--rgb-prefix ${RG
 - `LEVEL`: Directory level. 1 for the single-level directory or 2 for the two-level directory.
 - `FORMAT`: Source data format to generate file list. Allowed choices are `rawframes`, `videos`.
 - `OUT_ROOT_PATH`: Root path for output
+- `SEED`: Random seed.
 - `--shuffle`: Whether to shuffle the file list.
 
 Now, you can go to [getting_started.md](getting_started.md) to train and test the model.

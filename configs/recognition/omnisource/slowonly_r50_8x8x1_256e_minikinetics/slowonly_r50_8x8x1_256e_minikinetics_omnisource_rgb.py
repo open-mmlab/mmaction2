@@ -22,6 +22,8 @@ train_cfg = None
 test_cfg = dict(average_clips='prob')
 # dataset settings
 dataset_type = 'VideoDataset'
+# The flag indicates using joint training
+omnisource = True
 
 data_root = 'data/OmniSource/kinetics_200_train'
 data_root_val = 'data/OmniSource/kinetics_200_val'
@@ -35,7 +37,7 @@ ann_file_web = ('data/OmniSource/annotations/webimage_200/'
 ann_file_iv = ('data/OmniSource/annotations/insvideo_200/'
                'slowonly_8x8_insvideo_200_wodup.txt')
 ann_file_kraw = ('data/OmniSource/annotations/kinetics_raw_200/'
-                 'slowonly_8x8_kinetics_raw_200.txt')
+                 'slowonly_8x8_kinetics_raw_200.json')
 
 ann_file_val = 'data/OmniSource/annotations/kinetics_200/k200_val.txt'
 ann_file_test = 'data/OmniSource/annotations/kinetics_200/k200_val.txt'
@@ -62,7 +64,7 @@ train_web_pipeline = [
     dict(type='RandomResizedCrop'),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
     dict(type='Flip', flip_ratio=0.5),
-    dict(type='PseudoClipBuilder', clip_len=8),
+    dict(type='BuildPseudoClip', clip_len=8),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),

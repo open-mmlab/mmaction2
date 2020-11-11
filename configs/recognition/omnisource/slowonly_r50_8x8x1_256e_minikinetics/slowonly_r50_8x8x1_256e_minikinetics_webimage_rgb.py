@@ -22,6 +22,8 @@ train_cfg = None
 test_cfg = dict(average_clips='prob')
 # dataset settings
 dataset_type = 'VideoDataset'
+# The flag indicates using joint training
+omnisource = True
 
 data_root = 'data/OmniSource/kinetics_200_train'
 data_root_val = 'data/OmniSource/kinetics_200_val'
@@ -56,7 +58,7 @@ train_web_pipeline = [
     dict(type='RandomResizedCrop'),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
     dict(type='Flip', flip_ratio=0.5),
-    dict(type='PseudoClipBuilder', clip_len=8),
+    dict(type='BuildPseudoClip', clip_len=8),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),

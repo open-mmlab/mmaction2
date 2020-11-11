@@ -265,6 +265,10 @@ class TestDataset:
                                   's3://good')
         assert dataset.data_prefix == 's3://good'
 
+        dataset = RawframeDataset(self.frame_ann_file, self.frame_pipeline)
+        assert dataset.data_prefix is None
+        assert dataset.video_infos[0]['frame_dir'] == 'test_imgs'
+
     def test_video_dataset(self):
         video_dataset = VideoDataset(
             self.video_ann_file,
