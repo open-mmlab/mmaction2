@@ -29,7 +29,7 @@ kraw_root = 'data/OmniSource/kinetics_raw_200_train'
 
 ann_file_train = 'data/OmniSource/annotations/kinetics_200/k200_train.txt'
 ann_file_kraw = ('data/OmniSource/annotations/kinetics_raw_200/'
-                 'slowonly_8x8_kinetics_raw_200.txt')
+                 'slowonly_8x8_kinetics_raw_200.json')
 
 ann_file_val = 'data/OmniSource/annotations/kinetics_200/k200_val.txt'
 ann_file_test = 'data/OmniSource/annotations/kinetics_200/k200_val.txt'

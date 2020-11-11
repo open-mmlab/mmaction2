@@ -1,6 +1,6 @@
 # model settings
 category_nums = dict(
-    action=729, attribute=117, concept=291, event=69, object=1679, scene=248)
+    action=739, attribute=117, concept=291, event=69, object=1678, scene=248)
 target_cate = 'event'
 
 model = dict(
