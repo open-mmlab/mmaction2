@@ -87,8 +87,6 @@ def _build_demo_runner():
     return runner
 
 
-@pytest.mark.skipif(
-    not torch.cuda.is_available(), reason='requires CUDA support')
 def test_eval_hook():
     with pytest.raises(TypeError):
         # `save_best` should be a boolean
