@@ -1,0 +1,8 @@
+[
+  {
+    "video_dir":"test_rawvideo_dataset",
+    "label":1,
+    "num_clips":2,
+    "positive_clip_inds":[0]
+  }
+]
