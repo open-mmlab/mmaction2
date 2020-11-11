@@ -178,8 +178,8 @@ class EpochEvalHook(Hook):
                               'it in config file')
                 return None
             return eval_res[self.key_indicator]
-        else:
-            return None
+
+        return None
 
 
 class DistEpochEvalHook(EpochEvalHook):

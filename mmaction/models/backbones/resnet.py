@@ -543,8 +543,8 @@ class ResNet(nn.Module):
                 outs.append(x)
         if len(outs) == 1:
             return outs[0]
-        else:
-            return tuple(outs)
+
+        return tuple(outs)
 
     def _freeze_stages(self):
         """Prevent all the parameters from being optimized before

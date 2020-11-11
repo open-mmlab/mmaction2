@@ -276,5 +276,5 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         """Get the sample for either training or testing given index."""
         if self.test_mode:
             return self.prepare_test_frames(idx)
-        else:
-            return self.prepare_train_frames(idx)
+
+        return self.prepare_train_frames(idx)

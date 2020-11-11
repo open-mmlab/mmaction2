@@ -12,8 +12,8 @@ class AudioRecognizer(BaseRecognizer):
             if label is None:
                 raise ValueError('Label should not be None.')
             return self.forward_train(audios, label)
-        else:
-            return self.forward_test(audios)
+
+        return self.forward_test(audios)
 
     def forward_train(self, audios, labels):
         """Defines the computation performed at every call when training."""

@@ -53,8 +53,8 @@ class BaseLocalizer(nn.Module, metaclass=ABCMeta):
         """Define the computation performed at every call."""
         if return_loss:
             return self.forward_train(imgs, **kwargs)
-        else:
-            return self.forward_test(imgs, **kwargs)
+
+        return self.forward_test(imgs, **kwargs)
 
     @staticmethod
     def _parse_losses(losses):

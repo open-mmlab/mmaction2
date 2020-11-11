@@ -220,8 +220,8 @@ class TEM(BaseLocalizer):
             label_end = label_end.to(device)
             return self.forward_train(raw_feature, label_action, label_start,
                                       label_end)
-        else:
-            return self.forward_test(raw_feature, video_meta)
+
+        return self.forward_test(raw_feature, video_meta)
 
 
 @LOCALIZERS.register_module()
@@ -390,6 +390,6 @@ class PEM(BaseLocalizer):
         """Define the computation performed at every call."""
         if return_loss:
             return self.forward_train(bsp_feature, reference_temporal_iou)
-        else:
-            return self.forward_test(bsp_feature, tmin, tmax, tmin_score,
-                                     tmax_score, video_meta)
+
+        return self.forward_test(bsp_feature, tmin, tmax, tmin_score,
+                                 tmax_score, video_meta)

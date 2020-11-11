@@ -639,14 +639,11 @@ class SSNDataset(BaseDataset):
                 idx = np.random.choice(
                     len(dataset_pool), num_requested_proposals, replace=False)
                 return [(dataset_pool[x], proposal_type) for x in idx]
-            else:
-                replicate = len(video_pool) < num_requested_proposals
-                idx = np.random.choice(
-                    len(video_pool),
-                    num_requested_proposals,
-                    replace=replicate)
-                return [((video_id, video_pool[x]), proposal_type)
-                        for x in idx]
+
+            replicate = len(video_pool) < num_requested_proposals
+            idx = np.random.choice(
+                len(video_pool), num_requested_proposals, replace=replicate)
+            return [((video_id, video_pool[x]), proposal_type) for x in idx]
 
         out_proposals = []
         out_proposals.extend(

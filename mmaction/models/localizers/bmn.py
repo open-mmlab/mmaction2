@@ -350,8 +350,8 @@ class BMN(BaseLocalizer):
             label_end = label_end.to(device)
             return self.forward_train(raw_feature, label_confidence,
                                       label_start, label_end)
-        else:
-            return self.forward_test(raw_feature, video_meta)
+
+        return self.forward_test(raw_feature, video_meta)
 
     @staticmethod
     def _get_interp1d_bin_mask(seg_tmin, seg_tmax, tscale, num_samples,

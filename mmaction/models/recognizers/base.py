@@ -168,8 +168,8 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
             if label is None:
                 raise ValueError('Label should not be None.')
             return self.forward_train(imgs, label, **kwargs)
-        else:
-            return self.forward_test(imgs, **kwargs)
+
+        return self.forward_test(imgs, **kwargs)
 
     def train_step(self, data_batch, optimizer, **kwargs):
         """The iteration step during training.

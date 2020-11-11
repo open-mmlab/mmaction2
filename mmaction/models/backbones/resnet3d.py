@@ -804,8 +804,8 @@ class ResNet3d(nn.Module):
                 outs.append(x)
         if len(outs) == 1:
             return outs[0]
-        else:
-            return tuple(outs)
+
+        return tuple(outs)
 
     def train(self, mode=True):
         """Set the optimization status when training."""

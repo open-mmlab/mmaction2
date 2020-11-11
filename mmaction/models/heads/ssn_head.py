@@ -403,12 +403,11 @@ class SSNHead(nn.Module):
             else:
                 bbox_preds = None
             return activity_scores, complete_scores, bbox_preds
-        else:
-            x, proposal_tick_list, scale_factor_list = x
-            test_scores = self.test_fc(x)
-            (activity_scores, completeness_scores,
-             bbox_preds) = self.consensus(test_scores, proposal_tick_list,
-                                          scale_factor_list)
 
-            return (test_scores, activity_scores, completeness_scores,
-                    bbox_preds)
+        x, proposal_tick_list, scale_factor_list = x
+        test_scores = self.test_fc(x)
+        (activity_scores, completeness_scores,
+         bbox_preds) = self.consensus(test_scores, proposal_tick_list,
+                                      scale_factor_list)
+
+        return (test_scores, activity_scores, completeness_scores, bbox_preds)
