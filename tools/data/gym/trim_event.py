@@ -17,8 +17,7 @@ videos = set(videos)
 annotation = mmcv.load(anno_file)
 event_annotation = {}
 
-if not osp.exists(event_root):
-    os.makedirs(event_root)
+mmcv.mkdir_or_exist(event_root)
 
 for k, v in annotation.items():
     if k + '.mp4' not in videos:
