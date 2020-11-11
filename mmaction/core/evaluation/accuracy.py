@@ -466,7 +466,7 @@ def average_precision_at_temporal_iou(ground_truth,
     for idx, this_pred in enumerate(prediction):
 
         # Check if there is at least one ground truth in the video.
-        if (this_pred[0] in ground_truth):
+        if this_pred[0] in ground_truth:
             this_gt = np.array(ground_truth[this_pred[0]], dtype=float)
         else:
             fp[:, idx] = 1
