@@ -89,7 +89,7 @@ class OmniSourceRunner(EpochBasedRunner):
                 continue
 
             for idx, n_times in enumerate(auxiliary_iter_times):
-                for step in range(n_times):
+                for _ in range(n_times):
                     data_batch = next(self.aux_iters[idx])
                     self.call_hook('before_train_iter')
                     self.run_iter(

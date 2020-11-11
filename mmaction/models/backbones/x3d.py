@@ -504,7 +504,7 @@ class X3D(nn.Module):
         """
         x = self.conv1_s(x)
         x = self.conv1_t(x)
-        for i, layer_name in enumerate(self.res_layers):
+        for layer_name in self.res_layers:
             res_layer = getattr(self, layer_name)
             x = res_layer(x)
         x = self.conv5(x)

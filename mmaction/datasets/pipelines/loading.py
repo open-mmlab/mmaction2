@@ -1394,7 +1394,7 @@ class BuildPseudoClip:
         # the input should be one single image
         assert len(results['imgs']) == 1
         im = results['imgs'][0]
-        for i in range(1, self.clip_len):
+        for _ in range(1, self.clip_len):
             results['imgs'].append(np.copy(im))
         results['clip_len'] = self.clip_len
         results['num_clips'] = 1

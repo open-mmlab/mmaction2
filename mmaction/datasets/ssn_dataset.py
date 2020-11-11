@@ -770,7 +770,7 @@ class SSNDataset(BaseDataset):
             num_frames = proposal[0][1].num_video_frames
 
             (starting_scale_factor, ending_scale_factor,
-             stage_split) = self._get_stage(proposal[0][1], num_frames)
+             _) = self._get_stage(proposal[0][1], num_frames)
 
             # proposal[1]: Type id of proposal.
             # Positive/Foreground: 0

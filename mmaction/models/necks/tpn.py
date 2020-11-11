@@ -184,7 +184,7 @@ class SpatialModulation(nn.Module):
 
     def forward(self, x):
         out = []
-        for i, feature in enumerate(x):
+        for i in range(len(x)):
             if isinstance(self.spatial_modulation[i], nn.ModuleList):
                 out_ = x[i]
                 for op in self.spatial_modulation[i]:
