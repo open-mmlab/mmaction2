@@ -7,9 +7,9 @@ from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from mmaction.core import (ActivityNetDetection,
                            average_recall_at_avg_proposals, confusion_matrix,
-                           get_weighted_score, mean_class_accuracy,
-                           mmit_mean_average_precision, pairwise_temporal_iou,
-                           top_k_accuracy, mean_average_precision)
+                           get_weighted_score, mean_average_precision,
+                           mean_class_accuracy, mmit_mean_average_precision,
+                           pairwise_temporal_iou, top_k_accuracy)
 
 
 def gt_confusion_matrix(gt_labels, pred_labels, normalize=None):
