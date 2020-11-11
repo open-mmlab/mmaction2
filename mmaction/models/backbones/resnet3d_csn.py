@@ -48,7 +48,7 @@ class CSNBottleneck3d(Bottleneck3d):
         conv2_stride = self.conv2.conv.stride
         conv2_padding = self.conv2.conv.padding
         conv2_dilation = self.conv2.conv.dilation
-        conv2_bias = True if self.conv2.conv.bias else False
+        conv2_bias = bool(self.conv2.conv.bias)
         self.conv2 = ConvModule(
             planes,
             planes,

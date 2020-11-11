@@ -390,7 +390,7 @@ class X3D(nn.Module):
         if self.se_style == 'all':
             use_se = [True] * blocks
         elif self.se_style == 'half':
-            use_se = [True if i % 2 == 0 else False for i in range(blocks)]
+            use_se = [bool(i % 2 == 0) for i in range(blocks)]
         else:
             raise NotImplementedError
 
