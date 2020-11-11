@@ -139,4 +139,4 @@ class C3D(nn.Module):
         return x
 
     def train(self, mode=True):
-        super(C3D, self).train(mode)
+        super().train(mode)
