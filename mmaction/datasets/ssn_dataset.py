@@ -524,7 +524,8 @@ class SSNDataset(BaseDataset):
 
         return gts
 
-    def get_positives(self, gts, proposals, positive_threshold, with_gt=True):
+    @staticmethod
+    def get_positives(gts, proposals, positive_threshold, with_gt=True):
         """Get positive/foreground proposals.
 
         Args:
@@ -552,8 +553,8 @@ class SSNDataset(BaseDataset):
 
         return positives
 
-    def get_negatives(self,
-                      proposals,
+    @staticmethod
+    def get_negatives(proposals,
                       incomplete_iou_threshold,
                       background_iou_threshold,
                       background_coverage_threshold=0.01,

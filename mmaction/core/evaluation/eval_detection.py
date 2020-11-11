@@ -50,7 +50,8 @@ class ActivityNetDetection:
                 f'Fixed threshold for tiou score: {self.tiou_thresholds}')
             print_log(log_msg, logger=self.logger)
 
-    def _import_ground_truth(self, ground_truth_filename):
+    @staticmethod
+    def _import_ground_truth(ground_truth_filename):
         """Read ground truth file and return the ground truth instances and the
         activity classes.
 

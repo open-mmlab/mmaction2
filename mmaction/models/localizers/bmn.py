@@ -353,7 +353,8 @@ class BMN(BaseLocalizer):
         else:
             return self.forward_test(raw_feature, video_meta)
 
-    def _get_interp1d_bin_mask(self, seg_tmin, seg_tmax, tscale, num_samples,
+    @staticmethod
+    def _get_interp1d_bin_mask(seg_tmin, seg_tmax, tscale, num_samples,
                                num_samples_per_bin):
         """Generate sample mask for a boundary-matching pair."""
         plen = float(seg_tmax - seg_tmin)

@@ -223,7 +223,8 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
 
         return eval_results
 
-    def dump_results(self, results, out):
+    @staticmethod
+    def dump_results(results, out):
         """Dump data to json/yaml/pickle strings or files."""
         return mmcv.dump(results, out)
 

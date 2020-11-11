@@ -300,7 +300,7 @@ class ResNet3dPathway(ResNet3d):
             for param in m.parameters():
                 param.requires_grad = False
 
-            if (i != len(self.res_layers) and self.lateral):
+            if i != len(self.res_layers) and self.lateral:
                 # No fusion needed in the final stage
                 lateral_name = self.lateral_connections[i - 1]
                 conv_lateral = getattr(self, lateral_name)

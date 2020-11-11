@@ -50,7 +50,8 @@ class STPPTrain(nn.Module):
 
         self.num_segments_list = num_segments_list
 
-    def _extract_stage_feature(self, stage_feat, stage_parts, num_multipliers,
+    @staticmethod
+    def _extract_stage_feature(stage_feat, stage_parts, num_multipliers,
                                scale_factors, num_samples):
         """Extract stage feature based on structured temporal pyramid pooling.
 
@@ -167,8 +168,9 @@ class STPPTest(nn.Module):
             self.complete_slice.stop, self.complete_slice.stop +
             self.reg_score_len * self.num_multipliers)
 
-    def _pyramids_pooling(self, out_scores, index, raw_scores, ticks,
-                          scale_factors, score_len, stpp_stage):
+    @staticmethod
+    def _pyramids_pooling(out_scores, index, raw_scores, ticks, scale_factors,
+                          score_len, stpp_stage):
         """Perform pyramids pooling.
 
         Args:

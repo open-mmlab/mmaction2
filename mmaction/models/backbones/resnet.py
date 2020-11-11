@@ -416,7 +416,8 @@ class ResNet(nn.Module):
             act_cfg=self.act_cfg)
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
 
-    def _load_conv_params(self, conv, state_dict_tv, module_name_tv,
+    @staticmethod
+    def _load_conv_params(conv, state_dict_tv, module_name_tv,
                           loaded_param_names):
         """Load the conv parameters of resnet from torchvision.
 
@@ -439,8 +440,8 @@ class ResNet(nn.Module):
             conv.bias.data.copy_(state_dict_tv[bias_tv_name])
             loaded_param_names.append(bias_tv_name)
 
-    def _load_bn_params(self, bn, state_dict_tv, module_name_tv,
-                        loaded_param_names):
+    @staticmethod
+    def _load_bn_params(bn, state_dict_tv, module_name_tv, loaded_param_names):
         """Load the bn parameters of resnet from torchvision.
 
         Args:

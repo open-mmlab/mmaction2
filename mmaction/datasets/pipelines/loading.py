@@ -503,7 +503,8 @@ class SampleProposalFrames(SampleFrames):
         self.mode = mode
         self.test_interval = test_interval
 
-    def _get_train_indices(self, valid_length, num_segments):
+    @staticmethod
+    def _get_train_indices(valid_length, num_segments):
         """Get indices of different stages of proposals in train mode.
 
         It will calculate the average interval for each segment,
@@ -529,7 +530,8 @@ class SampleProposalFrames(SampleFrames):
 
         return offsets
 
-    def _get_val_indices(self, valid_length, num_segments):
+    @staticmethod
+    def _get_val_indices(valid_length, num_segments):
         """Get indices of different stages of proposals in validation mode.
 
         It will calculate the average interval for each segment.
@@ -1231,10 +1233,12 @@ class AudioDecodeInit:
         self.kwargs = kwargs
         self.file_client = None
 
-    def _zero_pad(self, shape):
+    @staticmethod
+    def _zero_pad(shape):
         return np.zeros(shape, dtype=np.float32)
 
-    def _random_pad(self, shape):
+    @staticmethod
+    def _random_pad(shape):
         # librosa load raw audio file into a distribution of -1~+1
         return np.random.rand(shape).astype(np.float32) * 2 - 1
 
@@ -1287,10 +1291,12 @@ class LoadAudioFeature:
             raise NotImplementedError
         self.pad_method = pad_method
 
-    def _zero_pad(self, shape):
+    @staticmethod
+    def _zero_pad(shape):
         return np.zeros(shape, dtype=np.float32)
 
-    def _random_pad(self, shape):
+    @staticmethod
+    def _random_pad(shape):
         # spectrogram is normalized into a distribution of 0~1
         return np.random.rand(shape).astype(np.float32)
 

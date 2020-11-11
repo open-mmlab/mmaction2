@@ -24,7 +24,8 @@ class SEModule(nn.Module):
             self.bottleneck, channels, kernel_size=1, padding=0)
         self.sigmoid = nn.Sigmoid()
 
-    def _round_width(self, width, multiplier, min_width=8, divisor=8):
+    @staticmethod
+    def _round_width(width, multiplier, min_width=8, divisor=8):
         width *= multiplier
         min_width = min_width or divisor
         width_out = max(min_width,
@@ -306,7 +307,8 @@ class X3D(nn.Module):
             act_cfg=self.act_cfg)
         self.feat_dim = int(self.feat_dim * self.gamma_b)
 
-    def _round_width(self, width, multiplier, min_depth=8, divisor=8):
+    @staticmethod
+    def _round_width(width, multiplier, min_depth=8, divisor=8):
         """Round width of filters based on width multiplier."""
         if not multiplier:
             return width
@@ -319,7 +321,8 @@ class X3D(nn.Module):
             new_filters += divisor
         return int(new_filters)
 
-    def _round_repeats(self, repeats, multiplier):
+    @staticmethod
+    def _round_repeats(repeats, multiplier):
         """Round number of layers based on depth multiplier."""
         multiplier = multiplier
         if not multiplier:

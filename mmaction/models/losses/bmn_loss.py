@@ -22,7 +22,8 @@ class BMNLoss(nn.Module):
         results of candidate proposals.
     """
 
-    def tem_loss(self, pred_start, pred_end, gt_start, gt_end):
+    @staticmethod
+    def tem_loss(pred_start, pred_end, gt_start, gt_end):
         """Calculate Temporal Evaluation Module Loss.
 
         This function calculate the binary_logistic_regression_loss for start
@@ -42,8 +43,8 @@ class BMNLoss(nn.Module):
         loss = loss_start + loss_end
         return loss
 
-    def pem_reg_loss(self,
-                     pred_score,
+    @staticmethod
+    def pem_reg_loss(pred_score,
                      gt_iou_map,
                      mask,
                      high_temporal_iou_threshold=0.7,
@@ -91,8 +92,8 @@ class BMNLoss(nn.Module):
 
         return loss
 
-    def pem_cls_loss(self,
-                     pred_score,
+    @staticmethod
+    def pem_cls_loss(pred_score,
                      gt_iou_map,
                      mask,
                      threshold=0.9,

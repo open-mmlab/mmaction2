@@ -481,8 +481,8 @@ class ResNet3d(nn.Module):
         self.feat_dim = self.block.expansion * self.base_channels * 2**(
             len(self.stage_blocks) - 1)
 
-    def make_res_layer(self,
-                       block,
+    @staticmethod
+    def make_res_layer(block,
                        inplanes,
                        planes,
                        blocks,
@@ -595,7 +595,8 @@ class ResNet3d(nn.Module):
 
         return nn.Sequential(*layers)
 
-    def _inflate_conv_params(self, conv3d, state_dict_2d, module_name_2d,
+    @staticmethod
+    def _inflate_conv_params(conv3d, state_dict_2d, module_name_2d,
                              inflated_param_names):
         """Inflate a conv module from 2d to 3d.
 
@@ -622,7 +623,8 @@ class ResNet3d(nn.Module):
             conv3d.bias.data.copy_(state_dict_2d[bias_2d_name])
             inflated_param_names.append(bias_2d_name)
 
-    def _inflate_bn_params(self, bn3d, state_dict_2d, module_name_2d,
+    @staticmethod
+    def _inflate_bn_params(bn3d, state_dict_2d, module_name_2d,
                            inflated_param_names):
         """Inflate a norm module from 2d to 3d.
 
