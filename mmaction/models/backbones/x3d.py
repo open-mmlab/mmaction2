@@ -245,7 +245,7 @@ class X3D(nn.Module):
         ]
 
         self.num_stages = num_stages
-        assert num_stages >= 1 and num_stages <= 4
+        assert 1 <= num_stages <= 4
         self.spatial_strides = spatial_strides
         assert len(spatial_strides) == num_stages
         self.frozen_stages = frozen_stages

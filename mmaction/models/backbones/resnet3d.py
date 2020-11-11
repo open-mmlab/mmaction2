@@ -417,7 +417,7 @@ class ResNet3d(nn.Module):
         self.in_channels = in_channels
         self.base_channels = base_channels
         self.num_stages = num_stages
-        assert num_stages >= 1 and num_stages <= 4
+        assert 1 <= num_stages <= 4
         self.out_indices = out_indices
         assert max(out_indices) < num_stages
         self.spatial_strides = spatial_strides

@@ -355,7 +355,7 @@ class ResNet(nn.Module):
         self.pretrained = pretrained
         self.torchvision_pretrain = torchvision_pretrain
         self.num_stages = num_stages
-        assert num_stages >= 1 and num_stages <= 4
+        assert 1 <= num_stages <= 4
         self.out_indices = out_indices
         assert max(out_indices) < num_stages
         self.strides = strides
