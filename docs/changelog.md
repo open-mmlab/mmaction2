@@ -1,6 +1,6 @@
 ## Changelog
 
-###v 0.9.0 (master)
+### 0.9.0 (master)
 
 **Highlights**
 
@@ -14,6 +14,7 @@
 
 **Bug Fixes**
 - Fix a bug in BaseDataset when `data_prefix` is None ([#314](https://github.com/open-mmlab/mmaction2/pull/314))
+- Fix the bug of HVU object `num_classes` from 1679 to 1678 ([#307](https://github.com/open-mmlab/mmaction2/pull/307))
 
 **ModelZoo**
 
