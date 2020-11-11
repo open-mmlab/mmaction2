@@ -338,6 +338,7 @@ class X3D(nn.Module):
                        planes,
                        blocks,
                        spatial_stride=1,
+                       se_style='half',
                        se_ratio=None,
                        use_swish=True,
                        norm_cfg=None,
@@ -358,6 +359,9 @@ class X3D(nn.Module):
             blocks (int): Number of residual blocks.
             spatial_stride (int): Spatial strides in residual and conv layers.
                 Default: 1.
+            se_style (str): The style of inserting SE modules into BlockX3D,
+                'half' denotes insert into half of the blocks, while 'all'
+                denotes insert into all blocks. Default: 'half'.
             se_ratio (float | None): The reduction ratio of squeeze and
                 excitation unit. If set as None, it means not using SE unit.
                 Default: None.

@@ -326,7 +326,7 @@ class SSNDataset(BaseDataset):
                     proposals=proposals))
         return video_infos
 
-    def results_to_detections(self, results, top_k=2000):
+    def results_to_detections(self, results, top_k=2000, **kwargs):
         """Convert prediction results into detections.
 
         Args:
