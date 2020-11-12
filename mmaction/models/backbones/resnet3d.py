@@ -24,9 +24,6 @@ class BasicBlock3d(nn.Module):
             stride-two layer is the 3x3 conv layer, otherwise the stride-two
             layer is the first 1x1 conv layer. Default: 'pytorch'.
         inflate (bool): Whether to inflate kernel. Default: True.
-        inflate_style (str): ``3x1x1`` or ``1x1x1``. which determines the
-            kernel sizes and padding strides for conv1 and conv2 in each block.
-            Default: '3x1x1'.
         non_local (bool): Determine whether to apply non-local module in this
             block. Default: False.
         non_local_cfg (dict): Config for non-local module. Default: ``dict()``.
@@ -50,16 +47,17 @@ class BasicBlock3d(nn.Module):
                  downsample=None,
                  style='pytorch',
                  inflate=True,
-                 inflate_style='3x1x1',
                  non_local=False,
                  non_local_cfg=dict(),
                  conv_cfg=dict(type='Conv3d'),
                  norm_cfg=dict(type='BN3d'),
                  act_cfg=dict(type='ReLU'),
-                 with_cp=False):
+                 with_cp=False,
+                 **kwargs):
         super().__init__()
         assert style in ['pytorch', 'caffe']
-        assert inflate_style in ['3x1x1', '3x3x3']
+        # make sure that only ``inflate_style`` is passed into kwargs
+        assert set(kwargs.keys()).issubset(['inflate_style'])
 
         self.inplanes = inplanes
         self.planes = planes
@@ -68,7 +66,6 @@ class BasicBlock3d(nn.Module):
         self.dilation = dilation
         self.style = style
         self.inflate = inflate
-        self.inflate_style = inflate_style
         self.conv_cfg = conv_cfg
         self.norm_cfg = norm_cfg
         self.act_cfg = act_cfg
@@ -166,7 +163,7 @@ class Bottleneck3d(nn.Module):
             stride-two layer is the 3x3 conv layer, otherwise the stride-two
             layer is the first 1x1 conv layer. Default: 'pytorch'.
         inflate (bool): Whether to inflate kernel. Default: True.
-        inflate_style (str): ``3x1x1`` or ``1x1x1``. which determines the
+        inflate_style (str): ``3x1x1`` or ``3x3x3``. which determines the
             kernel sizes and padding strides for conv1 and conv2 in each block.
             Default: '3x1x1'.
         non_local (bool): Determine whether to apply non-local module in this
