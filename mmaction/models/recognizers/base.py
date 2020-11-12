@@ -160,14 +160,10 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
 
         return loss, log_vars
 
-    def forward(self,
-                imgs,
-                label=None,
-                gradcam=False,
-                return_loss=True,
-                **kwargs):
+    def forward(self, imgs, label=None, return_loss=True, **kwargs):
         """Define the computation performed at every call."""
-        if gradcam:
+        if kwargs.get('gradcam', False):
+            del kwargs['gradcam']
             return self.forward_gradcam(imgs, **kwargs)
         elif return_loss:
             if label is None:
