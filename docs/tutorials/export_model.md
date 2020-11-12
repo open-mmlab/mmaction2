@@ -21,7 +21,7 @@ First, install onnx.
 pip install onnx onnxruntime
 ```
 
-We provide a python script to export the pytorch model trained by MMaction2 to ONNX.
+We provide a python script to export the pytorch model trained by MMAction2 to ONNX.
 ```shell
 python tools/pytorch2onnx.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--shape ${SHAPE}] \
     [--verify] [--show] [--output-file ${OUTPUT_FILE}]  [--is-localizer] [--opset-version ${VERSION}]
@@ -37,13 +37,13 @@ Optional arguments:
 ### Recognizers
 For recognizers, please run:
 ```shell
-python tools/torch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --verify
+python tools/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --verify
 ```
 
 ### Localizer
 For localizers, please run:
 ```shell
-python tools/torch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --is-localizer --shape $SHAPE --verify
+python tools/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --is-localizer --shape $SHAPE --verify
 ```
 
 Please fire an issue if you discover any checkpoints that are not perfectly exported or suffer some loss in accuracy.
