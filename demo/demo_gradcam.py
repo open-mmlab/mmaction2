@@ -9,7 +9,7 @@ from mmcv.parallel import collate, scatter
 
 from mmaction.apis import init_recognizer
 from mmaction.datasets.pipelines import Compose
-from mmaction.utils.gradcam_utils import GradCAM
+from mmaction.utils import GradCAM
 
 
 def parse_args():

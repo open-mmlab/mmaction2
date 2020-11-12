@@ -1,8 +1,6 @@
 import torch
 import torch.nn.functional as F
 
-from ..models.recognizers import Recognizer2D, Recognizer3D
-
 
 class GradCAM:
     """GradCAM class helps create visulization results.
@@ -25,6 +23,7 @@ class GradCAM:
                 heatmap. For more information, please visit:
                 https://matplotlib.org/3.3.0/tutorials/colors/colormaps.html
         """
+        from ..models.recognizers import Recognizer2D, Recognizer3D
         if isinstance(model, Recognizer2D):
             self.is_recognizer2d = True
         elif isinstance(model, Recognizer3D):
