@@ -7,6 +7,7 @@
 **New Features**
 - Automatically add modelzoo statistics to readthedocs ([#327](https://github.com/open-mmlab/mmaction2/pull/327))
 - Support GYM99 data preparation ([#331](https://github.com/open-mmlab/mmaction2/pull/331))
+- Add GradCAM utils for recognizer ([#324](https://github.com/open-mmlab/mmaction2/pull/324))
 - Add print config script ([#345](https://github.com/open-mmlab/mmaction2/pull/345))
 
 **Improvements**

@@ -118,6 +118,12 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         testing."""
         pass
 
+    @abstractmethod
+    def forward_gradcam(self, imgs):
+        """Defines the computation performed at every all when using gradcam
+        utils."""
+        pass
+
     @staticmethod
     def _parse_losses(losses):
         """Parse the raw outputs (losses) of the network.
@@ -156,7 +162,10 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
 
     def forward(self, imgs, label=None, return_loss=True, **kwargs):
         """Define the computation performed at every call."""
-        if return_loss:
+        if kwargs.get('gradcam', False):
+            del kwargs['gradcam']
+            return self.forward_gradcam(imgs, **kwargs)
+        elif return_loss:
             if label is None:
                 raise ValueError('Label should not be None.')
             return self.forward_train(imgs, label, **kwargs)

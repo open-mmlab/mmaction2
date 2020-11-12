@@ -36,6 +36,9 @@ class AudioRecognizer(BaseRecognizer):
 
         return cls_score.cpu().numpy()
 
+    def forward_gradcam(self, audios):
+        raise NotImplementedError
+
     def train_step(self, data_batch, optimizer, **kwargs):
         """The iteration step during training.
 

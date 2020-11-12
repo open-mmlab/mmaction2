@@ -26,6 +26,9 @@ class ExampleRecognizer(BaseRecognizer):
     def forward_test(self, imgs):
         pass
 
+    def forward_gradcam(self, imgs):
+        pass
+
 
 def _get_recognizer_cfg(fname):
     """Grab configs necessary to create a recognizer.
@@ -113,6 +116,11 @@ def test_tsn():
         for one_img in img_list:
             recognizer(one_img, None, return_loss=False)
 
+    # Test forward gradcam
+    recognizer(imgs, gradcam=True)
+    for one_img in img_list:
+        recognizer(one_img, gradcam=True)
+
 
 def test_i3d():
     model, train_cfg, test_cfg = _get_recognizer_cfg(
@@ -143,6 +151,12 @@ def test_i3d():
                 img_list = [img[None, :] for img in imgs]
                 for one_img in img_list:
                     recognizer(one_img, None, return_loss=False)
+
+            # Test forward gradcam
+            recognizer(imgs, gradcam=True)
+            for one_img in img_list:
+                recognizer(one_img, gradcam=True)
+
     else:
         losses = recognizer(imgs, gt_labels)
         assert isinstance(losses, dict)
@@ -152,6 +166,11 @@ def test_i3d():
             img_list = [img[None, :] for img in imgs]
             for one_img in img_list:
                 recognizer(one_img, None, return_loss=False)
+
+        # Test forward gradcam
+        recognizer(imgs, gradcam=True)
+        for one_img in img_list:
+            recognizer(one_img, gradcam=True)
 
 
 def test_r2plus1d():
@@ -184,6 +203,11 @@ def test_r2plus1d():
                 img_list = [img[None, :] for img in imgs]
                 for one_img in img_list:
                     recognizer(one_img, None, return_loss=False)
+
+            # Test forward gradcam
+            recognizer(imgs, gradcam=True)
+            for one_img in img_list:
+                recognizer(one_img, gradcam=True)
     else:
         losses = recognizer(imgs, gt_labels)
         assert isinstance(losses, dict)
@@ -193,6 +217,11 @@ def test_r2plus1d():
             img_list = [img[None, :] for img in imgs]
             for one_img in img_list:
                 recognizer(one_img, None, return_loss=False)
+
+        # Test forward gradcam
+        recognizer(imgs, gradcam=True)
+        for one_img in img_list:
+            recognizer(one_img, gradcam=True)
 
 
 def test_slowfast():
@@ -222,6 +251,11 @@ def test_slowfast():
                 img_list = [img[None, :] for img in imgs]
                 for one_img in img_list:
                     recognizer(one_img, None, return_loss=False)
+
+            # Test forward gradcam
+            recognizer(imgs, gradcam=True)
+            for one_img in img_list:
+                recognizer(one_img, gradcam=True)
     else:
         losses = recognizer(imgs, gt_labels)
         assert isinstance(losses, dict)
@@ -231,6 +265,11 @@ def test_slowfast():
             img_list = [img[None, :] for img in imgs]
             for one_img in img_list:
                 recognizer(one_img, None, return_loss=False)
+
+        # Test forward gradcam
+        recognizer(imgs, gradcam=True)
+        for one_img in img_list:
+            recognizer(one_img, gradcam=True)
 
 
 def test_tsm():
@@ -259,7 +298,6 @@ def test_tsm():
     # test twice sample + 3 crops
     input_shape = (2, 48, 3, 32, 32)
     demo_inputs = generate_demo_inputs(input_shape)
-
     imgs = demo_inputs['imgs']
 
     test_cfg = dict(average_clips='prob', test_crops=3, twice_sample=True)
@@ -271,6 +309,11 @@ def test_tsm():
         img_list = [img[None, :] for img in imgs]
         for one_img in img_list:
             recognizer(one_img, None, return_loss=False)
+
+    # Test forward gradcam
+    recognizer(imgs, gradcam=True)
+    for one_img in img_list:
+        recognizer(one_img, gradcam=True)
 
 
 def test_csn():
@@ -302,6 +345,11 @@ def test_csn():
                 img_list = [img[None, :] for img in imgs]
                 for one_img in img_list:
                     recognizer(one_img, None, return_loss=False)
+
+            # Test forward gradcam
+            recognizer(imgs, gradcam=True)
+            for one_img in img_list:
+                recognizer(one_img, gradcam=True)
     else:
         losses = recognizer(imgs, gt_labels)
         assert isinstance(losses, dict)
@@ -311,6 +359,11 @@ def test_csn():
             img_list = [img[None, :] for img in imgs]
             for one_img in img_list:
                 recognizer(one_img, None, return_loss=False)
+
+        # Test forward gradcam
+        recognizer(imgs, gradcam=True)
+        for one_img in img_list:
+            recognizer(one_img, gradcam=True)
 
 
 def test_tpn():
@@ -336,6 +389,11 @@ def test_tpn():
         for one_img in img_list:
             recognizer(one_img, None, return_loss=False)
 
+    # Test forward gradcam
+    recognizer(imgs, gradcam=True)
+    for one_img in img_list:
+        recognizer(one_img, gradcam=True)
+
     model, train_cfg, test_cfg = _get_recognizer_cfg(
         'tpn/tpn_slowonly_r50_8x8x1_150e_kinetics_rgb.py')
     model['backbone']['pretrained'] = None
@@ -357,6 +415,11 @@ def test_tpn():
         img_list = [img[None, :] for img in imgs]
         for one_img in img_list:
             recognizer(one_img, None, return_loss=False)
+
+    # Test forward gradcam
+    recognizer(imgs, gradcam=True)
+    for one_img in img_list:
+        recognizer(one_img, gradcam=True)
 
 
 def test_audio_recognizer():
@@ -405,6 +468,11 @@ def test_c3d():
         img_list = [img[None, :] for img in imgs]
         for one_img in img_list:
             recognizer(one_img, None, return_loss=False)
+
+    # Test forward gradcam
+    recognizer(imgs, gradcam=True)
+    for one_img in img_list:
+        recognizer(one_img, gradcam=True)
 
 
 def generate_demo_inputs(input_shape=(1, 3, 3, 224, 224), model_type='2D'):
