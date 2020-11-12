@@ -1,6 +1,6 @@
 ## Tools Link
 
-Apart from training/testing scripts, We provide lots of useful tools under the [`tools/`](/tools) directory.
+Apart from training/testing scripts, We provide lots of useful tools under the `tools/` directory.
 
 - [Log Analysis](#log-analysis)
 - [Model Complexity](#model-complexity)
@@ -12,7 +12,7 @@ Apart from training/testing scripts, We provide lots of useful tools under the [
 
 ## Log Analysis
 
-[`tools/analysis/analyze_logs.py`](/tools/analysis/analyze_logs.py) plots loss/top-k acc curves given a training log file. Run `pip install seaborn` first to install the dependency.
+`tools/analysis/analyze_logs.py` plots loss/top-k acc curves given a training log file. Run `pip install seaborn` first to install the dependency.
 
 ![acc_curve_image](imgs/acc_curve.png)
 
@@ -64,7 +64,7 @@ You can also compute the average training speed.
 
 ## Model Complexity
 
-[`/tools/analysis/get_flops.py`](/tools/analysis/get_flops.py) is a script adapted from [flops-counter.pytorch](https://github.com/sovrasov/flops-counter.pytorch) to compute the FLOPs and params of a given model.
+`/tools/analysis/get_flops.py` is a script adapted from [flops-counter.pytorch](https://github.com/sovrasov/flops-counter.pytorch) to compute the FLOPs and params of a given model.
 
 ```shell
 python tools/analysis/get_flops.py ${CONFIG_FILE} [--shape ${INPUT_SHAPE}]
@@ -90,7 +90,7 @@ You may use the result for simple comparisons, but double check it before you ad
 
 ### MMAction2 model to ONNX (experimental)
 
-[`/tools/pytorch2onnx.py`](/tools/pytorch2onnx.py) is a script to convert model to [ONNX](https://github.com/onnx/onnx) format.
+`/tools/pytorch2onnx.py` is a script to convert model to [ONNX](https://github.com/onnx/onnx) format.
 It also supports comparing the output results between Pytorch and ONNX model for verification.
 Run `pip install onnx onnxruntime` first to install the dependency.
 
@@ -108,7 +108,7 @@ Run `pip install onnx onnxruntime` first to install the dependency.
 
 ### Prepare a model for publishing
 
-[`tools/publish_model.py`](/tools/publish_model.py) helps users to prepare their model for publishing.
+`tools/publish_model.py` helps users to prepare their model for publishing.
 
 Before you upload a model to AWS, you may want to:
 
@@ -132,9 +132,9 @@ The final output filename will be `tsn_r50_1x1x3_100e_kinetics400_rgb-{hash id}.
 
 ### Evaluating a metric
 
-[tools/analysis/eval_metric.py](/tools/analysis/eval_metric.py) evaluates certain metrics of the results saved in a file according to a config file.
+tools/analysis/eval_metric.py evaluates certain metrics of the results saved in a file according to a config file.
 
-The saved result file is created on [tools/test.py](/tools/test.py) by setting the arguments `--out ${RESULT_FILE}` to indicate the result file,
+The saved result file is created on `tools/test.py` by setting the arguments `--out ${RESULT_FILE}` to indicate the result file,
 which stores the final output of the whole model.
 
 ```shell
