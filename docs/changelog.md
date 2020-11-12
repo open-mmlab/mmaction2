@@ -7,6 +7,7 @@
 **New Features**
 - Automatically add modelzoo statistics to readthedocs ([#327](https://github.com/open-mmlab/mmaction2/pull/327))
 - Support GYM99 data preparation ([#331](https://github.com/open-mmlab/mmaction2/pull/331))
+- Add print config script ([#345](https://github.com/open-mmlab/mmaction2/pull/345))
 
 **Improvements**
 - Support PyTorch 1.7 in CI ([#312](https://github.com/open-mmlab/mmaction2/pull/312))
