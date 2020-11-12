@@ -56,8 +56,8 @@ class BasicBlock3d(nn.Module):
                  **kwargs):
         super().__init__()
         assert style in ['pytorch', 'caffe']
-        # unused ``inflate_style`` should be passed in kwargs
-        assert 'inflate_style' in kwargs
+        # make sure that only ``inflate_style`` is passed into kwargs
+        set(kwargs.keys()).issubset(['inflate_style'])
 
         self.inplanes = inplanes
         self.planes = planes
