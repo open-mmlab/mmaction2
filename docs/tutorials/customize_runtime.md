@@ -2,6 +2,31 @@
 
 In this tutorial, we will introduce some methods about how to customize optimization methods, training schedules, workflow and hooks when running your own settings for the project.
 
+<!-- TOC -->
+
+- [Customize Optimization Methods](#customize-optimization-methods)
+  * [Customize optimizer supported by PyTorch](#customize-optimizer-supported-by-pytorch)
+  * [Customize self-implemented optimizer](#customize-self-implemented-optimizer)
+    + [1. Define a new optimizer](#1-define-a-new-optimizer)
+    + [2. Add the optimizer to registry](#2-add-the-optimizer-to-registry)
+    + [3. Specify the optimizer in the config file](#3-specify-the-optimizer-in-the-config-file)
+  * [Customize optimizer constructor](#customize-optimizer-constructor)
+  * [Additional settings](#additional-settings)
+- [Customize Training Schedules](#customize-training-schedules)
+- [Customize Workflow](#customize-workflow)
+- [Customize Hooks](#customize-hooks)
+  * [Customize self-implemented hooks](#customize-self-implemented-hooks)
+    + [1. Implement a new hook](#1-implement-a-new-hook)
+    + [2. Register the new hook](#2-register-the-new-hook)
+    + [3. Modify the config](#3-modify-the-config)
+  * [Use hooks implemented in MMCV](#use-hooks-implemented-in-mmcv)
+  * [Modify default runtime hooks](#modify-default-runtime-hooks)
+    + [Checkpoint config](#checkpoint-config)
+    + [Log config](#log-config)
+    + [Evaluation config](#evaluation-config)
+
+<!-- TOC -->
+
 ## Customize Optimization Methods
 
 ### Customize optimizer supported by PyTorch

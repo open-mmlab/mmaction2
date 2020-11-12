@@ -1,6 +1,19 @@
 # Tutorial 5: Exporting a model to ONNX
 
-Open Neural Network Exchange [(ONNX)](https://onnx.ai/) is an open ecosystem that empowers AI developers to choose the right tools as their project evolves. So far, our codebase supports onnx exporting from pytorch models trained with mmaction2. The supported models are:
+Open Neural Network Exchange [(ONNX)](https://onnx.ai/) is an open ecosystem that empowers AI developers to choose the right tools as their project evolves.
+
+<!-- TOC -->
+
+- [Supported Models](#supported-models)
+- [Usage](#usage)
+  * [Prerequisite](#prerequisite)
+  * [Recognizers](#recognizers)
+  * [Localizer](#localizer)
+
+<!-- TOC -->
+
+## Supported Models
+So far, our codebase supports onnx exporting from pytorch models trained with MMAction2. The supported models are:
 
 + I3D
 + TSN
@@ -32,7 +45,7 @@ Optional arguments:
 + `--show`: Determines whether to print the architecture of the exported model. If not specified, it wll be set to `False`.
 + `--output-file`: The output onnx model name. If not specified, it wll be set to `tmp.onnx`.
 + `--is-localizer`: Determines whether the model to be exported is a localizer. If not specified, it wll be set to `False`.
-+ `--opset-version`: Determines the operation set version of onnx, we recommand you to use a higher version such as 11 for compatibility. If not specified, it wll be set to `11`.
++ `--opset-version`: Determines the operation set version of onnx, we recommend you to use a higher version such as 11 for compatibility. If not specified, it wll be set to `11`.
 
 ### Recognizers
 For recognizers, please run:
