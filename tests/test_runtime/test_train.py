@@ -62,6 +62,7 @@ class ExampleModel(nn.Module):
 def test_train_model():
     model = ExampleModel()
     dataset = ExampleDataset()
+    datasets = [ExampleDataset(), ExampleDataset()]
     cfg = dict(
         seed=0,
         gpus=1,
@@ -71,7 +72,6 @@ def test_train_model():
         workflow=[('train', 1)],
         total_epochs=5,
         evaluation=dict(interval=1, key_indicator='acc'),
-        omnisource=False,
         data=dict(
             videos_per_gpu=1,
             workers_per_gpu=0,
@@ -79,6 +79,7 @@ def test_train_model():
         optimizer=dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001),
         optimizer_config=dict(grad_clip=dict(max_norm=40, norm_type=2)),
         lr_config=dict(policy='step', step=[40, 80]),
+        omnisource=False,
         checkpoint_config=dict(interval=1),
         log_level='INFO',
         log_config=dict(interval=20, hooks=[dict(type='TextLoggerHook')]))
@@ -102,3 +103,9 @@ def test_train_model():
         config = Config(cfg)
         model.fp16_enabled = None
         train_model(model, dataset, config)
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        cfg['work_dir'] = tmpdir
+        cfg['omnisource'] = True
+        config = Config(cfg)
+        train_model(model, datasets, config)

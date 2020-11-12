@@ -1,0 +1,46 @@
+{
+    "v_bYUmtLBL7W4": {
+        "duration": 224.49,
+        "subset": "validation",
+        "resolution": "1920x1080",
+        "url": "https://www.youtube.com/watch?v=bYUmtLBL7W4",
+        "annotations": [
+            {
+                "segment": [
+                    11.553655226209049,
+                    57.06805460218409
+                ],
+                "label": "Wakeboarding"
+            },
+            {
+                "segment": [
+                    68.62170982839314,
+                    126.03987519500778
+                ],
+                "label": "Wakeboarding"
+            },
+            {
+                "segment": [
+                    135.4928658346334,
+                    201.31368954758187
+                ],
+                "label": "Wakeboarding"
+            }
+        ]
+    },
+    "v_hDPLy21Yyuk": {
+        "duration": 76.23,
+        "subset": "validation",
+        "resolution": "1280x720",
+        "url": "https://www.youtube.com/watch?v=hDPLy21Yyuk",
+        "annotations": [
+            {
+                "segment": [
+                    21.392480499219968,
+                    76.161
+                ],
+                "label": "Cleaning shoes"
+            }
+        ]
+    }
+}
