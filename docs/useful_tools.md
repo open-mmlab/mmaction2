@@ -1,14 +1,4 @@
-## Tools Link
-
 Apart from training/testing scripts, We provide lots of useful tools under the `tools/` directory.
-
-- [Log Analysis](#log-analysis)
-- [Model Complexity](#model-complexity)
-- [Model Conversion](#model-conversion)
-  * [MMAction2 model to ONNX (experimental)](#mmaction2-model-to-onnx--experimental-)
-  * [Prepare a model for publishing](#prepare-a-model-for-publishing)
-- [Miscellaneous](#miscellaneous)
-  * [Evaluating a metric](#evaluating-a-metric)
 
 ## Log Analysis
 

@@ -1,6 +1,8 @@
 ## Installation
 
-### Index
+We provide some tips for MMAction2 installation in this file.
+
+<!-- TOC -->
 
 - [Requirements](#requirements)
 - [Install MMAction2](#install-mmaction2)
@@ -9,6 +11,8 @@
 - [A from-scratch setup script](#a-from-scratch-setup-script)
 - [Developing with multiple MMAction2 versions](#developing-with-multiple-mmaction2-versions)
 - [Verification](#verification)
+
+<!-- TOC -->
 
 ### Requirements
 

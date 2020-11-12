@@ -1,8 +1,8 @@
 # Config System
 
-## Index
-
 We use python files as our config system. You can find all the provided configs under `$MMAction2/configs`.
+
+<!-- TOC -->
 
 - [Config File Naming Convention](#config-file-naming-convention)
 - [Config File Structure](#config-file-structure)
@@ -10,6 +10,8 @@ We use python files as our config system. You can find all the provided configs 
   * [Config System for Action Recognition](#config-system-for-action-recognition)
 - [FAQ](#faq)
   * [Use intermediate variables in configs](#use-intermediate-variables-in-configs)
+
+<!-- TOC -->
 
 ## Config File Naming Convention
 

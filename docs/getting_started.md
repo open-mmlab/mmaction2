@@ -3,6 +3,26 @@
 This page provides basic tutorials about the usage of MMAction2.
 For installation instructions, please see [install.md](install.md).
 
+<!-- TOC -->
+
+- [Datasets](#datasets)
+- [Inference with Pre-Trained Models](#inference-with-pre-trained-models)
+  * [Test a dataset](#test-a-dataset)
+  * [High-level APIs for testing a video and rawframes.](#high-level-apis-for-testing-a-video-and-rawframes)
+- [Build a Model](#build-a-model)
+  * [Build a model with basic components](#build-a-model-with-basic-components)
+  * [Write a new model](#write-a-new-model)
+- [Train a Model](#train-a-model)
+  * [Iteration pipeline](#iteration-pipeline)
+  * [Training setting](#training-setting)
+  * [Train with a single GPU](#train-with-a-single-gpu)
+  * [Train with multiple GPUs](#train-with-multiple-gpus)
+  * [Train with multiple machines](#train-with-multiple-machines)
+  * [Launch multiple jobs on a single machine](#launch-multiple-jobs-on-a-single-machine)
+- [Tutorials](#tutorials)
+
+<!-- TOC -->
+
 ## Datasets
 
 It is recommended to symlink the dataset root to `$MMACTION2/data`.

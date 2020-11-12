@@ -1,5 +1,19 @@
 # Data Preparation
 
+We provide some tips for MMAction2 data preparation in this file.
+
+<!-- TOC -->
+
+- [Notes on Video Data Format](#notes-on-video-data-format)
+- [Getting Data](#getting-data)
+  * [Prepare videos](#prepare-videos)
+  * [Extract frames](#extract-frames)
+    + [Alternative to denseflow](#alternative-to-denseflow)
+  * [Generate file list](#generate-file-list)
+  * [Prepare audio](#Prepare-audio)
+
+<!-- TOC -->
+
 ## Notes on Video Data Format
 
 MMAction2 supports two types of data format: raw frames and video. The former is widely used in previous projects such as [TSN](https://github.com/yjxiong/temporal-segment-networks).
@@ -107,7 +121,7 @@ python tools/data/build_file_list.py ${DATASET} ${SRC_FOLDER} [--rgb-prefix ${RG
 
 Now, you can go to [getting_started.md](getting_started.md) to train and test the model.
 
-### Audio Preparation
+### Prepare audio
 
 We also provide a simple script for audio waveform extraction and mel-spectrogram generation.
 
