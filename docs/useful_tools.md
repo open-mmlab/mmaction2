@@ -130,3 +130,11 @@ which stores the final output of the whole model.
 ```shell
 python tools/analysis/eval_metric.py ${CONFIG_FILE} ${RESULT_FILE} [--eval ${EVAL_METRICS}] [--cfg-options ${CFG_OPTIONS}] [--eval-options ${EVAL_OPTIONS}]
 ```
+
+### Print the entire config
+
+`tools/analysis/print_config.py` prints the whole config verbatim, expanding all its imports.
+
+```shell
+python tools/print_config.py ${CONFIG} [-h] [--options ${OPTIONS [OPTIONS...]}]
+```
