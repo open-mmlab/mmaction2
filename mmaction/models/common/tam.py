@@ -70,6 +70,8 @@ class TAM(nn.Module):
             nn.Conv1d(in_channels // beta, in_channels, 1, bias=False),
             nn.Sigmoid())
 
+        self.init_weights()
+
     def init_weights(self):
         """Initiate the parameters from scratch."""
         for m in self.modules():
@@ -93,6 +95,7 @@ class TAM(nn.Module):
         n, c, h, w = x.size()
         num_segments = self.num_segments
         num_batches = n // num_segments
+        assert c == self.in_channels
 
         # [num_batches, c, num_segments, h, w]
         x = x.view(num_batches, num_segments, c, h, w)
