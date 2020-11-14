@@ -178,7 +178,7 @@ def main():
 
     rank, _ = get_dist_info()
     if rank == 0:
-        if output_config:
+        if output_config.get('out', None):
             out = output_config['out']
             print(f'\nwriting results to {out}')
             dataset.dump_results(outputs, **output_config)
