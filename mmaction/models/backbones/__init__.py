@@ -7,8 +7,9 @@ from .resnet3d_slowfast import ResNet3dSlowFast
 from .resnet3d_slowonly import ResNet3dSlowOnly
 from .resnet_tin import ResNetTIN
 from .resnet_tsm import ResNetTSM
+from .tanet import TANet
 
 __all__ = [
     'C3D', 'ResNet', 'ResNet3d', 'ResNetTSM', 'ResNet2Plus1d',
-    'ResNet3dSlowFast', 'ResNet3dSlowOnly', 'ResNet3dCSN', 'ResNetTIN'
+    'ResNet3dSlowFast', 'ResNet3dSlowOnly', 'ResNet3dCSN', 'ResNetTIN', 'TANet'
 ]
