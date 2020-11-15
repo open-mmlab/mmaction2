@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 import torch.nn as nn
 from torch.utils import checkpoint as cp
 
@@ -16,21 +18,24 @@ class TABlock(nn.Module):
     Args:
         block (nn.Module): Residual blocks to be substituted.
         num_segments (int): Number of frame segments.
-        tam_cfg (dict | None): Config for temporal adaptive module (TAM).
-            If set to None, it uses ```dict()``` to constrcut TAM.
-            Default: None.
+        tam_cfg (dict): Config for temporal adaptive module (TAM).
+            Default: dict().
     """
 
-    def __init__(self, block, num_segments, tam_cfg=None):
+    def __init__(self, block, num_segments, tam_cfg=dict()):
         super().__init__()
-        if tam_cfg is None:
-            tam_cfg = dict()
+        self.tam_cfg = deepcopy(tam_cfg)
         self.block = block
         self.num_segments = num_segments
         self.tam = TAM(
             in_channels=block.conv1.out_channels,
             num_segments=num_segments,
-            **tam_cfg)
+            **self.tam_cfg)
+
+        if not isinstance(self.block, Bottleneck):
+            raise NotImplementedError('TA-Blocks have not been fully '
+                                      'implemented except the pattern based '
+                                      'on Bottleneck block.')
 
     def forward(self, x):
         if isinstance(self.block, Bottleneck):
@@ -60,11 +65,6 @@ class TABlock(nn.Module):
 
             return out
 
-        else:
-            raise NotImplementedError('TA-Blocks have not been fully '
-                                      'implemented except the pattern based '
-                                      'on Bottleneck block.')
-
 
 @BACKBONES.register_module()
 class TANet(ResNet):
@@ -77,19 +77,16 @@ class TANet(ResNet):
         depth (int): Depth of resnet, from {18, 34, 50, 101, 152}.
         num_segments (int): Number of frame segments.
         tam_cfg (dict | None): Config for temporal adaptive module (TAM).
-            If set to None, it uses ```dict()``` to constrcut TAM.
-            Default: None.
+            Default: dict().
         **kwargs (keyword arguments, optional): Arguments for ResNet except
             ```depth```.
     """
 
-    def __init__(self, depth, num_segments, tam_cfg=None, **kwargs):
+    def __init__(self, depth, num_segments, tam_cfg=dict(), **kwargs):
         super().__init__(depth, **kwargs)
         assert num_segments >= 3
-        if tam_cfg is None:
-            tam_cfg = dict()
         self.num_segments = num_segments
-        self.tam_cfg = tam_cfg
+        self.tam_cfg = deepcopy(tam_cfg)
 
     def init_weights(self):
         super().init_weights()
@@ -98,12 +95,10 @@ class TANet(ResNet):
     def make_tam_modeling(self):
         """Replace ResNet-Block with TA-Block."""
 
-        def make_tam_block(stage, num_segments, tam_cfg=None):
-            if tam_cfg is None:
-                tam_cfg = dict()
+        def make_tam_block(stage, num_segments, tam_cfg=dict()):
             blocks = list(stage.children())
             for i, block in enumerate(blocks):
-                blocks[i] = TABlock(block, num_segments, tam_cfg)
+                blocks[i] = TABlock(block, num_segments, deepcopy(tam_cfg))
             return nn.Sequential(*blocks)
 
         for i in range(self.num_stages):
