@@ -116,7 +116,7 @@ def main():
         ('Please specify at least one operation (save or eval the '
          'results) with the argument "--out" or "--eval"')
 
-    if output_config:
+    if output_config.get('out', None):
         out = output_config['out']
         # make sure the dirname of the output path exists
         mmcv.mkdir_or_exist(osp.dirname(out))
@@ -178,7 +178,7 @@ def main():
 
     rank, _ = get_dist_info()
     if rank == 0:
-        if output_config:
+        if output_config.get('out', None):
             out = output_config['out']
             print(f'\nwriting results to {out}')
             dataset.dump_results(outputs, **output_config)

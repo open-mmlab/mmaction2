@@ -6,12 +6,12 @@ import mmcv
 import numpy as np
 import pytest
 from mmcv import ConfigDict
-from numpy.testing import assert_array_equal
+from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from mmaction.datasets import (ActivityNetDataset, AudioDataset,
                                AudioFeatureDataset, HVUDataset,
-                               RawframeDataset, RepeatDataset, SSNDataset,
-                               VideoDataset)
+                               RawframeDataset, RawVideoDataset, RepeatDataset,
+                               SSNDataset, VideoDataset)
 
 
 class TestDataset:
@@ -32,6 +32,8 @@ class TestDataset:
         cls.video_ann_file = osp.join(cls.data_prefix, 'video_test_list.txt')
         cls.hvu_video_ann_file = osp.join(cls.data_prefix,
                                           'hvu_video_test_anno.json')
+        cls.hvu_video_eval_ann_file = osp.join(
+            cls.data_prefix, 'hvu_video_eval_test_anno.json')
         cls.hvu_frame_ann_file = osp.join(cls.data_prefix,
                                           'hvu_frame_test_anno.json')
         cls.action_ann_file = osp.join(cls.data_prefix,
@@ -43,6 +45,11 @@ class TestDataset:
         cls.audio_ann_file = osp.join(cls.data_prefix, 'audio_test_list.txt')
         cls.audio_feature_ann_file = osp.join(cls.data_prefix,
                                               'audio_feature_test_list.txt')
+        cls.rawvideo_test_anno_txt = osp.join(cls.data_prefix,
+                                              'rawvideo_test_anno.txt')
+        cls.rawvideo_test_anno_json = osp.join(cls.data_prefix,
+                                               'rawvideo_test_anno.json')
+        cls.rawvideo_pipeline = []
 
         cls.frame_pipeline = [
             dict(
@@ -141,8 +148,35 @@ class TestDataset:
             'action', 'attribute', 'concept', 'event', 'object', 'scene'
         ]
 
-        cls.hvu_category_nums = [739, 117, 291, 69, 1678, 248]
+        cls.hvu_category_nums = [739, 117, 291, 69, 1679, 248]
+
+        cls.hvu_categories_for_eval = ['action', 'scene', 'object']
+        cls.hvu_category_nums_for_eval = [3, 3, 3]
+
         cls.filename_tmpl = 'img_{:05d}.jpg'
+
+    def test_rawvideo_dataset(self):
+        # Try to load txt file
+        rawvideo_dataset = RawVideoDataset(
+            ann_file=self.rawvideo_test_anno_txt,
+            pipeline=self.rawvideo_pipeline,
+            clipname_tmpl='part_{}.mp4',
+            sampling_strategy='positive',
+            data_prefix=self.data_prefix)
+        result = rawvideo_dataset[0]
+        clipname = osp.join(self.data_prefix, 'test_rawvideo_dataset',
+                            'part_0.mp4')
+        assert result['filename'] == clipname
+
+        # Try to load json file
+        rawvideo_dataset = RawVideoDataset(
+            ann_file=self.rawvideo_test_anno_json,
+            pipeline=self.rawvideo_pipeline,
+            clipname_tmpl='part_{}.mp4',
+            sampling_strategy='random',
+            data_prefix=self.data_prefix,
+            test_mode=True)
+        result = rawvideo_dataset[0]
 
     def test_hvu_dataset(self):
         hvu_frame_dataset = HVUDataset(
@@ -192,6 +226,28 @@ class TestDataset:
                 categories=self.hvu_categories,
                 category_nums=self.hvu_category_nums)
         ] * 2
+
+        hvu_video_eval_dataset = HVUDataset(
+            ann_file=self.hvu_video_eval_ann_file,
+            pipeline=self.video_pipeline,
+            tag_categories=self.hvu_categories_for_eval,
+            tag_category_nums=self.hvu_category_nums_for_eval,
+            data_prefix=self.data_prefix)
+
+        results = [
+            np.array([
+                -1.59812844, 0.24459082, 1.38486497, 0.28801252, 1.09813449,
+                -0.28696971, 0.0637848, 0.22877678, -1.82406999
+            ]),
+            np.array([
+                0.87904563, 1.64264224, 0.46382051, 0.72865088, -2.13712525,
+                1.28571358, 1.01320328, 0.59292737, -0.05502892
+            ])
+        ]
+        mAP = hvu_video_eval_dataset.evaluate(results)
+        assert_array_almost_equal(mAP['action_mAP'], 1.0)
+        assert_array_almost_equal(mAP['scene_mAP'], 0.5)
+        assert_array_almost_equal(mAP['object_mAP'], 0.75)
 
     def test_rawframe_dataset(self):
         rawframe_dataset = RawframeDataset(self.frame_ann_file,

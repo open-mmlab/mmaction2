@@ -38,6 +38,12 @@ Welcome to MMAction2's documentation!
 
 .. toctree::
    :maxdepth: 2
+   :caption: Useful Tools and Scripts
+
+   useful_tools.md
+
+.. toctree::
+   :maxdepth: 2
    :caption: Updates
 
    changelog.md

@@ -1,6 +1,19 @@
 # Tutorial 5: Exporting a model to ONNX
 
-Open Neural Network Exchange [(ONNX)](https://onnx.ai/) is an open ecosystem that empowers AI developers to choose the right tools as their project evolves. So far, our codebase supports onnx exporting from pytorch models trained with mmaction2. The supported models are:
+Open Neural Network Exchange [(ONNX)](https://onnx.ai/) is an open ecosystem that empowers AI developers to choose the right tools as their project evolves.
+
+<!-- TOC -->
+
+- [Supported Models](#supported-models)
+- [Usage](#usage)
+  * [Prerequisite](#prerequisite)
+  * [Recognizers](#recognizers)
+  * [Localizer](#localizer)
+
+<!-- TOC -->
+
+## Supported Models
+So far, our codebase supports onnx exporting from pytorch models trained with MMAction2. The supported models are:
 
 + I3D
 + TSN
@@ -21,7 +34,7 @@ First, install onnx.
 pip install onnx onnxruntime
 ```
 
-We provide a python script to export the pytorch model trained by MMaction2 to ONNX.
+We provide a python script to export the pytorch model trained by MMAction2 to ONNX.
 ```shell
 python tools/pytorch2onnx.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--shape ${SHAPE}] \
     [--verify] [--show] [--output-file ${OUTPUT_FILE}]  [--is-localizer] [--opset-version ${VERSION}]
@@ -32,18 +45,18 @@ Optional arguments:
 + `--show`: Determines whether to print the architecture of the exported model. If not specified, it wll be set to `False`.
 + `--output-file`: The output onnx model name. If not specified, it wll be set to `tmp.onnx`.
 + `--is-localizer`: Determines whether the model to be exported is a localizer. If not specified, it wll be set to `False`.
-+ `--opset-version`: Determines the operation set version of onnx, we recommand you to use a higher version such as 11 for compatibility. If not specified, it wll be set to `11`.
++ `--opset-version`: Determines the operation set version of onnx, we recommend you to use a higher version such as 11 for compatibility. If not specified, it wll be set to `11`.
 
 ### Recognizers
 For recognizers, please run:
 ```shell
-python tools/torch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --verify
+python tools/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --verify
 ```
 
 ### Localizer
 For localizers, please run:
 ```shell
-python tools/torch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --is-localizer --shape $SHAPE --verify
+python tools/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --is-localizer --shape $SHAPE --verify
 ```
 
 Please fire an issue if you discover any checkpoints that are not perfectly exported or suffer some loss in accuracy.
