@@ -1,6 +1,6 @@
 # Config System
 
-We use python files as our config system. You can find all the provided configs under `$MMAction2/configs`.
+We use python files as configs. You can find all the provided configs under `$MMAction2/configs`.
 
 <!-- TOC -->
 

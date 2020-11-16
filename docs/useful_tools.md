@@ -1,5 +1,18 @@
 Apart from training/testing scripts, We provide lots of useful tools under the `tools/` directory.
 
+<!-- TOC -->
+
+- [Log Analysis](#log-analysis)
+- [Model Complexity](#model-complexity)
+- [Model Conversion](#model-conversion)
+  * [MMAction2 model to ONNX (experimental)](#mmaction2-model-to-onnx--experimental-)
+  * [Prepare a model for publishing](#prepare-a-model-for-publishing)
+- [Miscellaneous](#miscellaneous)
+  * [Evaluating a metric](#evaluating-a-metric)
+  * [Print the entire config](#print-the-entire-config)
+
+<!-- TOC -->
+
 ## Log Analysis
 
 `tools/analysis/analyze_logs.py` plots loss/top-k acc curves given a training log file. Run `pip install seaborn` first to install the dependency.
