@@ -4,17 +4,7 @@ from collections import defaultdict
 
 import numpy as np
 
-
-def iou2d(*args, **kwargs):
-    pass
-
-
-def nms3dt(*args, **kwargs):
-    pass
-
-
-def iou3dt(*args, **kwargs):
-    pass
+from mmaction.core import iou2d, spatio_temporal_iou3d, spatio_temporal_nms3d
 
 
 def pr_to_ap(precision_recall):
@@ -206,7 +196,7 @@ def video_ap(labels, videos, gt_tubes, threshold, tube_dir, overlap=0.3):
 
         for label_index in range(len(labels)):
             tube = tubes[label_index]
-            index = nms3dt(tube, overlap)
+            index = spatio_temporal_nms3d(tube, overlap)
             det_results[label_index].extend([(video, tube[i][1], tube[i][0])
                                              for i in index])
 
@@ -237,7 +227,7 @@ def video_ap(labels, videos, gt_tubes, threshold, tube_dir, overlap=0.3):
             is_positive = False
 
             if key in gt:
-                ious = [iou3dt(g, tube) for g in gt[key]]
+                ious = [spatio_temporal_iou3d(g, tube) for g in gt[key]]
                 max_index = np.argmax(ious)
                 if ious[max_index] >= threshold:
                     is_positive = True
