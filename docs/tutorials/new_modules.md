@@ -1,5 +1,19 @@
 # Tutorial 4: Adding New Modules
 
+In this tutorial, we will introduce some methods about how to customize optimizer, develop new components and new a learning rate scheduler for this project.
+
+<!-- TOC -->
+
+- [Customize Optimizer](#customize-optimizer)
+- [Customize Optimizer Constructor](#customize-optimizer-constructor)
+- [Develop New Components](#develop-new-components)
+  * [Add new backbones](#add-new-backbones)
+  * [Add new heads](#add-new-heads)
+  * [Add new loss](#add-new-loss)
+- [Add new learning rate scheduler (updater)](#add-new-learning-rate-scheduler--updater-)
+
+<!-- TOC -->
+
 ## Customize Optimizer
 
 An example of customized optimizer is [CopyOfSGD](/mmaction/core/optimizer/copy_of_sgd.py) is defined in `mmaction/core/optimizer/copy_of_sgd.py`.

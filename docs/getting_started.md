@@ -3,6 +3,26 @@
 This page provides basic tutorials about the usage of MMAction2.
 For installation instructions, please see [install.md](install.md).
 
+<!-- TOC -->
+
+- [Datasets](#datasets)
+- [Inference with Pre-Trained Models](#inference-with-pre-trained-models)
+  * [Test a dataset](#test-a-dataset)
+  * [High-level APIs for testing a video and rawframes.](#high-level-apis-for-testing-a-video-and-rawframes)
+- [Build a Model](#build-a-model)
+  * [Build a model with basic components](#build-a-model-with-basic-components)
+  * [Write a new model](#write-a-new-model)
+- [Train a Model](#train-a-model)
+  * [Iteration pipeline](#iteration-pipeline)
+  * [Training setting](#training-setting)
+  * [Train with a single GPU](#train-with-a-single-gpu)
+  * [Train with multiple GPUs](#train-with-multiple-gpus)
+  * [Train with multiple machines](#train-with-multiple-machines)
+  * [Launch multiple jobs on a single machine](#launch-multiple-jobs-on-a-single-machine)
+- [Tutorials](#tutorials)
+
+<!-- TOC -->
+
 ## Datasets
 
 It is recommended to symlink the dataset root to `$MMACTION2/data`.
@@ -391,115 +411,6 @@ Then you can launch two jobs with `config1.py` ang `config2.py`.
 ```shell
 CUDA_VISIBLE_DEVICES=0,1,2,3 GPUS=4 ./tools/slurm_train.sh ${PARTITION} ${JOB_NAME} config1.py [--work-dir ${WORK_DIR}]
 CUDA_VISIBLE_DEVICES=4,5,6,7 GPUS=4 ./tools/slurm_train.sh ${PARTITION} ${JOB_NAME} config2.py [--work-dir ${WORK_DIR}]
-```
-
-## Useful Tools
-
-We provide lots of useful tools under `tools/` directory.
-
-### Analyze logs
-
-You can plot loss/top-k acc curves given a training log file. Run `pip install seaborn` first to install the dependency.
-
-![acc_curve_image](imgs/acc_curve.png)
-
-```shell
-python tools/analysis/analyze_logs.py plot_curve ${JSON_LOGS} [--keys ${KEYS}] [--title ${TITLE}] [--legend ${LEGEND}] [--backend ${BACKEND}] [--style ${STYLE}] [--out ${OUT_FILE}]
-```
-
-Examples:
-
-- Plot the classification loss of some run.
-
-```shell
-python tools/analysis/analyze_logs.py plot_curve log.json --keys loss_cls --legend loss_cls
-```
-
-- Plot the top-1 acc and top-5 acc of some run, and save the figure to a pdf.
-
-```shell
-python tools/analysis/analyze_logs.py plot_curve log.json --keys top1_acc top5_acc --out results.pdf
-```
-
-- Compare the top-1 acc of two runs in the same figure.
-
-```shell
-python tools/analysis/analyze_logs.py plot_curve log1.json log2.json --keys top1_acc --legend run1 run2
-```
-
-You can also compute the average training speed.
-
-```shell
-python tools/analysis/analyze_logs.py cal_train_time ${JSON_LOGS} [--include-outliers]
-```
-
-- Compute the average training speed for a config file
-
-```shell
-python tools/analysis/analyze_logs.py cal_train_time work_dirs/some_exp/20200422_153324.log.json
-```
-
-The output is expected to be like the following.
-
-```
------Analyze train time of work_dirs/some_exp/20200422_153324.log.json-----
-slowest epoch 60, average time is 0.9736
-fastest epoch 18, average time is 0.9001
-time std over epochs is 0.0177
-average iter time: 0.9330 s/iter
-
-```
-
-### Get the FLOPs and params (experimental)
-
-We provide a script adapted from [flops-counter.pytorch](https://github.com/sovrasov/flops-counter.pytorch) to compute the FLOPs and params of a given model.
-
-```shell
-python tools/analysis/get_flops.py ${CONFIG_FILE} [--shape ${INPUT_SHAPE}]
-```
-
-We will get the result like this
-
-```
-Input shape: (1, 3, 32, 340, 256)
-Flops: 37.1 GMac
-Params: 28.04 M
-```
-
-**Note**: This tool is still experimental and we do not guarantee that the number is correct.
-You may use the result for simple comparisons well, but double check it before you adopt it in technical reports or papers.
-
-(1) FLOPs are related to the input shape while parameters are not. The default input shape is (1, 3, 340, 256) for 2D recognizer, (1, 3, 32, 340, 256) for 3D recognizer.
-(2) Some operators are not counted into FLOPs like GN and custom operators. Refer to [`mmcv.cnn.get_model_complexity_info()`](https://github.com/open-mmlab/mmcv/blob/master/mmcv/cnn/utils/flops_counter.py) for details.
-
-### Publish a model
-
-Before you upload a model to AWS, you may want to:
-(1) convert model weights to CPU tensors.
-(2) delete the optimizer states.
-(3) compute the hash of the checkpoint file and append the hash id to the filename.
-
-```shell
-python tools/publish_model.py ${INPUT_FILENAME} ${OUTPUT_FILENAME}
-```
-
-E.g.,
-
-```shell
-python tools/publish_model.py work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb/latest.pth tsn_r50_1x1x3_100e_kinetics400_rgb.pth
-```
-
-The final output filename will be `tsn_r50_1x1x3_100e_kinetics400_rgb-{hash id}.pth`.
-
-### Evaluate metrics on result file
-
-We provide a convenient script [tools/analysis/eval_metric.py](/tools/analysis/eval_metric.py) to evaluate metrics of the results saved in a file.
-
-The saved result file is created on [tools/test.py](/tools/test.py) by setting the arguments `--out ${RESULT_FILE}` to indicate the result file,
-which stores the final output of the whole model.
-
-```shell
-python tools/analysis/eval_metric.py ${CONFIG_FILE} ${RESULT_FILE} [--eval ${EVAL_METRICS}] [--cfg-options ${CFG_OPTIONS}] [--eval-options ${EVAL_OPTIONS}]
 ```
 
 ## Tutorials

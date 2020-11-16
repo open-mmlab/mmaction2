@@ -1,5 +1,17 @@
 # Tutorial 3: Customize Data Pipelines
 
+In this tutorial, we will introduce some methods about the design of data pipelines, and how to customize and extend your own data pipelines for the project.
+
+<!-- TOC -->
+
+- [Design of Data Pipelines](#design-of-data-pipelines)
+  * [Data loading](#data-loading)
+  * [Pre-processing](#pre-processing)
+  * [Formatting](#formatting)
+- [Extend and Use Custom Pipelines](#extend-and-use-custom-pipelines)
+
+<!-- TOC -->
+
 ## Design of Data Pipelines
 
 Following typical conventions, we use `Dataset` and `DataLoader` for data loading

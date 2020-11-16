@@ -3,6 +3,18 @@
 This tutorial provides instructions for users to use the pre-trained models
 to finetune them on other datasets, so that better performance can be get.
 
+<!-- TOC -->
+
+- [Outline](#outline)
+- [Modify Head](#modify-head)
+- [Modify Dataset](#modify-dataset)
+- [Modify Training Schedule](#modify-training-schedule)
+- [Use Pre-Trained Model](#use-pre-trained-model)
+
+<!-- TOC -->
+
+## Outline
+
 There are two steps to finetune a model on a new dataset.
 
 1. Add support for the new dataset. See [Tutorial 2: Adding New Dataset](new_dataset.md).

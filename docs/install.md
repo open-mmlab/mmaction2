@@ -1,5 +1,19 @@
 ## Installation
 
+We provide some tips for MMAction2 installation in this file.
+
+<!-- TOC -->
+
+- [Requirements](#requirements)
+- [Install MMAction2](#install-mmaction2)
+- [Install with CPU only](#install-with-cpu-only)
+- [Another option: Docker Image](#another-option--docker-image)
+- [A from-scratch setup script](#a-from-scratch-setup-script)
+- [Developing with multiple MMAction2 versions](#developing-with-multiple-mmaction2-versions)
+- [Verification](#verification)
+
+<!-- TOC -->
+
 ### Requirements
 
 - Linux (Windows is not officially supported)
@@ -27,6 +41,9 @@ conda install -yc conda-forge libjpeg-turbo
 CFLAGS="${CFLAGS} -mavx2" pip install --upgrade --no-cache-dir --force-reinstall --no-binary :all: --compile pillow-simd
 conda install -y jpeg libtiff
 ```
+
+**Note**:  You need to run `pip uninstall mmcv` first if you have mmcv installed.
+If mmcv and mmcv-full are both installed, there will be `ModuleNotFoundError`.
 
 ### Install MMAction2
 
@@ -88,21 +105,21 @@ pip install mmcv-full
 
 **Important:** You need to run `pip uninstall mmcv` first if you have mmcv installed. If mmcv and mmcv-full are both installed, there will be `ModuleNotFoundError`.
 
-d. Clone the mmaction2 repository
+d. Clone the MMAction2 repository
 
 ```shell
 git clone https://github.com/open-mmlab/mmaction2.git
 cd mmaction2
 ```
 
-d. Install build requirements and then install mmaction2.
+d. Install build requirements and then install MMAction2.
 
 ```shell
 pip install -r requirements/build.txt
 pip install -v -e .  # or "python setup.py develop"
 ```
 
-If you build mmaction2 on macOS, replace the last command with
+If you build MMAction2 on macOS, replace the last command with
 
 ```
 CC=clang CXX=clang++ CFLAGS='-stdlib=libc++' pip install -e .
@@ -114,7 +131,7 @@ Note:
 1. The git commit id will be written to the version number with step d, e.g. 0.6.0+2e7045c. The version will also be saved in trained models.
 It is recommended that you run step d each time you pull some updates from github. If C++/CUDA codes are modified, then this step is compulsory.
 
-2. Following the above instructions, mmaction2 is installed on `dev` mode, any local modifications made to the code will take effect without the need to reinstall it (unless you submit some commits and want to update the version number).
+2. Following the above instructions, MMAction2 is installed on `dev` mode, any local modifications made to the code will take effect without the need to reinstall it (unless you submit some commits and want to update the version number).
 
 3. If you would like to use `opencv-python-headless` instead of `opencv-python`,
 you can install it before installing MMCV.
@@ -150,7 +167,7 @@ docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmaction2/data mmaction2
 
 ### A from-scratch setup script
 
-Here is a full script for setting up mmaction2 with conda and link the dataset path (supposing that your Kinetics-400 dataset path is $KINETICS400_ROOT).
+Here is a full script for setting up MMAction2 with conda and link the dataset path (supposing that your Kinetics-400 dataset path is $KINETICS400_ROOT).
 
 ```shell
 conda create -n open-mmlab python=3.7 -y
@@ -172,7 +189,7 @@ mkdir data
 ln -s $KINETICS400_ROOT data
 ```
 
-### Using multiple MMAction2 versions
+### Developing with multiple MMAction2 versions
 
 The train and test scripts already modify the `PYTHONPATH` to ensure the script use the MMAction2 in the current directory.
 
@@ -180,4 +197,22 @@ To use the default MMAction2 installed in the environment rather than that you a
 
 ```shell
 PYTHONPATH="$(dirname $0)/..":$PYTHONPATH
+```
+
+### Verification
+
+To verify whether MMAction2 and the required environment are installed correctly,
+we can run sample python codes to initialize a recognizer and inference a demo video:
+
+```python
+import torch
+from mmaction.apis import init_recognizer, inference_recognizer
+
+config_file = 'configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py'
+device = 'cuda:0' # or 'cpu'
+device = torch.device(device)
+
+model = init_recognizer(config_file, device=device)
+# inference the demo video
+inference_recognizer(model, 'demo/demo.mp4', 'demo/label_map.txt')
 ```
