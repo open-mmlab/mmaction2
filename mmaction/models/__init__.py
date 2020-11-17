@@ -1,6 +1,6 @@
 from .backbones import (C3D, X3D, ResNet, ResNet2Plus1d, ResNet3d, ResNet3dCSN,
-                        ResNet3dSlowFast, ResNet3dSlowOnly, ResNetTIN,
-                        ResNetTSM)
+                        ResNet3dLayer, ResNet3dSlowFast, ResNet3dSlowOnly,
+                        ResNetTIN, ResNetTSM)
 from .builder import (build_backbone, build_head, build_localizer, build_loss,
                       build_model, build_neck, build_recognizer)
 from .common import Conv2plus1d
@@ -25,5 +25,5 @@ __all__ = [
     'PEM', 'TEM', 'BinaryLogisticRegressionLoss', 'BMN', 'BMNLoss',
     'build_model', 'OHEMHingeLoss', 'SSNLoss', 'ResNet3dCSN', 'ResNetTIN',
     'TPN', 'TPNHead', 'build_loss', 'build_neck', 'AudioRecognizer',
-    'AudioTSNHead', 'X3D', 'X3DHead'
+    'AudioTSNHead', 'X3D', 'X3DHead', 'ResNet3dLayer'
 ]
