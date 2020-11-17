@@ -314,175 +314,6 @@ class Bottleneck3d(nn.Module):
         return out
 
 
-def make_res_layer(block,
-                   inplanes,
-                   planes,
-                   blocks,
-                   spatial_stride=1,
-                   temporal_stride=1,
-                   dilation=1,
-                   style='pytorch',
-                   inflate=1,
-                   inflate_style='3x1x1',
-                   non_local=0,
-                   non_local_cfg=dict(),
-                   norm_cfg=None,
-                   act_cfg=None,
-                   conv_cfg=None,
-                   with_cp=False,
-                   **kwargs):
-    """Build residual layer for ResNet3D.
-
-    Args:
-        block (nn.Module): Residual module to be built.
-        inplanes (int): Number of channels for the input feature
-            in each block.
-        planes (int): Number of channels for the output feature
-            in each block.
-        blocks (int): Number of residual blocks.
-        spatial_stride (int | Sequence[int]): Spatial strides in
-            residual and conv layers. Default: 1.
-        temporal_stride (int | Sequence[int]): Temporal strides in
-            residual and conv layers. Default: 1.
-        dilation (int): Spacing between kernel elements. Default: 1.
-        style (str): ``pytorch`` or ``caffe``. If set to ``pytorch``,
-            the stride-two layer is the 3x3 conv layer, otherwise
-            the stride-two layer is the first 1x1 conv layer.
-            Default: ``pytorch``.
-        inflate (int | Sequence[int]): Determine whether to inflate
-            for each block. Default: 1.
-        inflate_style (str): ``3x1x1`` or ``1x1x1``. which determines
-            the kernel sizes and padding strides for conv1 and conv2
-            in each block. Default: '3x1x1'.
-        non_local (int | Sequence[int]): Determine whether to apply
-            non-local module in the corresponding block of each stages.
-            Default: 0.
-        non_local_cfg (dict): Config for non-local module.
-            Default: ``dict()``.
-        conv_cfg (dict | None): Config for norm layers. Default: None.
-        norm_cfg (dict | None): Config for norm layers. Default: None.
-        act_cfg (dict | None): Config for activate layers. Default: None.
-        with_cp (bool | None): Use checkpoint or not. Using checkpoint
-            will save some memory while slowing down the training speed.
-            Default: False.
-
-    Returns:
-        nn.Module: A residual layer for the given config.
-    """
-    inflate = inflate if not isinstance(inflate, int) else (inflate, ) * blocks
-    non_local = non_local if not isinstance(non_local,
-                                            int) else (non_local, ) * blocks
-    assert len(inflate) == blocks and len(non_local) == blocks
-    downsample = None
-    if spatial_stride != 1 or inplanes != planes * block.expansion:
-        downsample = ConvModule(
-            inplanes,
-            planes * block.expansion,
-            kernel_size=1,
-            stride=(temporal_stride, spatial_stride, spatial_stride),
-            bias=False,
-            conv_cfg=conv_cfg,
-            norm_cfg=norm_cfg,
-            act_cfg=None)
-
-    layers = []
-    layers.append(
-        block(
-            inplanes,
-            planes,
-            spatial_stride=spatial_stride,
-            temporal_stride=temporal_stride,
-            dilation=dilation,
-            downsample=downsample,
-            style=style,
-            inflate=(inflate[0] == 1),
-            inflate_style=inflate_style,
-            non_local=(non_local[0] == 1),
-            non_local_cfg=non_local_cfg,
-            norm_cfg=norm_cfg,
-            conv_cfg=conv_cfg,
-            act_cfg=act_cfg,
-            with_cp=with_cp,
-            **kwargs))
-    inplanes = planes * block.expansion
-    for i in range(1, blocks):
-        layers.append(
-            block(
-                inplanes,
-                planes,
-                spatial_stride=1,
-                temporal_stride=1,
-                dilation=dilation,
-                style=style,
-                inflate=(inflate[i] == 1),
-                inflate_style=inflate_style,
-                non_local=(non_local[i] == 1),
-                non_local_cfg=non_local_cfg,
-                norm_cfg=norm_cfg,
-                conv_cfg=conv_cfg,
-                act_cfg=act_cfg,
-                with_cp=with_cp,
-                **kwargs))
-
-    return nn.Sequential(*layers)
-
-
-def inflate_conv_params(conv3d, state_dict_2d, module_name_2d,
-                        inflated_param_names):
-    """Inflate a conv module from 2d to 3d.
-
-    Args:
-        conv3d (nn.Module): The destination conv3d module.
-        state_dict_2d (OrderedDict): The state dict of pretrained 2d model.
-        module_name_2d (str): The name of corresponding conv module in the
-            2d model.
-        inflated_param_names (list[str]): List of parameters that have been
-            inflated.
-    """
-    weight_2d_name = module_name_2d + '.weight'
-
-    conv2d_weight = state_dict_2d[weight_2d_name]
-    kernel_t = conv3d.weight.data.shape[2]
-
-    new_weight = conv2d_weight.data.unsqueeze(2).expand_as(
-        conv3d.weight) / kernel_t
-    conv3d.weight.data.copy_(new_weight)
-    inflated_param_names.append(weight_2d_name)
-
-    if getattr(conv3d, 'bias') is not None:
-        bias_2d_name = module_name_2d + '.bias'
-        conv3d.bias.data.copy_(state_dict_2d[bias_2d_name])
-        inflated_param_names.append(bias_2d_name)
-
-
-def inflate_bn_params(bn3d, state_dict_2d, module_name_2d,
-                      inflated_param_names):
-    """Inflate a norm module from 2d to 3d.
-
-    Args:
-        bn3d (nn.Module): The destination bn3d module.
-        state_dict_2d (OrderedDict): The state dict of pretrained 2d model.
-        module_name_2d (str): The name of corresponding bn module in the
-            2d model.
-        inflated_param_names (list[str]): List of parameters that have been
-            inflated.
-    """
-    for param_name, param in bn3d.named_parameters():
-        param_2d_name = f'{module_name_2d}.{param_name}'
-        param_2d = state_dict_2d[param_2d_name]
-        param.data.copy_(param_2d)
-        inflated_param_names.append(param_2d_name)
-
-    for param_name, param in bn3d.named_buffers():
-        param_2d_name = f'{module_name_2d}.{param_name}'
-        # some buffers like num_batches_tracked may not exist in old
-        # checkpoints
-        if param_2d_name in state_dict_2d:
-            param_2d = state_dict_2d[param_2d_name]
-            param.data.copy_(param_2d)
-            inflated_param_names.append(param_2d_name)
-
-
 @BACKBONES.register_module()
 class ResNet3d(nn.Module):
     """ResNet 3d backbone.
@@ -624,7 +455,7 @@ class ResNet3d(nn.Module):
             temporal_stride = temporal_strides[i]
             dilation = dilations[i]
             planes = self.base_channels * 2**i
-            res_layer = make_res_layer(
+            res_layer = self.make_res_layer(
                 self.block,
                 self.inplanes,
                 planes,
@@ -865,16 +696,17 @@ class ResNet3d(nn.Module):
                                        f'3d weight shape: {shape_3d}; '
                                        f'2d weight shape: {shape_2d}. ')
                     else:
-                        inflate_conv_params(module.conv, state_dict_r2d,
-                                            original_conv_name,
-                                            inflated_param_names)
+                        self._inflate_conv_params(module.conv, state_dict_r2d,
+                                                  original_conv_name,
+                                                  inflated_param_names)
 
                 if original_bn_name + '.weight' not in state_dict_r2d:
                     logger.warning(f'Module not exist in the state_dict_r2d'
                                    f': {original_bn_name}')
                 else:
-                    inflate_bn_params(module.bn, state_dict_r2d,
-                                      original_bn_name, inflated_param_names)
+                    self._inflate_bn_params(module.bn, state_dict_r2d,
+                                            original_bn_name,
+                                            inflated_param_names)
 
         # check if any parameters in the 2d checkpoint are not loaded
         remaining_names = set(
@@ -1048,6 +880,10 @@ class ResNet3dLayer(nn.Module):
         super().__init__()
         assert depth in ResNet3d.arch_settings
 
+        self.make_res_layer = ResNet3d.make_res_layer
+        self._inflate_conv_params = ResNet3d._inflate_conv_params
+        self._inflate_bn_params = ResNet3d._inflate_bn_params
+
         self.depth = depth
         self.pretrained = pretrained
         self.pretrained2d = pretrained2d
@@ -1076,7 +912,7 @@ class ResNet3dLayer(nn.Module):
         planes = 64 * 2**stage
         inplanes = 64 * 2**(stage - 1) * block.expansion
 
-        res_layer = make_res_layer(
+        res_layer = self.make_res_layer(
             block,
             inplanes,
             planes,
@@ -1141,16 +977,17 @@ class ResNet3dLayer(nn.Module):
                                        f'3d weight shape: {shape_3d}; '
                                        f'2d weight shape: {shape_2d}. ')
                     else:
-                        inflate_conv_params(module.conv, state_dict_r2d,
-                                            original_conv_name,
-                                            inflated_param_names)
+                        self._inflate_conv_params(module.conv, state_dict_r2d,
+                                                  original_conv_name,
+                                                  inflated_param_names)
 
                 if original_bn_name + '.weight' not in state_dict_r2d:
                     logger.warning(f'Module not exist in the state_dict_r2d'
                                    f': {original_bn_name}')
                 else:
-                    inflate_bn_params(module.bn, state_dict_r2d,
-                                      original_bn_name, inflated_param_names)
+                    self._inflate_bn_params(module.bn, state_dict_r2d,
+                                            original_bn_name,
+                                            inflated_param_names)
 
         # check if any parameters in the 2d checkpoint are not loaded
         remaining_names = set(
