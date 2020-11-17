@@ -103,24 +103,30 @@ class TubeDataset(BaseDataset):
         return is_whole and has_gt
 
     def load_annotations(self):
+        pkl_data = pickle.load(
+            open(self.ann_file, 'rb'), encoding=self.encoding)
+        gt_tubes = pkl_data['gttubes']
+        num_frames = pkl_data['nframes']
+        train_videos = pkl_data['train_videos']
+        test_videos = pkl_data['test_videos']
+        resolution = pkl_data['resolution']
+
+        self.gt_tubes = gt_tubes
+        self.labels = pkl_data['labels']
+
+        assert len(train_videos[self.split - 1]) + len(
+            test_videos[self.split - 1]) == len(num_frames)
+        videos = train_videos[
+            self.split - 1] if not self.test_mode else test_videos[self.split -
+                                                                   1]
+        self.videos = videos
+
         if self.preload_ann_file is not None and osp.exists(
                 self.preload_ann_file):
             video_infos = pickle.load(open(self.preload_ann_file, 'rb'))
         else:
             video_infos = []
-            pkl_data = pickle.load(
-                open(self.ann_file, 'rb'), encoding=self.encoding)
-            gt_tubes = pkl_data['gttubes']
-            num_frames = pkl_data['nframes']
-            train_videos = pkl_data['train_videos']
-            test_videos = pkl_data['test_videos']
-            resolution = pkl_data['resolution']
 
-            assert len(train_videos[self.split - 1]) + len(
-                test_videos[self.split - 1]) == len(num_frames)
-            videos = train_videos[self.split -
-                                  1] if not self.test_mode else test_videos[
-                                      self.split - 1]
             for video in videos:
                 video_tubes = sum(gt_tubes[video].values(), [])
                 for i in range(1, num_frames[video] + 2 - self.tube_length):

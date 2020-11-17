@@ -4,7 +4,7 @@ from collections import defaultdict
 
 import numpy as np
 
-from mmaction.core import iou2d, spatio_temporal_iou3d, spatio_temporal_nms3d
+from .bbox_overlaps import iou2d, spatio_temporal_iou3d, spatio_temporal_nms3d
 
 
 def pr_to_ap(precision_recall):
@@ -43,7 +43,7 @@ def frame_ap(det_results, labels, videos, gt_tubes, threshold):
 
         for i, j in enumerate(np.argsort(-det_result[:, 3])):
             key = (int(det_result[j, 0]), int(det_result[j, 1]))
-            box = det_result[:, 4:8]
+            box = det_result[j, 4:8]
             is_positive = False
 
             if key in gt:
@@ -202,7 +202,7 @@ def video_ap(labels, videos, gt_tubes, threshold, tube_dir, overlap=0.3):
 
     results = []
     for label_index in range(len(labels)):
-        det_result = det_results[label_index]
+        det_result = np.array(det_results[label_index])
 
         gt = defaultdict(list)
         for video in videos:
@@ -220,7 +220,6 @@ def video_ap(labels, videos, gt_tubes, threshold, tube_dir, overlap=0.3):
         precision_recall[0, 1] = 0.0
         fn, fp, tp = sum([len(item) for item in gt.values()]), 0, 0
 
-        # dets = -np.array([det[1] for det in det_result])
         dets = -np.array(det_result[:, 1])
         for i, j in enumerate(np.argsort(dets)):
             key, score, tube = det_result[j]
