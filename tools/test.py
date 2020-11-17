@@ -121,7 +121,7 @@ def main():
         # make sure the dirname of the output path exists
         mmcv.mkdir_or_exist(osp.dirname(out))
         _, suffix = osp.splitext(out)
-        assert suffix in file_handlers, \
+        assert suffix[1:] in file_handlers, \
             'The format of the output file should be json, pickle or yaml'
 
     # set cudnn benchmark
