@@ -6,9 +6,10 @@ from .hvu_loss import HVULoss
 from .nll_loss import NLLLoss
 from .ohem_hinge_loss import OHEMHingeLoss
 from .ssn_loss import SSNLoss
+from .truncated_loss import TruncatedLoss
 
 __all__ = [
     'BaseWeightedLoss', 'CrossEntropyLoss', 'NLLLoss', 'BCELossWithLogits',
     'BinaryLogisticRegressionLoss', 'BMNLoss', 'OHEMHingeLoss', 'SSNLoss',
-    'HVULoss'
+    'HVULoss', 'TruncatedLoss'
 ]

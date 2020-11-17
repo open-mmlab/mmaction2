@@ -191,7 +191,8 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         """
         imgs = data_batch['imgs']
         label = data_batch['label']
-
+        # if 'indexes' in kwargs:
+        #     indexes = kwargs.get('indexes')
         aux_info = {}
         for item in self.aux_info:
             assert item in data_batch

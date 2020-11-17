@@ -106,6 +106,7 @@ class SampleFrames:
                  num_clips=1,
                  temporal_jitter=False,
                  twice_sample=False,
+                 triple_sample=False,
                  out_of_bound_opt='loop',
                  test_mode=False,
                  start_index=None):
@@ -115,6 +116,7 @@ class SampleFrames:
         self.num_clips = num_clips
         self.temporal_jitter = temporal_jitter
         self.twice_sample = twice_sample
+        self.triple_sample = triple_sample
         self.out_of_bound_opt = out_of_bound_opt
         self.test_mode = test_mode
         assert self.out_of_bound_opt in ['loop', 'repeat_last']
@@ -176,8 +178,18 @@ class SampleFrames:
         if num_frames > ori_clip_len - 1:
             base_offsets = np.arange(self.num_clips) * avg_interval
             clip_offsets = (base_offsets + avg_interval / 2.0).astype(np.int)
+
             if self.twice_sample:
                 clip_offsets = np.concatenate([clip_offsets, base_offsets])
+                # clip_offsets = np.concatenate([clip_offsets_1,
+                #   clip_offset_2, base_offsets])
+            # if self.triple_sample:
+            #     clip_offsets_1 = (base_offsets +
+            #                       avg_interval / 3.0).astype(np.int)
+            #     clip_offsets_2 = (base_offsets +
+            #                       2 * avg_interval / 3.0).astype(np.int)
+            #     clip_offsets = np.concatenate(
+            #         [clip_offsets_1, clip_offset_2, base_offsets])
         else:
             clip_offsets = np.zeros((self.num_clips, ), dtype=np.int)
         return clip_offsets

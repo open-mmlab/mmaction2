@@ -240,12 +240,19 @@ class FormatShape:
         if self.input_format == 'NCTHW':
             num_clips = results['num_clips']
             clip_len = results['clip_len']
-
-            imgs = imgs.reshape((-1, num_clips, clip_len) + imgs.shape[1:])
-            # N_crops x N_clips x L x H x W x C
-            imgs = np.transpose(imgs, (0, 1, 5, 2, 3, 4))
-            # N_crops x N_clips x C x L x H x W
-            imgs = imgs.reshape((-1, ) + imgs.shape[2:])
+            # import pdb
+            if clip_len == 1:
+                imgs = imgs.reshape((-1, num_clips, clip_len) + imgs.shape[1:])
+                imgs = np.transpose(imgs, (0, 2, 5, 1, 3, 4))
+                # N_crops x L x C x N_CLIPS  X H x W
+                imgs = imgs.reshape((-1, ) + imgs.shape[2:])
+                # pdb.set_trace()
+            else:
+                imgs = imgs.reshape((-1, num_clips, clip_len) + imgs.shape[1:])
+                # N_crops x N_clips x L x H x W x C
+                imgs = np.transpose(imgs, (0, 1, 5, 2, 3, 4))
+                # N_crops x N_clips x C x L x H x W
+                imgs = imgs.reshape((-1, ) + imgs.shape[2:])
             # M' x C x L x H x W
             # M' = N_crops x N_clips
         elif self.input_format == 'NCHW':

@@ -1,21 +1,14 @@
 # model settings
 model = dict(
-    type='Recognizer3D',
-    backbone=dict(
-        type='ResNet3d',
-        pretrained2d=False,
-        pretrained=None,
-        depth=50,
-        conv_cfg=dict(type='Conv3d'),
-        norm_eval=False,
-        inflate=((1, 1, 1), (1, 0, 1, 0), (1, 0, 1, 0, 1, 0), (0, 1, 0)),
-        zero_init_residual=False),
+    type='Recognizer2D',
+    backbone=dict(type='ResNet', pretrained=None, depth=50, norm_eval=False),
     cls_head=dict(
-        type='I3DHead',
+        type='TSNHead',
         num_classes=212,
         in_channels=2048,
         spatial_type='avg',
-        dropout_ratio=0.5,
+        consensus=dict(type='AvgConsensus', dim=1),
+        dropout_ratio=0.4,
         init_std=0.01))
 # model training and testing settings
 train_cfg = None
@@ -52,7 +45,7 @@ train_pipeline = [
     dict(type='Flip', flip_ratio=0.5, lazy=True),
     dict(type='Fuse'),
     dict(type='Normalize', **img_norm_cfg),
-    dict(type='FormatShape', input_format='NCTHW'),
+    dict(type='FormatShape', input_format='NCHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs', 'label'])
 ]
@@ -63,43 +56,34 @@ val_pipeline = [
         frame_interval=1,
         num_clips=8,
         test_mode=True),
-    dict(
-        type='RawFrameDecode',
-        io_backend='memcached',
-        decoding_backend='turbojpeg',
-        **mc_cfg),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
     dict(type='Flip', flip_ratio=0),
     dict(type='Normalize', **img_norm_cfg),
-    dict(type='FormatShape', input_format='NCTHW'),
+    dict(type='FormatShape', input_format='NCHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs'])
 ]
 test_pipeline = [
     dict(
-        # type='SampleFrames',
-        type='DenseSampleFrames',
+        type='SampleFrames',
         clip_len=1,
         frame_interval=1,
-        num_clips=8,  # 25
+        num_clips=25,
         test_mode=True),
-    dict(
-        type='RawFrameDecode',
-        io_backend='memcached',
-        decoding_backend='turbojpeg',
-        **mc_cfg),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
-    dict(type='ThreeCrop', crop_size=256),
+    dict(type='TenCrop', crop_size=224),
     dict(type='Flip', flip_ratio=0),
     dict(type='Normalize', **img_norm_cfg),
-    dict(type='FormatShape', input_format='NCTHW'),
+    dict(type='FormatShape', input_format='NCHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
-    videos_per_gpu=1,
-    workers_per_gpu=0,
+    videos_per_gpu=16,
+    workers_per_gpu=4,
     train=dict(
         type=dataset_type,
         ann_file=ann_file_train,
@@ -109,33 +93,33 @@ data = dict(
         type=dataset_type,
         ann_file=ann_file_val,
         data_prefix=data_root_val,
-        pipeline=val_pipeline,
-        test_mode=True),
+        pipeline=val_pipeline),
     test=dict(
         type=dataset_type,
-        ann_file=ann_file_val,
+        ann_file=ann_file_test,
         data_prefix=data_root_val,
-        pipeline=test_pipeline,
-        test_mode=True))
+        pipeline=test_pipeline))
 # optimizer
 optimizer = dict(
-    type='SGD', lr=0.2, momentum=0.9,
-    weight_decay=0.0001)  # this lr is used for 8 gpus
+    type='SGD', lr=0.05, momentum=0.9,
+    weight_decay=0.001)  # this lr is used for 8 gpus
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
-lr_config = dict(policy='CosineAnnealing', min_lr=0)
-total_epochs = 200
+lr_config = dict(policy='step', step=[40, 80])
+total_epochs = 100
 checkpoint_config = dict(interval=5)
 evaluation = dict(
     interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
 log_config = dict(
     interval=20,
-    hooks=[dict(type='TextLoggerHook'),
-           dict(type='TensorboardLoggerHook')])
+    hooks=[
+        dict(type='TextLoggerHook'),
+        dict(type='TensorboardLoggerHook'),
+    ])
 # runtime settings
-dist_params = dict(backend='nccl')
+dist_params = dict(backend='nccl', port=29509)
 log_level = 'INFO'
-work_dir = './work_dirs/i3d_r50_1x1x8_200e_ugc_rgb/'
+work_dir = './work_dirs/tsn_r50_1x1x8_100e_ugc_rgb/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
