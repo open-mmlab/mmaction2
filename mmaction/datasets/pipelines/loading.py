@@ -901,7 +901,7 @@ class DecordDecode:
 
 @PIPELINES.register_module()
 class OpenCVInit:
-    """Using OpenCV to initalize the video_reader.
+    """Using OpenCV to initialize the video_reader.
 
     Required keys are "filename", added or modified keys are "new_path",
     "video_reader" and "total_frames".
@@ -911,11 +911,12 @@ class OpenCVInit:
         self.io_backend = io_backend
         self.kwargs = kwargs
         self.file_client = None
-        random_string = get_random_string()
-        thread_id = get_thread_id()
-        self.tmp_folder = osp.join(get_shm_dir(),
-                                   f'{random_string}_{thread_id}')
-        os.mkdir(self.tmp_folder)
+        if self.io_backend != 'disk':
+            random_string = get_random_string()
+            thread_id = get_thread_id()
+            self.tmp_folder = osp.join(get_shm_dir(),
+                                       f'{random_string}_{thread_id}')
+            os.mkdir(self.tmp_folder)
 
     def __call__(self, results):
         """Perform the OpenCV initialization.
