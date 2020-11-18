@@ -19,7 +19,7 @@
 
 **Bug Fixes**
 - Fix a bug in BaseDataset when `data_prefix` is None ([#314](https://github.com/open-mmlab/mmaction2/pull/314))
-- Fix `get_thread_id` when not using disk as backend ([#354](https://github.com/open-mmlab/mmaction2/pull/354))
+- Fix `get_thread_id` when not using disk as backend ([#354](https://github.com/open-mmlab/mmaction2/pull/354), [#357](https://github.com/open-mmlab/mmaction2/pull/357))
 - Fix the bug of HVU object `num_classes` from 1679 to 1678 ([#307](https://github.com/open-mmlab/mmaction2/pull/307))
 - Fix OmniSource training configs ([#321](https://github.com/open-mmlab/mmaction2/pull/321))
 - Fix Issue #306: Bug of SampleAVAFrames ([#317](https://github.com/open-mmlab/mmaction2/pull/317))
