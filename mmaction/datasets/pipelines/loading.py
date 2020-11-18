@@ -760,8 +760,10 @@ class PyAVDecode:
     """Using pyav to decode the video.
 
     PyAV: https://github.com/mikeboers/PyAV
+
     Required keys are "video_reader" and "frame_inds",
     added or modified keys are "imgs", "img_shape" and "original_shape".
+
     Args:
         multi_thread (bool): If set to True, it will apply multi
             thread processing. Default: False.

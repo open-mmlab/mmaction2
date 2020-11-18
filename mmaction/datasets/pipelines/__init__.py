@@ -14,8 +14,9 @@ from .loading import (AudioDecode, AudioDecodeInit, AudioFeatureSelector,
                       GenerateLocalizationLabels, ImageDecode,
                       LoadAudioFeature, LoadHVULabel, LoadLocalizationFeature,
                       LoadProposals, OpenCVDecode, OpenCVInit, PyAVDecode,
-                      PyAVInit, RawFrameDecode, SampleAVAFrames, SampleFrames,
-                      SampleProposalFrames, UntrimmedSampleFrames, PyAVDecodeMotionVector)
+                      PyAVDecodeMotionVector, PyAVInit, RawFrameDecode,
+                      SampleAVAFrames, SampleFrames, SampleProposalFrames,
+                      UntrimmedSampleFrames)
 
 __all__ = [
     'SampleFrames', 'PyAVDecode', 'DecordDecode', 'DenseSampleFrames',
