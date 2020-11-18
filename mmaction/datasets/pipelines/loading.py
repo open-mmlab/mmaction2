@@ -819,7 +819,7 @@ class PyAVDecodeMotionVector(PyAVDecode):
     PyAV: https://github.com/mikeboers/PyAV
 
     Required keys are "video_reader" and "frame_inds",
-    added or modified keys are "imgs", "img_shape" and "original_shape".
+    added or modified keys are "mvs".
 
     Args:
         multi_thread (bool): If set to True, it will apply multi
@@ -890,7 +890,7 @@ class PyAVDecodeMotionVector(PyAVDecode):
 
         # the available frame in pyav may be less than its length,
         # which may raise error
-        results['imgs'] = np.array(
+        results['mvs'] = np.array(
             [imgs[i % len(imgs)] for i in results['frame_inds']])
         return results
 

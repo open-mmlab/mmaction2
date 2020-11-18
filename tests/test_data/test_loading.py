@@ -1479,3 +1479,5 @@ class TestLoading:
         }
         results = pyav_init(results)
         results = pyav(results)
+        target_keys = ['mvs']
+        assert self.check_keys_contain(results.keys(), target_keys)
