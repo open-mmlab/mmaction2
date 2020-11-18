@@ -16,10 +16,11 @@ from mmaction.datasets.pipelines import (AudioDecode, AudioDecodeInit,
                                          LoadAudioFeature, LoadHVULabel,
                                          LoadLocalizationFeature,
                                          LoadProposals, OpenCVDecode,
-                                         OpenCVInit, PyAVDecode, PyAVInit,
+                                         OpenCVInit, PyAVDecode,
+                                         PyAVDecodeMotionVector, PyAVInit,
                                          RawFrameDecode, SampleAVAFrames,
                                          SampleFrames, SampleProposalFrames,
-                                         UntrimmedSampleFrames, PyAVDecodeMotionVector)
+                                         UntrimmedSampleFrames)
 
 # yapf: enable
 
@@ -1473,10 +1474,8 @@ class TestLoading:
 
         # test pyav
         results = {
-            'filename':
-            osp.join(osp.dirname(osp.dirname(__file__)), 'data/test.mp4'),
-            'frame_inds':
-            np.arange(0, 32, 1)[:, np.newaxis]
+            'filename': self.video_path,
+            'frame_inds': np.arange(0, 32, 1)[:, None]
         }
         results = pyav_init(results)
         results = pyav(results)
