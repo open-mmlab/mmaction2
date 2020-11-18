@@ -3,8 +3,8 @@ from .augmentations import (AudioAmplify, CenterCrop, ColorJitter,
                             EntityBoxPad, EntityBoxRescale, Flip, Fuse,
                             MelSpectrogram, MultiGroupCrop, MultiScaleCrop,
                             Normalize, RandomCrop, RandomRescale,
-                            RandomResizedCrop, RandomScale, Resize, TenCrop,
-                            ThreeCrop)
+                            RandomResizedCrop, RandomScale, Resize, SpecAug,
+                            TenCrop, ThreeCrop)
 from .compose import Compose
 from .formating import (Collect, FormatAudioShape, FormatShape, ImageToTensor,
                         ToDataContainer, ToTensor, Transpose)
@@ -31,5 +31,5 @@ __all__ = [
     'FormatAudioShape', 'LoadAudioFeature', 'AudioFeatureSelector',
     'AudioDecodeInit', 'EntityBoxPad', 'EntityBoxFlip', 'EntityBoxCrop',
     'EntityBoxRescale', 'EntityBoxClip', 'RandomScale', 'ImageDecode',
-    'BuildPseudoClip', 'RandomRescale'
+    'BuildPseudoClip', 'RandomRescale', 'SpecAug'
 ]

@@ -1,6 +1,6 @@
 import torch.nn as nn
 from mmcv.cnn import CONV_LAYERS, kaiming_init
-from torch.nn.modules.utils import _tuple
+from torch.nn.modules.utils import _pair
 
 
 @CONV_LAYERS.register_module()
@@ -8,14 +8,14 @@ class ConvAudio(nn.Module):
     """Conv2d module for AudioResNet backbone.
 
     Args:
-        in_channels (int): Same as nn.Conv3d.
-        out_channels (int): Same as nn.Conv3d.
-        kernel_size (int | tuple[int]): Same as nn.Conv3d.
-        stride (int | tuple[int]): Same as nn.Conv3d.
-        padding (int | tuple[int]): Same as nn.Conv3d.
-        dilation (int | tuple[int]): Same as nn.Conv3d.
-        groups (int): Same as nn.Conv3d.
-        bias (bool | str): If specified as ``auto``, it will be decided by the
+        in_channels (int): Same as nn.Conv2d.
+        out_channels (int): Same as nn.Conv2d.
+        kernel_size (int | tuple[int]): Same as nn.Conv2d.
+        stride (int | tuple[int]): Same as nn.Conv2d.
+        padding (int | tuple[int]): Same as nn.Conv2d.
+        dilation (int | tuple[int]): Same as nn.Conv2d.
+        groups (int): Same as nn.Conv2d.
+        bias (bool | str): If specified as `auto`, it will be decided by the
             norm_cfg. Bias will be set as True if norm_cfg is None, otherwise
             False.
     """
@@ -31,9 +31,11 @@ class ConvAudio(nn.Module):
                  bias=True):
         super().__init__()
 
-        kernel_size = _tuple(kernel_size)
-        stride = _tuple(stride)
-        padding = _tuple(padding)
+        kernel_size = _pair(kernel_size)
+        stride = _pair(stride)
+        padding = _pair(padding)
+        padding = _pair(dilation)
+
         assert len(kernel_size) == len(stride) == len(padding) == 2
 
         self.in_channels = in_channels
@@ -52,6 +54,7 @@ class ConvAudio(nn.Module):
             in_channels,
             kernel_size=(kernel_size[0], 1),
             stride=(stride[0], 1),
+            dilation=(dilation, 1),
             padding=(dilation, 0),
             bias=bias)
 
@@ -60,6 +63,7 @@ class ConvAudio(nn.Module):
             out_channels,
             kernel_size=(1, kernel_size[1]),
             stride=(1, stride[1]),
+            dilation=(1, dilation),
             padding=(0, dilation),
             bias=bias)
 
