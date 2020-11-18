@@ -149,11 +149,16 @@ class TestLoading:
         num_categories = len(categories)
 
         loader = LoadHVULabel()
+        assert repr(loader) == (f'{loader.__class__.__name__}('
+                                f'hvu_initialized={False})')
 
         result1 = loader(hvu_label_example1)
         label1 = torch.zeros(num_tags)
         mask1 = torch.zeros(num_tags)
         category_mask1 = torch.zeros(num_categories)
+
+        assert repr(loader) == (f'{loader.__class__.__name__}('
+                                f'hvu_initialized={True})')
 
         label1[[0, 4, 5, 7, 8]] = 1.
         mask1[:10] = 1.
@@ -204,6 +209,14 @@ class TestLoading:
         assert len(sample_frames_results['frame_inds']) == 15
         assert np.max(sample_frames_results['frame_inds']) <= 5
         assert np.min(sample_frames_results['frame_inds']) >= 1
+        assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
+                                       f'clip_len={3}, '
+                                       f'frame_interval={1}, '
+                                       f'num_clips={5}, '
+                                       f'temporal_jitter={False}, '
+                                       f'twice_sample={False}, '
+                                       f'out_of_bound_opt=loop, '
+                                       f'test_mode={False})')
 
         # Sample Frame with no temporal_jitter
         # clip_len=5, frame_interval=1, num_clips=5,
@@ -218,6 +231,14 @@ class TestLoading:
             out_of_bound_opt='repeat_last')
         sample_frames = SampleFrames(**config)
         sample_frames_results = sample_frames(video_result)
+        assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
+                                       f'clip_len={5}, '
+                                       f'frame_interval={1}, '
+                                       f'num_clips={5}, '
+                                       f'temporal_jitter={False}, '
+                                       f'twice_sample={False}, '
+                                       f'out_of_bound_opt=repeat_last, '
+                                       f'test_mode={False})')
 
         def check_monotonous(arr):
             length = arr.shape[0]
@@ -256,6 +277,14 @@ class TestLoading:
         assert len(sample_frames_results['frame_inds']) == 20
         assert np.max(sample_frames_results['frame_inds']) <= 5
         assert np.min(sample_frames_results['frame_inds']) >= 1
+        assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
+                                       f'clip_len={4}, '
+                                       f'frame_interval={2}, '
+                                       f'num_clips={5}, '
+                                       f'temporal_jitter={True}, '
+                                       f'twice_sample={False}, '
+                                       f'out_of_bound_opt=loop, '
+                                       f'test_mode={False})')
 
         # Sample Frame with no temporal_jitter in test mode
         # clip_len=4, frame_interval=1, num_clips=6
@@ -276,6 +305,14 @@ class TestLoading:
         assert len(sample_frames_results['frame_inds']) == 24
         assert np.max(sample_frames_results['frame_inds']) <= 5
         assert np.min(sample_frames_results['frame_inds']) >= 1
+        assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
+                                       f'clip_len={4}, '
+                                       f'frame_interval={1}, '
+                                       f'num_clips={6}, '
+                                       f'temporal_jitter={False}, '
+                                       f'twice_sample={False}, '
+                                       f'out_of_bound_opt=loop, '
+                                       f'test_mode={True})')
 
         # Sample Frame with no temporal_jitter in test mode
         # clip_len=3, frame_interval=1, num_clips=6
