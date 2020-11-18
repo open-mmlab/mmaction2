@@ -911,6 +911,7 @@ class OpenCVInit:
         self.io_backend = io_backend
         self.kwargs = kwargs
         self.file_client = None
+        self.tmp_folder = None
         if self.io_backend != 'disk':
             random_string = get_random_string()
             thread_id = get_thread_id()
@@ -945,7 +946,8 @@ class OpenCVInit:
         return results
 
     def __del__(self):
-        shutil.rmtree(self.tmp_folder)
+        if self.tmp_folder and osp.exists(self.tmp_folder):
+            shutil.rmtree(self.tmp_folder)
 
     def __repr__(self):
         repr_str = (f'{self.__class__.__name__}('
