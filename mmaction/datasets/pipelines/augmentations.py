@@ -313,7 +313,7 @@ class EntityBoxPad:
         padded_labels[:num_gts] = labels
 
         if proposals is not None:
-            padded_proposals = np.zeros(
+            padded_proposals = np.ones(
                 (self.max_num_gts, 4), dtype=np.float32) * -1
             padded_proposals[:num_proposals] = proposals
         else:
