@@ -321,7 +321,7 @@ class EntityBoxPad:
 
         results['proposals'] = padded_proposals
         results['entity_boxes'] = padded_entity_boxes
-        results['labels'] = labels
+        results['labels'] = padded_labels
         return results
 
     def __repr__(self):
