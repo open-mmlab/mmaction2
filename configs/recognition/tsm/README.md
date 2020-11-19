@@ -57,7 +57,12 @@ e.g., lr=0.01 for 4 GPUs * 2 video/gpu and lr=0.08 for 16 GPUs * 4 video/gpu.
 2. The **inference_time** is got by this [benchmark script](/tools/analysis/benchmark.py), where we use the sampling frames strategy of the test setting and only care about the model inference time,
 not including the IO time and pre-processing time. For each setting, we use 1 gpu and set batch size (videos per gpu) to 1 to calculate the inference time.
 3. The values in columns named after "reference" are the results got by training on the original repo, using the same model settings. The checkpoints for reference repo can be downloaded [here](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_reference_ckpt.rar).
-4. There are two kinds of test settings for Something-Something dataset, efficient setting (center crop * 1 clip) and accurate setting (Three crop * 2 clip), which is referred from the [original repo](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd).
+4. When using multiple crops for testing, we have to set `cfg.test_cfg['test_crops']` and `cfg.test_cfg['twice_sample']` manually to get correct results. Number of crops is calculated by:
+   1. `twice_sample` in `SampleFrames`
+   2. `num_sample_positions` in `DenseSampleFrames`
+   3. `ThreeCrop/TenCrop/MultiGroupCrop` in `test_pipeline`
+   4. `num_clips` in `SampleFrames` or its subclass if `clip_len != 1`
+5. There are two kinds of test settings for Something-Something dataset, efficient setting (center crop * 1 clip) and accurate setting (Three crop * 2 clip), which is referred from the [original repo](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd).
 We use efficient setting as default provided in config files, and it can be changed to accurate setting by
 ```python
 ...

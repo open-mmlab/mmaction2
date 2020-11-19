@@ -23,9 +23,9 @@ class Recognizer3D(BaseRecognizer):
 
         return losses
 
-    def forward_test(self, imgs):
-        """Defines the computation performed at every call when evaluation and
-        testing."""
+    def _do_test(self, imgs):
+        """Defines the computation performed at every call when evaluation,
+        testing and gradcam."""
         num_segs = imgs.shape[1]
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
 
@@ -36,7 +36,12 @@ class Recognizer3D(BaseRecognizer):
         cls_score = self.cls_head(x)
         cls_score = self.average_clip(cls_score, num_segs)
 
-        return cls_score.cpu().numpy()
+        return cls_score
+
+    def forward_test(self, imgs):
+        """Defines the computation performed at every call when evaluation and
+        testing."""
+        return self._do_test(imgs).cpu().numpy()
 
     def forward_dummy(self, imgs):
         """Used for computing network FLOPs.
@@ -58,14 +63,4 @@ class Recognizer3D(BaseRecognizer):
     def forward_gradcam(self, imgs):
         """Defines the computation performed at every call when using gradcam
         utils."""
-        num_segs = imgs.shape[1]
-        imgs = imgs.reshape((-1, ) + imgs.shape[2:])
-
-        x = self.extract_feat(imgs)
-        if hasattr(self, 'neck'):
-            x, _ = self.neck(x)
-
-        cls_score = self.cls_head(x)
-        cls_score = self.average_clip(cls_score, num_segs)
-
-        return cls_score
+        return self._do_test(imgs)

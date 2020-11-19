@@ -78,7 +78,8 @@ class TSMHead(BaseHead):
 
         Args:
             x (torch.Tensor): The input data.
-            num_segments (int): Number of frame segments. Default: 8.
+            num_segments (int): Useless in TSMHead.
+                Use `self.num_segments` instead.
 
         Returns:
             torch.Tensor: The classification scores for input samples.
