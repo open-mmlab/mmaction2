@@ -35,9 +35,6 @@ class Recognizer2D(BaseRecognizer):
     def _do_test(self, imgs):
         """Defines the computation performed at every call when evaluation,
         testing and gradcam."""
-        test_crops = self.test_cfg.get('test_crops', None)
-        twice_sample = self.test_cfg.get('twice_sample', False)
-
         batches = imgs.shape[0]
 
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
@@ -66,14 +63,11 @@ class Recognizer2D(BaseRecognizer):
         #   4) `num_clips` in `SampleFrames` or its subclass if `clip_len != 1`
         cls_score = self.cls_head(x, num_segs)
 
-        # When using TSMHead, We have to set `twice_sample` and `test_crops`
-        # in test_cfg manually to get `[batch_size, num_classes]` results.
-        if test_crops is not None:
-            if twice_sample:
-                test_crops = test_crops * 2
-
-            # Please make sure `test_crops == num_crops`
-            cls_score = self.average_clip(cls_score, test_crops)
+        assert cls_score.size()[0] % batches == 0
+        if cls_score.size()[0] != batches:
+            # calculate num_crops automatically
+            cls_score = self.average_clip(cls_score,
+                                          cls_score.size()[0] // batches)
 
         return cls_score
 
