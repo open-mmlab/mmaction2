@@ -1,10 +1,9 @@
 from .augmentations import (AudioAmplify, CenterCrop, ColorJitter,
-                            EntityBoxClip, EntityBoxCrop, EntityBoxFlip,
-                            EntityBoxPad, EntityBoxRescale, Flip, Fuse,
-                            MelSpectrogram, MultiGroupCrop, MultiScaleCrop,
-                            Normalize, RandomCrop, RandomRescale,
-                            RandomResizedCrop, RandomScale, Resize, TenCrop,
-                            ThreeCrop)
+                            EntityBoxCrop, EntityBoxFlip, EntityBoxPad,
+                            EntityBoxRescale, Flip, Fuse, MelSpectrogram,
+                            MultiGroupCrop, MultiScaleCrop, Normalize,
+                            RandomCrop, RandomRescale, RandomResizedCrop,
+                            RandomScale, Resize, TenCrop, ThreeCrop)
 from .compose import Compose
 from .formating import (Collect, FormatAudioShape, FormatShape, ImageToTensor,
                         ToDataContainer, ToTensor, Transpose)
@@ -30,6 +29,6 @@ __all__ = [
     'SampleAVAFrames', 'AudioAmplify', 'MelSpectrogram', 'AudioDecode',
     'FormatAudioShape', 'LoadAudioFeature', 'AudioFeatureSelector',
     'AudioDecodeInit', 'EntityBoxPad', 'EntityBoxFlip', 'EntityBoxCrop',
-    'EntityBoxRescale', 'EntityBoxClip', 'RandomScale', 'ImageDecode',
-    'BuildPseudoClip', 'RandomRescale'
+    'EntityBoxRescale', 'RandomScale', 'ImageDecode', 'BuildPseudoClip',
+    'RandomRescale'
 ]

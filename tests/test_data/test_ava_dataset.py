@@ -96,11 +96,11 @@ class TestAVADataset(object):
     def test_ava_pipeline(self):
         target_keys = [
             'frame_dir', 'video_id', 'timestamp', 'img_key', 'shot_info',
-            'fps', 'ann', 'filename_tmpl', 'modality', 'start_index',
-            'timestamp_start', 'timestamp_end', 'proposals', 'frame_inds',
-            'clip_len', 'frame_interval'
+            'fps', 'filename_tmpl', 'modality', 'start_index',
+            'timestamp_start', 'timestamp_end', 'proposals', 'scores',
+            'frame_inds', 'clip_len', 'frame_interval', 'labels',
+            'entity_boxes', 'entity_ids'
         ]
-        ann_keys = ['labels', 'entity_boxes', 'entity_ids']
 
         ava_dataset = AVADataset(
             self.ann_file,
@@ -110,15 +110,15 @@ class TestAVADataset(object):
             proposal_file=self.proposal_file)
         result = ava_dataset[0]
         assert check_keys_contain(result.keys(), target_keys)
-        assert check_keys_contain(result['ann'].keys(), ann_keys)
 
         assert result['filename_tmpl'] == 'img_{:05}.jpg'
         assert result['modality'] == 'RGB'
         assert result['start_index'] == 1
-        assert result['timestamp_start'] == 902
-        assert result['timestamp_end'] == 1798
+        assert result['timestamp_start'] == 900
+        assert result['timestamp_end'] == 1800
         assert_array_equal(result['proposals'],
-                           np.array([[0.011, 0.157, 0.655, 0.983, 0.998163]]))
+                           np.array([[0.011, 0.157, 0.655, 0.983]]))
+        assert_array_equal(result['scores'], np.array([0.998163]))
 
         assert result['clip_len'] == 32
         assert result['frame_interval'] == 2

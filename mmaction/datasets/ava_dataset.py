@@ -87,8 +87,8 @@ class AVADataset(BaseDataset):
                  test_mode=False,
                  modality='RGB',
                  num_max_proposals=1000,
-                 timestamp_start=902,
-                 timestamp_end=1798):
+                 timestamp_start=900,
+                 timestamp_end=1800):
         # since it inherits from `BaseDataset`, some arguments
         # should be assigned before performing `load_annotations()`
         self.exclude_file = exclude_file
@@ -138,12 +138,13 @@ class AVADataset(BaseDataset):
                 for selected_record in selected_records
             ])
 
-            padded_labels = np.pad(
-                valid_labels, (0, self._NUM_CLASSES - valid_labels.shape[0]),
-                'constant',
-                constant_values=-1)
-            labels.append(padded_labels)
+            # The format can be directly used by BCELossWithLogits
+            label = np.zeros(self._NUM_CLASSES, dtype=np.float32)
+            label[valid_labels] = 1.
+
+            labels.append(label)
             entity_ids.append(img_record['entity_id'])
+
         bboxes = np.stack(bboxes)
         labels = np.stack(labels)
         entity_ids = np.stack(entity_ids)
@@ -223,7 +224,17 @@ class AVADataset(BaseDataset):
         results['start_index'] = self.start_index
         results['timestamp_start'] = self.timestamp_start
         results['timestamp_end'] = self.timestamp_end
-        results['proposals'] = self.proposals[img_key][:self.num_max_proposals]
+
+        if self.proposals is not None:
+            proposals = self.proposals[img_key][:self.num_max_proposals]
+            results['proposals'] = proposals[:, :4]
+            if proposals.shape[-1] == 5:
+                results['scores'] = proposals[:, 4]
+
+        ann = results.pop('ann')
+        results['entity_boxes'] = ann['entity_boxes']
+        results['labels'] = ann['labels']
+        results['entity_ids'] = ann['entity_ids']
 
         return self.pipeline(results)
 
@@ -237,7 +248,18 @@ class AVADataset(BaseDataset):
         results['start_index'] = self.start_index
         results['timestamp_start'] = self.timestamp_start
         results['timestamp_end'] = self.timestamp_end
-        results['proposals'] = self.proposals[img_key][:self.num_max_proposals]
+
+        if self.proposals is not None:
+            proposals = self.proposals[img_key][:self.num_max_proposals]
+            results['proposals'] = proposals[:, :4]
+            if proposals.shape[-1] == 5:
+                results['scores'] = proposals[:, 4]
+
+        ann = results.pop('ann')
+        results['entity_boxes'] = ann['entity_boxes']
+        results['labels'] = ann['labels']
+        results['entity_ids'] = ann['entity_ids']
+
         return self.pipeline(results)
 
     def evaluate(self, results, metrics, metric_options, logger):
