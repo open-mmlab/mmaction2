@@ -78,7 +78,7 @@ class TSMHead(BaseHead):
 
         Args:
             x (torch.Tensor): The input data.
-            num_segments (int): Useless in TSMHead. 
+            num_segments (int): Useless in TSMHead.
                 Use `self.num_segments` instead.
 
         Returns:
