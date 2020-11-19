@@ -441,6 +441,7 @@ class SampleAVAFrames(SampleFrames):
         results['frame_inds'] = np.array(frame_inds, dtype=np.int)
         results['clip_len'] = self.clip_len
         results['frame_interval'] = self.frame_interval
+        results['num_clips'] = 1
         return results
 
     def __repr__(self):
@@ -1064,7 +1065,8 @@ class RawFrameDecode:
 
         # we resize the entity_boxes and proposals to their real scale
         if 'entity_boxes' in results:
-            scale_factor = np.array(results['img_shape'] * 2)
+            h, w = results['img_shape']
+            scale_factor = np.array([w, h, w, h])
             entity_boxes = results['entity_boxes']
             entity_boxes = (entity_boxes * scale_factor).astype(np.float32)
             results['entity_boxes'] = entity_boxes
