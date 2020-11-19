@@ -82,9 +82,6 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         Args:
             cls_score (torch.Tensor): Class score to be averaged.
             num_segs (int): Number of clips for each input sample.
-                For Recognizer3D, `num_segs` is set automatically.
-                For Recognizer2D, `num_segs` HAS TO BE SET MANUALLY by
-                `test_crops` and `twice_sample` in cfg.test_cfg.
 
         Returns:
             torch.Tensor: Averaged class score.

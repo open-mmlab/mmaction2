@@ -194,7 +194,7 @@ def test_tsm():
     _do_test_2D_models(recognizer, target_layer_name, input_shape)
 
     # test twice sample + 3 crops, 2*3*8=48
-    test_cfg = dict(average_clips='prob', test_crops=3, twice_sample=True)
+    test_cfg = dict(average_clips='prob')
     recognizer = build_recognizer(config.model, test_cfg=test_cfg)
     recognizer.cfg = config
     input_shape = (1, 48, 3, 32, 32)
