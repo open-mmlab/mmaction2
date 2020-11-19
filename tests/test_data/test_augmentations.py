@@ -1173,7 +1173,7 @@ class TestAugumentations:
         target_keys = ['proposals', 'crop_bbox', 'entity_boxes']
         results = dict(
             proposals=np.array([[3.696, 65.312, 220.08, 408.928]]),
-            crop_bbox=[13, 75, 200, 380],
+            crop_bbox=[13, 75, 200, 450],
             entity_boxes=np.array([[10.416, 67.392, 225.12, 413.92]]))
 
         crop_bbox = results['crop_bbox']

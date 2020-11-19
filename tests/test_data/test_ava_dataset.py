@@ -53,13 +53,13 @@ class TestAVADataset(object):
         assert ava_infos[0]['video_id'] == '0f39OWEqJ24'
         assert ava_infos[0]['timestamp'] == 902
         assert ava_infos[0]['img_key'] == '0f39OWEqJ24,0902'
-        assert ava_infos[0]['shot_info'] == (0, 26880)
+        assert ava_infos[0]['shot_info'] == (0, 27000)
         assert ava_infos[0]['fps'] == 30
         assert len(ava_infos[0]['ann']) == 3
-        target_labels = np.array([12, 17, 79] + [
-            -1,
-        ] * 78)
-        target_labels = target_labels[None, ...]
+        target_labels = np.array([12, 17, 79])
+        labels = np.zeros([81])
+        labels[target_labels] = 1.
+        target_labels = labels[None, ...]
         assert_array_equal(ava_infos[0]['ann']['labels'], target_labels)
         assert_array_equal(ava_infos[0]['ann']['entity_boxes'],
                            np.array([[0.031, 0.162, 0.67, 0.995]]))
