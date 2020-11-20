@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from mmaction.core.bbox2d import bbox_target
+from mmaction.core.bbox import bbox_target
 from ...registry import HEADS
 
 
