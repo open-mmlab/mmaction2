@@ -64,10 +64,9 @@ class Recognizer2D(BaseRecognizer):
         cls_score = self.cls_head(x, num_segs)
 
         assert cls_score.size()[0] % batches == 0
-        if cls_score.size()[0] != batches:
-            # calculate num_crops automatically
-            cls_score = self.average_clip(cls_score,
-                                          cls_score.size()[0] // batches)
+        # calculate num_crops automatically
+        cls_score = self.average_clip(cls_score,
+                                      cls_score.size()[0] // batches)
 
         return cls_score
 
