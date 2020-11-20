@@ -107,7 +107,7 @@ The supported datasets are listed in [supported_datasets.md](docs/supported_data
 Please see [getting_started.md](docs/getting_started.md) for the basic usage of MMAction2.
 There are also tutorials for [finetuning models](docs/tutorials/finetune.md), [adding new dataset](docs/tutorials/new_dataset.md), [designing data pipeline](docs/tutorials/data_pipeline.md), [exporting model to onnx](docs/tutorials/export_model.md), [customizing runtime settings](docs/tutorials/customize_runtime.md) and [adding new modules](docs/tutorials/new_modules.md).
 
-A Colab tutorial is also provided. You may preview the notebook [here](demo/mmaction2_tutorial.ipynb) or directly [run](https://colab.research.google.com/github/open-mmlab/mmaction2/blob/master/demo/mmaction2_tutorial.ipynb) on Colab.
+A Colab tutorial is also provided. You may preview the notebook [here](demo/mmaction2_tutorial.ipynb) or directly [run](https://colab.research.google.com/github/dreamerlin/mmaction2/blob/ipython/demo/mmaction2_tutorial.ipynb) on Colab.
 
 ## Contributing
 
