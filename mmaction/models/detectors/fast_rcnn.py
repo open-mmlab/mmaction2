@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 
-from mmaction.core.bbox2d import (bbox2result, bbox2roi, build_assigner,
-                                  build_sampler)
+from mmaction.core.bbox import (bbox2result, bbox2roi, build_assigner,
+                                build_sampler)
 from .. import builder
 from ..registry import DETECTORS
 from .base import BaseDetector
