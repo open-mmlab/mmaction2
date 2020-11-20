@@ -10,7 +10,7 @@ class AssignResult(object):
             as 0 indicates that no gt bbox is assigned to the proposal bbox.
         max_overlaps (Tensor[float]): The maximum overlap of a proposal bbox
             to each gt_bboxes.
-        labels (Tensor[long]): The assigned labels to each proposal bbox.
+        labels (Tensor[float]): The assigned labels to each proposal bbox.
     """
 
     def __init__(self, num_gts, gt_inds, max_overlaps, labels=None):

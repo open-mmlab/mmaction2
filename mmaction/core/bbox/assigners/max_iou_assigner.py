@@ -127,11 +127,9 @@ class MaxIoUAssigner(BaseAssigner):
 
         if gt_labels is not None:
             # consider multi-class case (AVA)
-            if len(gt_labels[0]) == 1:
-                assigned_labels = assigned_gt_inds.new_zeros((num_bboxes, ))
-            else:
-                assigned_labels = assigned_gt_inds.new_zeros(
-                    (num_bboxes, len(gt_labels[0])))
+            assert len(gt_labels[0]) > 1
+            assigned_labels = assigned_gt_inds.new_zeros(
+                num_bboxes, len(gt_labels[0]))
 
             # If not assigned, labels will be all 0
             pos_inds = torch.nonzero(assigned_gt_inds > 0).squeeze()
