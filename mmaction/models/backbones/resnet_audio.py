@@ -145,14 +145,17 @@ class ResNetAudio(nn.Module):
                  in_channels=1,
                  num_stages=4,
                  base_channels=32,
-                 strides=(1, 2, 2, 2),
+                 strides=(2, 2, 2, 2),
                  dilations=(1, 1, 1, 1),
                  conv1_kernel=9,
-                 conv1_stride=2,
+                 conv1_stride=1,
                  frozen_stages=-1,
                  factorize=(1, 1, 0, 0),
                  norm_eval=True,
                  with_cp=False,
+                 conv_cfg=dict(type='Conv'),
+                 norm_cfg=dict(type='BN'),
+                 act_cfg=dict(type='ReLU'),
                  zero_init_residual=True):
         super().__init__()
         if depth not in self.arch_settings:
@@ -170,6 +173,9 @@ class ResNetAudio(nn.Module):
         self.stage_factorization = _ntuple(num_stages)(factorize)
         self.norm_eval = norm_eval
         self.with_cp = with_cp
+        self.conv_cfg = conv_cfg
+        self.norm_cfg = norm_cfg
+        self.act_cfg = act_cfg
         self.zero_init_residual = zero_init_residual
 
         self.block, stage_blocks = self.arch_settings[depth]
@@ -279,8 +285,6 @@ class ResNetAudio(nn.Module):
             conv_cfg=dict(type='ConvAudio'),
             norm_cfg=dict(type='BN'))
 
-        self.pool2 = nn.MaxPool2d(kernel_size=(2, 2), stride=(2, 2))
-
     def _freeze_stages(self):
         if self.frozen_stages >= 0:
             self.conv1.bn.eval()
@@ -318,11 +322,9 @@ class ResNetAudio(nn.Module):
 
     def forward(self, x):
         x = self.conv1(x)
-        for i, layer_name in enumerate(self.res_layers):
+        for layer_name in self.res_layers:
             res_layer = getattr(self, layer_name)
             x = res_layer(x)
-            if i == 0:
-                x = self.pool2(x)
         return x
 
     def train(self, mode=True):

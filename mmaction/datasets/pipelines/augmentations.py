@@ -1526,37 +1526,6 @@ class AudioAmplify:
 
 
 @PIPELINES.register_module()
-class SpecAug:
-    """SpecAug."""
-
-    def __call__(self, results):
-        """Perfrom the audio amplification.
-
-        Args:
-            results (dict): The resulting dict to be modified and passed
-                to the next transform in pipeline.
-        """
-        audios = list()
-        try:
-            from specAugment import spec_augment_pytorch
-        except ImportError:
-            print('Install specAugment first.')
-        for clip_idx in range(results['num_clips']):
-            ori_audio = results['audios'][clip_idx]
-            warped_masked_spectrogram = spec_augment_pytorch.spec_augment(
-                mel_spectrogram=ori_audio)
-            audios.append(warped_masked_spectrogram)
-
-        results['audios'] = np.array(audios)
-
-        return results
-
-    def __repr__(self):
-        repr_str = f'{self.__class__.__name__}'
-        return repr_str
-
-
-@PIPELINES.register_module()
 class MelSpectrogram:
     """MelSpectrogram. Transfer an audio wave into a melspectogram figure.
 

@@ -27,7 +27,6 @@ train_pipeline = [
     dict(type='LoadAudioFeature'),
     dict(type='SampleFrames', clip_len=64, frame_interval=1, num_clips=1),
     dict(type='AudioFeatureSelector'),
-    dict(type='SpecAug'),
     dict(type='FormatAudioShape', input_format='NCTF'),
     dict(type='Collect', keys=['audios', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['audios'])
@@ -59,8 +58,8 @@ test_pipeline = [
     dict(type='ToTensor', keys=['audios'])
 ]
 data = dict(
-    videos_per_gpu=1,
-    workers_per_gpu=8,
+    videos_per_gpu=320,
+    workers_per_gpu=4,
     train=dict(
         type=dataset_type,
         ann_file=ann_file_train,
