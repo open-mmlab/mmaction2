@@ -915,7 +915,9 @@ class Flip:
     The shape of the imgs is preserved, but the elements are reordered.
     Required keys are "imgs", "img_shape", "modality", added or modified
     keys are "imgs", "lazy" and "flip_direction". Required keys in "lazy" is
-    None, added or modified key are "flip" and "flip_direction".
+    None, added or modified key are "flip" and "flip_direction". The Flip
+    augmentation should be placed after any cropping / reshaping augmentations,
+    to make sure crop_quadruple is calculated properly.
 
     Args:
         flip_ratio (float): Probability of implementing flip. Default: 0.5.
