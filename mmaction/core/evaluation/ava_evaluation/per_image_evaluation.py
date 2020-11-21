@@ -24,7 +24,7 @@ from __future__ import (absolute_import, division, print_function,
 
 import numpy as np
 
-from . import np_box_list, np_box_list_ops
+from . import np_box_list, np_box_ops
 
 
 class PerImageEvaluation(object):
@@ -243,7 +243,9 @@ class PerImageEvaluation(object):
         detected_boxlist.add_field('scores', detected_scores)
         gt_non_group_of_boxlist = np_box_list.BoxList(
             groundtruth_boxes[~groundtruth_is_group_of_list])
-        iou = np_box_list_ops.iou(detected_boxlist, gt_non_group_of_boxlist)
+
+        iou = np_box_ops.iou(detected_boxlist.get(),
+                             gt_non_group_of_boxlist.get())
         scores = detected_boxlist.get_field('scores')
         num_boxes = detected_boxlist.num_boxes()
         return iou, None, scores, num_boxes
