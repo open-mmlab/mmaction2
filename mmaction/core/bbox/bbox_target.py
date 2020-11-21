@@ -10,10 +10,10 @@ def bbox_target(pos_bboxes_list,
     for pos_bboxes, neg_bboxes, neg_gt_bboxes in zip(pos_bboxes_list,
                                                      neg_bboxes_list,
                                                      pos_gt_labels_list):
-        label, label_weight, class_weight = bbox_target_single(
+        label, label_weight = bbox_target_single(
             pos_bboxes, neg_bboxes, neg_gt_bboxes, cfg=cfg)
         labels.append(label)
-        label_weights.append(label_weights)
+        label_weights.append(label_weight)
 
     if concat:
         labels = torch.cat(labels, 0)

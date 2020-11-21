@@ -67,7 +67,6 @@ class FastRCNN(BaseDetector):
         # of AVA
         assert imgs.shape[1] == 1
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
-        img_meta = img_meta.data[0]
 
         # proposals & gt_bboxes are padded, while scores & entity_ids are not.
         proposal_scores = [x['scores'] for x in img_meta]
@@ -85,11 +84,12 @@ class FastRCNN(BaseDetector):
             proposal = proposal[:num_proposal]
 
             score_select_inds = score >= min(
-                self.train_cfg.person_det_score_thr, max(proposal[:, 4]))
+                self.train_cfg.person_det_score_thr, max(score))
             # I think 25-pixel is a reasonable threshold
             area_select_inds = (proposal[:, 2] - proposal[:, 0]) * (
                 proposal[:, 3] - proposal[:, 1]) > 25
-            score_select_inds = score_select_inds.to(area_select_inds.device)
+            score_select_inds = torch.tensor(score_select_inds).to(
+                area_select_inds.device)
             select_inds = score_select_inds & area_select_inds
             proposal_list.append(proposal[select_inds])
 
@@ -117,7 +117,7 @@ class FastRCNN(BaseDetector):
             sampling_results = []
             img_inds = []
             for i in range(num_imgs):
-                if not (len(proposal_list) and len(gt_bbox_list)):
+                if not (len(proposal_list[i]) and len(gt_bbox_list[i])):
                     img_inds.append(False)
                     continue
                 assign_result = bbox_assigner.assign(proposal_list[i],
@@ -167,7 +167,6 @@ class FastRCNN(BaseDetector):
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
 
         x = self.extract_feat(imgs)
-        img_meta = img_meta.data[0]
         assert len(img_meta) == 1
 
         proposal_scores = [x['scores'] for x in img_meta]
@@ -178,10 +177,11 @@ class FastRCNN(BaseDetector):
             proposal = proposal[:num_proposal]
 
             score_select_inds = score >= min(
-                self.test_cfg.person_det_score_thr, max(proposal[:, 4]))
+                self.test_cfg.person_det_score_thr, max(score))
             area_select_inds = (proposal[:, 2] - proposal[:, 0]) * (
                 proposal[:, 3] - proposal[:, 1]) > 25
-            score_select_inds = score_select_inds.to(area_select_inds.device)
+            score_select_inds = torch.tensor(score_select_inds).to(
+                area_select_inds.device)
             select_inds = score_select_inds & area_select_inds
             proposal_list.append(proposal[select_inds])
 

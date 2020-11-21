@@ -77,7 +77,8 @@ class BBoxHead(nn.Module):
 
         """
         correct = pred_vec & target_vec
-        recall = correct.sum(1) / target_vec.sum(1)
+        # Seems torch 1.5 has no auto type conversion
+        recall = correct.sum(1) / target_vec.sum(1).float()
         prec = correct.sum(1) / (pred_vec.sum(1) + 1e-6)
         return recall.mean(), prec.mean()
 
