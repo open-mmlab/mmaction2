@@ -35,7 +35,7 @@ from abc import ABCMeta, abstractmethod
 
 import numpy as np
 
-from . import label_map_util, metrics, per_image_evaluation, standard_fields
+from . import metrics, per_image_evaluation, standard_fields
 
 
 class DetectionEvaluator(object):
@@ -267,6 +267,25 @@ class ObjectDetectionEvaluator(DetectionEvaluator):
             detected_masks=detection_masks,
         )
 
+    def create_category_index(self, categories):
+        """Creates dictionary of COCO compatible categories keyed by category
+        id.
+
+        Args:
+          categories: a list of dicts, each of which has the following keys:
+            'id': (required) an integer id uniquely identifying this category.
+            'name': (required) string representing category name
+              e.g., 'cat', 'dog', 'pizza'.
+
+        Returns:
+          category_index: a dict containing the same entries as categories, but
+            keyed by the 'id' field of each category.
+        """
+        category_index = {}
+        for cat in categories:
+            category_index[cat['id']] = cat
+        return category_index
+
     def evaluate(self):
         """Compute evaluation result.
 
@@ -295,7 +314,7 @@ class ObjectDetectionEvaluator(DetectionEvaluator):
             pascal_metrics[self._metric_prefix +
                            'Precision/meanCorLoc@{}IOU'.format(
                                self._matching_iou_threshold)] = mean_corloc
-        category_index = label_map_util.create_category_index(self._categories)
+        category_index = self.create_category_index(self._categories)
         for idx in range(per_class_ap.size):
             if idx + self._label_id_offset in category_index:
                 display_name = (
@@ -341,153 +360,6 @@ class PascalDetectionEvaluator(ObjectDetectionEvaluator):
             metric_prefix='PascalBoxes',
             use_weighted_mean_ap=False,
         )
-
-
-class WeightedPascalDetectionEvaluator(ObjectDetectionEvaluator):
-    """A class to evaluate detections using weighted PASCAL metrics.
-
-    Weighted PASCAL metrics computes the mean average precision as the average
-    precision given the scores and tp_fp_labels of all classes. In comparison,
-    PASCAL metrics computes the mean average precision as the mean of the
-    per-class average precisions.
-
-    This definition is very similar to the mean of the per-class average
-    precisions weighted by class frequency. However, they are typically not the
-    same as the average precision is not a linear function of the scores and
-    tp_fp_labels.
-    """
-
-    def __init__(self, categories, matching_iou_threshold=0.5):
-        super(WeightedPascalDetectionEvaluator, self).__init__(
-            categories,
-            matching_iou_threshold=matching_iou_threshold,
-            evaluate_corlocs=False,
-            metric_prefix='WeightedPascalBoxes',
-            use_weighted_mean_ap=True,
-        )
-
-
-class PascalInstanceSegmentationEvaluator(ObjectDetectionEvaluator):
-    """A class to evaluate instance masks using PASCAL metrics."""
-
-    def __init__(self, categories, matching_iou_threshold=0.5):
-        super(PascalInstanceSegmentationEvaluator, self).__init__(
-            categories,
-            matching_iou_threshold=matching_iou_threshold,
-            evaluate_corlocs=False,
-            metric_prefix='PascalMasks',
-            use_weighted_mean_ap=False,
-            evaluate_masks=True,
-        )
-
-
-class WeightedPascalInstanceSegmentationEvaluator(ObjectDetectionEvaluator):
-    """A class to evaluate instance masks using weighted PASCAL metrics.
-
-    Weighted PASCAL metrics computes the mean average precision as the average
-    precision given the scores and tp_fp_labels of all classes. In comparison,
-    PASCAL metrics computes the mean average precision as the mean of the
-    per-class average precisions.
-
-    This definition is very similar to the mean of the per-class average
-    precisions weighted by class frequency. However, they are typically not the
-    same as the average precision is not a linear function of the scores and
-    tp_fp_labels.
-    """
-
-    def __init__(self, categories, matching_iou_threshold=0.5):
-        super(WeightedPascalInstanceSegmentationEvaluator, self).__init__(
-            categories,
-            matching_iou_threshold=matching_iou_threshold,
-            evaluate_corlocs=False,
-            metric_prefix='WeightedPascalMasks',
-            use_weighted_mean_ap=True,
-            evaluate_masks=True,
-        )
-
-
-class OpenImagesDetectionEvaluator(ObjectDetectionEvaluator):
-    """A class to evaluate detections using Open Images V2 metrics.
-
-    Open Images V2 introduce group_of type of bounding boxes and this metric
-    handles those boxes appropriately.
-    """
-
-    def __init__(self,
-                 categories,
-                 matching_iou_threshold=0.5,
-                 evaluate_corlocs=False):
-        """Constructor.
-
-        Args:
-          categories: A list of dicts, each of which has the following keys -
-            'id': (required) an integer id uniquely identifying this category.
-            'name': (required) string representing category name e.g., 'cat',
-            'dog'.
-          matching_iou_threshold: IOU threshold to use for matching groundtruth
-            boxes to detection boxes.
-          evaluate_corlocs: if True, additionally evaluates and returns CorLoc.
-        """
-        super(OpenImagesDetectionEvaluator, self).__init__(
-            categories,
-            matching_iou_threshold,
-            evaluate_corlocs,
-            metric_prefix='OpenImagesV2',
-        )
-
-    def add_single_ground_truth_image_info(self, image_id, groundtruth_dict):
-        """Adds groundtruth for a single image to be used for evaluation.
-
-        Args:
-          image_id: A unique string/integer identifier for the image.
-          groundtruth_dict: A dictionary containing -
-            standard_fields.InputDataFields.groundtruth_boxes: float32 numpy
-              array of shape [num_boxes, 4] containing `num_boxes` groundtruth
-              boxes of the format [ymin, xmin, ymax, xmax] in absolute image
-              coordinates.
-            standard_fields.InputDataFields.groundtruth_classes: integer numpy
-              array of shape [num_boxes] containing 1-indexed groundtruth
-              classes for the boxes.
-            standard_fields.InputDataFields.groundtruth_group_of: Optional
-              length M numpy boolean array denoting whether a groundtruth box
-              contains a group of instances.
-
-        Raises:
-          ValueError: On adding groundtruth for an image more than once.
-        """
-        if image_id in self._image_ids:
-            raise ValueError(
-                'Image with id {} already added.'.format(image_id))
-
-        groundtruth_classes = (
-            groundtruth_dict[
-                standard_fields.InputDataFields.groundtruth_classes] -
-            self._label_id_offset)
-        # If the key is not present in the groundtruth_dict or the array is
-        # empty (unless there are no annotations for the groundtruth on this
-        # image) use values from the dictionary or insert None otherwise.
-        if (standard_fields.InputDataFields.groundtruth_group_of
-                in groundtruth_dict.keys()) and (groundtruth_dict[
-                    standard_fields.InputDataFields.groundtruth_group_of].size
-                                                 or
-                                                 not groundtruth_classes.size):
-            groundtruth_group_of = groundtruth_dict[
-                standard_fields.InputDataFields.groundtruth_group_of]
-        else:
-            groundtruth_group_of = None
-            if not len(self._image_ids) % 1000:
-                logging.warn(('image %s does not have groundtruth group_of '
-                              'flag specified'), image_id)
-
-        self._evaluation.add_single_ground_truth_image_info(
-            image_id,
-            groundtruth_dict[
-                standard_fields.InputDataFields.groundtruth_boxes],
-            groundtruth_classes,
-            groundtruth_is_difficult_list=None,
-            groundtruth_is_group_of_list=groundtruth_group_of,
-        )
-        self._image_ids.update([image_id])
 
 
 ObjectDetectionEvalMetrics = collections.namedtuple(
