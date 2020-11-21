@@ -134,7 +134,7 @@ class FastRCNN(BaseDetector):
                 print('Warning: There is empty proposal or gt.')
             img_inds = torch.tensor(img_inds)
             # Extract feature with inds
-            x[0] = x[0][img_inds]
+            x = (x[0][img_inds], )
 
         # bbox head forward and loss
         if self.bbox_head:
