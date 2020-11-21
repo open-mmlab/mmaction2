@@ -228,10 +228,14 @@ class AVADataset(BaseDataset):
         results['timestamp_end'] = self.timestamp_end
 
         if self.proposals is not None:
-            proposals = self.proposals[img_key][:self.num_max_proposals]
-            results['proposals'] = proposals[:, :4]
-            if proposals.shape[-1] == 5:
-                results['scores'] = proposals[:, 4]
+            if img_key not in self.proposals:
+                results['proposals'] = np.array([[0, 0, 1, 1]])
+                results['scores'] = np.array([1])
+            else:
+                proposals = self.proposals[img_key][:self.num_max_proposals]
+                results['proposals'] = proposals[:, :4]
+                if proposals.shape[-1] == 5:
+                    results['scores'] = proposals[:, 4]
 
         ann = results.pop('ann')
         results['entity_boxes'] = ann['entity_boxes']
@@ -252,10 +256,14 @@ class AVADataset(BaseDataset):
         results['timestamp_end'] = self.timestamp_end
 
         if self.proposals is not None:
-            proposals = self.proposals[img_key][:self.num_max_proposals]
-            results['proposals'] = proposals[:, :4]
-            if proposals.shape[-1] == 5:
-                results['scores'] = proposals[:, 4]
+            if img_key not in self.proposals:
+                results['proposals'] = np.array([[0, 0, 1, 1]])
+                results['scores'] = np.array([1])
+            else:
+                proposals = self.proposals[img_key][:self.num_max_proposals]
+                results['proposals'] = proposals[:, :4]
+                if proposals.shape[-1] == 5:
+                    results['scores'] = proposals[:, 4]
 
         ann = results.pop('ann')
         results['entity_boxes'] = ann['entity_boxes']
