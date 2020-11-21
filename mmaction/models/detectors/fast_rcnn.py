@@ -1,3 +1,4 @@
+import numpy as np
 import torch
 import torch.nn as nn
 
@@ -130,8 +131,6 @@ class FastRCNN(BaseDetector):
                 sampling_results.append(sampling_result)
                 img_inds.append(True)
 
-            if sum(img_inds) != num_imgs:
-                print('Warning: There is empty proposal or gt.')
             img_inds = torch.tensor(img_inds)
             # Extract feature with inds
             x = (x[0][img_inds], )
@@ -207,11 +206,18 @@ class FastRCNN(BaseDetector):
 
         cls_score = self.bbox_head(roi_feats)
 
+        # img_shape is required, crop_quadruple and flip are optional
         img_shape = img_meta[0]['img_shape']
-        crop_quadruple = img_meta[0]['crop_quadruple']
+
+        crop_quadruple = np.array([0, 0, 1, 1])
+        flip = False
+
+        if 'crop_quadruple' in img_meta[0]:
+            crop_quadruple = img_meta[0]['crop_quadruple']
 
         # If flip used, we should first flip the proposal box
-        flip = img_meta[0]['flip']
+        if 'flip' in img_meta[0]:
+            flip = img_meta[0]['flip']
 
         # The returned det_bboxes are normalized to [0, 1]
         det_bboxes, det_labels = self.bbox_head.get_det_bboxes(
