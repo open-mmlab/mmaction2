@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from mmcv.ops import RoIAlign, RoIPool
 
-from ...registry import ROI_EXTRACTORS
+from ..registry import ROI_EXTRACTORS
 
 
 @ROI_EXTRACTORS.register_module
