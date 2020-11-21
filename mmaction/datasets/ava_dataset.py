@@ -1,10 +1,12 @@
 import copy
 import os.path as osp
 from collections import defaultdict
+from datetime import datetime
 
 import mmcv
 import numpy as np
 
+from mmaction.core.evaluation.ava_utils import ava_eval, results2csv
 from ..utils import get_root_logger
 from .base import BaseDataset
 from .registry import DATASETS
@@ -262,5 +264,24 @@ class AVADataset(BaseDataset):
 
         return self.pipeline(results)
 
-    def evaluate(self, results, metrics, metric_options, logger):
-        raise NotImplementedError
+    def dump_results(self, results, out):
+        assert out.endswith('csv')
+        results2csv(self, results, out)
+
+    def evaluate(self,
+                 results,
+                 metrics=['proposal', 'bbox'],
+                 metric_options=None,
+                 logger=None):
+        # need to create a temp result file
+        time_now = datetime.now().strftime('%Y%m%d_%H%M%S')
+        temp_file = f'AVA_{time_now}_result.csv'
+        results2csv(self, results, temp_file)
+
+        ret = {}
+        for metric in metrics:
+            ret.update(
+                ava_eval(temp_file, metric, self.label_file, self.ann_file,
+                         self.exclude_file))
+        print(ret)
+        return ret
