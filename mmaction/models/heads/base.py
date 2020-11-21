@@ -94,7 +94,7 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
 
         loss_cls = self.loss_cls(cls_score, labels, **kwargs)
         # loss_cls may be dictionary or single tensor
-        if type(loss_cls) is dict:
+        if isinstance(loss_cls, dict):
             losses.update(loss_cls)
         else:
             losses['loss_cls'] = loss_cls

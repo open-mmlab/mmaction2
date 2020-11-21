@@ -350,7 +350,8 @@ class SSNDataset(BaseDataset):
             regression_scores = results[idx]['bbox_preds']
             if regression_scores is None:
                 regression_scores = np.zeros(
-                    len(relative_proposals), num_classes, 2, dtype=np.float32)
+                    (len(relative_proposals), num_classes, 2),
+                    dtype=np.float32)
             regression_scores = regression_scores.reshape((-1, num_classes, 2))
 
             if top_k <= 0:
@@ -439,7 +440,7 @@ class SSNDataset(BaseDataset):
 
         if self.use_regression:
             self.logger.info('Performing location regression')
-            for class_idx in range(len(detections)):
+            for class_idx, _ in enumerate(detections):
                 detections[class_idx] = {
                     k: perform_regression(v)
                     for k, v in detections[class_idx].items()

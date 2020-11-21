@@ -46,8 +46,8 @@ class HVULoss(BaseWeightedLoss):
         self.category_nums = category_nums
         self.category_loss_weights = category_loss_weights
         assert len(self.category_nums) == len(self.category_loss_weights)
-        for loss_weight in self.category_loss_weights:
-            assert loss_weight >= 0
+        for category_loss_weight in self.category_loss_weights:
+            assert category_loss_weight >= 0
         self.loss_type = loss_type
         self.with_mask = with_mask
         self.reduction = reduction
@@ -89,7 +89,7 @@ class HVULoss(BaseWeightedLoss):
                 loss_cls = torch.sum(loss_cls, dim=-1)
             return dict(loss_cls=torch.mean(loss_cls))
 
-        elif self.loss_type == 'individual':
+        if self.loss_type == 'individual':
             losses = {}
             loss_weights = {}
             for name, num, start_idx in zip(self.categories,

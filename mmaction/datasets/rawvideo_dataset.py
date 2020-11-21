@@ -114,7 +114,7 @@ class RawVideoDataset(BaseDataset):
         """Sample a clip from the raw video given the sampling strategy."""
         assert self.sampling_strategy in ['positive', 'random']
         if self.sampling_strategy == 'positive':
-            assert len(results['positive_clip_inds'])
+            assert results['positive_clip_inds']
             ind = random.choice(results['positive_clip_inds'])
         else:
             ind = random.randint(0, results['num_clips'] - 1)

@@ -343,8 +343,8 @@ def build_pathway(cfg, *args, **kwargs):
     pathway_type = cfg_.pop('type')
     if pathway_type not in pathway_cfg:
         raise KeyError(f'Unrecognized pathway type {pathway_type}')
-    else:
-        pathway_cls = pathway_cfg[pathway_type]
+
+    pathway_cls = pathway_cfg[pathway_type]
     pathway = pathway_cls(*args, **kwargs, **cfg_)
 
     return pathway

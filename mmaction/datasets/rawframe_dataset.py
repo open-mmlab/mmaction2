@@ -138,7 +138,7 @@ class RawframeDataset(BaseDataset):
                     idx += 1
                 # idx for label[s]
                 label = [int(x) for x in line_split[idx:]]
-                assert len(label), f'missing label in line: {line}'
+                assert label, f'missing label in line: {line}'
                 if self.multi_class:
                     assert self.num_classes is not None
                     video_info['label'] = label

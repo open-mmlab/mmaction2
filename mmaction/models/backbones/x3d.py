@@ -324,7 +324,6 @@ class X3D(nn.Module):
     @staticmethod
     def _round_repeats(repeats, multiplier):
         """Round number of layers based on depth multiplier."""
-        multiplier = multiplier
         if not multiplier:
             return repeats
         return int(math.ceil(multiplier * repeats))

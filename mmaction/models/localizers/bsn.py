@@ -302,7 +302,7 @@ class PEM(BaseLocalizer):
         Returns:
             torch.Tensor: The output of the module.
         """
-        x = torch.cat([data for data in x])
+        x = torch.cat(list(x))
         x = F.relu(self.fc1_ratio * self.fc1(x))
         x = torch.sigmoid(self.fc2_ratio * self.fc2(x))
         return x
@@ -310,8 +310,7 @@ class PEM(BaseLocalizer):
     def forward_train(self, bsp_feature, reference_temporal_iou):
         """Define the computation performed at every call when training."""
         pem_output = self._forward(bsp_feature)
-        reference_temporal_iou = torch.cat(
-            [data for data in reference_temporal_iou])
+        reference_temporal_iou = torch.cat(list(reference_temporal_iou))
         device = pem_output.device
         reference_temporal_iou = reference_temporal_iou.to(device)
 

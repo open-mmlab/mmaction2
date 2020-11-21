@@ -19,10 +19,9 @@ def parse_stage_config(stage_cfg):
     """
     if isinstance(stage_cfg, int):
         return (stage_cfg, ), stage_cfg
-    elif isinstance(stage_cfg, tuple):
+    if isinstance(stage_cfg, tuple):
         return stage_cfg, sum(stage_cfg)
-    else:
-        raise ValueError(f'Incorrect STPP config {stage_cfg}')
+    raise ValueError(f'Incorrect STPP config {stage_cfg}')
 
 
 class STPPTrain(nn.Module):
