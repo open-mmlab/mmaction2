@@ -878,7 +878,8 @@ class ResNet3dLayer(nn.Module):
                  **kwargs):
 
         super().__init__()
-        assert depth in ResNet3d.arch_settings
+        self.arch_settings = ResNet3d.arch_settings
+        assert depth in self.arch_settings
 
         self.make_res_layer = ResNet3d.make_res_layer
         self._inflate_conv_params = ResNet3d._inflate_conv_params
