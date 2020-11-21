@@ -197,12 +197,8 @@ def ava_eval(result_file,
                 proposals.append(np.array([0, 0, 1, 1, 1]))
 
         # Proposals used here are with scores
-        recalls = eval_recalls(
-            gts,
-            proposals,
-            np.array(max_dets),
-            np.arange(0.5, 0.96, 0.05),
-            print_summary=False)
+        recalls = eval_recalls(gts, proposals, np.array(max_dets),
+                               np.arange(0.5, 0.96, 0.05))
         ar = recalls.mean(axis=1)
         ret = {}
         for i, num in enumerate(max_dets):
