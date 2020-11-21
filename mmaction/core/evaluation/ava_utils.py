@@ -261,5 +261,5 @@ def ava_eval(result_file,
             print('{}=\t{}'.format(display_name, metrics[display_name]))
         return {
             display_name: metrics[display_name]
-            for display_name in metrics
+            for display_name in metrics if 'ByCategory' not in display_name
         }

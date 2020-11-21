@@ -193,7 +193,8 @@ class FastRCNN(BaseDetector):
             self.bbox_head.num_classes,
             thr=self.test_cfg.rcnn.action_thr)
 
-        return bbox_results
+        # Since only 1 sample here
+        return [bbox_results]
 
     def simple_test_bboxes(self, x, img_meta, proposals, rcnn_test_cfg):
         """Test only det bboxes without augmentation."""
@@ -201,7 +202,7 @@ class FastRCNN(BaseDetector):
         rois = bbox2roi(proposals)
         roi_feats = self.bbox_roi_extractor(x[0], rois)
 
-        if self.with_shared_head:
+        if self.shared_head:
             roi_feats = self.shared_head(roi_feats)
 
         cls_score = self.bbox_head(roi_feats)
