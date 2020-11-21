@@ -1,4 +1,5 @@
 import copy
+import os
 import os.path as osp
 from collections import defaultdict
 from datetime import datetime
@@ -292,4 +293,6 @@ class AVADataset(BaseDataset):
                 ava_eval(temp_file, metric, self.label_file, self.ann_file,
                          self.exclude_file))
         print(ret)
+        os.remove(temp_file)
+
         return ret

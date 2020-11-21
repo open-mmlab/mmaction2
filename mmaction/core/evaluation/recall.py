@@ -1,5 +1,4 @@
 import numpy as np
-from terminaltables import AsciiTable
 
 
 # Have to add this piece of code, since during evaluation, bboxes are of type
@@ -105,11 +104,7 @@ def set_recall_param(proposal_nums, iou_thrs):
     return _proposal_nums, _iou_thrs
 
 
-def eval_recalls(gts,
-                 proposals,
-                 proposal_nums=None,
-                 iou_thrs=None,
-                 print_summary=True):
+def eval_recalls(gts, proposals, proposal_nums=None, iou_thrs=None):
     """Calculate recalls.
 
     Args:
@@ -143,39 +138,4 @@ def eval_recalls(gts,
         all_ious.append(ious)
     all_ious = np.array(all_ious)
     recalls = _recalls(all_ious, proposal_nums, iou_thrs)
-    if print_summary:
-        print_recall_summary(recalls, proposal_nums, iou_thrs)
     return recalls
-
-
-def print_recall_summary(recalls,
-                         proposal_nums,
-                         iou_thrs,
-                         row_idxs=None,
-                         col_idxs=None):
-    """Print recalls in a table.
-
-    Args:
-        recalls(ndarray): calculated from `bbox_recalls`
-        proposal_nums(ndarray or list): top N proposals
-        iou_thrs(ndarray or list): iou thresholds
-        row_idxs(ndarray): which rows(proposal nums) to print
-        col_idxs(ndarray): which cols(iou thresholds) to print
-    """
-    proposal_nums = np.array(proposal_nums, dtype=np.int32)
-    iou_thrs = np.array(iou_thrs)
-    if row_idxs is None:
-        row_idxs = np.arange(proposal_nums.size)
-    if col_idxs is None:
-        col_idxs = np.arange(iou_thrs.size)
-    row_header = [''] + iou_thrs[col_idxs].tolist()
-    table_data = [row_header]
-    for i, num in enumerate(proposal_nums[row_idxs]):
-        row = [
-            '{:.3f}'.format(val)
-            for val in recalls[row_idxs[i], col_idxs].tolist()
-        ]
-        row.insert(0, num)
-        table_data.append(row)
-    table = AsciiTable(table_data)
-    print(table.table)
