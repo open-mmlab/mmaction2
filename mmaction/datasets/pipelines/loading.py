@@ -442,6 +442,7 @@ class SampleAVAFrames(SampleFrames):
         results['clip_len'] = self.clip_len
         results['frame_interval'] = self.frame_interval
         results['num_clips'] = 1
+        results['crop_quadruple'] = np.array([0, 0, 1, 1], dtype=np.float32)
         return results
 
     def __repr__(self):
