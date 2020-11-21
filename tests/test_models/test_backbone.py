@@ -8,7 +8,7 @@ from mmcv.utils import _BatchNorm
 
 from mmaction.models import (C3D, X3D, ResNet, ResNet2Plus1d, ResNet3d,
                              ResNet3dCSN, ResNet3dSlowFast, ResNet3dSlowOnly,
-                             ResNetAudio, ResNetTIN, ResNetTSM)
+                             ResNetAudio, ResNetTIN, ResNetTSM, ResNet3dLayer)
 from mmaction.models.backbones.resnet_tsm import NL3DWrapper
 
 
@@ -530,6 +530,40 @@ def test_resnet3d_backbone():
 
     feat = resnet3d_nonlocal(imgs)
     assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
+
+
+def test_resnet3d_layer():
+    with pytest.raises(AssertionError):
+        ResNet3dLayer(22, None)
+
+    with pytest.raises(AssertionError):
+        ResNet3dLayer(50, None, stage=5)
+
+    res_layer = ResNet3dLayer(50, None, stage=4, norm_eval=True)
+    res_layer.init_weights()
+    res_layer.train()
+    imgs = _demo_inputs(1, 1024, 1, 4, 4)
+    if torch.__version__ == 'parrots':
+        if torch.cuda.is_available():
+            res_layer = res_layer.cuda()
+            imgs_gpu = imgs.cuda()
+            feat = res_layer(imgs_gpu)
+            assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
+    else:
+        feat = res_layer(imgs)
+        assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
+
+    res_layer = ResNet3dLayer(50, 'torchvision://resnet50', stage=4)
+    imgs = _demo_inputs(1, 1024, 1, 4, 4)
+    if torch.__version__ == 'parrots':
+        if torch.cuda.is_available():
+            res_layer = res_layer.cuda()
+            imgs_gpu = imgs.cuda()
+            feat = res_layer(imgs_gpu)
+            assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
+    else:
+        feat = res_layer(imgs)
+        assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
 
 
 def test_resnet2plus1d_backbone():
