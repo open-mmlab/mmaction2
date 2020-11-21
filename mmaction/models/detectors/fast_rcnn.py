@@ -204,17 +204,16 @@ class FastRCNN(BaseDetector):
         cls_score = self.bbox_head(roi_feats)
 
         img_shape = img_meta[0]['img_shape']
-        original_shape = img_meta[0]['original_shape']
         crop_quadruple = img_meta[0]['crop_quadruple']
 
         # If flip used, we should first flip the proposal box
         flip = img_meta[0]['flip']
 
+        # The returned det_bboxes are normalized to [0, 1]
         det_bboxes, det_labels = self.bbox_head.get_det_bboxes(
             rois,
             cls_score,
             img_shape,
-            original_shape,
             flip=flip,
             crop_quadruple=crop_quadruple,
             cfg=rcnn_test_cfg)

@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from mmaction.core.bbox import bbox_target
-from ...registry import HEADS
+from ..registry import HEADS
 
 
 # TODO: we can add class_weight for 80 AVA classes
@@ -131,7 +131,6 @@ class BBoxHead(nn.Module):
                        rois,
                        cls_score,
                        img_shape,
-                       original_shape,
                        flip=False,
                        crop_quadruple=None,
                        cfg=None):
@@ -158,20 +157,16 @@ class BBoxHead(nn.Module):
         bboxes[:, 0::2] /= img_w
         bboxes[:, 1::2] /= img_h
 
-        def _bbox_crop_undo(bboxes, crop_quadruple, original_shape):
+        def _bbox_crop_undo(bboxes, crop_quadruple):
             decropped = bboxes.clone()
-            original_h, original_w = original_shape
 
             if crop_quadruple is not None:
                 x1, y1, tw, th = crop_quadruple
                 decropped[:, 0::2] = bboxes[..., 0::2] * tw + x1
                 decropped[:, 1::2] = bboxes[..., 1::2] * th + y1
 
-            decropped[:, 0::2] *= original_w
-            decropped[:, 1::2] *= original_h
-
             return decropped
 
-        bboxes = _bbox_crop_undo(bboxes, crop_quadruple, original_shape)
+        bboxes = _bbox_crop_undo(bboxes, crop_quadruple)
 
         return bboxes, scores
