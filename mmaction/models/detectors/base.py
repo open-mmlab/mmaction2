@@ -39,7 +39,7 @@ class BaseDetector(nn.Module, metaclass=ABCMeta):
         return x
 
     @abstractmethod
-    def forward_train(self, imgs, proposals, img_meta, gt_bboxes, gt_labels,
+    def forward_train(self, imgs, proposals, img_meta, entity_boxes, labels,
                       **kwargs):
         """Defines the computation performed at training."""
         pass

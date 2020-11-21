@@ -67,8 +67,10 @@ def build_model(cfg, train_cfg=None, test_cfg=None):
         return build_localizer(cfg)
     if obj_type in RECOGNIZERS:
         return build_recognizer(cfg, train_cfg, test_cfg)
+    if obj_type in DETECTORS:
+        return build_detector(cfg, train_cfg, test_cfg)
     raise ValueError(f'{obj_type} is not registered in '
-                     'LOCALIZERS or RECOGNIZERS')
+                     'LOCALIZERS, RECOGNIZERS or DETECTORS')
 
 
 def build_neck(cfg):
