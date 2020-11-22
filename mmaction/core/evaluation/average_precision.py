@@ -114,7 +114,7 @@ def frame_ap_error(det_results, labels, videos, gt_tubes, threshold):
 
         for i, j in enumerate(np.argsort(-det_result[:, 3])):
             key = (int(det_result[j, 0]), int(det_result[j, 1]))
-            box = det_result[:, 4:8]
+            box = det_result[j, 4:8]
             is_positive = False
 
             if key in original_key:
@@ -138,7 +138,7 @@ def frame_ap_error(det_results, labels, videos, gt_tubes, threshold):
                 if np.max(ious) >= threshold:
                     classification_error += 1
                 else:
-                    other_gt += 1
+                    other_error += 1
 
             elif label_index in label_dict[key[0]]:
                 time_error += 1
@@ -178,6 +178,20 @@ def frame_ap_error(det_results, labels, videos, gt_tubes, threshold):
         time_error=time_error,
         other_error=other_error,
         missing_detections=missing_detections)
+
+    result_str = ''
+    for i, label in enumerate(labels):
+        result_str += f'{label:20s}' + ' '.join(
+            [f'{v[i]:8.2f}' for v in result.values()]) + '\n'
+    result_str += '\n' + f"{'mean':20s}" + ' '.join(
+        [f'{np.mean(v):8.2f}' for v in result.values()]) + '\n'
+
+    msg = 'Error Analysis\n'
+    msg += f"\n{'label':20s} {'   AP   ':8s} {'  Loc.  ':8s} {'  Cls.  ':8s} "
+    msg += f"{'  Time  ':8s} {' Other ':8s} {' missed ':8s}\n"
+    msg += f'\n{result_str}'
+
+    print(msg)
 
     return result
 
