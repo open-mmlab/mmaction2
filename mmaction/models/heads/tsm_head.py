@@ -73,12 +73,12 @@ class TSMHead(BaseHead):
         """Initiate the parameters from scratch."""
         normal_init(self.fc_cls, std=self.init_std)
 
-    def forward(self, x, num_segments):
+    def forward(self, x, num_segs):
         """Defines the computation performed at every call.
 
         Args:
             x (torch.Tensor): The input data.
-            num_segments (int): Useless in TSMHead. By default, `num_segments`
+            num_segs (int): Useless in TSMHead. By default, `num_segs`
                 is equal to `clip_len * num_clips * num_crops`, which is
                 automatically generated in Recognizer forward phase and
                 useless in TSM models. The `self.num_segments` we need is a

@@ -72,7 +72,7 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         x = self.backbone(imgs)
         return x
 
-    def average_clip(self, cls_score, num_segments=1):
+    def average_clip(self, cls_score, num_segs=1):
         """Averaging class score over multiple clips.
 
         Using different averaging types ('score' or 'prob' or None,
@@ -81,7 +81,7 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
 
         Args:
             cls_score (torch.Tensor): Class score to be averaged.
-            num_segments (int): Number of clips for each input sample.
+            num_segs (int): Number of clips for each input sample.
 
         Returns:
             torch.Tensor: Averaged class score.
@@ -99,8 +99,7 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
             return cls_score
 
         batch_size = cls_score.shape[0]
-        cls_score = cls_score.view(batch_size // num_segments, num_segments,
-                                   -1)
+        cls_score = cls_score.view(batch_size // num_segs, num_segs, -1)
 
         if average_clips == 'prob':
             cls_score = F.softmax(cls_score, dim=2).mean(dim=1)
