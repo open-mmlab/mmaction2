@@ -6,6 +6,7 @@ from datetime import datetime
 
 import mmcv
 import numpy as np
+from mmcv.utils import print_log
 
 from mmaction.core.evaluation.ava_utils import ava_eval, results2csv
 from ..utils import get_root_logger
@@ -298,10 +299,19 @@ class AVADataset(BaseDataset):
 
         ret = {}
         for metric in metrics:
-            ret.update(
-                ava_eval(temp_file, metric, self.label_file, self.ann_file,
-                         self.exclude_file))
-        print(ret)
+            msg = f'Evaluating {metric} ...'
+            if logger is None:
+                msg = '\n' + msg
+            print_log(msg, logger=logger)
+
+            eval_result = ava_eval(temp_file, metric, self.label_file,
+                                   self.ann_file, self.exclude_file)
+            log_msg = []
+            for k, v in eval_result.items():
+                log_msg.append(f'\n{k}\t{v: .4f}')
+            log_msg = ''.join(log_msg)
+            print_log(log_msg, logger=logger)
+
         os.remove(temp_file)
 
         return ret

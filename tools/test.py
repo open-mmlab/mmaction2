@@ -126,8 +126,9 @@ def main():
             assert suffix[1:] == 'csv', ('For AVADataset, the format of the '
                                          'output file should be csv')
         else:
-            assert suffix[1:] in file_handlers, \
-                'The format of the output file should be json, pickle or yaml'
+            assert suffix[1:] in file_handlers, (
+                'The format of the output '
+                'file should be json, pickle or yaml')
 
     # set cudnn benchmark
     if cfg.get('cudnn_benchmark', False):

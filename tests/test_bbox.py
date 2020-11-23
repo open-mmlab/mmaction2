@@ -4,8 +4,8 @@ from abc import abstractproperty
 import numpy as np
 import torch
 
-from mmaction.core.bbox import (bbox2result, bbox2roi, bbox_overlaps,
-                                bbox_target, build_assigner, build_sampler)
+from mmaction.core.bbox import (bbox2result, bbox_target, build_assigner,
+                                build_sampler)
 from mmaction.datasets import AVADataset
 
 
@@ -56,48 +56,6 @@ def test_assigner_sampler():
                                      gt_labels)
 
     assert sampling_result is not None
-
-
-def test_bbox_overlaps():
-    dtype = torch.float
-    b1 = torch.tensor([[1.0, 1.0, 3.0, 4.0], [2.0, 2.0, 3.0, 4.0],
-                       [7.0, 7.0, 8.0, 8.0]]).type(dtype)
-    b2 = torch.tensor([[0.0, 2.0, 2.0, 5.0], [2.0, 1.0, 3.0, 3.0]]).type(dtype)
-    should_output = np.array([[0.33333334, 0.5], [0.2, 0.5], [0.0, 0.0]])
-    out = bbox_overlaps(b1, b2)
-    assert np.allclose(out.numpy(), should_output, 1e-2)
-
-    b1 = torch.tensor([[1.0, 1.0, 3.0, 4.0], [2.0, 2.0, 3.0, 4.0]]).type(dtype)
-    b2 = torch.tensor([[0.0, 2.0, 2.0, 5.0], [2.0, 1.0, 3.0, 3.0]]).type(dtype)
-    should_output = np.array([0.33333334, 0.5])
-    out = bbox_overlaps(b1, b2, aligned=True)
-    assert np.allclose(out.numpy(), should_output, 1e-2)
-
-    b1 = torch.tensor([[0.0, 0.0, 3.0, 3.0]]).type(dtype)
-    b2 = torch.tensor([[4.0, 0.0, 5.0, 3.0], [3.0, 0.0, 4.0, 3.0],
-                       [2.0, 0.0, 3.0, 3.0], [1.0, 0.0, 2.0, 3.0]]).type(dtype)
-    should_output = np.array([0, 0.2, 0.5, 0.5])
-    out = bbox_overlaps(
-        b1,
-        b2,
-    )
-    assert np.allclose(out.numpy(), should_output, 1e-2)
-
-
-def test_bbox2roi():
-    bbox_list = [
-        torch.tensor([[0.0, 0.0, 1.0, 1.0]]),
-        torch.tensor([[0.1, 0.1, 0.9, 0.9]]),
-        torch.tensor([[0.2, 0.2, 0.8, 0.8], [0.3, 0.3, 0.7, 0.7]])
-    ]
-    rois = bbox2roi(bbox_list)
-    assert torch.all(
-        torch.isclose(
-            rois,
-            torch.tensor([[0.00, 0.00, 0.00, 1.00, 1.00],
-                          [1.00, 0.10, 0.10, 0.90, 0.90],
-                          [2.00, 0.20, 0.20, 0.80, 0.80],
-                          [2.00, 0.30, 0.30, 0.70, 0.70]])))
 
 
 def test_bbox2result():

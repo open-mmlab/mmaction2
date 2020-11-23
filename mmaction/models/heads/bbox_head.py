@@ -10,7 +10,18 @@ from ..registry import HEADS
 @HEADS.register_module
 class BBoxHead(nn.Module):
     """Simplest RoI head, with only two fc layers for classification and
-    regression respectively."""
+    regression respectively.
+
+    Args:
+        temporal_pool_type (str): The temporal pool type. Choices are 'avg' or
+            'max'. Default: 'avg'.
+        spatial_pool_type (str): The spatial pool type. Choices are 'avg' or
+            'max'. Default: 'max'.
+        in_channels (int): The number of input channels. Default: 2048.
+        num_classes (int): The number of classes. Default: 81.
+        multilabel (bool): Whether used for a multilabel task. Default: True.
+            (Only support multilabel == True now).
+    """
 
     def __init__(
             self,

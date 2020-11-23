@@ -1,7 +1,7 @@
 import torch
 
 
-class SamplingResult(object):
+class SamplingResult:
 
     def __init__(self, pos_inds, neg_inds, bboxes, gt_bboxes, assign_result,
                  gt_flags):

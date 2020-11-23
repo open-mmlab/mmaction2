@@ -19,7 +19,7 @@ class BaseDetector(nn.Module, metaclass=ABCMeta):
     """
 
     def __init__(self):
-        super(BaseDetector, self).__init__()
+        super().__init__()
 
     @abstractmethod
     def init_weights(self):
@@ -53,8 +53,7 @@ class BaseDetector(nn.Module, metaclass=ABCMeta):
         """Define the computation performed at every call."""
         if return_loss:
             return self.forward_train(imgs, proposals, img_meta, **kwargs)
-        else:
-            return self.forward_test(imgs, proposals, img_meta, **kwargs)
+        return self.forward_test(imgs, proposals, img_meta, **kwargs)
 
     @staticmethod
     def _parse_losses(losses):
@@ -118,7 +117,7 @@ class BaseDetector(nn.Module, metaclass=ABCMeta):
                 DDP, it means the batch size on each GPU), which is used for
                 averaging the logs.
         """
-        losses = self.forward(**data_batch)
+        losses = self(**data_batch)
 
         loss, log_vars = self._parse_losses(losses)
 
@@ -136,7 +135,7 @@ class BaseDetector(nn.Module, metaclass=ABCMeta):
         during val epochs. Note that the evaluation after training epochs is
         not implemented with this method, but an evaluation hook.
         """
-        results = self.forward(return_loss=False, **data_batch)
+        results = self(return_loss=False, **data_batch)
 
         outputs = dict(results=results)
 

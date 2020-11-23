@@ -51,6 +51,7 @@ class BaseSampler(metaclass=ABCMeta):
             bboxes (Tensor): Boxes to be sampled from.
             gt_bboxes (Tensor): Ground truth bboxes.
             gt_labels (Tensor, optional): Class labels of ground truth bboxes.
+                Default: None.
 
         Returns:
             :obj:`SamplingResult`: Sampling result.
@@ -76,8 +77,7 @@ class BaseSampler(metaclass=ABCMeta):
         if self.neg_pos_ub >= 0:
             _pos = max(1, num_sampled_pos)
             neg_upper_bound = int(self.neg_pos_ub * _pos)
-            if num_expected_neg > neg_upper_bound:
-                num_expected_neg = neg_upper_bound
+            num_expected_neg = min(num_expected_neg, neg_upper_bound)
         neg_inds = self._sample_neg(
             assign_result, num_expected_neg, bboxes=bboxes)
 

@@ -1,6 +1,6 @@
 import torch
+from mmdet.core import bbox_overlaps
 
-from ..transforms import bbox_overlaps
 from .assign_result import AssignResult
 from .base_assigner import BaseAssigner
 
@@ -17,12 +17,13 @@ class MaxIoUAssigner(BaseAssigner):
 
     Args:
         pos_iou_thr (float): IoU threshold for positive bboxes.
-        neg_iou_thr (float or tuple): IoU threshold for negative bboxes.
+        neg_iou_thr (float | tuple): IoU threshold for negative bboxes.
         min_pos_iou (float): Minimum iou for a bbox to be considered as a
             positive bbox. Positive samples can have smaller IoU than
             pos_iou_thr due to the 4th step (assign max IoU sample to each gt).
+            Default: 0.
         gt_max_assign_all (bool): Whether to assign all bboxes with the same
-            highest overlap with some gt to that gt.
+            highest overlap with some gt to that gt. Default: True.
     """
 
     def __init__(self,

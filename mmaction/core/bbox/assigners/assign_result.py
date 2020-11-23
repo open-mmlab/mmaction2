@@ -1,7 +1,7 @@
 import torch
 
 
-class AssignResult(object):
+class AssignResult:
     """Store the assign results.
 
     Args:
@@ -11,6 +11,7 @@ class AssignResult(object):
         max_overlaps (Tensor[float]): The maximum overlap of a proposal bbox
             to each gt_bboxes.
         labels (Tensor[float]): The assigned labels to each proposal bbox.
+            Default: None.
     """
 
     def __init__(self, num_gts, gt_inds, max_overlaps, labels=None):
