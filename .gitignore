@@ -113,7 +113,6 @@ venv.bak/
 *.log.json
 benchlist.txt
 work_dirs/
-!tests/data/test_eval_detection/proposal.pkl
 
 # Pytorch
 *.pth
