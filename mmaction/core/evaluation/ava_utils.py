@@ -31,11 +31,17 @@ def det2csv(dataset, results):
 def results2csv(dataset, results, out_file):
     if isinstance(results[0], list):
         csv_results = det2csv(dataset, results)
-    # TODO: integrate CSVWriter into mmcv.fileio
-    # mmcv.dump(csv_results, out_file)
+
+    # save space for float
+    def tostr(item):
+        if type(item) is float:
+            return '%.3f' % item
+        else:
+            return str(item)
+
     with open(out_file, 'w') as f:
         for csv_result in csv_results:
-            f.write(','.join(map(lambda x: str(x), csv_result)))
+            f.write(','.join(map(lambda x: tostr(x), csv_result)))
             f.write('\n')
 
 
