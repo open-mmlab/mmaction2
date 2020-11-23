@@ -31,6 +31,7 @@ class Bottleneck2dAudio(nn.Module):
                  dilation=1,
                  downsample=None,
                  factorize=True,
+                 norm_cfg=None,
                  with_cp=False):
         super().__init__()
 
@@ -39,6 +40,7 @@ class Bottleneck2dAudio(nn.Module):
         self.stride = stride
         self.dilation = dilation
         self.factorize = factorize
+        self.norm_cfg = norm_cfg
         self.with_cp = with_cp
 
         self.conv1_stride = 1
@@ -54,7 +56,7 @@ class Bottleneck2dAudio(nn.Module):
             kernel_size=conv1_kernel_size,
             padding=conv1_padding,
             dilation=dilation,
-            norm_cfg=dict(type='BN'),
+            norm_cfg=self.norm_cfg,
             bias=False)
         self.conv2 = ConvModule(
             planes,
@@ -66,13 +68,13 @@ class Bottleneck2dAudio(nn.Module):
             bias=False,
             conv_cfg=dict(type='ConvAudio') if factorize else dict(
                 type='Conv'),
-            norm_cfg=dict(type='BN'))
+            norm_cfg=self.norm_cfg)
         self.conv3 = ConvModule(
             planes,
             planes * self.expansion,
             kernel_size=1,
             bias=False,
-            norm_cfg=dict(type='BN'),
+            norm_cfg=self.norm_cfg,
             act_cfg=None)
 
         self.relu = nn.ReLU(inplace=True)
@@ -197,6 +199,7 @@ class ResNetAudio(nn.Module):
                 stride=stride,
                 dilation=dilation,
                 factorize=self.stage_factorization[i],
+                norm_cfg=self.norm_cfg,
                 with_cp=with_cp)
             self.inplanes = planes * self.block.expansion
             layer_name = f'layer{i + 1}'
@@ -214,6 +217,7 @@ class ResNetAudio(nn.Module):
                        stride=1,
                        dilation=1,
                        factorize=1,
+                       norm_cfg=None,
                        with_cp=False):
         """Build residual layer for ResNetAudio.
 
@@ -247,7 +251,7 @@ class ResNetAudio(nn.Module):
                 kernel_size=1,
                 stride=stride,
                 bias=False,
-                norm_cfg=dict(type='BN'),
+                norm_cfg=norm_cfg,
             )
 
         layers = []
@@ -259,6 +263,7 @@ class ResNetAudio(nn.Module):
                 dilation,
                 downsample,
                 factorize=(factorize[0] == 1),
+                norm_cfg=norm_cfg,
                 with_cp=with_cp))
         inplanes = planes * block.expansion
         for i in range(1, blocks):
@@ -269,6 +274,7 @@ class ResNetAudio(nn.Module):
                     1,
                     dilation,
                     factorize=(factorize[i] == 1),
+                    norm_cfg=norm_cfg,
                     with_cp=with_cp))
 
         return nn.Sequential(*layers)
@@ -283,7 +289,7 @@ class ResNetAudio(nn.Module):
                      (self.conv1_kernel - 1) // 2),
             bias=False,
             conv_cfg=dict(type='ConvAudio'),
-            norm_cfg=dict(type='BN'))
+            norm_cfg=self.norm_cfg)
 
     def _freeze_stages(self):
         if self.frozen_stages >= 0:
@@ -309,7 +315,7 @@ class ResNetAudio(nn.Module):
             for m in self.modules():
                 if isinstance(m, nn.Conv2d):
                     kaiming_init(m)
-                elif isinstance(m, nn.BatchNorm2d):
+                elif isinstance(m, _BatchNorm):
                     constant_init(m, 1)
 
             if self.zero_init_residual:
