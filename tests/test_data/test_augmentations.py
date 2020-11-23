@@ -149,6 +149,7 @@ class TestAugumentations:
         imgs = list(np.random.rand(2, 224, 341, 3))
         results = dict(imgs=imgs)
         results['entity_boxes'] = np.array([[0, 0, 340, 224]])
+        results['proposals'] = None
         random_crop = RandomCrop(size=224)
         random_crop_result = random_crop(results)
         assert self.check_keys_contain(random_crop_result.keys(), target_keys)
@@ -254,6 +255,7 @@ class TestAugumentations:
         imgs = list(np.random.rand(2, 256, 341, 3))
         results = dict(imgs=imgs)
         results['entity_boxes'] = np.array([[0, 0, 340, 256]])
+        results['proposals'] = None
 
         with pytest.raises(AssertionError):
             # area_range[0] > area_range[1], which is wrong
@@ -406,6 +408,7 @@ class TestAugumentations:
         imgs = list(np.random.rand(2, 256, 341, 3))
         results = dict(imgs=imgs)
         results['entity_boxes'] = np.array([[0, 0, 340, 256]])
+        results['proposals'] = None
         config = dict(
             input_size=224,
             scales=(1, 0.8),
@@ -581,6 +584,7 @@ class TestAugumentations:
         imgs = list(np.random.rand(2, 240, 320, 3))
         results = dict(imgs=imgs, modality='RGB')
         results['entity_boxes'] = np.array([[0, 0, 320, 240]])
+        results['proposals'] = None
         resize = Resize(scale=(-1, 256), keep_ratio=True)
         resize_results = resize(results)
         assert self.check_keys_contain(resize_results.keys(), target_keys)
@@ -677,6 +681,7 @@ class TestAugumentations:
         imgs = list(np.random.rand(2, 64, 64, 3))
         results = dict(imgs=copy.deepcopy(imgs), modality='RGB')
         results['entity_boxes'] = np.array([[0, 0, 60, 60]])
+        results['proposals'] = None
         flip = Flip(flip_ratio=0, direction='horizontal')
         flip_results = flip(results)
         assert self.check_keys_contain(flip_results.keys(), target_keys)
@@ -919,6 +924,7 @@ class TestAugumentations:
         imgs = list(np.random.rand(2, 240, 320, 3))
         results = dict(imgs=imgs)
         results['entity_boxes'] = np.array([[0, 0, 320, 240]])
+        results['proposals'] = None
         center_crop = CenterCrop(crop_size=224)
         center_crop_results = center_crop(results)
         target_keys = ['imgs', 'crop_bbox', 'img_shape']

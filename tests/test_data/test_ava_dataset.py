@@ -90,7 +90,8 @@ class TestAVADataset(object):
             self.pipeline,
             test_mode=True,
             data_prefix=self.data_prefix,
-            proposal_file=None)
+            proposal_file=self.proposal_file)
+
         assert ava_dataset.proposals is None
 
     def test_ava_pipeline(self):
