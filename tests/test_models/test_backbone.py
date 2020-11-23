@@ -542,7 +542,8 @@ def test_resnet3d_layer():
     res_layer = ResNet3dLayer(50, None, stage=3, norm_eval=True)
     res_layer.init_weights()
     res_layer.train()
-    imgs = _demo_inputs(1, 1024, 1, 4, 4)
+    input_shape = (1, 1024, 1, 4, 4)
+    imgs = _demo_inputs(input_shape)
     if torch.__version__ == 'parrots':
         if torch.cuda.is_available():
             res_layer = res_layer.cuda()
@@ -554,7 +555,7 @@ def test_resnet3d_layer():
         assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
 
     res_layer = ResNet3dLayer(50, 'torchvision://resnet50', stage=3)
-    imgs = _demo_inputs(1, 1024, 1, 4, 4)
+    imgs = _demo_inputs(input_shape)
     if torch.__version__ == 'parrots':
         if torch.cuda.is_available():
             res_layer = res_layer.cuda()
