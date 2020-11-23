@@ -22,6 +22,18 @@
 
 [1] We report the performance on UCF-101 split1.
 
+### HMDB51
+|config | gpus | backbone | pretrain | top1 acc| top5 acc | gpu_mem(M) | ckpt | log| json|
+|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+|[tsn_r50_1x1x8_50e_hmdb51_imagenet_rgb](/configs/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_imagenet_rgb.py) [1] |8| ResNet50 | ImageNet | | | | [ckpt]( ) | [log]( ) | [json]( ) |
+|config | gpus | backbone | pretrain | top1 acc| top5 acc | gpu_mem(M) | ckpt | log| json|
+|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+|[tsn_r50_1x1x8_50e_hmdb51_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_kinetics400_rgb.py) [1] |8| ResNet50 | Kinetics400 | | | | [ckpt]( ) | [log]( ) | [json]( ) |
+|config | gpus | backbone | pretrain | top1 acc| top5 acc | gpu_mem(M) | ckpt | log| json|
+|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+|[tsn_r50_1x1x8_50e_hmdb51_mit_rgb](/configs/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_mit_rgb.py) [1] |8| ResNet50 | Moments | | | | [ckpt]( ) | [log]( ) | [json]( ) |
+
+
 ### Kinetics-400
 
 |config | resolution | gpus | backbone|pretrain | top1 acc| top5 acc | reference top1 acc | reference top5 acc | inference_time(video/s) | gpu_mem(M)| ckpt | log| json|
