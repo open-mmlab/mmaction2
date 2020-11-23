@@ -19,7 +19,7 @@ class TestTubeMetrics:
 
     @classmethod
     def setup_class(cls):
-        cls.data_prefix = osp.join(osp.dirname(__file__), 'data', 'test_tube')
+        cls.data_prefix = osp.join(osp.dirname(__file__), 'data', 'test_tubes')
         cls.tube_dir = osp.join(cls.data_prefix, 'tubes')
         cls.gt_tubes_file = osp.join(cls.data_prefix, 'gt_tubes.pkl')
         cls.tube_sample_file = osp.join(cls.data_prefix, 'tube_sample.pkl')
