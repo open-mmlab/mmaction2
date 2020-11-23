@@ -1,6 +1,6 @@
 import torch
-from mmcv.ops import bbox_overlaps
 
+from ..transforms import bbox_overlaps
 from .assign_result import AssignResult
 from .base_assigner import BaseAssigner
 

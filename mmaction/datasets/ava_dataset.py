@@ -63,6 +63,9 @@ class AVADataset(BaseDataset):
         proposal_file (str): Path to the proposal file like
             ``ava_dense_proposals_{train, val}.FAIR.recall_93.9.pkl``.
             Default: None.
+        num_classes (int): The number of classes of the dataset. Default: 81.
+            (AVA has 80 action classes, another 1-dim is added for potential
+            usage)
         data_prefix (str): Path to a directory where videos are held.
             Default: None.
         test_mode (bool): Store True when building test or validation dataset.
@@ -77,7 +80,6 @@ class AVADataset(BaseDataset):
     """
 
     _FPS = 30
-    _NUM_CLASSES = 81
 
     def __init__(self,
                  ann_file,
@@ -86,6 +88,7 @@ class AVADataset(BaseDataset):
                  label_file=None,
                  filename_tmpl='img_{:05}.jpg',
                  proposal_file=None,
+                 num_classes=81,
                  data_prefix=None,
                  test_mode=False,
                  modality='RGB',
@@ -97,6 +100,7 @@ class AVADataset(BaseDataset):
         self.exclude_file = exclude_file
         self.label_file = label_file
         self.proposal_file = proposal_file
+        self.num_classes = num_classes
         self.filename_tmpl = filename_tmpl
         self.num_max_proposals = num_max_proposals
         self.timestamp_start = timestamp_start
@@ -142,7 +146,7 @@ class AVADataset(BaseDataset):
             ])
 
             # The format can be directly used by BCELossWithLogits
-            label = np.zeros(self._NUM_CLASSES, dtype=np.float32)
+            label = np.zeros(self.num_classes, dtype=np.float32)
             label[valid_labels] = 1.
 
             labels.append(label)
