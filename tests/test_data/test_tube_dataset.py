@@ -18,7 +18,7 @@ class TestTubeDataset:
     @classmethod
     def setup_class(cls):
         cls.data_prefix = osp.join(
-            osp.dirname(osp.dirname(__file__)), 'data', 'test_tube')
+            osp.dirname(osp.dirname(__file__)), 'data', 'test_tubes')
         cls.ann_file = osp.join(cls.data_prefix, 'tube_sample.pkl')
         cls.pipeline = []
 
