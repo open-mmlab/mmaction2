@@ -78,9 +78,11 @@ class TSMHead(BaseHead):
 
         Args:
             x (torch.Tensor): The input data.
-            num_segments (int): Useless in TSMHead.
-                Use `self.num_segments` instead.
-
+            num_segments (int): Useless in TSMHead. By default, `num_segments`
+                is equal to `clip_len * num_clips * num_crops`, which is
+                automatically generated in Recognizer forward phase and
+                useless in TSM models. The `self.num_segments` we need is a
+                hyper parameter to build TSM models.
         Returns:
             torch.Tensor: The classification scores for input samples.
         """
