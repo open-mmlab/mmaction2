@@ -15,7 +15,7 @@ def pr_to_ap(precision_recall):
     return np.sum(pr_diff * pr_sum * 0.5)
 
 
-def frame_ap(det_results, labels, videos, gt_tubes, threshold):
+def frame_ap(det_results, labels, videos, gt_tubes, threshold=0.5):
     results = []
     for label_index, label in enumerate(labels):
         det_result = det_results[det_results[:, 2] == label_index, :]
@@ -33,7 +33,7 @@ def frame_ap(det_results, labels, videos, gt_tubes, threshold):
                     gt[key].append(tube[i, 1:5].tolist())
 
         for key in gt:
-            gt[key] = np.array(gt[key])
+            gt[key] = np.array(gt[key].copy())
 
         precision_recall = np.empty((det_result.shape[0] + 1, 2),
                                     dtype=np.float32)
@@ -72,7 +72,7 @@ def frame_ap(det_results, labels, videos, gt_tubes, threshold):
     return frame_ap_result
 
 
-def frame_ap_error(det_results, labels, videos, gt_tubes, threshold):
+def frame_ap_error(det_results, labels, videos, gt_tubes, threshold=0.5):
     ap_results = []
     other_ap_results = [[], [], [], []]
     missing_detections = []
@@ -85,7 +85,7 @@ def frame_ap_error(det_results, labels, videos, gt_tubes, threshold):
 
         for video_id, video in enumerate(videos):
             tubes = gt_tubes[video]
-            label_dict[video_id] = list(tubes.keys())
+            label_dict[video_id] = list(tubes)
 
             for tube_label_index in tubes:
                 for tube in tubes[tube_label_index]:
@@ -97,11 +97,11 @@ def frame_ap_error(det_results, labels, videos, gt_tubes, threshold):
                             other_gt[key].append(tube[i, 1:5].tolist())
 
         for key in gt:
-            gt[key] = np.array(gt[key])
+            gt[key] = np.array(gt[key].copy())
         for key in other_gt:
-            other_gt[key] = np.array(other_gt[key])
+            other_gt[key] = np.array(other_gt[key].copy())
 
-        original_key = list(gt.keys())
+        original_key = list(gt)
 
         precision_recall = np.empty((det_result.shape[0] + 1, 6),
                                     dtype=np.float32)
@@ -196,7 +196,7 @@ def frame_ap_error(det_results, labels, videos, gt_tubes, threshold):
     return result
 
 
-def video_ap(labels, videos, gt_tubes, threshold, tube_dir, overlap=0.3):
+def video_ap(labels, videos, gt_tubes, tube_dir, threshold=0.5, overlap=0.3):
 
     det_results = defaultdict(list)
 
@@ -225,7 +225,7 @@ def video_ap(labels, videos, gt_tubes, threshold, tube_dir, overlap=0.3):
             if label_index not in tubes:
                 continue
 
-            gt[video] = tubes[label_index]
+            gt[video] = tubes[label_index].copy()
             if len(gt[video]) == 0:
                 del gt[video]
 
