@@ -324,7 +324,7 @@ class DenseSampleFrames(SampleFrames):
             Default: 64.
         num_sample_positions (int): Number of sample start positions, Which is
             only used in test mode. Default: 10. That is to say, by default,
-            there are at least 10 crops for one input sample in test mode.
+            there are at least 10 clips for one input sample in test mode.
         temporal_jitter (bool): Whether to apply temporal jittering.
             Default: False.
         test_mode (bool): Store True when building test or validation dataset.
