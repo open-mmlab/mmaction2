@@ -10,15 +10,19 @@ class SingleRoIStraight3DExtractor(nn.Module):
     """Extract RoI features from a single level feature map.
 
     Args:
-        roi_layer_type (str): Specify the RoI layer type.
-        featmap_stride (int): Strides of input feature maps.
-        output_size (int | tuple): Size or (Height, Width).
+        roi_layer_type (str): Specify the RoI layer type. Default: 'RoIAlign'.
+        featmap_stride (int): Strides of input feature maps. Default: 16.
+        output_size (int | tuple): Size or (Height, Width). Default: 16.
         sampling_ratio (int): number of inputs samples to take for each
             output sample. 0 to take samples densely for current models.
+            Default: 0.
         pool_mode (str, 'avg' or 'max'): pooling mode in each bin.
+            Default: 'avg'.
         aligned (bool): if False, use the legacy implementation in
             MMDetection. If True, align the results more perfectly.
+            Default: True.
         with_temporal_pool (bool): if True, avgpool the temporal dim.
+            Default: True.
 
     Note that sampling_ratio, pool_mode, aligned only apply when roi_layer_type
     is set as RoIAlign.
@@ -32,7 +36,7 @@ class SingleRoIStraight3DExtractor(nn.Module):
                  pool_mode='avg',
                  aligned=True,
                  with_temporal_pool=True):
-        super(SingleRoIStraight3DExtractor, self).__init__()
+        super().__init__()
         self.roi_layer_type = roi_layer_type
         assert self.roi_layer_type in ['RoIPool', 'RoIAlign']
         self.featmap_stride = featmap_stride

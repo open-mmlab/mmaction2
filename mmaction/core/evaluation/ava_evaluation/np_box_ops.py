@@ -53,14 +53,12 @@ def intersection(boxes1, boxes2):
     all_pairs_max_ymin = np.maximum(y_min1, np.transpose(y_min2))
     intersect_heights = np.maximum(
         np.zeros(all_pairs_max_ymin.shape),
-        all_pairs_min_ymax - all_pairs_max_ymin,
-    )
+        all_pairs_min_ymax - all_pairs_max_ymin)
     all_pairs_min_xmax = np.minimum(x_max1, np.transpose(x_max2))
     all_pairs_max_xmin = np.maximum(x_min1, np.transpose(x_min2))
     intersect_widths = np.maximum(
         np.zeros(all_pairs_max_xmin.shape),
-        all_pairs_min_xmax - all_pairs_max_xmin,
-    )
+        all_pairs_min_xmax - all_pairs_max_xmin)
     return intersect_heights * intersect_widths
 
 

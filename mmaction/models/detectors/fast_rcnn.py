@@ -1,9 +1,9 @@
 import numpy as np
 import torch
 import torch.nn as nn
+from mmdet.core import bbox2roi
 
-from mmaction.core.bbox import (bbox2result, bbox2roi, build_assigner,
-                                build_sampler)
+from mmaction.core.bbox import bbox2result, build_assigner, build_sampler
 from .. import builder
 from ..registry import DETECTORS
 from .base import BaseDetector
@@ -11,18 +11,35 @@ from .base import BaseDetector
 
 @DETECTORS.register_module
 class FastRCNN(BaseDetector):
+    """FastRCNN for Spatio-Temporal Action Detection.
+
+    Args:
+        backbone (dict): Backbone modules to extract feature.
+        shared_head (dict | None): The shared head to process RoI features.
+            Default: None.
+        bbox_roi_extractor (dict | None): The RoI Extractor, which extracts
+            RoI features given feature maps and RoIs. Default: None.
+        bbox_head (dict): Classification head to process feature of each RoI.
+            Default: None.
+        dropout_ratio (float): The dropout ratio. Default: 0.
+        bbox_size_threshold (int): GT bboxes or proposal bboxes smaller than
+            this size will be ignored during training or testing. Default: 25.
+        train_cfg (dict | None): Config for training. Default: None.
+        test_cfg (dict | None): Config for testing. Default: None.
+    """
 
     def __init__(self,
                  backbone,
                  shared_head=None,
                  bbox_roi_extractor=None,
-                 dropout_ratio=0,
                  bbox_head=None,
+                 dropout_ratio=0,
+                 bbox_size_threshold=25,
                  train_cfg=None,
-                 test_cfg=None,
-                 pretrained=None):
+                 test_cfg=None):
 
-        super(FastRCNN, self).__init__()
+        super().__init__()
+
         self.backbone = builder.build_backbone(backbone)
         self.shared_head = None
         self.bbox_roi_extractor = None
@@ -41,6 +58,7 @@ class FastRCNN(BaseDetector):
             self.dropout = nn.Dropout(p=dropout_ratio)
         else:
             self.dropout = None
+        self.bbox_size_threshold = bbox_size_threshold
 
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
@@ -86,9 +104,8 @@ class FastRCNN(BaseDetector):
 
             score_select_inds = score >= min(
                 self.train_cfg.person_det_score_thr, max(score))
-            # I think 25-pixel is a reasonable threshold
             area_select_inds = (proposal[:, 2] - proposal[:, 0]) * (
-                proposal[:, 3] - proposal[:, 1]) > 25
+                proposal[:, 3] - proposal[:, 1]) >= self.bbox_size_threshold
             score_select_inds = torch.tensor(score_select_inds).to(
                 area_select_inds.device)
             select_inds = score_select_inds & area_select_inds
@@ -103,7 +120,7 @@ class FastRCNN(BaseDetector):
             gt_label = gt_label[:num_gt]
 
             area_select_inds = (gt_bbox[:, 2] - gt_bbox[:, 0]) * (
-                gt_bbox[:, 3] - gt_bbox[:, 1]) > 25
+                gt_bbox[:, 3] - gt_bbox[:, 1]) >= self.bbox_size_threshold
             gt_bbox_list.append(gt_bbox[area_select_inds])
             gt_label_list.append(gt_label[area_select_inds])
 
@@ -178,7 +195,7 @@ class FastRCNN(BaseDetector):
             score_select_inds = score >= min(
                 self.test_cfg.person_det_score_thr, max(score))
             area_select_inds = (proposal[:, 2] - proposal[:, 0]) * (
-                proposal[:, 3] - proposal[:, 1]) > 25
+                proposal[:, 3] - proposal[:, 1]) >= self.bbox_size_threshold
             score_select_inds = torch.tensor(score_select_inds).to(
                 area_select_inds.device)
             select_inds = score_select_inds & area_select_inds

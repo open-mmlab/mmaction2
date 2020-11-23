@@ -107,7 +107,7 @@ class BoxList(object):
           ValueError: if invalid field
         """
         if not self.has_field(field):
-            raise ValueError('field {} does not exist'.format(field))
+            raise ValueError(f'field {field} does not exist')
         return self.data[field]
 
     def get_coordinates(self):
@@ -134,8 +134,8 @@ class BoxList(object):
           a boolean indicating whether all ymax of boxes are equal or greater
             than ymin, and all xmax of boxes are equal or greater than xmin.
         """
-        if data.shape[0] > 0:
-            for i in range(data.shape[0]):
-                if data[i, 0] > data[i, 2] or data[i, 1] > data[i, 3]:
+        if len(data):
+            for v in data:
+                if v[0] > v[2] or v[1] > v[3]:
                     return False
         return True

@@ -16,14 +16,6 @@ class RandomSampler(BaseSampler):
             Default: True.
     """
 
-    def __init__(self,
-                 num,
-                 pos_fraction,
-                 neg_pos_ub=-1,
-                 add_gt_as_proposals=True):
-        super(RandomSampler, self).__init__(num, pos_fraction, neg_pos_ub,
-                                            add_gt_as_proposals)
-
     @staticmethod
     def random_choice(gallery, num):
         """Random select some elements from the gallery.
@@ -48,8 +40,7 @@ class RandomSampler(BaseSampler):
             pos_inds = pos_inds.squeeze(1)
         if pos_inds.numel() <= num_expected:
             return pos_inds
-        else:
-            return self.random_choice(pos_inds, num_expected)
+        return self.random_choice(pos_inds, num_expected)
 
     def _sample_neg(self, assign_result, num_expected, **kwargs):
         """Randomly sample some negative samples."""
@@ -58,5 +49,4 @@ class RandomSampler(BaseSampler):
             neg_inds = neg_inds.squeeze(1)
         if len(neg_inds) <= num_expected:
             return neg_inds
-        else:
-            return self.random_choice(neg_inds, num_expected)
+        return self.random_choice(neg_inds, num_expected)

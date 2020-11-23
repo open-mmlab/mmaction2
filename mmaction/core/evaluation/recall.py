@@ -1,7 +1,6 @@
 import numpy as np
 import torch
-
-from mmaction.core.bbox.transforms import bbox_overlaps
+from mmdet.core import bbox_overlaps
 
 
 def _recalls(all_ious, proposal_nums, thrs):
