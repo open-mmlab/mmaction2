@@ -537,9 +537,9 @@ def test_resnet3d_layer():
         ResNet3dLayer(22, None)
 
     with pytest.raises(AssertionError):
-        ResNet3dLayer(50, None, stage=5)
+        ResNet3dLayer(50, None, stage=4)
 
-    res_layer = ResNet3dLayer(50, None, stage=4, norm_eval=True)
+    res_layer = ResNet3dLayer(50, None, stage=3, norm_eval=True)
     res_layer.init_weights()
     res_layer.train()
     imgs = _demo_inputs(1, 1024, 1, 4, 4)
@@ -553,7 +553,7 @@ def test_resnet3d_layer():
         feat = res_layer(imgs)
         assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
 
-    res_layer = ResNet3dLayer(50, 'torchvision://resnet50', stage=4)
+    res_layer = ResNet3dLayer(50, 'torchvision://resnet50', stage=3)
     imgs = _demo_inputs(1, 1024, 1, 4, 4)
     if torch.__version__ == 'parrots':
         if torch.cuda.is_available():
