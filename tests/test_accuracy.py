@@ -85,13 +85,6 @@ def test_ava_detection():
     detection = ava_eval(result_path, 'bbox', label_map, gt_path, None)
     assert_array_almost_equal(detection['PascalBoxes_Precision/mAP@0.5IOU'],
                               0.093855219)
-    names = [
-        f'PascalBoxes_PerformanceByCategory/AP@0.5IOU/action{i}'
-        for i in range(1, 4)
-    ]
-    assert_array_almost_equal(detection[names[0]], 0.17045455)
-    assert_array_almost_equal(detection[names[1]], 0.0)
-    assert_array_almost_equal(detection[names[2]], 0.11111111)
 
 
 def test_confusion_matrix():
