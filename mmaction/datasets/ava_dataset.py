@@ -107,7 +107,12 @@ class AVADataset(BaseDataset):
         self.timestamp_end = timestamp_end
         self.logger = get_root_logger()
         super().__init__(
-            ann_file, pipeline, data_prefix, test_mode, modality=modality)
+            ann_file,
+            pipeline,
+            data_prefix,
+            test_mode,
+            modality=modality,
+            num_classes=num_classes)
 
         if self.proposal_file is not None:
             self.proposals = mmcv.load(self.proposal_file)
