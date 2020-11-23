@@ -8,13 +8,13 @@ def bbox2result(bboxes, labels, num_classes, thr=0.01):
         bboxes (Tensor): shape (n, 4)
         labels (Tensor): shape (n, #num_classes)
         num_classes (int): class number, including background class
+        thr (float): The score threshold used when converting predictions to
+            detection results
     Returns:
         list(ndarray): bbox results of each class
     """
     if bboxes.shape[0] == 0:
-        return [
-            np.zeros((0, 5), dtype=np.float32) for i in range(num_classes - 1)
-        ]
+        return list(np.zeros((num_classes - 1, 0, 5), dtype=np.float32))
     else:
         bboxes = bboxes.cpu().numpy()
         labels = labels.cpu().numpy()

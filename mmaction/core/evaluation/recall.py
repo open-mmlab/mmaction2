@@ -8,12 +8,12 @@ def _recalls(all_ious, proposal_nums, thrs):
     img_num = all_ious.shape[0]
     total_gt_num = sum([ious.shape[0] for ious in all_ious])
 
-    _ious = np.zeros((proposal_nums.size, total_gt_num), dtype=np.float32)
+    ious_ = np.zeros((proposal_nums.size, total_gt_num), dtype=np.float32)
     for k, proposal_num in enumerate(proposal_nums):
         tmp_ious = np.zeros(0)
         for i in range(img_num):
             ious = all_ious[i][:, :proposal_num].copy()
-            gt_ious = np.zeros((ious.shape[0]))
+            gt_ious = np.zeros(ious.shape[0])
             if ious.size == 0:
                 tmp_ious = np.hstack((tmp_ious, gt_ious))
                 continue
@@ -26,12 +26,12 @@ def _recalls(all_ious, proposal_nums, thrs):
                 ious[gt_idx, :] = -1
                 ious[:, box_idx] = -1
             tmp_ious = np.hstack((tmp_ious, gt_ious))
-        _ious[k, :] = tmp_ious
+        ious_[k, :] = tmp_ious
 
-    _ious = np.fliplr(np.sort(_ious, axis=1))
+    ious_ = np.fliplr(np.sort(ious_, axis=1))
     recalls = np.zeros((proposal_nums.size, thrs.size))
     for i, thr in enumerate(thrs):
-        recalls[:, i] = (_ious >= thr).sum(axis=1) / float(total_gt_num)
+        recalls[:, i] = (ious_ >= thr).sum(axis=1) / float(total_gt_num)
 
     return recalls
 
@@ -39,11 +39,11 @@ def _recalls(all_ious, proposal_nums, thrs):
 def set_recall_param(proposal_nums, iou_thrs):
     """Check proposal_nums and iou_thrs and set correct format."""
     if isinstance(proposal_nums, list):
-        _proposal_nums = np.array(proposal_nums)
+        proposal_nums_ = np.array(proposal_nums)
     elif isinstance(proposal_nums, int):
-        _proposal_nums = np.array([proposal_nums])
+        proposal_nums_ = np.array([proposal_nums])
     else:
-        _proposal_nums = proposal_nums
+        proposal_nums_ = proposal_nums
 
     if iou_thrs is None:
         _iou_thrs = np.array([0.5])
@@ -54,7 +54,7 @@ def set_recall_param(proposal_nums, iou_thrs):
     else:
         _iou_thrs = iou_thrs
 
-    return _proposal_nums, _iou_thrs
+    return proposal_nums_, _iou_thrs
 
 
 def eval_recalls(gts, proposals, proposal_nums=None, iou_thrs=None):

@@ -13,7 +13,6 @@
 # limitations under the License.
 # =============================================================================
 """Functions for computing metrics like precision, recall, CorLoc and etc."""
-from __future__ import division
 
 import numpy as np
 
@@ -22,18 +21,19 @@ def compute_precision_recall(scores, labels, num_gt):
     """Compute precision and recall.
 
     Args:
-      scores: A float numpy array representing detection score
-      labels: A boolean numpy array representing true/false positive labels
-      num_gt: Number of ground truth instances
+        scores: A float numpy array representing detection score
+        labels: A boolean numpy array representing true/false positive labels
+        num_gt: Number of ground truth instances
 
     Raises:
-      ValueError: if the input is not of the correct format
+        ValueError: if the input is not of the correct format
 
     Returns:
-      precision: Fraction of positive instances over detected ones. This value
-        is None if no ground truth labels are present.
-      recall: Fraction of detected positive instance over all positive
-        instances. This value is None if no ground truth labels are present.
+        precision: Fraction of positive instances over detected ones. This
+            value is None if no ground truth labels are present.
+        recall: Fraction of detected positive instance over all positive
+            instances. This value is None if no ground truth labels are
+            present.
     """
     if (not isinstance(labels, np.ndarray) or labels.dtype != np.bool
             or len(labels.shape) != 1):
@@ -72,15 +72,15 @@ def compute_average_precision(precision, recall):
     decrease.
 
     Args:
-      precision: A float [N, 1] numpy array of precisions
-      recall: A float [N, 1] numpy array of recalls
+        precision: A float [N, 1] numpy array of precisions
+        recall: A float [N, 1] numpy array of recalls
 
     Raises:
-      ValueError: if the input is not of the correct format
+        ValueError: if the input is not of the correct format
 
     Returns:
-      average_precison: The area under the precision recall curve. NaN if
-        precision and recall are None.
+        average_precison: The area under the precision recall curve. NaN if
+            precision and recall are None.
     """
     if precision is None:
         if recall is not None:
@@ -125,15 +125,15 @@ def compute_cor_loc(num_gt_imgs_per_class,
     Returns nans if there are no ground truth images for a class.
 
     Args:
-      num_gt_imgs_per_class: 1D array, representing number of images containing
-          at least one object instance of a particular class
-      num_images_correctly_detected_per_class: 1D array, representing number of
-          images that are correctly detected at least one object instance of a
-          particular class
+        num_gt_imgs_per_class: 1D array, representing number of images
+            containing at least one object instance of a particular class
+        num_images_correctly_detected_per_class: 1D array, representing number
+            of images that are correctly detected at least one object instance
+            of a particular class
 
     Returns:
-      corloc_per_class: A float numpy array represents the corloc score of each
-        class
+        corloc_per_class: A float numpy array represents the corloc score of
+            each class
     """
     # Divide by zero expected for classes with no gt examples.
     with np.errstate(divide='ignore', invalid='ignore'):

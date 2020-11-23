@@ -14,13 +14,10 @@
 # =============================================================================
 """Numpy BoxList classes and functions."""
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
-
 import numpy as np
 
 
-class BoxList(object):
+class BoxList:
     """Box collection.
 
     BoxList represents a list of bounding boxes as numpy array, where each
@@ -36,11 +33,11 @@ class BoxList(object):
         """Constructs box collection.
 
         Args:
-          data: a numpy array of shape [N, 4] representing box coordinates
+            data: a numpy array of shape [N, 4] representing box coordinates
 
         Raises:
-          ValueError: if bbox data is not a numpy array
-          ValueError: if invalid dimensions for bbox data
+            ValueError: if bbox data is not a numpy array
+            ValueError: if invalid dimensions for bbox data
         """
         if not isinstance(data, np.ndarray):
             raise ValueError('data must be a numpy array.')
@@ -60,7 +57,7 @@ class BoxList(object):
 
     def get_extra_fields(self):
         """Return all non-box fields."""
-        return [k for k in self.data.keys() if k != 'boxes']
+        return [k for k in self.data if k != 'boxes']
 
     def has_field(self, field):
         return field in self.data
@@ -69,13 +66,13 @@ class BoxList(object):
         """Add data to a specified field.
 
         Args:
-          field: a string parameter used to speficy a related field to be
-            accessed.
-          field_data: a numpy array of [N, ...] representing the data
-            associated with the field.
+            field: a string parameter used to speficy a related field to be
+                accessed.
+            field_data: a numpy array of [N, ...] representing the data
+                associated with the field.
         Raises:
-          ValueError: if the field is already exist or the dimension of the
-            field data does not matches the number of boxes.
+            ValueError: if the field is already exist or the dimension of the
+                field data does not matches the number of boxes.
         """
         if self.has_field(field):
             raise ValueError('Field ' + field + 'already exists')
@@ -88,7 +85,7 @@ class BoxList(object):
         """Convenience function for accesssing box coordinates.
 
         Returns:
-          a numpy array of shape [N, 4] representing box corners
+            a numpy array of shape [N, 4] representing box corners
         """
         return self.get_field('boxes')
 
@@ -97,14 +94,14 @@ class BoxList(object):
         collection.
 
         Args:
-          field: a string parameter used to speficy a related field to be
-            accessed.
+            field: a string parameter used to speficy a related field to be
+                accessed.
 
         Returns:
-          a numpy 1-d array representing data of an associated field
+            a numpy 1-d array representing data of an associated field
 
         Raises:
-          ValueError: if invalid field
+            ValueError: if invalid field
         """
         if not self.has_field(field):
             raise ValueError(f'field {field} does not exist')
@@ -114,7 +111,7 @@ class BoxList(object):
         """Get corner coordinates of boxes.
 
         Returns:
-         a list of 4 1-d numpy arrays [y_min, x_min, y_max, x_max]
+            a list of 4 1-d numpy arrays [y_min, x_min, y_max, x_max]
         """
         box_coordinates = self.get()
         y_min = box_coordinates[:, 0]
@@ -128,10 +125,10 @@ class BoxList(object):
         xmin].
 
         Args:
-          data: a numpy array of shape [N, 4] representing box coordinates
+            data: a numpy array of shape [N, 4] representing box coordinates
 
         Returns:
-          a boolean indicating whether all ymax of boxes are equal or greater
+            a boolean indicating whether all ymax of boxes are equal or greater
             than ymin, and all xmax of boxes are equal or greater than xmin.
         """
         if len(data):

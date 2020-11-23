@@ -13,17 +13,17 @@ from .recall import eval_recalls
 
 def det2csv(dataset, results):
     csv_results = []
-    for idx in range(len(dataset)):
+    for idx, _ in enumerate(dataset):
         video_id = dataset.video_infos[idx]['video_id']
         timestamp = dataset.video_infos[idx]['timestamp']
         result = results[idx]
-        for label in range(len(result)):
+        for label, _ in enumerate(result):
             for bbox in result[label]:
-                _bbox = tuple(bbox.tolist())
+                bbox_ = tuple(bbox.tolist())
                 csv_results.append((
                     video_id,
                     timestamp,
-                ) + _bbox[:4] + (label + 1, ) + _bbox[4:])
+                ) + bbox_[:4] + (label + 1, ) + bbox_[4:])
     return csv_results
 
 
@@ -34,10 +34,9 @@ def results2csv(dataset, results, out_file):
 
     # save space for float
     def tostr(item):
-        if type(item) is float:
+        if isinstance(item, float):
             return '%.3f' % item
-        else:
-            return str(item)
+        return str(item)
 
     with open(out_file, 'w') as f:
         for csv_result in csv_results:
@@ -208,8 +207,8 @@ def ava_eval(result_file,
         ar = recalls.mean(axis=1)
         ret = {}
         for i, num in enumerate(max_dets):
-            print('Recall@0.5@{}\t={:.4f}'.format(num, recalls[i, 0]))
-            print('AR@{}\t={:.4f}'.format(num, ar[i]))
+            print(f'Recall@0.5@{num}\t={recalls[i, 0]:.4f}')
+            print(f'AR@{num}\t={ar[i]:.4f}')
             ret[f'Recall@0.5@{num}'] = recalls[i, 0]
             ret[f'AR@{num}'] = ar[i]
         return ret
@@ -260,7 +259,7 @@ def ava_eval(result_file,
         if verbose:
             print_time('run_evaluator', start)
         for display_name in metrics:
-            print('{}=\t{}'.format(display_name, metrics[display_name]))
+            print(f'{display_name}=\t{metrics[display_name]}')
         return {
             display_name: metrics[display_name]
             for display_name in metrics if 'ByCategory' not in display_name
