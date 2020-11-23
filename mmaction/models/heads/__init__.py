@@ -1,4 +1,5 @@
 from .audio_tsn_head import AudioTSNHead
+from .avslowfast_head import AVSlowFastHead
 from .base import BaseHead
 from .i3d_head import I3DHead
 from .slowfast_head import SlowFastHead
@@ -10,5 +11,5 @@ from .x3d_head import X3DHead
 
 __all__ = [
     'TSNHead', 'I3DHead', 'BaseHead', 'TSMHead', 'SlowFastHead', 'SSNHead',
-    'TPNHead', 'AudioTSNHead', 'X3DHead'
+    'TPNHead', 'AudioTSNHead', 'X3DHead', 'AVSlowFastHead'
 ]

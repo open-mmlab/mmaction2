@@ -1,5 +1,8 @@
+import random
+
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from mmcv.cnn import ConvModule, kaiming_init
 from mmcv.runner import load_checkpoint
 from mmcv.utils import print_log
@@ -11,20 +14,20 @@ from .resnet_audio import ResNetAudio
 
 
 class ResNetAudioPathway(ResNetAudio):
-    """A pathway of Slowfast based on ResNetAudio.
+    """A pathway of AVSlowfast based on ResNetAudio.
 
     Args:
         *args (arguments): Arguments same as :class:``ResNet3d``.
         lateral (bool): Determines whether to enable the lateral connection
-            from another pathway. Default: False.
+            to another pathway. Default: True.
         speed_ratio (int): Speed ratio indicating the ratio between time
             dimension of the fast and slow pathway, corresponding to the
-            ``alpha`` in the paper. Default: 8.
+            ``alpha`` in the paper. Default: 32.
         channel_ratio (int): Reduce the channel number of fast pathway
             by ``channel_ratio``, corresponding to ``beta`` in the paper.
-            Default: 8.
+            Default: 2.
         fusion_kernel (int): The kernel size of lateral fusion.
-            Default: 5.
+            Default: 9.
         **kwargs (keyword arguments): Keywords arguments for ResNet3d.
     """
 
@@ -44,13 +47,13 @@ class ResNetAudioPathway(ResNetAudio):
         if self.lateral:
             self.conv1_lateral = ConvModule(
                 self.inplanes,
-                self.inplanes * 2,
+                self.inplanes * self.channel_ratio,
                 kernel_size=(fusion_kernel, 1),
                 stride=(self.speed_ratio, 1),
                 padding=((fusion_kernel - 1) // 2, 0),
                 bias=False,
                 conv_cfg=self.conv_cfg,
-                norm_cfg=None,
+                norm_cfg=self.norm_cfg,
                 act_cfg=None)
 
         self.lateral_connections = []
@@ -65,13 +68,12 @@ class ResNetAudioPathway(ResNetAudio):
                     self, lateral_name,
                     ConvModule(
                         self.inplanes,
-                        self.inplanes * 2,
-                        kernel_size=(fusion_kernel, 1),
-                        stride=(self.speed_ratio, 1),
-                        padding=((fusion_kernel - 1) // 2, 0),
+                        self.inplanes * self.channel_ratio,
+                        kernel_size=fusion_kernel,
+                        stride=self.speed_ratio,
                         bias=False,
                         conv_cfg=self.conv_cfg,
-                        norm_cfg=None,
+                        norm_cfg=self.norm_cfg,
                         act_cfg=None))
                 self.lateral_connections.append(lateral_name)
 
@@ -88,7 +90,7 @@ class ResNetAudioPathway(ResNetAudio):
             m.eval()
             for param in m.parameters():
                 param.requires_grad = False
-
+            # Freeze those in the lateral connections as well.
             if (i != len(self.res_layers) and self.lateral):
                 # No fusion needed in the final stage
                 lateral_name = self.lateral_connections[i - 1]
@@ -100,8 +102,8 @@ class ResNetAudioPathway(ResNetAudio):
     def init_weights(self):
         """Initiate the parameters either from existing checkpoint or from
         scratch."""
-        # Override the init_weights of i3d
         super().init_weights()
+        # Init those in the lateral connections as well.
         for module_name in self.lateral_connections:
             layer = getattr(self, module_name)
             for m in layer.modules():
@@ -110,7 +112,7 @@ class ResNetAudioPathway(ResNetAudio):
 
 
 pathway_cfg = {
-    'resnet_audio': ResNetAudio,
+    'resnet_audio': ResNetAudioPathway,
     'resnet3d': ResNet3dPathway
     # TODO: BNInceptionPathway
 }
@@ -141,7 +143,7 @@ def build_pathway(cfg, *args, **kwargs):
 
 
 @BACKBONES.register_module()
-class AVResNet3DSlowFast(nn.Module):
+class AVResNet3dSlowFast(nn.Module):
     """Audio Visual Slowfast backbone.
 
     This module is proposed in `SlowFast Networks for Video Recognition
@@ -190,6 +192,7 @@ class AVResNet3DSlowFast(nn.Module):
                  channel_ratio_fast=8,
                  speed_ratio_audio=32,
                  channel_ratio_audio=2,
+                 drop_out_ratio=0.5,
                  slow_pathway=dict(
                      type='resnet3d',
                      depth=50,
@@ -214,6 +217,7 @@ class AVResNet3DSlowFast(nn.Module):
                      type='resnet_audio',
                      depth=50,
                      pretrained=None,
+                     strides=(2, 2, 2, 2),
                      lateral=True)):
         super().__init__()
         self.pretrained = pretrained
@@ -222,15 +226,17 @@ class AVResNet3DSlowFast(nn.Module):
         self.channel_ratio_fast = channel_ratio_fast
         self.speed_ratio_audio = speed_ratio_audio
         self.channel_ratio_audio = channel_ratio_audio
+        self.drop_out_ratio = drop_out_ratio
 
         if slow_pathway['lateral']:
             slow_pathway['speed_ratio'] = speed_ratio_fast
-            slow_pathway['channel_ratio'] = 1. / (1. / channel_ratio_fast +
-                                                  1. / channel_ratio_audio)
+            slow_pathway['channel_ratio'] = channel_ratio_fast
         if audio_pathway['lateral']:
             audio_pathway['speed_ratio'] = speed_ratio_audio
             audio_pathway['channel_ratio'] = channel_ratio_audio
-
+        random.seed(100)
+        # set the random seed to avoid different
+        # graphs in distributed env
         self.slow_path = build_pathway(slow_pathway)
         self.fast_path = build_pathway(fast_pathway)
         self.audio_path = build_pathway(audio_pathway)
@@ -263,6 +269,7 @@ class AVResNet3DSlowFast(nn.Module):
             tuple[torch.Tensor]: The feature of the input samples extracted
                 by the backbone.
         """
+        use_audio = random.random() > self.drop_out_ratio
         # stem
         x_slow = nn.functional.interpolate(
             x,
@@ -282,14 +289,18 @@ class AVResNet3DSlowFast(nn.Module):
 
         x_audio = a
         x_audio = self.audio_path.conv1(x_audio)
-
-        if self.audio_path.lateral:
-            x_audio_lateral = self.audio_path.conv1_lateral(x_audio)
-            x_slow = torch.cat((x_slow, x_audio_lateral), dim=1)
-
         if self.slow_path.lateral:
             x_fast_lateral = self.slow_path.conv1_lateral(x_fast)
             x_slow = torch.cat((x_slow, x_fast_lateral), dim=1)
+
+        if use_audio and self.audio_path.lateral:
+            x_audio_lateral = self.audio_path.conv1_lateral(x_audio)
+            x_audio_lateral = x_audio_lateral.unsqueeze(4)
+            # use t-pool rather than t-conv
+            x_audio_lateral_pooled = F.adaptive_avg_pool3d(
+                x_audio_lateral,
+                x_slow.size()[2:])
+            x_slow = x_slow + x_audio_lateral_pooled
 
         # res-stages
         for i, layer_name in enumerate(self.slow_path.res_layers):
@@ -307,11 +318,18 @@ class AVResNet3DSlowFast(nn.Module):
                 conv_lateral = getattr(self.slow_path, lateral_name)
                 x_fast_lateral = conv_lateral(x_fast)
                 x_slow = torch.cat((x_slow, x_fast_lateral), dim=1)
-
-                lateral_name = self.audio_path.lateral_connections[i]
-                conv_lateral = getattr(self.audio_path, lateral_name)
-                x_audio_lateral = conv_lateral(x_audio)
-                x_slow = torch.cat((x_slow, x_audio_lateral), dim=1)
+                if use_audio:
+                    lateral_name = self.audio_path.lateral_connections[i]
+                    conv_lateral = getattr(self.audio_path, lateral_name)
+                    x_audio_lateral = conv_lateral(x_audio)
+                    # NCTF -> NCTHW
+                    x_audio_lateral = x_audio_lateral.unsqueeze(4)
+                    x_audio_lateral_pooled = F.adaptive_avg_pool3d(
+                        x_audio_lateral,
+                        x_slow.size()[2:])
+                    x_slow = x_slow + x_audio_lateral_pooled
+                else:
+                    x_audio = torch.zeros_like(x_audio, requires_grad=True)
 
         out = (x_slow, x_fast, x_audio)
 
