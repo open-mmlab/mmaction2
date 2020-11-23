@@ -19,11 +19,8 @@ Specifies:
   DetectionResultFields: standard fields returned by object detector.
 """
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
 
-
-class InputDataFields(object):
+class InputDataFields:
     """Names for the input tensors.
 
     Holds the standard data field names to use for identifying input tensors.
@@ -32,34 +29,35 @@ class InputDataFields(object):
     identify the tensors it needs.
 
     Attributes:
-      image: image.
-      original_image: image in the original input size.
-      key: unique key corresponding to image.
-      source_id: source of the original image.
-      filename: original filename of the dataset (without common path).
-      groundtruth_image_classes: image-level class labels.
-      groundtruth_boxes: coordinates of the ground truth boxes in the image.
-      groundtruth_classes: box-level class labels.
-      groundtruth_label_types: box-level label types (e.g. explicit negative).
-      groundtruth_is_crowd: [DEPRECATED, use groundtruth_group_of instead]
-        is the groundtruth a single object or a crowd.
-      groundtruth_area: area of a groundtruth segment.
-      groundtruth_difficult: is a `difficult` object
-      groundtruth_group_of: is a `group_of` objects, e.g. multiple objects of
-        the same class, forming a connected group, where instances are heavily
-        occluding each other.
-      proposal_boxes: coordinates of object proposal boxes.
-      proposal_objectness: objectness score of each proposal.
-      groundtruth_instance_masks: ground truth instance masks.
-      groundtruth_instance_boundaries: ground truth instance boundaries.
-      groundtruth_instance_classes: instance mask-level class labels.
-      groundtruth_keypoints: ground truth keypoints.
-      groundtruth_keypoint_visibilities: ground truth keypoint visibilities.
-      groundtruth_label_scores: groundtruth label scores.
-      groundtruth_weights: groundtruth weight factor for bounding boxes.
-      num_groundtruth_boxes: number of groundtruth boxes.
-      true_image_shapes: true shapes of images in the resized images, as
-        resized images can be padded with zeros.
+        image: image.
+        original_image: image in the original input size.
+        key: unique key corresponding to image.
+        source_id: source of the original image.
+        filename: original filename of the dataset (without common path).
+        groundtruth_image_classes: image-level class labels.
+        groundtruth_boxes: coordinates of the ground truth boxes in the image.
+        groundtruth_classes: box-level class labels.
+        groundtruth_label_types: box-level label types (e.g. explicit
+            negative).
+        groundtruth_is_crowd: [DEPRECATED, use groundtruth_group_of instead]
+            is the groundtruth a single object or a crowd.
+        groundtruth_area: area of a groundtruth segment.
+        groundtruth_difficult: is a `difficult` object
+        groundtruth_group_of: is a `group_of` objects, e.g. multiple objects of
+            the same class, forming a connected group, where instances are
+            heavily occluding each other.
+        proposal_boxes: coordinates of object proposal boxes.
+        proposal_objectness: objectness score of each proposal.
+        groundtruth_instance_masks: ground truth instance masks.
+        groundtruth_instance_boundaries: ground truth instance boundaries.
+        groundtruth_instance_classes: instance mask-level class labels.
+        groundtruth_keypoints: ground truth keypoints.
+        groundtruth_keypoint_visibilities: ground truth keypoint visibilities.
+        groundtruth_label_scores: groundtruth label scores.
+        groundtruth_weights: groundtruth weight factor for bounding boxes.
+        num_groundtruth_boxes: number of groundtruth boxes.
+        true_image_shapes: true shapes of images in the resized images, as
+            resized images can be padded with zeros.
     """
 
     image = 'image'
@@ -88,19 +86,22 @@ class InputDataFields(object):
     true_image_shape = 'true_image_shape'
 
 
-class DetectionResultFields(object):
+class DetectionResultFields:
     """Naming conventions for storing the output of the detector.
 
     Attributes:
-      source_id: source of the original image.
-      key: unique key corresponding to image.
-      detection_boxes: coordinates of the detection boxes in the image.
-      detection_scores: detection scores for the detection boxes in the image.
-      detection_classes: detection-level class labels.
-      detection_masks: contains a segmentation mask for each detection box.
-      detection_boundaries: contains an object boundary for each detection box.
-      detection_keypoints: contains detection keypoints for each detection box.
-      num_detections: number of detections in the batch.
+        source_id: source of the original image.
+        key: unique key corresponding to image.
+        detection_boxes: coordinates of the detection boxes in the image.
+        detection_scores: detection scores for the detection boxes in the
+            image.
+        detection_classes: detection-level class labels.
+        detection_masks: contains a segmentation mask for each detection box.
+        detection_boundaries: contains an object boundary for each detection
+            box.
+        detection_keypoints: contains detection keypoints for each detection
+            box.
+        num_detections: number of detections in the batch.
     """
 
     source_id = 'source_id'

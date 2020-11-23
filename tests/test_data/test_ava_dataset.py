@@ -12,7 +12,7 @@ def check_keys_contain(result_keys, target_keys):
     return set(target_keys).issubset(set(result_keys))
 
 
-class TestAVADataset(object):
+class TestAVADataset:
 
     @classmethod
     def setup_class(cls):
