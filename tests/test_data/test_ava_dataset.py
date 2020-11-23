@@ -2,7 +2,7 @@ import os.path as osp
 
 import mmcv
 import numpy as np
-from numpy.testing import assert_array_equal
+from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from mmaction.datasets import AVADataset
 
@@ -92,8 +92,6 @@ class TestAVADataset(object):
             data_prefix=self.data_prefix,
             proposal_file=self.proposal_file)
 
-        assert ava_dataset.proposals is None
-
     def test_ava_pipeline(self):
         target_keys = [
             'frame_dir', 'video_id', 'timestamp', 'img_key', 'shot_info',
@@ -124,3 +122,40 @@ class TestAVADataset(object):
         assert result['clip_len'] == 32
         assert result['frame_interval'] == 2
         assert len(result['frame_inds']) == 32
+
+    def test_ava_evaluate(self):
+        data_prefix = osp.join(
+            osp.dirname(__file__), '../data/test_eval_detection')
+        ann_file = osp.join(data_prefix, 'gt.csv')
+        label_file = osp.join(data_prefix, 'action_list.txt')
+        ava_dataset = AVADataset(
+            ann_file, None, [], label_file=label_file, num_classes=4)
+        fake_result = [[
+            np.array([[0.362, 0.156, 0.969, 0.666, 0.106],
+                      [0.442, 0.083, 0.721, 0.947, 0.162]]),
+            np.array([[0.288, 0.365, 0.766, 0.551, 0.706],
+                      [0.178, 0.296, 0.707, 0.995, 0.223]]),
+            np.array([[0.417, 0.167, 0.843, 0.939, 0.015],
+                      [0.35, 0.421, 0.57, 0.689, 0.427]])
+        ],
+                       [
+                           np.array([[0.256, 0.338, 0.726, 0.799, 0.563],
+                                     [0.071, 0.256, 0.64, 0.75, 0.297]]),
+                           np.array([[0.326, 0.036, 0.513, 0.991, 0.405],
+                                     [0.351, 0.035, 0.729, 0.936, 0.945]]),
+                           np.array([[0.051, 0.005, 0.975, 0.942, 0.424],
+                                     [0.347, 0.05, 0.97, 0.944, 0.396]])
+                       ],
+                       [
+                           np.array([[0.39, 0.087, 0.833, 0.616, 0.447],
+                                     [0.461, 0.212, 0.627, 0.527, 0.036]]),
+                           np.array([[0.022, 0.394, 0.93, 0.527, 0.109],
+                                     [0.208, 0.462, 0.874, 0.948, 0.954]]),
+                           np.array([[0.206, 0.456, 0.564, 0.725, 0.685],
+                                     [0.106, 0.445, 0.782, 0.673, 0.367]])
+                       ]]
+        res = ava_dataset.evaluate(fake_result)
+        assert_array_almost_equal(res['Recall@0.5@100'], 1.0)
+        assert_array_almost_equal(res['AR@100'], 0.60833333)
+        assert_array_almost_equal(res['PascalBoxes_Precision/mAP@0.5IOU'],
+                                  0.027777777)
