@@ -61,37 +61,32 @@ def test_assigner_sampler():
 def test_bbox_overlaps():
     dtype = torch.float
     b1 = torch.tensor([[1.0, 1.0, 3.0, 4.0], [2.0, 2.0, 3.0, 4.0],
-                       [7.0, 7.0, 8.0, 8.0]]).cuda().type(dtype)
-    b2 = torch.tensor([[0.0, 2.0, 2.0, 5.0], [2.0, 1.0, 3.0,
-                                              3.0]]).cuda().type(dtype)
+                       [7.0, 7.0, 8.0, 8.0]]).type(dtype)
+    b2 = torch.tensor([[0.0, 2.0, 2.0, 5.0], [2.0, 1.0, 3.0, 3.0]]).type(dtype)
     should_output = np.array([[0.33333334, 0.5], [0.2, 0.5], [0.0, 0.0]])
     out = bbox_overlaps(b1, b2)
-    assert np.allclose(out.cpu().numpy(), should_output, 1e-2)
+    assert np.allclose(out.numpy(), should_output, 1e-2)
 
-    b1 = torch.tensor([[1.0, 1.0, 3.0, 4.0], [2.0, 2.0, 3.0,
-                                              4.0]]).cuda().type(dtype)
-    b2 = torch.tensor([[0.0, 2.0, 2.0, 5.0], [2.0, 1.0, 3.0,
-                                              3.0]]).cuda().type(dtype)
+    b1 = torch.tensor([[1.0, 1.0, 3.0, 4.0], [2.0, 2.0, 3.0, 4.0]]).type(dtype)
+    b2 = torch.tensor([[0.0, 2.0, 2.0, 5.0], [2.0, 1.0, 3.0, 3.0]]).type(dtype)
     should_output = np.array([0.33333334, 0.5])
     out = bbox_overlaps(b1, b2, aligned=True)
-    assert np.allclose(out.cpu().numpy(), should_output, 1e-2)
+    assert np.allclose(out.numpy(), should_output, 1e-2)
 
-    b1 = torch.tensor([[0.0, 0.0, 3.0, 3.0]]).cuda().type(dtype)
-    b1 = torch.tensor([[0.0, 0.0, 3.0, 3.0]]).cuda().type(dtype)
+    b1 = torch.tensor([[0.0, 0.0, 3.0, 3.0]]).type(dtype)
     b2 = torch.tensor([[4.0, 0.0, 5.0, 3.0], [3.0, 0.0, 4.0, 3.0],
-                       [2.0, 0.0, 3.0, 3.0], [1.0, 0.0, 2.0,
-                                              3.0]]).cuda().type(dtype)
+                       [2.0, 0.0, 3.0, 3.0], [1.0, 0.0, 2.0, 3.0]]).type(dtype)
     should_output = np.array([0, 0.2, 0.5, 0.5])
     out = bbox_overlaps(
         b1,
         b2,
     )
-    assert np.allclose(out.cpu().numpy(), should_output, 1e-2)
+    assert np.allclose(out.numpy(), should_output, 1e-2)
 
 
 def test_bbox2roi():
     bbox_list = [
-        torch.tensor([[0, 0, 1, 1]]),
+        torch.tensor([[0.0, 0.0, 1.0, 1.0]]),
         torch.tensor([[0.1, 0.1, 0.9, 0.9]]),
         torch.tensor([[0.2, 0.2, 0.8, 0.8], [0.3, 0.3, 0.7, 0.7]])
     ]
@@ -158,7 +153,7 @@ def test_bbox_target():
     assert torch.all(
         torch.isclose(
             labels,
-            torch.tensor([[0., 0., 0., 0.], [0., 0., 0., 1.], [0., 1., 0., 0.],
+            torch.tensor([[0., 0., 1., 0.], [0., 0., 0., 1.], [0., 1., 0., 0.],
                           [0., 1., 0., 0.], [0., 0., 0., 0.], [0., 0., 0.,
                                                                0.]])))
     assert torch.all(
