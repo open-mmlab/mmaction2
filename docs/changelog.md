@@ -14,6 +14,7 @@
 - Support PyTorch 1.7 in CI ([#312](https://github.com/open-mmlab/mmaction2/pull/312))
 - Support to predict different labels in a long video ([#274](https://github.com/open-mmlab/mmaction2/pull/274))
 - Add random seed for building filelists ([#323](https://github.com/open-mmlab/mmaction2/pull/323))
+- Update colab ipynb tutorial ([#366](https://github.com/open-mmlab/mmaction2/pull/366))
 - Move docs about demo to `demo/README.md` ([#329](https://github.com/open-mmlab/mmaction2/pull/329))
 - Remove redundant code in `tools/test.py` ([#310](https://github.com/open-mmlab/mmaction2/pull/310))
 
