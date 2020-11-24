@@ -11,7 +11,7 @@ fi
 
 cd ../../../data/${DATASET}/
 ls ./videos_train | while read class; do \
-  newclass=`echo $class | tr " " "_" | tr "(" "-" | tr ")" "-" `;
+  newclass=`echo $class | tr " " "_" `;
   if [ "${class}" != "${newclass}" ]
   then
     mv "videos_train/${class}" "videos_train/${newclass}";
@@ -19,7 +19,7 @@ ls ./videos_train | while read class; do \
 done
 
 ls ./videos_val | while read class; do \
-  newclass=`echo $class | tr " " "_" | tr "(" "-" | tr ")" "-" `;
+  newclass=`echo $class | tr " " "_" `;
   if [ "${class}" != "${newclass}" ]
   then
     mv "videos_val/${class}" "videos_val/${newclass}";

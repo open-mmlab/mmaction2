@@ -34,15 +34,7 @@ bash download_videos.sh ${DATASET}
 ```
 
 If you have already have a backup of the dataset using the download script above,
-you only need to replace all whitespaces in the class name for ease of processing either by [detox](http://manpages.ubuntu.com/manpages/bionic/man1/detox.1.html)
-
-```shell
-# sudo apt-get install detox
-detox -r ../../../data/${DATASET}/videos_train/
-detox -r ../../../data/${DATASET}/videos_val/
-```
-
-or running
+you only need to replace all whitespaces in the class name for ease of processing by running
 
 ```shell
 bash rename_classnames.sh ${DATASET}
