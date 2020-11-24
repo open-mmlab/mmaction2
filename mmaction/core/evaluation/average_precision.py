@@ -8,6 +8,15 @@ from .bbox_overlaps import iou2d, spatio_temporal_iou3d, spatio_temporal_nms3d
 
 
 def pr_to_ap(precision_recall):
+    """Compute AP given precision-recall.
+
+    Args:
+        precision_recall (np.ndarray): precision_recall is an Nx2 array with
+            first row being precision and second row being recall.
+
+    Returns:
+        np.ndarray: The result of average precision.
+    """
 
     pr_diff = precision_recall[1:, 1] - precision_recall[:-1, 1]
     pr_sum = precision_recall[1:, 0] + precision_recall[:-1, 0]
@@ -16,6 +25,18 @@ def pr_to_ap(precision_recall):
 
 
 def frame_ap(det_results, labels, videos, gt_tubes, threshold=0.5):
+    """Calculate frame mAP for tubes.
+
+    Args:
+        det_results (np.ndarray): Detection results for each frames.
+        labels (list): List of action labels.
+        videos (list): List of video names.
+        gt_tubes (dict): Ground truth tubes for each video.
+        threshold (float): Threshold for IoU. Default: 0.5.
+
+    Returns:
+        float: The calculated frame mAP.
+    """
     results = []
     for label_index, label in enumerate(labels):
         det_result = det_results[det_results[:, 2] == label_index, :]
@@ -73,6 +94,23 @@ def frame_ap(det_results, labels, videos, gt_tubes, threshold=0.5):
 
 
 def frame_ap_error(det_results, labels, videos, gt_tubes, threshold=0.5):
+    """Calculate error information for frame mAP in tubes.
+
+    The error information will contain ap_results, localization_error,
+    classification_error, time_error, other_error, missing_detections.
+
+    Args:
+        det_results (np.ndarray): Detection results for each frames.
+        labels (list): List of action labels.
+        videos (list): List of video names.
+        gt_tubes (dict): Ground truth tubes for each video.
+        threshold (float): Threshold for IoU. Default: 0.5.
+
+    Returns:
+        dict: Result dict containing frame mAP, localization_error,
+            classification_error, time_error, other_error and
+            missing_detections
+    """
     ap_results = []
     other_ap_results = [[], [], [], []]
     missing_detections = []
@@ -197,6 +235,19 @@ def frame_ap_error(det_results, labels, videos, gt_tubes, threshold=0.5):
 
 
 def video_ap(labels, videos, gt_tubes, tube_dir, threshold=0.5, overlap=0.3):
+    """Calculate video mAP for tubes.
+
+    Args:
+        labels (list): List of action labels.
+        videos (list): List of video names.
+        gt_tubes (dict): Ground truth tubes for each video.
+        tube_dir (str): Directory of predicted tube pickle files.
+        threshold (float): Threshold for IoU. Default: 0.5.
+        overlap (float): Threshold of overlap for nms. Default: 0.3.
+
+    Returns:
+        float: The calculated video mAP.
+    """
 
     det_results = defaultdict(list)
 

@@ -1,20 +1,20 @@
 import numpy as np
 
 
-def overlap2d(origin_box, target_box):
-    """Compute the overlaps between original boxes and target boxes.
+def overlap2d(bboxes1, bboxes2):
+    """Calculate the overlap between each bbox of bboxes1 and bboxes2.
 
     Args:
-        origin_box (np.ndarray): Original bounding boxes.
-        target_box (np.ndarray): Target bounding boxes.
+        bboxes1 (np.ndarray): shape (n, 4).
+        bboxes2 (np.ndarray): shape (k, 4).
 
     Returns:
         np.ndarray: Overlap between the boxes pairs.
     """
-    x_min = np.maximum(origin_box[:, 0], target_box[:, 0])
-    y_min = np.maximum(origin_box[:, 1], target_box[:, 1])
-    x_max = np.minimum(origin_box[:, 2], target_box[:, 2])
-    y_max = np.minimum(origin_box[:, 3], target_box[:, 3])
+    x_min = np.maximum(bboxes1[:, 0], bboxes2[:, 0])
+    y_min = np.maximum(bboxes1[:, 1], bboxes2[:, 1])
+    x_max = np.minimum(bboxes1[:, 2], bboxes2[:, 2])
+    y_max = np.minimum(bboxes1[:, 3], bboxes2[:, 3])
 
     width = np.maximum(0, x_max - x_min)
     height = np.maximum(0, y_max - y_min)
@@ -37,65 +37,93 @@ def area2d(box):
     return width * height
 
 
-def iou2d(origin_box, target_box):
-    """Compute the IoU between original boxes and target boxes.
+def iou2d(bboxes1, bboxes2):
+    """Calculate the IoUs between each bbox of bboxes1 and bboxes2.
 
     Args:
-        origin_box (np.ndarray): Original bounding boxes.
-        target_box (np.ndarray): Target bounding boxes.
+        bboxes1 (np.ndarray): shape (n, 4).
+        bboxes2 (np.ndarray): shape (k, 4).
 
     Returns:
         np.ndarray: IoU between the boxes pairs.
     """
-    if origin_box.ndim == 1:
-        origin_box = origin_box[None, :]
-    if target_box.ndim == 1:
-        target_box = target_box[None, :]
+    if bboxes1.ndim == 1:
+        bboxes1 = bboxes1[None, :]
+    if bboxes2.ndim == 1:
+        bboxes2 = bboxes2[None, :]
 
-    assert len(target_box) == 1
-    overlap = overlap2d(origin_box, target_box)
+    assert len(bboxes2) == 1
+    overlap = overlap2d(bboxes1, bboxes2)
 
-    return overlap / (area2d(origin_box) + area2d(target_box) - overlap)
+    return overlap / (area2d(bboxes1) + area2d(bboxes2) - overlap)
 
 
-def iou3d(origin_box, target_box):
+def iou3d(bboxes1, bboxes2):
+    """Calculate the IoU3d regardless of temporal overlap between two pairs of
+    bboxes.
 
-    assert origin_box.shape[0] == target_box.shape[0]
-    assert np.all(origin_box[:, 0] == target_box[:, 0])
+    Args:
+        bboxes1 (np.ndarray): shape (n, 4).
+        bboxes2 (np.ndarray): shape (k, 4).
 
-    overlap = overlap2d(origin_box[:, 1:5], target_box[:, 1:5])
+    Returns:
+        np.ndarray: IoU3d regardless of temporal overlap.
+    """
+
+    assert bboxes1.shape[0] == bboxes2.shape[0]
+    assert np.all(bboxes1[:, 0] == bboxes2[:, 0])
+
+    overlap = overlap2d(bboxes1[:, 1:5], bboxes2[:, 1:5])
 
     return np.mean(
         overlap /
-        (area2d(origin_box[:, 1:5]) + area2d(target_box[:, 1:5]) - overlap))
+        (area2d(bboxes1[:, 1:5]) + area2d(bboxes2[:, 1:5]) - overlap))
 
 
-def spatio_temporal_iou3d(origin_box, target_box, spatial_only=False):
-    tmin = max(origin_box[0, 0], target_box[0, 0])
-    tmax = min(origin_box[-1, 0], target_box[-1, 0])
+def spatio_temporal_iou3d(bboxes1, bboxes2, spatial_only=False):
+    """Calculate the IoU3d between two pairs of bboxes.
+
+    Args:
+        bboxes1 (np.ndarray): shape (n, 4).
+        bboxes2 (np.ndarray): shape (k, 4).
+        spatial_only (bool): Whether to consider the temporal overlap.
+            Default: False.
+
+    Returns:
+        np.ndarray: IoU3d for bboxes between two tubes.
+    """
+    tmin = max(bboxes1[0, 0], bboxes2[0, 0])
+    tmax = min(bboxes1[-1, 0], bboxes2[-1, 0])
 
     if tmax < tmin:
         return 0.0
 
     temporal_inter = tmax - tmin + 1
     temporal_union = (
-        max(origin_box[-1, 0], target_box[-1, 0]) -
-        min(origin_box[0, 0], target_box[0, 0]) + 1)
+        max(bboxes1[-1, 0], bboxes2[-1, 0]) -
+        min(bboxes1[0, 0], bboxes2[0, 0]) + 1)
 
-    tube1 = origin_box[int(np.where(
-        origin_box[:,
-                   0] == tmin)[0]):int(np.where(origin_box[:, 0] == tmax)[0]) +
-                       1, :]
-    tube2 = target_box[int(np.where(
-        target_box[:,
-                   0] == tmin)[0]):int(np.where(target_box[:, 0] == tmax)[0]) +
-                       1, :]
+    tube1 = bboxes1[int(np.where(
+        bboxes1[:,
+                0] == tmin)[0]):int(np.where(bboxes1[:, 0] == tmax)[0]) + 1, :]
+    tube2 = bboxes2[int(np.where(
+        bboxes2[:,
+                0] == tmin)[0]):int(np.where(bboxes2[:, 0] == tmax)[0]) + 1, :]
 
     return iou3d(tube1, tube2) * (1. if spatial_only else temporal_inter /
                                   temporal_union)
 
 
 def spatio_temporal_nms3d(tubes, overlap=0.5):
+    """NMS processing for tubes in spatio and temporal dimension.
+
+    Args:
+        tubes (np.ndarray): Bounding boxes in tubes.
+        overlap (float): Threshold of overlap for nms
+
+    Returns:
+        np.ndarray[int]: Index for Selected bboxes.
+    """
     if not tubes:
         return np.array([], dtype=np.int32)
 
@@ -117,6 +145,15 @@ def spatio_temporal_nms3d(tubes, overlap=0.5):
 
 
 def nms2d(boxes, overlap=0.6):
+    """NMS processing.
+
+    Args:
+        boxes (np.ndarray): shape (n, 4).
+        overlap (float): Threshold of overlap. Default: 0.6.
+
+    Returns:
+        np.ndarray: Result bboxes.
+    """
     if boxes.size == 0:
         return np.array([], dtype=np.int32)
 

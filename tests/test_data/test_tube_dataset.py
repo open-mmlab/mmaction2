@@ -37,6 +37,10 @@ class TestTubeDataset:
 
         tube_dataset = TubeDataset(
             self.ann_file, self.pipeline, data_prefix=self.data_prefix)
+        assert hasattr(tube_dataset, 'gt_tubes')
+        assert hasattr(tube_dataset, 'labels')
+        assert hasattr(tube_dataset, 'videos')
+
         tube_info = tube_dataset.video_infos[0]
         assert check_keys_contain(tube_info.keys(), target_keys)
 
@@ -46,7 +50,7 @@ class TestTubeDataset:
                                                   tube_info['video'])
         assert tube_info['total_frames'] == 240
         assert tube_info['resolution'] == (240, 320)
-        assert list(tube_info['gt_bboxes'].keys()) == [23]
+        assert list(tube_info['gt_bboxes']) == [23]
         assert_array_equal(tube_info['gt_bboxes'][23], [
             np.array([[77., 0., 185., 168.], [77., 0., 185., 168.],
                       [77., 0., 185., 168.], [77., 0., 185., 168.],
@@ -69,7 +73,7 @@ class TestTubeDataset:
                                                        test_tube_info['video'])
         assert test_tube_info['total_frames'] == 167
         assert test_tube_info['resolution'] == (240, 320)
-        assert list(test_tube_info['gt_bboxes'].keys()) == [14]
+        assert list(test_tube_info['gt_bboxes']) == [14]
         assert_array_equal(test_tube_info['gt_bboxes'][14], [
             np.array([[125., 60., 192., 211.], [125., 60., 192., 211.],
                       [127., 61., 191., 212.], [127., 61., 188., 212.],
