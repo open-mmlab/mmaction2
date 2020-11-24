@@ -147,7 +147,7 @@ class ResNetAudio(nn.Module):
                  in_channels=1,
                  num_stages=4,
                  base_channels=32,
-                 strides=(1, 2, 2, 2),
+                 strides=(2, 2, 2, 2),
                  dilations=(1, 1, 1, 1),
                  conv1_kernel=9,
                  conv1_stride=1,

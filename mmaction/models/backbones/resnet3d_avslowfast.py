@@ -3,6 +3,7 @@ import random
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torchsnooper
 from mmcv.cnn import ConvModule, kaiming_init
 from mmcv.runner import load_checkpoint
 from mmcv.utils import print_log
@@ -36,6 +37,7 @@ class ResNetAudioPathway(ResNetAudio):
                  lateral=True,
                  speed_ratio=32,
                  channel_ratio=2,
+                 channel_ratio_fast=8,
                  fusion_kernel=9,
                  **kwargs):
         self.lateral = lateral
@@ -47,7 +49,8 @@ class ResNetAudioPathway(ResNetAudio):
         if self.lateral:
             self.conv1_lateral = ConvModule(
                 self.inplanes,
-                self.inplanes * self.channel_ratio,
+                (self.inplanes * 2 * self.channel_ratio // channel_ratio_fast)
+                + self.inplanes * 2,
                 kernel_size=(fusion_kernel, 1),
                 stride=(self.speed_ratio, 1),
                 padding=((fusion_kernel - 1) // 2, 0),
@@ -68,9 +71,11 @@ class ResNetAudioPathway(ResNetAudio):
                     self, lateral_name,
                     ConvModule(
                         self.inplanes,
-                        self.inplanes * self.channel_ratio,
-                        kernel_size=fusion_kernel,
-                        stride=self.speed_ratio,
+                        (self.inplanes * 2 * self.channel_ratio //
+                         channel_ratio_fast) + self.inplanes * 2,
+                        kernel_size=(fusion_kernel, 1),
+                        stride=(self.speed_ratio, 1),
+                        padding=((fusion_kernel - 1) // 2, 0),
                         bias=False,
                         conv_cfg=self.conv_cfg,
                         norm_cfg=self.norm_cfg,
@@ -258,6 +263,7 @@ class AVResNet3dSlowFast(nn.Module):
         else:
             raise TypeError('pretrained must be a str or None')
 
+    @torchsnooper.snoop()
     def forward(self, x, a):
         """Defines the computation performed at every call.
 
@@ -298,8 +304,7 @@ class AVResNet3dSlowFast(nn.Module):
             x_audio_lateral = x_audio_lateral.unsqueeze(4)
             # use t-pool rather than t-conv
             x_audio_lateral_pooled = F.adaptive_avg_pool3d(
-                x_audio_lateral,
-                x_slow.size()[2:])
+                x_audio_lateral, [x_slow.size(2), 1, 1])
             x_slow = x_slow + x_audio_lateral_pooled
 
         # res-stages
@@ -325,8 +330,7 @@ class AVResNet3dSlowFast(nn.Module):
                     # NCTF -> NCTHW
                     x_audio_lateral = x_audio_lateral.unsqueeze(4)
                     x_audio_lateral_pooled = F.adaptive_avg_pool3d(
-                        x_audio_lateral,
-                        x_slow.size()[2:])
+                        x_audio_lateral, [x_slow.size(2), 1, 1])
                     x_slow = x_slow + x_audio_lateral_pooled
                 else:
                     x_audio = torch.zeros_like(x_audio, requires_grad=True)

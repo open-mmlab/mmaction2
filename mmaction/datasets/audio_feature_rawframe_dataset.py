@@ -9,6 +9,7 @@ class AudioFeatureRawframeDataset(RawframeDataset):
 
     def __init__(self, ann_file, pipeline, audio_prefix, **kwargs):
         self.audio_prefix = audio_prefix
+        self.video_prefix = kwargs.pop('video_prefix', None)
         super(AudioFeatureRawframeDataset,
               self).__init__(ann_file, pipeline, **kwargs)
 
@@ -21,13 +22,18 @@ class AudioFeatureRawframeDataset(RawframeDataset):
                 idx = 0
                 # idx for frame_dir
                 frame_dir = line_split[idx]
-                if self.data_prefix is not None:
-                    frame_dir = osp.join(self.data_prefix, frame_dir)
                 if self.audio_prefix is not None:
                     audio_path = osp.join(self.audio_prefix,
                                           frame_dir) + '.npy'
+                if self.video_prefix:
+                    video_path = osp.join(self.video_prefix,
+                                          frame_dir) + '.mp4'
+
+                if self.data_prefix is not None:
+                    frame_dir = osp.join(self.data_prefix, frame_dir)
                 video_info['frame_dir'] = frame_dir
                 video_info['audio_path'] = audio_path
+                video_info['filename'] = video_path
                 idx += 1
                 if self.with_offset:
                     # idx for offset and total_frames
