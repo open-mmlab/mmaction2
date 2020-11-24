@@ -21,6 +21,13 @@
 |[tsn_r50_1x1x3_75e_ucf101_rgb](/configs/recognition/tsn/tsn_r50_1x1x3_75e_ucf101_rgb.py) [1] |8| ResNet50 | ImageNet |83.03|96.78|8332| [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x3_75e_ucf101_rgb/tsn_r50_1x1x3_75e_ucf101_rgb_20201023-d85ab600.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x3_75e_ucf101_rgb/tsn_r50_1x1x3_75e_ucf101_rgb_20201023.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x3_75e_ucf101_rgb/tsn_r50_1x1x3_75e_ucf101_rgb_20201023.json) |
 
 [1] We report the performance on UCF-101 split1.
+### HMDB51
+|config | gpus | backbone | pretrain | top1 acc| top5 acc | gpu_mem(M) | ckpt | log| json|
+|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+|[tsn_r50_1x1x8_50e_hmdb51_imagenet_rgb](/configs/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_imagenet_rgb.py)|8| ResNet50 | ImageNet | 48.95| 80.19| 21535| [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_imagenet_rgb/tsn_r50_1x1x8_50e_hmdb51_imagenet_rgb_20201123-ce6c27ed.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_imagenet_rgb/20201025_231108.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_imagenet_rgb/20201025_231108.log.json) |
+|[tsn_r50_1x1x8_50e_hmdb51_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_kinetics400_rgb.py) |8| ResNet50 | Kinetics400 | 56.08 | 84.31 | 21535| [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_kinetics400_rgb/tsn_r50_1x1x8_50e_hmdb51_kinetics400_rgb_20201123-7f84701b.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_kinetics400_rgb/20201108_190805.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_kinetics400_rgb/20201108_190805.log.json) |
+|[tsn_r50_1x1x8_50e_hmdb51_mit_rgb](/configs/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_mit_rgb.py) |8| ResNet50 | Moments | 54.25 | 83.86| 21535| [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_mit_rgb/tsn_r50_1x1x8_50e_hmdb51_mit_rgb_20201123-01526d41.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_mit_rgb/20201112_170135.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_mit_rgb/20201112_170135.log.json) |
+
 
 ### Kinetics-400
 
@@ -148,7 +155,7 @@ Notes:
    not including the IO time and pre-processing time. For each setting, we use 1 gpu and set batch size (videos per gpu) to 1 to calculate the inference time.
 3. The values in columns named after "reference" are the results got by training on the original repo, using the same model settings.
 
-For more details on data preparation, you can refer to [preparing_ucf101](/tools/data/ucf101/preparing_ucf101.md),  [preparing_kinetics400](/tools/data/kinetics400/preparing_kinetics400.md),  [preparing_sthv1](/tools/data/sthv1/preparing_sthv1.md),  [preparing_sthv2](/tools/data/sthv2/preparing_sthv2.md),  [preparing_mit](/tools/data/mit/preparing_mit.md),  [preparing_mmit](/tools/data/mmit/preparing_mmit.md),  [preparing_hvu](/tools/data/hvu/preparing_hvu.md).
+For more details on data preparation, you can refer to [preparing_ucf101](/tools/data/ucf101/preparing_ucf101.md),  [preparing_kinetics400](/tools/data/kinetics400/preparing_kinetics400.md),  [preparing_sthv1](/tools/data/sthv1/preparing_sthv1.md),  [preparing_sthv2](/tools/data/sthv2/preparing_sthv2.md),  [preparing_mit](/tools/data/mit/preparing_mit.md),  [preparing_mmit](/tools/data/mmit/preparing_mmit.md),  [preparing_hvu](/tools/data/hvu/preparing_hvu.md), [preparing_hmdb51](/tools/data/hmdb51/preparing_hmdb51.md).
 
 ## Train
 
