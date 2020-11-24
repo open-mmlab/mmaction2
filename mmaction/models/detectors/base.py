@@ -18,9 +18,6 @@ class BaseDetector(nn.Module, metaclass=ABCMeta):
     different components.
     """
 
-    def __init__(self):
-        super().__init__()
-
     @abstractmethod
     def init_weights(self):
         pass
@@ -42,12 +39,10 @@ class BaseDetector(nn.Module, metaclass=ABCMeta):
     def forward_train(self, imgs, proposals, img_meta, entity_boxes, labels,
                       **kwargs):
         """Defines the computation performed at training."""
-        pass
 
     @abstractmethod
     def forward_test(self, imgs, proposals, img_meta, **kwargs):
         """Defines the computation performed at testing."""
-        pass
 
     def forward(self, imgs, proposals, img_meta, return_loss=True, **kwargs):
         """Define the computation performed at every call."""

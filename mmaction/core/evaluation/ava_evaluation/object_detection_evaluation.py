@@ -77,7 +77,6 @@ class DetectionEvaluator:
             groundtruth_dict: A dictionary of groundtruth numpy arrays required
                 for evaluations.
         """
-        pass
 
     @abstractmethod
     def add_single_detected_image_info(self, image_id, detections_dict):
@@ -88,17 +87,14 @@ class DetectionEvaluator:
             detections_dict: A dictionary of detection numpy arrays required
                 for evaluation.
         """
-        pass
 
     @abstractmethod
     def evaluate(self):
         """Evaluates detections and returns a dictionary of metrics."""
-        pass
 
     @abstractmethod
     def clear(self):
         """Clears the state to prepare for a fresh evaluation."""
-        pass
 
 
 class ObjectDetectionEvaluator(DetectionEvaluator):
