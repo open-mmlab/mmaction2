@@ -842,10 +842,9 @@ class PyAVDecodeMotionVector(PyAVDecode):
         for row in range(len(vectors)):
             if (start_x[row] >= 0 and end_x[row] < width and start_y[row] >= 0
                     and end_y[row] < height):
-                mv[start_y[row]:end_y[row], start_x[row]:end_x[row],
-                   0] = val_x[row]
-                mv[start_y[row]:end_y[row], start_x[row]:end_x[row],
-                   1] = val_y[row]
+                mv[start_y[row]:end_y[row],
+                   start_x[row]:end_x[row]] = (val_x[row], val_y[row])
+
         return mv
 
     def __call__(self, results):
