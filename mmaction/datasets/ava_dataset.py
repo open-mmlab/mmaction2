@@ -311,6 +311,7 @@ class AVADataset(BaseDataset):
                 log_msg.append(f'\n{k}\t{v: .4f}')
             log_msg = ''.join(log_msg)
             print_log(log_msg, logger=logger)
+            ret.update(eval_result)
 
         os.remove(temp_file)
 
