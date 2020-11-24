@@ -137,6 +137,7 @@ jobs:
       - name: Install mmaction dependencies
         run: |
           pip install mmcv-full==${{matrix.mmcv}} -f https://download.openmmlab.com/mmcv/dist/index.html
+          pip install -q git+https://github.com/open-mmlab/mmdetection/
           pip install -r requirements.txt
       - name: Build and install
         run: |
