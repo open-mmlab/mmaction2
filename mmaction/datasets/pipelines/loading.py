@@ -829,7 +829,7 @@ class PyAVDecodeMotionVector(PyAVDecode):
     """
 
     def _parse_vectors(self, mv, vectors, height, width):
-        """Parse the returned vector."""
+        """Parse the returned vectors."""
         (w, h, src_x, src_y, dst_x,
          dst_y) = (vectors['w'], vectors['h'], vectors['src_x'],
                    vectors['src_y'], vectors['dst_x'], vectors['dst_y'])
@@ -839,7 +839,7 @@ class PyAVDecodeMotionVector(PyAVDecode):
         start_y = (-1 * h / 2).astype(np.int8) + dst_y
         end_x = start_x + w.astype(np.int8)
         end_y = start_y + h.astype(np.int8)
-        for row in range(len(vectors)):
+        for row, _ in enumerate(vectors):
             if (start_x[row] >= 0 and end_x[row] < width and start_y[row] >= 0
                     and end_y[row] < height):
                 mv[start_y[row]:end_y[row],
@@ -848,7 +848,7 @@ class PyAVDecodeMotionVector(PyAVDecode):
         return mv
 
     def __call__(self, results):
-        """Perform the PyAV decoding.
+        """Perform the PyAV motion vector decoding.
 
         Args:
             results (dict): The resulting dict to be modified and passed
