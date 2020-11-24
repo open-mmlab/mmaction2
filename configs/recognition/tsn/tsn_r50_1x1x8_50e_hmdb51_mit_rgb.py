@@ -99,7 +99,7 @@ log_config = dict(
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 work_dir = './work_dirs/tsn_r50_1x1x8_50e_hmdb51_mit_rgb/'
-load_from = './tsn_r50_1x1x6_100e_mit_rgb_20200618-d512ab1b.pth'
+load_from = 'https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x6_100e_mit_rgb/tsn_r50_1x1x6_100e_mit_rgb_20200618-d512ab1b.pth'  # noqa: E501
 resume_from = None
 workflow = [('train', 1)]
 gpu_ids = range(0, 1)
