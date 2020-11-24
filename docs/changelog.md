@@ -26,6 +26,7 @@
 
 **ModelZoo**
 - Add SlowOnly model for GYM99, both RGB and Flow ([#336](https://github.com/open-mmlab/mmaction2/pull/336))
+- Add TSN for HMDB51 pretrained on Kinetics400, Moments in Time and ImageNet. ([#372](https://github.com/open-mmlab/mmaction2/pull/372))
 
 ### v0.8.0 (31/10/2020)
 
