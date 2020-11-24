@@ -24,9 +24,9 @@ def test_assigner_sampler():
 
     assigner = dict(
         type='MaxIoUAssigner',
-        pos_iou_thr=0.75,
-        neg_iou_thr=0.75,
-        min_pos_iou=0.75)
+        pos_iou_thr=0.5,
+        neg_iou_thr=0.5,
+        min_pos_iou=0.5)
     assigner = build_assigner(assigner)
     proposal = torch.tensor(dataset[0]['proposals'])
     gt_bboxes = torch.tensor(dataset[0]['entity_boxes'])
@@ -34,19 +34,19 @@ def test_assigner_sampler():
     assign_result = assigner.assign(proposal, gt_bboxes, gt_labels)
     assert assign_result.num_gts == 4
     assert torch.all(
-        assign_result.gt_inds == torch.tensor([0, 1, 2, 3, 0, 0, 0, 1, 0, 0]))
+        assign_result.gt_inds == torch.tensor([0, 0, 3, 3, 0, 0, 0, 1, 0, 0]))
     assert torch.all(
         torch.isclose(
             assign_result.max_overlaps,
             torch.tensor([
-                0.69276601, 0.77789903, 0.78705092, 0.82503866, 0.71533428,
-                0.72312719, 0.72436035, 0.78155030, 0.69307099, 0.68858184
+                0.40386841, 0.47127257, 0.53544776, 0.58797631, 0.29281288,
+                0.40979504, 0.45902917, 0.50093938, 0.21560125, 0.32948171
             ],
                          dtype=torch.float64)))
     assert torch.all(
         torch.isclose(
             assign_result.labels,
-            torch.tensor([[0., 0., 0., 0.], [0., 0., 0., 1.], [0., 1., 0., 0.],
+            torch.tensor([[0., 0., 0., 0.], [0., 0., 0., 0.], [0., 1., 0., 0.],
                           [0., 1., 0., 0.], [0., 0., 0., 0.], [0., 0., 0., 0.],
                           [0., 0., 0., 0.], [0., 0., 0., 1.], [0., 0., 0., 0.],
                           [0., 0., 0., 0.]])))
@@ -54,8 +54,11 @@ def test_assigner_sampler():
     sampler = build_sampler(sampler)
     sampling_result = sampler.sample(assign_result, proposal, gt_bboxes,
                                      gt_labels)
-
-    assert sampling_result is not None
+    assert (sampling_result.pos_inds.shape[0] ==
+            sampling_result.pos_bboxes.shape[0])
+    assert (sampling_result.neg_inds.shape[0] ==
+            sampling_result.neg_bboxes.shape[0])
+    return sampling_result
 
 
 def test_bbox2result():
