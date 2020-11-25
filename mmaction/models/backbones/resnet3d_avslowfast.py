@@ -24,9 +24,12 @@ class ResNetAudioPathway(ResNetAudio):
         speed_ratio (int): Speed ratio indicating the ratio between time
             dimension of the fast and slow pathway, corresponding to the
             ``alpha`` in the paper. Default: 32.
-        channel_ratio (int): Reduce the channel number of fast pathway
-            by ``channel_ratio``, corresponding to ``beta`` in the paper.
+        channel_ratio (int): Reduce the channel number of audio pathway
+            by ``channel_ratio``, corresponding to ``beta_a`` in the paper.
             Default: 2.
+        channel_ratio_fast (int): Reduce the channel number of fast pathway
+            by ``channel_ratio_fast``, corresponding to ``beta`` in the paper.
+            Default: 8.
         fusion_kernel (int): The kernel size of lateral fusion.
             Default: 9.
         **kwargs (keyword arguments): Keywords arguments for ResNet3d.
@@ -159,12 +162,18 @@ class AVResNet3dSlowFast(nn.Module):
             on input frames, corresponding to the :math:`\\tau` in the paper.
             i.e., it processes only one out of ``resample_rate`` frames.
             Default: 16.
-        speed_ratio (int): Speed ratio indicating the ratio between time
+        speed_ratio_fast (int): Speed ratio indicating the ratio between time
             dimension of the fast and slow pathway, corresponding to the
             :math:`\\alpha` in the paper. Default: 8.
-        channel_ratio (int): Reduce the channel number of fast pathway
+        channel_ratio_fast (int): Reduce the channel number of fast pathway
             by ``channel_ratio``, corresponding to :math:`\\beta` in the paper.
             Default: 8.
+        speed_ratio_audio (int): Speed ratio indicating the ratio between time
+            dimension of the audio and slow pathway, corresponding to the
+            :math:`\\alpha` in the paper. Default: 32.
+        channel_ratio_audio (int): Reduce the channel number of audio pathway
+            by ``channel_ratio``, corresponding to :math:`\\beta` in the paper.
+            Default: 2.
         slow_pathway (dict): Configuration of slow branch, should contain
             necessary arguments for building the specific type of pathway
             and:
@@ -187,11 +196,20 @@ class AVResNet3dSlowFast(nn.Module):
                 dict(type='ResNetPathway',
                 lateral=False, depth=50, pretrained=None, base_channels=8,
                 conv1_kernel=(5, 7, 7), conv1_stride_t=1, pool1_stride_t=1)
+
+        audio_pathway (dict): Configuration of fast branch, similar to
+            `slow_pathway`. Default:
+
+            .. code-block:: Python
+
+                dict(type='ResNetAudioPathway',
+                lateral=True, depth=50, pretrained=None, base_channels=32,
+                strides=(2, 2, 2, 2))
     """
 
     def __init__(self,
                  pretrained,
-                 resample_rate_fast=8,
+                 resample_rate=8,
                  speed_ratio_fast=8,
                  channel_ratio_fast=8,
                  speed_ratio_audio=32,
@@ -225,7 +243,7 @@ class AVResNet3dSlowFast(nn.Module):
                      lateral=True)):
         super().__init__()
         self.pretrained = pretrained
-        self.resample_rate_fast = resample_rate_fast
+        self.resample_rate = resample_rate
         self.speed_ratio_fast = speed_ratio_fast
         self.channel_ratio_fast = channel_ratio_fast
         self.speed_ratio_audio = speed_ratio_audio
@@ -284,15 +302,14 @@ class AVResNet3dSlowFast(nn.Module):
         x_slow = nn.functional.interpolate(
             x,
             mode='nearest',
-            scale_factor=(1.0 / self.resample_rate_fast, 1.0, 1.0))
+            scale_factor=(1.0 / self.resample_rate, 1.0, 1.0))
         x_slow = self.slow_path.conv1(x_slow)
         x_slow = self.slow_path.maxpool(x_slow)
 
         x_fast = nn.functional.interpolate(
             x,
             mode='nearest',
-            scale_factor=(1.0 /
-                          (self.resample_rate_fast // self.speed_ratio_fast),
+            scale_factor=(1.0 / (self.resample_rate // self.speed_ratio_fast),
                           1.0, 1.0))
         x_fast = self.fast_path.conv1(x_fast)
         x_fast = self.fast_path.maxpool(x_fast)

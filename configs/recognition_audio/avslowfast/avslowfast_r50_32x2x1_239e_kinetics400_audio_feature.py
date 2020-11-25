@@ -12,7 +12,7 @@ model = dict(
 train_cfg = None
 test_cfg = dict(average_clips='prob')
 # dataset settings
-dataset_type = 'AudioFeatureRawframeDataset'
+dataset_type = 'AudioVisualDataset'
 data_root = 'data/kinetics400/rawframes_train'
 data_root_val = 'data/kinetics400/rawframes_val'
 video_prefix = 'data/kinetics400/videos_train'

@@ -19,6 +19,9 @@ class Bottleneck2dAudio(nn.Module):
         dilation (int): Spacing between kernel elements. Default: 1.
         downsample (nn.Module): Downsample layer. Default: None.
         factorize (bool): Whether to factorize kernel. Default: True.
+        norm_cfg (dict):
+            Config for norm layers. required keys are `type` and
+            `requires_grad`. Default: None.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
             memory while slowing down the training speed. Default: False.
     """
@@ -109,13 +112,13 @@ class ResNetAudio(nn.Module):
     """ResNet 2d audio backbone.
 
     Args:
-        depth (int): Depth of resnet, from {18, 34, 50, 101, 152}.
+        depth (int): Depth of resnet, from {50, 101, 152}.
         pretrained (str | None): Name of pretrained model.
-        in_channels (int): Channel num of input features. Default: 3.
+        in_channels (int): Channel num of input features. Default: 1.
         base_channels (int): Channel num of stem output features. Default: 32.
         num_stages (int): Resnet stages. Default: 4.
         strides (Sequence[int]): Strides of residual blocks of each stage.
-            Default: (1, 2, 2, 2).
+            Default: (2, 2, 2, 2).
         dilations (Sequence[int]): Dilation of each stage.
             Default: (1, 1, 1, 1).
         conv1_kernel (int): Kernel size of the first conv layer. Default: 9.
@@ -125,9 +128,15 @@ class ResNetAudio(nn.Module):
         factorize (Sequence[int]): factorize Dims of each block.
             Default: (1, 1, 0, 0).
         norm_eval (bool): Whether to set BN layers to eval mode, namely, freeze
-            running stats (mean and var). Default: True.
+            running stats (mean and var). Default: False.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
             memory while slowing down the training speed. Default: False.
+        conv_cfg (dict): Config for norm layers. Default: dict(type='Conv').
+        norm_cfg (dict):
+            Config for norm layers. required keys are `type` and
+            `requires_grad`. Default: dict(type='BN2d', requires_grad=True).
+        act_cfg (dict): Config for activate layers.
+            Default: dict(type='ReLU', inplace=True).
         zero_init_residual (bool):
             Whether to use zero initialization for residual block,
             Default: True.
@@ -153,7 +162,7 @@ class ResNetAudio(nn.Module):
                  conv1_stride=1,
                  frozen_stages=-1,
                  factorize=(1, 1, 0, 0),
-                 norm_eval=True,
+                 norm_eval=False,
                  with_cp=False,
                  conv_cfg=dict(type='Conv'),
                  norm_cfg=dict(type='BN'),

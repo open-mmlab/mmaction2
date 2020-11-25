@@ -9,10 +9,9 @@ from mmcv import ConfigDict
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from mmaction.datasets import (ActivityNetDataset, AudioDataset,
-                               AudioFeatureDataset,
-                               AudioFeatureRawframeDataset, HVUDataset,
-                               RawframeDataset, RawVideoDataset, RepeatDataset,
-                               SSNDataset, VideoDataset)
+                               AudioFeatureDataset, AudioVisualDataset,
+                               HVUDataset, RawframeDataset, RawVideoDataset,
+                               RepeatDataset, SSNDataset, VideoDataset)
 
 
 class TestDataset:
@@ -314,13 +313,13 @@ class TestDataset:
             assert set(info['label']) == set(label)
         assert rawframe_dataset.start_index == 1
 
-    def test_audio_feature_rawframe_dataset_with_frames(self):
-        test_dataset = AudioFeatureRawframeDataset(
+    def test_audio_visual_dataset(self):
+        test_dataset = AudioVisualDataset(
             self.frame_ann_file,
-            self.av_pipeline,
+            self.frame_pipeline,
             self.data_prefix,
-            audio_prefix=self.data_prefix,
-            video_prefix=self.data_prefix)
+            video_prefix=self.data_prefix,
+            data_prefix=self.data_prefix)
         video_infos = test_dataset.video_infos
         frame_dir = osp.join(self.data_prefix, 'test_imgs')
         audio_path = osp.join(self.data_prefix, 'test_imgs.npy')

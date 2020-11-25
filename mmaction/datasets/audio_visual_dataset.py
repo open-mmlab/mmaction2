@@ -5,9 +5,27 @@ from .registry import DATASETS
 
 
 @DATASETS.register_module
-class AudioFeatureRawframeDataset(RawframeDataset):
+class AudioVisualDataset(RawframeDataset):
     """Dataset that read both audio and visual, supporting both rawframes and
-    videos."""
+        videos. Annotation file can be that of the rawframe dataset,
+    or:
+
+    .. code-block:: txt
+
+        some/directory-1 163 1
+        some/directory-2 122 1
+        some/directory-3 258 2
+        some/directory-4 234 2
+        some/directory-5 295 3
+        some/directory-6 121 3
+
+    Args:
+        ann_file (str): Path to the annotation file.
+        pipeline (list[dict | callable]): A sequence of data transforms.
+        audio_prefix (str): Directory of the audio files.
+        kwargs (dict): Other keyword args for `RawframeDataset`. `video_prefix`
+            is also allowed if pipeline is designed for videos.
+    """
 
     def __init__(self, ann_file, pipeline, audio_prefix, **kwargs):
         self.audio_prefix = audio_prefix
