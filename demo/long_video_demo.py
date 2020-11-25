@@ -1,6 +1,5 @@
 import argparse
 import random
-import warnings
 from collections import deque
 from operator import itemgetter
 
@@ -72,7 +71,7 @@ def show_results():
         prog_bar.update()
         ret, frame = cap.read()
         if frame is None:
-            warnings.warn('A certain frame of the video is None.')
+            # drop it when encounting None
             continue
         backup_frames.append(np.array(frame)[:, :, ::-1])
         if ind == sample_length:
