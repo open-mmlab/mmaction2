@@ -155,7 +155,7 @@ Notes:
    not including the IO time and pre-processing time. For each setting, we use 1 gpu and set batch size (videos per gpu) to 1 to calculate the inference time.
 3. The values in columns named after "reference" are the results got by training on the original repo, using the same model settings.
 
-For more details on data preparation, you can refer to 
+For more details on data preparation, you can refer to
 
 * [preparing_ucf101](/tools/data/ucf101/preparing_ucf101.md)
 * [preparing_kinetics](/tools/data/kinetics/preparing_kinetics.md)
