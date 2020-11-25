@@ -133,7 +133,7 @@ class MaxIoUAssigner(BaseAssigner):
                 num_bboxes, len(gt_labels[0]), dtype=torch.float32)
 
             # If not assigned, labels will be all 0
-            pos_inds = torch.nonzero(assigned_gt_inds > 0).squeeze()
+            pos_inds = (assigned_gt_inds > 0).nonzero().squeeze()
             if pos_inds.numel() > 0:
                 # since the assigned inds are 1 based
                 assigned_labels[pos_inds] = gt_labels[
