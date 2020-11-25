@@ -33,8 +33,8 @@ The codes are adapted from the [official crawler](https://github.com/activitynet
 bash download_videos.sh ${DATASET}
 ```
 
-If you have already have a backup of the dataset using the download script above,
-you only need to replace all whitespaces in the class name for ease of processing by running
+**Important**: If you have already downloaded video dataset using the download script above,
+you must replace all whitespaces in the class name for ease of processing by running
 
 ```shell
 bash rename_classnames.sh ${DATASET}
