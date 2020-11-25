@@ -221,7 +221,7 @@ def test_avslowfast_head():
     avsf_head.init_weights()
 
     assert avsf_head.num_classes == 4
-    assert avsf_head.dropout_ratio == 0.5
+    assert avsf_head.dropout_ratio == 0.8
     assert avsf_head.in_channels == 5
     assert avsf_head.init_std == 0.01
     assert avsf_head.spatial_type == 'avg'
@@ -238,11 +238,13 @@ def test_avslowfast_head():
 
     slow_shape = (8, 1, 4, 7, 7)
     fast_shape = (8, 2, 4, 7, 7)
-    audio_shape = (8, 1, 7, 7)
+    audio_shape = (8, 2, 7, 7)
 
-    feat = tuple(
-        torch.rand(slow_shape), torch.rand(fast_shape),
-        torch.rand(audio_shape))
+    feat = tuple([
+        torch.rand(slow_shape),
+        torch.rand(fast_shape),
+        torch.rand(audio_shape)
+    ])
 
     # tsn head inference
     cls_scores = avsf_head(feat)

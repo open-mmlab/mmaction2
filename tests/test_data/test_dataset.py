@@ -9,7 +9,8 @@ from mmcv import ConfigDict
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from mmaction.datasets import (ActivityNetDataset, AudioDataset,
-                               AudioFeatureDataset, HVUDataset,
+                               AudioFeatureDataset,
+                               AudioFeatureRawframeDataset, HVUDataset,
                                RawframeDataset, RawVideoDataset, RepeatDataset,
                                SSNDataset, VideoDataset)
 
@@ -312,6 +313,27 @@ class TestDataset:
             assert info['total_frames'] == 5
             assert set(info['label']) == set(label)
         assert rawframe_dataset.start_index == 1
+
+    def test_audio_feature_rawframe_dataset_with_frames(self):
+        test_dataset = AudioFeatureRawframeDataset(
+            self.frame_ann_file,
+            self.av_pipeline,
+            self.data_prefix,
+            audio_prefix=self.data_prefix,
+            video_prefix=self.data_prefix)
+        video_infos = test_dataset.video_infos
+        frame_dir = osp.join(self.data_prefix, 'test_imgs')
+        audio_path = osp.join(self.data_prefix, 'test_imgs.npy')
+        filename = osp.join(self.data_prefix, 'test_imgs.mp4')
+        assert video_infos == [
+            dict(
+                frame_dir=frame_dir,
+                audio_path=audio_path,
+                filename=filename,
+                total_frames=5,
+                label=127)
+        ] * 2
+        assert test_dataset.start_index == 1
 
     def test_dataset_realpath(self):
         dataset = RawframeDataset(self.frame_ann_file, self.frame_pipeline,

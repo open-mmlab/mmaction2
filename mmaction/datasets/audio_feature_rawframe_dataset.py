@@ -6,12 +6,13 @@ from .registry import DATASETS
 
 @DATASETS.register_module
 class AudioFeatureRawframeDataset(RawframeDataset):
+    """Dataset that read both audio and visual, supporting both rawframes and
+    videos."""
 
     def __init__(self, ann_file, pipeline, audio_prefix, **kwargs):
         self.audio_prefix = audio_prefix
         self.video_prefix = kwargs.pop('video_prefix', None)
-        super(AudioFeatureRawframeDataset,
-              self).__init__(ann_file, pipeline, **kwargs)
+        super().__init__(ann_file, pipeline, **kwargs)
 
     def load_annotations(self):
         video_infos = []

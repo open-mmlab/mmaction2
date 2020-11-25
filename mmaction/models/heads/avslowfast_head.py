@@ -29,15 +29,15 @@ class AVSlowFastHead(SlowFastHead):
         Returns:
             torch.Tensor: The classification scores for input samples.
         """
-        # ([N, channel_fast, T, H, W], [(N, channel_slow, T, H, W)])
+        # ([N, channel_fast, T, H, W], [(N, channel_slow, T, H, W)], [(N, channel_audio, T, F)]) # noqa:E501
         x_slow, x_fast, x_audio = x
-        if len(x_audio.size()) == 4:
+        if x_audio.dim() == 4:
             x_audio = x_audio.unsqueeze(4)
-        # ([N, channel_fast, 1, 1, 1], [N, channel_slow, 1, 1, 1])
+        # ([N, channel_fast, 1, 1, 1], [N, channel_slow, 1, 1, 1], [N, channel_audio, 1, 1, 1]) # noqa:E501
         x_slow = self.avg_pool(x_slow)
         x_fast = self.avg_pool(x_fast)
         x_audio = self.avg_pool(x_audio)
-        # [N, channel_fast + channel_slow, 1, 1, 1]
+        # [N, channel_fast + channel_slow, + channel_audio 1, 1, 1]
         x = torch.cat((x_slow, x_fast, x_audio), dim=1)
 
         if self.dropout is not None:

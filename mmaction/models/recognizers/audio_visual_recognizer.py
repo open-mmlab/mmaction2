@@ -54,8 +54,7 @@ class AVRecognizer(BaseRecognizer):
     def forward(self, imgs, audios, label, return_loss=True):
         if return_loss:
             return self.forward_train(imgs, audios, label)
-        else:
-            return self.forward_test(imgs, audios)
+        return self.forward_test(imgs, audios)
 
     def forward_gradcam(self, audios):
         raise NotImplementedError

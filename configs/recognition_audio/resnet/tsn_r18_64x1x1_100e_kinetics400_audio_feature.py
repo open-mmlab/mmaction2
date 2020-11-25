@@ -90,7 +90,7 @@ log_config = dict(
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/tsn_resnet_r18_64x1x1_100e_kinetics400_audio_feature/'
+work_dir = './work_dirs/tsn_r18_64x1x1_100e_kinetics400_audio_feature/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]

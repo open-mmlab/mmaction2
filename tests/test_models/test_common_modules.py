@@ -23,13 +23,9 @@ def test_conv2plus1d():
 
 
 def test_conv_audio():
-    with pytest.raises(AssertionError):
-        # Length of kernel size, stride and padding must be the same
-        ConvAudio(3, 8, (2, 2))
-
     conv_audio = ConvAudio(3, 8, 2)
     conv_audio.init_weights()
 
     x = torch.rand(1, 3, 8, 8)
-    output = ConvAudio(x)
-    assert output.shape == torch.Size([1, 8, 8, 8])
+    output = conv_audio(x)
+    assert output.shape == torch.Size([1, 8, 9, 9])

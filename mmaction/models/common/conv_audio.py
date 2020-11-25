@@ -34,9 +34,6 @@ class ConvAudio(nn.Module):
         kernel_size = _pair(kernel_size)
         stride = _pair(stride)
         padding = _pair(padding)
-        padding = _pair(dilation)
-
-        assert len(kernel_size) == len(stride) == len(padding) == 2
 
         self.in_channels = in_channels
         self.out_channels = out_channels

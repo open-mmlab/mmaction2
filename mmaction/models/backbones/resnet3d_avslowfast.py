@@ -1,3 +1,4 @@
+import copy
 import random
 
 import torch
@@ -59,7 +60,7 @@ class ResNetAudioPathway(ResNetAudio):
                 act_cfg=None)
 
         self.lateral_connections = []
-        for i in range(len(self.stage_blocks)):
+        for i, _ in enumerate(self.stage_blocks):
             planes = self.base_channels * 2**i
             self.inplanes = planes * self.block.expansion
 
@@ -139,8 +140,7 @@ def build_pathway(cfg, *args, **kwargs):
     pathway_type = cfg_.pop('type')
     if pathway_type not in pathway_cfg:
         raise KeyError(f'Unrecognized pathway type {pathway_type}')
-    else:
-        pathway_cls = pathway_cfg[pathway_type]
+    pathway_cls = pathway_cfg[pathway_type]
     pathway = pathway_cls(*args, **kwargs, **cfg_)
 
     return pathway
@@ -231,19 +231,22 @@ class AVResNet3dSlowFast(nn.Module):
         self.speed_ratio_audio = speed_ratio_audio
         self.channel_ratio_audio = channel_ratio_audio
         self.drop_out_ratio = drop_out_ratio
+        slow_pathway_ = copy.deepcopy(slow_pathway)
+        fast_pathway_ = copy.deepcopy(fast_pathway)
+        audio_pathway_ = copy.deepcopy(audio_pathway)
 
-        if slow_pathway['lateral']:
-            slow_pathway['speed_ratio'] = speed_ratio_fast
-            slow_pathway['channel_ratio'] = channel_ratio_fast
-        if audio_pathway['lateral']:
-            audio_pathway['speed_ratio'] = speed_ratio_audio
-            audio_pathway['channel_ratio'] = channel_ratio_audio
+        if slow_pathway_['lateral']:
+            slow_pathway_['speed_ratio'] = speed_ratio_fast
+            slow_pathway_['channel_ratio'] = channel_ratio_fast
+        if audio_pathway_['lateral']:
+            audio_pathway_['speed_ratio'] = speed_ratio_audio
+            audio_pathway_['channel_ratio'] = channel_ratio_audio
         random.seed(100)
         # set the random seed to avoid different
         # graphs in distributed env
-        self.slow_path = build_pathway(slow_pathway)
-        self.fast_path = build_pathway(fast_pathway)
-        self.audio_path = build_pathway(audio_pathway)
+        self.slow_path = build_pathway(slow_pathway_)
+        self.fast_path = build_pathway(fast_pathway_)
+        self.audio_path = build_pathway(audio_pathway_)
 
     def init_weights(self):
         """Initiate the parameters either from existing checkpoint or from

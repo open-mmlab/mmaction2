@@ -968,7 +968,7 @@ def test_resnet_audio_backbone():
     audioonly.init_weights()
     audioonly.train()
     feat = audioonly(spec)
-    assert feat.shape == torch.size([1, 2048])
+    assert feat.shape == torch.Size([1, 1024, 8, 5])
 
 
 def test_avslowfast_backbone():
@@ -983,9 +983,9 @@ def test_avslowfast_backbone():
     avsf.train()
     feat = avsf(imgs, spec)
     assert isinstance(feat, tuple)
-    assert feat[0].shape == torch.size([1, 2048])
-    assert feat[1].shape == torch.size([1, 256])
-    assert feat[2].shape == torch.size([1, 1024])
+    assert feat[0].shape == torch.Size([1, 2048, 4, 1, 1])
+    assert feat[1].shape == torch.Size([1, 256, 32, 1, 1])
+    assert feat[2].shape == torch.Size([1, 1024, 8, 5])
 
 
 @pytest.mark.skipif(

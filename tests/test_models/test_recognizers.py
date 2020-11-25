@@ -424,7 +424,7 @@ def test_tpn():
 
 def test_audio_recognizer():
     model, train_cfg, test_cfg = _get_audio_recognizer_cfg(
-        'resnet/tsn_resnet_r50_64x1x1_100e_kinetics400_audio_feature.py')
+        'resnet/tsn_r50_64x1x1_100e_kinetics400_audio_feature.py')
     model['backbone']['pretrained'] = None
 
     recognizer = build_recognizer(
@@ -454,11 +454,16 @@ def test_av_recognizer():
     recognizer = build_recognizer(
         model, train_cfg=train_cfg, test_cfg=test_cfg)
 
-    input_shape = (1, 3, 1, 128, 80)
-    demo_inputs_audio = generate_demo_inputs(input_shape, model_type='audio')
-    input_shape = (1, 3, 32, 16, 16)
-    demo_inputs_visual = generate_demo_inputs(input_shape)
-    demo_inputs = {**demo_inputs_audio, **demo_inputs_visual}
+    audio_shape = (1, 3, 1, 128, 80)
+    demo_inputs_audio = generate_demo_inputs(audio_shape, model_type='audio')
+    visual_shape = (1, 3, 3, 32, 16, 16)
+    demo_inputs_visual = generate_demo_inputs(visual_shape, model_type='3D')
+    assert torch.equal(demo_inputs_audio['gt_labels'],
+                       demo_inputs_visual['gt_labels'])
+    demo_inputs = dict(
+        imgs=demo_inputs_visual['imgs'],
+        audios=demo_inputs_audio['audios'],
+        gt_labels=demo_inputs_audio['gt_labels'])
     imgs = demo_inputs['imgs']
     audios = demo_inputs['audios']
     gt_labels = demo_inputs['gt_labels']
@@ -530,6 +535,7 @@ def generate_demo_inputs(input_shape=(1, 3, 3, 224, 224), model_type='2D'):
 
     inputs = {
         'imgs': torch.FloatTensor(imgs),
-        'gt_labels': gt_labels,
+        'audios': torch.FloatTensor(imgs),
+        'gt_labels': gt_labels
     }
     return inputs
