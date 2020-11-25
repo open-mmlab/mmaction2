@@ -1,7 +1,7 @@
 import pytest
 import torch
 
-from mmaction.models import Conv2plus1d
+from mmaction.models import Conv2plus1d, ConvAudio
 
 
 def test_conv2plus1d():
@@ -20,3 +20,16 @@ def test_conv2plus1d():
     x = torch.rand(1, 3, 8, 256, 256)
     output = conv_2plus1d(x)
     assert output.shape == torch.Size([1, 8, 7, 255, 255])
+
+
+def test_conv_audio():
+    with pytest.raises(AssertionError):
+        # Length of kernel size, stride and padding must be the same
+        ConvAudio(3, 8, (2, 2))
+
+    conv_audio = ConvAudio(3, 8, 2)
+    conv_audio.init_weights()
+
+    x = torch.rand(1, 3, 8, 8)
+    output = ConvAudio(x)
+    assert output.shape == torch.Size([1, 8, 8, 8])

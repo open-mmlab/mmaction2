@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 
-from mmaction.models import (AudioTSNHead, BaseHead, I3DHead, SlowFastHead,
-                             TPNHead, TSMHead, TSNHead, X3DHead)
+from mmaction.models import (AudioTSNHead, AVSlowFastHead, BaseHead, I3DHead,
+                             SlowFastHead, TPNHead, TSMHead, TSNHead, X3DHead)
 
 
 class ExampleHead(BaseHead):
@@ -211,6 +211,41 @@ def test_tsn_head_audio():
 
     # tsn head inference
     cls_scores = tsn_head_audio(feat)
+    assert cls_scores.shape == torch.Size([8, 4])
+
+
+def test_avslowfast_head():
+    """Test loss method, layer construction, attributes and forward function in
+    tsn head."""
+    avsf_head = AVSlowFastHead(num_classes=4, in_channels=5)
+    avsf_head.init_weights()
+
+    assert avsf_head.num_classes == 4
+    assert avsf_head.dropout_ratio == 0.5
+    assert avsf_head.in_channels == 5
+    assert avsf_head.init_std == 0.01
+    assert avsf_head.spatial_type == 'avg'
+
+    assert isinstance(avsf_head.dropout, nn.Dropout)
+    assert avsf_head.dropout.p == avsf_head.dropout_ratio
+
+    assert isinstance(avsf_head.fc_cls, nn.Linear)
+    assert avsf_head.fc_cls.in_features == avsf_head.in_channels
+    assert avsf_head.fc_cls.out_features == avsf_head.num_classes
+
+    assert isinstance(avsf_head.avg_pool, nn.AdaptiveAvgPool3d)
+    assert avsf_head.avg_pool.output_size == (1, 1, 1)
+
+    slow_shape = (8, 1, 4, 7, 7)
+    fast_shape = (8, 2, 4, 7, 7)
+    audio_shape = (8, 1, 7, 7)
+
+    feat = tuple(
+        torch.rand(slow_shape), torch.rand(fast_shape),
+        torch.rand(audio_shape))
+
+    # tsn head inference
+    cls_scores = avsf_head(feat)
     assert cls_scores.shape == torch.Size([8, 4])
 
 

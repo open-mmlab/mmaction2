@@ -6,8 +6,9 @@ import torch
 import torch.nn as nn
 from mmcv.utils import _BatchNorm
 
-from mmaction.models import (C3D, X3D, ResNet, ResNet2Plus1d, ResNet3d,
-                             ResNet3dCSN, ResNet3dSlowFast, ResNet3dSlowOnly,
+from mmaction.models import (C3D, X3D, AVResNet3dSlowFast, ResNet,
+                             ResNet2Plus1d, ResNet3d, ResNet3dCSN,
+                             ResNet3dSlowFast, ResNet3dSlowOnly, ResNetAudio,
                              ResNetTIN, ResNetTSM)
 from mmaction.models.backbones.resnet_tsm import NL3DWrapper
 
@@ -956,6 +957,35 @@ def test_c3d_backbone():
     c3d_bn.train()
     feat = c3d_bn(imgs)
     assert feat.shape == torch.Size([1, 4096])
+
+
+def test_resnet_audio_backbone():
+    """Test ResNetAudio backbone."""
+    input_shape = (1, 1, 128, 80)
+    spec = _demo_inputs(input_shape)
+    # inference
+    audioonly = ResNetAudio(50, None)
+    audioonly.init_weights()
+    audioonly.train()
+    feat = audioonly(spec)
+    assert feat.shape == torch.size([1, 2048])
+
+
+def test_avslowfast_backbone():
+    """Test ResNetAudio backbone."""
+    audio_shape = (1, 1, 128, 80)
+    image_shape = (1, 3, 32, 16, 16)
+    imgs = _demo_inputs(image_shape)
+    spec = _demo_inputs(audio_shape)
+    # inference
+    avsf = AVResNet3dSlowFast(None)
+    avsf.init_weights()
+    avsf.train()
+    feat = avsf(imgs, spec)
+    assert isinstance(feat, tuple)
+    assert feat[0].shape == torch.size([1, 2048])
+    assert feat[1].shape == torch.size([1, 256])
+    assert feat[2].shape == torch.size([1, 1024])
 
 
 @pytest.mark.skipif(

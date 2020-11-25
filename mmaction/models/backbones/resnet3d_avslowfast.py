@@ -3,7 +3,6 @@ import random
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import torchsnooper
 from mmcv.cnn import ConvModule, kaiming_init
 from mmcv.runner import load_checkpoint
 from mmcv.utils import print_log
@@ -263,7 +262,6 @@ class AVResNet3dSlowFast(nn.Module):
         else:
             raise TypeError('pretrained must be a str or None')
 
-    @torchsnooper.snoop()
     def forward(self, x, a):
         """Defines the computation performed at every call.
 
@@ -275,7 +273,10 @@ class AVResNet3dSlowFast(nn.Module):
             tuple[torch.Tensor]: The feature of the input samples extracted
                 by the backbone.
         """
-        use_audio = random.random() > self.drop_out_ratio
+        if self.training:
+            use_audio = random.random() > self.drop_out_ratio
+        else:
+            use_audio = True
         # stem
         x_slow = nn.functional.interpolate(
             x,
@@ -298,15 +299,7 @@ class AVResNet3dSlowFast(nn.Module):
         if self.slow_path.lateral:
             x_fast_lateral = self.slow_path.conv1_lateral(x_fast)
             x_slow = torch.cat((x_slow, x_fast_lateral), dim=1)
-
-        if use_audio and self.audio_path.lateral:
-            x_audio_lateral = self.audio_path.conv1_lateral(x_audio)
-            x_audio_lateral = x_audio_lateral.unsqueeze(4)
-            # use t-pool rather than t-conv
-            x_audio_lateral_pooled = F.adaptive_avg_pool3d(
-                x_audio_lateral, [x_slow.size(2), 1, 1])
-            x_slow = x_slow + x_audio_lateral_pooled
-
+        # no audio fusion in early stage
         # res-stages
         for i, layer_name in enumerate(self.slow_path.res_layers):
             res_layer = getattr(self.slow_path, layer_name)
@@ -318,12 +311,13 @@ class AVResNet3dSlowFast(nn.Module):
 
             if (i != len(self.slow_path.res_layers) - 1
                     and self.slow_path.lateral and self.audio_path.lateral):
-                # No fusion needed in the final stage
+                # No fusion in the final stage
                 lateral_name = self.slow_path.lateral_connections[i]
                 conv_lateral = getattr(self.slow_path, lateral_name)
                 x_fast_lateral = conv_lateral(x_fast)
                 x_slow = torch.cat((x_slow, x_fast_lateral), dim=1)
-                if use_audio:
+                if use_audio and i > 0:
+                    # lateral connection in res3,4 and pool5
                     lateral_name = self.audio_path.lateral_connections[i]
                     conv_lateral = getattr(self.audio_path, lateral_name)
                     x_audio_lateral = conv_lateral(x_audio)
