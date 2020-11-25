@@ -155,7 +155,16 @@ Notes:
    not including the IO time and pre-processing time. For each setting, we use 1 gpu and set batch size (videos per gpu) to 1 to calculate the inference time.
 3. The values in columns named after "reference" are the results got by training on the original repo, using the same model settings.
 
-For more details on data preparation, you can refer to [preparing_ucf101](/tools/data/ucf101/preparing_ucf101.md),  [preparing_kinetics400](/tools/data/kinetics400/preparing_kinetics400.md),  [preparing_sthv1](/tools/data/sthv1/preparing_sthv1.md),  [preparing_sthv2](/tools/data/sthv2/preparing_sthv2.md),  [preparing_mit](/tools/data/mit/preparing_mit.md),  [preparing_mmit](/tools/data/mmit/preparing_mmit.md),  [preparing_hvu](/tools/data/hvu/preparing_hvu.md), [preparing_hmdb51](/tools/data/hmdb51/preparing_hmdb51.md).
+For more details on data preparation, you can refer to 
+
+* [preparing_ucf101](/tools/data/ucf101/preparing_ucf101.md)
+* [preparing_kinetics](/tools/data/kinetics/preparing_kinetics.md)
+* [preparing_sthv1](/tools/data/sthv1/preparing_sthv1.md)
+* [preparing_sthv2](/tools/data/sthv2/preparing_sthv2.md)
+* [preparing_mit](/tools/data/mit/preparing_mit.md)
+* [preparing_mmit](/tools/data/mmit/preparing_mmit.md)
+* [preparing_hvu](/tools/data/hvu/preparing_hvu.md)
+* [preparing_hmdb51](/tools/data/hmdb51/preparing_hmdb51.md)
 
 ## Train
 
