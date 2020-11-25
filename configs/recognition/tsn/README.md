@@ -163,8 +163,8 @@ For more details on data preparation, you can refer to
 * [preparing_sthv2](/tools/data/sthv2/preparing_sthv2.md)
 * [preparing_mit](/tools/data/mit/preparing_mit.md)
 * [preparing_mmit](/tools/data/mmit/preparing_mmit.md)
-* [preparing_hvu](/tools/data/hvu/preparing_hvu.md).
-* [preparing_hmdb51](/tools/data/hmdb51/preparing_hmdb51.md).
+* [preparing_hvu](/tools/data/hvu/preparing_hvu.md)
+* [preparing_hmdb51](/tools/data/hmdb51/preparing_hmdb51.md)
 
 ## Train
 
