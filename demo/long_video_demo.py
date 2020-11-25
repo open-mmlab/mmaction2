@@ -1,5 +1,6 @@
 import argparse
 import random
+import warnings
 from collections import deque
 from operator import itemgetter
 
@@ -70,6 +71,9 @@ def show_results():
         ind += 1
         prog_bar.update()
         ret, frame = cap.read()
+        if frame is None and ind == num_frames:
+            warnings.warn('The last frame of the video is None.')
+            break
         backup_frames.append(np.array(frame)[:, :, ::-1])
         if ind == sample_length:
             # provide a quick show at the beginning
@@ -123,9 +127,9 @@ def inference():
         return False, None
 
     cur_windows = list(np.array(frame_queue))
+    img = frame_queue.popleft()
     if data['img_shape'] is None:
-        data['img_shape'] = frame_queue.popleft().shape[:2]
-    frame_queue.popleft()
+        data['img_shape'] = img.shape[:2]
     cur_data = data.copy()
     cur_data['imgs'] = cur_windows
     cur_data = test_pipeline(cur_data)
