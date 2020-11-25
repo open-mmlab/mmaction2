@@ -123,6 +123,21 @@ class TestAVADataset:
         assert result['frame_interval'] == 2
         assert len(result['frame_inds']) == 32
 
+        ava_dataset = AVADataset(
+            self.ann_file,
+            None,
+            self.pipeline,
+            test_mode=True,
+            data_prefix=self.data_prefix,
+            proposal_file=self.proposal_file)
+        # Try to get a sample
+        result = ava_dataset[0]
+        assert result['filename_tmpl'] == 'img_{:05}.jpg'
+        assert result['modality'] == 'RGB'
+        assert result['start_index'] == 1
+        assert result['timestamp_start'] == 900
+        assert result['timestamp_end'] == 1800
+
     def test_ava_evaluate(self):
         data_prefix = osp.join(
             osp.dirname(__file__), '../data/test_eval_detection')
