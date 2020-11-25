@@ -71,9 +71,9 @@ def show_results():
         ind += 1
         prog_bar.update()
         ret, frame = cap.read()
-        if frame is None and ind == num_frames:
-            warnings.warn('The last frame of the video is None.')
-            break
+        if frame is None:
+            warnings.warn('A certain frame of the video is None.')
+            continue
         backup_frames.append(np.array(frame)[:, :, ::-1])
         if ind == sample_length:
             # provide a quick show at the beginning
