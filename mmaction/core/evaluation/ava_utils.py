@@ -13,7 +13,7 @@ from .recall import eval_recalls
 
 def det2csv(dataset, results):
     csv_results = []
-    for idx, _ in enumerate(dataset):
+    for idx in range(len(dataset)):
         video_id = dataset.video_infos[idx]['video_id']
         timestamp = dataset.video_infos[idx]['timestamp']
         result = results[idx]
