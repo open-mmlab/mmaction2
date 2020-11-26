@@ -71,9 +71,10 @@ class Bottleneck2dAudio(nn.Module):
             bias=False,
             conv_cfg=dict(type='ConvAudio') if factorize else dict(
                 type='Conv'),
-            norm_cfg=self.norm_cfg)
+            norm_cfg=None,
+            act_cfg=None)
         self.conv3 = ConvModule(
-            planes,
+            2 * planes if factorize else planes,
             planes * self.expansion,
             kernel_size=1,
             bias=False,
@@ -118,7 +119,7 @@ class ResNetAudio(nn.Module):
         base_channels (int): Channel num of stem output features. Default: 32.
         num_stages (int): Resnet stages. Default: 4.
         strides (Sequence[int]): Strides of residual blocks of each stage.
-            Default: (2, 2, 2, 2).
+            Default: (1, 2, 2, 2).
         dilations (Sequence[int]): Dilation of each stage.
             Default: (1, 1, 1, 1).
         conv1_kernel (int): Kernel size of the first conv layer. Default: 9.
@@ -156,7 +157,7 @@ class ResNetAudio(nn.Module):
                  in_channels=1,
                  num_stages=4,
                  base_channels=32,
-                 strides=(2, 2, 2, 2),
+                 strides=(1, 2, 2, 2),
                  dilations=(1, 1, 1, 1),
                  conv1_kernel=9,
                  conv1_stride=1,
@@ -261,7 +262,7 @@ class ResNetAudio(nn.Module):
                 stride=stride,
                 bias=False,
                 norm_cfg=norm_cfg,
-            )
+                act_cfg=None)
 
         layers = []
         layers.append(
@@ -294,11 +295,10 @@ class ResNetAudio(nn.Module):
             self.base_channels,
             kernel_size=self.conv1_kernel,
             stride=self.conv1_stride,
-            padding=((self.conv1_kernel - 1) // 2,
-                     (self.conv1_kernel - 1) // 2),
             bias=False,
-            conv_cfg=dict(type='ConvAudio'),
-            norm_cfg=self.norm_cfg)
+            conv_cfg=dict(type='ConvAudio', op='sum'),
+            norm_cfg=self.norm_cfg,
+            act_cfg=self.act_cfg)
 
     def _freeze_stages(self):
         if self.frozen_stages >= 0:

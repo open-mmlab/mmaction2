@@ -16,7 +16,7 @@
 
 |config | n_fft | gpus | backbone |pretrain| top1 acc/delta| top5 acc/delta | inference_time(video/s) | gpu_mem(M)| ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[audioonly_r50_64x1x1_100e_kinetics400_audio_feature](/configs/recognition_audio/audioonly/audioonly_r50_64x1x1_100e_kinetics400_audio_feature.py)|1024|8| ResNet50 | None |20.37|37.37|x|6154|[ckpt]()|[log]()|[json]()|
+|[audioonly_r50_64x1x1_100e_kinetics400_audio_feature](/configs/recognition_audio/audioonly/audioonly_r50_64x1x1_100e_kinetics400_audio_feature.py)|1024|8| ResNet50 | None |20.81|38.23|x|6154|[ckpt]()|[log]()|[json]()|
 
 Notes:
 

@@ -1,5 +1,6 @@
+import torch
 import torch.nn as nn
-from mmcv.cnn import CONV_LAYERS, kaiming_init
+from mmcv.cnn import CONV_LAYERS, ConvModule, constant_init, kaiming_init
 from torch.nn.modules.utils import _pair
 
 
@@ -11,6 +12,9 @@ class ConvAudio(nn.Module):
         in_channels (int): Same as nn.Conv2d.
         out_channels (int): Same as nn.Conv2d.
         kernel_size (int | tuple[int]): Same as nn.Conv2d.
+        op (string): Operation to merge the output of freq
+            and time feature map. Choices are 'sum' and 'concat'.
+            Default: 'concat'.
         stride (int | tuple[int]): Same as nn.Conv2d.
         padding (int | tuple[int]): Same as nn.Conv2d.
         dilation (int | tuple[int]): Same as nn.Conv2d.
@@ -24,11 +28,12 @@ class ConvAudio(nn.Module):
                  in_channels,
                  out_channels,
                  kernel_size,
+                 op='concat',
                  stride=1,
                  padding=0,
                  dilation=1,
                  groups=1,
-                 bias=True):
+                 bias=False):
         super().__init__()
 
         kernel_size = _pair(kernel_size)
@@ -38,6 +43,8 @@ class ConvAudio(nn.Module):
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.kernel_size = kernel_size
+        assert op in ['concat', 'sum']
+        self.op = op
         self.stride = stride
         self.padding = padding
         self.dilation = dilation
@@ -46,23 +53,27 @@ class ConvAudio(nn.Module):
         self.output_padding = (0, 0)
         self.transposed = False
 
-        self.conv_1 = nn.Conv2d(
+        self.conv_1 = ConvModule(
             in_channels,
-            in_channels,
+            out_channels,
             kernel_size=(kernel_size[0], 1),
-            stride=(stride[0], 1),
-            dilation=(dilation, 1),
-            padding=(dilation, 0),
-            bias=bias)
+            stride=stride,
+            padding=(kernel_size[0] // 2, 0),
+            bias=bias,
+            conv_cfg=dict(type='Conv'),
+            norm_cfg=dict(type='BN'),
+            act_cfg=dict(type='ReLU'))
 
-        self.conv_2 = nn.Conv2d(
+        self.conv_2 = ConvModule(
             in_channels,
             out_channels,
             kernel_size=(1, kernel_size[1]),
-            stride=(1, stride[1]),
-            dilation=(1, dilation),
-            padding=(0, dilation),
-            bias=bias)
+            stride=stride,
+            padding=(0, kernel_size[1] // 2),
+            bias=bias,
+            conv_cfg=dict(type='Conv'),
+            norm_cfg=dict(type='BN'),
+            act_cfg=dict(type='ReLU'))
 
         self.init_weights()
 
@@ -75,11 +86,17 @@ class ConvAudio(nn.Module):
         Returns:
             torch.Tensor: The output of the module.
         """
-        x = self.conv_1(x)
-        x = self.conv_2(x)
-        return x
+        x_1 = self.conv_1(x)
+        x_2 = self.conv_2(x)
+        if self.op == 'concat':
+            out = torch.cat([x_1, x_2], 1)
+        else:
+            out = x_1 + x_2
+        return out
 
     def init_weights(self):
         """Initiate the parameters from scratch."""
-        kaiming_init(self.conv_1)
-        kaiming_init(self.conv_2)
+        kaiming_init(self.conv_1.conv)
+        kaiming_init(self.conv_2.conv)
+        constant_init(self.conv_1.bn, 1, bias=0)
+        constant_init(self.conv_2.bn, 1, bias=0)

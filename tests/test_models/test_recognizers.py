@@ -446,39 +446,6 @@ def test_audio_recognizer():
             recognizer(one_spectro, None, return_loss=False)
 
 
-def test_av_recognizer():
-    model, train_cfg, test_cfg = _get_audio_recognizer_cfg(
-        'avslowfast/avslowfast_r50_32x2x1_239e_kinetics400_audio_feature.py')
-    model['backbone']['pretrained'] = None
-
-    recognizer = build_recognizer(
-        model, train_cfg=train_cfg, test_cfg=test_cfg)
-
-    audio_shape = (1, 3, 1, 128, 80)
-    demo_inputs_audio = generate_demo_inputs(audio_shape, model_type='audio')
-    visual_shape = (1, 3, 3, 32, 16, 16)
-    demo_inputs_visual = generate_demo_inputs(visual_shape, model_type='3D')
-    assert torch.equal(demo_inputs_audio['gt_labels'],
-                       demo_inputs_visual['gt_labels'])
-    demo_inputs = dict(
-        imgs=demo_inputs_visual['imgs'],
-        audios=demo_inputs_audio['audios'],
-        gt_labels=demo_inputs_audio['gt_labels'])
-    imgs = demo_inputs['imgs']
-    audios = demo_inputs['audios']
-    gt_labels = demo_inputs['gt_labels']
-
-    losses = recognizer(imgs, audios, gt_labels)
-    assert isinstance(losses, dict)
-
-    # Test forward test
-    with torch.no_grad():
-        audio_list = [audio[None, :] for audio in audios]
-        img_list = [img[None, :] for img in imgs]
-        for one_img, one_spectro in zip(img_list, audio_list):
-            recognizer(one_img, one_spectro, None, return_loss=False)
-
-
 def test_c3d():
     model, train_cfg, test_cfg = _get_recognizer_cfg(
         'c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb.py')
