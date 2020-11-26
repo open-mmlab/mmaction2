@@ -727,6 +727,7 @@ class Resize:
             given size. Default: True.
         interpolation (str): Algorithm used for interpolation:
             "nearest" | "bilinear". Default: "bilinear".
+        field (str): The field to be operated on. Default: 'imgs'.
         lazy (bool): Determine whether to apply lazy operation. Default: False.
     """
 
@@ -734,6 +735,7 @@ class Resize:
                  scale,
                  keep_ratio=True,
                  interpolation='bilinear',
+                 field='imgs',
                  lazy=False):
         if isinstance(scale, float):
             if scale <= 0:
@@ -750,6 +752,7 @@ class Resize:
         self.scale = scale
         self.keep_ratio = keep_ratio
         self.interpolation = interpolation
+        self.field = field
         self.lazy = lazy
 
     def __call__(self, results):
@@ -764,7 +767,7 @@ class Resize:
 
         if 'scale_factor' not in results:
             results['scale_factor'] = np.array([1, 1], dtype=np.float32)
-        img_h, img_w = results['img_shape']
+        img_h, img_w = results[self.field][0].shape[:2]
 
         if self.keep_ratio:
             new_w, new_h = mmcv.rescale_size((img_w, img_h), self.scale)
@@ -779,11 +782,15 @@ class Resize:
         results['scale_factor'] = results['scale_factor'] * self.scale_factor
 
         if not self.lazy:
-            results['imgs'] = [
-                mmcv.imresize(
-                    img, (new_w, new_h), interpolation=self.interpolation)
-                for img in results['imgs']
-            ]
+            import pdb
+            try:
+                results[self.field] = [
+                    mmcv.imresize(
+                        img, (new_w, new_h), interpolation=self.interpolation)
+                    for img in results[self.field]
+                ]
+            except BaseException:
+                pdb.set_trace()
         else:
             lazyop = results['lazy']
             if lazyop['flip']:
@@ -955,7 +962,12 @@ class Normalize:
             on 'scale_factor' when modality is 'Flow'. Default: False.
     """
 
-    def __init__(self, mean, std, to_bgr=False, adjust_magnitude=False):
+    def __init__(self,
+                 mean,
+                 std,
+                 to_bgr=False,
+                 adjust_magnitude=False,
+                 field='imgs'):
         if not isinstance(mean, Sequence):
             raise TypeError(
                 f'Mean must be list, tuple or np.ndarray, but got {type(mean)}'
@@ -969,21 +981,22 @@ class Normalize:
         self.std = np.array(std, dtype=np.float32)
         self.to_bgr = to_bgr
         self.adjust_magnitude = adjust_magnitude
+        self.field = field
 
     def __call__(self, results):
         modality = results['modality']
 
         if modality == 'RGB':
-            n = len(results['imgs'])
-            h, w, c = results['imgs'][0].shape
+            n = len(results[self.field])
+            h, w, c = results[self.field][0].shape
             imgs = np.empty((n, h, w, c), dtype=np.float32)
-            for i, img in enumerate(results['imgs']):
+            for i, img in enumerate(results[self.field]):
                 imgs[i] = img
 
             for img in imgs:
                 mmcv.imnormalize_(img, self.mean, self.std, self.to_bgr)
 
-            results['imgs'] = imgs
+            results[self.field] = imgs
             results['img_norm_cfg'] = dict(
                 mean=self.mean, std=self.std, to_bgr=self.to_bgr)
             return results
@@ -1219,8 +1232,9 @@ class CenterCrop:
         lazy (bool): Determine whether to apply lazy operation. Default: False.
     """
 
-    def __init__(self, crop_size, lazy=False):
+    def __init__(self, crop_size, field='imgs', lazy=False):
         self.crop_size = _pair(crop_size)
+        self.field = field
         self.lazy = lazy
         if not mmcv.is_tuple_of(self.crop_size, int):
             raise TypeError(f'Crop_size must be int or tuple of int, '
@@ -1235,7 +1249,7 @@ class CenterCrop:
         """
         _init_lazy_if_proper(results, self.lazy)
 
-        img_h, img_w = results['img_shape']
+        img_h, img_w = results[self.field][0].shape[:2]
         crop_w, crop_h = self.crop_size
 
         left = (img_w - crop_w) // 2
@@ -1267,8 +1281,8 @@ class CenterCrop:
             new_crop_quadruple, dtype=np.float32)
 
         if not self.lazy:
-            results['imgs'] = [
-                img[top:bottom, left:right] for img in results['imgs']
+            results[self.field] = [
+                img[top:bottom, left:right] for img in results[self.field]
             ]
         else:
             lazyop = results['lazy']

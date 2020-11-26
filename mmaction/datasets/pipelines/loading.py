@@ -947,6 +947,124 @@ class DecordInit:
 
 
 @PIPELINES.register_module()
+class PyAVDecodeSideData(PyAVDecode):
+    """Using pyav to decode the motion vectors from video.
+
+    PyAV: https://github.com/mikeboers/PyAV
+    Required keys are "video_reader" and "frame_inds",
+    added or modified keys are "mvs".
+    Args:
+        multi_thread (bool): If set to True, it will apply multi
+            thread processing. Default: False.
+    """
+
+    def _parse_vectors(self, mv, vectors, height, width):
+        """Parse the returned vectors."""
+        (w, h, src_x, src_y, dst_x,
+         dst_y) = (vectors['w'], vectors['h'], vectors['src_x'],
+                   vectors['src_y'], vectors['dst_x'], vectors['dst_y'])
+        val_x = dst_x - src_x
+        val_y = dst_y - src_y
+        start_x = (-1 * w / 2).astype(np.int8) + dst_x
+        start_y = (-1 * h / 2).astype(np.int8) + dst_y
+        end_x = start_x + w.astype(np.int8)
+        end_y = start_y + h.astype(np.int8)
+        for row, _ in enumerate(vectors):
+            if (start_x[row] >= 0 and end_x[row] < width and start_y[row] >= 0
+                    and end_y[row] < height):
+                mv[start_y[row]:end_y[row],
+                   start_x[row]:end_x[row]] = (val_x[row], val_y[row])
+
+        return mv
+
+    def __call__(self, results):
+        """Perform the PyAV motion vector decoding.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        container = results['video_reader']
+        imgs = list()
+        mvs = list()
+
+        if self.multi_thread:
+            container.streams.video[0].thread_type = 'AUTO'
+        if results['frame_inds'].ndim != 1:
+            results['frame_inds'] = np.squeeze(results['frame_inds'])
+        frame_inds = results['frame_inds']
+        num_clips = results['num_clips']
+
+        frame_inds = frame_inds.reshape(num_clips, -1)
+
+        # set max indice to make early stop
+        max_inds = max(results['frame_inds'])
+        i = 0
+        stream = container.streams.video[0]
+        codec_context = stream.codec_context
+        codec_context.options = {'flags2': '+export_mvs'}
+        mv_inds = list()
+        if_inds = list()
+        for packet in container.demux(stream):
+            for frame in packet.decode():
+                if i > max_inds + 1:
+                    break
+                height = frame.height
+                width = frame.width
+                mv = np.zeros((height, width, 2), dtype=np.int8)
+                vectors = frame.side_data.get('MOTION_VECTORS')
+                imgs.append(frame.to_rgb().to_ndarray())
+                if frame.key_frame:
+                    if_inds.append(i)
+                    # import pdb
+                    # pdb.set_trace()
+                if vectors is not None and len(vectors) > 0:
+                    # import pdb
+                    # pdb.set_trace()
+                    mv = self._parse_vectors(mv, vectors.to_ndarray(), height,
+                                             width)
+                    mvs.append(mv)
+                    mv_inds.append(i)
+                i += 1
+
+        imgs_valid = list()
+        mvs_valid = list()
+        i_frames_valid = list()
+        for clip_idx in range(num_clips):
+            clip_frame_inds = frame_inds[clip_idx]
+            end_idx = min(clip_frame_inds[-1], results['total_frames'])
+            start_idx = max(0, clip_frame_inds[0])
+            valid_mv_inds = [
+                idx for idx in mv_inds if start_idx <= idx <= end_idx
+            ]
+            valid_if_inds = [
+                idx for idx in if_inds if start_idx <= idx <= end_idx
+            ]
+            imgs_valid.append(
+                np.array([imgs[i % len(imgs)] for i in clip_frame_inds]))
+            mvs_valid.append(
+                np.array([mvs[j % len(mvs)] for j in valid_mv_inds]))
+            i_frames_valid.append(
+                np.array([imgs[k % len(imgs)] for k in valid_if_inds]))
+        # need to transform back to merge clips with clips length for further
+        # augmentation, how stupid
+        imgs_valid = np.array(imgs_valid)
+        imgs_valid = np.reshape(imgs_valid, (-1, ) + imgs_valid.shape[2:])
+        mvs_valid = np.array(mvs_valid)
+        mvs_valid = np.reshape(mvs_valid, (-1, ) + mvs_valid.shape[2:])
+        i_frames_valid = np.array(i_frames_valid)
+        i_frames_valid = np.reshape(i_frames_valid,
+                                    (-1, ) + i_frames_valid.shape[2:])
+        results['imgs'] = imgs_valid
+        results['mvs'] = mvs_valid
+        results['i_frames'] = i_frames_valid
+        results['video_reader'] = None
+        del container
+
+        return results
+
+
+@PIPELINES.register_module()
 class DecordDecode:
     """Using decord to decode the video.
 
@@ -1326,6 +1444,8 @@ class LoadAudioFeature:
         else:
             # Generate a random dummy 10s input
             # Some videos do not have audio stream
+            print('Audio file {} not found!'.format(results['audio_path']))
+            raise ValueError
             pad_func = getattr(self, f'_{self.pad_method}_pad')
             feature_map = pad_func((640, 80))
 

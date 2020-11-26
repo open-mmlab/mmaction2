@@ -28,12 +28,17 @@ class AudioRecognizer(BaseRecognizer):
     def forward_test(self, audios):
         """Defines the computation performed at every call when evaluation and
         testing."""
+        # import pdb
+        # pdb.set_trace()
         num_segs = audios.shape[1]
         audios = audios.reshape((-1, ) + audios.shape[2:])
+        # pdb.set_trace()
         x = self.extract_feat(audios)
+        # pdb.set_trace()
         cls_score = self.cls_head(x)
+        # pdb.set_trace()
         cls_score = self.average_clip(cls_score, num_segs)
-
+        # pdb.set_trace()
         return cls_score.cpu().numpy()
 
     def forward_gradcam(self, audios):

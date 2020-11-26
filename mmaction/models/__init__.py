@@ -3,7 +3,7 @@ from .backbones import (C3D, X3D, ResNet, ResNet2Plus1d, ResNet3d, ResNet3dCSN,
                         ResNetAudio, ResNetTIN, ResNetTSM)
 from .builder import (DETECTORS, build_backbone, build_detector, build_head,
                       build_localizer, build_loss, build_model, build_neck,
-                      build_recognizer)
+                      build_recognizer, build_sampler)
 from .common import Conv2plus1d, ConvAudio
 from .heads import (AudioTSNHead, AVARoIHead, BaseHead, BBoxHeadAVA, I3DHead,
                     SlowFastHead, TPNHead, TSMHead, TSNHead, X3DHead)
@@ -12,10 +12,12 @@ from .losses import (BCELossWithLogits, BinaryLogisticRegressionLoss, BMNLoss,
                      CrossEntropyLoss, HVULoss, NLLLoss, OHEMHingeLoss,
                      SSNLoss)
 from .necks import TPN
-from .recognizers import (AudioRecognizer, BaseRecognizer, recognizer2d,
-                          recognizer3d)
-from .registry import BACKBONES, HEADS, LOCALIZERS, LOSSES, RECOGNIZERS
 from .roi_extractors import SingleRoIExtractor3D
+from .recognizers import (AudioRecognizer, BaseRecognizer, Recognizer3DSampler,
+                          recognizer2d, recognizer3d)
+from .registry import (BACKBONES, HEADS, LOCALIZERS, LOSSES, RECOGNIZERS,
+                       SAMPLERS)
+from .samplers import ACSampler
 
 __all__ = [
     'BACKBONES', 'HEADS', 'RECOGNIZERS', 'build_recognizer', 'build_head',
@@ -29,5 +31,6 @@ __all__ = [
     'TPN', 'TPNHead', 'build_loss', 'build_neck', 'AudioRecognizer',
     'AudioTSNHead', 'X3D', 'X3DHead', 'ResNet3dLayer', 'DETECTORS',
     'SingleRoIExtractor3D', 'BBoxHeadAVA', 'ResNetAudio', 'build_detector',
-    'ConvAudio', 'AVARoIHead'
+    'ConvAudio', 'AVARoIHead', 'SAMPLERS', 'Recognizer3DSampler',
+    'ACSampler', 'build_sampler'
 ]

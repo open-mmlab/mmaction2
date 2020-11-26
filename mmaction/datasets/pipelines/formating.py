@@ -265,6 +265,8 @@ class FormatShape:
     def __init__(self, input_format, collapse=False):
         self.input_format = input_format
         self.collapse = collapse
+        self.field = field
+        
         if self.input_format not in ['NCTHW', 'NCHW', 'NCHW_Flow', 'NPTCHW']:
             raise ValueError(
                 f'The input format {self.input_format} is invalid.')
@@ -276,7 +278,7 @@ class FormatShape:
             results (dict): The resulting dict to be modified and passed
                 to the next transform in pipeline.
         """
-        imgs = results['imgs']
+        imgs = results[self.field]
         # [M x H x W x C]
         # M = 1 * N_crops * N_clips * L
         if self.collapse:
@@ -322,7 +324,7 @@ class FormatShape:
             assert imgs.shape[0] == 1
             imgs = imgs.squeeze(0)
 
-        results['imgs'] = imgs
+        results[self.field] = imgs
         results['input_shape'] = imgs.shape
         return results
 

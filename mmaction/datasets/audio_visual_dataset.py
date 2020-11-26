@@ -18,7 +18,6 @@ class AudioVisualDataset(RawframeDataset):
         some/directory-4 234 2
         some/directory-5 295 3
         some/directory-6 121 3
-
     Args:
         ann_file (str): Path to the annotation file.
         pipeline (list[dict | callable]): A sequence of data transforms.

@@ -3,7 +3,8 @@ import warnings
 import torch.nn as nn
 from mmcv.utils import Registry, build_from_cfg
 
-from .registry import BACKBONES, HEADS, LOCALIZERS, LOSSES, NECKS, RECOGNIZERS
+from .registry import (BACKBONES, HEADS, LOCALIZERS, LOSSES, NECKS,
+                       RECOGNIZERS, SAMPLERS)
 
 try:
     from mmdet.models.builder import DETECTORS, build_detector
@@ -54,6 +55,11 @@ def build_recognizer(cfg, train_cfg=None, test_cfg=None):
     """Build recognizer."""
     return build(cfg, RECOGNIZERS,
                  dict(train_cfg=train_cfg, test_cfg=test_cfg))
+
+
+def build_sampler(cfg, train_cfg=None, test_cfg=None):
+    """Build clip sampler."""
+    return build(cfg, SAMPLERS, dict(train_cfg=train_cfg, test_cfg=test_cfg))
 
 
 def build_loss(cfg):
