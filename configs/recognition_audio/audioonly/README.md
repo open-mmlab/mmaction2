@@ -16,7 +16,7 @@
 
 |config | n_fft | gpus | backbone |pretrain| top1 acc/delta| top5 acc/delta | inference_time(video/s) | gpu_mem(M)| ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[audioonly_r50_64x1x1_100e_kinetics400_audio_feature](/configs/recognition_audio/audioonly/audioonly_r50_64x1x1_100e_kinetics400_audio_feature.py)|1024|8x2| ResNet50 | None |21.88|39.65|x|24613|[ckpt]()|[log]()|[json]()|
+|[audioonly_r50_64x1x1_100e_kinetics400_audio_feature](/configs/recognition_audio/audioonly/audioonly_r50_64x1x1_100e_kinetics400_audio_feature.py)|1024|8x2| ResNet50 | None |21.88|39.65|x|24613|[ckpt](https://download.openmmlab.com/mmaction/recognition_audio/audioonly/audioonly_r50_64x1x1_100e_kinetics400_audio_feature/audioonly_r50_64x1x1_100e_kinetics400_audio_feature_20201127-9d591fed.pth)|[log](https://download.openmmlab.com/mmaction/recognition_audio/audioonly/audioonly_r50_64x1x1_100e_kinetics400_audio_feature/20201126_161659.log)|[json](https://download.openmmlab.com/mmaction/recognition_audio/audioonly/audioonly_r50_64x1x1_100e_kinetics400_audio_feature/20201126_161659.log.json)|
 
 Notes:
 
