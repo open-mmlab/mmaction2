@@ -66,7 +66,8 @@ class TAM(nn.Module):
                 conv1d_kernel_size,
                 stride=1,
                 padding=conv1d_kernel_size // 2,
-                bias=False), nn.ReLU(inplace=True),
+                bias=False), nn.BatchNorm1d(in_channels // beta),
+            nn.ReLU(inplace=True),
             nn.Conv1d(in_channels // beta, in_channels, 1, bias=False),
             nn.Sigmoid())
 
