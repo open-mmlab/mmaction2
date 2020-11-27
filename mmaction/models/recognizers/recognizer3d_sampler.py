@@ -46,14 +46,9 @@ class Recognizer3DSampler(Recognizer3D):
             test_crop,
         ) + imgs.shape[2:])
         # batch x  clips x crops x C x T x H x W
-        # import pdb
-        # pdb.set_trace()
         num_segs = self.sampler.top_k * test_crop
-        # pdb.set_trace()
         imgs = imgs[:, top_k_clip_inds, :, :, :, :, :]
-        # pdb.set_trace()
         imgs = imgs.reshape((-1, ) + imgs.shape[3:])
-        # pdb.set_trace()
 
         x = self.extract_feat(imgs)
         if hasattr(self, 'neck'):

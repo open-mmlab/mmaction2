@@ -2,21 +2,39 @@
 model = dict(
     type='Recognizer3DSampler',
     backbone=dict(
-        type='ResNet3d',
-        pretrained2d=True,
-        pretrained='torchvision://resnet50',
-        depth=50,
-        conv_cfg=dict(type='Conv3d'),
-        norm_eval=False,
-        inflate=((1, 1, 1), (1, 0, 1, 0), (1, 0, 1, 0, 1, 0), (0, 1, 0)),
-        zero_init_residual=False),
+        type='ResNet3dSlowFast',
+        pretrained=None,
+        resample_rate=4,  # tau
+        speed_ratio=4,  # alpha
+        channel_ratio=8,  # beta_inv
+        slow_pathway=dict(
+            type='resnet3d',
+            depth=50,
+            pretrained=None,
+            lateral=True,
+            fusion_kernel=7,
+            conv1_kernel=(1, 7, 7),
+            dilations=(1, 1, 1, 1),
+            conv1_stride_t=1,
+            pool1_stride_t=1,
+            inflate=(0, 0, 1, 1),
+            norm_eval=False),
+        fast_pathway=dict(
+            type='resnet3d',
+            depth=50,
+            pretrained=None,
+            lateral=False,
+            base_channels=8,
+            conv1_kernel=(5, 7, 7),
+            conv1_stride_t=1,
+            pool1_stride_t=1,
+            norm_eval=False)),
     cls_head=dict(
-        type='I3DHead',
-        num_classes=400,
-        in_channels=2048,
+        type='SlowFastHead',
+        in_channels=2304,  # 2048+256
+        num_classes=212,
         spatial_type='avg',
-        dropout_ratio=0.5,
-        init_std=0.01),
+        dropout_ratio=0.5),
     sampler=dict(
         type='ACSampler',
         top_k=10,
@@ -26,31 +44,33 @@ model = dict(
                 type='ResNet', depth=18, in_channels=1, norm_eval=False),
             cls_head=dict(
                 type='AudioTSNHead',
-                num_classes=400,
+                num_classes=212,
                 in_channels=512,
                 dropout_ratio=0.5,
                 init_std=0.01)),
-        pretrained_audio='tsn_r18_64x1x1_100e_kinetics400_audio_feature.pth',
+        pretrained_audio='epoch_200.pth',
         mv_recognizer_config=None,
         pretrained_mv=None,
         if_recognizer_config=None,
         pretrained_if=None,
     ))
 # model training and testing settings
-train_cfg = dict(aux_info=['mvs', 'i_frames', 'audios'])
+# train_cfg = dict(aux_info=['mvs', 'i_frames', 'audios'])
+train_cfg = dict(aux_info=['audios'])
 test_cfg = dict(average_clips='prob')
 # dataset settings
 dataset_type = 'AudioVisualDataset'
-data_root_val = 'data/kinetics400/videos'
-audio_prefix = 'data/kinetics400/audio_feature'
-ann_file_test = 'data/kinetics400/clean_kinetics400_val_list_audio_feature.txt'
+data_root_val = 'data/ugc/rawframes'
+audio_prefix = 'data/ugc/audio_feature'
+ann_file_test = 'data/ugc/ugc_val_list_rawframes.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 test_pipeline = [
-    dict(type='PyAVInit'),
+    # dict(type='PyAVInit'),
     dict(type='LoadAudioFeature'),
     dict(type='SampleFrames', clip_len=32, frame_interval=2, num_clips=30),
-    dict(type='PyAVDecodeSideData'),
+    # dict(type='PyAVDecodeSideData'),
+    dict(type='RawFrameDecode'),
     dict(type='AudioFeatureSelector'),
     dict(type='Resize', scale=(-1, 256)),
     # dict(type='Resize', scale=(16, 16), field='mvs'),
@@ -72,11 +92,12 @@ test_pipeline = [
 
 data = dict(
     videos_per_gpu=1,
-    workers_per_gpu=0,
+    workers_per_gpu=4,
     test=dict(
         type=dataset_type,
         ann_file=ann_file_test,
-        video_prefix=data_root_val,
+        # video_prefix=data_root_val,
+        data_prefix=data_root_val,
         audio_prefix=audio_prefix,
         start_index=1,
         pipeline=test_pipeline))

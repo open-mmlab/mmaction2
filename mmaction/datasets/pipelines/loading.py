@@ -958,6 +958,10 @@ class PyAVDecodeSideData(PyAVDecode):
             thread processing. Default: False.
     """
 
+    def __init__(self, fixed_length=8, **kwargs):
+        super().__init__(**kwargs)
+        self.fixed_length = fixed_length
+
     def _parse_vectors(self, mv, vectors, height, width):
         """Parse the returned vectors."""
         (w, h, src_x, src_y, dst_x,
@@ -1014,10 +1018,8 @@ class PyAVDecodeSideData(PyAVDecode):
                 mv = np.zeros((height, width, 2), dtype=np.int8)
                 vectors = frame.side_data.get('MOTION_VECTORS')
                 imgs.append(frame.to_rgb().to_ndarray())
-                if frame.key_frame:
-                    if_inds.append(i)
-                    # import pdb
-                    # pdb.set_trace()
+                # if frame.key_frame:
+                if_inds.append(i)  # Let's just treat i-frame as normal frame
                 if vectors is not None and len(vectors) > 0:
                     # import pdb
                     # pdb.set_trace()
@@ -1037,15 +1039,22 @@ class PyAVDecodeSideData(PyAVDecode):
             valid_mv_inds = [
                 idx for idx in mv_inds if start_idx <= idx <= end_idx
             ]
+            step_mv = len(valid_mv_inds) // (self.fixed_length) + 1
+            valid_mv_inds = valid_mv_inds[0:len(valid_mv_inds):step_mv]
+
             valid_if_inds = [
                 idx for idx in if_inds if start_idx <= idx <= end_idx
             ]
+            step_if = len(valid_if_inds) // (self.fixed_length) + 1
+            valid_if_inds = valid_if_inds[0:len(valid_if_inds):step_if]
             imgs_valid.append(
                 np.array([imgs[i % len(imgs)] for i in clip_frame_inds]))
             mvs_valid.append(
                 np.array([mvs[j % len(mvs)] for j in valid_mv_inds]))
             i_frames_valid.append(
                 np.array([imgs[k % len(imgs)] for k in valid_if_inds]))
+        # import pdb
+        # pdb.set_trace()
         # need to transform back to merge clips with clips length for further
         # augmentation, how stupid
         imgs_valid = np.array(imgs_valid)
@@ -1445,7 +1454,7 @@ class LoadAudioFeature:
             # Generate a random dummy 10s input
             # Some videos do not have audio stream
             print('Audio file {} not found!'.format(results['audio_path']))
-            raise ValueError
+            # raise ValueError
             pad_func = getattr(self, f'_{self.pad_method}_pad')
             feature_map = pad_func((640, 80))
 

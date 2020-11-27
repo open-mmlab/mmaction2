@@ -476,7 +476,8 @@ class ResNet3dSlowFast(nn.Module):
         x_slow = nn.functional.interpolate(
             x,
             mode='nearest',
-            scale_factor=(1.0 / self.resample_rate, 1.0, 1.0))
+            scale_factor=(1.0 / self.resample_rate, 1.0, 1.0),
+            recompute_scale_factor=True)
         x_slow = self.slow_path.conv1(x_slow)
         x_slow = self.slow_path.maxpool(x_slow)
 
@@ -484,7 +485,8 @@ class ResNet3dSlowFast(nn.Module):
             x,
             mode='nearest',
             scale_factor=(1.0 / (self.resample_rate // self.speed_ratio), 1.0,
-                          1.0))
+                          1.0),
+            recompute_scale_factor=True)
         x_fast = self.fast_path.conv1(x_fast)
         x_fast = self.fast_path.maxpool(x_fast)
 

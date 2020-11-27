@@ -1,6 +1,7 @@
 import argparse
 import os
 import os.path as osp
+import time
 import warnings
 
 import mmcv
@@ -186,7 +187,7 @@ def main():
             broadcast_buffers=False)
         outputs = multi_gpu_test(model, data_loader, args.tmpdir,
                                  args.gpu_collect)
-
+    time.sleep(10)
     rank, _ = get_dist_info()
     if rank == 0:
         if output_config.get('out', None):
