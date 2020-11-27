@@ -300,7 +300,7 @@ def test_tsm():
     demo_inputs = generate_demo_inputs(input_shape)
     imgs = demo_inputs['imgs']
 
-    test_cfg = dict(average_clips='prob', test_crops=3, twice_sample=True)
+    test_cfg = dict(average_clips='prob')
     recognizer = build_recognizer(
         model, train_cfg=train_cfg, test_cfg=test_cfg)
 

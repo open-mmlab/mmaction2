@@ -323,7 +323,8 @@ class DenseSampleFrames(SampleFrames):
         sample_range (int): Total sample range for dense sample.
             Default: 64.
         num_sample_positions (int): Number of sample start positions, Which is
-            only used in test mode. Default: 10.
+            only used in test mode. Default: 10. That is to say, by default,
+            there are at least 10 clips for one input sample in test mode.
         temporal_jitter (bool): Whether to apply temporal jittering.
             Default: False.
         test_mode (bool): Store True when building test or validation dataset.
@@ -901,7 +902,7 @@ class DecordDecode:
 
 @PIPELINES.register_module()
 class OpenCVInit:
-    """Using OpenCV to initalize the video_reader.
+    """Using OpenCV to initialize the video_reader.
 
     Required keys are "filename", added or modified keys are "new_path",
     "video_reader" and "total_frames".
@@ -911,11 +912,13 @@ class OpenCVInit:
         self.io_backend = io_backend
         self.kwargs = kwargs
         self.file_client = None
-        random_string = get_random_string()
-        thread_id = get_thread_id()
-        self.tmp_folder = osp.join(get_shm_dir(),
-                                   f'{random_string}_{thread_id}')
-        os.mkdir(self.tmp_folder)
+        self.tmp_folder = None
+        if self.io_backend != 'disk':
+            random_string = get_random_string()
+            thread_id = get_thread_id()
+            self.tmp_folder = osp.join(get_shm_dir(),
+                                       f'{random_string}_{thread_id}')
+            os.mkdir(self.tmp_folder)
 
     def __call__(self, results):
         """Perform the OpenCV initialization.
@@ -944,7 +947,8 @@ class OpenCVInit:
         return results
 
     def __del__(self):
-        shutil.rmtree(self.tmp_folder)
+        if self.tmp_folder and osp.exists(self.tmp_folder):
+            shutil.rmtree(self.tmp_folder)
 
     def __repr__(self):
         repr_str = (f'{self.__class__.__name__}('
