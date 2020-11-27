@@ -19,7 +19,7 @@ We currently released 4 models trained with OmniSource framework, including both
 
 ### Benchmark on Mini-Kinetics
 
-We release a subset of web dataset used in the OmniSource paper. Specifically, we release the web data in the 200 classes of [Mini-Kinetics](https://arxiv.org/pdf/1712.04851.pdf). The statistics of those datasets is detailed in [preparing_omnisource](/tools/data/omnisource/preparing_omnisource.md). To obtain those data, you need to fill in a [data request form](https://docs.google.com/forms/d/e/1FAIpQLSd8_GlmHzG8FcDbW-OEu__G7qLgOSYZpH-i5vYVJcu7wcb_TQ/viewform?usp=sf_link). After we received your request, the download link of these data will be send to you. For more details on the released OmniSource web dataset, please refer to [preparing_omnisource](/tools/data/omnisource/preparing_omnisource.md).
+We release a subset of web dataset used in the OmniSource paper. Specifically, we release the web data in the 200 classes of [Mini-Kinetics](https://arxiv.org/pdf/1712.04851.pdf). The statistics of those datasets is detailed in [preparing_omnisource](/tools/data/omnisource/README.md). To obtain those data, you need to fill in a [data request form](https://docs.google.com/forms/d/e/1FAIpQLSd8_GlmHzG8FcDbW-OEu__G7qLgOSYZpH-i5vYVJcu7wcb_TQ/viewform?usp=sf_link). After we received your request, the download link of these data will be send to you. For more details on the released OmniSource web dataset, please refer to [preparing_omnisource](/tools/data/omnisource/README.md).
 
 We benchmark the OmniSource framework on the released subset, results are listed in the following table (we report the Top-1 and Top-5 accuracy on Mini-Kinetics validation). The cbenchmark can be used as a baseline for video recognition with web data.
 

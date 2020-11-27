@@ -2,21 +2,21 @@
 
 sed -i '$a\\n' ../demo/README.md
 
-sed -i 's/(\/tools\/data\/activitynet\/preparing_activitynet.md/(#activitynet/g' supported_datasets.md
-sed -i 's/(\/tools\/data\/kinetics\/preparing_kinetics.md/(#kinetics/g' supported_datasets.md
-sed -i 's/(\/tools\/data\/mit\/preparing_mit.md/(#moments-in-time/g' supported_datasets.md
-sed -i 's/(\/tools\/data\/mmit\/preparing_mmit.md/(#multi-moments-in-time/g' supported_datasets.md
-sed -i 's/(\/tools\/data\/sthv1\/preparing_sthv1.md/(#something-something-v1/g' supported_datasets.md
-sed -i 's/(\/tools\/data\/sthv2\/preparing_sthv2.md/(#something-something-v2/g' supported_datasets.md
-sed -i 's/(\/tools\/data\/thumos14\/preparing_thumos14.md/(#thumos-14/g' supported_datasets.md
-sed -i 's/(\/tools\/data\/ucf101\/preparing_ucf101.md/(#ucf-101/g' supported_datasets.md
-sed -i 's/(\/tools\/data\/ucf101_24\/preparing_ucf101_24.md/(#ucf101-24/g' supported_datasets.md
-sed -i 's/(\/tools\/data\/jhmdb\/preparing_jhmdb.md/(#jhmdb/g' supported_datasets.md
-sed -i 's/(\/tools\/data\/hvu\/preparing_hvu.md/(#hvu/g' supported_datasets.md
-sed -i 's/(\/tools\/data\/hmdb51\/preparing_hmdb51.md/(#hmdb51/g' supported_datasets.md
-sed -i 's/(\/tools\/data\/jester\/preparing_jester.md/(#jester/g' supported_datasets.md
-sed -i 's/(\/tools\/data\/ava\/preparing_ava.md/(#ava/g' supported_datasets.md
-sed -i 's/(\/tools\/data\/gym\/preparing_gym.md/(#gym/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/activitynet\/README.md/(#activitynet/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/kinetics\/README.md/(#kinetics-400-600-700/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/mit\/README.md/(#moments-in-time/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/mmit\/README.md/(#multi-moments-in-time/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/sthv1\/README.md/(#something-something-v1/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/sthv2\/README.md/(#something-something-v2/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/thumos14\/README.md/(#thumos-14/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/ucf101\/README.md/(#ucf-101/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/ucf101_24\/README.md/(#ucf101-24/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/jhmdb\/README.md/(#jhmdb/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/hvu\/README.md/(#hvu/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/hmdb51\/README.md/(#hmdb51/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/jester\/README.md/(#jester/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/ava\/README.md/(#ava/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/gym\/README.md/(#gym/g' supported_datasets.md
 
 cat  ../configs/localization/*/*.md > localization_models.md
 cat  ../configs/recognition/*/*.md > recognition_models.md
