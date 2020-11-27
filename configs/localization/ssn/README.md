@@ -24,6 +24,7 @@ According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you ma
 e.g., lr=0.01 for 4 GPUs * 2 video/gpu and lr=0.08 for 16 GPUs * 4 video/gpu.
 2. Since SSN utilizes different structured temporal pyramid pooling methods at training and testing, please refer to [ssn_r50_450e_thumos14_rgb_train](/configs/localization/ssn/ssn_r50_450e_thumos14_rgb_train.py) at training and [ssn_r50_450e_thumos14_rgb_test](/configs/localization/ssn/ssn_r50_450e_thumos14_rgb_test.py) at testing.
 3. We evaluate the action detection performance of SSN, using action proposals of TAG. For more details on data preparation, you can refer to thumos14 TAG proposals in [Data Preparation](/docs/data_preparation.md).
+4. The reference SSN in is evaluated with `ResNet50` backbone in MMAction, which is the same backbone with ours. Note that the original setting of MMAction SSN uses the `BNInception` backbone.
 
 ## Train
 
