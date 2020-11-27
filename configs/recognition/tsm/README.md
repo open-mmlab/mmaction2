@@ -61,8 +61,7 @@ not including the IO time and pre-processing time. For each setting, we use 1 gp
 We use efficient setting as default provided in config files, and it can be changed to accurate setting by
 ```python
 ...
-# `test_cfg = dict(average_clips=None)` for efficient setting
-test_cfg = dict(average_clips='prob', test_crops=3, twice_sample=True)  # for accurate setting
+test_cfg = dict(average_clips='prob')
 ...
 test_pipeline = [
     dict(

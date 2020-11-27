@@ -16,6 +16,7 @@
 - Add random seed for building filelists ([#323](https://github.com/open-mmlab/mmaction2/pull/323))
 - Move docs about demo to `demo/README.md` ([#329](https://github.com/open-mmlab/mmaction2/pull/329))
 - Remove redundant code in `tools/test.py` ([#310](https://github.com/open-mmlab/mmaction2/pull/310))
+- Automatically calculate number of test clips for Recognizer2D ([#359](https://github.com/open-mmlab/mmaction2/pull/359))
 
 **Bug Fixes**
 - Fix a bug in BaseDataset when `data_prefix` is None ([#314](https://github.com/open-mmlab/mmaction2/pull/314))
@@ -26,6 +27,7 @@
 
 **ModelZoo**
 - Add SlowOnly model for GYM99, both RGB and Flow ([#336](https://github.com/open-mmlab/mmaction2/pull/336))
+- Add TSN for HMDB51 pretrained on Kinetics400, Moments in Time and ImageNet. ([#372](https://github.com/open-mmlab/mmaction2/pull/372))
 
 ### v0.8.0 (31/10/2020)
 
