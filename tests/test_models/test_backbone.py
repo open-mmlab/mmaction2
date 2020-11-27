@@ -960,14 +960,14 @@ def test_c3d_backbone():
 
 def test_resnet_audio_backbone():
     """Test ResNetAudio backbone."""
-    input_shape = (1, 1, 128, 80)
+    input_shape = (1, 1, 32, 32)
     spec = _demo_inputs(input_shape)
     # inference
     audioonly = ResNetAudio(50, None)
     audioonly.init_weights()
     audioonly.train()
     feat = audioonly(spec)
-    assert feat.shape == torch.Size([1, 1024, 8, 5])
+    assert feat.shape == torch.Size([1, 1024, 2, 2])
 
 
 @pytest.mark.skipif(
