@@ -167,9 +167,7 @@ def main():
         pr = Thread(target=inference, args=(), daemon=True)
         pw.start()
         pr.start()
-        while True:
-            if not pw.is_alive():
-                exit(0)
+        pw.join()
     except KeyboardInterrupt:
         pass
 
