@@ -157,14 +157,14 @@ Notes:
 
 For more details on data preparation, you can refer to
 
-* [preparing_ucf101](/tools/data/ucf101/preparing_ucf101.md)
-* [preparing_kinetics](/tools/data/kinetics/preparing_kinetics.md)
-* [preparing_sthv1](/tools/data/sthv1/preparing_sthv1.md)
-* [preparing_sthv2](/tools/data/sthv2/preparing_sthv2.md)
-* [preparing_mit](/tools/data/mit/preparing_mit.md)
-* [preparing_mmit](/tools/data/mmit/preparing_mmit.md)
-* [preparing_hvu](/tools/data/hvu/preparing_hvu.md)
-* [preparing_hmdb51](/tools/data/hmdb51/preparing_hmdb51.md)
+* [preparing_ucf101](/tools/data/ucf101/README.md)
+* [preparing_kinetics](/tools/data/kinetics/README.md)
+* [preparing_sthv1](/tools/data/sthv1/README.md)
+* [preparing_sthv2](/tools/data/sthv2/README.md)
+* [preparing_mit](/tools/data/mit/README.md)
+* [preparing_mmit](/tools/data/mmit/README.md)
+* [preparing_hvu](/tools/data/hvu/README.md)
+* [preparing_hmdb51](/tools/data/hmdb51/README.md)
 
 ## Train
 
