@@ -149,11 +149,16 @@ class TestLoading:
         num_categories = len(categories)
 
         loader = LoadHVULabel()
+        assert repr(loader) == (f'{loader.__class__.__name__}('
+                                f'hvu_initialized={False})')
 
         result1 = loader(hvu_label_example1)
         label1 = torch.zeros(num_tags)
         mask1 = torch.zeros(num_tags)
         category_mask1 = torch.zeros(num_categories)
+
+        assert repr(loader) == (f'{loader.__class__.__name__}('
+                                f'hvu_initialized={True})')
 
         label1[[0, 4, 5, 7, 8]] = 1.
         mask1[:10] = 1.
@@ -204,6 +209,14 @@ class TestLoading:
         assert len(sample_frames_results['frame_inds']) == 15
         assert np.max(sample_frames_results['frame_inds']) <= 5
         assert np.min(sample_frames_results['frame_inds']) >= 1
+        assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
+                                       f'clip_len={3}, '
+                                       f'frame_interval={1}, '
+                                       f'num_clips={5}, '
+                                       f'temporal_jitter={False}, '
+                                       f'twice_sample={False}, '
+                                       f'out_of_bound_opt=loop, '
+                                       f'test_mode={False})')
 
         # Sample Frame with no temporal_jitter
         # clip_len=5, frame_interval=1, num_clips=5,
@@ -218,6 +231,14 @@ class TestLoading:
             out_of_bound_opt='repeat_last')
         sample_frames = SampleFrames(**config)
         sample_frames_results = sample_frames(video_result)
+        assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
+                                       f'clip_len={5}, '
+                                       f'frame_interval={1}, '
+                                       f'num_clips={5}, '
+                                       f'temporal_jitter={False}, '
+                                       f'twice_sample={False}, '
+                                       f'out_of_bound_opt=repeat_last, '
+                                       f'test_mode={False})')
 
         def check_monotonous(arr):
             length = arr.shape[0]
@@ -256,6 +277,14 @@ class TestLoading:
         assert len(sample_frames_results['frame_inds']) == 20
         assert np.max(sample_frames_results['frame_inds']) <= 5
         assert np.min(sample_frames_results['frame_inds']) >= 1
+        assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
+                                       f'clip_len={4}, '
+                                       f'frame_interval={2}, '
+                                       f'num_clips={5}, '
+                                       f'temporal_jitter={True}, '
+                                       f'twice_sample={False}, '
+                                       f'out_of_bound_opt=loop, '
+                                       f'test_mode={False})')
 
         # Sample Frame with no temporal_jitter in test mode
         # clip_len=4, frame_interval=1, num_clips=6
@@ -276,6 +305,14 @@ class TestLoading:
         assert len(sample_frames_results['frame_inds']) == 24
         assert np.max(sample_frames_results['frame_inds']) <= 5
         assert np.min(sample_frames_results['frame_inds']) >= 1
+        assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
+                                       f'clip_len={4}, '
+                                       f'frame_interval={1}, '
+                                       f'num_clips={6}, '
+                                       f'temporal_jitter={False}, '
+                                       f'twice_sample={False}, '
+                                       f'out_of_bound_opt=loop, '
+                                       f'test_mode={True})')
 
         # Sample Frame with no temporal_jitter in test mode
         # clip_len=3, frame_interval=1, num_clips=6
@@ -475,6 +512,16 @@ class TestLoading:
         assert len(dense_sample_frames_results['frame_inds']) == 240
         dense_sample_frames_results = dense_sample_frames(frame_result)
         assert len(dense_sample_frames_results['frame_inds']) == 240
+        assert repr(dense_sample_frames) == (
+            f'{dense_sample_frames.__class__.__name__}('
+            f'clip_len={4}, '
+            f'frame_interval={1}, '
+            f'num_clips={6}, '
+            f'sample_range={64}, '
+            f'num_sample_positions={10}, '
+            f'temporal_jitter={False}, '
+            f'out_of_bound_opt=loop, '
+            f'test_mode={True})')
 
         # Dense sample with no temporal_jitter
         # clip_len=4, frame_interval=1, num_clips=6
@@ -529,6 +576,16 @@ class TestLoading:
         assert len(dense_sample_frames_results['frame_inds']) == 24
         dense_sample_frames_results = dense_sample_frames(frame_result)
         assert len(dense_sample_frames_results['frame_inds']) == 24
+        assert repr(dense_sample_frames) == (
+            f'{dense_sample_frames.__class__.__name__}('
+            f'clip_len={4}, '
+            f'frame_interval={1}, '
+            f'num_clips={6}, '
+            f'sample_range={32}, '
+            f'num_sample_positions={10}, '
+            f'temporal_jitter={False}, '
+            f'out_of_bound_opt=loop, '
+            f'test_mode={False})')
 
         # Dense sample with no temporal_jitter, sample_range=1000 to check mod
         # clip_len=4, frame_interval=1, num_clips=6
@@ -570,6 +627,16 @@ class TestLoading:
         assert len(dense_sample_frames_results['frame_inds']) == 120
         dense_sample_frames_results = dense_sample_frames(frame_result)
         assert len(dense_sample_frames_results['frame_inds']) == 120
+        assert repr(dense_sample_frames) == (
+            f'{dense_sample_frames.__class__.__name__}('
+            f'clip_len={4}, '
+            f'frame_interval={1}, '
+            f'num_clips={6}, '
+            f'sample_range={32}, '
+            f'num_sample_positions={5}, '
+            f'temporal_jitter={False}, '
+            f'out_of_bound_opt=loop, '
+            f'test_mode={True})')
 
     def test_untrim_sample_frames(self):
 
@@ -595,6 +662,9 @@ class TestLoading:
         assert len(sample_frames_results['frame_inds']) == 6
         assert_array_equal(sample_frames_results['frame_inds'],
                            np.array([8, 24, 40, 56, 72, 88]))
+        assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
+                                       f'clip_len={1}, '
+                                       f'frame_interval={16})')
 
         config = dict(clip_len=1, frame_interval=16, start_index=0)
         sample_frames = UntrimmedSampleFrames(**config)
@@ -604,6 +674,9 @@ class TestLoading:
         frame_inds = np.array(list(range(8, 300, 16)))
         assert len(sample_frames_results['frame_inds']) == frame_inds.shape[0]
         assert_array_equal(sample_frames_results['frame_inds'], frame_inds)
+        assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
+                                       f'clip_len={1}, '
+                                       f'frame_interval={16})')
 
         config = dict(clip_len=1, frame_interval=16)
         sample_frames = UntrimmedSampleFrames(**config)
@@ -615,6 +688,9 @@ class TestLoading:
         assert len(sample_frames_results['frame_inds']) == 6
         assert_array_equal(sample_frames_results['frame_inds'],
                            np.array([8, 24, 40, 56, 72, 88]) + 1)
+        assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
+                                       f'clip_len={1}, '
+                                       f'frame_interval={16})')
 
         config = dict(clip_len=3, frame_interval=16, start_index=0)
         sample_frames = UntrimmedSampleFrames(**config)
@@ -628,6 +704,9 @@ class TestLoading:
                 7, 8, 9, 23, 24, 25, 39, 40, 41, 55, 56, 57, 71, 72, 73, 87,
                 88, 89
             ]))
+        assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
+                                       f'clip_len={3}, '
+                                       f'frame_interval={16})')
 
     def test_sample_ava_frames(self):
         target_keys = [
@@ -641,6 +720,11 @@ class TestLoading:
         assert ava_result['clip_len'] == 32
         assert ava_result['frame_interval'] == 2
         assert len(ava_result['frame_inds']) == 32
+        assert repr(sample_ava_dataset) == (
+            f'{sample_ava_dataset.__class__.__name__}('
+            f'clip_len={32}, '
+            f'frame_interval={2}, '
+            f'test_mode={False})')
 
         # add test case in Issue #306
         config = dict(clip_len=8, frame_interval=8)
@@ -650,6 +734,11 @@ class TestLoading:
         assert ava_result['clip_len'] == 8
         assert ava_result['frame_interval'] == 8
         assert len(ava_result['frame_inds']) == 8
+        assert repr(sample_ava_dataset) == (
+            f'{sample_ava_dataset.__class__.__name__}('
+            f'clip_len={8}, '
+            f'frame_interval={8}, '
+            f'test_mode={False})')
 
     def test_sample_proposal_frames(self):
         target_keys = [
@@ -688,6 +777,15 @@ class TestLoading:
         assert self.check_keys_contain(sample_frames_results.keys(),
                                        target_keys)
         assert len(sample_frames_results['frame_inds']) == 8
+        assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
+                                       f'clip_len={1}, '
+                                       f'body_segments={2}, '
+                                       f'aug_segments={(1, 1)}, '
+                                       f'aug_ratio={(0.5, 0.5)}, '
+                                       f'frame_interval={1}, '
+                                       f'test_interval={6}, '
+                                       f'temporal_jitter={False}, '
+                                       f'mode=train)')
 
         # Sample Frame with temporal_jitter
         # clip_len=1, frame_interval=1
@@ -706,6 +804,15 @@ class TestLoading:
         assert self.check_keys_contain(sample_frames_results.keys(),
                                        target_keys)
         assert len(sample_frames_results['frame_inds']) == 8
+        assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
+                                       f'clip_len={1}, '
+                                       f'body_segments={2}, '
+                                       f'aug_segments={(1, 1)}, '
+                                       f'aug_ratio={(0.5, 0.5)}, '
+                                       f'frame_interval={1}, '
+                                       f'test_interval={6}, '
+                                       f'temporal_jitter={True}, '
+                                       f'mode=train)')
 
         # Sample Frame with no temporal_jitter in val mode
         # clip_len=1, frame_interval=1
@@ -725,6 +832,15 @@ class TestLoading:
         assert self.check_keys_contain(sample_frames_results.keys(),
                                        target_keys)
         assert len(sample_frames_results['frame_inds']) == 8
+        assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
+                                       f'clip_len={1}, '
+                                       f'body_segments={2}, '
+                                       f'aug_segments={(1, 1)}, '
+                                       f'aug_ratio={(0.5, 0.5)}, '
+                                       f'frame_interval={1}, '
+                                       f'test_interval={6}, '
+                                       f'temporal_jitter={False}, '
+                                       f'mode=val)')
 
         # Sample Frame with no temporal_jitter in test mode
         # test_interval=2
@@ -745,6 +861,15 @@ class TestLoading:
         assert self.check_keys_contain(sample_frames_results.keys(),
                                        target_keys)
         assert len(sample_frames_results['frame_inds']) == 5
+        assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
+                                       f'clip_len={1}, '
+                                       f'body_segments={2}, '
+                                       f'aug_segments={(1, 1)}, '
+                                       f'aug_ratio={(0.5, 0.5)}, '
+                                       f'frame_interval={1}, '
+                                       f'test_interval={2}, '
+                                       f'temporal_jitter={False}, '
+                                       f'mode=test)')
 
         # Sample Frame with no temporal_jitter to get clip_offsets zero
         # clip_len=1, frame_interval=1
@@ -763,6 +888,15 @@ class TestLoading:
         assert self.check_keys_contain(sample_frames_results.keys(),
                                        target_keys)
         assert len(sample_frames_results['frame_inds']) == 8
+        assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
+                                       f'clip_len={1}, '
+                                       f'body_segments={2}, '
+                                       f'aug_segments={(1, 1)}, '
+                                       f'aug_ratio={(0.5, 0.5)}, '
+                                       f'frame_interval={1}, '
+                                       f'test_interval={6}, '
+                                       f'temporal_jitter={False}, '
+                                       f'mode=train)')
 
         # Sample Frame with no temporal_jitter to
         # get clip_offsets zero in val mode
@@ -783,6 +917,15 @@ class TestLoading:
         assert self.check_keys_contain(sample_frames_results.keys(),
                                        target_keys)
         assert len(sample_frames_results['frame_inds']) == 16
+        assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
+                                       f'clip_len={1}, '
+                                       f'body_segments={4}, '
+                                       f'aug_segments={(2, 2)}, '
+                                       f'aug_ratio={(0.5, 0.5)}, '
+                                       f'frame_interval={1}, '
+                                       f'test_interval={6}, '
+                                       f'temporal_jitter={False}, '
+                                       f'mode=val)')
 
     def test_pyav_init(self):
         target_keys = ['video_reader', 'total_frames']
@@ -791,6 +934,8 @@ class TestLoading:
         pyav_init_result = pyav_init(video_result)
         assert self.check_keys_contain(pyav_init_result.keys(), target_keys)
         assert pyav_init_result['total_frames'] == 300
+        assert repr(
+            pyav_init) == f'{pyav_init.__class__.__name__}(io_backend=disk)'
 
     def test_pyav_decode(self):
         target_keys = ['frame_inds', 'imgs', 'original_shape']
@@ -809,6 +954,8 @@ class TestLoading:
         assert pyav_decode_result['original_shape'] == (256, 340)
         assert np.shape(pyav_decode_result['imgs']) == (len(
             video_result['frame_inds']), 256, 340, 3)
+        assert repr(pyav_decode) == (f'{pyav_decode.__class__.__name__}('
+                                     f'multi_thread={False})')
 
         # test PyAV with 1 dim input and start_index = 0
         video_result = copy.deepcopy(self.video_results)
@@ -837,6 +984,8 @@ class TestLoading:
         assert pyav_decode_result['original_shape'] == (256, 340)
         assert np.shape(pyav_decode_result['imgs']) == (len(
             video_result['frame_inds']), 256, 340, 3)
+        assert repr(pyav_decode) == (f'{pyav_decode.__class__.__name__}('
+                                     f'multi_thread={True})')
 
         # test PyAV with 2 dim input
         video_result = copy.deepcopy(self.video_results)
@@ -892,6 +1041,9 @@ class TestLoading:
         assert self.check_keys_contain(decord_init_result.keys(), target_keys)
         assert decord_init_result['total_frames'] == len(
             decord_init_result['video_reader'])
+        assert repr(decord_init) == (f'{decord_init.__class__.__name__}('
+                                     f'io_backend=disk, '
+                                     f'num_threads={1})')
 
     def test_decord_decode(self):
         target_keys = ['frame_inds', 'imgs', 'original_shape']
@@ -966,6 +1118,8 @@ class TestLoading:
         assert self.check_keys_contain(opencv_init_result.keys(), target_keys)
         assert opencv_init_result['total_frames'] == len(
             opencv_init_result['video_reader'])
+        assert repr(opencv_init) == (f'{opencv_init.__class__.__name__}('
+                                     f'io_backend=disk)')
 
     def test_opencv_decode(self):
         target_keys = ['frame_inds', 'imgs', 'original_shape']
@@ -1151,6 +1305,9 @@ class TestLoading:
         assert np.shape(results['imgs']) == (len(inputs['frame_inds']), 240,
                                              320, 3)
         assert results['original_shape'] == (240, 320)
+        assert repr(frame_selector) == (f'{frame_selector.__class__.__name__}('
+                                        f'io_backend=disk, '
+                                        f'decoding_backend=turbojpeg)')
 
     def test_load_localization_feature(self):
         target_keys = ['raw_feature']
@@ -1170,6 +1327,9 @@ class TestLoading:
                                        target_keys)
         assert load_localization_feature_result['raw_feature'].shape == (400,
                                                                          5)
+        assert repr(load_localization_feature) == (
+            f'{load_localization_feature.__class__.__name__}('
+            f'raw_feature_ext=.csv)')
 
     def test_generate_localization_label(self):
         action_result = copy.deepcopy(self.action_results)
@@ -1234,6 +1394,13 @@ class TestLoading:
             load_proposals_result['reference_temporal_iou'],
             np.arange(0.85, 0.80, -0.01),
             decimal=4)
+        assert repr(load_proposals) == (
+            f'{load_proposals.__class__.__name__}('
+            f'top_k={5}, '
+            f'pgm_proposals_dir={self.proposals_dir}, '
+            f'pgm_features_dir={self.bsp_feature_dir}, '
+            f'proposal_ext=.csv, '
+            f'feature_ext=.npy)')
 
     def test_audio_decode_init(self):
         target_keys = ['audios', 'length', 'sample_rate']
@@ -1250,6 +1417,11 @@ class TestLoading:
         assert self.check_keys_contain(results.keys(), target_keys)
         assert results['audios'].shape == (10.0 *
                                            audio_decode_init.sample_rate, )
+        assert repr(audio_decode_init) == (
+            f'{audio_decode_init.__class__.__name__}('
+            f'io_backend=disk, '
+            f'sample_rate=16000, '
+            f'pad_method=zero)')
 
     def test_audio_decode(self):
         target_keys = ['frame_inds', 'audios']
@@ -1276,6 +1448,9 @@ class TestLoading:
         results = load_audio_feature(inputs)
         assert results['audios'].shape == (640, 80)
         assert self.check_keys_contain(results.keys(), target_keys)
+        assert repr(load_audio_feature) == (
+            f'{load_audio_feature.__class__.__name__}('
+            f'pad_method=zero)')
 
     def test_audio_feature_selector(self):
         target_keys = ['audios']
@@ -1288,3 +1463,6 @@ class TestLoading:
         audio_feature_selector = AudioFeatureSelector()
         results = audio_feature_selector(inputs)
         assert self.check_keys_contain(results.keys(), target_keys)
+        assert repr(audio_feature_selector) == (
+            f'{audio_feature_selector.__class__.__name__}('
+            f'fix_length={128})')
