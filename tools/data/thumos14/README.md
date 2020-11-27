@@ -115,14 +115,14 @@ mmaction2
 │   │   ├── annotations_val
 │   │   ├── annotations_test
 │   │   ├── videos
-│   │   │   ├── val
+│   │   │   ├── validation
 │   │   │   |   ├── video_validation_0000001.mp4
 │   │   │   |   ├── ...
 │   │   |   ├── test
 │   │   │   |   ├── video_test_0000001.mp4
 │   │   │   |   ├── ...
 │   │   ├── rawframes
-│   │   │   ├── val
+│   │   │   ├── validation
 │   │   │   |   ├── video_validation_0000001
 |   │   │   |   │   ├── img_00001.jpg
 |   │   │   |   │   ├── img_00002.jpg

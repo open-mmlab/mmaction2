@@ -15,7 +15,7 @@ wget https://storage.googleapis.com/thumos14_files/TH14_Test_set_mp4.zip
 if [ ! -d "./videos/val" ]; then
   mkdir -p ./videos/val
 fi
-unzip -j TH14_validation_set_mp4.zip -d videos/val
+unzip -j TH14_validation_set_mp4.zip -d videos/validation
 
 if [ ! -d "./videos/test" ]; then
   mkdir -p ./videos/test
