@@ -20,6 +20,6 @@ unzip -j TH14_validation_set_mp4.zip -d videos/val
 if [ ! -d "./videos/test" ]; then
   mkdir -p ./videos/test
 fi
-unzip -P "THUMOS14_REGISTERED" TH14_Test_set_mp4.zip -d videos/test
+unzip -P "THUMOS14_REGISTERED" -j TH14_Test_set_mp4.zip -d videos/test
 
 cd "../../tools/data/thumos14/"
