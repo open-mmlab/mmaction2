@@ -4,7 +4,7 @@ model = dict(
     backbone=dict(
         type='ResNet3dSlowOnly',
         depth=50,
-        pretrained='modelzoo/slowonly_r50_8x8x1_256e_kinetics400_rgb.pth',
+        pretrained=None,
         pretrained2d=False,
         lateral=False,
         num_stages=4,
@@ -26,13 +26,13 @@ model = dict(
         type='BBoxHead', in_channels=2048, num_classes=81, multilabel=True))
 
 train_cfg = dict(
-    person_det_score_thr=0.5,
+    person_det_score_thr=0.9,
     rcnn=dict(
         assigner=dict(
             type='MaxIoUAssigner',
-            pos_iou_thr=0.8,
-            neg_iou_thr=0.8,
-            min_pos_iou=0.8),
+            pos_iou_thr=0.9,
+            neg_iou_thr=0.9,
+            min_pos_iou=0.9),
         sampler=dict(
             type='RandomSampler',
             num=32,
@@ -41,7 +41,7 @@ train_cfg = dict(
             add_gt_as_proposals=True),
         pos_weight=1.0,
         debug=False))
-test_cfg = dict(person_det_score_thr=0.85, rcnn=dict(action_thr=0.00))
+test_cfg = dict(person_det_score_thr=0.9, rcnn=dict(action_thr=0.00))
 
 dataset_type = 'AVADataset'
 data_root = 'data/ava/rawframes'
@@ -63,7 +63,7 @@ img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 
 train_pipeline = [
-    dict(type='SampleAVAFrames', clip_len=8, frame_interval=8),
+    dict(type='SampleAVAFrames', clip_len=4, frame_interval=16),
     dict(type='RawFrameDecode'),
     dict(type='RandomRescale', scale_range=(256, 320)),
     dict(type='RandomCrop', size=256),
@@ -80,7 +80,7 @@ train_pipeline = [
 ]
 # The testing is w/o. any cropping / flipping
 val_pipeline = [
-    dict(type='SampleAVAFrames', clip_len=8, frame_interval=8),
+    dict(type='SampleAVAFrames', clip_len=4, frame_interval=16),
     dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='Normalize', **img_norm_cfg),
@@ -94,7 +94,7 @@ val_pipeline = [
 ]
 
 data = dict(
-    videos_per_gpu=8,
+    videos_per_gpu=16,
     workers_per_gpu=4,
     # During testing, each video may have different shape
     val_videos_per_gpu=1,
@@ -116,7 +116,7 @@ data = dict(
         data_prefix=data_root))
 data['test'] = data['val']
 
-optimizer = dict(type='SGD', lr=0.1, momentum=0.9, weight_decay=0.00001)
+optimizer = dict(type='SGD', lr=0.2, momentum=0.9, weight_decay=0.00001)
 # this lr is used for 8 gpus
 
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
@@ -139,9 +139,10 @@ log_config = dict(
     ])
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/ava/slowonly_kinetics_pretrained_r50_8x8x1_20e_ava_rgb'
+work_dir = ('./work_dirs/ava/'
+            'slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb')
 load_from = ('https://download.openmmlab.com/mmaction/recognition/slowonly/'
-             'slowonly_r50_256p_8x8x1_256e_kinetics400_rgb/slowonly_r50_256p_'
-             '8x8x1_256e_kinetics400_rgb_20200820-75851a7d.pth')
+             'slowonly_r50_4x16x1_256e_kinetics400_rgb/'
+             'slowonly_r50_4x16x1_256e_kinetics400_rgb_20200704-a69556c6.pth')
 resume_from = None
 find_unused_parameters = False
