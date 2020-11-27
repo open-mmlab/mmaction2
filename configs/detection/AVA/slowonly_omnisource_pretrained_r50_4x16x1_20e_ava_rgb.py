@@ -97,7 +97,7 @@ data = dict(
     videos_per_gpu=16,
     workers_per_gpu=4,
     # During testing, each video may have different shape
-    val_videos_per_gpu=1,
+    val_dataloader=dict(videos_per_gpu=1),
     train=dict(
         type=dataset_type,
         ann_file=ann_file_train,
