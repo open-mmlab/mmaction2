@@ -10,7 +10,7 @@ We provide some tips for MMAction2 data preparation in this file.
   * [Extract frames](#extract-frames)
     + [Alternative to denseflow](#alternative-to-denseflow)
   * [Generate file list](#generate-file-list)
-  * [Prepare audio](#Prepare-audio)
+  * [Prepare audio](#prepare-audio)
 
 <!-- TOC -->
 
