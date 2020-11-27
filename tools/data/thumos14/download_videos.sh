@@ -12,8 +12,8 @@ cd ${DATA_DIR}
 wget https://storage.googleapis.com/thumos14_files/TH14_validation_set_mp4.zip
 wget https://storage.googleapis.com/thumos14_files/TH14_Test_set_mp4.zip
 
-if [ ! -d "./videos/val" ]; then
-  mkdir -p ./videos/val
+if [ ! -d "./videos/validation" ]; then
+  mkdir -p ./videos/validation
 fi
 unzip -j TH14_validation_set_mp4.zip -d videos/validation
 
