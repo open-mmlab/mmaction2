@@ -9,7 +9,7 @@
 
 ### Video demo
 
-We provide a demo script to predict the recognition result using a single video.
+We provide a demo script to predict the recognition result using a single video. In order to get predict results in range `[0, 1]`, make sure to set `test_cfg = dict(average_clips='prob')` in config file.
 
 ```shell
 python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} {LABEL_FILE} [--use-frames] \
@@ -157,7 +157,7 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
 
 ### Webcam demo
 
-We provide a demo script to implement real-time action recognition from web camera.
+We provide a demo script to implement real-time action recognition from web camera. In order to get predict results in range `[0, 1]`, make sure to set `test_cfg = dict(average_clips='prob')` in config file.
 
 ```shell
 python demo/webcam_demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${LABEL_FILE} \
@@ -212,7 +212,7 @@ Users can change:
 
 ### Long video demo
 
-We provide a demo script to predict different labels using a single long video.
+We provide a demo script to predict different labels using a single long video. In order to get predict results in range `[0, 1]`, make sure to set `test_cfg = dict(average_clips='prob')` in config file.
 
 ```shell
 python demo/long_video_demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} ${LABEL_FILE} \
