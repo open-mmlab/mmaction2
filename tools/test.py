@@ -129,7 +129,7 @@ def main():
     dataset = build_dataset(cfg.data.test, dict(test_mode=True))
     dataloader_setting = dict(
         videos_per_gpu=cfg.data.get('videos_per_gpu', 1),
-        workers_per_gpu=cfg.data.get('workers_per_gpu', 0),
+        workers_per_gpu=cfg.data.get('workers_per_gpu', 1),
         dist=distributed,
         shuffle=False)
     dataloader_setting = dict(dataloader_setting,
