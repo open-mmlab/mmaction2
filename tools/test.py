@@ -53,10 +53,6 @@ def parse_args():
         'in xxx=yyy format will be merged into config file. For example, '
         "'--cfg-options model.backbone.depth=18 model.backbone.with_cp=True'")
     parser.add_argument(
-        '--multi-batches',
-        action='store_true',
-        help='whether to perform multi batches inference')
-    parser.add_argument(
         '--average-clips',
         choices=['score', 'prob', None],
         default=None,
@@ -132,8 +128,7 @@ def main():
     # build the dataloader
     dataset = build_dataset(cfg.data.test, dict(test_mode=True))
     dataloader_setting = dict(
-        videos_per_gpu=cfg.data.get('videos_per_gpu', 1)
-        if args.multi_batches else 1,
+        videos_per_gpu=cfg.data.get('videos_per_gpu', 1),
         workers_per_gpu=cfg.data.get('workers_per_gpu', 0),
         dist=distributed,
         shuffle=False)
