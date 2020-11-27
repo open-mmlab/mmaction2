@@ -110,7 +110,9 @@ class Bottleneck2dAudio(nn.Module):
 
 @BACKBONES.register_module
 class ResNetAudio(nn.Module):
-    """ResNet 2d audio backbone.
+    """ResNet 2d audio backbone. Reference:
+
+        <https://arxiv.org/abs/2001.08740>`_.
 
     Args:
         depth (int): Depth of resnet, from {50, 101, 152}.
@@ -124,9 +126,10 @@ class ResNetAudio(nn.Module):
             Default: (1, 1, 1, 1).
         conv1_kernel (int): Kernel size of the first conv layer. Default: 9.
         conv1_stride (int | tuple[int]): Stride of the first conv layer.
+            Default: 1.
         frozen_stages (int): Stages to be frozen (all param fixed). -1 means
             not freezing any parameters.
-        factorize (Sequence[int]): factorize Dims of each block.
+        factorize (Sequence[int]): factorize Dims of each block for audio.
             Default: (1, 1, 0, 0).
         norm_eval (bool): Whether to set BN layers to eval mode, namely, freeze
             running stats (mean and var). Default: False.
@@ -166,8 +169,8 @@ class ResNetAudio(nn.Module):
                  norm_eval=False,
                  with_cp=False,
                  conv_cfg=dict(type='Conv'),
-                 norm_cfg=dict(type='BN'),
-                 act_cfg=dict(type='ReLU'),
+                 norm_cfg=dict(type='BN2d', requires_grad=True),
+                 act_cfg=dict(type='ReLU', inplace=True),
                  zero_init_residual=True):
         super().__init__()
         if depth not in self.arch_settings:
@@ -243,6 +246,9 @@ class ResNetAudio(nn.Module):
             dilation (int): Spacing between kernel elements. Default: 1.
             factorize (int | Sequence[int]): Determine whether to factorize
                 for each block. Default: 1.
+            norm_cfg (dict):
+                Config for norm layers. required keys are `type` and
+                `requires_grad`. Default: None.
             with_cp (bool): Use checkpoint or not. Using checkpoint will save
                 some memory while slowing down the training speed.
                 Default: False.
@@ -290,6 +296,8 @@ class ResNetAudio(nn.Module):
         return nn.Sequential(*layers)
 
     def _make_stem_layer(self):
+        """Construct the stem layers consists of a conv+norm+act module and a
+        pooling layer."""
         self.conv1 = ConvModule(
             self.in_channels,
             self.base_channels,
@@ -301,6 +309,8 @@ class ResNetAudio(nn.Module):
             act_cfg=self.act_cfg)
 
     def _freeze_stages(self):
+        """Prevent all the parameters from being optimized before
+        ``self.frozen_stages``."""
         if self.frozen_stages >= 0:
             self.conv1.bn.eval()
             for m in [self.conv1.conv, self.conv1.bn]:
@@ -314,6 +324,8 @@ class ResNetAudio(nn.Module):
                 param.requires_grad = False
 
     def init_weights(self):
+        """Initiate the parameters either from existing checkpoint or from
+        scratch."""
         if isinstance(self.pretrained, str):
             logger = get_root_logger()
             logger.info(f'load model from: {self.pretrained}')
@@ -336,6 +348,15 @@ class ResNetAudio(nn.Module):
             raise TypeError('pretrained must be a str or None')
 
     def forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+
+        Returns:
+            torch.Tensor: The feature of the input samples extracted
+            by the backbone.
+        """
         x = self.conv1(x)
         for layer_name in self.res_layers:
             res_layer = getattr(self, layer_name)
@@ -343,6 +364,7 @@ class ResNetAudio(nn.Module):
         return x
 
     def train(self, mode=True):
+        """Set the optimization status when training."""
         super().train(mode)
         self._freeze_stages()
         if mode and self.norm_eval:

@@ -960,7 +960,7 @@ def test_c3d_backbone():
 
 def test_resnet_audio_backbone():
     """Test ResNetAudio backbone."""
-    input_shape = (1, 1, 32, 32)
+    input_shape = (1, 1, 16, 16)
     spec = _demo_inputs(input_shape)
     # inference
     audioonly = ResNetAudio(50, None)

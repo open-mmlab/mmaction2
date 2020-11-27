@@ -8,6 +8,8 @@ from torch.nn.modules.utils import _pair
 class ConvAudio(nn.Module):
     """Conv2d module for AudioResNet backbone.
 
+        <https://arxiv.org/abs/2001.08740>`_.
+
     Args:
         in_channels (int): Same as nn.Conv2d.
         out_channels (int): Same as nn.Conv2d.

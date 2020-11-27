@@ -7,8 +7,7 @@ from .registry import DATASETS
 @DATASETS.register_module
 class AudioVisualDataset(RawframeDataset):
     """Dataset that read both audio and visual, supporting both rawframes and
-        videos. Annotation file can be that of the rawframe dataset,
-    or:
+    videos. Annotation file can be that of the rawframe dataset, such as:
 
     .. code-block:: txt
 
@@ -30,6 +29,7 @@ class AudioVisualDataset(RawframeDataset):
     def __init__(self, ann_file, pipeline, audio_prefix, **kwargs):
         self.audio_prefix = audio_prefix
         self.video_prefix = kwargs.pop('video_prefix', None)
+        self.data_prefix = kwargs.get('data_prefix', None)
         super().__init__(ann_file, pipeline, **kwargs)
 
     def load_annotations(self):
@@ -43,16 +43,15 @@ class AudioVisualDataset(RawframeDataset):
                 frame_dir = line_split[idx]
                 if self.audio_prefix is not None:
                     audio_path = osp.join(self.audio_prefix,
-                                          frame_dir) + '.npy'
+                                          frame_dir + '.npy')
+                    video_info['audio_path'] = audio_path
                 if self.video_prefix:
                     video_path = osp.join(self.video_prefix,
-                                          frame_dir) + '.mp4'
-
+                                          frame_dir + '.mp4')
+                    video_info['filename'] = video_path
                 if self.data_prefix is not None:
                     frame_dir = osp.join(self.data_prefix, frame_dir)
-                video_info['frame_dir'] = frame_dir
-                video_info['audio_path'] = audio_path
-                video_info['filename'] = video_path
+                    video_info['frame_dir'] = frame_dir
                 idx += 1
                 if self.with_offset:
                     # idx for offset and total_frames

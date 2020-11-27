@@ -50,7 +50,7 @@ test_pipeline = [
         type='SampleFrames',
         clip_len=64,
         frame_interval=1,
-        num_clips=1,
+        num_clips=10,
         test_mode=True),
     dict(type='AudioFeatureSelector'),
     dict(type='FormatAudioShape', input_format='NCTF'),

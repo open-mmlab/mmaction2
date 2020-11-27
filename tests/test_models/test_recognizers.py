@@ -500,9 +500,5 @@ def generate_demo_inputs(input_shape=(1, 3, 3, 224, 224), model_type='2D'):
     else:
         raise ValueError(f'Data type {model_type} is not available')
 
-    inputs = {
-        'imgs': torch.FloatTensor(imgs),
-        'audios': torch.FloatTensor(imgs),
-        'gt_labels': gt_labels
-    }
+    inputs = {'imgs': torch.FloatTensor(imgs), 'gt_labels': gt_labels}
     return inputs
