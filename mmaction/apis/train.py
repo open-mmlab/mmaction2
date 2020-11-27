@@ -125,8 +125,6 @@ def train_model(model,
             num_gpus=len(cfg.gpu_ids),
             dist=distributed,
             shuffle=False)
-        if hasattr(cfg.data, 'val_videos_per_gpu'):
-            dataloader_setting['videos_per_gpu'] = cfg.data.val_videos_per_gpu
         dataloader_setting = dict(dataloader_setting,
                                   **cfg.data.get('val_dataloader', {}))
         val_dataloader = build_dataloader(val_dataset, **dataloader_setting)
