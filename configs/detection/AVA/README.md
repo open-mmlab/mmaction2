@@ -11,6 +11,13 @@
   year={2018}
 }
 
+@article{duan2020omni,
+  title={Omni-sourced Webly-supervised Learning for Video Recognition},
+  author={Duan, Haodong and Zhao, Yue and Xiong, Yuanjun and Liu, Wentao and Lin, Dahua},
+  journal={arXiv preprint arXiv:2003.13042},
+  year={2020}
+}
+
 @inproceedings{feichtenhofer2019slowfast,
   title={Slowfast networks for video recognition},
   author={Feichtenhofer, Christoph and Fan, Haoqi and Malik, Jitendra and He, Kaiming},
@@ -24,9 +31,12 @@
 
 ### AVA2.1
 
-|                            Model                             | Modality | Pretrained | Backbone | Input | gpus |   Resolution   | mAP  | log  | json | ckpt |
-| :----------------------------------------------------------: | :------: | :--------: | :------: | :---: | :--: | :------------: | :--: | :--: | :--: | :--: |
-| [slowonly_kinetics_pretrained_r50_8x8x1_20e_ava_rgb](/configs/detection/AVA/slowonly_kinetics_pretrained_r50_8x8x1_20e_ava_rgb.py) |   RGB    |  Kinetics  | ResNet50 |  8x8  | 8x2  | short-side 256 | 22.6 |      |      |      |
+|                            Model                             | Modality |  Pretrained  | Backbone  | Input | gpus |   Resolution   | mAP  | log  | json | ckpt |
+| :----------------------------------------------------------: | :------: | :----------: | :-------: | :---: | :--: | :------------: | :--: | :--: | :--: | :--: |
+| [slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb](/configs/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb.py) |   RGB    | Kinetics-400 | ResNet50  | 4x16  |  8   | short-side 256 | 20.1 |      |      |      |
+| [slowonly_omnisource_pretrained_r50_4x16x1_20e_ava_rgb](/configs/detection/ava/slowonly_omnisource_pretrained_r50_4x16x1_20e_ava_rgb.py) |   RGB    |  OmniSource  | ResNet50  | 4x16  |  8   | short-side 256 | 21.8 |      |      |      |
+| [slowonly_kinetics_pretrained_r101_8x8x1_20e_ava_rgb](/configs/detection/ava/slowonly_kinetics_pretrained_r101_8x8x1_20e_ava_rgb.py) |   RGB    | Kinetics-400 | ResNet101 |  8x8  | 8x2  | short-side 256 | 24.6 |      |      |      |
+| [slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb](/configs/detection/ava/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb.py) |   RGB    |  OmniSource  | ResNet101 |  8x8  | 8x2  | short-side 256 | 25.9 |      |      |      |
 
 - Notes:
 
