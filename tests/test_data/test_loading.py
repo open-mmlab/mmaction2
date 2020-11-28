@@ -1472,12 +1472,24 @@ class TestLoading:
         pyav_init = PyAVInit()
         pyav = PyAVDecodeMotionVector()
 
-        # test pyav
+        # test pyav with 2-dim input
         results = {
             'filename': self.video_path,
-            'frame_inds': np.arange(0, 32, 1)[:, None]
+            'frame_inds': np.arange(0, 32, 1)[:, np.newaxis]
         }
         results = pyav_init(results)
         results = pyav(results)
         target_keys = ['motion_vectors']
+        assert self.check_keys_contain(results.keys(), target_keys)
+
+        # test pyav with 1 dim input
+        results = {
+            'filename': self.video_path,
+            'frame_inds': np.arange(0, 32, 1)
+        }
+        pyav_init = PyAVInit()
+        results = pyav_init(results)
+        pyav = PyAVDecodeMotionVector()
+        results = pyav(results)
+
         assert self.check_keys_contain(results.keys(), target_keys)

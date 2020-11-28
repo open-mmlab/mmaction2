@@ -868,7 +868,6 @@ class PyAVDecodeMotionVector(PyAVDecode):
         stream = container.streams.video[0]
         codec_context = stream.codec_context
         codec_context.options = {'flags2': '+export_mvs'}
-        # import imageio
         for packet in container.demux(stream):
             for frame in packet.decode():
                 if i > max_inds + 1:
