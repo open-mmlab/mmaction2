@@ -2,7 +2,7 @@ import copy
 import os.path as osp
 import warnings
 from abc import ABCMeta, abstractmethod
-from collections import defaultdict
+from collections import OrderedDict, defaultdict
 
 import mmcv
 import numpy as np
@@ -170,7 +170,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
             if metric not in allowed_metrics:
                 raise KeyError(f'metric {metric} is not supported')
 
-        eval_results = {}
+        eval_results = OrderedDict()
         gt_labels = [ann['label'] for ann in self.video_infos]
 
         for metric in metrics:

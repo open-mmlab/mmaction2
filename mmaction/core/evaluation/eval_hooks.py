@@ -26,21 +26,22 @@ class EpochEvalHook(Hook):
             epoch. If None, whether to evaluate is merely decided by
             ``interval``. Default: None.
         interval (int): Evaluation interval (by epochs). Default: 1.
-        save_best (bool): Whether to save best checkpoint during evaluation.
-            Default: True.
-        key_indicator (str | None): Key indicator to measure the best
-            checkpoint during evaluation when ``save_best`` is set to True.
+        save_best (str | None, optional): If a metric is specified, it would
+            measure the best checkpoint during evaluation. The information
+            about best checkpoint would be save in best.json.
             Options are the evaluation metrics to the test dataset. e.g.,
              ``top1_acc``, ``top5_acc``, ``mean_class_accuracy``,
             ``mean_average_precision``, ``mmit_mean_average_precision``
             for action recognition dataset (RawframeDataset and VideoDataset).
-            ``AR@AN``, ``auc`` for action localization dataset
+            ``AR@AN``, ``auc`` for action localization dataset.
             (ActivityNetDataset). ``Recall@0.5@100``, ``AR@100``,
             ``mAP@0.5IOU`` for spatio-temporal action detection dataset
             (AVADataset). Default: `top1_acc`.
-        rule (str | None): Comparison rule for best score. Options are None,
-            'greater' and 'less'. If set to None, it will infer a reasonable
-            rule. Default: 'None'.
+        rule (str | None, optional): Comparison rule for best score. If set to
+            None, it will infer a reasonable rule. Keys such as 'acc', 'top'
+            .etc will be inferred by 'greater' rule. Keys contain 'loss' will
+            be inferred by 'less' rule. Options are 'greater', 'less', None.
+            Default: None.
         **eval_kwargs: Evaluation arguments fed into the evaluate function of
             the dataset.
     """
@@ -54,58 +55,68 @@ class EpochEvalHook(Hook):
                  dataloader,
                  start=None,
                  interval=1,
-                 save_best=True,
-                 key_indicator='top1_acc',
+                 save_best=None,
                  rule=None,
                  **eval_kwargs):
         if not isinstance(dataloader, DataLoader):
             raise TypeError(f'dataloader must be a pytorch DataLoader, '
                             f'but got {type(dataloader)}')
-        if not isinstance(save_best, bool):
-            raise TypeError("'save_best' should be a boolean")
-
-        if save_best and not key_indicator:
-            raise ValueError('key_indicator should not be None, when '
-                             'save_best is set to True.')
-        if rule not in self.rule_map and rule is not None:
-            raise KeyError(f'rule must be greater, less or None, '
-                           f'but got {rule}.')
-
-        if rule is None and save_best:
-            if any(key in key_indicator for key in self.greater_keys):
-                rule = 'greater'
-            elif any(key in key_indicator for key in self.less_keys):
-                rule = 'less'
-            else:
-                raise ValueError(
-                    f'key_indicator must be in {self.greater_keys} '
-                    f'or in {self.less_keys} when rule is None, '
-                    f'but got {key_indicator}')
 
         if interval <= 0:
             raise ValueError(f'interval must be positive, but got {interval}')
+
         if start is not None and start < 0:
             warnings.warn(
                 f'The evaluation start epoch {start} is smaller than 0, '
                 f'use 0 instead', UserWarning)
             start = 0
-
         self.dataloader = dataloader
         self.interval = interval
         self.start = start
-        self.eval_kwargs = eval_kwargs
+
+        assert isinstance(save_best, str) or save_best is None
         self.save_best = save_best
-        self.key_indicator = key_indicator
-        self.rule = rule
+        self.eval_kwargs = eval_kwargs
+        self.initial_epoch_flag = True
 
         self.logger = get_root_logger()
 
-        if self.save_best:
-            self.compare_func = self.rule_map[self.rule]
-            self.best_score = self.init_value_map[self.rule]
+        if self.save_best is not None:
+            self._init_rule(rule, self.save_best)
 
-        self.best_json = dict()
-        self.initial_epoch_flag = True
+    def _init_rule(self, rule, key_indicator):
+        """Initialize rule, key_indicator, comparison_func, and best score.
+
+        Args:
+            rule (str | None): Comparison rule for best score.
+            key_indicator (str | None): Key indicator to determine the
+                comparison rule.
+        """
+        if rule not in self.rule_map and rule is not None:
+            raise KeyError(f'rule must be greater, less or None, '
+                           f'but got {rule}.')
+
+        if rule is None:
+            if key_indicator != 'auto':
+                if any(key in key_indicator for key in self.greater_keys):
+                    rule = 'greater'
+                elif any(key in key_indicator for key in self.less_keys):
+                    rule = 'less'
+                else:
+                    raise ValueError(f'Cannot infer the rule for key '
+                                     f'{key_indicator}, thus a specific rule '
+                                     f'must be specified.')
+        self.rule = rule
+        self.key_indicator = key_indicator
+        if self.rule is not None:
+            self.compare_func = self.rule_map[self.rule]
+
+    def before_run(self, runner):
+        if self.save_best is not None:
+            if runner.meta is None:
+                warnings.warn('runner.meta is None. Creating a empty one.')
+                runner.meta = dict()
+            runner.meta.setdefault('hook_msgs', dict())
 
     def before_train_epoch(self, runner):
         """Evaluate the model only at the start of training."""
@@ -139,27 +150,26 @@ class EpochEvalHook(Hook):
         if not self.evaluation_flag(runner):
             return
 
-        current_ckpt_path = osp.join(runner.work_dir,
-                                     f'epoch_{runner.epoch + 1}.pth')
-        json_path = osp.join(runner.work_dir, 'best.json')
-
-        if osp.exists(json_path) and len(self.best_json) == 0:
-            self.best_json = mmcv.load(json_path)
-            self.best_score = self.best_json['best_score']
-            self.best_ckpt = self.best_json['best_ckpt']
-            self.key_indicator = self.best_json['key_indicator']
-
         from mmaction.apis import single_gpu_test
         results = single_gpu_test(runner.model, self.dataloader)
         key_score = self.evaluate(runner, results)
-        if (self.save_best and self.compare_func(key_score, self.best_score)):
-            self.best_score = key_score
+        if self.save_best:
+            self._save_ckpt(runner, key_score)
+
+    def _save_ckpt(self, runner, key_score):
+        best_score = runner.meta['hook_msgs'].get(
+            'best_score', self.init_value_map[self.rule])
+        if self.compare_func(key_score, best_score):
+            best_score = key_score
+            runner.meta['hook_msgs']['best_score'] = best_score
+            last_ckpt = runner.meta['hook_msgs']['last_ckpt']
+            runner.meta['hook_msgs']['best_ckpt'] = last_ckpt
+            mmcv.symlink(
+                last_ckpt,
+                osp.join(runner.work_dir, f'best_{self.key_indicator}.pth'))
             self.logger.info(
-                f'Now best checkpoint is epoch_{runner.epoch + 1}.pth')
-            self.best_json['best_score'] = self.best_score
-            self.best_json['best_ckpt'] = current_ckpt_path
-            self.best_json['key_indicator'] = self.key_indicator
-            mmcv.dump(self.best_json, json_path)
+                f'Now best checkpoint is epoch_{runner.epoch + 1}.pth.'
+                f'Best {self.key_indicator} is {best_score:0.4f}')
 
     def evaluate(self, runner, results):
         """Evaluate the results.
@@ -173,12 +183,10 @@ class EpochEvalHook(Hook):
         for name, val in eval_res.items():
             runner.log_buffer.output[name] = val
         runner.log_buffer.ready = True
-        if self.key_indicator is not None:
-            if self.key_indicator not in eval_res:
-                warnings.warn('The key indicator for evaluation is not '
-                              'included in evaluation result, please specify '
-                              'it in config file')
-                return None
+        if self.save_best is not None:
+            if self.key_indicator == 'auto':
+                # infer from eval_results
+                self._init_rule(self.rule, list(eval_res.keys())[0])
             return eval_res[self.key_indicator]
 
         return None
@@ -197,19 +205,20 @@ class DistEpochEvalHook(EpochEvalHook):
             epoch. If None, whether to evaluate is merely decided by
             ``interval``. Default: None.
         interval (int): Evaluation interval (by epochs). Default: 1.
-        save_best (bool): Whether to save best checkpoint during evaluation.
-            Default: True.
-        key_indicator (str | None): Key indicator to measure the best
-            checkpoint during evaluation when ``save_best`` is set to True.
+        save_best (str | None, optional): If a metric is specified, it would
+            measure the best checkpoint during evaluation. The information
+            about best checkpoint would be save in best.json.
             Options are the evaluation metrics to the test dataset. e.g.,
              ``top1_acc``, ``top5_acc``, ``mean_class_accuracy``,
             ``mean_average_precision``, ``mmit_mean_average_precision``
             for action recognition dataset (RawframeDataset and VideoDataset).
-            ``AR@AN``, ``auc`` for action localization dataset
-            (ActivityNetDataset). Default: `top1_acc`.
-        rule (str | None): Comparison rule for best score. Options are None,
-            'greater' and 'less'. If set to None, it will infer a reasonable
-            rule. Default: 'None'.
+            ``AR@AN``, ``auc`` for action localization dataset.
+            (ActivityNetDataset). Default: None.
+        rule (str | None, optional): Comparison rule for best score. If set to
+            None, it will infer a reasonable rule. Keys such as 'acc', 'top'
+            .etc will be inferred by 'greater' rule. Keys contain 'loss' will
+            be inferred by 'less' rule. Options are 'greater', 'less', None.
+            Default: None.
         tmpdir (str | None): Temporary directory to save the results of all
             processes. Default: None.
         gpu_collect (bool): Whether to use gpu or cpu to collect results.
@@ -222,8 +231,7 @@ class DistEpochEvalHook(EpochEvalHook):
                  dataloader,
                  start=None,
                  interval=1,
-                 save_best=True,
-                 key_indicator='top1_acc',
+                 save_best=None,
                  rule=None,
                  tmpdir=None,
                  gpu_collect=False,
@@ -233,7 +241,6 @@ class DistEpochEvalHook(EpochEvalHook):
             start=start,
             interval=interval,
             save_best=save_best,
-            key_indicator=key_indicator,
             rule=rule,
             **eval_kwargs)
         self.tmpdir = tmpdir
@@ -244,18 +251,7 @@ class DistEpochEvalHook(EpochEvalHook):
         if not self.evaluation_flag(runner):
             return
 
-        current_ckpt_path = osp.join(runner.work_dir,
-                                     f'epoch_{runner.epoch + 1}.pth')
-        json_path = osp.join(runner.work_dir, 'best.json')
-
-        if osp.exists(json_path) and len(self.best_json) == 0:
-            self.best_json = mmcv.load(json_path)
-            self.best_score = self.best_json['best_score']
-            self.best_ckpt = self.best_json['best_ckpt']
-            self.key_indicator = self.best_json['key_indicator']
-
         from mmaction.apis import multi_gpu_test
-
         tmpdir = self.tmpdir
         if tmpdir is None:
             tmpdir = osp.join(runner.work_dir, '.eval_hook')
@@ -268,12 +264,6 @@ class DistEpochEvalHook(EpochEvalHook):
         if runner.rank == 0:
             print('\n')
             key_score = self.evaluate(runner, results)
-            if (self.save_best and key_score is not None
-                    and self.compare_func(key_score, self.best_score)):
-                self.best_score = key_score
-                self.logger.info(
-                    f'Now best checkpoint is epoch_{runner.epoch + 1}.pth')
-                self.best_json['best_score'] = self.best_score
-                self.best_json['best_ckpt'] = current_ckpt_path
-                self.best_json['key_indicator'] = self.key_indicator
-                mmcv.dump(self.best_json, json_path)
+
+            if self.save_best:
+                self._save_ckpt(runner, key_score)
