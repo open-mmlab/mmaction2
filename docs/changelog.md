@@ -10,6 +10,7 @@
 - Add GradCAM utils for recognizer ([#324](https://github.com/open-mmlab/mmaction2/pull/324))
 - Add print config script ([#345](https://github.com/open-mmlab/mmaction2/pull/345))
 - Add online motion vector decoder ([#291](https://github.com/open-mmlab/mmaction2/pull/291))
+
 **Improvements**
 - Support PyTorch 1.7 in CI ([#312](https://github.com/open-mmlab/mmaction2/pull/312))
 - Support to predict different labels in a long video ([#274](https://github.com/open-mmlab/mmaction2/pull/274))
