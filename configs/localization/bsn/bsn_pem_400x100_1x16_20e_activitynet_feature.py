@@ -82,6 +82,7 @@ data = dict(
     workers_per_gpu=8,
     train_dataloader=dict(drop_last=True),
     val_dataloader=dict(videos_per_gpu=1),
+    test_dataloader=dict(videos_per_gpu=1),
     test=dict(
         type=dataset_type,
         ann_file=ann_file_test,

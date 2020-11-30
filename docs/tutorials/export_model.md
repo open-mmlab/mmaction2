@@ -40,12 +40,12 @@ python tools/pytorch2onnx.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--shape ${SHAPE}
     [--verify] [--show] [--output-file ${OUTPUT_FILE}]  [--is-localizer] [--opset-version ${VERSION}]
 ```
 Optional arguments:
-+ `--shape`: The shape of input tensor to the model. For 2D recognizer(e.g. TSN), the input should be `$batch $clip $channel $height $width`(e.g. `1 1 3 224 224`); For 3D recognizer(e.g. I3D), the input should be `$batch $clip $channel $time $height $width`(e.g. `1 1 3 32 224 224`); For localizer such as BSN, the input for each module is different, please check the `forward` function for it. If not specified, it wll be set to `1 1 3 224 224`.
-+ `--verify`: Determines whether to verify the exported model, runnably and numerically. If not specified, it wll be set to `False`.
-+ `--show`: Determines whether to print the architecture of the exported model. If not specified, it wll be set to `False`.
-+ `--output-file`: The output onnx model name. If not specified, it wll be set to `tmp.onnx`.
-+ `--is-localizer`: Determines whether the model to be exported is a localizer. If not specified, it wll be set to `False`.
-+ `--opset-version`: Determines the operation set version of onnx, we recommend you to use a higher version such as 11 for compatibility. If not specified, it wll be set to `11`.
++ `--shape`: The shape of input tensor to the model. For 2D recognizer(e.g. TSN), the input should be `$batch $clip $channel $height $width`(e.g. `1 1 3 224 224`); For 3D recognizer(e.g. I3D), the input should be `$batch $clip $channel $time $height $width`(e.g. `1 1 3 32 224 224`); For localizer such as BSN, the input for each module is different, please check the `forward` function for it. If not specified, it will be set to `1 1 3 224 224`.
++ `--verify`: Determines whether to verify the exported model, runnably and numerically. If not specified, it will be set to `False`.
++ `--show`: Determines whether to print the architecture of the exported model. If not specified, it will be set to `False`.
++ `--output-file`: The output onnx model name. If not specified, it will be set to `tmp.onnx`.
++ `--is-localizer`: Determines whether the model to be exported is a localizer. If not specified, it will be set to `False`.
++ `--opset-version`: Determines the operation set version of onnx, we recommend you to use a higher version such as 11 for compatibility. If not specified, it will be set to `11`.
 
 ### Recognizers
 For recognizers, please run:
