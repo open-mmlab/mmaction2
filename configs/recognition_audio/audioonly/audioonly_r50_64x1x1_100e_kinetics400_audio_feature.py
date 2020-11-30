@@ -1,11 +1,16 @@
 # model settings
 model = dict(
     type='AudioRecognizer',
-    backbone=dict(type='ResNet', depth=50, in_channels=1, norm_eval=False),
+    backbone=dict(
+        type='ResNetAudio',
+        depth=50,
+        pretrained=None,
+        in_channels=1,
+        norm_eval=False),
     cls_head=dict(
         type='AudioTSNHead',
         num_classes=400,
-        in_channels=2048,
+        in_channels=1024,
         dropout_ratio=0.5,
         init_std=0.01))
 # model training and testing settings
@@ -45,7 +50,7 @@ test_pipeline = [
         type='SampleFrames',
         clip_len=64,
         frame_interval=1,
-        num_clips=1,
+        num_clips=10,
         test_mode=True),
     dict(type='AudioFeatureSelector'),
     dict(type='FormatAudioShape', input_format='NCTF'),
@@ -53,7 +58,7 @@ test_pipeline = [
     dict(type='ToTensor', keys=['audios'])
 ]
 data = dict(
-    videos_per_gpu=320,
+    videos_per_gpu=160,
     workers_per_gpu=4,
     train=dict(
         type=dataset_type,
@@ -72,7 +77,7 @@ data = dict(
         pipeline=test_pipeline))
 # optimizer
 optimizer = dict(
-    type='SGD', lr=0.1, momentum=0.9,
+    type='SGD', lr=2.0, momentum=0.9,
     weight_decay=0.0001)  # this lr is used for 8 gpus
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
@@ -82,7 +87,7 @@ checkpoint_config = dict(interval=5)
 evaluation = dict(
     interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
 log_config = dict(
-    interval=20,
+    interval=1,
     hooks=[
         dict(type='TextLoggerHook'),
         # dict(type='TensorboardLoggerHook'),
@@ -90,7 +95,8 @@ log_config = dict(
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/tsn_r50_64x1x1_100e_kinetics400_audio_feature/'
+work_dir = ('./work_dirs/' +
+            'audioonly_r50_64x1x1_100e_kinetics400_audio_feature/')
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
