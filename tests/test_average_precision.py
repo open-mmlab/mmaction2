@@ -5,7 +5,8 @@ import numpy as np
 import pytest
 from numpy.testing import assert_array_almost_equal
 
-from mmaction.core import frame_ap, frame_ap_error, pr_to_ap, video_ap
+from mmaction.core import (frame_mean_ap, frame_mean_ap_error, pr_to_ap,
+                           video_mean_ap)
 
 
 def test_pr_to_ap():
@@ -34,10 +35,10 @@ class TestTubeMetrics:
                                                 (0.25, 0.5), (0.2, 1)])
     def test_video_ap(self, threshold, v_ap):
         with pytest.raises(FileNotFoundError):
-            video_ap(self.labels, self.videos, self.gt_tubes, 'not_found')
+            video_mean_ap(self.labels, self.videos, self.gt_tubes, 'not_found')
 
-        result = video_ap(self.labels, self.videos, self.gt_tubes,
-                          self.tube_dir, threshold)
+        result = video_mean_ap(self.labels, self.videos, self.gt_tubes,
+                               self.tube_dir, threshold)
         assert v_ap == result
 
     @pytest.mark.parametrize('threshold,f_ap', [(0.7, 0.20534295),
@@ -45,8 +46,8 @@ class TestTubeMetrics:
                                                 (0.8, 0.044360217),
                                                 (0.85, 0.0)])
     def test_frame_ap(self, threshold, f_ap):
-        result = frame_ap(self.det_results, self.labels, self.videos,
-                          self.gt_tubes, threshold)
+        result = frame_mean_ap(self.det_results, self.labels, self.videos,
+                               self.gt_tubes, threshold)
         assert_array_almost_equal(result, f_ap)
 
     @pytest.mark.parametrize('threshold,ap,le,ce,te,oe,miss',
@@ -58,8 +59,8 @@ class TestTubeMetrics:
                                (2.3474007, 0.), (0., 0.), (77.27273, 100.))])
     def test_frame_ap_error(self, threshold, ap, le, ce, te, oe, miss):
         gts = [ap, le, ce, te, oe, miss]
-        results = frame_ap_error(self.det_results, self.labels, self.videos,
-                                 self.gt_tubes, threshold)
+        results = frame_mean_ap_error(self.det_results, self.labels,
+                                      self.videos, self.gt_tubes, threshold)
         for result, gt in zip(results.values(), gts):
             gt = np.array(gt, dtype=np.float32)
             assert_array_almost_equal(result, gt)

@@ -4,7 +4,8 @@ from .accuracy import (average_precision_at_temporal_iou,
                        mean_average_precision, mean_class_accuracy,
                        mmit_mean_average_precision, pairwise_temporal_iou,
                        softmax, top_k_accuracy)
-from .average_precision import frame_ap, frame_ap_error, pr_to_ap, video_ap
+from .average_precision import (frame_mean_ap, frame_mean_ap_error, pr_to_ap,
+                                video_mean_ap)
 from .bbox_overlaps import (area2d, iou2d, iou3d, nms2d, overlap2d,
                             spatio_temporal_iou3d, spatio_temporal_nms3d)
 from .eval_detection import ActivityNetDetection
@@ -18,5 +19,5 @@ __all__ = [
     'ActivityNetDetection', 'softmax', 'interpolated_precision_recall',
     'mmit_mean_average_precision', 'iou2d', 'area2d', 'overlap2d', 'iou3d',
     'nms2d', 'spatio_temporal_nms3d', 'spatio_temporal_iou3d', 'pr_to_ap',
-    'frame_ap', 'frame_ap_error', 'video_ap'
+    'frame_mean_ap', 'frame_mean_ap_error', 'video_mean_ap'
 ]

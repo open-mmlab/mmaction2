@@ -957,11 +957,13 @@ class CuboidCrop:
         if len(candidate_cuboids) == 0:
             return results
 
-        cuboid = random.choice(candidate_cuboids)
+        cuboid = np.random.choice(candidate_cuboids)
         x1, y1, x2, y2 = map(int, cuboid.tolist())
 
-        for i in range(len(imgs)):
+        num_imgs = len(imgs)
+        for i in range(num_imgs):
             imgs[i] = imgs[i][y1:y2, x1:x2, :]
+
         out_tubes = defaultdict(list)
         width = x2 - x1
         height = y2 - y1
@@ -1325,9 +1327,7 @@ class Flip:
                     for i in range(0, lt, 2):
                         # flow with even indexes are x_flow, which need to be
                         # inverted when doing horizontal flip
-                        if modality == 'Flow':
-                            results['imgs'][i] = mmcv.iminvert(
-                                results['imgs'][i])
+                        results['imgs'][i] = mmcv.iminvert(results['imgs'][i])
 
             else:
                 results['imgs'] = list(results['imgs'])
@@ -1354,22 +1354,18 @@ class TubeFlip(Flip):
 
     Reverse the order of elements in the given imgs with a specific direction.
     The shape of the imgs is preserved, but the elements are reordered.
-    Required keys are "imgs", "img_shape", "modality", added or modified keys
-    are "imgs", "lazy" and "flip_direction". Required keys in "lazy" is None,
-    added or modified key are "flip" and "flip_direction".
+    Required keys are "imgs", "img_shape", "modality", "flip" added or modified
+    keys are "imgs", "lazy" and "flip_direction". Required keys in "lazy" is
+    None, added or modified key are "flip" and "flip_direction".
     """
 
     def __call__(self, results):
         modality = results['modality']
+        flip = results['flip']
+
         if modality == 'Flow':
             assert self.direction == 'horizontal'
 
-        if np.random.rand() < self.flip_ratio:
-            flip = True
-        else:
-            flip = False
-
-        results['flip'] = flip
         results['flip_direction'] = self.direction
 
         if flip:
