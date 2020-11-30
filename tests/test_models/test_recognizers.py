@@ -424,7 +424,7 @@ def test_tpn():
 
 def test_audio_recognizer():
     model, train_cfg, test_cfg = _get_audio_recognizer_cfg(
-        'resnet/tsn_r50_64x1x1_100e_kinetics400_audio_feature.py')
+        'resnet/tsn_r18_64x1x1_100e_kinetics400_audio_feature.py')
     model['backbone']['pretrained'] = None
 
     recognizer = build_recognizer(
