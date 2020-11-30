@@ -8,7 +8,7 @@ def build_assigner(cfg, **kwargs):
         return cfg
     elif isinstance(cfg, dict):
         return mmcv.runner.obj_from_dict(cfg, assigners, default_args=kwargs)
-    raise TypeError('Invalid type {} for building a sampler'.format(type(cfg)))
+    raise TypeError(f'Invalid type {type(cfg)} for building a sampler')
 
 
 def build_sampler(cfg, **kwargs):
@@ -16,4 +16,4 @@ def build_sampler(cfg, **kwargs):
         return cfg
     elif isinstance(cfg, dict):
         return mmcv.runner.obj_from_dict(cfg, samplers, default_args=kwargs)
-    raise TypeError('Invalid type {} for building a sampler'.format(type(cfg)))
+    raise TypeError(f'Invalid type {type(cfg)} for building a sampler')
