@@ -252,7 +252,7 @@ class EntityBoxFlip:
         self.direction = direction
 
     def __call__(self, results):
-        flip = bool(np.random.rand() < self.flip_ratio)
+        flip = np.random.rand() < self.flip_ratio
 
         results['flip'] = flip
         results['flip_direction'] = self.direction
@@ -903,7 +903,7 @@ class Flip:
         if modality == 'Flow':
             assert self.direction == 'horizontal'
 
-        flip = bool(np.random.rand() < self.flip_ratio)
+        flip = np.random.rand() < self.flip_ratio
 
         results['flip'] = flip
         results['flip_direction'] = self.direction
