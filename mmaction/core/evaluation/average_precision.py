@@ -18,10 +18,10 @@ def pr_to_ap(precision_recall):
         np.ndarray: The result of average precision.
     """
 
-    pr_diff = precision_recall[1:, 1] - precision_recall[:-1, 1]
-    pr_sum = precision_recall[1:, 0] + precision_recall[:-1, 0]
+    recall_diff = precision_recall[1:, 1] - precision_recall[:-1, 1]
+    precision_sum = precision_recall[1:, 0] + precision_recall[:-1, 0]
 
-    return np.sum(pr_diff * pr_sum * 0.5)
+    return np.sum(recall_diff * precision_sum * 0.5)
 
 
 def frame_mean_ap(det_results, labels, videos, gt_tubes, threshold=0.5):
@@ -269,6 +269,7 @@ def video_mean_ap(labels,
     """
 
     det_results = defaultdict(list)
+    num_labels = len(labels)
 
     for video in videos:
         tube_name = osp.join(tube_dir, video + '_tubes.pkl')
@@ -278,7 +279,7 @@ def video_mean_ap(labels,
         with open(tube_name, 'rb') as f:
             tubes = pickle.load(f)
 
-        for label_index, _ in enumerate(labels):
+        for label_index in range(num_labels):
             # tube is a np.ndarray with (N, 5) shape,
             # each row contains frame index and a bbounding box.
             tube = tubes[label_index]
@@ -287,7 +288,7 @@ def video_mean_ap(labels,
                                              for i in index])
 
     results = []
-    for label_index, _ in enumerate(labels):
+    for label_index in range(num_labels):
         det_result = np.array(det_results[label_index])
 
         gt = defaultdict(list)
