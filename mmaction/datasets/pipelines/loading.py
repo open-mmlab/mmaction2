@@ -836,8 +836,8 @@ class PyAVDecodeMotionVector(PyAVDecode):
                    vectors['src_y'], vectors['dst_x'], vectors['dst_y'])
         val_x = dst_x - src_x
         val_y = dst_y - src_y
-        start_x = -1 * w // 2 + dst_x
-        start_y = -1 * h // 2 + dst_y
+        start_x = dst_x - w // 2
+        start_y = dst_y - h // 2
         end_x = start_x + w
         end_y = start_y + h
         for sx, ex, sy, ey, vx, vy in zip(start_x, end_x, start_y, end_y,
