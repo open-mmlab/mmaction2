@@ -1048,6 +1048,7 @@ class TubePad:
             expand_scale = np.random.uniform(1, self.max_expand_ratio)
             h = int(img_h * expand_scale)
             w = int(img_w * expand_scale)
+            # todo: check np.uint8 here
             outs = [
                 np.zeros((h, w, 3), dtype=np.float32)
                 for _ in range(len(results['imgs']))
@@ -1369,12 +1370,10 @@ class TubeFlip(Flip):
         results['flip_direction'] = self.direction
 
         if flip:
-            for i, img in enumerate(results['imgs']):
+            for img in results['imgs']:
                 mmcv.imflip_(img, self.direction)
                 if modality == 'Flow':
-                    results['imgs'][i, :, :,
-                                    2] = mmcv.iminvert(results['imgs'][i, :, :,
-                                                                       2])
+                    img[..., 2] = mmcv.iminvert(img[..., 2])
 
         return results
 
