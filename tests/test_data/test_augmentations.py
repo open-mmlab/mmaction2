@@ -1469,8 +1469,8 @@ class TestAugumentations:
 
         # do not flip imgs
         imgs = list(np.random.rand(2, 64, 64, 3))
-        results = dict(imgs=copy.deepcopy(imgs), modality='RGB')
-        tube_flip = TubeFlip(flip_ratio=0)
+        results = dict(imgs=copy.deepcopy(imgs), modality='RGB', flip=False)
+        tube_flip = TubeFlip()
         tube_flip_results = tube_flip(results)
         assert self.check_keys_contain(tube_flip_results.keys(), target_keys)
         assert_array_equal(tube_flip_results['imgs'], imgs)
@@ -1478,8 +1478,8 @@ class TestAugumentations:
 
         # always flip imgs horizontally
         imgs = list(np.random.rand(2, 64, 64, 3))
-        results = dict(imgs=copy.deepcopy(imgs), modality='RGB')
-        tube_flip = TubeFlip(flip_ratio=0, direction='horizontal')
+        results = dict(imgs=copy.deepcopy(imgs), modality='RGB', flip=True)
+        tube_flip = TubeFlip(direction='horizontal')
         tube_flip_results = tube_flip(results)
         assert self.check_keys_contain(tube_flip_results.keys(), target_keys)
         if tube_flip_results['flip'] is True:
@@ -1488,22 +1488,19 @@ class TestAugumentations:
         assert id(tube_flip_results['imgs']) == id(results['imgs'])
 
         # flip flow images horizontally
-        imgs = list(np.random.rand(2, 64, 64, 2))
-        results = dict(imgs=copy.deepcopy(imgs), modality='Flow')
+        imgs = list(np.random.rand(2, 64, 64, 3))
+        results = dict(imgs=copy.deepcopy(imgs), modality='Flow', flip=True)
         with pytest.raises(AssertionError):
-            TubeFlip(flip_ratio=1, direction='vertical')(results)
-        tube_flip = TubeFlip(flip_ratio=0, direction='horizontal')
+            TubeFlip(direction='vertical')(results)
+        tube_flip = TubeFlip(direction='horizontal')
         assert self.check_keys_contain(tube_flip_results.keys(), target_keys)
         tube_flip_results = tube_flip(results)
-        if tube_flip_results['flip'] is True:
-            assert self.check_flip(imgs, tube_flip_results['imgs'],
-                                   tube_flip_results['flip_direction'])
         assert id(tube_flip_results['imgs']) == id(results['imgs'])
 
         # always flip imgs vertivally.
         imgs = list(np.random.rand(2, 64, 64, 3))
-        results = dict(imgs=copy.deepcopy(imgs), modality='RGB')
-        tube_flip = TubeFlip(flip_ratio=1, direction='vertical')
+        results = dict(imgs=copy.deepcopy(imgs), modality='RGB', flip=True)
+        tube_flip = TubeFlip(direction='vertical')
         assert self.check_keys_contain(tube_flip_results.keys(), target_keys)
         tube_flip_results = tube_flip(results)
         if tube_flip_results['flip'] is True:
