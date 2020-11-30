@@ -17,12 +17,14 @@
 - Update unittest coverage ([#358](https://github.com/open-mmlab/mmaction2/pull/358), [#322](https://github.com/open-mmlab/mmaction2/pull/322))
 - Add random seed for building filelists ([#323](https://github.com/open-mmlab/mmaction2/pull/323))
 - Update colab tutorial ([#367](https://github.com/open-mmlab/mmaction2/pull/367))
+- set default batch_size of evaluation and testing to 1 ([#250](https://github.com/open-mmlab/mmaction2/pull/250))
 - Rename the preparation docs to `README.md` ([#388](https://github.com/open-mmlab/mmaction2/pull/388))
 - Move docs about demo to `demo/README.md` ([#329](https://github.com/open-mmlab/mmaction2/pull/329))
 - Remove redundant code in `tools/test.py` ([#310](https://github.com/open-mmlab/mmaction2/pull/310))
 - Automatically calculate number of test clips for Recognizer2D ([#359](https://github.com/open-mmlab/mmaction2/pull/359))
 
 **Bug and Typo Fixes**
+- Fix rename Kinetics classnames bug ([#384](https://github.com/open-mmlab/mmaction2/pull/384))
 - Fix a bug in BaseDataset when `data_prefix` is None ([#314](https://github.com/open-mmlab/mmaction2/pull/314))
 - Fix a bug about `tmp_folder` in `OpenCVInit` ([#357](https://github.com/open-mmlab/mmaction2/pull/357))
 - Fix `get_thread_id` when not using disk as backend ([#354](https://github.com/open-mmlab/mmaction2/pull/354), [#357](https://github.com/open-mmlab/mmaction2/pull/357))
