@@ -12,7 +12,7 @@ def pr_to_ap(precision_recall):
 
     Args:
         precision_recall (np.ndarray): precision_recall is an Nx2 array with
-            first row being precision and second row being recall.
+            first column being precision and second column being recall.
 
     Returns:
         np.ndarray: The result of average precision.
@@ -24,14 +24,17 @@ def pr_to_ap(precision_recall):
     return np.sum(pr_diff * pr_sum * 0.5)
 
 
-def frame_ap(det_results, labels, videos, gt_tubes, threshold=0.5):
+def frame_mean_ap(det_results, labels, videos, gt_tubes, threshold=0.5):
     """Calculate frame mAP for tubes.
 
     Args:
         det_results (np.ndarray): Detection results for each frames.
         labels (list): List of action labels.
         videos (list): List of video names.
-        gt_tubes (dict): Ground truth tubes for each video.
+        gt_tubes (dict): Ground truth tubes for each video. The format of
+            ``gt_tubes`` is {video_name: {label: list[tube]}}, where tube is a
+            np.ndarray with (N, 5) shape, each row contains frame index and a
+            bbounding box.
         threshold (float): Threshold for IoU. Default: 0.5.
 
     Returns:
@@ -43,15 +46,17 @@ def frame_ap(det_results, labels, videos, gt_tubes, threshold=0.5):
 
         gt = defaultdict(list)
         for video_id, video in enumerate(videos):
+            # tube is a np.ndarray with (N, 5) shape,
+            # each row contains frame index and a bbounding box.
             tubes = gt_tubes[video]
 
             if label_index not in tubes:
                 continue
 
             for tube in tubes[label_index]:
-                for i in range(len(tube)):
-                    key = (video_id, int(tube[i, 0]))
-                    gt[key].append(tube[i, 1:5].tolist())
+                for t in tube:
+                    key = (video_id, int(t[0]))
+                    gt[key].append(t[1:5].tolist())
 
         for key in gt:
             gt[key] = np.array(gt[key].copy())
@@ -84,8 +89,8 @@ def frame_ap(det_results, labels, videos, gt_tubes, threshold=0.5):
             else:
                 fp += 1
 
-            precision_recall[i + 1, 0] = tp / (tp + fp)
-            precision_recall[i + 1, 1] = tp / (tp + fn)
+            precision_recall[i + 1, 0] = tp / max(1, (tp + fp))
+            precision_recall[i + 1, 1] = tp / max(1, (tp + fn))
 
         results.append(pr_to_ap(precision_recall))
 
@@ -93,7 +98,7 @@ def frame_ap(det_results, labels, videos, gt_tubes, threshold=0.5):
     return frame_ap_result
 
 
-def frame_ap_error(det_results, labels, videos, gt_tubes, threshold=0.5):
+def frame_mean_ap_error(det_results, labels, videos, gt_tubes, threshold=0.5):
     """Calculate error information for frame mAP in tubes.
 
     The error information will contain ap_results, localization_error,
@@ -103,7 +108,10 @@ def frame_ap_error(det_results, labels, videos, gt_tubes, threshold=0.5):
         det_results (np.ndarray): Detection results for each frames.
         labels (list): List of action labels.
         videos (list): List of video names.
-        gt_tubes (dict): Ground truth tubes for each video.
+        gt_tubes (dict): Ground truth tubes for each video. The format of
+            ``gt_tubes`` is {video_name: {label: list[tube]}}, where tube is a
+            np.ndarray with (N, 5) shape, each row contains frame index and a
+            bbounding box.
         threshold (float): Threshold for IoU. Default: 0.5.
 
     Returns:
@@ -122,17 +130,19 @@ def frame_ap_error(det_results, labels, videos, gt_tubes, threshold=0.5):
         label_dict = defaultdict(list)
 
         for video_id, video in enumerate(videos):
+            # tube is a np.ndarray with (N, 5) shape,
+            # each row contains frame index and a bbounding box.
             tubes = gt_tubes[video]
             label_dict[video_id] = list(tubes)
 
             for tube_label_index in tubes:
                 for tube in tubes[tube_label_index]:
-                    for i in range(tube.shape[0]):
-                        key = (video_id, int(tube[i, 0]))
+                    for t in tube:
+                        key = (video_id, int(t[0]))
                         if tube_label_index == label_index:
-                            gt[key].append(tube[i, 1:5].tolist())
+                            gt[key].append(t[1:5].tolist())
                         else:
-                            other_gt[key].append(tube[i, 1:5].tolist())
+                            other_gt[key].append(t[1:5].tolist())
 
         for key in gt:
             gt[key] = np.array(gt[key].copy())
@@ -189,12 +199,13 @@ def frame_ap_error(det_results, labels, videos, gt_tubes, threshold=0.5):
             else:
                 fp += 1
 
-            precision_recall[i + 1, 0] = tp / (tp + fp)
-            precision_recall[i + 1, 1] = tp / (tp + fn)
-            precision_recall[i + 1, 2] = localization_error / (tp + fp)
-            precision_recall[i + 1, 3] = classification_error / (tp + fp)
-            precision_recall[i + 1, 4] = time_error / (tp + fp)
-            precision_recall[i + 1, 5] = other_error / (tp + fp)
+            precision_recall[i + 1, 0] = tp / max(1, (tp + fp))
+            precision_recall[i + 1, 1] = tp / max(1, (tp + fn))
+            precision_recall[i + 1, 2] = localization_error / max(1, (tp + fp))
+            precision_recall[i + 1,
+                             3] = classification_error / max(1, (tp + fp))
+            precision_recall[i + 1, 4] = time_error / max(1, (tp + fp))
+            precision_recall[i + 1, 5] = other_error / max(1, (tp + fp))
 
         ap_results.append(pr_to_ap(precision_recall[..., :2]))
         for j in range(2, 6):
@@ -234,13 +245,21 @@ def frame_ap_error(det_results, labels, videos, gt_tubes, threshold=0.5):
     return result
 
 
-def video_ap(labels, videos, gt_tubes, tube_dir, threshold=0.5, overlap=0.3):
+def video_mean_ap(labels,
+                  videos,
+                  gt_tubes,
+                  tube_dir,
+                  threshold=0.5,
+                  overlap=0.3):
     """Calculate video mAP for tubes.
 
     Args:
         labels (list): List of action labels.
         videos (list): List of video names.
-        gt_tubes (dict): Ground truth tubes for each video.
+        gt_tubes (dict): Ground truth tubes for each video. The format of
+            ``gt_tubes`` is {video_name: {label: list[tube]}}, where tube is a
+            np.ndarray with (N, 5) shape, each row contains frame index and a
+            bbounding box.
         tube_dir (str): Directory of predicted tube pickle files.
         threshold (float): Threshold for IoU. Default: 0.5.
         overlap (float): Threshold of overlap for nms. Default: 0.3.
@@ -259,14 +278,16 @@ def video_ap(labels, videos, gt_tubes, tube_dir, threshold=0.5, overlap=0.3):
         with open(tube_name, 'rb') as f:
             tubes = pickle.load(f)
 
-        for label_index in range(len(labels)):
+        for label_index, _ in enumerate(labels):
+            # tube is a np.ndarray with (N, 5) shape,
+            # each row contains frame index and a bbounding box.
             tube = tubes[label_index]
             index = spatio_temporal_nms3d(tube, overlap)
             det_results[label_index].extend([(video, tube[i][1], tube[i][0])
                                              for i in index])
 
     results = []
-    for label_index in range(len(labels)):
+    for label_index, _ in enumerate(labels):
         det_result = np.array(det_results[label_index])
 
         gt = defaultdict(list)
@@ -306,8 +327,8 @@ def video_ap(labels, videos, gt_tubes, tube_dir, threshold=0.5, overlap=0.3):
             else:
                 fp += 1
 
-            precision_recall[i + 1, 0] = tp / (tp + fp)
-            precision_recall[i + 1, 1] = tp / (tp + fn)
+            precision_recall[i + 1, 0] = tp / max(1, (tp + fp))
+            precision_recall[i + 1, 1] = tp / max(1, (tp + fn))
 
         results.append(pr_to_ap(precision_recall))
 
