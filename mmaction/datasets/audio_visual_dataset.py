@@ -6,8 +6,9 @@ from .registry import DATASETS
 
 @DATASETS.register_module
 class AudioVisualDataset(RawframeDataset):
-    """Dataset that read both audio and visual, supporting both rawframes and
-    videos. Annotation file can be that of the rawframe dataset, such as:
+    """Dataset that reads both audio and visual data, supporting both rawframes
+    and videos. The annotation file is same as that of the rawframe dataset,
+    such as:
 
     .. code-block:: txt
 
