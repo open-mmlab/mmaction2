@@ -829,7 +829,8 @@ class PyAVDecodeMotionVector(PyAVDecode):
             thread processing. Default: False.
     """
 
-    def _parse_vectors(self, mv, vectors, height, width):
+    @staticmethod
+    def _parse_vectors(mv, vectors, height, width):
         """Parse the returned vectors."""
         (w, h, src_x, src_y, dst_x,
          dst_y) = (vectors['w'], vectors['h'], vectors['src_x'],
