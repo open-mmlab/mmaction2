@@ -6,11 +6,13 @@
 
 **New Features**
 - Automatically add modelzoo statistics to readthedocs ([#327](https://github.com/open-mmlab/mmaction2/pull/327))
-- Support GYM99 data preparation ([#331](https://github.com/open-mmlab/mmaction2/pull/331))
+- Support GYM99 ([#331](https://github.com/open-mmlab/mmaction2/pull/331), [#336](https://github.com/open-mmlab/mmaction2/pull/336))
 - Add GradCAM utils for recognizer ([#324](https://github.com/open-mmlab/mmaction2/pull/324))
+- Support Spatio-Temporal Action Detection(AVA) ([#351](https://github.com/open-mmlab/mmaction2/pull/351))
 - Add print config script ([#345](https://github.com/open-mmlab/mmaction2/pull/345))
 
 **Improvements**
+- Support training and testing for Spatio-Temporal Action Detection ([#351](https://github.com/open-mmlab/mmaction2/pull/351))
 - Support PyTorch 1.7 in CI ([#312](https://github.com/open-mmlab/mmaction2/pull/312))
 - Add random seed for building filelists ([#323](https://github.com/open-mmlab/mmaction2/pull/323))
 - Move docs about demo to `demo/README.md` ([#329](https://github.com/open-mmlab/mmaction2/pull/329))
@@ -23,6 +25,7 @@
 - Fix Issue #306: Bug of SampleAVAFrames ([#317](https://github.com/open-mmlab/mmaction2/pull/317))
 
 **ModelZoo**
+- Add SlowOnly model for AVA2.1 ([#351](https://github.com/open-mmlab/mmaction2/pull/351))
 - Add SlowOnly model for GYM99, both RGB and Flow ([#336](https://github.com/open-mmlab/mmaction2/pull/336))
 
 ### v0.8.0 (31/10/2020)
