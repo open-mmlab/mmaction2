@@ -9,6 +9,7 @@
 - Support GYM99 data preparation ([#331](https://github.com/open-mmlab/mmaction2/pull/331))
 - Add GradCAM utils for recognizer ([#324](https://github.com/open-mmlab/mmaction2/pull/324))
 - Add print config script ([#345](https://github.com/open-mmlab/mmaction2/pull/345))
+- Add online motion vector decoder ([#291](https://github.com/open-mmlab/mmaction2/pull/291))
 
 **Improvements**
 - Support PyTorch 1.7 in CI ([#312](https://github.com/open-mmlab/mmaction2/pull/312))

@@ -16,7 +16,8 @@ from mmaction.datasets.pipelines import (AudioDecode, AudioDecodeInit,
                                          LoadAudioFeature, LoadHVULabel,
                                          LoadLocalizationFeature,
                                          LoadProposals, OpenCVDecode,
-                                         OpenCVInit, PyAVDecode, PyAVInit,
+                                         OpenCVInit, PyAVDecode,
+                                         PyAVDecodeMotionVector, PyAVInit,
                                          RawFrameDecode, SampleAVAFrames,
                                          SampleFrames, SampleProposalFrames,
                                          UntrimmedSampleFrames)
@@ -1466,3 +1467,29 @@ class TestLoading:
         assert repr(audio_feature_selector) == (
             f'{audio_feature_selector.__class__.__name__}('
             f'fix_length={128})')
+
+    def test_pyav_decode_motion_vector(self):
+        pyav_init = PyAVInit()
+        pyav = PyAVDecodeMotionVector()
+
+        # test pyav with 2-dim input
+        results = {
+            'filename': self.video_path,
+            'frame_inds': np.arange(0, 32, 1)[:, np.newaxis]
+        }
+        results = pyav_init(results)
+        results = pyav(results)
+        target_keys = ['motion_vectors']
+        assert self.check_keys_contain(results.keys(), target_keys)
+
+        # test pyav with 1 dim input
+        results = {
+            'filename': self.video_path,
+            'frame_inds': np.arange(0, 32, 1)
+        }
+        pyav_init = PyAVInit()
+        results = pyav_init(results)
+        pyav = PyAVDecodeMotionVector()
+        results = pyav(results)
+
+        assert self.check_keys_contain(results.keys(), target_keys)

@@ -815,6 +815,88 @@ class PyAVDecode:
 
 
 @PIPELINES.register_module()
+class PyAVDecodeMotionVector(PyAVDecode):
+    """Using pyav to decode the motion vectors from video.
+
+    Reference: https://github.com/PyAV-Org/PyAV/
+        blob/main/tests/test_decode.py
+
+    Required keys are "video_reader" and "frame_inds",
+    added or modified keys are "motion_vectors", "frame_inds".
+
+    Args:
+        multi_thread (bool): If set to True, it will apply multi
+            thread processing. Default: False.
+    """
+
+    @staticmethod
+    def _parse_vectors(mv, vectors, height, width):
+        """Parse the returned vectors."""
+        (w, h, src_x, src_y, dst_x,
+         dst_y) = (vectors['w'], vectors['h'], vectors['src_x'],
+                   vectors['src_y'], vectors['dst_x'], vectors['dst_y'])
+        val_x = dst_x - src_x
+        val_y = dst_y - src_y
+        start_x = dst_x - w // 2
+        start_y = dst_y - h // 2
+        end_x = start_x + w
+        end_y = start_y + h
+        for sx, ex, sy, ey, vx, vy in zip(start_x, end_x, start_y, end_y,
+                                          val_x, val_y):
+            if (sx >= 0 and ex < width and sy >= 0 and ey < height):
+                mv[sy:ey, sx:ex] = (vx, vy)
+
+        return mv
+
+    def __call__(self, results):
+        """Perform the PyAV motion vector decoding.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        container = results['video_reader']
+        imgs = list()
+
+        if self.multi_thread:
+            container.streams.video[0].thread_type = 'AUTO'
+        if results['frame_inds'].ndim != 1:
+            results['frame_inds'] = np.squeeze(results['frame_inds'])
+
+        # set max index to make early stop
+        max_idx = max(results['frame_inds'])
+        i = 0
+        stream = container.streams.video[0]
+        codec_context = stream.codec_context
+        codec_context.options = {'flags2': '+export_mvs'}
+        for packet in container.demux(stream):
+            for frame in packet.decode():
+                if i > max_idx + 1:
+                    break
+                i += 1
+                height = frame.height
+                width = frame.width
+                mv = np.zeros((height, width, 2), dtype=np.int8)
+                vectors = frame.side_data.get('MOTION_VECTORS')
+                if frame.key_frame:
+                    # Key frame don't have motion vectors
+                    assert vectors is None
+                if vectors is not None and len(vectors) > 0:
+                    mv = self._parse_vectors(mv, vectors.to_ndarray(), height,
+                                             width)
+                imgs.append(mv)
+
+        results['video_reader'] = None
+        del container
+
+        # the available frame in pyav may be less than its length,
+        # which may raise error
+        results['motion_vectors'] = np.array(
+            [imgs[i % len(imgs)] for i in results['frame_inds']])
+        return results
+
+
+@PIPELINES.register_module()
 class DecordInit:
     """Using decord to initialize the video_reader.
 
