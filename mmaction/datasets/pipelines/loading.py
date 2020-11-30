@@ -818,10 +818,11 @@ class PyAVDecode:
 class PyAVDecodeMotionVector(PyAVDecode):
     """Using pyav to decode the motion vectors from video.
 
-    PyAV: https://github.com/mikeboers/PyAV
+    Reference: https://github.com/PyAV-Org/PyAV/
+        blob/main/tests/test_decode.py
 
     Required keys are "video_reader" and "frame_inds",
-    added or modified keys are "motion_vectors".
+    added or modified keys are "motion_vectors", "frame_inds".
 
     Args:
         multi_thread (bool): If set to True, it will apply multi
@@ -835,15 +836,14 @@ class PyAVDecodeMotionVector(PyAVDecode):
                    vectors['src_y'], vectors['dst_x'], vectors['dst_y'])
         val_x = dst_x - src_x
         val_y = dst_y - src_y
-        start_x = (-1 * w / 2).astype(np.int8) + dst_x
-        start_y = (-1 * h / 2).astype(np.int8) + dst_y
-        end_x = start_x + w.astype(np.int8)
-        end_y = start_y + h.astype(np.int8)
-        for row, _ in enumerate(vectors):
-            if (start_x[row] >= 0 and end_x[row] < width and start_y[row] >= 0
-                    and end_y[row] < height):
-                mv[start_y[row]:end_y[row],
-                   start_x[row]:end_x[row]] = (val_x[row], val_y[row])
+        start_x = -1 * w // 2 + dst_x
+        start_y = -1 * h // 2 + dst_y
+        end_x = start_x + w
+        end_y = start_y + h
+        for sx, ex, sy, ey, vx, vy in zip(start_x, end_x, start_y, end_y,
+                                          val_x, val_y):
+            if (sx >= 0 and ex < width and sy >= 0 and ey < height):
+                mv[sy:ey, sx:ex] = (vx, vy)
 
         return mv
 
@@ -862,15 +862,15 @@ class PyAVDecodeMotionVector(PyAVDecode):
         if results['frame_inds'].ndim != 1:
             results['frame_inds'] = np.squeeze(results['frame_inds'])
 
-        # set max indice to make early stop
-        max_inds = max(results['frame_inds'])
+        # set max index to make early stop
+        max_idx = max(results['frame_inds'])
         i = 0
         stream = container.streams.video[0]
         codec_context = stream.codec_context
         codec_context.options = {'flags2': '+export_mvs'}
         for packet in container.demux(stream):
             for frame in packet.decode():
-                if i > max_inds + 1:
+                if i > max_idx + 1:
                     break
                 i += 1
                 height = frame.height
