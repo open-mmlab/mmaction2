@@ -72,7 +72,8 @@ def soft_nms(proposals, alpha, low_threshold, high_threshold, top_k):
         iou_list = temporal_iou(tstart[max_index], tend[max_index],
                                 np.array(tstart), np.array(tend))
         iou_exp_list = np.exp(-np.square(iou_list) / alpha)
-        for idx in range(len(tscore)):
+
+        for idx, _ in enumerate(tscore):
             if idx != max_index:
                 current_iou = iou_list[idx]
                 if current_iou > low_threshold + (high_threshold -

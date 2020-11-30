@@ -184,7 +184,7 @@ class SpatialModulation(nn.Module):
 
     def forward(self, x):
         out = []
-        for i, feature in enumerate(x):
+        for i, _ in enumerate(x):
             if isinstance(self.spatial_modulation[i], nn.ModuleList):
                 out_ = x[i]
                 for op in self.spatial_modulation[i]:
@@ -433,9 +433,7 @@ class TPN(nn.Module):
         top_down_outs = self.level_fusion_1(outs)
 
         # Build bottom-up flow using downsample operation
-        if self.flow_type == 'cascade':
-            outs = outs
-        else:
+        if self.flow_type == 'parallel':
             outs = [out.clone() for out in temporal_modulation_outs]
         if len(self.downsample_ops) != 0:
             for i in range(self.num_tpn_stages - 1):

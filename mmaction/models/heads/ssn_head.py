@@ -19,10 +19,9 @@ def parse_stage_config(stage_cfg):
     """
     if isinstance(stage_cfg, int):
         return (stage_cfg, ), stage_cfg
-    elif isinstance(stage_cfg, tuple):
+    if isinstance(stage_cfg, tuple):
         return stage_cfg, sum(stage_cfg)
-    else:
-        raise ValueError(f'Incorrect STPP config {stage_cfg}')
+    raise ValueError(f'Incorrect STPP config {stage_cfg}')
 
 
 class STPPTrain(nn.Module):
@@ -50,7 +49,8 @@ class STPPTrain(nn.Module):
 
         self.num_segments_list = num_segments_list
 
-    def _extract_stage_feature(self, stage_feat, stage_parts, num_multipliers,
+    @staticmethod
+    def _extract_stage_feature(stage_feat, stage_parts, num_multipliers,
                                scale_factors, num_samples):
         """Extract stage feature based on structured temporal pyramid pooling.
 
@@ -167,8 +167,9 @@ class STPPTest(nn.Module):
             self.complete_slice.stop, self.complete_slice.stop +
             self.reg_score_len * self.num_multipliers)
 
-    def _pyramids_pooling(self, out_scores, index, raw_scores, ticks,
-                          scale_factors, score_len, stpp_stage):
+    @staticmethod
+    def _pyramids_pooling(out_scores, index, raw_scores, ticks, scale_factors,
+                          score_len, stpp_stage):
         """Perform pyramids pooling.
 
         Args:
@@ -401,12 +402,11 @@ class SSNHead(nn.Module):
             else:
                 bbox_preds = None
             return activity_scores, complete_scores, bbox_preds
-        else:
-            x, proposal_tick_list, scale_factor_list = x
-            test_scores = self.test_fc(x)
-            (activity_scores, completeness_scores,
-             bbox_preds) = self.consensus(test_scores, proposal_tick_list,
-                                          scale_factor_list)
 
-            return (test_scores, activity_scores, completeness_scores,
-                    bbox_preds)
+        x, proposal_tick_list, scale_factor_list = x
+        test_scores = self.test_fc(x)
+        (activity_scores, completeness_scores,
+         bbox_preds) = self.consensus(test_scores, proposal_tick_list,
+                                      scale_factor_list)
+
+        return (test_scores, activity_scores, completeness_scores, bbox_preds)

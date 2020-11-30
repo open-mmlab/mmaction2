@@ -120,9 +120,8 @@ def mmit_mean_average_precision(scores, labels):
         np.float: The MMIT style mean average precision.
     """
     results = []
-    for i in range(len(scores)):
-        precision, recall, _ = binary_precision_recall_curve(
-            scores[i], labels[i])
+    for score, label in zip(scores, labels):
+        precision, recall, _ = binary_precision_recall_curve(score, label)
         ap = -np.sum(np.diff(recall) * np.array(precision)[:-1])
         results.append(ap)
     return np.mean(results)
@@ -144,9 +143,8 @@ def mean_average_precision(scores, labels):
     scores = np.stack(scores).T
     labels = np.stack(labels).T
 
-    for i in range(len(scores)):
-        precision, recall, _ = binary_precision_recall_curve(
-            scores[i], labels[i])
+    for score, label in zip(scores, labels):
+        precision, recall, _ = binary_precision_recall_curve(score, label)
         ap = -np.sum(np.diff(recall) * np.array(precision)[:-1])
         results.append(ap)
     results = [x for x in results if not np.isnan(x)]
@@ -466,7 +464,7 @@ def average_precision_at_temporal_iou(ground_truth,
     for idx, this_pred in enumerate(prediction):
 
         # Check if there is at least one ground truth in the video.
-        if (this_pred[0] in ground_truth):
+        if this_pred[0] in ground_truth:
             this_gt = np.array(ground_truth[this_pred[0]], dtype=float)
         else:
             fp[:, idx] = 1

@@ -165,7 +165,7 @@ class HVUDataset(BaseDataset):
         gt_labels = [ann['label'] for ann in self.video_infos]
 
         eval_results = {}
-        for i, category in enumerate(self.tag_categories):
+        for category in self.tag_categories:
 
             start_idx = self.category2startidx[category]
             num = self.category2num[category]

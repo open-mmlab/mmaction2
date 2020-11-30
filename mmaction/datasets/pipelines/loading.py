@@ -24,6 +24,7 @@ class LoadHVULabel:
 
     def __init__(self, **kwargs):
         self.hvu_initialized = False
+        self.kwargs = kwargs
 
     def init_hvu_info(self, categories, category_nums):
         assert len(categories) == len(category_nums)
@@ -502,7 +503,8 @@ class SampleProposalFrames(SampleFrames):
         self.mode = mode
         self.test_interval = test_interval
 
-    def _get_train_indices(self, valid_length, num_segments):
+    @staticmethod
+    def _get_train_indices(valid_length, num_segments):
         """Get indices of different stages of proposals in train mode.
 
         It will calculate the average interval for each segment,
@@ -528,7 +530,8 @@ class SampleProposalFrames(SampleFrames):
 
         return offsets
 
-    def _get_val_indices(self, valid_length, num_segments):
+    @staticmethod
+    def _get_val_indices(valid_length, num_segments):
         """Get indices of different stages of proposals in validation mode.
 
         It will calculate the average interval for each segment.
@@ -1230,10 +1233,12 @@ class AudioDecodeInit:
         self.kwargs = kwargs
         self.file_client = None
 
-    def _zero_pad(self, shape):
+    @staticmethod
+    def _zero_pad(shape):
         return np.zeros(shape, dtype=np.float32)
 
-    def _random_pad(self, shape):
+    @staticmethod
+    def _random_pad(shape):
         # librosa load raw audio file into a distribution of -1~+1
         return np.random.rand(shape).astype(np.float32) * 2 - 1
 
@@ -1286,10 +1291,12 @@ class LoadAudioFeature:
             raise NotImplementedError
         self.pad_method = pad_method
 
-    def _zero_pad(self, shape):
+    @staticmethod
+    def _zero_pad(shape):
         return np.zeros(shape, dtype=np.float32)
 
-    def _random_pad(self, shape):
+    @staticmethod
+    def _random_pad(shape):
         # spectrogram is normalized into a distribution of 0~1
         return np.random.rand(shape).astype(np.float32)
 
@@ -1387,7 +1394,7 @@ class BuildPseudoClip:
         # the input should be one single image
         assert len(results['imgs']) == 1
         im = results['imgs'][0]
-        for i in range(1, self.clip_len):
+        for _ in range(1, self.clip_len):
             results['imgs'].append(np.copy(im))
         results['clip_len'] = self.clip_len
         results['num_clips'] = 1

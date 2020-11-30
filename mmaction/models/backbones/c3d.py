@@ -1,7 +1,7 @@
+import torch.nn as nn
 from mmcv.cnn import ConvModule, constant_init, kaiming_init, normal_init
 from mmcv.runner import load_checkpoint
 from mmcv.utils import _BatchNorm
-from torch import nn as nn
 
 from ...utils import get_root_logger
 from ..registry import BACKBONES
@@ -137,6 +137,3 @@ class C3D(nn.Module):
         x = self.relu(self.fc7(x))
 
         return x
-
-    def train(self, mode=True):
-        super(C3D, self).train(mode)

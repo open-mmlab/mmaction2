@@ -148,7 +148,8 @@ class TEM(BaseLocalizer):
         video_meta_list = [dict(x) for x in video_meta]
 
         video_results = []
-        for batch_idx in range(len(batch_action)):
+
+        for batch_idx, _ in enumerate(batch_action):
             video_name = video_meta_list[batch_idx]['video_name']
             video_action = batch_action[batch_idx]
             video_start = batch_start[batch_idx]
@@ -220,8 +221,8 @@ class TEM(BaseLocalizer):
             label_end = label_end.to(device)
             return self.forward_train(raw_feature, label_action, label_start,
                                       label_end)
-        else:
-            return self.forward_test(raw_feature, video_meta)
+
+        return self.forward_test(raw_feature, video_meta)
 
 
 @LOCALIZERS.register_module()
@@ -301,7 +302,7 @@ class PEM(BaseLocalizer):
         Returns:
             torch.Tensor: The output of the module.
         """
-        x = torch.cat([data for data in x])
+        x = torch.cat(list(x))
         x = F.relu(self.fc1_ratio * self.fc1(x))
         x = torch.sigmoid(self.fc2_ratio * self.fc2(x))
         return x
@@ -309,8 +310,7 @@ class PEM(BaseLocalizer):
     def forward_train(self, bsp_feature, reference_temporal_iou):
         """Define the computation performed at every call when training."""
         pem_output = self._forward(bsp_feature)
-        reference_temporal_iou = torch.cat(
-            [data for data in reference_temporal_iou])
+        reference_temporal_iou = torch.cat(list(reference_temporal_iou))
         device = pem_output.device
         reference_temporal_iou = reference_temporal_iou.to(device)
 
@@ -390,6 +390,6 @@ class PEM(BaseLocalizer):
         """Define the computation performed at every call."""
         if return_loss:
             return self.forward_train(bsp_feature, reference_temporal_iou)
-        else:
-            return self.forward_test(bsp_feature, tmin, tmax, tmin_score,
-                                     tmax_score, video_meta)
+
+        return self.forward_test(bsp_feature, tmin, tmax, tmin_score,
+                                 tmax_score, video_meta)
