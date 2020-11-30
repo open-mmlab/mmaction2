@@ -957,7 +957,7 @@ class CuboidCrop:
         if len(candidate_cuboids) == 0:
             return results
 
-        cuboid = np.random.choice(candidate_cuboids)
+        cuboid = random.choice(candidate_cuboids)
         x1, y1, x2, y2 = map(int, cuboid.tolist())
 
         num_imgs = len(imgs)
