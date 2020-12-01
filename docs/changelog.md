@@ -1,6 +1,6 @@
 ## Changelog
 
-### 0.9.0 (1/12/2020)
+### 0.9.0 (30/11/2020)
 
 **Highlights**
 - Support GradCAM utils for recognizers
