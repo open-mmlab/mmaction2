@@ -183,15 +183,16 @@ class ActivityNetDataset(BaseDataset):
                 video_idx = 0
 
                 out_classifier_input = open(
-                    self.ann_file.replace('anet_anno_val.json',
-                                          'anet_val_classifier_input.txt'),
-                    'w')
+                    self.ann_file.replace(
+                        osp.split(self.ann_file)[1],
+                        'anet_val_classifier_input.txt'), 'w')
                 # The activity index file is constructed according to
                 # 'https://github.com/activitynet/ActivityNet/blob/master/Evaluation/eval_classification.py'
                 activity_index, class_idx = {}, 0
                 with open(
-                        self.ann_file.replace('anet_anno_val.json',
-                                              'anet_activity_indexes_val.txt')
+                        self.ann_file.replace(
+                            osp.split(self.ann_file)[1],
+                            'anet_activity_indexes_val.txt')
                 ) as activity_index_file:
                     for line in activity_index_file.readlines():
                         activity_index[line.strip()] = class_idx
@@ -199,13 +200,10 @@ class ActivityNetDataset(BaseDataset):
 
                 ground_truth = self._import_ground_truth(activity_index)
                 proposal, num_proposals = self._import_proposals(results)
-                with open(self.ann_file.replace('val', 'full')) as f_full:
-                    full_ground_truth = json.load(f_full)
 
                 for video in videos:
-                    num_frames = full_ground_truth['v_' +
-                                                   video]['duration_frame']
-                    fps = full_ground_truth['v_' + video]['fps']
+                    num_frames = self.ann_file['v_' + video]['duration_frame']
+                    fps = self.ann_file['v_' + video]['fps']
                     tiou, t_overlap = pairwise_temporal_iou(
                         proposal[video][:, :2].astype(float),
                         ground_truth[video][:, :2].astype(float),
