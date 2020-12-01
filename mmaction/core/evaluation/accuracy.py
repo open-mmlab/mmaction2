@@ -210,7 +210,7 @@ def pairwise_temporal_iou(candidate_segments,
         target_segments (np.ndarray): 2-dim array in format
             ``[n x 2:=[init, end]]``.
         overlap_self (bool): Whether to calculate overlap_self
-            (union / candidate_length) or not.
+            (union / candidate_length) or not. Default: False.
 
     Returns:
         t_iou (np.ndarray): 1-dim array [n] /

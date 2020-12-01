@@ -177,7 +177,7 @@ class ActivityNetDataset(BaseDataset):
             mmcv.dump(output_dict, out)
 
             if classifier_input:
-                with open(out, 'r') as f_out:
+                with open(out) as f_out:
                     proposal_results = json.load(f_out)['results']
                 videos = proposal_results.keys()
                 video_idx = 0
@@ -188,18 +188,18 @@ class ActivityNetDataset(BaseDataset):
                     'w')
                 # The activity index file is constructed according to
                 # 'https://github.com/activitynet/ActivityNet/blob/master/Evaluation/eval_classification.py'
-                activity_index_file = open(
-                    self.ann_file.replace('anet_anno_val.json',
-                                          'anet_activity_indexes_val.txt'),
-                    'r')
                 activity_index, class_idx = {}, 0
-                for line in activity_index_file.readlines():
-                    activity_index[line.strip()] = class_idx
-                    class_idx += 1
+                with open(
+                        self.ann_file.replace('anet_anno_val.json',
+                                              'anet_activity_indexes_val.txt')
+                ) as activity_index_file:
+                    for line in activity_index_file.readlines():
+                        activity_index[line.strip()] = class_idx
+                        class_idx += 1
 
                 ground_truth = self._import_ground_truth(activity_index)
                 proposal, num_proposals = self._import_proposals(results)
-                with open(self.ann_file.replace('val', 'full'), 'r') as f_full:
+                with open(self.ann_file.replace('val', 'full')) as f_full:
                     full_ground_truth = json.load(f_full)
 
                 for video in videos:
@@ -216,6 +216,7 @@ class ActivityNetDataset(BaseDataset):
                                                proposal[video], tiou,
                                                t_overlap, out_classifier_input)
                     video_idx += 1
+                out_classifier_input.close()
 
         elif output_format == 'csv':
             # TODO: add csv handler to mmcv and use mmcv.dump
@@ -237,12 +238,11 @@ class ActivityNetDataset(BaseDataset):
     def dump_classifier_input(self, video_idx, video, num_frames, fps, gts,
                               proposals, tiou, t_overlap,
                               out_classifier_input):
-        out_classifier_input.write('#{}\n{}\n{}\n{}\n{}\n'.format(
-            video_idx, video, num_frames, fps, gts.shape[0]))
+        out_classifier_input.write(
+            f'#{video_idx}\n{video}\n{num_frames}\n{fps}\n{gts.shape[0]}\n')
         for gt in gts:
-            out_classifier_input.write('{} {} {}\n'.format(
-                int(gt[2]), gt[0], gt[1]))
-        out_classifier_input.write('{}\n'.format(proposals.shape[0]))
+            out_classifier_input.write(f'{int(gt[2])} {gt[0]} {gt[1]}\n')
+        out_classifier_input.write(f'{proposals.shape[0]}\n')
 
         best_iou = np.amax(tiou, axis=0)
         best_iou_index = np.argmax(tiou, axis=0)
@@ -259,12 +259,12 @@ class ActivityNetDataset(BaseDataset):
             else:
                 label = label_iou
             if best_iou[i] == 0 and best_overlap[i] == 0:
-                out_classifier_input.write('0 0 0 {} {}\n'.format(
-                    proposals[i][0], proposals[i][1]))
+                out_classifier_input.write(
+                    f'0 0 0 {proposals[i][0]} {proposals[i][1]}\n')
             else:
-                out_classifier_input.write('{} {} {} {} {}\n'.format(
-                    int(label), best_iou[i], best_overlap[i], proposals[i][0],
-                    proposals[i][1]))
+                out_classifier_input.write(
+                    f'{int(label)} {best_iou[i]} {best_overlap[i]} '
+                    f'{proposals[i][0]} {proposals[i][1]}\n')
 
     def evaluate(
             self,
