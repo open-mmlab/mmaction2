@@ -10,7 +10,8 @@ from torch.utils.data import DataLoader
 
 from .dataset_wrappers import RepeatDataset
 from .registry import DATASETS
-from .samplers import DistributedPowerSampler, DistributedSampler
+from .samplers import (DistributedPowerSampler, DistributedSampler,
+                       ShortCycleBatchSampler)
 
 if platform.system() != 'Windows':
     # https://github.com/pytorch/pytorch/issues/973
@@ -80,6 +81,9 @@ def build_dataloader(dataset,
     rank, world_size = get_dist_info()
     sample_by_class = getattr(dataset, 'sample_by_class', False)
     power = getattr(dataset, 'power', None)
+    short_cycle = kwargs.get('short_cycle', False)
+    multi_grid_cfg = kwargs.get('multi_grid_cfg', None)
+    crop_size = kwargs.get('crop_size', 224)
 
     if dist:
         if sample_by_class:
@@ -91,7 +95,14 @@ def build_dataloader(dataset,
         shuffle = False
         batch_size = videos_per_gpu
         num_workers = workers_per_gpu
+        if short_cycle:
+            assert multi_grid_cfg is not None
+            sampler = ShortCycleBatchSampler(sampler, batch_size, drop_last,
+                                             multi_grid_cfg, crop_size)
     else:
+        if short_cycle:
+            raise NotImplementedError('Short cycle using non-dist'
+                                      'default sampler is not supported')
         sampler = None
         batch_size = num_gpus * videos_per_gpu
         num_workers = num_gpus * workers_per_gpu
@@ -102,10 +113,11 @@ def build_dataloader(dataset,
 
     data_loader = DataLoader(
         dataset,
-        batch_size=batch_size,
+        batch_size=batch_size if not short_cycle else 1,
         sampler=sampler,
         num_workers=num_workers,
-        collate_fn=partial(collate, samples_per_gpu=videos_per_gpu),
+        collate_fn=partial(collate, samples_per_gpu=videos_per_gpu)
+        if not short_cycle else None,
         pin_memory=pin_memory,
         shuffle=shuffle,
         worker_init_fn=init_fn,

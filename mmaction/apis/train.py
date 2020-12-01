@@ -6,8 +6,9 @@ from mmcv.runner import (DistSamplerSeedHook, EpochBasedRunner, OptimizerHook,
                          build_optimizer)
 from mmcv.runner.hooks import Fp16OptimizerHook
 
-from ..core import (DistEpochEvalHook, EpochEvalHook,
-                    OmniSourceDistSamplerSeedHook, OmniSourceRunner)
+from ..core import (DistEpochEvalHook, EpochEvalHook, MultiGridHook,
+                    OmniSourceDistSamplerSeedHook, OmniSourceRunner,
+                    SubBatchBN3dAggregationHook)
 from ..datasets import build_dataloader, build_dataset
 from ..utils import get_root_logger
 
@@ -114,6 +115,16 @@ def train_model(model,
             runner.register_hook(OmniSourceDistSamplerSeedHook())
         else:
             runner.register_hook(DistSamplerSeedHook())
+
+    # multigrid setting
+    multi_grid_cfg = cfg.get('multi_grid', None)
+    if multi_grid_cfg is not None:
+        multi_grid_scheduler = MultiGridHook(cfg)
+        runner.register_hook(multi_grid_scheduler)
+        subbn3d_aggregation_hook = SubBatchBN3dAggregationHook()
+        # subbn3d aggregation is HIGH, as it should be done before saving
+        # and evaluation
+        runner.register_hook(subbn3d_aggregation_hook, priority='HIGH')
 
     if validate:
         eval_cfg = cfg.get('evaluation', {})

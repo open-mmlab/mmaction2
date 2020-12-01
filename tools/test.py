@@ -15,6 +15,7 @@ from mmcv.runner.fp16_utils import wrap_fp16_model
 from mmaction.apis import multi_gpu_test, single_gpu_test
 from mmaction.datasets import build_dataloader, build_dataset
 from mmaction.models import build_model
+from mmaction.utils import update_bn_stats
 
 
 def parse_args():
@@ -164,6 +165,20 @@ def main():
 
     if args.fuse_conv_bn:
         model = fuse_conv_bn(model)
+
+    if cfg.get('precise_bn', False):
+        precise_bn_dataset = build_dataset(cfg.data.train,
+                                           dict(test_mode=True))
+        precise_bn_dataloader_setting = dict(
+            videos_per_gpu=cfg.data.get('videos_per_gpu', 1),
+            workers_per_gpu=0,  # for efficiency
+            dist=distributed,
+            shuffle=False)
+        precise_bn_dataloader_setting = dict(
+            dataloader_setting, **cfg.data.get('test_dataloader', {}))
+        precise_bn_data_loader = build_dataloader(
+            precise_bn_dataset, **precise_bn_dataloader_setting)
+        update_bn_stats(model, precise_bn_data_loader)
 
     if not distributed:
         model = MMDataParallel(model, device_ids=[0])
