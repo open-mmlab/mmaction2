@@ -651,7 +651,8 @@ class ResNet3d(nn.Module):
                 param.data.copy_(param_2d)
                 inflated_param_names.append(param_2d_name)
 
-    def inflate_weights(self, logger):
+    @staticmethod
+    def _inflate_weights(self, logger):
         """Inflate the resnet2d parameters to resnet3d.
 
         The differences between resnet3d and resnet2d mainly lie in an extra
@@ -715,6 +716,9 @@ class ResNet3d(nn.Module):
             logger.info(f'These parameters in the 2d checkpoint are not loaded'
                         f': {remaining_names}')
 
+    def inflate_weights(self, logger):
+        self._inflate_weights(self, logger)
+
     def _make_stem_layer(self):
         """Construct the stem layers consists of a conv+norm+act module and a
         pooling layer."""
@@ -750,7 +754,8 @@ class ResNet3d(nn.Module):
             for param in m.parameters():
                 param.requires_grad = False
 
-    def init_weights(self):
+    @staticmethod
+    def _init_weights(self):
         """Initiate the parameters either from existing checkpoint or from
         scratch."""
         if isinstance(self.pretrained, str):
@@ -781,6 +786,9 @@ class ResNet3d(nn.Module):
                         constant_init(m.conv2.bn, 0)
         else:
             raise TypeError('pretrained must be a str or None')
+
+    def init_weights(self):
+        self._init_weights(self)
 
     def forward(self, x):
         """Defines the computation performed at every call.
@@ -884,6 +892,8 @@ class ResNet3dLayer(nn.Module):
         self.make_res_layer = ResNet3d.make_res_layer
         self._inflate_conv_params = ResNet3d._inflate_conv_params
         self._inflate_bn_params = ResNet3d._inflate_bn_params
+        self._inflate_weights = ResNet3d._inflate_weights
+        self._init_weights = ResNet3d._init_weights
 
         self.depth = depth
         self.pretrained = pretrained
@@ -935,68 +945,7 @@ class ResNet3dLayer(nn.Module):
         self.add_module(self.layer_name, res_layer)
 
     def inflate_weights(self, logger):
-        """Inflate the resnet2d parameters to resnet3d.
-
-        The differences between resnet3d and resnet2d mainly lie in an extra
-        axis of conv kernel. To utilize the pretrained parameters in 2d model,
-        the weight of conv2d models should be inflated to fit in the shapes of
-        the 3d counterpart.
-
-        Args:
-            logger (logging.Logger): The logger used to print
-                debugging infomation.
-        """
-
-        state_dict_r2d = _load_checkpoint(self.pretrained)
-        if 'state_dict' in state_dict_r2d:
-            state_dict_r2d = state_dict_r2d['state_dict']
-
-        inflated_param_names = []
-        for name, module in self.named_modules():
-            if isinstance(module, ConvModule):
-                # we use a ConvModule to wrap conv+bn+relu layers, thus the
-                # name mapping is needed
-                if 'downsample' in name:
-                    # layer{X}.{Y}.downsample.conv->layer{X}.{Y}.downsample.0
-                    original_conv_name = name + '.0'
-                    # layer{X}.{Y}.downsample.bn->layer{X}.{Y}.downsample.1
-                    original_bn_name = name + '.1'
-                else:
-                    # layer{X}.{Y}.conv{n}.conv->layer{X}.{Y}.conv{n}
-                    original_conv_name = name
-                    # layer{X}.{Y}.conv{n}.bn->layer{X}.{Y}.bn{n}
-                    original_bn_name = name.replace('conv', 'bn')
-                if original_conv_name + '.weight' not in state_dict_r2d:
-                    logger.warning(f'Module not exist in the state_dict_r2d'
-                                   f': {original_conv_name}')
-                else:
-                    shape_2d = state_dict_r2d[original_conv_name +
-                                              '.weight'].shape
-                    shape_3d = module.conv.weight.data.shape
-                    if shape_2d != shape_3d[:2] + shape_3d[3:]:
-                        logger.warning(f'Weight shape mismatch for '
-                                       f': {original_conv_name} : '
-                                       f'3d weight shape: {shape_3d}; '
-                                       f'2d weight shape: {shape_2d}. ')
-                    else:
-                        self._inflate_conv_params(module.conv, state_dict_r2d,
-                                                  original_conv_name,
-                                                  inflated_param_names)
-
-                if original_bn_name + '.weight' not in state_dict_r2d:
-                    logger.warning(f'Module not exist in the state_dict_r2d'
-                                   f': {original_bn_name}')
-                else:
-                    self._inflate_bn_params(module.bn, state_dict_r2d,
-                                            original_bn_name,
-                                            inflated_param_names)
-
-        # check if any parameters in the 2d checkpoint are not loaded
-        remaining_names = set(
-            state_dict_r2d.keys()) - set(inflated_param_names)
-        if remaining_names:
-            logger.info(f'These parameters in the 2d checkpoint are not loaded'
-                        f': {remaining_names}')
+        self._inflate_weights(self, logger)
 
     def _freeze_stages(self):
         """Prevent all the parameters from being optimized before
@@ -1008,36 +957,7 @@ class ResNet3dLayer(nn.Module):
                 param.requires_grad = False
 
     def init_weights(self):
-        """Initiate the parameters either from existing checkpoint or from
-        scratch."""
-        if isinstance(self.pretrained, str):
-            logger = get_root_logger()
-            logger.info(f'load model from: {self.pretrained}')
-
-            if self.pretrained2d:
-                # Inflate 2D model into 3D model.
-                self.inflate_weights(logger)
-
-            else:
-                # Directly load 3D model.
-                load_checkpoint(
-                    self, self.pretrained, strict=False, logger=logger)
-
-        elif self.pretrained is None:
-            for m in self.modules():
-                if isinstance(m, nn.Conv3d):
-                    kaiming_init(m)
-                elif isinstance(m, _BatchNorm):
-                    constant_init(m, 1)
-
-            if self.zero_init_residual:
-                for m in self.modules():
-                    if isinstance(m, Bottleneck3d):
-                        constant_init(m.conv3.bn, 0)
-                    elif isinstance(m, BasicBlock3d):
-                        constant_init(m.conv2.bn, 0)
-        else:
-            raise TypeError('pretrained must be a str or None')
+        self._init_weights(self)
 
     def forward(self, x):
         """Defines the computation performed at every call.
