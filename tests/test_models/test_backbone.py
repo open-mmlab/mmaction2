@@ -7,8 +7,9 @@ import torch.nn as nn
 from mmcv.utils import _BatchNorm
 
 from mmaction.models import (C3D, X3D, ResNet, ResNet2Plus1d, ResNet3d,
-                             ResNet3dCSN, ResNet3dSlowFast, ResNet3dSlowOnly,
-                             ResNetAudio, ResNetTIN, ResNetTSM, ResNet3dLayer)
+                             ResNet3dCSN, ResNet3dLayer, ResNet3dSlowFast,
+                             ResNet3dSlowOnly, ResNetAudio, ResNetTIN,
+                             ResNetTSM)
 from mmaction.models.backbones.resnet_tsm import NL3DWrapper
 
 

@@ -1,14 +1,13 @@
 from .backbones import (C3D, X3D, ResNet, ResNet2Plus1d, ResNet3d, ResNet3dCSN,
-                        ResNet3dSlowFast, ResNet3dSlowOnly, ResNetAudio,
-                        ResNet3dLayer, ResNetTIN, ResNetTSM)
-from .builder import (build_backbone, build_head, build_localizer, build_loss,
-                      build_model, build_neck, build_recognizer)
-
+                        ResNet3dLayer, ResNet3dSlowFast, ResNet3dSlowOnly,
+                        ResNetAudio, ResNetTIN, ResNetTSM)
+from .builder import (build_backbone, build_detector, build_head,
+                      build_localizer, build_loss, build_model, build_neck,
+                      build_recognizer)
 from .common import Conv2plus1d, ConvAudio
 from .detectors import FastRCNN
-from .heads import (AudioTSNHead, BaseHead, I3DHead, SlowFastHead, TPNHead,
-                    TSMHead, TSNHead, X3DHead, BBoxHead)
-
+from .heads import (AudioTSNHead, BaseHead, BBoxHead, I3DHead, SlowFastHead,
+                    TPNHead, TSMHead, TSNHead, X3DHead)
 from .localizers import BMN, PEM, TEM
 from .losses import (BCELossWithLogits, BinaryLogisticRegressionLoss, BMNLoss,
                      CrossEntropyLoss, HVULoss, NLLLoss, OHEMHingeLoss,
@@ -32,5 +31,5 @@ __all__ = [
     'TPN', 'TPNHead', 'build_loss', 'build_neck', 'AudioRecognizer',
     'AudioTSNHead', 'X3D', 'X3DHead', 'ResNet3dLayer', 'DETECTORS', 'FastRCNN',
     'SingleRoIStraight3DExtractor', 'BBoxHead', 'ROI_EXTRACTORS',
-    'ResNetAudio', 'ConvAudio'
+    'ResNetAudio', 'ConvAudio', 'build_detector'
 ]

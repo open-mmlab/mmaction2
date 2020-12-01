@@ -30,6 +30,6 @@ __all__ = [
     'SampleAVAFrames', 'AudioAmplify', 'MelSpectrogram', 'AudioDecode',
     'FormatAudioShape', 'LoadAudioFeature', 'AudioFeatureSelector',
     'AudioDecodeInit', 'EntityBoxPad', 'EntityBoxFlip', 'EntityBoxCrop',
-    'EntityBoxRescale', 'RandomScale', 'ImageDecode',
-    'BuildPseudoClip', 'RandomRescale', 'PyAVDecodeMotionVector'
+    'EntityBoxRescale', 'RandomScale', 'ImageDecode', 'BuildPseudoClip',
+    'RandomRescale', 'PyAVDecodeMotionVector'
 ]
