@@ -24,6 +24,7 @@ class LoadHVULabel:
 
     def __init__(self, **kwargs):
         self.hvu_initialized = False
+        self.kwargs = kwargs
 
     def init_hvu_info(self, categories, category_nums):
         assert len(categories) == len(category_nums)
@@ -502,7 +503,8 @@ class SampleProposalFrames(SampleFrames):
         self.mode = mode
         self.test_interval = test_interval
 
-    def _get_train_indices(self, valid_length, num_segments):
+    @staticmethod
+    def _get_train_indices(valid_length, num_segments):
         """Get indices of different stages of proposals in train mode.
 
         It will calculate the average interval for each segment,
@@ -528,7 +530,8 @@ class SampleProposalFrames(SampleFrames):
 
         return offsets
 
-    def _get_val_indices(self, valid_length, num_segments):
+    @staticmethod
+    def _get_val_indices(valid_length, num_segments):
         """Get indices of different stages of proposals in validation mode.
 
         It will calculate the average interval for each segment.
@@ -812,6 +815,88 @@ class PyAVDecode:
         repr_str = self.__class__.__name__
         repr_str += f'(multi_thread={self.multi_thread})'
         return repr_str
+
+
+@PIPELINES.register_module()
+class PyAVDecodeMotionVector(PyAVDecode):
+    """Using pyav to decode the motion vectors from video.
+
+    Reference: https://github.com/PyAV-Org/PyAV/
+        blob/main/tests/test_decode.py
+
+    Required keys are "video_reader" and "frame_inds",
+    added or modified keys are "motion_vectors", "frame_inds".
+
+    Args:
+        multi_thread (bool): If set to True, it will apply multi
+            thread processing. Default: False.
+    """
+
+    @staticmethod
+    def _parse_vectors(mv, vectors, height, width):
+        """Parse the returned vectors."""
+        (w, h, src_x, src_y, dst_x,
+         dst_y) = (vectors['w'], vectors['h'], vectors['src_x'],
+                   vectors['src_y'], vectors['dst_x'], vectors['dst_y'])
+        val_x = dst_x - src_x
+        val_y = dst_y - src_y
+        start_x = dst_x - w // 2
+        start_y = dst_y - h // 2
+        end_x = start_x + w
+        end_y = start_y + h
+        for sx, ex, sy, ey, vx, vy in zip(start_x, end_x, start_y, end_y,
+                                          val_x, val_y):
+            if (sx >= 0 and ex < width and sy >= 0 and ey < height):
+                mv[sy:ey, sx:ex] = (vx, vy)
+
+        return mv
+
+    def __call__(self, results):
+        """Perform the PyAV motion vector decoding.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        container = results['video_reader']
+        imgs = list()
+
+        if self.multi_thread:
+            container.streams.video[0].thread_type = 'AUTO'
+        if results['frame_inds'].ndim != 1:
+            results['frame_inds'] = np.squeeze(results['frame_inds'])
+
+        # set max index to make early stop
+        max_idx = max(results['frame_inds'])
+        i = 0
+        stream = container.streams.video[0]
+        codec_context = stream.codec_context
+        codec_context.options = {'flags2': '+export_mvs'}
+        for packet in container.demux(stream):
+            for frame in packet.decode():
+                if i > max_idx + 1:
+                    break
+                i += 1
+                height = frame.height
+                width = frame.width
+                mv = np.zeros((height, width, 2), dtype=np.int8)
+                vectors = frame.side_data.get('MOTION_VECTORS')
+                if frame.key_frame:
+                    # Key frame don't have motion vectors
+                    assert vectors is None
+                if vectors is not None and len(vectors) > 0:
+                    mv = self._parse_vectors(mv, vectors.to_ndarray(), height,
+                                             width)
+                imgs.append(mv)
+
+        results['video_reader'] = None
+        del container
+
+        # the available frame in pyav may be less than its length,
+        # which may raise error
+        results['motion_vectors'] = np.array(
+            [imgs[i % len(imgs)] for i in results['frame_inds']])
+        return results
 
 
 @PIPELINES.register_module()
@@ -1148,10 +1233,12 @@ class AudioDecodeInit:
         self.kwargs = kwargs
         self.file_client = None
 
-    def _zero_pad(self, shape):
+    @staticmethod
+    def _zero_pad(shape):
         return np.zeros(shape, dtype=np.float32)
 
-    def _random_pad(self, shape):
+    @staticmethod
+    def _random_pad(shape):
         # librosa load raw audio file into a distribution of -1~+1
         return np.random.rand(shape).astype(np.float32) * 2 - 1
 
@@ -1204,10 +1291,12 @@ class LoadAudioFeature:
             raise NotImplementedError
         self.pad_method = pad_method
 
-    def _zero_pad(self, shape):
+    @staticmethod
+    def _zero_pad(shape):
         return np.zeros(shape, dtype=np.float32)
 
-    def _random_pad(self, shape):
+    @staticmethod
+    def _random_pad(shape):
         # spectrogram is normalized into a distribution of 0~1
         return np.random.rand(shape).astype(np.float32)
 
@@ -1305,7 +1394,7 @@ class BuildPseudoClip:
         # the input should be one single image
         assert len(results['imgs']) == 1
         im = results['imgs'][0]
-        for i in range(1, self.clip_len):
+        for _ in range(1, self.clip_len):
             results['imgs'].append(np.copy(im))
         results['clip_len'] = self.clip_len
         results['num_clips'] = 1

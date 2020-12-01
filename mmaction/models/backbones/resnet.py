@@ -1,7 +1,7 @@
+import torch.nn as nn
 from mmcv.cnn import ConvModule, constant_init, kaiming_init
 from mmcv.runner import _load_checkpoint, load_checkpoint
 from mmcv.utils import _BatchNorm
-from torch import nn as nn
 from torch.utils import checkpoint as cp
 
 from ...utils import get_root_logger
@@ -355,7 +355,7 @@ class ResNet(nn.Module):
         self.pretrained = pretrained
         self.torchvision_pretrain = torchvision_pretrain
         self.num_stages = num_stages
-        assert num_stages >= 1 and num_stages <= 4
+        assert 1 <= num_stages <= 4
         self.out_indices = out_indices
         assert max(out_indices) < num_stages
         self.strides = strides
@@ -416,7 +416,8 @@ class ResNet(nn.Module):
             act_cfg=self.act_cfg)
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
 
-    def _load_conv_params(self, conv, state_dict_tv, module_name_tv,
+    @staticmethod
+    def _load_conv_params(conv, state_dict_tv, module_name_tv,
                           loaded_param_names):
         """Load the conv parameters of resnet from torchvision.
 
@@ -439,8 +440,8 @@ class ResNet(nn.Module):
             conv.bias.data.copy_(state_dict_tv[bias_tv_name])
             loaded_param_names.append(bias_tv_name)
 
-    def _load_bn_params(self, bn, state_dict_tv, module_name_tv,
-                        loaded_param_names):
+    @staticmethod
+    def _load_bn_params(bn, state_dict_tv, module_name_tv, loaded_param_names):
         """Load the bn parameters of resnet from torchvision.
 
         Args:
@@ -467,10 +468,7 @@ class ResNet(nn.Module):
                 param.data.copy_(param_tv)
                 loaded_param_names.append(param_tv_name)
 
-    def _load_torchvision_checkpoint(self,
-                                     pretrained,
-                                     strict=False,
-                                     logger=None):
+    def _load_torchvision_checkpoint(self, logger=None):
         """Initiate the parameters from torchvision pretrained checkpoint."""
         state_dict_torchvision = _load_checkpoint(self.pretrained)
         if 'state_dict' in state_dict_torchvision:
@@ -511,8 +509,7 @@ class ResNet(nn.Module):
             logger = get_root_logger()
             if self.torchvision_pretrain:
                 # torchvision's
-                self._load_torchvision_checkpoint(
-                    self.pretrained, strict=False, logger=logger)
+                self._load_torchvision_checkpoint(logger)
             else:
                 # ours
                 load_checkpoint(
@@ -546,8 +543,8 @@ class ResNet(nn.Module):
                 outs.append(x)
         if len(outs) == 1:
             return outs[0]
-        else:
-            return tuple(outs)
+
+        return tuple(outs)
 
     def _freeze_stages(self):
         """Prevent all the parameters from being optimized before

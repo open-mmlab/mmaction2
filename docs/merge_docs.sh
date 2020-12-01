@@ -20,6 +20,7 @@ sed -i 's/(\/tools\/data\/gym\/README.md/(#gym/g' supported_datasets.md
 
 cat  ../configs/localization/*/*.md > localization_models.md
 cat  ../configs/recognition/*/*.md > recognition_models.md
+cat  ../configs/recognition_audio/*/*.md >> recognition_models.md
 cat  ../tools/data/*/*.md > prepare_data.md
 cat  ../demo/README.md > demo.md
 

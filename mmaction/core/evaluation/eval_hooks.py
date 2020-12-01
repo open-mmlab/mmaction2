@@ -80,7 +80,7 @@ class EpochEvalHook(Hook):
                     f'or in {self.less_keys} when rule is None, '
                     f'but got {key_indicator}')
 
-        if not interval > 0:
+        if interval <= 0:
             raise ValueError(f'interval must be positive, but got {interval}')
         if start is not None and start < 0:
             warnings.warn(
@@ -178,8 +178,8 @@ class EpochEvalHook(Hook):
                               'it in config file')
                 return None
             return eval_res[self.key_indicator]
-        else:
-            return None
+
+        return None
 
 
 class DistEpochEvalHook(EpochEvalHook):

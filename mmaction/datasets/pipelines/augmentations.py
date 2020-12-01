@@ -252,10 +252,7 @@ class EntityBoxFlip:
         self.direction = direction
 
     def __call__(self, results):
-        if np.random.rand() < self.flip_ratio:
-            flip = True
-        else:
-            flip = False
+        flip = np.random.rand() < self.flip_ratio
 
         results['flip'] = flip
         results['flip_direction'] = self.direction
@@ -906,10 +903,7 @@ class Flip:
         if modality == 'Flow':
             assert self.direction == 'horizontal'
 
-        if np.random.rand() < self.flip_ratio:
-            flip = True
-        else:
-            flip = False
+        flip = np.random.rand() < self.flip_ratio
 
         results['flip'] = flip
         results['flip_direction'] = self.direction
@@ -993,7 +987,7 @@ class Normalize:
             results['img_norm_cfg'] = dict(
                 mean=self.mean, std=self.std, to_bgr=self.to_bgr)
             return results
-        elif modality == 'Flow':
+        if modality == 'Flow':
             num_imgs = len(results['imgs'])
             assert num_imgs % 2 == 0
             assert self.mean.shape[0] == 2
@@ -1019,8 +1013,7 @@ class Normalize:
                 adjust_magnitude=self.adjust_magnitude)
             results['img_norm_cfg'] = args
             return results
-        else:
-            raise NotImplementedError
+        raise NotImplementedError
 
     def __repr__(self):
         repr_str = (f'{self.__class__.__name__}('

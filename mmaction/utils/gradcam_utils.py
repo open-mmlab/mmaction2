@@ -3,10 +3,11 @@ import torch.nn.functional as F
 
 
 class GradCAM:
-    """GradCAM class helps create visulization results.
+    """GradCAM class helps create visualization results.
 
-    Visulization results are blended by heatmaps and input images.
-    This class is modified from https://github.com/facebookresearch/SlowFast/blob/master/slowfast/visualization/gradcam_utils.py # noqa
+    Visualization results are blended by heatmaps and input images.
+    This class is modified from
+    https://github.com/facebookresearch/SlowFast/blob/master/slowfast/visualization/gradcam_utils.py # noqa
     For more information about GradCAM, please visit:
     https://arxiv.org/pdf/1610.02391.pdf
     """
@@ -20,7 +21,7 @@ class GradCAM:
                 be used to get gradients and feature maps from for creating
                 localization maps.
             colormap (Optional[str]): matplotlib colormap used to create
-                heatmap. For more information, please visit:
+                heatmap. Default: 'viridis'. For more information, please visit
                 https://matplotlib.org/3.3.0/tutorials/colors/colormaps.html
         """
         from ..models.recognizers import Recognizer2D, Recognizer3D

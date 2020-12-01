@@ -9,7 +9,8 @@ from .ohem_hinge_loss import OHEMHingeLoss
 @LOSSES.register_module()
 class SSNLoss(nn.Module):
 
-    def activity_loss(self, activity_score, labels, activity_indexer):
+    @staticmethod
+    def activity_loss(activity_score, labels, activity_indexer):
         """Activity Loss.
 
         It will calculate activity loss given activity_score and label.
@@ -26,8 +27,8 @@ class SSNLoss(nn.Module):
         gt = labels[activity_indexer]
         return F.cross_entropy(pred, gt)
 
-    def completeness_loss(self,
-                          completeness_score,
+    @staticmethod
+    def completeness_loss(completeness_score,
                           labels,
                           completeness_indexer,
                           positive_per_video,
@@ -77,7 +78,8 @@ class SSNLoss(nn.Module):
         return ((positive_loss + incomplete_loss) /
                 float(num_positives + num_incompletes))
 
-    def classwise_regression_loss(self, bbox_pred, labels, bbox_targets,
+    @staticmethod
+    def classwise_regression_loss(bbox_pred, labels, bbox_targets,
                                   regression_indexer):
         """Classwise Regression Loss.
 

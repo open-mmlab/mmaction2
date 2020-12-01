@@ -46,13 +46,11 @@ class SSNInstance:
         self.size_reg = None
         self.regression_targets = [0., 0.]
 
-    def compute_regression_targets(self, gt_list, positive_threshold):
+    def compute_regression_targets(self, gt_list):
         """Compute regression targets of positive proposals.
 
         Args:
             gt_list (list): The list of groundtruth instances.
-            positive_threshold (float): Minimum threshold of overlap of
-                positive/foreground proposals and groundtruths.
         """
         # Find the groundtruth instance with the highest IOU.
         ious = [
@@ -328,20 +326,12 @@ class SSNDataset(BaseDataset):
                     proposals=proposals))
         return video_infos
 
-    def results_to_detections(self,
-                              results,
-                              top_k=2000,
-                              softmax_before_filter=True,
-                              cls_top_k=2,
-                              **kwargs):
+    def results_to_detections(self, results, top_k=2000, **kwargs):
         """Convert prediction results into detections.
 
         Args:
             results (list): Prediction results.
             top_k (int): Number of top results. Default: 2000.
-            softmax_before_filter (bool): Whether to perform softmax operations
-                before filtering results. Default: True.
-            cls_top_k (int): Number of top results for each class. Default: 2.
 
         Returns:
             list: Detection results.
@@ -360,7 +350,8 @@ class SSNDataset(BaseDataset):
             regression_scores = results[idx]['bbox_preds']
             if regression_scores is None:
                 regression_scores = np.zeros(
-                    len(relative_proposals), num_classes, 2, dtype=np.float32)
+                    (len(relative_proposals), num_classes, 2),
+                    dtype=np.float32)
             regression_scores = regression_scores.reshape((-1, num_classes, 2))
 
             if top_k <= 0:
@@ -449,7 +440,7 @@ class SSNDataset(BaseDataset):
 
         if self.use_regression:
             self.logger.info('Performing location regression')
-            for class_idx in range(len(detections)):
+            for class_idx, _ in enumerate(detections):
                 detections[class_idx] = {
                     k: perform_regression(v)
                     for k, v in detections[class_idx].items()
@@ -457,7 +448,7 @@ class SSNDataset(BaseDataset):
             self.logger.info('Regression finished')
 
         self.logger.info('Performing NMS')
-        for class_idx in range(len(detections)):
+        for class_idx, _ in enumerate(detections):
             detections[class_idx] = {
                 k: temporal_nms(v, self.evaluater.nms)
                 for k, v in detections[class_idx].items()
@@ -466,13 +457,13 @@ class SSNDataset(BaseDataset):
 
         # get gts
         all_gts = self.get_all_gts()
-        for class_idx in range(len(detections)):
+        for class_idx, _ in enumerate(detections):
             if class_idx not in all_gts:
                 all_gts[class_idx] = dict()
 
         # get predictions
         plain_detections = {}
-        for class_idx in range(len(detections)):
+        for class_idx, _ in enumerate(detections):
             detection_list = []
             for video, dets in detections[class_idx].items():
                 detection_list.extend([[video, class_idx] + x[:3]
@@ -534,7 +525,8 @@ class SSNDataset(BaseDataset):
 
         return gts
 
-    def get_positives(self, gts, proposals, positive_threshold, with_gt=True):
+    @staticmethod
+    def get_positives(gts, proposals, positive_threshold, with_gt=True):
         """Get positive/foreground proposals.
 
         Args:
@@ -558,12 +550,12 @@ class SSNDataset(BaseDataset):
             positives.extend(gts)
 
         for proposal in positives:
-            proposal.compute_regression_targets(gts, positive_threshold)
+            proposal.compute_regression_targets(gts)
 
         return positives
 
-    def get_negatives(self,
-                      proposals,
+    @staticmethod
+    def get_negatives(proposals,
                       incomplete_iou_threshold,
                       background_iou_threshold,
                       background_coverage_threshold=0.01,
@@ -648,14 +640,11 @@ class SSNDataset(BaseDataset):
                 idx = np.random.choice(
                     len(dataset_pool), num_requested_proposals, replace=False)
                 return [(dataset_pool[x], proposal_type) for x in idx]
-            else:
-                replicate = len(video_pool) < num_requested_proposals
-                idx = np.random.choice(
-                    len(video_pool),
-                    num_requested_proposals,
-                    replace=replicate)
-                return [((video_id, video_pool[x]), proposal_type)
-                        for x in idx]
+
+            replicate = len(video_pool) < num_requested_proposals
+            idx = np.random.choice(
+                len(video_pool), num_requested_proposals, replace=replicate)
+            return [((video_id, video_pool[x]), proposal_type) for x in idx]
 
         out_proposals = []
         out_proposals.extend(
@@ -782,7 +771,7 @@ class SSNDataset(BaseDataset):
             num_frames = proposal[0][1].num_video_frames
 
             (starting_scale_factor, ending_scale_factor,
-             stage_split) = self._get_stage(proposal[0][1], num_frames)
+             _) = self._get_stage(proposal[0][1], num_frames)
 
             # proposal[1]: Type id of proposal.
             # Positive/Foreground: 0

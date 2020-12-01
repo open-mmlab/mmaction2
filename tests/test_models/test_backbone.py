@@ -8,7 +8,7 @@ from mmcv.utils import _BatchNorm
 
 from mmaction.models import (C3D, X3D, ResNet, ResNet2Plus1d, ResNet3d,
                              ResNet3dCSN, ResNet3dSlowFast, ResNet3dSlowOnly,
-                             ResNetTIN, ResNetTSM)
+                             ResNetAudio, ResNetTIN, ResNetTSM)
 from mmaction.models.backbones.resnet_tsm import NL3DWrapper
 
 
@@ -956,6 +956,18 @@ def test_c3d_backbone():
     c3d_bn.train()
     feat = c3d_bn(imgs)
     assert feat.shape == torch.Size([1, 4096])
+
+
+def test_resnet_audio_backbone():
+    """Test ResNetAudio backbone."""
+    input_shape = (1, 1, 16, 16)
+    spec = _demo_inputs(input_shape)
+    # inference
+    audioonly = ResNetAudio(50, None)
+    audioonly.init_weights()
+    audioonly.train()
+    feat = audioonly(spec)
+    assert feat.shape == torch.Size([1, 1024, 2, 2])
 
 
 @pytest.mark.skipif(

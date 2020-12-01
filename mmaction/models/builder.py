@@ -23,8 +23,8 @@ def build(cfg, registry, default_args=None):
             build_from_cfg(cfg_, registry, default_args) for cfg_ in cfg
         ]
         return nn.Sequential(*modules)
-    else:
-        return build_from_cfg(cfg, registry, default_args)
+
+    return build_from_cfg(cfg, registry, default_args)
 
 
 def build_backbone(cfg):
@@ -59,8 +59,10 @@ def build_model(cfg, train_cfg=None, test_cfg=None):
     obj_type = args.pop('type')
     if obj_type in LOCALIZERS:
         return build_localizer(cfg)
-    elif obj_type in RECOGNIZERS:
+    if obj_type in RECOGNIZERS:
         return build_recognizer(cfg, train_cfg, test_cfg)
+    raise ValueError(f'{obj_type} is not registered in '
+                     'LOCALIZERS or RECOGNIZERS')
 
 
 def build_neck(cfg):

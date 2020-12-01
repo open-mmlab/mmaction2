@@ -173,7 +173,7 @@ class ResNetTSM(ResNet):
             ]
         else:
             num_segment_list = [self.num_segments] * 4
-        if not num_segment_list[-1] > 0:
+        if num_segment_list[-1] <= 0:
             raise ValueError('num_segment_list[-1] must be positive')
 
         if self.shift_place == 'block':

@@ -72,7 +72,7 @@ def inference_recognizer(model, video_path, label_path, use_frames=False):
     if osp.isfile(video_path) and use_frames:
         raise RuntimeError(
             f"'{video_path}' is a video file, not a rawframe directory")
-    elif osp.isdir(video_path) and not use_frames:
+    if osp.isdir(video_path) and not use_frames:
         raise RuntimeError(
             f"'{video_path}' is a rawframe directory, not a video file")
 
