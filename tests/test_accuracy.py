@@ -189,6 +189,12 @@ def test_pairwise_temporal_iou():
     temporal_iou = pairwise_temporal_iou(target_segments, candidate_segments)
     assert_array_equal(temporal_iou, [[0, 1], [0, 0.5]])
 
+    target_segments = np.array([[1, 2], [2, 3]])
+    candidate_segments = np.array([[2, 3], [2.5, 3]])
+    temporal_iou, temporal_overlap_self = pairwise_temporal_iou(
+        target_segments, candidate_segments, overlap_self=True)
+    assert_array_equal(temporal_overlap_self, [[0, 1], [0, 1]])
+
 
 def test_average_recall_at_avg_proposals():
     ground_truth1 = {
