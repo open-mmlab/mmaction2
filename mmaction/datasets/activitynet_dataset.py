@@ -201,9 +201,10 @@ class ActivityNetDataset(BaseDataset):
                 ground_truth = self._import_ground_truth(activity_index)
                 proposal, num_proposals = self._import_proposals(results)
 
+                anno_database = mmcv.load(self.ann_file)
                 for video in videos:
-                    num_frames = self.ann_file['v_' + video]['duration_frame']
-                    fps = self.ann_file['v_' + video]['fps']
+                    num_frames = anno_database['v_' + video]['duration_frame']
+                    fps = anno_database['v_' + video]['fps']
                     tiou, t_overlap = pairwise_temporal_iou(
                         proposal[video][:, :2].astype(float),
                         ground_truth[video][:, :2].astype(float),
