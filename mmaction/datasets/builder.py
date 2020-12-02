@@ -81,9 +81,12 @@ def build_dataloader(dataset,
     rank, world_size = get_dist_info()
     sample_by_class = getattr(dataset, 'sample_by_class', False)
     power = getattr(dataset, 'power', None)
-    short_cycle = kwargs.get('short_cycle', False)
-    multi_grid_cfg = kwargs.get('multi_grid_cfg', None)
-    crop_size = kwargs.get('crop_size', 224)
+    # kwargs for multigrid training
+    short_cycle = kwargs.pop('short_cycle', False)
+    multi_grid_cfg = kwargs.pop('multi_grid_cfg', None)
+    crop_size = kwargs.pop('crop_size', 224)
+    # precise bn
+    is_precise_bn = kwargs.pop('is_precise_bn', False)
 
     if dist:
         if sample_by_class:
@@ -97,8 +100,9 @@ def build_dataloader(dataset,
         num_workers = workers_per_gpu
         if short_cycle:
             assert multi_grid_cfg is not None
-            sampler = ShortCycleBatchSampler(sampler, batch_size, drop_last,
-                                             multi_grid_cfg, crop_size)
+            batch_sampler = ShortCycleBatchSampler(sampler, batch_size,
+                                                   drop_last, multi_grid_cfg,
+                                                   crop_size)
     else:
         if short_cycle:
             raise NotImplementedError('Short cycle using non-dist'
@@ -111,18 +115,30 @@ def build_dataloader(dataset,
         worker_init_fn, num_workers=num_workers, rank=rank,
         seed=seed) if seed is not None else None
 
-    data_loader = DataLoader(
-        dataset,
-        batch_size=batch_size if not short_cycle else 1,
-        sampler=sampler,
-        num_workers=num_workers,
-        collate_fn=partial(collate, samples_per_gpu=videos_per_gpu)
-        if not short_cycle else None,
-        pin_memory=pin_memory,
-        shuffle=shuffle,
-        worker_init_fn=init_fn,
-        drop_last=drop_last,
-        **kwargs)
+    if short_cycle and not is_precise_bn:
+        data_loader = DataLoader(
+            dataset,
+            batch_size=1,
+            sampler=batch_sampler,
+            num_workers=num_workers,
+            collate_fn=partial(collate, samples_per_gpu=videos_per_gpu),
+            pin_memory=pin_memory,
+            shuffle=shuffle,
+            worker_init_fn=init_fn,
+            drop_last=drop_last,
+            **kwargs)
+    else:
+        data_loader = DataLoader(
+            dataset,
+            batch_size=batch_size,
+            sampler=sampler,
+            num_workers=num_workers,
+            collate_fn=None,
+            pin_memory=pin_memory,
+            shuffle=shuffle,
+            worker_init_fn=init_fn,
+            drop_last=drop_last,
+            **kwargs)
 
     return data_loader
 

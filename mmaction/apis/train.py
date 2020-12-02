@@ -10,7 +10,7 @@ from ..core import (DistEpochEvalHook, EpochEvalHook, MultiGridHook,
                     OmniSourceDistSamplerSeedHook, OmniSourceRunner,
                     SubBatchBN3dAggregationHook)
 from ..datasets import build_dataloader, build_dataset
-from ..utils import get_root_logger
+from ..utils import PreciseBNHook, get_root_logger
 
 
 def train_model(model,
@@ -116,15 +116,30 @@ def train_model(model,
         else:
             runner.register_hook(DistSamplerSeedHook())
 
+    # precise bn setting
+    if cfg.get('precise_bn', False):
+        precise_bn_dataset = build_dataset(cfg.data.precise_bn,
+                                           dict(test_mode=True))
+        dataloader_setting = dict(
+            videos_per_gpu=cfg.data.get('videos_per_gpu', 1),
+            workers_per_gpu=cfg.data.get('workers_per_gpu', 1),
+            num_gpus=len(cfg.gpu_ids),
+            dist=distributed,
+            seed=cfg.seed)
+        data_loader_precise_bn = build_dataloader(
+            precise_bn_dataset, is_precise_bn=True, **dataloader_setting)
+        precise_bn_hook = PreciseBNHook(data_loader_precise_bn)
+        runner.register_hook(precise_bn_hook, priority='HIGHEST')
+
     # multigrid setting
     multi_grid_cfg = cfg.get('multi_grid', None)
     if multi_grid_cfg is not None:
         multi_grid_scheduler = MultiGridHook(cfg)
         runner.register_hook(multi_grid_scheduler)
-        subbn3d_aggregation_hook = SubBatchBN3dAggregationHook()
         # subbn3d aggregation is HIGH, as it should be done before saving
         # and evaluation
-        runner.register_hook(subbn3d_aggregation_hook, priority='HIGH')
+        subbn3d_aggregation_hook = SubBatchBN3dAggregationHook()
+        runner.register_hook(subbn3d_aggregation_hook, priority='VERY_HIGH')
 
     if validate:
         eval_cfg = cfg.get('evaluation', {})
