@@ -6,9 +6,10 @@ import torch
 import torch.nn as nn
 from mmcv.utils import _BatchNorm
 
-from mmaction.models import (C3D, X3D, ResNet, ResNet2Plus1d, ResNet3d,
-                             ResNet3dCSN, ResNet3dSlowFast, ResNet3dSlowOnly,
-                             ResNetAudio, ResNetTIN, ResNetTSM)
+from mmaction.models import (C3D, X3D, MobileNetV2, MobileNetV2TSM, ResNet,
+                             ResNet2Plus1d, ResNet3d, ResNet3dCSN,
+                             ResNet3dSlowFast, ResNet3dSlowOnly, ResNetAudio,
+                             ResNetTIN, ResNetTSM)
 from mmaction.models.backbones.resnet_tsm import NL3DWrapper
 
 
@@ -125,6 +126,26 @@ def test_resnet_backbone():
     resnet50_caffe.train()
     feat = resnet50_caffe(imgs)
     assert feat.shape == torch.Size([1, 2048, 2, 2])
+
+
+def test_mobilenetv2_backbone():
+    """Test MobileNetV2 backbone."""
+    with pytest.raises(KeyError):
+        MobileNetV2()
+
+    with pytest.raises(TypeError):
+        # pretrain is a bool
+        mobilenetv2 = MobileNetV2(50, pretrained=True)
+        mobilenetv2.init_weights()
+
+    input_shape = (1, 3, 64, 64)
+    imgs = _demo_inputs(input_shape)
+
+    # resnet with depth 18 inference
+    mobilenetv2 = MobileNetV2()
+    mobilenetv2.init_weights()
+    feat = mobilenetv2(imgs)
+    assert feat.shape == torch.Size([1, 1280, 2, 2])
 
 
 def test_x3d_backbone():
@@ -724,6 +745,35 @@ def test_resnet_tsm_backbone():
     imgs = _demo_inputs(input_shape)
     feat = resnet_tsm_50_full(imgs)
     assert feat.shape == torch.Size([8, 2048, 1, 1])
+
+
+def test_mobilenetv2_tsm_backbone():
+    """Test mobilenetv2_tsm backbone."""
+    with pytest.raises(NotImplementedError):
+        # shift_place must be block or blockres
+        mobilenetv2_tsm = MobileNetV2TSM()
+        mobilenetv2_tsm.init_weights()
+
+    from mmaction.models.backbones.resnet_tsm import TemporalShift
+
+    input_shape = (8, 3, 64, 64)
+    imgs = _demo_inputs(input_shape)
+
+    # resnet_tsm with depth 50
+    mobilenetv2_tsm = MobileNetV2TSM(50)
+    mobilenetv2_tsm.init_weights()
+    for layer_name in mobilenetv2_tsm.res_layers:
+        layer = getattr(mobilenetv2_tsm, layer_name)
+        blocks = list(layer.children())
+        for block in blocks:
+            assert isinstance(block.conv1.conv, TemporalShift)
+            assert block.conv1.num_segments == mobilenetv2_tsm.num_segments
+            assert block.conv1.conv.shift_div == mobilenetv2_tsm.shift_div
+            assert isinstance(block.conv1.conv.net, nn.Conv2d)
+
+    # TSM-MobileNetV2 forword
+    feat = mobilenetv2_tsm(imgs)
+    assert feat.shape == torch.Size([8, 2048, 2, 2])
 
 
 def test_slowfast_backbone():
