@@ -1,5 +1,7 @@
 """This file converts the output proposal file of proposal generator (BMN) into
 the input proposal file of action classifier (SSN)."""
+import argparse
+import os.path as osp
 
 import mmcv
 import numpy as np
@@ -48,9 +50,11 @@ def import_proposals(result_dict):
     return proposals, num_proposals
 
 
-def dump_classifier_input(video_idx, video_id, num_frames, fps, gts, proposals,
-                          tiou, t_overlap_self, action_classifier_input):
-    """dump the input proposal file of action classifier (e.g: SSN).
+def dump_formatted_proposal(video_idx, video_id, num_frames, fps, gts,
+                            proposals, tiou, t_overlap_self,
+                            formatted_proposal_file):
+    """dump the formatted proposal file, which is the input proposal file of
+    action classifier (e.g: SSN).
 
     Args:
         video_idx (int): Index of video.
@@ -62,15 +66,15 @@ def dump_classifier_input(video_idx, video_id, num_frames, fps, gts, proposals,
         tiou (np.ndarray[float]): 2-dim array with IoU ratio.
         t_overlap_self (np.ndarray[float]): 2-dim array with overlap_self
             (union / self_len) ratio.
-        action_classifier_input (open file object): Open file object of
-            action_classifier_input file.
+        formatted_proposal_file (open file object): Open file object of
+            formatted_proposal_file.
     """
 
-    action_classifier_input.write(
+    formatted_proposal_file.write(
         f'#{video_idx}\n{video_id}\n{num_frames}\n{fps}\n{gts.shape[0]}\n')
     for gt in gts:
-        action_classifier_input.write(f'{int(gt[2])} {gt[0]} {gt[1]}\n')
-    action_classifier_input.write(f'{proposals.shape[0]}\n')
+        formatted_proposal_file.write(f'{int(gt[2])} {gt[0]} {gt[1]}\n')
+    formatted_proposal_file.write(f'{proposals.shape[0]}\n')
 
     best_iou = np.amax(tiou, axis=0)
     best_iou_index = np.argmax(tiou, axis=0)
@@ -87,46 +91,87 @@ def dump_classifier_input(video_idx, video_id, num_frames, fps, gts, proposals,
         else:
             label = label_iou
         if best_iou[i] == 0 and best_overlap[i] == 0:
-            action_classifier_input.write(
+            formatted_proposal_file.write(
                 f'0 0 0 {proposals[i][0]} {proposals[i][1]}\n')
         else:
-            action_classifier_input.write(
+            formatted_proposal_file.write(
                 f'{int(label)} {best_iou[i]} {best_overlap[i]} '
                 f'{proposals[i][0]} {proposals[i][1]}\n')
 
 
-data_path = '../../../data/ActivityNet'
-result_path = '../../..'
-proposal_generator_output_file = f'{result_path}/results.json'
-action_classifier_input_file = f'{result_path}/anet_val_classifier_input.txt'
-activity_index_file = f'{data_path}/anet_activity_indexes_val.txt'
-ann_file = f'{data_path}/anet_anno_val.json'
+def parse_args():
+    parser = argparse.ArgumentParser(description='convert proposal format')
+    parser.add_argument(
+        '--data-path',
+        type=str,
+        default='../../../data/ActivityNet',
+        help='path of activitynet data')
+    parser.add_argument(
+        '--result-path',
+        type=str,
+        default='../../..',
+        help='path of proposal result')
+    parser.add_argument(
+        '--ann-file',
+        type=str,
+        default='anet_anno_val.json',
+        help='name of annotation file')
+    parser.add_argument(
+        '--activity-index-file',
+        type=str,
+        default='anet_activity_indexes_val.txt',
+        help='name of activity index file')
+    parser.add_argument(
+        '--proposal-file',
+        type=str,
+        default='results.json',
+        help=
+        'name of proposal file, which is the output of proposal generator (BMN)'
+    )
+    parser.add_argument(
+        '--formatted-proposal-file',
+        type=str,
+        default='anet_val_formatted_proposal.txt',
+        help=
+        'name of formatted proposal file, which is the input of action classifier (SSN)'
+    )
+    args = parser.parse_args()
 
-action_classifier_input = open(action_classifier_input_file, 'w')
-# The activity index file is constructed according to
-# 'https://github.com/activitynet/ActivityNet/blob/master/Evaluation/eval_classification.py'
-activity_index, class_idx = {}, 0
-for line in open(activity_index_file).readlines():
-    activity_index[line.strip()] = class_idx
-    class_idx += 1
+    return args
 
-video_infos = load_annotations(ann_file)
-ground_truth = import_ground_truth(video_infos, activity_index)
-proposal, num_proposals = import_proposals(
-    mmcv.load(proposal_generator_output_file)['results'])
-video_idx = 0
 
-for video_info in video_infos:
-    video_id = video_info['video_name'][2:]
-    num_frames = video_info['duration_frame']
-    fps = video_info['fps']
-    tiou, t_overlap_self = pairwise_temporal_iou(
-        proposal[video_id][:, :2].astype(float),
-        ground_truth[video_id][:, :2].astype(float),
-        overlap_self=True)
+if __name__ == '__main__':
+    args = parse_args()
+    proposal_file = osp.join(args.result_path, args.proposal_file)
+    formatted_proposal_file = open(
+        osp.join(args.result_path, args.formatted_proposal_file), 'w')
+    ann_file = osp.join(args.data_path, args.ann_file)
+    activity_index_file = osp.join(args.data_path, args.activity_index_file)
 
-    dump_classifier_input(video_idx, video_id, num_frames, fps,
-                          ground_truth[video_id], proposal[video_id], tiou,
-                          t_overlap_self, action_classifier_input)
-    video_idx += 1
-action_classifier_input.close()
+    # The activity index file is constructed according to
+    # 'https://github.com/activitynet/ActivityNet/blob/master/Evaluation/eval_classification.py'
+    activity_index, class_idx = {}, 0
+    for line in open(activity_index_file).readlines():
+        activity_index[line.strip()] = class_idx
+        class_idx += 1
+
+    video_infos = load_annotations(ann_file)
+    ground_truth = import_ground_truth(video_infos, activity_index)
+    proposal, num_proposals = import_proposals(
+        mmcv.load(proposal_file)['results'])
+    video_idx = 0
+
+    for video_info in video_infos:
+        video_id = video_info['video_name'][2:]
+        num_frames = video_info['duration_frame']
+        fps = video_info['fps']
+        tiou, t_overlap = pairwise_temporal_iou(
+            proposal[video_id][:, :2].astype(float),
+            ground_truth[video_id][:, :2].astype(float),
+            overlap_self=True)
+
+        dump_formatted_proposal(video_idx, video_id, num_frames, fps,
+                                ground_truth[video_id], proposal[video_id],
+                                tiou, t_overlap, formatted_proposal_file)
+        video_idx += 1
+    formatted_proposal_file.close()
