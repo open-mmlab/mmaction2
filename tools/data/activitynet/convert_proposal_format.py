@@ -125,16 +125,14 @@ def parse_args():
         '--proposal-file',
         type=str,
         default='results.json',
-        help=
-        'name of proposal file, which is the output of proposal generator (BMN)'
-    )
+        help='name of proposal file, which is the'
+        'output of proposal generator (BMN)')
     parser.add_argument(
         '--formatted-proposal-file',
         type=str,
         default='anet_val_formatted_proposal.txt',
-        help=
-        'name of formatted proposal file, which is the input of action classifier (SSN)'
-    )
+        help='name of formatted proposal file, which is the'
+        'input of action classifier (SSN)')
     args = parser.parse_args()
 
     return args
