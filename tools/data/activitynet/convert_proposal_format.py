@@ -1,7 +1,6 @@
 """This file converts the output proposal file of proposal generator (BMN) into
 the input proposal file of action classifier (SSN)."""
 import argparse
-import os.path as osp
 
 import mmcv
 import numpy as np
@@ -102,35 +101,25 @@ def dump_formatted_proposal(video_idx, video_id, num_frames, fps, gts,
 def parse_args():
     parser = argparse.ArgumentParser(description='convert proposal format')
     parser.add_argument(
-        '--data-path',
-        type=str,
-        default='../../../data/ActivityNet',
-        help='path of activitynet data')
-    parser.add_argument(
-        '--result-path',
-        type=str,
-        default='../../..',
-        help='path of proposal result')
-    parser.add_argument(
         '--ann-file',
         type=str,
-        default='anet_anno_val.json',
+        default='../../../data/ActivityNet/anet_anno_val.json',
         help='name of annotation file')
     parser.add_argument(
         '--activity-index-file',
         type=str,
-        default='anet_activity_indexes_val.txt',
+        default='../../../data/ActivityNet/anet_activity_indexes_val.txt',
         help='name of activity index file')
     parser.add_argument(
         '--proposal-file',
         type=str,
-        default='results.json',
+        default='../../../results.json',
         help='name of proposal file, which is the'
         'output of proposal generator (BMN)')
     parser.add_argument(
         '--formatted-proposal-file',
         type=str,
-        default='anet_val_formatted_proposal.txt',
+        default='../../../anet_val_formatted_proposal.txt',
         help='name of formatted proposal file, which is the'
         'input of action classifier (SSN)')
     args = parser.parse_args()
@@ -140,23 +129,19 @@ def parse_args():
 
 if __name__ == '__main__':
     args = parse_args()
-    proposal_file = osp.join(args.result_path, args.proposal_file)
-    formatted_proposal_file = open(
-        osp.join(args.result_path, args.formatted_proposal_file), 'w')
-    ann_file = osp.join(args.data_path, args.ann_file)
-    activity_index_file = osp.join(args.data_path, args.activity_index_file)
+    formatted_proposal_file = open(args.formatted_proposal_file, 'w')
 
     # The activity index file is constructed according to
     # 'https://github.com/activitynet/ActivityNet/blob/master/Evaluation/eval_classification.py'
     activity_index, class_idx = {}, 0
-    for line in open(activity_index_file).readlines():
+    for line in open(args.activity_index_file).readlines():
         activity_index[line.strip()] = class_idx
         class_idx += 1
 
-    video_infos = load_annotations(ann_file)
+    video_infos = load_annotations(args.ann_file)
     ground_truth = import_ground_truth(video_infos, activity_index)
     proposal, num_proposals = import_proposals(
-        mmcv.load(proposal_file)['results'])
+        mmcv.load(args.proposal_file)['results'])
     video_idx = 0
 
     for video_info in video_infos:
