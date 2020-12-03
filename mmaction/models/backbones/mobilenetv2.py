@@ -1,6 +1,5 @@
-import math
-
 import torch.nn as nn
+from mmcv.cnn import constant_init, kaiming_init
 
 
 def conv_bn(inp, oup, stride):
@@ -185,11 +184,7 @@ class MobileNetV2(nn.Module):
         scratch."""
 
         if self.pretrained:
-            try:
-                from torch.hub import load_state_dict_from_url
-            except ImportError:
-                from torch.utils.model_zoo import \
-                    load_url as load_state_dict_from_url
+            from torch.hub import load_state_dict_from_url
             state_dict = load_state_dict_from_url(
                 'https://www.dropbox.com/s/47tyzpofuuyyv1b/mobilenetv2_1.0-f2a8633.pth.tar?dl=1',  # noqa
                 progress=True)
@@ -199,14 +194,6 @@ class MobileNetV2(nn.Module):
         else:
             for m in self.modules():
                 if isinstance(m, nn.Conv2d):
-                    n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
-                    m.weight.data.normal_(0, math.sqrt(2. / n))
-                    if m.bias is not None:
-                        m.bias.data.zero_()
+                    kaiming_init(m)
                 elif isinstance(m, nn.BatchNorm2d):
-                    m.weight.data.fill_(1)
-                    m.bias.data.zero_()
-                elif isinstance(m, nn.Linear):
-                    n = m.weight.size(1)
-                    m.weight.data.normal_(0, 0.01)
-                    m.bias.data.zero_()
+                    constant_init(m, 1)

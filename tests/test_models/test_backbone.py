@@ -130,6 +130,16 @@ def test_resnet_backbone():
 
 def test_mobilenetv2_backbone():
     """Test MobileNetV2 backbone."""
+    with pytest.raises(ValueError):
+        # MobileNetV2 only supports one pretrained model
+        MobileNetV2(width_mult=0.5, pretrained=True)
+
+    with pytest.raises(ValueError):
+        # In MobileNetV2, inverted_residual_setting must be None or a list.
+        # The input list should at least have one element. Each Element should
+        # be a list with exact 4 ints.
+        MobileNetV2(inverted_residual_setting=[])
+
     input_shape = (1, 3, 64, 64)
     imgs = _demo_inputs(input_shape)
 
