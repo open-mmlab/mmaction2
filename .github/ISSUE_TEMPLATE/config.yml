@@ -4,6 +4,6 @@ contact_links:
   - name: Common Issues
     url: https://mmaction2.readthedocs.io/en/latest/faq.html
     about: Check if your issue already has solutions
-  - name: MMDetection Documentation
+  - name: MMAction2 Documentation
     url: https://mmaction2.readthedocs.io/en/latest/
     about: Check if your question is answered in docs
