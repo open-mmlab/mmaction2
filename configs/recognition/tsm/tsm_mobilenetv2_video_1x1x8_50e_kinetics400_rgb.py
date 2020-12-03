@@ -1,7 +1,12 @@
 # model settings
 model = dict(
     type='Recognizer2D',
-    backbone=dict(type='MobileNetV2TSM', shift_div=8),
+    backbone=dict(
+        type='MobileNetV2TSM',
+        shift_div=8,
+        num_segments=8,
+        is_shift=True,
+        pretrained=True),
     cls_head=dict(
         type='TSMHead',
         num_segments=8,
@@ -67,12 +72,10 @@ test_pipeline = [
         clip_len=8,
         frame_interval=8,
         num_clips=10,
-        # twice_sample=True,
         test_mode=True),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
-    # dict(type='CenterCrop', crop_size=224),
-    dict(type='ThreeCrop', crop_size=256),  # it is used for accurate setting
+    dict(type='CenterCrop', crop_size=224),
     dict(type='Flip', flip_ratio=0),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
@@ -80,8 +83,8 @@ test_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
-    videos_per_gpu=4,
-    workers_per_gpu=8,
+    videos_per_gpu=8,
+    workers_per_gpu=4,
     train=dict(
         type=dataset_type,
         ann_file=ann_file_train,
@@ -111,7 +114,7 @@ lr_config = dict(policy='step', step=[20, 40])
 total_epochs = 50
 checkpoint_config = dict(interval=5)
 evaluation = dict(
-    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
+    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
 log_config = dict(
     interval=20,
     hooks=[
