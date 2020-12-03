@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-If you feel we have help you, give us a STAR! :star2:
+If you feel we have help you, give us a STAR! :satisfied:
 
 **Notice**
 
