@@ -130,11 +130,6 @@ def test_resnet_backbone():
 
 def test_mobilenetv2_backbone():
     """Test MobileNetV2 backbone."""
-    with pytest.raises(TypeError):
-        # pretrain is a bool
-        mobilenetv2 = MobileNetV2(pretrained='')
-        mobilenetv2.init_weights()
-
     input_shape = (1, 3, 64, 64)
     imgs = _demo_inputs(input_shape)
 

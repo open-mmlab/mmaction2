@@ -5,6 +5,15 @@ from .resnet_tsm import TemporalShift
 
 @BACKBONES.register_module()
 class MobileNetV2TSM(MobileNetV2):
+    """MobileNetV2 backbone for TSM.
+
+    Args:
+        num_segments (int): Number of frame segments. Default: 8.
+        is_shift (bool): Whether to make temporal shift in reset layers.
+            Default: True.
+        shift_div (int): Number of div for shift. Default: 8.
+        **kwargs (keyword arguments, optional): Arguments for MobilNetV2.
+    """
 
     def __init__(self, num_segments=8, is_shift=True, shift_div=8, **kwargs):
         super().__init__(**kwargs)
@@ -13,6 +22,7 @@ class MobileNetV2TSM(MobileNetV2):
         self.shift_div = shift_div
 
     def make_temporal_shift(self):
+        """Make temporal shift for some layers."""
         for m in self.modules():
             if isinstance(m, InvertedResidual) and \
                     len(m.conv) == 8 and m.use_res_connect:

@@ -15,14 +15,38 @@ def conv_1x1_bn(inp, oup):
         nn.ReLU6(inplace=True))
 
 
-def make_divisible(x, divisible_by=8):
-    import numpy as np
-    return int(np.ceil(x * 1. / divisible_by) * divisible_by)
+def make_divisible(v, divisor, min_value=None):
+    """This function is taken from the original tf repo.
+
+    It ensures that all layers have a channel number that is divisible by 8.
+    It can be seen here:
+    https://github.com/tensorflow/models/blob/master/research/slim/nets/mobilenet/mobilenet.py # noqa
+    Args:
+        v (float): original number of channels.
+        divisor (float): Round the number of channels in each layer to
+            be a multiple of this number. Set to 1 to turn off rounding.
+        min_value (int): minimal value to return
+    """
+    if min_value is None:
+        min_value = divisor
+    new_v = max(min_value, int(v + divisor / 2) // divisor * divisor)
+    # Make sure that round down does not go down by more than 10%.
+    if new_v < 0.9 * v:
+        new_v += divisor
+    return new_v
 
 
 class InvertedResidual(nn.Module):
 
     def __init__(self, inp, oup, stride, expand_ratio):
+        """Inverted Residual Mobule from MobilNetV2.
+
+        Args:
+            inp (int): number of input channels.
+            oup (int): number of output channels.
+            stride (int): stride for depthwise convolution.
+            expand_ratio (int): expand ratio for hidden layers.
+        """
         super(InvertedResidual, self).__init__()
         self.stride = stride
         assert stride in [1, 2]
@@ -89,7 +113,7 @@ class MobileNetV2(nn.Module):
         Args:
             width_mult (float): Width multiplier - adjusts number of channels
                 in each layer by this amount.
-            inverted_residual_setting: Network structure.
+            inverted_residual_setting (list): Network structure.
             round_nearest (int): Round the number of channels in each layer to
                 be a multiple of this number. Set to 1 to turn off rounding.
             block (nn.Module): Module specifying inverted residual building
@@ -157,6 +181,9 @@ class MobileNetV2(nn.Module):
         return self.features(x)
 
     def init_weights(self):
+        """Initiate the parameters either from existing checkpoint or from
+        scratch."""
+
         if self.pretrained:
             try:
                 from torch.hub import load_state_dict_from_url
