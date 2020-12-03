@@ -130,22 +130,31 @@ def test_resnet_backbone():
 
 def test_mobilenetv2_backbone():
     """Test MobileNetV2 backbone."""
-    with pytest.raises(KeyError):
-        MobileNetV2()
-
     with pytest.raises(TypeError):
         # pretrain is a bool
-        mobilenetv2 = MobileNetV2(50, pretrained=True)
+        mobilenetv2 = MobileNetV2(pretrained='')
         mobilenetv2.init_weights()
 
     input_shape = (1, 3, 64, 64)
     imgs = _demo_inputs(input_shape)
 
-    # resnet with depth 18 inference
-    mobilenetv2 = MobileNetV2()
+    # mobilenetv2 with width_mult = 1.0, pretrained
+    mobilenetv2 = MobileNetV2(pretrained=True)
     mobilenetv2.init_weights()
     feat = mobilenetv2(imgs)
     assert feat.shape == torch.Size([1, 1280, 2, 2])
+
+    # mobilenetv2 with width_mult = 0.5
+    mobilenetv2 = MobileNetV2(width_mult=0.5)
+    mobilenetv2.init_weights()
+    feat = mobilenetv2(imgs)
+    assert feat.shape == torch.Size([1, 1280, 2, 2])
+
+    # mobilenetv2 with width_mult = 1.5
+    mobilenetv2 = MobileNetV2(width_mult=1.5)
+    mobilenetv2.init_weights()
+    feat = mobilenetv2(imgs)
+    assert feat.shape == torch.Size([1, 1920, 2, 2])
 
 
 def test_x3d_backbone():
@@ -749,31 +758,40 @@ def test_resnet_tsm_backbone():
 
 def test_mobilenetv2_tsm_backbone():
     """Test mobilenetv2_tsm backbone."""
-    with pytest.raises(NotImplementedError):
-        # shift_place must be block or blockres
-        mobilenetv2_tsm = MobileNetV2TSM()
-        mobilenetv2_tsm.init_weights()
-
     from mmaction.models.backbones.resnet_tsm import TemporalShift
+    from mmaction.models.backbones.mobilenetv2 import InvertedResidual
 
-    input_shape = (8, 3, 64, 64)
+    input_shape = (4, 3, 64, 64)
     imgs = _demo_inputs(input_shape)
 
-    # resnet_tsm with depth 50
-    mobilenetv2_tsm = MobileNetV2TSM(50)
+    # mobilenetv2_tsm with width_mult = 1.0
+    mobilenetv2_tsm = MobileNetV2TSM()
     mobilenetv2_tsm.init_weights()
-    for layer_name in mobilenetv2_tsm.res_layers:
-        layer = getattr(mobilenetv2_tsm, layer_name)
-        blocks = list(layer.children())
-        for block in blocks:
-            assert isinstance(block.conv1.conv, TemporalShift)
-            assert block.conv1.num_segments == mobilenetv2_tsm.num_segments
-            assert block.conv1.conv.shift_div == mobilenetv2_tsm.shift_div
-            assert isinstance(block.conv1.conv.net, nn.Conv2d)
+    for cur_module in mobilenetv2_tsm.modules():
+        if isinstance(cur_module, InvertedResidual) and \
+            len(cur_module.conv) == 8 and \
+                cur_module.use_res_connect:
+            assert isinstance(cur_module.conv[0], TemporalShift)
+            assert cur_module.conv[0].num_segments == \
+                mobilenetv2_tsm.num_segments
+            assert cur_module.conv[0].shift_div == mobilenetv2_tsm.shift_div
+            assert isinstance(cur_module.conv[0].net, nn.Conv2d)
 
-    # TSM-MobileNetV2 forword
+    # TSM-MobileNetV2 with width_mult = 1.0 forword
     feat = mobilenetv2_tsm(imgs)
-    assert feat.shape == torch.Size([8, 2048, 2, 2])
+    assert feat.shape == torch.Size([4, 1280, 2, 2])
+
+    # mobilenetv2 with width_mult = 0.5 forword
+    mobilenetv2_tsm_05 = MobileNetV2TSM(width_mult=0.5)
+    mobilenetv2_tsm_05.init_weights()
+    feat = mobilenetv2_tsm_05(imgs)
+    assert feat.shape == torch.Size([4, 1280, 2, 2])
+
+    # mobilenetv2 with width_mult = 1.5 forword
+    mobilenetv2_tsm_15 = MobileNetV2TSM(width_mult=1.5)
+    mobilenetv2_tsm_15.init_weights()
+    feat = mobilenetv2_tsm_15(imgs)
+    assert feat.shape == torch.Size([4, 1920, 2, 2])
 
 
 def test_slowfast_backbone():

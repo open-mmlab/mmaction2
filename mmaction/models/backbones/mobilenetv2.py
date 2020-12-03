@@ -82,14 +82,34 @@ class MobileNetV2(nn.Module):
                  width_mult=1.,
                  inverted_residual_setting=None,
                  round_nearest=8,
+                 block=None,
                  pretrained=False):
+        """MobileNet V2 main class.
+
+        Args:
+            width_mult (float): Width multiplier - adjusts number of channels
+                in each layer by this amount.
+            inverted_residual_setting: Network structure.
+            round_nearest (int): Round the number of channels in each layer to
+                be a multiple of this number. Set to 1 to turn off rounding.
+            block (nn.Module): Module specifying inverted residual building
+                block for mobilenet.
+            pretrained (bool): whether to load pretrained checkpoints.
+        """
         super(MobileNetV2, self).__init__()
         self.pretrained = pretrained
-        block = InvertedResidual
+
+        if abs(width_mult - 1.0) > 1e-5 and pretrained:
+            raise ValueError('MobileNetV2 only supports one pretrained model '
+                             'with `width_mult=1.0`.')
+
+        if block is None:
+            block = InvertedResidual
         input_channel = 32
         last_channel = 1280
+
         if inverted_residual_setting is None:
-            interverted_residual_setting = [
+            inverted_residual_setting = [
                 # t/expand_ratio, c/output_channels, n/num_of_blocks, s/stride
                 [1, 16, 1, 1],
                 [6, 24, 2, 2],
@@ -100,36 +120,41 @@ class MobileNetV2(nn.Module):
                 [6, 320, 1, 1],
             ]
 
-        # input_channel = make_divisible(input_channel * width_mult)
-        self.last_channel = make_divisible(
-            last_channel *
-            width_mult, round_nearest) if width_mult > 1.0 else last_channel
+        # only check the first element
+        # assuming user knows t,c,n,s are required
+        if len(inverted_residual_setting) == 0 or len(
+                inverted_residual_setting[0]) != 4:
+            raise ValueError('inverted_residual_setting should be non-empty '
+                             'or a 4-element list, got {}'.format(
+                                 inverted_residual_setting))
 
+        input_channel = make_divisible(input_channel * width_mult,
+                                       round_nearest)
+        self.last_channel = make_divisible(last_channel * max(1.0, width_mult),
+                                           round_nearest)
+
+        # first layer
         self.features = [conv_bn(3, input_channel, 2)]
 
         # building inverted residual blocks
-        for t, c, n, s in interverted_residual_setting:
-            output_channel = make_divisible(c * width_mult,
-                                            round_nearest) if t > 1 else c
+        for t, c, n, s in inverted_residual_setting:
+            output_channel = make_divisible(c * width_mult, round_nearest)
 
             for i in range(n):
-                if i == 0:
-                    self.features.append(
-                        block(
-                            input_channel, output_channel, s, expand_ratio=t))
-                else:
-                    self.features.append(
-                        block(
-                            input_channel, output_channel, 1, expand_ratio=t))
+                stride = s if i == 0 else 1
+                self.features.append(
+                    block(
+                        input_channel, output_channel, stride, expand_ratio=t))
                 input_channel = output_channel
+
         # building last several layers
         self.features.append(conv_1x1_bn(input_channel, self.last_channel))
+
         # make it nn.Sequential
         self.features = nn.Sequential(*self.features)
 
     def forward(self, x):
-        x = self.features(x)
-        return x
+        return self.features(x)
 
     def init_weights(self):
         if self.pretrained:
