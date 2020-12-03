@@ -756,7 +756,7 @@ def test_mobilenetv2_tsm_backbone():
     from mmaction.models.backbones.resnet_tsm import TemporalShift
     from mmaction.models.backbones.mobilenetv2 import InvertedResidual
 
-    input_shape = (4, 3, 64, 64)
+    input_shape = (8, 3, 64, 64)
     imgs = _demo_inputs(input_shape)
 
     # mobilenetv2_tsm with width_mult = 1.0
@@ -774,19 +774,19 @@ def test_mobilenetv2_tsm_backbone():
 
     # TSM-MobileNetV2 with width_mult = 1.0 forword
     feat = mobilenetv2_tsm(imgs)
-    assert feat.shape == torch.Size([4, 1280, 2, 2])
+    assert feat.shape == torch.Size([8, 1280, 2, 2])
 
     # mobilenetv2 with width_mult = 0.5 forword
     mobilenetv2_tsm_05 = MobileNetV2TSM(width_mult=0.5)
     mobilenetv2_tsm_05.init_weights()
     feat = mobilenetv2_tsm_05(imgs)
-    assert feat.shape == torch.Size([4, 1280, 2, 2])
+    assert feat.shape == torch.Size([8, 1280, 2, 2])
 
     # mobilenetv2 with width_mult = 1.5 forword
     mobilenetv2_tsm_15 = MobileNetV2TSM(width_mult=1.5)
     mobilenetv2_tsm_15.init_weights()
     feat = mobilenetv2_tsm_15(imgs)
-    assert feat.shape == torch.Size([4, 1920, 2, 2])
+    assert feat.shape == torch.Size([8, 1920, 2, 2])
 
 
 def test_slowfast_backbone():
