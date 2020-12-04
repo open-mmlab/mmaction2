@@ -1,5 +1,19 @@
 ## Changelog
 
+### 0.10.0 (31/12/2020)
+
+**Highlights**
+
+**New Features**
+
+**Improvements**
+- Add FAQ documents for easy troubleshooting. ([#413](https://github.com/open-mmlab/mmaction2/pull/413), [#420](https://github.com/open-mmlab/mmaction2/pull/420))
+
+
+**Bug and Typo Fixes**
+
+**ModelZoo**
+
 ### 0.9.0 (30/11/2020)
 
 **Highlights**
