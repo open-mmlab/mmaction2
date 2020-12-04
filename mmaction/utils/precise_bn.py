@@ -2,7 +2,9 @@
 
 import logging
 import time
+from copy import deepcopy
 
+import mmcv
 import torch
 from mmcv.parallel import MMDistributedDataParallel
 from mmcv.runner import Hook
@@ -53,7 +55,7 @@ def update_bn_stats(model, data_loader, num_iters=200, logger=None):
     """
 
     model.train()
-    model.cuda()
+
     assert len(data_loader) >= num_iters, (
         f'length of dataloader {len(data_loader)} must be greater than '
         f'iteration number {num_iters}')
@@ -95,9 +97,11 @@ def update_bn_stats(model, data_loader, num_iters=200, logger=None):
     running_var = [torch.zeros_like(bn.running_var) for bn in bn_layers]
 
     finish_before_loader = False
+    prog_bar = mmcv.ProgressBar(len(data_loader))
     for ind, data in enumerate(data_loader):
         with torch.no_grad():
             parallel_module(**data, return_loss=False)
+        prog_bar.update()
         for i, bn in enumerate(bn_layers):
             # Accumulates the bn stats.
             running_mean[i] += (bn.running_mean - running_mean[i]) / (ind + 1)
@@ -124,7 +128,7 @@ class PreciseBNHook(Hook):
         interval (int): Evaluation interval (by epochs). Default: 1.
     """
 
-    def __init__(self, dataloader, num_iters=100, interval=1):
+    def __init__(self, dataloader, num_iters=200, interval=1):
         if not isinstance(dataloader, DataLoader):
             raise TypeError('dataloader must be a pytorch DataLoader, but got'
                             f' {type(dataloader)}')
@@ -137,6 +141,7 @@ class PreciseBNHook(Hook):
             print_log(
                 f'Running Precise BN for {self.num_iters} iterations',
                 logger=runner.logger)
+            self.dataloader = deepcopy(runner.dataloader)
             update_bn_stats(
                 runner.model,
                 self.dataloader,
