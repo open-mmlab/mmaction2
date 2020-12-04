@@ -50,7 +50,8 @@ def gt_confusion_matrix(gt_labels, pred_labels, normalize=None):
 
 
 def test_activitynet_detection():
-    data_prefix = osp.join(osp.dirname(__file__), 'data/test_eval_detection')
+    data_prefix = osp.join(
+        osp.dirname(__file__), '../data/test_eval_detection')
     gt_path = osp.join(data_prefix, 'gt.json')
     result_path = osp.join(data_prefix, 'result.json')
     detection = ActivityNetDetection(gt_path, result_path)

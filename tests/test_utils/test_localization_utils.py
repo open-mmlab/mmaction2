@@ -59,7 +59,8 @@ def test_generate_candidate_proposals():
             }],
             feature_frame=900)
     ]
-    tem_results_dir = osp.join(osp.dirname(__file__), 'data/test_tem_results')
+    tem_results_dir = osp.join(
+        osp.dirname(__file__), '../data/test_tem_results')
 
     # test when tem_result_ext is not valid
     with pytest.raises(NotImplementedError):
@@ -124,8 +125,10 @@ def test_generate_bsp_feature():
             }],
             feature_frame=900)
     ]
-    tem_results_dir = osp.join(osp.dirname(__file__), 'data/test_tem_results')
-    pgm_proposals_dir = osp.join(osp.dirname(__file__), 'data/test_proposals')
+    tem_results_dir = osp.join(
+        osp.dirname(__file__), '../data/test_tem_results')
+    pgm_proposals_dir = osp.join(
+        osp.dirname(__file__), '../data/test_proposals')
 
     # test when extension is not valid
     with pytest.raises(NotImplementedError):
