@@ -220,8 +220,9 @@ class FormatShape:
         input_format (str): Define the final imgs format.
     """
 
-    def __init__(self, input_format):
+    def __init__(self, input_format, collapse=False):
         self.input_format = input_format
+        self.collapse = collapse
         if self.input_format not in ['NCTHW', 'NCHW', 'NCHW_Flow', 'NPTCHW']:
             raise ValueError(
                 f'The input format {self.input_format} is invalid.')
@@ -236,6 +237,9 @@ class FormatShape:
         imgs = results['imgs']
         # [M x H x W x C]
         # M = 1 * N_crops * N_clips * L
+        if self.collapse:
+            assert results['num_clips'] == 1
+
         if self.input_format == 'NCTHW':
             num_clips = results['num_clips']
             clip_len = results['clip_len']
@@ -272,6 +276,9 @@ class FormatShape:
             # M = N_clips x L
             imgs = np.transpose(imgs, (0, 1, 4, 2, 3))
             # P x M x C x H x W
+        if self.collapse:
+            assert imgs.shape[0] == 1
+            imgs = imgs.reshape(imgs.shape[1:])
 
         results['imgs'] = imgs
         results['input_shape'] = imgs.shape
