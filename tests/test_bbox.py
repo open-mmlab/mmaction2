@@ -3,9 +3,9 @@ from abc import abstractproperty
 
 import numpy as np
 import torch
+from mmdet.core.bbox import build_assigner, build_sampler
 
-from mmaction.core.bbox import (bbox2result, bbox_target, build_assigner,
-                                build_sampler)
+from mmaction.core.bbox import bbox2result, bbox_target
 from mmaction.datasets import AVADataset
 
 

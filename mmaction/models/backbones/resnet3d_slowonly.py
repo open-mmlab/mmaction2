@@ -1,8 +1,11 @@
+from mmdet.models.registry import BACKBONES as MMDET_BACKBONES
+
 from ..registry import BACKBONES
 from .resnet3d_slowfast import ResNet3dPathway
 
 
 @BACKBONES.register_module()
+@MMDET_BACKBONES.register_module()
 class ResNet3dSlowOnly(ResNet3dPathway):
     """SlowOnly backbone based on ResNet3dPathway.
 

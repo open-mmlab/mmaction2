@@ -2,7 +2,7 @@ import torch.nn as nn
 from mmcv.utils import build_from_cfg
 
 from .registry import (BACKBONES, DETECTORS, HEADS, LOCALIZERS, LOSSES, NECKS,
-                       RECOGNIZERS, ROI_EXTRACTORS)
+                       RECOGNIZERS)
 
 
 def build(cfg, registry, default_args=None):
@@ -76,8 +76,3 @@ def build_model(cfg, train_cfg=None, test_cfg=None):
 def build_neck(cfg):
     """Build neck."""
     return build(cfg, NECKS)
-
-
-def build_roi_extractor(cfg):
-    """Build RoI Extractor."""
-    return build(cfg, ROI_EXTRACTORS)
