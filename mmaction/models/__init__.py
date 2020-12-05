@@ -5,7 +5,7 @@ from .builder import (DETECTORS, build_backbone, build_detector, build_head,
                       build_localizer, build_loss, build_model, build_neck,
                       build_recognizer)
 from .common import Conv2plus1d, ConvAudio
-from .heads import (AudioTSNHead, BaseHead, BBoxHead, I3DHead, SlowFastHead,
+from .heads import (AudioTSNHead, BaseHead, BBoxHeadAVA, I3DHead, SlowFastHead,
                     TPNHead, TSMHead, TSNHead, X3DHead)
 from .localizers import BMN, PEM, TEM
 from .losses import (BCELossWithLogits, BinaryLogisticRegressionLoss, BMNLoss,
@@ -28,6 +28,6 @@ __all__ = [
     'build_model', 'OHEMHingeLoss', 'SSNLoss', 'ResNet3dCSN', 'ResNetTIN',
     'TPN', 'TPNHead', 'build_loss', 'build_neck', 'AudioRecognizer',
     'AudioTSNHead', 'X3D', 'X3DHead', 'ResNet3dLayer', 'DETECTORS',
-    'SingleRoIExtractor3D', 'BBoxHead', 'ResNetAudio', 'build_detector',
+    'SingleRoIExtractor3D', 'BBoxHeadAVA', 'ResNetAudio', 'build_detector',
     'ConvAudio'
 ]
