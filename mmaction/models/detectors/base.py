@@ -36,19 +36,19 @@ class BaseDetector(nn.Module, metaclass=ABCMeta):
         return x
 
     @abstractmethod
-    def forward_train(self, imgs, proposals, img_meta, gt_bboxes, labels,
+    def forward_train(self, imgs, proposals, img_metas, gt_bboxes, labels,
                       **kwargs):
         """Defines the computation performed at training."""
 
     @abstractmethod
-    def forward_test(self, imgs, proposals, img_meta, **kwargs):
+    def forward_test(self, imgs, proposals, img_metas, **kwargs):
         """Defines the computation performed at testing."""
 
-    def forward(self, imgs, proposals, img_meta, return_loss=True, **kwargs):
+    def forward(self, imgs, proposals, img_metas, return_loss=True, **kwargs):
         """Define the computation performed at every call."""
         if return_loss:
-            return self.forward_train(imgs, proposals, img_meta, **kwargs)
-        return self.forward_test(imgs, proposals, img_meta, **kwargs)
+            return self.forward_train(imgs, proposals, img_metas, **kwargs)
+        return self.forward_test(imgs, proposals, img_metas, **kwargs)
 
     @staticmethod
     def _parse_losses(losses):

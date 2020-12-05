@@ -76,7 +76,7 @@ class FastRCNN(BaseDetector):
             self.bbox_roi_extractor.init_weights()
             self.bbox_head.init_weights()
 
-    def forward_train(self, imgs, proposals, img_meta, gt_bboxes, labels,
+    def forward_train(self, imgs, proposals, img_metas, gt_bboxes, labels,
                       **kwargs):
         # Rename
         gt_bboxes = gt_bboxes
@@ -88,8 +88,8 @@ class FastRCNN(BaseDetector):
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
 
         # proposals & gt_bboxes are padded, while scores & entity_ids are not.
-        proposal_scores = [x['scores'] for x in img_meta]
-        entity_ids = [x['entity_ids'] for x in img_meta]
+        proposal_scores = [x['scores'] for x in img_metas]
+        entity_ids = [x['entity_ids'] for x in img_metas]
 
         # Now we get the feature: it's N x C x T x H x W
         x = self.extract_feat(imgs)
@@ -174,7 +174,7 @@ class FastRCNN(BaseDetector):
 
         return losses
 
-    def forward_test(self, imgs, proposals, img_meta, **kwargs):
+    def forward_test(self, imgs, proposals, img_metas, **kwargs):
         """Test without augmentation."""
         assert self.bbox_head, 'Bbox head must be implemented.'
 
@@ -183,9 +183,9 @@ class FastRCNN(BaseDetector):
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
 
         x = self.extract_feat(imgs)
-        assert len(img_meta) == 1
+        assert len(img_metas) == 1
 
-        proposal_scores = [x['scores'] for x in img_meta]
+        proposal_scores = [x['scores'] for x in img_metas]
 
         proposal_list = []
         for proposal, score in zip(proposals, proposal_scores):
@@ -202,7 +202,7 @@ class FastRCNN(BaseDetector):
             proposal_list.append(proposal[select_inds])
 
         det_bboxes, det_labels = self.simple_test_bboxes(
-            x, img_meta, proposal_list, self.test_cfg.rcnn)
+            x, img_metas, proposal_list, self.test_cfg.rcnn)
 
         bbox_results = bbox2result(
             det_bboxes,
@@ -213,7 +213,7 @@ class FastRCNN(BaseDetector):
         # Since only 1 sample here
         return [bbox_results]
 
-    def simple_test_bboxes(self, x, img_meta, proposals, rcnn_test_cfg):
+    def simple_test_bboxes(self, x, img_metas, proposals, rcnn_test_cfg):
         """Test only det bboxes without augmentation."""
         # rois have batch_ind, do not have scores
         rois = bbox2roi(proposals)
@@ -225,17 +225,17 @@ class FastRCNN(BaseDetector):
         cls_score = self.bbox_head(roi_feats)
 
         # img_shape is required, crop_quadruple and flip are optional
-        img_shape = img_meta[0]['img_shape']
+        img_shape = img_metas[0]['img_shape']
 
         crop_quadruple = np.array([0, 0, 1, 1])
         flip = False
 
-        if 'crop_quadruple' in img_meta[0]:
-            crop_quadruple = img_meta[0]['crop_quadruple']
+        if 'crop_quadruple' in img_metas[0]:
+            crop_quadruple = img_metas[0]['crop_quadruple']
 
         # If flip used, we should first flip the proposal box
-        if 'flip' in img_meta[0]:
-            flip = img_meta[0]['flip']
+        if 'flip' in img_metas[0]:
+            flip = img_metas[0]['flip']
 
         # The returned det_bboxes are normalized to [0, 1]
         det_bboxes, det_labels = self.bbox_head.get_det_bboxes(

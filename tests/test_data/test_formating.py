@@ -119,11 +119,11 @@ def test_collect():
     collect = Collect(keys)
     results = collect(inputs)
     assert sorted(list(results.keys())) == sorted(
-        ['imgs', 'label', 'img_meta'])
+        ['imgs', 'label', 'img_metas'])
     inputs.pop('imgs')
-    assert set(results['img_meta'].data.keys()) == set(inputs.keys())
-    for key in results['img_meta'].data:
-        assert results['img_meta'].data[key] == inputs[key]
+    assert set(results['img_metas'].data.keys()) == set(inputs.keys())
+    for key in results['img_metas'].data:
+        assert results['img_metas'].data[key] == inputs[key]
     assert repr(collect) == collect.__class__.__name__ + \
         f'(keys={keys}, meta_keys={collect.meta_keys})'
 

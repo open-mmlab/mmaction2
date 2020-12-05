@@ -4,8 +4,13 @@ import mmcv
 import numpy as np
 import torch
 from mmcv.parallel import DataContainer as DC
+from mmdet.datasets.pipelines import DefaultFormatBundle
 
 from ..registry import PIPELINES
+
+# Since the class DefaultFormatBundle is already defined in mmdet, we have to
+# register it explicitly in mmaction PIPELINES
+DefaultFormatBundle = PIPELINES.register_module()(DefaultFormatBundle)
 
 
 def to_tensor(data):
@@ -52,6 +57,34 @@ class ToTensor:
 
     def __repr__(self):
         return f'{self.__class__.__name__}(keys={self.keys})'
+
+
+@PIPELINES.register_module()
+class Rename:
+    """Rename the key in results.
+
+    Args:
+        mapping (dict): The keys in results that need to be renamed. The key of
+            the dict is the original name, while the value is the new name. If
+            the original name not found in results, do nothing.
+            Default: dict().
+    """
+
+    def __init__(self, mapping):
+        self.mapping = mapping
+
+    def __call__(self, results):
+        for key, value in self.mapping.items():
+            if key in results:
+                assert isinstance(key, str) and isinstance(value, str)
+                assert value not in results, ('the new name already exists in '
+                                              'results')
+                # Handle the case that the original name equals to the new name
+                if key == value:
+                    continue
+                results[value] = results[key]
+                results.pop(key)
+        return results
 
 
 @PIPELINES.register_module()
@@ -147,14 +180,14 @@ class Collect:
     ``meta_keys`` into a meta item called ``meta_name``.This is usually
     the last stage of the data loader pipeline.
     For example, when keys='imgs', meta_keys=('filename', 'label',
-    'original_shape'), meta_name='img_meta', the results will be a dict with
-    keys 'imgs' and 'img_meta', where 'img_meta' is a DataContainer of another
-    dict with keys 'filename', 'label', 'original_shape'.
+    'original_shape'), meta_name='img_metas', the results will be a dict with
+    keys 'imgs' and 'img_metas', where 'img_metas' is a DataContainer of
+    another dict with keys 'filename', 'label', 'original_shape'.
 
     Args:
         keys (Sequence[str]): Required keys to be collected.
         meta_name (str): The name of the key that contains meta infomation.
-            This key is always populated. Default: "img_meta".
+            This key is always populated. Default: "img_metas".
         meta_keys (Sequence[str]): Keys that are collected under meta_name.
             The contents of the ``meta_name`` dictionary depends on
             ``meta_keys``.
@@ -180,7 +213,7 @@ class Collect:
                  keys,
                  meta_keys=('filename', 'label', 'original_shape', 'img_shape',
                             'pad_shape', 'flip_direction', 'img_norm_cfg'),
-                 meta_name='img_meta'):
+                 meta_name='img_metas'):
         self.keys = keys
         self.meta_keys = meta_keys
         self.meta_name = meta_name

@@ -11,25 +11,25 @@ model = dict(
         conv1_kernel=(1, 7, 7),
         conv1_stride_t=1,
         pool1_stride_t=1,
-        spatial_strides=(1, 2, 2, 1),
-        temporal_strides=(1, 1, 1, 1),
-        dilations=(1, 1, 1, 1),
-        inflate=(0, 0, 1, 1),
-        norm_eval=False),
-    bbox_roi_extractor=dict(
-        type='SingleRoIStraight3DExtractor',
-        roi_layer_type='RoIAlign',
-        output_size=8,
-        with_temporal_pool=True),
-    dropout_ratio=0.5,
-    bbox_head=dict(
-        type='BBoxHead', in_channels=2048, num_classes=81, multilabel=True))
+        spatial_strides=(1, 2, 2, 1)),
+    roi_head=dict(
+        type='StandardRoIHead',
+        bbox_roi_extractor=dict(
+            type='SingleRoIExtractor3D',
+            roi_layer_type='RoIAlign',
+            output_size=8,
+            with_temporal_pool=True),
+        bbox_head=dict(
+            type='BBoxHeadAVA',
+            in_channels=2048,
+            num_classes=81,
+            multilabel=True,
+            dropout_ratio=0.5)))
 
 train_cfg = dict(
-    person_det_score_thr=0.9,
     rcnn=dict(
         assigner=dict(
-            type='MaxIoUAssigner',
+            type='MaxIoUAssignerAVA',
             pos_iou_thr=0.9,
             neg_iou_thr=0.9,
             min_pos_iou=0.9),
@@ -41,7 +41,7 @@ train_cfg = dict(
             add_gt_as_proposals=True),
         pos_weight=1.0,
         debug=False))
-test_cfg = dict(person_det_score_thr=0.9, rcnn=dict(action_thr=0.00))
+test_cfg = dict(rcnn=dict(action_thr=0.00))
 
 dataset_type = 'AVADataset'
 data_root = 'data/ava/rawframes'
@@ -69,13 +69,14 @@ train_pipeline = [
     dict(type='RandomCrop', size=256),
     dict(type='Flip', flip_ratio=0.5),
     dict(type='Normalize', **img_norm_cfg),
-    dict(type='FormatShape', input_format='NCTHW'),
+    dict(type='FormatShape', input_format='NCTHW', collapse=True),
+    # Rename to use mmdet models
+    dict(type='Rename', mapping=dict(imgs='img')),
+    dict(type='DefaultFormatBundle'),
     dict(
         type='Collect',
-        keys=['imgs', 'proposals', 'gt_bboxes', 'gt_labels'],
-        meta_keys=['scores', 'entity_ids']),
-    dict(
-        type='ToTensor', keys=['imgs', 'proposals', 'gt_bboxes', 'gt_labels'])
+        keys=['img', 'proposals', 'gt_bboxes', 'gt_labels'],
+        meta_keys=['scores', 'entity_ids'])
 ]
 # The testing is w/o. any cropping / flipping
 val_pipeline = [
@@ -83,18 +84,20 @@ val_pipeline = [
     dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='Normalize', **img_norm_cfg),
-    dict(type='FormatShape', input_format='NCTHW'),
+    dict(type='FormatShape', input_format='NCTHW', collapse=True),
     dict(
         type='Collect',
         keys=['imgs', 'proposals'],
         meta_keys=['scores', 'img_shape']),
-    dict(type='ToTensor', keys=['imgs', 'proposals'])
+    # Rename to use mmdet models
+    dict(type='Rename', mapping=dict(imgs='img')),
+    dict(type='DefaultFormatBundle'),
+    dict(type='ToTensor', keys=['img', 'proposals'])
 ]
 
 data = dict(
     videos_per_gpu=16,
     workers_per_gpu=4,
-    # During testing, each video may have different shape
     val_dataloader=dict(videos_per_gpu=1),
     test_dataloader=dict(videos_per_gpu=1),
     train=dict(
@@ -104,6 +107,7 @@ data = dict(
         pipeline=train_pipeline,
         label_file=label_file,
         proposal_file=proposal_file_train,
+        person_det_score_thr=0.9,
         data_prefix=data_root),
     val=dict(
         type=dataset_type,
@@ -112,6 +116,7 @@ data = dict(
         pipeline=val_pipeline,
         label_file=label_file,
         proposal_file=proposal_file_val,
+        person_det_score_thr=0.9,
         data_prefix=data_root))
 data['test'] = data['val']
 
