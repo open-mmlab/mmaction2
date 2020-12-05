@@ -16,8 +16,8 @@ from .necks import TPN
 from .recognizers import (AudioRecognizer, BaseRecognizer, recognizer2d,
                           recognizer3d)
 from .registry import (BACKBONES, DETECTORS, HEADS, LOCALIZERS, LOSSES,
-                       RECOGNIZERS, ROI_EXTRACTORS)
-from .roi_extractors import SingleRoIStraight3DExtractor
+                       RECOGNIZERS)
+from .roi_extractors import SingleRoIExtractor3D
 
 __all__ = [
     'BACKBONES', 'HEADS', 'RECOGNIZERS', 'build_recognizer', 'build_head',
@@ -30,6 +30,6 @@ __all__ = [
     'build_model', 'OHEMHingeLoss', 'SSNLoss', 'ResNet3dCSN', 'ResNetTIN',
     'TPN', 'TPNHead', 'build_loss', 'build_neck', 'AudioRecognizer',
     'AudioTSNHead', 'X3D', 'X3DHead', 'ResNet3dLayer', 'DETECTORS', 'FastRCNN',
-    'SingleRoIStraight3DExtractor', 'BBoxHead', 'ROI_EXTRACTORS',
-    'ResNetAudio', 'ConvAudio', 'build_detector'
+    'SingleRoIExtractor3D', 'BBoxHead', 'ResNetAudio', 'build_detector',
+    'ConvAudio'
 ]

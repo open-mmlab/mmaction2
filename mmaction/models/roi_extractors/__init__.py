@@ -1,3 +1,3 @@
-from .single_straight3d import SingleRoIStraight3DExtractor
+from .single_straight3d import SingleRoIExtractor3D
 
-__all__ = ['SingleRoIStraight3DExtractor']
+__all__ = ['SingleRoIExtractor3D']

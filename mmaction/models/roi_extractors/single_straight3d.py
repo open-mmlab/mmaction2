@@ -1,12 +1,12 @@
 import torch
 import torch.nn as nn
 from mmcv.ops import RoIAlign, RoIPool
+from mmdet.models import ROI_EXTRACTORS
 
-from ..registry import ROI_EXTRACTORS
 
-
+# register the module in mmdet
 @ROI_EXTRACTORS.register_module
-class SingleRoIStraight3DExtractor(nn.Module):
+class SingleRoIExtractor3D(nn.Module):
     """Extract RoI features from a single level feature map.
 
     Args:
