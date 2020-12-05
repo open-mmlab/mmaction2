@@ -4,6 +4,7 @@ from mmcv.cnn import (ConvModule, NonLocal3d, build_activation_layer,
                       constant_init, kaiming_init)
 from mmcv.runner import _load_checkpoint, load_checkpoint
 from mmcv.utils import _BatchNorm
+from mmdet.models.builder import SHARED_HEADS as MMDET_SHARED_HEADS
 from torch.nn.modules.utils import _ntuple, _triple
 
 from ...utils import get_root_logger
@@ -826,6 +827,7 @@ class ResNet3d(nn.Module):
 
 
 @BACKBONES.register_module()
+@MMDET_SHARED_HEADS.register_module()
 class ResNet3dLayer(nn.Module):
     """ResNet 3d Layer.
 

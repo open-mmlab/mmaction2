@@ -1,4 +1,4 @@
-from mmdet.models.registry import BACKBONES as MMDET_BACKBONES
+from mmdet.models.builder import BACKBONES as MMDET_BACKBONES
 
 from ..registry import BACKBONES
 from .resnet3d_slowfast import ResNet3dPathway
