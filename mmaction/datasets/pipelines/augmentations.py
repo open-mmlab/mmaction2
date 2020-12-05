@@ -153,13 +153,13 @@ class RandomScale:
 
 
 # Note, entity box transfroms are not added to: ThreeCrop, TenCrop,
-# MultiGroupCrop. Besides, the EntityBoxPad should be added before we collect.
+# MultiGroupCrop.
 @PIPELINES.register_module()
 class EntityBoxRescale:
     """Rescale the entity box and proposals according to the image shape.
 
-    Required keys are "proposals", "entity_boxes", added or modified keys are
-    "entity_boxes". If original "proposals" is not None, "proposals" and
+    Required keys are "proposals", "gt_bboxes", added or modified keys are
+    "gt_bboxes". If original "proposals" is not None, "proposals" and
     will be added or modified.
 
     Args:
@@ -173,8 +173,8 @@ class EntityBoxRescale:
         scale_factor = np.concatenate([self.scale_factor, self.scale_factor])
 
         proposals = results['proposals']
-        entity_boxes = results['entity_boxes']
-        results['entity_boxes'] = entity_boxes * scale_factor
+        gt_bboxes = results['gt_bboxes']
+        results['gt_bboxes'] = gt_bboxes * scale_factor
 
         if proposals is not None:
             assert proposals.shape[1] == 4, (
@@ -189,8 +189,8 @@ class EntityBoxRescale:
 class EntityBoxCrop:
     """Crop the entity boxes and proposals according to the cropped images.
 
-    Required keys are "proposals", "entity_boxes", added or modified keys are
-    "entity_boxes". If original "proposals" is not None, "proposals" will be
+    Required keys are "proposals", "gt_bboxes", added or modified keys are
+    "gt_bboxes". If original "proposals" is not None, "proposals" will be
     modified.
 
     Args:
@@ -202,7 +202,7 @@ class EntityBoxCrop:
 
     def __call__(self, results):
         proposals = results['proposals']
-        entity_boxes = results['entity_boxes']
+        gt_bboxes = results['gt_bboxes']
 
         if self.crop_bbox is None:
             return results
@@ -210,13 +210,13 @@ class EntityBoxCrop:
         x1, y1, x2, y2 = self.crop_bbox
         img_w, img_h = x2 - x1, y2 - y1
 
-        assert entity_boxes.shape[-1] == 4
-        entity_boxes_ = entity_boxes.copy()
-        entity_boxes_[..., 0::2] = np.clip(entity_boxes[..., 0::2] - x1, 0,
-                                           img_w - 1)
-        entity_boxes_[..., 1::2] = np.clip(entity_boxes[..., 1::2] - y1, 0,
-                                           img_h - 1)
-        results['entity_boxes'] = entity_boxes_
+        assert gt_bboxes.shape[-1] == 4
+        gt_bboxes_ = gt_bboxes.copy()
+        gt_bboxes_[..., 0::2] = np.clip(gt_bboxes[..., 0::2] - x1, 0,
+                                        img_w - 1)
+        gt_bboxes_[..., 1::2] = np.clip(gt_bboxes[..., 1::2] - y1, 0,
+                                        img_h - 1)
+        results['gt_bboxes'] = gt_bboxes_
 
         if proposals is not None:
             assert proposals.shape[-1] == 4
@@ -237,7 +237,7 @@ class EntityBoxFlip:
     with a specific direction. The shape of them are preserved, but the
     elements are reordered. Only the horizontal flip is supported (seems
     vertical flipping makes no sense). Required keys are "proposals",
-    "entity_boxes", added or modified keys are "entity_boxes". If "proposals"
+    "gt_bboxes", added or modified keys are "gt_bboxes". If "proposals"
     is not None, it will also be modified.
 
     Args:
@@ -255,13 +255,13 @@ class EntityBoxFlip:
 
     def __call__(self, results):
         proposals = results['proposals']
-        entity_boxes = results['entity_boxes']
+        gt_bboxes = results['gt_bboxes']
         img_h, img_w = self.img_shape
 
-        assert entity_boxes.shape[-1] == 4
-        entity_boxes_ = entity_boxes.copy()
-        entity_boxes_[..., 0::4] = img_w - entity_boxes[..., 2::4] - 1
-        entity_boxes_[..., 2::4] = img_w - entity_boxes[..., 0::4] - 1
+        assert gt_bboxes.shape[-1] == 4
+        gt_bboxes_ = gt_bboxes.copy()
+        gt_bboxes_[..., 0::4] = img_w - gt_bboxes[..., 2::4] - 1
+        gt_bboxes_[..., 2::4] = img_w - gt_bboxes[..., 0::4] - 1
         if proposals is not None:
             assert proposals.shape[-1] == 4
             proposals_ = proposals.copy()
@@ -271,62 +271,8 @@ class EntityBoxFlip:
             proposals_ = None
 
         results['proposals'] = proposals_
-        results['entity_boxes'] = entity_boxes_
+        results['gt_bboxes'] = gt_bboxes_
         return results
-
-
-@PIPELINES.register_module()
-class EntityBoxPad:
-    """Pad entity boxes and proposals with zeros.
-
-    Required keys are "proposals", "entity_boxes", "labels", added or modified
-    keys are "entity_boxes", "labels". If "proposals" is not None, it is also
-    modified. Note that entity_ids (for gt bboxes) and scores (for proposal
-    bboxes) are not padded.
-
-    Args:
-        max_num_gts (int | None): maximum of ground truth proposals.
-            Default: 100. (There is at most 80+ proposals for one frame in AVA,
-            for the detection results provided by FAIR).
-    """
-
-    def __init__(self, max_num_gts=100):
-        self.max_num_gts = max_num_gts
-
-    def __call__(self, results):
-        if self.max_num_gts is None:
-            return results
-
-        proposals = results['proposals']
-        entity_boxes = results['entity_boxes']
-        labels = results['labels']
-
-        num_gts = entity_boxes.shape[0]
-        num_classes = labels.shape[1]
-
-        padded_entity_boxes = np.ones(
-            (self.max_num_gts, 4), dtype=np.float32) * -1.
-        padded_entity_boxes[:num_gts] = entity_boxes
-        padded_labels = np.ones(
-            (self.max_num_gts, num_classes), dtype=np.float32) * -1
-        padded_labels[:num_gts] = labels
-
-        if proposals is not None:
-            num_proposals = proposals.shape[0]
-            padded_proposals = np.ones(
-                (self.max_num_gts, 4), dtype=np.float32) * -1
-            padded_proposals[:num_proposals] = proposals
-        else:
-            padded_proposals = None
-
-        results['proposals'] = padded_proposals
-        results['entity_boxes'] = padded_entity_boxes
-        results['labels'] = padded_labels
-        return results
-
-    def __repr__(self):
-        repr_str = f'{self.__class__.__name__}(max_num_gts={self.max_num_gts})'
-        return repr_str
 
 
 @PIPELINES.register_module()
@@ -416,7 +362,7 @@ class RandomCrop:
                                            dtype=np.float32)
 
         # Process entity boxes
-        if 'entity_boxes' in results:
+        if 'gt_bboxes' in results:
             assert not self.lazy
             entity_box_crop = EntityBoxCrop(results['crop_bbox'])
             results = entity_box_crop(results)
@@ -568,7 +514,7 @@ class RandomResizedCrop:
                                             (lazy_top + bottom)],
                                            dtype=np.float32)
 
-        if 'entity_boxes' in results:
+        if 'gt_bboxes' in results:
             assert not self.lazy
             entity_box_crop = EntityBoxCrop(results['crop_bbox'])
             results = entity_box_crop(results)
@@ -738,7 +684,7 @@ class MultiScaleCrop:
                                             (lazy_top + bottom)],
                                            dtype=np.float32)
 
-        if 'entity_boxes' in results:
+        if 'gt_bboxes' in results:
             assert not self.lazy
             entity_box_crop = EntityBoxCrop(results['crop_bbox'])
             results = entity_box_crop(results)
@@ -839,7 +785,7 @@ class Resize:
                 raise NotImplementedError('Put Flip at last for now')
             lazyop['interpolation'] = self.interpolation
 
-        if 'entity_boxes' in results:
+        if 'gt_bboxes' in results:
             assert not self.lazy
             entity_box_rescale = EntityBoxRescale(self.scale_factor)
             results = entity_box_rescale(results)
@@ -972,7 +918,7 @@ class Flip:
             lazyop['flip'] = flip
             lazyop['flip_direction'] = self.direction
 
-        if 'entity_boxes' in results and flip:
+        if 'gt_bboxes' in results and flip:
             assert not self.lazy and self.direction == 'horizontal'
             entity_box_flip = EntityBoxFlip(results['img_shape'],
                                             self.direction)
@@ -1337,7 +1283,7 @@ class CenterCrop:
                                             (lazy_top + bottom)],
                                            dtype=np.float32)
 
-        if 'entity_boxes' in results:
+        if 'gt_bboxes' in results:
             assert not self.lazy
             entity_box_crop = EntityBoxCrop(results['crop_bbox'])
             results = entity_box_crop(results)

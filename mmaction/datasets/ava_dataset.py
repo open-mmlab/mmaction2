@@ -64,6 +64,11 @@ class AVADataset(BaseDataset):
         proposal_file (str): Path to the proposal file like
             ``ava_dense_proposals_{train, val}.FAIR.recall_93.9.pkl``.
             Default: None.
+        person_det_score_thr (float): The threshold of person detection scores,
+            bboxes with scores above the threshold will be used. Default: 0.9.
+            Note that 0 <= person_det_score_thr <= 1. If no proposal has
+            detection score larger than the threshold, the one with the largest
+            detection score will be used.
         num_classes (int): The number of classes of the dataset. Default: 81.
             (AVA has 80 action classes, another 1-dim is added for potential
             usage)
@@ -89,6 +94,7 @@ class AVADataset(BaseDataset):
                  label_file=None,
                  filename_tmpl='img_{:05}.jpg',
                  proposal_file=None,
+                 person_det_score_thr=0.9,
                  num_classes=81,
                  data_prefix=None,
                  test_mode=False,
@@ -101,6 +107,10 @@ class AVADataset(BaseDataset):
         self.exclude_file = exclude_file
         self.label_file = label_file
         self.proposal_file = proposal_file
+        assert 0 <= person_det_score_thr <= 1, (
+            'The value of '
+            'person_det_score_thr should in [0, 1]. ')
+        self.person_det_score_thr = person_det_score_thr
         self.num_classes = num_classes
         self.filename_tmpl = filename_tmpl
         self.num_max_proposals = num_max_proposals
@@ -211,7 +221,7 @@ class AVADataset(BaseDataset):
             bboxes, labels, entity_ids = self.parse_img_record(
                 records_dict_by_img[img_key])
             ann = dict(
-                entity_boxes=bboxes, labels=labels, entity_ids=entity_ids)
+                gt_bboxes=bboxes, gt_labels=labels, entity_ids=entity_ids)
             frame_dir = video_id
             if self.data_prefix is not None:
                 frame_dir = osp.join(self.data_prefix, frame_dir)
@@ -243,14 +253,22 @@ class AVADataset(BaseDataset):
                 results['proposals'] = np.array([[0, 0, 1, 1]])
                 results['scores'] = np.array([1])
             else:
-                proposals = self.proposals[img_key][:self.num_max_proposals]
-                results['proposals'] = proposals[:, :4]
+                proposals = self.proposals[img_key]
+                assert proposals.shape[-1] in [4, 5]
                 if proposals.shape[-1] == 5:
+                    thr = min(self.preson_det_score_thr, max(proposals[:, 4]))
+                    positive_inds = (proposals[:, 4] >= thr)
+                    proposals = proposals[positive_inds]
+                    proposals = proposals[:self.num_max_proposals]
+                    results['proposals'] = proposals[:, :4]
                     results['scores'] = proposals[:, 4]
+                else:
+                    proposals = proposals[:self.num_max_proposals]
+                    results['proposals'] = proposals
 
         ann = results.pop('ann')
-        results['entity_boxes'] = ann['entity_boxes']
-        results['labels'] = ann['labels']
+        results['gt_bboxes'] = ann['gt_bboxes']
+        results['gt_labels'] = ann['gt_labels']
         results['entity_ids'] = ann['entity_ids']
 
         return self.pipeline(results)
@@ -271,14 +289,23 @@ class AVADataset(BaseDataset):
                 results['proposals'] = np.array([[0, 0, 1, 1]])
                 results['scores'] = np.array([1])
             else:
-                proposals = self.proposals[img_key][:self.num_max_proposals]
-                results['proposals'] = proposals[:, :4]
+                proposals = self.proposals[img_key]
+                assert proposals.shape[-1] in [4, 5]
                 if proposals.shape[-1] == 5:
+                    thr = min(self.preson_det_score_thr, max(proposals[:, 4]))
+                    positive_inds = (proposals[:, 4] >= thr)
+                    proposals = proposals[positive_inds]
+                    proposals = proposals[:self.num_max_proposals]
+                    results['proposals'] = proposals[:, :4]
                     results['scores'] = proposals[:, 4]
+                else:
+                    proposals = proposals[:self.num_max_proposals]
+                    results['proposals'] = proposals
 
         ann = results.pop('ann')
-        results['entity_boxes'] = ann['entity_boxes']
-        results['labels'] = ann['labels']
+        # Follow the mmdet variable naming style.
+        results['gt_bboxes'] = ann['gt_bboxes']
+        results['gt_labels'] = ann['gt_labels']
         results['entity_ids'] = ann['entity_ids']
 
         return self.pipeline(results)

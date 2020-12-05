@@ -69,14 +69,13 @@ train_pipeline = [
     dict(type='RandomCrop', size=256),
     dict(type='Flip', flip_ratio=0.5),
     dict(type='Normalize', **img_norm_cfg),
-    dict(type='EntityBoxPad'),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(
         type='Collect',
-        keys=['imgs', 'proposals', 'entity_boxes', 'labels'],
+        keys=['imgs', 'proposals', 'gt_bboxes', 'gt_labels'],
         meta_keys=['scores', 'entity_ids']),
     dict(
-        type='ToTensor', keys=['imgs', 'proposals', 'entity_boxes', 'labels'])
+        type='ToTensor', keys=['imgs', 'proposals', 'gt_bboxes', 'gt_labels'])
 ]
 # The testing is w/o. any cropping / flipping
 val_pipeline = [
@@ -84,7 +83,6 @@ val_pipeline = [
     dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='Normalize', **img_norm_cfg),
-    dict(type='EntityBoxPad'),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(
         type='Collect',

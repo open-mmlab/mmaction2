@@ -1153,13 +1153,13 @@ class RawFrameDecode:
         results['original_shape'] = imgs[0].shape[:2]
         results['img_shape'] = imgs[0].shape[:2]
 
-        # we resize the entity_boxes and proposals to their real scale
-        if 'entity_boxes' in results:
+        # we resize the gt_bboxes and proposals to their real scale
+        if 'gt_bboxes' in results:
             h, w = results['img_shape']
             scale_factor = np.array([w, h, w, h])
-            entity_boxes = results['entity_boxes']
-            entity_boxes = (entity_boxes * scale_factor).astype(np.float32)
-            results['entity_boxes'] = entity_boxes
+            gt_bboxes = results['gt_bboxes']
+            gt_bboxes = (gt_bboxes * scale_factor).astype(np.float32)
+            results['gt_bboxes'] = gt_bboxes
             if 'proposals' in results and results['proposals'] is not None:
                 proposals = results['proposals']
                 proposals = (proposals * scale_factor).astype(np.float32)

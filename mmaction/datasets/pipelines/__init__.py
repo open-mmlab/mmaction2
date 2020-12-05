@@ -1,9 +1,9 @@
 from .augmentations import (AudioAmplify, CenterCrop, ColorJitter,
-                            EntityBoxCrop, EntityBoxFlip, EntityBoxPad,
-                            EntityBoxRescale, Flip, Fuse, MelSpectrogram,
-                            MultiGroupCrop, MultiScaleCrop, Normalize,
-                            RandomCrop, RandomRescale, RandomResizedCrop,
-                            RandomScale, Resize, TenCrop, ThreeCrop)
+                            EntityBoxCrop, EntityBoxFlip, EntityBoxRescale,
+                            Flip, Fuse, MelSpectrogram, MultiGroupCrop,
+                            MultiScaleCrop, Normalize, RandomCrop,
+                            RandomRescale, RandomResizedCrop, RandomScale,
+                            Resize, TenCrop, ThreeCrop)
 from .compose import Compose
 from .formating import (Collect, FormatAudioShape, FormatShape, ImageToTensor,
                         ToDataContainer, ToTensor, Transpose)
@@ -29,7 +29,7 @@ __all__ = [
     'PyAVInit', 'SampleProposalFrames', 'ColorJitter', 'LoadHVULabel',
     'SampleAVAFrames', 'AudioAmplify', 'MelSpectrogram', 'AudioDecode',
     'FormatAudioShape', 'LoadAudioFeature', 'AudioFeatureSelector',
-    'AudioDecodeInit', 'EntityBoxPad', 'EntityBoxFlip', 'EntityBoxCrop',
-    'EntityBoxRescale', 'RandomScale', 'ImageDecode', 'BuildPseudoClip',
-    'RandomRescale', 'PyAVDecodeMotionVector'
+    'AudioDecodeInit', 'EntityBoxFlip', 'EntityBoxCrop', 'EntityBoxRescale',
+    'RandomScale', 'ImageDecode', 'BuildPseudoClip', 'RandomRescale',
+    'PyAVDecodeMotionVector'
 ]

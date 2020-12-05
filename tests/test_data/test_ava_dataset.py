@@ -33,7 +33,7 @@ class TestAVADataset:
             'frame_dir', 'video_id', 'timestamp', 'img_key', 'shot_info',
             'fps', 'ann'
         ]
-        ann_keys = ['labels', 'entity_boxes', 'entity_ids']
+        ann_keys = ['gt_labels', 'gt_bboxes', 'entity_ids']
         pkl_keys = ['0f39OWEqJ24,0902', '0f39OWEqJ24,0903', '_-Z6wFjXtGQ,0902']
 
         ava_dataset = AVADataset(
@@ -60,8 +60,8 @@ class TestAVADataset:
         labels = np.zeros([81])
         labels[target_labels] = 1.
         target_labels = labels[None, ...]
-        assert_array_equal(ava_infos[0]['ann']['labels'], target_labels)
-        assert_array_equal(ava_infos[0]['ann']['entity_boxes'],
+        assert_array_equal(ava_infos[0]['ann']['gt_labels'], target_labels)
+        assert_array_equal(ava_infos[0]['ann']['gt_bboxes'],
                            np.array([[0.031, 0.162, 0.67, 0.995]]))
         assert_array_equal(ava_infos[0]['ann']['entity_ids'], np.array([0]))
 
@@ -97,8 +97,8 @@ class TestAVADataset:
             'frame_dir', 'video_id', 'timestamp', 'img_key', 'shot_info',
             'fps', 'filename_tmpl', 'modality', 'start_index',
             'timestamp_start', 'timestamp_end', 'proposals', 'scores',
-            'frame_inds', 'clip_len', 'frame_interval', 'labels',
-            'entity_boxes', 'entity_ids'
+            'frame_inds', 'clip_len', 'frame_interval', 'gt_labels',
+            'gt_bboxes', 'entity_ids'
         ]
 
         ava_dataset = AVADataset(

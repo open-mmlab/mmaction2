@@ -1,14 +1,14 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from mmdet.models.builder import HEADS as MMDET_HEADS
 
 from mmaction.core.bbox import bbox_target
-from ..registry import HEADS
 
 
 # TODO: we can add class_weight for 80 AVA classes
-@HEADS.register_module
-class BBoxHead(nn.Module):
+@MMDET_HEADS.register_module
+class BBoxHeadAVA(nn.Module):
     """Simplest RoI head, with only two fc layers for classification and
     regression respectively.
 
@@ -28,12 +28,11 @@ class BBoxHead(nn.Module):
             temporal_pool_type='avg',
             spatial_pool_type='max',
             in_channels=2048,
-            # The first class is reserved, to classify bbox as positive or
-            # negative
+            # The first class is reserved, to classify bbox as pos / neg
             num_classes=81,
             multilabel=True):
 
-        super(BBoxHead, self).__init__()
+        super(BBoxHeadAVA, self).__init__()
         assert temporal_pool_type in ['max', 'avg']
         assert spatial_pool_type in ['max', 'avg']
         self.temporal_pool_type = temporal_pool_type
@@ -180,5 +179,4 @@ class BBoxHead(nn.Module):
             return decropped
 
         bboxes = _bbox_crop_undo(bboxes, crop_quadruple)
-
         return bboxes, scores

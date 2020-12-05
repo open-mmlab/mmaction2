@@ -76,10 +76,10 @@ class FastRCNN(BaseDetector):
             self.bbox_roi_extractor.init_weights()
             self.bbox_head.init_weights()
 
-    def forward_train(self, imgs, proposals, img_meta, entity_boxes, labels,
+    def forward_train(self, imgs, proposals, img_meta, gt_bboxes, labels,
                       **kwargs):
         # Rename
-        gt_bboxes = entity_boxes
+        gt_bboxes = gt_bboxes
         gt_labels = labels
 
         # Only 1 clip for each sample is permitted, due to the characteristic

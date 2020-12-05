@@ -1195,7 +1195,7 @@ class TestLoading:
         # in order to pass the CI
         inputs['frame_inds'] = inputs['frame_inds'] + 1
 
-        inputs['entity_boxes'] = np.array([[0, 0, 1, 1]])
+        inputs['gt_bboxes'] = np.array([[0, 0, 1, 1]])
         inputs['proposals'] = np.array([[0, 0, 1, 1]])
         frame_selector = RawFrameDecode(io_backend='disk')
         results = frame_selector(inputs)

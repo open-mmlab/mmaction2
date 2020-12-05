@@ -8,8 +8,8 @@ from numpy.testing import assert_array_almost_equal, assert_array_equal
 # yapf: disable
 from mmaction.datasets.pipelines import (AudioAmplify, CenterCrop, ColorJitter,
                                          EntityBoxCrop, EntityBoxFlip,
-                                         EntityBoxPad, EntityBoxRescale, Flip,
-                                         Fuse, MelSpectrogram, MultiGroupCrop,
+                                         EntityBoxRescale, Flip, Fuse,
+                                         MelSpectrogram, MultiGroupCrop,
                                          MultiScaleCrop, Normalize, RandomCrop,
                                          RandomRescale, RandomResizedCrop,
                                          RandomScale, Resize, TenCrop,
@@ -148,7 +148,7 @@ class TestAugumentations:
         # General case
         imgs = list(np.random.rand(2, 224, 341, 3))
         results = dict(imgs=imgs)
-        results['entity_boxes'] = np.array([[0, 0, 340, 224]])
+        results['gt_bboxes'] = np.array([[0, 0, 340, 224]])
         results['proposals'] = None
         random_crop = RandomCrop(size=224)
         random_crop_result = random_crop(results)
@@ -254,7 +254,7 @@ class TestAugumentations:
         eps = 0.01
         imgs = list(np.random.rand(2, 256, 341, 3))
         results = dict(imgs=imgs)
-        results['entity_boxes'] = np.array([[0, 0, 340, 256]])
+        results['gt_bboxes'] = np.array([[0, 0, 340, 256]])
         results['proposals'] = None
 
         with pytest.raises(AssertionError):
@@ -407,7 +407,7 @@ class TestAugumentations:
         # MultiScaleCrop with normal crops.
         imgs = list(np.random.rand(2, 256, 341, 3))
         results = dict(imgs=imgs)
-        results['entity_boxes'] = np.array([[0, 0, 340, 256]])
+        results['gt_bboxes'] = np.array([[0, 0, 340, 256]])
         results['proposals'] = None
         config = dict(
             input_size=224,
@@ -583,7 +583,7 @@ class TestAugumentations:
         # scale with -1 to indicate np.inf
         imgs = list(np.random.rand(2, 240, 320, 3))
         results = dict(imgs=imgs, modality='RGB')
-        results['entity_boxes'] = np.array([[0, 0, 320, 240]])
+        results['gt_bboxes'] = np.array([[0, 0, 320, 240]])
         results['proposals'] = None
         resize = Resize(scale=(-1, 256), keep_ratio=True)
         resize_results = resize(results)
@@ -680,7 +680,7 @@ class TestAugumentations:
         # do not flip imgs.
         imgs = list(np.random.rand(2, 64, 64, 3))
         results = dict(imgs=copy.deepcopy(imgs), modality='RGB')
-        results['entity_boxes'] = np.array([[0, 0, 60, 60]])
+        results['gt_bboxes'] = np.array([[0, 0, 60, 60]])
         results['proposals'] = None
         flip = Flip(flip_ratio=0, direction='horizontal')
         flip_results = flip(results)
@@ -923,7 +923,7 @@ class TestAugumentations:
         # center crop with crop_size 224
         imgs = list(np.random.rand(2, 240, 320, 3))
         results = dict(imgs=imgs)
-        results['entity_boxes'] = np.array([[0, 0, 320, 240]])
+        results['gt_bboxes'] = np.array([[0, 0, 320, 240]])
         results['proposals'] = None
         center_crop = CenterCrop(crop_size=224)
         center_crop_results = center_crop(results)
@@ -1150,14 +1150,12 @@ class TestAugumentations:
             'mode=range)')
 
     def test_box_rescale(self):
-        target_keys = [
-            'img_shape', 'scale_factor', 'proposals', 'entity_boxes'
-        ]
+        target_keys = ['img_shape', 'scale_factor', 'proposals', 'gt_bboxes']
         results = dict(
             img_shape=(520, 480),
             scale_factor=(0.7, 0.8),
             proposals=np.array([[5.28, 81.64, 314.4, 511.16]]),
-            entity_boxes=np.array([[14.88, 84.24, 321.6, 517.4]]))
+            gt_bboxes=np.array([[14.88, 84.24, 321.6, 517.4]]))
         scale_factor = results['scale_factor']
 
         with pytest.raises(AssertionError):
@@ -1172,7 +1170,7 @@ class TestAugumentations:
         self.check_keys_contain(results_.keys(), target_keys)
         assert_array_almost_equal(results_['proposals'],
                                   np.array([[3.696, 65.312, 220.08, 408.928]]))
-        assert_array_almost_equal(results_['entity_boxes'],
+        assert_array_almost_equal(results_['gt_bboxes'],
                                   np.array([[10.416, 67.392, 225.12, 413.92]]))
 
         results_ = copy.deepcopy(results)
@@ -1182,11 +1180,11 @@ class TestAugumentations:
         assert results_['proposals'] is None
 
     def test_box_crop(self):
-        target_keys = ['proposals', 'crop_bbox', 'entity_boxes']
+        target_keys = ['proposals', 'crop_bbox', 'gt_bboxes']
         results = dict(
             proposals=np.array([[3.696, 65.312, 220.08, 408.928]]),
             crop_bbox=[13, 75, 200, 450],
-            entity_boxes=np.array([[10.416, 67.392, 225.12, 413.92]]))
+            gt_bboxes=np.array([[10.416, 67.392, 225.12, 413.92]]))
 
         crop_bbox = results['crop_bbox']
 
@@ -1195,7 +1193,7 @@ class TestAugumentations:
         results_ = copy.deepcopy(results)
         results_ = box_crop(results_)
         self.check_keys_contain(results_.keys(), target_keys)
-        assert_array_almost_equal(results_['entity_boxes'],
+        assert_array_almost_equal(results_['gt_bboxes'],
                                   np.array([[0, 0, 186, 338.92]]))
         assert_array_almost_equal(results_['proposals'],
                                   np.array([[0, 0, 186, 333.928]]))
@@ -1206,11 +1204,11 @@ class TestAugumentations:
         assert results_['proposals'] is None
 
     def test_box_flip(self):
-        target_keys = ['entity_boxes', 'proposals', 'img_shape']
+        target_keys = ['gt_bboxes', 'proposals', 'img_shape']
         results = dict(
             proposals=np.array([[0, 0, 186, 333.928]]),
             img_shape=(305, 200),
-            entity_boxes=np.array([[0, 0, 186, 338.92]]))
+            gt_bboxes=np.array([[0, 0, 186, 338.92]]))
 
         img_shape = results['img_shape']
 
@@ -1221,7 +1219,7 @@ class TestAugumentations:
         results_ = copy.deepcopy(results)
         results_ = box_flip(results_)
         self.check_keys_contain(results_.keys(), target_keys)
-        assert_array_almost_equal(results_['entity_boxes'],
+        assert_array_almost_equal(results_['gt_bboxes'],
                                   np.array([[13, 0, 199, 338.92]]))
         assert_array_almost_equal(results_['proposals'],
                                   np.array([[13, 0, 199, 333.928]]))
@@ -1230,47 +1228,4 @@ class TestAugumentations:
         results_ = copy.deepcopy(results)
         results_['proposals'] = None
         results_ = box_flip(results_)
-        assert results_['proposals'] is None
-
-    def test_box_pad(self):
-        target_keys = ['entity_boxes', 'proposals', 'img_shape', 'labels']
-        results = dict(
-            proposals=np.array([[-9.304, -9.688, 207.08, 333.928],
-                                [-2.584, -7.608, 212.120, 338.92]]),
-            img_shape=(335, 210),
-            entity_boxes=np.array([[-2.584, -7.608, 212.120, 338.92],
-                                   [-9.304, -9.688, 207.08, 333.928]]),
-            labels=np.array([[1, 1, 0, 0], [0, 0, 1, 0]]))
-
-        box_pad_none = EntityBoxPad(None)
-        results_ = copy.deepcopy(results)
-        results_ = box_pad_none(results_)
-        self.check_keys_contain(results_.keys(), target_keys)
-        assert_array_equal(results_['proposals'], results['proposals'])
-        assert_array_equal(results_['entity_boxes'], results['entity_boxes'])
-        assert_array_equal(results_['labels'], results['labels'])
-
-        box_pad = EntityBoxPad(3)
-        results_ = copy.deepcopy(results)
-        results_ = box_pad(results_)
-        self.check_keys_contain(results_.keys(), target_keys)
-        assert_array_equal(
-            results_['proposals'],
-            np.array([[-9.304, -9.688, 207.08, 333.928],
-                      [-2.584, -7.608, 212.120, 338.92], [-1., -1., -1., -1.]],
-                     dtype=np.float32))
-        assert_array_equal(
-            results_['entity_boxes'],
-            np.array([[-2.584, -7.608, 212.120, 338.92],
-                      [-9.304, -9.688, 207.08, 333.928], [-1., -1., -1., -1.]],
-                     dtype=np.float32))
-        assert_array_equal(
-            results_['labels'],
-            np.array([[1., 1., 0., 0.], [0., 0., 1., 0.], [-1., -1., -1., -1.]
-                      ],
-                     dtype=np.float32))
-
-        results_ = copy.deepcopy(results)
-        results_['proposals'] = None
-        results_ = box_pad(results_)
         assert results_['proposals'] is None
