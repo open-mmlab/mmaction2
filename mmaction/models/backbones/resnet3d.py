@@ -327,6 +327,8 @@ class ResNet3d(nn.Module):
         in_channels (int): Channel num of input features. Default: 3.
         base_channels (int): Channel num of stem output features. Default: 64.
         out_indices (Sequence[int]): Indices of output feature. Default: (3, ).
+        return_tuple (bool): If set as True, return a tuple even if there is
+            only one output. Default: False.
         num_stages (int): Resnet stages. Default: 4.
         spatial_strides (Sequence[int]):
             Spatial strides of residual blocks of each stage.
@@ -389,6 +391,7 @@ class ResNet3d(nn.Module):
                  num_stages=4,
                  base_channels=64,
                  out_indices=(3, ),
+                 return_tuple=False,
                  spatial_strides=(1, 2, 2, 2),
                  temporal_strides=(1, 1, 1, 1),
                  dilations=(1, 1, 1, 1),
@@ -420,6 +423,7 @@ class ResNet3d(nn.Module):
         self.num_stages = num_stages
         assert 1 <= num_stages <= 4
         self.out_indices = out_indices
+        self.return_tuple = return_tuple
         assert max(out_indices) < num_stages
         self.spatial_strides = spatial_strides
         self.temporal_strides = temporal_strides
@@ -819,7 +823,7 @@ class ResNet3d(nn.Module):
                 x = self.pool2(x)
             if i in self.out_indices:
                 outs.append(x)
-        if len(outs) == 1:
+        if len(outs) == 1 and not self.return_tuple:
             return outs[0]
 
         return tuple(outs)
