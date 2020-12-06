@@ -756,9 +756,17 @@ class ResNet3d(nn.Module):
                 param.requires_grad = False
 
     @staticmethod
-    def _init_weights(self):
+    def _init_weights(self, pretrained=None):
         """Initiate the parameters either from existing checkpoint or from
-        scratch."""
+        scratch.
+
+        Args:
+            pretrained (str | None): The path of the pretrained weight. Will
+                override the original `pretrained` if set. The arg is added to
+                be compatible with mmdet. Default: None.
+        """
+        if pretrained:
+            self.pretrained = pretrained
         if isinstance(self.pretrained, str):
             logger = get_root_logger()
             logger.info(f'load model from: {self.pretrained}')
