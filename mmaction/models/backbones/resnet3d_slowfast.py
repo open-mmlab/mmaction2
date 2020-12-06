@@ -308,9 +308,12 @@ class ResNet3dPathway(ResNet3d):
                 for param in conv_lateral.parameters():
                     param.requires_grad = False
 
-    def init_weights(self):
+    def init_weights(self, pretrained=None):
         """Initiate the parameters either from existing checkpoint or from
         scratch."""
+        if pretrained:
+            self.pretrained = pretrained
+
         # Override the init_weights of i3d
         super().init_weights()
         for module_name in self.lateral_connections:
@@ -430,9 +433,12 @@ class ResNet3dSlowFast(nn.Module):
         self.slow_path = build_pathway(slow_pathway)
         self.fast_path = build_pathway(fast_pathway)
 
-    def init_weights(self):
+    def init_weights(self, pretrained=None):
         """Initiate the parameters either from existing checkpoint or from
         scratch."""
+        if pretrained:
+            self.pretrained = pretrained
+
         if isinstance(self.pretrained, str):
             logger = get_root_logger()
             msg = f'load model from: {self.pretrained}'

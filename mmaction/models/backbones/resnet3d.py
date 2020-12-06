@@ -796,8 +796,8 @@ class ResNet3d(nn.Module):
         else:
             raise TypeError('pretrained must be a str or None')
 
-    def init_weights(self):
-        self._init_weights(self)
+    def init_weights(self, pretrained=None):
+        self._init_weights(self, pretrained)
 
     def forward(self, x):
         """Defines the computation performed at every call.
@@ -966,8 +966,8 @@ class ResNet3dLayer(nn.Module):
             for param in layer.parameters():
                 param.requires_grad = False
 
-    def init_weights(self):
-        self._init_weights(self)
+    def init_weights(self, pretrained=None):
+        self._init_weights(self, pretrained)
 
     def forward(self, x):
         """Defines the computation performed at every call.
