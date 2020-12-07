@@ -2,7 +2,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-from mmaction.models import (AudioTSNHead, BaseHead, BBoxHead, I3DHead,
+from mmaction.models import (AudioTSNHead, BaseHead, BBoxHeadAVA, I3DHead,
                              SlowFastHead, TPNHead, TSMHead, TSNHead, X3DHead)
 
 
@@ -55,17 +55,17 @@ def test_i3d_head():
     assert cls_scores.shape == torch.Size([3, 4])
 
 
-def test_bbox_head():
+def test_bbox_head_ava():
     """Test loss method, layer construction, attributes and forward function in
     bbox head."""
-    bbox_head = BBoxHead()
+    bbox_head = BBoxHeadAVA()
     bbox_head.init_weights()
-    bbox_head = BBoxHead(temporal_pool_type='max', spatial_pool_type='avg')
+    bbox_head = BBoxHeadAVA(temporal_pool_type='max', spatial_pool_type='avg')
     bbox_head.init_weights()
 
-    bbox_head = BBoxHead(in_channels=10, num_classes=4)
+    bbox_head = BBoxHeadAVA(in_channels=10, num_classes=4)
     input = torch.randn([3, 10, 2, 2, 2])
-    ret = bbox_head(input)
+    ret, _ = bbox_head(input)
     assert ret.shape == (3, 4)
 
     cls_score = torch.tensor(
@@ -78,7 +78,12 @@ def test_bbox_head():
                            [0., 1., 0., 0., 1., 0., 1.],
                            [0., 0., 1., 1., 0., 0., 1.]])
     label_weights = torch.tensor([1., 1., 1., 1.])
-    losses = bbox_head.loss(cls_score, labels, label_weights)
+    losses = bbox_head.loss(
+        cls_score=cls_score,
+        bbox_pred=None,
+        rois=None,
+        labels=labels,
+        label_weights=label_weights)
     assert torch.isclose(losses['loss_action_cls'], torch.tensor(0.7162495))
     assert torch.isclose(losses['recall@thr=0.5'], torch.tensor(0.6666666))
     assert torch.isclose(losses['prec@thr=0.5'], torch.tensor(0.4791665))
@@ -95,8 +100,12 @@ def test_bbox_head():
     img_shape = (320, 480)
     flip = True
 
-    bboxes, scores = bbox_head.get_det_bboxes(rois, cls_score, img_shape, flip,
-                                              crop_quadruple)
+    bboxes, scores = bbox_head.get_det_bboxes(
+        rois=rois,
+        cls_score=cls_score,
+        img_shape=img_shape,
+        flip=flip,
+        crop_quadruple=crop_quadruple)
     assert torch.all(
         torch.isclose(
             bboxes,
