@@ -1,9 +1,9 @@
-import numpy as np  # isort:skip
-from mmdet.models import HEADS  # isort:skip
-from mmdet.models.roi_heads import StandardRoIHead  # isort:skip
+import numpy as np
+from mmdet.core.bbox import bbox2roi
+from mmdet.models import HEADS
+from mmdet.models.roi_heads import StandardRoIHead
 
-from mmaction.core.bbox import bbox2result  # isort:skip
-from mmdet.core.bbox import bbox2roi  # isort:skip
+from mmaction.core.bbox import bbox2result
 
 
 @HEADS.register_module()
