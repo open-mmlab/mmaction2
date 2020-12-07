@@ -23,7 +23,7 @@ def test_assigner_sampler():
         num_classes=4)
 
     assigner = dict(
-        type='MaxIoUAssigner',
+        type='MaxIoUAssignerAVA',
         pos_iou_thr=0.5,
         neg_iou_thr=0.5,
         min_pos_iou=0.5)
