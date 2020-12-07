@@ -30,7 +30,7 @@ def test_assigner_sampler():
     assigner = build_assigner(assigner)
     proposal = torch.tensor(dataset[0]['proposals'])
     gt_bboxes = torch.tensor(dataset[0]['gt_bboxes'])
-    gt_labels = torch.tensor(dataset[0]['labels'])
+    gt_labels = torch.tensor(dataset[0]['gt_labels'])
     assign_result = assigner.assign(proposal, gt_bboxes, gt_labels)
     assert assign_result.num_gts == 4
     assert torch.all(
