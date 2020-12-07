@@ -65,8 +65,9 @@ class SingleRoIExtractor3D(nn.Module):
         pass
 
     def forward(self, feat, rois):
+        # if multiple feat in, concat them along the c-axis
         if isinstance(feat, tuple):
-            feat = feat[0]
+            feat = torch.cat(feat, axis=1)
 
         if self.with_temporal_pool:
             feat = torch.mean(feat, 2, keepdim=True)

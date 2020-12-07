@@ -3,6 +3,7 @@ import torch.nn as nn
 from mmcv.cnn import ConvModule, kaiming_init
 from mmcv.runner import _load_checkpoint, load_checkpoint
 from mmcv.utils import print_log
+from mmdet.models import BACKBONES as MMDET_BACKBONES
 
 from ...utils import get_root_logger
 from ..registry import BACKBONES
@@ -353,6 +354,7 @@ def build_pathway(cfg, *args, **kwargs):
     return pathway
 
 
+@MMDET_BACKBONES.register_module()
 @BACKBONES.register_module()
 class ResNet3dSlowFast(nn.Module):
     """Slowfast backbone.
