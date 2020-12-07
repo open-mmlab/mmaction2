@@ -1,5 +1,4 @@
 import numpy as np
-import torch
 from mmdet.core.bbox import bbox2roi
 from mmdet.models import HEADS
 from mmdet.models.roi_heads import StandardRoIHead
@@ -11,10 +10,6 @@ from mmaction.core.bbox import bbox2result
 class AVARoIHead(StandardRoIHead):
 
     def _bbox_forward(self, x, rois):
-        # concatenate x is there is multiple feature (like SlowFast)
-        if isinstance(x, tuple):
-            x = torch.cat(x, axis=1)
-
         bbox_feat = self.bbox_roi_extractor(x, rois)
         if self.with_shared_head:
             bbox_feat = self.shared_head(bbox_feat)

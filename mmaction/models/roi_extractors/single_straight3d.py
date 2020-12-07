@@ -62,8 +62,13 @@ class SingleRoIExtractor3D(nn.Module):
         pass
 
     def forward(self, feat, rois):
+        if not isinstance(feat, tuple):
+            feat = (feat, )
+        if len(feat) >= 2:
+            assert self.with_temporal_pool
         if self.with_temporal_pool:
-            feat = torch.mean(feat, 2, keepdim=True)
+            feat = [torch.mean(x, 2, keepdim=True) for x in feat]
+        feat = torch.cat(feat, axis=1)
         roi_feats = []
         for t in range(feat.size(2)):
             frame_feat = feat[:, :, t, :, :].contiguous()
