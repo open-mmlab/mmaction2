@@ -1,9 +1,9 @@
-import numpy as np
-from mmdet.core.bbox import bbox2roi
-from mmdet.models import HEADS
-from mmdet.models.roi_heads import StandardRoIHead
+import numpy as np  # isort:skip
+from mmdet.core.bbox import bbox2roi  # isort:skip
+from mmdet.models import HEADS  # isort:skip
+from mmdet.models.roi_heads import StandardRoIHead  # isort:skip
 
-from mmaction.core.bbox import bbox2result
+from mmaction.core.bbox import bbox2result  # isort:skip
 
 
 @HEADS.register_module()
@@ -17,6 +17,9 @@ class AVARoIHead(StandardRoIHead):
                     rescale=False):
         assert self.with_bbox, 'Bbox head must be implemented.'
 
+        assert x[0].shape[0] == len(img_metas) == len(proposal_list) == 1, \
+            'test mode only accept one sample at a time'
+
         det_bboxes, det_labels = self.simple_test_bboxes(
             x, img_metas, proposal_list, self.test_cfg, rescale=rescale)
         bbox_results = bbox2result(
@@ -26,7 +29,12 @@ class AVARoIHead(StandardRoIHead):
             thr=self.test_cfg.action_thr)
         return [bbox_results]
 
-    def simple_test_bboxes(self, x, img_metas, proposals, rcnn_test_cfg):
+    def simple_test_bboxes(self,
+                           x,
+                           img_metas,
+                           proposals,
+                           rcnn_test_cfg,
+                           rescale=False):
         """Test only det bboxes without augmentation."""
         rois = bbox2roi(proposals)
         bbox_results = self._bbox_forward(x, rois)

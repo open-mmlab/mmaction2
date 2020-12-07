@@ -72,8 +72,8 @@ class BBoxHeadAVA(nn.Module):
         # We do not predict bbox, so return None
         return cls_score, None
 
-    def get_target(self, sampling_results, gt_bboxes, gt_labels,
-                   rcnn_train_cfg):
+    def get_targets(self, sampling_results, gt_bboxes, gt_labels,
+                    rcnn_train_cfg):
         pos_proposals = [res.pos_bboxes for res in sampling_results]
         neg_proposals = [res.neg_bboxes for res in sampling_results]
         pos_gt_labels = [res.pos_gt_labels for res in sampling_results]
