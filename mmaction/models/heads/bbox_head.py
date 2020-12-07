@@ -19,6 +19,10 @@ class BBoxHeadAVA(nn.Module):
             'max'. Default: 'max'.
         in_channels (int): The number of input channels. Default: 2048.
         num_classes (int): The number of classes. Default: 81.
+        dropout_ratio (float): A float in [0, 1], indicates the dropout_ratio.
+            Default: 0.
+        dropout_before_pool (bool): Dropout Feature before spatial temporal
+            pooling. Default: True.
         multilabel (bool): Whether used for a multilabel task. Default: True.
             (Only support multilabel == True now).
     """
@@ -42,6 +46,10 @@ class BBoxHeadAVA(nn.Module):
 
         self.in_channels = in_channels
         self.num_classes = num_classes
+
+        self.dropout_ratio = dropout_ratio
+        self.dropout_before_pool = dropout_before_pool
+
         self.multilabel = multilabel
 
         # Handle AVA first
@@ -58,6 +66,9 @@ class BBoxHeadAVA(nn.Module):
         else:
             self.spatial_pool = nn.AdaptiveMaxPool3d((None, 1, 1))
 
+        if dropout_ratio > 0:
+            self.dropout = nn.Dropout(dropout_ratio)
+
         self.fc_cls = nn.Linear(in_channels, num_classes)
         self.debug_imgs = None
 
@@ -66,8 +77,14 @@ class BBoxHeadAVA(nn.Module):
         nn.init.constant_(self.fc_cls.bias, 0)
 
     def forward(self, x):
+        if self.dropout_before_pool and self.dropout_ratio > 0:
+            x = self.dropout(x)
+
         x = self.temporal_pool(x)
         x = self.spatial_pool(x)
+
+        if not self.dropout_before_pool and self.dropout_ratio > 0:
+            x = self.dropout(x)
 
         x = x.view(x.size(0), -1)
         cls_score = self.fc_cls(x)
