@@ -30,6 +30,8 @@ class BBoxHeadAVA(nn.Module):
             in_channels=2048,
             # The first class is reserved, to classify bbox as pos / neg
             num_classes=81,
+            dropout_ratio=0,
+            dropout_before_pool=True,
             multilabel=True):
 
         super(BBoxHeadAVA, self).__init__()

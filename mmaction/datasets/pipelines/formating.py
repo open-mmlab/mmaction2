@@ -218,6 +218,7 @@ class Collect:
         self.keys = keys
         self.meta_keys = meta_keys
         self.meta_name = meta_name
+        self.nested = nested
 
     def __call__(self, results):
         """Performs the Collect formating.

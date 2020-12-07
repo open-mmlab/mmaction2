@@ -256,7 +256,7 @@ class AVADataset(BaseDataset):
                 proposals = self.proposals[img_key]
                 assert proposals.shape[-1] in [4, 5]
                 if proposals.shape[-1] == 5:
-                    thr = min(self.preson_det_score_thr, max(proposals[:, 4]))
+                    thr = min(self.person_det_score_thr, max(proposals[:, 4]))
                     positive_inds = (proposals[:, 4] >= thr)
                     proposals = proposals[positive_inds]
                     proposals = proposals[:self.num_max_proposals]
@@ -292,7 +292,7 @@ class AVADataset(BaseDataset):
                 proposals = self.proposals[img_key]
                 assert proposals.shape[-1] in [4, 5]
                 if proposals.shape[-1] == 5:
-                    thr = min(self.preson_det_score_thr, max(proposals[:, 4]))
+                    thr = min(self.person_det_score_thr, max(proposals[:, 4]))
                     positive_inds = (proposals[:, 4] >= thr)
                     proposals = proposals[positive_inds]
                     proposals = proposals[:self.num_max_proposals]
