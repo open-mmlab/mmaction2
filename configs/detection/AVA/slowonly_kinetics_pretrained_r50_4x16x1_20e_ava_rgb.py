@@ -96,7 +96,7 @@ val_pipeline = [
     dict(type='ToDataContainer', fields=[dict(key='proposals', stack=False)]),
     dict(
         type='Collect',
-        keys=['imgs', 'proposals'],
+        keys=['img', 'proposals'],
         meta_keys=['scores', 'img_shape'],
         nested=True)
 ]
