@@ -1,4 +1,3 @@
-from .base import BaseDetector
-from .fast_rcnn import FastRCNN
+from .fast_rcnn import FastRCNNAVA
 
-__all__ = ['BaseDetector', 'FastRCNN']
+__all__ = ['FastRCNNAVA']

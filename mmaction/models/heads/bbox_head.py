@@ -69,9 +69,11 @@ class BBoxHeadAVA(nn.Module):
 
         x = x.view(x.size(0), -1)
         cls_score = self.fc_cls(x)
-        return cls_score
+        # We do not predict bbox, so return None
+        return cls_score, None
 
-    def get_target(self, sampling_results, gt_labels, rcnn_train_cfg):
+    def get_target(self, sampling_results, gt_bboxes, gt_labels,
+                   rcnn_train_cfg):
         pos_proposals = [res.pos_bboxes for res in sampling_results]
         neg_proposals = [res.neg_bboxes for res in sampling_results]
         pos_gt_labels = [res.pos_gt_labels for res in sampling_results]
@@ -117,7 +119,16 @@ class BBoxHeadAVA(nn.Module):
             precs.append(prec_k)
         return recall_thr, prec_thr, recalls, precs
 
-    def loss(self, cls_score, labels, label_weights, reduce=True):
+    def loss(self,
+             cls_score,
+             bbox_pred,
+             rois,
+             labels,
+             label_weights,
+             bbox_targets=None,
+             bbox_weights=None,
+             reduce=True):
+
         losses = dict()
         if cls_score is not None:
             # Only use the cls_score

@@ -47,6 +47,9 @@ class SingleRoIExtractor3D(nn.Module):
         self.pool_mode = pool_mode
         self.aligned = aligned
 
+        # The attribute is needed by roi_head
+        self.num_inputs = 1
+
         self.with_temporal_pool = with_temporal_pool
         if self.roi_layer_type == 'RoIPool':
             self.roi_layer = RoIPool(self.output_size, self.spatial_scale)
@@ -62,6 +65,9 @@ class SingleRoIExtractor3D(nn.Module):
         pass
 
     def forward(self, feat, rois):
+        if isinstance(feat, tuple):
+            feat = feat[0]
+
         if self.with_temporal_pool:
             feat = torch.mean(feat, 2, keepdim=True)
         roi_feats = []
