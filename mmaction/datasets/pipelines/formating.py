@@ -4,13 +4,8 @@ import mmcv
 import numpy as np
 import torch
 from mmcv.parallel import DataContainer as DC
-from mmdet.datasets.pipelines import DefaultFormatBundle
 
 from ..registry import PIPELINES
-
-# Since the class DefaultFormatBundle is already defined in mmdet, we have to
-# register it explicitly in mmaction PIPELINES
-DefaultFormatBundle = PIPELINES.register_module()(DefaultFormatBundle)
 
 
 def to_tensor(data):
@@ -79,9 +74,6 @@ class Rename:
                 assert isinstance(key, str) and isinstance(value, str)
                 assert value not in results, ('the new name already exists in '
                                               'results')
-                # Handle the case that the original name equals to the new name
-                if key == value:
-                    continue
                 results[value] = results[key]
                 results.pop(key)
         return results
@@ -95,6 +87,8 @@ class ToDataContainer:
         fields (Sequence[dict]): Required fields to be converted
             with keys and attributes. E.g.
             fields=(dict(key='gt_bbox', stack=False),).
+            Note that key can also be a list of keys, if so, every tensor in
+            the list will be converted to DataContainer.
     """
 
     def __init__(self, fields):
@@ -110,7 +104,11 @@ class ToDataContainer:
         for field in self.fields:
             _field = field.copy()
             key = _field.pop('key')
-            results[key] = DC(results[key], **_field)
+            if isinstance(key, list):
+                for item in key:
+                    results[item] = DC(results[item], **_field)
+            else:
+                results[key] = DC(results[key], **_field)
         return results
 
     def __repr__(self):
@@ -207,13 +205,16 @@ class Collect:
                 - mean - per channel mean subtraction
                 - std - per channel std divisor
                 - to_rgb - bool indicating if bgr was converted to rgb
+        nested (bool): If set as True, will apply data[x] = [data[x]] to all
+            items in data. The arg is added for compatibility. Default: False.
     """
 
     def __init__(self,
                  keys,
                  meta_keys=('filename', 'label', 'original_shape', 'img_shape',
                             'pad_shape', 'flip_direction', 'img_norm_cfg'),
-                 meta_name='img_metas'):
+                 meta_name='img_metas',
+                 nested=False):
         self.keys = keys
         self.meta_keys = meta_keys
         self.meta_name = meta_name
@@ -234,12 +235,16 @@ class Collect:
             for key in self.meta_keys:
                 meta[key] = results[key]
             data[self.meta_name] = DC(meta, cpu_only=True)
+        if self.nested:
+            for k in data:
+                data[k] = [data[k]]
 
         return data
 
     def __repr__(self):
         return (f'{self.__class__.__name__}('
-                f'keys={self.keys}, meta_keys={self.meta_keys})')
+                f'keys={self.keys}, meta_keys={self.meta_keys}), '
+                f'nested={self.nested}')
 
 
 @PIPELINES.register_module()

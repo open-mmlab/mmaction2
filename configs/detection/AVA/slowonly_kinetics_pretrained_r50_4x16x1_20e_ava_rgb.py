@@ -13,7 +13,7 @@ model = dict(
         pool1_stride_t=1,
         spatial_strides=(1, 2, 2, 1)),
     roi_head=dict(
-        type='StandardRoIHead',
+        type='AVARoIHead',
         bbox_roi_extractor=dict(
             type='SingleRoIExtractor3D',
             roi_layer_type='RoIAlign',
@@ -70,9 +70,14 @@ train_pipeline = [
     dict(type='Flip', flip_ratio=0.5),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW', collapse=True),
-    # Rename to use mmdet models
+    # Rename is needed to use mmdet detectors
     dict(type='Rename', mapping=dict(imgs='img')),
-    dict(type='DefaultFormatBundle'),
+    dict(type='ToTensor', keys=['img', 'proposals', 'gt_bboxes', 'gt_labels']),
+    dict(
+        type='ToDataContainer',
+        fields=[
+            dict(key=['proposals', 'gt_bboxes', 'gt_labels'], stack=False)
+        ]),
     dict(
         type='Collect',
         keys=['img', 'proposals', 'gt_bboxes', 'gt_labels'],
@@ -85,14 +90,15 @@ val_pipeline = [
     dict(type='Resize', scale=(-1, 256)),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW', collapse=True),
+    # Rename is needed to use mmdet detectors
+    dict(type='Rename', mapping=dict(imgs='img')),
+    dict(type='ToTensor', keys=['img', 'proposals']),
+    dict(type='ToDataContainer', fields=[dict(key='proposals', stack=False)]),
     dict(
         type='Collect',
         keys=['imgs', 'proposals'],
-        meta_keys=['scores', 'img_shape']),
-    # Rename to use mmdet models
-    dict(type='Rename', mapping=dict(imgs='img')),
-    dict(type='DefaultFormatBundle'),
-    dict(type='ToTensor', keys=['img', 'proposals'])
+        meta_keys=['scores', 'img_shape'],
+        nested=True)
 ]
 
 data = dict(

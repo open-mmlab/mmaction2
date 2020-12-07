@@ -125,7 +125,8 @@ def test_collect():
     for key in results['img_metas'].data:
         assert results['img_metas'].data[key] == inputs[key]
     assert repr(collect) == collect.__class__.__name__ + \
-        f'(keys={keys}, meta_keys={collect.meta_keys})'
+        (f'(keys={keys}, meta_keys={collect.meta_keys}, '
+         f'nested={collect.nested})')
 
 
 def test_format_shape():
