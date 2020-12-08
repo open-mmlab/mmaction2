@@ -27,7 +27,7 @@ class AVARoIHead(StandardRoIHead):
                     rescale=False):
         assert self.with_bbox, 'Bbox head must be implemented.'
 
-        assert x.shape[0] == len(img_metas) == len(proposal_list) == 1, \
+        assert x[0].shape[0] == len(img_metas) == len(proposal_list) == 1, \
             'test mode only accept one sample at a time'
 
         det_bboxes, det_labels = self.simple_test_bboxes(
