@@ -3,6 +3,8 @@ import torch.nn.functional as F
 from einops import rearrange, repeat
 from torch import nn
 
+from ..registry import BACKBONES
+
 MIN_NUM_PATCHES = 16
 
 
@@ -96,6 +98,7 @@ class Transformer(nn.Module):
         return x
 
 
+@BACKBONES.register_module()
 class ViT(nn.Module):
 
     def __init__(self,
