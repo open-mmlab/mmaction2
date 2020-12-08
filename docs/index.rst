@@ -44,9 +44,10 @@ Welcome to MMAction2's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Updates
+   :caption: Notes
 
    changelog.md
+   faq.md
 
 .. toctree::
    :caption: API Reference
