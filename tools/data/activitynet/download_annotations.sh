@@ -11,4 +11,6 @@ wget https://raw.githubusercontent.com/wzmsltw/BSN-boundary-sensitive-network/ma
 
 wget https://raw.githubusercontent.com/wzmsltw/BSN-boundary-sensitive-network/master/data/activitynet_annotations/video_info_new.csv
 
+wget https://download.openmmlab.com/mmaction/localization/anet_activity_indexes_val.txt
+
 cd -
