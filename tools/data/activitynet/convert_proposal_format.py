@@ -152,7 +152,7 @@ if __name__ == '__main__':
         tiou, t_overlap = pairwise_temporal_iou(
             proposal[video_id][:, :2].astype(float),
             ground_truth[video_id][:, :2].astype(float),
-            overlap_self=True)
+            calculate_overlap_self=True)
 
         dump_formatted_proposal(video_idx, video_id, num_frames, fps,
                                 ground_truth[video_id], proposal[video_id],

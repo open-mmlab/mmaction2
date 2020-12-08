@@ -194,14 +194,14 @@ def test_pairwise_temporal_iou():
     target_segments = np.array([[1, 2], [2, 3]])
     candidate_segments = np.array([[2, 3], [2.5, 3]])
     temporal_iou, temporal_overlap_self = pairwise_temporal_iou(
-        candidate_segments, target_segments, overlap_self=True)
+        candidate_segments, target_segments, calculate_overlap_self=True)
     assert_array_equal(temporal_overlap_self, [[0, 0], [1, 1]])
 
     # test temporal overlap_self when candidate_segments is 1d
     target_segments = np.array([[1, 2], [2, 3]])
     candidate_segments = np.array([2.5, 3])
     temporal_iou, temporal_overlap_self = pairwise_temporal_iou(
-        candidate_segments, target_segments, overlap_self=True)
+        candidate_segments, target_segments, calculate_overlap_self=True)
     assert_array_equal(temporal_overlap_self, [0, 1])
 
 
