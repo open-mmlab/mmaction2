@@ -108,7 +108,7 @@ class Bottleneck2dAudio(nn.Module):
         return out
 
 
-@BACKBONES.register_module
+@BACKBONES.register_module()
 class ResNetAudio(nn.Module):
     """ResNet 2d audio backbone. Reference:
 
