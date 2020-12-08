@@ -213,8 +213,9 @@ def pairwise_temporal_iou(candidate_segments,
     Returns:
         t_iou (np.ndarray): 1-dim array [n] /
             2-dim array [n x m] with IoU ratio.
-        t_overlap_self (np.ndarray): 1-dim array [n] /
-            2-dim array [n x m] with overlap_self.
+        t_overlap_self (optional, np.ndarray): 1-dim array [n] /
+            2-dim array [n x m] with overlap_self, returns when
+            calculate_overlap_self is True.
     """
     candidate_segments_ndim = candidate_segments.ndim
     if target_segments.ndim != 2 or candidate_segments_ndim not in [1, 2]:
