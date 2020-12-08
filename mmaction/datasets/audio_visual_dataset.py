@@ -4,7 +4,7 @@ from .rawframe_dataset import RawframeDataset
 from .registry import DATASETS
 
 
-@DATASETS.register_module
+@DATASETS.register_module()
 class AudioVisualDataset(RawframeDataset):
     """Dataset that reads both audio and visual data, supporting both rawframes
     and videos. The annotation file is same as that of the rawframe dataset,
