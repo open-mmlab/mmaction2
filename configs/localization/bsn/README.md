@@ -123,7 +123,7 @@ Examples:
     python tools/test.py configs/localization/bsn/bsn_pem_400x100_1x16_20e_activitynet_feature.py checkpoints/SOME_CHECKPOINT.pth --eval AR@AN --out results.json
     ```
 Notes:
-1. (Optional) You can use the following command to generate a formatted proposal file, which will be fed into the action classifier (e.g: SSN) to get the classification result of proposals.
+1. (Optional) You can use the following command to generate a formatted proposal file, which will be fed into the action classifier (only SSN and P-GCN, not including TSN, I3D etc.) to get the classification result of proposals.
     ```shell
     python tools/data/activitynet/convert_proposal_format.py
     ```

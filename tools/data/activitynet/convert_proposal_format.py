@@ -1,5 +1,5 @@
-"""This file converts the output proposal file of proposal generator (BMN) into
-the input proposal file of action classifier (SSN)."""
+"""This file converts the output proposal file of proposal generator (BSN, BMN) into
+the input proposal file of action classifier (only SSN and P-GCN)."""
 import argparse
 
 import mmcv
