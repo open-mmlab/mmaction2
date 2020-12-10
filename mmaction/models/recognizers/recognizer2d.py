@@ -91,6 +91,16 @@ class Recognizer2D(BaseRecognizer):
         num_segs = imgs.shape[0] // batches
 
         x = self.extract_feat(imgs)
+        if hasattr(self, 'neck'):
+            x = [
+                each.reshape((-1, num_segs) +
+                             each.shape[1:]).transpose(1, 2).contiguous()
+                for each in x
+            ]
+            x, _ = self.neck(x)
+            x = x.squeeze(2)
+            num_segs = 1
+
         outs = (self.cls_head(x, num_segs), )
         return outs
 
