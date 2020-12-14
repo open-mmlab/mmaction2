@@ -41,6 +41,14 @@ If the contents here do not cover your issue, please create an issue using the [
     And to use backbone for pre-training, you can change `pretrained` value in the backbone dict of config files to the checkpoint path / url.
     When training, the unexpected keys will be ignored.
 
+- **How to visualize the training accuracy/loss curves in real-time ?**
+
+    Use `TensorboardLoggerHook` in `log_config` like
+    ```python
+    log_config=dict(interval=20, hooks=[dict(type='TensorboardLoggerHook')])
+    ```
+    You can refer to [tutorials/customize_runtime.md](tutorials/customize_runtime.md#log-config), [config.md](config.md) and [this](https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py#L118).
+
 
 ## Testing
 
