@@ -103,6 +103,7 @@ class ViT(nn.Module):
 
     def __init__(self,
                  *,
+                 pretrained=None,
                  image_size,
                  patch_size,
                  num_classes,
@@ -120,7 +121,7 @@ class ViT(nn.Module):
         assert num_patches > MIN_NUM_PATCHES, f'your number of patches ({num_patches}) is way too small for attention to be effective (at least 16). Try decreasing your patch size'  # noqa: E501
 
         self.patch_size = patch_size
-
+        self.pretrained = pretrained
         self.pos_embedding = nn.Parameter(torch.randn(1, num_patches + 1, dim))
         self.patch_to_embedding = nn.Linear(patch_dim, dim)
         self.cls_token = nn.Parameter(torch.randn(1, 1, dim))
@@ -130,8 +131,14 @@ class ViT(nn.Module):
 
         self.to_cls_token = nn.Identity()
 
+        # to be moved to head
         self.mlp_head = nn.Sequential(
             nn.LayerNorm(dim), nn.Linear(dim, num_classes))
+
+        if pretrained:
+            # use self-supervised training pretrain
+            from mmcv.runner import load_checkpoint
+            load_checkpoint(self, pretrained, map_location='cpu')
 
     def forward(self, img, mask=None):
         p = self.patch_size

@@ -48,7 +48,7 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         if train_cfg is not None and 'aux_info' in train_cfg:
             self.aux_info = train_cfg['aux_info']
 
-        self.init_weights()
+        # self.init_weights() # FIXME
 
         self.fp16_enabled = False
 

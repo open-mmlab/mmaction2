@@ -46,7 +46,7 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
     def __init__(self,
                  num_classes,
                  in_channels,
-                 loss_cls=dict(type='CrossEntropyLoss', loss_factor=1.0),
+                 loss_cls=dict(type='CrossEntropyLoss', loss_weight=1.0),
                  multi_class=False,
                  label_smooth_eps=0.0):
         super().__init__()
