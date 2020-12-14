@@ -1,46 +1,41 @@
 import torch
+import torch.nn.functional as F
 
 
-def bbox_target(pos_bboxes_list,
-                neg_bboxes_list,
-                pos_gt_labels_list,
-                cfg,
-                concat=True):
+def bbox_target(pos_bboxes_list, neg_bboxes_list, gt_labels, cfg):
+    """Generate classification targets for bboxes.
+
+    Args:
+        pos_bboxes_list (list[Tensor]): Positive bboxes list.
+        neg_bboxes_list (list[Tensor]): Negative bboxes list.
+        gt_labels (list[Tensor]): Groundtruth classification label list.
+        cfg (Config): RCNN config.
+
+    Returns:
+        (Tensor, Tensor): Label and label_weight for bboxes.
+    """
     labels, label_weights = [], []
-    for pos_bboxes, neg_bboxes, neg_gt_bboxes in zip(pos_bboxes_list,
-                                                     neg_bboxes_list,
-                                                     pos_gt_labels_list):
-        label, label_weight = bbox_target_single(
-            pos_bboxes, neg_bboxes, neg_gt_bboxes, cfg=cfg)
+    pos_weight = 1.0 if cfg.pos_weight <= 0 else cfg.pos_weight
+
+    assert len(pos_bboxes_list) == len(neg_bboxes_list) == len(gt_labels)
+    length = len(pos_bboxes_list)
+
+    for i in range(length):
+        pos_bboxes = pos_bboxes_list[i]
+        neg_bboxes = neg_bboxes_list[i]
+        gt_label = gt_labels[i]
+
+        num_pos = pos_bboxes.size(0)
+        num_neg = neg_bboxes.size(0)
+        num_samples = num_pos + num_neg
+        label = F.pad(gt_label, (0, 0, 0, num_neg))
+        label_weight = pos_bboxes.new_zeros(num_samples)
+        label_weight[:num_pos] = pos_weight
+        label_weight[-num_neg:] = 1.
+
         labels.append(label)
         label_weights.append(label_weight)
 
-    if concat:
-        labels = torch.cat(labels, 0)
-        label_weights = torch.cat(label_weights, 0)
-    return labels, label_weights
-
-
-# The class_weight is used for the classification loss, default 1
-# The pos_weight is used for the positive bboxes (if train detection),
-# default -1
-def bbox_target_single(pos_bboxes, neg_bboxes, pos_gt_labels, cfg):
-    num_pos = pos_bboxes.size(0)
-    num_neg = neg_bboxes.size(0)
-    num_samples = num_pos + num_neg
-
-    label_len = len(pos_gt_labels[0])
-
-    assert label_len > 1
-    labels = pos_bboxes.new_zeros(num_samples, label_len)
-
-    label_weights = pos_bboxes.new_zeros(num_samples)
-
-    if num_pos > 0:
-        labels[:num_pos] = pos_gt_labels
-        pos_weight = 1.0 if cfg.pos_weight <= 0 else cfg.pos_weight
-        label_weights[:num_pos] = pos_weight
-    if num_neg > 0:
-        label_weights[-num_neg:] = 1.0
-
+    labels = torch.cat(labels, 0)
+    label_weights = torch.cat(label_weights, 0)
     return labels, label_weights

@@ -316,7 +316,7 @@ class AVADataset(BaseDataset):
 
     def evaluate(self,
                  results,
-                 metrics=['proposal', 'bbox'],
+                 metrics=('proposal', 'bbox'),
                  metric_options=None,
                  logger=None):
         # need to create a temp result file

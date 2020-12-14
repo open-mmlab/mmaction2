@@ -1178,6 +1178,8 @@ class TestAugumentations:
         results_ = box_scale(results_)
         self.check_keys_contain(results_.keys(), target_keys)
         assert results_['proposals'] is None
+        assert repr(box_scale) == ('EntityBoxRescale'
+                                   f'(scale_factor={scale_factor})')
 
     def test_box_crop(self):
         target_keys = ['proposals', 'crop_bbox', 'gt_bboxes']
@@ -1202,6 +1204,7 @@ class TestAugumentations:
         results_['proposals'] = None
         results_ = box_crop(results_)
         assert results_['proposals'] is None
+        assert repr(box_crop) == f'EntityBoxCrop(crop_bbox={crop_bbox})'
 
     def test_box_flip(self):
         target_keys = ['gt_bboxes', 'proposals', 'img_shape']
@@ -1229,3 +1232,4 @@ class TestAugumentations:
         results_['proposals'] = None
         results_ = box_flip(results_)
         assert results_['proposals'] is None
+        assert repr(box_flip) == f'EntityBoxFlip(img_shape={img_shape})'

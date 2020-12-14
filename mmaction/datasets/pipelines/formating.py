@@ -257,6 +257,9 @@ class FormatShape:
 
     Args:
         input_format (str): Define the final imgs format.
+        collapse (bool): To collpase input_format N... to ... (NCTHW to CTHW,
+            etc.) if N is 1. Should be set as True when training and testing
+            detectors. Default: False.
     """
 
     def __init__(self, input_format, collapse=False):
@@ -317,7 +320,7 @@ class FormatShape:
             # P x M x C x H x W
         if self.collapse:
             assert imgs.shape[0] == 1
-            imgs = imgs.reshape(imgs.shape[1:])
+            imgs = imgs.squeeze(0)
 
         results['imgs'] = imgs
         results['input_shape'] = imgs.shape

@@ -184,6 +184,9 @@ class EntityBoxRescale:
 
         return results
 
+    def __repr__(self):
+        return f'{self.__class__.__name__}(scale_factor={self.scale_factor})'
+
 
 @PIPELINES.register_module()
 class EntityBoxCrop:
@@ -228,6 +231,9 @@ class EntityBoxCrop:
             results['proposals'] = proposals_
         return results
 
+    def __repr__(self):
+        return f'{self.__class__.__name__}(crop_bbox={self.crop_bbox})'
+
 
 @PIPELINES.register_module()
 class EntityBoxFlip:
@@ -244,14 +250,9 @@ class EntityBoxFlip:
         img_shape (tuple[int]): The img shape.
     """
 
-    _directions = ['horizontal']
-
-    def __init__(self, img_shape, direction='horizontal'):
+    def __init__(self, img_shape):
         self.img_shape = img_shape
         assert mmcv.is_tuple_of(img_shape, int)
-        if direction not in self._directions:
-            raise ValueError(f'Direction {direction} is not supported. '
-                             f'Currently support ones are {self._directions}')
 
     def __call__(self, results):
         proposals = results['proposals']
@@ -273,6 +274,10 @@ class EntityBoxFlip:
         results['proposals'] = proposals_
         results['gt_bboxes'] = gt_bboxes_
         return results
+
+    def __repr__(self):
+        repr_str = f'{self.__class__.__name__}(img_shape={self.img_shape})'
+        return repr_str
 
 
 @PIPELINES.register_module()
@@ -920,8 +925,7 @@ class Flip:
 
         if 'gt_bboxes' in results and flip:
             assert not self.lazy and self.direction == 'horizontal'
-            entity_box_flip = EntityBoxFlip(results['img_shape'],
-                                            self.direction)
+            entity_box_flip = EntityBoxFlip(results['img_shape'])
             results = entity_box_flip(results)
 
         return results

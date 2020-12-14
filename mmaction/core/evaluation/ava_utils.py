@@ -35,7 +35,7 @@ def results2csv(dataset, results, out_file):
     # save space for float
     def tostr(item):
         if isinstance(item, float):
-            return '%.3f' % item
+            return f'{item:.3f}'
         return str(item)
 
     with open(out_file, 'w') as f:
@@ -50,7 +50,7 @@ def print_time(message, start):
 
 def make_image_key(video_id, timestamp):
     """Returns a unique identifier for a video id & timestamp."""
-    return '%s,%04d' % (video_id, int(timestamp))
+    return f'{video_id},{int(timestamp):04d}'
 
 
 def read_csv(csv_file, class_whitelist=None, capacity=0):
