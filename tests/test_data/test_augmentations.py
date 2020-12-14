@@ -1215,9 +1215,6 @@ class TestAugumentations:
 
         img_shape = results['img_shape']
 
-        with pytest.raises(ValueError):
-            EntityBoxFlip(img_shape, 'unsupport')
-
         box_flip = EntityBoxFlip(img_shape)
         results_ = copy.deepcopy(results)
         results_ = box_flip(results_)
