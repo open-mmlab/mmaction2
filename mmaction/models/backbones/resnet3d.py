@@ -1,14 +1,21 @@
+import warnings
+
 import torch.nn as nn
 import torch.utils.checkpoint as cp
 from mmcv.cnn import (ConvModule, NonLocal3d, build_activation_layer,
                       constant_init, kaiming_init)
 from mmcv.runner import _load_checkpoint, load_checkpoint
 from mmcv.utils import _BatchNorm
-from mmdet.models.builder import SHARED_HEADS as MMDET_SHARED_HEADS
 from torch.nn.modules.utils import _ntuple, _triple
 
 from ...utils import get_root_logger
 from ..registry import BACKBONES
+
+try:
+    import mmdet  # noqa
+    from mmdet.models.builder import SHARED_HEADS as MMDET_SHARED_HEADS
+except (ImportError, ModuleNotFoundError):
+    warnings.warn('Please install mmdet to use MMDET_SHARED_HEADS')
 
 
 class BasicBlock3d(nn.Module):
@@ -835,7 +842,6 @@ class ResNet3d(nn.Module):
 
 
 @BACKBONES.register_module()
-@MMDET_SHARED_HEADS.register_module()
 class ResNet3dLayer(nn.Module):
     """ResNet 3d Layer.
 
@@ -991,3 +997,7 @@ class ResNet3dLayer(nn.Module):
             for m in self.modules():
                 if isinstance(m, _BatchNorm):
                     m.eval()
+
+
+if 'mmdet' in dir():
+    MMDET_SHARED_HEADS.register_module()(ResNet3dLayer)

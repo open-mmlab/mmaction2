@@ -1,11 +1,16 @@
+import warnings
+
 import torch
 import torch.nn as nn
 from mmcv.ops import RoIAlign, RoIPool
-from mmdet.models import ROI_EXTRACTORS
+
+try:
+    import mmdet  # noqa
+    from mmdet.models import ROI_EXTRACTORS
+except (ImportError, ModuleNotFoundError):
+    warnings.warn('Please install mmdet to use ROI_EXTRACTORS')
 
 
-# register the module in mmdet
-@ROI_EXTRACTORS.register_module
 class SingleRoIExtractor3D(nn.Module):
     """Extract RoI features from a single level feature map.
 
@@ -74,3 +79,7 @@ class SingleRoIExtractor3D(nn.Module):
             frame_feat = feat[:, :, t, :, :].contiguous()
             roi_feats.append(self.roi_layer(frame_feat, rois))
         return torch.stack(roi_feats, dim=2)
+
+
+if 'mmdet' in dir():
+    ROI_EXTRACTORS.register_module()(SingleRoIExtractor3D)

@@ -1,13 +1,18 @@
+import warnings
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from mmdet.models.builder import HEADS as MMDET_HEADS
 
 from mmaction.core.bbox import bbox_target
 
+try:
+    import mmdet  # noqa
+    from mmdet.models.builder import HEADS as MMDET_HEADS
+except (ImportError, ModuleNotFoundError):
+    warnings.warn('Please install mmdet to use MMDET_HEADS')
 
-# TODO: we can add class_weight for 80 AVA classes
-@MMDET_HEADS.register_module
+
 class BBoxHeadAVA(nn.Module):
     """Simplest RoI head, with only two fc layers for classification and
     regression respectively.
@@ -210,3 +215,7 @@ class BBoxHeadAVA(nn.Module):
 
         bboxes = _bbox_crop_undo(bboxes, crop_quadruple)
         return bboxes, scores
+
+
+if 'mmdet' in dir():
+    MMDET_HEADS.register_module()(BBoxHeadAVA)

@@ -1,13 +1,20 @@
+import warnings
+
 import torch
 import torch.nn as nn
 from mmcv.cnn import ConvModule, kaiming_init
 from mmcv.runner import _load_checkpoint, load_checkpoint
 from mmcv.utils import print_log
-from mmdet.models import BACKBONES as MMDET_BACKBONES
 
 from ...utils import get_root_logger
 from ..registry import BACKBONES
 from .resnet3d import ResNet3d
+
+try:
+    import mmdet  # noqa
+    from mmdet.models import BACKBONES as MMDET_BACKBONES
+except (ImportError, ModuleNotFoundError):
+    warnings.warn('Please install mmdet to use MMDET_BACKBONES')
 
 
 class ResNet3dPathway(ResNet3d):
@@ -354,7 +361,6 @@ def build_pathway(cfg, *args, **kwargs):
     return pathway
 
 
-@MMDET_BACKBONES.register_module()
 @BACKBONES.register_module()
 class ResNet3dSlowFast(nn.Module):
     """Slowfast backbone.
@@ -499,3 +505,7 @@ class ResNet3dSlowFast(nn.Module):
         out = (x_slow, x_fast)
 
         return out
+
+
+if 'mmdet' in dir():
+    MMDET_BACKBONES.register_module()(ResNet3dSlowFast)
