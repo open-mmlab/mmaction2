@@ -1,5 +1,9 @@
 import numpy as np
 
+from mmaction.localization import eval_ap
+from ..registry import METRICS
+from .base import BaseMetrics
+
 
 def confusion_matrix(y_pred, y_real, normalize=None):
     """Compute confusion matrix.
@@ -517,3 +521,144 @@ def average_precision_at_temporal_iou(ground_truth,
                                                   recall_cumsum[t_idx, :])
 
     return ap
+
+
+@METRICS.register_module()
+class TopKAcc(BaseMetrics):
+
+    def __init__(self, logger, topk=(1, 5)):
+        super().__init__(logger)
+        self.topk = topk
+
+    def wrap_up(self, results):
+        eval_results = {}
+        for k, v in zip(self.topk, results):
+            eval_results[f'top{k}_acc'] = v
+        return eval_results
+
+    def __call__(self, results, gt_labels, kwargs=None):
+        acc = top_k_accuracy(results, gt_labels, self.topk)
+        eval_results = self.wrap_up(acc)
+
+        self.print_log_msg(eval_results)
+        return eval_results
+
+
+@METRICS.register_module()
+class MeanClassAcc(BaseMetrics):
+
+    def wrap_up(self, results):
+        eval_results = {'mean_class_accuracy': results}
+        return eval_results
+
+    def __call__(self, results, gt_labels, kwargs=None):
+        mean_cls_acc = mean_class_accuracy(results, gt_labels)
+        eval_results = self.wrap_up(mean_cls_acc)
+
+        self.print_log_msg(eval_results)
+        return eval_results
+
+
+@METRICS.register_module()
+class TemporalMeanAP(BaseMetrics):
+
+    VALID_DATASETS = ('thumos14', )
+
+    def __init__(self,
+                 logger,
+                 scale_range=np.arange(0.1, 1.0, .1),
+                 eval_dataset='thumos14'):
+        super().__init__(logger)
+
+        assert eval_dataset in self.VALID_DATASETS
+
+        self.scale_range = scale_range
+        self.eval_dataset = eval_dataset
+
+    def wrap_up(self, results):
+        eval_results = {}
+        for iou, map_iou in zip(self.scale_range, results):
+            eval_results[f'mAP@{iou:.02f}'] = map_iou
+        return eval_results
+
+    def print_log_msg(self, log_msg):
+        super().print_log_msg(log_msg)
+        self.logger.info('Evaluation finished')
+
+    def __call__(self, results, gts, kwargs=None):
+        if self.eval_dataset == 'thumos14':
+            ap_values = eval_ap(results, gts, self.scale_range)
+            map_ious = ap_values.mean(axis=0)
+            eval_results = self.wrap_up(map_ious)
+
+        self.print_log_msg(eval_results)
+        return eval_results
+
+
+@METRICS.register_module()
+class MeanAP(BaseMetrics):
+
+    VALID_MODE = (None, 'mit')
+
+    def __init__(self, logger, mode=None):
+        super().__init__(logger)
+
+        assert mode in self.VALID_MODE
+        self.mode = mode
+
+    def wrap_up(self, results):
+        eval_results = {'mean_average_precision': results}
+        return eval_results
+
+    def __call__(self, results, gt_labels, kwargs=None):
+        if self.mode == 'mit':
+            mean_ap = mmit_mean_average_precision(results, gt_labels)
+        elif self.mode is None:
+            mean_ap = mean_average_precision(results, gt_labels)
+        eval_results = self.wrap_up(mean_ap)
+
+        self.print_log_msg(eval_results)
+        return eval_results
+
+
+@METRICS.register_module()
+class ARAN(BaseMetrics):
+
+    def __init__(self,
+                 logger,
+                 max_avg_proposals=100,
+                 temporal_iou_thresholds=np.linspace(0.5, 0.95, 10)):
+        super().__init__(logger)
+
+        if isinstance(temporal_iou_thresholds, list):
+            temporal_iou_thresholds = np.array(temporal_iou_thresholds)
+
+        self.max_avg_proposals = max_avg_proposals
+        self.temporal_iou_thresholds = temporal_iou_thresholds
+
+    def wrap_up(self, results):
+        auc = results['auc']
+        recall = results['recall']
+
+        eval_results = {
+            'auc': auc,
+            'AR@1': np.mean(recall[:, 0]),
+            'AR@5': np.mean(recall[:, 4]),
+            'AR@10': np.mean(recall[:, 9]),
+            'AR@100': np.mean(recall[:, 99])
+        }
+        return eval_results
+
+    def __call__(self, proposal, ground_truth, kwargs=None):
+        keys = ['recall', 'avg_recall', 'proposals_per_video', 'auc']
+        num_proposals = kwargs['num_proposals']
+
+        results = average_recall_at_avg_proposals(ground_truth, proposal,
+                                                  num_proposals,
+                                                  self.max_avg_proposals,
+                                                  self.temporal_iou_thresholds)
+        results = dict(zip(keys, results))
+        eval_results = self.wrap_up(results)
+
+        self.print_log_msg(eval_results)
+        return eval_results

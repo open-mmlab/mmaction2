@@ -150,7 +150,7 @@ def eval_ap(detections, gt_by_cls, iou_range):
 
     Args:
         detections (dict): Results of detections.
-        gt_by_cls (dict): Information of groudtruth.
+        gt_by_cls (dict): Information of groundtruth.
         iou_range (list): Ranges of iou.
 
     Returns:
