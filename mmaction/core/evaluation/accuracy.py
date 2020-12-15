@@ -528,6 +528,13 @@ class TopKAcc(BaseMetrics):
 
     def __init__(self, logger, topk=(1, 5)):
         super().__init__(logger)
+
+        if not isinstance(topk, (int, tuple)):
+            raise TypeError('topk must be int or tuple of int, '
+                            f'but got {type(topk)}')
+
+        if isinstance(topk, int):
+            topk = (topk, )
         self.topk = topk
 
     def wrap_up(self, results):
@@ -545,7 +552,7 @@ class TopKAcc(BaseMetrics):
 
 
 @METRICS.register_module()
-class MeanClassAcc(BaseMetrics):
+class MeanClsAcc(BaseMetrics):
 
     def wrap_up(self, results):
         eval_results = {'mean_class_accuracy': results}
@@ -606,8 +613,13 @@ class MeanAP(BaseMetrics):
         assert mode in self.VALID_MODE
         self.mode = mode
 
-    def wrap_up(self, results):
-        eval_results = {'mean_average_precision': results}
+    def wrap_up(self, results, kwargs):
+        eval_results = {}
+        if 'category' in kwargs:
+            category = kwargs['category']
+            eval_results[f'{category}_mAP'] = results
+        else:
+            eval_results['mean_average_precision'] = results
         return eval_results
 
     def __call__(self, results, gt_labels, kwargs=None):
@@ -615,7 +627,7 @@ class MeanAP(BaseMetrics):
             mean_ap = mmit_mean_average_precision(results, gt_labels)
         elif self.mode is None:
             mean_ap = mean_average_precision(results, gt_labels)
-        eval_results = self.wrap_up(mean_ap)
+        eval_results = self.wrap_up(mean_ap, kwargs)
 
         self.print_log_msg(eval_results)
         return eval_results

@@ -1,12 +1,12 @@
 import copy
 import os
 import os.path as osp
-import warnings
 
 import mmcv
 import numpy as np
+from mmcv.utils import print_log
 
-from ..core import average_recall_at_avg_proposals
+from ..core import build_metrics
 from .base import BaseDataset
 from .registry import DATASETS
 
@@ -188,43 +188,25 @@ class ActivityNetDataset(BaseDataset):
     def evaluate(
             self,
             results,
-            metrics='AR@AN',
             metric_options={
-                'AR@AN':
+                'ARAN':
                 dict(
                     max_avg_proposals=100,
                     temporal_iou_thresholds=np.linspace(0.5, 0.95, 10))
             },
-            logger=None,
-            **deprecated_kwargs):
+            logger=None):
         """Evaluation in feature dataset.
 
         Args:
             results (list[dict]): Output results.
-            metrics (str | sequence[str]): Metrics to be performed.
-                Defaults: 'AR@AN'.
-            metric_options (dict): Dict for metric options. Options are
-                ``max_avg_proposals``, ``temporal_iou_thresholds`` for
-                ``AR@AN``.
-                default: ``{'AR@AN': dict(max_avg_proposals=100,
-                temporal_iou_thresholds=np.linspace(0.5, 0.95, 10))}``.
+            metric_options (dict): Dict.
             logger (logging.Logger | None): Training logger. Defaults: None.
-            deprecated_kwargs (dict): Used for containing deprecated arguments.
-                See 'https://github.com/open-mmlab/mmaction2/pull/286'.
 
         Returns:
             dict: Evaluation results for evaluation metrics.
         """
-        # Protect ``metric_options`` since it uses mutable value as default
-        metric_options = copy.deepcopy(metric_options)
-
-        if deprecated_kwargs != {}:
-            warnings.warn(
-                'Option arguments for metrics has been changed to '
-                "`metric_options`, See 'https://github.com/open-mmlab/mmaction2/pull/286' "  # noqa: E501
-                'for more details')
-            metric_options['AR@AN'] = dict(metric_options['AR@AN'],
-                                           **deprecated_kwargs)
+        metrics = list(metric_options)
+        allowed_metrics = ('ARAN', )
 
         if not isinstance(results, list):
             raise TypeError(f'results must be a list, but got {type(results)}')
@@ -232,8 +214,6 @@ class ActivityNetDataset(BaseDataset):
             f'The length of results is not equal to the dataset len: '
             f'{len(results)} != {len(self)}')
 
-        metrics = metrics if isinstance(metrics, (list, tuple)) else [metrics]
-        allowed_metrics = ['AR@AN']
         for metric in metrics:
             if metric not in allowed_metrics:
                 raise KeyError(f'metric {metric} is not supported')
@@ -241,28 +221,21 @@ class ActivityNetDataset(BaseDataset):
         eval_results = {}
         ground_truth = self._import_ground_truth()
         proposal, num_proposals = self._import_proposals(results)
+        metric_kwargs = dict(num_proposals=num_proposals)
 
         for metric in metrics:
-            if metric == 'AR@AN':
-                temporal_iou_thresholds = metric_options.setdefault(
-                    'AR@AN', {}).setdefault('temporal_iou_thresholds',
-                                            np.linspace(0.5, 0.95, 10))
-                max_avg_proposals = metric_options.setdefault(
-                    'AR@AN', {}).setdefault('max_avg_proposals', 100)
-                if isinstance(temporal_iou_thresholds, list):
-                    temporal_iou_thresholds = np.array(temporal_iou_thresholds)
+            msg = f'Evaluating {metric} ...'
+            msg = '\n' + msg if logger is None else msg
+            print_log(msg, logger=logger)
 
-                recall, _, _, auc = (
-                    average_recall_at_avg_proposals(
-                        ground_truth,
-                        proposal,
-                        num_proposals,
-                        max_avg_proposals=max_avg_proposals,
-                        temporal_iou_thresholds=temporal_iou_thresholds))
-                eval_results['auc'] = auc
-                eval_results['AR@1'] = np.mean(recall[:, 0])
-                eval_results['AR@5'] = np.mean(recall[:, 4])
-                eval_results['AR@10'] = np.mean(recall[:, 9])
-                eval_results['AR@100'] = np.mean(recall[:, 99])
+            if not hasattr(self, metric):
+                metric_cfg = dict(
+                    type=metric, logger=logger, **metric_options[metric])
+                metric_func = build_metrics(metric_cfg)
+                setattr(self, metric, metric_func)
+
+            results = getattr(self, metric)(proposal, ground_truth,
+                                            metric_kwargs)
+            eval_results.update(results)
 
         return eval_results

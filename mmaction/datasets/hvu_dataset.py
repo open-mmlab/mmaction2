@@ -1,11 +1,10 @@
-import copy
 import os.path as osp
 
 import mmcv
 import numpy as np
 from mmcv.utils import print_log
 
-from ..core import mean_average_precision
+from ..core import build_metrics
 from .base import BaseDataset
 from .registry import DATASETS
 
@@ -124,19 +123,13 @@ class HVUDataset(BaseDataset):
         arr[label] = 1.
         return arr
 
-    def evaluate(self,
-                 results,
-                 metrics='mean_average_precision',
-                 metric_options=None,
-                 logger=None):
+    def evaluate(self, results, metric_options=None, logger=None):
         """Evaluation in HVU Video Dataset. We only support evaluating mAP for
         each tag categories. Since some tag categories are missing for some
         videos, we can not evaluate mAP for all tags.
 
         Args:
             results (list): Output results.
-            metrics (str | sequence[str]): Metrics to be performed.
-                Defaults: 'mean_average_precision'.
             metric_options (dict | None): Dict for metric options.
                 Default: None.
             logger (logging.Logger | None): Logger for recording.
@@ -145,8 +138,8 @@ class HVUDataset(BaseDataset):
         Returns:
             dict: Evaluation results dict.
         """
-        # Protect ``metric_options`` since it uses mutable value as default
-        metric_options = copy.deepcopy(metric_options)
+        metrics = list(metric_options)
+        allowed_metrics = ('MeanAP', )
 
         if not isinstance(results, list):
             raise TypeError(f'results must be a list, but got {type(results)}')
@@ -154,36 +147,45 @@ class HVUDataset(BaseDataset):
             f'The length of results is not equal to the dataset len: '
             f'{len(results)} != {len(self)}')
 
-        metrics = metrics if isinstance(metrics, (list, tuple)) else [metrics]
-
-        # There should be only one metric in the metrics list:
-        # 'mean_average_precision'
-        assert len(metrics) == 1
-        metric = metrics[0]
-        assert metric == 'mean_average_precision'
-
-        gt_labels = [ann['label'] for ann in self.video_infos]
+        for metric in metrics:
+            if metric not in allowed_metrics:
+                raise KeyError(f'metric {metric} is not supported')
 
         eval_results = {}
-        for category in self.tag_categories:
+        metric_kwargs = {}
+        gt_labels = [ann['label'] for ann in self.video_infos]
 
-            start_idx = self.category2startidx[category]
-            num = self.category2num[category]
-            preds = [
-                result[start_idx:start_idx + num]
-                for video_idx, result in enumerate(results)
-                if category in gt_labels[video_idx]
-            ]
-            gts = [
-                gt_label[category] for gt_label in gt_labels
-                if category in gt_label
-            ]
+        for metric in metrics:
 
-            gts = [self.label2array(num, item) for item in gts]
+            if not hasattr(self, metric):
+                metric_cfg = dict(
+                    type=metric, logger=logger, **metric_options[metric])
+                metric_func = build_metrics(metric_cfg)
+                setattr(self, metric, metric_func)
 
-            mAP = mean_average_precision(preds, gts)
-            eval_results[f'{category}_mAP'] = mAP
-            log_msg = f'\n{category}_mAP\t{mAP:.4f}'
-            print_log(log_msg, logger=logger)
+            for category in self.tag_categories:
+
+                metric_kwargs['category'] = category
+
+                msg = f'Evaluating {metric} on {category} ...'
+                msg = '\n' + msg if logger is None else msg
+                print_log(msg, logger=logger)
+
+                start_idx = self.category2startidx[category]
+                num = self.category2num[category]
+
+                preds = []
+                for video_idx, result in enumerate(results):
+                    if category in gt_labels[video_idx]:
+                        preds.append(result[start_idx:start_idx + num])
+
+                gts = []
+                for gt_label in gt_labels:
+                    if category in gt_label:
+                        gts.append(gt_label[category])
+                gts = [self.label2array(num, item) for item in gts]
+
+                results = getattr(self, metric)(preds, gts, metric_kwargs)
+                eval_results.update(results)
 
         return eval_results

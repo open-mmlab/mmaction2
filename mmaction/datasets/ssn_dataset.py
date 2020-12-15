@@ -1,14 +1,14 @@
 import copy
 import os.path as osp
-import warnings
 
 import mmcv
 import numpy as np
+from mmcv.utils import print_log
 from torch.nn.modules.utils import _pair
 
-from ..core import softmax
-from ..localization import (eval_ap, load_localize_proposal_file,
-                            perform_regression, temporal_iou, temporal_nms)
+from ..core import build_metrics, softmax
+from ..localization import (load_localize_proposal_file, perform_regression,
+                            temporal_iou, temporal_nms)
 from ..utils import get_root_logger
 from .base import BaseDataset
 from .registry import DATASETS
@@ -392,37 +392,22 @@ class SSNDataset(BaseDataset):
 
     def evaluate(self,
                  results,
-                 metrics='mAP',
                  metric_options=dict(mAP=dict(eval_dataset='thumos14')),
-                 logger=None,
-                 **deprecated_kwargs):
+                 logger=None):
         """Evaluation in SSN proposal dataset.
 
         Args:
             results (list[dict]): Output results.
-            metrics (str | sequence[str]): Metrics to be performed.
-                Defaults: 'mAP'.
-            metric_options (dict): Dict for metric options. Options are
-                ``eval_dataset`` for ``mAP``.
+            metric_options (dict): Dict.
                 Default: ``dict(mAP=dict(eval_dataset='thumos14'))``.
             logger (logging.Logger | None): Logger for recording.
                 Default: None.
-            deprecated_kwargs (dict): Used for containing deprecated arguments.
-                See 'https://github.com/open-mmlab/mmaction2/pull/286'.
 
         Returns:
             dict: Evaluation results for evaluation metrics.
         """
-        # Protect ``metric_options`` since it uses mutable value as default
-        metric_options = copy.deepcopy(metric_options)
-
-        if deprecated_kwargs != {}:
-            warnings.warn(
-                'Option arguments for metrics has been changed to '
-                "`metric_options`, See 'https://github.com/open-mmlab/mmaction2/pull/286' "  # noqa: E501
-                'for more details')
-            metric_options['mAP'] = dict(metric_options['mAP'],
-                                         **deprecated_kwargs)
+        metrics = list(metric_options)
+        allowed_metrics = ('TemporalMeanAP', )
 
         if not isinstance(results, list):
             raise TypeError(f'results must be a list, but got {type(results)}')
@@ -430,8 +415,6 @@ class SSNDataset(BaseDataset):
             f'The length of results is not equal to the dataset len: '
             f'{len(results)} != {len(self)}')
 
-        metrics = metrics if isinstance(metrics, (list, tuple)) else [metrics]
-        allowed_metrics = ['mAP']
         for metric in metrics:
             if metric not in allowed_metrics:
                 raise KeyError(f'metric {metric} is not supported')
@@ -471,18 +454,21 @@ class SSNDataset(BaseDataset):
             plain_detections[class_idx] = detection_list
 
         eval_results = {}
-        for metric in metrics:
-            if metric == 'mAP':
-                eval_dataset = metric_options.setdefault('mAP', {}).setdefault(
-                    'eval_dataset', 'thumos14')
-                if eval_dataset == 'thumos14':
-                    iou_range = np.arange(0.1, 1.0, .1)
-                    ap_values = eval_ap(plain_detections, all_gts, iou_range)
-                    map_ious = ap_values.mean(axis=0)
-                    self.logger.info('Evaluation finished')
+        metric_kwargs = {}
 
-                    for iou, map_iou in zip(iou_range, map_ious):
-                        eval_results[f'mAP@{iou:.02f}'] = map_iou
+        for metric in metrics:
+            msg = f'Evaluating {metric} ...'
+            msg = '\n' + msg if logger is None else msg
+            print_log(msg, logger=logger)
+
+            if not hasattr(self, metric):
+                metric_cfg = dict(
+                    type=metric, logger=logger, **metric_options[metric])
+                metric_func = build_metrics(metric_cfg)
+                setattr(self, metric, metric_func)
+
+            results = getattr(self, metric)(results, all_gts, metric_kwargs)
+            eval_results.update(results)
 
         return eval_results
 
