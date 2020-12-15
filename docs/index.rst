@@ -22,8 +22,6 @@ Welcome to MMAction2's documentation!
    :caption: Model Zoo
 
    modelzoo.md
-   recognition_models.md
-   localization_models.md
 
 .. toctree::
    :maxdepth: 2

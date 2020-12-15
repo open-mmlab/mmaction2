@@ -1,23 +1,25 @@
 #!/usr/bin/env python
 import functools as func
 import glob
+import os
 import re
+from itertools import chain
 
-files = sorted(glob.glob('*_models.md'))
+
+def link_anchor(name_str):
+    return name_str.strip().replace(' ', '-').replace('.', '')
+
+
+config_dir_names = ['localization', 'recognition']
 
 stats = []
 
-for f in files:
-    with open(f, 'r') as content_file:
+for config_dir_name in config_dir_names:
+    with open(config_dir_name + '_models.md') as content_file:
         content = content_file.read()
 
     # title
     title = content.split('\n')[0].replace('#', '')
-
-    # count papers
-    papers = set(x.lower().strip()
-                 for x in re.findall(r'\btitle={(.*)}', content))
-    paperlist = '\n'.join(sorted('    - ' + x for x in papers))
 
     # count configs
     configs = set(x.lower().strip()
@@ -28,13 +30,39 @@ for f in files:
                 for x in re.findall(r'https://download.*\.pth', content)
                 if 'mmaction' in x)
 
+    # count models and papers
+    model_item_list = ''
+    papers = set()
+
+    readme_files = []
+    all_config_dirs = glob.glob('../configs/' + config_dir_name + '*')
+    for path, dirs, files in chain.from_iterable(
+            os.walk(conf_dir) for conf_dir in all_config_dirs):
+        readme_files += [
+            os.path.join(path, f) for f in files if f.endswith('.md')
+        ]
+
+    for f in readme_files:
+        with open(f, 'r') as readme_file:
+            readme_content = '\n' + readme_file.read()
+        model = [x.strip() for x in re.findall(r'\n# (.*)\n', readme_content)]
+        assert len(model) >= 1
+        _papers = set(
+            x.lower().strip()
+            for x in re.findall(r'\btitle *= *"?{(.*)}"?', readme_content))
+        papers = papers.union(_papers)
+        model_item_list += ('    - [' + model[0] + '](#' +
+                            link_anchor(model[0]) + ')\n')
+        model_item_list += '\n'.join(sorted('      - ' + x for x in _papers))
+        model_item_list += '\n'
+    # organize statsmsg
     statsmsg = f"""
-## [{title}]({f})
+## [{title.strip() + ' Statistics'}](#{link_anchor(title)})
 
 * Number of checkpoints: {len(ckpts)}
 * Number of configs: {len(configs)}
 * Number of papers: {len(papers)}
-{paperlist}
+{model_item_list}
 
     """
 
@@ -53,7 +81,57 @@ modelzoo = f"""
 * Number of papers: {len(allpapers)}
 
 {msglist}
+
 """
 
 with open('modelzoo.md', 'w') as f:
     f.write(modelzoo)
+
+for f in [f_name + '_models.md' for f_name in config_dir_names]:
+    with open(f, 'r') as model_content_file:
+        with open('modelzoo.md', 'a') as modelzoo_file:
+            for line in model_content_file:
+                modelzoo_file.write(line)
+
+# files = sorted(glob.glob('*_models.md'))
+
+# stats = []
+
+# for f in files:
+#     with open(f, 'r') as content_file:
+#         content = content_file.read()
+
+#     # title
+#     title = content.split('\n')[0].replace('#', '')
+
+#     # count papers
+#     papers = [
+#         x.lower().strip() for x in re.findall(r'\btitle *= *{(.*)}', content)
+#     ]
+
+#     # count models
+#     models = [x.strip() for x in re.findall(r'^### (.*)', content)]
+
+#     paperlist = '\n'.join(
+#         ('    - [' + x + '](#' + y + ')') for x, y in zip(papers, models))
+
+#     # paperlist = '\n'.join(sorted('    - ' + x for x in papers))
+
+#     # count configs
+#     configs = set(x.lower().strip()
+#                   for x in re.findall(r'https.*configs/.*\.py', content))
+
+#     # count ckpts
+#     ckpts = set(x.lower().strip()
+#                 for x in re.findall(r'https://download.*\.pth', content)
+#                 if 'mmaction' in x)
+
+#     statsmsg = f"""
+# ## [{title}]({f})
+
+# * Number of checkpoints: {len(ckpts)}
+# * Number of configs: {len(configs)}
+# * Number of papers: {len(papers)}
+# {paperlist}
+
+#     """
