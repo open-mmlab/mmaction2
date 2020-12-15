@@ -6,7 +6,7 @@ from mmaction.models import (AudioTSNHead, BaseHead, I3DHead, SlowFastHead,
 
 
 class ExampleHead(BaseHead):
-    # use a ExampleHead to succeed BaseHead
+    # use an ExampleHead to test BaseHead
     def init_weights(self):
         pass
 
