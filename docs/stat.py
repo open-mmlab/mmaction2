@@ -79,7 +79,7 @@ Number of papers: {len(papers)}</br>
 
 {model_items_list}
 
-    """  # noqa: W291
+"""
     stats.append((papers, configs, ckpts, statsmsg))
 
 allpapers = func.reduce(lambda a, b: a.union(b), [p for p, _, _, _ in stats])
@@ -96,7 +96,7 @@ Number of papers: {len(allpapers)}</br>
 
 {msglist}
 
-"""  # noqa: W291
+"""
 
 with open('modelzoo.md', 'w') as f:
     f.write(modelzoo)
