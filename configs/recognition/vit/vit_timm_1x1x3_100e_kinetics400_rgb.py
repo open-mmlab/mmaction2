@@ -1,20 +1,8 @@
 # model settings
 model = dict(
     type='Recognizer2D',
-    backbone=dict(
-        type='ViT',
-        # pretrained='',
-        pretrained=None,
-        image_size=224,
-        patch_size=16,
-        num_classes=400,
-        dim=768,
-        depth=12,
-        heads=12,
-        mlp_dim=3072,
-        dropout=0.1,
-        emb_dropout=0.),
-    cls_head=dict(type='NullHead', num_classes=400, in_channels=2048))
+    backbone=dict(type='ViT_Timm'),
+    cls_head=dict(type='TSN_VIT_Head', num_classes=400, in_channels=1000))
 # model training and testing settings
 train_cfg = None
 test_cfg = dict(average_clips='score')
@@ -25,18 +13,23 @@ mc_cfg = dict(
     client_cfg='/mnt/lustre/share/memcached_client/client.conf',
     sys_path='/mnt/lustre/share/pymc/py3')
 
-dataset_type = 'VideoDataset'
-data_root = 'data/kinetics400/videos_train'
-data_root_val = 'data/kinetics400/videos_val'
-ann_file_train = 'data/kinetics400/kinetics400_train_list_videos.txt'
-ann_file_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
-ann_file_test = 'data/kinetics400/kinetics400_val_list_videos.txt'
+dataset_type = 'RawframeDataset'
+data_root = 'data/kinetics400/rawframes_train'
+data_root_val = 'data/kinetics400/rawframes_val'
+ann_file_train = 'data/kinetics400/kinetics400_train_list_rawframes.txt'
+ann_file_val = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
+ann_file_test = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
-    dict(type='PyAVInit', io_backend='memcached', **mc_cfg),
+    # dict(type='PyAVInit', io_backend='memcached', **mc_cfg),
     dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=3),
-    dict(type='PyAVDecode'),
+    # dict(type='PyAVDecode'),
+    dict(
+        type='RawFrameDecode',
+        decoding_backend='turbojpeg',
+        io_backend='memcached',
+        **mc_cfg),
     dict(type='Resize', scale=(-1, 224)),
     dict(
         type='MultiScaleCrop',
@@ -52,14 +45,19 @@ train_pipeline = [
     dict(type='ToTensor', keys=['imgs', 'label'])
 ]
 val_pipeline = [
-    dict(type='PyAVInit', io_backend='memcached', **mc_cfg),
+    # dict(type='PyAVInit', io_backend='memcached', **mc_cfg),
     dict(
         type='SampleFrames',
         clip_len=1,
         frame_interval=1,
         num_clips=3,
         test_mode=True),
-    dict(type='PyAVDecode'),
+    # dict(type='PyAVDecode'),
+    dict(
+        type='RawFrameDecode',
+        decoding_backend='turbojpeg',
+        io_backend='memcached',
+        **mc_cfg),
     dict(type='Resize', scale=(-1, 224)),
     dict(type='CenterCrop', crop_size=224),
     dict(type='Flip', flip_ratio=0),
@@ -69,14 +67,19 @@ val_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 test_pipeline = [
-    dict(type='PyAVInit', io_backend='memcached', **mc_cfg),
+    # dict(type='PyAVInit', io_backend='memcached', **mc_cfg),
     dict(
         type='SampleFrames',
         clip_len=1,
         frame_interval=1,
         num_clips=25,
         test_mode=True),
-    dict(type='PyAVDecode'),
+    # dict(type='PyAVDecode'),
+    dict(
+        type='RawFrameDecode',
+        decoding_backend='turbojpeg',
+        io_backend='memcached',
+        **mc_cfg),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=256),
     dict(type='Flip', flip_ratio=0),
@@ -86,8 +89,8 @@ test_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
-    videos_per_gpu=32,
-    workers_per_gpu=8,
+    videos_per_gpu=32,  # 32
+    workers_per_gpu=4,
     train=dict(
         type=dataset_type,
         ann_file=ann_file_train,
@@ -109,17 +112,17 @@ optimizer = dict(
     lr=0.006,
     momentum=0.9,
     # 4096 / (32b * 8g * 3c) = 5.3; 5.3 * 6e-4 = 3e-3
-    weight_decay=0.1)  # this lr is used for 8 gpus;
+    weight_decay=0.1)  # this lr is used for 16 gpus;
 # very large weight_decay
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
 lr_config = dict(
-    policy='step',
-    step=[40, 80, 120, 160],
+    policy='CosineAnnealing',
+    min_lr=0,
     warmup='linear',
     warmup_ratio=0.001,
     warmup_by_epoch=True,
-    warmup_iters=32)
+    warmup_iters=20)
 
 total_epochs = 200
 checkpoint_config = dict(interval=5)
@@ -132,7 +135,7 @@ log_config = dict(
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/vit_1x1x3_100e_kinetics400_rgb/'
+work_dir = './work_dirs/vit_timm_1x1x3_100e_kinetics400_rgb/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]

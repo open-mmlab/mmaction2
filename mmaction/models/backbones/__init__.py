@@ -9,10 +9,11 @@ from .resnet_audio import ResNetAudio
 from .resnet_tin import ResNetTIN
 from .resnet_tsm import ResNetTSM
 from .vit import ViT
+from .vit_timm import ViT_Timm
 from .x3d import X3D
 
 __all__ = [
     'C3D', 'ResNet', 'ResNet3d', 'ResNetTSM', 'ResNet2Plus1d',
     'ResNet3dSlowFast', 'ResNet3dSlowOnly', 'ResNet3dCSN', 'ResNetTIN', 'X3D',
-    'ResNetAudio', 'ViT'
+    'ResNetAudio', 'ViT', 'ViT_Timm'
 ]
