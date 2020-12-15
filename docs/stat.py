@@ -7,7 +7,7 @@ from itertools import chain
 
 
 def link_anchor(name_str):
-    return name_str.strip().replace(' ', '-').replace('.', '')
+    return name_str.lower().strip().replace(' ', '-').replace('.', '')
 
 
 config_dir_names = ['localization', 'recognition']
@@ -31,7 +31,7 @@ for config_dir_name in config_dir_names:
                 if 'mmaction' in x)
 
     # count models and papers
-    model_item_list = ''
+    model_items_list = ''
     papers = set()
 
     readme_files = []
@@ -45,27 +45,41 @@ for config_dir_name in config_dir_names:
     for f in readme_files:
         with open(f, 'r') as readme_file:
             readme_content = '\n' + readme_file.read()
+
         model = [x.strip() for x in re.findall(r'\n# (.*)\n', readme_content)]
-        assert len(model) >= 1
+
         _papers = set(
             x.lower().strip()
             for x in re.findall(r'\btitle *= *"?{(.*)}"?', readme_content))
         papers = papers.union(_papers)
-        model_item_list += ('    - [' + model[0] + '](#' +
-                            link_anchor(model[0]) + ')\n')
-        model_item_list += '\n'.join(sorted('      - ' + x for x in _papers))
-        model_item_list += '\n'
+
+        model_items_list += ('  - [' + model[0] + '](#' +
+                             link_anchor(model[0]) + ')\n')
+        model_items_list += '\n'.join(sorted('    - ' + x for x in _papers))
+        model_items_list += '\n\n'
+
+        tables = re.findall(
+            r'(\|[^\n]+\|\r?\n)((?:\|:?[-]+:?)+\|)(\n(?:\|[^\n]+\|\r?\n?)*)?',
+            readme_content)
+
+        for table in tables:
+            for lines in table:
+                model_items_list += '\n'.join(
+                    '' + line for line in lines.strip().split('\n'))
+                model_items_list += '\n'
+            model_items_list += '\n'
+
     # organize statsmsg
     statsmsg = f"""
 ## [{title.strip() + ' Statistics'}](#{link_anchor(title)})
 
-* Number of checkpoints: {len(ckpts)}
-* Number of configs: {len(configs)}
-* Number of papers: {len(papers)}
-{model_item_list}
+Number of checkpoints: {len(ckpts)}</br>
+Number of configs: {len(configs)}</br>
+Number of papers: {len(papers)}</br>
 
-    """
+{model_items_list}
 
+    """  # noqa: W291
     stats.append((papers, configs, ckpts, statsmsg))
 
 allpapers = func.reduce(lambda a, b: a.union(b), [p for p, _, _, _ in stats])
@@ -76,13 +90,13 @@ msglist = '\n'.join(x for _, _, _, x in stats)
 modelzoo = f"""
 # Model Zoo Statistics
 
-* Number of checkpoints: {len(allckpts)}
-* Number of configs: {len(allconfigs)}
-* Number of papers: {len(allpapers)}
+Number of checkpoints: {len(allckpts)}</br>
+Number of configs: {len(allconfigs)}</br>
+Number of papers: {len(allpapers)}</br>
 
 {msglist}
 
-"""
+"""  # noqa: W291
 
 with open('modelzoo.md', 'w') as f:
     f.write(modelzoo)
