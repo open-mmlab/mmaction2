@@ -36,7 +36,7 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
         num_classes (int): Number of classes to be classified.
         in_channels (int): Number of channels in input feature.
         loss_cls (dict): Config for building loss.
-            Default: dict(type='CrossEntropyLoss').
+            Default: dict(type='CrossEntropyLoss', loss_weight=1.0).
         multi_class (bool): Determines whether it is a multi-class
             recognition task. Default: False.
         label_smooth_eps (float): Epsilon used in label smooth.
