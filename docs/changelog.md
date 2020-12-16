@@ -11,6 +11,7 @@
 
 
 **Bug and Typo Fixes**
+- Fix typo in default argument of BaseHead. ([#446](https://github.com/open-mmlab/mmaction2/pull/446))
 
 **ModelZoo**
 
