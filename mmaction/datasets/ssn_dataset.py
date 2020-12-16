@@ -6,10 +6,10 @@ import numpy as np
 from mmcv.utils import print_log
 from torch.nn.modules.utils import _pair
 
-from ..core import build_metrics, softmax
-from ..localization import (load_localize_proposal_file, perform_regression,
-                            temporal_iou, temporal_nms)
-from ..utils import get_root_logger
+from mmaction.core import build_metrics, temporal_iou
+from mmaction.models.localizers.utils import (load_localize_proposal_file,
+                                              perform_regression, temporal_nms)
+from mmaction.utils import get_root_logger, softmax
 from .base import BaseDataset
 from .registry import DATASETS
 
@@ -392,7 +392,8 @@ class SSNDataset(BaseDataset):
 
     def evaluate(self,
                  results,
-                 metric_options=dict(mAP=dict(eval_dataset='thumos14')),
+                 metric_options=dict(
+                     TemporalMeanAP=dict(eval_dataset='thumos14')),
                  logger=None):
         """Evaluation in SSN proposal dataset.
 
@@ -467,8 +468,9 @@ class SSNDataset(BaseDataset):
                 metric_func = build_metrics(metric_cfg)
                 setattr(self, metric, metric_func)
 
-            results = getattr(self, metric)(results, all_gts, metric_kwargs)
-            eval_results.update(results)
+            eval_res = getattr(self, metric)(plain_detections, all_gts,
+                                             metric_kwargs)
+            eval_results.update(eval_res)
 
         return eval_results
 

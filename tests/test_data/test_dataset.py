@@ -578,18 +578,19 @@ class TestDataset:
             # topk must be int or tuple of int
             rawframe_dataset.evaluate(
                 [0] * len(rawframe_dataset),
-                metric_options=dict(top_k_accuracy=dict(topk=1.)))
+                metric_options=dict(TopKAcc=dict(topk=1.)))
 
         with pytest.raises(KeyError):
             # unsupported metric
             rawframe_dataset.evaluate(
-                [0] * len(rawframe_dataset), metrics='iou')
+                [0] * len(rawframe_dataset), metric_options=dict(ious=dict()))
 
         # evaluate top_k_accuracy and mean_class_accuracy metric
         results = [np.array([0.1, 0.5, 0.4])] * 2
         eval_result = rawframe_dataset.evaluate(
-            results, metrics=['top_k_accuracy', 'mean_class_accuracy'])
-        assert set(eval_result.keys()) == set(
+            results,
+            metric_options=dict(TopKAcc=dict(topk=(1, 5)), MeanClsAcc=dict()))
+        assert set(eval_result) == set(
             ['top1_acc', 'top5_acc', 'mean_class_accuracy'])
 
     def test_video_evaluate(self):
@@ -610,17 +611,19 @@ class TestDataset:
             # topk must be int or tuple of int
             video_dataset.evaluate(
                 [0] * len(video_dataset),
-                metric_options=dict(top_k_accuracy=dict(topk=1.)))
+                metric_options=dict(TopKAcc=dict(topk=1.)))
 
         with pytest.raises(KeyError):
             # unsupported metric
-            video_dataset.evaluate([0] * len(video_dataset), metrics='iou')
+            video_dataset.evaluate(
+                [0] * len(video_dataset), metric_options=dict(ious=dict()))
 
         # evaluate top_k_accuracy and mean_class_accuracy metric
         results = [np.array([0.1, 0.5, 0.4])] * 2
         eval_result = video_dataset.evaluate(
-            results, metrics=['top_k_accuracy', 'mean_class_accuracy'])
-        assert set(eval_result.keys()) == set(
+            results,
+            metric_options=dict(TopKAcc=dict(topk=(1, 5)), MeanClsAcc=dict()))
+        assert set(eval_result) == set(
             ['top1_acc', 'top5_acc', 'mean_class_accuracy'])
 
     def test_base_dataset(self):
@@ -724,7 +727,8 @@ class TestDataset:
         with pytest.raises(KeyError):
             # unsupported metric
             activitynet_dataset.evaluate(
-                [0] * len(activitynet_dataset), metrics='iou')
+                [0] * len(activitynet_dataset),
+                metric_options=dict(ious=dict()))
 
         # evaluate AR@AN metric
         results = [
@@ -735,7 +739,8 @@ class TestDataset:
                 video_name='v_test2',
                 proposal_list=[dict(segment=[10.1, 20.9], score=0.9)])
         ]
-        eval_result = activitynet_dataset.evaluate(results, metrics=['AR@AN'])
+        eval_result = activitynet_dataset.evaluate(
+            results, metric_options=dict(ARAN=dict()))
         assert set(eval_result) == set(
             ['auc', 'AR@1', 'AR@5', 'AR@10', 'AR@100'])
 
@@ -871,7 +876,8 @@ class TestDataset:
 
         with pytest.raises(KeyError):
             # unsupported metric
-            ssn_dataset.evaluate([0] * len(ssn_dataset), metrics='iou')
+            ssn_dataset.evaluate(
+                [0] * len(ssn_dataset), metric_options=dict(ious=dict()))
 
         # evaluate mAP metric
         results_relative_proposal_list = np.random.randn(16, 2)
@@ -885,7 +891,9 @@ class TestDataset:
                 completeness_scores=results_completeness_scores,
                 bbox_preds=results_bbox_preds)
         ]
-        eval_result = ssn_dataset.evaluate(results, metrics=['mAP'])
+        eval_result = ssn_dataset.evaluate(
+            results,
+            metric_options=dict(TemporalMeanAP=dict(eval_dataset='thumos14')))
         assert set(eval_result) == set([
             'mAP@0.10', 'mAP@0.20', 'mAP@0.30', 'mAP@0.40', 'mAP@0.50',
             'mAP@0.50', 'mAP@0.60', 'mAP@0.70', 'mAP@0.80', 'mAP@0.90'
@@ -903,7 +911,9 @@ class TestDataset:
                 completeness_scores=results_completeness_scores,
                 bbox_preds=results_bbox_preds)
         ]
-        eval_result = ssn_dataset_topall.evaluate(results, metrics=['mAP'])
+        eval_result = ssn_dataset_topall.evaluate(
+            results,
+            metric_options=dict(TemporalMeanAP=dict(eval_dataset='thumos14')))
         assert set(eval_result) == set([
             'mAP@0.10', 'mAP@0.20', 'mAP@0.30', 'mAP@0.40', 'mAP@0.50',
             'mAP@0.50', 'mAP@0.60', 'mAP@0.70', 'mAP@0.80', 'mAP@0.90'
@@ -927,17 +937,19 @@ class TestDataset:
             # topk must be int or tuple of int
             audio_dataset.evaluate(
                 [0] * len(audio_dataset),
-                metric_options=dict(top_k_accuracy=dict(topk=1.)))
+                metric_options=dict(TopKAcc=dict(topk=1.)))
 
         with pytest.raises(KeyError):
             # unsupported metric
-            audio_dataset.evaluate([0] * len(audio_dataset), metrics='iou')
+            audio_dataset.evaluate(
+                [0] * len(audio_dataset), metric_options=dict(ious=dict()))
 
         # evaluate top_k_accuracy and mean_class_accuracy metric
         results = [np.array([0.1, 0.5, 0.4])] * 2
         eval_result = audio_dataset.evaluate(
-            results, metrics=['top_k_accuracy', 'mean_class_accuracy'])
-        assert set(eval_result.keys()) == set(
+            results,
+            metric_options=dict(TopKAcc=dict(topk=(1, 5)), MeanClsAcc=dict()))
+        assert set(eval_result) == set(
             ['top1_acc', 'top5_acc', 'mean_class_accuracy'])
 
     def test_audio_feature_evaluate(self):
@@ -958,15 +970,17 @@ class TestDataset:
             # topk must be int or tuple of int
             audio_dataset.evaluate(
                 [0] * len(audio_dataset),
-                metric_options=dict(top_k_accuracy=dict(topk=1.)))
+                metric_options=dict(TopKAcc=dict(topk=1.)))
 
         with pytest.raises(KeyError):
             # unsupported metric
-            audio_dataset.evaluate([0] * len(audio_dataset), metrics='iou')
+            audio_dataset.evaluate(
+                [0] * len(audio_dataset), metric_options=dict(ious=dict()))
 
         # evaluate top_k_accuracy and mean_class_accuracy metric
         results = [np.array([0.1, 0.5, 0.4])] * 2
         eval_result = audio_dataset.evaluate(
-            results, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+            results,
+            metric_options=dict(TopKAcc=dict(topk=(1, 5)), MeanClsAcc=dict()))
         assert set(eval_result) == set(
             ['top1_acc', 'top5_acc', 'mean_class_accuracy'])

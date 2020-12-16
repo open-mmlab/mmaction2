@@ -5,7 +5,7 @@ import torch
 import torch.distributed as dist
 import torch.nn as nn
 
-from .. import builder
+from mmaction.models import builder
 
 
 class BaseLocalizer(nn.Module, metaclass=ABCMeta):

@@ -4,7 +4,7 @@ import mmcv
 import numpy as np
 from mmcv.utils import print_log
 
-from ..core import build_metrics
+from mmaction.core import build_metrics
 from .base import BaseDataset
 from .registry import DATASETS
 
@@ -123,7 +123,10 @@ class HVUDataset(BaseDataset):
         arr[label] = 1.
         return arr
 
-    def evaluate(self, results, metric_options=None, logger=None):
+    def evaluate(self,
+                 results,
+                 metric_options=dict(MeanAP=dict()),
+                 logger=None):
         """Evaluation in HVU Video Dataset. We only support evaluating mAP for
         each tag categories. Since some tag categories are missing for some
         videos, we can not evaluate mAP for all tags.
@@ -185,7 +188,7 @@ class HVUDataset(BaseDataset):
                         gts.append(gt_label[category])
                 gts = [self.label2array(num, item) for item in gts]
 
-                results = getattr(self, metric)(preds, gts, metric_kwargs)
-                eval_results.update(results)
+                eval_res = getattr(self, metric)(preds, gts, metric_kwargs)
+                eval_results.update(eval_res)
 
         return eval_results

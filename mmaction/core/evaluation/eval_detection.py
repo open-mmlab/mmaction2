@@ -3,8 +3,9 @@ import json
 import numpy as np
 from mmcv.utils import print_log
 
-from ...utils import get_root_logger
-from .accuracy import interpolated_precision_recall, pairwise_temporal_iou
+from mmaction.utils import get_root_logger
+from .mean_ap import interpolated_precision_recall
+from .overlaps import pairwise_temporal_iou
 
 
 class ActivityNetLocalization:
@@ -147,6 +148,8 @@ class ActivityNetLocalization:
         return self.mAP, self.average_mAP
 
 
+# TODO: This function seems similar
+#  with `def average_precision_at_temporal_iou`
 def compute_average_precision_detection(ground_truth,
                                         prediction,
                                         tiou_thresholds=np.linspace(

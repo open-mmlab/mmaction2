@@ -9,7 +9,7 @@ import torch
 from mmcv.utils import print_log
 from torch.utils.data import Dataset
 
-from ..core import build_metrics
+from mmaction.core import build_metrics
 from .pipelines import Compose
 
 
@@ -161,8 +161,8 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
                 metric_func = build_metrics(metric_cfg)
                 setattr(self, metric, metric_func)
 
-            results = getattr(self, metric)(results, gt_labels, metric_kwargs)
-            eval_results.update(results)
+            eval_res = getattr(self, metric)(results, gt_labels, metric_kwargs)
+            eval_results.update(eval_res)
 
         return eval_results
 

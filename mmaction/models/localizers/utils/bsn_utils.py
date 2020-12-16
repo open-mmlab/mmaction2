@@ -2,7 +2,7 @@ import os.path as osp
 
 import numpy as np
 
-from .proposal_utils import temporal_iop, temporal_iou
+from mmaction.core import temporal_iop, temporal_iou
 
 
 def generate_candidate_proposals(video_list,

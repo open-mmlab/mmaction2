@@ -2,8 +2,7 @@ from itertools import groupby
 
 import numpy as np
 
-from ..core import average_precision_at_temporal_iou
-from . import temporal_iou
+from mmaction.core import temporal_iou
 
 
 def load_localize_proposal_file(filename):
@@ -143,26 +142,3 @@ def temporal_nms(detections, threshold):
         order = order[idxs + 1]
 
     return detections[keep, :]
-
-
-def eval_ap(detections, gt_by_cls, iou_range):
-    """Evaluate average precisions.
-
-    Args:
-        detections (dict): Results of detections.
-        gt_by_cls (dict): Information of groundtruth.
-        iou_range (list): Ranges of iou.
-
-    Returns:
-        list: Average precision values of classes at ious.
-    """
-    ap_values = np.zeros((len(detections), len(iou_range)))
-
-    for iou_idx, min_overlap in enumerate(iou_range):
-        for class_idx, _ in enumerate(detections):
-            ap = average_precision_at_temporal_iou(gt_by_cls[class_idx],
-                                                   detections[class_idx],
-                                                   [min_overlap])
-            ap_values[class_idx, iou_idx] = ap
-
-    return ap_values

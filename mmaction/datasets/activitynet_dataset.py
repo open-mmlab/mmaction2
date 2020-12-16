@@ -234,8 +234,8 @@ class ActivityNetDataset(BaseDataset):
                 metric_func = build_metrics(metric_cfg)
                 setattr(self, metric, metric_func)
 
-            results = getattr(self, metric)(proposal, ground_truth,
-                                            metric_kwargs)
-            eval_results.update(results)
+            eval_res = getattr(self, metric)(proposal, ground_truth,
+                                             metric_kwargs)
+            eval_results.update(eval_res)
 
         return eval_results

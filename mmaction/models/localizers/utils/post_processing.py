@@ -1,4 +1,4 @@
-from mmaction.localization import soft_nms
+from .proposal_utils import soft_nms
 
 
 def post_processing(result, video_info, soft_nms_alpha, soft_nms_low_threshold,

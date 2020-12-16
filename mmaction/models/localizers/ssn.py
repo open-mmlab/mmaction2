@@ -1,8 +1,7 @@
 import torch
 import torch.nn as nn
 
-from .. import builder
-from ..registry import LOCALIZERS
+from mmaction.models.builder import LOCALIZERS, build_loss
 from .base import BaseLocalizer
 
 
@@ -53,7 +52,7 @@ class SSN(BaseLocalizer):
             self.dropout = nn.Dropout(p=self.dropout_ratio)
         else:
             self.dropout = None
-        self.loss_cls = builder.build_loss(loss_cls)
+        self.loss_cls = build_loss(loss_cls)
 
     def forward_train(self, imgs, proposal_scale_factor, proposal_type,
                       proposal_labels, reg_targets, **kwargs):
