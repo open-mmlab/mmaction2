@@ -1,5 +1,5 @@
 from ..registry import BACKBONES
-from .mobilenetv2 import InvertedResidual, MobileNetV2
+from .mobilenet_v2 import InvertedResidual, MobileNetV2
 from .resnet_tsm import TemporalShift
 
 
@@ -25,7 +25,7 @@ class MobileNetV2TSM(MobileNetV2):
         """Make temporal shift for some layers."""
         for m in self.modules():
             if isinstance(m, InvertedResidual) and \
-                    len(m.conv) == 8 and m.use_res_connect:
+                    len(m.conv) == 3 and m.use_res_connect:
                 m.conv[0] = TemporalShift(
                     m.conv[0],
                     num_segments=self.num_segments,

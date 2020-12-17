@@ -6,7 +6,7 @@ model = dict(
         shift_div=8,
         num_segments=8,
         is_shift=True,
-        pretrained=True),
+        pretrained='mmcls://mobilenet_v2'),
     cls_head=dict(
         type='TSMHead',
         num_segments=8,
@@ -83,7 +83,7 @@ test_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
-    videos_per_gpu=4,
+    videos_per_gpu=8,
     workers_per_gpu=4,
     train=dict(
         type=dataset_type,
