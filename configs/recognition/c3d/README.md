@@ -4,7 +4,7 @@
 ```
 @ARTICLE{2014arXiv1412.0767T,
 author = {Tran, Du and Bourdev, Lubomir and Fergus, Rob and Torresani, Lorenzo and Paluri, Manohar},
-title = "{Learning Spatiotemporal Features with 3D Convolutional Networks}",
+title = {Learning Spatiotemporal Features with 3D Convolutional Networks},
 keywords = {Computer Science - Computer Vision and Pattern Recognition},
 year = 2014,
 month = dec,
