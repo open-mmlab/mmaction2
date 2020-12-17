@@ -109,6 +109,10 @@ There are also tutorials for [finetuning models](docs/tutorials/finetune.md), [a
 
 A Colab tutorial is also provided. You may preview the notebook [here](demo/mmaction2_tutorial.ipynb) or directly [run](https://colab.research.google.com/github/open-mmlab/mmaction2/blob/master/demo/mmaction2_tutorial.ipynb) on Colab.
 
+## FAQ
+
+Please refer to [FAQ](docs/faq.md) for frequently asked questions.
+
 ## Contributing
 
 We appreciate all contributions to improve MMAction2. Please refer to [CONTRIBUTING.md](.github/CONTRIBUTING.md) for the contributing guideline.
