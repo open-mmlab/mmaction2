@@ -36,8 +36,13 @@ if 'mmdet' in dir():
                         rescale=False):
             assert self.with_bbox, 'Bbox head must be implemented.'
 
-            assert x[0].shape[0] == 1, 'only accept one sample at test mode'
-            assert x[0].shape[0] == len(img_metas) == len(proposal_list)
+            if isinstance(x, tuple):
+                x_shape = x[0].shape
+            else:
+                x_shape = x.shape
+
+            assert x_shape[0] == 1, 'only accept 1 sample at test mode'
+            assert x_shape[0] == len(img_metas) == len(proposal_list)
 
             det_bboxes, det_labels = self.simple_test_bboxes(
                 x, img_metas, proposal_list, self.test_cfg, rescale=rescale)
