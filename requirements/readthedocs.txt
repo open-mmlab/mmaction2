@@ -1,3 +1,4 @@
 mmcv
 torch
 torchvision
+titlecase
