@@ -150,8 +150,8 @@ def test_mobilenetv2_backbone():
 
     with pytest.raises(TypeError):
         # pretrained must be a string path
-        model = MobileNetV2()
-        model.init_weights(pretrained=0)
+        model = MobileNetV2(pretrained=0)
+        model.init_weights()
 
     with pytest.raises(ValueError):
         # frozen_stages must in range(1, 8)
