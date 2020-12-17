@@ -944,7 +944,7 @@ def test_mobilenetv2_tsm_backbone():
     mobilenetv2_tsm.init_weights()
     for cur_module in mobilenetv2_tsm.modules():
         if isinstance(cur_module, InvertedResidual) and \
-            len(cur_module.conv) == 8 and \
+            len(cur_module.conv) == 3 and \
                 cur_module.use_res_connect:
             assert isinstance(cur_module.conv[0], TemporalShift)
             assert cur_module.conv[0].num_segments == \
