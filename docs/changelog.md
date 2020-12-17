@@ -7,6 +7,7 @@
 **New Features**
 
 **Improvements**
+- Fix CI due to pip upgrade. ([#454](https://github.com/open-mmlab/mmaction2/pull/454))
 - Add FAQ documents for easy troubleshooting. ([#413](https://github.com/open-mmlab/mmaction2/pull/413), [#420](https://github.com/open-mmlab/mmaction2/pull/420), [#439](https://github.com/open-mmlab/mmaction2/pull/439))
 
 
