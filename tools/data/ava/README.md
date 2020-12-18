@@ -27,6 +27,7 @@ bash download_videos.sh
 ```
 
 Or you can use the following command to downloading AVA videos in parallel using a python script.
+
 ```shell
 bash download_videos_parallel.sh
 ```

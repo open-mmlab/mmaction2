@@ -71,7 +71,6 @@ cd $MMACTION2/tools/data/thumos14/
 bash extract_frames.sh tvl1
 ```
 
-.
 ## Step 4. Fetch File List
 
 This part is **optional** if you do not use SSN model.
