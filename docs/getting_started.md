@@ -7,18 +7,18 @@ For installation instructions, please see [install.md](install.md).
 
 - [Datasets](#datasets)
 - [Inference with Pre-Trained Models](#inference-with-pre-trained-models)
-  * [Test a dataset](#test-a-dataset)
-  * [High-level APIs for testing a video and rawframes.](#high-level-apis-for-testing-a-video-and-rawframes)
+  - [Test a dataset](#test-a-dataset)
+  - [High-level APIs for testing a video and rawframes.](#high-level-apis-for-testing-a-video-and-rawframes)
 - [Build a Model](#build-a-model)
-  * [Build a model with basic components](#build-a-model-with-basic-components)
-  * [Write a new model](#write-a-new-model)
+  - [Build a model with basic components](#build-a-model-with-basic-components)
+  - [Write a new model](#write-a-new-model)
 - [Train a Model](#train-a-model)
-  * [Iteration pipeline](#iteration-pipeline)
-  * [Training setting](#training-setting)
-  * [Train with a single GPU](#train-with-a-single-gpu)
-  * [Train with multiple GPUs](#train-with-multiple-gpus)
-  * [Train with multiple machines](#train-with-multiple-machines)
-  * [Launch multiple jobs on a single machine](#launch-multiple-jobs-on-a-single-machine)
+  - [Iteration pipeline](#iteration-pipeline)
+  - [Training setting](#training-setting)
+  - [Train with a single GPU](#train-with-a-single-gpu)
+  - [Train with multiple GPUs](#train-with-multiple-gpus)
+  - [Train with multiple machines](#train-with-multiple-machines)
+  - [Launch multiple jobs on a single machine](#launch-multiple-jobs-on-a-single-machine)
 - [Tutorials](#tutorials)
 
 <!-- TOC -->
@@ -46,6 +46,7 @@ mmaction2
 │   │   ├── ucf101_val_list.txt
 │   ├── ...
 ```
+
 For more information on data preparation, please see [data_preparation.md](data_preparation.md)
 
 For using custom datasets, please refer to [Tutorial 2: Adding New Dataset](tutorials/new_dataset.md)
@@ -76,6 +77,7 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--out ${RESULT_FILE}] [-
 ```
 
 Optional arguments:
+
 - `RESULT_FILE`: Filename of the output results. If not specified, the results will not be saved to a file.
 - `EVAL_METRICS`: Items to be evaluated on the results. Allowed values depend on the dataset, e.g., `top_k_accuracy`, `mean_class_accuracy` are available for all datasets in recognition, `mmit_mean_average_precision` for Multi-Moments in Time, `mean_average_precision` for Multi-Moments in Time and HVU single category. `AR@AN` for ActivityNet, etc.
 - `--gpu-collect`: If specified, recognition results will be collected using gpu communication. Otherwise, it will save the results on different gpus to `TMPDIR` and collect them by the rank 0 worker.
@@ -113,8 +115,7 @@ Assume that you have already downloaded the checkpoints to the directory `checkp
         --launcher slurm --eval top_k_accuracy
     ```
 
-
-### High-level APIs for testing a video and rawframes.
+### High-level APIs for testing a video and rawframes
 
 Here is an example of building the model and testing a given video.
 
@@ -208,18 +209,14 @@ If the `data_prefix` is not None, the path for the video file (or rawframe direc
 Here, the `video` is the param in the demo scripts above.
 This detail can be found in `rawframe_dataset.py` and `video_dataset.py`. For example,
 
-* When video (rawframes) path is `SOME_DIR_PATH/VIDEO.mp4` (`SOME_DIR_PATH/VIDEO_NAME/img_xxxxx.jpg`), and `data_prefix` is None in the config file,
-the param `video` should be `SOME_DIR_PATH/VIDEO.mp4` (`SOME_DIR_PATH/VIDEO_NAME`).
-
-* When video (rawframes) path is `SOME_DIR_PATH/VIDEO.mp4` (`SOME_DIR_PATH/VIDEO_NAME/img_xxxxx.jpg`), and `data_prefix` is `SOME_DIR_PATH` in the config file,
-the param `video` should be `VIDEO.mp4` (`VIDEO_NAME`).
-
-* When rawframes path is `VIDEO_NAME/img_xxxxx.jpg`, and `data_prefix` is None in the config file, the param `video` should be `VIDEO_NAME`.
-
-* When passing a url instead of a local video file, you need to use OpenCV as the video decoding backend.
+- When video (rawframes) path is `SOME_DIR_PATH/VIDEO.mp4` (`SOME_DIR_PATH/VIDEO_NAME/img_xxxxx.jpg`), and `data_prefix` is None in the config file,
+  the param `video` should be `SOME_DIR_PATH/VIDEO.mp4` (`SOME_DIR_PATH/VIDEO_NAME`).
+- When video (rawframes) path is `SOME_DIR_PATH/VIDEO.mp4` (`SOME_DIR_PATH/VIDEO_NAME/img_xxxxx.jpg`), and `data_prefix` is `SOME_DIR_PATH` in the config file,
+  the param `video` should be `VIDEO.mp4` (`VIDEO_NAME`).
+- When rawframes path is `VIDEO_NAME/img_xxxxx.jpg`, and `data_prefix` is None in the config file, the param `video` should be `VIDEO_NAME`.
+- When passing a url instead of a local video file, you need to use OpenCV as the video decoding backend.
 
 A notebook demo can be found in [demo/demo.ipynb](/demo/demo.ipynb)
-
 
 ## Build a Model
 
@@ -263,6 +260,7 @@ in [TSM: Temporal Shift Module for Efficient Video Understanding](https://arxiv.
     ```
 
 2. Import the module in `mmaction/models/backbones/__init__.py`
+
     ```python
     from .resnet_tsm import ResNetTSM
     ```
@@ -276,7 +274,9 @@ in [TSM: Temporal Shift Module for Efficient Video Understanding](https://arxiv.
       depth=50,
       norm_eval=False)
     ```
+
    to
+
     ```python
     backbone=dict(
         type='ResNetTSM',
@@ -296,7 +296,6 @@ which defines the following abstract methods.
 
 [Recognizer2D](/mmaction/models/recognizers/recognizer2d.py) and [Recognizer3D](/mmaction/models/recognizers/recognizer3d.py)
 are good examples which show how to do that.
-
 
 ## Train a Model
 
@@ -320,11 +319,12 @@ All outputs (log files and checkpoints) will be saved to the working directory,
 which is specified by `work_dir` in the config file.
 
 By default we evaluate the model on the validation set after each epoch, you can change the evaluation interval by modifying the interval argument in the training config
+
 ```python
 evaluation = dict(interval=5)  # This evaluate the model per 5 epoch.
 ```
 
-According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you need to set the learning rate proportional to the batch size if you use different GPUs or videos per GPU, e.g., lr=0.01 for 4 GPUs * 2 video/gpu and lr=0.08 for 16 GPUs * 4 video/gpu.
+According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you need to set the learning rate proportional to the batch size if you use different GPUs or videos per GPU, e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
 
 ### Train with a single GPU
 
@@ -397,11 +397,13 @@ CUDA_VISIBLE_DEVICES=4,5,6,7 PORT=29501 ./tools/dist_train.sh ${CONFIG_FILE} 4
 If you use launch training jobs with slurm, you need to modify the config files (usually the 6th line from the bottom in config files) to set different communication ports.
 
 In `config1.py`,
+
 ```python
 dist_params = dict(backend='nccl', port=29500)
 ```
 
 In `config2.py`,
+
 ```python
 dist_params = dict(backend='nccl', port=29501)
 ```

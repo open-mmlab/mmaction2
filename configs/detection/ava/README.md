@@ -43,30 +43,37 @@
 - Notes:
 
 1. The **gpus** indicates the number of gpu we used to get the checkpoint.
-According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
-e.g., lr=0.01 for 4 GPUs * 2 video/gpu and lr=0.08 for 16 GPUs * 4 video/gpu.
+   According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
+   e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
 
 For more details on data preparation, you can refer to AVA in [Data Preparation](/docs/data_preparation.md).
 
 ## Train
+
 You can use the following command to train a model.
+
 ```shell
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
 Example: train SlowOnly model on AVA with periodic validation.
+
 ```shell
 python tools/train.py configs/detection/AVA/slowonly_kinetics_pretrained_r50_8x8x1_20e_ava_rgb.py --validate
 ```
+
 For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting) .
 
 ## Test
+
 You can use the following command to test a model.
+
 ```shell
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
 Example: test SlowOnly model on AVA and dump the result to a csv file.
+
 ```shell
 python tools/test.py configs/detection/AVA/slowonly_kinetics_pretrained_r50_8x8x1_20e_ava_rgb.py checkpoints/SOME_CHECKPOINT.pth --eval bbox --out results.csv
 ```

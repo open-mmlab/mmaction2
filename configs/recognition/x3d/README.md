@@ -1,6 +1,7 @@
 # X3D
 
 ## Introduction
+
 ```
 @misc{feichtenhofer2020x3d,
       title={X3D: Expanding Architectures for Efficient Video Recognition},
@@ -25,17 +26,20 @@
 
 Notes:
 
-3. The values in columns named after "reference" are the results got by testing the checkpoint released on the original repo and codes, using the same dataset with ours.
+1. The values in columns named after "reference" are the results got by testing the checkpoint released on the original repo and codes, using the same dataset with ours.
 
 For more details on data preparation, you can refer to Kinetics400 in [Data Preparation](/docs/data_preparation.md).
 
 ## Test
+
 You can use the following command to test a model.
+
 ```shell
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
 Example: test X3D model on Kinetics-400 dataset and dump the result to a json file.
+
 ```shell
 python tools/test.py configs/recognition/x3d/x3d_s_13x6x1_facebook_kinetics400_rgb.py \
     checkpoints/SOME_CHECKPOINT.pth --eval top_k_accuracy mean_class_accuracy \
