@@ -70,3 +70,14 @@ def test_inference_recognizer():
     scores = [item[1] for item in top5_label]
     assert len(top5_label) == 5
     assert scores == sorted(scores, reverse=True)
+
+    _, feat = inference_recognizer(
+        model, video_path, label_path, outputs='backbone')
+    assert isinstance(feat, dict)
+    assert feat['backbone'].size() == (25, 2048, 7, 7)
+
+    _, feat = inference_recognizer(
+        model, video_path, label_path, outputs=('backbone', 'cls_head'))
+    assert isinstance(feat, dict)
+    assert 'backbone' in feat and 'cls_head' in feat
+    assert feat['cls_head'].size() == (1, 400)
