@@ -389,6 +389,14 @@ def test_tpn():
         for one_img in img_list:
             recognizer(one_img, None, return_loss=False)
 
+    # Test forward dummy
+    with torch.no_grad():
+        img_list = [img[None, :] for img in imgs]
+        if hasattr(model, 'forward_dummy'):
+            model.forward = model.forward_dummy
+        for one_img in img_list:
+            recognizer(one_img, None, return_loss=False)
+
     # Test forward gradcam
     recognizer(imgs, gradcam=True)
     for one_img in img_list:
@@ -413,6 +421,14 @@ def test_tpn():
     # Test forward test
     with torch.no_grad():
         img_list = [img[None, :] for img in imgs]
+        for one_img in img_list:
+            recognizer(one_img, None, return_loss=False)
+
+    # Test dummy forward
+    with torch.no_grad():
+        img_list = [img[None, :] for img in imgs]
+        if hasattr(model, 'forward_dummy'):
+            model.forward = model.forward_dummy
         for one_img in img_list:
             recognizer(one_img, None, return_loss=False)
 

@@ -1,8 +1,26 @@
 ## Changelog
 
-### 0.9.0 (master)
+### 0.10.0 (31/12/2020)
 
 **Highlights**
+
+**New Features**
+
+**Improvements**
+- Fix CI due to pip upgrade. ([#454](https://github.com/open-mmlab/mmaction2/pull/454))
+- Add FAQ documents for easy troubleshooting. ([#413](https://github.com/open-mmlab/mmaction2/pull/413), [#420](https://github.com/open-mmlab/mmaction2/pull/420), [#439](https://github.com/open-mmlab/mmaction2/pull/439))
+
+
+**Bug and Typo Fixes**
+- Fix typo in default argument of BaseHead. ([#446](https://github.com/open-mmlab/mmaction2/pull/446))
+
+**ModelZoo**
+
+### 0.9.0 (30/11/2020)
+
+**Highlights**
+- Support GradCAM utils for recognizers
+- Support ResNet Audio model
 
 **New Features**
 - Automatically add modelzoo statistics to readthedocs ([#327](https://github.com/open-mmlab/mmaction2/pull/327))
@@ -16,7 +34,8 @@
 - Support PyTorch 1.7 in CI ([#312](https://github.com/open-mmlab/mmaction2/pull/312))
 - Support to predict different labels in a long video ([#274](https://github.com/open-mmlab/mmaction2/pull/274))
 - Update docs bout test crops ([#359](https://github.com/open-mmlab/mmaction2/pull/359))
-- Update unittest coverage ([#358](https://github.com/open-mmlab/mmaction2/pull/358), [#322](https://github.com/open-mmlab/mmaction2/pull/322))
+- Polish code format using pylint manually ([#338](https://github.com/open-mmlab/mmaction2/pull/338))
+- Update unittest coverage ([#358](https://github.com/open-mmlab/mmaction2/pull/358), [#322](https://github.com/open-mmlab/mmaction2/pull/322), [#325](https://github.com/open-mmlab/mmaction2/pull/325))
 - Add random seed for building filelists ([#323](https://github.com/open-mmlab/mmaction2/pull/323))
 - Update colab tutorial ([#367](https://github.com/open-mmlab/mmaction2/pull/367))
 - set default batch_size of evaluation and testing to 1 ([#250](https://github.com/open-mmlab/mmaction2/pull/250))

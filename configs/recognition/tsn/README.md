@@ -22,6 +22,7 @@
 
 [1] We report the performance on UCF-101 split1.
 ### HMDB51
+
 |config | gpus | backbone | pretrain | top1 acc| top5 acc | gpu_mem(M) | ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
 |[tsn_r50_1x1x8_50e_hmdb51_imagenet_rgb](/configs/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_imagenet_rgb.py)|8| ResNet50 | ImageNet | 48.95| 80.19| 21535| [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_imagenet_rgb/tsn_r50_1x1x8_50e_hmdb51_imagenet_rgb_20201123-ce6c27ed.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_imagenet_rgb/20201025_231108.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_imagenet_rgb/20201025_231108.log.json) |

@@ -7,6 +7,9 @@ assignees: ''
 
 ---
 
+Thanks for your feature request and we will review and plan for it when necessary.
+If you feel we have help you, give us a STAR! :satisfied:
+
 **Describe the feature**
 
 **Motivation**

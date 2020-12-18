@@ -70,5 +70,10 @@ You can also test the action detection performance of the model, with [anet_cuhk
 python tools/analysis/report_map.py --proposal path/to/proposal_file
 ```
 
+Notes:
+1. (Optional) You can use the following command to generate a formatted proposal file, which will be fed into the action classifier (Currently supports SSN and P-GCN, not including TSN, I3D etc.) to get the classification result of proposals.
+    ```shell
+    python tools/data/activitynet/convert_proposal_format.py
+    ```
 
 For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset) .

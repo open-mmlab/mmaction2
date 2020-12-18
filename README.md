@@ -51,7 +51,7 @@ This project is released under the [Apache 2.0 license](LICENSE).
 
 ## Changelog
 
-v0.8.0 was released in 31/10/2020. Please refer to [changelog.md](docs/changelog.md) for details and release history.
+v0.9.0 was released in 30/11/2020. Please refer to [changelog.md](docs/changelog.md) for details and release history.
 
 ## Benchmark
 | Model  |input| io backend | batch size x gpus | MMAction2 (s/iter) | MMAction (s/iter) | Temporal-Shift-Module (s/iter) | PySlowFast (s/iter) |
@@ -108,6 +108,10 @@ Please see [getting_started.md](docs/getting_started.md) for the basic usage of 
 There are also tutorials for [finetuning models](docs/tutorials/finetune.md), [adding new dataset](docs/tutorials/new_dataset.md), [designing data pipeline](docs/tutorials/data_pipeline.md), [exporting model to onnx](docs/tutorials/export_model.md), [customizing runtime settings](docs/tutorials/customize_runtime.md) and [adding new modules](docs/tutorials/new_modules.md).
 
 A Colab tutorial is also provided. You may preview the notebook [here](demo/mmaction2_tutorial.ipynb) or directly [run](https://colab.research.google.com/github/open-mmlab/mmaction2/blob/master/demo/mmaction2_tutorial.ipynb) on Colab.
+
+## FAQ
+
+Please refer to [FAQ](docs/faq.md) for frequently asked questions.
 
 ## Contributing
 
