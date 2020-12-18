@@ -138,6 +138,21 @@ class EpochEvalHook(Hook):
                 return False
         return True
 
+    def _do_save_best(self, key_score, json_path, current_ckpt_path, runner):
+        if (self.save_best and self.compare_func(key_score, self.best_score)):
+            self.best_score = key_score
+            self.logger.info(
+                f'Now best checkpoint is epoch_{runner.epoch + 1}.pth')
+            self.best_json['best_score'] = self.best_score
+            self.best_json['best_ckpt'] = current_ckpt_path
+            self.best_json['key_indicator'] = self.key_indicator
+            mmcv.dump(self.best_json, json_path)
+            if self.best_ckpt_name:
+                best_ckpt_path = osp(runner.work_dir, self.best_ckpt_name)
+                if os.path.isfile(best_ckpt_path):
+                    os.remove(best_ckpt_path)
+                shutil.copyfile(current_ckpt_path, best_ckpt_path)
+
     def after_train_epoch(self, runner):
         """Called after every training epoch to evaluate the results."""
         if not self.evaluation_flag(runner):
@@ -156,20 +171,8 @@ class EpochEvalHook(Hook):
         from mmaction.apis import single_gpu_test
         results = single_gpu_test(runner.model, self.dataloader)
         key_score = self.evaluate(runner, results)
-        if (self.save_best and self.compare_func(key_score, self.best_score)):
-            self.best_score = key_score
-            self.logger.info(
-                f'Now best checkpoint is epoch_{runner.epoch + 1}.pth')
-            self.best_json['best_score'] = self.best_score
-            self.best_json['best_ckpt'] = current_ckpt_path
-            self.best_json['key_indicator'] = self.key_indicator
-            mmcv.dump(self.best_json, json_path)
-            if self.best_ckpt_name:
-                best_ckpt_path = os.path.join(runner.work_dir,
-                                              self.best_ckpt_name)
-                if os.path.isfile(best_ckpt_path):
-                    os.remove(best_ckpt_path)
-                shutil.copyfile(current_ckpt_path, best_ckpt_path)
+        self._do_save_best(self, key_score, json_path, current_ckpt_path,
+                           runner)
 
     def evaluate(self, runner, results):
         """Evaluate the results.
@@ -282,18 +285,5 @@ class DistEpochEvalHook(EpochEvalHook):
         if runner.rank == 0:
             print('\n')
             key_score = self.evaluate(runner, results)
-            if (self.save_best and key_score is not None
-                    and self.compare_func(key_score, self.best_score)):
-                self.best_score = key_score
-                self.logger.info(
-                    f'Now best checkpoint is epoch_{runner.epoch + 1}.pth')
-                self.best_json['best_score'] = self.best_score
-                self.best_json['best_ckpt'] = current_ckpt_path
-                self.best_json['key_indicator'] = self.key_indicator
-                mmcv.dump(self.best_json, json_path)
-                if self.best_ckpt_name:
-                    best_ckpt_path = os.path.join(runner.work_dir,
-                                                  self.best_ckpt_name)
-                    if os.path.isfile(best_ckpt_path):
-                        os.remove(best_ckpt_path)
-                    shutil.copyfile(current_ckpt_path, best_ckpt_path)
+            self._do_save_best(self, key_score, json_path, current_ckpt_path,
+                               runner)
