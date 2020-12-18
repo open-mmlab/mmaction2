@@ -72,6 +72,7 @@ mmaction2
 ```
 
 **Note**: The `UCF101v2-GT.pkl` exists as a cache, it contains 6 items as follows:
+
 1. `labels` (list): List of the 24 labels.
 2. `gttubes` (dict): Dictionary that contains the ground truth tubes for each video.
   A **gttube** is dictionary that associates with each index of label and a list of tubes.

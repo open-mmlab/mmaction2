@@ -3,6 +3,7 @@
 We compare our results with some popular frameworks and official releases in terms of speed.
 
 ## Settings
+
 ### Hardware
 
 - 8 NVIDIA Tesla V100 (32G) GPUs
@@ -17,6 +18,7 @@ We compare our results with some popular frameworks and official releases in ter
 - NCCL 2.4.08
 
 ### Metrics
+
 The time we measured is the average training time for an iteration, including data processing and model training.
 The training speed is measure with s/iter. The lower, the better. Note that we skip the first 50 iter times as they may contain the device warmup time.
 
@@ -24,6 +26,7 @@ The training speed is measure with s/iter. The lower, the better. Note that we s
 
 Here we compare our MMAction2 repo with other video understanding toolboxes in the same data and model settings
 by the training time per iteration. Here, we use
+
 - commit id [7f3490d](https://github.com/open-mmlab/mmaction/tree/7f3490d3db6a67fe7b87bfef238b757403b670e3)(1/5/2020) of MMAction
 - commit id [8d53d6f](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd)(5/5/2020) of Temporal-Shift-Module
 - commit id [8299c98](https://github.com/facebookresearch/SlowFast/tree/8299c9862f83a067fa7114ce98120ae1568a83ec)(7/7/2020) of PySlowFast
@@ -38,6 +41,7 @@ In addition, we also used Memcached, a distributed cached system, to load the da
 We provide the training log based on which we calculate the average iter time, with the actual setting logged inside, feel free to verify it and fire an issue if something does not make sense.
 
 ## Main Results
+
 ### Recognizers
 
 | Model  |input| io backend | batch size x gpus | MMAction2 (s/iter) | GPU mem(GB) | MMAction (s/iter)| GPU mem(GB) | Temporal-Shift-Module (s/iter) | GPU mem(GB) | PySlowFast (s/iter)| GPU mem(GB) |
@@ -63,10 +67,12 @@ We provide the training log based on which we calculate the average iter time, w
 | BSN ([TEM + PEM + PGM](/configs/localization/bsn)) | **0.074(TEM)+0.040(PEM)** | 0.101(TEM)+0.040(PEM) | x |
 | BMN ([bmn_400x100_2x8_9e_activitynet_feature](/configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py)) | **3.27** | x | 3.30 |
 
-
 ## Details of Comparison
+
 ### TSN
-+ **mmaction2**
+
+- **mmaction2**
+
 ```shell
 # rawframes
 bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_tsn configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py --work-dir work_dirs/benchmark_tsn_rawframes
@@ -75,18 +81,22 @@ bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_tsn configs/recognition/ts
 bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_tsn configs/recognition/tsn/tsn_r50_video_1x1x3_100e_kinetics400_rgb.py --work-dir work_dirs/benchmark_tsn_video
 ```
 
-+ **mmaction**
+- **mmaction**
+
 ```shell
 python -u tools/train_recognizer.py configs/TSN/tsn_kinetics400_2d_rgb_r50_seg3_f1s1.py
 ```
 
-+ **Temporal-Shift-Module**
+- **Temporal-Shift-Module**
+
 ```shell
 python main.py kinetics RGB --arch resnet50 --num_segments 3 --gd 20 --lr 0.02 --wd 1e-4 --lr_steps 20 40 --epochs 1 --batch-size 256 -j 32 --dropout 0.5 --consensus_type=avg --eval-freq=10 --npb --print-freq 1
 ```
 
 ### I3D
-+ **mmaction2**
+
+- **mmaction2**
+
 ```shell
 # rawframes
 bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_i3d configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py --work-dir work_dirs/benchmark_i3d_rawframes
@@ -95,43 +105,56 @@ bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_i3d configs/recognition/i3
 bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_i3d configs/recognition/i3d/i3d_r50_video_heavy_8x8x1_100e_kinetics400_rgb.py --work-dir work_dirs/benchmark_i3d_video
 ```
 
-+ **mmaction**
+- **mmaction**
+
 ```shell
 python -u tools/train_recognizer.py configs/I3D_RGB/i3d_kinetics400_3d_rgb_r50_c3d_inflate3x1x1_seg1_f32s2.py
 ```
 
-+ **PySlowFast**
+- **PySlowFast**
+
 ```shell
 python tools/run_net.py   --cfg configs/Kinetics/I3D_8x8_R50.yaml   DATA.PATH_TO_DATA_DIR ${DATA_ROOT}   NUM_GPUS 8 TRAIN.BATCH_SIZE 64 TRAIN.AUTO_RESUME False LOG_PERIOD 1 SOLVER.MAX_EPOCH 1 > pysf_i3d_r50_8x8_video.log
 ```
+
 You may reproduce the result by writting a simple script to parse out the value of the field 'time_diff'.
 
 ### SlowFast
-+ **mmaction2**
+
+- **mmaction2**
+
 ```shell
 bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_slowfast configs/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb.py --work-dir work_dirs/benchmark_slowfast_video
 ```
 
-+ **PySlowFast**
+- **PySlowFast**
+
 ```shell
 python tools/run_net.py   --cfg configs/Kinetics/SLOWFAST_4x16_R50.yaml   DATA.PATH_TO_DATA_DIR ${DATA_ROOT}   NUM_GPUS 8 TRAIN.BATCH_SIZE 64 TRAIN.AUTO_RESUME False LOG_PERIOD 1 SOLVER.MAX_EPOCH 1 > pysf_slowfast_r50_4x16_video.log
 ```
+
 You may reproduce the result by writting a simple script to parse out the value of the field 'time_diff'.
 
 ### SlowOnly
-+ **mmaction2**
+
+- **mmaction2**
+
 ```shell
 bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_slowonly configs/recognition/slowonly/slowonly_r50_video_4x16x1_256e_kinetics400_rgb.py --work-dir work_dirs/benchmark_slowonly_video
 ```
 
-+ **PySlowFast**
+- **PySlowFast**
+
 ```shell
 python tools/run_net.py   --cfg configs/Kinetics/SLOW_4x16_R50.yaml   DATA.PATH_TO_DATA_DIR ${DATA_ROOT}   NUM_GPUS 8 TRAIN.BATCH_SIZE 64 TRAIN.AUTO_RESUME False LOG_PERIOD 1 SOLVER.MAX_EPOCH 1 > pysf_slowonly_r50_4x16_video.log
 ```
+
 You may reproduce the result by writting a simple script to parse out the value of the field 'time_diff'.
 
 ### R2plus1D
-+ **mmaction2**
+
+- **mmaction2**
+
 ```shell
 bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_r2plus1d configs/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb.py --work-dir work_dirs/benchmark_r2plus1d_video
 ```

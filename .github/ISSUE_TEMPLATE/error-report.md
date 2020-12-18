@@ -11,6 +11,7 @@ Thanks for your error report and we appreciate it a lot.
 If you feel we have help you, give us a STAR! :satisfied:
 
 **Checklist**
+
 1. I have searched related issues but cannot get the expected help.
 2. The bug has not been fixed in the latest version.
 
@@ -18,10 +19,13 @@ If you feel we have help you, give us a STAR! :satisfied:
 A clear and concise description of what the bug is.
 
 **Reproduction**
+
 1. What command or script did you run?
+
 ```
 A placeholder for the command.
 ```
+
 2. Did you make any modifications on the code or config? Did you understand what you have modified?
 3. What dataset did you use?
 
@@ -33,10 +37,13 @@ A placeholder for the command.
     - Other environment variables that may be related (such as `$PATH`, `$LD_LIBRARY_PATH`, `$PYTHONPATH`, etc.)
 
 **Error traceback**
+
 If applicable, paste the error traceback here.
+
 ```
 A placeholder for traceback.
 ```
 
 **Bug fix**
+
 If you have already identified the reason, you can provide the information here. If you are willing to create a PR to fix it, please also leave a comment here and that would be much appreciated!
