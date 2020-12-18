@@ -67,7 +67,7 @@ def inference_recognizer(model,
             directory path. Otherwise, it should be video file path.
         label_path (str): The label file path.
         use_frames (bool): Whether to use rawframes as input. Default:False.
-        outputs (list(str) | tuple(str) | None) : Names of layers whose
+        outputs (list(str) | tuple(str) | str | None) : Names of layers whose
             outputs need to be returned, default: None.
 
     Returns:
@@ -84,6 +84,10 @@ def inference_recognizer(model,
     if osp.isdir(video_path) and not use_frames:
         raise RuntimeError(
             f"'{video_path}' is a rawframe directory, not a video file")
+
+    if isinstance(outputs, str):
+        outputs = (outputs, )
+    assert outputs is None or isinstance(outputs, (tuple, list))
 
     cfg = model.cfg
     device = next(model.parameters()).device  # model device
