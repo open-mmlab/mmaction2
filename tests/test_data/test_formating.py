@@ -131,7 +131,7 @@ def test_collect():
     results = collect(inputs)
     assert sorted(list(results.keys())) == sorted(
         ['imgs', 'label', 'img_metas'])
-    inputs.pop('imgs')
+    imgs = inputs.pop('imgs')
     assert set(results['img_metas'].data.keys()) == set(inputs.keys())
     for key in results['img_metas'].data:
         assert results['img_metas'].data[key] == inputs[key]
@@ -139,6 +139,7 @@ def test_collect():
         (f'(keys={keys}, meta_keys={collect.meta_keys}, '
          f'nested={collect.nested})')
 
+    inputs['imgs'] = imgs
     collect = Collect(keys, nested=True)
     results = collect(inputs)
     assert sorted(list(results.keys())) == sorted(

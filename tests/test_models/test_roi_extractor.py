@@ -23,6 +23,7 @@ def test_single_roi_extractor3d():
     extracted = roi_extractor(feat, rois)
     assert extracted.shape == (4, 96, 1, 8, 8)
 
+    feat = torch.randn([4, 64, 8, 16, 16])
     roi_extractor = SingleRoIExtractor3D(
         roi_layer_type='RoIAlign',
         featmap_stride=16,
