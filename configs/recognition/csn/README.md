@@ -1,6 +1,7 @@
 # CSN
 
 ## Introduction
+
 ```
 @inproceedings{inproceedings,
 author = {Wang, Heng and Feiszli, Matt and Torresani, Lorenzo},
@@ -32,10 +33,10 @@ doi = {10.1109/ICCV.2019.00565}
 Notes:
 
 1. The **gpus** indicates the number of gpu (32G V100) we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
-According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
-e.g., lr=0.01 for 4 GPUs * 2 video/gpu and lr=0.08 for 16 GPUs * 4 video/gpu.
+   According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
+   e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
 2. The **inference_time** is got by this [benchmark script](/tools/analysis/benchmark.py), where we use the sampling frames strategy of the test setting and only care about the model inference time,
-not including the IO time and pre-processing time. For each setting, we use 1 gpu and set batch size (videos per gpu) to 1 to calculate the inference time.
+   not including the IO time and pre-processing time. For each setting, we use 1 gpu and set batch size (videos per gpu) to 1 to calculate the inference time.
 3. The values in columns named after "reference" are the results got by training on the original repo, using the same model settings.
 
 For more details on data preparation, you can refer to Kinetics400 in [Data Preparation](/docs/data_preparation.md).
@@ -43,11 +44,13 @@ For more details on data preparation, you can refer to Kinetics400 in [Data Prep
 ## Train
 
 You can use the following command to train a model.
+
 ```shell
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
 Example: train CSN model on Kinetics-400 dataset in a deterministic option with periodic validation.
+
 ```shell
 python tools/train.py configs/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb.py \
     --work-dir work_dirs/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb \
@@ -59,11 +62,13 @@ For more details, you can refer to **Training setting** part in [getting_started
 ## Test
 
 You can use the following command to test a model.
+
 ```shell
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
 Example: test CSN model on Kinetics-400 dataset and dump the result to a json file.
+
 ```shell
 python tools/test.py configs/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb.py \
     checkpoints/SOME_CHECKPOINT.pth --eval top_k_accuracy mean_class_accuracy \

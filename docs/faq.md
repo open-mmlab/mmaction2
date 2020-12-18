@@ -4,7 +4,6 @@ We list some common issues faced by many users and their corresponding solutions
 Feel free to enrich the list if you find any frequent issues and have ways to help others to solve them.
 If the contents here do not cover your issue, please create an issue using the [provided templates](/.github/ISSUE_TEMPLATE/error-report.md) and make sure you fill in all required information in the template.
 
-
 ## Installation
 
 - **"No module named 'mmcv.ops'"; "No module named 'mmcv._ext'"**
@@ -30,7 +29,6 @@ If the contents here do not cover your issue, please create an issue using the [
     If users encounter FileNotFound error for the first or last frame of the data, there is a need to check the files begin with offset 0 or 1,
     that is `xxx_00000.jpg` or `xxx_00001.jpg`, and then change the `start_index` value of data pipeline in configs.
 
-
 ## Training
 
 - **How to just use trained recognizer models for backbone pre-training ?**
@@ -44,11 +42,12 @@ If the contents here do not cover your issue, please create an issue using the [
 - **How to visualize the training accuracy/loss curves in real-time ?**
 
     Use `TensorboardLoggerHook` in `log_config` like
+
     ```python
     log_config=dict(interval=20, hooks=[dict(type='TensorboardLoggerHook')])
     ```
-    You can refer to [tutorials/customize_runtime.md](tutorials/customize_runtime.md#log-config), [config.md](config.md) and [this](https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py#L118).
 
+    You can refer to [tutorials/customize_runtime.md](tutorials/customize_runtime.md#log-config), [config.md](config.md) and [this](https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py#L118).
 
 ## Testing
 

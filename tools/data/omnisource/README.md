@@ -106,7 +106,7 @@ data/OmniSource/
 |   │   │   ├── ...
 |   │   │   └── 000901.jpg
 |   │   ├── ...
-│   │   └──	19
+|   │   ├── 19
 │   ├── ...
 │   └── 199
 ├── insimage_200
@@ -115,7 +115,7 @@ data/OmniSource/
 |   │   │   ├── 1J9tKWCNgV_0.jpg
 |   │   │   ├── ...
 |   │   │   └── 1J9tKWCNgV_0.jpg
-│   │   └──	abseiling
+|   │   ├── abseiling
 │   ├── ...
 │   └── 199
 ├── insvideo_200
@@ -124,7 +124,7 @@ data/OmniSource/
 |   │   │   ├── B00arxogubl.mp4
 |   │   │   ├── ...
 |   │   │   └── BzYsP0HIvbt.mp4
-│   │   └──	abseiling
+|   │   ├── abseiling
 │   ├── ...
 │   └── 199
 ├── kinetics_200_train
@@ -136,13 +136,13 @@ data/OmniSource/
 |   ├── ...
 |   ├── zymA_6jZIz4.mp4
 └── kinetics_raw_200_train
-    ├── pref_
-    |   ├── ___dTOdxzXY
-    |   |   ├──	part_0.mp4
-    |   |   ├──	...
-    |   |   └──	part_6.mp4
-    |   ├── ...
-    |   └── _zygwGDE2EM
-    ├── ...
-    └── prefZ
+│   ├── pref_
+│   |   ├── ___dTOdxzXY
+|   │   │   ├── part_0.mp4
+|   │   │   ├── ...
+|   │   │   ├── part_6.mp4
+│   |   ├── ...
+│   |   └── _zygwGDE2EM
+│   ├── ...
+│   └── prefZ
 ```

@@ -1,13 +1,13 @@
 # Demo
 
-### Demo link
+## Demo link
 
-  * [Video demo](#video-demo): A demo script to predict the recognition result using a single video
-  * [Video GradCAM Demo](#video-gradcam-demo): A demo script to visualize GradCAM results using a single video.
-  * [Webcam demo](#webcam-demo): A demo script to implement real-time action recognition from web camera
-  * [Long Video demo](#long-video-demo): a demo script to predict different labels using a single long video.
+- [Video demo](#video-demo): A demo script to predict the recognition result using a single video
+- [Video GradCAM Demo](#video-gradcam-demo): A demo script to visualize GradCAM results using a single video.
+- [Webcam demo](#webcam-demo): A demo script to implement real-time action recognition from web camera
+- [Long Video demo](#long-video-demo): a demo script to predict different labels using a single long video.
 
-### Video demo
+## Video demo
 
 We provide a demo script to predict the recognition result using a single video. In order to get predict results in range `[0, 1]`, make sure to set `test_cfg = dict(average_clips='prob')` in config file.
 
@@ -18,6 +18,7 @@ python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} {LABEL_FILE}
 ```
 
 Optional arguments:
+
 - `--use-frames`: If specified, the demo will take rawframes as input. Otherwise, it will take a video as input.
 - `DEVICE_TYPE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`. If not specified, it will be set to `cuda:0`.
 - `FPS`: FPS value of the output video when using rawframes as input. If not specified, it wll be set to 30.
@@ -113,8 +114,7 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
         PATH_TO_FRAMES/ LABEL_FILE --use-frames --fps 24 --out-filename demo/demo_out.gif
     ```
 
-
-### Video GradCAM Demo
+## Video GradCAM Demo
 
 We provide a demo script to visualize GradCAM results using a single video.
 
@@ -154,8 +154,7 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
         demo/demo.mp4 --target-layer-name backbone/layer4/1/relu --out-filename demo/demo_gradcam_tsm.gif
     ```
 
-
-### Webcam demo
+## Webcam demo
 
 We provide a demo script to implement real-time action recognition from web camera. In order to get predict results in range `[0, 1]`, make sure to set `test_cfg = dict(average_clips='prob')` in config file.
 
@@ -166,6 +165,7 @@ python demo/webcam_demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${LABEL_FILE} \
 ```
 
 Optional arguments:
+
 - `DEVICE_TYPE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`. If not specified, it will be set to `cuda:0`.
 - `CAMERA_ID`: ID of camera device If not specified, it will be set to 0.
 - `THRESHOLD`: Threshold of prediction score for action recognition. Only label with score higher than the threshold will be shown. If not specified, it will be set to 0.
@@ -205,12 +205,12 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
 
 **Note:** Considering the efficiency difference for users' hardware, Some modifications might be done to suit the case.
 Users can change:
+
 1). `SampleFrames` step (especially the number of `clip_len` and `num_clips`) of `test_pipeline` in the config file.
 2). Change to the suitable Crop methods like `TenCrop`, `ThreeCrop`, `CenterCrop`, etc. in `test_pipeline` of the config file.
 3). Change the number of `--average-size`. The smaller, the faster.
 
-
-### Long video demo
+## Long video demo
 
 We provide a demo script to predict different labels using a single long video. In order to get predict results in range `[0, 1]`, make sure to set `test_cfg = dict(average_clips='prob')` in config file.
 
@@ -220,6 +220,7 @@ python demo/long_video_demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} $
 ```
 
 Optional arguments:
+
 - `OUT_FILE`: Path to the output video file.
 - `INPUT_STEP`: Input step for sampling frames, which can help to get more spare input. If not specified , it will be set to 1.
 - `DEVICE_TYPE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`. If not specified, it will be set to `cuda:0`.
@@ -231,7 +232,7 @@ Assume that you are located at `$MMACTION2` and have already downloaded the chec
 or use checkpoint url from `configs/` to directly load corresponding checkpoint, which will be automatically saved in `$HOME/.cahe/torch/checkpoints`.
 
 1. Predict different labels in a long video by using a TSN model on cpu, with 3 frames for input steps (that is, random sample one from each 3 frames)
-and outputting result labels with score higher than 0.2.
+   and outputting result labels with score higher than 0.2.
 
     ```shell
     python demo/long_video_demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
@@ -240,7 +241,7 @@ and outputting result labels with score higher than 0.2.
     ```
 
 2. Predict different labels in a long video by using a TSN model on cpu, with 3 frames for input steps (that is, random sample one from each 3 frames)
-and outputting result labels with score higher than 0.2, loading checkpoint from url.
+   and outputting result labels with score higher than 0.2, loading checkpoint from url.
 
     ```shell
     python demo/long_video_demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
@@ -249,7 +250,7 @@ and outputting result labels with score higher than 0.2, loading checkpoint from
     ```
 
 3. Predict different labels in a long video from web by using a TSN model on cpu, with 3 frames for input steps (that is, random sample one from each 3 frames)
-and outputting result labels with score higher than 0.2, loading checkpoint from url.
+   and outputting result labels with score higher than 0.2, loading checkpoint from url.
 
     ```shell
     python demo/long_video_demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \

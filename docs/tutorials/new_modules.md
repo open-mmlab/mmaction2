@@ -7,9 +7,9 @@ In this tutorial, we will introduce some methods about how to customize optimize
 - [Customize Optimizer](#customize-optimizer)
 - [Customize Optimizer Constructor](#customize-optimizer-constructor)
 - [Develop New Components](#develop-new-components)
-  * [Add new backbones](#add-new-backbones)
-  * [Add new heads](#add-new-heads)
-  * [Add new loss](#add-new-loss)
+  - [Add new backbones](#add-new-backbones)
+  - [Add new heads](#add-new-heads)
+  - [Add new loss](#add-new-loss)
 - [Add new learning rate scheduler (updater)](#add-new-learning-rate-scheduler--updater-)
 
 <!-- TOC -->
@@ -234,13 +234,17 @@ loss_bbox=dict(type='MyLoss'))
 ```
 
 ## Add new learning rate scheduler (updater)
+
 The default manner of constructing a lr updater(namely, 'scheduler' by pytorch convention), is to modify the config such as:
+
 ```python
 ...
 lr_config = dict(policy='step', step=[20, 40])
 ...
 ```
+
 In the api for [`train.py`](/mmaction/apis/train.py), it will register the learning rate updater hook based on the config at:
+
 ```python
 ...
     runner.register_training_hooks(
@@ -251,9 +255,11 @@ In the api for [`train.py`](/mmaction/apis/train.py), it will register the learn
         cfg.get('momentum_config', None))
 ...
 ```
+
 So far, the supported updaters can be find in [mmcv](https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/lr_updater.py), but if you want to customize a new learning rate updater, you may follow the steps below:
 
 1. First, write your own LrUpdaterHook in `$MMAction2/mmaction/core/lr`. The snippet followed is an example of cumtomized lr updater that uses learning rate based on a specific learning rate ratio: `lrs`, by which the learning rate decreases at each `steps`:
+
 ```python
 @HOOKS.register_module()
 # Register it here
@@ -275,7 +281,9 @@ class RelativeStepLrUpdaterHook(LrUpdaterHook):
 ```
 
 2. Modify your config:
+
 In your config file, swap the original `lr_config` by:
+
 ```python
 lr_config = dict(policy='RelativeStep', steps=[20, 40, 60], lrs=[0.1, 0.01, 0.001])
 ```

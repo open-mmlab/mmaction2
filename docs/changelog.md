@@ -5,28 +5,34 @@
 **Highlights**
 
 **New Features**
+
 - Support Spatio-Temporal Action Detection(AVA) ([#351](https://github.com/open-mmlab/mmaction2/pull/351))
 
 **Improvements**
+
 - Support training and testing for Spatio-Temporal Action Detection ([#351](https://github.com/open-mmlab/mmaction2/pull/351))
-- Fix CI due to pip upgrade. ([#454](https://github.com/open-mmlab/mmaction2/pull/454))
+- Fix CI due to pip upgrade ([#454](https://github.com/open-mmlab/mmaction2/pull/454))
+- Add markdown lint in pre-commit hook ([#255](https://github.com/open-mmlab/mmaction2/pull/225))
 - Use title case in modelzoo statistics. ([#456](https://github.com/open-mmlab/mmaction2/pull/456))
 - Add FAQ documents for easy troubleshooting. ([#413](https://github.com/open-mmlab/mmaction2/pull/413), [#420](https://github.com/open-mmlab/mmaction2/pull/420), [#439](https://github.com/open-mmlab/mmaction2/pull/439))
 
-
 **Bug and Typo Fixes**
+
 - Fix typo in default argument of BaseHead. ([#446](https://github.com/open-mmlab/mmaction2/pull/446))
 
 **ModelZoo**
+
 - Add SlowOnly, SlowFast for AVA2.1 ([#351](https://github.com/open-mmlab/mmaction2/pull/351))
 
 ### 0.9.0 (30/11/2020)
 
 **Highlights**
+
 - Support GradCAM utils for recognizers
 - Support ResNet Audio model
 
 **New Features**
+
 - Automatically add modelzoo statistics to readthedocs ([#327](https://github.com/open-mmlab/mmaction2/pull/327))
 - Support GYM99 ([#331](https://github.com/open-mmlab/mmaction2/pull/331), [#336](https://github.com/open-mmlab/mmaction2/pull/336))
 - Add AudioOnly Pathway from AVSlowFast. ([#355](https://github.com/open-mmlab/mmaction2/pull/355))
@@ -36,6 +42,7 @@
 - Add online motion vector decoder ([#291](https://github.com/open-mmlab/mmaction2/pull/291))
 
 **Improvements**
+
 - Support training and testing for Spatio-Temporal Action Detection ([#351](https://github.com/open-mmlab/mmaction2/pull/351))
 - Support PyTorch 1.7 in CI ([#312](https://github.com/open-mmlab/mmaction2/pull/312))
 - Support to predict different labels in a long video ([#274](https://github.com/open-mmlab/mmaction2/pull/274))
@@ -51,6 +58,7 @@
 - Automatically calculate number of test clips for Recognizer2D ([#359](https://github.com/open-mmlab/mmaction2/pull/359))
 
 **Bug and Typo Fixes**
+
 - Fix rename Kinetics classnames bug ([#384](https://github.com/open-mmlab/mmaction2/pull/384))
 - Fix a bug in BaseDataset when `data_prefix` is None ([#314](https://github.com/open-mmlab/mmaction2/pull/314))
 - Fix a bug about `tmp_folder` in `OpenCVInit` ([#357](https://github.com/open-mmlab/mmaction2/pull/357))
@@ -61,6 +69,7 @@
 - Fix Issue #306: Bug of SampleAVAFrames ([#317](https://github.com/open-mmlab/mmaction2/pull/317))
 
 **ModelZoo**
+
 - Add SlowOnly model for AVA2.1 ([#351](https://github.com/open-mmlab/mmaction2/pull/351))
 - Add SlowOnly model for GYM99, both RGB and Flow ([#336](https://github.com/open-mmlab/mmaction2/pull/336))
 - Add auto modelzoo statistics in readthedocs ([#327](https://github.com/open-mmlab/mmaction2/pull/327))
@@ -69,6 +78,7 @@
 ### v0.8.0 (31/10/2020)
 
 **Highlights**
+
 - Support [OmniSource](https://arxiv.org/abs/2003.13042)
 - Support C3D
 - Support video recognition with audio modality
@@ -76,6 +86,7 @@
 - Support X3D
 
 **New Features**
+
 - Support AVA dataset preparation ([#266](https://github.com/open-mmlab/mmaction2/pull/266))
 - Support the training of video recognition dataset with multiple tag categories ([#235](https://github.com/open-mmlab/mmaction2/pull/235))
 - Support joint training with multiple training datasets of multiple formats, including images, untrimmed videos, etc. ([#242](https://github.com/open-mmlab/mmaction2/pull/242))
@@ -84,6 +95,7 @@
 - Support specify a start epoch to conduct evaluation ([#216](https://github.com/open-mmlab/mmaction2/pull/216))
 
 **Improvements**
+
 - Set default values of 'average_clips' in each config file so that there is no need to set it explicitly during testing in most cases ([#232](https://github.com/open-mmlab/mmaction2/pull/232))
 - Extend HVU datatools to generate individual file list for each tag category ([#258](https://github.com/open-mmlab/mmaction2/pull/258))
 - Support data preparation for Kinetics-600 and Kinetics-700 ([#254](https://github.com/open-mmlab/mmaction2/pull/254))
@@ -97,6 +109,7 @@
 - Use `metric_options` dict to provide metric args in `evaluate` ([#286](https://github.com/open-mmlab/mmaction2/pull/286))
 
 **Bug Fixes**
+
 - Register `FrameSelector` in `PIPELINES` ([#268](https://github.com/open-mmlab/mmaction2/pull/268))
 - Fix the potential bug for default value in dataset_setting ([#245](https://github.com/open-mmlab/mmaction2/pull/245))
 - Fix multi-node dist test ([#292](https://github.com/open-mmlab/mmaction2/pull/292))
@@ -106,6 +119,7 @@
 - Correct the `img_norm_cfg` used by TSN-3seg-R50 UCF-101 model, improve the Top-1 accuracy by 3% ([#273](https://github.com/open-mmlab/mmaction2/pull/273))
 
 **ModelZoo**
+
 - Add Baselines for Kinetics-600 and Kinetics-700, including TSN-R50-8seg and SlowOnly-R50-8x8 ([#259](https://github.com/open-mmlab/mmaction2/pull/259))
 - Add OmniSource benchmark on MiniKineitcs ([#296](https://github.com/open-mmlab/mmaction2/pull/296))
 - Add Baselines for HVU, including TSN-R18-8seg on 6 tag categories of HVU ([#287](https://github.com/open-mmlab/mmaction2/pull/287))
@@ -114,11 +128,13 @@
 ### v0.7.0 (30/9/2020)
 
 **Highlights**
+
 - Support TPN
 - Support JHMDB, UCF101-24, HVU dataset preparation
 - support onnx model conversion
 
 **New Features**
+
 - Support the data pre-processing pipeline for the HVU Dataset ([#277](https://github.com/open-mmlab/mmaction2/pull/227/))
 - Support real-time action recognition from web camera ([#171](https://github.com/open-mmlab/mmaction2/pull/171))
 - Support onnx ([#160](https://github.com/open-mmlab/mmaction2/pull/160))
@@ -128,10 +144,12 @@
 - Support JHMDB preparation ([#220](https://github.com/open-mmlab/mmaction2/pull/220))
 
 **ModelZoo**
+
 - Add finetuning setting for SlowOnly ([#173](https://github.com/open-mmlab/mmaction2/pull/173))
 - Add TSN and SlowOnly models trained with [OmniSource](https://arxiv.org/abs/2003.13042), which achieve 75.7% Top-1 with TSN-R50-3seg and 80.4% Top-1 with SlowOnly-R101-8x8 ([#215](https://github.com/open-mmlab/mmaction2/pull/215))
 
 **Improvements**
+
 - Support demo with video url ([#165](https://github.com/open-mmlab/mmaction2/pull/165))
 - Support multi-batch when testing ([#184](https://github.com/open-mmlab/mmaction2/pull/184))
 - Add tutorial for adding a new learning rate updater ([#181](https://github.com/open-mmlab/mmaction2/pull/181))
@@ -143,17 +161,19 @@
 - Polish readsthedocs display ([#217](https://github.com/open-mmlab/mmaction2/pull/217), [#229](https://github.com/open-mmlab/mmaction2/pull/229))
 
 **Bug Fixes**
+
 - Fix the bug when using OpenCV to extract only RGB frames with original shape ([#184](https://github.com/open-mmlab/mmaction2/pull/187))
 - Fix the bug of sthv2 `num_classes` from 339 to 174 ([#174](https://github.com/open-mmlab/mmaction2/pull/174), [#207](https://github.com/open-mmlab/mmaction2/pull/207))
-
 
 ### v0.6.0 (2/9/2020)
 
 **Highlights**
+
 - Support TIN, CSN, SSN, NonLocal
 - Support FP16 training
 
 **New Features**
+
 - Support NonLocal module and provide ckpt in TSM and I3D ([#41](https://github.com/open-mmlab/mmaction2/pull/41))
 - Support SSN ([#33](https://github.com/open-mmlab/mmaction2/pull/33), [#37](https://github.com/open-mmlab/mmaction2/pull/37), [#52](https://github.com/open-mmlab/mmaction2/pull/52), [#55](https://github.com/open-mmlab/mmaction2/pull/55))
 - Support CSN ([#87](https://github.com/open-mmlab/mmaction2/pull/87))
@@ -164,6 +184,7 @@
 - Enhance demo by supporting rawframe inference ([#59](https://github.com/open-mmlab/mmaction2/pull/59)), output video/gif ([#72](https://github.com/open-mmlab/mmaction2/pull/72))
 
 **ModelZoo**
+
 - Update Slowfast modelzoo ([#51](https://github.com/open-mmlab/mmaction2/pull/51))
 - Update TSN, TSM video checkpoints ([#50](https://github.com/open-mmlab/mmaction2/pull/50))
 - Add data benchmark for TSN ([#57](https://github.com/open-mmlab/mmaction2/pull/57))
@@ -171,6 +192,7 @@
 - Add BSN/BMN performance results with feature extracted by our codebase ([#99](https://github.com/open-mmlab/mmaction2/pull/99))
 
 **Improvements**
+
 - Polish data preparation codes ([#70](https://github.com/open-mmlab/mmaction2/pull/70))
 - Improve data preparation scripts ([#58](https://github.com/open-mmlab/mmaction2/pull/58))
 - Improve unittest coverage and minor fix ([#62](https://github.com/open-mmlab/mmaction2/pull/62))
@@ -184,6 +206,7 @@
 - Adjust the directory structure of `tools/` and rename some scripts files ([#142](https://github.com/open-mmlab/mmaction2/pull/142))
 
 **Bug Fixes**
+
 - Fix configs for localization test ([#67](https://github.com/open-mmlab/mmaction2/pull/67))
 - Fix configs of SlowOnly by fixing lr to 8 gpus ([#136](https://github.com/open-mmlab/mmaction2/pull/136))
 - Fix the bug in analyze_log ([#54](https://github.com/open-mmlab/mmaction2/pull/54))
@@ -193,13 +216,14 @@
 - Correct the sthv1/sthv2 rawframes filelist generate command ([#71](https://github.com/open-mmlab/mmaction2/pull/71))
 - `CosineAnnealing` typo ([#47](https://github.com/open-mmlab/mmaction2/pull/47))
 
-
 ### v0.5.0 (9/7/2020)
 
 **Highlights**
+
 - MMAction2 is released
 
 **New Features**
+
 - Support various datasets: UCF101, Kinetics-400, Something-Something V1&V2, Moments in Time,
   Multi-Moments in Time, THUMOS14
 - Support various action recognition methods: TSN, TSM, R(2+1)D, I3D, SlowOnly, SlowFast, Non-local
