@@ -7,11 +7,11 @@ Apart from training/testing scripts, We provide lots of useful tools under the `
 - [Log Analysis](#log-analysis)
 - [Model Complexity](#model-complexity)
 - [Model Conversion](#model-conversion)
-  * [MMAction2 model to ONNX (experimental)](#mmaction2-model-to-onnx--experimental-)
-  * [Prepare a model for publishing](#prepare-a-model-for-publishing)
+  - [MMAction2 model to ONNX (experimental)](#mmaction2-model-to-onnx--experimental-)
+  - [Prepare a model for publishing](#prepare-a-model-for-publishing)
 - [Miscellaneous](#miscellaneous)
-  * [Evaluating a metric](#evaluating-a-metric)
-  * [Print the entire config](#print-the-entire-config)
+  - [Evaluating a metric](#evaluating-a-metric)
+  - [Print the entire config](#print-the-entire-config)
 
 <!-- TOC -->
 
@@ -45,7 +45,7 @@ Examples:
     python tools/analysis/analyze_logs.py plot_curve log1.json log2.json --keys top1_acc --legend run1 run2
     ```
 
-You can also compute the average training speed.
+    You can also compute the average training speed.
 
     ```shell
     python tools/analysis/analyze_logs.py cal_train_time ${JSON_LOGS} [--include-outliers]

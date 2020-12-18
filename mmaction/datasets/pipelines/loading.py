@@ -443,6 +443,8 @@ class SampleAVAFrames(SampleFrames):
         results['frame_inds'] = np.array(frame_inds, dtype=np.int)
         results['clip_len'] = self.clip_len
         results['frame_interval'] = self.frame_interval
+        results['num_clips'] = 1
+        results['crop_quadruple'] = np.array([0, 0, 1, 1], dtype=np.float32)
         return results
 
     def __repr__(self):
@@ -1150,6 +1152,18 @@ class RawFrameDecode:
         results['imgs'] = imgs
         results['original_shape'] = imgs[0].shape[:2]
         results['img_shape'] = imgs[0].shape[:2]
+
+        # we resize the gt_bboxes and proposals to their real scale
+        if 'gt_bboxes' in results:
+            h, w = results['img_shape']
+            scale_factor = np.array([w, h, w, h])
+            gt_bboxes = results['gt_bboxes']
+            gt_bboxes = (gt_bboxes * scale_factor).astype(np.float32)
+            results['gt_bboxes'] = gt_bboxes
+            if 'proposals' in results and results['proposals'] is not None:
+                proposals = results['proposals']
+                proposals = (proposals * scale_factor).astype(np.float32)
+                results['proposals'] = proposals
 
         return results
 

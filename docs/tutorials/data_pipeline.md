@@ -5,9 +5,9 @@ In this tutorial, we will introduce some methods about the design of data pipeli
 <!-- TOC -->
 
 - [Design of Data Pipelines](#design-of-data-pipelines)
-  * [Data loading](#data-loading)
-  * [Pre-processing](#pre-processing)
-  * [Formatting](#formatting)
+  - [Data loading](#data-loading)
+  - [Pre-processing](#pre-processing)
+  - [Formatting](#formatting)
 - [Extend and Use Custom Pipelines](#extend-and-use-custom-pipelines)
 
 <!-- TOC -->
@@ -32,6 +32,7 @@ With the pipeline going on, each operator can add new keys (marked as green) to 
 The operations are categorized into data loading, pre-processing and formatting.
 
 Here is a pipeline example for TSN.
+
 ```python
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
@@ -91,87 +92,108 @@ For each operation, we list the related dict fields that are added/updated/remov
 ### Data loading
 
 `SampleFrames`
+
 - add: frame_inds, clip_len, frame_interval, num_clips, *total_frames
 
 `DenseSampleFrames`
+
 - add: frame_inds, clip_len, frame_interval, num_clips, *total_frames
 
 `PyAVDecode`
+
 - add: imgs, original_shape
 - update: *frame_inds
 
 `DecordDecode`
+
 - add: imgs, original_shape
 - update: *frame_inds
 
 `OpenCVDecode`
+
 - add: imgs, original_shape
 - update: *frame_inds
 
 `RawFrameDecode`
+
 - add: imgs, original_shape
 - update: *frame_inds
 
 ### Pre-processing
 
 `RandomCrop`
+
 - add: crop_bbox, img_shape
 - update: imgs
 
 `RandomResizedCrop`
+
 - add: crop_bbox, img_shape
 - update: imgs
 
 `MultiScaleCrop`
+
 - add: crop_bbox, img_shape, scales
 - update: imgs
 
 `Resize`
+
 - add: img_shape, keep_ratio, scale_factor
 - update: imgs
 
 `Flip`
+
 - add: flip, flip_direction
 - update: imgs
 
 `Normalize`
+
 - add: img_norm_cfg
 - update: imgs
 
 `CenterCrop`
+
 - add: crop_bbox, img_shape
 - update: imgs
 
 `ThreeCrop`
+
 - add: crop_bbox, img_shape
 - update: imgs
 
 `TenCrop`
+
 - add: crop_bbox, img_shape
 - update: imgs
 
 `MultiGroupCrop`
+
 - add: crop_bbox, img_shape
 - update: imgs
 
 ### Formatting
 
 `ToTensor`
+
 - update: specified by `keys`.
 
 `ImageToTensor`
+
 - update: specified by `keys`.
 
 `Transpose`
+
 - update: specified by `keys`.
 
 `Collect`
-- add: img_meta (the keys of img_meta is specified by `meta_keys`)
+
+- add: img_metas (the keys of img_metas is specified by `meta_keys`)
 - remove: all other keys except for those specified by `keys`
 
 It is **noteworthy** that the first key, commonly `imgs`, will be used as the main key to calculate the batch size.
 
 `FormatShape`
+
 - add: input_shape
 - update: imgs
 

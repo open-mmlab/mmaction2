@@ -1,3 +1,5 @@
+import warnings
+
 import torch
 import torch.nn as nn
 from mmcv.cnn import ConvModule, kaiming_init
@@ -7,6 +9,12 @@ from mmcv.utils import print_log
 from ...utils import get_root_logger
 from ..registry import BACKBONES
 from .resnet3d import ResNet3d
+
+try:
+    import mmdet  # noqa
+    from mmdet.models import BACKBONES as MMDET_BACKBONES
+except (ImportError, ModuleNotFoundError):
+    warnings.warn('Please install mmdet to use MMDET_BACKBONES')
 
 
 class ResNet3dPathway(ResNet3d):
@@ -308,9 +316,12 @@ class ResNet3dPathway(ResNet3d):
                 for param in conv_lateral.parameters():
                     param.requires_grad = False
 
-    def init_weights(self):
+    def init_weights(self, pretrained=None):
         """Initiate the parameters either from existing checkpoint or from
         scratch."""
+        if pretrained:
+            self.pretrained = pretrained
+
         # Override the init_weights of i3d
         super().init_weights()
         for module_name in self.lateral_connections:
@@ -430,9 +441,12 @@ class ResNet3dSlowFast(nn.Module):
         self.slow_path = build_pathway(slow_pathway)
         self.fast_path = build_pathway(fast_pathway)
 
-    def init_weights(self):
+    def init_weights(self, pretrained=None):
         """Initiate the parameters either from existing checkpoint or from
         scratch."""
+        if pretrained:
+            self.pretrained = pretrained
+
         if isinstance(self.pretrained, str):
             logger = get_root_logger()
             msg = f'load model from: {self.pretrained}'
@@ -491,3 +505,7 @@ class ResNet3dSlowFast(nn.Module):
         out = (x_slow, x_fast)
 
         return out
+
+
+if 'mmdet' in dir():
+    MMDET_BACKBONES.register_module()(ResNet3dSlowFast)

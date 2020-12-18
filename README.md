@@ -12,7 +12,6 @@
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 
-
 MMAction2 is an open-source toolbox for action understanding based on PyTorch.
 It is a part of the [OpenMMLab](http://openmmlab.org/) project.
 
@@ -54,6 +53,7 @@ This project is released under the [Apache 2.0 license](LICENSE).
 v0.9.0 was released in 30/11/2020. Please refer to [changelog.md](docs/changelog.md) for details and release history.
 
 ## Benchmark
+
 | Model  |input| io backend | batch size x gpus | MMAction2 (s/iter) | MMAction (s/iter) | Temporal-Shift-Module (s/iter) | PySlowFast (s/iter) |
 | :--- | :---------------:|:---------------:| :---------------:| :---------------:  | :--------------------: | :----------------------------: | :-----------------: |
 | [TSN](/configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py)| 256p rawframes |Memcached| 32x8|**[0.32](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction2/tsn_256p_rawframes_memcahed_32x8.zip)** | [0.38](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction/tsn_256p_rawframes_memcached_32x8.zip)| [0.42](https://download.openmmlab.com/mmaction/benchmark/recognition/temporal_shift_module/tsn_256p_rawframes_memcached_32x8.zip)| x |
@@ -68,7 +68,9 @@ v0.9.0 was released in 30/11/2020. Please refer to [changelog.md](docs/changelog
 Details can be found in [benchmark](docs/benchmark.md).
 
 ## ModelZoo
+
 Supported methods for action recognition:
+
 - [x] [TSN](configs/recognition/tsn/README.md)
 - [x] [TSM](configs/recognition/tsm/README.md)
 - [x] [TSM Non-Local](configs/recognition/i3d)
@@ -86,6 +88,7 @@ Supported methods for action recognition:
 - [x] [MultiModality: Audio](configs/recognition_audio/resnet/README.md)
 
 Supported methods for action localization:
+
 - [x] [BMN](configs/localization/bmn/README.md)
 - [x] [BSN](configs/localization/bsn/README.md)
 - [x] [SSN](configs/localization/ssn/README.md)

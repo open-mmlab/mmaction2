@@ -1,3 +1,5 @@
+import warnings
+
 import torch.nn as nn
 import torch.utils.checkpoint as cp
 from mmcv.cnn import (ConvModule, NonLocal3d, build_activation_layer,
@@ -8,6 +10,12 @@ from torch.nn.modules.utils import _ntuple, _triple
 
 from ...utils import get_root_logger
 from ..registry import BACKBONES
+
+try:
+    import mmdet  # noqa
+    from mmdet.models.builder import SHARED_HEADS as MMDET_SHARED_HEADS
+except (ImportError, ModuleNotFoundError):
+    warnings.warn('Please install mmdet to use MMDET_SHARED_HEADS')
 
 
 class BasicBlock3d(nn.Module):
@@ -651,7 +659,8 @@ class ResNet3d(nn.Module):
                 param.data.copy_(param_2d)
                 inflated_param_names.append(param_2d_name)
 
-    def inflate_weights(self, logger):
+    @staticmethod
+    def _inflate_weights(self, logger):
         """Inflate the resnet2d parameters to resnet3d.
 
         The differences between resnet3d and resnet2d mainly lie in an extra
@@ -715,6 +724,9 @@ class ResNet3d(nn.Module):
             logger.info(f'These parameters in the 2d checkpoint are not loaded'
                         f': {remaining_names}')
 
+    def inflate_weights(self, logger):
+        self._inflate_weights(self, logger)
+
     def _make_stem_layer(self):
         """Construct the stem layers consists of a conv+norm+act module and a
         pooling layer."""
@@ -750,9 +762,18 @@ class ResNet3d(nn.Module):
             for param in m.parameters():
                 param.requires_grad = False
 
-    def init_weights(self):
+    @staticmethod
+    def _init_weights(self, pretrained=None):
         """Initiate the parameters either from existing checkpoint or from
-        scratch."""
+        scratch.
+
+        Args:
+            pretrained (str | None): The path of the pretrained weight. Will
+                override the original `pretrained` if set. The arg is added to
+                be compatible with mmdet. Default: None.
+        """
+        if pretrained:
+            self.pretrained = pretrained
         if isinstance(self.pretrained, str):
             logger = get_root_logger()
             logger.info(f'load model from: {self.pretrained}')
@@ -781,6 +802,9 @@ class ResNet3d(nn.Module):
                         constant_init(m.conv2.bn, 0)
         else:
             raise TypeError('pretrained must be a str or None')
+
+    def init_weights(self, pretrained=None):
+        self._init_weights(self, pretrained)
 
     def forward(self, x):
         """Defines the computation performed at every call.
@@ -815,3 +839,165 @@ class ResNet3d(nn.Module):
             for m in self.modules():
                 if isinstance(m, _BatchNorm):
                     m.eval()
+
+
+@BACKBONES.register_module()
+class ResNet3dLayer(nn.Module):
+    """ResNet 3d Layer.
+
+    Args:
+        depth (int): Depth of resnet, from {18, 34, 50, 101, 152}.
+        pretrained (str | None): Name of pretrained model.
+        pretrained2d (bool): Whether to load pretrained 2D model.
+            Default: True.
+        stage (int): The index of Resnet stage. Default: 3.
+        base_channels (int): Channel num of stem output features. Default: 64.
+        spatial_stride (int): The 1st res block's spatial stride. Default 2.
+        temporal_stride (int): The 1st res block's temporal stride. Default 1.
+        dilation (int): The dilation. Default: 1.
+        style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
+            layer is the 3x3 conv layer, otherwise the stride-two layer is
+            the first 1x1 conv layer. Default: 'pytorch'.
+        all_frozen (bool): Frozen all modules in the layer. Default: False.
+        inflate (int): Inflate Dims of each block. Default: 1.
+        inflate_style (str): ``3x1x1`` or ``1x1x1``. which determines the
+            kernel sizes and padding strides for conv1 and conv2 in each block.
+            Default: '3x1x1'.
+        conv_cfg (dict): Config for conv layers. required keys are ``type``
+            Default: ``dict(type='Conv3d')``.
+        norm_cfg (dict): Config for norm layers. required keys are ``type`` and
+            ``requires_grad``.
+            Default: ``dict(type='BN3d', requires_grad=True)``.
+        act_cfg (dict): Config dict for activation layer.
+            Default: ``dict(type='ReLU', inplace=True)``.
+        norm_eval (bool): Whether to set BN layers to eval mode, namely, freeze
+            running stats (mean and var). Default: False.
+        with_cp (bool): Use checkpoint or not. Using checkpoint will save some
+            memory while slowing down the training speed. Default: False.
+        zero_init_residual (bool):
+            Whether to use zero initialization for residual block,
+            Default: True.
+        kwargs (dict, optional): Key arguments for "make_res_layer".
+    """
+
+    def __init__(self,
+                 depth,
+                 pretrained,
+                 pretrained2d=True,
+                 stage=3,
+                 base_channels=64,
+                 spatial_stride=2,
+                 temporal_stride=1,
+                 dilation=1,
+                 style='pytorch',
+                 all_frozen=False,
+                 inflate=1,
+                 inflate_style='3x1x1',
+                 conv_cfg=dict(type='Conv3d'),
+                 norm_cfg=dict(type='BN3d', requires_grad=True),
+                 act_cfg=dict(type='ReLU', inplace=True),
+                 norm_eval=False,
+                 with_cp=False,
+                 zero_init_residual=True,
+                 **kwargs):
+
+        super().__init__()
+        self.arch_settings = ResNet3d.arch_settings
+        assert depth in self.arch_settings
+
+        self.make_res_layer = ResNet3d.make_res_layer
+        self._inflate_conv_params = ResNet3d._inflate_conv_params
+        self._inflate_bn_params = ResNet3d._inflate_bn_params
+        self._inflate_weights = ResNet3d._inflate_weights
+        self._init_weights = ResNet3d._init_weights
+
+        self.depth = depth
+        self.pretrained = pretrained
+        self.pretrained2d = pretrained2d
+        self.stage = stage
+        # stage index is 0 based
+        assert stage >= 0 and stage <= 3
+        self.base_channels = base_channels
+
+        self.spatial_stride = spatial_stride
+        self.temporal_stride = temporal_stride
+        self.dilation = dilation
+
+        self.style = style
+        self.all_frozen = all_frozen
+
+        self.stage_inflation = inflate
+        self.inflate_style = inflate_style
+        self.conv_cfg = conv_cfg
+        self.norm_cfg = norm_cfg
+        self.act_cfg = act_cfg
+        self.norm_eval = norm_eval
+        self.with_cp = with_cp
+        self.zero_init_residual = zero_init_residual
+
+        block, stage_blocks = self.arch_settings[depth]
+        stage_block = stage_blocks[stage]
+        planes = 64 * 2**stage
+        inplanes = 64 * 2**(stage - 1) * block.expansion
+
+        res_layer = self.make_res_layer(
+            block,
+            inplanes,
+            planes,
+            stage_block,
+            spatial_stride=spatial_stride,
+            temporal_stride=temporal_stride,
+            dilation=dilation,
+            style=self.style,
+            norm_cfg=self.norm_cfg,
+            conv_cfg=self.conv_cfg,
+            act_cfg=self.act_cfg,
+            inflate=self.stage_inflation,
+            inflate_style=self.inflate_style,
+            with_cp=with_cp,
+            **kwargs)
+
+        self.layer_name = f'layer{stage + 1}'
+        self.add_module(self.layer_name, res_layer)
+
+    def inflate_weights(self, logger):
+        self._inflate_weights(self, logger)
+
+    def _freeze_stages(self):
+        """Prevent all the parameters from being optimized before
+        ``self.frozen_stages``."""
+        if self.all_frozen:
+            layer = getattr(self, self.layer_name)
+            layer.eval()
+            for param in layer.parameters():
+                param.requires_grad = False
+
+    def init_weights(self, pretrained=None):
+        self._init_weights(self, pretrained)
+
+    def forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+
+        Returns:
+            torch.Tensor: The feature of the input
+            samples extracted by the backbone.
+        """
+        res_layer = getattr(self, self.layer_name)
+        out = res_layer(x)
+        return out
+
+    def train(self, mode=True):
+        """Set the optimization status when training."""
+        super().train(mode)
+        self._freeze_stages()
+        if mode and self.norm_eval:
+            for m in self.modules():
+                if isinstance(m, _BatchNorm):
+                    m.eval()
+
+
+if 'mmdet' in dir():
+    MMDET_SHARED_HEADS.register_module()(ResNet3dLayer)

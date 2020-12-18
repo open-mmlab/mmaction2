@@ -5,10 +5,10 @@ In this tutorial, we will introduce some methods about how to customize your own
 <!-- TOC -->
 
 - [Customize Datasets by Reorganizing Data](#customize-datasets-by-reorganizing-data)
-  * [Reorganize datasets to existing format](#reorganize-datasets-to-existing-format)
-  * [An example of a custom dataset](#an-example-of-a-custom-dataset)
+  - [Reorganize datasets to existing format](#reorganize-datasets-to-existing-format)
+  - [An example of a custom dataset](#an-example-of-a-custom-dataset)
 - [Customize Dataset by Mixing Dataset](#customize-dataset-by-mixing-dataset)
-  * [Repeat dataset](#repeat-dataset)
+  - [Repeat dataset](#repeat-dataset)
 
 <!-- TOC -->
 
@@ -27,6 +27,7 @@ There are three kinds of annotation files.
   `total_frames` of a video and the `label` of a video, which are split by a whitespace.
 
   Here is an example.
+
   ```
   some/directory-1 163 1
   some/directory-2 122 1
@@ -43,6 +44,7 @@ There are three kinds of annotation files.
   which are split by a whitespace.
 
   Here is an example.
+
   ```
   some/path/000.mp4 1
   some/path/001.mp4 1
@@ -57,6 +59,7 @@ There are three kinds of annotation files.
   and the corresponding value is the meta data and annotation for the video.
 
   Here is an example.
+
   ```
   {
     "video1": {
