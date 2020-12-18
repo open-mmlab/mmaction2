@@ -1,4 +1,6 @@
+import os
 import os.path as osp
+import shutil
 import warnings
 from math import inf
 
@@ -28,6 +30,8 @@ class EpochEvalHook(Hook):
         interval (int): Evaluation interval (by epochs). Default: 1.
         save_best (bool): Whether to save best checkpoint during evaluation.
             Default: True.
+        best_ckpt_name (str): If not None, save best ckpt in work_dir with
+            this name. Default: None.
         key_indicator (str | None): Key indicator to measure the best
             checkpoint during evaluation when ``save_best`` is set to True.
             Options are the evaluation metrics to the test dataset. e.g.,
@@ -53,6 +57,7 @@ class EpochEvalHook(Hook):
                  start=None,
                  interval=1,
                  save_best=True,
+                 best_ckpt_name=None,
                  key_indicator='top1_acc',
                  rule=None,
                  **eval_kwargs):
@@ -93,6 +98,7 @@ class EpochEvalHook(Hook):
         self.start = start
         self.eval_kwargs = eval_kwargs
         self.save_best = save_best
+        self.best_ckpt_name = best_ckpt_name
         self.key_indicator = key_indicator
         self.rule = rule
 
@@ -158,6 +164,12 @@ class EpochEvalHook(Hook):
             self.best_json['best_ckpt'] = current_ckpt_path
             self.best_json['key_indicator'] = self.key_indicator
             mmcv.dump(self.best_json, json_path)
+            if self.best_ckpt_name:
+                best_ckpt_path = os.path.join(runner.work_dir,
+                                              self.best_ckpt_name)
+                if os.path.isfile(best_ckpt_path):
+                    os.remove(best_ckpt_path)
+                shutil.copyfile(current_ckpt_path, best_ckpt_path)
 
     def evaluate(self, runner, results):
         """Evaluate the results.
@@ -197,6 +209,8 @@ class DistEpochEvalHook(EpochEvalHook):
         interval (int): Evaluation interval (by epochs). Default: 1.
         save_best (bool): Whether to save best checkpoint during evaluation.
             Default: True.
+        best_ckpt_name (str): If not None, save best ckpt in work_dir with
+            this name. Default: None.
         key_indicator (str | None): Key indicator to measure the best
             checkpoint during evaluation when ``save_best`` is set to True.
             Options are the evaluation metrics to the test dataset. e.g.,
@@ -221,6 +235,7 @@ class DistEpochEvalHook(EpochEvalHook):
                  start=None,
                  interval=1,
                  save_best=True,
+                 best_ckpt_name=None,
                  key_indicator='top1_acc',
                  rule=None,
                  tmpdir=None,
@@ -231,6 +246,7 @@ class DistEpochEvalHook(EpochEvalHook):
             start=start,
             interval=interval,
             save_best=save_best,
+            best_ckpt_name=None,
             key_indicator=key_indicator,
             rule=rule,
             **eval_kwargs)
@@ -275,3 +291,9 @@ class DistEpochEvalHook(EpochEvalHook):
                 self.best_json['best_ckpt'] = current_ckpt_path
                 self.best_json['key_indicator'] = self.key_indicator
                 mmcv.dump(self.best_json, json_path)
+                if self.best_ckpt_name:
+                    best_ckpt_path = os.path.join(runner.work_dir,
+                                                  self.best_ckpt_name)
+                    if os.path.isfile(best_ckpt_path):
+                        os.remove(best_ckpt_path)
+                    shutil.copyfile(current_ckpt_path, best_ckpt_path)
