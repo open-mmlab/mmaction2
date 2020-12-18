@@ -7,6 +7,8 @@ assignees: ''
 
 ---
 
+If you feel we have help you, give us a STAR! :satisfied:
+
 **Notice**
 
 There are several common situations in the reimplementation issues as below

@@ -1,4 +1,4 @@
-# Resnet for Audio
+# ResNet for Audio
 
 ## Introduction
 ```
