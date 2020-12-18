@@ -210,7 +210,7 @@ Users can change:
 2). Change to the suitable Crop methods like `TenCrop`, `ThreeCrop`, `CenterCrop`, etc. in `test_pipeline` of the config file.
 3). Change the number of `--average-size`. The smaller, the faster.
 
-### Long video demo
+## Long video demo
 
 We provide a demo script to predict different labels using a single long video. In order to get predict results in range `[0, 1]`, make sure to set `test_cfg = dict(average_clips='prob')` in config file.
 
