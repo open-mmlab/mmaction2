@@ -166,7 +166,7 @@ For each operation, we list the related dict fields that are added/updated/remov
 - update: specified by `keys`.
 
 `Collect`
-- add: img_meta (the keys of img_meta is specified by `meta_keys`)
+- add: img_metas (the keys of img_metas is specified by `meta_keys`)
 - remove: all other keys except for those specified by `keys`
 
 It is **noteworthy** that the first key, commonly `imgs`, will be used as the main key to calculate the batch size.

@@ -5,8 +5,10 @@
 **Highlights**
 
 **New Features**
+- Support Spatio-Temporal Action Detection(AVA) ([#351](https://github.com/open-mmlab/mmaction2/pull/351))
 
 **Improvements**
+- Support training and testing for Spatio-Temporal Action Detection ([#351](https://github.com/open-mmlab/mmaction2/pull/351))
 - Fix CI due to pip upgrade. ([#454](https://github.com/open-mmlab/mmaction2/pull/454))
 - Use title case in modelzoo statistics. ([#456](https://github.com/open-mmlab/mmaction2/pull/456))
 - Add FAQ documents for easy troubleshooting. ([#413](https://github.com/open-mmlab/mmaction2/pull/413), [#420](https://github.com/open-mmlab/mmaction2/pull/420), [#439](https://github.com/open-mmlab/mmaction2/pull/439))
@@ -16,6 +18,7 @@
 - Fix typo in default argument of BaseHead. ([#446](https://github.com/open-mmlab/mmaction2/pull/446))
 
 **ModelZoo**
+- Add SlowOnly, SlowFast for AVA2.1 ([#351](https://github.com/open-mmlab/mmaction2/pull/351))
 
 ### 0.9.0 (30/11/2020)
 
@@ -25,13 +28,15 @@
 
 **New Features**
 - Automatically add modelzoo statistics to readthedocs ([#327](https://github.com/open-mmlab/mmaction2/pull/327))
-- Support GYM99 data preparation ([#331](https://github.com/open-mmlab/mmaction2/pull/331))
+- Support GYM99 ([#331](https://github.com/open-mmlab/mmaction2/pull/331), [#336](https://github.com/open-mmlab/mmaction2/pull/336))
 - Add AudioOnly Pathway from AVSlowFast. ([#355](https://github.com/open-mmlab/mmaction2/pull/355))
 - Add GradCAM utils for recognizer ([#324](https://github.com/open-mmlab/mmaction2/pull/324))
+- Support Spatio-Temporal Action Detection(AVA) ([#351](https://github.com/open-mmlab/mmaction2/pull/351))
 - Add print config script ([#345](https://github.com/open-mmlab/mmaction2/pull/345))
 - Add online motion vector decoder ([#291](https://github.com/open-mmlab/mmaction2/pull/291))
 
 **Improvements**
+- Support training and testing for Spatio-Temporal Action Detection ([#351](https://github.com/open-mmlab/mmaction2/pull/351))
 - Support PyTorch 1.7 in CI ([#312](https://github.com/open-mmlab/mmaction2/pull/312))
 - Support to predict different labels in a long video ([#274](https://github.com/open-mmlab/mmaction2/pull/274))
 - Update docs bout test crops ([#359](https://github.com/open-mmlab/mmaction2/pull/359))
@@ -56,6 +61,7 @@
 - Fix Issue #306: Bug of SampleAVAFrames ([#317](https://github.com/open-mmlab/mmaction2/pull/317))
 
 **ModelZoo**
+- Add SlowOnly model for AVA2.1 ([#351](https://github.com/open-mmlab/mmaction2/pull/351))
 - Add SlowOnly model for GYM99, both RGB and Flow ([#336](https://github.com/open-mmlab/mmaction2/pull/336))
 - Add auto modelzoo statistics in readthedocs ([#327](https://github.com/open-mmlab/mmaction2/pull/327))
 - Add TSN for HMDB51 pretrained on Kinetics400, Moments in Time and ImageNet. ([#372](https://github.com/open-mmlab/mmaction2/pull/372))
