@@ -6,6 +6,8 @@ In ECCV, 2020. [Paper](https://arxiv.org/abs/2003.13042)
 
 ![pipeline](pipeline.png)
 
+## Model Zoo
+
 ### Kinetics-400 Model Release
 
 We currently released 4 models trained with OmniSource framework, including both 2D and 3D architectures. We compare the performance of models trained with or without OmniSource in the following table.
@@ -17,7 +19,7 @@ We currently released 4 models trained with OmniSource framework, including both
 | SlowOnly |   RGB    |  Scratch   | ResNet50  | 4x16  | short-side 320 |          72.9 / 76.8 (+ 3.9)          |          90.9 / 92.5 (+ 1.6)           | [Baseline](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_rgb/slowonly_r50_4x16x1_256e_kinetics400_rgb_20200704-a69556c6.pth) / [OmniSource](https://download.openmmlab.com/mmaction/recognition/slowonly/omni/slowonly_r50_omni_4x16x1_kinetics400_rgb_20200926-51b1f7ea.pth) |
 | SlowOnly |   RGB    |  Scratch   | ResNet101 |  8x8  | short-side 320 |          76.5 / 80.4 (+ 3.9)          |          92.7 / 94.4 (+ 1.7)           | [Baseline](https://download.openmmlab.com/mmaction/recognition/slowonly/omni/slowonly_r101_without_omni_8x8x1_kinetics400_rgb_20200926-0c730aef.pth) / [OmniSource](https://download.openmmlab.com/mmaction/recognition/slowonly/omni/slowonly_r101_omni_8x8x1_kinetics400_rgb_20200926-b5dbb701.pth) |
 
-### Benchmark on Mini-Kinetics
+## Benchmark on Mini-Kinetics
 
 We release a subset of web dataset used in the OmniSource paper. Specifically, we release the web data in the 200 classes of [Mini-Kinetics](https://arxiv.org/pdf/1712.04851.pdf). The statistics of those datasets is detailed in [preparing_omnisource](/tools/data/omnisource/README.md). To obtain those data, you need to fill in a [data request form](https://docs.google.com/forms/d/e/1FAIpQLSd8_GlmHzG8FcDbW-OEu__G7qLgOSYZpH-i5vYVJcu7wcb_TQ/viewform?usp=sf_link). After we received your request, the download link of these data will be send to you. For more details on the released OmniSource web dataset, please refer to [preparing_omnisource](/tools/data/omnisource/README.md).
 
@@ -102,7 +104,7 @@ We also list the benchmark in the original paper which run on Kinetics-400 for c
 |   TSN-3seg-ResNet50    | 70.6 / 89.4 | 71.5 / 89.5 | 72.0 / 90.0  | 72.0 / 90.3 | 71.7 / 89.6 | 73.6 / 91.0 |
 | SlowOnly-4x16-ResNet50 | 73.8 / 90.9 | 74.5 / 91.4 | 75.2 / 91.6  | 75.2 / 91.7 | 74.5 / 91.1 | 76.6 / 92.5 |
 
-### Citing OmniSource
+## Citing OmniSource
 
 If you find OmniSource useful for your research, please consider citing the paper using the following BibTeX entry.
 
