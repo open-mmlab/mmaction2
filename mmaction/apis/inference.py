@@ -7,8 +7,9 @@ import torch
 from mmcv.parallel import collate, scatter
 from mmcv.runner import load_checkpoint
 
-from ..datasets.pipelines import Compose
-from ..models import build_recognizer
+from mmaction.core import OutputHook
+from mmaction.datasets.pipelines import Compose
+from mmaction.models import build_recognizer
 
 
 def init_recognizer(config,
@@ -52,7 +53,11 @@ def init_recognizer(config,
     return model
 
 
-def inference_recognizer(model, video_path, label_path, use_frames=False):
+def inference_recognizer(model,
+                         video_path,
+                         label_path,
+                         use_frames=False,
+                         outputs=None):
     """Inference a video with the detector.
 
     Args:
@@ -62,9 +67,13 @@ def inference_recognizer(model, video_path, label_path, use_frames=False):
             directory path. Otherwise, it should be video file path.
         label_path (str): The label file path.
         use_frames (bool): Whether to use rawframes as input. Default:False.
+        outputs (list(str) | tuple(str) | None) : Names of layers whose
+            outputs need to be returned, default: None.
 
     Returns:
         dict[tuple(str, float)]: Top-5 recognition result dict.
+        dict[np.ndarray[N, K, H, W] | torch.tensor[N, K, H, W]]:
+            Output feature maps from layers specified in `outputs`.
     """
     if not (osp.exists(video_path) or video_path.startswith('http')):
         raise RuntimeError(f"'{video_path}' is missing")
@@ -111,10 +120,15 @@ def inference_recognizer(model, video_path, label_path, use_frames=False):
         data = scatter(data, [device])[0]
 
     # forward the model
-    with torch.no_grad():
-        scores = model(return_loss=False, **data)[0]
+    with OutputHook(model, outputs=outputs, as_tensor=True) as h:
+        with torch.no_grad():
+            scores = model(return_loss=False, **data)[0]
+        returned_features = h.layer_outputs if outputs else None
+
     score_tuples = tuple(zip(label, scores))
     score_sorted = sorted(score_tuples, key=itemgetter(1), reverse=True)
 
     top5_label = score_sorted[:5]
+    if outputs:
+        return top5_label, returned_features
     return top5_label
