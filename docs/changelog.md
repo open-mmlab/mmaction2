@@ -5,8 +5,10 @@
 **Highlights**
 
 **New Features**
+- Support Spatio-Temporal Action Detection(AVA) ([#351](https://github.com/open-mmlab/mmaction2/pull/351))
 
 **Improvements**
+- Support training and testing for Spatio-Temporal Action Detection ([#351](https://github.com/open-mmlab/mmaction2/pull/351))
 - Fix CI due to pip upgrade. ([#454](https://github.com/open-mmlab/mmaction2/pull/454))
 - Add FAQ documents for easy troubleshooting. ([#413](https://github.com/open-mmlab/mmaction2/pull/413), [#420](https://github.com/open-mmlab/mmaction2/pull/420), [#439](https://github.com/open-mmlab/mmaction2/pull/439))
 
@@ -15,6 +17,7 @@
 - Fix typo in default argument of BaseHead. ([#446](https://github.com/open-mmlab/mmaction2/pull/446))
 
 **ModelZoo**
+- Add SlowOnly, SlowFast for AVA2.1 ([#351](https://github.com/open-mmlab/mmaction2/pull/351))
 
 ### 0.9.0 (30/11/2020)
 
