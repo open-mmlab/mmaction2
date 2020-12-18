@@ -171,8 +171,7 @@ class EpochEvalHook(Hook):
         from mmaction.apis import single_gpu_test
         results = single_gpu_test(runner.model, self.dataloader)
         key_score = self.evaluate(runner, results)
-        self._do_save_best(self, key_score, json_path, current_ckpt_path,
-                           runner)
+        self._do_save_best(key_score, json_path, current_ckpt_path, runner)
 
     def evaluate(self, runner, results):
         """Evaluate the results.
@@ -285,5 +284,4 @@ class DistEpochEvalHook(EpochEvalHook):
         if runner.rank == 0:
             print('\n')
             key_score = self.evaluate(runner, results)
-            self._do_save_best(self, key_score, json_path, current_ckpt_path,
-                               runner)
+            self._do_save_best(key_score, json_path, current_ckpt_path, runner)
