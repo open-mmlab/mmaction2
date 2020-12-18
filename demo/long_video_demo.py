@@ -45,6 +45,13 @@ def parse_args():
         type=float,
         default=0.01,
         help='recognition score threshold')
+    parser.add_argument(
+        '--stride',
+        type=float,
+        default=0,
+        default=('the prediction stride equals to '
+                 'stride * sample_length, if set as 0, the '
+                 'prediction stride is 1'))
     args = parser.parse_args()
     return args
 
@@ -87,6 +94,11 @@ def show_results():
             frame_queue.append(chosen_frame)
 
         ret, scores = inference()
+
+        if ret and stride > 0:
+            pred_stride = int(sample_length * stride)
+            for i in range(pred_stride):
+                frame_queue.popleft()
 
         if ret:
             num_selected_labels = min(len(label), 5)
@@ -142,13 +154,14 @@ def inference():
 
 def main():
     global frame_queue, threshold, sample_length, data, test_pipeline, model, \
-        out_file, video_path, device, input_step, label, result_queue
+        out_file, video_path, device, input_step, label, result_queue, stride
 
     args = parse_args()
     input_step = args.input_step
     threshold = args.threshold
     video_path = args.video
     out_file = args.out_file
+    stride = args.stride
 
     device = torch.device(args.device)
     model = init_recognizer(args.config, args.checkpoint, device=device)
