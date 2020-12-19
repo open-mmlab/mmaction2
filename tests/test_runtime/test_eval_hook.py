@@ -271,7 +271,7 @@ def test_eval_hook():
         resume_from = osp.join(tmpdir, 'latest.pth')
         loader = DataLoader(ExampleDataset(), batch_size=1)
         eval_hook = EpochEvalHook(
-            data_loader, key_indicator='acc', best_ckpt_name='best.pth')
+            data_loader, key_indicator='acc', save_best_ckpt=True)
         runner = EpochBasedRunner(
             model=model,
             batch_processor=None,
@@ -286,13 +286,11 @@ def test_eval_hook():
         best_json_path = osp.join(tmpdir, 'best.json')
         best_json = mmcv.load(best_json_path)
         real_path = osp.join(tmpdir, 'epoch_4.pth')
-        best_ckpt_path = osp.join(tmpdir, 'best.pth')
 
         assert best_json['best_ckpt'] == osp.realpath(real_path)
         assert best_json['best_score'] == 7
         assert best_json['key_indicator'] == 'acc'
-        import os
-        assert os.path.isfile(best_ckpt_path)
+        assert osp.isfile(osp.join(tmpdir, 'best_7.0000_4.pth'))
 
 
 @patch('mmaction.apis.single_gpu_test', MagicMock)
