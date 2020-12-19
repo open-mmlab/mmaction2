@@ -1,4 +1,4 @@
-name: kinetics
+name: gym
 channels:
   - anaconda
   - menpo
