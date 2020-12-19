@@ -9,11 +9,11 @@ from torch.utils.data import DataLoader
 from mmaction.utils import get_root_logger
 
 
-class EpochEvalHook(Hook):
-    """Non-Distributed evaluation hook based on epochs.
+class EvalHook(Hook):
+    """Non-Distributed evaluation hook.
 
     Notes:
-        If new arguments are added for EpochEvalHook, tools/test.py,
+        If new arguments are added for EvalHook, tools/test.py,
         tools/eval_metric.py may be effected.
 
     This hook will regularly perform evaluation in a given interval when
@@ -25,7 +25,10 @@ class EpochEvalHook(Hook):
             evaluation before the training starts if ``start`` <= the resuming
             epoch. If None, whether to evaluate is merely decided by
             ``interval``. Default: None.
-        interval (int): Evaluation interval (by epochs). Default: 1.
+        interval (int): Evaluation interval. Default: 1.
+        by_epoch (bool): Determine perform evaluation by epoch or by iteration.
+            If set to True, it will perform by epoch. Otherwise, by iteration.
+            default: True.
         save_best (str | None, optional): If a metric is specified, it would
             measure the best checkpoint during evaluation. The information
             about best checkpoint would be save in best.json.
@@ -55,6 +58,7 @@ class EpochEvalHook(Hook):
                  dataloader,
                  start=None,
                  interval=1,
+                 by_epoch=True,
                  save_best=None,
                  rule=None,
                  **eval_kwargs):
@@ -65,6 +69,8 @@ class EpochEvalHook(Hook):
         if interval <= 0:
             raise ValueError(f'interval must be positive, but got {interval}')
 
+        assert isinstance(by_epoch, bool)
+
         if start is not None and start < 0:
             warnings.warn(
                 f'The evaluation start epoch {start} is smaller than 0, '
@@ -73,6 +79,7 @@ class EpochEvalHook(Hook):
         self.dataloader = dataloader
         self.interval = interval
         self.start = start
+        self.by_epoch = by_epoch
 
         assert isinstance(save_best, str) or save_best is None
         self.save_best = save_best
@@ -118,35 +125,36 @@ class EpochEvalHook(Hook):
                 runner.meta = dict()
             runner.meta.setdefault('hook_msgs', dict())
 
+    def before_train_iter(self, runner):
+        """Evaluate the model only at the start of training by iteration."""
+        if self.by_epoch:
+            return
+        if not self.initial_epoch_flag:
+            return
+        if self.start is not None and runner.iter >= self.start:
+            self.after_train_iter(runner)
+        self.initial_epoch_flag = False
+
     def before_train_epoch(self, runner):
-        """Evaluate the model only at the start of training."""
+        """Evaluate the model only at the start of training by epoch."""
+        if not self.by_epoch:
+            return
         if not self.initial_epoch_flag:
             return
         if self.start is not None and runner.epoch >= self.start:
             self.after_train_epoch(runner)
         self.initial_epoch_flag = False
 
-    def evaluation_flag(self, runner):
-        """Judge whether to perform_evaluation after this epoch.
-
-        Returns:
-            bool: The flag indicating whether to perform evaluation.
-        """
-        if self.start is None:
-            if not self.every_n_epochs(runner, self.interval):
-                # No evaluation during the interval epochs.
-                return False
-        elif (runner.epoch + 1) < self.start:
-            # No evaluation if start is larger than the current epoch.
-            return False
-        else:
-            # Evaluation only at epochs 3, 5, 7... if start==3 and interval==2
-            if (runner.epoch + 1 - self.start) % self.interval:
-                return False
-        return True
+    def after_train_iter(self, runner):
+        """Called after every training iter to evaluate the results."""
+        self._do_evaluate(runner)
 
     def after_train_epoch(self, runner):
         """Called after every training epoch to evaluate the results."""
+        self._do_evaluate(runner)
+
+    def _do_evaluate(self, runner):
+        """perform evaluation and save ckpt."""
         if not self.evaluation_flag(runner):
             return
 
@@ -156,7 +164,38 @@ class EpochEvalHook(Hook):
         if self.save_best:
             self._save_ckpt(runner, key_score)
 
+    def evaluation_flag(self, runner):
+        """Judge whether to perform_evaluation.
+
+        Returns:
+            bool: The flag indicating whether to perform evaluation.
+        """
+        if self.by_epoch:
+            current = runner.epoch
+            check_time = self.every_n_epochs
+        else:
+            current = runner.iter
+            check_time = self.every_n_iters
+
+        if self.start is None:
+            if not check_time(runner, self.interval):
+                # No evaluation during the interval.
+                return False
+        elif (current + 1) < self.start:
+            # No evaluation if start is larger than the current time.
+            return False
+        else:
+            # Evaluation only at epochs 3, 5, 7... if start==3 and interval==2
+            if (current + 1 - self.start) % self.interval:
+                return False
+        return True
+
     def _save_ckpt(self, runner, key_score):
+        if self.by_epoch:
+            current = f'epoch_{runner.epoch + 1}'
+        else:
+            current = f'iter_{runner.epoch + 1}'
+
         best_score = runner.meta['hook_msgs'].get(
             'best_score', self.init_value_map[self.rule])
         if self.compare_func(key_score, best_score):
@@ -167,9 +206,8 @@ class EpochEvalHook(Hook):
             mmcv.symlink(
                 last_ckpt,
                 osp.join(runner.work_dir, f'best_{self.key_indicator}.pth'))
-            self.logger.info(
-                f'Now best checkpoint is epoch_{runner.epoch + 1}.pth.'
-                f'Best {self.key_indicator} is {best_score:0.4f}')
+            self.logger.info(f'Now best checkpoint is {current}.pth.'
+                             f'Best {self.key_indicator} is {best_score:0.4f}')
 
     def evaluate(self, runner, results):
         """Evaluate the results.
@@ -192,8 +230,8 @@ class EpochEvalHook(Hook):
         return None
 
 
-class DistEpochEvalHook(EpochEvalHook):
-    """Distributed evaluation hook based on epochs.
+class DistEvalHook(EvalHook):
+    """Distributed evaluation hook.
 
     This hook will regularly perform evaluation in a given interval when
     performing in distributed environment.
@@ -204,7 +242,10 @@ class DistEpochEvalHook(EpochEvalHook):
             evaluation before the training starts if ``start`` <= the resuming
             epoch. If None, whether to evaluate is merely decided by
             ``interval``. Default: None.
-        interval (int): Evaluation interval (by epochs). Default: 1.
+        interval (int): Evaluation interval. Default: 1.
+        by_epoch (bool): Determine perform evaluation by epoch or by iteration.
+            If set to True, it will perform by epoch. Otherwise, by iteration.
+            default: True.
         save_best (str | None, optional): If a metric is specified, it would
             measure the best checkpoint during evaluation. The information
             about best checkpoint would be save in best.json.
@@ -231,6 +272,7 @@ class DistEpochEvalHook(EpochEvalHook):
                  dataloader,
                  start=None,
                  interval=1,
+                 by_epoch=True,
                  save_best=None,
                  rule=None,
                  tmpdir=None,
@@ -240,14 +282,14 @@ class DistEpochEvalHook(EpochEvalHook):
             dataloader,
             start=start,
             interval=interval,
+            by_epoch=by_epoch,
             save_best=save_best,
             rule=rule,
             **eval_kwargs)
         self.tmpdir = tmpdir
         self.gpu_collect = gpu_collect
 
-    def after_train_epoch(self, runner):
-        """Called after each training epoch to evaluate the model."""
+    def _do_evaluate(self, runner):
         if not self.evaluation_flag(runner):
             return
 
