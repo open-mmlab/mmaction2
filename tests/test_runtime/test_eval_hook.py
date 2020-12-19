@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 import torch
 import torch.nn as nn
-from mmcv.runner import EpochBasedRunner, build_optimizer
+from mmcv.runner import EpochBasedRunner, IterBasedRunner, build_optimizer
 from mmcv.utils import get_logger
 from torch.utils.data import DataLoader, Dataset
 
@@ -62,27 +62,38 @@ class ExampleModel(nn.Module):
         return outputs
 
 
-def _build_demo_runner():
+class Model(nn.Module):
 
-    class Model(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.linear = nn.Linear(2, 1)
 
-        def __init__(self):
-            super().__init__()
-            self.linear = nn.Linear(2, 1)
+    def forward(self, x):
+        return self.linear(x)
 
-        def forward(self, x):
-            return self.linear(x)
+    def train_step(self, x, optimizer, **kwargs):
+        return dict(loss=self(x))
 
-        def train_step(self, x, optimizer, **kwargs):
-            return dict(loss=self(x))
+    def val_step(self, x, optimizer, **kwargs):
+        return dict(loss=self(x))
 
-        def val_step(self, x, optimizer, **kwargs):
-            return dict(loss=self(x))
+
+def _build_epoch_runner():
 
     model = Model()
     tmp_dir = tempfile.mkdtemp()
 
     runner = EpochBasedRunner(
+        model=model, work_dir=tmp_dir, logger=get_logger('demo'))
+    return runner
+
+
+def _build_iter_runner():
+
+    model = Model()
+    tmp_dir = tempfile.mkdtemp()
+
+    runner = IterBasedRunner(
         model=model, work_dir=tmp_dir, logger=get_logger('demo'))
     return runner
 
@@ -304,8 +315,11 @@ def test_eval_hook():
 
 @patch('mmaction.apis.single_gpu_test', MagicMock)
 @patch('mmaction.apis.multi_gpu_test', MagicMock)
-@pytest.mark.parametrize('EvalHookParam', (EvalHook, DistEvalHook))
-def test_start_param(EvalHookParam):
+@pytest.mark.parametrize('EvalHookParam', [EvalHook, DistEvalHook])
+@pytest.mark.parametrize('_build_demo_runner,by_epoch',
+                         [(_build_epoch_runner, True),
+                          (_build_iter_runner, False)])
+def test_start_param(EvalHookParam, _build_demo_runner, by_epoch):
     # create dummy data
     dataloader = DataLoader(torch.ones((5, 2)))
 
@@ -319,7 +333,7 @@ def test_start_param(EvalHookParam):
 
     # 1. start=None, interval=1: perform evaluation after each epoch.
     runner = _build_demo_runner()
-    evalhook = EvalHookParam(dataloader, interval=1)
+    evalhook = EvalHookParam(dataloader, interval=1, by_epoch=by_epoch)
     evalhook.evaluate = MagicMock()
     runner.register_hook(evalhook)
     runner.run([dataloader], [('train', 1)], 2)
@@ -327,7 +341,8 @@ def test_start_param(EvalHookParam):
 
     # 2. start=1, interval=1: perform evaluation after each epoch.
     runner = _build_demo_runner()
-    evalhook = EvalHookParam(dataloader, start=1, interval=1)
+    evalhook = EvalHookParam(
+        dataloader, start=1, interval=1, by_epoch=by_epoch)
     evalhook.evaluate = MagicMock()
     runner.register_hook(evalhook)
     runner.run([dataloader], [('train', 1)], 2)
@@ -335,7 +350,7 @@ def test_start_param(EvalHookParam):
 
     # 3. start=None, interval=2: perform evaluation after epoch 2, 4, 6, etc
     runner = _build_demo_runner()
-    evalhook = EvalHookParam(dataloader, interval=2)
+    evalhook = EvalHookParam(dataloader, interval=2, by_epoch=by_epoch)
     evalhook.evaluate = MagicMock()
     runner.register_hook(evalhook)
     runner.run([dataloader], [('train', 1)], 2)
@@ -343,7 +358,8 @@ def test_start_param(EvalHookParam):
 
     # 4. start=1, interval=2: perform evaluation after epoch 1, 3, 5, etc
     runner = _build_demo_runner()
-    evalhook = EvalHookParam(dataloader, start=1, interval=2)
+    evalhook = EvalHookParam(
+        dataloader, start=1, interval=2, by_epoch=by_epoch)
     evalhook.evaluate = MagicMock()
     runner.register_hook(evalhook)
     runner.run([dataloader], [('train', 1)], 3)
@@ -352,7 +368,7 @@ def test_start_param(EvalHookParam):
     # 5. start=0/negative, interval=1: perform evaluation after each epoch and
     #    before epoch 1.
     runner = _build_demo_runner()
-    evalhook = EvalHookParam(dataloader, start=0)
+    evalhook = EvalHookParam(dataloader, start=0, by_epoch=by_epoch)
     evalhook.evaluate = MagicMock()
     runner.register_hook(evalhook)
     runner.run([dataloader], [('train', 1)], 2)
@@ -360,7 +376,7 @@ def test_start_param(EvalHookParam):
 
     runner = _build_demo_runner()
     with pytest.warns(UserWarning):
-        evalhook = EvalHookParam(dataloader, start=-2)
+        evalhook = EvalHookParam(dataloader, start=-2, by_epoch=by_epoch)
     evalhook.evaluate = MagicMock()
     runner.register_hook(evalhook)
     runner.run([dataloader], [('train', 1)], 2)
@@ -369,19 +385,25 @@ def test_start_param(EvalHookParam):
     # 6. resuming from epoch i, start = x (x<=i), interval =1: perform
     #    evaluation after each epoch and before the first epoch.
     runner = _build_demo_runner()
-    evalhook = EvalHookParam(dataloader, start=1)
+    evalhook = EvalHookParam(dataloader, start=1, by_epoch=by_epoch)
     evalhook.evaluate = MagicMock()
     runner.register_hook(evalhook)
-    runner._epoch = 2
+    if by_epoch:
+        runner._epoch = 2
+    else:
+        runner._iter = 2
     runner.run([dataloader], [('train', 1)], 3)
     assert evalhook.evaluate.call_count == 2  # before & after epoch 3
 
     # 7. resuming from epoch i, start = i+1/None, interval =1: perform
     #    evaluation after each epoch.
     runner = _build_demo_runner()
-    evalhook = EvalHookParam(dataloader, start=2)
+    evalhook = EvalHookParam(dataloader, start=2, by_epoch=by_epoch)
     evalhook.evaluate = MagicMock()
     runner.register_hook(evalhook)
-    runner._epoch = 1
+    if by_epoch:
+        runner._epoch = 1
+    else:
+        runner._iter = 1
     runner.run([dataloader], [('train', 1)], 3)
     assert evalhook.evaluate.call_count == 2  # after epoch 2 & 3

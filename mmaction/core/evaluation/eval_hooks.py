@@ -147,11 +147,13 @@ class EvalHook(Hook):
 
     def after_train_iter(self, runner):
         """Called after every training iter to evaluate the results."""
-        self._do_evaluate(runner)
+        if not self.by_epoch:
+            self._do_evaluate(runner)
 
     def after_train_epoch(self, runner):
         """Called after every training epoch to evaluate the results."""
-        self._do_evaluate(runner)
+        if self.by_epoch:
+            self._do_evaluate(runner)
 
     def _do_evaluate(self, runner):
         """perform evaluation and save ckpt."""
