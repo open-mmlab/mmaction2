@@ -148,10 +148,7 @@ class EpochEvalHook(Hook):
             self.best_json['key_indicator'] = self.key_indicator
             mmcv.dump(self.best_json, json_path)
             if self.best_ckpt_name:
-                best_ckpt_path = osp.join(runner.work_dir, self.best_ckpt_name)
-                if osp.isfile(best_ckpt_path):
-                    os.remove(best_ckpt_path)
-                shutil.copyfile(current_ckpt_path, best_ckpt_path)
+                runner.save_checkpoint(runner.work_dir, self.best_ckpt_name)
 
     def after_train_epoch(self, runner):
         """Called after every training epoch to evaluate the results."""
