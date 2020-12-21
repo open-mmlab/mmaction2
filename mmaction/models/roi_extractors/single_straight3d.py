@@ -91,6 +91,7 @@ class SingleRoIExtractor3D(nn.Module):
                 inds = rois[:, 0].type(torch.int64)
                 global_feat = global_feat[inds]
                 roi_feat = torch.cat([roi_feat, global_feat], dim=1)
+            roi_feats.append(roi_feat)
 
         return torch.stack(roi_feats, dim=2)
 
