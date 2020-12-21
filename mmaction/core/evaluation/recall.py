@@ -1,6 +1,7 @@
+import warnings
+
 import numpy as np
 import torch
-import warnings
 
 from ..registry import METRICS
 from .base import BaseMetrics
