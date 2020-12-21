@@ -87,7 +87,7 @@ class SingleRoIExtractor3D(nn.Module):
             frame_feat = feat[:, :, t].contiguous()
             roi_feat = self.roi_layer(frame_feat, rois)
             if self.with_global:
-                global_feat = self.global_pool(feat[:, :, t].contiguous())
+                global_feat = self.global_pool(frame_feat.contiguous())
                 inds = rois[:, 0].type(torch.int64)
                 global_feat = global_feat[inds]
                 roi_feat = torch.cat([roi_feat, global_feat], dim=1)
