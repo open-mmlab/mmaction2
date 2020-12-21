@@ -13,6 +13,7 @@
 - Support training and testing for Spatio-Temporal Action Detection ([#351](https://github.com/open-mmlab/mmaction2/pull/351))
 - Fix CI due to pip upgrade ([#454](https://github.com/open-mmlab/mmaction2/pull/454))
 - Add markdown lint in pre-commit hook ([#255](https://github.com/open-mmlab/mmaction2/pull/225))
+- Speed up confusion matrix calculation ([#465](https://github.com/open-mmlab/mmaction2/pull/465))
 - Use title case in modelzoo statistics ([#456](https://github.com/open-mmlab/mmaction2/pull/456))
 - Add FAQ documents for easy troubleshooting. ([#413](https://github.com/open-mmlab/mmaction2/pull/413), [#420](https://github.com/open-mmlab/mmaction2/pull/420), [#439](https://github.com/open-mmlab/mmaction2/pull/439))
 
