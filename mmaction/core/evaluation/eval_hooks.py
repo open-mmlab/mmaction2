@@ -6,8 +6,6 @@ import mmcv
 from mmcv.runner import Hook
 from torch.utils.data import DataLoader
 
-from mmaction.utils import get_root_logger
-
 
 class EvalHook(Hook):
     """Non-Distributed evaluation hook.
@@ -85,8 +83,6 @@ class EvalHook(Hook):
         self.save_best = save_best
         self.eval_kwargs = eval_kwargs
         self.initial_epoch_flag = True
-
-        self.logger = get_root_logger()
 
         if self.save_best is not None:
             self._init_rule(rule, self.save_best)
@@ -208,8 +204,9 @@ class EvalHook(Hook):
             mmcv.symlink(
                 last_ckpt,
                 osp.join(runner.work_dir, f'best_{self.key_indicator}.pth'))
-            self.logger.info(f'Now best checkpoint is {current}.pth.'
-                             f'Best {self.key_indicator} is {best_score:0.4f}')
+            runner.logger.info(
+                f'Now best checkpoint is {current}.pth.'
+                f'Best {self.key_indicator} is {best_score:0.4f}')
 
     def evaluate(self, runner, results):
         """Evaluate the results.
