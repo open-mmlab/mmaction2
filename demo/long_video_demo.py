@@ -49,9 +49,9 @@ def parse_args():
         '--stride',
         type=float,
         default=0,
-        default=('the prediction stride equals to '
-                 'stride * sample_length, if set as 0, the '
-                 'prediction stride is 1'))
+        help=('the prediction stride equals to '
+              'stride * sample_length, if set as 0, the '
+              'prediction stride is 1'))
     args = parser.parse_args()
     return args
 
