@@ -10,6 +10,7 @@
 
 **Improvements**
 
+- Add arg `stride` to long_video_demo.py, to make inference faster ([#468](https://github.com/open-mmlab/mmaction2/pull/468))
 - Support training and testing for Spatio-Temporal Action Detection ([#351](https://github.com/open-mmlab/mmaction2/pull/351))
 - Fix CI due to pip upgrade ([#454](https://github.com/open-mmlab/mmaction2/pull/454))
 - Add markdown lint in pre-commit hook ([#255](https://github.com/open-mmlab/mmaction2/pull/225))
