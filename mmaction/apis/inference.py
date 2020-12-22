@@ -57,7 +57,8 @@ def inference_recognizer(model,
                          video_path,
                          label_path,
                          use_frames=False,
-                         outputs=None):
+                         outputs=None,
+                         as_tensor=True):
     """Inference a video with the detector.
 
     Args:
@@ -69,10 +70,11 @@ def inference_recognizer(model,
         use_frames (bool): Whether to use rawframes as input. Default:False.
         outputs (list(str) | tuple(str) | str | None) : Names of layers whose
             outputs need to be returned, default: None.
+        as_tensor (bool): Same as that in ``OutputHook``. Default: True.
 
     Returns:
         dict[tuple(str, float)]: Top-5 recognition result dict.
-        dict[np.ndarray[N, K, H, W] | torch.tensor[N, K, H, W]]:
+        dict[torch.tensor | np.ndarray]:
             Output feature maps from layers specified in `outputs`.
     """
     if not (osp.exists(video_path) or video_path.startswith('http')):
@@ -124,7 +126,7 @@ def inference_recognizer(model,
         data = scatter(data, [device])[0]
 
     # forward the model
-    with OutputHook(model, outputs=outputs, as_tensor=True) as h:
+    with OutputHook(model, outputs=outputs, as_tensor=as_tensor) as h:
         with torch.no_grad():
             scores = model(return_loss=False, **data)[0]
         returned_features = h.layer_outputs if outputs else None

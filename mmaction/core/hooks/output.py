@@ -1,7 +1,18 @@
 import functools
+import warnings
+
+import torch
 
 
 class OutputHook:
+    """Output feature map of some layers.
+
+    Args:
+        module (nn.Module): The whole module to get layers.
+        outputs (tuple[str] | list[str]): Layer name to output. Default: None.
+        as_tensor (bool): Determine to return a tensor or a numpy array.
+            Default: False.
+    """
 
     def __init__(self, module, outputs=None, as_tensor=False):
         self.outputs = outputs
@@ -15,7 +26,11 @@ class OutputHook:
         def hook_wrapper(name):
 
             def hook(model, input, output):
-                if self.as_tensor:
+                if not isinstance(output, torch.Tensor):
+                    warnings.warn(f'Directly return the output from {name}, '
+                                  f'since it is not a tensor')
+                    self.layer_outputs[name] = output
+                elif self.as_tensor:
                     self.layer_outputs[name] = output
                 else:
                     self.layer_outputs[name] = output.detach().cpu().numpy()
