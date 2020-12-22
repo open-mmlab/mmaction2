@@ -15,6 +15,7 @@
 - Add markdown lint in pre-commit hook ([#255](https://github.com/open-mmlab/mmaction2/pull/225))
 - Use title case in modelzoo statistics. ([#456](https://github.com/open-mmlab/mmaction2/pull/456))
 - Add FAQ documents for easy troubleshooting. ([#413](https://github.com/open-mmlab/mmaction2/pull/413), [#420](https://github.com/open-mmlab/mmaction2/pull/420), [#439](https://github.com/open-mmlab/mmaction2/pull/439))
+- Support Spatio-Temporal Action Detection with context ([#471](https://github.com/open-mmlab/mmaction2/pull/471))
 
 **Bug and Typo Fixes**
 
