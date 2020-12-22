@@ -85,8 +85,21 @@ def test_inference_recognizer():
         as_tensor=False)
     assert isinstance(feat, dict)
     assert 'backbone' in feat and 'cls_head' in feat
+    assert isinstance(feat['backbone'], np.ndarray)
     assert isinstance(feat['cls_head'], np.ndarray)
     assert feat['cls_head'].shape == (1, 400)
+
+    _, feat = inference_recognizer(
+        model,
+        video_path,
+        label_path,
+        outputs=('backbone.layer3', 'backbone.layer3.1.conv1'),
+        as_tensor=False)
+    assert 'backbone.layer3.1.conv1' in feat and 'backbone.layer3' in feat
+    assert isinstance(feat['backbone.layer3.1.conv1'], np.ndarray)
+    assert isinstance(feat['backbone.layer3'], np.ndarray)
+    assert feat['backbone.layer3'].shape == (25, 1024, 14, 14)
+    assert feat['backbone.layer3.1.conv1'].shape == (25, 256, 14, 14)
 
     cfg_file = 'configs/recognition/slowfast/slowfast_r50_video_inference_4x16x1_256e_kinetics400_rgb.py'  # noqa: E501
     sf_model = init_recognizer(cfg_file, None, device)
