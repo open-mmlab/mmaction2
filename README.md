@@ -95,7 +95,6 @@ Supported methods for action localization:
 
 Supported methods for spatio-temporal action detection:
 
-- [x] [Fast R-CNN](configs/detection/ava/README.md)
 - [x] [SlowOnly](configs/detection/ava/README.md)
 - [x] [SlowFast](configs/detection/ava/README.md)
 
