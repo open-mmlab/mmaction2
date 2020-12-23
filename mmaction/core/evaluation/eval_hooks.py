@@ -252,8 +252,10 @@ class DistEvalHook(EvalHook):
              ``top1_acc``, ``top5_acc``, ``mean_class_accuracy``,
             ``mean_average_precision``, ``mmit_mean_average_precision``
             for action recognition dataset (RawframeDataset and VideoDataset).
-            ``AR@AN``, ``auc`` for action localization dataset.
-            (ActivityNetDataset). Default: None.
+            ``AR@AN``, ``auc`` for action localization dataset
+            (ActivityNetDataset). If ``save_best`` is ``auto``, the first key
+            will be used. The interval of ``CheckpointHook`` should device
+            EvalHook. Default: None.
         rule (str | None, optional): Comparison rule for best score. If set to
             None, it will infer a reasonable rule. Keys such as 'acc', 'top'
             .etc will be inferred by 'greater' rule. Keys contain 'loss' will
