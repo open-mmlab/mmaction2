@@ -95,8 +95,8 @@ Supported methods for action localization:
 
 Supported methods for spatio-temporal action detection:
 
-- [x] [SlowOnly](configs/detection/ava/README.md)
-- [x] [SlowFast](configs/detection/ava/README.md)
+- [x] [SlowOnly+Fast R-CNN](configs/detection/ava/README.md)
+- [x] [SlowFast+Fast R-CNN](configs/detection/ava/README.md)
 
 Results and models are available in the *README.md* of each method's config directory.
 A summary can be found in the [**model zoo**](https://mmaction2.readthedocs.io/en/latest/recognition_models.html) page.
