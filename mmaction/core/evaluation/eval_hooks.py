@@ -34,10 +34,17 @@ class EvalHook(Hook):
              ``top1_acc``, ``top5_acc``, ``mean_class_accuracy``,
             ``mean_average_precision``, ``mmit_mean_average_precision``
             for action recognition dataset (RawframeDataset and VideoDataset).
+<<<<<<< HEAD
             ``AR@AN``, ``auc`` for action localization dataset.
             (ActivityNetDataset). ``Recall@0.5@100``, ``AR@100``,
             ``mAP@0.5IOU`` for spatio-temporal action detection dataset
             (AVADataset). Default: `top1_acc`.
+=======
+            ``AR@AN``, ``auc`` for action localization dataset
+            (ActivityNetDataset). If ``save_best`` is ``auto``, the first key
+             of the returned ``OrderedDict`` result will be used. The interval
+             of ``CheckpointHook`` should device EvalHook. Default: None.
+>>>>>>> polish again
         rule (str | None, optional): Comparison rule for best score. If set to
             None, it will infer a reasonable rule. Keys such as 'acc', 'top'
             .etc will be inferred by 'greater' rule. Keys contain 'loss' will
@@ -254,8 +261,8 @@ class DistEvalHook(EvalHook):
             for action recognition dataset (RawframeDataset and VideoDataset).
             ``AR@AN``, ``auc`` for action localization dataset
             (ActivityNetDataset). If ``save_best`` is ``auto``, the first key
-            will be used. The interval of ``CheckpointHook`` should device
-            EvalHook. Default: None.
+            of the returned ``OrderedDict`` result will be used. The interval
+            of ``CheckpointHook`` should device EvalHook. Default: None.
         rule (str | None, optional): Comparison rule for best score. If set to
             None, it will infer a reasonable rule. Keys such as 'acc', 'top'
             .etc will be inferred by 'greater' rule. Keys contain 'loss' will
