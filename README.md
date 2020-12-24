@@ -18,7 +18,12 @@ It is a part of the [OpenMMLab](http://openmmlab.org/) project.
 The master branch works with **PyTorch 1.3+**.
 
 <div align="center">
-  <img src="docs/imgs/mmaction2_overview.gif" width="600px"/>
+  <img src="docs/imgs/mmaction2_overview.gif" width="450px"/><br>
+    Action Recognition Results on Kinetics-400
+</div>
+<div align="center">
+  <img src="docs/imgs/spatio-temporal-det.gif" width="800px"/><br>
+    Spatio-Temporal Action Detection Results on AVA-2.1
 </div>
 
 ### Major Features

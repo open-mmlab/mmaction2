@@ -1,5 +1,9 @@
 # AVA
 
+<div align="center">
+  <img src="../../../docs/imgs/spatio-temporal-det.gif" width="800px"/>
+</div>
+
 ## Introduction
 
 ```
