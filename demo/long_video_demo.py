@@ -155,6 +155,9 @@ def inference(model, data, args, frame_queue):
         for i in range(pred_stride):
             frame_queue.popleft()
 
+    # for case ``args.stride=0``
+    # deque will automatically popleft one element
+
     return True, scores
 
 
