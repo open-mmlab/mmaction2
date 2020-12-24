@@ -7,6 +7,7 @@
 **New Features**
 
 - Support Spatio-Temporal Action Detection(AVA) ([#351](https://github.com/open-mmlab/mmaction2/pull/351))
+- Support to return feature maps in `inference_recognizer` ([#458](https://github.com/open-mmlab/mmaction2/pull/458))
 
 **Improvements**
 
