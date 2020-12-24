@@ -448,8 +448,8 @@ train_cfg = dict( # Training config of FastRCNN
             type='RandomSampler', # Name of the sampler
             num=32, # Batch Size of the sampler
             pos_fraction=1, # Positive bbox fraction of the sampler
-            neg_pos_ub=-1,  # Positive bbox fraction of the sampler
-            add_gt_as_proposals=True), # Upper bound of the ratio of num negative to num positive
+            neg_pos_ub=-1,  # Upper bound of the ratio of num negative to num positive
+            add_gt_as_proposals=True), # Add gt bboxes as proposals
         pos_weight=1.0, # Loss weight of positive examples
         debug=False)) # Debug mode
 test_cfg = dict( # Testing config of FastRCNN
@@ -587,7 +587,7 @@ optimizer = dict(
     # which are builed on `constructor`, referring to "tutorials/new_modules.md"
     # for implementation.
     type='SGD',  # Type of optimizer, refer to https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/optimizer/default_constructor.py#L13 for more details
-    lr=0.2,  # Learning rate, see detail usages of the parameters in the documentaion of PyTorch
+    lr=0.2,  # Learning rate, see detail usages of the parameters in the documentaion of PyTorch (for 8gpu)
     momentum=0.9,  # Momentum,
     weight_decay=0.00001)  # Weight decay of SGD
 
