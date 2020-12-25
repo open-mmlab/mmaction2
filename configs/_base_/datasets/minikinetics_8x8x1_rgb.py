@@ -3,12 +3,8 @@ dataset_type = 'VideoDataset'
 
 data_root = 'data/OmniSource/kinetics_200_train'
 data_root_val = 'data/OmniSource/kinetics_200_val'
-gg_root = 'data/OmniSource/googleimage_200'
 
 ann_file_train = 'data/OmniSource/annotations/kinetics_200/k200_train.txt'
-ann_file_gg = ('data/OmniSource/annotations/googleimage_200/'
-               'tsn_8seg_googleimage_200_wodup.txt')
-
 ann_file_val = 'data/OmniSource/annotations/kinetics_200/k200_val.txt'
 ann_file_test = 'data/OmniSource/annotations/kinetics_200/k200_val.txt'
 
@@ -23,18 +19,6 @@ train_pipeline = [
     dict(type='RandomResizedCrop'),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
     dict(type='Flip', flip_ratio=0.5),
-    dict(type='Normalize', **img_norm_cfg),
-    dict(type='FormatShape', input_format='NCTHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs', 'label'])
-]
-train_gg_pipeline = [
-    dict(type='ImageDecode'),
-    dict(type='Resize', scale=(-1, 256)),
-    dict(type='RandomResizedCrop'),
-    dict(type='Resize', scale=(224, 224), keep_ratio=False),
-    dict(type='Flip', flip_ratio=0.5),
-    dict(type='BuildPseudoClip', clip_len=8),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
@@ -77,19 +61,12 @@ test_pipeline = [
 
 data = dict(
     videos_per_gpu=12,
-    workers_per_gpu=2,
-    train=[
-        dict(
-            type=dataset_type,
-            ann_file=ann_file_train,
-            data_prefix=data_root,
-            pipeline=train_pipeline),
-        dict(
-            type='ImageDataset',
-            ann_file=ann_file_gg,
-            data_prefix=gg_root,
-            pipeline=train_gg_pipeline)
-    ],
+    workers_per_gpu=4,
+    train=dict(
+        type=dataset_type,
+        ann_file=ann_file_train,
+        data_prefix=data_root,
+        pipeline=train_pipeline),
     val=dict(
         type=dataset_type,
         ann_file=ann_file_val,
@@ -100,5 +77,6 @@ data = dict(
         ann_file=ann_file_test,
         data_prefix=data_root_val,
         pipeline=test_pipeline))
+
 evaluation = dict(
     interval=8, metrics=['top_k_accuracy', 'mean_class_accuracy'])

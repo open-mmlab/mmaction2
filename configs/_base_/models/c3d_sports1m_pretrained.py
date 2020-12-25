@@ -3,7 +3,8 @@ model = dict(
     type='Recognizer3D',
     backbone=dict(
         type='C3D',
-        pretrained=None,
+        pretrained=  # noqa: E251
+        'https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_pretrain_20201016-dcc47ddc.pth',  # noqa: E501
         style='pytorch',
         conv_cfg=dict(type='Conv3d'),
         norm_cfg=None,

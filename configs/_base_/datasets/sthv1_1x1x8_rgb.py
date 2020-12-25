@@ -1,10 +1,10 @@
 # dataset settings
 dataset_type = 'RawframeDataset'
-data_root = 'data/sthv1/rawframes'
-data_root_val = 'data/sthv1/rawframes'
-ann_file_train = 'data/sthv1/sthv1_train_list_rawframes.txt'
-ann_file_val = 'data/sthv1/sthv1_val_list_rawframes.txt'
-ann_file_test = 'data/sthv1/sthv1_val_list_rawframes.txt'
+data_root = 'data/sth-v1/rawframes_train/'
+data_root_val = 'data/sth-v1/rawframes_val/'
+ann_file_train = 'data/sth-v1/sth-v1_train_list.txt'
+ann_file_val = 'data/sth-v1/sth-v1_val_list.txt'
+ann_file_test = 'data/sth-v1/sth-v1_val_list.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
@@ -76,4 +76,4 @@ data = dict(
         filename_tmpl='{:05}.jpg',
         pipeline=test_pipeline))
 evaluation = dict(
-    interval=2, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
+    interval=2, metrics=['top_k_accuracy', 'mean_class_accuracy'])

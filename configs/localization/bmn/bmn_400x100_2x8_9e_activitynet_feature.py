@@ -1,18 +1,7 @@
-# model settings
-model = dict(
-    type='BMN',
-    temporal_dim=100,
-    boundary_ratio=0.5,
-    num_samples=32,
-    num_samples_per_bin=3,
-    feat_dim=400,
-    soft_nms_alpha=0.4,
-    soft_nms_low_threshold=0.5,
-    soft_nms_high_threshold=0.9,
-    post_process_top_k=100)
-# model training and testing settings
-train_cfg = None
-test_cfg = dict(average_clips='score')
+_base_ = [
+    '../../_base_/models/bmn_400x100.py', '../../_base_/default_runtime.py'
+]
+
 # dataset settings
 dataset_type = 'ActivityNetDataset'
 data_root = 'data/ActivityNet/activitynet_feature_cuhk/csv_mean_100/'
@@ -83,6 +72,7 @@ data = dict(
         ann_file=ann_file_train,
         pipeline=train_pipeline,
         data_prefix=data_root))
+evaluation = dict(interval=1, metrics=['AR@AN'])
 
 # optimizer
 optimizer = dict(
@@ -90,16 +80,9 @@ optimizer = dict(
 optimizer_config = dict(grad_clip=None)
 # learning policy
 lr_config = dict(policy='step', step=7)
-
 total_epochs = 9
-checkpoint_config = dict(interval=1)
-evaluation = dict(interval=1, metrics=['AR@AN'])
-log_config = dict(interval=50, hooks=[dict(type='TextLoggerHook')])
+
 # runtime settings
-dist_params = dict(backend='nccl')
-log_level = 'INFO'
+log_config = dict(interval=50, hooks=[dict(type='TextLoggerHook')])
 work_dir = './work_dirs/bmn_400x100_2x8_9e_activitynet_feature/'
-load_from = None
-resume_from = None
-workflow = [('train', 1)]
 output_config = dict(out=f'{work_dir}/results.json', output_format='json')

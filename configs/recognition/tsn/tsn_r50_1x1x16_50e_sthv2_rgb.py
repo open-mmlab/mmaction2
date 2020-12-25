@@ -1,22 +1,8 @@
+_base_ = ['./tsn_r50_1x1x8_50e_sthv2_rgb.py']
+
 # model settings
-model = dict(
-    type='Recognizer2D',
-    backbone=dict(
-        type='ResNet',
-        pretrained='torchvision://resnet50',
-        depth=50,
-        norm_eval=False),
-    cls_head=dict(
-        type='TSNHead',
-        num_classes=174,
-        in_channels=2048,
-        spatial_type='avg',
-        consensus=dict(type='AvgConsensus', dim=1),
-        dropout_ratio=0.5,
-        init_std=0.001))
-# model training and testing settings
-train_cfg = None
-test_cfg = dict(average_clips=None)
+model = dict(cls_head=dict(init_std=0.001))
+
 # dataset settings
 dataset_type = 'RawframeDataset'
 data_root = 'data/sthv2/rawframes'
@@ -81,27 +67,16 @@ data = dict(
         ann_file=ann_file_test,
         data_prefix=data_root_val,
         pipeline=test_pipeline))
+evaluation = dict(
+    interval=2, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+
 # optimizer
 optimizer = dict(
     type='SGD', lr=0.005, momentum=0.9,
     weight_decay=0.0005)  # this lr is used for 8 gpus
+# optimizer config
 optimizer_config = dict(grad_clip=dict(max_norm=20, norm_type=2))
-# learning policy
-lr_config = dict(policy='step', step=[20, 40])
-total_epochs = 50
-checkpoint_config = dict(interval=1)
-evaluation = dict(
-    interval=2, metrics=['top_k_accuracy', 'mean_class_accuracy'])
-log_config = dict(
-    interval=20,
-    hooks=[
-        dict(type='TextLoggerHook'),
-        # dict(type='TensorboardLoggerHook'),
-    ])
+
 # runtime settings
-dist_params = dict(backend='nccl')
-log_level = 'INFO'
+checkpoint_config = dict(interval=1)
 work_dir = './work_dirs/tsn_r50_1x1x16_50e_sthv2_rgb/'
-load_from = None
-resume_from = None
-workflow = [('train', 1)]
