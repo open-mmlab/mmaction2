@@ -1,4 +1,4 @@
-# Config System
+# Tutorial 1: Learn about Configs
 
 We use python files as configs. You can find all the provided configs under `$MMAction2/configs`.
 
@@ -149,7 +149,7 @@ which is convenient to conduct various experiments.
     optimizer = dict(
         # Config used to build optimizer, support (1). All the optimizers in PyTorch
         # whose arguments are also the same as those in PyTorch. (2). Custom optimizers
-        # which are builed on `constructor`, referring to "tutorials/new_modules.md"
+        # which are builed on `constructor`, referring to "tutorials/5_new_modules.md"
         # for implementation.
         type='Adam',  # Type of optimizer, refer to https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/optimizer/default_constructor.py#L13 for more details
         lr=0.001,  # Learning rate, see detail usages of the parameters in the documentaion of PyTorch
@@ -360,7 +360,7 @@ which is convenient to conduct various experiments.
     optimizer = dict(
         # Config used to build optimizer, support (1). All the optimizers in PyTorch
         # whose arguments are also the same as those in PyTorch. (2). Custom optimizers
-        # which are builed on `constructor`, referring to "tutorials/new_modules.md"
+        # which are builed on `constructor`, referring to "tutorials/5_new_modules.md"
         # for implementation.
         type='SGD',  # Type of optimizer, refer to https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/optimizer/default_constructor.py#L13 for more details
         lr=0.01,  # Learning rate, see detail usages of the parameters in the documentaion of PyTorch
@@ -584,7 +584,7 @@ data['test'] = data['val']    # Set test_dataset as val_dataset
 optimizer = dict(
     # Config used to build optimizer, support (1). All the optimizers in PyTorch
     # whose arguments are also the same as those in PyTorch. (2). Custom optimizers
-    # which are builed on `constructor`, referring to "tutorials/new_modules.md"
+    # which are builed on `constructor`, referring to "tutorials/5_new_modules.md"
     # for implementation.
     type='SGD',  # Type of optimizer, refer to https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/optimizer/default_constructor.py#L13 for more details
     lr=0.2,  # Learning rate, see detail usages of the parameters in the documentaion of PyTorch (for 8gpu)

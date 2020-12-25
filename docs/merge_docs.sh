@@ -51,7 +51,6 @@ sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' detectio
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' benchmark.md
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' getting_started.md
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' install.md
-sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' config.md
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' changelog.md
 sed -i 's/](\/docs\//](/g' ./tutorials/*.md
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' ./tutorials/*.md
