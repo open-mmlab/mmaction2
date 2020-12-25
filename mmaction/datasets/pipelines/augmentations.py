@@ -7,6 +7,14 @@ from torch.nn.modules.utils import _pair
 
 from ..registry import PIPELINES
 
+try:
+    import imgaug  # noqa
+    from imgaug import augmenters as iaa
+    from imgaug.augmentables.bbs import BoundingBox, BoundingBoxesOnImage
+except ImportError:
+    imgaug = None
+    iaa = None
+
 
 def _init_lazy_if_proper(results, lazy):
     """Initialize lazy operation properly.
@@ -40,6 +48,140 @@ def _init_lazy_if_proper(results, lazy):
             results['lazy'] = lazyop
     else:
         assert 'lazy' not in results, 'Use Fuse after lazy operations'
+
+
+@PIPELINES.register_module()
+class Imgaug(object):
+    """Imgaug augmentation.
+
+    Adds custom transformations from imgaug library.
+    Please, visit `https://imgaug.readthedocs.io/en/latest/index.html`
+    to get more information. An example of ``transforms`` could be found
+    in `_default_transforms`
+
+    Required keys is "imgs" and "img_shape"(if "gt_bboxes" is not None),
+    added or modified keys are "imgs", "gt_bboxes", "proposals".
+
+    Args:
+        transforms (str or list[dict]): `default` or a list of imgaug
+            transformations. If
+    """
+
+    def __init__(self, transforms):
+        if imgaug is None or iaa is None:
+            raise RuntimeError('imgaug is not installed')
+
+        if transforms == 'default':
+            self.transforms = self._default_transforms()
+        elif isinstance(self.transforms, list):
+            self.transforms = transforms
+        else:
+            raise ValueError("transforms must be 'default' or a list of dicts")
+
+        self.aug = iaa.Sequential(
+            [self.imgaug_builder(t) for t in self.transforms])
+
+    def _default_transforms(self):
+        """Default transforms for imgaug."""
+
+        return [
+            dict(type='Rotate', rotate=(-30, 30)),
+            dict(type='Add', value=(-10, 10), per_channel=0.5),
+            dict(
+                type='SomeOf',
+                n=(0, 3),
+                children=[
+                    dict(
+                        type='OneOf',
+                        children=[
+                            dict(type='GaussianBlur', sigma=(0, 0.5)),
+                            dict(type='AverageBlur', k=(2, 7)),
+                            dict(type='MedianBlur', k=(3, 11))
+                        ]),
+                    dict(
+                        type='OneOf',
+                        children=[
+                            dict(
+                                type='Dropout', p=(0.01, 0.1),
+                                per_channel=0.5),
+                            dict(
+                                type='CoarseDropout',
+                                p=(0.03, 0.15),
+                                size_percent=(0.02, 0.05),
+                                per_channel=0.2),
+                        ]),
+                    dict(
+                        type='AdditiveGaussianNoise',
+                        loc=0,
+                        scale=(0.0, 0.05 * 255),
+                        per_channel=0.5),
+                ]),
+        ]
+
+    def imgaug_builder(self, cfg):
+        """Import a module from imgaug.
+
+        It inherits some of :func:`build_from_cfg` logic.
+
+        Args:
+            cfg (dict): Config dict. It should at least contain the key "type".
+
+        Returns:
+            obj: The constructed object.
+        """
+        import inspect
+
+        assert isinstance(cfg, dict) and 'type' in cfg
+        args = cfg.copy()
+
+        obj_type = args.pop('type')
+        if mmcv.is_str(obj_type):
+            obj_cls = getattr(iaa, obj_type)
+        elif inspect.isclass(obj_type):
+            obj_cls = obj_type
+        else:
+            raise TypeError(
+                f'type must be a str or valid type, but got {type(obj_type)}')
+
+        if 'children' in args:
+            args['children'] = [
+                self.imgaug_builder(child) for child in args['children']
+            ]
+
+        return obj_cls(**args)
+
+    def __repr__(self):
+        repr_str = self.__class__.__name__ + f'(transforms={self.transforms})'
+        return repr_str
+
+    def __call__(self, results):
+        cur_aug = self.aug.to_deterministic()
+        if 'gt_bboxes' in results:
+            bbox_list = [
+                BoundingBox(x1=bbox[0], y1=bbox[1], x2=bbox[2], y2=bbox[3])
+                for bbox in results['gt_bboxes']
+            ]
+            bboxes = BoundingBoxesOnImage(
+                bbox_list, shape=results['img_shape'])
+            bbox_aug = cur_aug.augment_bounding_boxes([bboxes])[0]
+            results['gt_bboxes'] = [[bbox.x1, bbox.y1, bbox.x2, bbox.y2]
+                                    for bbox in bbox_aug.items]
+            if 'proposals' in results:
+                bbox_list = [
+                    BoundingBox(
+                        x1=bbox[0], y1=bbox[1], x2=bbox[2], y2=bbox[3])
+                    for bbox in results['proposals']
+                ]
+                bboxes = BoundingBoxesOnImage(
+                    bbox_list, shape=results['img_shape'])
+                bbox_aug = cur_aug.augment_bounding_boxes([bboxes])[0]
+                results['proposals'] = [[bbox.x1, bbox.y1, bbox.x2, bbox.y2]
+                                        for bbox in bbox_aug.items]
+
+        results['imgs'] = [
+            cur_aug.augment_image(frame) for frame in results['imgs']
+        ]
+        return results
 
 
 @PIPELINES.register_module()
