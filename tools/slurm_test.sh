@@ -9,7 +9,7 @@ CHECKPOINT=$4
 GPUS=${GPUS:-8}
 GPUS_PER_NODE=${GPUS_PER_NODE:-8}
 CPUS_PER_TASK=${CPUS_PER_TASK:-5}
-PY_ARGS=${@:5}
+PY_ARGS=${@:5}  # Any arguments from the fifth one are captured by this
 SRUN_ARGS=${SRUN_ARGS:-""}
 
 PYTHONPATH="$(dirname $0)/..":$PYTHONPATH \
