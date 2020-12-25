@@ -89,7 +89,7 @@ class EvalHook(Hook):
         assert isinstance(save_best, str) or save_best is None
         self.save_best = save_best
         self.eval_kwargs = eval_kwargs
-        self.initial_epoch_flag = True
+        self.initial_flag = True
 
         if self.save_best is not None:
             self._init_rule(rule, self.save_best)
@@ -132,21 +132,21 @@ class EvalHook(Hook):
         """Evaluate the model only at the start of training by iteration."""
         if self.by_epoch:
             return
-        if not self.initial_epoch_flag:
+        if not self.initial_flag:
             return
         if self.start is not None and runner.iter >= self.start:
             self.after_train_iter(runner)
-        self.initial_epoch_flag = False
+        self.initial_flag = False
 
     def before_train_epoch(self, runner):
         """Evaluate the model only at the start of training by epoch."""
         if not self.by_epoch:
             return
-        if not self.initial_epoch_flag:
+        if not self.initial_flag:
             return
         if self.start is not None and runner.epoch >= self.start:
             self.after_train_epoch(runner)
-        self.initial_epoch_flag = False
+        self.initial_flag = False
 
     def after_train_iter(self, runner):
         """Called after every training iter to evaluate the results."""
@@ -190,7 +190,8 @@ class EvalHook(Hook):
             # No evaluation if start is larger than the current time.
             return False
         else:
-            # Evaluation only at epochs 3, 5, 7... if start==3 and interval==2
+            # Evaluation only at epochs/iters 3, 5, 7...
+            # if start==3 and interval==2
             if (current + 1 - self.start) % self.interval:
                 return False
         return True
@@ -199,7 +200,7 @@ class EvalHook(Hook):
         if self.by_epoch:
             current = f'epoch_{runner.epoch + 1}'
         else:
-            current = f'iter_{runner.epoch + 1}'
+            current = f'iter_{runner.iter + 1}'
 
         best_score = runner.meta['hook_msgs'].get(
             'best_score', self.init_value_map[self.rule])
