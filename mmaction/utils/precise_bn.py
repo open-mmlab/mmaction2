@@ -2,7 +2,6 @@
 
 import logging
 import time
-from copy import deepcopy
 
 import mmcv
 import torch
@@ -56,9 +55,9 @@ def update_bn_stats(model, data_loader, num_iters=200, logger=None):
 
     model.train()
 
-    # assert len(data_loader) >= num_iters, (
-    #     f'length of dataloader {len(data_loader)} must be greater than '
-    #     f'iteration number {num_iters}')
+    assert len(data_loader) >= num_iters, (
+        f'length of dataloader {len(data_loader)} must be greater than '
+        f'iteration number {num_iters}')
 
     if is_parallel_module(model):
         parallel_module = model
@@ -96,7 +95,7 @@ def update_bn_stats(model, data_loader, num_iters=200, logger=None):
     running_mean = [torch.zeros_like(bn.running_mean) for bn in bn_layers]
     running_var = [torch.zeros_like(bn.running_var) for bn in bn_layers]
 
-    # finish_before_loader = False
+    finish_before_loader = False
     prog_bar = mmcv.ProgressBar(len(data_loader))
     for ind, data in enumerate(data_loader):
         with torch.no_grad():
@@ -108,10 +107,10 @@ def update_bn_stats(model, data_loader, num_iters=200, logger=None):
             running_var[i] += (bn.running_var - running_var[i]) / (ind + 1)
             # We compute the "average of variance" across iterations.
         if ind >= num_iters:
-            # finish_before_loader = True
+            finish_before_loader = True
             break
-    # assert finish_before_loader, 'Dataloader stopped before ' \
-    #                              f'iteration {num_iters}'
+    assert finish_before_loader, 'Dataloader stopped before ' \
+                                 f'iteration {num_iters}'
 
     for i, bn in enumerate(bn_layers):
         # Sets the precise bn stats.
@@ -138,15 +137,16 @@ class PreciseBNHook(Hook):
 
     def after_train_epoch(self, runner):
         if self.every_n_epochs(runner, self.interval):
+            # sleep to avoid possible deadlock
+            time.sleep(2.)
             print_log(
                 f'Running Precise BN for {self.num_iters} iterations',
                 logger=runner.logger)
-            # use the same dataloader as the training one
-            self.dataloader = deepcopy(runner.data_loader)
             update_bn_stats(
                 runner.model,
                 self.dataloader,
                 self.num_iters,
                 logger=runner.logger)
             print_log('BN stats updated', logger=runner.logger)
+            # sleep to avoid possible deadlock
             time.sleep(2.)
