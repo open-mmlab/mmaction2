@@ -8,7 +8,6 @@ Welcome to MMAction2's documentation!
    getting_started.md
    demo.md
    benchmark.md
-   config.md
 
 .. toctree::
    :maxdepth: 2
@@ -30,12 +29,13 @@ Welcome to MMAction2's documentation!
    :maxdepth: 2
    :caption: Tutorials
 
-   tutorials/finetune.md
-   tutorials/new_dataset.md
-   tutorials/data_pipeline.md
-   tutorials/new_modules.md
-   tutorials/export_model.md
-   tutorials/customize_runtime.md
+   tutorials/1_config.md
+   tutorials/2_finetune.md
+   tutorials/3_new_dataset.md
+   tutorials/4_data_pipeline.md
+   tutorials/5_new_modules.md
+   tutorials/6_export_model.md
+   tutorials/7_customize_runtime.md
 
 .. toctree::
    :maxdepth: 2
