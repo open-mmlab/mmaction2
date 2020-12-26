@@ -1271,7 +1271,7 @@ class TestAugumentations:
         assert repr(imgaug_flip) == f'Imgaug(transforms={transforms})'
 
         # check crop (both images and bboxes)
-        target_keys = ['crop_bbox', 'gt_bboxes']
+        target_keys = ['crop_bbox', 'gt_bboxes', 'imgs', 'img_shape']
         imgs = list(np.random.rand(1, 122, 122, 3))
         results = dict(
             imgs=imgs,
@@ -1289,3 +1289,12 @@ class TestAugumentations:
         assert_array_almost_equal(crop_results['gt_bboxes'],
                                   np.array([[0., 0., 99., 53.]]))
         assert 'proposals' not in results
+
+        # check resize (images only)
+        target_keys = ['imgs', 'img_shape']
+        imgs = list(np.random.rand(1, 64, 64, 3))
+        results = dict(imgs=imgs)
+        imgaug_resize = Imgaug(transforms=iaa.Resize(32))
+        resize_results = imgaug_resize(results)
+        self.check_keys_contain(resize_results.keys(), target_keys)
+        assert resize_results['img_shape'] == (32, 32)

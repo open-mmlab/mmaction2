@@ -62,9 +62,18 @@ class Imgaug(object):
     Required keys are "imgs" and "img_shape"(if "gt_bboxes" is not None),
     added or modified keys are "imgs", "img_shape", "gt_bboxes", "proposals".
 
+    It is worth mentioning that `Imgaug` will NOT create custom keys like
+    "interpolation", "crop_bbox", "flip_direction", etc. So when using
+    `Imgaug` along with other mmaction2 pipelines, we should pay more attetion
+    to required keys of all pipelines.
+
     Args:
-        transforms (str or list[dict]): `default` or a list of imgaug
-            transformations. If
+        transforms (str or list[dict] or iaa.Augmenter): Three different ways
+            to create imgaug augmenter.
+            1) string: only support one string `default`
+            2) list[dict]: create a list of Augmenters by a list of dicts.
+                Each dict contains a key named `type`.
+            3) iaa.Augmenter: Directly use imgaug class.
     """
 
     def __init__(self, transforms):
@@ -75,11 +84,14 @@ class Imgaug(object):
             self.transforms = self._default_transforms()
         elif isinstance(transforms, list):
             self.transforms = transforms
+        elif isinstance(transforms, iaa.Augmenter):
+            self.aug = self.transforms = transforms
         else:
             raise ValueError("transforms must be 'default' or a list of dicts")
 
-        self.aug = iaa.Sequential(
-            [self.imgaug_builder(t) for t in self.transforms])
+        if not isinstance(transforms, iaa.Augmenter):
+            self.aug = iaa.Sequential(
+                [self.imgaug_builder(t) for t in self.transforms])
 
     def _default_transforms(self):
         """Default transforms for imgaug."""
