@@ -29,6 +29,7 @@
 - Support precise BN ([#501](https://github.com/open-mmlab/mmaction2/pull/501/))
 - Support Spatio-Temporal Action Detection (AVA) ([#351](https://github.com/open-mmlab/mmaction2/pull/351))
 - Support to return feature maps in `inference_recognizer` ([#458](https://github.com/open-mmlab/mmaction2/pull/458))
+- Support [imgaug](https://imgaug.readthedocs.io/en/latest/index.html) for augmentations in the data pipeline ([#492](https://github.com/open-mmlab/mmaction2/pull/492))
 
 **Improvements**
 
