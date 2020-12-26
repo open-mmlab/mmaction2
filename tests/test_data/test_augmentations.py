@@ -8,7 +8,7 @@ from numpy.testing import assert_array_almost_equal, assert_array_equal
 # yapf: disable
 from mmaction.datasets.pipelines import (AudioAmplify, CenterCrop, ColorJitter,
                                          EntityBoxCrop, EntityBoxFlip,
-                                         EntityBoxRescale, Flip, Fuse,
+                                         EntityBoxRescale, Flip, Fuse, Imgaug,
                                          MelSpectrogram, MultiGroupCrop,
                                          MultiScaleCrop, Normalize, RandomCrop,
                                          RandomRescale, RandomResizedCrop,
@@ -1230,3 +1230,62 @@ class TestAugumentations:
         results_ = box_flip(results_)
         assert results_['proposals'] is None
         assert repr(box_flip) == f'EntityBoxFlip(img_shape={img_shape})'
+
+    def test_imgaug(self):
+
+        with pytest.raises(ValueError):
+            # transforms only support one string, 'default'
+            Imgaug(transforms='test')
+
+        with pytest.raises(ValueError):
+            # transforms only support string or list of dicts
+            Imgaug(transforms=dict(type='Rotate'))
+
+        with pytest.raises(AssertionError):
+            # each dict must have a `type` key
+            Imgaug(transforms=[dict(rotate=(-30, 30))])
+
+        with pytest.raises(AttributeError):
+            # `type` must be available in imgaug
+            Imgaug(transforms=[dict(type='BlaBla')])
+
+        from imgaug import augmenters as iaa
+
+        # check flip (both images and bboxes)
+        target_keys = ['imgs', 'gt_bboxes', 'proposals', 'img_shape']
+        imgs = list(np.random.rand(1, 305, 200, 3))
+        results = dict(
+            imgs=imgs,
+            proposals=np.array([[0, 0, 186, 305]]),
+            img_shape=(305, 200),
+            gt_bboxes=np.array([[0, 0, 186, 305]]))
+        transforms = [dict(type='Fliplr')]
+        imgaug_flip = Imgaug(transforms=transforms)
+        flip_results = imgaug_flip(results)
+        assert self.check_keys_contain(flip_results.keys(), target_keys)
+        assert self.check_flip(imgs, flip_results['imgs'], 'horizontal')
+        assert_array_almost_equal(flip_results['gt_bboxes'],
+                                  np.array([[14, 0, 200, 305]]))
+        assert_array_almost_equal(flip_results['proposals'],
+                                  np.array([[14, 0, 200, 305]]))
+        assert repr(imgaug_flip) == f'Imgaug(transforms={transforms})'
+
+        # check crop (both images and bboxes)
+        target_keys = ['crop_bbox', 'gt_bboxes']
+        imgs = list(np.random.rand(1, 122, 122, 3))
+        results = dict(
+            imgs=imgs,
+            img_shape=(122, 122),
+            gt_bboxes=np.array([[1.5, 2.5, 110, 64]]))
+        imgaug_center_crop = Imgaug(transforms=[
+            dict(
+                type=iaa.CropToFixedSize,
+                width=100,
+                height=100,
+                position='center')
+        ])
+        crop_results = imgaug_center_crop(results)
+        self.check_keys_contain(crop_results.keys(), target_keys)
+        assert_array_almost_equal(crop_results['gt_bboxes'],
+                                  np.array([[0., 0., 99., 53.]]))
+        assert 'proposals' not in results

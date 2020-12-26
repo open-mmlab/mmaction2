@@ -59,8 +59,8 @@ class Imgaug(object):
     to get more information. An example of ``transforms`` could be found
     in `_default_transforms`
 
-    Required keys is "imgs" and "img_shape"(if "gt_bboxes" is not None),
-    added or modified keys are "imgs", "gt_bboxes", "proposals".
+    Required keys are "imgs" and "img_shape"(if "gt_bboxes" is not None),
+    added or modified keys are "imgs", "img_shape", "gt_bboxes", "proposals".
 
     Args:
         transforms (str or list[dict]): `default` or a list of imgaug
@@ -73,7 +73,7 @@ class Imgaug(object):
 
         if transforms == 'default':
             self.transforms = self._default_transforms()
-        elif isinstance(self.transforms, list):
+        elif isinstance(transforms, list):
             self.transforms = transforms
         else:
             raise ValueError("transforms must be 'default' or a list of dicts")
@@ -138,6 +138,7 @@ class Imgaug(object):
         if mmcv.is_str(obj_type):
             obj_cls = getattr(iaa, obj_type)
         elif inspect.isclass(obj_type):
+            assert obj_type == getattr(iaa, obj_type.__name__)
             obj_cls = obj_type
         else:
             raise TypeError(
@@ -156,6 +157,12 @@ class Imgaug(object):
 
     def __call__(self, results):
         cur_aug = self.aug.to_deterministic()
+
+        results['imgs'] = [
+            cur_aug.augment_image(frame) for frame in results['imgs']
+        ]
+        img_h, img_w, _ = results['imgs'][0].shape
+
         if 'gt_bboxes' in results:
             bbox_list = [
                 BoundingBox(x1=bbox[0], y1=bbox[1], x2=bbox[2], y2=bbox[3])
@@ -164,8 +171,12 @@ class Imgaug(object):
             bboxes = BoundingBoxesOnImage(
                 bbox_list, shape=results['img_shape'])
             bbox_aug = cur_aug.augment_bounding_boxes([bboxes])[0]
-            results['gt_bboxes'] = [[bbox.x1, bbox.y1, bbox.x2, bbox.y2]
-                                    for bbox in bbox_aug.items]
+            results['gt_bboxes'] = [[
+                max(bbox.x1, 0),
+                max(bbox.y1, 0),
+                min(bbox.x2, img_w),
+                min(bbox.y2, img_h)
+            ] for bbox in bbox_aug.items]
             if 'proposals' in results:
                 bbox_list = [
                     BoundingBox(
@@ -175,12 +186,15 @@ class Imgaug(object):
                 bboxes = BoundingBoxesOnImage(
                     bbox_list, shape=results['img_shape'])
                 bbox_aug = cur_aug.augment_bounding_boxes([bboxes])[0]
-                results['proposals'] = [[bbox.x1, bbox.y1, bbox.x2, bbox.y2]
-                                        for bbox in bbox_aug.items]
+                results['proposals'] = [[
+                    max(bbox.x1, 0),
+                    max(bbox.y1, 0),
+                    min(bbox.x2, img_w),
+                    min(bbox.y2, img_h)
+                ] for bbox in bbox_aug.items]
 
-        results['imgs'] = [
-            cur_aug.augment_image(frame) for frame in results['imgs']
-        ]
+        results['img_shape'] = (img_h, img_w)
+
         return results
 
 
