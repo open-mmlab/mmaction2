@@ -1,5 +1,5 @@
 _base_ = [
-    '../../../_base_/models/tsn_r18.py',
+    '../../../_base_/models/tsn_r50.py',
     '../../../_base_/schedules/sgd_100e.py',
     '../../../_base_/default_runtime.py'
 ]
@@ -10,6 +10,7 @@ category_nums = dict(
 target_cate = 'attribute'
 
 model = dict(
+    backbone=dict(pretrained='torchvision://resnet18', depth=18),
     cls_head=dict(
         num_classes=category_nums[target_cate],
         multi_class=True,
