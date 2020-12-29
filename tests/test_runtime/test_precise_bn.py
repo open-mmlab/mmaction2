@@ -53,7 +53,16 @@ class ExampleModel(nn.Module):
         return outputs
 
 
-class NoBNExampleModel(nn.Module):
+class GNExampleModel(ExampleModel):
+
+    def __init__(self):
+        super().__init__()
+        self.conv = nn.Linear(1, 1)
+        self.bn = nn.GroupNorm(1, 1)
+        self.test_cfg = None
+
+
+class NoBNExampleModel(ExampleModel):
 
     def __init__(self):
         super().__init__()
@@ -62,16 +71,6 @@ class NoBNExampleModel(nn.Module):
 
     def forward(self, imgs, return_loss=False):
         return self.conv(imgs)
-
-    def train_step(self, data_batch, optimizer, **kwargs):
-        outputs = {
-            'loss': 0.5,
-            'log_vars': {
-                'accuracy': 0.98
-            },
-            'num_samples': 1
-        }
-        return outputs
 
 
 def test_precise_bn():
@@ -113,6 +112,17 @@ def test_precise_bn():
     precise_bn_hook = PreciseBNHook(loader, num_iters=5)
     assert precise_bn_hook.num_iters == 5
     assert precise_bn_hook.interval == 1
+    runner = EpochBasedRunner(
+        model=model, batch_processor=None, optimizer=optimizer, logger=logger)
+    runner.register_hook(precise_bn_hook)
+    runner.run([loader], [('train', 1)], 1)
+
+    # test model w/ gn layer
+    loader = DataLoader(test_bigger_dataset, batch_size=2)
+    precise_bn_hook = PreciseBNHook(loader, num_iters=5)
+    assert precise_bn_hook.num_iters == 5
+    assert precise_bn_hook.interval == 1
+    model = GNExampleModel()
     runner = EpochBasedRunner(
         model=model, batch_processor=None, optimizer=optimizer, logger=logger)
     runner.register_hook(precise_bn_hook)

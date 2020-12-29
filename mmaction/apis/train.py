@@ -117,11 +117,10 @@ def train_model(model,
 
     # precise bn setting
     if cfg.get('precise_bn', False):
-        precise_bn_dataset = build_dataset(cfg.data.train,
-                                           dict(test_mode=True))
+        precise_bn_dataset = build_dataset(cfg.data.train)
         dataloader_setting = dict(
             videos_per_gpu=cfg.data.get('videos_per_gpu', 1),
-            workers_per_gpu=cfg.data.get('workers_per_gpu', 1),
+            workers_per_gpu=0,  # save memory and time
             num_gpus=len(cfg.gpu_ids),
             dist=distributed,
             seed=cfg.seed)
@@ -129,9 +128,7 @@ def train_model(model,
                                                   **dataloader_setting)
         precise_bn_hook = PreciseBNHook(data_loader_precise_bn,
                                         **cfg.get('precise_bn'))
-        # precise bn is of highest priority, run after each train-epoch
-        # but before each validation stage
-        runner.register_hook(precise_bn_hook, priority='HIGHEST')
+        runner.register_hook(precise_bn_hook)
 
     if validate:
         eval_cfg = cfg.get('evaluation', {})
