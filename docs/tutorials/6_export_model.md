@@ -1,4 +1,4 @@
-# Tutorial 5: Exporting a model to ONNX
+# Tutorial 6: Exporting a model to ONNX
 
 Open Neural Network Exchange [(ONNX)](https://onnx.ai/) is an open ecosystem that empowers AI developers to choose the right tools as their project evolves.
 

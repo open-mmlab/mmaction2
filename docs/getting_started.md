@@ -49,7 +49,7 @@ mmaction2
 
 For more information on data preparation, please see [data_preparation.md](data_preparation.md)
 
-For using custom datasets, please refer to [Tutorial 2: Adding New Dataset](tutorials/new_dataset.md)
+For using custom datasets, please refer to [Tutorial 2: Adding New Dataset](tutorials/3_new_dataset.md)
 
 ## Inference with Pre-Trained Models
 
@@ -417,6 +417,6 @@ CUDA_VISIBLE_DEVICES=4,5,6,7 GPUS=4 ./tools/slurm_train.sh ${PARTITION} ${JOB_NA
 
 ## Tutorials
 
-Currently, we provide some tutorials for users to [finetune model](tutorials/finetune.md),
-[add new dataset](tutorials/new_dataset.md), [customize data pipelines](tutorials/data_pipeline.md),
-[add new modules](tutorials/new_modules.md), [export a model to ONNX](tutorials/export_model.md) and [customize runtime settings](tutorials/customize_runtime.md).
+Currently, we provide some tutorials for users to [learn about configs](tutorials/1_config.md), [finetune model](tutorials/2_finetune.md),
+[add new dataset](tutorials/3_new_dataset.md), [customize data pipelines](tutorials/4_data_pipeline.md),
+[add new modules](tutorials/5_new_modules.md), [export a model to ONNX](tutorials/6_export_model.md) and [customize runtime settings](tutorials/7_customize_runtime.md).
