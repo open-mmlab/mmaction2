@@ -51,6 +51,8 @@ def update_bn_stats(model, data_loader, num_iters=200, logger=None):
         model (nn.Module): The model whose bn stats will be recomputed.
         data_loader (iterator): The DataLoader iterator.
         num_iters (int): number of iterations to compute the stats.
+        logger (:obj:`logging.Logger` | None): Logger for logging.
+            Default: None.
     """
 
     model.train()
@@ -124,6 +126,8 @@ class PreciseBNHook(Hook):
 
     Attributes:
         dataloader (DataLoader): A PyTorch dataloader.
+        num_iters (int): Number of iterations to update the bn stats.
+            Default: 200.
         interval (int): Perform precise bn interval (by epochs). Default: 1.
     """
 
