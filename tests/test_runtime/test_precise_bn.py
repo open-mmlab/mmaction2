@@ -28,7 +28,7 @@ class BiggerDataset(ExampleDataset):
 
     def __len__(self):
         # a bigger dataset
-        return 1024
+        return 12
 
 
 class ExampleModel(nn.Module):
