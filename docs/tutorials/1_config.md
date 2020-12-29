@@ -1,4 +1,4 @@
-# Config System
+# Tutorial 1: Learn about Configs
 
 We use python files as configs. You can find all the provided configs under `$MMAction2/configs`.
 
@@ -149,7 +149,7 @@ which is convenient to conduct various experiments.
     optimizer = dict(
         # Config used to build optimizer, support (1). All the optimizers in PyTorch
         # whose arguments are also the same as those in PyTorch. (2). Custom optimizers
-        # which are builed on `constructor`, referring to "tutorials/new_modules.md"
+        # which are builed on `constructor`, referring to "tutorials/5_new_modules.md"
         # for implementation.
         type='Adam',  # Type of optimizer, refer to https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/optimizer/default_constructor.py#L13 for more details
         lr=0.001,  # Learning rate, see detail usages of the parameters in the documentaion of PyTorch
@@ -360,7 +360,7 @@ which is convenient to conduct various experiments.
     optimizer = dict(
         # Config used to build optimizer, support (1). All the optimizers in PyTorch
         # whose arguments are also the same as those in PyTorch. (2). Custom optimizers
-        # which are builed on `constructor`, referring to "tutorials/new_modules.md"
+        # which are builed on `constructor`, referring to "tutorials/5_new_modules.md"
         # for implementation.
         type='SGD',  # Type of optimizer, refer to https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/optimizer/default_constructor.py#L13 for more details
         lr=0.01,  # Learning rate, see detail usages of the parameters in the documentaion of PyTorch
@@ -395,6 +395,234 @@ which is convenient to conduct various experiments.
     workflow = [('train', 1)]  # Workflow for runner. [('train', 1)] means there is only one workflow and the workflow named 'train' is executed once
 
     ```
+
+### Config System for Spatio-Temporal Action Detection
+
+We incorporate modular design into our config system,
+which is convenient to conduct various experiments.
+
+#### An Example of FastRCNN
+
+To help the users have a basic idea of a complete config structure and the modules in an spatio-temporal action detection system,
+we make brief comments on the config of FastRCNN as the following.
+For more detailed usage and alternative for per parameter in each module, please refer to the API documentation.
+
+```python
+# model setting
+model = dict( # Config of the model
+    type='FastRCNN',  # Type of the detector
+    backbone=dict(  # Dict for backbone
+        type='ResNet3dSlowOnly',  # Name of the backbone
+        depth=50, # Depth of ResNet model
+        pretrained=None,   # The url/site of the pretrained model
+        pretrained2d=False, # If the pretrained model is 2D
+        lateral=False,  # If the backbone is with lateral connections
+        num_stages=4, # Stages of ResNet model
+        conv1_kernel=(1, 7, 7), # Conv1 kernel size
+        conv1_stride_t=1, # Conv1 temporal stride
+        pool1_stride_t=1, # Pool1 temporal stride
+        spatial_strides=(1, 2, 2, 1)),  # The spatial stride for each ResNet stage
+    roi_head=dict(  # Dict for roi_head
+        type='AVARoIHead',  # Name of the roi_head
+        bbox_roi_extractor=dict(  # Dict for bbox_roi_extractor
+            type='SingleRoIExtractor3D',  # Name of the bbox_roi_extractor
+            roi_layer_type='RoIAlign',  # Type of the RoI op
+            output_size=8,  # Output feature size of the RoI op
+            with_temporal_pool=True), # If temporal dim is pooled
+        bbox_head=dict( # Dict for bbox_head
+            type='BBoxHeadAVA', # Name of the bbox_head
+            in_channels=2048, # Number of channels of the input feature
+            num_classes=81, # Number of action classes + 1
+            multilabel=True,  # If the dataset is multilabel
+            dropout_ratio=0.5)))  # The dropout ratio used
+
+# model training and testing settings
+train_cfg = dict( # Training config of FastRCNN
+    rcnn=dict(  # Dict for rcnn training config
+        assigner=dict(  # Dict for assigner
+            type='MaxIoUAssignerAVA', # Name of the assigner
+            pos_iou_thr=0.9,  # IoU threshold for positive examples, > pos_iou_thr -> positive
+            neg_iou_thr=0.9,  # IoU threshold for negative examples, < neg_iou_thr -> negative
+            min_pos_iou=0.9), # Minimum acceptable IoU for positive examples
+        sampler=dict( # Dict for sample
+            type='RandomSampler', # Name of the sampler
+            num=32, # Batch Size of the sampler
+            pos_fraction=1, # Positive bbox fraction of the sampler
+            neg_pos_ub=-1,  # Upper bound of the ratio of num negative to num positive
+            add_gt_as_proposals=True), # Add gt bboxes as proposals
+        pos_weight=1.0, # Loss weight of positive examples
+        debug=False)) # Debug mode
+test_cfg = dict( # Testing config of FastRCNN
+    rcnn=dict(  # Dict for rcnn testing config
+        action_thr=0.00)) # The threshold of an action
+
+# dataset settings
+dataset_type = 'AVADataset' # Type of dataset for training, valiation and testing
+data_root = 'data/ava/rawframes'  # Root path to data
+anno_root = 'data/ava/annotations'  # Root path to annotations
+
+ann_file_train = f'{anno_root}/ava_train_v2.1.csv'  # Path to the annotation file for training
+ann_file_val = f'{anno_root}/ava_val_v2.1.csv'  # Path to the annotation file for validation
+
+exclude_file_train = f'{anno_root}/ava_train_excluded_timestamps_v2.1.csv'  # Path to the exclude annotation file for training
+exclude_file_val = f'{anno_root}/ava_val_excluded_timestamps_v2.1.csv'  # Path to the exclude annotation file for validation
+
+label_file = f'{anno_root}/ava_action_list_v2.1_for_activitynet_2018.pbtxt'  # Path to the label file
+
+proposal_file_train = f'{anno_root}/ava_dense_proposals_train.FAIR.recall_93.9.pkl'  # Path to the human detection proposals for training examples
+proposal_file_val = f'{anno_root}/ava_dense_proposals_val.FAIR.recall_93.9.pkl'  # Path to the human detection proposals for validation examples
+
+img_norm_cfg = dict(  # Config of image normalition used in data pipeline
+    mean=[123.675, 116.28, 103.53], # Mean values of different channels to normalize
+    std=[58.395, 57.12, 57.375],   # Std values of different channels to normalize
+    to_bgr=False) # Whether to convert channels from RGB to BGR
+
+train_pipeline = [  # List of training pipeline steps
+    dict(  # Config of SampleFrames
+        type='AVASampleFrames',  # Sample frames pipeline, sampling frames from video
+        clip_len=4,  # Frames of each sampled output clip
+        frame_interval=16)  # Temporal interval of adjacent sampled frames
+    dict(  # Config of RawFrameDecode
+        type='RawFrameDecode'),  # Load and decode Frames pipeline, picking raw frames with given indices
+    dict(  # Config of RandomRescale
+        type='RandomRescale',   # Randomly rescale the shortedge by a given range
+        scale_range=(256, 320)),   # The shortedge size range of RandomRescale
+    dict(  # Config of RandomCrop
+        type='RandomCrop',   # Randomly crop a patch with the given size
+        size=256),   # The size of the cropped patch
+    dict(  # Config of Flip
+        type='Flip',  # Flip Pipeline
+        flip_ratio=0.5),  # Probability of implementing flip
+    dict(  # Config of Normalize
+        type='Normalize',  # Normalize pipeline
+        **img_norm_cfg),  # Config of image normalization
+    dict(  # Config of FormatShape
+        type='FormatShape',  # Format shape pipeline, Format final image shape to the given input_format
+        input_format='NCTHW',  # Final image shape format
+        collapse=True),   # Collapse the dim N if N == 1
+    dict(  # Config of Rename
+        type='Rename',  # Rename keys
+        mapping=dict(imgs='img')),  # The old name to new name mapping
+    dict(  # Config of ToTensor
+        type='ToTensor',  # Convert other types to tensor type pipeline
+        keys=['img', 'proposals', 'gt_bboxes', 'gt_labels']),  # Keys to be converted from image to tensor
+    dict(  # Config of ToDataContainer
+        type='ToDataContainer',  # Convert other types to DataContainer type pipeline
+        fields=[   # Fields to convert to DataContainer
+            dict(   # Dict of fields
+                key=['proposals', 'gt_bboxes', 'gt_labels'],  # Keys to Convert to DataContainer
+                stack=False)]),  # Whether to stack these tensor
+    dict(  # Config of Collect
+        type='Collect',  # Collect pipeline that decides which keys in the data should be passed to the recognizer
+        keys=['img', 'proposals', 'gt_bboxes', 'gt_labels'],  # Keys of input
+        meta_keys=['scores', 'entity_ids']),  # Meta keys of input
+]
+
+val_pipeline = [  # List of validation pipeline steps
+    dict(  # Config of SampleFrames
+        type='AVASampleFrames',  # Sample frames pipeline, sampling frames from video
+        clip_len=4,  # Frames of each sampled output clip
+        frame_interval=16)  # Temporal interval of adjacent sampled frames
+    dict(  # Config of RawFrameDecode
+        type='RawFrameDecode'),  # Load and decode Frames pipeline, picking raw frames with given indices
+    dict(  # Config of Resize
+        type='Resize',  # Resize pipeline
+        scale=(-1, 256)),  # The scale to resize images
+    dict(  # Config of Normalize
+        type='Normalize',  # Normalize pipeline
+        **img_norm_cfg),  # Config of image normalization
+    dict(  # Config of FormatShape
+        type='FormatShape',  # Format shape pipeline, Format final image shape to the given input_format
+        input_format='NCTHW',  # Final image shape format
+        collapse=True),   # Collapse the dim N if N == 1
+    dict(  # Config of Rename
+        type='Rename',  # Rename keys
+        mapping=dict(imgs='img')),  # The old name to new name mapping
+    dict(  # Config of ToTensor
+        type='ToTensor',  # Convert other types to tensor type pipeline
+        keys=['img', 'proposals']),  # Keys to be converted from image to tensor
+    dict(  # Config of ToDataContainer
+        type='ToDataContainer',  # Convert other types to DataContainer type pipeline
+        fields=[   # Fields to convert to DataContainer
+            dict(   # Dict of fields
+                key=['proposals'],  # Keys to Convert to DataContainer
+                stack=False)]),  # Whether to stack these tensor
+    dict(  # Config of Collect
+        type='Collect',  # Collect pipeline that decides which keys in the data should be passed to the recognizer
+        keys=['img', 'proposals'],  # Keys of input
+        meta_keys=['scores', 'entity_ids'],  # Meta keys of input
+        nested=True)  # Whether to wrap the data in a nested list
+]
+
+data = dict(  # Config of data
+    videos_per_gpu=16,  # Batch size of each single GPU
+    workers_per_gpu=4,  # Workers to pre-fetch data for each single GPU
+    val_dataloader=dict(   # Additional config of validation dataloader
+        videos_per_gpu=1),  # Batch size of each single GPU during evaluation
+    test_dataloader=dict(   # Additional config of testing dataloader
+        videos_per_gpu=1),   # Batch size of each single GPU during testing
+    train=dict(   # Training dataset config
+        type=dataset_type,
+        ann_file=ann_file_train,
+        exclude_file=exclude_file_train,
+        pipeline=train_pipeline,
+        label_file=label_file,
+        proposal_file=proposal_file_train,
+        person_det_score_thr=0.9,
+        data_prefix=data_root),
+    val=dict(     # Validation dataset config
+        type=dataset_type,
+        ann_file=ann_file_val,
+        exclude_file=exclude_file_val,
+        pipeline=val_pipeline,
+        label_file=label_file,
+        proposal_file=proposal_file_val,
+        person_det_score_thr=0.9,
+        data_prefix=data_root))
+data['test'] = data['val']    # Set test_dataset as val_dataset
+# optimizer
+optimizer = dict(
+    # Config used to build optimizer, support (1). All the optimizers in PyTorch
+    # whose arguments are also the same as those in PyTorch. (2). Custom optimizers
+    # which are builed on `constructor`, referring to "tutorials/5_new_modules.md"
+    # for implementation.
+    type='SGD',  # Type of optimizer, refer to https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/optimizer/default_constructor.py#L13 for more details
+    lr=0.2,  # Learning rate, see detail usages of the parameters in the documentaion of PyTorch (for 8gpu)
+    momentum=0.9,  # Momentum,
+    weight_decay=0.00001)  # Weight decay of SGD
+
+optimizer_config = dict(  # Config used to build the optimizer hook
+    grad_clip=dict(max_norm=40, norm_type=2))   # Use gradient clip
+
+lr_config = dict(  # Learning rate scheduler config used to register LrUpdater hook
+    policy='step',  # Policy of scheduler, also support CosineAnnealing, Cyclic, etc. Refer to details of supported LrUpdater from https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/lr_updater.py#L9
+    step=[40, 80],  # Steps to decay the learning rate
+    warmup='linear',  # Warmup strategy
+    warmup_by_epoch=True,  # Warmup_iters indicates iter num or epoch num
+    warmup_iters=5,   # Number of iters or epochs for warmup
+    warmup_ratio=0.1)   # The initial learning rate is warmup_ratio * lr
+
+total_epochs = 20  # Total epochs to train the model
+checkpoint_config = dict(  # Config to set the checkpoint hook, Refer to https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/checkpoint.py for implementation
+    interval=1)   # Interval to save checkpoint
+workflow = [('train', 1)]   # Workflow for runner. [('train', 1)] means there is only one workflow and the workflow named 'train' is executed once
+evaluation = dict(  # Config of evaluation during training
+    interval=1)  # Interval to perform evaluation
+log_config = dict(  # Config to register logger hook
+    interval=20,  # Interval to print the log
+    hooks=[  # Hooks to be implemented during training
+        dict(type='TextLoggerHook'),  # The logger used to record the training process
+    ])
+# runtime settings
+dist_params = dict(backend='nccl')  # Parameters to setup distributed training, the port can also be set
+log_level = 'INFO'  # The level of logging
+work_dir = ('./work_dirs/ava/'  # Directory to save the model checkpoints and logs for the current experiments
+            'slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb')
+load_from = ('https://download.openmmlab.com/mmaction/recognition/slowonly/'  # load models as a pre-trained model from a given path. This will not resume training
+             'slowonly_r50_4x16x1_256e_kinetics400_rgb/'
+             'slowonly_r50_4x16x1_256e_kinetics400_rgb_20200704-a69556c6.pth')
+resume_from = None  # Resume checkpoints from a given path, the training will be resumed from the epoch when the checkpoint's is saved
+```
 
 ## FAQ
 
