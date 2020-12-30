@@ -134,7 +134,9 @@ class BMN(BaseLocalizer):
         self.anchors_tmins, self.anchors_tmaxs = self._temporal_anchors(
             -0.5, 1.5)
         self.match_map = self._match_map()
-        self.bm_mask = self._get_bm_mask().cuda()
+        self.bm_mask = self._get_bm_mask()
+        if torch.cuda.is_aviaiable():
+            self.bm_mask = self.bm_mask.cuda()
 
     def _match_map(self):
         """Generate match map."""
