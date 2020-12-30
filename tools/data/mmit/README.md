@@ -61,6 +61,7 @@ If both are required, run the following script to extract frames using "tvl1" al
 ```shell
 bash extract_frames.sh
 ```
+
 ## Step 3. Generate File List
 
 you can run the follow script to generate file list in the format of rawframes or videos.

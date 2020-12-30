@@ -1,8 +1,9 @@
+import numpy as np
 import torch
 import torch.nn as nn
 
-from mmaction.models import (AudioTSNHead, BaseHead, I3DHead, SlowFastHead,
-                             TPNHead, TSMHead, TSNHead, X3DHead)
+from mmaction.models import (AudioTSNHead, BaseHead, BBoxHeadAVA, I3DHead,
+                             SlowFastHead, TPNHead, TSMHead, TSNHead, X3DHead)
 
 
 class ExampleHead(BaseHead):
@@ -61,6 +62,66 @@ def test_i3d_head():
     # i3d head inference
     cls_scores = i3d_head(feat)
     assert cls_scores.shape == torch.Size([3, 4])
+
+
+def test_bbox_head_ava():
+    """Test loss method, layer construction, attributes and forward function in
+    bbox head."""
+    bbox_head = BBoxHeadAVA()
+    bbox_head.init_weights()
+    bbox_head = BBoxHeadAVA(temporal_pool_type='max', spatial_pool_type='avg')
+    bbox_head.init_weights()
+
+    bbox_head = BBoxHeadAVA(in_channels=10, num_classes=4)
+    input = torch.randn([3, 10, 2, 2, 2])
+    ret, _ = bbox_head(input)
+    assert ret.shape == (3, 4)
+
+    cls_score = torch.tensor(
+        [[0.568, -0.162, 0.273, -0.390, 0.447, 0.102, -0.409],
+         [2.388, 0.609, 0.369, 1.630, -0.808, -0.212, 0.296],
+         [0.252, -0.533, -0.644, -0.591, 0.148, 0.963, -0.525],
+         [0.134, -0.311, -0.764, -0.752, 0.656, -1.517, 0.185]])
+    labels = torch.tensor([[0., 0., 1., 0., 0., 1., 0.],
+                           [0., 0., 0., 1., 0., 0., 0.],
+                           [0., 1., 0., 0., 1., 0., 1.],
+                           [0., 0., 1., 1., 0., 0., 1.]])
+    label_weights = torch.tensor([1., 1., 1., 1.])
+    losses = bbox_head.loss(
+        cls_score=cls_score,
+        bbox_pred=None,
+        rois=None,
+        labels=labels,
+        label_weights=label_weights)
+    assert torch.isclose(losses['loss_action_cls'], torch.tensor(0.7162495))
+    assert torch.isclose(losses['recall@thr=0.5'], torch.tensor(0.6666666))
+    assert torch.isclose(losses['prec@thr=0.5'], torch.tensor(0.4791665))
+    assert torch.isclose(losses['recall@top3'], torch.tensor(0.75))
+    assert torch.isclose(losses['prec@top3'], torch.tensor(0.5))
+    assert torch.isclose(losses['recall@top5'], torch.tensor(1.0))
+    assert torch.isclose(losses['prec@top5'], torch.tensor(0.45))
+
+    rois = torch.tensor([[0.0, 0.1, 0.2, 0.3, 0.4], [0.0, 0.5, 0.6, 0.7, 0.8]])
+    rois[1::2] *= 380
+    rois[2::2] *= 220
+    crop_quadruple = np.array([0.1, 0.2, 0.8, 0.7])
+    cls_score = torch.tensor([0.995, 0.728])
+    img_shape = (320, 480)
+    flip = True
+
+    bboxes, scores = bbox_head.get_det_bboxes(
+        rois=rois,
+        cls_score=cls_score,
+        img_shape=img_shape,
+        flip=flip,
+        crop_quadruple=crop_quadruple)
+    assert torch.all(
+        torch.isclose(
+            bboxes,
+            torch.tensor([[0.89783341, 0.20043750, 0.89816672, 0.20087500],
+                          [0.45499998, 0.69875002, 0.58166665, 0.86499995]])))
+    assert torch.all(
+        torch.isclose(scores, torch.tensor([0.73007441, 0.67436624])))
 
 
 def test_x3d_head():

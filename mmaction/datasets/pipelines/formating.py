@@ -55,6 +55,31 @@ class ToTensor:
 
 
 @PIPELINES.register_module()
+class Rename:
+    """Rename the key in results.
+
+    Args:
+        mapping (dict): The keys in results that need to be renamed. The key of
+            the dict is the original name, while the value is the new name. If
+            the original name not found in results, do nothing.
+            Default: dict().
+    """
+
+    def __init__(self, mapping):
+        self.mapping = mapping
+
+    def __call__(self, results):
+        for key, value in self.mapping.items():
+            if key in results:
+                assert isinstance(key, str) and isinstance(value, str)
+                assert value not in results, ('the new name already exists in '
+                                              'results')
+                results[value] = results[key]
+                results.pop(key)
+        return results
+
+
+@PIPELINES.register_module()
 class ToDataContainer:
     """Convert the data to DataContainer.
 
@@ -62,6 +87,8 @@ class ToDataContainer:
         fields (Sequence[dict]): Required fields to be converted
             with keys and attributes. E.g.
             fields=(dict(key='gt_bbox', stack=False),).
+            Note that key can also be a list of keys, if so, every tensor in
+            the list will be converted to DataContainer.
     """
 
     def __init__(self, fields):
@@ -77,7 +104,11 @@ class ToDataContainer:
         for field in self.fields:
             _field = field.copy()
             key = _field.pop('key')
-            results[key] = DC(results[key], **_field)
+            if isinstance(key, list):
+                for item in key:
+                    results[item] = DC(results[item], **_field)
+            else:
+                results[key] = DC(results[key], **_field)
         return results
 
     def __repr__(self):
@@ -147,14 +178,14 @@ class Collect:
     ``meta_keys`` into a meta item called ``meta_name``.This is usually
     the last stage of the data loader pipeline.
     For example, when keys='imgs', meta_keys=('filename', 'label',
-    'original_shape'), meta_name='img_meta', the results will be a dict with
-    keys 'imgs' and 'img_meta', where 'img_meta' is a DataContainer of another
-    dict with keys 'filename', 'label', 'original_shape'.
+    'original_shape'), meta_name='img_metas', the results will be a dict with
+    keys 'imgs' and 'img_metas', where 'img_metas' is a DataContainer of
+    another dict with keys 'filename', 'label', 'original_shape'.
 
     Args:
         keys (Sequence[str]): Required keys to be collected.
         meta_name (str): The name of the key that contains meta infomation.
-            This key is always populated. Default: "img_meta".
+            This key is always populated. Default: "img_metas".
         meta_keys (Sequence[str]): Keys that are collected under meta_name.
             The contents of the ``meta_name`` dictionary depends on
             ``meta_keys``.
@@ -174,16 +205,20 @@ class Collect:
                 - mean - per channel mean subtraction
                 - std - per channel std divisor
                 - to_rgb - bool indicating if bgr was converted to rgb
+        nested (bool): If set as True, will apply data[x] = [data[x]] to all
+            items in data. The arg is added for compatibility. Default: False.
     """
 
     def __init__(self,
                  keys,
                  meta_keys=('filename', 'label', 'original_shape', 'img_shape',
                             'pad_shape', 'flip_direction', 'img_norm_cfg'),
-                 meta_name='img_meta'):
+                 meta_name='img_metas',
+                 nested=False):
         self.keys = keys
         self.meta_keys = meta_keys
         self.meta_name = meta_name
+        self.nested = nested
 
     def __call__(self, results):
         """Performs the Collect formating.
@@ -201,12 +236,16 @@ class Collect:
             for key in self.meta_keys:
                 meta[key] = results[key]
             data[self.meta_name] = DC(meta, cpu_only=True)
+        if self.nested:
+            for k in data:
+                data[k] = [data[k]]
 
         return data
 
     def __repr__(self):
         return (f'{self.__class__.__name__}('
-                f'keys={self.keys}, meta_keys={self.meta_keys})')
+                f'keys={self.keys}, meta_keys={self.meta_keys}, '
+                f'nested={self.nested})')
 
 
 @PIPELINES.register_module()
@@ -218,10 +257,14 @@ class FormatShape:
 
     Args:
         input_format (str): Define the final imgs format.
+        collapse (bool): To collpase input_format N... to ... (NCTHW to CTHW,
+            etc.) if N is 1. Should be set as True when training and testing
+            detectors. Default: False.
     """
 
-    def __init__(self, input_format):
+    def __init__(self, input_format, collapse=False):
         self.input_format = input_format
+        self.collapse = collapse
         if self.input_format not in ['NCTHW', 'NCHW', 'NCHW_Flow', 'NPTCHW']:
             raise ValueError(
                 f'The input format {self.input_format} is invalid.')
@@ -236,6 +279,9 @@ class FormatShape:
         imgs = results['imgs']
         # [M x H x W x C]
         # M = 1 * N_crops * N_clips * L
+        if self.collapse:
+            assert results['num_clips'] == 1
+
         if self.input_format == 'NCTHW':
             num_clips = results['num_clips']
             clip_len = results['clip_len']
@@ -272,6 +318,9 @@ class FormatShape:
             # M = N_clips x L
             imgs = np.transpose(imgs, (0, 1, 4, 2, 3))
             # P x M x C x H x W
+        if self.collapse:
+            assert imgs.shape[0] == 1
+            imgs = imgs.squeeze(0)
 
         results['imgs'] = imgs
         results['input_shape'] = imgs.shape

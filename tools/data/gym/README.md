@@ -33,7 +33,7 @@ The codes are adapted from the [official crawler](https://github.com/activitynet
 bash download_videos.sh
 ```
 
-## Step 3. Trim Videos into Events.
+## Step 3. Trim Videos into Events
 
 First, you need to trim long videos into events based on the annotation of GYM with the following scripts.
 
@@ -41,7 +41,7 @@ First, you need to trim long videos into events based on the annotation of GYM w
 python trim_event.py
 ```
 
-## Step 4. Trim Events into Subactions.
+## Step 4. Trim Events into Subactions
 
 Then, you need to trim events into subactions based on the annotation of GYM with the following scripts. We use the two stage trimming for better efficiency (trimming multiple short clips from a long video can be extremely inefficient, since you need to go over the video many times).
 
@@ -61,7 +61,7 @@ Run the following script to extract both rgb and flow using "tvl1" algorithm.
 bash extract_frames.sh
 ```
 
-## Step 6. Generate file list for GYM99 based on extracted subactions.
+## Step 6. Generate file list for GYM99 based on extracted subactions
 
 You can use the following script to generate train / val lists for GYM99.
 

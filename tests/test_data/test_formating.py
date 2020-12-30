@@ -4,13 +4,24 @@ import torch
 from mmcv.parallel import DataContainer as DC
 
 from mmaction.datasets.pipelines import (Collect, FormatAudioShape,
-                                         FormatShape, ImageToTensor,
+                                         FormatShape, ImageToTensor, Rename,
                                          ToDataContainer, ToTensor, Transpose)
 
 
 def check_keys_contain(result_keys, target_keys):
     """Check if all elements in target_keys is in result_keys."""
     return set(target_keys).issubset(set(result_keys))
+
+
+def test_rename():
+    org_name = 'a'
+    new_name = 'b'
+    mapping = {org_name: new_name}
+    rename = Rename(mapping)
+    results = dict(a=2)
+    results = rename(results)
+    assert results['b'] == 2
+    assert 'a' not in results
 
 
 def test_to_tensor():
@@ -119,13 +130,22 @@ def test_collect():
     collect = Collect(keys)
     results = collect(inputs)
     assert sorted(list(results.keys())) == sorted(
-        ['imgs', 'label', 'img_meta'])
-    inputs.pop('imgs')
-    assert set(results['img_meta'].data.keys()) == set(inputs.keys())
-    for key in results['img_meta'].data:
-        assert results['img_meta'].data[key] == inputs[key]
+        ['imgs', 'label', 'img_metas'])
+    imgs = inputs.pop('imgs')
+    assert set(results['img_metas'].data.keys()) == set(inputs.keys())
+    for key in results['img_metas'].data:
+        assert results['img_metas'].data[key] == inputs[key]
     assert repr(collect) == collect.__class__.__name__ + \
-        f'(keys={keys}, meta_keys={collect.meta_keys})'
+        (f'(keys={keys}, meta_keys={collect.meta_keys}, '
+         f'nested={collect.nested})')
+
+    inputs['imgs'] = imgs
+    collect = Collect(keys, nested=True)
+    results = collect(inputs)
+    assert sorted(list(results.keys())) == sorted(
+        ['imgs', 'label', 'img_metas'])
+    for k in results.keys():
+        assert isinstance(results[k], list)
 
 
 def test_format_shape():

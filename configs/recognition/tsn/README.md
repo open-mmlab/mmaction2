@@ -1,6 +1,7 @@
 # TSN
 
 ## Introduction
+
 ```
 @inproceedings{wang2016temporal,
   title={Temporal segment networks: Towards good practices for deep action recognition},
@@ -21,6 +22,7 @@
 |[tsn_r50_1x1x3_75e_ucf101_rgb](/configs/recognition/tsn/tsn_r50_1x1x3_75e_ucf101_rgb.py) [1] |8| ResNet50 | ImageNet |83.03|96.78|8332| [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x3_75e_ucf101_rgb/tsn_r50_1x1x3_75e_ucf101_rgb_20201023-d85ab600.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x3_75e_ucf101_rgb/tsn_r50_1x1x3_75e_ucf101_rgb_20201023.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x3_75e_ucf101_rgb/tsn_r50_1x1x3_75e_ucf101_rgb_20201023.json) |
 
 [1] We report the performance on UCF-101 split1.
+
 ### HMDB51
 
 |config | gpus | backbone | pretrain | top1 acc| top5 acc | gpu_mem(M) | ckpt | log| json|
@@ -28,7 +30,6 @@
 |[tsn_r50_1x1x8_50e_hmdb51_imagenet_rgb](/configs/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_imagenet_rgb.py)|8| ResNet50 | ImageNet | 48.95| 80.19| 21535| [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_imagenet_rgb/tsn_r50_1x1x8_50e_hmdb51_imagenet_rgb_20201123-ce6c27ed.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_imagenet_rgb/20201025_231108.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_imagenet_rgb/20201025_231108.log.json) |
 |[tsn_r50_1x1x8_50e_hmdb51_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_kinetics400_rgb.py) |8| ResNet50 | Kinetics400 | 56.08 | 84.31 | 21535| [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_kinetics400_rgb/tsn_r50_1x1x8_50e_hmdb51_kinetics400_rgb_20201123-7f84701b.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_kinetics400_rgb/20201108_190805.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_kinetics400_rgb/20201108_190805.log.json) |
 |[tsn_r50_1x1x8_50e_hmdb51_mit_rgb](/configs/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_mit_rgb.py) |8| ResNet50 | Moments | 54.25 | 83.86| 21535| [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_mit_rgb/tsn_r50_1x1x8_50e_hmdb51_mit_rgb_20201123-01526d41.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_mit_rgb/20201112_170135.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_hmdb51_mit_rgb/20201112_170135.log.json) |
-
 
 ### Kinetics-400
 
@@ -54,6 +55,7 @@ Here, We use [1: 1] to indicate that we combine rgb and flow score with coeffici
 ### Kinetics-400 Data Benchmark (8-gpus, ResNet50, ImageNet pretrain; 3 segments)
 
 In data benchmark, we compare:
+
 1. Different data preprocessing methods: (1) Resize video to 340x256, (2) Resize the short edge of video to 320px, (3) Resize the short edge of video to 256px;
 2. Different data augmentation methods: (1) MultiScaleCrop, (2) RandomResizedCrop;
 3. Different testing protocols: (1) 25 frames x 10 crops, (2) 25 frames x 3 crops.
@@ -151,7 +153,7 @@ Notes:
 
 1. The **gpus** indicates the number of gpu we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
    According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
-   e.g., lr=0.01 for 4 GPUs * 2 video/gpu and lr=0.08 for 16 GPUs * 4 video/gpu.
+   e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
 2. The **inference_time** is got by this [benchmark script](/tools/analysis/benchmark.py), where we use the sampling frames strategy of the test setting and only care about the model inference time,
    not including the IO time and pre-processing time. For each setting, we use 1 gpu and set batch size (videos per gpu) to 1 to calculate the inference time.
 3. The values in columns named after "reference" are the results got by training on the original repo, using the same model settings.
@@ -170,11 +172,13 @@ For more details on data preparation, you can refer to
 ## Train
 
 You can use the following command to train a model.
+
 ```shell
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
 Example: train TSN model on Kinetics-400 dataset in a deterministic option with periodic validation.
+
 ```shell
 python tools/train.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
     --work-dir work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb \
@@ -186,11 +190,13 @@ For more details, you can refer to **Training setting** part in [getting_started
 ## Test
 
 You can use the following command to test a model.
+
 ```shell
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
 Example: test TSN model on Kinetics-400 dataset and dump the result to a json file.
+
 ```shell
 python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
     checkpoints/SOME_CHECKPOINT.pth --eval top_k_accuracy mean_class_accuracy \

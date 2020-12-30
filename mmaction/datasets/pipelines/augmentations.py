@@ -152,76 +152,87 @@ class RandomScale:
         return repr_str
 
 
+# Note, entity box transfroms are not added to: ThreeCrop, TenCrop,
+# MultiGroupCrop.
 @PIPELINES.register_module()
 class EntityBoxRescale:
     """Rescale the entity box and proposals according to the image shape.
 
-    Required keys are "img_shape", "scale_factor", "proposals",
-    "ann.entity_boxes", added or modified keys are "ann.entity_boxes". If
-    original "proposals" is not None, "proposals" and "scores" will be added or
-    modified.
+    Required keys are "proposals", "gt_bboxes", added or modified keys are
+    "gt_bboxes". If original "proposals" is not None, "proposals" and
+    will be added or modified.
+
+    Args:
+        scale_factor (np.ndarray): The scale factor used entity_box rescaling.
     """
 
+    def __init__(self, scale_factor):
+        self.scale_factor = scale_factor
+
     def __call__(self, results):
-        img_h, img_w = results['img_shape']
-        scale_factor = results['scale_factor']
-        scale_factor = np.array([
-            scale_factor[0], scale_factor[1], scale_factor[0], scale_factor[1]
-        ])
+        scale_factor = np.concatenate([self.scale_factor, self.scale_factor])
 
         proposals = results['proposals']
-        entity_boxes = results['ann']['entity_boxes']
-        img_scale = np.array([img_w, img_h, img_w, img_h])
-        entity_boxes = (entity_boxes * img_scale).astype(np.float32)
-        results['ann']['entity_boxes'] = entity_boxes * scale_factor
+        gt_bboxes = results['gt_bboxes']
+        results['gt_bboxes'] = gt_bboxes * scale_factor
 
         if proposals is not None:
-            if proposals.shape[1] not in (4, 5):
-                raise AssertionError('proposals shape should be in (n, 4) or '
-                                     f'(n, 5), but got {proposals.shape}')
-            if proposals.shape[1] == 5:
-                scores = proposals[:, 4].astype(np.float32)
-                proposals = proposals[:, :4]
-            else:
-                scores = None
-            proposals = (proposals * img_scale).astype(np.float32)
+            assert proposals.shape[1] == 4, (
+                'proposals shape should be in '
+                f'(n, 4), but got {proposals.shape}')
             results['proposals'] = proposals * scale_factor
-            results['scores'] = scores
 
         return results
+
+    def __repr__(self):
+        return f'{self.__class__.__name__}(scale_factor={self.scale_factor})'
 
 
 @PIPELINES.register_module()
 class EntityBoxCrop:
     """Crop the entity boxes and proposals according to the cropped images.
 
-    Required keys are "proposals", "ann.entity_boxes", "crop_bbox", added or
-    modified keys are "ann.entity_boxes". If original "proposals" is not None,
-    "proposals" will be modified.
+    Required keys are "proposals", "gt_bboxes", added or modified keys are
+    "gt_bboxes". If original "proposals" is not None, "proposals" will be
+    modified.
+
+    Args:
+        crop_bbox(np.ndarray | None): The bbox used to crop the original image.
     """
+
+    def __init__(self, crop_bbox):
+        self.crop_bbox = crop_bbox
 
     def __call__(self, results):
         proposals = results['proposals']
-        entity_boxes = results['ann']['entity_boxes']
-        crop_bboxes = results['crop_bbox']
+        gt_bboxes = results['gt_bboxes']
 
-        if crop_bboxes is None:
+        if self.crop_bbox is None:
             return results
-        x1, y1, _, _ = crop_bboxes
 
-        assert entity_boxes.shape[-1] % 4 == 0
-        entity_boxes_ = entity_boxes.copy()
-        entity_boxes_[..., 0::2] = entity_boxes[..., 0::2] - x1
-        entity_boxes_[..., 1::2] = entity_boxes[..., 1::2] - y1
-        results['ann']['entity_boxes'] = entity_boxes_
+        x1, y1, x2, y2 = self.crop_bbox
+        img_w, img_h = x2 - x1, y2 - y1
+
+        assert gt_bboxes.shape[-1] == 4
+        gt_bboxes_ = gt_bboxes.copy()
+        gt_bboxes_[..., 0::2] = np.clip(gt_bboxes[..., 0::2] - x1, 0,
+                                        img_w - 1)
+        gt_bboxes_[..., 1::2] = np.clip(gt_bboxes[..., 1::2] - y1, 0,
+                                        img_h - 1)
+        results['gt_bboxes'] = gt_bboxes_
 
         if proposals is not None:
-            assert proposals.shape[-1] % 4 == 0
+            assert proposals.shape[-1] == 4
             proposals_ = proposals.copy()
-            proposals_[..., 0::2] = proposals[..., 0::2] - x1
-            proposals_[..., 1::2] = proposals[..., 1::2] - y1
+            proposals_[..., 0::2] = np.clip(proposals[..., 0::2] - x1, 0,
+                                            img_w - 1)
+            proposals_[..., 1::2] = np.clip(proposals[..., 1::2] - y1, 0,
+                                            img_h - 1)
             results['proposals'] = proposals_
         return results
+
+    def __repr__(self):
+        return f'{self.__class__.__name__}(crop_bbox={self.crop_bbox})'
 
 
 @PIPELINES.register_module()
@@ -230,138 +241,42 @@ class EntityBoxFlip:
 
     Reverse the order of elements in the given bounding boxes and proposals
     with a specific direction. The shape of them are preserved, but the
-    elements are reordered.
-
-    Required keys are "proposals", "img_shape", "ann.entity_boxes", added or
-    modified keys are "flip", "flip_direction", "ann.entity_boxes". If
-    "proposals" is not, it will also be modified.
-
-    Args:
-        flip_ratio (float): Probability of implementing flip. Default: 0.5.
-        direction (str): Flip imgs horizontally or vertically. Options are
-            "horizontal" | "vertical". Default: "horizontal".
-    """
-
-    _directions = ['horizontal', 'vertical']
-
-    def __init__(self, flip_ratio=0.5, direction='horizontal'):
-        if direction not in self._directions:
-            raise ValueError(f'Direction {direction} is not supported. '
-                             f'Currently support ones are {self._directions}')
-        self.flip_ratio = flip_ratio
-        self.direction = direction
-
-    def __call__(self, results):
-        flip = np.random.rand() < self.flip_ratio
-
-        results['flip'] = flip
-        results['flip_direction'] = self.direction
-
-        proposals = results['proposals']
-        entity_boxes = results['ann']['entity_boxes']
-        img_h, img_w = results['img_shape']
-
-        if flip:
-            if self.direction == 'horizontal':
-                assert entity_boxes.shape[-1] % 4 == 0
-                entity_boxes_ = entity_boxes.copy()
-                entity_boxes_[..., 0::4] = img_w - entity_boxes[..., 2::4] - 1
-                entity_boxes_[..., 2::4] = img_w - entity_boxes[..., 0::4] - 1
-                if proposals is not None:
-                    assert proposals.shape[-1] % 4 == 0
-                    proposals_ = proposals.copy()
-                    proposals_[..., 0::4] = img_w - proposals[..., 2::4] - 1
-                    proposals_[..., 2::4] = img_w - proposals[..., 0::4] - 1
-                else:
-                    proposals_ = None
-            else:
-                assert entity_boxes.shape[-1] % 4 == 0
-                entity_boxes_ = entity_boxes.copy()
-                entity_boxes_[..., 1::4] = img_h - entity_boxes[..., 3::4] - 1
-                entity_boxes_[..., 3::4] = img_h - entity_boxes[..., 1::4] - 1
-                if proposals is not None:
-                    assert proposals.shape[-1] % 4 == 0
-                    proposals_ = proposals.copy()
-                    proposals_[..., 1::4] = img_h - proposals[..., 3::4] - 1
-                    proposals_[..., 3::4] = img_h - proposals[..., 1::4] - 1
-                else:
-                    proposals_ = None
-
-            results['proposals'] = proposals_
-            results['ann']['entity_boxes'] = entity_boxes_
-        return results
-
-    def __repr__(self):
-        repr_str = (f'{self.__class__.__name__}('
-                    f'flip_ratio={self.flip_ratio}, '
-                    f'direction={self.direction})')
-        return repr_str
-
-
-@PIPELINES.register_module()
-class EntityBoxClip:
-    """Clip (limit) the values in the entity boxes and proposals.
-
-    Required keys are "img_shape", "proposals" and "ann.entity_boxes", added or
-    modified keys are "ann.entity_boxes". If "proposals" is None, it will also
-    be modified.
-    """
-
-    def __call__(self, results):
-        proposals = results['proposals']
-        entity_boxes = results['ann']['entity_boxes']
-        img_h, img_w = results['img_shape']
-
-        entity_boxes[:, 0::2] = np.clip(entity_boxes[:, 0::2], 0, img_w - 1)
-        entity_boxes[:, 1::2] = np.clip(entity_boxes[:, 1::2], 0, img_h - 1)
-        if proposals is not None:
-            proposals[:, 0::2] = np.clip(proposals[:, 0::2], 0, img_w - 1)
-            proposals[:, 1::2] = np.clip(proposals[:, 1::2], 0, img_h - 1)
-
-        results['ann']['entity_boxes'] = entity_boxes
-        results['proposals'] = proposals
-        return results
-
-
-@PIPELINES.register_module()
-class EntityBoxPad:
-    """Pad entity boxes and proposals with zeros.
-
-    Required keys are "proposals" and "ann.entity_boxes", added or modified
-    keys are "ann.entity_boxes". If "proposals" is not None, it is also
-    modified.
+    elements are reordered. Only the horizontal flip is supported (seems
+    vertical flipping makes no sense). Required keys are "proposals",
+    "gt_bboxes", added or modified keys are "gt_bboxes". If "proposals"
+    is not None, it will also be modified.
 
     Args:
-        max_num_gts (int | None): maximum of ground truth proposals.
-            Default: None.
+        img_shape (tuple[int]): The img shape.
     """
 
-    def __init__(self, max_num_gts=None):
-        self.max_num_gts = max_num_gts
+    def __init__(self, img_shape):
+        self.img_shape = img_shape
+        assert mmcv.is_tuple_of(img_shape, int)
 
     def __call__(self, results):
-        if self.max_num_gts is None:
-            return results
-
         proposals = results['proposals']
-        entity_boxes = results['ann']['entity_boxes']
-        num_gts = entity_boxes.shape[0]
+        gt_bboxes = results['gt_bboxes']
+        img_h, img_w = self.img_shape
 
-        padded_entity_boxes = np.zeros((self.max_num_gts, 4), dtype=np.float32)
-        padded_entity_boxes[:num_gts, :] = entity_boxes
+        assert gt_bboxes.shape[-1] == 4
+        gt_bboxes_ = gt_bboxes.copy()
+        gt_bboxes_[..., 0::4] = img_w - gt_bboxes[..., 2::4] - 1
+        gt_bboxes_[..., 2::4] = img_w - gt_bboxes[..., 0::4] - 1
         if proposals is not None:
-            padded_proposals = np.zeros((self.max_num_gts, 4),
-                                        dtype=np.float32)
-            padded_proposals[:num_gts, :] = proposals
+            assert proposals.shape[-1] == 4
+            proposals_ = proposals.copy()
+            proposals_[..., 0::4] = img_w - proposals[..., 2::4] - 1
+            proposals_[..., 2::4] = img_w - proposals[..., 0::4] - 1
         else:
-            padded_proposals = None
+            proposals_ = None
 
-        results['proposals'] = padded_proposals
-        results['ann']['entity_boxes'] = padded_entity_boxes
+        results['proposals'] = proposals_
+        results['gt_bboxes'] = gt_bboxes_
         return results
 
     def __repr__(self):
-        repr_str = f'{self.__class__.__name__}(max_num_gts={self.max_num_gts})'
+        repr_str = f'{self.__class__.__name__}(img_shape={self.img_shape})'
         return repr_str
 
 
@@ -403,10 +318,30 @@ class RandomCrop:
         if img_w > self.size:
             x_offset = int(np.random.randint(0, img_w - self.size))
 
+        if 'crop_quadruple' not in results:
+            results['crop_quadruple'] = np.array(
+                [0, 0, 1, 1],  # x, y, w, h
+                dtype=np.float32)
+
+        x_ratio, y_ratio = x_offset / img_w, y_offset / img_h
+        w_ratio, h_ratio = self.size / img_w, self.size / img_h
+
+        old_crop_quadruple = results['crop_quadruple']
+        old_x_ratio, old_y_ratio = old_crop_quadruple[0], old_crop_quadruple[1]
+        old_w_ratio, old_h_ratio = old_crop_quadruple[2], old_crop_quadruple[3]
+        new_crop_quadruple = [
+            old_x_ratio + x_ratio * old_w_ratio,
+            old_y_ratio + y_ratio * old_h_ratio, w_ratio * old_w_ratio,
+            h_ratio * old_x_ratio
+        ]
+        results['crop_quadruple'] = np.array(
+            new_crop_quadruple, dtype=np.float32)
+
         new_h, new_w = self.size, self.size
 
         results['crop_bbox'] = np.array(
             [x_offset, y_offset, x_offset + new_w, y_offset + new_h])
+
         results['img_shape'] = (new_h, new_w)
 
         if not self.lazy:
@@ -430,6 +365,12 @@ class RandomCrop:
                                             (lazy_left + right),
                                             (lazy_top + bottom)],
                                            dtype=np.float32)
+
+        # Process entity boxes
+        if 'gt_bboxes' in results:
+            assert not self.lazy
+            entity_box_crop = EntityBoxCrop(results['crop_bbox'])
+            results = entity_box_crop(results)
 
         return results
 
@@ -535,6 +476,25 @@ class RandomResizedCrop:
             (img_h, img_w), self.area_range, self.aspect_ratio_range)
         new_h, new_w = bottom - top, right - left
 
+        if 'crop_quadruple' not in results:
+            results['crop_quadruple'] = np.array(
+                [0, 0, 1, 1],  # x, y, w, h
+                dtype=np.float32)
+
+        x_ratio, y_ratio = left / img_w, top / img_h
+        w_ratio, h_ratio = new_w / img_w, new_h / img_h
+
+        old_crop_quadruple = results['crop_quadruple']
+        old_x_ratio, old_y_ratio = old_crop_quadruple[0], old_crop_quadruple[1]
+        old_w_ratio, old_h_ratio = old_crop_quadruple[2], old_crop_quadruple[3]
+        new_crop_quadruple = [
+            old_x_ratio + x_ratio * old_w_ratio,
+            old_y_ratio + y_ratio * old_h_ratio, w_ratio * old_w_ratio,
+            h_ratio * old_x_ratio
+        ]
+        results['crop_quadruple'] = np.array(
+            new_crop_quadruple, dtype=np.float32)
+
         results['crop_bbox'] = np.array([left, top, right, bottom])
         results['img_shape'] = (new_h, new_w)
 
@@ -559,6 +519,10 @@ class RandomResizedCrop:
                                             (lazy_top + bottom)],
                                            dtype=np.float32)
 
+        if 'gt_bboxes' in results:
+            assert not self.lazy
+            entity_box_crop = EntityBoxCrop(results['crop_bbox'])
+            results = entity_box_crop(results)
         return results
 
     def __repr__(self):
@@ -684,6 +648,25 @@ class MultiScaleCrop:
         results['img_shape'] = (new_h, new_w)
         results['scales'] = self.scales
 
+        if 'crop_quadruple' not in results:
+            results['crop_quadruple'] = np.array(
+                [0, 0, 1, 1],  # x, y, w, h
+                dtype=np.float32)
+
+        x_ratio, y_ratio = x_offset / img_w, y_offset / img_h
+        w_ratio, h_ratio = new_w / img_w, new_h / img_h
+
+        old_crop_quadruple = results['crop_quadruple']
+        old_x_ratio, old_y_ratio = old_crop_quadruple[0], old_crop_quadruple[1]
+        old_w_ratio, old_h_ratio = old_crop_quadruple[2], old_crop_quadruple[3]
+        new_crop_quadruple = [
+            old_x_ratio + x_ratio * old_w_ratio,
+            old_y_ratio + y_ratio * old_h_ratio, w_ratio * old_w_ratio,
+            h_ratio * old_x_ratio
+        ]
+        results['crop_quadruple'] = np.array(
+            new_crop_quadruple, dtype=np.float32)
+
         if not self.lazy:
             results['imgs'] = [
                 img[y_offset:y_offset + new_h, x_offset:x_offset + new_w]
@@ -705,6 +688,11 @@ class MultiScaleCrop:
                                             (lazy_left + right),
                                             (lazy_top + bottom)],
                                            dtype=np.float32)
+
+        if 'gt_bboxes' in results:
+            assert not self.lazy
+            entity_box_crop = EntityBoxCrop(results['crop_bbox'])
+            results = entity_box_crop(results)
 
         return results
 
@@ -802,6 +790,11 @@ class Resize:
                 raise NotImplementedError('Put Flip at last for now')
             lazyop['interpolation'] = self.interpolation
 
+        if 'gt_bboxes' in results:
+            assert not self.lazy
+            entity_box_rescale = EntityBoxRescale(self.scale_factor)
+            results = entity_box_rescale(results)
+
         return results
 
     def __repr__(self):
@@ -873,7 +866,9 @@ class Flip:
     The shape of the imgs is preserved, but the elements are reordered.
     Required keys are "imgs", "img_shape", "modality", added or modified
     keys are "imgs", "lazy" and "flip_direction". Required keys in "lazy" is
-    None, added or modified key are "flip" and "flip_direction".
+    None, added or modified key are "flip" and "flip_direction". The Flip
+    augmentation should be placed after any cropping / reshaping augmentations,
+    to make sure crop_quadruple is calculated properly.
 
     Args:
         flip_ratio (float): Probability of implementing flip. Default: 0.5.
@@ -927,6 +922,11 @@ class Flip:
                 raise NotImplementedError('Use one Flip please')
             lazyop['flip'] = flip
             lazyop['flip_direction'] = self.direction
+
+        if 'gt_bboxes' in results and flip:
+            assert not self.lazy and self.direction == 'horizontal'
+            entity_box_flip = EntityBoxFlip(results['img_shape'])
+            results = entity_box_flip(results)
 
         return results
 
@@ -1247,6 +1247,25 @@ class CenterCrop:
         results['crop_bbox'] = np.array([left, top, right, bottom])
         results['img_shape'] = (new_h, new_w)
 
+        if 'crop_quadruple' not in results:
+            results['crop_quadruple'] = np.array(
+                [0, 0, 1, 1],  # x, y, w, h
+                dtype=np.float32)
+
+        x_ratio, y_ratio = left / img_w, top / img_h
+        w_ratio, h_ratio = new_w / img_w, new_h / img_h
+
+        old_crop_quadruple = results['crop_quadruple']
+        old_x_ratio, old_y_ratio = old_crop_quadruple[0], old_crop_quadruple[1]
+        old_w_ratio, old_h_ratio = old_crop_quadruple[2], old_crop_quadruple[3]
+        new_crop_quadruple = [
+            old_x_ratio + x_ratio * old_w_ratio,
+            old_y_ratio + y_ratio * old_h_ratio, w_ratio * old_w_ratio,
+            h_ratio * old_x_ratio
+        ]
+        results['crop_quadruple'] = np.array(
+            new_crop_quadruple, dtype=np.float32)
+
         if not self.lazy:
             results['imgs'] = [
                 img[top:bottom, left:right] for img in results['imgs']
@@ -1267,6 +1286,11 @@ class CenterCrop:
                                             (lazy_left + right),
                                             (lazy_top + bottom)],
                                            dtype=np.float32)
+
+        if 'gt_bboxes' in results:
+            assert not self.lazy
+            entity_box_crop = EntityBoxCrop(results['crop_bbox'])
+            results = entity_box_crop(results)
 
         return results
 

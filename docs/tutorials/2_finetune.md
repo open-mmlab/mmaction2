@@ -1,4 +1,4 @@
-# Tutorial 1: Finetuning Models
+# Tutorial 2: Finetuning Models
 
 This tutorial provides instructions for users to use the pre-trained models
 to finetune them on other datasets, so that better performance can be get.
@@ -17,11 +17,11 @@ to finetune them on other datasets, so that better performance can be get.
 
 There are two steps to finetune a model on a new dataset.
 
-1. Add support for the new dataset. See [Tutorial 2: Adding New Dataset](new_dataset.md).
+1. Add support for the new dataset. See [Tutorial 2: Adding New Dataset](3_new_dataset.md).
 1. Modify the configs. This will be discussed in this tutorial.
 
 For example, if the user want to finetune models pre-trained on Kinetics-400 Dataset to another dataset, say UCF101,
-then four parts in the config (see [here](../config.md)) needs attention.
+then four parts in the config (see [here](1_config.md)) needs attention.
 
 ## Modify Head
 
@@ -87,6 +87,7 @@ checkpoint_config = dict(interval=5)
 ```
 
 ## Use Pre-Trained Model
+
 To use the pre-trained model for the whole network, the new config adds the link of pre-trained models in the `load_from`.
 
 ```python

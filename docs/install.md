@@ -34,6 +34,7 @@ We provide some tips for MMAction2 installation in this file.
     2. For Linux users, there is a need to modify the `/etc/ImageMagick-6/policy.xml` file by commenting out
     `<policy domain="path" rights="none" pattern="@*" />` to `<!-- <policy domain="path" rights="none" pattern="@*" /> -->`, if [ImageMagick](https://www.imagemagick.org/script/index.php) is not detected by `moviepy`.
 - [Pillow-SIMD](https://docs.fast.ai/performance.html#pillow-simd) (optional): Install it by the following scripts.
+
 ```shell
 conda uninstall -y --force pillow pil jpeg libtiff libjpeg-turbo
 pip   uninstall -y         pillow pil jpeg libtiff libjpeg-turbo
@@ -82,10 +83,17 @@ If you build PyTorch from source instead of installing the prebuilt package, you
 c. Install mmcv, we recommend you to install the pre-build mmcv as below.
 
 ```shell
-pip install mmcv-full==latest+torch1.5.0+cu101 -f https://download.openmmlab.com/mmcv/dist/index.html
+pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/{cu_version}/{torch_version}/index.html
 ```
 
-See [here](https://github.com/open-mmlab/mmcv#install-with-pip) for different versions of MMCV compatible to different PyTorch and CUDA versions.
+Please replace ``{cu_version}`` and ``{torch_version}`` in the url to your desired one. For example, to install the latest ``mmcv-full`` with ``CUDA 11`` and ``PyTorch 1.7.0``, use the following command:
+
+```shell
+pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu110/torch1.7.0/index.html
+```
+
+See [here](https://github.com/open-mmlab/mmcv#installation) for different versions of MMCV compatible to different PyTorch and CUDA versions.
+
 Optionally you can choose to compile mmcv from source by the following command
 
 ```shell
@@ -121,29 +129,29 @@ pip install -v -e .  # or "python setup.py develop"
 
 If you build MMAction2 on macOS, replace the last command with
 
-```
+```shell
 CC=clang CXX=clang++ CFLAGS='-stdlib=libc++' pip install -e .
 ```
-
 
 Note:
 
 1. The git commit id will be written to the version number with step d, e.g. 0.6.0+2e7045c. The version will also be saved in trained models.
-It is recommended that you run step d each time you pull some updates from github. If C++/CUDA codes are modified, then this step is compulsory.
+   It is recommended that you run step d each time you pull some updates from github. If C++/CUDA codes are modified, then this step is compulsory.
 
 2. Following the above instructions, MMAction2 is installed on `dev` mode, any local modifications made to the code will take effect without the need to reinstall it (unless you submit some commits and want to update the version number).
 
 3. If you would like to use `opencv-python-headless` instead of `opencv-python`,
-you can install it before installing MMCV.
+   you can install it before installing MMCV.
 
 4. If you would like to use `PyAV`, you can install it with `conda install av -c conda-forge -y`.
 
 5. Some dependencies are optional. Running `python setup.py develop` will only install the minimum runtime requirements.
-To use optional dependencies like `decord`, either install them with `pip install -r requirements/optional.txt`
-or specify desired extras when calling `pip` (e.g. `pip install -v -e .[optional]`,
-valid keys for the `[optional]` field are `all`, `tests`, `build`, and `optional`) like `pip install -v -e .[tests,build]`.
+   To use optional dependencies like `decord`, either install them with `pip install -r requirements/optional.txt`
+   or specify desired extras when calling `pip` (e.g. `pip install -v -e .[optional]`,
+   valid keys for the `[optional]` field are `all`, `tests`, `build`, and `optional`) like `pip install -v -e .[tests,build]`.
 
 ### Install with CPU only
+
 The code can be built for CPU only environment (where CUDA isn't available).
 
 In CPU mode you can run the demo/demo.py for example.

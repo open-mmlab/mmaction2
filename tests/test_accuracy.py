@@ -5,11 +5,12 @@ import numpy as np
 import pytest
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
-from mmaction.core import (ActivityNetDetection,
+from mmaction.core import (ActivityNetLocalization,
                            average_recall_at_avg_proposals, confusion_matrix,
                            get_weighted_score, mean_average_precision,
                            mean_class_accuracy, mmit_mean_average_precision,
                            pairwise_temporal_iou, top_k_accuracy)
+from mmaction.core.evaluation.ava_utils import ava_eval
 
 
 def gt_confusion_matrix(gt_labels, pred_labels, normalize=None):
@@ -49,13 +50,15 @@ def gt_confusion_matrix(gt_labels, pred_labels, normalize=None):
     return confusion_mat
 
 
-def test_activitynet_detection():
-    data_prefix = osp.join(osp.dirname(__file__), 'data/test_eval_detection')
+def test_activitynet_localization():
+    data_prefix = osp.join(
+        osp.dirname(__file__), 'data/test_eval_localization')
+
     gt_path = osp.join(data_prefix, 'gt.json')
     result_path = osp.join(data_prefix, 'result.json')
-    detection = ActivityNetDetection(gt_path, result_path)
+    localization = ActivityNetLocalization(gt_path, result_path)
 
-    results = detection.evaluate()
+    results = localization.evaluate()
     mAP = np.array([
         0.71428571, 0.71428571, 0.71428571, 0.6875, 0.6875, 0.59722222,
         0.52083333, 0.52083333, 0.52083333, 0.5
@@ -64,6 +67,24 @@ def test_activitynet_detection():
 
     assert_array_almost_equal(results[0], mAP)
     assert_array_almost_equal(results[1], average_mAP)
+
+
+def test_ava_detection():
+    data_prefix = osp.join(osp.dirname(__file__), 'data/test_eval_detection')
+
+    gt_path = osp.join(data_prefix, 'gt.csv')
+    result_path = osp.join(data_prefix, 'pred.csv')
+    label_map = osp.join(data_prefix, 'action_list.txt')
+
+    # eval proposal
+    detection = ava_eval(result_path, 'proposal', label_map, gt_path, None)
+    assert_array_almost_equal(detection['Recall@0.5@100'], 0.41666667)
+    assert_array_almost_equal(detection['AR@100'], 0.08333333)
+
+    # eval bbox
+    detection = ava_eval(result_path, 'bbox', label_map, gt_path, None)
+    assert_array_almost_equal(detection['PascalBoxes_Precision/mAP@0.5IOU'],
+                              0.09385522)
 
 
 def test_confusion_matrix():

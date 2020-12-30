@@ -1,6 +1,7 @@
 # BMN
 
 ## Introduction
+
 ```
 @inproceedings{lin2019bmn,
   title={Bmn: Boundary-matching network for temporal action proposal generation},
@@ -33,8 +34,8 @@
 - Notes:
 
 1. The **gpus** indicates the number of gpu we used to get the checkpoint.
-According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
-e.g., lr=0.01 for 4 GPUs * 2 video/gpu and lr=0.08 for 16 GPUs * 4 video/gpu.
+   According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
+   e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
 2. For feature column, cuhk_mean_100 denotes the widely used cuhk activitynet feature extracted by [anet2016-cuhk](https://github.com/yjxiong/anet2016-cuhk), mmaction_video and mmaction_clip denote feature extracted by mmaction, with video-level activitynet finetuned model or clip-level activitynet finetuned model respectively.
 3. We evaluate the action detection performance of BMN, using  [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) submission for ActivityNet2017 Untrimmed Video Classification Track to assign label for each action proposal.
 
@@ -43,35 +44,46 @@ e.g., lr=0.01 for 4 GPUs * 2 video/gpu and lr=0.08 for 16 GPUs * 4 video/gpu.
 For more details on data preparation, you can refer to ActivityNet feature in [Data Preparation](/docs/data_preparation.md).
 
 ## Train
+
 You can use the following command to train a model.
+
 ```shell
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
 Example: train BMN model on ActivityNet features dataset.
+
 ```shell
 python tools/train.py configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py
 ```
+
 For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting) .
 
 ## Test
+
 You can use the following command to test a model.
+
 ```shell
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
 Example: test BMN on ActivityNet feature dataset.
+
 ```shell
 # Note: If evaluated, then please make sure the annotation file for test data contains groundtruth.
 python tools/test.py configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py checkpoints/SOME_CHECKPOINT.pth --eval AR@AN --out results.json
 ```
+
 You can also test the action detection performance of the model, with [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) prediction file and generated proposal file (`results.json` in last command).
+
 ```shell
 python tools/analysis/report_map.py --proposal path/to/proposal_file
 ```
 
 Notes:
+
 1. (Optional) You can use the following command to generate a formatted proposal file, which will be fed into the action classifier (Currently supports SSN and P-GCN, not including TSN, I3D etc.) to get the classification result of proposals.
+
     ```shell
     python tools/data/activitynet/convert_proposal_format.py
     ```
