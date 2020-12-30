@@ -16,9 +16,7 @@
 For basic dataset information, please refer to the official [website](https://deepmind.com/research/open-source/open-source-datasets/kinetics/). The scripts can be used for preparing kinetics400, kinetics600, kinetics700. To prepare different version of kinetics, you need to replace `${DATASET}` in the following examples with the specific dataset name. The choices of dataset names are `kinetics400`, `kinetics600` and `kinetics700`.
 Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/${DATASET}/`.
 
-## Dataset Size
-
-Here are the sizes of our kinetics dataset copies used in the benchmarks:
+**Note**: Because of the expirations of some YouTube links, the sizes of kinetics dataset copies may be different. Here are the sizes of our kinetics dataset copies that used to train all checkpoints.
 
 | Dataset | training videos | validation videos |
 | :---------------:|:---------------:|:---------------:|
