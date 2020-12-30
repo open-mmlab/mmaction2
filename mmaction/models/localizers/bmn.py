@@ -135,7 +135,7 @@ class BMN(BaseLocalizer):
             -0.5, 1.5)
         self.match_map = self._match_map()
         self.bm_mask = self._get_bm_mask()
-        if torch.cuda.is_aviaiable():
+        if torch.cuda.is_available():
             self.bm_mask = self.bm_mask.cuda()
 
     def _match_map(self):
