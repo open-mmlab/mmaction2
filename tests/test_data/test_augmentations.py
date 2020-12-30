@@ -1239,6 +1239,7 @@ class TestAugumentations:
 
         with pytest.raises(ValueError):
             # transforms only support string or list of dicts
+            # or iaa.Augmenter object
             Imgaug(transforms=dict(type='Rotate'))
 
         with pytest.raises(AssertionError):
@@ -1249,7 +1250,7 @@ class TestAugumentations:
             # `type` must be available in imgaug
             Imgaug(transforms=[dict(type='BlaBla')])
 
-        with pytest.raises(AttributeError):
+        with pytest.raises(TypeError):
             # `type` must be str or iaa available type
             Imgaug(transforms=[dict(type=CenterCrop)])
 
@@ -1257,30 +1258,31 @@ class TestAugumentations:
 
         # check default configs
         target_keys = ['imgs', 'img_shape']
-        imgs = list(np.random.rand(1, 64, 64, 3))
+        imgs = list(np.random.randint(0, 255, (1, 64, 64, 3)).astype(np.uint8))
         results = dict(imgs=imgs)
-        imgaug_resize = Imgaug(transforms='default')
-        default_transforms_results = imgaug_resize(results)
-        self.check_keys_contain(default_transforms_results.keys(), target_keys)
-        assert default_transforms_results['img_shape'] == (64, 64)
+        transforms = 'default'
+        default_imgaug = Imgaug(transforms=transforms)
+        default_results = default_imgaug(results)
+        self.check_keys_contain(default_results.keys(), target_keys)
+        assert default_results['img_shape'] == (64, 64)
 
         # check flip (both images and bboxes)
         target_keys = ['imgs', 'gt_bboxes', 'proposals', 'img_shape']
-        imgs = list(np.random.rand(1, 305, 200, 3))
+        imgs = list(np.random.rand(1, 64, 64, 3).astype(np.float32))
         results = dict(
             imgs=imgs,
-            proposals=np.array([[0, 0, 186, 305]]),
-            img_shape=(305, 200),
-            gt_bboxes=np.array([[0, 0, 186, 305]]))
+            proposals=np.array([[0, 0, 25, 35]]),
+            img_shape=(64, 64),
+            gt_bboxes=np.array([[0, 0, 25, 35]]))
         transforms = [dict(type='Fliplr')]
         imgaug_flip = Imgaug(transforms=transforms)
         flip_results = imgaug_flip(results)
         assert self.check_keys_contain(flip_results.keys(), target_keys)
         assert self.check_flip(imgs, flip_results['imgs'], 'horizontal')
         assert_array_almost_equal(flip_results['gt_bboxes'],
-                                  np.array([[14, 0, 200, 305]]))
+                                  np.array([[39, 0, 64, 35]]))
         assert_array_almost_equal(flip_results['proposals'],
-                                  np.array([[14, 0, 200, 305]]))
+                                  np.array([[39, 0, 64, 35]]))
         assert repr(imgaug_flip) == f'Imgaug(transforms={transforms})'
 
         # check crop (both images and bboxes)

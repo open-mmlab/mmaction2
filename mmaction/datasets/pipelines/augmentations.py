@@ -57,15 +57,57 @@ class Imgaug(object):
     It is worth mentioning that `Imgaug` will NOT create custom keys like
     "interpolation", "crop_bbox", "flip_direction", etc. So when using
     `Imgaug` along with other mmaction2 pipelines, we should pay more attetion
-    to required keys of all pipelines.
+    to required keys.
+
+    Three steps to use `Imgaug` pipeline:
+    1. Choose our favourite augmenters in imgaug docs and set related args.
+    2. Create initialization parameter `transforms`. There are three ways
+        to create `transforms`.
+        1) string: only support `default` for now.
+            e.g. `transforms='default'`
+        2) list[dict]: create a list of augmenters by a list of dicts, each
+            dict corresponds to one augmenter. Every dict MUST contain a key
+            named `type`. `type` should be a string(iaa.Augmenter's name) or
+            an iaa.Augmenter subclass.
+            e.g. `transforms=[dict(type='Rotate', rotate=(-20, 20))]`
+            e.g. `transforms=[dict(type=iaa.Rotate, rotate=(-20, 20))]`
+        3) iaa.Augmenter: create an imgaug.Augmenter object.
+            e.g. `transforms=iaa.Rotate(rotate=(-20, 20))`
+    3. Add `Imgaug` in dataset pipeline. It is recommended to insert imgaug
+        pipeline before `FormatShape`. A demo pipeline is listed as follows.
+        ```
+        pipeline = [
+            dict(
+                type='SampleFrames',
+                clip_len=1,
+                frame_interval=1,
+                num_clips=16,
+            ),
+            dict(type='RawFrameDecode'),
+            dict(type='Resize', scale=(-1, 256)),
+            dict(
+                type='MultiScaleCrop',
+                input_size=224,
+                scales=(1, 0.875, 0.75, 0.66),
+                random_crop=False,
+                max_wh_scale_gap=1,
+                num_fixed_crops=13),
+            dict(type='Resize', scale=(224, 224), keep_ratio=False),
+            dict(type='Flip', flip_ratio=0.5),
+            dict(type='Imgaug', transforms='default'),
+            # dict(type='Imgaug', transforms=[
+            #     dict(type=iaa.Rotate, rotate=(-20, 20))
+            # ]),
+            # dict(type='Imgaug',transforms=iaa.Rotate(rotate=(-20, 20))),
+            dict(type='FormatShape', input_format='NCHW'),
+            dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
+            dict(type='ToTensor', keys=['imgs', 'label'])
+        ]
+        ```
 
     Args:
-        transforms (str or list[dict] or iaa.Augmenter): Three different ways
-            to create imgaug augmenter.
-            1) string: only support one string `default`
-            2) list[dict]: create a list of Augmenters by a list of dicts.
-                Each dict contains a key named `type`.
-            3) iaa.Augmenter: Directly use imgaug class.
+        transforms (str | list[dict] | :obj:`iaa.Augmenter`): Three different
+            ways to create imgaug augmenter.
     """
 
     def __init__(self, transforms):
@@ -77,11 +119,13 @@ class Imgaug(object):
         if transforms == 'default':
             self.transforms = self._default_transforms()
         elif isinstance(transforms, list):
+            assert all(isinstance(trans, dict) for trans in transforms)
             self.transforms = transforms
         elif isinstance(transforms, self.iaa.Augmenter):
             self.aug = self.transforms = transforms
         else:
-            raise ValueError("transforms must be 'default' or a list of dicts")
+            raise ValueError('transforms must be `default` or a list of dicts'
+                             ' or iaa.Augmenter object')
 
         if not isinstance(transforms, self.iaa.Augmenter):
             self.aug = self.iaa.Sequential(
@@ -92,7 +136,6 @@ class Imgaug(object):
 
         return [
             dict(type='Rotate', rotate=(-30, 30)),
-            dict(type='Add', value=(-10, 10), per_channel=0.5),
             dict(
                 type='SomeOf',
                 n=(0, 3),
@@ -127,24 +170,22 @@ class Imgaug(object):
     def imgaug_builder(self, cfg):
         """Import a module from imgaug.
 
-        It inherits some of :func:`build_from_cfg` logic.
+        It inherits some of :func:`build_from_cfg` logic. Use a dict object to
+        create a iaa.Augmenter object.
 
         Args:
             cfg (dict): Config dict. It should at least contain the key "type".
 
         Returns:
-            obj: The constructed object.
+            obj:`iaa.Augmenter`: The constructed imgaug augmenter.
         """
-        import inspect
-
         assert isinstance(cfg, dict) and 'type' in cfg
         args = cfg.copy()
 
         obj_type = args.pop('type')
         if mmcv.is_str(obj_type):
             obj_cls = getattr(self.iaa, obj_type)
-        elif inspect.isclass(obj_type):
-            assert obj_type == getattr(self.iaa, obj_type.__name__)
+        elif issubclass(obj_type, self.iaa.Augmenter):
             obj_cls = obj_type
         else:
             raise TypeError(
@@ -177,7 +218,7 @@ class Imgaug(object):
             ]
             bboxes = self.bbs.BoundingBoxesOnImage(
                 bbox_list, shape=results['img_shape'])
-            bbox_aug = cur_aug.augment_bounding_boxes([bboxes])[0]
+            bbox_aug, *_ = cur_aug.augment_bounding_boxes([bboxes])
             results['gt_bboxes'] = [[
                 max(bbox.x1, 0),
                 max(bbox.y1, 0),
@@ -192,7 +233,7 @@ class Imgaug(object):
                 ]
                 bboxes = self.bbs.BoundingBoxesOnImage(
                     bbox_list, shape=results['img_shape'])
-                bbox_aug = cur_aug.augment_bounding_boxes([bboxes])[0]
+                bbox_aug, *_ = cur_aug.augment_bounding_boxes([bboxes])
                 results['proposals'] = [[
                     max(bbox.x1, 0),
                     max(bbox.y1, 0),
