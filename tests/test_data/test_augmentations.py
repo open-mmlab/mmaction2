@@ -1260,8 +1260,7 @@ class TestAugumentations:
         target_keys = ['imgs', 'img_shape']
         imgs = list(np.random.randint(0, 255, (1, 64, 64, 3)).astype(np.uint8))
         results = dict(imgs=imgs)
-        transforms = 'default'
-        default_imgaug = Imgaug(transforms=transforms)
+        default_imgaug = Imgaug(transforms='default')
         default_results = default_imgaug(results)
         self.check_keys_contain(default_results.keys(), target_keys)
         assert default_results['img_shape'] == (64, 64)
@@ -1274,8 +1273,7 @@ class TestAugumentations:
             proposals=np.array([[0, 0, 25, 35]]),
             img_shape=(64, 64),
             gt_bboxes=np.array([[0, 0, 25, 35]]))
-        transforms = [dict(type='Fliplr')]
-        imgaug_flip = Imgaug(transforms=transforms)
+        imgaug_flip = Imgaug(transforms=[dict(type='Fliplr')])
         flip_results = imgaug_flip(results)
         assert self.check_keys_contain(flip_results.keys(), target_keys)
         assert self.check_flip(imgs, flip_results['imgs'], 'horizontal')
@@ -1283,6 +1281,7 @@ class TestAugumentations:
                                   np.array([[39, 0, 64, 35]]))
         assert_array_almost_equal(flip_results['proposals'],
                                   np.array([[39, 0, 64, 35]]))
+        transforms = iaa.Sequential([iaa.Fliplr()])
         assert repr(imgaug_flip) == f'Imgaug(transforms={transforms})'
 
         # check crop (both images and bboxes)
@@ -1304,12 +1303,17 @@ class TestAugumentations:
         assert_array_almost_equal(crop_results['gt_bboxes'],
                                   np.array([[0., 0., 99., 53.]]))
         assert 'proposals' not in results
+        transforms = iaa.Sequential(
+            [iaa.CropToFixedSize(width=100, height=100, position='center')])
+        assert repr(imgaug_center_crop) == f'Imgaug(transforms={transforms})'
 
         # check resize (images only)
         target_keys = ['imgs', 'img_shape']
         imgs = list(np.random.rand(1, 64, 64, 3))
         results = dict(imgs=imgs)
-        imgaug_resize = Imgaug(transforms=iaa.Resize(32))
+        transforms = iaa.Resize(32)
+        imgaug_resize = Imgaug(transforms=transforms)
         resize_results = imgaug_resize(results)
         self.check_keys_contain(resize_results.keys(), target_keys)
         assert resize_results['img_shape'] == (32, 32)
+        assert repr(imgaug_resize) == f'Imgaug(transforms={transforms})'

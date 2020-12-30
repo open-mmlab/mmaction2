@@ -199,7 +199,7 @@ class Imgaug(object):
         return obj_cls(**args)
 
     def __repr__(self):
-        repr_str = self.__class__.__name__ + f'(transforms={self.transforms})'
+        repr_str = self.__class__.__name__ + f'(transforms={self.aug})'
         return repr_str
 
     def __call__(self, results):
