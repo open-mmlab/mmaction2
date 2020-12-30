@@ -89,7 +89,7 @@ test_pipeline = [
 
 We have supported some lazy operators and encourage users to apply them.
 Lazy ops record how the data should be processed, but it will postpone the processing on the raw data until the raw data forward `Fuse` stage.
-Specifically, lazy ops avoid frequent reading and modification operation on the raw data, but process the raw data once in the final Fuse stage, thus accelerating data preprocessing greatly.
+Specifically, lazy ops avoid frequent reading and modification operation on the raw data, but process the raw data once in the final Fuse stage, thus accelerating data preprocessing.
 
 Here is a pipeline example applying lazy ops.
 
