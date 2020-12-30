@@ -282,8 +282,7 @@ class BMN(BaseLocalizer):
         confidence_map, start, end = self._forward(raw_feature)
         if torch.__version__ == 'parrots':
             loss = self.loss_cls(confidence_map, start, end, label_confidence,
-                                 label_start, label_end,
-                                 self.bm_mask)
+                                 label_start, label_end, self.bm_mask)
         else:
             loss = self.loss_cls(confidence_map, start, end, label_confidence,
                                  label_start, label_end,
