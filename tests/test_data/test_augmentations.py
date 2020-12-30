@@ -1249,7 +1249,20 @@ class TestAugumentations:
             # `type` must be available in imgaug
             Imgaug(transforms=[dict(type='BlaBla')])
 
+        with pytest.raises(AttributeError):
+            # `type` must be str or iaa available type
+            Imgaug(transforms=[dict(type=CenterCrop)])
+
         from imgaug import augmenters as iaa
+
+        # check default configs
+        target_keys = ['imgs', 'img_shape']
+        imgs = list(np.random.rand(1, 64, 64, 3))
+        results = dict(imgs=imgs)
+        imgaug_resize = Imgaug(transforms='default')
+        default_transforms_results = imgaug_resize(results)
+        self.check_keys_contain(default_transforms_results.keys(), target_keys)
+        assert default_transforms_results['img_shape'] == (64, 64)
 
         # check flip (both images and bboxes)
         target_keys = ['imgs', 'gt_bboxes', 'proposals', 'img_shape']

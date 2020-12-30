@@ -7,14 +7,6 @@ from torch.nn.modules.utils import _pair
 
 from ..registry import PIPELINES
 
-try:
-    import imgaug  # noqa
-    from imgaug import augmenters as iaa
-    from imgaug.augmentables.bbs import BoundingBox, BoundingBoxesOnImage
-except ImportError:
-    imgaug = None
-    iaa = None
-
 
 def _init_lazy_if_proper(results, lazy):
     """Initialize lazy operation properly.
@@ -77,20 +69,22 @@ class Imgaug(object):
     """
 
     def __init__(self, transforms):
-        if imgaug is None or iaa is None:
-            raise RuntimeError('imgaug is not installed')
+        import imgaug
+
+        self.iaa = imgaug.augmenters
+        self.bbs = imgaug.augmentables.bbs
 
         if transforms == 'default':
             self.transforms = self._default_transforms()
         elif isinstance(transforms, list):
             self.transforms = transforms
-        elif isinstance(transforms, iaa.Augmenter):
+        elif isinstance(transforms, self.iaa.Augmenter):
             self.aug = self.transforms = transforms
         else:
             raise ValueError("transforms must be 'default' or a list of dicts")
 
-        if not isinstance(transforms, iaa.Augmenter):
-            self.aug = iaa.Sequential(
+        if not isinstance(transforms, self.iaa.Augmenter):
+            self.aug = self.iaa.Sequential(
                 [self.imgaug_builder(t) for t in self.transforms])
 
     def _default_transforms(self):
@@ -148,9 +142,9 @@ class Imgaug(object):
 
         obj_type = args.pop('type')
         if mmcv.is_str(obj_type):
-            obj_cls = getattr(iaa, obj_type)
+            obj_cls = getattr(self.iaa, obj_type)
         elif inspect.isclass(obj_type):
-            assert obj_type == getattr(iaa, obj_type.__name__)
+            assert obj_type == getattr(self.iaa, obj_type.__name__)
             obj_cls = obj_type
         else:
             raise TypeError(
@@ -177,10 +171,11 @@ class Imgaug(object):
 
         if 'gt_bboxes' in results:
             bbox_list = [
-                BoundingBox(x1=bbox[0], y1=bbox[1], x2=bbox[2], y2=bbox[3])
+                self.bbs.BoundingBox(
+                    x1=bbox[0], y1=bbox[1], x2=bbox[2], y2=bbox[3])
                 for bbox in results['gt_bboxes']
             ]
-            bboxes = BoundingBoxesOnImage(
+            bboxes = self.bbs.BoundingBoxesOnImage(
                 bbox_list, shape=results['img_shape'])
             bbox_aug = cur_aug.augment_bounding_boxes([bboxes])[0]
             results['gt_bboxes'] = [[
@@ -191,11 +186,11 @@ class Imgaug(object):
             ] for bbox in bbox_aug.items]
             if 'proposals' in results:
                 bbox_list = [
-                    BoundingBox(
+                    self.bbs.BoundingBox(
                         x1=bbox[0], y1=bbox[1], x2=bbox[2], y2=bbox[3])
                     for bbox in results['proposals']
                 ]
-                bboxes = BoundingBoxesOnImage(
+                bboxes = self.bbs.BoundingBoxesOnImage(
                     bbox_list, shape=results['img_shape'])
                 bbox_aug = cur_aug.augment_bounding_boxes([bboxes])[0]
                 results['proposals'] = [[
