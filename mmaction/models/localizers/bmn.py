@@ -134,10 +134,7 @@ class BMN(BaseLocalizer):
         self.anchors_tmins, self.anchors_tmaxs = self._temporal_anchors(
             -0.5, 1.5)
         self.match_map = self._match_map()
-        if torch.__version__ == 'parrots':
-            self.bm_mask = self._get_bm_mask().cuda()
-        else:
-            self.bm_mask = self._get_bm_mask()
+        self.bm_mask = self._get_bm_mask().cuda()
 
     def _match_map(self):
         """Generate match map."""
@@ -280,13 +277,8 @@ class BMN(BaseLocalizer):
                       label_end):
         """Define the computation performed at every call when training."""
         confidence_map, start, end = self._forward(raw_feature)
-        if torch.__version__ == 'parrots':
-            loss = self.loss_cls(confidence_map, start, end, label_confidence,
-                                 label_start, label_end, self.bm_mask)
-        else:
-            loss = self.loss_cls(confidence_map, start, end, label_confidence,
-                                 label_start, label_end,
-                                 self.bm_mask.to(raw_feature.device))
+        loss = self.loss_cls(confidence_map, start, end, label_confidence,
+                             label_start, label_end, self.bm_mask)
         loss_dict = dict(loss=loss[0])
         return loss_dict
 
