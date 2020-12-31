@@ -47,6 +47,11 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         self.aux_info = []
         if train_cfg is not None and 'aux_info' in train_cfg:
             self.aux_info = train_cfg['aux_info']
+        # test_batch should be int
+        self.test_batch = None
+        if test_cfg is not None and 'test_batch' in test_cfg:
+            self.test_batch = test_cfg['test_batch']
+            assert isinstance(self.test_batch, int)
 
         self.init_weights()
 
