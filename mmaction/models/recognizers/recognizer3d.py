@@ -1,3 +1,5 @@
+import torch
+
 from ..registry import RECOGNIZERS
 from .base import BaseRecognizer
 
@@ -29,13 +31,27 @@ class Recognizer3D(BaseRecognizer):
         num_segs = imgs.shape[1]
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
 
-        x = self.extract_feat(imgs)
-        if hasattr(self, 'neck'):
-            x, _ = self.neck(x)
+        if self.test_batch is not None:
+            tot = imgs.shape[0]
+            assert num_segs == tot, 'assume batch_size == 1 for convenience'
+            ptr = 0
+            cls_scores = []
+            while ptr < tot:
+                batch_imgs = imgs[ptr:ptr + self.test_batch]
+                x = self.extract_feat(batch_imgs)
+                if hasattr(self, 'neck'):
+                    x, _ = self.neck(x)
+                cls_score = self.cls_head(x)
+                cls_scores.append(cls_score)
+                ptr += self.test_batch
+            cls_score = torch.cat(cls_scores)
+        else:
+            x = self.extract_feat(imgs)
+            if hasattr(self, 'neck'):
+                x, _ = self.neck(x)
+            cls_score = self.cls_head(x)
 
-        cls_score = self.cls_head(x)
         cls_score = self.average_clip(cls_score, num_segs)
-
         return cls_score
 
     def forward_test(self, imgs):
