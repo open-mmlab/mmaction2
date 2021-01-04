@@ -1,5 +1,6 @@
 import copy
 
+import numpy as np
 import pytest
 import torch
 import torch.nn as nn
@@ -26,6 +27,15 @@ class ExampleDataset(Dataset):
 
 class BiggerDataset(ExampleDataset):
 
+    def __init__(self, fixed_values=range(0, 12)):
+        assert len(self) == len(fixed_values)
+        self.fixed_values = fixed_values
+
+    def __getitem__(self, idx):
+        results = dict(
+            imgs=torch.tensor(self.fixed_value[idx], dtype=torch.float32))
+        return results
+
     def __len__(self):
         # a bigger dataset
         return 12
@@ -51,6 +61,17 @@ class ExampleModel(nn.Module):
             'num_samples': 1
         }
         return outputs
+
+
+class SingleBNModel(ExampleModel):
+
+    def __init__(self):
+        super().__init__()
+        self.bn = nn.BatchNorm1d(1)
+        self.test_cfg = None
+
+    def forward(self, imgs, return_loss=False):
+        return self.bn(imgs)
 
 
 class GNExampleModel(ExampleModel):
@@ -138,6 +159,25 @@ def test_precise_bn():
         model=model, batch_processor=None, optimizer=optimizer, logger=logger)
     runner.register_hook(precise_bn_hook)
     runner.run([loader], [('train', 1)], 1)
+
+    # test how precise it is
+    loader = DataLoader(test_bigger_dataset, batch_size=2)
+    precise_bn_hook = PreciseBNHook(loader, num_iters=6)  # run all
+    assert precise_bn_hook.num_iters == 5
+    assert precise_bn_hook.interval == 1
+    model = SingleBNModel()
+    runner = EpochBasedRunner(
+        model=model, batch_processor=None, optimizer=optimizer, logger=logger)
+    runner.register_hook(precise_bn_hook)
+    runner.run([loader], [('train', 1)], 1)
+    imgs_list = list()
+    for i, data in enumerate(loader):
+        imgs_list.append(np.array(data['imgs']))
+    mean, var = np.mean(imgs_list), np.var(imgs_list)
+    print(mean, var, model.bn.running_mean, model.bn.running_var)
+    assert np.equal(mean, np.array(model.bn.running_mean))
+    assert np.equal(var, np.array(model.bn.running_var))
+    assert np.equal(1., np.array(model.bn.momentum))
 
     @pytest.mark.skipif(
         not torch.cuda.is_available(), reason='requires CUDA support')
