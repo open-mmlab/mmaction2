@@ -173,11 +173,11 @@ def test_precise_bn():
     imgs_list = list()
     for i, data in enumerate(loader):
         imgs_list.append(np.array(data['imgs']))
-    mean, var = np.mean(imgs_list), np.var(imgs_list)
-    print(mean, var, model.bn.running_mean, model.bn.running_var)
+    mean = np.mean([np.mean(batch) for batch in imgs_list])
+    # bassel correction used in Pytorch, therefore ddof=1
+    var = np.mean([np.var(batch, ddof=1) for batch in imgs_list])
     assert np.equal(mean, np.array(model.bn.running_mean))
     assert np.equal(var, np.array(model.bn.running_var))
-    assert np.equal(1., np.array(model.bn.momentum))
 
     @pytest.mark.skipif(
         not torch.cuda.is_available(), reason='requires CUDA support')

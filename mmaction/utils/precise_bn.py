@@ -1,18 +1,5 @@
-# =============================================================================
-# Copyright 2019, Facebook, Inc
-
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-
-# http://www.apache.org/licenses/LICENSE-2.0
-
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-# =============================================================================
+# Adapted from https://github.com/facebookresearch/fvcore/blob/master/fvcore/nn/precise_bn.py  # noqa: E501
+# Original licence: Copyright (c) 2019 Facebook, Inc under the Apache License 2.0  # noqa: E501
 
 import logging
 import time
@@ -120,8 +107,9 @@ def update_bn_stats(model, data_loader, num_iters=200, logger=None):
         for i, bn in enumerate(bn_layers):
             # Accumulates the bn stats.
             running_mean[i] += (bn.running_mean - running_mean[i]) / (ind + 1)
+            # running var is actually
             running_var[i] += (bn.running_var - running_var[i]) / (ind + 1)
-            # We compute the "average of variance" across iterations.
+
         if (ind + 1) >= num_iters:
             finish_before_loader = True
             break
