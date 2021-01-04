@@ -122,7 +122,7 @@ def update_bn_stats(model, data_loader, num_iters=200, logger=None):
             running_mean[i] += (bn.running_mean - running_mean[i]) / (ind + 1)
             running_var[i] += (bn.running_var - running_var[i]) / (ind + 1)
             # We compute the "average of variance" across iterations.
-        if ind >= num_iters:
+        if (ind + 1) >= num_iters:
             finish_before_loader = True
             break
     assert finish_before_loader, 'Dataloader stopped before ' \

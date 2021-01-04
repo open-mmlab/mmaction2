@@ -33,7 +33,7 @@ class BiggerDataset(ExampleDataset):
 
     def __getitem__(self, idx):
         results = dict(
-            imgs=torch.tensor(self.fixed_value[idx], dtype=torch.float32))
+            imgs=torch.tensor([self.fixed_values[idx]], dtype=torch.float32))
         return results
 
     def __len__(self):
@@ -163,7 +163,7 @@ def test_precise_bn():
     # test how precise it is
     loader = DataLoader(test_bigger_dataset, batch_size=2)
     precise_bn_hook = PreciseBNHook(loader, num_iters=6)  # run all
-    assert precise_bn_hook.num_iters == 5
+    assert precise_bn_hook.num_iters == 6
     assert precise_bn_hook.interval == 1
     model = SingleBNModel()
     runner = EpochBasedRunner(
