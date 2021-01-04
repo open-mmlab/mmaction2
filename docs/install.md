@@ -83,10 +83,17 @@ If you build PyTorch from source instead of installing the prebuilt package, you
 c. Install mmcv, we recommend you to install the pre-build mmcv as below.
 
 ```shell
-pip install mmcv-full==latest+torch1.5.0+cu101 -f https://download.openmmlab.com/mmcv/dist/index.html
+pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/{cu_version}/{torch_version}/index.html
 ```
 
-See [here](https://github.com/open-mmlab/mmcv#install-with-pip) for different versions of MMCV compatible to different PyTorch and CUDA versions.
+Please replace ``{cu_version}`` and ``{torch_version}`` in the url to your desired one. For example, to install the latest ``mmcv-full`` with ``CUDA 11`` and ``PyTorch 1.7.0``, use the following command:
+
+```shell
+pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu110/torch1.7.0/index.html
+```
+
+See [here](https://github.com/open-mmlab/mmcv#installation) for different versions of MMCV compatible to different PyTorch and CUDA versions.
+
 Optionally you can choose to compile mmcv from source by the following command
 
 ```shell
@@ -122,7 +129,7 @@ pip install -v -e .  # or "python setup.py develop"
 
 If you build MMAction2 on macOS, replace the last command with
 
-```
+```shell
 CC=clang CXX=clang++ CFLAGS='-stdlib=libc++' pip install -e .
 ```
 

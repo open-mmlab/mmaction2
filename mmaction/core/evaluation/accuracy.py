@@ -39,12 +39,17 @@ def confusion_matrix(y_pred, y_real, normalize=None):
 
     label_set = np.unique(np.concatenate((y_pred, y_real)))
     num_labels = len(label_set)
-    label_map = {label: i for i, label in enumerate(label_set)}
-    confusion_mat = np.zeros((num_labels, num_labels), dtype=np.int64)
-    for rlabel, plabel in zip(y_real, y_pred):
-        index_real = label_map[rlabel]
-        index_pred = label_map[plabel]
-        confusion_mat[index_real][index_pred] += 1
+    max_label = label_set[-1]
+    label_map = np.zeros(max_label + 1, dtype=np.int64)
+    for i, label in enumerate(label_set):
+        label_map[label] = i
+
+    y_pred_mapped = label_map[y_pred]
+    y_real_mapped = label_map[y_real]
+
+    confusion_mat = np.bincount(
+        num_labels * y_real_mapped + y_pred_mapped,
+        minlength=num_labels**2).reshape(num_labels, num_labels)
 
     with np.errstate(all='ignore'):
         if normalize == 'true':

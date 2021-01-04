@@ -9,7 +9,7 @@ GPUS=${GPUS:-8}
 GPUS_PER_NODE=${GPUS_PER_NODE:-8}
 CPUS_PER_TASK=${CPUS_PER_TASK:-5}
 SRUN_ARGS=${SRUN_ARGS:-""}
-PY_ARGS=${@:4}
+PY_ARGS=${@:4}  # Any arguments from the forth one are captured by this
 
 PYTHONPATH="$(dirname $0)/..":$PYTHONPATH \
 srun -p ${PARTITION} \
