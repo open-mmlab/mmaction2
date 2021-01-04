@@ -4,6 +4,7 @@
 conda env create -f environment.yml
 source activate activitynet
 pip install --upgrade youtube-dl
+pip install mmcv
 
 DATA_DIR="../../../data/ActivityNet"
 python download.py

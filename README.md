@@ -18,7 +18,12 @@ It is a part of the [OpenMMLab](http://openmmlab.org/) project.
 The master branch works with **PyTorch 1.3+**.
 
 <div align="center">
-  <img src="docs/imgs/mmaction2_overview.gif" width="600px"/>
+  <img src="docs/imgs/mmaction2_overview.gif" width="450px"/><br>
+    Action Recognition Results on Kinetics-400
+</div>
+<div align="center">
+  <img src="docs/imgs/spatio-temporal-det.gif" width="800px"/><br>
+    Spatio-Temporal Action Detection Results on AVA-2.1
 </div>
 
 ### Major Features
@@ -93,6 +98,11 @@ Supported methods for action localization:
 - [x] [BSN](configs/localization/bsn/README.md)
 - [x] [SSN](configs/localization/ssn/README.md)
 
+Supported methods for spatio-temporal action detection:
+
+- [x] [SlowOnly+Fast R-CNN](configs/detection/ava/README.md)
+- [x] [SlowFast+Fast R-CNN](configs/detection/ava/README.md)
+
 Results and models are available in the *README.md* of each method's config directory.
 A summary can be found in the [**model zoo**](https://mmaction2.readthedocs.io/en/latest/recognition_models.html) page.
 
@@ -108,7 +118,7 @@ The supported datasets are listed in [supported_datasets.md](docs/supported_data
 ## Get Started
 
 Please see [getting_started.md](docs/getting_started.md) for the basic usage of MMAction2.
-There are also tutorials for [finetuning models](docs/tutorials/finetune.md), [adding new dataset](docs/tutorials/new_dataset.md), [designing data pipeline](docs/tutorials/data_pipeline.md), [exporting model to onnx](docs/tutorials/export_model.md), [customizing runtime settings](docs/tutorials/customize_runtime.md) and [adding new modules](docs/tutorials/new_modules.md).
+There are also tutorials for [learn about configs](docs/tutorials/1_config.md), [finetuning models](docs/tutorials/2_finetune.md), [adding new dataset](docs/tutorials/3_new_dataset.md), [designing data pipeline](docs/tutorials/4_data_pipeline.md), [adding new modules](docs/tutorials/5_new_modules.md), [exporting model to onnx](docs/tutorials/6_export_model.md) and [customizing runtime settings](docs/tutorials/7_customize_runtime.md).
 
 A Colab tutorial is also provided. You may preview the notebook [here](demo/mmaction2_tutorial.ipynb) or directly [run](https://colab.research.google.com/github/open-mmlab/mmaction2/blob/master/demo/mmaction2_tutorial.ipynb) on Colab.
 

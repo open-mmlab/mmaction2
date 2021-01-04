@@ -1,4 +1,4 @@
-# Tutorial 2: Adding New Dataset
+# Tutorial 3: Adding New Dataset
 
 In this tutorial, we will introduce some methods about how to customize your own dataset by reorganizing data and mixing dataset for the project.
 
