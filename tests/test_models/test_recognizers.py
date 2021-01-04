@@ -271,6 +271,15 @@ def test_slowfast():
         for one_img in img_list:
             recognizer(one_img, gradcam=True)
 
+        # Test the feature test_batch
+        test_cfg['test_batch'] = 1
+        recognizer = build_recognizer(
+            model, train_cfg=train_cfg, test_cfg=test_cfg)
+        with torch.no_grad():
+            img_list = [img[None, :] for img in imgs]
+            for one_img in img_list:
+                recognizer(one_img, None, return_loss=False)
+
 
 def test_tsm():
     model, train_cfg, test_cfg = _get_recognizer_cfg(

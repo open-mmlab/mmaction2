@@ -33,7 +33,8 @@ class Recognizer3D(BaseRecognizer):
 
         if self.test_batch is not None:
             tot = imgs.shape[0]
-            assert num_segs == tot, 'assume batch_size == 1 for convenience'
+            assert num_segs == tot, ('test_batch is only compatible with '
+                                     'batch_size == 1')
             ptr = 0
             cls_scores = []
             while ptr < tot:
