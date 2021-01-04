@@ -37,6 +37,7 @@ class CrossEntropyLoss(BaseWeightedLoss):
             torch.Tensor: The returned CrossEntropy loss.
         """
         if self.class_weight is not None:
+            assert 'weight' not in kwargs, "The key 'weight' already exists."
             kwargs['weight'] = self.class_weight.to(cls_score.device)
         loss_cls = F.cross_entropy(cls_score, label, **kwargs)
         return loss_cls
@@ -74,6 +75,7 @@ class BCELossWithLogits(BaseWeightedLoss):
             torch.Tensor: The returned bce loss with logits.
         """
         if self.class_weight is not None:
+            assert 'weight' not in kwargs, "The key 'weight' already exists."
             kwargs['weight'] = self.class_weight.to(cls_score.device)
         loss_cls = F.binary_cross_entropy_with_logits(cls_score, label,
                                                       **kwargs)
