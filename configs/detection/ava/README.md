@@ -8,7 +8,7 @@
 
 ```
 @inproceedings{gu2018ava,
-  title={Ava: A video dataset of spatio-temporally localized atomic visual actions},
+  title="{Ava: A video dataset of spatio-temporally localized atomic visual actions}",
   author={Gu, Chunhui and Sun, Chen and Ross, David A and Vondrick, Carl and Pantofaru, Caroline and Li, Yeqing and Vijayanarasimhan, Sudheendra and Toderici, George and Ricco, Susanna and Sukthankar, Rahul and others},
   booktitle={Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition},
   pages={6047--6056},
