@@ -8,7 +8,6 @@
 
 - Support Spatio-Temporal Action Detection (AVA)
 - Support precise BN
-- Add FAQ documents for easy troubleshooting
 
 **New Features**
 
