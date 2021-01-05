@@ -371,9 +371,11 @@ class ResNet3dSlowFast(nn.Module):
     Args:
         pretrained (str): The file path to a pretrained model.
         resample_rate (int): A large temporal stride ``resample_rate``
-            on input frames, corresponding to the :math:`\\tau` in the paper.
-            i.e., it processes only one out of ``resample_rate`` frames.
-            Default: 16.
+            on input frames. The actual resample rate is calculated by
+            multipling the ``interval`` in ``SampleFrames`` in the
+            pipeline with ``resample_rate``, equivalent to the :math:`\\tau`
+            in the paper, i.e. it processes only one out of
+            ``resample_rate * interval`` frames. Default: 8.
         speed_ratio (int): Speed ratio indicating the ratio between time
             dimension of the fast and slow pathway, corresponding to the
             :math:`\\alpha` in the paper. Default: 8.
