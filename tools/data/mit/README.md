@@ -20,11 +20,7 @@ Before we start, please make sure that the directory is located at `$MMACTION2/t
 
 ## Step 1. Prepare Annotations and Videos
 
-First of all, you can run the following script to download the videos along with the annotations.
-
-```shell
-bash download_data.sh
-```
+First of all, you have to visit the official [website](http://moments.csail.mit.edu/), fill in an application form for downloading the dataset. Then you will get the download link. You can use `bash preprocess_data.sh` to prepare annotations and videos. However, the download command is missing in that script. Remember to download the dataset to the proper place follow the comment in this script.
 
 For better decoding speed, you can resize the original videos into smaller sized, densely encoded version by:
 
