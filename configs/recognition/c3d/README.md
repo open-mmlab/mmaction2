@@ -11,14 +11,6 @@ year = 2014,
 month = dec,
 eid = {arXiv:1412.0767}
 }
-
-@article{Tran2014C3DGF,
-  title={C3D: Generic Features for Video Analysis},
-  author={D. Tran and Lubomir D. Bourdev and R. Fergus and L. Torresani and Manohar Paluri},
-  journal={ArXiv},
-  year={2014},
-  volume={abs/1412.0767}
-}
 ```
 
 ## Model Zoo
