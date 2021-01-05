@@ -6,19 +6,25 @@
 
 **New Features**
 
+- Support precise BN ([#501](https://github.com/open-mmlab/mmaction2/pull/501/))
 - Support Spatio-Temporal Action Detection(AVA) ([#351](https://github.com/open-mmlab/mmaction2/pull/351))
+- Support to return feature maps in `inference_recognizer` ([#458](https://github.com/open-mmlab/mmaction2/pull/458))
 
 **Improvements**
 
+- Add arg `stride` to long_video_demo.py, to make inference faster ([#468](https://github.com/open-mmlab/mmaction2/pull/468))
 - Support training and testing for Spatio-Temporal Action Detection ([#351](https://github.com/open-mmlab/mmaction2/pull/351))
 - Fix CI due to pip upgrade ([#454](https://github.com/open-mmlab/mmaction2/pull/454))
 - Add markdown lint in pre-commit hook ([#255](https://github.com/open-mmlab/mmaction2/pull/225))
-- Use title case in modelzoo statistics. ([#456](https://github.com/open-mmlab/mmaction2/pull/456))
+- Speed up confusion matrix calculation ([#465](https://github.com/open-mmlab/mmaction2/pull/465))
+- Use title case in modelzoo statistics ([#456](https://github.com/open-mmlab/mmaction2/pull/456))
 - Add FAQ documents for easy troubleshooting. ([#413](https://github.com/open-mmlab/mmaction2/pull/413), [#420](https://github.com/open-mmlab/mmaction2/pull/420), [#439](https://github.com/open-mmlab/mmaction2/pull/439))
+- Support Spatio-Temporal Action Detection with context ([#471](https://github.com/open-mmlab/mmaction2/pull/471))
 
 **Bug and Typo Fixes**
 
-- Fix typo in default argument of BaseHead. ([#446](https://github.com/open-mmlab/mmaction2/pull/446))
+- Fix typo in default argument of BaseHead ([#446](https://github.com/open-mmlab/mmaction2/pull/446))
+- Fix potential bug about `output_config` overwrite ([#463](https://github.com/open-mmlab/mmaction2/pull/463))
 
 **ModelZoo**
 

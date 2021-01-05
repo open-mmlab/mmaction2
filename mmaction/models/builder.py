@@ -13,7 +13,7 @@ except (ImportError, ModuleNotFoundError):
     # Define an empty registry and building func, so that can import
     DETECTORS = Registry('detector')
 
-    def bulid_detector(cfg, train_cfg, test_cfg):
+    def build_detector(cfg, train_cfg, test_cfg):
         pass
 
 

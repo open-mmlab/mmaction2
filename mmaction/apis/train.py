@@ -9,7 +9,7 @@ from mmcv.runner.hooks import Fp16OptimizerHook
 from ..core import (DistEpochEvalHook, EpochEvalHook,
                     OmniSourceDistSamplerSeedHook, OmniSourceRunner)
 from ..datasets import build_dataloader, build_dataset
-from ..utils import get_root_logger
+from ..utils import PreciseBNHook, get_root_logger
 
 
 def train_model(model,
@@ -114,6 +114,21 @@ def train_model(model,
             runner.register_hook(OmniSourceDistSamplerSeedHook())
         else:
             runner.register_hook(DistSamplerSeedHook())
+
+    # precise bn setting
+    if cfg.get('precise_bn', False):
+        precise_bn_dataset = build_dataset(cfg.data.train)
+        dataloader_setting = dict(
+            videos_per_gpu=cfg.data.get('videos_per_gpu', 1),
+            workers_per_gpu=0,  # save memory and time
+            num_gpus=len(cfg.gpu_ids),
+            dist=distributed,
+            seed=cfg.seed)
+        data_loader_precise_bn = build_dataloader(precise_bn_dataset,
+                                                  **dataloader_setting)
+        precise_bn_hook = PreciseBNHook(data_loader_precise_bn,
+                                        **cfg.get('precise_bn'))
+        runner.register_hook(precise_bn_hook)
 
     if validate:
         eval_cfg = cfg.get('evaluation', {})
