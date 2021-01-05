@@ -371,7 +371,7 @@ class ResNet3dSlowFast(nn.Module):
     Args:
         pretrained (str): The file path to a pretrained model.
         resample_rate (int): A large temporal stride ``resample_rate``
-            on input frames. The actuall resample rate is calculated by
+            on input frames. The actual resample rate is calculated by
             multipling the ``interval`` in ``SampleFrames`` in the
             pipeline with ``resample_rate``, equivalent to the :math:`\\tau`
             in the paper, i.e. it processes only one out of
