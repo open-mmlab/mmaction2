@@ -1,5 +1,7 @@
 ## Changelog
 
+### master
+
 ### 0.10.0 (31/12/2020)
 
 **Highlights**
