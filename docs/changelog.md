@@ -56,7 +56,6 @@
 
 **Improvements**
 
-- Support training and testing for Spatio-Temporal Action Detection ([#351](https://github.com/open-mmlab/mmaction2/pull/351))
 - Support PyTorch 1.7 in CI ([#312](https://github.com/open-mmlab/mmaction2/pull/312))
 - Support to predict different labels in a long video ([#274](https://github.com/open-mmlab/mmaction2/pull/274))
 - Update docs bout test crops ([#359](https://github.com/open-mmlab/mmaction2/pull/359))
