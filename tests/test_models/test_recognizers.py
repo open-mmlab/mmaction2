@@ -231,7 +231,7 @@ def test_slowfast():
     recognizer = build_recognizer(
         model, train_cfg=train_cfg, test_cfg=test_cfg)
 
-    input_shape = (1, 3, 3, 8, 32, 32)
+    input_shape = (1, 3, 3, 16, 32, 32)
     demo_inputs = generate_demo_inputs(input_shape, '3D')
 
     imgs = demo_inputs['imgs']
