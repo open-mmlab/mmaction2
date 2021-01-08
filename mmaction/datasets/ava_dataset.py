@@ -147,9 +147,7 @@ class AVADataset(BaseDataset):
             self.logger.info(
                 f'{len(valid_indexes)} out of {len(self.video_infos)} '
                 f'frames are valid.')
-            self.video_infos = self.video_infos = [
-                self.video_infos[i] for i in valid_indexes
-            ]
+            self.video_infos = [self.video_infos[i] for i in valid_indexes]
 
     def parse_img_record(self, img_records):
         bboxes, labels, entity_ids = [], [], []
