@@ -143,7 +143,12 @@ lr_config = dict(
 total_epochs = 20
 checkpoint_config = dict(interval=1)
 workflow = [('train', 1)]
-evaluation = dict(interval=1)
+# Three avaiable key indicators for ava dataset
+# 'Recall@0.5@100' 'AR@100' 'PascalBoxes_Precision/mAP@0.5IOU'
+evaluation = dict(
+    interval=1,
+    key_indicator='PascalBoxes_Precision/mAP@0.5IOU',
+    rule='greater')
 log_config = dict(
     interval=20, hooks=[
         dict(type='TextLoggerHook'),
