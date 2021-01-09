@@ -1,8 +1,8 @@
+import os
 import os.path as osp
 import warnings
 from math import inf
 
-import mmcv
 from mmcv.runner import Hook
 from torch.utils.data import DataLoader
 
@@ -92,6 +92,7 @@ class EvalHook(Hook):
         self.initial_flag = True
 
         if self.save_best is not None:
+            self.best_ckpt_path = None
             self._init_rule(rule, self.save_best)
 
     def _init_rule(self, rule, key_indicator):
@@ -209,12 +210,19 @@ class EvalHook(Hook):
             runner.meta['hook_msgs']['best_score'] = best_score
             last_ckpt = runner.meta['hook_msgs']['last_ckpt']
             runner.meta['hook_msgs']['best_ckpt'] = last_ckpt
-            mmcv.symlink(
-                last_ckpt,
-                osp.join(runner.work_dir, f'best_{self.key_indicator}.pth'))
+
+            if self.best_ckpt_path and osp.isfile(self.best_ckpt_path):
+                os.remove(self.best_ckpt_path)
+
+            best_ckpt_name = f'best_{self.key_indicator}_{current}.pth'
+            runner.save_checkpoint(
+                runner.work_dir, best_ckpt_name, create_symlink=False)
+            self.best_ckpt_path = osp.join(runner.work_dir, best_ckpt_name)
+
             runner.logger.info(
-                f'Now best checkpoint is {current}.pth.'
-                f'Best {self.key_indicator} is {best_score:0.4f}')
+                f'Now best checkpoint is saved as {best_ckpt_name}.'
+                f'Best {self.key_indicator} is {best_score:0.4f} at {current}.'
+            )
 
     def evaluate(self, runner, results):
         """Evaluate the results.
