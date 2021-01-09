@@ -10,7 +10,7 @@
 
 **Bug and Typo Fixes**
 
-+ Fix a bug about ava dataset validation ([#527](https://github.com/open-mmlab/mmaction2/pull/527).
+- Fix a bug about ava dataset validation ([#527](https://github.com/open-mmlab/mmaction2/pull/527).
 
 **ModelZoo**
 
