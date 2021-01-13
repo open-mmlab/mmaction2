@@ -11,10 +11,11 @@ from ..registry import BACKBONES
 from .resnet3d import ResNet3d
 
 try:
-    import mmdet  # noqa
     from mmdet.models import BACKBONES as MMDET_BACKBONES
+    mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
     warnings.warn('Please install mmdet to use MMDET_BACKBONES')
+    mmdet_imported = False
 
 
 class ResNet3dPathway(ResNet3d):
@@ -371,9 +372,11 @@ class ResNet3dSlowFast(nn.Module):
     Args:
         pretrained (str): The file path to a pretrained model.
         resample_rate (int): A large temporal stride ``resample_rate``
-            on input frames, corresponding to the :math:`\\tau` in the paper.
-            i.e., it processes only one out of ``resample_rate`` frames.
-            Default: 16.
+            on input frames. The actual resample rate is calculated by
+            multipling the ``interval`` in ``SampleFrames`` in the
+            pipeline with ``resample_rate``, equivalent to the :math:`\\tau`
+            in the paper, i.e. it processes only one out of
+            ``resample_rate * interval`` frames. Default: 8.
         speed_ratio (int): Speed ratio indicating the ratio between time
             dimension of the fast and slow pathway, corresponding to the
             :math:`\\alpha` in the paper. Default: 8.
@@ -507,5 +510,5 @@ class ResNet3dSlowFast(nn.Module):
         return out
 
 
-if 'mmdet' in dir():
+if mmdet_imported:
     MMDET_BACKBONES.register_module()(ResNet3dSlowFast)
