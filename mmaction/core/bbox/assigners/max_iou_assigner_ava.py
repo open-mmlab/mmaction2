@@ -3,14 +3,15 @@ import warnings
 import torch
 
 try:
-    import mmdet  # noqa
     from mmdet.core.bbox import AssignResult, MaxIoUAssigner
     from mmdet.core.bbox.builder import BBOX_ASSIGNERS
+    mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
     warnings.warn('Please install mmdet to use AssignResult, MaxIoUAssigner '
                   'and BBOX_ASSIGNERS')
+    mmdet_imported = False
 
-if 'mmdet' in dir():
+if mmdet_imported:
 
     @BBOX_ASSIGNERS.register_module()
     class MaxIoUAssignerAVA(MaxIoUAssigner):

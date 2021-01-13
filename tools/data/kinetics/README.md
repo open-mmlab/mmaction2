@@ -52,6 +52,8 @@ For better decoding speed, you can resize the original videos into smaller sized
 python ../resize_videos.py ../../../data/${DATASET}/videos_train/ ../../../data/${DATASET}/videos_train_256p_dense_cache --dense --level 2
 ```
 
+You can also download kinetics400 and kinetics700 from [Academic Torrents](https://academictorrents.com/details/184d11318372f70018cf9a72ef867e2fb9ce1d26).
+
 ## Step 3. Extract RGB and Flow
 
 This part is **optional** if you only want to use the video loader.

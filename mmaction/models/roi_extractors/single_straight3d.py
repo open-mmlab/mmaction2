@@ -9,10 +9,11 @@ except (ImportError, ModuleNotFoundError):
     warnings.warn('Please install mmcv-full to use RoIAlign and RoIPool')
 
 try:
-    import mmdet  # noqa
     from mmdet.models import ROI_EXTRACTORS
+    mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
     warnings.warn('Please install mmdet to use ROI_EXTRACTORS')
+    mmdet_imported = False
 
 
 class SingleRoIExtractor3D(nn.Module):
@@ -101,5 +102,5 @@ class SingleRoIExtractor3D(nn.Module):
         return torch.stack(roi_feats, dim=2)
 
 
-if 'mmdet' in dir():
+if mmdet_imported:
     ROI_EXTRACTORS.register_module()(SingleRoIExtractor3D)

@@ -5,15 +5,16 @@ import numpy as np
 from mmaction.core.bbox import bbox2result
 
 try:
-    import mmdet  # noqa
     from mmdet.core.bbox import bbox2roi
     from mmdet.models import HEADS as MMDET_HEADS
     from mmdet.models.roi_heads import StandardRoIHead
+    mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
     warnings.warn('Please install mmdet to use bbox2roi, MMDET_HEADS '
                   'and StandardRoIHead')
+    mmdet_imported = False
 
-if 'mmdet' in dir():
+if mmdet_imported:
 
     @MMDET_HEADS.register_module()
     class AVARoIHead(StandardRoIHead):
