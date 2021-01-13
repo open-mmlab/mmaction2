@@ -9,10 +9,11 @@ except (ImportError, ModuleNotFoundError):
     warnings.warn('Please install mmcv-full to use RoIAlign and RoIPool')
 
 try:
-    import mmdet  # noqa
     from mmdet.models import ROI_EXTRACTORS
+    mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
     warnings.warn('Please install mmdet to use ROI_EXTRACTORS')
+    mmdet_imported = False
 
 
 class SingleRoIExtractor3D(nn.Module):
@@ -32,6 +33,8 @@ class SingleRoIExtractor3D(nn.Module):
             Default: True.
         with_temporal_pool (bool): if True, avgpool the temporal dim.
             Default: True.
+        with_global (bool): if True, concatenate the RoI feature with global
+            feature. Default: False.
 
     Note that sampling_ratio, pool_mode, aligned only apply when roi_layer_type
     is set as RoIAlign.
@@ -44,7 +47,8 @@ class SingleRoIExtractor3D(nn.Module):
                  sampling_ratio=0,
                  pool_mode='avg',
                  aligned=True,
-                 with_temporal_pool=True):
+                 with_temporal_pool=True,
+                 with_global=False):
         super().__init__()
         self.roi_layer_type = roi_layer_type
         assert self.roi_layer_type in ['RoIPool', 'RoIAlign']
@@ -57,6 +61,8 @@ class SingleRoIExtractor3D(nn.Module):
         self.aligned = aligned
 
         self.with_temporal_pool = with_temporal_pool
+        self.with_global = with_global
+
         if self.roi_layer_type == 'RoIPool':
             self.roi_layer = RoIPool(self.output_size, self.spatial_scale)
         else:
@@ -66,10 +72,12 @@ class SingleRoIExtractor3D(nn.Module):
                 sampling_ratio=self.sampling_ratio,
                 pool_mode=self.pool_mode,
                 aligned=self.aligned)
+        self.global_pool = nn.AdaptiveAvgPool2d(self.output_size)
 
     def init_weights(self):
         pass
 
+    # The shape of feat is N, C, T, H, W
     def forward(self, feat, rois):
         if not isinstance(feat, tuple):
             feat = (feat, )
@@ -78,12 +86,21 @@ class SingleRoIExtractor3D(nn.Module):
         if self.with_temporal_pool:
             feat = [torch.mean(x, 2, keepdim=True) for x in feat]
         feat = torch.cat(feat, axis=1)
+
         roi_feats = []
         for t in range(feat.size(2)):
-            frame_feat = feat[:, :, t, :, :].contiguous()
-            roi_feats.append(self.roi_layer(frame_feat, rois))
+            frame_feat = feat[:, :, t].contiguous()
+            roi_feat = self.roi_layer(frame_feat, rois)
+            if self.with_global:
+                global_feat = self.global_pool(frame_feat.contiguous())
+                inds = rois[:, 0].type(torch.int64)
+                global_feat = global_feat[inds]
+                roi_feat = torch.cat([roi_feat, global_feat], dim=1)
+                roi_feat = roi_feat.contiguous()
+            roi_feats.append(roi_feat)
+
         return torch.stack(roi_feats, dim=2)
 
 
-if 'mmdet' in dir():
+if mmdet_imported:
     ROI_EXTRACTORS.register_module()(SingleRoIExtractor3D)

@@ -13,7 +13,7 @@ doi = {10.1109/ICCV.2019.00565}
 }
 
 @inproceedings{ghadiyaram2019large,
-  title={Large-scale weakly-supervised pre-training for video action recognition},
+  title="{Large-scale weakly-supervised pre-training for video action recognition}",
   author={Ghadiyaram, Deepti and Tran, Du and Mahajan, Dhruv},
   booktitle={Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition},
   pages={12046--12055},

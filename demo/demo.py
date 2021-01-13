@@ -134,9 +134,21 @@ def main():
         args.checkpoint,
         device=device,
         use_frames=args.use_frames)
+
+    # e.g. use ('backbone', ) to return backbone feature
+    output_layer_names = None
+
     # test a single video or rawframes of a single video
-    results = inference_recognizer(
-        model, args.video, args.label, use_frames=args.use_frames)
+    if output_layer_names:
+        results, returned_feature = inference_recognizer(
+            model,
+            args.video,
+            args.label,
+            use_frames=args.use_frames,
+            outputs=output_layer_names)
+    else:
+        results = inference_recognizer(
+            model, args.video, args.label, use_frames=args.use_frames)
 
     print('The top-5 labels with corresponding scores are:')
     for result in results:

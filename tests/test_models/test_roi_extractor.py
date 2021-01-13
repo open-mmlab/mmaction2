@@ -38,3 +38,16 @@ def test_single_roi_extractor3d():
     feat = (torch.randn([4, 64, 8, 16, 16]), torch.randn([4, 32, 16, 16, 16]))
     with pytest.raises(AssertionError):
         extracted = roi_extractor(feat, rois)
+
+    feat = torch.randn([4, 64, 8, 16, 16])
+    roi_extractor = SingleRoIExtractor3D(
+        roi_layer_type='RoIAlign',
+        featmap_stride=16,
+        output_size=8,
+        sampling_ratio=0,
+        pool_mode='avg',
+        aligned=True,
+        with_temporal_pool=True,
+        with_global=True)
+    extracted = roi_extractor(feat, rois)
+    assert extracted.shape == (4, 128, 1, 8, 8)

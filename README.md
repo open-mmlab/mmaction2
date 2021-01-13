@@ -18,7 +18,12 @@ It is a part of the [OpenMMLab](http://openmmlab.org/) project.
 The master branch works with **PyTorch 1.3+**.
 
 <div align="center">
-  <img src="docs/imgs/mmaction2_overview.gif" width="600px"/>
+  <img src="docs/imgs/mmaction2_overview.gif" width="450px"/><br>
+    Action Recognition Results on Kinetics-400
+</div>
+<div align="center">
+  <img src="docs/imgs/spatio-temporal-det.gif" width="800px"/><br>
+    Spatio-Temporal Action Detection Results on AVA-2.1
 </div>
 
 ### Major Features
@@ -50,7 +55,7 @@ This project is released under the [Apache 2.0 license](LICENSE).
 
 ## Changelog
 
-v0.9.0 was released in 30/11/2020. Please refer to [changelog.md](docs/changelog.md) for details and release history.
+v0.10.0 was released in 05/01/2021. Please refer to [changelog.md](docs/changelog.md) for details and release history.
 
 ## Benchmark
 
@@ -93,6 +98,11 @@ Supported methods for action localization:
 - [x] [BSN](configs/localization/bsn/README.md)
 - [x] [SSN](configs/localization/ssn/README.md)
 
+Supported methods for spatio-temporal action detection:
+
+- [x] [SlowOnly+Fast R-CNN](configs/detection/ava/README.md)
+- [x] [SlowFast+Fast R-CNN](configs/detection/ava/README.md)
+
 Results and models are available in the *README.md* of each method's config directory.
 A summary can be found in the [**model zoo**](https://mmaction2.readthedocs.io/en/latest/recognition_models.html) page.
 
@@ -108,7 +118,7 @@ The supported datasets are listed in [supported_datasets.md](docs/supported_data
 ## Get Started
 
 Please see [getting_started.md](docs/getting_started.md) for the basic usage of MMAction2.
-There are also tutorials for [finetuning models](docs/tutorials/finetune.md), [adding new dataset](docs/tutorials/new_dataset.md), [designing data pipeline](docs/tutorials/data_pipeline.md), [exporting model to onnx](docs/tutorials/export_model.md), [customizing runtime settings](docs/tutorials/customize_runtime.md) and [adding new modules](docs/tutorials/new_modules.md).
+There are also tutorials for [learn about configs](docs/tutorials/1_config.md), [finetuning models](docs/tutorials/2_finetune.md), [adding new dataset](docs/tutorials/3_new_dataset.md), [designing data pipeline](docs/tutorials/4_data_pipeline.md), [adding new modules](docs/tutorials/5_new_modules.md), [exporting model to onnx](docs/tutorials/6_export_model.md) and [customizing runtime settings](docs/tutorials/7_customize_runtime.md).
 
 A Colab tutorial is also provided. You may preview the notebook [here](demo/mmaction2_tutorial.ipynb) or directly [run](https://colab.research.google.com/github/open-mmlab/mmaction2/blob/master/demo/mmaction2_tutorial.ipynb) on Colab.
 
@@ -125,3 +135,15 @@ We appreciate all contributions to improve MMAction2. Please refer to [CONTRIBUT
 MMAction2 is an open source project that is contributed by researchers and engineers from various colleges and companies.
 We appreciate all the contributors who implement their methods or add new features, as well as users who give valuable feedbacks.
 We wish that the toolbox and benchmark could serve the growing research community by providing a flexible toolkit to reimplement existing methods and develop their own new models.
+
+## Projects in OpenMMLab
+
+- [MMCV](https://github.com/open-mmlab/mmcv): OpenMMLab foundational library for computer vision.
+- [MMClassification](https://github.com/open-mmlab/mmclassification): OpenMMLab image classification toolbox and benchmark.
+- [MMDetection](https://github.com/open-mmlab/mmdetection): OpenMMLab detection toolbox and benchmark.
+- [MMDetection3D](https://github.com/open-mmlab/mmdetection3d): OpenMMLab's next-generation platform for general 3D object detection.
+- [MMSegmentation](https://github.com/open-mmlab/mmsegmentation): OpenMMLab semantic segmentation toolbox and benchmark.
+- [MMAction2](https://github.com/open-mmlab/mmaction2): OpenMMLab's next-generation action understanding toolbox and benchmark.
+- [MMTracking](https://github.com/open-mmlab/mmtracking): OpenMMLab video perception toolbox and benchmark.
+- [MMPose](https://github.com/open-mmlab/mmpose): OpenMMLab pose estimation toolbox and benchmark.
+- [MMEditing](https://github.com/open-mmlab/mmediting): OpenMMLab image and video editing toolbox.
