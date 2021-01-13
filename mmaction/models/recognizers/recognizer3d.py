@@ -32,19 +32,19 @@ class Recognizer3D(BaseRecognizer):
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
 
         if self.test_batch is not None:
-            tot = imgs.shape[0]
-            assert num_segs == tot, ('test_batch is only compatible with '
-                                     'batch_size == 1')
-            ptr = 0
+            total_views = imgs.shape[0]
+            assert num_segs == total_views, ('test_batch is only compatible '
+                                             'with batch_size == 1')
+            view_ptr = 0
             cls_scores = []
-            while ptr < tot:
-                batch_imgs = imgs[ptr:ptr + self.test_batch]
+            while view_ptr < total_views:
+                batch_imgs = imgs[view_ptr:view_ptr + self.test_batch]
                 x = self.extract_feat(batch_imgs)
                 if hasattr(self, 'neck'):
                     x, _ = self.neck(x)
                 cls_score = self.cls_head(x)
                 cls_scores.append(cls_score)
-                ptr += self.test_batch
+                view_ptr += self.test_batch
             cls_score = torch.cat(cls_scores)
         else:
             x = self.extract_feat(imgs)
