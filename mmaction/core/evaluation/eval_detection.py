@@ -4,7 +4,7 @@ import numpy as np
 from mmcv.utils import print_log
 
 from mmaction.utils import get_root_logger
-from .mean_ap import interpolated_precision_recall
+from .mean_ap import interpolated_precision_recall, average_precision_at_temporal_iou
 from .overlaps import pairwise_temporal_iou
 
 
@@ -127,7 +127,7 @@ class ActivityNetLocalization:
             prediction_by_label[pred['label']].append(pred)
 
         for i in range(len(self.activity_index)):
-            ap_result = compute_average_precision_detection(
+            ap_result = average_precision_at_temporal_iou(
                 ground_truth_by_label[i], prediction_by_label[i],
                 self.tiou_thresholds)
             ap[:, i] = ap_result
@@ -146,91 +146,3 @@ class ActivityNetLocalization:
         self.average_mAP = self.mAP.mean()
 
         return self.mAP, self.average_mAP
-
-
-# TODO: This function seems similar
-#  with `def average_precision_at_temporal_iou`
-def compute_average_precision_detection(ground_truth,
-                                        prediction,
-                                        tiou_thresholds=np.linspace(
-                                            0.5, 0.95, 10)):
-    """Compute average precision (detection task) between ground truth and
-    predictions data frames. If multiple predictions occurs for the same
-    predicted segment, only the one with highest score is matches as true
-    positive. This code is greatly inspired by Pascal VOC devkit.
-
-    Args:
-        ground_truth (list[dict]): List containing the ground truth instances
-            (dictionaries). Required keys are 'video-id', 't-start' and
-            't-end'.
-        prediction (list[dict]): List containing the prediction instances
-            (dictionaries). Required keys are: 'video-id', 't-start', 't-end'
-            and 'score'.
-        tiou_thresholds (np.ndarray): A 1darray indicates the temporal
-            intersection over union threshold, which is optional.
-            Default: ``np.linspace(0.5, 0.95, 10)``.
-
-    Returns:
-        Float: ap, Average precision score.
-    """
-    num_thresholds = len(tiou_thresholds)
-    num_gts = len(ground_truth)
-    num_preds = len(prediction)
-    ap = np.zeros(num_thresholds)
-    if len(prediction) == 0:
-        return ap
-
-    num_positive = float(num_gts)
-    lock_gt = np.ones((num_thresholds, num_gts)) * -1
-    # Sort predictions by decreasing score order.
-    prediction.sort(key=lambda x: -x['score'])
-    # Initialize true positive and false positive vectors.
-    tp = np.zeros((num_thresholds, num_preds))
-    fp = np.zeros((num_thresholds, num_preds))
-
-    # Adaptation to query faster
-    ground_truth_by_videoid = {}
-    for i, item in enumerate(ground_truth):
-        item['index'] = i
-        ground_truth_by_videoid.setdefault(item['video-id'], []).append(item)
-
-    # Assigning true positive to truly grount truth instances.
-    for idx, pred in enumerate(prediction):
-        if pred['video-id'] in ground_truth_by_videoid:
-            gts = ground_truth_by_videoid[pred['video-id']]
-        else:
-            fp[:, idx] = 1
-            continue
-
-        tiou_arr = pairwise_temporal_iou(
-            np.array([pred['t-start'], pred['t-end']]),
-            np.array([np.array([gt['t-start'], gt['t-end']]) for gt in gts]))
-        tiou_arr = tiou_arr.reshape(-1)
-        # We would like to retrieve the predictions with highest tiou score.
-        tiou_sorted_idx = tiou_arr.argsort()[::-1]
-        for t_idx, tiou_threshold in enumerate(tiou_thresholds):
-            for j_idx in tiou_sorted_idx:
-                if tiou_arr[j_idx] < tiou_threshold:
-                    fp[t_idx, idx] = 1
-                    break
-                if lock_gt[t_idx, gts[j_idx]['index']] >= 0:
-                    continue
-                # Assign as true positive after the filters above.
-                tp[t_idx, idx] = 1
-                lock_gt[t_idx, gts[j_idx]['index']] = idx
-                break
-
-            if fp[t_idx, idx] == 0 and tp[t_idx, idx] == 0:
-                fp[t_idx, idx] = 1
-
-    tp_cumsum = np.cumsum(tp, axis=1).astype(np.float)
-    fp_cumsum = np.cumsum(fp, axis=1).astype(np.float)
-    recall_cumsum = tp_cumsum / num_positive
-
-    precision_cumsum = tp_cumsum / (tp_cumsum + fp_cumsum)
-
-    for t_idx in range(len(tiou_thresholds)):
-        ap[t_idx] = interpolated_precision_recall(precision_cumsum[t_idx, :],
-                                                  recall_cumsum[t_idx, :])
-
-    return ap
