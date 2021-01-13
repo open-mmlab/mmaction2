@@ -2,6 +2,10 @@
 
 ### master
 
+**Improvements**
+
+- Support setting `test_batch` for extremely large models to save GPU memory used ([#511](https://github.com/open-mmlab/mmaction2/pull/511))
+
 ### 0.10.0 (31/12/2020)
 
 **Highlights**
