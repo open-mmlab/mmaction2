@@ -29,6 +29,10 @@ If the contents here do not cover your issue, please create an issue using the [
     If users encounter FileNotFound error for the first or last frame of the data, there is a need to check the files begin with offset 0 or 1,
     that is `xxx_00000.jpg` or `xxx_00001.jpg`, and then change the `start_index` value of data pipeline in configs.
 
+- **How should we preprocess the videos in the dataset? Resizing them to a fix size(all videos with the same height-width ratio) like `340x256`(1) or resizing them so that the short edges of all videos are of the same length (256px or 320px)**
+
+    We have tried both preprocessing approaches and found (2) is a better solution in general, so we use (2) with short edge length 256px as the default preprocessing setting. We benchmarked these preprocessing approaches and you may find the results in [TSN Data Benchmark](https://github.com/open-mmlab/mmaction2/tree/master/configs/recognition/tsn) and [SlowOnly Data Benchmark](https://github.com/open-mmlab/mmaction2/tree/master/configs/recognition/tsn).
+
 ## Training
 
 - **How to just use trained recognizer models for backbone pre-training ?**
