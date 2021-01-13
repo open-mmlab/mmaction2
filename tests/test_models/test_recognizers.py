@@ -271,8 +271,8 @@ def test_slowfast():
         for one_img in img_list:
             recognizer(one_img, gradcam=True)
 
-        # Test the feature test_batch
-        test_cfg['test_batch'] = 1
+        # Test the feature max_testing_views
+        test_cfg['max_testing_views'] = 1
         recognizer = build_recognizer(
             model, train_cfg=train_cfg, test_cfg=test_cfg)
         with torch.no_grad():
