@@ -25,16 +25,20 @@ def eval_ap(detections, gt_by_cls, iou_range):
             new_ground_truth = []
             for video_id, segments in ground_truth.items():
                 for segment in segments:
-                    new_ground_truth.append({'video-id': video_id,
-                                             't-start': segment[0],
-                                             't-end': segment[1]})
+                    new_ground_truth.append({
+                        'video-id': video_id,
+                        't-start': segment[0],
+                        't-end': segment[1]
+                    })
             prediction = detections[class_idx]
             new_prediction = []
             for pred in prediction:
-                new_prediction.append({'video-id': pred[0],
-                                       't-start': pred[2],
-                                       't-end': pred[3],
-                                       'score': pred[4]})
+                new_prediction.append({
+                    'video-id': pred[0],
+                    't-start': pred[2],
+                    't-end': pred[3],
+                    'score': pred[4]
+                })
 
             ap = average_precision_at_temporal_iou(new_ground_truth,
                                                    new_prediction,
