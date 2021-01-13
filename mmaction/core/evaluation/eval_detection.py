@@ -4,8 +4,7 @@ import numpy as np
 from mmcv.utils import print_log
 
 from mmaction.utils import get_root_logger
-from .mean_ap import (average_precision_at_temporal_iou,
-                      interpolated_precision_recall)
+from .mean_ap import average_precision_at_temporal_iou
 
 
 class ActivityNetLocalization:
