@@ -8,6 +8,8 @@
 
 **Improvements**
 
+- Support setting `max_testing_views` for extremely large models to save GPU memory used ([#511](https://github.com/open-mmlab/mmaction2/pull/511))
+
 **Bug and Typo Fixes**
 
 - Fix a bug about ava dataset validation ([#527](https://github.com/open-mmlab/mmaction2/pull/527).

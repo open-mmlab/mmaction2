@@ -11,10 +11,11 @@ from ..registry import BACKBONES
 from .resnet3d import ResNet3d
 
 try:
-    import mmdet  # noqa
     from mmdet.models import BACKBONES as MMDET_BACKBONES
+    mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
     warnings.warn('Please install mmdet to use MMDET_BACKBONES')
+    mmdet_imported = False
 
 
 class ResNet3dPathway(ResNet3d):
@@ -509,5 +510,5 @@ class ResNet3dSlowFast(nn.Module):
         return out
 
 
-if 'mmdet' in dir():
+if mmdet_imported:
     MMDET_BACKBONES.register_module()(ResNet3dSlowFast)

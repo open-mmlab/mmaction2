@@ -231,7 +231,7 @@ def test_slowfast():
     recognizer = build_recognizer(
         model, train_cfg=train_cfg, test_cfg=test_cfg)
 
-    input_shape = (1, 3, 3, 8, 32, 32)
+    input_shape = (1, 3, 3, 16, 32, 32)
     demo_inputs = generate_demo_inputs(input_shape, '3D')
 
     imgs = demo_inputs['imgs']
@@ -270,6 +270,15 @@ def test_slowfast():
         recognizer(imgs, gradcam=True)
         for one_img in img_list:
             recognizer(one_img, gradcam=True)
+
+        # Test the feature max_testing_views
+        test_cfg['max_testing_views'] = 1
+        recognizer = build_recognizer(
+            model, train_cfg=train_cfg, test_cfg=test_cfg)
+        with torch.no_grad():
+            img_list = [img[None, :] for img in imgs]
+            for one_img in img_list:
+                recognizer(one_img, None, return_loss=False)
 
 
 def test_tsm():
