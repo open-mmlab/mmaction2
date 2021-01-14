@@ -2,7 +2,9 @@
 
 ## Introduction
 
-```
+[ALGORITHM]
+
+```citation
 @inproceedings{lin2019bmn,
   title={Bmn: Boundary-matching network for temporal action proposal generation},
   author={Lin, Tianwei and Liu, Xiao and Li, Xin and Ding, Errui and Wen, Shilei},

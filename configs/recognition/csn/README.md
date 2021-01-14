@@ -2,7 +2,9 @@
 
 ## Introduction
 
-```
+[ALGORITHM]
+
+```citation
 @inproceedings{inproceedings,
 author = {Wang, Heng and Feiszli, Matt and Torresani, Lorenzo},
 year = {2019},

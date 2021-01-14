@@ -2,7 +2,9 @@
 
 ## Introduction
 
-```
+[ALGORITHM]
+
+```citation
 @inproceedings{inproceedings,
   author = {Carreira, J. and Zisserman, Andrew},
   year = {2017},
