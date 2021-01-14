@@ -4,7 +4,7 @@
 
 [ALGORITHM]
 
-```citation
+```latex
 @inproceedings{lin2019tsm,
   title={TSM: Temporal Shift Module for Efficient Video Understanding},
   author={Lin, Ji and Gan, Chuang and Han, Song},
