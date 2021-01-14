@@ -12,9 +12,13 @@
   pages={3889--3898},
   year={2019}
 }
+```
 
+[DATASET]
+
+```latex
 @article{zhao2017cuhk,
-  title="{Cuhk \& ethz \& siat submission to activitynet challenge 2017}",
+  title={Cuhk \& ethz \& siat submission to activitynet challenge 2017},
   author={Zhao, Y and Zhang, B and Wu, Z and Yang, S and Zhou, L and Yan, S and Wang, L and Xiong, Y and Lin, D and Qiao, Y and others},
   journal={arXiv preprint arXiv:1710.08011},
   volume={8},

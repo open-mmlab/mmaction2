@@ -11,10 +11,14 @@
   booktitle={Proceedings of the IEEE International Conference on Computer Vision},
   year={2019}
 }
+```
 
+[BACKBONE]
+
+```latex
 @article{NonLocal2018,
   author =   {Xiaolong Wang and Ross Girshick and Abhinav Gupta and Kaiming He},
-  title =    "{Non-local Neural Networks}",
+  title =    {Non-local Neural Networks},
   journal =  {CVPR},
   year =     {2018}
 }
