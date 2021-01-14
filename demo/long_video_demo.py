@@ -177,7 +177,7 @@ def main():
     pipeline_ = pipeline.copy()
     for step in pipeline:
         if 'SampleFrames' in step['type']:
-            sample_length = step['clip_len'] * step['num_clips']
+            sample_length = step['clip_len'] * step['frame_interval']
             data['num_clips'] = step['num_clips']
             data['clip_len'] = step['clip_len']
             pipeline_.remove(step)
