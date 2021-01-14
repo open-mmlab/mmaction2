@@ -2,7 +2,9 @@
 
 ## Introduction
 
-```
+[ALGORITHM]
+
+```latex
 @inproceedings{inproceedings,
   author = {Carreira, J. and Zisserman, Andrew},
   year = {2017},
@@ -11,10 +13,14 @@
   title = {Quo Vadis, Action Recognition? A New Model and the Kinetics Dataset},
   doi = {10.1109/CVPR.2017.502}
 }
+```
 
+[BACKBONE]
+
+```latex
 @article{NonLocal2018,
   author =   {Xiaolong Wang and Ross Girshick and Abhinav Gupta and Kaiming He},
-  title =    "{Non-local Neural Networks}",
+  title =    {Non-local Neural Networks},
   journal =  {CVPR},
   year =     {2018}
 }

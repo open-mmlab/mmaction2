@@ -2,7 +2,9 @@
 
 ## Introduction
 
-```
+[ALGORITHM]
+
+```latex
 @inproceedings{lin2018bsn,
   title={Bsn: Boundary sensitive network for temporal action proposal generation},
   author={Lin, Tianwei and Zhao, Xu and Su, Haisheng and Wang, Chongjing and Yang, Ming},

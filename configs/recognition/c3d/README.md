@@ -2,7 +2,9 @@
 
 ## Introduction
 
-```
+[ALGORITHM]
+
+```latex
 @ARTICLE{2014arXiv1412.0767T,
 author = {Tran, Du and Bourdev, Lubomir and Fergus, Rob and Torresani, Lorenzo and Paluri, Manohar},
 title = {Learning Spatiotemporal Features with 3D Convolutional Networks},
