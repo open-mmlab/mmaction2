@@ -37,7 +37,7 @@ for f in files:
     paperlinks = {}
     for _, p in papers:
         print(p)
-        q = p.replace('\\', '\\\\')
+        q = p.replace('\\', '\\\\').replace('?', '\\?')
         paperlinks[p] = ' '.join(
             (f'[⇨]({splitext(basename(f))[0]}.html#{anchor(paperlink)})'
              for paperlink in re.findall(
