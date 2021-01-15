@@ -2,7 +2,9 @@
 
 ## Introduction
 
-```
+[ALGORITHM]
+
+```latex
 @inproceedings{feichtenhofer2019slowfast,
   title={Slowfast networks for video recognition},
   author={Feichtenhofer, Christoph and Fan, Haoqi and Malik, Jitendra and He, Kaiming},

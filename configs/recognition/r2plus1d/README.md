@@ -2,7 +2,9 @@
 
 ## Introduction
 
-```
+[ALGORITHM]
+
+```latex
 @inproceedings{tran2018closer,
   title={A closer look at spatiotemporal convolutions for action recognition},
   author={Tran, Du and Wang, Heng and Torresani, Lorenzo and Ray, Jamie and LeCun, Yann and Paluri, Manohar},

@@ -108,7 +108,9 @@ We also list the benchmark in the original paper which run on Kinetics-400 for c
 
 If you find OmniSource useful for your research, please consider citing the paper using the following BibTeX entry.
 
-```
+[ALGORITHM]
+
+```latex
 @article{duan2020omni,
   title={Omni-sourced Webly-supervised Learning for Video Recognition},
   author={Duan, Haodong and Zhao, Yue and Xiong, Yuanjun and Liu, Wentao and Lin, Dahua},

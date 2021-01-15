@@ -2,7 +2,9 @@
 
 ## Introduction
 
-```
+[ALGORITHM]
+
+```latex
 @inproceedings{inproceedings,
 author = {Wang, Heng and Feiszli, Matt and Torresani, Lorenzo},
 year = {2019},
@@ -11,9 +13,13 @@ pages = {5551-5560},
 title = {Video Classification With Channel-Separated Convolutional Networks},
 doi = {10.1109/ICCV.2019.00565}
 }
+```
 
+[OTHERS]
+
+```latex
 @inproceedings{ghadiyaram2019large,
-  title="{Large-scale weakly-supervised pre-training for video action recognition}",
+  title={Large-scale weakly-supervised pre-training for video action recognition},
   author={Ghadiyaram, Deepti and Tran, Du and Mahajan, Dhruv},
   booktitle={Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition},
   pages={12046--12055},

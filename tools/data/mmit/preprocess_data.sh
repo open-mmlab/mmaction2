@@ -7,8 +7,7 @@ fi
 
 cd ${DATA_DIR}
 
-wget -c https://www.dropbox.com/s/sz3yd1o0gf09amh/Multi_Moments_in_Time.zip?dl=0
-
+# Download the Multi_Moments_in_Time_Raw.zip here manually
 unzip Multi_Moments_in_Time_Raw.zip
 rm Multi_Moments_in_Time.zip
 

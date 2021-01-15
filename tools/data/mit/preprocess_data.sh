@@ -9,7 +9,7 @@ fi
 
 cd ${DATA_DIR}
 
-wget http://data.csail.mit.edu/soundnet/actions3/split1/Moments_in_Time_Raw.zip
+# Download the Moments_in_Time_Raw.zip here manually
 unzip Moments_in_Time_Raw.zip
 rm Moments_in_Time_Raw.zip
 
