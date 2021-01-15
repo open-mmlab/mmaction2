@@ -2,11 +2,21 @@
 import functools as func
 import glob
 import re
+from os.path import basename, splitext
 
 import numpy as np
 import titlecase
 
+
+def anchor(name):
+    return re.sub(r'-+', '-', re.sub(r'[^a-zA-Z0-9]', '-',
+                                     name.strip().lower()))
+
+
+# Count algorithms
+
 files = sorted(glob.glob('*_models.md'))
+# files = sorted(glob.glob('docs/*_models.md'))
 
 stats = []
 
@@ -18,12 +28,24 @@ for f in files:
     title = content.split('\n')[0].replace('#', '')
 
     # count papers
-    papers = set(
-        (papertype, titlecase.titlecase(paper.lower().strip()))
-        for (papertype, paper) in re.findall(
-            r'\[([A-Z]+?)\].*?\btitle\s*=\s*{(.*?)}', content, re.DOTALL))
-    paperlist = '\n'.join(sorted(f'    - [{t}] {x}' for t, x in papers))
-
+    papers = set((papertype, titlecase.titlecase(paper.lower().strip()))
+                 for (papertype, paper) in re.findall(
+                     r'\n\s*\[([A-Z]+?)\]\s*\n.*?\btitle\s*=\s*{(.*?)}',
+                     content, re.DOTALL))
+    # paper links
+    revcontent = '\n'.join(list(reversed(content.splitlines())))
+    paperlinks = {}
+    for _, p in papers:
+        print(p)
+        q = p.replace('\\', '\\\\')
+        paperlinks[p] = ' '.join(
+            (f'[⇨]({splitext(basename(f))[0]}.html#{anchor(paperlink)})'
+             for paperlink in re.findall(
+                 rf'\btitle\s*=\s*{{\s*{q}\s*}}.*?\n## (.*?)\s*[,;]?\s*\n',
+                 revcontent, re.DOTALL | re.IGNORECASE)))
+        print('   ', paperlinks[p])
+    paperlist = '\n'.join(
+        sorted(f'    - [{t}] {x} ({paperlinks[x]})' for t, x in papers))
     # count configs
     configs = set(x.lower().strip()
                   for x in re.findall(r'https.*configs/.*\.py', content))
@@ -56,7 +78,7 @@ countstr = '\n'.join(
     [f'   - {t}: {c}' for t, c in zip(papertypes, papercounts)])
 
 modelzoo = f"""
-# Model Zoo Statistics
+# Overview
 
 * Number of checkpoints: {len(allckpts)}
 * Number of configs: {len(allconfigs)}
