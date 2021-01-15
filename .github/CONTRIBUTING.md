@@ -49,7 +49,10 @@ From the repository folder
 pre-commit install
 ```
 
-If you are facing an issue when installing markdown lint, you may install ruby for markdown lint by the following stpes
+If you are facing an issue when installing markdown lint, you may install ruby for markdown lint by
+referring to [this repo](https://github.com/innerlee/setup) by following the usage and taking [`zzruby.sh`](https://github.com/innerlee/setup/blob/master/zzruby.sh)
+
+or by the following steps
 
 ```shell
 # install rvm
