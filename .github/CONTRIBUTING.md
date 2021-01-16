@@ -57,10 +57,6 @@ or by the following steps
 ```shell
 # install rvm
 curl -L https://get.rvm.io | bash -s -- --autolibs=read-fail
-
-# set up environment
-echo 'source $HOME/.bash_profile' >> ~/.bashrc
-source ~/.profile
 rvm autolibs disable
 
 # install ruby
