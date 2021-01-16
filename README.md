@@ -132,7 +132,7 @@ If you find this project useful in your research, please consider cite:
 
 ```latex
 @misc{2020mmaction2,
-    title={OpenMMLab's Next Generation Action Understanding Toolbox and Benchmark},
+    title={OpenMMLab's Next Generation Video Understanding Toolbox and Benchmark},
     author={MMAction2 Contributors},
     howpublished = {\url{https://github.com/open-mmlab/mmaction2}},
     year={2020}
