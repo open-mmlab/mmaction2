@@ -5,6 +5,7 @@
 **Improvements**
 
 - Support setting `max_testing_views` for extremely large models to save GPU memory used ([#511](https://github.com/open-mmlab/mmaction2/pull/511))
+- Add repo citation ([#545](https://github.com/open-mmlab/mmaction2/pull/545))
 
 ### 0.10.0 (31/12/2020)
 

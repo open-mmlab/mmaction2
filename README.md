@@ -49,10 +49,6 @@ The master branch works with **PyTorch 1.3+**.
 
   We provide detailed documentation and API reference, as well as unittests.
 
-## License
-
-This project is released under the [Apache 2.0 license](LICENSE).
-
 ## Changelog
 
 v0.10.0 was released in 05/01/2021. Please refer to [changelog.md](docs/changelog.md) for details and release history.
@@ -125,6 +121,23 @@ A Colab tutorial is also provided. You may preview the notebook [here](demo/mmac
 ## FAQ
 
 Please refer to [FAQ](docs/faq.md) for frequently asked questions.
+
+## License
+
+This project is released under the [Apache 2.0 license](LICENSE).
+
+## Citation
+
+If you find this project useful in your research, please consider cite:
+
+```latex
+@misc{2020mmaction2,
+    title={OpenMMLab's Next Generation Video Understanding Toolbox and Benchmark},
+    author={MMAction2 Contributors},
+    howpublished = {\url{https://github.com/open-mmlab/mmaction2}},
+    year={2020}
+}
+```
 
 ## Contributing
 
