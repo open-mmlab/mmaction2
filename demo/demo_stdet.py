@@ -130,15 +130,20 @@ def parse_args():
         help='output filename')
     parser.add_argument(
         '--predict-stepsize',
-        default=16,
+        default=8,
+        type=int,
         help='give out a prediction per n frames')
     parser.add_argument(
         '--output-stepsize',
         default=4,
+        type=int,
         help=('show one frame per n frames in the demo, we should have: '
               'predict_stepsize % output_stepsize == 0'))
     parser.add_argument(
-        '--output_fps', default=10, help='the fps of demo video output')
+        '--output-fps',
+        default=6,
+        type=int,
+        help='the fps of demo video output')
     args = parser.parse_args()
     return args
 
@@ -173,7 +178,7 @@ def detection_inference(args, frame_paths):
     for frame_path in tqdm(frame_paths):
         result = inference_detector(model, frame_path)
         # We only keep human detections with score larger than det_score_thr
-        result = result[0][result[0][4] >= args.det_score_thr]
+        result = result[0][result[0][:, 4] >= args.det_score_thr]
         results.append(result)
     return results
 
@@ -235,9 +240,10 @@ def main():
     center_frames = [frame_paths[ind - 1] for ind in timestamps]
     human_detections = detection_inference(args, center_frames)
     for i in range(len(human_detections)):
-        det_result = human_detections[i]
-        det_result[:, 0:4:2] *= w_ratio
-        det_result[:, 1:4:2] *= h_ratio
+        det = human_detections[i]
+        det[:, 0:4:2] *= w_ratio
+        det[:, 1:4:2] *= h_ratio
+        human_detections[i] = torch.from_numpy(det[:, :4]).to(args.device)
 
     # Get img_norm_cfg
     img_norm_cfg = config['img_norm_cfg']
@@ -256,7 +262,9 @@ def main():
     model.eval()
 
     predictions = []
-    for timestamp, proposal in zip(timestamps, human_detections):
+
+    print('Performing SpatioTemporal Action Detection for each clip')
+    for timestamp, proposal in tqdm(zip(timestamps, human_detections)):
         if proposal.shape[0] == 0:
             predictions.append(None)
             continue
@@ -303,10 +311,12 @@ def main():
             len(timestamps) * n) * old_frame_interval / n + start
         return new_frame_inds.astype(np.int)
 
+    dense_n = int(args.predict_stepsize / args.output_stepsize)
     frames = [
-        cv2.imread(f'/tmp/demo/img_{i:06d}.jpg')
-        for i in dense_timestamps(timestamps, args.output_stepsize)
+        cv2.imread(frame_paths[i - 1])
+        for i in dense_timestamps(timestamps, dense_n)
     ]
+    print('Performing visualization')
     vis_frames = visualize(frames, results)
     vid = mpy.ImageSequenceClip([x[:, :, ::-1] for x in vis_frames],
                                 fps=args.output_fps)
