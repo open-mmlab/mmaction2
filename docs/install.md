@@ -222,5 +222,5 @@ device = torch.device(device)
 
 model = init_recognizer(config_file, device=device)
 # inference the demo video
-inference_recognizer(model, 'demo/demo.mp4', 'demo/label_map.txt')
+inference_recognizer(model, 'demo/demo.mp4', 'demo/label_map_k400.txt')
 ```
