@@ -10,7 +10,7 @@ import titlecase
 
 def anchor(name):
     return re.sub(r'-+', '-', re.sub(r'[^a-zA-Z0-9]', '-',
-                                     name.strip().lower()))
+                                     name.strip().lower())).strip('-')
 
 
 # Count algorithms
@@ -117,22 +117,15 @@ for f in files:
     paperlinks = {}
     for _, p in papers:
         print(p)
+        q = p.replace('\\', '\\\\').replace('?', '\\?')
         paperlinks[p] = ', '.join(
-            (f'[{p} ⇨](tasks/{splitext(basename(f))[0]}.html#{anchor(p)})'
+            (f'[{p.strip()} ⇨]({splitext(basename(f))[0]}.html#{anchor(p)})'
              for p in re.findall(
-                 rf'\btitle\s*=\s*{{\s*{p}\s*}}.*?\n## (.*?)\s*[,;]?\s*\n',
+                 rf'\btitle\s*=\s*{{\s*{q}\s*}}.*?\n## (.*?)\s*[,;]?\s*\n',
                  revcontent, re.DOTALL | re.IGNORECASE)))
         print('   ', paperlinks[p])
     paperlist = '\n'.join(
         sorted(f'    - [{t}] {x} ({paperlinks[x]})' for t, x in papers))
-    # count configs
-    configs = set(x.lower().strip()
-                  for x in re.findall(r'https.*configs/.*\.py', content))
-
-    # count ckpts
-    ckpts = set(x.lower().strip()
-                for x in re.findall(r'https://download.*\.pth', content)
-                if 'mmpose' in x)
 
     statsmsg = f"""
 ## [{title}]({f})

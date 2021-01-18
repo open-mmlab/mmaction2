@@ -34,7 +34,7 @@ sed -i 's/md###t/html#t/g' detection_models.md
 sed -i "s/md###t/html#t/g" demo.md
 
 sed -i 's/# Preparing/# /g' prepare_data.md
-sed -i 's/#/##&/' prepare_data.md
+sed -i 's/#/#&/' prepare_data.md
 
 sed -i '1i\# Action Localization Models' localization_models.md
 sed -i '1i\# Action Recognition Models' recognition_models.md

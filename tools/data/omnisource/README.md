@@ -1,4 +1,4 @@
-## Preparing OmniSource
+# Preparing OmniSource
 
 ## Introduction
 
