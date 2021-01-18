@@ -2,11 +2,11 @@ import argparse
 import copy as cp
 import os
 import os.path as osp
+import shutil
 import warnings
 
 import cv2
 import mmcv
-import moviepy.editor as mpy
 import numpy as np
 import torch
 from mmcv.runner import load_checkpoint
@@ -17,7 +17,12 @@ from mmaction.models import build_detector
 try:
     from mmdet.apis import inference_detector, init_detector
 except (ImportError, ModuleNotFoundError):
-    warnings.warn('Please install mmdet to use stdet_demo')
+    warnings.warn('Please install mmdet to use demo_spatiotempoal_det')
+
+try:
+    import moviepy.editor as mpy
+except ImportError:
+    raise ImportError('Please install moviepy to enable output file')
 
 FONTFACE = cv2.FONT_HERSHEY_DUPLEX
 FONTSCALE = 0.5
@@ -28,6 +33,7 @@ LINETYPE = 1
 
 
 def hex2color(h):
+    """Convert the 6-digit hex string to tuple of 3 int value (RGB)"""
     return (int(h[:2], 16), int(h[2:4], 16), int(h[4:], 16))
 
 
@@ -40,6 +46,20 @@ plate_green = [hex2color(h) for h in plate_green]
 
 
 def visualize(frames, annotations, plate=plate_blue, max_num=5):
+    """Visualize frames with predicted annotations.
+
+    Args:
+        frames (list[np.ndarray]): Frames for visualization, note that
+            len(frames) % len(annotations) should be 0.
+        annotations (list[list[tuple]]): The predicted results.
+        plate (str): The plate used for visualization. Default: plate_blue.
+        max_num (int): Max number of labels to visualize for a person box.
+            Default: 5.
+
+    Returns:
+        list[np.ndarray]: Visualized frames.
+    """
+
     assert max_num + 1 <= len(plate)
     plate = [x[::-1] for x in plate]
     frames_ = cp.deepcopy(frames)
@@ -83,7 +103,6 @@ def visualize(frames, annotations, plate=plate_blue, max_num=5):
     return frames_
 
 
-# We only accept videos with regular fps (30 fps) now.
 def parse_args():
     parser = argparse.ArgumentParser(description='MMAction2 demo')
     parser.add_argument(
@@ -121,7 +140,7 @@ def parse_args():
         help='the threshold of human action score')
     parser.add_argument('--video', help='video file/url')
     parser.add_argument(
-        '--label-map', default='demo/ava_label_map.txt', help='label map file')
+        '--label-map', default='demo/label_map_ava.txt', help='label map file')
     parser.add_argument(
         '--device', type=str, default='cuda:0', help='CPU/CUDA device option')
     parser.add_argument(
@@ -149,8 +168,13 @@ def parse_args():
 
 
 def frame_extraction(video_path):
+    """Extract frames given video_path.
+
+    Args:
+        video_path (str): The video_path.
+    """
     # Load the video, extract frames into /tmp/video_name
-    target_dir = osp.join('/tmp', osp.basename(osp.splitext(video_path)[0]))
+    target_dir = osp.join('./tmp', osp.basename(osp.splitext(video_path)[0]))
     os.makedirs(target_dir, exist_ok=True)
     # Should be able to handle videos up to several hours
     frame_tmpl = osp.join(target_dir, 'img_{:06d}.jpg')
@@ -170,6 +194,15 @@ def frame_extraction(video_path):
 
 
 def detection_inference(args, frame_paths):
+    """Detect human boxes given frame paths.
+
+    Args:
+        args (argparse.Namespace): The arguments.
+        frame_paths (list[str]): The paths of frames to do detection inference.
+
+    Returns:
+        list[np.ndarray]: The human detection results.
+    """
     model = init_detector(args.det_config, args.det_checkpoint, args.device)
     assert model.CLASSES[0] == 'person', ('We require you to use a detector '
                                           'trained on COCO')
@@ -184,12 +217,24 @@ def detection_inference(args, frame_paths):
 
 
 def load_label_map(file_path):
+    """Load Label Map.
+
+    Args:
+        file_path (str): The file path of label map.
+
+    Returns:
+        dict: The label map (int -> label name).
+    """
     lines = open(file_path).readlines()
     lines = [x.strip().split(': ') for x in lines]
     return {int(x[0]): x[1] for x in lines}
 
 
 def abbrev(name):
+    """Get the abbreviation of label name:
+
+    'take (an object) from (a person)' -> 'take ... from ...'
+    """
     while name.find('(') != -1:
         st, ed = name.find('('), name.find(')')
         name = name[:st] + '...' + name[ed + 1:]
@@ -197,6 +242,17 @@ def abbrev(name):
 
 
 def pack_result(human_detection, result, img_h, img_w):
+    """Short summary.
+
+    Args:
+        human_detection (np.ndarray): Human detection result.
+        result (type): The predicted label of each human proposal.
+        img_h (int): The image height.
+        img_w (int): The image width.
+
+    Returns:
+        tuple: Tuple of human proposal, label name and label score.
+    """
     human_detection[:, 0::2] /= img_w
     human_detection[:, 1::2] /= img_h
     results = []
@@ -304,7 +360,7 @@ def main():
         results.append(pack_result(human_detection, prediction, new_h, new_w))
 
     def dense_timestamps(timestamps, n):
-        """Make it 3x frames."""
+        """Make it nx frames."""
         old_frame_interval = (timestamps[1] - timestamps[0])
         start = timestamps[0] - old_frame_interval / n * (n - 1) / 2
         new_frame_inds = np.arange(
@@ -321,6 +377,9 @@ def main():
     vid = mpy.ImageSequenceClip([x[:, :, ::-1] for x in vis_frames],
                                 fps=args.output_fps)
     vid.write_videofile(args.out_filename)
+
+    tmp_frame_dir = osp.dirname(frame_paths[0])
+    shutil.rmtree(tmp_frame_dir)
 
 
 if __name__ == '__main__':
