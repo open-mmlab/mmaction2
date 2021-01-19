@@ -51,8 +51,9 @@ class Imgaug:
     to get more information. An example of ``transforms`` could be found
     in `default_transforms`
 
-    Required keys are "imgs" and "img_shape"(if "gt_bboxes" is not None),
-    added or modified keys are "imgs", "img_shape", "gt_bboxes", "proposals".
+    Required keys are "imgs", "img_shape"(if "gt_bboxes" is not None) and
+    "modality", added or modified keys are "imgs", "img_shape", "gt_bboxes"
+    and "proposals".
 
     It is worth mentioning that `Imgaug` will NOT create custom keys like
     "interpolation", "crop_bbox", "flip_direction", etc. So when using
@@ -202,6 +203,8 @@ class Imgaug:
         return repr_str
 
     def __call__(self, results):
+        assert results['modality'] == 'RGB', 'Imgaug only support RGB images.'
+
         cur_aug = self.aug.to_deterministic()
 
         results['imgs'] = [

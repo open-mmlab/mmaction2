@@ -1257,9 +1257,9 @@ class TestAugumentations:
         from imgaug import augmenters as iaa
 
         # check default configs
-        target_keys = ['imgs', 'img_shape']
+        target_keys = ['imgs', 'img_shape', 'modality']
         imgs = list(np.random.randint(0, 255, (1, 64, 64, 3)).astype(np.uint8))
-        results = dict(imgs=imgs)
+        results = dict(imgs=imgs, modality='RGB')
         default_imgaug = Imgaug(transforms='default')
         default_results = default_imgaug(results)
         self.check_keys_contain(default_results.keys(), target_keys)
@@ -1270,6 +1270,7 @@ class TestAugumentations:
         imgs = list(np.random.rand(1, 64, 64, 3).astype(np.float32))
         results = dict(
             imgs=imgs,
+            modality='RGB',
             proposals=np.array([[0, 0, 25, 35]]),
             img_shape=(64, 64),
             gt_bboxes=np.array([[0, 0, 25, 35]]))
@@ -1289,6 +1290,7 @@ class TestAugumentations:
         imgs = list(np.random.rand(1, 122, 122, 3))
         results = dict(
             imgs=imgs,
+            modality='RGB',
             img_shape=(122, 122),
             gt_bboxes=np.array([[1.5, 2.5, 110, 64]]))
         imgaug_center_crop = Imgaug(transforms=[
@@ -1310,7 +1312,7 @@ class TestAugumentations:
         # check resize (images only)
         target_keys = ['imgs', 'img_shape']
         imgs = list(np.random.rand(1, 64, 64, 3))
-        results = dict(imgs=imgs)
+        results = dict(imgs=imgs, modality='RGB')
         transforms = iaa.Resize(32)
         imgaug_resize = Imgaug(transforms=transforms)
         resize_results = imgaug_resize(results)
