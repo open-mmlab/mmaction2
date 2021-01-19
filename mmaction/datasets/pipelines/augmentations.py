@@ -98,7 +98,6 @@ class Imgaug:
             # dict(type='Imgaug', transforms=[
             #     dict(type='Rotate', rotate=(-20, 20))
             # ]),
-            # dict(type='Imgaug',transforms=iaa.Rotate(rotate=(-20, 20))),
             dict(type='FormatShape', input_format='NCHW'),
             dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
             dict(type='ToTensor', keys=['imgs', 'label'])
