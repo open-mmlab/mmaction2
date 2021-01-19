@@ -123,10 +123,15 @@ mmaction2
 ├── configs
 ├── data
 │   ├── ava
-│   │   ├── ava_dense_proposals_train.FAIR.recall_93.9.pkl
-│   │   ├── ava_dense_proposals_val.FAIR.recall_93.9.pkl
-│   │   ├── ava_dense_proposals_test.FAIR.recall_93.9.pkl
 │   │   ├── annotations
+│   │   |   ├── ava_dense_proposals_train.FAIR.recall_93.9.pkl
+│   │   |   ├── ava_dense_proposals_val.FAIR.recall_93.9.pkl
+│   │   |   ├── ava_dense_proposals_test.FAIR.recall_93.9.pkl
+│   │   |   ├── ava_train_v2.1.csv
+│   │   |   ├── ava_val_v2.1.csv
+│   │   |   ├── ava_train_excluded_timestamps_v2.1.csv
+│   │   |   ├── ava_val_excluded_timestamps_v2.1.csv
+│   │   |   ├── ava_action_list_v2.1_for_activitynet_2018.pbtxt
 │   │   ├── videos
 │   │   │   ├── 053oq2xB3oU.mkv
 │   │   │   ├── 0f39OWEqJ24.mp4
