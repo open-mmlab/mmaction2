@@ -172,5 +172,4 @@ class TestAVADataset:
         res = ava_dataset.evaluate(fake_result)
         assert_array_almost_equal(res['Recall@0.5@100'], 0.33333333)
         assert_array_almost_equal(res['AR@100'], 0.15833333)
-        assert_array_almost_equal(res['PascalBoxes_Precision/mAP@0.5IOU'],
-                                  0.027777778)
+        assert_array_almost_equal(res['mAP@0.5IOU'], 0.027777778)

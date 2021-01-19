@@ -142,7 +142,7 @@ lr_config = dict(
 total_epochs = 20
 checkpoint_config = dict(interval=1)
 workflow = [('train', 1)]
-evaluation = dict(interval=1)
+evaluation = dict(interval=1, key_indicator='mAP@0.5IOU')
 log_config = dict(
     interval=20, hooks=[
         dict(type='TextLoggerHook'),
