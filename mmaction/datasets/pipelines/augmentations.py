@@ -43,25 +43,24 @@ def _init_lazy_if_proper(results, lazy):
 
 
 @PIPELINES.register_module()
-class Imgaug(object):
+class Imgaug:
     """Imgaug augmentation.
 
     Adds custom transformations from imgaug library.
-    Please, visit `https://imgaug.readthedocs.io/en/latest/index.html`
+    Please visit `https://imgaug.readthedocs.io/en/latest/index.html`
     to get more information. An example of ``transforms`` could be found
-    in `_default_transforms`
+    in `default_transforms`
 
     Required keys are "imgs" and "img_shape"(if "gt_bboxes" is not None),
     added or modified keys are "imgs", "img_shape", "gt_bboxes", "proposals".
 
     It is worth mentioning that `Imgaug` will NOT create custom keys like
     "interpolation", "crop_bbox", "flip_direction", etc. So when using
-    `Imgaug` along with other mmaction2 pipelines, we should pay more attetion
+    `Imgaug` along with other mmaction2 pipelines, we should pay more attention
     to required keys.
 
-    Three steps to use `Imgaug` pipeline:
-    1. Choose our favourite augmenters in imgaug docs and set related args.
-    2. Create initialization parameter `transforms`. There are three ways
+    Two steps to use `Imgaug` pipeline:
+    1. Create initialization parameter `transforms`. There are three ways
         to create `transforms`.
         1) string: only support `default` for now.
             e.g. `transforms='default'`
@@ -73,7 +72,7 @@ class Imgaug(object):
             e.g. `transforms=[dict(type=iaa.Rotate, rotate=(-20, 20))]`
         3) iaa.Augmenter: create an imgaug.Augmenter object.
             e.g. `transforms=iaa.Rotate(rotate=(-20, 20))`
-    3. Add `Imgaug` in dataset pipeline. It is recommended to insert imgaug
+    2. Add `Imgaug` in dataset pipeline. It is recommended to insert imgaug
         pipeline before `FormatShape`. A demo pipeline is listed as follows.
         ```
         pipeline = [
@@ -96,7 +95,7 @@ class Imgaug(object):
             dict(type='Flip', flip_ratio=0.5),
             dict(type='Imgaug', transforms='default'),
             # dict(type='Imgaug', transforms=[
-            #     dict(type=iaa.Rotate, rotate=(-20, 20))
+            #     dict(type='Rotate', rotate=(-20, 20))
             # ]),
             # dict(type='Imgaug',transforms=iaa.Rotate(rotate=(-20, 20))),
             dict(type='FormatShape', input_format='NCHW'),
@@ -117,7 +116,7 @@ class Imgaug(object):
         self.bbs = imgaug.augmentables.bbs
 
         if transforms == 'default':
-            self.transforms = self._default_transforms()
+            self.transforms = self.default_transforms()
         elif isinstance(transforms, list):
             assert all(isinstance(trans, dict) for trans in transforms)
             self.transforms = transforms
@@ -131,7 +130,7 @@ class Imgaug(object):
             self.aug = self.iaa.Sequential(
                 [self.imgaug_builder(t) for t in self.transforms])
 
-    def _default_transforms(self):
+    def default_transforms(self):
         """Default transforms for imgaug."""
 
         return [
@@ -170,8 +169,8 @@ class Imgaug(object):
     def imgaug_builder(self, cfg):
         """Import a module from imgaug.
 
-        It inherits some of :func:`build_from_cfg` logic. Use a dict object to
-        create a iaa.Augmenter object.
+        It follows the logic of :func:`build_from_cfg`. Use a dict object to
+        create an iaa.Augmenter object.
 
         Args:
             cfg (dict): Config dict. It should at least contain the key "type".
