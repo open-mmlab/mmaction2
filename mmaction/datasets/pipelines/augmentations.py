@@ -48,8 +48,13 @@ class Imgaug:
 
     Adds custom transformations from imgaug library.
     Please visit `https://imgaug.readthedocs.io/en/latest/index.html`
-    to get more information. An example of ``transforms`` could be found
-    in `default_transforms`
+    to get more information. Two demo configs could be found in tsn and i3d
+    config folder.
+
+    It's better to use uint8 images as inputs since imgaug works best with
+    numpy dtype uint8 and isn't well tested with other dtypes. It should be
+    noted that not all of the augmenters have the same input and output dtype,
+    which may cause unexpected results.
 
     Required keys are "imgs", "img_shape"(if "gt_bboxes" is not None) and
     "modality", added or modified keys are "imgs", "img_shape", "gt_bboxes"
@@ -74,7 +79,7 @@ class Imgaug:
         3) iaa.Augmenter: create an imgaug.Augmenter object.
             e.g. `transforms=iaa.Rotate(rotate=(-20, 20))`
     2. Add `Imgaug` in dataset pipeline. It is recommended to insert imgaug
-        pipeline before `FormatShape`. A demo pipeline is listed as follows.
+        pipeline before `Normalize`. A demo pipeline is listed as follows.
         ```
         pipeline = [
             dict(
@@ -98,6 +103,7 @@ class Imgaug:
             # dict(type='Imgaug', transforms=[
             #     dict(type='Rotate', rotate=(-20, 20))
             # ]),
+            dict(type='Normalize', **img_norm_cfg),
             dict(type='FormatShape', input_format='NCHW'),
             dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
             dict(type='ToTensor', keys=['imgs', 'label'])
@@ -110,24 +116,21 @@ class Imgaug:
     """
 
     def __init__(self, transforms):
-        import imgaug
-
-        self.iaa = imgaug.augmenters
-        self.bbs = imgaug.augmentables.bbs
+        import imgaug.augmenters as iaa
 
         if transforms == 'default':
             self.transforms = self.default_transforms()
         elif isinstance(transforms, list):
             assert all(isinstance(trans, dict) for trans in transforms)
             self.transforms = transforms
-        elif isinstance(transforms, self.iaa.Augmenter):
+        elif isinstance(transforms, iaa.Augmenter):
             self.aug = self.transforms = transforms
         else:
             raise ValueError('transforms must be `default` or a list of dicts'
                              ' or iaa.Augmenter object')
 
-        if not isinstance(transforms, self.iaa.Augmenter):
-            self.aug = self.iaa.Sequential(
+        if not isinstance(transforms, iaa.Augmenter):
+            self.aug = iaa.Sequential(
                 [self.imgaug_builder(t) for t in self.transforms])
 
     def default_transforms(self):
@@ -178,13 +181,15 @@ class Imgaug:
         Returns:
             obj:`iaa.Augmenter`: The constructed imgaug augmenter.
         """
+        import imgaug.augmenters as iaa
+
         assert isinstance(cfg, dict) and 'type' in cfg
         args = cfg.copy()
 
         obj_type = args.pop('type')
         if mmcv.is_str(obj_type):
-            obj_cls = getattr(self.iaa, obj_type)
-        elif issubclass(obj_type, self.iaa.Augmenter):
+            obj_cls = getattr(iaa, obj_type)
+        elif issubclass(obj_type, iaa.Augmenter):
             obj_cls = obj_type
         else:
             raise TypeError(
@@ -203,6 +208,7 @@ class Imgaug:
 
     def __call__(self, results):
         assert results['modality'] == 'RGB', 'Imgaug only support RGB images.'
+        in_type = results['imgs'][0].dtype.type
 
         cur_aug = self.aug.to_deterministic()
 
@@ -211,13 +217,19 @@ class Imgaug:
         ]
         img_h, img_w, _ = results['imgs'][0].shape
 
+        out_type = results['imgs'][0].dtype.type
+        assert in_type == out_type, \
+            ('Imgaug input dtype and output dtype are not the same. ',
+             f'Convert from {in_type} to {out_type}')
+
         if 'gt_bboxes' in results:
+            from imgaug.augmentables import bbs
             bbox_list = [
-                self.bbs.BoundingBox(
+                bbs.BoundingBox(
                     x1=bbox[0], y1=bbox[1], x2=bbox[2], y2=bbox[3])
                 for bbox in results['gt_bboxes']
             ]
-            bboxes = self.bbs.BoundingBoxesOnImage(
+            bboxes = bbs.BoundingBoxesOnImage(
                 bbox_list, shape=results['img_shape'])
             bbox_aug, *_ = cur_aug.augment_bounding_boxes([bboxes])
             results['gt_bboxes'] = [[
@@ -228,11 +240,11 @@ class Imgaug:
             ] for bbox in bbox_aug.items]
             if 'proposals' in results:
                 bbox_list = [
-                    self.bbs.BoundingBox(
+                    bbs.BoundingBox(
                         x1=bbox[0], y1=bbox[1], x2=bbox[2], y2=bbox[3])
                     for bbox in results['proposals']
                 ]
-                bboxes = self.bbs.BoundingBoxesOnImage(
+                bboxes = bbs.BoundingBoxesOnImage(
                     bbox_list, shape=results['img_shape'])
                 bbox_aug, *_ = cur_aug.augment_bounding_boxes([bboxes])
                 results['proposals'] = [[
