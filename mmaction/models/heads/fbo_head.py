@@ -10,12 +10,14 @@ import torch.nn as nn
 from mmcv.cnn import ConvModule, constant_init, kaiming_init
 from mmcv.runner import auto_fp16, load_checkpoint
 
+from mmaction.utils import get_root_logger
+
 try:
-    from mmdet.models.builder import SHARED_HEADS
-    from mmdet.utils import get_root_logger
+    from mmdet.models.builder import SHARED_HEADS as MMDET_SHARED_HEADS
+    mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
-    warnings.warn('Please install mmdet to use bbox2roi, SHARED_HEADS '
-                  'and StandardRoIHead')
+    warnings.warn('Please install mmdet to SHARED_HEADS')
+    mmdet_imported = False
 
 
 class FeatureBank(object):
@@ -235,7 +237,7 @@ class FBOMax(nn.Module):
     pass
 
 
-@SHARED_HEADS.register_module()
+@MMDET_SHARED_HEADS.register_module()
 class FBOHead(nn.Module):
 
     fbo_dict = {'non_local': FBONonLocal, 'avg': FBOAvg, 'max': FBOMax}

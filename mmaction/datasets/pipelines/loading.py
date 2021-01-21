@@ -1115,7 +1115,8 @@ class RawFrameDecode:
         mmcv.use_backend(self.decoding_backend)
 
         directory = results['frame_dir']
-        filename_tmpl = results['filename_tmpl']
+        filename_tmpl = results['filename_tmpl'].replace(
+            'img', results['video_id'])
         modality = results['modality']
 
         if self.file_client is None:
