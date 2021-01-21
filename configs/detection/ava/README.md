@@ -90,7 +90,7 @@ You can train custom classes from ava.
   - There are three `num_classes` in ava config, `model -> roi_head -> bbox_head -> num_classes`, `data -> train -> num_classes` and `data -> val -> num_classes`.
 - Step 3: Make sure all custom classes are in `label_file`. It is worth mentioning that there are two label files, `f'{anno_root}/ava_action_list_v2.1_for_activitynet_2018.pbtxt'`(contains 60 classes, 20 classes are missing) and `f'{anno_root}/ava_action_list_v2.1.pbtxt'`(contains all 80 classes).
 
-In the newAn example is shown in [slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes.py](/configs/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes.py)
+An example config is shown in [slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes.py](/configs/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes.py)
 
 ## Test
 
