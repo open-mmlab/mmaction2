@@ -12,6 +12,7 @@ target_cate = 'object'
 model = dict(
     backbone=dict(pretrained='torchvision://resnet18', depth=18),
     cls_head=dict(
+        in_channels=512,
         num_classes=category_nums[target_cate],
         multi_class=True,
         loss_cls=dict(type='BCELossWithLogits', loss_weight=333.)))

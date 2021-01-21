@@ -63,7 +63,7 @@ test_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
-    videos_per_gpu=8,
+    videos_per_gpu=6,
     workers_per_gpu=4,
     train=dict(
         type=dataset_type,
@@ -82,9 +82,6 @@ data = dict(
         pipeline=test_pipeline))
 evaluation = dict(
     interval=2, metrics=['top_k_accuracy', 'mean_class_accuracy'])
-
-# dataset settings
-data = dict(videos_per_gpu=6, workers_per_gpu=4)
 
 # optimizer
 optimizer = dict(

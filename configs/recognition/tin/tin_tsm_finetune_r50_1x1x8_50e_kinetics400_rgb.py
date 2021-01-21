@@ -3,6 +3,9 @@ _base_ = [
     '../../_base_/default_runtime.py'
 ]
 
+# model settings
+model = dict(cls_head=dict(is_shift=True))
+
 # dataset settings
 dataset_type = 'RawframeDataset'
 data_root = 'data/kinetics400/rawframes_train'

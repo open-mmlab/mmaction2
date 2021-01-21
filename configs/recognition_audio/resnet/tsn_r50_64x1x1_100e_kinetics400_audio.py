@@ -1,7 +1,5 @@
 _base_ = [
-    '../../_base_/models/tsn_r50_audio.py',
-    '../../_base_/datasets/kinetics400_64x1x1_audio.py',
-    '../../_base_/default_runtime.py'
+    '../../_base_/models/tsn_r50_audio.py', '../../_base_/default_runtime.py'
 ]
 
 # dataset settings
