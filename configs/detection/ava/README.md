@@ -80,6 +80,18 @@ python tools/train.py configs/detection/AVA/slowonly_kinetics_pretrained_r50_8x8
 
 For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting) .
 
+### Train Custom Classes From Ava Dataset
+
+You can train custom classes from ava.
+
+- Step 1: Select custom classes from original classes, named `custom_classes`. Class `0` should not be selected since it is designed for potential usage(not implemented yet) and will be added automatically.
+- Step 2: Set `num_classes`. In order to be compatible with current codes, plase make sure `num_classes == len(custom_classes) + 1`.
+  - The new class `0` corresponds to original class `0`. The new class `i`(i > 0) corresponds to original class `custom_classes[i-1]`.
+  - There are three `num_classes` in ava config, `model -> roi_head -> bbox_head -> num_classes`, `data -> train -> num_classes` and `data -> val -> num_classes`.
+- Step 3: Make sure all custom classes are in `label_file`. It is worth mentioning that there are two label files, `f'{anno_root}/ava_action_list_v2.1_for_activitynet_2018.pbtxt'`(contains 60 classes, 20 classes are missing) and `f'{anno_root}/ava_action_list_v2.1.pbtxt'`(contains all 80 classes).
+
+In the newAn example is shown in [slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes.py](/configs/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes.py)
+
 ## Test
 
 You can use the following command to test a model.
