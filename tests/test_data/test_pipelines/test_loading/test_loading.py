@@ -4,14 +4,11 @@ import os.path as osp
 import mmcv
 import numpy as np
 import pytest
-import torch
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from mmaction.datasets.pipelines import (AudioFeatureSelector,
                                          DenseSampleFrames,
                                          GenerateLocalizationLabels,
-                                         LoadAudioFeature, LoadHVULabel,
-                                         LoadLocalizationFeature,
                                          LoadProposals, SampleAVAFrames,
                                          SampleFrames, SampleProposalFrames,
                                          UntrimmedSampleFrames)
@@ -132,48 +129,6 @@ class TestLoading:
             categories=['action', 'object', 'scene', 'concept'],
             category_nums=[2, 5, 3, 2],
             label=dict(action=[1], scene=[1, 2], concept=[1]))
-
-    def test_load_hvu_label(self):
-        hvu_label_example1 = copy.deepcopy(self.hvu_label_example1)
-        hvu_label_example2 = copy.deepcopy(self.hvu_label_example2)
-        categories = hvu_label_example1['categories']
-        category_nums = hvu_label_example1['category_nums']
-        num_tags = sum(category_nums)
-        num_categories = len(categories)
-
-        loader = LoadHVULabel()
-        assert repr(loader) == (f'{loader.__class__.__name__}('
-                                f'hvu_initialized={False})')
-
-        result1 = loader(hvu_label_example1)
-        label1 = torch.zeros(num_tags)
-        mask1 = torch.zeros(num_tags)
-        category_mask1 = torch.zeros(num_categories)
-
-        assert repr(loader) == (f'{loader.__class__.__name__}('
-                                f'hvu_initialized={True})')
-
-        label1[[0, 4, 5, 7, 8]] = 1.
-        mask1[:10] = 1.
-        category_mask1[:3] = 1.
-
-        assert torch.all(torch.eq(label1, result1['label']))
-        assert torch.all(torch.eq(mask1, result1['mask']))
-        assert torch.all(torch.eq(category_mask1, result1['category_mask']))
-
-        result2 = loader(hvu_label_example2)
-        label2 = torch.zeros(num_tags)
-        mask2 = torch.zeros(num_tags)
-        category_mask2 = torch.zeros(num_categories)
-
-        label2[[1, 8, 9, 11]] = 1.
-        mask2[:2] = 1.
-        mask2[7:] = 1.
-        category_mask2[[0, 2, 3]] = 1.
-
-        assert torch.all(torch.eq(label2, result2['label']))
-        assert torch.all(torch.eq(mask2, result2['mask']))
-        assert torch.all(torch.eq(category_mask2, result2['category_mask']))
 
     def test_sample_frames(self):
         target_keys = [
@@ -920,28 +875,6 @@ class TestLoading:
                                        f'temporal_jitter={False}, '
                                        f'mode=val)')
 
-    def test_load_localization_feature(self):
-        target_keys = ['raw_feature']
-
-        action_result = copy.deepcopy(self.action_results)
-
-        # test error cases
-        with pytest.raises(NotImplementedError):
-            load_localization_feature = LoadLocalizationFeature(
-                'unsupport_ext')
-
-        # test normal cases
-        load_localization_feature = LoadLocalizationFeature()
-        load_localization_feature_result = load_localization_feature(
-            action_result)
-        assert self.check_keys_contain(load_localization_feature_result.keys(),
-                                       target_keys)
-        assert load_localization_feature_result['raw_feature'].shape == (400,
-                                                                         5)
-        assert repr(load_localization_feature) == (
-            f'{load_localization_feature.__class__.__name__}('
-            f'raw_feature_ext=.csv)')
-
     def test_generate_localization_label(self):
         action_result = copy.deepcopy(self.action_results)
         action_result['raw_feature'] = np.random.randn(400, 5)
@@ -1012,24 +945,6 @@ class TestLoading:
             f'pgm_features_dir={self.bsp_feature_dir}, '
             f'proposal_ext=.csv, '
             f'feature_ext=.npy)')
-
-    def test_load_audio_feature(self):
-        target_keys = ['audios']
-        inputs = copy.deepcopy(self.audio_feature_results)
-        load_audio_feature = LoadAudioFeature()
-        results = load_audio_feature(inputs)
-        assert self.check_keys_contain(results.keys(), target_keys)
-
-        # test when no audio feature file exists
-        inputs = copy.deepcopy(self.audio_feature_results)
-        inputs['audio_path'] = 'foo/foo/bar.npy'
-        load_audio_feature = LoadAudioFeature()
-        results = load_audio_feature(inputs)
-        assert results['audios'].shape == (640, 80)
-        assert self.check_keys_contain(results.keys(), target_keys)
-        assert repr(load_audio_feature) == (
-            f'{load_audio_feature.__class__.__name__}('
-            f'pad_method=zero)')
 
     def test_audio_feature_selector(self):
         target_keys = ['audios']
