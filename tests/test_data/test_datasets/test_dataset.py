@@ -5,9 +5,9 @@ import pytest
 from mmcv import ConfigDict
 from numpy.testing import assert_array_almost_equal
 
-from mmaction.datasets import (AudioFeatureDataset, AudioVisualDataset,
-                               HVUDataset, RawframeDataset, RawVideoDataset,
-                               RepeatDataset, SSNDataset, VideoDataset)
+from mmaction.datasets import (AudioVisualDataset, HVUDataset, RawframeDataset,
+                               RawVideoDataset, RepeatDataset, SSNDataset,
+                               VideoDataset)
 
 
 class TestDataset:
@@ -256,17 +256,6 @@ class TestDataset:
         ] * 2
         assert rawframe_dataset.start_index == 1
 
-    def test_audio_feature_dataset(self):
-        audio_dataset = AudioFeatureDataset(
-            self.audio_feature_ann_file,
-            self.audio_feature_pipeline,
-            data_prefix=self.data_prefix)
-        audio_infos = audio_dataset.video_infos
-        feature_path = osp.join(self.data_prefix, 'test.npy')
-        assert audio_infos == [
-            dict(audio_path=feature_path, total_frames=100, label=127)
-        ] * 2
-
     def test_rawframe_dataset_with_offset(self):
         rawframe_dataset = RawframeDataset(
             self.frame_ann_file_with_offset,
@@ -408,30 +397,6 @@ class TestDataset:
             test_mode=True)
         result = rawframe_dataset[0]
         assert self.check_keys_contain(result.keys(), target_keys + ['offset'])
-
-    def test_audio_feature_pipeline(self):
-        target_keys = [
-            'audio_path', 'label', 'start_index', 'modality', 'audios',
-            'total_frames'
-        ]
-
-        # Audio feature dataset not in test mode
-        audio_feature_dataset = AudioFeatureDataset(
-            self.audio_feature_ann_file,
-            self.audio_feature_pipeline,
-            data_prefix=self.data_prefix,
-            test_mode=False)
-        result = audio_feature_dataset[0]
-        assert self.check_keys_contain(result.keys(), target_keys)
-
-        # Audio dataset in test mode
-        audio_feature_dataset = AudioFeatureDataset(
-            self.audio_feature_ann_file,
-            self.audio_feature_pipeline,
-            data_prefix=self.data_prefix,
-            test_mode=True)
-        result = audio_feature_dataset[0]
-        assert self.check_keys_contain(result.keys(), target_keys)
 
     def test_video_pipeline(self):
         target_keys = ['filename', 'label', 'start_index', 'modality']
@@ -709,34 +674,3 @@ class TestDataset:
             'mAP@0.10', 'mAP@0.20', 'mAP@0.30', 'mAP@0.40', 'mAP@0.50',
             'mAP@0.50', 'mAP@0.60', 'mAP@0.70', 'mAP@0.80', 'mAP@0.90'
         ])
-
-    def test_audio_feature_evaluate(self):
-        audio_dataset = AudioFeatureDataset(
-            self.audio_feature_ann_file,
-            self.audio_feature_pipeline,
-            data_prefix=self.data_prefix)
-
-        with pytest.raises(TypeError):
-            # results must be a list
-            audio_dataset.evaluate('0.5')
-
-        with pytest.raises(AssertionError):
-            # The length of results must be equal to the dataset len
-            audio_dataset.evaluate([0] * 5)
-
-        with pytest.raises(TypeError):
-            # topk must be int or tuple of int
-            audio_dataset.evaluate(
-                [0] * len(audio_dataset),
-                metric_options=dict(top_k_accuracy=dict(topk=1.)))
-
-        with pytest.raises(KeyError):
-            # unsupported metric
-            audio_dataset.evaluate([0] * len(audio_dataset), metrics='iou')
-
-        # evaluate top_k_accuracy and mean_class_accuracy metric
-        results = [np.array([0.1, 0.5, 0.4])] * 2
-        eval_result = audio_dataset.evaluate(
-            results, metrics=['top_k_accuracy', 'mean_class_accuracy'])
-        assert set(eval_result) == set(
-            ['top1_acc', 'top5_acc', 'mean_class_accuracy'])
