@@ -119,3 +119,10 @@ work_dirs/
 
 # Profile
 *.prof
+
+# unignore some anno or data type in tests/data
+!tests/data/**/*.pkl
+!tests/data/**/*.pkl.json
+!tests/data/**/*.log.json
+!tests/data/**/*.pth
+!tests/data/**/*.prof

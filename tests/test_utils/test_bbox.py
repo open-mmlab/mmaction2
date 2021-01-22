@@ -15,7 +15,8 @@ except (ImportError, ModuleNotFoundError):
 
 
 def test_assigner_sampler():
-    data_prefix = osp.join(osp.dirname(__file__), 'data/test_eval_detection')
+    data_prefix = osp.normpath(
+        osp.join(osp.dirname(__file__), '../data/eval_detection'))
     ann_file = osp.join(data_prefix, 'gt.csv')
     label_file = osp.join(data_prefix, 'action_list.txt')
     proposal_file = osp.join(data_prefix, 'proposal.pkl')
