@@ -14,7 +14,7 @@ class TestRepeatDataset(BaseTestDataset):
         assert len(repeat_dataset) == 10
         result_a = repeat_dataset[0]
         result_b = repeat_dataset[2]
-        assert set(result_a.keys()) == set(result_b.keys())
+        assert set(result_a) == set(result_b)
         for key in result_a:
             if isinstance(result_a[key], np.ndarray):
                 assert np.equal(result_a[key], result_b[key]).all()

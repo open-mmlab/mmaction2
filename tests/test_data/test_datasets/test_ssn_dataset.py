@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+from mmcv.utils import assert_dict_has_keys
 
 from mmaction.datasets import SSNDataset
 from .base import BaseTestDataset
@@ -23,7 +24,7 @@ class TestSSNDataset(BaseTestDataset):
             self.proposal_test_cfg,
             data_prefix=self.data_prefix)
         result = proposal_dataset[0]
-        assert self.check_keys_contain(result.keys(), target_keys)
+        assert assert_dict_has_keys(result, target_keys)
 
         # SSN Dataset with random sampling proposals
         proposal_dataset = SSNDataset(
@@ -34,7 +35,7 @@ class TestSSNDataset(BaseTestDataset):
             data_prefix=self.data_prefix,
             video_centric=False)
         result = proposal_dataset[0]
-        assert self.check_keys_contain(result.keys(), target_keys)
+        assert assert_dict_has_keys(result, target_keys)
 
         target_keys = [
             'frame_dir', 'video_id', 'total_frames', 'gts', 'proposals',
@@ -52,7 +53,7 @@ class TestSSNDataset(BaseTestDataset):
             data_prefix=self.data_prefix,
             test_mode=True)
         result = proposal_dataset[0]
-        assert self.check_keys_contain(result.keys(), target_keys)
+        assert assert_dict_has_keys(result, target_keys)
 
     def test_ssn_dataset(self):
         # test ssn dataset

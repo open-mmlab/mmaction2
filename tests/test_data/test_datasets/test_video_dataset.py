@@ -2,6 +2,7 @@ import os.path as osp
 
 import numpy as np
 import pytest
+from mmcv.utils import assert_dict_has_keys
 
 from mmaction.datasets import VideoDataset
 from .base import BaseTestDataset
@@ -37,7 +38,7 @@ class TestVideoDataset(BaseTestDataset):
             data_prefix=self.data_prefix,
             test_mode=False)
         result = video_dataset[0]
-        assert self.check_keys_contain(result.keys(), target_keys)
+        assert assert_dict_has_keys(result, target_keys)
 
         # VideoDataset in test mode
         video_dataset = VideoDataset(
@@ -46,7 +47,7 @@ class TestVideoDataset(BaseTestDataset):
             data_prefix=self.data_prefix,
             test_mode=True)
         result = video_dataset[0]
-        assert self.check_keys_contain(result.keys(), target_keys)
+        assert assert_dict_has_keys(result, target_keys)
 
     def test_video_evaluate(self):
         video_dataset = VideoDataset(
@@ -76,5 +77,5 @@ class TestVideoDataset(BaseTestDataset):
         results = [np.array([0.1, 0.5, 0.4])] * 2
         eval_result = video_dataset.evaluate(
             results, metrics=['top_k_accuracy', 'mean_class_accuracy'])
-        assert set(eval_result.keys()) == set(
+        assert set(eval_result) == set(
             ['top1_acc', 'top5_acc', 'mean_class_accuracy'])

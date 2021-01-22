@@ -160,5 +160,5 @@ class TestRawframDataset(BaseTestDataset):
         results = [np.array([0.1, 0.5, 0.4])] * 2
         eval_result = rawframe_dataset.evaluate(
             results, metrics=['top_k_accuracy', 'mean_class_accuracy'])
-        assert set(eval_result.keys()) == set(
+        assert set(eval_result) == set(
             ['top1_acc', 'top5_acc', 'mean_class_accuracy'])
