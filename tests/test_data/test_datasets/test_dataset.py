@@ -1,15 +1,11 @@
-import os
 import os.path as osp
-import tempfile
 
-import mmcv
 import numpy as np
 import pytest
 from mmcv import ConfigDict
-from numpy.testing import assert_array_almost_equal, assert_array_equal
+from numpy.testing import assert_array_almost_equal
 
-from mmaction.datasets import (ActivityNetDataset, AudioDataset,
-                               AudioFeatureDataset, AudioVisualDataset,
+from mmaction.datasets import (AudioFeatureDataset, AudioVisualDataset,
                                HVUDataset, RawframeDataset, RawVideoDataset,
                                RepeatDataset, SSNDataset, VideoDataset)
 
@@ -260,17 +256,6 @@ class TestDataset:
         ] * 2
         assert rawframe_dataset.start_index == 1
 
-    def test_audio_dataset(self):
-        audio_dataset = AudioDataset(
-            self.audio_ann_file,
-            self.audio_pipeline,
-            data_prefix=self.data_prefix)
-        audio_infos = audio_dataset.video_infos
-        wav_path = osp.join(self.data_prefix, 'test.wav')
-        assert audio_infos == [
-            dict(audio_path=wav_path, total_frames=100, label=127)
-        ] * 2
-
     def test_audio_feature_dataset(self):
         audio_dataset = AudioFeatureDataset(
             self.audio_feature_ann_file,
@@ -424,30 +409,6 @@ class TestDataset:
         result = rawframe_dataset[0]
         assert self.check_keys_contain(result.keys(), target_keys + ['offset'])
 
-    def test_audio_pipeline(self):
-        target_keys = [
-            'audio_path', 'label', 'start_index', 'modality', 'audios_shape',
-            'length', 'sample_rate', 'total_frames'
-        ]
-
-        # Audio dataset not in test mode
-        audio_dataset = AudioDataset(
-            self.audio_ann_file,
-            self.audio_pipeline,
-            data_prefix=self.data_prefix,
-            test_mode=False)
-        result = audio_dataset[0]
-        assert self.check_keys_contain(result.keys(), target_keys)
-
-        # Audio dataset in test mode
-        audio_dataset = AudioDataset(
-            self.audio_ann_file,
-            self.audio_pipeline,
-            data_prefix=self.data_prefix,
-            test_mode=True)
-        result = audio_dataset[0]
-        assert self.check_keys_contain(result.keys(), target_keys)
-
     def test_audio_feature_pipeline(self):
         target_keys = [
             'audio_path', 'label', 'start_index', 'modality', 'audios',
@@ -491,27 +452,6 @@ class TestDataset:
             data_prefix=self.data_prefix,
             test_mode=True)
         result = video_dataset[0]
-        assert self.check_keys_contain(result.keys(), target_keys)
-
-    def test_action_pipeline(self):
-        target_keys = ['video_name', 'data_prefix']
-
-        # ActivityNet Dataset not in test mode
-        action_dataset = ActivityNetDataset(
-            self.action_ann_file,
-            self.action_pipeline,
-            self.data_prefix,
-            test_mode=False)
-        result = action_dataset[0]
-        assert self.check_keys_contain(result.keys(), target_keys)
-
-        # ActivityNet Dataset in test mode
-        action_dataset = ActivityNetDataset(
-            self.action_ann_file,
-            self.action_pipeline,
-            self.data_prefix,
-            test_mode=True)
-        result = action_dataset[0]
         assert self.check_keys_contain(result.keys(), target_keys)
 
     def test_proposal_pipeline(self):
@@ -651,145 +591,6 @@ class TestDataset:
             else:
                 assert result_a[key] == result_b[key]
 
-    def test_activitynet_dataset(self):
-        activitynet_dataset = ActivityNetDataset(self.action_ann_file,
-                                                 self.action_pipeline,
-                                                 self.data_prefix)
-        activitynet_infos = activitynet_dataset.video_infos
-        assert activitynet_infos == [
-            dict(
-                video_name='v_test1',
-                duration_second=1,
-                duration_frame=30,
-                annotations=[dict(segment=[0.3, 0.6], label='Rock climbing')],
-                feature_frame=30,
-                fps=30.0,
-                rfps=30),
-            dict(
-                video_name='v_test2',
-                duration_second=2,
-                duration_frame=48,
-                annotations=[dict(segment=[1.0, 2.0], label='Drinking beer')],
-                feature_frame=48,
-                fps=24.0,
-                rfps=24.0)
-        ]
-
-    def test_activitynet_proposals2json(self):
-        activitynet_dataset = ActivityNetDataset(self.action_ann_file,
-                                                 self.action_pipeline,
-                                                 self.data_prefix)
-        results = [
-            dict(
-                video_name='v_test1',
-                proposal_list=[dict(segment=[0.1, 0.9], score=0.1)]),
-            dict(
-                video_name='v_test2',
-                proposal_list=[dict(segment=[10.1, 20.9], score=0.9)])
-        ]
-        result_dict = activitynet_dataset.proposals2json(results)
-        assert result_dict == dict(
-            test1=[{
-                'segment': [0.1, 0.9],
-                'score': 0.1
-            }],
-            test2=[{
-                'segment': [10.1, 20.9],
-                'score': 0.9
-            }])
-        result_dict = activitynet_dataset.proposals2json(results, True)
-        assert result_dict == dict(
-            test1=[{
-                'segment': [0.1, 0.9],
-                'score': 0.1
-            }],
-            test2=[{
-                'segment': [10.1, 20.9],
-                'score': 0.9
-            }])
-
-    def test_activitynet_evaluate(self):
-        activitynet_dataset = ActivityNetDataset(self.action_ann_file,
-                                                 self.action_pipeline,
-                                                 self.data_prefix)
-
-        with pytest.raises(TypeError):
-            # results must be a list
-            activitynet_dataset.evaluate('0.5')
-
-        with pytest.raises(AssertionError):
-            # The length of results must be equal to the dataset len
-            activitynet_dataset.evaluate([0] * 5)
-
-        with pytest.raises(KeyError):
-            # unsupported metric
-            activitynet_dataset.evaluate(
-                [0] * len(activitynet_dataset), metrics='iou')
-
-        # evaluate AR@AN metric
-        results = [
-            dict(
-                video_name='v_test1',
-                proposal_list=[dict(segment=[0.1, 0.9], score=0.1)]),
-            dict(
-                video_name='v_test2',
-                proposal_list=[dict(segment=[10.1, 20.9], score=0.9)])
-        ]
-        eval_result = activitynet_dataset.evaluate(results, metrics=['AR@AN'])
-        assert set(eval_result) == set(
-            ['auc', 'AR@1', 'AR@5', 'AR@10', 'AR@100'])
-
-    def test_activitynet_dump_results(self):
-        activitynet_dataset = ActivityNetDataset(self.action_ann_file,
-                                                 self.action_pipeline,
-                                                 self.data_prefix)
-        # test dumping json file
-        results = [
-            dict(
-                video_name='v_test1',
-                proposal_list=[dict(segment=[0.1, 0.9], score=0.1)]),
-            dict(
-                video_name='v_test2',
-                proposal_list=[dict(segment=[10.1, 20.9], score=0.9)])
-        ]
-        dump_results = {
-            'version': 'VERSION 1.3',
-            'results': {
-                'test1': [{
-                    'segment': [0.1, 0.9],
-                    'score': 0.1
-                }],
-                'test2': [{
-                    'segment': [10.1, 20.9],
-                    'score': 0.9
-                }]
-            },
-            'external_data': {}
-        }
-
-        tmp_filename = osp.join(tempfile.gettempdir(), 'result.json')
-        activitynet_dataset.dump_results(results, tmp_filename, 'json')
-        assert osp.isfile(tmp_filename)
-        with open(tmp_filename, 'r+') as f:
-            load_obj = mmcv.load(f, file_format='json')
-        assert load_obj == dump_results
-        os.remove(tmp_filename)
-
-        # test dumping csv file
-        results = [('test_video', np.array([[1, 2, 3, 4, 5], [6, 7, 8, 9,
-                                                              10]]))]
-        with tempfile.TemporaryDirectory() as tmpdir:
-            activitynet_dataset.dump_results(results, tmpdir, 'csv')
-            load_obj = np.loadtxt(
-                osp.join(tmpdir, 'test_video.csv'),
-                dtype=np.float32,
-                delimiter=',',
-                skiprows=1)
-            assert_array_equal(
-                load_obj,
-                np.array([[1, 2, 3, 4, 5], [6, 7, 8, 9, 10]],
-                         dtype=np.float32))
-
     def test_ssn_dataset(self):
         # test ssn dataset
         ssn_dataset = SSNDataset(
@@ -908,37 +709,6 @@ class TestDataset:
             'mAP@0.10', 'mAP@0.20', 'mAP@0.30', 'mAP@0.40', 'mAP@0.50',
             'mAP@0.50', 'mAP@0.60', 'mAP@0.70', 'mAP@0.80', 'mAP@0.90'
         ])
-
-    def test_audio_evaluate(self):
-        audio_dataset = AudioDataset(
-            self.audio_ann_file,
-            self.audio_pipeline,
-            data_prefix=self.data_prefix)
-
-        with pytest.raises(TypeError):
-            # results must be a list
-            audio_dataset.evaluate('0.5')
-
-        with pytest.raises(AssertionError):
-            # The length of results must be equal to the dataset len
-            audio_dataset.evaluate([0] * 5)
-
-        with pytest.raises(TypeError):
-            # topk must be int or tuple of int
-            audio_dataset.evaluate(
-                [0] * len(audio_dataset),
-                metric_options=dict(top_k_accuracy=dict(topk=1.)))
-
-        with pytest.raises(KeyError):
-            # unsupported metric
-            audio_dataset.evaluate([0] * len(audio_dataset), metrics='iou')
-
-        # evaluate top_k_accuracy and mean_class_accuracy metric
-        results = [np.array([0.1, 0.5, 0.4])] * 2
-        eval_result = audio_dataset.evaluate(
-            results, metrics=['top_k_accuracy', 'mean_class_accuracy'])
-        assert set(eval_result.keys()) == set(
-            ['top1_acc', 'top5_acc', 'mean_class_accuracy'])
 
     def test_audio_feature_evaluate(self):
         audio_dataset = AudioFeatureDataset(
