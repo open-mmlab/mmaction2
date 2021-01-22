@@ -7,10 +7,9 @@ import pytest
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from mmaction.datasets.pipelines import (AudioFeatureSelector,
-                                         DenseSampleFrames,
-                                         GenerateLocalizationLabels,
-                                         LoadProposals, SampleAVAFrames,
-                                         SampleFrames, SampleProposalFrames,
+                                         DenseSampleFrames, LoadProposals,
+                                         SampleAVAFrames, SampleFrames,
+                                         SampleProposalFrames,
                                          UntrimmedSampleFrames)
 
 
@@ -874,22 +873,6 @@ class TestLoading:
                                        f'test_interval={6}, '
                                        f'temporal_jitter={False}, '
                                        f'mode=val)')
-
-    def test_generate_localization_label(self):
-        action_result = copy.deepcopy(self.action_results)
-        action_result['raw_feature'] = np.random.randn(400, 5)
-
-        # test default setting
-        target_keys = ['gt_bbox']
-        generate_localization_labels = GenerateLocalizationLabels()
-        generate_localization_labels_result = generate_localization_labels(
-            action_result)
-        assert self.check_keys_contain(
-            generate_localization_labels_result.keys(), target_keys)
-
-        assert_array_almost_equal(
-            generate_localization_labels_result['gt_bbox'], [[0.375, 0.625]],
-            decimal=4)
 
     def test_load_proposals(self):
         target_keys = [
