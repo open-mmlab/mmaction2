@@ -8,7 +8,7 @@ import mmcv
 import numpy as np
 from mmcv.utils import print_log
 
-from mmaction.core.evaluation.ava_utils import ava_eval, results2csv
+from ..core.evaluation.ava_utils import ava_eval, read_labelmap, results2csv
 from ..utils import get_root_logger
 from .base import BaseDataset
 from .registry import DATASETS
@@ -112,6 +112,9 @@ class AVADataset(BaseDataset):
         if custom_classes is not None:
             assert num_classes == len(custom_classes) + 1
             assert 0 not in custom_classes
+            _, class_whitelist = read_labelmap(open(label_file))
+            assert set(custom_classes).issubset(class_whitelist)
+
             self.custom_classes = tuple([0] + custom_classes)
         self.exclude_file = exclude_file
         self.label_file = label_file

@@ -1,3 +1,7 @@
+# custom classes of ava dataset
+custom_classes = list(range(1, 15))
+num_classes = len(custom_classes) + 1
+
 # model setting
 model = dict(
     type='FastRCNN',
@@ -22,7 +26,7 @@ model = dict(
         bbox_head=dict(
             type='BBoxHeadAVA',
             in_channels=2048,
-            num_classes=15,
+            num_classes=num_classes,
             multilabel=True,
             dropout_ratio=0.5)))
 
@@ -114,8 +118,8 @@ data = dict(
         label_file=label_file,
         proposal_file=proposal_file_train,
         person_det_score_thr=0.9,
-        num_classes=15,
-        custom_classes=list(range(1, 15)),
+        num_classes=num_classes,
+        custom_classes=custom_classes,
         data_prefix=data_root),
     val=dict(
         type=dataset_type,
@@ -125,8 +129,8 @@ data = dict(
         label_file=label_file,
         proposal_file=proposal_file_val,
         person_det_score_thr=0.9,
-        num_classes=15,
-        custom_classes=list(range(1, 15)),
+        num_classes=num_classes,
+        custom_classes=custom_classes,
         data_prefix=data_root))
 data['test'] = data['val']
 
