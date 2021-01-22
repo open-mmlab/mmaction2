@@ -18,6 +18,7 @@ class TestAVADataset:
     def setup_class(cls):
         cls.data_prefix = osp.join(
             osp.dirname(osp.dirname(__file__)), 'data', 'test_ava_dataset')
+        cls.label_file = osp.join(cls.data_prefix, 'action_list.txt')
         cls.ann_file = osp.join(cls.data_prefix, 'ava_sample.csv')
         cls.exclude_file = osp.join(cls.data_prefix,
                                     'ava_excluded_timestamps_sample.csv')
@@ -70,6 +71,7 @@ class TestAVADataset:
             self.ann_file,
             self.exclude_file,
             self.pipeline,
+            label_file=self.label_file,
             custom_classes=[17, 79],
             num_classes=3,
             data_prefix=self.data_prefix,
