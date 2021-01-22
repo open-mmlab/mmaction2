@@ -1,2 +1,2 @@
-test_imgs 5 1
-test_imgs 5 3 5
+imgs 5 1
+imgs 5 3 5
