@@ -4,8 +4,8 @@ import numpy as np
 import pytest
 from mmcv import ConfigDict
 
-from mmaction.datasets import (RawframeDataset, RawVideoDataset, RepeatDataset,
-                               SSNDataset, VideoDataset)
+from mmaction.datasets import (RawframeDataset, RepeatDataset, SSNDataset,
+                               VideoDataset)
 
 
 class TestDataset:
@@ -148,29 +148,6 @@ class TestDataset:
         cls.hvu_category_nums_for_eval = [3, 3, 3]
 
         cls.filename_tmpl = 'img_{:05d}.jpg'
-
-    def test_rawvideo_dataset(self):
-        # Try to load txt file
-        rawvideo_dataset = RawVideoDataset(
-            ann_file=self.rawvideo_test_anno_txt,
-            pipeline=self.rawvideo_pipeline,
-            clipname_tmpl='part_{}.mp4',
-            sampling_strategy='positive',
-            data_prefix=self.data_prefix)
-        result = rawvideo_dataset[0]
-        clipname = osp.join(self.data_prefix, 'test_rawvideo_dataset',
-                            'part_0.mp4')
-        assert result['filename'] == clipname
-
-        # Try to load json file
-        rawvideo_dataset = RawVideoDataset(
-            ann_file=self.rawvideo_test_anno_json,
-            pipeline=self.rawvideo_pipeline,
-            clipname_tmpl='part_{}.mp4',
-            sampling_strategy='random',
-            data_prefix=self.data_prefix,
-            test_mode=True)
-        result = rawvideo_dataset[0]
 
     def test_video_dataset(self):
         video_dataset = VideoDataset(
