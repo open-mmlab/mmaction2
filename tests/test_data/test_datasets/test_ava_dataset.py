@@ -2,22 +2,18 @@ import os.path as osp
 
 import mmcv
 import numpy as np
+from mmcv.utils import assert_dict_has_keys
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from mmaction.datasets import AVADataset
-
-
-def check_keys_contain(result_keys, target_keys):
-    """Check if all elements in target_keys is in result_keys."""
-    return set(target_keys).issubset(set(result_keys))
 
 
 class TestAVADataset:
 
     @classmethod
     def setup_class(cls):
-        cls.data_prefix = osp.join(
-            osp.dirname(osp.dirname(__file__)), 'data', 'test_ava_dataset')
+        cls.data_prefix = osp.normpath(
+            osp.join(osp.dirname(__file__), '../../data', 'ava_dataset'))
         cls.ann_file = osp.join(cls.data_prefix, 'ava_sample.csv')
         cls.exclude_file = osp.join(cls.data_prefix,
                                     'ava_excluded_timestamps_sample.csv')
@@ -43,10 +39,10 @@ class TestAVADataset:
             data_prefix=self.data_prefix,
             proposal_file=self.proposal_file)
         ava_infos = ava_dataset.video_infos
-        assert check_keys_contain(ava_dataset.proposals.keys(), pkl_keys)
+        assert assert_dict_has_keys(ava_dataset.proposals, pkl_keys)
 
-        assert check_keys_contain(ava_infos[0].keys(), target_keys)
-        assert check_keys_contain(ava_infos[0]['ann'].keys(), ann_keys)
+        assert assert_dict_has_keys(ava_infos[0], target_keys)
+        assert assert_dict_has_keys(ava_infos[0]['ann'], ann_keys)
         assert len(ava_infos) == 1
         assert ava_infos[0]['frame_dir'] == osp.join(self.data_prefix,
                                                      '0f39OWEqJ24')
@@ -108,7 +104,7 @@ class TestAVADataset:
             data_prefix=self.data_prefix,
             proposal_file=self.proposal_file)
         result = ava_dataset[0]
-        assert check_keys_contain(result.keys(), target_keys)
+        assert assert_dict_has_keys(result, target_keys)
 
         assert result['filename_tmpl'] == 'img_{:05}.jpg'
         assert result['modality'] == 'RGB'
@@ -139,8 +135,8 @@ class TestAVADataset:
         assert result['timestamp_end'] == 1800
 
     def test_ava_evaluate(self):
-        data_prefix = osp.join(
-            osp.dirname(__file__), '../data/test_eval_detection')
+        data_prefix = osp.normpath(
+            osp.join(osp.dirname(__file__), '../../data', 'eval_detection'))
         ann_file = osp.join(data_prefix, 'gt.csv')
         label_file = osp.join(data_prefix, 'action_list.txt')
         ava_dataset = AVADataset(
