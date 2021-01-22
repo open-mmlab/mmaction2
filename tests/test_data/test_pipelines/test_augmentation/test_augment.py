@@ -1,16 +1,13 @@
 import numpy as np
 import pytest
+from mmcv.utils import assert_dict_has_keys
 from numpy.testing import assert_array_almost_equal
 
 from mmaction.datasets.pipelines import CenterCrop, Imgaug
+from .base import check_flip
 
 
 class TestAugumentations:
-
-    @staticmethod
-    def check_keys_contain(result_keys, target_keys):
-        """Check if all elements in target_keys is in result_keys."""
-        return set(target_keys).issubset(set(result_keys))
 
     def test_imgaug(self):
 
@@ -43,7 +40,7 @@ class TestAugumentations:
         results = dict(imgs=imgs, modality='RGB')
         default_imgaug = Imgaug(transforms='default')
         default_results = default_imgaug(results)
-        self.check_keys_contain(default_results.keys(), target_keys)
+        assert_dict_has_keys(default_results, target_keys)
         assert default_results['img_shape'] == (64, 64)
 
         # check flip (both images and bboxes)
@@ -57,8 +54,8 @@ class TestAugumentations:
             gt_bboxes=np.array([[0, 0, 25, 35]]))
         imgaug_flip = Imgaug(transforms=[dict(type='Fliplr')])
         flip_results = imgaug_flip(results)
-        assert self.check_keys_contain(flip_results.keys(), target_keys)
-        assert self.check_flip(imgs, flip_results['imgs'], 'horizontal')
+        assert assert_dict_has_keys(flip_results, target_keys)
+        assert check_flip(imgs, flip_results['imgs'], 'horizontal')
         assert_array_almost_equal(flip_results['gt_bboxes'],
                                   np.array([[39, 0, 64, 35]]))
         assert_array_almost_equal(flip_results['proposals'],
@@ -82,7 +79,7 @@ class TestAugumentations:
                 position='center')
         ])
         crop_results = imgaug_center_crop(results)
-        self.check_keys_contain(crop_results.keys(), target_keys)
+        assert_dict_has_keys(crop_results, target_keys)
         assert_array_almost_equal(crop_results['gt_bboxes'],
                                   np.array([[0., 0., 99., 53.]]))
         assert 'proposals' not in results
@@ -97,6 +94,6 @@ class TestAugumentations:
         transforms = iaa.Resize(32)
         imgaug_resize = Imgaug(transforms=transforms)
         resize_results = imgaug_resize(results)
-        self.check_keys_contain(resize_results.keys(), target_keys)
+        assert_dict_has_keys(resize_results, target_keys)
         assert resize_results['img_shape'] == (32, 32)
         assert repr(imgaug_resize) == f'Imgaug(transforms={transforms})'
