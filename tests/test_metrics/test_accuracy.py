@@ -51,8 +51,8 @@ def gt_confusion_matrix(gt_labels, pred_labels, normalize=None):
 
 
 def test_activitynet_localization():
-    data_prefix = osp.join(
-        osp.dirname(__file__), 'data/test_eval_localization')
+    data_prefix = osp.normpath(
+        osp.join(osp.dirname(__file__), '../data/eval_localization'))
 
     gt_path = osp.join(data_prefix, 'gt.json')
     result_path = osp.join(data_prefix, 'result.json')
@@ -70,7 +70,8 @@ def test_activitynet_localization():
 
 
 def test_ava_detection():
-    data_prefix = osp.join(osp.dirname(__file__), 'data/test_eval_detection')
+    data_prefix = osp.normpath(
+        osp.join(osp.dirname(__file__), '../data/eval_detection'))
 
     gt_path = osp.join(data_prefix, 'gt.csv')
     result_path = osp.join(data_prefix, 'pred.csv')
