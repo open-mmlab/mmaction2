@@ -1,10 +1,10 @@
 import copy
 
-import numpy as np
 import pytest
 import torch
 
 from mmaction.models import TPN
+from .base import generate_backbone_demo_inputs
 
 
 def test_tpn():
@@ -54,11 +54,11 @@ def test_tpn():
         TPN(**tpn_cfg_)
 
     target_shape = (32, 1)
-    target = _demo_inputs(target_shape).long().squeeze()
+    target = generate_backbone_demo_inputs(target_shape).long().squeeze()
     x0_shape = (32, 1024, 1, 4, 4)
     x1_shape = (32, 2048, 1, 2, 2)
-    x0 = _demo_inputs(x0_shape)
-    x1 = _demo_inputs(x1_shape)
+    x0 = generate_backbone_demo_inputs(x0_shape)
+    x1 = generate_backbone_demo_inputs(x1_shape)
     x = [x0, x1]
 
     # ResNetTPN with 'cascade' flow_type
@@ -84,16 +84,3 @@ def test_tpn():
     feat, loss_aux = tpn_parallel(x, None)
     assert feat.shape == torch.Size([32, 2048, 1, 2, 2])
     assert len(loss_aux) == 0
-
-
-def _demo_inputs(input_shape=(1, 3, 64, 64)):
-    """Create a superset of inputs needed to run backbone.
-
-    Args:
-        input_shape (tuple): input batch dimensions.
-            Default: (1, 3, 64, 64).
-    """
-    imgs = np.random.random(input_shape)
-    imgs = torch.FloatTensor(imgs)
-
-    return imgs
