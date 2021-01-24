@@ -274,6 +274,9 @@ class TestDecode(BaseTestLoading):
         # since the test images start with index 1, we plus 1 to frame_inds
         # in order to pass the CI
         inputs['frame_inds'] = inputs['frame_inds'] + 1
+
+        inputs['gt_bboxes'] = np.array([[0, 0, 1, 1]])
+        inputs['proposals'] = np.array([[0, 0, 1, 1]])
         frame_selector = RawFrameDecode(io_backend='disk')
         results = frame_selector(inputs)
         assert assert_dict_has_keys(results, target_keys)
