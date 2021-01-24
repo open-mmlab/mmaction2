@@ -21,6 +21,8 @@ class TestFlip:
         # do not flip imgs.
         imgs = list(np.random.rand(2, 64, 64, 3))
         results = dict(imgs=copy.deepcopy(imgs), modality='RGB')
+        results['gt_bboxes'] = np.array([[0, 0, 60, 60]])
+        results['proposals'] = None
         flip = Flip(flip_ratio=0, direction='horizontal')
         flip_results = flip(results)
         assert assert_dict_has_keys(flip_results, target_keys)
