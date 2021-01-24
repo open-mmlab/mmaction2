@@ -57,6 +57,7 @@ or by the following steps
 ```shell
 # install rvm
 curl -L https://get.rvm.io | bash -s -- --autolibs=read-fail
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 rvm autolibs disable
 
 # install ruby
