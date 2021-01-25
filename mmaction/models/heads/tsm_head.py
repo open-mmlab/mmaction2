@@ -87,7 +87,8 @@ class TSMHead(BaseHead):
             torch.Tensor: The classification scores for input samples.
         """
         # [N * num_segs, in_channels, 7, 7]
-        x = self.avg_pool(x)
+        if self.avg_pool is not None:
+            x = self.avg_pool(x)
         # [N * num_segs, in_channels, 1, 1]
         x = torch.flatten(x, 1)
         # [N * num_segs, in_channels]
