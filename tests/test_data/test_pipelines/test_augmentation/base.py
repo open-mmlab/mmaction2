@@ -44,8 +44,7 @@ def check_crop(origin_imgs, result_imgs, result_bbox, num_crops=1):
 def check_flip(origin_imgs, result_imgs, flip_type):
     """Check if the origin_imgs are flipped correctly into result_imgs in
     different flip_types."""
-    n = len(origin_imgs)
-    h, w, c = origin_imgs[0].shape
+    n, h, w, c = np.shape(origin_imgs)
     if flip_type == 'horizontal':
         # yapf: disable
         for i in range(n):

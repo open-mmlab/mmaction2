@@ -88,15 +88,14 @@ class BaseTestLoading:
             }])
         cls.proposal_results = dict(
             frame_dir=cls.img_dir,
-            video_id='test_imgs',
+            video_id='imgs',
             total_frames=cls.total_frames,
             filename_tmpl=cls.filename_tmpl,
             start_index=1,
-            out_proposals=[[[
-                'test_imgs',
-                ExampleSSNInstance(1, 4, 10, 1, 1, 1)
-            ], 0], [['test_imgs',
-                     ExampleSSNInstance(2, 5, 10, 2, 1, 1)], 0]])
+            out_proposals=[[['imgs',
+                             ExampleSSNInstance(1, 4, 10, 1, 1, 1)], 0],
+                           [['imgs',
+                             ExampleSSNInstance(2, 5, 10, 2, 1, 1)], 0]])
 
         cls.ava_results = dict(
             fps=30, timestamp=902, timestamp_start=840, shot_info=(0, 27000))

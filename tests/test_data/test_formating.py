@@ -128,7 +128,7 @@ def test_collect():
     assert sorted(list(results.keys())) == sorted(
         ['imgs', 'label', 'img_metas'])
     imgs = inputs.pop('imgs')
-    assert set(results['img_metas'].data.keys()) == set(inputs)
+    assert set(results['img_metas'].data) == set(inputs)
     for key in results['img_metas'].data:
         assert results['img_metas'].data[key] == inputs[key]
     assert repr(collect) == collect.__class__.__name__ + \
