@@ -1,19 +1,8 @@
-# model settings
-model = dict(
-    type='PEM',
-    pem_feat_dim=32,
-    pem_hidden_dim=256,
-    pem_u_ratio_m=1,
-    pem_u_ratio_l=2,
-    pem_high_temporal_iou_threshold=0.6,
-    pem_low_temporal_iou_threshold=2.2,
-    soft_nms_alpha=0.75,
-    soft_nms_low_threshold=0.65,
-    soft_nms_high_threshold=0.9,
-    post_process_top_k=100)
-# model training and testing settings
-train_cfg = None
-test_cfg = dict(average_clips='score')
+_base_ = [
+    '../../_base_/models/bsm_pem.py', '../../_base_/schedules/adam_20e.py',
+    '../../_base_/default_runtime.py'
+]
+
 # dataset settings
 dataset_type = 'ActivityNetDataset'
 data_root = 'data/ActivityNet/activitynet_feature_cuhk/csv_mean_100/'
@@ -98,25 +87,9 @@ data = dict(
         ann_file=ann_file_train,
         pipeline=train_pipeline,
         data_prefix=data_root))
-
-# optimizer
-optimizer = dict(
-    type='Adam', lr=0.01, weight_decay=0.00001)  # this lr is used for 1 gpus
-
-optimizer_config = dict(grad_clip=None)
-# learning policy
-lr_config = dict(policy='step', step=10)
-
-total_epochs = 20
-checkpoint_config = dict(interval=1, filename_tmpl='pem_epoch_{}.pth')
-
 evaluation = dict(interval=1, metrics=['AR@AN'])
 
-log_config = dict(interval=50, hooks=[dict(type='TextLoggerHook')])
 # runtime settings
-dist_params = dict(backend='nccl')
-log_level = 'INFO'
-load_from = None
-resume_from = None
-workflow = [('train', 1)]
+checkpoint_config = dict(interval=1, filename_tmpl='pem_epoch_{}.pth')
+log_config = dict(interval=50, hooks=[dict(type='TextLoggerHook')])
 output_config = dict(out=f'{work_dir}/results.json', output_format='json')

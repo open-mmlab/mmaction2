@@ -1,23 +1,8 @@
-model = dict(
-    type='Recognizer3D',
-    backbone=dict(
-        type='ResNet3dSlowOnly',
-        depth=50,
-        pretrained='torchvision://resnet50',
-        lateral=False,
-        conv1_kernel=(1, 7, 7),
-        conv1_stride_t=1,
-        pool1_stride_t=1,
-        inflate=(0, 0, 1, 1),
-        norm_eval=False),
-    cls_head=dict(
-        type='I3DHead',
-        in_channels=2048,
-        num_classes=400,
-        spatial_type='avg',
-        dropout_ratio=0.5))
-train_cfg = None
-test_cfg = dict(average_clips='prob')
+_base_ = [
+    '../../_base_/models/slowonly_r50.py', '../../_base_/default_runtime.py'
+]
+
+# dataset settings
 dataset_type = 'RawframeDataset'
 data_root = 'data/kinetics400/rawframes_train'
 data_root_val = 'data/kinetics400/rawframes_val'
@@ -88,6 +73,9 @@ data = dict(
         ann_file=ann_file_test,
         data_prefix=data_root_val,
         pipeline=test_pipeline))
+evaluation = dict(
+    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+
 # optimizer
 optimizer = dict(
     type='SGD', lr=0.01, momentum=0.9,
@@ -101,20 +89,9 @@ lr_config = dict(
     warmup_by_epoch=True,
     warmup_iters=10)
 total_epochs = 150
+
+# runtime settings
 checkpoint_config = dict(interval=4)
-workflow = [('train', 1)]
-evaluation = dict(
-    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
-log_config = dict(
-    interval=20,
-    hooks=[
-        dict(type='TextLoggerHook'),
-        #    dict(type='TensorboardLoggerHook'),
-    ])
-dist_params = dict(backend='nccl')
-log_level = 'INFO'
 work_dir = ('./work_dirs/slowonly_imagenet_pretrained_r50_4x16x1_150e'
             '_kinetics400_rgb')
-load_from = None
-resume_from = None
 find_unused_parameters = False

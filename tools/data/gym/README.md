@@ -99,10 +99,11 @@ mmaction2
 |   |   |   ├── 0LtLS9wROrk_E_002407_002435.mp4
 |   |   |   ├── ...
 |   |   |   └── zfqS-wCJSsw_E_006732_006824.mp4
-│   │   └── subactions
-|   |       ├── 0LtLS9wROrk_E_002407_002435_A_0003_0005.mp4
-|   |       ├── ...
-|   |       └── zfqS-wCJSsw_E_006244_006252_A_0000_0007.mp4
+│   │   ├── subactions
+|   |   |   ├── 0LtLS9wROrk_E_002407_002435_A_0003_0005.mp4
+|   |   |   ├── ...
+|   |   |   └── zfqS-wCJSsw_E_006244_006252_A_0000_0007.mp4
+|   |   └── subaction_frames
 ```
 
 For training and evaluating on GYM, please refer to [getting_started](/docs/getting_started.md).

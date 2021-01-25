@@ -1,25 +1,11 @@
+_base_ = [
+    '../../../_base_/models/slowonly_r50.py',
+    '../../../_base_/default_runtime.py'
+]
+
 # model settings
-model = dict(
-    type='Recognizer3D',
-    backbone=dict(
-        type='ResNet3dSlowOnly',
-        depth=50,
-        pretrained=None,
-        lateral=False,
-        conv1_kernel=(1, 7, 7),
-        conv1_stride_t=1,
-        pool1_stride_t=1,
-        inflate=(0, 0, 1, 1),
-        norm_eval=False),
-    cls_head=dict(
-        type='I3DHead',
-        in_channels=2048,
-        num_classes=200,
-        spatial_type='avg',
-        dropout_ratio=0.5))
-# model training and testing settings
-train_cfg = None
-test_cfg = dict(average_clips='prob')
+model = dict(backbone=dict(pretrained=None), cls_head=dict(num_classes=200))
+
 # dataset settings
 dataset_type = 'VideoDataset'
 # The flag indicates using joint training
@@ -124,6 +110,9 @@ data = dict(
         ann_file=ann_file_test,
         data_prefix=data_root_val,
         pipeline=test_pipeline))
+evaluation = dict(
+    interval=8, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+
 # optimizer
 optimizer = dict(
     type='SGD', lr=0.15, momentum=0.9,
@@ -131,19 +120,10 @@ optimizer = dict(
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
 lr_config = dict(policy='CosineAnnealing', min_lr=0)
+
+# runtime settings
 total_epochs = 256
 checkpoint_config = dict(interval=8)
-workflow = [('train', 1)]
-evaluation = dict(
-    interval=8, metrics=['top_k_accuracy', 'mean_class_accuracy'])
-log_config = dict(
-    interval=20, hooks=[
-        dict(type='TextLoggerHook'),
-    ])
-dist_params = dict(backend='nccl')
-log_level = 'INFO'
 work_dir = ('./work_dirs/omnisource/'
             'slowonly_r50_8x8x1_256e_minikinetics_googleimage_rgb')
-load_from = None
-resume_from = None
 find_unused_parameters = False

@@ -1,3 +1,7 @@
+_base_ = [
+    '../../_base_/schedules/sgd_tsm_50e.py', '../../_base_/default_runtime.py'
+]
+
 # model settings
 model = dict(
     type='Recognizer2D',
@@ -20,13 +24,14 @@ model = dict(
 # model training and testing settings
 train_cfg = None
 test_cfg = dict(average_clips=None)
+
 # dataset settings
 dataset_type = 'RawframeDataset'
-data_root = 'data/mmit/rawframes/training'
-data_root_val = '/data/mmit/rawframes/validation/'
-ann_file_train = 'data/mmit/mmit_train_list_rawframes.txt'
-ann_file_val = 'data/mmit/mmit_val_list_rawframes.txt'
-ann_file_test = 'data/mmit/mmit_val_list_rawframes.txt'
+data_root = 'data/mmit/rawframes'
+data_root_val = '/data/mmit/rawframes'
+ann_file_train = 'data/mmit/mmit_train_rawframes.txt'
+ann_file_val = 'data/mmit/mmit_val_rawframes.txt'
+ann_file_test = 'data/mmit/mmit_val_rawframes.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
@@ -103,32 +108,8 @@ data = dict(
         pipeline=test_pipeline,
         multi_class=True,
         num_classes=313))
-# optimizer
-optimizer = dict(
-    type='SGD',
-    constructor='TSMOptimizerConstructor',
-    paramwise_cfg=dict(fc_lr5=True),
-    lr=0.01,  # this lr is used for 8 gpus
-    momentum=0.9,
-    weight_decay=0.0001,
-)
-optimizer_config = dict(grad_clip=dict(max_norm=20, norm_type=2))
-# learning policy
-lr_config = dict(policy='step', step=[20, 40])
-total_epochs = 50
-checkpoint_config = dict(interval=5)
 evaluation = dict(interval=5, metrics=['mmit_mean_average_precision'])
-# yapf:disable
-log_config = dict(
-    interval=20,
-    hooks=[
-        dict(type='TextLoggerHook'),
-        # dict(type='TensorboardLoggerHook'),
-    ])
+
 # runtime settings
-dist_params = dict(backend='nccl')
-log_level = 'INFO'
+checkpoint_config = dict(interval=5)
 work_dir = './work_dirs/tsn_r101_1x1x5_50e_mmit_rgb/'
-load_from = None
-resume_from = None
-workflow = [('train', 1)]
