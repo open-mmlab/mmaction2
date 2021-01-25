@@ -1,5 +1,7 @@
 # custom classes of ava dataset
-custom_classes = list(range(1, 15))
+# Here we choose classes with AP in range [0.1, 0.3)
+# AP is calculated by original ckpt, which is trained by all 80 classes
+custom_classes = [3, 6, 10, 27, 29, 38, 41, 48, 51, 53, 54, 59, 61, 64, 70, 72]
 num_classes = len(custom_classes) + 1
 
 # model setting
