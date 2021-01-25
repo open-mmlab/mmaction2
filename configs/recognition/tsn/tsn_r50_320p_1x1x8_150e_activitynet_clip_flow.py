@@ -9,8 +9,8 @@ model = dict(
 
 # dataset settings
 dataset_type = 'RawframeDataset'
-data_root = 'data/ActivityNet/flow'
-data_root_val = 'data/ActivityNet/flow'
+data_root = 'data/ActivityNet/rawframes'
+data_root_val = 'data/ActivityNet/rawframes'
 ann_file_train = 'data/ActivityNet/anet_train_clip.txt'
 ann_file_val = 'data/ActivityNet/anet_val_clip.txt'
 ann_file_test = 'data/ActivityNet/anet_val_clip.txt'

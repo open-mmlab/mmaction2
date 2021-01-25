@@ -2,8 +2,8 @@ _base_ = ['tsn_r50_320p_1x1x8_50e_activitynet_clip_rgb.py']
 
 # dataset settings
 dataset_type = 'RawframeDataset'
-data_root = 'data/ActivityNet/rgb'
-data_root_val = 'data/ActivityNet/rgb'
+data_root = 'data/ActivityNet/rawframes'
+data_root_val = 'data/ActivityNet/rawframes'
 ann_file_train = 'data/ActivityNet/anet_train_video.txt'
 ann_file_val = 'data/ActivityNet/anet_val_video.txt'
 ann_file_test = 'data/ActivityNet/anet_val_clip.txt'
