@@ -35,7 +35,9 @@ class EpochEvalHook(Hook):
             ``mean_average_precision``, ``mmit_mean_average_precision``
             for action recognition dataset (RawframeDataset and VideoDataset).
             ``AR@AN``, ``auc`` for action localization dataset
-            (ActivityNetDataset). Default: `top1_acc`.
+            (ActivityNetDataset). ``Recall@0.5@100``, ``AR@100``,
+            ``mAP@0.5IOU`` for spatio-temporal action detection dataset
+            (AVADataset). Default: `top1_acc`.
         rule (str | None): Comparison rule for best score. Options are None,
             'greater' and 'less'. If set to None, it will infer a reasonable
             rule. Default: 'None'.
@@ -45,7 +47,7 @@ class EpochEvalHook(Hook):
 
     rule_map = {'greater': lambda x, y: x > y, 'less': lambda x, y: x < y}
     init_value_map = {'greater': -inf, 'less': inf}
-    greater_keys = ['acc', 'top', 'AR@', 'auc', 'precision']
+    greater_keys = ['acc', 'top', 'AR@', 'auc', 'precision', 'mAP@', 'Recall@']
     less_keys = ['loss']
 
     def __init__(self,

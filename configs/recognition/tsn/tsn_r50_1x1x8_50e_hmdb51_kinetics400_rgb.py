@@ -1,20 +1,12 @@
-model = dict(
-    type='Recognizer2D',
-    backbone=dict(
-        type='ResNet',
-        pretrained='torchvision://resnet50',
-        depth=50,
-        norm_eval=False),
-    cls_head=dict(
-        type='TSNHead',
-        num_classes=51,
-        in_channels=2048,
-        spatial_type='avg',
-        consensus=dict(type='AvgConsensus', dim=1),
-        dropout_ratio=0.4,
-        init_std=0.01))
-train_cfg = None
-test_cfg = dict(average_clips=None)
+_base_ = [
+    '../../_base_/models/tsn_r50.py', '../../_base_/schedules/sgd_50e.py',
+    '../../_base_/default_runtime.py'
+]
+
+# model settings
+model = dict(cls_head=dict(num_classes=51))
+
+# dataset settings
 dataset_type = 'RawframeDataset'
 data_root = 'data/hmdb51/rawframes'
 data_root_val = 'data/hmdb51/rawframes'
@@ -85,23 +77,14 @@ data = dict(
         ann_file=ann_file_val,
         data_prefix=data_root_val,
         pipeline=test_pipeline))
-optimizer = dict(type='SGD', lr=0.025, momentum=0.9, weight_decay=0.0001)
-optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
-lr_config = dict(policy='step', step=[20, 40])
-total_epochs = 50
-checkpoint_config = dict(interval=5)
 evaluation = dict(
     interval=1, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
-log_config = dict(
-    interval=20,
-    hooks=[
-        dict(type='TextLoggerHook'),
-        #    dict(type='TensorboardLoggerHook')
-    ])
-dist_params = dict(backend='nccl')
-log_level = 'INFO'
+
+# optimizer
+optimizer = dict(type='SGD', lr=0.025, momentum=0.9, weight_decay=0.0001)
+
+# runtime settings
+checkpoint_config = dict(interval=5)
 work_dir = './work_dirs/tsn_r50_1x1x8_50e_hmdb51_kinetics400_rgb/'
 load_from = 'https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_256p_1x1x8_100e_kinetics400_rgb/tsn_r50_256p_1x1x8_100e_kinetics400_rgb_20200817-883baf16.pth'  # noqa: E501
-resume_from = None
-workflow = [('train', 1)]
 gpu_ids = range(0, 1)

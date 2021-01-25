@@ -304,7 +304,7 @@ class ObjectDetectionEvaluator(DetectionEvaluator):
             mean_corloc,
         ) = self._evaluation.evaluate()
 
-        metric = 'Precision/mAP@{}IOU'.format(self._matching_iou_threshold)
+        metric = f'mAP@{self._matching_iou_threshold}IOU'
         pascal_metrics = {self._metric_prefix + metric: mean_ap}
         if self._evaluate_corlocs:
             pascal_metrics[self._metric_prefix +
@@ -353,7 +353,6 @@ class PascalDetectionEvaluator(ObjectDetectionEvaluator):
             categories,
             matching_iou_threshold=matching_iou_threshold,
             evaluate_corlocs=False,
-            metric_prefix='PascalBoxes',
             use_weighted_mean_ap=False,
         )
 

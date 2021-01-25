@@ -13,6 +13,7 @@ Welcome to MMAction2's documentation!
    :maxdepth: 2
    :caption: Datasets
 
+   datasets.md
    data_preparation.md
    supported_datasets.md
 

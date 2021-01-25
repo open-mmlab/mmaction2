@@ -1,23 +1,5 @@
-# model settings
-model = dict(
-    type='Recognizer2D',
-    backbone=dict(
-        type='ResNetTSM',
-        pretrained='torchvision://resnet50',
-        depth=50,
-        norm_eval=False,
-        shift_div=8),
-    cls_head=dict(
-        type='TSMHead',
-        num_classes=400,
-        in_channels=2048,
-        spatial_type='avg',
-        consensus=dict(type='AvgConsensus', dim=1),
-        dropout_ratio=0.5,
-        init_std=0.001,
-        is_shift=True))
-# model training and testing settings
-test_cfg = dict(average_clips='prob')
+_base_ = ['../../_base_/models/tsm_r50.py']
+
 # dataset settings
 dataset_type = 'VideoDataset'
 img_norm_cfg = dict(

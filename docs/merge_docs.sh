@@ -25,20 +25,20 @@ cat  ../configs/detection/*/*.md > detection_models.md
 cat  ../tools/data/*/*.md > prepare_data.md
 cat  ../demo/README.md > demo.md
 
-sed -i 's/#/##&/' localization_models.md
-sed -i 's/#/##&/' recognition_models.md
-sed -i 's/#/##&/' detection_models.md
+sed -i 's/#/#&/' localization_models.md
+sed -i 's/#/#&/' recognition_models.md
+sed -i 's/#/#&/' detection_models.md
 sed -i 's/md###t/html#t/g' localization_models.md
 sed -i 's/md###t/html#t/g' recognition_models.md
 sed -i 's/md###t/html#t/g' detection_models.md
 sed -i "s/md###t/html#t/g" demo.md
 
 sed -i 's/# Preparing/# /g' prepare_data.md
-sed -i 's/#/##&/' prepare_data.md
+sed -i 's/#/#&/' prepare_data.md
 
-sed -i '1i\## Action Localization Models' localization_models.md
-sed -i '1i\## Action Recognition Models' recognition_models.md
-sed -i '1i\## Spatio Temporal Action Detection Models' detection_models.md
+sed -i '1i\# Action Localization Models' localization_models.md
+sed -i '1i\# Action Recognition Models' recognition_models.md
+sed -i '1i\# Spatio Temporal Action Detection Models' detection_models.md
 
 cat prepare_data.md >> supported_datasets.md
 

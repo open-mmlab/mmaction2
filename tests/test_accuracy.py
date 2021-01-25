@@ -83,8 +83,7 @@ def test_ava_detection():
 
     # eval bbox
     detection = ava_eval(result_path, 'bbox', label_map, gt_path, None)
-    assert_array_almost_equal(detection['PascalBoxes_Precision/mAP@0.5IOU'],
-                              0.09385522)
+    assert_array_almost_equal(detection['mAP@0.5IOU'], 0.09385522)
 
 
 def test_confusion_matrix():

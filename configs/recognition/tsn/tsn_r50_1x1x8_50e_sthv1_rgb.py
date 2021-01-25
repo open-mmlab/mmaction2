@@ -1,23 +1,14 @@
+_base_ = [
+    '../../_base_/models/tsn_r50.py', '../../_base_/schedules/sgd_50e.py',
+    '../../_base_/default_runtime.py'
+]
+
 # model settings
 model = dict(
-    type='Recognizer2D',
     backbone=dict(
-        type='ResNet',
-        pretrained='torchvision://resnet50',
-        depth=50,
-        norm_cfg=dict(type='SyncBN', requires_grad=True),
-        norm_eval=True),
-    cls_head=dict(
-        type='TSNHead',
-        num_classes=174,
-        in_channels=2048,
-        spatial_type='avg',
-        consensus=dict(type='AvgConsensus', dim=1),
-        dropout_ratio=0.5,
-        init_std=0.01))
-# model training and testing settings
-train_cfg = None
-test_cfg = dict(average_clips=None)
+        norm_cfg=dict(type='SyncBN', requires_grad=True), norm_eval=True),
+    cls_head=dict(num_classes=174, dropout_ratio=0.5))
+
 # dataset settings
 dataset_type = 'RawframeDataset'
 data_root = 'data/sthv1/rawframes'
@@ -97,27 +88,15 @@ data = dict(
         data_prefix=data_root_val,
         filename_tmpl='{:05}.jpg',
         pipeline=test_pipeline))
+evaluation = dict(
+    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+
 # optimizer
 optimizer = dict(
     type='SGD', lr=0.02, momentum=0.9,
     weight_decay=0.0005)  # this lr is used for 8 gpus
 optimizer_config = dict(grad_clip=dict(max_norm=20, norm_type=2))
-# learning policy
-lr_config = dict(policy='step', step=[20, 40])
-total_epochs = 50
-checkpoint_config = dict(interval=5)
-evaluation = dict(
-    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
-log_config = dict(
-    interval=20,
-    hooks=[
-        dict(type='TextLoggerHook'),
-        # dict(type='TensorboardLoggerHook'),
-    ])
+
 # runtime settings
-dist_params = dict(backend='nccl')
-log_level = 'INFO'
+checkpoint_config = dict(interval=5)
 work_dir = './work_dirs/tsn_r50_1x1x8_50e_sthv1_rgb/'
-load_from = None
-resume_from = None
-workflow = [('train', 1)]

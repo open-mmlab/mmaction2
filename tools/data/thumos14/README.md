@@ -2,12 +2,14 @@
 
 ## Introduction
 
+[DATASET]
+
 ```
 @misc{THUMOS14,
-    author = "Jiang, Y.-G. and Liu, J. and Roshan Zamir, A. and Toderici, G. and Laptev,
-    I. and Shah, M. and Sukthankar, R.",
-    title = "{THUMOS} Challenge: Action Recognition with a Large
-    Number of Classes",
+    author = {Jiang, Y.-G. and Liu, J. and Roshan Zamir, A. and Toderici, G. and Laptev,
+    I. and Shah, M. and Sukthankar, R.},
+    title = {{THUMOS} Challenge: Action Recognition with a Large
+    Number of Classes},
     howpublished = "\url{http://crcv.ucf.edu/THUMOS14/}",
     Year = {2014}
 }

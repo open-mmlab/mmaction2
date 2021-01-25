@@ -8,7 +8,7 @@ from mmaction.apis import inference_recognizer, init_recognizer
 
 video_config_file = 'configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py'  # noqa: E501
 frame_config_file = 'configs/recognition/tsn/tsn_r50_inference_1x1x3_100e_kinetics400_rgb.py'  # noqa: E501
-label_path = 'demo/label_map.txt'
+label_path = 'demo/label_map_k400.txt'
 video_path = 'demo/demo.mp4'
 
 
