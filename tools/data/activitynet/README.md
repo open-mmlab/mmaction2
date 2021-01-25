@@ -135,7 +135,7 @@ mmaction2
 │   │   │   ├── v___c8enCfzqw.csv
 │   │   │   ├── v___dXUJsj3yo.csv
 │   │   │   ├── ..
-│   │   ├── rawframes
+│   │   ├── rawframes (rgb | flow)
 │   │   │   ├── v___c8enCfzqw
 │   │   │   │   ├── img_00000.jpg
 │   │   │   │   ├── flow_x_00000.jpg

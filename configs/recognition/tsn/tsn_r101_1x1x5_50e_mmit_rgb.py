@@ -27,11 +27,11 @@ test_cfg = dict(average_clips=None)
 
 # dataset settings
 dataset_type = 'RawframeDataset'
-data_root = 'data/mmit/rawframes/training'
-data_root_val = '/data/mmit/rawframes/validation/'
-ann_file_train = 'data/mmit/mmit_train_list_rawframes.txt'
-ann_file_val = 'data/mmit/mmit_val_list_rawframes.txt'
-ann_file_test = 'data/mmit/mmit_val_list_rawframes.txt'
+data_root = 'data/mmit/rawframes'
+data_root_val = '/data/mmit/rawframes'
+ann_file_train = 'data/mmit/mmit_train_rawframes.txt'
+ann_file_val = 'data/mmit/mmit_val_rawframes.txt'
+ann_file_test = 'data/mmit/mmit_val_rawframes.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
