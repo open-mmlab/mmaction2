@@ -16,5 +16,9 @@ from .x3d import X3D
 __all__ = [
     'C3D', 'ResNet', 'ResNet3d', 'ResNetTSM', 'ResNet2Plus1d',
     'ResNet3dSlowFast', 'ResNet3dSlowOnly', 'ResNet3dCSN', 'ResNetTIN', 'X3D',
+<<<<<<< HEAD
     'ResNetAudio', 'ResNet3dLayer', 'MobileNetV2TSM', 'MobileNetV2', 'TANet'
+=======
+    'ResNetAudio', 'ResNet3dLayer', 'TANet'
+>>>>>>> 31c7bb5... fix __init__
 ]

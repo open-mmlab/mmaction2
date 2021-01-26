@@ -5,9 +5,16 @@ import torch
 import torch.nn as nn
 from mmcv.utils import _BatchNorm
 
+<<<<<<< HEAD:tests/test_models/test_backbones.py
 from mmaction.models import (C3D, X3D, MobileNetV2TSM, ResNet2Plus1d,
                              ResNet3dCSN, ResNet3dSlowFast, ResNet3dSlowOnly,
                              ResNetAudio, ResNetTIN, ResNetTSM, TANet)
+=======
+from mmaction.models import (C3D, X3D, ResNet, ResNet2Plus1d, ResNet3d,
+                             ResNet3dCSN, ResNet3dLayer, ResNet3dSlowFast,
+                             ResNet3dSlowOnly, ResNetAudio, ResNetTIN,
+                             ResNetTSM, TANet)
+>>>>>>> 31c7bb5... fix __init__:tests/test_models/test_backbone.py
 from mmaction.models.backbones.resnet_tsm import NL3DWrapper
 from .base import check_norm_state, generate_backbone_demo_inputs
 
