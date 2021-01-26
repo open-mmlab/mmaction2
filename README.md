@@ -12,7 +12,7 @@
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 
-MMAction2 is an open-source toolbox for action understanding based on PyTorch.
+MMAction2 is an open-source toolbox for video understanding based on PyTorch.
 It is a part of the [OpenMMLab](http://openmmlab.org/) project.
 
 The master branch works with **PyTorch 1.3+**.
@@ -30,16 +30,16 @@ The master branch works with **PyTorch 1.3+**.
 
 - **Modular design**
 
-  We decompose the action understanding framework into different components and one can easily construct a customized
-  action understanding framework by combining different modules.
+  We decompose the video understanding framework into different components and one can easily construct a customized
+  video understanding framework by combining different modules.
 
 - **Support for various datasets**
 
   The toolbox directly supports multiple datasets, UCF101, Kinetics-[400/600/700], Something-Something V1&V2, Moments in Time, Multi-Moments in Time, THUMOS14, etc.
 
-- **Support for multiple action understanding frameworks**
+- **Support for multiple video understanding frameworks**
 
-  MMAction2 implements popular frameworks for action understanding:
+  MMAction2 implements popular frameworks for video understanding:
 
   - For action recognition, various algorithms are implemented, including TSN, TSM, TIN, R(2+1)D, I3D, SlowOnly, SlowFast, CSN, Non-local, etc.
 
@@ -156,7 +156,7 @@ We wish that the toolbox and benchmark could serve the growing research communit
 - [MMDetection](https://github.com/open-mmlab/mmdetection): OpenMMLab detection toolbox and benchmark.
 - [MMDetection3D](https://github.com/open-mmlab/mmdetection3d): OpenMMLab's next-generation platform for general 3D object detection.
 - [MMSegmentation](https://github.com/open-mmlab/mmsegmentation): OpenMMLab semantic segmentation toolbox and benchmark.
-- [MMAction2](https://github.com/open-mmlab/mmaction2): OpenMMLab's next-generation action understanding toolbox and benchmark.
+- [MMAction2](https://github.com/open-mmlab/mmaction2): OpenMMLab's next-generation video understanding toolbox and benchmark.
 - [MMTracking](https://github.com/open-mmlab/mmtracking): OpenMMLab video perception toolbox and benchmark.
 - [MMPose](https://github.com/open-mmlab/mmpose): OpenMMLab pose estimation toolbox and benchmark.
 - [MMEditing](https://github.com/open-mmlab/mmediting): OpenMMLab image and video editing toolbox.
