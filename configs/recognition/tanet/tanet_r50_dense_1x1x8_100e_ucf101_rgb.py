@@ -19,22 +19,18 @@ train_cfg = None
 test_cfg = dict(average_clips='prob')
 # dataset settings
 dataset_type = 'RawframeDataset'
-data_root = 'data/kinetics400/rawframes_train'
-data_root_val = 'data/kinetics400/rawframes_val'
-ann_file_train = 'data/kinetics400/kinetics400_train_list_rawframes.txt'
-ann_file_val = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
-ann_file_test = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
-
-mc_cfg = dict(
-    server_list_cfg='/mnt/lustre/share/memcached_client/server_list.conf',
-    client_cfg='/mnt/lustre/share/memcached_client/client.conf',
-    sys_path='/mnt/lustre/share/pymc/py3')
+data_root = 'data/ucf101/rawframes'
+data_root_val = 'data/ucf101/rawframes'
+split = 1  # official train/test splits. valid numbers: 1, 2, 3
+ann_file_train = f'data/ucf101/ucf101_train_split_{split}_rawframes.txt'
+ann_file_val = f'data/ucf101/ucf101_val_split_{split}_rawframes.txt'
+ann_file_test = f'data/ucf101/ucf101_val_split_{split}_rawframes.txt'
 
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
     dict(type='DenseSampleFrames', clip_len=1, frame_interval=1, num_clips=8),
-    dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(
         type='MultiScaleCrop',
@@ -57,7 +53,7 @@ val_pipeline = [
         frame_interval=1,
         num_clips=8,
         test_mode=True),
-    dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
     dict(type='Flip', flip_ratio=0),
@@ -73,7 +69,7 @@ test_pipeline = [
         frame_interval=1,
         num_clips=8,
         test_mode=True),
-    dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
     dict(type='Flip', flip_ratio=0),
@@ -83,8 +79,8 @@ test_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
-    videos_per_gpu=8,
-    workers_per_gpu=4,
+    videos_per_gpu=4,
+    workers_per_gpu=2,
     val_dataloader=dict(videos_per_gpu=4),
     test_dataloader=dict(videos_per_gpu=4),
     train=dict(
@@ -126,7 +122,7 @@ log_config = dict(
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/tanet_r50_dense_1x1x8_100e_kinetics400_rgb/'
+work_dir = './work_dirs/tanet_r50_dense_1x1x8_100e_ucf101_rgb/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]

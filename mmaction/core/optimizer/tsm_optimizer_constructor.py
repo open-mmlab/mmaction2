@@ -54,7 +54,8 @@ class TSMOptimizerConstructor(DefaultOptimizerConstructor):
             elif isinstance(m, torch.nn.Linear):
                 m_params = list(m.parameters())
                 normal_weight.append(m_params[0])
-                normal_bias.append(m_params[1])
+                if len(m_params) == 2:
+                    normal_bias.append(m_params[1])
             elif isinstance(m,
                             (_BatchNorm, SyncBatchNorm, torch.nn.GroupNorm)):
                 for param in list(m.parameters()):
