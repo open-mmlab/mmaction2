@@ -2,15 +2,11 @@ import numpy as np
 import pytest
 import torch
 from mmcv.parallel import DataContainer as DC
+from mmcv.utils import assert_dict_has_keys
 
 from mmaction.datasets.pipelines import (Collect, FormatAudioShape,
                                          FormatShape, ImageToTensor, Rename,
                                          ToDataContainer, ToTensor, Transpose)
-
-
-def check_keys_contain(result_keys, target_keys):
-    """Check if all elements in target_keys is in result_keys."""
-    return set(target_keys).issubset(set(result_keys))
 
 
 def test_rename():
@@ -41,7 +37,7 @@ def test_to_tensor():
         int=1,
         float=0.1)
     results = to_tensor(original_results)
-    assert check_keys_contain(results.keys(), target_keys)
+    assert assert_dict_has_keys(results, target_keys)
     for key in target_keys:
         assert isinstance(results[key], torch.Tensor)
         assert torch.equal(results[key].data, original_results[key])
@@ -55,7 +51,7 @@ def test_to_tensor():
         float=0.1,
         str='test')
     results = to_tensor(original_results)
-    assert check_keys_contain(results.keys(), target_keys)
+    assert assert_dict_has_keys(results, target_keys)
     for key in target_keys:
         assert isinstance(results[key], torch.Tensor)
         assert torch.equal(results[key].data, original_results[key])
@@ -71,7 +67,7 @@ def test_to_data_container():
     target_keys = ['key1', 'key2']
     original_results = dict(key1=np.random.randn(10, 20), key2=['a', 'b'])
     results = to_data_container(original_results.copy())
-    assert check_keys_contain(results.keys(), target_keys)
+    assert assert_dict_has_keys(results, target_keys)
     for key in target_keys:
         assert isinstance(results[key], DC)
         assert np.all(results[key].data == original_results[key])
@@ -82,7 +78,7 @@ def test_to_data_container():
     original_results = dict(
         key1=np.random.randn(10, 20), key2=['a', 'b'], key3='value3')
     results = to_data_container(original_results.copy())
-    assert check_keys_contain(results.keys(), target_keys)
+    assert assert_dict_has_keys(results, target_keys)
     for key in target_keys:
         assert isinstance(results[key], DC)
         assert np.all(results[key].data == original_results[key])
@@ -132,7 +128,7 @@ def test_collect():
     assert sorted(list(results.keys())) == sorted(
         ['imgs', 'label', 'img_metas'])
     imgs = inputs.pop('imgs')
-    assert set(results['img_metas'].data.keys()) == set(inputs.keys())
+    assert set(results['img_metas'].data) == set(inputs)
     for key in results['img_metas'].data:
         assert results['img_metas'].data[key] == inputs[key]
     assert repr(collect) == collect.__class__.__name__ + \
@@ -170,7 +166,7 @@ def test_format_shape():
         imgs=np.random.randn(18, 224, 224, 3), num_clips=2, clip_len=3)
     assert format_shape(results)['input_shape'] == (6, 3, 3, 224, 224)
     target_keys = ['imgs', 'input_shape']
-    assert check_keys_contain(results.keys(), target_keys)
+    assert assert_dict_has_keys(results, target_keys)
 
     assert repr(format_shape) == format_shape.__class__.__name__ + \
         "(input_format='NCTHW')"

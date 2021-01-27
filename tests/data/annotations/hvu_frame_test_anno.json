@@ -1,0 +1,24 @@
+[
+  {
+    "frame_dir":"imgs",
+    "total_frames":5,
+    "label":{
+        "concept":[250, 131, 42, 51, 57, 155, 122],
+        "object":[1570, 508],
+        "event":[16],
+        "action":[180],
+        "scene":[206]
+    }
+  },
+  {
+    "frame_dir":"imgs",
+    "total_frames":5,
+    "label":{
+        "concept":[250, 131, 42, 51, 57, 155, 122],
+        "object":[1570, 508],
+        "event":[16],
+        "action":[180],
+        "scene":[206]
+    }
+  }
+]

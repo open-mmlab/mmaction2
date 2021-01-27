@@ -11,6 +11,7 @@
 **Improvements**
 
 - Support setting `max_testing_views` for extremely large models to save GPU memory used ([#511](https://github.com/open-mmlab/mmaction2/pull/511))
+- Refactor unit test structure ([#433](https://github.com/open-mmlab/mmaction2/pull/433))
 - Add repo citation ([#545](https://github.com/open-mmlab/mmaction2/pull/545))
 
 **Bug and Typo Fixes**
