@@ -2,6 +2,7 @@ import copy
 import os
 import os.path as osp
 import warnings
+from collections import OrderedDict
 
 import mmcv
 import numpy as np
@@ -238,7 +239,7 @@ class ActivityNetDataset(BaseDataset):
             if metric not in allowed_metrics:
                 raise KeyError(f'metric {metric} is not supported')
 
-        eval_results = {}
+        eval_results = OrderedDict()
         ground_truth = self._import_ground_truth()
         proposal, num_proposals = self._import_proposals(results)
 
