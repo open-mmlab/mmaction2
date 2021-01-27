@@ -338,8 +338,10 @@ class EpochEvalHook(EvalHook):
     """Deprecated class for ``EvalHook``."""
 
     def __init__(self, *args, **kwargs):
-        warnings.warn('"EpochEvalHook" is deprecated, please switch to'
-                      '"EvalHook"')
+        warnings.warn(
+            '"EpochEvalHook" is deprecated, please switch to'
+            '"EvalHook". See https://github.com/open-mmlab/mmaction2/pull/395 for more info'  # noqa: E501
+        )
         super().__init__(*args, **kwargs)
 
 
@@ -347,6 +349,8 @@ class DistEpochEvalHook(DistEvalHook):
     """Deprecated class for ``DistEvalHook``."""
 
     def __init__(self, *args, **kwargs):
-        warnings.warn('"DistEpochEvalHook" is deprecated, please switch to'
-                      '"DistEvalHook"')
+        warnings.warn(
+            '"DistEpochEvalHook" is deprecated, please switch to'
+            '"DistEvalHook". See https://github.com/open-mmlab/mmaction2/pull/395 for more info'  # noqa: E501
+        )
         super().__init__(*args, **kwargs)
