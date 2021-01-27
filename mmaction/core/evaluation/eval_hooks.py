@@ -332,3 +332,21 @@ class DistEvalHook(EvalHook):
 
             if self.save_best:
                 self._save_ckpt(runner, key_score)
+
+
+class EpochEvalHook(EvalHook):
+    """Deprecated class for ``EvalHook``."""
+
+    def __init__(self, *args, **kwargs):
+        warnings.warn('"EpochEvalHook" is deprecated, please switch to'
+                      '"EvalHook"')
+        super().__init__(*args, **kwargs)
+
+
+class DistEpochEvalHook(DistEvalHook):
+    """Deprecated class for ``DistEvalHook``."""
+
+    def __init__(self, *args, **kwargs):
+        warnings.warn('"DistEpochEvalHook" is deprecated, please switch to'
+                      '"DistEvalHook"')
+        super().__init__(*args, **kwargs)
