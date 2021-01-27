@@ -107,7 +107,7 @@ Supported methods for Temporal Action Detection:
 Supported methods for Spatial Temporal Action Detection:
 
 <details open>
-<summary>(click to expand)</summary>
+<summary>(click to collapse)</summary>
 
 - [x] [SlowOnly+Fast R-CNN](configs/detection/ava/README.md) (ICCV'2019)
 - [x] [SlowFast+Fast R-CNN](configs/detection/ava/README.md) (ICCV'2019)
@@ -124,7 +124,7 @@ Supported [datasets](https://mmaction2.readthedocs.io/en/latest/supported_datase
 Supported datasets for Action Recognition:
 
 <details open>
-<summary>(click to expand)</summary>
+<summary>(click to collapse)</summary>
 
 - [x] [UCF101](/tools/data/ucf101/README.md) \[ [Homepage](https://www.crcv.ucf.edu/research/data-sets/ucf101/) \] (CRCV-IR-12-01)
 - [x] [HMDB51](/tools/data/hmdb51/README.md) \[ [Homepage](https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/) \] (ICCV'2011)
@@ -143,7 +143,7 @@ Supported datasets for Action Recognition:
 Supported datasets for Temporal Action Detection
 
 <details open>
-<summary>(click to expand)</summary>
+<summary>(click to collapse)</summary>
 
 - [x] [ActivityNet](/tools/data/activitynet/README.md) \[ [Homepage](http://activity-net.org/) \] (CVPR'2015)
 - [x] [THUMOS14](/tools/data/thumos14/README.md) \[ [Homepage](https://www.crcv.ucf.edu/THUMOS14/download.html) \] (THUMOS Challenge 2014)
@@ -153,7 +153,7 @@ Supported datasets for Temporal Action Detection
 Supported datasets for Spatial Temporal Action Detection
 
 <details open>
-<summary>(click to expand)</summary>
+<summary>(click to collapse)</summary>
 
 - [x] [AVA](/tools/data/ava/README.md) \[ [Homepage](https://research.google.com/ava/index.html) \] (CVPR'2018)
 - [x] [UCF101-24](/tools/data/ucf101_24/README.md) \[ [Homepage](http://www.thumos.info/download.html) \] (CRCV-IR-12-01)
