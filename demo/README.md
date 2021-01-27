@@ -2,9 +2,10 @@
 
 ## Demo link
 
-- [Video demo](#video-demo): A demo script to predict the recognition result using a single video
+- [Video demo](#video-demo): A demo script to predict the recognition result using a single video.
+- [SpatioTemporal Action Detection Video Demo](#spatiotemporal-action-detection-video-demo): A demo script to predict the SpatioTemporal Action Detection result using a single video.
 - [Video GradCAM Demo](#video-gradcam-demo): A demo script to visualize GradCAM results using a single video.
-- [Webcam demo](#webcam-demo): A demo script to implement real-time action recognition from web camera
+- [Webcam demo](#webcam-demo): A demo script to implement real-time action recognition from web camera.
 - [Long Video demo](#long-video-demo): a demo script to predict different labels using a single long video.
 
 ## Video demo
