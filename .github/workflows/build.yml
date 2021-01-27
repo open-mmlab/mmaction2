@@ -58,7 +58,7 @@ jobs:
       - name: Install PyTorch
         run: pip install torch==${{matrix.torch}}+cpu torchvision==${{matrix.torchvision}}+cpu -f https://download.pytorch.org/whl/torch_stable.html
       - name: Install MMCV
-        run: pip install mmcv-full==1.2.4 -f https://download.openmmlab.com/mmcv/dist/cpu/torch${{matrix.torch}}/index.html
+        run: pip install mmcv-full==1.2.6 -f https://download.openmmlab.com/mmcv/dist/cpu/torch${{matrix.torch}}/index.html
       - name: Install MMDet
         run: pip install git+https://github.com/open-mmlab/mmdetection/
       - name: Install unittest dependencies
@@ -138,7 +138,7 @@ jobs:
         run: pip install torch==${{matrix.torch}} torchvision==${{matrix.torchvision}} -f https://download.pytorch.org/whl/torch_stable.html
       - name: Install mmaction dependencies
         run: |
-          pip install mmcv-full==1.2.4 -f https://download.openmmlab.com/mmcv/dist/${{matrix.mmcv}}/index.html
+          pip install mmcv-full==1.2.6 -f https://download.openmmlab.com/mmcv/dist/${{matrix.mmcv}}/index.html
           pip install -q git+https://github.com/open-mmlab/mmdetection/
           pip install -r requirements.txt
       - name: Build and install
