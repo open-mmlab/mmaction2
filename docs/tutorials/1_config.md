@@ -1,17 +1,56 @@
 # Tutorial 1: Learn about Configs
 
-We use python files as configs. You can find all the provided configs under `$MMAction2/configs`.
+We use python files as configs, incorporate modular and inheritance design into our config system, which is convenient to conduct various experiments.
+You can find all the provided configs under `$MMAction2/configs`. If you wish to inspect the config file,
+you may run python `tools/analysis/print_config.py /PATH/TO/CONFIG` to see the complete config.
 
 <!-- TOC -->
 
-- [Config File Naming Convention](#config-file-naming-convention)
+- [Modify config through script arguments](#modify-config-through-script-arguments)
 - [Config File Structure](#config-file-structure)
+- [Config File Naming Convention](#config-file-naming-convention)
   - [Config System for Action localization](#config-system-for-action-localization)
   - [Config System for Action Recognition](#config-system-for-action-recognition)
 - [FAQ](#faq)
   - [Use intermediate variables in configs](#use-intermediate-variables-in-configs)
 
 <!-- TOC -->
+
+## Modify config through script arguments
+
+When submitting jobs using "tools/train.py" or "tools/test.py", you may specify `--cfg-options` to in-place modify the config.
+
+- Update config keys of dict chains.
+
+  The config options can be specified following the order of the dict keys in the original config.
+  For example, `--cfg-options model.backbone.norm_eval=False` changes the all BN modules in model backbones to `train` mode.
+
+- Update keys inside a list of configs.
+
+  Some config dicts are composed as a list in your config. For example, the training pipeline `data.train.pipeline` is normally a list
+  e.g. `[dict(type='SampleFrames'), ...]`. If you want to change `'SampleFrames'` to `'DenseSampleFrames'` in the pipeline,
+  you may specify `--cfg-options data.train.pipeline.0.type=DenseSampleFrames`.
+
+- Update values of list/tuples.
+
+  If the value to be updated is a list or a tuple. For example, the config file normally sets `workflow=[('train', 1)]`. If you want to
+  change this key, you may specify `--cfg-options workflow="[(train,1),(val,1)]"`. Note that the quotation mark \" is necessary to
+  support list/tuple data types, and that **NO** white space is allowed inside the quotation marks in the specified value.
+
+## Config File Structure
+
+There are 3 basic component types under `config/_base_`, model, schedule, default_runtime.
+Many methods could be easily constructed with one of each like TSN, I3D, SlowOnly, etc.
+The configs that are composed by components from `_base_` are called _primitive_.
+
+For all configs under the same folder, it is recommended to have only **one** _primitive_ config. All other configs should inherit from the _primitive_ config. In this way, the maximum of inheritance level is 3.
+
+For easy understanding, we recommend contributors to inherit from exiting methods.
+For example, if some modification is made base on TSN, users may first inherit the basic TSN structure by specifying `_base_ = ../tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py`, then modify the necessary fields in the config files.
+
+If you are building an entirely new method that does not share the structure with any of the existing methods, you may create a folder under `configs/TASK`,
+
+If you are building an entirely new method that does not share the structure with any of the existing methods, you may create a folder `xxx_rcnn` under `configs`,
 
 ## Config File Naming Convention
 
@@ -32,10 +71,6 @@ We follow the style below to name config files. Contributors are advised to foll
 - `{schedule}`: training schedule, e.g. `20e` means 20 epochs.
 - `{dataset}`: dataset name, e.g. `kinetics400`, `mmit`, etc.
 - `{modality}`: frame modality, e.g. `rgb`, `flow`, etc.
-
-## Config File Structure
-
-Please refer to the corresponding pages for config file structure for different tasks.
 
 ### Config System for Action localization
 
