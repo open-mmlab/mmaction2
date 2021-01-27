@@ -63,6 +63,13 @@ class EvalHook(Hook):
                  save_best=None,
                  rule=None,
                  **eval_kwargs):
+        if 'key_indicator' in eval_kwargs:
+            raise RuntimeError(
+                '"key_indicator" is deprecated, '
+                'you need to use "save_best" instead. '
+                'See https://github.com/open-mmlab/mmaction2/pull/395 for more info'  # noqa: E501
+            )
+
         if not isinstance(dataloader, DataLoader):
             raise TypeError(f'dataloader must be a pytorch DataLoader, '
                             f'but got {type(dataloader)}')
