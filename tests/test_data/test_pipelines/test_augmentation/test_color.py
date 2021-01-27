@@ -9,7 +9,7 @@ class TestColor:
 
     def test_color_jitter(self):
         imgs = list(
-            np.random.randint(0, 255, size=(3, 240, 320, 3), dtype=np.uint8))
+            np.random.randint(0, 255, size=(3, 112, 112, 3), dtype=np.uint8))
         results = dict(imgs=imgs)
 
         eig_val = np.array([55.46, 4.794, 1.148], dtype=np.float32)
@@ -28,7 +28,7 @@ class TestColor:
             'imgs', 'eig_val', 'eig_vec', 'alpha_std', 'color_space_aug'
         ]
         assert assert_dict_has_keys(color_jitter_results, target_keys)
-        assert np.shape(color_jitter_results['imgs']) == (3, 240, 320, 3)
+        assert np.shape(color_jitter_results['imgs']) == (3, 112, 112, 3)
         assert_array_equal(color_jitter_results['eig_val'], eig_val)
         assert_array_equal(color_jitter_results['eig_vec'], eig_vec)
         assert color_jitter_results['alpha_std'] == 0.1
@@ -38,7 +38,7 @@ class TestColor:
         custom_eig_vec = np.ones((3, 3))
 
         imgs = list(
-            np.random.randint(0, 255, size=(3, 240, 320, 3), dtype=np.uint8))
+            np.random.randint(0, 255, size=(3, 64, 80, 3), dtype=np.uint8))
         results = dict(imgs=imgs)
         custom_color_jitter = ColorJitter(True, 0.5, custom_eig_val,
                                           custom_eig_vec)
@@ -47,8 +47,7 @@ class TestColor:
         assert custom_color_jitter.alpha_std == 0.5
         assert custom_color_jitter.color_space_aug is True
         custom_color_jitter_results = custom_color_jitter(results)
-        assert np.shape(custom_color_jitter_results['imgs']) == (3, 240, 320,
-                                                                 3)
+        assert np.shape(custom_color_jitter_results['imgs']) == (3, 64, 80, 3)
         assert_array_equal(custom_color_jitter_results['eig_val'],
                            custom_eig_val)
         assert_array_equal(custom_color_jitter_results['eig_vec'],

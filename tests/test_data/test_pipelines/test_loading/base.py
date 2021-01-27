@@ -4,23 +4,6 @@ import mmcv
 import numpy as np
 
 
-class ExampleSSNInstance:
-
-    def __init__(self,
-                 start_frame,
-                 end_frame,
-                 num_frames,
-                 label=None,
-                 best_iou=None,
-                 overlap_self=None):
-        self.start_frame = start_frame
-        self.end_frame = min(end_frame, num_frames)
-        self.label = label if label is not None else -1
-        self.coverage = (end_frame - start_frame) / num_frames
-        self.best_iou = best_iou
-        self.overlap_self = overlap_self
-
-
 class BaseTestLoading:
 
     @classmethod
@@ -86,16 +69,15 @@ class BaseTestLoading:
                 'segment': [3.0, 5.0],
                 'label': 'Rock climbing'
             }])
+        from mmaction.datasets.ssn_dataset import SSNInstance
         cls.proposal_results = dict(
             frame_dir=cls.img_dir,
             video_id='imgs',
             total_frames=cls.total_frames,
             filename_tmpl=cls.filename_tmpl,
             start_index=1,
-            out_proposals=[[['imgs',
-                             ExampleSSNInstance(1, 4, 10, 1, 1, 1)], 0],
-                           [['imgs',
-                             ExampleSSNInstance(2, 5, 10, 2, 1, 1)], 0]])
+            out_proposals=[[['imgs', SSNInstance(1, 4, 10, 1, 1, 1)], 0],
+                           [['imgs', SSNInstance(2, 5, 10, 2, 1, 1)], 0]])
 
         cls.ava_results = dict(
             fps=30, timestamp=902, timestamp_start=840, shot_info=(0, 27000))

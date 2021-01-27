@@ -125,4 +125,3 @@ work_dirs/
 !tests/data/**/*.pkl.json
 !tests/data/**/*.log.json
 !tests/data/**/*.pth
-!tests/data/**/*.prof

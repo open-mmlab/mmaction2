@@ -20,11 +20,11 @@ class BaseTestDataset:
         cls.audio_ann_file = osp.join(cls.ann_file_prefix,
                                       'audio_test_list.txt')
         cls.frame_ann_file_multi_label = osp.join(
-            cls.ann_file_prefix, 'frame_test_list_multi_label.txt')
+            cls.ann_file_prefix, 'rawframe_test_list_multi_label.txt')
         cls.frame_ann_file_with_offset = osp.join(
-            cls.ann_file_prefix, 'frame_test_list_with_offset.txt')
+            cls.ann_file_prefix, 'rawframe_test_list_with_offset.txt')
         cls.frame_ann_file = osp.join(cls.ann_file_prefix,
-                                      'frame_test_list.txt')
+                                      'rawframe_test_list.txt')
         cls.hvu_frame_ann_file = osp.join(cls.ann_file_prefix,
                                           'hvu_frame_test_anno.json')
         cls.hvu_video_ann_file = osp.join(cls.ann_file_prefix,

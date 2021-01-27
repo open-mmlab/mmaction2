@@ -46,22 +46,14 @@ def check_flip(origin_imgs, result_imgs, flip_type):
     different flip_types."""
     n, h, w, c = np.shape(origin_imgs)
     if flip_type == 'horizontal':
-        # yapf: disable
         for i in range(n):
-            for j in range(h):
-                for k in range(w):
-                    for channel in range(c):
-                        if result_imgs[i][j, k, channel] != origin_imgs[i][j, w - 1 - k, channel]:  # noqa:E501
-                            return False
-        # yapf: enable
+            if np.any(result_imgs[i] != np.fliplr(origin_imgs[i])):
+                return False
     else:
         # yapf: disable
         for i in range(n):
-            for j in range(h):
-                for k in range(w):
-                    for channel in range(c):
-                        if result_imgs[i][j, k, channel] != origin_imgs[i][h - 1 - j, k, channel]:  # noqa:E501
-                            return False
+            if np.any(result_imgs[i] != np.transpose(np.fliplr(np.transpose(origin_imgs[i], (1, 0, 2))), (1, 0, 2))):  # noqa:E501
+                return False
         # yapf: enable
     return True
 
