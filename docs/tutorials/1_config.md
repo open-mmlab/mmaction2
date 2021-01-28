@@ -2,7 +2,7 @@
 
 We use python files as configs, incorporate modular and inheritance design into our config system, which is convenient to conduct various experiments.
 You can find all the provided configs under `$MMAction2/configs`. If you wish to inspect the config file,
-you may run python `tools/analysis/print_config.py /PATH/TO/CONFIG` to see the complete config.
+you may run `python tools/analysis/print_config.py /PATH/TO/CONFIG` to see the complete config.
 
 <!-- TOC -->
 
@@ -414,7 +414,7 @@ which is convenient to conduct various experiments.
     evaluation = dict(  # Config of evaluation during training
         interval=5,  # Interval to perform evaluation
         metrics=['top_k_accuracy', 'mean_class_accuracy'],  # Metrics to be performed
-        topk=(1, 5))  # K value for `top_k_accuracy` metric
+        save_best='top_k_accuracy')  # set `top_k_accuracy` as key indicator to save best checkpoint
     log_config = dict(  # Config to register logger hook
         interval=20,  # Interval to print the log
         hooks=[  # Hooks to be implemented during training
@@ -642,7 +642,7 @@ We incorporate modular design into our config system, which is convenient to con
         interval=1)   # Interval to save checkpoint
     workflow = [('train', 1)]   # Workflow for runner. [('train', 1)] means there is only one workflow and the workflow named 'train' is executed once
     evaluation = dict(  # Config of evaluation during training
-        interval=1)  # Interval to perform evaluation
+        interval=1, save_best='mAP@0.5IOU')  # Interval to perform evaluation and the key for saving best checkpoint
     log_config = dict(  # Config to register logger hook
         interval=20,  # Interval to print the log
         hooks=[  # Hooks to be implemented during training
