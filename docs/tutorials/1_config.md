@@ -49,9 +49,9 @@ For all configs under the same folder, it is recommended to have only **one** _p
 For easy understanding, we recommend contributors to inherit from exiting methods.
 For example, if some modification is made base on TSN, users may first inherit the basic TSN structure by specifying `_base_ = ../tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py`, then modify the necessary fields in the config files.
 
-If you are building an entirely new method that does not share the structure with any of the existing methods, you may create a folder under `configs/TASK`,
+If you are building an entirely new method that does not share the structure with any of the existing methods, you may create a folder under `configs/TASK`.
 
-If you are building an entirely new method that does not share the structure with any of the existing methods, you may create a folder `xxx_rcnn` under `configs`,
+Please refer to [mmcv](https://mmcv.readthedocs.io/en/latest/utils.html#config) for detailed documentation.
 
 ## Config File Naming Convention
 
