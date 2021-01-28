@@ -1,11 +1,10 @@
-import logging
-
 import torch.nn as nn
 import torch.utils.checkpoint as cp
 from mmcv.cnn import ConvModule, constant_init, kaiming_init
 from mmcv.runner import load_checkpoint
 from torch.nn.modules.batchnorm import _BatchNorm
 
+from ...utils import get_root_logger
 from ..builder import BACKBONES
 
 
@@ -160,7 +159,7 @@ class MobileNetV2(nn.Module):
                  act_cfg=dict(type='ReLU6', inplace=True),
                  norm_eval=False,
                  with_cp=False):
-        super(MobileNetV2, self).__init__()
+        super().__init__()
         self.pretrained = pretrained
         self.widen_factor = widen_factor
         self.out_indices = out_indices
@@ -253,7 +252,7 @@ class MobileNetV2(nn.Module):
 
     def init_weights(self):
         if isinstance(self.pretrained, str):
-            logger = logging.getLogger()
+            logger = get_root_logger()
             load_checkpoint(self, self.pretrained, strict=False, logger=logger)
         elif self.pretrained is None:
             for m in self.modules():
