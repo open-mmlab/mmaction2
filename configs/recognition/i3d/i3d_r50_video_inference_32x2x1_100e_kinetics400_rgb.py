@@ -28,3 +28,6 @@ data = dict(
         ann_file=None,
         data_prefix=None,
         pipeline=test_pipeline))
+
+# runtime settings
+dist_params = dict(backend='nccl')
