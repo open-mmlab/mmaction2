@@ -1,25 +1,9 @@
-# model settings
-model = dict(
-    type='Recognizer2D',
-    backbone=dict(
-        type='MobileNetV2TSM',
-        shift_div=8,
-        num_segments=8,
-        is_shift=True,
-        pretrained='mmcls://mobilenet_v2'),
-    cls_head=dict(
-        type='TSMHead',
-        num_segments=8,
-        num_classes=400,
-        in_channels=1280,
-        spatial_type='avg',
-        consensus=dict(type='AvgConsensus', dim=1),
-        dropout_ratio=0.5,
-        init_std=0.001,
-        is_shift=True))
-# model training and testing settings
-train_cfg = None
-test_cfg = dict(average_clips='prob')
+_base_ = [
+    '../../_base_/models/tsm_mobilenet_v2.py',
+    '../../_base_/schedules/sgd_tsm_mobilenet_v2_50e.py',
+    '../../_base_/default_runtime.py'
+]
+
 # dataset settings
 dataset_type = 'VideoDataset'
 data_root = 'data/kinetics400/videos_train'
@@ -100,31 +84,14 @@ data = dict(
         ann_file=ann_file_test,
         data_prefix=data_root_val,
         pipeline=test_pipeline))
-# optimizer
-optimizer = dict(
-    type='SGD',
-    constructor='TSMOptimizerConstructor',
-    paramwise_cfg=dict(fc_lr5=True),
-    lr=0.01,  # this lr is used for 8 gpus
-    momentum=0.9,
-    weight_decay=0.00004)
-optimizer_config = dict(grad_clip=dict(max_norm=20, norm_type=2))
-# learning policy
-lr_config = dict(policy='step', step=[40, 80])
-total_epochs = 100
-checkpoint_config = dict(interval=5)
 evaluation = dict(
     interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
-log_config = dict(
-    interval=20,
-    hooks=[
-        dict(type='TextLoggerHook'),
-        # dict(type='TensorboardLoggerHook'),
-    ])
+
+# optimizer
+optimizer = dict(
+    lr=0.01,  # this lr is used for 8 gpus
+)
+
 # runtime settings
-dist_params = dict(backend='nccl')
-log_level = 'INFO'
+checkpoint_config = dict(interval=5)
 work_dir = './work_dirs/tsm_mobilenetv2_dense_video_1x1x8_100e_kinetics400_rgb/'  # noqa
-load_from = None
-resume_from = None
-workflow = [('train', 1)]
