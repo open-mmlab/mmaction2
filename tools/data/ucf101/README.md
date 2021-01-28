@@ -2,6 +2,8 @@
 
 ## Introduction
 
+[DATASET]
+
 ```
 @article{Soomro2012UCF101AD,
   title={UCF101: A Dataset of 101 Human Actions Classes From Videos in The Wild},
@@ -34,7 +36,7 @@ bash download_videos.sh
 For better decoding speed, you can resize the original videos into smaller sized, densely encoded version by:
 
 ```
-python ../resize_videos.py ../../../data/ucf101/videos/ ../../../data/ucf101/videos_256p_dense_cache --dense --level 2 --ext avi
+python ../resize_video.py ../../../data/ucf101/videos/ ../../../data/ucf101/videos_256p_dense_cache --dense --level 2 --ext avi
 ```
 
 ## Step 3. Extract RGB and Flow

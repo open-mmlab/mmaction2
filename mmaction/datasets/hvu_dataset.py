@@ -1,5 +1,6 @@
 import copy
 import os.path as osp
+from collections import OrderedDict
 
 import mmcv
 import numpy as np
@@ -164,7 +165,8 @@ class HVUDataset(BaseDataset):
 
         gt_labels = [ann['label'] for ann in self.video_infos]
 
-        eval_results = {}
+        eval_results = OrderedDict()
+
         for category in self.tag_categories:
 
             start_idx = self.category2startidx[category]

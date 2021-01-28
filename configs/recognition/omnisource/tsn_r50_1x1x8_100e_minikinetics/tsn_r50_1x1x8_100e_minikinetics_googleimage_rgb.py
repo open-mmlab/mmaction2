@@ -1,22 +1,12 @@
+_base_ = [
+    '../../../_base_/models/tsn_r50.py',
+    '../../../_base_/schedules/sgd_100e.py',
+    '../../../_base_/default_runtime.py'
+]
+
 # model settings
-model = dict(
-    type='Recognizer2D',
-    backbone=dict(
-        type='ResNet',
-        pretrained='torchvision://resnet50',
-        depth=50,
-        norm_eval=False),
-    cls_head=dict(
-        type='TSNHead',
-        num_classes=200,
-        in_channels=2048,
-        spatial_type='avg',
-        consensus=dict(type='AvgConsensus', dim=1),
-        dropout_ratio=0.4,
-        init_std=0.01))
-# model training and testing settings
-train_cfg = None
-test_cfg = dict(average_clips=None)
+model = dict(cls_head=dict(num_classes=200))
+
 omnisource = True
 # dataset settings
 dataset_type = 'VideoDataset'
@@ -122,25 +112,14 @@ data = dict(
         ann_file=ann_file_test,
         data_prefix=data_root_val,
         pipeline=test_pipeline))
+evaluation = dict(
+    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+
 # optimizer
 optimizer = dict(
     type='SGD', lr=0.00375, momentum=0.9,
     weight_decay=0.0001)  # this lr is used for 8 gpus
-optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
-# learning policy
-lr_config = dict(policy='step', step=[40, 80])
-total_epochs = 100
-checkpoint_config = dict(interval=1)
-evaluation = dict(
-    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
-log_config = dict(
-    interval=20, hooks=[
-        dict(type='TextLoggerHook'),
-    ])
-dist_params = dict(backend='nccl')
-log_level = 'INFO'
+
+# runtime settings
 work_dir = ('./work_dirs/omnisource/'
             'tsn_r50_1x1x8_100e_minikinetics_googleimage_rgb')
-load_from = None
-resume_from = None
-workflow = [('train', 1)]

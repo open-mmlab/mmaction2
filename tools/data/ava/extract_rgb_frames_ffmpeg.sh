@@ -35,10 +35,10 @@ do
     video_name=${video_name::-4}
   fi
 
-  out_video_dir=${OUT_DATA_DIR}/${video_name}/
+  out_video_dir=${OUT_DATA_DIR}/${video_name}
   mkdir -p "${out_video_dir}"
 
-  out_name="${out_video_dir}/${video_name}_%06d.jpg"
+  out_name="${out_video_dir}/img_%05d.jpg"
 
   ffmpeg -i "${video}" -r 30 -q:v 1 "${out_name}"
 done

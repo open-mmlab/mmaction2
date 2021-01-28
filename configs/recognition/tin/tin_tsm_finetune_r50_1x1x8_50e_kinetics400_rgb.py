@@ -1,24 +1,11 @@
+_base_ = [
+    '../../_base_/models/tin_r50.py', '../../_base_/schedules/sgd_50e.py',
+    '../../_base_/default_runtime.py'
+]
+
 # model settings
-model = dict(
-    type='Recognizer2D',
-    backbone=dict(
-        type='ResNetTIN',
-        pretrained='torchvision://resnet50',
-        depth=50,
-        norm_eval=False,
-        shift_div=4),
-    cls_head=dict(
-        type='TSMHead',
-        num_classes=400,
-        in_channels=2048,
-        spatial_type='avg',
-        consensus=dict(type='AvgConsensus', dim=1),
-        dropout_ratio=0.5,
-        init_std=0.001,
-        is_shift=True))
-# model training and testing settings
-train_cfg = None
-test_cfg = dict(average_clips=None)
+model = dict(cls_head=dict(is_shift=True))
+
 # dataset settings
 dataset_type = 'RawframeDataset'
 data_root = 'data/kinetics400/rawframes_train'
@@ -94,31 +81,14 @@ data = dict(
         ann_file=ann_file_test,
         data_prefix=data_root_val,
         pipeline=test_pipeline))
-# optimizer
-optimizer = dict(
-    type='SGD',
-    constructor='TSMOptimizerConstructor',
-    paramwise_cfg=dict(fc_lr5=True),
-    lr=0.01,  # this lr is for 8 gpus
-    momentum=0.9,
-    weight_decay=0.0001)
-optimizer_config = dict(grad_clip=dict(max_norm=20, norm_type=2))
-# learning policy
-lr_config = dict(policy='step', step=[20, 40])
-total_epochs = 50
-checkpoint_config = dict(interval=1)
 evaluation = dict(
     interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
-log_config = dict(
-    interval=20,
-    hooks=[
-        dict(type='TextLoggerHook'),
-        # dict(type='TensorboardLoggerHook'),
-    ])
+# optimizer
+optimizer = dict(
+    constructor='TSMOptimizerConstructor', paramwise_cfg=dict(fc_lr5=True))
+optimizer_config = dict(grad_clip=dict(max_norm=20, norm_type=2))
+
 # runtime settings
-dist_params = dict(backend='nccl')
-log_level = 'INFO'
 work_dir = './work_dirs/tin_tsm_finetune_r50_1x1x8_50e_kinetics400_rgb/'
 # load_from = 'modelzoo/tsm_r50_1x1x8_50e_kinetics400_rgb_20200607-af7fb746.pth'  # noqa: E501
 load_from = 'https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/tsm_r50_1x1x8_50e_kinetics400_rgb_20200607-af7fb746.pth'  # noqa: E501
-resume_from = None

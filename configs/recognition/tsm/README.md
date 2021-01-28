@@ -2,14 +2,20 @@
 
 ## Introduction
 
-```
+[ALGORITHM]
+
+```latex
 @inproceedings{lin2019tsm,
   title={TSM: Temporal Shift Module for Efficient Video Understanding},
   author={Lin, Ji and Gan, Chuang and Han, Song},
   booktitle={Proceedings of the IEEE International Conference on Computer Vision},
   year={2019}
 }
+```
 
+[BACKBONE]
+
+```latex
 @article{NonLocal2018,
   author =   {Xiaolong Wang and Ross Girshick and Abhinav Gupta and Kaiming He},
   title =    {Non-local Neural Networks},

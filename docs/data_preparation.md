@@ -68,6 +68,7 @@ The recommended practice is
 
 1. set `$OUT_FOLDER` to be a folder located in SSD.
 2. symlink the link `$OUT_FOLDER` to `$MMACTION2/data/$DATASET/rawframes`.
+3. set `new-short` instead of using `new-width` and `new-height`.
 
 ```shell
 ln -s ${YOUR_FOLDER} $MMACTION2/data/$DATASET/rawframes

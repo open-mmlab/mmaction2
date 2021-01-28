@@ -1,25 +1,11 @@
-model = dict(
-    type='Recognizer3D',
-    backbone=dict(
-        type='ResNet3dSlowOnly',
-        depth=50,
-        pretrained=None,
-        lateral=False,
-        in_channels=2,
-        conv1_kernel=(1, 7, 7),
-        conv1_stride_t=1,
-        pool1_stride_t=1,
-        inflate=(0, 0, 1, 1),
-        with_pool2=False,
-        norm_eval=False),
-    cls_head=dict(
-        type='I3DHead',
-        in_channels=2048,
-        num_classes=400,
-        spatial_type='avg',
-        dropout_ratio=0.5))
-train_cfg = None
-test_cfg = dict(average_clips='prob')
+_base_ = [
+    '../../_base_/models/slowonly_r50.py', '../../_base_/default_runtime.py'
+]
+
+# model settings
+model = dict(backbone=dict(pretrained=None, in_channels=2, with_pool2=False))
+
+# dataset settings
 dataset_type = 'RawframeDataset'
 data_root = 'data/gym/subaction_frames'
 data_root_val = 'data/gym/subaction_frames'
@@ -95,6 +81,9 @@ data = dict(
         modality='Flow',
         filename_tmpl='{}_{:05d}.jpg',
         pipeline=test_pipeline))
+evaluation = dict(
+    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+
 # optimizer
 optimizer = dict(
     type='SGD', lr=0.03, momentum=0.9,
@@ -103,22 +92,11 @@ optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
 lr_config = dict(policy='step', step=[90, 110])
 total_epochs = 120
-checkpoint_config = dict(interval=1)
-workflow = [('train', 1)]
-evaluation = dict(
-    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
-log_config = dict(
-    interval=20,
-    hooks=[
-        dict(type='TextLoggerHook'),
-        #    dict(type='TensorboardLoggerHook'),
-    ])
-dist_params = dict(backend='nccl')
-log_level = 'INFO'
+
+# runtime settings
 work_dir = ('./work_dirs/'
             'slowonly_kinetics_pretrained_r50_4x16x1_120e_gym99_flow')
 load_from = ('https://download.openmmlab.com/mmaction/recognition/slowonly/'
              'slowonly_r50_4x16x1_256e_kinetics400_flow/'
              'slowonly_r50_4x16x1_256e_kinetics400_flow_20200704-decb8568.pth')
-resume_from = None
 find_unused_parameters = False

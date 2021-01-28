@@ -12,7 +12,7 @@
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 
-MMAction2 is an open-source toolbox for action understanding based on PyTorch.
+MMAction2 is an open-source toolbox for video understanding based on PyTorch.
 It is a part of the [OpenMMLab](http://openmmlab.org/) project.
 
 The master branch works with **PyTorch 1.3+**.
@@ -30,16 +30,16 @@ The master branch works with **PyTorch 1.3+**.
 
 - **Modular design**
 
-  We decompose the action understanding framework into different components and one can easily construct a customized
-  action understanding framework by combining different modules.
+  We decompose the video understanding framework into different components and one can easily construct a customized
+  video understanding framework by combining different modules.
 
 - **Support for various datasets**
 
   The toolbox directly supports multiple datasets, UCF101, Kinetics-[400/600/700], Something-Something V1&V2, Moments in Time, Multi-Moments in Time, THUMOS14, etc.
 
-- **Support for multiple action understanding frameworks**
+- **Support for multiple video understanding frameworks**
 
-  MMAction2 implements popular frameworks for action understanding:
+  MMAction2 implements popular frameworks for video understanding:
 
   - For action recognition, various algorithms are implemented, including TSN, TSM, TIN, R(2+1)D, I3D, SlowOnly, SlowFast, CSN, Non-local, etc.
 
@@ -49,13 +49,9 @@ The master branch works with **PyTorch 1.3+**.
 
   We provide detailed documentation and API reference, as well as unittests.
 
-## License
-
-This project is released under the [Apache 2.0 license](LICENSE).
-
 ## Changelog
 
-v0.9.0 was released in 30/11/2020. Please refer to [changelog.md](docs/changelog.md) for details and release history.
+v0.10.0 was released in 05/01/2021. Please refer to [changelog.md](docs/changelog.md) for details and release history.
 
 ## Benchmark
 
@@ -74,37 +70,96 @@ Details can be found in [benchmark](docs/benchmark.md).
 
 ## ModelZoo
 
-Supported methods for action recognition:
+Supported methods for Action Recognition:
 
-- [x] [TSN](configs/recognition/tsn/README.md)
-- [x] [TSM](configs/recognition/tsm/README.md)
-- [x] [TSM Non-Local](configs/recognition/i3d)
-- [x] [R(2+1)D](configs/recognition/r2plus1d/README.md)
-- [x] [I3D](configs/recognition/i3d/README.md)
-- [x] [I3D Non-Local](configs/recognition/i3d/README.md)
-- [x] [SlowOnly](configs/recognition/slowonly/README.md)
-- [x] [SlowFast](configs/recognition/slowfast/README.md)
-- [x] [CSN](configs/recognition/csn/README.md)
-- [x] [TIN](configs/recognition/tin/README.md)
-- [x] [TPN](configs/recognition/tpn/README.md)
-- [x] [C3D](configs/recognition/c3d/README.md)
-- [x] [X3D](configs/recognition/x3d/README.md)
-- [x] [OmniSource](configs/recognition/omnisource/README.md)
-- [x] [MultiModality: Audio](configs/recognition_audio/resnet/README.md)
+<details open>
+<summary>(click to collapse)</summary>
 
-Supported methods for action localization:
+- [x] [TSN](configs/recognition/tsn/README.md) (ECCV'2016)
+- [x] [TSM](configs/recognition/tsm/README.md) (ICCV'2019)
+- [x] [TSM Non-Local](configs/recognition/i3d) (ICCV'2019)
+- [x] [R(2+1)D](configs/recognition/r2plus1d/README.md) (CVPR'2018)
+- [x] [I3D](configs/recognition/i3d/README.md) (CVPR'2017)
+- [x] [I3D Non-Local](configs/recognition/i3d/README.md) (CVPR'2018)
+- [x] [SlowOnly](configs/recognition/slowonly/README.md) (ICCV'2019)
+- [x] [SlowFast](configs/recognition/slowfast/README.md) (ICCV'2019)
+- [x] [CSN](configs/recognition/csn/README.md) (ICCV'2019)
+- [x] [TIN](configs/recognition/tin/README.md) (AAAI'2020)
+- [x] [TPN](configs/recognition/tpn/README.md) (CVPR'2020)
+- [x] [C3D](configs/recognition/c3d/README.md) (CVPR'2014)
+- [x] [X3D](configs/recognition/x3d/README.md) (CVPR'2020)
+- [x] [OmniSource](configs/recognition/omnisource/README.md) (ECCV'2020)
+- [x] [MultiModality: Audio](configs/recognition_audio/resnet/README.md) (ArXiv'2020)
 
-- [x] [BMN](configs/localization/bmn/README.md)
-- [x] [BSN](configs/localization/bsn/README.md)
-- [x] [SSN](configs/localization/ssn/README.md)
+</details>
 
-Supported methods for spatio-temporal action detection:
+Supported methods for Temporal Action Detection:
 
-- [x] [SlowOnly+Fast R-CNN](configs/detection/ava/README.md)
-- [x] [SlowFast+Fast R-CNN](configs/detection/ava/README.md)
+<details open>
+<summary>(click to collapse)</summary>
+
+- [x] [BSN](configs/localization/bsn/README.md) (ECCV'2018)
+- [x] [BMN](configs/localization/bmn/README.md) (ICCV'2019)
+- [x] [SSN](configs/localization/ssn/README.md) (ICCV'2017)
+
+</details>
+
+Supported methods for Spatial Temporal Action Detection:
+
+<details open>
+<summary>(click to collapse)</summary>
+
+- [x] [SlowOnly+Fast R-CNN](configs/detection/ava/README.md) (ICCV'2019)
+- [x] [SlowFast+Fast R-CNN](configs/detection/ava/README.md) (ICCV'2019)
+
+</details>
 
 Results and models are available in the *README.md* of each method's config directory.
 A summary can be found in the [**model zoo**](https://mmaction2.readthedocs.io/en/latest/recognition_models.html) page.
+
+## Dataset
+
+Supported [datasets](https://mmaction2.readthedocs.io/en/latest/supported_datasets.html):
+
+Supported datasets for Action Recognition:
+
+<details open>
+<summary>(click to collapse)</summary>
+
+- [x] [UCF101](/tools/data/ucf101/README.md) \[ [Homepage](https://www.crcv.ucf.edu/research/data-sets/ucf101/) \] (CRCV-IR-12-01)
+- [x] [HMDB51](/tools/data/hmdb51/README.md) \[ [Homepage](https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/) \] (ICCV'2011)
+- [x] [Kinetics-[400/600/700]](/tools/data/kinetics/README.md) \[ [Homepage](https://deepmind.com/research/open-source/kinetics) \] (CVPR'2017)
+- [x] [Something-Something V1](/tools/data/sthv1/README.md) \[ [Homepage](https://20bn.com/datasets/something-something/v1) \] (ICCV'2017)
+- [x] [Something-Something V2](/tools/data/sthv2/README.md) \[ [Homepage](https://20bn.com/datasets/something-something) \] (ICCV'2017)
+- [x] [Moments in Time](/tools/data/mit/README.md) \[ [Homepage](http://moments.csail.mit.edu/) \] (TPAMI'2019)
+- [x] [Multi-Moments in Time](/tools/data/mmit/README.md) \[ [Homepage](http://moments.csail.mit.edu/challenge_iccv_2019.html) \] (ArXiv'2019)
+- [x] [HVU](/tools/data/hvu/README.md) \[ [Homepage](https://github.com/holistic-video-understanding/HVU-Dataset) \] (ECCV'2020)
+- [x] [Jester](/tools/data/jester/README.md) \[ [Homepage](https://20bn.com/datasets/jester/v1) \] (ICCV'2019)
+- [x] [GYM](/tools/data/gym/README.md) \[ [Homepage](https://sdolivia.github.io/FineGym/) \] (CVPR'2020)
+- [x] [ActivityNet](/tools/data/activitynet/README.md) \[ [Homepage](http://activity-net.org/) \] (CVPR'2015)
+
+</details>
+
+Supported datasets for Temporal Action Detection
+
+<details open>
+<summary>(click to collapse)</summary>
+
+- [x] [ActivityNet](/tools/data/activitynet/README.md) \[ [Homepage](http://activity-net.org/) \] (CVPR'2015)
+- [x] [THUMOS14](/tools/data/thumos14/README.md) \[ [Homepage](https://www.crcv.ucf.edu/THUMOS14/download.html) \] (THUMOS Challenge 2014)
+
+</details>
+
+Supported datasets for Spatial Temporal Action Detection
+
+<details open>
+<summary>(click to collapse)</summary>
+
+- [x] [AVA](/tools/data/ava/README.md) \[ [Homepage](https://research.google.com/ava/index.html) \] (CVPR'2018)
+- [x] [UCF101-24](/tools/data/ucf101_24/README.md) \[ [Homepage](http://www.thumos.info/download.html) \] (CRCV-IR-12-01)
+- [x] [JHMDB](/tools/data/jhmdb/README.md) \[ [Homepage](http://jhmdb.is.tue.mpg.de/) \] (ICCV'2013)
+
+</details>
 
 ## Installation
 
@@ -126,6 +181,23 @@ A Colab tutorial is also provided. You may preview the notebook [here](demo/mmac
 
 Please refer to [FAQ](docs/faq.md) for frequently asked questions.
 
+## License
+
+This project is released under the [Apache 2.0 license](LICENSE).
+
+## Citation
+
+If you find this project useful in your research, please consider cite:
+
+```latex
+@misc{2020mmaction2,
+    title={OpenMMLab's Next Generation Video Understanding Toolbox and Benchmark},
+    author={MMAction2 Contributors},
+    howpublished = {\url{https://github.com/open-mmlab/mmaction2}},
+    year={2020}
+}
+```
+
 ## Contributing
 
 We appreciate all contributions to improve MMAction2. Please refer to [CONTRIBUTING.md](.github/CONTRIBUTING.md) for the contributing guideline.
@@ -135,3 +207,15 @@ We appreciate all contributions to improve MMAction2. Please refer to [CONTRIBUT
 MMAction2 is an open source project that is contributed by researchers and engineers from various colleges and companies.
 We appreciate all the contributors who implement their methods or add new features, as well as users who give valuable feedbacks.
 We wish that the toolbox and benchmark could serve the growing research community by providing a flexible toolkit to reimplement existing methods and develop their own new models.
+
+## Projects in OpenMMLab
+
+- [MMCV](https://github.com/open-mmlab/mmcv): OpenMMLab foundational library for computer vision.
+- [MMClassification](https://github.com/open-mmlab/mmclassification): OpenMMLab image classification toolbox and benchmark.
+- [MMDetection](https://github.com/open-mmlab/mmdetection): OpenMMLab detection toolbox and benchmark.
+- [MMDetection3D](https://github.com/open-mmlab/mmdetection3d): OpenMMLab's next-generation platform for general 3D object detection.
+- [MMSegmentation](https://github.com/open-mmlab/mmsegmentation): OpenMMLab semantic segmentation toolbox and benchmark.
+- [MMAction2](https://github.com/open-mmlab/mmaction2): OpenMMLab's next-generation video understanding toolbox and benchmark.
+- [MMTracking](https://github.com/open-mmlab/mmtracking): OpenMMLab video perception toolbox and benchmark.
+- [MMPose](https://github.com/open-mmlab/mmpose): OpenMMLab pose estimation toolbox and benchmark.
+- [MMEditing](https://github.com/open-mmlab/mmediting): OpenMMLab image and video editing toolbox.

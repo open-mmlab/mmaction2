@@ -1,22 +1,8 @@
+_base_ = ['../../_base_/models/tsn_r50.py', '../../_base_/default_runtime.py']
+
 # model settings
-model = dict(
-    type='Recognizer2D',
-    backbone=dict(
-        type='ResNet',
-        pretrained='torchvision://resnet50',
-        depth=50,
-        norm_eval=False),
-    cls_head=dict(
-        type='TSNHead',
-        num_classes=101,
-        in_channels=2048,
-        spatial_type='avg',
-        consensus=dict(type='AvgConsensus', dim=1),
-        dropout_ratio=0.4,
-        init_std=0.001))
-# model training and testing settings
-train_cfg = None
-test_cfg = dict(average_clips=None)
+model = dict(cls_head=dict(num_classes=101, init_std=0.001))
+
 # dataset settings
 dataset_type = 'RawframeDataset'
 data_root = 'data/ucf101/rawframes/'
@@ -89,6 +75,9 @@ data = dict(
         ann_file=ann_file_test,
         data_prefix=data_root_val,
         pipeline=test_pipeline))
+evaluation = dict(
+    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+
 # optimizer
 optimizer = dict(
     type='SGD', lr=0.00128, momentum=0.9,
@@ -97,19 +86,7 @@ optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
 lr_config = dict(policy='step', step=[])
 total_epochs = 75
-checkpoint_config = dict(interval=5)
-evaluation = dict(
-    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
-log_config = dict(
-    interval=20,
-    hooks=[
-        dict(type='TextLoggerHook'),
-        # dict(type='TensorboardLoggerHook'),
-    ])
+
 # runtime settings
-dist_params = dict(backend='nccl')
-log_level = 'INFO'
+checkpoint_config = dict(interval=5)
 work_dir = f'./work_dirs/tsn_r50_1x1x3_75e_ucf101_split_{split}_rgb/'
-load_from = None
-resume_from = None
-workflow = [('train', 1)]

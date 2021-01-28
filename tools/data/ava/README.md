@@ -1,5 +1,17 @@
 # Preparing AVA
 
+[DATASET]
+
+```latex
+@inproceedings{gu2018ava,
+  title={Ava: A video dataset of spatio-temporally localized atomic visual actions},
+  author={Gu, Chunhui and Sun, Chen and Ross, David A and Vondrick, Carl and Pantofaru, Caroline and Li, Yeqing and Vijayanarasimhan, Sudheendra and Toderici, George and Ricco, Susanna and Sukthankar, Rahul and others},
+  booktitle={Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition},
+  pages={6047--6056},
+  year={2018}
+}
+```
+
 For basic dataset information, please refer to the official [website](https://research.google.com/ava/index.html).
 Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/ava/`.
 
@@ -111,10 +123,15 @@ mmaction2
 ├── configs
 ├── data
 │   ├── ava
-│   │   ├── ava_dense_proposals_train.FAIR.recall_93.9.pkl
-│   │   ├── ava_dense_proposals_val.FAIR.recall_93.9.pkl
-│   │   ├── ava_dense_proposals_test.FAIR.recall_93.9.pkl
 │   │   ├── annotations
+│   │   |   ├── ava_dense_proposals_train.FAIR.recall_93.9.pkl
+│   │   |   ├── ava_dense_proposals_val.FAIR.recall_93.9.pkl
+│   │   |   ├── ava_dense_proposals_test.FAIR.recall_93.9.pkl
+│   │   |   ├── ava_train_v2.1.csv
+│   │   |   ├── ava_val_v2.1.csv
+│   │   |   ├── ava_train_excluded_timestamps_v2.1.csv
+│   │   |   ├── ava_val_excluded_timestamps_v2.1.csv
+│   │   |   ├── ava_action_list_v2.1_for_activitynet_2018.pbtxt
 │   │   ├── videos
 │   │   │   ├── 053oq2xB3oU.mkv
 │   │   │   ├── 0f39OWEqJ24.mp4

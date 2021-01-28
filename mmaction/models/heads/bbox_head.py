@@ -7,10 +7,11 @@ import torch.nn.functional as F
 from mmaction.core.bbox import bbox_target
 
 try:
-    import mmdet  # noqa
     from mmdet.models.builder import HEADS as MMDET_HEADS
+    mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
     warnings.warn('Please install mmdet to use MMDET_HEADS')
+    mmdet_imported = False
 
 
 class BBoxHeadAVA(nn.Module):
@@ -217,5 +218,5 @@ class BBoxHeadAVA(nn.Module):
         return bboxes, scores
 
 
-if 'mmdet' in dir():
+if mmdet_imported:
     MMDET_HEADS.register_module()(BBoxHeadAVA)

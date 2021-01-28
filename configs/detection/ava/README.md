@@ -1,12 +1,14 @@
 # AVA
 
 <div align="center">
-  <img src="../../../docs/imgs/spatio-temporal-det.gif" width="800px"/>
+  <img src="https://raw.githubusercontent.com/open-mmlab/mmaction2/master/docs/imgs/spatio-temporal-det.gif" width="800px"/>
 </div>
 
 ## Introduction
 
-```
+[DATASET]
+
+```latex
 @inproceedings{gu2018ava,
   title={Ava: A video dataset of spatio-temporally localized atomic visual actions},
   author={Gu, Chunhui and Sun, Chen and Ross, David A and Vondrick, Carl and Pantofaru, Caroline and Li, Yeqing and Vijayanarasimhan, Sudheendra and Toderici, George and Ricco, Susanna and Sukthankar, Rahul and others},
@@ -14,14 +16,22 @@
   pages={6047--6056},
   year={2018}
 }
+```
 
+[ALGORITHM]
+
+```latex
 @article{duan2020omni,
   title={Omni-sourced Webly-supervised Learning for Video Recognition},
   author={Duan, Haodong and Zhao, Yue and Xiong, Yuanjun and Liu, Wentao and Lin, Dahua},
   journal={arXiv preprint arXiv:2003.13042},
   year={2020}
 }
+```
 
+[ALGORITHM]
+
+```latex
 @inproceedings{feichtenhofer2019slowfast,
   title={Slowfast networks for video recognition},
   author={Feichtenhofer, Christoph and Fan, Haoqi and Malik, Jitendra and He, Kaiming},
@@ -81,7 +91,7 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 Example: test SlowOnly model on AVA and dump the result to a csv file.
 
 ```shell
-python tools/test.py configs/detection/AVA/slowonly_kinetics_pretrained_r50_8x8x1_20e_ava_rgb.py checkpoints/SOME_CHECKPOINT.pth --eval bbox --out results.csv
+python tools/test.py configs/detection/AVA/slowonly_kinetics_pretrained_r50_8x8x1_20e_ava_rgb.py checkpoints/SOME_CHECKPOINT.pth --eval mAP --out results.csv
 ```
 
 For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset) .

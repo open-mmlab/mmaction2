@@ -98,13 +98,13 @@ if __name__ == '__main__':
     setup(
         name='mmaction2',
         version=get_version(),
-        description='OpenMMLab Action Understanding Toolbox and Benchmark',
+        description='OpenMMLab Video Understanding Toolbox and Benchmark',
         long_description=readme(),
         long_description_content_type='text/markdown',
         maintainer='MMAction2 Authors',
         maintainer_email='openmmlab@gmail.com',
         packages=find_packages(exclude=('configs', 'tools', 'demo')),
-        keywords='computer vision, action understanding',
+        keywords='computer vision, video understanding',
         classifiers=[
             'Development Status :: 4 - Beta',
             'License :: OSI Approved :: Apache Software License',

@@ -6,10 +6,10 @@ from mmcv.runner import (DistSamplerSeedHook, EpochBasedRunner, OptimizerHook,
                          build_optimizer)
 from mmcv.runner.hooks import Fp16OptimizerHook
 
-from ..core import (DistEpochEvalHook, EpochEvalHook,
-                    OmniSourceDistSamplerSeedHook, OmniSourceRunner)
+from ..core import (DistEvalHook, EvalHook, OmniSourceDistSamplerSeedHook,
+                    OmniSourceRunner)
 from ..datasets import build_dataloader, build_dataset
-from ..utils import get_root_logger
+from ..utils import PreciseBNHook, get_root_logger
 
 
 def train_model(model,
@@ -115,6 +115,21 @@ def train_model(model,
         else:
             runner.register_hook(DistSamplerSeedHook())
 
+    # precise bn setting
+    if cfg.get('precise_bn', False):
+        precise_bn_dataset = build_dataset(cfg.data.train)
+        dataloader_setting = dict(
+            videos_per_gpu=cfg.data.get('videos_per_gpu', 1),
+            workers_per_gpu=0,  # save memory and time
+            num_gpus=len(cfg.gpu_ids),
+            dist=distributed,
+            seed=cfg.seed)
+        data_loader_precise_bn = build_dataloader(precise_bn_dataset,
+                                                  **dataloader_setting)
+        precise_bn_hook = PreciseBNHook(data_loader_precise_bn,
+                                        **cfg.get('precise_bn'))
+        runner.register_hook(precise_bn_hook)
+
     if validate:
         eval_cfg = cfg.get('evaluation', {})
         val_dataset = build_dataset(cfg.data.val, dict(test_mode=True))
@@ -128,7 +143,7 @@ def train_model(model,
         dataloader_setting = dict(dataloader_setting,
                                   **cfg.data.get('val_dataloader', {}))
         val_dataloader = build_dataloader(val_dataset, **dataloader_setting)
-        eval_hook = DistEpochEvalHook if distributed else EpochEvalHook
+        eval_hook = DistEvalHook if distributed else EvalHook
         runner.register_hook(eval_hook(val_dataloader, **eval_cfg))
 
     if cfg.resume_from:

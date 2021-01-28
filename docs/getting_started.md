@@ -137,7 +137,7 @@ model = init_recognizer(config_file, checkpoint_file, device=device)
 
 # test a single video and show the result:
 video = 'demo/demo.mp4'
-labels = 'demo/label_map.txt'
+labels = 'demo/label_map_k400.txt'
 results = inference_recognizer(model, video, labels)
 
 # show the results
@@ -166,7 +166,7 @@ model = init_recognizer(config_file, checkpoint_file, device=device, use_frames=
 
 # test rawframe directory of a single video and show the result:
 video = 'SOME_DIR_PATH/'
-labels = 'demo/label_map.txt'
+labels = 'demo/label_map_k400.txt'
 results = inference_recognizer(model, video, labels, use_frames=True)
 
 # show the results
@@ -195,7 +195,7 @@ model = init_recognizer(config_file, checkpoint_file, device=device, use_frames=
 
 # test rawframe directory of a single video and show the result:
 video = 'https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4'
-labels = 'demo/label_map.txt'
+labels = 'demo/label_map_k400.txt'
 results = inference_recognizer(model, video, labels, use_frames=True)
 
 # show the results

@@ -2,6 +2,8 @@
 
 ## Introduction
 
+[DATASET]
+
 ```
 @inproceedings{inproceedings,
   author = {Carreira, J. and Zisserman, Andrew},
@@ -52,6 +54,8 @@ For better decoding speed, you can resize the original videos into smaller sized
 python ../resize_videos.py ../../../data/${DATASET}/videos_train/ ../../../data/${DATASET}/videos_train_256p_dense_cache --dense --level 2
 ```
 
+You can also download kinetics400 and kinetics700 from [Academic Torrents](https://academictorrents.com/details/184d11318372f70018cf9a72ef867e2fb9ce1d26).
+
 ## Step 3. Extract RGB and Flow
 
 This part is **optional** if you only want to use the video loader.
@@ -86,8 +90,7 @@ If both are required, run the following script to extract frames.
 bash extract_frames.sh ${DATASET}
 ```
 
-These three commands above can generate images with size 340x256, if you want to generate images with short edge 320 (320p),
-you can change the args `--new-width 340 --new-height 256` to `--new-short 320`.
+The commands above can generate images with new short edge 256. If you want to generate images with short edge 320 (320p), or with fix size 340x256, you can change the args `--new-short 256` to `--new-short 320` or `--new-width 340 --new-height 256`.
 More details can be found in [data_preparation](/docs/data_preparation.md)
 
 ## Step 4. Generate File List

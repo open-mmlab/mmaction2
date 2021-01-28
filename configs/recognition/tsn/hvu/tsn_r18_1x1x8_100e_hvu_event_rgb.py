@@ -1,28 +1,22 @@
+_base_ = [
+    '../../../_base_/models/tsn_r50.py',
+    '../../../_base_/schedules/sgd_100e.py',
+    '../../../_base_/default_runtime.py'
+]
+
 # model settings
 category_nums = dict(
     action=739, attribute=117, concept=291, event=69, object=1678, scene=248)
 target_cate = 'event'
 
 model = dict(
-    type='Recognizer2D',
-    backbone=dict(
-        type='ResNet',
-        pretrained='torchvision://resnet18',
-        depth=18,
-        norm_eval=False),
+    backbone=dict(pretrained='torchvision://resnet18', depth=18),
     cls_head=dict(
-        type='TSNHead',
-        num_classes=category_nums[target_cate],
         in_channels=512,
-        spatial_type='avg',
+        num_classes=category_nums[target_cate],
         multi_class=True,
-        consensus=dict(type='AvgConsensus', dim=1),
-        loss_cls=dict(type='BCELossWithLogits', loss_weight=333.),
-        dropout_ratio=0.4,
-        init_std=0.01))
-# model training and testing settings
-train_cfg = None
-test_cfg = dict(average_clips=None)
+        loss_cls=dict(type='BCELossWithLogits', loss_weight=333.)))
+
 # dataset settings
 dataset_type = 'RawframeDataset'
 data_root = 'data/hvu/rawframes_train'
@@ -103,24 +97,7 @@ data = dict(
         multi_class=True,
         num_classes=category_nums[target_cate],
         filename_tmpl='img_{:05d}.jpg'))
-# optimizer
-optimizer = dict(
-    type='SGD', lr=0.01, momentum=0.9,
-    weight_decay=0.0001)  # this lr is used for 8 gpus
-optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
-# learning policy
-lr_config = dict(policy='step', step=[40, 80])
-total_epochs = 100
-checkpoint_config = dict(interval=1)
 evaluation = dict(interval=2, metrics=['mean_average_precision'])
-log_config = dict(
-    interval=20, hooks=[
-        dict(type='TextLoggerHook'),
-    ])
+
 # runtime settings
-dist_params = dict(backend='nccl')
-log_level = 'INFO'
 work_dir = f'./work_dirs/tsn_r18_1x1x8_100e_hvu_{target_cate}_rgb/'
-load_from = None
-resume_from = None
-workflow = [('train', 1)]

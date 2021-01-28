@@ -2,7 +2,9 @@
 
 ## Introduction
 
-```
+[ALGORITHM]
+
+```latex
 @ARTICLE{2014arXiv1412.0767T,
 author = {Tran, Du and Bourdev, Lubomir and Fergus, Rob and Torresani, Lorenzo and Paluri, Manohar},
 title = {Learning Spatiotemporal Features with 3D Convolutional Networks},
@@ -10,14 +12,6 @@ keywords = {Computer Science - Computer Vision and Pattern Recognition},
 year = 2014,
 month = dec,
 eid = {arXiv:1412.0767}
-}
-
-@article{Tran2014C3DGF,
-  title={C3D: Generic Features for Video Analysis},
-  author={D. Tran and Lubomir D. Bourdev and R. Fergus and L. Torresani and Manohar Paluri},
-  journal={ArXiv},
-  year={2014},
-  volume={abs/1412.0767}
 }
 ```
 
