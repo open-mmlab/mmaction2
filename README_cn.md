@@ -4,7 +4,7 @@
 
 ## Introduction
 
-English | [简体中文](README_cn.md)
+[English](./README.md) | 简体中文
 
 [![Documentation](https://readthedocs.org/projects/mmaction2/badge/?version=latest)](https://mmaction2.readthedocs.io/en/latest/)
 [![actions](https://github.com/open-mmlab/mmaction2/workflows/build/badge.svg)](https://github.com/open-mmlab/mmaction2/actions)
@@ -14,48 +14,44 @@ English | [简体中文](README_cn.md)
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 
-MMAction2 is an open-source toolbox for video understanding based on PyTorch.
-It is a part of the [OpenMMLab](http://openmmlab.org/) project.
+MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLab](http://openmmlab.org/) 项目的成员之一
 
-The master branch works with **PyTorch 1.3+**.
+主分支代码目前支持 **PyTorch 1.3 以上**的版本
 
 <div align="center">
   <img src="docs/imgs/mmaction2_overview.gif" width="450px"/><br>
-    Action Recognition Results on Kinetics-400
+    Kinetics-400 上的动作识别
 </div>
 <div align="center">
   <img src="docs/imgs/spatio-temporal-det.gif" width="800px"/><br>
-    Spatio-Temporal Action Detection Results on AVA-2.1
+    AVA-2.1 上的时空动作检测
 </div>
 
-### Major Features
+## 主要特性
 
-- **Modular design**
+- **模块化设计**
+  MMAction2 将统一的视频理解框架解耦成不同的模块组件，通过组合不同的模块组件，用户可以便捷地构建自定义的视频理解模型
 
-  We decompose the video understanding framework into different components and one can easily construct a customized
-  video understanding framework by combining different modules.
+- **支持多样的数据集**
+  MMAction2 支持多种数据集的准备和构建，包括 UCF101, Kinetics-[400/600/700], Something-Something V1&V2, Moments in Time, Multi-Moments in Time, THUMOS14 等
 
-- **Support for various datasets**
+- **支持多种视频理解任务**
+  MMAction2 支持多种主流的视频理解任务
 
-  The toolbox directly supports multiple datasets, UCF101, Kinetics-[400/600/700], Something-Something V1&V2, Moments in Time, Multi-Moments in Time, THUMOS14, etc.
+  - 动作识别：TSN, TSM, TIN, R(2+1)D, I3D, SlowOnly, SlowFast, CSN, Non-local 等
+  - 时序动作检测：BSN, BMN, SSN
+  - 时空动作检测：SlowOnly + Fast-RCNN, SlowFast + Fast-RCNN
 
-- **Support for multiple video understanding frameworks**
+  具体可参考 [ModelZoo](#模型库)
 
-  MMAction2 implements popular frameworks for video understanding:
+- **详尽的单元测试和文档**
+  MMAction2 提供了详尽的说明文档，API 接口说明，全面的单元测试，以供社区参考
 
-  - For action recognition, various algorithms are implemented, including TSN, TSM, TIN, R(2+1)D, I3D, SlowOnly, SlowFast, CSN, Non-local, etc.
+## 更新记录
 
-  - For temporal action localization, we implement BSN, BMN, SSN.
+v0.10.0 版本已于 2021 年 1 月 5 日发布，可通过查阅 [changelog.md](docs/changelog.md) 了解更多细节以及发布历史
 
-- **Well tested and documented**
-
-  We provide detailed documentation and API reference, as well as unittests.
-
-## Changelog
-
-v0.11.0 was released in 31/01/2021. Please refer to [changelog.md](docs/changelog.md) for details and release history.
-
-## Benchmark
+## 基准测试
 
 | Model  |input| io backend | batch size x gpus | MMAction2 (s/iter) | MMAction (s/iter) | Temporal-Shift-Module (s/iter) | PySlowFast (s/iter) |
 | :--- | :---------------:|:---------------:| :---------------:| :---------------:  | :--------------------: | :----------------------------: | :-----------------: |
@@ -68,14 +64,14 @@ v0.11.0 was released in 31/01/2021. Please refer to [changelog.md](docs/changelo
 | [Slowfast](/configs/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb.py)|256p videos|Disk|8x8 | **[0.69](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction2/slowfast_256p_videos_disk_8x8.zip)** | x | x | [1.04](https://download.openmmlab.com/mmaction/benchmark/recognition/pyslowfast/pysf_slowfast_r50_4x16_video.log) |
 | [R(2+1)D](/configs/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb.py)|256p videos |Disk| 8x8|**[0.45](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction2/r2plus1d_256p_videos_disk_8x8.zip)** | x | x | x |
 
-Details can be found in [benchmark](docs/benchmark.md).
+更多详情可见 [bechmark.md](docs/benchmark.md)
 
-## ModelZoo
+## 模型库
 
-Supported methods for Action Recognition:
+支持的行为识别方法：
 
 <details open>
-<summary>(click to collapse)</summary>
+<summary>(点击收起)</summary>
 
 - [x] [TSN](configs/recognition/tsn/README.md) (ECCV'2016)
 - [x] [TSM](configs/recognition/tsm/README.md) (ICCV'2019)
@@ -95,10 +91,10 @@ Supported methods for Action Recognition:
 
 </details>
 
-Supported methods for Temporal Action Detection:
+支持的时序动作检测方法：
 
 <details open>
-<summary>(click to collapse)</summary>
+<summary>(点击收起)</summary>
 
 - [x] [BSN](configs/localization/bsn/README.md) (ECCV'2018)
 - [x] [BMN](configs/localization/bmn/README.md) (ICCV'2019)
@@ -106,24 +102,24 @@ Supported methods for Temporal Action Detection:
 
 </details>
 
-Supported methods for Spatial Temporal Action Detection:
+支持的时空检测方法：
 
 <details open>
-<summary>(click to collapse)</summary>
+<summary>(点击收起)</summary>
 
 - [x] [SlowOnly+Fast R-CNN](configs/detection/ava/README.md) (ICCV'2019)
 - [x] [SlowFast+Fast R-CNN](configs/detection/ava/README.md) (ICCV'2019)
 
 </details>
 
-Results and models are available in the *README.md* of each method's config directory.
-A summary can be found in the [**model zoo**](https://mmaction2.readthedocs.io/en/latest/recognition_models.html) page.
+各个模型的结果和设置都可以在对应的 config 目录下的 *README.md* 中查看
+整体的概况也可也在 [**model zoo**](https://mmaction2.readthedocs.io/en/latest/recognition_models.html) 页面中查看
 
-## Dataset
+## 数据集
 
-Supported [datasets](https://mmaction2.readthedocs.io/en/latest/supported_datasets.html):
+支持的[数据集](https://mmaction2.readthedocs.io/en/latest/supported_datasets.html)：
 
-Supported datasets for Action Recognition:
+支持的动作识别数据集：
 
 <details open>
 <summary>(click to collapse)</summary>
@@ -142,7 +138,7 @@ Supported datasets for Action Recognition:
 
 </details>
 
-Supported datasets for Temporal Action Detection
+支持的时序动作检测数据集：
 
 <details open>
 <summary>(click to collapse)</summary>
@@ -152,7 +148,7 @@ Supported datasets for Temporal Action Detection
 
 </details>
 
-Supported datasets for Spatial Temporal Action Detection
+支持的时空动作检测数据集：
 
 <details open>
 <summary>(click to collapse)</summary>
@@ -163,33 +159,31 @@ Supported datasets for Spatial Temporal Action Detection
 
 </details>
 
-## Installation
+## 安装
 
-Please refer to [install.md](docs/install.md) for installation.
+请参考 [install.md](/docs/install.md) 进行安装
 
-## Data Preparation
+## 数据集准备
 
-Please refer to [data_preparation.md](docs/data_preparation.md) for a general knowledge of data preparation.
-The supported datasets are listed in [supported_datasets.md](docs/supported_datasets.md)
+请参考 [data_preparation.md](/docs/data_preparation.md) 了解数据集准备概况。所有支持的数据集都列于 [supported_datasets.md](docs/supported_datasets.md) 中
 
-## Get Started
+## 教程
 
-Please see [getting_started.md](docs/getting_started.md) for the basic usage of MMAction2.
-There are also tutorials for [learn about configs](docs/tutorials/1_config.md), [finetuning models](docs/tutorials/2_finetune.md), [adding new dataset](docs/tutorials/3_new_dataset.md), [designing data pipeline](docs/tutorials/4_data_pipeline.md), [adding new modules](docs/tutorials/5_new_modules.md), [exporting model to onnx](docs/tutorials/6_export_model.md) and [customizing runtime settings](docs/tutorials/7_customize_runtime.md).
+请参考 [getting_started.md](/docs/getting_started.md) 了解 MMAction2 的基本使用。MMAction2也提供了其他更详细的教程：
+[learn about configs](docs/tutorials/1_config.md), [finetuning models](docs/tutorials/2_finetune.md), [adding new dataset](docs/tutorials/3_new_dataset.md),
+[designing data pipeline](docs/tutorials/4_data_pipeline.md), [adding new modules](docs/tutorials/5_new_modules.md), [exporting model to onnx](docs/tutorials/6_export_model.md) 和 [customizing runtime settings](docs/tutorials/7_customize_runtime.md).
 
-A Colab tutorial is also provided. You may preview the notebook [here](demo/mmaction2_tutorial.ipynb) or directly [run](https://colab.research.google.com/github/open-mmlab/mmaction2/blob/master/demo/mmaction2_tutorial.ipynb) on Colab.
+## 常见问题
 
-## FAQ
+请参考 [FAQ](docs/faq.md) 了解其他用户的常见问题
 
-Please refer to [FAQ](docs/faq.md) for frequently asked questions.
+## 许可
 
-## License
+该项目开源自 [Apache 2.0 license](LICENSE)
 
-This project is released under the [Apache 2.0 license](LICENSE).
+## 引用
 
-## Citation
-
-If you find this project useful in your research, please consider cite:
+如果你觉得 MMAction2 对你的研究有所帮助，可以考虑引用它：
 
 ```latex
 @misc{2020mmaction2,
@@ -200,24 +194,23 @@ If you find this project useful in your research, please consider cite:
 }
 ```
 
-## Contributing
+## 参与贡献
 
-We appreciate all contributions to improve MMAction2. Please refer to [CONTRIBUTING.md](.github/CONTRIBUTING.md) for the contributing guideline.
+我们非常欢迎用户任何对于 MMAction2 做出的贡献，可以参考 [CONTRIBUTION.md](.github/CONTRIBUTING.md) 文件了解更多细节
 
-## Acknowledgement
+## 致谢
 
-MMAction2 is an open source project that is contributed by researchers and engineers from various colleges and companies.
-We appreciate all the contributors who implement their methods or add new features, as well as users who give valuable feedbacks.
-We wish that the toolbox and benchmark could serve the growing research community by providing a flexible toolkit to reimplement existing methods and develop their own new models.
+MMAction2 是一款由不同学校和公司共同贡献的开源项目。我们感谢所有为项目提供算法复现和新功能支持的贡献者，以及提供宝贵反馈的用户。
+我们希望该工具箱和基准测试可以为社区提供灵活的代码工具，供用户复现现有算法并开发自己的新模型，从而不断为开源社区提供贡献。
 
-## Projects in OpenMMLab
+## OpenMMLab的其他项目
 
-- [MMCV](https://github.com/open-mmlab/mmcv): OpenMMLab foundational library for computer vision.
-- [MMClassification](https://github.com/open-mmlab/mmclassification): OpenMMLab image classification toolbox and benchmark.
-- [MMDetection](https://github.com/open-mmlab/mmdetection): OpenMMLab detection toolbox and benchmark.
-- [MMDetection3D](https://github.com/open-mmlab/mmdetection3d): OpenMMLab's next-generation platform for general 3D object detection.
-- [MMSegmentation](https://github.com/open-mmlab/mmsegmentation): OpenMMLab semantic segmentation toolbox and benchmark.
-- [MMAction2](https://github.com/open-mmlab/mmaction2): OpenMMLab's next-generation video understanding toolbox and benchmark.
-- [MMTracking](https://github.com/open-mmlab/mmtracking): OpenMMLab video perception toolbox and benchmark.
-- [MMPose](https://github.com/open-mmlab/mmpose): OpenMMLab pose estimation toolbox and benchmark.
-- [MMEditing](https://github.com/open-mmlab/mmediting): OpenMMLab image and video editing toolbox.
+- [MMCV](https://github.com/open-mmlab/mmcv): OpenMMLab 计算机视觉基础库
+- [MMClassification](https://github.com/open-mmlab/mmclassification): OpenMMLab 图像分类工具箱与测试基准
+- [MMDetection](https://github.com/open-mmlab/mmdetection): OpenMMLab 检测工具箱与测试基准
+- [MMDetection3D](https://github.com/open-mmlab/mmdetection3d): OpenMMLab's 新一代通用3D目标检测平台
+- [MMSegmentation](https://github.com/open-mmlab/mmsegmentation): OpenMMLab 语义分割工具箱与测试基准
+- [MMAction2](https://github.com/open-mmlab/mmaction2): OpenMMLab's 新一代视频理解工具箱与测试基准
+- [MMTracking](https://github.com/open-mmlab/mmtracking): OpenMMLab 一体化视频目标感知平台
+- [MMPose](https://github.com/open-mmlab/mmpose): OpenMMLab 姿态估计工具箱与测试基准
+- [MMEditing](https://github.com/open-mmlab/mmediting): OpenMMLab 图像视频编辑工具箱
