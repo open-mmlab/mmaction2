@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 import torch
 import torch.nn as nn
 
@@ -38,6 +39,14 @@ def test_i3d_head():
 def test_bbox_head_ava():
     """Test loss method, layer construction, attributes and forward function in
     bbox head."""
+    with pytest.raises(TypeError):
+        # topk must be None, int or tuple[int]
+        BBoxHeadAVA(topk=0.1)
+
+    with pytest.raises(AssertionError):
+        # topk should be smaller than num_classes
+        BBoxHeadAVA(num_classes=5, topk=(3, 5))
+
     bbox_head = BBoxHeadAVA()
     bbox_head.init_weights()
     bbox_head = BBoxHeadAVA(temporal_pool_type='max', spatial_pool_type='avg')
