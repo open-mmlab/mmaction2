@@ -1,12 +1,6 @@
-import warnings
-
 import torch
 import torch.nn as nn
-
-try:
-    from mmcv.ops import RoIAlign, RoIPool
-except (ImportError, ModuleNotFoundError):
-    warnings.warn('Please install mmcv-full to use RoIAlign and RoIPool')
+from mmcv.ops import RoIAlign, RoIPool
 
 try:
     from mmdet.models import ROI_EXTRACTORS
