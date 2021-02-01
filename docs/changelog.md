@@ -13,11 +13,11 @@
 - Support [imgaug](https://imgaug.readthedocs.io/en/latest/index.html) for augmentations in the data pipeline ([#492](https://github.com/open-mmlab/mmaction2/pull/492))
 - Support setting `max_testing_views` for extremely large models to save GPU memory used ([#511](https://github.com/open-mmlab/mmaction2/pull/511))
 - Add spatial temporal demo ([#547](https://github.com/open-mmlab/mmaction2/pull/547), [#566](https://github.com/open-mmlab/mmaction2/pull/566))
-- Refactor EvalHook ([#395](https://github.com/open-mmlab/mmaction2/pull/395))
-- Refactor AVA hook ([#567](https://github.com/open-mmlab/mmaction2/pull/567))
 
 **Improvements**
 
+- Refactor EvalHook ([#395](https://github.com/open-mmlab/mmaction2/pull/395))
+- Refactor AVA hook ([#567](https://github.com/open-mmlab/mmaction2/pull/567))
 - Refactor unit test structure ([#433](https://github.com/open-mmlab/mmaction2/pull/433))
 - Add repo citation ([#545](https://github.com/open-mmlab/mmaction2/pull/545))
 - Add dataset size of Kinetics400 ([#503](https://github.com/open-mmlab/mmaction2/pull/503))
