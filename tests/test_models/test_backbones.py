@@ -49,6 +49,20 @@ def test_resnet_backbone():
         feat = net(imgs)
         assert feat.shape == torch.Size([1, 2048, 2, 2])
 
+    net = ResNet(depth=50, pretrained='torchvision://resnet50', in_channels=3)
+    input_shape = (1, 3, 64, 64)
+    imgs = generate_backbone_demo_inputs(input_shape)
+    # parrots 3dconv is only implemented on gpu
+    if torch.__version__ == 'parrots':
+        if torch.cuda.is_available():
+            net = net.cuda()
+            imgs_gpu = imgs.cuda()
+            feat = net(imgs_gpu)
+            assert feat.shape == torch.Size([1, 2048, 2, 2])
+    else:
+        feat = net(imgs)
+        assert feat.shape == torch.Size([1, 2048, 2, 2])
+
 
 def test_x3d_backbone():
     """Test x3d backbone."""
