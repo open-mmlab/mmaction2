@@ -36,7 +36,8 @@
 
 **Bug and Typo Fixes**
 
-- Fix a bug about ava dataset validation ([#527](https://github.com/open-mmlab/mmaction2/pull/527)
+- Fix a bug about ava dataset validation ([#527](https://github.com/open-mmlab/mmaction2/pull/527))
+- Fix a bug about ResNet pretrain weight initialization ([#582](https://github.com/open-mmlab/mmaction2/pull/582))
 - Fix a bug in CI due to MMCV index ([#495](https://github.com/open-mmlab/mmaction2/pull/495))
 - Remove invalid links of MiT and MMiT ([#516](https://github.com/open-mmlab/mmaction2/pull/516))
 - Fix frame rate bug for AVA preparation ([#576](https://github.com/open-mmlab/mmaction2/pull/576))

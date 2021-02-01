@@ -432,13 +432,15 @@ class ResNet(nn.Module):
         """
 
         weight_tv_name = module_name_tv + '.weight'
-        conv.weight.data.copy_(state_dict_tv[weight_tv_name])
-        loaded_param_names.append(weight_tv_name)
+        if conv.weight.data.shape == state_dict_tv[weight_tv_name].shape:
+            conv.weight.data.copy_(state_dict_tv[weight_tv_name])
+            loaded_param_names.append(weight_tv_name)
 
         if getattr(conv, 'bias') is not None:
             bias_tv_name = module_name_tv + '.bias'
-            conv.bias.data.copy_(state_dict_tv[bias_tv_name])
-            loaded_param_names.append(bias_tv_name)
+            if conv.bias.data.shape == state_dict_tv[bias_tv_name].shape:
+                conv.bias.data.copy_(state_dict_tv[bias_tv_name])
+                loaded_param_names.append(bias_tv_name)
 
     @staticmethod
     def _load_bn_params(bn, state_dict_tv, module_name_tv, loaded_param_names):
@@ -457,16 +459,18 @@ class ResNet(nn.Module):
         for param_name, param in bn.named_parameters():
             param_tv_name = f'{module_name_tv}.{param_name}'
             param_tv = state_dict_tv[param_tv_name]
-            param.data.copy_(param_tv)
-            loaded_param_names.append(param_tv_name)
+            if param.data.shape == param_tv.shape:
+                param.data.copy_(param_tv)
+                loaded_param_names.append(param_tv_name)
 
         for param_name, param in bn.named_buffers():
             param_tv_name = f'{module_name_tv}.{param_name}'
             # some buffers like num_batches_tracked may not exist
             if param_tv_name in state_dict_tv:
                 param_tv = state_dict_tv[param_tv_name]
-                param.data.copy_(param_tv)
-                loaded_param_names.append(param_tv_name)
+                if param.data.shape == param_tv.shape:
+                    param.data.copy_(param_tv)
+                    loaded_param_names.append(param_tv_name)
 
     def _load_torchvision_checkpoint(self, logger=None):
         """Initiate the parameters from torchvision pretrained checkpoint."""
