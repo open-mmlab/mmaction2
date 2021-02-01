@@ -1,5 +1,3 @@
-import warnings
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -10,7 +8,6 @@ try:
     from mmdet.models.builder import HEADS as MMDET_HEADS
     mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
-    warnings.warn('Please install mmdet to use MMDET_HEADS')
     mmdet_imported = False
 
 

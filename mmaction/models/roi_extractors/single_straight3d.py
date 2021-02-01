@@ -12,7 +12,6 @@ try:
     from mmdet.models import ROI_EXTRACTORS
     mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
-    warnings.warn('Please install mmdet to use ROI_EXTRACTORS')
     mmdet_imported = False
 
 

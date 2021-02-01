@@ -1,12 +1,15 @@
-import warnings
-
 import numpy as np
 import torch
+
+from mmaction.utils import import_module_error_func
 
 try:
     from mmdet.core import bbox_overlaps
 except (ImportError, ModuleNotFoundError):
-    warnings.warn('Please install mmdet to use bbox_overlaps')
+
+    @import_module_error_func('mmdet')
+    def bbox_overlaps(*args, **kwargs):
+        pass
 
 
 def _recalls(all_ious, proposal_nums, thrs):
