@@ -69,7 +69,8 @@ class BBoxHeadAVA(nn.Module):
             assert all([isinstance(k, int) for k in topk])
             self.topk = topk
         else:
-            raise TypeError(f'topk be int or tuple, but get {type(topk)}')
+            raise TypeError('topk should be int or tuple[int], '
+                            f'but get {type(topk)}')
         # Class 0 is ignored when calculaing multilabel accuracy,
         # so topk cannot be equal to num_classes
         assert all([k < num_classes for k in topk])

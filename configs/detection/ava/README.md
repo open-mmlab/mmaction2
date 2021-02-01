@@ -48,7 +48,6 @@
 |                            Model                             | Modality |  Pretrained  | Backbone  | Input | gpus |   Resolution   | mAP  |                             log                              |                             json                             |                             ckpt                             |
 | :----------------------------------------------------------: | :------: | :----------: | :-------: | :---: | :--: | :------------: | :--: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
 | [slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb](/configs/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb.py) |   RGB    | Kinetics-400 | ResNet50  | 4x16  |  8   | short-side 256 | 20.1 | [log](https://download.openmmlab.com/mmaction/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_20201127.log) | [json](https://download.openmmlab.com/mmaction/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_20201127.json) | [ckpt](https://download.openmmlab.com/mmaction/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_20201217-40061d5f.pth) |
-| [slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes](/configs/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes.py) |   RGB    | Kinetics-400 | ResNet50  | 4x16  |  4   | short-side 256 | 33.1 | log | json | ckpt |
 | [slowonly_omnisource_pretrained_r50_4x16x1_20e_ava_rgb](/configs/detection/ava/slowonly_omnisource_pretrained_r50_4x16x1_20e_ava_rgb.py) |   RGB    |  OmniSource  | ResNet50  | 4x16  |  8   | short-side 256 | 21.8 | [log](https://download.openmmlab.com/mmaction/detection/ava/slowonly_omnisource_pretrained_r50_4x16x1_20e_ava_rgb/slowonly_omnisource_pretrained_r50_4x16x1_20e_ava_rgb_20201127.log) | [json](https://download.openmmlab.com/mmaction/detection/ava/slowonly_omnisource_pretrained_r50_4x16x1_20e_ava_rgb/slowonly_omnisource_pretrained_r50_4x16x1_20e_ava_rgb_20201127.json) | [ckpt](https://download.openmmlab.com/mmaction/detection/ava/slowonly_omnisource_pretrained_r50_4x16x1_20e_ava_rgb/slowonly_omnisource_pretrained_r50_4x16x1_20e_ava_rgb_20201217-0c6d2e98.pth) |
 | [slowonly_kinetics_pretrained_r101_8x8x1_20e_ava_rgb](/configs/detection/ava/slowonly_kinetics_pretrained_r101_8x8x1_20e_ava_rgb.py) |   RGB    | Kinetics-400 | ResNet101 |  8x8  | 8x2  | short-side 256 | 24.6 | [log](https://download.openmmlab.com/mmaction/detection/ava/slowonly_kinetics_pretrained_r101_8x8x1_20e_ava_rgb/slowonly_kinetics_pretrained_r101_8x8x1_20e_ava_rgb_20201127.log) | [json](https://download.openmmlab.com/mmaction/detection/ava/slowonly_kinetics_pretrained_r101_8x8x1_20e_ava_rgb/slowonly_kinetics_pretrained_r101_8x8x1_20e_ava_rgb_20201127.json) | [ckpt](https://download.openmmlab.com/mmaction/detection/ava/slowonly_kinetics_pretrained_r101_8x8x1_20e_ava_rgb/slowonly_kinetics_pretrained_r101_8x8x1_20e_ava_rgb_20201217-1c9b4117.pth) |
 | [slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb](/configs/detection/ava/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb.py) |   RGB    |  OmniSource  | ResNet101 |  8x8  | 8x2  | short-side 256 | 25.9 | [log](https://download.openmmlab.com/mmaction/detection/ava/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb_20201127.log) | [json](https://download.openmmlab.com/mmaction/detection/ava/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb_20201127.json) | [ckpt](https://download.openmmlab.com/mmaction/detection/ava/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb_20201217-16378594.pth) |
@@ -83,9 +82,7 @@ For more details and optional arguments infos, you can refer to **Training setti
 
 ### Train Custom Classes From Ava Dataset
 
-You can train custom classes from ava.
-
-Ava suffers from class imbalance. There are more then 100,000 samples for classes like `stand/talk to/watch/listen to`, whereas half of all classes has less than 500 samples. In most cases, training custom classes with fewer samples only will lead to better results.
+You can train custom classes from ava. Ava suffers from class imbalance. There are more then 100,000 samples for classes like `stand`/`listen to (a person)`/`talk to (e.g., self, a person, a group)`/`watch (a person)`, whereas half of all classes has less than 500 samples. In most cases, training custom classes with fewer samples only will lead to better results.
 
 Three steps to train custom classes:
 
@@ -95,7 +92,20 @@ Three steps to train custom classes:
   - There are three `num_classes` in ava config, `model -> roi_head -> bbox_head -> num_classes`, `data -> train -> num_classes` and `data -> val -> num_classes`.
 - Step 3: Make sure all custom classes are in `label_file`. It is worth mentioning that there are two label files, `ava_action_list_v2.1_for_activitynet_2018.pbtxt`(contains 60 classes, 20 classes are missing) and `ava_action_list_v2.1.pbtxt`(contains all 80 classes).
 
-An example config is shown in [slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes.py](/configs/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes.py), and mAP of custom classes is improved from 0.1948(ckpt trained by all 80 classes) to 0.3311(ckpt trained by custom classes only).
+An example config is shown in [slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes.py](/configs/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes.py), and a table of mAP comparison between original ckpt trained by all 80 classes and ckpt trained by custom classes is listed as follows.
+
+|custom classes|mAP(trained by 80 classes)|mAP (trained by custom classes)|selected classes comment|
+|:-:|:-:|:-:|:-:|
+|range(1, 15)|**0.3460**|0.3399|all `PERSON_MOVEMENT` classes|
+|`[11,12,14,15,79,80]`|**0.7066**|0.7011|AP(80 classes ckpt) > 0.6|
+|`[1,4,8,9,13,17,28,49,74]`|0.4339|**0.4397**|AP(80 classes ckpt) in[0.3, 0.6)|
+|`[3,6,10,27,29,38,41,48,51,53,54,59,61,64,70,72]`|0.1948|**0.3311**|AP(80 classes ckpt) in[0.1, 0.3)|
+|`[11,12,17,74,79,80]`|**0.6520**|0.6438|> 50000 samples|
+|`[1,8,14,59]`|0.4307|**0.5549**|[5000, 50000) samples|
+|`[3,4,6,9,10,15,27,28,29,38,41,48,49,54,61,64,65,66,67,70,77]`|0.2384|**0.3269**|[1000, 5000) samples|
+|`[22,37,47,51,63,68,72,78]`|0.0753|**0.3209**|[500, 1000) samples|
+|`[2,5,7,13,20,24,26,30,34,36,42,45,46,52,56,57,58,60,62,69,73,75,76]`|0.0348|**0.1806**|[100, 500) samples|
+|`[16,18,19,21,23,25,31,32,33,35,39,40,43,44,50,53,55,71]`|0.0169|**0.1984**|<100  samples|
 
 ## Test
 
