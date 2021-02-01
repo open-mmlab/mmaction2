@@ -5,15 +5,53 @@ import torch
 import torch.nn as nn
 from mmcv.utils import _BatchNorm
 
-from mmaction.models import (C3D, X3D, ResNet2Plus1d, ResNet3dCSN,
+from mmaction.models import (C3D, X3D, ResNet, ResNet2Plus1d, ResNet3dCSN,
                              ResNet3dSlowFast, ResNet3dSlowOnly, ResNetAudio,
                              ResNetTIN, ResNetTSM)
 from mmaction.models.backbones.resnet_tsm import NL3DWrapper
 from .base import check_norm_state, generate_backbone_demo_inputs
 
 
+def test_resnet_backbone():
+    """Test resnet backbone."""
+
+    with pytest.raises(KeyError):
+        ResNet(depth=13)
+
+    with pytest.raises(AssertionError):
+        ResNet(depth=18, num_stages=5)
+
+    net = ResNet(depth=18, pretrained=None)
+    input_shape = (1, 3, 64, 64)
+    imgs = generate_backbone_demo_inputs(input_shape)
+    # parrots 3dconv is only implemented on gpu
+    if torch.__version__ == 'parrots':
+        if torch.cuda.is_available():
+            net = net.cuda()
+            imgs_gpu = imgs.cuda()
+            feat = net(imgs_gpu)
+            assert feat.shape == torch.Size([1, 512, 2, 2])
+    else:
+        feat = net(imgs)
+        assert feat.shape == torch.Size([1, 512, 2, 2])
+
+    net = ResNet(depth=50, pretrained='torchvision://resnet50', in_channels=10)
+    input_shape = (1, 10, 64, 64)
+    imgs = generate_backbone_demo_inputs(input_shape)
+    # parrots 3dconv is only implemented on gpu
+    if torch.__version__ == 'parrots':
+        if torch.cuda.is_available():
+            net = net.cuda()
+            imgs_gpu = imgs.cuda()
+            feat = net(imgs_gpu)
+            assert feat.shape == torch.Size([1, 2048, 2, 2])
+    else:
+        feat = net(imgs)
+        assert feat.shape == torch.Size([1, 2048, 2, 2])
+
+
 def test_x3d_backbone():
-    """Test resnet3d backbone."""
+    """Test x3d backbone."""
     with pytest.raises(AssertionError):
         # In X3D: 1 <= num_stages <= 4
         X3D(gamma_w=1.0, gamma_b=2.25, gamma_d=2.2, num_stages=0)
@@ -100,7 +138,7 @@ def test_x3d_backbone():
                                torch.zeros_like(m.conv3.bn.bias))
 
     # x3d_s inference
-    input_shape = (1, 3, 13, 160, 160)
+    input_shape = (1, 3, 13, 64, 64)
     imgs = generate_backbone_demo_inputs(input_shape)
     # parrots 3dconv is only implemented on gpu
     if torch.__version__ == 'parrots':
@@ -108,13 +146,13 @@ def test_x3d_backbone():
             x3d_s_frozen = x3d_s_frozen.cuda()
             imgs_gpu = imgs.cuda()
             feat = x3d_s_frozen(imgs_gpu)
-            assert feat.shape == torch.Size([1, 432, 13, 5, 5])
+            assert feat.shape == torch.Size([1, 432, 13, 2, 2])
     else:
         feat = x3d_s_frozen(imgs)
-        assert feat.shape == torch.Size([1, 432, 13, 5, 5])
+        assert feat.shape == torch.Size([1, 432, 13, 2, 2])
 
     # x3d_m inference
-    input_shape = (1, 3, 16, 224, 224)
+    input_shape = (1, 3, 16, 96, 96)
     imgs = generate_backbone_demo_inputs(input_shape)
     # parrots 3dconv is only implemented on gpu
     if torch.__version__ == 'parrots':
@@ -122,10 +160,10 @@ def test_x3d_backbone():
             x3d_s_frozen = x3d_s_frozen.cuda()
             imgs_gpu = imgs.cuda()
             feat = x3d_s_frozen(imgs_gpu)
-            assert feat.shape == torch.Size([1, 432, 16, 7, 7])
+            assert feat.shape == torch.Size([1, 432, 16, 3, 3])
     else:
         feat = x3d_s_frozen(imgs)
-        assert feat.shape == torch.Size([1, 432, 16, 7, 7])
+        assert feat.shape == torch.Size([1, 432, 16, 3, 3])
 
 
 def test_resnet2plus1d_backbone():
