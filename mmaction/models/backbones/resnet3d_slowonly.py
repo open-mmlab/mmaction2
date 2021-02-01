@@ -1,5 +1,3 @@
-import warnings
-
 from ..registry import BACKBONES
 from .resnet3d_slowfast import ResNet3dPathway
 
@@ -7,7 +5,6 @@ try:
     from mmdet.models.builder import BACKBONES as MMDET_BACKBONES
     mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
-    warnings.warn('Please install mmdet to use MMDET_BACKBONES')
     mmdet_imported = False
 
 

@@ -18,7 +18,6 @@
 
 - Refactor EvalHook ([#395](https://github.com/open-mmlab/mmaction2/pull/395))
 - Refactor AVA hook ([#567](https://github.com/open-mmlab/mmaction2/pull/567))
-- Refactor unit test structure ([#433](https://github.com/open-mmlab/mmaction2/pull/433))
 - Add repo citation ([#545](https://github.com/open-mmlab/mmaction2/pull/545))
 - Add dataset size of Kinetics400 ([#503](https://github.com/open-mmlab/mmaction2/pull/503))
 - Add lazy operation docs ([#504](https://github.com/open-mmlab/mmaction2/pull/504))
@@ -31,6 +30,7 @@
 - Add config tag in dataset README ([#540](https://github.com/open-mmlab/mmaction2/pull/540))
 - Add solution for markdownlint installation issue ([#497](https://github.com/open-mmlab/mmaction2/pull/497))
 - Add dataset overview in readthedocs ([#548](https://github.com/open-mmlab/mmaction2/pull/548))
+- Modify the trigger mode of the warnings of missing mmdet ([583](https://github.com/open-mmlab/mmaction2/pull/583))
 - Refactor config structure ([#488](https://github.com/open-mmlab/mmaction2/pull/488), [#572](https://github.com/open-mmlab/mmaction2/pull/572))
 - Refactor unittest structure ([#433](https://github.com/open-mmlab/mmaction2/pull/433))
 
