@@ -77,13 +77,8 @@ def test_ava_detection():
     result_path = osp.join(data_prefix, 'pred.csv')
     label_map = osp.join(data_prefix, 'action_list.txt')
 
-    # eval proposal
-    detection = ava_eval(result_path, 'proposal', label_map, gt_path, None)
-    assert_array_almost_equal(detection['Recall@0.5@100'], 0.41666667)
-    assert_array_almost_equal(detection['AR@100'], 0.08333333)
-
     # eval bbox
-    detection = ava_eval(result_path, 'bbox', label_map, gt_path, None)
+    detection = ava_eval(result_path, 'mAP', label_map, gt_path, None)
     assert_array_almost_equal(detection['mAP@0.5IOU'], 0.09385522)
 
 

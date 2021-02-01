@@ -316,10 +316,14 @@ class AVADataset(BaseDataset):
 
     def evaluate(self,
                  results,
-                 metrics=('proposal', 'bbox'),
+                 metrics=('mAP', ),
                  metric_options=None,
                  logger=None):
         # need to create a temp result file
+        assert len(metrics) == 1 and metrics[0] == 'mAP', (
+            'For evaluation on AVADataset, you need to use metrics "mAP" '
+            'See https://github.com/open-mmlab/mmaction2/pull/567 '
+            'for more info.')
         time_now = datetime.now().strftime('%Y%m%d_%H%M%S')
         temp_file = f'AVA_{time_now}_result.csv'
         results2csv(self, results, temp_file)

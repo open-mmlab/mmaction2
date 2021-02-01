@@ -70,37 +70,96 @@ Details can be found in [benchmark](docs/benchmark.md).
 
 ## ModelZoo
 
-Supported methods for action recognition:
+Supported methods for Action Recognition:
 
-- [x] [TSN](configs/recognition/tsn/README.md)
-- [x] [TSM](configs/recognition/tsm/README.md)
-- [x] [TSM Non-Local](configs/recognition/i3d)
-- [x] [R(2+1)D](configs/recognition/r2plus1d/README.md)
-- [x] [I3D](configs/recognition/i3d/README.md)
-- [x] [I3D Non-Local](configs/recognition/i3d/README.md)
-- [x] [SlowOnly](configs/recognition/slowonly/README.md)
-- [x] [SlowFast](configs/recognition/slowfast/README.md)
-- [x] [CSN](configs/recognition/csn/README.md)
-- [x] [TIN](configs/recognition/tin/README.md)
-- [x] [TPN](configs/recognition/tpn/README.md)
-- [x] [C3D](configs/recognition/c3d/README.md)
-- [x] [X3D](configs/recognition/x3d/README.md)
-- [x] [OmniSource](configs/recognition/omnisource/README.md)
-- [x] [MultiModality: Audio](configs/recognition_audio/resnet/README.md)
+<details open>
+<summary>(click to collapse)</summary>
 
-Supported methods for action localization:
+- [x] [TSN](configs/recognition/tsn/README.md) (ECCV'2016)
+- [x] [TSM](configs/recognition/tsm/README.md) (ICCV'2019)
+- [x] [TSM Non-Local](configs/recognition/i3d) (ICCV'2019)
+- [x] [R(2+1)D](configs/recognition/r2plus1d/README.md) (CVPR'2018)
+- [x] [I3D](configs/recognition/i3d/README.md) (CVPR'2017)
+- [x] [I3D Non-Local](configs/recognition/i3d/README.md) (CVPR'2018)
+- [x] [SlowOnly](configs/recognition/slowonly/README.md) (ICCV'2019)
+- [x] [SlowFast](configs/recognition/slowfast/README.md) (ICCV'2019)
+- [x] [CSN](configs/recognition/csn/README.md) (ICCV'2019)
+- [x] [TIN](configs/recognition/tin/README.md) (AAAI'2020)
+- [x] [TPN](configs/recognition/tpn/README.md) (CVPR'2020)
+- [x] [C3D](configs/recognition/c3d/README.md) (CVPR'2014)
+- [x] [X3D](configs/recognition/x3d/README.md) (CVPR'2020)
+- [x] [OmniSource](configs/recognition/omnisource/README.md) (ECCV'2020)
+- [x] [MultiModality: Audio](configs/recognition_audio/resnet/README.md) (ArXiv'2020)
 
-- [x] [BMN](configs/localization/bmn/README.md)
-- [x] [BSN](configs/localization/bsn/README.md)
-- [x] [SSN](configs/localization/ssn/README.md)
+</details>
 
-Supported methods for spatio-temporal action detection:
+Supported methods for Temporal Action Detection:
 
-- [x] [SlowOnly+Fast R-CNN](configs/detection/ava/README.md)
-- [x] [SlowFast+Fast R-CNN](configs/detection/ava/README.md)
+<details open>
+<summary>(click to collapse)</summary>
+
+- [x] [BSN](configs/localization/bsn/README.md) (ECCV'2018)
+- [x] [BMN](configs/localization/bmn/README.md) (ICCV'2019)
+- [x] [SSN](configs/localization/ssn/README.md) (ICCV'2017)
+
+</details>
+
+Supported methods for Spatial Temporal Action Detection:
+
+<details open>
+<summary>(click to collapse)</summary>
+
+- [x] [SlowOnly+Fast R-CNN](configs/detection/ava/README.md) (ICCV'2019)
+- [x] [SlowFast+Fast R-CNN](configs/detection/ava/README.md) (ICCV'2019)
+
+</details>
 
 Results and models are available in the *README.md* of each method's config directory.
 A summary can be found in the [**model zoo**](https://mmaction2.readthedocs.io/en/latest/recognition_models.html) page.
+
+## Dataset
+
+Supported [datasets](https://mmaction2.readthedocs.io/en/latest/supported_datasets.html):
+
+Supported datasets for Action Recognition:
+
+<details open>
+<summary>(click to collapse)</summary>
+
+- [x] [UCF101](/tools/data/ucf101/README.md) \[ [Homepage](https://www.crcv.ucf.edu/research/data-sets/ucf101/) \] (CRCV-IR-12-01)
+- [x] [HMDB51](/tools/data/hmdb51/README.md) \[ [Homepage](https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/) \] (ICCV'2011)
+- [x] [Kinetics-[400/600/700]](/tools/data/kinetics/README.md) \[ [Homepage](https://deepmind.com/research/open-source/kinetics) \] (CVPR'2017)
+- [x] [Something-Something V1](/tools/data/sthv1/README.md) \[ [Homepage](https://20bn.com/datasets/something-something/v1) \] (ICCV'2017)
+- [x] [Something-Something V2](/tools/data/sthv2/README.md) \[ [Homepage](https://20bn.com/datasets/something-something) \] (ICCV'2017)
+- [x] [Moments in Time](/tools/data/mit/README.md) \[ [Homepage](http://moments.csail.mit.edu/) \] (TPAMI'2019)
+- [x] [Multi-Moments in Time](/tools/data/mmit/README.md) \[ [Homepage](http://moments.csail.mit.edu/challenge_iccv_2019.html) \] (ArXiv'2019)
+- [x] [HVU](/tools/data/hvu/README.md) \[ [Homepage](https://github.com/holistic-video-understanding/HVU-Dataset) \] (ECCV'2020)
+- [x] [Jester](/tools/data/jester/README.md) \[ [Homepage](https://20bn.com/datasets/jester/v1) \] (ICCV'2019)
+- [x] [GYM](/tools/data/gym/README.md) \[ [Homepage](https://sdolivia.github.io/FineGym/) \] (CVPR'2020)
+- [x] [ActivityNet](/tools/data/activitynet/README.md) \[ [Homepage](http://activity-net.org/) \] (CVPR'2015)
+
+</details>
+
+Supported datasets for Temporal Action Detection
+
+<details open>
+<summary>(click to collapse)</summary>
+
+- [x] [ActivityNet](/tools/data/activitynet/README.md) \[ [Homepage](http://activity-net.org/) \] (CVPR'2015)
+- [x] [THUMOS14](/tools/data/thumos14/README.md) \[ [Homepage](https://www.crcv.ucf.edu/THUMOS14/download.html) \] (THUMOS Challenge 2014)
+
+</details>
+
+Supported datasets for Spatial Temporal Action Detection
+
+<details open>
+<summary>(click to collapse)</summary>
+
+- [x] [AVA](/tools/data/ava/README.md) \[ [Homepage](https://research.google.com/ava/index.html) \] (CVPR'2018)
+- [x] [UCF101-24](/tools/data/ucf101_24/README.md) \[ [Homepage](http://www.thumos.info/download.html) \] (CRCV-IR-12-01)
+- [x] [JHMDB](/tools/data/jhmdb/README.md) \[ [Homepage](http://jhmdb.is.tue.mpg.de/) \] (ICCV'2013)
+
+</details>
 
 ## Installation
 

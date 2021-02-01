@@ -1,5 +1,6 @@
 import copy
 import tempfile
+from collections import OrderedDict
 
 import pytest
 import torch
@@ -18,7 +19,7 @@ class ExampleDataset(Dataset):
         self.test_mode = test_mode
 
     def evaluate(self, results, logger=None):
-        eval_results = dict()
+        eval_results = OrderedDict()
         eval_results['acc'] = 1
         return eval_results
 

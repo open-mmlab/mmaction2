@@ -1,6 +1,7 @@
 import copy
 import os.path as osp
 import warnings
+from collections import OrderedDict
 
 import mmcv
 import numpy as np
@@ -470,7 +471,7 @@ class SSNDataset(BaseDataset):
                                        for x in dets.tolist()])
             plain_detections[class_idx] = detection_list
 
-        eval_results = {}
+        eval_results = OrderedDict()
         for metric in metrics:
             if metric == 'mAP':
                 eval_dataset = metric_options.setdefault('mAP', {}).setdefault(
