@@ -2,9 +2,10 @@
 
 ## Demo link
 
-- [Video demo](#video-demo): A demo script to predict the recognition result using a single video
+- [Video demo](#video-demo): A demo script to predict the recognition result using a single video.
+- [SpatioTemporal Action Detection Video Demo](#spatiotemporal-action-detection-video-demo): A demo script to predict the SpatioTemporal Action Detection result using a single video.
 - [Video GradCAM Demo](#video-gradcam-demo): A demo script to visualize GradCAM results using a single video.
-- [Webcam demo](#webcam-demo): A demo script to implement real-time action recognition from web camera
+- [Webcam demo](#webcam-demo): A demo script to implement real-time action recognition from web camera.
 - [Long Video demo](#long-video-demo): a demo script to predict different labels using a single long video.
 
 ## Video demo
@@ -113,6 +114,61 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
         checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
         PATH_TO_FRAMES/ LABEL_FILE --use-frames --fps 24 --out-filename demo/demo_out.gif
     ```
+
+## SpatioTemporal Action Detection Video Demo
+
+We provide a demo script to predict the SpatioTemporal Action Detection result using a single video.
+
+```shell
+python demo/demo_spatiotemporal_det.py --video ${VIDEO_FILE} \
+    [--config ${SPATIOTEMPORAL_ACTION_DETECTION_CONFIG_FILE}] \
+    [--checkpoint ${SPATIOTEMPORAL_ACTION_DETECTION_CHECKPOINT}] \
+    [--det-config ${HUMAN_DETECTION_CONFIG_FILE}] \
+    [--det-checkpoint ${HUMAN_DETECTION_CHECKPOINT}] \
+    [--det-score-thr ${HUMAN_DETECTION_SCORE_THRESHOLD}] \
+    [--action-score-thr ${ACTION_DETECTION_SCORE_THRESHOLD}] \
+    [--label-map ${LABEL_MAP}] \
+    [--device ${DEVICE}] \
+    [--out-filename ${OUTPUT_FILENAME}] \
+    [--predict-stepsize ${PREDICT_STEPSIZE}] \
+    [--output-stepsize ${OUTPUT_STEPSIZE}] \
+    [--output-fps ${OUTPUT_FPS}]
+```
+
+Optional arguments:
+
+- `SPATIOTEMPORAL_ACTION_DETECTION_CONFIG_FILE`: The spatiotemporal action detection config file path.
+- `SPATIOTEMPORAL_ACTION_DETECTION_CHECKPOINT`: The spatiotemporal action detection checkpoint URL.
+- `HUMAN_DETECTION_CONFIG_FILE`: The human detection config file path.
+- `HUMAN_DETECTION_CHECKPOINT`: The human detection checkpoint URL.
+- `HUMAN_DETECTION_SCORE_THRE`: The score threshold for human detection. Default: 0.9.
+- `ACTION_DETECTION_SCORE_THRESHOLD`: The score threshold for action detection. Default: 0.5.
+- `LABEL_MAP`: The label map used. Default: `demo/label_map_ava.txt`
+- `DEVICE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`.  Default: `cuda:0`.
+- `OUTPUT_FILENAME`: Path to the output file which is a video format. Default: `demo/stdet_demo.mp4`.
+- `PREDICT_STEPSIZE`: Make a prediction per N frames.  Default: 8.
+- `OUTPUT_STEPSIZE`: Output 1 frame per N frames in the input video. Note that `PREDICT_STEPSIZE % OUTPUT_STEPSIZE == 0`. Default: 4.
+- `OUTPUT_FPS`: The FPS of demo video output. Default: 6.
+
+Examples:
+
+Assume that you are located at `$MMACTION2` .
+
+1. Use the Faster RCNN as the human detector, SlowOnly-8x8-R101 as the action detector. Making predictions per 8 frames, and output 1 frame per 4 frames to the output video. The FPS of the output video is 4.
+
+```shell
+python demo/demo_spatiotemporal_det.py --video demo/demo.mp4 \
+    --config configs/detection/ava/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb.py \
+    --checkpoint https://download.openmmlab.com/mmaction/detection/ava/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb_20201217-16378594.pth \
+    --det-config demo/faster_rcnn_r50_fpn_2x_coco.py \
+    --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
+    --det-score-thr 0.9 \
+    --action-score-thr 0.5 \
+    --label-map demo/label_map_ava.txt \
+    --predict-stepsize 8 \
+    --output-stepsize 4 \
+    --output-fps 6
+```
 
 ## Video GradCAM Demo
 

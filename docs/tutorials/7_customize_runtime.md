@@ -191,7 +191,7 @@ We support many other learning rate schedule [here](https://github.com/open-mmla
 
 ## Customize Workflow
 
-By default, we recommend users to use `EpochEvalHook` to do evaluation after training epoch, but they can still use `val` workflow as an alternative.
+By default, we recommend users to use `EvalHook` to do evaluation after training epoch, but they can still use `val` workflow as an alternative.
 
 Workflow is a list of (phase, epochs) to specify the running order and epochs. By default it is set to be
 
@@ -213,7 +213,7 @@ so that 1 epoch for training and 1 epoch for validation will be run iteratively.
 
 1. The parameters of model will not be updated during val epoch.
 2. Keyword `total_epochs` in the config only controls the number of training epochs and will not affect the validation workflow.
-3. Workflows `[('train', 1), ('val', 1)]` and `[('train', 1)]` will not change the behavior of `EpochEvalHook` because `EpochEvalHook` is called by `after_train_epoch` and validation workflow only affect hooks that are called through `after_val_epoch`.
+3. Workflows `[('train', 1), ('val', 1)]` and `[('train', 1)]` will not change the behavior of `EvalHook` because `EvalHook` is called by `after_train_epoch` and validation workflow only affect hooks that are called through `after_val_epoch`.
    Therefore, the only difference between `[('train', 1), ('val', 1)]` and ``[('train', 1)]`` is that the runner will calculate losses on validation set after each training epoch.
 
 ## Customize Hooks
@@ -344,7 +344,7 @@ log_config = dict(
 
 #### Evaluation config
 
-The config of `evaluation` will be used to initialize the [`EpochEvalHook`](https://github.com/open-mmlab/mmaction2/blob/master/mmaction/core/evaluation/eval_hooks.py#L12).
+The config of `evaluation` will be used to initialize the [`EvalHook`](https://github.com/open-mmlab/mmaction2/blob/master/mmaction/core/evaluation/eval_hooks.py#L12).
 Except the key `interval`, other arguments such as `metrics` will be passed to the `dataset.evaluate()`
 
 ```python

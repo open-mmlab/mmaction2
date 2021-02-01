@@ -169,7 +169,7 @@ def ava_eval(result_file,
              verbose=True,
              custom_classes=None):
 
-    assert result_type in ['proposal', 'bbox']
+    assert result_type in ['mAP']
 
     start = time.time()
     categories, class_whitelist = read_labelmap(open(label_file))
@@ -223,7 +223,7 @@ def ava_eval(result_file,
             ret[f'AR@{num}'] = ar[i]
         return ret
 
-    if result_type == 'bbox':
+    if result_type == 'mAP':
         pascal_evaluator = det_eval.PascalDetectionEvaluator(categories)
 
         start = time.time()

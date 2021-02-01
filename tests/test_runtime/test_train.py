@@ -1,4 +1,6 @@
+import copy
 import tempfile
+from collections import OrderedDict
 
 import pytest
 import torch
@@ -17,7 +19,7 @@ class ExampleDataset(Dataset):
         self.test_mode = test_mode
 
     def evaluate(self, results, logger=None):
-        eval_results = dict()
+        eval_results = OrderedDict()
         eval_results['acc'] = 1
         return eval_results
 
@@ -63,7 +65,7 @@ def test_train_model():
     model = ExampleModel()
     dataset = ExampleDataset()
     datasets = [ExampleDataset(), ExampleDataset()]
-    cfg = dict(
+    _cfg = dict(
         seed=0,
         gpus=1,
         gpu_ids=[0],
@@ -87,18 +89,21 @@ def test_train_model():
 
     with tempfile.TemporaryDirectory() as tmpdir:
         # normal train
+        cfg = copy.deepcopy(_cfg)
         cfg['work_dir'] = tmpdir
         config = Config(cfg)
         train_model(model, dataset, config)
 
     with tempfile.TemporaryDirectory() as tmpdir:
         # train with validation
+        cfg = copy.deepcopy(_cfg)
         cfg['work_dir'] = tmpdir
         config = Config(cfg)
         train_model(model, dataset, config, validate=True)
 
     with tempfile.TemporaryDirectory() as tmpdir:
         # train with Fp16OptimizerHook
+        cfg = copy.deepcopy(_cfg)
         cfg['work_dir'] = tmpdir
         cfg['fp16'] = dict(loss_scale=512.)
         config = Config(cfg)
@@ -106,6 +111,7 @@ def test_train_model():
         train_model(model, dataset, config)
 
     with tempfile.TemporaryDirectory() as tmpdir:
+        cfg = copy.deepcopy(_cfg)
         cfg['work_dir'] = tmpdir
         cfg['omnisource'] = True
         config = Config(cfg)
@@ -113,7 +119,14 @@ def test_train_model():
 
     with tempfile.TemporaryDirectory() as tmpdir:
         # train with precise_bn on
+        cfg = copy.deepcopy(_cfg)
         cfg['work_dir'] = tmpdir
+        cfg['workflow'] = [('train', 1), ('val', 1)]
+        cfg['data'] = dict(
+            videos_per_gpu=1,
+            workers_per_gpu=0,
+            train=dict(type='ExampleDataset'),
+            val=dict(type='ExampleDataset'))
         cfg['precise_bn'] = dict(num_iters=1, interval=1)
         config = Config(cfg)
         train_model(model, datasets, config)

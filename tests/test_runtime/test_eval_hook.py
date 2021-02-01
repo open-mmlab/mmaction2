@@ -1,17 +1,17 @@
 import os.path as osp
 import tempfile
 import unittest.mock as mock
+from collections import OrderedDict
 from unittest.mock import MagicMock, patch
 
-import mmcv
 import pytest
 import torch
 import torch.nn as nn
-from mmcv.runner import EpochBasedRunner, build_optimizer
+from mmcv.runner import EpochBasedRunner, IterBasedRunner
 from mmcv.utils import get_logger
 from torch.utils.data import DataLoader, Dataset
 
-from mmaction.core import DistEpochEvalHook, EpochEvalHook
+from mmaction.core import DistEvalHook, EvalHook
 
 
 class ExampleDataset(Dataset):
@@ -21,7 +21,7 @@ class ExampleDataset(Dataset):
         self.eval_result = [1, 4, 3, 7, 2, -3, 4, 6]
 
     def __getitem__(self, idx):
-        results = dict(imgs=torch.tensor([1]))
+        results = dict(x=torch.tensor([1]))
         return results
 
     def __len__(self):
@@ -36,48 +36,30 @@ class EvalDataset(ExampleDataset):
 
     def evaluate(self, results, logger=None):
         acc = self.eval_result[self.index]
-        output = dict(acc=acc, index=self.index, score=acc)
+        output = OrderedDict(acc=acc, index=self.index, score=acc)
         self.index += 1
         return output
 
 
-class ExampleModel(nn.Module):
+class Model(nn.Module):
 
     def __init__(self):
         super().__init__()
-        self.conv = nn.Linear(1, 1)
-        self.test_cfg = None
+        self.linear = nn.Linear(2, 1)
 
-    def forward(self, imgs, return_loss=False):
-        return imgs
+    def forward(self, x, **kwargs):
+        return x
 
     def train_step(self, data_batch, optimizer, **kwargs):
-        outputs = {
-            'loss': 0.5,
-            'log_vars': {
-                'accuracy': 0.98
-            },
-            'num_samples': 1
-        }
-        return outputs
+        if not isinstance(data_batch, dict):
+            data_batch = dict(x=data_batch)
+        return data_batch
+
+    def val_step(self, x, optimizer, **kwargs):
+        return dict(loss=self(x))
 
 
-def _build_demo_runner():
-
-    class Model(nn.Module):
-
-        def __init__(self):
-            super().__init__()
-            self.linear = nn.Linear(2, 1)
-
-        def forward(self, x):
-            return self.linear(x)
-
-        def train_step(self, x, optimizer, **kwargs):
-            return dict(loss=self(x))
-
-        def val_step(self, x, optimizer, **kwargs):
-            return dict(loss=self(x))
+def _build_epoch_runner():
 
     model = Model()
     tmp_dir = tempfile.mkdtemp()
@@ -87,229 +69,198 @@ def _build_demo_runner():
     return runner
 
 
+def _build_iter_runner():
+
+    model = Model()
+    tmp_dir = tempfile.mkdtemp()
+
+    runner = IterBasedRunner(
+        model=model, work_dir=tmp_dir, logger=get_logger('demo'))
+    return runner
+
+
 def test_eval_hook():
-    with pytest.raises(TypeError):
-        # `save_best` should be a boolean
-        test_dataset = ExampleModel()
-        data_loader = DataLoader(
-            test_dataset,
-            batch_size=1,
-            sampler=None,
-            num_workers=0,
-            shuffle=False)
-        EpochEvalHook(data_loader, save_best='True')
+    with pytest.raises(AssertionError):
+        # `save_best` should be a str
+        test_dataset = Model()
+        data_loader = DataLoader(test_dataset)
+        EvalHook(data_loader, save_best=True)
 
     with pytest.raises(TypeError):
         # dataloader must be a pytorch DataLoader
-        test_dataset = ExampleModel()
-        data_loader = [
-            DataLoader(
-                test_dataset,
-                batch_size=1,
-                sampler=None,
-                num_worker=0,
-                shuffle=False)
-        ]
-        EpochEvalHook(data_loader)
-
-    with pytest.raises(ValueError):
-        # when `save_best` is True, `key_indicator` should not be None
-        test_dataset = ExampleModel()
-        data_loader = DataLoader(
-            test_dataset,
-            batch_size=1,
-            sampler=None,
-            num_workers=0,
-            shuffle=False)
-        EpochEvalHook(data_loader, key_indicator=None)
-
-    with pytest.raises(KeyError):
-        # rule must be in keys of rule_map
-        test_dataset = ExampleModel()
-        data_loader = DataLoader(
-            test_dataset,
-            batch_size=1,
-            sampler=None,
-            num_workers=0,
-            shuffle=False)
-        EpochEvalHook(data_loader, save_best=False, rule='unsupport')
+        test_dataset = Model()
+        data_loader = [DataLoader(test_dataset)]
+        EvalHook(data_loader)
 
     with pytest.raises(ValueError):
         # key_indicator must be valid when rule_map is None
-        test_dataset = ExampleModel()
-        data_loader = DataLoader(
-            test_dataset,
-            batch_size=1,
-            sampler=None,
-            num_workers=0,
-            shuffle=False)
-        EpochEvalHook(data_loader, key_indicator='unsupport')
+        test_dataset = ExampleDataset()
+        data_loader = DataLoader(test_dataset)
+        EvalHook(data_loader, save_best='unsupport')
 
-    optimizer_cfg = dict(
-        type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001)
+    with pytest.raises(KeyError):
+        # rule must be in keys of rule_map
+        test_dataset = Model()
+        data_loader = DataLoader(test_dataset)
+        EvalHook(data_loader, save_best='auto', rule='unsupport')
 
     test_dataset = ExampleDataset()
-    loader = DataLoader(test_dataset, batch_size=1)
-    model = ExampleModel()
-    optimizer = build_optimizer(model, optimizer_cfg)
+    loader = DataLoader(test_dataset)
+    model = Model()
+    data_loader = DataLoader(test_dataset)
+    eval_hook = EvalHook(data_loader, save_best=None)
 
-    data_loader = DataLoader(test_dataset, batch_size=1)
-    eval_hook = EpochEvalHook(data_loader, save_best=False)
     with tempfile.TemporaryDirectory() as tmpdir:
+
+        # total_epochs = 1
         logger = get_logger('test_eval')
-        runner = EpochBasedRunner(
-            model=model,
-            batch_processor=None,
-            optimizer=optimizer,
-            work_dir=tmpdir,
-            logger=logger)
+        runner = EpochBasedRunner(model=model, work_dir=tmpdir, logger=logger)
         runner.register_hook(eval_hook)
         runner.run([loader], [('train', 1)], 1)
         test_dataset.evaluate.assert_called_with(
             test_dataset, [torch.tensor([1])], logger=runner.logger)
+        assert runner.meta is None or 'best_score' not in runner.meta[
+            'hook_msgs']
+        assert runner.meta is None or 'best_ckpt' not in runner.meta[
+            'hook_msgs']
 
-        best_json_path = osp.join(tmpdir, 'best.json')
-        assert not osp.exists(best_json_path)
+        # when `save_best` is set to 'auto', first metric will be used.
+        loader = DataLoader(EvalDataset())
+        model = Model()
+        data_loader = DataLoader(EvalDataset())
+        eval_hook = EvalHook(data_loader, interval=1, save_best='auto')
 
-    loader = DataLoader(EvalDataset(), batch_size=1)
-    model = ExampleModel()
-    data_loader = DataLoader(EvalDataset(), batch_size=1)
-    eval_hook = EpochEvalHook(
-        data_loader, interval=1, save_best=True, key_indicator='acc')
+        with tempfile.TemporaryDirectory() as tmpdir:
+            logger = get_logger('test_eval')
+            runner = EpochBasedRunner(
+                model=model, work_dir=tmpdir, logger=logger)
+            runner.register_checkpoint_hook(dict(interval=1))
+            runner.register_hook(eval_hook)
+            runner.run([loader], [('train', 1)], 8)
 
-    with tempfile.TemporaryDirectory() as tmpdir:
-        logger = get_logger('test_eval')
-        runner = EpochBasedRunner(
-            model=model,
-            batch_processor=None,
-            optimizer=optimizer,
-            work_dir=tmpdir,
-            logger=logger)
-        runner.register_checkpoint_hook(dict(interval=1))
-        runner.register_hook(eval_hook)
-        runner.run([loader], [('train', 1)], 8)
+            ckpt_path = osp.join(tmpdir, 'best_acc_epoch_4.pth')
 
-        best_json_path = osp.join(tmpdir, 'best.json')
-        best_json = mmcv.load(best_json_path)
-        real_path = osp.join(tmpdir, 'epoch_4.pth')
+            assert runner.meta['hook_msgs']['best_ckpt'] == osp.realpath(
+                ckpt_path)
+            assert osp.exists(ckpt_path)
+            assert runner.meta['hook_msgs']['best_score'] == 7
 
-        assert best_json['best_ckpt'] == osp.realpath(real_path)
-        assert best_json['best_score'] == 7
-        assert best_json['key_indicator'] == 'acc'
+        # total_epochs = 8, return the best acc and corresponding epoch
+        loader = DataLoader(EvalDataset())
+        model = Model()
+        data_loader = DataLoader(EvalDataset())
+        eval_hook = EvalHook(data_loader, interval=1, save_best='acc')
 
-    data_loader = DataLoader(EvalDataset(), batch_size=1)
-    eval_hook = EpochEvalHook(
-        data_loader,
-        interval=1,
-        save_best=True,
-        key_indicator='score',
-        rule='greater')
-    with tempfile.TemporaryDirectory() as tmpdir:
-        logger = get_logger('test_eval')
-        runner = EpochBasedRunner(
-            model=model,
-            batch_processor=None,
-            optimizer=optimizer,
-            work_dir=tmpdir,
-            logger=logger)
-        runner.register_checkpoint_hook(dict(interval=1))
-        runner.register_hook(eval_hook)
-        runner.run([loader], [('train', 1)], 8)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            logger = get_logger('test_eval')
+            runner = EpochBasedRunner(
+                model=model, work_dir=tmpdir, logger=logger)
+            runner.register_checkpoint_hook(dict(interval=1))
+            runner.register_hook(eval_hook)
+            runner.run([loader], [('train', 1)], 8)
 
-        best_json_path = osp.join(tmpdir, 'best.json')
-        best_json = mmcv.load(best_json_path)
-        real_path = osp.join(tmpdir, 'epoch_4.pth')
+            ckpt_path = osp.join(tmpdir, 'best_acc_epoch_4.pth')
 
-        assert best_json['best_ckpt'] == osp.realpath(real_path)
-        assert best_json['best_score'] == 7
-        assert best_json['key_indicator'] == 'score'
+            assert runner.meta['hook_msgs']['best_ckpt'] == osp.realpath(
+                ckpt_path)
+            assert osp.exists(ckpt_path)
+            assert runner.meta['hook_msgs']['best_score'] == 7
 
-    data_loader = DataLoader(EvalDataset(), batch_size=1)
-    eval_hook = EpochEvalHook(data_loader, rule='less', key_indicator='acc')
-    with tempfile.TemporaryDirectory() as tmpdir:
-        logger = get_logger('test_eval')
-        runner = EpochBasedRunner(
-            model=model,
-            batch_processor=None,
-            optimizer=optimizer,
-            work_dir=tmpdir,
-            logger=logger)
-        runner.register_checkpoint_hook(dict(interval=1))
-        runner.register_hook(eval_hook)
-        runner.run([loader], [('train', 1)], 8)
+        # total_epochs = 8, return the best score and corresponding epoch
+        data_loader = DataLoader(EvalDataset())
+        eval_hook = EvalHook(
+            data_loader, interval=1, save_best='score', rule='greater')
+        with tempfile.TemporaryDirectory() as tmpdir:
+            logger = get_logger('test_eval')
+            runner = EpochBasedRunner(
+                model=model, work_dir=tmpdir, logger=logger)
+            runner.register_checkpoint_hook(dict(interval=1))
+            runner.register_hook(eval_hook)
+            runner.run([loader], [('train', 1)], 8)
 
-        best_json_path = osp.join(tmpdir, 'best.json')
-        best_json = mmcv.load(best_json_path)
-        real_path = osp.join(tmpdir, 'epoch_6.pth')
+            ckpt_path = osp.join(tmpdir, 'best_score_epoch_4.pth')
 
-        assert best_json['best_ckpt'] == osp.realpath(real_path)
-        assert best_json['best_score'] == -3
-        assert best_json['key_indicator'] == 'acc'
+            assert runner.meta['hook_msgs']['best_ckpt'] == osp.realpath(
+                ckpt_path)
+            assert osp.exists(ckpt_path)
+            assert runner.meta['hook_msgs']['best_score'] == 7
 
-    data_loader = DataLoader(EvalDataset(), batch_size=1)
-    eval_hook = EpochEvalHook(data_loader, key_indicator='acc')
-    with tempfile.TemporaryDirectory() as tmpdir:
-        logger = get_logger('test_eval')
-        runner = EpochBasedRunner(
-            model=model,
-            batch_processor=None,
-            optimizer=optimizer,
-            work_dir=tmpdir,
-            logger=logger)
-        runner.register_checkpoint_hook(dict(interval=1))
-        runner.register_hook(eval_hook)
-        runner.run([loader], [('train', 1)], 2)
+        # total_epochs = 8, return the best score using less compare func
+        # and indicate corresponding epoch
+        data_loader = DataLoader(EvalDataset())
+        eval_hook = EvalHook(data_loader, save_best='acc', rule='less')
+        with tempfile.TemporaryDirectory() as tmpdir:
+            logger = get_logger('test_eval')
+            runner = EpochBasedRunner(
+                model=model, work_dir=tmpdir, logger=logger)
+            runner.register_checkpoint_hook(dict(interval=1))
+            runner.register_hook(eval_hook)
+            runner.run([loader], [('train', 1)], 8)
 
-        best_json_path = osp.join(tmpdir, 'best.json')
-        best_json = mmcv.load(best_json_path)
-        real_path = osp.join(tmpdir, 'epoch_2.pth')
+            ckpt_path = osp.join(tmpdir, 'best_acc_epoch_6.pth')
 
-        assert best_json['best_ckpt'] == osp.realpath(real_path)
-        assert best_json['best_score'] == 4
-        assert best_json['key_indicator'] == 'acc'
+            assert runner.meta['hook_msgs']['best_ckpt'] == osp.realpath(
+                ckpt_path)
+            assert osp.exists(ckpt_path)
+            assert runner.meta['hook_msgs']['best_score'] == -3
 
-        resume_from = osp.join(tmpdir, 'latest.pth')
-        loader = DataLoader(ExampleDataset(), batch_size=1)
-        eval_hook = EpochEvalHook(data_loader, key_indicator='acc')
-        runner = EpochBasedRunner(
-            model=model,
-            batch_processor=None,
-            optimizer=optimizer,
-            work_dir=tmpdir,
-            logger=logger)
-        runner.register_checkpoint_hook(dict(interval=1))
-        runner.register_hook(eval_hook)
-        runner.resume(resume_from)
-        runner.run([loader], [('train', 1)], 8)
+        # Test the EvalHook when resume happend
+        data_loader = DataLoader(EvalDataset())
+        eval_hook = EvalHook(data_loader, save_best='acc')
+        with tempfile.TemporaryDirectory() as tmpdir:
+            logger = get_logger('test_eval')
+            runner = EpochBasedRunner(
+                model=model, work_dir=tmpdir, logger=logger)
+            runner.register_checkpoint_hook(dict(interval=1))
+            runner.register_hook(eval_hook)
+            runner.run([loader], [('train', 1)], 2)
 
-        best_json_path = osp.join(tmpdir, 'best.json')
-        best_json = mmcv.load(best_json_path)
-        real_path = osp.join(tmpdir, 'epoch_4.pth')
+            ckpt_path = osp.join(tmpdir, 'best_acc_epoch_2.pth')
 
-        assert best_json['best_ckpt'] == osp.realpath(real_path)
-        assert best_json['best_score'] == 7
-        assert best_json['key_indicator'] == 'acc'
+            assert runner.meta['hook_msgs']['best_ckpt'] == osp.realpath(
+                ckpt_path)
+            assert osp.exists(ckpt_path)
+            assert runner.meta['hook_msgs']['best_score'] == 4
+
+            resume_from = osp.join(tmpdir, 'latest.pth')
+            loader = DataLoader(ExampleDataset())
+            eval_hook = EvalHook(data_loader, save_best='acc')
+            runner = EpochBasedRunner(
+                model=model, work_dir=tmpdir, logger=logger)
+            runner.register_checkpoint_hook(dict(interval=1))
+            runner.register_hook(eval_hook)
+            runner.resume(resume_from)
+            runner.run([loader], [('train', 1)], 8)
+
+            ckpt_path = osp.join(tmpdir, 'best_acc_epoch_4.pth')
+
+            assert runner.meta['hook_msgs']['best_ckpt'] == osp.realpath(
+                ckpt_path)
+            assert osp.exists(ckpt_path)
+            assert runner.meta['hook_msgs']['best_score'] == 7
 
 
 @patch('mmaction.apis.single_gpu_test', MagicMock)
 @patch('mmaction.apis.multi_gpu_test', MagicMock)
-@pytest.mark.parametrize('EpochEvalHookParam',
-                         (EpochEvalHook, DistEpochEvalHook))
-def test_start_param(EpochEvalHookParam):
+@pytest.mark.parametrize('EvalHookParam', [EvalHook, DistEvalHook])
+@pytest.mark.parametrize('_build_demo_runner,by_epoch',
+                         [(_build_epoch_runner, True),
+                          (_build_iter_runner, False)])
+def test_start_param(EvalHookParam, _build_demo_runner, by_epoch):
     # create dummy data
     dataloader = DataLoader(torch.ones((5, 2)))
 
     # 0.1. dataloader is not a DataLoader object
     with pytest.raises(TypeError):
-        EpochEvalHookParam(dataloader=MagicMock(), interval=-1)
+        EvalHookParam(dataloader=MagicMock(), interval=-1)
 
     # 0.2. negative interval
     with pytest.raises(ValueError):
-        EpochEvalHookParam(dataloader, interval=-1)
+        EvalHookParam(dataloader, interval=-1)
 
     # 1. start=None, interval=1: perform evaluation after each epoch.
     runner = _build_demo_runner()
-    evalhook = EpochEvalHookParam(dataloader, interval=1, save_best=False)
+    evalhook = EvalHookParam(dataloader, interval=1, by_epoch=by_epoch)
     evalhook.evaluate = MagicMock()
     runner.register_hook(evalhook)
     runner.run([dataloader], [('train', 1)], 2)
@@ -317,8 +268,8 @@ def test_start_param(EpochEvalHookParam):
 
     # 2. start=1, interval=1: perform evaluation after each epoch.
     runner = _build_demo_runner()
-    evalhook = EpochEvalHookParam(
-        dataloader, start=1, interval=1, save_best=False)
+    evalhook = EvalHookParam(
+        dataloader, start=1, interval=1, by_epoch=by_epoch)
     evalhook.evaluate = MagicMock()
     runner.register_hook(evalhook)
     runner.run([dataloader], [('train', 1)], 2)
@@ -326,7 +277,7 @@ def test_start_param(EpochEvalHookParam):
 
     # 3. start=None, interval=2: perform evaluation after epoch 2, 4, 6, etc
     runner = _build_demo_runner()
-    evalhook = EpochEvalHookParam(dataloader, interval=2, save_best=False)
+    evalhook = EvalHookParam(dataloader, interval=2, by_epoch=by_epoch)
     evalhook.evaluate = MagicMock()
     runner.register_hook(evalhook)
     runner.run([dataloader], [('train', 1)], 2)
@@ -334,8 +285,8 @@ def test_start_param(EpochEvalHookParam):
 
     # 4. start=1, interval=2: perform evaluation after epoch 1, 3, 5, etc
     runner = _build_demo_runner()
-    evalhook = EpochEvalHookParam(
-        dataloader, start=1, interval=2, save_best=False)
+    evalhook = EvalHookParam(
+        dataloader, start=1, interval=2, by_epoch=by_epoch)
     evalhook.evaluate = MagicMock()
     runner.register_hook(evalhook)
     runner.run([dataloader], [('train', 1)], 3)
@@ -344,7 +295,7 @@ def test_start_param(EpochEvalHookParam):
     # 5. start=0/negative, interval=1: perform evaluation after each epoch and
     #    before epoch 1.
     runner = _build_demo_runner()
-    evalhook = EpochEvalHookParam(dataloader, start=0, save_best=False)
+    evalhook = EvalHookParam(dataloader, start=0, by_epoch=by_epoch)
     evalhook.evaluate = MagicMock()
     runner.register_hook(evalhook)
     runner.run([dataloader], [('train', 1)], 2)
@@ -352,7 +303,7 @@ def test_start_param(EpochEvalHookParam):
 
     runner = _build_demo_runner()
     with pytest.warns(UserWarning):
-        evalhook = EpochEvalHookParam(dataloader, start=-2, save_best=False)
+        evalhook = EvalHookParam(dataloader, start=-2, by_epoch=by_epoch)
     evalhook.evaluate = MagicMock()
     runner.register_hook(evalhook)
     runner.run([dataloader], [('train', 1)], 2)
@@ -361,19 +312,25 @@ def test_start_param(EpochEvalHookParam):
     # 6. resuming from epoch i, start = x (x<=i), interval =1: perform
     #    evaluation after each epoch and before the first epoch.
     runner = _build_demo_runner()
-    evalhook = EpochEvalHookParam(dataloader, start=1, save_best=False)
+    evalhook = EvalHookParam(dataloader, start=1, by_epoch=by_epoch)
     evalhook.evaluate = MagicMock()
     runner.register_hook(evalhook)
-    runner._epoch = 2
+    if by_epoch:
+        runner._epoch = 2
+    else:
+        runner._iter = 2
     runner.run([dataloader], [('train', 1)], 3)
     assert evalhook.evaluate.call_count == 2  # before & after epoch 3
 
     # 7. resuming from epoch i, start = i+1/None, interval =1: perform
     #    evaluation after each epoch.
     runner = _build_demo_runner()
-    evalhook = EpochEvalHookParam(dataloader, start=2, save_best=False)
+    evalhook = EvalHookParam(dataloader, start=2, by_epoch=by_epoch)
     evalhook.evaluate = MagicMock()
     runner.register_hook(evalhook)
-    runner._epoch = 1
+    if by_epoch:
+        runner._epoch = 1
+    else:
+        runner._iter = 1
     runner.run([dataloader], [('train', 1)], 3)
     assert evalhook.evaluate.call_count == 2  # after epoch 2 & 3
