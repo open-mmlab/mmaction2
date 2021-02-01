@@ -16,9 +16,12 @@
 
 **Improvements**
 
+<<<<<<< HEAD
 - Refactor EvalHook ([#395](https://github.com/open-mmlab/mmaction2/pull/395))
 - Refactor AVA hook ([#567](https://github.com/open-mmlab/mmaction2/pull/567))
 - Refactor unit test structure ([#433](https://github.com/open-mmlab/mmaction2/pull/433))
+=======
+>>>>>>> 7077908... remove rebundent changelog of refactor unittest
 - Add repo citation ([#545](https://github.com/open-mmlab/mmaction2/pull/545))
 - Add dataset size of Kinetics400 ([#503](https://github.com/open-mmlab/mmaction2/pull/503))
 - Add lazy operation docs ([#504](https://github.com/open-mmlab/mmaction2/pull/504))
