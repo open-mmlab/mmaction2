@@ -1,5 +1,19 @@
 ## Changelog
 
+### master
+
+**Highlights**
+
+**New Features**
+
+**Improvements**
+
+- Set RandAugment as Imgaug default transforms ([#585](https://github.com/open-mmlab/mmaction2/pull/585))
+
+**Bug and Typo Fixes**
+
+**ModelZoo**
+
 ### 0.11.0 (31/01/2021)
 
 **Highlights**
