@@ -11,7 +11,6 @@
 **New Features**
 
 - Support [imgaug](https://imgaug.readthedocs.io/en/latest/index.html) for augmentations in the data pipeline ([#492](https://github.com/open-mmlab/mmaction2/pull/492))
-- Add precise BN hook ([#501](https://github.com/open-mmlab/mmaction2/pull/501))
 - Support setting `max_testing_views` for extremely large models to save GPU memory used ([#511](https://github.com/open-mmlab/mmaction2/pull/511))
 - Add spatial temporal demo ([#547](https://github.com/open-mmlab/mmaction2/pull/547), [#566](https://github.com/open-mmlab/mmaction2/pull/566))
 - Refactor EvalHook ([#395](https://github.com/open-mmlab/mmaction2/pull/395))
@@ -40,6 +39,7 @@
 - Fix a bug about ava dataset validation ([#527](https://github.com/open-mmlab/mmaction2/pull/527)
 - Fix a bug in CI due to MMCV index ([#495](https://github.com/open-mmlab/mmaction2/pull/495))
 - Remove invalid links of MiT and MMiT ([#516](https://github.com/open-mmlab/mmaction2/pull/516))
+- Fix frame rate bug for AVA preparation ([#576](https://github.com/open-mmlab/mmaction2/pull/576))
 
 **ModelZoo**
 
