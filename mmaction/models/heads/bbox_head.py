@@ -73,7 +73,7 @@ class BBoxHeadAVA(nn.Module):
                             f'but get {type(topk)}')
         # Class 0 is ignored when calculaing multilabel accuracy,
         # so topk cannot be equal to num_classes
-        assert all([k < num_classes for k in topk])
+        assert all([k < num_classes for k in self.topk])
 
         # Handle AVA first
         assert self.multilabel

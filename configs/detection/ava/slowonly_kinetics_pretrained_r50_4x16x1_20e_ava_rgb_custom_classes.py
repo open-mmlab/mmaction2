@@ -30,6 +30,7 @@ model = dict(
             in_channels=2048,
             num_classes=num_classes,
             multilabel=True,
+            topk=(3, 5),
             dropout_ratio=0.5)))
 
 train_cfg = dict(

@@ -90,6 +90,7 @@ Three steps to train custom classes:
 - Step 2: Set `num_classes`. In order to be compatible with current codes, plase make sure `num_classes == len(custom_classes) + 1`.
   - The new class `0` corresponds to original class `0`. The new class `i`(i > 0) corresponds to original class `custom_classes[i-1]`.
   - There are three `num_classes` in ava config, `model -> roi_head -> bbox_head -> num_classes`, `data -> train -> num_classes` and `data -> val -> num_classes`.
+  - If `num_classes <= 5`, input arg `topk` of `BBoxHeadAVA` should be modified. The default value of `topk` is `(3, 5)`, and all elements of `topk` must be smaller than `num_classes`.
 - Step 3: Make sure all custom classes are in `label_file`. It is worth mentioning that there are two label files, `ava_action_list_v2.1_for_activitynet_2018.pbtxt`(contains 60 classes, 20 classes are missing) and `ava_action_list_v2.1.pbtxt`(contains all 80 classes).
 
 An example config is shown in [slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes.py](/configs/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes.py), and a table of mAP comparison between original ckpt trained by all 80 classes and ckpt trained by custom classes is listed as follows.
