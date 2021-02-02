@@ -164,10 +164,10 @@ class Imgaug:
                         shear=17.19 * cur_level * random.choice([-1, 1])),
                     dict(
                         type='TranslateX',
-                        px=int(100 * cur_level * random.choice([-1, 1]))),
+                        percent=.2 * cur_level * random.choice([-1, 1])),
                     dict(
                         type='TranslateY',
-                        px=int(100 * cur_level * random.choice([-1, 1]))),
+                        percent=.2 * cur_level * random.choice([-1, 1])),
                     dict(
                         type='Rotate',
                         rotate=30 * cur_level * random.choice([-1, 1])),
