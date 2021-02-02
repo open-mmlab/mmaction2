@@ -1,15 +1,17 @@
-import warnings
-
 import torch
 import torch.nn as nn
 
+from mmaction.utils import import_module_error_func
 from ..registry import BACKBONES
 from .resnet_tsm import ResNetTSM
 
 try:
     from mmcv.ops import tin_shift
 except (ImportError, ModuleNotFoundError):
-    warnings.warn('Please install mmcv-full to support "tin_shift"')
+
+    @import_module_error_func('mmcv-full')
+    def tin_shift(*args, **kwargs):
+        pass
 
 
 def linear_sampler(data, offset):

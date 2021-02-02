@@ -1,5 +1,3 @@
-import warnings
-
 import torch
 import torch.nn as nn
 from mmcv.cnn import ConvModule, kaiming_init
@@ -14,7 +12,6 @@ try:
     from mmdet.models import BACKBONES as MMDET_BACKBONES
     mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
-    warnings.warn('Please install mmdet to use MMDET_BACKBONES')
     mmdet_imported = False
 
 
