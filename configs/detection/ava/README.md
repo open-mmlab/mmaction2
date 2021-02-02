@@ -95,10 +95,10 @@ Three steps to train custom classes:
 
 Take `slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb` as an example, training custom classes with AP in range `(0.1, 0.3)`, aka `[3, 6, 10, 27, 29, 38, 41, 48, 51, 53, 54, 59, 61, 64, 70, 72]`. Please note that, the previously mentioned AP is calculated by original ckpt, which is trained by all 80 classes. The results are listed as follows.
 
-|training classes|mAP(custom classes)|config|ckpt|
-|:-:|:-:|:-:|:-:|
-|All 80 classes|0.1948|[slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb](/configs/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb.py)|[ckpt](https://download.openmmlab.com/mmaction/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_20201217-40061d5f.pth)|
-|custom classes|0.3311|[slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes](/configs/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes.py)|ckpt/json/log|
+|training classes|mAP(custom classes)|config|log|json|ckpt|
+|:-:|:-:|:-:|:-:|:-:|:-:|
+|All 80 classes|0.1948|[slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb](/configs/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb.py)|[log](https://download.openmmlab.com/mmaction/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_20201127.log) | [json](https://download.openmmlab.com/mmaction/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_20201127.json) | [ckpt](https://download.openmmlab.com/mmaction/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_20201217-40061d5f.pth) |
+|custom classes|0.3311|[slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes](/configs/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes.py)| [log](https://download.openmmlab.com/mmaction/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes.log) | [json](https://download.openmmlab.com/mmaction/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes.json) | [ckpt](https://download.openmmlab.com/mmaction/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes-4ab80419.pth) | 
 
 ## Test
 
