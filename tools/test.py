@@ -14,6 +14,7 @@ from mmcv.runner.fp16_utils import wrap_fp16_model
 
 from mmaction.apis import multi_gpu_test, single_gpu_test
 from mmaction.datasets import build_dataloader, build_dataset
+from mmaction.datasets.module_hooks import gpu_normalize
 from mmaction.models import build_model
 
 
@@ -168,6 +169,11 @@ def main():
 
     # build the model and load checkpoint
     model = build_model(cfg.model, train_cfg=None, test_cfg=cfg.test_cfg)
+
+    if hasattr(cfg, 'gpu_normalize'):
+        model.backbone.register_forward_pre_hook(
+            gpu_normalize(**cfg.gpu_normalize))
+
     fp16_cfg = cfg.get('fp16', None)
     if fp16_cfg is not None:
         wrap_fp16_model(model)

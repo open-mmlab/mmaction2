@@ -14,6 +14,7 @@ from mmcv.utils import get_git_hash
 from mmaction import __version__
 from mmaction.apis import train_model
 from mmaction.datasets import build_dataset
+from mmaction.datasets.module_hooks import gpu_normalize
 from mmaction.models import build_model
 from mmaction.utils import collect_env, get_root_logger
 
@@ -146,6 +147,10 @@ def main():
         datasets = [build_dataset(dataset) for dataset in cfg.data.train]
     else:
         datasets = [build_dataset(cfg.data.train)]
+
+    if hasattr(cfg, 'gpu_normalize'):
+        model.backbone.register_forward_pre_hook(
+            gpu_normalize(**cfg.gpu_normalize))
 
     if len(cfg.workflow) == 2:
         # For simplicity, omnisource is not compatiable with val workflow,
