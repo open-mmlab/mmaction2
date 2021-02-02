@@ -1,6 +1,6 @@
 _base_ = [
     '../../_base_/models/tsm_mobilenet_v2.py',
-    '../../_base_/schedules/sgd_tsm_mobilenet_v2_100e.py',
+    '../../_base_/schedules/sgd_tsm_mobilenet_v2_50e.py',
     '../../_base_/default_runtime.py'
 ]
 
@@ -40,7 +40,7 @@ val_pipeline = [
         test_mode=True),
     dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
-    dict(type='ThreeCrop', crop_size=256),
+    dict(type='CenterCrop', crop_size=224),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
