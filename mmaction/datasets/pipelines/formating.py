@@ -276,7 +276,8 @@ class FormatShape:
             results (dict): The resulting dict to be modified and passed
                 to the next transform in pipeline.
         """
-        results['imgs'] = np.array(results['imgs'], dtype=np.float32)
+        if not isinstance(results['imgs'], np.ndarray):
+            results['imgs'] = np.array(results['imgs'], dtype=np.float32)
         imgs = results['imgs']
         # [M x H x W x C]
         # M = 1 * N_crops * N_clips * L

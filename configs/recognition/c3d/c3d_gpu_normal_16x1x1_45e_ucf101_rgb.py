@@ -4,8 +4,8 @@ module_hooks = [
     dict(
         type='GpuNormalize',
         input_format='NCTHW',
-        mean=[123.675, 116.28, 103.53],
-        std=[58.395, 57.12, 57.375])
+        mean=[104, 117, 128],
+        std=[1, 1, 1])
 ]
 
 # dataset settings

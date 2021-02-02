@@ -1,5 +1,3 @@
-import copy
-
 import torch
 from mmcv.utils import Registry, build_from_cfg
 
@@ -17,13 +15,13 @@ class GpuNormalize:
 
     def __init__(self,
                  input_format,
-                 mean=[123.675, 116.28, 103.53],
-                 std=[58.395, 57.12, 57.375]):
+                 mean=(123.675, 116.28, 103.53),
+                 std=(58.395, 57.12, 57.375)):
         if input_format not in ['NCTHW', 'NCHW', 'NCHW_Flow', 'NPTCHW']:
             raise ValueError(f'The input format {input_format} is invalid.')
         self.input_format = input_format
-        _mean = torch.tensor(copy.deepcopy(mean))
-        _std = torch.tensor(copy.deepcopy(std))
+        _mean = torch.tensor(mean)
+        _std = torch.tensor(std)
         if input_format == 'NCTHW':
             self._mean = _mean[None, :, None, None, None]
             self._std = _std[None, :, None, None, None]
