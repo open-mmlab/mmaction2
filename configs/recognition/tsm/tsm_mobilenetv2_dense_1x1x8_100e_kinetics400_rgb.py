@@ -5,18 +5,17 @@ _base_ = [
 ]
 
 # dataset settings
-dataset_type = 'VideoDataset'
-data_root = 'data/kinetics400/videos_train'
-data_root_val = 'data/kinetics400/videos_val'
-ann_file_train = 'data/kinetics400/kinetics400_train_list_videos.txt'
-ann_file_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
-ann_file_test = 'data/kinetics400/kinetics400_val_list_videos.txt'
+dataset_type = 'RawframeDataset'
+data_root = 'data/kinetics400/rawframes_train'
+data_root_val = 'data/kinetics400/rawframes_val'
+ann_file_train = 'data/kinetics400/kinetics400_train_list_rawframes.txt'
+ann_file_val = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
+ann_file_test = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
-    dict(type='DecordInit'),
-    dict(type='DenseSampleFrames', clip_len=1, frame_interval=1, num_clips=8),
-    dict(type='DecordDecode'),
+    dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=8),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(
         type='MultiScaleCrop',
@@ -33,34 +32,30 @@ train_pipeline = [
     dict(type='ToTensor', keys=['imgs', 'label'])
 ]
 val_pipeline = [
-    dict(type='DecordInit'),
     dict(
-        type='DenseSampleFrames',
+        type='SampleFrames',
         clip_len=1,
         frame_interval=1,
         num_clips=8,
         test_mode=True),
-    dict(type='DecordDecode'),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
-    dict(type='CenterCrop', crop_size=224),
-    dict(type='Flip', flip_ratio=0),
+    dict(type='ThreeCrop', crop_size=256),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs'])
 ]
 test_pipeline = [
-    dict(type='DecordInit'),
     dict(
-        type='DenseSampleFrames',
+        type='SampleFrames',
         clip_len=1,
         frame_interval=1,
         num_clips=8,
         test_mode=True),
-    dict(type='DecordDecode'),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
-    dict(type='CenterCrop', crop_size=224),
-    dict(type='Flip', flip_ratio=0),
+    dict(type='ThreeCrop', crop_size=256),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
@@ -93,5 +88,5 @@ optimizer = dict(
 )
 
 # runtime settings
-checkpoint_config = dict(interval=5)
-work_dir = './work_dirs/tsm_mobilenetv2_dense_video_1x1x8_100e_kinetics400_rgb/'  # noqa
+checkpoint_config = dict(interval=1)
+work_dir = './work_dirs/tsm_mobilenetv2_dense_1x1x8_100e_kinetics400_rgb/'
