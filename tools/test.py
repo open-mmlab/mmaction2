@@ -156,6 +156,7 @@ def main():
         distributed = True
         init_dist(args.launcher, **cfg.dist_params)
 
+    # The flag is used to register module's hooks
     cfg.setdefault('module_hooks', [])
 
     # build the dataloader

@@ -11,12 +11,18 @@ def register_module_hooks(Module, module_hooks_list):
 
 
 @MODULE_HOOKS.register_module()
-class GpuNormalize:
+class GPUNormalize:
+    """Normalize images with the given mean and std value on GPUs.
 
-    def __init__(self,
-                 input_format,
-                 mean=(123.675, 116.28, 103.53),
-                 std=(58.395, 57.12, 57.375)):
+    Call the member function ``hook_func`` will return the forward pre-hook
+    function for module registration.
+
+    Args:
+        mean (Sequence[float]): Mean values of different channels.
+        std (Sequence[float]): Std values of different channels.
+    """
+
+    def __init__(self, input_format, mean, std):
         if input_format not in ['NCTHW', 'NCHW', 'NCHW_Flow', 'NPTCHW']:
             raise ValueError(f'The input format {input_format} is invalid.')
         self.input_format = input_format

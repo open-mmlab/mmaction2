@@ -2,10 +2,10 @@ _base_ = '../../_base_/models/c3d_sports1m_pretrained.py'
 
 module_hooks = [
     dict(
-        type='GpuNormalize',
+        type='GPUNormalize',
         input_format='NCTHW',
-        mean=[104, 117, 128],
-        std=[1, 1, 1])
+        mean=(104, 117, 128),
+        std=(1, 1, 1))
 ]
 
 # dataset settings
@@ -17,14 +17,9 @@ ann_file_train = f'data/ucf101/ucf101_train_split_{split}_rawframes.txt'
 ann_file_val = f'data/ucf101/ucf101_val_split_{split}_rawframes.txt'
 ann_file_test = f'data/ucf101/ucf101_val_split_{split}_rawframes.txt'
 
-mc_cfg = dict(
-    server_list_cfg='/mnt/lustre/share/memcached_client/server_list.conf',
-    client_cfg='/mnt/lustre/share/memcached_client/client.conf',
-    sys_path='/mnt/lustre/share/pymc/py3')
-
 train_pipeline = [
     dict(type='SampleFrames', clip_len=16, frame_interval=1, num_clips=1),
-    dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(128, 171)),
     dict(type='RandomCrop', size=112),
     dict(type='Flip', flip_ratio=0.5),
@@ -39,7 +34,7 @@ val_pipeline = [
         frame_interval=1,
         num_clips=1,
         test_mode=True),
-    dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(128, 171)),
     dict(type='CenterCrop', crop_size=112),
     dict(type='Flip', flip_ratio=0),
@@ -54,7 +49,7 @@ test_pipeline = [
         frame_interval=1,
         num_clips=10,
         test_mode=True),
-    dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(128, 171)),
     dict(type='CenterCrop', crop_size=112),
     dict(type='Flip', flip_ratio=0),
@@ -101,7 +96,8 @@ log_config = dict(
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/c3d_gpu_normal_16x1x1_45e_ucf101_rgb/'
+work_dir = (
+    f'./work_dirs/c3d_sports1m_gpu_normalize_16x1x1_45e_ucf101_split_{split}/')
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
