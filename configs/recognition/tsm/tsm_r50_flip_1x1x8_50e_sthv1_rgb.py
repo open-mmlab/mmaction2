@@ -94,4 +94,4 @@ evaluation = dict(
 optimizer = dict(weight_decay=0.0005)
 
 # runtime settings
-work_dir = './work_dirs/tsm_r50_1x1x8_50e_sthv1_rgb/'
+work_dir = './work_dirs/tsm_r50_flip_1x1x8_50e_sthv1_rgb/'
