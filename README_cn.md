@@ -122,7 +122,7 @@ v0.10.0 版本已于 2021 年 1 月 5 日发布，可通过查阅 [changelog.md]
 支持的动作识别数据集：
 
 <details open>
-<summary>(click to collapse)</summary>
+<summary>(点击收起)</summary>
 
 - [x] [UCF101](/tools/data/ucf101/README.md) \[ [Homepage](https://www.crcv.ucf.edu/research/data-sets/ucf101/) \] (CRCV-IR-12-01)
 - [x] [HMDB51](/tools/data/hmdb51/README.md) \[ [Homepage](https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/) \] (ICCV'2011)
@@ -141,7 +141,7 @@ v0.10.0 版本已于 2021 年 1 月 5 日发布，可通过查阅 [changelog.md]
 支持的时序动作检测数据集：
 
 <details open>
-<summary>(click to collapse)</summary>
+<summary>(点击收起)</summary>
 
 - [x] [ActivityNet](/tools/data/activitynet/README.md) \[ [Homepage](http://activity-net.org/) \] (CVPR'2015)
 - [x] [THUMOS14](/tools/data/thumos14/README.md) \[ [Homepage](https://www.crcv.ucf.edu/THUMOS14/download.html) \] (THUMOS Challenge 2014)
@@ -151,7 +151,7 @@ v0.10.0 版本已于 2021 年 1 月 5 日发布，可通过查阅 [changelog.md]
 支持的时空动作检测数据集：
 
 <details open>
-<summary>(click to collapse)</summary>
+<summary>(点击收起)</summary>
 
 - [x] [AVA](/tools/data/ava/README.md) \[ [Homepage](https://research.google.com/ava/index.html) \] (CVPR'2018)
 - [x] [UCF101-24](/tools/data/ucf101_24/README.md) \[ [Homepage](http://www.thumos.info/download.html) \] (CRCV-IR-12-01)
