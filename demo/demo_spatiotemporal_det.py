@@ -3,7 +3,6 @@ import copy as cp
 import os
 import os.path as osp
 import shutil
-import warnings
 
 import cv2
 import mmcv
@@ -13,11 +12,20 @@ from mmcv.runner import load_checkpoint
 from tqdm import tqdm
 
 from mmaction.models import build_detector
+from mmaction.utils import import_module_error_func
 
 try:
     from mmdet.apis import inference_detector, init_detector
 except (ImportError, ModuleNotFoundError):
-    warnings.warn('Please install mmdet to use demo_spatiotempoal_det')
+
+    @import_module_error_func('mmdet')
+    def inference_detector(*args, **kwargs):
+        pass
+
+    @import_module_error_func('mmdet')
+    def init_detector(*args, **kwargs):
+        pass
+
 
 try:
     import moviepy.editor as mpy

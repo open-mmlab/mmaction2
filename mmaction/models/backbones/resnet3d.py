@@ -1,5 +1,3 @@
-import warnings
-
 import torch.nn as nn
 import torch.utils.checkpoint as cp
 from mmcv.cnn import (ConvModule, NonLocal3d, build_activation_layer,
@@ -15,7 +13,6 @@ try:
     from mmdet.models.builder import SHARED_HEADS as MMDET_SHARED_HEADS
     mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
-    warnings.warn('Please install mmdet to use MMDET_SHARED_HEADS')
     mmdet_imported = False
 
 

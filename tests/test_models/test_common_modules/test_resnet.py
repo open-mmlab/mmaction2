@@ -111,3 +111,17 @@ def test_resnet_backbone():
     resnet50_caffe.train()
     feat = resnet50_caffe(imgs)
     assert feat.shape == torch.Size([1, 2048, 2, 2])
+
+    resnet50_flow = ResNet(
+        depth=50, pretrained='torchvision://resnet50', in_channels=10)
+    input_shape = (1, 10, 64, 64)
+    imgs = generate_backbone_demo_inputs(input_shape)
+    feat = resnet50_flow(imgs)
+    assert feat.shape == torch.Size([1, 2048, 2, 2])
+
+    resnet50 = ResNet(
+        depth=50, pretrained='torchvision://resnet50', in_channels=3)
+    input_shape = (1, 3, 64, 64)
+    imgs = generate_backbone_demo_inputs(input_shape)
+    feat = resnet50(imgs)
+    assert feat.shape == torch.Size([1, 2048, 2, 2])

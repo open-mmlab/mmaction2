@@ -1,18 +1,16 @@
-import warnings
-
 import torch.nn as nn
 from mmcv.utils import Registry, build_from_cfg
 
+from mmaction.utils import import_module_error_func
 from .registry import BACKBONES, HEADS, LOCALIZERS, LOSSES, NECKS, RECOGNIZERS
 
 try:
     from mmdet.models.builder import DETECTORS, build_detector
 except (ImportError, ModuleNotFoundError):
-    warnings.warn('Please install mmdet to use DETECTORS, build_detector')
-
     # Define an empty registry and building func, so that can import
     DETECTORS = Registry('detector')
 
+    @import_module_error_func('mmdet')
     def build_detector(cfg, train_cfg, test_cfg):
         pass
 

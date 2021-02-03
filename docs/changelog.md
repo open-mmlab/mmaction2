@@ -11,15 +11,13 @@
 **New Features**
 
 - Support [imgaug](https://imgaug.readthedocs.io/en/latest/index.html) for augmentations in the data pipeline ([#492](https://github.com/open-mmlab/mmaction2/pull/492))
-- Add precise BN hook ([#501](https://github.com/open-mmlab/mmaction2/pull/501))
 - Support setting `max_testing_views` for extremely large models to save GPU memory used ([#511](https://github.com/open-mmlab/mmaction2/pull/511))
 - Add spatial temporal demo ([#547](https://github.com/open-mmlab/mmaction2/pull/547), [#566](https://github.com/open-mmlab/mmaction2/pull/566))
-- Refactor EvalHook ([#395](https://github.com/open-mmlab/mmaction2/pull/395))
-- Refactor AVA hook ([#567](https://github.com/open-mmlab/mmaction2/pull/567))
 
 **Improvements**
 
-- Refactor unit test structure ([#433](https://github.com/open-mmlab/mmaction2/pull/433))
+- Refactor EvalHook ([#395](https://github.com/open-mmlab/mmaction2/pull/395))
+- Refactor AVA hook ([#567](https://github.com/open-mmlab/mmaction2/pull/567))
 - Add repo citation ([#545](https://github.com/open-mmlab/mmaction2/pull/545))
 - Add dataset size of Kinetics400 ([#503](https://github.com/open-mmlab/mmaction2/pull/503))
 - Add lazy operation docs ([#504](https://github.com/open-mmlab/mmaction2/pull/504))
@@ -32,14 +30,17 @@
 - Add config tag in dataset README ([#540](https://github.com/open-mmlab/mmaction2/pull/540))
 - Add solution for markdownlint installation issue ([#497](https://github.com/open-mmlab/mmaction2/pull/497))
 - Add dataset overview in readthedocs ([#548](https://github.com/open-mmlab/mmaction2/pull/548))
+- Modify the trigger mode of the warnings of missing mmdet ([583](https://github.com/open-mmlab/mmaction2/pull/583))
 - Refactor config structure ([#488](https://github.com/open-mmlab/mmaction2/pull/488), [#572](https://github.com/open-mmlab/mmaction2/pull/572))
 - Refactor unittest structure ([#433](https://github.com/open-mmlab/mmaction2/pull/433))
 
 **Bug and Typo Fixes**
 
-- Fix a bug about ava dataset validation ([#527](https://github.com/open-mmlab/mmaction2/pull/527)
+- Fix a bug about ava dataset validation ([#527](https://github.com/open-mmlab/mmaction2/pull/527))
+- Fix a bug about ResNet pretrain weight initialization ([#582](https://github.com/open-mmlab/mmaction2/pull/582))
 - Fix a bug in CI due to MMCV index ([#495](https://github.com/open-mmlab/mmaction2/pull/495))
 - Remove invalid links of MiT and MMiT ([#516](https://github.com/open-mmlab/mmaction2/pull/516))
+- Fix frame rate bug for AVA preparation ([#576](https://github.com/open-mmlab/mmaction2/pull/576))
 
 **ModelZoo**
 

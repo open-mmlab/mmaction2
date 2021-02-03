@@ -1,5 +1,4 @@
 import os.path as osp
-import warnings
 from abc import abstractproperty
 
 import numpy as np
@@ -7,11 +6,19 @@ import torch
 
 from mmaction.core.bbox import bbox2result, bbox_target
 from mmaction.datasets import AVADataset
+from mmaction.utils import import_module_error_func
 
 try:
     from mmdet.core.bbox import build_assigner, build_sampler
 except (ImportError, ModuleNotFoundError):
-    warnings.warn('Please install mmdet to use build_assigner, build_sampler')
+
+    @import_module_error_func('mmdet')
+    def build_assigner(*args, **kwargs):
+        pass
+
+    @import_module_error_func('mmdet')
+    def build_sampler(*args, **kwargs):
+        pass
 
 
 def test_assigner_sampler():
