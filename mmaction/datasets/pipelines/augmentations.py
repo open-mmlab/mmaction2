@@ -1128,9 +1128,8 @@ class Flip:
         results['flip_direction'] = self.direction
 
         if self.label_transforms is not None and flip:
-            label = results['label']
-            if label in self.label_transforms.keys():
-                results['label'] = self.label_transforms[label]
+            results['label'] = self.label_transforms.get(
+                results['label'], results['label'])
 
         if not self.lazy:
             if flip:
