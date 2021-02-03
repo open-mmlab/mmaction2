@@ -14,7 +14,7 @@ ann_file_train = 'data/sthv1/sthv1_train_list_rawframes.txt'
 ann_file_val = 'data/sthv1/sthv1_val_list_rawframes.txt'
 ann_file_test = 'data/sthv1/sthv1_val_list_rawframes.txt'
 
-sthv1_label_transforms = {2: 4, 4: 2, 30: 41, 41: 30, 52: 66, 66: 52}
+sthv1_flip_label_map = {2: 4, 4: 2, 30: 41, 41: 30, 52: 66, 66: 52}
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 
@@ -30,7 +30,7 @@ train_pipeline = [
         max_wh_scale_gap=1,
         num_fixed_crops=13),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
-    dict(type='Flip', flip_ratio=0.5, label_transforms=sthv1_label_transforms),
+    dict(type='Flip', flip_ratio=0.5, flip_label_map=sthv1_flip_label_map),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),

@@ -81,7 +81,7 @@ class TestFlip:
                               f'lazy={False})')
 
         # transform label for the flipped image with the specific label.
-        _label_transforms = {4: 6}
+        _flip_label_map = {4: 6}
         imgs = list(np.random.rand(2, 64, 64, 3))
 
         # the label should be transformed.
@@ -89,7 +89,7 @@ class TestFlip:
         flip = Flip(
             flip_ratio=1,
             direction='horizontal',
-            label_transforms=_label_transforms)
+            flip_label_map=_flip_label_map)
         flip_results = flip(results)
         assert results['label'] == 6
 
@@ -98,6 +98,6 @@ class TestFlip:
         flip = Flip(
             flip_ratio=1,
             direction='horizontal',
-            label_transforms=_label_transforms)
+            flip_label_map=_flip_label_map)
         flip_results = flip(results)
         assert results['label'] == 3
