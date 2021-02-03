@@ -49,7 +49,7 @@ MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLa
 
 ## 更新记录
 
-v0.10.0 版本已于 2021 年 1 月 5 日发布，可通过查阅 [changelog.md](docs/changelog.md) 了解更多细节以及发布历史
+v0.11.0 版本已于 2021 年 1 月 31 日发布，可通过查阅 [changelog.md](docs/changelog.md) 了解更多细节以及发布历史
 
 ## 基准测试
 
@@ -124,17 +124,17 @@ v0.10.0 版本已于 2021 年 1 月 5 日发布，可通过查阅 [changelog.md]
 <details open>
 <summary>(点击收起)</summary>
 
-- [x] [UCF101](/tools/data/ucf101/README.md) \[ [Homepage](https://www.crcv.ucf.edu/research/data-sets/ucf101/) \] (CRCV-IR-12-01)
-- [x] [HMDB51](/tools/data/hmdb51/README.md) \[ [Homepage](https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/) \] (ICCV'2011)
-- [x] [Kinetics-[400/600/700]](/tools/data/kinetics/README.md) \[ [Homepage](https://deepmind.com/research/open-source/kinetics) \] (CVPR'2017)
-- [x] [Something-Something V1](/tools/data/sthv1/README.md) \[ [Homepage](https://20bn.com/datasets/something-something/v1) \] (ICCV'2017)
-- [x] [Something-Something V2](/tools/data/sthv2/README.md) \[ [Homepage](https://20bn.com/datasets/something-something) \] (ICCV'2017)
-- [x] [Moments in Time](/tools/data/mit/README.md) \[ [Homepage](http://moments.csail.mit.edu/) \] (TPAMI'2019)
-- [x] [Multi-Moments in Time](/tools/data/mmit/README.md) \[ [Homepage](http://moments.csail.mit.edu/challenge_iccv_2019.html) \] (ArXiv'2019)
-- [x] [HVU](/tools/data/hvu/README.md) \[ [Homepage](https://github.com/holistic-video-understanding/HVU-Dataset) \] (ECCV'2020)
-- [x] [Jester](/tools/data/jester/README.md) \[ [Homepage](https://20bn.com/datasets/jester/v1) \] (ICCV'2019)
-- [x] [GYM](/tools/data/gym/README.md) \[ [Homepage](https://sdolivia.github.io/FineGym/) \] (CVPR'2020)
-- [x] [ActivityNet](/tools/data/activitynet/README.md) \[ [Homepage](http://activity-net.org/) \] (CVPR'2015)
+- [x] [UCF101](/tools/data/ucf101/README.md) \[ [主页](https://www.crcv.ucf.edu/research/data-sets/ucf101/) \] (CRCV-IR-12-01)
+- [x] [HMDB51](/tools/data/hmdb51/README.md) \[ [主页](https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/) \] (ICCV'2011)
+- [x] [Kinetics-[400/600/700]](/tools/data/kinetics/README.md) \[ [主页](https://deepmind.com/research/open-source/kinetics) \] (CVPR'2017)
+- [x] [Something-Something V1](/tools/data/sthv1/README.md) \[ [主页](https://20bn.com/datasets/something-something/v1) \] (ICCV'2017)
+- [x] [Something-Something V2](/tools/data/sthv2/README.md) \[ [主页](https://20bn.com/datasets/something-something) \] (ICCV'2017)
+- [x] [Moments in Time](/tools/data/mit/README.md) \[ [主页](http://moments.csail.mit.edu/) \] (TPAMI'2019)
+- [x] [Multi-Moments in Time](/tools/data/mmit/README.md) \[ [主页](http://moments.csail.mit.edu/challenge_iccv_2019.html) \] (ArXiv'2019)
+- [x] [HVU](/tools/data/hvu/README.md) \[ [主页](https://github.com/holistic-video-understanding/HVU-Dataset) \] (ECCV'2020)
+- [x] [Jester](/tools/data/jester/README.md) \[ [主页](https://20bn.com/datasets/jester/v1) \] (ICCV'2019)
+- [x] [GYM](/tools/data/gym/README.md) \[ [主页](https://sdolivia.github.io/FineGym/) \] (CVPR'2020)
+- [x] [ActivityNet](/tools/data/activitynet/README.md) \[ [主页](http://activity-net.org/) \] (CVPR'2015)
 
 </details>
 
@@ -143,8 +143,8 @@ v0.10.0 版本已于 2021 年 1 月 5 日发布，可通过查阅 [changelog.md]
 <details open>
 <summary>(点击收起)</summary>
 
-- [x] [ActivityNet](/tools/data/activitynet/README.md) \[ [Homepage](http://activity-net.org/) \] (CVPR'2015)
-- [x] [THUMOS14](/tools/data/thumos14/README.md) \[ [Homepage](https://www.crcv.ucf.edu/THUMOS14/download.html) \] (THUMOS Challenge 2014)
+- [x] [ActivityNet](/tools/data/activitynet/README.md) \[ [主页](http://activity-net.org/) \] (CVPR'2015)
+- [x] [THUMOS14](/tools/data/thumos14/README.md) \[ [主页](https://www.crcv.ucf.edu/THUMOS14/download.html) \] (THUMOS Challenge 2014)
 
 </details>
 
@@ -153,9 +153,9 @@ v0.10.0 版本已于 2021 年 1 月 5 日发布，可通过查阅 [changelog.md]
 <details open>
 <summary>(点击收起)</summary>
 
-- [x] [AVA](/tools/data/ava/README.md) \[ [Homepage](https://research.google.com/ava/index.html) \] (CVPR'2018)
-- [x] [UCF101-24](/tools/data/ucf101_24/README.md) \[ [Homepage](http://www.thumos.info/download.html) \] (CRCV-IR-12-01)
-- [x] [JHMDB](/tools/data/jhmdb/README.md) \[ [Homepage](http://jhmdb.is.tue.mpg.de/) \] (ICCV'2013)
+- [x] [AVA](/tools/data/ava/README.md) \[ [主页](https://research.google.com/ava/index.html) \] (CVPR'2018)
+- [x] [UCF101-24](/tools/data/ucf101_24/README.md) \[ [主页](http://www.thumos.info/download.html) \] (CRCV-IR-12-01)
+- [x] [JHMDB](/tools/data/jhmdb/README.md) \[ [主页](http://jhmdb.is.tue.mpg.de/) \] (ICCV'2013)
 
 </details>
 
@@ -169,9 +169,15 @@ v0.10.0 版本已于 2021 年 1 月 5 日发布，可通过查阅 [changelog.md]
 
 ## 教程
 
-请参考 [getting_started.md](/docs/getting_started.md) 了解 MMAction2 的基本使用。MMAction2也提供了其他更详细的教程：
-[learn about configs](docs/tutorials/1_config.md), [finetuning models](docs/tutorials/2_finetune.md), [adding new dataset](docs/tutorials/3_new_dataset.md),
-[designing data pipeline](docs/tutorials/4_data_pipeline.md), [adding new modules](docs/tutorials/5_new_modules.md), [exporting model to onnx](docs/tutorials/6_export_model.md) 和 [customizing runtime settings](docs/tutorials/7_customize_runtime.md).
+请参考 [getting_started.md](/docs/getting_started.md) 了解 MMAction2 的基本使用。MMAction2也提供了其他更详细的教程:
+
+- [如何编写配置文件](docs/tutorials/1_config.md)
+- [如何微调模型](docs/tutorials/2_finetune.md)
+- [如何增加新数据集](docs/tutorials/3_new_dataset.md)
+- [如何设计数据处理流程](docs/tutorials/4_data_pipeline.md)
+- [如何增加新模块](docs/tutorials/5_new_modules.md)
+- [如何导出模型为 onnx 格式](docs/tutorials/6_export_model.md)
+- [如何自定义模型运行参数](docs/tutorials/7_customize_runtime.md)
 
 ## 常见问题
 
