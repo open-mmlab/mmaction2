@@ -86,7 +86,7 @@ You can train custom classes from ava. Ava suffers from class imbalance. There a
 
 Three steps to train custom classes:
 
-- Step 1: Select custom classes from original classes, named `custom_classes`. Class `0` should not be selected since it is designed for potential usage(not implemented yet) and will be added automatically.
+- Step 1: Select custom classes from original classes, named `custom_classes`. Class `0` should not be selected since it is reserved for further usage (to identify whether a proposal is positive or negative, not implemented yet) and will be added automatically.
 - Step 2: Set `num_classes`. In order to be compatible with current codes, plase make sure `num_classes == len(custom_classes) + 1`.
   - The new class `0` corresponds to original class `0`. The new class `i`(i > 0) corresponds to original class `custom_classes[i-1]`.
   - There are three `num_classes` in ava config, `model -> roi_head -> bbox_head -> num_classes`, `data -> train -> num_classes` and `data -> val -> num_classes`.
