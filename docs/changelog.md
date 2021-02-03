@@ -1,5 +1,19 @@
 ## Changelog
 
+### Master
+
+**Highlights**
+
+- Support TSM-MobileNetV2
+
+**New Features**
+
+- Support TSM-MobileNetV2 ([#415](https://github.com/open-mmlab/mmaction2/pull/415))
+
+**ModelZoo**
+
+- Add TSM-MobileNetV2 for Kinetics400 ([#415](https://github.com/open-mmlab/mmaction2/pull/415))
+
 ### 0.11.0 (31/01/2021)
 
 **Highlights**
