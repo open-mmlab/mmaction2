@@ -1162,7 +1162,7 @@ class Flip:
         repr_str = (
             f'{self.__class__.__name__}('
             f'flip_ratio={self.flip_ratio}, direction={self.direction}, '
-            f'lazy={self.lazy})')
+            f'flip_label_map={self.flip_label_map}, lazy={self.lazy})')
         return repr_str
 
 
