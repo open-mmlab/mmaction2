@@ -9,6 +9,7 @@
 **New Features**
 
 - Support TSM-MobileNetV2 ([#415](https://github.com/open-mmlab/mmaction2/pull/415))
+- Support flip with label mapping ([#591](https://github.com/open-mmlab/mmaction2/pull/591))
 
 **ModelZoo**
 
