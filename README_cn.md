@@ -42,7 +42,7 @@ MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLa
   - 时序动作检测：BSN, BMN, SSN
   - 时空动作检测：SlowOnly + Fast-RCNN, SlowFast + Fast-RCNN
 
-  具体可参考 [ModelZoo](#模型库)
+  具体可参考 [模型库](#模型库)
 
 - **详尽的单元测试和文档**
   MMAction2 提供了详尽的说明文档，API 接口说明，全面的单元测试，以供社区参考
