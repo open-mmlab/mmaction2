@@ -1,7 +1,7 @@
 import pytest
 import torch
 
-from mmaction.models import Conv2plus1d, ConvAudio, TAM
+from mmaction.models import TAM, Conv2plus1d, ConvAudio
 
 
 def test_conv2plus1d():

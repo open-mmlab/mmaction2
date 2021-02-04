@@ -1,22 +1,7 @@
-# model settings
-model = dict(
-    type='Recognizer2D',
-    backbone=dict(
-        type='TANet',
-        pretrained='torchvision://resnet50',
-        depth=50,
-        num_segments=8,
-        tam_cfg=dict()),
-    cls_head=dict(
-        type='TSMHead',
-        num_classes=400,
-        in_channels=2048,
-        spatial_type='avg',
-        consensus=dict(type='AvgConsensus', dim=1),
-        dropout_ratio=0.5,
-        init_std=0.001))
-train_cfg = None
-test_cfg = dict(average_clips='prob')
+_base_ = [
+    '../../_base_/models/tanet_r50.py', '../../_base_/default_runtime.py'
+]
+
 # dataset settings
 dataset_type = 'RawframeDataset'
 data_root = 'data/kinetics400/rawframes_train'
@@ -32,6 +17,7 @@ mc_cfg = dict(
 
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
+
 train_pipeline = [
     dict(type='DenseSampleFrames', clip_len=1, frame_interval=1, num_clips=8),
     dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
@@ -75,7 +61,7 @@ test_pipeline = [
         test_mode=True),
     dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
     dict(type='Resize', scale=(-1, 256)),
-    dict(type='CenterCrop', crop_size=224),
+    dict(type='ThreeCrop', crop_size=256),
     dict(type='Flip', flip_ratio=0),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
@@ -85,8 +71,7 @@ test_pipeline = [
 data = dict(
     videos_per_gpu=8,
     workers_per_gpu=4,
-    val_dataloader=dict(videos_per_gpu=4),
-    test_dataloader=dict(videos_per_gpu=4),
+    test_dataloader=dict(videos_per_gpu=1),
     train=dict(
         type=dataset_type,
         ann_file=ann_file_train,
@@ -102,6 +87,9 @@ data = dict(
         ann_file=ann_file_test,
         data_prefix=data_root_val,
         pipeline=test_pipeline))
+evaluation = dict(
+    interval=2, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+
 # optimizer
 optimizer = dict(
     type='SGD',
@@ -114,19 +102,6 @@ optimizer_config = dict(grad_clip=dict(max_norm=20, norm_type=2))
 # learning policy
 lr_config = dict(policy='step', step=[50, 75, 90])
 total_epochs = 100
-checkpoint_config = dict(interval=2)
-evaluation = dict(
-    interval=2, metrics=['top_k_accuracy', 'mean_class_accuracy'])
-log_config = dict(
-    interval=20,
-    hooks=[
-        dict(type='TextLoggerHook'),
-        # dict(type='TensorboardLoggerHook'),
-    ])
+
 # runtime settings
-dist_params = dict(backend='nccl')
-log_level = 'INFO'
 work_dir = './work_dirs/tanet_r50_dense_1x1x8_100e_kinetics400_rgb/'
-load_from = None
-resume_from = None
-workflow = [('train', 1)]

@@ -5,16 +5,9 @@ import torch
 import torch.nn as nn
 from mmcv.utils import _BatchNorm
 
-<<<<<<< HEAD:tests/test_models/test_backbones.py
 from mmaction.models import (C3D, X3D, MobileNetV2TSM, ResNet2Plus1d,
                              ResNet3dCSN, ResNet3dSlowFast, ResNet3dSlowOnly,
                              ResNetAudio, ResNetTIN, ResNetTSM, TANet)
-=======
-from mmaction.models import (C3D, X3D, ResNet, ResNet2Plus1d, ResNet3d,
-                             ResNet3dCSN, ResNet3dLayer, ResNet3dSlowFast,
-                             ResNet3dSlowOnly, ResNetAudio, ResNetTIN,
-                             ResNetTSM, TANet)
->>>>>>> 31c7bb5... fix __init__:tests/test_models/test_backbone.py
 from mmaction.models.backbones.resnet_tsm import NL3DWrapper
 from .base import check_norm_state, generate_backbone_demo_inputs
 
@@ -604,12 +597,12 @@ def test_tanet_backbone():
             assert block.tam.in_channels == block.block.conv1.out_channels
 
     input_shape = (8, 3, 64, 64)
-    imgs = _demo_inputs(input_shape)
+    imgs = generate_backbone_demo_inputs(input_shape)
     feat = tanet_50(imgs)
     assert feat.shape == torch.Size([8, 2048, 2, 2])
 
     input_shape = (16, 3, 32, 32)
-    imgs = _demo_inputs(input_shape)
+    imgs = generate_backbone_demo_inputs(input_shape)
     feat = tanet_50(imgs)
     assert feat.shape == torch.Size([16, 2048, 1, 1])
 
