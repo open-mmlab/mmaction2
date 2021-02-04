@@ -2,7 +2,7 @@
   <img src="docs/imgs/mmaction2_logo.png" width="500"/>
 </div>
 
-## Introduction
+## 简介
 
 [English](./README.md) | 简体中文
 
@@ -42,7 +42,7 @@ MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLa
   - 时序动作检测：BSN, BMN, SSN
   - 时空动作检测：SlowOnly + Fast-RCNN, SlowFast + Fast-RCNN
 
-  具体可参考 [ModelZoo](#模型库)
+  具体可参考 [模型库](#模型库)
 
 - **详尽的单元测试和文档**
   MMAction2 提供了详尽的说明文档，API 接口说明，全面的单元测试，以供社区参考
@@ -202,7 +202,7 @@ v0.11.0 版本已于 2021 年 1 月 31 日发布，可通过查阅 [changelog.md
 
 ## 参与贡献
 
-我们非常欢迎用户任何对于 MMAction2 做出的贡献，可以参考 [CONTRIBUTION.md](.github/CONTRIBUTING.md) 文件了解更多细节
+我们非常欢迎用户对于 MMAction2 做出的任何贡献，可以参考 [CONTRIBUTION.md](.github/CONTRIBUTING.md) 文件了解更多细节
 
 ## 致谢
 
