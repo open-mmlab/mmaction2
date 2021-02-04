@@ -1,5 +1,5 @@
 _base_ = [
-    '../../_base_/models/bsm_pem.py', '../../_base_/schedules/adam_20e.py',
+    '../../_base_/models/bsn_pem.py', '../../_base_/schedules/adam_20e.py',
     '../../_base_/default_runtime.py'
 ]
 
