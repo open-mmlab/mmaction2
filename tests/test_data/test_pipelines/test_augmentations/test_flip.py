@@ -78,7 +78,7 @@ class TestFlip:
 
         assert repr(flip) == (f'{flip.__class__.__name__}'
                               f'(flip_ratio={1}, direction=vertical, '
-                              f'lazy={False})')
+                              f'flip_label_map={None}, lazy={False})')
 
         # transform label for the flipped image with the specific label.
         _flip_label_map = {4: 6}
