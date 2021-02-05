@@ -60,7 +60,7 @@ class EvalHook(Hook):
                  start=None,
                  interval=1,
                  by_epoch=True,
-                 save_best=None,
+                 save_best='auto',
                  rule=None,
                  **eval_kwargs):
         if 'key_indicator' in eval_kwargs:

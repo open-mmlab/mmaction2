@@ -93,7 +93,7 @@ def test_eval_hook():
         EvalHook(data_loader)
 
     with pytest.raises(ValueError):
-        # key_indicator must be valid when rule_map is None
+        # save_best must be valid when rule_map is None
         test_dataset = ExampleDataset()
         data_loader = DataLoader(test_dataset)
         EvalHook(data_loader, save_best='unsupport')
