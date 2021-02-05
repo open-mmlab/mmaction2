@@ -26,10 +26,19 @@ Before we start, please make sure that the directory is located at `$MMACTION2/t
 
 ## Step 1. Prepare Annotations
 
-First of all, you can run the following script to prepare annotations.
+First of all, you can run the following script to prepare annotations by downloading from the official [website](https://deepmind.com/research/open-source/open-source-datasets/kinetics/).
 
 ```shell
 bash download_annotations.sh ${DATASET}
+```
+
+Since some video urls are invalid, the number of video items in current official annotations are less than the original official ones.
+So we provide an alternative way to download the older one as a reference.
+Among these, the annotation files of Kinetics400 and Kinetics600 are from [official crawler](https://github.com/activitynet/ActivityNet/tree/199c9358907928a47cdfc81de4db788fddc2f91d/Crawler/Kinetics/data),
+the annotation files of Kinetics700 are from [website](https://deepmind.com/research/open-source/open-source-datasets/kinetics/) downloaded in 05/02/2021.
+
+```shell
+bash download_backup_annotations.sh ${DATASET}
 ```
 
 ## Step 2. Prepare Videos
