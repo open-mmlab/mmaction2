@@ -6,6 +6,7 @@ _base_ = [
 module_hooks = [
     dict(
         type='GPUNormalize',
+        hook_pos='forward_pre',
         input_format='NCHW',
         mean=[123.675, 116.28, 103.53],
         std=[58.395, 57.12, 57.375])

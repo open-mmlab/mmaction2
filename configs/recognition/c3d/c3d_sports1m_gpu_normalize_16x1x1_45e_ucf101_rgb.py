@@ -3,6 +3,7 @@ _base_ = '../../_base_/models/c3d_sports1m_pretrained.py'
 module_hooks = [
     dict(
         type='GPUNormalize',
+        hook_pos='forward_pre',
         input_format='NCTHW',
         mean=(104, 117, 128),
         std=(1, 1, 1))

@@ -5,9 +5,24 @@ MODULE_HOOKS = Registry('module_hooks')
 
 
 def register_module_hooks(Module, module_hooks_list):
+    handles = []
     for module_hook_cfg in module_hooks_list:
-        Module.register_forward_pre_hook(
-            build_from_cfg(module_hook_cfg, MODULE_HOOKS).hook_func())
+        hook_pos = module_hook_cfg.pop('hook_pos', 'forward_pre')
+        if hook_pos == 'forward_pre':
+            handle = Module.register_forward_pre_hook(
+                build_from_cfg(module_hook_cfg, MODULE_HOOKS).hook_func())
+        elif hook_pos == 'forward':
+            handle = Module.register_forward_hook(
+                build_from_cfg(module_hook_cfg, MODULE_HOOKS).hook_func())
+        elif hook_pos == 'backward':
+            handle = Module.register_backward_hook(
+                build_from_cfg(module_hook_cfg, MODULE_HOOKS).hook_func())
+        else:
+            raise ValueError(
+                f'hook_pos must be `forward_pre`, `forward` or `backward`, '
+                f'but get {hook_pos}')
+        handles.append(handle)
+    return handles
 
 
 @MODULE_HOOKS.register_module()
@@ -43,14 +58,13 @@ class GPUNormalize:
 
     def hook_func(self):
 
-        def normalize_forward_pre_hook(Module, input):
+        def normalize_hook(Module, input):
             x = input[0]
-            if not hasattr(self, 'mean'):
+            if not hasattr(normalize_hook, 'mean'):
                 self.mean = self._mean.to(x.device)
                 self.std = self._std.to(x.device)
 
-            assert self.mean.device == x.device
             with torch.no_grad():
                 x.sub_(self.mean).div_(self.std)
 
-        return normalize_forward_pre_hook
+        return normalize_hook
