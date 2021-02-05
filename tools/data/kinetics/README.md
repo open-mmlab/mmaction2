@@ -32,7 +32,7 @@ First of all, you can run the following script to prepare annotations by downloa
 bash download_annotations.sh ${DATASET}
 ```
 
-Since some video urls are invalid, the number of video items in official annotations are less than the original one.
+Since some video urls are invalid, the number of video items in current official annotations are less than the original official ones.
 So we provide an alternative way to download the older one as a reference.
 Among these, the annotation files of Kinetics400 and Kinetics600 are from [official crawler](https://github.com/activitynet/ActivityNet/tree/199c9358907928a47cdfc81de4db788fddc2f91d/Crawler/Kinetics/data),
 the annotation files of Kinetics700 are from [website](https://deepmind.com/research/open-source/open-source-datasets/kinetics/) downloaded in 05/02/2021.
