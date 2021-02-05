@@ -40,7 +40,7 @@ class EvalHook(Hook):
             (AVADataset). If ``save_best`` is ``auto``, the first key
              of the returned ``OrderedDict`` result will be used. The interval
              of ``EvalHook`` should be divisible by that of ``CheckpointHook``.
-             Default: 'top1_acc'.
+             Default: 'auto'.
         rule (str | None, optional): Comparison rule for best score. If set to
             None, it will infer a reasonable rule. Keys such as 'acc', 'top'
             .etc will be inferred by 'greater' rule. Keys contain 'loss' will
@@ -277,7 +277,7 @@ class DistEvalHook(EvalHook):
             (ActivityNetDataset). If ``save_best`` is ``auto``, the first key
             of the returned ``OrderedDict`` result will be used. The interval
             of ``EvalHook`` should be divisible of that in ``CheckpointHook``.
-            Default: None.
+            Default: 'auto'.
         rule (str | None, optional): Comparison rule for best score. If set to
             None, it will infer a reasonable rule. Keys such as 'acc', 'top'
             .etc will be inferred by 'greater' rule. Keys contain 'loss' will
@@ -296,7 +296,7 @@ class DistEvalHook(EvalHook):
                  start=None,
                  interval=1,
                  by_epoch=True,
-                 save_best=None,
+                 save_best='auto',
                  rule=None,
                  tmpdir=None,
                  gpu_collect=False,
