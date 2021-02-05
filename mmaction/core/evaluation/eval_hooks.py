@@ -35,12 +35,10 @@ class EvalHook(Hook):
             ``mean_average_precision``, ``mmit_mean_average_precision``
             for action recognition dataset (RawframeDataset and VideoDataset).
             ``AR@AN``, ``auc`` for action localization dataset.
-            (ActivityNetDataset). ``Recall@0.5@100``, ``AR@100``,
-            ``mAP@0.5IOU`` for spatio-temporal action detection dataset
-            (AVADataset). If ``save_best`` is ``auto``, the first key
-             of the returned ``OrderedDict`` result will be used. The interval
-             of ``EvalHook`` should be divisible by that of ``CheckpointHook``.
-             Default: 'auto'.
+            (ActivityNetDataset). ``mAP@0.5IOU`` for spatio-temporal action
+            detection dataset (AVADataset). If ``save_best`` is ``auto``, the
+            first key of the returned ``OrderedDict`` result will be used.
+            Default: 'auto'.
         rule (str | None, optional): Comparison rule for best score. If set to
             None, it will infer a reasonable rule. Keys such as 'acc', 'top'
             .etc will be inferred by 'greater' rule. Keys contain 'loss' will
@@ -274,9 +272,9 @@ class DistEvalHook(EvalHook):
             ``mean_average_precision``, ``mmit_mean_average_precision``
             for action recognition dataset (RawframeDataset and VideoDataset).
             ``AR@AN``, ``auc`` for action localization dataset
-            (ActivityNetDataset). If ``save_best`` is ``auto``, the first key
-            of the returned ``OrderedDict`` result will be used. The interval
-            of ``EvalHook`` should be divisible of that in ``CheckpointHook``.
+            (ActivityNetDataset). ``mAP@0.5IOU`` for spatio-temporal action
+            detection dataset (AVADataset). If ``save_best`` is ``auto``, the
+            first key of the returned ``OrderedDict`` result will be used.
             Default: 'auto'.
         rule (str | None, optional): Comparison rule for best score. If set to
             None, it will infer a reasonable rule. Keys such as 'acc', 'top'
