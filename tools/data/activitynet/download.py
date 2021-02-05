@@ -1,6 +1,7 @@
 # This scripts is copied from
 # https://github.com/activitynet/ActivityNet/blob/master/Crawler/Kinetics/download.py  # noqa: E501
 # The code is licensed under the MIT licence.
+import argparse
 import os
 import ssl
 import subprocess
@@ -10,9 +11,17 @@ from joblib import Parallel, delayed
 
 ssl._create_default_https_context = ssl._create_unverified_context
 data_file = '../../../data/ActivityNet'
-video_list = f'{data_file}/video_info_new.csv'
-anno_file = f'{data_file}/anet_anno_action.json'
 output_dir = f'{data_file}/videos'
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='ActivityNet downloader')
+    parser.add_argument(
+        '--bsn',
+        action='store_true',
+        help='download for BSN annotation or official one')
+    args = parser.parse_args()
+    return args
 
 
 def download_clip(video_identifier,
@@ -72,7 +81,7 @@ def download_clip_wrapper(youtube_id, output_dir):
     return status
 
 
-def parse_activitynet_annotations(input_csv):
+def parse_activitynet_annotations(input_csv, is_bsn_case=False):
     """Returns a list of YoutubeID.
     arguments:
     ---------
@@ -85,16 +94,21 @@ def parse_activitynet_annotations(input_csv):
         List of all YoutubeIDs in ActivityNet.
 
     """
-    lines = open(input_csv).readlines()
-    lines = lines[1:]
-    # YoutubeIDs do not have prefix `v_`
-    youtube_ids = [x.split(',')[0][2:] for x in lines]
+    if is_bsn_case:
+        lines = open(input_csv).readlines()
+        lines = lines[1:]
+        # YoutubeIDs do not have prefix `v_`
+        youtube_ids = [x.split(',')[0][2:] for x in lines]
+    else:
+        data = mmcv.load(anno_file)['database']
+        youtube_ids = list(data.keys())
+
     return youtube_ids
 
 
-def main(input_csv, output_dir, anno_file, num_jobs=24):
+def main(input_csv, output_dir, anno_file, num_jobs=24, is_bsn_case=False):
     # Reading and parsing ActivityNet.
-    youtube_ids = parse_activitynet_annotations(input_csv)
+    youtube_ids = parse_activitynet_annotations(input_csv, is_bsn_case)
 
     # Creates folders where videos will be saved later.
     if not os.path.exists(output_dir):
@@ -114,10 +128,20 @@ def main(input_csv, output_dir, anno_file, num_jobs=24):
     annotation = mmcv.load(anno_file)
     downloaded = {status[0]: status[1] for status in status_list}
     annotation = {k: v for k, v in annotation.items() if downloaded[k]}
-    anno_file_bak = anno_file.replace('.json', '_bak.json')
-    os.system(f'mv {anno_file} {anno_file_bak}')
-    mmcv.dump(annotation, anno_file)
+
+    if is_bsn_case:
+        anno_file_bak = anno_file.replace('.json', '_bak.json')
+        os.system(f'mv {anno_file} {anno_file_bak}')
+        mmcv.dump(annotation, anno_file)
 
 
 if __name__ == '__main__':
-    main(video_list, output_dir, anno_file, 24)
+    args = parse_args()
+    is_bsn_case = args.bsn
+    if is_bsn_case:
+        video_list = f'{data_file}/video_info_new.csv'
+        anno_file = f'{data_file}/anet_anno_action.json'
+    else:
+        video_list = f'{data_file}/activity_net.v1-3.min.json'
+        anno_file = video_list
+    main(video_list, output_dir, anno_file, 24, is_bsn_case)

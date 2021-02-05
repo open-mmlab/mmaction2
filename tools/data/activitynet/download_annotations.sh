@@ -7,10 +7,8 @@ fi
 
 cd ${DATA_DIR}
 
-wget https://raw.githubusercontent.com/wzmsltw/BSN-boundary-sensitive-network/master/data/activitynet_annotations/anet_anno_action.json
+wget http://ec2-52-25-205-214.us-west-2.compute.amazonaws.com/files/activity_net.v1-3.min.json
 
-wget https://raw.githubusercontent.com/wzmsltw/BSN-boundary-sensitive-network/master/data/activitynet_annotations/video_info_new.csv
-
-wget https://download.openmmlab.com/mmaction/localization/anet_activity_indexes_val.txt
+wget
 
 cd -
