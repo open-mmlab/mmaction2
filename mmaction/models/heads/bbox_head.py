@@ -22,6 +22,7 @@ class BBoxHeadAVA(nn.Module):
             'max'. Default: 'max'.
         in_channels (int): The number of input channels. Default: 2048.
         num_classes (int): The number of classes. Default: 81.
+        topk (Union[int, Tuple[int]]): k values to calculate topk accuracies. Default: (3, 5).
         dropout_ratio (float): A float in [0, 1], indicates the dropout_ratio.
             Default: 0.
         dropout_before_pool (bool): Dropout Feature before spatial temporal
@@ -37,6 +38,7 @@ class BBoxHeadAVA(nn.Module):
             in_channels=2048,
             # The first class is reserved, to classify bbox as pos / neg
             num_classes=81,
+            topk=(3, 5),
             dropout_ratio=0,
             dropout_before_pool=True,
             multilabel=True):
@@ -49,6 +51,7 @@ class BBoxHeadAVA(nn.Module):
 
         self.in_channels = in_channels
         self.num_classes = num_classes
+        self.topk = topk
 
         self.dropout_ratio = dropout_ratio
         self.dropout_before_pool = dropout_before_pool
@@ -162,13 +165,12 @@ class BBoxHeadAVA(nn.Module):
             bce_loss = F.binary_cross_entropy_with_logits
             losses['loss_action_cls'] = bce_loss(cls_score, labels)
             recall_thr, prec_thr, recall_k, prec_k = self.multilabel_accuracy(
-                cls_score, labels, topk=(3, 5), thr=0.5)
+                cls_score, labels, topk=self.topk, thr=0.5)
             losses['recall@thr=0.5'] = recall_thr
             losses['prec@thr=0.5'] = prec_thr
-            losses['recall@top3'] = recall_k[0]
-            losses['prec@top3'] = prec_k[0]
-            losses['recall@top5'] = recall_k[1]
-            losses['prec@top5'] = prec_k[1]
+            for k in topk:
+                losses['recall@top{}'.format(k)] = recall_k[k]
+                losses['prec@top{}'.format(k)] = prec_k[k]
         return losses
 
     def get_det_bboxes(self,
