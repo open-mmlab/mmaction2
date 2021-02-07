@@ -70,11 +70,11 @@ def test_gpu_normalize():
     gpu_normalize_cfg['input_format'] = 'NCHW'
     gpu_normalize = GPUNormalize(**gpu_normalize_cfg)
     assert gpu_normalize._mean.shape == (1, 3, 1, 1)
-    imgs = np.random.rand(2, 240, 320, 3).astype(np.float32)
+    imgs = np.random.randint(256, size=(2, 240, 320, 3), dtype=np.uint8)
     _input = (torch.tensor(imgs).permute(0, 3, 1, 2), )
     resnet = models.resnet50()
     normalize_hook = gpu_normalize.hook_func()
-    normalize_hook(resnet, _input)
+    _input = normalize_hook(resnet, _input)
     result_imgs = np.array(_input[0].permute(0, 2, 3, 1))
     check_normalize(imgs, result_imgs, gpu_normalize_cfg)
 

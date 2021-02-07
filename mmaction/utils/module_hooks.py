@@ -64,9 +64,8 @@ class GPUNormalize:
                 self.mean = self._mean.to(x.device)
                 self.std = self._std.to(x.device)
             assert x.dtype == torch.uint8, (
-                'The previous augmentation should use uint8 data type to speed'
-                ' up computation')
-            print(self.mean.device)
+                f'The previous augmentation should use uint8 data type to '
+                f'speed up computation, but get {x.dtype}')
 
             with torch.no_grad():
                 x = x.float().sub_(self.mean).div_(self.std)
