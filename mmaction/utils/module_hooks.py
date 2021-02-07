@@ -60,11 +60,17 @@ class GPUNormalize:
 
         def normalize_hook(Module, input):
             x = input[0]
-            if not hasattr(normalize_hook, 'mean'):
+            if not hasattr(self, 'mean'):
                 self.mean = self._mean.to(x.device)
                 self.std = self._std.to(x.device)
+            assert x.dtype == torch.uint8, (
+                'The previous augmentation should use uint8 data type to speed'
+                ' up computation')
+            print(self.mean.device)
 
             with torch.no_grad():
-                x.sub_(self.mean).div_(self.std)
+                x = x.float().sub_(self.mean).div_(self.std)
+
+            return (x, *input[1:])
 
         return normalize_hook
