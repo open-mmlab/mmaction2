@@ -73,7 +73,7 @@ def test_train_model():
         load_from=None,
         workflow=[('train', 1)],
         total_epochs=5,
-        evaluation=dict(interval=1, key_indicator='acc'),
+        evaluation=dict(interval=1, save_best='acc'),
         data=dict(
             videos_per_gpu=1,
             workers_per_gpu=0,
