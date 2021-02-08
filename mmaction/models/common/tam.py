@@ -6,7 +6,8 @@ from mmcv.cnn import constant_init, kaiming_init, normal_init
 class TAM(nn.Module):
     """Temporal Adaptive Module(TAM) for TANet.
 
-    https://arxiv.org/pdf/2005.06803.pdf.
+    This module is proposed in `TAM: TEMPORAL ADAPTIVE MODULE FOR VIDEO
+    RECOGNITION <https://arxiv.org/pdf/2005.06803>`_
 
     Args:
         in_channels (int): Channel num of input features.
@@ -40,7 +41,7 @@ class TAM(nn.Module):
                  adaptive_convolution_stride=1,
                  adaptive_convolution_padding=1,
                  init_std=0.001):
-        super(TAM, self).__init__()
+        super().__init__()
 
         assert beta > 0 and alpha > 0
         self.in_channels = in_channels

@@ -11,9 +11,12 @@ from .resnet import Bottleneck, ResNet
 class TABlock(nn.Module):
     """Temporal Adaptive Block (TA-Block) for TANet.
 
-    "The temporal adaptive module (TAM) is embedded into ResNet-Block
+    This block is proposed in `TAM: TEMPORAL ADAPTIVE MODULE FOR VIDEO
+    RECOGNITION <https://arxiv.org/pdf/2005.06803>`_
+
+    The temporal adaptive module (TAM) is embedded into ResNet-Block
     after the first Conv2D, which turns the vanilla ResNet-Block
-    into TA-Block."
+    into TA-Block.
 
     Args:
         block (nn.Module): Residual blocks to be substituted.
@@ -69,6 +72,9 @@ class TABlock(nn.Module):
 @BACKBONES.register_module()
 class TANet(ResNet):
     """Temporal Adaptive Network (TANet) backbone.
+
+    This backbone is proposed in `TAM: TEMPORAL ADAPTIVE MODULE FOR VIDEO
+    RECOGNITION <https://arxiv.org/pdf/2005.06803>`_
 
     Embedding the temporal adaptive module (TAM) into ResNet to
     instantiate TANet.
