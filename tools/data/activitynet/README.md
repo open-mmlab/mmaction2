@@ -66,7 +66,7 @@ bash download_videos.sh
 ```
 
 Since some videos in the ActivityNet dataset might be no longer available on YouTube, official [website](http://activity-net.org/) has made the full dataset available on Google and Baidu drives.
-To accommodate missing data requests, you can fill in this [request form]() provided in official [download page](http://activity-net.org/download.html) to have a 7-day-access to download the videos from the drive folders.
+To accommodate missing data requests, you can fill in this [request form](https://docs.google.com/forms/d/e/1FAIpQLSeKaFq9ZfcmZ7W0B0PbEhfbTHY41GeEgwsa7WobJgGUhn4DTQ/viewform) provided in official [download page](http://activity-net.org/download.html) to have a 7-day-access to download the videos from the drive folders.
 
 We also provide download steps for annotations from [BSN repo](https://github.com/wzmsltw/BSN-boundary-sensitive-network#code-and-data-preparation)
 
@@ -137,11 +137,11 @@ mmaction2
 ├── configs
 ├── data
 │   ├── ActivityNet
+
+(if Option 1 used)
 │   │   ├── anet_anno_{train,val,test,full}.json
 │   │   ├── anet_anno_action.json
 │   │   ├── video_info_new.csv
-
-(if Option 1 used)
 │   │   ├── activitynet_feature_cuhk
 │   │   │   ├── csv_mean_100
 │   │   │   │   ├── v___c8enCfzqw.csv
@@ -149,6 +149,11 @@ mmaction2
 │   │   │   |   ├── ..
 
 (if Option 2 used)
+│   │   ├── anet_train_video.txt
+│   │   ├── anet_val_video.txt
+│   │   ├── anet_train_clip.txt
+│   │   ├── anet_val_clip.txt
+│   │   ├── activity_net.v1-3.min.json
 │   │   ├── mmaction_feat
 │   │   │   ├── v___c8enCfzqw.csv
 │   │   │   ├── v___dXUJsj3yo.csv
@@ -160,10 +165,7 @@ mmaction2
 │   │   │   │   ├── flow_y_00000.jpg
 │   │   │   │   ├── ..
 │   │   │   ├── ..
-│   │   ├── anet_train_video.txt
-│   │   ├── anet_val_video.txt
-│   │   ├── anet_train_clip.txt
-│   │   ├── anet_val_clip.txt
+
 ```
 
 For training and evaluating on ActivityNet, please refer to [getting_started.md](/docs/getting_started.md).

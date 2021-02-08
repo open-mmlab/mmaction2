@@ -28,7 +28,7 @@ def generate_rawframes_filelist():
     ]
 
     def simple_label(anno):
-        label = anno['annotations'][0]['label']
+        label = anno[0]['label']
         return anet_labels.index(label)
 
     def count_frames(dir_list, video):
@@ -40,6 +40,7 @@ def generate_rawframes_filelist():
     database = load_dict['database']
     training = {}
     validation = {}
+    key_dict = {}
 
     for k in database:
         data = database[k]
@@ -62,6 +63,7 @@ def generate_rawframes_filelist():
         if gt_dir_name is None:
             continue
         data_dict[gt_dir_name] = [num_frames, label]
+        key_dict[k] = gt_dir_name
 
     train_lines = [
         k + ' ' + str(training[k][0]) + ' ' + str(training[k][1])
@@ -96,9 +98,9 @@ def generate_rawframes_filelist():
 
     train_clips, val_clips = [], []
     for k in training:
-        train_clips.extend(clip_list(k, database[k], training[k]))
+        train_clips.extend(clip_list(k, database[key_dict[k]], training[k]))
     for k in validation:
-        val_clips.extend(clip_list(k, database[k], validation[k]))
+        val_clips.extend(clip_list(k, database[key_dict[k]], validation[k]))
 
     with open(osp.join(data_file, 'anet_train_clip.txt'), 'w') as fout:
         fout.write('\n'.join(train_clips))
