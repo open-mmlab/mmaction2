@@ -119,6 +119,9 @@ Supported methods for Spatial Temporal Action Detection:
 Results and models are available in the *README.md* of each method's config directory.
 A summary can be found in the [**model zoo**](https://mmaction2.readthedocs.io/en/latest/recognition_models.html) page.
 
+We will keep up with the latest progress of the community, and support more popular algorithms and frameworks.
+If you have any feature requests, please feel free to leave a comment in [Issues](https://github.com/open-mmlab/mmaction2/issues/19).
+
 ## Dataset
 
 Supported [datasets](https://mmaction2.readthedocs.io/en/latest/supported_datasets.html):
@@ -175,7 +178,15 @@ The supported datasets are listed in [supported_datasets.md](docs/supported_data
 ## Get Started
 
 Please see [getting_started.md](docs/getting_started.md) for the basic usage of MMAction2.
-There are also tutorials for [learn about configs](docs/tutorials/1_config.md), [finetuning models](docs/tutorials/2_finetune.md), [adding new dataset](docs/tutorials/3_new_dataset.md), [designing data pipeline](docs/tutorials/4_data_pipeline.md), [adding new modules](docs/tutorials/5_new_modules.md), [exporting model to onnx](docs/tutorials/6_export_model.md) and [customizing runtime settings](docs/tutorials/7_customize_runtime.md).
+There are also tutorials:
+
+- [learn about configs](docs/tutorials/1_config.md)
+- [finetuning models](docs/tutorials/2_finetune.md)
+- [adding new dataset](docs/tutorials/3_new_dataset.md)
+- [designing data pipeline](docs/tutorials/4_data_pipeline.md)
+- [adding new modules](docs/tutorials/5_new_modules.md)
+- [exporting model to onnx](docs/tutorials/6_export_model.md)
+- [customizing runtime settings](docs/tutorials/7_customize_runtime.md)
 
 A Colab tutorial is also provided. You may preview the notebook [here](demo/mmaction2_tutorial.ipynb) or directly [run](https://colab.research.google.com/github/open-mmlab/mmaction2/blob/master/demo/mmaction2_tutorial.ipynb) on Colab.
 

@@ -49,7 +49,7 @@ MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLa
 
 ## 更新记录
 
-v0.11.0 版本已于 2021 年 1 月 31 日发布，可通过查阅 [changelog.md](docs/changelog.md) 了解更多细节以及发布历史
+v0.11.0 版本已于 2021 年 1 月 31 日发布，可通过查阅 [更新日志](docs/changelog.md) 了解更多细节以及发布历史
 
 ## 基准测试
 
@@ -64,7 +64,7 @@ v0.11.0 版本已于 2021 年 1 月 31 日发布，可通过查阅 [changelog.md
 | [Slowfast](/configs/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb.py)|256p videos|Disk|8x8 | **[0.69](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction2/slowfast_256p_videos_disk_8x8.zip)** | x | x | [1.04](https://download.openmmlab.com/mmaction/benchmark/recognition/pyslowfast/pysf_slowfast_r50_4x16_video.log) |
 | [R(2+1)D](/configs/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb.py)|256p videos |Disk| 8x8|**[0.45](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction2/r2plus1d_256p_videos_disk_8x8.zip)** | x | x | x |
 
-更多详情可见 [bechmark.md](docs/benchmark.md)
+更多详情可见 [基准测试](docs/benchmark.md)
 
 ## 模型库
 
@@ -112,12 +112,13 @@ v0.11.0 版本已于 2021 年 1 月 31 日发布，可通过查阅 [changelog.md
 
 </details>
 
-各个模型的结果和设置都可以在对应的 config 目录下的 *README.md* 中查看
-整体的概况也可也在 [**model zoo**](https://mmaction2.readthedocs.io/en/latest/recognition_models.html) 页面中查看
+各个模型的结果和设置都可以在对应的 config 目录下的 *README.md* 中查看。整体的概况也可也在 [**模型库**](https://mmaction2.readthedocs.io/en/latest/recognition_models.html) 页面中查看
+
+我们将跟进学界的最新进展，并支持更多算法和框架。如果您对 MMAction2 有任何功能需求，请随时在 [问题](https://github.com/open-mmlab/mmaction2/issues/19) 中留言。
 
 ## 数据集
 
-支持的[数据集](https://mmaction2.readthedocs.io/en/latest/supported_datasets.html)：
+支持的 [数据集](https://mmaction2.readthedocs.io/en/latest/supported_datasets.html)：
 
 支持的动作识别数据集：
 
@@ -161,15 +162,15 @@ v0.11.0 版本已于 2021 年 1 月 31 日发布，可通过查阅 [changelog.md
 
 ## 安装
 
-请参考 [install.md](/docs/install.md) 进行安装
+请参考 [安装指南](/docs/install.md) 进行安装
 
 ## 数据集准备
 
-请参考 [data_preparation.md](/docs/data_preparation.md) 了解数据集准备概况。所有支持的数据集都列于 [supported_datasets.md](docs/supported_datasets.md) 中
+请参考 [数据准备](/docs/data_preparation.md) 了解数据集准备概况。所有支持的数据集都列于 [数据集清单](docs/supported_datasets.md) 中
 
 ## 教程
 
-请参考 [getting_started.md](/docs/getting_started.md) 了解 MMAction2 的基本使用。MMAction2也提供了其他更详细的教程:
+请参考 [基础教程](/docs/getting_started.md) 了解 MMAction2 的基本使用。MMAction2也提供了其他更详细的教程:
 
 - [如何编写配置文件](docs/tutorials/1_config.md)
 - [如何微调模型](docs/tutorials/2_finetune.md)
@@ -202,14 +203,14 @@ v0.11.0 版本已于 2021 年 1 月 31 日发布，可通过查阅 [changelog.md
 
 ## 参与贡献
 
-我们非常欢迎用户对于 MMAction2 做出的任何贡献，可以参考 [CONTRIBUTION.md](.github/CONTRIBUTING.md) 文件了解更多细节
+我们非常欢迎用户对于 MMAction2 做出的任何贡献，可以参考 [贡献指南](.github/CONTRIBUTING.md) 文件了解更多细节
 
 ## 致谢
 
 MMAction2 是一款由不同学校和公司共同贡献的开源项目。我们感谢所有为项目提供算法复现和新功能支持的贡献者，以及提供宝贵反馈的用户。
 我们希望该工具箱和基准测试可以为社区提供灵活的代码工具，供用户复现现有算法并开发自己的新模型，从而不断为开源社区提供贡献。
 
-## OpenMMLab的其他项目
+## OpenMMLab 的其他项目
 
 - [MMCV](https://github.com/open-mmlab/mmcv): OpenMMLab 计算机视觉基础库
 - [MMClassification](https://github.com/open-mmlab/mmclassification): OpenMMLab 图像分类工具箱与测试基准
