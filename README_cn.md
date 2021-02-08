@@ -192,7 +192,7 @@ v0.11.0 版本已于 2021 年 1 月 31 日发布，可通过查阅 [更新日志
 
 如果你觉得 MMAction2 对你的研究有所帮助，可以考虑引用它：
 
-```latex
+```BibTeX
 @misc{2020mmaction2,
     title={OpenMMLab's Next Generation Video Understanding Toolbox and Benchmark},
     author={MMAction2 Contributors},

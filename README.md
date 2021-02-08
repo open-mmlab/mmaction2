@@ -202,7 +202,7 @@ This project is released under the [Apache 2.0 license](LICENSE).
 
 If you find this project useful in your research, please consider cite:
 
-```latex
+```BibTeX
 @misc{2020mmaction2,
     title={OpenMMLab's Next Generation Video Understanding Toolbox and Benchmark},
     author={MMAction2 Contributors},

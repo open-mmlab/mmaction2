@@ -4,7 +4,7 @@
 
 [ALGORITHM]
 
-```latex
+```BibTeX
 @inproceedings{wang2016temporal,
   title={Temporal segment networks: Towards good practices for deep action recognition},
   author={Wang, Limin and Xiong, Yuanjun and Wang, Zhe and Qiao, Yu and Lin, Dahua and Tang, Xiaoou and Van Gool, Luc},
