@@ -1,15 +1,17 @@
 import copy as cp
+import os.path as osp
 
 import torch
 from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
 from mmcv.runner import (DistSamplerSeedHook, EpochBasedRunner, OptimizerHook,
-                         build_optimizer)
+                         build_optimizer, get_dist_info)
 from mmcv.runner.hooks import Fp16OptimizerHook
 
 from ..core import (DistEvalHook, EvalHook, OmniSourceDistSamplerSeedHook,
                     OmniSourceRunner)
 from ..datasets import build_dataloader, build_dataset
 from ..utils import PreciseBNHook, get_root_logger
+from .test import multi_gpu_test
 
 
 def train_model(model,
@@ -17,6 +19,7 @@ def train_model(model,
                 cfg,
                 distributed=False,
                 validate=False,
+                test=False,
                 timestamp=None,
                 meta=None):
     """Train model entry function.
@@ -154,3 +157,27 @@ def train_model(model,
     if cfg.omnisource:
         runner_kwargs = dict(train_ratio=train_ratio)
     runner.run(data_loaders, cfg.workflow, cfg.total_epochs, **runner_kwargs)
+
+    if test:
+        test_dataset = build_dataset(cfg.data.test, dict(test_mode=True))
+        dataloader_setting = dict(
+            videos_per_gpu=1,
+            workers_per_gpu=4,
+            num_gpus=len(cfg.gpu_ids),
+            dist=distributed,
+            shuffle=False)
+        test_dataloader = build_dataloader(test_dataset, **dataloader_setting)
+        outputs = multi_gpu_test(model, test_dataloader,
+                                 osp.join(cfg.work_dir, 'tmp'), False)
+        rank, _ = get_dist_info()
+        if rank == 0:
+            out = osp.join(cfg.work_dir, 'final_pred.pkl')
+            test_dataset.dump_results(outputs, out)
+
+            eval_cfg = cfg.get('evaluation', {})
+            if 'interval' in eval_cfg:
+                eval_cfg.pop('interval')
+
+            eval_res = test_dataset.evaluate(outputs, **eval_cfg)
+            for name, val in eval_res.items():
+                print(f'{name}: {val:.04f}')
