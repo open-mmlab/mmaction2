@@ -28,6 +28,10 @@ def parse_args():
         '--validate',
         action='store_true',
         help='whether to evaluate the checkpoint during training')
+    parser.add_argument(
+        '--test',
+        action='store_true',
+        help='whether to test the checkpoint after training')
     group_gpus = parser.add_mutually_exclusive_group()
     group_gpus.add_argument(
         '--gpus',
@@ -170,6 +174,7 @@ def main():
         cfg,
         distributed=distributed,
         validate=args.validate,
+        test=args.test,
         timestamp=timestamp,
         meta=meta)
 
