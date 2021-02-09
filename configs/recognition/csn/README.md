@@ -4,7 +4,7 @@
 
 [ALGORITHM]
 
-```latex
+```BibTeX
 @inproceedings{inproceedings,
 author = {Wang, Heng and Feiszli, Matt and Torresani, Lorenzo},
 year = {2019},
@@ -17,7 +17,7 @@ doi = {10.1109/ICCV.2019.00565}
 
 [OTHERS]
 
-```latex
+```BibTeX
 @inproceedings{ghadiyaram2019large,
   title={Large-scale weakly-supervised pre-training for video action recognition},
   author={Ghadiyaram, Deepti and Tran, Du and Mahajan, Dhruv},

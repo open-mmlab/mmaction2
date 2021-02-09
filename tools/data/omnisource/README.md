@@ -4,7 +4,7 @@
 
 [DATASET]
 
-```
+```BibTeX
 @article{duan2020omni,
   title={Omni-sourced Webly-supervised Learning for Video Recognition},
   author={Duan, Haodong and Zhao, Yue and Xiong, Yuanjun and Liu, Wentao and Lin, Dahua},

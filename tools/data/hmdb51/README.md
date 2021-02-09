@@ -4,7 +4,7 @@
 
 [DATASET]
 
-```
+```BibTeX
 @article{Kuehne2011HMDBAL,
   title={HMDB: A large video database for human motion recognition},
   author={Hilde Kuehne and Hueihan Jhuang and E. Garrote and T. Poggio and Thomas Serre},

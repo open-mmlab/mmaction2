@@ -4,7 +4,7 @@
 
 [ALGORITHM]
 
-```latex
+```BibTeX
 @inproceedings{lin2019bmn,
   title={Bmn: Boundary-matching network for temporal action proposal generation},
   author={Lin, Tianwei and Liu, Xiao and Li, Xin and Ding, Errui and Wen, Shilei},
@@ -16,7 +16,7 @@
 
 [DATASET]
 
-```latex
+```BibTeX
 @article{zhao2017cuhk,
   title={Cuhk \& ethz \& siat submission to activitynet challenge 2017},
   author={Zhao, Y and Zhang, B and Wu, Z and Yang, S and Zhou, L and Yan, S and Wang, L and Xiong, Y and Lin, D and Qiao, Y and others},

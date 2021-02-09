@@ -8,7 +8,7 @@
 
 [DATASET]
 
-```latex
+```BibTeX
 @inproceedings{gu2018ava,
   title={Ava: A video dataset of spatio-temporally localized atomic visual actions},
   author={Gu, Chunhui and Sun, Chen and Ross, David A and Vondrick, Carl and Pantofaru, Caroline and Li, Yeqing and Vijayanarasimhan, Sudheendra and Toderici, George and Ricco, Susanna and Sukthankar, Rahul and others},
@@ -20,7 +20,7 @@
 
 [ALGORITHM]
 
-```latex
+```BibTeX
 @article{duan2020omni,
   title={Omni-sourced Webly-supervised Learning for Video Recognition},
   author={Duan, Haodong and Zhao, Yue and Xiong, Yuanjun and Liu, Wentao and Lin, Dahua},
@@ -31,7 +31,7 @@
 
 [ALGORITHM]
 
-```latex
+```BibTeX
 @inproceedings{feichtenhofer2019slowfast,
   title={Slowfast networks for video recognition},
   author={Feichtenhofer, Christoph and Fan, Haoqi and Malik, Jitendra and He, Kaiming},
