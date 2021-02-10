@@ -180,4 +180,4 @@ def train_model(model,
 
             eval_res = test_dataset.evaluate(outputs, **eval_cfg)
             for name, val in eval_res.items():
-                print(f'{name}: {val:.04f}')
+                runner.logger.info(f'{name}: {val:.04f}')
