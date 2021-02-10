@@ -1202,7 +1202,8 @@ class Normalize:
         modality = results['modality']
 
         if modality == 'RGB':
-            n, h, w, c = np.shape(results['imgs'])
+            n = len(results['imgs'])
+            h, w, c = results['imgs'][0].shape
             imgs = np.empty((n, h, w, c), dtype=np.float32)
             for i, img in enumerate(results['imgs']):
                 imgs[i] = img
