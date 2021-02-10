@@ -60,7 +60,6 @@ test_pipeline = [
         test_mode=True),
     dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
-    # dict(type='CenterCrop', crop_size=224),
     dict(type='ThreeCrop', crop_size=256),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),

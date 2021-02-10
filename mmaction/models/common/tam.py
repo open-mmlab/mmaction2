@@ -27,7 +27,7 @@ class TAM(nn.Module):
         adaptive_convolution_padding (int): The first dimension of paddings in
             the adaptive convolution of ```Temporal Adaptive Aggregation```.
             Default: 1.
-        init_std (float): Std value for initiation of nn.Linear. Default:
+        init_std (float): Std value for initiation of `nn.Linear`. Default:
             0.001.
     """
 
