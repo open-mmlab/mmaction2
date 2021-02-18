@@ -1,49 +1,46 @@
 # model settings
-
-lfb_prefix_path = 'data/ava_lfb'
+lfb_prefix_path = 'data/ava/lfb'
 
 model = dict(
     type='FastRCNN',
     backbone=dict(
-        type='ResNet3d',
-        pretrained2d=True,
-        pretrained=  # noqa: E251
-        'https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_embedded_gaussian_r50_32x2x1_100e_kinetics400_rgb/i3d_nl_embedded_gaussian_r50_32x2x1_100e_kinetics400_rgb_20200813-6e6aef1b.pth',  # noqa: E501
+        type='ResNet3dSlowOnly',
         depth=50,
-        spatial_strides=(1, 2, 2, 1),
+        pretrained=None,
+        pretrained2d=False,
+        lateral=False,
+        num_stages=4,
+        conv1_kernel=(1, 7, 7),
         conv1_stride_t=1,
         pool1_stride_t=1,
-        conv_cfg=dict(type='Conv3d'),
-        norm_cfg=dict(type='BN3d', requires_grad=False),
-        norm_eval=False,
-        inflate=((1, 1, 1), (1, 0, 1, 0), (1, 0, 1, 0, 1, 0), (0, 1, 0)),
-        non_local=((0, 0, 0), (0, 1, 0, 1), (0, 1, 0, 1, 0, 1), (0, 0, 0)),
-        non_local_cfg=dict(
-            sub_sample=True,
-            use_scale=True,
-            norm_cfg=dict(type='BN3d', requires_grad=False),
-            mode='embedded_gaussian'),
-        zero_init_residual=False),
+        spatial_strides=(1, 2, 2, 1)),
     roi_head=dict(
         type='AVARoIHead',
         bbox_roi_extractor=dict(
             type='SingleRoIExtractor3D',
             roi_layer_type='RoIAlign',
-            output_size=7,
-            with_temporal_pool=True,
-            with_global=False),  # output channel 2048 without global feat
+            output_size=8,
+            with_temporal_pool=True),
         shared_head=dict(
             type='FBOHead',
-            lfb_prefix_path=lfb_prefix_path,
-            fbo_type='non_local',
+            lfb_cfg=dict(
+                lfb_prefix_path=lfb_prefix_path,
+                max_num_feat_per_step=5,
+                window_size=60,
+                num_lfb_channels=2048,
+                dataset_modes=['train', 'val']),
             fbo_cfg=dict(
+                type='non_local',
                 num_non_local_layers=2,
                 num_st_feat_channels=2048,
                 num_lt_feat_channels=2048,
-                num_latent_channels=512)),
+                num_latent_channels=512,
+                st_feat_dropout_ratio=0.2,
+                lt_feat_dropout_ratio=0.2,
+                with_relu_after_nl=False)),
         bbox_head=dict(
             type='BBoxHeadAVA',
-            in_channels=2569,
+            in_channels=2560,
             num_classes=81,
             multilabel=True,
             dropout_ratio=0.5)))
@@ -85,7 +82,7 @@ img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 
 train_pipeline = [
-    dict(type='SampleAVAFrames', clip_len=32, frame_interval=2),
+    dict(type='SampleAVAFrames', clip_len=4, frame_interval=16),
     dict(type='RawFrameDecode'),
     dict(type='RandomRescale', scale_range=(256, 320)),
     dict(type='RandomCrop', size=256),
@@ -107,7 +104,7 @@ train_pipeline = [
 ]
 # The testing is w/o. any cropping / flipping
 val_pipeline = [
-    dict(type='SampleAVAFrames', clip_len=32, frame_interval=2),
+    dict(type='SampleAVAFrames', clip_len=4, frame_interval=16),
     dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='Normalize', **img_norm_cfg),
@@ -124,7 +121,7 @@ val_pipeline = [
 ]
 
 data = dict(
-    videos_per_gpu=9,
+    videos_per_gpu=16,
     workers_per_gpu=4,
     val_dataloader=dict(videos_per_gpu=1),
     test_dataloader=dict(videos_per_gpu=1),
@@ -147,3 +144,35 @@ data = dict(
         person_det_score_thr=0.9,
         data_prefix=data_root))
 data['test'] = data['val']
+
+optimizer = dict(type='SGD', lr=0.2, momentum=0.9, weight_decay=0.00001)
+# this lr is used for 8 gpus
+
+optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
+# learning policy
+
+lr_config = dict(
+    policy='step',
+    step=[10, 15],
+    warmup='linear',
+    warmup_by_epoch=True,
+    warmup_iters=5,
+    warmup_ratio=0.1)
+total_epochs = 20
+checkpoint_config = dict(interval=1)
+workflow = [('train', 1)]
+evaluation = dict(interval=1, save_best='mAP@0.5IOU')
+log_config = dict(
+    interval=20, hooks=[
+        dict(type='TextLoggerHook'),
+    ])
+dist_params = dict(backend='nccl')
+log_level = 'INFO'
+work_dir = ('./work_dirs/lfb/lfb_slowonly_nl')
+load_from = (
+    'https://download.openmmlab.com/mmaction/detection/ava/'
+    'slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb/'
+    'slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_20201217-40061d5f.pth'
+)
+resume_from = None
+find_unused_parameters = False

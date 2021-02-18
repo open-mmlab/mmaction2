@@ -1,15 +1,12 @@
 import copy
-import os
-import os.path as osp
 import warnings
 
-import mmcv
-import numpy as np
 import torch
 import torch.nn as nn
 from mmcv.cnn import ConvModule, constant_init, kaiming_init
 from mmcv.runner import auto_fp16, load_checkpoint
 
+from mmaction.models.common import LFB
 from mmaction.utils import get_root_logger
 
 try:
@@ -18,53 +15,6 @@ try:
 except (ImportError, ModuleNotFoundError):
     warnings.warn('Please install mmdet to SHARED_HEADS')
     mmdet_imported = False
-
-
-class FeatureBank(object):
-
-    def __init__(self, data_prefix_path, max_num_feat_per_step, window_size,
-                 num_lfb_channels):
-        self.data_prefix_path = data_prefix_path
-        self.max_num_feat_per_step = max_num_feat_per_step
-        self.window_size = window_size
-        self.num_lfb_channels = num_lfb_channels
-
-        self.video_feature_id = ''
-        self.video_feature = None
-
-        # TODO: use backend
-
-    @staticmethod
-    def sample_long_term_features(self, video_id, timestamp):
-        # update present video_feature
-        if video_id != self.video_feature_id:
-            filepath = osp.join(self.data_prefix_path, f'{video_id}.pkl')
-            self.video_feature = mmcv.load(filepath)
-            self.video_feature_id = video_id
-
-        # sample long term features
-        window_size, K = self.window_size, self.max_num_feat_per_step
-        start = timestamp - (window_size // 2)
-        lt_feat = np.zeros((window_size * K, self.num_lfb_channels))
-
-        for idx, sec in enumerate(range(start, start + window_size)):
-            if sec in self.video_feature:
-                num_feat = len(self.video_feature[sec])
-                num_feat_used = min(num_feat, K)
-                random_lfb_indices = np.random.choice(
-                    range(num_feat), num_feat_used, replace=False)
-                for k, rand_idx in enumerate(random_lfb_indices):
-                    lt_feat[idx * K + k] = self.video_feature[sec][rand_idx]
-
-        # [window_size * max_num_feat_per_step, num_lfb_channels]
-        return torch.tensor(lt_feat)
-
-    def __getitem__(self, img_key):
-        video_id, timestamp = img_key.split(',')
-        return self.sample_long_term_features(video_id, int(timestamp))
-
-    def __len__(self):
-        return len(next(os.walk(self.data_prefix_path))[2])
 
 
 class NonLocalLayer(nn.Module):
@@ -243,35 +193,27 @@ class FBOHead(nn.Module):
     fbo_dict = {'non_local': FBONonLocal, 'avg': FBOAvg, 'max': FBOMax}
 
     def __init__(self,
-                 lfb_prefix_path,
-                 max_num_feat_per_step=5,
-                 window_size=60,
-                 num_lfb_channels=512,
-                 fbo_type='non_local',
-                 fbo_cfg=dict(),
+                 lfb_cfg,
+                 fbo_cfg,
                  temporal_pool_type='avg',
                  spatial_pool_type='max'):
-        assert osp.exists(lfb_prefix_path)
-        assert fbo_type in self.fbo_dict.keys()
+        fbo_type = self.fbo_cfg.pop('type', 'non_local')
+        assert fbo_type in self.fbo_dict
         assert temporal_pool_type in ['max', 'avg']
         assert spatial_pool_type in ['max', 'avg']
-        self.lfb_prefix_path = lfb_prefix_path
-        self.max_num_feat_per_step = max_num_feat_per_step
-        self.window_size = window_size
-        self.num_lfb_channels = num_lfb_channels
-        self.fbo_type = fbo_type
+
+        self.lfb_cfg = copy.deepcopy(lfb_cfg)
         self.fbo_cfg = copy.deepcopy(fbo_cfg)
-        self._lfb = FeatureBank(lfb_prefix_path,
-                                max_num_feat_per_step.window_size,
-                                num_lfb_channels)
-        self.fbo = self.fbo_dict[self.fbo_type](**self.fbo_cfg)
+
+        self.lfb = LFB(**self.lfb_cfg)
+        self.fbo = self.fbo_dict[fbo_type](**self.fbo_cfg)
 
         # Pool by default
-        if self.temporal_pool_type == 'avg':
+        if temporal_pool_type == 'avg':
             self.temporal_pool = nn.AdaptiveAvgPool3d((1, None, None))
         else:
             self.temporal_pool = nn.AdaptiveMaxPool3d((1, None, None))
-        if self.spatial_pool_type == 'avg':
+        if spatial_pool_type == 'avg':
             self.spatial_pool = nn.AdaptiveAvgPool3d((None, 1, 1))
         else:
             self.spatial_pool = nn.AdaptiveMaxPool3d((None, 1, 1))
@@ -300,7 +242,7 @@ class FBOHead(nn.Module):
         inds = rois[:, 0]
         lt_feat_list = []
         for ind in inds:
-            lt_feat_list.append(self._lfb[img_metas[ind]['img_key']])
+            lt_feat_list.append(self.lfb[img_metas[ind]['img_key']])
         lt_feat = torch.stack(lt_feat_list, dim=0)
         # [N, num_lfb_channels, window_size * max_num_feat_per_step]
         lt_feat = lt_feat.permute(0, 2, 1).contiguous()
