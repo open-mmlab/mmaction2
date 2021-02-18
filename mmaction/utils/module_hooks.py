@@ -55,6 +55,8 @@ class GPUNormalize:
         elif input_format == 'NPTCHW':
             self._mean = _mean[None, None, None, :, None, None]
             self._std = _std[None, None, None, :, None, None]
+        else:
+            raise ValueError(f'The input format {input_format} is invalid.')
 
     def hook_func(self):
 
