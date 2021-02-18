@@ -1,5 +1,4 @@
 import copy
-import warnings
 
 import torch
 import torch.nn as nn
@@ -13,61 +12,88 @@ try:
     from mmdet.models.builder import SHARED_HEADS as MMDET_SHARED_HEADS
     mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
-    warnings.warn('Please install mmdet to SHARED_HEADS')
     mmdet_imported = False
 
 
 class NonLocalLayer(nn.Module):
+    """Non-local layer used in `FBONonLocal` is a variation of the vanilla non-
+    local block.
+
+    Args:
+        st_feat_channels (int): Channels of short-term features.
+        lt_feat_channels (int): Channels of long-term features.
+        latent_channels (int): Channels of latent features.
+        use_scale (bool): Whether to scale pairwise_weight by
+            `1/sqrt(latent_channels)`. Default: True.
+        pre_activate (bool): Whether to use the activation function before
+            upsampling. Default: False.
+        conv_cfg (Dict | None): The config dict for convolution layers. If
+            not specified, it will use `nn.Conv2d` for convolution layers.
+            Default: None.
+        norm_cfg (Dict | None): he config dict for normalization layers.
+            Default: None.
+        dropout_ratio (float, optional): Probability of dropout layer.
+            Default: 0.2.
+    """
 
     def __init__(self,
-                 num_st_feat_channels,
-                 num_lt_feat_channels,
-                 num_latent_channels,
+                 st_feat_channels,
+                 lt_feat_channels,
+                 latent_channels,
+                 num_st_feat,
+                 num_lt_feat,
                  use_scale=True,
-                 act_before_upsample=False,
+                 pre_activate=True,
+                 pre_activate_with_ln=True,
                  conv_cfg=None,
                  norm_cfg=None,
                  dropout_ratio=0.2):
-        self.num_st_feat_channels = num_st_feat_channels
-        self.num_lt_feat_channels = num_lt_feat_channels
-        self.num_latent_channels = num_latent_channels
+
+        super().__init__()
+        self.st_feat_channels = st_feat_channels
+        self.lt_feat_channels = lt_feat_channels
+        self.latent_channels = latent_channels
+        self.num_st_feat = num_st_feat
+        self.num_lt_feat = num_lt_feat
         self.use_scale = use_scale
-        self.act_before_upsample = act_before_upsample
+        self.pre_activate = pre_activate
+        self.pre_activate_with_ln = pre_activate_with_ln
         self.dropout_ratio = dropout_ratio
 
         self.st_feat_conv = ConvModule(
-            self.num_st_feat_channels,
-            self.num_latent_channels,
+            self.st_feat_channels,
+            self.latent_channels,
             kernel_size=1,
             conv_cfg=conv_cfg,
             norm_cfg=norm_cfg,
             act_cfg=None)
 
         self.lt_feat_conv = ConvModule(
-            self.num_lt_feat_channels,
-            self.num_latent_channels,
+            self.lt_feat_channels,
+            self.latent_channels,
             kernel_size=1,
             conv_cfg=conv_cfg,
             norm_cfg=norm_cfg,
             act_cfg=None)
 
         self.global_conv = ConvModule(
-            self.num_lt_feat_channels,
-            self.num_latent_channels,
+            self.lt_feat_channels,
+            self.latent_channels,
             kernel_size=1,
             conv_cfg=conv_cfg,
+            norm_cfg=norm_cfg,
             act_cfg=None)
 
-        if act_before_upsample:
-            self.ln = nn.LayerNorm([num_latent_channels, 1, 1, 1])
+        if pre_activate:
+            self.ln = nn.LayerNorm([latent_channels, num_st_feat, 1, 1])
         else:
-            self.ln = nn.LayerNorm([num_st_feat_channels, 1, 1, 1])
+            self.ln = nn.LayerNorm([st_feat_channels, num_st_feat, 1, 1])
 
         self.relu = nn.ReLU()
 
         self.out_conv = ConvModule(
-            self.num_latent_channels,
-            self.num_lt_feat_channels,
+            self.latent_channels,
+            self.st_feat_channels,
             kernel_size=1,
             conv_cfg=conv_cfg,
             norm_cfg=norm_cfg,
@@ -77,69 +103,93 @@ class NonLocalLayer(nn.Module):
             self.dropout = nn.Dropout(self.dropout_ratio)
 
     def forward(self, st_feat, lt_feat):
-        n = st_feat.size(0)
+        n, c = st_feat.size(0), self.latent_channels
+        num_st_feat, num_lt_feat = self.num_st_feat, self.num_lt_feat
 
         theta = self.st_feat_conv(st_feat)
-        theta = theta.view(n, self.num_latent_channels, -1, 1,
-                           1).permute(0, 2, 1).contiguous()
+        theta = theta.view(n, c, num_st_feat)
 
         phi = self.lt_feat_conv(lt_feat)
-        phi = phi.view(n, self.num_latent_channels, -1, 1, 1)
+        phi = phi.view(n, c, num_lt_feat)
 
         g = self.global_conv(lt_feat)
-        g = g.view(n, self.num_latent_channels, -1, 1, 1)
+        g = g.view(n, c, num_lt_feat)
 
-        theta_phi = torch.matmul(theta, phi)
-
+        # (n, num_st_feat, c), (n, c, num_lt_feat)
+        # -> (n, num_st_feat, num_lt_feat)
+        theta_phi = torch.matmul(theta.permute(0, 2, 1), phi)
         if self.use_scale:
-            theta_phi /= theta.shape[-1]**0.5
-        p = theta_phi.softmax(dim=-1).permute(0, 2, 1)
+            theta_phi /= c**0.5
 
-        out = torch.matmul(g, p)
-        out = out.view(n, self.num_latent_channels, -1, 1, 1)
+        p = theta_phi.softmax(dim=-1)
 
-        if self.act_before_upsample:
-            out = self.relu(self.ln(out))
+        # (n, c, num_lt_feat), (n, num_lt_feat, num_st_feat)
+        # -> (n, c, num_st_feat, 1, 1)
+        out = torch.matmul(g, p.permute(0, 2, 1)).view(n, c, num_st_feat, 1, 1)
+
+        # If need to activate it before out_conv, use relu here, otherwise
+        # use relu outside the non local layer.
+        if self.pre_activate:
+            if self.pre_activate_with_ln:
+                out = self.nl(out)
+            out = self.relu(out)
 
         out = self.out_conv(out)
 
-        if not self.act_before_upsample:
+        if not self.pre_activate:
             out = self.ln(out)
-
         if self.dropout_ratio > 0:
             out = self.dropout(out)
+
         return out
 
 
 class FBONonLocal(nn.Module):
+    """Non local feature bank operator.
+
+    Args:
+        st_feat_channels (int): Channels of short-term features.
+        lt_feat_channels (int): Channels of long-term features.
+        latent_channels (int): Channles of latent features.
+        num_st_feat (int): Number of short-term roi features.
+        num_lt_feat (int): Number of long-term roi features.
+        num_non_local_layers (int): Number of non-local layers, which is
+            at least 1. Default: 2.
+        st_feat_dropout_ratio (float): Probability of dropout layer for
+            short-term features. Default: 0.2.
+        lt_feat_dropout_ratio (float): Probability of dropout layer for
+            long-term features. Default: 0.2.
+        pre_activate (bool): Whether to use the activation function before
+            upsampling in non local layers. Default: True.
+    """
 
     def __init__(self,
+                 st_feat_channels,
+                 lt_feat_channels,
+                 latent_channels,
+                 num_st_feat,
+                 num_lt_feat,
                  num_non_local_layers=2,
-                 num_st_feat_channels=2048,
-                 num_lt_feat_channels=2048,
-                 num_latent_channels=512,
                  st_feat_dropout_ratio=0.2,
                  lt_feat_dropout_ratio=0.2,
-                 with_relu_after_nl=False):
+                 pre_activate=True):
         super().__init__()
+        assert num_non_local_layers >= 1, (
+            'At least one non_local_layer is needed.')
+        self.st_feat_channels = st_feat_channels
+        self.lt_feat_channels = lt_feat_channels
+        self.latent_channels = latent_channels
+        self.num_st_feat = num_st_feat
+        self.num_lt_feat = num_lt_feat
         self.num_non_local_layers = num_non_local_layers
-        self.num_st_feat_channels = num_st_feat_channels
-        self.num_lt_feat_channels = num_lt_feat_channels
-        self.num_latent_channels = num_latent_channels
         self.st_feat_dropout_ratio = st_feat_dropout_ratio
         self.lt_feat_dropout_ratio = lt_feat_dropout_ratio
-        self.with_relu_after_nl = with_relu_after_nl
+        self.pre_activate = pre_activate
 
-        self.st_feat_conv = nn.Conv1d(
-            num_st_feat_channels,
-            num_latent_channels,
-            kernel_size=1,
-            bias=False)
-        self.lt_feat_conv = nn.Conv1d(
-            num_lt_feat_channels,
-            num_latent_channels,
-            kernel_size=1,
-            bias=False)
+        self.st_feat_conv = nn.Conv3d(
+            st_feat_channels, latent_channels, kernel_size=1)
+        self.lt_feat_conv = nn.Conv3d(
+            lt_feat_channels, latent_channels, kernel_size=1)
 
         if self.st_feat_dropout_ratio > 0:
             self.st_feat_dropout = nn.Dropout(self.st_feat_dropout_ratio)
@@ -147,48 +197,88 @@ class FBONonLocal(nn.Module):
         if self.lt_feat_dropout_ratio > 0:
             self.lt_feat_dropout = nn.Dropout(self.lt_feat_dropout_ratio)
 
-        if self.with_relu_after_nl:
+        if not self.pre_activate:
             self.relu = nn.ReLU()
 
         self.non_local_layers = []
         for idx in range(self.num_non_local_layers):
-            layer_name = f'non_local_layer{idx + 1}'
+            layer_name = f'non_local_layer_{idx + 1}'
             self.add_module(
                 layer_name,
-                NonLocalLayer(num_latent_channels, num_latent_channels,
-                              num_latent_channels))
+                NonLocalLayer(
+                    latent_channels,
+                    latent_channels,
+                    latent_channels,
+                    num_st_feat,
+                    num_lt_feat,
+                    pre_activate=self.pre_activate))
             self.non_local_layers.append(layer_name)
 
     def forward(self, st_feat, lt_feat):
-        # prepare input
+        # prepare st_feat
         st_feat = self.st_feat_conv(st_feat)
         if self.st_feat_dropout_ratio > 0:
             st_feat = self.st_feat_dropout(st_feat)
 
+        # prepare lt_feat
         lt_feat = self.lt_feat_conv(lt_feat)
         if self.lt_feat_dropout_ratio > 0:
             lt_feat = self.lt_feat_dropout(lt_feat)
 
+        # fuse short-term and long-term features in NonLocal Layer
         for layer_name in self.non_local_layers:
+            identity = st_feat
             non_local_layer = getattr(self, layer_name)
             nl_out = non_local_layer(st_feat, lt_feat)
-            nl_out = st_feat + nl_out
-            if self.with_relu_after_nl:
+            nl_out = identity + nl_out
+            if not self.pre_activate:
                 nl_out = self.relu(nl_out)
             st_feat = nl_out
+
         return nl_out
 
 
 class FBOAvg(nn.Module):
-    pass
+    """Avg pool feature bank operator."""
+
+    def __init__(self):
+        super().__init__()
+        self.avg_pool = nn.AdaptiveAvgPool3d((1, None, None))
+
+    def forward(self, st_feat, lt_feat):
+        out = self.avg_pool(lt_feat)
+        return out
 
 
 class FBOMax(nn.Module):
-    pass
+    """Max pool feature bank operator."""
+
+    def __init__(self):
+        super().__init__()
+        self.max_pool = nn.AdaptiveMaxPool3d((1, None, None))
+
+    def forward(self, st_feat, lt_feat):
+        out = self.max_pool(lt_feat)
+        return out
 
 
-@MMDET_SHARED_HEADS.register_module()
 class FBOHead(nn.Module):
+    """Feature Bank Operator Head.
+
+    Add feature bank operator for the spatiotemporal detection model to fuse
+    short-term features and long-term features.
+
+    Args:
+        lfb_cfg (Dict): The config dict for LFB which is used to sample
+            long-term features.
+        fbo_cfg (Dict): The config dict for feature bank operator (FBO). The
+            type of fbo is also in the config dict and supported fbo type is
+            `fbo_dict`.
+        temporal_pool_type (str): The temporal pool type. Choices are 'avg' or
+            'max'. Default: 'avg'.
+        spatial_pool_type (str): The spatial pool type. Choices are 'avg' or
+            'max'. Default: 'max'.
+    """
 
     fbo_dict = {'non_local': FBONonLocal, 'avg': FBOAvg, 'max': FBOMax}
 
@@ -197,6 +287,7 @@ class FBOHead(nn.Module):
                  fbo_cfg,
                  temporal_pool_type='avg',
                  spatial_pool_type='max'):
+        super().__init__()
         fbo_type = self.fbo_cfg.pop('type', 'non_local')
         assert fbo_type in self.fbo_dict
         assert temporal_pool_type in ['max', 'avg']
@@ -223,7 +314,7 @@ class FBOHead(nn.Module):
 
         Args:
             pretrained (str, optional): Path to pre-trained weights.
-                Defaults to None.
+                Default: None.
         """
         if isinstance(pretrained, str):
             logger = get_root_logger()
@@ -239,29 +330,31 @@ class FBOHead(nn.Module):
 
     @staticmethod
     def sample_lfb(self, rois, img_metas):
-        inds = rois[:, 0]
+        """Sample long-term features for each ROI feature."""
+        inds = rois[:, 0].type(torch.int64)
         lt_feat_list = []
         for ind in inds:
             lt_feat_list.append(self.lfb[img_metas[ind]['img_key']])
         lt_feat = torch.stack(lt_feat_list, dim=0)
-        # [N, num_lfb_channels, window_size * max_num_feat_per_step]
+        # [N, lfb_channels, window_size * max_num_feat_per_step]
         lt_feat = lt_feat.permute(0, 2, 1).contiguous()
-        return lt_feat.unsqueeze(-1).unsqueeze(-1).unsqueeze(-1)
+        return lt_feat.unsqueeze(-1).unsqueeze(-1)
 
     @auto_fp16()
     def forward(self, x, rois, img_metas):
-        # feature size [N, C, T, H, W]
-        n, c, _, _, _ = x.shape
-
         # [N, C, 1, 1, 1]
-        x = self.temporal_pool(x)
-        st_feat = self.spatial_pool(x)
+        st_feat = self.temporal_pool(x)
+        st_feat = self.spatial_pool(st_feat)
         identity = st_feat
 
-        # [N, C, window_size * num_feat_per_step, 1, 1, 1]
+        # [N, C, window_size * num_feat_per_step, 1, 1]
         lt_feat = self.sample_lfb(rois, img_metas)
 
         fbo_feat = self.fbo(st_feat, lt_feat)
 
         out = torch.cat([identity, fbo_feat], dim=1)
         return out
+
+
+if mmdet_imported:
+    MMDET_SHARED_HEADS.register_module()(FBOHead)

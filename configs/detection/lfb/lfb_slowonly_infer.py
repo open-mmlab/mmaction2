@@ -1,39 +1,16 @@
+# This config is used to generate long-term feature bank.
+_base_ = ['../_base_/models/slowonly_r50.py']
+
 # model settings
 lfb_prefix_path = 'data/ava/lfb'
-dataset_mode = 'train'  # dataset_mode are in ['train', 'val', 'test']
+dataset_mode = 'train'  # ['train', 'val', 'test']
 
 model = dict(
-    type='FastRCNN',
-    backbone=dict(
-        type='ResNet3dSlowOnly',
-        depth=50,
-        pretrained=None,
-        pretrained2d=False,
-        lateral=False,
-        num_stages=4,
-        conv1_kernel=(1, 7, 7),
-        conv1_stride_t=1,
-        pool1_stride_t=1,
-        spatial_strides=(1, 2, 2, 1)),
     roi_head=dict(
-        type='AVARoIHead',
-        bbox_roi_extractor=dict(
-            type='SingleRoIExtractor3D',
-            roi_layer_type='RoIAlign',
-            output_size=8,
-            with_temporal_pool=True),
         shared_head=dict(
             type='LFBInferHead',
             lfb_prefix_path=lfb_prefix_path,
-            dataset_mode=dataset_mode),
-        bbox_head=dict(
-            type='BBoxHeadAVA',
-            in_channels=2048,
-            num_classes=81,
-            multilabel=True,
-            dropout_ratio=0.5)))
-# model testing settings
-test_cfg = dict(rcnn=dict(action_thr=0.00))
+            dataset_mode=dataset_mode)))
 
 # dataset settings
 dataset_type = 'AVADataset'
@@ -83,9 +60,10 @@ data = dict(
         type=dataset_type,
         ann_file=ann_file_infer,
         exclude_file=exclude_file_infer,
-        filename_tmpl='img_{:06d}.jpg',
         pipeline=infer_pipeline,
         label_file=label_file,
         proposal_file=proposal_file_infer,
         person_det_score_thr=0.9,
         data_prefix=data_root))
+
+dist_params = dict(backend='nccl')
