@@ -32,6 +32,10 @@ class GPUNormalize:
     Call the member function ``hook_func`` will return the forward pre-hook
     function for module registration.
 
+    GPU normalization, rather than CPU normalization, is more recommended in
+    the case of a model running on GPUs with strong compute capacity such as
+    Tesla V100.
+
     Args:
         mean (Sequence[float]): Mean values of different channels.
         std (Sequence[float]): Std values of different channels.

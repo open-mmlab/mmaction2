@@ -4,7 +4,7 @@
 
 ## Introduction
 
-English | [简体中文](README_cn.md)
+English | [简体中文](docs/README_cn.md)
 
 [![Documentation](https://readthedocs.org/projects/mmaction2/badge/?version=latest)](https://mmaction2.readthedocs.io/en/latest/)
 [![actions](https://github.com/open-mmlab/mmaction2/workflows/build/badge.svg)](https://github.com/open-mmlab/mmaction2/actions)
@@ -92,6 +92,7 @@ Supported methods for Action Recognition:
 - [x] [X3D](configs/recognition/x3d/README.md) (CVPR'2020)
 - [x] [OmniSource](configs/recognition/omnisource/README.md) (ECCV'2020)
 - [x] [MultiModality: Audio](configs/recognition_audio/resnet/README.md) (ArXiv'2020)
+- [x] [TANet](configs/recognition/tanet/README.md) (ArXiv'2020)
 
 </details>
 
