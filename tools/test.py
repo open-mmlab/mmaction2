@@ -15,6 +15,7 @@ from mmcv.runner.fp16_utils import wrap_fp16_model
 from mmaction.apis import multi_gpu_test, single_gpu_test
 from mmaction.datasets import build_dataloader, build_dataset
 from mmaction.models import build_model
+from mmaction.utils import register_module_hooks
 
 
 def parse_args():
@@ -155,6 +156,9 @@ def main():
         distributed = True
         init_dist(args.launcher, **cfg.dist_params)
 
+    # The flag is used to register module's hooks
+    cfg.setdefault('module_hooks', [])
+
     # build the dataloader
     dataset = build_dataset(cfg.data.test, dict(test_mode=True))
     dataloader_setting = dict(
@@ -168,6 +172,9 @@ def main():
 
     # build the model and load checkpoint
     model = build_model(cfg.model, train_cfg=None, test_cfg=cfg.test_cfg)
+
+    register_module_hooks(model.backbone, cfg.module_hooks)
+
     fp16_cfg = cfg.get('fp16', None)
     if fp16_cfg is not None:
         wrap_fp16_model(model)
