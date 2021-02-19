@@ -1,7 +1,7 @@
 import pytest
 import torch
 
-from mmaction.models import Conv2plus1d, ConvAudio
+from mmaction.models import TAM, Conv2plus1d, ConvAudio
 
 
 def test_conv2plus1d():
@@ -33,3 +33,25 @@ def test_conv_audio():
     conv_audio_sum = ConvAudio(3, 8, 3, op='sum')
     output = conv_audio_sum(x)
     assert output.shape == torch.Size([1, 8, 8, 8])
+
+
+def test_TAM():
+    """test TAM."""
+    with pytest.raises(AssertionError):
+        # alpha must be a positive integer
+        TAM(16, 8, alpha=0, beta=4)
+
+    with pytest.raises(AssertionError):
+        # beta must be a positive integer
+        TAM(16, 8, alpha=2, beta=0)
+
+    with pytest.raises(AssertionError):
+        # the channels number of x should be equal to self.in_channels of TAM
+        tam = TAM(16, 8)
+        x = torch.rand(64, 8, 112, 112)
+        tam(x)
+
+    tam = TAM(16, 8)
+    x = torch.rand(32, 16, 112, 112)
+    output = tam(x)
+    assert output.shape == torch.Size([32, 16, 112, 112])
