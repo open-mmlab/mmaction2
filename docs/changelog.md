@@ -5,11 +5,15 @@
 **Highlights**
 
 - Support TSM-MobileNetV2
+- Support TANet
+- Support GPU Normalize
 
 **New Features**
 
 - Support TSM-MobileNetV2 ([#415](https://github.com/open-mmlab/mmaction2/pull/415))
 - Support flip with label mapping ([#591](https://github.com/open-mmlab/mmaction2/pull/591))
+- Support GPU Normalize ([#586](https://github.com/open-mmlab/mmaction2/pull/586))
+- Support TANet ([#595](https://github.com/open-mmlab/mmaction2/pull/595))
 
 **ModelZoo**
 
