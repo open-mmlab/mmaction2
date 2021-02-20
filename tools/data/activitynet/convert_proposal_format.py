@@ -50,7 +50,7 @@ def import_proposals(result_dict):
     return proposals, num_proposals
 
 
-def dump_formatted_proposal(video_idx, video_id, num_frames, fps, gts,
+def dump_formatted_proposal(video_idx, video_id, num_seconds, fps, gts,
                             proposals, tiou, t_overlap_self,
                             formatted_proposal_file):
     """dump the formatted proposal file, which is the input proposal file of
@@ -59,7 +59,7 @@ def dump_formatted_proposal(video_idx, video_id, num_frames, fps, gts,
     Args:
         video_idx (int): Index of video.
         video_id (str): ID of video.
-        num_frames (int): Total frames of the video.
+        num_seconds (int): Total seconds of the video.
         fps (float): Fps of the video.
         gts (np.ndarray[float]): t_start, t_end and label of groundtruths.
         proposals (np.ndarray[float]): t_start, t_end and score of proposals.
@@ -71,9 +71,10 @@ def dump_formatted_proposal(video_idx, video_id, num_frames, fps, gts,
     """
 
     formatted_proposal_file.write(
-        f'#{video_idx}\n{video_id}\n{num_frames}\n{fps}\n{gts.shape[0]}\n')
+        f'#{video_idx}\n{video_id}\n{num_seconds}\n{fps}\n{gts.shape[0]}\n')
     for gt in gts:
-        formatted_proposal_file.write(f'{int(gt[2])} {gt[0]} {gt[1]}\n')
+        formatted_proposal_file.write(
+            f'{int(gt[2])} {int(gt[0]*fps)} {int(gt[1]*fps)}\n')
     formatted_proposal_file.write(f'{proposals.shape[0]}\n')
 
     best_iou = np.amax(tiou, axis=0)
@@ -92,11 +93,12 @@ def dump_formatted_proposal(video_idx, video_id, num_frames, fps, gts,
             label = label_iou
         if best_iou[i] == 0 and best_overlap[i] == 0:
             formatted_proposal_file.write(
-                f'0 0 0 {proposals[i][0]} {proposals[i][1]}\n')
+                f'0 0 0'
+                f'{int(proposals[i][0]*fps)} {int(proposals[i][1]*fps)}\n')
         else:
             formatted_proposal_file.write(
                 f'{int(label)} {best_iou[i]} {best_overlap[i]} '
-                f'{proposals[i][0]} {proposals[i][1]}\n')
+                f'{int(proposals[i][0]*fps)} {int(proposals[i][1]*fps)}\n')
 
 
 def parse_args():
@@ -104,23 +106,23 @@ def parse_args():
     parser.add_argument(
         '--ann-file',
         type=str,
-        default='../../../data/ActivityNet/anet_anno_val.json',
+        default='data/ActivityNet/anet_anno_val.json',
         help='name of annotation file')
     parser.add_argument(
         '--activity-index-file',
         type=str,
-        default='../../../data/ActivityNet/anet_activity_indexes_val.txt',
+        default='data/ActivityNet/anet_activity_indexes_val.txt',
         help='name of activity index file')
     parser.add_argument(
         '--proposal-file',
         type=str,
-        default='../../../results.json',
+        default='results.json',
         help='name of proposal file, which is the'
         'output of proposal generator (BMN)')
     parser.add_argument(
         '--formatted-proposal-file',
         type=str,
-        default='../../../anet_val_formatted_proposal.txt',
+        default='anet_val_formatted_proposal.txt',
         help='name of formatted proposal file, which is the'
         'input of action classifier (SSN)')
     args = parser.parse_args()
@@ -147,14 +149,14 @@ if __name__ == '__main__':
 
     for video_info in video_infos:
         video_id = video_info['video_name'][2:]
-        num_frames = video_info['duration_frame']
+        num_seconds = video_info['duration_second']
         fps = video_info['fps']
         tiou, t_overlap = pairwise_temporal_iou(
             proposal[video_id][:, :2].astype(float),
             ground_truth[video_id][:, :2].astype(float),
             calculate_overlap_self=True)
 
-        dump_formatted_proposal(video_idx, video_id, num_frames, fps,
+        dump_formatted_proposal(video_idx, video_id, num_seconds, fps,
                                 ground_truth[video_id], proposal[video_id],
                                 tiou, t_overlap, formatted_proposal_file)
         video_idx += 1

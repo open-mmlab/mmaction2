@@ -37,10 +37,32 @@ You can use the following command to train a model.
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
-Example: train SSN model on thumos14 dataset.
+Example: train SSN on THUMOS14 dataset.
 
 ```shell
 python tools/train.py configs/localization/ssn/ssn_r50_450e_thumos14_rgb_train.py
+```
+
+Example: train SSN on ActivityNet-1.3 dataset.
+
+1. Get the result of action proposals. (Take proposal generator BMN as an example.)
+
+```shell
+python tools/test.py configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py checkpoints/SOME_CHECKPOINT.pth --eval AR@AN --out results.json
+```
+
+2. Convert the output proposal file of proposal generator (BSN, BMN) into the input proposal file of action classifier. (Currently supports SSN and P-GCN, not including TSN, I3D etc.)
+
+```shell
+python tools/data/activitynet/convert_proposal_format.py
+```
+
+3. train SSN model.
+
+Notes: There is a large gap between THUMOS14 and ActivityNet-1.3, therefore hyperparameters in config need to be carefully tuned.
+
+```shell
+python tools/train.py configs/localization/ssn/ssn_r50_1000e_anet_rgb_train.py
 ```
 
 For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting) .
@@ -53,7 +75,7 @@ You can use the following command to test a model.
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-Example: test BMN on ActivityNet feature dataset.
+Example: test SSN on THUMOS14 dataset.
 
 ```shell
 # Note: If evaluated, then please make sure the annotation file for test data contains groundtruth.
