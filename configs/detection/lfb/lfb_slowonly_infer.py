@@ -2,7 +2,7 @@
 _base_ = ['../_base_/models/slowonly_r50.py']
 
 # model settings
-lfb_prefix_path = 'data/ava/lfb'
+lfb_prefix_path = 'data/ava/lfb_half'
 dataset_mode = 'train'  # ['train', 'val', 'test']
 
 model = dict(
@@ -10,7 +10,8 @@ model = dict(
         shared_head=dict(
             type='LFBInferHead',
             lfb_prefix_path=lfb_prefix_path,
-            dataset_mode=dataset_mode)))
+            dataset_mode=dataset_mode,
+            use_half_precision=True)))
 
 # dataset settings
 dataset_type = 'AVADataset'
@@ -53,9 +54,8 @@ infer_pipeline = [
 ]
 
 data = dict(
-    videos_per_gpu=16,
-    workers_per_gpu=4,
-    test_dataloader=dict(videos_per_gpu=1),
+    videos_per_gpu=1,
+    workers_per_gpu=2,
     test=dict(
         type=dataset_type,
         ann_file=ann_file_infer,

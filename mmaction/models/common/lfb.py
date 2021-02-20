@@ -1,9 +1,9 @@
 import copy
 import os.path as osp
 
-import mmcv
 import numpy as np
 import torch
+from mmcv.runner import get_dist_info
 
 
 class LFB(object):
@@ -46,6 +46,7 @@ class LFB(object):
         dataset_modes (list | str): Load LFB of datasets with different modes,
             such as training, validation, testing datasets.
             Default: ['train', 'val']
+        use_half_precision (bool): Whether to use half_precison. Default: True.
     """
 
     def __init__(self,
@@ -53,7 +54,8 @@ class LFB(object):
                  max_num_sampled_feat=5,
                  window_size=60,
                  lfb_channels=2048,
-                 dataset_modes=['train', 'val']):
+                 dataset_modes=['train', 'val'],
+                 device='cpu'):
         if not osp.exists(lfb_prefix_path):
             raise ValueError(
                 f'lfb prefix path {lfb_prefix_path} does not exist!')
@@ -65,6 +67,13 @@ class LFB(object):
             assert isinstance(dataset_modes, str)
             dataset_modes = [dataset_modes]
         self.dataset_modes = copy.deepcopy(dataset_modes)
+        self.device = device
+
+        if self.device == 'cpu':
+            map_location = 'cpu'
+        elif self.device == 'gpu':
+            rank, world_size = get_dist_info()
+            map_location = f'cuda:{rank}'
 
         # Loading LFB from different lfb path.
         self.lfb = {}
@@ -72,16 +81,17 @@ class LFB(object):
             lfb_path = osp.normpath(
                 osp.join(lfb_prefix_path, f'lfb_{dataset_mode}.pkl'))
             print(f'Loading LFB from {lfb_path}...')
-            self.lfb.update(mmcv.load(lfb_path))
+            self.lfb.update(torch.load(lfb_path, map_location=map_location))
 
-    @staticmethod
+        print(f'LFB has been loaded in GPU {rank}.')
+
     def sample_long_term_features(self, video_id, timestamp):
         video_features = self.lfb[video_id]
 
         # Sample long term features.
         window_size, K = self.window_size, self.max_num_sampled_feat
         start = timestamp - (window_size // 2)
-        lt_feats = np.zeros((window_size * K, self.lfb_channels))
+        lt_feats = torch.zeros(window_size * K, self.lfb_channels)
 
         for idx, sec in enumerate(range(start, start + window_size)):
             if sec in video_features:
@@ -96,7 +106,7 @@ class LFB(object):
                     lt_feats[idx * K + k] = video_features[sec][rand_idx]
 
         # [window_size * max_num_sampled_feat, lfb_channels]
-        return torch.tensor(lt_feats)
+        return lt_feats
 
     def __getitem__(self, img_key):
         """Sample long term features like `lfb['0f39OWEqJ24,0902']` where `lfb`

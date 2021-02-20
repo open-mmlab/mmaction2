@@ -48,8 +48,9 @@ class NonLocalLayer(nn.Module):
                  conv_cfg=None,
                  norm_cfg=None,
                  dropout_ratio=0.2):
-
         super().__init__()
+        if conv_cfg is None:
+            conv_cfg = dict(type='Conv3d')
         self.st_feat_channels = st_feat_channels
         self.lt_feat_channels = lt_feat_channels
         self.latent_channels = latent_channels
@@ -131,7 +132,7 @@ class NonLocalLayer(nn.Module):
         # use relu outside the non local layer.
         if self.pre_activate:
             if self.pre_activate_with_ln:
-                out = self.nl(out)
+                out = self.ln(out)
             out = self.relu(out)
 
         out = self.out_conv(out)
@@ -214,6 +215,7 @@ class FBONonLocal(nn.Module):
                     pre_activate=self.pre_activate))
             self.non_local_layers.append(layer_name)
 
+    @auto_fp16()
     def forward(self, st_feat, lt_feat):
         # prepare st_feat
         st_feat = self.st_feat_conv(st_feat)
@@ -288,8 +290,8 @@ class FBOHead(nn.Module):
                  temporal_pool_type='avg',
                  spatial_pool_type='max'):
         super().__init__()
-        fbo_type = self.fbo_cfg.pop('type', 'non_local')
-        assert fbo_type in self.fbo_dict
+        fbo_type = fbo_cfg.pop('type', 'non_local')
+        assert fbo_type in FBOHead.fbo_dict
         assert temporal_pool_type in ['max', 'avg']
         assert spatial_pool_type in ['max', 'avg']
 
@@ -328,19 +330,17 @@ class FBOHead(nn.Module):
         else:
             raise TypeError('pretrained must be a str or None')
 
-    @staticmethod
     def sample_lfb(self, rois, img_metas):
         """Sample long-term features for each ROI feature."""
         inds = rois[:, 0].type(torch.int64)
         lt_feat_list = []
         for ind in inds:
-            lt_feat_list.append(self.lfb[img_metas[ind]['img_key']])
+            lt_feat_list.append(self.lfb[img_metas[ind]['img_key']].to())
         lt_feat = torch.stack(lt_feat_list, dim=0)
         # [N, lfb_channels, window_size * max_num_feat_per_step]
         lt_feat = lt_feat.permute(0, 2, 1).contiguous()
         return lt_feat.unsqueeze(-1).unsqueeze(-1)
 
-    @auto_fp16()
     def forward(self, x, rois, img_metas):
         # [N, C, 1, 1, 1]
         st_feat = self.temporal_pool(x)
@@ -348,7 +348,7 @@ class FBOHead(nn.Module):
         identity = st_feat
 
         # [N, C, window_size * num_feat_per_step, 1, 1]
-        lt_feat = self.sample_lfb(rois, img_metas)
+        lt_feat = self.sample_lfb(rois, img_metas).to(st_feat.device)
 
         fbo_feat = self.fbo(st_feat, lt_feat)
 
