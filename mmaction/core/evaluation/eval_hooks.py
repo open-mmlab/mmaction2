@@ -44,6 +44,9 @@ class EvalHook(Hook):
             .etc will be inferred by 'greater' rule. Keys contain 'loss' will
             be inferred by 'less' rule. Options are 'greater', 'less', None.
             Default: None.
+        out_dir (str | None, optional): Output Directory to dump evaluation
+            results.
+            Default: None.
         **eval_kwargs: Evaluation arguments fed into the evaluate function of
             the dataset.
     """
@@ -60,6 +63,7 @@ class EvalHook(Hook):
                  by_epoch=True,
                  save_best='auto',
                  rule=None,
+                 out_dir=None,
                  **eval_kwargs):
         if 'key_indicator' in eval_kwargs:
             raise RuntimeError(
@@ -86,6 +90,7 @@ class EvalHook(Hook):
         self.interval = interval
         self.start = start
         self.by_epoch = by_epoch
+        self.out_dir = out_dir
 
         assert isinstance(save_best, str) or save_best is None
         self.save_best = save_best
@@ -167,9 +172,19 @@ class EvalHook(Hook):
 
         from mmaction.apis import single_gpu_test
         results = single_gpu_test(runner.model, self.dataloader)
+        self.dump_results(runner, results)
         key_score = self.evaluate(runner, results)
         if self.save_best:
             self._save_ckpt(runner, key_score)
+    
+    def dump_results(self, runner, results):
+        if self.out_dir:
+            os.makedirs(self.out_dir, exist_ok=True)
+            if self.by_epoch:
+                out_path = osp.join(self.out_dir, f'epoch_{runner.epoch:03}.json')
+            else:
+                out_path = osp.join(self.out_dir, f'iter_{runner.iter:06}.json')
+            self.dataloader.dataset.dump_results(results, dict(out=out_path))
 
     def evaluation_flag(self, runner):
         """Judge whether to perform_evaluation.
@@ -281,6 +296,9 @@ class DistEvalHook(EvalHook):
             .etc will be inferred by 'greater' rule. Keys contain 'loss' will
             be inferred by 'less' rule. Options are 'greater', 'less', None.
             Default: None.
+        out_dir (str | None, optional): Output Directory to dump evaluation
+            results.
+            Default: None.
         tmpdir (str | None): Temporary directory to save the results of all
             processes. Default: None.
         gpu_collect (bool): Whether to use gpu or cpu to collect results.
@@ -296,6 +314,7 @@ class DistEvalHook(EvalHook):
                  by_epoch=True,
                  save_best='auto',
                  rule=None,
+                 out_dir=None,
                  tmpdir=None,
                  gpu_collect=False,
                  **eval_kwargs):
@@ -306,6 +325,7 @@ class DistEvalHook(EvalHook):
             by_epoch=by_epoch,
             save_best=save_best,
             rule=rule,
+            out_dir=out_dir,
             **eval_kwargs)
         self.tmpdir = tmpdir
         self.gpu_collect = gpu_collect
@@ -324,6 +344,7 @@ class DistEvalHook(EvalHook):
             self.dataloader,
             tmpdir=tmpdir,
             gpu_collect=self.gpu_collect)
+        self.dump_results(runner, results)
         if runner.rank == 0:
             print('\n')
             key_score = self.evaluate(runner, results)
