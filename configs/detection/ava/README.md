@@ -80,6 +80,26 @@ python tools/train.py configs/detection/AVA/slowonly_kinetics_pretrained_r50_8x8
 
 For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting) .
 
+### Train Custom Classes From Ava Dataset
+
+You can train custom classes from ava. Ava suffers from class imbalance. There are more then 100,000 samples for classes like `stand`/`listen to (a person)`/`talk to (e.g., self, a person, a group)`/`watch (a person)`, whereas half of all classes has less than 500 samples. In most cases, training custom classes with fewer samples only will lead to better results.
+
+Three steps to train custom classes:
+
+- Step 1: Select custom classes from original classes, named `custom_classes`. Class `0` should not be selected since it is reserved for further usage (to identify whether a proposal is positive or negative, not implemented yet) and will be added automatically.
+- Step 2: Set `num_classes`. In order to be compatible with current codes, plase make sure `num_classes == len(custom_classes) + 1`.
+  - The new class `0` corresponds to original class `0`. The new class `i`(i > 0) corresponds to original class `custom_classes[i-1]`.
+  - There are three `num_classes` in ava config, `model -> roi_head -> bbox_head -> num_classes`, `data -> train -> num_classes` and `data -> val -> num_classes`.
+  - If `num_classes <= 5`, input arg `topk` of `BBoxHeadAVA` should be modified. The default value of `topk` is `(3, 5)`, and all elements of `topk` must be smaller than `num_classes`.
+- Step 3: Make sure all custom classes are in `label_file`. It is worth mentioning that there are two label files, `ava_action_list_v2.1_for_activitynet_2018.pbtxt`(contains 60 classes, 20 classes are missing) and `ava_action_list_v2.1.pbtxt`(contains all 80 classes).
+
+Take `slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb` as an example, training custom classes with AP in range `(0.1, 0.3)`, aka `[3, 6, 10, 27, 29, 38, 41, 48, 51, 53, 54, 59, 61, 64, 70, 72]`. Please note that, the previously mentioned AP is calculated by original ckpt, which is trained by all 80 classes. The results are listed as follows.
+
+|training classes|mAP(custom classes)|config|log|json|ckpt|
+|:-:|:-:|:-:|:-:|:-:|:-:|
+|All 80 classes|0.1948|[slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb](/configs/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb.py)|[log](https://download.openmmlab.com/mmaction/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_20201127.log) | [json](https://download.openmmlab.com/mmaction/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_20201127.json) | [ckpt](https://download.openmmlab.com/mmaction/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_20201217-40061d5f.pth) |
+|custom classes|0.3311|[slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes](/configs/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes.py)| [log](https://download.openmmlab.com/mmaction/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes.log) | [json](https://download.openmmlab.com/mmaction/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes.json) | [ckpt](https://download.openmmlab.com/mmaction/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_custom_classes-4ab80419.pth) |
+
 ## Test
 
 You can use the following command to test a model.

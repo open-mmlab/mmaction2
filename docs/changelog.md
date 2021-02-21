@@ -23,6 +23,20 @@
 
 **Highlights**
 
+**New Features**
+
+**Improvements**
+
+- Training custom classes of ava dataset ([#555](https://github.com/open-mmlab/mmaction2/pull/555))
+
+**Bug and Typo Fixes**
+
+**ModelZoo**
+
+### 0.11.0 (31/01/2021)
+
+**Highlights**
+
 - Support imgaug
 - Support spatial temporal demo
 - Refactor EvalHook, config structure, unittest structure
