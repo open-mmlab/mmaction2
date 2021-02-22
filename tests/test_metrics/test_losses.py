@@ -103,7 +103,6 @@ def test_cross_entropy_loss():
     # soft label without class weight
     cross_entropy_loss = CrossEntropyLoss()
     output_loss = cross_entropy_loss(cls_scores, soft_gt_labels)
-
     assert_almost_equal(
         output_loss.numpy(),
         F.cross_entropy(cls_scores, sparse_gt_labels).numpy(),
@@ -114,7 +113,7 @@ def test_cross_entropy_loss():
     output_loss = cross_entropy_loss(cls_scores, soft_gt_labels)
     assert_almost_equal(
         output_loss.numpy(),
-        F.cross_entropy(cls_scores, sparse_gt_labels).numpy(),
+        F.cross_entropy(cls_scores, sparse_gt_labels, weight=weight).numpy(),
         decimal=4)
 
 
