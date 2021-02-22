@@ -2,7 +2,6 @@ av
 decord >= 0.4.1
 imgaug
 librosa
-mmdet <= 2.9.0
 moviepy
 onnx
 onnxruntime
