@@ -9,6 +9,16 @@ from .base import BaseWeightedLoss
 class CrossEntropyLoss(BaseWeightedLoss):
     """Cross Entropy Loss.
 
+    Support two kinds of labels and their corresponding loss type. It's worth
+    mentioning that loss type will be detected by the shape of ``cls_score``
+    and ``label``.
+    1) Sparse label: integers in range [0, num_classes - 1].
+    2) Non-sparse label(one-hot like labels): floats in range [0, 1]. It shares
+        the same shape with ``cls_score``.
+
+    For example, if the number of classes is 4, sparse labels could be [0, 2]
+    and its corresponding non-sparse labels are [[1, 0, 0, 0], [0, 0, 1, 0]].
+
     Args:
         loss_weight (float): Factor scalar multiplied on the loss.
             Default: 1.0.
@@ -29,13 +39,7 @@ class CrossEntropyLoss(BaseWeightedLoss):
 
         Args:
             cls_score (torch.Tensor): The class score.
-            label (torch.Tensor): The ground truth label. Support two kinds of
-                label, sparse label and non-sparse label. Sparse labels are
-                integers in range [0, num_classes - 1]. Non-sparse labels, or
-                one-hot like labels, are floats in range [0, 1]. If the shape
-                of ``cls_score`` is [N, num_classes], the shape of ``label``
-                should be [N] for sparse labels and [N, num_classes] for
-                non-sparse labels.
+            label (torch.Tensor): The ground truth label.
             kwargs: Any keyword argument to be used to calculate
                 CrossEntropy loss.
 
@@ -43,6 +47,8 @@ class CrossEntropyLoss(BaseWeightedLoss):
             torch.Tensor: The returned CrossEntropy loss.
         """
         if cls_score.size() == label.size():
+            # cal loss for non-sparse(one-hot like) label
+
             assert cls_score.dim() == 2, 'Only support 2-dim non-sparse labels'
 
             lsm = F.log_softmax(cls_score, 1)
@@ -59,6 +65,8 @@ class CrossEntropyLoss(BaseWeightedLoss):
             else:
                 loss_cls = loss_cls.mean()
         else:
+            # cal loss for sparse label
+
             if self.class_weight is not None:
                 assert 'weight' not in kwargs, \
                     "The key 'weight' already exists."
