@@ -12,12 +12,16 @@ class CrossEntropyLoss(BaseWeightedLoss):
     Support two kinds of labels and their corresponding loss type. It's worth
     mentioning that loss type will be detected by the shape of ``cls_score``
     and ``label``.
-    1) Sparse label: integers in range [0, num_classes - 1].
-    2) Non-sparse label(one-hot like labels): floats in range [0, 1]. It shares
-        the same shape with ``cls_score``.
+    1) Sparse label: This label is an integer array and all of the elements are
+        in the range [0, num_classes - 1]. This label's shape should be
+        ``cls_score``'s shape with the `num_classes` dimension removed.
+    2) Soft label(one-hot like label): This label is a probability distribution
+        and all of the elements are in the range [0, 1]. This label's shape
+        must be the same as ``cls_score``. For now, only 2-dim soft label is
+        supported.
 
-    For example, if the number of classes is 4, sparse labels could be [0, 2]
-    and its corresponding non-sparse labels are [[1, 0, 0, 0], [0, 0, 1, 0]].
+    For example, if the number of classes is 4, sparse label could be [0, 2]
+    and its corresponding soft label is [[1, 0, 0, 0], [0, 0, 1, 0]].
 
     Args:
         loss_weight (float): Factor scalar multiplied on the loss.
@@ -47,9 +51,9 @@ class CrossEntropyLoss(BaseWeightedLoss):
             torch.Tensor: The returned CrossEntropy loss.
         """
         if cls_score.size() == label.size():
-            # cal loss for non-sparse(one-hot like) label
+            # cal loss for soft label
 
-            assert cls_score.dim() == 2, 'Only support 2-dim non-sparse labels'
+            assert cls_score.dim() == 2, 'Only support 2-dim soft label'
 
             lsm = F.log_softmax(cls_score, 1)
             if self.class_weight is not None:

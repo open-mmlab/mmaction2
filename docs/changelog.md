@@ -18,7 +18,7 @@
 **Improvements**
 
 - Training custom classes of ava dataset ([#555](https://github.com/open-mmlab/mmaction2/pull/555))
-- Support non-sparse(one-hot like) label for CrossEntropyLoss ([#625](https://github.com/open-mmlab/mmaction2/pull/625))
+- Support soft label for CrossEntropyLoss ([#625](https://github.com/open-mmlab/mmaction2/pull/625))
 
 **Bug and Typo Fixes**
 
