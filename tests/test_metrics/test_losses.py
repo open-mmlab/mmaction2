@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from mmcv import ConfigDict
-from numpy.testing import assert_array_almost_equal, assert_almost_equal
+from numpy.testing import assert_almost_equal, assert_array_almost_equal
 from torch.autograd import Variable
 
 from mmaction.models import (BCELossWithLogits, BinaryLogisticRegressionLoss,
@@ -83,7 +83,7 @@ def test_cross_entropy_loss():
     cls_scores = torch.rand((3, 4))
     sparse_gt_labels = torch.LongTensor([0, 1, 2]).squeeze()
     soft_gt_labels = torch.FloatTensor([[1, 0, 0, 0], [0, 1, 0, 0],
-                                              [0, 0, 1, 0]]).squeeze()
+                                        [0, 0, 1, 0]]).squeeze()
 
     # sparse label without weight
     cross_entropy_loss = CrossEntropyLoss()
