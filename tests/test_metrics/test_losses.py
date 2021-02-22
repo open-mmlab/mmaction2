@@ -101,14 +101,13 @@ def test_cross_entropy_loss():
         F.cross_entropy(cls_scores, sparse_gt_labels, weight=weight))
 
     # non-sparse label without class weight
-    cross_entropy_loss = CrossEntropyLoss(sparse_label=False)
+    cross_entropy_loss = CrossEntropyLoss()
     output_loss = cross_entropy_loss(cls_scores, non_sparse_gt_labels)
     assert torch.equal(output_loss,
                        F.cross_entropy(cls_scores, sparse_gt_labels))
 
     # non-sparse label with class weight
-    cross_entropy_loss = CrossEntropyLoss(
-        sparse_label=False, class_weight=class_weight)
+    cross_entropy_loss = CrossEntropyLoss(class_weight=class_weight)
     output_loss = cross_entropy_loss(cls_scores, non_sparse_gt_labels)
     assert torch.equal(
         output_loss,

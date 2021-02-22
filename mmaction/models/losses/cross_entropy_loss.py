@@ -16,42 +16,34 @@ class CrossEntropyLoss(BaseWeightedLoss):
             as None, use the same weight 1 for all classes. Only applies
             to CrossEntropyLoss and BCELossWithLogits (should not be set when
             using other losses). Default: None.
-        sparse_label (bool): Whether to use sparse labels or not. Sparse labels
-            are integers in range [0, num_classes - 1]. Non sparse labels, or
-            one-hot like labels, are floats in range [0, 1]. If the shape of
-            ``cls_score`` is [N, num_classes], the shape of ``label`` should be
-            [N] for sparse labels and [N, num_classes] for non-sparse labels.
-            Default: True.
     """
 
-    def __init__(self, loss_weight=1.0, class_weight=None, sparse_label=True):
+    def __init__(self, loss_weight=1.0, class_weight=None):
         super().__init__(loss_weight=loss_weight)
         self.class_weight = None
         if class_weight is not None:
             self.class_weight = torch.Tensor(class_weight)
-        self.sparse_label = sparse_label
 
     def _forward(self, cls_score, label, **kwargs):
         """Forward function.
 
         Args:
             cls_score (torch.Tensor): The class score.
-            label (torch.Tensor): The ground truth label.
+            label (torch.Tensor): The ground truth label. Support two kinds of
+                label, sparse label and non-sparse label. Sparse labels are
+                integers in range [0, num_classes - 1]. Non-sparse labels, or
+                one-hot like labels, are floats in range [0, 1]. If the shape
+                of ``cls_score`` is [N, num_classes], the shape of ``label``
+                should be [N] for sparse labels and [N, num_classes] for
+                non-sparse labels.
             kwargs: Any keyword argument to be used to calculate
                 CrossEntropy loss.
 
         Returns:
             torch.Tensor: The returned CrossEntropy loss.
         """
-        if self.sparse_label:
-            if self.class_weight is not None:
-                assert 'weight' not in kwargs, \
-                    "The key 'weight' already exists."
-                kwargs['weight'] = self.class_weight.to(cls_score.device)
-            loss_cls = F.cross_entropy(cls_score, label, **kwargs)
-        else:
-            assert cls_score.size() == label.size()
-            assert cls_score.dim() == 2
+        if cls_score.size() == label.size():
+            assert cls_score.dim() == 2, 'Only support 2-dim non-sparse labels'
 
             lsm = F.log_softmax(cls_score, 1)
             if self.class_weight is not None:
@@ -66,6 +58,12 @@ class CrossEntropyLoss(BaseWeightedLoss):
                     self.class_weight.unsqueeze(0) * label)
             else:
                 loss_cls = loss_cls.mean()
+        else:
+            if self.class_weight is not None:
+                assert 'weight' not in kwargs, \
+                    "The key 'weight' already exists."
+                kwargs['weight'] = self.class_weight.to(cls_score.device)
+            loss_cls = F.cross_entropy(cls_score, label, **kwargs)
 
         return loss_cls
 
