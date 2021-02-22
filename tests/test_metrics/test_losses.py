@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from mmcv import ConfigDict
-from numpy.testing import assert_array_almost_equal
+from numpy.testing import assert_array_almost_equal, assert_almost_equal
 from torch.autograd import Variable
 
 from mmaction.models import (BCELossWithLogits, BinaryLogisticRegressionLoss,
@@ -103,15 +103,19 @@ def test_cross_entropy_loss():
     # non-sparse label without class weight
     cross_entropy_loss = CrossEntropyLoss()
     output_loss = cross_entropy_loss(cls_scores, non_sparse_gt_labels)
-    assert torch.equal(output_loss,
-                       F.cross_entropy(cls_scores, sparse_gt_labels))
+
+    assert_almost_equal(
+        output_loss.numpy(),
+        F.cross_entropy(cls_scores, sparse_gt_labels).numpy(),
+        decimal=4)
 
     # non-sparse label with class weight
     cross_entropy_loss = CrossEntropyLoss(class_weight=class_weight)
     output_loss = cross_entropy_loss(cls_scores, non_sparse_gt_labels)
-    assert torch.equal(
-        output_loss,
-        F.cross_entropy(cls_scores, sparse_gt_labels, weight=weight))
+    assert_almost_equal(
+        output_loss.numpy(),
+        F.cross_entropy(cls_scores, sparse_gt_labels).numpy(),
+        decimal=4)
 
 
 def test_bce_loss_with_logits():
