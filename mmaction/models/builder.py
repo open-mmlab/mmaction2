@@ -74,6 +74,10 @@ def build_model(cfg, train_cfg=None, test_cfg=None):
         return build_recognizer(cfg, train_cfg, test_cfg)
     if obj_type in DETECTORS:
         return build_detector(cfg, train_cfg, test_cfg)
+    class_in_mmdet = ['FastRCNN', 'MaxIoUAssignerAVA', 'RandomSampler']
+    if obj_type in class_in_mmdet:
+        raise ImportError(
+            'Please install mmdet for spatial temporal detection tasks.')
     raise ValueError(f'{obj_type} is not registered in '
                      'LOCALIZERS, RECOGNIZERS or DETECTORS')
 

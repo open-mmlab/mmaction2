@@ -47,6 +47,8 @@ The master branch works with **PyTorch 1.3+**.
 
   - For temporal action localization, we implement BSN, BMN, SSN.
 
+  - For spatial temporal detection, we implement SlowOnly, SlowFast.
+
 - **Well tested and documented**
 
   We provide detailed documentation and API reference, as well as unittests.
