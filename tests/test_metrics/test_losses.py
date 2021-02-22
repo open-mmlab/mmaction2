@@ -81,18 +81,38 @@ def test_hvu_loss():
 
 def test_cross_entropy_loss():
     cls_scores = torch.rand((3, 4))
-    gt_labels = torch.LongTensor([0, 1, 2]).squeeze()
+    sparse_gt_labels = torch.LongTensor([0, 1, 2]).squeeze()
+    non_sparse_gt_labels = torch.FloatTensor([[1, 0, 0, 0], [0, 1, 0, 0],
+                                              [0, 0, 1, 0]]).squeeze()
 
+    # sparse label without weight
     cross_entropy_loss = CrossEntropyLoss()
-    output_loss = cross_entropy_loss(cls_scores, gt_labels)
-    assert torch.equal(output_loss, F.cross_entropy(cls_scores, gt_labels))
+    output_loss = cross_entropy_loss(cls_scores, sparse_gt_labels)
+    assert torch.equal(output_loss,
+                       F.cross_entropy(cls_scores, sparse_gt_labels))
 
+    # sparse label with class weight
     weight = torch.rand(4)
     class_weight = weight.numpy().tolist()
     cross_entropy_loss = CrossEntropyLoss(class_weight=class_weight)
-    output_loss = cross_entropy_loss(cls_scores, gt_labels)
+    output_loss = cross_entropy_loss(cls_scores, sparse_gt_labels)
+    assert torch.equal(
+        output_loss,
+        F.cross_entropy(cls_scores, sparse_gt_labels, weight=weight))
+
+    # non-sparse label without class weight
+    cross_entropy_loss = CrossEntropyLoss(sparse_label=False)
+    output_loss = cross_entropy_loss(cls_scores, non_sparse_gt_labels)
     assert torch.equal(output_loss,
-                       F.cross_entropy(cls_scores, gt_labels, weight=weight))
+                       F.cross_entropy(cls_scores, sparse_gt_labels))
+
+    # non-sparse label with class weight
+    cross_entropy_loss = CrossEntropyLoss(
+        sparse_label=False, class_weight=class_weight)
+    output_loss = cross_entropy_loss(cls_scores, non_sparse_gt_labels)
+    assert torch.equal(
+        output_loss,
+        F.cross_entropy(cls_scores, sparse_gt_labels, weight=weight))
 
 
 def test_bce_loss_with_logits():
