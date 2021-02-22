@@ -44,18 +44,15 @@ class CrossEntropyLoss(BaseWeightedLoss):
             torch.Tensor: The returned CrossEntropy loss.
         """
         if self.sparse_label:
-            # sparse labels
             if self.class_weight is not None:
                 assert 'weight' not in kwargs, \
                     "The key 'weight' already exists."
                 kwargs['weight'] = self.class_weight.to(cls_score.device)
             loss_cls = F.cross_entropy(cls_score, label, **kwargs)
         else:
-            # non-sparse(one-hot like) labels
             assert cls_score.size() == label.size()
             assert cls_score.dim() == 2
 
-            # cal cross entropy loss with one-hot like labels
             lsm = F.log_softmax(cls_score, 1)
             if self.class_weight is not None:
                 lsm = lsm * self.class_weight.unsqueeze(0)
