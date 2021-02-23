@@ -44,7 +44,7 @@ def init_recognizer(config,
                            f"'{config.dataset_type}'")
     # pretrained model is unnecessary since we directly load checkpoint later
     config.model.backbone.pretrained = None
-    model = build_recognizer(config.model, test_cfg=config.test_cfg)
+    model = build_recognizer(config.model)
     if checkpoint is not None:
         load_checkpoint(model, checkpoint, map_location=device)
     model.cfg = config

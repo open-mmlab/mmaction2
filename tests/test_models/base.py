@@ -102,15 +102,12 @@ def get_cfg(config_type, fname):
 
 
 def get_recognizer_cfg(fname):
-    config = get_cfg('recognition', fname)
-    return config.model, config.train_cfg, config.test_cfg
+    return get_cfg('recognition', fname)
 
 
 def get_audio_recognizer_cfg(fname):
-    config = get_cfg('recognition_audio', fname)
-    return config.model, config.train_cfg, config.test_cfg
+    return get_cfg('recognition_audio', fname)
 
 
 def get_localizer_cfg(fname):
-    config = get_cfg('localization', fname)
-    return config.model, config.train_cfg, config.test_cfg
+    return get_cfg('localization', fname)

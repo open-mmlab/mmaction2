@@ -5,12 +5,10 @@ from ..base import generate_recognizer_demo_inputs, get_recognizer_cfg
 
 
 def test_tsn():
-    model, train_cfg, test_cfg = get_recognizer_cfg(
-        'tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py')
-    model['backbone']['pretrained'] = None
+    config = get_recognizer_cfg('tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py')
+    config.model['backbone']['pretrained'] = None
 
-    recognizer = build_recognizer(
-        model, train_cfg=train_cfg, test_cfg=test_cfg)
+    recognizer = build_recognizer(config.model)
 
     input_shape = (1, 3, 3, 32, 32)
     demo_inputs = generate_recognizer_demo_inputs(input_shape)
@@ -34,12 +32,10 @@ def test_tsn():
 
 
 def test_tsm():
-    model, train_cfg, test_cfg = get_recognizer_cfg(
-        'tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py')
-    model['backbone']['pretrained'] = None
+    config = get_recognizer_cfg('tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py')
+    config.model['backbone']['pretrained'] = None
 
-    recognizer = build_recognizer(
-        model, train_cfg=train_cfg, test_cfg=test_cfg)
+    recognizer = build_recognizer(config.model)
 
     input_shape = (1, 8, 3, 32, 32)
     demo_inputs = generate_recognizer_demo_inputs(input_shape)
@@ -61,9 +57,8 @@ def test_tsm():
     demo_inputs = generate_recognizer_demo_inputs(input_shape)
     imgs = demo_inputs['imgs']
 
-    test_cfg = dict(average_clips='prob')
-    recognizer = build_recognizer(
-        model, train_cfg=train_cfg, test_cfg=test_cfg)
+    config.model.test_cfg = dict(average_clips='prob')
+    recognizer = build_recognizer(config.model)
 
     # Test forward test
     with torch.no_grad():
@@ -78,12 +73,11 @@ def test_tsm():
 
 
 def test_tanet():
-    model, train_cfg, test_cfg = get_recognizer_cfg(
+    config = get_recognizer_cfg(
         'tanet/tanet_r50_dense_1x1x8_100e_kinetics400_rgb.py')
-    model['backbone']['pretrained'] = None
+    config.model['backbone']['pretrained'] = None
 
-    recognizer = build_recognizer(
-        model, train_cfg=train_cfg, test_cfg=test_cfg)
+    recognizer = build_recognizer(config.model)
 
     input_shape = (1, 8, 3, 32, 32)
     demo_inputs = generate_recognizer_demo_inputs(input_shape)
@@ -105,9 +99,8 @@ def test_tanet():
     demo_inputs = generate_recognizer_demo_inputs(input_shape)
     imgs = demo_inputs['imgs']
 
-    test_cfg = dict(average_clips='prob')
-    recognizer = build_recognizer(
-        model, train_cfg=train_cfg, test_cfg=test_cfg)
+    config.model.test_cfg = dict(average_clips='prob')
+    recognizer = build_recognizer(config.model)
 
     # Test forward test
     with torch.no_grad():
