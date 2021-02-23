@@ -13,7 +13,7 @@ except (ImportError, ModuleNotFoundError):
     DETECTORS = Registry('detector')
 
     @import_module_error_func('mmdet')
-    def build_detector(cfg, train_cfg=None, test_cfg=None):
+    def build_detector(cfg, train_cfg, test_cfg):
         pass
 
 

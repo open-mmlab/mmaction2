@@ -44,7 +44,11 @@ def main():
         raise ValueError('invalid input shape')
 
     cfg = Config.fromfile(args.config)
-    model = build_recognizer(cfg.model)
+    model = build_recognizer(
+        cfg.model,
+        train_cfg=cfg.get('train_cfg'),
+        test_cfg=cfg.get('test_cfg'))
+
     model = model.cuda()
     model.eval()
 

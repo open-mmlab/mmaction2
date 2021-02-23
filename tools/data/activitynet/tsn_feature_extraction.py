@@ -71,7 +71,7 @@ def main():
     data_pipeline = Compose(data_pipeline)
 
     # define TSN R50 model, the model is used as the feature extractor
-    model = dict(
+    model_cfg = dict(
         type='Recognizer2D',
         backbone=dict(
             type='ResNet',
@@ -83,8 +83,9 @@ def main():
             num_classes=200,
             in_channels=2048,
             spatial_type='avg',
-            consensus=dict(type='AvgConsensus', dim=1)))
-    model = build_model(model, test_cfg=dict(average_clips=None))
+            consensus=dict(type='AvgConsensus', dim=1)),
+        test_cfg=dict(average_clips=None))
+    model = build_model(model_cfg)
     # load pretrained weight into the feature extractor
     state_dict = torch.load(args.ckpt)['state_dict']
     model.load_state_dict(state_dict)
