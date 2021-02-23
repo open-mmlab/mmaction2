@@ -17,8 +17,7 @@ model = dict(
         in_channels=4096,
         spatial_type=None,
         dropout_ratio=0.5,
-        init_std=0.01))
-
-# model training and testing settings
-train_cfg = None
-test_cfg = dict(average_clips='score')
+        init_std=0.01),
+    # model training and testing settings
+    train_cfg=None,
+    test_cfg=dict(average_clips='score'))

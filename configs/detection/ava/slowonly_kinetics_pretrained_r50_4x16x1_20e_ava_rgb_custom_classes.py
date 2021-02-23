@@ -31,24 +31,23 @@ model = dict(
             num_classes=num_classes,
             multilabel=True,
             topk=(3, 5),
-            dropout_ratio=0.5)))
-
-train_cfg = dict(
-    rcnn=dict(
-        assigner=dict(
-            type='MaxIoUAssignerAVA',
-            pos_iou_thr=0.9,
-            neg_iou_thr=0.9,
-            min_pos_iou=0.9),
-        sampler=dict(
-            type='RandomSampler',
-            num=32,
-            pos_fraction=1,
-            neg_pos_ub=-1,
-            add_gt_as_proposals=True),
-        pos_weight=1.0,
-        debug=False))
-test_cfg = dict(rcnn=dict(action_thr=0.00))
+            dropout_ratio=0.5)),
+    train_cfg=dict(
+        rcnn=dict(
+            assigner=dict(
+                type='MaxIoUAssignerAVA',
+                pos_iou_thr=0.9,
+                neg_iou_thr=0.9,
+                min_pos_iou=0.9),
+            sampler=dict(
+                type='RandomSampler',
+                num=32,
+                pos_fraction=1,
+                neg_pos_ub=-1,
+                add_gt_as_proposals=True),
+            pos_weight=1.0,
+            debug=False)),
+    test_cfg=dict(rcnn=dict(action_thr=0.00)))
 
 dataset_type = 'AVADataset'
 data_root = 'data/ava/rawframes'

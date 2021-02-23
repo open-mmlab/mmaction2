@@ -14,6 +14,7 @@ model = dict(
         spatial_type='avg',
         consensus=dict(type='AvgConsensus', dim=1),
         dropout_ratio=0.5,
-        init_std=0.001))
-train_cfg = None
-test_cfg = dict(average_clips='prob')
+        init_std=0.001),
+    # model training and testing settings
+    train_cfg=None,
+    test_cfg=dict(average_clips='prob'))
