@@ -48,7 +48,7 @@ class CrossEntropyLoss(BaseWeightedLoss):
             torch.Tensor: The returned CrossEntropy loss.
         """
         if cls_score.size() == label.size():
-            # cal loss for soft label
+            # calculate loss for soft label
 
             assert cls_score.dim() == 2, 'Only support 2-dim soft label'
             assert len(kwargs) == 0, \
@@ -69,7 +69,7 @@ class CrossEntropyLoss(BaseWeightedLoss):
             else:
                 loss_cls = loss_cls.mean()
         else:
-            # cal loss for hard label
+            # calculate loss for hard label
 
             if self.class_weight is not None:
                 assert 'weight' not in kwargs, \
