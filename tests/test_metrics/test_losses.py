@@ -81,31 +81,31 @@ def test_hvu_loss():
 
 def test_cross_entropy_loss():
     cls_scores = torch.rand((3, 4))
-    sparse_gt_labels = torch.LongTensor([0, 1, 2]).squeeze()
+    hard_gt_labels = torch.LongTensor([0, 1, 2]).squeeze()
     soft_gt_labels = torch.FloatTensor([[1, 0, 0, 0], [0, 1, 0, 0],
                                         [0, 0, 1, 0]]).squeeze()
 
-    # sparse label without weight
+    # hard label without weight
     cross_entropy_loss = CrossEntropyLoss()
-    output_loss = cross_entropy_loss(cls_scores, sparse_gt_labels)
-    assert torch.equal(output_loss,
-                       F.cross_entropy(cls_scores, sparse_gt_labels))
+    output_loss = cross_entropy_loss(cls_scores, hard_gt_labels)
+    assert torch.equal(output_loss, F.cross_entropy(cls_scores,
+                                                    hard_gt_labels))
 
-    # sparse label with class weight
+    # hard label with class weight
     weight = torch.rand(4)
     class_weight = weight.numpy().tolist()
     cross_entropy_loss = CrossEntropyLoss(class_weight=class_weight)
-    output_loss = cross_entropy_loss(cls_scores, sparse_gt_labels)
+    output_loss = cross_entropy_loss(cls_scores, hard_gt_labels)
     assert torch.equal(
         output_loss,
-        F.cross_entropy(cls_scores, sparse_gt_labels, weight=weight))
+        F.cross_entropy(cls_scores, hard_gt_labels, weight=weight))
 
     # soft label without class weight
     cross_entropy_loss = CrossEntropyLoss()
     output_loss = cross_entropy_loss(cls_scores, soft_gt_labels)
     assert_almost_equal(
         output_loss.numpy(),
-        F.cross_entropy(cls_scores, sparse_gt_labels).numpy(),
+        F.cross_entropy(cls_scores, hard_gt_labels).numpy(),
         decimal=4)
 
     # soft label with class weight
@@ -113,7 +113,7 @@ def test_cross_entropy_loss():
     output_loss = cross_entropy_loss(cls_scores, soft_gt_labels)
     assert_almost_equal(
         output_loss.numpy(),
-        F.cross_entropy(cls_scores, sparse_gt_labels, weight=weight).numpy(),
+        F.cross_entropy(cls_scores, hard_gt_labels, weight=weight).numpy(),
         decimal=4)
 
 
