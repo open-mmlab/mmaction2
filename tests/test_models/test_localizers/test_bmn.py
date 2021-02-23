@@ -6,11 +6,11 @@ from ..base import get_localizer_cfg
 
 
 def test_bmn():
-    model_cfg, _, _ = get_localizer_cfg(
+    model_cfg = get_localizer_cfg(
         'bmn/bmn_400x100_2x8_9e_activitynet_feature.py')
 
     if torch.cuda.is_available():
-        localizer_bmn = build_localizer(model_cfg).cuda()
+        localizer_bmn = build_localizer(model_cfg.model).cuda()
         raw_feature = torch.rand(8, 400, 100).cuda()
         gt_bbox = np.array([[[0.1, 0.3], [0.375, 0.625]]] * 8)
         losses = localizer_bmn(raw_feature, gt_bbox)
@@ -32,7 +32,7 @@ def test_bmn():
                 video_meta=video_meta,
                 return_loss=False)
     else:
-        localizer_bmn = build_localizer(model_cfg)
+        localizer_bmn = build_localizer(model_cfg.model)
         raw_feature = torch.rand(8, 400, 100)
         gt_bbox = torch.Tensor([[[0.1, 0.3], [0.375, 0.625]]] * 8)
         losses = localizer_bmn(raw_feature, gt_bbox)

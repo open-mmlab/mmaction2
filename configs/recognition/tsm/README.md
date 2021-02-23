@@ -73,8 +73,6 @@ Notes:
 
 ```python
 ...
-test_cfg = dict(average_clips='prob')
-...
 test_pipeline = [
     dict(
         type='SampleFrames',

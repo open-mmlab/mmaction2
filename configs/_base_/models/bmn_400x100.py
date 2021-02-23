@@ -9,7 +9,7 @@ model = dict(
     soft_nms_alpha=0.4,
     soft_nms_low_threshold=0.5,
     soft_nms_high_threshold=0.9,
-    post_process_top_k=100,
-    # model training and testing settings
-    train_cfg=None,
-    test_cfg=dict(average_clips='score'))
+    post_process_top_k=100)
+# model training and testing settings
+train_cfg = None
+test_cfg = dict(average_clips='score')

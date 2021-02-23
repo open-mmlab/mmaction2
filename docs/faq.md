@@ -67,11 +67,11 @@ If the contents here do not cover your issue, please create an issue using the [
 
 - **How to make predicted score normalized by softmax within [0, 1] ?**
 
-    change this in the config, make `test_cfg = dict(average_clips='prob')`.
+    change this in the config, make `model['test_cfg'] = dict(average_clips='prob')`.
 
 - **What if the model is too large and the GPU memory can not fit even only one testing sample ?**
 
-    By default, the 3d models are tested with 10clips x 3crops, which are 30 views in total. For extremely large models, the GPU memory can not fit even only one testing sample (cuz there are 30 views). To handle this, you can set `max_testing_views=n` in test_cfg of the config file. If so, n views will be used as a batch during forwarding to save GPU memory used.
+    By default, the 3d models are tested with 10clips x 3crops, which are 30 views in total. For extremely large models, the GPU memory can not fit even only one testing sample (cuz there are 30 views). To handle this, you can set `max_testing_views=n` in `model['test_cfg']` of the config file. If so, n views will be used as a batch during forwarding to save GPU memory used.
 
 - **How to show test results ?**
 
