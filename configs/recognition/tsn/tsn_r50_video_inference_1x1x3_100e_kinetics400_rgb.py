@@ -1,6 +1,5 @@
 _base_ = ['../../_base_/models/tsn_r50.py']
 
-test_cfg = dict(average_clips='prob')
 # dataset settings
 dataset_type = 'VideoDataset'
 img_norm_cfg = dict(
