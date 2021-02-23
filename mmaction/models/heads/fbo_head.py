@@ -2,8 +2,9 @@ import copy
 
 import torch
 import torch.nn as nn
-from mmcv.cnn import ConvModule, constant_init, kaiming_init
+from mmcv.cnn import ConvModule, constant_init, normal_init
 from mmcv.runner import auto_fp16, load_checkpoint
+from mmcv.utils import _BatchNorm
 
 from mmaction.models.common import LFB
 from mmaction.utils import get_root_logger
@@ -47,7 +48,8 @@ class NonLocalLayer(nn.Module):
                  pre_activate_with_ln=True,
                  conv_cfg=None,
                  norm_cfg=None,
-                 dropout_ratio=0.2):
+                 dropout_ratio=0.2,
+                 zero_init_out_conv=True):
         super().__init__()
         if conv_cfg is None:
             conv_cfg = dict(type='Conv3d')
@@ -60,6 +62,7 @@ class NonLocalLayer(nn.Module):
         self.pre_activate = pre_activate
         self.pre_activate_with_ln = pre_activate_with_ln
         self.dropout_ratio = dropout_ratio
+        self.zero_init_out_conv = zero_init_out_conv
 
         self.st_feat_conv = ConvModule(
             self.st_feat_channels,
@@ -102,6 +105,24 @@ class NonLocalLayer(nn.Module):
 
         if self.dropout_ratio > 0:
             self.dropout = nn.Dropout(self.dropout_ratio)
+
+    def init_weights(self, pretrained=None):
+        """Initiate the parameters either from existing checkpoint or from
+        scratch."""
+        if isinstance(pretrained, str):
+            logger = get_root_logger()
+            logger.info(f'load model from: {pretrained}')
+            load_checkpoint(self, pretrained, strict=False, logger=logger)
+        elif pretrained is None:
+            for m in self.modules():
+                if isinstance(m, nn.Conv3d):
+                    normal_init(m, mean=0, std=0.01, bias=0)
+                elif isinstance(m, _BatchNorm):
+                    constant_init(m, 1)
+            if self.zero_init_out_conv:
+                constant_init(self.out_conv, 0, bias=0)
+        else:
+            raise TypeError('pretrained must be a str or None')
 
     def forward(self, st_feat, lt_feat):
         n, c = st_feat.size(0), self.latent_channels
@@ -215,6 +236,19 @@ class FBONonLocal(nn.Module):
                     pre_activate=self.pre_activate))
             self.non_local_layers.append(layer_name)
 
+    def init_weights(self, pretrained=None):
+        if isinstance(pretrained, str):
+            logger = get_root_logger()
+            load_checkpoint(self, pretrained, strict=False, logger=logger)
+        elif pretrained is None:
+            normal_init(self.st_feat_conv, mean=0, std=0.01, bias=0)
+            normal_init(self.lt_feat_conv, mean=0, std=0.01, bias=0)
+            for layer_name in self.non_local_layers:
+                non_local_layer = getattr(self, layer_name)
+                non_local_layer.init_weights(pretrained=pretrained)
+        else:
+            raise TypeError('pretrained must be a str or None')
+
     @auto_fp16()
     def forward(self, st_feat, lt_feat):
         # prepare st_feat
@@ -247,6 +281,10 @@ class FBOAvg(nn.Module):
         super().__init__()
         self.avg_pool = nn.AdaptiveAvgPool3d((1, None, None))
 
+    def init_weights(self, pretrained=None):
+        # FBOAvg has no parameters to be initalized.
+        pass
+
     def forward(self, st_feat, lt_feat):
         out = self.avg_pool(lt_feat)
         return out
@@ -258,6 +296,10 @@ class FBOMax(nn.Module):
     def __init__(self):
         super().__init__()
         self.max_pool = nn.AdaptiveMaxPool3d((1, None, None))
+
+    def init_weights(self, pretrained=None):
+        # FBOMax has no parameters to be initialized.
+        pass
 
     def forward(self, st_feat, lt_feat):
         out = self.max_pool(lt_feat)
@@ -318,17 +360,7 @@ class FBOHead(nn.Module):
             pretrained (str, optional): Path to pre-trained weights.
                 Default: None.
         """
-        if isinstance(pretrained, str):
-            logger = get_root_logger()
-            load_checkpoint(self, pretrained, strict=False, logger=logger)
-        elif pretrained is None:
-            for m in self.modules():
-                if isinstance(m, nn.Conv2d):
-                    kaiming_init(m)
-                elif isinstance(m, nn.BatchNorm2d):
-                    constant_init(m, 1)
-        else:
-            raise TypeError('pretrained must be a str or None')
+        self.fbo.init_weights(pretrained=pretrained)
 
     def sample_lfb(self, rois, img_metas):
         """Sample long-term features for each ROI feature."""

@@ -44,9 +44,14 @@ class LFB(object):
         lfb_channels (int): Number of the channels of the features stored
             in LFB. Default: 2048.
         dataset_modes (list | str): Load LFB of datasets with different modes,
-            such as training, validation, testing datasets.
-            Default: ['train', 'val']
-        use_half_precision (bool): Whether to use half_precison. Default: True.
+            such as training, validation, testing datasets. If you don't do
+            cross validation during training, just load the training set i.e.
+            setting `dataset_modes = ['train']`. Default: ['train', 'val'].
+        device (str): Where to load lfb. 'cpu' and 'gpu' are supported. If
+            distributed training is used, this file will be loaded repeatly
+            on RAM with `device = 'cpu'`. A 1.65GB half-precision ava lfb
+            (including training and validation) occupies about 2GB GPU memory.
+            Default: 'gpu'.
     """
 
     def __init__(self,
@@ -55,7 +60,7 @@ class LFB(object):
                  window_size=60,
                  lfb_channels=2048,
                  dataset_modes=['train', 'val'],
-                 device='cpu'):
+                 device='gpu'):
         if not osp.exists(lfb_prefix_path):
             raise ValueError(
                 f'lfb prefix path {lfb_prefix_path} does not exist!')
@@ -69,11 +74,14 @@ class LFB(object):
         self.dataset_modes = copy.deepcopy(dataset_modes)
         self.device = device
 
-        if self.device == 'cpu':
-            map_location = 'cpu'
-        elif self.device == 'gpu':
-            rank, world_size = get_dist_info()
+        rank, world_size = get_dist_info()
+        if self.device == 'gpu':
             map_location = f'cuda:{rank}'
+        elif self.device == 'cpu':
+            map_location = 'cpu'
+        else:
+            raise ValueError(
+                f"device must be 'cpu' or 'gpu', but get {self.device}.")
 
         # Loading LFB from different lfb path.
         self.lfb = {}
@@ -83,7 +91,10 @@ class LFB(object):
             print(f'Loading LFB from {lfb_path}...')
             self.lfb.update(torch.load(lfb_path, map_location=map_location))
 
-        print(f'LFB has been loaded in GPU {rank}.')
+        if self.device == 'gpu':
+            print(f'LFB has been loaded on GPU {rank}.')
+        elif self.device == 'cpu':
+            print('LFB has been loaded on CPU.')
 
     def sample_long_term_features(self, video_id, timestamp):
         video_features = self.lfb[video_id]

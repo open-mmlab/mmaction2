@@ -134,6 +134,7 @@ lr_config = dict(
     warmup_iters=5,
     warmup_ratio=0.1)
 total_epochs = 20
+
 checkpoint_config = dict(interval=1)
 workflow = [('train', 1)]
 log_config = dict(
@@ -142,7 +143,7 @@ log_config = dict(
     ])
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/lfb/lfb_slowonly_nl'
+work_dir = './work_dirs/lfb/lfb_slowonly_nl_gpu'
 load_from = ('https://download.openmmlab.com/mmaction/recognition/slowonly/'
              'slowonly_r50_4x16x1_256e_kinetics400_rgb/'
              'slowonly_r50_4x16x1_256e_kinetics400_rgb_20200704-a69556c6.pth')
