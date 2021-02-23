@@ -15,10 +15,10 @@ class CrossEntropyLoss(BaseWeightedLoss):
     1) Hard label: This label is an integer array and all of the elements are
         in the range [0, num_classes - 1]. This label's shape should be
         ``cls_score``'s shape with the `num_classes` dimension removed.
-    2) Soft label(one-hot like label): This label is a probability distribution
-        and all of the elements are in the range [0, 1]. This label's shape
-        must be the same as ``cls_score``. For now, only 2-dim soft label is
-        supported.
+    2) Soft label(probablity distribution over classes): This label is a
+        probability distribution and all of the elements are in the range
+        [0, 1]. This label's shape must be the same as ``cls_score``. For now,
+        only 2-dim soft label is supported.
 
     Args:
         loss_weight (float): Factor scalar multiplied on the loss.
