@@ -61,12 +61,12 @@ def pytorch2onnx(model,
     """
     model.cpu().eval()
 
-    one_img = torch.randn(input_shape)
+    input_tensor = torch.randn(input_shape)
 
     register_extra_symbolics(opset_version)
     torch.onnx.export(
         model,
-        one_img,
+        input_tensor,
         output_file,
         export_params=True,
         keep_initializers_as_inputs=True,
@@ -81,7 +81,7 @@ def pytorch2onnx(model,
 
         # check the numerical value
         # get pytorch output
-        pytorch_result = model(one_img)[0].detach().numpy()
+        pytorch_result = model(input_tensor)[0].detach().numpy()
 
         # get onnx output
         input_all = [node.name for node in onnx_model.graph.input]
@@ -91,9 +91,8 @@ def pytorch2onnx(model,
         net_feed_input = list(set(input_all) - set(input_initializer))
         assert len(net_feed_input) == 1
         sess = rt.InferenceSession(output_file)
-        onnx_result = sess.run(None,
-                               {net_feed_input[0]: one_img.detach().numpy()
-                                })[0]
+        onnx_result = sess.run(
+            None, {net_feed_input[0]: input_tensor.detach().numpy()})[0]
         # only compare part of results
         assert np.allclose(
             pytorch_result[:, 4], onnx_result[:, 4]
