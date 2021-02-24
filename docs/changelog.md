@@ -19,6 +19,7 @@
 
 - Training custom classes of ava dataset ([#555](https://github.com/open-mmlab/mmaction2/pull/555))
 - Support soft label for CrossEntropyLoss ([#625](https://github.com/open-mmlab/mmaction2/pull/625))
+- Refactor config: Specify `train_cfg` and `test_cfg` in `model` ([#629](https://github.com/open-mmlab/mmaction2/pull/629))
 
 **Bug and Typo Fixes**
 
