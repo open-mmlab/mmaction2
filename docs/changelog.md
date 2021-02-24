@@ -12,6 +12,7 @@
 
 - Support TSM-MobileNetV2 ([#415](https://github.com/open-mmlab/mmaction2/pull/415))
 - Support flip with label mapping ([#591](https://github.com/open-mmlab/mmaction2/pull/591))
+- Add seed option for sampler ([#642](https://github.com/open-mmlab/mmaction2/pull/642))
 - Support GPU Normalize ([#586](https://github.com/open-mmlab/mmaction2/pull/586))
 - Support TANet ([#595](https://github.com/open-mmlab/mmaction2/pull/595))
 
