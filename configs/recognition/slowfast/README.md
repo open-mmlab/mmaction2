@@ -28,6 +28,7 @@
 |[slowfast_r101_r50_4x16x1_256e_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r101_4x16x1_256e_kinetics400_rgb.py) |short-side 256|8x1| ResNet101 + ResNet50 |None|76.69|93.07||16628| [ckpt]() | [log]()| [json]()|
 |[slowfast_r101_8x8x1_256e_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r101_4x16x1_256e_kinetics400_rgb.py) |short-side 256|8x4| ResNet101 |None|77.90|93.51||25994| [ckpt]() | [log]()| [json]()|
 |[slowfast_r152_r50_4x16x1_256e_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r152_4x16x1_256e_kinetics400_rgb.py) |short-side 256|8x1| ResNet152 + ResNet50 |None|77.13|93.20||10077| [ckpt]() | [log]()| [json]()|
+
 Notes:
 
 1. The **gpus** indicates the number of gpu we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
