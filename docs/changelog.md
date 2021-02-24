@@ -15,23 +15,16 @@
 - Support GPU Normalize ([#586](https://github.com/open-mmlab/mmaction2/pull/586))
 - Support TANet ([#595](https://github.com/open-mmlab/mmaction2/pull/595))
 
-**ModelZoo**
-
-- Add TSM-MobileNetV2 for Kinetics400 ([#415](https://github.com/open-mmlab/mmaction2/pull/415))
-
-### 0.11.0 (31/01/2021)
-
-**Highlights**
-
-**New Features**
-
 **Improvements**
 
 - Training custom classes of ava dataset ([#555](https://github.com/open-mmlab/mmaction2/pull/555))
+- Support soft label for CrossEntropyLoss ([#625](https://github.com/open-mmlab/mmaction2/pull/625))
 
 **Bug and Typo Fixes**
 
 **ModelZoo**
+
+- Add TSM-MobileNetV2 for Kinetics400 ([#415](https://github.com/open-mmlab/mmaction2/pull/415))
 
 ### 0.11.0 (31/01/2021)
 
