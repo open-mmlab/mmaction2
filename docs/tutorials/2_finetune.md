@@ -46,7 +46,9 @@ model = dict(
         spatial_type='avg',
         consensus=dict(type='AvgConsensus', dim=1),
         dropout_ratio=0.4,
-        init_std=0.01))
+        init_std=0.01),
+    train_cfg=None,
+    test_cfg=dict(average_clips=None))
 ```
 
 Note that the `pretrained='torchvision://resnet50'` setting is used for initializing backbone.

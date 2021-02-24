@@ -249,10 +249,10 @@ which is convenient to conduct various experiments.
             spatial_type='avg',  # Type of pooling in spatial dimension
             consensus=dict(type='AvgConsensus', dim=1),  # Config of consensus module
             dropout_ratio=0.4,  # Probability in dropout layer
-            init_std=0.01))  # Std value for linear layer initiation
-    # model training and testing settings
-    train_cfg = None  # Config of training hyperparameters for TSN
-    test_cfg = dict(average_clips=None) # Config for testing hyperparameters for TSN. Here we define clip averaging method in it
+            init_std=0.01), # Std value for linear layer initiation
+            # model training and testing settings
+            train_cfg=None,  # Config of training hyperparameters for TSN
+            test_cfg=dict(average_clips=None))  # Config for testing hyperparameters for TSN.
 
     # dataset settings
     dataset_type = 'RawframeDataset'  # Type of dataset for training, valiation and testing
@@ -444,7 +444,7 @@ We incorporate modular design into our config system, which is convenient to con
 
     ```python
     # model setting
-    model = dict( # Config of the model
+    model = dict(  # Config of the model
         type='FastRCNN',  # Type of the detector
         backbone=dict(  # Dict for backbone
             type='ResNet3dSlowOnly',  # Name of the backbone
@@ -469,27 +469,26 @@ We incorporate modular design into our config system, which is convenient to con
                 in_channels=2048, # Number of channels of the input feature
                 num_classes=81, # Number of action classes + 1
                 multilabel=True,  # If the dataset is multilabel
-                dropout_ratio=0.5)))  # The dropout ratio used
-
-    # model training and testing settings
-    train_cfg = dict( # Training config of FastRCNN
-        rcnn=dict(  # Dict for rcnn training config
-            assigner=dict(  # Dict for assigner
-                type='MaxIoUAssignerAVA', # Name of the assigner
-                pos_iou_thr=0.9,  # IoU threshold for positive examples, > pos_iou_thr -> positive
-                neg_iou_thr=0.9,  # IoU threshold for negative examples, < neg_iou_thr -> negative
-                min_pos_iou=0.9), # Minimum acceptable IoU for positive examples
-            sampler=dict( # Dict for sample
-                type='RandomSampler', # Name of the sampler
-                num=32, # Batch Size of the sampler
-                pos_fraction=1, # Positive bbox fraction of the sampler
-                neg_pos_ub=-1,  # Upper bound of the ratio of num negative to num positive
-                add_gt_as_proposals=True), # Add gt bboxes as proposals
-            pos_weight=1.0, # Loss weight of positive examples
-            debug=False)) # Debug mode
-    test_cfg = dict( # Testing config of FastRCNN
-        rcnn=dict(  # Dict for rcnn testing config
-            action_thr=0.00)) # The threshold of an action
+                dropout_ratio=0.5)),  # The dropout ratio used
+        # model training and testing settings
+        train_cfg=dict(  # Training config of FastRCNN
+            rcnn=dict(  # Dict for rcnn training config
+                assigner=dict(  # Dict for assigner
+                    type='MaxIoUAssignerAVA', # Name of the assigner
+                    pos_iou_thr=0.9,  # IoU threshold for positive examples, > pos_iou_thr -> positive
+                    neg_iou_thr=0.9,  # IoU threshold for negative examples, < neg_iou_thr -> negative
+                    min_pos_iou=0.9), # Minimum acceptable IoU for positive examples
+                sampler=dict( # Dict for sample
+                    type='RandomSampler', # Name of the sampler
+                    num=32, # Batch Size of the sampler
+                    pos_fraction=1, # Positive bbox fraction of the sampler
+                    neg_pos_ub=-1,  # Upper bound of the ratio of num negative to num positive
+                    add_gt_as_proposals=True), # Add gt bboxes as proposals
+                pos_weight=1.0, # Loss weight of positive examples
+                debug=False)), # Debug mode
+        test_cfg=dict( # Testing config of FastRCNN
+            rcnn=dict(  # Dict for rcnn testing config
+                action_thr=0.00))) # The threshold of an action
 
     # dataset settings
     dataset_type = 'AVADataset' # Type of dataset for training, valiation and testing

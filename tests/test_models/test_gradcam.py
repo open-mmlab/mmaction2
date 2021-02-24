@@ -3,7 +3,7 @@ import torch
 
 from mmaction.models import build_recognizer
 from mmaction.utils.gradcam_utils import GradCAM
-from .base import generate_gradcam_inputs, get_cfg
+from .base import generate_gradcam_inputs, get_recognizer_cfg
 
 
 def _get_target_shapes(input_shape, num_classes=400, model_type='2D'):
@@ -87,10 +87,9 @@ def _do_test_3D_models(recognizer,
 
 
 def test_tsn():
-    config = get_cfg('recognition',
-                     'tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py')
+    config = get_recognizer_cfg('tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py')
     config.model['backbone']['pretrained'] = None
-    recognizer = build_recognizer(config.model, test_cfg=config.test_cfg)
+    recognizer = build_recognizer(config.model)
     recognizer.cfg = config
 
     input_shape = (1, 25, 3, 32, 32)
@@ -100,12 +99,11 @@ def test_tsn():
 
 
 def test_i3d():
-    config = get_cfg('recognition',
-                     'i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py')
+    config = get_recognizer_cfg('i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py')
     config.model['backbone']['pretrained2d'] = False
     config.model['backbone']['pretrained'] = None
 
-    recognizer = build_recognizer(config.model, test_cfg=config.test_cfg)
+    recognizer = build_recognizer(config.model)
     recognizer.cfg = config
 
     input_shape = [1, 1, 3, 32, 32, 32]
@@ -115,13 +113,13 @@ def test_i3d():
 
 
 def test_r2plus1d():
-    config = get_cfg('recognition',
-                     'r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb.py')
+    config = get_recognizer_cfg(
+        'r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb.py')
     config.model['backbone']['pretrained2d'] = False
     config.model['backbone']['pretrained'] = None
     config.model['backbone']['norm_cfg'] = dict(type='BN3d')
 
-    recognizer = build_recognizer(config.model, test_cfg=config.test_cfg)
+    recognizer = build_recognizer(config.model)
     recognizer.cfg = config
 
     input_shape = (1, 3, 3, 8, 32, 32)
@@ -131,10 +129,10 @@ def test_r2plus1d():
 
 
 def test_slowfast():
-    config = get_cfg('recognition',
-                     'slowfast/slowfast_r50_4x16x1_256e_kinetics400_rgb.py')
+    config = get_recognizer_cfg(
+        'slowfast/slowfast_r50_4x16x1_256e_kinetics400_rgb.py')
 
-    recognizer = build_recognizer(config.model, test_cfg=config.test_cfg)
+    recognizer = build_recognizer(config.model)
     recognizer.cfg = config
 
     input_shape = (1, 1, 3, 32, 32, 32)
@@ -144,32 +142,31 @@ def test_slowfast():
 
 
 def test_tsm():
-    config = get_cfg('recognition', 'tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py')
+    config = get_recognizer_cfg('tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py')
     config.model['backbone']['pretrained'] = None
     target_layer_name = 'backbone/layer4/1/relu'
 
     # base config
-    recognizer = build_recognizer(config.model, test_cfg=config.test_cfg)
+    recognizer = build_recognizer(config.model)
     recognizer.cfg = config
     input_shape = (1, 8, 3, 32, 32)
     _do_test_2D_models(recognizer, target_layer_name, input_shape)
 
     # test twice sample + 3 crops, 2*3*8=48
-    test_cfg = dict(average_clips='prob')
-    recognizer = build_recognizer(config.model, test_cfg=test_cfg)
+    config.model.test_cfg = dict(average_clips='prob')
+    recognizer = build_recognizer(config.model)
     recognizer.cfg = config
     input_shape = (1, 48, 3, 32, 32)
     _do_test_2D_models(recognizer, target_layer_name, input_shape)
 
 
 def test_csn():
-    config = get_cfg(
-        'recognition',
+    config = get_recognizer_cfg(
         'csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb.py')
     config.model['backbone']['pretrained2d'] = False
     config.model['backbone']['pretrained'] = None
 
-    recognizer = build_recognizer(config.model, test_cfg=config.test_cfg)
+    recognizer = build_recognizer(config.model)
     recognizer.cfg = config
     input_shape = (1, 1, 3, 32, 32, 32)
     target_layer_name = 'backbone/layer4/1/relu'
@@ -180,28 +177,27 @@ def test_csn():
 def test_tpn():
     target_layer_name = 'backbone/layer4/1/relu'
 
-    config = get_cfg('recognition', 'tpn/tpn_tsm_r50_1x1x8_150e_sthv1_rgb.py')
+    config = get_recognizer_cfg('tpn/tpn_tsm_r50_1x1x8_150e_sthv1_rgb.py')
     config.model['backbone']['pretrained'] = None
-    recognizer = build_recognizer(config.model, test_cfg=config.test_cfg)
+    recognizer = build_recognizer(config.model)
     recognizer.cfg = config
 
     input_shape = (1, 8, 3, 32, 32)
     _do_test_2D_models(recognizer, target_layer_name, input_shape, 174)
 
-    config = get_cfg('recognition',
-                     'tpn/tpn_slowonly_r50_8x8x1_150e_kinetics_rgb.py')
+    config = get_recognizer_cfg(
+        'tpn/tpn_slowonly_r50_8x8x1_150e_kinetics_rgb.py')
     config.model['backbone']['pretrained'] = None
-    recognizer = build_recognizer(config.model, test_cfg=config.test_cfg)
+    recognizer = build_recognizer(config.model)
     recognizer.cfg = config
     input_shape = (1, 3, 3, 8, 32, 32)
     _do_test_3D_models(recognizer, target_layer_name, input_shape)
 
 
 def test_c3d():
-    config = get_cfg('recognition',
-                     'c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb.py')
+    config = get_recognizer_cfg('c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb.py')
     config.model['backbone']['pretrained'] = None
-    recognizer = build_recognizer(config.model, test_cfg=config.test_cfg)
+    recognizer = build_recognizer(config.model)
     recognizer.cfg = config
     input_shape = (1, 1, 3, 16, 112, 112)
     target_layer_name = 'backbone/conv5a/activate'
@@ -211,12 +207,12 @@ def test_c3d():
 @pytest.mark.skipif(
     not torch.cuda.is_available(), reason='requires CUDA support')
 def test_tin():
-    config = get_cfg('recognition',
-                     'tin/tin_tsm_finetune_r50_1x1x8_50e_kinetics400_rgb.py')
+    config = get_recognizer_cfg(
+        'tin/tin_tsm_finetune_r50_1x1x8_50e_kinetics400_rgb.py')
     config.model['backbone']['pretrained'] = None
     target_layer_name = 'backbone/layer4/1/relu'
 
-    recognizer = build_recognizer(config.model, test_cfg=config.test_cfg)
+    recognizer = build_recognizer(config.model)
     recognizer.cfg = config
     input_shape = (1, 8, 3, 64, 64)
     _do_test_2D_models(
@@ -224,10 +220,9 @@ def test_tin():
 
 
 def test_x3d():
-    config = get_cfg('recognition',
-                     'x3d/x3d_s_13x6x1_facebook_kinetics400_rgb.py')
+    config = get_recognizer_cfg('x3d/x3d_s_13x6x1_facebook_kinetics400_rgb.py')
     config.model['backbone']['pretrained'] = None
-    recognizer = build_recognizer(config.model, test_cfg=config.test_cfg)
+    recognizer = build_recognizer(config.model)
     recognizer.cfg = config
     input_shape = (1, 1, 3, 13, 32, 32)
     target_layer_name = 'backbone/layer4/1/relu'

@@ -138,7 +138,8 @@ if __name__ == '__main__':
         cfg.model.backbone.pretrained = None
 
     # build the model
-    model = build_model(cfg.model, train_cfg=None, test_cfg=cfg.test_cfg)
+    model = build_model(
+        cfg.model, train_cfg=None, test_cfg=cfg.get('test_cfg'))
     model = _convert_batchnorm(model)
 
     # onnx.export does not support kwargs

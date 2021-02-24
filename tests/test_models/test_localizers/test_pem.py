@@ -5,10 +5,10 @@ from ..base import get_localizer_cfg
 
 
 def test_pem():
-    model_cfg, _, _ = get_localizer_cfg(
+    model_cfg = get_localizer_cfg(
         'bsn/bsn_pem_400x100_1x16_20e_activitynet_feature.py')
 
-    localizer_pem = build_localizer(model_cfg)
+    localizer_pem = build_localizer(model_cfg.model)
     bsp_feature = torch.rand(8, 100, 32)
     reference_temporal_iou = torch.rand(8, 100)
     losses = localizer_pem(bsp_feature, reference_temporal_iou)

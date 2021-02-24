@@ -1,3 +1,5 @@
+import warnings
+
 import torch.nn as nn
 from mmcv.utils import Registry, build_from_cfg
 
@@ -50,6 +52,16 @@ def build_head(cfg):
 
 def build_recognizer(cfg, train_cfg=None, test_cfg=None):
     """Build recognizer."""
+    if train_cfg is not None or test_cfg is not None:
+        warnings.warn(
+            'train_cfg and test_cfg is deprecated, '
+            'please specify them in model. Details see this '
+            'PR: https://github.com/open-mmlab/mmaction2/pull/629',
+            UserWarning)
+    assert cfg.get('train_cfg') is None or train_cfg is None, \
+        'train_cfg specified in both outer field and model field '
+    assert cfg.get('test_cfg') is None or test_cfg is None, \
+        'test_cfg specified in both outer field and model field '
     return build(cfg, RECOGNIZERS,
                  dict(train_cfg=train_cfg, test_cfg=test_cfg))
 
@@ -73,6 +85,12 @@ def build_model(cfg, train_cfg=None, test_cfg=None):
     if obj_type in RECOGNIZERS:
         return build_recognizer(cfg, train_cfg, test_cfg)
     if obj_type in DETECTORS:
+        if train_cfg is not None or test_cfg is not None:
+            warnings.warn(
+                'train_cfg and test_cfg is deprecated, '
+                'please specify them in model. Details see this '
+                'PR: https://github.com/open-mmlab/mmaction2/pull/629',
+                UserWarning)
         return build_detector(cfg, train_cfg, test_cfg)
     model_in_mmdet = ['FastRCNN']
     if obj_type in model_in_mmdet:
