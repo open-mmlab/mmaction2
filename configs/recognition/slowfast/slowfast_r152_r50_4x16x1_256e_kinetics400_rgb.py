@@ -130,7 +130,7 @@ log_config = dict(
     ])
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/slowfast_r152_3d_4x16x1_256e_kinetics400_rgb'
+work_dir = './work_dirs/slowfast_r152_r50_4x16x1_256e_kinetics400_rgb'
 load_from = None
 resume_from = None
 find_unused_parameters = False
