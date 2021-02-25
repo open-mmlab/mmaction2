@@ -124,120 +124,108 @@ def test_eval_hook():
         assert runner.meta is None or 'best_ckpt' not in runner.meta[
             'hook_msgs']
 
-        # when `save_best` is set to 'auto', first metric will be used.
-        loader = DataLoader(EvalDataset())
-        model = Model()
-        data_loader = DataLoader(EvalDataset())
-        eval_hook = EvalHook(data_loader, interval=1, save_best='auto')
+    # when `save_best` is set to 'auto', first metric will be used.
+    loader = DataLoader(EvalDataset())
+    model = Model()
+    data_loader = DataLoader(EvalDataset())
+    eval_hook = EvalHook(data_loader, interval=1, save_best='auto')
 
-        with tempfile.TemporaryDirectory() as tmpdir:
-            logger = get_logger('test_eval')
-            runner = EpochBasedRunner(
-                model=model, work_dir=tmpdir, logger=logger)
-            runner.register_checkpoint_hook(dict(interval=1))
-            runner.register_hook(eval_hook)
-            runner.run([loader], [('train', 1)], 8)
+    with tempfile.TemporaryDirectory() as tmpdir:
+        logger = get_logger('test_eval')
+        runner = EpochBasedRunner(model=model, work_dir=tmpdir, logger=logger)
+        runner.register_checkpoint_hook(dict(interval=1))
+        runner.register_hook(eval_hook)
+        runner.run([loader], [('train', 1)], 8)
 
-            ckpt_path = osp.join(tmpdir, 'best_acc_epoch_4.pth')
+        ckpt_path = osp.join(tmpdir, 'best_acc_epoch_4.pth')
 
-            assert runner.meta['hook_msgs']['best_ckpt'] == osp.realpath(
-                ckpt_path)
-            assert osp.exists(ckpt_path)
-            assert runner.meta['hook_msgs']['best_score'] == 7
+        assert runner.meta['hook_msgs']['best_ckpt'] == osp.realpath(ckpt_path)
+        assert osp.exists(ckpt_path)
+        assert runner.meta['hook_msgs']['best_score'] == 7
 
-        # total_epochs = 8, return the best acc and corresponding epoch
-        loader = DataLoader(EvalDataset())
-        model = Model()
-        data_loader = DataLoader(EvalDataset())
-        eval_hook = EvalHook(data_loader, interval=1, save_best='acc')
+    # total_epochs = 8, return the best acc and corresponding epoch
+    loader = DataLoader(EvalDataset())
+    model = Model()
+    data_loader = DataLoader(EvalDataset())
+    eval_hook = EvalHook(data_loader, interval=1, save_best='acc')
 
-        with tempfile.TemporaryDirectory() as tmpdir:
-            logger = get_logger('test_eval')
-            runner = EpochBasedRunner(
-                model=model, work_dir=tmpdir, logger=logger)
-            runner.register_checkpoint_hook(dict(interval=1))
-            runner.register_hook(eval_hook)
-            runner.run([loader], [('train', 1)], 8)
+    with tempfile.TemporaryDirectory() as tmpdir:
+        logger = get_logger('test_eval')
+        runner = EpochBasedRunner(model=model, work_dir=tmpdir, logger=logger)
+        runner.register_checkpoint_hook(dict(interval=1))
+        runner.register_hook(eval_hook)
+        runner.run([loader], [('train', 1)], 8)
 
-            ckpt_path = osp.join(tmpdir, 'best_acc_epoch_4.pth')
+        ckpt_path = osp.join(tmpdir, 'best_acc_epoch_4.pth')
 
-            assert runner.meta['hook_msgs']['best_ckpt'] == osp.realpath(
-                ckpt_path)
-            assert osp.exists(ckpt_path)
-            assert runner.meta['hook_msgs']['best_score'] == 7
+        assert runner.meta['hook_msgs']['best_ckpt'] == osp.realpath(ckpt_path)
+        assert osp.exists(ckpt_path)
+        assert runner.meta['hook_msgs']['best_score'] == 7
 
-        # total_epochs = 8, return the best score and corresponding epoch
-        data_loader = DataLoader(EvalDataset())
-        eval_hook = EvalHook(
-            data_loader, interval=1, save_best='score', rule='greater')
-        with tempfile.TemporaryDirectory() as tmpdir:
-            logger = get_logger('test_eval')
-            runner = EpochBasedRunner(
-                model=model, work_dir=tmpdir, logger=logger)
-            runner.register_checkpoint_hook(dict(interval=1))
-            runner.register_hook(eval_hook)
-            runner.run([loader], [('train', 1)], 8)
+    # total_epochs = 8, return the best score and corresponding epoch
+    data_loader = DataLoader(EvalDataset())
+    eval_hook = EvalHook(
+        data_loader, interval=1, save_best='score', rule='greater')
+    with tempfile.TemporaryDirectory() as tmpdir:
+        logger = get_logger('test_eval')
+        runner = EpochBasedRunner(model=model, work_dir=tmpdir, logger=logger)
+        runner.register_checkpoint_hook(dict(interval=1))
+        runner.register_hook(eval_hook)
+        runner.run([loader], [('train', 1)], 8)
 
-            ckpt_path = osp.join(tmpdir, 'best_score_epoch_4.pth')
+        ckpt_path = osp.join(tmpdir, 'best_score_epoch_4.pth')
 
-            assert runner.meta['hook_msgs']['best_ckpt'] == osp.realpath(
-                ckpt_path)
-            assert osp.exists(ckpt_path)
-            assert runner.meta['hook_msgs']['best_score'] == 7
+        assert runner.meta['hook_msgs']['best_ckpt'] == osp.realpath(ckpt_path)
+        assert osp.exists(ckpt_path)
+        assert runner.meta['hook_msgs']['best_score'] == 7
 
-        # total_epochs = 8, return the best score using less compare func
-        # and indicate corresponding epoch
-        data_loader = DataLoader(EvalDataset())
-        eval_hook = EvalHook(data_loader, save_best='acc', rule='less')
-        with tempfile.TemporaryDirectory() as tmpdir:
-            logger = get_logger('test_eval')
-            runner = EpochBasedRunner(
-                model=model, work_dir=tmpdir, logger=logger)
-            runner.register_checkpoint_hook(dict(interval=1))
-            runner.register_hook(eval_hook)
-            runner.run([loader], [('train', 1)], 8)
+    # total_epochs = 8, return the best score using less compare func
+    # and indicate corresponding epoch
+    data_loader = DataLoader(EvalDataset())
+    eval_hook = EvalHook(data_loader, save_best='acc', rule='less')
+    with tempfile.TemporaryDirectory() as tmpdir:
+        logger = get_logger('test_eval')
+        runner = EpochBasedRunner(model=model, work_dir=tmpdir, logger=logger)
+        runner.register_checkpoint_hook(dict(interval=1))
+        runner.register_hook(eval_hook)
+        runner.run([loader], [('train', 1)], 8)
 
-            ckpt_path = osp.join(tmpdir, 'best_acc_epoch_6.pth')
+        ckpt_path = osp.join(tmpdir, 'best_acc_epoch_6.pth')
 
-            assert runner.meta['hook_msgs']['best_ckpt'] == osp.realpath(
-                ckpt_path)
-            assert osp.exists(ckpt_path)
-            assert runner.meta['hook_msgs']['best_score'] == -3
+        assert runner.meta['hook_msgs']['best_ckpt'] == osp.realpath(ckpt_path)
+        assert osp.exists(ckpt_path)
+        assert runner.meta['hook_msgs']['best_score'] == -3
 
-        # Test the EvalHook when resume happend
-        data_loader = DataLoader(EvalDataset())
+    # Test the EvalHook when resume happend
+    data_loader = DataLoader(EvalDataset())
+    eval_hook = EvalHook(data_loader, save_best='acc')
+    with tempfile.TemporaryDirectory() as tmpdir:
+        logger = get_logger('test_eval')
+        runner = EpochBasedRunner(model=model, work_dir=tmpdir, logger=logger)
+        runner.register_checkpoint_hook(dict(interval=1))
+        runner.register_hook(eval_hook)
+        runner.run([loader], [('train', 1)], 2)
+
+        ckpt_path = osp.join(tmpdir, 'best_acc_epoch_2.pth')
+
+        assert runner.meta['hook_msgs']['best_ckpt'] == osp.realpath(ckpt_path)
+        assert osp.exists(ckpt_path)
+        assert runner.meta['hook_msgs']['best_score'] == 4
+
+        resume_from = osp.join(tmpdir, 'latest.pth')
+        loader = DataLoader(ExampleDataset())
         eval_hook = EvalHook(data_loader, save_best='acc')
-        with tempfile.TemporaryDirectory() as tmpdir:
-            logger = get_logger('test_eval')
-            runner = EpochBasedRunner(
-                model=model, work_dir=tmpdir, logger=logger)
-            runner.register_checkpoint_hook(dict(interval=1))
-            runner.register_hook(eval_hook)
-            runner.run([loader], [('train', 1)], 2)
+        runner = EpochBasedRunner(model=model, work_dir=tmpdir, logger=logger)
+        runner.register_checkpoint_hook(dict(interval=1))
+        runner.register_hook(eval_hook)
+        runner.resume(resume_from)
+        runner.run([loader], [('train', 1)], 8)
 
-            ckpt_path = osp.join(tmpdir, 'best_acc_epoch_2.pth')
+        ckpt_path = osp.join(tmpdir, 'best_acc_epoch_4.pth')
 
-            assert runner.meta['hook_msgs']['best_ckpt'] == osp.realpath(
-                ckpt_path)
-            assert osp.exists(ckpt_path)
-            assert runner.meta['hook_msgs']['best_score'] == 4
-
-            resume_from = osp.join(tmpdir, 'latest.pth')
-            loader = DataLoader(ExampleDataset())
-            eval_hook = EvalHook(data_loader, save_best='acc')
-            runner = EpochBasedRunner(
-                model=model, work_dir=tmpdir, logger=logger)
-            runner.register_checkpoint_hook(dict(interval=1))
-            runner.register_hook(eval_hook)
-            runner.resume(resume_from)
-            runner.run([loader], [('train', 1)], 8)
-
-            ckpt_path = osp.join(tmpdir, 'best_acc_epoch_4.pth')
-
-            assert runner.meta['hook_msgs']['best_ckpt'] == osp.realpath(
-                ckpt_path)
-            assert osp.exists(ckpt_path)
-            assert runner.meta['hook_msgs']['best_score'] == 7
+        assert runner.meta['hook_msgs']['best_ckpt'] == osp.realpath(ckpt_path)
+        assert osp.exists(ckpt_path)
+        assert runner.meta['hook_msgs']['best_score'] == 7
 
 
 @patch('mmaction.apis.single_gpu_test', MagicMock)
