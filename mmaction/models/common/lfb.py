@@ -61,6 +61,10 @@ class LFB(object):
         device (str): Where to load lfb. Choices are 'gpu', 'cpu' and 'lmdb'.
             A 1.65GB half-precision ava lfb (including training and validation)
             occupies about 2GB GPU memory. Default: 'gpu'.
+        lmdb_map_size (int): Map size of lmdb. Default: 4e9.
+        construct_lmdb (bool): Whether to construct lmdb. If you have
+            constructed lmdb of lfb, you can set to False to skip the
+            construction. Default: True.
     """
 
     def __init__(self,
@@ -69,7 +73,9 @@ class LFB(object):
                  window_size=60,
                  lfb_channels=2048,
                  dataset_modes=('train', 'val'),
-                 device='gpu'):
+                 device='gpu',
+                 lmdb_map_size=4e9,
+                 construct_lmdb=True):
         if not osp.exists(lfb_prefix_path):
             raise ValueError(
                 f'lfb prefix path {lfb_prefix_path} does not exist!')
@@ -98,11 +104,16 @@ class LFB(object):
         elif self.device == 'lmdb':
             assert lmdb_imported, (
                 'Please install `lmdb` to load lfb on lmdb!')
+            self.lmdb_map_size = lmdb_map_size
+            self.construct_lmdb = construct_lmdb
             self.lfb_lmdb_path = osp.normpath(
                 osp.join(self.lfb_prefix_path, 'lmdb'))
-            if rank == 0:
-                print('Loading LFB on lmdb...')
+
+            if rank == 0 and self.construct_lmdb:
+                print('Constructing LFB lmdb...')
                 self.load_lfb_on_lmdb()
+
+            # Synchronizes all processes to make sure lfb lmdb exist.
             dist.barrier()
             self.lmdb_env = lmdb.open(self.lfb_lmdb_path, readonly=True)
         else:
@@ -119,27 +130,23 @@ class LFB(object):
         print(f'LFB has been loaded on {map_location}.')
 
     def load_lfb_on_lmdb(self):
-        if osp.exists(self.lfb_lmdb_path):
-            print(f'lmdb has been constructed in {self.lfb_lmdb_path} before.')
-            return
-
         lfb = {}
         for dataset_mode in self.dataset_modes:
             lfb_path = osp.normpath(
                 osp.join(self.lfb_prefix_path, f'lfb_{dataset_mode}.pkl'))
             lfb.update(torch.load(lfb_path, map_location='cpu'))
 
-        lmdb_env = lmdb.open(self.lfb_lmdb_path)
-        with lmdb_env.begin(write=True) as txn:
-            for key, value in lfb.items():
-                buff = io.BytesIO()
-                torch.save(value, buff)
-                buff.seek(0)
-                txn.put(key.encode(), buff.read())
-                buff.close()
+        lmdb_env = lmdb.open(self.lfb_lmdb_path, map_size=self.lmdb_map_size)
+        for key, value in lfb.items():
+            txn = lmdb_env.begin(write=True)
+            buff = io.BytesIO()
+            torch.save(value, buff)
+            buff.seek(0)
+            txn.put(key.encode(), buff.read())
             txn.commit()
+            buff.close()
 
-        print(f'LFB has been loaded on {self.lfb_lmdb_path}!')
+        print(f'LFB lmdb has been constructed on {self.lfb_lmdb_path}!')
 
     def sample_long_term_features(self, video_id, timestamp):
         if self.device == 'lmdb':
