@@ -5,7 +5,7 @@ lfb_prefix_path = 'data/ava/lfb_half'
 max_num_sampled_feat = 5
 window_size = 60
 lfb_channels = 2048
-dataset_modes = ['train', 'val']
+dataset_modes = ('train', 'val')
 
 model = dict(
     roi_head=dict(
@@ -120,7 +120,7 @@ data = dict(
 data['test'] = data['val']
 evaluation = dict(interval=1, save_best='mAP@0.5IOU')
 
-optimizer = dict(type='SGD', lr=0.15, momentum=0.9, weight_decay=0.00001)
+optimizer = dict(type='SGD', lr=0.15, momentum=0.9, weight_decay=1e-05)
 # this lr is used for 8 gpus
 
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))

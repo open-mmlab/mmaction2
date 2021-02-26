@@ -14,6 +14,21 @@ except (ImportError, ModuleNotFoundError):
 
 
 class LFBInferHead(nn.Module):
+    """Long-Term Feature Bank Infer Head.
+
+    This head is used to derive and save the LFB without affecting the input.
+
+    Args:
+        lfb_prefix_path (str): The prefix path to store the lfb.
+        dataset_mode (str, optional): Which dataset to be inferred. Choices are
+            'train', 'val' or 'test'. Default: 'train'.
+        use_half_precision (bool, optional): Whether to store the
+            half-precision roi features. Default: True.
+        temporal_pool_type (str): The temporal pool type. Choices are 'avg' or
+            'max'. Default: 'avg'.
+        spatial_pool_type (str): The spatial pool type. Choices are 'avg' or
+            'max'. Default: 'max'.
+    """
 
     def __init__(self,
                  lfb_prefix_path,
@@ -65,6 +80,7 @@ class LFBInferHead(nn.Module):
             self.all_metadata.append(img_metas[ind]['img_key'])
         self.all_features += list(features)
 
+        # Return the input directly and doesn't affect the input.
         return x
 
     def __del__(self):

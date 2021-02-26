@@ -2,7 +2,7 @@ import copy
 
 import torch
 import torch.nn as nn
-from mmcv.cnn import ConvModule, constant_init, normal_init
+from mmcv.cnn import ConvModule, constant_init, kaiming_init
 from mmcv.runner import auto_fp16, load_checkpoint
 from mmcv.utils import _BatchNorm
 
@@ -49,7 +49,7 @@ class NonLocalLayer(nn.Module):
                  conv_cfg=None,
                  norm_cfg=None,
                  dropout_ratio=0.2,
-                 zero_init_out_conv=True):
+                 zero_init_out_conv=False):
         super().__init__()
         if conv_cfg is None:
             conv_cfg = dict(type='Conv3d')
@@ -116,7 +116,7 @@ class NonLocalLayer(nn.Module):
         elif pretrained is None:
             for m in self.modules():
                 if isinstance(m, nn.Conv3d):
-                    normal_init(m, mean=0, std=0.01, bias=0)
+                    kaiming_init(m)
                 elif isinstance(m, _BatchNorm):
                     constant_init(m, 1)
             if self.zero_init_out_conv:
@@ -241,8 +241,8 @@ class FBONonLocal(nn.Module):
             logger = get_root_logger()
             load_checkpoint(self, pretrained, strict=False, logger=logger)
         elif pretrained is None:
-            normal_init(self.st_feat_conv, mean=0, std=0.01, bias=0)
-            normal_init(self.lt_feat_conv, mean=0, std=0.01, bias=0)
+            kaiming_init(self.st_feat_conv)
+            kaiming_init(self.lt_feat_conv)
             for layer_name in self.non_local_layers:
                 non_local_layer = getattr(self, layer_name)
                 non_local_layer.init_weights(pretrained=pretrained)
