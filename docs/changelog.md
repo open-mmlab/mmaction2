@@ -27,6 +27,7 @@
 **ModelZoo**
 
 - Add TSM-MobileNetV2 for Kinetics400 ([#415](https://github.com/open-mmlab/mmaction2/pull/415))
+- Add deeper SlowFast models ([#605](https://github.com/open-mmlab/mmaction2/pull/605))
 
 ### 0.11.0 (31/01/2021)
 
