@@ -71,6 +71,13 @@ If the contents here do not cover your issue, please create an issue using the [
     train_dataloader=dict(drop_last=True)
     ```
 
+- **How to fix stages of backbone when finetuning a model ?**
+
+    You can refer to [`def _freeze_stages()`](https://github.com/open-mmlab/mmaction2/blob/0149a0e8c1e0380955db61680c0006626fd008e9/mmaction/models/backbones/x3d.py#L458) and [`frozen_stages`](https://github.com/open-mmlab/mmaction2/blob/0149a0e8c1e0380955db61680c0006626fd008e9/mmaction/models/backbones/x3d.py#L183-L184),
+    reminding to set `find_unused_parameters = True` in config files for distributed training or testing.
+
+    Actually, users can set `frozen_stages` to freeze stages in backbones except C3D model, since all backbones inheriting from `ResNet` and `ResNet3D` support the inner function `_freeze_stages()`.
+
 ## Testing
 
 - **How to make predicted score normalized by softmax within [0, 1] ?**
