@@ -102,7 +102,7 @@ which is convenient to conduct various experiments.
     test_cfg = dict(average_clips='score')  # Config for testing hyperparameters for BMN
 
     # dataset settings
-    dataset_type = 'ActivityNetDataset'  # Type of dataset for training, valiation and testing
+    dataset_type = 'ActivityNetDataset'  # Type of dataset for training, validation and testing
     data_root = 'data/activitynet_feature_cuhk/csv_mean_100/'  # Root path to data for training
     data_root_val = 'data/activitynet_feature_cuhk/csv_mean_100/'  # Root path to data for validation and testing
     ann_file_train = 'data/ActivityNet/anet_anno_train.json'  # Path to the annotation file for training
