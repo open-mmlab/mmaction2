@@ -6,14 +6,14 @@ MMAction2 提供的所有配置文件都放置在 `$MMAction2/configs` 文件夹
 
 <!-- TOC -->
 
-- [通过脚本参数修改配置信息]()
-- [配置文件结构]()
-- [配置文件命名规则]()
-  - [时序动作检测的配置文件系统]()
-  - [动作识别的配置文件系统]()
-  - [时空动作检测的配置文件系统]()
-- [常见问题]()
-  - [配置文件中的中间变量]()
+- [通过脚本参数修改配置信息](#通过脚本参数修改配置信息)
+- [配置文件结构](#配置文件结构)
+- [配置文件命名规则](#配置文件命名规则)
+  - [时序动作检测的配置文件系统](#时序动作检测的配置文件系统)
+  - [动作识别的配置文件系统](#动作识别的配置文件系统)
+  - [时空动作检测的配置文件系统](#时空动作检测的配置文件系统)
+- [常见问题](#常见问题)
+  - [配置文件中的中间变量](#配置文件中的中间变量)
 
 <!-- TOC -->
 
@@ -102,122 +102,646 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
     test_cfg = dict(average_clips='score')  # 测试 BMN 的超参配置
 
     # 数据集设置
-    dataset_type = 'ActivityNetDataset'  # Type of dataset for training, valiation and testing
-    data_root = 'data/activitynet_feature_cuhk/csv_mean_100/'  # Root path to data for training
-    data_root_val = 'data/activitynet_feature_cuhk/csv_mean_100/'  # Root path to data for validation and testing
-    ann_file_train = 'data/ActivityNet/anet_anno_train.json'  # Path to the annotation file for training
-    ann_file_val = 'data/ActivityNet/anet_anno_val.json'  # Path to the annotation file for validation
-    ann_file_test = 'data/ActivityNet/anet_anno_test.json'  # Path to the annotation file for testing
+    dataset_type = 'ActivityNetDataset'  # 训练，验证，测试的数据集类型
+    data_root = 'data/activitynet_feature_cuhk/csv_mean_100/'  # 训练集的根目录
+    data_root_val = 'data/activitynet_feature_cuhk/csv_mean_100/'  # 验证集和测试集的根目录
+    ann_file_train = 'data/ActivityNet/anet_anno_train.json'  # 训练集的标注文件
+    ann_file_val = 'data/ActivityNet/anet_anno_val.json'  # 验证集的标注文件
+    ann_file_test = 'data/ActivityNet/anet_anno_test.json'  # 测试集的标注文件
 
-    train_pipeline = [  # List of training pipeline steps
-        dict(type='LoadLocalizationFeature'),  # Load localization feature pipeline
-        dict(type='GenerateLocalizationLabels'),  # Generate localization labels pipeline
-        dict(  # Config of Collect
-            type='Collect',  # Collect pipeline that decides which keys in the data should be passed to the localizer
-            keys=['raw_feature', 'gt_bbox'],  # Keys of input
-            meta_name='video_meta',  # Meta name
-            meta_keys=['video_name']),  # Meta keys of input
-        dict(  # Config of ToTensor
-            type='ToTensor',  # Convert other types to tensor type pipeline
-            keys=['raw_feature']),  # Keys to be converted from image to tensor
-        dict(  # Config of ToDataContainer
-            type='ToDataContainer',  # Pipeline to convert the data to DataContainer
-            fields=[dict(key='gt_bbox', stack=False, cpu_only=True)])  # Required fields to be converted with keys and attributes
+    train_pipeline = [  # 训练流水线步骤组成的列表
+        dict(type='LoadLocalizationFeature'),  # 加载时序动作检测特征
+        dict(type='GenerateLocalizationLabels'),  # 生成时序动作检测标签
+        dict(  # Collect 类的配置
+            type='Collect',  # Collect 类决定哪些键会被传递到时序检测器中
+            keys=['raw_feature', 'gt_bbox'],  # 输入的键
+            meta_name='video_meta',  # 元名称
+            meta_keys=['video_name']),  # 输入的元键
+        dict(  # ToTensor 类的配置
+            type='ToTensor',  # ToTensor 类将其他类型转化为 Tensor 类型
+            keys=['raw_feature']),  # 将被从其他类型转化为 Tensor 类型的特征
+        dict(  # ToDataContainer 类的配置
+            type='ToDataContainer',  # 将一些信息转入到 ToDataContainer 中
+            fields=[dict(key='gt_bbox', stack=False, cpu_only=True)])  # 携带额外键和属性的信息域
     ]
-    val_pipeline = [  # List of validation pipeline steps
-        dict(type='LoadLocalizationFeature'),  # Load localization feature pipeline
-        dict(type='GenerateLocalizationLabels'),  # Generate localization labels pipeline
-        dict(  # Config of Collect
-            type='Collect',  # Collect pipeline that decides which keys in the data should be passed to the localizer
-            keys=['raw_feature', 'gt_bbox'],  # Keys of input
-            meta_name='video_meta',  # Meta name
+    val_pipeline = [  # 验证流水线步骤组成的列表
+        dict(type='LoadLocalizationFeature'),  # 加载时序动作检测特征
+        dict(type='GenerateLocalizationLabels'),  # 生成时序动作检测标签
+        dict(  # Collect 类的配置
+            type='Collect',  # Collect 类决定哪些键会被传递到时序检测器中
+            keys=['raw_feature', 'gt_bbox'],  # 输入的键
+            meta_name='video_meta',  # 元名称
             meta_keys=[
                 'video_name', 'duration_second', 'duration_frame', 'annotations',
                 'feature_frame'
-            ]),  # Meta keys of input
-        dict(  # Config of ToTensor
-            type='ToTensor',  # Convert other types to tensor type pipeline
-            keys=['raw_feature']),  # Keys to be converted from image to tensor
-        dict(  # Config of ToDataContainer
-            type='ToDataContainer',  # Pipeline to convert the data to DataContainer
-            fields=[dict(key='gt_bbox', stack=False, cpu_only=True)])  # Required fields to be converted with keys and attributes
+            ]),  # 输入的元键
+        dict(  # ToTensor 类的配置
+            type='ToTensor',  # ToTensor 类将其他类型转化为 Tensor 类型
+            keys=['raw_feature']),  # 将被从其他类型转化为 Tensor 类型的特征
+        dict(  # ToDataContainer 类的配置
+            type='ToDataContainer',  # 将一些信息转入到 ToDataContainer 中
+            fields=[dict(key='gt_bbox', stack=False, cpu_only=True)])  # 携带额外键和属性的信息域
     ]
-    test_pipeline = [  # List of testing pipeline steps
-        dict(type='LoadLocalizationFeature'),  # Load localization feature pipeline
-        dict(  # Config of Collect
-            type='Collect',  # Collect pipeline that decides which keys in the data should be passed to the localizer
-            keys=['raw_feature'],  # Keys of input
-            meta_name='video_meta',  # Meta name
+    test_pipeline = [  # 测试流水线步骤组成的列表
+        dict(type='LoadLocalizationFeature'),  # 加载时序动作检测特征
+        dict(  # Collect 类的配置
+            type='Collect',  # Collect 类决定哪些键会被传递到时序检测器中
+            keys=['raw_feature'],  # 输入的键
+            meta_name='video_meta',  # 元名称
             meta_keys=[
                 'video_name', 'duration_second', 'duration_frame', 'annotations',
                 'feature_frame'
-            ]),  # Meta keys of input
-        dict(  # Config of ToTensor
-            type='ToTensor',  # Convert other types to tensor type pipeline
-            keys=['raw_feature']),  # Keys to be converted from image to tensor
+            ]),  # 输入的元键
+        dict(  # ToTensor 类的配置
+            type='ToTensor',  # ToTensor 类将其他类型转化为 Tensor 类型
+            keys=['raw_feature']),  # 将被从其他类型转化为 Tensor 类型的特征
     ]
-    data = dict(  # Config of data
-        videos_per_gpu=8,  # Batch size of each single GPU
-        workers_per_gpu=8,  # Workers to pre-fetch data for each single GPU
-        train_dataloader=dict(  # Additional config of train dataloader
-            drop_last=True),  # Whether to drop out the last batch of data in training
-        val_dataloader=dict(  # Additional config of validation dataloader
-            videos_per_gpu=1),  # Batch size of each single GPU during evaluation
-        test_dataloader=dict(  # Additional config of test dataloader
-            videos_per_gpu=2),  # Batch size of each single GPU during testing
-        test=dict(  # Testing dataset config
+    data = dict(  # 数据的配置
+        videos_per_gpu=8,  # 单个 GPU 的批大小
+        workers_per_gpu=8,  # 单个 GPU 的 dataloader 的进程
+        train_dataloader=dict(  # 训练过程 dataloader 的额外设置
+            drop_last=True),  # 在训练过程中是否丢弃最后一个批次
+        val_dataloader=dict(  # 验证过程 dataloader 的额外设置
+            videos_per_gpu=1),  # 单个 GPU 的批大小
+        test_dataloader=dict(  # 测试过程 dataloader 的额外设置
+            videos_per_gpu=2),  # 单个 GPU 的批大小
+        test=dict(  # 测试数据集的设置
             type=dataset_type,
             ann_file=ann_file_test,
             pipeline=test_pipeline,
             data_prefix=data_root_val),
-        val=dict(  # Validation dataset config
+        val=dict(  # 验证数据集的设置
             type=dataset_type,
             ann_file=ann_file_val,
             pipeline=val_pipeline,
             data_prefix=data_root_val),
-        train=dict(  # Training dataset config
+        train=dict(  # 训练数据集的设置
             type=dataset_type,
             ann_file=ann_file_train,
             pipeline=train_pipeline,
             data_prefix=data_root))
 
-    # optimizer
+    # 优化器设置
     optimizer = dict(
-        # Config used to build optimizer, support (1). All the optimizers in PyTorch
-        # whose arguments are also the same as those in PyTorch. (2). Custom optimizers
-        # which are builed on `constructor`, referring to "tutorials/5_new_modules.md"
-        # for implementation.
-        type='Adam',  # Type of optimizer, refer to https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/optimizer/default_constructor.py#L13 for more details
-        lr=0.001,  # Learning rate, see detail usages of the parameters in the documentaion of PyTorch
-        weight_decay=0.0001)  # Weight decay of Adam
-    optimizer_config = dict(  # Config used to build the optimizer hook
-        grad_clip=None)  # Most of the methods do not use gradient clip
-    # learning policy
-    lr_config = dict(  # Learning rate scheduler config used to register LrUpdater hook
-        policy='step',  # Policy of scheduler, also support CosineAnnealing, Cyclic, etc. Refer to details of supported LrUpdater from https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/lr_updater.py#L9
-        step=7)  # Steps to decay the learning rate
+        # 构建优化器的设置, 支持 (1). 所有 PyTorch 原生的优化器，
+        # 这些优化器的参数和 PyTorch 对应的一致. (2). 自定义的优化器，
+        # 这些优化器在 `constructor` 的基础上构建, 更多细节可参考 "tutorials/5_new_modules.md" 部分
+        type='Adam',  # 优化器类型, 参考 https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/optimizer/default_constructor.py#L13 for more details
+        lr=0.001,  # 学习率, 参数的细节使用可参考 PyTorch 的对应文档
+        weight_decay=0.0001)  # Adam 优化器的权重衰减
+    optimizer_config = dict(  # 用于构建优化器钩子的设置
+        grad_clip=None)  # 大部分的方法不使用梯度裁剪
+    # 学习策略设置
+    lr_config = dict(  # 用于注册学习率调整钩子的设置
+        policy='step',  # 调整起策略, 支持 CosineAnnealing，Cyclic等方法。更多细节可参考 https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/lr_updater.py#L9
+        step=7)  # 学习率衰减步长
 
-    total_epochs = 9  # Total epochs to train the model
-    checkpoint_config = dict(  # Config to set the checkpoint hook, Refer to https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/checkpoint.py for implementation
-        interval=1)  # Interval to save checkpoint
-    evaluation = dict(  # Config of evaluation during training
-        interval=1,  # Interval to perform evaluation
-        metrics=['AR@AN'])  # Metrics to be performed
-    log_config = dict(  # Config to register logger hook
-        interval=50,  # Interval to print the log
-        hooks=[  # Hooks to be implemented during training
-            dict(type='TextLoggerHook'),  # The logger used to record the training process
-            # dict(type='TensorboardLoggerHook'),  # The Tensorboard logger is also supported
+    total_epochs = 9  # 训练模型的总周期数
+    checkpoint_config = dict(  # 检查点钩子设置，更多细节可参考 https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/checkpoint.py
+        interval=1)  # 检查点保存间隔
+    evaluation = dict(  # 训练期间做验证的设置
+        interval=1,  # 执行验证的间隔
+        metrics=['AR@AN'])  # 验证方法
+    log_config = dict(  # 注册日志钩子的设置
+        interval=50,  # 打印日志间隔
+        hooks=[  # 训练期间执行的钩子
+            dict(type='TextLoggerHook'),  # 记录训练过程信息的日志
+            # dict(type='TensorboardLoggerHook'),  # 同时支持 Tensorboard 日志
         ])
 
-    # runtime settings
-    dist_params = dict(backend='nccl')  # Parameters to setup distributed training, the port can also be set
-    log_level = 'INFO'  # The level of logging
-    work_dir = './work_dirs/bmn_400x100_2x8_9e_activitynet_feature/'  # Directory to save the model checkpoints and logs for the current experiments
-    load_from = None  # load models as a pre-trained model from a given path. This will not resume training
-    resume_from = None  # Resume checkpoints from a given path, the training will be resumed from the epoch when the checkpoint's is saved
-    workflow = [('train', 1)]  # Workflow for # runner. [('train', 1)] means there is only one workflow and the workflow named 'train' is executed once
-    output_config = dict(  # Config of localization ouput
-        out=f'{work_dir}/results.json',  # Path to output file
-        output_format='json')  # File format of output file
+    # 运行设置
+    dist_params = dict(backend='nccl')  # 建立分布式训练的设置，其中端口号也可以设置
+    log_level = 'INFO'  # 日志等级
+    work_dir = './work_dirs/bmn_400x100_2x8_9e_activitynet_feature/'  # 记录当前实验日志和检查点的文件夹
+    load_from = None  # 从给定路径加载模型作为预训练模型. 这个选项不会用于断点恢复训练
+    resume_from = None  # 加载给定路径的检查点作为断点续连的模型, 训练将从该时间点保存的周期点继续进行
+    workflow = [('train', 1)]  # runner 的执行流. [('train', 1)] 代表只有一个执行流，并且这个名为 train 的执行流只执行一次
+    output_config = dict(  # 时序检测器输出设置
+        out=f'{work_dir}/results.json',  # 输出文件路径
+        output_format='json')  # 输出文件格式
     ```
+
+### 动作识别的配置文件系统
+
+MMAction2 将模块化设计整合到配置文件系统中，以便于执行各种不同的实验。
+
+- 以 TSN 为例
+
+    为了帮助用户理解 MMAction2 的完整配置文件结构，及动作识别系统中的一些模块，这里以 TSN 为例对其配置文件进行了注释。
+    对于每个模块的详细用法以及对应参数的选择，请参照 API 文档。
+
+    ```python
+    # 模型设置
+    model = dict(  # 模型的配置
+        type='Recognizer2D',  # 动作识别器的类型
+        backbone=dict(  # Backbone 字典设置
+            type='ResNet',  # Backbone 名
+            pretrained='torchvision://resnet50',  # 预训练模型的 url/文件位置
+            depth=50,  # ResNet 模型深度
+            norm_eval=False),  # 训练时是否设置 BN 层为验证模式
+        cls_head=dict(  # 分类器字典设置
+            type='TSNHead',  # 分类器名
+            num_classes=400,  # 分类类别数量
+            in_channels=2048,  # 分类器里输入通道数
+            spatial_type='avg',  # 空间维度的池化种类
+            consensus=dict(type='AvgConsensus', dim=1),  # consensus 模块设置
+            dropout_ratio=0.4,  # dropout 层概率
+            init_std=0.01), # 线性层初始化 std 值
+            # 模型训练和测试的设置
+        train_cfg=None,  # 训练 TSN 的超参配置
+        test_cfg=dict(average_clips=None))  # 测试 TSN 的超参配置
+
+    # 数据集设置
+    dataset_type = 'RawframeDataset'  # 训练，验证，测试的数据集类型
+    data_root = 'data/kinetics400/rawframes_train/'  # 训练集的根目录
+    data_root_val = 'data/kinetics400/rawframes_val/'  # 验证集，测试集的根目录
+    ann_file_train = 'data/kinetics400/kinetics400_train_list_rawframes.txt'  # 训练集的标注文件
+    ann_file_val = 'data/kinetics400/kinetics400_val_list_rawframes.txt'  # 验证集的标注文件
+    ann_file_test = 'data/kinetics400/kinetics400_val_list_rawframes.txt'  # 测试集的标注文件
+    img_norm_cfg = dict(  # 图像正则化参数设置
+        mean=[123.675, 116.28, 103.53],  # 图像正则化需平均值
+        std=[58.395, 57.12, 57.375],  # 图像正则化方差
+        to_bgr=False)  # 是否将通道数从 RGB 转为 BGR
+
+    train_pipeline = [  # 训练流水线步骤组成的列表
+        dict(  # SampleFrames 类的配置
+            type='SampleFrames',  # 采帧，从视频帧中选定哪些帧要采
+            clip_len=1,  # 每个输出视频片段的帧
+            frame_interval=1,  # 所采相邻帧的时序间隔
+            num_clips=3),  # 所采帧片段的数
+        dict(  # RawFrameDecode 类的配置
+            type='RawFrameDecode'),  # 给定帧序列，加载对应帧, 解码对应帧
+        dict(  # Resize 类的配置
+            type='Resize',  # 调整图片尺寸
+            scale=(-1, 256)),  # 调整比例
+        dict(  # MultiScaleCrop 类的配置
+            type='MultiScaleCrop',  # 多尺寸裁剪, 随机从一系列给定尺寸从选择一个比例尺寸进行裁剪
+            input_size=224,  # 网络输入
+            scales=(1, 0.875, 0.75, 0.66),  # 长宽比例选择范围
+            random_crop=False,  # 是否进行随机裁剪
+            max_wh_scale_gap=1),  # 长宽最大比例间隔
+        dict(  # Resize 类的配置
+            type='Resize',  # 调整图片尺寸
+            scale=(224, 224),  # 调整比例
+            keep_ratio=False),  # 是否保持长宽比
+        dict(  # Flip 类的配置
+            type='Flip',  # 图片翻转
+            flip_ratio=0.5),  # 执行翻转几率
+        dict(  # Normalize 类的配置
+            type='Normalize',  # 图片正则化
+            **img_norm_cfg),  # 图片正则化参数
+        dict(  # FormatShape 类的配置
+            type='FormatShape',  # 将图片格式转变为给定的输入格式
+            input_format='NCHW'),  # 最终的图片组成格式
+        dict(  # Collect 类的配置
+            type='Collect',  # Collect 类决定哪些键会被传递到行为识别器中
+            keys=['imgs', 'label'],  # 输入的键
+            meta_keys=[]),  # 输入的元键
+        dict(  # ToTensor 类的配置
+            type='ToTensor',  # ToTensor 类将其他类型转化为 Tensor 类型
+            keys=['imgs', 'label'])  # 将被从其他类型转化为 Tensor 类型的特征
+    ]
+    val_pipeline = [  # 验证流水线步骤组成的列表
+        dict(  # SampleFrames 类的配置
+            type='SampleFrames',  # 采帧，从视频帧中选定哪些帧要采
+            clip_len=1,  # 每个输出视频片段的帧
+            frame_interval=1,  # 所采相邻帧的时序间隔
+            num_clips=3,  # 所采帧片段的数
+            test_mode=True),  # 是否设置为测试模式采帧
+        dict(  # RawFrameDecode 类的配置
+            type='RawFrameDecode'),  # 给定帧序列，加载对应帧, 解码对应帧
+        dict(  # Resize 类的配置
+            type='Resize',  # 调整图片尺寸
+            scale=(-1, 256)),  # 调整比例
+        dict(  # CenterCrop 类的配置
+            type='CenterCrop',  # 重心裁剪
+            crop_size=224),  # 裁剪部分的尺寸
+        dict(  # Flip 类的配置
+            type='Flip',  # 图片翻转
+            flip_ratio=0),  # 执行翻转几率
+        dict(  # Normalize 类的配置
+            type='Normalize',  # 图片正则化
+            **img_norm_cfg),  # 图片正则化参数
+        dict(  # FormatShape 类的配置
+            type='FormatShape',  # 将图片格式转变为给定的输入格式
+            input_format='NCHW'),  # 最终的图片组成格式
+        dict(  # Collect 类的配置
+            type='Collect',  # Collect 类决定哪些键会被传递到行为识别器中
+            keys=['imgs', 'label'],  # 输入的键
+            meta_keys=[]),  # 输入的元键
+        dict(  # ToTensor 类的配置
+            type='ToTensor',  # ToTensor 类将其他类型转化为 Tensor 类型
+            keys=['imgs'])  # 将被从其他类型转化为 Tensor 类型的特征
+    ]
+    test_pipeline = [  # 测试流水线步骤组成的列表
+        dict(  # SampleFrames 类的配置
+            type='SampleFrames',  # 采帧，从视频帧中选定哪些帧要采
+            clip_len=1,  # 每个输出视频片段的帧
+            frame_interval=1,  # 所采相邻帧的时序间隔
+            num_clips=25,  # 所采帧片段的数
+            test_mode=True),  # 是否设置为测试模式采帧
+        dict(  # RawFrameDecode 类的配置
+            type='RawFrameDecode'),  # 给定帧序列，加载对应帧, 解码对应帧
+        dict(  # Resize 类的配置
+            type='Resize',  # 调整图片尺寸
+            scale=(-1, 256)),  # 调整比例
+        dict(  # TenCrop 类的配置
+            type='TenCrop',  # 裁剪 10 个区域
+            crop_size=224),  # 裁剪部分的尺寸
+        dict(  # Flip 类的配置
+            type='Flip',  # 图片翻转
+            flip_ratio=0),  # 执行翻转几率
+        dict(  # Normalize 类的配置
+            type='Normalize',  # 图片正则化
+            **img_norm_cfg),  # 图片正则化参数
+        dict(  # FormatShape 类的配置
+            type='FormatShape',  # 将图片格式转变为给定的输入格式
+            input_format='NCHW'),  # 最终的图片组成格式
+        dict(  # Collect 类的配置
+            type='Collect',  # Collect 类决定哪些键会被传递到行为识别器中
+            keys=['imgs', 'label'],  # 输入的键
+            meta_keys=[]),  # 输入的元键
+        dict(  # ToTensor 类的配置
+            type='ToTensor',  # ToTensor 类将其他类型转化为 Tensor 类型
+            keys=['imgs'])  # 将被从其他类型转化为 Tensor 类型的特征
+    ]
+    data = dict(  # 数据的配置
+        videos_per_gpu=32,  # 单个 GPU 的批大小
+        workers_per_gpu=4,  # 单个 GPU 的 dataloader 的进程
+        train_dataloader=dict(  # 训练过程 dataloader 的额外设置
+            drop_last=True),  # 在训练过程中是否丢弃最后一个批次
+        val_dataloader=dict(  # 验证过程 dataloader 的额外设置
+            videos_per_gpu=1),  # 单个 GPU 的批大小
+        test_dataloader=dict(  # 测试过程 dataloader 的额外设置
+            videos_per_gpu=2),  # 单个 GPU 的批大小
+        train=dict(  # 训练数据集的设置
+            type=dataset_type,
+            ann_file=ann_file_train,
+            data_prefix=data_root,
+            pipeline=train_pipeline),
+        val=dict(  # 验证数据集的设置
+            type=dataset_type,
+            ann_file=ann_file_val,
+            data_prefix=data_root_val,
+            pipeline=val_pipeline),
+        test=dict(  # 测试数据集的设置
+            type=dataset_type,
+            ann_file=ann_file_test,
+            data_prefix=data_root_val,
+            pipeline=test_pipeline))
+    # 优化器设置
+    optimizer = dict(
+        # 构建优化器的设置, 支持 (1). 所有 PyTorch 原生的优化器，
+        # 这些优化器的参数和 PyTorch 对应的一致. (2). 自定义的优化器，
+        # 这些优化器在 `constructor` 的基础上构建, 更多细节可参考 "tutorials/5_new_modules.md" 部分
+        type='SGD',  # 优化器类型, 参考 https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/optimizer/default_constructor.py#L13
+        lr=0.01,  # 学习率, 参数的细节使用可参考 PyTorch 的对应文档
+        momentum=0.9,  # 动量大小
+        weight_decay=0.0001)  # SGD 优化器权重衰减
+    optimizer_config = dict(  # 用于构建优化器钩子的设置
+        grad_clip=dict(max_norm=40, norm_type=2))  # 使用梯度裁剪
+    # 学习策略设置
+    lr_config = dict(  # 用于注册学习率调整钩子的设置
+        policy='step',  # 调整器策略, 支持 CosineAnnealing，Cyclic等方法。更多细节可参考 https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/lr_updater.py#L9
+        step=[40, 80])  # 学习率衰减步长
+    total_epochs = 100  # 训练模型的总周期数
+    checkpoint_config = dict(  # 检查点钩子设置，更多细节可参考 https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/checkpoint.py
+        interval=5)  # 检查点保存间隔
+    evaluation = dict(  # 训练期间做验证的设置
+        interval=5,  # 执行验证的间隔
+        metrics=['top_k_accuracy', 'mean_class_accuracy'],  # 验证方法
+        save_best='top_k_accuracy')  # 设置 `top_k_accuracy` 作为指示器，用于存储最好的检查点
+    log_config = dict(  # 注册日志钩子的设置
+        interval=20,  # 打印日志间隔
+        hooks=[  # 训练期间执行的钩子
+            dict(type='TextLoggerHook'),  # 记录训练过程信息的日志
+            # dict(type='TensorboardLoggerHook'),  # 同时支持 Tensorboard 日志
+        ])
+
+    # 运行设置
+    dist_params = dict(backend='nccl')  # 建立分布式训练的设置，其中端口号也可以设置
+    log_level = 'INFO'  # 日志等级
+    work_dir = './work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb/'  # 记录当前实验日志和检查点的文件夹
+    load_from = None  # 从给定路径加载模型作为预训练模型. 这个选项不会用于断点恢复训练
+    resume_from = None  # 加载给定路径的检查点作为断点续连的模型, 训练将从该时间点保存的周期点继续进行
+    workflow = [('train', 1)]  # runner 的执行流. [('train', 1)] 代表只有一个执行流，并且这个名为 train 的执行流只执行一次
+
+    ```
+
+### 时空动作检测的配置文件系统
+
+MMAction2 将模块化设计整合到配置文件系统中，以便于执行各种不同的实验。
+
+- 以 FastRCNN 为例
+
+    为了帮助用户理解 MMAction2 的完整配置文件结构，及时空检测系统中的一些模块，这里以 FastRCNN 为例对其配置文件进行了注释。
+    对于每个模块的详细用法以及对应参数的选择，请参照 API 文档。
+
+    ```python
+    # 模型设置
+    model = dict(  # 模型的配置
+        type='FastRCNN',  # 时空检测器类型
+        backbone=dict(  # Backbone 字典设置
+            type='ResNet3dSlowOnly',  # Backbone 名
+            depth=50, # ResNet 模型深度
+            pretrained=None,   # 预训练模型的 url/文件位置
+            pretrained2d=False, # 预训练模型是否为 2D 模型
+            lateral=False,  # backbone 是否有侧连接
+            num_stages=4, # ResNet 模型阶数
+            conv1_kernel=(1, 7, 7), # Conv1 卷积核尺寸
+            conv1_stride_t=1, # Conv1 时序步长
+            pool1_stride_t=1, # Pool1 时序步长
+            spatial_strides=(1, 2, 2, 1)),  # 每个 ResNet 阶的空间步长
+        roi_head=dict(  # roi_head 字典设置
+            type='AVARoIHead',  # roi_head 名
+            bbox_roi_extractor=dict(  # bbox_roi_extractor 字典设置
+                type='SingleRoIExtractor3D',  # bbox_roi_extractor 名
+                roi_layer_type='RoIAlign',  # RoI op 类型
+                output_size=8,  # RoI op 输出特征尺寸
+                with_temporal_pool=True), # 时序维度是否要经过池化
+            bbox_head=dict( # bbox_head 字典设置
+                type='BBoxHeadAVA', # bbox_head 名
+                in_channels=2048, # 输入特征通道数
+                num_classes=81, # 动作类别数 + 1
+                multilabel=True,  # 数据集是否多标签
+                dropout_ratio=0.5)),  # dropout 比率
+        # 模型训练和测试的设置
+        train_cfg=dict(  # 训练 FastRCNN 的超参配置
+            rcnn=dict(  # rcnn 训练字典设置
+                assigner=dict(  # assigner 字典设置
+                    type='MaxIoUAssignerAVA', # assigner 名
+                    pos_iou_thr=0.9,  # 正样本 IoU 阈值, > pos_iou_thr -> positive
+                    neg_iou_thr=0.9,  # 负样本 IoU 阈值, < neg_iou_thr -> negative
+                    min_pos_iou=0.9), # 正样本最小可接受 IoU
+                sampler=dict( # sample 字典设置
+                    type='RandomSampler', # sampler 名
+                    num=32, # sampler 批大小
+                    pos_fraction=1, # sampler 正样本边界框比率
+                    neg_pos_ub=-1,  # 负样本数转正样本数的比率上界
+                    add_gt_as_proposals=True), # 是否添加 ground truth 为候选
+                pos_weight=1.0, # 正样本 loss 权重
+                debug=False)), # 是否为 debug 模式
+        test_cfg=dict( # 测试 FastRCNN 的超参设置
+            rcnn=dict(  # rcnn 测试字典设置
+                action_thr=0.00))) # 某行为的阈值
+
+    # 数据集设置
+    dataset_type = 'AVADataset' # 训练，验证，测试的数据集类型
+    data_root = 'data/ava/rawframes'  # 训练集的根目录
+    anno_root = 'data/ava/annotations'  # 标注文件目录
+
+    ann_file_train = f'{anno_root}/ava_train_v2.1.csv'  # 训练集的标注文件
+    ann_file_val = f'{anno_root}/ava_val_v2.1.csv'  # 验证集的标注文件
+
+    exclude_file_train = f'{anno_root}/ava_train_excluded_timestamps_v2.1.csv'  # 训练除外数据集文件路径
+    exclude_file_val = f'{anno_root}/ava_val_excluded_timestamps_v2.1.csv'  # 验证除外数据集文件路径
+
+    label_file = f'{anno_root}/ava_action_list_v2.1_for_activitynet_2018.pbtxt'  # 标签文件路径
+
+    proposal_file_train = f'{anno_root}/ava_dense_proposals_train.FAIR.recall_93.9.pkl'  # 训练样本检测候选框的文件路径
+    proposal_file_val = f'{anno_root}/ava_dense_proposals_val.FAIR.recall_93.9.pkl'  # 验证样本检测候选框的文件路径
+
+    img_norm_cfg = dict(  # 图像正则化参数设置
+        mean=[123.675, 116.28, 103.53], # 图像正则化需平均值
+        std=[58.395, 57.12, 57.375],   # 图像正则化方差
+        to_bgr=False) # 是否将通道数从 RGB 转为 BGR
+
+    train_pipeline = [  # 训练流水线步骤组成的列表
+        dict(  # SampleFrames 类的配置
+            type='AVASampleFrames',  # 采帧，从视频帧中选定哪些帧要采
+            clip_len=4,  # 每个输出视频片段的帧
+            frame_interval=16), # 所采相邻帧的时序间隔
+        dict(  # RawFrameDecode 类的配置
+            type='RawFrameDecode'),  # 给定帧序列，加载对应帧, 解码对应帧
+        dict(  # RandomRescale 类的配置
+            type='RandomRescale',   # 给定一个范围，进行随机短边缩放
+            scale_range=(256, 320)),   # RandomRescale 的短边缩放范围
+        dict(  # RandomCrop 类的配置
+            type='RandomCrop',   # 给定一个尺寸进行随机裁剪
+            size=256),   # 裁剪尺寸
+        dict(  # Flip 类的配置
+            type='Flip',  # 图片翻转
+            flip_ratio=0.5),  # 执行翻转几率
+        dict(  # Normalize 类的配置
+            type='Normalize',  # 图片正则化
+            **img_norm_cfg),  # 图片正则化参数
+        dict(  # FormatShape 类的配置
+            type='FormatShape',  # 将图片格式转变为给定的输入格式
+            input_format='NCTHW',  # 最终的图片组成格式
+            collapse=True),   # 去掉 N 梯度当 N == 1
+        dict(  # Rename 类的配置
+            type='Rename',  # 重命名 key 名
+            mapping=dict(imgs='img')),  # 改名映射字典
+        dict(  # ToTensor 类的配置
+            type='ToTensor',  # ToTensor 类将其他类型转化为 Tensor 类型
+            keys=['img', 'proposals', 'gt_bboxes', 'gt_labels']),  # 将被从其他类型转化为 Tensor 类型的特征
+        dict(  # ToDataContainer 类的配置
+            type='ToDataContainer',  # 将一些信息转入到 ToDataContainer 中
+            fields=[   # 转化为 Datacontainer 的域
+                dict(   # 域字典
+                    key=['proposals', 'gt_bboxes', 'gt_labels'],  # 将转化为 Datacontyainer 的键
+                    stack=False)]),  # 是否要堆列这些 tensor
+        dict(  # Collect 类的配置
+            type='Collect',  # Collect 类决定哪些键会被传递到时空检测器中
+            keys=['img', 'proposals', 'gt_bboxes', 'gt_labels'],  # 输入的键
+            meta_keys=['scores', 'entity_ids']),  # 输入的元键
+    ]
+
+    val_pipeline = [  # 验证流水线步骤组成的列表
+        dict(  # SampleFrames 类的配置
+            type='AVASampleFrames',  # 采帧，从视频帧中选定哪些帧要采
+            clip_len=4,  # 每个输出视频片段的帧
+            frame_interval=16),  # 所采相邻帧的时序间隔
+        dict(  # RawFrameDecode 类的配置
+            type='RawFrameDecode'),  # 给定帧序列，加载对应帧, 解码对应帧
+        dict(  # Resize 类的配置
+            type='Resize',  # 调整图片尺寸
+            scale=(-1, 256)),  # 调整比例
+        dict(  # Normalize 类的配置
+            type='Normalize',  # 图片正则化
+            **img_norm_cfg),  # 图片正则化参数
+        dict(  # FormatShape 类的配置
+            type='FormatShape',  # 将图片格式转变为给定的输入格式
+            input_format='NCTHW',  # 最终的图片组成格式
+            collapse=True),   # 去掉 N 梯度当 N == 1
+        dict(  # Rename 类的配置
+            type='Rename',  # 重命名 key 名
+            mapping=dict(imgs='img')),  # 改名映射字典
+        dict(  # ToTensor 类的配置
+            type='ToTensor',  # ToTensor 类将其他类型转化为 Tensor 类型
+            keys=['img', 'proposals']),  # 将被从其他类型转化为 Tensor 类型的特征
+        dict(  # ToDataContainer 类的配置
+            type='ToDataContainer',  # 将一些信息转入到 ToDataContainer 中
+            fields=[   # 转化为 Datacontainer 的域
+                dict(   # 域字典
+                    key=['proposals'],  # 将转化为 Datacontyainer 的键
+                    stack=False)]),  # 是否要堆列这些 tensor
+        dict(  # Collect 类的配置
+            type='Collect',  # Collect 类决定哪些键会被传递到时空检测器中
+            keys=['img', 'proposals'],  # 输入的键
+            meta_keys=['scores', 'entity_ids'],  # 输入的元键
+            nested=True)  # 是否将数据包装为嵌套列表
+    ]
+
+    data = dict(  # 数据的配置
+        videos_per_gpu=16,  # 单个 GPU 的批大小
+        workers_per_gpu=4,  # 单个 GPU 的 dataloader 的进程
+        val_dataloader=dict(   # 验证过程 dataloader 的额外设置
+            videos_per_gpu=1),  # 单个 GPU 的批大小
+        train=dict(   # 训练数据集的设置
+            type=dataset_type,
+            ann_file=ann_file_train,
+            exclude_file=exclude_file_train,
+            pipeline=train_pipeline,
+            label_file=label_file,
+            proposal_file=proposal_file_train,
+            person_det_score_thr=0.9,
+            data_prefix=data_root),
+        val=dict(     # 验证数据集的设置
+            type=dataset_type,
+            ann_file=ann_file_val,
+            exclude_file=exclude_file_val,
+            pipeline=val_pipeline,
+            label_file=label_file,
+            proposal_file=proposal_file_val,
+            person_det_score_thr=0.9,
+            data_prefix=data_root))
+    data['test'] = data['val']    # 将验证数据集设置复制到测试数据集设置
+
+    # 优化器设置
+    optimizer = dict(
+        # 构建优化器的设置, 支持 (1). 所有 PyTorch 原生的优化器，
+        # 这些优化器的参数和 PyTorch 对应的一致. (2). 自定义的优化器，
+        # 这些优化器在 `constructor` 的基础上构建, 更多细节可参考 "tutorials/5_new_modules.md" 部分
+        type='SGD',  # 优化器类型, 参考 https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/optimizer/default_constructor.py#L13
+        lr=0.2,  # 学习率, 参数的细节使用可参考 PyTorch 的对应文档
+        momentum=0.9,  # 动量大小
+        weight_decay=0.00001)  # SGD 优化器权重衰减
+
+    optimizer_config = dict(  # 用于构建优化器钩子的设置
+        grad_clip=dict(max_norm=40, norm_type=2))   # 使用梯度裁剪
+
+    lr_config = dict(  # 用于注册学习率调整钩子的设置
+        policy='step',  # 调整器策略, 支持 CosineAnnealing，Cyclic等方法。更多细节可参考 https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/lr_updater.py#L9
+        step=[40, 80],  # 学习率衰减步长
+        warmup='linear',  # Warmup 策略
+        warmup_by_epoch=True,  # Warmup 单位为 epoch 还是 iteration
+        warmup_iters=5,   # warmup 数
+        warmup_ratio=0.1)   # 初始学习率为 warmup_ratio * lr
+
+    total_epochs = 20  # 训练模型的总周期数
+    checkpoint_config = dict(  # 检查点钩子设置，更多细节可参考 https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/checkpoint.py
+        interval=1)   # 检查点保存间隔
+    workflow = [('train', 1)]   # runner 的执行流. [('train', 1)] 代表只有一个执行流，并且这个名为 train 的执行流只执行一次
+    evaluation = dict(  # 训练期间做验证的设置
+        interval=1, save_best='mAP@0.5IOU')  # 执行验证的间隔，以及设置 `mAP@0.5IOU` 作为指示器，用于存储最好的检查点
+    log_config = dict(  # 注册日志钩子的设置
+        interval=20,  # 打印日志间隔
+        hooks=[  # 训练期间执行的钩子
+            dict(type='TextLoggerHook'),  # 记录训练过程信息的日志
+        ])
+
+    # 运行设置
+    dist_params = dict(backend='nccl')  # 建立分布式训练的设置，其中端口号也可以设置
+    log_level = 'INFO'  # 日志等级
+    work_dir = ('./work_dirs/ava/'  # 记录当前实验日志和检查点的文件夹
+                'slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb')
+    load_from = ('https://download.openmmlab.com/mmaction/recognition/slowonly/'  # 从给定路径加载模型作为预训练模型. 这个选项不会用于断点恢复训练
+                 'slowonly_r50_4x16x1_256e_kinetics400_rgb/'
+                 'slowonly_r50_4x16x1_256e_kinetics400_rgb_20200704-a69556c6.pth')
+    resume_from = None  # 加载给定路径的检查点作为断点续连的模型, 训练将从该时间点保存的周期点继续进行
+    ```
+
+## 常见问题
+
+### 配置文件中的中间变量
+
+配置文件中会用到一些中间变量，如 `train_pipeline`/`val_pipeline`/`test_pipeline`, `ann_file_train`/`ann_file_val`/`ann_file_test`, `img_norm_cfg` 等。
+
+例如，首先定义 `train_pipeline`/`val_pipeline`/`test_pipeline` 并将其传给 `data`。因此，`train_pipeline`/`val_pipeline`/`test_pipeline` 为中间变量
+
+这里也定义了 `ann_file_train`/`ann_file_val`/`ann_file_test` 和 `data_root`/`data_root_val` 以为数据处理流程提供一些基本信息。
+
+此外，使用 `img_norm_cfg` 作为中间变量，构建一些数组增强组件。
+
+```python
+...
+dataset_type = 'RawframeDataset'
+data_root = 'data/kinetics400/rawframes_train'
+data_root_val = 'data/kinetics400/rawframes_val'
+ann_file_train = 'data/kinetics400/kinetics400_train_list_rawframes.txt'
+ann_file_val = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
+ann_file_test = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
+
+img_norm_cfg = dict(
+    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
+
+train_pipeline = [
+    dict(type='SampleFrames', clip_len=32, frame_interval=2, num_clips=1),
+    dict(type='RawFrameDecode'),
+    dict(type='Resize', scale=(-1, 256)),
+    dict(
+        type='MultiScaleCrop',
+        input_size=224,
+        scales=(1, 0.8),
+        random_crop=False,
+        max_wh_scale_gap=0),
+    dict(type='Resize', scale=(224, 224), keep_ratio=False),
+    dict(type='Flip', flip_ratio=0.5),
+    dict(type='Normalize', **img_norm_cfg),
+    dict(type='FormatShape', input_format='NCTHW'),
+    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
+    dict(type='ToTensor', keys=['imgs', 'label'])
+]
+val_pipeline = [
+    dict(
+        type='SampleFrames',
+        clip_len=32,
+        frame_interval=2,
+        num_clips=1,
+        test_mode=True),
+    dict(type='RawFrameDecode'),
+    dict(type='Resize', scale=(-1, 256)),
+    dict(type='CenterCrop', crop_size=224),
+    dict(type='Flip', flip_ratio=0),
+    dict(type='Normalize', **img_norm_cfg),
+    dict(type='FormatShape', input_format='NCTHW'),
+    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
+    dict(type='ToTensor', keys=['imgs'])
+]
+test_pipeline = [
+    dict(
+        type='SampleFrames',
+        clip_len=32,
+        frame_interval=2,
+        num_clips=10,
+        test_mode=True),
+    dict(type='RawFrameDecode'),
+    dict(type='Resize', scale=(-1, 256)),
+    dict(type='ThreeCrop', crop_size=256),
+    dict(type='Flip', flip_ratio=0),
+    dict(type='Normalize', **img_norm_cfg),
+    dict(type='FormatShape', input_format='NCTHW'),
+    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
+    dict(type='ToTensor', keys=['imgs'])
+]
+
+data = dict(
+    videos_per_gpu=8,
+    workers_per_gpu=4,
+    train=dict(
+        type=dataset_type,
+        ann_file=ann_file_train,
+        data_prefix=data_root,
+        pipeline=train_pipeline),
+    val=dict(
+        type=dataset_type,
+        ann_file=ann_file_val,
+        data_prefix=data_root_val,
+        pipeline=val_pipeline),
+    test=dict(
+        type=dataset_type,
+        ann_file=ann_file_val,
+        data_prefix=data_root_val,
+        pipeline=test_pipeline))
+```

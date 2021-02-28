@@ -270,7 +270,7 @@ class TemporalInterlace(nn.Module):
         # x_pooled: [num_batches, num_folds, num_segments]
         x_pooled = x_pooled.permute(0, 2, 1).contiguous()
 
-        # Calculate weight and bias, here groups = 2
+        # Calculate width and bias, here groups = 2
         # x_offset: [num_batches, groups]
         x_offset = self.offset_net(x_pooled).view(num_batches, -1)
         # x_weight: [num_batches, num_segments, groups]

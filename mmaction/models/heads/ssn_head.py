@@ -355,7 +355,7 @@ class SSNHead(nn.Module):
                 self.regressor_fc.out_features * stpp_feat_multiplier)
         self.test_fc = nn.Linear(in_features, out_features)
 
-        # Fetch weight and bias of the reorganized fc.
+        # Fetch width and bias of the reorganized fc.
         complete_weight = self.completeness_fc.weight.data.view(
             self.completeness_fc.out_features, stpp_feat_multiplier,
             in_features).transpose(0, 1).contiguous().view(-1, in_features)
