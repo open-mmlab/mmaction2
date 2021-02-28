@@ -49,7 +49,7 @@ MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLa
 
 ## 更新记录
 
-v0.11.0 版本已于 2021 年 1 月 31 日发布，可通过查阅 [更新日志](docs/changelog.md) 了解更多细节以及发布历史
+v0.12.0 版本已于 2021 年 2 月 28 日发布，可通过查阅 [更新日志](/docs/changelog.md) 了解更多细节以及发布历史
 
 ## 基准测试
 
@@ -64,7 +64,7 @@ v0.11.0 版本已于 2021 年 1 月 31 日发布，可通过查阅 [更新日志
 | [Slowfast](/configs/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb.py)|256p videos|Disk|8x8 | **[0.69](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction2/slowfast_256p_videos_disk_8x8.zip)** | x | x | [1.04](https://download.openmmlab.com/mmaction/benchmark/recognition/pyslowfast/pysf_slowfast_r50_4x16_video.log) |
 | [R(2+1)D](/configs/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb.py)|256p videos |Disk| 8x8|**[0.45](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction2/r2plus1d_256p_videos_disk_8x8.zip)** | x | x | x |
 
-更多详情可见 [基准测试](docs/benchmark.md)
+更多详情可见 [基准测试](/docs/benchmark.md)
 
 ## 模型库
 
@@ -73,21 +73,21 @@ v0.11.0 版本已于 2021 年 1 月 31 日发布，可通过查阅 [更新日志
 <details open>
 <summary>(点击收起)</summary>
 
-- [x] [TSN](configs/recognition/tsn/README.md) (ECCV'2016)
-- [x] [TSM](configs/recognition/tsm/README.md) (ICCV'2019)
-- [x] [TSM Non-Local](configs/recognition/i3d) (ICCV'2019)
-- [x] [R(2+1)D](configs/recognition/r2plus1d/README.md) (CVPR'2018)
-- [x] [I3D](configs/recognition/i3d/README.md) (CVPR'2017)
-- [x] [I3D Non-Local](configs/recognition/i3d/README.md) (CVPR'2018)
-- [x] [SlowOnly](configs/recognition/slowonly/README.md) (ICCV'2019)
-- [x] [SlowFast](configs/recognition/slowfast/README.md) (ICCV'2019)
-- [x] [CSN](configs/recognition/csn/README.md) (ICCV'2019)
-- [x] [TIN](configs/recognition/tin/README.md) (AAAI'2020)
-- [x] [TPN](configs/recognition/tpn/README.md) (CVPR'2020)
-- [x] [C3D](configs/recognition/c3d/README.md) (CVPR'2014)
-- [x] [X3D](configs/recognition/x3d/README.md) (CVPR'2020)
-- [x] [OmniSource](configs/recognition/omnisource/README.md) (ECCV'2020)
-- [x] [MultiModality: Audio](configs/recognition_audio/resnet/README.md) (ArXiv'2020)
+- [x] [TSN](/configs/recognition/tsn/README.md) (ECCV'2016)
+- [x] [TSM](/configs/recognition/tsm/README.md) (ICCV'2019)
+- [x] [TSM Non-Local](/configs/recognition/i3d) (ICCV'2019)
+- [x] [R(2+1)D](/configs/recognition/r2plus1d/README.md) (CVPR'2018)
+- [x] [I3D](/configs/recognition/i3d/README.md) (CVPR'2017)
+- [x] [I3D Non-Local](/configs/recognition/i3d/README.md) (CVPR'2018)
+- [x] [SlowOnly](/configs/recognition/slowonly/README.md) (ICCV'2019)
+- [x] [SlowFast](/configs/recognition/slowfast/README.md) (ICCV'2019)
+- [x] [CSN](/configs/recognition/csn/README.md) (ICCV'2019)
+- [x] [TIN](/configs/recognition/tin/README.md) (AAAI'2020)
+- [x] [TPN](/configs/recognition/tpn/README.md) (CVPR'2020)
+- [x] [C3D](/configs/recognition/c3d/README.md) (CVPR'2014)
+- [x] [X3D](/configs/recognition/x3d/README.md) (CVPR'2020)
+- [x] [OmniSource](/configs/recognition/omnisource/README.md) (ECCV'2020)
+- [x] [MultiModality: Audio](/configs/recognition_audio/resnet/README.md) (ArXiv'2020)
 
 </details>
 
@@ -96,9 +96,9 @@ v0.11.0 版本已于 2021 年 1 月 31 日发布，可通过查阅 [更新日志
 <details open>
 <summary>(点击收起)</summary>
 
-- [x] [BSN](configs/localization/bsn/README.md) (ECCV'2018)
-- [x] [BMN](configs/localization/bmn/README.md) (ICCV'2019)
-- [x] [SSN](configs/localization/ssn/README.md) (ICCV'2017)
+- [x] [BSN](/configs/localization/bsn/README.md) (ECCV'2018)
+- [x] [BMN](/configs/localization/bmn/README.md) (ICCV'2019)
+- [x] [SSN](/configs/localization/ssn/README.md) (ICCV'2017)
 
 </details>
 
@@ -107,8 +107,8 @@ v0.11.0 版本已于 2021 年 1 月 31 日发布，可通过查阅 [更新日志
 <details open>
 <summary>(点击收起)</summary>
 
-- [x] [SlowOnly+Fast R-CNN](configs/detection/ava/README.md) (ICCV'2019)
-- [x] [SlowFast+Fast R-CNN](configs/detection/ava/README.md) (ICCV'2019)
+- [x] [SlowOnly+Fast R-CNN](/configs/detection/ava/README.md) (ICCV'2019)
+- [x] [SlowFast+Fast R-CNN](/configs/detection/ava/README.md) (ICCV'2019)
 
 </details>
 
@@ -166,27 +166,27 @@ v0.11.0 版本已于 2021 年 1 月 31 日发布，可通过查阅 [更新日志
 
 ## 数据集准备
 
-请参考 [数据准备](/docs/data_preparation.md) 了解数据集准备概况。所有支持的数据集都列于 [数据集清单](docs/supported_datasets.md) 中
+请参考 [数据准备](/docs/data_preparation.md) 了解数据集准备概况。所有支持的数据集都列于 [数据集清单](/docs/supported_datasets.md) 中
 
 ## 教程
 
 请参考 [基础教程](/docs/getting_started.md) 了解 MMAction2 的基本使用。MMAction2也提供了其他更详细的教程:
 
-- [如何编写配置文件](docs/tutorials/1_config.md)
-- [如何微调模型](docs/tutorials/2_finetune.md)
-- [如何增加新数据集](docs/tutorials/3_new_dataset.md)
-- [如何设计数据处理流程](docs/tutorials/4_data_pipeline.md)
-- [如何增加新模块](docs/tutorials/5_new_modules.md)
-- [如何导出模型为 onnx 格式](docs/tutorials/6_export_model.md)
-- [如何自定义模型运行参数](docs/tutorials/7_customize_runtime.md)
+- [如何编写配置文件](/docs/tutorials/1_config.md)
+- [如何微调模型](/docs/tutorials/2_finetune.md)
+- [如何增加新数据集](/docs/tutorials/3_new_dataset.md)
+- [如何设计数据处理流程](/docs/tutorials/4_data_pipeline.md)
+- [如何增加新模块](/docs/tutorials/5_new_modules.md)
+- [如何导出模型为 onnx 格式](/docs/tutorials/6_export_model.md)
+- [如何自定义模型运行参数](/docs/tutorials/7_customize_runtime.md)
 
 ## 常见问题
 
-请参考 [FAQ](docs/faq.md) 了解其他用户的常见问题
+请参考 [FAQ](/docs/faq.md) 了解其他用户的常见问题
 
 ## 许可
 
-该项目开源自 [Apache 2.0 license](LICENSE)
+该项目开源自 [Apache 2.0 license](/LICENSE)
 
 ## 引用
 
@@ -203,7 +203,7 @@ v0.11.0 版本已于 2021 年 1 月 31 日发布，可通过查阅 [更新日志
 
 ## 参与贡献
 
-我们非常欢迎用户对于 MMAction2 做出的任何贡献，可以参考 [贡献指南](.github/CONTRIBUTING.md) 文件了解更多细节
+我们非常欢迎用户对于 MMAction2 做出的任何贡献，可以参考 [贡献指南](/.github/CONTRIBUTING.md) 文件了解更多细节
 
 ## 致谢
 
