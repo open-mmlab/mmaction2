@@ -63,6 +63,14 @@ If the contents here do not cover your issue, please create an issue using the [
 
     You can refer to [tutorials/1_config.md](tutorials/1_config.md), [tutorials/7_customize_runtime.md](tutorials/7_customize_runtime.md#log-config), and [this](https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py#L118).
 
+- **In batchnorm.py: Expected more than 1 value per channel when training**
+
+    To use batchnorm, the batch_size should be larger than 1. If `drop_last` is set as False when building dataloaders, sometimes the last batch of an epoch will have `batch_size==1` (what a coincidence ...) and training will throw out this error. You can set `drop_last` as True to avoid this error:
+
+    ```python
+    train_dataloader=dict(drop_last=True)
+    ```
+
 ## Testing
 
 - **How to make predicted score normalized by softmax within [0, 1] ?**
