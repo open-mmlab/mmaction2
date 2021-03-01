@@ -98,8 +98,8 @@ class LFB(object):
             if world_size > 1:
                 warnings.warn(
                     'If distributed training is used with multi-GPUs, lfb '
-                    "will be loaded repeatly on RAM. In this case, 'lmdb' is "
-                    'more recomended.', UserWarning)
+                    'will be loaded multiple times on RAM. In this case, '
+                    "'lmdb' is recomended.", UserWarning)
             self.load_lfb('cpu')
         elif self.device == 'lmdb':
             assert lmdb_imported, (

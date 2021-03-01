@@ -40,14 +40,9 @@ proposal_file_val = f'{anno_root}/ava_dense_proposals_val.FAIR.recall_93.9.pkl'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 
-mc_cfg = dict(
-    server_list_cfg='/mnt/lustre/share/memcached_client/server_list.conf',
-    client_cfg='/mnt/lustre/share/memcached_client/client.conf',
-    sys_path='/mnt/lustre/share/pymc/py3')
-
 train_pipeline = [
     dict(type='SampleAVAFrames', clip_len=4, frame_interval=16),
-    dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
+    dict(type='RawFrameDecode'),
     dict(type='RandomRescale', scale_range=(256, 320)),
     dict(type='RandomCrop', size=256),
     dict(type='Flip', flip_ratio=0.5),
@@ -69,7 +64,7 @@ train_pipeline = [
 # The testing is w/o. any cropping / flipping
 val_pipeline = [
     dict(type='SampleAVAFrames', clip_len=4, frame_interval=16),
-    dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW', collapse=True),
@@ -133,7 +128,7 @@ log_config = dict(
     ])
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/lfb/lfb_slowonly_nl_gpu'
+work_dir = './work_dirs/lfb/lfb_max_kinetics_pretrained_slowonly_r50_4x16x1_20e_ava_rgb'  # noqa E501
 load_from = ('https://download.openmmlab.com/mmaction/recognition/slowonly/'
              'slowonly_r50_4x16x1_256e_kinetics400_rgb/'
              'slowonly_r50_4x16x1_256e_kinetics400_rgb_20200704-a69556c6.pth')
