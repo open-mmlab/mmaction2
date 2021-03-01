@@ -4,7 +4,7 @@
 
 ## Introduction
 
-English | [简体中文](./README_zh-CN.md)
+English | [简体中文](/README_zh-CN.md)
 
 [![Documentation](https://readthedocs.org/projects/mmaction2/badge/?version=latest)](https://mmaction2.readthedocs.io/en/latest/)
 [![actions](https://github.com/open-mmlab/mmaction2/workflows/build/badge.svg)](https://github.com/open-mmlab/mmaction2/actions)
