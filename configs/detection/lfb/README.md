@@ -32,6 +32,7 @@
 2. We use `slowonly_r50_4x16x1` instead of `I3D-R50-NL` in the original paper as the backbone of LFB, but we have achieved the similar improvement: (ours: 20.1 -> 24.11 vs. author: 22.1 -> 25.8).
 3. Because the long-term features are randomly sampled in testing, the test accuracy may have some differences.
 4. Before train or test lfb, you need to infer feature bank with the [lfb_slowonly_r50_ava_infer.py](/configs/detection/lfb/lfb_slowonly_r50_ava_infer.py). For more details on infer feature bank, you can refer to [Train](#Train) part.
+5. You can also dowonload long-term feature bank from [AVA_train_val_float32](waiting for url) or [AVA_train_val_float16](waiting for url).
 
 ## Train
 
@@ -43,7 +44,7 @@ Specifically, run the test on the training, validation, testing dataset with the
 
 A long-term feature bank file of AVA training and validation datasets with float32 precision occupies 3.3 GB. If store the features with float16 precision, the feature bank occupies 1.65 GB.
 
-You can use the following command to infer feature bank of AVA training and validation dataset.
+You can use the following command to infer feature bank of AVA training and validation dataset and the feature bank will be stored in `lfb_prefix_path/lfb_train.pkl` and `lfb_prefix_path/lfb_val.pkl`.
 
 ```shell
 # set `dataset_mode = 'train'` in lfb_slowonly_r50_ava_infer.py

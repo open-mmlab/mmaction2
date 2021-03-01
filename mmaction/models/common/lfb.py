@@ -114,7 +114,8 @@ class LFB(object):
                 self.load_lfb_on_lmdb()
 
             # Synchronizes all processes to make sure lfb lmdb exist.
-            dist.barrier()
+            if world_size > 1:
+                dist.barrier()
             self.lmdb_env = lmdb.open(self.lfb_lmdb_path, readonly=True)
         else:
             raise ValueError("Device must be 'gpu', 'cpu' or 'lmdb', ",

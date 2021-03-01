@@ -88,7 +88,8 @@ class LFBInferHead(nn.Module):
             'features and metadata are not equal in length!')
 
         rank, world_size = get_dist_info()
-        dist.barrier()
+        if world_size > 1:
+            dist.barrier()
 
         _lfb = {}
         for feature, metadata in zip(self.all_features, self.all_metadata):
@@ -111,7 +112,8 @@ class LFBInferHead(nn.Module):
 
         # Synchronizes all processes to make sure all gpus have stored their
         # roi features
-        dist.barrier()
+        if world_size > 1:
+            dist.barrier()
         if rank > 0:
             return
 
