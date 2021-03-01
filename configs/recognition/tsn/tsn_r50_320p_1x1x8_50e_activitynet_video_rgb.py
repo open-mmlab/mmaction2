@@ -1,4 +1,9 @@
-_base_ = ['tsn_r50_320p_1x1x8_50e_activitynet_clip_rgb.py']
+_base_ = [
+    '../../_base_/models/tsn_r50.py', '../../_base_/schedules/sgd_50e.py',
+    '../../_base_/default_runtime.py'
+]
+# model settings
+model = dict(cls_head=dict(num_classes=200, dropout_ratio=0.8))
 
 # dataset settings
 dataset_type = 'RawframeDataset'
@@ -6,7 +11,7 @@ data_root = 'data/ActivityNet/rawframes'
 data_root_val = 'data/ActivityNet/rawframes'
 ann_file_train = 'data/ActivityNet/anet_train_video.txt'
 ann_file_val = 'data/ActivityNet/anet_val_video.txt'
-ann_file_test = 'data/ActivityNet/anet_val_clip.txt'
+ann_file_test = 'data/ActivityNet/anet_val_video.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
@@ -60,24 +65,22 @@ data = dict(
         type=dataset_type,
         ann_file=ann_file_train,
         data_prefix=data_root,
-        pipeline=train_pipeline,
-        start_index=0,
-        filename_tmpl='image_{:05d}.jpg'),
+        pipeline=train_pipeline),
     val=dict(
         type=dataset_type,
         ann_file=ann_file_val,
         data_prefix=data_root_val,
-        pipeline=val_pipeline,
-        start_index=0,
-        filename_tmpl='image_{:05d}.jpg'),
+        pipeline=val_pipeline),
     test=dict(
         type=dataset_type,
         ann_file=ann_file_test,
         data_prefix=data_root_val,
-        pipeline=test_pipeline,
-        with_offset=True,
-        start_index=0,
-        filename_tmpl='image_{:05d}.jpg'))
+        pipeline=test_pipeline))
+evaluation = dict(
+    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+
+# optimizer
+optimizer = dict(type='SGD', lr=0.001, momentum=0.9, weight_decay=0.0001)
 
 # runtime settings
 work_dir = './work_dirs/tsn_r50_320p_1x1x8_50e_activitynet_video_rgb/'
