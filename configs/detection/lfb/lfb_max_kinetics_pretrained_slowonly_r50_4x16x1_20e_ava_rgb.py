@@ -17,20 +17,9 @@ model = dict(
                 window_size=window_size,
                 lfb_channels=lfb_channels,
                 dataset_modes=dataset_modes,
-                device='lmdb',
-                construct_lmdb=True),
-            fbo_cfg=dict(
-                type='non_local',
-                st_feat_channels=2048,
-                lt_feat_channels=lfb_channels,
-                latent_channels=512,
-                num_st_feat=1,
-                num_lt_feat=window_size * max_num_sampled_feat,
-                num_non_local_layers=2,
-                st_feat_dropout_ratio=0.2,
-                lt_feat_dropout_ratio=0.2,
-                pre_activate=True)),
-        bbox_head=dict(in_channels=2560)))
+                device='gpu'),
+            fbo_cfg=dict(type='max')),
+        bbox_head=dict(in_channels=4096)))
 
 dataset_type = 'AVADataset'
 data_root = 'data/ava/rawframes'
@@ -96,7 +85,7 @@ val_pipeline = [
 ]
 
 data = dict(
-    videos_per_gpu=16,
+    videos_per_gpu=12,
     workers_per_gpu=4,
     val_dataloader=dict(videos_per_gpu=1),
     test_dataloader=dict(videos_per_gpu=1),
@@ -121,7 +110,7 @@ data = dict(
 data['test'] = data['val']
 evaluation = dict(interval=1, save_best='mAP@0.5IOU')
 
-optimizer = dict(type='SGD', lr=0.2, momentum=0.9, weight_decay=1e-05)
+optimizer = dict(type='SGD', lr=0.15, momentum=0.9, weight_decay=1e-05)
 # this lr is used for 8 gpus
 
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
