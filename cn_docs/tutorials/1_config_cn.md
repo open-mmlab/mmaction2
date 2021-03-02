@@ -1,6 +1,6 @@
 # 教程 1：如何编写配置文件
 
-MMAction2 使用 python 文件作为配置文件，将模块设计与继承设计整合到 MMAction2 的配置文件系统中，方便用户进行各种实验。
+MMAction2 使用 python 文件作为配置文件。其配置文件系统的设计将模块化与继承整合进来，方便用户进行各种实验。
 MMAction2 提供的所有配置文件都放置在 `$MMAction2/configs` 文件夹下，用户可以通过运行命令
 `python tools/analysis/print_config.py /PATH/TO/CONFIG` 来查看完整的配置信息，从而方便检查所对应的配置文件。
 
@@ -21,14 +21,14 @@ MMAction2 提供的所有配置文件都放置在 `$MMAction2/configs` 文件夹
 
 当用户使用脚本 "tools/train.py" 或者 "tools/test.py" 提交任务时，可以通过指定 `--cfg-options` 参数来直接修改所使用的配置文件内容。
 
-- 更新配置文件内字典链中的键
+- 更新配置文件内的字典
 
   用户可以按照原始配置中的字典键顺序来指定配置文件的设置。
   例如，`--cfg-options model.backbone.norm_eval=False` 会改变 `train` 模式下模型骨架 backbone 中所有的 BN 模块。
 
 - 更新配置文件内列表的键
 
-  配置文件中的存在一些由字典组合成的列表。例如，训练流水线 `data.train.pipeline` 通常是一个 python 列表。
+  配置文件中，存在一些由字典组合成的列表。例如，训练数据增强流水线 data.train.pipeline 就是 python 列表
   类似，`[dict(type='SampleFrames'), ...]`。如果用户向更改其中的 `'SampleFrames'` 为 `'DenseSampleFrames'`，
   可以指定 `--cfg-options data.train.pipeline.0.type=DenseSampleFrames`。
 
@@ -45,13 +45,13 @@ MMAction2 提供的所有配置文件都放置在 `$MMAction2/configs` 文件夹
 其中，通过 `_base_` 下组件来构建的配置被称为 _原始配置_（_primitive_）。
 
 对于在同一文件夹下的所有配置文件，MMAction2 推荐只在其中存在 **一个** _原始配置_ 文件。
-所有其他的配置文件都应该继承 _原始配置_ 文件，这样就能保证配置文件的最大继承等级为3。
+所有其他的配置文件都应该继承 _原始配置_ 文件，这样就能保证配置文件的最大继承等级为 3。
 
-为了方便理解，MMAction2 推荐用户继承现有的方法的配置文件。
+为了方便理解，MMAction2 推荐用户继承现有方法的配置文件。
 例如，如果配置的修改基于 TSN，用户首先应通过指定 `_base_ = ../tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py` 继承 TSN 的基本结构，
 并修改其中必要的内容以完成继承。
 
-如果用户实现一个独立于任何一个现有的方法结构的新方法，则需要在 `configs/TASK` 建立新的文件夹。
+如果用户想实现一个独立于任何一个现有的方法结构的新方法，则需要像 `configs/recognition`, `configs/detection` 等一样，在 `configs/TASK` 中建立新的文件夹。
 
 更多详细内容，请参考 [mmcv](https://mmcv.readthedocs.io/en/latest/utils.html#config)。
 

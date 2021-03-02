@@ -21,7 +21,7 @@ you may run `python tools/analysis/print_config.py /PATH/TO/CONFIG` to see the c
 
 When submitting jobs using "tools/train.py" or "tools/test.py", you may specify `--cfg-options` to in-place modify the config.
 
-- Update config keys of dict chains.
+- Update config keys of dict.
 
   The config options can be specified following the order of the dict keys in the original config.
   For example, `--cfg-options model.backbone.norm_eval=False` changes the all BN modules in model backbones to `train` mode.
