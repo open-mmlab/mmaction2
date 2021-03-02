@@ -6,7 +6,7 @@ _base_ = [
 module_hooks = [
     dict(
         type='GPUNormalize',
-        module_to_be_registered='backbone',
+        hooked_module='backbone',
         hook_pos='forward_pre',
         input_format='NCHW',
         mean=[123.675, 116.28, 103.53],

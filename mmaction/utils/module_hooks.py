@@ -7,22 +7,21 @@ MODULE_HOOKS = Registry('module_hooks')
 def register_module_hooks(Module, module_hooks_list):
     handles = []
     for module_hook_cfg in module_hooks_list:
-        module_to_be_registered_name = module_hook_cfg.pop(
-            'module_to_be_registered', 'backbone')
-        if not hasattr(Module, module_to_be_registered_name):
+        hooked_module_name = module_hook_cfg.pop('hooked_module', 'backbone')
+        if not hasattr(Module, hooked_module_name):
             raise ValueError(
-                f'{Module.__class__} has no {module_to_be_registered_name}!')
-        module_to_be_registered = getattr(Module, module_to_be_registered_name)
+                f'{Module.__class__} has no {hooked_module_name}!')
+        hooked_module = getattr(Module, hooked_module_name)
         hook_pos = module_hook_cfg.pop('hook_pos', 'forward_pre')
 
         if hook_pos == 'forward_pre':
-            handle = module_to_be_registered.register_forward_pre_hook(
+            handle = hooked_module.register_forward_pre_hook(
                 build_from_cfg(module_hook_cfg, MODULE_HOOKS).hook_func())
         elif hook_pos == 'forward':
-            handle = module_to_be_registered.register_forward_hook(
+            handle = hooked_module.register_forward_hook(
                 build_from_cfg(module_hook_cfg, MODULE_HOOKS).hook_func())
         elif hook_pos == 'backward':
-            handle = module_to_be_registered.register_backward_hook(
+            handle = hooked_module.register_backward_hook(
                 build_from_cfg(module_hook_cfg, MODULE_HOOKS).hook_func())
         else:
             raise ValueError(
