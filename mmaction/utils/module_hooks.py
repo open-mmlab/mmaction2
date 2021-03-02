@@ -12,17 +12,17 @@ def register_module_hooks(Module, module_hooks_list):
         if not hasattr(Module, module_to_be_registered_name):
             raise ValueError(
                 f'{Module.__class__} has no {module_to_be_registered_name}!')
-        registered_module = getattr(Module, module_to_be_registered_name)
+        module_to_be_registered = getattr(Module, module_to_be_registered_name)
         hook_pos = module_hook_cfg.pop('hook_pos', 'forward_pre')
 
         if hook_pos == 'forward_pre':
-            handle = registered_module.register_forward_pre_hook(
+            handle = module_to_be_registered.register_forward_pre_hook(
                 build_from_cfg(module_hook_cfg, MODULE_HOOKS).hook_func())
         elif hook_pos == 'forward':
-            handle = registered_module.register_forward_hook(
+            handle = module_to_be_registered.register_forward_hook(
                 build_from_cfg(module_hook_cfg, MODULE_HOOKS).hook_func())
         elif hook_pos == 'backward':
-            handle = registered_module.register_backward_hook(
+            handle = module_to_be_registered.register_backward_hook(
                 build_from_cfg(module_hook_cfg, MODULE_HOOKS).hook_func())
         else:
             raise ValueError(
