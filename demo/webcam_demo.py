@@ -1,4 +1,5 @@
 import argparse
+import time
 from collections import deque
 from operator import itemgetter
 from threading import Thread
@@ -43,7 +44,21 @@ def parse_args():
         type=int,
         default=1,
         help='number of latest clips to be averaged for prediction')
+    parser.add_argument(
+        '--drawing-fps',
+        type=int,
+        default=-1,
+        help='FPS value of the output drawing')
+    parser.add_argument(
+        '--inference-fps',
+        type=int,
+        default=-1,
+        help='FPS value of model inference')
     args = parser.parse_args()
+    if args.drawing_fps != -1 or args.inference_fps != -1:
+        assert args.drawing_fps > 0 and args.inference_fps > 0, \
+            'FPS value of drawing and inference should also be set as ' \
+            'positive number'
     return args
 
 
@@ -51,6 +66,7 @@ def show_results():
     print('Press "Esc", "q" or "Q" to exit')
 
     text_info = {}
+    cur_time = time.time()
     while True:
         msg = 'Waiting for action ...'
         ret, frame = camera.read()
@@ -84,10 +100,18 @@ def show_results():
         if ch == 27 or ch == ord('q') or ch == ord('Q'):
             break
 
+        if drawing_fps > 0:
+            # add a limiter for drawing fps <= drawing_fps
+            sleep_time = 1 / drawing_fps - (time.time() - cur_time)
+            if sleep_time > 0:
+                time.sleep(sleep_time)
+            cur_time = time.time()
+
 
 def inference():
     score_cache = deque()
     scores_sum = 0
+    cur_time = time.time()
     while True:
         cur_windows = []
 
@@ -122,17 +146,27 @@ def inference():
             result_queue.append(results)
             scores_sum -= score_cache.popleft()
 
+        if inference_fps > 0:
+            # add a limiter for inference fps <= inference_fps
+            sleep_time = 1 / inference_fps - (time.time() - cur_time)
+            if sleep_time > 0:
+                time.sleep(sleep_time)
+            cur_time = time.time()
+
     camera.release()
     cv2.destroyAllWindows()
 
 
 def main():
     global frame_queue, camera, frame, results, threshold, sample_length, \
-        data, test_pipeline, model, device, average_size, label, result_queue
+        data, test_pipeline, model, device, average_size, label, \
+        result_queue, drawing_fps, inference_fps
 
     args = parse_args()
     average_size = args.average_size
     threshold = args.threshold
+    drawing_fps = args.drawing_fps
+    inference_fps = args.inference_fps
 
     device = torch.device(args.device)
     model = init_recognizer(args.config, args.checkpoint, device=device)
