@@ -178,7 +178,8 @@ def main():
     model = build_model(
         cfg.model, train_cfg=None, test_cfg=cfg.get('test_cfg'))
 
-    register_module_hooks(model.backbone, cfg.module_hooks)
+    if len(cfg.module_hooks) > 0:
+        register_module_hooks(model, cfg.module_hooks)
 
     fp16_cfg = cfg.get('fp16', None)
     if fp16_cfg is not None:
