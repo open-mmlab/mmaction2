@@ -146,10 +146,7 @@ def main():
         test_cfg=cfg.get('test_cfg'))
 
     if len(cfg.module_hooks) > 0:
-        if not hasattr(model, 'backbone'):
-            raise ValueError(
-                'model.backbone is needed to register module hooks!')
-        register_module_hooks(model.backbone, cfg.module_hooks)
+        register_module_hooks(model, cfg.module_hooks)
 
     if cfg.omnisource:
         # If omnisource flag is set, cfg.data.train should be a list

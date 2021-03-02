@@ -179,10 +179,7 @@ def main():
         cfg.model, train_cfg=None, test_cfg=cfg.get('test_cfg'))
 
     if len(cfg.module_hooks) > 0:
-        if not hasattr(model, 'backbone'):
-            raise ValueError(
-                'model.backbone is needed to register module hooks!')
-        register_module_hooks(model.backbone, cfg.module_hooks)
+        register_module_hooks(model, cfg.module_hooks)
 
     fp16_cfg = cfg.get('fp16', None)
     if fp16_cfg is not None:
