@@ -3,7 +3,7 @@ import copy
 import torch
 import torch.nn as nn
 from mmcv.cnn import ConvModule, constant_init, kaiming_init
-from mmcv.runner import auto_fp16, load_checkpoint
+from mmcv.runner import load_checkpoint
 from mmcv.utils import _BatchNorm
 
 from mmaction.models.common import LFB
@@ -35,6 +35,8 @@ class NonLocalLayer(nn.Module):
             Default: None.
         dropout_ratio (float, optional): Probability of dropout layer.
             Default: 0.2.
+        zero_init_out_conv (bool): Whether to use zero initialization for
+            out_conv. Default: False.
     """
 
     def __init__(self,
@@ -183,6 +185,8 @@ class FBONonLocal(nn.Module):
             long-term features. Default: 0.2.
         pre_activate (bool): Whether to use the activation function before
             upsampling in non local layers. Default: True.
+        zero_init_out_conv (bool): Whether to use zero initialization for
+            out_conv in NonLocalLayer. Default: False.
     """
 
     def __init__(self,
@@ -194,7 +198,8 @@ class FBONonLocal(nn.Module):
                  num_non_local_layers=2,
                  st_feat_dropout_ratio=0.2,
                  lt_feat_dropout_ratio=0.2,
-                 pre_activate=True):
+                 pre_activate=True,
+                 zero_init_out_conv=False):
         super().__init__()
         assert num_non_local_layers >= 1, (
             'At least one non_local_layer is needed.')
@@ -207,6 +212,7 @@ class FBONonLocal(nn.Module):
         self.st_feat_dropout_ratio = st_feat_dropout_ratio
         self.lt_feat_dropout_ratio = lt_feat_dropout_ratio
         self.pre_activate = pre_activate
+        self.zero_init_out_conv = zero_init_out_conv
 
         self.st_feat_conv = nn.Conv3d(
             st_feat_channels, latent_channels, kernel_size=1)
@@ -233,7 +239,8 @@ class FBONonLocal(nn.Module):
                     latent_channels,
                     num_st_feat,
                     num_lt_feat,
-                    pre_activate=self.pre_activate))
+                    pre_activate=self.pre_activate,
+                    zero_init_out_conv=self.zero_init_out_conv))
             self.non_local_layers.append(layer_name)
 
     def init_weights(self, pretrained=None):
@@ -249,7 +256,6 @@ class FBONonLocal(nn.Module):
         else:
             raise TypeError('pretrained must be a str or None')
 
-    @auto_fp16()
     def forward(self, st_feat, lt_feat):
         # prepare st_feat
         st_feat = self.st_feat_conv(st_feat)
