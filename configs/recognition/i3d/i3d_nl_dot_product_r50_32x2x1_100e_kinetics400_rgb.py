@@ -5,7 +5,6 @@ _base_ = [
 
 # model settings
 model = dict(
-    type='Recognizer3D',
     backbone=dict(
         non_local=((0, 0, 0), (0, 1, 0, 1), (0, 1, 0, 1, 0, 1), (0, 0, 0)),
         non_local_cfg=dict(
