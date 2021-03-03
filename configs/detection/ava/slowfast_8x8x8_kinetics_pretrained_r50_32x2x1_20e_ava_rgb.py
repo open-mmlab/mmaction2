@@ -165,7 +165,7 @@ log_config = dict(
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 work_dir = ('./work_dirs/ava/'
-            'slowfast_kinetics_pretrained_r50_4x16x1_20e_ava_rgb')
+            'slowfast_8x8x8_kinetics_pretrained_r50_32x2x1_20e_ava_rgb')
 load_from = ('https://download.openmmlab.com/mmaction/recognition/slowfast/'
              'slowfast_r50_4x16x1_256e_kinetics400_rgb/'
              'slowfast_r50_4x16x1_256e_kinetics400_rgb_20200704-bcde7ed7.pth')
