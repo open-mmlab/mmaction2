@@ -1,5 +1,21 @@
 ## Changelog
 
+**Highlights**
+
+- Support LFB
+
+**New Features**
+
+- Support LFB [#553](https://github.com/open-mmlab/mmaction2/pull/553)
+
+**Improvements**
+
+**Bug and Typo Fixes**
+
+**ModelZoo**
+
+- Add LFB for AVA2.1 [#553](https://github.com/open-mmlab/mmaction2/pull/553)
+
 ### 0.12.0 (28/02/2021)
 
 **Highlights**
