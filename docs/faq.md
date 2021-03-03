@@ -33,6 +33,16 @@ If the contents here do not cover your issue, please create an issue using the [
 
     We have tried both preprocessing approaches and found (2) is a better solution in general, so we use (2) with short edge length 256px as the default preprocessing setting. We benchmarked these preprocessing approaches and you may find the results in [TSN Data Benchmark](https://github.com/open-mmlab/mmaction2/tree/master/configs/recognition/tsn) and [SlowOnly Data Benchmark](https://github.com/open-mmlab/mmaction2/tree/master/configs/recognition/tsn).
 
+- **Mismatched data pipeline items lead to errors like `KeyError: 'total_frames'`**
+
+    We have both pipeline for processing videos and frames.
+
+    **For videos**, We should decode them on the fly in the pipeline, so pairs like `DecordInit & DecordDecode`, `OpenCVInit & OpenCVDecode`, `PyAVInit & PyAVDecode` should be used for this case like [this example](https://github.com/open-mmlab/mmaction2/blob/023777cfd26bb175f85d78c455f6869673e0aa09/configs/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb.py#L47-L49).
+
+    **For Frames**, the image has been decoded offline, so pipeline item `RawFrameDecode` should be used for this case like [this example](https://github.com/open-mmlab/mmaction2/blob/023777cfd26bb175f85d78c455f6869673e0aa09/configs/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb.py#L49).
+
+    `KeyError: 'total_frames'` is caused by incorrectly using `RawFrameDecode` step for videos, since when the input is a video, it can not get the `total_frame` beforehand.
+
 ## Training
 
 - **How to just use trained recognizer models for backbone pre-training ?**
@@ -53,15 +63,35 @@ If the contents here do not cover your issue, please create an issue using the [
 
     You can refer to [tutorials/1_config.md](tutorials/1_config.md), [tutorials/7_customize_runtime.md](tutorials/7_customize_runtime.md#log-config), and [this](https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py#L118).
 
+- **In batchnorm.py: Expected more than 1 value per channel when training**
+
+    To use batchnorm, the batch_size should be larger than 1. If `drop_last` is set as False when building dataloaders, sometimes the last batch of an epoch will have `batch_size==1` (what a coincidence ...) and training will throw out this error. You can set `drop_last` as True to avoid this error:
+
+    ```python
+    train_dataloader=dict(drop_last=True)
+    ```
+
+- **How to fix stages of backbone when finetuning a model ?**
+
+    You can refer to [`def _freeze_stages()`](https://github.com/open-mmlab/mmaction2/blob/0149a0e8c1e0380955db61680c0006626fd008e9/mmaction/models/backbones/x3d.py#L458) and [`frozen_stages`](https://github.com/open-mmlab/mmaction2/blob/0149a0e8c1e0380955db61680c0006626fd008e9/mmaction/models/backbones/x3d.py#L183-L184),
+    reminding to set `find_unused_parameters = True` in config files for distributed training or testing.
+
+    Actually, users can set `frozen_stages` to freeze stages in backbones except C3D model, since all backbones inheriting from `ResNet` and `ResNet3D` support the inner function `_freeze_stages()`.
+
 ## Testing
 
 - **How to make predicted score normalized by softmax within [0, 1] ?**
 
-    change this in the config, make `test_cfg = dict(average_clips='prob')`.
+    change this in the config, make `model['test_cfg'] = dict(average_clips='prob')`.
 
 - **What if the model is too large and the GPU memory can not fit even only one testing sample ?**
 
-    By default, the 3d models are tested with 10clips x 3crops, which are 30 views in total. For extremely large models, the GPU memory can not fit even only one testing sample (cuz there are 30 views). To handle this, you can set `max_testing_views=n` in test_cfg of the config file. If so, n views will be used as a batch during forwarding to save GPU memory used.
+    By default, the 3d models are tested with 10clips x 3crops, which are 30 views in total. For extremely large models, the GPU memory can not fit even only one testing sample (cuz there are 30 views). To handle this, you can set `max_testing_views=n` in `model['test_cfg']` of the config file. If so, n views will be used as a batch during forwarding to save GPU memory used.
+
+- **How to show test results ?**
+
+    During testing, we can use the command `--out xxx.json/pkl/yaml` to output result files for checking. The testing output has exactly the same order as the test dataset.
+    Besides, we provide an analysis tool for evaluating a model using the output result files in [`tools/analysis/eval_metric.py`](/tools/analysis/eval_metric.py)
 
 ## Deploying
 

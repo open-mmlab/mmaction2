@@ -78,4 +78,26 @@ class TestFlip:
 
         assert repr(flip) == (f'{flip.__class__.__name__}'
                               f'(flip_ratio={1}, direction=vertical, '
-                              f'lazy={False})')
+                              f'flip_label_map={None}, lazy={False})')
+
+        # transform label for the flipped image with the specific label.
+        _flip_label_map = {4: 6}
+        imgs = list(np.random.rand(2, 64, 64, 3))
+
+        # the label should be mapped.
+        results = dict(imgs=copy.deepcopy(imgs), modality='RGB', label=4)
+        flip = Flip(
+            flip_ratio=1,
+            direction='horizontal',
+            flip_label_map=_flip_label_map)
+        flip_results = flip(results)
+        assert results['label'] == 6
+
+        # the label should not be mapped.
+        results = dict(imgs=copy.deepcopy(imgs), modality='RGB', label=3)
+        flip = Flip(
+            flip_ratio=1,
+            direction='horizontal',
+            flip_label_map=_flip_label_map)
+        flip_results = flip(results)
+        assert results['label'] == 3

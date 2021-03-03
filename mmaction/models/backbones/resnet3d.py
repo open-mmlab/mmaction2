@@ -11,6 +11,7 @@ from ..registry import BACKBONES
 
 try:
     from mmdet.models.builder import SHARED_HEADS as MMDET_SHARED_HEADS
+    from mmdet.models import BACKBONES as MMDET_BACKBONES
     mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
     mmdet_imported = False
@@ -999,3 +1000,4 @@ class ResNet3dLayer(nn.Module):
 
 if mmdet_imported:
     MMDET_SHARED_HEADS.register_module()(ResNet3dLayer)
+    MMDET_BACKBONES.register_module()(ResNet3d)

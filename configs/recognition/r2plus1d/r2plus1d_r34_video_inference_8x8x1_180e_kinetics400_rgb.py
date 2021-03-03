@@ -3,8 +3,6 @@ _base_ = ['../../_base_/models/r2plus1d_r34.py']
 # model settings
 model = dict(backbone=dict(act_cfg=dict(type='ReLU')))
 
-# model training and testing settings
-test_cfg = dict(average_clips='prob')
 # dataset settings
 dataset_type = 'VideoDataset'
 img_norm_cfg = dict(

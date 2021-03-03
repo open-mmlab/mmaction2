@@ -113,7 +113,7 @@ pip install mmcv-full
 
 **Important:** You need to run `pip uninstall mmcv` first if you have mmcv installed. If mmcv and mmcv-full are both installed, there will be `ModuleNotFoundError`.
 
-d. Clone the MMAction2 repository
+d. Clone the MMAction2 repository.
 
 ```shell
 git clone https://github.com/open-mmlab/mmaction2.git
@@ -132,6 +132,12 @@ If you build MMAction2 on macOS, replace the last command with
 ```shell
 CC=clang CXX=clang++ CFLAGS='-stdlib=libc++' pip install -e .
 ```
+
+f. Install mmdetection for spatial temporal detection tasks.
+
+This part is **optional** if you're not going to do spatial temporal detection.
+
+See [here](https://github.com/open-mmlab/mmdetection#installation) to install mmdetection.
 
 Note:
 

@@ -53,6 +53,8 @@ jobs:
         run: pip install onnx
       - name: Install librosa and soundfile
         run: pip install librosa soundfile
+      - name: Install lmdb
+        run: pip install lmdb
       - name: Install TurboJpeg lib
         run: sudo apt-get install -y libturbojpeg
       - name: Install PyTorch
@@ -134,6 +136,8 @@ jobs:
         run: sudo apt-get install -y libsndfile1
       - name: Install librosa and soundfile
         run: pip install librosa soundfile
+      - name: Install lmdb
+        run: pip install lmdb
       - name: Install PyTorch
         run: pip install torch==${{matrix.torch}} torchvision==${{matrix.torchvision}} -f https://download.pytorch.org/whl/torch_stable.html
       - name: Install mmaction dependencies

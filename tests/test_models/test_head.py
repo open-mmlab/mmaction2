@@ -1,9 +1,16 @@
+import os.path as osp
+from unittest.mock import Mock, patch
+
 import numpy as np
+import pytest
 import torch
 import torch.nn as nn
 
-from mmaction.models import (AudioTSNHead, BBoxHeadAVA, I3DHead, SlowFastHead,
-                             TPNHead, TSMHead, TSNHead, X3DHead)
+import mmaction
+from mmaction.models import (AudioTSNHead, BBoxHeadAVA, FBOHead, I3DHead,
+                             LFBInferHead, SlowFastHead, TPNHead, TSMHead,
+                             TSNHead, X3DHead)
+from .base import generate_backbone_demo_inputs
 
 
 def test_i3d_head():
@@ -38,15 +45,23 @@ def test_i3d_head():
 def test_bbox_head_ava():
     """Test loss method, layer construction, attributes and forward function in
     bbox head."""
+    with pytest.raises(TypeError):
+        # topk must be None, int or tuple[int]
+        BBoxHeadAVA(topk=0.1)
+
+    with pytest.raises(AssertionError):
+        # topk should be smaller than num_classes
+        BBoxHeadAVA(num_classes=5, topk=(3, 5))
+
+    bbox_head = BBoxHeadAVA(in_channels=10, num_classes=4, topk=1)
+    input = torch.randn([3, 10, 2, 2, 2])
+    ret, _ = bbox_head(input)
+    assert ret.shape == (3, 4)
+
     bbox_head = BBoxHeadAVA()
     bbox_head.init_weights()
     bbox_head = BBoxHeadAVA(temporal_pool_type='max', spatial_pool_type='avg')
     bbox_head.init_weights()
-
-    bbox_head = BBoxHeadAVA(in_channels=10, num_classes=4)
-    input = torch.randn([3, 10, 2, 2, 2])
-    ret, _ = bbox_head(input)
-    assert ret.shape == (3, 4)
 
     cls_score = torch.tensor(
         [[0.568, -0.162, 0.273, -0.390, 0.447, 0.102, -0.409],
@@ -291,6 +306,86 @@ def test_tsm_head():
     tsm_head.init_weights()
     cls_scores = tsm_head(feat, num_segs)
     assert cls_scores.shape == torch.Size([2, 4])
+
+
+@patch.object(mmaction.models.LFBInferHead, '__del__', Mock)
+def test_lfb_infer_head():
+    """Test layer construction, attributes and forward function in lfb infer
+    head."""
+    lfb_infer_head = LFBInferHead(
+        lfb_prefix_path='temp_dir', use_half_precision=True)
+    lfb_infer_head.init_weights()
+
+    st_feat_shape = (3, 16, 1, 8, 8)
+    st_feat = generate_backbone_demo_inputs(st_feat_shape)
+    rois = torch.cat(
+        (torch.tensor([0, 1, 0]).float().view(3, 1), torch.randn(3, 4)), dim=1)
+    img_metas = [dict(img_key='video_1,777'), dict(img_key='video_2, 888')]
+    result = lfb_infer_head(st_feat, rois, img_metas)
+    assert st_feat.equal(result)
+    assert len(lfb_infer_head.all_features) == 3
+    assert lfb_infer_head.all_features[0].shape == (16, 1, 1, 1)
+
+
+def test_fbo_head():
+    """Test layer construction, attributes and forward function in fbo head."""
+    lfb_prefix_path = osp.normpath(
+        osp.join(osp.dirname(__file__), '../data/lfb'))
+
+    st_feat_shape = (1, 16, 1, 8, 8)
+    st_feat = generate_backbone_demo_inputs(st_feat_shape)
+    rois = torch.randn(1, 5)
+    rois[0][0] = 0
+    img_metas = [dict(img_key='video_1, 930')]
+
+    # non local fbo
+    fbo_head = FBOHead(
+        lfb_cfg=dict(
+            lfb_prefix_path=lfb_prefix_path,
+            max_num_sampled_feat=5,
+            window_size=60,
+            lfb_channels=16,
+            dataset_modes=('unittest'),
+            device='cpu'),
+        fbo_cfg=dict(
+            type='non_local',
+            st_feat_channels=16,
+            lt_feat_channels=16,
+            latent_channels=8,
+            num_st_feat=1,
+            num_lt_feat=5 * 60,
+        ))
+    fbo_head.init_weights()
+    out = fbo_head(st_feat, rois, img_metas)
+    assert out.shape == (1, 24, 1, 1, 1)
+
+    # avg fbo
+    fbo_head = FBOHead(
+        lfb_cfg=dict(
+            lfb_prefix_path=lfb_prefix_path,
+            max_num_sampled_feat=5,
+            window_size=60,
+            lfb_channels=16,
+            dataset_modes=('unittest'),
+            device='cpu'),
+        fbo_cfg=dict(type='avg'))
+    fbo_head.init_weights()
+    out = fbo_head(st_feat, rois, img_metas)
+    assert out.shape == (1, 32, 1, 1, 1)
+
+    # max fbo
+    fbo_head = FBOHead(
+        lfb_cfg=dict(
+            lfb_prefix_path=lfb_prefix_path,
+            max_num_sampled_feat=5,
+            window_size=60,
+            lfb_channels=16,
+            dataset_modes=('unittest'),
+            device='cpu'),
+        fbo_cfg=dict(type='max'))
+    fbo_head.init_weights()
+    out = fbo_head(st_feat, rois, img_metas)
+    assert out.shape == (1, 32, 1, 1, 1)
 
 
 def test_tpn_head():

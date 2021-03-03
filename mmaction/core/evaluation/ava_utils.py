@@ -11,7 +11,7 @@ from .ava_evaluation import standard_fields
 from .recall import eval_recalls
 
 
-def det2csv(dataset, results):
+def det2csv(dataset, results, custom_classes):
     csv_results = []
     for idx in range(len(dataset)):
         video_id = dataset.video_infos[idx]['video_id']
@@ -20,17 +20,21 @@ def det2csv(dataset, results):
         for label, _ in enumerate(result):
             for bbox in result[label]:
                 bbox_ = tuple(bbox.tolist())
+                if custom_classes is not None:
+                    actual_label = custom_classes[label + 1]
+                else:
+                    actual_label = label + 1
                 csv_results.append((
                     video_id,
                     timestamp,
-                ) + bbox_[:4] + (label + 1, ) + bbox_[4:])
+                ) + bbox_[:4] + (actual_label, ) + bbox_[4:])
     return csv_results
 
 
 # results is organized by class
-def results2csv(dataset, results, out_file):
+def results2csv(dataset, results, out_file, custom_classes=None):
     if isinstance(results[0], list):
-        csv_results = det2csv(dataset, results)
+        csv_results = det2csv(dataset, results, custom_classes)
 
     # save space for float
     def tostr(item):
@@ -162,12 +166,18 @@ def ava_eval(result_file,
              ann_file,
              exclude_file,
              max_dets=(100, ),
-             verbose=True):
+             verbose=True,
+             custom_classes=None):
 
     assert result_type in ['mAP']
 
     start = time.time()
     categories, class_whitelist = read_labelmap(open(label_file))
+    if custom_classes is not None:
+        custom_classes = custom_classes[1:]
+        assert set(custom_classes).issubset(set(class_whitelist))
+        class_whitelist = custom_classes
+        categories = [cat for cat in categories if cat['id'] in custom_classes]
 
     # loading gt, do not need gt score
     gt_boxes, gt_labels, _ = read_csv(open(ann_file), class_whitelist, 0)

@@ -26,6 +26,8 @@ class BBoxHeadAVA(nn.Module):
             Default: 0.
         dropout_before_pool (bool): Dropout Feature before spatial temporal
             pooling. Default: True.
+        topk (int or tuple[int]): Parameter for evaluating multilabel accuracy.
+            Default: (3, 5)
         multilabel (bool): Whether used for a multilabel task. Default: True.
             (Only support multilabel == True now).
     """
@@ -39,6 +41,7 @@ class BBoxHeadAVA(nn.Module):
             num_classes=81,
             dropout_ratio=0,
             dropout_before_pool=True,
+            topk=(3, 5),
             multilabel=True):
 
         super(BBoxHeadAVA, self).__init__()
@@ -54,6 +57,20 @@ class BBoxHeadAVA(nn.Module):
         self.dropout_before_pool = dropout_before_pool
 
         self.multilabel = multilabel
+
+        if topk is None:
+            self.topk = ()
+        elif isinstance(topk, int):
+            self.topk = (topk, )
+        elif isinstance(topk, tuple):
+            assert all([isinstance(k, int) for k in topk])
+            self.topk = topk
+        else:
+            raise TypeError('topk should be int or tuple[int], '
+                            f'but get {type(topk)}')
+        # Class 0 is ignored when calculaing multilabel accuracy,
+        # so topk cannot be equal to num_classes
+        assert all([k < num_classes for k in self.topk])
 
         # Handle AVA first
         assert self.multilabel
@@ -116,12 +133,7 @@ class BBoxHeadAVA(nn.Module):
         prec = correct.sum(1) / (pred_vec.sum(1) + 1e-6)
         return recall.mean(), prec.mean()
 
-    def multilabel_accuracy(self, pred, target, topk=1, thr=0.5):
-        if topk is None:
-            topk = ()
-        elif isinstance(topk, int):
-            topk = (topk, )
-
+    def multilabel_accuracy(self, pred, target, thr=0.5):
         pred = pred.sigmoid()
         pred_vec = pred > thr
         # Target is 0 or 1, so using 0.5 as the borderline is OK
@@ -129,7 +141,7 @@ class BBoxHeadAVA(nn.Module):
         recall_thr, prec_thr = self.recall_prec(pred_vec, target_vec)
 
         recalls, precs = [], []
-        for k in topk:
+        for k in self.topk:
             _, pred_label = pred.topk(k, 1, True, True)
             pred_vec = pred.new_full(pred.size(), 0, dtype=torch.bool)
 
@@ -162,13 +174,12 @@ class BBoxHeadAVA(nn.Module):
             bce_loss = F.binary_cross_entropy_with_logits
             losses['loss_action_cls'] = bce_loss(cls_score, labels)
             recall_thr, prec_thr, recall_k, prec_k = self.multilabel_accuracy(
-                cls_score, labels, topk=(3, 5), thr=0.5)
+                cls_score, labels, thr=0.5)
             losses['recall@thr=0.5'] = recall_thr
             losses['prec@thr=0.5'] = prec_thr
-            losses['recall@top3'] = recall_k[0]
-            losses['prec@top3'] = prec_k[0]
-            losses['recall@top5'] = recall_k[1]
-            losses['prec@top5'] = prec_k[1]
+            for i, k in enumerate(self.topk):
+                losses[f'recall@top{k}'] = recall_k[i]
+                losses[f'prec@top{k}'] = prec_k[i]
         return losses
 
     def get_det_bboxes(self,

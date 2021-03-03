@@ -1,5 +1,64 @@
 ## Changelog
 
+**Highlights**
+
+- Support LFB
+
+**New Features**
+
+- Support LFB [#553](https://github.com/open-mmlab/mmaction2/pull/553)
+
+**Improvements**
+
+**Bug and Typo Fixes**
+
+**ModelZoo**
+
+- Add LFB for AVA2.1 [#553](https://github.com/open-mmlab/mmaction2/pull/553)
+
+### 0.12.0 (28/02/2021)
+
+**Highlights**
+
+- Support TSM-MobileNetV2
+- Support TANet
+- Support GPU Normalize
+
+**New Features**
+
+- Support TSM-MobileNetV2 ([#415](https://github.com/open-mmlab/mmaction2/pull/415))
+- Support flip with label mapping ([#591](https://github.com/open-mmlab/mmaction2/pull/591))
+- Add seed option for sampler ([#642](https://github.com/open-mmlab/mmaction2/pull/642))
+- Support GPU Normalize ([#586](https://github.com/open-mmlab/mmaction2/pull/586))
+- Support TANet ([#595](https://github.com/open-mmlab/mmaction2/pull/595))
+
+**Improvements**
+
+- Training custom classes of ava dataset ([#555](https://github.com/open-mmlab/mmaction2/pull/555))
+- Add CN README in homepage ([#592](https://github.com/open-mmlab/mmaction2/pull/592), [#594](https://github.com/open-mmlab/mmaction2/pull/594))
+- Support soft label for CrossEntropyLoss ([#625](https://github.com/open-mmlab/mmaction2/pull/625))
+- Refactor config: Specify `train_cfg` and `test_cfg` in `model` ([#629](https://github.com/open-mmlab/mmaction2/pull/629))
+- Provide an alternative way to download older kinetics annotations ([#597](https://github.com/open-mmlab/mmaction2/pull/597))
+- Update FAQ for
+  - 1). data pipeline about video and frames ([#598](https://github.com/open-mmlab/mmaction2/pull/598))
+  - 2). how to show results ([#598](https://github.com/open-mmlab/mmaction2/pull/598))
+  - 3). batch size setting for batchnorm ([#657](https://github.com/open-mmlab/mmaction2/pull/657))
+  - 4). how to fix stages of backbone when finetuning models ([#658](https://github.com/open-mmlab/mmaction2/pull/658))
+- Modify default value of `save_best` ([#600](https://github.com/open-mmlab/mmaction2/pull/600))
+- Use BibTex rather than latex in markdown ([#607](https://github.com/open-mmlab/mmaction2/pull/607))
+- Add warnings of uninstalling mmdet and supplementary documents ([#624](https://github.com/open-mmlab/mmaction2/pull/624))
+- Support soft label for CrossEntropyLoss ([#625](https://github.com/open-mmlab/mmaction2/pull/625))
+
+**Bug and Typo Fixes**
+
+- Fix value of `pem_low_temporal_iou_threshold` in BSN ([#556](https://github.com/open-mmlab/mmaction2/pull/556))
+- Fix ActivityNet download script ([#601](https://github.com/open-mmlab/mmaction2/pull/601))
+
+**ModelZoo**
+
+- Add TSM-MobileNetV2 for Kinetics400 ([#415](https://github.com/open-mmlab/mmaction2/pull/415))
+- Add deeper SlowFast models ([#605](https://github.com/open-mmlab/mmaction2/pull/605))
+
 ### 0.11.0 (31/01/2021)
 
 **Highlights**
@@ -30,7 +89,7 @@
 - Add config tag in dataset README ([#540](https://github.com/open-mmlab/mmaction2/pull/540))
 - Add solution for markdownlint installation issue ([#497](https://github.com/open-mmlab/mmaction2/pull/497))
 - Add dataset overview in readthedocs ([#548](https://github.com/open-mmlab/mmaction2/pull/548))
-- Modify the trigger mode of the warnings of missing mmdet ([583](https://github.com/open-mmlab/mmaction2/pull/583))
+- Modify the trigger mode of the warnings of missing mmdet ([#583](https://github.com/open-mmlab/mmaction2/pull/583))
 - Refactor config structure ([#488](https://github.com/open-mmlab/mmaction2/pull/488), [#572](https://github.com/open-mmlab/mmaction2/pull/572))
 - Refactor unittest structure ([#433](https://github.com/open-mmlab/mmaction2/pull/433))
 

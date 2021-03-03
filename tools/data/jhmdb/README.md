@@ -4,7 +4,7 @@
 
 [DATASET]
 
-```
+```BibTeX
 @inproceedings{Jhuang:ICCV:2013,
     title = {Towards understanding action recognition},
     author = {H. Jhuang and J. Gall and S. Zuffi and C. Schmid and M. J. Black},

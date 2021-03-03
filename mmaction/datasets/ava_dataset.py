@@ -8,7 +8,7 @@ import mmcv
 import numpy as np
 from mmcv.utils import print_log
 
-from mmaction.core.evaluation.ava_utils import ava_eval, results2csv
+from ..core.evaluation.ava_utils import ava_eval, read_labelmap, results2csv
 from ..utils import get_root_logger
 from .base import BaseDataset
 from .registry import DATASETS
@@ -72,6 +72,9 @@ class AVADataset(BaseDataset):
         num_classes (int): The number of classes of the dataset. Default: 81.
             (AVA has 80 action classes, another 1-dim is added for potential
             usage)
+        custom_classes (list[int]): A subset of class ids from origin dataset.
+            Please note that 0 should NOT be selected, and ``num_classes``
+            should be equal to ``len(custom_classes) + 1``
         data_prefix (str): Path to a directory where videos are held.
             Default: None.
         test_mode (bool): Store True when building test or validation dataset.
@@ -96,6 +99,7 @@ class AVADataset(BaseDataset):
                  proposal_file=None,
                  person_det_score_thr=0.9,
                  num_classes=81,
+                 custom_classes=None,
                  data_prefix=None,
                  test_mode=False,
                  modality='RGB',
@@ -104,6 +108,14 @@ class AVADataset(BaseDataset):
                  timestamp_end=1800):
         # since it inherits from `BaseDataset`, some arguments
         # should be assigned before performing `load_annotations()`
+        self.custom_classes = custom_classes
+        if custom_classes is not None:
+            assert num_classes == len(custom_classes) + 1
+            assert 0 not in custom_classes
+            _, class_whitelist = read_labelmap(open(label_file))
+            assert set(custom_classes).issubset(class_whitelist)
+
+            self.custom_classes = tuple([0] + custom_classes)
         self.exclude_file = exclude_file
         self.label_file = label_file
         self.proposal_file = proposal_file
@@ -135,9 +147,7 @@ class AVADataset(BaseDataset):
             self.logger.info(
                 f'{len(valid_indexes)} out of {len(self.video_infos)} '
                 f'frames are valid.')
-            self.video_infos = self.video_infos = [
-                self.video_infos[i] for i in valid_indexes
-            ]
+            self.video_infos = [self.video_infos[i] for i in valid_indexes]
 
     def parse_img_record(self, img_records):
         bboxes, labels, entity_ids = [], [], []
@@ -197,12 +207,17 @@ class AVADataset(BaseDataset):
             for line in fin:
                 line_split = line.strip().split(',')
 
+                label = int(line_split[6])
+                if self.custom_classes is not None:
+                    if label not in self.custom_classes:
+                        continue
+                    label = self.custom_classes.index(label)
+
                 video_id = line_split[0]
                 timestamp = int(line_split[1])
                 img_key = f'{video_id},{timestamp:04d}'
 
                 entity_box = np.array(list(map(float, line_split[2:6])))
-                label = int(line_split[6])
                 entity_id = int(line_split[7])
                 shot_info = (0, (self.timestamp_end - self.timestamp_start) *
                              self._FPS)
@@ -312,7 +327,7 @@ class AVADataset(BaseDataset):
 
     def dump_results(self, results, out):
         assert out.endswith('csv')
-        results2csv(self, results, out)
+        results2csv(self, results, out, self.custom_classes)
 
     def evaluate(self,
                  results,
@@ -326,7 +341,7 @@ class AVADataset(BaseDataset):
             'for more info.')
         time_now = datetime.now().strftime('%Y%m%d_%H%M%S')
         temp_file = f'AVA_{time_now}_result.csv'
-        results2csv(self, results, temp_file)
+        results2csv(self, results, temp_file, self.custom_classes)
 
         ret = {}
         for metric in metrics:
@@ -335,8 +350,13 @@ class AVADataset(BaseDataset):
                 msg = '\n' + msg
             print_log(msg, logger=logger)
 
-            eval_result = ava_eval(temp_file, metric, self.label_file,
-                                   self.ann_file, self.exclude_file)
+            eval_result = ava_eval(
+                temp_file,
+                metric,
+                self.label_file,
+                self.ann_file,
+                self.exclude_file,
+                custom_classes=self.custom_classes)
             log_msg = []
             for k, v in eval_result.items():
                 log_msg.append(f'\n{k}\t{v: .4f}')

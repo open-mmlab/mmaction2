@@ -15,7 +15,7 @@ from mmaction import __version__
 from mmaction.apis import train_model
 from mmaction.datasets import build_dataset
 from mmaction.models import build_model
-from mmaction.utils import collect_env, get_root_logger
+from mmaction.utils import collect_env, get_root_logger, register_module_hooks
 
 
 def parse_args():
@@ -103,6 +103,9 @@ def main():
     # The flag is used to determine whether it is omnisource training
     cfg.setdefault('omnisource', False)
 
+    # The flag is used to register module's hooks
+    cfg.setdefault('module_hooks', [])
+
     # create work_dir
     mmcv.mkdir_or_exist(osp.abspath(cfg.work_dir))
     # dump config
@@ -138,7 +141,12 @@ def main():
     meta['work_dir'] = osp.basename(cfg.work_dir.rstrip('/\\'))
 
     model = build_model(
-        cfg.model, train_cfg=cfg.train_cfg, test_cfg=cfg.test_cfg)
+        cfg.model,
+        train_cfg=cfg.get('train_cfg'),
+        test_cfg=cfg.get('test_cfg'))
+
+    if len(cfg.module_hooks) > 0:
+        register_module_hooks(model, cfg.module_hooks)
 
     if cfg.omnisource:
         # If omnisource flag is set, cfg.data.train should be a list

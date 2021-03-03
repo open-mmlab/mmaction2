@@ -1,12 +1,14 @@
-from .backbones import (C3D, X3D, ResNet, ResNet2Plus1d, ResNet3d, ResNet3dCSN,
-                        ResNet3dLayer, ResNet3dSlowFast, ResNet3dSlowOnly,
-                        ResNetAudio, ResNetTIN, ResNetTSM)
+from .backbones import (C3D, X3D, MobileNetV2, MobileNetV2TSM, ResNet,
+                        ResNet2Plus1d, ResNet3d, ResNet3dCSN, ResNet3dLayer,
+                        ResNet3dSlowFast, ResNet3dSlowOnly, ResNetAudio,
+                        ResNetTIN, ResNetTSM, TANet)
 from .builder import (DETECTORS, build_backbone, build_detector, build_head,
                       build_localizer, build_loss, build_model, build_neck,
                       build_recognizer)
-from .common import Conv2plus1d, ConvAudio
-from .heads import (AudioTSNHead, AVARoIHead, BaseHead, BBoxHeadAVA, I3DHead,
-                    SlowFastHead, TPNHead, TSMHead, TSNHead, X3DHead)
+from .common import LFB, TAM, Conv2plus1d, ConvAudio
+from .heads import (AudioTSNHead, AVARoIHead, BaseHead, BBoxHeadAVA, FBOHead,
+                    I3DHead, LFBInferHead, SlowFastHead, TPNHead, TSMHead,
+                    TSNHead, X3DHead)
 from .localizers import BMN, PEM, TEM
 from .losses import (BCELossWithLogits, BinaryLogisticRegressionLoss, BMNLoss,
                      CrossEntropyLoss, HVULoss, NLLLoss, OHEMHingeLoss,
@@ -24,10 +26,11 @@ __all__ = [
     'BaseRecognizer', 'LOSSES', 'CrossEntropyLoss', 'NLLLoss', 'HVULoss',
     'ResNetTSM', 'ResNet3dSlowFast', 'SlowFastHead', 'Conv2plus1d',
     'ResNet3dSlowOnly', 'BCELossWithLogits', 'LOCALIZERS', 'build_localizer',
-    'PEM', 'TEM', 'BinaryLogisticRegressionLoss', 'BMN', 'BMNLoss',
+    'PEM', 'TAM', 'TEM', 'BinaryLogisticRegressionLoss', 'BMN', 'BMNLoss',
     'build_model', 'OHEMHingeLoss', 'SSNLoss', 'ResNet3dCSN', 'ResNetTIN',
     'TPN', 'TPNHead', 'build_loss', 'build_neck', 'AudioRecognizer',
     'AudioTSNHead', 'X3D', 'X3DHead', 'ResNet3dLayer', 'DETECTORS',
     'SingleRoIExtractor3D', 'BBoxHeadAVA', 'ResNetAudio', 'build_detector',
-    'ConvAudio', 'AVARoIHead'
+    'ConvAudio', 'AVARoIHead', 'MobileNetV2', 'MobileNetV2TSM', 'TANet', 'LFB',
+    'FBOHead', 'LFBInferHead'
 ]
