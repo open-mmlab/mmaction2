@@ -82,7 +82,7 @@ which is convenient to conduct various experiments.
 
     To help the users have a basic idea of a complete config structure and the modules in an action localization system,
     we make brief comments on the config of BMN as the following.
-    For more detailed usage and alternative for per parameter in each module, please refer to the API documentation.
+    For more detailed usage and alternative for per parameter in each module, please refer to the [API documentation](https://mmaction2.readthedocs.io/en/latest/api.html).
 
     ```python
     # model settings

@@ -48,14 +48,15 @@ model = dict(
 ```
 
 注意，这里的 `pretrained='torchvision://resnet50'` 用于初始化 backbone，用于继承 ImageNet 预训练的权重来训新模型。
-然而，这个设置和微调模型没有关系。相反，`load_from` 和微调模型的关联性更大。
+然而，这个设置和微调模型没有关系。预训练的权重的加载通过 `load_from` 来指定。
 
 ## 修改数据集
 
 MMAction2 支持 UCF101, Kinetics-400, Moments in Time, Multi-Moments in Time, THUMOS14,
 Something-Something V1&V2, ActivityNet 等数据集。
-用户可能需要采用上面之一的数据集来适合他们特定的数据集。
-对于我们的例子，UCF101已经被多种数据集类型所支持，如 `RawframeDataset`，需将配置文件更改如下
+用户可将他们特定的数据集调整为上面支持的数据集格式之一。
+对动作识别任务来讲，数据集格式相对简单。MMAction2 提供了 `RawframeDataset` 和 `VideoDataset` 等通用的数据集读取类。
+以 `UCF101` 和 `RawframeDataset` 为例，
 
 ```python
 # 数据集设置
@@ -76,14 +77,14 @@ ann_file_test = 'data/ucf101/ucf101_val_list.txt'
 optimizer = dict(type='SGD', lr=0.005, momentum=0.9, weight_decay=0.0001)  # 从 0.01 改为 0.005
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # 学习策略
-lr_config = dict(policy='step', step=[40, 80])
+lr_config = dict(policy='step', step=[40, 80]) # step 与 total_epoch 相适应
 total_epochs = 50 # 从 100 改为 50
 checkpoint_config = dict(interval=5)
 ```
 
 ## 使用预训练模型
 
-要将预训练模型用于整个网络，新的配置需要将预训练模型的链接添加到 `load_from` 中。
+若要将预训练模型用于整个网络，需要在新的配置中，于 `load_from` 处指明预训练模型的链接。
 
 ```python
 # 将预训练模型用于整个 TSN 网络

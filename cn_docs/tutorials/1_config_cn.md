@@ -48,7 +48,7 @@ MMAction2 提供的所有配置文件都放置在 `$MMAction2/configs` 文件夹
 所有其他的配置文件都应该继承 _原始配置_ 文件，这样就能保证配置文件的最大继承等级为 3。
 
 为了方便理解，MMAction2 推荐用户继承现有方法的配置文件。
-例如，如果配置的修改基于 TSN，用户首先应通过指定 `_base_ = ../tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py` 继承 TSN 的基本结构，
+例如，如果配置的修改基于 TSN，用户首先应通过指定 `_base_ = '../tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py'` 继承 TSN 的基本结构，
 并修改其中必要的内容以完成继承。
 
 如果用户想实现一个独立于任何一个现有的方法结构的新方法，则需要像 `configs/recognition`, `configs/detection` 等一样，在 `configs/TASK` 中建立新的文件夹。
@@ -69,7 +69,7 @@ MMAction2 按照以下风格进行配置文件命名，代码库的贡献者需�
 - `[model setting]`：一些模型上的特殊设置。
 - `{backbone}`：骨架类型，如 `r50`（ResNet-50）等。
 - `[misc]`：模型的额外设置或插件，如 `dense`，`320p`，`video`等。
-- `{data setting}`：采桢数据格式，形如 `{clip_len}x{frame_interval}x{num_clips}`。
+- `{data setting}`：采帧数据格式，形如 `{clip_len}x{frame_interval}x{num_clips}`。
 - `[gpu x batch_per_gpu]`：GPU 数量以及每个 GPU 上的采样。
 - `{schedule}`：训练时的调度设置，如 `20e` 表示 20 个周期（epoch）。
 - `{dataset}`：数据集名，如 `kinetics400`，`mmit`等。
@@ -81,8 +81,8 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
 
 - 以 BMN 为例
 
-    为了帮助用户理解 MMAction2 的完整配置文件结构，及时序动作检测系统中的一些模块，这里以 BMN 为例对其配置文件进行了注释。
-    对于每个模块的详细用法以及对应参数的选择，请参照 API 文档。
+    为了帮助用户理解 MMAction2 的配置文件结构，以及时序动作检测系统中的一些模块，这里以 BMN 为例，给出其配置文件的注释。
+    对于每个模块的详细用法以及对应参数的选择，请参照 [API 文档](https://mmaction2.readthedocs.io/en/latest/api.html)。
 
     ```python
     # 模型设置
@@ -93,10 +93,10 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
         num_samples=32,  # 每个候选的采样数
         num_samples_per_bin=3,  # 每个样本的直方图采样数
         feat_dim=400,  # 特征维度
-        soft_nms_alpha=0.4,  # 软 NMS 的 alpha 值
-        soft_nms_low_threshold=0.5,  # 软 NMS 的下界
-        soft_nms_high_threshold=0.9,  # 软 NMS 的上届
-        post_process_top_k=100)  # 后处理得到的最好的 K 个proposal
+        soft_nms_alpha=0.4,  # soft-NMS 的 alpha 值
+        soft_nms_low_threshold=0.5,  # soft-NMS 的下界
+        soft_nms_high_threshold=0.9,  # soft-NMS 的上届
+        post_process_top_k=100)  # 后处理得到的最好的 K 个 proposal
     # 模型训练和测试的设置
     train_cfg = None  # 训练 BMN 的超参配置
     test_cfg = dict(average_clips='score')  # 测试 BMN 的超参配置
@@ -183,9 +183,10 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
 
     # 优化器设置
     optimizer = dict(
-        # 构建优化器的设置, 支持 (1). 所有 PyTorch 原生的优化器，
-        # 这些优化器的参数和 PyTorch 对应的一致. (2). 自定义的优化器，
-        # 这些优化器在 `constructor` 的基础上构建, 更多细节可参考 "tutorials/5_new_modules.md" 部分
+        # 构建优化器的设置，支持：
+        # (1). 所有 PyTorch 原生的优化器，这些优化器的参数和 PyTorch 对应的一致；
+        # (2). 自定义的优化器，这些优化器在 `constructor` 的基础上构建。
+        # 更多细节可参考 "tutorials/5_new_modules.md" 部分
         type='Adam',  # 优化器类型, 参考 https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/optimizer/default_constructor.py#L13 for more details
         lr=0.001,  # 学习率, 参数的细节使用可参考 PyTorch 的对应文档
         weight_decay=0.0001)  # Adam 优化器的权重衰减
@@ -210,7 +211,7 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
         ])
 
     # 运行设置
-    dist_params = dict(backend='nccl')  # 建立分布式训练的设置，其中端口号也可以设置
+    dist_params = dict(backend='nccl')  # 建立分布式训练的设置（端口号，多 GPU 通信框架等）
     log_level = 'INFO'  # 日志等级
     work_dir = './work_dirs/bmn_400x100_2x8_9e_activitynet_feature/'  # 记录当前实验日志和检查点的文件夹
     load_from = None  # 从给定路径加载模型作为预训练模型. 这个选项不会用于断点恢复训练
@@ -227,8 +228,8 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
 
 - 以 TSN 为例
 
-    为了帮助用户理解 MMAction2 的完整配置文件结构，及动作识别系统中的一些模块，这里以 TSN 为例对其配置文件进行了注释。
-    对于每个模块的详细用法以及对应参数的选择，请参照 API 文档。
+    为了帮助用户理解 MMAction2 的配置文件结构，以及动作识别系统中的一些模块，这里以 TSN 为例，给出其配置文件的注释。
+    对于每个模块的详细用法以及对应参数的选择，请参照 [API 文档](https://mmaction2.readthedocs.io/en/latest/api.html)。
 
     ```python
     # 模型设置
@@ -314,11 +315,11 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
             type='Resize',  # 调整图片尺寸
             scale=(-1, 256)),  # 调整比例
         dict(  # CenterCrop 类的配置
-            type='CenterCrop',  # 重心裁剪
+            type='CenterCrop',  # 中心裁剪
             crop_size=224),  # 裁剪部分的尺寸
         dict(  # Flip 类的配置
             type='Flip',  # 图片翻转
-            flip_ratio=0),  # 执行翻转几率
+            flip_ratio=0),  # 翻转几率
         dict(  # Normalize 类的配置
             type='Normalize',  # 图片正则化
             **img_norm_cfg),  # 图片正则化参数
@@ -391,9 +392,10 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
             pipeline=test_pipeline))
     # 优化器设置
     optimizer = dict(
-        # 构建优化器的设置, 支持 (1). 所有 PyTorch 原生的优化器，
-        # 这些优化器的参数和 PyTorch 对应的一致. (2). 自定义的优化器，
-        # 这些优化器在 `constructor` 的基础上构建, 更多细节可参考 "tutorials/5_new_modules.md" 部分
+        # 构建优化器的设置，支持：
+        # (1). 所有 PyTorch 原生的优化器，这些优化器的参数和 PyTorch 对应的一致；
+        # (2). 自定义的优化器，这些优化器在 `constructor` 的基础上构建。
+        # 更多细节可参考 "tutorials/5_new_modules.md" 部分
         type='SGD',  # 优化器类型, 参考 https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/optimizer/default_constructor.py#L13
         lr=0.01,  # 学习率, 参数的细节使用可参考 PyTorch 的对应文档
         momentum=0.9,  # 动量大小
@@ -434,8 +436,8 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
 
 - 以 FastRCNN 为例
 
-    为了帮助用户理解 MMAction2 的完整配置文件结构，及时空检测系统中的一些模块，这里以 FastRCNN 为例对其配置文件进行了注释。
-    对于每个模块的详细用法以及对应参数的选择，请参照 API 文档。
+    为了帮助用户理解 MMAction2 的完整配置文件结构，以及时空检测系统中的一些模块，这里以 FastRCNN 为例，给出其配置文件的注释。
+    对于每个模块的详细用法以及对应参数的选择，请参照 [API 文档](https://mmaction2.readthedocs.io/en/latest/api.html)。
 
     ```python
     # 模型设置
@@ -610,9 +612,10 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
 
     # 优化器设置
     optimizer = dict(
-        # 构建优化器的设置, 支持 (1). 所有 PyTorch 原生的优化器，
-        # 这些优化器的参数和 PyTorch 对应的一致. (2). 自定义的优化器，
-        # 这些优化器在 `constructor` 的基础上构建, 更多细节可参考 "tutorials/5_new_modules.md" 部分
+        # 构建优化器的设置，支持：
+        # (1). 所有 PyTorch 原生的优化器，这些优化器的参数和 PyTorch 对应的一致；
+        # (2). 自定义的优化器，这些优化器在 `constructor` 的基础上构建。
+        # 更多细节可参考 "tutorials/5_new_modules.md" 部分
         type='SGD',  # 优化器类型, 参考 https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/optimizer/default_constructor.py#L13
         lr=0.2,  # 学习率, 参数的细节使用可参考 PyTorch 的对应文档
         momentum=0.9,  # 动量大小
