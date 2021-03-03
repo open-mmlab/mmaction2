@@ -48,16 +48,16 @@ def parse_args():
         '--drawing-fps',
         type=int,
         default=20,
-        help='Upper bound FPS value of the output drawing')
+        help='Set upper bound FPS value of the output drawing')
     parser.add_argument(
         '--inference-fps',
         type=int,
         default=4,
-        help='Upper bound FPS value of model inference')
+        help='Set upper bound FPS value of model inference')
     args = parser.parse_args()
-    assert args.drawing_fps > 0 and args.inference_fps > 0, \
-        'FPS value of drawing and inference should also be set as ' \
-        'positive number'
+    assert args.drawing_fps >= 0 and args.inference_fps >= 0, \
+        'upper bound FPS value of drawing and inference should be set as ' \
+        'positive number, or zero for no limit'
     return args
 
 
