@@ -47,18 +47,17 @@ def parse_args():
     parser.add_argument(
         '--drawing-fps',
         type=int,
-        default=-1,
-        help='FPS value of the output drawing')
+        default=20,
+        help='Upper bound FPS value of the output drawing')
     parser.add_argument(
         '--inference-fps',
         type=int,
-        default=-1,
-        help='FPS value of model inference')
+        default=4,
+        help='Upper bound FPS value of model inference')
     args = parser.parse_args()
-    if args.drawing_fps != -1 or args.inference_fps != -1:
-        assert args.drawing_fps > 0 and args.inference_fps > 0, \
-            'FPS value of drawing and inference should also be set as ' \
-            'positive number'
+    assert args.drawing_fps > 0 and args.inference_fps > 0, \
+        'FPS value of drawing and inference should also be set as ' \
+        'positive number'
     return args
 
 
@@ -101,7 +100,7 @@ def show_results():
             break
 
         if drawing_fps > 0:
-            # add a limiter for drawing fps <= drawing_fps
+            # add a limiter for actual drawing fps <= drawing_fps
             sleep_time = 1 / drawing_fps - (time.time() - cur_time)
             if sleep_time > 0:
                 time.sleep(sleep_time)
@@ -147,7 +146,7 @@ def inference():
             scores_sum -= score_cache.popleft()
 
         if inference_fps > 0:
-            # add a limiter for inference fps <= inference_fps
+            # add a limiter for actual inference fps <= inference_fps
             sleep_time = 1 / inference_fps - (time.time() - cur_time)
             if sleep_time > 0:
                 time.sleep(sleep_time)
