@@ -28,8 +28,8 @@ MMAction2 提供的所有配置文件都放置在 `$MMAction2/configs` 文件夹
 
 - 更新配置文件内列表的键
 
-  配置文件中，存在一些由字典组合成的列表。例如，训练数据增强流水线 data.train.pipeline 就是 python 列表
-  类似，`[dict(type='SampleFrames'), ...]`。如果用户向更改其中的 `'SampleFrames'` 为 `'DenseSampleFrames'`，
+  配置文件中，存在一些由字典组合成的列表。例如，训练数据前处理流水线 data.train.pipeline 就是 python 列表。
+  类似，`[dict(type='SampleFrames'), ...]`。如果用户想更改其中的 `'SampleFrames'` 为 `'DenseSampleFrames'`，
   可以指定 `--cfg-options data.train.pipeline.0.type=DenseSampleFrames`。
 
 - 更新列表/元组的值。
@@ -95,7 +95,7 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
         feat_dim=400,  # 特征维度
         soft_nms_alpha=0.4,  # soft-NMS 的 alpha 值
         soft_nms_low_threshold=0.5,  # soft-NMS 的下界
-        soft_nms_high_threshold=0.9,  # soft-NMS 的上届
+        soft_nms_high_threshold=0.9,  # soft-NMS 的上界
         post_process_top_k=100)  # 后处理得到的最好的 K 个 proposal
     # 模型训练和测试的设置
     train_cfg = None  # 训练 BMN 的超参配置
@@ -109,7 +109,7 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
     ann_file_val = 'data/ActivityNet/anet_anno_val.json'  # 验证集的标注文件
     ann_file_test = 'data/ActivityNet/anet_anno_test.json'  # 测试集的标注文件
 
-    train_pipeline = [  # 训练流水线步骤组成的列表
+    train_pipeline = [  # 训练数据前处理流水线步骤组成的列表
         dict(type='LoadLocalizationFeature'),  # 加载时序动作检测特征
         dict(type='GenerateLocalizationLabels'),  # 生成时序动作检测标签
         dict(  # Collect 类的配置
@@ -124,7 +124,7 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
             type='ToDataContainer',  # 将一些信息转入到 ToDataContainer 中
             fields=[dict(key='gt_bbox', stack=False, cpu_only=True)])  # 携带额外键和属性的信息域
     ]
-    val_pipeline = [  # 验证流水线步骤组成的列表
+    val_pipeline = [  # 验证数据前处理流水线步骤组成的列表
         dict(type='LoadLocalizationFeature'),  # 加载时序动作检测特征
         dict(type='GenerateLocalizationLabels'),  # 生成时序动作检测标签
         dict(  # Collect 类的配置
@@ -142,7 +142,7 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
             type='ToDataContainer',  # 将一些信息转入到 ToDataContainer 中
             fields=[dict(key='gt_bbox', stack=False, cpu_only=True)])  # 携带额外键和属性的信息域
     ]
-    test_pipeline = [  # 测试流水线步骤组成的列表
+    test_pipeline = [  # 测试数据前处理流水线步骤组成的列表
         dict(type='LoadLocalizationFeature'),  # 加载时序动作检测特征
         dict(  # Collect 类的配置
             type='Collect',  # Collect 类决定哪些键会被传递到时序检测器中
@@ -237,7 +237,7 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
         type='Recognizer2D',  # 动作识别器的类型
         backbone=dict(  # Backbone 字典设置
             type='ResNet',  # Backbone 名
-            pretrained='torchvision://resnet50',  # 预训练模型的 url/文件位置
+            pretrained='torchvision://resnet50',  # 预训练模型的 url 或文件位置
             depth=50,  # ResNet 模型深度
             norm_eval=False),  # 训练时是否设置 BN 层为验证模式
         cls_head=dict(  # 分类器字典设置
@@ -264,19 +264,19 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
         std=[58.395, 57.12, 57.375],  # 图像正则化方差
         to_bgr=False)  # 是否将通道数从 RGB 转为 BGR
 
-    train_pipeline = [  # 训练流水线步骤组成的列表
+    train_pipeline = [  # 训练数据前处理流水线步骤组成的列表
         dict(  # SampleFrames 类的配置
             type='SampleFrames',  # 采帧，从视频帧中选定哪些帧要采
             clip_len=1,  # 每个输出视频片段的帧
             frame_interval=1,  # 所采相邻帧的时序间隔
-            num_clips=3),  # 所采帧片段的数
+            num_clips=3),  # 所采帧片段的数量
         dict(  # RawFrameDecode 类的配置
-            type='RawFrameDecode'),  # 给定帧序列，加载对应帧, 解码对应帧
+            type='RawFrameDecode'),  # 给定帧序列，加载对应帧，解码对应帧
         dict(  # Resize 类的配置
             type='Resize',  # 调整图片尺寸
             scale=(-1, 256)),  # 调整比例
         dict(  # MultiScaleCrop 类的配置
-            type='MultiScaleCrop',  # 多尺寸裁剪, 随机从一系列给定尺寸从选择一个比例尺寸进行裁剪
+            type='MultiScaleCrop',  # 多尺寸裁剪，随机从一系列给定尺寸中选择一个比例尺寸进行裁剪
             input_size=224,  # 网络输入
             scales=(1, 0.875, 0.75, 0.66),  # 长宽比例选择范围
             random_crop=False,  # 是否进行随机裁剪
@@ -302,15 +302,15 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
             type='ToTensor',  # ToTensor 类将其他类型转化为 Tensor 类型
             keys=['imgs', 'label'])  # 将被从其他类型转化为 Tensor 类型的特征
     ]
-    val_pipeline = [  # 验证流水线步骤组成的列表
+    val_pipeline = [  # 验证数据前处理流水线步骤组成的列表
         dict(  # SampleFrames 类的配置
             type='SampleFrames',  # 采帧，从视频帧中选定哪些帧要采
             clip_len=1,  # 每个输出视频片段的帧
             frame_interval=1,  # 所采相邻帧的时序间隔
-            num_clips=3,  # 所采帧片段的数
+            num_clips=3,  # 所采帧片段的数量
             test_mode=True),  # 是否设置为测试模式采帧
         dict(  # RawFrameDecode 类的配置
-            type='RawFrameDecode'),  # 给定帧序列，加载对应帧, 解码对应帧
+            type='RawFrameDecode'),  # 给定帧序列，加载对应帧，解码对应帧
         dict(  # Resize 类的配置
             type='Resize',  # 调整图片尺寸
             scale=(-1, 256)),  # 调整比例
@@ -334,15 +334,15 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
             type='ToTensor',  # ToTensor 类将其他类型转化为 Tensor 类型
             keys=['imgs'])  # 将被从其他类型转化为 Tensor 类型的特征
     ]
-    test_pipeline = [  # 测试流水线步骤组成的列表
+    test_pipeline = [  # 测试数据前处理流水线步骤组成的列表
         dict(  # SampleFrames 类的配置
             type='SampleFrames',  # 采帧，从视频帧中选定哪些帧要采
             clip_len=1,  # 每个输出视频片段的帧
             frame_interval=1,  # 所采相邻帧的时序间隔
-            num_clips=25,  # 所采帧片段的数
+            num_clips=25,  # 所采帧片段的数量
             test_mode=True),  # 是否设置为测试模式采帧
         dict(  # RawFrameDecode 类的配置
-            type='RawFrameDecode'),  # 给定帧序列，加载对应帧, 解码对应帧
+            type='RawFrameDecode'),  # 给定帧序列，加载对应帧，解码对应帧
         dict(  # Resize 类的配置
             type='Resize',  # 调整图片尺寸
             scale=(-1, 256)),  # 调整比例
@@ -446,7 +446,7 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
         backbone=dict(  # Backbone 字典设置
             type='ResNet3dSlowOnly',  # Backbone 名
             depth=50, # ResNet 模型深度
-            pretrained=None,   # 预训练模型的 url/文件位置
+            pretrained=None,   # 预训练模型的 url 或文件位置
             pretrained2d=False, # 预训练模型是否为 2D 模型
             lateral=False,  # backbone 是否有侧连接
             num_stages=4, # ResNet 模型阶数
@@ -464,7 +464,7 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
             bbox_head=dict( # bbox_head 字典设置
                 type='BBoxHeadAVA', # bbox_head 名
                 in_channels=2048, # 输入特征通道数
-                num_classes=81, # 动作类别数 + 1
+                num_classes=81, # 动作类别数 + 1（背景）
                 multilabel=True,  # 数据集是否多标签
                 dropout_ratio=0.5)),  # dropout 比率
         # 模型训练和测试的设置
@@ -508,13 +508,13 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
         std=[58.395, 57.12, 57.375],   # 图像正则化方差
         to_bgr=False) # 是否将通道数从 RGB 转为 BGR
 
-    train_pipeline = [  # 训练流水线步骤组成的列表
+    train_pipeline = [  # 训练数据前处理流水线步骤组成的列表
         dict(  # SampleFrames 类的配置
             type='AVASampleFrames',  # 采帧，从视频帧中选定哪些帧要采
             clip_len=4,  # 每个输出视频片段的帧
             frame_interval=16), # 所采相邻帧的时序间隔
         dict(  # RawFrameDecode 类的配置
-            type='RawFrameDecode'),  # 给定帧序列，加载对应帧, 解码对应帧
+            type='RawFrameDecode'),  # 给定帧序列，加载对应帧，解码对应帧
         dict(  # RandomRescale 类的配置
             type='RandomRescale',   # 给定一个范围，进行随机短边缩放
             scale_range=(256, 320)),   # RandomRescale 的短边缩放范围
@@ -541,7 +541,7 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
             type='ToDataContainer',  # 将一些信息转入到 ToDataContainer 中
             fields=[   # 转化为 Datacontainer 的域
                 dict(   # 域字典
-                    key=['proposals', 'gt_bboxes', 'gt_labels'],  # 将转化为 Datacontyainer 的键
+                    key=['proposals', 'gt_bboxes', 'gt_labels'],  # 将转化为 DataContainer 的键
                     stack=False)]),  # 是否要堆列这些 tensor
         dict(  # Collect 类的配置
             type='Collect',  # Collect 类决定哪些键会被传递到时空检测器中
@@ -549,13 +549,13 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
             meta_keys=['scores', 'entity_ids']),  # 输入的元键
     ]
 
-    val_pipeline = [  # 验证流水线步骤组成的列表
+    val_pipeline = [  # 验证数据前处理流水线步骤组成的列表
         dict(  # SampleFrames 类的配置
             type='AVASampleFrames',  # 采帧，从视频帧中选定哪些帧要采
             clip_len=4,  # 每个输出视频片段的帧
             frame_interval=16),  # 所采相邻帧的时序间隔
         dict(  # RawFrameDecode 类的配置
-            type='RawFrameDecode'),  # 给定帧序列，加载对应帧, 解码对应帧
+            type='RawFrameDecode'),  # 给定帧序列，加载对应帧，解码对应帧
         dict(  # Resize 类的配置
             type='Resize',  # 调整图片尺寸
             scale=(-1, 256)),  # 调整比例
@@ -576,7 +576,7 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
             type='ToDataContainer',  # 将一些信息转入到 ToDataContainer 中
             fields=[   # 转化为 Datacontainer 的域
                 dict(   # 域字典
-                    key=['proposals'],  # 将转化为 Datacontyainer 的键
+                    key=['proposals'],  # 将转化为 DataContainer 的键
                     stack=False)]),  # 是否要堆列这些 tensor
         dict(  # Collect 类的配置
             type='Collect',  # Collect 类决定哪些键会被传递到时空检测器中

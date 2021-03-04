@@ -1,6 +1,6 @@
 # 教程 6：如何导出模型为 onnx 格式
 
-开放式神经网络交换格式（Open Neural Network Exchange，即 [ONNX](https://onnx.ai/)）是一个开放的生态系统，使AI开发人员能够随着项目的发展选择正确的工具。
+开放式神经网络交换格式（Open Neural Network Exchange，即 [ONNX](https://onnx.ai/)）是一个开放的生态系统，使 AI 开发人员能够随着项目的发展选择正确的工具。
 
 <!-- TOC -->
 
@@ -48,12 +48,12 @@ python tools/pytorch2onnx.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--shape ${SHAPE}
 
 可选参数：
 
-- `--shape`: 模型输入张量的形状。对于 2D 模型（如 TSN），输入形状应当为 `$batch $clip $channel $height $width` (例如，`1 1 3 224 224`)；对于 3D 模型（如 I3D），输入形状应当为 `$batch $clip $channel $time $height $width` (如，`1 1 3 32 224 224`)；对于时序检测器如 BSN，每个模块的数据都不相同，请查看对应的 `forward` 函数。如果没有指定，它将被置为 `1 1 3 224 224`。
-- `--verify`: 决定是否对导出模型进行验证，是否可运行，是否数值正确。如果没有指定，它将被置为 `False`。
-- `--show`: 决定是否打印导出模型的结构。如果没有指定，它将被置为 `False`。
-- `--output-file`: 导出的 onnx 模型名。如果没有指定，它将被置为 `tmp.onnx`。
-- `--is-localizer`：决定导出的模型是否为时序检测其。如果没有指定，它将被置为 `False`。
-- `--opset-version`：决定 onnx 的执行版本，MMAction2 推荐用户使用高版本（例如 11 版本）的 onnx 以确保稳定性。如果没有指定，它将被置为 `11`。
+- `--shape`: 模型输入张量的形状。对于 2D 模型（如 TSN），输入形状应当为 `$batch $clip $channel $height $width` (例如，`1 1 3 224 224`)；对于 3D 模型（如 I3D），输入形状应当为 `$batch $clip $channel $time $height $width` (如，`1 1 3 32 224 224`)；对于时序检测器如 BSN，每个模块的数据都不相同，请查看对应的 `forward` 函数。如果没有被指定，它将被置为 `1 1 3 224 224`。
+- `--verify`: 决定是否对导出模型进行验证，验证项包括是否可运行，数值是否正确等。如果没有被指定，它将被置为 `False`。
+- `--show`: 决定是否打印导出模型的结构。如果没有被指定，它将被置为 `False`。
+- `--output-file`: 导出的 onnx 模型名。如果没有被指定，它将被置为 `tmp.onnx`。
+- `--is-localizer`：决定导出的模型是否为时序检测器。如果没有被指定，它将被置为 `False`。
+- `--opset-version`：决定 onnx 的执行版本，MMAction2 推荐用户使用高版本（例如 11 版本）的 onnx 以确保稳定性。如果没有被指定，它将被置为 `11`。
 
 ### 行为识别器
 
@@ -71,4 +71,4 @@ python tools/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --veri
 python tools/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --is-localizer --shape $SHAPE --verify
 ```
 
-如果发现提供的任何检查点没有被成功导出，或者精度上存在损失，可以在 repo 下提出问题（issue）。
+如果发现提供的检查点没有被成功导出，或者存在精度损失，可以在本 repo 下提出问题（issue）。

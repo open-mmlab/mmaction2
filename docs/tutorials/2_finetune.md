@@ -83,7 +83,7 @@ Finetuning usually requires smaller learning rate and less training epochs.
 optimizer = dict(type='SGD', lr=0.005, momentum=0.9, weight_decay=0.0001)  # change from 0.01 to 0.005
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
-lr_config = dict(policy='step', step=[40, 80])
+lr_config = dict(policy='step', step=[20, 40])
 total_epochs = 50 # change from 100 to 50
 checkpoint_config = dict(interval=5)
 ```

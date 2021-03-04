@@ -225,7 +225,7 @@ Then in the config, to use `MyDataset` you can modify the config as the followin
 ```python
 dataset_A_train = dict(
     type='MyDataset',
-    ann_file = ann_file_train,
+    ann_file=ann_file_train,
     pipeline=train_pipeline
 )
 ```

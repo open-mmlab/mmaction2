@@ -1,6 +1,6 @@
 # 教程 7：如何自定义模型运行参数
 
-在本教程中，我们将介绍关于如何在运行自己配置时进行自定义优化，训练调整，工作流和钩子的方法。
+在本教程中，我们将介绍如何在运行自定义模型时，进行自定义参数优化方法，学习率调整策略，工作流和钩子的方法。
 
 <!-- TOC -->
 
@@ -12,7 +12,7 @@
     - [3. 在配置文件中指定优化器](#3-在配置文件中指定优化器)
   - [定制优化器构造器](#定制优化器构造器)
   - [额外设定](#额外设定)
-- [定制训练调整](#定制训练调整)
+- [定制学习率调整策略](#定制学习率调整策略)
 - [定制工作流](#定制工作流)
 - [定制钩子](#定制钩子)
   - [定制用户自定义钩子](#定制用户自定义钩子)
@@ -31,14 +31,14 @@
 
 ### 定制 PyTorch 内置的优化器
 
-MMAction2 已经支持使用由 PyTorch 实现的所有优化器，唯一的修改就是更改配置文件的 ”optimizer“ 字段。
+MMAction2 已经支持使用由 PyTorch 实现的所有优化器，唯一需要修改的，就是配置文件的 “optimizer” 字段。
 例如，如果要使用 “Adam”，则修改如下。
 
 ```python
 optimizer = dict(type='Adam', lr=0.0003, weight_decay=0.0001)
 ```
 
-要修改模型的学习率，用户只需要在优化程序的配置中修改 ”lr“ 即可。
+要修改模型的学习率，用户只需要在优化程序的配置中修改 “lr” 即可。
 用户可根据 [PyTorch API 文档](https://pytorch.org/docs/stable/optim.html?highlight=optim#module-torch.optim) 进行参数设置
 
 例如，如果想使用 `Adam` 并设置参数为 `torch.optim.Adam(parms, lr=0.001, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, amsgrad=False)`，
@@ -93,7 +93,7 @@ custom_imports = dict(imports=['mmaction.core.optimizer.my_optimizer'], allow_fa
 #### 3. 在配置文件中指定优化器
 
 之后，用户便可在配置文件的 `optimizer` 域中使用 `MyOptimizer`。
-在配置中，优化器由“ optimizer”字段定义，如下所示：
+在配置中，优化器由 “optimizer” 字段定义，如下所示：
 
 ```python
 optimizer = dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001)
@@ -165,7 +165,7 @@ class MyOptimizerConstructor:
     )
     ```
 
-## 定制训练调整
+## 定制学习率调整策略
 
 在配置文件中使用默认值的逐步学习率调整，它调用 MMCV 中的 [`StepLRHook`](https://github.com/open-mmlab/mmcv/blob/f48241a65aebfe07db122e9db320c31b685dc674/mmcv/runner/hooks/lr_updater.py#L153)。
 此外，也支持其他学习率调整方法，如 `CosineAnnealing` 和 `Poly`。 详情可见 [这里](https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/lr_updater.py)
@@ -189,7 +189,7 @@ class MyOptimizerConstructor:
 
 ## 定制工作流
 
-默认情况下，MMAction2 推荐用户在训练周期中使用 ”EvalHook“ 进行模型验证，也可以选择 ”val“ 工作流模型进行模型验证。
+默认情况下，MMAction2 推荐用户在训练周期中使用 “EvalHook” 进行模型验证，也可以选择 “val“ 工作流模型进行模型验证。
 
 工作流是一个形如 (工作流名, 周期数) 的列表，用于指定运行顺序和周期。其默认设置为：
 
@@ -213,7 +213,7 @@ workflow = [('train', 1)]
 2. 配置文件内的关键词 `total_epochs` 控制训练时期数，并且不会影响验证工作流程。
 3. 工作流 `[('train', 1), ('val', 1)]` 和 `[('train', 1)]` 不会改变 `EvalHook` 的行为。
    因为 `EvalHook` 由 `after_train_epoch` 调用，而验证工作流只会影响 `after_val_epoch` 调用的钩子。
-   因此，`[('train', 1), ('val', 1)]` 和 ``[('train', 1)]`` 的区别在于 runner 在每个训练时期后会计算验证集上的损失。
+   因此，`[('train', 1), ('val', 1)]` 和 ``[('train', 1)]`` 的区别在于，runner 在完成每一轮训练后，会计算验证集上的损失。
 
 ## 定制钩子
 
@@ -221,7 +221,7 @@ workflow = [('train', 1)]
 
 #### 1. 创建一个新钩子
 
-这里举一个在 MMAction2 中创建一个新钩子并在训练中使用它的示例：
+这里举一个在 MMAction2 中创建一个新钩子，并在训练中使用它的示例：
 
 ```python
 from mmcv.runner import HOOKS, Hook
@@ -252,7 +252,7 @@ class MyHook(Hook):
         pass
 ```
 
-根据钩子的功能，用户需要指定挂钩在培训的每个阶段将要执行的操作，比如 `before_run`，`after_run`，`before_epoch`，`after_epoch`，`before_iter` 和 `after_iter`。
+根据钩子的功能，用户需要指定挂钩在训练的每个阶段将要执行的操作，比如 `before_run`，`after_run`，`before_epoch`，`after_epoch`，`before_iter` 和 `after_iter`。
 
 #### 2. 注册新钩子
 
@@ -260,7 +260,7 @@ class MyHook(Hook):
 
 - 修改 `mmaction/core/utils/__init__.py` 进行导入
 
-    新定义的模块应导入到 `mmaction/core/utils/__init__py` 中，以便注册表将找到新模块并将其添加：
+    新定义的模块应导入到 `mmaction/core/utils/__init__py` 中，以便注册表能找到并添加新模块：
 
 ```python
 from .my_hook import MyHook
@@ -313,7 +313,7 @@ mmcv_hooks = [
 
 在这些钩子中，只有记录器钩子具有 “VERY_LOW” 优先级，其他钩子具有 “NORMAL” 优先级。
 上述教程已经介绍了如何修改 “optimizer_config”，“momentum_config” 和 “lr_config”。
-下面揭示如何使用log_config，checkpoint_config 和 evaluation 可以做什么。
+下面介绍如何使用 log_config，checkpoint_config，以及 evaluation 能做什么。
 
 #### 检查点配置
 
@@ -344,7 +344,7 @@ log_config = dict(
 #### 验证配置
 
 评估的配置将用于初始化 [`EvalHook`](https://github.com/open-mmlab/mmaction2/blob/master/mmaction/core/evaluation/eval_hooks.py#L12)。
-除了键 `interval` 外，其他参数如 “metrics” 也将传递给`dataset.evaluate()`。
+除了键 `interval` 外，其他参数，如 “metrics” 也将传递给`dataset.evaluate()`。
 
 ```python
 evaluation = dict(interval=1, metrics='bbox')

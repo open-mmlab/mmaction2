@@ -77,7 +77,7 @@ ann_file_test = 'data/ucf101/ucf101_val_list.txt'
 optimizer = dict(type='SGD', lr=0.005, momentum=0.9, weight_decay=0.0001)  # 从 0.01 改为 0.005
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # 学习策略
-lr_config = dict(policy='step', step=[40, 80]) # step 与 total_epoch 相适应
+lr_config = dict(policy='step', step=[20, 40]) # step 与 total_epoch 相适应
 total_epochs = 50 # 从 100 改为 50
 checkpoint_config = dict(interval=5)
 ```

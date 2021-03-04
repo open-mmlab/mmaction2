@@ -1,10 +1,10 @@
 # 教程 4：如何设计数据处理流程
 
-在本教程中，我们将介绍一些有关数据流水线设计的方法，以及如何为项目自定义和扩展自己的数据管道。
+在本教程中，我们将介绍一些有关数据前处理流水线设计的方法，以及如何为项目自定义和扩展自己的数据管道。
 
 <!-- TOC -->
 
-- [数据流水线设计](#数据流水线设计)
+- [数据前处理流水线设计](#数据前处理流水线设计)
   - [数据加载](#数据加载)
   - [数据预处理](#数据预处理)
   - [数据格式化](#数据格式化)
@@ -12,14 +12,14 @@
 
 <!-- TOC -->
 
-## 数据流水线设计
+## 数据前处理流水线设计
 
 按照传统惯例，我们使用多进程的 `Dataset` 和 `DataLoader` 做数据加载。 `Dataset` 返回一个与模型前向过程相对应的字典项。
 由于动作识别和时序动作检测的数据大小不一定相同（图片大小，边界框大小等），MMCV 中的 `DataContainer` 可用于收集和分配不同大小的数据，
 详情可见 [这里](https://github.com/open-mmlab/mmcv/blob/master/mmcv/parallel/data_container.py)。
 
-数据流水线和数据集是相互解耦的。通常，数据集定义如何处理注释文件，数据流水线定义所有准备数据字典的步骤。
-数据流水线由一系列相互解耦的操作组成，每个操作都将一个字典（dict）作为输入，并为下一个操作输出一个字典。
+数据前处理流水线和数据集构建是相互解耦的。通常，数据集定义如何处理标注文件，数据前处理流水线定义所有准备数据字典的步骤。
+数据前处理流水线由一系列相互解耦的操作组成，每个操作都将一个字典（dict）作为输入，并为下一个操作输出一个字典。
 
 我们在下图中展示了一个典型的管道。 蓝色块是流水线操作。
 随着流水线的深入，每个操作都可以向结果字典添加新键（标记为绿色）或更新现有键（标记为橙色）。
@@ -27,7 +27,7 @@
 
 这些操作分为数据加载，数据预处理和数据格式化。
 
-这里是 TSN 的数据流水线例子：
+这里以 TSN 的数据前处理流水线为例：
 
 ```python
 img_norm_cfg = dict(
@@ -84,8 +84,8 @@ test_pipeline = [
 ```
 
 MMAction2 也支持一些 lazy 操作符，并且建议用户使用它们。
-Lazy 操作记录如何处理数据，但是它将对原始数据的处理推迟到其进入 Fuse 阶段。
-具体而言，lazy 操作符避免了对原始数据的频繁读取和修改操作，而是在最后的 Fuse 阶段中对原始数据进行了一次处理，从而加快了数据预处理的速度。
+Lazy 操作记录如何处理数据，但是它会推迟对原始数据的处理，直到进入 Fuse 阶段。
+具体而言，lazy 操作符避免了对原始数据的频繁读取和修改操作，只在最后的 Fuse 阶段中对原始数据进行了一次处理，从而加快了数据预处理的速度。
 
 这里是流水线使用 lazy 运算符的例子：
 
@@ -253,7 +253,7 @@ It is **noteworthy** that the first key, commonly `imgs`, will be used as the ma
     train_pipeline = [
         dict(type='DenseSampleFrames', clip_len=8, frame_interval=8, num_clips=1),
         dict(type='RawFrameDecode', io_backend='disk'),
-        dict(type='MyTransform'),       # use a custom pipeline
+        dict(type='MyTransform'),       # 使用自定义管道
         dict(type='Normalize', **img_norm_cfg),
         dict(type='FormatShape', input_format='NCTHW'),
         dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),

@@ -1,6 +1,6 @@
 # 教程 5：如何添加新模块
 
-在本教程中，我们将介绍一些有关如何为该项目定制优化器，开发新组件和新学习率调度器的方法。
+在本教程中，我们将介绍一些有关如何为该项目定制优化器，开发新组件，以及添加新的学习率调度器（更新器）的方法。
 
 <!-- TOC -->
 
@@ -9,7 +9,7 @@
 - [开发新组件](#开发新组件)
   - [添加新的 backbones](#添加新-backbones)
   - [添加新的 heads](#添加新-heads)
-  - [添加新的 loss](#添加新-loss)
+  - [添加新的 loss function](#添加新-loss-function)
 - [添加新的学习率调节器（更新器）](#添加新的学习率调节器（更新器）)
 
 <!-- TOC -->
@@ -49,14 +49,14 @@ optimizer = dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001)
 
 ## 自定义优化器构造器
 
-某些模型可能对参数优化具有一些特定参数的设置，例如 BatchNorm 层的梯度衰减。
+某些模型可能对不同层的参数有特定的优化设置，例如 BatchNorm 层的梯度衰减。
 用户可以通过自定义优化器构造函数来进行那些细粒度的参数调整。
 
 用户可以编写一个基于 [DefaultOptimizerConstructor](https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/optimizer/default_constructor.py) 的新的优化器构造器，
 并且重写 `add_params(self, params, module)` 方法。
 
 一个自定义优化器构造器的例子是 [TSMOptimizerConstructor](/mmaction/core/optimizer/tsm_optimizer_constructor.py)。
-更一般地，可以如下定义定制的优化器构造器。
+更具体地，可以如下定义定制的优化器构造器。
 
 在 `mmaction/core/optimizer/my_optimizer_constructor.py`：
 
@@ -113,7 +113,7 @@ MMAction2 将模型组件分为 4 种基础模型：
         def __init__(self, arg1, arg2):
             pass
 
-        def forward(self, x):  # should return a tuple
+        def forward(self, x):  # 应该返回一个元组
             pass
 
         def init_weights(self, pretrained=None):
@@ -184,7 +184,7 @@ MMAction2 将模型组件分为 4 种基础模型：
             arg2=xxx),
     ```
 
-### 添加新的 loss
+### 添加新的 loss function
 
 假设用户想添加新的 loss 为 `MyLoss`。为了添加一个新的损失函数，需要在 `mmaction/models/losses/my_loss.py` 下进行实现。
 
@@ -249,8 +249,8 @@ lr_config = dict(policy='step', step=[20, 40])
 1. 首先，在 `$MMAction2/mmaction/core/lr` 编写自定义的学习率更新钩子（LrUpdaterHook）。以下片段是自定义学习率更新器的例子，它使用基于特定比率的学习率 `lrs`，并在每个 `steps` 处进行学习率衰减：
 
 ```python
-@HOOKS.register_module()
 # 在此注册
+@HOOKS.register_module()
 class RelativeStepLrUpdaterHook(LrUpdaterHook):
     # 该类应当继承于 mmcv.LrUpdaterHook
     def __init__(self, runner, steps, lrs, **kwargs):
@@ -270,7 +270,7 @@ class RelativeStepLrUpdaterHook(LrUpdaterHook):
 
 2. 修改配置
 
-在配置文件下交换原先的 `lr_config` 变量
+在配置文件下替换原先的 `lr_config` 变量
 
 ```python
 lr_config = dict(policy='RelativeStep', steps=[20, 40, 60], lrs=[0.1, 0.01, 0.001])

@@ -16,9 +16,9 @@
 
 ### 将数据集重新组织为现有格式
 
-最简单的方法是将数据集转换为现有的数据集格式（RawframeDataset或VideoDataset）。
+最简单的方法是将数据集转换为现有的数据集格式（RawframeDataset 或 VideoDataset）。
 
-有三种注释文件：
+有三种标注文件：
 
 - 帧注释（rawframe annotation）
 
@@ -101,11 +101,11 @@
 
   用户可以通过继承 [BaseDataset](/mmaction/datasets/base.py) 基类编写一个新的数据集类，并重写三个抽象类方法：
   `load_annotations(self)`，`evaluate(self, results, metrics, logger)` 和 `dump_results(self, results, out)`，
-  如[RawframeDataset](/mmaction/datasets/rawframe_dataset.py)，[VideoDataset](/mmaction/datasets/video_dataset.py) 或 [ActivityNetDataset](/mmaction/datasets/activitynet_dataset.py)。
+  如 [RawframeDataset](/mmaction/datasets/rawframe_dataset.py)，[VideoDataset](/mmaction/datasets/video_dataset.py) 或 [ActivityNetDataset](/mmaction/datasets/activitynet_dataset.py)。
 
-- 离线转换
+- 本地转换
 
-  用户可以转换注释文件格式为上述期望的格式，并将其存储为 pickle 或 json 文件，然后便可以应用于 `RawframeDataset`，`VideoDataset` 或 `ActivityNetDataset` 中。
+  用户可以转换标注文件格式为上述期望的格式，并将其存储为 pickle 或 json 文件，然后便可以应用于 `RawframeDataset`，`VideoDataset` 或 `ActivityNetDataset` 中。
 
 数据预处理后，用户需要进一步修改配置文件以使用数据集。 这里展示了以帧形式使用自定义数据集的例子：
 
@@ -220,7 +220,7 @@ class MyDataset(BaseDataset):
 ```python
 dataset_A_train = dict(
     type='MyDataset',
-    ann_file = ann_file_train,
+    ann_file=ann_file_train,
     pipeline=train_pipeline
 )
 ```
