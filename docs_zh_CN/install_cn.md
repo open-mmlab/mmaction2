@@ -1,6 +1,6 @@
 # 安装
 
-本文档提供了安装 MMAction2 的相关步骤提示。
+本文档提供了安装 MMAction2 的相关步骤。
 
 <!-- TOC -->
 
@@ -22,7 +22,7 @@
 - CUDA 9.2+ (如果要从源码对 PyTorch 进行编译, CUDA 9.0 版本同样可以兼容)
 - GCC 5+
 - [mmcv](https://github.com/open-mmlab/mmcv) 1.1.1+
-- NumpyCPU 环境下的安装步骤
+- Numpy
 - ffmpeg (4.2 版本最佳)
 - [decord](https://github.com/dmlc/decord) (可选项, 0.4.1+)：使用 `pip install decord==0.4.1` 命令安装其 CPU 版本，GPU 版本需从源码进行编译。
 - [PyAV](https://github.com/mikeboers/PyAV) (可选项)：`conda install av -c conda-forge -y`。
@@ -44,7 +44,7 @@ conda install -y jpeg libtiff
 ```
 
 **注意**：用户需要首先运行 `pip uninstall mmcv` 命令，以确保 mmcv 被成功安装。
-如果 mmcv 和 mmcv-full 同时被安装, 会造成 `ModuleNotFoundError` 的报错。
+如果 mmcv 和 mmcv-full 同时被安装, 会报 `ModuleNotFoundError` 的错误。
 
 ### MMAction2 的安装步骤
 
@@ -100,7 +100,7 @@ pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu110/torch1.7
 ```shell
 git clone https://github.com/open-mmlab/mmcv.git
 cd mmcv
-MMCV_WITH_OPS=1 pip install -e .  # package mmcv-full, which contains cuda ops, will be installed after this step
+MMCV_WITH_OPS=1 pip install -e .  # mmcv-full 包含一些 cuda 算子，执行该步骤会安装 mmcv-full（而非 mmcv）
 # 或者使用 pip install -e .  # 这个命令安装的 mmcv 将不包含 cuda ops，通常适配 CPU（无 GPU）环境
 cd ..
 ```
@@ -109,10 +109,9 @@ cd ..
 
 ```shell
 pip install mmcv-full
-# 或者: pip install mmcv
 ```
 
-**注意**：如果 mmcv 已经被安装，用户需要使用 `pip uninstall mmcv` 命令进行卸载。如果 mmcv 和 mmcv-full 同时被安装, 会造成 `ModuleNotFoundError` 的报错。
+**注意**：如果 mmcv 已经被安装，用户需要使用 `pip uninstall mmcv` 命令进行卸载。如果 mmcv 和 mmcv-full 同时被安装, 会报 `ModuleNotFoundError` 的错误。
 
 d. 克隆 MMAction2 库。
 
