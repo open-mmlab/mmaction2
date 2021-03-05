@@ -124,17 +124,22 @@ def main():
 
     dataset_type = cfg.data.test.type
     if output_config.get('out', None):
-        out = output_config['out']
-        # make sure the dirname of the output path exists
-        mmcv.mkdir_or_exist(osp.dirname(out))
-        _, suffix = osp.splitext(out)
-        if dataset_type == 'AVADataset':
-            assert suffix[1:] == 'csv', ('For AVADataset, the format of the '
-                                         'output file should be csv')
+        if 'output_format' in output_config:
+            # ugly workround to make recognition and localization the same
+            warnings.warn(
+                'Skip checking `output_format` in localization task.')
         else:
-            assert suffix[1:] in file_handlers, (
-                'The format of the output '
-                'file should be json, pickle or yaml')
+            out = output_config['out']
+            # make sure the dirname of the output path exists
+            mmcv.mkdir_or_exist(osp.dirname(out))
+            _, suffix = osp.splitext(out)
+            if dataset_type == 'AVADataset':
+                assert suffix[1:] == 'csv', ('For AVADataset, the format of '
+                                             'the output file should be csv')
+            else:
+                assert suffix[1:] in file_handlers, (
+                    'The format of the output '
+                    'file should be json, pickle or yaml')
 
     # set cudnn benchmark
     if cfg.get('cudnn_benchmark', False):
@@ -143,7 +148,7 @@ def main():
 
     if args.average_clips is not None:
         # You can set average_clips during testing, it will override the
-        # original settting
+        # original setting
         if cfg.model.get('test_cfg') is None and cfg.get('test_cfg') is None:
             cfg.model.setdefault('test_cfg',
                                  dict(average_clips=args.average_clips))
