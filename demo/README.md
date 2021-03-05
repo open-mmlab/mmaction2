@@ -217,7 +217,7 @@ We provide a demo script to implement real-time action recognition from web came
 ```shell
 python demo/webcam_demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${LABEL_FILE} \
     [--device ${DEVICE_TYPE}] [--camera-id ${CAMERA_ID}] [--threshold ${THRESHOLD}] \
-    [--average-size ${AVERAGE_SIZE}]
+    [--average-size ${AVERAGE_SIZE}] [--drawing-fps ${DRAWING_FPS}] [--inference-fps ${INFERENCE_FPS}]
 ```
 
 Optional arguments:
@@ -226,6 +226,10 @@ Optional arguments:
 - `CAMERA_ID`: ID of camera device If not specified, it will be set to 0.
 - `THRESHOLD`: Threshold of prediction score for action recognition. Only label with score higher than the threshold will be shown. If not specified, it will be set to 0.
 - `AVERAGE_SIZE`: Number of latest clips to be averaged for prediction. If not specified, it will be set to 1.
+- `DRAWING_FPS`: Upper bound FPS value of the output drawing. If not specified, it will be set to 20.
+- `INFERENCE_FPS`: Upper bound FPS value of the output drawing. If not specified, it will be set to 4.
+
+**Note**: If your hardware is good enough, increasing the value of `DRAWING_FPS` and `INFERENCE_FPS` will get a better experience.
 
 Examples:
 

@@ -58,6 +58,50 @@ def generate_recognizer_demo_inputs(
     return inputs
 
 
+def generate_detector_demo_inputs(
+        input_shape=(1, 3, 4, 224, 224), num_classes=81, train=True,
+        device='cpu'):
+    num_samples = input_shape[0]
+    if not train:
+        assert num_samples == 1
+
+    def random_box(n):
+        box = torch.rand(n, 4) * 0.5
+        box[:, 2:] += 0.5
+        box[:, 0::2] *= input_shape[3]
+        box[:, 1::2] *= input_shape[4]
+        if device == 'cuda':
+            box = box.cuda()
+        return box
+
+    def random_label(n):
+        label = torch.randn(n, num_classes)
+        label = (label > 0.8).type(torch.float32)
+        label[:, 0] = 0
+        if device == 'cuda':
+            label = label.cuda()
+        return label
+
+    img = torch.FloatTensor(np.random.random(input_shape))
+    if device == 'cuda':
+        img = img.cuda()
+
+    proposals = [random_box(2) for i in range(num_samples)]
+    gt_bboxes = [random_box(2) for i in range(num_samples)]
+    gt_labels = [random_label(2) for i in range(num_samples)]
+    img_metas = [dict(img_shape=input_shape[-2:]) for i in range(num_samples)]
+
+    if train:
+        return dict(
+            img=img,
+            proposals=proposals,
+            gt_bboxes=gt_bboxes,
+            gt_labels=gt_labels,
+            img_metas=img_metas)
+    else:
+        return dict(img=[img], proposals=[proposals], img_metas=[img_metas])
+
+
 def generate_gradcam_inputs(input_shape=(1, 3, 3, 224, 224), model_type='2D'):
     """Create a superset of inputs needed to run gradcam.
 
@@ -89,7 +133,8 @@ def get_cfg(config_type, fname):
     These are deep copied to allow for safe modification of parameters without
     influencing other tests.
     """
-    config_types = ('recognition', 'recognition_audio', 'localization')
+    config_types = ('recognition', 'recognition_audio', 'localization',
+                    'detection')
     assert config_type in config_types
 
     repo_dpath = osp.dirname(osp.dirname(osp.dirname(__file__)))
@@ -111,3 +156,7 @@ def get_audio_recognizer_cfg(fname):
 
 def get_localizer_cfg(fname):
     return get_cfg('localization', fname)
+
+
+def get_detector_cfg(fname):
+    return get_cfg('detection', fname)
