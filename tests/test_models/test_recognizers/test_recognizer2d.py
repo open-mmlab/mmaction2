@@ -35,7 +35,7 @@ def test_tsn():
         'tsn/tsn_r50_video_mixup_1x1x8_100e_kinetics400_rgb.py')
     config.model['backbone']['pretrained'] = None
     recognizer = build_recognizer(config.model)
-    input_shape = (1, 8, 3, 32, 32)
+    input_shape = (2, 8, 3, 32, 32)
     demo_inputs = generate_recognizer_demo_inputs(input_shape)
     imgs = demo_inputs['imgs']
     gt_labels = demo_inputs['gt_labels']
