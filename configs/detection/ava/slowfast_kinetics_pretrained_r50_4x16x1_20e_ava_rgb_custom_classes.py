@@ -152,8 +152,7 @@ data = dict(
         data_prefix=data_root))
 data['test'] = data['val']
 
-optimizer = dict(type='SGD', lr=0.05652, momentum=0.9, weight_decay=0.00001)
-# optimizer = dict(type='SGD', lr=0.1125, momentum=0.9, weight_decay=0.00001)
+optimizer = dict(type='SGD', lr=0.1125, momentum=0.9, weight_decay=0.00001)
 # this lr is used for 8 gpus
 
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
