@@ -14,7 +14,7 @@ class BaseMiniBatchBlending(metaclass=ABCMeta):
         self.num_classes = num_classes
 
     @abstractmethod
-    def blending(self, imgs, label, **kwargs):
+    def do_blending(self, imgs, label, **kwargs):
         pass
 
     def __call__(self, imgs, label, **kwargs):
@@ -30,7 +30,8 @@ class BaseMiniBatchBlending(metaclass=ABCMeta):
         """
         one_hot_label = F.one_hot(label, num_classes=self.num_classes)
 
-        mixed_imgs, mixed_label = self.blending(imgs, one_hot_label, **kwargs)
+        mixed_imgs, mixed_label = self.do_blending(imgs, one_hot_label,
+                                                   **kwargs)
 
         return mixed_imgs, mixed_label
 
@@ -52,7 +53,7 @@ class MixupBlending(BaseMiniBatchBlending):
         super().__init__(num_classes=num_classes)
         self.beta = Beta(alpha, alpha)
 
-    def blending(self, imgs, label, **kwargs):
+    def do_blending(self, imgs, label, **kwargs):
         """Blending images with mixup."""
         assert len(kwargs) == 0, f'unexpected kwargs for mixup {kwargs}'
 
@@ -88,21 +89,24 @@ class CutmixBlending(BaseMiniBatchBlending):
         w = img_size[-1]
         h = img_size[-2]
         cut_rat = torch.sqrt(1. - lam)
-        cut_w = torch.IntTensor(w * cut_rat)
-        cut_h = torch.IntTensor(h * cut_rat)
+        # print(img_size[-1], img_size[-2], cut_rat)
+        cut_w = torch.tensor(int(w * cut_rat))
+        cut_h = torch.tensor(int(h * cut_rat))
+        print('cut_w', cut_w, cut_h)
 
         # uniform
-        cx = torch.randint(w)
-        cy = torch.randint(h)
+        cx = torch.randint(w, (1, ))[0]
+        cy = torch.randint(h, (1, ))[0]
+        # print('cxcy', cx, cy)
 
-        bbx1 = torch.clip(cx - cut_w // 2, 0, w)
-        bby1 = torch.clip(cy - cut_h // 2, 0, h)
-        bbx2 = torch.clip(cx + cut_w // 2, 0, w)
-        bby2 = torch.clip(cy + cut_h // 2, 0, h)
+        bbx1 = torch.clamp(cx - cut_w // 2, 0, w)
+        bby1 = torch.clamp(cy - cut_h // 2, 0, h)
+        bbx2 = torch.clamp(cx + cut_w // 2, 0, w)
+        bby2 = torch.clamp(cy + cut_h // 2, 0, h)
 
         return bbx1, bby1, bbx2, bby2
 
-    def blending(self, imgs, label, **kwargs):
+    def do_blending(self, imgs, label, **kwargs):
         """Blending images with mixup."""
         assert len(kwargs) == 0, f'unexpected kwargs for cutmix {kwargs}'
 
@@ -110,9 +114,9 @@ class CutmixBlending(BaseMiniBatchBlending):
         rand_index = torch.randperm(batch_size)
         lam = self.beta.sample()
         bbx1, bby1, bbx2, bby2 = self.rand_bbox(imgs.size(), lam)
-        imgs[:, :, bby1:bby2, bbx1:bbx2] = imgs[rand_index, ..., bby1:bby2,
-                                                bbx1:bbx2]
-        lam = 1 - ((bbx2 - bbx1) * (bby2 - bby1) /
+        imgs[:, ..., bby1:bby2, bbx1:bbx2] = imgs[rand_index, ..., bby1:bby2,
+                                                  bbx1:bbx2]
+        lam = 1 - (1.0 * (bbx2 - bbx1) * (bby2 - bby1) /
                    (imgs.size()[-1] * imgs.size()[-2]))
 
         label = lam * label + (1 - lam) * label[rand_index, :]

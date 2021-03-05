@@ -1,12 +1,27 @@
 _base_ = [
-    '../../_base_/models/tsn_r50.py', '../../_base_/schedules/sgd_100e.py',
-    '../../_base_/default_runtime.py'
+    '../../_base_/schedules/sgd_100e.py', '../../_base_/default_runtime.py'
 ]
 
-# blending settints
-# model = dict(
-#     train_cfg=dict(type="CutmixBlending", num_classes=400, alpha=.2))
-model = dict(train_cfg=dict(type="MixupBlending", num_classes=400, alpha=.2))
+# model settings
+model = dict(
+    type='Recognizer2D',
+    backbone=dict(
+        type='ResNet',
+        pretrained='torchvision://resnet50',
+        depth=50,
+        norm_eval=False),
+    cls_head=dict(
+        type='TSNHead',
+        num_classes=400,
+        in_channels=2048,
+        spatial_type='avg',
+        consensus=dict(type='AvgConsensus', dim=1),
+        dropout_ratio=0.4,
+        init_std=0.01),
+    # model training and testing settings
+    # train_cfg=dict(type="CutmixBlending", num_classes=400, alpha=.2),
+    train_cfg=dict(type='MixupBlending', num_classes=400, alpha=.2),
+    test_cfg=dict(average_clips=None))
 
 # dataset settings
 dataset_type = 'VideoDataset'

@@ -3,7 +3,6 @@ import torch
 import torch.nn.functional as F
 
 from mmaction.models import BaseRecognizer
-from ..base import generate_backbone_demo_inputs
 
 
 class ExampleRecognizer(BaseRecognizer):
@@ -18,7 +17,7 @@ class ExampleRecognizer(BaseRecognizer):
         self.test_cfg = test_cfg
 
     def forward_train(self, imgs, labels):
-        return imgs, labels
+        pass
 
     def forward_test(self, imgs):
         pass
@@ -58,14 +57,3 @@ def test_base_recognizer():
     score = recognizer.average_clip(cls_score, num_segs=5)
     assert torch.equal(score,
                        F.softmax(cls_score, dim=1).mean(dim=0, keepdim=True))
-
-    # alending
-    num_classes = 10
-    train_cfg = dict(
-        blending=dict(type='MixupBlending', num_classes=num_classes, alpha=.2))
-    recognizer = ExampleRecognizer(train_cfg, None)
-    demo_inputs = generate_backbone_demo_inputs(input_shape=(4, 4, 3, 32, 32))
-    demo_labels = torch.randint(0, num_classes, (4, ))
-    imgs, label = recognizer(demo_inputs, demo_labels, return_loss=True)
-    assert imgs.size() == demo_inputs.size()
-    assert label.size() == torch.Size((4, num_classes))
