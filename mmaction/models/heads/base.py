@@ -81,6 +81,7 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
             labels = labels.unsqueeze(0)
 
         if not self.multi_class and cls_score.size() != labels.size():
+            # TODO: Whether to show top1/top5 accuracy when using mixup/cutmix
             top_k_acc = top_k_accuracy(cls_score.detach().cpu().numpy(),
                                        labels.detach().cpu().numpy(), (1, 5))
             losses['top1_acc'] = torch.tensor(
