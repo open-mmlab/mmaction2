@@ -7,6 +7,7 @@
 **New Features**
 
 - Support LFB [#553](https://github.com/open-mmlab/mmaction2/pull/553)
+- Support Mixup and Cutmix for recognizers [#681](https://github.com/open-mmlab/mmaction2/pull/681)
 
 **Improvements**
 
