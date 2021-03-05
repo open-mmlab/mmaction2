@@ -1,8 +1,6 @@
-+ [ ] codes in recognisers
-  + BaseClass
-  + Mixup
++ [x] codes of mixup/cutmix/register/recognizers
 + [ ] unittest
 + [ ] changelog
-+ [ ] tutorials in docstring
++ [ ] demo config for tsn
 + [ ] visualize input results(gif)
 + [ ] ckpt of sthv2
