@@ -4,6 +4,7 @@ from .audio_feature_dataset import AudioFeatureDataset
 from .audio_visual_dataset import AudioVisualDataset
 from .ava_dataset import AVADataset
 from .base import BaseDataset
+from .blending_utils import CutmixBlending, MixupBlending  # noqa
 from .builder import build_dataloader, build_dataset
 from .dataset_wrappers import RepeatDataset
 from .hvu_dataset import HVUDataset

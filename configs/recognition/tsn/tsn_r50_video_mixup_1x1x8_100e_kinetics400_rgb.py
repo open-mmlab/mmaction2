@@ -19,8 +19,10 @@ model = dict(
         dropout_ratio=0.4,
         init_std=0.01),
     # model training and testing settings
-    # train_cfg=dict(type="CutmixBlending", num_classes=400, alpha=.2),
-    train_cfg=dict(type='MixupBlending', num_classes=400, alpha=.2),
+    # train_cfg=dict(
+    #     blending=dict(type="CutmixBlending", num_classes=400, alpha=.2)),
+    train_cfg=dict(
+        blending=dict(type='MixupBlending', num_classes=400, alpha=.2)),
     test_cfg=dict(average_clips=None))
 
 # dataset settings
@@ -105,4 +107,4 @@ evaluation = dict(
     interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
 
 # runtime settings
-work_dir = './work_dirs/tsn_r50_video_1x1x8_100e_kinetics400_rgb/'
+work_dir = './work_dirs/tsn_r50_video_mixup_1x1x8_100e_kinetics400_rgb/'
