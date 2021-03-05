@@ -11,6 +11,8 @@
 
 **Improvements**
 
+- Add slowfast config/json/log/ckpt for training custom classes of AVA [#678](https://github.com/open-mmlab/mmaction2/pull/678)
+
 **Bug and Typo Fixes**
 
 **ModelZoo**
