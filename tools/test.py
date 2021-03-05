@@ -141,13 +141,13 @@ def main():
         torch.backends.cudnn.benchmark = True
     cfg.data.test.test_mode = True
 
-    if cfg.model.get('test_cfg') is None and cfg.get('test_cfg') is None:
-        cfg.model.setdefault('test_cfg',
-                             dict(average_clips=args.average_clips))
-    else:
+    if args.average_clips is not None:
         # You can set average_clips during testing, it will override the
         # original settting
-        if args.average_clips is not None:
+        if cfg.model.get('test_cfg') is None and cfg.get('test_cfg') is None:
+            cfg.model.setdefault('test_cfg',
+                                 dict(average_clips=args.average_clips))
+        else:
             if cfg.model.get('test_cfg') is not None:
                 cfg.model.test_cfg.average_clips = args.average_clips
             else:
