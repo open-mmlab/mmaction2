@@ -1,5 +1,5 @@
 + [x] codes of mixup/cutmix/register/recognizers
-+ [ ] unittest
++ [x] unittest
 + [ ] changelog
 + [ ] demo config for tsn
 + [ ] visualize input results(gif)
