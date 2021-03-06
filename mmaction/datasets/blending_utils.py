@@ -20,13 +20,30 @@ class BaseMiniBatchBlending(metaclass=ABCMeta):
     def __call__(self, imgs, label, **kwargs):
         """Blending data in a mini-batch.
 
+        Images are float tensors with the shape of (B, N, C, H, W) for 2D
+        recognizers or (B, N, C, T, H, W) for 3D recognizers.
+
+        Besides, labels are converted from hard labels to soft labels.
+        Hard labels are integer tensors with the shape of(B, 1) and all of the
+        elements are in the range [0, num_classes - 1].
+        Soft labels(probablity distribution over classes) are float tensors
+        with the shape of (B, 1, num_classes) and all of the elements are in
+        the range [0, 1].
+
         Args:
-            imgs (Tensor): of shape (B, N, C, H, W) or (B, N, C, T, H, W)
-                encoding input images.
-            label (Tensor): It should be of shape (B, 1) encoding the
-                ground-truth label of input images for single label task.
-            kwargs (dict, optional): Any keyword argument to be used to
+            imgs (torch.Tensor): Model input images, float tensor with the
+                shape of (B, N, C, H, W) or (B, N, C, T, H, W).
+            label (torch.Tensor): Hard labels, integer tensor with the shape
+                of (B, 1) and all elements are in range [0, num_classes).
+            kwargs (dict, optional): Other keyword argument to be used to
                 blending imgs and labels in a mini-batch.
+
+        Returns:
+            mixed_imgs (torch.Tensor): Blending images, float tensor with the
+                same shape of the input imgs.
+            mixed_label (torch.Tensor): Blended soft labels, float tensor with
+                the shape of (B, 1, num_classes) and all elements are in range
+                [0, 1].
         """
         one_hot_label = F.one_hot(label, num_classes=self.num_classes)
 
@@ -111,6 +128,7 @@ class CutmixBlending(BaseMiniBatchBlending):
         batch_size = imgs.size(0)
         rand_index = torch.randperm(batch_size)
         lam = self.beta.sample()
+
         bbx1, bby1, bbx2, bby2 = self.rand_bbox(imgs.size(), lam)
         imgs[:, ..., bby1:bby2, bbx1:bbx2] = imgs[rand_index, ..., bby1:bby2,
                                                   bbx1:bbx2]
