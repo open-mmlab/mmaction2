@@ -1,3 +1,6 @@
+import torch
+import torch.nn.functional as F
+
 from ..registry import RECOGNIZERS
 from .base import BaseRecognizer
 
@@ -68,9 +71,44 @@ class Recognizer2D(BaseRecognizer):
 
         return cls_score
 
+    def _do_fcn_test(self, imgs):
+        # [1, num_crops * num_segs, C, H, W] -> [num_crops * num_segs, C, H, W]
+        imgs = imgs.reshape((-1, ) + imgs.shape[2:])
+        num_segs = self.test_cfg.get('num_segs', self.backbone.num_segments)
+
+        # num_crops, num_segs, C, H, W
+        imgs = imgs.reshape((-1, num_segs), imgs.shape[1:])
+
+        x1 = imgs[:, ::2, :, :, :]
+        x2 = imgs[:, 1::2, :, :, :]
+        imgs = torch.cat([x1, x2], 0)
+        imgs = imgs.view((-1, ) + imgs.shape[2:])
+
+        num_segs = num_segs // 2
+
+        if self.test_cfg.get('flip', False):
+            imgs = torch.flip(imgs, [-1])
+        x = self.extract_feat(imgs)
+
+        if hasattr(self, 'neck'):
+            x = [
+                each.reshape((-1, num_segs) + each.shape[1:]).transpose(1, 2)
+                for each in x
+            ]
+            x, _ = self.neck(x)
+        else:
+            x = x.reshape((-1, num_segs) + x.shape[1:]).transpose(1, 2)
+
+        x = self.cls_head(x, fcn_test=True)
+
+        cls_score = F.softmax(x.mean([2, 3, 4]), 1).mean(0, keepdim=True)
+        return cls_score
+
     def forward_test(self, imgs):
         """Defines the computation performed at every call when evaluation and
         testing."""
+        if self.test_cfg.get('fcn_test', False):
+            return self._do_fcn_test(imgs).cpu().numpy()
         return self._do_test(imgs).cpu().numpy()
 
     def forward_dummy(self, imgs):
