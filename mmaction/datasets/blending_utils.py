@@ -92,7 +92,6 @@ class CutmixBlending(BaseMiniBatchBlending):
         # print(img_size[-1], img_size[-2], cut_rat)
         cut_w = torch.tensor(int(w * cut_rat))
         cut_h = torch.tensor(int(h * cut_rat))
-        print('cut_w', cut_w, cut_h)
 
         # uniform
         cx = torch.randint(w, (1, ))[0]
