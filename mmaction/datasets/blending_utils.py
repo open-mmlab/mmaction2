@@ -86,17 +86,16 @@ class CutmixBlending(BaseMiniBatchBlending):
 
     @staticmethod
     def rand_bbox(img_size, lam):
+        """Generate a random boudning box."""
         w = img_size[-1]
         h = img_size[-2]
         cut_rat = torch.sqrt(1. - lam)
-        # print(img_size[-1], img_size[-2], cut_rat)
         cut_w = torch.tensor(int(w * cut_rat))
         cut_h = torch.tensor(int(h * cut_rat))
 
         # uniform
         cx = torch.randint(w, (1, ))[0]
         cy = torch.randint(h, (1, ))[0]
-        # print('cxcy', cx, cy)
 
         bbx1 = torch.clamp(cx - cut_w // 2, 0, w)
         bby1 = torch.clamp(cy - cut_h // 2, 0, h)
@@ -106,7 +105,7 @@ class CutmixBlending(BaseMiniBatchBlending):
         return bbx1, bby1, bbx2, bby2
 
     def do_blending(self, imgs, label, **kwargs):
-        """Blending images with mixup."""
+        """Blending images with cutmix."""
         assert len(kwargs) == 0, f'unexpected kwargs for cutmix {kwargs}'
 
         batch_size = imgs.size(0)
