@@ -63,7 +63,7 @@ def generate_rawframes_filelist():
         if gt_dir_name is None:
             continue
         data_dict[gt_dir_name] = [num_frames, label]
-        key_dict[k] = gt_dir_name
+        key_dict[gt_dir_name] = k
 
     train_lines = [
         k + ' ' + str(training[k][0]) + ' ' + str(training[k][1])
