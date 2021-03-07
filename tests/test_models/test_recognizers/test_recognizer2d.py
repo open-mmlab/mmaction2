@@ -86,6 +86,7 @@ def test_tpn():
 
     losses = recognizer(imgs, gt_labels)
     assert isinstance(losses, dict)
+    assert 'loss_aux' in losses and 'loss_cls' in losses
 
     # Test forward test
     with torch.no_grad():
