@@ -6,6 +6,8 @@ from torch.distributions.beta import Beta
 
 from .registry import BLENDINGS
 
+__all__ = ['BaseMiniBatchBlending', 'MixupBlending', 'CutmixBlending']
+
 
 class BaseMiniBatchBlending(metaclass=ABCMeta):
     """Base class for Image Aliasing."""
@@ -24,9 +26,9 @@ class BaseMiniBatchBlending(metaclass=ABCMeta):
         recognizers or (B, N, C, T, H, W) for 3D recognizers.
 
         Besides, labels are converted from hard labels to soft labels.
-        Hard labels are integer tensors with the shape of(B, 1) and all of the
+        Hard labels are integer tensors with the shape of (B, 1) and all of the
         elements are in the range [0, num_classes - 1].
-        Soft labels(probablity distribution over classes) are float tensors
+        Soft labels (probablity distribution over classes) are float tensors
         with the shape of (B, 1, num_classes) and all of the elements are in
         the range [0, 1].
 

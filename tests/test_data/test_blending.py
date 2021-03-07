@@ -1,6 +1,6 @@
 import torch
 
-from mmaction.datasets.blending_utils import CutmixBlending, MixupBlending
+from mmaction.datasets import CutmixBlending, MixupBlending
 
 
 def test_mixup():
