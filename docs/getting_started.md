@@ -394,7 +394,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=29500 ./tools/dist_train.sh ${CONFIG_FILE} 4
 CUDA_VISIBLE_DEVICES=4,5,6,7 PORT=29501 ./tools/dist_train.sh ${CONFIG_FILE} 4
 ```
 
-If you use launch training jobs with slurm, you need to modify the config files (usually the 6th line from the bottom in config files) to set different communication ports.
+If you use launch training jobs with slurm, you need to modify `dist_params` in the config files (usually the 6th line from the bottom in config files) to set different communication ports.
 
 In `config1.py`,
 

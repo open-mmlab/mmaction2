@@ -48,12 +48,12 @@ mmaction2
 
 请参阅 [数据集准备](data_preparation_cn.md) 获取数据集准备的相关信息。
 
-对于用户自定义数据集的准备，请参阅 [教程 2：如何增加新数据集](tutorials/3_new_dataset_cn.md)
+对于用户自定义数据集的准备，请参阅 [教程 3：如何增加新数据集](tutorials/3_new_dataset_cn.md)
 
 ## 使用预训练模型进行推理
 
-MMAction2 提供了一些测试脚本用于测试数据集结果（如 Kinetics-400，Something-Something V1&V2，(Multi-)Moments in Time，等），
-并提供了一些高级 API 用于更好地与其他项目兼容。
+MMAction2 提供了一些脚本用于测试数据集（如 Kinetics-400，Something-Something V1&V2，(Multi-)Moments in Time，等），
+并提供了一些高级 API，以便更好地兼容其他项目。
 
 ### 测试某个数据集
 
@@ -61,7 +61,7 @@ MMAction2 提供了一些测试脚本用于测试数据集结果（如 Kinetics-
 - [x] 支持单节点，多 GPU
 - [x] 支持多节点
 
-用户可使用一下命令进行数据集测试
+用户可使用以下命令进行数据集测试
 
 ```shell
 # 单 GPU 测试
@@ -77,8 +77,8 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--out ${RESULT_FILE}] [-
 
 可选参数:
 
-- `RESULT_FILE`：输出结果文件名。如果没有被指定，输出结果将不会被存储到文件中。
-- `EVAL_METRICS`：测试指标。其可选值与对应数据集相关，如 `top_k_accuracy`，`mean_class_accuracy` 适用于所有动作识别数据集，`mmit_mean_average_precision` 适用于 Multi-Moments in Time数据集，`mean_average_precision` 适用于 Multi-Moments in Time 和单类 HVU 数据集，`AR@AN` 适用于 ActivityNet 数据集，等。
+- `RESULT_FILE`：输出结果文件名。如果没有被指定，则不会保存测试结果。
+- `EVAL_METRICS`：测试指标。其可选值与对应数据集相关，如 `top_k_accuracy`，`mean_class_accuracy` 适用于所有动作识别数据集，`mmit_mean_average_precision` 适用于 Multi-Moments in Time 数据集，`mean_average_precision` 适用于 Multi-Moments in Time 和单类 HVU 数据集，`AR@AN` 适用于 ActivityNet 数据集等。
 - `--gpu-collect`：如果被指定，动作识别结果将会通过 GPU 通信进行收集。否则，它将被存储到不同 GPU 上的 `TMPDIR` 文件夹中，并在 rank 0 的进程中被收集。
 - `TMPDIR`：用于存储不同进程收集的结果文件的临时文件夹。该变量仅当 `--gpu-collect` 没有被指定时有效。
 - `OPTIONS`：用于验证过程的自定义选项。其可选值与对应数据集的 `evaluate` 函数变量有关。
@@ -106,7 +106,7 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--out ${RESULT_FILE}] [-
         8 --out results.pkl --eval top_k_accuracy
     ```
 
-3. 在 slurm 分布式环境下测试 TSN 在 Kinetics-400 数据集下的 `top-k accuracy` 指标
+3. 在 slurm 分布式环境中测试 TSN 在 Kinetics-400 数据集下的 `top-k accuracy` 指标
 
     ```shell
     python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
@@ -114,9 +114,9 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--out ${RESULT_FILE}] [-
         --launcher slurm --eval top_k_accuracy
     ```
 
-### 使用高级 API 对视频和帧进行测试
+### 使用高级 API 对视频和帧文件夹进行测试
 
-这里给出一个构建模型并测试给定视频的例子
+这里举例说明如何构建模型并测试给定视频
 
 ```python
 import torch
@@ -145,7 +145,7 @@ for result in results:
     print(f'{result[0]}: ', result[1])
 ```
 
-这里给出构建模型并使用给定 rawframes 目录进行测试的例子
+这里举例说明如何构建模型并测试给定帧文件夹
 
 ```python
 import torch
@@ -163,7 +163,7 @@ device = torch.device(device)
  # 根据配置文件和检查点来建立模型
 model = init_recognizer(config_file, checkpoint_file, device=device, use_frames=True)
 
-# 测试单个视频的 rawframe 文件夹并显示其结果
+# 测试单个视频的帧文件夹并显示其结果
 video = 'SOME_DIR_PATH/'
 labels = 'demo/label_map_k400.txt'
 results = inference_recognizer(model, video, labels, use_frames=True)
@@ -174,7 +174,7 @@ for result in results:
     print(f'{result[0]}: ', result[1])
 ```
 
-这里给出构建模型并使用给定视频 URL 进行测试的例子
+这里举例说明如何构建模型并通过 url 测试给定视频
 
 ```python
 import torch
@@ -203,20 +203,13 @@ for result in results:
     print(f'{result[0]}: ', result[1])
 ```
 
-**注意**：MMAction2 在配置文件中定义 `data_prefix` 变量，并将其设置为 None 作为默认值。
-如果 `data_prefix` 不为 None，则要获取的视频文件（或 rawframe 目录）的路径将为 `data_prefix/video`。
-在这里，`video` 是脚本中的参数。可以在 `rawframe_dataset.py` 文件和 `video_dataset.py` 文件中找到此详细信息。例如，
+**注意**：MMAction2 在默认提供的推理配置文件（inference configs）中定义 `data_prefix` 变量，并将其设置为 None 作为默认值。
+如果 `data_prefix` 不为 None，则要获取的视频文件（或帧文件夹）的路径将为 `data_prefix/video`。
+在这里，`video` 是上述脚本中的同名变量。可以在 `rawframe_dataset.py` 文件和 `video_dataset.py` 文件中找到此详细信息。例如，
 
-- When video (rawframes) path is `SOME_DIR_PATH/VIDEO.mp4` (`SOME_DIR_PATH/VIDEO_NAME/img_xxxxx.jpg`), and `data_prefix` is None in the config file,
-  the param `video` should be `SOME_DIR_PATH/VIDEO.mp4` (`SOME_DIR_PATH/VIDEO_NAME`).
-- When video (rawframes) path is `SOME_DIR_PATH/VIDEO.mp4` (`SOME_DIR_PATH/VIDEO_NAME/img_xxxxx.jpg`), and `data_prefix` is `SOME_DIR_PATH` in the config file,
-  the param `video` should be `VIDEO.mp4` (`VIDEO_NAME`).
-- When rawframes path is `VIDEO_NAME/img_xxxxx.jpg`, and `data_prefix` is None in the config file, the param `video` should be `VIDEO_NAME`.
-- When passing a url instead of a local video file, you need to use OpenCV as the video decoding backend.
-
-- 当视频（帧）路径为 `SOME_DIR_PATH/VIDEO.mp4`（`SOME_DIR_PATH/VIDEO_NAME/img_xxxxx.jpg`），并且配置文件中的 `data_prefix` 为 None，则 `video` 变量应为 `SOME_DIR_PATH/VIDEO.mp4`（`SOME_DIR_PATH/VIDEO_NAME`）。
-- 当视频（帧）路径为 `SOME_DIR_PATH/VIDEO.mp4`（`SOME_DIR_PATH/VIDEO_NAME/img_xxxxx.jpg`），并且配置文件中的 `data_prefix` 为 `SOME_DIR_PATH`，则 `video` 变量应为 `VIDEO.mp4`（`VIDEO_NAME`）。
-- 当帧路径为 `VIDEO_NAME/img_xxxxx.jpg`，并且配置文件中的 `data_prefix` 为 None，则 `video` 变量应为 `VIDEO_NAME`。
+- 当视频（帧文件夹）路径为 `SOME_DIR_PATH/VIDEO.mp4`（`SOME_DIR_PATH/VIDEO_NAME/img_xxxxx.jpg`），并且配置文件中的 `data_prefix` 为 None，则 `video` 变量应为 `SOME_DIR_PATH/VIDEO.mp4`（`SOME_DIR_PATH/VIDEO_NAME`）。
+- 当视频（帧文件夹）路径为 `SOME_DIR_PATH/VIDEO.mp4`（`SOME_DIR_PATH/VIDEO_NAME/img_xxxxx.jpg`），并且配置文件中的 `data_prefix` 为 `SOME_DIR_PATH`，则 `video` 变量应为 `VIDEO.mp4`（`VIDEO_NAME`）。
+- 当帧文件夹路径为 `VIDEO_NAME/img_xxxxx.jpg`，并且配置文件中的 `data_prefix` 为 None，则 `video` 变量应为 `VIDEO_NAME`。
 - 当传递参数为视频 url 而非本地路径，则需使用 OpenCV 作为视频解码后端。
 
 在 [demo/demo.ipynb](/demo/demo.ipynb) 中有提供相应的 notebook 演示文件。
@@ -232,7 +225,7 @@ MMAction2 将模型组件分为 4 种基础模型：
 - 分类头（cls_head）：用于分类任务的组件，通常包括一个带有池化层的 FC 层。
 - 时序检测器（localizer）：用于时序检测的模型，目前有的检测器包含 BSN，BMN，SSN。
 
-用户可参照给出的配置文件里的基础模型搭建流水线（如，`Recognizer2D`）
+用户可参照给出的配置文件里的基础模型搭建流水线（如 `Recognizer2D`）
 
 如果想创建一些新的组件，如 [TSM: Temporal Shift Module for Efficient Video Understanding](https://arxiv.org/abs/1811.08383) 中的 temporal shift backbone 结构，则需：
 
@@ -276,7 +269,7 @@ MMAction2 将模型组件分为 4 种基础模型：
       norm_eval=False)
     ```
 
-   为
+   修改为
 
     ```python
     backbone=dict(
@@ -302,15 +295,15 @@ MMAction2 将模型组件分为 4 种基础模型：
 
 MMAction2 使用 `MMDistributedDataParallel` 进行分布式训练，使用 `MMDataParallel` 进行非分布式训练。
 
-对于单台机器和多台机器，MMAction2 使用分布式训练。假设服务器有 8 快 GPU，则会启动 8 个进程，并且每台 GPU 对应一个进程。
+对于单机多卡与多台机器的情况，MMAction2 使用分布式训练。假设服务器有 8 块 GPU，则会启动 8 个进程，并且每台 GPU 对应一个进程。
 
-每个进程拥有一个独立的模型，数据加载器和优化器。
-模型参数只会在开始阶段同步一次，在一次前向和后向过程后，所有 GPU 都会被 allreduced，并且优化器会更新模型的参数。
-因为梯度被 allreduced，模型参数在迭代后会保持一致。
+每个进程拥有一个独立的模型，以及对应的数据加载器和优化器。
+模型参数同步只发生于最开始。之后，每经过一次前向与后向计算，所有 GPU 中梯度都执行一次 allreduce 操作，而后优化器将更新模型参数。
+由于梯度执行了 allreduce 操作，因此不同 GPU 中模型参数将保持一致。
 
 ### 训练配置
 
-所有的输出（日志文件和检查点文件）会被保存到工作目录下。工作目录在配置文件中被 `work_dir` 参数所指定。
+所有的输出（日志文件和检查点文件）会被将保存到工作目录下。工作目录通过配置文件中的参数 `work_dir` 指定。
 
 默认情况下，MMAction2 在每个周期后会在验证集上评估模型，可以通过在训练配置中修改 `interval` 参数来更改评估间隔
 
@@ -364,7 +357,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 [GPUS=${GPUS}] ./tools/slurm_train.sh ${PARTITION} ${JOB_NAME} ${CONFIG_FILE} [--work-dir ${WORK_DIR}]
 ```
 
-这里给出一个在 slurm 集群上的 dev 分区使用 16 块 GPU 训练 TSN 的例子。（使用 `GPUS_PER_NODE=8` 参数来指定一个有 8 快 GPUS 的 slurm 集群节点）
+这里给出一个在 slurm 集群上的 dev 分区使用 16 块 GPU 训练 TSN 的例子。（使用 `GPUS_PER_NODE=8` 参数来指定一个有 8 块 GPUS 的 slurm 集群节点）
 
 ```shell
 GPUS=16 ./tools/slurm_train.sh dev tsn_r50_k400 configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py --work-dir work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb
@@ -372,7 +365,7 @@ GPUS=16 ./tools/slurm_train.sh dev tsn_r50_k400 configs/recognition/tsn/tsn_r50_
 
 用户可以查看 [slurm_train.sh](/tools/slurm_train.sh) 文件来检查完整的参数和环境变量。
 
-如果用户的多台机器通过 ethernet 连接，则可以参考 pytorch [launch utility](https://pytorch.org/docs/stable/distributed.html#launch-utility)。如果用户没有高速网络，如 InfiniBand，速度将会非常慢。
+如果用户的多台机器通过 Ethernet 连接，则可以参考 pytorch [launch utility](https://pytorch.org/docs/stable/distributed.html#launch-utility)。如果用户没有高速网络，如 InfiniBand，速度将会非常慢。
 
 ### 使用单台机器启动多个任务
 
@@ -385,7 +378,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=29500 ./tools/dist_train.sh ${CONFIG_FILE} 4
 CUDA_VISIBLE_DEVICES=4,5,6,7 PORT=29501 ./tools/dist_train.sh ${CONFIG_FILE} 4
 ```
 
-如果用户在 slurm 集群下启动多个训练任务，则需要修改配置文件（通常时配置文件的倒数第 6 行）以设置不同的通信端口。
+如果用户在 slurm 集群下启动多个训练任务，则需要修改配置文件（通常时配置文件的倒数第 6 行）中的 `dist_params` 变量，以设置不同的通信端口。
 
 在 `config1.py` 中，
 
