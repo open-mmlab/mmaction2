@@ -176,13 +176,18 @@ def main():
 
     if cfg.model.get('backbone', None):
         # remove pretrain steps for testing
-        cfg.model.backbone.pretrained = None
-        cfg.model.backbone.pretrained2d = False
+        if hasattr(cfg.model.backbone, 'pretrained'):
+            cfg.model.backbone.pretrained = None
+        if hasattr(cfg.model.backbone, 'pretrained2d'):
+            cfg.model.backbone.pretrained2d = False
+
         # For slowfast case
         if cfg.model.backbone.get('slow_pathway', None):
-            cfg.model.backbone.slow_pathway.pretrained = None
+            if hasattr(cfg.model.backbone.slow_pathway, 'pretrained'):
+                cfg.model.backbone.slow_pathway.pretrained = None
         if cfg.model.backbone.get('fast_pathway', None):
-            cfg.model.backbone.fast_pathway.pretrained = None
+            if hasattr(cfg.model.backbone.fast_pathway, 'pretrained'):
+                cfg.model.backbone.fast_pathway.pretrained = None
 
     # build the model and load checkpoint
     model = build_model(
