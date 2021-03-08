@@ -6,17 +6,18 @@
 
 **New Features**
 
-- Support LFB [#553](https://github.com/open-mmlab/mmaction2/pull/553)
+- Support LFB ([#553](https://github.com/open-mmlab/mmaction2/pull/553))
 
 **Improvements**
 
-- Add slowfast config/json/log/ckpt for training custom classes of AVA [#678](https://github.com/open-mmlab/mmaction2/pull/678)
+- Add slowfast config/json/log/ckpt for training custom classes of AVA ([#678](https://github.com/open-mmlab/mmaction2/pull/678))
 
 **Bug and Typo Fixes**
 
 **ModelZoo**
 
-- Add LFB for AVA2.1 [#553](https://github.com/open-mmlab/mmaction2/pull/553)
+- Add LFB for AVA2.1 ([#553](https://github.com/open-mmlab/mmaction2/pull/553))
+- Add slowonly_nl_embedded_gaussian_r50_4x16x1_150e_kinetics400_rgb ([#690](https://github.com/open-mmlab/mmaction2/pull/690))
 
 ### 0.12.0 (28/02/2021)
 
