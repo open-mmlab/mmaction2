@@ -1,6 +1,6 @@
 # 教程 4：如何设计数据处理流程
 
-在本教程中，我们将介绍一些有关数据前处理流水线设计的方法，以及如何为项目自定义和扩展自己的数据管道。
+在本教程中，我们将介绍一些有关数据前处理流水线设计的方法，以及如何为项目自定义和扩展自己的数据流水线。
 
 <!-- TOC -->
 
@@ -8,20 +8,20 @@
   - [数据加载](#数据加载)
   - [数据预处理](#数据预处理)
   - [数据格式化](#数据格式化)
-- [扩展和使用自定义管道](#扩展和使用自定义管道)
+- [扩展和使用自定义流水线](#扩展和使用自定义流水线)
 
 <!-- TOC -->
 
 ## 数据前处理流水线设计
 
-按照传统惯例，我们使用多进程的 `Dataset` 和 `DataLoader` 做数据加载。 `Dataset` 返回一个与模型前向过程相对应的字典项。
+按照传统惯例，MMAction2 使用 `Dataset` 和 `DataLoader` 实现多进程数据加载。 `Dataset` 返回一个字典，作为模型的输入。
 由于动作识别和时序动作检测的数据大小不一定相同（图片大小，边界框大小等），MMCV 中的 `DataContainer` 可用于收集和分配不同大小的数据，
 详情可见 [这里](https://github.com/open-mmlab/mmcv/blob/master/mmcv/parallel/data_container.py)。
 
-数据前处理流水线和数据集构建是相互解耦的。通常，数据集定义如何处理标注文件，数据前处理流水线定义所有准备数据字典的步骤。
-数据前处理流水线由一系列相互解耦的操作组成，每个操作都将一个字典（dict）作为输入，并为下一个操作输出一个字典。
+“数据前处理流水线” 和 “数据集构建” 是相互解耦的。通常，“数据集构建” 定义如何处理标注文件，“数据前处理流水线” 定义数据加载、预处理、格式化等功能（后文将详细介绍）。
+数据前处理流水线由一系列相互解耦的操作组成。每个操作都输入一个字典（dict），新增/更新/删除相关字段，最终输出该字典，作为下一个操作的输入。
 
-我们在下图中展示了一个典型的管道。 蓝色块是流水线操作。
+我们在下图中展示了一个典型的流水线。 蓝色块是流水线操作。
 随着流水线的深入，每个操作都可以向结果字典添加新键（标记为绿色）或更新现有键（标记为橙色）。
 ![pipeline figure](/docs/imgs/data_pipeline.png)
 
@@ -83,11 +83,11 @@ test_pipeline = [
 ]
 ```
 
-MMAction2 也支持一些 lazy 操作符，并且建议用户使用它们。
+MMAction2 也支持一些 lazy 操作符。
 Lazy 操作记录如何处理数据，但是它会推迟对原始数据的处理，直到进入 Fuse 阶段。
-具体而言，lazy 操作符避免了对原始数据的频繁读取和修改操作，只在最后的 Fuse 阶段中对原始数据进行了一次处理，从而加快了数据预处理的速度。
+具体而言，lazy 操作符避免了对原始数据的频繁读取和修改操作，只在最后的 Fuse 阶段中对原始数据进行了一次处理，从而加快了数据预处理速度，因此，推荐用户使用本功能。
 
-这里是流水线使用 lazy 运算符的例子：
+这是使用 lazy 运算符的数据前处理流水线的例子：
 
 ```python
 train_pipeline = [
@@ -114,7 +114,7 @@ train_pipeline = [
 ]
 ```
 
-对于每个操作，这里列出 新增/更新/删除 的相关字典字段：
+本节将所有操作分为数据加载、数据预处理、数据格式化三类，列出每个操作 新增/更新/删除 的相关字典字段，其中 `*` 代表所对应的键值不一定会被影响。
 
 ### 数据加载
 
@@ -214,17 +214,17 @@ train_pipeline = [
 
 `Collect`
 
-- 新增: img_metas (the keys of img_metas is specified by `meta_keys`)
-- 删除: all other keys except for those specified by `keys`
+- 新增: img_metas (所有需要的图像元数据，会被在此阶段整合进 `meta_keys` 键值中)
+- 删除: 所有没有被整合进 `keys` 的键值
 
-It is **noteworthy** that the first key, commonly `imgs`, will be used as the main key to calculate the batch size.
+**值得注意的是**，第一个键，通常是 `imgs`，会作为主键用来计算批大小。
 
 `FormatShape`
 
 - 新增: input_shape
 - 更新: imgs
 
-## 扩展和使用自定义管道
+## 扩展和使用自定义流水线
 
 1. 在任何文件写入一个新的处理流水线，如 `my_pipeline.py`。它以一个字典作为输入并返回一个字典
 
@@ -253,7 +253,7 @@ It is **noteworthy** that the first key, commonly `imgs`, will be used as the ma
     train_pipeline = [
         dict(type='DenseSampleFrames', clip_len=8, frame_interval=8, num_clips=1),
         dict(type='RawFrameDecode', io_backend='disk'),
-        dict(type='MyTransform'),       # 使用自定义管道
+        dict(type='MyTransform'),       # 使用自定义流水线操作
         dict(type='Normalize', **img_norm_cfg),
         dict(type='FormatShape', input_format='NCTHW'),
         dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),

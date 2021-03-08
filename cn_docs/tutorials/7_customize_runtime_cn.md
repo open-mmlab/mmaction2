@@ -5,7 +5,7 @@
 <!-- TOC -->
 
 - [定制优化方法](#定制优化方法)
-  - [定制 PyTorch 内置的优化器](#定制-PyTorch-内置的优化器)
+  - [使用 PyTorch 内置的优化器](#使用-PyTorch-内置的优化器)
   - [定制用户自定义的优化器](#定制用户自定义的优化器)
     - [1. 定义一个新的优化器](#1-定义一个新的优化器)
     - [2. 注册优化器](#2-注册优化器)
@@ -29,9 +29,9 @@
 
 ## 定制优化方法
 
-### 定制 PyTorch 内置的优化器
+### 使用 PyTorch 内置的优化器
 
-MMAction2 已经支持使用由 PyTorch 实现的所有优化器，唯一需要修改的，就是配置文件的 “optimizer” 字段。
+MMAction2 支持 PyTorch 实现的所有优化器，仅需在配置文件中，指定 “optimizer” 字段
 例如，如果要使用 “Adam”，则修改如下。
 
 ```python
@@ -189,7 +189,7 @@ class MyOptimizerConstructor:
 
 ## 定制工作流
 
-默认情况下，MMAction2 推荐用户在训练周期中使用 “EvalHook” 进行模型验证，也可以选择 “val“ 工作流模型进行模型验证。
+默认情况下，MMAction2 推荐用户在训练周期中使用 “EvalHook” 进行模型验证，也可以选择 “val” 工作流模型进行模型验证。
 
 工作流是一个形如 (工作流名, 周期数) 的列表，用于指定运行顺序和周期。其默认设置为：
 
@@ -252,7 +252,7 @@ class MyHook(Hook):
         pass
 ```
 
-根据钩子的功能，用户需要指定挂钩在训练的每个阶段将要执行的操作，比如 `before_run`，`after_run`，`before_epoch`，`after_epoch`，`before_iter` 和 `after_iter`。
+根据钩子的功能，用户需要指定钩子在训练的每个阶段将要执行的操作，比如 `before_run`，`after_run`，`before_epoch`，`after_epoch`，`before_iter` 和 `after_iter`。
 
 #### 2. 注册新钩子
 
@@ -266,7 +266,7 @@ class MyHook(Hook):
 from .my_hook import MyHook
 ```
 
-- 使用配置文件中的 `custome_imports` 变量手动导入
+- 使用配置文件中的 `custom_imports` 变量手动导入
 
 ```python
 custom_imports = dict(imports=['mmaction.core.utils.my_hook'], allow_failed_imports=False)
@@ -280,7 +280,7 @@ custom_hooks = [
 ]
 ```
 
-还可以通过将键 `priority` 添加到 `'NORMAL'` 或 `'HIGHEST'` 中来设置挂钩的优先级，如下所示
+还可通过 `priority` 参数（可选参数值包括 `'NORMAL'` 或 `'HIGHEST'`）设置钩子优先级，如下所示：
 
 ```python
 custom_hooks = [
@@ -288,11 +288,11 @@ custom_hooks = [
 ]
 ```
 
-默认情况下，在注册过程中，挂钩的优先级设置为 “NORMAL”。
+默认情况下，在注册过程中，钩子的优先级设置为 “NORMAL”。
 
 ### 使用 MMCV 内置钩子
 
-如果该挂钩已在 MMCV 中实现，则可以直接修改配置以使用该挂钩，如下所示
+如果该钩子已在 MMCV 中实现，则可以直接修改配置以使用该钩子，如下所示
 
 ```python
 mmcv_hooks = [
@@ -302,7 +302,7 @@ mmcv_hooks = [
 
 ### 修改默认运行的钩子
 
-有一些常见的挂钩未通过 `custom_hooks` 注册，但在导入 MMCV 时已默认注册，它们是：
+有一些常见的钩子未通过 `custom_hooks` 注册，但在导入 MMCV 时已默认注册，它们是：
 
 - log_config
 - checkpoint_config

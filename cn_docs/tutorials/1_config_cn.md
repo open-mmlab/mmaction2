@@ -6,7 +6,7 @@ MMAction2 提供的所有配置文件都放置在 `$MMAction2/configs` 文件夹
 
 <!-- TOC -->
 
-- [通过脚本参数修改配置信息](#通过脚本参数修改配置信息)
+- [通过命令行参数修改配置信息](#通过命令行参数修改配置信息)
 - [配置文件结构](#配置文件结构)
 - [配置文件命名规则](#配置文件命名规则)
   - [时序动作检测的配置文件系统](#时序动作检测的配置文件系统)
@@ -17,7 +17,7 @@ MMAction2 提供的所有配置文件都放置在 `$MMAction2/configs` 文件夹
 
 <!-- TOC -->
 
-## 通过脚本参数修改配置信息
+## 通过命令行参数修改配置信息
 
 当用户使用脚本 "tools/train.py" 或者 "tools/test.py" 提交任务时，可以通过指定 `--cfg-options` 参数来直接修改所使用的配置文件内容。
 
@@ -28,8 +28,8 @@ MMAction2 提供的所有配置文件都放置在 `$MMAction2/configs` 文件夹
 
 - 更新配置文件内列表的键
 
-  配置文件中，存在一些由字典组合成的列表。例如，训练数据前处理流水线 data.train.pipeline 就是 python 列表。
-  类似，`[dict(type='SampleFrames'), ...]`。如果用户想更改其中的 `'SampleFrames'` 为 `'DenseSampleFrames'`，
+  配置文件中，存在一些由字典组成的列表。例如，训练数据前处理流水线 data.train.pipeline 就是 python 列表。
+  如，`[dict(type='SampleFrames'), ...]`。如果用户想更改其中的 `'SampleFrames'` 为 `'DenseSampleFrames'`，
   可以指定 `--cfg-options data.train.pipeline.0.type=DenseSampleFrames`。
 
 - 更新列表/元组的值。
@@ -41,14 +41,14 @@ MMAction2 提供的所有配置文件都放置在 `$MMAction2/configs` 文件夹
 ## 配置文件结构
 
 在 `config/_base_` 文件夹下存在 3 种基本组件类型： 模型（model）, 调度（schedule）, 默认运行设置（default_runtime）。
-许多方法都可以方便地通过组合这些组件进行实现，如 TSN，I3D，SlowOnly，等。
+许多方法都可以方便地通过组合这些组件进行实现，如 TSN，I3D，SlowOnly 等。
 其中，通过 `_base_` 下组件来构建的配置被称为 _原始配置_（_primitive_）。
 
-对于在同一文件夹下的所有配置文件，MMAction2 推荐只在其中存在 **一个** _原始配置_ 文件。
-所有其他的配置文件都应该继承 _原始配置_ 文件，这样就能保证配置文件的最大继承等级为 3。
+对于在同一文件夹下的所有配置文件，MMAction2 推荐只存在 **一个** 对应的 _原始配置_ 文件。
+所有其他的配置文件都应该继承 _原始配置_ 文件，这样就能保证配置文件的最大继承深度为 3。
 
 为了方便理解，MMAction2 推荐用户继承现有方法的配置文件。
-例如，如果配置的修改基于 TSN，用户首先应通过指定 `_base_ = '../tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py'` 继承 TSN 的基本结构，
+例如，如需修改 TSN 的配置文件，用户应先通过 `_base_ = '../tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py'` 继承 TSN 配置文件的基本结构，
 并修改其中必要的内容以完成继承。
 
 如果用户想实现一个独立于任何一个现有的方法结构的新方法，则需要像 `configs/recognition`, `configs/detection` 等一样，在 `configs/TASK` 中建立新的文件夹。
@@ -224,7 +224,7 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
 
 ### 动作识别的配置文件系统
 
-MMAction2 将模块化设计整合到配置文件系统中，以便于执行各种不同的实验。
+MMAction2 将模块化设计整合到配置文件系统中，以便执行各类不同实验。
 
 - 以 TSN 为例
 
@@ -661,9 +661,9 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
 
 配置文件中会用到一些中间变量，如 `train_pipeline`/`val_pipeline`/`test_pipeline`, `ann_file_train`/`ann_file_val`/`ann_file_test`, `img_norm_cfg` 等。
 
-例如，首先定义 `train_pipeline`/`val_pipeline`/`test_pipeline` 并将其传给 `data`。因此，`train_pipeline`/`val_pipeline`/`test_pipeline` 为中间变量
+例如，首先定义中间变量 `train_pipeline`/`val_pipeline`/`test_pipeline`，再将上述变量传递到 `data`。因此，`train_pipeline`/`val_pipeline`/`test_pipeline` 为中间变量
 
-这里也定义了 `ann_file_train`/`ann_file_val`/`ann_file_test` 和 `data_root`/`data_root_val` 以为数据处理流程提供一些基本信息。
+这里也定义了 `ann_file_train`/`ann_file_val`/`ann_file_test` 和 `data_root`/`data_root_val` 为数据处理流程提供一些基本信息。
 
 此外，使用 `img_norm_cfg` 作为中间变量，构建一些数组增强组件。
 

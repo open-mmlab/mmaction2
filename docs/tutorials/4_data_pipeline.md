@@ -120,7 +120,7 @@ train_pipeline = [
 ]
 ```
 
-For each operation, we list the related dict fields that are added/updated/removed.
+For each operation, we list the related dict fields that are added/updated/removed below, where `*` means the key may not be affected.
 
 ### Data loading
 

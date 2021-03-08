@@ -22,7 +22,7 @@
 
 - 帧注释（rawframe annotation）
 
-  帧数据集（rawframe dataset）的注释是一个包含多行的文本文件，每行表明了视频的 `帧（相对）文件夹`（rawframe directory of relative path），
+  帧数据集（rawframe dataset）注释文件由多行文本组成，每行代表一个样本，每个样本分为三个部分，分别是 `帧（相对）文件夹`（rawframe directory of relative path），
   `总帧数`（total frames）以及 `标签`（label），通过空格进行划分
 
   示例如下：
@@ -38,7 +38,7 @@
 
 - 视频注释（video annotation）
 
-  视频数据集（video dataset）的注释是一个包含多行的文本文件，每行表明了视频的 `文件（相对）路径`（filepath of relative path）
+  视频数据集（video dataset）注释文件由多行文本组成，每行代表一个样本，每个样本分为两个部分，分别是 `文件（相对）路径`（filepath of relative path）
   和 `标签`（label），通过空格进行划分
 
   示例如下：
@@ -139,11 +139,9 @@ data = dict(
 ...
 ```
 
-使用这种方法来支持 RawFrame 数据集。
-
 ### 自定义数据集的示例
 
-假设注释在文本文件中以新格式显示，并且图像文件名具有类似 ”img_00005.jpg” 的模板。
+假设注释在文本文件中以新格式显示，并且图像文件名具有类似 “img_00005.jpg” 的模板。
 那么视频注释将以以下形式存储在文本文件 `annotation.txt` 中。
 
 ```
