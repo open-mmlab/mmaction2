@@ -17,6 +17,7 @@
 **ModelZoo**
 
 - Add LFB for AVA2.1 [#553](https://github.com/open-mmlab/mmaction2/pull/553)
+- Add slowonly_nl_embedded_gaussian_r50_4x16x1_150e_kinetics400_rgb [#690](https://github.com/open-mmlab/mmaction2/pull/690)
 
 ### 0.12.0 (28/02/2021)
 
