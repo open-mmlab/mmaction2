@@ -369,7 +369,7 @@ GPUS=16 ./tools/slurm_train.sh dev tsn_r50_k400 configs/recognition/tsn/tsn_r50_
 
 ### 使用单台机器启动多个任务
 
-如果用使用单台机器启动多个任务，如在有 8 个 GPU 的单台机器上启动 2 个需要 4 块 GPU 的训练任务，则需要为每个任务指定不同端口，以避免通信冲突。
+如果用使用单台机器启动多个任务，如在有 8 块 GPU 的单台机器上启动 2 个需要 4 块 GPU 的训练任务，则需要为每个任务指定不同端口，以避免通信冲突。
 
 如果用户使用 `dist_train.sh` 脚本启动训练任务，则可以通过以下命令指定端口
 
@@ -378,7 +378,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=29500 ./tools/dist_train.sh ${CONFIG_FILE} 4
 CUDA_VISIBLE_DEVICES=4,5,6,7 PORT=29501 ./tools/dist_train.sh ${CONFIG_FILE} 4
 ```
 
-如果用户在 slurm 集群下启动多个训练任务，则需要修改配置文件（通常时配置文件的倒数第 6 行）中的 `dist_params` 变量，以设置不同的通信端口。
+如果用户在 slurm 集群下启动多个训练任务，则需要修改配置文件（通常是配置文件的倒数第 6 行）中的 `dist_params` 变量，以设置不同的通信端口。
 
 在 `config1.py` 中，
 
