@@ -33,7 +33,17 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
                  train_cfg=None,
                  test_cfg=None):
         super().__init__()
-        self.backbone = builder.build_backbone(backbone)
+        # The backbones in mmcls can be used by TSN
+        if backbone['type'].startswith('mmcls::'):
+            try:
+                import mmcls.models.builder as mmcls_builder
+            except (ImportError, ModuleNotFoundError):
+                raise ImportError('Please install mmcls to use this backbone.')
+            backbone['type'] = backbone['type'][7:]
+            self.backbone = mmcls_builder.build_backbone(backbone)
+        else:
+            self.backbone = builder.build_backbone(backbone)
+
         if neck is not None:
             self.neck = builder.build_neck(neck)
         self.cls_head = builder.build_head(cls_head)

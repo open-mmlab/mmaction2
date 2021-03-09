@@ -7,6 +7,7 @@
 **New Features**
 
 - Support LFB ([#553](https://github.com/open-mmlab/mmaction2/pull/553))
+- Support using backbones from MMCls for TSN ([#679](https://github.com/open-mmlab/mmaction2/pull/679))
 
 **Improvements**
 
@@ -18,6 +19,7 @@
 
 - Add LFB for AVA2.1 ([#553](https://github.com/open-mmlab/mmaction2/pull/553))
 - Add slowonly_nl_embedded_gaussian_r50_4x16x1_150e_kinetics400_rgb ([#690](https://github.com/open-mmlab/mmaction2/pull/690))
+- Add TSN with ResNeXt-101-32x4d backbone ([#679](https://github.com/open-mmlab/mmaction2/pull/679))
 
 ### 0.12.0 (28/02/2021)
 
