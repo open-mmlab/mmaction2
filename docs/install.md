@@ -120,7 +120,7 @@ git clone https://github.com/open-mmlab/mmaction2.git
 cd mmaction2
 ```
 
-d. Install build requirements and then install MMAction2.
+e. Install build requirements and then install MMAction2.
 
 ```shell
 pip install -r requirements/build.txt
