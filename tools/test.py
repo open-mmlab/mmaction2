@@ -101,8 +101,7 @@ def turn_off_pretrained(cfg):
         cfg.pretrained = None
 
     # recursively turn off pretrained value
-    for cfg_key in cfg:
-        sub_cfg = getattr(cfg, cfg_key)
+    for _, sub_cfg in cfg.items():
         if isinstance(sub_cfg, dict):
             turn_off_pretrained(sub_cfg)
 
