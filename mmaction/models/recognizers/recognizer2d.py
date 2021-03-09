@@ -77,7 +77,7 @@ class Recognizer2D(BaseRecognizer):
         num_segs = self.test_cfg.get('num_segs', self.backbone.num_segments)
 
         # num_crops, num_segs, C, H, W
-        imgs = imgs.reshape((-1, num_segs), imgs.shape[1:])
+        imgs = imgs.reshape((-1, num_segs) + imgs.shape[1:])
 
         x1 = imgs[:, ::2, :, :, :]
         x2 = imgs[:, 1::2, :, :, :]
