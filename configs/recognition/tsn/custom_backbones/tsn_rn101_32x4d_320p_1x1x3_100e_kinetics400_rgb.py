@@ -1,8 +1,11 @@
 _base_ = [
-    '../../_base_/schedules/sgd_100e.py', '../../_base_/default_runtime.py'
+    '../../../_base_/schedules/sgd_100e.py',
+    '../../../_base_/default_runtime.py'
 ]
 
+# model settings
 model = dict(
+    type='Recognizer2D',
     backbone=dict(
         type='mmcls::ResNeXt',
         depth=101,
@@ -10,7 +13,18 @@ model = dict(
         out_indices=(3, ),
         groups=32,
         width_per_group=4,
-        style='pytorch'))
+        style='pytorch'),
+    cls_head=dict(
+        type='TSNHead',
+        num_classes=400,
+        in_channels=2048,
+        spatial_type='avg',
+        consensus=dict(type='AvgConsensus', dim=1),
+        dropout_ratio=0.4,
+        init_std=0.01),
+    # model training and testing settings
+    train_cfg=None,
+    test_cfg=dict(average_clips=None))
 
 # dataset settings
 dataset_type = 'RawframeDataset'
@@ -66,7 +80,7 @@ test_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
-    videos_per_gpu=32,
+    videos_per_gpu=16,
     workers_per_gpu=4,
     train=dict(
         type=dataset_type,
@@ -88,3 +102,8 @@ data = dict(
 work_dir = './work_dirs/tsn_rn101_32x4d_320p_1x1x3_100e_kinetics400_rgb/'
 load_from = ('https://download.openmmlab.com/mmclassification/v0/resnext/'
              'resnext101_32x4d_batch256_imagenet_20200708-87f2d1c9.pth')
+optimizer = dict(
+    type='SGD',
+    lr=0.005,  # this lr is used for 8 gpus
+    momentum=0.9,
+    weight_decay=0.0001)
