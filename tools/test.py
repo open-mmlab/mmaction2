@@ -97,11 +97,11 @@ def parse_args():
 def turn_off_pretrained(cfg):
     # recursively find all pretrained in the model config,
     # and set them None to avoid redundant pretrain steps for testing
-    if hasattr(cfg, 'pretrained'):
+    if 'pretrained' in cfg:
         cfg.pretrained = None
 
     # recursively turn off pretrained value
-    for _, sub_cfg in cfg.items():
+    for sub_cfg in cfg.values():
         if isinstance(sub_cfg, dict):
             turn_off_pretrained(sub_cfg)
 
