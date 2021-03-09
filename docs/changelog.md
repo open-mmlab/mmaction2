@@ -7,6 +7,7 @@
 **New Features**
 
 - Support LFB [#553](https://github.com/open-mmlab/mmaction2/pull/553)
+- Support using backbones from MMCls for TSN [#679](https://github.com/open-mmlab/mmaction2/pull/679)
 
 **Improvements**
 
@@ -15,6 +16,7 @@
 **ModelZoo**
 
 - Add LFB for AVA2.1 [#553](https://github.com/open-mmlab/mmaction2/pull/553)
+- Add TSN with ResNeXt-101-32x4d backbone [#679](https://github.com/open-mmlab/mmaction2/pull/679)
 
 ### 0.12.0 (28/02/2021)
 
