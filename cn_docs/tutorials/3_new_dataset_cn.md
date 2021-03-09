@@ -225,7 +225,7 @@ dataset_A_train = dict(
 
 ## 通过混合数据集来自定义数据集
 
-MMAction2还支持混合数据集以进行训练。 目前，它支持重复数据集（repeat dataset）。
+MMAction2 还支持混合数据集以进行训练。 目前，它支持重复数据集（repeat dataset）。
 
 ### 重复数据集
 

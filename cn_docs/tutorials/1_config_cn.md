@@ -260,13 +260,13 @@ MMAction2 将模块化设计整合到配置文件系统中，以便执行各类�
     ann_file_val = 'data/kinetics400/kinetics400_val_list_rawframes.txt'  # 验证集的标注文件
     ann_file_test = 'data/kinetics400/kinetics400_val_list_rawframes.txt'  # 测试集的标注文件
     img_norm_cfg = dict(  # 图像正则化参数设置
-        mean=[123.675, 116.28, 103.53],  # 图像正则化需平均值
+        mean=[123.675, 116.28, 103.53],  # 图像正则化平均值
         std=[58.395, 57.12, 57.375],  # 图像正则化方差
         to_bgr=False)  # 是否将通道数从 RGB 转为 BGR
 
     train_pipeline = [  # 训练数据前处理流水线步骤组成的列表
         dict(  # SampleFrames 类的配置
-            type='SampleFrames',  # 采帧，从视频帧中选定哪些帧要采
+            type='SampleFrames',  # 选定采样哪些视频帧
             clip_len=1,  # 每个输出视频片段的帧
             frame_interval=1,  # 所采相邻帧的时序间隔
             num_clips=3),  # 所采帧片段的数量
@@ -304,7 +304,7 @@ MMAction2 将模块化设计整合到配置文件系统中，以便执行各类�
     ]
     val_pipeline = [  # 验证数据前处理流水线步骤组成的列表
         dict(  # SampleFrames 类的配置
-            type='SampleFrames',  # 采帧，从视频帧中选定哪些帧要采
+            type='SampleFrames',  # 选定采样哪些视频帧
             clip_len=1,  # 每个输出视频片段的帧
             frame_interval=1,  # 所采相邻帧的时序间隔
             num_clips=3,  # 所采帧片段的数量
@@ -336,7 +336,7 @@ MMAction2 将模块化设计整合到配置文件系统中，以便执行各类�
     ]
     test_pipeline = [  # 测试数据前处理流水线步骤组成的列表
         dict(  # SampleFrames 类的配置
-            type='SampleFrames',  # 采帧，从视频帧中选定哪些帧要采
+            type='SampleFrames',  # 选定采样哪些视频帧
             clip_len=1,  # 每个输出视频片段的帧
             frame_interval=1,  # 所采相邻帧的时序间隔
             num_clips=25,  # 所采帧片段的数量
@@ -504,13 +504,13 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
     proposal_file_val = f'{anno_root}/ava_dense_proposals_val.FAIR.recall_93.9.pkl'  # 验证样本检测候选框的文件路径
 
     img_norm_cfg = dict(  # 图像正则化参数设置
-        mean=[123.675, 116.28, 103.53], # 图像正则化需平均值
+        mean=[123.675, 116.28, 103.53], # 图像正则化平均值
         std=[58.395, 57.12, 57.375],   # 图像正则化方差
         to_bgr=False) # 是否将通道数从 RGB 转为 BGR
 
     train_pipeline = [  # 训练数据前处理流水线步骤组成的列表
         dict(  # SampleFrames 类的配置
-            type='AVASampleFrames',  # 采帧，从视频帧中选定哪些帧要采
+            type='AVASampleFrames',  # 选定采样哪些视频帧
             clip_len=4,  # 每个输出视频片段的帧
             frame_interval=16), # 所采相邻帧的时序间隔
         dict(  # RawFrameDecode 类的配置
@@ -551,7 +551,7 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
 
     val_pipeline = [  # 验证数据前处理流水线步骤组成的列表
         dict(  # SampleFrames 类的配置
-            type='AVASampleFrames',  # 采帧，从视频帧中选定哪些帧要采
+            type='AVASampleFrames',  # 选定采样哪些视频帧
             clip_len=4,  # 每个输出视频片段的帧
             frame_interval=16),  # 所采相邻帧的时序间隔
         dict(  # RawFrameDecode 类的配置

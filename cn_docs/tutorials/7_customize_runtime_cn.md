@@ -344,7 +344,7 @@ log_config = dict(
 #### 验证配置
 
 评估的配置将用于初始化 [`EvalHook`](https://github.com/open-mmlab/mmaction2/blob/master/mmaction/core/evaluation/eval_hooks.py#L12)。
-除了键 `interval` 外，其他参数，如 “metrics” 也将传递给`dataset.evaluate()`。
+除了键 `interval` 外，其他参数，如 “metrics” 也将传递给 `dataset.evaluate()`。
 
 ```python
 evaluation = dict(interval=1, metrics='bbox')
