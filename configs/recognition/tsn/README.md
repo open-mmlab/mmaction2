@@ -59,8 +59,6 @@ Here, We use [1: 1] to indicate that we combine rgb and flow score with coeffici
 It's possible and convenient to use a 3rd-party backbone for TSN under the framework of MMAction2, here we provide some examples for:
 
 - [x] Backbones from MMClassification
-- [ ] Backbones from torchvision
-- [ ] Backbones from other projects
 
 |                            config                            |   resolution   | gpus |                           backbone                           | pretrain | top1 acc | top5 acc |                             ckpt                             |                             log                              |                             json                             |
 | :----------------------------------------------------------: | :------------: | :--: | :----------------------------------------------------------: | :------: | :------: | :------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
