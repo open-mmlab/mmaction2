@@ -94,6 +94,19 @@ def parse_args():
     return args
 
 
+def turn_off_pretrained(cfg):
+    # recursively find all pretrained in the model config,
+    # and set them None to avoid redundant pretrain steps for testing
+    if hasattr(cfg, 'pretrained'):
+        cfg.pretrained = None
+
+    # recursively turn off pretrained value
+    for cfg_key in cfg:
+        sub_cfg = getattr(cfg, cfg_key)
+        if isinstance(sub_cfg, dict):
+            turn_off_pretrained(sub_cfg)
+
+
 def main():
     args = parse_args()
 
@@ -174,20 +187,8 @@ def main():
                               **cfg.data.get('test_dataloader', {}))
     data_loader = build_dataloader(dataset, **dataloader_setting)
 
-    if cfg.model.get('backbone', None):
-        # remove pretrain steps for testing
-        if hasattr(cfg.model.backbone, 'pretrained'):
-            cfg.model.backbone.pretrained = None
-        if hasattr(cfg.model.backbone, 'pretrained2d'):
-            cfg.model.backbone.pretrained2d = False
-
-        # For slowfast case
-        if cfg.model.backbone.get('slow_pathway', None):
-            if hasattr(cfg.model.backbone.slow_pathway, 'pretrained'):
-                cfg.model.backbone.slow_pathway.pretrained = None
-        if cfg.model.backbone.get('fast_pathway', None):
-            if hasattr(cfg.model.backbone.fast_pathway, 'pretrained'):
-                cfg.model.backbone.fast_pathway.pretrained = None
+    # remove redundant pretrain steps for testing
+    turn_off_pretrained(cfg.model)
 
     # build the model and load checkpoint
     model = build_model(
