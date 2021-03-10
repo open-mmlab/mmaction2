@@ -41,7 +41,6 @@ class TPNHead(TSNHead):
             self.new_cls = self.new_cls.cuda()
         self.new_cls.weight.copy_(self.fc_cls.weight[..., None, None, None])
         self.new_cls.bias.copy_(self.fc_cls.bias)
-        self.fc_cls = None
 
     def forward(self, x, num_segs=None, fcn_test=False):
         """Defines the computation performed at every call.
