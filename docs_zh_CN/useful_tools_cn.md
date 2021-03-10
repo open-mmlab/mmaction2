@@ -1,6 +1,6 @@
-除了 训练/测试 脚本外，MMAction2 还在 `tools/` 目录下提供了许多有用的工具。
+除了训练/测试脚本外，MMAction2 还在 `tools/` 目录下提供了许多有用的工具。
 
-## 有用的工具脚本链接
+## 目录
 
 <!-- TOC -->
 
@@ -17,7 +17,7 @@
 
 ## 日志分析
 
-给定一个训练日志文件，可通过 `tools/analysis/analyze_logs.py` 脚本绘制 loss/top-k 曲线。要使用这个功能，则要先通过 `pip install seaborn` 安装所需的依赖包。
+给定一个训练日志文件，可通过 `tools/analysis/analyze_logs.py` 脚本绘制 loss/top-k 曲线。要使用这个功能，要先通过 `pip install seaborn` 安装所需的依赖包。
 
 ![acc_curve_image](/docs/imgs/acc_curve.png)
 
@@ -97,7 +97,7 @@ Params: 28.04 M
 
 `/tools/pytorch2onnx.py` 脚本用于将模型转换为 [ONNX](https://github.com/onnx/onnx) 格式。
 它同时也支持通过比较 PyTorch 模型和 ONNX 模型的输出结果来进行验证。
-要使用这个功能，则要先通过 `pip install onnx onnxruntime` 安装所需的依赖包。
+要使用这个功能，要先通过 `pip install onnx onnxruntime` 安装所需的依赖包。
 
 - 对于行为识别模型，请运行：
 
