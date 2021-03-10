@@ -7,7 +7,7 @@
 - [日志分析](#日志分析)
 - [模型复杂度分析](#模型复杂度分析)
 - [模型转换](#模型转换)
-  - [导出 MMAction2 模型为 ONNX 格式（试验阶段）](#导出-MMAction2-模型为-ONNX-格式（试验阶段）)
+  - [导出 MMAction2 模型为 ONNX 格式（实验特性）](#导出-MMAction2-模型为-ONNX-格式（实验特性）)
   - [发布模型](#发布模型)
 - [其他脚本](#其他脚本)
   - [指标评价](#指标评价)
@@ -17,7 +17,7 @@
 
 ## 日志分析
 
-给定一个训练日志文件，可通过 `tools/analysis/analyze_logs.py` 脚本绘制 loss/top-k 曲线。要使用这个功能，要先通过 `pip install seaborn` 安装所需的依赖包。
+输入变量指定一个训练日志文件，可通过 `tools/analysis/analyze_logs.py` 脚本绘制 loss/top-k 曲线。本功能依赖于 `seaborn`，使用前请先通过 `pip install seaborn` 安装依赖包。
 
 ![acc_curve_image](/docs/imgs/acc_curve.png)
 
@@ -27,37 +27,37 @@ python tools/analysis/analyze_logs.py plot_curve ${JSON_LOGS} [--keys ${KEYS}] [
 
 例如:
 
-- 绘制某结果的分类损失图。
+- 绘制某日志文件对应的分类损失曲线图。
 
     ```shell
     python tools/analysis/analyze_logs.py plot_curve log.json --keys loss_cls --legend loss_cls
     ```
 
-- 绘制某结果的 top-1 和 top-5 准确率图像，并将其导出为 PDF 文件。
+- 绘制某日志文件对应的 top-1 和 top-5 准确率曲线图，并将曲线图导出为 PDF 文件。
 
     ```shell
     python tools/analysis/analyze_logs.py plot_curve log.json --keys top1_acc top5_acc --out results.pdf
     ```
 
-- 在同一图像内绘制两份结果文件的 top-1 准确率。
+- 在同一图像内绘制两份日志文件对应的 top-1 准确率曲线图。
 
     ```shell
     python tools/analysis/analyze_logs.py plot_curve log1.json log2.json --keys top1_acc --legend run1 run2
     ```
 
-    You can also compute the average training speed.
+    用户还可以通过本工具计算平均训练速度。
 
     ```shell
     python tools/analysis/analyze_logs.py cal_train_time ${JSON_LOGS} [--include-outliers]
     ```
 
-- 计算某个配置文件的平均训练速度
+- 计算某日志文件对应的平均训练速度。
 
     ```shell
     python tools/analysis/analyze_logs.py cal_train_time work_dirs/some_exp/20200422_153324.log.json
     ```
 
-    预计结果输出如下：
+    预计输出结果如下所示：
 
     ```text
     -----Analyze train time of work_dirs/some_exp/20200422_153324.log.json-----
@@ -69,7 +69,7 @@ python tools/analysis/analyze_logs.py plot_curve ${JSON_LOGS} [--keys ${KEYS}] [
 
 ## 模型复杂度分析
 
-`/tools/analysis/get_flops.py` 文件是根据 [flops-counter.pytorch](https://github.com/sovrasov/flops-counter.pytorch) 库改编的脚本，用于计算给定模型的 FLOPs 和参数量。
+`/tools/analysis/get_flops.py` 文件是根据 [flops-counter.pytorch](https://github.com/sovrasov/flops-counter.pytorch) 库改编的脚本，用于计算输入变量指定模型的 FLOPs 和参数量。
 
 ```shell
 python tools/analysis/get_flops.py ${CONFIG_FILE} [--shape ${INPUT_SHAPE}]
@@ -86,18 +86,18 @@ Params: 28.04 M
 ```
 
 **注意**：该工具仍处于试验阶段，不保证该数字绝对正确。
-用户可以将结果用于简单比较，但若要在技术报告或论文中采用该结果之前，请仔细检查。
+用户可以将结果用于简单比较，但若要在技术报告或论文中采用该结果，请仔细检查。
 
-(1) FLOPs 与输入变量的形状有关，但是模型的参数量与输入变量的形状无关。2D 行为识别器的默认形状为 (1, 3, 340, 256)，3D 行为识别器的默认形状为 (1, 3, 32, 340, 256)。
-(2) 某些算子没被列入计算中，如 GN 和一些自定义算子。更多详细信息请参考 [`mmcv.cnn.get_model_complexity_info()`](https://github.com/open-mmlab/mmcv/blob/master/mmcv/cnn/utils/flops_counter.py)
+(1) FLOPs 与输入变量尺寸有关，但是模型的参数量与输入变量尺寸无关。2D 行为识别器的默认尺寸为 (1, 3, 340, 256)，3D 行为识别器的默认尺寸为 (1, 3, 32, 340, 256)。
+(2) 部分算子不参与 FLOPs 以及参数量的计算，如 GN 和一些自定义算子。更多详细信息请参考 [`mmcv.cnn.get_model_complexity_info()`](https://github.com/open-mmlab/mmcv/blob/master/mmcv/cnn/utils/flops_counter.py)
 
 ## 模型转换
 
-### 导出 MMAction2 模型为 ONNX 格式（试验阶段）
+### 导出 MMAction2 模型为 ONNX 格式（实验特性）
 
 `/tools/pytorch2onnx.py` 脚本用于将模型转换为 [ONNX](https://github.com/onnx/onnx) 格式。
-它同时也支持通过比较 PyTorch 模型和 ONNX 模型的输出结果来进行验证。
-要使用这个功能，要先通过 `pip install onnx onnxruntime` 安装所需的依赖包。
+同时，该脚本支持比较 PyTorch 模型和 ONNX 模型的输出结果，验证输出结果是否相同。
+本功能依赖于 `onnx` 以及 `onnxruntime`，使用前请先通过 `pip install onnx onnxruntime` 安装依赖包。
 
 - 对于行为识别模型，请运行：
 
@@ -105,7 +105,7 @@ Params: 28.04 M
     python tools/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --verify
     ```
 
-- 对于时序检测模型，请运行：
+- 对于时序动作检测模型，请运行：
 
     ```shell
     python tools/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --is-localizer --shape $SHAPE --verify
@@ -113,9 +113,7 @@ Params: 28.04 M
 
 ### 发布模型
 
-`tools/publish_model.py` 脚本用于帮助用户发布模型。
-
-在用户上传自己训练的模型到 MMAction2 的 AWS 服务器前，需要：
+`tools/publish_model.py` 脚本用于进行模型发布前的准备工作，主要包括：
 
 (1) 将模型的权重向量转化为 CPU 向量。
 (2) 删除优化器状态信息。
@@ -131,15 +129,15 @@ python tools/publish_model.py ${INPUT_FILENAME} ${OUTPUT_FILENAME}
 python tools/publish_model.py work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb/latest.pth tsn_r50_1x1x3_100e_kinetics400_rgb.pth
 ```
 
-最终的输出文件名将会如 `tsn_r50_1x1x3_100e_kinetics400_rgb-{hash id}.pth`。
+最终，输出文件名为 `tsn_r50_1x1x3_100e_kinetics400_rgb-{hash id}.pth`。
 
 ## 其他脚本
 
 ### 指标评价
 
-`tools/analysis/eval_metric.py` 脚本会根据给定配置文件计算结果存储文件的某一评价指标值。
+`tools/analysis/eval_metric.py` 脚本通过输入变量指定配置文件，以及对应的结果存储文件，计算某一评价指标。
 
-结果存储文件是通过在 `tools/test.py` 脚本中利用参数 `--out ${RESULT_FILE}` 指定的，其存储了整个模型的最终结果。
+结果存储文件通过 `tools/test.py` 脚本（通过参数 `--out ${RESULT_FILE}` 指定）生成，保存了指定模型在指定数据集中的预测结果。
 
 ```shell
 python tools/analysis/eval_metric.py ${CONFIG_FILE} ${RESULT_FILE} [--eval ${EVAL_METRICS}] [--cfg-options ${CFG_OPTIONS}] [--eval-options ${EVAL_OPTIONS}]
@@ -147,7 +145,7 @@ python tools/analysis/eval_metric.py ${CONFIG_FILE} ${RESULT_FILE} [--eval ${EVA
 
 ### 打印完整配置
 
-`tools/analysis/print_config.py` 脚本会逐词打印整个配置文件的内容，并会扩展其所有的导入变量。
+`tools/analysis/print_config.py` 脚本会解析所有输入变量，并打印完整配置信息。
 
 ```shell
 python tools/print_config.py ${CONFIG} [-h] [--options ${OPTIONS [OPTIONS...]}]
