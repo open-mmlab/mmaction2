@@ -91,8 +91,8 @@ optimizer = dict(
 
 MMAction2 将模型组件分为 4 种基础模型：
 
-- 识别器（recognizer）：整个识别器模型流水线，通常包含一个骨架（backbone）和分类头（cls_head）。
-- 骨架（backbone）：通常为一个用于提取特征的 FCN 网络，例如 ResNet，BNInception。
+- 识别器（recognizer）：整个识别器模型流水线，通常包含一个主干（backbone）和分类头（cls_head）。
+- 主干（backbone）：通常为一个用于提取特征的 FCN 网络，例如 ResNet，BNInception。
 - 分类头（cls_head）：用于分类任务的组件，通常包括一个带有池化层的 FC 层。
 - 时序检测器（localizer）：用于时序检测的模型，目前有的检测器包含 BSN，BMN，SSN。
 
