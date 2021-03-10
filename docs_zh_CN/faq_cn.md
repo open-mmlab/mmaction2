@@ -9,7 +9,7 @@
 - **"No module named 'mmcv.ops'"; "No module named 'mmcv._ext'"**
 
     1. 使用 `pip uninstall mmcv` 卸载环境中已安装的 `mmcv`。
-    2. 遵循[安装文档](https://mmcv.readthedocs.io/en/latest/#installation)以安装 `mmcv-full`。
+    2. 遵循[安装文档](https://mmcv.readthedocs.io/en/latest/#installation)来安装 `mmcv-full`。
 
 - **"OSError: MoviePy Error: creation of None failed because of the following error"**
 
@@ -22,12 +22,12 @@
 
 - **FileNotFound 如 `No such file or directory: xxx/xxx/img_00300.jpg`**
 
-    在 MMAction2 中，我们对帧数据集将 `start_index=1` 设为默认值，而对视频数据集将 `start_index=0` 设为默认值。
+    在 MMAction2 中，对于帧数据集，我们将 `start_index=1` 设为默认值，而对于视频数据集，我们将 `start_index=0` 设为默认值。
     如果用户在数据的第一帧或最后一帧遇到 `文件未找到(FileNotFound)` 的错误，则需要根据每个视频首帧（也即 `xxx_00000.jpg` 或 `xxx_00001.jpg`）的偏移量，对配置文件中的数据处理流水线的 `start_index` 值进行相应的修改。
 
 - **我应该如何处理数据集中传入视频的尺寸？是把所有视频调整为固定尺寸，如 “340x256”，还是把所有视频的短边调整成相同的长度（256像素或320像素）？**
 
-    从基准测试来看，总体来说，后者（把所有视频的短边调整成相同的长度）效果更好，所以我们将“调整尺寸为短边256像素”作为默认的数据处理方式。关于相关的基准测试，你可以在 [TSN 数据基准测试](https://github.com/open-mmlab/mmaction2/tree/master/configs/recognition/tsn) 和 [SlowOnly 数据基准测试](https://github.com/open-mmlab/mmaction2/tree/master/configs/recognition/tsn)中查看结果。
+    从基准测试来看，总体来说，后者（把所有视频的短边调整成相同的长度）效果更好，所以我们将“调整尺寸为短边256像素”作为默认的数据处理方式。关于相关的基准测试，你可以在 [TSN 数据基准测试](https://github.com/open-mmlab/mmaction2/tree/master/configs/recognition/tsn)和 [SlowOnly 数据基准测试](https://github.com/open-mmlab/mmaction2/tree/master/configs/recognition/tsn)中查看结果。
 
 - **不匹配的数据流水线项值导致的错误，如 `KeyError: 'total_frames'`**
 
@@ -99,4 +99,4 @@
 
 - **为什么由 MMAction2 转换的 ONNX 模型在转换到其他框架（如 TensorRT）时会抛出错误？**
 
-    目前，我们只能确保 mmaction2 中的模型与 onnx 兼容。但是，onnx 中的某些算子可能不受其他框架支持，例如[这个问题](https://github.com/open-mmlab/mmaction2/issues/414)中的 TensorRT。当这种情况发生时，如果我们的 `pytorch2onnx.py` 没有出现问题，转换过去的 onnx 模型也通过了数值检验，建议您在对方框架的社区中提问。
+    目前，我们只能确保 MMAction2 中的模型与 ONNX 兼容。但是，ONNX 中的某些算子可能不受其他框架支持，例如[这个问题](https://github.com/open-mmlab/mmaction2/issues/414)中的 TensorRT。当这种情况发生时，如果我们的 `pytorch2onnx.py` 没有出现问题，转换过去的 ONNX 模型也通过了数值检验，建议您在对方框架的社区中提问。
