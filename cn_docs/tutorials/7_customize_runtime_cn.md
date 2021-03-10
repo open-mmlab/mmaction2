@@ -324,7 +324,7 @@ checkpoint_config = dict(interval=1)
 ```
 
 用户可以设置 “max_keep_ckpts” 来仅保存少量模型检查点文件，或者通过 “save_optimizer” 决定是否存储优化器的状态字典。
-更多细节可参考[这里](https://mmcv.readthedocs.io/en/latest/api.html#mmcv.runner.CheckpointHook)。
+更多细节可参考 [这里](https://mmcv.readthedocs.io/en/latest/api.html#mmcv.runner.CheckpointHook)。
 
 #### 日志配置
 
