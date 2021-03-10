@@ -19,12 +19,12 @@
 
 ### 评测指标
 
-这里测量的时间是一次训练迭代的平均时间，包括数据处理和模型训练。
+这里测量的时间是一轮训练迭代的平均时间，包括数据处理和模型训练。
 训练速度以 s/iter 为单位，其值越低越好。注意，这里跳过了前 50 个迭代时间，因为它们可能包含设备的预热时间。
 
 ### 比较规则
 
-这里以一次训练迭代世界为基准，使用了相同的数据和模型设置对 MMAction2 和其他的视频理解工具箱进行比较。对于其他代码库，我们使用了
+这里以一轮训练迭代时间为基准，使用了相同的数据和模型设置对 MMAction2 和其他的视频理解工具箱进行比较。参与评测的其他代码库包括
 
 - MMAction: commit id [7f3490d](https://github.com/open-mmlab/mmaction/tree/7f3490d3db6a67fe7b87bfef238b757403b670e3)(1/5/2020)
 - Temporal-Shift-Module: commit id [8d53d6f](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd)(5/5/2020)
@@ -32,9 +32,9 @@
 - BSN(boundary sensitive network): commit id [f13707f](https://github.com/wzmsltw/BSN-boundary-sensitive-network/tree/f13707fbc362486e93178c39f9c4d398afe2cb2f)(12/12/2018)
 - BMN(boundary matching network): commit id [45d0514](https://github.com/JJBOY/BMN-Boundary-Matching-Network/tree/45d05146822b85ca672b65f3d030509583d0135a)(17/10/2019)
 
-为了做到公平比较，这里采用了相同的硬件环境和数据进行比较实验。
+为了公平比较，这里基于相同的硬件环境和数据进行对比实验。
 使用的视频帧数据集是通过 [数据准备工具](/tools/data/kinetics/README.md) 生成的，
-使用的视频数据集是通过 [该脚本](/tools/data/resize_video.py) 生成的，以快速解码为特点的，"短边 256，密集编码“的视频数据集。
+使用的视频数据集是通过 [该脚本](/tools/data/resize_video.py) 生成的，以快速解码为特点的，"短边 256，密集关键帧编码“的视频数据集。
 正如以下表格所示，在对比正常的短边 256 视频时，可以观察到速度上的显著提升，尤其是在采样特别稀疏的情况下，如 [TSN](/configs/recognition/tsn/tsn_r50_video_320p_1x1x3_100e_kinetics400_rgb.py)。
 
 ## 主要结果
@@ -64,17 +64,17 @@
 | BSN ([TEM + PEM + PGM](/configs/localization/bsn)) | **0.074(TEM)+0.040(PEM)** | 0.101(TEM)+0.040(PEM) | x |
 | BMN ([bmn_400x100_2x8_9e_activitynet_feature](/configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py)) | **3.27** | x | 3.30 |
 
-## Details of Comparison
+## 比较细节
 
 ### TSN
 
 - **MMAction2**
 
 ```shell
-# rawframes
+# 处理视频帧
 bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_tsn configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py --work-dir work_dirs/benchmark_tsn_rawframes
 
-# videos
+# 处理视频
 bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_tsn configs/recognition/tsn/tsn_r50_video_1x1x3_100e_kinetics400_rgb.py --work-dir work_dirs/benchmark_tsn_video
 ```
 
@@ -95,10 +95,10 @@ python main.py kinetics RGB --arch resnet50 --num_segments 3 --gd 20 --lr 0.02 -
 - **MMAction2**
 
 ```shell
-# rawframes
+# 处理视频帧
 bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_i3d configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py --work-dir work_dirs/benchmark_i3d_rawframes
 
-# videos
+# 处理视频
 bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_i3d configs/recognition/i3d/i3d_r50_video_heavy_8x8x1_100e_kinetics400_rgb.py --work-dir work_dirs/benchmark_i3d_video
 ```
 
