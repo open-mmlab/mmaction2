@@ -24,4 +24,4 @@
 
 MMAction2 目前支持的数据集如上所列。
 MMAction2 在 `$MMACTION2/tools/data/` 路径下提供数据集准备脚本。
-每个数据集的详细准备教程也在 Readthedocs 中给出。
+每个数据集的详细准备教程也在 [Readthedocs](https://mmaction2.readthedocs.io/en/latest/supported_datasets.html) 中给出。
