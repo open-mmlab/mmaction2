@@ -69,13 +69,13 @@ python tools/analysis/analyze_logs.py plot_curve ${JSON_LOGS} [--keys ${KEYS}] [
 
 ## 模型复杂度分析
 
-`/tools/analysis/get_flops.py` 文件是根据 [flops-counter.pytorch](https://github.com/sovrasov/flops-counter.pytorch) 库改编的脚本，用于计算输入变量指定模型的 FLOPs 和参数量。
+`/tools/analysis/get_flops.py` 是根据 [flops-counter.pytorch](https://github.com/sovrasov/flops-counter.pytorch) 库改编的脚本，用于计算输入变量指定模型的 FLOPs 和参数量。
 
 ```shell
 python tools/analysis/get_flops.py ${CONFIG_FILE} [--shape ${INPUT_SHAPE}]
 ```
 
-预计结果输出如下：
+预计输出结果如下所示：
 
 ```text
 ==============================
