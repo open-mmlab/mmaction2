@@ -120,6 +120,9 @@ work_dirs/
 # Profile
 *.prof
 
+# lmdb
+*.mdb
+
 # unignore some data file in tests/data
 !tests/data/**/*.pkl
 !tests/data/**/*.pkl.json

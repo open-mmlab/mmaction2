@@ -1,4 +1,5 @@
 import os.path as osp
+import tempfile
 from unittest.mock import Mock, patch
 
 import numpy as np
@@ -312,8 +313,9 @@ def test_tsm_head():
 def test_lfb_infer_head():
     """Test layer construction, attributes and forward function in lfb infer
     head."""
-    lfb_infer_head = LFBInferHead(
-        lfb_prefix_path='temp_dir', use_half_precision=True)
+    with tempfile.TemporaryDirectory() as tmpdir:
+        lfb_infer_head = LFBInferHead(
+            lfb_prefix_path=tmpdir, use_half_precision=True)
     lfb_infer_head.init_weights()
 
     st_feat_shape = (3, 16, 1, 8, 8)

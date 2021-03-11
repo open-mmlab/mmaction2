@@ -54,6 +54,16 @@
 
 Here, We use [1: 1] to indicate that we combine rgb and flow score with coefficients 1: 1 to get the two-stream prediction (without applying softmax).
 
+### Using backbones from 3rd-party in TSN
+
+It's possible and convenient to use a 3rd-party backbone for TSN under the framework of MMAction2, here we provide some examples for:
+
+- [x] Backbones from MMClassification
+
+|                            config                            |   resolution   | gpus |                           backbone                           | pretrain | top1 acc | top5 acc |                             ckpt                             |                             log                              |                             json                             |
+| :----------------------------------------------------------: | :------------: | :--: | :----------------------------------------------------------: | :------: | :------: | :------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| [tsn_rn101_32x4d_320p_1x1x3_100e_kinetics400_rgb](/configs/recognition/tsn/custom_backbones/tsn_rn101_32x4d_320p_1x1x3_100e_kinetics400_rgb.py) | short-side 320 | 8x2  | ResNeXt101-32x4d [[MMCls](https://github.com/open-mmlab/mmclassification/tree/master/configs/resnext)] | ImageNet |  73.43   |  91.01   | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/custom_backbones/tsn_rn101_32x4d_320p_1x1x3_100e_kinetics400_rgb-16a8b561.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/custom_backbones/tsn_rn101_32x4d_320p_1x1x3_100e_kinetics400_rgb.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/custom_backbones/tsn_rn101_32x4d_320p_1x1x3_100e_kinetics400_rgb.json) |
+
 ### Kinetics-400 Data Benchmark (8-gpus, ResNet50, ImageNet pretrain; 3 segments)
 
 In data benchmark, we compare:
@@ -162,14 +172,14 @@ Notes:
 
 For more details on data preparation, you can refer to
 
-* [preparing_ucf101](/tools/data/ucf101/README.md)
-* [preparing_kinetics](/tools/data/kinetics/README.md)
-* [preparing_sthv1](/tools/data/sthv1/README.md)
-* [preparing_sthv2](/tools/data/sthv2/README.md)
-* [preparing_mit](/tools/data/mit/README.md)
-* [preparing_mmit](/tools/data/mmit/README.md)
-* [preparing_hvu](/tools/data/hvu/README.md)
-* [preparing_hmdb51](/tools/data/hmdb51/README.md)
+- [preparing_ucf101](/tools/data/ucf101/README.md)
+- [preparing_kinetics](/tools/data/kinetics/README.md)
+- [preparing_sthv1](/tools/data/sthv1/README.md)
+- [preparing_sthv2](/tools/data/sthv2/README.md)
+- [preparing_mit](/tools/data/mit/README.md)
+- [preparing_mmit](/tools/data/mmit/README.md)
+- [preparing_hvu](/tools/data/hvu/README.md)
+- [preparing_hmdb51](/tools/data/hmdb51/README.md)
 
 ## Train
 
