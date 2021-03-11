@@ -85,4 +85,4 @@ lr_config = dict(policy='step', step=[75, 125])
 total_epochs = 150
 
 # runtime settings
-work_dir = './work_dirs/tpn_tsm_r50_8x8x1_150e_kinetics400_rgb'
+work_dir = './work_dirs/tpn_tsm_r50_1x1x8_150e_kinetics400_rgb'
