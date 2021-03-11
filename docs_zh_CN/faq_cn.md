@@ -66,7 +66,7 @@
 
 - **在 batchnorm.py 中抛出错误: Expected more than 1 value per channel when training**
 
-    BatchNorm 层要求批大小（batch size）大于 1。构建数据集时， 若`drop_last` 被设为 `False`，有时每个轮次的最后一个批次的批大小可能为 1，进而在训练时抛出错误，可以设置 `drop_last=True` 来避免该错误，如：
+    BatchNorm 层要求批大小（batch size）大于 1。构建数据集时， 若 `drop_last` 被设为 `False`，有时每个轮次的最后一个批次的批大小可能为 1，进而在训练时抛出错误，可以设置 `drop_last=True` 来避免该错误，如：
 
     ```python
     train_dataloader=dict(drop_last=True)
