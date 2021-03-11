@@ -15,7 +15,7 @@
 
     参照[安装文档](https://github.com/open-mmlab/mmaction2/blob/master/docs/install.md#requirements)
     1. 对于 Windows 用户，[ImageMagick](https://www.imagemagick.org/script/index.php) 不再被 MoviePy 自动检测，
-    需要提供名为 `magick` 的 ImageMagick 二进制包的路径，来修改 `moviepy/config_defaults.py` 文件
+    需要提供名为 `magick` 的 ImageMagick 二进制包的路径，来修改 `moviepy/config_defaults.py` 文件，如 `IMAGEMAGICK_BINARY = "C:\\Program Files\\ImageMagick_VERSION\\magick.exe"`
     2. 对于 Linux 用户，如果 ImageMagick 没有被 moviepy 检测，需要注释掉 `/etc/ImageMagick-6/policy.xml` 文件中的 `<policy domain="path" rights="none" pattern="@*" />`，也即改为 `<!-- <policy domain="path" rights="none" pattern="@*" /> -->`。
 
 ## 数据
@@ -41,7 +41,7 @@
 
 ## 训练
 
-- **如何使用训练过的识别器作为骨架的预训练模型？**
+- **如何使用训练过的识别器作为主干的预训练模型？**
 
     参照[使用预训练模型](https://github.com/open-mmlab/mmaction2/blob/master/docs/tutorials/2_finetune.md#use-pre-trained-model)，
     如果想对整个网络使用预训练模型，可以在配置文件中，将 `load_from` 设置为预训练模型的链接。
@@ -66,7 +66,7 @@
 
 - **在 batchnorm.py 中抛出错误: Expected more than 1 value per channel when training**
 
-    为使用批正则，批大小应该大于 1，如果构建数据集时， `drop_last` 被设为 `False`，有时一个训练轮次的最后一个批次的批大小可能为 1，于是训练时会抛出错误，你可以将 `drop_last` 设为 `True` 来避免这个错误：
+    为使用 BatchNorm 层，批大小应该大于 1，如果构建数据集时， `drop_last` 被设为 `False`，有时一个训练轮次的最后一个批次的批大小可能为 1，于是训练时会抛出错误，你可以将 `drop_last` 设为 `True` 来避免这个错误：
 
     ```python
     train_dataloader=dict(drop_last=True)
@@ -86,9 +86,9 @@
 
 - **如果模型太大，连一个测试样例都没法放进显存，怎么办？**
 
-    默认情况下，3D 模型是以 `10 clips x 3 crops` 的设置进行测试的，也即采样 10 个帧片段，每帧裁剪出 3 个图像块出来，放入模型的图像数是训练时的 30 倍。
-    对于特别大的模型，GPU 显存可能连一个视频都放不下。对于这种情况，你可以在配置文件的 `model['test_cfg']` 中设置 `max_testing_views=n`。
-    这么设置后，测试时放入模型的图像数最多时训练时的 n 倍。
+    默认情况下，3D 模型是以 `10 clips x 3 crops` 的设置进行测试的，也即采样 10 个帧片段，每帧裁剪出 3 个图像块，总计有 30 个视图。
+    对于特别大的模型，GPU 显存可能连一个视频都放不下。对于这种情况，您可以在配置文件的 `model['test_cfg']` 中设置 `max_testing_views=n`。
+    如此设置，在模型推理过程中，一个批只会使用 n 个视图，以节省显存。
 
 - **如何展示测试结果？**
 
@@ -99,4 +99,4 @@
 
 - **为什么由 MMAction2 转换的 ONNX 模型在转换到其他框架（如 TensorRT）时会抛出错误？**
 
-    目前，我们只能确保 MMAction2 中的模型与 ONNX 兼容。但是，ONNX 中的某些算子可能不受其他框架支持，例如[这个问题](https://github.com/open-mmlab/mmaction2/issues/414)中的 TensorRT。当这种情况发生时，如果我们的 `pytorch2onnx.py` 没有出现问题，转换过去的 ONNX 模型也通过了数值检验，建议您在对方框架的社区中提问。
+    目前，我们只能确保 MMAction2 中的模型与 ONNX 兼容。但是，ONNX 中的某些算子可能不受其他框架支持，例如[这个问题](https://github.com/open-mmlab/mmaction2/issues/414)中的 TensorRT。当这种情况发生时，如果我们的 `pytorch2onnx.py` 没有出现问题，转换过去的 ONNX 模型也通过了数值检验，建议您在想转换过去的框架的社区中提问。
