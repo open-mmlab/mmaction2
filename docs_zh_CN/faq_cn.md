@@ -25,7 +25,7 @@
     在 MMAction2 中，对于帧数据集，`start_index` 的默认值为 1，而对于视频数据集， `start_index` 的默认值为 0。
     如果 FileNotFound 错误发生于视频的第一帧或最后一帧，则需根据视频首帧（即 `xxx_00000.jpg` 或 `xxx_00001.jpg`）的偏移量，修改配置文件中数据处理流水线的 `start_index` 值。
 
-- **我应该如何处理数据集中传入视频的尺寸？是把所有视频调整为固定尺寸，如 “340x256”，还是把所有视频的短边调整成相同的长度（256像素或320像素）？**
+- **如何处理数据集中传入视频的尺寸？是把所有视频调整为固定尺寸，如 “340x256”，还是把所有视频的短边调整成相同的长度（256像素或320像素）？**
 
     从基准测试来看，总体来说，后者（把所有视频的短边调整成相同的长度）效果更好，所以“调整尺寸为短边256像素”被设置为默认的数据处理方式。关于相关的基准测试，你可以在 [TSN 数据基准测试](https://github.com/open-mmlab/mmaction2/tree/master/configs/recognition/tsn) 和 [SlowOnly 数据基准测试](https://github.com/open-mmlab/mmaction2/tree/master/configs/recognition/tsn) 中查看结果。
 
