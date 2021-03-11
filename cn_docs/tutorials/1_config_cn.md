@@ -24,7 +24,7 @@ MMAction2 提供的所有配置文件都放置在 `$MMAction2/configs` 文件夹
 - 更新配置文件内的字典
 
   用户可以按照原始配置中的字典键顺序来指定配置文件的设置。
-  例如，`--cfg-options model.backbone.norm_eval=False` 会改变 `train` 模式下模型主干 backbone 中所有的 BN 模块。
+  例如，`--cfg-options model.backbone.norm_eval=False` 会改变 `train` 模式下模型主干网络 backbone 中所有的 BN 模块。
 
 - 更新配置文件内列表的键
 
@@ -67,7 +67,7 @@ MMAction2 按照以下风格进行配置文件命名，代码库的贡献者需�
 
 - `{model}`：模型类型，如 `tsn`，`i3d` 等。
 - `[model setting]`：一些模型上的特殊设置。
-- `{backbone}`：主干类型，如 `r50`（ResNet-50）等。
+- `{backbone}`：主干网络类型，如 `r50`（ResNet-50）等。
 - `[misc]`：模型的额外设置或插件，如 `dense`，`320p`，`video`等。
 - `{data setting}`：采帧数据格式，形如 `{clip_len}x{frame_interval}x{num_clips}`。
 - `[gpu x batch_per_gpu]`：GPU 数量以及每个 GPU 上的采样。
