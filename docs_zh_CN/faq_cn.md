@@ -99,4 +99,4 @@
 
 - **为什么由 MMAction2 转换的 ONNX 模型在转换到其他框架（如 TensorRT）时会抛出错误？**
 
-    目前只能确保 MMAction2 中的模型与 ONNX 兼容。但是，ONNX 中的某些算子可能不受其他框架支持，例如 [这个问题](https://github.com/open-mmlab/mmaction2/issues/414) 中的 TensorRT。当这种情况发生时，如果 `pytorch2onnx.py` 没有出现问题，转换过去的 ONNX 模型也通过了数值检验，则可以提 issue 让社区提供帮助。
+    目前只能确保 MMAction2 中的模型与 ONNX 兼容。但是，ONNX 中的某些算子可能不受其他框架支持，例如 [这个问题](https://github.com/open-mmlab/mmaction2/issues/414) 中的 TensorRT。当这种情况发生时，如果 `pytorch2onnx.py` 没有出现问题，转换过去的 ONNX 模型也通过了数值检验，可以提 issue 让社区提供帮助。
