@@ -46,8 +46,8 @@
     参照[使用预训练模型](https://github.com/open-mmlab/mmaction2/blob/master/docs/tutorials/2_finetune.md#use-pre-trained-model)，
     如果想对整个网络使用预训练模型，可以在配置文件中，将 `load_from` 设置为预训练模型的链接。
 
-    如果只想对骨架使用预训练模型，可以在配置文件中，将骨架 `backbone` 中的 `pretrained` 设置为预训练模型的地址或链接。
-    在训练时，预训练模型中无法与骨架对应的参数会被忽略。
+    如果只想对主干网络使用预训练模型，可以在配置文件中，将主干网络 `backbone` 中的 `pretrained` 设置为预训练模型的地址或链接。
+    在训练时，预训练模型中无法与主干网络对应的参数会被忽略。
 
 - **如何实时可视化训练集和验证集的损失曲线？**
 
@@ -72,11 +72,11 @@
     train_dataloader=dict(drop_last=True)
     ```
 
-- **如何在微调模型参数时，冻结骨架中某些阶段的参数？**
+- **如何在微调模型参数时，冻结主干网络中某些阶段的参数？**
 
     你可以参照 [`def _freeze_stages()`](https://github.com/open-mmlab/mmaction2/blob/0149a0e8c1e0380955db61680c0006626fd008e9/mmaction/models/backbones/x3d.py#L458) 和 [`frozen_stages`](https://github.com/open-mmlab/mmaction2/blob/0149a0e8c1e0380955db61680c0006626fd008e9/mmaction/models/backbones/x3d.py#L183-L184)，记得在分布式训练和测试时，需要设置 `find_unused_parameters = True`。
 
-    实际上，除了少数模型，如 C3D 等，用户都能通过设置 `frozen_stages` 来冻结模型参数，因为大多数骨架继承自 `ResNet` 和 `ResNet3D`，而这两个模型都支持 `_freeze_stages()`。
+    实际上，除了少数模型，如 C3D 等，用户都能通过设置 `frozen_stages` 来冻结模型参数，因为大多数主干网络继承自 `ResNet` 和 `ResNet3D`，而这两个模型都支持 `_freeze_stages()`。
 
 ## 测试
 
