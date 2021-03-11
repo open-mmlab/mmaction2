@@ -41,7 +41,7 @@
 
 ## 训练
 
-- **如何使用训练过的识别器作为主干的预训练模型？**
+- **如何使用训练过的识别器作为主干网络的预训练模型？**
 
     参照[使用预训练模型](https://github.com/open-mmlab/mmaction2/blob/master/docs/tutorials/2_finetune.md#use-pre-trained-model)，
     如果想对整个网络使用预训练模型，可以在配置文件中，将 `load_from` 设置为预训练模型的链接。
