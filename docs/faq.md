@@ -97,4 +97,4 @@ If the contents here do not cover your issue, please create an issue using the [
 
 - **Why is the onnx model converted by mmaction2 throwing error when converting to other frameworks such as TensorRT?**
 
-    For now, we can only make sure that models in mmaction2 are onnx-compatible. However, some operations in onnx may be unsupported by your target framework for deployment, e.g. TensorRT in [this issue](https://github.com/open-mmlab/mmaction2/issues/414). When such situation occurs, we suggest you raise an issue in the repo of your target framework as long as `pytorch2onnx.py` works well and is verified numerically.
+    For now, we can only make sure that models in mmaction2 are onnx-compatible. However, some operations in onnx may be unsupported by your target framework for deployment, e.g. TensorRT in [this issue](https://github.com/open-mmlab/mmaction2/issues/414). When such situation occurs, we suggest you raise an issue and ask the community to help as long as `pytorch2onnx.py` works well and is verified numerically.
