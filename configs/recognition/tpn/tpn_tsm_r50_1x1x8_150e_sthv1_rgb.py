@@ -19,7 +19,7 @@ train_pipeline = [
     dict(type='Flip', flip_ratio=0.5),
     dict(type='ColorJitter', color_space_aug=True),
     dict(type='Normalize', **img_norm_cfg),
-    dict(type='FormatShape'),
+    dict(type='FormatShape', input_format='NCHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs', 'label'])
 ]
@@ -35,7 +35,7 @@ val_pipeline = [
     dict(type='CenterCrop', crop_size=224),
     dict(type='ColorJitter', color_space_aug=True),
     dict(type='Normalize', **img_norm_cfg),
-    dict(type='FormatShape'),
+    dict(type='FormatShape', input_format='NCHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs'])
 ]
@@ -50,7 +50,7 @@ test_pipeline = [
     dict(type='Resize', scale=(-1, 256)),
     dict(type='ThreeCrop', crop_size=256),
     dict(type='Normalize', **img_norm_cfg),
-    dict(type='FormatShape'),
+    dict(type='FormatShape', input_format='NCHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs'])
 ]
