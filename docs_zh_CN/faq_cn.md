@@ -23,13 +23,13 @@
 - **FileNotFound 如 `No such file or directory: xxx/xxx/img_00300.jpg`**
 
     在 MMAction2 中，对于帧数据集，`start_index` 的默认值为 1，而对于视频数据集， `start_index` 的默认值为 0。
-    如果用户在数据的第一帧或最后一帧遇到 `文件未找到(FileNotFound)` 的错误，则需要根据每个视频首帧（也即 `xxx_00000.jpg` 或 `xxx_00001.jpg`）的偏移量，对配置文件中的数据处理流水线的 `start_index` 值进行相应的修改。
+    如果 FileNotFound 错误发生于视频的第一帧或最后一帧，则需根据视频首帧（即 `xxx_00000.jpg` 或 `xxx_00001.jpg`）的偏移量，修改配置文件中数据处理流水线的 `start_index` 值。
 
 - **我应该如何处理数据集中传入视频的尺寸？是把所有视频调整为固定尺寸，如 “340x256”，还是把所有视频的短边调整成相同的长度（256像素或320像素）？**
 
     从基准测试来看，总体来说，后者（把所有视频的短边调整成相同的长度）效果更好，所以“调整尺寸为短边256像素”被设置为默认的数据处理方式。关于相关的基准测试，你可以在 [TSN 数据基准测试](https://github.com/open-mmlab/mmaction2/tree/master/configs/recognition/tsn) 和 [SlowOnly 数据基准测试](https://github.com/open-mmlab/mmaction2/tree/master/configs/recognition/tsn) 中查看结果。
 
-- **不匹配的数据流水线项值导致的错误，如 `KeyError: 'total_frames'`**
+- **输入数据格式（视频或帧）与数据流水线不匹配，导致异常，如 `KeyError: 'total_frames'`**
 
     对于视频和帧，我们都有相应的流水线来处理。
 
@@ -49,7 +49,7 @@
     如果只想对主干网络使用预训练模型，可以在配置文件中，将主干网络 `backbone` 中的 `pretrained` 设置为预训练模型的地址或链接。
     在训练时，预训练模型中无法与主干网络对应的参数会被忽略。
 
-- **如何实时可视化训练集和验证集的损失曲线？**
+- **如何实时绘制训练集和验证集的准确率/损失函数曲线图？**
 
     使用 `log_config` 中的 `TensorboardLoggerHook`，如：
 
