@@ -27,15 +27,15 @@
 
 - **如何处理数据集中传入视频的尺寸？是把所有视频调整为固定尺寸，如 “340x256”，还是把所有视频的短边调整成相同的长度（256像素或320像素）？**
 
-    从基准测试来看，总体来说，后者（把所有视频的短边调整成相同的长度）效果更好，所以“调整尺寸为短边256像素”被设置为默认的数据处理方式。关于相关的基准测试，你可以在 [TSN 数据基准测试](https://github.com/open-mmlab/mmaction2/tree/master/configs/recognition/tsn) 和 [SlowOnly 数据基准测试](https://github.com/open-mmlab/mmaction2/tree/master/configs/recognition/tsn) 中查看结果。
+    从基准测试来看，总体来说，后者（把所有视频的短边调整成相同的长度）效果更好，所以“调整尺寸为短边256像素”被设置为默认的数据处理方式。用户可以在 [TSN 数据基准测试](https://github.com/open-mmlab/mmaction2/tree/master/configs/recognition/tsn) 和 [SlowOnly 数据基准测试](https://github.com/open-mmlab/mmaction2/tree/master/configs/recognition/tsn) 中查看相关的基准测试结果。
 
 - **输入数据格式（视频或帧）与数据流水线不匹配，导致异常，如 `KeyError: 'total_frames'`**
 
     对于视频和帧，我们都有相应的流水线来处理。
 
-    **对于视频**，应该在处理时首先对它们进行解码。可选的解码方式，有 `DecordInit & DecordDecode`, `OpenCVInit & OpenCVDecode`, `PyAVInit & PyAVDecode` 等等。可以参照 [这个例子](https://github.com/open-mmlab/mmaction2/blob/023777cfd26bb175f85d78c455f6869673e0aa09/configs/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb.py#L47-L49)。
+    **对于视频**，应该在处理时首先对其进行解码。可选的解码方式，有 `DecordInit & DecordDecode`, `OpenCVInit & OpenCVDecode`, `PyAVInit & PyAVDecode` 等等。可以参照 [这个例子](https://github.com/open-mmlab/mmaction2/blob/023777cfd26bb175f85d78c455f6869673e0aa09/configs/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb.py#L47-L49)。
 
-    **对于帧**，它们已经事先在本地进行了解码，所以使用 `RawFrameDecode` 对帧处理即可。可以参照 [这个例子](https://github.com/open-mmlab/mmaction2/blob/023777cfd26bb175f85d78c455f6869673e0aa09/configs/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb.py#L49)。
+    **对于帧**，已经事先在本地对其解码，所以使用 `RawFrameDecode` 对帧处理即可。可以参照 [这个例子](https://github.com/open-mmlab/mmaction2/blob/023777cfd26bb175f85d78c455f6869673e0aa09/configs/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb.py#L49)。
 
     `KeyError: 'total_frames'` 是因为错误地使用了 `RawFrameDecode` 来处理视频。当输入是视频的时候，程序是无法事先得到 `total_frame` 的。
 
@@ -76,7 +76,7 @@
 
     可以参照 [`def _freeze_stages()`](https://github.com/open-mmlab/mmaction2/blob/0149a0e8c1e0380955db61680c0006626fd008e9/mmaction/models/backbones/x3d.py#L458) 和 [`frozen_stages`](https://github.com/open-mmlab/mmaction2/blob/0149a0e8c1e0380955db61680c0006626fd008e9/mmaction/models/backbones/x3d.py#L183-L184)。在分布式训练和测试时，还须设置 `find_unused_parameters = True`。
 
-    实际上，除了少数模型，如 C3D 等，用户都能通过设置 `frozen_stages` 来冻结模型参数，因为大多数主干网络继承自 `ResNet` 和 `ResNet3D`，而这两个模型都支持 `_freeze_stages()`。
+    实际上，除了少数模型，如 C3D 等，用户都能通过设置 `frozen_stages` 来冻结模型参数，因为大多数主干网络继承自 `ResNet` 和 `ResNet3D`，而这两个模型都支持 `_freeze_stages()` 方法。
 
 ## 测试
 
@@ -99,4 +99,4 @@
 
 - **为什么由 MMAction2 转换的 ONNX 模型在转换到其他框架（如 TensorRT）时会抛出错误？**
 
-    目前只能确保 MMAction2 中的模型与 ONNX 兼容。但是，ONNX 中的某些算子可能不受其他框架支持，例如 [这个问题](https://github.com/open-mmlab/mmaction2/issues/414) 中的 TensorRT。当这种情况发生时，如果 `pytorch2onnx.py` 没有出现问题，转换过去的 ONNX 模型也通过了数值检验，您可以提 issue 然后让社区提供帮助。
+    目前只能确保 MMAction2 中的模型与 ONNX 兼容。但是，ONNX 中的某些算子可能不受其他框架支持，例如 [这个问题](https://github.com/open-mmlab/mmaction2/issues/414) 中的 TensorRT。当这种情况发生时，如果 `pytorch2onnx.py` 没有出现问题，转换过去的 ONNX 模型也通过了数值检验，则可以提 issue 让社区提供帮助。
