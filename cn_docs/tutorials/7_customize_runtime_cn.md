@@ -130,11 +130,11 @@ class MyOptimizerConstructor:
 ```
 
 默认的优化器构造器被创建于[此](https://github.com/open-mmlab/mmcv/blob/9ecd6b0d5ff9d2172c49a182eaa669e9f27bb8e7/mmcv/runner/optimizer/default_constructor.py#L11)，
-可被是为新优化器构造器的模板。
+可被视为新优化器构造器的模板。
 
 ### 额外设定
 
-未通过优化器实现的技巧可通过优化器构造函数（例如，设置按参数的学习率）或钩子来实现。
+未通过优化器实现的技巧（trick）可通过优化器构造函数（例如，设置按参数的学习率）或钩子来实现。
 下面列出了一些可以稳定训练或加快训练速度的常用设置。用户亦可通过为 MMAction2 创建 PR，发布更多设置。
 
 - __使用梯度裁剪来稳定训练__
@@ -145,8 +145,8 @@ class MyOptimizerConstructor:
     ```
 
 - __使用动量调整来加速模型收敛__
-    MMAction2 支持动量调度器根据学习率修改模型的动量，从而使模型收敛更快。
-    动量调度程序通常与学习率调整器一起使用，例如，以下配置用于3D检测以加速收敛。
+    MMAction2 支持动量调整器根据学习率修改模型的动量，从而使模型收敛更快。
+    动量调整程序通常与学习率调整器一起使用，例如，以下配置用于3D检测以加速收敛。
     更多细节可参考 [CyclicLrUpdater](https://github.com/open-mmlab/mmcv/blob/f48241a65aebfe07db122e9db320c31b685dc674/mmcv/runner/hooks/lr_updater.py#L327)
     和 [CyclicMomentumUpdater](https://github.com/open-mmlab/mmcv/blob/f48241a65aebfe07db122e9db320c31b685dc674/mmcv/runner/hooks/momentum_updater.py#L130)。
 
@@ -197,7 +197,7 @@ class MyOptimizerConstructor:
 workflow = [('train', 1)]
 ```
 
-其代表要进行一个周期的训练。
+其代表要进行一轮周期的训练。
 有时，用户可能希望检查有关验证集中模型的某些指标（例如，损失，准确性）。
 在这种情况下，可以将工作流程设置为
 
