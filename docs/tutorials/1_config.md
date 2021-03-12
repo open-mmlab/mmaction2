@@ -21,7 +21,7 @@ you may run `python tools/analysis/print_config.py /PATH/TO/CONFIG` to see the c
 
 When submitting jobs using "tools/train.py" or "tools/test.py", you may specify `--cfg-options` to in-place modify the config.
 
-- Update config keys of dict chains.
+- Update config keys of dict.
 
   The config options can be specified following the order of the dict keys in the original config.
   For example, `--cfg-options model.backbone.norm_eval=False` changes the all BN modules in model backbones to `train` mode.
@@ -82,7 +82,7 @@ which is convenient to conduct various experiments.
 
     To help the users have a basic idea of a complete config structure and the modules in an action localization system,
     we make brief comments on the config of BMN as the following.
-    For more detailed usage and alternative for per parameter in each module, please refer to the API documentation.
+    For more detailed usage and alternative for per parameter in each module, please refer to the [API documentation](https://mmaction2.readthedocs.io/en/latest/api.html).
 
     ```python
     # model settings
@@ -102,7 +102,7 @@ which is convenient to conduct various experiments.
     test_cfg = dict(average_clips='score')  # Config for testing hyperparameters for BMN
 
     # dataset settings
-    dataset_type = 'ActivityNetDataset'  # Type of dataset for training, valiation and testing
+    dataset_type = 'ActivityNetDataset'  # Type of dataset for training, validation and testing
     data_root = 'data/activitynet_feature_cuhk/csv_mean_100/'  # Root path to data for training
     data_root_val = 'data/activitynet_feature_cuhk/csv_mean_100/'  # Root path to data for validation and testing
     ann_file_train = 'data/ActivityNet/anet_anno_train.json'  # Path to the annotation file for training
@@ -185,10 +185,10 @@ which is convenient to conduct various experiments.
     optimizer = dict(
         # Config used to build optimizer, support (1). All the optimizers in PyTorch
         # whose arguments are also the same as those in PyTorch. (2). Custom optimizers
-        # which are builed on `constructor`, referring to "tutorials/5_new_modules.md"
+        # which are built on `constructor`, referring to "tutorials/5_new_modules.md"
         # for implementation.
         type='Adam',  # Type of optimizer, refer to https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/optimizer/default_constructor.py#L13 for more details
-        lr=0.001,  # Learning rate, see detail usages of the parameters in the documentaion of PyTorch
+        lr=0.001,  # Learning rate, see detail usages of the parameters in the documentation of PyTorch
         weight_decay=0.0001)  # Weight decay of Adam
     optimizer_config = dict(  # Config used to build the optimizer hook
         grad_clip=None)  # Most of the methods do not use gradient clip
@@ -216,7 +216,7 @@ which is convenient to conduct various experiments.
     work_dir = './work_dirs/bmn_400x100_2x8_9e_activitynet_feature/'  # Directory to save the model checkpoints and logs for the current experiments
     load_from = None  # load models as a pre-trained model from a given path. This will not resume training
     resume_from = None  # Resume checkpoints from a given path, the training will be resumed from the epoch when the checkpoint's is saved
-    workflow = [('train', 1)]  # Workflow for # runner. [('train', 1)] means there is only one workflow and the workflow named 'train' is executed once
+    workflow = [('train', 1)]  # Workflow for runner. [('train', 1)] means there is only one workflow and the workflow named 'train' is executed once
     output_config = dict(  # Config of localization ouput
         out=f'{work_dir}/results.json',  # Path to output file
         output_format='json')  # File format of output file
@@ -255,13 +255,13 @@ which is convenient to conduct various experiments.
             test_cfg=dict(average_clips=None))  # Config for testing hyperparameters for TSN.
 
     # dataset settings
-    dataset_type = 'RawframeDataset'  # Type of dataset for training, valiation and testing
+    dataset_type = 'RawframeDataset'  # Type of dataset for training, validation and testing
     data_root = 'data/kinetics400/rawframes_train/'  # Root path to data for training
     data_root_val = 'data/kinetics400/rawframes_val/'  # Root path to data for validation and testing
     ann_file_train = 'data/kinetics400/kinetics400_train_list_rawframes.txt'  # Path to the annotation file for training
     ann_file_val = 'data/kinetics400/kinetics400_val_list_rawframes.txt'  # Path to the annotation file for validation
     ann_file_test = 'data/kinetics400/kinetics400_val_list_rawframes.txt'  # Path to the annotation file for testing
-    img_norm_cfg = dict(  # Config of image normalition used in data pipeline
+    img_norm_cfg = dict(  # Config of image normalization used in data pipeline
         mean=[123.675, 116.28, 103.53],  # Mean values of different channels to normalize
         std=[58.395, 57.12, 57.375],  # Std values of different channels to normalize
         to_bgr=False)  # Whether to convert channels from RGB to BGR
@@ -280,7 +280,7 @@ which is convenient to conduct various experiments.
         dict(  # Config of MultiScaleCrop
             type='MultiScaleCrop',  # Multi scale crop pipeline, cropping images with a list of randomly selected scales
             input_size=224,  # Input size of the network
-            scales=(1, 0.875, 0.75, 0.66),  # Scales of weight and height to be selected
+            scales=(1, 0.875, 0.75, 0.66),  # Scales of width and height to be selected
             random_crop=False,  # Whether to randomly sample cropping bbox
             max_wh_scale_gap=1),  # Maximum gap of w and h scale levels
         dict(  # Config of Resize
@@ -348,8 +348,8 @@ which is convenient to conduct various experiments.
         dict(  # Config of Resize
             type='Resize',  # Resize pipeline
             scale=(-1, 256)),  # The scale to resize images
-        dict(  # Config of CenterCrop
-            type='TenCrop',  # Center crop pipeline, cropping the center area from images
+        dict(  # Config of TenCrop
+            type='TenCrop',  # Ten crop pipeline, cropping ten area from images
             crop_size=224),  # The size to crop images
         dict(  # Config of Flip
             type='Flip',  # Flip pipeline
@@ -396,10 +396,10 @@ which is convenient to conduct various experiments.
     optimizer = dict(
         # Config used to build optimizer, support (1). All the optimizers in PyTorch
         # whose arguments are also the same as those in PyTorch. (2). Custom optimizers
-        # which are builed on `constructor`, referring to "tutorials/5_new_modules.md"
+        # which are built on `constructor`, referring to "tutorials/5_new_modules.md"
         # for implementation.
         type='SGD',  # Type of optimizer, refer to https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/optimizer/default_constructor.py#L13 for more details
-        lr=0.01,  # Learning rate, see detail usages of the parameters in the documentaion of PyTorch
+        lr=0.01,  # Learning rate, see detail usages of the parameters in the documentation of PyTorch
         momentum=0.9,  # Momentum,
         weight_decay=0.0001)  # Weight decay of SGD
     optimizer_config = dict(  # Config used to build the optimizer hook
@@ -491,7 +491,7 @@ We incorporate modular design into our config system, which is convenient to con
                 action_thr=0.00))) # The threshold of an action
 
     # dataset settings
-    dataset_type = 'AVADataset' # Type of dataset for training, valiation and testing
+    dataset_type = 'AVADataset' # Type of dataset for training, validation and testing
     data_root = 'data/ava/rawframes'  # Root path to data
     anno_root = 'data/ava/annotations'  # Root path to annotations
 
@@ -506,7 +506,7 @@ We incorporate modular design into our config system, which is convenient to con
     proposal_file_train = f'{anno_root}/ava_dense_proposals_train.FAIR.recall_93.9.pkl'  # Path to the human detection proposals for training examples
     proposal_file_val = f'{anno_root}/ava_dense_proposals_val.FAIR.recall_93.9.pkl'  # Path to the human detection proposals for validation examples
 
-    img_norm_cfg = dict(  # Config of image normalition used in data pipeline
+    img_norm_cfg = dict(  # Config of image normalization used in data pipeline
         mean=[123.675, 116.28, 103.53], # Mean values of different channels to normalize
         std=[58.395, 57.12, 57.375],   # Std values of different channels to normalize
         to_bgr=False) # Whether to convert channels from RGB to BGR
@@ -515,7 +515,7 @@ We incorporate modular design into our config system, which is convenient to con
         dict(  # Config of SampleFrames
             type='AVASampleFrames',  # Sample frames pipeline, sampling frames from video
             clip_len=4,  # Frames of each sampled output clip
-            frame_interval=16)  # Temporal interval of adjacent sampled frames
+            frame_interval=16),  # Temporal interval of adjacent sampled frames
         dict(  # Config of RawFrameDecode
             type='RawFrameDecode'),  # Load and decode Frames pipeline, picking raw frames with given indices
         dict(  # Config of RandomRescale
@@ -547,7 +547,7 @@ We incorporate modular design into our config system, which is convenient to con
                     key=['proposals', 'gt_bboxes', 'gt_labels'],  # Keys to Convert to DataContainer
                     stack=False)]),  # Whether to stack these tensor
         dict(  # Config of Collect
-            type='Collect',  # Collect pipeline that decides which keys in the data should be passed to the recognizer
+            type='Collect',  # Collect pipeline that decides which keys in the data should be passed to the detector
             keys=['img', 'proposals', 'gt_bboxes', 'gt_labels'],  # Keys of input
             meta_keys=['scores', 'entity_ids']),  # Meta keys of input
     ]
@@ -582,7 +582,7 @@ We incorporate modular design into our config system, which is convenient to con
                     key=['proposals'],  # Keys to Convert to DataContainer
                     stack=False)]),  # Whether to stack these tensor
         dict(  # Config of Collect
-            type='Collect',  # Collect pipeline that decides which keys in the data should be passed to the recognizer
+            type='Collect',  # Collect pipeline that decides which keys in the data should be passed to the detector
             keys=['img', 'proposals'],  # Keys of input
             meta_keys=['scores', 'entity_ids'],  # Meta keys of input
             nested=True)  # Whether to wrap the data in a nested list
@@ -593,8 +593,6 @@ We incorporate modular design into our config system, which is convenient to con
         workers_per_gpu=4,  # Workers to pre-fetch data for each single GPU
         val_dataloader=dict(   # Additional config of validation dataloader
             videos_per_gpu=1),  # Batch size of each single GPU during evaluation
-        test_dataloader=dict(   # Additional config of testing dataloader
-            videos_per_gpu=1),   # Batch size of each single GPU during testing
         train=dict(   # Training dataset config
             type=dataset_type,
             ann_file=ann_file_train,
@@ -614,14 +612,15 @@ We incorporate modular design into our config system, which is convenient to con
             person_det_score_thr=0.9,
             data_prefix=data_root))
     data['test'] = data['val']    # Set test_dataset as val_dataset
+
     # optimizer
     optimizer = dict(
         # Config used to build optimizer, support (1). All the optimizers in PyTorch
         # whose arguments are also the same as those in PyTorch. (2). Custom optimizers
-        # which are builed on `constructor`, referring to "tutorials/5_new_modules.md"
+        # which are built on `constructor`, referring to "tutorials/5_new_modules.md"
         # for implementation.
         type='SGD',  # Type of optimizer, refer to https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/optimizer/default_constructor.py#L13 for more details
-        lr=0.2,  # Learning rate, see detail usages of the parameters in the documentaion of PyTorch (for 8gpu)
+        lr=0.2,  # Learning rate, see detail usages of the parameters in the documentation of PyTorch (for 8gpu)
         momentum=0.9,  # Momentum,
         weight_decay=0.00001)  # Weight decay of SGD
 
@@ -647,6 +646,7 @@ We incorporate modular design into our config system, which is convenient to con
         hooks=[  # Hooks to be implemented during training
             dict(type='TextLoggerHook'),  # The logger used to record the training process
         ])
+
     # runtime settings
     dist_params = dict(backend='nccl')  # Parameters to setup distributed training, the port can also be set
     log_level = 'INFO'  # The level of logging

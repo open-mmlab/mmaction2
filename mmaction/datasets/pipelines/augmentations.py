@@ -755,7 +755,7 @@ class MultiScaleCrop:
     """Crop images with a list of randomly selected scales.
 
     Randomly select the w and h scales from a list of scales. Scale of 1 means
-    the base size, which is the minimal of image weight and height. The scale
+    the base size, which is the minimal of image width and height. The scale
     level of w and h is controlled to be smaller than a certain value to
     prevent too large or small aspect ratio.
     Required keys are "imgs", "img_shape", added or modified keys are "imgs",
@@ -764,7 +764,7 @@ class MultiScaleCrop:
 
     Args:
         input_size (int | tuple[int]): (w, h) of network input.
-        scales (tuple[float]): Weight and height scales to be selected.
+        scales (tuple[float]): width and height scales to be selected.
         max_wh_scale_gap (int): Maximum gap of w and h scale levels.
             Default: 1.
         random_crop (bool): If set to True, the cropping bbox will be randomly
