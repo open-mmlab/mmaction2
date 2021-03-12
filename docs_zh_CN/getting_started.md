@@ -1,6 +1,6 @@
 # 基础教程
 
-本文档提供 MMAction2 相关用法的基本教程。对于安装说明，请参阅 [安装指南](install_cn.md)。
+本文档提供 MMAction2 相关用法的基本教程。对于安装说明，请参阅 [安装指南](install.md)。
 
 <!-- TOC -->
 
@@ -46,9 +46,9 @@ mmaction2
 │   ├── ...
 ```
 
-请参阅 [数据集准备](data_preparation_cn.md) 获取数据集准备的相关信息。
+请参阅 [数据集准备](data_preparation.md) 获取数据集准备的相关信息。
 
-对于用户自定义数据集的准备，请参阅 [教程 3：如何增加新数据集](tutorials/3_new_dataset_cn.md)
+对于用户自定义数据集的准备，请参阅 [教程 3：如何增加新数据集](tutorials/3_new_dataset.md)
 
 ## 使用预训练模型进行推理
 
