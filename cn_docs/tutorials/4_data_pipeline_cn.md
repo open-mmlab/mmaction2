@@ -15,7 +15,7 @@
 ## 数据前处理流水线设计
 
 按照惯例，MMAction2 使用 `Dataset` 和 `DataLoader` 实现多进程数据加载。 `Dataset` 返回一个字典，作为模型的输入。
-由于动作识别和时序动作检测的数据大小不一定相同（图片大小，边界框大小等），MMCV 中的 `DataContainer` 可用于收集和分配不同大小的数据，
+由于动作识别和时序动作检测的数据大小不一定相同（图片大小，边界框大小等），MMAction2 使用 MMCV 中的 `DataContainer` 可用于收集和分配不同大小的数据，
 详情可见 [这里](https://github.com/open-mmlab/mmcv/blob/master/mmcv/parallel/data_container.py)。
 
 “数据前处理流水线” 和 “数据集构建” 是相互解耦的。通常，“数据集构建” 定义如何处理标注文件，“数据前处理流水线” 定义数据加载、预处理、格式化等功能（后文将详细介绍）。
