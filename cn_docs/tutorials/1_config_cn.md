@@ -40,7 +40,7 @@ MMAction2 提供的所有配置文件都放置在 `$MMAction2/configs` 文件夹
 
 ## 配置文件结构
 
-在 `config/_base_` 文件夹下存在 3 种基本组件类型： 模型（model）, 调度（schedule）, 默认运行设置（default_runtime）。
+在 `config/_base_` 文件夹下存在 3 种基本组件类型： 模型（model）, 策略（schedule）, 默认运行设置（default_runtime）。
 许多方法都可以方便地通过组合这些组件进行实现，如 TSN，I3D，SlowOnly 等。
 其中，通过 `_base_` 下组件来构建的配置被称为 _原始配置_（_primitive_）。
 
@@ -71,7 +71,7 @@ MMAction2 按照以下风格进行配置文件命名，代码库的贡献者需�
 - `[misc]`：模型的额外设置或插件，如 `dense`，`320p`，`video`等。
 - `{data setting}`：采帧数据格式，形如 `{clip_len}x{frame_interval}x{num_clips}`。
 - `[gpu x batch_per_gpu]`：GPU 数量以及每个 GPU 上的采样。
-- `{schedule}`：训练时的调度设置，如 `20e` 表示 20 个周期（epoch）。
+- `{schedule}`：训练时的策略设置，如 `20e` 表示 20 个周期（epoch）。
 - `{dataset}`：数据集名，如 `kinetics400`，`mmit`等。
 - `{modality}`：帧的模态，如 `rgb`, `flow`等。
 
