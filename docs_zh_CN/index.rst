@@ -11,7 +11,7 @@
 
 .. toctree::
    :maxdepth: 2
-   :caption: Datasets
+   :caption: 数据集
 
    datasets.md
    data_preparation.md
@@ -19,7 +19,7 @@
 
 .. toctree::
    :maxdepth: 2
-   :caption: Model Zoo
+   :caption: 模型库
 
    modelzoo.md
    recognition_models.md
@@ -40,25 +40,25 @@
 
 .. toctree::
    :maxdepth: 2
-   :caption: Useful Tools and Scripts
+   :caption: 实用工具和脚本
 
    useful_tools.md
 
 .. toctree::
    :maxdepth: 2
-   :caption: Notes
+   :caption: 记录
 
    changelog.md
    faq.md
 
 .. toctree::
-   :caption: API Reference
+   :caption: API 参考文档
 
    api.rst
 
 
 
-Indices and tables
+索引和表格
 ==================
 
 * :ref:`genindex`
