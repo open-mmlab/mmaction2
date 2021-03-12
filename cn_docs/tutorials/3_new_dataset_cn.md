@@ -1,32 +1,31 @@
-# Tutorial 3: Adding New Dataset
+# 教程 3：如何增加新数据集
 
-In this tutorial, we will introduce some methods about how to customize your own dataset by reorganizing data and mixing dataset for the project.
-
-<!-- TOC -->
-
-- [Customize Datasets by Reorganizing Data](#customize-datasets-by-reorganizing-data)
-  - [Reorganize datasets to existing format](#reorganize-datasets-to-existing-format)
-  - [An example of a custom dataset](#an-example-of-a-custom-dataset)
-- [Customize Dataset by Mixing Dataset](#customize-dataset-by-mixing-dataset)
-  - [Repeat dataset](#repeat-dataset)
+在本教程中，我们将介绍一些有关如何按已支持的数据格式进行数据组织，和组合已有数据集来自定义数据集的方法。
 
 <!-- TOC -->
 
-## Customize Datasets by Reorganizing Data
+- [通过重组数据来自定义数据集](#通过重组数据来自定义数据集)
+  - [将数据集重新组织为现有格式](#将数据集重新组织为现有格式)
+  - [自定义数据集的示例](#自定义数据集的示例)
+- [通过组合已有数据集来自定义数据集](#通过组合已有数据集来自定义数据集)
+  - [重复数据集](#重复数据集)
 
-### Reorganize datasets to existing format
+<!-- TOC -->
 
-The simplest way is to convert your dataset to existing dataset formats (RawframeDataset or VideoDataset).
+## 通过重组数据来自定义数据集
 
-There are three kinds of annotation files.
+### 将数据集重新组织为现有格式
 
-- rawframe annotation
+最简单的方法是将数据集转换为现有的数据集格式（RawframeDataset 或 VideoDataset）。
 
-  The annotation of a rawframe dataset is a text file with multiple lines,
-  and each line indicates `frame_directory` (relative path) of a video,
-  `total_frames` of a video and the `label` of a video, which are split by a whitespace.
+有三种标注文件：
 
-  Here is an example.
+- 帧标注（rawframe annotation）
+
+  帧数据集（rawframe dataset）标注文件由多行文本组成，每行代表一个样本，每个样本分为三个部分，分别是 `帧（相对）文件夹`（rawframe directory of relative path），
+  `总帧数`（total frames）以及 `标签`（label），通过空格进行划分
+
+  示例如下：
 
   ```
   some/directory-1 163 1
@@ -37,13 +36,12 @@ There are three kinds of annotation files.
   some/directory-6 121 3
   ```
 
-- video annotation
+- 视频标注（video annotation）
 
-  The annotation of a video dataset is a text file with multiple lines,
-  and each line indicates a sample video with the `filepath` (relative path) and `label`,
-  which are split by a whitespace.
+  视频数据集（video dataset）标注文件由多行文本组成，每行代表一个样本，每个样本分为两个部分，分别是 `文件（相对）路径`（filepath of relative path）
+  和 `标签`（label），通过空格进行划分
 
-  Here is an example.
+  示例如下：
 
   ```
   some/path/000.mp4 1
@@ -54,12 +52,11 @@ There are three kinds of annotation files.
   some/path/005.mp4 3
   ```
 
-- ActivityNet annotation
+- ActivityNet 标注
 
-  The annotation of ActivityNet dataset is a json file. Each key is a video name
-  and the corresponding value is the meta data and annotation for the video.
+  ActivityNet 数据集的标注文件是一个 json 文件。每个键是一个视频名，其对应的值是这个视频的元数据和注释。
 
-  Here is an example.
+  示例如下：
 
   ```
   {
@@ -98,27 +95,25 @@ There are three kinds of annotation files.
   }
   ```
 
-There are two ways to work with custom datasets.
+有两种使用自定义数据集的方法：
 
-- online conversion
+- 在线转换
 
-  You can write a new Dataset class inherited from [BaseDataset](/mmaction/datasets/base.py), and overwrite three methods
-  `load_annotations(self)`, `evaluate(self, results, metrics, logger)` and `dump_results(self, results, out)`,
-  like [RawframeDataset](/mmaction/datasets/rawframe_dataset.py), [VideoDataset](/mmaction/datasets/video_dataset.py) or [ActivityNetDataset](/mmaction/datasets/activitynet_dataset.py).
+  用户可以通过继承 [BaseDataset](/mmaction/datasets/base.py) 基类编写一个新的数据集类，并重写三个抽象类方法：
+  `load_annotations(self)`，`evaluate(self, results, metrics, logger)` 和 `dump_results(self, results, out)`，
+  如 [RawframeDataset](/mmaction/datasets/rawframe_dataset.py)，[VideoDataset](/mmaction/datasets/video_dataset.py) 或 [ActivityNetDataset](/mmaction/datasets/activitynet_dataset.py)。
 
-- offline conversion
+- 本地转换
 
-  You can convert the annotation format to the expected format above and save it to
-  a pickle or json file, then you can simply use `RawframeDataset`, `VideoDataset` or `ActivityNetDataset`.
+  用户可以转换标注文件格式为上述期望的格式，并将其存储为 pickle 或 json 文件，然后便可以应用于 `RawframeDataset`，`VideoDataset` 或 `ActivityNetDataset` 中。
 
-After the data pre-processing, the users need to further modify the config files to use the dataset.
-Here is an example of using a custom dataset in rawframe format.
+数据预处理后，用户需要进一步修改配置文件以使用数据集。 这里展示了以帧形式使用自定义数据集的例子：
 
-In `configs/task/method/my_custom_config.py`:
+在 `configs/task/method/my_custom_config.py` 下：
 
 ```python
 ...
-# dataset settings
+# 数据集设定
 dataset_type = 'RawframeDataset'
 data_root = 'path/to/your/root'
 data_root_val = 'path/to/your/root_val'
@@ -144,15 +139,13 @@ data = dict(
 ...
 ```
 
-We use this way to support Rawframe dataset.
+### 自定义数据集的示例
 
-### An example of a custom dataset
-
-Assume the annotation is in a new format in text files, and the image file name is of template like `img_00005.jpg`
-The video annotations are stored in text file `annotation.txt` as following
+假设注释在文本文件中以新格式显示，并且图像文件名具有类似 “img_00005.jpg” 的模板。
+那么视频注释将以以下形式存储在文本文件 `annotation.txt` 中。
 
 ```
-directory,total frames,class
+#文件夹,总帧数,类别
 D32_1gwq35E,299,66
 -G-5CJ0JkKY,249,254
 T4h1bvOd9DA,299,33
@@ -161,7 +154,7 @@ T4h1bvOd9DA,299,33
 -YIsNpBEx6c,299,169
 ```
 
-We can create a new dataset in `mmaction/datasets/my_dataset.py` to load the data.
+在 `mmaction/datasets/my_dataset.py` 中创建新数据集加载数据
 
 ```python
 import copy
@@ -220,7 +213,7 @@ class MyDataset(BaseDataset):
         pass
 ```
 
-Then in the config, to use `MyDataset` you can modify the config as the following
+然后在配置文件中，用户可通过如下修改来使用 `MyDataset`：
 
 ```python
 dataset_A_train = dict(
@@ -230,20 +223,20 @@ dataset_A_train = dict(
 )
 ```
 
-## Customize Dataset by Mixing Dataset
+## 通过组合已有数据集来自定义数据集
 
-MMAction2 also supports to mix dataset for training. Currently it supports to repeat dataset.
+MMAction2 还支持组合已有数据集以进行训练。 目前，它支持重复数据集（repeat dataset）。
 
-### Repeat dataset
+### 重复数据集
 
-We use `RepeatDataset` as wrapper to repeat the dataset. For example, suppose the original dataset as `Dataset_A`,
-to repeat it, the config looks like the following
+MMAction2 使用 “RepeatDataset” 作为包装器来重复数据集。例如，假设原始数据集为 “Dataset_A”，
+为了重复此数据集，可设置配置如下：
 
 ```python
 dataset_A_train = dict(
         type='RepeatDataset',
         times=N,
-        dataset=dict(  # This is the original config of Dataset_A
+        dataset=dict(  # 这是 Dataset_A 的原始配置
             type='Dataset_A',
             ...
             pipeline=train_pipeline

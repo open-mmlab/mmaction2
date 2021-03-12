@@ -8,7 +8,7 @@ Open Neural Network Exchange [(ONNX)](https://onnx.ai/) is an open ecosystem tha
 - [Usage](#usage)
   - [Prerequisite](#prerequisite)
   - [Recognizers](#recognizers)
-  - [Localizer](#localizer)
+  - [Localizers](#localizers)
 
 <!-- TOC -->
 

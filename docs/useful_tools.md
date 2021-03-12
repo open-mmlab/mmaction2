@@ -51,7 +51,7 @@ Examples:
     python tools/analysis/analyze_logs.py cal_train_time ${JSON_LOGS} [--include-outliers]
     ```
 
-- Compute the average training speed for a config file
+- Compute the average training speed for a config file.
 
     ```shell
     python tools/analysis/analyze_logs.py cal_train_time work_dirs/some_exp/20200422_153324.log.json
@@ -137,7 +137,7 @@ The final output filename will be `tsn_r50_1x1x3_100e_kinetics400_rgb-{hash id}.
 
 ### Evaluating a metric
 
-tools/analysis/eval_metric.py evaluates certain metrics of the results saved in a file according to a config file.
+`tools/analysis/eval_metric.py` evaluates certain metrics of the results saved in a file according to a config file.
 
 The saved result file is created on `tools/test.py` by setting the arguments `--out ${RESULT_FILE}` to indicate the result file,
 which stores the final output of the whole model.

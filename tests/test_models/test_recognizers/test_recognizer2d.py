@@ -31,7 +31,7 @@ def test_tsn():
         recognizer(one_img, gradcam=True)
 
     mmcls_backbone = dict(
-        type='mmcls::ResNeXt',
+        type='mmcls.ResNeXt',
         depth=101,
         num_stages=4,
         out_indices=(3, ),
