@@ -1,5 +1,4 @@
 import torch
-import torch.nn.functional as F
 
 from ..registry import RECOGNIZERS
 from .base import BaseRecognizer
@@ -40,7 +39,6 @@ class Recognizer2D(BaseRecognizer):
         """Defines the computation performed at every call when evaluation,
         testing and gradcam."""
         batches = imgs.shape[0]
-
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
         num_segs = imgs.shape[0] // batches
 
@@ -72,19 +70,11 @@ class Recognizer2D(BaseRecognizer):
         return cls_score
 
     def _do_fcn_test(self, imgs):
-        # [1, num_crops * num_segs, C, H, W] -> [num_crops * num_segs, C, H, W]
+        # [N, num_crops * num_segs, C, H, W] ->
+        # [N * num_crops * num_segs, C, H, W]
+        batches = imgs.shape[0]
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
         num_segs = self.test_cfg.get('num_segs', self.backbone.num_segments)
-
-        # num_crops, num_segs, C, H, W
-        imgs = imgs.reshape((-1, num_segs) + imgs.shape[1:])
-
-        x1 = imgs[:, ::2, :, :, :]
-        x2 = imgs[:, 1::2, :, :, :]
-        imgs = torch.cat([x1, x2], 0)
-        imgs = imgs.view((-1, ) + imgs.shape[2:])
-
-        num_segs = num_segs // 2
 
         if self.test_cfg.get('flip', False):
             imgs = torch.flip(imgs, [-1])
@@ -92,16 +82,28 @@ class Recognizer2D(BaseRecognizer):
 
         if hasattr(self, 'neck'):
             x = [
-                each.reshape((-1, num_segs) + each.shape[1:]).transpose(1, 2)
+                each.reshape((-1, num_segs) +
+                             each.shape[1:]).transpose(1, 2).contiguous()
                 for each in x
             ]
             x, _ = self.neck(x)
         else:
-            x = x.reshape((-1, num_segs) + x.shape[1:]).transpose(1, 2)
+            x = x.reshape((-1, num_segs) +
+                          x.shape[1:]).transpose(1, 2).contiguous()
 
-        x = self.cls_head(x, fcn_test=True)
+        # When using `TSNHead` or `TPNHead`, shape is [batch_size, num_classes]
+        # When using `TSMHead`, shape is [batch_size * num_crops, num_classes]
+        # `num_crops` is calculated by:
+        #   1) `twice_sample` in `SampleFrames`
+        #   2) `num_sample_positions` in `DenseSampleFrames`
+        #   3) `ThreeCrop/TenCrop/MultiGroupCrop` in `test_pipeline`
+        #   4) `num_clips` in `SampleFrames` or its subclass if `clip_len != 1`
+        cls_score = self.cls_head(x, fcn_test=True)
 
-        cls_score = F.softmax(x.mean([2, 3, 4]), 1).mean(0, keepdim=True)
+        assert cls_score.size()[0] % batches == 0
+        # calculate num_crops automatically
+        cls_score = self.average_clip(cls_score,
+                                      cls_score.size()[0] // batches)
         return cls_score
 
     def forward_test(self, imgs):
