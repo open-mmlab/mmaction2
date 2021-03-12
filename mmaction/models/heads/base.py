@@ -79,9 +79,14 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
         losses = dict()
         if labels.shape == torch.Size([]):
             labels = labels.unsqueeze(0)
+        elif labels.dim() == 1 and labels.size()[0] == self.num_classes \
+                and cls_score.size()[0] == 1:
+            # Fix a bug when training with soft labels and batch size is 1.
+            # When using soft labels, `labels` and `cls_socre` share the same
+            # shape.
+            labels = labels.unsqueeze(0)
 
         if not self.multi_class and cls_score.size() != labels.size():
-            # TODO: Whether to show top1/top5 accuracy when using mixup/cutmix
             top_k_acc = top_k_accuracy(cls_score.detach().cpu().numpy(),
                                        labels.detach().cpu().numpy(), (1, 5))
             losses['top1_acc'] = torch.tensor(
