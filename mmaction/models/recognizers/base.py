@@ -33,7 +33,9 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
                  train_cfg=None,
                  test_cfg=None):
         super().__init__()
-        # The backbones in mmcls can be used by TSN
+        # record the source of the backbone
+        self.backbone_from = 'mmaction2'
+
         if backbone['type'].startswith('mmcls.'):
             try:
                 import mmcls.models.builder as mmcls_builder
@@ -41,6 +43,20 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
                 raise ImportError('Please install mmcls to use this backbone.')
             backbone['type'] = backbone['type'][6:]
             self.backbone = mmcls_builder.build_backbone(backbone)
+            self.backbone_from = 'mmcls'
+        elif backbone['type'].startswith('torchvision.'):
+            try:
+                import torchvision.models
+            except (ImportError, ModuleNotFoundError):
+                raise ImportError('Please install torchvision to use this '
+                                  'backbone.')
+            backbone_type = backbone.pop('type')[12:]
+            self.backbone = torchvision.models.__dict__[backbone_type](
+                **backbone)
+            # disable the classifier
+            self.backbone.classifier = nn.Identity()
+            self.backbone.fc = nn.Identity()
+            self.backbone_from = 'torchvision'
         else:
             self.backbone = builder.build_backbone(backbone)
 
@@ -69,7 +85,8 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
 
     def init_weights(self):
         """Initialize the model network weights."""
-        self.backbone.init_weights()
+        if self.backbone_from in ['mmcls', 'mmaction2']:
+            self.backbone.init_weights()
         self.cls_head.init_weights()
         if hasattr(self, 'neck'):
             self.neck.init_weights()
@@ -84,7 +101,11 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         Returns:
             torch.tensor: The extracted features.
         """
-        x = self.backbone(imgs)
+        if (hasattr(self.backbone, 'features')
+                and self.backbone_from == 'torchvision'):
+            x = self.backbone.features(imgs)
+        else:
+            x = self.backbone(imgs)
         return x
 
     def average_clip(self, cls_score, num_segs=1):

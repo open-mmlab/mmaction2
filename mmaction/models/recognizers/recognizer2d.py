@@ -1,3 +1,5 @@
+from torch import nn
+
 from ..registry import RECOGNIZERS
 from .base import BaseRecognizer
 
@@ -15,6 +17,14 @@ class Recognizer2D(BaseRecognizer):
         losses = dict()
 
         x = self.extract_feat(imgs)
+
+        if self.backbone_from == 'torchvision':
+            if len(x.shape) == 4 and (x.shape[2] > 1 or x.shape[3] > 1):
+                # apply adaptive avg pooling
+                x = nn.AdaptiveAvgPool2d(1)(x)
+            x = x.reshape((x.shape[0], -1))
+            x = x.reshape(x.shape + (1, 1))
+
         if hasattr(self, 'neck'):
             x = [
                 each.reshape((-1, num_segs) +
@@ -42,6 +52,14 @@ class Recognizer2D(BaseRecognizer):
         num_segs = imgs.shape[0] // batches
 
         x = self.extract_feat(imgs)
+
+        if self.backbone_from == 'torchvision':
+            if len(x.shape) == 4 and (x.shape[2] > 1 or x.shape[3] > 1):
+                # apply adaptive avg pooling
+                x = nn.AdaptiveAvgPool2d(1)(x)
+            x = x.reshape((x.shape[0], -1))
+            x = x.reshape(x.shape + (1, 1))
+
         if hasattr(self, 'neck'):
             x = [
                 each.reshape((-1, num_segs) +
