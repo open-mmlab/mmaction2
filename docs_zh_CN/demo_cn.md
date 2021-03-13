@@ -36,7 +36,7 @@ python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} {LABEL_FILE}
 1. 在 cuda 设备上，使用 TSN 模型进行视频识别：
 
     ```shell
-    # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
+    # demo.mp4 及 label_map_k400.txt 均来自 Kinetics-400 数据集
     python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
         checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
         demo/demo.mp4 demo/label_map_k400.txt
@@ -45,7 +45,7 @@ python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} {LABEL_FILE}
 2. 在 cuda 设备上，使用 TSN 模型进行视频识别，并利用 URL 加载模型检查点文件：
 
     ```shell
-    # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
+    # demo.mp4 及 label_map_k400.txt 均来自 Kinetics-400 数据集
     python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
         https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
         demo/demo.mp4 demo/label_map_k400.txt
@@ -62,7 +62,7 @@ python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} {LABEL_FILE}
 4. 使用 TSN 模型进行视频识别，将识别结果输出为 MP4 格式：
 
     ```shell
-    # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
+    # demo.mp4 及 label_map_k400.txt 均来自 Kinetics-400 数据集
     python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
         checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
         demo/demo.mp4 demo/label_map_k400.txt --out-filename demo/demo_out.mp4
@@ -79,7 +79,7 @@ python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} {LABEL_FILE}
 6. 使用 TSN 模型进行视频识别，将识别结果输出为 MP4 格式，并指定输出视频分辨率及缩放视频时使用的插值方法：
 
     ```shell
-    # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
+    # demo.mp4 及 label_map_k400.txt 均来自 Kinetics-400 数据集
     python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
         checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
         demo/demo.mp4 demo/label_map_k400.txt --target-resolution 340 256 --resize-algorithm bilinear \
@@ -87,9 +87,9 @@ python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} {LABEL_FILE}
     ```
 
     ```shell
-    # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
-    # If either dimension is set to -1, the frames are resized by keeping the existing aspect ratio
-    # For --target-resolution 170 -1, original resolution (340, 256) -> target resolution (170, 128)
+    # demo.mp4 及 label_map_k400.txt 均来自 Kinetics-400 数据集
+    # 若 TARGET_RESOLUTION 的任一维度被设置为 -1，视频帧缩放时将保持长宽比
+    # 如设定 --target-resolution 为 170 -1，原先长宽为 (340, 256) 的视频帧将被缩放至 (170, 128)
     python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
         checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
         demo/demo.mp4 demo/label_map_k400.txt --target-resolution 170 -1 --resize-algorithm bilinear \
@@ -99,7 +99,7 @@ python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} {LABEL_FILE}
 7. 使用 TSN 模型进行视频识别，将识别结果输出为 MP4 格式，指定输出视频中使用红色文字，字体大小为 10 像素：
 
     ```shell
-    # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
+    # demo.mp4 及 label_map_k400.txt 均来自 Kinetics-400 数据集
     python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
         checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
         demo/demo.mp4 demo/label_map_k400.txt --font-size 10 --font-color red \
