@@ -1,6 +1,6 @@
-# Demo示例
+# Demo 示例
 
-## 所有支持Demo
+## 所有支持 Demo
 
 - [Video demo](#video-demo): 预测视频的动作标签
 - [SpatioTemporal Action Detection Video Demo](#spatiotemporal-action-detection-video-demo): 预测视频的时空检测结果
@@ -21,7 +21,7 @@ python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} {LABEL_FILE}
 可选参数：
 
 - `--use-frames`: 如指定，代表使用帧目录作为输入；否则代表使用视频作为输入。
-- `DEVICE_TYPE`: 指定脚本运行设备，支持cuda设备（如 `cuda:0`）或cpu（`cpu`）。默认为 `cuda:0`。
+- `DEVICE_TYPE`: 指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或 cpu（`cpu`）。默认为 `cuda:0`。
 - `FPS`: 使用帧目录作为输入时，代表输入的帧率。默认为 30。
 - `FONT_SIZE`: 输出视频上的字体大小。默认为 20。
 - `FONT_COLOR`: 输出视频上的字体颜色，默认为白色（ `white`）。
@@ -31,7 +31,7 @@ python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} {LABEL_FILE}
 
 示例：
 
-以下示例假设用户的当前目录为 `$MMACTION2`，并已经将所需的模型检查点文件下载至目录 `checkpoints/` 下，用户也可以使用所提供的 URL 来直接加载模型检查点，文件将会被默认下载至 `$HOME/.cahe/torch/checkpoints`。
+以下示例假设用户的当前目录为 `$MMACTION2`，并已经将所需的模型检查点文件下载至目录 `checkpoints/` 下，用户也可以使用所提供的 URL 来直接加载模型检查点，文件将会被默认下载至 `$HOME/.cache/torch/checkpoints`。
 
 1. 在 cuda 设备上，使用 TSN 模型进行视频识别：
 
@@ -143,15 +143,15 @@ python demo/demo_spatiotemporal_det.py --video ${VIDEO_FILE} \
 - `HUMAN_DETECTION_SCORE_THRE`: 人体检测分数阈值：默认为 0.9。
 - `ACTION_DETECTION_SCORE_THRESHOLD`: 动作检测分数阈值：默认为 0.5。
 - `LABEL_MAP`: 所使用的标签映射文件，默认为 `demo/label_map_ava.txt`。
-- `DEVICE`:  指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或cpu（`cpu`）。默认为 `cuda:0`。
+- `DEVICE`:  指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或 cpu（`cpu`）。默认为 `cuda:0`。
 - `OUTPUT_FILENAME`: 输出视频的路径，默认为 `demo/stdet_demo.mp4`。
-- `PREDICT_STEPSIZE`: 每N帧进行一次预测（以节约计算资源），默认值为 8。
+- `PREDICT_STEPSIZE`: 每 N 帧进行一次预测（以节约计算资源），默认值为 8。
 - `OUTPUT_STEPSIZE`: 对于输入视频的每 N 帧，输出 1 帧至输出视频中， 默认值为 4，注意需满足 `PREDICT_STEPSIZE % OUTPUT_STEPSIZE == 0`。
 - `OUTPUT_FPS`: 输出视频的帧率，默认值为 6。
 
 示例：
 
-以下示例假设用户的当前目录为 `$MMACTION2`，并已经将所需的模型检查点文件下载至目录 `checkpoints/` 下，用户也可以使用所提供的 URL 来直接加载模型检查点，文件将会被默认下载至 `$HOME/.cahe/torch/checkpoints`。
+以下示例假设用户的当前目录为 `$MMACTION2`，并已经将所需的模型检查点文件下载至目录 `checkpoints/` 下，用户也可以使用所提供的 URL 来直接加载模型检查点，文件将会被默认下载至 `$HOME/.cache/torch/checkpoints`。
 
 1. 使用 Faster RCNN 作为人体检测器，SlowOnly-8x8-R101 作为动作检测器。每 8 帧进行一次预测，原视频中每 4 帧输出 1 帧至输出视频中，设置输出视频的帧率为 6。
 
@@ -182,7 +182,7 @@ python demo/demo_gradcam.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} [--u
 可选参数：
 
 - `--use-frames`: 如指定，代表使用帧目录作为输入；否则代表使用视频作为输入。
-- `DEVICE_TYPE`: 指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或cpu（`cpu`）。默认为 `cuda:0`。
+- `DEVICE_TYPE`: 指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或 cpu（`cpu`）。默认为 `cuda:0`。
 - `TARGET_LAYER_NAME`: 需要生成 GradCAM 可视化的网络层名称。
 - `FPS`: 使用帧目录作为输入时，代表输入的帧率。默认为 30。
 - `TARGET_RESOLUTION`: 输出视频的分辨率，如未指定，使用输入视频的分辨率。
@@ -191,7 +191,7 @@ python demo/demo_gradcam.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} [--u
 
 示例：
 
-以下示例假设用户的当前目录为 `$MMACTION2`，并已经将所需的模型检查点文件下载至目录 `checkpoints/` 下，用户也可以使用所提供的 URL 来直接加载模型检查点，文件将会被默认下载至 `$HOME/.cahe/torch/checkpoints`。
+以下示例假设用户的当前目录为 `$MMACTION2`，并已经将所需的模型检查点文件下载至目录 `checkpoints/` 下，用户也可以使用所提供的 URL 来直接加载模型检查点，文件将会被默认下载至 `$HOME/.cache/torch/checkpoints`。
 
 1. 对于 I3D 模型进行 GradCAM 的可视化，使用视频作为输入，并输出一帧率为 10 的 GIF 文件：
 
@@ -222,10 +222,10 @@ python demo/webcam_demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${LABEL_FILE} \
 
 可选参数：
 
-- `DEVICE_TYPE`: 指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或cpu（`cpu`）。默认为 `cuda:0`。
+- `DEVICE_TYPE`: 指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或 cpu（`cpu`）。默认为 `cuda:0`。
 - `CAMERA_ID`: 摄像头设备的 ID，默认为 0。
 - `THRESHOLD`: 动作识别的分数阈值，只有分数大于阈值的动作类型会被显示，默认为 0。
-- `AVERAGE_SIZE`: 使用最近N个片段的平均结果作为预测，默认为 1。
+- `AVERAGE_SIZE`: 使用最近 N 个片段的平均结果作为预测，默认为 1。
 - `DRAWING_FPS`: 可视化结果时的最高帧率，默认为 20。
 - `INFERENCE_FPS`: 进行推理时的最高帧率，默认为 4。
 
@@ -233,7 +233,7 @@ python demo/webcam_demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${LABEL_FILE} \
 
 示例：
 
-以下示例假设用户的当前目录为 `$MMACTION2`，并已经将所需的模型检查点文件下载至目录 `checkpoints/` 下，用户也可以使用所提供的 URL 来直接加载模型检查点，文件将会被默认下载至 `$HOME/.cahe/torch/checkpoints`。
+以下示例假设用户的当前目录为 `$MMACTION2`，并已经将所需的模型检查点文件下载至目录 `checkpoints/` 下，用户也可以使用所提供的 URL 来直接加载模型检查点，文件将会被默认下载至 `$HOME/.cache/torch/checkpoints`。
 
 1. 使用 TSN 模型进行利用网络摄像头的实时动作识别，平均最近 5 个片段结果作为预测，输出大于阈值 0.2 的动作类别：
 
@@ -277,14 +277,14 @@ python demo/long_video_demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} $
 可选参数：
 
 - `OUT_FILE`: 输出视频的路径。
-- `INPUT_STEP`: 在视频中的每N帧中选取一帧作为输入，默认为 1。
-- `DEVICE_TYPE`: 指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或cpu（`cpu`）。默认为 `cuda:0`。
+- `INPUT_STEP`: 在视频中的每 N 帧中选取一帧作为输入，默认为 1。
+- `DEVICE_TYPE`: 指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或 cpu（`cpu`）。默认为 `cuda:0`。
 - `THRESHOLD`: 动作识别的分数阈值，只有分数大于阈值的动作类型会被显示，默认为 0.01。
-- `STRIDE`: 默认情况下，脚本为每帧给出单独预测，较为耗时。可以设定 `STRIDE` 参数进行加速，此时脚本将会为每 `STRIDE x sample_length` 帧给出一次预测（`sample_length` 指模型采帧时的时间窗大小，等于 `clip_len x frame_interval`）。例如，若 sample_length 为 64 帧且 `STRIDE` 设定为 0.5，模型将每 32 帧给出一次预测。若 `STRIDE` 设为 0，模型将为每帧给出一次预测。`STRIDE` 的理想取值为 (0, 1] 间，若大于 1，脚本亦可正常执行。`STRIDE` 默认值为 0。
+- `STRIDE`: 默认情况下，脚本为每帧给出单独预测，较为耗时。可以设定 `STRIDE` 参数进行加速，此时脚本将会为每 `STRIDE x sample_length` 帧做一次预测（`sample_length` 指模型采帧时的时间窗大小，等于 `clip_len x frame_interval`）。例如，若 sample_length 为 64 帧且 `STRIDE` 设定为 0.5，模型将每 32 帧做一次预测。若 `STRIDE` 设为 0，模型将为每帧做一次预测。`STRIDE` 的理想取值为 (0, 1] 间，若大于 1，脚本亦可正常执行。`STRIDE` 默认值为 0。
 
 示例：
 
-以下示例假设用户的当前目录为 `$MMACTION2`，并已经将所需的模型检查点文件下载至目录 `checkpoints/` 下，用户也可以使用所提供的 URL 来直接加载模型检查点，文件将会被默认下载至 `$HOME/.cahe/torch/checkpoints`。
+以下示例假设用户的当前目录为 `$MMACTION2`，并已经将所需的模型检查点文件下载至目录 `checkpoints/` 下，用户也可以使用所提供的 URL 来直接加载模型检查点，文件将会被默认下载至 `$HOME/.cache/torch/checkpoints`。
 
 1. 利用 TSN 模型在 CPU 上预测长视频中的不同动作类别，设置 `INPUT_STEP` 为 3（即每 3 帧随机选取 1 帧作为输入），输出分值大于 0.2 的动作类别：
 
