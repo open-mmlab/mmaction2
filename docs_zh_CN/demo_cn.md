@@ -20,12 +20,12 @@ python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} {LABEL_FILE}
 
 可选参数：
 
-- `--use-frames`: 如指定，代表使用解好的帧作为输入；否则代表使用视频作为输入。
-- `DEVICE_TYPE`: 运行 demo 脚本的设备类型，支持cuda设备（如 `cuda:0`）或cpu（`cpu`）。默认为 `cuda:0`。
-- `FPS`: 使用解好的帧作为输入时，代表输入的帧率。默认为 30。
+- `--use-frames`: 如指定，代表使用帧目录作为输入；否则代表使用视频作为输入。
+- `DEVICE_TYPE`: 指定脚本运行设备，支持cuda设备（如 `cuda:0`）或cpu（`cpu`）。默认为 `cuda:0`。
+- `FPS`: 使用帧目录作为输入时，代表输入的帧率。默认为 30。
 - `FONT_SIZE`: 输出视频上的字体大小。默认为 20。
 - `FONT_COLOR`: 输出视频上的字体颜色，默认为白色（ `white`）。
-- `TARGET_RESOLUTION`: 输出视频的分辨率大小，如未指定，使用输入视频的分辨率大小。
+- `TARGET_RESOLUTION`: 输出视频的分辨率，如未指定，使用输入视频的分辨率。
 - `RESIZE_ALGORITHM`: 缩放视频时使用的插值方法，默认为 `bicubic`。
 - `OUT_FILE`: 输出视频的路径，如未指定，则不会生成输出视频。
 
@@ -59,7 +59,7 @@ python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} {LABEL_FILE}
         PATH_TO_FRAMES/ LABEL_FILE --use-frames --device cpu
     ```
 
-4. 使用 TSN 模型进行视频识别，将识别结果输出为 MP4 格式：
+4. 使用 TSN 模型进行视频识别，输出 MP4 格式的识别结果：
 
     ```shell
     # demo.mp4 及 label_map_k400.txt 均来自 Kinetics-400 数据集
@@ -76,7 +76,7 @@ python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} {LABEL_FILE}
         PATH_TO_FRAMES/ LABEL_FILE --use-frames --out-filename demo/demo_out.gif
     ```
 
-6. 使用 TSN 模型进行视频识别，将识别结果输出为 MP4 格式，并指定输出视频分辨率及缩放视频时使用的插值方法：
+6. 使用 TSN 模型进行视频识别，输出 MP4 格式的识别结果，并指定输出视频分辨率及缩放视频时使用的插值方法：
 
     ```shell
     # demo.mp4 及 label_map_k400.txt 均来自 Kinetics-400 数据集
@@ -96,7 +96,7 @@ python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} {LABEL_FILE}
         --out-filename demo/demo_out.mp4
     ```
 
-7. 使用 TSN 模型进行视频识别，将识别结果输出为 MP4 格式，指定输出视频中使用红色文字，字体大小为 10 像素：
+7. 使用 TSN 模型进行视频识别，输出 MP4 格式的识别结果，指定输出视频中使用红色文字，字体大小为 10 像素：
 
     ```shell
     # demo.mp4 及 label_map_k400.txt 均来自 Kinetics-400 数据集
@@ -143,7 +143,7 @@ python demo/demo_spatiotemporal_det.py --video ${VIDEO_FILE} \
 - `HUMAN_DETECTION_SCORE_THRE`: 人体检测分数阈值：默认为 0.9。
 - `ACTION_DETECTION_SCORE_THRESHOLD`: 动作检测分数阈值：默认为 0.5。
 - `LABEL_MAP`: 所使用的标签映射文件，默认为 `demo/label_map_ava.txt`。
-- `DEVICE`:  运行 demo 脚本的设备类型，支持 cuda 设备（如 `cuda:0`）或cpu（`cpu`）。默认为 `cuda:0`。
+- `DEVICE`:  指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或cpu（`cpu`）。默认为 `cuda:0`。
 - `OUTPUT_FILENAME`: 输出视频的路径，默认为 `demo/stdet_demo.mp4`。
 - `PREDICT_STEPSIZE`: 每N帧进行一次预测（以节约计算资源），默认值为 8。
 - `OUTPUT_STEPSIZE`: 对于输入视频的每 N 帧，输出 1 帧至输出视频中， 默认值为 4，注意需满足 `PREDICT_STEPSIZE % OUTPUT_STEPSIZE == 0`。
@@ -181,11 +181,11 @@ python demo/demo_gradcam.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} [--u
 
 可选参数：
 
-- `--use-frames`: 如指定，代表使用解好的帧作为输入；否则代表使用视频作为输入。
-- `DEVICE_TYPE`: 运行 demo 脚本的设备类型，支持 cuda 设备（如 `cuda:0`）或cpu（`cpu`）。默认为 `cuda:0`。
+- `--use-frames`: 如指定，代表使用帧目录作为输入；否则代表使用视频作为输入。
+- `DEVICE_TYPE`: 指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或cpu（`cpu`）。默认为 `cuda:0`。
 - `TARGET_LAYER_NAME`: 需要生成 GradCAM 可视化的网络层名称。
-- `FPS`: 使用解好的帧作为输入时，代表输入的帧率。默认为 30。
-- `TARGET_RESOLUTION`: 输出视频的分辨率大小，如未指定，使用输入视频的分辨率大小。
+- `FPS`: 使用帧目录作为输入时，代表输入的帧率。默认为 30。
+- `TARGET_RESOLUTION`: 输出视频的分辨率，如未指定，使用输入视频的分辨率。
 - `RESIZE_ALGORITHM`: 缩放视频时使用的插值方法，默认为 `bilinear`。
 - `OUT_FILE`: 输出视频的路径，如未指定，则不会生成输出视频。
 
@@ -222,7 +222,7 @@ python demo/webcam_demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${LABEL_FILE} \
 
 可选参数：
 
-- `DEVICE_TYPE`: 运行 demo 脚本的设备类型，支持 cuda 设备（如 `cuda:0`）或cpu（`cpu`）。默认为 `cuda:0`。
+- `DEVICE_TYPE`: 指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或cpu（`cpu`）。默认为 `cuda:0`。
 - `CAMERA_ID`: 摄像头设备的 ID，默认为 0。
 - `THRESHOLD`: 动作识别的分数阈值，只有分数大于阈值的动作类型会被显示，默认为 0。
 - `AVERAGE_SIZE`: 使用最近N个片段的平均结果作为预测，默认为 1。
@@ -278,7 +278,7 @@ python demo/long_video_demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} $
 
 - `OUT_FILE`: 输出视频的路径。
 - `INPUT_STEP`: 在视频中的每N帧中选取一帧作为输入，默认为 1。
-- `DEVICE_TYPE`: 运行 demo 脚本的设备类型，支持 cuda 设备（如 `cuda:0`）或cpu（`cpu`）。默认为 `cuda:0`。
+- `DEVICE_TYPE`: 指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或cpu（`cpu`）。默认为 `cuda:0`。
 - `THRESHOLD`: 动作识别的分数阈值，只有分数大于阈值的动作类型会被显示，默认为 0.01。
 - `STRIDE`: 默认情况下，脚本为每帧给出单独预测，较为耗时。可以设定 `STRIDE` 参数进行加速，此时脚本将会为每 `STRIDE x sample_length` 帧给出一次预测（`sample_length` 指模型采帧时的时间窗大小，等于 `clip_len x frame_interval`）。例如，若 sample_length 为 64 帧且 `STRIDE` 设定为 0.5，模型将每 32 帧给出一次预测。若 `STRIDE` 设为 0，模型将为每帧给出一次预测。`STRIDE` 的理想取值为 (0, 1] 间，若大于 1，脚本亦可正常执行。`STRIDE` 默认值为 0。
 
