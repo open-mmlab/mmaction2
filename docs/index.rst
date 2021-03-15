@@ -58,6 +58,11 @@ You can switch between Chinese and English documents in the lower-left corner of
 
    api.rst
 
+.. toctree::
+   :caption: Switch Language
+
+   switch_language.md
+
 
 
 Indices and tables

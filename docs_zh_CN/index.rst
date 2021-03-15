@@ -58,6 +58,11 @@
 
    api.rst
 
+.. toctree::
+   :caption: 语言切换
+
+   switch_language.md
+
 
 索引和表格
 ==================
