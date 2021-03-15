@@ -1,13 +1,15 @@
 欢迎来到 MMAction2 的中文文档！
 =====================================
 
+`English <https://mmaction2.readthedocs.io/en/latest/index.html>`_ | 简体中文
+
 .. toctree::
    :maxdepth: 2
 
    install.md
    getting_started.md
-   demo.md
    benchmark.md
+..   demo.md
 
 .. toctree::
    :maxdepth: 2
@@ -26,17 +28,17 @@
    localization_models.md
    detection_models.md
 
-.. .. toctree::
-..    :maxdepth: 2
-..    :caption: Tutorials
+.. toctree::
+   :maxdepth: 2
+   :caption: 教程
 
-..    tutorials/1_config.md
-..    tutorials/2_finetune.md
-..    tutorials/3_new_dataset.md
-..    tutorials/4_data_pipeline.md
-..    tutorials/5_new_modules.md
-..    tutorials/6_export_model.md
-..    tutorials/7_customize_runtime.md
+   tutorials/1_config.md
+   tutorials/2_finetune.md
+   tutorials/3_new_dataset.md
+   tutorials/4_data_pipeline.md
+   tutorials/5_new_modules.md
+   tutorials/6_export_model.md
+   tutorials/7_customize_runtime.md
 
 .. toctree::
    :maxdepth: 2

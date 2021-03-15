@@ -16,7 +16,6 @@ def anchor(name):
 # Count algorithms
 
 files = sorted(glob.glob('*_models.md'))
-# files = sorted(glob.glob('docs/*_models.md'))
 
 stats = []
 
@@ -96,7 +95,6 @@ with open('modelzoo.md', 'w') as f:
 # Count datasets
 
 files = ['supported_datasets.md']
-# files = sorted(glob.glob('docs/tasks/*.md'))
 
 datastats = []
 
@@ -156,7 +154,7 @@ modelzoo = f"""
 {countstr}
 
 
-有关受支持的动作算法，可参见 [模型总览](modelzoo.md)。
+有关受支持的视频理解算法，可参见 [模型总览](modelzoo.md)。
 
 {datamsglist}
 """

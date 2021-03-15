@@ -1,6 +1,8 @@
 Welcome to MMAction2's documentation!
 =====================================
 
+English | `简体中文 <https://mmaction2.readthedocs.io/zh_CN/latest/index.html>`_
+
 .. toctree::
    :maxdepth: 2
 

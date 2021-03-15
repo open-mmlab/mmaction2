@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-sed -i '$a\\n' ../demo/README.md
-
 sed -i 's/(\/tools\/data\/activitynet\/README.md/(#activitynet/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/kinetics\/README.md/(#kinetics-400-600-700/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/mit\/README.md/(#moments-in-time/g' supported_datasets.md
@@ -23,7 +21,6 @@ cat  ../configs/recognition/*/*.md > recognition_models.md
 cat  ../configs/recognition_audio/*/*.md >> recognition_models.md
 cat  ../configs/detection/*/*.md > detection_models.md
 cat  ../tools/data/*/*.md > prepare_data.md
-cat  ../demo/README.md > demo.md
 
 sed -i 's/#/#&/' localization_models.md
 sed -i 's/#/#&/' recognition_models.md
@@ -36,9 +33,9 @@ sed -i "s/md###t/html#t/g" demo.md
 sed -i 's/# Preparing/# /g' prepare_data.md
 sed -i 's/#/#&/' prepare_data.md
 
-sed -i '1i\# Action Localization Models' localization_models.md
-sed -i '1i\# Action Recognition Models' recognition_models.md
-sed -i '1i\# Spatio Temporal Action Detection Models' detection_models.md
+sed -i '1i\# 时序动作检测模型' localization_models.md
+sed -i '1i\# 动作识别模型' recognition_models.md
+sed -i '1i\# 时空动作检测模型' detection_models.md
 
 cat prepare_data.md >> supported_datasets.md
 
@@ -52,8 +49,8 @@ sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' benchmar
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' getting_started.md
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' install.md
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' changelog.md
-# sed -i 's/](\/docs\//](/g' ./tutorials/*.md
-# sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' ./tutorials/*.md
+sed -i 's/](\/docs_zh_CN\//](/g' ./tutorials/*.md
+sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' ./tutorials/*.md
 sed -i 's/](\/docs\//](/g' supported_datasets.md
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' supported_datasets.md
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' demo.md
