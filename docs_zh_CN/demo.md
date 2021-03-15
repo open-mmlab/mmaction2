@@ -4,7 +4,7 @@
 
 - [预测视频的动作标签](#预测视频的动作标签)
 - [预测视频的时空检测结果](#预测视频的时空检测结果)
-- [可视化输入视频的GradCAM](#可视化输入视频的GradCAM)
+- [可视化输入视频的 GradCAM](#可视化输入视频的-GradCAM)
 - [使用网络摄像头的实时动作识别](#使用网络摄像头的实时动作识别)
 - [滑动窗口预测长视频中不同动作类别](#滑动窗口预测长视频中不同动作类别)
 
@@ -169,7 +169,7 @@ python demo/demo_spatiotemporal_det.py --video demo/demo.mp4 \
     --output-fps 6
 ```
 
-## 可视化输入视频的GradCAM
+## 可视化输入视频的 GradCAM
 
 MMAction2 提供如下脚本以可视化输入视频的 GradCAM。
 

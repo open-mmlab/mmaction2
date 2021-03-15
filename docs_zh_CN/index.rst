@@ -8,8 +8,8 @@
 
    install.md
    getting_started.md
+   demo.md
    benchmark.md
-..   demo.md
 
 .. toctree::
    :maxdepth: 2
@@ -57,7 +57,6 @@
    :caption: API 参考文档
 
    api.rst
-
 
 
 索引和表格

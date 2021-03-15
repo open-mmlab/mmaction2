@@ -9,11 +9,11 @@
 - **"No module named 'mmcv.ops'"; "No module named 'mmcv._ext'"**
 
     1. 使用 `pip uninstall mmcv` 卸载环境中已安装的 `mmcv`。
-    2. 遵循 [安装文档](https://mmcv.readthedocs.io/en/latest/#installation) 来安装 `mmcv-full`。
+    2. 遵循 [MMCV 安装文档](https://mmcv.readthedocs.io/en/latest/#installation) 来安装 `mmcv-full`。
 
 - **"OSError: MoviePy Error: creation of None failed because of the following error"**
 
-    参照 [安装文档](https://github.com/open-mmlab/mmaction2/blob/master/docs_zh_CN/install.md#安装依赖包)
+    参照 [MMAction2 安装文档](https://github.com/open-mmlab/mmaction2/blob/master/docs_zh_CN/install.md#安装依赖包)
     1. 对于 Windows 用户，[ImageMagick](https://www.imagemagick.org/script/index.php) 不再被 MoviePy 自动检测，
     需要获取名为 `magick` 的 ImageMagick 二进制包的路径，来修改 `moviepy/config_defaults.py` 文件中的 `IMAGEMAGICK_BINARY`，如 `IMAGEMAGICK_BINARY = "C:\\Program Files\\ImageMagick_VERSION\\magick.exe"`
     2. 对于 Linux 用户，如果 ImageMagick 没有被 moviepy 检测，需要注释掉 `/etc/ImageMagick-6/policy.xml` 文件中的 `<policy domain="path" rights="none" pattern="@*" />`，即改为 `<!-- <policy domain="path" rights="none" pattern="@*" /> -->`。
