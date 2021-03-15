@@ -1,14 +1,14 @@
 # Demo 示例
 
-## 所有支持 Demo
+## 目录
 
-- [Video demo](#video-demo): 预测视频的动作标签
-- [SpatioTemporal Action Detection Video Demo](#spatiotemporal-action-detection-video-demo): 预测视频的时空检测结果
-- [Video GradCAM Demo](#video-gradcam-demo): 可视化输入视频的 GradCAM
-- [Webcam demo](#webcam-demo): 使用网络摄像头的实时动作识别
-- [Long Video demo](#long-video-demo): 预测长视频中不同动作类别
+- [预测视频的动作标签](#预测视频的动作标签)
+- [预测视频的时空检测结果](#预测视频的时空检测结果)
+- [可视化输入视频的GradCAM](#可视化输入视频的GradCAM)
+- [使用网络摄像头的实时动作识别](#使用网络摄像头的实时动作识别)
+- [滑动窗口预测长视频中不同动作类别](#滑动窗口预测长视频中不同动作类别)
 
-## Video demo
+## 预测视频的动作标签
 
 MMAction2 提供如下脚本以预测视频的动作标签。为得到 [0, 1] 间的动作分值，请确保在配置文件中设定 `model['test_cfg'] = dict(average_clips='prob')`。
 
@@ -114,7 +114,7 @@ python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} {LABEL_FILE}
         PATH_TO_FRAMES/ LABEL_FILE --use-frames --fps 24 --out-filename demo/demo_out.gif
     ```
 
-## SpatioTemporal Action Detection Video Demo
+## 预测视频的时空检测结果
 
 MMAction2 提供如下脚本以预测视频的时空检测结果。
 
@@ -169,7 +169,7 @@ python demo/demo_spatiotemporal_det.py --video demo/demo.mp4 \
     --output-fps 6
 ```
 
-## Video GradCAM Demo
+## 可视化输入视频的GradCAM
 
 MMAction2 提供如下脚本以可视化输入视频的 GradCAM。
 
@@ -210,7 +210,7 @@ python demo/demo_gradcam.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} [--u
         demo/demo.mp4 --target-layer-name backbone/layer4/1/relu --out-filename demo/demo_gradcam_tsm.gif
     ```
 
-## Webcam demo
+## 使用网络摄像头的实时动作识别
 
 MMAction2 提供如下脚本来进行使用网络摄像头的实时动作识别。为得到 [0, 1] 间的动作分值，请确保在配置文件中设定 `model['test_cfg'] = dict(average_clips='prob')` 。
 
@@ -265,7 +265,7 @@ python demo/webcam_demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${LABEL_FILE} \
 2). 更改配置文件中的 `test_pipeline` 下的裁剪方式类型（可选项含：`TenCrop`, `ThreeCrop`, `CenterCrop`）。
 3). 调低 `AVERAGE_SIZE` 以加快推理。
 
-## Long video demo
+## 滑动窗口预测长视频中不同动作类别
 
 MMAction2 提供如下脚本来预测长视频中的不同动作类别。为得到 [0, 1] 间的动作分值，请确保在配置文件中设定 `model['test_cfg'] = dict(average_clips='prob')` 。
 
