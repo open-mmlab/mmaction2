@@ -49,7 +49,7 @@ sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' benchmar
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' getting_started.md
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' install.md
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' changelog.md
-sed -i 's/](\/docs_zh_CN\//](/g' ./tutorials/*.md
+sed -i 's/](\/docs\//](/g' ./tutorials/*.md
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' ./tutorials/*.md
 sed -i 's/](\/docs\//](/g' supported_datasets.md
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' supported_datasets.md

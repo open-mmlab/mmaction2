@@ -403,10 +403,10 @@ CUDA_VISIBLE_DEVICES=4,5,6,7 GPUS=4 ./tools/slurm_train.sh ${PARTITION} ${JOB_NA
 
 目前, MMAction2 提供以下几种更详细的教程：
 
-- [如何编写配置文件](/docs_zh_CN/tutorials/1_config.md)
-- [如何微调模型](/docs_zh_CN/tutorials/2_finetune.md)
-- [如何增加新数据集](/docs_zh_CN/tutorials/3_new_dataset.md)
-- [如何设计数据处理流程](/docs_zh_CN/tutorials/4_data_pipeline.md)
-- [如何增加新模块](/docs_zh_CN/tutorials/5_new_modules.md)
-- [如何导出模型为 onnx 格式](/docs_zh_CN/tutorials/6_export_model.md)
-- [如何自定义模型运行参数](/docs_zh_CN/tutorials/7_customize_runtime.md)
+- [如何编写配置文件](tutorials/1_config.md)
+- [如何微调模型](tutorials/2_finetune.md)
+- [如何增加新数据集](tutorials/3_new_dataset.md)
+- [如何设计数据处理流程](tutorials/4_data_pipeline.md)
+- [如何增加新模块](tutorials/5_new_modules.md)
+- [如何导出模型为 onnx 格式](tutorials/6_export_model.md)
+- [如何自定义模型运行参数](tutorials/7_customize_runtime.md)
