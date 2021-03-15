@@ -117,7 +117,7 @@ Params: 28.04 M
 
 (1) 将模型的权重张量转化为 CPU 张量。
 (2) 删除优化器状态信息。
-(3) 计算模型检查点文件的哈希值，并将哈希值添加到文件名后。
+(3) 计算模型权重文件的哈希值，并将哈希值添加到文件名后。
 
 ```shell
 python tools/publish_model.py ${INPUT_FILENAME} ${OUTPUT_FILENAME}

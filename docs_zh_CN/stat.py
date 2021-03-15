@@ -57,7 +57,7 @@ for f in files:
     statsmsg = f"""
 ## [{title}]({f})
 
-* 模型检查点文件数量: {len(ckpts)}
+* 模型权重文件数量: {len(ckpts)}
 * 配置文件数量: {len(configs)}
 * 论文数量: {len(papers)}
 {paperlist}
@@ -79,7 +79,7 @@ countstr = '\n'.join(
 modelzoo = f"""
 # 总览
 
-* 模型检查点文件数量: {len(allckpts)}
+* 模型权重文件数量: {len(allckpts)}
 * 配置文件数量: {len(allconfigs)}
 * 论文数量: {len(allpapers)}
 {countstr}

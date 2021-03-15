@@ -71,4 +71,4 @@ python tools/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --veri
 python tools/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --is-localizer --shape $SHAPE --verify
 ```
 
-如果发现提供的模型检查点文件没有被成功导出，或者存在精度损失，可以在本 repo 下提出问题（issue）。
+如果发现提供的模型权重文件没有被成功导出，或者存在精度损失，可以在本 repo 下提出问题（issue）。
