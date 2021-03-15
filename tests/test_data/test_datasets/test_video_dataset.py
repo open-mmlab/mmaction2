@@ -28,6 +28,24 @@ class TestVideoDataset(BaseTestDataset):
         assert video_infos == [dict(filename=video_filename, label=0)] * 2
         assert video_dataset.start_index == 0
 
+    def test_video_dataset_multi_label(self):
+        video_dataset = VideoDataset(
+            self.video_ann_file_multi_label,
+            self.video_pipeline,
+            data_prefix=self.data_prefix,
+            multi_class=True,
+            num_classes=100)
+        video_infos = video_dataset.video_infos
+        video_filename = osp.join(self.data_prefix, 'test.mp4')
+        label0 = [0, 3]
+        label1 = [0, 2, 4]
+        labels = [label0, label1]
+        for info, label in zip(video_infos, labels):
+            print(info, video_filename)
+            assert info['filename'] == video_filename
+            assert set(info['label']) == set(label)
+        assert video_dataset.start_index == 0
+
     def test_video_pipeline(self):
         target_keys = ['filename', 'label', 'start_index', 'modality']
 
