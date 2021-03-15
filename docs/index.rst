@@ -1,7 +1,7 @@
 Welcome to MMAction2's documentation!
 =====================================
 
-English | `简体中文 <https://mmaction2.readthedocs.io/zh_CN/latest/index.html>`_
+You can switch between Chinese and English documents in the lower-left corner of the layout.
 
 .. toctree::
    :maxdepth: 2

@@ -1,7 +1,7 @@
 欢迎来到 MMAction2 的中文文档！
 =====================================
 
-`English <https://mmaction2.readthedocs.io/en/latest/index.html>`_ | 简体中文
+您可以在页面左下角切换中英文文档。
 
 .. toctree::
    :maxdepth: 2
