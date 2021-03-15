@@ -4,7 +4,7 @@
 
 - [预测视频的动作标签](#预测视频的动作标签)
 - [预测视频的时空检测结果](#预测视频的时空检测结果)
-- [可视化输入视频的GradCAM](#可视化输入视频的GradCAM)
+- [可视化输入视频的 GradCAM](#可视化输入视频的-GradCAM)
 - [使用网络摄像头的实时动作识别](#使用网络摄像头的实时动作识别)
 - [滑动窗口预测长视频中不同动作类别](#滑动窗口预测长视频中不同动作类别)
 
@@ -31,7 +31,7 @@ python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} {LABEL_FILE}
 
 示例：
 
-以下示例假设用户的当前目录为 `$MMACTION2`，并已经将所需的模型检查点文件下载至目录 `checkpoints/` 下，用户也可以使用所提供的 URL 来直接加载模型检查点，文件将会被默认下载至 `$HOME/.cache/torch/checkpoints`。
+以下示例假设用户的当前目录为 `$MMACTION2`，并已经将所需的模型权重文件下载至目录 `checkpoints/` 下，用户也可以使用所提供的 URL 来直接加载模型权重，文件将会被默认下载至 `$HOME/.cache/torch/checkpoints`。
 
 1. 在 cuda 设备上，使用 TSN 模型进行视频识别：
 
@@ -42,7 +42,7 @@ python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} {LABEL_FILE}
         demo/demo.mp4 demo/label_map_k400.txt
     ```
 
-2. 在 cuda 设备上，使用 TSN 模型进行视频识别，并利用 URL 加载模型检查点文件：
+2. 在 cuda 设备上，使用 TSN 模型进行视频识别，并利用 URL 加载模型权重文件：
 
     ```shell
     # demo.mp4 及 label_map_k400.txt 均来自 Kinetics-400 数据集
@@ -137,9 +137,9 @@ python demo/demo_spatiotemporal_det.py --video ${VIDEO_FILE} \
 可选参数：
 
 - `SPATIOTEMPORAL_ACTION_DETECTION_CONFIG_FILE`: 时空检测配置文件路径。
-- `SPATIOTEMPORAL_ACTION_DETECTION_CHECKPOINT`: 时空检测模型检查点文件路径。
+- `SPATIOTEMPORAL_ACTION_DETECTION_CHECKPOINT`: 时空检测模型权重文件路径。
 - `HUMAN_DETECTION_CONFIG_FILE`: 人体检测配置文件路径。
-- `HUMAN_DETECTION_CHECKPOINT`: 人体检测模型检查点文件路径。
+- `HUMAN_DETECTION_CHECKPOINT`: 人体检测模型权重文件路径。
 - `HUMAN_DETECTION_SCORE_THRE`: 人体检测分数阈值：默认为 0.9。
 - `ACTION_DETECTION_SCORE_THRESHOLD`: 动作检测分数阈值：默认为 0.5。
 - `LABEL_MAP`: 所使用的标签映射文件，默认为 `demo/label_map_ava.txt`。
@@ -151,7 +151,7 @@ python demo/demo_spatiotemporal_det.py --video ${VIDEO_FILE} \
 
 示例：
 
-以下示例假设用户的当前目录为 `$MMACTION2`，并已经将所需的模型检查点文件下载至目录 `checkpoints/` 下，用户也可以使用所提供的 URL 来直接加载模型检查点，文件将会被默认下载至 `$HOME/.cache/torch/checkpoints`。
+以下示例假设用户的当前目录为 `$MMACTION2`，并已经将所需的模型权重文件下载至目录 `checkpoints/` 下，用户也可以使用所提供的 URL 来直接加载模型权重，文件将会被默认下载至 `$HOME/.cache/torch/checkpoints`。
 
 1. 使用 Faster RCNN 作为人体检测器，SlowOnly-8x8-R101 作为动作检测器。每 8 帧进行一次预测，原视频中每 4 帧输出 1 帧至输出视频中，设置输出视频的帧率为 6。
 
@@ -169,7 +169,7 @@ python demo/demo_spatiotemporal_det.py --video demo/demo.mp4 \
     --output-fps 6
 ```
 
-## 可视化输入视频的GradCAM
+## 可视化输入视频的 GradCAM
 
 MMAction2 提供如下脚本以可视化输入视频的 GradCAM。
 
@@ -191,7 +191,7 @@ python demo/demo_gradcam.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} [--u
 
 示例：
 
-以下示例假设用户的当前目录为 `$MMACTION2`，并已经将所需的模型检查点文件下载至目录 `checkpoints/` 下，用户也可以使用所提供的 URL 来直接加载模型检查点，文件将会被默认下载至 `$HOME/.cache/torch/checkpoints`。
+以下示例假设用户的当前目录为 `$MMACTION2`，并已经将所需的模型权重文件下载至目录 `checkpoints/` 下，用户也可以使用所提供的 URL 来直接加载模型权重，文件将会被默认下载至 `$HOME/.cache/torch/checkpoints`。
 
 1. 对于 I3D 模型进行 GradCAM 的可视化，使用视频作为输入，并输出一帧率为 10 的 GIF 文件：
 
@@ -202,7 +202,7 @@ python demo/demo_gradcam.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} [--u
         --out-filename demo/demo_gradcam.gif
     ```
 
-2. 对于 I3D 模型进行 GradCAM 的可视化，使用视频作为输入，并输出一 GIF 文件，此示例利用 URL 加载模型检查点文件：
+2. 对于 I3D 模型进行 GradCAM 的可视化，使用视频作为输入，并输出一 GIF 文件，此示例利用 URL 加载模型权重文件：
 
     ```shell
     python demo/demo_gradcam.py configs/recognition/tsm/tsm_r50_video_inference_1x1x8_100e_kinetics400_rgb.py \
@@ -233,7 +233,7 @@ python demo/webcam_demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${LABEL_FILE} \
 
 示例：
 
-以下示例假设用户的当前目录为 `$MMACTION2`，并已经将所需的模型检查点文件下载至目录 `checkpoints/` 下，用户也可以使用所提供的 URL 来直接加载模型检查点，文件将会被默认下载至 `$HOME/.cache/torch/checkpoints`。
+以下示例假设用户的当前目录为 `$MMACTION2`，并已经将所需的模型权重文件下载至目录 `checkpoints/` 下，用户也可以使用所提供的 URL 来直接加载模型权重，文件将会被默认下载至 `$HOME/.cache/torch/checkpoints`。
 
 1. 使用 TSN 模型进行利用网络摄像头的实时动作识别，平均最近 5 个片段结果作为预测，输出大于阈值 0.2 的动作类别：
 
@@ -243,7 +243,7 @@ python demo/webcam_demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${LABEL_FILE} \
       --threshold 0.2 --device cpu
 ```
 
-2. 使用 TSN 模型在 CPU 上进行利用网络摄像头的实时动作识别，平均最近 5 个片段结果作为预测，输出大于阈值 0.2 的动作类别，此示例利用 URL 加载模型检查点文件：
+2. 使用 TSN 模型在 CPU 上进行利用网络摄像头的实时动作识别，平均最近 5 个片段结果作为预测，输出大于阈值 0.2 的动作类别，此示例利用 URL 加载模型权重文件：
 
 ```shell
     python demo/webcam_demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
@@ -284,7 +284,7 @@ python demo/long_video_demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} $
 
 示例：
 
-以下示例假设用户的当前目录为 `$MMACTION2`，并已经将所需的模型检查点文件下载至目录 `checkpoints/` 下，用户也可以使用所提供的 URL 来直接加载模型检查点，文件将会被默认下载至 `$HOME/.cache/torch/checkpoints`。
+以下示例假设用户的当前目录为 `$MMACTION2`，并已经将所需的模型权重文件下载至目录 `checkpoints/` 下，用户也可以使用所提供的 URL 来直接加载模型权重，文件将会被默认下载至 `$HOME/.cache/torch/checkpoints`。
 
 1. 利用 TSN 模型在 CPU 上预测长视频中的不同动作类别，设置 `INPUT_STEP` 为 3（即每 3 帧随机选取 1 帧作为输入），输出分值大于 0.2 的动作类别：
 
@@ -294,7 +294,7 @@ python demo/long_video_demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} $
       --input-step 3 --device cpu --threshold 0.2
  ```
 
-2. 利用 TSN 模型在 CPU 上预测长视频中的不同动作类别，设置 `INPUT_STEP` 为 3，输出分值大于 0.2 的动作类别，此示例利用 URL 加载模型检查点文件：
+2. 利用 TSN 模型在 CPU 上预测长视频中的不同动作类别，设置 `INPUT_STEP` 为 3，输出分值大于 0.2 的动作类别，此示例利用 URL 加载模型权重文件：
 
  ```shell
     python demo/long_video_demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
@@ -302,7 +302,7 @@ python demo/long_video_demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} $
       PATH_TO_LONG_VIDEO demo/label_map_k400.txt PATH_TO_SAVED_VIDEO --input-step 3 --device cpu --threshold 0.2
  ```
 
-3. 利用 TSN 模型在 CPU 上预测网络长视频（利用 URL 读取）中的不同动作类别，设置 `INPUT_STEP` 为 3，输出分值大于 0.2 的动作类别，此示例利用 URL 加载模型检查点文件：
+3. 利用 TSN 模型在 CPU 上预测网络长视频（利用 URL 读取）中的不同动作类别，设置 `INPUT_STEP` 为 3，输出分值大于 0.2 的动作类别，此示例利用 URL 加载模型权重文件：
 
  ```shell
     python demo/long_video_demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
