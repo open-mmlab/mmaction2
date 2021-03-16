@@ -109,7 +109,7 @@ log_config = dict(
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 work_dir = ('./work_dirs/ava/'
-            'slowonly_nl_kinetics_pretrained_r50_4x16x1_20e_ava_rgb')
+            'slowonly_nl_kinetics_pretrained_r50_4x16x1_10e_ava_rgb')
 load_from = (
     'https://download.openmmlab.com/mmaction/recognition/slowonly/'
     'slowonly_nl_embedded_gaussian_r50_4x16x1_150e_kinetics400_rgb/'
