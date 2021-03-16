@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="docs/imgs/mmaction2_logo.png" width="500"/>
+  <img src="/docs/imgs/mmaction2_logo.png" width="500"/>
 </div>
 
 ## 简介
@@ -19,11 +19,11 @@ MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLa
 主分支代码目前支持 **PyTorch 1.3 以上**的版本
 
 <div align="center">
-  <img src="docs/imgs/mmaction2_overview.gif" width="450px"/><br>
+  <img src="/docs/imgs/mmaction2_overview.gif" width="450px"/><br>
     Kinetics-400 上的动作识别
 </div>
 <div align="center">
-  <img src="docs/imgs/spatio-temporal-det.gif" width="800px"/><br>
+  <img src="/docs/imgs/spatio-temporal-det.gif" width="800px"/><br>
     AVA-2.1 上的时空动作检测
 </div>
 
@@ -64,7 +64,7 @@ v0.12.0 版本已于 2021 年 2 月 28 日发布，可通过查阅 [更新日志
 | [Slowfast](/configs/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb.py)|256p videos|Disk|8x8 | **[0.69](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction2/slowfast_256p_videos_disk_8x8.zip)** | x | x | [1.04](https://download.openmmlab.com/mmaction/benchmark/recognition/pyslowfast/pysf_slowfast_r50_4x16_video.log) |
 | [R(2+1)D](/configs/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb.py)|256p videos |Disk| 8x8|**[0.45](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction2/r2plus1d_256p_videos_disk_8x8.zip)** | x | x | x |
 
-更多详情可见 [基准测试](/docs/benchmark.md)
+更多详情可见 [基准测试](/docs_zh_CN/benchmark.md)
 
 ## 模型库
 
@@ -162,27 +162,27 @@ v0.12.0 版本已于 2021 年 2 月 28 日发布，可通过查阅 [更新日志
 
 ## 安装
 
-请参考 [安装指南](/docs/install.md) 进行安装
+请参考 [安装指南](/docs_zh_CN/install.md) 进行安装
 
 ## 数据集准备
 
-请参考 [数据准备](/docs/data_preparation.md) 了解数据集准备概况。所有支持的数据集都列于 [数据集清单](/docs/supported_datasets.md) 中
+请参考 [数据准备](/docs_zh_CN/data_preparation.md) 了解数据集准备概况。所有支持的数据集都列于 [数据集清单](/docs_zh_CN/supported_datasets.md) 中
 
 ## 教程
 
-请参考 [基础教程](/docs/getting_started.md) 了解 MMAction2 的基本使用。MMAction2也提供了其他更详细的教程:
+请参考 [基础教程](/docs_zh_CN/getting_started.md) 了解 MMAction2 的基本使用。MMAction2也提供了其他更详细的教程:
 
-- [如何编写配置文件](/docs/tutorials/1_config.md)
-- [如何微调模型](/docs/tutorials/2_finetune.md)
-- [如何增加新数据集](/docs/tutorials/3_new_dataset.md)
-- [如何设计数据处理流程](/docs/tutorials/4_data_pipeline.md)
-- [如何增加新模块](/docs/tutorials/5_new_modules.md)
-- [如何导出模型为 onnx 格式](/docs/tutorials/6_export_model.md)
-- [如何自定义模型运行参数](/docs/tutorials/7_customize_runtime.md)
+- [如何编写配置文件](/docs_zh_CN/tutorials/1_config.md)
+- [如何微调模型](/docs_zh_CN/tutorials/2_finetune.md)
+- [如何增加新数据集](/docs_zh_CN/tutorials/3_new_dataset.md)
+- [如何设计数据处理流程](/docs_zh_CN/tutorials/4_data_pipeline.md)
+- [如何增加新模块](/docs_zh_CN/tutorials/5_new_modules.md)
+- [如何导出模型为 onnx 格式](/docs_zh_CN/tutorials/6_export_model.md)
+- [如何自定义模型运行参数](/docs_zh_CN/tutorials/7_customize_runtime.md)
 
 ## 常见问题
 
-请参考 [FAQ](/docs/faq.md) 了解其他用户的常见问题
+请参考 [FAQ](/docs_zh_CN/faq.md) 了解其他用户的常见问题
 
 ## 许可
 
