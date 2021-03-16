@@ -16,17 +16,12 @@ proposal_file_train = (f'{anno_root}/ava_dense_proposals_train.FAIR.'
                        'recall_93.9.pkl')
 proposal_file_val = f'{anno_root}/ava_dense_proposals_val.FAIR.recall_93.9.pkl'
 
-mc_cfg = dict(
-    server_list_cfg='/mnt/lustre/share/memcached_client/server_list.conf',
-    client_cfg='/mnt/lustre/share/memcached_client/client.conf',
-    sys_path='/mnt/lustre/share/pymc/py3')
-
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 
 train_pipeline = [
     dict(type='SampleAVAFrames', clip_len=8, frame_interval=8),
-    dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
+    dict(type='RawFrameDecode'),
     dict(type='RandomRescale', scale_range=(256, 320)),
     dict(type='RandomCrop', size=256),
     dict(type='Flip', flip_ratio=0.5),
@@ -48,7 +43,7 @@ train_pipeline = [
 # The testing is w/o. any cropping / flipping
 val_pipeline = [
     dict(type='SampleAVAFrames', clip_len=8, frame_interval=8),
-    dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW', collapse=True),
@@ -90,8 +85,7 @@ data = dict(
 data['test'] = data['val']
 
 optimizer = dict(
-    type='SGD', lr=0.3, momentum=0.9, weight_decay=1e-06,
-    nesterov=True)  # TODO
+    type='SGD', lr=0.15, momentum=0.9, weight_decay=1e-06, nesterov=True)
 # this lr is used for 8x2 gpus
 
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
@@ -101,7 +95,7 @@ lr_config = dict(
     policy='step',
     step=[4, 6, 8],
     warmup='linear',
-    warmup_iters=800,  # TODO
+    warmup_iters=1600,
     warmup_ratio=0.01)
 total_epochs = 10
 
