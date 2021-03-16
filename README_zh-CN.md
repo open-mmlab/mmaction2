@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="docs/imgs/mmaction2_logo.png" width="500"/>
+  <img src="/docs/imgs/mmaction2_logo.png" width="500"/>
 </div>
 
 ## 简介
@@ -19,11 +19,11 @@ MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLa
 主分支代码目前支持 **PyTorch 1.3 以上**的版本
 
 <div align="center">
-  <img src="docs/imgs/mmaction2_overview.gif" width="450px"/><br>
+  <img src="/docs/imgs/mmaction2_overview.gif" width="450px"/><br>
     Kinetics-400 上的动作识别
 </div>
 <div align="center">
-  <img src="docs/imgs/spatio-temporal-det.gif" width="800px"/><br>
+  <img src="/docs/imgs/spatio-temporal-det.gif" width="800px"/><br>
     AVA-2.1 上的时空动作检测
 </div>
 
