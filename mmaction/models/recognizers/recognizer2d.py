@@ -21,9 +21,10 @@ class Recognizer2D(BaseRecognizer):
                              each.shape[1:]).transpose(1, 2).contiguous()
                 for each in x
             ]
-            x, _ = self.neck(x, labels.squeeze())
+            x, loss_aux = self.neck(x, labels.squeeze())
             x = x.squeeze(2)
             num_segs = 1
+            losses.update(loss_aux)
 
         cls_score = self.cls_head(x, num_segs)
         gt_labels = labels.squeeze()
@@ -40,8 +41,6 @@ class Recognizer2D(BaseRecognizer):
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
         num_segs = imgs.shape[0] // batches
 
-        losses = dict()
-
         x = self.extract_feat(imgs)
         if hasattr(self, 'neck'):
             x = [
@@ -49,9 +48,8 @@ class Recognizer2D(BaseRecognizer):
                              each.shape[1:]).transpose(1, 2).contiguous()
                 for each in x
             ]
-            x, loss_aux = self.neck(x)
+            x, _ = self.neck(x)
             x = x.squeeze(2)
-            losses.update(loss_aux)
             num_segs = 1
 
         # When using `TSNHead` or `TPNHead`, shape is [batch_size, num_classes]

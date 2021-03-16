@@ -94,6 +94,18 @@ def parse_args():
     return args
 
 
+def turn_off_pretrained(cfg):
+    # recursively find all pretrained in the model config,
+    # and set them None to avoid redundant pretrain steps for testing
+    if 'pretrained' in cfg:
+        cfg.pretrained = None
+
+    # recursively turn off pretrained value
+    for sub_cfg in cfg.values():
+        if isinstance(sub_cfg, dict):
+            turn_off_pretrained(sub_cfg)
+
+
 def main():
     args = parse_args()
 
@@ -124,30 +136,35 @@ def main():
 
     dataset_type = cfg.data.test.type
     if output_config.get('out', None):
-        out = output_config['out']
-        # make sure the dirname of the output path exists
-        mmcv.mkdir_or_exist(osp.dirname(out))
-        _, suffix = osp.splitext(out)
-        if dataset_type == 'AVADataset':
-            assert suffix[1:] == 'csv', ('For AVADataset, the format of the '
-                                         'output file should be csv')
+        if 'output_format' in output_config:
+            # ugly workround to make recognition and localization the same
+            warnings.warn(
+                'Skip checking `output_format` in localization task.')
         else:
-            assert suffix[1:] in file_handlers, (
-                'The format of the output '
-                'file should be json, pickle or yaml')
+            out = output_config['out']
+            # make sure the dirname of the output path exists
+            mmcv.mkdir_or_exist(osp.dirname(out))
+            _, suffix = osp.splitext(out)
+            if dataset_type == 'AVADataset':
+                assert suffix[1:] == 'csv', ('For AVADataset, the format of '
+                                             'the output file should be csv')
+            else:
+                assert suffix[1:] in file_handlers, (
+                    'The format of the output '
+                    'file should be json, pickle or yaml')
 
     # set cudnn benchmark
     if cfg.get('cudnn_benchmark', False):
         torch.backends.cudnn.benchmark = True
     cfg.data.test.test_mode = True
 
-    if cfg.model.get('test_cfg') is None and cfg.get('test_cfg') is None:
-        cfg.model.setdefault('test_cfg',
-                             dict(average_clips=args.average_clips))
-    else:
+    if args.average_clips is not None:
         # You can set average_clips during testing, it will override the
-        # original settting
-        if args.average_clips is not None:
+        # original setting
+        if cfg.model.get('test_cfg') is None and cfg.get('test_cfg') is None:
+            cfg.model.setdefault('test_cfg',
+                                 dict(average_clips=args.average_clips))
+        else:
             if cfg.model.get('test_cfg') is not None:
                 cfg.model.test_cfg.average_clips = args.average_clips
             else:
@@ -173,6 +190,9 @@ def main():
     dataloader_setting = dict(dataloader_setting,
                               **cfg.data.get('test_dataloader', {}))
     data_loader = build_dataloader(dataset, **dataloader_setting)
+
+    # remove redundant pretrain steps for testing
+    turn_off_pretrained(cfg.model)
 
     # build the model and load checkpoint
     model = build_model(

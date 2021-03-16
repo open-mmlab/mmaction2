@@ -304,7 +304,7 @@ mmcv_hooks = [
 
 ### Modify default runtime hooks
 
-There are some common hooks that are not registered through `custom_hooks` but has been registered by default when importing MMCV,  they are
+There are some common hooks that are not registered through `custom_hooks` but has been registered by default when importing MMCV, they are
 
 - log_config
 - checkpoint_config

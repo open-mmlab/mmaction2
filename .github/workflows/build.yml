@@ -63,6 +63,8 @@ jobs:
         run: pip install mmcv-full==1.2.6 -f https://download.openmmlab.com/mmcv/dist/cpu/torch${{matrix.torch}}/index.html
       - name: Install MMDet
         run: pip install git+https://github.com/open-mmlab/mmdetection/
+      - name: Install MMCls
+        run: pip install git+https://github.com/open-mmlab/mmclassification/
       - name: Install unittest dependencies
         run: pip install -r requirements/tests.txt -r requirements/optional.txt
       - name: Build and install
@@ -144,6 +146,7 @@ jobs:
         run: |
           pip install mmcv-full==1.2.6 -f https://download.openmmlab.com/mmcv/dist/${{matrix.mmcv}}/index.html
           pip install -q git+https://github.com/open-mmlab/mmdetection/
+          pip install -q git+https://github.com/open-mmlab/mmclassification/
           pip install -r requirements.txt
       - name: Build and install
         run: |

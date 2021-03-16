@@ -71,7 +71,7 @@ We provide the training log based on which we calculate the average iter time, w
 
 ### TSN
 
-- **mmaction2**
+- **MMAction2**
 
 ```shell
 # rawframes
@@ -81,7 +81,7 @@ bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_tsn configs/recognition/ts
 bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_tsn configs/recognition/tsn/tsn_r50_video_1x1x3_100e_kinetics400_rgb.py --work-dir work_dirs/benchmark_tsn_video
 ```
 
-- **mmaction**
+- **MMAction**
 
 ```shell
 python -u tools/train_recognizer.py configs/TSN/tsn_kinetics400_2d_rgb_r50_seg3_f1s1.py
@@ -95,7 +95,7 @@ python main.py kinetics RGB --arch resnet50 --num_segments 3 --gd 20 --lr 0.02 -
 
 ### I3D
 
-- **mmaction2**
+- **MMAction2**
 
 ```shell
 # rawframes
@@ -105,7 +105,7 @@ bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_i3d configs/recognition/i3
 bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_i3d configs/recognition/i3d/i3d_r50_video_heavy_8x8x1_100e_kinetics400_rgb.py --work-dir work_dirs/benchmark_i3d_video
 ```
 
-- **mmaction**
+- **MMAction**
 
 ```shell
 python -u tools/train_recognizer.py configs/I3D_RGB/i3d_kinetics400_3d_rgb_r50_c3d_inflate3x1x1_seg1_f32s2.py
@@ -117,11 +117,11 @@ python -u tools/train_recognizer.py configs/I3D_RGB/i3d_kinetics400_3d_rgb_r50_c
 python tools/run_net.py   --cfg configs/Kinetics/I3D_8x8_R50.yaml   DATA.PATH_TO_DATA_DIR ${DATA_ROOT}   NUM_GPUS 8 TRAIN.BATCH_SIZE 64 TRAIN.AUTO_RESUME False LOG_PERIOD 1 SOLVER.MAX_EPOCH 1 > pysf_i3d_r50_8x8_video.log
 ```
 
-You may reproduce the result by writting a simple script to parse out the value of the field 'time_diff'.
+You may reproduce the result by writing a simple script to parse out the value of the field 'time_diff'.
 
 ### SlowFast
 
-- **mmaction2**
+- **MMAction2**
 
 ```shell
 bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_slowfast configs/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb.py --work-dir work_dirs/benchmark_slowfast_video
@@ -133,11 +133,11 @@ bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_slowfast configs/recogniti
 python tools/run_net.py   --cfg configs/Kinetics/SLOWFAST_4x16_R50.yaml   DATA.PATH_TO_DATA_DIR ${DATA_ROOT}   NUM_GPUS 8 TRAIN.BATCH_SIZE 64 TRAIN.AUTO_RESUME False LOG_PERIOD 1 SOLVER.MAX_EPOCH 1 > pysf_slowfast_r50_4x16_video.log
 ```
 
-You may reproduce the result by writting a simple script to parse out the value of the field 'time_diff'.
+You may reproduce the result by writing a simple script to parse out the value of the field 'time_diff'.
 
 ### SlowOnly
 
-- **mmaction2**
+- **MMAction2**
 
 ```shell
 bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_slowonly configs/recognition/slowonly/slowonly_r50_video_4x16x1_256e_kinetics400_rgb.py --work-dir work_dirs/benchmark_slowonly_video
@@ -149,11 +149,11 @@ bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_slowonly configs/recogniti
 python tools/run_net.py   --cfg configs/Kinetics/SLOW_4x16_R50.yaml   DATA.PATH_TO_DATA_DIR ${DATA_ROOT}   NUM_GPUS 8 TRAIN.BATCH_SIZE 64 TRAIN.AUTO_RESUME False LOG_PERIOD 1 SOLVER.MAX_EPOCH 1 > pysf_slowonly_r50_4x16_video.log
 ```
 
-You may reproduce the result by writting a simple script to parse out the value of the field 'time_diff'.
+You may reproduce the result by writing a simple script to parse out the value of the field 'time_diff'.
 
 ### R2plus1D
 
-- **mmaction2**
+- **MMAction2**
 
 ```shell
 bash tools/slurm_train.sh ${PARTATION_NAME} benchmark_r2plus1d configs/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb.py --work-dir work_dirs/benchmark_r2plus1d_video

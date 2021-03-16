@@ -8,7 +8,7 @@ For installation instructions, please see [install.md](install.md).
 - [Datasets](#datasets)
 - [Inference with Pre-Trained Models](#inference-with-pre-trained-models)
   - [Test a dataset](#test-a-dataset)
-  - [High-level APIs for testing a video and rawframes.](#high-level-apis-for-testing-a-video-and-rawframes)
+  - [High-level APIs for testing a video and rawframes](#high-level-apis-for-testing-a-video-and-rawframes)
 - [Build a Model](#build-a-model)
   - [Build a model with basic components](#build-a-model-with-basic-components)
   - [Write a new model](#write-a-new-model)
@@ -49,7 +49,7 @@ mmaction2
 
 For more information on data preparation, please see [data_preparation.md](data_preparation.md)
 
-For using custom datasets, please refer to [Tutorial 2: Adding New Dataset](tutorials/3_new_dataset.md)
+For using custom datasets, please refer to [Tutorial 3: Adding New Dataset](tutorials/3_new_dataset.md)
 
 ## Inference with Pre-Trained Models
 
@@ -193,7 +193,7 @@ device = torch.device(device)
  # build the model from a config file and a checkpoint file
 model = init_recognizer(config_file, checkpoint_file, device=device, use_frames=True)
 
-# test rawframe directory of a single video and show the result:
+# test url of a single video and show the result:
 video = 'https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4'
 labels = 'demo/label_map_k400.txt'
 results = inference_recognizer(model, video, labels, use_frames=True)
@@ -394,7 +394,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=29500 ./tools/dist_train.sh ${CONFIG_FILE} 4
 CUDA_VISIBLE_DEVICES=4,5,6,7 PORT=29501 ./tools/dist_train.sh ${CONFIG_FILE} 4
 ```
 
-If you use launch training jobs with slurm, you need to modify the config files (usually the 6th line from the bottom in config files) to set different communication ports.
+If you use launch training jobs with slurm, you need to modify `dist_params` in the config files (usually the 6th line from the bottom in config files) to set different communication ports.
 
 In `config1.py`,
 
