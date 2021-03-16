@@ -68,7 +68,7 @@ class MixupBlending(BaseMiniBatchBlending):
         alpha (float): Parameters for Beta distribution.
     """
 
-    def __init__(self, num_classes, alpha=1.):
+    def __init__(self, num_classes, alpha=.2):
         super().__init__(num_classes=num_classes)
         self.beta = Beta(alpha, alpha)
 
@@ -99,7 +99,7 @@ class CutmixBlending(BaseMiniBatchBlending):
         alpha (float): Parameters for Beta distribution.
     """
 
-    def __init__(self, num_classes, alpha=1.):
+    def __init__(self, num_classes, alpha=.2):
         super().__init__(num_classes=num_classes)
         self.beta = Beta(alpha, alpha)
 
