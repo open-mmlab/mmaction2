@@ -24,7 +24,7 @@ First of all, you have to sign in and download annotations to `$MMACTION2/data/s
 
 ## Step 2. Prepare Videos
 
-Then, you can download all data parts to `$MMACTION2/data/sthv2/` and use the following command to extract.
+Then, you can download all data parts to `$MMACTION2/data/sthv2/` and use the following command to uncompress.
 
 ```shell
 cd $MMACTION2/data/sthv2/

@@ -32,61 +32,82 @@ cat 20bn-something-something-v1-?? | tar zx
 cd $MMACTION2/tools/data/sthv1/
 ```
 
-用户可使用以下脚本，对原视频进行裁剪，得到密集编码且更小尺寸的视频。
+如果用户只想使用 RGB 帧，则可以跳过中间步骤至步骤 5 以直接生成视频帧的标注文件。
+由于官网的 JPG 文件名形如 "%05d.jpg" （比如，"00001.jpg"），需要在配置文件的 `data.train`, `data.val` 和 `data.test` 处添加 "filename_tmpl='{:05}.jpg'" 代码，以修改文件名模板。
 
 ```
-python ../resize_video.py ../../../data/ucf101/videos/ ../../../data/ucf101/videos_256p_dense_cache --dense --level 2 --ext avi
+data = dict(
+    videos_per_gpu=16,
+    workers_per_gpu=4,
+    train=dict(
+        type=dataset_type,
+        ann_file=ann_file_train,
+        data_prefix=data_root,
+        filename_tmpl='{:05}.jpg',
+        pipeline=train_pipeline),
+    val=dict(
+        type=dataset_type,
+        ann_file=ann_file_val,
+        data_prefix=data_root_val,
+        filename_tmpl='{:05}.jpg',
+        pipeline=val_pipeline),
+    test=dict(
+        type=dataset_type,
+        ann_file=ann_file_test,
+        data_prefix=data_root_val,
+        filename_tmpl='{:05}.jpg',
+        pipeline=test_pipeline))
 ```
 
-## 步骤 3. 抽取视频帧和光流
+## 步骤 3. 抽取光流
 
-如果用户只想使用视频进行加载训练，则该部分是 **可选项**。
+如果用户只想使用原 RGB 帧进行加载训练，则该部分是 **可选项**。
 
 在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 进行 [denseflow](https://github.com/open-mmlab/denseflow) 的安装。
 
-如果用户有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 存储中。所抽取的视频帧和光流约占据 100 GB 的存储空间。
+如果用户有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 存储中。
 
 用户可以运行以下命令在 SSD 中建立软连接。
 
 ```shell
 # 执行这两行进行抽取（假设 SSD 挂载在 "/mnt/SSD/"）
-mkdir /mnt/SSD/ucf101_extracted/
-ln -s /mnt/SSD/ucf101_extracted/ ../../../data/ucf101/rawframes
+mkdir /mnt/SSD/sthv1_extracted/
+ln -s /mnt/SSD/sthv1_extracted/ ../../../data/sthv1/rawframes
 ```
 
-如果用户需要抽取 RGB 帧（因为抽取光流的过程十分耗时），可以考虑运行以下命令使用 denseflow **只对 RGB 帧** 进行抽取。
+如果用户想抽取光流，则可以运行以下脚本从 RGB 帧中抽取出光流。
 
 ```shell
-bash extract_rgb_frames.sh
+cd $MMACTION2/tools/data/sthv1/
+bash extract_flow.sh
 ```
 
-如果用户没有安装 denseflow，则可以运行以下命令使用 OpenCV 对 RGB 帧进行抽取。然而，该方法只能抽取与原始视频分辨率相同的帧。
+## 步骤 4: 编码视频
+
+如果用户只想使用原 RGB 帧进行加载训练，则该部分是 **可选项**。
+
+用户可以运行以下命令进行视频编码。
 
 ```shell
-bash extract_rgb_frames_opencv.sh
+cd $MMACTION2/tools/data/sthv1/
+bash encode_videos.sh
 ```
 
-如果用户想抽取 RGB 帧和光流，则可以运行以下脚本使用 "tvl1" 算法进行抽取。
-
-```shell
-bash extract_frames.sh
-```
-
-## 步骤 4. 生成文件列表
+## 步骤 5. 生成文件列表
 
 用户可以通过运行以下命令生成帧和视频格式的文件列表。
 
 ```shell
-bash generate_videos_filelist.sh
-bash generate_rawframes_filelist.sh
+cd $MMACTION2/tools/data/sthv1/
+bash generate_{rawframes, videos}_filelist.sh
 ```
 
-## 步骤 5. 检查文件夹结构
+## 步骤 6. 检查文件夹结构
 
-在走完完整的 UCF-101 数据集准备流程后，
+在走完完整的 Something-Something V1 数据集准备流程后，
 用户可以获得对应的 RGB + 光流文件，视频文件以及标注文件。
 
-在整个 MMAction2 文件夹下，UCF-101 的文件结构如下：
+在整个 MMAction2 文件夹下，Something-Something V1 的文件结构如下：
 
 ```
 mmaction2
@@ -94,33 +115,28 @@ mmaction2
 ├── tools
 ├── configs
 ├── data
-│   ├── ucf101
-│   │   ├── ucf101_{train,val}_split_{1,2,3}_rawframes.txt
-│   │   ├── ucf101_{train,val}_split_{1,2,3}_videos.txt
+│   ├── sthv1
+│   │   ├── sthv1_{train,val}_list_rawframes.txt
+│   │   ├── sthv1_{train,val}_list_videos.txt
 │   │   ├── annotations
-│   │   ├── videos
-│   │   │   ├── ApplyEyeMakeup
-│   │   │   │   ├── v_ApplyEyeMakeup_g01_c01.avi
-
-│   │   │   ├── YoYo
-│   │   │   │   ├── v_YoYo_g25_c05.avi
-│   │   ├── rawframes
-│   │   │   ├── ApplyEyeMakeup
-│   │   │   │   ├── v_ApplyEyeMakeup_g01_c01
-│   │   │   │   │   ├── img_00001.jpg
-│   │   │   │   │   ├── img_00002.jpg
-│   │   │   │   │   ├── ...
-│   │   │   │   │   ├── flow_x_00001.jpg
-│   │   │   │   │   ├── flow_x_00002.jpg
-│   │   │   │   │   ├── ...
-│   │   │   │   │   ├── flow_y_00001.jpg
-│   │   │   │   │   ├── flow_y_00002.jpg
-│   │   │   ├── ...
-│   │   │   ├── YoYo
-│   │   │   │   ├── v_YoYo_g01_c01
-│   │   │   │   ├── ...
-│   │   │   │   ├── v_YoYo_g25_c05
+│   |   ├── videos
+│   |   |   ├── 1.mp4
+│   |   |   ├── 2.mp4
+│   |   |   ├──...
+│   |   ├── rawframes
+│   |   |   ├── 1
+│   |   |   |   ├── 00001.jpg
+│   |   |   |   ├── 00002.jpg
+│   |   |   |   ├── ...
+│   |   |   |   ├── flow_x_00001.jpg
+│   |   |   |   ├── flow_x_00002.jpg
+│   |   |   |   ├── ...
+│   |   |   |   ├── flow_y_00001.jpg
+│   |   |   |   ├── flow_y_00002.jpg
+│   |   |   |   ├── ...
+│   |   |   ├── 2
+│   |   |   ├── ...
 
 ```
 
-关于对 UCF-101 进行训练和验证，可以参考 [基础教程](/docs_zh_CN/getting_started.md)。
+关于对 Something-Something V1 进行训练和验证，可以参考 [基础教程](/docs_zh_CN/getting_started.md)。
