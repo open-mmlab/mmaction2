@@ -110,7 +110,5 @@ evaluation = dict(
 # optimizer
 optimizer = dict(weight_decay=0.0005)
 
-resume_from = "./work_dirs/tsm_r50_mixup_1x1x8_50e_sthv1_rgb/latest.pth"
-
 # runtime settings
 work_dir = './work_dirs/tsm_r50_mixup_1x1x8_50e_sthv1_rgb/'

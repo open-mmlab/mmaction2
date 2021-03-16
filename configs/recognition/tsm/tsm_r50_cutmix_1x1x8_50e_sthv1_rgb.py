@@ -23,7 +23,7 @@ model = dict(
         is_shift=True),
     # model training and testing settings
     train_cfg=dict(
-        blending=dict(type="CutmixBlending", num_classes=174, alpha=.2)),
+        blending=dict(type='CutmixBlending', num_classes=174, alpha=.2)),
     test_cfg=dict(average_clips='prob'))
 
 # dataset settings
