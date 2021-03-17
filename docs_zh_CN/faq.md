@@ -62,7 +62,7 @@
     )
     ```
 
-    可以参照 [教程1：如何编写配置文件](tutorials/1_config.md)，[教程7：如何自定义模型运行参数](tutorials/7_customize_runtime.md#log-config)，和 [这个例子](https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py#L118)了解更多相关内容。
+    可以参照 [教程1：如何编写配置文件](tutorials/1_config.md)，[教程7：如何自定义模型运行参数](tutorials/7_customize_runtime.md#log-config)，和 [这个例子](https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py#L118) 了解更多相关内容。
 
 - **在 batchnorm.py 中抛出错误: Expected more than 1 value per channel when training**
 
