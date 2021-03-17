@@ -24,7 +24,7 @@ The data are provided from [MOC](https://github.com/MCG-NJU/MOC-Detector/blob/ma
 
 **Note**: The annotation of this UCF101-24 is from [here](https://github.com/gurkirt/corrected-UCF101-Annots), which is more correct.
 
-After downloading the `UCF101_v2.tar.gz` file and put it in `$MMACTION2/tools/data/ucf101_24/`, you can run the following command to extract.
+After downloading the `UCF101_v2.tar.gz` file and put it in `$MMACTION2/tools/data/ucf101_24/`, you can run the following command to uncompress.
 
 ```shell
 tar -zxvf UCF101_v2.tar.gz
@@ -32,7 +32,7 @@ tar -zxvf UCF101_v2.tar.gz
 
 ## Check Directory Structure
 
-After extracting, you will get the `rgb-images` directory, `brox-images` directory and `UCF101v2-GT.pkl` for UCF101-24.
+After uncompressing, you will get the `rgb-images` directory, `brox-images` directory and `UCF101v2-GT.pkl` for UCF101-24.
 
 In the context of the whole project (for UCF101-24 only), the folder structure will look like:
 
