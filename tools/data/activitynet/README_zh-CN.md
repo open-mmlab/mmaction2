@@ -1,6 +1,6 @@
-# Preparing ActivityNet
+# 准备 ActivityNet
 
-## Introduction
+## 简介
 
 [DATASET]
 
@@ -14,33 +14,33 @@
 }
 ```
 
-For basic dataset information, please refer to the official [website](http://activity-net.org/).
-For action detection, you can either use the ActivityNet rescaled feature provided in this [repo](https://github.com/wzmsltw/BSN-boundary-sensitive-network#code-and-data-preparation) or extract feature with mmaction2 (which has better performance).
-We release both pipeline.
-Before we start, please make sure that current working directory is `$MMACTION2/tools/data/activitynet/`.
+用户可参考该数据集的 [website](http://activity-net.org/)，以获取数据集相关的基本信息。
+对于时序动作检测任务，用户可以使用这个 [代码库](https://github.com/wzmsltw/BSN-boundary-sensitive-network#code-and-data-preparation) 提供的经缩放（rescaled）的 ActivityNet 特征，
+或者使用 MMAction2 进行特征提取（这将具有更好地精度）。MMAction2 同时提供了以上所述的两种数据使用流程。
+在数据集准备前，请确保当前所在文件夹位置为 `$MMACTION2/tools/data/activitynet/`。
 
-## Option 1: Use the ActivityNet rescaled feature provided in this [repo](https://github.com/wzmsltw/BSN-boundary-sensitive-network#code-and-data-preparation)
+## 选项 1：用户可以使用这个 [代码库](https://github.com/wzmsltw/BSN-boundary-sensitive-network#code-and-data-preparation) 提供的特征
 
-### Step 1. Download Annotations
+### 步骤 1. 下载标注文件
 
-First of all, you can run the following script to download annotation files.
+首先，用户可以使用以下命令进行标注文件下载。
 
 ```shell
 bash download_feature_annotations.sh
 ```
 
-### Step 2. Prepare Videos Features
+### 步骤 2. 准备视频特征
 
-Then, you can run the following script to download activitynet features.
+之后，用户可以使用以下命令进行 activitynet 特征下载。
 
 ```shell
 bash download_features.sh
 ```
 
-### Step 3. Process Annotation Files
+### 步骤 3. 处理标注文件
 
-Next, you can run the following script to process the downloaded annotation files for training and testing.
-It first merges the two annotation files together and then separates the annoations by `train`, `val` and `test`.
+之后，用户可以使用以下命令处理下载的标注文件，以便于训练和测试。
+该脚本会首先合并两个标注文件，然后再将其分为 `train`, `val` 和 `test` 三个部分。
 
 ```shell
 python process_annotations.py
@@ -123,12 +123,12 @@ After feature extraction, you can use our post processing scripts to concat RGB 
 python activitynet_feature_postprocessing.py --rgb ../../../data/ActivityNet/rgb_feat --flow ../../../data/ActivityNet/flow_feat --dest ../../../data/ActivityNet/mmaction_feat
 ```
 
-## Final Step. Check Directory Structure
+## 最后一步：检查文件夹结构
 
-After the whole data pipeline for ActivityNet preparation,
-you will get the features, videos, frames and annotation files.
+在走完完整的 ActivityNet 数据集准备流程后，
+用户可以获得对应的特征文件，RGB + 光流文件，视频文件以及标注文件。
 
-In the context of the whole project (for ActivityNet only), the folder structure will look like:
+在整个 MMAction2 文件夹下，ActivityNet 的文件结构如下：
 
 ```
 mmaction2
@@ -138,7 +138,7 @@ mmaction2
 ├── data
 │   ├── ActivityNet
 
-(if Option 1 used)
+(若根据选项 1 进行数据处理)
 │   │   ├── anet_anno_{train,val,test,full}.json
 │   │   ├── anet_anno_action.json
 │   │   ├── video_info_new.csv
@@ -148,7 +148,7 @@ mmaction2
 │   │   │   │   ├── v___dXUJsj3yo.csv
 │   │   │   |   ├── ..
 
-(if Option 2 used)
+(若根据选项 2 进行数据处理)
 │   │   ├── anet_train_video.txt
 │   │   ├── anet_val_video.txt
 │   │   ├── anet_train_clip.txt
@@ -168,4 +168,4 @@ mmaction2
 
 ```
 
-For training and evaluating on ActivityNet, please refer to [getting_started.md](/docs/getting_started.md).
+关于对 ActivityNet 进行训练和验证，可以参考 [基础教程](/docs/getting_started.md).
