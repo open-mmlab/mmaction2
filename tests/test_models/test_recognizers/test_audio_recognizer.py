@@ -5,12 +5,11 @@ from ..base import generate_recognizer_demo_inputs, get_audio_recognizer_cfg
 
 
 def test_audio_recognizer():
-    model, train_cfg, test_cfg = get_audio_recognizer_cfg(
+    config = get_audio_recognizer_cfg(
         'resnet/tsn_r18_64x1x1_100e_kinetics400_audio_feature.py')
-    model['backbone']['pretrained'] = None
+    config.model['backbone']['pretrained'] = None
 
-    recognizer = build_recognizer(
-        model, train_cfg=train_cfg, test_cfg=test_cfg)
+    recognizer = build_recognizer(config.model)
 
     input_shape = (1, 3, 1, 128, 80)
     demo_inputs = generate_recognizer_demo_inputs(

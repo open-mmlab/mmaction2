@@ -17,10 +17,10 @@ to finetune them on other datasets, so that better performance can be get.
 
 There are two steps to finetune a model on a new dataset.
 
-1. Add support for the new dataset. See [Tutorial 2: Adding New Dataset](3_new_dataset.md).
+1. Add support for the new dataset. See [Tutorial 3: Adding New Dataset](3_new_dataset.md).
 1. Modify the configs. This will be discussed in this tutorial.
 
-For example, if the user want to finetune models pre-trained on Kinetics-400 Dataset to another dataset, say UCF101,
+For example, if the users want to finetune models pre-trained on Kinetics-400 Dataset to another dataset, say UCF101,
 then four parts in the config (see [here](1_config.md)) needs attention.
 
 ## Modify Head
@@ -46,7 +46,9 @@ model = dict(
         spatial_type='avg',
         consensus=dict(type='AvgConsensus', dim=1),
         dropout_ratio=0.4,
-        init_std=0.01))
+        init_std=0.01),
+    train_cfg=None,
+    test_cfg=dict(average_clips=None))
 ```
 
 Note that the `pretrained='torchvision://resnet50'` setting is used for initializing backbone.
@@ -81,7 +83,7 @@ Finetuning usually requires smaller learning rate and less training epochs.
 optimizer = dict(type='SGD', lr=0.005, momentum=0.9, weight_decay=0.0001)  # change from 0.01 to 0.005
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
-lr_config = dict(policy='step', step=[40, 80])
+lr_config = dict(policy='step', step=[20, 40])
 total_epochs = 50 # change from 100 to 50
 checkpoint_config = dict(interval=5)
 ```

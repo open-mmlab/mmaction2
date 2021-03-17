@@ -5,9 +5,9 @@ import torch
 import torch.nn as nn
 from mmcv.utils import _BatchNorm
 
-from mmaction.models import (C3D, X3D, ResNet2Plus1d, ResNet3dCSN,
-                             ResNet3dSlowFast, ResNet3dSlowOnly, ResNetAudio,
-                             ResNetTIN, ResNetTSM)
+from mmaction.models import (C3D, X3D, MobileNetV2TSM, ResNet2Plus1d,
+                             ResNet3dCSN, ResNet3dSlowFast, ResNet3dSlowOnly,
+                             ResNetAudio, ResNetTIN, ResNetTSM, TANet)
 from mmaction.models.backbones.resnet_tsm import NL3DWrapper
 from .base import check_norm_state, generate_backbone_demo_inputs
 
@@ -322,6 +322,45 @@ def test_resnet_tsm_backbone():
     assert feat.shape == torch.Size([8, 2048, 1, 1])
 
 
+def test_mobilenetv2_tsm_backbone():
+    """Test mobilenetv2_tsm backbone."""
+    from mmaction.models.backbones.resnet_tsm import TemporalShift
+    from mmaction.models.backbones.mobilenet_v2 import InvertedResidual
+    from mmcv.cnn import ConvModule
+
+    input_shape = (8, 3, 64, 64)
+    imgs = generate_backbone_demo_inputs(input_shape)
+
+    # mobilenetv2_tsm with width_mult = 1.0
+    mobilenetv2_tsm = MobileNetV2TSM()
+    mobilenetv2_tsm.init_weights()
+    for cur_module in mobilenetv2_tsm.modules():
+        if isinstance(cur_module, InvertedResidual) and \
+            len(cur_module.conv) == 3 and \
+                cur_module.use_res_connect:
+            assert isinstance(cur_module.conv[0], TemporalShift)
+            assert cur_module.conv[0].num_segments == \
+                mobilenetv2_tsm.num_segments
+            assert cur_module.conv[0].shift_div == mobilenetv2_tsm.shift_div
+            assert isinstance(cur_module.conv[0].net, ConvModule)
+
+    # TSM-MobileNetV2 with widen_factor = 1.0 forword
+    feat = mobilenetv2_tsm(imgs)
+    assert feat.shape == torch.Size([8, 1280, 2, 2])
+
+    # mobilenetv2 with widen_factor = 0.5 forword
+    mobilenetv2_tsm_05 = MobileNetV2TSM(widen_factor=0.5)
+    mobilenetv2_tsm_05.init_weights()
+    feat = mobilenetv2_tsm_05(imgs)
+    assert feat.shape == torch.Size([8, 1280, 2, 2])
+
+    # mobilenetv2 with widen_factor = 1.5 forword
+    mobilenetv2_tsm_15 = MobileNetV2TSM(widen_factor=1.5)
+    mobilenetv2_tsm_15.init_weights()
+    feat = mobilenetv2_tsm_15(imgs)
+    assert feat.shape == torch.Size([8, 1920, 2, 2])
+
+
 def test_slowfast_backbone():
     """Test SlowFast backbone."""
     with pytest.raises(TypeError):
@@ -532,6 +571,40 @@ def test_resnet_csn_backbone():
     resnet3d_csn_ip.train(False)
     for module in resnet3d_csn_ip.children():
         assert module.training is False
+
+
+def test_tanet_backbone():
+    """Test tanet backbone."""
+    with pytest.raises(NotImplementedError):
+        # TA-Blocks are only based on Bottleneck block now
+        tanet_18 = TANet(18, 8)
+        tanet_18.init_weights()
+
+    from mmaction.models.backbones.resnet import Bottleneck
+    from mmaction.models.backbones.tanet import TABlock
+
+    # tanet with depth 50
+    tanet_50 = TANet(50, 8)
+    tanet_50.init_weights()
+
+    for layer_name in tanet_50.res_layers:
+        layer = getattr(tanet_50, layer_name)
+        blocks = list(layer.children())
+        for block in blocks:
+            assert isinstance(block, TABlock)
+            assert isinstance(block.block, Bottleneck)
+            assert block.tam.num_segments == block.num_segments
+            assert block.tam.in_channels == block.block.conv1.out_channels
+
+    input_shape = (8, 3, 64, 64)
+    imgs = generate_backbone_demo_inputs(input_shape)
+    feat = tanet_50(imgs)
+    assert feat.shape == torch.Size([8, 2048, 2, 2])
+
+    input_shape = (16, 3, 32, 32)
+    imgs = generate_backbone_demo_inputs(input_shape)
+    feat = tanet_50(imgs)
+    assert feat.shape == torch.Size([16, 2048, 1, 1])
 
 
 def test_c3d_backbone():

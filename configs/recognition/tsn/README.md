@@ -4,7 +4,7 @@
 
 [ALGORITHM]
 
-```latex
+```BibTeX
 @inproceedings{wang2016temporal,
   title={Temporal segment networks: Towards good practices for deep action recognition},
   author={Wang, Limin and Xiong, Yuanjun and Wang, Zhe and Qiao, Yu and Lin, Dahua and Tang, Xiaoou and Van Gool, Luc},
@@ -53,6 +53,16 @@
 |[tsn_r50_video_dense_1x1x8_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_video_dense_1x1x8_100e_kinetics400_rgb.py) |short-side 256|8| ResNet50| ImageNet | 70.40 | 89.12 |x|x|x|21553| [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_video_dense_1x1x8_100e_kinetics400_rgb/tsn_r50_video_dense_1x1x8_100e_kinetics400_rgb_20200703-0f19175f.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_video_dense_1x1x8_100e_kinetics400_rgb/tsn_r50_video_2d_1x1x8_dense_100e_kinetics400_rgb.log)| [json](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_video_dense_1x1x8_100e_kinetics400_rgb/tsn_r50_video_2d_1x1x8_dense_100e_kinetics400_rgb.log.json)|
 
 Here, We use [1: 1] to indicate that we combine rgb and flow score with coefficients 1: 1 to get the two-stream prediction (without applying softmax).
+
+### Using backbones from 3rd-party in TSN
+
+It's possible and convenient to use a 3rd-party backbone for TSN under the framework of MMAction2, here we provide some examples for:
+
+- [x] Backbones from MMClassification
+
+|                            config                            |   resolution   | gpus |                           backbone                           | pretrain | top1 acc | top5 acc |                             ckpt                             |                             log                              |                             json                             |
+| :----------------------------------------------------------: | :------------: | :--: | :----------------------------------------------------------: | :------: | :------: | :------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| [tsn_rn101_32x4d_320p_1x1x3_100e_kinetics400_rgb](/configs/recognition/tsn/custom_backbones/tsn_rn101_32x4d_320p_1x1x3_100e_kinetics400_rgb.py) | short-side 320 | 8x2  | ResNeXt101-32x4d [[MMCls](https://github.com/open-mmlab/mmclassification/tree/master/configs/resnext)] | ImageNet |  73.43   |  91.01   | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/custom_backbones/tsn_rn101_32x4d_320p_1x1x3_100e_kinetics400_rgb-16a8b561.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/custom_backbones/tsn_rn101_32x4d_320p_1x1x3_100e_kinetics400_rgb.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/custom_backbones/tsn_rn101_32x4d_320p_1x1x3_100e_kinetics400_rgb.json) |
 
 ### Kinetics-400 Data Benchmark (8-gpus, ResNet50, ImageNet pretrain; 3 segments)
 
@@ -130,9 +140,9 @@ In data benchmark, we compare:
 
 | config                                                       | resolution | gpus | backbone |  pretrain   | top1 acc | top5 acc | gpu_mem(M) |                             ckpt                             |                             log                              |                             json                             |
 | :----------------------------------------------------------- | :--------: | :--: | :------: | :---------: | :------: | :------: | :--------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
-| [tsn_r50_320p_1x1x8_50e_activitynet_video_rgb](/configs/recognition/tsn/tsn_r50_320p_1x1x8_50e_activitynet_video_rgb.py) |  340x256   | 8x1  | ResNet50 | Kinetics400 |  73.97   |  93.46   |    5692    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_320p_1x1x8_50e_activitynet_video_rgb/tsn_r50_320p_1x1x8_50e_activitynet_video_rgb_20200804-9e15687e.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_320p_1x1x8_50e_activitynet_video_rgb/tsn_r50_320p_1x1x8_50e_activitynet_video_rgb_20200804.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_320p_1x1x8_50e_activitynet_video_rgb/tsn_r50_320p_1x1x8_50e_activitynet_video_rgb_20200804.json) |
-| [tsn_r50_320p_1x1x8_50e_activitynet_clip_rgb](/configs/recognition/tsn/tsn_r50_320p_1x1x8_50e_activitynet_clip_rgb.py) |  340x256   | 8x1  | ResNet50 | Kinetics400 |  76.07   |  94.10   |    5692    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_320p_1x1x8_50e_activitynet_clip_rgb/tsn_r50_320p_1x1x8_50e_activitynet_clip_rgb_20200804-f7bcbf34.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_320p_1x1x8_50e_activitynet_clip_rgb/tsn_r50_320p_1x1x8_50e_activitynet_clip_rgb_20200804.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_320p_1x1x8_50e_activitynet_clip_rgb/tsn_r50_320p_1x1x8_50e_activitynet_clip_rgb_20200804.json) |
-| [tsn_r50_320p_1x1x8_150e_activitynet_video_flow](/configs/recognition/tsn/tsn_r50_320p_1x1x8_150e_activitynet_video_flow.py) |  340x256   | 8x2  | ResNet50 | Kinetics400 |  58.70   |  84.72   |    5780    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_320p_1x1x8_150e_activitynet_video_flow/tsn_r50_320p_1x1x8_150e_activitynet_video_flow_20200804-13313f52.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_320p_1x1x8_150e_activitynet_video_flow/tsn_r50_320p_1x1x8_150e_activitynet_video_flow_20200804.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_320p_1x1x8_150e_activitynet_video_flow/tsn_r50_320p_1x1x8_150e_activitynet_video_flow_20200804.json) |
+| [tsn_r50_320p_1x1x8_50e_activitynet_video_rgb](/configs/recognition/tsn/tsn_r50_320p_1x1x8_50e_activitynet_video_rgb.py) |  short-side 320  | 8x1  | ResNet50 | Kinetics400 |  73.93   |  93.44   |    5692    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_320p_1x1x8_50e_activitynet_video_rgb/tsn_r50_320p_1x1x8_50e_activitynet_video_rgb_20210301-7f8da0c6.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_320p_1x1x8_50e_activitynet_video_rgb/20210228_223327.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_320p_1x1x8_50e_activitynet_video_rgb/20210228_223327.log.json) |
+| [tsn_r50_320p_1x1x8_50e_activitynet_clip_rgb](/configs/recognition/tsn/tsn_r50_320p_1x1x8_50e_activitynet_clip_rgb.py) |  short-side 320  | 8x1  | ResNet50 | Kinetics400 |  76.90   |  94.47   |    5692    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_320p_1x1x8_50e_activitynet_clip_rgb/tsn_r50_320p_1x1x8_50e_activitynet_clip_rgb_20210301-c0f04a7e.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_320p_1x1x8_50e_activitynet_clip_rgb/20210217_181313.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_320p_1x1x8_50e_activitynet_clip_rgb/20210217_181313.log.json) |
+| [tsn_r50_320p_1x1x8_150e_activitynet_video_flow](/configs/recognition/tsn/tsn_r50_320p_1x1x8_150e_activitynet_video_flow.py) |  340x256   | 8x2  | ResNet50 | Kinetics400 |  57.51   |  83.02   |    5780    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_320p_1x1x8_150e_activitynet_video_flow/tsn_r50_320p_1x1x8_150e_activitynet_video_flow_20200804-13313f52.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_320p_1x1x8_150e_activitynet_video_flow/tsn_r50_320p_1x1x8_150e_activitynet_video_flow_20200804.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_320p_1x1x8_150e_activitynet_video_flow/tsn_r50_320p_1x1x8_150e_activitynet_video_flow_20200804.json) |
 | [tsn_r50_320p_1x1x8_150e_activitynet_clip_flow](/configs/recognition/tsn/tsn_r50_320p_1x1x8_150e_activitynet_clip_flow.py) |  340x256   | 8x2  | ResNet50 | Kinetics400 |  59.51   |  82.69   |    5780    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_320p_1x1x8_150e_activitynet_clip_flow/tsn_r50_320p_1x1x8_150e_activitynet_clip_flow_20200804-8622cf38.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_320p_1x1x8_150e_activitynet_clip_flow/tsn_r50_320p_1x1x8_150e_activitynet_clip_flow_20200804.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_320p_1x1x8_150e_activitynet_clip_flow/tsn_r50_320p_1x1x8_150e_activitynet_clip_flow_20200804.json) |
 
 ### HVU
@@ -162,14 +172,14 @@ Notes:
 
 For more details on data preparation, you can refer to
 
-* [preparing_ucf101](/tools/data/ucf101/README.md)
-* [preparing_kinetics](/tools/data/kinetics/README.md)
-* [preparing_sthv1](/tools/data/sthv1/README.md)
-* [preparing_sthv2](/tools/data/sthv2/README.md)
-* [preparing_mit](/tools/data/mit/README.md)
-* [preparing_mmit](/tools/data/mmit/README.md)
-* [preparing_hvu](/tools/data/hvu/README.md)
-* [preparing_hmdb51](/tools/data/hmdb51/README.md)
+- [preparing_ucf101](/tools/data/ucf101/README.md)
+- [preparing_kinetics](/tools/data/kinetics/README.md)
+- [preparing_sthv1](/tools/data/sthv1/README.md)
+- [preparing_sthv2](/tools/data/sthv2/README.md)
+- [preparing_mit](/tools/data/mit/README.md)
+- [preparing_mmit](/tools/data/mmit/README.md)
+- [preparing_hvu](/tools/data/hvu/README.md)
+- [preparing_hmdb51](/tools/data/hmdb51/README.md)
 
 ## Train
 

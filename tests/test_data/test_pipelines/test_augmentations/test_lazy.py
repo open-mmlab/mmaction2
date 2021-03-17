@@ -339,7 +339,7 @@ class TestLazy:
 
         assert repr(flip) == (f'{flip.__class__.__name__}'
                               f'(flip_ratio={1}, direction=vertical, '
-                              f'lazy={True})')
+                              f'flip_label_map={None}, lazy={True})')
 
     def test_center_crop_lazy(self):
         with pytest.raises(TypeError):

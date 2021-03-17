@@ -4,7 +4,7 @@
 
 [DATASET]
 
-```
+```BibTeX
 @InProceedings{Materzynska_2019_ICCV,
   author = {Materzynska, Joanna and Berger, Guillaume and Bax, Ingo and Memisevic, Roland},
   title = {The Jester Dataset: A Large-Scale Video Dataset of Human Gestures},

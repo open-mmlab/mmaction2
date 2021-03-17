@@ -15,9 +15,9 @@ model = dict(
         in_channels=2048,
         num_classes=400,
         spatial_type='avg',
-        dropout_ratio=0.5))
-train_cfg = None
-test_cfg = dict(average_clips='prob')
+        dropout_ratio=0.5),
+    train_cfg=None,
+    test_cfg=dict(average_clips='prob'))
 dataset_type = 'RawframeDataset'
 data_root = 'data/kinetics400/rawframes_train'
 data_root_val = 'data/kinetics400/rawframes_val'

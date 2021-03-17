@@ -10,7 +10,7 @@
 
 ## Video demo
 
-We provide a demo script to predict the recognition result using a single video. In order to get predict results in range `[0, 1]`, make sure to set `test_cfg = dict(average_clips='prob')` in config file.
+We provide a demo script to predict the recognition result using a single video. In order to get predict results in range `[0, 1]`, make sure to set `model['test_cfg'] = dict(average_clips='prob')` in config file.
 
 ```shell
 python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} {LABEL_FILE} [--use-frames] \
@@ -32,7 +32,7 @@ Optional arguments:
 Examples:
 
 Assume that you are located at `$MMACTION2` and have already downloaded the checkpoints to the directory `checkpoints/`,
-or use checkpoint url from `configs/` to directly load corresponding checkpoint, which will be automatically saved in `$HOME/.cahe/torch/checkpoints`.
+or use checkpoint url from `configs/` to directly load corresponding checkpoint, which will be automatically saved in `$HOME/.cache/torch/checkpoints`.
 
 1. Recognize a video file as input by using a TSN model on cuda by default.
 
@@ -191,7 +191,7 @@ python demo/demo_gradcam.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} [--u
 Examples:
 
 Assume that you are located at `$MMACTION2` and have already downloaded the checkpoints to the directory `checkpoints/`,
-or use checkpoint url from `configs/` to directly load corresponding checkpoint, which will be automatically saved in `$HOME/.cahe/torch/checkpoints`.
+or use checkpoint url from `configs/` to directly load corresponding checkpoint, which will be automatically saved in `$HOME/.cache/torch/checkpoints`.
 
 1. Get GradCAM results of a I3D model, using a video file as input and then generate an gif file with 10 fps.
 
@@ -212,12 +212,12 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
 
 ## Webcam demo
 
-We provide a demo script to implement real-time action recognition from web camera. In order to get predict results in range `[0, 1]`, make sure to set `test_cfg = dict(average_clips='prob')` in config file.
+We provide a demo script to implement real-time action recognition from web camera. In order to get predict results in range `[0, 1]`, make sure to set `model.['test_cfg'] = dict(average_clips='prob')` in config file.
 
 ```shell
 python demo/webcam_demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${LABEL_FILE} \
     [--device ${DEVICE_TYPE}] [--camera-id ${CAMERA_ID}] [--threshold ${THRESHOLD}] \
-    [--average-size ${AVERAGE_SIZE}]
+    [--average-size ${AVERAGE_SIZE}] [--drawing-fps ${DRAWING_FPS}] [--inference-fps ${INFERENCE_FPS}]
 ```
 
 Optional arguments:
@@ -226,11 +226,15 @@ Optional arguments:
 - `CAMERA_ID`: ID of camera device If not specified, it will be set to 0.
 - `THRESHOLD`: Threshold of prediction score for action recognition. Only label with score higher than the threshold will be shown. If not specified, it will be set to 0.
 - `AVERAGE_SIZE`: Number of latest clips to be averaged for prediction. If not specified, it will be set to 1.
+- `DRAWING_FPS`: Upper bound FPS value of the output drawing. If not specified, it will be set to 20.
+- `INFERENCE_FPS`: Upper bound FPS value of the output drawing. If not specified, it will be set to 4.
+
+**Note**: If your hardware is good enough, increasing the value of `DRAWING_FPS` and `INFERENCE_FPS` will get a better experience.
 
 Examples:
 
 Assume that you are located at `$MMACTION2` and have already downloaded the checkpoints to the directory `checkpoints/`,
-or use checkpoint url from `configs/` to directly load corresponding checkpoint, which will be automatically saved in `$HOME/.cahe/torch/checkpoints`.
+or use checkpoint url from `configs/` to directly load corresponding checkpoint, which will be automatically saved in `$HOME/.cache/torch/checkpoints`.
 
 1. Recognize the action from web camera as input by using a TSN model on cpu, averaging the score per 5 times
     and outputting result labels with score higher than 0.2.
@@ -286,7 +290,7 @@ Optional arguments:
 Examples:
 
 Assume that you are located at `$MMACTION2` and have already downloaded the checkpoints to the directory `checkpoints/`,
-or use checkpoint url from `configs/` to directly load corresponding checkpoint, which will be automatically saved in `$HOME/.cahe/torch/checkpoints`.
+or use checkpoint url from `configs/` to directly load corresponding checkpoint, which will be automatically saved in `$HOME/.cache/torch/checkpoints`.
 
 1. Predict different labels in a long video by using a TSN model on cpu, with 3 frames for input steps (that is, random sample one from each 3 frames)
    and outputting result labels with score higher than 0.2.

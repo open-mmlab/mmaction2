@@ -319,7 +319,7 @@ def main():
 
     # Build STDET model
     config.model.backbone.pretrained = None
-    model = build_detector(config.model, test_cfg=config.test_cfg)
+    model = build_detector(config.model, test_cfg=config.get('test_cfg'))
 
     load_checkpoint(model, args.checkpoint, map_location=args.device)
     model.to(args.device)

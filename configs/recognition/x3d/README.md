@@ -4,7 +4,7 @@
 
 [ALGORITHM]
 
-```latex
+```BibTeX
 @misc{feichtenhofer2020x3d,
       title={X3D: Expanding Architectures for Efficient Video Recognition},
       author={Christoph Feichtenhofer},

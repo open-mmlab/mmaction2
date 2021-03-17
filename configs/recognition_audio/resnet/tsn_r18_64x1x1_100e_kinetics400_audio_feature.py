@@ -9,10 +9,10 @@ model = dict(
         num_classes=400,
         in_channels=512,
         dropout_ratio=0.5,
-        init_std=0.01))
-# model training and testing settings
-train_cfg = None
-test_cfg = dict(average_clips='prob')
+        init_std=0.01),
+    # model training and testing settings
+    train_cfg=None,
+    test_cfg=dict(average_clips='prob'))
 # dataset settings
 dataset_type = 'AudioFeatureDataset'
 data_root = 'data/kinetics400/audio_feature_train'

@@ -45,7 +45,10 @@ def main():
 
     cfg = Config.fromfile(args.config)
     model = build_recognizer(
-        cfg.model, train_cfg=cfg.train_cfg, test_cfg=cfg.test_cfg)
+        cfg.model,
+        train_cfg=cfg.get('train_cfg'),
+        test_cfg=cfg.get('test_cfg'))
+
     model = model.cuda()
     model.eval()
 

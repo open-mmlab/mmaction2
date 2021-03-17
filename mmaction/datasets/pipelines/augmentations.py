@@ -778,7 +778,7 @@ class MultiScaleCrop:
     """Crop images with a list of randomly selected scales.
 
     Randomly select the w and h scales from a list of scales. Scale of 1 means
-    the base size, which is the minimal of image weight and height. The scale
+    the base size, which is the minimal of image width and height. The scale
     level of w and h is controlled to be smaller than a certain value to
     prevent too large or small aspect ratio.
     Required keys are "imgs", "img_shape", added or modified keys are "imgs",
@@ -787,7 +787,7 @@ class MultiScaleCrop:
 
     Args:
         input_size (int | tuple[int]): (w, h) of network input.
-        scales (tuple[float]): Weight and height scales to be selected.
+        scales (tuple[float]): width and height scales to be selected.
         max_wh_scale_gap (int): Maximum gap of w and h scale levels.
             Default: 1.
         random_crop (bool): If set to True, the cropping bbox will be randomly
@@ -1114,16 +1114,23 @@ class Flip:
         flip_ratio (float): Probability of implementing flip. Default: 0.5.
         direction (str): Flip imgs horizontally or vertically. Options are
             "horizontal" | "vertical". Default: "horizontal".
+        flip_label_map (Dict[int, int] | None): Transform the label of the
+            flipped image with the specific label. Default: None.
         lazy (bool): Determine whether to apply lazy operation. Default: False.
     """
     _directions = ['horizontal', 'vertical']
 
-    def __init__(self, flip_ratio=0.5, direction='horizontal', lazy=False):
+    def __init__(self,
+                 flip_ratio=0.5,
+                 direction='horizontal',
+                 flip_label_map=None,
+                 lazy=False):
         if direction not in self._directions:
             raise ValueError(f'Direction {direction} is not supported. '
                              f'Currently support ones are {self._directions}')
         self.flip_ratio = flip_ratio
         self.direction = direction
+        self.flip_label_map = flip_label_map
         self.lazy = lazy
 
     def __call__(self, results):
@@ -1142,6 +1149,10 @@ class Flip:
 
         results['flip'] = flip
         results['flip_direction'] = self.direction
+
+        if self.flip_label_map is not None and flip:
+            results['label'] = self.flip_label_map.get(results['label'],
+                                                       results['label'])
 
         if not self.lazy:
             if flip:
@@ -1174,7 +1185,7 @@ class Flip:
         repr_str = (
             f'{self.__class__.__name__}('
             f'flip_ratio={self.flip_ratio}, direction={self.direction}, '
-            f'lazy={self.lazy})')
+            f'flip_label_map={self.flip_label_map}, lazy={self.lazy})')
         return repr_str
 
 

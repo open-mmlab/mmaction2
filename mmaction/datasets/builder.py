@@ -84,10 +84,11 @@ def build_dataloader(dataset,
     if dist:
         if sample_by_class:
             assert power is not None
-            sampler = DistributedPowerSampler(dataset, world_size, rank, power)
+            sampler = DistributedPowerSampler(
+                dataset, world_size, rank, power, seed=seed)
         else:
             sampler = DistributedSampler(
-                dataset, world_size, rank, shuffle=shuffle)
+                dataset, world_size, rank, shuffle=shuffle, seed=seed)
         shuffle = False
         batch_size = videos_per_gpu
         num_workers = workers_per_gpu

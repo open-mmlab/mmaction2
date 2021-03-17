@@ -5,10 +5,10 @@ from ..base import get_localizer_cfg
 
 
 def test_tem():
-    model_cfg, _, _ = get_localizer_cfg(
+    model_cfg = get_localizer_cfg(
         'bsn/bsn_tem_400x100_1x16_20e_activitynet_feature.py')
 
-    localizer_tem = build_localizer(model_cfg)
+    localizer_tem = build_localizer(model_cfg.model)
     raw_feature = torch.rand(8, 400, 100)
     gt_bbox = torch.Tensor([[[1.0, 3.0], [3.0, 5.0]]] * 8)
     losses = localizer_tem(raw_feature, gt_bbox)

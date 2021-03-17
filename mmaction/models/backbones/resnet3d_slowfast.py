@@ -236,11 +236,20 @@ class ResNet3dPathway(ResNet3d):
                     original_conv_name = name
                     # layer{X}.{Y}.conv{n}.bn->layer{X}.{Y}.bn{n}
                     original_bn_name = name.replace('conv', 'bn')
-                self._inflate_conv_params(module.conv, state_dict_r2d,
-                                          original_conv_name,
-                                          inflated_param_names)
-                self._inflate_bn_params(module.bn, state_dict_r2d,
-                                        original_bn_name, inflated_param_names)
+                if original_conv_name + '.weight' not in state_dict_r2d:
+                    logger.warning(f'Module not exist in the state_dict_r2d'
+                                   f': {original_conv_name}')
+                else:
+                    self._inflate_conv_params(module.conv, state_dict_r2d,
+                                              original_conv_name,
+                                              inflated_param_names)
+                if original_bn_name + '.weight' not in state_dict_r2d:
+                    logger.warning(f'Module not exist in the state_dict_r2d'
+                                   f': {original_bn_name}')
+                else:
+                    self._inflate_bn_params(module.bn, state_dict_r2d,
+                                            original_bn_name,
+                                            inflated_param_names)
 
         # check if any parameters in the 2d checkpoint are not loaded
         remaining_names = set(

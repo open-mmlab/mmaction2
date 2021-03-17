@@ -4,7 +4,7 @@
 
 [ALGORITHM]
 
-```latex
+```BibTeX
 @InProceedings{Zhao_2017_ICCV,
 author = {Zhao, Yue and Xiong, Yuanjun and Wang, Limin and Wu, Zhirong and Tang, Xiaoou and Lin, Dahua},
 title = {Temporal Action Detection With Structured Segment Networks},

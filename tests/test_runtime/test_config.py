@@ -40,10 +40,7 @@ def test_config_build_recognizer():
         if 'pretrained' in config_mod.model['backbone']:
             config_mod.model['backbone']['pretrained'] = None
 
-        recognizer = build_recognizer(
-            config_mod.model,
-            train_cfg=config_mod.train_cfg,
-            test_cfg=config_mod.test_cfg)
+        recognizer = build_recognizer(config_mod.model)
         assert isinstance(recognizer, nn.Module)
 
 

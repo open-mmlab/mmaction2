@@ -3,7 +3,9 @@ import os.path as osp
 import warnings
 from math import inf
 
+import torch.distributed as dist
 from mmcv.runner import Hook
+from torch.nn.modules.batchnorm import _BatchNorm
 from torch.utils.data import DataLoader
 
 
@@ -35,12 +37,10 @@ class EvalHook(Hook):
             ``mean_average_precision``, ``mmit_mean_average_precision``
             for action recognition dataset (RawframeDataset and VideoDataset).
             ``AR@AN``, ``auc`` for action localization dataset.
-            (ActivityNetDataset). ``Recall@0.5@100``, ``AR@100``,
-            ``mAP@0.5IOU`` for spatio-temporal action detection dataset
-            (AVADataset). If ``save_best`` is ``auto``, the first key
-             of the returned ``OrderedDict`` result will be used. The interval
-             of ``EvalHook`` should be divisible by that of ``CheckpointHook``.
-             Default: 'top1_acc'.
+            (ActivityNetDataset). ``mAP@0.5IOU`` for spatio-temporal action
+            detection dataset (AVADataset). If ``save_best`` is ``auto``, the
+            first key of the returned ``OrderedDict`` result will be used.
+            Default: 'auto'.
         rule (str | None, optional): Comparison rule for best score. If set to
             None, it will infer a reasonable rule. Keys such as 'acc', 'top'
             .etc will be inferred by 'greater' rule. Keys contain 'loss' will
@@ -60,7 +60,7 @@ class EvalHook(Hook):
                  start=None,
                  interval=1,
                  by_epoch=True,
-                 save_best=None,
+                 save_best='auto',
                  rule=None,
                  **eval_kwargs):
         if 'key_indicator' in eval_kwargs:
@@ -274,10 +274,10 @@ class DistEvalHook(EvalHook):
             ``mean_average_precision``, ``mmit_mean_average_precision``
             for action recognition dataset (RawframeDataset and VideoDataset).
             ``AR@AN``, ``auc`` for action localization dataset
-            (ActivityNetDataset). If ``save_best`` is ``auto``, the first key
-            of the returned ``OrderedDict`` result will be used. The interval
-            of ``EvalHook`` should be divisible of that in ``CheckpointHook``.
-            Default: None.
+            (ActivityNetDataset). ``mAP@0.5IOU`` for spatio-temporal action
+            detection dataset (AVADataset). If ``save_best`` is ``auto``, the
+            first key of the returned ``OrderedDict`` result will be used.
+            Default: 'auto'.
         rule (str | None, optional): Comparison rule for best score. If set to
             None, it will infer a reasonable rule. Keys such as 'acc', 'top'
             .etc will be inferred by 'greater' rule. Keys contain 'loss' will
@@ -287,6 +287,9 @@ class DistEvalHook(EvalHook):
             processes. Default: None.
         gpu_collect (bool): Whether to use gpu or cpu to collect results.
             Default: False.
+        broadcast_bn_buffer (bool): Whether to broadcast the
+            buffer(running_mean and running_var) of rank 0 to other rank
+            before evaluation. Default: True.
         **eval_kwargs: Evaluation arguments fed into the evaluate function of
             the dataset.
     """
@@ -296,8 +299,9 @@ class DistEvalHook(EvalHook):
                  start=None,
                  interval=1,
                  by_epoch=True,
-                 save_best=None,
+                 save_best='auto',
                  rule=None,
+                 broadcast_bn_buffer=True,
                  tmpdir=None,
                  gpu_collect=False,
                  **eval_kwargs):
@@ -309,10 +313,25 @@ class DistEvalHook(EvalHook):
             save_best=save_best,
             rule=rule,
             **eval_kwargs)
+        self.broadcast_bn_buffer = broadcast_bn_buffer
         self.tmpdir = tmpdir
         self.gpu_collect = gpu_collect
 
     def _do_evaluate(self, runner):
+        """perform evaluation and save ckpt."""
+        # Synchronization of BatchNorm's buffer (running_mean
+        # and running_var) is not supported in the DDP of pytorch,
+        # which may cause the inconsistent performance of models in
+        # different ranks, so we broadcast BatchNorm's buffers
+        # of rank 0 to other ranks to avoid this.
+        if self.broadcast_bn_buffer:
+            model = runner.model
+            for name, module in model.named_modules():
+                if isinstance(module,
+                              _BatchNorm) and module.track_running_stats:
+                    dist.broadcast(module.running_var, 0)
+                    dist.broadcast(module.running_mean, 0)
+
         if not self.evaluation_flag(runner):
             return
 
