@@ -179,7 +179,7 @@ docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmaction2/data mmaction2
 
 ### 源码安装 MMAction2
 
-这里提供了 conda 下安装 MMAction2 并链接数据集路径的完整脚本（假设这里的 Kinetics-400 数据的路径在 $KINETICS400_ROOT）。
+这里提供了 conda 下安装 MMAction2 并链接数据集路径的完整脚本（假设 Kinetics-400 数据的路径在 $KINETICS400_ROOT）。
 
 ```shell
 conda create -n open-mmlab python=3.7 -y
