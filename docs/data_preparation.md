@@ -95,7 +95,7 @@ python tools/flow_extraction.py --input ${INPUT} [--prefix ${PREFIX}] [--dest ${
 
 ### Generate file list
 
-We provide a convenient script to generate annotation file list. You can use the following command to extract frames.
+We provide a convenient script to generate annotation file list. You can use the following command to generate file lists given extracted frames / downloaded videos.
 
 ```shell
 cd $MMACTION2
