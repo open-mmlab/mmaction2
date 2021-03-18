@@ -19,7 +19,7 @@
 
 输入变量指定一个训练日志文件，可通过 `tools/analysis/analyze_logs.py` 脚本绘制 loss/top-k 曲线。本功能依赖于 `seaborn`，使用前请先通过 `pip install seaborn` 安装依赖包。
 
-![acc_curve_image](/docs/imgs/acc_curve.png)
+![准确度曲线图](imgs/acc_curve.png)
 
 ```shell
 python tools/analysis/analyze_logs.py plot_curve ${JSON_LOGS} [--keys ${KEYS}] [--title ${TITLE}] [--legend ${LEGEND}] [--backend ${BACKEND}] [--style ${STYLE}] [--out ${OUT_FILE}]
@@ -117,7 +117,7 @@ Params: 28.04 M
 
 (1) 将模型的权重张量转化为 CPU 张量。
 (2) 删除优化器状态信息。
-(3) 计算模型检查点文件的哈希值，并将哈希值添加到文件名后。
+(3) 计算模型权重文件的哈希值，并将哈希值添加到文件名后。
 
 ```shell
 python tools/publish_model.py ${INPUT_FILENAME} ${OUTPUT_FILENAME}

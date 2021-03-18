@@ -1,7 +1,7 @@
-Welcome to MMAction2's documentation!
+欢迎来到 MMAction2 的中文文档！
 =====================================
 
-You can switch between Chinese and English documents in the lower-left corner of the layout.
+您可以在页面左下角切换中英文文档。
 
 .. toctree::
    :maxdepth: 2
@@ -13,7 +13,7 @@ You can switch between Chinese and English documents in the lower-left corner of
 
 .. toctree::
    :maxdepth: 2
-   :caption: Datasets
+   :caption: 数据集
 
    datasets.md
    data_preparation.md
@@ -21,7 +21,7 @@ You can switch between Chinese and English documents in the lower-left corner of
 
 .. toctree::
    :maxdepth: 2
-   :caption: Model Zoo
+   :caption: 模型库
 
    modelzoo.md
    recognition_models.md
@@ -30,7 +30,7 @@ You can switch between Chinese and English documents in the lower-left corner of
 
 .. toctree::
    :maxdepth: 2
-   :caption: Tutorials
+   :caption: 教程
 
    tutorials/1_config.md
    tutorials/2_finetune.md
@@ -42,30 +42,29 @@ You can switch between Chinese and English documents in the lower-left corner of
 
 .. toctree::
    :maxdepth: 2
-   :caption: Useful Tools and Scripts
+   :caption: 实用工具和脚本
 
    useful_tools.md
 
 .. toctree::
    :maxdepth: 2
-   :caption: Notes
+   :caption: 记录
 
    changelog.md
    faq.md
 
 .. toctree::
-   :caption: API Reference
+   :caption: API 参考文档
 
    api.rst
 
 .. toctree::
-   :caption: Switch Language
+   :caption: 语言切换
 
    switch_language.md
 
 
-
-Indices and tables
+索引和表格
 ==================
 
 * :ref:`genindex`

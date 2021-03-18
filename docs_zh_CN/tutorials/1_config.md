@@ -198,8 +198,8 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
         step=7)  # 学习率衰减步长
 
     total_epochs = 9  # 训练模型的总周期数
-    checkpoint_config = dict(  # 模型检查点钩子设置，更多细节可参考 https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/checkpoint.py
-        interval=1)  # 模型检查点文件保存间隔
+    checkpoint_config = dict(  # 模型权重文件钩子设置，更多细节可参考 https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/checkpoint.py
+        interval=1)  # 模型权重文件保存间隔
     evaluation = dict(  # 训练期间做验证的设置
         interval=1,  # 执行验证的间隔
         metrics=['AR@AN'])  # 验证方法
@@ -213,9 +213,9 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
     # 运行设置
     dist_params = dict(backend='nccl')  # 建立分布式训练的设置（端口号，多 GPU 通信框架等）
     log_level = 'INFO'  # 日志等级
-    work_dir = './work_dirs/bmn_400x100_2x8_9e_activitynet_feature/'  # 记录当前实验日志和模型检查点文件的文件夹
+    work_dir = './work_dirs/bmn_400x100_2x8_9e_activitynet_feature/'  # 记录当前实验日志和模型权重文件的文件夹
     load_from = None  # 从给定路径加载模型作为预训练模型. 这个选项不会用于断点恢复训练
-    resume_from = None  # 加载给定路径的模型检查点文件作为断点续连的模型, 训练将从该时间点保存的周期点继续进行
+    resume_from = None  # 加载给定路径的模型权重文件作为断点续连的模型, 训练将从该时间点保存的周期点继续进行
     workflow = [('train', 1)]  # runner 的执行流. [('train', 1)] 代表只有一个执行流，并且这个名为 train 的执行流只执行一次
     output_config = dict(  # 时序检测器输出设置
         out=f'{work_dir}/results.json',  # 输出文件路径
@@ -407,12 +407,12 @@ MMAction2 将模块化设计整合到配置文件系统中，以便执行各类�
         policy='step',  # 调整器策略, 支持 CosineAnnealing，Cyclic等方法。更多细节可参考 https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/lr_updater.py#L9
         step=[40, 80])  # 学习率衰减步长
     total_epochs = 100  # 训练模型的总周期数
-    checkpoint_config = dict(  # 模型检查点钩子设置，更多细节可参考 https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/checkpoint.py
-        interval=5)  # 模型检查点文件保存间隔
+    checkpoint_config = dict(  # 模型权重钩子设置，更多细节可参考 https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/checkpoint.py
+        interval=5)  # 模型权重文件保存间隔
     evaluation = dict(  # 训练期间做验证的设置
         interval=5,  # 执行验证的间隔
         metrics=['top_k_accuracy', 'mean_class_accuracy'],  # 验证方法
-        save_best='top_k_accuracy')  # 设置 `top_k_accuracy` 作为指示器，用于存储最好的模型检查点文件
+        save_best='top_k_accuracy')  # 设置 `top_k_accuracy` 作为指示器，用于存储最好的模型权重文件
     log_config = dict(  # 注册日志钩子的设置
         interval=20,  # 打印日志间隔
         hooks=[  # 训练期间执行的钩子
@@ -423,9 +423,9 @@ MMAction2 将模块化设计整合到配置文件系统中，以便执行各类�
     # 运行设置
     dist_params = dict(backend='nccl')  # 建立分布式训练的设置，其中端口号也可以设置
     log_level = 'INFO'  # 日志等级
-    work_dir = './work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb/'  # 记录当前实验日志和模型检查点文件的文件夹
+    work_dir = './work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb/'  # 记录当前实验日志和模型权重文件的文件夹
     load_from = None  # 从给定路径加载模型作为预训练模型. 这个选项不会用于断点恢复训练
-    resume_from = None  # 加载给定路径的模型检查点文件作为断点续连的模型, 训练将从该时间点保存的周期点继续进行
+    resume_from = None  # 加载给定路径的模型权重文件作为断点续连的模型, 训练将从该时间点保存的周期点继续进行
     workflow = [('train', 1)]  # runner 的执行流. [('train', 1)] 代表只有一个执行流，并且这个名为 train 的执行流只执行一次
 
     ```
@@ -633,11 +633,11 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
         warmup_ratio=0.1)   # 初始学习率为 warmup_ratio * lr
 
     total_epochs = 20  # 训练模型的总周期数
-    checkpoint_config = dict(  # 模型检查点钩子设置，更多细节可参考 https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/checkpoint.py
-        interval=1)   # 模型检查点文件保存间隔
+    checkpoint_config = dict(  # 模型权重文件钩子设置，更多细节可参考 https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/checkpoint.py
+        interval=1)   # 模型权重文件保存间隔
     workflow = [('train', 1)]   # runner 的执行流. [('train', 1)] 代表只有一个执行流，并且这个名为 train 的执行流只执行一次
     evaluation = dict(  # 训练期间做验证的设置
-        interval=1, save_best='mAP@0.5IOU')  # 执行验证的间隔，以及设置 `mAP@0.5IOU` 作为指示器，用于存储最好的模型检查点文件
+        interval=1, save_best='mAP@0.5IOU')  # 执行验证的间隔，以及设置 `mAP@0.5IOU` 作为指示器，用于存储最好的模型权重文件
     log_config = dict(  # 注册日志钩子的设置
         interval=20,  # 打印日志间隔
         hooks=[  # 训练期间执行的钩子
@@ -647,12 +647,12 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
     # 运行设置
     dist_params = dict(backend='nccl')  # 建立分布式训练的设置，其中端口号也可以设置
     log_level = 'INFO'  # 日志等级
-    work_dir = ('./work_dirs/ava/'  # 记录当前实验日志和模型检查点文件的文件夹
+    work_dir = ('./work_dirs/ava/'  # 记录当前实验日志和模型权重文件的文件夹
                 'slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb')
     load_from = ('https://download.openmmlab.com/mmaction/recognition/slowonly/'  # 从给定路径加载模型作为预训练模型. 这个选项不会用于断点恢复训练
                  'slowonly_r50_4x16x1_256e_kinetics400_rgb/'
                  'slowonly_r50_4x16x1_256e_kinetics400_rgb_20200704-a69556c6.pth')
-    resume_from = None  # 加载给定路径的模型检查点文件作为断点续连的模型, 训练将从该时间点保存的周期点继续进行
+    resume_from = None  # 加载给定路径的模型权重文件作为断点续连的模型, 训练将从该时间点保存的周期点继续进行
     ```
 
 ## 常见问题
