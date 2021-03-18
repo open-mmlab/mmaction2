@@ -117,7 +117,7 @@ python tsn_feature_extraction.py --data-prefix ../../../data/ActivityNet/rawfram
 python tsn_feature_extraction.py --data-prefix ../../../data/ActivityNet/rawframes --data-list ../../../data/ActivityNet/anet_val_video.txt --output-prefix ../../../data/ActivityNet/flow_feat --modality Flow --ckpt /path/to/flow_checkpoint.pth
 ```
 
-After feature extraction, you can use our post processing scripts to concat RGB and Flow feature, generate the 100-t X 400-d feature for Action Detection.
+After feature extraction, you can use our post processing scripts to concat RGB and Flow feature, generate the `100-t X 400-d` feature for Action Detection.
 
 ```shell
 python activitynet_feature_postprocessing.py --rgb ../../../data/ActivityNet/rgb_feat --flow ../../../data/ActivityNet/flow_feat --dest ../../../data/ActivityNet/mmaction_feat

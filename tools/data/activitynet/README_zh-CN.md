@@ -14,7 +14,7 @@
 }
 ```
 
-用户可参考该数据集的 [website](http://activity-net.org/)，以获取数据集相关的基本信息。
+用户可参考该数据集的 [官网](http://activity-net.org/)，以获取数据集相关的基本信息。
 对于时序动作检测任务，用户可以使用这个 [代码库](https://github.com/wzmsltw/BSN-boundary-sensitive-network#code-and-data-preparation) 提供的经缩放（rescaled）的 ActivityNet 特征，
 或者使用 MMAction2 进行特征提取（这将具有更好地精度）。MMAction2 同时提供了以上所述的两种数据使用流程。
 在数据集准备前，请确保当前所在文件夹位置为 `$MMACTION2/tools/data/activitynet/`。
@@ -46,66 +46,67 @@ bash download_features.sh
 python process_annotations.py
 ```
 
-## Option 2: Extract ActivityNet feature using MMAction2 with all videos provided in official [website](http://activity-net.org/)
+## 选项 2：使用 MMAction2 对 [官网](http://activity-net.org/) 提供的视频进行特征抽取
 
-### Step 1. Download Annotations
+### 步骤 1. 下载标注文件
 
-First of all, you can run the following script to download annotation files.
+首先，用户可以使用以下命令进行标注文件下载。
 
 ```shell
 bash download_annotations.sh
 ```
 
-### Step 2. Prepare Videos
+### 步骤 2. 准备视频
 
-Then, you can run the following script to prepare videos.
-The codes are adapted from the [official crawler](https://github.com/activitynet/ActivityNet/tree/master/Crawler/Kinetics). Note that this might take a long time.
+之后，用户可以使用以下脚本进行视频数据的准备
+该代码参考自 [官方爬虫](https://github.com/activitynet/ActivityNet/tree/master/Crawler/Kinetics)，该过程将会耗费较多时间。
 
 ```shell
 bash download_videos.sh
 ```
 
-Since some videos in the ActivityNet dataset might be no longer available on YouTube, official [website](http://activity-net.org/) has made the full dataset available on Google and Baidu drives.
-To accommodate missing data requests, you can fill in this [request form](https://docs.google.com/forms/d/e/1FAIpQLSeKaFq9ZfcmZ7W0B0PbEhfbTHY41GeEgwsa7WobJgGUhn4DTQ/viewform) provided in official [download page](http://activity-net.org/download.html) to have a 7-day-access to download the videos from the drive folders.
+由于 ActivityNet 数据集中的一些视频已经在 YouTube 失效，[官网](http://activity-net.org/) 在谷歌网盘和百度网盘提供了完整的数据集数据。
+如果用户想要获取失效的数据集，则需要填写 [下载页面](http://activity-net.org/download.html) 中提供的 [需求表格](https://docs.google.com/forms/d/e/1FAIpQLSeKaFq9ZfcmZ7W0B0PbEhfbTHY41GeEgwsa7WobJgGUhn4DTQ/viewform) 以获取 7 天的下载权限。
 
-We also provide download steps for annotations from [BSN repo](https://github.com/wzmsltw/BSN-boundary-sensitive-network#code-and-data-preparation)
+MMAction2 同时也提供了 [BSN 代码库](https://github.com/wzmsltw/BSN-boundary-sensitive-network#code-and-data-preparation) 的标注文件的下载步骤。
 
 ```shell
 bash download_bsn_videos.sh
 ```
 
-For this case, the downloading scripts update the annotation file after downloading to make sure every video in it exists.
+对于这种情况，该下载脚本将在下载后更新此标注文件，以确保每个视频都存在。
 
-### Step 3. Extract RGB and Flow
+### 步骤 3. 抽取 RGB 帧和光流
 
-Before extracting, please refer to [install.md](/docs/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
+在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 进行 [denseflow](https://github.com/open-mmlab/denseflow) 的安装。
 
-Use following scripts to extract both RGB and Flow.
+可使用以下命令抽取视频帧和光流。
 
 ```shell
 bash extract_frames.sh
 ```
 
-The command above can generate images with new short edge 256. If you want to generate images with short edge 320 (320p), or with fix size 340x256, you can change the args `--new-short 256` to `--new-short 320` or `--new-width 340 --new-height 256`.
-More details can be found in [data_preparation](/docs/data_preparation.md)
+以上脚本将会生成短边 256 分辨率的视频。如果用户想生成短边 320 分辨率的视频（即 320p），或者 340x256 的固定分辨率，用户可以通过改变参数由 `--new-short 256` 至 `--new-short 320`，或者 `--new-width 340 --new-height 256` 进行设置
+更多细节可参考 [数据准备指南](/docs_zh_CN/data_preparation.md)
 
-### Step 4. Generate File List for ActivityNet Finetuning
+### 步骤 4. 生成用于 ActivityNet 微调的文件列表
 
-With extracted frames, you can generate video-level or clip-level lists of rawframes, which can be used for ActivityNet Finetuning.
+根据抽取的帧，用户可以生成视频级别（video-level）或者片段级别（clip-level）的文件列表，其可用于微调 ActivityNet。
 
 ```shell
 python generate_rawframes_filelist.py
 ```
 
-### Step 5. Finetune TSN models on ActivityNet
+### 步骤 5. 在 ActivityNet 上微调 TSN 模型
 
-You can use ActivityNet configs in `configs/recognition/tsn` to finetune TSN models on ActivityNet.
 You need to use Kinetics models for pretraining.
 Both RGB models and Flow models are supported.
+用户可使用 `configs/recognition/tsn` 目录下的 ActivityNet 的配置文件进行 TSN 模型微调。
+用户需要使用 Kinetics 相关模型进行预训练，并且同时支持 RGB 模型和光流模型。
 
-### Step 6. Extract ActivityNet Feature with finetuned ckpts
+### 步骤 6. 使用预训练模型进行 ActivityNet 特征抽取
 
-After finetuning TSN on ActivityNet, you can use it to extract both RGB and Flow feature.
+在 ActivityNet 上微调 TSN 模型之后，用户可以使用该模型进行 RGB 特征和光流特征的提取。
 
 ```shell
 python tsn_feature_extraction.py --data-prefix ../../../data/ActivityNet/rawframes --data-list ../../../data/ActivityNet/anet_train_video.txt --output-prefix ../../../data/ActivityNet/rgb_feat --modality RGB --ckpt /path/to/rgb_checkpoint.pth
@@ -117,7 +118,7 @@ python tsn_feature_extraction.py --data-prefix ../../../data/ActivityNet/rawfram
 python tsn_feature_extraction.py --data-prefix ../../../data/ActivityNet/rawframes --data-list ../../../data/ActivityNet/anet_val_video.txt --output-prefix ../../../data/ActivityNet/flow_feat --modality Flow --ckpt /path/to/flow_checkpoint.pth
 ```
 
-After feature extraction, you can use our post processing scripts to concat RGB and Flow feature, generate the 100-t X 400-d feature for Action Detection.
+在提取完特征后，用户可以使用后处理脚本整合 RGB 特征和光流特征，生成 `100-t X 400-d` 维度的特征用于时序动作检测。
 
 ```shell
 python activitynet_feature_postprocessing.py --rgb ../../../data/ActivityNet/rgb_feat --flow ../../../data/ActivityNet/flow_feat --dest ../../../data/ActivityNet/mmaction_feat
