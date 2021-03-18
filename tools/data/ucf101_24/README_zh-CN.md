@@ -13,7 +13,7 @@
 ```
 
 用户可参考该数据集的 [官网](http://www.thumos.info/download.html)，以获取数据集相关的基本信息。
-在数据集准备前，请确保当前所在文件夹位置为 `$MMACTION2/tools/data/ucf101_24/`。
+在数据集准备前，请确保命令行当前路径为 `$MMACTION2/tools/data/ucf101_24/`。
 
 ## 下载和解压
 
@@ -74,7 +74,7 @@ mmaction2
 
 **注意**：`UCF101v2-GT.pkl` 作为一个缓存文件，它包含 6 个项目：
 
-1. `labels` (list)：24 个标签组成的列表
+1. `labels` (list)：24 个行为类别名称组成的列表
 2. `gttubes` (dict)：每个视频对应的基准 tubes 组成的字典
   **gttube** 是由标签索引和 tube 列表组成的字典
   **tube** 是一个 `nframes` 行和 5 列的 numpy array，每一列的形式如 `<frame index> <x1> <y1> <x2> <y2>`

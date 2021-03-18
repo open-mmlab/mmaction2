@@ -16,13 +16,13 @@
 ```
 
 用户可参考该数据集的 [官网](http://jhmdb.is.tue.mpg.de/)，以获取数据集相关的基本信息。
-在数据集准备前，请确保当前所在文件夹位置为 `$MMACTION2/tools/data/jhmdb//`。
+在数据集准备前，请确保命令行当前路径为 `$MMACTION2/tools/data/jhmdb/`。
 
 ## 下载和解压
 
 用户可以从 [这里](https://drive.google.com/drive/folders/1BvGywlAGrACEqRyfYbz3wzlVV3cDFkct) 下载 RGB 帧，光流和真实标签文件。
 该数据由 [MOC](https://github.com/MCG-NJU/MOC-Detector/blob/master/readme/Dataset.md) 代码库提供，
-参考自 [act-detector](https://github.com/vkalogeiton/caffe/tree/act-detector)。
+其参考自 [act-detector](https://github.com/vkalogeiton/caffe/tree/act-detector)。
 
 用户在下载 `JHMDB.tar.gz` 文件后，需将其放置在 `$MMACTION2/tools/data/jhmdb/` 目录下，并使用以下指令进行解压：
 
@@ -30,9 +30,9 @@
 tar -zxvf JHMDB.tar.gz
 ```
 
-如果拥有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 存储中。
+如果拥有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 中。
 
-可以运行以下命令在 SSD 中建立软连接。
+可以运行以下命令为 SSD 建立软连接。
 
 ```shell
 # 执行这两行进行抽取（假设 SSD 挂载在 "/mnt/SSD/"）
@@ -89,7 +89,7 @@ mmaction2
 
 **注意**：`JHMDB-GT.pkl` 作为一个缓存文件，它包含 6 个项目：
 
-1. `labels` (list)：21 个标签组成的列表
+1. `labels` (list)：21 个行为类别名称组成的列表
 2. `gttubes` (dict)：每个视频对应的基准 tubes 组成的字典
   **gttube** 是由标签索引和 tube 列表组成的字典
   **tube** 是一个 `nframes` 行和 5 列的 numpy array，每一列的形式如 `<frame index> <x1> <y1> <x2> <y2>`

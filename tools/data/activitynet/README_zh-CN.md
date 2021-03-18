@@ -17,7 +17,7 @@
 用户可参考该数据集的 [官网](http://activity-net.org/)，以获取数据集相关的基本信息。
 对于时序动作检测任务，用户可以使用这个 [代码库](https://github.com/wzmsltw/BSN-boundary-sensitive-network#code-and-data-preparation) 提供的缩放过（rescaled）的 ActivityNet 特征，
 或者使用 MMAction2 进行特征提取（这将具有更好地精度）。MMAction2 同时提供了以上所述的两种数据使用流程。
-在数据集准备前，请确保当前所在文件夹位置为 `$MMACTION2/tools/data/activitynet/`。
+在数据集准备前，请确保命令行当前路径为 `$MMACTION2/tools/data/activitynet/`。
 
 ## 选项 1：用户可以使用这个 [代码库](https://github.com/wzmsltw/BSN-boundary-sensitive-network#code-and-data-preparation) 提供的特征
 
@@ -99,10 +99,8 @@ python generate_rawframes_filelist.py
 
 ### 步骤 5. 在 ActivityNet 上微调 TSN 模型
 
-You need to use Kinetics models for pretraining.
-Both RGB models and Flow models are supported.
-用户可使用 `configs/recognition/tsn` 目录下的 ActivityNet 的配置文件进行 TSN 模型微调。
-用户需要使用 Kinetics 相关模型进行预训练，并且同时支持 RGB 模型和光流模型。
+用户可使用 `configs/recognition/tsn` 目录中的 ActivityNet 配置文件进行 TSN 模型微调。
+用户需要使用 Kinetics 相关模型（同时支持 RGB 模型与光流模型）进行预训练。
 
 ### 步骤 6. 使用预训练模型进行 ActivityNet 特征抽取
 
@@ -126,8 +124,7 @@ python activitynet_feature_postprocessing.py --rgb ../../../data/ActivityNet/rgb
 
 ## 最后一步：检查文件夹结构
 
-在走完完整的 ActivityNet 数据集准备流程后，
-用户可以获得对应的特征文件，RGB + 光流文件，视频文件以及标注文件。
+在完成所有 ActivityNet 数据集准备流程后，用户可以获得对应的特征文件，RGB + 光流文件，视频文件以及标注文件。
 
 在整个 MMAction2 文件夹下，ActivityNet 的文件结构如下：
 
