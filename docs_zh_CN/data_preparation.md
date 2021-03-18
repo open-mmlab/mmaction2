@@ -19,7 +19,7 @@
 MMAction2 支持两种数据类型：原始帧和视频。前者在过去的项目中，如 TSN，经常出现。
 如果能把原始帧存储在固态硬盘上，处理帧格式的数据是非常快的，但帧格式难以拓展到快速扩充的数据集上。
 （举例来说，最新版本的 [Kinetics](https://deepmind.com/research/open-source/open-source-datasets/kinetics/) 有 650K 个视频，其所有原始帧需要占据几个 TB 的磁盘空间。）
-视频格式的数据能够节省很多空间，但在运行模型时，必须做算力开销很大的视频解码。
+视频格式的数据能够节省很多空间，但在运行模型时，必须进行算力开销很大的视频解码。
 为了加速视频解码，MMAction2 支持了若干种高效的视频加载库，如 [decord](https://github.com/zhreshold/decord), [PyAV](https://github.com/PyAV-Org/PyAV) 等等。
 
 ## 获取数据
@@ -138,7 +138,7 @@ python tools/data/extract_audio.py ${ROOT} ${DST_ROOT} [--ext ${EXT}] [--num-wor
 - `EXT`: 视频的后缀名，如 `.mp4`。
 - `N_WORKERS`: 使用的进程数量。
 
-成功提取出音频后，用户可参照 [配置文件](/configs/audio_recognition/tsn_r50_64x1x1_kinetics400_audio.py) 在线地解码并生成梅尔频谱。关于训练时使用的标注文件，用户可以直接使用帧文件夹所用的标注文件（若音频文件的目录结构与帧文件夹一致）。在线解码的缺陷在于速度较慢，因此，MMAction2 也提供如下脚本用于离线地生成梅尔频谱。
+成功提取出音频后，用户可参照 [配置文件](/configs/audio_recognition/tsn_r50_64x1x1_kinetics400_audio.py) 在线解码并生成梅尔频谱。关于训练时使用的标注文件，用户可以直接使用帧文件夹所用的标注文件（若音频文件的目录结构与帧文件夹一致）。在线解码的缺陷在于速度较慢，因此，MMAction2 也提供如下脚本用于离线地生成梅尔频谱。
 
 ```shell
 cd $MMACTION2
