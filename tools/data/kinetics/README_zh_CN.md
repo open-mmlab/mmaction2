@@ -68,7 +68,7 @@ python ../resize_videos.py ../../../data/${DATASET}/videos_train/ ../../../data/
 
 在提取之前，请参考 [安装教程](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
-如果你有足够的 SSD 空间，那么建议将视频抽取为 RGB 帧以提升 I/O 性能。用户可以使用以下脚本为抽取得到的帧文件夹建立软连接：
+如果用户有足够的 SSD 空间，那么建议将视频抽取为 RGB 帧以提升 I/O 性能。用户可以使用以下脚本为抽取得到的帧文件夹建立软连接：
 
 ```shell
 # 执行以下脚本 (假设 SSD 被挂载在 "/mnt/SSD/")
@@ -139,4 +139,4 @@ mmaction2
 
 ```
 
-关于 Kinetics 数据集上的训练与测试，请参照 [基础教程](/docs_zh_CN/getting_started.md).
+关于 Kinetics 数据集上的训练与测试，请参照 [基础教程](/docs_zh_CN/getting_started.md)。
