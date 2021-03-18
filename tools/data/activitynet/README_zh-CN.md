@@ -15,7 +15,7 @@
 ```
 
 用户可参考该数据集的 [官网](http://activity-net.org/)，以获取数据集相关的基本信息。
-对于时序动作检测任务，用户可以使用这个 [代码库](https://github.com/wzmsltw/BSN-boundary-sensitive-network#code-and-data-preparation) 提供的经缩放（rescaled）的 ActivityNet 特征，
+对于时序动作检测任务，用户可以使用这个 [代码库](https://github.com/wzmsltw/BSN-boundary-sensitive-network#code-and-data-preparation) 提供的缩放过（rescaled）的 ActivityNet 特征，
 或者使用 MMAction2 进行特征提取（这将具有更好地精度）。MMAction2 同时提供了以上所述的两种数据使用流程。
 在数据集准备前，请确保当前所在文件夹位置为 `$MMACTION2/tools/data/activitynet/`。
 
@@ -23,7 +23,7 @@
 
 ### 步骤 1. 下载标注文件
 
-首先，用户可以使用以下命令进行标注文件下载。
+首先，用户可以使用以下命令下载标注文件。
 
 ```shell
 bash download_feature_annotations.sh
@@ -31,7 +31,7 @@ bash download_feature_annotations.sh
 
 ### 步骤 2. 准备视频特征
 
-之后，用户可以使用以下命令进行 ActivityNet 特征下载。
+之后，用户可以使用以下命令下载 ActivityNet 特征。
 
 ```shell
 bash download_features.sh
@@ -50,7 +50,7 @@ python process_annotations.py
 
 ### 步骤 1. 下载标注文件
 
-首先，用户可以使用以下命令进行标注文件下载。
+首先，用户可以使用以下命令下载标注文件。
 
 ```shell
 bash download_annotations.sh
@@ -58,7 +58,7 @@ bash download_annotations.sh
 
 ### 步骤 2. 准备视频
 
-之后，用户可以使用以下脚本进行视频数据的准备
+之后，用户可以使用以下脚本准备视频数据。
 该代码参考自 [官方爬虫](https://github.com/activitynet/ActivityNet/tree/master/Crawler/Kinetics)，该过程将会耗费较多时间。
 
 ```shell
