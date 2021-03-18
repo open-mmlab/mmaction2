@@ -1,3 +1,4 @@
+import warnings
 from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
 
@@ -87,6 +88,15 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         """Initialize the model network weights."""
         if self.backbone_from in ['mmcls', 'mmaction2']:
             self.backbone.init_weights()
+        elif self.backbone_from == 'torchvision':
+            warnings.warn('We do not initialize weights for backbones in '
+                          'torchvision, since the weights for backbones in '
+                          'torchvision are initialized in their __init__ '
+                          'functions. ')
+        else:
+            raise NotImplementedError('Unsupported backbone source '
+                                      f'{self.backbone_from}!')
+
         self.cls_head.init_weights()
         if hasattr(self, 'neck'):
             self.neck.init_weights()
