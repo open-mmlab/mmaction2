@@ -20,7 +20,7 @@
 
 ## 下载和解压
 
-用户可以从 [这里](https://drive.google.com/drive/folders/1BvGywlAGrACEqRyfYbz3wzlVV3cDFkct) 下载 RGB 帧，光流和基准标注文件。
+用户可以从 [这里](https://drive.google.com/drive/folders/1BvGywlAGrACEqRyfYbz3wzlVV3cDFkct) 下载 RGB 帧，光流和真实标签文件。
 该数据由 [MOC](https://github.com/MCG-NJU/MOC-Detector/blob/master/readme/Dataset.md) 代码库提供，
 参考自 [act-detector](https://github.com/vkalogeiton/caffe/tree/act-detector)。
 
@@ -30,9 +30,9 @@
 tar -zxvf JHMDB.tar.gz
 ```
 
-如果用户有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 存储中。
+如果拥有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 存储中。
 
-用户可以运行以下命令在 SSD 中建立软连接。
+可以运行以下命令在 SSD 中建立软连接。
 
 ```shell
 # 执行这两行进行抽取（假设 SSD 挂载在 "/mnt/SSD/"）
@@ -89,9 +89,9 @@ mmaction2
 
 **注意**：`JHMDB-GT.pkl` 作为一个缓存文件，它包含 6 个项目：
 
-1. `labels` (list)：21 个标签组成的 list
-2. `gttubes` (dict)：每个视频对应的基准 tubes 组成的 dict
-  **gttube** 是由标签索引和 tube 列表组成的 dict
+1. `labels` (list)：21 个标签组成的列表
+2. `gttubes` (dict)：每个视频对应的基准 tubes 组成的字典
+  **gttube** 是由标签索引和 tube 列表组成的字典
   **tube** 是一个 `nframes` 行和 5 列的 numpy array，每一列的形式如 `<frame index> <x1> <y1> <x2> <y2>`
 3. `nframes` (dict)：用以表示每个视频对应的帧数，如 `'walk/Panic_in_the_Streets_walk_u_cm_np1_ba_med_5': 16`
 4. `train_videos` (list)：包含 `nsplits=1` 的元素，每一项都包含了训练视频的列表

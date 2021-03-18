@@ -78,7 +78,7 @@ bash download_bsn_videos.sh
 
 ### 步骤 3. 抽取 RGB 帧和光流
 
-在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 进行 [denseflow](https://github.com/open-mmlab/denseflow) 的安装。
+在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
 可使用以下命令抽取视频帧和光流。
 

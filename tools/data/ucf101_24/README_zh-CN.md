@@ -74,9 +74,9 @@ mmaction2
 
 **注意**：`UCF101v2-GT.pkl` 作为一个缓存文件，它包含 6 个项目：
 
-1. `labels` (list)：24 个标签组成的 list
-2. `gttubes` (dict)：每个视频对应的基准 tubes 组成的 dict
-  **gttube** 是由标签索引和 tube 列表组成的 dict
+1. `labels` (list)：24 个标签组成的列表
+2. `gttubes` (dict)：每个视频对应的基准 tubes 组成的字典
+  **gttube** 是由标签索引和 tube 列表组成的字典
   **tube** 是一个 `nframes` 行和 5 列的 numpy array，每一列的形式如 `<frame index> <x1> <y1> <x2> <y2>`
 3. `nframes` (dict)：用以表示每个视频对应的帧数，如 `'HorseRiding/v_HorseRiding_g05_c02': 151`
 4. `train_videos` (list)：包含 `nsplits=1` 的元素，每一项都包含了训练视频的列表

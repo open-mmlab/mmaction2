@@ -39,13 +39,13 @@ python ../resize_video.py ../../../data/ucf101/videos/ ../../../data/ucf101/vide
 
 ## 步骤 3. 抽取视频帧和光流
 
-如果用户只想使用视频进行加载训练，则该部分是 **可选项**。
+如果用户只想使用视频加载训练，则该部分是 **可选项**。
 
-在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 进行 [denseflow](https://github.com/open-mmlab/denseflow) 的安装。
+在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
-如果用户有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 存储中。所抽取的视频帧和光流约占据 100 GB 的存储空间。
+如果拥有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 存储中。所抽取的视频帧和光流约占据 100 GB 的存储空间。
 
-用户可以运行以下命令在 SSD 中建立软连接。
+可以运行以下命令在 SSD 中建立软连接。
 
 ```shell
 # 执行这两行进行抽取（假设 SSD 挂载在 "/mnt/SSD/"）

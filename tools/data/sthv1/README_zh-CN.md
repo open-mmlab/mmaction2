@@ -61,13 +61,13 @@ data = dict(
 
 ## 步骤 3. 抽取光流
 
-如果用户只想使用原 RGB 帧进行加载训练，则该部分是 **可选项**。
+如果用户只想使用原 RGB 帧加载训练，则该部分是 **可选项**。
 
-在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 进行 [denseflow](https://github.com/open-mmlab/denseflow) 的安装。
+在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
-如果用户有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 存储中。
+如果拥有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 存储中。
 
-用户可以运行以下命令在 SSD 中建立软连接。
+可以运行以下命令在 SSD 中建立软连接。
 
 ```shell
 # 执行这两行进行抽取（假设 SSD 挂载在 "/mnt/SSD/"）
@@ -75,7 +75,7 @@ mkdir /mnt/SSD/sthv1_extracted/
 ln -s /mnt/SSD/sthv1_extracted/ ../../../data/sthv1/rawframes
 ```
 
-如果用户想抽取光流，则可以运行以下脚本从 RGB 帧中抽取出光流。
+如果想抽取光流，则可以运行以下脚本从 RGB 帧中抽取出光流。
 
 ```shell
 cd $MMACTION2/tools/data/sthv1/
@@ -84,7 +84,7 @@ bash extract_flow.sh
 
 ## 步骤 4: 编码视频
 
-如果用户只想使用原 RGB 帧进行加载训练，则该部分是 **可选项**。
+如果用户只想使用原 RGB 帧加载训练，则该部分是 **可选项**。
 
 用户可以运行以下命令进行视频编码。
 
