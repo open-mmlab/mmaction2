@@ -1,7 +1,6 @@
 # 准备数据
 
 本文为 MMAction2 的数据准备提供一些指南。
-We provide some tips for MMAction2 data preparation in this file.
 
 <!-- TOC -->
 
