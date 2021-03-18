@@ -21,8 +21,7 @@
 ## 下载和解压
 
 用户可以从 [这里](https://drive.google.com/drive/folders/1BvGywlAGrACEqRyfYbz3wzlVV3cDFkct) 下载 RGB 帧，光流和真实标签文件。
-该数据由 [MOC](https://github.com/MCG-NJU/MOC-Detector/blob/master/readme/Dataset.md) 代码库提供，
-其参考自 [act-detector](https://github.com/vkalogeiton/caffe/tree/act-detector)。
+该数据由 [MOC](https://github.com/MCG-NJU/MOC-Detector/blob/master/readme/Dataset.md) 代码库提供，参考自 [act-detector](https://github.com/vkalogeiton/caffe/tree/act-detector)。
 
 用户在下载 `JHMDB.tar.gz` 文件后，需将其放置在 `$MMACTION2/tools/data/jhmdb/` 目录下，并使用以下指令进行解压：
 
