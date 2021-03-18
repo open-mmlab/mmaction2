@@ -31,7 +31,7 @@ bash download_feature_annotations.sh
 
 ### 步骤 2. 准备视频特征
 
-之后，用户可以使用以下命令进行 activitynet 特征下载。
+之后，用户可以使用以下命令进行 ActivityNet 特征下载。
 
 ```shell
 bash download_features.sh
@@ -169,4 +169,4 @@ mmaction2
 
 ```
 
-关于对 ActivityNet 进行训练和验证，可以参考 [基础教程](/docs/getting_started.md).
+关于对 ActivityNet 进行训练和验证，可以参考 [基础教程](/docs_zh_CN/getting_started.md).
