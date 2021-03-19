@@ -1,4 +1,4 @@
-# Preparing Jester
+# 准备 Jester
 
 ## 介绍
 
@@ -23,7 +23,7 @@
 
 ## 步骤 2. 准备 RGB 帧
 
-[jester 官网](https://20bn.com/datasets/jester/v1) 并未提供原始视频文件，只提供了对原视频文件进行抽取得到的 RGB 帧，，用户可在 [jester 官网](https://20bn.com/datasets/jester/v1) 直接下载。
+[jester 官网](https://20bn.com/datasets/jester/v1) 并未提供原始视频文件，只提供了对原视频文件进行抽取得到的 RGB 帧，用户可在 [jester 官网](https://20bn.com/datasets/jester/v1) 直接下载。
 
 将下载好的压缩文件放在 `$MMACTION2/data/jester/` 文件夹下，并使用以下脚本进行解压。
 

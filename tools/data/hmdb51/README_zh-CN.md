@@ -42,7 +42,6 @@ bash download_videos.sh
 在抽取视频帧和光流之前，请参照 [安装指南](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
 如果用户有大量的固态硬盘存储空间，则推荐将抽取的存储至 I/O 性能更优秀的固态硬盘上。
-
 用户可使用以下命令为固态硬盘建立软链接。
 
 ```shell
@@ -51,7 +50,7 @@ mkdir /mnt/SSD/hmdb51_extracted/
 ln -s /mnt/SSD/hmdb51_extracted/ ../../../data/hmdb51/rawframes
 ```
 
-如果用户没有安装 denseflow，则可以运行以下命令使用 OpenCV 对 RGB 帧进行抽取。然而，该方法只能抽取与原始视频分辨率相同的帧。
+如果用户需要抽取 RGB 帧（因为抽取光流的过程十分耗时），可以考虑运行以下命令使用 denseflow **只对 RGB 帧** 进行抽取。
 
 ```shell
 bash extract_rgb_frames.sh
