@@ -53,7 +53,7 @@ ln -s /mnt/SSD/mit_extracted/ ../../../data/mit/rawframes
 bash extract_rgb_frames.sh
 ```
 
-如果用户不想安装 denseflow，也可以使用以下命令，用 OpenCV 抽取 RGB 帧，但输出帧的大小只能和原视频的大小一致。
+如果用户没有安装 denseflow，则可以运行以下命令使用 OpenCV 对 RGB 帧进行抽取。然而，该方法只能抽取与原始视频分辨率相同的帧。
 
 ```shell
 bash extract_rgb_frames_opencv.sh
