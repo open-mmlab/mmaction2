@@ -39,7 +39,7 @@ MMAction2 支持两种数据类型：原始帧和视频。前者在过去的项�
 ### 提取帧
 
 若想同时提取帧和光流，可以使用 OpenMMLab 准备的 [denseflow](https://github.com/open-mmlab/denseflow) 工具。
-因为不同的帧提取工具可能产生不同数量的帧，建议使用同一工具来提取图像帧和光流，以避免图像帧和光流数量不同。
+因为不同的帧提取工具可能产生不同数量的帧，建议使用同一工具来提取 RGB 帧和光流，以避免它们的数量不同。
 
 ```shell
 python build_rawframes.py ${SRC_FOLDER} ${OUT_FOLDER} [--task ${TASK}] [--level ${LEVEL}] \
@@ -60,7 +60,7 @@ python build_rawframes.py ${SRC_FOLDER} ${OUT_FOLDER} [--task ${TASK}] [--level 
 - `NEW_HEIGHT`: 调整尺寸后，输出图像的高
 - `NEW_SHORT`: 等比例缩放图片后，输出图像的短边长
 - `--resume`: 是否接续之前的光流提取任务，还是覆盖之前的输出结果重新提取
-- `--use-opencv`: 是否使用 OpenCV 提取图像帧
+- `--use-opencv`: 是否使用 OpenCV 提取 RGB 帧
 - `--mixed-ext`: 说明是否处理不同文件类型的视频文件
 
 根据实际经验，推荐设置为：
@@ -77,7 +77,7 @@ ln -s ${YOUR_FOLDER} $MMACTION2/data/$DATASET/rawframes
 
 如果用户因依赖要求（如 Nvidia 显卡驱动版本），无法安装 [denseflow](https://github.com/open-mmlab/denseflow)，
 或者只需要一些关于光流提取的快速演示，可用 Python 脚本 `tools/flow_extraction.py` 替代 denseflow。
-这个脚本可用于一个或多个视频提取图像帧和光流。注意，由于该脚本时在 CPU 上运行光流算法，其速度比 denseflow 慢很多。
+这个脚本可用于一个或多个视频提取 RGB 帧和光流。注意，由于该脚本时在 CPU 上运行光流算法，其速度比 denseflow 慢很多。
 
 ```shell
 python tools/flow_extraction.py --input ${INPUT} [--prefix ${PREFIX}] [--dest ${DEST}] [--rgb-tmpl ${RGB_TMPL}] \
@@ -87,12 +87,12 @@ python tools/flow_extraction.py --input ${INPUT} [--prefix ${PREFIX}] [--dest ${
 - `INPUT`: 用于提取帧的视频，可以是单个视频或一个视频列表，视频列表应该是一个 txt 文件，并且只包含视频文件名，不包含目录
 - `PREFIX`: 输入视频的前缀，当输入是一个视频列表时使用
 - `DEST`: 保存提取出的帧的位置
-- `RGB_TMPL`: 图像帧的文件名格式
+- `RGB_TMPL`:  RGB 帧的文件名格式
 - `FLOW_TMPL`: 光流的文件名格式
 - `START_IDX`: 提取帧的开始索引
 - `METHOD`: 用于生成光流的方法
 - `BOUND`: 光流的最大值
-- `SAVE_RGB`: 同时保存提取的图像帧
+- `SAVE_RGB`: 同时保存提取的 RGB 帧
 
 ### 生成文件列表
 
