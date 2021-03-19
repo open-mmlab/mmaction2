@@ -15,7 +15,7 @@
 ```
 
 用户可以参照数据集 [官网](https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/)，获取数据集相关的基本信息，。
-在数据集准备前，请确保当前工作目录为 `$MMACTION2/tools/data/hmdb51/`。
+在准备数据集前，请确保命令行当前路径为 `$MMACTION2/tools/data/hmdb51/`。
 
 为运行下面的 bash 脚本，需要安装 `unrar`。用户可运行 `sudo apt-get install unrar` 安装，或参照 [setup](https://github.com/innerlee/setup)，按照指引，运行 [`zzunrar.sh`](https://github.com/innerlee/setup/blob/master/zzunrar.sh) 脚本实现无管理员权限下的简易安装。
 
