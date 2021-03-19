@@ -15,9 +15,9 @@
 用户可参考该数据集的 [官网](https://www.crcv.ucf.edu/research/data-sets/ucf101/)，以获取数据集相关的基本信息。
 在数据集准备前，请确保命令行当前路径为 `$MMACTION2/tools/data/ucf101/`。
 
-## 步骤 1. 准备标注文件
+## 步骤 1. 下载标注文件
 
-首先，用户可运行以下脚本准备标注文件。
+首先，用户可运行以下脚本下载标注文件。
 
 ```shell
 bash download_annotations.sh
@@ -45,7 +45,7 @@ python ../resize_video.py ../../../data/ucf101/videos/ ../../../data/ucf101/vide
 
 如果拥有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 中。所抽取的视频帧和光流约占据 100 GB 的存储空间。
 
-可以运行以下命令为 SSD 建立软连接。
+可以运行以下命令为 SSD 建立软链接。
 
 ```shell
 # 执行这两行进行抽取（假设 SSD 挂载在 "/mnt/SSD/"）

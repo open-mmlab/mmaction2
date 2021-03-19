@@ -16,7 +16,7 @@
 
 用户可参考该数据集的 [官网](http://activity-net.org/)，以获取数据集相关的基本信息。
 对于时序动作检测任务，用户可以使用这个 [代码库](https://github.com/wzmsltw/BSN-boundary-sensitive-network#code-and-data-preparation) 提供的缩放过（rescaled）的 ActivityNet 特征，
-或者使用 MMAction2 进行特征提取（这将具有更好地精度）。MMAction2 同时提供了以上所述的两种数据使用流程。
+或者使用 MMAction2 进行特征提取（这将具有更高的精度）。MMAction2 同时提供了以上所述的两种数据使用流程。
 在数据集准备前，请确保命令行当前路径为 `$MMACTION2/tools/data/activitynet/`。
 
 ## 选项 1：用户可以使用这个 [代码库](https://github.com/wzmsltw/BSN-boundary-sensitive-network#code-and-data-preparation) 提供的特征

@@ -18,7 +18,7 @@
 用户可参考该数据集的 [官网](https://20bn.com/datasets/something-something/v2)，以获取数据集相关的基本信息。
 在数据集准备前，请确保命令行当前路径为 `$MMACTION2/tools/data/sthv2/`。
 
-## 步骤 1. 准备标注文件
+## 步骤 1. 下载标注文件
 
 首先，用户需要在 [官网](https://20bn.com/datasets/something-something/v2) 进行注册，才能下载标注文件。下载好的标注文件需要放在 `$MMACTION2/data/sthv2/annotations` 文件夹下。
 
@@ -40,7 +40,7 @@ cd $MMACTION2/tools/data/sthv2/
 
 如果拥有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 中。
 
-可以运行以下命令为 SSD 建立软连接。
+可以运行以下命令为 SSD 建立软链接。
 
 ```shell
 # 执行这两行进行抽取（假设 SSD 挂载在 "/mnt/SSD/"）

@@ -17,7 +17,7 @@
 
 ## 下载和解压
 
-用户可以从 [这里](https://drive.google.com/drive/folders/1BvGywlAGrACEqRyfYbz3wzlVV3cDFkct) 下载 RGB 帧，光流和基准标注文件。
+用户可以从 [这里](https://drive.google.com/drive/folders/1BvGywlAGrACEqRyfYbz3wzlVV3cDFkct) 下载 RGB 帧，光流和标注文件。
 该数据由 [MOC](https://github.com/MCG-NJU/MOC-Detector/blob/master/readme/Dataset.md) 代码库提供，
 参考自 [act-detector](https://github.com/vkalogeiton/caffe/tree/act-detector) 和 [corrected-UCF101-Annots](https://github.com/gurkirt/corrected-UCF101-Annots)。
 
