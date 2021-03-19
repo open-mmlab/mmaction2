@@ -65,7 +65,7 @@ bash extract_rgb_frames_opencv.sh
 bash extract_frames.sh
 ```
 
-## 步骤 4. 生成文件列表
+## 步骤 3. 生成文件列表
 
 用户可以通过运行以下命令生成帧和视频格式的文件列表。
 
@@ -73,11 +73,11 @@ bash extract_frames.sh
 bash generate_{rawframes, videos}_filelist.sh
 ```
 
-## 步骤 5. 检查目录结构
+## 步骤 4. 检查目录结构
 
 在完成 Moments in Time 数据集准备流程后，用户可以得到 Moments in Time 的 RGB 帧 + 光流文件，视频文件以及标注文件。
 
-在整个 MMAction2 文件夹下，Moments in Time only 的文件结构如下：
+在整个 MMAction2 文件夹下，Moments in Time 的文件结构如下：
 
 ```
 mmaction2
@@ -127,4 +127,4 @@ mmaction2
 
 ```
 
-关于对 HMDB51 进行训练和验证，可以参照 [基础教程](/docs_zh_CN/getting_started.md)。
+关于对 Moments in Times 进行训练和验证，可以参照 [基础教程](/docs_zh_CN/getting_started.md)。
