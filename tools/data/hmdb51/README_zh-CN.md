@@ -14,10 +14,10 @@
 }
 ```
 
-用户可以参照数据集 [官网](https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/)，获取数据集相关的基本信息，。
+用户可以参照数据集 [官网](https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/)，获取数据集相关的基本信息。
 在准备数据集前，请确保命令行当前路径为 `$MMACTION2/tools/data/hmdb51/`。
 
-为运行下面的 bash 脚本，需要安装 `unrar`。用户可运行 `sudo apt-get install unrar` 安装，或参照 [setup](https://github.com/innerlee/setup)，按照指引，运行 [`zzunrar.sh`](https://github.com/innerlee/setup/blob/master/zzunrar.sh) 脚本实现无管理员权限下的简易安装。
+为运行下面的 bash 脚本，需要安装 `unrar`。用户可运行 `sudo apt-get install unrar` 安装，或参照 [setup](https://github.com/innerlee/setup)，运行 [`zzunrar.sh`](https://github.com/innerlee/setup/blob/master/zzunrar.sh) 脚本实现无管理员权限下的简易安装。
 
 ## 步骤 1. 下载标注文件
 
@@ -41,7 +41,7 @@ bash download_videos.sh
 
 在抽取视频帧和光流之前，请参照 [安装指南](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
-如果用户有大量的固态硬盘存储空间，则推荐将抽取的存储至 I/O 性能更优秀的固态硬盘上。
+如果用户有大量的固态硬盘存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的固态硬盘上。
 用户可使用以下命令为固态硬盘建立软链接。
 
 ```shell

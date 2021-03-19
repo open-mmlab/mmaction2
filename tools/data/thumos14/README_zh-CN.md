@@ -42,7 +42,7 @@ bash download_videos.sh
 
 在抽取视频帧和光流之前，请参照 [安装指南](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
-如果用户有大量的固态硬盘存储空间，则推荐将抽取的存储至 I/O 性能更优秀的固态硬盘上。
+如果用户有大量的固态硬盘存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的固态硬盘上。
 用户可使用以下命令为固态硬盘建立软链接。
 
 ```shell

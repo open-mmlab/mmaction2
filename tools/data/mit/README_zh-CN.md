@@ -24,9 +24,9 @@
 
 首先，用户需要访问[官网](http://moments.csail.mit.edu/)，填写申请表来下载数据集。
 在得到下载链接后，用户可以使用 `bash preprocess_data.sh` 来准备标注文件和视频。
-但此脚本中是没有下载指令的，用户需要按照脚本中的注释，自行下载数据集到合适的位置。
+请注意此脚本并没有下载标注和视频文件，用户需要根据脚本文件中的注释，提前下载好数据集，并放/软链接到合适的位置。
 
-为加快视频解码速度，用户需要缩小原视频的尺寸，密集编码版本可由以下命令得到：
+为加快视频解码速度，用户需要缩小原视频的尺寸，获取密集编码版视频，获取命令如下：
 
 ```shell
 python ../resize_videos.py ../../../data/mit/videos/ ../../../data/mit/videos_256p_dense_cache --dense --level 2
@@ -36,9 +36,9 @@ python ../resize_videos.py ../../../data/mit/videos/ ../../../data/mit/videos_25
 
 如果用户只想使用视频加载训练，则该部分是 **可选项**。
 
-Before extracting, please refer to [install.md](/docs/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
+在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
-如果用户有大量的固态硬盘存储空间，则推荐将抽取的存储至 I/O 性能更优秀的固态硬盘上。
+如果用户有大量的固态硬盘存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的固态硬盘上。
 用户可使用以下命令为固态硬盘建立软链接。
 
 ```shell

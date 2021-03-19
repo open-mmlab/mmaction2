@@ -36,7 +36,7 @@ python ../resize_videos.py ../../../data/mmit/videos/ ../../../data/mmit/videos_
 
 Before extracting, please refer to [install.md](/docs/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
 
-如果用户有大量的固态硬盘存储空间，则推荐将抽取的存储至 I/O 性能更优秀的固态硬盘上。
+如果用户有大量的固态硬盘存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的固态硬盘上。
 用户可使用以下命令为固态硬盘建立软链接。
 
 ```shell

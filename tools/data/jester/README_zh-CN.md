@@ -33,10 +33,10 @@ cat 20bn-jester-v1-?? | tar zx
 cd $MMACTION2/tools/data/jester/
 ```
 
-如果用户只想使用 RGB 帧，则可以跳过中间步骤至步骤 5 以直接生成视频帧的标注文件。
+如果用户只想使用 RGB 帧，则可以跳过中间步骤至步骤 5 以直接生成视频帧的文件列表。
 由于官网的 JPG 文件名形如 "%05d.jpg" （比如，"00001.jpg"），需要在配置文件的 `data.train`, `data.val` 和 `data.test` 处添加 `"filename_tmpl='{:05}.jpg'"` 代码，以修改文件名模板。
 
-```
+```python
 data = dict(
     videos_per_gpu=16,
     workers_per_gpu=4,
