@@ -14,56 +14,56 @@
 }
 ```
 
-有关数据集的基础信息，用户可以参照数据集 [官网](https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/)。
-在开始前，请确保当前工作目录为 `$MMACTION2/tools/data/hmdb51/`。
+用户可以参照数据集 [官网](https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/)，获取数据集相关的基本信息，。
+在数据集准备前，请确保当前工作目录为 `$MMACTION2/tools/data/hmdb51/`。
 
 为运行下面的 bash 脚本，需要安装 `unrar`。用户可运行 `sudo apt-get install unrar` 安装，或参照 [setup](https://github.com/innerlee/setup)，按照指引，运行 [`zzunrar.sh`](https://github.com/innerlee/setup/blob/master/zzunrar.sh) 脚本实现无管理员权限下的简易安装。
 
-## 步骤 1. 准备标注文件
+## 步骤 1. 下载标注文件
 
-首先，用户可运行下列脚本来准备标注文件。
+首先，用户可使用以下命令下载标注文件。
 
 ```shell
 bash download_annotations.sh
 ```
 
-## 步骤 2. 准备视频
+## 步骤 2. 下载视频
 
-接着，用户可运行下列脚本来准备视频
+之后，用户可使用以下指令下载视频
 
 ```shell
 bash download_videos.sh
 ```
 
-## 步骤 3. 提取帧和光流
+## 步骤 3. 抽取帧和光流
 
-这步是**可选**的，如果用户只打算使用视频加载器。
+如果用户只想使用视频加载训练，则该部分是 **可选项**。
 
-在提取前，请参照 [MMAction2 安装文档](/docs_zh_CN/install.md) 来安装 [denseflow](https://github.com/open-mmlab/denseflow)。
+在抽取视频帧和光流之前，请参照 [安装指南](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
-如果用户有大量的固态硬盘空间，那么推荐在固态硬盘上进行帧的提取以获得更好的输入/输出表现。
+如果用户有大量的固态硬盘存储空间，则推荐将抽取的存储至 I/O 性能更优秀的固态硬盘上。
 
-用户可以运行下列脚本来软连接到固态硬盘的文件存储位置。
+用户可使用以下命令为固态硬盘建立软链接。
 
 ```shell
-# 执行这两行指令（假设固态硬盘挂载在 "/mnt/SSD/"上）
+# 执行这两行指令进行抽取（假设固态硬盘挂载在 "/mnt/SSD/"上）
 mkdir /mnt/SSD/hmdb51_extracted/
 ln -s /mnt/SSD/hmdb51_extracted/ ../../../data/hmdb51/rawframes
 ```
 
-如果用户只想使用图像帧来运行模型（因为提取光流非常耗时），可考虑运行下列脚本，使用 denseflow 只提取**图像帧**。
+如果用户没有安装 denseflow，则可以运行以下命令使用 OpenCV 对 RGB 帧进行抽取。然而，该方法只能抽取与原始视频分辨率相同的帧。
 
 ```shell
 bash extract_rgb_frames.sh
 ```
 
-如果用户不想安装 denseflow，也仍然可以运行下列脚本，使用 OpenCV 来提取图像帧，但输出帧的大小只能和原视频的大小一致。
+如果用户不想安装 denseflow，也可以使用以下命令，用 OpenCV 抽取 RGB 帧，但输出帧的大小只能和原视频的大小一致。
 
 ```shell
 bash extract_rgb_frames_opencv.sh
 ```
 
-如果既想提取图像帧，又想提取光流，那么可以运行下列脚本，使用 "tvl1" 算法来提取帧。
+如果用户想抽取 RGB 帧和光流，则可以运行以下脚本，使用 "tvl1" 算法进行抽取。
 
 ```shell
 bash extract_frames.sh
@@ -71,7 +71,7 @@ bash extract_frames.sh
 
 ## 步骤 4. 生成文件列表
 
-用户可以运行下列脚本来生成原始帧和视频的文件列表
+用户可以通过运行以下命令生成帧和视频格式的文件列表。
 
 ```shell
 bash generate_rawframes_filelist.sh
@@ -80,9 +80,9 @@ bash generate_videos_filelist.sh
 
 ## 步骤 5. 检查目录结构
 
-在完成 HMDB51 的全部准备过程后，用户会得到 HMDB51 的原始帧（图像帧 + 光流），视频和标注文件。
+在完成 HMDB51 数据集准备流程后，用户可以得到 HMDB51 的 RGB 帧 + 光流文件，视频文件以及标注文件。
 
-在整个项目的上下文中（只对 HMDB51 来说），文件夹结构如下所示：
+在整个 MMAction2 文件夹下，HMDB51 的文件结构如下：
 
 ```
 mmaction2
@@ -119,4 +119,4 @@ mmaction2
 
 ```
 
-有关在 HMDB51 上进行训练和评估，请参照 [基础教程](/docs_zh_CN/getting_started.md)。
+关于对 HMDB51 进行训练和验证，可以参照 [基础教程](/docs_zh_CN/getting_started.md)。
