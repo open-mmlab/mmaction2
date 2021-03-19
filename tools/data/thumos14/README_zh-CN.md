@@ -87,9 +87,7 @@ bash fetch_tag_proposals.sh
 
 如果用户不使用 SSN 模型，则该部分是 **可选项**。
 
-可运行以下脚本，来根据本地原始帧的实际数量，去规范化预先计算的候选标签
-You can run the follow script to denormalize pre-computed tag proposals according to
-actual number of local rawframes.
+可运行以下脚本，来根据本地原始帧的实际数量，去规范化预先计算的候选标签。
 
 ```shell
 cd $MMACTION2/tools/data/thumos14/
