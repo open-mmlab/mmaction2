@@ -19,7 +19,7 @@
 
 ## 步骤 1. 下载标注文件
 
-首先，用户需要在 [官网](https://20bn.com/datasets/jester/v1) 进行注册，才能下载标注文件。下载好的标注文件需要放在 `$MMACTION2/data/jester/annotations` 文件夹下。
+首先，用户需要在 [官网](https://20bn.com/datasets/jester/v1) 完成注册，才能下载标注文件。下载好的标注文件需要放在 `$MMACTION2/data/jester/annotations` 文件夹下。
 
 ## 步骤 2. 准备 RGB 帧
 
