@@ -20,7 +20,7 @@
 
 ## 步骤 1. 准备标注文件
 
-首先，用户需要在 [官网](https://20bn.com/datasets/something-something/v2) 进行注册，才能对标注文件进行下载。下载好的标准文件需要放在 `$MMACTION2/data/sthv2/annotations` 文件夹下。
+首先，用户需要在 [官网](https://20bn.com/datasets/something-something/v2) 完成注册，才能对标注文件进行下载。下载好的标准文件需要放在 `$MMACTION2/data/sthv2/annotations` 文件夹下。
 
 ## 步骤 2. 准备视频
 
@@ -34,9 +34,9 @@ cd $MMACTION2/tools/data/sthv2/
 
 ## Step 3. 抽取 RGB 帧和光流
 
-如果用户只想使用视频进行加载训练，则该部分是 **可选项**。
+如果用户只想使用视频进行训练，则该部分是 **可选项**。
 
-在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 进行 [denseflow](https://github.com/open-mmlab/denseflow) 的安装。
+在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
 如果用户有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 存储中。
 
@@ -48,14 +48,14 @@ mkdir /mnt/SSD/sthv2_extracted/
 ln -s /mnt/SSD/sthv2_extracted/ ../../../data/sthv2/rawframes
 ```
 
-如果用户需要抽取 RGB 帧（因为抽取光流的过程十分耗时），可以考虑运行以下命令使用 denseflow **只对 RGB 帧** 进行抽取。
+如果用户需要抽取 RGB 帧（因为抽取光流的过程十分耗时），可以考虑运行以下命令使用 denseflow **只抽取 RGB 帧**。
 
 ```shell
 cd $MMACTION2/tools/data/sthv2/
 bash extract_rgb_frames.sh
 ```
 
-如果用户没有安装 denseflow，则可以运行以下命令使用 OpenCV 对 RGB 帧进行抽取。然而，该方法只能抽取与原始视频分辨率相同的帧。
+如果用户没有安装 denseflow，则可以运行以下命令使用 OpenCV 抽取 RGB 帧。然而，该方法只能抽取与原始视频分辨率相同的帧。
 
 ```shell
 cd $MMACTION2/tools/data/sthv2/

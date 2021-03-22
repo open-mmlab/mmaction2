@@ -31,7 +31,7 @@ tar -zxvf UCF101_v2.tar.gz
 
 ## 检查文件夹结构
 
-在进行解压后，用户将得到 `rgb-images` 文件夹，`brox-images` 文件夹和 `UCF101v2-GT.pkl` 文件。
+经过解压后，用户将得到 `rgb-images` 文件夹，`brox-images` 文件夹和 `UCF101v2-GT.pkl` 文件。
 
 在整个 MMAction2 文件夹下，UCF101_24 的文件结构如下：
 

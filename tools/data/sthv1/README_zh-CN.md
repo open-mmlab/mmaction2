@@ -18,11 +18,11 @@
 
 ## 步骤 1. 准备标注文件
 
-首先，用户需要在 [官网](https://20bn.com/datasets/something-something/v1) 进行注册，才能对标注文件进行下载。下载好的标准文件需要放在 `$MMACTION2/data/sthv1/annotations` 文件夹下。
+首先，用户需要在 [官网](https://20bn.com/datasets/something-something/v1) 完成注册，才能下载标注文件。下载好的标准文件需要放在 `$MMACTION2/data/sthv1/annotations` 文件夹下。
 
 ## 步骤 2. 准备 RGB 帧
 
-因为 [官网](https://20bn.com/datasets/something-something/v1) 并未提供原始视频文件，只提供了对原视频文件进行抽取得到的 RGB 帧，用户可在 [官网](https://20bn.com/datasets/something-something/v1) 直接对其进行下载。
+因为 [官网](https://20bn.com/datasets/something-something/v1) 并未提供原始视频文件，只提供了对原视频文件进行抽取得到的 RGB 帧，用户可在 [官网](https://20bn.com/datasets/something-something/v1) 直接下载。
 
 将下载好的 RGB 帧放在 `$MMACTION2/data/sthv1/` 文件夹下，并使用以下脚本进行解压。
 
@@ -61,9 +61,9 @@ data = dict(
 
 ## 步骤 3. 抽取光流
 
-如果用户只想使用原 RGB 帧进行加载训练，则该部分是 **可选项**。
+如果用户只想使用原 RGB 帧进行训练，则该部分是 **可选项**。
 
-在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 进行 [denseflow](https://github.com/open-mmlab/denseflow) 的安装。
+在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
 如果用户有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 存储中。
 
@@ -84,7 +84,7 @@ bash extract_flow.sh
 
 ## 步骤 4: 编码视频
 
-如果用户只想使用原 RGB 帧进行加载训练，则该部分是 **可选项**。
+如果用户只想使用原 RGB 帧进行训练，则该部分是 **可选项**。
 
 用户可以运行以下命令进行视频编码。
 
