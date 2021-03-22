@@ -1,6 +1,6 @@
 # 准备 Moments in Time
 
-## 介绍
+## 简介
 
 [DATASET]
 
@@ -38,22 +38,22 @@ python ../resize_videos.py ../../../data/mit/videos/ ../../../data/mit/videos_25
 
 在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
-如果用户有大量的固态硬盘存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的固态硬盘上。
-用户可使用以下命令为固态硬盘建立软链接。
+如果用户有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 上。
+用户可使用以下命令为 SSD 建立软链接。
 
 ```shell
-# 执行这两行指令进行抽取（假设固态硬盘挂载在 "/mnt/SSD/"上）
+# 执行这两行指令进行抽取（假设 SSD 挂载在 "/mnt/SSD/"上）
 mkdir /mnt/SSD/mit_extracted/
 ln -s /mnt/SSD/mit_extracted/ ../../../data/mit/rawframes
 ```
 
-如果用户需要抽取 RGB 帧（因为抽取光流的过程十分耗时），可以考虑运行以下命令使用 denseflow **只对 RGB 帧** 进行抽取。
+如果用户需要抽取 RGB 帧（因为抽取光流的过程十分耗时），可以考虑运行以下命令使用 denseflow **只抽取 RGB 帧**。
 
 ```shell
 bash extract_rgb_frames.sh
 ```
 
-如果用户没有安装 denseflow，则可以运行以下命令使用 OpenCV 对 RGB 帧进行抽取。然而，该方法只能抽取与原始视频分辨率相同的帧。
+如果用户没有安装 denseflow，则可以运行以下命令使用 OpenCV 抽取 RGB 帧。然而，该方法只能抽取与原始视频分辨率相同的帧。
 
 ```shell
 bash extract_rgb_frames_opencv.sh

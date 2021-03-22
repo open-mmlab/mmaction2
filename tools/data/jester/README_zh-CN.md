@@ -1,6 +1,6 @@
 # 准备 Jester
 
-## 介绍
+## 简介
 
 [DATASET]
 
@@ -66,12 +66,12 @@ data = dict(
 
 在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
-如果拥有大量的固态硬盘存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的固态硬盘中。
+如果拥有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 中。
 
-可以运行以下命令为固态硬盘建立软链接。
+可以运行以下命令为 SSD 建立软链接。
 
 ```shell
-# 执行这两行进行抽取（假设固态硬盘挂载在 "/mnt/SSD/"）
+# 执行这两行进行抽取（假设 SSD 挂载在 "/mnt/SSD/"）
 mkdir /mnt/SSD/jester_extracted/
 ln -s /mnt/SSD/jester_extracted/ ../../../data/jester/rawframes
 ```
