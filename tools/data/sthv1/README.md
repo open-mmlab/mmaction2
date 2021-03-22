@@ -26,7 +26,7 @@ First of all, you have to sign in and download annotations to `$MMACTION2/data/s
 
 Since the [sthv1 website](https://20bn.com/datasets/something-something/v1) doesn't provide the original video data and only extracted RGB frames are available, you have to directly download RGB frames from [sthv1 website](https://20bn.com/datasets/something-something/v1).
 
-You can download all RGB frame parts on [sthv1 website](https://20bn.com/datasets/something-something/v1) to `$MMACTION2/data/sthv1/` and use the following command to uncompress.
+You can download all compressed file parts on [sthv1 website](https://20bn.com/datasets/something-something/v1) to `$MMACTION2/data/sthv1/` and use the following command to uncompress.
 
 ```shell
 cd $MMACTION2/data/sthv1/
@@ -35,7 +35,7 @@ cd $MMACTION2/tools/data/sthv1/
 ```
 
 For users who only want to use RGB frames, you can skip to step 5 to generate file lists in the format of rawframes.
-Since the prefix of official JPGs is "%05d.jpg" (e.g., "00001.jpg"), users need to add "filename_tmpl='{:05}.jpg'" to the dict of `data.train`, `data.val` and `data.test` in the config files related with sthv1 like this:
+Since the prefix of official JPGs is "%05d.jpg" (e.g., "00001.jpg"), users need to add `"filename_tmpl='{:05}.jpg'"` to the dict of `data.train`, `data.val` and `data.test` in the config files related with sthv1 like this:
 
 ```
 data = dict(

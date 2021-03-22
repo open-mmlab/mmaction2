@@ -13,11 +13,11 @@
 ```
 
 用户可参考该数据集的 [官网](https://www.crcv.ucf.edu/research/data-sets/ucf101/)，以获取数据集相关的基本信息。
-在数据集准备前，请确保当前所在文件夹位置为 `$MMACTION2/tools/data/ucf101/`。
+在数据集准备前，请确保命令行当前路径为 `$MMACTION2/tools/data/ucf101/`。
 
-## 步骤 1. 准备标注文件
+## 步骤 1. 下载标注文件
 
-首先，用户可运行以下脚本准备标注文件。
+首先，用户可运行以下脚本下载标注文件。
 
 ```shell
 bash download_annotations.sh
@@ -39,13 +39,13 @@ python ../resize_video.py ../../../data/ucf101/videos/ ../../../data/ucf101/vide
 
 ## 步骤 3. 抽取视频帧和光流
 
-如果用户只想使用视频进行训练，则该部分是 **可选项**。
+如果用户只想使用视频加载训练，则该部分是 **可选项**。
 
 在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
-如果用户有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 存储中。所抽取的视频帧和光流约占据 100 GB 的存储空间。
+如果拥有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 中。所抽取的视频帧和光流约占据 100 GB 的存储空间。
 
-用户可以运行以下命令在 SSD 中建立软连接。
+可以运行以下命令为 SSD 建立软链接。
 
 ```shell
 # 执行这两行进行抽取（假设 SSD 挂载在 "/mnt/SSD/"）
@@ -82,7 +82,7 @@ bash generate_rawframes_filelist.sh
 
 ## 步骤 5. 检查文件夹结构
 
-在走完完整的 UCF-101 数据集准备流程后，
+在完成所有 UCF-101 数据集准备流程后，
 用户可以获得对应的 RGB + 光流文件，视频文件以及标注文件。
 
 在整个 MMAction2 文件夹下，UCF-101 的文件结构如下：

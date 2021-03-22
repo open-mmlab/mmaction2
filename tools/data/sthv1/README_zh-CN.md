@@ -14,17 +14,17 @@
 ```
 
 用户可参考该数据集的 [官网](https://20bn.com/datasets/something-something/v1)，以获取数据集相关的基本信息。
-在数据集准备前，请确保当前所在文件夹位置为 `$MMACTION2/tools/data/sthv1/`。
+在数据集准备前，请确保命令行当前路径为 `$MMACTION2/tools/data/sthv1/`。
 
-## 步骤 1. 准备标注文件
+## 步骤 1. 下载标注文件
 
-首先，用户需要在 [官网](https://20bn.com/datasets/something-something/v1) 完成注册，才能下载标注文件。下载好的标准文件需要放在 `$MMACTION2/data/sthv1/annotations` 文件夹下。
+首先，用户需要在 [官网](https://20bn.com/datasets/something-something/v1) 进行注册，才能下载标注文件。下载好的标注文件需要放在 `$MMACTION2/data/sthv1/annotations` 文件夹下。
 
 ## 步骤 2. 准备 RGB 帧
 
-因为 [官网](https://20bn.com/datasets/something-something/v1) 并未提供原始视频文件，只提供了对原视频文件进行抽取得到的 RGB 帧，用户可在 [官网](https://20bn.com/datasets/something-something/v1) 直接下载。
+[官网](https://20bn.com/datasets/something-something/v1) 并未提供原始视频文件，只提供了对原视频文件进行抽取得到的 RGB 帧，用户可在 [官网](https://20bn.com/datasets/something-something/v1) 直接下载。
 
-将下载好的 RGB 帧放在 `$MMACTION2/data/sthv1/` 文件夹下，并使用以下脚本进行解压。
+将下载好的压缩文件放在 `$MMACTION2/data/sthv1/` 文件夹下，并使用以下脚本进行解压。
 
 ```shell
 cd $MMACTION2/data/sthv1/
@@ -32,8 +32,8 @@ cat 20bn-something-something-v1-?? | tar zx
 cd $MMACTION2/tools/data/sthv1/
 ```
 
-如果用户只想使用 RGB 帧，则可以跳过中间步骤至步骤 5 以直接生成视频帧的标注文件。
-由于官网的 JPG 文件名形如 "%05d.jpg" （比如，"00001.jpg"），需要在配置文件的 `data.train`, `data.val` 和 `data.test` 处添加 "filename_tmpl='{:05}.jpg'" 代码，以修改文件名模板。
+如果用户只想使用 RGB 帧，则可以跳过中间步骤至步骤 5 以直接生成视频帧的文件列表。
+由于官网的 JPG 文件名形如 "%05d.jpg" （比如，"00001.jpg"），需要在配置文件的 `data.train`, `data.val` 和 `data.test` 处添加 `"filename_tmpl='{:05}.jpg'"` 代码，以修改文件名模板。
 
 ```
 data = dict(
@@ -61,13 +61,13 @@ data = dict(
 
 ## 步骤 3. 抽取光流
 
-如果用户只想使用原 RGB 帧进行训练，则该部分是 **可选项**。
+如果用户只想使用原 RGB 帧加载训练，则该部分是 **可选项**。
 
 在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
-如果用户有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 存储中。
+如果拥有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 中。
 
-用户可以运行以下命令在 SSD 中建立软连接。
+可以运行以下命令为 SSD 建立软链接。
 
 ```shell
 # 执行这两行进行抽取（假设 SSD 挂载在 "/mnt/SSD/"）
@@ -75,7 +75,7 @@ mkdir /mnt/SSD/sthv1_extracted/
 ln -s /mnt/SSD/sthv1_extracted/ ../../../data/sthv1/rawframes
 ```
 
-如果用户想抽取光流，则可以运行以下脚本从 RGB 帧中抽取出光流。
+如果想抽取光流，则可以运行以下脚本从 RGB 帧中抽取出光流。
 
 ```shell
 cd $MMACTION2/tools/data/sthv1/
@@ -84,7 +84,7 @@ bash extract_flow.sh
 
 ## 步骤 4: 编码视频
 
-如果用户只想使用原 RGB 帧进行训练，则该部分是 **可选项**。
+如果用户只想使用 RGB 帧加载训练，则该部分是 **可选项**。
 
 用户可以运行以下命令进行视频编码。
 
@@ -104,7 +104,7 @@ bash generate_{rawframes, videos}_filelist.sh
 
 ## 步骤 6. 检查文件夹结构
 
-在走完完整的 Something-Something V1 数据集准备流程后，
+在完成所有 Something-Something V1 数据集准备流程后，
 用户可以获得对应的 RGB + 光流文件，视频文件以及标注文件。
 
 在整个 MMAction2 文件夹下，Something-Something V1 的文件结构如下：
