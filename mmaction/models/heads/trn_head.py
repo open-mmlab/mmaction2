@@ -51,14 +51,14 @@ class RelationModuleMultiScale(nn.Module):
                 min(max_subsample, len(relations_scale)))
         assert len(self.relations_scales[0]) == 1
 
-        num_bottleneck = 256
+        bottleneck_dim = 256
         self.fc_fusion_scales = nn.ModuleList()
         for scale in self.scales:
             fc_fusion = nn.Sequential(
                 nn.ReLU(),
-                nn.Linear(scale * self.hidden_dim, num_bottleneck),
+                nn.Linear(scale * self.hidden_dim, bottleneck_dim),
                 nn.ReLU(),
-                nn.Linear(num_bottleneck, self.num_classes),
+                nn.Linear(bottleneck_dim, self.num_classes),
             )
             self.fc_fusion_scales.append(fc_fusion)
 
@@ -87,7 +87,6 @@ class RelationModuleMultiScale(nn.Module):
 
 @HEADS.register_module()
 class TRNHead(BaseHead):
-    """TODO."""
 
     def __init__(self,
                  num_classes,
@@ -98,7 +97,7 @@ class TRNHead(BaseHead):
                  relation_type='TRNMultiScale',
                  hidden_dim=256,
                  dropout_ratio=0.4,
-                 init_std=0.01,
+                 init_std=0.001,
                  **kwargs):
         super().__init__(num_classes, in_channels, loss_cls, **kwargs)
 
@@ -146,7 +145,7 @@ class TRNHead(BaseHead):
         if self.dropout is not None:
             x = self.dropout(x)
 
-        # [N * num_segs, hidden_dim]
+        # [N, num_segs, hidden_dim]
         cls_score = self.fc_cls(x)
         cls_score = cls_score.view((-1, self.num_segments) +
                                    cls_score.size()[1:])
