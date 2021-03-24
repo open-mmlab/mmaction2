@@ -8,6 +8,7 @@
 
 - Support LFB ([#553](https://github.com/open-mmlab/mmaction2/pull/553))
 - Support using backbones from MMCls for TSN ([#679](https://github.com/open-mmlab/mmaction2/pull/679))
+- Support Mixup and Cutmix for recognizers [#681](https://github.com/open-mmlab/mmaction2/pull/681)
 
 **Improvements**
 

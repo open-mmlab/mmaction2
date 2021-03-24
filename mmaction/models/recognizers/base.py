@@ -63,6 +63,13 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
             self.max_testing_views = test_cfg['max_testing_views']
             assert isinstance(self.max_testing_views, int)
 
+        # mini-batch blending, e.g. mixup, cutmix, etc.
+        self.blending = None
+        if train_cfg is not None and 'blending' in train_cfg:
+            from mmcv.utils import build_from_cfg
+            from ...datasets.registry import BLENDINGS
+            self.blending = build_from_cfg(train_cfg['blending'], BLENDINGS)
+
         self.init_weights()
 
         self.fp16_enabled = False
@@ -181,6 +188,8 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         if return_loss:
             if label is None:
                 raise ValueError('Label should not be None.')
+            if self.blending is not None:
+                imgs, label = self.blending(imgs, label)
             return self.forward_train(imgs, label, **kwargs)
 
         return self.forward_test(imgs, **kwargs)
