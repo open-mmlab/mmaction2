@@ -184,8 +184,8 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
     # 优化器设置
     optimizer = dict(
         # 构建优化器的设置，支持：
-        # (1). 所有 PyTorch 原生的优化器，这些优化器的参数和 PyTorch 对应的一致；
-        # (2). 自定义的优化器，这些优化器在 `constructor` 的基础上构建。
+        # (1) 所有 PyTorch 原生的优化器，这些优化器的参数和 PyTorch 对应的一致；
+        # (2) 自定义的优化器，这些优化器在 `constructor` 的基础上构建。
         # 更多细节可参考 "tutorials/5_new_modules.md" 部分
         type='Adam',  # 优化器类型, 参考 https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/optimizer/default_constructor.py#L13 for more details
         lr=0.001,  # 学习率, 参数的细节使用可参考 PyTorch 的对应文档
@@ -393,8 +393,8 @@ MMAction2 将模块化设计整合到配置文件系统中，以便执行各类�
     # 优化器设置
     optimizer = dict(
         # 构建优化器的设置，支持：
-        # (1). 所有 PyTorch 原生的优化器，这些优化器的参数和 PyTorch 对应的一致；
-        # (2). 自定义的优化器，这些优化器在 `constructor` 的基础上构建。
+        # (1) 所有 PyTorch 原生的优化器，这些优化器的参数和 PyTorch 对应的一致；
+        # (2) 自定义的优化器，这些优化器在 `constructor` 的基础上构建。
         # 更多细节可参考 "tutorials/5_new_modules.md" 部分
         type='SGD',  # 优化器类型, 参考 https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/optimizer/default_constructor.py#L13
         lr=0.01,  # 学习率, 参数的细节使用可参考 PyTorch 的对应文档
@@ -613,8 +613,8 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
     # 优化器设置
     optimizer = dict(
         # 构建优化器的设置，支持：
-        # (1). 所有 PyTorch 原生的优化器，这些优化器的参数和 PyTorch 对应的一致；
-        # (2). 自定义的优化器，这些优化器在 `constructor` 的基础上构建。
+        # (1) 所有 PyTorch 原生的优化器，这些优化器的参数和 PyTorch 对应的一致；
+        # (2) 自定义的优化器，这些优化器在 `constructor` 的基础上构建。
         # 更多细节可参考 "tutorials/5_new_modules.md" 部分
         type='SGD',  # 优化器类型, 参考 https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/optimizer/default_constructor.py#L13
         lr=0.2,  # 学习率, 参数的细节使用可参考 PyTorch 的对应文档
