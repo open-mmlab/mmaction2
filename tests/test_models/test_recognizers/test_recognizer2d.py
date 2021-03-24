@@ -57,6 +57,19 @@ def test_tsn():
         for one_img in img_list:
             recognizer(one_img, None, return_loss=False)
 
+    # test mixup forward
+    config = get_recognizer_cfg(
+        'tsn/tsn_r50_video_mixup_1x1x8_100e_kinetics400_rgb.py')
+    config.model['backbone']['pretrained'] = None
+    recognizer = build_recognizer(config.model)
+    input_shape = (2, 8, 3, 32, 32)
+    demo_inputs = generate_recognizer_demo_inputs(input_shape)
+    imgs = demo_inputs['imgs']
+    gt_labels = demo_inputs['gt_labels']
+    losses = recognizer(imgs, gt_labels)
+    assert isinstance(losses, dict)
+
+    # test torchvision backbones
     tv_backbone = dict(type='torchvision.densenet161', pretrained=True)
     config.model['backbone'] = tv_backbone
     config.model['cls_head']['in_channels'] = 2208
@@ -77,7 +90,6 @@ def test_tsn():
         img_list = [img[None, :] for img in imgs]
         for one_img in img_list:
             recognizer(one_img, None, return_loss=False)
-
 
 def test_tsm():
     config = get_recognizer_cfg('tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py')

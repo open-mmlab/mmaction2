@@ -21,7 +21,7 @@
     - [3. 修改配置](#3-修改配置)
   - [使用 MMCV 内置钩子](#使用-MMCV-内置钩子)
   - [修改默认运行的钩子](#修改默认运行的钩子)
-    - [模型检查点文件配置](#模型检查点文件配置)
+    - [模型权重文件配置](#模型权重文件配置)
     - [日志配置](#日志配置)
     - [验证配置](#验证配置)
 
@@ -315,7 +315,7 @@ mmcv_hooks = [
 上述教程已经介绍了如何修改 “optimizer_config”，“momentum_config” 和 “lr_config”。
 下面介绍如何使用 log_config，checkpoint_config，以及 evaluation 能做什么。
 
-#### 模型检查点文件配置
+#### 模型权重文件配置
 
 MMCV 的 runner 使用 `checkpoint_config` 来初始化 [`CheckpointHook`](https://github.com/open-mmlab/mmcv/blob/9ecd6b0d5ff9d2172c49a182eaa669e9f27bb8e7/mmcv/runner/hooks/checkpoint.py#L9)。
 
@@ -323,7 +323,7 @@ MMCV 的 runner 使用 `checkpoint_config` 来初始化 [`CheckpointHook`](https
 checkpoint_config = dict(interval=1)
 ```
 
-用户可以设置 “max_keep_ckpts” 来仅保存少量模型检查点文件，或者通过 “save_optimizer” 决定是否存储优化器的状态字典。
+用户可以设置 “max_keep_ckpts” 来仅保存少量模型权重文件，或者通过 “save_optimizer” 决定是否存储优化器的状态字典。
 更多细节可参考 [这里](https://mmcv.readthedocs.io/en/latest/api.html#mmcv.runner.CheckpointHook)。
 
 #### 日志配置

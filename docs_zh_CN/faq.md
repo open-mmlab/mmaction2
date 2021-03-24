@@ -9,11 +9,11 @@
 - **"No module named 'mmcv.ops'"; "No module named 'mmcv._ext'"**
 
     1. 使用 `pip uninstall mmcv` 卸载环境中已安装的 `mmcv`。
-    2. 遵循 [安装文档](https://mmcv.readthedocs.io/en/latest/#installation) 来安装 `mmcv-full`。
+    2. 遵循 [MMCV 安装文档](https://mmcv.readthedocs.io/en/latest/#installation) 来安装 `mmcv-full`。
 
 - **"OSError: MoviePy Error: creation of None failed because of the following error"**
 
-    参照 [安装文档](https://github.com/open-mmlab/mmaction2/blob/master/docs/install.md#requirements)
+    参照 [MMAction2 安装文档](https://github.com/open-mmlab/mmaction2/blob/master/docs_zh_CN/install.md#安装依赖包)
     1. 对于 Windows 用户，[ImageMagick](https://www.imagemagick.org/script/index.php) 不再被 MoviePy 自动检测，
     需要获取名为 `magick` 的 ImageMagick 二进制包的路径，来修改 `moviepy/config_defaults.py` 文件中的 `IMAGEMAGICK_BINARY`，如 `IMAGEMAGICK_BINARY = "C:\\Program Files\\ImageMagick_VERSION\\magick.exe"`
     2. 对于 Linux 用户，如果 ImageMagick 没有被 moviepy 检测，需要注释掉 `/etc/ImageMagick-6/policy.xml` 文件中的 `<policy domain="path" rights="none" pattern="@*" />`，即改为 `<!-- <policy domain="path" rights="none" pattern="@*" /> -->`。
@@ -43,7 +43,7 @@
 
 - **如何使用训练过的识别器作为主干网络的预训练模型？**
 
-    参照 [使用预训练模型](https://github.com/open-mmlab/mmaction2/blob/master/docs/tutorials/2_finetune.md#use-pre-trained-model)，
+    参照 [使用预训练模型](https://github.com/open-mmlab/mmaction2/blob/master/docs_zh_CN/tutorials/2_finetune.md#使用预训练模型)，
     如果想对整个网络使用预训练模型，可以在配置文件中，将 `load_from` 设置为预训练模型的链接。
 
     如果只想对主干网络使用预训练模型，可以在配置文件中，将主干网络 `backbone` 中的 `pretrained` 设置为预训练模型的地址或链接。
@@ -62,7 +62,7 @@
     )
     ```
 
-    可以参照 [教程1：如何编写配置文件](tutorials/1_config.md)，[教程7：如何自定义模型运行参数](tutorials/7_customize_runtime.md#log-config)，和 [这个例子](https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py#L118)了解更多相关内容。
+    可以参照 [教程1：如何编写配置文件](tutorials/1_config.md)，[教程7：如何自定义模型运行参数](tutorials/7_customize_runtime.md#log-config)，和 [这个例子](https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py#L118) 了解更多相关内容。
 
 - **在 batchnorm.py 中抛出错误: Expected more than 1 value per channel when training**
 

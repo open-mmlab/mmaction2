@@ -79,8 +79,14 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
         losses = dict()
         if labels.shape == torch.Size([]):
             labels = labels.unsqueeze(0)
+        elif labels.dim() == 1 and labels.size()[0] == self.num_classes \
+                and cls_score.size()[0] == 1:
+            # Fix a bug when training with soft labels and batch size is 1.
+            # When using soft labels, `labels` and `cls_socre` share the same
+            # shape.
+            labels = labels.unsqueeze(0)
 
-        if not self.multi_class:
+        if not self.multi_class and cls_score.size() != labels.size():
             top_k_acc = top_k_accuracy(cls_score.detach().cpu().numpy(),
                                        labels.detach().cpu().numpy(), (1, 5))
             losses['top1_acc'] = torch.tensor(
@@ -88,7 +94,7 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
             losses['top5_acc'] = torch.tensor(
                 top_k_acc[1], device=cls_score.device)
 
-        elif self.label_smooth_eps != 0:
+        elif self.multi_class and self.label_smooth_eps != 0:
             labels = ((1 - self.label_smooth_eps) * labels +
                       self.label_smooth_eps / self.num_classes)
 

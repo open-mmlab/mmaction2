@@ -1,7 +1,5 @@
 import os.path as osp
 
-import torch
-
 from .base import BaseDataset
 from .registry import DATASETS
 
@@ -53,15 +51,10 @@ class VideoDataset(BaseDataset):
                     assert self.num_classes is not None
                     filename, label = line_split[0], line_split[1:]
                     label = list(map(int, label))
-                    onehot = torch.zeros(self.num_classes)
-                    onehot[label] = 1.0
                 else:
                     filename, label = line_split
                     label = int(label)
                 if self.data_prefix is not None:
                     filename = osp.join(self.data_prefix, filename)
-                video_infos.append(
-                    dict(
-                        filename=filename,
-                        label=onehot if self.multi_class else label))
+                video_infos.append(dict(filename=filename, label=label))
         return video_infos

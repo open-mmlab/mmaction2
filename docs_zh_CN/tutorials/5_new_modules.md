@@ -17,7 +17,7 @@
 ## 自定义优化器
 
 [CopyOfSGD](/mmaction/core/optimizer/copy_of_sgd.py) 是自定义优化器的一个例子，写在 `mmaction/core/optimizer/copy_of_sgd.py` 文件中。
-更一般地，可以根据如下方法如下自定义优化器。
+更一般地，可以根据如下方法自定义优化器。
 
 假设添加的优化器名为 `MyOptimizer`，它有 `a`，`b` 和 `c` 三个参数。
 用户需要首先实现一个新的优化器文件，如 `mmaction/core/optimizer/my_optimizer.py`：

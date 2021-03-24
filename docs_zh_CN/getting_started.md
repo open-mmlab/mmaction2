@@ -1,6 +1,6 @@
 # 基础教程
 
-本文档提供 MMAction2 相关用法的基本教程。对于安装说明，请参阅 [安装指南](install_cn.md)。
+本文档提供 MMAction2 相关用法的基本教程。对于安装说明，请参阅 [安装指南](install.md)。
 
 <!-- TOC -->
 
@@ -46,9 +46,9 @@ mmaction2
 │   ├── ...
 ```
 
-请参阅 [数据集准备](data_preparation_cn.md) 获取数据集准备的相关信息。
+请参阅 [数据集准备](data_preparation.md) 获取数据集准备的相关信息。
 
-对于用户自定义数据集的准备，请参阅 [教程 3：如何增加新数据集](tutorials/3_new_dataset_cn.md)
+对于用户自定义数据集的准备，请参阅 [教程 3：如何增加新数据集](tutorials/3_new_dataset.md)
 
 ## 使用预训练模型进行推理
 
@@ -88,7 +88,7 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--out ${RESULT_FILE}] [-
 
 例子：
 
-假定用户将下载的检查点放置在 `checkpoints/` 目录下。
+假定用户将下载的模型权重文件放置在 `checkpoints/` 目录下。
 
 1. 在 Kinetics-400 数据集下测试 TSN （不存储测试结果为文件），并验证 `top-k accuracy` 和 `mean class accuracy` 指标
 
@@ -303,7 +303,7 @@ MMAction2 使用 `MMDistributedDataParallel` 进行分布式训练，使用 `MMD
 
 ### 训练配置
 
-所有的输出（日志文件和检查点文件）会被将保存到工作目录下。工作目录通过配置文件中的参数 `work_dir` 指定。
+所有的输出（日志文件和模型权重文件）会被将保存到工作目录下。工作目录通过配置文件中的参数 `work_dir` 指定。
 
 默认情况下，MMAction2 在每个周期后会在验证集上评估模型，可以通过在训练配置中修改 `interval` 参数来更改评估间隔
 
@@ -331,7 +331,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 
 - `--validate` (**强烈建议**)：在训练期间每 k 个周期进行一次验证（默认值为 5，可通过修改每个配置文件中的 `evaluation` 字典变量的 `interval` 值进行改变）。
 - `--work-dir ${WORK_DIR}`：覆盖配置文件中指定的工作目录。
-- `--resume-from ${CHECKPOINT_FILE}`：从以前的检查点恢复训练。
+- `--resume-from ${CHECKPOINT_FILE}`：从以前的模型权重文件恢复训练。
 - `--gpus ${GPU_NUM}`：使用的 GPU 数量，仅适用于非分布式训练。
 - `--gpu-ids ${GPU_IDS}`：使用的 GPU ID，仅适用于非分布式训练。
 - `--seed ${SEED}`：设置 python，numpy 和 pytorch 里的种子 ID，已用于生成随机数。
@@ -343,7 +343,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 `resume-from` 加载模型参数和优化器状态，并且保留检查点所在的周期数，常被用于恢复意外被中断的训练。
 `load-from` 只加载模型参数，但周期数从 0 开始计数，常被用于微调模型。
 
-这里提供一个使用 8 块 GPU 加载 TSN 检查点的例子。
+这里提供一个使用 8 块 GPU 加载 TSN 模型权重文件的例子。
 
 ```shell
 ./tools/dist_train.sh configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py 8 --resume-from work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb/latest.pth
@@ -403,10 +403,10 @@ CUDA_VISIBLE_DEVICES=4,5,6,7 GPUS=4 ./tools/slurm_train.sh ${PARTITION} ${JOB_NA
 
 目前, MMAction2 提供以下几种更详细的教程：
 
-- [如何编写配置文件](/docs/tutorials/1_config.md)
-- [如何微调模型](/docs/tutorials/2_finetune.md)
-- [如何增加新数据集](/docs/tutorials/3_new_dataset.md)
-- [如何设计数据处理流程](/docs/tutorials/4_data_pipeline.md)
-- [如何增加新模块](/docs/tutorials/5_new_modules.md)
-- [如何导出模型为 onnx 格式](/docs/tutorials/6_export_model.md)
-- [如何自定义模型运行参数](/docs/tutorials/7_customize_runtime.md)
+- [如何编写配置文件](tutorials/1_config.md)
+- [如何微调模型](tutorials/2_finetune.md)
+- [如何增加新数据集](tutorials/3_new_dataset.md)
+- [如何设计数据处理流程](tutorials/4_data_pipeline.md)
+- [如何增加新模块](tutorials/5_new_modules.md)
+- [如何导出模型为 onnx 格式](tutorials/6_export_model.md)
+- [如何自定义模型运行参数](tutorials/7_customize_runtime.md)
