@@ -148,13 +148,14 @@ class Imgaug:
             dict: The constructed RandAugment transforms.
         """
         # RandAugment hyper params
-        n, m, max_level = 2, 9, 10
-        cur_level = 1.0 * m / max_level
+        num_augmenters = 2
+        cur_magnitude, max_magnitude = 9, 10
+        cur_level = 1.0 * cur_magnitude / max_magnitude
 
         return [
             dict(
                 type='SomeOf',
-                n=n,
+                n=num_augmenters,
                 children=[
                     dict(
                         type='ShearX',
@@ -208,10 +209,8 @@ class Imgaug:
 
         obj_type = args.pop('type')
         if mmcv.is_str(obj_type):
-            try:
-                obj_cls = getattr(iaa, obj_type)
-            except AttributeError:
-                obj_cls = getattr(iaa.pillike, obj_type)
+            obj_cls = getattr(iaa, obj_type) if hasattr(iaa, obj_type) \
+                else getattr(iaa.pillike, obj_type)
         elif issubclass(obj_type, iaa.Augmenter):
             obj_cls = obj_type
         else:
