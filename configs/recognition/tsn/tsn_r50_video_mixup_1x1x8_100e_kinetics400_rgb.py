@@ -19,8 +19,6 @@ model = dict(
         dropout_ratio=0.4,
         init_std=0.01),
     # model training and testing settings
-    # train_cfg=dict(
-    #     blending=dict(type="CutmixBlending", num_classes=400, alpha=.2)),
     train_cfg=dict(
         blending=dict(type='MixupBlending', num_classes=400, alpha=.2)),
     test_cfg=dict(average_clips=None))
