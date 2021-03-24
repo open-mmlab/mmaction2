@@ -91,6 +91,7 @@ def test_tsn():
         for one_img in img_list:
             recognizer(one_img, None, return_loss=False)
 
+
 def test_tsm():
     config = get_recognizer_cfg('tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py')
     config.model['backbone']['pretrained'] = None
