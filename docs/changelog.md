@@ -8,7 +8,7 @@
 
 - Support LFB ([#553](https://github.com/open-mmlab/mmaction2/pull/553))
 - Support using backbones from MMCls for TSN ([#679](https://github.com/open-mmlab/mmaction2/pull/679))
-- Support using backbones from TorchVision for TSN ([#720]([[Feature\] Enable torchvision backbones by kennymckormick · Pull Request #720 · open-mmlab/mmaction2 (github.com)](https://github.com/open-mmlab/mmaction2/pull/720)))
+- Support using backbones from TorchVision for TSN ([#720](https://github.com/open-mmlab/mmaction2/pull/720))
 - Support Mixup and Cutmix for recognizers [#681](https://github.com/open-mmlab/mmaction2/pull/681)
 
 **Improvements**
