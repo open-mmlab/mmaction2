@@ -49,7 +49,7 @@ class TPNHead(TSNHead):
             x (torch.Tensor): The input data.
             num_segs (int | None): Number of segments into which a video
                 is divided. Default: None.
-            fcn_test (bool): Whether to apply full convolution (fcn) testing. 
+            fcn_test (bool): Whether to apply full convolution (fcn) testing.
                 Default: False.
 
         Returns:
