@@ -1,10 +1,10 @@
-# Preparing THUMOS'14
+# 准备 THUMOS'14
 
-## Introduction
+## 简介
 
 [DATASET]
 
-```BibTeX
+```BibTex
 @misc{THUMOS14,
     author = {Jiang, Y.-G. and Liu, J. and Roshan Zamir, A. and Toderici, G. and Laptev,
     I. and Shah, M. and Sukthankar, R.},
@@ -15,93 +15,90 @@
 }
 ```
 
-For basic dataset information, you can refer to the dataset [website](https://www.crcv.ucf.edu/THUMOS14/download.html).
-Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/thumos14/`.
+用户可以参照数据集 [官网](https://www.crcv.ucf.edu/THUMOS14/download.html)，获取数据集相关的基本信息。
+在准备数据集前，请确保命令行当前路径为 `$MMACTION2/tools/data/thumos14/`。
 
-## Step 1. Prepare Annotations
+## 步骤 1. 下载标注文件
 
-First of all, run the following script to prepare annotations.
+首先，用户可使用以下命令下载标注文件。
 
 ```shell
 cd $MMACTION2/tools/data/thumos14/
 bash download_annotations.sh
 ```
 
-## Step 2. Prepare Videos
+## 步骤 2. 下载视频
 
-Then, you can run the following script to prepare videos.
+之后，用户可使用以下指令下载视频
 
 ```shell
 cd $MMACTION2/tools/data/thumos14/
 bash download_videos.sh
 ```
 
-## Step 3. Extract RGB and Flow
+## 步骤 3. 抽取帧和光流
 
-This part is **optional** if you only want to use the video loader.
+如果用户只想使用视频加载训练，则该部分是 **可选项**。
 
-Before extracting, please refer to [install.md](/docs/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
+在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
-If you have plenty of SSD space, then we recommend extracting frames there for better I/O performance.
-
-You can run the following script to soft link SSD.
+如果用户有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 上。
+用户可使用以下命令为 SSD 建立软链接。
 
 ```shell
-# execute these two line (Assume the SSD is mounted at "/mnt/SSD/")
+# 执行这两行指令进行抽取（假设 SSD 挂载在 "/mnt/SSD/"上）
 mkdir /mnt/SSD/thumos14_extracted/
 ln -s /mnt/SSD/thumos14_extracted/ ../data/thumos14/rawframes/
 ```
 
-If you only want to play with RGB frames (since extracting optical flow can be time-consuming), consider running the following script to extract **RGB-only** frames using denseflow.
+如果用户需要抽取 RGB 帧（因为抽取光流的过程十分耗时），可以考虑运行以下命令使用 denseflow **只抽取 RGB 帧**。
 
 ```shell
 cd $MMACTION2/tools/data/thumos14/
 bash extract_rgb_frames.sh
 ```
 
-If you didn't install denseflow, you can still extract RGB frames using OpenCV by the following script, but it will keep the original size of the images.
+如果用户没有安装 denseflow，则可以运行以下命令使用 OpenCV 抽取 RGB 帧。然而，该方法只能抽取与原始视频分辨率相同的帧。
 
 ```shell
 cd $MMACTION2/tools/data/thumos14/
 bash extract_rgb_frames_opencv.sh
 ```
 
-If both are required, run the following script to extract frames.
+如果用户想抽取 RGB 帧和光流，则可以运行以下脚本进行抽取。
 
 ```shell
 cd $MMACTION2/tools/data/thumos14/
 bash extract_frames.sh tvl1
 ```
 
-## Step 4. Fetch File List
+## 步骤 4. 生成文件列表
 
-This part is **optional** if you do not use SSN model.
+如果用户不使用 SSN 模型，则该部分是 **可选项**。
 
-You can run the follow script to fetch pre-computed tag proposals.
+可使用运行以下脚本下载预先计算的候选标签。
 
 ```shell
 cd $MMACTION2/tools/data/thumos14/
 bash fetch_tag_proposals.sh
 ```
 
-## Step 5. Denormalize Proposal File
+## 步骤 5. 去规范化候选文件
 
-This part is **optional** if you do not use SSN model.
+如果用户不使用 SSN 模型，则该部分是 **可选项**。
 
-You can run the follow script to denormalize pre-computed tag proposals according to
-actual number of local rawframes.
+可运行以下脚本，来根据本地原始帧的实际数量，去规范化预先计算的候选标签。
 
 ```shell
 cd $MMACTION2/tools/data/thumos14/
 bash denormalize_proposal_file.sh
 ```
 
-## Step 6. Check Directory Structure
+## 步骤 6. 检查目录结构
 
-After the whole data process for THUMOS'14 preparation,
-you will get the rawframes (RGB + Flow), videos and annotation files for THUMOS'14.
+在完成 THUMOS'14 数据集准备流程后，用户可以得到 THUMOS'14 的 RGB 帧 + 光流文件，视频文件以及标注文件。
 
-In the context of the whole project (for THUMOS'14 only), the folder structure will look like:
+在整个 MMAction2 文件夹下，THUMOS'14 的文件结构如下：
 
 ```
 mmaction2
@@ -139,4 +136,4 @@ mmaction2
 │   │   │   |   ├── video_test_0000001
 ```
 
-For training and evaluating on THUMOS'14, please refer to [getting_started.md](/docs/getting_started.md).
+关于对 THUMOS'14 进行训练和验证，可以参照 [基础教程](/docs_zh_CN/getting_started.md)。
