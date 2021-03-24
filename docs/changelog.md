@@ -16,6 +16,8 @@
 
 **Bug and Typo Fixes**
 
+- Fix a bug about multi-class in VideoDataset ([#723](https://github.com/open-mmlab/mmaction2/pull/678))
+
 **ModelZoo**
 
 - Add LFB for AVA2.1 ([#553](https://github.com/open-mmlab/mmaction2/pull/553))
