@@ -1,6 +1,6 @@
-# Preparing Moments in Time
+# 准备 Moments in Time
 
-## Introduction
+## 简介
 
 [DATASET]
 
@@ -17,65 +17,67 @@
 }
 ```
 
-For basic dataset information, you can refer to the dataset [website](http://moments.csail.mit.edu/).
-Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/mit/`.
+用户可以参照数据集 [官网](http://moments.csail.mit.edu/)，获取数据集相关的基本信息。
+在准备数据集前，请确保命令行当前路径为 `$MMACTION2/tools/data/mit/`。
 
-## Step 1. Prepare Annotations and Videos
+## 步骤 1. 准备标注文件和视频文件
 
-First of all, you have to visit the official [website](http://moments.csail.mit.edu/), fill in an application form for downloading the dataset. Then you will get the download link. You can use `bash preprocess_data.sh` to prepare annotations and videos. However, the download command is missing in that script. Remember to download the dataset to the proper place follow the comment in this script.
+首先，用户需要访问[官网](http://moments.csail.mit.edu/)，填写申请表来下载数据集。
+在得到下载链接后，用户可以使用 `bash preprocess_data.sh` 来准备标注文件和视频。
+请注意此脚本并没有下载标注和视频文件，用户需要根据脚本文件中的注释，提前下载好数据集，并放/软链接到合适的位置。
 
-For better decoding speed, you can resize the original videos into smaller sized, densely encoded version by:
+为加快视频解码速度，用户需要缩小原视频的尺寸，可使用以下命令获取密集编码版视频：
 
 ```shell
 python ../resize_videos.py ../../../data/mit/videos/ ../../../data/mit/videos_256p_dense_cache --dense --level 2
 ```
 
-## Step 2. Extract RGB and Flow
+## Step 2. 抽取帧和光流
 
-This part is **optional** if you only want to use the video loader.
+如果用户只想使用视频加载训练，则该部分是 **可选项**。
 
-Before extracting, please refer to [install.md](/docs/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
+在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
-If you have plenty of SSD space, then we recommend extracting frames there for better I/O performance. And you can run the following script to soft link the extracted frames.
+如果用户有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 上。
+用户可使用以下命令为 SSD 建立软链接。
 
 ```shell
-# execute these two line (Assume the SSD is mounted at "/mnt/SSD/")
+# 执行这两行指令进行抽取（假设 SSD 挂载在 "/mnt/SSD/"上）
 mkdir /mnt/SSD/mit_extracted/
 ln -s /mnt/SSD/mit_extracted/ ../../../data/mit/rawframes
 ```
 
-If you only want to play with RGB frames (since extracting optical flow can be time-consuming), consider running the following script to extract **RGB-only** frames using denseflow.
+如果用户需要抽取 RGB 帧（因为抽取光流的过程十分耗时），可以考虑运行以下命令使用 denseflow **只抽取 RGB 帧**。
 
 ```shell
 bash extract_rgb_frames.sh
 ```
 
-If you didn't install denseflow, you can still extract RGB frames using OpenCV by the following script, but it will keep the original size of the images.
+如果用户没有安装 denseflow，则可以运行以下命令使用 OpenCV 抽取 RGB 帧。然而，该方法只能抽取与原始视频分辨率相同的帧。
 
 ```shell
 bash extract_rgb_frames_opencv.sh
 ```
 
-If both are required, run the following script to extract frames.
+如果用户想抽取 RGB 帧和光流，则可以运行以下脚本进行抽取。
 
 ```shell
 bash extract_frames.sh
 ```
 
-## Step 4. Generate File List
+## 步骤 3. 生成文件列表
 
-you can run the follow script to generate file list in the format of rawframes and videos.
+用户可以通过运行以下命令生成帧和视频格式的文件列表。
 
 ```shell
 bash generate_{rawframes, videos}_filelist.sh
 ```
 
-## Step 5. Check Directory Structure
+## 步骤 4. 检查目录结构
 
-After the whole data process for Moments in Time preparation,
-you will get the rawframes (RGB + Flow), videos and annotation files for Moments in Time.
+在完成 Moments in Time 数据集准备流程后，用户可以得到 Moments in Time 的 RGB 帧 + 光流文件，视频文件以及标注文件。
 
-In the context of the whole project (for Moments in Time only), the folder structure will look like:
+在整个 MMAction2 文件夹下，Moments in Time 的文件结构如下：
 
 ```
 mmaction2
@@ -125,4 +127,4 @@ mmaction2
 
 ```
 
-For training and evaluating on Moments in Time, please refer to [getting_started.md](/docs/getting_started.md).
+关于对 Moments in Times 进行训练和验证，可以参照 [基础教程](/docs_zh_CN/getting_started.md)。
