@@ -1,6 +1,6 @@
 # BSN
 
-## Introduction
+## 简介
 
 [ALGORITHM]
 
@@ -14,11 +14,11 @@
 }
 ```
 
-## Model Zoo
+## 模型库
 
 ### ActivityNet feature
 
-|config |feature | gpus| pretrain | AR@100| AUC | gpu_mem(M) | iter time(s) | ckpt | log| json|
+|配置文件 |特征 | GPU 数量| 预训练 | AR@100| AUC | GPU 显存占用 (M) | 迭代时间 (s) | ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:-:|
 |bsn_400x100_1x16_20e_activitynet_feature |cuhk_mean_100 |1| None |74.66|66.45|41(TEM)+25(PEM)|0.074(TEM)+0.036(PEM)|[ckpt_tem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_tem_400x100_1x16_20e_activitynet_feature/bsn_tem_400x100_1x16_20e_activitynet_feature_20200619-cd6accc3.pth) [ckpt_pem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_pem_400x100_1x16_20e_activitynet_feature/bsn_pem_400x100_1x16_20e_activitynet_feature_20210203-1c27763d.pth)| [log_tem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_tem_400x100_1x16_20e_activitynet_feature/bsn_tem_400x100_1x16_20e_activitynet_feature.log) [log_pem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_pem_400x100_1x16_20e_activitynet_feature/bsn_pem_400x100_1x16_20e_activitynet_feature.log)| [json_tem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_tem_400x100_1x16_20e_activitynet_feature/bsn_tem_400x100_1x16_20e_activitynet_feature.log.json)  [json_pem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_pem_400x100_1x16_20e_activitynet_feature/bsn_pem_400x100_1x16_20e_activitynet_feature.log.json)|
 | |mmaction_video |1| None |74.93|66.74|41(TEM)+25(PEM)|0.074(TEM)+0.036(PEM)|[ckpt_tem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_tem_400x100_1x16_20e_mmaction_video/bsn_tem_400x100_1x16_20e_mmaction_video_20200809-ad6ec626.pth) [ckpt_pem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_pem_400x100_1x16_20e_mmaction_video/bsn_pem_400x100_1x16_20e_mmaction_video_20200809-aa861b26.pth)| [log_tem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_tem_400x100_1x16_20e_mmaction_video/bsn_tem_400x100_1x16_20e_mmaction_video_20200809.log) [log_pem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_pem_400x100_1x16_20e_mmaction_video/bsn_pem_400x100_1x16_20e_mmaction_video_20200809.log) | [json_tem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_tem_400x100_1x16_20e_mmaction_video/bsn_tem_400x100_1x16_20e_mmaction_video_20200809.json) [json_pem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_pem_400x100_1x16_20e_mmaction_video/bsn_pem_400x100_1x16_20e_mmaction_video_20200809.json) |
@@ -26,89 +26,89 @@
 
 Notes:
 
-1. The **gpus** indicates the number of gpu we used to get the checkpoint.
-   According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
-   e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
+1. 这里的 **GPU 数量** 指的是得到模型权重文件对应的 GPU 个数。默认地，MMAction2 所提供的配置文件对应使用 8 块 GPU 进行训练的情况。
+   依据 [线性缩放法则](https://arxiv.org/abs/1706.02677)，当用户使用不同数量的 GPU 或者每块 GPU 处理不同视频个数时，需要根据批大小等比例地调节学习率。
+   如，lr=0.01 对应 4 GPUs x 2 video/gpu，以及 lr=0.08 对应 16 GPUs x 4 video/gpu。
 2. For feature column, cuhk_mean_100 denotes the widely used cuhk activitynet feature extracted by [anet2016-cuhk](https://github.com/yjxiong/anet2016-cuhk), mmaction_video and mmaction_clip denote feature extracted by mmaction, with video-level activitynet finetuned model or clip-level activitynet finetuned model respectively.
 
-For more details on data preparation, you can refer to ActivityNet feature in [Data Preparation](/docs/data_preparation.md).
+对于数据集准备的细节，用户可参考 [数据集准备文档](/docs_zh_CN/data_preparation.md) 中的 ActivityNet 特征部分。
 
-## Train
+## 如何训练
 
-You can use the following commands to train a model.
+用户可以使用以下指令进行模型训练。
 
 ```shell
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
-Examples:
+例如：
 
-1. train BSN(TEM) on ActivityNet features dataset.
+1. 在 ActivityNet 特征上训练 BSN(TEM) 模型。
 
     ```shell
     python tools/train.py configs/localization/bsn/bsn_tem_400x100_1x16_20e_activitynet_feature.py
     ```
 
-2. train BSN(PEM) on PGM results.
+2. 基于 PGM 的结果训练 BSN(PEM)。
 
     ```shell
     python tools/train.py configs/localization/bsn/bsn_pem_400x100_1x16_20e_activitynet_feature.py
     ```
 
-For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
+更多训练细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#训练配置) 中的 **训练配置** 部分。
 
-## Inference
+## 如何进行推理
 
-You can use the following commands to inference a model.
+用户可以使用以下指令进行模型推理。
 
-1. For TEM Inference
+1. 推理 TEM 模型。
 
     ```shell
     # Note: This could not be evaluated.
     python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
     ```
 
-2. For PGM Inference
+2. 推理 PGM 模型
 
     ```shell
     python tools/bsn_proposal_generation.py ${CONFIG_FILE} [--mode ${MODE}]
     ```
 
-3. For PEM Inference
+3. 推理 PEM 模型
 
     ```shell
     python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
     ```
 
-Examples:
+例如
 
-1. Inference BSN(TEM) with pretrained model.
+1. 利用预训练模型进行 BSN(TEM) 模型的推理。
 
     ```shell
     python tools/test.py configs/localization/bsn/bsn_tem_400x100_1x16_20e_activitynet_feature.py checkpoints/SOME_CHECKPOINT.pth
     ```
 
-2. Inference BSN(PGM) with pretrained model.
+2. 利用预训练模型进行 BSN(PGM) 模型的推理
 
     ```shell
     python tools/bsn_proposal_generation.py configs/localization/bsn/bsn_pgm_400x100_activitynet_feature.py --mode train
     ```
 
-3. Inference BSN(PEM) with evaluation metric 'AR@AN' and output the results.
+3. 推理 BSN(PEM) 模型，并计算 'AR@AN' 指标，输出结果文件。
 
     ```shell
-    # Note: If evaluated, then please make sure the annotation file for test data contains groundtruth.
+    # 注意：如果需要进行指标验证，需确测试数据的保标注文件包含真实标签
     python tools/test.py configs/localization/bsn/bsn_pem_400x100_1x16_20e_activitynet_feature.py  checkpoints/SOME_CHECKPOINT.pth  --eval AR@AN --out results.json
     ```
 
-## Test
+## 如何测试
 
-You can use the following commands to test a model.
+用户可以使用以下指令进行模型测试。
 
 1. TEM
 
     ```shell
-    # Note: This could not be evaluated.
+    # 注意：该命令无法进行指标验证
     python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
     ```
 
@@ -124,32 +124,32 @@ You can use the following commands to test a model.
     python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
     ```
 
-Examples:
+例如：
 
-1. Test a TEM model on ActivityNet dataset.
+1. 在 ActivityNet 数据集上测试 TEM 模型。
 
     ```shell
     python tools/test.py configs/localization/bsn/bsn_tem_400x100_1x16_20e_activitynet_feature.py checkpoints/SOME_CHECKPOINT.pth
     ```
 
-2. Test a PGM model on ActivityNet dataset.
+2. 在 ActivityNet 数据集上测试 PGM 模型。
 
     ```shell
     python tools/bsn_proposal_generation.py configs/localization/bsn/bsn_pgm_400x100_activitynet_feature.py --mode test
     ```
 
-3. Test a PEM model with with evaluation metric 'AR@AN' and output the results.
+3. 测试 PEM 模型，并计算 'AR@AN' 指标，输出结果文件。
 
     ```shell
     python tools/test.py configs/localization/bsn/bsn_pem_400x100_1x16_20e_activitynet_feature.py checkpoints/SOME_CHECKPOINT.pth --eval AR@AN --out results.json
     ```
 
-Notes:
+注意：
 
-1. (Optional) You can use the following command to generate a formatted proposal file, which will be fed into the action classifier (Currently supports only SSN and P-GCN, not including TSN, I3D etc.) to get the classification result of proposals.
+1. (可选项) 用户可以使用以下指令生成格式化的候选文件，该文件可被送入动作识别器中（目前只支持 SSN 和 P-GCN，不包括 TSN, I3D 等），以获得候选的分类结果。
 
     ```shell
     python tools/data/activitynet/convert_proposal_format.py
     ```
 
-For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+更多测试细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#测试某个数据集) 中的 **测试某个数据集** 部分。

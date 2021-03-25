@@ -1,6 +1,6 @@
 # BMN
 
-## Introduction
+## 简介
 
 [ALGORITHM]
 
