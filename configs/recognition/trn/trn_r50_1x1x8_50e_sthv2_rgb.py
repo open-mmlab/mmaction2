@@ -97,6 +97,10 @@ evaluation = dict(
 
 # optimizer
 optimizer = dict(lr=0.002, paramwise_cfg=dict(fc_lr5=False), weight_decay=5e-4)
+# learning policy
+lr_config = dict(policy='step', step=[30, 45])
+total_epochs = 50
 
 # runtime settings
+find_unused_parameters = True
 work_dir = './work_dirs/trn_r50_1x1x8_50e_sthv2_rgb/'
