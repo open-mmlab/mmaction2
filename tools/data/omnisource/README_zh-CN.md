@@ -1,4 +1,4 @@
-# 准备 OmniSource 数据集
+# 准备 OmniSource
 
 ## 简介
 
