@@ -10,6 +10,14 @@ from .base import BaseHead
 
 
 class RelationModule(nn.Module):
+    """Relation Module of TRN.
+
+    Args:
+        hidden_dim (int): The dimension of hidden layer of MLP in relation
+            module.
+        num_segments (int): Number of frame segments.
+        num_classes (int): Number of classes to be classified.
+    """
 
     def __init__(self, hidden_dim, num_segments, num_classes):
         super().__init__()
@@ -22,6 +30,10 @@ class RelationModule(nn.Module):
             nn.Linear(self.num_segments * self.hidden_dim, bottleneck_dim),
             nn.ReLU(), nn.Linear(bottleneck_dim, self.num_classes))
 
+    def init_weights(self):
+        # Use the default kaiming_uniform for all nn.linear layers.
+        pass
+
     def forward(self, x):
         # [N, num_segs * hidden_dim]
         x = x.view(x.size(0), -1)
@@ -30,6 +42,14 @@ class RelationModule(nn.Module):
 
 
 class RelationModuleMultiScale(nn.Module):
+    """Relation Module with Multi Scale of TRN.
+
+    Args:
+        hidden_dim (int): The dimension of hidden layer of MLP in relation
+            module.
+        num_segments (int): Number of frame segments.
+        num_classes (int): Number of classes to be classified.
+    """
 
     def __init__(self, hidden_dim, num_segments, num_classes):
         super().__init__()
@@ -62,6 +82,10 @@ class RelationModuleMultiScale(nn.Module):
             )
             self.fc_fusion_scales.append(fc_fusion)
 
+    def init_weights(self):
+        # Use the default kaiming_uniform for all nn.linear layers.
+        pass
+
     def forward(self, x):
         # the first one is the largest scale
         act_all = x[:, self.relations_scales[0][0], :]
@@ -87,6 +111,25 @@ class RelationModuleMultiScale(nn.Module):
 
 @HEADS.register_module()
 class TRNHead(BaseHead):
+    """Class head for TRN.
+
+    Args:
+        num_classes (int): Number of classes to be classified.
+        in_channels (int): Number of channels in input feature.
+        num_segments (int): Number of frame segments. Default: 8.
+        loss_cls (dict): Config for building loss. Default:
+            dict(type='CrossEntropyLoss')
+        spatial_type (str): Pooling type in spatial dimension. Default: 'avg'.
+        consensus (dict): Consensus config dict.
+        relation_type (str): The relation module type. Choices are 'TRN' or
+            'TRNMultiScale' Default: 'TRNMultiScale'.
+        hidden_dim (int): The dimension of hidden layer of MLP in relation
+            module. Default: 256.
+        dropout_ratio (float): Probability of dropout layer. Default: 0.5.
+        init_std (float): Std value for Initiation. Default: 0.001.
+        kwargs (dict, optional): Any keyword argument to be used to initialize
+            the head.
+    """
 
     def __init__(self,
                  num_classes,
@@ -96,12 +139,11 @@ class TRNHead(BaseHead):
                  spatial_type='avg',
                  relation_type='TRNMultiScale',
                  hidden_dim=256,
-                 dropout_ratio=0.4,
+                 dropout_ratio=0.5,
                  init_std=0.001,
                  **kwargs):
         super().__init__(num_classes, in_channels, loss_cls, **kwargs)
 
-        assert relation_type in ['TRN', 'TRNMultiScale']
         self.num_classes = num_classes
         self.in_channels = in_channels
         self.num_segments = num_segments
@@ -118,6 +160,8 @@ class TRNHead(BaseHead):
             self.consensus = RelationModuleMultiScale(self.hidden_dim,
                                                       self.num_segments,
                                                       self.num_classes)
+        else:
+            raise ValueError(f'Unknown Relation Type {self.relation_type}!')
 
         if self.dropout_ratio != 0:
             self.dropout = nn.Dropout(p=self.dropout_ratio)
@@ -136,6 +180,18 @@ class TRNHead(BaseHead):
         normal_init(self.fc_cls, std=self.init_std)
 
     def forward(self, x, num_segs):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The input data.
+            num_segs (int): Useless in TRNHead. By default, `num_segs`
+                is equal to `clip_len * num_clips * num_crops`, which is
+                automatically generated in Recognizer forward phase and
+                useless in TRN models. The `self.num_segments` we need is a
+                hyper parameter to build TRN models.
+        Returns:
+            torch.Tensor: The classification scores for input samples.
+        """
         # [N * num_segs, in_channels, 7, 7]
         if self.avg_pool is not None:
             x = self.avg_pool(x)
