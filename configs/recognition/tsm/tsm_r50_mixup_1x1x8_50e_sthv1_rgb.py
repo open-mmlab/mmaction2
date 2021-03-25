@@ -3,7 +3,6 @@ _base_ = [
 ]
 
 # model settings
-# model settings# model settings
 model = dict(
     type='Recognizer2D',
     backbone=dict(

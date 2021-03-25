@@ -134,38 +134,59 @@ class Imgaug:
                 [self.imgaug_builder(t) for t in self.transforms])
 
     def default_transforms(self):
-        """Default transforms for imgaug."""
+        """Default transforms for imgaug.
+
+        Implement RandAugment by imgaug.
+        Plase visit `https://arxiv.org/abs/1909.13719` for more information.
+
+        Augmenters and hyper parameters are borrowed from the following repo:
+        https://github.com/tensorflow/tpu/blob/master/models/official/efficientnet/autoaugment.py # noqa
+
+        Miss one augmenter ``SolarizeAdd`` since imgaug doesn't support this.
+
+        Returns:
+            dict: The constructed RandAugment transforms.
+        """
+        # RandAugment hyper params
+        num_augmenters = 2
+        cur_magnitude, max_magnitude = 9, 10
+        cur_level = 1.0 * cur_magnitude / max_magnitude
 
         return [
-            dict(type='Rotate', rotate=(-30, 30)),
             dict(
                 type='SomeOf',
-                n=(0, 3),
+                n=num_augmenters,
                 children=[
                     dict(
-                        type='OneOf',
-                        children=[
-                            dict(type='GaussianBlur', sigma=(0, 0.5)),
-                            dict(type='AverageBlur', k=(2, 7)),
-                            dict(type='MedianBlur', k=(3, 11))
-                        ]),
+                        type='ShearX',
+                        shear=17.19 * cur_level * random.choice([-1, 1])),
                     dict(
-                        type='OneOf',
-                        children=[
-                            dict(
-                                type='Dropout', p=(0.01, 0.1),
-                                per_channel=0.5),
-                            dict(
-                                type='CoarseDropout',
-                                p=(0.03, 0.15),
-                                size_percent=(0.02, 0.05),
-                                per_channel=0.2),
-                        ]),
+                        type='ShearY',
+                        shear=17.19 * cur_level * random.choice([-1, 1])),
                     dict(
-                        type='AdditiveGaussianNoise',
-                        loc=0,
-                        scale=(0.0, 0.05 * 255),
-                        per_channel=0.5),
+                        type='TranslateX',
+                        percent=.2 * cur_level * random.choice([-1, 1])),
+                    dict(
+                        type='TranslateY',
+                        percent=.2 * cur_level * random.choice([-1, 1])),
+                    dict(
+                        type='Rotate',
+                        rotate=30 * cur_level * random.choice([-1, 1])),
+                    dict(type='Posterize', nb_bits=max(1, int(4 * cur_level))),
+                    dict(type='Solarize', threshold=256 * cur_level),
+                    dict(type='EnhanceColor', factor=1.8 * cur_level + .1),
+                    dict(type='EnhanceContrast', factor=1.8 * cur_level + .1),
+                    dict(
+                        type='EnhanceBrightness', factor=1.8 * cur_level + .1),
+                    dict(type='EnhanceSharpness', factor=1.8 * cur_level + .1),
+                    dict(type='Autocontrast', cutoff=0),
+                    dict(type='Equalize'),
+                    dict(type='Invert', p=1.),
+                    dict(
+                        type='Cutout',
+                        nb_iterations=1,
+                        size=0.2 * cur_level,
+                        squared=True),
                 ]),
         ]
 
@@ -188,7 +209,8 @@ class Imgaug:
 
         obj_type = args.pop('type')
         if mmcv.is_str(obj_type):
-            obj_cls = getattr(iaa, obj_type)
+            obj_cls = getattr(iaa, obj_type) if hasattr(iaa, obj_type) \
+                else getattr(iaa.pillike, obj_type)
         elif issubclass(obj_type, iaa.Augmenter):
             obj_cls = obj_type
         else:
