@@ -110,7 +110,7 @@ class Recognizer2D(BaseRecognizer):
         """Defines the computation performed at every call when evaluation and
         testing."""
         if self.test_cfg.get('fcn_test', False):
-            #  If specified, spatially fully-convolutional testing is performed.
+            #  If specified, spatially fully-convolutional testing is performed
             return self._do_fcn_test(imgs).cpu().numpy()
         return self._do_test(imgs).cpu().numpy()
 
