@@ -1,4 +1,5 @@
 import torch
+from torch import nn
 
 from ..registry import RECOGNIZERS
 from .base import BaseRecognizer
@@ -17,6 +18,14 @@ class Recognizer2D(BaseRecognizer):
         losses = dict()
 
         x = self.extract_feat(imgs)
+
+        if self.backbone_from == 'torchvision':
+            if len(x.shape) == 4 and (x.shape[2] > 1 or x.shape[3] > 1):
+                # apply adaptive avg pooling
+                x = nn.AdaptiveAvgPool2d(1)(x)
+            x = x.reshape((x.shape[0], -1))
+            x = x.reshape(x.shape + (1, 1))
+
         if hasattr(self, 'neck'):
             x = [
                 each.reshape((-1, num_segs) +
@@ -43,6 +52,14 @@ class Recognizer2D(BaseRecognizer):
         num_segs = imgs.shape[0] // batches
 
         x = self.extract_feat(imgs)
+
+        if self.backbone_from == 'torchvision':
+            if len(x.shape) == 4 and (x.shape[2] > 1 or x.shape[3] > 1):
+                # apply adaptive avg pooling
+                x = nn.AdaptiveAvgPool2d(1)(x)
+            x = x.reshape((x.shape[0], -1))
+            x = x.reshape(x.shape + (1, 1))
+
         if hasattr(self, 'neck'):
             x = [
                 each.reshape((-1, num_segs) +
@@ -110,7 +127,7 @@ class Recognizer2D(BaseRecognizer):
         """Defines the computation performed at every call when evaluation and
         testing."""
         if self.test_cfg.get('fcn_test', False):
-            #  If specified, spatially fully-convolutional testing is performed
+            # If specified, spatially fully-convolutional testing is performed
             return self._do_fcn_test(imgs).cpu().numpy()
         return self._do_test(imgs).cpu().numpy()
 
