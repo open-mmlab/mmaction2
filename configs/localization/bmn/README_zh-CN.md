@@ -1,6 +1,6 @@
 # BMN
 
-## Introduction
+## 简介
 
 [ALGORITHM]
 
@@ -26,11 +26,11 @@
 }
 ```
 
-## Model Zoo
+## 模型库
 
 ### ActivityNet feature
 
-|config |feature | gpus | AR@100| AUC | AP@0.5 | AP@0.75 | AP@0.95 | mAP | gpu_mem(M) | iter time(s) | ckpt | log| json|
+|配置文件 |特征 | GPU 数量 | AR@100| AUC | AP@0.5 | AP@0.75 | AP@0.95 | mAP | GPU 显存占用 (M) | 推理时间 (s) | ckpt | log| json|
 |:-:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:-:|---|:-:|:-:|---|
 |[bmn_400x100_9e_2x8_activitynet_feature](/configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py) |cuhk_mean_100 |2|75.28|67.22|42.47|31.31|9.92|30.34|5420|3.27|[ckpt](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature_20200619-42a3b111.pth)| [log](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature.log)| [json](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature.log.json)|
 | |mmaction_video |2|75.43|67.22|42.62|31.56|10.86|30.77|5420|3.27|[ckpt](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809-c9fd14d2.pth)| [log](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809.log) | [json](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809.json) |
@@ -39,19 +39,22 @@
 
 - Notes:
 
-1. The **gpus** indicates the number of gpu we used to get the checkpoint.
-   According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
-   e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
-2. For feature column, cuhk_mean_100 denotes the widely used cuhk activitynet feature extracted by [anet2016-cuhk](https://github.com/yjxiong/anet2016-cuhk), mmaction_video and mmaction_clip denote feature extracted by mmaction, with video-level activitynet finetuned model or clip-level activitynet finetuned model respectively.
-3. We evaluate the action detection performance of BMN, using  [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) submission for ActivityNet2017 Untrimmed Video Classification Track to assign label for each action proposal.
+1. 这里的 **GPU 数量** 指的是得到模型权重文件对应的 GPU 个数。默认地，MMAction2 所提供的配置文件对应使用 8 块 GPU 进行训练的情况。
+   依据 [线性缩放法则](https://arxiv.org/abs/1706.02677)，当用户使用不同数量的 GPU 或者每块 GPU 处理不同视频个数时，需要根据批大小等比例地调节学习率。
+   如，lr=0.01 对应 4 GPUs x 2 video/gpu，以及 lr=0.08 对应 16 GPUs x 4 video/gpu。
+2. 对于 **特征** 这一列，`cuhk_mean_100` 表示所使用的特征为利用 [anet2016-cuhk](https://github.com/yjxiong/anet2016-cuhk) 代码库抽取的，被广泛利用的 CUHK ActivityNet 特征，
+   `mmaction_video` 和 `mmaction_clip` 分布表示所使用的特征为利用 MMAction 抽取的，视频级别 ActivityNet 预训练模型的特征；视频片段级别 ActivityNet 预训练模型的特征。
+3. MMAction2 使用 ActivityNet2017 未剪辑视频分类赛道上 [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) 所提交的结果来为每个视频候选指定标签，以用于 BMN 模型评估。
 
 *We train BMN with the [official repo](https://github.com/JJBOY/BMN-Boundary-Matching-Network), evaluate its proposal generation and action detection performance with [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) for label assigning.
 
+*MMAction2 在 [原始代码库](https://github.com/JJBOY/BMN-Boundary-Matching-Network) 上训练 BMN，并
+
 For more details on data preparation, you can refer to ActivityNet feature in [Data Preparation](/docs/data_preparation.md).
 
-## Train
+## 如何训练
 
-You can use the following command to train a model.
+用户可以使用以下指令进行模型训练。
 
 ```shell
 python tools/train.py ${CONFIG_FILE} [optional arguments]
@@ -65,15 +68,15 @@ python tools/train.py configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_fe
 
 For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting) .
 
-## Test
+## 如何测试
 
-You can use the following command to test a model.
+用户可以使用以下指令进行模型测试。
 
 ```shell
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-Example: test BMN on ActivityNet feature dataset.
+例如：在 ActivityNet 特征上测试 BMN 模型。
 
 ```shell
 # Note: If evaluated, then please make sure the annotation file for test data contains groundtruth.
@@ -86,7 +89,7 @@ You can also test the action detection performance of the model, with [anet_cuhk
 python tools/analysis/report_map.py --proposal path/to/proposal_file
 ```
 
-Notes:
+注意：
 
 1. (Optional) You can use the following command to generate a formatted proposal file, which will be fed into the action classifier (Currently supports SSN and P-GCN, not including TSN, I3D etc.) to get the classification result of proposals.
 
@@ -94,4 +97,4 @@ Notes:
     python tools/data/activitynet/convert_proposal_format.py
     ```
 
-For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset) .
+更多测试细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#测试某个数据集) 中的 **测试某个数据集** 部分。
