@@ -46,11 +46,9 @@
    `mmaction_video` 和 `mmaction_clip` 分布表示所使用的特征为利用 MMAction 抽取的，视频级别 ActivityNet 预训练模型的特征；视频片段级别 ActivityNet 预训练模型的特征。
 3. MMAction2 使用 ActivityNet2017 未剪辑视频分类赛道上 [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) 所提交的结果来为每个视频候选指定标签，以用于 BMN 模型评估。
 
-*We train BMN with the [official repo](https://github.com/JJBOY/BMN-Boundary-Matching-Network), evaluate its proposal generation and action detection performance with [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) for label assigning.
+*MMAction2 在 [原始代码库](https://github.com/JJBOY/BMN-Boundary-Matching-Network) 上训练 BMN，并且在 [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) 的对应标签上评估候选生成和时序检测的结果。
 
-*MMAction2 在 [原始代码库](https://github.com/JJBOY/BMN-Boundary-Matching-Network) 上训练 BMN，并
-
-For more details on data preparation, you can refer to ActivityNet feature in [Data Preparation](/docs/data_preparation.md).
+对于数据集准备的细节，用户可参考 [数据集准备文档](/docs_zh_CN/data_preparation.md) 中的 ActivityNet 特征部分。
 
 ## 如何训练
 
@@ -60,13 +58,13 @@ For more details on data preparation, you can refer to ActivityNet feature in [D
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
-Example: train BMN model on ActivityNet features dataset.
+例如：在 ActivityNet 特征上训练 BMN。
 
 ```shell
 python tools/train.py configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py
 ```
 
-For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting) .
+更多训练细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#训练配置) 中的 **训练配置** 部分。
 
 ## 如何测试
 
@@ -79,11 +77,11 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 例如：在 ActivityNet 特征上测试 BMN 模型。
 
 ```shell
-# Note: If evaluated, then please make sure the annotation file for test data contains groundtruth.
+# 注意：如果需要进行指标验证，需确测试数据的保标注文件包含真实标签
 python tools/test.py configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py checkpoints/SOME_CHECKPOINT.pth --eval AR@AN --out results.json
 ```
 
-You can also test the action detection performance of the model, with [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) prediction file and generated proposal file (`results.json` in last command).
+用户也可以利用 [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) 的预测文件评估模型时序检测的结果，并生成候选文件（即命令中的 `results.json`）
 
 ```shell
 python tools/analysis/report_map.py --proposal path/to/proposal_file
@@ -91,7 +89,7 @@ python tools/analysis/report_map.py --proposal path/to/proposal_file
 
 注意：
 
-1. (Optional) You can use the following command to generate a formatted proposal file, which will be fed into the action classifier (Currently supports SSN and P-GCN, not including TSN, I3D etc.) to get the classification result of proposals.
+1. (可选项) 用户可以使用以下指令生成格式化的候选文件，该文件可被送入动作识别器中（目前只支持 SSN 和 P-GCN，不包括 TSN, I3D 等），以获得候选的分类结果。
 
     ```shell
     python tools/data/activitynet/convert_proposal_format.py
