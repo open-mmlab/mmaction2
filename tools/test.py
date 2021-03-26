@@ -84,6 +84,10 @@ def parse_args():
         '--tensorrt',
         action='store_true',
         help='Whether the input checkpoint is TensorRT engine or not')
+    parser.add_argument(
+        '--onnx',
+        action='store_true',
+        help='Whether the input checkpoint is ONNX model or not')
     args = parser.parse_args()
     if 'LOCAL_RANK' not in os.environ:
         os.environ['LOCAL_RANK'] = str(args.local_rank)
@@ -156,7 +160,7 @@ def inference_pytorch(args, cfg, distributed, data_loader):
     return outputs
 
 
-def inference_tensorrt(args, cfg, distributed, data_loader, batch_size):
+def inference_tensorrt(ckpt_path, distributed, data_loader, batch_size):
     """Get predictions by TensorRT engine.
 
     For now, multi-gpu mode and dynamic tensor are not supported.
@@ -169,22 +173,26 @@ def inference_tensorrt(args, cfg, distributed, data_loader, batch_size):
 
     # load engine
     with trt.Logger() as logger, trt.Runtime(logger) as runtime:
-        with open(args.checkpoint, mode='rb') as f:
+        with open(ckpt_path, mode='rb') as f:
             engine_bytes = f.read()
         engine = runtime.deserialize_cuda_engine(engine_bytes)
 
     # For now, only support fixed input tensor
-    assert batch_size == engine.get_binding_shape(0)[0]
+    cur_batch_size = engine.get_binding_shape(0)[0]
+    assert batch_size == cur_batch_size, \
+        ('Dataset and TensorRT model should share the same batch size, '
+         f'but get {batch_size} and {cur_batch_size}')
 
     context = engine.create_execution_context()
 
-    # get output
+    # get output tensor
     dtype = torch_dtype_from_trt(engine.get_binding_dtype(1))
     shape = tuple(context.get_binding_shape(1))
     device = torch_device_from_trt(engine.get_location(1))
     output = torch.empty(
         size=shape, dtype=dtype, device=device, requires_grad=False)
 
+    # get predictions
     results = []
     dataset = data_loader.dataset
     prog_bar = mmcv.ProgressBar(len(dataset))
@@ -202,8 +210,56 @@ def inference_tensorrt(args, cfg, distributed, data_loader, batch_size):
     return results
 
 
+def inference_onnx(ckpt_path, distributed, data_loader, batch_size):
+    """Get predictions by ONNX.
+
+    For now, multi-gpu mode and dynamic tensor are not supported.
+    """
+    assert not distributed, 'ONNX inference only support single gpu mode.'
+
+    # For now, only support fixed input tensor
+    import onnx
+    import onnxruntime as rt
+
+    # get input tensor name
+    onnx_model = onnx.load(ckpt_path)
+    input_all = [node.name for node in onnx_model.graph.input]
+    input_initializer = [node.name for node in onnx_model.graph.initializer]
+    net_feed_input = list(set(input_all) - set(input_initializer))
+    assert len(net_feed_input) == 1
+
+    # support fixed input shape for now
+    input_tensor = None
+    for tensor in onnx_model.graph.input:
+        if tensor.name == net_feed_input[0]:
+            input_tensor = tensor
+            break
+    cur_batch_size = input_tensor.type.tensor_type.shape.dim[0].dim_value
+    assert batch_size == cur_batch_size, \
+        ('Dataset and ONNX model should share the same batch size, '
+         f'but get {batch_size} and {cur_batch_size}')
+
+    # get predictions
+    sess = rt.InferenceSession(ckpt_path)
+    results = []
+    dataset = data_loader.dataset
+    prog_bar = mmcv.ProgressBar(len(dataset))
+    for data in data_loader:
+        imgs = data['imgs'].cpu().numpy()
+        onnx_result = sess.run(None, {net_feed_input[0]: imgs})[0]
+        results.extend(onnx_result)
+        batch_size = len(next(iter(data.values())))
+        for _ in range(batch_size):
+            prog_bar.update()
+    return results
+
+
 def main():
     args = parse_args()
+
+    if args.tensorrt and args.onnx:
+        raise ValueError(
+            'Cannot set onnx mode and tensorrt mode at the same time.')
 
     cfg = Config.fromfile(args.config)
 
@@ -276,8 +332,11 @@ def main():
     data_loader = build_dataloader(dataset, **dataloader_setting)
 
     if args.tensorrt:
-        outputs = inference_tensorrt(args, cfg, distributed, data_loader,
+        outputs = inference_tensorrt(args.checkpoint, distributed, data_loader,
                                      dataloader_setting['videos_per_gpu'])
+    elif args.onnx:
+        outputs = inference_onnx(args.checkpoint, distributed, data_loader,
+                                 dataloader_setting['videos_per_gpu'])
     else:
         outputs = inference_pytorch(args, cfg, distributed, data_loader)
 
