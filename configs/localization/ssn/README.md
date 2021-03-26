@@ -43,7 +43,7 @@ Example: train SSN model on thumos14 dataset.
 python tools/train.py configs/localization/ssn/ssn_r50_450e_thumos14_rgb_train.py
 ```
 
-For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting) .
+For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
 
 ## Test
 
@@ -60,4 +60,4 @@ Example: test BMN on ActivityNet feature dataset.
 python tools/test.py configs/localization/ssn/ssn_r50_450e_thumos14_rgb_test.py checkpoints/SOME_CHECKPOINT.pth --eval mAP
 ```
 
-For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset) .
+For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
