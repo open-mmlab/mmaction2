@@ -160,13 +160,13 @@
 [1] 简单起见，MMAction2 对每个 tag 类别训练特定的模型，作为 HVU 的基准模型。
 
 [2] 这里 HATNet 和 HATNet-multi 的结果来自于 paper: [Large Scale Holistic Video Understanding](https://pages.iai.uni-bonn.de/gall_juergen/download/HVU_eccv20.pdf)。
-HATNet 的候选是一个双分支的卷积网络（一个 2D 分支，一个 3D 分支），并且和 MMAction2 有相同的主干网络（ResNet18）。HATNet 的输入是 16 帧或 32 帧的长视频片段（这样的片段比 MMAction2 使用的要长），同时输入分辨率更粗糙（112px 而非 224px）。
+HATNet 的时序动作候选是一个双分支的卷积网络（一个 2D 分支，一个 3D 分支），并且和 MMAction2 有相同的主干网络（ResNet18）。HATNet 的输入是 16 帧或 32 帧的长视频片段（这样的片段比 MMAction2 使用的要长），同时输入分辨率更粗糙（112px 而非 224px）。
 HATNet 是在每个独立的任务（对应每个 tag 类别）上进行训练的，HATNet-multi 是在多个任务上进行训练的。由于目前没有 HATNet 的开源代码和模型，这里仅汇报了原 paper 的精度。
 
 注意：
 
 1. 这里的 **GPU 数量** 指的是得到模型权重文件对应的 GPU 个数。默认地，MMAction2 所提供的配置文件对应使用 8 块 GPU 进行训练的情况。
-   依据 [线性缩放法则](https://arxiv.org/abs/1706.02677)，当用户使用不同数量的 GPU 或者每块 GPU 处理不同视频个数时，需要根据批大小等比例地调节学习率。
+   依据 [线性缩放规则](https://arxiv.org/abs/1706.02677)，当用户使用不同数量的 GPU 或者每块 GPU 处理不同视频个数时，需要根据批大小等比例地调节学习率。
    如，lr=0.01 对应 4 GPUs x 2 video/gpu，以及 lr=0.08 对应 16 GPUs x 4 video/gpu。
 2. 这里的 **推理时间** 是根据 [基准测试脚本](/tools/analysis/benchmark.py) 获得的，采用测试时的采帧策略，且只考虑模型的推理时间，
    并不包括 IO 时间以及预处理时间。对于每个配置，MMAction2 使用 1 块 GPU 并设置批大小（每块 GPU 处理的视频个数）为 1 来计算推理时间。

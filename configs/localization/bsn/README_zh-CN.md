@@ -27,7 +27,7 @@
 Notes:
 
 1. 这里的 **GPU 数量** 指的是得到模型权重文件对应的 GPU 个数。默认地，MMAction2 所提供的配置文件对应使用 8 块 GPU 进行训练的情况。
-   依据 [线性缩放法则](https://arxiv.org/abs/1706.02677)，当用户使用不同数量的 GPU 或者每块 GPU 处理不同视频个数时，需要根据批大小等比例地调节学习率。
+   依据 [线性缩放规则](https://arxiv.org/abs/1706.02677)，当用户使用不同数量的 GPU 或者每块 GPU 处理不同视频个数时，需要根据批大小等比例地调节学习率。
    如，lr=0.01 对应 4 GPUs x 2 video/gpu，以及 lr=0.08 对应 16 GPUs x 4 video/gpu。
 2. For feature column, cuhk_mean_100 denotes the widely used cuhk activitynet feature extracted by [anet2016-cuhk](https://github.com/yjxiong/anet2016-cuhk), mmaction_video and mmaction_clip denote feature extracted by mmaction, with video-level activitynet finetuned model or clip-level activitynet finetuned model respectively.
 
@@ -146,7 +146,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 
 注意：
 
-1. (可选项) 用户可以使用以下指令生成格式化的候选文件，该文件可被送入动作识别器中（目前只支持 SSN 和 P-GCN，不包括 TSN, I3D 等），以获得候选的分类结果。
+1. (可选项) 用户可以使用以下指令生成格式化的时序动作候选文件，该文件可被送入动作识别器中（目前只支持 SSN 和 P-GCN，不包括 TSN, I3D 等），以获得时序动作候选的分类结果。
 
     ```shell
     python tools/data/activitynet/convert_proposal_format.py

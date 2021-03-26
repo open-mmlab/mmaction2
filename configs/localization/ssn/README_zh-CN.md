@@ -23,10 +23,10 @@ year = {2017}
 注意：
 
 1. 这里的 **GPU 数量** 指的是得到模型权重文件对应的 GPU 个数。默认地，MMAction2 所提供的配置文件对应使用 8 块 GPU 进行训练的情况。
-   依据 [线性缩放法则](https://arxiv.org/abs/1706.02677)，当用户使用不同数量的 GPU 或者每块 GPU 处理不同视频个数时，需要根据批大小等比例地调节学习率。
+   依据 [线性缩放规则](https://arxiv.org/abs/1706.02677)，当用户使用不同数量的 GPU 或者每块 GPU 处理不同视频个数时，需要根据批大小等比例地调节学习率。
    如，lr=0.01 对应 4 GPUs x 2 video/gpu，以及 lr=0.08 对应 16 GPUs x 4 video/gpu。
 2. 由于 SSN 在训练和测试阶段使用不同的结构化时序金字塔池化方法（structured temporal pyramid pooling methods），请分别参考 [ssn_r50_450e_thumos14_rgb_train](/configs/localization/ssn/ssn_r50_450e_thumos14_rgb_train.py) 和 [ssn_r50_450e_thumos14_rgb_test](/configs/localization/ssn/ssn_r50_450e_thumos14_rgb_test.py)。
-3. MMAction2 使用 TAG 的动作候选进行 SSN 模型的精度验证。关于数据准备的更多细节，用户可参考 [Data 数据集准备文档](/docs_zh_CN/data_preparation.md) 准备 thumos14 的 TAG 候选。
+3. MMAction2 使用 TAG 的时序动作候选进行 SSN 模型的精度验证。关于数据准备的更多细节，用户可参考 [Data 数据集准备文档](/docs_zh_CN/data_preparation.md) 准备 thumos14 的 TAG 时序动作候选。
 4. 参考代码的 SSN 模型是和 MMAction2 一样在 `ResNet50` 主干网络上验证的。注意，这里的 SSN 的初始设置与原代码库的 `BNInception` 骨干网络的设置相同。
 
 ## 如何训练

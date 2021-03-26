@@ -40,13 +40,13 @@
 - Notes:
 
 1. 这里的 **GPU 数量** 指的是得到模型权重文件对应的 GPU 个数。默认地，MMAction2 所提供的配置文件对应使用 8 块 GPU 进行训练的情况。
-   依据 [线性缩放法则](https://arxiv.org/abs/1706.02677)，当用户使用不同数量的 GPU 或者每块 GPU 处理不同视频个数时，需要根据批大小等比例地调节学习率。
+   依据 [线性缩放规则](https://arxiv.org/abs/1706.02677)，当用户使用不同数量的 GPU 或者每块 GPU 处理不同视频个数时，需要根据批大小等比例地调节学习率。
    如，lr=0.01 对应 4 GPUs x 2 video/gpu，以及 lr=0.08 对应 16 GPUs x 4 video/gpu。
 2. 对于 **特征** 这一列，`cuhk_mean_100` 表示所使用的特征为利用 [anet2016-cuhk](https://github.com/yjxiong/anet2016-cuhk) 代码库抽取的，被广泛利用的 CUHK ActivityNet 特征，
    `mmaction_video` 和 `mmaction_clip` 分布表示所使用的特征为利用 MMAction 抽取的，视频级别 ActivityNet 预训练模型的特征；视频片段级别 ActivityNet 预训练模型的特征。
-3. MMAction2 使用 ActivityNet2017 未剪辑视频分类赛道上 [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) 所提交的结果来为每个视频候选指定标签，以用于 BMN 模型评估。
+3. MMAction2 使用 ActivityNet2017 未剪辑视频分类赛道上 [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) 所提交的结果来为每个视频的时序动作候选指定标签，以用于 BMN 模型评估。
 
-*MMAction2 在 [原始代码库](https://github.com/JJBOY/BMN-Boundary-Matching-Network) 上训练 BMN，并且在 [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) 的对应标签上评估候选生成和时序检测的结果。
+*MMAction2 在 [原始代码库](https://github.com/JJBOY/BMN-Boundary-Matching-Network) 上训练 BMN，并且在 [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) 的对应标签上评估时序动作候选生成和时序检测的结果。
 
 对于数据集准备的细节，用户可参考 [数据集准备文档](/docs_zh_CN/data_preparation.md) 中的 ActivityNet 特征部分。
 
@@ -81,7 +81,7 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 python tools/test.py configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py checkpoints/SOME_CHECKPOINT.pth --eval AR@AN --out results.json
 ```
 
-用户也可以利用 [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) 的预测文件评估模型时序检测的结果，并生成候选文件（即命令中的 `results.json`）
+用户也可以利用 [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) 的预测文件评估模型时序检测的结果，并生成时序动作候选文件（即命令中的 `results.json`）
 
 ```shell
 python tools/analysis/report_map.py --proposal path/to/proposal_file
@@ -89,7 +89,7 @@ python tools/analysis/report_map.py --proposal path/to/proposal_file
 
 注意：
 
-1. (可选项) 用户可以使用以下指令生成格式化的候选文件，该文件可被送入动作识别器中（目前只支持 SSN 和 P-GCN，不包括 TSN, I3D 等），以获得候选的分类结果。
+1. (可选项) 用户可以使用以下指令生成格式化的时序动作候选文件，该文件可被送入动作识别器中（目前只支持 SSN 和 P-GCN，不包括 TSN, I3D 等），以获得时序动作候选的分类结果。
 
     ```shell
     python tools/data/activitynet/convert_proposal_format.py
