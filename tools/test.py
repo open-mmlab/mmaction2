@@ -163,10 +163,10 @@ def inference_pytorch(args, cfg, distributed, data_loader):
 def inference_tensorrt(ckpt_path, distributed, data_loader, batch_size):
     """Get predictions by TensorRT engine.
 
-    For now, multi-gpu mode and dynamic tensor are not supported.
+    For now, multi-gpu mode and dynamic tensor shape are not supported.
     """
     assert not distributed, \
-        'TensorRT engine inference only support single gpu mode.'
+        'TensorRT engine inference only supports single gpu mode.'
     import tensorrt as trt
     from mmcv.tensorrt.tensorrt_utils import (torch_dtype_from_trt,
                                               torch_device_from_trt)
@@ -213,11 +213,10 @@ def inference_tensorrt(ckpt_path, distributed, data_loader, batch_size):
 def inference_onnx(ckpt_path, distributed, data_loader, batch_size):
     """Get predictions by ONNX.
 
-    For now, multi-gpu mode and dynamic tensor are not supported.
+    For now, multi-gpu mode and dynamic tensor shape are not supported.
     """
-    assert not distributed, 'ONNX inference only support single gpu mode.'
+    assert not distributed, 'ONNX inference only supports single gpu mode.'
 
-    # For now, only support fixed input tensor
     import onnx
     import onnxruntime as rt
 
@@ -228,7 +227,7 @@ def inference_onnx(ckpt_path, distributed, data_loader, batch_size):
     net_feed_input = list(set(input_all) - set(input_initializer))
     assert len(net_feed_input) == 1
 
-    # support fixed input shape for now
+    # For now, only support fixed tensor shape
     input_tensor = None
     for tensor in onnx_model.graph.input:
         if tensor.name == net_feed_input[0]:

@@ -9,12 +9,13 @@
 - Support LFB ([#553](https://github.com/open-mmlab/mmaction2/pull/553))
 - Support using backbones from MMCls for TSN ([#679](https://github.com/open-mmlab/mmaction2/pull/679))
 - Support using backbones from TorchVision for TSN ([#720](https://github.com/open-mmlab/mmaction2/pull/720))
-- Support Mixup and Cutmix for recognizers [#681](https://github.com/open-mmlab/mmaction2/pull/681)
+- Support Mixup and Cutmix for recognizers ([#681](https://github.com/open-mmlab/mmaction2/pull/681))
 
 **Improvements**
 
 - Add slowfast config/json/log/ckpt for training custom classes of AVA ([#678](https://github.com/open-mmlab/mmaction2/pull/678))
 - Set RandAugment as Imgaug default transforms ([#585](https://github.com/open-mmlab/mmaction2/pull/585))
+- Test with onnx models and TensorRT engines ([#758](https://github.com/open-mmlab/mmaction2/pull/758))
 
 **Bug and Typo Fixes**
 
