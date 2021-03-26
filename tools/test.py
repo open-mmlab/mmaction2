@@ -81,13 +81,13 @@ def parse_args():
         help='job launcher')
     parser.add_argument('--local_rank', type=int, default=0)
     parser.add_argument(
-        '--tensorrt',
-        action='store_true',
-        help='Whether the input checkpoint is TensorRT engine or not')
-    parser.add_argument(
         '--onnx',
         action='store_true',
-        help='Whether the input checkpoint is ONNX model or not')
+        help='Whether to test with onnx model or not')
+    parser.add_argument(
+        '--tensorrt',
+        action='store_true',
+        help='Whether to test with TensorRT engine or not')
     args = parser.parse_args()
     if 'LOCAL_RANK' not in os.environ:
         os.environ['LOCAL_RANK'] = str(args.local_rank)
