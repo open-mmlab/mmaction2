@@ -330,6 +330,8 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 可选参数为：
 
 - `--validate` (**强烈建议**)：在训练期间每 k 个周期进行一次验证（默认值为 5，可通过修改每个配置文件中的 `evaluation` 字典变量的 `interval` 值进行改变）。
+- `--test-last`：在训练结束后使用最后一个检查点的参数进行测试，将测试结果存储在 `${WORK_DIR}/last_pred.pkl` 中。
+- `--test-best`：在训练结束后使用效果最好的检查点的参数进行测试，将测试结果存储在 `${WORK_DIR}/best_pred.pkl` 中。
 - `--work-dir ${WORK_DIR}`：覆盖配置文件中指定的工作目录。
 - `--resume-from ${CHECKPOINT_FILE}`：从以前的模型权重文件恢复训练。
 - `--gpus ${GPU_NUM}`：使用的 GPU 数量，仅适用于非分布式训练。
