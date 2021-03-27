@@ -1,7 +1,6 @@
 import copy as cp
 import os.path as osp
 
-import mmcv
 import torch
 from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
 from mmcv.runner import (DistSamplerSeedHook, EpochBasedRunner, OptimizerHook,
@@ -163,10 +162,12 @@ def train_model(model,
     runner.run(data_loaders, cfg.workflow, cfg.total_epochs, **runner_kwargs)
 
     if test['test_last'] or test['test_best']:
-        best_json = None
+        best_ckpt_path = None
         if test['test_best']:
-            best_json = osp.join(cfg.work_dir, 'best.json')
-            if not osp.exists(best_json):
+            if hasattr(eval_hook, 'best_ckpt_path'):
+                best_ckpt_path = eval_hook.best_ckpt_path
+
+            if best_ckpt_path is None or not osp.exists(best_ckpt_path):
                 test['test_best'] = False
                 runner.logger.info('Warning: test_best set as True, but is '
                                    'not applicable')
@@ -195,11 +196,8 @@ def train_model(model,
             names.append('last')
             ckpts.append(None)
         if test['test_best']:
-            assert best_json
-            best = mmcv.load(best_json)
-            best_ckpt = best['best_ckpt']
-            names.append(best)
-            ckpts.append(best_ckpt)
+            names.append('best')
+            ckpts.append(best_ckpt_path)
 
         for name, ckpt in zip(names, ckpts):
             if ckpt is not None:
@@ -220,6 +218,6 @@ def train_model(model,
                     eval_cfg.pop(key, None)
 
                 eval_res = test_dataset.evaluate(outputs, **eval_cfg)
-                runner.logger.info('Testing results of the last checkpoint')
+                runner.logger.info(f'Testing results of the {name} checkpoint')
                 for name, val in eval_res.items():
                     runner.logger.info(f'{name}: {val:.04f}')
