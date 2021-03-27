@@ -160,23 +160,31 @@ def train_model(model,
 
     if test:
         test_dataset = build_dataset(cfg.data.test, dict(test_mode=True))
+        gpu_collect = cfg.get('evaluation', {}).get('gpu_collect', False)
+        tmpdir = cfg.get('evaluation', {}).get('tmpdir',
+                                               osp.join(cfg.work_dir, 'tmp'))
         dataloader_setting = dict(
-            videos_per_gpu=1,
-            workers_per_gpu=4,
+            videos_per_gpu=cfg.data.get('videos_per_gpu', 1),
+            workers_per_gpu=cfg.data.get('workers_per_gpu', 1),
             num_gpus=len(cfg.gpu_ids),
             dist=distributed,
             shuffle=False)
+        dataloader_setting = dict(dataloader_setting,
+                                  **cfg.data.get('test_dataloader', {}))
+
         test_dataloader = build_dataloader(test_dataset, **dataloader_setting)
-        outputs = multi_gpu_test(model, test_dataloader,
-                                 osp.join(cfg.work_dir, 'tmp'), False)
+        outputs = multi_gpu_test(model, test_dataloader, tmpdir, gpu_collect)
         rank, _ = get_dist_info()
         if rank == 0:
             out = osp.join(cfg.work_dir, 'final_pred.pkl')
             test_dataset.dump_results(outputs, out)
 
             eval_cfg = cfg.get('evaluation', {})
-            if 'interval' in eval_cfg:
-                eval_cfg.pop('interval')
+            for key in [
+                    'interval', 'tmpdir', 'start', 'gpu_collect', 'save_best',
+                    'rule', 'by_epoch', 'broadcast_bn_buffers'
+            ]:
+                eval_cfg.pop(key, None)
 
             eval_res = test_dataset.evaluate(outputs, **eval_cfg)
             for name, val in eval_res.items():
