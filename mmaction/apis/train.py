@@ -1,7 +1,6 @@
 import copy as cp
 import os.path as osp
 
-import mmcv
 import torch
 from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
 from mmcv.runner import (DistSamplerSeedHook, EpochBasedRunner, OptimizerHook,
@@ -197,11 +196,8 @@ def train_model(model,
             names.append('last')
             ckpts.append(None)
         if test['test_best']:
-            assert best_json
-            best = mmcv.load(best_json)
-            best_ckpt = best['best_ckpt']
-            names.append(best)
-            ckpts.append(best_ckpt)
+            names.append('best')
+            ckpts.append(best_ckpt_path)
 
         for name, ckpt in zip(names, ckpts):
             if ckpt is not None:
