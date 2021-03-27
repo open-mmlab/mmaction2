@@ -29,9 +29,14 @@ def parse_args():
         action='store_true',
         help='whether to evaluate the checkpoint during training')
     parser.add_argument(
-        '--test',
+        '--test-last',
         action='store_true',
         help='whether to test the checkpoint after training')
+    parser.add_argument(
+        '--test-best',
+        action='store_true',
+        help=('whether to test the best checkpoint (if applicable) after '
+              'training'))
     group_gpus = parser.add_mutually_exclusive_group()
     group_gpus.add_argument(
         '--gpus',
@@ -176,13 +181,14 @@ def main():
             mmaction_version=__version__ + get_git_hash(digits=7),
             config=cfg.text)
 
+    test_option = dict(test_last=args.test_last, test_best=args.test_best)
     train_model(
         model,
         datasets,
         cfg,
         distributed=distributed,
         validate=args.validate,
-        test=args.test,
+        test=test_option,
         timestamp=timestamp,
         meta=meta)
 
