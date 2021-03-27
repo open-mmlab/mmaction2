@@ -169,11 +169,16 @@ def train_model(model,
 
             if best_ckpt_path is None or not osp.exists(best_ckpt_path):
                 test['test_best'] = False
-                runner.logger.info('Warning: test_best set as True, but is '
-                                   'not applicable')
-
-        if not (test['test_last'] or test['test_best']):
-            return
+                if best_ckpt_path is None:
+                    runner.logger.info('Warning: test_best set as True, but '
+                                       'is not applicable '
+                                       '(eval_hook.best_ckpt_path is None)')
+                else:
+                    runner.logger.info('Warning: test_best set as True, but '
+                                       'is not applicable (best_ckpt '
+                                       f'{best_ckpt_path} not found)')
+                if not test['test_last']:
+                    return
 
         test_dataset = build_dataset(cfg.data.test, dict(test_mode=True))
         gpu_collect = cfg.get('evaluation', {}).get('gpu_collect', False)
