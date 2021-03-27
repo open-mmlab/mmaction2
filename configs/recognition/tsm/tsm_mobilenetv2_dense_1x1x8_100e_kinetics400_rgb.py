@@ -1,6 +1,6 @@
 _base_ = [
     '../../_base_/models/tsm_mobilenet_v2.py',
-    '../../_base_/schedules/sgd_tsm_mobilenet_v2_50e.py',
+    '../../_base_/schedules/sgd_tsm_mobilenet_v2_100e.py',
     '../../_base_/default_runtime.py'
 ]
 
@@ -33,7 +33,7 @@ train_pipeline = [
 ]
 val_pipeline = [
     dict(
-        type='SampleFrames',
+        type='DenseSampleFrames',
         clip_len=1,
         frame_interval=1,
         num_clips=8,
@@ -48,7 +48,7 @@ val_pipeline = [
 ]
 test_pipeline = [
     dict(
-        type='SampleFrames',
+        type='DenseSampleFrames',
         clip_len=1,
         frame_interval=1,
         num_clips=8,
@@ -81,11 +81,6 @@ data = dict(
         pipeline=test_pipeline))
 evaluation = dict(
     interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
-
-# optimizer
-optimizer = dict(
-    lr=0.01,  # this lr is used for 8 gpus
-)
 
 # runtime settings
 checkpoint_config = dict(interval=1)

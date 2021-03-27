@@ -1,6 +1,6 @@
 # I3D
 
-## Introduction
+## 简介
 
 [ALGORITHM]
 

@@ -56,7 +56,7 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 例如：在 ActivityNet 特征上测试 BMN。
 
 ```shell
-# Note: If evaluated, then please make sure the annotation file for test data contains groundtruth.
+# 注意：如果需要进行指标验证，需确测试数据的保标注文件包含真实标签
 python tools/test.py configs/localization/ssn/ssn_r50_450e_thumos14_rgb_test.py checkpoints/SOME_CHECKPOINT.pth --eval mAP
 ```
 

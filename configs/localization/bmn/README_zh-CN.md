@@ -37,7 +37,7 @@
 | |mmaction_clip |2|75.35|67.38|43.08|32.19|10.73|31.15|5420|3.27|[ckpt](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809-10d803ce.pth)| [log](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809.log) | [json](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809.json) |
 | [BMN-official](https://github.com/JJBOY/BMN-Boundary-Matching-Network) (for reference)* |cuhk_mean_100 |-|75.27|67.49|42.22|30.98|9.22|30.00|-|-|-| - | - |
 
-- Notes:
+- 注意：
 
 1. 这里的 **GPU 数量** 指的是得到模型权重文件对应的 GPU 个数。默认地，MMAction2 所提供的配置文件对应使用 8 块 GPU 进行训练的情况。
    依据 [线性缩放规则](https://arxiv.org/abs/1706.02677)，当用户使用不同数量的 GPU 或者每块 GPU 处理不同视频个数时，需要根据批大小等比例地调节学习率。
