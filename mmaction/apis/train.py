@@ -1,6 +1,7 @@
 import copy as cp
 import os.path as osp
 
+import mmcv
 import torch
 from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
 from mmcv.runner import (DistSamplerSeedHook, EpochBasedRunner, OptimizerHook,
@@ -31,6 +32,9 @@ def train_model(model,
         distributed (bool): Whether to use distributed training.
             Default: False.
         validate (bool): Whether to do evaluation. Default: False.
+        test (dict): The testing option, with two keys: test_last & test_best.
+            The value is True or False, indicates whether to test the
+            corresponding checkpoint.
         timestamp (str | None): Local time for runner. Default: None.
         meta (dict | None): Meta dict to record some important information.
             Default: None
@@ -158,7 +162,18 @@ def train_model(model,
         runner_kwargs = dict(train_ratio=train_ratio)
     runner.run(data_loaders, cfg.workflow, cfg.total_epochs, **runner_kwargs)
 
-    if test:
+    if test['test_last'] or test['test_best']:
+        best_json = None
+        if test['test_best']:
+            best_json = osp.join(cfg.work_dir, 'best.json')
+            if not osp.exists(best_json):
+                test['test_best'] = False
+                runner.logger.info('Warning: test_best set as True, but is '
+                                   'not applicable')
+
+        if not (test['test_last'] or test['test_best']):
+            return
+
         test_dataset = build_dataset(cfg.data.test, dict(test_mode=True))
         gpu_collect = cfg.get('evaluation', {}).get('gpu_collect', False)
         tmpdir = cfg.get('evaluation', {}).get('tmpdir',
@@ -173,19 +188,38 @@ def train_model(model,
                                   **cfg.data.get('test_dataloader', {}))
 
         test_dataloader = build_dataloader(test_dataset, **dataloader_setting)
-        outputs = multi_gpu_test(model, test_dataloader, tmpdir, gpu_collect)
-        rank, _ = get_dist_info()
-        if rank == 0:
-            out = osp.join(cfg.work_dir, 'final_pred.pkl')
-            test_dataset.dump_results(outputs, out)
 
-            eval_cfg = cfg.get('evaluation', {})
-            for key in [
-                    'interval', 'tmpdir', 'start', 'gpu_collect', 'save_best',
-                    'rule', 'by_epoch', 'broadcast_bn_buffers'
-            ]:
-                eval_cfg.pop(key, None)
+        names, ckpts = []
 
-            eval_res = test_dataset.evaluate(outputs, **eval_cfg)
-            for name, val in eval_res.items():
-                runner.logger.info(f'{name}: {val:.04f}')
+        if test['test_last']:
+            names.append('last')
+            ckpts.append(None)
+        if test['test_best']:
+            assert best_json
+            best = mmcv.load(best_json)
+            best_ckpt = best['best_ckpt']
+            names.append(best)
+            ckpts.append(best_ckpt)
+
+        for name, ckpt in zip(names, ckpts):
+            if ckpt is not None:
+                runner.load_checkpoint(ckpt)
+
+            outputs = multi_gpu_test(runner.model, test_dataloader, tmpdir,
+                                     gpu_collect)
+            rank, _ = get_dist_info()
+            if rank == 0:
+                out = osp.join(cfg.work_dir, f'{name}_pred.pkl')
+                test_dataset.dump_results(outputs, out)
+
+                eval_cfg = cfg.get('evaluation', {})
+                for key in [
+                        'interval', 'tmpdir', 'start', 'gpu_collect',
+                        'save_best', 'rule', 'by_epoch', 'broadcast_bn_buffers'
+                ]:
+                    eval_cfg.pop(key, None)
+
+                eval_res = test_dataset.evaluate(outputs, **eval_cfg)
+                runner.logger.info('Testing results of the last checkpoint')
+                for name, val in eval_res.items():
+                    runner.logger.info(f'{name}: {val:.04f}')
