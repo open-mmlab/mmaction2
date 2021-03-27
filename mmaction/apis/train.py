@@ -195,7 +195,7 @@ def train_model(model,
 
         test_dataloader = build_dataloader(test_dataset, **dataloader_setting)
 
-        names, ckpts = []
+        names, ckpts = [], []
 
         if test['test_last']:
             names.append('last')
