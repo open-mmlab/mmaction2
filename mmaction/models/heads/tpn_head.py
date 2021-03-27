@@ -33,17 +33,36 @@ class TPNHead(TSNHead):
             self.avg_pool3d = None
 
         self.avg_pool2d = None
+        self.new_cls = None
 
-    def forward(self, x, num_segs=None):
+    def _init_new_cls(self):
+        self.new_cls = nn.Conv3d(self.in_channels, self.num_classes, 1, 1, 0)
+        if next(self.fc_cls.parameters()).is_cuda:
+            self.new_cls = self.new_cls.cuda()
+        self.new_cls.weight.copy_(self.fc_cls.weight[..., None, None, None])
+        self.new_cls.bias.copy_(self.fc_cls.bias)
+
+    def forward(self, x, num_segs=None, fcn_test=False):
         """Defines the computation performed at every call.
 
         Args:
             x (torch.Tensor): The input data.
             num_segs (int | None): Number of segments into which a video
                 is divided. Default: None.
+            fcn_test (bool): Whether to apply full convolution (fcn) testing.
+                Default: False.
+
         Returns:
             torch.Tensor: The classification scores for input samples.
         """
+        if fcn_test:
+            if self.avg_pool3d:
+                x = self.avg_pool3d(x)
+            if self.new_cls is None:
+                self._init_new_cls()
+            cls_score_feat_map = self.new_cls(x)
+            return cls_score_feat_map
+
         if self.avg_pool2d is None:
             kernel_size = (1, x.shape[-2], x.shape[-1])
             self.avg_pool2d = nn.AvgPool3d(kernel_size, stride=1, padding=0)

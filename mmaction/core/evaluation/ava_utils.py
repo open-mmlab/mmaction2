@@ -8,7 +8,6 @@ import numpy as np
 
 from .ava_evaluation import object_detection_evaluation as det_eval
 from .ava_evaluation import standard_fields
-from .recall import eval_recalls
 
 
 def det2csv(dataset, results, custom_classes):
@@ -193,35 +192,6 @@ def ava_eval(result_file,
     boxes, labels, scores = read_csv(open(result_file), class_whitelist, 0)
     if verbose:
         print_time('Reading detection results', start)
-
-    if result_type == 'proposal':
-        gts = [
-            np.array(gt_boxes[image_key], dtype=float)
-            for image_key in gt_boxes
-        ]
-        proposals = []
-        for image_key in gt_boxes:
-            if image_key in boxes:
-                proposals.append(
-                    np.concatenate(
-                        (np.array(boxes[image_key], dtype=float),
-                         np.array(scores[image_key], dtype=float)[:, None]),
-                        axis=1))
-            else:
-                # if no corresponding proposal, add a fake one
-                proposals.append(np.array([0, 0, 1, 1, 1]))
-
-        # Proposals used here are with scores
-        recalls = eval_recalls(gts, proposals, np.array(max_dets),
-                               np.arange(0.5, 0.96, 0.05))
-        ar = recalls.mean(axis=1)
-        ret = {}
-        for i, num in enumerate(max_dets):
-            print(f'Recall@0.5@{num}\t={recalls[i, 0]:.4f}')
-            print(f'AR@{num}\t={ar[i]:.4f}')
-            ret[f'Recall@0.5@{num}'] = recalls[i, 0]
-            ret[f'AR@{num}'] = ar[i]
-        return ret
 
     if result_type == 'mAP':
         pascal_evaluator = det_eval.PascalDetectionEvaluator(categories)

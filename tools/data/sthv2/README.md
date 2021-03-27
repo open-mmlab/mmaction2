@@ -4,7 +4,7 @@
 
 [DATASET]
 
-```
+```BibTeX
 @misc{goyal2017something,
       title={The "something something" video database for learning and evaluating visual common sense},
       author={Raghav Goyal and Samira Ebrahimi Kahou and Vincent Michalski and Joanna Materzyńska and Susanne Westphal and Heuna Kim and Valentin Haenel and Ingo Fruend and Peter Yianilos and Moritz Mueller-Freitag and Florian Hoppe and Christian Thurau and Ingo Bax and Roland Memisevic},
@@ -24,7 +24,7 @@ First of all, you have to sign in and download annotations to `$MMACTION2/data/s
 
 ## Step 2. Prepare Videos
 
-Then, you can download all data parts to `$MMACTION2/data/sthv2/` and use the following command to extract.
+Then, you can download all data parts to `$MMACTION2/data/sthv2/` and use the following command to uncompress.
 
 ```shell
 cd $MMACTION2/data/sthv2/

@@ -1,3 +1,4 @@
+import warnings
 from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
 
@@ -33,7 +34,9 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
                  train_cfg=None,
                  test_cfg=None):
         super().__init__()
-        # The backbones in mmcls can be used by TSN
+        # record the source of the backbone
+        self.backbone_from = 'mmaction2'
+
         if backbone['type'].startswith('mmcls.'):
             try:
                 import mmcls.models.builder as mmcls_builder
@@ -41,6 +44,20 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
                 raise ImportError('Please install mmcls to use this backbone.')
             backbone['type'] = backbone['type'][6:]
             self.backbone = mmcls_builder.build_backbone(backbone)
+            self.backbone_from = 'mmcls'
+        elif backbone['type'].startswith('torchvision.'):
+            try:
+                import torchvision.models
+            except (ImportError, ModuleNotFoundError):
+                raise ImportError('Please install torchvision to use this '
+                                  'backbone.')
+            backbone_type = backbone.pop('type')[12:]
+            self.backbone = torchvision.models.__dict__[backbone_type](
+                **backbone)
+            # disable the classifier
+            self.backbone.classifier = nn.Identity()
+            self.backbone.fc = nn.Identity()
+            self.backbone_from = 'torchvision'
         else:
             self.backbone = builder.build_backbone(backbone)
 
@@ -63,13 +80,30 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
             self.max_testing_views = test_cfg['max_testing_views']
             assert isinstance(self.max_testing_views, int)
 
+        # mini-batch blending, e.g. mixup, cutmix, etc.
+        self.blending = None
+        if train_cfg is not None and 'blending' in train_cfg:
+            from mmcv.utils import build_from_cfg
+            from ...datasets.registry import BLENDINGS
+            self.blending = build_from_cfg(train_cfg['blending'], BLENDINGS)
+
         self.init_weights()
 
         self.fp16_enabled = False
 
     def init_weights(self):
         """Initialize the model network weights."""
-        self.backbone.init_weights()
+        if self.backbone_from in ['mmcls', 'mmaction2']:
+            self.backbone.init_weights()
+        elif self.backbone_from == 'torchvision':
+            warnings.warn('We do not initialize weights for backbones in '
+                          'torchvision, since the weights for backbones in '
+                          'torchvision are initialized in their __init__ '
+                          'functions. ')
+        else:
+            raise NotImplementedError('Unsupported backbone source '
+                                      f'{self.backbone_from}!')
+
         self.cls_head.init_weights()
         if hasattr(self, 'neck'):
             self.neck.init_weights()
@@ -84,7 +118,11 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         Returns:
             torch.tensor: The extracted features.
         """
-        x = self.backbone(imgs)
+        if (hasattr(self.backbone, 'features')
+                and self.backbone_from == 'torchvision'):
+            x = self.backbone.features(imgs)
+        else:
+            x = self.backbone(imgs)
         return x
 
     def average_clip(self, cls_score, num_segs=1):
@@ -181,6 +219,8 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         if return_loss:
             if label is None:
                 raise ValueError('Label should not be None.')
+            if self.blending is not None:
+                imgs, label = self.blending(imgs, label)
             return self.forward_train(imgs, label, **kwargs)
 
         return self.forward_test(imgs, **kwargs)

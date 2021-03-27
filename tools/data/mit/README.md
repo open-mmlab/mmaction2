@@ -26,7 +26,7 @@ First of all, you have to visit the official [website](http://moments.csail.mit.
 
 For better decoding speed, you can resize the original videos into smaller sized, densely encoded version by:
 
-```
+```shell
 python ../resize_videos.py ../../../data/mit/videos/ ../../../data/mit/videos_256p_dense_cache --dense --level 2
 ```
 

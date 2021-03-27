@@ -19,7 +19,7 @@ train_pipeline = [
     dict(type='Flip', flip_ratio=0.5),
     dict(type='ColorJitter', color_space_aug=True),
     dict(type='Normalize', **img_norm_cfg),
-    dict(type='FormatShape'),
+    dict(type='FormatShape', input_format='NCHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs', 'label'])
 ]
@@ -35,7 +35,7 @@ val_pipeline = [
     dict(type='CenterCrop', crop_size=224),
     dict(type='ColorJitter', color_space_aug=True),
     dict(type='Normalize', **img_norm_cfg),
-    dict(type='FormatShape'),
+    dict(type='FormatShape', input_format='NCHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs'])
 ]
@@ -50,13 +50,14 @@ test_pipeline = [
     dict(type='Resize', scale=(-1, 256)),
     dict(type='ThreeCrop', crop_size=256),
     dict(type='Normalize', **img_norm_cfg),
-    dict(type='FormatShape'),
+    dict(type='FormatShape', input_format='NCHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
     videos_per_gpu=8,
     workers_per_gpu=8,
+    test_dataloader=dict(videos_per_gpu=12),
     train=dict(
         type=dataset_type,
         ann_file=ann_file_train,
@@ -85,4 +86,4 @@ lr_config = dict(policy='step', step=[75, 125])
 total_epochs = 150
 
 # runtime settings
-work_dir = './work_dirs/tpn_tsm_r50_8x8x1_150e_kinetics400_rgb'
+work_dir = './work_dirs/tpn_tsm_r50_1x1x8_150e_kinetics400_rgb'
