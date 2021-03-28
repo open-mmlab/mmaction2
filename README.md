@@ -114,9 +114,9 @@ Supported methods for Spatial Temporal Action Detection:
 <details open>
 <summary>(click to collapse)</summary>
 
-- [x] [SlowOnly+Fast R-CNN](configs/detection/ava/README.md) (ICCV'2019)
-- [x] [SlowFast+Fast R-CNN](configs/detection/ava/README.md) (ICCV'2019)
-- [x] [Long-Term Feature Bank](configs/detection/lfb/README.md) (CVPR'2019)
+- [ ] [SlowOnly+Fast R-CNN](configs/detection/ava/README.md) (ICCV'2019)
+- [ ] [SlowFast+Fast R-CNN](configs/detection/ava/README.md) (ICCV'2019)
+- [ ] [Long-Term Feature Bank](configs/detection/lfb/README.md) (CVPR'2019)
 
 </details>
 
