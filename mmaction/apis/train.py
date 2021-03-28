@@ -19,7 +19,7 @@ def train_model(model,
                 cfg,
                 distributed=False,
                 validate=False,
-                test=dict(),
+                test=dict(test_best=False, test_last=False),
                 timestamp=None,
                 meta=None):
     """Train model entry function.
