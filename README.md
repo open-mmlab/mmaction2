@@ -79,22 +79,22 @@ Supported methods for Action Recognition:
 <details open>
 <summary>(click to collapse)</summary>
 
-- [x] [TSN](configs/recognition/tsn/README.md) (ECCV'2016)
-- [x] [TSM](configs/recognition/tsm/README.md) (ICCV'2019)
-- [x] [TSM Non-Local](configs/recognition/i3d) (ICCV'2019)
-- [x] [R(2+1)D](configs/recognition/r2plus1d/README.md) (CVPR'2018)
-- [x] [I3D](configs/recognition/i3d/README.md) (CVPR'2017)
-- [x] [I3D Non-Local](configs/recognition/i3d/README.md) (CVPR'2018)
-- [x] [SlowOnly](configs/recognition/slowonly/README.md) (ICCV'2019)
-- [x] [SlowFast](configs/recognition/slowfast/README.md) (ICCV'2019)
-- [x] [CSN](configs/recognition/csn/README.md) (ICCV'2019)
-- [x] [TIN](configs/recognition/tin/README.md) (AAAI'2020)
-- [x] [TPN](configs/recognition/tpn/README.md) (CVPR'2020)
-- [x] [C3D](configs/recognition/c3d/README.md) (CVPR'2014)
-- [x] [X3D](configs/recognition/x3d/README.md) (CVPR'2020)
-- [x] [OmniSource](configs/recognition/omnisource/README.md) (ECCV'2020)
-- [x] [MultiModality: Audio](configs/recognition_audio/resnet/README.md) (ArXiv'2020)
-- [x] [TANet](configs/recognition/tanet/README.md) (ArXiv'2020)
+- ✅ [TSN](configs/recognition/tsn/README.md) (ECCV'2016)
+- ✅ [TSM](configs/recognition/tsm/README.md) (ICCV'2019)
+- ✅ [TSM Non-Local](configs/recognition/i3d) (ICCV'2019)
+- ✅ [R(2+1)D](configs/recognition/r2plus1d/README.md) (CVPR'2018)
+- ✅ [I3D](configs/recognition/i3d/README.md) (CVPR'2017)
+- ✅ [I3D Non-Local](configs/recognition/i3d/README.md) (CVPR'2018)
+- ✅ [SlowOnly](configs/recognition/slowonly/README.md) (ICCV'2019)
+- ✅ [SlowFast](configs/recognition/slowfast/README.md) (ICCV'2019)
+- ✅ [CSN](configs/recognition/csn/README.md) (ICCV'2019)
+- ✅ [TIN](configs/recognition/tin/README.md) (AAAI'2020)
+- ✅ [TPN](configs/recognition/tpn/README.md) (CVPR'2020)
+- ✅ [C3D](configs/recognition/c3d/README.md) (CVPR'2014)
+- ✅ [X3D](configs/recognition/x3d/README.md) (CVPR'2020)
+- ✅ [OmniSource](configs/recognition/omnisource/README.md) (ECCV'2020)
+- ✅ [MultiModality: Audio](configs/recognition_audio/resnet/README.md) (ArXiv'2020)
+- ✅ [TANet](configs/recognition/tanet/README.md) (ArXiv'2020)
 
 </details>
 
@@ -103,9 +103,9 @@ Supported methods for Temporal Action Detection:
 <details open>
 <summary>(click to collapse)</summary>
 
-- [x] [BSN](configs/localization/bsn/README.md) (ECCV'2018)
-- [x] [BMN](configs/localization/bmn/README.md) (ICCV'2019)
-- [x] [SSN](configs/localization/ssn/README.md) (ICCV'2017)
+- ✅ [BSN](configs/localization/bsn/README.md) (ECCV'2018)
+- ✅ [BMN](configs/localization/bmn/README.md) (ICCV'2019)
+- ✅ [SSN](configs/localization/ssn/README.md) (ICCV'2017)
 
 </details>
 
@@ -114,9 +114,9 @@ Supported methods for Spatial Temporal Action Detection:
 <details open>
 <summary>(click to collapse)</summary>
 
-- [ ] [SlowOnly+Fast R-CNN](configs/detection/ava/README.md) (ICCV'2019)
-- [ ] [SlowFast+Fast R-CNN](configs/detection/ava/README.md) (ICCV'2019)
-- [ ] [Long-Term Feature Bank](configs/detection/lfb/README.md) (CVPR'2019)
+- ✅ [SlowOnly+Fast R-CNN](configs/detection/ava/README.md) (ICCV'2019)
+- ✅ [SlowFast+Fast R-CNN](configs/detection/ava/README.md) (ICCV'2019)
+- ✅ [Long-Term Feature Bank](configs/detection/lfb/README.md) (CVPR'2019)
 
 </details>
 
