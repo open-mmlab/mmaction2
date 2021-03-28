@@ -20,7 +20,7 @@ year = {2017}
 |:-:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:-:|:-:|:-:|:-:|---|:--:|:--:|
 |[ssn_r50_450e_thumos14_rgb](/configs/localization/ssn/ssn_r50_450e_thumos14_rgb_train.py) |8| ResNet50 | ImageNet |29.37|22.15|15.69|[27.61](https://github.com/open-mmlab/mmaction/tree/c7e3b7c11fb94131be9b48a8e3d510589addc3ce#Get%20started)|[21.28](https://github.com/open-mmlab/mmaction/tree/c7e3b7c11fb94131be9b48a8e3d510589addc3ce#Get%20started)|[14.57](https://github.com/open-mmlab/mmaction/tree/c7e3b7c11fb94131be9b48a8e3d510589addc3ce#Get%20started)|6352|[ckpt](https://download.openmmlab.com/mmaction/localization/ssn/ssn_r50_450e_thumos14_rgb/ssn_r50_450e_thumos14_rgb_20201012-1920ab16.pth)| [log](https://download.openmmlab.com/mmaction/localization/ssn/ssn_r50_450e_thumos14_rgb/20201005_144656.log)| [json](https://download.openmmlab.com/mmaction/localization/ssn/ssn_r50_450e_thumos14_rgb/20201005_144656.log.json)| [ckpt](https://download.openmmlab.com/mmaction/localization/ssn/mmaction_reference/ssn_r50_450e_thumos14_rgb_ref/ssn_r50_450e_thumos14_rgb_ref_20201014-b6f48f68.pth)| [json](https://download.openmmlab.com/mmaction/localization/ssn/mmaction_reference/ssn_r50_450e_thumos14_rgb_ref/20201008_103258.log.json)|
 
-注意：
+注：
 
 1. 这里的 **GPU 数量** 指的是得到模型权重文件对应的 GPU 个数。默认地，MMAction2 所提供的配置文件对应使用 8 块 GPU 进行训练的情况。
    依据 [线性缩放规则](https://arxiv.org/abs/1706.02677)，当用户使用不同数量的 GPU 或者每块 GPU 处理不同视频个数时，需要根据批大小等比例地调节学习率。
@@ -56,7 +56,7 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 例如：在 ActivityNet 特征上测试 BMN。
 
 ```shell
-# Note: If evaluated, then please make sure the annotation file for test data contains groundtruth.
+# 注：如果需要进行指标验证，需确测试数据的保标注文件包含真实标签
 python tools/test.py configs/localization/ssn/ssn_r50_450e_thumos14_rgb_test.py checkpoints/SOME_CHECKPOINT.pth --eval mAP
 ```
 

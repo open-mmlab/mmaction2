@@ -24,12 +24,13 @@
 | |mmaction_video |1| None |74.93|66.74|41(TEM)+25(PEM)|0.074(TEM)+0.036(PEM)|[ckpt_tem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_tem_400x100_1x16_20e_mmaction_video/bsn_tem_400x100_1x16_20e_mmaction_video_20200809-ad6ec626.pth) [ckpt_pem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_pem_400x100_1x16_20e_mmaction_video/bsn_pem_400x100_1x16_20e_mmaction_video_20200809-aa861b26.pth)| [log_tem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_tem_400x100_1x16_20e_mmaction_video/bsn_tem_400x100_1x16_20e_mmaction_video_20200809.log) [log_pem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_pem_400x100_1x16_20e_mmaction_video/bsn_pem_400x100_1x16_20e_mmaction_video_20200809.log) | [json_tem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_tem_400x100_1x16_20e_mmaction_video/bsn_tem_400x100_1x16_20e_mmaction_video_20200809.json) [json_pem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_pem_400x100_1x16_20e_mmaction_video/bsn_pem_400x100_1x16_20e_mmaction_video_20200809.json) |
 | |mmaction_clip |1| None |75.19|66.81|41(TEM)+25(PEM)|0.074(TEM)+0.036(PEM)|[ckpt_tem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_tem_400x100_1x16_20e_mmaction_clip/bsn_tem_400x100_1x16_20e_mmaction_clip_20200809-0a563554.pth) [ckpt_pem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_pem_400x100_1x16_20e_mmaction_clip/bsn_pem_400x100_1x16_20e_mmaction_clip_20200809-e32f61e6.pth)| [log_tem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_tem_400x100_1x16_20e_mmaction_clip/bsn_tem_400x100_1x16_20e_mmaction_clip_20200809.log) [log_pem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_pem_400x100_1x16_20e_mmaction_clip/bsn_pem_400x100_1x16_20e_mmaction_clip_20200809.log) | [json_tem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_tem_400x100_1x16_20e_mmaction_clip/bsn_tem_400x100_1x16_20e_mmaction_clip_20200809.json) [json_pem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_pem_400x100_1x16_20e_mmaction_clip/bsn_pem_400x100_1x16_20e_mmaction_clip_20200809.json) |
 
-Notes:
+注：
 
 1. 这里的 **GPU 数量** 指的是得到模型权重文件对应的 GPU 个数。默认地，MMAction2 所提供的配置文件对应使用 8 块 GPU 进行训练的情况。
    依据 [线性缩放规则](https://arxiv.org/abs/1706.02677)，当用户使用不同数量的 GPU 或者每块 GPU 处理不同视频个数时，需要根据批大小等比例地调节学习率。
    如，lr=0.01 对应 4 GPUs x 2 video/gpu，以及 lr=0.08 对应 16 GPUs x 4 video/gpu。
-2. For feature column, cuhk_mean_100 denotes the widely used cuhk activitynet feature extracted by [anet2016-cuhk](https://github.com/yjxiong/anet2016-cuhk), mmaction_video and mmaction_clip denote feature extracted by mmaction, with video-level activitynet finetuned model or clip-level activitynet finetuned model respectively.
+2. 对于 **特征** 这一列，`cuhk_mean_100` 表示所使用的特征为利用 [anet2016-cuhk](https://github.com/yjxiong/anet2016-cuhk) 代码库抽取的，被广泛利用的 CUHK ActivityNet 特征，
+   `mmaction_video` 和 `mmaction_clip` 分布表示所使用的特征为利用 MMAction 抽取的，视频级别 ActivityNet 预训练模型的特征；视频片段级别 ActivityNet 预训练模型的特征。
 
 对于数据集准备的细节，用户可参考 [数据集准备文档](/docs_zh_CN/data_preparation.md) 中的 ActivityNet 特征部分。
 
@@ -97,7 +98,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 3. 推理 BSN(PEM) 模型，并计算 'AR@AN' 指标，输出结果文件。
 
     ```shell
-    # 注意：如果需要进行指标验证，需确测试数据的保标注文件包含真实标签
+    # 注：如果需要进行指标验证，需确测试数据的保标注文件包含真实标签
     python tools/test.py configs/localization/bsn/bsn_pem_400x100_1x16_20e_activitynet_feature.py  checkpoints/SOME_CHECKPOINT.pth  --eval AR@AN --out results.json
     ```
 
@@ -108,7 +109,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 1. TEM
 
     ```shell
-    # 注意：该命令无法进行指标验证
+    # 注：该命令无法进行指标验证
     python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
     ```
 
@@ -144,7 +145,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
     python tools/test.py configs/localization/bsn/bsn_pem_400x100_1x16_20e_activitynet_feature.py checkpoints/SOME_CHECKPOINT.pth --eval AR@AN --out results.json
     ```
 
-注意：
+注：
 
 1. (可选项) 用户可以使用以下指令生成格式化的时序动作候选文件，该文件可被送入动作识别器中（目前只支持 SSN 和 P-GCN，不包括 TSN, I3D 等），以获得时序动作候选的分类结果。
 

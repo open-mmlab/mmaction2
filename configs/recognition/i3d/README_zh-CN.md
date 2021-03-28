@@ -1,6 +1,6 @@
 # I3D
 
-## Introduction
+## 简介
 
 [ALGORITHM]
 
@@ -43,7 +43,7 @@
 |[i3d_nl_gaussian_r50_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_nl_gaussian_r50_32x2x1_100e_kinetics400_rgb.py)|短边 256p|8x4| ResNet50 |ImageNet|73.37|91.26|x|4944|[ckpt](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_gaussian_r50_32x2x1_100e_kinetics400_rgb/i3d_nl_gaussian_r50_32x2x1_100e_kinetics400_rgb_20200815-17f84aa2.pth)|[log](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_gaussian_r50_32x2x1_100e_kinetics400_rgb/20200813_034909.log)|[json](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_gaussian_r50_32x2x1_100e_kinetics400_rgb/20200813_034909.log.json)|
 |[i3d_nl_dot_product_r50_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_nl_dot_product_r50_32x2x1_100e_kinetics400_rgb.py)|短边 256p|8x4| ResNet50 |ImageNet|73.92|91.59|x|4832|[ckpt](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_dot_product_r50_32x2x1_100e_kinetics400_rgb/i3d_nl_dot_product_r50_32x2x1_100e_kinetics400_rgb_20200814-7c30d5bb.pth)|[log](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_dot_product_r50_32x2x1_100e_kinetics400_rgb/20200814_044208.log)|[json](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_dot_product_r50_32x2x1_100e_kinetics400_rgb/20200814_044208.log.json)|
 
-注意：
+注：
 
 1. 这里的 **GPU 数量** 指的是得到模型权重文件对应的 GPU 个数。默认地，MMAction2 所提供的配置文件对应使用 8 块 GPU 进行训练的情况。
    依据 [线性缩放规则](https://arxiv.org/abs/1706.02677)，当用户使用不同数量的 GPU 或者每块 GPU 处理不同视频个数时，需要根据批大小等比例地调节学习率。
