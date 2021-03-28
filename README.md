@@ -135,17 +135,17 @@ Supported datasets for Action Recognition:
 <details open>
 <summary>(click to collapse)</summary>
 
-- [x] [UCF101](/tools/data/ucf101/README.md) \[ [Homepage](https://www.crcv.ucf.edu/research/data-sets/ucf101/) \] (CRCV-IR-12-01)
-- [x] [HMDB51](/tools/data/hmdb51/README.md) \[ [Homepage](https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/) \] (ICCV'2011)
-- [x] [Kinetics-[400/600/700]](/tools/data/kinetics/README.md) \[ [Homepage](https://deepmind.com/research/open-source/kinetics) \] (CVPR'2017)
-- [x] [Something-Something V1](/tools/data/sthv1/README.md) \[ [Homepage](https://20bn.com/datasets/something-something/v1) \] (ICCV'2017)
-- [x] [Something-Something V2](/tools/data/sthv2/README.md) \[ [Homepage](https://20bn.com/datasets/something-something) \] (ICCV'2017)
-- [x] [Moments in Time](/tools/data/mit/README.md) \[ [Homepage](http://moments.csail.mit.edu/) \] (TPAMI'2019)
-- [x] [Multi-Moments in Time](/tools/data/mmit/README.md) \[ [Homepage](http://moments.csail.mit.edu/challenge_iccv_2019.html) \] (ArXiv'2019)
-- [x] [HVU](/tools/data/hvu/README.md) \[ [Homepage](https://github.com/holistic-video-understanding/HVU-Dataset) \] (ECCV'2020)
-- [x] [Jester](/tools/data/jester/README.md) \[ [Homepage](https://20bn.com/datasets/jester/v1) \] (ICCV'2019)
-- [x] [GYM](/tools/data/gym/README.md) \[ [Homepage](https://sdolivia.github.io/FineGym/) \] (CVPR'2020)
-- [x] [ActivityNet](/tools/data/activitynet/README.md) \[ [Homepage](http://activity-net.org/) \] (CVPR'2015)
+- ✅ [UCF101](/tools/data/ucf101/README.md) \[ [Homepage](https://www.crcv.ucf.edu/research/data-sets/ucf101/) \] (CRCV-IR-12-01)
+- ✅ [HMDB51](/tools/data/hmdb51/README.md) \[ [Homepage](https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/) \] (ICCV'2011)
+- ✅ [Kinetics-[400/600/700]](/tools/data/kinetics/README.md) \[ [Homepage](https://deepmind.com/research/open-source/kinetics) \] (CVPR'2017)
+- ✅ [Something-Something V1](/tools/data/sthv1/README.md) \[ [Homepage](https://20bn.com/datasets/something-something/v1) \] (ICCV'2017)
+- ✅ [Something-Something V2](/tools/data/sthv2/README.md) \[ [Homepage](https://20bn.com/datasets/something-something) \] (ICCV'2017)
+- ✅ [Moments in Time](/tools/data/mit/README.md) \[ [Homepage](http://moments.csail.mit.edu/) \] (TPAMI'2019)
+- ✅ [Multi-Moments in Time](/tools/data/mmit/README.md) \[ [Homepage](http://moments.csail.mit.edu/challenge_iccv_2019.html) \] (ArXiv'2019)
+- ✅ [HVU](/tools/data/hvu/README.md) \[ [Homepage](https://github.com/holistic-video-understanding/HVU-Dataset) \] (ECCV'2020)
+- ✅ [Jester](/tools/data/jester/README.md) \[ [Homepage](https://20bn.com/datasets/jester/v1) \] (ICCV'2019)
+- ✅ [GYM](/tools/data/gym/README.md) \[ [Homepage](https://sdolivia.github.io/FineGym/) \] (CVPR'2020)
+- ✅ [ActivityNet](/tools/data/activitynet/README.md) \[ [Homepage](http://activity-net.org/) \] (CVPR'2015)
 
 </details>
 
@@ -154,8 +154,8 @@ Supported datasets for Temporal Action Detection
 <details open>
 <summary>(click to collapse)</summary>
 
-- [x] [ActivityNet](/tools/data/activitynet/README.md) \[ [Homepage](http://activity-net.org/) \] (CVPR'2015)
-- [x] [THUMOS14](/tools/data/thumos14/README.md) \[ [Homepage](https://www.crcv.ucf.edu/THUMOS14/download.html) \] (THUMOS Challenge 2014)
+- ✅ [ActivityNet](/tools/data/activitynet/README.md) \[ [Homepage](http://activity-net.org/) \] (CVPR'2015)
+- ✅ [THUMOS14](/tools/data/thumos14/README.md) \[ [Homepage](https://www.crcv.ucf.edu/THUMOS14/download.html) \] (THUMOS Challenge 2014)
 
 </details>
 
@@ -164,11 +164,13 @@ Supported datasets for Spatial Temporal Action Detection
 <details open>
 <summary>(click to collapse)</summary>
 
-- [x] [AVA](/tools/data/ava/README.md) \[ [Homepage](https://research.google.com/ava/index.html) \] (CVPR'2018)
-- [x] [UCF101-24](/tools/data/ucf101_24/README.md) \[ [Homepage](http://www.thumos.info/download.html) \] (CRCV-IR-12-01)
-- [x] [JHMDB](/tools/data/jhmdb/README.md) \[ [Homepage](http://jhmdb.is.tue.mpg.de/) \] (ICCV'2013)
+- ✅ [AVA](/tools/data/ava/README.md) \[ [Homepage](https://research.google.com/ava/index.html) \] (CVPR'2018)
+- 🔲 [UCF101-24](/tools/data/ucf101_24/README.md) \[ [Homepage](http://www.thumos.info/download.html) \] (CRCV-IR-12-01)
+- 🔲 [JHMDB](/tools/data/jhmdb/README.md) \[ [Homepage](http://jhmdb.is.tue.mpg.de/) \] (ICCV'2013)
 
 </details>
+
+Datasets marked with 🔲 are not fully supported yet, but related dataset preparation steps are provided.
 
 ## Installation
 
