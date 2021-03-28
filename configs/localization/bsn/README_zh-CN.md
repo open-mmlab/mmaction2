@@ -24,7 +24,7 @@
 | |mmaction_video |1| None |74.93|66.74|41(TEM)+25(PEM)|0.074(TEM)+0.036(PEM)|[ckpt_tem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_tem_400x100_1x16_20e_mmaction_video/bsn_tem_400x100_1x16_20e_mmaction_video_20200809-ad6ec626.pth) [ckpt_pem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_pem_400x100_1x16_20e_mmaction_video/bsn_pem_400x100_1x16_20e_mmaction_video_20200809-aa861b26.pth)| [log_tem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_tem_400x100_1x16_20e_mmaction_video/bsn_tem_400x100_1x16_20e_mmaction_video_20200809.log) [log_pem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_pem_400x100_1x16_20e_mmaction_video/bsn_pem_400x100_1x16_20e_mmaction_video_20200809.log) | [json_tem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_tem_400x100_1x16_20e_mmaction_video/bsn_tem_400x100_1x16_20e_mmaction_video_20200809.json) [json_pem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_pem_400x100_1x16_20e_mmaction_video/bsn_pem_400x100_1x16_20e_mmaction_video_20200809.json) |
 | |mmaction_clip |1| None |75.19|66.81|41(TEM)+25(PEM)|0.074(TEM)+0.036(PEM)|[ckpt_tem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_tem_400x100_1x16_20e_mmaction_clip/bsn_tem_400x100_1x16_20e_mmaction_clip_20200809-0a563554.pth) [ckpt_pem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_pem_400x100_1x16_20e_mmaction_clip/bsn_pem_400x100_1x16_20e_mmaction_clip_20200809-e32f61e6.pth)| [log_tem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_tem_400x100_1x16_20e_mmaction_clip/bsn_tem_400x100_1x16_20e_mmaction_clip_20200809.log) [log_pem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_pem_400x100_1x16_20e_mmaction_clip/bsn_pem_400x100_1x16_20e_mmaction_clip_20200809.log) | [json_tem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_tem_400x100_1x16_20e_mmaction_clip/bsn_tem_400x100_1x16_20e_mmaction_clip_20200809.json) [json_pem](https://download.openmmlab.com/mmaction/localization/bsn/bsn_pem_400x100_1x16_20e_mmaction_clip/bsn_pem_400x100_1x16_20e_mmaction_clip_20200809.json) |
 
-注意：
+注：
 
 1. 这里的 **GPU 数量** 指的是得到模型权重文件对应的 GPU 个数。默认地，MMAction2 所提供的配置文件对应使用 8 块 GPU 进行训练的情况。
    依据 [线性缩放规则](https://arxiv.org/abs/1706.02677)，当用户使用不同数量的 GPU 或者每块 GPU 处理不同视频个数时，需要根据批大小等比例地调节学习率。
@@ -98,7 +98,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 3. 推理 BSN(PEM) 模型，并计算 'AR@AN' 指标，输出结果文件。
 
     ```shell
-    # 注意：如果需要进行指标验证，需确测试数据的保标注文件包含真实标签
+    # 注：如果需要进行指标验证，需确测试数据的保标注文件包含真实标签
     python tools/test.py configs/localization/bsn/bsn_pem_400x100_1x16_20e_activitynet_feature.py  checkpoints/SOME_CHECKPOINT.pth  --eval AR@AN --out results.json
     ```
 
@@ -109,7 +109,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 1. TEM
 
     ```shell
-    # 注意：该命令无法进行指标验证
+    # 注：该命令无法进行指标验证
     python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
     ```
 
@@ -145,7 +145,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
     python tools/test.py configs/localization/bsn/bsn_pem_400x100_1x16_20e_activitynet_feature.py checkpoints/SOME_CHECKPOINT.pth --eval AR@AN --out results.json
     ```
 
-注意：
+注：
 
 1. (可选项) 用户可以使用以下指令生成格式化的时序动作候选文件，该文件可被送入动作识别器中（目前只支持 SSN 和 P-GCN，不包括 TSN, I3D 等），以获得时序动作候选的分类结果。
 

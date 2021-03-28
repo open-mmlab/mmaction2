@@ -71,7 +71,7 @@
 | [slowonly_kinetics_pretrained_r50_4x16x1_120e_gym99_flow](/configs/recognition/slowonly/slowonly_kinetics_pretrained_r50_4x16x1_120e_gym99_flow.py) | 短边 256 | 8x2  | ResNet50 | Kinetics |   80.3   |      71.0      | [ckpt](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_kinetics_pretrained_r50_4x16x1_120e_gym99_flow/slowonly_kinetics_pretrained_r50_4x16x1_120e_gym99_flow_20201111-66ecdb3c.pth) | [log](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_kinetics_pretrained_r50_4x16x1_120e_gym99_flow/slowonly_kinetics_pretrained_r50_4x16x1_120e_gym99_flow_20201111.log) | [json](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_kinetics_pretrained_r50_4x16x1_120e_gym99_flow/slowonly_kinetics_pretrained_r50_4x16x1_120e_gym99_flow_20201111.json) |
 | 1: 1 融合                                                  |                |      |          |          |   83.7   |      74.8      |                                                              |                                                              |                                                              |
 
-注意：
+注：
 
 1. 这里的 **GPU 数量** 指的是得到模型权重文件对应的 GPU 个数。默认地，MMAction2 所提供的配置文件对应使用 8 块 GPU 进行训练的情况。
    依据 [线性缩放规则](https://arxiv.org/abs/1706.02677)，当用户使用不同数量的 GPU 或者每块 GPU 处理不同视频个数时，需要根据批大小等比例地调节学习率。

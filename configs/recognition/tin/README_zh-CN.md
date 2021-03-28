@@ -35,7 +35,7 @@
 
 这里，MMAction2 使用 `finetune` 一词表示 TIN 模型使用 Kinetics400 上的 [TSM 模型](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/tsm_r50_1x1x8_50e_kinetics400_rgb_20200607-af7fb746.pth) 进行微调。
 
-注意：
+注：
 
 1. 参考代码的结果是通过 [原始 repo](https://github.com/deepcs233/TIN/tree/1aacd0c4c30d5e1d334bf023e55b855b59f158db) 解决 [AverageMeter 相关问题](https://github.com/deepcs233/TIN/issues/4) 后训练得到的，该问题会导致错误的精度计算。
 2. 这里的 **GPU 数量** 指的是得到模型权重文件对应的 GPU 个数。默认地，MMAction2 所提供的配置文件对应使用 8 块 GPU 进行训练的情况。
