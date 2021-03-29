@@ -58,7 +58,7 @@ python tools/test.py configs/detection/lfb/lfb_slowonly_r50_ava_infer.py \
     checkpoints/YOUR_BASELINE_CHECKPOINT.pth --eval mAP
 ```
 
-我们使用来自配置文件 [slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb](/configs/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb.py) 的模型权重文件 [slowonly_r50_4x16x1 checkpoint](https://download.openmmlab.com/mmaction/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_20201217-40061d5f.pth)作为推导长时特征库的 LFB 模型的主干网络的预训练模型。
+MMAction2 使用来自配置文件 [slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb](/configs/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb.py) 的模型权重文件 [slowonly_r50_4x16x1 checkpoint](https://download.openmmlab.com/mmaction/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_20201217-40061d5f.pth)作为推导长时特征库的 LFB 模型的主干网络的预训练模型。
 
 ### b. 训练 LFB
 
