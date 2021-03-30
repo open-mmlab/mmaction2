@@ -75,11 +75,8 @@ class RelationModuleMultiScale(nn.Module):
         self.fc_fusion_scales = nn.ModuleList()
         for scale in self.scales:
             fc_fusion = nn.Sequential(
-                nn.ReLU(),
-                nn.Linear(scale * self.hidden_dim, bottleneck_dim),
-                nn.ReLU(),
-                nn.Linear(bottleneck_dim, self.num_classes),
-            )
+                nn.ReLU(), nn.Linear(scale * self.hidden_dim, bottleneck_dim),
+                nn.ReLU(), nn.Linear(bottleneck_dim, self.num_classes))
             self.fc_fusion_scales.append(fc_fusion)
 
     def init_weights(self):
@@ -122,10 +119,10 @@ class TRNHead(BaseHead):
         spatial_type (str): Pooling type in spatial dimension. Default: 'avg'.
         consensus (dict): Consensus config dict.
         relation_type (str): The relation module type. Choices are 'TRN' or
-            'TRNMultiScale' Default: 'TRNMultiScale'.
+            'TRNMultiScale'. Default: 'TRNMultiScale'.
         hidden_dim (int): The dimension of hidden layer of MLP in relation
             module. Default: 256.
-        dropout_ratio (float): Probability of dropout layer. Default: 0.5.
+        dropout_ratio (float): Probability of dropout layer. Default: 0.8.
         init_std (float): Std value for Initiation. Default: 0.001.
         kwargs (dict, optional): Any keyword argument to be used to initialize
             the head.
@@ -139,7 +136,7 @@ class TRNHead(BaseHead):
                  spatial_type='avg',
                  relation_type='TRNMultiScale',
                  hidden_dim=256,
-                 dropout_ratio=0.5,
+                 dropout_ratio=0.8,
                  init_std=0.001,
                  **kwargs):
         super().__init__(num_classes, in_channels, loss_cls, **kwargs)
