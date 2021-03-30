@@ -81,7 +81,7 @@ For more details and optional arguments infos, you can refer to **Training setti
 
 Before train or test lfb, you also need to infer long-term feature bank first. If you have generated the feature bank file, you can skip it.
 
-The step is the same with **Infer long-term feature bank for training** part in [Train](#Trian).
+The step is the same with **Infer long-term feature bank for training** part in [Train](#Train).
 
 ### b. Test LFB
 
