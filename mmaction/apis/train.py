@@ -33,7 +33,7 @@ def train_model(model,
         validate (bool): Whether to do evaluation. Default: False.
         test (dict): The testing option, with two keys: test_last & test_best.
             The value is True or False, indicating whether to test the
-            corresponding checkpoint. 
+            corresponding checkpoint.
             Default: dict(test_best=False, test_last=False).
         timestamp (str | None): Local time for runner. Default: None.
         meta (dict | None): Meta dict to record some important information.
