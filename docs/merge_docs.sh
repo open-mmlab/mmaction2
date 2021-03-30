@@ -18,10 +18,10 @@ sed -i 's/(\/tools\/data\/jester\/README.md/(#jester/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/ava\/README.md/(#ava/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/gym\/README.md/(#gym/g' supported_datasets.md
 
-cat  ../configs/localization/*/*.md > localization_models.md
-cat  ../configs/recognition/*/*.md > recognition_models.md
-cat  ../configs/recognition_audio/*/*.md >> recognition_models.md
-cat  ../configs/detection/*/*.md > detection_models.md
+cat  ../configs/localization/*/README.md > localization_models.md
+cat  ../configs/recognition/*/README.md > recognition_models.md
+cat  ../configs/recognition_audio/*/README.md >> recognition_models.md
+cat  ../configs/detection/*/README.md > detection_models.md
 cat  ../tools/data/*/README.md > prepare_data.md
 cat  ../demo/README.md > demo.md
 

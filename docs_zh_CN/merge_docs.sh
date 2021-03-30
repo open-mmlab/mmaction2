@@ -16,10 +16,10 @@ sed -i 's/(\/tools\/data\/jester\/README_zh-CN.md/(#jester/g' supported_datasets
 sed -i 's/(\/tools\/data\/ava\/README_zh-CN.md/(#ava/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/gym\/README_zh-CN.md/(#gym/g' supported_datasets.md
 
-cat  ../configs/localization/*/*.md > localization_models.md
-cat  ../configs/recognition/*/*.md > recognition_models.md
-cat  ../configs/recognition_audio/*/*.md >> recognition_models.md
-cat  ../configs/detection/*/*.md > detection_models.md
+cat  ../configs/localization/*/README_zh-CN.md > localization_models.md
+cat  ../configs/recognition/*/README_zh-CN.md > recognition_models.md
+cat  ../configs/recognition_audio/*/README_zh-CN.md >> recognition_models.md
+cat  ../configs/detection/*/README_zh-CN.md > detection_models.md
 cat  ../tools/data/*/README_zh-CN.md > prepare_data.md
 
 sed -i 's/#/#&/' localization_models.md
@@ -39,12 +39,15 @@ sed -i '1i\# 时空动作检测模型' detection_models.md
 
 cat prepare_data.md >> supported_datasets.md
 
-sed -i 's/](\/docs\//](/g' recognition_models.md # remove /docs/ for link used in doc site
-sed -i 's/](\/docs\//](/g' localization_models.md
-sed -i 's/](\/docs\//](/g' detection_models.md
+sed -i 's/](\/docs_zh_CN\//](/g' recognition_models.md # remove /docs/ for link used in doc site
+sed -i 's/](\/docs_zh_CN\//](/g' localization_models.md
+sed -i 's/](\/docs_zh_CN\//](/g' detection_models.md
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' recognition_models.md
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' localization_models.md
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' detection_models.md
+sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' recognition_models_en.md
+sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' localization_models_en.md
+sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' detection_models_en.md
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' benchmark.md
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' getting_started.md
 sed -i 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' install.md
