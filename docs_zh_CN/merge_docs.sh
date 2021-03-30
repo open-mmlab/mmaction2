@@ -6,7 +6,7 @@ cat  ../configs/recognition_audio/*/README_zh-CN.md | sed "s/md###t/html#t/g" | 
 cat  ../configs/detection/*/README_zh-CN.md  | sed "s/md###t/html#t/g" | sed "s/#/#&/" | sed '1i\# 时空动作检测模型' | sed 's/](\/docs_zh_CN\//](/g' | sed 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' > detection_models.md
 
 # gather datasets
-cat  ../tools/data/*/README_zh-CN.md | sed 's/# Preparing/# /g' | sed 's/#/#&/' > prepare_data.md
+cat  ../tools/data/*/README_zh-CN.md | sed 's/# 准备/# /g' | sed 's/#/#&/' > prepare_data.md
 
 sed -i 's/(\/tools\/data\/activitynet\/README_zh-CN.md/(#activitynet/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/kinetics\/README_zh-CN.md/(#kinetics-400-600-700/g' supported_datasets.md
