@@ -25,6 +25,7 @@
 - Remove redundant recall functions ([#741](https://github.com/open-mmlab/mmaction2/pull/741))
 - Recursively remove pretrained step for testing ([#695](https://github.com/open-mmlab/mmaction2/pull/695))
 - Add limiter for demo ([#668](https://github.com/open-mmlab/mmaction2/pull/668))
+- Test with onnx models and TensorRT engines ([#758](https://github.com/open-mmlab/mmaction2/pull/758))
 
 **Bug and Typo Fixes**
 
