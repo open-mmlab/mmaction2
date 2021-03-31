@@ -37,7 +37,7 @@
 | |mmaction_clip |2|75.35|67.38|43.08|32.19|10.73|31.15|5420|3.27|[ckpt](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809-10d803ce.pth)| [log](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809.log) | [json](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809.json) |
 | [BMN-official](https://github.com/JJBOY/BMN-Boundary-Matching-Network) (for reference)* |cuhk_mean_100 |-|75.27|67.49|42.22|30.98|9.22|30.00|-|-|-| - | - |
 
-- Notes:
+- 注：
 
 1. 这里的 **GPU 数量** 指的是得到模型权重文件对应的 GPU 个数。默认地，MMAction2 所提供的配置文件对应使用 8 块 GPU 进行训练的情况。
    依据 [线性缩放规则](https://arxiv.org/abs/1706.02677)，当用户使用不同数量的 GPU 或者每块 GPU 处理不同视频个数时，需要根据批大小等比例地调节学习率。
@@ -77,7 +77,7 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 例如：在 ActivityNet 特征上测试 BMN 模型。
 
 ```shell
-# 注意：如果需要进行指标验证，需确测试数据的保标注文件包含真实标签
+# 注：如果需要进行指标验证，需确测试数据的保标注文件包含真实标签
 python tools/test.py configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py checkpoints/SOME_CHECKPOINT.pth --eval AR@AN --out results.json
 ```
 
@@ -87,7 +87,7 @@ python tools/test.py configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_fea
 python tools/analysis/report_map.py --proposal path/to/proposal_file
 ```
 
-注意：
+注：
 
 1. (可选项) 用户可以使用以下指令生成格式化的时序动作候选文件，该文件可被送入动作识别器中（目前只支持 SSN 和 P-GCN，不包括 TSN, I3D 等），以获得时序动作候选的分类结果。
 

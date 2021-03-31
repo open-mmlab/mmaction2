@@ -96,7 +96,7 @@
 |                              x                               | 短边 320 | ResNet50 | IG-1B [1] |        :x:         |   73.1   |   90.4   |            x            |    8344    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/omni/tsn_1G1B_pretrained_r50_without_omni_1x1x3_kinetics400_rgb_20200926-c133dd49.pth) |                              x                               |                              x                               |
 |                              x                               | 短边 320 | ResNet50 | IG-1B [1] | :heavy_check_mark: |   75.7   |   91.9   |            x            |    8344    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/omni/tsn_1G1B_pretrained_r50_omni_1x1x3_kinetics400_rgb_20200926-2863fed0.pth) |                              x                               |                              x                               |
 
-[1] We obtain the pre-trained model from [torch-hub](https://pytorch.org/hub/facebookresearch_semi-supervised-ImageNet1K-models_resnext/), the 预训练 model we used is `resnet50_swsl`
+[1] MMAction2 使用 [torch-hub](https://pytorch.org/hub/facebookresearch_semi-supervised-ImageNet1K-models_resnext/) 提供的 `resnet50_swsl` 预训练模型。
 
 ### Kinetics-600
 
@@ -147,7 +147,7 @@
 
 ### HVU
 
-|                          配置文件[1]                           | tag category |   分辨率   | GPU 数量 | 主干网络 | 预训练 | mAP  | HATNet[2] | HATNet-multi[2] |                             ckpt                             |                             log                              |                             json                             |
+|                          配置文件[1]                           | tag 类别 |   分辨率   | GPU 数量 | 主干网络 | 预训练 | mAP  | HATNet[2] | HATNet-multi[2] |                             ckpt                             |                             log                              |                             json                             |
 | :----------------------------------------------------------: | :----------: | :------------: | :--: | :------: | :------: | :--: | :-------: | :-------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
 | [tsn_r18_1x1x8_100e_hvu_action_rgb](/configs/recognition/tsn/hvu/tsn_r18_1x1x8_100e_hvu_action_rgb.py) |    action    | 短边 256 | 8x2  | ResNet18 | ImageNet | 57.5 |   51.8    |      53.5       | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/hvu/action/tsn_r18_1x1x8_100e_hvu_action_rgb_20201027-011b282b.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/hvu/action/tsn_r18_1x1x8_100e_hvu_action_rgb_20201027.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/hvu/action/tsn_r18_1x1x8_100e_hvu_action_rgb_20201027.json) |
 | [tsn_r18_1x1x8_100e_hvu_scene_rgb](/configs/recognition/tsn/hvu/tsn_r18_1x1x8_100e_hvu_scene_rgb.py) |    scene     | 短边 256 |  8   | ResNet18 | ImageNet | 55.2 |   55.8    |      57.2       | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/hvu/scene/tsn_r18_1x1x8_100e_hvu_scene_rgb_20201027-00e5748d.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/hvu/scene/tsn_r18_1x1x8_100e_hvu_scene_rgb_20201027.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/hvu/scene/tsn_r18_1x1x8_100e_hvu_scene_rgb_20201027.json) |
@@ -155,7 +155,7 @@
 | [tsn_r18_1x1x8_100e_hvu_event_rgb](/configs/recognition/tsn/hvu/tsn_r18_1x1x8_100e_hvu_event_rgb.py) |    event     | 短边 256 |  8   | ResNet18 | ImageNet | 63.7 |   38.5    |      39.8       | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/hvu/event/tsn_r18_1x1x8_100e_hvu_event_rgb_20201027-dea8cd71.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/hvu/event/tsn_r18_1x1x8_100e_hvu_event_rgb_20201027.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/hvu/event/tsn_r18_1x1x8_100e_hvu_event_rgb_20201027.json) |
 | [tsn_r18_1x1x8_100e_hvu_concept_rgb](/configs/recognition/tsn/hvu/tsn_r18_1x1x8_100e_hvu_concept_rgb.py) |   concept    | 短边 256 |  8   | ResNet18 | ImageNet | 47.5 |   26.1    |      27.3       | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/hvu/concept/tsn_r18_1x1x8_100e_hvu_concept_rgb_20201027-fc1dd8e3.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/hvu/concept/tsn_r18_1x1x8_100e_hvu_concept_rgb_20201027.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/hvu/concept/tsn_r18_1x1x8_100e_hvu_concept_rgb_20201027.json) |
 | [tsn_r18_1x1x8_100e_hvu_attribute_rgb](/configs/recognition/tsn/hvu/tsn_r18_1x1x8_100e_hvu_attribute_rgb.py) |  attribute   | 短边 256 |  8   | ResNet18 | ImageNet | 46.1 |   33.6    |      34.9       | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/hvu/attribute/tsn_r18_1x1x8_100e_hvu_attribute_rgb_20201027-0b3b49d2.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/hvu/attribute/tsn_r18_1x1x8_100e_hvu_attribute_rgb_20201027.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/hvu/attribute/tsn_r18_1x1x8_100e_hvu_attribute_rgb_20201027.json) |
-|                              -                               |   Overall    | 短边 256 |  -   | ResNet18 | ImageNet | 52.6 |   40.0    |      41.3       |                              -                               |                              -                               |                              -                               |
+|                              -                               |   所有 tag    | 短边 256 |  -   | ResNet18 | ImageNet | 52.6 |   40.0    |      41.3       |                              -                               |                              -                               |                              -                               |
 
 [1] 简单起见，MMAction2 对每个 tag 类别训练特定的模型，作为 HVU 的基准模型。
 
@@ -163,7 +163,7 @@
 HATNet 的时序动作候选是一个双分支的卷积网络（一个 2D 分支，一个 3D 分支），并且和 MMAction2 有相同的主干网络（ResNet18）。HATNet 的输入是 16 帧或 32 帧的长视频片段（这样的片段比 MMAction2 使用的要长），同时输入分辨率更粗糙（112px 而非 224px）。
 HATNet 是在每个独立的任务（对应每个 tag 类别）上进行训练的，HATNet-multi 是在多个任务上进行训练的。由于目前没有 HATNet 的开源代码和模型，这里仅汇报了原 paper 的精度。
 
-注意：
+注：
 
 1. 这里的 **GPU 数量** 指的是得到模型权重文件对应的 GPU 个数。默认地，MMAction2 所提供的配置文件对应使用 8 块 GPU 进行训练的情况。
    依据 [线性缩放规则](https://arxiv.org/abs/1706.02677)，当用户使用不同数量的 GPU 或者每块 GPU 处理不同视频个数时，需要根据批大小等比例地调节学习率。

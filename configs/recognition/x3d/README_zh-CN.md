@@ -26,7 +26,7 @@
 
 [1] 这里的模型是从 [SlowFast](https://github.com/facebookresearch/SlowFast/) 代码库中导入并在 MMAction2 使用的数据上进行测试的。目前仅支持 X3D 模型的测试，训练部分将会在近期提供。
 
-注意：
+注：
 
 1. 参考代码的结果是通过使用相同的数据和原来的代码库所提供的模型进行测试得到的。
 
