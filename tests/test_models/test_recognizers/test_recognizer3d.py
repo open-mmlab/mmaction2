@@ -214,7 +214,7 @@ def test_tpn():
 
     recognizer = build_recognizer(config.model)
 
-    input_shape = (1, 8, 3, 1, 224, 224)
+    input_shape = (1, 8, 3, 1, 32, 32)
     demo_inputs = generate_recognizer_demo_inputs(input_shape, '3D')
 
     imgs = demo_inputs['imgs']
