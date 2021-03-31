@@ -73,21 +73,21 @@ v0.12.0 版本已于 2021 年 2 月 28 日发布，可通过查阅 [更新日志
 <details open>
 <summary>(点击收起)</summary>
 
-- [x] [TSN](/configs/recognition/tsn/README.md) (ECCV'2016)
-- [x] [TSM](/configs/recognition/tsm/README.md) (ICCV'2019)
-- [x] [TSM Non-Local](/configs/recognition/i3d) (ICCV'2019)
-- [x] [R(2+1)D](/configs/recognition/r2plus1d/README.md) (CVPR'2018)
-- [x] [I3D](/configs/recognition/i3d/README.md) (CVPR'2017)
-- [x] [I3D Non-Local](/configs/recognition/i3d/README.md) (CVPR'2018)
-- [x] [SlowOnly](/configs/recognition/slowonly/README.md) (ICCV'2019)
-- [x] [SlowFast](/configs/recognition/slowfast/README.md) (ICCV'2019)
-- [x] [CSN](/configs/recognition/csn/README.md) (ICCV'2019)
-- [x] [TIN](/configs/recognition/tin/README.md) (AAAI'2020)
-- [x] [TPN](/configs/recognition/tpn/README.md) (CVPR'2020)
-- [x] [C3D](/configs/recognition/c3d/README.md) (CVPR'2014)
-- [x] [X3D](/configs/recognition/x3d/README.md) (CVPR'2020)
-- [x] [OmniSource](/configs/recognition/omnisource/README.md) (ECCV'2020)
-- [x] [MultiModality: Audio](/configs/recognition_audio/resnet/README.md) (ArXiv'2020)
+- ✅ [TSN](/configs/recognition/tsn/README.md) (ECCV'2016)
+- ✅ [TSM](/configs/recognition/tsm/README.md) (ICCV'2019)
+- ✅ [TSM Non-Local](/configs/recognition/i3d) (ICCV'2019)
+- ✅ [R(2+1)D](/configs/recognition/r2plus1d/README.md) (CVPR'2018)
+- ✅ [I3D](/configs/recognition/i3d/README.md) (CVPR'2017)
+- ✅ [I3D Non-Local](/configs/recognition/i3d/README.md) (CVPR'2018)
+- ✅ [SlowOnly](/configs/recognition/slowonly/README.md) (ICCV'2019)
+- ✅ [SlowFast](/configs/recognition/slowfast/README.md) (ICCV'2019)
+- ✅ [CSN](/configs/recognition/csn/README.md) (ICCV'2019)
+- ✅ [TIN](/configs/recognition/tin/README.md) (AAAI'2020)
+- ✅ [TPN](/configs/recognition/tpn/README.md) (CVPR'2020)
+- ✅ [C3D](/configs/recognition/c3d/README.md) (CVPR'2014)
+- ✅ [X3D](/configs/recognition/x3d/README.md) (CVPR'2020)
+- ✅ [OmniSource](/configs/recognition/omnisource/README.md) (ECCV'2020)
+- ✅ [MultiModality: Audio](/configs/recognition_audio/resnet/README.md) (ArXiv'2020)
 
 </details>
 
@@ -96,9 +96,9 @@ v0.12.0 版本已于 2021 年 2 月 28 日发布，可通过查阅 [更新日志
 <details open>
 <summary>(点击收起)</summary>
 
-- [x] [BSN](/configs/localization/bsn/README.md) (ECCV'2018)
-- [x] [BMN](/configs/localization/bmn/README.md) (ICCV'2019)
-- [x] [SSN](/configs/localization/ssn/README.md) (ICCV'2017)
+- ✅ [BSN](/configs/localization/bsn/README.md) (ECCV'2018)
+- ✅ [BMN](/configs/localization/bmn/README.md) (ICCV'2019)
+- ✅ [SSN](/configs/localization/ssn/README.md) (ICCV'2017)
 
 </details>
 
@@ -107,8 +107,8 @@ v0.12.0 版本已于 2021 年 2 月 28 日发布，可通过查阅 [更新日志
 <details open>
 <summary>(点击收起)</summary>
 
-- [x] [SlowOnly+Fast R-CNN](/configs/detection/ava/README.md) (ICCV'2019)
-- [x] [SlowFast+Fast R-CNN](/configs/detection/ava/README.md) (ICCV'2019)
+- ✅ [SlowOnly+Fast R-CNN](/configs/detection/ava/README.md) (ICCV'2019)
+- ✅ [SlowFast+Fast R-CNN](/configs/detection/ava/README.md) (ICCV'2019)
 
 </details>
 
@@ -125,17 +125,17 @@ v0.12.0 版本已于 2021 年 2 月 28 日发布，可通过查阅 [更新日志
 <details open>
 <summary>(点击收起)</summary>
 
-- [x] [UCF101](/tools/data/ucf101/README.md) \[ [主页](https://www.crcv.ucf.edu/research/data-sets/ucf101/) \] (CRCV-IR-12-01)
-- [x] [HMDB51](/tools/data/hmdb51/README.md) \[ [主页](https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/) \] (ICCV'2011)
-- [x] [Kinetics-[400/600/700]](/tools/data/kinetics/README.md) \[ [主页](https://deepmind.com/research/open-source/kinetics) \] (CVPR'2017)
-- [x] [Something-Something V1](/tools/data/sthv1/README.md) \[ [主页](https://20bn.com/datasets/something-something/v1) \] (ICCV'2017)
-- [x] [Something-Something V2](/tools/data/sthv2/README.md) \[ [主页](https://20bn.com/datasets/something-something) \] (ICCV'2017)
-- [x] [Moments in Time](/tools/data/mit/README.md) \[ [主页](http://moments.csail.mit.edu/) \] (TPAMI'2019)
-- [x] [Multi-Moments in Time](/tools/data/mmit/README.md) \[ [主页](http://moments.csail.mit.edu/challenge_iccv_2019.html) \] (ArXiv'2019)
-- [x] [HVU](/tools/data/hvu/README.md) \[ [主页](https://github.com/holistic-video-understanding/HVU-Dataset) \] (ECCV'2020)
-- [x] [Jester](/tools/data/jester/README.md) \[ [主页](https://20bn.com/datasets/jester/v1) \] (ICCV'2019)
-- [x] [GYM](/tools/data/gym/README.md) \[ [主页](https://sdolivia.github.io/FineGym/) \] (CVPR'2020)
-- [x] [ActivityNet](/tools/data/activitynet/README.md) \[ [主页](http://activity-net.org/) \] (CVPR'2015)
+- ✅ [UCF101](/tools/data/ucf101/README.md) \[ [主页](https://www.crcv.ucf.edu/research/data-sets/ucf101/) \] (CRCV-IR-12-01)
+- ✅ [HMDB51](/tools/data/hmdb51/README.md) \[ [主页](https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/) \] (ICCV'2011)
+- ✅ [Kinetics-[400/600/700]](/tools/data/kinetics/README.md) \[ [主页](https://deepmind.com/research/open-source/kinetics) \] (CVPR'2017)
+- ✅ [Something-Something V1](/tools/data/sthv1/README.md) \[ [主页](https://20bn.com/datasets/something-something/v1) \] (ICCV'2017)
+- ✅ [Something-Something V2](/tools/data/sthv2/README.md) \[ [主页](https://20bn.com/datasets/something-something) \] (ICCV'2017)
+- ✅ [Moments in Time](/tools/data/mit/README.md) \[ [主页](http://moments.csail.mit.edu/) \] (TPAMI'2019)
+- ✅ [Multi-Moments in Time](/tools/data/mmit/README.md) \[ [主页](http://moments.csail.mit.edu/challenge_iccv_2019.html) \] (ArXiv'2019)
+- ✅ [HVU](/tools/data/hvu/README.md) \[ [主页](https://github.com/holistic-video-understanding/HVU-Dataset) \] (ECCV'2020)
+- ✅ [Jester](/tools/data/jester/README.md) \[ [主页](https://20bn.com/datasets/jester/v1) \] (ICCV'2019)
+- ✅ [GYM](/tools/data/gym/README.md) \[ [主页](https://sdolivia.github.io/FineGym/) \] (CVPR'2020)
+- ✅ [ActivityNet](/tools/data/activitynet/README.md) \[ [主页](http://activity-net.org/) \] (CVPR'2015)
 
 </details>
 
@@ -144,8 +144,8 @@ v0.12.0 版本已于 2021 年 2 月 28 日发布，可通过查阅 [更新日志
 <details open>
 <summary>(点击收起)</summary>
 
-- [x] [ActivityNet](/tools/data/activitynet/README.md) \[ [主页](http://activity-net.org/) \] (CVPR'2015)
-- [x] [THUMOS14](/tools/data/thumos14/README.md) \[ [主页](https://www.crcv.ucf.edu/THUMOS14/download.html) \] (THUMOS Challenge 2014)
+- ✅ [ActivityNet](/tools/data/activitynet/README.md) \[ [主页](http://activity-net.org/) \] (CVPR'2015)
+- ✅ [THUMOS14](/tools/data/thumos14/README.md) \[ [主页](https://www.crcv.ucf.edu/THUMOS14/download.html) \] (THUMOS Challenge 2014)
 
 </details>
 
@@ -154,11 +154,13 @@ v0.12.0 版本已于 2021 年 2 月 28 日发布，可通过查阅 [更新日志
 <details open>
 <summary>(点击收起)</summary>
 
-- [x] [AVA](/tools/data/ava/README.md) \[ [主页](https://research.google.com/ava/index.html) \] (CVPR'2018)
-- [x] [UCF101-24](/tools/data/ucf101_24/README.md) \[ [主页](http://www.thumos.info/download.html) \] (CRCV-IR-12-01)
-- [x] [JHMDB](/tools/data/jhmdb/README.md) \[ [主页](http://jhmdb.is.tue.mpg.de/) \] (ICCV'2013)
+- ✅ [AVA](/tools/data/ava/README.md) \[ [主页](https://research.google.com/ava/index.html) \] (CVPR'2018)
+- 🔲 [UCF101-24](/tools/data/ucf101_24/README.md) \[ [主页](http://www.thumos.info/download.html) \] (CRCV-IR-12-01)
+- 🔲 [JHMDB](/tools/data/jhmdb/README.md) \[ [主页](http://jhmdb.is.tue.mpg.de/) \] (ICCV'2013)
 
 </details>
+
+标记 🔲 代表对应数据集并未被完全支持，但提供相应的数据准备步骤。
 
 ## 安装
 

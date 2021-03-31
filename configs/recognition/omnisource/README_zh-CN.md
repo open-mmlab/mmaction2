@@ -6,24 +6,24 @@ In ECCV, 2020. [Paper](https://arxiv.org/abs/2003.13042)
 
 ![pipeline](https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/omnisource/pipeline.png?raw=true)
 
-## Model Zoo
+## 模型库
 
-### Kinetics-400 Model Release
+### Kinetics-400
 
-We currently released 4 models trained with OmniSource framework, including both 2D and 3D architectures. We compare the performance of models trained with or without OmniSource in the following table.
+MMAction2 当前公开了 4 个 OmniSource 框架训练的模型，包含 2D 架构与 3D 架构。下表比较了使用或不适用 OmniSource 框架训练得的模型在 Kinetics-400 上的精度：
 
-|  Model   | Modality | Pretrained | Backbone  | Input |   Resolution   | Top-1 (Baseline / OmniSource (Delta)) | Top-5 (Baseline / OmniSource (Delta))) |                           Download                           |
-| :------: | :------: | :--------: | :-------: | :---: | :------------: | :-----------------------------------: | :------------------------------------: | :----------------------------------------------------------: |
-|   TSN    |   RGB    |  ImageNet  | ResNet50  | 3seg  |    340x256     |          70.6 / 73.6 (+ 3.0)          |          89.4 / 91.0 (+ 1.6)           | [Baseline](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth) / [OmniSource](https://download.openmmlab.com/mmaction/recognition/tsn/omni/tsn_imagenet_pretrained_r50_omni_1x1x3_kinetics400_rgb_20200926-54192355.pth) |
-|   TSN    |   RGB    |   IG-1B    | ResNet50  | 3seg  | short-side 320 |          73.1 / 75.7 (+ 2.6)          |          90.4 / 91.9 (+ 1.5)           | [Baseline](https://download.openmmlab.com/mmaction/recognition/tsn/omni/tsn_1G1B_pretrained_r50_without_omni_1x1x3_kinetics400_rgb_20200926-c133dd49.pth) / [OmniSource](https://download.openmmlab.com/mmaction/recognition/tsn/omni/tsn_1G1B_pretrained_r50_omni_1x1x3_kinetics400_rgb_20200926-2863fed0.pth) |
-| SlowOnly |   RGB    |  Scratch   | ResNet50  | 4x16  | short-side 320 |          72.9 / 76.8 (+ 3.9)          |          90.9 / 92.5 (+ 1.6)           | [Baseline](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_rgb/slowonly_r50_4x16x1_256e_kinetics400_rgb_20200704-a69556c6.pth) / [OmniSource](https://download.openmmlab.com/mmaction/recognition/slowonly/omni/slowonly_r50_omni_4x16x1_kinetics400_rgb_20200926-51b1f7ea.pth) |
-| SlowOnly |   RGB    |  Scratch   | ResNet101 |  8x8  | short-side 320 |          76.5 / 80.4 (+ 3.9)          |          92.7 / 94.4 (+ 1.7)           | [Baseline](https://download.openmmlab.com/mmaction/recognition/slowonly/omni/slowonly_r101_without_omni_8x8x1_kinetics400_rgb_20200926-0c730aef.pth) / [OmniSource](https://download.openmmlab.com/mmaction/recognition/slowonly/omni/slowonly_r101_omni_8x8x1_kinetics400_rgb_20200926-b5dbb701.pth) |
+|   模型   | 模态 |  预训练  | 主干网络  | 输入 |     分辨率     | Top-1 准确率(Baseline / OmniSource (Delta)) | Top-5 准确率(Baseline / OmniSource (Delta))) |                         模型下载链接                         |
+| :------: | :--: | :------: | :-------: | :--: | :------------: | :-----------------------------------------: | :------------------------------------------: | :----------------------------------------------------------: |
+|   TSN    | RGB  | ImageNet | ResNet50  | 3seg |    340x256     |             70.6 / 73.6 (+ 3.0)             |             89.4 / 91.0 (+ 1.6)              | [Baseline](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth) / [OmniSource](https://download.openmmlab.com/mmaction/recognition/tsn/omni/tsn_imagenet_pretrained_r50_omni_1x1x3_kinetics400_rgb_20200926-54192355.pth) |
+|   TSN    | RGB  |  IG-1B   | ResNet50  | 3seg | short-side 320 |             73.1 / 75.7 (+ 2.6)             |             90.4 / 91.9 (+ 1.5)              | [Baseline](https://download.openmmlab.com/mmaction/recognition/tsn/omni/tsn_1G1B_pretrained_r50_without_omni_1x1x3_kinetics400_rgb_20200926-c133dd49.pth) / [OmniSource](https://download.openmmlab.com/mmaction/recognition/tsn/omni/tsn_1G1B_pretrained_r50_omni_1x1x3_kinetics400_rgb_20200926-2863fed0.pth) |
+| SlowOnly | RGB  | Scratch  | ResNet50  | 4x16 | short-side 320 |             72.9 / 76.8 (+ 3.9)             |             90.9 / 92.5 (+ 1.6)              | [Baseline](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_rgb/slowonly_r50_4x16x1_256e_kinetics400_rgb_20200704-a69556c6.pth) / [OmniSource](https://download.openmmlab.com/mmaction/recognition/slowonly/omni/slowonly_r50_omni_4x16x1_kinetics400_rgb_20200926-51b1f7ea.pth) |
+| SlowOnly | RGB  | Scratch  | ResNet101 | 8x8  | short-side 320 |             76.5 / 80.4 (+ 3.9)             |             92.7 / 94.4 (+ 1.7)              | [Baseline](https://download.openmmlab.com/mmaction/recognition/slowonly/omni/slowonly_r101_without_omni_8x8x1_kinetics400_rgb_20200926-0c730aef.pth) / [OmniSource](https://download.openmmlab.com/mmaction/recognition/slowonly/omni/slowonly_r101_omni_8x8x1_kinetics400_rgb_20200926-b5dbb701.pth) |
 
-## Benchmark on Mini-Kinetics
+## Mini-Kinetics 上的基准测试
 
-We release a subset of web dataset used in the OmniSource paper. Specifically, we release the web data in the 200 classes of [Mini-Kinetics](https://arxiv.org/pdf/1712.04851.pdf). The statistics of those datasets is detailed in [preparing_omnisource](/tools/data/omnisource/README.md). To obtain those data, you need to fill in a [data request form](https://docs.google.com/forms/d/e/1FAIpQLSd8_GlmHzG8FcDbW-OEu__G7qLgOSYZpH-i5vYVJcu7wcb_TQ/viewform?usp=sf_link). After we received your request, the download link of these data will be send to you. For more details on the released OmniSource web dataset, please refer to [preparing_omnisource](/tools/data/omnisource/README.md).
+OmniSource 项目当前公开了所采集网络数据的一个子集，涉及 [Mini-Kinetics](https://arxiv.org/pdf/1712.04851.pdf) 中的 200 个动作类别。[OmniSource 数据集准备](/tools/data/omnisource/README_zh-CN.md) 中记录了这些数据集的详细统计信息。用户可以通过填写 [申请表](https://docs.google.com/forms/d/e/1FAIpQLSd8_GlmHzG8FcDbW-OEu__G7qLgOSYZpH-i5vYVJcu7wcb_TQ/viewform?usp=sf_link) 获取这些数据，在完成填写后，数据下载链接会被发送至用户邮箱。更多关于 OmniSource 网络数据集的信息请参照 [OmniSource 数据集准备](/tools/data/omnisource/README_zh-CN.md)。
 
-We benchmark the OmniSource framework on the released subset, results are listed in the following table (we report the Top-1 and Top-5 accuracy on Mini-Kinetics validation). The benchmark can be used as a baseline for video recognition with web data.
+MMAction2 在公开的数据集上进行了 OmniSource 框架的基准测试，下表记录了详细的结果（在 Mini-Kinetics 验证集上的精度），这些结果可以作为使用网络数据训练视频识别任务的基线。
 
 ### TSN-8seg-ResNet50
 
@@ -47,16 +47,16 @@ We benchmark the OmniSource framework on the released subset, results are listed
 |    +KRaw     | 80.3  | 94.5  | [ckpt](https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/kineticsraw/slowonly_r50_8x8x1_256e_minikinetics_kineticsraw_rgb_20201030-62974bac.pth) | [json](https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/kineticsraw/slowonly_r50_8x8x1_256e_minikinetics_kineticsraw_rgb_20201030.json) | [log](https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/kineticsraw/slowonly_r50_8x8x1_256e_minikinetics_kineticsraw_rgb_20201030.log) |
 |  OmniSource  | 82.9  | 95.8  | [ckpt](https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/omnisource/slowonly_r50_8x8x1_256e_minikinetics_omnisource_rgb_20201030-284cfd3b.pth) | [json](https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/omnisource/slowonly_r50_8x8x1_256e_minikinetics_omnisource_rgb_20201030.json) | [log](https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/omnisource/slowonly_r50_8x8x1_256e_minikinetics_omnisource_rgb_20201030.log) |
 
-We also list the benchmark in the original paper which run on Kinetics-400 for comparison:
+下表列出了原论文中在 Kinetics-400 上进行基准测试的结果供参考：
 
 |         Model          |  Baseline   |   +GG-img   | +[GG-IG]-img |   +IG-vid   |    +KRaw    | OmniSource  |
 | :--------------------: | :---------: | :---------: | :----------: | :---------: | :---------: | :---------: |
 |   TSN-3seg-ResNet50    | 70.6 / 89.4 | 71.5 / 89.5 | 72.0 / 90.0  | 72.0 / 90.3 | 71.7 / 89.6 | 73.6 / 91.0 |
 | SlowOnly-4x16-ResNet50 | 73.8 / 90.9 | 74.5 / 91.4 | 75.2 / 91.6  | 75.2 / 91.7 | 74.5 / 91.1 | 76.6 / 92.5 |
 
-## Citing OmniSource
+## 注：
 
-If you find OmniSource useful for your research, please consider citing the paper using the following BibTeX entry.
+如果 OmniSource 项目对您的研究有所帮助，请使用以下 BibTex 项进行引用：
 
 [ALGORITHM]
 
