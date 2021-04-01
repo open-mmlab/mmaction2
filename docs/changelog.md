@@ -6,7 +6,7 @@
 
 - Support LFB
 - Support using backbone from MMCls/TorchVision
-- Support Chinese documentation
+- Add Chinese documentation
 
 **New Features**
 
