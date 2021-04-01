@@ -49,7 +49,7 @@ MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLa
 
 ## 更新记录
 
-v0.12.0 版本已于 2021 年 2 月 28 日发布，可通过查阅 [更新日志](/docs/changelog.md) 了解更多细节以及发布历史
+v0.13.0 版本已于 2021 年 3 月 31 日发布，可通过查阅 [更新日志](/docs/changelog.md) 了解更多细节以及发布历史
 
 ## 基准测试
 
@@ -88,6 +88,7 @@ v0.12.0 版本已于 2021 年 2 月 28 日发布，可通过查阅 [更新日志
 - ✅ [X3D](/configs/recognition/x3d/README.md) (CVPR'2020)
 - ✅ [OmniSource](/configs/recognition/omnisource/README.md) (ECCV'2020)
 - ✅ [MultiModality: Audio](/configs/recognition_audio/resnet/README.md) (ArXiv'2020)
+- ✅ [TANet](configs/recognition/tanet/README.md) (ArXiv'2020)
 
 </details>
 
@@ -109,6 +110,7 @@ v0.12.0 版本已于 2021 年 2 月 28 日发布，可通过查阅 [更新日志
 
 - ✅ [SlowOnly+Fast R-CNN](/configs/detection/ava/README.md) (ICCV'2019)
 - ✅ [SlowFast+Fast R-CNN](/configs/detection/ava/README.md) (ICCV'2019)
+- ✅ [Long-Term Feature Bank](configs/detection/lfb/README.md) (CVPR'2019)
 
 </details>
 

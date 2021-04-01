@@ -6,7 +6,7 @@
 
 - Support LFB
 - Support using backbone from MMCls/TorchVision
-- Support Chinese documentation
+- Add Chinese documentation
 
 **New Features**
 
@@ -20,11 +20,11 @@
 
 - Add slowfast config/json/log/ckpt for training custom classes of AVA ([#678](https://github.com/open-mmlab/mmaction2/pull/678))
 - Set RandAugment as Imgaug default transforms ([#585](https://github.com/open-mmlab/mmaction2/pull/585))
-- Add `--test-last` & `--test-best` for `tools/train.py` to test checkpoints after training ([#608](https://github.com/open-mmlab/mmaction2/pull/608)
+- Add `--test-last` & `--test-best` for `tools/train.py` to test checkpoints after training ([#608](https://github.com/open-mmlab/mmaction2/pull/608))
 - Add fcn_testing in TPN ([#684](https://github.com/open-mmlab/mmaction2/pull/684))
 - Remove redundant recall functions ([#741](https://github.com/open-mmlab/mmaction2/pull/741))
 - Recursively remove pretrained step for testing ([#695](https://github.com/open-mmlab/mmaction2/pull/695))
-- Add limiter for demo ([#668](https://github.com/open-mmlab/mmaction2/pull/668))
+- Improve demo by limiting inference fps ([#668](https://github.com/open-mmlab/mmaction2/pull/668))
 
 **Bug and Typo Fixes**
 
@@ -35,9 +35,9 @@
 **ModelZoo**
 
 - Add LFB for AVA2.1 ([#553](https://github.com/open-mmlab/mmaction2/pull/553))
-- Add slowonly_nl_embedded_gaussian_r50_4x16x1_150e_kinetics400_rgb ([#690](https://github.com/open-mmlab/mmaction2/pull/690))
 - Add TSN with ResNeXt-101-32x4d backbone as an example for using MMCls backbones ([#679](https://github.com/open-mmlab/mmaction2/pull/679))
 - Add TSN with Densenet161 backbone as an example for using TorchVision backbones ([#720](https://github.com/open-mmlab/mmaction2/pull/720))
+- Add slowonly_nl_embedded_gaussian_r50_4x16x1_150e_kinetics400_rgb ([#690](https://github.com/open-mmlab/mmaction2/pull/690))
 - Add slowonly_nl_embedded_gaussian_r50_8x8x1_150e_kinetics400_rgb ([#704](https://github.com/open-mmlab/mmaction2/pull/704))
 - Add slowonly_nl_kinetics_pretrained_r50_4x16x1(8x8x1)_20e_ava_rgb ([#730](https://github.com/open-mmlab/mmaction2/pull/730))
 
