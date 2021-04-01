@@ -1,5 +1,19 @@
 ## Changelog
 
+### Master
+
+**Highlights**
+
+**New Features**
+
+**Improvements**
+
+- Test with onnx models and TensorRT engines ([#758](https://github.com/open-mmlab/mmaction2/pull/758))
+
+**Bug and Typo Fixes**
+
+**ModelZoo**
+
 ### 0.13.0 (31/03/2021)
 
 **Highlights**
