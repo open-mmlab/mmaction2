@@ -24,7 +24,7 @@
 - Add fcn_testing in TPN ([#684](https://github.com/open-mmlab/mmaction2/pull/684))
 - Remove redundant recall functions ([#741](https://github.com/open-mmlab/mmaction2/pull/741))
 - Recursively remove pretrained step for testing ([#695](https://github.com/open-mmlab/mmaction2/pull/695))
-- Improve demo by limiting inference fps for demo ([#668](https://github.com/open-mmlab/mmaction2/pull/668))
+- Improve demo by limiting inference fps ([#668](https://github.com/open-mmlab/mmaction2/pull/668))
 
 **Bug and Typo Fixes**
 
