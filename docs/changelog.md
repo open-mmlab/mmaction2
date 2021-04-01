@@ -14,7 +14,7 @@
 - Support using backbones from MMCls for TSN ([#679](https://github.com/open-mmlab/mmaction2/pull/679))
 - Support using backbones from TorchVision for TSN ([#720](https://github.com/open-mmlab/mmaction2/pull/720))
 - Support Mixup and Cutmix for recognizers ([#681](https://github.com/open-mmlab/mmaction2/pull/681))
-- Support Chinese documentation
+- Support Chinese documentation ([#665](https://github.com/open-mmlab/mmaction2/pull/665), [#680](https://github.com/open-mmlab/mmaction2/pull/680), [#689](https://github.com/open-mmlab/mmaction2/pull/689), [#701](https://github.com/open-mmlab/mmaction2/pull/701)[#702](https://github.com/open-mmlab/mmaction2/pull/702), [#703](https://github.com/open-mmlab/mmaction2/pull/703), [#706](https://github.com/open-mmlab/mmaction2/pull/706)[#716](https://github.com/open-mmlab/mmaction2/pull/716), [#717](https://github.com/open-mmlab/mmaction2/pull/717), [#731](https://github.com/open-mmlab/mmaction2/pull/731), [#733](https://github.com/open-mmlab/mmaction2/pull/733), [#735](https://github.com/open-mmlab/mmaction2/pull/735), [#736](https://github.com/open-mmlab/mmaction2/pull/736), [#737](https://github.com/open-mmlab/mmaction2/pull/737), [#738](https://github.com/open-mmlab/mmaction2/pull/738) , [#739](https://github.com/open-mmlab/mmaction2/pull/739), [#740](https://github.com/open-mmlab/mmaction2/pull/740), [#742](https://github.com/open-mmlab/mmaction2/pull/742), [#752](https://github.com/open-mmlab/mmaction2/pull/752), [#759](https://github.com/open-mmlab/mmaction2/pull/759), [#761](https://github.com/open-mmlab/mmaction2/pull/761), [#772](https://github.com/open-mmlab/mmaction2/pull/772), [#775](https://github.com/open-mmlab/mmaction2/pull/775))
 
 **Improvements**
 
