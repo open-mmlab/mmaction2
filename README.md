@@ -55,7 +55,7 @@ The master branch works with **PyTorch 1.3+**.
 
 ## Changelog
 
-v0.12.0 was released in 28/02/2021. Please refer to [changelog.md](docs/changelog.md) for details and release history.
+v0.13.0 was released in 31/03/2021. Please refer to [changelog.md](docs/changelog.md) for details and release history.
 
 ## Benchmark
 
