@@ -30,6 +30,12 @@ def test_tsn():
     for one_img in img_list:
         recognizer(one_img, gradcam=True)
 
+    # test forward dummy
+    recognizer.forward_dummy(imgs, softmax=False)
+    res = recognizer.forward_dummy(imgs, softmax=True)[0]
+    assert torch.min(res) >= 0
+    assert torch.max(res) <= 1
+
     mmcls_backbone = dict(
         type='mmcls.ResNeXt',
         depth=101,
