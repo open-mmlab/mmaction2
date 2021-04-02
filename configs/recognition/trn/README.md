@@ -19,13 +19,13 @@
 
 |config | resolution | gpus | backbone| pretrain | top1 acc (efficient/accurate)| top5 acc (efficient/accurate)| gpu_mem(M)  | ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[trn_r50_1x1x8_50e_sthv1_rgb](configs/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb.py) | height 100 | 8 | ResNet50 | ImageNet | 31.62 / 33.88 |60.01 / 72.12| 11010 | [ckpt](waiting for url) | [log](waiting for url)| [json](waiting for url)|
+|[trn_r50_1x1x8_50e_sthv1_rgb](configs/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb.py) | height 100 | 8 | ResNet50 | ImageNet | 31.62 / 33.88 |60.01 / 62.12| 11010 | [ckpt](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/trn_r50_1x1x8_50e_sthv1_rgb_20210401-163704a8.pth) | [log](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/20210326_103948.log)| [json](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/20210326_103948.log.json)|
 
 ### Something-Something V2
 
 |config | resolution | gpus | backbone| pretrain | top1 acc (efficient/accurate)| top5 acc (efficient/accurate)| gpu_mem(M)  | ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[trn_r50_1x1x8_50e_sthv2_rgb](configs/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb.py) | height 100 | 8 | ResNet50 | ImageNet | 45.14 / 47.96 |73.21 / 75.97 | 11010 | [ckpt](waiting for url) | [log](waiting for url)| [json](waiting for url)|
+|[trn_r50_1x1x8_50e_sthv2_rgb](configs/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb.py) | height 100 | 8 | ResNet50 | ImageNet | 45.14 / 47.96 |73.21 / 75.97 | 11010 | [ckpt](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/trn_r50_1x1x8_50e_sthv2_rgb_20210401-773eca7b.pth) | [log](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210326_103951.log)| [json](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210326_103951.log.json)|
 
 Notes:
 
@@ -33,28 +33,8 @@ Notes:
    According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
    e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
 2. There are two kinds of test settings for Something-Something dataset, efficient setting (center crop x 1 clip) and accurate setting (Three crop x 2 clip).
-   We use efficient setting as default provided in config files, and it can be changed to accurate setting by
-
-```python
-...
-test_pipeline = [
-    dict(
-        type='SampleFrames',
-        clip_len=1,
-        frame_interval=1,
-        num_clips=8,
-        twice_sample=True,    # set `twice_sample=True` for twice sample in accurate setting
-        test_mode=True),
-    dict(type='RawFrameDecode'),
-    dict(type='Resize', scale=(-1, 256)),
-    # dict(type='CenterCrop', crop_size=224), it is used for efficient setting
-    dict(type='ThreeCrop', crop_size=256),  # it is used for accurate setting
-    dict(type='Normalize', **img_norm_cfg),
-    dict(type='FormatShape', input_format='NCHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs'])
-]
-```
+3. In the original [repository](https://github.com/zhoubolei/TRN-pytorch), the author augments data with random flipping on something-something dataset, but the augmentation method may be wrong due to the direct actions, such as `push left to right`. So, we replaced `flip` with `flip with label mapping`, and change the testing method `TenCrop`, which has five flipped crops, to `Twice Sample & ThreeCrop`.
+4. We use `ResNet50` instead of `BNInception` as the backbone of TRN. When Training `TRN-ResNet50` on sthv1 dataset in the original repository, we get top1 (top5) accuracy 30.542 (58.627) vs. ours 31.62 (60.01).
 
 For more details on data preparation, you can refer to
 

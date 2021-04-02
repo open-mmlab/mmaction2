@@ -81,7 +81,7 @@ Supported methods for Action Recognition:
 
 - ✅ [TSN](configs/recognition/tsn/README.md) (ECCV'2016)
 - ✅ [TSM](configs/recognition/tsm/README.md) (ICCV'2019)
-- ✅ [TSM Non-Local](configs/recognition/i3d) (ICCV'2019)
+- ✅ [TSM Non-Local](configs/recognition/tsm/README.md) (ICCV'2019)
 - ✅ [R(2+1)D](configs/recognition/r2plus1d/README.md) (CVPR'2018)
 - ✅ [I3D](configs/recognition/i3d/README.md) (CVPR'2017)
 - ✅ [I3D Non-Local](configs/recognition/i3d/README.md) (CVPR'2018)
@@ -95,6 +95,7 @@ Supported methods for Action Recognition:
 - ✅ [OmniSource](configs/recognition/omnisource/README.md) (ECCV'2020)
 - ✅ [MultiModality: Audio](configs/recognition_audio/resnet/README.md) (ArXiv'2020)
 - ✅ [TANet](configs/recognition/tanet/README.md) (ArXiv'2020)
+- ✅ [TRN](configs/recognition/trn/README.md) (CVPR'2015)
 
 </details>
 

@@ -64,9 +64,11 @@ class RelationModuleMultiScale(nn.Module):
         self.subsample_scales = []
         max_subsample = 3
         for scale in self.scales:
+            # select the different frame features for different scales
             relations_scale = list(
                 itertools.combinations(range(self.num_segments), scale))
             self.relations_scales.append(relations_scale)
+            # sample `max_subsample` relation_scale at most
             self.subsample_scales.append(
                 min(max_subsample, len(relations_scale)))
         assert len(self.relations_scales[0]) == 1

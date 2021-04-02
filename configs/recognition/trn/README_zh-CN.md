@@ -19,13 +19,13 @@
 
 |配置文件 | 分辨率 | GPU 数量 | 主干网络| 预训练 | top1 准确率 (efficient/accurate)| top5 准确率 (efficient/accurate)| GPU 显存占用 (M)| ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[trn_r50_1x1x8_50e_sthv1_rgb](configs/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb.py) | 高 100 | 8 | ResNet50 | ImageNet | 31.62 / 33.88 |60.01 / 72.12| 11010 | [ckpt](waiting for url) | [log](waiting for url)| [json](waiting for url)|
+|[trn_r50_1x1x8_50e_sthv1_rgb](configs/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb.py) | 高 100 | 8 | ResNet50 | ImageNet | 31.62 / 33.88 |60.01 / 62.12| 11010 | [ckpt](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/trn_r50_1x1x8_50e_sthv1_rgb_20210401-163704a8.pth) | [log](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/20210326_103948.log)| [json](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/20210326_103948.log.json)|
 
 ### Something-Something V2
 
 |配置文件 | 分辨率 | GPU 数量 | 主干网络| 预训练 | top1 准确率 (efficient/accurate)| top5 准确率 (efficient/accurate)| GPU 显存占用 (M)| ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[trn_r50_1x1x8_50e_sthv2_rgb](configs/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb.py) | 高 100 | 8 | ResNet50 | ImageNet | 45.14 / 47.96 |73.21 / 75.97 | 11010 | [ckpt](waiting for url) | [log](waiting for url)| [json](waiting for url)|
+|[trn_r50_1x1x8_50e_sthv2_rgb](configs/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb.py) | 高 100 | 8 | ResNet50 | ImageNet | 45.14 / 47.96 |73.21 / 75.97 | 11010 | [ckpt](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/trn_r50_1x1x8_50e_sthv2_rgb_20210401-773eca7b.pth) | [log](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210326_103951.log)| [json](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210326_103951.log.json)|
 
 注：
 
@@ -33,28 +33,8 @@
    依据 [线性缩放规则](https://arxiv.org/abs/1706.02677)，当用户使用不同数量的 GPU 或者每块 GPU 处理不同视频个数时，需要根据批大小等比例地调节学习率。
    如，lr=0.01 对应 4 GPUs x 2 video/gpu，以及 lr=0.08 对应 16 GPUs x 4 video/gpu。
 2. 对于 Something-Something 数据集，有两种测试方案：efficient（对应 center crop x 1 clip）和 accurate（对应 Three crop x 2 clip）。
-   MMAction2 使用 efficient 方案作为配置文件中的默认选择，用户可以通过以下方式转变为 accurate 方案：
-
-```python
-...
-test_pipeline = [
-    dict(
-        type='SampleFrames',
-        clip_len=1,
-        frame_interval=1,
-        num_clips=8,   # 当使用 8 个 视频段时，设置 `num_clips = 8`
-        twice_sample=True,    # 设置 `twice_sample=True` 用于 accurate 方案中的 Twice Sample
-        test_mode=True),
-    dict(type='RawFrameDecode'),
-    dict(type='Resize', scale=(-1, 256)),
-    # dict(type='CenterCrop', crop_size=224), 用于 efficient 方案
-    dict(type='ThreeCrop', crop_size=256),  # 用于 accurate 方案
-    dict(type='Normalize', **img_norm_cfg),
-    dict(type='FormatShape', input_format='NCHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs'])
-]
-```
+3. 在原代码库中，作者在 Something-Something 数据集上使用了随机水平翻转，但这种数据增强方法有一些问题，因为 Something-Something 数据集有一些方向性的动作，比如`从左往右推`。所以 MMAction2 把`随机水平翻转`改为`带标签映射的水平翻转`，同时修改了测试模型的数据处理方法，即把`裁剪 10 个图像块`（这里面包括 5 个翻转后的图像块）修改成`采帧两次 & 裁剪 3 个图像块`。
+4. MMAction2 使用 `ResNet50` 代替 `BNInception` 作为 TRN 的主干网络。使用原代码，在 sthv1 数据集上训练 `TRN-ResNet50` 时，实验得到的 top1 (top5) 的准确度为 30.542 (58.627)，而 MMAction2 的精度为 31.62 (60.01)。
 
 关于数据处理的更多细节，用户可以参照
 

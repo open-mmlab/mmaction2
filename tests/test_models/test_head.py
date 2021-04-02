@@ -318,7 +318,7 @@ def test_trn_head():
     trn_head.init_weights()
 
     assert trn_head.num_classes == 4
-    assert trn_head.dropout_ratio == 0.5
+    assert trn_head.dropout_ratio == 0.8
     assert trn_head.in_channels == 2048
     assert trn_head.init_std == 0.001
     assert trn_head.spatial_type == 'avg'
