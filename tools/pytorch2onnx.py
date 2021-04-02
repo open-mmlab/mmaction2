@@ -109,10 +109,6 @@ def parse_args():
     parser.add_argument('--output-file', type=str, default='tmp.onnx')
     parser.add_argument('--opset-version', type=int, default=11)
     parser.add_argument(
-        '--softmax',
-        action='store_true',
-        help='wheter to add softmax layer at the end of recognizers')
-    parser.add_argument(
         '--verify',
         action='store_true',
         help='verify the onnx model output against pytorch output')
@@ -126,6 +122,10 @@ def parse_args():
         nargs='+',
         default=[1, 3, 8, 224, 224],
         help='input video size')
+    parser.add_argument(
+        '--softmax',
+        action='store_true',
+        help='wheter to add softmax layer at the end of recognizers')
     args = parser.parse_args()
     return args
 
