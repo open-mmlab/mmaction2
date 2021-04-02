@@ -1,4 +1,5 @@
 import torch
+from torch import nn
 
 from ..registry import RECOGNIZERS
 from .base import BaseRecognizer
@@ -61,7 +62,7 @@ class Recognizer3D(BaseRecognizer):
         testing."""
         return self._do_test(imgs).cpu().numpy()
 
-    def forward_dummy(self, imgs):
+    def forward_dummy(self, imgs, softmax=False):
         """Used for computing network FLOPs.
 
         See ``tools/analysis/get_flops.py``.
@@ -78,8 +79,10 @@ class Recognizer3D(BaseRecognizer):
         if hasattr(self, 'neck'):
             x, _ = self.neck(x)
 
-        outs = (self.cls_head(x), )
-        return outs
+        outs = self.cls_head(x)
+        if softmax:
+            outs = nn.functional.softmax(outs)
+        return (outs, )
 
     def forward_gradcam(self, imgs):
         """Defines the computation performed at every call when using gradcam

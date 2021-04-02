@@ -109,6 +109,10 @@ def parse_args():
     parser.add_argument('--output-file', type=str, default='tmp.onnx')
     parser.add_argument('--opset-version', type=int, default=11)
     parser.add_argument(
+        '--softmax',
+        action='store_true',
+        help='wheter to add softmax layer at the end of recognizers')
+    parser.add_argument(
         '--verify',
         action='store_true',
         help='verify the onnx model output against pytorch output')
@@ -144,7 +148,8 @@ if __name__ == '__main__':
 
     # onnx.export does not support kwargs
     if hasattr(model, 'forward_dummy'):
-        model.forward = model.forward_dummy
+        from functools import partial
+        model.forward = partial(model.forward_dummy, softmax=args.softmax)
     elif hasattr(model, '_forward') and args.is_localizer:
         model.forward = model._forward
     else:
