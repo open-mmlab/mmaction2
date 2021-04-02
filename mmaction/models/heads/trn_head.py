@@ -119,7 +119,6 @@ class TRNHead(BaseHead):
         loss_cls (dict): Config for building loss. Default:
             dict(type='CrossEntropyLoss')
         spatial_type (str): Pooling type in spatial dimension. Default: 'avg'.
-        consensus (dict): Consensus config dict.
         relation_type (str): The relation module type. Choices are 'TRN' or
             'TRNMultiScale'. Default: 'TRNMultiScale'.
         hidden_dim (int): The dimension of hidden layer of MLP in relation
