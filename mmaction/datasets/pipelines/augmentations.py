@@ -407,7 +407,7 @@ def box_resize(results, scale_factor):
     """
 
     assert len(scale_factor) == 2
-    scale_factor = np.concatenate(scale_factor, scale_factor)
+    scale_factor = np.concatenate([scale_factor, scale_factor])
     assert 'proposals' in results and 'gt_bboxes' in results
     results['gt_bboxes'] = results['gt_bboxes'] * scale_factor
     if results['proposals'] is not None:
