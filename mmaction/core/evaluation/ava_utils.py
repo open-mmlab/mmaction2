@@ -214,9 +214,7 @@ def ava_eval(result_file,
                     standard_fields.InputDataFields.groundtruth_boxes:
                     np.array(gt_boxes[image_key], dtype=float),
                     standard_fields.InputDataFields.groundtruth_classes:
-                    np.array(gt_labels[image_key], dtype=int),
-                    standard_fields.InputDataFields.groundtruth_difficult:
-                    np.zeros(len(gt_boxes[image_key]), dtype=bool)
+                    np.array(gt_labels[image_key], dtype=int)
                 })
         if verbose:
             print_time('Convert groundtruth', start)
