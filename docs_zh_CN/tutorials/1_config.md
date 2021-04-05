@@ -485,7 +485,7 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
                 debug=False)), # 是否为 debug 模式
         test_cfg=dict( # 测试 FastRCNN 的超参设置
             rcnn=dict(  # rcnn 测试字典设置
-                action_thr=0.00))) # 某行为的阈值
+                action_thr=0.002))) # 某行为的阈值
 
     # 数据集设置
     dataset_type = 'AVADataset' # 训练，验证，测试的数据集类型

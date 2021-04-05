@@ -56,7 +56,7 @@ model = dict(
                 add_gt_as_proposals=True),
             pos_weight=1.0,
             debug=False)),
-    test_cfg=dict(rcnn=dict(action_thr=0.00)))
+    test_cfg=dict(rcnn=dict(action_thr=0.002)))
 
 dataset_type = 'AVADataset'
 data_root = 'data/ava/rawframes'
