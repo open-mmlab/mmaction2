@@ -48,7 +48,7 @@ def results2csv(dataset, results, out_file, custom_classes=None):
 
 
 def print_time(message, start):
-    print('==> %g seconds to %s' % (time.time() - start, message))
+    print('==> %g seconds to %s' % (time.time() - start, message), flush=True)
 
 
 def make_image_key(video_id, timestamp):
@@ -66,7 +66,8 @@ def read_csv(csv_file, class_whitelist=None, capacity=0):
         class_whitelist: If provided, boxes corresponding to (integer) class
         labels not in this set are skipped.
         capacity: Maximum number of labeled boxes allowed for each example.
-        Default is 0 where there is no limit.
+        Default is 0 where there is no limit. In our experiments, capacity is
+        always set as 0.
 
     Returns:
         boxes: A dictionary mapping each unique image key (string) to a list of
@@ -94,20 +95,25 @@ def read_csv(csv_file, class_whitelist=None, capacity=0):
         score = 1.0
         if len(row) == 8:
             score = float(row[7])
-        if capacity < 1 or len(entries[image_key]) < capacity:
-            heapq.heappush(entries[image_key],
-                           (score, action_id, y1, x1, y2, x2))
-        elif score > entries[image_key][0][0]:
-            heapq.heapreplace(entries[image_key],
-                              (score, action_id, y1, x1, y2, x2))
+
+        if capacity < 1:
+            entries[image_key].append((score, action_id, y1, x1, y2, x2))
+        else:
+            # maintain a heap if capacity is limited
+            if len(entries[image_key]) < capacity:
+                heapq.heappush(entries[image_key],
+                               (score, action_id, y1, x1, y2, x2))
+            elif score > entries[image_key][0][0]:
+                heapq.heapreplace(entries[image_key],
+                                  (score, action_id, y1, x1, y2, x2))
+
     for image_key in entries:
         # Evaluation API assumes boxes with descending scores
         entry = sorted(entries[image_key], key=lambda tup: -tup[0])
-        for item in entry:
-            score, action_id, y1, x1, y2, x2 = item
-            boxes[image_key].append([y1, x1, y2, x2])
-            labels[image_key].append(action_id)
-            scores[image_key].append(score)
+        boxes[image_key] = [x[2:] for x in entry]
+        labels[image_key] = [x[1] for x in entry]
+        scores[image_key] = [x[0] for x in entry]
+
     print_time('read file ' + csv_file.name, start)
     return boxes, labels, scores
 

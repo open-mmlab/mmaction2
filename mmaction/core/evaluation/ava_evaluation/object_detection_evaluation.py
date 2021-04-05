@@ -30,6 +30,7 @@ Note: This module operates on numpy boxes and box lists.
 import collections
 import logging
 from abc import ABCMeta, abstractmethod
+from collections import defaultdict
 
 import numpy as np
 
@@ -578,13 +579,21 @@ class ObjectDetectionEvaluation:
             groundtruth_is_group_of_list: A boolean numpy array of length M
                 denoting whether a ground truth box is a group-of box or not
         """
-        for class_index in range(self.num_class):
-            num_gt_instances = np.sum(groundtruth_class_labels[
-                ~groundtruth_is_difficult_list
-                & ~groundtruth_is_group_of_list] == class_index)
-            self.num_gt_instances_per_class[class_index] += num_gt_instances
-            if np.any(groundtruth_class_labels == class_index):
-                self.num_gt_imgs_per_class[class_index] += 1
+        count = defaultdict(lambda: 0)
+        for label in groundtruth_class_labels:
+            count[label] += 1
+        for k in count:
+            self.num_gt_instances_per_class[k] += count[k]
+            self.num_gt_imgs_per_class[k] += 1
+
+        # Old implementation
+        # for class_index in range(self.num_class):
+        #     num_gt_instances = np.sum(groundtruth_class_labels[
+        #         ~groundtruth_is_difficult_list
+        #         & ~groundtruth_is_group_of_list] == class_index)
+        #     self.num_gt_instances_per_class[class_index] += num_gt_instances
+        #     if np.any(groundtruth_class_labels == class_index):
+        #         self.num_gt_imgs_per_class[class_index] += 1
 
     def evaluate(self):
         """Compute evaluation result.
