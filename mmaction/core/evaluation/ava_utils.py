@@ -1,5 +1,4 @@
 import csv
-import heapq
 import logging
 import time
 from collections import defaultdict
@@ -56,7 +55,7 @@ def make_image_key(video_id, timestamp):
     return f'{video_id},{int(timestamp):04d}'
 
 
-def read_csv(csv_file, class_whitelist=None, capacity=0):
+def read_csv(csv_file, class_whitelist=None):
     """Loads boxes and class labels from a CSV file in the AVA format.
 
     CSV file format described at https://research.google.com/ava/download.html.
@@ -65,9 +64,6 @@ def read_csv(csv_file, class_whitelist=None, capacity=0):
         csv_file: A file object.
         class_whitelist: If provided, boxes corresponding to (integer) class
         labels not in this set are skipped.
-        capacity: Maximum number of labeled boxes allowed for each example.
-        Default is 0 where there is no limit. In our experiments, capacity is
-        always set as 0.
 
     Returns:
         boxes: A dictionary mapping each unique image key (string) to a list of
@@ -96,16 +92,7 @@ def read_csv(csv_file, class_whitelist=None, capacity=0):
         if len(row) == 8:
             score = float(row[7])
 
-        if capacity < 1:
-            entries[image_key].append((score, action_id, y1, x1, y2, x2))
-        else:
-            # maintain a heap if capacity is limited
-            if len(entries[image_key]) < capacity:
-                heapq.heappush(entries[image_key],
-                               (score, action_id, y1, x1, y2, x2))
-            elif score > entries[image_key][0][0]:
-                heapq.heapreplace(entries[image_key],
-                                  (score, action_id, y1, x1, y2, x2))
+        entries[image_key].append((score, action_id, y1, x1, y2, x2))
 
     for image_key in entries:
         # Evaluation API assumes boxes with descending scores
@@ -185,7 +172,7 @@ def ava_eval(result_file,
         categories = [cat for cat in categories if cat['id'] in custom_classes]
 
     # loading gt, do not need gt score
-    gt_boxes, gt_labels, _ = read_csv(open(ann_file), class_whitelist, 0)
+    gt_boxes, gt_labels, _ = read_csv(open(ann_file), class_whitelist)
     if verbose:
         print_time('Reading detection results', start)
 
@@ -195,7 +182,7 @@ def ava_eval(result_file,
         excluded_keys = list()
 
     start = time.time()
-    boxes, labels, scores = read_csv(open(result_file), class_whitelist, 0)
+    boxes, labels, scores = read_csv(open(result_file), class_whitelist)
     if verbose:
         print_time('Reading detection results', start)
 
