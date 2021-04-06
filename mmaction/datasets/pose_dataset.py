@@ -99,9 +99,6 @@ class PoseDataset(BaseDataset):
             # Sometimes we may need to load anno from the file
             if 'filename' in item:
                 item['filename'] = osp.join(self.data_prefix, item['filename'])
-            if 'frame_dir' in item:
-                item['frame_dir'] = osp.join(self.data_prefix,
-                                             item['frame_dir'])
         return data
 
     def prepare_train_frames(self, idx):
