@@ -458,8 +458,8 @@ class SampleAVAFrames(SampleFrames):
 @PIPELINES.register_module()
 class SampleCharadesFrames(SampleFrames):
 
-    def __init__(self, clip_len, num_classes=157, **kwargs):
-        super().__init__(clip_len, **kwargs)
+    def __init__(self, num_classes=157, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.num_classes = num_classes
 
     @staticmethod

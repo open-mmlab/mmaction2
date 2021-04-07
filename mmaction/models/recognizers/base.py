@@ -125,6 +125,42 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
             x = self.backbone(imgs)
         return x
 
+    def maximize_clip(self, cls_score, num_segs=1):
+        """maximizing class score over multiple clips.
+
+        Using different maximize types ('score' or 'prob' or None,
+        which defined in test_cfg) to computed the final averaged
+        class score. Only called in test mode.
+
+        Args:
+            cls_score (torch.Tensor): Class score to be maximized.
+            num_segs (int): Number of clips for each input sample.
+
+        Returns:
+            torch.Tensor: maximized class score.
+        """
+        if 'maximize_clips' not in self.test_cfg.keys():
+            return cls_score
+
+        maximize_clips = self.test_cfg['maximize_clips']
+        if maximize_clips not in ['score', 'prob', None]:
+            raise ValueError(f'{maximize_clips} is not supported. '
+                             f'Currently supported ones are '
+                             f'["score", "prob", None]')
+
+        if maximize_clips is None:
+            return cls_score
+
+        batch_size = cls_score.shape[0]
+        cls_score = cls_score.view(batch_size // num_segs, num_segs, -1)
+
+        if maximize_clips == 'prob':
+            cls_score = F.softmax(cls_score, dim=2).max(dim=1)
+        elif maximize_clips == 'score':
+            cls_score = cls_score.max(dim=1)
+
+        return cls_score
+
     def average_clip(self, cls_score, num_segs=1):
         """Averaging class score over multiple clips.
 

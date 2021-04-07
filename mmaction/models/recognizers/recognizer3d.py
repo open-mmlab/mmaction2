@@ -54,6 +54,7 @@ class Recognizer3D(BaseRecognizer):
                 x, _ = self.neck(x)
             cls_score = self.cls_head(x)
 
+        cls_score = self.maximize_clip(cls_score, num_segs)
         cls_score = self.average_clip(cls_score, num_segs)
         return cls_score
 
