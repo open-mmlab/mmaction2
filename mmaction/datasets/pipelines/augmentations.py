@@ -44,6 +44,39 @@ def _init_lazy_if_proper(results, lazy):
 
 
 @PIPELINES.register_module()
+class EntityBoxRescale:
+
+    def __init__(self, scale_factor):
+        warnings.warn('"EntityBoxRescale" is deprecated and will be removed '
+                      'in later versions. You can not use it in the pipeline.')
+
+    def __call__(self, results):
+        return results
+
+
+@PIPELINES.register_module()
+class EntityBoxCrop:
+
+    def __init__(self, crop_bbox):
+        warnings.warn('"EntityBoxCrop" is deprecated and will be removed in '
+                      'later versions. You can not use it in the pipeline.')
+
+    def __call__(self, results):
+        return results
+
+
+@PIPELINES.register_module()
+class EntityBoxFlip:
+
+    def __init__(self, img_shape):
+        warnings.warn('"EntityBoxFlip" is deprecated and will be removed in '
+                      'later versions. You can not use it in the pipeline.')
+
+    def __call__(self, results):
+        return results
+
+
+@PIPELINES.register_module()
 class Imgaug:
     """Imgaug augmentation.
 
@@ -442,6 +475,7 @@ class RandomCrop:
             assert results['proposals'].shape[1] == 4
             results['proposals'] = self._box_crop(results['proposals'],
                                                   crop_bbox)
+        return results
 
     def __call__(self, results):
         """Performs the RandomCrop augmentation.
