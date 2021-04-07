@@ -1265,7 +1265,7 @@ class Flip:
         lazy (bool): Determine whether to apply lazy operation. Default: False.
     """
     # Only horizontal flip is useful
-    _directions = ['horizontal']
+    _directions = ['horizontal', 'vertical']
 
     def __init__(self,
                  flip_ratio=0.5,
@@ -1316,6 +1316,9 @@ class Flip:
         if 'kp' in results:
             assert not self.lazy, ('Keypoint Augmentations are not compatible '
                                    'with lazy == True')
+            assert self.direction == 'horizontal', (
+                'Only horizontal flips are'
+                'supported for human keypoints')
 
         modality = results['modality']
         if modality == 'Flow':
