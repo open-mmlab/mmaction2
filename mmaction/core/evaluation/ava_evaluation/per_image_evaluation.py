@@ -47,19 +47,13 @@ class PerImageEvaluation:
         detected_class_labels,
         groundtruth_boxes,
         groundtruth_class_labels,
-        groundtruth_is_difficult_list,
-        groundtruth_is_group_of_list,
         detected_masks=None,
         groundtruth_masks=None,
     ):
         """Evaluates detections as being tp, fp or ignored from a single image.
 
         The evaluation is done in two stages:
-        1. All detections are matched to non group-of boxes; true positives
-            are determined and detections matched to difficult boxes are
-            ignored.
-        2. Detections that are determined as false positives are matched
-            against group-of boxes and ignored if matched.
+        1. All detections are matched to non group-of boxes.
 
         Args:
             detected_boxes: A float numpy array of shape [N, 4], representing N
@@ -74,11 +68,6 @@ class PerImageEvaluation:
                 representing M regions of object instances in ground truth
             groundtruth_class_labels: An integer numpy array of shape [M, 1],
                 representing M class labels of object instances in ground truth
-            groundtruth_is_difficult_list: A boolean numpy array of length M
-                denoting whether a ground truth box is a difficult instance or
-                not
-            groundtruth_is_group_of_list: A boolean numpy array of length M
-                denoting whether a ground truth box has group-of tag
             detected_masks: (optional) A uint8 numpy array of shape
                 [N, height, width]. If not None, the metrics will be computed
                 based on masks.
@@ -110,8 +99,6 @@ class PerImageEvaluation:
             detected_class_labels=detected_class_labels,
             groundtruth_boxes=groundtruth_boxes,
             groundtruth_class_labels=groundtruth_class_labels,
-            groundtruth_is_difficult_list=groundtruth_is_difficult_list,
-            groundtruth_is_group_of_list=groundtruth_is_group_of_list,
             detected_masks=detected_masks,
             groundtruth_masks=groundtruth_masks,
         )
@@ -125,8 +112,6 @@ class PerImageEvaluation:
         detected_class_labels,
         groundtruth_boxes,
         groundtruth_class_labels,
-        groundtruth_is_difficult_list,
-        groundtruth_is_group_of_list,
         detected_masks=None,
         groundtruth_masks=None,
     ):
@@ -146,11 +131,6 @@ class PerImageEvaluation:
                 representing M regions of object instances in ground truth
             groundtruth_class_labels: An integer numpy array of shape [M, 1],
                 representing M class labels of object instances in ground truth
-            groundtruth_is_difficult_list: A boolean numpy array of length M
-                denoting whether a ground truth box is a difficult instance or
-                not
-            groundtruth_is_group_of_list: A boolean numpy array of length M
-                denoting whether a ground truth box has group-of tag
             detected_masks: (optional) A np.uint8 numpy array of shape
                 [N, height, width]. If not None, the scores will be computed
                 based on masks.
@@ -179,10 +159,6 @@ class PerImageEvaluation:
         result_scores = []
         result_tp_fp_labels = []
         for i in range(self.num_groundtruth_classes):
-            groundtruth_is_difficult_list_at_ith_class = (
-                groundtruth_is_difficult_list[groundtruth_class_labels == i])
-            groundtruth_is_group_of_list_at_ith_class = (
-                groundtruth_is_group_of_list[groundtruth_class_labels == i])
             (
                 gt_boxes_at_ith_class,
                 gt_masks_at_ith_class,
@@ -199,10 +175,6 @@ class PerImageEvaluation:
                 detected_boxes=detected_boxes_at_ith_class,
                 detected_scores=detected_scores_at_ith_class,
                 groundtruth_boxes=gt_boxes_at_ith_class,
-                groundtruth_is_difficult_list=(
-                    groundtruth_is_difficult_list_at_ith_class),
-                groundtruth_is_group_of_list=(
-                    groundtruth_is_group_of_list_at_ith_class),
                 detected_masks=detected_masks_at_ith_class,
                 groundtruth_masks=gt_masks_at_ith_class,
             )
@@ -210,13 +182,8 @@ class PerImageEvaluation:
             result_tp_fp_labels.append(tp_fp_labels)
         return result_scores, result_tp_fp_labels
 
-    def _get_overlaps_and_scores_box_mode(
-        self,
-        detected_boxes,
-        detected_scores,
-        groundtruth_boxes,
-        groundtruth_is_group_of_list,
-    ):
+    def _get_overlaps_and_scores_box_mode(self, detected_boxes,
+                                          detected_scores, groundtruth_boxes):
         """Computes overlaps and scores between detected and groudntruth boxes.
 
         Args:
@@ -226,10 +193,6 @@ class PerImageEvaluation:
                 classification score
             groundtruth_boxes: A numpy array of shape [M, 4] representing
                 ground truth box coordinates
-            groundtruth_is_group_of_list: A boolean numpy array of length M
-                denoting whether a ground truth box has group-of tag. If a
-                groundtruth box is group-of box, every detection matching this
-                box is ignored.
 
         Returns:
             iou: A float numpy array of size [num_detected_boxes,
@@ -243,8 +206,7 @@ class PerImageEvaluation:
         """
         detected_boxlist = np_box_list.BoxList(detected_boxes)
         detected_boxlist.add_field('scores', detected_scores)
-        gt_non_group_of_boxlist = np_box_list.BoxList(
-            groundtruth_boxes[~groundtruth_is_group_of_list])
+        gt_non_group_of_boxlist = np_box_list.BoxList(groundtruth_boxes)
 
         iou = np_box_ops.iou(detected_boxlist.get(),
                              gt_non_group_of_boxlist.get())
@@ -257,8 +219,6 @@ class PerImageEvaluation:
         detected_boxes,
         detected_scores,
         groundtruth_boxes,
-        groundtruth_is_difficult_list,
-        groundtruth_is_group_of_list,
         detected_masks=None,
         groundtruth_masks=None,
     ):
@@ -272,14 +232,6 @@ class PerImageEvaluation:
                 classification score
             groundtruth_boxes: A numpy array of shape [M, 4] representing
                 groundtruth box coordinates
-            groundtruth_is_difficult_list: A boolean numpy array of length M
-                denoting whether a ground truth box is a difficult instance or
-                not. If a groundtruth box is difficult, every detection
-                matching this box is ignored.
-            groundtruth_is_group_of_list: A boolean numpy array of length M
-                denoting whether a ground truth box has group-of tag. If a
-                groundtruth box is group-of box, every detection matching this
-                box is ignored.
             detected_masks: (optional) A uint8 numpy array of shape
                 [N, height, width]. If not None, the scores will be computed
                 based on masks.
@@ -288,8 +240,7 @@ class PerImageEvaluation:
 
         Returns:
             Two arrays of the same size, containing all boxes that were
-            evaluated as being true positives or false positives; if a box
-            matched to a difficult box or to a group-of box, it is ignored.
+            evaluated as being true positives or false positives.
 
             scores: A numpy array representing the detection scores.
             tp_fp_labels: a boolean numpy array indicating whether a detection
@@ -306,45 +257,30 @@ class PerImageEvaluation:
         ) = self._get_overlaps_and_scores_box_mode(
             detected_boxes=detected_boxes,
             detected_scores=detected_scores,
-            groundtruth_boxes=groundtruth_boxes,
-            groundtruth_is_group_of_list=groundtruth_is_group_of_list,
-        )
+            groundtruth_boxes=groundtruth_boxes)
 
         if groundtruth_boxes.size == 0:
             return scores, np.zeros(num_detected_boxes, dtype=bool)
 
         tp_fp_labels = np.zeros(num_detected_boxes, dtype=bool)
-        is_matched_to_difficult_box = np.zeros(num_detected_boxes, dtype=bool)
-        is_matched_to_group_of_box = np.zeros(num_detected_boxes, dtype=bool)
 
         # The evaluation is done in two stages:
-        # 1. All detections are matched to non group-of boxes; true positives
-        #    are determined and detections matched to difficult boxes are
-        #    ignored.
+        # 1. All detections are matched to non group-of boxes.
         # 2. Detections that are determined as false positives are matched
         #    against group-of boxes and ignored if matched.
 
         # Tp-fp evaluation for non-group of boxes (if any).
         if iou.shape[1] > 0:
-            groundtruth_nongroup_of_is_difficult_list = (
-                groundtruth_is_difficult_list[~groundtruth_is_group_of_list])
             max_overlap_gt_ids = np.argmax(iou, axis=1)
             is_gt_box_detected = np.zeros(iou.shape[1], dtype=bool)
             for i in range(num_detected_boxes):
                 gt_id = max_overlap_gt_ids[i]
                 if iou[i, gt_id] >= self.matching_iou_threshold:
-                    if not groundtruth_nongroup_of_is_difficult_list[gt_id]:
-                        if not is_gt_box_detected[gt_id]:
-                            tp_fp_labels[i] = True
-                            is_gt_box_detected[gt_id] = True
-                    else:
-                        is_matched_to_difficult_box[i] = True
+                    if not is_gt_box_detected[gt_id]:
+                        tp_fp_labels[i] = True
+                        is_gt_box_detected[gt_id] = True
 
-        return (
-            scores[~is_matched_to_difficult_box & ~is_matched_to_group_of_box],
-            tp_fp_labels[~is_matched_to_difficult_box
-                         & ~is_matched_to_group_of_box],
-        )
+        return scores, tp_fp_labels
 
     def _get_ith_class_arrays(
         self,

@@ -54,6 +54,7 @@ python tools/pytorch2onnx.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--shape ${SHAPE}
 - `--output-file`: 导出的 onnx 模型名。如果没有被指定，它将被置为 `tmp.onnx`。
 - `--is-localizer`：决定导出的模型是否为时序检测器。如果没有被指定，它将被置为 `False`。
 - `--opset-version`：决定 onnx 的执行版本，MMAction2 推荐用户使用高版本（例如 11 版本）的 onnx 以确保稳定性。如果没有被指定，它将被置为 `11`。
+- `--softmax`: 是否在行为识别器末尾添加 Softmax。如果没有指定，将被置为 `False`。目前仅支持行为识别器，不支持时序动作检测器。
 
 ### 行为识别器
 

@@ -131,7 +131,7 @@ class Recognizer2D(BaseRecognizer):
             return self._do_fcn_test(imgs).cpu().numpy()
         return self._do_test(imgs).cpu().numpy()
 
-    def forward_dummy(self, imgs):
+    def forward_dummy(self, imgs, softmax=False):
         """Used for computing network FLOPs.
 
         See ``tools/analysis/get_flops.py``.
@@ -157,8 +157,10 @@ class Recognizer2D(BaseRecognizer):
             x = x.squeeze(2)
             num_segs = 1
 
-        outs = (self.cls_head(x, num_segs), )
-        return outs
+        outs = self.cls_head(x, num_segs)
+        if softmax:
+            outs = nn.functional.softmax(outs)
+        return (outs, )
 
     def forward_gradcam(self, imgs):
         """Defines the computation performed at every call when using gradcam
