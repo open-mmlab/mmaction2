@@ -9,6 +9,7 @@
 **Improvements**
 
 - Add softmax option for pytorch2onnx tool ([#781](https://github.com/open-mmlab/mmaction2/pull/781))
+- Test with onnx models and TensorRT engines ([#758](https://github.com/open-mmlab/mmaction2/pull/758))
 
 **Bug and Typo Fixes**
 
