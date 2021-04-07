@@ -7,6 +7,7 @@ from .base import BaseDataset
 from .blending_utils import (BaseMiniBatchBlending, CutmixBlending,
                              MixupBlending)
 from .builder import build_dataloader, build_dataset
+from .charades_dataset import CharadesDataset
 from .dataset_wrappers import RepeatDataset
 from .hvu_dataset import HVUDataset
 from .image_dataset import ImageDataset
@@ -20,5 +21,6 @@ __all__ = [
     'RawframeDataset', 'BaseDataset', 'ActivityNetDataset', 'SSNDataset',
     'HVUDataset', 'AudioDataset', 'AudioFeatureDataset', 'ImageDataset',
     'RawVideoDataset', 'AVADataset', 'AudioVisualDataset',
-    'BaseMiniBatchBlending', 'CutmixBlending', 'MixupBlending'
+    'BaseMiniBatchBlending', 'CutmixBlending', 'MixupBlending',
+    'CharadesDataset'
 ]

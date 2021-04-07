@@ -16,7 +16,9 @@ class CharadesDataset(BaseDataset):
                  pipeline,
                  data_prefix=None,
                  test_mode=False,
-                 filename_tmpl='{}-{:06}.jpg',
+                 filename_tmpl_prefix='{}-',
+                 filename_tmpl_suffix='{:06}.jpg',
+                 filename_tmpl=None,
                  with_offset=False,
                  multi_class=True,
                  num_classes=157,
@@ -25,6 +27,8 @@ class CharadesDataset(BaseDataset):
                  sample_by_class=False,
                  power=None):
         self.filename_tmpl = filename_tmpl
+        self.filename_tmpl_prefix = filename_tmpl_prefix
+        self.filename_tmpl_suffix = filename_tmpl_suffix
         super().__init__(
             ann_file,
             pipeline,
@@ -36,17 +40,6 @@ class CharadesDataset(BaseDataset):
             modality,
             sample_by_class=sample_by_class,
             power=power)
-
-    @staticmethod
-    def aggregate_labels(label_list):
-        """Join a list of label list.
-
-        Args:
-            labels (list): The input label list.
-        Returns:
-            labels (list): The joint list of all lists in input.
-        """
-        return list(set().union(*label_list))
 
     @staticmethod
     def load_image_lists(frame_list_file, return_list=False):
@@ -88,6 +81,9 @@ class CharadesDataset(BaseDataset):
             video_info['frame_dir'] = frame_dir
             video_info['total_frames'] = len(image_paths[video_name])
             video_info['label'] = labels[video_name]
+            if self.filename_tmpl is None:
+                video_info['filename_tmpl'] = self.filename_tmpl_prefix.format(
+                    video_name)
             video_infos.append(video_info)
 
         return video_infos
@@ -114,7 +110,10 @@ class CharadesDataset(BaseDataset):
             results = copy.deepcopy(np.random.choice(samples))
         else:
             results = copy.deepcopy(self.video_infos[idx])
-        results['filename_tmpl'] = self.filename_tmpl
+        if self.filename_tmpl is None:
+            results['filename_tmpl'] += self.filename_tmpl_suffix
+        else:
+            results['filename_tmpl'] = self.filename_tmpl
         results['modality'] = self.modality
         results['start_index'] = self.start_index
 

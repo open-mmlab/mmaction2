@@ -456,6 +456,82 @@ class SampleAVAFrames(SampleFrames):
 
 
 @PIPELINES.register_module()
+class SampleCharadesFrames(SampleFrames):
+
+    def __init__(self, clip_len, num_classes=157, **kwargs):
+        super().__init__(clip_len, **kwargs)
+        self.num_classes = num_classes
+
+    @staticmethod
+    def aggregate_labels(label_list):
+        """Join a list of label list.
+
+        Args:
+            labels (list): The input label list.
+        Returns:
+            labels (list): The joint list of all lists in input.
+        """
+        return list(set().union(*label_list))
+
+    def __call__(self, results):
+        """Perform the SampleFrames loading.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        total_frames = results['total_frames']
+
+        clip_offsets = self._sample_clips(total_frames)
+        frame_inds = clip_offsets[:, None] + np.arange(
+            self.clip_len)[None, :] * self.frame_interval
+        frame_inds = np.concatenate(frame_inds)
+
+        if self.temporal_jitter:
+            perframe_offsets = np.random.randint(
+                self.frame_interval, size=len(frame_inds))
+            frame_inds += perframe_offsets
+
+        frame_inds = frame_inds.reshape((-1, self.clip_len))
+        if self.out_of_bound_opt == 'loop':
+            frame_inds = np.mod(frame_inds, total_frames)
+        elif self.out_of_bound_opt == 'repeat_last':
+            safe_inds = frame_inds < total_frames
+            unsafe_inds = 1 - safe_inds
+            last_ind = np.max(safe_inds * frame_inds, axis=1)
+            new_inds = (safe_inds * frame_inds + (unsafe_inds.T * last_ind).T)
+            frame_inds = new_inds
+        else:
+            raise ValueError('Illegal out_of_bound option.')
+
+        start_index = results['start_index']
+        frame_inds = np.concatenate(frame_inds) + start_index
+        results['frame_inds'] = frame_inds.astype(np.int)
+        results['clip_len'] = self.clip_len
+        results['frame_interval'] = self.frame_interval
+        results['num_clips'] = self.num_clips
+        # aggregate labels of the sampled clip
+        label_list = results['labels'][frame_inds[0] - 1:frame_inds[-1]]
+        label = self.aggregate_labels(label_list)
+        onehot = torch.zeros(self.num_classes)
+        onehot[label] = 1.
+        results['label'] = onehot
+        return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'clip_len={self.clip_len}, '
+                    f'num_classes={self.num_classes}, '
+                    f'frame_interval={self.frame_interval}, '
+                    f'num_clips={self.num_clips}, '
+                    f'temporal_jitter={self.temporal_jitter}, '
+                    f'twice_sample={self.twice_sample}, '
+                    f'out_of_bound_opt={self.out_of_bound_opt}, '
+                    f'test_mode={self.test_mode})')
+        return repr_str
+
+
+@PIPELINES.register_module()
 class SampleProposalFrames(SampleFrames):
     """Sample frames from proposals in the video.
 
