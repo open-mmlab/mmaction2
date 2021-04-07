@@ -98,6 +98,7 @@ Params: 28.04 M
 `/tools/pytorch2onnx.py` 脚本用于将模型转换为 [ONNX](https://github.com/onnx/onnx) 格式。
 同时，该脚本支持比较 PyTorch 模型和 ONNX 模型的输出结果，验证输出结果是否相同。
 本功能依赖于 `onnx` 以及 `onnxruntime`，使用前请先通过 `pip install onnx onnxruntime` 安装依赖包。
+请注意，可通过 `--softmax` 选项在行为识别器末尾添加 Softmax 层，从而获取 `[0, 1]` 范围内的预测结果。
 
 - 对于行为识别模型，请运行：
 

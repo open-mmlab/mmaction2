@@ -1,5 +1,19 @@
 ## Changelog
 
+### Master
+
+**Highlights**
+
+**New Features**
+
+**Improvements**
+
+- Add softmax option for pytorch2onnx tool ([#781](https://github.com/open-mmlab/mmaction2/pull/781))
+
+**Bug and Typo Fixes**
+
+**ModelZoo**
+
 ### 0.13.0 (31/03/2021)
 
 **Highlights**

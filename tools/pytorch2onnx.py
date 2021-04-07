@@ -122,6 +122,10 @@ def parse_args():
         nargs='+',
         default=[1, 3, 8, 224, 224],
         help='input video size')
+    parser.add_argument(
+        '--softmax',
+        action='store_true',
+        help='wheter to add softmax layer at the end of recognizers')
     args = parser.parse_args()
     return args
 
@@ -144,7 +148,8 @@ if __name__ == '__main__':
 
     # onnx.export does not support kwargs
     if hasattr(model, 'forward_dummy'):
-        model.forward = model.forward_dummy
+        from functools import partial
+        model.forward = partial(model.forward_dummy, softmax=args.softmax)
     elif hasattr(model, '_forward') and args.is_localizer:
         model.forward = model._forward
     else:
