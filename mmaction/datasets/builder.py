@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader
 
 from .dataset_wrappers import RepeatDataset
 from .registry import DATASETS
-from .samplers import DistributedPowerSampler, DistributedSampler
+from .samplers import ClassSpecificDistributedSampler, DistributedSampler
 
 if platform.system() != 'Windows':
     # https://github.com/pytorch/pytorch/issues/973
@@ -79,13 +79,17 @@ def build_dataloader(dataset,
     """
     rank, world_size = get_dist_info()
     sample_by_class = getattr(dataset, 'sample_by_class', False)
-    power = getattr(dataset, 'power', None)
 
     if dist:
         if sample_by_class:
-            assert power is not None
-            sampler = DistributedPowerSampler(
-                dataset, world_size, rank, power, seed=seed)
+            dynamic_length = getattr(dataset, 'dynamic_length', True)
+            sampler = ClassSpecificDistributedSampler(
+                dataset,
+                world_size,
+                rank,
+                dynamic_length=dynamic_length,
+                shuffle=shuffle,
+                seed=seed)
         else:
             sampler = DistributedSampler(
                 dataset, world_size, rank, shuffle=shuffle, seed=seed)

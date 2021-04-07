@@ -1,7 +1,6 @@
 import copy
 import os.path as osp
 
-import numpy as np
 import torch
 
 from .base import BaseDataset
@@ -151,12 +150,7 @@ class RawframeDataset(BaseDataset):
 
     def prepare_train_frames(self, idx):
         """Prepare the frames for training given the index."""
-        if self.sample_by_class:
-            # Then, the idx is the class index
-            samples = self.video_infos_by_class[idx]
-            results = copy.deepcopy(np.random.choice(samples))
-        else:
-            results = copy.deepcopy(self.video_infos[idx])
+        results = copy.deepcopy(self.video_infos[idx])
         results['filename_tmpl'] = self.filename_tmpl
         results['modality'] = self.modality
         results['start_index'] = self.start_index
@@ -171,12 +165,7 @@ class RawframeDataset(BaseDataset):
 
     def prepare_test_frames(self, idx):
         """Prepare the frames for testing given the index."""
-        if self.sample_by_class:
-            # Then, the idx is the class index
-            samples = self.video_infos_by_class[idx]
-            results = copy.deepcopy(np.random.choice(samples))
-        else:
-            results = copy.deepcopy(self.video_infos[idx])
+        results = copy.deepcopy(self.video_infos[idx])
         results['filename_tmpl'] = self.filename_tmpl
         results['modality'] = self.modality
         results['start_index'] = self.start_index

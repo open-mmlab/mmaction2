@@ -83,6 +83,18 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         self.video_infos = self.load_annotations()
         if self.sample_by_class:
             self.video_infos_by_class = self.parse_by_class()
+            class_prob = []
+            for k, samples in self.video_infos_by_class.items():
+                class_prob.append(len(samples) / len(self.video_infos))
+
+            summ = sum(class_prob)
+            class_prob = [x / summ for x in class_prob]
+
+            self.class_prob = {
+                k: prob
+                for k, prob in zip(self.video_infos_by_class, class_prob)
+            }
+            self.dynamic_length = False
 
     @abstractmethod
     def load_annotations(self):
@@ -230,12 +242,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
 
     def prepare_train_frames(self, idx):
         """Prepare the frames for training given the index."""
-        if self.sample_by_class:
-            # Then, the idx is the class index
-            samples = self.video_infos_by_class[idx]
-            results = copy.deepcopy(np.random.choice(samples))
-        else:
-            results = copy.deepcopy(self.video_infos[idx])
+        results = copy.deepcopy(self.video_infos[idx])
         results['modality'] = self.modality
         results['start_index'] = self.start_index
 
@@ -250,12 +257,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
 
     def prepare_test_frames(self, idx):
         """Prepare the frames for testing given the index."""
-        if self.sample_by_class:
-            # Then, the idx is the class index
-            samples = self.video_infos_by_class[idx]
-            results = copy.deepcopy(np.random.choice(samples))
-        else:
-            results = copy.deepcopy(self.video_infos[idx])
+        results = copy.deepcopy(self.video_infos[idx])
         results['modality'] = self.modality
         results['start_index'] = self.start_index
 
