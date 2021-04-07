@@ -1,4 +1,5 @@
 import random
+import warnings
 from collections.abc import Sequence
 
 import mmcv
@@ -186,8 +187,8 @@ class Imgaug:
                         type='Cutout',
                         nb_iterations=1,
                         size=0.2 * cur_level,
-                        squared=True),
-                ]),
+                        squared=True)
+                ])
         ]
 
     def imgaug_builder(self, cfg):
@@ -639,6 +640,9 @@ class RandomResizedCrop:
                  area_range=(0.08, 1.0),
                  aspect_ratio_range=(3 / 4, 4 / 3),
                  lazy=False):
+        warnings.warn('"RandomResizedCrop" is deprecated since it is provided '
+                      'in MMAction but not used in MMAction2')
+
         self.area_range = area_range
         self.aspect_ratio_range = aspect_ratio_range
         self.lazy = lazy
