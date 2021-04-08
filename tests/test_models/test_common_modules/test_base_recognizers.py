@@ -29,16 +29,22 @@ class ExampleRecognizer(BaseRecognizer):
 def test_base_recognizer():
     cls_score = torch.rand(5, 400)
     with pytest.raises(KeyError):
-        # "average_clips" must defined in test_cfg keys
+        # "average_clips" or "maximize" must defined in test_cfg keys
         wrong_test_cfg = dict(clip='score')
         recognizer = ExampleRecognizer(None, wrong_test_cfg)
-        recognizer.average_clip(cls_score)
+        recognizer.aggregate_clip(cls_score)
 
     with pytest.raises(ValueError):
         # unsupported average clips type
         wrong_test_cfg = dict(average_clips='softmax')
         recognizer = ExampleRecognizer(None, wrong_test_cfg)
-        recognizer.average_clip(cls_score)
+        recognizer.aggregate_clip(cls_score)
+
+    with pytest.raises(ValueError):
+        # unsupported maximize clips type
+        wrong_test_cfg = dict(maximize_clips='softmax')
+        recognizer = ExampleRecognizer(None, wrong_test_cfg)
+        recognizer.aggregate_clip(cls_score)
 
     with pytest.raises(ValueError):
         # Label should not be None
@@ -48,18 +54,37 @@ def test_base_recognizer():
     # average_clips=None
     test_cfg = dict(average_clips=None)
     recognizer = ExampleRecognizer(None, test_cfg)
-    score = recognizer.average_clip(cls_score, num_segs=5)
+    score = recognizer.aggregate_clip(cls_score, num_segs=5)
     assert torch.equal(score, cls_score)
 
     # average_clips='score'
     test_cfg = dict(average_clips='score')
     recognizer = ExampleRecognizer(None, test_cfg)
-    score = recognizer.average_clip(cls_score, num_segs=5)
+    score = recognizer.aggregate_clip(cls_score, num_segs=5)
     assert torch.equal(score, cls_score.mean(dim=0, keepdim=True))
 
     # average_clips='prob'
     test_cfg = dict(average_clips='prob')
     recognizer = ExampleRecognizer(None, test_cfg)
-    score = recognizer.average_clip(cls_score, num_segs=5)
+    score = recognizer.aggregate_clip(cls_score, num_segs=5)
     assert torch.equal(score,
                        F.softmax(cls_score, dim=1).mean(dim=0, keepdim=True))
+
+    # maximize_clips=None
+    test_cfg = dict(maximize_clips=None)
+    recognizer = ExampleRecognizer(None, test_cfg)
+    score = recognizer.aggregate_clip(cls_score, num_segs=5)
+    assert torch.equal(score, cls_score)
+
+    # maximize_clips='score'
+    test_cfg = dict(maximize_clips='score')
+    recognizer = ExampleRecognizer(None, test_cfg)
+    score = recognizer.aggregate_clip(cls_score, num_segs=5)
+    assert torch.equal(score, cls_score.max(dim=0, keepdim=True)[0])
+
+    # maximize_clips='prob'
+    test_cfg = dict(maximize_clips='prob')
+    recognizer = ExampleRecognizer(None, test_cfg)
+    score = recognizer.aggregate_clip(cls_score, num_segs=5)
+    assert torch.equal(score,
+                       F.softmax(cls_score, dim=1).max(dim=0, keepdim=True)[0])

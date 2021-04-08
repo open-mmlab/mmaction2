@@ -125,75 +125,44 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
             x = self.backbone(imgs)
         return x
 
-    def maximize_clip(self, cls_score, num_segs=1):
-        """maximizing class score over multiple clips.
-
-        Using different maximize types ('score' or 'prob' or None,
-        which defined in test_cfg) to computed the final averaged
-        class score. Only called in test mode.
-
-        Args:
-            cls_score (torch.Tensor): Class score to be maximized.
-            num_segs (int): Number of clips for each input sample.
-
-        Returns:
-            torch.Tensor: maximized class score.
-        """
-        if 'maximize_clips' not in self.test_cfg.keys():
-            return cls_score
-
-        maximize_clips = self.test_cfg['maximize_clips']
+    def aggregate_clip(self, cls_score, num_segs=1):
+        if ('average_clips' not in self.test_cfg) and ('maximize_clips'
+                                                       not in self.test_cfg):
+            raise KeyError(
+                '"average_clips" or "maximize_clips" must be defined in '
+                'test_cfg\'s keys')
+        average_clips = self.test_cfg.get('average_clips', None)
+        maximize_clips = self.test_cfg.get('maximize_clips', None)
+        if average_clips not in ['score', 'prob', None]:
+            raise ValueError(f'{average_clips} is not supported. '
+                             f'Currently supported ones are '
+                             f'["score", "prob", None]')
         if maximize_clips not in ['score', 'prob', None]:
             raise ValueError(f'{maximize_clips} is not supported. '
                              f'Currently supported ones are '
                              f'["score", "prob", None]')
 
-        if maximize_clips is None:
+        if average_clips is not None and maximize_clips is not None:
+            raise KeyError(
+                'Cannot do "average_clips" and "maximize_clips" both.')
+
+        if average_clips is None and maximize_clips is None:
             return cls_score
 
         batch_size = cls_score.shape[0]
         cls_score = cls_score.view(batch_size // num_segs, num_segs, -1)
 
-        if maximize_clips == 'prob':
-            cls_score = F.softmax(cls_score, dim=2).max(dim=1)
-        elif maximize_clips == 'score':
-            cls_score = cls_score.max(dim=1)
-
-        return cls_score
-
-    def average_clip(self, cls_score, num_segs=1):
-        """Averaging class score over multiple clips.
-
-        Using different averaging types ('score' or 'prob' or None,
-        which defined in test_cfg) to computed the final averaged
-        class score. Only called in test mode.
-
-        Args:
-            cls_score (torch.Tensor): Class score to be averaged.
-            num_segs (int): Number of clips for each input sample.
-
-        Returns:
-            torch.Tensor: Averaged class score.
-        """
-        if 'average_clips' not in self.test_cfg.keys():
-            raise KeyError('"average_clips" must defined in test_cfg\'s keys')
-
-        average_clips = self.test_cfg['average_clips']
-        if average_clips not in ['score', 'prob', None]:
-            raise ValueError(f'{average_clips} is not supported. '
-                             f'Currently supported ones are '
-                             f'["score", "prob", None]')
-
-        if average_clips is None:
-            return cls_score
-
-        batch_size = cls_score.shape[0]
-        cls_score = cls_score.view(batch_size // num_segs, num_segs, -1)
-
+        # choose to average the scores of clips
         if average_clips == 'prob':
             cls_score = F.softmax(cls_score, dim=2).mean(dim=1)
         elif average_clips == 'score':
             cls_score = cls_score.mean(dim=1)
+
+        # choose to maximize the scores of clips
+        if maximize_clips == 'prob':
+            cls_score = F.softmax(cls_score, dim=2).max(dim=1)[0]
+        elif maximize_clips == 'score':
+            cls_score = cls_score.max(dim=1)[0]
 
         return cls_score
 

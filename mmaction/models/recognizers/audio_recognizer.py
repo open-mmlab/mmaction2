@@ -32,7 +32,7 @@ class AudioRecognizer(BaseRecognizer):
         audios = audios.reshape((-1, ) + audios.shape[2:])
         x = self.extract_feat(audios)
         cls_score = self.cls_head(x)
-        cls_score = self.average_clip(cls_score, num_segs)
+        cls_score = self.aggregate_clip(cls_score, num_segs)
 
         return cls_score.cpu().numpy()
 

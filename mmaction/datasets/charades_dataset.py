@@ -2,8 +2,6 @@ import copy
 import os.path as osp
 from collections import defaultdict
 
-import numpy as np
-
 from .base import BaseDataset
 from .registry import DATASETS
 
@@ -11,9 +9,31 @@ from .registry import DATASETS
 @DATASETS.register_module()
 class CharadesDataset(BaseDataset):
 
-    def __init__(self, filename_tmpl='{}-{}.jpg', *args, **kwargs):
+    def __init__(self,
+                 ann_file,
+                 pipeline,
+                 data_prefix=None,
+                 test_mode=False,
+                 filename_tmpl='{}-{}.jpg',
+                 multi_class=True,
+                 num_classes=157,
+                 start_index=1,
+                 modality='RGB'):
         self.filename_tmpl = filename_tmpl
-        super().__init__(*args, **kwargs)
+        super().__init__(
+            ann_file,
+            pipeline,
+            data_prefix,
+            test_mode,
+            multi_class=multi_class,
+            num_classes=num_classes,
+            start_index=start_index,
+            modality=modality)
+
+    @staticmethod
+    def aggregate_labels(label_list):
+        """Join a list of label list."""
+        return list(set().union(*label_list))
 
     @staticmethod
     def load_image_lists(frame_list_file, return_list=False):
@@ -45,6 +65,7 @@ class CharadesDataset(BaseDataset):
         """Load annotation file to get video information."""
         video_infos = []
         image_paths, labels = self.load_image_lists(self.ann_file)
+
         for video_name in image_paths:
             video_info = {}
             frame_dir = osp.dirname(image_paths[video_name][0])
@@ -52,7 +73,10 @@ class CharadesDataset(BaseDataset):
                 frame_dir = osp.join(self.data_prefix, frame_dir)
             video_info['frame_dir'] = frame_dir
             video_info['total_frames'] = len(image_paths[video_name])
-            video_info['labels'] = labels[video_name]
+            if self.test_mode:
+                video_info['label'] = self.aggregate_labels(labels[video_name])
+            else:
+                video_info['label'] = labels[video_name]
             video_info['filename_tmpl'] = self.filename_tmpl.format(
                 video_name, '{:06}')
             video_infos.append(video_info)
@@ -61,12 +85,7 @@ class CharadesDataset(BaseDataset):
 
     def prepare_train_frames(self, idx):
         """Prepare the frames for training given the index."""
-        if self.sample_by_class:
-            # Then, the idx is the class index
-            samples = self.video_infos_by_class[idx]
-            results = copy.deepcopy(np.random.choice(samples))
-        else:
-            results = copy.deepcopy(self.video_infos[idx])
+        results = copy.deepcopy(self.video_infos[idx])
         results['modality'] = self.modality
         results['start_index'] = self.start_index
 
@@ -74,12 +93,7 @@ class CharadesDataset(BaseDataset):
 
     def prepare_test_frames(self, idx):
         """Prepare the frames for testing given the index."""
-        if self.sample_by_class:
-            # Then, the idx is the class index
-            samples = self.video_infos_by_class[idx]
-            results = copy.deepcopy(np.random.choice(samples))
-        else:
-            results = copy.deepcopy(self.video_infos[idx])
+        results = copy.deepcopy(self.video_infos[idx])
         results['modality'] = self.modality
         results['start_index'] = self.start_index
 

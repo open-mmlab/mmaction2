@@ -20,7 +20,7 @@ model = dict(
             pool1_stride_t=1,
             fusion_kernel=7,
             inflate=(0, 0, 1, 1),
-            norm_eval=True),
+            norm_cfg=dict(type='SyncBN')),
         fast_pathway=dict(
             type='resnet3d',
             depth=50,
@@ -30,7 +30,7 @@ model = dict(
             conv1_kernel=(5, 7, 7),
             conv1_stride_t=1,
             pool1_stride_t=1,
-            norm_eval=True)),
+            norm_cfg=dict(type='SyncBN'))),
     cls_head=dict(
         type='SlowFastHead',
         in_channels=2304,  # 2048+256
@@ -41,7 +41,7 @@ model = dict(
         dropout_ratio=0.5),
     # model training and testing settings
     train_cfg=None,
-    test_cfg=dict(maximize_clips='score', average_clips=None))
+    test_cfg=dict(maximize_clips='score'))
 
 dataset_type = 'CharadesDataset'
 data_root = 'data/charades/rawframes'
@@ -78,15 +78,15 @@ val_pipeline = [
         type='SampleCharadesFrames',
         clip_len=64,
         frame_interval=2,
-        num_clips=1,
+        num_clips=10,
         test_mode=True),
     dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
     dict(type='Resize', scale=(-1, 256)),
-    dict(type='CenterCrop', crop_size=224),
+    dict(type='CenterCrop', crop_size=256),
     dict(type='Flip', flip_ratio=0),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
+    dict(type='Collect', keys=['imgs'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs'])
 ]
 test_pipeline = [
@@ -94,20 +94,22 @@ test_pipeline = [
         type='SampleCharadesFrames',
         clip_len=64,
         frame_interval=2,
-        num_clips=1,
+        num_clips=10,
         test_mode=True),
     dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
     dict(type='Resize', scale=(-1, 256)),
-    dict(type='CenterCrop', crop_size=224),
+    dict(type='ThreeCrop', crop_size=256),
     dict(type='Flip', flip_ratio=0),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
+    dict(type='Collect', keys=['imgs'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
     videos_per_gpu=4,
     workers_per_gpu=2,
+    val_dataloader=dict(videos_per_gpu=1),
+    test_dataloader=dict(videos_per_gpu=1),
     train=dict(
         type=dataset_type,
         ann_file=ann_file_train,
@@ -117,14 +119,16 @@ data = dict(
         type=dataset_type,
         ann_file=ann_file_val,
         data_prefix=data_root_val,
-        pipeline=val_pipeline),
+        pipeline=val_pipeline,
+        test_mode=True),
     test=dict(
         type=dataset_type,
         ann_file=ann_file_test,
         data_prefix=data_root_val,
-        pipeline=test_pipeline))
+        pipeline=test_pipeline,
+        test_mode=True))
 
-evaluation = dict(interval=1, metrics=['mean_average_precision'])
+evaluation = dict(interval=2, metrics=['mean_average_precision'])
 
 # optimizer
 optimizer = dict(type='SGD', lr=0.075, momentum=0.9, weight_decay=1e-4)
@@ -132,14 +136,14 @@ optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
 lr_config = dict(
     policy='step',
-    step=[20, 40],
+    step=[40, 50],
     warmup='linear',
     warmup_by_epoch=True,
     warmup_iters=4,
     warmup_ratio=0.0001)
-total_epochs = 50
+total_epochs = 60
 
 load_from = ('https://download.openmmlab.com/mmaction/recognition/'
              'slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb/'
              'slowfast_r50_8x8x1_256e_kinetics400_rgb_20200716-73547d2b.pth')
-work_dir = './work_dirs/slowfast_r50_kinetics_8x8x1_50e_charades_rgb'
+work_dir = './work_dirs/slowfast_r50_kinetics_16x8x1_60e_charades_rgb'
