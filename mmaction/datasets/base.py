@@ -90,10 +90,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
             summ = sum(class_prob)
             class_prob = [x / summ for x in class_prob]
 
-            self.class_prob = {
-                k: prob
-                for k, prob in zip(self.video_infos_by_class, class_prob)
-            }
+            self.class_prob = dict(zip(self.video_infos_by_class, class_prob))
             self.dynamic_length = False
 
     @abstractmethod
