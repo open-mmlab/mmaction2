@@ -2,11 +2,18 @@ import os.path as osp
 import pickle
 import shutil
 import tempfile
+# TODO import test functions from mmcv and delete them from mmaction2
+import warnings
 
 import mmcv
 import torch
 import torch.distributed as dist
 from mmcv.runner import get_dist_info
+
+warnings.warn(
+    'DeprecationWarning: single_gpu_test, multi_gpu_test, '
+    'collect_results_cpu, collect_results_gpu from mmaction2 will be '
+    'deprecated. Please install mmcv through master branch.')
 
 
 def single_gpu_test(model, data_loader):

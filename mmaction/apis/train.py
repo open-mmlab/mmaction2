@@ -1,17 +1,35 @@
 import copy as cp
 import os.path as osp
+import warnings
 
 import torch
 from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
-from mmcv.runner import (DistSamplerSeedHook, EpochBasedRunner, OptimizerHook,
-                         build_optimizer, get_dist_info)
-from mmcv.runner.hooks import Fp16OptimizerHook
+from mmcv.runner import (DistSamplerSeedHook, EpochBasedRunner,
+                         Fp16OptimizerHook, OptimizerHook, build_optimizer,
+                         get_dist_info)
 
-from ..core import (DistEvalHook, EvalHook, OmniSourceDistSamplerSeedHook,
-                    OmniSourceRunner)
+from ..core import OmniSourceDistSamplerSeedHook, OmniSourceRunner
 from ..datasets import build_dataloader, build_dataset
 from ..utils import PreciseBNHook, get_root_logger
-from .test import multi_gpu_test
+
+# TODO: import eval hooks from mmcv and delete them from mmaction2
+try:
+    from mmcv.runner import EvalHook, DistEvalHook
+except ImportError:
+    warnings.warn('DeprecationWarning: EvalHook and DistEvalHook from '
+                  'mmaction2 will be deprecated. Please install mmcv through '
+                  'master branch.')
+    from ..core import EvalHook, DistEvalHook
+
+# TODO import test functions from mmcv and delete them from mmaction2
+try:
+    from mmcv.engine import multi_gpu_test
+except (ImportError, ModuleNotFoundError):
+    warnings.warn(
+        'DeprecationWarning: single_gpu_test, multi_gpu_test, '
+        'collect_results_cpu, collect_results_gpu from mmaction2 will be '
+        'deprecated. Please install mmcv through master branch.')
+    from .test import multi_gpu_test
 
 
 def train_model(model,

@@ -63,6 +63,10 @@ class EvalHook(Hook):
                  save_best='auto',
                  rule=None,
                  **eval_kwargs):
+        warnings.warn(
+            'DeprecationWarning: EvalHook and DistEvalHook in mmaction2 will '
+            'be deprecated, please install mmcv through master branch.')
+
         if 'key_indicator' in eval_kwargs:
             raise RuntimeError(
                 '"key_indicator" is deprecated, '

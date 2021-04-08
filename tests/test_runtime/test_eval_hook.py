@@ -1,6 +1,7 @@
 import os.path as osp
 import tempfile
 import unittest.mock as mock
+import warnings
 from collections import OrderedDict
 from unittest.mock import MagicMock, patch
 
@@ -11,7 +12,17 @@ from mmcv.runner import EpochBasedRunner, IterBasedRunner
 from mmcv.utils import get_logger
 from torch.utils.data import DataLoader, Dataset
 
-from mmaction.core import DistEvalHook, EvalHook
+# TODO import eval hooks from mmcv and delete them from mmaction2
+try:
+    from mmcv.runner import EvalHook, DistEvalHook
+    pytest.skip(
+        'EvalHook and DistEvalHook are supported in MMCV',
+        allow_module_level=True)
+except ImportError:
+    warnings.warn('DeprecationWarning: EvalHook and DistEvalHook from '
+                  'mmaction2 will be deprecated. Please install mmcv through '
+                  'master branch.')
+    from mmaction.core import DistEvalHook, EvalHook
 
 
 class ExampleDataset(Dataset):
