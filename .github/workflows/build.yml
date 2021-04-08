@@ -84,22 +84,28 @@ jobs:
     strategy:
       matrix:
         python-version: [3.7]
-        torch: [1.5.0, 1.6.0, 1.7.0, 1.8.0]
+        torch: [1.5.0+cu101, 1.6.0+cu101, 1.7.0+cu101, 1.8.0+cu101]
         include:
-          - torch: 1.5.0
-            torchvision: 0.6.0
-          - torch: 1.6.0
-            torchvision: 0.7.0
-          - torch: 1.7.0
-            torchvision: 0.8.1
-          - torch: 1.7.0
-            torchvision: 0.8.1
+          - torch: 1.5.0+cu101
+            torchvision: 0.6.0+cu101
+            mmcv: 1.5.0+cu101
+          - torch: 1.6.0+cu101
+            torchvision: 0.7.0+cu101
+            mmcv: 1.6.0+cu101
+          - torch: 1.7.0+cu101
+            torchvision: 0.8.1+cu101
+            mmcv: 1.7.0+cu101
+          - torch: 1.7.0+cu101
+            torchvision: 0.8.1+cu101
+            mmcv: 1.7.0+cu101
             python-version: 3.6
-          - torch: 1.7.0
-            torchvision: 0.8.1
+          - torch: 1.7.0+cu101
+            torchvision: 0.8.1+cu101
+            mmcv: 1.7.0+cu101
             python-version: 3.8
-          - torch: 1.8.0
-            torchvision: 0.9.0
+          - torch: 1.8.0+cu101
+            torchvision: 0.9.0+cu101
+            mmcv: 1.8.0+cu101
             python-version: 3.8
 
     steps:
@@ -136,10 +142,10 @@ jobs:
       - name: Install lmdb
         run: pip install lmdb
       - name: Install PyTorch
-        run: pip install torch==${{matrix.torch}}+cu101 torchvision==${{matrix.torchvision}}+cu101 -f https://download.pytorch.org/whl/torch_stable.html
+        run: pip install torch==${{matrix.torch}} torchvision==${{matrix.torchvision}} -f https://download.pytorch.org/whl/torch_stable.html
       - name: Install mmaction dependencies
         run: |
-          pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu101/torch${{matrix.torch}}/index.html
+          pip install mmcv-full==latest+torch${{matrix.mmcv}} -f https://download.openmmlab.com/mmcv/dist/index.html --use-deprecated=legacy-resolver
           pip install -q git+https://github.com/open-mmlab/mmdetection/
           pip install -q git+https://github.com/open-mmlab/mmclassification/
           pip install -r requirements.txt
@@ -153,7 +159,9 @@ jobs:
           coverage run --branch --source mmaction -m pytest tests/
           coverage xml
           coverage report -m
+      # Only upload coverage report for python3.7 && pytorch1.5
       - name: Upload coverage to Codecov
+        if: ${{matrix.torch == '1.5.0+cu101' && matrix.python-version == '3.7'}}
         uses: codecov/codecov-action@v1.0.14
         with:
           file: ./coverage.xml
