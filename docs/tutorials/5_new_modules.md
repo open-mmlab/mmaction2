@@ -128,9 +128,6 @@ Here we show how to develop new components with an example of TSN.
 
         def forward(self, x):  # should return a tuple
             pass
-
-        def init_weights(self, pretrained=None):
-            pass
     ```
 
 2. Import the module in `mmaction/models/backbones/__init__.py`.
@@ -158,7 +155,7 @@ Here we show how to develop a new head with the example of TSNHead as the follow
 1. Create a new file `mmaction/models/heads/tsn_head.py`.
 
     You can write a new classification head inheriting from [BaseHead](/mmaction/models/heads/base.py),
-    and overwrite `init_weights(self)` and `forward(self, x)` method.
+    and overwrite `forward(self, x)` method.
 
     ```python
     from ..registry import HEADS
@@ -172,9 +169,6 @@ Here we show how to develop a new head with the example of TSNHead as the follow
             pass
 
         def forward(self, x):
-            pass
-
-        def init_weights(self):
             pass
     ```
 
