@@ -146,7 +146,6 @@ class BaseHumanDetector:
     def predict(self, task):
         keyframe = task.frames[len(task.frames) // 2]
         bboxes = self._do_detect(keyframe)
-        bboxes = torch.from_numpy(bboxes).to(self.device)
         task.add_bboxes(bboxes)
         return task
 
@@ -162,6 +161,7 @@ class MmdetHumanDetector(BaseHumanDetector):
     def _do_detect(self, image):
         result = inference_detector(self.model, image)[self.person_classid]
         result = result[result[:, 4] >= self.score_thr][:, :4]
+        result = torch.from_numpy(result).to(self.device)
         return result
 
 
@@ -334,21 +334,11 @@ class ClipHelper:
         return self
 
     def __next__(self):
-        # If there is nothing in the task queue.
         if self.read_queue.qsize() == 0:
-            return self.not_end, None
+            time.sleep(0.02)
+            return True, None
         else:
-            with self.read_id_lock:
-                read_id = self.read_id
-            was_read, task = self.read_queue.get()
-
-            # If we reach the end of the video.
-            if not was_read:
-                # Put to write queue.
-                with self.display_lock:
-                    self.display_queue[read_id] = was_read, copy.deepcopy(task)
-                task = None
-            return was_read, task
+            return self.read_queue.get()
 
     def start(self):
         """Start threads to read and display frames."""
@@ -375,6 +365,7 @@ class ClipHelper:
 
     def join(self):
         self.read_thread.join()
+        self.display_thread.join()
 
     def display(self, task):
         """Add the visualized task to the display queue for display.
@@ -487,6 +478,13 @@ def main(args):
 
     # init action detector
     config = mmcv.Config.fromfile(args.config)
+
+    # Fix a issue that different actions may have different bboxes
+    try:
+        config['model']['test_cfg']['rcnn']['action_thr'] = .0
+    except KeyError:
+        pass
+
     stdet_predictor = StdetPredictor(
         config=config,
         checkpoint=args.checkpoint,
@@ -504,8 +502,6 @@ def main(args):
     clip_helper.start()
 
     for able_to_read, task in clip_helper:
-        if not able_to_read:
-            break
         if task is None:
             time.sleep(0.02)
             continue
@@ -513,6 +509,9 @@ def main(args):
         stdet_predictor.predict(task)
         vis.draw_predictions(task)
         clip_helper.display(task)
+
+        if not able_to_read:
+            break
 
     clip_helper.join()
     clip_helper.clean()
