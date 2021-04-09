@@ -30,6 +30,7 @@ Note: This module operates on numpy boxes and box lists.
 import collections
 import logging
 from abc import ABCMeta, abstractmethod
+from collections import defaultdict
 
 import numpy as np
 
@@ -163,10 +164,6 @@ class ObjectDetectionEvaluator(DetectionEvaluator):
                 standard_fields.InputDataFields.groundtruth_classes: integer
                     numpy array of shape [num_boxes] containing 1-indexed
                     groundtruth classes for the boxes.
-                standard_fields.InputDataFields.groundtruth_difficult: Optional
-                    length M numpy boolean array denoting whether a ground
-                    truth box is a difficult instance or not. This field is
-                    optional to support the case that no boxes are difficult.
                 standard_fields.InputDataFields.groundtruth_instance_masks:
                     Optional numpy array of shape [num_boxes, height, width]
                     with values in {0, 1}.
@@ -184,21 +181,7 @@ class ObjectDetectionEvaluator(DetectionEvaluator):
             groundtruth_dict[
                 standard_fields.InputDataFields.groundtruth_classes] -
             self._label_id_offset)
-        # If the key is not present in the groundtruth_dict or the array is
-        # empty (unless there are no annotations for the groundtruth on this
-        # image) use values from the dictionary or insert None otherwise.
-        if (standard_fields.InputDataFields.groundtruth_difficult
-                in groundtruth_dict.keys()) and (groundtruth_dict[
-                    standard_fields.InputDataFields.groundtruth_difficult].size
-                                                 or
-                                                 not groundtruth_classes.size):
-            groundtruth_difficult = groundtruth_dict[
-                standard_fields.InputDataFields.groundtruth_difficult]
-        else:
-            groundtruth_difficult = None
-            if not len(self._image_ids) % 1000:
-                logging.warn(('image %s does not have groundtruth difficult '
-                              'flag specified'), image_id)
+
         groundtruth_masks = None
         if self._evaluate_masks:
             if (standard_fields.InputDataFields.groundtruth_instance_masks
@@ -212,7 +195,6 @@ class ObjectDetectionEvaluator(DetectionEvaluator):
             groundtruth_boxes=groundtruth_dict[
                 standard_fields.InputDataFields.groundtruth_boxes],
             groundtruth_class_labels=groundtruth_classes,
-            groundtruth_is_difficult_list=groundtruth_difficult,
             groundtruth_masks=groundtruth_masks,
         )
         self._image_ids.update([image_id])
@@ -397,8 +379,6 @@ class ObjectDetectionEvaluation:
         self.groundtruth_boxes = {}
         self.groundtruth_class_labels = {}
         self.groundtruth_masks = {}
-        self.groundtruth_is_difficult_list = {}
-        self.groundtruth_is_group_of_list = {}
         self.num_gt_instances_per_class = np.zeros(self.num_class, dtype=int)
         self.num_gt_imgs_per_class = np.zeros(self.num_class, dtype=int)
 
@@ -424,8 +404,6 @@ class ObjectDetectionEvaluation:
         image_key,
         groundtruth_boxes,
         groundtruth_class_labels,
-        groundtruth_is_difficult_list=None,
-        groundtruth_is_group_of_list=None,
         groundtruth_masks=None,
     ):
         """Adds groundtruth for a single image to be used for evaluation.
@@ -437,14 +415,6 @@ class ObjectDetectionEvaluation:
                 [ymin, xmin, ymax, xmax] in absolute image coordinates.
             groundtruth_class_labels: integer numpy array of shape [num_boxes]
                 containing 0-indexed groundtruth classes for the boxes.
-            groundtruth_is_difficult_list: A length M numpy boolean array
-                denoting whether a ground truth box is a difficult instance or
-                not. To support the case that no boxes are difficult, it is by
-                default set as None.
-            groundtruth_is_group_of_list: A length M numpy boolean array
-                denoting whether a ground truth box is a group-of box or not.
-                To support the case that no boxes are groups-of, it is by
-                default set as None.
             groundtruth_masks: uint8 numpy array of shape
                 [num_boxes, height, width] containing `num_boxes` groundtruth
                 masks. The mask values range from 0 to 1.
@@ -457,22 +427,8 @@ class ObjectDetectionEvaluation:
         self.groundtruth_boxes[image_key] = groundtruth_boxes
         self.groundtruth_class_labels[image_key] = groundtruth_class_labels
         self.groundtruth_masks[image_key] = groundtruth_masks
-        if groundtruth_is_difficult_list is None:
-            num_boxes = groundtruth_boxes.shape[0]
-            groundtruth_is_difficult_list = np.zeros(num_boxes, dtype=bool)
-        self.groundtruth_is_difficult_list[
-            image_key] = groundtruth_is_difficult_list.astype(dtype=bool)
-        if groundtruth_is_group_of_list is None:
-            num_boxes = groundtruth_boxes.shape[0]
-            groundtruth_is_group_of_list = np.zeros(num_boxes, dtype=bool)
-        self.groundtruth_is_group_of_list[
-            image_key] = groundtruth_is_group_of_list.astype(dtype=bool)
 
-        self._update_ground_truth_statistics(
-            groundtruth_class_labels,
-            groundtruth_is_difficult_list.astype(dtype=bool),
-            groundtruth_is_group_of_list.astype(dtype=bool),
-        )
+        self._update_ground_truth_statistics(groundtruth_class_labels)
 
     def add_single_detected_image_info(
         self,
@@ -523,10 +479,6 @@ class ObjectDetectionEvaluation:
             # Masks are popped instead of look up. The reason is that we do not
             # want to keep all masks in memory which can cause memory overflow.
             groundtruth_masks = self.groundtruth_masks.pop(image_key)
-            groundtruth_is_difficult_list = self.groundtruth_is_difficult_list[
-                image_key]
-            groundtruth_is_group_of_list = self.groundtruth_is_group_of_list[
-                image_key]
         else:
             groundtruth_boxes = np.empty(shape=[0, 4], dtype=float)
             groundtruth_class_labels = np.array([], dtype=int)
@@ -534,8 +486,6 @@ class ObjectDetectionEvaluation:
                 groundtruth_masks = None
             else:
                 groundtruth_masks = np.empty(shape=[0, 1, 1], dtype=float)
-            groundtruth_is_difficult_list = np.array([], dtype=bool)
-            groundtruth_is_group_of_list = np.array([], dtype=bool)
         (
             scores,
             tp_fp_labels,
@@ -545,8 +495,6 @@ class ObjectDetectionEvaluation:
             detected_class_labels=detected_class_labels,
             groundtruth_boxes=groundtruth_boxes,
             groundtruth_class_labels=groundtruth_class_labels,
-            groundtruth_is_difficult_list=groundtruth_is_difficult_list,
-            groundtruth_is_group_of_list=groundtruth_is_group_of_list,
             detected_masks=detected_masks,
             groundtruth_masks=groundtruth_masks,
         )
@@ -556,35 +504,19 @@ class ObjectDetectionEvaluation:
                 self.scores_per_class[i].append(scores[i])
                 self.tp_fp_labels_per_class[i].append(tp_fp_labels[i])
 
-    def _update_ground_truth_statistics(
-        self,
-        groundtruth_class_labels,
-        groundtruth_is_difficult_list,
-        groundtruth_is_group_of_list,
-    ):
+    def _update_ground_truth_statistics(self, groundtruth_class_labels):
         """Update grouth truth statitistics.
-
-        1. Difficult boxes are ignored when counting the number of ground truth
-        instances as done in Pascal VOC devkit.
-        2. Difficult boxes are treated as normal boxes when computing CorLoc
-        related statitistics.
 
         Args:
             groundtruth_class_labels: An integer numpy array of length M,
                 representing M class labels of object instances in ground truth
-            groundtruth_is_difficult_list: A boolean numpy array of length M
-                denoting whether a ground truth box is a difficult instance or
-                not
-            groundtruth_is_group_of_list: A boolean numpy array of length M
-                denoting whether a ground truth box is a group-of box or not
         """
-        for class_index in range(self.num_class):
-            num_gt_instances = np.sum(groundtruth_class_labels[
-                ~groundtruth_is_difficult_list
-                & ~groundtruth_is_group_of_list] == class_index)
-            self.num_gt_instances_per_class[class_index] += num_gt_instances
-            if np.any(groundtruth_class_labels == class_index):
-                self.num_gt_imgs_per_class[class_index] += 1
+        count = defaultdict(lambda: 0)
+        for label in groundtruth_class_labels:
+            count[label] += 1
+        for k in count:
+            self.num_gt_instances_per_class[k] += count[k]
+            self.num_gt_imgs_per_class[k] += 1
 
     def evaluate(self):
         """Compute evaluation result.

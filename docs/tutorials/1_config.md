@@ -488,7 +488,7 @@ We incorporate modular design into our config system, which is convenient to con
                 debug=False)), # Debug mode
         test_cfg=dict( # Testing config of FastRCNN
             rcnn=dict(  # Dict for rcnn testing config
-                action_thr=0.00))) # The threshold of an action
+                action_thr=0.002))) # The threshold of an action
 
     # dataset settings
     dataset_type = 'AVADataset' # Type of dataset for training, validation and testing

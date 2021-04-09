@@ -53,6 +53,7 @@ Optional arguments:
 - `--output-file`: The output onnx model name. If not specified, it will be set to `tmp.onnx`.
 - `--is-localizer`: Determines whether the model to be exported is a localizer. If not specified, it will be set to `False`.
 - `--opset-version`: Determines the operation set version of onnx, we recommend you to use a higher version such as 11 for compatibility. If not specified, it will be set to `11`.
+- `--softmax`: Determines whether to add a softmax layer at the end of recognizers. If not specified, it will be set to `False`. For now, localizers are not supported.
 
 ### Recognizers
 
