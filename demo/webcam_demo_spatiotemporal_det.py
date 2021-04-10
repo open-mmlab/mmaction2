@@ -1,7 +1,7 @@
 """Webcam Spatio-Temporal Action Detection Demo.
 
-This script borrows some codes from
-https://github.com/facebookresearch/SlowFast
+This script borrows some codes from https://github.com/facebookresearch/SlowFast # noqa
+Tips: TODO
 """
 
 import argparse
@@ -70,10 +70,13 @@ def parse_args():
 
     # display config
     parser.add_argument(
-        '--video', default='0', type=str, help='video file/url')
+        '--input-video',
+        default='0',
+        type=str,
+        help='webcam id or input video file/url')
     parser.add_argument(
         '--output-fps',
-        default=30,
+        default=15,
         type=int,
         help='the fps of demo video output')
     parser.add_argument(
@@ -109,20 +112,45 @@ def parse_args():
 
 
 class TaskInfo:
-    """Wapper for a clip."""
+    """Wapper for a clip.
+
+    Transmit data around three threads.
+
+    1) Read Thread: Create task and put task into read queue. Init `frames`,
+        `processed_frames`, `img_shape`, `num_buffer_frames`,
+        `clip_vis_radius`.
+    2) Main Thread: Get data from read queue, predict human bboxes and stdet
+        action labels, draw predictions and put task into display queue. Init
+        `bboxes` and `action_preds`, update `frames`.
+    3) Display Thread: Get data from display queue, show/write frames and
+        delete task.
+    """
 
     def __init__(self):
-        # raw frames
-        self.frames = None
-        # preprocessed(resize/norm) frames
-        self.processed_frames = None
-        self.frames_inds = None
         self.id = -1
+
+        # raw frames, used as human detector input, draw predictions input
+        # and output, display input
+        self.frames = None
+
+        # stdet params
+        self.processed_frames = None  # model inputs
+        self.frames_inds = None  # select frames from processed frames
+        self.img_shape = None  # model inputs, processed frame shape
+        # `action_preds` is `list[list[tuple]]`. The outter brackets indicate
+        # different bboxes and the intter brackets indicate different action
+        # results for the same bbox. tuple contains `class_name` and `score`.
+        self.action_preds = None  # stdet results
+
+        # human detector results
         self.bboxes = None
-        self.action_preds = None
+
+        # number of overlapping frames with the previous task
         self.num_buffer_frames = 0
+
+        # for each clip, draw predictions around keyframe with at most
+        # 2 x clip_vis_raius frames
         self.clip_vis_radius = -1
-        self.img_shape = None
 
     def add_frames(self, idx, frames, processed_frames):
         """Add the clip and corresponding id.
@@ -130,6 +158,8 @@ class TaskInfo:
         Args:
             idx (int): the current index of the clip.
             frames (list[ndarray]): list of images in "BGR" format.
+            processed_frames (list[ndarray]): list of resize and normed images
+                in "BGR" format.
         """
         self.frames = frames
         self.processed_frames = processed_frames
@@ -145,10 +175,10 @@ class TaskInfo:
         self.action_preds = preds
 
     def get_model_inputs(self, device):
+        """Convert preprocessed images to MMAction2 STDet model inputs."""
         cur_frames = [self.processed_frames[idx] for idx in self.frames_inds]
         input_array = np.stack(cur_frames).transpose((3, 0, 1, 2))[np.newaxis]
         input_tensor = torch.from_numpy(input_array).to(device)
-        print(input_tensor.size())
         return dict(
             return_loss=False,
             img=[input_tensor],
@@ -157,6 +187,14 @@ class TaskInfo:
 
 
 class BaseHumanDetector:
+    """Base class for Human Dector.
+
+    Args:
+        device (str): CPU/CUDA device option.
+    """
+
+    def __init__(self, device):
+        self.device = torch.device(device)
 
     def _do_detect(self, image):
         """Get human bboxes with shape [n, 4].
@@ -166,30 +204,55 @@ class BaseHumanDetector:
         raise NotImplementedError
 
     def predict(self, task):
+        """Add keyframe bboxes to task."""
+        # keyframe idx == (clip_len * frame_interval) // 2
         keyframe = task.frames[len(task.frames) // 2]
+
+        # call detector
         bboxes = self._do_detect(keyframe)
+
+        # convert bboxes to torch.Tensor and move to target device
+        if isinstance(bboxes, np.ndarray):
+            bboxes = torch.from_numpy(bboxes).to(self.device)
+        elif isinstance(bboxes, torch.Tensor) and bboxes.device != self.device:
+            bboxes = bboxes.to(self.device)
+
+        # update task
         task.add_bboxes(bboxes)
+
         return task
 
 
 class MmdetHumanDetector(BaseHumanDetector):
+    """Wrapper for mmdetection human detector.
+
+    Args:
+        config (str): Path to mmdetection config.
+        ckpt (str): Path to mmdetection checkpoint.
+        device (str): CPU/CUDA device option.
+        score_thr (float): The threshold of human action score.
+        person_classid (int): Choose class from detection results.
+            Default: 0. Suitable for COCO pretrained models.
+    """
 
     def __init__(self, config, ckpt, device, score_thr, person_classid=0):
+        super().__init__(device)
         self.model = init_detector(config, ckpt, device)
         self.person_classid = person_classid
         self.score_thr = score_thr
-        self.device = device
 
     def _do_detect(self, image):
+        """Get bboxes in shape [n, 4] and values in pixels."""
         result = inference_detector(self.model, image)[self.person_classid]
         result = result[result[:, 4] >= self.score_thr][:, :4]
-        result = torch.from_numpy(result).to(self.device)
         return result
 
 
 class StdetPredictor:
+    """Wrapper for MMAction2 spatio-temporal action models."""
 
     def __init__(self, config, checkpoint, device, score_thr, label_map_path):
+        self.score_thr = score_thr
         # load model
         config.model.backbone.pretrained = None
         model = build_detector(config.model, test_cfg=config.get('test_cfg'))
@@ -199,25 +262,24 @@ class StdetPredictor:
         self.model = model
         self.device = device
 
-        self.score_thr = score_thr
+        # init label map, aka class_id to class_name dict
         with open(label_map_path) as f:
             lines = f.readlines()
         lines = [x.strip().split(': ') for x in lines]
         self.label_map = {int(x[0]): x[1] for x in lines}
 
     def predict(self, task):
+        """Spatio-temporval Action Detection model inference."""
+        # No need to do inference if no one in keyframe
         if len(task.bboxes) == 0:
             return task
 
-        # model inference
         with torch.no_grad():
-            # result for one sample, a list with num_classes elements
-            # each element
             result = self.model(**task.get_model_inputs(self.device))[0]
 
-        # post process
+        # pack results of human detector and stdet
         preds = []
-        for i in range(task.bboxes.shape[0]):
+        for _ in range(task.bboxes.shape[0]):
             preds.append([])
         for class_id in range(len(result)):
             if class_id + 1 not in self.label_map:
@@ -236,22 +298,22 @@ class ClipHelper:
 
     def __init__(self,
                  config,
-                 video_path=0,
+                 input_video=0,
                  predict_stepsize=40,
                  output_fps=25,
                  clip_vis_radius=8,
                  output_file=None,
                  show=True):
-        # init input
+        # source params
         try:
-            self.cap = cv2.VideoCapture(int(video_path))
+            self.cap = cv2.VideoCapture(int(input_video))
         except ValueError:
-            self.cap = cv2.VideoCapture(video_path)
+            self.cap = cv2.VideoCapture(input_video)
         assert self.cap.isOpened()
         was_read, frame = self.cap.read()
         assert was_read
 
-        # image meta & preprocess params
+        # image meta & image preprocess params
         h, w, _ = frame.shape
         self.origin_size = (h, w)
         self.new_size = mmcv.rescale_size((w, h), (256, np.Inf))
@@ -264,7 +326,7 @@ class ClipHelper:
         img_norm_cfg['std'] = np.array(img_norm_cfg['std'])
         self.img_norm_cfg = img_norm_cfg
 
-        # init output
+        # output/display params
         assert output_file or output_fps, \
             'output_file and show cannot both be None'
         self.output_fps = output_fps
@@ -282,7 +344,7 @@ class ClipHelper:
             'frame_interval']
         assert clip_len % 2 == 0, 'We would like to have an even clip_len'
 
-        # init params
+        # task init params
         self.clip_vis_radius = clip_vis_radius
         self.predict_stepsize = predict_stepsize
         self.window_size = clip_len * frame_interval
@@ -292,40 +354,56 @@ class ClipHelper:
         self.frames_inds = [
             frame_start + frame_interval * i for i in range(clip_len)
         ]
-
-        self.display_id = -1
-        self.read_id = -1
         self.buffer = []
         self.processed_buffer = []
-        self.read_queue = queue.Queue()
+
+        # display multi-theading params
+        self.display_id = -1  # task.id for display queue
         self.display_queue = {}
         self.display_lock = threading.Lock()
-        self.read_id_lock = threading.Lock()
-        self.read_lock = threading.Lock()
         self.output_lock = threading.Lock()
-        self.not_end = True
+
+        # read multi-theading params
+        self.read_id = -1  # task.id for read queue
+        self.read_id_lock = threading.Lock()
+        self.read_queue = queue.Queue()
+        self.read_lock = threading.Lock()
+        self.not_end = True  # cap.read() flag
+
+        # program state
         self.stopped = False
 
         atexit.register(self.clean)
 
     def read_fn(self):
-        """Read frames from VideoCapture and create tasks."""
+        """Main function for read thread.
+
+        Contains three functions:
+
+        1) Read and preprocess (resize + norm) frames from source.
+        2) Create task by frames from previous step and buffer.
+        3) Put task into read queue.
+        """
         was_read = True
         start_time = time.time()
         while was_read and not self.stopped:
-            # create task
+            # init task
             task = TaskInfo()
             task.clip_vis_radius = self.clip_vis_radius
             task.frames_inds = self.frames_inds
 
-            # read frames to create a clip
+            # read buffer
             frames = []
             processed_frames = []
             if len(self.buffer) != 0:
                 frames = self.buffer
             if len(self.processed_buffer) != 0:
                 processed_frames = self.processed_buffer
+
+            # read and preprocess frames from source and update task
             with self.read_lock:
+                before_read = time.time()
+                read_frame_cnt = self.window_size - len(frames)
                 while was_read and len(frames) < self.window_size:
                     was_read, frame = self.cap.read()
                     if was_read:
@@ -335,26 +413,35 @@ class ClipHelper:
                         _ = mmcv.imnormalize_(processed_frame,
                                               **self.img_norm_cfg)
                         processed_frames.append(processed_frame)
+            task.add_frames(self.read_id + 1, frames, processed_frames)
+            task.num_buffer_frames = (0 if self.read_id == -1 else
+                                      self.buffer_size)
 
+            # update buffer
             if was_read:
                 self.buffer = frames[-self.buffer_size:]
                 self.processed_buffer = processed_frames[-self.buffer_size:]
 
-            task.add_frames(self.read_id + 1, frames, processed_frames)
-            task.num_buffer_frames = (0 if self.read_id == -1 else
-                                      self.buffer_size)
+            # update read state
             with self.read_id_lock:
                 self.read_id += 1
                 self.not_end = was_read
 
             self.read_queue.put((was_read, copy.deepcopy(task)))
             cur_time = time.time()
-            logger.debug(f'Read Thread: {1000*(cur_time - start_time):.0f} ms')
+            logger.debug(
+                f'Read Thread: {1000*(cur_time - start_time):.0f} ms, '
+                f'{read_frame_cnt / (cur_time - before_read):.0f} fps')
             start_time = cur_time
 
     def display_fn(self):
+        """Main function for display thread.
+
+        Read data from display queue and display predictions.
+        """
         start_time = time.time()
         while not self.stopped:
+            # get the state of the read thread
             with self.read_id_lock:
                 read_id = self.read_id
                 not_end = self.not_end
@@ -363,40 +450,52 @@ class ClipHelper:
                 # If video ended and we have display all frames.
                 if not not_end and self.display_id == read_id:
                     break
-                # If the next frames are not available, wait.
+
+                # If the next task are not available, wait.
                 if (len(self.display_queue) == 0 or
                         self.display_queue.get(self.display_id + 1) is None):
                     time.sleep(0.02)
                     continue
-                else:
-                    self.display_id += 1
-                    was_read, task = self.display_queue[self.display_id]
-                    del self.display_queue[self.display_id]
 
+                # get display data and update state
+                self.display_id += 1
+                was_read, task = self.display_queue[self.display_id]
+                del self.display_queue[self.display_id]
+                display_id = self.display_id
+
+            # do display predictions
             with self.output_lock:
+                # task.frames[:task.num_buffer_frames] have already been
+                # displayed by the previous task
                 for frame in task.frames[task.num_buffer_frames:]:
                     if self.show:
                         cv2.imshow('Demo', frame)
                         cv2.waitKey(int(1000 / self.output_fps))
                     if self.video_writer:
                         self.video_writer.write(frame)
-                cur_time = time.time()
-                logger.debug(
-                    f'Display thread: {1000*(cur_time - start_time):.0f} ms')
-                start_time = cur_time
+
+            cur_time = time.time()
+            logger.debug(
+                f'Display thread: {1000*(cur_time - start_time):.0f} ms, '
+                f'read id {read_id}, display id {display_id}')
+            start_time = cur_time
 
     def __iter__(self):
         return self
 
     def __next__(self):
+        """Get data from read queue.
+
+        This function is part of the main thread.
+        """
         if self.read_queue.qsize() == 0:
             time.sleep(0.02)
-            return True, None
+            return not self.stopped, None
         else:
             return self.read_queue.get()
 
     def start(self):
-        """Start threads to read and display frames."""
+        """Start read thread and display thread."""
         self.read_thread = threading.Thread(
             target=self.read_fn, args=(), name='VidRead-Thread', daemon=True)
         self.read_thread.start()
@@ -410,6 +509,7 @@ class ClipHelper:
         return self
 
     def clean(self):
+        """Close all threads and release all resources."""
         self.stopped = True
         self.read_lock.acquire()
         self.cap.release()
@@ -421,11 +521,12 @@ class ClipHelper:
         self.output_lock.release()
 
     def join(self):
+        """Waiting for the finalization of read and display thread."""
         self.read_thread.join()
         self.display_thread.join()
 
     def display(self, task):
-        """Add the visualized task to the display queue for display.
+        """Add the visualized task to the display queue.
 
         Args:
             task (TaskInfo object): task object that contain the necessary
@@ -450,25 +551,40 @@ class ClipHelper:
         )
 
 
-FONTFACE = cv2.FONT_HERSHEY_DUPLEX
-FONTSCALE = 0.5
-FONTCOLOR = (255, 255, 255)  # BGR, white
-MSGCOLOR = (128, 128, 128)  # BGR, gray
-THICKNESS = 1
-LINETYPE = 1
-
-
 class Visualizer:
-    """plate (str): The plate used for visualization.
+    """Tools to visualize predictions.
 
-    Default: plate_blue.
-    max_labels_per_bbox (int): Max number of labels to visualize for a person
-        box. Default: 5.
+    Args:
+        plate (str): The plate used for visualization.
+            Default: plate_blue.
+        max_labels_per_bbox (int): Max number of labels to visualize for a
+            person box. Default: 5.
+        text_fontface (int): Fontface from OpenCV for texts.
+            Default: cv2.FONT_HERSHEY_DUPLEX.
+        text_fontscale (float): Fontscale from OpenCV for texts.
+            Default: 0.5.
+        text_fontcolor (tuple): fontface from OpenCV for texts.
+            Default: (255, 255, 255).
+        text_thickness (int): Thickness from OpenCV for texts.
+            Default: 1.
+        text_linetype (int): LInetype from OpenCV for texts.
+            Default: 1.
     """
 
-    def __init__(self,
-                 plate='03045e-023e8a-0077b6-0096c7-00b4d8-48cae4',
-                 max_labels_per_bbox=5):
+    def __init__(
+            self,
+            plate='03045e-023e8a-0077b6-0096c7-00b4d8-48cae4',
+            max_labels_per_bbox=5,
+            text_fontface=cv2.FONT_HERSHEY_DUPLEX,
+            text_fontscale=0.5,
+            text_fontcolor=(255, 255, 255),  # white
+            text_thickness=1,
+            text_linetype=1):
+        self.text_fontface = text_fontface
+        self.text_fontscale = text_fontscale
+        self.text_fontcolor = text_fontcolor
+        self.text_thickness = text_thickness
+        self.text_linetype = text_linetype
 
         def hex2color(h):
             """Convert the 6-digit hex string to tuple of 3 int value (RGB)"""
@@ -476,68 +592,77 @@ class Visualizer:
 
         plate = plate.split('-')
         self.plate = [hex2color(h) for h in plate]
+
         self.max_labels_per_bbox = max_labels_per_bbox
 
     def draw_predictions(self, task):
+        """Visualize stdet predictions on raw frames."""
+        # read data from task
         bboxes = task.bboxes.cpu().numpy()
         frames = task.frames
         preds = task.action_preds
 
-        # already displayed by the former task
+        # already draw by the former task
         buffer = frames[:task.num_buffer_frames]
 
-        # display with preds
+        # draw predictions
         keyframe_idx = len(frames) // 2 - task.num_buffer_frames
         draw_range = [
             keyframe_idx - task.clip_vis_radius,
             keyframe_idx + task.clip_vis_radius,
         ]
         frames = self.draw_clip_range(frames[task.num_buffer_frames:], preds,
-                                      bboxes, keyframe_idx, draw_range)
+                                      bboxes, draw_range)
+
+        # update task
         task.frames = buffer + frames
 
         return task
 
-    def draw_clip_range(self, frames, preds, bboxes, keyframe_idx, draw_range):
+    def draw_clip_range(self, frames, preds, bboxes, draw_range):
+        """Draw a range of frames with the same bboxes and predictions."""
+        # no predictions to be draw
         if bboxes is None or len(bboxes) == 0:
             return frames
 
-        if draw_range is None:
-            draw_range = [0, len(frames) - 1]
-        else:
-            draw_range[0] = max(0, draw_range[0])
+        # draw frames in `draw_range`
+        draw_range[0] = max(0, draw_range[0])
         left_frames = frames[:draw_range[0]]
         right_frames = frames[draw_range[1] + 1:]
         draw_frames = frames[draw_range[0]:draw_range[1] + 1]
 
-        # draw bboxes and texts
+        # get labels(texts) and draw predictions
         labels = []
         for bbox_preds in preds:
             labels.append([x[0] for x in bbox_preds])
-        h, w, _ = frames[0].shape
-        scale_ratio = np.array([w, h, w, h])
         for frame in draw_frames:
-            self.draw_one_image(frame, bboxes, labels, scale_ratio)
+            self.draw_one_image(frame, bboxes, labels)
 
         return list(left_frames) + draw_frames + list(right_frames)
 
-    def draw_one_image(self, frame, bboxes, labels, scale_ratio):
+    def draw_one_image(self, frame, bboxes, labels):
+        """Draw predictions on one image."""
         for bbox, label in zip(bboxes, labels):
+            # draw bbox
             box = bbox.astype(np.int64)
             st, ed = tuple(box[:2]), tuple(box[2:])
             cv2.rectangle(frame, st, ed, (0, 0, 255), 2)
+
+            # draw texts
             for k, text in enumerate(label):
                 if k >= self.max_labels_per_bbox:
                     break
                 location = (0 + st[0], 18 + k * 18 + st[1])
-                textsize = cv2.getTextSize(text, FONTFACE, FONTSCALE,
-                                           THICKNESS)[0]
+                textsize = cv2.getTextSize(text, self.text_fontface,
+                                           self.text_fontscale,
+                                           self.text_thickness)[0]
                 textwidth = textsize[0]
                 diag0 = (location[0] + textwidth, location[1] - 14)
                 diag1 = (location[0], location[1] + 2)
                 cv2.rectangle(frame, diag0, diag1, self.plate[k + 1], -1)
-                cv2.putText(frame, text, location, FONTFACE, FONTSCALE,
-                            FONTCOLOR, THICKNESS, LINETYPE)
+                cv2.putText(frame, text, location, self.text_fontface,
+                            self.text_fontscale, self.text_fontcolor,
+                            self.text_thickness, self.text_linetype)
 
 
 def main(args):
@@ -550,13 +675,11 @@ def main(args):
 
     # init action detector
     config = mmcv.Config.fromfile(args.config)
-
-    # Fix a issue that different actions may have different bboxes
     try:
+        # Fix a issue that different actions may have different bboxes
         config['model']['test_cfg']['rcnn']['action_thr'] = .0
     except KeyError:
         pass
-
     stdet_predictor = StdetPredictor(
         config=config,
         checkpoint=args.checkpoint,
@@ -567,35 +690,56 @@ def main(args):
     # init clip helper
     clip_helper = ClipHelper(
         config=config,
-        video_path=args.video,
+        input_video=args.input_video,
         predict_stepsize=args.predict_stepsize,
         output_fps=args.output_fps,
         clip_vis_radius=args.clip_vis_radius,
         output_file=args.output_file,
         show=args.show)
+    # start read and display thread
     clip_helper.start()
 
     try:
+        # Main thread main function contains:
+        # 1) get data from read queue
+        # 2) get human bboxes and stdet predictions
+        # 3) draw stdet predictions and update task
+        # 4) put task into display queue
         for able_to_read, task in clip_helper:
+            # get data from read queue
+
             if task is None:
+                # when no data in read queue, wait
                 time.sleep(0.01)
                 continue
 
             inference_start = time.time()
 
+            # get human bboxes
             human_detector.predict(task)
+
+            # get stdet predictions
             stdet_predictor.predict(task)
+
+            # draw stdet predictions in raw frames
             vis.draw_predictions(task)
+
+            # add draw frames to display queue
             clip_helper.display(task)
 
             logger.debug('Main thread inference time detector '
                          f'{1000*(time.time() - inference_start):.0f} ms')
+
             if not able_to_read:
+                # read thread is dead and all tasks are processed
                 break
+
+        # wait for display thread
         clip_helper.join()
     except KeyboardInterrupt:
         pass
     finally:
+        # close read & display thread, release all resources
         clip_helper.clean()
 
 
