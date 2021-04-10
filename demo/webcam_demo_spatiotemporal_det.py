@@ -77,6 +77,15 @@ def parse_args():
         type=int,
         help='the fps of demo video output')
     parser.add_argument(
+        '--output-file',
+        default=None,
+        type=str,
+        help='the filename of output video')
+    parser.add_argument(
+        '--show',
+        action='store_true',
+        help='Whether to show results with cv2.imshow')
+    parser.add_argument(
         '--det-score-thr',
         type=float,
         default=0.9,
@@ -223,9 +232,15 @@ class StdetPredictor:
 class ClipHelper:
     """Multithrading utils to read/show frames and create TaskInfo object."""
 
-    def __init__(self, config, video_path, predict_stepsize, output_fps,
-                 clip_vis_radius):
-        # init source
+    def __init__(self,
+                 config,
+                 video_path=0,
+                 predict_stepsize=40,
+                 output_fps=25,
+                 clip_vis_radius=8,
+                 output_file=None,
+                 show=True):
+        # init input
         try:
             self.cap = cv2.VideoCapture(int(video_path))
         except ValueError:
@@ -247,6 +262,16 @@ class ClipHelper:
         img_norm_cfg['std'] = np.array(img_norm_cfg['std'])
         self.img_norm_cfg = img_norm_cfg
 
+        # init output
+        assert output_file or output_fps, \
+            'output_file and show cannot both be None'
+        self.output_fps = output_fps
+        self.show = show
+        self.video_writer = None
+        self.display_height, self.display_width = self.new_size
+        if output_file is not None:
+            self.video_writer = self.get_output_file(output_file)
+
         # sampling strategy
         val_pipeline = config['val_pipeline']
         sampler = [x for x in val_pipeline
@@ -257,7 +282,6 @@ class ClipHelper:
 
         # init params
         self.clip_vis_radius = clip_vis_radius
-        self.output_fps = output_fps
         self.predict_stepsize = predict_stepsize
         self.window_size = clip_len * frame_interval
         self.buffer_size = self.window_size - self.predict_stepsize
@@ -318,7 +342,7 @@ class ClipHelper:
 
             self.read_queue.put((was_read, copy.deepcopy(task)))
             cur_time = time.time()
-            logger.info(f'Read Thread: {1000*(cur_time - start_time):.0f} ms')
+            logger.debug(f'Read Thread: {1000*(cur_time - start_time):.0f} ms')
             start_time = cur_time
 
     def display_fn(self):
@@ -344,10 +368,13 @@ class ClipHelper:
 
             with self.output_lock:
                 for frame in task.frames[task.num_buffer_frames:]:
-                    cv2.imshow('Demo', frame)
-                    cv2.waitKey(int(1000 / self.output_fps))
+                    if self.show:
+                        cv2.imshow('Demo', frame)
+                        cv2.waitKey(int(1000 / self.output_fps))
+                    if self.video_writer:
+                        self.video_writer.write(frame)
                 cur_time = time.time()
-                logger.info(
+                logger.debug(
                     f'Display thread: {1000*(cur_time - start_time):.0f} ms')
                 start_time = cur_time
 
@@ -382,6 +409,8 @@ class ClipHelper:
         self.read_lock.release()
         self.output_lock.acquire()
         cv2.destroyAllWindows()
+        if self.video_writer:
+            self.video_writer.release()
         self.output_lock.release()
 
     def join(self):
@@ -397,6 +426,21 @@ class ClipHelper:
         """
         with self.display_lock:
             self.display_queue[task.id] = (True, task)
+
+    def get_output_file(self, path):
+        """Return a video writer object.
+
+        Args:
+            path (str): path to the output video file.
+        """
+        return cv2.VideoWriter(
+            filename=path,
+            fourcc=cv2.VideoWriter_fourcc(*'mp4v'),
+            fps=float(self.output_fps),
+            # frameSize=(self.display_width, self.display_height),
+            frameSize=(self.display_height, self.display_width),
+            isColor=True,
+        )
 
 
 FONTFACE = cv2.FONT_HERSHEY_DUPLEX
@@ -519,7 +563,9 @@ def main(args):
         video_path=args.video,
         predict_stepsize=args.predict_stepsize,
         output_fps=args.output_fps,
-        clip_vis_radius=args.clip_vis_radius)
+        clip_vis_radius=args.clip_vis_radius,
+        output_file=args.output_file,
+        show=args.show)
     clip_helper.start()
 
     try:
@@ -535,8 +581,8 @@ def main(args):
             vis.draw_predictions(task)
             clip_helper.display(task)
 
-            logger.info('Main thread inference time detector'
-                        f' {1000*(inference_start - time.time()):.0f} ms')
+            logger.debug('Main thread inference time detector '
+                         f'{1000*(time.time() - inference_start):.0f} ms')
             if not able_to_read:
                 break
         clip_helper.join()
