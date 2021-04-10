@@ -127,7 +127,7 @@ pip install -r requirements/build.txt
 pip install -v -e .  # or "python setup.py develop"
 ```
 
-如果实在 macOS 环境安装 MMAction2，则需使用如下命令：
+如果是在 macOS 环境安装 MMAction2，则需使用如下命令：
 
 ```shell
 CC=clang CXX=clang++ CFLAGS='-stdlib=libc++' pip install -e .
