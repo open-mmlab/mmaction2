@@ -1,12 +1,13 @@
 """Webcam Spatio-Temporal Action Detection Demo.
 
-This Script borrows some codes from
-https://github.com/facebookresearch/SlowFast # noqa
+This script borrows some codes from
+https://github.com/facebookresearch/SlowFast
 """
 
 import argparse
 import atexit
 import copy
+import logging
 import queue
 import threading
 import time
@@ -31,6 +32,71 @@ except (ImportError, ModuleNotFoundError):
     @import_module_error_func('mmdet')
     def init_detector(*args, **kwargs):
         pass
+
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='MMAction2 demo')
+
+    # model config
+    parser.add_argument(
+        '--config',
+        default=('configs/detection/ava/'
+                 'slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb.py'),
+        help='spatio temporal detection config file path')
+    parser.add_argument(
+        '--checkpoint',
+        default=('https://download.openmmlab.com/mmaction/detection/ava/'
+                 'slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb/'
+                 'slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb'
+                 '_20201217-16378594.pth'),
+        help='spatio temporal detection checkpoint file/url')
+    parser.add_argument(
+        '--det-config',
+        default='demo/faster_rcnn_r50_fpn_2x_coco.py',
+        help='human detection config file path (from mmdet)')
+    parser.add_argument(
+        '--det-checkpoint',
+        default=('http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/'
+                 'faster_rcnn_r50_fpn_2x_coco/'
+                 'faster_rcnn_r50_fpn_2x_coco_'
+                 'bbox_mAP-0.384_20200504_210434-a5d8aa15.pth'),
+        help='human detection checkpoint file/url')
+    parser.add_argument(
+        '--device', type=str, default='cuda:0', help='CPU/CUDA device option')
+
+    # display config
+    parser.add_argument(
+        '--video', default='0', type=str, help='video file/url')
+    parser.add_argument(
+        '--output-fps',
+        default=30,
+        type=int,
+        help='the fps of demo video output')
+    parser.add_argument(
+        '--det-score-thr',
+        type=float,
+        default=0.9,
+        help='the threshold of human detection score')
+    parser.add_argument(
+        '--action-score-thr',
+        type=float,
+        default=0.3,
+        help='the threshold of human action score')
+    parser.add_argument(
+        '--label-map', default='demo/label_map_ava.txt', help='label map file')
+    parser.add_argument(
+        '--predict-stepsize',
+        default=33,
+        type=int,
+        help='give out a prediction per n frames')
+    parser.add_argument('--clip-vis-radius', default=10, type=int, help='')
+
+    args = parser.parse_args()
+    return args
 
 
 class TaskInfo:
@@ -77,61 +143,6 @@ class TaskInfo:
             img=[input_tensor],
             proposals=[[self.bboxes]],
             img_metas=[[dict(img_shape=self.img_shape)]])
-
-
-def parse_args():
-    parser = argparse.ArgumentParser(description='MMAction2 demo')
-    parser.add_argument(
-        '--config',
-        default=('configs/detection/ava/'
-                 'slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb.py'),
-        help='spatio temporal detection config file path')
-    parser.add_argument(
-        '--checkpoint',
-        default=('https://download.openmmlab.com/mmaction/detection/ava/'
-                 'slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb/'
-                 'slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb'
-                 '_20201217-16378594.pth'),
-        help='spatio temporal detection checkpoint file/url')
-    parser.add_argument(
-        '--det-config',
-        default='demo/faster_rcnn_r50_fpn_2x_coco.py',
-        help='human detection config file path (from mmdet)')
-    parser.add_argument(
-        '--det-checkpoint',
-        default=('http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/'
-                 'faster_rcnn_r50_fpn_2x_coco/'
-                 'faster_rcnn_r50_fpn_2x_coco_'
-                 'bbox_mAP-0.384_20200504_210434-a5d8aa15.pth'),
-        help='human detection checkpoint file/url')
-    parser.add_argument(
-        '--det-score-thr',
-        type=float,
-        default=0.9,
-        help='the threshold of human detection score')
-    parser.add_argument(
-        '--action-score-thr',
-        type=float,
-        default=0.5,
-        help='the threshold of human action score')
-    parser.add_argument('--video', help='video file/url')
-    parser.add_argument(
-        '--label-map', default='demo/label_map_ava.txt', help='label map file')
-    parser.add_argument(
-        '--device', type=str, default='cuda:0', help='CPU/CUDA device option')
-    parser.add_argument(
-        '--predict-stepsize',
-        default=8,
-        type=int,
-        help='give out a prediction per n frames')
-    parser.add_argument('--clip-vis-radius', default=5, type=int, help='')
-    parser.add_argument(
-        '--output-fps',
-        default=30,
-        type=int,
-        help='the fps of demo video output')
-    args = parser.parse_args()
-    return args
 
 
 class BaseHumanDetector:
@@ -270,6 +281,7 @@ class ClipHelper:
     def read_fn(self):
         """Read frames from VideoCapture and create tasks."""
         was_read = True
+        start_time = time.time()
         while was_read and not self.stopped:
             # create task
             task = TaskInfo()
@@ -292,6 +304,7 @@ class ClipHelper:
                         _ = mmcv.imnormalize_(processed_frame,
                                               **self.img_norm_cfg)
                         processed_frames.append(processed_frame)
+
             if was_read:
                 self.buffer = frames[-self.buffer_size:]
                 self.processed_buffer = processed_frames[-self.buffer_size:]
@@ -304,8 +317,12 @@ class ClipHelper:
                 self.not_end = was_read
 
             self.read_queue.put((was_read, copy.deepcopy(task)))
+            cur_time = time.time()
+            logger.info(f'Read Thread: {1000*(cur_time - start_time):.0f} ms')
+            start_time = cur_time
 
     def display_fn(self):
+        start_time = time.time()
         while not self.stopped:
             with self.read_id_lock:
                 read_id = self.read_id
@@ -329,6 +346,10 @@ class ClipHelper:
                 for frame in task.frames[task.num_buffer_frames:]:
                     cv2.imshow('Demo', frame)
                     cv2.waitKey(int(1000 / self.output_fps))
+                cur_time = time.time()
+                logger.info(
+                    f'Display thread: {1000*(cur_time - start_time):.0f} ms')
+                start_time = cur_time
 
     def __iter__(self):
         return self
@@ -501,20 +522,28 @@ def main(args):
         clip_vis_radius=args.clip_vis_radius)
     clip_helper.start()
 
-    for able_to_read, task in clip_helper:
-        if task is None:
-            time.sleep(0.02)
-            continue
-        human_detector.predict(task)
-        stdet_predictor.predict(task)
-        vis.draw_predictions(task)
-        clip_helper.display(task)
+    try:
+        for able_to_read, task in clip_helper:
+            if task is None:
+                time.sleep(0.01)
+                continue
 
-        if not able_to_read:
-            break
+            inference_start = time.time()
 
-    clip_helper.join()
-    clip_helper.clean()
+            human_detector.predict(task)
+            stdet_predictor.predict(task)
+            vis.draw_predictions(task)
+            clip_helper.display(task)
+
+            logger.info('Main thread inference time detector'
+                        f' {1000*(inference_start - time.time()):.0f} ms')
+            if not able_to_read:
+                break
+        clip_helper.join()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        clip_helper.clean()
 
 
 if __name__ == '__main__':
