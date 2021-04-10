@@ -116,6 +116,7 @@ class TaskInfo:
         self.frames = None
         # preprocessed(resize/norm) frames
         self.processed_frames = None
+        self.frames_inds = None
         self.id = -1
         self.bboxes = None
         self.action_preds = None
@@ -144,9 +145,10 @@ class TaskInfo:
         self.action_preds = preds
 
     def get_model_inputs(self, device):
-        input_array = np.stack(self.processed_frames).transpose(
-            (3, 0, 1, 2))[np.newaxis]
+        cur_frames = [self.processed_frames[idx] for idx in self.frames_inds]
+        input_array = np.stack(cur_frames).transpose((3, 0, 1, 2))[np.newaxis]
         input_tensor = torch.from_numpy(input_array).to(device)
+        print(input_tensor.size())
         return dict(
             return_loss=False,
             img=[input_tensor],
@@ -286,6 +288,10 @@ class ClipHelper:
         self.window_size = clip_len * frame_interval
         self.buffer_size = self.window_size - self.predict_stepsize
         assert self.buffer_size < self.window_size // 2
+        frame_start = self.window_size // 2 - (clip_len // 2) * frame_interval
+        self.frames_inds = [
+            frame_start + frame_interval * i for i in range(clip_len)
+        ]
 
         self.display_id = -1
         self.read_id = -1
@@ -310,6 +316,7 @@ class ClipHelper:
             # create task
             task = TaskInfo()
             task.clip_vis_radius = self.clip_vis_radius
+            task.frames_inds = self.frames_inds
 
             # read frames to create a clip
             frames = []
