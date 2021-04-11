@@ -97,6 +97,16 @@ def parse_args():
         action='store_true',
         help='Whether to show results with cv2.imshow')
     parser.add_argument(
+        '--display-height',
+        type=int,
+        default=0,
+        help='Image height for human detector and draw frames.')
+    parser.add_argument(
+        '--display-width',
+        type=int,
+        default=0,
+        help='Image width for human detector and draw frames.')
+    parser.add_argument(
         '--predict-stepsize',
         default=33,
         type=int,
@@ -113,11 +123,11 @@ class TaskInfo:
     Transmit data around three threads.
 
     1) Read Thread: Create task and put task into read queue. Init `frames`,
-        `processed_frames`, `img_shape`, `num_buffer_frames`,
+        `processed_frames`, `img_shape`, `num_buffer_frames`, `ratio`,
         `clip_vis_radius`.
     2) Main Thread: Get data from read queue, predict human bboxes and stdet
         action labels, draw predictions and put task into display queue. Init
-        `bboxes` and `action_preds`, update `frames`.
+        `display_bboxes`, `stdet_bboxes` and `action_preds`, update `frames`.
     3) Display Thread: Get data from display queue, show/write frames and
         delete task.
     """
@@ -139,7 +149,9 @@ class TaskInfo:
         self.action_preds = None  # stdet results
 
         # human detector results
-        self.bboxes = None
+        self.display_bboxes = None  # bboxes coords for self.frames
+        self.stdet_bboxes = None  # bboxes coords for self.processed_frames
+        self.ratio = None  # processed_frames.shape[:2] / frames.shape[:2]
 
         # number of overlapping frames with the previous task
         self.num_buffer_frames = 0
@@ -162,9 +174,12 @@ class TaskInfo:
         self.id = idx
         self.img_shape = processed_frames[0].shape[:2]
 
-    def add_bboxes(self, bboxes):
+    def add_bboxes(self, display_bboxes):
         """Add correspondding bounding boxes."""
-        self.bboxes = bboxes
+        self.display_bboxes = display_bboxes
+        self.stdet_bboxes = display_bboxes.clone()
+        self.stdet_bboxes[:, ::2] = self.stdet_bboxes[:, ::2] * self.ratio[0]
+        self.stdet_bboxes[:, 1::2] = self.stdet_bboxes[:, 1::2] * self.ratio[1]
 
     def add_action_preds(self, preds):
         """Add the corresponding action predictions."""
@@ -178,7 +193,7 @@ class TaskInfo:
         return dict(
             return_loss=False,
             img=[input_tensor],
-            proposals=[[self.bboxes]],
+            proposals=[[self.stdet_bboxes]],
             img_metas=[[dict(img_shape=self.img_shape)]])
 
 
@@ -277,7 +292,7 @@ class StdetPredictor:
     def predict(self, task):
         """Spatio-temporval Action Detection model inference."""
         # No need to do inference if no one in keyframe
-        if len(task.bboxes) == 0:
+        if len(task.stdet_bboxes) == 0:
             return task
 
         with torch.no_grad():
@@ -285,12 +300,12 @@ class StdetPredictor:
 
         # pack results of human detector and stdet
         preds = []
-        for _ in range(task.bboxes.shape[0]):
+        for _ in range(task.stdet_bboxes.shape[0]):
             preds.append([])
         for class_id in range(len(result)):
             if class_id + 1 not in self.label_map:
                 continue
-            for bboex_id in range(task.bboxes.shape[0]):
+            for bboex_id in range(task.stdet_bboxes.shape[0]):
                 if result[class_id][bboex_id, 4] > self.score_thr:
                     preds[bboex_id].append((self.label_map[class_id + 1],
                                             result[class_id][bboex_id, 4]))
@@ -309,12 +324,15 @@ class ClipHelper:
 
     def __init__(self,
                  config,
+                 display_height=0,
+                 display_width=0,
                  input_video=0,
                  predict_stepsize=40,
                  output_fps=25,
                  clip_vis_radius=8,
                  output_filename=None,
-                 show=True):
+                 show=True,
+                 stdet_input_shortside=256):
         # source params
         try:
             self.cap = cv2.VideoCapture(int(input_video))
@@ -326,9 +344,8 @@ class ClipHelper:
 
         # image meta & image preprocess params
         h, w, _ = frame.shape
-        self.origin_size = (h, w)
-        self.new_size = mmcv.rescale_size((w, h), (256, np.Inf))
-        self.ratio = (n / o for n, o in zip(self.new_size, self.origin_size))
+        self.stdet_input_size = mmcv.rescale_size(
+            (w, h), (stdet_input_shortside, np.Inf))
         img_norm_cfg = config['img_norm_cfg']
         if 'to_rgb' not in img_norm_cfg and 'to_bgr' in img_norm_cfg:
             to_bgr = img_norm_cfg.pop('to_bgr')
@@ -338,12 +355,20 @@ class ClipHelper:
         self.img_norm_cfg = img_norm_cfg
 
         # output/display params
+        if display_height > 0 and display_width > 0:
+            self.display_size = (display_width, display_height)
+        elif display_height > 0 or display_width > 0:
+            self.display_size = mmcv.rescale_size(
+                (w, h), (np.Inf, max(display_height, display_width)))
+        else:
+            self.display_size = self.stdet_input_size
+        self.ratio = tuple(
+            n / o for n, o in zip(self.stdet_input_size, self.display_size))
         assert output_filename or output_fps, \
             'output_filename and show cannot both be None'
         self.output_fps = output_fps
         self.show = show
         self.video_writer = None
-        self.display_height, self.display_width = self.new_size
         if output_filename is not None:
             self.video_writer = self.get_output_video_writer(output_filename)
 
@@ -402,6 +427,7 @@ class ClipHelper:
             task = TaskInfo()
             task.clip_vis_radius = self.clip_vis_radius
             task.frames_inds = self.frames_inds
+            task.ratio = self.ratio
 
             # read buffer
             frames = []
@@ -418,9 +444,9 @@ class ClipHelper:
                 while was_read and len(frames) < self.window_size:
                     was_read, frame = self.cap.read()
                     if was_read:
-                        frame = mmcv.imresize(frame, self.new_size)
-                        frames.append(frame)
-                        processed_frame = frame.astype(np.float32)
+                        frames.append(mmcv.imresize(frame, self.display_size))
+                        processed_frame = mmcv.imresize(
+                            frame, self.stdet_input_size).astype(np.float32)
                         _ = mmcv.imnormalize_(processed_frame,
                                               **self.img_norm_cfg)
                         processed_frames.append(processed_frame)
@@ -556,8 +582,7 @@ class ClipHelper:
             filename=path,
             fourcc=cv2.VideoWriter_fourcc(*'mp4v'),
             fps=float(self.output_fps),
-            # frameSize=(self.display_width, self.display_height),
-            frameSize=(self.display_height, self.display_width),
+            frameSize=(self.display_size[1], self.display_size[0]),
             isColor=True,
         )
 
@@ -609,7 +634,7 @@ class Visualizer:
     def draw_predictions(self, task):
         """Visualize stdet predictions on raw frames."""
         # read data from task
-        bboxes = task.bboxes.cpu().numpy()
+        bboxes = task.display_bboxes.cpu().numpy()
         frames = task.frames
         preds = task.action_preds
 
@@ -701,6 +726,8 @@ def main(args):
     # init clip helper
     clip_helper = ClipHelper(
         config=config,
+        display_height=args.display_height,
+        display_width=args.display_width,
         input_video=args.input_video,
         predict_stepsize=args.predict_stepsize,
         output_fps=args.output_fps,

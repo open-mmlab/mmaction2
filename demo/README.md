@@ -346,6 +346,8 @@ python demo/webcam_demo_spatiotemporal_det.py \
     [--output-fps ${OUTPUT_FPS}] \
     [--out-filename ${OUTPUT_FILENAME}] \
     [--show] \
+    [--display-height] ${DISPLAY_HEIGHT} \
+    [--display-width] ${DISPLAY_WIDTH} \
     [--predict-stepsize ${PREDICT_STEPSIZE}] \
     [--clip-vis-radius] ${CLIP_VIS_RADIUS}
 ```
@@ -364,6 +366,8 @@ Optional arguments:
 - `OUTPUT_FPS`: The FPS of demo video output. Default: 15.
 - `OUTPUT_FILENAME`: Path to the output file which is a video format. Default: None.
 - `--show`: Whether to show predictions with `cv2.imshow`.
+- `DISPLAY_HEIGHT`: The height of the display frame.
+- `DISPLAY_WIDTH`: The width of the display frame.
 - `PREDICT_STEPSIZE`: Make a prediction per N frames.  Default: 33.
 - `CLIP_VIS_RADIUS`: The radius of the draw frames number for each clip. In other words, for each clip, there are at most `2 * CLIP_VIS_RADIUS` frames to be draw around the keyframe. DEFAULT: 10.
 
