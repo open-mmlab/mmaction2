@@ -108,10 +108,14 @@ def parse_args():
         help='Image width for human detector and draw frames.')
     parser.add_argument(
         '--predict-stepsize',
-        default=33,
+        default=8,
         type=int,
         help='give out a prediction per n frames')
-    parser.add_argument('--clip-vis-radius', default=10, type=int, help='')
+    parser.add_argument(
+        '--clip-vis-length',
+        default=8,
+        type=int,
+        help='Number of draw frames per clip.')
 
     args = parser.parse_args()
     return args
@@ -124,7 +128,7 @@ class TaskInfo:
 
     1) Read Thread: Create task and put task into read queue. Init `frames`,
         `processed_frames`, `img_shape`, `num_buffer_frames`, `ratio`,
-        `clip_vis_radius`.
+        `clip_vis_length`.
     2) Main Thread: Get data from read queue, predict human bboxes and stdet
         action labels, draw predictions and put task into display queue. Init
         `display_bboxes`, `stdet_bboxes` and `action_preds`, update `frames`.
@@ -157,8 +161,8 @@ class TaskInfo:
         self.num_buffer_frames = 0
 
         # for each clip, draw predictions around keyframe with at most
-        # 2 x clip_vis_raius frames
-        self.clip_vis_radius = -1
+        # clip_vis_length frames
+        self.clip_vis_length = -1
 
     def add_frames(self, idx, frames, processed_frames):
         """Add the clip and corresponding id.
@@ -329,7 +333,7 @@ class ClipHelper:
                  input_video=0,
                  predict_stepsize=40,
                  output_fps=25,
-                 clip_vis_radius=8,
+                 clip_vis_length=8,
                  output_filename=None,
                  show=True,
                  stdet_input_shortside=256):
@@ -339,11 +343,10 @@ class ClipHelper:
         except ValueError:
             self.cap = cv2.VideoCapture(input_video)
         assert self.cap.isOpened()
-        was_read, frame = self.cap.read()
-        assert was_read
 
         # image meta & image preprocess params
-        h, w, _ = frame.shape
+        h = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        w = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         self.stdet_input_size = mmcv.rescale_size(
             (w, h), (stdet_input_shortside, np.Inf))
         img_norm_cfg = config['img_norm_cfg']
@@ -354,6 +357,29 @@ class ClipHelper:
         img_norm_cfg['std'] = np.array(img_norm_cfg['std'])
         self.img_norm_cfg = img_norm_cfg
 
+        # sampling strategy
+        val_pipeline = config['val_pipeline']
+        sampler = [x for x in val_pipeline
+                   if x['type'] == 'SampleAVAFrames'][0]
+        clip_len, frame_interval = sampler['clip_len'], sampler[
+            'frame_interval']
+        assert clip_len % 2 == 0, 'We would like to have an even clip_len'
+        self.window_size = clip_len * frame_interval
+
+        # task init params
+        assert clip_vis_length <= predict_stepsize
+        assert 0 < predict_stepsize <= self.window_size
+        assert predict_stepsize % 2 == 0
+        self.clip_vis_length = clip_vis_length
+        self.predict_stepsize = predict_stepsize
+        self.buffer_size = self.window_size - self.predict_stepsize
+        frame_start = self.window_size // 2 - (clip_len // 2) * frame_interval
+        self.frames_inds = [
+            frame_start + frame_interval * i for i in range(clip_len)
+        ]
+        self.buffer = []
+        self.processed_buffer = []
+
         # output/display params
         if display_height > 0 and display_width > 0:
             self.display_size = (display_width, display_height)
@@ -361,8 +387,7 @@ class ClipHelper:
             self.display_size = mmcv.rescale_size(
                 (w, h), (np.Inf, max(display_height, display_width)))
         else:
-            self.display_size = (int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
-                                 int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+            self.display_size = (w, h)
         self.ratio = tuple(
             n / o for n, o in zip(self.stdet_input_size, self.display_size))
         assert output_filename or output_fps, \
@@ -372,27 +397,10 @@ class ClipHelper:
         self.video_writer = None
         if output_filename is not None:
             self.video_writer = self.get_output_video_writer(output_filename)
-
-        # sampling strategy
-        val_pipeline = config['val_pipeline']
-        sampler = [x for x in val_pipeline
-                   if x['type'] == 'SampleAVAFrames'][0]
-        clip_len, frame_interval = sampler['clip_len'], sampler[
-            'frame_interval']
-        assert clip_len % 2 == 0, 'We would like to have an even clip_len'
-
-        # task init params
-        self.clip_vis_radius = clip_vis_radius
-        self.predict_stepsize = predict_stepsize
-        self.window_size = clip_len * frame_interval
-        self.buffer_size = self.window_size - self.predict_stepsize
-        assert self.buffer_size < self.window_size // 2
-        frame_start = self.window_size // 2 - (clip_len // 2) * frame_interval
-        self.frames_inds = [
-            frame_start + frame_interval * i for i in range(clip_len)
+        display_start_idx = self.window_size // 2 - self.predict_stepsize // 2
+        self.display_inds = [
+            display_start_idx + i for i in range(self.predict_stepsize)
         ]
-        self.buffer = []
-        self.processed_buffer = []
 
         # display multi-theading params
         self.display_id = -1  # task.id for display queue
@@ -426,7 +434,7 @@ class ClipHelper:
         while was_read and not self.stopped:
             # init task
             task = TaskInfo()
-            task.clip_vis_radius = self.clip_vis_radius
+            task.clip_vis_length = self.clip_vis_length
             task.frames_inds = self.frames_inds
             task.ratio = self.ratio
 
@@ -505,7 +513,8 @@ class ClipHelper:
             with self.output_lock:
                 # task.frames[:task.num_buffer_frames] have already been
                 # displayed by the previous task
-                for frame in task.frames[task.num_buffer_frames:]:
+                for frame_id in self.display_inds:
+                    frame = task.frames[frame_id]
                     if self.show:
                         cv2.imshow('Demo', frame)
                         cv2.waitKey(int(1000 / self.output_fps))
@@ -643,13 +652,13 @@ class Visualizer:
         buffer = frames[:task.num_buffer_frames]
 
         # draw predictions
-        keyframe_idx = len(frames) // 2 - task.num_buffer_frames
+        keyframe_idx = len(frames) // 2
         draw_range = [
-            keyframe_idx - task.clip_vis_radius,
-            keyframe_idx + task.clip_vis_radius,
+            keyframe_idx - task.clip_vis_length // 2,
+            keyframe_idx + (task.clip_vis_length - 1) // 2,
         ]
-        frames = self.draw_clip_range(frames[task.num_buffer_frames:], preds,
-                                      bboxes, draw_range)
+        assert draw_range[0] >= 0 and draw_range[1] < len(frames)
+        frames = self.draw_clip_range(frames, preds, bboxes, draw_range)
 
         # update task
         task.frames = buffer + frames
@@ -663,7 +672,6 @@ class Visualizer:
             return frames
 
         # draw frames in `draw_range`
-        draw_range[0] = max(0, draw_range[0])
         left_frames = frames[:draw_range[0]]
         right_frames = frames[draw_range[1] + 1:]
         draw_frames = frames[draw_range[0]:draw_range[1] + 1]
@@ -740,7 +748,7 @@ def main(args):
         input_video=args.input_video,
         predict_stepsize=args.predict_stepsize,
         output_fps=args.output_fps,
-        clip_vis_radius=args.clip_vis_radius,
+        clip_vis_length=args.clip_vis_length,
         output_filename=args.output_filename,
         show=args.show)
     # start read and display thread
