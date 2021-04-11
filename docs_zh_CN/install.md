@@ -135,7 +135,7 @@ CC=clang CXX=clang++ CFLAGS='-stdlib=libc++' pip install -e .
 
 f. 安装 mmdetection 以支持时空检测任务。
 
-如果用户不像做时空检测相关任务，这部分步骤可以选择跳过。
+如果用户不想做时空检测相关任务，这部分步骤可以选择跳过。
 
 可参考 [这里](https://github.com/open-mmlab/mmdetection#installation) 进行 mmdetection 的安装。
 
