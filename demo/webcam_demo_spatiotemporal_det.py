@@ -361,7 +361,8 @@ class ClipHelper:
             self.display_size = mmcv.rescale_size(
                 (w, h), (np.Inf, max(display_height, display_width)))
         else:
-            self.display_size = self.stdet_input_size
+            self.display_size = (int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
+                                 int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
         self.ratio = tuple(
             n / o for n, o in zip(self.stdet_input_size, self.display_size))
         assert output_filename or output_fps, \
@@ -668,26 +669,24 @@ class Visualizer:
         draw_frames = frames[draw_range[0]:draw_range[1] + 1]
 
         # get labels(texts) and draw predictions
-        labels = []
-        for bbox_preds in preds:
-            labels.append([x[0] for x in bbox_preds])
         for frame in draw_frames:
-            self.draw_one_image(frame, bboxes, labels)
+            self.draw_one_image(frame, bboxes, preds)
 
         return list(left_frames) + draw_frames + list(right_frames)
 
-    def draw_one_image(self, frame, bboxes, labels):
+    def draw_one_image(self, frame, bboxes, preds):
         """Draw predictions on one image."""
-        for bbox, label in zip(bboxes, labels):
+        for bbox, pred in zip(bboxes, preds):
             # draw bbox
             box = bbox.astype(np.int64)
             st, ed = tuple(box[:2]), tuple(box[2:])
             cv2.rectangle(frame, st, ed, (0, 0, 255), 2)
 
             # draw texts
-            for k, text in enumerate(label):
+            for k, (label, score) in enumerate(pred):
                 if k >= self.max_labels_per_bbox:
                     break
+                text = f'{self.abbrev(label)}: {score:.4f}'
                 location = (0 + st[0], 18 + k * 18 + st[1])
                 textsize = cv2.getTextSize(text, self.text_fontface,
                                            self.text_fontscale,
@@ -699,6 +698,16 @@ class Visualizer:
                 cv2.putText(frame, text, location, self.text_fontface,
                             self.text_fontscale, self.text_fontcolor,
                             self.text_thickness, self.text_linetype)
+
+    def abbrev(self, name):
+        """Get the abbreviation of label name:
+
+        'take (an object) from (a person)' -> 'take ... from ...'
+        """
+        while name.find('(') != -1:
+            st, ed = name.find('('), name.find(')')
+            name = name[:st] + '...' + name[ed + 1:]
+        return name
 
 
 def main(args):
