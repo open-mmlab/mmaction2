@@ -1,7 +1,6 @@
 """Webcam Spatio-Temporal Action Detection Demo.
 
-This script borrows some codes from https://github.com/facebookresearch/SlowFast # noqa
-Tips: TODO
+Some codes are based on https://github.com/facebookresearch/SlowFast
 """
 
 import argparse
@@ -41,7 +40,6 @@ logger = logging.getLogger(__name__)
 def parse_args():
     parser = argparse.ArgumentParser(description='MMAction2 demo')
 
-    # model config
     parser.add_argument(
         '--config',
         default=('configs/detection/ava/'
@@ -55,6 +53,11 @@ def parse_args():
                  '_20201217-16378594.pth'),
         help='spatio temporal detection checkpoint file/url')
     parser.add_argument(
+        '--action-score-thr',
+        type=float,
+        default=0.4,
+        help='the threshold of human action score')
+    parser.add_argument(
         '--det-config',
         default='demo/faster_rcnn_r50_fpn_2x_coco.py',
         help='human detection config file path (from mmdet)')
@@ -66,21 +69,26 @@ def parse_args():
                  'bbox_mAP-0.384_20200504_210434-a5d8aa15.pth'),
         help='human detection checkpoint file/url')
     parser.add_argument(
-        '--device', type=str, default='cuda:0', help='CPU/CUDA device option')
-
-    # display config
+        '--det-score-thr',
+        type=float,
+        default=0.9,
+        help='the threshold of human detection score')
     parser.add_argument(
         '--input-video',
         default='0',
         type=str,
         help='webcam id or input video file/url')
     parser.add_argument(
+        '--label-map', default='demo/label_map_ava.txt', help='label map file')
+    parser.add_argument(
+        '--device', type=str, default='cuda:0', help='CPU/CUDA device option')
+    parser.add_argument(
         '--output-fps',
         default=15,
         type=int,
         help='the fps of demo video output')
     parser.add_argument(
-        '--output-file',
+        '--output-filename',
         default=None,
         type=str,
         help='the filename of output video')
@@ -88,18 +96,6 @@ def parse_args():
         '--show',
         action='store_true',
         help='Whether to show results with cv2.imshow')
-    parser.add_argument(
-        '--det-score-thr',
-        type=float,
-        default=0.9,
-        help='the threshold of human detection score')
-    parser.add_argument(
-        '--action-score-thr',
-        type=float,
-        default=0.3,
-        help='the threshold of human action score')
-    parser.add_argument(
-        '--label-map', default='demo/label_map_ava.txt', help='label map file')
     parser.add_argument(
         '--predict-stepsize',
         default=33,
@@ -230,7 +226,7 @@ class MmdetHumanDetector(BaseHumanDetector):
         config (str): Path to mmdetection config.
         ckpt (str): Path to mmdetection checkpoint.
         device (str): CPU/CUDA device option.
-        score_thr (float): The threshold of human action score.
+        score_thr (float): The threshold of human detection score.
         person_classid (int): Choose class from detection results.
             Default: 0. Suitable for COCO pretrained models.
     """
@@ -249,10 +245,20 @@ class MmdetHumanDetector(BaseHumanDetector):
 
 
 class StdetPredictor:
-    """Wrapper for MMAction2 spatio-temporal action models."""
+    """Wrapper for MMAction2 spatio-temporal action models.
+
+    Args:
+        config (str): Path to stdet config.
+        ckpt (str): Path to stdet checkpoint.
+        device (str): CPU/CUDA device option.
+        score_thr (float): The threshold of human action score.
+        label_map_path (str): Path to label map file. The format for each line
+            is `{class_id}: {class_name}`.
+    """
 
     def __init__(self, config, checkpoint, device, score_thr, label_map_path):
         self.score_thr = score_thr
+
         # load model
         config.model.backbone.pretrained = None
         model = build_detector(config.model, test_cfg=config.get('test_cfg'))
@@ -288,13 +294,18 @@ class StdetPredictor:
                 if result[class_id][bboex_id, 4] > self.score_thr:
                     preds[bboex_id].append((self.label_map[class_id + 1],
                                             result[class_id][bboex_id, 4]))
+
+        # update task
+        # `preds` is `list[list[tuple]]`. The outter brackets indicate
+        # different bboxes and the intter brackets indicate different action
+        # results for the same bbox. tuple contains `class_name` and `score`.
         task.add_action_preds(preds)
 
         return task
 
 
 class ClipHelper:
-    """Multithrading utils to read/show frames and create TaskInfo object."""
+    """Multithrading utils to manage the lifecycle of task."""
 
     def __init__(self,
                  config,
@@ -302,7 +313,7 @@ class ClipHelper:
                  predict_stepsize=40,
                  output_fps=25,
                  clip_vis_radius=8,
-                 output_file=None,
+                 output_filename=None,
                  show=True):
         # source params
         try:
@@ -327,14 +338,14 @@ class ClipHelper:
         self.img_norm_cfg = img_norm_cfg
 
         # output/display params
-        assert output_file or output_fps, \
-            'output_file and show cannot both be None'
+        assert output_filename or output_fps, \
+            'output_filename and show cannot both be None'
         self.output_fps = output_fps
         self.show = show
         self.video_writer = None
         self.display_height, self.display_width = self.new_size
-        if output_file is not None:
-            self.video_writer = self.get_output_file(output_file)
+        if output_filename is not None:
+            self.video_writer = self.get_output_video_writer(output_filename)
 
         # sampling strategy
         val_pipeline = config['val_pipeline']
@@ -378,7 +389,7 @@ class ClipHelper:
     def read_fn(self):
         """Main function for read thread.
 
-        Contains three functions:
+        Contains three steps:
 
         1) Read and preprocess (resize + norm) frames from source.
         2) Create task by frames from previous step and buffer.
@@ -430,7 +441,7 @@ class ClipHelper:
             self.read_queue.put((was_read, copy.deepcopy(task)))
             cur_time = time.time()
             logger.debug(
-                f'Read Thread: {1000*(cur_time - start_time):.0f} ms, '
+                f'Read thread: {1000*(cur_time - start_time):.0f} ms, '
                 f'{read_frame_cnt / (cur_time - before_read):.0f} fps')
             start_time = cur_time
 
@@ -535,7 +546,7 @@ class ClipHelper:
         with self.display_lock:
             self.display_queue[task.id] = (True, task)
 
-    def get_output_file(self, path):
+    def get_output_video_writer(self, path):
         """Return a video writer object.
 
         Args:
@@ -694,7 +705,7 @@ def main(args):
         predict_stepsize=args.predict_stepsize,
         output_fps=args.output_fps,
         clip_vis_radius=args.clip_vis_radius,
-        output_file=args.output_file,
+        output_filename=args.output_filename,
         show=args.show)
     # start read and display thread
     clip_helper.start()
@@ -723,11 +734,12 @@ def main(args):
 
             # draw stdet predictions in raw frames
             vis.draw_predictions(task)
+            logger.info(f'Stdet Results: {task.action_preds}')
 
             # add draw frames to display queue
             clip_helper.display(task)
 
-            logger.debug('Main thread inference time detector '
+            logger.debug('Main thread inference time '
                          f'{1000*(time.time() - inference_start):.0f} ms')
 
             if not able_to_read:
