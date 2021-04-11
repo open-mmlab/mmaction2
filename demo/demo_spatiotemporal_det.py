@@ -318,6 +318,11 @@ def main():
     img_norm_cfg['std'] = np.array(img_norm_cfg['std'])
 
     # Build STDET model
+    try:
+        # Fix a issue that different actions may have different bboxes
+        config['model']['test_cfg']['rcnn']['action_thr'] = .0
+    except KeyError:
+        pass
     config.model.backbone.pretrained = None
     model = build_detector(config.model, test_cfg=config.get('test_cfg'))
 
