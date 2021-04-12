@@ -38,7 +38,8 @@ logger = logging.getLogger(__name__)
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='MMAction2 demo')
+    parser = argparse.ArgumentParser(
+        description='MMAction2 webcam spatio-temporal detection demo')
 
     parser.add_argument(
         '--config',
@@ -390,7 +391,7 @@ class ClipHelper:
             self.display_size = (w, h)
         self.ratio = tuple(
             n / o for n, o in zip(self.stdet_input_size, self.display_size))
-        assert output_filename or output_fps, \
+        assert (output_filename or output_fps), \
             'output_filename and show cannot both be None'
         self.output_fps = output_fps
         self.show = show
@@ -593,8 +594,7 @@ class ClipHelper:
             fourcc=cv2.VideoWriter_fourcc(*'mp4v'),
             fps=float(self.output_fps),
             frameSize=(self.display_size[1], self.display_size[0]),
-            isColor=True,
-        )
+            isColor=True)
 
 
 class Visualizer:
@@ -655,7 +655,7 @@ class Visualizer:
         keyframe_idx = len(frames) // 2
         draw_range = [
             keyframe_idx - task.clip_vis_length // 2,
-            keyframe_idx + (task.clip_vis_length - 1) // 2,
+            keyframe_idx + (task.clip_vis_length - 1) // 2
         ]
         assert draw_range[0] >= 0 and draw_range[1] < len(frames)
         frames = self.draw_clip_range(frames, preds, bboxes, draw_range)
