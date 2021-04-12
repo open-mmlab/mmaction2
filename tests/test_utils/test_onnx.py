@@ -25,4 +25,4 @@ def test_onnx_exporting():
         model = TestModel()
         model = _convert_batchnorm(model)
         # test exporting
-        pytorch2onnx(model, (1, 1, 1, 1, 1), output_file=out_file)
+        pytorch2onnx(model, (2, 1, 1, 1, 1), output_file=out_file, verify=True)

@@ -81,7 +81,7 @@ def pytorch2onnx(model,
 
         # check the numerical value
         # get pytorch output
-        pytorch_result = model(input_tensor)[0].detach().numpy()
+        pytorch_result = model(input_tensor).detach().numpy()
 
         # get onnx output
         input_all = [node.name for node in onnx_model.graph.input]
