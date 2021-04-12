@@ -349,7 +349,7 @@ python demo/webcam_demo_spatiotemporal_det.py \
     [--display-height] ${DISPLAY_HEIGHT} \
     [--display-width] ${DISPLAY_WIDTH} \
     [--predict-stepsize ${PREDICT_STEPSIZE}] \
-    [--clip-vis-radius] ${CLIP_VIS_RADIUS}
+    [--clip-vis-length] ${CLIP_VIS_LENGTH}
 ```
 
 Optional arguments:
@@ -360,16 +360,16 @@ Optional arguments:
 - `HUMAN_DETECTION_CONFIG_FILE`: The human detection config file path.
 - `HUMAN_DETECTION_CHECKPOINT`: The human detection checkpoint URL.
 - `HUMAN_DETECTION_SCORE_THRE`: The score threshold for human detection. Default: 0.9.
-- `INPUT_VIDEO`: The webcam id or video path of the source. Default: `'0'`.
+- `INPUT_VIDEO`: The webcam id or video path of the source. Default: `0`.
 - `LABEL_MAP`: The label map used. Default: `demo/label_map_ava.txt`
 - `DEVICE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`.  Default: `cuda:0`.
 - `OUTPUT_FPS`: The FPS of demo video output. Default: 15.
 - `OUTPUT_FILENAME`: Path to the output file which is a video format. Default: None.
 - `--show`: Whether to show predictions with `cv2.imshow`.
-- `DISPLAY_HEIGHT`: The height of the display frame.
-- `DISPLAY_WIDTH`: The width of the display frame.
-- `PREDICT_STEPSIZE`: Make a prediction per N frames.  Default: 33.
-- `CLIP_VIS_RADIUS`: The radius of the draw frames number for each clip. In other words, for each clip, there are at most `2 * CLIP_VIS_RADIUS` frames to be draw around the keyframe. DEFAULT: 10.
+- `DISPLAY_HEIGHT`: The height of the display frame. Default: 0.
+- `DISPLAY_WIDTH`: The width of the display frame. Default: 0. If `DISPLAY_HEIGHT <= 0 and DISPLAY_WIDTH <= 0`, the display frame and input video share the same shape.
+- `PREDICT_STEPSIZE`: Make a prediction per N frames. Default: 8.
+- `CLIP_VIS_LENGTH`: The number of the draw frames for each clip. In other words, for each clip, there are at most `CLIP_VIS_LENGTH` frames to be draw around the keyframe. DEFAULT: 8.
 
 Tips to get a better experience for webcam demo:
 
