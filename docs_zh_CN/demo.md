@@ -360,6 +360,7 @@ python demo/webcam_demo_spatiotemporal_det.py \
 - `DISPLAY_WIDTH`: 输出结果图像宽度，默认为 0。若 `DISPLAY_HEIGHT <= 0 and DISPLAY_WIDTH <= 0`，则表示输出图像形状与输入视频形状相同。
 - `PREDICT_STEPSIZE`: 每 N 帧进行一次预测（以控制计算资源），默认为 8。
 - `CLIP_VIS_LENGTH`: 预测结果可视化持续帧数，即每次预测结果将可视化到 `CLIP_VIS_LENGTH` 帧中，默认为 8。
+- `VISUALIZATION_TOOL`: 可视化工具，目前支持 `default` 和 `alphaction`，默认为 `default`。
 
 小技巧：
 
