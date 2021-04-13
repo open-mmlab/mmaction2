@@ -10,6 +10,7 @@ import logging
 import queue
 import threading
 import time
+from abc import ABCMeta, abstractmethod
 
 import cv2
 import mmcv
@@ -89,7 +90,7 @@ def parse_args():
         type=int,
         help='the fps of demo video output')
     parser.add_argument(
-        '--output-filename',
+        '--out-filename',
         default=None,
         type=str,
         help='the filename of output video')
@@ -202,7 +203,7 @@ class TaskInfo:
             img_metas=[[dict(img_shape=self.img_shape)]])
 
 
-class BaseHumanDetector:
+class BaseHumanDetector(metaclass=ABCMeta):
     """Base class for Human Dector.
 
     Args:
@@ -212,12 +213,13 @@ class BaseHumanDetector:
     def __init__(self, device):
         self.device = torch.device(device)
 
+    @abstractmethod
     def _do_detect(self, image):
         """Get human bboxes with shape [n, 4].
 
         The format of bboxes is (xmin, ymin, xmax, ymax) in pixels.
         """
-        raise NotImplementedError
+        pass
 
     def predict(self, task):
         """Add keyframe bboxes to task."""
@@ -335,7 +337,7 @@ class ClipHelper:
                  predict_stepsize=40,
                  output_fps=25,
                  clip_vis_length=8,
-                 output_filename=None,
+                 out_filename=None,
                  show=True,
                  stdet_input_shortside=256):
         # source params
@@ -391,13 +393,13 @@ class ClipHelper:
             self.display_size = (w, h)
         self.ratio = tuple(
             n / o for n, o in zip(self.stdet_input_size, self.display_size))
-        assert (output_filename or output_fps), \
-            'output_filename and show cannot both be None'
+        assert (out_filename or output_fps), \
+            'out_filename and show cannot both be None'
         self.output_fps = output_fps
         self.show = show
         self.video_writer = None
-        if output_filename is not None:
-            self.video_writer = self.get_output_video_writer(output_filename)
+        if out_filename is not None:
+            self.video_writer = self.get_output_video_writer(out_filename)
         display_start_idx = self.window_size // 2 - self.predict_stepsize // 2
         self.display_inds = [
             display_start_idx + i for i in range(self.predict_stepsize)
@@ -593,7 +595,7 @@ class ClipHelper:
             filename=path,
             fourcc=cv2.VideoWriter_fourcc(*'mp4v'),
             fps=float(self.output_fps),
-            frameSize=(self.display_size[1], self.display_size[0]),
+            frameSize=self.display_size,
             isColor=True)
 
 
@@ -602,7 +604,7 @@ class Visualizer:
 
     Args:
         plate (str): The plate used for visualization.
-            Default: plate_blue.
+            Default: '03045e-023e8a-0077b6-0096c7-00b4d8-48cae4'.
         max_labels_per_bbox (int): Max number of labels to visualize for a
             person box. Default: 5.
         text_fontface (int): Fontface from OpenCV for texts.
@@ -729,7 +731,8 @@ def main(args):
     # init action detector
     config = mmcv.Config.fromfile(args.config)
     try:
-        # Fix a issue that different actions may have different bboxes
+        # In our spatiotemporal detection demo, different actions should have
+        # the same number of bboxes.
         config['model']['test_cfg']['rcnn']['action_thr'] = .0
     except KeyError:
         pass
@@ -749,7 +752,7 @@ def main(args):
         predict_stepsize=args.predict_stepsize,
         output_fps=args.output_fps,
         clip_vis_length=args.clip_vis_length,
-        output_filename=args.output_filename,
+        out_filename=args.out_filename,
         show=args.show)
     # start read and display thread
     clip_helper.start()

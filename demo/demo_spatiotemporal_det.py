@@ -319,7 +319,8 @@ def main():
 
     # Build STDET model
     try:
-        # Fix a issue that different actions may have different bboxes
+        # In our spatiotemporal detection demo, different actions should have
+        # the same number of bboxes.
         config['model']['test_cfg']['rcnn']['action_thr'] = .0
     except KeyError:
         pass

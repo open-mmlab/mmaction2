@@ -144,7 +144,7 @@ Optional arguments:
 - `HUMAN_DETECTION_CHECKPOINT`: The human detection checkpoint URL.
 - `HUMAN_DETECTION_SCORE_THRE`: The score threshold for human detection. Default: 0.9.
 - `ACTION_DETECTION_SCORE_THRESHOLD`: The score threshold for action detection. Default: 0.5.
-- `LABEL_MAP`: The label map used. Default: `demo/label_map_ava.txt`
+- `LABEL_MAP`: The label map used. Default: `demo/label_map_ava.txt`.
 - `DEVICE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`.  Default: `cuda:0`.
 - `OUTPUT_FILENAME`: Path to the output file which is a video format. Default: `demo/stdet_demo.mp4`.
 - `PREDICT_STEPSIZE`: Make a prediction per N frames.  Default: 8.
@@ -361,7 +361,7 @@ Optional arguments:
 - `HUMAN_DETECTION_CHECKPOINT`: The human detection checkpoint URL.
 - `HUMAN_DETECTION_SCORE_THRE`: The score threshold for human detection. Default: 0.9.
 - `INPUT_VIDEO`: The webcam id or video path of the source. Default: `0`.
-- `LABEL_MAP`: The label map used. Default: `demo/label_map_ava.txt`
+- `LABEL_MAP`: The label map used. Default: `demo/label_map_ava.txt`.
 - `DEVICE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`.  Default: `cuda:0`.
 - `OUTPUT_FPS`: The FPS of demo video output. Default: 15.
 - `OUTPUT_FILENAME`: Path to the output file which is a video format. Default: None.
