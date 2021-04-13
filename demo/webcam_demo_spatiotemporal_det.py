@@ -648,25 +648,18 @@ class Visualizer:
 
     def draw_predictions(self, task):
         """Visualize stdet predictions on raw frames."""
-        # read data from task
+        # read bboxes from task
         bboxes = task.display_bboxes.cpu().numpy()
-        frames = task.frames
-        preds = task.action_preds
 
-        # already draw by the former task
-        buffer = frames[:task.num_buffer_frames]
-
-        # draw predictions
-        keyframe_idx = len(frames) // 2
+        # draw predictions and update task
+        keyframe_idx = len(task.frames) // 2
         draw_range = [
             keyframe_idx - task.clip_vis_length // 2,
             keyframe_idx + (task.clip_vis_length - 1) // 2
         ]
-        assert draw_range[0] >= 0 and draw_range[1] < len(frames)
-        frames = self.draw_clip_range(frames, preds, bboxes, draw_range)
-
-        # update task
-        task.frames = buffer + frames
+        assert draw_range[0] >= 0 and draw_range[1] < len(task.frames)
+        task.frames = self.draw_clip_range(task.frames, task.action_preds,
+                                           bboxes, draw_range)
 
         return task
 
