@@ -56,8 +56,6 @@ bash cut_videos.sh
 
 ## 4. 提取 RGB 帧和光流
 
-如果用户仅使用 video loader，则可以跳过本步。
-
 在提取之前，请参考 [安装教程](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
 如果用户有足够的 SSD 空间，那么建议将视频抽取为 RGB 帧以提升 I/O 性能。用户可以使用以下脚本为抽取得到的帧文件夹建立软连接：
