@@ -355,8 +355,10 @@ class ClipHelper:
         # source params
         try:
             self.cap = cv2.VideoCapture(int(input_video))
+            self.webcam = True
         except ValueError:
             self.cap = cv2.VideoCapture(input_video)
+            self.webcam = False
         assert self.cap.isOpened()
 
         # image meta & image preprocess params
@@ -405,9 +407,12 @@ class ClipHelper:
             self.display_size = (w, h)
         self.ratio = tuple(
             n / o for n, o in zip(self.stdet_input_size, self.display_size))
-        assert (out_filename or output_fps), \
+        assert (out_filename or show), \
             'out_filename and show cannot both be None'
-        self.output_fps = output_fps
+        if output_fps <= 0:
+            self.output_fps = int(self.cap.get(cv2.CAP_PROP_FPS))
+        else:
+            self.output_fps = output_fps
         self.show = show
         self.video_writer = None
         if out_filename is not None:
@@ -467,6 +472,11 @@ class ClipHelper:
                 read_frame_cnt = self.window_size - len(frames)
                 while was_read and len(frames) < self.window_size:
                     was_read, frame = self.cap.read()
+                    if not self.webcam:
+                        # Reading frames too fast may lead to unexpected
+                        # performance degradation. If you have enough
+                        # resource, this line could be commented.
+                        time.sleep(1 / self.output_fps)
                     if was_read:
                         frames.append(mmcv.imresize(frame, self.display_size))
                         processed_frame = mmcv.imresize(
@@ -526,9 +536,17 @@ class ClipHelper:
 
             # do display predictions
             with self.output_lock:
-                # task.frames[:task.num_buffer_frames] have already been
-                # displayed by the previous task
-                for frame_id in self.display_inds:
+                if was_read and task.id == 0:
+                    # the first task
+                    cur_display_inds = range(self.display_inds[-1] + 1)
+                elif not was_read:
+                    # the last task
+                    cur_display_inds = range(self.display_inds[0],
+                                             len(task.frames))
+                else:
+                    cur_display_inds = self.display_inds
+
+                for frame_id in cur_display_inds:
                     frame = task.frames[frame_id]
                     if self.show:
                         cv2.imshow('Demo', frame)
@@ -554,7 +572,19 @@ class ClipHelper:
             time.sleep(0.02)
             return not self.stopped, None
         else:
-            return self.read_queue.get()
+            was_read, task = self.read_queue.get()
+            if not was_read:
+                # If we reach the end of the video, there aren't enough frames
+                # in the task.processed_frames, so no need to model inference
+                # and draw predictions. Put task into display queue.
+                with self.read_id_lock:
+                    read_id = self.read_id
+                with self.display_lock:
+                    self.display_queue[read_id] = was_read, copy.deepcopy(task)
+
+                # main thread doesn't need to handle this task again
+                task = None
+            return was_read, task
 
     def start(self):
         """Start read thread and display thread."""
@@ -897,6 +927,10 @@ def main(args):
         for able_to_read, task in clip_helper:
             # get data from read queue
 
+            if not able_to_read:
+                # read thread is dead and all tasks are processed
+                break
+
             if task is None:
                 # when no data in read queue, wait
                 time.sleep(0.01)
@@ -919,10 +953,6 @@ def main(args):
 
             logger.debug('Main thread inference time '
                          f'{1000*(time.time() - inference_start):.0f} ms')
-
-            if not able_to_read:
-                # read thread is dead and all tasks are processed
-                break
 
         # wait for display thread
         clip_helper.join()
