@@ -357,7 +357,7 @@ def main():
             for i in range(len(result)):
                 if i + 1 not in label_map:
                     continue
-                for j in range(proposal.shape[0]):
+                for j in range(result[i].shape[0]):
                     if result[i][j, 4] > args.action_score_thr:
                         prediction[j].append((label_map[i + 1], result[i][j,
                                                                           4]))
