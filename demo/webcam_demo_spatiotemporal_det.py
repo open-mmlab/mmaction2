@@ -141,8 +141,7 @@ class TaskInfo:
     Transmit data around three threads.
 
     1) Read Thread: Create task and put task into read queue. Init `frames`,
-        `processed_frames`, `img_shape`, `num_buffer_frames`, `ratio`,
-        `clip_vis_length`.
+        `processed_frames`, `img_shape`, `ratio`, `clip_vis_length`.
     2) Main Thread: Get data from read queue, predict human bboxes and stdet
         action labels, draw predictions and put task into display queue. Init
         `display_bboxes`, `stdet_bboxes` and `action_preds`, update `frames`.
@@ -166,16 +165,12 @@ class TaskInfo:
         # results for the same bbox. tuple contains `class_name` and `score`.
         self.action_preds = None  # stdet results
 
-        # human detector results
+        # human bboxes with the format (xmin, ymin, xmax, ymax)
         self.display_bboxes = None  # bboxes coords for self.frames
         self.stdet_bboxes = None  # bboxes coords for self.processed_frames
-        self.ratio = None  # processed_frames.shape[:2] / frames.shape[:2]
+        self.ratio = None  # processed_frames.shape[1::-1]/frames.shape[1::-1]
 
-        # number of overlapping frames with the previous task
-        self.num_buffer_frames = 0
-
-        # for each clip, draw predictions around keyframe with at most
-        # clip_vis_length frames
+        # for each clip, draw predictions on clip_vis_length frames
         self.clip_vis_length = -1
 
     def add_frames(self, idx, frames, processed_frames):
@@ -324,10 +319,10 @@ class StdetPredictor:
         for class_id in range(len(result)):
             if class_id + 1 not in self.label_map:
                 continue
-            for bboex_id in range(task.stdet_bboxes.shape[0]):
-                if result[class_id][bboex_id, 4] > self.score_thr:
-                    preds[bboex_id].append((self.label_map[class_id + 1],
-                                            result[class_id][bboex_id, 4]))
+            for bbox_id in range(task.stdet_bboxes.shape[0]):
+                if result[class_id][bbox_id, 4] > self.score_thr:
+                    preds[bbox_id].append((self.label_map[class_id + 1],
+                                           result[class_id][bbox_id, 4]))
 
         # update task
         # `preds` is `list[list[tuple]]`. The outter brackets indicate
@@ -352,6 +347,21 @@ class ClipHelper:
                  out_filename=None,
                  show=True,
                  stdet_input_shortside=256):
+        # stdet sampling strategy
+        val_pipeline = config['val_pipeline']
+        sampler = [x for x in val_pipeline
+                   if x['type'] == 'SampleAVAFrames'][0]
+        clip_len, frame_interval = sampler['clip_len'], sampler[
+            'frame_interval']
+        self.window_size = clip_len * frame_interval
+
+        # asserts
+        assert (out_filename or show), \
+            'out_filename and show cannot both be None'
+        assert clip_len % 2 == 0, 'We would like to have an even clip_len'
+        assert clip_vis_length <= predict_stepsize
+        assert 0 < predict_stepsize <= self.window_size
+
         # source params
         try:
             self.cap = cv2.VideoCapture(int(input_video))
@@ -361,7 +371,7 @@ class ClipHelper:
             self.webcam = False
         assert self.cap.isOpened()
 
-        # image meta & image preprocess params
+        # stdet input preprocessing params
         h = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
         w = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         self.stdet_input_size = mmcv.rescale_size(
@@ -374,19 +384,7 @@ class ClipHelper:
         img_norm_cfg['std'] = np.array(img_norm_cfg['std'])
         self.img_norm_cfg = img_norm_cfg
 
-        # sampling strategy
-        val_pipeline = config['val_pipeline']
-        sampler = [x for x in val_pipeline
-                   if x['type'] == 'SampleAVAFrames'][0]
-        clip_len, frame_interval = sampler['clip_len'], sampler[
-            'frame_interval']
-        assert clip_len % 2 == 0, 'We would like to have an even clip_len'
-        self.window_size = clip_len * frame_interval
-
         # task init params
-        assert clip_vis_length <= predict_stepsize
-        assert 0 < predict_stepsize <= self.window_size
-        assert predict_stepsize % 2 == 0
         self.clip_vis_length = clip_vis_length
         self.predict_stepsize = predict_stepsize
         self.buffer_size = self.window_size - self.predict_stepsize
@@ -407,8 +405,6 @@ class ClipHelper:
             self.display_size = (w, h)
         self.ratio = tuple(
             n / o for n, o in zip(self.stdet_input_size, self.display_size))
-        assert (out_filename or show), \
-            'out_filename and show cannot both be None'
         if output_fps <= 0:
             self.output_fps = int(self.cap.get(cv2.CAP_PROP_FPS))
         else:
@@ -485,8 +481,6 @@ class ClipHelper:
                                               **self.img_norm_cfg)
                         processed_frames.append(processed_frame)
             task.add_frames(self.read_id + 1, frames, processed_frames)
-            task.num_buffer_frames = (0 if self.read_id == -1 else
-                                      self.buffer_size)
 
             # update buffer
             if was_read:
