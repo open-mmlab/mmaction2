@@ -47,33 +47,30 @@ def _init_lazy_if_proper(results, lazy):
 class EntityBoxRescale:
 
     def __init__(self, scale_factor):
-        warnings.warn('"EntityBoxRescale" is deprecated and will be removed '
-                      'in later versions. You can not use it in the pipeline.')
-
-    def __call__(self, results):
-        return results
+        raise NotImplementedError(
+            'This component should not be used in the '
+            'data pipeline and is removed in PR #782. Details see '
+            'https://github.com/open-mmlab/mmaction2/pull/782')
 
 
 @PIPELINES.register_module()
 class EntityBoxCrop:
 
     def __init__(self, crop_bbox):
-        warnings.warn('"EntityBoxCrop" is deprecated and will be removed in '
-                      'later versions. You can not use it in the pipeline.')
-
-    def __call__(self, results):
-        return results
+        raise NotImplementedError(
+            'This component should not be used in the '
+            'data pipeline and is removed in PR #782. Details see '
+            'https://github.com/open-mmlab/mmaction2/pull/782')
 
 
 @PIPELINES.register_module()
 class EntityBoxFlip:
 
     def __init__(self, img_shape):
-        warnings.warn('"EntityBoxFlip" is deprecated and will be removed in '
-                      'later versions. You can not use it in the pipeline.')
-
-    def __call__(self, results):
-        return results
+        raise NotImplementedError(
+            'This component should not be used in the '
+            'data pipeline and is removed in PR #782. Details see '
+            'https://github.com/open-mmlab/mmaction2/pull/782')
 
 
 @PIPELINES.register_module()
