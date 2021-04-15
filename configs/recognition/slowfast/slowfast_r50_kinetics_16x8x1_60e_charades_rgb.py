@@ -20,7 +20,8 @@ model = dict(
             pool1_stride_t=1,
             fusion_kernel=7,
             inflate=(0, 0, 1, 1),
-            norm_cfg=dict(type='SyncBN')),
+            norm_cfg=dict(type='SyncBN'),
+            norm_eval=True),
         fast_pathway=dict(
             type='resnet3d',
             depth=50,
@@ -30,7 +31,8 @@ model = dict(
             conv1_kernel=(5, 7, 7),
             conv1_stride_t=1,
             pool1_stride_t=1,
-            norm_cfg=dict(type='SyncBN'))),
+            norm_cfg=dict(type='SyncBN'),
+            norm_eval=True)),
     cls_head=dict(
         type='SlowFastHead',
         in_channels=2304,  # 2048+256
@@ -98,7 +100,8 @@ test_pipeline = [
         test_mode=True),
     dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
     dict(type='Resize', scale=(-1, 256)),
-    dict(type='ThreeCrop', crop_size=256),
+    dict(type='CenterCrop', crop_size=256),
+    #  dict(type='ThreeCrop', crop_size=256),
     dict(type='Flip', flip_ratio=0),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW'),
@@ -136,12 +139,12 @@ optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
 lr_config = dict(
     policy='step',
-    step=[40, 50],
+    step=[20, 40],
     warmup='linear',
     warmup_by_epoch=True,
-    warmup_iters=4,
+    warmup_iters=2,
     warmup_ratio=0.0001)
-total_epochs = 60
+total_epochs = 50
 
 load_from = ('https://download.openmmlab.com/mmaction/recognition/'
              'slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb/'
