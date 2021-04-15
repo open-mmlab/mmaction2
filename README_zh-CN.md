@@ -226,4 +226,30 @@ MMAction2 是一款由不同学校和公司共同贡献的开源项目。我们�
 - [MMTracking](https://github.com/open-mmlab/mmtracking): OpenMMLab 一体化视频目标感知平台
 - [MMPose](https://github.com/open-mmlab/mmpose): OpenMMLab 姿态估计工具箱与测试基准
 - [MMEditing](https://github.com/open-mmlab/mmediting): OpenMMLab 图像视频编辑工具箱
-- [MMOCR](https://github.com/open-mmlab/mmocr): OpenMMLab 全流程文字检测识别理解工具包.
+- [MMOCR](https://github.com/open-mmlab/mmocr): OpenMMLab 全流程文字检测识别理解工具包
+
+## 欢迎加入 OpenMMLab 社区
+
+- 扫描下方的二维码可关注 OpenMMLab 团队的知乎官方账号，我们会在该账号上为大家
+
+    <div align="left">
+    <img src="/docs/imgs/zhihu_qrcode.jpg" width="200" />
+    </div>
+
+  - 📢 分享 AI 框架的前沿技术
+  - 💻 解读 PyTorch 常用模块源码
+  - 📰 发布 OpenMMLab 的相关新闻
+  - 🚀 介绍 OpenMMLab 算法库开发的前沿算法
+
+  干货满满 📘，等你来撩 💗，欢迎关注 😘
+
+- 扫描下方的二维码可加入 OpenMMLab 团队的官方交流群，获得
+
+    <div align="left">
+    <img src="/docs/imgs/qq_group_qrcode.jpg" width="200" />
+    </div>
+
+  - 🏃 更高效的问题答疑和意见反馈
+  - 🔥 与各行各业开发者充分交流
+
+  OpenMMLab 社区期待您的加入 👬
