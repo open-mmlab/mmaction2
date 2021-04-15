@@ -128,7 +128,7 @@ data = dict(
         pipeline=test_pipeline,
         test_mode=True))
 
-evaluation = dict(interval=2, metrics=['mean_average_precision'])
+evaluation = dict(interval=1, metrics=['mean_average_precision'])
 
 # optimizer
 optimizer = dict(type='SGD', lr=0.075, momentum=0.9, weight_decay=1e-4)
