@@ -73,7 +73,7 @@ class TestTransform:
         imgs = list(np.random.rand(2, 240, 320, 3))
         results = dict(imgs=imgs, modality='RGB')
         results['gt_bboxes'] = np.array([[0, 0, 320, 240]])
-        results['proposals'] = None
+        results['proposals'] = np.array([[0, 0, 320, 240]])
         resize = Resize(scale=(-1, 256), keep_ratio=True)
         resize_results = resize(results)
         assert assert_dict_has_keys(resize_results, target_keys)

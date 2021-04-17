@@ -16,6 +16,8 @@
 
 **Bug and Typo Fixes**
 
+- Fix a bug in pytorch2onnx.py when `num_classes <= 4` ([#800](https://github.com/open-mmlab/mmaction2/pull/800))
+
 **ModelZoo**
 
 ### 0.13.0 (31/03/2021)
