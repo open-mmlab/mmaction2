@@ -81,6 +81,8 @@ class RawframeDataset(BaseDataset):
             when sampling data. `power == 1` indicates uniformly sampling all
             data; `power == 0` indicates uniformly sampling all classes.
             Default: 0.
+        dynamic_length (bool): If the dataset length is dynamic (used by
+            ClassSpecificDistributedSampler). Default: False.
     """
 
     def __init__(self,
