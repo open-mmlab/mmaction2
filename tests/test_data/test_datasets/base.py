@@ -43,6 +43,8 @@ class BaseTestDataset:
                                       'video_test_list.txt')
         cls.video_ann_file_multi_label = osp.join(
             cls.ann_file_prefix, 'video_test_list_multi_label.txt')
+        cls.charades_ann_file = osp.join(cls.ann_file_prefix,
+                                         'charades_test_ann.csv')
 
         # pipeline configuration
         cls.action_pipeline = []
@@ -90,6 +92,14 @@ class BaseTestDataset:
                 aug_ratio=0.5,
                 mode='test'),
             dict(type='RawFrameDecode', io_backend='disk')
+        ]
+        cls.charades_test_pipeline = [
+            dict(
+                type='SampleCharadesFrames',
+                clip_len=64,
+                frame_interval=2,
+                num_clips=1,
+                test_mode=True)
         ]
         cls.proposal_train_cfg = ConfigDict(
             dict(

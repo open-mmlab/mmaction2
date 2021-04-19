@@ -134,7 +134,7 @@ data = dict(
 evaluation = dict(interval=1, metrics=['mean_average_precision'])
 
 # optimizer
-optimizer = dict(type='SGD', lr=0.075, momentum=0.9, weight_decay=1e-4)
+optimizer = dict(type='SGD', lr=0.05, momentum=0.9, weight_decay=1e-4)
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
 lr_config = dict(

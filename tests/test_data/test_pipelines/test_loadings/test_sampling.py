@@ -2,12 +2,14 @@ import copy
 
 import numpy as np
 import pytest
+import torch
 from mmcv.utils import assert_dict_has_keys
 from numpy.testing import assert_array_equal
 
 from mmaction.datasets.pipelines import (AudioFeatureSelector,
                                          DenseSampleFrames, SampleAVAFrames,
-                                         SampleFrames, SampleProposalFrames,
+                                         SampleCharadesFrames, SampleFrames,
+                                         SampleProposalFrames,
                                          UntrimmedSampleFrames)
 from .base import BaseTestLoading
 
@@ -548,6 +550,30 @@ class TestSampling(BaseTestLoading):
             f'{sample_ava_dataset.__class__.__name__}('
             f'clip_len={8}, '
             f'frame_interval={8}, '
+            f'test_mode={False})')
+
+    def test_sample_charades_frames(self):
+        target_keys = [
+            'frame_inds', 'clip_len', 'frame_interval', 'num_clips',
+            'total_frames', 'label'
+        ]
+        config = dict(
+            clip_len=3, frame_interval=2, num_clips=1, num_classes=157)
+        sample_charades_frames = SampleCharadesFrames(**config)
+        charades_result = sample_charades_frames(results=self.charades_results)
+        assert assert_dict_has_keys(charades_result, target_keys)
+        assert charades_result['clip_len'] == 3
+        assert charades_result['frame_interval'] == 2
+        assert len(charades_result['frame_inds']) == 3
+        assert charades_result['label'].shape == torch.Size((157, ))
+        assert repr(sample_charades_frames) == (
+            f'{sample_charades_frames.__class__.__name__}('
+            f'clip_len={3}, '
+            f'num_classes={157}, '
+            f'frame_interval={2}, '
+            f'num_clips={1}, '
+            f'temporal_jitter={False}, '
+            f'twice_sample={False}, '
             f'test_mode={False})')
 
     def test_sample_proposal_frames(self):

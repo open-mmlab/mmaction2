@@ -464,13 +464,7 @@ class SampleCharadesFrames(SampleFrames):
 
     @staticmethod
     def aggregate_labels(label_list):
-        """Join a list of label list.
-
-        Args:
-            labels (list): The input label list.
-        Returns:
-            labels (list): The joint list of all lists in input.
-        """
+        """Join a list of label list."""
         return list(set().union(*label_list))
 
     def __call__(self, results):
@@ -501,7 +495,6 @@ class SampleCharadesFrames(SampleFrames):
                     f'num_clips={self.num_clips}, '
                     f'temporal_jitter={self.temporal_jitter}, '
                     f'twice_sample={self.twice_sample}, '
-                    f'out_of_bound_opt={self.out_of_bound_opt}, '
                     f'test_mode={self.test_mode})')
         return repr_str
 

@@ -81,6 +81,17 @@ class BaseTestLoading:
 
         cls.ava_results = dict(
             fps=30, timestamp=902, timestamp_start=840, shot_info=(0, 27000))
+        cls.charades_label = [[], [75], [75], [79, 76, 75], [79, 76, 75],
+                              [77, 79, 76, 75], [77, 79, 76, 75], [76, 75],
+                              [76], [76]]
+        cls.charades_results = dict(
+            frame_dir=cls.img_dir,
+            total_frames=cls.total_frames,
+            filename_tmpl=cls.filename_tmpl,
+            start_index=1,
+            modality='RGB',
+            offset=0,
+            label=cls.charades_label)
 
         cls.hvu_label_example1 = dict(
             categories=['action', 'object', 'scene', 'concept'],

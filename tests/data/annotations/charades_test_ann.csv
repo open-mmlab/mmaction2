@@ -1,0 +1,11 @@
+original_video_id video_id frame_id path labels
+YSKX3 7811 0 img_00001.jpg ""
+YSKX3 7811 0 img_00002.jpg "75"
+YSKX3 7811 0 img_00003.jpg "75"
+YSKX3 7811 0 img_00004.jpg "79,76,75"
+YSKX3 7811 0 img_00005.jpg "79,76,75"
+YSKX3 7811 0 img_00006.jpg "77,79,76,75"
+YSKX3 7811 0 img_00007.jpg "77,79,76,75"
+YSKX3 7811 0 img_00008.jpg "76,75"
+YSKX3 7811 0 img_00009.jpg "76"
+YSKX3 7811 0 img_000010.jpg "76"

@@ -14,12 +14,14 @@ class CharadesDataset(BaseDataset):
                  pipeline,
                  data_prefix=None,
                  test_mode=False,
-                 filename_tmpl='{}-{}.jpg',
+                 filename_tmpl_prefix='{}',
+                 filename_tmpl_suffix='-{:06}.jpg',
                  multi_class=True,
                  num_classes=157,
                  start_index=1,
                  modality='RGB'):
-        self.filename_tmpl = filename_tmpl
+        self.filename_tmpl_prefix = filename_tmpl_prefix
+        self.filename_tmpl_suffix = filename_tmpl_suffix
         super().__init__(
             ann_file,
             pipeline,
@@ -36,7 +38,7 @@ class CharadesDataset(BaseDataset):
         return list(set().union(*label_list))
 
     @staticmethod
-    def load_image_lists(frame_list_file, return_list=False):
+    def load_image_lists(frame_list_file):
         image_paths = defaultdict(list)
         labels = defaultdict(list)
         with open(frame_list_file, 'r') as f:
@@ -55,10 +57,6 @@ class CharadesDataset(BaseDataset):
                 else:
                     labels[video_name].append([])
 
-        if return_list:
-            image_paths = list(image_paths.values())
-            labels = list(labels.values())
-            return image_paths, labels
         return dict(image_paths), dict(labels)
 
     def load_annotations(self):
@@ -77,8 +75,12 @@ class CharadesDataset(BaseDataset):
                 video_info['label'] = self.aggregate_labels(labels[video_name])
             else:
                 video_info['label'] = labels[video_name]
-            video_info['filename_tmpl'] = self.filename_tmpl.format(
-                video_name, '{:06}')
+            if '{}' in self.filename_tmpl_prefix:
+                video_info['filename_tmpl'] = self.filename_tmpl_prefix.format(
+                    video_name)
+            else:
+                video_info['filename_tmpl'] = self.filename_tmpl_prefix
+            video_info['filename_tmpl'] += self.filename_tmpl_suffix
             video_infos.append(video_info)
 
         return video_infos
