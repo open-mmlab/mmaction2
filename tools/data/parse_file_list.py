@@ -504,3 +504,8 @@ def parse_hmdb51_split(level):
         splits.append((train_list, test_list))
 
     return splits
+
+
+def parse_diving48_splits(level=2):
+
+    pass
