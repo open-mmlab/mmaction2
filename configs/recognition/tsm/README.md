@@ -142,3 +142,5 @@ python tools/test.py configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.p
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+
+A TensorRT implementation of TSM-R50 could refer to [wang-xinyu/tensorrtx](https://github.com/wang-xinyu/tensorrtx/tree/master/tsm).
