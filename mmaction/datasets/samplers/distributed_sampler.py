@@ -128,7 +128,7 @@ class ClassSpecificDistributedSampler(_DistributedSampler):
         indices += indices[:(self.total_size - len(indices))]
         assert len(indices) == self.total_size
 
-        # subsample
+        # retrieve indices for current process
         indices = indices[self.rank:self.total_size:self.num_replicas]
         assert len(indices) == self.num_samples
         return iter(indices)

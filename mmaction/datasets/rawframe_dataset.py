@@ -76,11 +76,11 @@ class RawframeDataset(BaseDataset):
         sample_by_class (bool): Sampling by class, should be set `True` when
             performing inter-class data balancing. Only compatible with
             `multi_class == False`. Only applies for training. Default: False.
-        power (float | None): We support sampling data with the probability
+        power (float): We support sampling data with the probability
             proportional to the power of its label frequency (freq ^ power)
             when sampling data. `power == 1` indicates uniformly sampling all
             data; `power == 0` indicates uniformly sampling all classes.
-            Default: None.
+            Default: 0.
     """
 
     def __init__(self,
@@ -95,7 +95,8 @@ class RawframeDataset(BaseDataset):
                  start_index=1,
                  modality='RGB',
                  sample_by_class=False,
-                 power=None):
+                 power=0.,
+                 dynamic_length=False):
         self.filename_tmpl = filename_tmpl
         self.with_offset = with_offset
         super().__init__(
@@ -108,7 +109,8 @@ class RawframeDataset(BaseDataset):
             start_index,
             modality,
             sample_by_class=sample_by_class,
-            power=power)
+            power=power,
+            dynamic_length=dynamic_length)
 
     def load_annotations(self):
         """Load annotation file to get video information."""
