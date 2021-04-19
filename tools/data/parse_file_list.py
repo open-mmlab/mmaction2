@@ -430,15 +430,23 @@ def parse_hmdb51_split(level):
 
         class_list = sorted(os.listdir(frame_path))
         class_dict = dict()
-        with open(class_index_file, 'w') as f:
-            content = []
-            for class_id, class_name in enumerate(class_list):
-                # like `ClassInd.txt` in UCF-101, the class_id begins with 1
-                class_dict[class_name] = class_id + 1
-                cur_line = ' '.join([str(class_id + 1), class_name])
-                content.append(cur_line)
-            content = '\n'.join(content)
-            f.write(content)
+        if not osp.exists(class_index_file):
+            with open(class_index_file, 'w') as f:
+                content = []
+                for class_id, class_name in enumerate(class_list):
+                    # like `ClassInd.txt` in UCF-101,
+                    # the class_id begins with 1
+                    class_dict[class_name] = class_id + 1
+                    cur_line = ' '.join([str(class_id + 1), class_name])
+                    content.append(cur_line)
+                content = '\n'.join(content)
+                f.write(content)
+        else:
+            print(f'{class_index_file} has been generated before.')
+            class_dict = {
+                class_name: class_id + 1
+                for class_id, class_name in enumerate(class_list)
+            }
 
         for i in range(1, 4):
             train_content = []
@@ -469,8 +477,7 @@ def parse_hmdb51_split(level):
             with open(test_file_template.format(i), 'w') as fout:
                 fout.write(test_content)
 
-    if not osp.exists(class_index_file):
-        generate_class_index_file()
+    generate_class_index_file()
 
     with open(class_index_file, 'r') as fin:
         class_index = [x.strip().split() for x in fin]
