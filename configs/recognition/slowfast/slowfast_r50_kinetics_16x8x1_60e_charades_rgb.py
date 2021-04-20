@@ -48,9 +48,9 @@ model = dict(
 dataset_type = 'CharadesDataset'
 data_root = 'data/charades/rawframes'
 data_root_val = 'data/charades/rawframes'
-ann_file_train = 'data/charades/annotations/train.csv'
-ann_file_val = 'data/charades/annotations/val.csv'
-ann_file_test = 'data/charades/annotations/val.csv'
+ann_file_train = 'data/charades/annotations/charades_train_list_rawframes.csv'
+ann_file_val = 'data/charades/annotations/charades_val_list_rawframes.csv'
+ann_file_test = 'data/charades/annotations/charades_val_list_rawframes.csv'
 
 mc_cfg = dict(
     server_list_cfg='/mnt/lustre/share/memcached_client/server_list.conf',
