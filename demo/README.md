@@ -349,7 +349,7 @@ python demo/webcam_demo_spatiotemporal_det.py \
     [--display-height] ${DISPLAY_HEIGHT} \
     [--display-width] ${DISPLAY_WIDTH} \
     [--predict-stepsize ${PREDICT_STEPSIZE}] \
-    [--clip-vis-length] ${CLIP_VIS_LENGTH} \
+    [--clip-vis-length] ${CLIP_VIS_LENGTH}
 ```
 
 Optional arguments:
