@@ -1,4 +1,3 @@
-import copy
 import os.path as osp
 
 import mmcv
@@ -95,27 +94,11 @@ class PoseDataset(BaseDataset):
     def load_pkl_annotations(self):
         data = mmcv.load(self.ann_file)
 
-        for i, item in enumerate(data):
+        for item in data:
             # Sometimes we may need to load anno from the file
             if 'filename' in item:
                 item['filename'] = osp.join(self.data_prefix, item['filename'])
         return data
-
-    def prepare_train_frames(self, idx):
-        """Prepare the frames for training given the index."""
-        results = copy.deepcopy(self.video_infos[idx])
-
-        results['modality'] = self.modality
-        results['start_index'] = self.start_index
-        return self.pipeline(results)
-
-    def prepare_test_frames(self, idx):
-        """Prepare the frames for testing given the index."""
-        results = copy.deepcopy(self.video_infos[idx])
-
-        results['modality'] = self.modality
-        results['start_index'] = self.start_index
-        return self.pipeline(results)
 
     def evaluate(self,
                  results,

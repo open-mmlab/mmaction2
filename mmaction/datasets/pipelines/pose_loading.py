@@ -1,12 +1,12 @@
-import copy as cp
-import pickle
+import copy as cp  # isort: skip
+import pickle  # isort: skip
 
-import numpy as np
-from mmcv.fileio import FileClient
-from scipy.stats import mode
+import numpy as np  # isort: skip
+from mmcv.fileio import FileClient  # isort: skip
+from scipy.stats import mode  # isort: skip
 
-from ..registry import PIPELINES
-from .augmentations import Flip
+from ..registry import PIPELINES  # isort: skip
+from .augmentations import Flip  # isort: skip
 
 
 @PIPELINES.register_module()
@@ -108,6 +108,14 @@ class UniformSampleFrames:
         results['num_clips'] = self.num_clips
         return results
 
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'clip_len={self.clip_len}, '
+                    f'num_clips={self.num_clips}, '
+                    f'test_mode={self.test_mode}, '
+                    f'seed={self.seed})')
+        return repr_str
+
 
 @PIPELINES.register_module()
 class PoseDecode(object):
@@ -124,15 +132,15 @@ class PoseDecode(object):
             Default: 1.
         drop_prob (float): The probability for dropping one keypoint for each
             frame. Default: 1 / 16.
-        manipulate_joints (list[int]): The joint indexes that may be dropped.
-            Default: [7, 8, 9, 10, 13, 14, 15, 16]. (limb joints)
+        manipulate_joints (tuple[int]): The joint indexes that may be dropped.
+            Default: (7, 8, 9, 10, 13, 14, 15, 16). (limb joints)
     """
 
     def __init__(self,
                  random_drop=False,
                  random_seed=1,
                  drop_prob=1. / 16.,
-                 manipulate_joints=[7, 8, 9, 10, 13, 14, 15, 16]):
+                 manipulate_joints=(7, 8, 9, 10, 13, 14, 15, 16)):
         self.random_drop = random_drop
         self.random_seed = random_seed
         self.drop_prob = drop_prob
@@ -180,6 +188,14 @@ class PoseDecode(object):
             results['kp'] = results['kp'][:, frame_inds].astype(np.float32)
 
         return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name}(',
+                    f'random_crop={self.random_crop}, '
+                    f'random_seed={self.random_seed}, '
+                    f'drop_prob={self.drop_prob}, '
+                    f'manipulate_joints={self.manipulate_joints})')
+        return repr_str
 
 
 @PIPELINES.register_module()
@@ -319,6 +335,16 @@ class LoadKineticsPose:
         results['kpscore'] = new_kpscore[:self.max_person]
         return results
 
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'io_backend={self.io_backend}, '
+                    f'squeeze={self.squeeze}, '
+                    f'max_person={self.max_person}, '
+                    f'keypoint_weight={self.keypoint_weight}, '
+                    f'source={self.source}, '
+                    f'kwargs={self.kwargs})')
+        return repr_str
+
 
 @PIPELINES.register_module()
 class GeneratePoseTarget:
@@ -334,18 +360,18 @@ class GeneratePoseTarget:
         with_kp (bool): Generate pseudo heatmaps for keypoints. Default: True.
         with_limb (bool): Generate pseudo heatmaps for limbs. At least one of
             'with_kp' and 'with_limb' should be True. Default: False.
-        skeletons (list[tuple]): The definition of human skeletons.
-            Default: [(0, 1), (0, 2), (1, 3), (2, 4), (0, 5), (5, 7), (7, 9),
+        skeletons (tuple[tuple]): The definition of human skeletons.
+            Default: ((0, 1), (0, 2), (1, 3), (2, 4), (0, 5), (5, 7), (7, 9),
                       (0, 6), (6, 8), (8, 10), (5, 11), (11, 13), (13, 15),
-                      (6, 12), (12, 14), (14, 16), (11, 12)],
+                      (6, 12), (12, 14), (14, 16), (11, 12)),
             which is the definition of COCO-17p skeletons.
         double (bool): Output both original heatmaps and flipped heatmaps.
             Default: False.
-        left (list[int]): Indexes of left keypoints, which is used when
-            flipping heatmaps. Default: [1, 3, 5, 7, 9, 11, 13, 15],
+        left (tuple[int]): Indexes of left keypoints, which is used when
+            flipping heatmaps. Default: (1, 3, 5, 7, 9, 11, 13, 15),
             which is left keypoints in COCO-17p.
-        right (list[int]): Indexes of right keypoints, which is used when
-            flipping heatmaps. Default: [2, 4, 6, 8, 10, 12, 14, 16],
+        right (tuple[int]): Indexes of right keypoints, which is used when
+            flipping heatmaps. Default: (2, 4, 6, 8, 10, 12, 14, 16),
             which is right keypoints in COCO-17p.
     """
 
@@ -354,12 +380,12 @@ class GeneratePoseTarget:
                  use_score=True,
                  with_kp=True,
                  with_limb=False,
-                 skeletons=[(0, 1), (0, 2), (1, 3), (2, 4), (0, 5), (5, 7),
+                 skeletons=((0, 1), (0, 2), (1, 3), (2, 4), (0, 5), (5, 7),
                             (7, 9), (0, 6), (6, 8), (8, 10), (5, 11), (11, 13),
-                            (13, 15), (6, 12), (12, 14), (14, 16), (11, 12)],
+                            (13, 15), (6, 12), (12, 14), (14, 16), (11, 12)),
                  double=False,
-                 left=[1, 3, 5, 7, 9, 11, 13, 15],
-                 right=[2, 4, 6, 8, 10, 12, 14, 16]):
+                 left=(1, 3, 5, 7, 9, 11, 13, 15),
+                 right=(2, 4, 6, 8, 10, 12, 14, 16)):
 
         self.sigma = sigma
         self.use_score = use_score
@@ -591,3 +617,15 @@ class GeneratePoseTarget:
                 [self.gen_an_aug(results),
                  self.gen_an_aug(results_)])
         return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'sigma={self.sigma}, '
+                    f'use_score={self.use_score}, '
+                    f'with_kp={self.with_kp}, '
+                    f'with_limb={self.with_limb}, '
+                    f'skeletons={self.skeletons}, '
+                    f'double={self.double}, '
+                    f'left={self.left}, '
+                    f'right={self.right})')
+        return repr_str

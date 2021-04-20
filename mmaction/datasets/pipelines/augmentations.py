@@ -82,8 +82,8 @@ class PoseCompact:
 
         self.padding = padding
         self.threshold = threshold
-        if isinstance(hw_ratio, float):
-            hw_ratio = (hw_ratio, hw_ratio)
+        if hw_ratio is not None:
+            hw_ratio = _pair(hw_ratio)
 
         self.hw_ratio = hw_ratio
 
@@ -144,6 +144,13 @@ class PoseCompact:
         crop_quadruple = combine_quadruple(crop_quadruple, new_crop_quadruple)
         results['crop_quadruple'] = crop_quadruple
         return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}(padding={self.padding}, '
+                    f'threshold={self.threshold}, '
+                    f'hw_ratio={self.hw_ratio}, '
+                    f'allow_imgpad={self.allow_imgpad})')
+        return repr_str
 
 
 @PIPELINES.register_module()
@@ -1341,9 +1348,7 @@ class Flip:
                                                       modality)
                 if 'kp' in results:
                     kp = results['kp']
-                    kpscore = None
-                    if 'kpscore' in results:
-                        kpscore = results['kpscore']
+                    kpscore = results.get('kpscore', None)
                     kp, kpscore = self._flip_kps(kp, kpscore, img_width)
                     results['kp'] = kp
                     if 'kpscore' in results:
