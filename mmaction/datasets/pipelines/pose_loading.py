@@ -1,12 +1,12 @@
-import copy as cp  # isort: skip
-import pickle  # isort: skip
+import copy as cp
+import pickle
 
-import numpy as np  # isort: skip
-from mmcv.fileio import FileClient  # isort: skip
-from scipy.stats import mode  # isort: skip
+import numpy as np
+from mmcv.fileio import FileClient
+from scipy.stats import mode
 
-from ..registry import PIPELINES  # isort: skip
-from .augmentations import Flip  # isort: skip
+from ..registry import PIPELINES
+from .augmentations import Flip
 
 
 @PIPELINES.register_module()
