@@ -1,4 +1,5 @@
 import torch
+from torch import nn
 
 from ..registry import RECOGNIZERS
 from .base import BaseRecognizer
@@ -14,7 +15,7 @@ class Recognizer3D(BaseRecognizer):
         losses = dict()
 
         x = self.extract_feat(imgs)
-        if hasattr(self, 'neck'):
+        if self.with_neck:
             x, loss_aux = self.neck(x, labels.squeeze())
             losses.update(loss_aux)
 
@@ -41,7 +42,7 @@ class Recognizer3D(BaseRecognizer):
             while view_ptr < total_views:
                 batch_imgs = imgs[view_ptr:view_ptr + self.max_testing_views]
                 x = self.extract_feat(batch_imgs)
-                if hasattr(self, 'neck'):
+                if self.with_neck:
                     x, _ = self.neck(x)
                 cls_score = self.cls_head(x)
                 cls_scores.append(cls_score)
@@ -49,7 +50,7 @@ class Recognizer3D(BaseRecognizer):
             cls_score = torch.cat(cls_scores)
         else:
             x = self.extract_feat(imgs)
-            if hasattr(self, 'neck'):
+            if self.with_neck:
                 x, _ = self.neck(x)
             cls_score = self.cls_head(x)
 
@@ -61,7 +62,7 @@ class Recognizer3D(BaseRecognizer):
         testing."""
         return self._do_test(imgs).cpu().numpy()
 
-    def forward_dummy(self, imgs):
+    def forward_dummy(self, imgs, softmax=False):
         """Used for computing network FLOPs.
 
         See ``tools/analysis/get_flops.py``.
@@ -75,11 +76,13 @@ class Recognizer3D(BaseRecognizer):
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
         x = self.extract_feat(imgs)
 
-        if hasattr(self, 'neck'):
+        if self.with_neck:
             x, _ = self.neck(x)
 
-        outs = (self.cls_head(x), )
-        return outs
+        outs = self.cls_head(x)
+        if softmax:
+            outs = nn.functional.softmax(outs)
+        return (outs, )
 
     def forward_gradcam(self, imgs):
         """Defines the computation performed at every call when using gradcam

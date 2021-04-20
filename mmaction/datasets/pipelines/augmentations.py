@@ -1,4 +1,5 @@
 import random
+import warnings
 from collections.abc import Sequence
 
 import mmcv
@@ -151,6 +152,35 @@ class PoseCompact:
                     f'hw_ratio={self.hw_ratio}, '
                     f'allow_imgpad={self.allow_imgpad})')
         return repr_str
+
+
+class EntityBoxRescale:
+
+    def __init__(self, scale_factor):
+        raise NotImplementedError(
+            'This component should not be used in the '
+            'data pipeline and is removed in PR #782. Details see '
+            'https://github.com/open-mmlab/mmaction2/pull/782')
+
+
+@PIPELINES.register_module()
+class EntityBoxCrop:
+
+    def __init__(self, crop_bbox):
+        raise NotImplementedError(
+            'This component should not be used in the '
+            'data pipeline and is removed in PR #782. Details see '
+            'https://github.com/open-mmlab/mmaction2/pull/782')
+
+
+@PIPELINES.register_module()
+class EntityBoxFlip:
+
+    def __init__(self, img_shape):
+        raise NotImplementedError(
+            'This component should not be used in the '
+            'data pipeline and is removed in PR #782. Details see '
+            'https://github.com/open-mmlab/mmaction2/pull/782')
 
 
 @PIPELINES.register_module()
@@ -456,6 +486,8 @@ class RandomScale:
     """
 
     def __init__(self, scales, mode='range', **kwargs):
+        warnings.warn('"RandomScale" is deprecated and will be removed in '
+                      'later versions. It is currently not used in MMAction2')
         self.mode = mode
         if self.mode not in ['range', 'value']:
             raise ValueError(f"mode should be 'range' or 'value', "
@@ -502,134 +534,6 @@ class RandomScale:
         return repr_str
 
 
-# Note, entity box transfroms are not added to: ThreeCrop, TenCrop,
-# MultiGroupCrop.
-@PIPELINES.register_module()
-class EntityBoxRescale:
-    """Rescale the entity box and proposals according to the image shape.
-
-    Required keys are "proposals", "gt_bboxes", added or modified keys are
-    "gt_bboxes". If original "proposals" is not None, "proposals" and
-    will be added or modified.
-
-    Args:
-        scale_factor (np.ndarray): The scale factor used entity_box rescaling.
-    """
-
-    def __init__(self, scale_factor):
-        self.scale_factor = scale_factor
-
-    def __call__(self, results):
-        scale_factor = np.concatenate([self.scale_factor, self.scale_factor])
-
-        proposals = results['proposals']
-        gt_bboxes = results['gt_bboxes']
-        results['gt_bboxes'] = gt_bboxes * scale_factor
-
-        if proposals is not None:
-            assert proposals.shape[1] == 4, (
-                'proposals shape should be in '
-                f'(n, 4), but got {proposals.shape}')
-            results['proposals'] = proposals * scale_factor
-
-        return results
-
-    def __repr__(self):
-        return f'{self.__class__.__name__}(scale_factor={self.scale_factor})'
-
-
-@PIPELINES.register_module()
-class EntityBoxCrop:
-    """Crop the entity boxes and proposals according to the cropped images.
-
-    Required keys are "proposals", "gt_bboxes", added or modified keys are
-    "gt_bboxes". If original "proposals" is not None, "proposals" will be
-    modified.
-
-    Args:
-        crop_bbox(np.ndarray | None): The bbox used to crop the original image.
-    """
-
-    def __init__(self, crop_bbox):
-        self.crop_bbox = crop_bbox
-
-    def __call__(self, results):
-        proposals = results['proposals']
-        gt_bboxes = results['gt_bboxes']
-
-        if self.crop_bbox is None:
-            return results
-
-        x1, y1, x2, y2 = self.crop_bbox
-        img_w, img_h = x2 - x1, y2 - y1
-
-        assert gt_bboxes.shape[-1] == 4
-        gt_bboxes_ = gt_bboxes.copy()
-        gt_bboxes_[..., 0::2] = np.clip(gt_bboxes[..., 0::2] - x1, 0,
-                                        img_w - 1)
-        gt_bboxes_[..., 1::2] = np.clip(gt_bboxes[..., 1::2] - y1, 0,
-                                        img_h - 1)
-        results['gt_bboxes'] = gt_bboxes_
-
-        if proposals is not None:
-            assert proposals.shape[-1] == 4
-            proposals_ = proposals.copy()
-            proposals_[..., 0::2] = np.clip(proposals[..., 0::2] - x1, 0,
-                                            img_w - 1)
-            proposals_[..., 1::2] = np.clip(proposals[..., 1::2] - y1, 0,
-                                            img_h - 1)
-            results['proposals'] = proposals_
-        return results
-
-    def __repr__(self):
-        return f'{self.__class__.__name__}(crop_bbox={self.crop_bbox})'
-
-
-@PIPELINES.register_module()
-class EntityBoxFlip:
-    """Flip the entity boxes and proposals with a probability.
-
-    Reverse the order of elements in the given bounding boxes and proposals
-    with a specific direction. The shape of them are preserved, but the
-    elements are reordered. Only the horizontal flip is supported (seems
-    vertical flipping makes no sense). Required keys are "proposals",
-    "gt_bboxes", added or modified keys are "gt_bboxes". If "proposals"
-    is not None, it will also be modified.
-
-    Args:
-        img_shape (tuple[int]): The img shape.
-    """
-
-    def __init__(self, img_shape):
-        self.img_shape = img_shape
-        assert mmcv.is_tuple_of(img_shape, int)
-
-    def __call__(self, results):
-        proposals = results['proposals']
-        gt_bboxes = results['gt_bboxes']
-        img_h, img_w = self.img_shape
-
-        assert gt_bboxes.shape[-1] == 4
-        gt_bboxes_ = gt_bboxes.copy()
-        gt_bboxes_[..., 0::4] = img_w - gt_bboxes[..., 2::4] - 1
-        gt_bboxes_[..., 2::4] = img_w - gt_bboxes[..., 0::4] - 1
-        if proposals is not None:
-            assert proposals.shape[-1] == 4
-            proposals_ = proposals.copy()
-            proposals_[..., 0::4] = img_w - proposals[..., 2::4] - 1
-            proposals_[..., 2::4] = img_w - proposals[..., 0::4] - 1
-        else:
-            proposals_ = None
-
-        results['proposals'] = proposals_
-        results['gt_bboxes'] = gt_bboxes_
-        return results
-
-    def __repr__(self):
-        repr_str = f'{self.__class__.__name__}(img_shape={self.img_shape})'
-        return repr_str
-
-
 @PIPELINES.register_module()
 class RandomCrop:
     """Vanilla square random crop that specifics the output size.
@@ -655,6 +559,37 @@ class RandomCrop:
     def _crop_imgs(self, imgs, crop_bbox):
         x1, y1, x2, y2 = crop_bbox
         return [img[y1:y2, x1:x2] for img in imgs]
+
+    def _box_crop(self, box, crop_bbox):
+        """Crop the bounding boxes according to the crop_bbox.
+
+        Args:
+            box (np.ndarray): The bounding boxes.
+            crop_bbox(np.ndarray): The bbox used to crop the original image.
+        """
+
+        x1, y1, x2, y2 = crop_bbox
+        img_w, img_h = x2 - x1, y2 - y1
+
+        box_ = box.copy()
+        box_[..., 0::2] = np.clip(box[..., 0::2] - x1, 0, img_w - 1)
+        box_[..., 1::2] = np.clip(box[..., 1::2] - y1, 0, img_h - 1)
+        return box_
+
+    def _all_box_crop(self, results, crop_bbox):
+        """Crop the gt_bboxes and proposals in results according to crop_bbox.
+
+        Args:
+            results (dict): All information about the sample, which contain
+                'gt_bboxes' and 'proposals' (optional).
+            crop_bbox(np.ndarray): The bbox used to crop the original image.
+        """
+        results['gt_bboxes'] = self._box_crop(results['gt_bboxes'], crop_bbox)
+        if 'proposals' in results and results['proposals'] is not None:
+            assert results['proposals'].shape[1] == 4
+            results['proposals'] = self._box_crop(results['proposals'],
+                                                  crop_bbox)
+        return results
 
     def __call__(self, results):
         """Performs the RandomCrop augmentation.
@@ -730,8 +665,7 @@ class RandomCrop:
         # Process entity boxes
         if 'gt_bboxes' in results:
             assert not self.lazy
-            entity_box_crop = EntityBoxCrop(results['crop_bbox'])
-            results = entity_box_crop(results)
+            results = self._all_box_crop(results, results['crop_bbox'])
 
         return results
 
@@ -888,8 +822,8 @@ class RandomResizedCrop(RandomCrop):
 
         if 'gt_bboxes' in results:
             assert not self.lazy
-            entity_box_crop = EntityBoxCrop(results['crop_bbox'])
-            results = entity_box_crop(results)
+            results = self._all_box_crop(results, results['crop_bbox'])
+
         return results
 
     def __repr__(self):
@@ -1064,8 +998,7 @@ class MultiScaleCrop(RandomCrop):
 
         if 'gt_bboxes' in results:
             assert not self.lazy
-            entity_box_crop = EntityBoxCrop(results['crop_bbox'])
-            results = entity_box_crop(results)
+            results = self._all_box_crop(results, results['crop_bbox'])
 
         return results
 
@@ -1135,6 +1068,17 @@ class Resize:
     def _resize_kps(self, kps, scale_factor):
         return kps * scale_factor
 
+    def _box_resize(self, box, scale_factor):
+        """Rescale the bounding boxes according to the scale_factor.
+
+        Args:
+            box (np.ndarray): The bounding boxes.
+            scale_factor (np.ndarray): The scale factor used for rescaling.
+        """
+        assert len(scale_factor) == 2
+        scale_factor = np.concatenate([scale_factor, scale_factor])
+        return box * scale_factor
+
     def __call__(self, results):
         """Performs the Resize augmentation.
 
@@ -1179,8 +1123,12 @@ class Resize:
 
         if 'gt_bboxes' in results:
             assert not self.lazy
-            entity_box_rescale = EntityBoxRescale(self.scale_factor)
-            results = entity_box_rescale(results)
+            results['gt_bboxes'] = self._box_resize(results['gt_bboxes'],
+                                                    self.scale_factor)
+            if 'proposals' in results and results['proposals'] is not None:
+                assert results['proposals'].shape[1] == 4
+                results['proposals'] = self._box_resize(
+                    results['proposals'], self.scale_factor)
 
         return results
 
@@ -1312,6 +1260,18 @@ class Flip:
             kpscores = kpscores[:, :, new_order]
         return kps, kpscores
 
+    def _box_flip(self, box, img_width):
+        """Flip the bounding boxes given the width of the image.
+
+        Args:
+            box (np.ndarray): The bounding boxes.
+            img_width (int): The img width.
+        """
+        box_ = box.copy()
+        box_[..., 0::4] = img_width - box[..., 2::4]
+        box_[..., 2::4] = img_width - box[..., 0::4]
+        return box_
+
     def __call__(self, results):
         """Performs the Flip augmentation.
 
@@ -1362,8 +1322,12 @@ class Flip:
 
         if 'gt_bboxes' in results and flip:
             assert not self.lazy and self.direction == 'horizontal'
-            entity_box_flip = EntityBoxFlip(results['img_shape'])
-            results = entity_box_flip(results)
+            width = results['img_shape'][1]
+            results['gt_bboxes'] = self._box_flip(results['gt_bboxes'], width)
+            if 'proposals' in results and results['proposals'] is not None:
+                assert results['proposals'].shape[1] == 4
+                results['proposals'] = self._box_flip(results['proposals'],
+                                                      width)
 
         return results
 
@@ -1732,8 +1696,7 @@ class CenterCrop(RandomCrop):
 
         if 'gt_bboxes' in results:
             assert not self.lazy
-            entity_box_crop = EntityBoxCrop(results['crop_bbox'])
-            results = entity_box_crop(results)
+            results = self._all_box_crop(results, results['crop_bbox'])
 
         return results
 
@@ -1770,6 +1733,8 @@ class ThreeCrop:
                 to the next transform in pipeline.
         """
         _init_lazy_if_proper(results, False)
+        if 'gt_bboxes' in results or 'proposals' in results:
+            warnings.warn('ThreeCrop cannot process bounding boxes')
 
         imgs = results['imgs']
         img_h, img_w = results['imgs'][0].shape[:2]
@@ -1841,6 +1806,9 @@ class TenCrop:
                 to the next transform in pipeline.
         """
         _init_lazy_if_proper(results, False)
+
+        if 'gt_bboxes' in results or 'proposals' in results:
+            warnings.warn('TenCrop cannot process bounding boxes')
 
         imgs = results['imgs']
 
@@ -1917,6 +1885,9 @@ class MultiGroupCrop:
             results (dict): The resulting dict to be modified and passed
                 to the next transform in pipeline.
         """
+        if 'gt_bboxes' in results or 'proposals' in results:
+            warnings.warn('MultiGroupCrop cannot process bounding boxes')
+
         imgs = results['imgs']
         img_h, img_w = imgs[0].shape[:2]
         crop_w, crop_h = self.crop_size

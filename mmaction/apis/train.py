@@ -1,15 +1,17 @@
 import copy as cp
+import os.path as osp
 
 import torch
 from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
 from mmcv.runner import (DistSamplerSeedHook, EpochBasedRunner, OptimizerHook,
-                         build_optimizer)
+                         build_optimizer, get_dist_info)
 from mmcv.runner.hooks import Fp16OptimizerHook
 
 from ..core import (DistEvalHook, EvalHook, OmniSourceDistSamplerSeedHook,
                     OmniSourceRunner)
 from ..datasets import build_dataloader, build_dataset
 from ..utils import PreciseBNHook, get_root_logger
+from .test import multi_gpu_test
 
 
 def train_model(model,
@@ -17,6 +19,7 @@ def train_model(model,
                 cfg,
                 distributed=False,
                 validate=False,
+                test=dict(test_best=False, test_last=False),
                 timestamp=None,
                 meta=None):
     """Train model entry function.
@@ -28,6 +31,10 @@ def train_model(model,
         distributed (bool): Whether to use distributed training.
             Default: False.
         validate (bool): Whether to do evaluation. Default: False.
+        test (dict): The testing option, with two keys: test_last & test_best.
+            The value is True or False, indicating whether to test the
+            corresponding checkpoint.
+            Default: dict(test_best=False, test_last=False).
         timestamp (str | None): Local time for runner. Default: None.
         meta (dict | None): Meta dict to record some important information.
             Default: None
@@ -154,3 +161,69 @@ def train_model(model,
     if cfg.omnisource:
         runner_kwargs = dict(train_ratio=train_ratio)
     runner.run(data_loaders, cfg.workflow, cfg.total_epochs, **runner_kwargs)
+
+    if test['test_last'] or test['test_best']:
+        best_ckpt_path = None
+        if test['test_best']:
+            if hasattr(eval_hook, 'best_ckpt_path'):
+                best_ckpt_path = eval_hook.best_ckpt_path
+
+            if best_ckpt_path is None or not osp.exists(best_ckpt_path):
+                test['test_best'] = False
+                if best_ckpt_path is None:
+                    runner.logger.info('Warning: test_best set as True, but '
+                                       'is not applicable '
+                                       '(eval_hook.best_ckpt_path is None)')
+                else:
+                    runner.logger.info('Warning: test_best set as True, but '
+                                       'is not applicable (best_ckpt '
+                                       f'{best_ckpt_path} not found)')
+                if not test['test_last']:
+                    return
+
+        test_dataset = build_dataset(cfg.data.test, dict(test_mode=True))
+        gpu_collect = cfg.get('evaluation', {}).get('gpu_collect', False)
+        tmpdir = cfg.get('evaluation', {}).get('tmpdir',
+                                               osp.join(cfg.work_dir, 'tmp'))
+        dataloader_setting = dict(
+            videos_per_gpu=cfg.data.get('videos_per_gpu', 1),
+            workers_per_gpu=cfg.data.get('workers_per_gpu', 1),
+            num_gpus=len(cfg.gpu_ids),
+            dist=distributed,
+            shuffle=False)
+        dataloader_setting = dict(dataloader_setting,
+                                  **cfg.data.get('test_dataloader', {}))
+
+        test_dataloader = build_dataloader(test_dataset, **dataloader_setting)
+
+        names, ckpts = [], []
+
+        if test['test_last']:
+            names.append('last')
+            ckpts.append(None)
+        if test['test_best']:
+            names.append('best')
+            ckpts.append(best_ckpt_path)
+
+        for name, ckpt in zip(names, ckpts):
+            if ckpt is not None:
+                runner.load_checkpoint(ckpt)
+
+            outputs = multi_gpu_test(runner.model, test_dataloader, tmpdir,
+                                     gpu_collect)
+            rank, _ = get_dist_info()
+            if rank == 0:
+                out = osp.join(cfg.work_dir, f'{name}_pred.pkl')
+                test_dataset.dump_results(outputs, out)
+
+                eval_cfg = cfg.get('evaluation', {})
+                for key in [
+                        'interval', 'tmpdir', 'start', 'gpu_collect',
+                        'save_best', 'rule', 'by_epoch', 'broadcast_bn_buffers'
+                ]:
+                    eval_cfg.pop(key, None)
+
+                eval_res = test_dataset.evaluate(outputs, **eval_cfg)
+                runner.logger.info(f'Testing results of the {name} checkpoint')
+                for name, val in eval_res.items():
+                    runner.logger.info(f'{name}: {val:.04f}')

@@ -17,7 +17,7 @@
   - [使用单个 GPU 进行训练](#使用单个-GPU-进行训练)
   - [使用多个 GPU 进行训练](#使用多个-GPU-进行训练)
   - [使用多台机器进行训练](#使用多台机器进行训练)
-  - [使用单台机器创建多个任务](#使用单台机器启动多个任务)
+  - [使用单台机器启动多个任务](#使用单台机器启动多个任务)
 - [详细教程](#详细教程)
 
 <!-- TOC -->
@@ -67,7 +67,7 @@ MMAction2 提供了一些脚本用于测试数据集（如 Kinetics-400，Someth
 # 单 GPU 测试
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--out ${RESULT_FILE}] [--eval ${EVAL_METRICS}] \
     [--gpu-collect] [--tmpdir ${TMPDIR}] [--options ${OPTIONS}] [--average-clips ${AVG_TYPE}] \
-    [--launcher ${JOB_LAUNCHER}] [--local_rank ${LOCAL_RANK}]
+    [--launcher ${JOB_LAUNCHER}] [--local_rank ${LOCAL_RANK}] [--onnx] [--tensorrt]
 
 # 多 GPU 测试
 ./tools/dist_test.sh ${CONFIG_FILE} ${CHECKPOINT_FILE} ${GPU_NUM} [--out ${RESULT_FILE}] [--eval ${EVAL_METRICS}] \
@@ -85,6 +85,8 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--out ${RESULT_FILE}] [-
 - `AVG_TYPE`：用于平均测试片段结果的选项。如果被设置为 `prob`，则会在平均测试片段结果之前施加 softmax 函数。否则，会直接进行平均。
 - `JOB_LAUNCHER`：分布式任务初始化启动器选项。可选值有 `none`，`pytorch`，`slurm`，`mpi`。特别地，如果被设置为 `none`, 则会以非分布式模式进行测试。
 - `LOCAL_RANK`：本地 rank 的 ID。如果没有被指定，则会被设置为 0。
+- `--onnx`: 如果指定，将通过 onnx 模型推理获取预测结果，输入参数 `CHECKPOINT_FILE` 应为 onnx 模型文件。Onnx 模型文件由 `/tools/pytorch2onnx.py` 脚本导出。目前，不支持多 GPU 测试以及动态张量形状（Dynamic shape）。请注意，数据集输出与模型输入张量的形状应保持一致。同时，不建议使用测试时数据增强，如 `ThreeCrop`，`TenCrop`，`twice_sample` 等。
+- `--tensorrt`: 如果指定，将通过 TensorRT 模型推理获取预测结果，输入参数 `CHECKPOINT_FILE` 应为 TensorRT 模型文件。TensorRT 模型文件由导出的 onnx 模型以及 TensorRT 官方模型转换工具生成。目前，不支持多 GPU 测试以及动态张量形状（Dynamic shape）。请注意，数据集输出与模型输入张量的形状应保持一致。同时，不建议使用测试时数据增强，如 `ThreeCrop`，`TenCrop`，`twice_sample` 等。
 
 例子：
 
@@ -112,6 +114,14 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--out ${RESULT_FILE}] [-
     python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
         checkpoints/SOME_CHECKPOINT.pth \
         --launcher slurm --eval top_k_accuracy
+    ```
+
+4. 在 Something-Something V1 下测试 onnx 格式的 TSN 模型，并验证 `top-k accuracy` 指标
+
+    ```shell
+    python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
+        checkpoints/SOME_CHECKPOINT.onnx \
+        --eval top_k_accuracy --onnx
     ```
 
 ### 使用高级 API 对视频和帧文件夹进行测试
@@ -330,6 +340,8 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 可选参数为：
 
 - `--validate` (**强烈建议**)：在训练期间每 k 个周期进行一次验证（默认值为 5，可通过修改每个配置文件中的 `evaluation` 字典变量的 `interval` 值进行改变）。
+- `--test-last`：在训练结束后使用最后一个检查点的参数进行测试，将测试结果存储在 `${WORK_DIR}/last_pred.pkl` 中。
+- `--test-best`：在训练结束后使用效果最好的检查点的参数进行测试，将测试结果存储在 `${WORK_DIR}/best_pred.pkl` 中。
 - `--work-dir ${WORK_DIR}`：覆盖配置文件中指定的工作目录。
 - `--resume-from ${CHECKPOINT_FILE}`：从以前的模型权重文件恢复训练。
 - `--gpus ${GPU_NUM}`：使用的 GPU 数量，仅适用于非分布式训练。
