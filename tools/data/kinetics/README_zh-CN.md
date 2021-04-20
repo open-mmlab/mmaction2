@@ -60,7 +60,7 @@ bash rename_classnames.sh ${DATASET}
 python ../resize_videos.py ../../../data/${DATASET}/videos_train/ ../../../data/${DATASET}/videos_train_256p_dense_cache --dense --level 2
 ```
 
-也可以从 [Academic Torrents](https://academictorrents.com/) 中下载 [kinetics400](https://academictorrents.com/details/184d11318372f70018cf9a72ef867e2fb9ce1d26) 和 [kinetics700](https://academictorrents.com/details/49f203189fb69ae96fb40a6d0e129949e1dfec98)，从 Common Visual Data Foundation 维护的 [cvdfoundation/kinetics-dataset](https://github.com/cvdfoundation/kinetics-dataset) 中下载 Kinetics400/Kinetics600/Kinetics-700-2020。
+也可以从 [Academic Torrents](https://academictorrents.com/) 中下载短边长度为 256 的 [kinetics400](https://academictorrents.com/details/184d11318372f70018cf9a72ef867e2fb9ce1d26) 和 [kinetics700](https://academictorrents.com/details/49f203189fb69ae96fb40a6d0e129949e1dfec98)，或从 Common Visual Data Foundation 维护的 [cvdfoundation/kinetics-dataset](https://github.com/cvdfoundation/kinetics-dataset) 中下载 Kinetics400/Kinetics600/Kinetics-700-2020。
 
 ## 3. 提取 RGB 帧和光流
 
