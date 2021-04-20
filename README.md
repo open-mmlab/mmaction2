@@ -55,7 +55,7 @@ The master branch works with **PyTorch 1.3+**.
 
 ## Changelog
 
-v0.12.0 was released in 28/02/2021. Please refer to [changelog.md](docs/changelog.md) for details and release history.
+v0.13.0 was released in 31/03/2021. Please refer to [changelog.md](docs/changelog.md) for details and release history.
 
 ## Benchmark
 
@@ -81,7 +81,7 @@ Supported methods for Action Recognition:
 
 - ✅ [TSN](configs/recognition/tsn/README.md) (ECCV'2016)
 - ✅ [TSM](configs/recognition/tsm/README.md) (ICCV'2019)
-- ✅ [TSM Non-Local](configs/recognition/i3d) (ICCV'2019)
+- ✅ [TSM Non-Local](configs/recognition/tsm/README.md) (ICCV'2019)
 - ✅ [R(2+1)D](configs/recognition/r2plus1d/README.md) (CVPR'2018)
 - ✅ [I3D](configs/recognition/i3d/README.md) (CVPR'2017)
 - ✅ [I3D Non-Local](configs/recognition/i3d/README.md) (CVPR'2018)
@@ -95,6 +95,7 @@ Supported methods for Action Recognition:
 - ✅ [OmniSource](configs/recognition/omnisource/README.md) (ECCV'2020)
 - ✅ [MultiModality: Audio](configs/recognition_audio/resnet/README.md) (ArXiv'2020)
 - ✅ [TANet](configs/recognition/tanet/README.md) (ArXiv'2020)
+- ✅ [TRN](configs/recognition/trn/README.md) (CVPR'2015)
 
 </details>
 
@@ -238,3 +239,4 @@ We wish that the toolbox and benchmark could serve the growing research communit
 - [MMTracking](https://github.com/open-mmlab/mmtracking): OpenMMLab video perception toolbox and benchmark.
 - [MMPose](https://github.com/open-mmlab/mmpose): OpenMMLab pose estimation toolbox and benchmark.
 - [MMEditing](https://github.com/open-mmlab/mmediting): OpenMMLab image and video editing toolbox.
+- [MMOCR](https://github.com/open-mmlab/mmocr): A Comprehensive Toolbox for Text Detection, Recognition and Understanding.

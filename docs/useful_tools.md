@@ -98,6 +98,7 @@ You may use the result for simple comparisons, but double check it before you ad
 `/tools/pytorch2onnx.py` is a script to convert model to [ONNX](https://github.com/onnx/onnx) format.
 It also supports comparing the output results between Pytorch and ONNX model for verification.
 Run `pip install onnx onnxruntime` first to install the dependency.
+Please note that a softmax layer could be added for recognizers by `--softmax` option, in order to get predictions in range `[0, 1]`.
 
 - For recognizers, please run:
 

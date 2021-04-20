@@ -26,7 +26,7 @@ class Recognizer2D(BaseRecognizer):
             x = x.reshape((x.shape[0], -1))
             x = x.reshape(x.shape + (1, 1))
 
-        if hasattr(self, 'neck'):
+        if self.with_neck:
             x = [
                 each.reshape((-1, num_segs) +
                              each.shape[1:]).transpose(1, 2).contiguous()
@@ -60,7 +60,7 @@ class Recognizer2D(BaseRecognizer):
             x = x.reshape((x.shape[0], -1))
             x = x.reshape(x.shape + (1, 1))
 
-        if hasattr(self, 'neck'):
+        if self.with_neck:
             x = [
                 each.reshape((-1, num_segs) +
                              each.shape[1:]).transpose(1, 2).contiguous()
@@ -97,7 +97,7 @@ class Recognizer2D(BaseRecognizer):
             imgs = torch.flip(imgs, [-1])
         x = self.extract_feat(imgs)
 
-        if hasattr(self, 'neck'):
+        if self.with_neck:
             x = [
                 each.reshape((-1, num_segs) +
                              each.shape[1:]).transpose(1, 2).contiguous()
@@ -131,7 +131,7 @@ class Recognizer2D(BaseRecognizer):
             return self._do_fcn_test(imgs).cpu().numpy()
         return self._do_test(imgs).cpu().numpy()
 
-    def forward_dummy(self, imgs):
+    def forward_dummy(self, imgs, softmax=False):
         """Used for computing network FLOPs.
 
         See ``tools/analysis/get_flops.py``.
@@ -147,7 +147,7 @@ class Recognizer2D(BaseRecognizer):
         num_segs = imgs.shape[0] // batches
 
         x = self.extract_feat(imgs)
-        if hasattr(self, 'neck'):
+        if self.with_neck:
             x = [
                 each.reshape((-1, num_segs) +
                              each.shape[1:]).transpose(1, 2).contiguous()
@@ -157,8 +157,10 @@ class Recognizer2D(BaseRecognizer):
             x = x.squeeze(2)
             num_segs = 1
 
-        outs = (self.cls_head(x, num_segs), )
-        return outs
+        outs = self.cls_head(x, num_segs)
+        if softmax:
+            outs = nn.functional.softmax(outs)
+        return (outs, )
 
     def forward_gradcam(self, imgs):
         """Defines the computation performed at every call when using gradcam

@@ -94,8 +94,9 @@ def pytorch2onnx(model,
         onnx_result = sess.run(
             None, {net_feed_input[0]: input_tensor.detach().numpy()})[0]
         # only compare part of results
+        random_class = np.random.randint(pytorch_result.shape[1])
         assert np.allclose(
-            pytorch_result[:, 4], onnx_result[:, 4]
+            pytorch_result[:, random_class], onnx_result[:, random_class]
         ), 'The outputs are different between Pytorch and ONNX'
         print('The numerical values are same between Pytorch and ONNX')
 
@@ -122,6 +123,10 @@ def parse_args():
         nargs='+',
         default=[1, 3, 8, 224, 224],
         help='input video size')
+    parser.add_argument(
+        '--softmax',
+        action='store_true',
+        help='wheter to add softmax layer at the end of recognizers')
     args = parser.parse_args()
     return args
 
@@ -144,7 +149,8 @@ if __name__ == '__main__':
 
     # onnx.export does not support kwargs
     if hasattr(model, 'forward_dummy'):
-        model.forward = model.forward_dummy
+        from functools import partial
+        model.forward = partial(model.forward_dummy, softmax=args.softmax)
     elif hasattr(model, '_forward') and args.is_localizer:
         model.forward = model._forward
     else:

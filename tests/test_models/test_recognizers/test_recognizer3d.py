@@ -37,6 +37,12 @@ def test_i3d():
             for one_img in img_list:
                 recognizer(one_img, gradcam=True)
 
+            # Test forward dummy
+            recognizer.forward_dummy(imgs, softmax=False)
+            res = recognizer.forward_dummy(imgs, softmax=True)[0]
+            assert torch.min(res) >= 0
+            assert torch.max(res) <= 1
+
     else:
         losses = recognizer(imgs, gt_labels)
         assert isinstance(losses, dict)
@@ -51,6 +57,12 @@ def test_i3d():
         recognizer(imgs, gradcam=True)
         for one_img in img_list:
             recognizer(one_img, gradcam=True)
+
+        # Test forward dummy
+        recognizer.forward_dummy(imgs, softmax=False)
+        res = recognizer.forward_dummy(imgs, softmax=True)[0]
+        assert torch.min(res) >= 0
+        assert torch.max(res) <= 1
 
 
 def test_r2plus1d():

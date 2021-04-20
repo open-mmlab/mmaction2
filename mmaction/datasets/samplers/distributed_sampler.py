@@ -1,3 +1,6 @@
+import math
+from collections import defaultdict
+
 import torch
 from torch.utils.data import DistributedSampler as _DistributedSampler
 
@@ -40,43 +43,92 @@ class DistributedSampler(_DistributedSampler):
         return iter(indices)
 
 
-class DistributedPowerSampler(_DistributedSampler):
-    """DistributedPowerSampler inheriting from
+class ClassSpecificDistributedSampler(_DistributedSampler):
+    """ClassSpecificDistributedSampler inheriting from
     ``torch.utils.data.DistributedSampler``.
 
-    Samples are sampled with the probability that is proportional to the power
-    of label frequency (freq ^ power). The sampler only applies to single class
-    recognition dataset.
+    Samples are sampled with a class specific probability, which should be an
+    attribute of the dataset (dataset.class_prob, which is a dictionary that
+    map label index to the prob). This sampler is only applicable to single
+    class recognition dataset. This sampler is also compatible with
+    RepeatDataset.
 
-    The default value of power is 1, which is equivalent to bootstrap sampling
-    from the entire dataset.
+    The default value of dynamic_length is True, which means we use
+    oversampling / subsampling, and the dataset length may changed. If
+    dynamic_length is set as False, the dataset length is fixed.
     """
 
-    def __init__(self, dataset, num_replicas=None, rank=None, power=1, seed=0):
+    def __init__(self,
+                 dataset,
+                 num_replicas=None,
+                 rank=None,
+                 dynamic_length=True,
+                 shuffle=True,
+                 seed=0):
         super().__init__(dataset, num_replicas=num_replicas, rank=rank)
-        self.power = power
+        self.shuffle = shuffle
+
+        if type(dataset).__name__ == 'RepeatDataset':
+            dataset = dataset.dataset
+
+        assert hasattr(dataset, 'class_prob')
+
+        self.class_prob = dataset.class_prob
+        self.dynamic_length = dynamic_length
+        # for the compatibility from PyTorch 1.3+
         self.seed = seed if seed is not None else 0
 
     def __iter__(self):
-        # deterministically shuffle based on epoch
         g = torch.Generator()
-        g.manual_seed(self.epoch + self.seed)
-        video_infos_by_class = self.dataset.video_infos_by_class
-        num_classes = self.dataset.num_classes
-        # For simplicity, discontinuous labels are not permitted
-        assert set(video_infos_by_class) == set(range(num_classes))
-        counts = [len(video_infos_by_class[i]) for i in range(num_classes)]
-        counts = [cnt**self.power for cnt in counts]
+        g.manual_seed(self.seed + self.epoch)
 
-        indices = torch.multinomial(
-            torch.Tensor(counts),
-            self.total_size,
-            replacement=True,
-            generator=g)
-        indices = indices.data.numpy().tolist()
+        class_indices = defaultdict(list)
+
+        # To be compatible with RepeatDataset
+        times = 1
+        dataset = self.dataset
+        if type(dataset).__name__ == 'RepeatDataset':
+            times = dataset.times
+            dataset = dataset.dataset
+        for i, item in enumerate(dataset.video_infos):
+            class_indices[item['label']].append(i)
+
+        if self.dynamic_length:
+            indices = []
+            for k, prob in self.class_prob.items():
+                prob = prob * times
+                for i in range(int(prob // 1)):
+                    indices.extend(class_indices[k])
+                rem = int((prob % 1) * len(class_indices[k]))
+                rem_indices = torch.randperm(
+                    len(class_indices[k]), generator=g).tolist()[:rem]
+                indices.extend(rem_indices)
+            if self.shuffle:
+                shuffle = torch.randperm(len(indices), generator=g).tolist()
+                indices = [indices[i] for i in shuffle]
+
+            # re-calc num_samples & total_size
+            self.num_samples = math.ceil(len(indices) / self.num_replicas)
+            self.total_size = self.num_samples * self.num_replicas
+        else:
+            # We want to keep the dataloader length same as original
+            video_labels = [x['label'] for x in dataset.video_infos]
+            probs = [
+                self.class_prob[lb] / len(class_indices[lb])
+                for lb in video_labels
+            ]
+
+            indices = torch.multinomial(
+                torch.Tensor(probs),
+                self.total_size,
+                replacement=True,
+                generator=g)
+            indices = indices.data.numpy().tolist()
+
+        indices += indices[:(self.total_size - len(indices))]
         assert len(indices) == self.total_size
 
+        # retrieve indices for current process
         indices = indices[self.rank:self.total_size:self.num_replicas]
         assert len(indices) == self.num_samples
-
         return iter(indices)
