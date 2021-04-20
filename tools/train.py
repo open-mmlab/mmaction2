@@ -179,7 +179,7 @@ def main():
         # checkpoints as meta data
         cfg.checkpoint_config.meta = dict(
             mmaction_version=__version__ + get_git_hash(digits=7),
-            config=cfg.text)
+            config=cfg.pretty_text)
 
     test_option = dict(test_last=args.test_last, test_best=args.test_best)
     train_model(
