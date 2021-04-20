@@ -350,7 +350,6 @@ python demo/webcam_demo_spatiotemporal_det.py \
     [--display-width] ${DISPLAY_WIDTH} \
     [--predict-stepsize ${PREDICT_STEPSIZE}] \
     [--clip-vis-length] ${CLIP_VIS_LENGTH} \
-    [--visualization-tool] ${VISUALIZATION_TOOL}
 ```
 
 Optional arguments:
@@ -371,7 +370,6 @@ Optional arguments:
 - `DISPLAY_WIDTH`: The width of the display frame. Default: 0. If `DISPLAY_HEIGHT <= 0 and DISPLAY_WIDTH <= 0`, the display frame and input video share the same shape.
 - `PREDICT_STEPSIZE`: Make a prediction per N frames. Default: 8.
 - `CLIP_VIS_LENGTH`: The number of the draw frames for each clip. In other words, for each clip, there are at most `CLIP_VIS_LENGTH` frames to be draw around the keyframe. DEFAULT: 8.
-- `VISUALIZATION_TOOL`: Tools to visualize predictions. Support `default` and `alphaction`. Default: `default`.
 
 Tips to get a better experience for webcam demo:
 

@@ -34,13 +34,6 @@ except (ImportError, ModuleNotFoundError):
         pass
 
 
-try:
-    # used in AlphAction Visualization Tool,
-    # aka `--visualization-tool alphaction`
-    from PIL import Image, ImageDraw, ImageFont
-except ImportError:
-    pass
-
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
@@ -125,11 +118,6 @@ def parse_args():
         default=8,
         type=int,
         help='Number of draw frames per clip.')
-    parser.add_argument(
-        '--visualization-tool',
-        type=str,
-        default='default',
-        help='Tool to visualize, support ["default", "alphaction"]')
 
     args = parser.parse_args()
     return args
@@ -766,109 +754,6 @@ class DefaultVisualizer(BaseVisualizer):
         return frame
 
 
-class AlphActionVisualizer(BaseVisualizer):
-    """Tools to visualize predictions from AlphAction.
-
-    This class is mainly based on https://github.com/MVIG-SJTU/AlphAction/blob/master/demo/visualizer.py # noqa
-
-    Args:
-        frame_shape (list[int]): Display frame shape.
-        max_labels_per_bbox (int): Max number of labels to visualize for a
-            person box. Default: 5.
-        font_path (str): Path to local font file.
-            Default: `demo/Roboto-Bold.ttf`.
-        box_color (tuple[int]): Box rectangle color in RGB order.
-            Default: (191, 40, 41).
-        category_colors: (tuple[tuple[int]]): Colors for different categories.
-            Default: ((176, 85, 234), (87, 118, 198), (52, 189, 199)).
-        category_trans: The transparency of the text rectangle.
-            Default: int(0.6*255).
-    """
-
-    def __init__(self,
-                 frame_shape,
-                 max_labels_per_bbox=5,
-                 font_path='demo/Roboto-Bold.ttf',
-                 box_color=(191, 40, 41),
-                 category_colors=((176, 85, 234), (87, 118, 198), (52, 189,
-                                                                   199)),
-                 category_trans=int(0.6 * 255)):
-        short_side = min(frame_shape)
-
-        self.box_color = box_color
-        self.category_colors = category_colors
-        self.category_trans = category_trans
-        self.font_size = max(int(round((short_side / 40))), 1)
-        self.box_width = max(int(round(short_side / 180)), 1)
-        self.font = ImageFont.truetype(font_path, self.font_size)
-
-    def draw_one_image(self, frame, bboxes, preds):
-        """Draw predictions on one image with AlphAction tools."""
-        # BGR to RGBA
-        img = Image.fromarray(np.array(frame[:, :, ::-1]))
-        img = img.convert('RGBA')
-
-        for bbox, pred in zip(bboxes, preds):
-            overlay = Image.new('RGBA', img.size, (0, 0, 0, 0))
-            trans_draw = ImageDraw.Draw(overlay)
-
-            # draw bbox
-            box = bbox.astype(np.int64)
-            trans_draw.rectangle(
-                tuple(int(coord) for coord in box),
-                outline=self.box_color + (255, ),
-                width=self.box_width)
-
-            # get texts
-            captions = [
-                f'{self.abbrev(label)}: {score:.4f}' for label, score in pred
-            ]
-            if len(captions) == 0:
-                continue
-
-            # prepare params for visualization
-            x1, y1, x2, y2 = box.tolist()
-            caption_sizes = [
-                trans_draw.textsize(caption, font=self.font)
-                for caption in captions
-            ]
-            caption_widths, caption_heights = list(zip(*caption_sizes))
-            max_height = max(caption_heights)
-            rec_height = int(round(1.8 * max_height))
-            space_height = int(round(0.2 * max_height))
-            total_height = (rec_height + space_height) * (len(captions) -
-                                                          1) + rec_height
-            width_pad = max(self.font_size // 2, 1)
-            start_y = max(round(y1) - total_height, space_height)
-
-            # draw texts
-            for i, caption in enumerate(captions):
-                r_x1 = round(x1)
-                r_y1 = start_y + (rec_height + space_height) * i
-                r_x2 = r_x1 + caption_widths[i] + width_pad * 2
-                r_y2 = r_y1 + rec_height
-                rec_pos = (r_x1, r_y1, r_x2, r_y2)
-
-                height_pad = round((rec_height - caption_heights[i]) / 2)
-                text_pos = (r_x1 + width_pad, r_y1 + height_pad)
-
-                trans_draw.rectangle(
-                    rec_pos,
-                    fill=self.category_colors[i % 3] + (self.category_trans, ))
-                trans_draw.text(
-                    text_pos,
-                    caption,
-                    fill=(255, 255, 255, self.category_trans),
-                    font=self.font,
-                    align='center')
-
-            # blend raw image and bbox/texts
-            img = Image.alpha_composite(img, overlay)
-
-        # RGBA to BGR
-        return np.array(img)[:, :, 2::-1]
-
-
 def main(args):
     # init human detector
     human_detector = MmdetHumanDetector(args.det_config, args.det_checkpoint,
@@ -902,12 +787,7 @@ def main(args):
         show=args.show)
 
     # init visualizer
-    if args.visualization_tool == 'default':
-        vis = DefaultVisualizer()
-    elif args.visualization_tool == 'alphaction':
-        vis = AlphActionVisualizer(clip_helper.display_size)
-    else:
-        raise ValueError(f'Unknown visualize tool {args.visualization_tool}')
+    vis = DefaultVisualizer()
 
     # start read and display thread
     clip_helper.start()
