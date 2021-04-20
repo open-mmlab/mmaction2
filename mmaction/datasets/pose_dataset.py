@@ -37,6 +37,9 @@ class PoseDataset(BaseDataset):
             with confidence score larger than `box_thre` is kept. None means
             not applicable (only applicable to Kinetics Pose [ours]). Allowed
             choices are '0.5', '0.6', '0.7', '0.8', '0.9'. Default: None.
+        class_prob (dict | None): The per class sampling probability. If not
+            None, it will override the class_prob calculated in
+            BaseDataset.__init__(). Default: None.
         **kwargs: Keyword arguments for ``BaseDataset``.
     """
 
@@ -46,6 +49,7 @@ class PoseDataset(BaseDataset):
                  resample=None,
                  valid_ratio=None,
                  box_thre=None,
+                 class_prob=None,
                  **kwargs):
         # For NTU-120 X-Sub
         self.resample = resample
@@ -82,6 +86,9 @@ class PoseDataset(BaseDataset):
                             if score >= box_thre
                         ]
                         item['anno_inds'] = np.array(inds)
+
+        if class_prob is not None:
+            self.class_prob = class_prob
 
         logger = get_root_logger()
         logger.info(f'{len(self)} videos remain after valid thresholding')
