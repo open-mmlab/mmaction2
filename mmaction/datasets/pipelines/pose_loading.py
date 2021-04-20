@@ -32,6 +32,13 @@ class UniformSampleFrames:
         self.seed = seed
 
     def _get_train_clips(self, num_frames, clip_len):
+        """Uniformly sample indices for training clips.
+
+        Args:
+            num_frames (int): The number of frames.
+            clip_len (int): The length of the clip.
+        """
+
         assert self.num_clips == 1
         if num_frames < clip_len:
             start = np.random.randint(0, num_frames)
@@ -54,6 +61,13 @@ class UniformSampleFrames:
         return inds
 
     def _get_test_clips(self, num_frames, clip_len):
+        """Uniformly sample indices for testing clips.
+
+        Args:
+            num_frames (int): The number of frames.
+            clip_len (int): The length of the clip.
+        """
+
         np.random.seed(self.seed)
         if num_frames < clip_len:
             # Then we use a simple strategy
@@ -148,6 +162,13 @@ class PoseDecode(object):
 
     # inplace
     def _drop_kpscore(self, kpscores):
+        """Randomly drop keypoints by setting the corresponding keypoint scores
+        as 0.
+
+        Args:
+            kpscores (np.ndarray): The confidence scores of keypoints.
+        """
+
         for kpscore in kpscores:
             lt = kpscore.shape[0]
             for tidx in range(lt):
@@ -156,9 +177,23 @@ class PoseDecode(object):
                     kpscore[tidx, jidx] = 0.
 
     def _load_kp(self, kp, frame_inds):
+        """Load keypoints given frame indices.
+
+        Args:
+            kp (np.ndarray): The keypoint coordinates.
+            frame_inds (np.ndarray): The frame indices.
+        """
+
         return [x[frame_inds].astype(np.float32) for x in kp]
 
     def _load_kpscore(self, kpscore, frame_inds):
+        """Load keypoint scores given frame indices.
+
+        Args:
+            kpscore (np.ndarray): The confidence scores of keypoints.
+            frame_inds (np.ndarray): The frame indices.
+        """
+
         return [x[frame_inds].astype(np.float32) for x in kpscore]
 
     def __call__(self, results):
