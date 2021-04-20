@@ -324,6 +324,7 @@ def main():
         config['model']['test_cfg']['rcnn']['action_thr'] = .0
     except KeyError:
         pass
+
     config.model.backbone.pretrained = None
     model = build_detector(config.model, test_cfg=config.get('test_cfg'))
 

@@ -137,7 +137,7 @@ def main():
 
     # log some basic info
     logger.info(f'Distributed training: {distributed}')
-    logger.info(f'Config: {cfg.text}')
+    logger.info(f'Config: {cfg.pretty_text}')
 
     # set random seeds
     if args.seed is not None:
