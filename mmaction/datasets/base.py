@@ -46,11 +46,13 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         sample_by_class (bool): Sampling by class, should be set `True` when
             performing inter-class data balancing. Only compatible with
             `multi_class == False`. Only applies for training. Default: False.
-        power (float | None): We support sampling data with the probability
+        power (float): We support sampling data with the probability
             proportional to the power of its label frequency (freq ^ power)
             when sampling data. `power == 1` indicates uniformly sampling all
             data; `power == 0` indicates uniformly sampling all classes.
-            Default: None.
+            Default: 0.
+        dynamic_length (bool): If the dataset length is dynamic (used by
+            ClassSpecificDistributedSampler). Default: False.
     """
 
     def __init__(self,
@@ -63,7 +65,8 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
                  start_index=1,
                  modality='RGB',
                  sample_by_class=False,
-                 power=None):
+                 power=0,
+                 dynamic_length=False):
         super().__init__()
 
         self.ann_file = ann_file
@@ -77,12 +80,24 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         self.modality = modality
         self.sample_by_class = sample_by_class
         self.power = power
+        self.dynamic_length = dynamic_length
+
         assert not (self.multi_class and self.sample_by_class)
 
         self.pipeline = Compose(pipeline)
         self.video_infos = self.load_annotations()
         if self.sample_by_class:
             self.video_infos_by_class = self.parse_by_class()
+
+            class_prob = []
+            for k, samples in self.video_infos_by_class.items():
+                class_prob.append(len(samples) / len(self.video_infos))
+            class_prob = [x**self.power for x in class_prob]
+
+            summ = sum(class_prob)
+            class_prob = [x / summ for x in class_prob]
+
+            self.class_prob = dict(zip(self.video_infos_by_class, class_prob))
 
     @abstractmethod
     def load_annotations(self):
@@ -230,12 +245,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
 
     def prepare_train_frames(self, idx):
         """Prepare the frames for training given the index."""
-        if self.sample_by_class:
-            # Then, the idx is the class index
-            samples = self.video_infos_by_class[idx]
-            results = copy.deepcopy(np.random.choice(samples))
-        else:
-            results = copy.deepcopy(self.video_infos[idx])
+        results = copy.deepcopy(self.video_infos[idx])
         results['modality'] = self.modality
         results['start_index'] = self.start_index
 
@@ -250,12 +260,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
 
     def prepare_test_frames(self, idx):
         """Prepare the frames for testing given the index."""
-        if self.sample_by_class:
-            # Then, the idx is the class index
-            samples = self.video_infos_by_class[idx]
-            results = copy.deepcopy(np.random.choice(samples))
-        else:
-            results = copy.deepcopy(self.video_infos[idx])
+        results = copy.deepcopy(self.video_infos[idx])
         results['modality'] = self.modality
         results['start_index'] = self.start_index
 
