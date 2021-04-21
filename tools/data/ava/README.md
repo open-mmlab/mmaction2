@@ -2,7 +2,7 @@
 
 ## Introduction
 
-[DATASET]
+<!-- [DATASET] -->
 
 ```BibTeX
 @inproceedings{gu2018ava,
@@ -98,11 +98,11 @@ If both are required, run the following script to extract frames.
 bash extract_frames.sh
 ```
 
-## Step 5. Fetching Proposal Files
+## Step 5. Fetch Proposal Files
 
 The scripts are adapted from FAIR's [Long-Term Feature Banks](https://github.com/facebookresearch/video-long-term-feature-banks).
 
-Run the follow scripts to fetch pre-computed proposal list.
+Run the following scripts to fetch the pre-computed proposal list.
 
 ```shell
 bash fetch_ava_proposals.sh
