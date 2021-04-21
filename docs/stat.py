@@ -28,10 +28,11 @@ for f in files:
     title = content.split('\n')[0].replace('#', '')
 
     # count papers
-    papers = set((papertype, titlecase.titlecase(paper.lower().strip()))
-                 for (papertype, paper) in re.findall(
-                     r'\n\s*\[([A-Z]+?)\]\s*\n.*?\btitle\s*=\s*{(.*?)}',
-                     content, re.DOTALL))
+    papers = set(
+        (papertype, titlecase.titlecase(paper.lower().strip()))
+        for (papertype, paper) in re.findall(
+            r'<!--\s*\[([A-Z]*?)\]\s*-->\s*\n.*?\btitle\s*=\s*{(.*?)}',
+            content, re.DOTALL))
     # paper links
     revcontent = '\n'.join(list(reversed(content.splitlines())))
     paperlinks = {}
