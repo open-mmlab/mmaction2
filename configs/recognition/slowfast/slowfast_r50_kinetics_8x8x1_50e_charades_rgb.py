@@ -19,8 +19,7 @@ model = dict(
             conv1_stride_t=1,
             pool1_stride_t=1,
             fusion_kernel=7,
-            inflate=(0, 0, 1, 1),
-            norm_eval=True),
+            inflate=(0, 0, 1, 1)),
         fast_pathway=dict(
             type='resnet3d',
             depth=50,
@@ -29,8 +28,7 @@ model = dict(
             base_channels=8,
             conv1_kernel=(5, 7, 7),
             conv1_stride_t=1,
-            pool1_stride_t=1,
-            norm_eval=True)),
+            pool1_stride_t=1)),
     cls_head=dict(
         type='SlowFastHead',
         in_channels=2304,  # 2048+256
@@ -60,7 +58,7 @@ img_norm_cfg = dict(
 train_pipeline = [
     dict(
         type='SampleCharadesFrames',
-        clip_len=64,
+        clip_len=32,
         frame_interval=2,
         num_clips=1),
     dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
@@ -76,7 +74,7 @@ train_pipeline = [
 val_pipeline = [
     dict(
         type='SampleCharadesFrames',
-        clip_len=64,
+        clip_len=32,
         frame_interval=2,
         num_clips=10,
         test_mode=True),
@@ -92,14 +90,13 @@ val_pipeline = [
 test_pipeline = [
     dict(
         type='SampleCharadesFrames',
-        clip_len=64,
+        clip_len=32,
         frame_interval=2,
         num_clips=10,
         test_mode=True),
     dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
     dict(type='Resize', scale=(-1, 256)),
-    dict(type='CenterCrop', crop_size=256),
-    #  dict(type='ThreeCrop', crop_size=256),
+    dict(type='ThreeCrop', crop_size=256),
     dict(type='Flip', flip_ratio=0),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW'),
@@ -107,7 +104,7 @@ test_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
-    videos_per_gpu=6,
+    videos_per_gpu=8,
     workers_per_gpu=2,
     val_dataloader=dict(videos_per_gpu=1),
     test_dataloader=dict(videos_per_gpu=1),
@@ -132,7 +129,7 @@ data = dict(
 evaluation = dict(interval=1, metrics=['mean_average_precision'])
 
 # optimizer
-optimizer = dict(type='SGD', lr=0.075, momentum=0.9, weight_decay=1e-4)
+optimizer = dict(type='SGD', lr=0.1, momentum=0.9, weight_decay=1e-4)
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
 lr_config = dict(
