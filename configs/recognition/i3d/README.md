@@ -2,7 +2,7 @@
 
 ## Introduction
 
-[ALGORITHM]
+<!-- [ALGORITHM] -->
 
 ```BibTeX
 @inproceedings{inproceedings,
@@ -15,7 +15,7 @@
 }
 ```
 
-[BACKBONE]
+<!-- [BACKBONE] -->
 
 ```BibTeX
 @article{NonLocal2018,

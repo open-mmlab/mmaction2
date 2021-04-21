@@ -58,7 +58,7 @@ We also list the benchmark in the original paper which run on Kinetics-400 for c
 
 If you find OmniSource useful for your research, please consider citing the paper using the following BibTeX entry.
 
-[ALGORITHM]
+<!-- [ALGORITHM] -->
 
 ```BibTeX
 @article{duan2020omni,

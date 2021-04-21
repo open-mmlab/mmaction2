@@ -2,7 +2,7 @@
 
 ## 简介
 
-[ALGORITHM]
+<!-- [ALGORITHM] -->
 
 ```BibTeX
 @inproceedings{lin2019tsm,
@@ -13,7 +13,7 @@
 }
 ```
 
-[BACKBONE]
+<!-- [BACKBONE] -->
 
 ```BibTeX
 @article{NonLocal2018,

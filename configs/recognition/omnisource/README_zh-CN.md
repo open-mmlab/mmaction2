@@ -58,7 +58,7 @@ MMAction2 在公开的数据集上进行了 OmniSource 框架的基准测试，�
 
 如果 OmniSource 项目对您的研究有所帮助，请使用以下 BibTex 项进行引用：
 
-[ALGORITHM]
+<!-- [ALGORITHM] -->
 
 ```BibTeX
 @article{duan2020omni,
