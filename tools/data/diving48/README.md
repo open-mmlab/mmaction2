@@ -14,7 +14,7 @@
 }
 ```
 
-For basic dataset information, you can refer to the dataset [website](http://www.svcl.ucsd.edu/projects/resound/dataset.html).
+For basic dataset information, you can refer to the official dataset [website](http://www.svcl.ucsd.edu/projects/resound/dataset.html).
 Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/diving48/`.
 
 ## Step 1. Prepare Annotations
@@ -37,10 +37,45 @@ bash download_videos.sh
 
 This part is **optional** if you only want to use the video loader.
 
-You can run the following script to download RGB and Flow.
+You can run the following script to download RGB and Flow from official dataset [website](http://www.svcl.ucsd.edu/projects/resound/dataset.html).
 
 ```shell
 bash download_frames.sh
+```
+
+However, the frames in this compressed file are not complete. You may need to go through the following extraction steps to get the complete frames.
+
+Before extracting, please refer to [install.md](/docs/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
+
+If you have plenty of SSD space, then we recommend extracting frames there for better I/O performance.
+
+You can run the following script to soft link SSD.
+
+```shell
+# execute these two line (Assume the SSD is mounted at "/mnt/SSD/")
+mkdir /mnt/SSD/diving48_extracted/
+ln -s /mnt/SSD/diving48_extracted/ ../../../data/diving48/rawframes
+```
+
+If you only want to play with RGB frames (since extracting optical flow can be time-consuming), consider running the following script to extract **RGB-only** frames using denseflow.
+
+```shell
+cd $MMACTION2/tools/data/diving48/
+bash extract_rgb_frames.sh
+```
+
+If you didn't install denseflow, you can still extract RGB frames using OpenCV by the following script, but it will keep the original size of the images.
+
+```shell
+cd $MMACTION2/tools/data/diving48/
+bash extract_rgb_frames_opencv.sh
+```
+
+If both are required, run the following script to extract frames.
+
+```shell
+cd $MMACTION2/tools/data/diving48/
+bash extract_frames.sh
 ```
 
 ## Step 4. Generate File List
