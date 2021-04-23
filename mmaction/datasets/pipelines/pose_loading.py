@@ -212,14 +212,12 @@ class PoseDecode(object):
 
         if 'kpscore' in results:
             kpscore = results['kpscore']
-            assert results['num_person'] == kpscore.shape[0]
             if self.random_drop:
                 self._drop_kpscore(kpscore)
 
             results['kpscore'] = kpscore[:, frame_inds].astype(np.float32)
 
         if 'kp' in results:
-            assert results['num_person'] == len(results['kp'])
             results['kp'] = results['kp'][:, frame_inds].astype(np.float32)
 
         return results
