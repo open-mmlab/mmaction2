@@ -10,6 +10,7 @@ from .builder import build_dataloader, build_dataset
 from .dataset_wrappers import RepeatDataset
 from .hvu_dataset import HVUDataset
 from .image_dataset import ImageDataset
+from .pose_dataset import PoseDataset
 from .rawframe_dataset import RawframeDataset
 from .rawvideo_dataset import RawVideoDataset
 from .ssn_dataset import SSNDataset
@@ -19,6 +20,6 @@ __all__ = [
     'VideoDataset', 'build_dataloader', 'build_dataset', 'RepeatDataset',
     'RawframeDataset', 'BaseDataset', 'ActivityNetDataset', 'SSNDataset',
     'HVUDataset', 'AudioDataset', 'AudioFeatureDataset', 'ImageDataset',
-    'RawVideoDataset', 'AVADataset', 'AudioVisualDataset',
+    'RawVideoDataset', 'AVADataset', 'AudioVisualDataset', 'PoseDataset',
     'BaseMiniBatchBlending', 'CutmixBlending', 'MixupBlending'
 ]
