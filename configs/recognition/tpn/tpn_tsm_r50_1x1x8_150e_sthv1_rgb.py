@@ -33,7 +33,6 @@ val_pipeline = [
     dict(type='FrameSelector'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
-    dict(type='ColorJitter', color_space_aug=True),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
