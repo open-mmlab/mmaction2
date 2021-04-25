@@ -506,6 +506,29 @@ def parse_hmdb51_split(level):
     return splits
 
 
-def parse_diving48_splits(level=2):
+def parse_diving48_splits():
 
-    pass
+    train_file = 'data/diving48/annotations/Diving48_V2_train.json'
+    test_file = 'data/diving48/annotations/Diving48_V2_test.json'
+
+    train = json.load(open(train_file))
+    test = json.load(open(test_file))
+
+    # class_index_file = 'data/diving48/annotations/Diving48_vocab.json'
+    # class_list = json.load(open(class_index_file))
+
+    train_list = []
+    test_list = []
+
+    for item in train:
+        vid_name = item['vid_name']
+        label = item['label']
+        train_list.append((vid_name, label))
+
+    for item in test:
+        vid_name = item['vid_name']
+        label = item['label']
+        test_list.append((vid_name, label))
+
+    splits = ((train_list, test_list), )
+    return splits

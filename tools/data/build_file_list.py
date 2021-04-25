@@ -208,7 +208,7 @@ def main():
     elif args.dataset == 'jester':
         splits = parse_jester_splits(args.level)
     elif args.dataset == 'diving48':
-        splits = parse_diving48_splits(args.level)
+        splits = parse_diving48_splits()
     else:
         raise ValueError(
             f"Supported datasets are 'ucf101, sthv1, sthv2', 'jester', "
