@@ -24,11 +24,6 @@ class PoseDataset(BaseDataset):
     Args:
         ann_file (str): Path to the annotation file.
         pipeline (list[dict | callable]): A sequence of data transforms.
-        resample (float | None): The sampling probability for classes 61-120 in
-            NTU-120 XSub split. If set as 1.5, it means the probability of
-            sampling a video in classes 61-120 is 1.5 times than the
-            probability of sampling a video in classes 1-60. None means not
-            applicable (only applicable to NTU-120 XSub). Default: None.
         valid_ratio (float | None): The valid_ratio for videos in KineticsPose.
             For a video with n frames, it is a valid training sample only if
             n * valid_ratio frames have human pose. None means not applicable
@@ -46,13 +41,10 @@ class PoseDataset(BaseDataset):
     def __init__(self,
                  ann_file,
                  pipeline,
-                 resample=None,
                  valid_ratio=None,
                  box_thre=None,
                  class_prob=None,
                  **kwargs):
-        # For NTU-120 X-Sub
-        self.resample = resample
         modality = 'Pose'
 
         super().__init__(
