@@ -86,7 +86,7 @@ bash extract_flow.sh
 
 ## Step 4. Encode Videos
 
-This part is **optional** if you only want to use RGB frames.
+This part is **optional** if you only want to use RGB videos.
 
 You can run the following script to encode videos.
 

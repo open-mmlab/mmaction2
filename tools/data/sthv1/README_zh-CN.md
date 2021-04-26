@@ -61,7 +61,7 @@ data = dict(
 
 ## 步骤 3. 抽取光流
 
-如果用户只想使用原 RGB 帧加载训练，则该部分是 **可选项**。
+如果用户只想使用原 RGB 视频加载训练，则该部分是 **可选项**。
 
 在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
