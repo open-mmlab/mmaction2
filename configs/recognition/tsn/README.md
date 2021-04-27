@@ -29,6 +29,8 @@
 
 |config | gpus | backbone | pretrain | top1 acc| top5 acc | gpu_mem(M) | ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+|[tsn_r50_video_1x1x8_100e_diving48_rgb](/configs/recognition/tsn/tsn_r50_video_1x1x8_100e_diving48_rgb.py)|8| ResNet50 | ImageNet | xx | xx | xx | [ckpt]() | [log]() | [json]()|
+|[tsn_r50_video_1x1x16_100e_diving48_rgb](/configs/recognition/tsn/tsn_r50_video_1x1x16_100e_diving48_rgb.py)|8| ResNet50 | ImageNet | xx | xx | xx | [ckpt]() | [log]() | [json]()|
 
 ### HMDB51
 

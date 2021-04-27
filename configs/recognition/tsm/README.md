@@ -47,6 +47,8 @@
 
 |config | gpus | backbone | pretrain | top1 acc| top5 acc | gpu_mem(M) | ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+|[tsm_r50_video_1x1x8_50e_diving48_rgb](/configs/recognition/tsm/tsm_r50_video_1x1x8_50e_diving48_rgb.py)| 8 | ResNet50 | ImageNet | 75.99 | 97.16 | 7070 | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x8_50e_diving48_rgb/tsm_r50_video_1x1x8_50e_diving48_rgb_20210426-aba5aa3d.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x8_50e_diving48_rgb/20210426_012424.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x8_50e_diving48_rgb/20210426_012424.log.json)|
+|[tsm_r50_video_1x1x16_50e_diving48_rgb](/configs/recognition/tsm/tsm_r50_video_1x1x16_50e_diving48_rgb.py)| 8 | ResNet50 | ImageNet | 81.62 | 97.66 | 7070 | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x16_50e_diving48_rgb/tsm_r50_video_1x1x16_50e_diving48_rgb_20210426-aa9631c0.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x16_50e_diving48_rgb/20210426_012823.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x16_50e_diving48_rgb/20210426_012823.log.json)|
 
 ### Something-Something V1
 
