@@ -19,7 +19,7 @@
 
 ## 步骤 1. 下载标注文件
 
-用户可以使用以下命令下载标注文件。
+用户可以使用以下命令下载标注文件（考虑到标注的准确性，这里仅下载 V2 版本）。
 
 ```shell
 bash download_annotations.sh
@@ -37,13 +37,7 @@ bash download_videos.sh
 
 如果用户只想使用视频加载训练，则该部分是 **可选项**。
 
-用户可以使用以下命令从数据集 [官网](http://www.svcl.ucsd.edu/projects/resound/dataset.html) 下载 RGB 和光流的压缩包。
-
-```shell
-bash download_frames.sh
-```
-
-但是，这里提供的压缩包并不完整。若想获取完整的数据，可以使用以下步骤解帧。
+官网提供的帧压缩包并不完整。若想获取完整的数据，可以使用以下步骤解帧。
 
 在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 

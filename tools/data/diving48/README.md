@@ -19,7 +19,7 @@ Before we start, please make sure that the directory is located at `$MMACTION2/t
 
 ## Step 1. Prepare Annotations
 
-You can run the following script to download annotations.
+You can run the following script to download annotations (considering the correctness of annotation files, we only download V2 version here).
 
 ```shell
 bash download_annotations.sh
@@ -37,13 +37,7 @@ bash download_videos.sh
 
 This part is **optional** if you only want to use the video loader.
 
-You can run the following script to download RGB and Flow from official dataset [website](http://www.svcl.ucsd.edu/projects/resound/dataset.html).
-
-```shell
-bash download_frames.sh
-```
-
-However, the frames in this compressed file are not complete. You may need to go through the following extraction steps to get the complete frames.
+The frames provided in official compressed file are not complete. You may need to go through the following extraction steps to get the complete frames.
 
 Before extracting, please refer to [install.md](/docs/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
 
