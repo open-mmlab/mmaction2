@@ -422,9 +422,9 @@ class SampleAVAFrames(SampleFrames):
         start = center_index - (self.clip_len // 2) * self.frame_interval
         end = center_index + ((self.clip_len + 1) // 2) * self.frame_interval
         frame_inds = list(range(start, end, self.frame_interval))
-        frame_inds = frame_inds + skip_offsets
+        if not self.test_mode:
+            frame_inds = frame_inds + skip_offsets
         frame_inds = np.clip(frame_inds, shot_info[0], shot_info[1] - 1)
-
         return frame_inds
 
     def __call__(self, results):

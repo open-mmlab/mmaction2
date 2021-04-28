@@ -91,6 +91,11 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
 
         self.fp16_enabled = False
 
+    @property
+    def with_neck(self):
+        """bool: whether the detector has a neck"""
+        return hasattr(self, 'neck') and self.neck is not None
+
     def init_weights(self):
         """Initialize the model network weights."""
         if self.backbone_from in ['mmcls', 'mmaction2']:
@@ -105,7 +110,7 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
                                       f'{self.backbone_from}!')
 
         self.cls_head.init_weights()
-        if hasattr(self, 'neck'):
+        if self.with_neck:
             self.neck.init_weights()
 
     @auto_fp16()

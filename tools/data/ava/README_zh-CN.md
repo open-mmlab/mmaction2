@@ -2,7 +2,7 @@
 
 ## 简介
 
-[DATASET]
+<!-- [DATASET] -->
 
 ```BibTeX
 @inproceedings{gu2018ava,
@@ -55,8 +55,6 @@ bash cut_videos.sh
 ```
 
 ## 4. 提取 RGB 帧和光流
-
-如果用户仅使用 video loader，则可以跳过本步。
 
 在提取之前，请参考 [安装教程](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 

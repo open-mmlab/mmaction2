@@ -2,7 +2,7 @@
 
 ## 简介
 
-[DATASET]
+<!-- [DATASET] -->
 
 ```BibTeX
 @inproceedings{Jhuang:ICCV:2013,

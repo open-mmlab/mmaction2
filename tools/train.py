@@ -137,7 +137,7 @@ def main():
 
     # log some basic info
     logger.info(f'Distributed training: {distributed}')
-    logger.info(f'Config: {cfg.text}')
+    logger.info(f'Config: {cfg.pretty_text}')
 
     # set random seeds
     if args.seed is not None:
@@ -179,7 +179,7 @@ def main():
         # checkpoints as meta data
         cfg.checkpoint_config.meta = dict(
             mmaction_version=__version__ + get_git_hash(digits=7),
-            config=cfg.text)
+            config=cfg.pretty_text)
 
     test_option = dict(test_last=args.test_last, test_best=args.test_best)
     train_model(

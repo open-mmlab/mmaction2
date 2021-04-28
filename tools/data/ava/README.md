@@ -2,7 +2,7 @@
 
 ## Introduction
 
-[DATASET]
+<!-- [DATASET] -->
 
 ```BibTeX
 @inproceedings{gu2018ava,
@@ -64,8 +64,6 @@ bash cut_videos.sh
 
 ## Step 4. Extract RGB and Flow
 
-This part is **optional** if you only want to use the video loader.
-
 Before extracting, please refer to [install.md](/docs/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
 
 If you have plenty of SSD space, then we recommend extracting frames there for better I/O performance. And you can run the following script to soft link the extracted frames.
@@ -100,11 +98,11 @@ If both are required, run the following script to extract frames.
 bash extract_frames.sh
 ```
 
-## Step 5. Fetching Proposal Files
+## Step 5. Fetch Proposal Files
 
 The scripts are adapted from FAIR's [Long-Term Feature Banks](https://github.com/facebookresearch/video-long-term-feature-banks).
 
-Run the follow scripts to fetch pre-computed proposal list.
+Run the following scripts to fetch the pre-computed proposal list.
 
 ```shell
 bash fetch_ava_proposals.sh

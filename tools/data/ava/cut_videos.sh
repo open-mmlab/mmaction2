@@ -29,6 +29,6 @@ for video in $(ls -A1 -U ${IN_DATA_DIR}/*)
 do
   out_name="${OUT_DATA_DIR}/${video##*/}"
   if [ ! -f "${out_name}" ]; then
-    ffmpeg -ss 900 -t 901 -i "${video}" -strict experimental "${out_name}"
+    ffmpeg -ss 900 -t 901 -i "${video}" -r 30 -strict experimental "${out_name}"
   fi
 done

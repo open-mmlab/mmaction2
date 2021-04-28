@@ -2,7 +2,7 @@
 
 ## 简介
 
-[ALGORITHM]
+<!-- [ALGORITHM] -->
 
 ```BibTeX
 @inproceedings{wang2016temporal,

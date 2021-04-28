@@ -1,6 +1,8 @@
+import warnings
+
 import torch.nn as nn
-from mmcv.cnn import ConvModule, constant_init, kaiming_init
-from mmcv.runner import _load_checkpoint, load_checkpoint
+from mmcv.cnn import ConvModule
+from mmcv.runner import BaseModule, _load_checkpoint
 from mmcv.utils import _BatchNorm
 from torch.utils import checkpoint as cp
 
@@ -8,7 +10,7 @@ from ...utils import get_root_logger
 from ..registry import BACKBONES
 
 
-class BasicBlock(nn.Module):
+class BasicBlock(BaseModule):
     """Basic block for ResNet.
 
     Args:
@@ -28,6 +30,8 @@ class BasicBlock(nn.Module):
             Default: dict(type='ReLU', inplace=True).
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
             memory while slowing down the training speed. Default: False.
+        init_cfg (dict or list[dict], optional): Initialization config dict.
+            Default: None
     """
     expansion = 1
 
@@ -41,8 +45,9 @@ class BasicBlock(nn.Module):
                  conv_cfg=dict(type='Conv'),
                  norm_cfg=dict(type='BN', requires_grad=True),
                  act_cfg=dict(type='ReLU', inplace=True),
-                 with_cp=False):
-        super().__init__()
+                 with_cp=False,
+                 init_cfg=None):
+        super().__init__(init_cfg)
         assert style in ['pytorch', 'caffe']
         self.conv1 = ConvModule(
             inplanes,
@@ -99,7 +104,7 @@ class BasicBlock(nn.Module):
         return out
 
 
-class Bottleneck(nn.Module):
+class Bottleneck(BaseModule):
     """Bottleneck block for ResNet.
 
     Args:
@@ -121,6 +126,8 @@ class Bottleneck(nn.Module):
             Default: dict(type='ReLU', inplace=True).
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
             memory while slowing down the training speed. Default: False.
+        init_cfg (dict or list[dict], optional): Initialization config dict.
+            Default: None
     """
 
     expansion = 4
@@ -135,8 +142,9 @@ class Bottleneck(nn.Module):
                  conv_cfg=dict(type='Conv'),
                  norm_cfg=dict(type='BN', requires_grad=True),
                  act_cfg=dict(type='ReLU', inplace=True),
-                 with_cp=False):
-        super().__init__()
+                 with_cp=False,
+                 init_cfg=None):
+        super().__init__(init_cfg)
         assert style in ['pytorch', 'caffe']
         self.inplanes = inplanes
         self.planes = planes
@@ -293,7 +301,7 @@ def make_res_layer(block,
 
 
 @BACKBONES.register_module()
-class ResNet(nn.Module):
+class ResNet(BaseModule):
     """ResNet backbone.
 
     Args:
@@ -320,6 +328,8 @@ class ResNet(nn.Module):
         partial_bn (bool): Whether to use partial bn. Default: False.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
             memory while slowing down the training speed. Default: False.
+        init_cfg (dict or list[dict], optional): Initialization config dict.
+            Default: None
     """
 
     arch_settings = {
@@ -344,12 +354,48 @@ class ResNet(nn.Module):
                  conv_cfg=dict(type='Conv'),
                  norm_cfg=dict(type='BN2d', requires_grad=True),
                  act_cfg=dict(type='ReLU', inplace=True),
+                 zero_init_residual=True,
                  norm_eval=False,
                  partial_bn=False,
-                 with_cp=False):
-        super().__init__()
+                 with_cp=False,
+                 init_cfg=None):
+        super().__init__(init_cfg)
+        self.zero_init_residual = zero_init_residual
         if depth not in self.arch_settings:
             raise KeyError(f'invalid depth {depth} for resnet')
+
+        block_init_cfg = None
+        assert not (init_cfg
+                    and pretrained), ('init_cfg and pretrained cannot '
+                                      'be setting at the same time')
+        if isinstance(pretrained, str):
+            warnings.warn('DeprecationWarning: pretrained is a deprecated, '
+                          'please use "init_cfg" instead')
+            self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
+        elif pretrained is None:
+            if init_cfg is None:
+                self.init_cfg = [
+                    dict(type='Kaiming', layer='Conv2d'),
+                    dict(
+                        type='Constant',
+                        val=1,
+                        layer=['_BatchNorm', 'GroupNorm'])
+                ]
+                block = self.arch_settings[depth][0]
+                if self.zero_init_residual:
+                    if block is BasicBlock:
+                        block_init_cfg = dict(
+                            type='Constant',
+                            val=0,
+                            override=dict(name='norm2'))
+                    elif block is Bottleneck:
+                        block_init_cfg = dict(
+                            type='Constant',
+                            val=0,
+                            override=dict(name='norm3'))
+        else:
+            raise TypeError('pretrained must be a str or None')
+
         self.depth = depth
         self.in_channels = in_channels
         self.pretrained = pretrained
@@ -392,7 +438,8 @@ class ResNet(nn.Module):
                 conv_cfg=conv_cfg,
                 norm_cfg=norm_cfg,
                 act_cfg=act_cfg,
-                with_cp=with_cp)
+                with_cp=with_cp,
+                init_cfg=block_init_cfg)
             self.inplanes = planes * self.block.expansion
             layer_name = f'layer{i + 1}'
             self.add_module(layer_name, res_layer)
@@ -505,27 +552,6 @@ class ResNet(nn.Module):
             logger.info(
                 f'These parameters in pretrained checkpoint are not loaded'
                 f': {remaining_names}')
-
-    def init_weights(self):
-        """Initiate the parameters either from existing checkpoint or from
-        scratch."""
-        if isinstance(self.pretrained, str):
-            logger = get_root_logger()
-            if self.torchvision_pretrain:
-                # torchvision's
-                self._load_torchvision_checkpoint(logger)
-            else:
-                # ours
-                load_checkpoint(
-                    self, self.pretrained, strict=False, logger=logger)
-        elif self.pretrained is None:
-            for m in self.modules():
-                if isinstance(m, nn.Conv2d):
-                    kaiming_init(m)
-                elif isinstance(m, nn.BatchNorm2d):
-                    constant_init(m, 1)
-        else:
-            raise TypeError('pretrained must be a str or None')
 
     def forward(self, x):
         """Defines the computation performed at every call.

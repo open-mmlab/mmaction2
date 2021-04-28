@@ -2,7 +2,7 @@
 
 ## 简介
 
-[ALGORITHM]
+<!-- [ALGORITHM] -->
 
 ```BibTeX
 @inproceedings{inproceedings,
@@ -15,7 +15,7 @@ doi = {10.1109/ICCV.2019.00565}
 }
 ```
 
-[OTHERS]
+<!-- [OTHERS] -->
 
 ```BibTeX
 @inproceedings{ghadiyaram2019large,

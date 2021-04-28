@@ -26,7 +26,7 @@ class Recognizer2D(BaseRecognizer):
             x = x.reshape((x.shape[0], -1))
             x = x.reshape(x.shape + (1, 1))
 
-        if hasattr(self, 'neck'):
+        if self.with_neck:
             x = [
                 each.reshape((-1, num_segs) +
                              each.shape[1:]).transpose(1, 2).contiguous()
@@ -60,7 +60,7 @@ class Recognizer2D(BaseRecognizer):
             x = x.reshape((x.shape[0], -1))
             x = x.reshape(x.shape + (1, 1))
 
-        if hasattr(self, 'neck'):
+        if self.with_neck:
             x = [
                 each.reshape((-1, num_segs) +
                              each.shape[1:]).transpose(1, 2).contiguous()
@@ -97,7 +97,7 @@ class Recognizer2D(BaseRecognizer):
             imgs = torch.flip(imgs, [-1])
         x = self.extract_feat(imgs)
 
-        if hasattr(self, 'neck'):
+        if self.with_neck:
             x = [
                 each.reshape((-1, num_segs) +
                              each.shape[1:]).transpose(1, 2).contiguous()
@@ -147,7 +147,7 @@ class Recognizer2D(BaseRecognizer):
         num_segs = imgs.shape[0] // batches
 
         x = self.extract_feat(imgs)
-        if hasattr(self, 'neck'):
+        if self.with_neck:
             x = [
                 each.reshape((-1, num_segs) +
                              each.shape[1:]).transpose(1, 2).contiguous()

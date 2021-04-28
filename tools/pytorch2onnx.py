@@ -94,8 +94,9 @@ def pytorch2onnx(model,
         onnx_result = sess.run(
             None, {net_feed_input[0]: input_tensor.detach().numpy()})[0]
         # only compare part of results
+        random_class = np.random.randint(pytorch_result.shape[1])
         assert np.allclose(
-            pytorch_result[:, 4], onnx_result[:, 4]
+            pytorch_result[:, random_class], onnx_result[:, random_class]
         ), 'The outputs are different between Pytorch and ONNX'
         print('The numerical values are same between Pytorch and ONNX')
 
