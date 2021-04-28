@@ -25,6 +25,13 @@
 
 [1] We report the performance on UCF-101 split1.
 
+### Diving48
+
+|config | gpus | backbone | pretrain | top1 acc| top5 acc | gpu_mem(M) | ckpt | log| json|
+|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+|[tsn_r50_video_1x1x8_100e_diving48_rgb](/configs/recognition/tsn/tsn_r50_video_1x1x8_100e_diving48_rgb.py)|8| ResNet50 | ImageNet | 71.27 | 95.74 | 5699 | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_video_1x1x8_100e_diving48_rgb/tsn_r50_video_1x1x8_100e_diving48_rgb_20210426-6dde0185.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_video_1x1x8_100e_diving48_rgb/20210426_014138.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_video_1x1x8_100e_diving48_rgb/20210426_014138.log.json)|
+|[tsn_r50_video_1x1x16_100e_diving48_rgb](/configs/recognition/tsn/tsn_r50_video_1x1x16_100e_diving48_rgb.py)|8| ResNet50 | ImageNet | 76.75 | 96.95 | 5705 | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_video_1x1x16_100e_diving48_rgb/tsn_r50_video_1x1x16_100e_diving48_rgb_20210426-63c5f2f7.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_video_1x1x16_100e_diving48_rgb/20210426_014103.log) | [json](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_video_1x1x16_100e_diving48_rgb/20210426_014103.log.json)|
+
 ### HMDB51
 
 |config | gpus | backbone | pretrain | top1 acc| top5 acc | gpu_mem(M) | ckpt | log| json|
