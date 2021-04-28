@@ -20,8 +20,8 @@ try:
         ]
         less_keys = ['loss']
 
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
+        def __init__(self, *args, save_best='auto', **kwargs):
+            super().__init__(*args, save_best=save_best, **kwargs)
 
     class DistEvalHook(BasicDistEvalHook):
         greater_keys = [
@@ -29,8 +29,8 @@ try:
         ]
         less_keys = ['loss']
 
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
+        def __init__(self, *args, save_best='auto', **kwargs):
+            super().__init__(*args, save_best=save_best, **kwargs)
 
 except (ImportError, ModuleNotFoundError):
     warnings.warn('DeprecationWarning: EvalHook and DistEvalHook in mmaction2 '
