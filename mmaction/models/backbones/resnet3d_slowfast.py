@@ -99,7 +99,8 @@ class ResNet3dPathway(ResNet3d):
                        conv_cfg=None,
                        norm_cfg=None,
                        act_cfg=None,
-                       with_cp=False):
+                       with_cp=False,
+                       **kwargs):
         """Build residual layer for Slowfast.
 
         Args:
@@ -178,7 +179,8 @@ class ResNet3dPathway(ResNet3d):
                 conv_cfg=conv_cfg,
                 norm_cfg=norm_cfg,
                 act_cfg=act_cfg,
-                with_cp=with_cp))
+                with_cp=with_cp,
+                **kwargs))
         inplanes = planes * block.expansion
 
         for i in range(1, blocks):
@@ -197,7 +199,8 @@ class ResNet3dPathway(ResNet3d):
                     conv_cfg=conv_cfg,
                     norm_cfg=norm_cfg,
                     act_cfg=act_cfg,
-                    with_cp=with_cp))
+                    with_cp=with_cp,
+                    **kwargs))
 
         return nn.Sequential(*layers)
 
@@ -330,7 +333,7 @@ class ResNet3dPathway(ResNet3d):
             self.pretrained = pretrained
 
         # Override the init_weights of i3d
-        super().init_weights()
+        super().init_weights(pretrained=self.pretrained)
         for module_name in self.lateral_connections:
             layer = getattr(self, module_name)
             for m in layer.modules():

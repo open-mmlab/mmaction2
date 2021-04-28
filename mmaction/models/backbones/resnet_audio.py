@@ -1,15 +1,16 @@
+import warnings
+
 import torch.nn as nn
 import torch.utils.checkpoint as cp
-from mmcv.cnn import ConvModule, constant_init, kaiming_init
-from mmcv.runner import load_checkpoint
+from mmcv.cnn import ConvModule
+from mmcv.runner import BaseModule
 from torch.nn.modules.batchnorm import _BatchNorm
 from torch.nn.modules.utils import _ntuple
 
 from mmaction.models.registry import BACKBONES
-from mmaction.utils import get_root_logger
 
 
-class Bottleneck2dAudio(nn.Module):
+class Bottleneck2dAudio(BaseModule):
     """Bottleneck2D block for ResNet2D.
 
     Args:
@@ -35,8 +36,9 @@ class Bottleneck2dAudio(nn.Module):
                  downsample=None,
                  factorize=True,
                  norm_cfg=None,
-                 with_cp=False):
-        super().__init__()
+                 with_cp=False,
+                 init_cfg=None):
+        super().__init__(init_cfg)
 
         self.inplanes = inplanes
         self.planes = planes
@@ -109,7 +111,7 @@ class Bottleneck2dAudio(nn.Module):
 
 
 @BACKBONES.register_module()
-class ResNetAudio(nn.Module):
+class ResNetAudio(BaseModule):
     """ResNet 2d audio backbone. Reference:
 
         <https://arxiv.org/abs/2001.08740>`_.
@@ -171,10 +173,40 @@ class ResNetAudio(nn.Module):
                  conv_cfg=dict(type='Conv'),
                  norm_cfg=dict(type='BN2d', requires_grad=True),
                  act_cfg=dict(type='ReLU', inplace=True),
-                 zero_init_residual=True):
-        super().__init__()
+                 zero_init_residual=True,
+                 init_cfg=None):
+        super().__init__(init_cfg)
+        self.zero_init_residual = zero_init_residual
         if depth not in self.arch_settings:
             raise KeyError(f'invalid depth {depth} for resnet')
+
+        block_init_cfg = None
+        assert not (init_cfg
+                    and pretrained), ('init_cfg and pretrained cannot '
+                                      'be setting at the same time')
+        if isinstance(pretrained, str):
+            warnings.warn('DeprecationWarning: pretrained is a deprecated, '
+                          'please use "init_cfg" instead')
+            self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
+        elif pretrained is None:
+            if init_cfg is None:
+                self.init_cfg = [
+                    dict(type='Kaiming', layer='Conv2d'),
+                    dict(
+                        type='Constant',
+                        val=1,
+                        layer=['_BatchNorm', 'GroupNorm'])
+                ]
+                block = self.arch_settings[depth][0]
+                if self.zero_init_residual:
+                    if block is Bottleneck2dAudio:
+                        block_init_cfg = dict(
+                            type='Constant',
+                            val=0,
+                            override=dict(name='norm3'))
+        else:
+            raise TypeError('pretrained must be a str or None')
+
         self.depth = depth
         self.pretrained = pretrained
         self.in_channels = in_channels
@@ -191,7 +223,6 @@ class ResNetAudio(nn.Module):
         self.conv_cfg = conv_cfg
         self.norm_cfg = norm_cfg
         self.act_cfg = act_cfg
-        self.zero_init_residual = zero_init_residual
 
         self.block, stage_blocks = self.arch_settings[depth]
         self.stage_blocks = stage_blocks[:num_stages]
@@ -213,7 +244,8 @@ class ResNetAudio(nn.Module):
                 dilation=dilation,
                 factorize=self.stage_factorization[i],
                 norm_cfg=self.norm_cfg,
-                with_cp=with_cp)
+                with_cp=with_cp,
+                init_cfg=block_init_cfg)
             self.inplanes = planes * self.block.expansion
             layer_name = f'layer{i + 1}'
             self.add_module(layer_name, res_layer)
@@ -231,7 +263,8 @@ class ResNetAudio(nn.Module):
                        dilation=1,
                        factorize=1,
                        norm_cfg=None,
-                       with_cp=False):
+                       with_cp=False,
+                       **kwargs):
         """Build residual layer for ResNetAudio.
 
         Args:
@@ -280,7 +313,8 @@ class ResNetAudio(nn.Module):
                 downsample,
                 factorize=(factorize[0] == 1),
                 norm_cfg=norm_cfg,
-                with_cp=with_cp))
+                with_cp=with_cp,
+                **kwargs))
         inplanes = planes * block.expansion
         for i in range(1, blocks):
             layers.append(
@@ -291,7 +325,8 @@ class ResNetAudio(nn.Module):
                     dilation,
                     factorize=(factorize[i] == 1),
                     norm_cfg=norm_cfg,
-                    with_cp=with_cp))
+                    with_cp=with_cp,
+                    **kwargs))
 
         return nn.Sequential(*layers)
 
@@ -322,27 +357,6 @@ class ResNetAudio(nn.Module):
             m.eval()
             for param in m.parameters():
                 param.requires_grad = False
-
-    def init_weights(self):
-        """Initiate the parameters either from existing checkpoint or from
-        scratch."""
-        if isinstance(self.pretrained, str):
-            logger = get_root_logger()
-            logger.info(f'load model from: {self.pretrained}')
-
-            load_checkpoint(self, self.pretrained, strict=False, logger=logger)
-
-        elif self.pretrained is None:
-            for m in self.modules():
-                if isinstance(m, nn.Conv2d):
-                    kaiming_init(m)
-                elif isinstance(m, _BatchNorm):
-                    constant_init(m, 1)
-
-            if self.zero_init_residual:
-                for m in self.modules():
-                    if isinstance(m, Bottleneck2dAudio):
-                        constant_init(m.conv3.bn, 0)
 
         else:
             raise TypeError('pretrained must be a str or None')

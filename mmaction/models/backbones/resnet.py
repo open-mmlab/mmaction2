@@ -1,5 +1,3 @@
-import warnings
-
 import torch.nn as nn
 from mmcv.cnn import ConvModule
 from mmcv.runner import BaseModule, _load_checkpoint
@@ -236,7 +234,8 @@ def make_res_layer(block,
                    conv_cfg=None,
                    norm_cfg=None,
                    act_cfg=None,
-                   with_cp=False):
+                   with_cp=False,
+                   **kwargs):
     """Build residual layer for ResNet.
 
     Args:
@@ -282,7 +281,8 @@ def make_res_layer(block,
             conv_cfg=conv_cfg,
             norm_cfg=norm_cfg,
             act_cfg=act_cfg,
-            with_cp=with_cp))
+            with_cp=with_cp,
+            **kwargs))
     inplanes = planes * block.expansion
     for _ in range(1, blocks):
         layers.append(
@@ -295,7 +295,8 @@ def make_res_layer(block,
                 conv_cfg=conv_cfg,
                 norm_cfg=norm_cfg,
                 act_cfg=act_cfg,
-                with_cp=with_cp))
+                with_cp=with_cp,
+                **kwargs))
 
     return nn.Sequential(*layers)
 
@@ -361,6 +362,7 @@ class ResNet(BaseModule):
                  init_cfg=None):
         super().__init__(init_cfg)
         self.zero_init_residual = zero_init_residual
+        self.torchvision_pretrain = torchvision_pretrain
         if depth not in self.arch_settings:
             raise KeyError(f'invalid depth {depth} for resnet')
 
@@ -369,9 +371,8 @@ class ResNet(BaseModule):
                     and pretrained), ('init_cfg and pretrained cannot '
                                       'be setting at the same time')
         if isinstance(pretrained, str):
-            warnings.warn('DeprecationWarning: pretrained is a deprecated, '
-                          'please use "init_cfg" instead')
-            self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
+            if not self.torchvision_pretrain:
+                self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
         elif pretrained is None:
             if init_cfg is None:
                 self.init_cfg = [
@@ -399,7 +400,6 @@ class ResNet(BaseModule):
         self.depth = depth
         self.in_channels = in_channels
         self.pretrained = pretrained
-        self.torchvision_pretrain = torchvision_pretrain
         self.num_stages = num_stages
         assert 1 <= num_stages <= 4
         self.out_indices = out_indices
@@ -552,6 +552,13 @@ class ResNet(BaseModule):
             logger.info(
                 f'These parameters in pretrained checkpoint are not loaded'
                 f': {remaining_names}')
+
+    def init_weights(self):
+        if self.torchvision_pretrain:
+            logger = get_root_logger()
+            self._load_torchvision_checkpoint(logger)
+        else:
+            super().init_weights()
 
     def forward(self, x):
         """Defines the computation performed at every call.

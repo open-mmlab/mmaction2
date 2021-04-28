@@ -392,7 +392,7 @@ class ResNet3d(BaseModule):
 
     def __init__(self,
                  depth,
-                 pretrained,
+                 pretrained=None,
                  pretrained2d=True,
                  in_channels=3,
                  num_stages=4,
@@ -430,14 +430,13 @@ class ResNet3d(BaseModule):
                     and pretrained), ('init_cfg and pretrained cannot '
                                       'be setting at the same time')
         if isinstance(pretrained, str):
-            warnings.warn('DeprecationWarning: pretrained is a deprecated, '
-                          'please use "init_cfg" instead')
+            self.pretrained = pretrained
             if not self.pretrained2d:
                 self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
         elif pretrained is None:
             if init_cfg is None:
                 self.init_cfg = [
-                    dict(type='Kaiming', layer='Conv2d'),
+                    dict(type='Kaiming', layer='Conv3d'),
                     dict(
                         type='Constant',
                         val=1,
@@ -801,10 +800,14 @@ class ResNet3d(BaseModule):
             for param in m.parameters():
                 param.requires_grad = False
 
-    def init_weights(self):
+    def init_weights(self, pretrained=None):
+        if pretrained:
+            self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
         if not self.pretrained2d:
             super().init_weights()
         else:
+            assert pretrained is not None
+            self.pretrained = pretrained
             logger = get_root_logger()
             self.inflate_weights(logger)
 
@@ -1008,10 +1011,14 @@ class ResNet3dLayer(BaseModule):
             for param in layer.parameters():
                 param.requires_grad = False
 
-    def init_weights(self):
+    def init_weights(self, pretrained=None):
+        if pretrained:
+            self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
         if not self.pretrained2d:
             super().init_weights()
         else:
+            assert pretrained is not None
+            self.pretrained = pretrained
             logger = get_root_logger()
             self.inflate_weights(logger)
 
