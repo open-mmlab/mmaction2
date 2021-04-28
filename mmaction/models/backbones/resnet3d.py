@@ -1,8 +1,9 @@
+import warnings
+
 import torch.nn as nn
 import torch.utils.checkpoint as cp
-from mmcv.cnn import (ConvModule, NonLocal3d, build_activation_layer,
-                      constant_init, kaiming_init)
-from mmcv.runner import _load_checkpoint, load_checkpoint
+from mmcv.cnn import ConvModule, NonLocal3d, build_activation_layer
+from mmcv.runner import BaseModule, _load_checkpoint
 from mmcv.utils import _BatchNorm
 from torch.nn.modules.utils import _ntuple, _triple
 
@@ -17,7 +18,7 @@ except (ImportError, ModuleNotFoundError):
     mmdet_imported = False
 
 
-class BasicBlock3d(nn.Module):
+class BasicBlock3d(BaseModule):
     """BasicBlock 3d block for ResNet3D.
 
     Args:
@@ -60,8 +61,9 @@ class BasicBlock3d(nn.Module):
                  norm_cfg=dict(type='BN3d'),
                  act_cfg=dict(type='ReLU'),
                  with_cp=False,
+                 init_cfg=None,
                  **kwargs):
-        super().__init__()
+        super().__init__(init_cfg)
         assert style in ['pytorch', 'caffe']
         # make sure that only ``inflate_style`` is passed into kwargs
         assert set(kwargs).issubset(['inflate_style'])
@@ -202,8 +204,9 @@ class Bottleneck3d(nn.Module):
                  conv_cfg=dict(type='Conv3d'),
                  norm_cfg=dict(type='BN3d'),
                  act_cfg=dict(type='ReLU'),
-                 with_cp=False):
-        super().__init__()
+                 with_cp=False,
+                 init_cfg=None):
+        super().__init__(init_cfg)
         assert style in ['pytorch', 'caffe']
         assert inflate_style in ['3x1x1', '3x3x3']
 
@@ -322,7 +325,7 @@ class Bottleneck3d(nn.Module):
 
 
 @BACKBONES.register_module()
-class ResNet3d(nn.Module):
+class ResNet3d(BaseModule):
     """ResNet 3d backbone.
 
     Args:
@@ -414,13 +417,49 @@ class ResNet3d(nn.Module):
                  non_local=(0, 0, 0, 0),
                  non_local_cfg=dict(),
                  zero_init_residual=True,
+                 init_cfg=None,
                  **kwargs):
-        super().__init__()
+        super().__init__(init_cfg)
+        self.zero_init_residual = zero_init_residual
+        self.pretrained2d = pretrained2d
         if depth not in self.arch_settings:
             raise KeyError(f'invalid depth {depth} for resnet')
+
+        block_init_cfg = None
+        assert not (init_cfg
+                    and pretrained), ('init_cfg and pretrained cannot '
+                                      'be setting at the same time')
+        if isinstance(pretrained, str):
+            warnings.warn('DeprecationWarning: pretrained is a deprecated, '
+                          'please use "init_cfg" instead')
+            if not self.pretrained2d:
+                self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
+        elif pretrained is None:
+            if init_cfg is None:
+                self.init_cfg = [
+                    dict(type='Kaiming', layer='Conv2d'),
+                    dict(
+                        type='Constant',
+                        val=1,
+                        layer=['_BatchNorm', 'GroupNorm'])
+                ]
+                block = self.arch_settings[depth][0]
+                if self.zero_init_residual:
+                    if block is BasicBlock3d:
+                        block_init_cfg = dict(
+                            type='Constant',
+                            val=0,
+                            override=dict(name='norm2'))
+                    elif block is Bottleneck3d:
+                        block_init_cfg = dict(
+                            type='Constant',
+                            val=0,
+                            override=dict(name='norm3'))
+        else:
+            raise TypeError('pretrained must be a str or None')
+
         self.depth = depth
         self.pretrained = pretrained
-        self.pretrained2d = pretrained2d
         self.in_channels = in_channels
         self.base_channels = base_channels
         self.num_stages = num_stages
@@ -479,6 +518,7 @@ class ResNet3d(nn.Module):
                 inflate=self.stage_inflations[i],
                 inflate_style=self.inflate_style,
                 with_cp=with_cp,
+                init_cfg=block_init_cfg,
                 **kwargs)
             self.inplanes = planes * self.block.expansion
             layer_name = f'layer{i + 1}'
@@ -761,49 +801,12 @@ class ResNet3d(nn.Module):
             for param in m.parameters():
                 param.requires_grad = False
 
-    @staticmethod
-    def _init_weights(self, pretrained=None):
-        """Initiate the parameters either from existing checkpoint or from
-        scratch.
-
-        Args:
-            pretrained (str | None): The path of the pretrained weight. Will
-                override the original `pretrained` if set. The arg is added to
-                be compatible with mmdet. Default: None.
-        """
-        if pretrained:
-            self.pretrained = pretrained
-        if isinstance(self.pretrained, str):
-            logger = get_root_logger()
-            logger.info(f'load model from: {self.pretrained}')
-
-            if self.pretrained2d:
-                # Inflate 2D model into 3D model.
-                self.inflate_weights(logger)
-
-            else:
-                # Directly load 3D model.
-                load_checkpoint(
-                    self, self.pretrained, strict=False, logger=logger)
-
-        elif self.pretrained is None:
-            for m in self.modules():
-                if isinstance(m, nn.Conv3d):
-                    kaiming_init(m)
-                elif isinstance(m, _BatchNorm):
-                    constant_init(m, 1)
-
-            if self.zero_init_residual:
-                for m in self.modules():
-                    if isinstance(m, Bottleneck3d):
-                        constant_init(m.conv3.bn, 0)
-                    elif isinstance(m, BasicBlock3d):
-                        constant_init(m.conv2.bn, 0)
+    def init_weights(self):
+        if not self.pretrained2d:
+            super().init_weights()
         else:
-            raise TypeError('pretrained must be a str or None')
-
-    def init_weights(self, pretrained=None):
-        self._init_weights(self, pretrained)
+            logger = get_root_logger()
+            self.inflate_weights(logger)
 
     def forward(self, x):
         """Defines the computation performed at every call.
@@ -841,7 +844,7 @@ class ResNet3d(nn.Module):
 
 
 @BACKBONES.register_module()
-class ResNet3dLayer(nn.Module):
+class ResNet3dLayer(BaseModule):
     """ResNet 3d Layer.
 
     Args:
@@ -898,21 +901,54 @@ class ResNet3dLayer(nn.Module):
                  norm_eval=False,
                  with_cp=False,
                  zero_init_residual=True,
+                 init_cfg=None,
                  **kwargs):
 
         super().__init__()
         self.arch_settings = ResNet3d.arch_settings
+        self.pretrained = pretrained
+        self.pretrained2d = pretrained2d
         assert depth in self.arch_settings
 
         self.make_res_layer = ResNet3d.make_res_layer
         self._inflate_conv_params = ResNet3d._inflate_conv_params
         self._inflate_bn_params = ResNet3d._inflate_bn_params
         self._inflate_weights = ResNet3d._inflate_weights
-        self._init_weights = ResNet3d._init_weights
+
+        block_init_cfg = None
+        assert not (init_cfg
+                    and pretrained), ('init_cfg and pretrained cannot '
+                                      'be setting at the same time')
+        if isinstance(pretrained, str):
+            warnings.warn('DeprecationWarning: pretrained is a deprecated, '
+                          'please use "init_cfg" instead')
+            if not self.pretrained2d:
+                self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
+        elif pretrained is None:
+            if init_cfg is None:
+                self.init_cfg = [
+                    dict(type='Kaiming', layer='Conv2d'),
+                    dict(
+                        type='Constant',
+                        val=1,
+                        layer=['_BatchNorm', 'GroupNorm'])
+                ]
+                block = self.arch_settings[depth][0]
+                if self.zero_init_residual:
+                    if block is BasicBlock3d:
+                        block_init_cfg = dict(
+                            type='Constant',
+                            val=0,
+                            override=dict(name='norm2'))
+                    elif block is Bottleneck3d:
+                        block_init_cfg = dict(
+                            type='Constant',
+                            val=0,
+                            override=dict(name='norm3'))
+        else:
+            raise TypeError('pretrained must be a str or None')
 
         self.depth = depth
-        self.pretrained = pretrained
-        self.pretrained2d = pretrained2d
         self.stage = stage
         # stage index is 0 based
         assert stage >= 0 and stage <= 3
@@ -954,6 +990,7 @@ class ResNet3dLayer(nn.Module):
             inflate=self.stage_inflation,
             inflate_style=self.inflate_style,
             with_cp=with_cp,
+            init_cfg=block_init_cfg,
             **kwargs)
 
         self.layer_name = f'layer{stage + 1}'
@@ -971,8 +1008,12 @@ class ResNet3dLayer(nn.Module):
             for param in layer.parameters():
                 param.requires_grad = False
 
-    def init_weights(self, pretrained=None):
-        self._init_weights(self, pretrained)
+    def init_weights(self):
+        if not self.pretrained2d:
+            super().init_weights()
+        else:
+            logger = get_root_logger()
+            self.inflate_weights(logger)
 
     def forward(self, x):
         """Defines the computation performed at every call.
