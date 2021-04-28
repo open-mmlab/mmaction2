@@ -158,7 +158,7 @@ class BasicBlock3d(BaseModule):
         return out
 
 
-class Bottleneck3d(nn.Module):
+class Bottleneck3d(BaseModule):
     """Bottleneck 3d block for ResNet3D.
 
     Args:
