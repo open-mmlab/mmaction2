@@ -1,10 +1,11 @@
 import torch.nn as nn
-from mmcv.cnn import CONV_LAYERS, build_norm_layer, constant_init, kaiming_init
+from mmcv.cnn import CONV_LAYERS, build_norm_layer
+from mmcv.runner import BaseModule
 from torch.nn.modules.utils import _triple
 
 
 @CONV_LAYERS.register_module()
-class Conv2plus1d(nn.Module):
+class Conv2plus1d(BaseModule):
     """(2+1)d Conv module for R(2+1)d backbone.
 
     https://arxiv.org/pdf/1711.11248.pdf.
@@ -31,8 +32,16 @@ class Conv2plus1d(nn.Module):
                  dilation=1,
                  groups=1,
                  bias=True,
-                 norm_cfg=dict(type='BN3d')):
-        super().__init__()
+                 norm_cfg=dict(type='BN3d'),
+                 init_cfg=None):
+        super().__init__(init_cfg)
+
+        if init_cfg is None:
+            self.init_cfg = [
+                dict(type='kaiming', layer='Conv3d'),
+                dict(
+                    type='constant', val=1, layer=['_BatchNorm', 'GroupNorm'])
+            ]
 
         kernel_size = _triple(kernel_size)
         stride = _triple(stride)
@@ -96,9 +105,3 @@ class Conv2plus1d(nn.Module):
         x = self.relu(x)
         x = self.conv_t(x)
         return x
-
-    def init_weights(self):
-        """Initiate the parameters from scratch."""
-        kaiming_init(self.conv_s)
-        kaiming_init(self.conv_t)
-        constant_init(self.bn_s, 1, bias=0)

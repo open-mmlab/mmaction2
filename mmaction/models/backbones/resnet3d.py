@@ -802,6 +802,7 @@ class ResNet3d(BaseModule):
 
     def init_weights(self, pretrained=None):
         if pretrained:
+            self.pretrained = pretrained
             self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
         if not self.pretrained2d:
             super().init_weights()

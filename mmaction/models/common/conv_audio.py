@@ -1,11 +1,11 @@
 import torch
-import torch.nn as nn
-from mmcv.cnn import CONV_LAYERS, ConvModule, constant_init, kaiming_init
+from mmcv.cnn import CONV_LAYERS, ConvModule
+from mmcv.runner import BaseModule
 from torch.nn.modules.utils import _pair
 
 
 @CONV_LAYERS.register_module()
-class ConvAudio(nn.Module):
+class ConvAudio(BaseModule):
     """Conv2d module for AudioResNet backbone.
 
         <https://arxiv.org/abs/2001.08740>`_.
@@ -35,8 +35,16 @@ class ConvAudio(nn.Module):
                  padding=0,
                  dilation=1,
                  groups=1,
-                 bias=False):
-        super().__init__()
+                 bias=False,
+                 init_cfg=None):
+        super().__init__(init_cfg)
+
+        if init_cfg is None:
+            self.init_cfg = [
+                dict(type='kaiming', layer='Conv3d'),
+                dict(
+                    type='constant', val=1, layer=['_BatchNorm', 'GroupNorm'])
+            ]
 
         kernel_size = _pair(kernel_size)
         stride = _pair(stride)
@@ -95,10 +103,3 @@ class ConvAudio(nn.Module):
         else:
             out = x_1 + x_2
         return out
-
-    def init_weights(self):
-        """Initiate the parameters from scratch."""
-        kaiming_init(self.conv_1.conv)
-        kaiming_init(self.conv_2.conv)
-        constant_init(self.conv_1.bn, 1, bias=0)
-        constant_init(self.conv_2.bn, 1, bias=0)

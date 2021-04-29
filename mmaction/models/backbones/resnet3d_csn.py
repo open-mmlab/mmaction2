@@ -37,8 +37,7 @@ class CSNBottleneck3d(Bottleneck3d):
                  *args,
                  bottleneck_mode='ir',
                  **kwargs):
-        super(CSNBottleneck3d, self).__init__(inplanes, planes, *args,
-                                              **kwargs)
+        super().__init__(inplanes, planes, *args, **kwargs)
         self.bottleneck_mode = bottleneck_mode
         conv2 = []
         if self.bottleneck_mode == 'ip':
@@ -124,7 +123,7 @@ class ResNet3dCSN(ResNet3d):
         if bottleneck_mode not in ['ip', 'ir']:
             raise ValueError(f'Bottleneck mode must be "ip" or "ir",'
                              f'but got {bottleneck_mode}.')
-        super(ResNet3dCSN, self).__init__(
+        super().__init__(
             depth,
             pretrained,
             temporal_strides=temporal_strides,

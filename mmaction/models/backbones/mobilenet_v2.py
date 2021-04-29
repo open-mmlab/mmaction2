@@ -1,10 +1,9 @@
 import torch.nn as nn
 import torch.utils.checkpoint as cp
-from mmcv.cnn import ConvModule, constant_init, kaiming_init
-from mmcv.runner import load_checkpoint
+from mmcv.cnn import ConvModule
+from mmcv.runner import BaseModule
 from torch.nn.modules.batchnorm import _BatchNorm
 
-from ...utils import get_root_logger
 from ..builder import BACKBONES
 
 
@@ -33,7 +32,7 @@ def make_divisible(value, divisor, min_value=None, min_ratio=0.9):
     return new_value
 
 
-class InvertedResidual(nn.Module):
+class InvertedResidual(BaseModule):
     """InvertedResidual block for MobileNetV2.
 
     Args:
@@ -61,9 +60,10 @@ class InvertedResidual(nn.Module):
                  expand_ratio,
                  conv_cfg=None,
                  norm_cfg=dict(type='BN'),
-                 act_cfg=dict(type='ReLU6'),
-                 with_cp=False):
-        super(InvertedResidual, self).__init__()
+                 act_cfg=dict(typee='ReLU6'),
+                 with_cp=False,
+                 init_cfg=None):
+        super().__init__(init_cfg)
         self.stride = stride
         assert stride in [1, 2], f'stride must in [1, 2]. ' \
             f'But received {stride}.'
@@ -119,7 +119,7 @@ class InvertedResidual(nn.Module):
 
 
 @BACKBONES.register_module()
-class MobileNetV2(nn.Module):
+class MobileNetV2(BaseModule):
     """MobileNetV2 backbone.
 
     Args:
@@ -158,9 +158,29 @@ class MobileNetV2(nn.Module):
                  norm_cfg=dict(type='BN2d', requires_grad=True),
                  act_cfg=dict(type='ReLU6', inplace=True),
                  norm_eval=False,
-                 with_cp=False):
-        super().__init__()
+                 with_cp=False,
+                 init_cfg=None):
+        super().__init__(init_cfg)
         self.pretrained = pretrained
+
+        assert not (init_cfg
+                    and pretrained), ('init_cfg and pretrained cannot '
+                                      'be setting at the same time')
+        if isinstance(pretrained, str):
+            if not self.torchvision_pretrain:
+                self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
+        elif pretrained is None:
+            if init_cfg is None:
+                self.init_cfg = [
+                    dict(type='Kaiming', layer='Conv2d'),
+                    dict(
+                        type='Constant',
+                        val=1,
+                        layer=['_BatchNorm', 'GroupNorm'])
+                ]
+        else:
+            raise TypeError('pretrained must be a str or None')
+
         self.widen_factor = widen_factor
         self.out_indices = out_indices
         for index in out_indices:
@@ -249,19 +269,6 @@ class MobileNetV2(nn.Module):
             self.in_channels = out_channels
 
         return nn.Sequential(*layers)
-
-    def init_weights(self):
-        if isinstance(self.pretrained, str):
-            logger = get_root_logger()
-            load_checkpoint(self, self.pretrained, strict=False, logger=logger)
-        elif self.pretrained is None:
-            for m in self.modules():
-                if isinstance(m, nn.Conv2d):
-                    kaiming_init(m)
-                elif isinstance(m, (_BatchNorm, nn.GroupNorm)):
-                    constant_init(m, 1)
-        else:
-            raise TypeError('pretrained must be a str or None')
 
     def forward(self, x):
         x = self.conv1(x)

@@ -1,6 +1,7 @@
 from copy import deepcopy
 
 import torch.nn as nn
+from mmcv.runner import BaseModule
 from torch.utils import checkpoint as cp
 
 from ..common import TAM
@@ -8,7 +9,7 @@ from ..registry import BACKBONES
 from .resnet import Bottleneck, ResNet
 
 
-class TABlock(nn.Module):
+class TABlock(BaseModule):
     """Temporal Adaptive Block (TA-Block) for TANet.
 
     This block is proposed in `TAM: TEMPORAL ADAPTIVE MODULE FOR VIDEO
@@ -25,8 +26,8 @@ class TABlock(nn.Module):
             Default: dict().
     """
 
-    def __init__(self, block, num_segments, tam_cfg=dict()):
-        super().__init__()
+    def __init__(self, block, num_segments, tam_cfg=dict(), init_cfg=None):
+        super().__init__(init_cfg)
         self.tam_cfg = deepcopy(tam_cfg)
         self.block = block
         self.num_segments = num_segments

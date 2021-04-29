@@ -1,10 +1,8 @@
 import torch
 import torch.nn as nn
 from mmcv.cnn import ConvModule, kaiming_init
-from mmcv.runner import _load_checkpoint, load_checkpoint
-from mmcv.utils import print_log
+from mmcv.runner import BaseModule, _load_checkpoint
 
-from ...utils import get_root_logger
 from ..registry import BACKBONES
 from .resnet3d import ResNet3d
 
@@ -329,11 +327,8 @@ class ResNet3dPathway(ResNet3d):
     def init_weights(self, pretrained=None):
         """Initiate the parameters either from existing checkpoint or from
         scratch."""
-        if pretrained:
-            self.pretrained = pretrained
-
         # Override the init_weights of i3d
-        super().init_weights(pretrained=self.pretrained)
+        super().init_weights(pretrained=pretrained)
         for module_name in self.lateral_connections:
             layer = getattr(self, module_name)
             for m in layer.modules():
@@ -372,7 +367,7 @@ def build_pathway(cfg, *args, **kwargs):
 
 
 @BACKBONES.register_module()
-class ResNet3dSlowFast(nn.Module):
+class ResNet3dSlowFast(BaseModule):
     """Slowfast backbone.
 
     This module is proposed in `SlowFast Networks for Video Recognition
@@ -430,7 +425,8 @@ class ResNet3dSlowFast(nn.Module):
                      dilations=(1, 1, 1, 1),
                      conv1_stride_t=1,
                      pool1_stride_t=1,
-                     inflate=(0, 0, 1, 1)),
+                     inflate=(0, 0, 1, 1),
+                     init_cfg=None),
                  fast_pathway=dict(
                      type='resnet3d',
                      depth=50,
@@ -439,9 +435,21 @@ class ResNet3dSlowFast(nn.Module):
                      base_channels=8,
                      conv1_kernel=(5, 7, 7),
                      conv1_stride_t=1,
-                     pool1_stride_t=1)):
-        super().__init__()
+                     pool1_stride_t=1,
+                     init_cfg=None),
+                 init_cfg=None):
+        super().__init__(init_cfg)
         self.pretrained = pretrained
+
+        assert not (init_cfg
+                    and pretrained), ('init_cfg and pretrained cannot '
+                                      'be setting at the same time')
+        if isinstance(pretrained, str):
+            self.pretrained = pretrained
+            self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
+        elif pretrained is not None:
+            raise TypeError('pretrained must be a str or None')
+
         self.resample_rate = resample_rate
         self.speed_ratio = speed_ratio
         self.channel_ratio = channel_ratio
@@ -458,13 +466,10 @@ class ResNet3dSlowFast(nn.Module):
         scratch."""
         if pretrained:
             self.pretrained = pretrained
-
+            self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
         if isinstance(self.pretrained, str):
-            logger = get_root_logger()
-            msg = f'load model from: {self.pretrained}'
-            print_log(msg, logger=logger)
-            # Directly load 3D model.
-            load_checkpoint(self, self.pretrained, strict=True, logger=logger)
+            super().init_weights()
+
         elif self.pretrained is None:
             # Init two branch seperately.
             self.fast_path.init_weights()

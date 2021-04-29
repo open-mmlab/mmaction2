@@ -1,9 +1,9 @@
 import torch.nn as nn
 import torch.nn.functional as F
-from mmcv.cnn import constant_init, kaiming_init, normal_init
+from mmcv.runner import BaseModule
 
 
-class TAM(nn.Module):
+class TAM(BaseModule):
     """Temporal Adaptive Module(TAM) for TANet.
 
     This module is proposed in `TAM: TEMPORAL ADAPTIVE MODULE FOR VIDEO
@@ -40,8 +40,17 @@ class TAM(nn.Module):
                  conv1d_kernel_size=3,
                  adaptive_convolution_stride=1,
                  adaptive_convolution_padding=1,
-                 init_std=0.001):
-        super().__init__()
+                 init_std=0.001,
+                 init_cfg=None):
+        super().__init__(init_cfg)
+
+        if init_cfg is None:
+            self.init_cfg = [
+                dict(type='Kaiming', layer='Conv1d'),
+                dict(
+                    type='Constant', val=1, layer=['_BatchNorm', 'GroupNorm']),
+                dict(type='Normal', std=init_std, layer='Linear'),
+            ]
 
         assert beta > 0 and alpha > 0
         self.in_channels = in_channels
@@ -73,16 +82,6 @@ class TAM(nn.Module):
             nn.Sigmoid())
 
         self.init_weights()
-
-    def init_weights(self):
-        """Initiate the parameters from scratch."""
-        for m in self.modules():
-            if isinstance(m, nn.Conv1d):
-                kaiming_init(m)
-            elif isinstance(m, nn.BatchNorm1d):
-                constant_init(m, 1)
-            elif isinstance(m, nn.Linear):
-                normal_init(m, std=self.init_std)
 
     def forward(self, x):
         """Defines the computation performed at every call.

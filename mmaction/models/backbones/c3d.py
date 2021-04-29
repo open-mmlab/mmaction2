@@ -1,14 +1,12 @@
 import torch.nn as nn
-from mmcv.cnn import ConvModule, constant_init, kaiming_init, normal_init
-from mmcv.runner import load_checkpoint
-from mmcv.utils import _BatchNorm
+from mmcv.cnn import ConvModule
+from mmcv.runner import BaseModule
 
-from ...utils import get_root_logger
 from ..registry import BACKBONES
 
 
 @BACKBONES.register_module()
-class C3D(nn.Module):
+class C3D(BaseModule):
     """C3D backbone.
 
     Args:
@@ -35,19 +33,40 @@ class C3D(nn.Module):
                  norm_cfg=None,
                  act_cfg=None,
                  dropout_ratio=0.5,
-                 init_std=0.005):
-        super().__init__()
+                 init_std=0.005,
+                 init_cfg=None):
+        super().__init__(init_cfg)
         if conv_cfg is None:
             conv_cfg = dict(type='Conv3d')
         if act_cfg is None:
             act_cfg = dict(type='ReLU')
         self.pretrained = pretrained
+        self.init_std = init_std
+
+        assert not (init_cfg
+                    and pretrained), ('init_cfg and pretrained cannot '
+                                      'be setting at the same time')
+        if isinstance(pretrained, str):
+            if not self.torchvision_pretrain:
+                self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
+        elif pretrained is None:
+            if init_cfg is None:
+                self.init_cfg = [
+                    dict(type='Kaiming', layer='Conv3d'),
+                    dict(type='Normal', std=init_std, layer='Linear'),
+                    dict(
+                        type='Constant',
+                        val=1,
+                        layer=['_BatchNorm', 'GroupNorm'])
+                ]
+        else:
+            raise TypeError('pretrained must be a str or None')
+
         self.style = style
         self.conv_cfg = conv_cfg
         self.norm_cfg = norm_cfg
         self.act_cfg = act_cfg
         self.dropout_ratio = dropout_ratio
-        self.init_std = init_std
 
         c3d_conv_param = dict(
             kernel_size=(3, 3, 3),
@@ -80,27 +99,6 @@ class C3D(nn.Module):
 
         self.relu = nn.ReLU()
         self.dropout = nn.Dropout(p=self.dropout_ratio)
-
-    def init_weights(self):
-        """Initiate the parameters either from existing checkpoint or from
-        scratch."""
-        if isinstance(self.pretrained, str):
-            logger = get_root_logger()
-            logger.info(f'load model from: {self.pretrained}')
-
-            load_checkpoint(self, self.pretrained, strict=False, logger=logger)
-
-        elif self.pretrained is None:
-            for m in self.modules():
-                if isinstance(m, nn.Conv3d):
-                    kaiming_init(m)
-                elif isinstance(m, nn.Linear):
-                    normal_init(m, std=self.init_std)
-                elif isinstance(m, _BatchNorm):
-                    constant_init(m, 1)
-
-        else:
-            raise TypeError('pretrained must be a str or None')
 
     def forward(self, x):
         """Defines the computation performed at every call.

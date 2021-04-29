@@ -2,19 +2,17 @@ import math
 
 import torch.nn as nn
 import torch.utils.checkpoint as cp
-from mmcv.cnn import (ConvModule, Swish, build_activation_layer, constant_init,
-                      kaiming_init)
-from mmcv.runner import load_checkpoint
+from mmcv.cnn import ConvModule, Swish, build_activation_layer
+from mmcv.runner import BaseModule
 from mmcv.utils import _BatchNorm
 
-from ...utils import get_root_logger
 from ..registry import BACKBONES
 
 
-class SEModule(nn.Module):
+class SEModule(BaseModule):
 
-    def __init__(self, channels, reduction):
-        super().__init__()
+    def __init__(self, channels, reduction, init_cfg=None):
+        super().__init__(init_cfg)
         self.avg_pool = nn.AdaptiveAvgPool3d(1)
         self.bottleneck = self._round_width(channels, reduction)
         self.fc1 = nn.Conv3d(
@@ -44,7 +42,7 @@ class SEModule(nn.Module):
         return module_input * x
 
 
-class BlockX3D(nn.Module):
+class BlockX3D(BaseModule):
     """BlockX3D 3d building block for X3D.
 
     Args:
@@ -78,8 +76,9 @@ class BlockX3D(nn.Module):
                  conv_cfg=dict(type='Conv3d'),
                  norm_cfg=dict(type='BN3d'),
                  act_cfg=dict(type='ReLU'),
-                 with_cp=False):
-        super().__init__()
+                 with_cp=False,
+                 init_cfg=None):
+        super().__init__(init_cfg)
 
         self.inplanes = inplanes
         self.planes = planes
@@ -167,7 +166,7 @@ class BlockX3D(nn.Module):
 
 # We do not support initialize with 2D pretrain weight for X3D
 @BACKBONES.register_module()
-class X3D(nn.Module):
+class X3D(BaseModule):
     """X3D backbone. https://arxiv.org/pdf/2004.04730.pdf.
 
     Args:
@@ -224,13 +223,36 @@ class X3D(nn.Module):
                  norm_eval=False,
                  with_cp=False,
                  zero_init_residual=True,
+                 init_cfg=None,
                  **kwargs):
-        super().__init__()
+        super().__init__(init_cfg)
         self.gamma_w = gamma_w
         self.gamma_b = gamma_b
         self.gamma_d = gamma_d
 
-        self.pretrained = pretrained
+        block_init_cfg = None
+        assert not (init_cfg
+                    and pretrained), ('init_cfg and pretrained cannot '
+                                      'be setting at the same time')
+        if isinstance(pretrained, str):
+            self.pretrained = pretrained
+            if not self.pretrained2d:
+                self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
+        elif pretrained is None:
+            if init_cfg is None:
+                self.init_cfg = [
+                    dict(type='Kaiming', layer='Conv3d'),
+                    dict(
+                        type='Constant',
+                        val=1,
+                        layer=['_BatchNorm', 'GroupNorm'])
+                ]
+                if self.zero_init_residual:
+                    block_init_cfg = dict(
+                        type='Constant', val=0, override=dict(name='norm3'))
+        else:
+            raise TypeError('pretrained must be a str or None')
+
         self.in_channels = in_channels
         # Hard coded, can be changed by gamma_w
         self.base_channels = 24
@@ -288,6 +310,7 @@ class X3D(nn.Module):
                 conv_cfg=self.conv_cfg,
                 act_cfg=self.act_cfg,
                 with_cp=with_cp,
+                init_cfg=block_init_cfg,
                 **kwargs)
             self.layer_inplanes = inplanes
             layer_name = f'layer{i + 1}'
@@ -471,29 +494,6 @@ class X3D(nn.Module):
             m.eval()
             for param in m.parameters():
                 param.requires_grad = False
-
-    def init_weights(self):
-        """Initiate the parameters either from existing checkpoint or from
-        scratch."""
-        if isinstance(self.pretrained, str):
-            logger = get_root_logger()
-            logger.info(f'load model from: {self.pretrained}')
-
-            load_checkpoint(self, self.pretrained, strict=False, logger=logger)
-
-        elif self.pretrained is None:
-            for m in self.modules():
-                if isinstance(m, nn.Conv3d):
-                    kaiming_init(m)
-                elif isinstance(m, _BatchNorm):
-                    constant_init(m, 1)
-
-            if self.zero_init_residual:
-                for m in self.modules():
-                    if isinstance(m, BlockX3D):
-                        constant_init(m.conv3.bn, 0)
-        else:
-            raise TypeError('pretrained must be a str or None')
 
     def forward(self, x):
         """Defines the computation performed at every call.
