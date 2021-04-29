@@ -2,33 +2,78 @@
 
 ## Introduction
 
-[ALGORITHM]
+<!-- [ALGORITHM] -->
+
+```BibTeX
+@misc{duan2021revisiting,
+      title={Revisiting Skeleton-based Action Recognition},
+      author={Haodong Duan and Yue Zhao and Kai Chen and Dian Shao and Dahua Lin and Bo Dai},
+      year={2021},
+      eprint={2104.13586},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
+```
+
+<table>
+<thead>
+  <tr>
+    <td>
+<div align="center">
+  <b> Pose Estimation Results </b>
+  <br/>
+  <img src="https://user-images.githubusercontent.com/34324155/116529341-6fc95080-a90f-11eb-8f0d-57fdb35d1ba4.gif" width="455"/>
+  <br/>
+  <br/>
+  <img src="https://user-images.githubusercontent.com/34324155/116531676-04cd4900-a912-11eb-8db4-a93343bedd01.gif" width="455"/>
+</div></td>
+    <td>
+<div align="center">
+  <b> Keypoint Heatmap Volume Visualization </b>
+  <br/>
+  <img src="https://user-images.githubusercontent.com/34324155/116529336-6dff8d00-a90f-11eb-807e-4d9168997655.gif" width="256"/>
+  <br/>
+  <br/>
+  <img src="https://user-images.githubusercontent.com/34324155/116531658-00a12b80-a912-11eb-957b-561c280a86da.gif" width="256"/>
+</div></td>
+    <td>
+<div align="center">
+  <b> Limb Heatmap Volume Visualization </b>
+  <br/>
+  <img src="https://user-images.githubusercontent.com/34324155/116529322-6a6c0600-a90f-11eb-81df-6fbb36230bd0.gif" width="256"/>
+  <br/>
+  <br/>
+  <img src="https://user-images.githubusercontent.com/34324155/116531649-fed76800-a911-11eb-8ca9-0b4e58f43ad9.gif" width="256"/>
+</div></td>
+  </tr>
+</thead>
+</table>
 
 ## Model Zoo
 
 ### FineGYM
 
 |config |pseudo heatmap | gpus | backbone | Mean Top-1 | ckpt | log| json|
-|:--|:--:|:--:|:--:|:--:|:--:|:--:|---|
-|[slowonly_r50_u48_240e_gym_keypoint](/configs/skeleton/posec3d/slowonly_r50_u48_240e_gym_keypoint.py) |keypoint |8 x 2| SlowOnly-R50 |93.7 |  |      |      |
-|[slowonly_r50_u48_240e_gym_limb](/configs/skeleton/posec3d/slowonly_r50_u48_240e_gym_limb.py) |limb |8 x 2| SlowOnly-R50 |94.0 |  | | |
+|:--|:--:|:--:|:--:|:--:|:--:|:--:|:-:|
+|[slowonly_r50_u48_240e_gym_keypoint](/configs/skeleton/posec3d/slowonly_r50_u48_240e_gym_keypoint.py) |keypoint |8 x 2| SlowOnly-R50 |93.7 | [ckpt](https://openmmlab.oss-cn-hangzhou.aliyuncs.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_gym_keypoint/slowonly_r50_u48_240e_gym_keypoint-b07a98a0.pth) | [log](https://openmmlab.oss-cn-hangzhou.aliyuncs.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_gym_keypoint/slowonly_r50_u48_240e_gym_keypoint.log) | [json](https://openmmlab.oss-cn-hangzhou.aliyuncs.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_gym_keypoint/slowonly_r50_u48_240e_gym_keypoint.json) |
+|[slowonly_r50_u48_240e_gym_limb](/configs/skeleton/posec3d/slowonly_r50_u48_240e_gym_limb.py) |limb |8 x 2| SlowOnly-R50 |94.0 | [ckpt](https://openmmlab.oss-cn-hangzhou.aliyuncs.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_gym_limb/slowonly_r50_u48_240e_gym_limb-c0d7b482.pth) | [log](https://openmmlab.oss-cn-hangzhou.aliyuncs.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_gym_limb/slowonly_r50_u48_240e_gym_limb.log) | [json](https://openmmlab.oss-cn-hangzhou.aliyuncs.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_gym_limb/slowonly_r50_u48_240e_gym_limb.json) |
 |Fusion | ||  |94.3 |  | | |
 
 ### NTU60_XSub
 
-| config                                                       | pseudo heatmap | gpus  |   backbone   | Top-1 | ckpt | log  | json |
-| :----------------------------------------------------------- | :------------: | :---: | :----------: | :---: | :--: | :--: | :--: |
-| [slowonly_r50_u48_240e_ntu60_xsub_keypoint](/configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu60_xsub_keypoint.py) |    keypoint    | 8 x 2 | SlowOnly-R50 | 93.7  |      |      |      |
-| [slowonly_r50_u48_240e_ntu60_xsub_limb](/configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu60_xsub_limb.py) |      limb      | 8 x 2 | SlowOnly-R50 | 93.4  |      |      |      |
-| Fusion                                                       |                |       |              | 94.1  |      |      |      |
+| config                                                       | pseudo heatmap | gpus  |   backbone   | Top-1 |                             ckpt                             |                             log                              |                             json                             |
+| :----------------------------------------------------------- | :------------: | :---: | :----------: | :---: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| [slowonly_r50_u48_240e_ntu60_xsub_keypoint](/configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu60_xsub_keypoint.py) |    keypoint    | 8 x 2 | SlowOnly-R50 | 93.7  | [ckpt](https://openmmlab.oss-cn-hangzhou.aliyuncs.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu60_xsub_keypoint/slowonly_r50_u48_240e_ntu60_xsub_keypoint-f3adabf1.pth) | [log](https://openmmlab.oss-cn-hangzhou.aliyuncs.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu60_xsub_keypoint/slowonly_r50_u48_240e_ntu60_xsub_keypoint.log) | [json](https://openmmlab.oss-cn-hangzhou.aliyuncs.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu60_xsub_keypoint/slowonly_r50_u48_240e_ntu60_xsub_keypoint.json) |
+| [slowonly_r50_u48_240e_ntu60_xsub_limb](/configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu60_xsub_limb.py) |      limb      | 8 x 2 | SlowOnly-R50 | 93.4  | [ckpt](https://openmmlab.oss-cn-hangzhou.aliyuncs.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu60_xsub_limb/slowonly_r50_u48_240e_ntu60_xsub_limb-1d69006a.pth) | [log](https://openmmlab.oss-cn-hangzhou.aliyuncs.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu60_xsub_limb/slowonly_r50_u48_240e_ntu60_xsub_limb.log) | [json](https://openmmlab.oss-cn-hangzhou.aliyuncs.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu60_xsub_limb/slowonly_r50_u48_240e_ntu60_xsub_limb.json) |
+| Fusion                                                       |                |       |              | 94.1  |                                                              |                                                              |                                                              |
 
 ### NTU120_XSub
 
-| config                                                       | pseudo heatmap | gpus  |   backbone   | Top-1 | ckpt | log  | json |
-| :----------------------------------------------------------- | :------------: | :---: | :----------: | :---: | :--: | :--: | :--: |
-| [slowonly_r50_u48_240e_ntu120_xsub_keypoint](/configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint.py) |    keypoint    | 8 x 2 | SlowOnly-R50 | 86.3  |      |      |      |
-| [slowonly_r50_u48_240e_ntu120_xsub_limb](/configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_limb.py) |      limb      | 8 x 2 | SlowOnly-R50 | 85.7  |      |      |      |
-| Fusion                                                       |                |       |              | 86.9  |      |      |      |
+| config                                                       | pseudo heatmap | gpus  |   backbone   | Top-1 |                             ckpt                             |                             log                              |                             json                             |
+| :----------------------------------------------------------- | :------------: | :---: | :----------: | :---: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| [slowonly_r50_u48_240e_ntu120_xsub_keypoint](/configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint.py) |    keypoint    | 8 x 2 | SlowOnly-R50 | 86.3  | [ckpt](https://openmmlab.oss-cn-hangzhou.aliyuncs.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint/slowonly_r50_u48_240e_ntu120_xsub_keypoint-6736b03f.pth) | [log](https://openmmlab.oss-cn-hangzhou.aliyuncs.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint/slowonly_r50_u48_240e_ntu120_xsub_keypoint.log) | [json](https://openmmlab.oss-cn-hangzhou.aliyuncs.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint/slowonly_r50_u48_240e_ntu120_xsub_keypoint.json) |
+| [slowonly_r50_u48_240e_ntu120_xsub_limb](/configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_limb.py) |      limb      | 8 x 2 | SlowOnly-R50 | 85.7  | [ckpt](https://openmmlab.oss-cn-hangzhou.aliyuncs.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_limb/slowonly_r50_u48_240e_ntu120_xsub_limb-803c2317.pth?) | [log](https://openmmlab.oss-cn-hangzhou.aliyuncs.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_limb/slowonly_r50_u48_240e_ntu120_xsub_limb.log) | [json](https://openmmlab.oss-cn-hangzhou.aliyuncs.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_limb/slowonly_r50_u48_240e_ntu120_xsub_limb.json) |
+| Fusion                                                       |                |       |              | 86.9  |                                                              |                                                              |                                                              |
 
 Notes:
 
