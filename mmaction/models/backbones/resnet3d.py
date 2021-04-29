@@ -806,9 +806,7 @@ class ResNet3d(BaseModule):
             self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
         if not self.pretrained2d:
             super().init_weights()
-        else:
-            assert pretrained is not None
-            self.pretrained = pretrained
+        elif isinstance(self.pretrained, str):
             logger = get_root_logger()
             self.inflate_weights(logger)
 

@@ -554,7 +554,7 @@ class ResNet(BaseModule):
                 f': {remaining_names}')
 
     def init_weights(self):
-        if self.torchvision_pretrain:
+        if self.torchvision_pretrain and isinstance(self.pretrained, str):
             logger = get_root_logger()
             self._load_torchvision_checkpoint(logger)
         else:

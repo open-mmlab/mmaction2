@@ -1,13 +1,14 @@
 import torch
 import torch.nn as nn
 from mmcv.cnn import NonLocal3d
+from mmcv.runner import BaseModule
 from torch.nn.modules.utils import _ntuple
 
 from ..registry import BACKBONES
 from .resnet import ResNet
 
 
-class NL3DWrapper(nn.Module):
+class NL3DWrapper(BaseModule):
     """3D Non-local wrapper for ResNet50.
 
     Wrap ResNet layers with 3D NonLocal modules.
@@ -18,8 +19,12 @@ class NL3DWrapper(nn.Module):
         non_local_cfg (dict): Config for non-local layers. Default: ``dict()``.
     """
 
-    def __init__(self, block, num_segments, non_local_cfg=dict()):
-        super(NL3DWrapper, self).__init__()
+    def __init__(self,
+                 block,
+                 num_segments,
+                 non_local_cfg=dict(),
+                 init_cfg=None):
+        super().__init__(init_cfg)
         self.block = block
         self.non_local_cfg = non_local_cfg
         self.non_local_block = NonLocal3d(self.block.conv3.norm.num_features,

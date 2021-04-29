@@ -41,9 +41,9 @@ class ConvAudio(BaseModule):
 
         if init_cfg is None:
             self.init_cfg = [
-                dict(type='kaiming', layer='Conv3d'),
+                dict(type='Kaiming', layer='Conv3d'),
                 dict(
-                    type='constant', val=1, layer=['_BatchNorm', 'GroupNorm'])
+                    type='Constant', val=1, layer=['_BatchNorm', 'GroupNorm'])
             ]
 
         kernel_size = _pair(kernel_size)

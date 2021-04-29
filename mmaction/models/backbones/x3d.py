@@ -3,7 +3,7 @@ import math
 import torch.nn as nn
 import torch.utils.checkpoint as cp
 from mmcv.cnn import ConvModule, Swish, build_activation_layer
-from mmcv.runner import BaseModule
+from mmcv.runner import BaseModule, Sequential
 from mmcv.utils import _BatchNorm
 
 from ..registry import BACKBONES
@@ -230,6 +230,8 @@ class X3D(BaseModule):
         self.gamma_b = gamma_b
         self.gamma_d = gamma_d
 
+        self.zero_init_residual = zero_init_residual
+
         block_init_cfg = None
         assert not (init_cfg
                     and pretrained), ('init_cfg and pretrained cannot '
@@ -249,7 +251,7 @@ class X3D(BaseModule):
                 ]
                 if self.zero_init_residual:
                     block_init_cfg = dict(
-                        type='Constant', val=0, override=dict(name='norm3'))
+                        type='Constant', val=0, override=dict(name='conv3.bn'))
         else:
             raise TypeError('pretrained must be a str or None')
 
@@ -283,7 +285,6 @@ class X3D(BaseModule):
         self.act_cfg = act_cfg
         self.norm_eval = norm_eval
         self.with_cp = with_cp
-        self.zero_init_residual = zero_init_residual
 
         self.block = BlockX3D
         self.stage_blocks = self.stage_blocks[:num_stages]
@@ -451,7 +452,8 @@ class X3D(BaseModule):
                     with_cp=with_cp,
                     **kwargs))
 
-        return nn.Sequential(*layers)
+        # return nn.Sequential(*layers)
+        return Sequential(*layers)
 
     def _make_stem_layer(self):
         """Construct the stem layers consists of a conv+norm+act module and a
