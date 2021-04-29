@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from einops import rearrange
-from mmcv.cnn import build_conv_layer, kaiming_init
+from mmcv.cnn import build_conv_layer, build_norm_layer, kaiming_init
 from mmcv.cnn.bricks import build_transformer_layer_sequence
 from torch.nn.modules.utils import _pair
 
@@ -72,6 +72,7 @@ class TimeSformer(nn.Module):
                  drop_rate=0.,
                  transformer_layers=None,
                  attention_type='divided_space_time',
+                 norm_cfg=dict(type='LN'),
                  **kwargs):
         super().__init__(**kwargs)
         assert attention_type in self.supported_attention_type, (
@@ -152,6 +153,8 @@ class TimeSformer(nn.Module):
         self.transformer_layers = build_transformer_layer_sequence(
             transformer_layers)
 
+        self.norm = build_norm_layer(norm_cfg, embed_dims)
+
     def forward(self, x):
         # x [batch_size * num_frames, num_patches, embed_dims]
         B = x.shape[0]
@@ -175,4 +178,10 @@ class TimeSformer(nn.Module):
 
         x = self.transformer_layers(x)
 
-        return x
+        if self.attention_type == 'space_only':
+            # x [batch_size, num_patches + 1, embed_dims]
+            x = x.view(-1, self.num_frames, *x.size()[-2:])
+            x = torch.mean(x, 1)
+        x = self.norm(x)
+
+        return x[:, 0]
