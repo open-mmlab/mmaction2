@@ -55,7 +55,7 @@ The master branch works with **PyTorch 1.3+**.
 
 ## Changelog
 
-v0.13.0 was released in 31/03/2021. Please refer to [changelog.md](docs/changelog.md) for details and release history.
+v0.14.0 was released in 30/04/2021. Please refer to [changelog.md](docs/changelog.md) for details and release history.
 
 ## Benchmark
 
@@ -147,6 +147,7 @@ Supported datasets for Action Recognition:
 - ✅ [Jester](/tools/data/jester/README.md) \[ [Homepage](https://20bn.com/datasets/jester/v1) \] (ICCV'2019)
 - ✅ [GYM](/tools/data/gym/README.md) \[ [Homepage](https://sdolivia.github.io/FineGym/) \] (CVPR'2020)
 - ✅ [ActivityNet](/tools/data/activitynet/README.md) \[ [Homepage](http://activity-net.org/) \] (CVPR'2015)
+- ✅ [Diving48](/tools/data/diving48/README.md) \[ [Homepage](http://www.svcl.ucsd.edu/projects/resound/dataset.html) \] (ECCV'2018)
 
 </details>
 

@@ -49,7 +49,7 @@ MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLa
 
 ## 更新记录
 
-v0.13.0 版本已于 2021 年 3 月 31 日发布，可通过查阅 [更新日志](/docs/changelog.md) 了解更多细节以及发布历史
+v0.14.0 版本已于 2021 年 4 月 30 日发布，可通过查阅 [更新日志](/docs/changelog.md) 了解更多细节以及发布历史
 
 ## 基准测试
 
@@ -139,6 +139,7 @@ v0.13.0 版本已于 2021 年 3 月 31 日发布，可通过查阅 [更新日志
 - ✅ [Jester](/tools/data/jester/README_zh-CN.md) \[ [主页](https://20bn.com/datasets/jester/v1) \] (ICCV'2019)
 - ✅ [GYM](/tools/data/gym/README_zh-CN.md) \[ [主页](https://sdolivia.github.io/FineGym/) \] (CVPR'2020)
 - ✅ [ActivityNet](/tools/data/activitynet/README_zh-CN.md) \[ [主页](http://activity-net.org/) \] (CVPR'2015)
+- ✅ [Diving48](/tools/data/diving48/README_zh-CN.md) \[ [主页](http://www.svcl.ucsd.edu/projects/resound/dataset.html) \] (ECCV'2018)
 
 </details>
 
