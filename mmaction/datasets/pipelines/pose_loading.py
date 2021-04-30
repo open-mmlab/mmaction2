@@ -224,7 +224,7 @@ class PoseDecode(object):
 
     def __repr__(self):
         repr_str = (f'{self.__class__.__name__}(',
-                    f'random_crop={self.random_crop}, '
+                    f'random_drop={self.random_drop}, '
                     f'random_seed={self.random_seed}, '
                     f'drop_prob={self.drop_prob}, '
                     f'manipulate_joints={self.manipulate_joints})')
