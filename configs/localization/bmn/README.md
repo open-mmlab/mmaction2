@@ -2,7 +2,7 @@
 
 ## Introduction
 
-[ALGORITHM]
+<!-- [ALGORITHM] -->
 
 ```BibTeX
 @inproceedings{lin2019bmn,
@@ -14,7 +14,7 @@
 }
 ```
 
-[DATASET]
+<!-- [DATASET] -->
 
 ```BibTeX
 @article{zhao2017cuhk,

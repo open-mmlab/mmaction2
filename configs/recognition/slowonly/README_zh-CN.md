@@ -2,7 +2,7 @@
 
 ## 简介
 
-[ALGORITHM]
+<!-- [ALGORITHM] -->
 
 ```BibTeX
 @inproceedings{feichtenhofer2019slowfast,

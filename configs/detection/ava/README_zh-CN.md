@@ -6,7 +6,7 @@
 
 ## 简介
 
-[DATASET]
+<!-- [DATASET] -->
 
 ```BibTeX
 @inproceedings{gu2018ava,
@@ -18,7 +18,7 @@
 }
 ```
 
-[ALGORITHM]
+<!-- [ALGORITHM] -->
 
 ```BibTeX
 @article{duan2020omni,
@@ -29,7 +29,7 @@
 }
 ```
 
-[ALGORITHM]
+<!-- [ALGORITHM] -->
 
 ```BibTeX
 @inproceedings{feichtenhofer2019slowfast,

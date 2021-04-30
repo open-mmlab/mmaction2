@@ -1,4 +1,4 @@
-from ..registry import BACKBONES
+from ..builder import BACKBONES
 from .mobilenet_v2 import InvertedResidual, MobileNetV2
 from .resnet_tsm import TemporalShift
 

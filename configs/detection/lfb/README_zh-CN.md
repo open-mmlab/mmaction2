@@ -2,7 +2,7 @@
 
 ## 简介
 
-[ALGORITHM]
+<!-- [ALGORITHM] -->
 
 ```BibTeX
 @inproceedings{wu2019long,

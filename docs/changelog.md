@@ -6,6 +6,8 @@
 
 **New Features**
 
+- Support Webcam Demo for Spatio-temporal Action Detection Models ([#795](https://github.com/open-mmlab/mmaction2/pull/795))
+
 **Improvements**
 
 - Add softmax option for pytorch2onnx tool ([#781](https://github.com/open-mmlab/mmaction2/pull/781))

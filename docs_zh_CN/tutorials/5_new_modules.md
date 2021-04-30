@@ -23,7 +23,7 @@
 用户需要首先实现一个新的优化器文件，如 `mmaction/core/optimizer/my_optimizer.py`：
 
 ```python
-from .registry import OPTIMIZERS
+from mmcv.runner import OPTIMIZERS
 from torch.optim import Optimizer
 
 @OPTIMIZERS.register_module()
@@ -105,7 +105,7 @@ MMAction2 将模型组件分为 4 种基础模型：
     ```python
     import torch.nn as nn
 
-    from ..registry import BACKBONES
+    from ..builder import BACKBONES
 
     @BACKBONES.register_module()
     class ResNet(nn.Module):
@@ -148,7 +148,7 @@ MMAction2 将模型组件分为 4 种基础模型：
     并重写 `init_weights(self)` 和 `forward(self, x)` 方法
 
     ```python
-    from ..registry import HEADS
+    from ..builder import HEADS
     from .base import BaseHead
 
 

@@ -2,7 +2,7 @@
 
 ## Introduction
 
-[DATASET]
+<!-- [DATASET] -->
 
 ```BibTeX
 @article{Heilbron2015ActivityNetAL,

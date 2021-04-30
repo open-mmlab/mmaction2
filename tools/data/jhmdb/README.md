@@ -2,7 +2,7 @@
 
 ## Introduction
 
-[DATASET]
+<!-- [DATASET] -->
 
 ```BibTeX
 @inproceedings{Jhuang:ICCV:2013,

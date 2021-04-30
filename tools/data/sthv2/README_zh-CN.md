@@ -2,9 +2,9 @@
 
 ## 简介
 
-[DATASET]
+<!-- [DATASET] -->
 
-```
+```BibTeX
 @misc{goyal2017something,
       title={The "something something" video database for learning and evaluating visual common sense},
       author={Raghav Goyal and Samira Ebrahimi Kahou and Vincent Michalski and Joanna Materzyńska and Susanne Westphal and Heuna Kim and Valentin Haenel and Ingo Fruend and Peter Yianilos and Moritz Mueller-Freitag and Florian Hoppe and Christian Thurau and Ingo Bax and Roland Memisevic},
@@ -32,7 +32,7 @@ cat 20bn-something-something-v2-?? | tar zx
 cd $MMACTION2/tools/data/sthv2/
 ```
 
-## Step 3. 抽取 RGB 帧和光流
+## 步骤 3. 抽取 RGB 帧和光流
 
 如果用户只想使用视频加载训练，则该部分是 **可选项**。
 

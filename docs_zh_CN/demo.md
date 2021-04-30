@@ -140,8 +140,8 @@ python demo/demo_spatiotemporal_det.py --video ${VIDEO_FILE} \
 - `SPATIOTEMPORAL_ACTION_DETECTION_CHECKPOINT`: 时空检测模型权重文件路径。
 - `HUMAN_DETECTION_CONFIG_FILE`: 人体检测配置文件路径。
 - `HUMAN_DETECTION_CHECKPOINT`: 人体检测模型权重文件路径。
-- `HUMAN_DETECTION_SCORE_THRE`: 人体检测分数阈值：默认为 0.9。
-- `ACTION_DETECTION_SCORE_THRESHOLD`: 动作检测分数阈值：默认为 0.5。
+- `HUMAN_DETECTION_SCORE_THRE`: 人体检测分数阈值，默认为 0.9。
+- `ACTION_DETECTION_SCORE_THRESHOLD`: 动作检测分数阈值，默认为 0.5。
 - `LABEL_MAP`: 所使用的标签映射文件，默认为 `demo/label_map_ava.txt`。
 - `DEVICE`:  指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或 cpu（`cpu`）。默认为 `cuda:0`。
 - `OUTPUT_FILENAME`: 输出视频的路径，默认为 `demo/stdet_demo.mp4`。
@@ -317,3 +317,82 @@ python demo/long_video_demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} $
     python demo/long_video_demo.py configs/recognition/i3d/i3d_r50_video_inference_32x2x1_100e_kinetics400_rgb.py \
       checkpoints/i3d_r50_256p_32x2x1_100e_kinetics400_rgb_20200801-7d9f44de.pth PATH_TO_LONG_VIDEO demo/label_map_k400.txt PATH_TO_SAVED_VIDEO \
     ```
+
+## 基于网络摄像头的实时时空动作检测
+
+MMAction2 提供本脚本实现基于网络摄像头的实时时空动作检测。
+
+```shell
+python demo/webcam_demo_spatiotemporal_det.py \
+    [--config ${SPATIOTEMPORAL_ACTION_DETECTION_CONFIG_FILE}] \
+    [--checkpoint ${SPATIOTEMPORAL_ACTION_DETECTION_CHECKPOINT}] \
+    [--action-score-thr ${ACTION_DETECTION_SCORE_THRESHOLD}] \
+    [--det-config ${HUMAN_DETECTION_CONFIG_FILE}] \
+    [--det-checkpoint ${HUMAN_DETECTION_CHECKPOINT}] \
+    [--det-score-thr ${HUMAN_DETECTION_SCORE_THRESHOLD}] \
+    [--input-video] ${INPUT_VIDEO} \
+    [--label-map ${LABEL_MAP}] \
+    [--device ${DEVICE}] \
+    [--output-fps ${OUTPUT_FPS}] \
+    [--out-filename ${OUTPUT_FILENAME}] \
+    [--show] \
+    [--display-height] ${DISPLAY_HEIGHT} \
+    [--display-width] ${DISPLAY_WIDTH} \
+    [--predict-stepsize ${PREDICT_STEPSIZE}] \
+    [--clip-vis-length] ${CLIP_VIS_LENGTH}
+```
+
+可选参数：
+
+- `SPATIOTEMPORAL_ACTION_DETECTION_CONFIG_FILE`: 时空检测配置文件路径。
+- `SPATIOTEMPORAL_ACTION_DETECTION_CHECKPOINT`: 时空检测模型权重文件路径。
+- `ACTION_DETECTION_SCORE_THRESHOLD`: 动作检测分数阈值，默认为 0.4。
+- `HUMAN_DETECTION_CONFIG_FILE`: 人体检测配置文件路径。
+- `HUMAN_DETECTION_CHECKPOINT`: 人体检测模型权重文件路径。
+- `HUMAN_DETECTION_SCORE_THRE`: 人体检测分数阈值，默认为 0.9。
+- `INPUT_VIDEO`: 网络摄像头编号或本地视频文件路径，默认为 `0`。
+- `LABEL_MAP`: 所使用的标签映射文件，默认为 `demo/label_map_ava.txt`。
+- `DEVICE`:  指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或 cpu（`cpu`），默认为 `cuda:0`。
+- `OUTPUT_FPS`: 输出视频的帧率，默认为 15。
+- `OUTPUT_FILENAME`: 输出视频的路径，默认为 `None`。
+- `--show`: 是否通过 `cv2.imshow` 展示预测结果。
+- `DISPLAY_HEIGHT`: 输出结果图像高度，默认为 0。
+- `DISPLAY_WIDTH`: 输出结果图像宽度，默认为 0。若 `DISPLAY_HEIGHT <= 0 and DISPLAY_WIDTH <= 0`，则表示输出图像形状与输入视频形状相同。
+- `PREDICT_STEPSIZE`: 每 N 帧进行一次预测（以控制计算资源），默认为 8。
+- `CLIP_VIS_LENGTH`: 预测结果可视化持续帧数，即每次预测结果将可视化到 `CLIP_VIS_LENGTH` 帧中，默认为 8。
+
+小技巧：
+
+- 如何设置 `--output-fps` 的数值?
+
+  - `--output-fps` 建议设置为视频读取线程的帧率。
+  - 视频读取线程帧率已通过日志输出，格式为 `DEBUG:__main__:Read Thread: {duration} ms, {fps} fps`。
+
+- 如何设置 `--predict-stepsize` 的数值?
+
+  - 该参数选择与模型选型有关。
+  - 模型输入构建时间（视频读取线程）应大于等于模型推理时间（主线程）。
+  - 模型输入构建时间与模型推理时间均已通过日志输出。
+  - `--predict-stepsize` 数值越大，模型输入构建时间越长。
+  - 可降低 `--predict-stepsize` 数值增加模型推理频率，从而充分利用计算资源。
+
+示例：
+
+以下示例假设用户的当前目录为 $MMACTION2，并已经将所需的模型权重文件下载至目录 checkpoints/ 下，用户也可以使用所提供的 URL 来直接加载模型权重，文件将会被默认下载至 $HOME/.cache/torch/checkpoints。
+
+1. 使用 Faster RCNN 作为人体检测器，SlowOnly-8x8-R101 作为动作检测器，每 8 帧进行一次预测，设置输出视频的帧率为 20，并通过 `cv2.imshow` 展示预测结果。
+
+```shell
+python demo/webcam_demo_spatiotemporal_det.py \
+    --input-video 0 \
+    --config configs/detection/ava/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb.py \
+    --checkpoint https://download.openmmlab.com/mmaction/detection/ava/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb_20201217-16378594.pth \
+    --det-config demo/faster_rcnn_r50_fpn_2x_coco.py \
+    --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
+    --det-score-thr 0.9 \
+    --action-score-thr 0.5 \
+    --label-map demo/label_map_ava.txt \
+    --predict-stepsize 40 \
+    --output-fps 20 \
+    --show
+```

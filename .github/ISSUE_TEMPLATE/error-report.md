@@ -16,6 +16,7 @@ If you feel we have help you, give us a STAR! :satisfied:
 2. The bug has not been fixed in the latest version.
 
 **Describe the bug**
+
 A clear and concise description of what the bug is.
 
 **Reproduction**
