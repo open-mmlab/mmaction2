@@ -307,11 +307,13 @@ class LoadKineticsPose:
 
         total_frames = results['total_frames']
 
-        frame_inds = list(results.pop('frame_inds'))
+        frame_inds = results.pop('frame_inds')
 
         if anno_inds is not None:
             kps = kps[anno_inds]
             frame_inds = frame_inds[anno_inds]
+
+        frame_inds = list(frame_inds)
 
         def mapinds(inds):
             uni = np.unique(inds)
