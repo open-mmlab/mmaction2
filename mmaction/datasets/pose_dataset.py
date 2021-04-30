@@ -2,9 +2,7 @@ import os.path as osp
 
 import mmcv
 import numpy as np
-from mmcv.utils import print_log
 
-from ..core import mean_class_accuracy, top_k_accuracy
 from ..utils import get_root_logger
 from .base import BaseDataset
 from .registry import DATASETS
@@ -98,67 +96,3 @@ class PoseDataset(BaseDataset):
             if 'filename' in item:
                 item['filename'] = osp.join(self.data_prefix, item['filename'])
         return data
-
-    def evaluate(self,
-                 results,
-                 metrics='top_k_accuracy',
-                 topk=(1, 5),
-                 logger=None,
-                 **kwargs):
-        """Evaluation in rawframe dataset.
-
-        Args:
-            results (list): Output results.
-            metrics (str | sequence[str]): Metrics to be performed.
-                Defaults: 'top_k_accuracy'.
-            logger (obj): Training logger. Defaults: None.
-            topk (tuple[int]): K value for top_k_accuracy metric.
-                Defaults: (1, 5).
-            logger (logging.Logger | None): Logger for recording.
-                Default: None.
-
-        Return:
-            dict: Evaluation results dict.
-        """
-        if not isinstance(results, list):
-            raise TypeError(f'results must be a list, but got {type(results)}')
-        assert len(results) == len(self), (
-            f'The length of results is not equal to the dataset len: '
-            f'{len(results)} != {len(self)}')
-
-        if not isinstance(topk, (int, tuple)):
-            raise TypeError(
-                f'topk must be int or tuple of int, but got {type(topk)}')
-
-        metrics = metrics if isinstance(metrics, (list, tuple)) else [metrics]
-        allowed_metrics = ['top_k_accuracy', 'mean_class_accuracy']
-
-        for metric in metrics:
-            if metric not in allowed_metrics:
-                raise KeyError(f'metric {metric} is not supported')
-
-        eval_results = {}
-        gt_labels = [ann['label'] for ann in self.video_infos]
-
-        for metric in metrics:
-            msg = f'Evaluating {metric}...'
-            if logger is None:
-                msg = '\n' + msg
-            print_log(msg, logger=logger)
-
-            if metric == 'top_k_accuracy':
-                top_k_acc = top_k_accuracy(results, gt_labels, topk)
-                log_msg = []
-                for k, acc in zip(topk, top_k_acc):
-                    eval_results[f'top{k}_acc'] = acc
-                    log_msg.append(f'\ntop{k}_acc\t{acc:.4f}')
-                log_msg = ''.join(log_msg)
-                print_log(log_msg, logger=logger)
-
-            if metric == 'mean_class_accuracy':
-                mean_acc = mean_class_accuracy(results, gt_labels)
-                eval_results['mean_class_accuracy'] = mean_acc
-                log_msg = f'\nmean_acc\t{mean_acc:.4f}'
-                print_log(log_msg, logger=logger)
-
-        return eval_results
