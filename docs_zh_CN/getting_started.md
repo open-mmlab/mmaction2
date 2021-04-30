@@ -242,7 +242,7 @@ MMAction2 将模型组件分为 4 种基础模型：
 1. 创建 `mmaction/models/backbones/resnet_tsm.py` 文件
 
     ```python
-    from ..registry import BACKBONES
+    from ..builder import BACKBONES
     from .resnet import ResNet
 
     @BACKBONES.register_module()

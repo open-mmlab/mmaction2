@@ -1,6 +1,6 @@
 import torch.nn.functional as F
 
-from ..registry import LOSSES
+from ..builder import LOSSES
 from .base import BaseWeightedLoss
 
 

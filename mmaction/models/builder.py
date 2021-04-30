@@ -1,53 +1,37 @@
 import warnings
 
-import torch.nn as nn
-from mmcv.utils import Registry, build_from_cfg
+from mmcv.cnn import MODELS as MMCV_MODELS
+from mmcv.utils import Registry
 
 from mmaction.utils import import_module_error_func
-from .registry import BACKBONES, HEADS, LOCALIZERS, LOSSES, NECKS, RECOGNIZERS
+
+MODELS = Registry('models', parent=MMCV_MODELS)
+BACKBONES = MODELS
+NECKS = MODELS
+HEADS = MODELS
+RECOGNIZERS = MODELS
+LOSSES = MODELS
+LOCALIZERS = MODELS
 
 try:
     from mmdet.models.builder import DETECTORS, build_detector
 except (ImportError, ModuleNotFoundError):
     # Define an empty registry and building func, so that can import
-    DETECTORS = Registry('detector')
+    DETECTORS = MODELS
 
     @import_module_error_func('mmdet')
     def build_detector(cfg, train_cfg, test_cfg):
         pass
 
 
-def build(cfg, registry, default_args=None):
-    """Build a module.
-
-    Args:
-        cfg (dict, list[dict]): The config of modules, it is either a dict
-            or a list of configs.
-        registry (:obj:`Registry`): A registry the module belongs to.
-        default_args (dict, optional): Default arguments to build the module.
-            Defaults to None.
-
-    Returns:
-        nn.Module: A built nn module.
-    """
-
-    if isinstance(cfg, list):
-        modules = [
-            build_from_cfg(cfg_, registry, default_args) for cfg_ in cfg
-        ]
-        return nn.Sequential(*modules)
-
-    return build_from_cfg(cfg, registry, default_args)
-
-
 def build_backbone(cfg):
     """Build backbone."""
-    return build(cfg, BACKBONES)
+    return BACKBONES.build(cfg)
 
 
 def build_head(cfg):
     """Build head."""
-    return build(cfg, HEADS)
+    return HEADS.build(cfg)
 
 
 def build_recognizer(cfg, train_cfg=None, test_cfg=None):
@@ -58,22 +42,24 @@ def build_recognizer(cfg, train_cfg=None, test_cfg=None):
             'please specify them in model. Details see this '
             'PR: https://github.com/open-mmlab/mmaction2/pull/629',
             UserWarning)
-    assert cfg.get('train_cfg') is None or train_cfg is None, \
-        'train_cfg specified in both outer field and model field '
-    assert cfg.get('test_cfg') is None or test_cfg is None, \
-        'test_cfg specified in both outer field and model field '
-    return build(cfg, RECOGNIZERS,
-                 dict(train_cfg=train_cfg, test_cfg=test_cfg))
+    assert cfg.get(
+        'train_cfg'
+    ) is None or train_cfg is None, 'train_cfg specified in both outer field and model field'  # noqa: E501
+    assert cfg.get(
+        'test_cfg'
+    ) is None or test_cfg is None, 'test_cfg specified in both outer field and model field '  # noqa: E501
+    return RECOGNIZERS.build(
+        cfg, default_args=dict(train_cfg=train_cfg, test_cfg=test_cfg))
 
 
 def build_loss(cfg):
     """Build loss."""
-    return build(cfg, LOSSES)
+    return LOSSES.build(cfg)
 
 
 def build_localizer(cfg):
     """Build localizer."""
-    return build(cfg, LOCALIZERS)
+    return LOCALIZERS.build(cfg)
 
 
 def build_model(cfg, train_cfg=None, test_cfg=None):
@@ -102,4 +88,4 @@ def build_model(cfg, train_cfg=None, test_cfg=None):
 
 def build_neck(cfg):
     """Build neck."""
-    return build(cfg, NECKS)
+    return NECKS.build(cfg)

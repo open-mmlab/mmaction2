@@ -5,11 +5,9 @@ from functools import partial
 import numpy as np
 from mmcv.parallel import collate
 from mmcv.runner import get_dist_info
-from mmcv.utils import build_from_cfg
+from mmcv.utils import Registry, build_from_cfg
 from torch.utils.data import DataLoader
 
-from .dataset_wrappers import RepeatDataset
-from .registry import DATASETS
 from .samplers import ClassSpecificDistributedSampler, DistributedSampler
 
 if platform.system() != 'Windows':
@@ -19,6 +17,10 @@ if platform.system() != 'Windows':
     hard_limit = rlimit[1]
     soft_limit = min(4096, hard_limit)
     resource.setrlimit(resource.RLIMIT_NOFILE, (soft_limit, hard_limit))
+
+DATASETS = Registry('dataset')
+PIPELINES = Registry('pipeline')
+BLENDINGS = Registry('blending')
 
 
 def build_dataset(cfg, default_args=None):
@@ -33,6 +35,7 @@ def build_dataset(cfg, default_args=None):
         Dataset: The constructed dataset.
     """
     if cfg['type'] == 'RepeatDataset':
+        from .dataset_wrappers import RepeatDataset
         dataset = RepeatDataset(
             build_dataset(cfg['dataset'], default_args), cfg['times'])
     else:

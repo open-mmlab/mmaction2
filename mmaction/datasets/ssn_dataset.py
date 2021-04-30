@@ -12,7 +12,7 @@ from ..localization import (eval_ap, load_localize_proposal_file,
                             perform_regression, temporal_iou, temporal_nms)
 from ..utils import get_root_logger
 from .base import BaseDataset
-from .registry import DATASETS
+from .builder import DATASETS
 
 
 class SSNInstance:
