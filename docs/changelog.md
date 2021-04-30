@@ -1,11 +1,16 @@
 ## Changelog
 
-### Master
+### 0.14.0 (30/04/2021)
 
 **Highlights**
 
+- Support TRN
+- Support Diving48
+
 **New Features**
 
+- Support TRN ([#755](https://github.com/open-mmlab/mmaction2/pull/755))
+- Support Diving48 ([#835](https://github.com/open-mmlab/mmaction2/pull/835))
 - Support Webcam Demo for Spatio-temporal Action Detection Models ([#795](https://github.com/open-mmlab/mmaction2/pull/795))
 
 **Improvements**
@@ -13,14 +18,29 @@
 - Add softmax option for pytorch2onnx tool ([#781](https://github.com/open-mmlab/mmaction2/pull/781))
 - Support TRN ([#755](https://github.com/open-mmlab/mmaction2/pull/755))
 - Test with onnx models and TensorRT engines ([#758](https://github.com/open-mmlab/mmaction2/pull/758))
-
-**Improvements**
+- Speed up AVA Testing ([#784](https://github.com/open-mmlab/mmaction2/pull/784))
+- Add `self.with_neck` attribute ([#796](https://github.com/open-mmlab/mmaction2/pull/796))
+- Update installation document ([#798](https://github.com/open-mmlab/mmaction2/pull/798))
+- Use a random master port ([#809](https://github.com/open-mmlab/mmaction2/pull/8098))
+- Update AVA processing data document ([#801](https://github.com/open-mmlab/mmaction2/pull/801))
+- Refactor spatio-temporal augmentation ([#782](https://github.com/open-mmlab/mmaction2/pull/782))
+- Add QR code in CN README ([#812](https://github.com/open-mmlab/mmaction2/pull/812))
+- Add Alternative way to download Kinetics ([#817](https://github.com/open-mmlab/mmaction2/pull/817), [#822](https://github.com/open-mmlab/mmaction2/pull/822))
+- Refactor Sampler ([#790](https://github.com/open-mmlab/mmaction2/pull/790))
+- Use EvalHook in MMCV with backward compatibility ([#793](https://github.com/open-mmlab/mmaction2/pull/793))
+- Use MMCV Model Registry ([#843](https://github.com/open-mmlab/mmaction2/pull/843))
 
 **Bug and Typo Fixes**
 
-- Fix a bug in pytorch2onnx.py when `num_classes <= 4` ([#800](https://github.com/open-mmlab/mmaction2/pull/800))
+- Fix a bug in pytorch2onnx.py when `num_classes <= 4` ([#800](https://github.com/open-mmlab/mmaction2/pull/800), [#824](https://github.com/open-mmlab/mmaction2/pull/824))
+- Fix `demo_spatiotemporal_det.py` error ([#803](https://github.com/open-mmlab/mmaction2/pull/803), [#805](https://github.com/open-mmlab/mmaction2/pull/805))
+- Fix loading config bugs when resume ([#820](https://github.com/open-mmlab/mmaction2/pull/820))
+- Make HMDB51 annotation generation more robust ([#811](https://github.com/open-mmlab/mmaction2/pull/811))
 
 **ModelZoo**
+
+- Update checkpoint for 256 height in something-V2 ([#789](https://github.com/open-mmlab/mmaction2/pull/789))
+- Support Diving48 ([#835](https://github.com/open-mmlab/mmaction2/pull/835))
 
 ### 0.13.0 (31/03/2021)
 
