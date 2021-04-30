@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 from .. import builder
-from ..registry import LOCALIZERS
+from ..builder import LOCALIZERS
 from .base import BaseLocalizer
 
 

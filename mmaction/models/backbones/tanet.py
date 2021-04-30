@@ -3,8 +3,8 @@ from copy import deepcopy
 import torch.nn as nn
 from torch.utils import checkpoint as cp
 
+from ..builder import BACKBONES
 from ..common import TAM
-from ..registry import BACKBONES
 from .resnet import Bottleneck, ResNet
 
 

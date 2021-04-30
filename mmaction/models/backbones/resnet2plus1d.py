@@ -1,4 +1,4 @@
-from ..registry import BACKBONES
+from ..builder import BACKBONES
 from .resnet3d import ResNet3d
 
 

@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from ..registry import LOSSES
+from ..builder import LOSSES
 
 
 def binary_logistic_regression_loss(reg_score,

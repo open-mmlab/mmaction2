@@ -11,7 +11,7 @@ from mmcv.fileio import FileClient
 from torch.nn.modules.utils import _pair
 
 from ...utils import get_random_string, get_shm_dir, get_thread_id
-from ..registry import PIPELINES
+from ..builder import PIPELINES
 
 
 @PIPELINES.register_module()

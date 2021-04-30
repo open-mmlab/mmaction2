@@ -118,7 +118,7 @@ Here we show how to develop new components with an example of TSN.
     ```python
     import torch.nn as nn
 
-    from ..registry import BACKBONES
+    from ..builder import BACKBONES
 
     @BACKBONES.register_module()
     class ResNet(nn.Module):
@@ -161,7 +161,7 @@ Here we show how to develop a new head with the example of TSNHead as the follow
     and overwrite `init_weights(self)` and `forward(self, x)` method.
 
     ```python
-    from ..registry import HEADS
+    from ..builder import HEADS
     from .base import BaseHead
 
 

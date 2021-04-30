@@ -248,7 +248,7 @@ in [TSM: Temporal Shift Module for Efficient Video Understanding](https://arxiv.
 1. create a new file in `mmaction/models/backbones/resnet_tsm.py`.
 
     ```python
-    from ..registry import BACKBONES
+    from ..builder import BACKBONES
     from .resnet import ResNet
 
     @BACKBONES.register_module()
