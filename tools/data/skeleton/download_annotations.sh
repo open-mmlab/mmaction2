@@ -15,8 +15,8 @@ if [[ ! -d "${DATA_DIR}" ]]; then
   mkdir -p ${DATA_DIR}
 fi
 
-wget https://openmmlab.oss-cn-hangzhou.aliyuncs.com/mmaction/posec3d/${DATASET}_train.pkl
-wget https://openmmlab.oss-cn-hangzhou.aliyuncs.com/mmaction/posec3d/${DATASET}_val.pkl
+wget https://download.openmmlab.com/mmaction/posec3d/${DATASET}_train.pkl
+wget https://download.openmmlab.com/mmaction/posec3d/${DATASET}_val.pkl
 
 mv ${DATASET}_train.pkl ${DATA_DIR}
 mv ${DATASET}_val.pkl ${DATA_DIR}
