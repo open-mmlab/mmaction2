@@ -1,12 +1,15 @@
-import copy as cp
-from collections import defaultdict
+import copy as cp  # isort: skip
+from collections import defaultdict  # isort: skip
 
-import numpy as np
-from mmcv import dump
-from numpy.testing import assert_array_almost_equal, assert_array_equal
+import numpy as np  # isort: skip
+from mmcv import dump  # isort: skip
+from numpy.testing import assert_array_almost_equal  # isort: skip
+from numpy.testing import assert_array_equal  # isort: skip
 
-from mmaction.datasets.pipelines import (LoadKineticsPose, PoseDecode,
-                                         UniformSampleFrames)
+from mmaction.datasets.pipelines import GeneratePoseTarget  # isort: skip
+from mmaction.datasets.pipelines import LoadKineticsPose  # isort: skip
+from mmaction.datasets.pipelines import PoseDecode  # isort: skip
+from mmaction.datasets.pipelines import UniformSampleFrames  # isort: skip
 
 
 class TestPoseLoading:
@@ -123,6 +126,12 @@ class TestPoseLoading:
         inp = cp.deepcopy(results)
         load_kinetics_pose = LoadKineticsPose(
             squeeze=True, max_person=100, source='openpose')
+
+        assert str(load_kinetics_pose) == ('LoadKineticsPose(io_backend=disk, '
+                                           'squeeze=True, max_person=100, '
+                                           "keypoint_weight={'face': 1, "
+                                           "'torso': 2, 'limb': 3}, "
+                                           'source=openpose, kwargs={})')
         return_results = load_kinetics_pose(inp)
         assert return_results['kp'].shape[:-1] == \
             return_results['kpscore'].shape
@@ -173,3 +182,64 @@ class TestPoseLoading:
         assert num_person <= 2
         assert np.max(return_results['kp']) <= 1
         assert num_frame == len(set(frame_inds[anno_inds]))
+
+    def test_generate_pose_target():
+        img_shape = (64, 64)
+        kp = np.array([[[[24, 24], [40, 40], [24, 40]]]])
+        kpscore = np.array([[[1., 1., 1.]]])
+        kp = np.concatenate([kp] * 8, axis=1)
+        kpscore = np.concatenate([kpscore] * 8, axis=1)
+        results = dict(
+            img_shape=img_shape, kp=kp, kpscore=kpscore, modality='Pose')
+
+        generate_pose_target = GeneratePoseTarget(
+            sigma=1, with_kp=True, left=(0, ), right=(1, ), skeletons=())
+        assert str(generate_pose_target) == ('GeneratePoseTarget(sigma=1, '
+                                             'use_score=True, with_kp=True, '
+                                             'with_limb=False, skeletons=(), '
+                                             'double=False, left=(0,), '
+                                             'right=(1,))')
+        return_results = generate_pose_target(results)
+        assert return_results['imgs'].shape == (8, 64, 64, 3)
+        assert_array_almost_equal(return_results['imgs'][0],
+                                  return_results['imgs'][1])
+
+        generate_pose_target = GeneratePoseTarget(
+            sigma=1,
+            with_kp=False,
+            with_limb=True,
+            left=(0, ),
+            right=(1, ),
+            skeletons=((0, 1), (1, 2), (0, 2)))
+        return_results = generate_pose_target(results)
+        assert return_results['imgs'].shape == (8, 64, 64, 3)
+        assert_array_almost_equal(return_results['imgs'][0],
+                                  return_results['imgs'][1])
+
+        generate_pose_target = GeneratePoseTarget(
+            sigma=1,
+            with_kp=True,
+            with_limb=True,
+            left=(0, ),
+            right=(1, ),
+            skeletons=((0, 1), (1, 2), (0, 2)))
+        return_results = generate_pose_target(results)
+        assert return_results['imgs'].shape == (8, 64, 64, 6)
+        assert_array_almost_equal(return_results['imgs'][0],
+                                  return_results['imgs'][1])
+
+        generate_pose_target = GeneratePoseTarget(
+            sigma=1,
+            with_kp=True,
+            with_limb=True,
+            double=True,
+            left=(0, ),
+            right=(1, ),
+            skeletons=((0, 1), (1, 2), (0, 2)))
+        return_results = generate_pose_target(results)
+        imgs = return_results['imgs']
+        assert imgs.shape == (16, 64, 64, 6)
+        assert_array_almost_equal(imgs[0], imgs[1])
+        assert_array_almost_equal(imgs[:8, 2], imgs[8:, 2, :, ::-1])
+        assert_array_almost_equal(imgs[:8, 0], imgs[8:, 1, :, ::-1])
+        assert_array_almost_equal(imgs[:8, 1], imgs[8:, 0, :, ::-1])
