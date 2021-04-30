@@ -5,6 +5,7 @@ import pytest
 from mmcv.utils import assert_dict_has_keys
 
 from mmaction.datasets.pipelines import RandomRescale, RandomScale, Resize
+from mmaction.datasets.pipelines.augmentations import PoseCompact
 
 
 class TestTransform:
@@ -138,3 +139,41 @@ class TestTransform:
             f'{random_scale_range.__class__.__name__}'
             f'(scales={((200, 64), (250, 80))}, '
             'mode=range)')
+
+
+class TestPoseCompact:
+
+    def test_pose_compact(self):
+        results = {}
+        results['img_shape'] = (100, 100)
+        fake_kp = np.zeros([1, 4, 2, 2])
+        fake_kp[:, :, 0] = [10, 10]
+        fake_kp[:, :, 1] = [90, 90]
+        results['kp'] = fake_kp
+
+        pose_compact = PoseCompact(
+            padding=0, threshold=0, hw_ratio=None, allow_imgpad=False)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (80, 80)
+        assert str(pose_compact) == (
+            'PoseCompact(padding=0, threshold=0, hw_ratio=None, '
+            'allow_imgpad=False)')
+
+        pose_compact = PoseCompact(
+            padding=0.3, threshold=0, hw_ratio=None, allow_imgpad=False)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (100, 100)
+
+        pose_compact = PoseCompact(
+            padding=0.3, threshold=0, hw_ratio=None, allow_imgpad=True)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (104, 104)
+
+        pose_compact = PoseCompact(
+            padding=0, threshold=100, hw_ratio=None, allow_imgpad=False)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (100, 100)
