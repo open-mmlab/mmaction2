@@ -1,15 +1,12 @@
-import copy as cp  # isort: skip
-from collections import defaultdict  # isort: skip
+import copy as cp
+from collections import defaultdict
 
-import numpy as np  # isort: skip
-from mmcv import dump  # isort: skip
-from numpy.testing import assert_array_almost_equal  # isort: skip
-from numpy.testing import assert_array_equal  # isort: skip
+import numpy as np
+from mmcv import dump
+from numpy.testing import assert_array_almost_equal, assert_array_equal
 
-from mmaction.datasets.pipelines import GeneratePoseTarget  # isort: skip
-from mmaction.datasets.pipelines import LoadKineticsPose  # isort: skip
-from mmaction.datasets.pipelines import PoseDecode  # isort: skip
-from mmaction.datasets.pipelines import UniformSampleFrames  # isort: skip
+from mmaction.datasets.pipelines import (GeneratePoseTarget, LoadKineticsPose,
+                                         PoseDecode, UniformSampleFrames)
 
 
 class TestPoseLoading:
@@ -183,7 +180,7 @@ class TestPoseLoading:
         assert np.max(return_results['kp']) <= 1
         assert num_frame == len(set(frame_inds[anno_inds]))
 
-    def test_generate_pose_target():
+    def test_generate_pose_target(self):
         img_shape = (64, 64)
         kp = np.array([[[[24, 24], [40, 40], [24, 40]]]])
         kpscore = np.array([[[1., 1., 1.]]])
