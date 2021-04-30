@@ -209,19 +209,24 @@ class TestCrops:
             CenterCrop([224, 224])
 
         # center crop with crop_size 224
+        # add kps in test_center_crop
         imgs = list(np.random.rand(2, 240, 320, 3))
         results = dict(imgs=imgs)
+        kp = np.array([[160, 120], [160, 120]]).reshape([1, 1, 2, 2])
+        results['kp'] = kp
+
         results['gt_bboxes'] = np.array([[0, 0, 320, 240]])
         results['proposals'] = np.array([[0, 0, 320, 240]])
         center_crop = CenterCrop(crop_size=224)
         center_crop_results = center_crop(results)
-        target_keys = ['imgs', 'crop_bbox', 'img_shape']
+        target_keys = ['imgs', 'crop_bbox', 'img_shape', 'kp']
         assert assert_dict_has_keys(center_crop_results, target_keys)
         assert check_crop(imgs, center_crop_results['imgs'],
                           center_crop_results['crop_bbox'])
         assert np.all(
             center_crop_results['crop_bbox'] == np.array([48, 8, 272, 232]))
         assert center_crop_results['img_shape'] == (224, 224)
+        assert np.all(center_crop_results['kp'] == 112)
 
         assert repr(center_crop) == (f'{center_crop.__class__.__name__}'
                                      f'(crop_size={(224, 224)}, lazy={False})')

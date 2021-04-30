@@ -3,6 +3,7 @@ import copy
 import numpy as np
 import pytest
 from mmcv.utils import assert_dict_has_keys
+from numpy.testing import assert_array_almost_equal
 
 from mmaction.datasets.pipelines import RandomRescale, RandomScale, Resize
 from mmaction.datasets.pipelines.augmentations import PoseCompact
@@ -62,13 +63,16 @@ class TestTransform:
 
         # test resize for flow images
         imgs = list(np.random.rand(2, 240, 320))
-        results = dict(imgs=imgs, modality='Flow')
+        kp = np.array([60, 60]).reshape([1, 1, 1, 2])
+        results = dict(imgs=imgs, kp=kp, modality='Flow')
         resize = Resize(scale=(160, 80), keep_ratio=False)
         resize_results = resize(results)
         assert assert_dict_has_keys(resize_results, target_keys)
         assert np.all(resize_results['scale_factor'] == np.array(
             [.5, 1. / 3.], dtype=np.float32))
         assert resize_results['img_shape'] == (80, 160)
+        kp = resize_results['kp'][0, 0, 0]
+        assert_array_almost_equal(kp, np.array([30, 20]))
 
         # scale with -1 to indicate np.inf
         imgs = list(np.random.rand(2, 240, 320, 3))
