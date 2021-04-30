@@ -68,7 +68,7 @@ class TestPoseLoading:
         assert sampling_results['num_clips'] == 1
         assert len(sampling_results['frame_inds']) == 8
 
-    def test_pose_decode():
+    def test_pose_decode(self):
         kp = np.random.random([1, 16, 17, 2])
         kpscore = np.random.random([1, 16, 17])
         frame_inds = np.array([2, 4, 6, 8, 10])
@@ -96,7 +96,7 @@ class TestPoseLoading:
         decode_results = pose_decode(results)
         assert_array_almost_equal(decode_results['kpscore'][..., 7], 0)
 
-    def test_load_kinetics_pose():
+    def test_load_kinetics_pose(self):
 
         def get_mode(arr):
             cnt = defaultdict(lambda: 0)
