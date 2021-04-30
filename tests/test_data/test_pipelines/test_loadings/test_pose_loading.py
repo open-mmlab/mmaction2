@@ -1,14 +1,12 @@
-import copy as cp  # isort: skip
-from collections import defaultdict  # isort: skip
+import copy as cp
+from collections import defaultdict
 
-import numpy as np  # isort: skip
-from mmcv import dump  # isort: skip
-from numpy.testing import assert_array_almost_equal  # isort: skip
-from numpy.testing import assert_array_equal  # isort: skip
+import numpy as np
+from mmcv import dump
+from numpy.testing import assert_array_almost_equal, assert_array_equal
 
-from mmaction.datasets.pipelines import LoadKineticsPose  # isort: skip
-from mmaction.datasets.pipelines import PoseDecode  # isort: skip
-from mmaction.datasets.pipelines import UniformSampleFrames  # isort: skip
+from mmaction.datasets.pipelines import (LoadKineticsPose, PoseDecode,
+                                         UniformSampleFrames)
 
 
 class TestPoseLoading:
