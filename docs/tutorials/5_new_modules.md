@@ -23,7 +23,7 @@ Assume you want to add an optimizer named as `MyOptimizer`, which has arguments 
 You need to first implement the new optimizer in a file, e.g., in `mmaction/core/optimizer/my_optimizer.py`:
 
 ```python
-from .registry import OPTIMIZERS
+from mmcv.runner import OPTIMIZERS
 from torch.optim import Optimizer
 
 @OPTIMIZERS.register_module()

@@ -58,7 +58,7 @@ optimizer = dict(type='Adam', lr=0.001, betas=(0.9, 0.999), eps=1e-08, weight_de
 可以创建一个名为 `mmaction/core/optimizer` 的文件夹，并在目录下的文件进行构建，如 `mmaction/core/optimizer/my_optimizer.py`：
 
 ```python
-from .registry import OPTIMIZERS
+from mmcv.runner import OPTIMIZERS
 from torch.optim import Optimizer
 
 
@@ -111,11 +111,7 @@ optimizer = dict(type='MyOptimizer', a=a_value, b=b_value, c=c_value)
 用户可以通过自定义优化器构造函数来进行那些细粒度的参数调整。
 
 ```python
-from mmcv.utils import build_from_cfg
-
-from mmcv.runner.optimizer import OPTIMIZER_BUILDERS, OPTIMIZERS
-from mmaction.utils import get_root_logger
-from .my_optimizer import MyOptimizer
+from mmcv.runner.optimizer import OPTIMIZER_BUILDERS
 
 
 @OPTIMIZER_BUILDERS.register_module()

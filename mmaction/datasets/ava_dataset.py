@@ -11,7 +11,7 @@ from mmcv.utils import print_log
 from ..core.evaluation.ava_utils import ava_eval, read_labelmap, results2csv
 from ..utils import get_root_logger
 from .base import BaseDataset
-from .registry import DATASETS
+from .builder import DATASETS
 
 
 @DATASETS.register_module()

@@ -1,7 +1,7 @@
 import os.path as osp
 
+from .builder import DATASETS
 from .rawframe_dataset import RawframeDataset
-from .registry import DATASETS
 
 
 @DATASETS.register_module()

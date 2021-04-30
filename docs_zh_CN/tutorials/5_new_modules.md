@@ -23,7 +23,7 @@
 用户需要首先实现一个新的优化器文件，如 `mmaction/core/optimizer/my_optimizer.py`：
 
 ```python
-from .registry import OPTIMIZERS
+from mmcv.runner import OPTIMIZERS
 from torch.optim import Optimizer
 
 @OPTIMIZERS.register_module()
