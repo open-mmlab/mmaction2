@@ -146,7 +146,7 @@ class PoseDecode(object):
             Default: 1.
         drop_prob (float): The probability for dropping one keypoint for each
             frame. Default: 1 / 16.
-        manipulate_joints (tuple[int]): The joint indexes that may be dropped.
+        droppable_joints (tuple[int]): The joint indexes that may be dropped.
             Default: (7, 8, 9, 10, 13, 14, 15, 16). (limb joints)
     """
 
@@ -154,11 +154,11 @@ class PoseDecode(object):
                  random_drop=False,
                  random_seed=1,
                  drop_prob=1. / 16.,
-                 manipulate_joints=(7, 8, 9, 10, 13, 14, 15, 16)):
+                 droppable_joints=(7, 8, 9, 10, 13, 14, 15, 16)):
         self.random_drop = random_drop
         self.random_seed = random_seed
         self.drop_prob = drop_prob
-        self.manipulate_joints = manipulate_joints
+        self.droppable_joints = droppable_joints
 
     # inplace
     def _drop_kpscore(self, kpscores):
@@ -173,7 +173,7 @@ class PoseDecode(object):
             lt = kpscore.shape[0]
             for tidx in range(lt):
                 if np.random.random() < self.drop_prob:
-                    jidx = np.random.choice(self.manipulate_joints)
+                    jidx = np.random.choice(self.droppable_joints)
                     kpscore[tidx, jidx] = 0.
 
     def _load_kp(self, kp, frame_inds):
@@ -227,7 +227,7 @@ class PoseDecode(object):
                     f'random_drop={self.random_drop}, '
                     f'random_seed={self.random_seed}, '
                     f'drop_prob={self.drop_prob}, '
-                    f'manipulate_joints={self.manipulate_joints})')
+                    f'droppable_joints={self.droppable_joints})')
         return repr_str
 
 
@@ -253,8 +253,6 @@ class LoadKineticsPose:
         kwargs (dict, optional): Arguments for FileClient.
     """
 
-    # squeeze (Remove those frames that w/o. keypoints)
-    # kp2keep (The list of keypoint ids to keep)
     def __init__(self,
                  io_backend='disk',
                  squeeze=True,
@@ -266,7 +264,7 @@ class LoadKineticsPose:
         self.io_backend = io_backend
         self.squeeze = squeeze
         self.max_person = max_person
-        self.keypoint_weight = keypoint_weight
+        self.keypoint_weight = cp.deepcopy(keypoint_weight)
         self.source = source
 
         if source == 'openpose':

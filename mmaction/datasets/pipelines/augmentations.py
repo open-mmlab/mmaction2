@@ -1211,9 +1211,9 @@ class Flip:
         flip_label_map (Dict[int, int] | None): Transform the label of the
             flipped image with the specific label. Default: None.
         left (list[int]): Indexes of left keypoints, used to flip keypoints.
-            Default: [1, 3, 5, 7, 9, 11, 13, 15]. (COCO-17P keypoints)
+            Default: None.
         right (list[ind]): Indexes of right keypoints, used to flip keypoints.
-            Default: [2, 4, 6, 8, 10, 12, 14, 16]. (COCO-17P keypoints)
+            Default: None.
         lazy (bool): Determine whether to apply lazy operation. Default: False.
     """
     _directions = ['horizontal', 'vertical']
@@ -1222,8 +1222,8 @@ class Flip:
                  flip_ratio=0.5,
                  direction='horizontal',
                  flip_label_map=None,
-                 left=[1, 3, 5, 7, 9, 11, 13, 15],
-                 right=[2, 4, 6, 8, 10, 12, 14, 16],
+                 left=None,
+                 right=None,
                  lazy=False):
         if direction not in self._directions:
             raise ValueError(f'Direction {direction} is not supported. '
@@ -1248,9 +1248,10 @@ class Flip:
         kp_x = kps[..., 0]
         kp_x[kp_x != 0] = img_width - kp_x[kp_x != 0]
         new_order = list(range(kps.shape[2]))
-        for left, right in zip(self.left, self.right):
-            new_order[left] = right
-            new_order[right] = left
+        if self.left is not None and self.right is not None:
+            for left, right in zip(self.left, self.right):
+                new_order[left] = right
+                new_order[right] = left
         kps = kps[:, :, new_order]
         if kpscores is not None:
             kpscores = kpscores[:, :, new_order]

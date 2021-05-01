@@ -77,7 +77,7 @@ class TestPoseLoading:
         assert str(pose_decode) == ('PoseDecode(random_drop=False, '
                                     'random_seed=1, '
                                     'drop_prob=0.0625, '
-                                    'manipulate_joints=(7, 8, 9, 10, '
+                                    'droppable_joints=(7, 8, 9, 10, '
                                     '13, 14, 15, 16))')
         decode_results = pose_decode(results)
         assert_array_almost_equal(decode_results['kp'], kp[:, frame_inds])
@@ -92,7 +92,7 @@ class TestPoseLoading:
 
         results = dict(kp=kp, kpscore=kpscore, frame_inds=frame_inds)
         pose_decode = PoseDecode(
-            random_drop=True, drop_prob=1, manipulate_joints=(7, ))
+            random_drop=True, drop_prob=1, droppable_joints=(7, ))
         decode_results = pose_decode(results)
         assert_array_almost_equal(decode_results['kpscore'][..., 7], 0)
 
