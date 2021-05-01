@@ -5,7 +5,7 @@ import numpy as np
 
 from ..utils import get_root_logger
 from .base import BaseDataset
-from .registry import DATASETS
+from .builder import DATASETS
 
 
 @DATASETS.register_module()

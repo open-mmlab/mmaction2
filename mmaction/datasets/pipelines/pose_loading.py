@@ -5,7 +5,7 @@ import numpy as np
 from mmcv.fileio import FileClient
 from scipy.stats import mode
 
-from ..registry import PIPELINES
+from ..builder import PIPELINES
 from .augmentations import Flip
 
 
