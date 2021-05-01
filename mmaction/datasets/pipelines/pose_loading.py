@@ -132,7 +132,7 @@ class UniformSampleFrames:
 
 
 @PIPELINES.register_module()
-class PoseDecode(object):
+class PoseDecode:
     """Load and decode pose with given indices.
 
     Required keys are "keypoint", "frame_inds" (optional), "keypoint_score"
@@ -359,9 +359,10 @@ class LoadKineticsPose:
                 np_frame = num_person_frame[i]
                 val = new_kpscore[:np_frame, i]
 
-                val = np.sum(val[:, kpgrp['face']], 1) * weight['face'] + \
-                    np.sum(val[:, kpgrp['torso']], 1) * weight['torso'] + \
-                    np.sum(val[:, kpgrp['limb']], 1) * weight['limb']
+                val = (
+                    np.sum(val[:, kpgrp['face']], 1) * weight['face'] +
+                    np.sum(val[:, kpgrp['torso']], 1) * weight['torso'] +
+                    np.sum(val[:, kpgrp['limb']], 1) * weight['limb'])
                 inds = sorted(range(np_frame), key=lambda x: -val[x])
                 new_kpscore[:np_frame, i] = new_kpscore[inds, i]
                 new_kp[:np_frame, i] = new_kp[inds, i]
