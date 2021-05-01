@@ -64,7 +64,7 @@ class TestTransform:
         # test resize for flow images
         imgs = list(np.random.rand(2, 240, 320))
         kp = np.array([60, 60]).reshape([1, 1, 1, 2])
-        results = dict(imgs=imgs, kp=kp, modality='Flow')
+        results = dict(imgs=imgs, keypoint=kp, modality='Flow')
         resize = Resize(scale=(160, 80), keep_ratio=False)
         resize_results = resize(results)
         assert assert_dict_has_keys(resize_results, target_keys)

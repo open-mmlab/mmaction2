@@ -72,7 +72,8 @@ class TestPoseLoading:
         kp = np.random.random([1, 16, 17, 2])
         kpscore = np.random.random([1, 16, 17])
         frame_inds = np.array([2, 4, 6, 8, 10])
-        results = dict(kp=kp, kpscore=kpscore, frame_inds=frame_inds)
+        results = dict(
+            keypoint=kp, keypoint_score=kpscore, frame_inds=frame_inds)
         pose_decode = PoseDecode()
         assert str(pose_decode) == ('PoseDecode(random_drop=False, '
                                     'random_seed=1, '
@@ -85,13 +86,14 @@ class TestPoseLoading:
         assert_array_almost_equal(decode_results['keypoint_score'],
                                   kpscore[:, frame_inds])
 
-        results = dict(kp=kp, kpscore=kpscore, total_frames=16)
+        results = dict(keypoint=kp, keypoint_score=kpscore, total_frames=16)
         pose_decode = PoseDecode()
         decode_results = pose_decode(results)
         assert_array_almost_equal(decode_results['keypoint'], kp)
         assert_array_almost_equal(decode_results['keypoint_score'], kpscore)
 
-        results = dict(kp=kp, kpscore=kpscore, frame_inds=frame_inds)
+        results = dict(
+            keypoint=kp, keypoint_score=kpscore, frame_inds=frame_inds)
         pose_decode = PoseDecode(
             random_drop=True, drop_prob=1, droppable_joints=(7, ))
         decode_results = pose_decode(results)
@@ -188,7 +190,10 @@ class TestPoseLoading:
         kp = np.concatenate([kp] * 8, axis=1)
         kpscore = np.concatenate([kpscore] * 8, axis=1)
         results = dict(
-            img_shape=img_shape, kp=kp, kpscore=kpscore, modality='Pose')
+            img_shape=img_shape,
+            keypoint=kp,
+            keypoint_score=kpscore,
+            modality='Pose')
 
         generate_pose_target = GeneratePoseTarget(
             sigma=1, with_kp=True, left=(0, ), right=(1, ), skeletons=())

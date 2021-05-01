@@ -13,7 +13,7 @@ class TestPoseDataset(BaseTestDataset):
         dataset = PoseDataset(
             ann_file=ann_file,
             pipeline=[],
-            box_thre='0.5',
+            box_thr='0.5',
             data_prefix=data_prefix)
         assert len(dataset) == 100
         item = dataset[0]
@@ -23,7 +23,7 @@ class TestPoseDataset(BaseTestDataset):
             ann_file=ann_file,
             pipeline=[],
             valid_ratio=0.2,
-            box_thre='0.9',
+            box_thr='0.9',
             data_prefix=data_prefix)
         assert len(dataset) == 84
         for item in dataset:
@@ -35,7 +35,7 @@ class TestPoseDataset(BaseTestDataset):
             ann_file=ann_file,
             pipeline=[],
             valid_ratio=0.3,
-            box_thre='0.7',
+            box_thr='0.7',
             data_prefix=data_prefix)
         assert len(dataset) == 87
         for item in dataset:
@@ -48,5 +48,5 @@ class TestPoseDataset(BaseTestDataset):
                 ann_file=ann_file,
                 pipeline=[],
                 valid_ratio=0.2,
-                box_thre='0.55',
+                box_thr='0.55',
                 data_prefix=data_prefix)

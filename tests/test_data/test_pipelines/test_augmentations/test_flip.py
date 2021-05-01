@@ -105,7 +105,7 @@ class TestFlip:
 
         # flip the keypoints
         results = dict(
-            kp=np.array([[1, 1], [63, 63]]).reshape([1, 1, 2, 2]),
+            keypoint=np.array([[1, 1], [63, 63]]).reshape([1, 1, 2, 2]),
             modality='Pose',
             img_shape=(64, 64))
         flip = Flip(flip_ratio=1, direction='horizontal', left=[0], right=[1])
@@ -114,7 +114,7 @@ class TestFlip:
                                   np.array([[1, 63], [63, 1]]))
 
         results = dict(
-            kp=np.array([[1, 1], [63, 63]]).reshape([1, 1, 2, 2]),
+            keypoint=np.array([[1, 1], [63, 63]]).reshape([1, 1, 2, 2]),
             modality='Pose',
             img_shape=(64, 64))
         flip = Flip(flip_ratio=1, direction='horizontal', left=[], right=[])
@@ -124,7 +124,7 @@ class TestFlip:
 
         with pytest.raises(AssertionError):
             results = dict(
-                kp=np.array([[1, 1], [63, 63]]).reshape([1, 1, 2, 2]),
+                keypoint=np.array([[1, 1], [63, 63]]).reshape([1, 1, 2, 2]),
                 modality='Pose',
                 img_shape=(64, 64))
             flip = Flip(flip_ratio=1, direction='vertical', left=[], right=[])
