@@ -135,13 +135,14 @@ class UniformSampleFrames:
 class PoseDecode(object):
     """Load and decode pose with given indices.
 
-    Required keys are "kp", "frame_inds" (optional), "kpscore" (optional),
-    added or modified keys are "kp", "kpscore" (if applicable).
+    Required keys are "keypoint", "frame_inds" (optional), "keypoint_score"
+    (optional), added or modified keys are "keypoint", "keypoint_score"
+    (if applicable).
 
     Args:
         random_drop (bool): Whether to randomly drop keypoints. The following
             args are applicable only when `random_crop == True`. When set as
-            True, "kpscore" is a mandatory key. Default: False.
+            True, "keypoint_score" is a mandatory key. Default: False.
         random_seed (int): Random seed used for randomly dropping keypoints.
             Default: 1.
         drop_prob (float): The probability for dropping one keypoint for each
@@ -199,7 +200,7 @@ class PoseDecode(object):
     def __call__(self, results):
         if self.random_drop:
             np.random.seed(self.random_seed)
-            assert 'kpscore' in results, 'for simplicity'
+            assert 'keypoint_score' in results, 'for simplicity'
 
         if 'frame_inds' not in results:
             results['frame_inds'] = np.arange(results['total_frames'])
@@ -210,15 +211,17 @@ class PoseDecode(object):
         offset = results.get('offset', 0)
         frame_inds = results['frame_inds'] + offset
 
-        if 'kpscore' in results:
-            kpscore = results['kpscore']
+        if 'keypoint_score' in results:
+            kpscore = results['keypoint_score']
             if self.random_drop:
                 self._drop_kpscore(kpscore)
 
-            results['kpscore'] = kpscore[:, frame_inds].astype(np.float32)
+            results['keypoint_score'] = kpscore[:,
+                                                frame_inds].astype(np.float32)
 
-        if 'kp' in results:
-            results['kp'] = results['kp'][:, frame_inds].astype(np.float32)
+        if 'keypoint' in results:
+            results['keypoint'] = results['keypoint'][:, frame_inds].astype(
+                np.float32)
 
         return results
 
@@ -236,8 +239,8 @@ class LoadKineticsPose:
     """Load Kinetics Pose given filename (The format should be pickle)
 
     Required keys are "filename", "total_frames", "img_shape", "frame_inds",
-    "anno_inds" (for mmpose source, optional), added or modified keys are "kp",
-    "kpscore".
+    "anno_inds" (for mmpose source, optional), added or modified keys are
+    "keypoint", "keypoint_score".
 
     Args:
         io_backend (str): IO backend where frames are stored. Default: 'disk'.
@@ -364,8 +367,8 @@ class LoadKineticsPose:
                 new_kp[:np_frame, i] = new_kp[inds, i]
             results['num_person'] = self.max_person
 
-        results['kp'] = new_kp[:self.max_person]
-        results['kpscore'] = new_kpscore[:self.max_person]
+        results['keypoint'] = new_kp[:self.max_person]
+        results['keypoint_score'] = new_kpscore[:self.max_person]
         return results
 
     def __repr__(self):
@@ -383,8 +386,8 @@ class LoadKineticsPose:
 class GeneratePoseTarget:
     """Generate pseudo heatmaps based on joint coordinates and confidence.
 
-    Required keys are "kp", "img_shape", "kpscore" (optional), added or
-    modified keys are "imgs",
+    Required keys are "keypoint", "img_shape", "keypoint_score" (optional),
+    added or modified keys are "imgs".
 
     Args:
         sigma (float): The sigma of the generated gaussian map. Default: 0.6.
@@ -613,11 +616,11 @@ class GeneratePoseTarget:
             list[np.ndarray]: The generated pseudo heatmaps.
         """
 
-        all_kps = results['kp']
+        all_kps = results['keypoint']
         kp_shape = all_kps.shape
 
-        if 'kpscore' in results:
-            all_kpscores = results['kpscore']
+        if 'keypoint_score' in results:
+            all_kpscores = results['keypoint_score']
         else:
             all_kpscores = np.ones(kp_shape[:-1], dtype=np.float32)
 

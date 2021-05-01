@@ -110,7 +110,7 @@ class TestFlip:
             img_shape=(64, 64))
         flip = Flip(flip_ratio=1, direction='horizontal', left=[0], right=[1])
         flip_results = flip(results)
-        assert_array_almost_equal(flip_results['kp'][0, 0],
+        assert_array_almost_equal(flip_results['keypoint'][0, 0],
                                   np.array([[1, 63], [63, 1]]))
 
         results = dict(
@@ -119,7 +119,7 @@ class TestFlip:
             img_shape=(64, 64))
         flip = Flip(flip_ratio=1, direction='horizontal', left=[], right=[])
         flip_results = flip(results)
-        assert_array_almost_equal(flip_results['kp'][0, 0],
+        assert_array_almost_equal(flip_results['keypoint'][0, 0],
                                   np.array([[63, 1], [1, 63]]))
 
         with pytest.raises(AssertionError):

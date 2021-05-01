@@ -80,21 +80,22 @@ class TestPoseLoading:
                                     'droppable_joints=(7, 8, 9, 10, '
                                     '13, 14, 15, 16))')
         decode_results = pose_decode(results)
-        assert_array_almost_equal(decode_results['kp'], kp[:, frame_inds])
-        assert_array_almost_equal(decode_results['kpscore'],
+        assert_array_almost_equal(decode_results['keypoint'], kp[:,
+                                                                 frame_inds])
+        assert_array_almost_equal(decode_results['keypoint_score'],
                                   kpscore[:, frame_inds])
 
         results = dict(kp=kp, kpscore=kpscore, total_frames=16)
         pose_decode = PoseDecode()
         decode_results = pose_decode(results)
-        assert_array_almost_equal(decode_results['kp'], kp)
-        assert_array_almost_equal(decode_results['kpscore'], kpscore)
+        assert_array_almost_equal(decode_results['keypoint'], kp)
+        assert_array_almost_equal(decode_results['keypoint_score'], kpscore)
 
         results = dict(kp=kp, kpscore=kpscore, frame_inds=frame_inds)
         pose_decode = PoseDecode(
             random_drop=True, drop_prob=1, droppable_joints=(7, ))
         decode_results = pose_decode(results)
-        assert_array_almost_equal(decode_results['kpscore'][..., 7], 0)
+        assert_array_almost_equal(decode_results['keypoint_score'][..., 7], 0)
 
     def test_load_kinetics_pose(self):
 
@@ -130,26 +131,26 @@ class TestPoseLoading:
                                            "'torso': 2, 'limb': 3}, "
                                            'source=openpose, kwargs={})')
         return_results = load_kinetics_pose(inp)
-        assert return_results['kp'].shape[:-1] == \
-            return_results['kpscore'].shape
+        assert return_results['keypoint'].shape[:-1] == \
+            return_results['keypoint_score'].shape
 
-        num_person = return_results['kp'].shape[0]
-        num_frame = return_results['kp'].shape[1]
+        num_person = return_results['keypoint'].shape[0]
+        num_frame = return_results['keypoint'].shape[1]
         assert num_person == get_mode(frame_inds)[1]
-        assert np.max(return_results['kp']) > 1
+        assert np.max(return_results['keypoint']) > 1
         assert num_frame == len(set(frame_inds))
 
         inp = cp.deepcopy(results)
         load_kinetics_pose = LoadKineticsPose(
             squeeze=False, max_person=100, source='openpose')
         return_results = load_kinetics_pose(inp)
-        assert return_results['kp'].shape[:-1] == \
-            return_results['kpscore'].shape
+        assert return_results['keypoint'].shape[:-1] == \
+            return_results['keypoint_score'].shape
 
-        num_person = return_results['kp'].shape[0]
-        num_frame = return_results['kp'].shape[1]
+        num_person = return_results['keypoint'].shape[0]
+        num_frame = return_results['keypoint'].shape[1]
         assert num_person == get_mode(frame_inds)[1]
-        assert np.max(return_results['kp']) > 1
+        assert np.max(return_results['keypoint']) > 1
         assert num_frame == total_frames
 
         inp = cp.deepcopy(results)
@@ -157,13 +158,13 @@ class TestPoseLoading:
         load_kinetics_pose = LoadKineticsPose(
             squeeze=True, max_person=100, source='mmpose')
         return_results = load_kinetics_pose(inp)
-        assert return_results['kp'].shape[:-1] == \
-            return_results['kpscore'].shape
+        assert return_results['keypoint'].shape[:-1] == \
+            return_results['keypoint_score'].shape
 
-        num_person = return_results['kp'].shape[0]
-        num_frame = return_results['kp'].shape[1]
+        num_person = return_results['keypoint'].shape[0]
+        num_frame = return_results['keypoint'].shape[1]
         assert num_person == get_mode(frame_inds[anno_inds])[1]
-        assert np.max(return_results['kp']) <= 1
+        assert np.max(return_results['keypoint']) <= 1
         assert num_frame == len(set(frame_inds[anno_inds]))
 
         inp = cp.deepcopy(results)
@@ -171,13 +172,13 @@ class TestPoseLoading:
         load_kinetics_pose = LoadKineticsPose(
             squeeze=True, max_person=2, source='mmpose')
         return_results = load_kinetics_pose(inp)
-        assert return_results['kp'].shape[:-1] == \
-            return_results['kpscore'].shape
+        assert return_results['keypoint'].shape[:-1] == \
+            return_results['keypoint_score'].shape
 
-        num_person = return_results['kp'].shape[0]
-        num_frame = return_results['kp'].shape[1]
+        num_person = return_results['keypoint'].shape[0]
+        num_frame = return_results['keypoint'].shape[1]
         assert num_person <= 2
-        assert np.max(return_results['kp']) <= 1
+        assert np.max(return_results['keypoint']) <= 1
         assert num_frame == len(set(frame_inds[anno_inds]))
 
     def test_generate_pose_target(self):

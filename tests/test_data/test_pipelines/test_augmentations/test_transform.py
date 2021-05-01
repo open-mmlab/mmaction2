@@ -71,7 +71,7 @@ class TestTransform:
         assert np.all(resize_results['scale_factor'] == np.array(
             [.5, 1. / 3.], dtype=np.float32))
         assert resize_results['img_shape'] == (80, 160)
-        kp = resize_results['kp'][0, 0, 0]
+        kp = resize_results['keypoint'][0, 0, 0]
         assert_array_almost_equal(kp, np.array([30, 20]))
 
         # scale with -1 to indicate np.inf
@@ -153,7 +153,7 @@ class TestPoseCompact:
         fake_kp = np.zeros([1, 4, 2, 2])
         fake_kp[:, :, 0] = [10, 10]
         fake_kp[:, :, 1] = [90, 90]
-        results['kp'] = fake_kp
+        results['keypoint'] = fake_kp
 
         pose_compact = PoseCompact(
             padding=0, threshold=0, hw_ratio=None, allow_imgpad=False)

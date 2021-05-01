@@ -94,7 +94,7 @@ class PoseCompact:
     def __call__(self, results):
         img_shape = results['img_shape']
         h, w = img_shape
-        kp = results['kp']
+        kp = results['keypoint']
 
         # Make NaN zero
         kp[np.isnan(kp)] = 0.
@@ -535,9 +535,10 @@ class RandomScale:
 class RandomCrop:
     """Vanilla square random crop that specifics the output size.
 
-    Required keys in results are "img_shape", "kp" (optional), "imgs"
-    (optional), added or modified keys are "kp", "imgs", "lazy"; Required keys
-    in "lazy" are "flip", "crop_bbox", added or modified key is "crop_bbox".
+    Required keys in results are "img_shape", "keypoint" (optional), "imgs"
+    (optional), added or modified keys are "keypoint", "imgs", "lazy"; Required
+    keys in "lazy" are "flip", "crop_bbox", added or modified key is
+    "crop_bbox".
 
     Args:
         size (int): The output size of the images.
@@ -596,7 +597,7 @@ class RandomCrop:
                 to the next transform in pipeline.
         """
         _init_lazy_if_proper(results, self.lazy)
-        if 'kp' in results:
+        if 'keypoint' in results:
             assert not self.lazy, ('Keypoint Augmentations are not compatible '
                                    'with lazy == True')
 
@@ -638,8 +639,9 @@ class RandomCrop:
         results['img_shape'] = (new_h, new_w)
 
         if not self.lazy:
-            if 'kp' in results:
-                results['kp'] = self._crop_kps(results['kp'], crop_bbox)
+            if 'keypoint' in results:
+                results['keypoint'] = self._crop_kps(results['keypoint'],
+                                                     crop_bbox)
             if 'imgs' in results:
                 results['imgs'] = self._crop_imgs(results['imgs'], crop_bbox)
         else:
@@ -677,9 +679,9 @@ class RandomResizedCrop(RandomCrop):
     """Random crop that specifics the area and height-weight ratio range.
 
     Required keys in results are "img_shape", "crop_bbox", "imgs" (optional),
-    "kp" (optional), added or modified keys are "imgs", "kp", "crop_bbox" and
-    "lazy"; Required keys in "lazy" are "flip", "crop_bbox", added or modified
-    key is "crop_bbox".
+    "keypoint" (optional), added or modified keys are "imgs", "keypoint",
+    "crop_bbox" and "lazy"; Required keys in "lazy" are "flip", "crop_bbox",
+    added or modified key is "crop_bbox".
 
     Args:
         area_range (Tuple[float]): The candidate area scales range of
@@ -762,7 +764,7 @@ class RandomResizedCrop(RandomCrop):
                 to the next transform in pipeline.
         """
         _init_lazy_if_proper(results, self.lazy)
-        if 'kp' in results:
+        if 'keypoint' in results:
             assert not self.lazy, ('Keypoint Augmentations are not compatible '
                                    'with lazy == True')
 
@@ -796,8 +798,9 @@ class RandomResizedCrop(RandomCrop):
         results['img_shape'] = (new_h, new_w)
 
         if not self.lazy:
-            if 'kp' in results:
-                results['kp'] = self._crop_kps(results['kp'], crop_bbox)
+            if 'keypoint' in results:
+                results['keypoint'] = self._crop_kps(results['keypoint'],
+                                                     crop_bbox)
             if 'imgs' in results:
                 results['imgs'] = self._crop_imgs(results['imgs'], crop_bbox)
         else:
@@ -840,9 +843,9 @@ class MultiScaleCrop(RandomCrop):
     level of w and h is controlled to be smaller than a certain value to
     prevent too large or small aspect ratio.
 
-    Required keys are "img_shape", "imgs" (optional), "kp" (optional), added or
-    modified keys are "imgs", "crop_bbox", "img_shape", "lazy" and "scales".
-    Required keys in "lazy" are "crop_bbox", added or modified key is
+    Required keys are "img_shape", "imgs" (optional), "keypoint" (optional),
+    added or modified keys are "imgs", "crop_bbox", "img_shape", "lazy" and
+    "scales". Required keys in "lazy" are "crop_bbox", added or modified key is
     "crop_bbox".
 
     Args:
@@ -896,7 +899,7 @@ class MultiScaleCrop(RandomCrop):
                 to the next transform in pipeline.
         """
         _init_lazy_if_proper(results, self.lazy)
-        if 'kp' in results:
+        if 'keypoint' in results:
             assert not self.lazy, ('Keypoint Augmentations are not compatible '
                                    'with lazy == True')
 
@@ -972,8 +975,9 @@ class MultiScaleCrop(RandomCrop):
             new_crop_quadruple, dtype=np.float32)
 
         if not self.lazy:
-            if 'kp' in results:
-                results['kp'] = self._crop_kps(results['kp'], crop_bbox)
+            if 'keypoint' in results:
+                results['keypoint'] = self._crop_kps(results['keypoint'],
+                                                     crop_bbox)
             if 'imgs' in results:
                 results['imgs'] = self._crop_imgs(results['imgs'], crop_bbox)
         else:
@@ -1013,7 +1017,7 @@ class MultiScaleCrop(RandomCrop):
 class Resize:
     """Resize images to a specific size.
 
-    Required keys are "img_shape", "modality", "imgs" (optional), "kp"
+    Required keys are "img_shape", "modality", "imgs" (optional), "keypoint"
     (optional), added or modified keys are "imgs", "img_shape", "keep_ratio",
     "scale_factor", "lazy", "resize_size". Required keys in "lazy" is None,
     added or modified key is "interpolation".
@@ -1085,7 +1089,7 @@ class Resize:
         """
 
         _init_lazy_if_proper(results, self.lazy)
-        if 'kp' in results:
+        if 'keypoint' in results:
             assert not self.lazy, ('Keypoint Augmentations are not compatible '
                                    'with lazy == True')
 
@@ -1109,9 +1113,9 @@ class Resize:
             if 'imgs' in results:
                 results['imgs'] = self._resize_imgs(results['imgs'], new_w,
                                                     new_h)
-            if 'kp' in results:
-                results['kp'] = self._resize_kps(results['kp'],
-                                                 self.scale_factor)
+            if 'keypoint' in results:
+                results['keypoint'] = self._resize_kps(results['keypoint'],
+                                                       self.scale_factor)
         else:
             lazyop = results['lazy']
             if lazyop['flip']:
@@ -1197,8 +1201,8 @@ class Flip:
     Reverse the order of elements in the given imgs with a specific direction.
     The shape of the imgs is preserved, but the elements are reordered.
 
-    Required keys are "img_shape", "modality", "imgs" (optional), "kp"
-    (optional), added or modified keys are "imgs", "kp", "lazy" and
+    Required keys are "img_shape", "modality", "imgs" (optional), "keypoint"
+    (optional), added or modified keys are "imgs", "keypoint", "lazy" and
     "flip_direction". Required keys in "lazy" is None, added or modified key
     are "flip" and "flip_direction". The Flip augmentation should be placed
     after any cropping / reshaping augmentations, to make sure crop_quadruple
@@ -1277,7 +1281,7 @@ class Flip:
                 to the next transform in pipeline.
         """
         _init_lazy_if_proper(results, self.lazy)
-        if 'kp' in results:
+        if 'keypoint' in results:
             assert not self.lazy, ('Keypoint Augmentations are not compatible '
                                    'with lazy == True')
             assert self.direction == 'horizontal', (
@@ -1303,13 +1307,13 @@ class Flip:
                 if 'imgs' in results:
                     results['imgs'] = self._flip_imgs(results['imgs'],
                                                       modality)
-                if 'kp' in results:
-                    kp = results['kp']
-                    kpscore = results.get('kpscore', None)
+                if 'keypoint' in results:
+                    kp = results['keypoint']
+                    kpscore = results.get('keypoint_score', None)
                     kp, kpscore = self._flip_kps(kp, kpscore, img_width)
-                    results['kp'] = kp
-                    if 'kpscore' in results:
-                        results['kpscore'] = kpscore
+                    results['keypoint'] = kp
+                    if 'keypoint_score' in results:
+                        results['keypoint_score'] = kpscore
         else:
             lazyop = results['lazy']
             if lazyop['flip']:
@@ -1608,10 +1612,10 @@ class ColorJitter:
 class CenterCrop(RandomCrop):
     """Crop the center area from images.
 
-    Required keys are "img_shape", "imgs" (optional), "kp" (optional), added or
-    modified keys are "imgs", "kp", "crop_bbox", "lazy" and "img_shape".
-    Required keys in "lazy" is "crop_bbox", added or modified key is
-    "crop_bbox".
+    Required keys are "img_shape", "imgs" (optional), "keypoint" (optional),
+    added or modified keys are "imgs", "keypoint", "crop_bbox", "lazy" and
+    "img_shape". Required keys in "lazy" is "crop_bbox", added or modified key
+    is "crop_bbox".
 
     Args:
         crop_size (int | tuple[int]): (w, h) of crop size.
@@ -1633,7 +1637,7 @@ class CenterCrop(RandomCrop):
                 to the next transform in pipeline.
         """
         _init_lazy_if_proper(results, self.lazy)
-        if 'kp' in results:
+        if 'keypoint' in results:
             assert not self.lazy, ('Keypoint Augmentations are not compatible '
                                    'with lazy == True')
 
@@ -1670,8 +1674,9 @@ class CenterCrop(RandomCrop):
             new_crop_quadruple, dtype=np.float32)
 
         if not self.lazy:
-            if 'kp' in results:
-                results['kp'] = self._crop_kps(results['kp'], crop_bbox)
+            if 'keypoint' in results:
+                results['keypoint'] = self._crop_kps(results['keypoint'],
+                                                     crop_bbox)
             if 'imgs' in results:
                 results['imgs'] = self._crop_imgs(results['imgs'], crop_bbox)
         else:
