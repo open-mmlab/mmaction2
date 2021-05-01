@@ -9,11 +9,11 @@ from torch.nn.modules.utils import _pair
 from ..builder import PIPELINES
 
 
-def combine_quadruple(a, b):
+def _combine_quadruple(a, b):
     return (a[0] + a[2] * b[0], a[1] + a[3] * b[1], a[2] * b[2], a[3] * b[3])
 
 
-def flip_quadruple(a):
+def _flip_quadruple(a):
     return (1 - a[0] - a[2], a[1], a[2], a[3])
 
 
@@ -142,7 +142,7 @@ class PoseCompact:
         crop_quadruple = results.get('crop_quadruple', (0., 0., 1., 1.))
         new_crop_quadruple = (min_x / w, min_y / h, (max_x - min_x) / w,
                               (max_y - min_y) / h)
-        crop_quadruple = combine_quadruple(crop_quadruple, new_crop_quadruple)
+        crop_quadruple = _combine_quadruple(crop_quadruple, new_crop_quadruple)
         results['crop_quadruple'] = crop_quadruple
         return results
 
@@ -1219,7 +1219,6 @@ class Flip:
             Default: [2, 4, 6, 8, 10, 12, 14, 16]. (COCO-17P keypoints)
         lazy (bool): Determine whether to apply lazy operation. Default: False.
     """
-    # Only horizontal flip is useful
     _directions = ['horizontal', 'vertical']
 
     def __init__(self,
