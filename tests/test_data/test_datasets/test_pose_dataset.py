@@ -1,8 +1,8 @@
-import numpy as np  # isort: skip
-import pytest  # isort: skip
+import numpy as np
+import pytest
 
-from mmaction.datasets import PoseDataset  # isort: skip
-from .base import BaseTestDataset  # isort: skip
+from mmaction.datasets import PoseDataset
+from .base import BaseTestDataset
 
 
 class TestPoseDataset(BaseTestDataset):
