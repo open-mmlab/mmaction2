@@ -1,10 +1,11 @@
-import numpy as np
-import pytest
+import numpy as np  # isort: skip
+import pytest  # isort: skip
 
-from mmaction.datasets import PoseDataset
+from mmaction.datasets import PoseDataset  # isort: skip
+from .base import BaseTestDataset  # isort: skip
 
 
-def TestPoseDataset(BaseTestDataset):
+class TestPoseDataset(BaseTestDataset):
 
     def test_pose_dataset(self):
         ann_file = self.pose_ann_file
