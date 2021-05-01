@@ -95,19 +95,16 @@ class PoseCompact:
         img_shape = results['img_shape']
         h, w = img_shape
         kp = results['kp']
-        min_x, min_y, max_x, max_y = np.Inf, np.Inf, -np.Inf, -np.Inf
 
         # Make NaN zero
         kp[np.isnan(kp)] = 0.
         kp_x = kp[..., 0]
         kp_y = kp[..., 1]
 
-        # There is at least one legal keypoint
-        if np.sum(kp_x != 0) or np.sum(kp_y != 0):
-            min_x = min(min(kp_x[kp_x != 0]), min_x)
-            min_y = min(min(kp_y[kp_y != 0]), min_y)
-            max_x = max(max(kp_x[kp_x != 0]), max_x)
-            max_y = max(max(kp_y[kp_y != 0]), max_y)
+        min_x = np.min(kp_x[kp_x != 0], initial=np.Inf)
+        min_y = np.min(kp_y[kp_y != 0], initial=np.Inf)
+        max_x = np.max(kp_x[kp_x != 0], initial=-np.Inf)
+        max_y = np.max(kp_y[kp_y != 0], initial=-np.Inf)
 
         # The compact area is too small
         if max_x - min_x < self.threshold or max_y - min_y < self.threshold:
