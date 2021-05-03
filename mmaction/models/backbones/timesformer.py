@@ -102,30 +102,35 @@ class TimeSformer(nn.Module):
                     type='TransformerLayerSequence',
                     transformerlayer=dict(
                         type='BaseTransformerLayer',
-                        attn_cfg=[
+                        attn_cfgs=[
                             dict(
                                 type='DividedTemporalAttentionWithNorm',
                                 embed_dims=embed_dims,
                                 num_heads=8,
                                 num_frames=num_frames,
                                 attn_drop=0.,
-                                drop_path=0.1),
+                                dropout_layer=dict(
+                                    type='DropPath', drop_prob=0.1),
+                                norm_cfg=dict(type='LN')),
                             dict(
                                 type='DividedSpatialAttentionWithNorm',
                                 embed_dims=embed_dims,
                                 num_heads=8,
                                 num_frames=num_frames,
                                 attn_drop=0.,
-                                drop_path=0.1)
+                                dropout_layer=dict(
+                                    type='DropPath', drop_prob=0.1),
+                                norm_cfg=dict(type='LN'))
                         ],
-                        feedforward_channels=3072,
-                        ffn_dropout=0.,
-                        operation_order=('self_attn', 'self_attn', 'ffn',
-                                         'norm'),
-                        act_cfg=dict(type='ReLU'),
-                        norm_cfg=dict(type='LN'),
-                        ffn_num_fcs=2,
-                        init_cfg=None),
+                        ffn_cfgs=dict(
+                            embed_dims=embed_dims,
+                            feedforward_channels=3072,
+                            num_fcs=2,
+                            ffn_drop=0.,
+                            act_cfg=dict(type='GeLU', inplace=True),
+                            dropout_layer=dict(type='DropPath',
+                                               drop_prob=0.1)),
+                        operation_order=('self_attn', 'self_attn', 'ffn')),
                     num_layers=12,
                     init_cfg=None)
             else:
@@ -133,21 +138,24 @@ class TimeSformer(nn.Module):
                     type='TransformerLayerSequence',
                     transformerlayer=dict(
                         type='BaseTransformerLayer',
-                        attn_cfg=[
+                        attn_cfgs=[
                             dict(
-                                type='_MultiheadAttention',
+                                type='MultiheadAttention',
                                 embed_dims=embed_dims,
                                 num_heads=8,
-                                attn_drop=0.,
-                                drop_path=0.1)
+                                dropout_layer=dict(
+                                    type='DropPath', drop_prob=0.1))
                         ],
-                        feedforward_channels=3072,
-                        ffn_dropout=0.,
-                        operation_order=('norm', 'self_attn', 'ffn', 'norm'),
-                        act_cfg=dict(type='ReLU'),
-                        norm_cfg=dict(type='LN'),
-                        ffn_num_fcs=2,
-                        init_cfg=None),
+                        ffn_cfgs=dict(
+                            embed_dims=embed_dims,
+                            feedforward_channels=3072,
+                            num_fcs=2,
+                            ffn_drop=0.,
+                            act_cfg=dict(type='GeLU', inplace=True),
+                            dropout_layer=dict(type='DropPath',
+                                               drop_prob=0.1)),
+                        operation_order=('norm', 'self_attn', 'ffn'),
+                        norm_cfg=dict(type='LN')),
                     num_layers=12,
                     init_cfg=None)
         self.transformer_layers = build_transformer_layer_sequence(

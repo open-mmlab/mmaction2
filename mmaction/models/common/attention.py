@@ -1,59 +1,7 @@
 import torch
 import torch.nn as nn
 from einops import rearrange
-from mmcv.cnn import (ATTENTION, BaseModule, MultiheadAttention,
-                      build_norm_layer)
-
-
-def drop_path(x, drop_prob: float = 0., training: bool = False):
-    """From TimeSformer.
-
-    For temporary use only.
-    """
-    if drop_prob == 0. or not training:
-        return x
-    keep_prob = 1 - drop_prob
-    # work with diff dim tensors, not just 2D ConvNets
-    shape = (x.shape[0], ) + (1, ) * (x.ndim - 1)
-    random_tensor = keep_prob + torch.rand(
-        shape, dtype=x.dtype, device=x.device)
-    random_tensor.floor_()  # binarize
-    output = x.div(keep_prob) * random_tensor
-    return output
-
-
-class DropPath(nn.Module):
-    """From TimeSformer.
-
-    For temporary use only.
-    """
-
-    def __init__(self, drop_prob=None):
-        super(DropPath, self).__init__()
-        self.drop_prob = drop_prob
-
-    def forward(self, x):
-        return drop_path(x, self.drop_prob, self.training)
-
-
-@ATTENTION.register_module()
-class _MultiheadAttention(MultiheadAttention):
-
-    def __init__(self,
-                 embed_dims,
-                 num_heads,
-                 attn_drop=0.,
-                 drop_path=0.,
-                 init_cfg=None,
-                 **kwargs):
-        super().__init__(
-            embed_dims,
-            num_heads,
-            attn_drop=attn_drop,
-            proj_drop=drop_path,
-            init_cfg=init_cfg,
-            **kwargs)
-        self.dropout = DropPath(drop_path)
+from mmcv.cnn import ATTENTION, BaseModule, build_dropout, build_norm_layer
 
 
 @ATTENTION.register_module()
@@ -64,7 +12,7 @@ class DividedTemporalAttentionWithNorm(BaseModule):
                  num_heads,
                  num_frames,
                  attn_drop=0.,
-                 drop_path=0.1,
+                 dropout_layer=dict(type='DropPath', drop_prob=0.1),
                  norm_cfg=dict(type='LN'),
                  init_cfg=None,
                  **kwargs):
@@ -74,7 +22,8 @@ class DividedTemporalAttentionWithNorm(BaseModule):
         self.num_frames = num_frames
         self.attn = nn.MultiheadAttention(embed_dims, num_heads, attn_drop,
                                           **kwargs)
-        self.drop_path = DropPath(drop_path)
+        self.dropout_layer = build_dropout(
+            dropout_layer) if dropout_layer else nn.Identity()
         self.norm = build_norm_layer(norm_cfg, self.embed_dims)
         self.temporal_fc = nn.Linear(self.embed_dims, self.embed_dims)
 
@@ -91,7 +40,8 @@ class DividedTemporalAttentionWithNorm(BaseModule):
 
         # res_temporal [batch_size * num_patches, num_frames, embed_dims]
         query_t = self.norm(query_t.view(b * p, t, m))
-        res_temporal = self.drop_path(self.attn(query_t, query_t, query_t)[0])
+        res_temporal = self.dropout_layer(
+            self.attn(query_t, query_t, query_t)[0])
         res_temporal = self.temporal_fc(res_temporal)
 
         # res_temporal [batch_size, num_patches * num_frames, embed_dims]
@@ -109,7 +59,7 @@ class DividedSpatialAttentionWithNorm(BaseModule):
                  num_heads,
                  num_frames,
                  attn_drop=0.,
-                 drop_path=0.1,
+                 dropout_layer=dict(type='DropPath', drop_prob=0.1),
                  norm_cfg=dict(type='LN'),
                  init_cfg=None,
                  **kwargs):
@@ -119,7 +69,8 @@ class DividedSpatialAttentionWithNorm(BaseModule):
         self.num_frames = num_frames
         self.attn = nn.MultiheadAttention(embed_dims, num_heads, attn_drop,
                                           **kwargs)
-        self.drop_path = DropPath(drop_path)
+        self.dropout_layer = build_dropout(
+            dropout_layer) if dropout_layer else nn.Identity()
         self.norm = build_norm_layer(norm_cfg, self.embed_dims)
 
     def forward(self, query, key=None, value=None, residual=None, **kwargs):
@@ -143,7 +94,8 @@ class DividedSpatialAttentionWithNorm(BaseModule):
         query_s = self.norm(query_s)
 
         # res_spatial [batch_size * num_frames, num_patches + 1, embed_dims]
-        res_spatial = self.drop_path(self.attn(query_s, query_s, query_s)[0])
+        res_spatial = self.dropout_layer(
+            self.attn(query_s, query_s, query_s)[0])
 
         # cls_token [batch_size, 1, embed_dims]
         cls_token = res_spatial[:, 0, :].view(b, t, m)
