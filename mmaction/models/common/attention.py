@@ -1,7 +1,10 @@
 import torch
 import torch.nn as nn
 from einops import rearrange
-from mmcv.cnn import ATTENTION, BaseModule, build_dropout, build_norm_layer
+from mmcv.cnn import build_norm_layer
+from mmcv.cnn.bricks.registry import ATTENTION
+from mmcv.cnn.bricks.transformer import build_dropout
+from mmcv.runner.base_module import BaseModule
 
 
 @ATTENTION.register_module()
@@ -24,7 +27,7 @@ class DividedTemporalAttentionWithNorm(BaseModule):
                                           **kwargs)
         self.dropout_layer = build_dropout(
             dropout_layer) if dropout_layer else nn.Identity()
-        self.norm = build_norm_layer(norm_cfg, self.embed_dims)
+        self.norm = build_norm_layer(norm_cfg, self.embed_dims)[1]
         self.temporal_fc = nn.Linear(self.embed_dims, self.embed_dims)
 
     def forward(self, query, key=None, value=None, residual=None, **kwargs):
@@ -71,7 +74,7 @@ class DividedSpatialAttentionWithNorm(BaseModule):
                                           **kwargs)
         self.dropout_layer = build_dropout(
             dropout_layer) if dropout_layer else nn.Identity()
-        self.norm = build_norm_layer(norm_cfg, self.embed_dims)
+        self.norm = build_norm_layer(norm_cfg, self.embed_dims)[1]
 
     def forward(self, query, key=None, value=None, residual=None, **kwargs):
         assert residual is None, (
@@ -103,7 +106,7 @@ class DividedSpatialAttentionWithNorm(BaseModule):
 
         # res_spatial [batch_size * num_frames, num_patches + 1, embed_dims]
         res_spatial = rearrange(
-            res_spatial[:, 0:, :], '(b t) p m -> b (p t) m', p=p, t=t)
+            res_spatial[:, 1:, :], '(b t) p m -> b (p t) m', p=p, t=t)
         res_spatial = torch.cat((cls_token, res_spatial), 1)
 
         return identity + res_spatial
