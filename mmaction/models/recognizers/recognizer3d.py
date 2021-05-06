@@ -11,6 +11,8 @@ class Recognizer3D(BaseRecognizer):
 
     def forward_train(self, imgs, labels, **kwargs):
         """Defines the computation performed at every call when training."""
+
+        assert self.with_cls_head
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
         losses = dict()
 
@@ -29,6 +31,7 @@ class Recognizer3D(BaseRecognizer):
     def _do_test(self, imgs):
         """Defines the computation performed at every call when evaluation,
         testing and gradcam."""
+        batches = imgs.shape[0]
         num_segs = imgs.shape[1]
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
 
@@ -38,22 +41,33 @@ class Recognizer3D(BaseRecognizer):
                 'max_testing_views is only compatible '
                 'with batch_size == 1')
             view_ptr = 0
-            cls_scores = []
+            feats = []
             while view_ptr < total_views:
                 batch_imgs = imgs[view_ptr:view_ptr + self.max_testing_views]
                 x = self.extract_feat(batch_imgs)
                 if self.with_neck:
                     x, _ = self.neck(x)
-                cls_score = self.cls_head(x)
-                cls_scores.append(cls_score)
+                feats.append(x)
                 view_ptr += self.max_testing_views
-            cls_score = torch.cat(cls_scores)
+            feat = torch.cat(feats)
         else:
-            x = self.extract_feat(imgs)
+            feat = self.extract_feat(imgs)
             if self.with_neck:
-                x, _ = self.neck(x)
-            cls_score = self.cls_head(x)
+                feat, _ = self.neck(feat)
 
+        if self.feature_extraction:
+            # perform spatio-temporal pooling
+            avg_pool = nn.AdaptiveAvgPool3d(1)
+            feat = avg_pool(feat)
+            # squeeze dimensions
+            x = x.reshape((batches, num_segs, -1))
+            # temporal average pooling
+            x = x.mean(axis=1)
+            return x
+
+        # should have cls_head if not extracting features
+        assert self.with_cls_head
+        cls_score = self.cls_head(x)
         cls_score = self.average_clip(cls_score, num_segs)
         return cls_score
 
@@ -73,6 +87,7 @@ class Recognizer3D(BaseRecognizer):
         Returns:
             Tensor: Class score.
         """
+        assert self.with_cls_head
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
         x = self.extract_feat(imgs)
 
@@ -87,4 +102,5 @@ class Recognizer3D(BaseRecognizer):
     def forward_gradcam(self, imgs):
         """Defines the computation performed at every call when using gradcam
         utils."""
+        assert self.with_cls_head
         return self._do_test(imgs)
