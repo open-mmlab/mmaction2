@@ -2,6 +2,7 @@ import argparse
 import os
 import os.path as osp
 import warnings
+from datetime import datetime
 
 import mmcv
 import torch
@@ -23,6 +24,8 @@ def parse_args():
         description='MMAction2 test (and eval) a model')
     parser.add_argument('config', help='test config file path')
     parser.add_argument('checkpoint', help='checkpoint file')
+    parser.add_argument('--video-list', help='video file list')
+    parser.add_argument('--video-root', help='video root directory')
     parser.add_argument(
         '--out',
         default=None,
@@ -156,6 +159,16 @@ def main():
     if cfg.get('cudnn_benchmark', False):
         torch.backends.cudnn.benchmark = True
     cfg.data.test.test_mode = True
+    cfg.data.test.data_prefix = args.video_root
+    videos = open(args.video_list).readlines()
+    videos = [x.strip() for x in videos]
+
+    timestamp = datetime.now().strfttime('%Y%m%d_%H%M%S')
+    fake_anno = f'fake_anno_{timestamp}.txt'
+    with open(fake_anno, 'w') as fout:
+        lines = [x + ' 0' for x in videos]
+        fout.write('\n'.join(lines))
+    cfg.data.test.ann_file = fake_anno
 
     # init distributed env first, since logger depends on the dist info.
     if args.launcher == 'none':
@@ -182,6 +195,10 @@ def main():
     outputs = inference_pytorch(args, cfg, distributed, data_loader)
 
     rank, _ = get_dist_info()
+
+    # remove the temporary file
+    os.remove(fake_anno)
+
     if rank == 0:
         if output_config.get('out', None):
             out = output_config['out']
