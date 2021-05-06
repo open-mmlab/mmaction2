@@ -60,14 +60,14 @@ class Recognizer3D(BaseRecognizer):
             avg_pool = nn.AdaptiveAvgPool3d(1)
             feat = avg_pool(feat)
             # squeeze dimensions
-            x = x.reshape((batches, num_segs, -1))
+            feat = feat.reshape((batches, num_segs, -1))
             # temporal average pooling
-            x = x.mean(axis=1)
-            return x
+            feat = feat.mean(axis=1)
+            return feat
 
         # should have cls_head if not extracting features
         assert self.with_cls_head
-        cls_score = self.cls_head(x)
+        cls_score = self.cls_head(feat)
         cls_score = self.average_clip(cls_score, num_segs)
         return cls_score
 
