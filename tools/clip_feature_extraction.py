@@ -6,6 +6,7 @@ from datetime import datetime
 
 import mmcv
 import torch
+import torch.distributed as dist
 from mmcv import Config, DictAction
 from mmcv.cnn import fuse_conv_bn
 from mmcv.fileio.io import file_handlers
@@ -148,15 +149,23 @@ def main():
         torch.backends.cudnn.benchmark = True
     cfg.data.test.test_mode = True
     cfg.data.test.data_prefix = args.video_root
-    videos = open(args.video_list).readlines()
-    videos = [x.strip() for x in videos]
 
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    fake_anno = f'fake_anno_{timestamp}.txt'
-    with open(fake_anno, 'w') as fout:
-        lines = [x + ' 0' for x in videos]
-        fout.write('\n'.join(lines))
-    cfg.data.test.ann_file = fake_anno
+    rank, _ = get_dist_info()
+
+    objects = [None]
+    if rank == 0:
+        videos = open(args.video_list).readlines()
+        videos = [x.strip() for x in videos]
+
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        fake_anno = f'fake_anno_{timestamp}.txt'
+        with open(fake_anno, 'w') as fout:
+            lines = [x + ' 0' for x in videos]
+            fout.write('\n'.join(lines))
+        objects = [fake_anno]
+
+    dist.broadcast_object_list(objects, src=0)
+    cfg.data.test.ann_file = objects[0]
 
     # init distributed env first, since logger depends on the dist info.
     if args.launcher == 'none':
@@ -182,16 +191,13 @@ def main():
 
     outputs = inference_pytorch(args, cfg, distributed, data_loader)
 
-    rank, _ = get_dist_info()
-
-    # remove the temporary file
-    os.remove(fake_anno)
-
     if rank == 0:
         if output_config.get('out', None):
             out = output_config['out']
             print(f'\nwriting results to {out}')
             dataset.dump_results(outputs, **output_config)
+        # remove the temporary file
+        os.remove(fake_anno)
 
 
 if __name__ == '__main__':
