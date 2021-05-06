@@ -49,7 +49,15 @@ class Recognizer3D(BaseRecognizer):
                     x, _ = self.neck(x)
                 feats.append(x)
                 view_ptr += self.max_testing_views
-            feat = torch.cat(feats)
+            # should consider the case that feat is a tuple
+            if isinstance(feats[0], tuple):
+                len_tuple = len(feats[0])
+                feat = [
+                    torch.cat([x[i] for i in range(len_tuple)]) for x in feats
+                ]
+                feat = tuple(feat)
+            else:
+                feat = torch.cat(feats)
         else:
             feat = self.extract_feat(imgs)
             if self.with_neck:
@@ -58,7 +66,12 @@ class Recognizer3D(BaseRecognizer):
         if self.feature_extraction:
             # perform spatio-temporal pooling
             avg_pool = nn.AdaptiveAvgPool3d(1)
-            feat = avg_pool(feat)
+            if isinstance(feat, tuple):
+                feat = [avg_pool(x) for x in feat]
+                # concat them
+                feat = torch.cat(feat, axis=1)
+            else:
+                feat = avg_pool(feat)
             # squeeze dimensions
             feat = feat.reshape((batches, num_segs, -1))
             # temporal average pooling
