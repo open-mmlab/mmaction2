@@ -78,18 +78,6 @@ def turn_off_pretrained(cfg):
 
 def inference_pytorch(args, cfg, distributed, data_loader):
     """Get predictions by pytorch models."""
-    if args.average_clips is not None:
-        # You can set average_clips during testing, it will override the
-        # original setting
-        if cfg.model.get('test_cfg') is None and cfg.get('test_cfg') is None:
-            cfg.model.setdefault('test_cfg',
-                                 dict(average_clips=args.average_clips))
-        else:
-            if cfg.model.get('test_cfg') is not None:
-                cfg.model.test_cfg.average_clips = args.average_clips
-            else:
-                cfg.test_cfg.average_clips = args.average_clips
-
     # remove redundant pretrain steps for testing
     turn_off_pretrained(cfg.model)
 
@@ -163,7 +151,7 @@ def main():
     videos = open(args.video_list).readlines()
     videos = [x.strip() for x in videos]
 
-    timestamp = datetime.now().strfttime('%Y%m%d_%H%M%S')
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     fake_anno = f'fake_anno_{timestamp}.txt'
     with open(fake_anno, 'w') as fout:
         lines = [x + ' 0' for x in videos]
