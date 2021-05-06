@@ -22,20 +22,26 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
 
     Args:
         backbone (dict): Backbone modules to extract feature.
-        cls_head (dict): Classification head to process feature.
+        cls_head (dict | None): Classification head to process feature.
+            Default: None.
+        feature_extraction (bool): Perform feature extraction instead of
+            recognition. Default: False.
+        neck (dict | None): Neck for feature fusion. Default: None.
         train_cfg (dict | None): Config for training. Default: None.
         test_cfg (dict | None): Config for testing. Default: None.
     """
 
     def __init__(self,
                  backbone,
-                 cls_head,
+                 cls_head=None,
+                 feature_extraction=False,
                  neck=None,
                  train_cfg=None,
                  test_cfg=None):
         super().__init__()
         # record the source of the backbone
         self.backbone_from = 'mmaction2'
+        self.feature_extraction = feature_extraction
 
         if backbone['type'].startswith('mmcls.'):
             try:
@@ -63,7 +69,8 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
 
         if neck is not None:
             self.neck = builder.build_neck(neck)
-        self.cls_head = builder.build_head(cls_head)
+
+        self.cls_head = builder.build_head(cls_head) if cls_head else None
 
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
@@ -93,8 +100,13 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
 
     @property
     def with_neck(self):
-        """bool: whether the detector has a neck"""
+        """bool: whether the recognizer has a neck"""
         return hasattr(self, 'neck') and self.neck is not None
+
+    @property
+    def with_cls_head(self):
+        """bool: whether the recognizer has a cls_head"""
+        return hasattr(self, 'cls_head') and self.cls_head is not None
 
     def init_weights(self):
         """Initialize the model network weights."""
@@ -109,7 +121,8 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
             raise NotImplementedError('Unsupported backbone source '
                                       f'{self.backbone_from}!')
 
-        self.cls_head.init_weights()
+        if self.with_cls_head:
+            self.cls_head.init_weights()
         if self.with_neck:
             self.neck.init_weights()
 
