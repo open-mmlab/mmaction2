@@ -53,7 +53,7 @@ class Recognizer3D(BaseRecognizer):
             if isinstance(feats[0], tuple):
                 len_tuple = len(feats[0])
                 feat = [
-                    torch.cat([x[i] for i in range(len_tuple)]) for x in feats
+                    torch.cat([x[i] for x in feats]) for i in range(len_tuple)
                 ]
                 feat = tuple(feat)
             else:
