@@ -1,9 +1,9 @@
 import torch
 import torch.nn as nn
 from einops import rearrange
-from mmcv.cnn import build_norm_layer
-from mmcv.cnn.bricks.registry import ATTENTION
-from mmcv.cnn.bricks.transformer import build_dropout
+from mmcv.cnn import build_norm_layer, constant_init
+from mmcv.cnn.bricks.registry import ATTENTION, FEEDFORWARD_NETWORK
+from mmcv.cnn.bricks.transformer import FFN, build_dropout
 from mmcv.runner.base_module import BaseModule
 
 
@@ -30,6 +30,11 @@ class DividedTemporalAttentionWithNorm(BaseModule):
         self.norm = build_norm_layer(norm_cfg, self.embed_dims)[1]
         self.temporal_fc = nn.Linear(self.embed_dims, self.embed_dims)
 
+        self.init_weights()
+
+    def init_weights(self):
+        constant_init(self.temporal_fc, val=0, bias=0)
+
     def forward(self, query, key=None, value=None, residual=None, **kwargs):
         assert residual is None, (
             'Cannot apply pre-norm with DividedTemporalAttentionWithNorm')
@@ -42,16 +47,18 @@ class DividedTemporalAttentionWithNorm(BaseModule):
         p, t = pt // self.num_frames, self.num_frames
 
         # res_temporal [batch_size * num_patches, num_frames, embed_dims]
-        query_t = self.norm(query_t.view(b * p, t, m))
-        res_temporal = self.dropout_layer(
-            self.attn(query_t, query_t, query_t)[0])
+        query_t = self.norm(query_t.reshape(b * p, t, m)).permute(1, 0, 2)
+        res_temporal = self.attn(query_t, query_t, query_t)[0].permute(1, 0, 2)
+        res_temporal = self.dropout_layer(res_temporal.contiguous())
         res_temporal = self.temporal_fc(res_temporal)
 
         # res_temporal [batch_size, num_patches * num_frames, embed_dims]
-        res_temporal = res_temporal.view(b, p * t, m)
+        res_temporal = res_temporal.reshape(b, p * t, m)
 
         # ret_value [batch_size, num_patches * num_frames + 1, embed_dims]
-        return torch.cat((init_cls_token, identity + res_temporal), 1)
+        new_query_t = identity + res_temporal
+        new_query = torch.cat((init_cls_token, new_query_t), 1)
+        return new_query
 
 
 @ATTENTION.register_module()
@@ -89,19 +96,20 @@ class DividedSpatialAttentionWithNorm(BaseModule):
         p, t = pt // self.num_frames, self.num_frames
 
         # cls_token [batch_size * num_frames, 1, embed_dims]
-        cls_token = init_cls_token.repeat(1, t, 1).view(b * t, m).unsqueeze(1)
+        cls_token = init_cls_token.repeat(1, t, 1).reshape(b * t,
+                                                           m).unsqueeze(1)
 
         # query_s [batch_size * num_frames, num_patches + 1, embed_dims]
         query_s = rearrange(query_s, 'b (p t) m -> (b t) p m', p=p, t=t)
         query_s = torch.cat((cls_token, query_s), 1)
-        query_s = self.norm(query_s)
 
         # res_spatial [batch_size * num_frames, num_patches + 1, embed_dims]
-        res_spatial = self.dropout_layer(
-            self.attn(query_s, query_s, query_s)[0])
+        query_s = self.norm(query_s).permute(1, 0, 2)
+        res_spatial = self.attn(query_s, query_s, query_s)[0].permute(1, 0, 2)
+        res_spatial = self.dropout_layer(res_spatial.contiguous())
 
         # cls_token [batch_size, 1, embed_dims]
-        cls_token = res_spatial[:, 0, :].view(b, t, m)
+        cls_token = res_spatial[:, 0, :].reshape(b, t, m)
         cls_token = torch.mean(cls_token, 1, True)
 
         # res_spatial [batch_size * num_frames, num_patches + 1, embed_dims]
@@ -109,4 +117,17 @@ class DividedSpatialAttentionWithNorm(BaseModule):
             res_spatial[:, 1:, :], '(b t) p m -> b (p t) m', p=p, t=t)
         res_spatial = torch.cat((cls_token, res_spatial), 1)
 
-        return identity + res_spatial
+        new_query = identity + res_spatial
+        return new_query
+
+
+@FEEDFORWARD_NETWORK.register_module()
+class FFNWithNorm(FFN):
+
+    def __init__(self, *args, norm_cfg=dict(type='LN'), **kwargs):
+        super().__init__(*args, **kwargs)
+        self.norm = build_norm_layer(norm_cfg, self.embed_dims)[1]
+
+    def forward(self, x, residual=None):
+        assert residual is None, ('Cannot apply pre-norm with FFNWithNorm')
+        return super().forward(self.norm(x), x)
