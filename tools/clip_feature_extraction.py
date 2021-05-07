@@ -78,14 +78,17 @@ def turn_off_pretrained(cfg):
             turn_off_pretrained(sub_cfg)
 
 
-def text2tensor(text):
+def text2tensor(text, size=256):
     nums = [ord(x) for x in text]
+    assert len(nums) < size
+    nums.extend([0] * (size - len(nums)))
     nums = np.array(nums, dtype=np.uint8)
     return torch.from_numpy(nums)
 
 
 def tensor2text(tensor):
-    chars = [chr(x) for x in tensor]
+    # 0 may not occur in a string
+    chars = [chr(x) for x in tensor if x != 0]
     return ''.join(chars)
 
 
@@ -162,9 +165,17 @@ def main():
     cfg.data.test.test_mode = True
     cfg.data.test.data_prefix = args.video_root
 
+    # init distributed env first, since logger depends on the dist info.
+    if args.launcher == 'none':
+        distributed = False
+    else:
+        distributed = True
+        init_dist(args.launcher, **cfg.dist_params)
+
     rank, _ = get_dist_info()
 
-    fname_tensor = None
+    size = 256
+    fname_tensor = torch.zeros(size, dtype=torch.uint8)
     if rank == 0:
         videos = open(args.video_list).readlines()
         videos = [x.strip() for x in videos]
@@ -174,19 +185,13 @@ def main():
         with open(fake_anno, 'w') as fout:
             lines = [x + ' 0' for x in videos]
             fout.write('\n'.join(lines))
-        fname_tensor = text2tensor(fake_anno)
+        fname_tensor = text2tensor(fake_anno, size).cuda()
 
-    dist.broadcast(fname_tensor, src=0)
+    if distributed:
+        dist.broadcast(fname_tensor.cuda(), src=0)
+
     fname = tensor2text(fname_tensor)
-
     cfg.data.test.ann_file = fname
-
-    # init distributed env first, since logger depends on the dist info.
-    if args.launcher == 'none':
-        distributed = False
-    else:
-        distributed = True
-        init_dist(args.launcher, **cfg.dist_params)
 
     # The flag is used to register module's hooks
     cfg.setdefault('module_hooks', [])
