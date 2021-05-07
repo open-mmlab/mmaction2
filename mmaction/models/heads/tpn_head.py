@@ -1,6 +1,6 @@
 import torch.nn as nn
 
-from ..registry import HEADS
+from ..builder import HEADS
 from .tsn_head import TSNHead
 
 

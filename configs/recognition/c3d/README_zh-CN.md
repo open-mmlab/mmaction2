@@ -2,7 +2,7 @@
 
 ## 简介
 
-[ALGORITHM]
+<!-- [ALGORITHM] -->
 
 ```BibTeX
 @ARTICLE{2014arXiv1412.0767T,

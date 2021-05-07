@@ -1,4 +1,4 @@
-from .registry import DATASETS
+from .builder import DATASETS
 from .video_dataset import VideoDataset
 
 

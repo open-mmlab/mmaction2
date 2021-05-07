@@ -2,7 +2,7 @@
 
 ## Introduction
 
-[ALGORITHM]
+<!-- [ALGORITHM] -->
 
 ```BibTeX
 @inproceedings{feichtenhofer2019slowfast,

@@ -28,7 +28,7 @@ class TestCrops:
         results = dict(imgs=imgs)
         random_crop = RandomCrop(size=224)
         results['gt_bboxes'] = np.array([[0, 0, 340, 224]])
-        results['proposals'] = None
+        results['proposals'] = np.array([[0, 0, 340, 224]])
         random_crop_result = random_crop(results)
         assert assert_dict_has_keys(random_crop_result, target_keys)
         assert check_crop(imgs, random_crop_result['imgs'],
@@ -75,7 +75,7 @@ class TestCrops:
         imgs = list(np.random.rand(2, 256, 341, 3))
         results = dict(imgs=imgs)
         results['gt_bboxes'] = np.array([[0, 0, 340, 256]])
-        results['proposals'] = None
+        results['proposals'] = np.array([[0, 0, 340, 256]])
 
         with pytest.raises(AssertionError):
             # area_range[0] > area_range[1], which is wrong
@@ -142,7 +142,7 @@ class TestCrops:
         imgs = list(np.random.rand(2, 256, 341, 3))
         results = dict(imgs=imgs)
         results['gt_bboxes'] = np.array([[0, 0, 340, 256]])
-        results['proposals'] = None
+        results['proposals'] = np.array([[0, 0, 340, 256]])
         config = dict(
             input_size=224,
             scales=(1, 0.8),
@@ -212,7 +212,7 @@ class TestCrops:
         imgs = list(np.random.rand(2, 240, 320, 3))
         results = dict(imgs=imgs)
         results['gt_bboxes'] = np.array([[0, 0, 320, 240]])
-        results['proposals'] = None
+        results['proposals'] = np.array([[0, 0, 320, 240]])
         center_crop = CenterCrop(crop_size=224)
         center_crop_results = center_crop(results)
         target_keys = ['imgs', 'crop_bbox', 'img_shape']

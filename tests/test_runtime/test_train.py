@@ -9,7 +9,7 @@ from mmcv import Config
 from torch.utils.data import Dataset
 
 from mmaction.apis import train_model
-from mmaction.datasets.registry import DATASETS
+from mmaction.datasets import DATASETS
 
 
 @DATASETS.register_module()

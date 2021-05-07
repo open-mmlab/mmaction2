@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from ..registry import LOSSES
+from ..builder import LOSSES
 from .binary_logistic_regression_loss import binary_logistic_regression_loss
 
 

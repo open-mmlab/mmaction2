@@ -1,4 +1,5 @@
 import sys
+import warnings
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
@@ -6,8 +7,19 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, Dataset
 
-from mmaction.apis.test import (collect_results_cpu, multi_gpu_test,
-                                single_gpu_test)
+# TODO import test functions from mmcv and delete them from mmaction2
+try:
+    from mmcv.engine import (collect_results_cpu, multi_gpu_test,
+                             single_gpu_test)
+    pytest.skip(
+        'Test functions are supported in MMCV', allow_module_level=True)
+except (ImportError, ModuleNotFoundError):
+    warnings.warn(
+        'DeprecationWarning: single_gpu_test, multi_gpu_test, '
+        'collect_results_cpu, collect_results_gpu from mmaction2 will be '
+        'deprecated. Please install mmcv through master branch.')
+    from mmaction.apis.test import (collect_results_cpu, multi_gpu_test,
+                                    single_gpu_test)
 
 
 class OldStyleModel(nn.Module):

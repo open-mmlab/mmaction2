@@ -7,7 +7,7 @@ from mmcv.utils import _BatchNorm
 from torch.nn.modules.utils import _ntuple, _triple
 
 from ...utils import get_root_logger
-from ..registry import BACKBONES
+from ..builder import BACKBONES
 
 try:
     from mmdet.models.builder import SHARED_HEADS as MMDET_SHARED_HEADS

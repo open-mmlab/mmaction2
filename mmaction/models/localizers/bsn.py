@@ -4,8 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from ...localization import temporal_iop
-from ..builder import build_loss
-from ..registry import LOCALIZERS
+from ..builder import LOCALIZERS, build_loss
 from .base import BaseLocalizer
 from .utils import post_processing
 

@@ -3,6 +3,7 @@
 # set up environment
 conda env create -f environment.yml
 source activate gym
+pip install mmcv
 pip install --upgrade youtube-dl
 
 DATA_DIR="../../../data/gym"

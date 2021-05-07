@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 from mmaction.utils import import_module_error_func
-from ..registry import BACKBONES
+from ..builder import BACKBONES
 from .resnet_tsm import ResNetTSM
 
 try:

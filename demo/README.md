@@ -5,8 +5,9 @@
 - [Video demo](#video-demo): A demo script to predict the recognition result using a single video.
 - [SpatioTemporal Action Detection Video Demo](#spatiotemporal-action-detection-video-demo): A demo script to predict the SpatioTemporal Action Detection result using a single video.
 - [Video GradCAM Demo](#video-gradcam-demo): A demo script to visualize GradCAM results using a single video.
-- [Webcam demo](#webcam-demo): A demo script to implement real-time action recognition from web camera.
+- [Webcam demo](#webcam-demo): A demo script to implement real-time action recognition from a web camera.
 - [Long Video demo](#long-video-demo): a demo script to predict different labels using a single long video.
+- [SpatioTempoval Action Detection Webcam Demo](#spatiotemporal-action-detection-webcam-demo): A demo script to implement real-time spatio-temporval action detection from a web camera.
 
 ## Video demo
 
@@ -143,7 +144,7 @@ Optional arguments:
 - `HUMAN_DETECTION_CHECKPOINT`: The human detection checkpoint URL.
 - `HUMAN_DETECTION_SCORE_THRE`: The score threshold for human detection. Default: 0.9.
 - `ACTION_DETECTION_SCORE_THRESHOLD`: The score threshold for action detection. Default: 0.5.
-- `LABEL_MAP`: The label map used. Default: `demo/label_map_ava.txt`
+- `LABEL_MAP`: The label map used. Default: `demo/label_map_ava.txt`.
 - `DEVICE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`.  Default: `cuda:0`.
 - `OUTPUT_FILENAME`: Path to the output file which is a video format. Default: `demo/stdet_demo.mp4`.
 - `PREDICT_STEPSIZE`: Make a prediction per N frames.  Default: 8.
@@ -326,3 +327,82 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
     python demo/long_video_demo.py configs/recognition/i3d/i3d_r50_video_inference_32x2x1_100e_kinetics400_rgb.py \
       checkpoints/i3d_r50_256p_32x2x1_100e_kinetics400_rgb_20200801-7d9f44de.pth PATH_TO_LONG_VIDEO demo/label_map_k400.txt PATH_TO_SAVED_VIDEO \
     ```
+
+## SpatioTemporal Action Detection Webcam Demo
+
+We provide a demo script to implement real-time spatio-temporal action detection from a web camera.
+
+```shell
+python demo/webcam_demo_spatiotemporal_det.py \
+    [--config ${SPATIOTEMPORAL_ACTION_DETECTION_CONFIG_FILE}] \
+    [--checkpoint ${SPATIOTEMPORAL_ACTION_DETECTION_CHECKPOINT}] \
+    [--action-score-thr ${ACTION_DETECTION_SCORE_THRESHOLD}] \
+    [--det-config ${HUMAN_DETECTION_CONFIG_FILE}] \
+    [--det-checkpoint ${HUMAN_DETECTION_CHECKPOINT}] \
+    [--det-score-thr ${HUMAN_DETECTION_SCORE_THRESHOLD}] \
+    [--input-video] ${INPUT_VIDEO} \
+    [--label-map ${LABEL_MAP}] \
+    [--device ${DEVICE}] \
+    [--output-fps ${OUTPUT_FPS}] \
+    [--out-filename ${OUTPUT_FILENAME}] \
+    [--show] \
+    [--display-height] ${DISPLAY_HEIGHT} \
+    [--display-width] ${DISPLAY_WIDTH} \
+    [--predict-stepsize ${PREDICT_STEPSIZE}] \
+    [--clip-vis-length] ${CLIP_VIS_LENGTH}
+```
+
+Optional arguments:
+
+- `SPATIOTEMPORAL_ACTION_DETECTION_CONFIG_FILE`: The spatiotemporal action detection config file path.
+- `SPATIOTEMPORAL_ACTION_DETECTION_CHECKPOINT`: The spatiotemporal action detection checkpoint path or URL.
+- `ACTION_DETECTION_SCORE_THRESHOLD`: The score threshold for action detection. Default: 0.4.
+- `HUMAN_DETECTION_CONFIG_FILE`: The human detection config file path.
+- `HUMAN_DETECTION_CHECKPOINT`: The human detection checkpoint URL.
+- `HUMAN_DETECTION_SCORE_THRE`: The score threshold for human detection. Default: 0.9.
+- `INPUT_VIDEO`: The webcam id or video path of the source. Default: `0`.
+- `LABEL_MAP`: The label map used. Default: `demo/label_map_ava.txt`.
+- `DEVICE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`.  Default: `cuda:0`.
+- `OUTPUT_FPS`: The FPS of demo video output. Default: 15.
+- `OUTPUT_FILENAME`: Path to the output file which is a video format. Default: None.
+- `--show`: Whether to show predictions with `cv2.imshow`.
+- `DISPLAY_HEIGHT`: The height of the display frame. Default: 0.
+- `DISPLAY_WIDTH`: The width of the display frame. Default: 0. If `DISPLAY_HEIGHT <= 0 and DISPLAY_WIDTH <= 0`, the display frame and input video share the same shape.
+- `PREDICT_STEPSIZE`: Make a prediction per N frames. Default: 8.
+- `CLIP_VIS_LENGTH`: The number of the draw frames for each clip. In other words, for each clip, there are at most `CLIP_VIS_LENGTH` frames to be draw around the keyframe. DEFAULT: 8.
+
+Tips to get a better experience for webcam demo:
+
+- How to choose `--output-fps`?
+
+  - `--output-fps` should be almost equal to read thread fps.
+  - Read thread fps is printed by logger in format `DEBUG:__main__:Read Thread: {duration} ms, {fps} fps`
+
+- How to choose `--predict-stepsize`?
+
+  - It's related to how to choose human detector and spatio-temporval model.
+  - Overall, the duration of read thread for each task should be greater equal to that of model inference.
+  - The durations for read/inference are both printed by logger.
+  - Larger `--predict-stepsize` leads to larger duration for read thread.
+  - In order to fully take the advantage of computation resources, decrease the value of `--predict-stepsize`.
+
+Examples:
+
+Assume that you are located at `$MMACTION2` .
+
+1. Use the Faster RCNN as the human detector, SlowOnly-8x8-R101 as the action detector. Making predictions per 40 frames, and FPS of the output is 20. Show predictions with `cv2.imshow`.
+
+```shell
+python demo/webcam_demo_spatiotemporal_det.py \
+    --input-video 0 \
+    --config configs/detection/ava/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb.py \
+    --checkpoint https://download.openmmlab.com/mmaction/detection/ava/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb_20201217-16378594.pth \
+    --det-config demo/faster_rcnn_r50_fpn_2x_coco.py \
+    --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
+    --det-score-thr 0.9 \
+    --action-score-thr 0.5 \
+    --label-map demo/label_map_ava.txt \
+    --predict-stepsize 40 \
+    --output-fps 20 \
+    --show
+```

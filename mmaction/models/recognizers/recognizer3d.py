@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 
-from ..registry import RECOGNIZERS
+from ..builder import RECOGNIZERS
 from .base import BaseRecognizer
 
 

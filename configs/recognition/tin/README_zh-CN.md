@@ -2,7 +2,7 @@
 
 ## 简介
 
-[ALGORITHM]
+<!-- [ALGORITHM] -->
 
 ```BibTeX
 @article{shao2020temporal,

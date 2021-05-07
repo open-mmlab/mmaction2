@@ -4,7 +4,7 @@ import torch
 import torch.nn.functional as F
 from torch.distributions.beta import Beta
 
-from .registry import BLENDINGS
+from .builder import BLENDINGS
 
 __all__ = ['BaseMiniBatchBlending', 'MixupBlending', 'CutmixBlending']
 

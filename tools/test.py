@@ -12,10 +12,19 @@ from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
 from mmcv.runner import get_dist_info, init_dist, load_checkpoint
 from mmcv.runner.fp16_utils import wrap_fp16_model
 
-from mmaction.apis import multi_gpu_test, single_gpu_test
 from mmaction.datasets import build_dataloader, build_dataset
 from mmaction.models import build_model
 from mmaction.utils import register_module_hooks
+
+# TODO import test functions from mmcv and delete them from mmaction2
+try:
+    from mmcv.engine import multi_gpu_test, single_gpu_test
+except (ImportError, ModuleNotFoundError):
+    warnings.warn(
+        'DeprecationWarning: single_gpu_test, multi_gpu_test, '
+        'collect_results_cpu, collect_results_gpu from mmaction2 will be '
+        'deprecated. Please install mmcv through master branch.')
+    from mmaction.apis import multi_gpu_test, single_gpu_test
 
 
 def parse_args():

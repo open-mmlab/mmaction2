@@ -23,7 +23,7 @@ Assume you want to add an optimizer named as `MyOptimizer`, which has arguments 
 You need to first implement the new optimizer in a file, e.g., in `mmaction/core/optimizer/my_optimizer.py`:
 
 ```python
-from .registry import OPTIMIZERS
+from mmcv.runner import OPTIMIZERS
 from torch.optim import Optimizer
 
 @OPTIMIZERS.register_module()
@@ -118,7 +118,7 @@ Here we show how to develop new components with an example of TSN.
     ```python
     import torch.nn as nn
 
-    from ..registry import BACKBONES
+    from ..builder import BACKBONES
 
     @BACKBONES.register_module()
     class ResNet(nn.Module):
@@ -161,7 +161,7 @@ Here we show how to develop a new head with the example of TSNHead as the follow
     and overwrite `init_weights(self)` and `forward(self, x)` method.
 
     ```python
-    from ..registry import HEADS
+    from ..builder import HEADS
     from .base import BaseHead
 
 

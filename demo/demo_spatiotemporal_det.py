@@ -318,6 +318,13 @@ def main():
     img_norm_cfg['std'] = np.array(img_norm_cfg['std'])
 
     # Build STDET model
+    try:
+        # In our spatiotemporal detection demo, different actions should have
+        # the same number of bboxes.
+        config['model']['test_cfg']['rcnn']['action_thr'] = .0
+    except KeyError:
+        pass
+
     config.model.backbone.pretrained = None
     model = build_detector(config.model, test_cfg=config.get('test_cfg'))
 
@@ -357,7 +364,7 @@ def main():
             for i in range(len(result)):
                 if i + 1 not in label_map:
                     continue
-                for j in range(result[i].shape[0]):
+                for j in range(proposal.shape[0]):
                     if result[i][j, 4] > args.action_score_thr:
                         prediction[j].append((label_map[i + 1], result[i][j,
                                                                           4]))
