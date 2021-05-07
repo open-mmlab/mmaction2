@@ -23,7 +23,7 @@ from mmaction.utils import register_module_hooks
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='MMAction2 test (and eval) a model')
+        description='MMAction2 clip-level feature extraction')
     parser.add_argument('config', help='test config file path')
     parser.add_argument('checkpoint', help='checkpoint file')
     parser.add_argument('--video-list', help='video file list')

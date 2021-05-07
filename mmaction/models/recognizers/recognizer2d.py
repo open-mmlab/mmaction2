@@ -121,8 +121,6 @@ class Recognizer2D(BaseRecognizer):
             x = x.reshape((-1, num_segs) +
                           x.shape[1:]).transpose(1, 2).contiguous()
 
-        assert not self.feature_extraction
-        assert self.with_cls_head
         # When using `TSNHead` or `TPNHead`, shape is [batch_size, num_classes]
         # When using `TSMHead`, shape is [batch_size * num_crops, num_classes]
         # `num_crops` is calculated by:
@@ -143,6 +141,8 @@ class Recognizer2D(BaseRecognizer):
         testing."""
         if self.test_cfg.get('fcn_test', False):
             # If specified, spatially fully-convolutional testing is performed
+            assert not self.feature_extraction
+            assert self.with_cls_head
             return self._do_fcn_test(imgs).cpu().numpy()
         return self._do_test(imgs).cpu().numpy()
 
