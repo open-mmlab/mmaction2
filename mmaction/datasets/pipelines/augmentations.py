@@ -59,6 +59,9 @@ class PoseCompact:
     example, if 'padding == 0.25', then the expanded box has unchanged center,
     and 1.25x width and height.
 
+    Required keys in results are "img_shape", "keypoint", add or modified keys
+    are "img_shape", "keypoint", "crop_quadruple".
+
     Args:
         padding (float): The padding size. Default: 0.25.
         threshold (int): The threshold for the tight bounding box. If the width
