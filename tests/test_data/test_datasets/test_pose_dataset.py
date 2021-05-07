@@ -48,7 +48,7 @@ class TestPoseDataset(BaseTestDataset):
             ann_file=ann_file,
             pipeline=[],
             valid_ratio=0.3,
-            box_thre='0.7',
+            box_thr='0.7',
             data_prefix=data_prefix,
             class_prob=class_prob)
 
