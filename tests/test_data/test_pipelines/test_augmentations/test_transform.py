@@ -181,3 +181,9 @@ class TestPoseCompact:
         inp = copy.deepcopy(results)
         ret = pose_compact(inp)
         assert ret['img_shape'] == (100, 100)
+
+        pose_compact = PoseCompact(
+            padding=0, threshold=0, hw_ratio=0.75, allow_imgpad=True)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (80, 106)

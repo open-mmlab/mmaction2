@@ -2,6 +2,7 @@ import copy as cp
 from collections import defaultdict
 
 import numpy as np
+import pytest
 from mmcv import dump
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
@@ -45,6 +46,15 @@ class TestPoseLoading:
         assert_array_equal(sampling_results['frame_inds'],
                            np.array([0, 1, 2, 3, 4, 5, 6, 0]))
 
+        results = dict(total_frames=7, start_index=0)
+        sampling = UniformSampleFrames(
+            clip_len=8, num_clips=8, test_mode=True, seed=0)
+        sampling_results = sampling(results)
+        assert sampling_results['clip_len'] == 8
+        assert sampling_results['frame_interval'] is None
+        assert sampling_results['num_clips'] == 8
+        assert len(sampling_results['frame_inds']) == 64
+
         results = dict(total_frames=64, start_index=0)
         sampling = UniformSampleFrames(
             clip_len=8, num_clips=4, test_mode=True, seed=0)
@@ -60,6 +70,24 @@ class TestPoseLoading:
             ]))
 
         results = dict(total_frames=64, start_index=0)
+        sampling = UniformSampleFrames(
+            clip_len=8, num_clips=1, test_mode=False, seed=0)
+        sampling_results = sampling(results)
+        assert sampling_results['clip_len'] == 8
+        assert sampling_results['frame_interval'] is None
+        assert sampling_results['num_clips'] == 1
+        assert len(sampling_results['frame_inds']) == 8
+
+        results = dict(total_frames=7, start_index=0)
+        sampling = UniformSampleFrames(
+            clip_len=8, num_clips=1, test_mode=False, seed=0)
+        sampling_results = sampling(results)
+        assert sampling_results['clip_len'] == 8
+        assert sampling_results['frame_interval'] is None
+        assert sampling_results['num_clips'] == 1
+        assert len(sampling_results['frame_inds']) == 8
+
+        results = dict(total_frames=15, start_index=0)
         sampling = UniformSampleFrames(
             clip_len=8, num_clips=1, test_mode=False, seed=0)
         sampling_results = sampling(results)
@@ -124,6 +152,10 @@ class TestPoseLoading:
             frame_inds=frame_inds)
 
         inp = cp.deepcopy(results)
+
+        with pytest.raises(NotImplementedError):
+            LoadKineticsPose(squeeze=True, max_person=100, source='xxx')
+
         load_kinetics_pose = LoadKineticsPose(
             squeeze=True, max_person=100, source='openpose')
 
@@ -207,6 +239,15 @@ class TestPoseLoading:
         assert_array_almost_equal(return_results['imgs'][0],
                                   return_results['imgs'][1])
 
+        results = dict(img_shape=img_shape, keypoint=kp, modality='Pose')
+
+        generate_pose_target = GeneratePoseTarget(
+            sigma=1, with_kp=True, left=(0, ), right=(1, ), skeletons=())
+        return_results = generate_pose_target(results)
+        assert return_results['imgs'].shape == (8, 64, 64, 3)
+        assert_array_almost_equal(return_results['imgs'][0],
+                                  return_results['imgs'][1])
+
         generate_pose_target = GeneratePoseTarget(
             sigma=1,
             with_kp=False,
@@ -246,3 +287,73 @@ class TestPoseLoading:
         assert_array_almost_equal(imgs[:8, 2], imgs[8:, 2, :, ::-1])
         assert_array_almost_equal(imgs[:8, 0], imgs[8:, 1, :, ::-1])
         assert_array_almost_equal(imgs[:8, 1], imgs[8:, 0, :, ::-1])
+
+        img_shape = (64, 64)
+        kp = np.array([[[[24, 24], [40, 40], [24, 40]]]])
+        kpscore = np.array([[[0., 0., 0.]]])
+        kp = np.concatenate([kp] * 8, axis=1)
+        kpscore = np.concatenate([kpscore] * 8, axis=1)
+        results = dict(
+            img_shape=img_shape,
+            keypoint=kp,
+            keypoint_score=kpscore,
+            modality='Pose')
+        generate_pose_target = GeneratePoseTarget(
+            sigma=1, with_kp=True, left=(0, ), right=(1, ), skeletons=())
+        return_results = generate_pose_target(results)
+        assert_array_almost_equal(return_results['imgs'], 0)
+
+        img_shape = (64, 64)
+        kp = np.array([[[[24, 24], [40, 40], [24, 40]]]])
+        kpscore = np.array([[[0., 0., 0.]]])
+        kp = np.concatenate([kp] * 8, axis=1)
+        kpscore = np.concatenate([kpscore] * 8, axis=1)
+        results = dict(
+            img_shape=img_shape,
+            keypoint=kp,
+            keypoint_score=kpscore,
+            modality='Pose')
+        generate_pose_target = GeneratePoseTarget(
+            sigma=1,
+            with_kp=False,
+            with_limb=True,
+            left=(0, ),
+            right=(1, ),
+            skeletons=((0, 1), (1, 2), (0, 2)))
+        return_results = generate_pose_target(results)
+        assert_array_almost_equal(return_results['imgs'], 0)
+
+        img_shape = (64, 64)
+        kp = np.array([[[[124, 124], [140, 140], [124, 140]]]])
+        kpscore = np.array([[[0., 0., 0.]]])
+        kp = np.concatenate([kp] * 8, axis=1)
+        kpscore = np.concatenate([kpscore] * 8, axis=1)
+        results = dict(
+            img_shape=img_shape,
+            keypoint=kp,
+            keypoint_score=kpscore,
+            modality='Pose')
+        generate_pose_target = GeneratePoseTarget(
+            sigma=1, with_kp=True, left=(0, ), right=(1, ), skeletons=())
+        return_results = generate_pose_target(results)
+        assert_array_almost_equal(return_results['imgs'], 0)
+
+        img_shape = (64, 64)
+        kp = np.array([[[[124, 124], [140, 140], [124, 140]]]])
+        kpscore = np.array([[[0., 0., 0.]]])
+        kp = np.concatenate([kp] * 8, axis=1)
+        kpscore = np.concatenate([kpscore] * 8, axis=1)
+        results = dict(
+            img_shape=img_shape,
+            keypoint=kp,
+            keypoint_score=kpscore,
+            modality='Pose')
+        generate_pose_target = GeneratePoseTarget(
+            sigma=1,
+            with_kp=False,
+            with_limb=True,
+            left=(0, ),
+            right=(1, ),
+            skeletons=((0, 1), (1, 2), (0, 2)))
+        return_results = generate_pose_target(results)
+        assert_array_almost_equal(return_results['imgs'], 0)

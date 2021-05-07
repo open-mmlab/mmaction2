@@ -490,6 +490,24 @@ def test_slowonly_backbone():
     so_50.init_weights()
     so_50.train()
 
+    # test SlowOnly for PoseC3D
+    so_50 = ResNet3dSlowOnly(
+        depth=50,
+        pretrained=None,
+        in_channels=17,
+        base_channels=32,
+        num_stages=3,
+        out_indices=(2, ),
+        stage_blocks=(4, 6, 3),
+        conv1_stride_s=1,
+        pool1_stride_s=1,
+        inflate=(0, 1, 1),
+        spatial_strides=(2, 2, 2),
+        temporal_strides=(1, 1, 2),
+        dilations=(1, 1, 1))
+    so_50.init_weights()
+    so_50.train()
+
     # SlowOnly inference test
     input_shape = (1, 3, 8, 64, 64)
     imgs = generate_backbone_demo_inputs(input_shape)

@@ -43,6 +43,15 @@ class TestPoseDataset(BaseTestDataset):
             assert np.all(item['box_score'][item['anno_inds']] >= 0.7)
             assert item['valid@0.7'] / item['total_frames'] >= 0.3
 
+        class_prob = {i: 1 for i in range(400)}
+        dataset = PoseDataset(
+            ann_file=ann_file,
+            pipeline=[],
+            valid_ratio=0.3,
+            box_thre='0.7',
+            data_prefix=data_prefix,
+            class_prob=class_prob)
+
         with pytest.raises(AssertionError):
             dataset = PoseDataset(
                 ann_file=ann_file,
