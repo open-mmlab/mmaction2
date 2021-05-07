@@ -175,7 +175,7 @@ def main():
     rank, _ = get_dist_info()
 
     size = 256
-    fname_tensor = torch.zeros(size, dtype=torch.uint8)
+    fname_tensor = torch.zeros(size, dtype=torch.uint8).cuda()
     if rank == 0:
         videos = open(args.video_list).readlines()
         videos = [x.strip() for x in videos]
