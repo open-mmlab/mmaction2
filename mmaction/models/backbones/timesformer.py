@@ -74,6 +74,7 @@ class TimeSformer(nn.Module):
                  patch_size,
                  pretrained=None,
                  embed_dims=768,
+                 num_layers=12,
                  in_channels=3,
                  drop_rate=0.,
                  transformer_layers=None,
@@ -85,6 +86,7 @@ class TimeSformer(nn.Module):
             f'Unsupported Attention Type {self.attention_type}!')
         self.pretrained = pretrained
         self.embed_dims = embed_dims
+        self.num_layers = num_layers
         self.attention_type = attention_type
         self.patch_embed = PatchEmbed(
             img_size=img_size,
@@ -103,70 +105,76 @@ class TimeSformer(nn.Module):
             self.drop_after_time = nn.Dropout(p=drop_rate)
 
         if transformer_layers is None:
+            # stochastic depth decay rule
+            dpr = [x.item() for x in torch.linspace(0, 0.1, num_layers)]
+
             if self.attention_type == 'divided_space_time':
-                transformer_layers = ConfigDict(
+                _transformerlayers_cfg = [
                     dict(
-                        type='TransformerLayerSequence',
-                        transformerlayers=dict(
-                            type='BaseTransformerLayer',
-                            attn_cfgs=[
-                                dict(
-                                    type='DividedTemporalAttentionWithNorm',
-                                    embed_dims=embed_dims,
-                                    num_heads=12,
-                                    num_frames=num_frames,
-                                    attn_drop=0.,
-                                    dropout_layer=dict(
-                                        type='DropPath', drop_prob=0.1),
-                                    norm_cfg=dict(type='LN', eps=1e-6)),
-                                dict(
-                                    type='DividedSpatialAttentionWithNorm',
-                                    embed_dims=embed_dims,
-                                    num_heads=12,
-                                    num_frames=num_frames,
-                                    attn_drop=0.,
-                                    dropout_layer=dict(
-                                        type='DropPath', drop_prob=0.1),
-                                    norm_cfg=dict(type='LN', eps=1e-6))
-                            ],
-                            ffn_cfgs=dict(
-                                type='FFNWithNorm',
+                        type='BaseTransformerLayer',
+                        attn_cfgs=[
+                            dict(
+                                type='DividedTemporalAttentionWithNorm',
                                 embed_dims=embed_dims,
-                                feedforward_channels=3072,
-                                num_fcs=2,
-                                ffn_drop=0.,
-                                act_cfg=dict(type='GELU'),
+                                num_heads=12,
+                                num_frames=num_frames,
+                                attn_drop=0.,
                                 dropout_layer=dict(
-                                    type='DropPath', drop_prob=0.1),
+                                    type='DropPath', drop_prob=dpr[i]),
                                 norm_cfg=dict(type='LN', eps=1e-6)),
-                            operation_order=('self_attn', 'self_attn', 'ffn')),
-                        num_layers=12))
-            else:
-                transformer_layers = ConfigDict(
-                    dict(
-                        type='TransformerLayerSequence',
-                        transformerlayers=dict(
-                            type='BaseTransformerLayer',
-                            attn_cfgs=[
-                                dict(
-                                    type='MultiheadAttention',
-                                    embed_dims=embed_dims,
-                                    num_heads=12,
-                                    dropout_layer=dict(
-                                        type='DropPath', drop_prob=0.1))
-                            ],
-                            ffn_cfgs=dict(
+                            dict(
+                                type='DividedSpatialAttentionWithNorm',
                                 embed_dims=embed_dims,
-                                feedforward_channels=3072,
-                                num_fcs=2,
-                                ffn_drop=0.,
-                                act_cfg=dict(type='GELU'),
+                                num_heads=12,
+                                num_frames=num_frames,
+                                attn_drop=0.,
                                 dropout_layer=dict(
-                                    type='DropPath', drop_prob=0.1)),
-                            operation_order=('norm', 'self_attn', 'norm',
-                                             'ffn'),
+                                    type='DropPath', drop_prob=dpr[i]),
+                                norm_cfg=dict(type='LN', eps=1e-6))
+                        ],
+                        ffn_cfgs=dict(
+                            type='FFNWithNorm',
+                            embed_dims=embed_dims,
+                            feedforward_channels=3072,
+                            num_fcs=2,
+                            ffn_drop=0.,
+                            act_cfg=dict(type='GELU'),
+                            dropout_layer=dict(
+                                type='DropPath', drop_prob=dpr[i]),
                             norm_cfg=dict(type='LN', eps=1e-6)),
-                        num_layers=12))
+                        operation_order=('self_attn', 'self_attn', 'ffn'))
+                    for i in range(num_layers)
+                ]
+            else:
+                _transformerlayers_cfg = [
+                    dict(
+                        type='BaseTransformerLayer',
+                        attn_cfgs=[
+                            dict(
+                                type='MultiheadAttention',
+                                embed_dims=embed_dims,
+                                num_heads=12,
+                                dropout_layer=dict(
+                                    type='DropPath', drop_prob=dpr[i]))
+                        ],
+                        ffn_cfgs=dict(
+                            embed_dims=embed_dims,
+                            feedforward_channels=3072,
+                            num_fcs=2,
+                            ffn_drop=0.,
+                            act_cfg=dict(type='GELU'),
+                            dropout_layer=dict(
+                                type='DropPath', drop_prob=dpr[i])),
+                        operation_order=('norm', 'self_attn', 'norm', 'ffn'),
+                        norm_cfg=dict(type='LN', eps=1e-6))
+                    for i in range(num_layers)
+                ]
+
+            transformer_layers = ConfigDict(
+                dict(
+                    type='TransformerLayerSequence',
+                    transformerlayers=_transformerlayers_cfg,
+                    num_layers=num_layers))
 
         self.transformer_layers = build_transformer_layer_sequence(
             transformer_layers)
@@ -174,15 +182,8 @@ class TimeSformer(nn.Module):
         self.norm = build_norm_layer(norm_cfg, embed_dims)[1]
 
     def init_weights(self, pretrained=None):
-        nn.init.normal_(self.pos_embed, std=.02)
-        if self.attention_type == 'divided_space_time':
-            # normal_init(
-            #     self.transformer_layers.layers[0].attentions[0].temporal_fc,
-            #     std=.02)
-            temporal_fc = self.transformer_layers.layers[0].attentions[
-                0].temporal_fc
-            trunc_normal_(temporal_fc.weight, std=.02)
-            nn.init.constant_(temporal_fc.bias, 0)
+        trunc_normal_(self.pos_embed, std=.02)
+        trunc_normal_(self.cls_token, std=.02)
 
         if pretrained:
             self.pretrained = pretrained

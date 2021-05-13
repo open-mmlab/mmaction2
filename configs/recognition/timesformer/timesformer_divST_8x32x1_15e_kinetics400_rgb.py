@@ -30,7 +30,7 @@ ann_file_test = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
 # img_norm_cfg = dict(
 #    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 img_norm_cfg = dict(
-    mean=[114.75, 114.75, 114.75], std=[57.375, 57.375, 57.375], to_bgr=False)
+    mean=[127.5, 127.5, 127.5], std=[127.5, 127.5, 127.5], to_bgr=False)
 
 mc_cfg = dict(
     server_list_cfg='/mnt/lustre/share/memcached_client/server_list.conf',
@@ -58,7 +58,6 @@ val_pipeline = [
     dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
-    dict(type='Flip', flip_ratio=0),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
@@ -74,16 +73,14 @@ test_pipeline = [
     dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
     dict(type='Resize', scale=(-1, 224)),
     dict(type='ThreeCrop', crop_size=224),
-    dict(type='Flip', flip_ratio=0),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs', 'label'])
 ]
 data = dict(
-    videos_per_gpu=12,
-    workers_per_gpu=4,
-    test_dataloader=dict(videos_per_gpu=4),
+    videos_per_gpu=4,
+    workers_per_gpu=2,
     train=dict(
         type=dataset_type,
         ann_file=ann_file_train,
@@ -105,7 +102,7 @@ evaluation = dict(
 
 # optimizer
 optimizer = dict(
-    type='SGD', lr=0.06, momentum=0.9,
+    type='SGD', lr=0.02, momentum=0.9,
     weight_decay=1e-4)  # this lr is used for 8 gpus
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
