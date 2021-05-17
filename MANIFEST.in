@@ -1,0 +1,2 @@
+recursive-include mmcls/configs *.py *.yml
+recursive-include mmcls/tools *.sh *.py

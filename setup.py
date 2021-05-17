@@ -105,6 +105,7 @@ if __name__ == '__main__':
         maintainer_email='openmmlab@gmail.com',
         packages=find_packages(exclude=('configs', 'tools', 'demo')),
         keywords='computer vision, video understanding',
+        include_package_data=True,
         classifiers=[
             'Development Status :: 4 - Beta',
             'License :: OSI Approved :: Apache Software License',
