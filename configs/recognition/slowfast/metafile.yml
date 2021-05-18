@@ -20,8 +20,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 74.75
-    - top5 acc: 91.73
+      top1 acc: 74.75
+      top5 acc: 91.73
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_256p_4x16x1_256e_kinetics400_rgb/20200731_151706.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_256p_4x16x1_256e_kinetics400_rgb/20200731_151706.log
@@ -44,8 +44,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 74.34
-    - top5 acc: 91.58
+      top1 acc: 74.34
+      top5 acc: 91.58
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb/20200812_160237.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb/20200812_160237.log
@@ -68,8 +68,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 75.64
-    - top5 acc: 92.3
+      top1 acc: 75.64
+      top5 acc: 92.3
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_4x16x1_256e_kinetics400_rgb/20200704_232901.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_4x16x1_256e_kinetics400_rgb/20200704_232901.log
@@ -92,8 +92,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 75.61
-    - top5 acc: 92.34
+      top1 acc: 75.61
+      top5 acc: 92.34
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_256p_8x8x1_256e_kinetics400_rgb/20200731_151537.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_256p_8x8x1_256e_kinetics400_rgb/20200731_151537.log
@@ -116,8 +116,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 76.94
-    - top5 acc: 92.8
+      top1 acc: 76.94
+      top5 acc: 92.8
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb/20200716_192653.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb/20200716_192653.log
@@ -140,8 +140,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 76.69
-    - top5 acc: 93.07
+      top1 acc: 76.69
+      top5 acc: 93.07
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r101_4x16x1_256e_kinetics400_rgb/20210118_133528.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r101_4x16x1_256e_kinetics400_rgb/20210118_133528.log
@@ -164,8 +164,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 77.9
-    - top5 acc: 93.51
+      top1 acc: 77.9
+      top5 acc: 93.51
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r101_8x8x1_256e_kinetics400_rgb/20210218_121513.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r101_8x8x1_256e_kinetics400_rgb/20210218_121513.log
@@ -188,8 +188,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 77.13
-    - top5 acc: 93.2
+      top1 acc: 77.13
+      top5 acc: 93.2
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r152_4x16x1_256e_kinetics400_rgb/20210122_131321.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r152_4x16x1_256e_kinetics400_rgb/20210122_131321.log

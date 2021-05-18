@@ -20,8 +20,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 70.24
-    - top5 acc: 89.56
+      top1 acc: 70.24
+      top5 acc: 89.56
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/20200607_211800.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/20200607_211800.log
@@ -44,8 +44,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 70.59
-    - top5 acc: 89.52
+      top1 acc: 70.59
+      top5 acc: 89.52
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_256p_1x1x8_50e_kinetics400_rgb/20200725_031623.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_256p_1x1x8_50e_kinetics400_rgb/20200725_031623.log
@@ -68,8 +68,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 70.48
-    - top5 acc: 89.4
+      top1 acc: 70.48
+      top5 acc: 89.4
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_gpu_normalize_1x1x8_50e_kinetics400_rgb/tsm_r50_gpu_normalize_1x1x8_50e_kinetics400_rgb_20210219.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_gpu_normalize_1x1x8_50e_kinetics400_rgb/tsm_r50_gpu_normalize_1x1x8_50e_kinetics400_rgb_20210219.log
@@ -92,8 +92,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 70.25
-    - top5 acc: 89.66
+      top1 acc: 70.25
+      top5 acc: 89.66
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x8_100e_kinetics400_rgb/tsm_r50_video_2d_1x1x8_50e_kinetics400_rgb.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x8_100e_kinetics400_rgb/tsm_r50_video_2d_1x1x8_50e_kinetics400_rgb.log
@@ -116,8 +116,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 72.9
-    - top5 acc: 90.44
+      top1 acc: 72.9
+      top5 acc: 90.44
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_dense_1x1x8_100e_kinetics400_rgb/20200626_213415.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_dense_1x1x8_100e_kinetics400_rgb/20200626_213415.log
@@ -140,8 +140,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 73.38
-    - top5 acc: 91.02
+      top1 acc: 73.38
+      top5 acc: 91.02
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_dense_256p_1x1x8_100e_kinetics400_rgb/20200725_032043.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_dense_256p_1x1x8_100e_kinetics400_rgb/20200725_032043.log
@@ -164,8 +164,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 72.09
-    - top5 acc: 90.37
+      top1 acc: 72.09
+      top5 acc: 90.37
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_kinetics400_rgb/20201011_205356.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_kinetics400_rgb/20201011_205356.log
@@ -188,8 +188,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 71.89
-    - top5 acc: 90.73
+      top1 acc: 71.89
+      top5 acc: 90.73
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_256p_1x1x16_50e_kinetics400_rgb/20201010_224825.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_256p_1x1x16_50e_kinetics400_rgb/20201010_224825.log
@@ -212,8 +212,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 72.03
-    - top5 acc: 90.25
+      top1 acc: 72.03
+      top5 acc: 90.25
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_nl_embedded_gaussian_r50_1x1x8_50e_kinetics400_rgb/20200724_120023.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_nl_embedded_gaussian_r50_1x1x8_50e_kinetics400_rgb/20200724_120023.log
@@ -236,8 +236,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 70.7
-    - top5 acc: 89.9
+      top1 acc: 70.7
+      top5 acc: 89.9
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_nl_gaussian_r50_1x1x8_50e_kinetics400_rgb/20200815_210253.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_nl_gaussian_r50_1x1x8_50e_kinetics400_rgb/20200815_210253.log
@@ -260,8 +260,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 71.6
-    - top5 acc: 90.34
+      top1 acc: 71.6
+      top5 acc: 90.34
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_nl_dot_product_r50_1x1x8_50e_kinetics400_rgb/20200723_220442.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_nl_dot_product_r50_1x1x8_50e_kinetics400_rgb/20200723_220442.log
@@ -284,8 +284,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 68.46
-    - top5 acc: 88.64
+      top1 acc: 68.46
+      top5 acc: 88.64
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_mobilenetv2_dense_1x1x8_100e_kinetics400_rgb/20210129_024936.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_mobilenetv2_dense_1x1x8_100e_kinetics400_rgb/20210129_024936.log
@@ -307,8 +307,8 @@ Models:
   Results:
   - Dataset: Diving48
     Metrics:
-    - top1 acc: 75.99
-    - top5 acc: 97.16
+      top1 acc: 75.99
+      top5 acc: 97.16
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x8_50e_diving48_rgb/20210426_012424.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x8_50e_diving48_rgb/20210426_012424.log
@@ -329,8 +329,8 @@ Models:
   Results:
   - Dataset: Diving48
     Metrics:
-    - top1 acc: 81.62
-    - top5 acc: 97.66
+      top1 acc: 81.62
+      top5 acc: 97.66
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x16_50e_diving48_rgb/20210426_012823.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x16_50e_diving48_rgb/20210426_012823.log
@@ -352,10 +352,10 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-    - top1 acc (efficient): 45.58
-    - top1 acc (accurate): 47.7
-    - top5 acc (efficient): 75.02
-    - top5 acc (accurate): 76.12
+      top1 acc (accurate): 47.7
+      top1 acc (efficient): 45.58
+      top5 acc (accurate): 76.12
+      top5 acc (efficient): 75.02
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv1_rgb/20210203_150227.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv1_rgb/20210203_150227.log
@@ -379,10 +379,10 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-    - top1 acc (efficient): 47.1
-    - top1 acc (accurate): 48.51
-    - top5 acc (efficient): 76.02
-    - top5 acc (accurate): 77.56
+      top1 acc (accurate): 48.51
+      top1 acc (efficient): 47.1
+      top5 acc (accurate): 77.56
+      top5 acc (efficient): 76.02
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_flip_1x1x8_50e_sthv1_rgb/20210203_145829.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_flip_1x1x8_50e_sthv1_rgb/20210203_145829.log
@@ -406,10 +406,10 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-    - top1 acc (efficient): 47.16
-    - top1 acc (accurate): 48.9
-    - top5 acc (efficient): 76.07
-    - top5 acc (accurate): 77.92
+      top1 acc (accurate): 48.9
+      top1 acc (efficient): 47.16
+      top5 acc (accurate): 77.92
+      top5 acc (efficient): 76.07
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_randaugment_1x1x8_50e_sthv1_rgb/tsm_r50_randaugment_1x1x8_50e_sthv1_rgb.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_randaugment_1x1x8_50e_sthv1_rgb/tsm_r50_randaugment_1x1x8_50e_sthv1_rgb.log
@@ -433,10 +433,10 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-    - top1 acc (efficient): 47.85
-    - top1 acc (accurate): 50.31
-    - top5 acc (efficient): 76.78
-    - top5 acc (accurate): 78.18
+      top1 acc (accurate): 50.31
+      top1 acc (efficient): 47.85
+      top5 acc (accurate): 78.18
+      top5 acc (efficient): 76.78
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_flip_randaugment_1x1x8_50e_sthv1_rgb/tsm_r50_flip_randaugment_1x1x8_50e_sthv1_rgb.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_flip_randaugment_1x1x8_50e_sthv1_rgb/tsm_r50_flip_randaugment_1x1x8_50e_sthv1_rgb.log
@@ -460,10 +460,10 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-    - top1 acc (efficient): 47.62
-    - top1 acc (accurate): 49.28
-    - top5 acc (efficient): 76.63
-    - top5 acc (accurate): 77.82
+      top1 acc (accurate): 49.28
+      top1 acc (efficient): 47.62
+      top5 acc (accurate): 77.82
+      top5 acc (efficient): 76.63
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv1_rgb/20201010_221240.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv1_rgb/20201010_221240.log
@@ -487,10 +487,10 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-    - top1 acc (efficient): 45.72
-    - top1 acc (accurate): 48.43
-    - top5 acc (efficient): 74.67
-    - top5 acc (accurate): 76.72
+      top1 acc (accurate): 48.43
+      top1 acc (efficient): 45.72
+      top5 acc (accurate): 76.72
+      top5 acc (efficient): 74.67
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv1_rgb/20201010_224055.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv1_rgb/20201010_224055.log
@@ -514,10 +514,10 @@ Models:
   Results:
   - Dataset: SthV2
     Metrics:
-    - top1 acc (efficient): 57.86
-    - top1 acc (accurate): 61.12
-    - top5 acc (efficient): 84.67
-    - top5 acc (accurate): 86.26
+      top1 acc (accurate): 61.12
+      top1 acc (efficient): 57.86
+      top5 acc (accurate): 86.26
+      top5 acc (efficient): 84.67
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb/20200912_140737.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb/20200912_140737.log
@@ -541,10 +541,10 @@ Models:
   Results:
   - Dataset: SthV2
     Metrics:
-    - top1 acc (efficient): 60.79
-    - top1 acc (accurate): 63.84
-    - top5 acc (efficient): 86.6
-    - top5 acc (accurate): 88.3
+      top1 acc (accurate): 63.84
+      top1 acc (efficient): 60.79
+      top5 acc (accurate): 88.3
+      top5 acc (efficient): 86.6
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb/20210401_143656.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb/20210401_143656.log
@@ -568,10 +568,10 @@ Models:
   Results:
   - Dataset: SthV2
     Metrics:
-    - top1 acc (efficient): 59.93
-    - top1 acc (accurate): 62.04
-    - top5 acc (efficient): 86.1
-    - top5 acc (accurate): 87.35
+      top1 acc (accurate): 62.04
+      top1 acc (efficient): 59.93
+      top5 acc (accurate): 87.35
+      top5 acc (efficient): 86.1
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv2_rgb/20201010_224215.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv2_rgb/20201010_224215.log
@@ -595,10 +595,10 @@ Models:
   Results:
   - Dataset: SthV2
     Metrics:
-    - top1 acc (efficient): 61.06
-    - top1 acc (accurate): 63.19
-    - top5 acc (efficient): 86.66
-    - top5 acc (accurate): 87.93
+      top1 acc (accurate): 63.19
+      top1 acc (efficient): 61.06
+      top5 acc (accurate): 87.93
+      top5 acc (efficient): 86.66
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv2_rgb/20210331_134458.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv2_rgb/20210331_134458.log
@@ -622,10 +622,10 @@ Models:
   Results:
   - Dataset: SthV2
     Metrics:
-    - top1 acc (efficient): 58.59
-    - top1 acc (accurate): 61.51
-    - top5 acc (efficient): 85.07
-    - top5 acc (accurate): 86.9
+      top1 acc (accurate): 61.51
+      top1 acc (efficient): 58.59
+      top5 acc (accurate): 86.9
+      top5 acc (efficient): 85.07
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv2_rgb/20201010_224100.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv2_rgb/20201010_224100.log
@@ -649,10 +649,10 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-    - top1 acc (efficient): 46.35
-    - top1 acc (accurate): 48.49
-    - top5 acc (efficient): 75.07
-    - top5 acc (accurate): 76.88
+      top1 acc (accurate): 48.49
+      top1 acc (efficient): 46.35
+      top5 acc (accurate): 76.88
+      top5 acc (efficient): 75.07
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_mixup_1x1x8_50e_sthv1_rgb/tsm_r50_mixup_1x1x8_50e_sthv1_rgb.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_mixup_1x1x8_50e_sthv1_rgb/tsm_r50_mixup_1x1x8_50e_sthv1_rgb.log
@@ -675,10 +675,10 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-    - top1 acc (efficient): 45.92
-    - top1 acc (accurate): 47.46
-    - top5 acc (efficient): 75.23
-    - top5 acc (accurate): 76.71
+      top1 acc (accurate): 47.46
+      top1 acc (efficient): 45.92
+      top5 acc (accurate): 76.71
+      top5 acc (efficient): 75.23
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_cutmix_1x1x8_50e_sthv1_rgb/tsm_r50_cutmix_1x1x8_50e_sthv1_rgb.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_cutmix_1x1x8_50e_sthv1_rgb/tsm_r50_cutmix_1x1x8_50e_sthv1_rgb.log

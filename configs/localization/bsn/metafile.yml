@@ -18,8 +18,8 @@ Models:
   Results:
   - Dataset: ActivityNet v1.3
     Metrics:
-    - AR@100: 74.66
-    - AUC: 66.45
+      AR@100: 74.66
+      AUC: 66.45
     Task: Temporal Action Localization
   Training Json Log:
   - https://download.openmmlab.com/mmaction/localization/bsn/bsn_tem_400x100_1x16_20e_activitynet_feature/bsn_tem_400x100_1x16_20e_activitynet_feature.log.json
@@ -46,8 +46,8 @@ Models:
   Results:
   - Dataset: ActivityNet v1.3
     Metrics:
-    - AR@100: 74.93
-    - AUC: 66.74
+      AR@100: 74.93
+      AUC: 66.74
     Task: Temporal Action Localization
   Training Json Log:
   - https://download.openmmlab.com/mmaction/localization/bsn/bsn_tem_400x100_1x16_20e_mmaction_video/bsn_tem_400x100_1x16_20e_mmaction_video_20200809.json
@@ -74,8 +74,8 @@ Models:
   Results:
   - Dataset: ActivityNet v1.3
     Metrics:
-    - AR@100: 75.19
-    - AUC: 66.81
+      AR@100: 75.19
+      AUC: 66.81
     Task: Temporal Action Localization
   Training Json Log:
   - https://download.openmmlab.com/mmaction/localization/bsn/bsn_tem_400x100_1x16_20e_mmaction_clip/bsn_tem_400x100_1x16_20e_mmaction_clip_20200809.json

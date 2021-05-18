@@ -7,11 +7,11 @@ Models:
 - Config: configs/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb.py
   In Collection: R2Plus1D
   Metadata:
+    Architecture: ResNet34
     Epochs: 180
     Parameters: 63759281
     Training BatchSize / GPU: 8
     Training Data: Kinetics-400
-    Architecture: ResNet34
     gpus: 32
     pretrain: None
     resolution: short-side 256
@@ -20,8 +20,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 67.3
-    - top5 acc: 87.65
+      top1 acc: 67.3
+      top5 acc: 87.65
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_256p_8x8x1_180e_kinetics400_rgb/20200728_021421.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_256p_8x8x1_180e_kinetics400_rgb/20200728_021421.log
@@ -31,11 +31,11 @@ Models:
 - Config: configs/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb.py
   In Collection: R2Plus1D
   Metadata:
+    Architecture: ResNet34
     Epochs: 180
     Parameters: 63759281
     Training BatchSize / GPU: 16
     Training Data: Kinetics-400
-    Architecture: ResNet34
     gpus: 8
     pretrain: None
     resolution: short-side 256
@@ -44,8 +44,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 67.3
-    - top5 acc: 87.8
+      top1 acc: 67.3
+      top5 acc: 87.8
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb/20200724_201360.log
   Training Log: https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb/20200724_201360.log.json
@@ -55,11 +55,11 @@ Models:
 - Config: configs/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb.py
   In Collection: R2Plus1D
   Metadata:
+    Architecture: ResNet34
     Epochs: 180
     Parameters: 63759281
     Training BatchSize / GPU: 8
     Training Data: Kinetics-400
-    Architecture: ResNet34
     gpus: 16
     pretrain: None
     resolution: short-side 320
@@ -68,8 +68,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 68.68
-    - top5 acc: 88.36
+      top1 acc: 68.68
+      top5 acc: 88.36
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb/r2plus1d_r34_8x8_69.58_88.36.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb/r21d_8x8.log
@@ -79,11 +79,11 @@ Models:
 - Config: configs/recognition/r2plus1d/r2plus1d_r34_32x2x1_180e_kinetics400_rgb.py
   In Collection: R2Plus1D
   Metadata:
+    Architecture: ResNet34
     Epochs: 180
     Parameters: 63759281
     Training BatchSize / GPU: 6
     Training Data: Kinetics-400
-    Architecture: ResNet34
     gpus: 16
     pretrain: None
     resolution: short-side 320
@@ -92,8 +92,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 74.6
-    - top5 acc: 91.59
+      top1 acc: 74.6
+      top5 acc: 91.59
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_32x2x1_180e_kinetics400_rgb/r2plus1d_r34_32x2_74.6_91.6.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_32x2x1_180e_kinetics400_rgb/r21d_32x2.log

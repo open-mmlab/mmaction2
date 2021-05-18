@@ -15,9 +15,9 @@ Models:
   Results:
   - Dataset: THUMOS 14
     Metrics:
-    - mAP@0.3: 29.37
-    - mAP@0.4: 22.15
-    - mAP@0.5: 15.69
+      mAP@0.3: 29.37
+      mAP@0.4: 22.15
+      mAP@0.5: 15.69
     Task: Temporal Action Localization
   Training Json Log: https://download.openmmlab.com/mmaction/localization/ssn/ssn_r50_450e_thumos14_rgb/20201005_144656.log.json
   Training Log: https://download.openmmlab.com/mmaction/localization/ssn/ssn_r50_450e_thumos14_rgb/20201005_144656.log

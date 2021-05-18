@@ -20,8 +20,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 80.14
-    - top5 acc: 94.93
+      top1 acc: 80.14
+      top5 acc: 94.93
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb/20200728_031952.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb/20200728_031952.log
@@ -44,8 +44,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-    - top1 acc: 82.76
-    - top5 acc: 95.68
+      top1 acc: 82.76
+      top5 acc: 95.68
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb/20200809_053132.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb/20200809_053132.log

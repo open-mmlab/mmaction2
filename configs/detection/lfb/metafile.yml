@@ -20,7 +20,7 @@ Models:
   Results:
   - Dataset: AVA v2.1
     Metrics:
-    - mAP: 24.11
+      mAP: 24.11
     Task: Spatial Temporal Action Detection
   Training Json Log: https://download.openmmlab.com/mmaction/detection/lfb/lfb_nl_kinetics_pretrained_slowonly_r50_4x16x1_20e_ava_rgb/20210224_125052.log.json
   Training Log: https://download.openmmlab.com/mmaction/detection/lfb/lfb_nl_kinetics_pretrained_slowonly_r50_4x16x1_20e_ava_rgb/20210224_125052.log
@@ -41,7 +41,7 @@ Models:
   Results:
   - Dataset: AVA v2.1
     Metrics:
-    - mAP: 20.17
+      mAP: 20.17
     Task: Spatial Temporal Action Detection
   Training Json Log: https://download.openmmlab.com/mmaction/detection/lfb/lfb_avg_kinetics_pretrained_slowonly_r50_4x16x1_20e_ava_rgb/20210301_124812.log.json
   Training Log: https://download.openmmlab.com/mmaction/detection/lfb/lfb_avg_kinetics_pretrained_slowonly_r50_4x16x1_20e_ava_rgb/20210301_124812.log
@@ -62,7 +62,7 @@ Models:
   Results:
   - Dataset: AVA v2.1
     Metrics:
-    - mAP: 22.15
+      mAP: 22.15
     Task: Spatial Temporal Action Detection
   Training Json Log: https://download.openmmlab.com/mmaction/detection/lfb/lfb_max_kinetics_pretrained_slowonly_r50_4x16x1_20e_ava_rgb/20210301_124812.log.json
   Training Log: https://download.openmmlab.com/mmaction/detection/lfb/lfb_max_kinetics_pretrained_slowonly_r50_4x16x1_20e_ava_rgb/20210301_124812.log
