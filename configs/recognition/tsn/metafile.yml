@@ -815,14 +815,14 @@ Models:
     Epochs: 100
     Parameters: 11555619
     Training BatchSize / GPU: 32
-    Training Data: ActivityNet v1.3
+    Training Data: HVU
     gpus: 16
     pretrain: ImageNet
     resolution: short-side 256
   Modality: RGB
   Name: tsn_r18_1x1x8_100e_hvu_action_rgb
   Results:
-  - Dataset: ActivityNet v1.3
+  - Dataset: HVU
     Metrics:
     - action mAP: 57.5
     Task: Action Recognition
@@ -837,14 +837,14 @@ Models:
     Epochs: 100
     Parameters: 11303736
     Training BatchSize / GPU: 32
-    Training Data: ActivityNet v1.3
+    Training Data: HVU
     gpus: 8
     pretrain: ImageNet
     resolution: short-side 256
   Modality: RGB
   Name: tsn_r18_1x1x8_100e_hvu_scene_rgb
   Results:
-  - Dataset: ActivityNet v1.3
+  - Dataset: HVU
     Metrics:
     - scene mAP: 55.2
     Task: Action Recognition
@@ -859,14 +859,14 @@ Models:
     Epochs: 100
     Parameters: 12037326
     Training BatchSize / GPU: 32
-    Training Data: ActivityNet v1.3
+    Training Data: HVU
     gpus: 8
     pretrain: ImageNet
     resolution: short-side 256
   Modality: RGB
   Name: tsn_r18_1x1x8_100e_hvu_object_rgb
   Results:
-  - Dataset: ActivityNet v1.3
+  - Dataset: HVU
     Metrics:
     - object mAP: 45.7
     Task: Action Recognition
@@ -881,14 +881,14 @@ Models:
     Epochs: 100
     Parameters: 11211909
     Training BatchSize / GPU: 32
-    Training Data: ActivityNet v1.3
+    Training Data: HVU
     gpus: 8
     pretrain: ImageNet
     resolution: short-side 256
   Modality: RGB
   Name: tsn_r18_1x1x8_100e_hvu_event_rgb
   Results:
-  - Dataset: ActivityNet v1.3
+  - Dataset: HVU
     Metrics:
     - event mAP: 63.7
     Task: Action Recognition
@@ -903,14 +903,14 @@ Models:
     Epochs: 100
     Parameters: 12037326
     Training BatchSize / GPU: 32
-    Training Data: ActivityNet v1.3
+    Training Data: HVU
     gpus: 8
     pretrain: ImageNet
     resolution: short-side 256
   Modality: RGB
   Name: tsn_r18_1x1x8_100e_hvu_concept_rgb
   Results:
-  - Dataset: ActivityNet v1.3
+  - Dataset: HVU
     Metrics:
     - concept mAP: 47.5
     Task: Action Recognition
@@ -925,14 +925,14 @@ Models:
     Epochs: 100
     Parameters: 11236533
     Training BatchSize / GPU: 32
-    Training Data: ActivityNet v1.3
+    Training Data: HVU
     gpus: 8
     pretrain: ImageNet
     resolution: short-side 256
   Modality: RGB
   Name: tsn_r18_1x1x8_100e_hvu_attribute_rgb
   Results:
-  - Dataset: ActivityNet v1.3
+  - Dataset: HVU
     Metrics:
     - attribute mAP: 46.1
     Task: Action Recognition
