@@ -1,2 +1,3 @@
+include mmcls/model_zoo.yml
 recursive-include mmcls/configs *.py *.yml
 recursive-include mmcls/tools *.sh *.py
