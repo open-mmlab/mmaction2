@@ -1,0 +1,687 @@
+Collections:
+- Metadata:
+    Training Data: null
+  Name: TSM
+  README: configs/recognition/tsm/README.md
+Models:
+- Config: configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 24327632
+    Training BatchSize / GPU: 8
+    Training Data: Kinetics-400
+    gpus: 8
+    pretrain: ImageNet
+    resolution: 340x256
+  Modality: RGB
+  Name: tsm_r50_1x1x8_50e_kinetics400_rgb
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      top1 acc: 70.24
+      top5 acc: 89.56
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/20200607_211800.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/20200607_211800.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/tsm_r50_1x1x8_50e_kinetics400_rgb_20200607-af7fb746.pth
+  gpu_mem(M): '7079'
+  inference_time(video/s): 74.0 (8x1 frames)
+- Config: configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 24327632
+    Training BatchSize / GPU: 8
+    Training Data: Kinetics-400
+    gpus: 8
+    pretrain: ImageNet
+    resolution: short-side 256
+  Modality: RGB
+  Name: tsm_r50_1x1x8_50e_kinetics400_rgb
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      top1 acc: 70.59
+      top5 acc: 89.52
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_256p_1x1x8_50e_kinetics400_rgb/20200725_031623.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_256p_1x1x8_50e_kinetics400_rgb/20200725_031623.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_256p_1x1x8_50e_kinetics400_rgb/tsm_r50_256p_1x1x8_50e_kinetics400_rgb_20200726-020785e2.pth
+  gpu_mem(M): '7079'
+  inference_time(video/s): x
+- Config: configs/recognition/tsm/tsm_r50_gpu_normalize_1x1x8_50e_kinetics400_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 24327632
+    Training BatchSize / GPU: 8
+    Training Data: Kinetics-400
+    gpus: 8
+    pretrain: ImageNet
+    resolution: short-side 256
+  Modality: RGB
+  Name: tsm_r50_gpu_normalize_1x1x8_50e_kinetics400_rgb.py
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      top1 acc: 70.48
+      top5 acc: 89.4
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_gpu_normalize_1x1x8_50e_kinetics400_rgb/tsm_r50_gpu_normalize_1x1x8_50e_kinetics400_rgb_20210219.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_gpu_normalize_1x1x8_50e_kinetics400_rgb/tsm_r50_gpu_normalize_1x1x8_50e_kinetics400_rgb_20210219.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_gpu_normalize_1x1x8_50e_kinetics400_rgb/tsm_r50_gpu_normalize_1x1x8_50e_kinetics400_rgb_20210219-bf96e6cc.pth
+  gpu_mem(M): '7076'
+  inference_time(video/s): x
+- Config: configs/recognition/tsm/tsm_r50_video_1x1x8_50e_kinetics400_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 24327632
+    Training BatchSize / GPU: 8
+    Training Data: Kinetics-400
+    gpus: 8
+    pretrain: ImageNet
+    resolution: short-side 256
+  Modality: RGB
+  Name: tsm_r50_video_1x1x8_50e_kinetics400_rgb
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      top1 acc: 70.25
+      top5 acc: 89.66
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x8_100e_kinetics400_rgb/tsm_r50_video_2d_1x1x8_50e_kinetics400_rgb.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x8_100e_kinetics400_rgb/tsm_r50_video_2d_1x1x8_50e_kinetics400_rgb.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x8_100e_kinetics400_rgb/tsm_r50_video_1x1x8_100e_kinetics400_rgb_20200702-a77f4328.pth
+  gpu_mem(M): '7077'
+  inference_time(video/s): 74.0 (8x1 frames)
+- Config: configs/recognition/tsm/tsm_r50_dense_1x1x8_100e_kinetics400_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 100
+    Parameters: 24327632
+    Training BatchSize / GPU: 8
+    Training Data: Kinetics-400
+    gpus: 32
+    pretrain: ImageNet
+    resolution: 340x256
+  Modality: RGB
+  Name: tsm_r50_dense_1x1x8_100e_kinetics400_rgb
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      top1 acc: 72.9
+      top5 acc: 90.44
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_dense_1x1x8_100e_kinetics400_rgb/20200626_213415.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_dense_1x1x8_100e_kinetics400_rgb/20200626_213415.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_dense_1x1x8_100e_kinetics400_rgb/tsm_r50_dense_1x1x8_100e_kinetics400_rgb_20200626-91a54551.pth
+  gpu_mem(M): '7079'
+  inference_time(video/s): 11.5 (8x10 frames)
+- Config: configs/recognition/tsm/tsm_r50_dense_1x1x8_100e_kinetics400_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 100
+    Parameters: 24327632
+    Training BatchSize / GPU: 8
+    Training Data: Kinetics-400
+    gpus: 8
+    pretrain: ImageNet
+    resolution: short-side 256
+  Modality: RGB
+  Name: tsm_r50_dense_1x1x8_100e_kinetics400_rgb
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      top1 acc: 73.38
+      top5 acc: 91.02
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_dense_256p_1x1x8_100e_kinetics400_rgb/20200725_032043.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_dense_256p_1x1x8_100e_kinetics400_rgb/20200725_032043.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_dense_256p_1x1x8_100e_kinetics400_rgb/tsm_r50_dense_256p_1x1x8_100e_kinetics400_rgb_20200727-e1e0c785.pth
+  gpu_mem(M): '7079'
+  inference_time(video/s): x
+- Config: configs/recognition/tsm/tsm_r50_1x1x16_50e_kinetics400_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 24327632
+    Training BatchSize / GPU: 6
+    Training Data: Kinetics-400
+    gpus: 8
+    pretrain: ImageNet
+    resolution: 340x256
+  Modality: RGB
+  Name: tsm_r50_1x1x16_50e_kinetics400_rgb
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      top1 acc: 72.09
+      top5 acc: 90.37
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_kinetics400_rgb/20201011_205356.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_kinetics400_rgb/20201011_205356.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_kinetics400_rgb/tsm_r50_340x256_1x1x16_50e_kinetics400_rgb_20201011-2f27f229.pth
+  gpu_mem(M): '10404'
+  inference_time(video/s): 47.0 (16x1 frames)
+- Config: configs/recognition/tsm/tsm_r50_1x1x16_50e_kinetics400_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 24327632
+    Training BatchSize / GPU: 6
+    Training Data: Kinetics-400
+    gpus: 32
+    pretrain: ImageNet
+    resolution: short-side 256
+  Modality: RGB
+  Name: tsm_r50_1x1x16_50e_kinetics400_rgb
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      top1 acc: 71.89
+      top5 acc: 90.73
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_256p_1x1x16_50e_kinetics400_rgb/20201010_224825.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_256p_1x1x16_50e_kinetics400_rgb/20201010_224825.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_256p_1x1x16_50e_kinetics400_rgb/tsm_r50_256p_1x1x16_50e_kinetics400_rgb_20201010-85645c2a.pth
+  gpu_mem(M): '10398'
+  inference_time(video/s): x
+- Config: configs/recognition/tsm/tsm_nl_embedded_gaussian_r50_1x1x8_50e_kinetics400_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 31682000
+    Training BatchSize / GPU: 8
+    Training Data: Kinetics-400
+    gpus: 32
+    pretrain: ImageNet
+    resolution: short-side 320
+  Modality: RGB
+  Name: tsm_nl_embedded_gaussian_r50_1x1x8_50e_kinetics400_rgb
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      top1 acc: 72.03
+      top5 acc: 90.25
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_nl_embedded_gaussian_r50_1x1x8_50e_kinetics400_rgb/20200724_120023.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_nl_embedded_gaussian_r50_1x1x8_50e_kinetics400_rgb/20200724_120023.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_nl_embedded_gaussian_r50_1x1x8_50e_kinetics400_rgb/tsm_nl_embedded_gaussian_r50_1x1x8_50e_kinetics400_rgb_20200724-f00f1336.pth
+  gpu_mem(M): '8931'
+  inference_time(video/s): x
+- Config: configs/recognition/tsm/tsm_nl_gaussian_r50_1x1x8_50e_kinetics400_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 28007888
+    Training BatchSize / GPU: 8
+    Training Data: Kinetics-400
+    gpus: 32
+    pretrain: ImageNet
+    resolution: short-side 320
+  Modality: RGB
+  Name: tsm_nl_gaussian_r50_1x1x8_50e_kinetics400_rgb
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      top1 acc: 70.7
+      top5 acc: 89.9
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_nl_gaussian_r50_1x1x8_50e_kinetics400_rgb/20200815_210253.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_nl_gaussian_r50_1x1x8_50e_kinetics400_rgb/20200815_210253.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_nl_gaussian_r50_1x1x8_50e_kinetics400_rgb/tsm_nl_gaussian_r50_1x1x8_50e_kinetics400_rgb_20200816-b93fd297.pth
+  gpu_mem(M): '10125'
+  inference_time(video/s): x
+- Config: configs/recognition/tsm/tsm_nl_dot_product_r50_1x1x8_50e_kinetics400_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 31682000
+    Training BatchSize / GPU: 8
+    Training Data: Kinetics-400
+    gpus: 32
+    pretrain: ImageNet
+    resolution: short-side 320
+  Modality: RGB
+  Name: tsm_nl_dot_product_r50_1x1x8_50e_kinetics400_rgb
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      top1 acc: 71.6
+      top5 acc: 90.34
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_nl_dot_product_r50_1x1x8_50e_kinetics400_rgb/20200723_220442.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_nl_dot_product_r50_1x1x8_50e_kinetics400_rgb/20200723_220442.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_nl_dot_product_r50_1x1x8_50e_kinetics400_rgb/tsm_nl_dot_product_r50_1x1x8_50e_kinetics400_rgb_20200724-d8ad84d2.pth
+  gpu_mem(M): '8358'
+  inference_time(video/s): x
+- Config: configs/recognition/tsm/tsm_mobilenetv2_dense_1x1x8_100e_kinetics400_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: MobileNetV2
+    Epochs: 100
+    Parameters: 2736272
+    Training BatchSize / GPU: 8
+    Training Data: Kinetics-400
+    gpus: 8
+    pretrain: ImageNet
+    resolution: short-side 320
+  Modality: RGB
+  Name: tsm_mobilenetv2_dense_1x1x8_100e_kinetics400_rgb
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      top1 acc: 68.46
+      top5 acc: 88.64
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_mobilenetv2_dense_1x1x8_100e_kinetics400_rgb/20210129_024936.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_mobilenetv2_dense_1x1x8_100e_kinetics400_rgb/20210129_024936.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_mobilenetv2_dense_1x1x8_100e_kinetics400_rgb/tsm_mobilenetv2_dense_320p_1x1x8_100e_kinetics400_rgb_20210202-61135809.pth
+  gpu_mem(M): '3385'
+  inference_time(video/s): x
+- Config: configs/recognition/tsm/tsm_r50_video_1x1x8_50e_diving48_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 23606384
+    Training BatchSize / GPU: 8
+    Training Data: Diving48
+    gpus: 8
+    pretrain: ImageNet
+  Modality: RGB
+  Name: tsm_r50_video_1x1x8_50e_diving48_rgb
+  Results:
+  - Dataset: Diving48
+    Metrics:
+      top1 acc: 75.99
+      top5 acc: 97.16
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x8_50e_diving48_rgb/20210426_012424.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x8_50e_diving48_rgb/20210426_012424.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x8_50e_diving48_rgb/tsm_r50_video_1x1x8_50e_diving48_rgb_20210426-aba5aa3d.pth
+  gpu_mem(M): '7070'
+- Config: configs/recognition/tsm/tsm_r50_video_1x1x16_50e_diving48_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 23606384
+    Training BatchSize / GPU: 4
+    Training Data: Diving48
+    gpus: 8
+    pretrain: ImageNet
+  Modality: RGB
+  Name: tsm_r50_video_1x1x16_50e_diving48_rgb
+  Results:
+  - Dataset: Diving48
+    Metrics:
+      top1 acc: 81.62
+      top5 acc: 97.66
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x16_50e_diving48_rgb/20210426_012823.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x16_50e_diving48_rgb/20210426_012823.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x16_50e_diving48_rgb/tsm_r50_video_1x1x16_50e_diving48_rgb_20210426-aa9631c0.pth
+  gpu_mem(M): '7070'
+- Config: configs/recognition/tsm/tsm_r50_1x1x8_50e_sthv1_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 23864558
+    Training BatchSize / GPU: 8
+    Training Data: SthV1
+    gpus: 8
+    pretrain: ImageNet
+    resolution: height 100
+  Modality: RGB
+  Name: tsm_r50_1x1x8_50e_sthv1_rgb
+  Results:
+  - Dataset: SthV1
+    Metrics:
+      top1 acc (accurate): 47.7
+      top1 acc (efficient): 45.58
+      top5 acc (accurate): 76.12
+      top5 acc (efficient): 75.02
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv1_rgb/20210203_150227.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv1_rgb/20210203_150227.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv1_rgb/tsm_r50_1x1x8_50e_sthv1_rgb_20210203-01dce462.pth
+  gpu_mem(M): '7077'
+  reference top1 acc (efficient/accurate): '[45.50 / 47.33](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+  reference top5 acc (efficient/accurate): '[74.34 / 76.60](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+- Config: configs/recognition/tsm/tsm_r50_flip_1x1x8_50e_sthv1_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 23864558
+    Training BatchSize / GPU: 8
+    Training Data: SthV1
+    gpus: 8
+    pretrain: ImageNet
+    resolution: height 100
+  Modality: RGB
+  Name: tsm_r50_flip_1x1x8_50e_sthv1_rgb
+  Results:
+  - Dataset: SthV1
+    Metrics:
+      top1 acc (accurate): 48.51
+      top1 acc (efficient): 47.1
+      top5 acc (accurate): 77.56
+      top5 acc (efficient): 76.02
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_flip_1x1x8_50e_sthv1_rgb/20210203_145829.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_flip_1x1x8_50e_sthv1_rgb/20210203_145829.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_flip_1x1x8_50e_sthv1_rgb/tsm_r50_flip_1x1x8_50e_sthv1_rgb_20210203-12596f16.pth
+  gpu_mem(M): '7077'
+  reference top1 acc (efficient/accurate): '[45.50 / 47.33](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+  reference top5 acc (efficient/accurate): '[74.34 / 76.60](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+- Config: configs/recognition/tsm/tsm_r50_randaugment_1x1x8_50e_sthv1_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 23864558
+    Training BatchSize / GPU: 8
+    Training Data: SthV1
+    gpus: 8
+    pretrain: ImageNet
+    resolution: height 100
+  Modality: RGB
+  Name: tsm_r50_randaugment_1x1x8_50e_sthv1_rgb
+  Results:
+  - Dataset: SthV1
+    Metrics:
+      top1 acc (accurate): 48.9
+      top1 acc (efficient): 47.16
+      top5 acc (accurate): 77.92
+      top5 acc (efficient): 76.07
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_randaugment_1x1x8_50e_sthv1_rgb/tsm_r50_randaugment_1x1x8_50e_sthv1_rgb.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_randaugment_1x1x8_50e_sthv1_rgb/tsm_r50_randaugment_1x1x8_50e_sthv1_rgb.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_randaugment_1x1x8_50e_sthv1_rgb/tsm_r50_randaugment_1x1x8_50e_sthv1_rgb_20210324-481268d9.pth
+  gpu_mem(M): '7077'
+  reference top1 acc (efficient/accurate): '[45.50 / 47.33](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+  reference top5 acc (efficient/accurate): '[74.34 / 76.60](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+- Config: configs/recognition/tsm/tsm_r50_flip_randaugment_1x1x8_50e_sthv1_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 23864558
+    Training BatchSize / GPU: 8
+    Training Data: SthV1
+    gpus: 8
+    pretrain: ImageNet
+    resolution: height 100
+  Modality: RGB
+  Name: tsm_r50_flip_randaugment_1x1x8_50e_sthv1_rgb
+  Results:
+  - Dataset: SthV1
+    Metrics:
+      top1 acc (accurate): 50.31
+      top1 acc (efficient): 47.85
+      top5 acc (accurate): 78.18
+      top5 acc (efficient): 76.78
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_flip_randaugment_1x1x8_50e_sthv1_rgb/tsm_r50_flip_randaugment_1x1x8_50e_sthv1_rgb.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_flip_randaugment_1x1x8_50e_sthv1_rgb/tsm_r50_flip_randaugment_1x1x8_50e_sthv1_rgb.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_flip_randaugment_1x1x8_50e_sthv1_rgb/tsm_r50_flip_randaugment_1x1x8_50e_sthv1_rgb_20210324-76937692.pth
+  gpu_mem(M): '7077'
+  reference top1 acc (efficient/accurate): '[45.50 / 47.33](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+  reference top5 acc (efficient/accurate): '[74.34 / 76.60](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+- Config: configs/recognition/tsm/tsm_r50_1x1x16_50e_sthv1_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 23864558
+    Training BatchSize / GPU: 6
+    Training Data: SthV1
+    gpus: 8
+    pretrain: ImageNet
+    resolution: height 100
+  Modality: RGB
+  Name: tsm_r50_1x1x16_50e_sthv1_rgb
+  Results:
+  - Dataset: SthV1
+    Metrics:
+      top1 acc (accurate): 49.28
+      top1 acc (efficient): 47.62
+      top5 acc (accurate): 77.82
+      top5 acc (efficient): 76.63
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv1_rgb/20201010_221240.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv1_rgb/20201010_221240.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv1_rgb/tsm_r50_1x1x16_50e_sthv1_rgb_20201010-17fa49f6.pth
+  gpu_mem(M): '10390'
+  reference top1 acc (efficient/accurate): '[47.05 / 48.61](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+  reference top5 acc (efficient/accurate): '[76.40 / 77.96](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+- Config: configs/recognition/tsm/tsm_r101_1x1x8_50e_sthv1_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 42856686
+    Training BatchSize / GPU: 8
+    Training Data: SthV1
+    gpus: 8
+    pretrain: ImageNet
+    resolution: height 100
+  Modality: RGB
+  Name: tsm_r101_1x1x8_50e_sthv1_rgb
+  Results:
+  - Dataset: SthV1
+    Metrics:
+      top1 acc (accurate): 48.43
+      top1 acc (efficient): 45.72
+      top5 acc (accurate): 76.72
+      top5 acc (efficient): 74.67
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv1_rgb/20201010_224055.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv1_rgb/20201010_224055.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv1_rgb/tsm_r101_1x1x8_50e_sthv1_rgb_20201010-43fedf2e.pth
+  gpu_mem(M): '9800'
+  reference top1 acc (efficient/accurate): '[46.64 / 48.13](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+  reference top5 acc (efficient/accurate): '[75.40 / 77.31](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+- Config: configs/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 23864558
+    Training BatchSize / GPU: 6
+    Training Data: SthV2
+    gpus: 8
+    pretrain: ImageNet
+    resolution: height 240
+  Modality: RGB
+  Name: tsm_r50_1x1x8_50e_sthv2_rgb
+  Results:
+  - Dataset: SthV2
+    Metrics:
+      top1 acc (accurate): 61.12
+      top1 acc (efficient): 57.86
+      top5 acc (accurate): 86.26
+      top5 acc (efficient): 84.67
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb/20200912_140737.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb/20200912_140737.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb/tsm_r50_1x1x8_50e_sthv2_rgb_20200912-033c4ac6.pth
+  gpu_mem(M): '7069'
+  reference top1 acc (efficient/accurate): '[57.98 / 60.69](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+  reference top5 acc (efficient/accurate): '[84.57 / 86.28](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+- Config: configs/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 23864558
+    Training BatchSize / GPU: 6
+    Training Data: SthV2
+    gpus: 8
+    pretrain: ImageNet
+    resolution: height 256
+  Modality: RGB
+  Name: tsm_r50_1x1x8_50e_sthv2_rgb
+  Results:
+  - Dataset: SthV2
+    Metrics:
+      top1 acc (accurate): 63.84
+      top1 acc (efficient): 60.79
+      top5 acc (accurate): 88.3
+      top5 acc (efficient): 86.6
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb/20210401_143656.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb/20210401_143656.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb/tsm_r50_256h_1x1x8_50e_sthv2_rgb_20210401-df97f3e1.pth
+  gpu_mem(M): '7069'
+  reference top1 acc (efficient/accurate): '[xx / 61.2](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+  reference top5 acc (efficient/accurate): '[xx / xx](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+- Config: configs/recognition/tsm/tsm_r50_1x1x16_50e_sthv2_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 23864558
+    Training BatchSize / GPU: 6
+    Training Data: SthV2
+    gpus: 8
+    pretrain: ImageNet
+    resolution: height 240
+  Modality: RGB
+  Name: tsm_r50_1x1x16_50e_sthv2_rgb
+  Results:
+  - Dataset: SthV2
+    Metrics:
+      top1 acc (accurate): 62.04
+      top1 acc (efficient): 59.93
+      top5 acc (accurate): 87.35
+      top5 acc (efficient): 86.1
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv2_rgb/20201010_224215.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv2_rgb/20201010_224215.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv2_rgb/tsm_r50_1x1x16_50e_sthv2_rgb_20201010-16469c6f.pth
+  gpu_mem(M): '10400'
+  reference top1 acc (efficient/accurate): '[58.90 / 60.98](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+  reference top5 acc (efficient/accurate): '[85.29 / 86.60](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+- Config: configs/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 23864558
+    Training BatchSize / GPU: 6
+    Training Data: SthV2
+    gpus: 8
+    pretrain: ImageNet
+    resolution: height 256
+  Modality: RGB
+  Name: tsm_r50_1x1x16_50e_sthv2_rgb
+  Results:
+  - Dataset: SthV2
+    Metrics:
+      top1 acc (accurate): 63.19
+      top1 acc (efficient): 61.06
+      top5 acc (accurate): 87.93
+      top5 acc (efficient): 86.66
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv2_rgb/20210331_134458.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv2_rgb/20210331_134458.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv2_rgb/tsm_r50_256h_1x1x16_50e_sthv2_rgb_20210331-0a45549c.pth
+  gpu_mem(M): '10400'
+  reference top1 acc (efficient/accurate): '[xx / 63.1](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+  reference top5 acc (efficient/accurate): '[xx / xx](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+- Config: configs/recognition/tsm/tsm_r101_1x1x8_50e_sthv2_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet101
+    Epochs: 50
+    Parameters: 42856686
+    Training BatchSize / GPU: 8
+    Training Data: SthV2
+    gpus: 8
+    pretrain: ImageNet
+    resolution: height 240
+  Modality: RGB
+  Name: tsm_r101_1x1x8_50e_sthv2_rgb
+  Results:
+  - Dataset: SthV2
+    Metrics:
+      top1 acc (accurate): 61.51
+      top1 acc (efficient): 58.59
+      top5 acc (accurate): 86.9
+      top5 acc (efficient): 85.07
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv2_rgb/20201010_224100.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv2_rgb/20201010_224100.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv2_rgb/tsm_r101_1x1x8_50e_sthv2_rgb_20201010-98cdedb8.pth
+  gpu_mem(M): '9784'
+  reference top1 acc (efficient/accurate): '[58.89 / 61.36](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+  reference top5 acc (efficient/accurate): '[85.14 / 87.00](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+- Config: configs/recognition/tsm/tsm_r50_mixup_1x1x8_50e_sthv1_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 23864558
+    Training BatchSize / GPU: 8
+    Training Data: SthV1
+    gpus: 8
+    pretrain: ImageNet
+    resolution: height 100
+  Modality: RGB
+  Name: tsm_r50_mixup_1x1x8_50e_sthv1_rgb
+  Results:
+  - Dataset: SthV1
+    Metrics:
+      top1 acc (accurate): 48.49
+      top1 acc (efficient): 46.35
+      top5 acc (accurate): 76.88
+      top5 acc (efficient): 75.07
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_mixup_1x1x8_50e_sthv1_rgb/tsm_r50_mixup_1x1x8_50e_sthv1_rgb.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_mixup_1x1x8_50e_sthv1_rgb/tsm_r50_mixup_1x1x8_50e_sthv1_rgb.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_mixup_1x1x8_50e_sthv1_rgb/tsm_r50_mixup_1x1x8_50e_sthv1_rgb-9eca48e5.pth
+  delta top1 acc (efficient/accurate): +0.77 / +0.79
+  delta top5 acc (efficient/accurate): +0.05 / +0.70
+- Config: configs/recognition/tsm/tsm_r50_cutmix_1x1x8_50e_sthv1_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 23864558
+    Training BatchSize / GPU: 8
+    Training Data: SthV1
+    gpus: 8
+    pretrain: ImageNet
+    resolution: height 100
+  Modality: RGB
+  Name: tsm_r50_cutmix_1x1x8_50e_sthv1_rgb
+  Results:
+  - Dataset: SthV1
+    Metrics:
+      top1 acc (accurate): 47.46
+      top1 acc (efficient): 45.92
+      top5 acc (accurate): 76.71
+      top5 acc (efficient): 75.23
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_cutmix_1x1x8_50e_sthv1_rgb/tsm_r50_cutmix_1x1x8_50e_sthv1_rgb.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_cutmix_1x1x8_50e_sthv1_rgb/tsm_r50_cutmix_1x1x8_50e_sthv1_rgb.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_cutmix_1x1x8_50e_sthv1_rgb/tsm_r50_cutmix_1x1x8_50e_sthv1_rgb-34934615.pth
+  delta top1 acc (efficient/accurate): +0.34 / -0.24
+  delta top5 acc (efficient/accurate): +0.21 / +0.59

@@ -1,0 +1,30 @@
+Collections:
+- Metadata:
+    Training Data: null
+  Name: SSN
+  README: configs/localization/ssn/README.md
+Models:
+- Config: configs/localization/ssn/ssn_r50_450e_thumos14_rgb_train.py
+  In Collection: SSN
+  Metadata:
+    Architecture: ResNet50
+    Training Data: THUMOS 14
+    gpus: 8
+    pretrain: ImageNet
+  Name: ssn_r50_450e_thumos14_rgb
+  Results:
+  - Dataset: THUMOS 14
+    Metrics:
+      mAP@0.3: 29.37
+      mAP@0.4: 22.15
+      mAP@0.5: 15.69
+    Task: Temporal Action Localization
+  Training Json Log: https://download.openmmlab.com/mmaction/localization/ssn/ssn_r50_450e_thumos14_rgb/20201005_144656.log.json
+  Training Log: https://download.openmmlab.com/mmaction/localization/ssn/ssn_r50_450e_thumos14_rgb/20201005_144656.log
+  Weights: https://download.openmmlab.com/mmaction/localization/ssn/ssn_r50_450e_thumos14_rgb/ssn_r50_450e_thumos14_rgb_20201012-1920ab16.pth
+  gpu_mem(M): '6352'
+  reference mAP@0.3: '[27.61](https://github.com/open-mmlab/mmaction/tree/c7e3b7c11fb94131be9b48a8e3d510589addc3ce#Get%20started)'
+  reference mAP@0.4: '[21.28](https://github.com/open-mmlab/mmaction/tree/c7e3b7c11fb94131be9b48a8e3d510589addc3ce#Get%20started)'
+  reference mAP@0.5: '[14.57](https://github.com/open-mmlab/mmaction/tree/c7e3b7c11fb94131be9b48a8e3d510589addc3ce#Get%20started)'
+  refrence ckpt: '[ckpt](https://download.openmmlab.com/mmaction/localization/ssn/mmaction_reference/ssn_r50_450e_thumos14_rgb_ref/ssn_r50_450e_thumos14_rgb_ref_20201014-b6f48f68.pth)'
+  refrence json: '[json](https://download.openmmlab.com/mmaction/localization/ssn/mmaction_reference/ssn_r50_450e_thumos14_rgb_ref/20201008_103258.log.json)'
