@@ -3,7 +3,6 @@ import torch.nn as nn
 from einops import rearrange
 from mmcv import ConfigDict
 from mmcv.cnn import build_conv_layer, build_norm_layer, kaiming_init
-# from mmcv.cnn import normal_init
 from mmcv.cnn.bricks.transformer import build_transformer_layer_sequence
 from mmcv.runner import _load_checkpoint, load_state_dict
 from torch.nn.modules.utils import _pair
@@ -84,6 +83,7 @@ class TimeSformer(nn.Module):
         super().__init__(**kwargs)
         assert attention_type in self.supported_attention_type, (
             f'Unsupported Attention Type {self.attention_type}!')
+        self.num_frames = num_frames
         self.pretrained = pretrained
         self.embed_dims = embed_dims
         self.num_layers = num_layers
@@ -104,6 +104,8 @@ class TimeSformer(nn.Module):
                 torch.zeros(1, num_frames, embed_dims))
             self.drop_after_time = nn.Dropout(p=drop_rate)
 
+        self.norm = build_norm_layer(norm_cfg, embed_dims)[1]
+
         if transformer_layers is None:
             # stochastic depth decay rule
             dpr = [x.item() for x in torch.linspace(0, 0.1, num_layers)]
@@ -118,7 +120,6 @@ class TimeSformer(nn.Module):
                                 embed_dims=embed_dims,
                                 num_heads=12,
                                 num_frames=num_frames,
-                                attn_drop=0.,
                                 dropout_layer=dict(
                                     type='DropPath', drop_prob=dpr[i]),
                                 norm_cfg=dict(type='LN', eps=1e-6)),
@@ -127,7 +128,6 @@ class TimeSformer(nn.Module):
                                 embed_dims=embed_dims,
                                 num_heads=12,
                                 num_frames=num_frames,
-                                attn_drop=0.,
                                 dropout_layer=dict(
                                     type='DropPath', drop_prob=dpr[i]),
                                 norm_cfg=dict(type='LN', eps=1e-6))
@@ -137,7 +137,6 @@ class TimeSformer(nn.Module):
                             embed_dims=embed_dims,
                             feedforward_channels=3072,
                             num_fcs=2,
-                            ffn_drop=0.,
                             act_cfg=dict(type='GELU'),
                             dropout_layer=dict(
                                 type='DropPath', drop_prob=dpr[i]),
@@ -146,6 +145,7 @@ class TimeSformer(nn.Module):
                     for i in range(num_layers)
                 ]
             else:
+                # Sapce Only & Joint Space Time
                 _transformerlayers_cfg = [
                     dict(
                         type='BaseTransformerLayer',
@@ -154,14 +154,15 @@ class TimeSformer(nn.Module):
                                 type='MultiheadAttention',
                                 embed_dims=embed_dims,
                                 num_heads=12,
+                                batch_first=True,
                                 dropout_layer=dict(
                                     type='DropPath', drop_prob=dpr[i]))
                         ],
                         ffn_cfgs=dict(
+                            type='FFN',
                             embed_dims=embed_dims,
                             feedforward_channels=3072,
                             num_fcs=2,
-                            ffn_drop=0.,
                             act_cfg=dict(type='GELU'),
                             dropout_layer=dict(
                                 type='DropPath', drop_prob=dpr[i])),
@@ -179,8 +180,6 @@ class TimeSformer(nn.Module):
         self.transformer_layers = build_transformer_layer_sequence(
             transformer_layers)
 
-        self.norm = build_norm_layer(norm_cfg, embed_dims)[1]
-
     def init_weights(self, pretrained=None):
         trunc_normal_(self.pos_embed, std=.02)
         trunc_normal_(self.cls_token, std=.02)
@@ -196,12 +195,7 @@ class TimeSformer(nn.Module):
                 state_dict = state_dict['state_dict']
 
             if self.attention_type == 'divided_space_time':
-                # vit has no temporal attention, temporal_fc and time_embed
-                #   which were constructed in divided_space_time timesformer.
-                # for time_embed and temporal_fc, keep them as default initial
-                #   state;
-                # for temporal attention, use the same parameters of its
-                #   following spatial attention.
+                # copy the parameters of space attention to time attention
                 old_state_dict_keys = list(state_dict.keys())
                 for old_key in old_state_dict_keys:
                     if 'attentions.1' in old_key:
