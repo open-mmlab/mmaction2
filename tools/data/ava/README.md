@@ -80,7 +80,7 @@ If you only want to play with RGB frames (since extracting optical flow can be t
 bash extract_rgb_frames.sh
 ```
 
-If you didn't install denseflow, you can still extract RGB frames using using ffmpeg to extract RGB frames by the following script.
+If you didn't install denseflow, you can still extract RGB frames using ffmpeg by the following script.
 
 ```shell
 bash extract_rgb_frames_ffmpeg.sh
