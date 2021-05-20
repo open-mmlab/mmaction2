@@ -290,6 +290,15 @@ class StdetPredictor:
             lines = f.readlines()
         lines = [x.strip().split(': ') for x in lines]
         self.label_map = {int(x[0]): x[1] for x in lines}
+        try:
+            if config['data']['train']['custom_classes'] is not None:
+                self.label_map = {
+                    id: self.label_map[cls]
+                    for id, cls in enumerate(config['data']['train']
+                                             ['custom_classes'])
+                }
+        except KeyError:
+            pass
 
     def predict(self, task):
         """Spatio-temporval Action Detection model inference."""
