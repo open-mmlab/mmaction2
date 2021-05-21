@@ -297,17 +297,6 @@ class StdetPredictor:
                     for id, cls in enumerate(config['data']['train']
                                              ['custom_classes'])
                 }
-                print(self.label_map)
-                print(self.label_map)
-                print(self.label_map)
-                print(self.label_map)
-                print(self.label_map)
-                print(self.label_map)
-                print(self.label_map)
-                print(self.label_map)
-                print(self.label_map)
-                print(self.label_map)
-                print(self.label_map)
         except KeyError:
             pass
 
