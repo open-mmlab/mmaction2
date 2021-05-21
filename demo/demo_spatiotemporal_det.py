@@ -302,7 +302,7 @@ def main():
     try:
         if config['data']['train']['custom_classes'] is not None:
             label_map = {
-                id: label_map[cls]
+                id + 1: label_map[cls]
                 for id, cls in enumerate(config['data']['train']
                                          ['custom_classes'])
             }

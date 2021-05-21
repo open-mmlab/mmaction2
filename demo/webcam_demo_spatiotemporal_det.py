@@ -293,10 +293,21 @@ class StdetPredictor:
         try:
             if config['data']['train']['custom_classes'] is not None:
                 self.label_map = {
-                    id: self.label_map[cls]
+                    id + 1: self.label_map[cls]
                     for id, cls in enumerate(config['data']['train']
                                              ['custom_classes'])
                 }
+                print(self.label_map)
+                print(self.label_map)
+                print(self.label_map)
+                print(self.label_map)
+                print(self.label_map)
+                print(self.label_map)
+                print(self.label_map)
+                print(self.label_map)
+                print(self.label_map)
+                print(self.label_map)
+                print(self.label_map)
         except KeyError:
             pass
 
