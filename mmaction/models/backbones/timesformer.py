@@ -274,4 +274,5 @@ class TimeSformer(nn.Module):
 
         x = self.norm(x)
 
+        # return class token
         return x[:, 0]

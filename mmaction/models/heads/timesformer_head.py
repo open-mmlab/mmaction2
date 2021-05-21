@@ -1,12 +1,23 @@
 import torch.nn as nn
 
-from mmaction.utils import trunc_normal_
+from mmaction.utils import trunc_normal_  # TODO: use trunc_normal_ in mmcv
 from ..registry import HEADS
 from .base import BaseHead
 
 
 @HEADS.register_module()
 class TimeSformerHead(BaseHead):
+    """Classification head for TimeSformer.
+
+    Args:
+        num_classes (int): Number of classes to be classified.
+        in_channels (int): Number of channels in input feature.
+        loss_cls (dict): Config for building loss.
+            Defaults to dict(type='CrossEntropyLoss')
+        init_std (float): Std value for Initiation. Defaults to 0.02.
+        kwargs (dict, optional): Any keyword argument to be used to initialize
+            the head.
+    """
     supported_attention_type = [
         'divided_space_time', 'space_only', 'joint_space_time'
     ]

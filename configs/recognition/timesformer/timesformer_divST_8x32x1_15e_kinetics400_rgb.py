@@ -5,6 +5,7 @@ model = dict(
     type='Recognizer3D',
     backbone=dict(
         type='TimeSformer',
+        # TODO: upload vit-imagenet21k to cloud
         pretrained='work_dirs/vit_base_patch16_224.pth',
         num_frames=8,
         img_size=224,
@@ -115,4 +116,4 @@ total_epochs = 15
 
 # runtime settings
 checkpoint_config = dict(interval=1)
-work_dir = './work_dirs/timesformer_divST_8x32x1_20e_kinetics400_rgb'
+work_dir = './work_dirs/timesformer_divST_8x32x1_15e_kinetics400_rgb'
