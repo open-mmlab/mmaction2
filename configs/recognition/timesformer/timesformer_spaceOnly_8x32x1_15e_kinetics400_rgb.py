@@ -11,7 +11,7 @@ model = dict(
         patch_size=16,
         embed_dims=768,
         in_channels=3,
-        drop_rate=0.,
+        dropout_ratio=0.,
         transformer_layers=None,
         attention_type='space_only',
         norm_cfg=dict(type='LN', eps=1e-6)),
@@ -31,14 +31,9 @@ ann_file_test = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
 img_norm_cfg = dict(
     mean=[127.5, 127.5, 127.5], std=[127.5, 127.5, 127.5], to_bgr=False)
 
-mc_cfg = dict(
-    server_list_cfg='/mnt/lustre/share/memcached_client/server_list.conf',
-    client_cfg='/mnt/lustre/share/memcached_client/client.conf',
-    sys_path='/mnt/lustre/share/pymc/py3')
-
 train_pipeline = [
     dict(type='SampleFrames', clip_len=8, frame_interval=32, num_clips=1),
-    dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
+    dict(type='RawFrameDecode'),
     dict(type='RandomRescale', scale_range=(256, 320)),
     dict(type='RandomCrop', size=224),
     dict(type='Flip', flip_ratio=0.5),
@@ -54,7 +49,7 @@ val_pipeline = [
         frame_interval=32,
         num_clips=1,
         test_mode=True),
-    dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
     dict(type='Normalize', **img_norm_cfg),
@@ -69,7 +64,7 @@ test_pipeline = [
         frame_interval=32,
         num_clips=1,
         test_mode=True),
-    dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 224)),
     dict(type='ThreeCrop', crop_size=224),
     dict(type='Normalize', **img_norm_cfg),
