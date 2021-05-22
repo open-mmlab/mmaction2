@@ -8,7 +8,7 @@ import warnings
 import mmcv
 import torch
 from mmcv import Config, DictAction
-from mmcv.runner import init_dist, set_random_seed, get_dist_info
+from mmcv.runner import get_dist_info, init_dist, set_random_seed
 from mmcv.utils import get_git_hash
 
 from mmaction import __version__
@@ -110,7 +110,6 @@ def main():
         init_dist(args.launcher, **cfg.dist_params)
         _, world_size = get_dist_info()
         cfg.gpu_ids = range(world_size)
-        
 
     # The flag is used to determine whether it is omnisource training
     cfg.setdefault('omnisource', False)
