@@ -136,46 +136,9 @@ class PoseDecode:
     """Load and decode pose with given indices.
 
     Required keys are "keypoint", "frame_inds" (optional), "keypoint_score"
-    (optional), added or modified keys are "keypoint", "keypoint_score"
-    (if applicable).
-
-    Args:
-        random_drop (bool): Whether to randomly drop keypoints. The following
-            args are applicable only when `random_crop == True`. When set as
-            True, "keypoint_score" is a mandatory key. Default: False.
-        random_seed (int): Random seed used for randomly dropping keypoints.
-            Default: 1.
-        drop_prob (float): The probability for dropping one keypoint for each
-            frame. Default: 1 / 16.
-        droppable_joints (tuple[int]): The joint indexes that may be dropped.
-            Default: (7, 8, 9, 10, 13, 14, 15, 16). (limb joints)
+    (optional), added or modified keys are "keypoint", "keypoint_score" (if
+    applicable).
     """
-
-    def __init__(self,
-                 random_drop=False,
-                 random_seed=1,
-                 drop_prob=1. / 16.,
-                 droppable_joints=(7, 8, 9, 10, 13, 14, 15, 16)):
-        self.random_drop = random_drop
-        self.random_seed = random_seed
-        self.drop_prob = drop_prob
-        self.droppable_joints = droppable_joints
-
-    # inplace
-    def _drop_kpscore(self, kpscores):
-        """Randomly drop keypoints by setting the corresponding keypoint scores
-        as 0.
-
-        Args:
-            kpscores (np.ndarray): The confidence scores of keypoints.
-        """
-
-        for kpscore in kpscores:
-            lt = kpscore.shape[0]
-            for tidx in range(lt):
-                if np.random.random() < self.drop_prob:
-                    jidx = np.random.choice(self.droppable_joints)
-                    kpscore[tidx, jidx] = 0.
 
     def _load_kp(self, kp, frame_inds):
         """Load keypoints given frame indices.
@@ -198,9 +161,6 @@ class PoseDecode:
         return [x[frame_inds].astype(np.float32) for x in kpscore]
 
     def __call__(self, results):
-        if self.random_drop:
-            np.random.seed(self.random_seed)
-            assert 'keypoint_score' in results, 'for simplicity'
 
         if 'frame_inds' not in results:
             results['frame_inds'] = np.arange(results['total_frames'])
@@ -213,9 +173,6 @@ class PoseDecode:
 
         if 'keypoint_score' in results:
             kpscore = results['keypoint_score']
-            if self.random_drop:
-                self._drop_kpscore(kpscore)
-
             results['keypoint_score'] = kpscore[:,
                                                 frame_inds].astype(np.float32)
 
@@ -226,11 +183,7 @@ class PoseDecode:
         return results
 
     def __repr__(self):
-        repr_str = (f'{self.__class__.__name__}('
-                    f'random_drop={self.random_drop}, '
-                    f'random_seed={self.random_seed}, '
-                    f'drop_prob={self.drop_prob}, '
-                    f'droppable_joints={self.droppable_joints})')
+        repr_str = (f'{self.__class__.__name__}()')
         return repr_str
 
 
