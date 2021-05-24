@@ -19,7 +19,7 @@ model = dict(
     cls_head=dict(type='TimeSformerHead', num_classes=400, in_channels=768),
     # model training and testing settings
     train_cfg=None,
-    test_cfg=dict(average_clips='score'))
+    test_cfg=dict(average_clips='prob'))
 
 # dataset settings
 dataset_type = 'RawframeDataset'

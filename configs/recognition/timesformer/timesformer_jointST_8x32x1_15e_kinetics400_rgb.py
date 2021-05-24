@@ -19,7 +19,7 @@ model = dict(
     cls_head=dict(type='TimeSformerHead', num_classes=400, in_channels=768),
     # model training and testing settings
     train_cfg=None,
-    test_cfg=dict(average_clips='score'))
+    test_cfg=dict(average_clips='prob'))
 
 # dataset settings
 dataset_type = 'RawframeDataset'
@@ -74,8 +74,8 @@ test_pipeline = [
     dict(type='ToTensor', keys=['imgs', 'label'])
 ]
 data = dict(
-    videos_per_gpu=6,
-    workers_per_gpu=3,
+    videos_per_gpu=7,
+    workers_per_gpu=4,
     train=dict(
         type=dataset_type,
         ann_file=ann_file_train,
@@ -98,7 +98,7 @@ evaluation = dict(
 # optimizer
 optimizer = dict(
     type='SGD',
-    lr=0.00375,
+    lr=0.004375,
     momentum=0.9,
     paramwise_cfg=dict(
         custom_keys={

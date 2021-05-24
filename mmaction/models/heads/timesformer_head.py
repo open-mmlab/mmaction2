@@ -13,14 +13,11 @@ class TimeSformerHead(BaseHead):
         num_classes (int): Number of classes to be classified.
         in_channels (int): Number of channels in input feature.
         loss_cls (dict): Config for building loss.
-            Defaults to dict(type='CrossEntropyLoss')
+            Defaults to `dict(type='CrossEntropyLoss')`.
         init_std (float): Std value for Initiation. Defaults to 0.02.
         kwargs (dict, optional): Any keyword argument to be used to initialize
             the head.
     """
-    supported_attention_type = [
-        'divided_space_time', 'space_only', 'joint_space_time'
-    ]
 
     def __init__(self,
                  num_classes,
