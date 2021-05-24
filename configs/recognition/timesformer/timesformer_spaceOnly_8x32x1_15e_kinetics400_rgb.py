@@ -5,7 +5,8 @@ model = dict(
     type='Recognizer3D',
     backbone=dict(
         type='TimeSformer',
-        pretrained='work_dirs/vit_base_patch16_224.pth',
+        pretrained=  # noqa: E251
+        'https://download.openmmlab.com/mmaction/recognition/timesformer/vit_base_patch16_224.pth',  # noqa: E501
         num_frames=8,
         img_size=224,
         patch_size=16,
