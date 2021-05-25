@@ -229,10 +229,12 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
                 ]
                 if metric == 'mean_average_precision':
                     mAP = mean_average_precision(results, gt_labels)
+                    eval_results['mean_average_precision'] = mAP
+                    log_msg = f'\nmean_average_precision\t{mAP:.4f}'
                 elif metric == 'mmit_mean_average_precision':
                     mAP = mmit_mean_average_precision(results, gt_labels)
-                eval_results['mean_average_precision'] = mAP
-                log_msg = f'\nmean_average_precision\t{mAP:.4f}'
+                    eval_results['mmit_mean_average_precision'] = mAP
+                    log_msg = f'\nmmit_mean_average_precision\t{mAP:.4f}'
                 print_log(log_msg, logger=logger)
                 continue
 
