@@ -4,14 +4,9 @@ We provide easy to use scripts for feature extraction.
 
 ## Clip-leval Feature Extraction
 
-Clip-level feature extraction extract deep feature from a video clip, which usually lasts several to tens of seconds.
-The extracted feature is an n-dim vector for each clip.
-When performing multi-view feature extraction, e.g. n clips x m crops,
-the extracted feature will be the average of the n * m views.
+Clip-level feature extraction extract deep feature from a video clip, which usually lasts several to tens of seconds. The extracted feature is an n-dim vector for each clip. When performing multi-view feature extraction, e.g. n clips x m crops, the extracted feature will be the average of the n * m views.
 
-Before applying clip-level feature extraction, you need to prepare a video list
-(which include all videos that you want to extract feature from).
-For example, the video list for videos in UCF101 will look like:
+Before applying clip-level feature extraction, you need to prepare a video list (which include all videos that you want to extract feature from). For example, the video list for videos in UCF101 will look like:
 
 ```
 ApplyEyeMakeup/v_ApplyEyeMakeup_g01_c01.avi
@@ -27,9 +22,7 @@ YoYo/v_YoYo_g25_c04.avi
 YoYo/v_YoYo_g25_c05.avi
 ```
 
-Assume the root of UCF101 videos is `data/ucf101/videos` and the name of the video list is `ucf101.txt`,
-to extract clip-level feature of UCF101 videos with Kinetics-400 pretrained TSN,
-you can use the following script:
+Assume the root of UCF101 videos is `data/ucf101/videos` and the name of the video list is `ucf101.txt`, to extract clip-level feature of UCF101 videos with Kinetics-400 pretrained TSN, you can use the following script:
 
 ```shell
 python tools/clip_feature_extraction.py \
@@ -54,8 +47,7 @@ https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_320p_1x1x3_100e_
 --out ucf101_feature.pkl
 ```
 
-To extract clip-level feature of UCF101 videos with Kinetics-400 pretrained SlowOnly,
-you can use the following script:
+To extract clip-level feature of UCF101 videos with Kinetics-400 pretrained SlowOnly, you can use the following script:
 
 ```shell
 python tools/clip_feature_extraction.py \
@@ -66,8 +58,13 @@ https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_video_
 --out ucf101_feature.pkl
 ```
 
-To extract feature with a custom video recognition model,
-you need to write your own `*_clip_feature_extraction_*.py`.
-Note that the config file for clip feature extraction doesn't include a classification head.
-So you can use the same config file for checkpoints pretrained on differenet video datasets.
-You are welcome to raise a PR if you want to add a new `*_clip_feature_extraction_*.py` to the master branch.
+The two config files demonstrates what a minimal config file for feature extraction looks like. You can also use other existing config files for feature extraction, as long as they use videos rather than raw frames for training and testing:
+
+```shell
+python tools/clip_feature_extraction.py \
+configs/recognition/slowonly/slowonly_r50_video_4x16x1_256e_kinetics400_rgb.py \
+https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_video_320p_4x16x1_256e_kinetics400_rgb/slowonly_r50_video_320p_4x16x1_256e_kinetics400_rgb_20201014-c9cdc656.pth \
+--video-list ucf101.txt \
+--video-root data/ucf101/videos \
+--out ucf101_feature.pkl
+```

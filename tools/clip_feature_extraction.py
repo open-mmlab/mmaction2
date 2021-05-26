@@ -133,6 +133,8 @@ def main():
 
     cfg.merge_from_dict(args.cfg_options)
 
+    cfg.model['feature_extraction'] = True
+
     # Load output_config from cfg
     output_config = cfg.get('output_config', {})
     if args.out:
