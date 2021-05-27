@@ -1,7 +1,7 @@
 import torch.nn as nn
 from mmcv.cnn import trunc_normal_init
 
-from ..registry import HEADS
+from ..builder import HEADS
 from .base import BaseHead
 
 

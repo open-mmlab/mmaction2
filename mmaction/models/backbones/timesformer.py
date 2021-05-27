@@ -10,7 +10,7 @@ from mmcv.runner import _load_checkpoint, load_state_dict
 from torch.nn.modules.utils import _pair
 
 from ...utils import get_root_logger
-from ..registry import BACKBONES
+from ..builder import BACKBONES
 
 
 class PatchEmbed(nn.Module):
@@ -90,7 +90,7 @@ class TimeSformer(nn.Module):
         norm_cfg (dict): Config for norm layers. Defaults to
             `dict(type='LN', eps=1e-6)`.
     """
-    supported_attention_type = [
+    supported_attention_types = [
         'divided_space_time', 'space_only', 'joint_space_time'
     ]
 
@@ -109,8 +109,8 @@ class TimeSformer(nn.Module):
                  norm_cfg=dict(type='LN', eps=1e-6),
                  **kwargs):
         super().__init__(**kwargs)
-        assert attention_type in self.supported_attention_type, (
-            f'Unsupported Attention Type {self.attention_type}!')
+        assert attention_type in self.supported_attention_types, (
+            f'Unsupported Attention Type {attention_type}!')
         assert transformer_layers is None or isinstance(
             transformer_layers, (dict, list))
 

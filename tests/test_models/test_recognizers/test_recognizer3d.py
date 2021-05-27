@@ -256,6 +256,35 @@ def test_tpn():
             _recognizer(one_img)
 
 
+def test_timesformer():
+    config = get_recognizer_cfg(
+        'timesformer/timesformer_divST_8x32x1_15e_kinetics400_rgb.py')
+    config.model['backbone']['pretrained'] = None
+    config.model['backbone']['img_size'] = 32
+
+    recognizer = build_recognizer(config.model)
+
+    input_shape = (1, 3, 3, 8, 32, 32)
+    demo_inputs = generate_recognizer_demo_inputs(input_shape, '3D')
+
+    imgs = demo_inputs['imgs']
+    gt_labels = demo_inputs['gt_labels']
+
+    losses = recognizer(imgs, gt_labels)
+    assert isinstance(losses, dict)
+
+    # Test forward test
+    with torch.no_grad():
+        img_list = [img[None, :] for img in imgs]
+        for one_img in img_list:
+            recognizer(one_img, None, return_loss=False)
+
+    # Test forward gradcam
+    recognizer(imgs, gradcam=True)
+    for one_img in img_list:
+        recognizer(one_img, gradcam=True)
+
+
 def test_c3d():
     config = get_recognizer_cfg('c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb.py')
     config.model['backbone']['pretrained'] = None
