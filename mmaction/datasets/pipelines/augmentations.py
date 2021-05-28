@@ -1217,10 +1217,10 @@ class Flip:
             "horizontal" | "vertical". Default: "horizontal".
         flip_label_map (Dict[int, int] | None): Transform the label of the
             flipped image with the specific label. Default: None.
-        left (list[int]): Indexes of left keypoints, used to flip keypoints.
+        left_kp (list[int]): Indexes of left keypoints, used to flip keypoints.
             Default: None.
-        right (list[ind]): Indexes of right keypoints, used to flip keypoints.
-            Default: None.
+        right_kp (list[ind]): Indexes of right keypoints, used to flip
+            keypoints. Default: None.
         lazy (bool): Determine whether to apply lazy operation. Default: False.
     """
     _directions = ['horizontal', 'vertical']
@@ -1229,8 +1229,8 @@ class Flip:
                  flip_ratio=0.5,
                  direction='horizontal',
                  flip_label_map=None,
-                 left=None,
-                 right=None,
+                 left_kp=None,
+                 right_kp=None,
                  lazy=False):
         if direction not in self._directions:
             raise ValueError(f'Direction {direction} is not supported. '
@@ -1238,8 +1238,8 @@ class Flip:
         self.flip_ratio = flip_ratio
         self.direction = direction
         self.flip_label_map = flip_label_map
-        self.left = left
-        self.right = right
+        self.left_kp = left_kp
+        self.right_kp = right_kp
         self.lazy = lazy
 
     def _flip_imgs(self, imgs, modality):
@@ -1255,8 +1255,8 @@ class Flip:
         kp_x = kps[..., 0]
         kp_x[kp_x != 0] = img_width - kp_x[kp_x != 0]
         new_order = list(range(kps.shape[2]))
-        if self.left is not None and self.right is not None:
-            for left, right in zip(self.left, self.right):
+        if self.left_kp is not None and self.right_kp is not None:
+            for left, right in zip(self.left_kp, self.right_kp):
                 new_order[left] = right
                 new_order[right] = left
         kps = kps[:, :, new_order]

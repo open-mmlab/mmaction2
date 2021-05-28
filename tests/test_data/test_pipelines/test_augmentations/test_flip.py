@@ -108,7 +108,8 @@ class TestFlip:
             keypoint=np.array([[1, 1], [63, 63]]).reshape([1, 1, 2, 2]),
             modality='Pose',
             img_shape=(64, 64))
-        flip = Flip(flip_ratio=1, direction='horizontal', left=[0], right=[1])
+        flip = Flip(
+            flip_ratio=1, direction='horizontal', left_kp=[0], right_kp=[1])
         flip_results = flip(results)
         assert_array_almost_equal(flip_results['keypoint'][0, 0],
                                   np.array([[1, 63], [63, 1]]))
@@ -117,7 +118,8 @@ class TestFlip:
             keypoint=np.array([[1, 1], [63, 63]]).reshape([1, 1, 2, 2]),
             modality='Pose',
             img_shape=(64, 64))
-        flip = Flip(flip_ratio=1, direction='horizontal', left=[], right=[])
+        flip = Flip(
+            flip_ratio=1, direction='horizontal', left_kp=[], right_kp=[])
         flip_results = flip(results)
         assert_array_almost_equal(flip_results['keypoint'][0, 0],
                                   np.array([[63, 1], [1, 63]]))
@@ -127,5 +129,6 @@ class TestFlip:
                 keypoint=np.array([[1, 1], [63, 63]]).reshape([1, 1, 2, 2]),
                 modality='Pose',
                 img_shape=(64, 64))
-            flip = Flip(flip_ratio=1, direction='vertical', left=[], right=[])
+            flip = Flip(
+                flip_ratio=1, direction='vertical', left_kp=[], right_kp=[])
             flip_results = flip(results)
