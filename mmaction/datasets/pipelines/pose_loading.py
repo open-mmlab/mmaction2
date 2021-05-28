@@ -21,7 +21,7 @@ class UniformSampleFrames:
         num_clips (int): Number of clips to be sampled. Default: 1.
         test_mode (bool): Store True when building test or validation dataset.
             Default: False.
-        seed (int): The random seed used during test time.
+        seed (int): The random seed used during test time. Default: 255.
     """
 
     def __init__(self, clip_len, num_clips=1, test_mode=False, seed=255):
