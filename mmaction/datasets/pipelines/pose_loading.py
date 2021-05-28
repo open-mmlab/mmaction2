@@ -13,6 +13,12 @@ from .augmentations import Flip
 class UniformSampleFrames:
     """Uniformly sample frames from the video.
 
+    To sample an n-frame clip from the video. UniformSampleFrames basically
+    divide the video into n segments of equal length and randomly sample one
+    frame from each segment. To make the testing results reproducible, a
+    random seed is set during testing, to make the sampling results
+    deterministic.
+
     Required keys are "total_frames", "start_index" , added or modified keys
     are "frame_inds", "clip_len", "frame_interval" and "num_clips".
 
