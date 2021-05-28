@@ -217,12 +217,12 @@ class TestPoseLoading:
             modality='Pose')
 
         generate_pose_target = GeneratePoseTarget(
-            sigma=1, with_kp=True, left=(0, ), right=(1, ), skeletons=())
+            sigma=1, with_kp=True, left_kp=(0, ), right_kp=(1, ), skeletons=())
         assert str(generate_pose_target) == ('GeneratePoseTarget(sigma=1, '
                                              'use_score=True, with_kp=True, '
                                              'with_limb=False, skeletons=(), '
-                                             'double=False, left=(0,), '
-                                             'right=(1,))')
+                                             'double=False, left_kp=(0,), '
+                                             'right_kp=(1,))')
         return_results = generate_pose_target(results)
         assert return_results['imgs'].shape == (8, 64, 64, 3)
         assert_array_almost_equal(return_results['imgs'][0],
@@ -231,7 +231,7 @@ class TestPoseLoading:
         results = dict(img_shape=img_shape, keypoint=kp, modality='Pose')
 
         generate_pose_target = GeneratePoseTarget(
-            sigma=1, with_kp=True, left=(0, ), right=(1, ), skeletons=())
+            sigma=1, with_kp=True, left_kp=(0, ), right_kp=(1, ), skeletons=())
         return_results = generate_pose_target(results)
         assert return_results['imgs'].shape == (8, 64, 64, 3)
         assert_array_almost_equal(return_results['imgs'][0],
@@ -241,8 +241,8 @@ class TestPoseLoading:
             sigma=1,
             with_kp=False,
             with_limb=True,
-            left=(0, ),
-            right=(1, ),
+            left_kp=(0, ),
+            right_kp=(1, ),
             skeletons=((0, 1), (1, 2), (0, 2)))
         return_results = generate_pose_target(results)
         assert return_results['imgs'].shape == (8, 64, 64, 3)
@@ -253,8 +253,8 @@ class TestPoseLoading:
             sigma=1,
             with_kp=True,
             with_limb=True,
-            left=(0, ),
-            right=(1, ),
+            left_kp=(0, ),
+            right_kp=(1, ),
             skeletons=((0, 1), (1, 2), (0, 2)))
         return_results = generate_pose_target(results)
         assert return_results['imgs'].shape == (8, 64, 64, 6)
@@ -266,8 +266,8 @@ class TestPoseLoading:
             with_kp=True,
             with_limb=True,
             double=True,
-            left=(0, ),
-            right=(1, ),
+            left_kp=(0, ),
+            right_kp=(1, ),
             skeletons=((0, 1), (1, 2), (0, 2)))
         return_results = generate_pose_target(results)
         imgs = return_results['imgs']
@@ -288,7 +288,7 @@ class TestPoseLoading:
             keypoint_score=kpscore,
             modality='Pose')
         generate_pose_target = GeneratePoseTarget(
-            sigma=1, with_kp=True, left=(0, ), right=(1, ), skeletons=())
+            sigma=1, with_kp=True, left_kp=(0, ), right_kp=(1, ), skeletons=())
         return_results = generate_pose_target(results)
         assert_array_almost_equal(return_results['imgs'], 0)
 
@@ -306,8 +306,8 @@ class TestPoseLoading:
             sigma=1,
             with_kp=False,
             with_limb=True,
-            left=(0, ),
-            right=(1, ),
+            left_kp=(0, ),
+            right_kp=(1, ),
             skeletons=((0, 1), (1, 2), (0, 2)))
         return_results = generate_pose_target(results)
         assert_array_almost_equal(return_results['imgs'], 0)
@@ -323,7 +323,7 @@ class TestPoseLoading:
             keypoint_score=kpscore,
             modality='Pose')
         generate_pose_target = GeneratePoseTarget(
-            sigma=1, with_kp=True, left=(0, ), right=(1, ), skeletons=())
+            sigma=1, with_kp=True, left_kp=(0, ), right_kp=(1, ), skeletons=())
         return_results = generate_pose_target(results)
         assert_array_almost_equal(return_results['imgs'], 0)
 
@@ -341,8 +341,8 @@ class TestPoseLoading:
             sigma=1,
             with_kp=False,
             with_limb=True,
-            left=(0, ),
-            right=(1, ),
+            left_kp=(0, ),
+            right_kp=(1, ),
             skeletons=((0, 1), (1, 2), (0, 2)))
         return_results = generate_pose_target(results)
         assert_array_almost_equal(return_results['imgs'], 0)

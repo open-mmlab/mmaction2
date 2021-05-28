@@ -363,10 +363,10 @@ class GeneratePoseTarget:
             which is the definition of COCO-17p skeletons.
         double (bool): Output both original heatmaps and flipped heatmaps.
             Default: False.
-        left (tuple[int]): Indexes of left keypoints, which is used when
+        left_kp (tuple[int]): Indexes of left keypoints, which is used when
             flipping heatmaps. Default: (1, 3, 5, 7, 9, 11, 13, 15),
             which is left keypoints in COCO-17p.
-        right (tuple[int]): Indexes of right keypoints, which is used when
+        right_kp (tuple[int]): Indexes of right keypoints, which is used when
             flipping heatmaps. Default: (2, 4, 6, 8, 10, 12, 14, 16),
             which is right keypoints in COCO-17p.
     """
@@ -380,8 +380,8 @@ class GeneratePoseTarget:
                             (7, 9), (0, 6), (6, 8), (8, 10), (5, 11), (11, 13),
                             (13, 15), (6, 12), (12, 14), (14, 16), (11, 12)),
                  double=False,
-                 left=(1, 3, 5, 7, 9, 11, 13, 15),
-                 right=(2, 4, 6, 8, 10, 12, 14, 16)):
+                 left_kp=(1, 3, 5, 7, 9, 11, 13, 15),
+                 right_kp=(2, 4, 6, 8, 10, 12, 14, 16)):
 
         self.sigma = sigma
         self.use_score = use_score
@@ -395,8 +395,8 @@ class GeneratePoseTarget:
         assert self.with_kp or self.with_limb, (
             'At least one of "with_limb" '
             'and "with_kp" should be set as True.')
-        self.left = left
-        self.right = right
+        self.left_kp = left_kp
+        self.right_kp = right_kp
         self.skeletons = skeletons
 
     def generate_a_heatmap(self, img_h, img_w, centers, sigma, max_values):
@@ -607,7 +607,8 @@ class GeneratePoseTarget:
             results['imgs'] = np.stack(self.gen_an_aug(results))
         else:
             results_ = cp.deepcopy(results)
-            flip = Flip(flip_ratio=1, left=self.left, right=self.right)
+            flip = Flip(
+                flip_ratio=1, left_kp=self.left_kp, right_kp=self.right_kp)
             results_ = flip(results_)
             results['imgs'] = np.concatenate(
                 [self.gen_an_aug(results),
@@ -622,6 +623,6 @@ class GeneratePoseTarget:
                     f'with_limb={self.with_limb}, '
                     f'skeletons={self.skeletons}, '
                     f'double={self.double}, '
-                    f'left={self.left}, '
-                    f'right={self.right})')
+                    f'left_kp={self.left_kp}, '
+                    f'right_kp={self.right_kp})')
         return repr_str
