@@ -4,6 +4,7 @@ import mmcv
 import numpy as np
 import pytest
 from mmcv.utils import assert_dict_has_keys
+from numpy.testing import assert_array_almost_equal
 
 from mmaction.datasets.pipelines import Flip
 from .base import check_flip
@@ -101,3 +102,33 @@ class TestFlip:
             flip_label_map=_flip_label_map)
         flip_results = flip(results)
         assert results['label'] == 3
+
+        # flip the keypoints
+        results = dict(
+            keypoint=np.array([[1, 1], [63, 63]]).reshape([1, 1, 2, 2]),
+            modality='Pose',
+            img_shape=(64, 64))
+        flip = Flip(
+            flip_ratio=1, direction='horizontal', left_kp=[0], right_kp=[1])
+        flip_results = flip(results)
+        assert_array_almost_equal(flip_results['keypoint'][0, 0],
+                                  np.array([[1, 63], [63, 1]]))
+
+        results = dict(
+            keypoint=np.array([[1, 1], [63, 63]]).reshape([1, 1, 2, 2]),
+            modality='Pose',
+            img_shape=(64, 64))
+        flip = Flip(
+            flip_ratio=1, direction='horizontal', left_kp=[], right_kp=[])
+        flip_results = flip(results)
+        assert_array_almost_equal(flip_results['keypoint'][0, 0],
+                                  np.array([[63, 1], [1, 63]]))
+
+        with pytest.raises(AssertionError):
+            results = dict(
+                keypoint=np.array([[1, 1], [63, 63]]).reshape([1, 1, 2, 2]),
+                modality='Pose',
+                img_shape=(64, 64))
+            flip = Flip(
+                flip_ratio=1, direction='vertical', left_kp=[], right_kp=[])
+            flip_results = flip(results)

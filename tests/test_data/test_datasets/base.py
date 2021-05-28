@@ -43,6 +43,7 @@ class BaseTestDataset:
                                       'video_test_list.txt')
         cls.video_ann_file_multi_label = osp.join(
             cls.ann_file_prefix, 'video_test_list_multi_label.txt')
+        cls.pose_ann_file = osp.join(cls.ann_file_prefix, 'sample.pkl')
 
         # pipeline configuration
         cls.action_pipeline = []

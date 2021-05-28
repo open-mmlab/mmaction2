@@ -11,6 +11,7 @@ from .builder import (BLENDINGS, DATASETS, PIPELINES, build_dataloader,
 from .dataset_wrappers import RepeatDataset
 from .hvu_dataset import HVUDataset
 from .image_dataset import ImageDataset
+from .pose_dataset import PoseDataset
 from .rawframe_dataset import RawframeDataset
 from .rawvideo_dataset import RawVideoDataset
 from .ssn_dataset import SSNDataset
@@ -22,5 +23,5 @@ __all__ = [
     'HVUDataset', 'AudioDataset', 'AudioFeatureDataset', 'ImageDataset',
     'RawVideoDataset', 'AVADataset', 'AudioVisualDataset',
     'BaseMiniBatchBlending', 'CutmixBlending', 'MixupBlending', 'DATASETS',
-    'PIPELINES', 'BLENDINGS'
+    'PIPELINES', 'BLENDINGS', 'PoseDataset'
 ]

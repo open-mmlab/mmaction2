@@ -78,8 +78,8 @@ class LoadHVULabel:
 class SampleFrames:
     """Sample frames from the video.
 
-    Required keys are "filename", "total_frames", "start_index" , added or
-    modified keys are "frame_inds", "frame_interval" and "num_clips".
+    Required keys are "total_frames", "start_index" , added or modified keys
+    are "frame_inds", "frame_interval" and "num_clips".
 
     Args:
         clip_len (int): Frames of each sampled output clip.

@@ -3,8 +3,10 @@ import copy
 import numpy as np
 import pytest
 from mmcv.utils import assert_dict_has_keys
+from numpy.testing import assert_array_almost_equal
 
 from mmaction.datasets.pipelines import RandomRescale, RandomScale, Resize
+from mmaction.datasets.pipelines.augmentations import PoseCompact
 
 
 class TestTransform:
@@ -61,13 +63,16 @@ class TestTransform:
 
         # test resize for flow images
         imgs = list(np.random.rand(2, 240, 320))
-        results = dict(imgs=imgs, modality='Flow')
+        kp = np.array([60, 60]).reshape([1, 1, 1, 2])
+        results = dict(imgs=imgs, keypoint=kp, modality='Flow')
         resize = Resize(scale=(160, 80), keep_ratio=False)
         resize_results = resize(results)
         assert assert_dict_has_keys(resize_results, target_keys)
         assert np.all(resize_results['scale_factor'] == np.array(
             [.5, 1. / 3.], dtype=np.float32))
         assert resize_results['img_shape'] == (80, 160)
+        kp = resize_results['keypoint'][0, 0, 0]
+        assert_array_almost_equal(kp, np.array([30, 20]))
 
         # scale with -1 to indicate np.inf
         imgs = list(np.random.rand(2, 240, 320, 3))
@@ -138,3 +143,47 @@ class TestTransform:
             f'{random_scale_range.__class__.__name__}'
             f'(scales={((200, 64), (250, 80))}, '
             'mode=range)')
+
+
+class TestPoseCompact:
+
+    def test_pose_compact(self):
+        results = {}
+        results['img_shape'] = (100, 100)
+        fake_kp = np.zeros([1, 4, 2, 2])
+        fake_kp[:, :, 0] = [10, 10]
+        fake_kp[:, :, 1] = [90, 90]
+        results['keypoint'] = fake_kp
+
+        pose_compact = PoseCompact(
+            padding=0, threshold=0, hw_ratio=None, allow_imgpad=False)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (80, 80)
+        assert str(pose_compact) == (
+            'PoseCompact(padding=0, threshold=0, hw_ratio=None, '
+            'allow_imgpad=False)')
+
+        pose_compact = PoseCompact(
+            padding=0.3, threshold=0, hw_ratio=None, allow_imgpad=False)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (100, 100)
+
+        pose_compact = PoseCompact(
+            padding=0.3, threshold=0, hw_ratio=None, allow_imgpad=True)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (104, 104)
+
+        pose_compact = PoseCompact(
+            padding=0, threshold=100, hw_ratio=None, allow_imgpad=False)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (100, 100)
+
+        pose_compact = PoseCompact(
+            padding=0, threshold=0, hw_ratio=0.75, allow_imgpad=True)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (80, 106)
