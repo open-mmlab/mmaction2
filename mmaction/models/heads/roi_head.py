@@ -17,9 +17,15 @@ if mmdet_imported:
     class AVARoIHead(StandardRoIHead):
 
         def _bbox_forward(self, x, rois, img_metas):
-            bbox_feat = self.bbox_roi_extractor(x, rois)
+            bbox_feat, global_feat = self.bbox_roi_extractor(x, rois)
+
             if self.with_shared_head:
-                bbox_feat = self.shared_head(bbox_feat, rois, img_metas)
+                bbox_feat = self.shared_head(
+                    bbox_feat,
+                    feat=global_feat,
+                    rois=rois,
+                    img_metas=img_metas)
+
             cls_score, bbox_pred = self.bbox_head(bbox_feat)
 
             bbox_results = dict(
