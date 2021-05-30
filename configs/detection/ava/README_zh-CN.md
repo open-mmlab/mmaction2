@@ -77,7 +77,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 例如：在 AVA 数据集上训练 SlowOnly，并定期验证。
 
 ```shell
-python tools/train.py configs/detection/AVA/slowonly_kinetics_pretrained_r50_8x8x1_20e_ava_rgb.py --validate
+python tools/train.py configs/detection/ava/slowonly_kinetics_pretrained_r50_8x8x1_20e_ava_rgb.py --validate
 ```
 
 更多训练细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#训练配置) 中的 **训练配置** 部分。
@@ -115,7 +115,7 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 例如：在 AVA 上测试 SlowOnly 模型，并将结果存为 csv 文件。
 
 ```shell
-python tools/test.py configs/detection/AVA/slowonly_kinetics_pretrained_r50_8x8x1_20e_ava_rgb.py checkpoints/SOME_CHECKPOINT.pth --eval mAP --out results.csv
+python tools/test.py configs/detection/ava/slowonly_kinetics_pretrained_r50_8x8x1_20e_ava_rgb.py checkpoints/SOME_CHECKPOINT.pth --eval mAP --out results.csv
 ```
 
 更多测试细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#测试某个数据集) 中的 **测试某个数据集** 部分。

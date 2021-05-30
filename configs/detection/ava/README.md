@@ -61,10 +61,9 @@
 
 |                            Model                             | Modality |  Pretrained  | Backbone | Input | gpus | mAP  | log  | json | ckpt |
 | :----------------------------------------------------------: | :------: | :----------: | :------: | :---: | :--: | :--: | :--: | :--: | :--: |
-| [slowfast_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb](/configs/detection/ava/slowfast_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.py) |   RGB    | Kinetics-400 | ResNet50 | 32x2  | 8x2  | 26.1 |      |      |      |
-| [slowfast_temporal_max_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb](/configs/detection/ava/slowfast_temporal_max_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.py) |   RGB    | Kinetics-400 | ResNet50 | 32x2  | 8x2  | 26.4 |      |      |      |
-| [slowfast_temporal_max_context_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb](/configs/detection/ava/slowfast_temporal_max_context_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.py) |   RGB    | Kinetics-400 | ResNet50 | 32x2  | 8x2  | 26.8 |      |      |      |
-| [slowfast_temporal_max_focal_alpha3_gamma1_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb](/configs/detection/ava/slowfast_temporal_max_focal_alpha3_gamma1_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.py) |   RGB    | Kinetics-400 | ResNet50 | 32x2  | 8x2  | 26.8 |      |      |      |
+| [slowfast_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb](/configs/detection/ava/slowfast_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.py) |   RGB    | Kinetics-400 | ResNet50 | 32x2  |  8   | 26.1 |      |      |      |
+| [slowfast_temporal_max_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb](/configs/detection/ava/slowfast_temporal_max_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.py) |   RGB    | Kinetics-400 | ResNet50 | 32x2  |  8   | 26.4 |      |      |      |
+| [slowfast_temporal_max_focal_alpha3_gamma1_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb](/configs/detection/ava/slowfast_temporal_max_focal_alpha3_gamma1_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.py) |   RGB    | Kinetics-400 | ResNet50 | 32x2  |  8   | 26.8 |      |      |      |
 
 - Notes:
 
@@ -86,7 +85,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 Example: train SlowOnly model on AVA with periodic validation.
 
 ```shell
-python tools/train.py configs/detection/AVA/slowonly_kinetics_pretrained_r50_8x8x1_20e_ava_rgb.py --validate
+python tools/train.py configs/detection/ava/slowonly_kinetics_pretrained_r50_8x8x1_20e_ava_rgb.py --validate
 ```
 
 For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting) .
@@ -124,7 +123,7 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 Example: test SlowOnly model on AVA and dump the result to a csv file.
 
 ```shell
-python tools/test.py configs/detection/AVA/slowonly_kinetics_pretrained_r50_8x8x1_20e_ava_rgb.py checkpoints/SOME_CHECKPOINT.pth --eval mAP --out results.csv
+python tools/test.py configs/detection/ava/slowonly_kinetics_pretrained_r50_8x8x1_20e_ava_rgb.py checkpoints/SOME_CHECKPOINT.pth --eval mAP --out results.csv
 ```
 
 For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset) .
