@@ -27,8 +27,8 @@ model = dict(
 dataset_type = 'PoseDataset'
 ann_file_train = 'data/posec3d/gym_train.pkl'
 ann_file_val = 'data/posec3d/gym_val.pkl'
-left = [1, 3, 5, 7, 9, 11, 13, 15]
-right = [2, 4, 6, 8, 10, 12, 14, 16]
+left_kp = [1, 3, 5, 7, 9, 11, 13, 15]
+right_kp = [2, 4, 6, 8, 10, 12, 14, 16]
 skeletons = [[0, 5], [0, 6], [5, 7], [7, 9], [6, 8], [8, 10], [5, 11],
              [11, 13], [13, 15], [6, 12], [12, 14], [14, 16], [0, 1], [0, 2],
              [1, 3], [2, 4], [11, 12]]
@@ -39,7 +39,7 @@ train_pipeline = [
     dict(type='Resize', scale=(-1, 64)),
     dict(type='RandomResizedCrop', area_range=(0.56, 1.0)),
     dict(type='Resize', scale=(56, 56), keep_ratio=False),
-    dict(type='Flip', flip_ratio=0.5, left=left, right=right),
+    dict(type='Flip', flip_ratio=0.5, left_kp=left_kp, right_kp=right_kp),
     dict(
         type='GeneratePoseTarget',
         sigma=0.6,
@@ -83,8 +83,8 @@ test_pipeline = [
         with_limb=True,
         skeletons=skeletons,
         double=True,
-        left=left,
-        right=right),
+        left_kp=left_kp,
+        right_kp=right_kp),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['imgs'])
