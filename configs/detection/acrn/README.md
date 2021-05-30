@@ -28,6 +28,12 @@
 
 ## Model Zoo
 
+### AVA2.1
+
+|                            Model                             | Modality |  Pretrained  | Backbone | Input | gpus | mAP  | log  | json | ckpt |
+| :----------------------------------------------------------: | :------: | :----------: | :------: | :---: | :--: | :--: | :--: | :--: | :--: |
+| [slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb](/configs/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.py) |   RGB    | Kinetics-400 | ResNet50 | 32x2  |  8   | 27.8 |      |      |      |
+
 ### AVA2.2
 
 |                            Model                             | Modality |  Pretrained  | Backbone | Input | gpus | mAP  | log  | json | ckpt |
