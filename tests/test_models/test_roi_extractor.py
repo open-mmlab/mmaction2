@@ -1,4 +1,3 @@
-import pytest
 import torch
 
 from mmaction.models import SingleRoIExtractor3D
@@ -39,8 +38,9 @@ def test_single_roi_extractor3d():
     assert feat.shape == (4, 64, 8, 16, 16)
 
     feat = (torch.randn([4, 64, 8, 16, 16]), torch.randn([4, 32, 16, 16, 16]))
-    with pytest.raises(AssertionError):
-        _ = roi_extractor(feat, rois)
+    roi_feat, feat = roi_extractor(feat, rois)
+    assert roi_feat.shape == (4, 96, 16, 8, 8)
+    assert feat.shape == (4, 96, 16, 16, 16)
 
     feat = torch.randn([4, 64, 8, 16, 16])
     roi_extractor = SingleRoIExtractor3D(
