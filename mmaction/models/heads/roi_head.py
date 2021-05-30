@@ -17,6 +17,16 @@ if mmdet_imported:
     class AVARoIHead(StandardRoIHead):
 
         def _bbox_forward(self, x, rois, img_metas):
+            """Defines the computation performed to get bbox predictions.
+
+            Args:
+                x (torch.Tensor): The input tensor.
+                rois (torch.Tensor): The regions of interest.
+                img_metas (list): The meta info of images
+
+            Returns:
+                dict: bbox predictions with features and classification scores.
+            """
             bbox_feat, global_feat = self.bbox_roi_extractor(x, rois)
 
             if self.with_shared_head:
@@ -55,6 +65,7 @@ if mmdet_imported:
                         img_metas,
                         proposals=None,
                         rescale=False):
+            """Defines the computation performed for simple testing."""
             assert self.with_bbox, 'Bbox head must be implemented.'
 
             if isinstance(x, tuple):

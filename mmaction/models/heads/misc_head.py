@@ -84,15 +84,27 @@ class ACRNHead(nn.Module):
             convs.append(conv)
         self.convs = nn.ModuleList(convs)
 
-    def init_weights(self, pretrained=None):
+    def init_weights(self, **kwargs):
+        """Weight Initialization for ACRNHead."""
         for m in self.modules():
             if isinstance(m, nn.Conv3d):
                 kaiming_init(m)
             elif isinstance(m, _BatchNorm):
                 constant_init(m, 1)
 
-    # x is the RoI feat, feat is the full img feature
     def forward(self, x, feat, rois, img_metas):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (torch.Tensor): The extracted RoI feature.
+            feat (torch.Tensor): The context feature.
+            rois (torch.Tensor): The regions of interest.
+            img_metas (list): The meta info of images.
+
+        Returns:
+            torch.Tensor: The RoI features that have interacted with context
+                feature.
+        """
         # We use max pooling by default
         x = self.pooling(x)
 
