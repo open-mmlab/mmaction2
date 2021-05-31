@@ -133,7 +133,10 @@ def main():
 
     cfg.merge_from_dict(args.cfg_options)
 
-    cfg.model['feature_extraction'] = True
+    if cfg.model['test_cfg'] is None:
+        cfg.model['test_cfg'] = dict(feature_extraction=True)
+    else:
+        cfg.model['test_cfg']['feature_extraction'] = True
 
     # Load output_config from cfg
     output_config = cfg.get('output_config', {})

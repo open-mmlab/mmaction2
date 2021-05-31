@@ -24,8 +24,6 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         backbone (dict): Backbone modules to extract feature.
         cls_head (dict | None): Classification head to process feature.
             Default: None.
-        feature_extraction (bool): Perform feature extraction instead of
-            recognition. Default: False.
         neck (dict | None): Neck for feature fusion. Default: None.
         train_cfg (dict | None): Config for training. Default: None.
         test_cfg (dict | None): Config for testing. Default: None.
@@ -34,14 +32,12 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
     def __init__(self,
                  backbone,
                  cls_head=None,
-                 feature_extraction=False,
                  neck=None,
                  train_cfg=None,
                  test_cfg=None):
         super().__init__()
         # record the source of the backbone
         self.backbone_from = 'mmaction2'
-        self.feature_extraction = feature_extraction
 
         if backbone['type'].startswith('mmcls.'):
             try:
@@ -86,6 +82,11 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         if test_cfg is not None and 'max_testing_views' in test_cfg:
             self.max_testing_views = test_cfg['max_testing_views']
             assert isinstance(self.max_testing_views, int)
+
+        if test_cfg is not None and 'feature_extraction' in test_cfg:
+            self.feature_extraction = test_cfg['feature_extraction']
+        else:
+            self.feature_extraction = False
 
         # mini-batch blending, e.g. mixup, cutmix, etc.
         self.blending = None

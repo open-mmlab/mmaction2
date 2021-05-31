@@ -10,9 +10,8 @@ model = dict(
         pool1_stride_t=1,
         inflate=(0, 0, 1, 1),
         norm_eval=False),
-    feature_extraction=True,
     train_cfg=None,
-    test_cfg=dict(average_clips='prob'))
+    test_cfg=dict(feature_extraction=True))
 
 # dataset settings
 dataset_type = 'VideoDataset'

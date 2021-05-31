@@ -6,9 +6,8 @@ model = dict(
         pretrained='torchvision://resnet50',
         depth=50,
         norm_eval=False),
-    feature_extraction=True,
     train_cfg=None,
-    test_cfg=dict(average_clips=None))
+    test_cfg=dict(feature_extraction=True))
 
 # dataset settings
 dataset_type = 'VideoDataset'
