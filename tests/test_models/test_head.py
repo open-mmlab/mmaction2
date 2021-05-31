@@ -488,13 +488,13 @@ def test_acrn_head():
 
     acrn_head = ACRNHead(32, 16)
     acrn_head.init_weights()
-    new_feat = acrn_head(roi_feat, feat, rois, None)
+    new_feat = acrn_head(roi_feat, feat, rois)
     assert new_feat.shape == (4, 16, 1, 16, 16)
 
     acrn_head = ACRNHead(32, 16, stride=2)
-    new_feat = acrn_head(roi_feat, feat, rois, None)
+    new_feat = acrn_head(roi_feat, feat, rois)
     assert new_feat.shape == (4, 16, 1, 8, 8)
 
     acrn_head = ACRNHead(32, 16, stride=2, num_convs=2)
-    new_feat = acrn_head(roi_feat, feat, rois, None)
+    new_feat = acrn_head(roi_feat, feat, rois)
     assert new_feat.shape == (4, 16, 1, 8, 8)
