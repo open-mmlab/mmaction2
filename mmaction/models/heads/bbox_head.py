@@ -21,6 +21,12 @@ class BBoxHeadAVA(nn.Module):
         spatial_pool_type (str): The spatial pool type. Choices are 'avg' or
             'max'. Default: 'max'.
         in_channels (int): The number of input channels. Default: 2048.
+        focal_alpha (float): The hyper-parameter alpha for Focal Loss.
+            When alpha == 1 and gamma == 0, Focal Loss degenerates to
+            BCELossWithLogits. Default: 1.
+        focal_gamma (float): The hyper-parameter gamma for Focal Loss.
+            When alpha == 1 and gamma == 0, Focal Loss degenerates to
+            BCELossWithLogits. Default: 0.
         num_classes (int): The number of classes. Default: 81.
         dropout_ratio (float): A float in [0, 1], indicates the dropout_ratio.
             Default: 0.

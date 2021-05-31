@@ -15,6 +15,10 @@ except (ImportError, ModuleNotFoundError):
 class ACRNHead(nn.Module):
     """ACRN Head: Tile + 1x1 convolution + 3x3 convolution.
 
+    This module is proposed in
+    `Actor-Centric Relation Network
+    <https://arxiv.org/abs/1807.10982>`_
+
     Args:
         in_channels (int): The input channel.
         out_channels (int): The output channel.
@@ -45,7 +49,7 @@ class ACRNHead(nn.Module):
         self.conv_cfg = conv_cfg
         self.norm_cfg = norm_cfg
         self.act_cfg = act_cfg
-        self.pooling = nn.AdaptiveMaxPool3d(1)
+        self.max_pool = nn.AdaptiveMaxPool3d(1)
 
         self.conv1 = ConvModule(
             in_channels,
@@ -105,7 +109,7 @@ class ACRNHead(nn.Module):
                 feature.
         """
         # We use max pooling by default
-        x = self.pooling(x)
+        x = self.max_pool(x)
 
         h, w = feat.shape[-2:]
         x_tile = x.repeat(1, 1, 1, h, w)
