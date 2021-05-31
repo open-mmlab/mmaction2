@@ -1,5 +1,37 @@
 ## Changelog
 
+### 0.15.0 (31/05/2021)
+
+**Highlights**
+
+- Support PoseC3D
+- Support ACRN
+- Support MIM
+
+**New Features**
+
+- Support PoseC3D ([#786](https://github.com/open-mmlab/mmaction2/pull/786), [#890](https://github.com/open-mmlab/mmaction2/pull/890))
+- Support MIM ([#870](https://github.com/open-mmlab/mmaction2/pull/870))
+- Support ACRN and Focal Loss ([#891](https://github.com/open-mmlab/mmaction2/pull/891))
+- Support Jester dataset ([#864](https://github.com/open-mmlab/mmaction2/pull/864))
+
+**Improvements**
+
+- Add `metric_options` for evaluation to docs ([#873](https://github.com/open-mmlab/mmaction2/pull/873))
+- Support creating a new label map based on custom classes for demos about spatio temporal demo ([#879](https://github.com/open-mmlab/mmaction2/pull/879))
+- Improve document about AVA dataset preparation ([#878](https://github.com/open-mmlab/mmaction2/pull/878))
+- Provide a script to extract clip-level feature ([#856](https://github.com/open-mmlab/mmaction2/pull/856))
+
+**Bug and Typo Fixes**
+
+- Fix issues about resume ([#877](https://github.com/open-mmlab/mmaction2/pull/877), [#878](https://github.com/open-mmlab/mmaction2/pull/878))
+- Correct the key name of `eval_results` dictionary for metric 'mmit_mean_average_precision' ([#885](https://github.com/open-mmlab/mmaction2/pull/885))
+
+**ModelZoo**
+
+- Support Jester dataset ([#864](https://github.com/open-mmlab/mmaction2/pull/864))
+- Support ACRN and Focal Loss ([#891](https://github.com/open-mmlab/mmaction2/pull/891))
+
 ### 0.14.0 (30/04/2021)
 
 **Highlights**
