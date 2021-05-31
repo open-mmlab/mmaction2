@@ -57,6 +57,14 @@
 | [slowfast_context_kinetics_pretrained_r50_4x16x1_20e_ava_rgb](/configs/detection/ava/slowfast_context_kinetics_pretrained_r50_4x16x1_20e_ava_rgb.py) |   RGB    | Kinetics-400 | ResNet50  | 32x2  | 8x2  | 短边 256 | 25.4 | [log](https://download.openmmlab.com/mmaction/detection/ava/slowfast_context_kinetics_pretrained_r50_4x16x1_20e_ava_rgb/slowfast_context_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_20201222.log) | [json](https://download.openmmlab.com/mmaction/detection/ava/slowfast_context_kinetics_pretrained_r50_4x16x1_20e_ava_rgb/slowfast_context_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_20201222.json) | [ckpt](https://download.openmmlab.com/mmaction/detection/ava/slowfast_context_kinetics_pretrained_r50_4x16x1_20e_ava_rgb/slowfast_context_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_20201222-f4d209c9.pth) |
 | [slowfast_kinetics_pretrained_r50_8x8x1_20e_ava_rgb](/configs/detection/ava/slowfast_kinetics_pretrained_r50_8x8x1_20e_ava_rgb.py) |   RGB    | Kinetics-400 | ResNet50  | 32x2  | 8x2  | 短边 256 | 25.5 | [log](https://download.openmmlab.com/mmaction/detection/ava/slowfast_kinetics_pretrained_r50_8x8x1_20e_ava_rgb/slowfast_kinetics_pretrained_r50_8x8x1_20e_ava_rgb_20201217.log) | [json](https://download.openmmlab.com/mmaction/detection/ava/slowfast_kinetics_pretrained_r50_8x8x1_20e_ava_rgb/slowfast_kinetics_pretrained_r50_8x8x1_20e_ava_rgb_20201217.json) | [ckpt](https://download.openmmlab.com/mmaction/detection/ava/slowfast_kinetics_pretrained_r50_8x8x1_20e_ava_rgb/slowfast_kinetics_pretrained_r50_8x8x1_20e_ava_rgb_20201217-ae225e97.pth) |
 
+### AVA2.2
+
+|                           配置文件                           | 模态 |    预训练    | 主干网络 | 输入 | GPU 数量 | mAP  |                             log                              |                             json                             |                             ckpt                             |
+| :----------------------------------------------------------: | :--: | :----------: | :------: | :--: | :------: | :--: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| [slowfast_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb](/configs/detection/ava/slowfast_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.py) | RGB  | Kinetics-400 | ResNet50 | 32x2 |    8     | 26.1 | [log](https://download.openmmlab.com/mmaction/detection/ava/slowfast_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.log) | [json](https://download.openmmlab.com/mmaction/detection/ava/slowfast_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.json) | [ckpt](https://download.openmmlab.com/mmaction/detection/ava/slowfast_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb-b987b516.pth) |
+| [slowfast_temporal_max_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb](/configs/detection/ava/slowfast_temporal_max_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.py) | RGB  | Kinetics-400 | ResNet50 | 32x2 |    8     | 26.4 | [log](https://download.openmmlab.com/mmaction/detection/ava/slowfast_temporal_max_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_temporal_max_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.log) | [json](https://download.openmmlab.com/mmaction/detection/ava/slowfast_temporal_max_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_temporal_max_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.json) | [ckpt](https://download.openmmlab.com/mmaction/detection/ava/slowfast_temporal_max_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_temporal_max_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb-874e0845.pth) |
+| [slowfast_temporal_max_focal_alpha3_gamma1_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb](/configs/detection/ava/slowfast_temporal_max_focal_alpha3_gamma1_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.py) | RGB  | Kinetics-400 | ResNet50 | 32x2 |    8     | 26.8 | [log](https://download.openmmlab.com/mmaction/detection/ava/slowfast_temporal_max_focal_alpha3_gamma1_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_temporal_max_focal_alpha3_gamma1_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.log) | [json](https://download.openmmlab.com/mmaction/detection/ava/slowfast_temporal_max_focal_alpha3_gamma1_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_temporal_max_focal_alpha3_gamma1_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.json) | [ckpt](https://download.openmmlab.com/mmaction/detection/ava/slowfast_temporal_max_focal_alpha3_gamma1_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_temporal_max_focal_alpha3_gamma1_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb-345618cd.pth) |
+
 注：
 
 1. 这里的 **GPU 数量** 指的是得到模型权重文件对应的 GPU 个数。默认地，MMAction2 所提供的配置文件对应使用 8 块 GPU 进行训练的情况。
@@ -77,7 +85,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 例如：在 AVA 数据集上训练 SlowOnly，并定期验证。
 
 ```shell
-python tools/train.py configs/detection/AVA/slowonly_kinetics_pretrained_r50_8x8x1_20e_ava_rgb.py --validate
+python tools/train.py configs/detection/ava/slowonly_kinetics_pretrained_r50_8x8x1_20e_ava_rgb.py --validate
 ```
 
 更多训练细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#训练配置) 中的 **训练配置** 部分。
@@ -115,7 +123,7 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 例如：在 AVA 上测试 SlowOnly 模型，并将结果存为 csv 文件。
 
 ```shell
-python tools/test.py configs/detection/AVA/slowonly_kinetics_pretrained_r50_8x8x1_20e_ava_rgb.py checkpoints/SOME_CHECKPOINT.pth --eval mAP --out results.csv
+python tools/test.py configs/detection/ava/slowonly_kinetics_pretrained_r50_8x8x1_20e_ava_rgb.py checkpoints/SOME_CHECKPOINT.pth --eval mAP --out results.csv
 ```
 
 更多测试细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#测试某个数据集) 中的 **测试某个数据集** 部分。
