@@ -79,7 +79,7 @@ img_norm_cfg = dict(
 
 train_pipeline = [
     dict(type='SampleAVAFrames', clip_len=32, frame_interval=2),
-    dict(type='RawFrameDecode', ),
+    dict(type='RawFrameDecode'),
     dict(type='RandomRescale', scale_range=(256, 320)),
     dict(type='RandomCrop', size=256),
     dict(type='Flip', flip_ratio=0.5),
@@ -100,7 +100,7 @@ train_pipeline = [
 # The testing is w/o. any cropping / flipping
 val_pipeline = [
     dict(type='SampleAVAFrames', clip_len=32, frame_interval=2),
-    dict(type='RawFrameDecode', ),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW', collapse=True),
