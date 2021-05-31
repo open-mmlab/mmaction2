@@ -92,14 +92,13 @@ class ACRNHead(nn.Module):
             elif isinstance(m, _BatchNorm):
                 constant_init(m, 1)
 
-    def forward(self, x, feat, rois, img_metas):
+    def forward(self, x, feat, rois, **kwargs):
         """Defines the computation performed at every call.
 
         Args:
             x (torch.Tensor): The extracted RoI feature.
             feat (torch.Tensor): The context feature.
             rois (torch.Tensor): The regions of interest.
-            img_metas (list): The meta info of images.
 
         Returns:
             torch.Tensor: The RoI features that have interacted with context
