@@ -1,0 +1,30 @@
+Collections:
+- Metadata:
+    Training Data: null
+  Name: TANet
+  README: configs/recognition/tanet/README.md
+Models:
+- Config: configs/recognition/tanet/tanet_r50_dense_1x1x8_100e_kinetics400_rgb.py
+  In Collection: TANet
+  Metadata:
+    Architecture: TANet
+    Epochs: 100
+    Parameters: 25590320
+    Training BatchSize / GPU: 8
+    Training Data: Kinetics-400
+    gpus: 8
+    pretrain: ImageNet
+    resolution: short-side 320
+  Modality: RGB
+  Name: tanet_r50_dense_1x1x8_100e_kinetics400_rgb
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      top1 acc: 76.28
+      top5 acc: 92.6
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_dense_1x1x8_100e_kinetics400_rgb/tanet_r50_dense_1x1x8_100e_kinetics400_rgb_20210219.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_dense_1x1x8_100e_kinetics400_rgb/tanet_r50_dense_1x1x8_100e_kinetics400_rgb_20210219.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_dense_1x1x8_100e_kinetics400_rgb/tanet_r50_dense_1x1x8_100e_kinetics400_rgb_20210219-032c8e94.pth
+  gpu_mem(M): '7124'
+  inference_time(video/s): x

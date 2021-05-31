@@ -66,19 +66,13 @@ mkdir /mnt/SSD/ava_extracted/
 ln -s /mnt/SSD/ava_extracted/ ../data/ava/rawframes/
 ```
 
-如果用户只使用 RGB 帧（由于光流提取非常耗时），可以考虑执行以下脚本，仅用 denseflow 提取 RGB 帧：
+如果用户只使用 RGB 帧（由于光流提取非常耗时），可执行以下脚本使用 denseflow 提取 RGB 帧：
 
 ```shell
 bash extract_rgb_frames.sh
 ```
 
-如果用户未安装 denseflow，以下脚本可以使用 OpenCV 进行 RGB 帧的提取，但视频原分辨率大小会被保留：
-
-```shell
-bash extract_rgb_frames_opencv.sh
-```
-
-或执行以下脚本，使用 ffmpeg 提取 RGB 帧：
+如果用户未安装 denseflow，可执行以下脚本使用 ffmpeg 提取 RGB 帧：
 
 ```shell
 bash extract_rgb_frames_ffmpeg.sh

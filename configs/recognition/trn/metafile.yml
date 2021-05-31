@@ -1,0 +1,56 @@
+Collections:
+- Metadata:
+    Training Data: null
+  Name: TRN
+  README: configs/recognition/trn/README.md
+Models:
+- Config: configs/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb.py
+  In Collection: TRN
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 26641154
+    Training BatchSize / GPU: 16
+    Training Data: SthV1
+    gpus: 8
+    pretrain: ImageNet
+    resolution: height 100
+  Modality: RGB
+  Name: trn_r50_1x1x8_50e_sthv1_rgb
+  Results:
+  - Dataset: SthV1
+    Metrics:
+      top1 acc (accurate): 33.88
+      top1 acc (efficient): 31.62
+      top5 acc (accurate): 62.12
+      top5 acc (efficient): 60.01
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/20210326_103948.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/20210326_103948.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/trn_r50_1x1x8_50e_sthv1_rgb_20210401-163704a8.pth
+  gpu_mem(M): '11010'
+- Config: configs/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb.py
+  In Collection: TRN
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 26641154
+    Training BatchSize / GPU: 16
+    Training Data: SthV2
+    gpus: 8
+    pretrain: ImageNet
+    resolution: height 100
+  Modality: RGB
+  Name: trn_r50_1x1x8_50e_sthv2_rgb
+  Results:
+  - Dataset: SthV2
+    Metrics:
+      top1 acc (accurate): 47.96
+      top1 acc (efficient): 45.14
+      top5 acc (accurate): 75.97
+      top5 acc (efficient): 73.21
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210326_103951.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210326_103951.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/trn_r50_1x1x8_50e_sthv2_rgb_20210401-773eca7b.pth
+  gpu_mem(M): '11010'

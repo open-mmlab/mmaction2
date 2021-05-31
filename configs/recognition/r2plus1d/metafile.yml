@@ -1,0 +1,102 @@
+Collections:
+- Metadata:
+    Training Data: null
+  Name: R2Plus1D
+  README: configs/recognition/r2plus1d/README.md
+Models:
+- Config: configs/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb.py
+  In Collection: R2Plus1D
+  Metadata:
+    Architecture: ResNet34
+    Epochs: 180
+    Parameters: 63759281
+    Training BatchSize / GPU: 8
+    Training Data: Kinetics-400
+    gpus: 32
+    pretrain: None
+    resolution: short-side 256
+  Modality: RGB
+  Name: r2plus1d_r34_8x8x1_180e_kinetics400_rgb
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      top1 acc: 67.3
+      top5 acc: 87.65
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_256p_8x8x1_180e_kinetics400_rgb/20200728_021421.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_256p_8x8x1_180e_kinetics400_rgb/20200728_021421.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_256p_8x8x1_180e_kinetics400_rgb/r2plus1d_r34_256p_8x8x1_180e_kinetics400_rgb_20200729-aa94765e.pth
+  gpu_mem(M): '5019'
+  inference_time(video/s): x
+- Config: configs/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb.py
+  In Collection: R2Plus1D
+  Metadata:
+    Architecture: ResNet34
+    Epochs: 180
+    Parameters: 63759281
+    Training BatchSize / GPU: 16
+    Training Data: Kinetics-400
+    gpus: 8
+    pretrain: None
+    resolution: short-side 256
+  Modality: RGB
+  Name: r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      top1 acc: 67.3
+      top5 acc: 87.8
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb/20200724_201360.log
+  Training Log: https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb/20200724_201360.log.json
+  Weights: https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb_20200826-ab35a529.pth
+  gpu_mem(M): '5019'
+  inference_time(video/s): x
+- Config: configs/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb.py
+  In Collection: R2Plus1D
+  Metadata:
+    Architecture: ResNet34
+    Epochs: 180
+    Parameters: 63759281
+    Training BatchSize / GPU: 8
+    Training Data: Kinetics-400
+    gpus: 16
+    pretrain: None
+    resolution: short-side 320
+  Modality: RGB
+  Name: r2plus1d_r34_8x8x1_180e_kinetics400_rgb
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      top1 acc: 68.68
+      top5 acc: 88.36
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb/r2plus1d_r34_8x8_69.58_88.36.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb/r21d_8x8.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb/r2plus1d_r34_8x8x1_180e_kinetics400_rgb_20200618-3fce5629.pth
+  gpu_mem(M): '5019'
+  inference_time(video/s): 1.6 (80x3 frames)
+- Config: configs/recognition/r2plus1d/r2plus1d_r34_32x2x1_180e_kinetics400_rgb.py
+  In Collection: R2Plus1D
+  Metadata:
+    Architecture: ResNet34
+    Epochs: 180
+    Parameters: 63759281
+    Training BatchSize / GPU: 6
+    Training Data: Kinetics-400
+    gpus: 16
+    pretrain: None
+    resolution: short-side 320
+  Modality: RGB
+  Name: r2plus1d_r34_32x2x1_180e_kinetics400_rgb
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      top1 acc: 74.6
+      top5 acc: 91.59
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_32x2x1_180e_kinetics400_rgb/r2plus1d_r34_32x2_74.6_91.6.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_32x2x1_180e_kinetics400_rgb/r21d_32x2.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_32x2x1_180e_kinetics400_rgb/r2plus1d_r34_32x2x1_180e_kinetics400_rgb_20200618-63462eb3.pth
+  gpu_mem(M): '12975'
+  inference_time(video/s): 0.5 (320x3 frames)
