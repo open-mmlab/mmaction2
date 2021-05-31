@@ -5,12 +5,14 @@
 **Highlights**
 
 - Support PoseC3D
+- Support ACRN
 - Support MIM
 
 **New Features**
 
 - Support PoseC3D ([#786](https://github.com/open-mmlab/mmaction2/pull/786), [#890](https://github.com/open-mmlab/mmaction2/pull/890))
 - Support MIM ([#870](https://github.com/open-mmlab/mmaction2/pull/870))
+- Support ACRN and Focal Loss ([#891](https://github.com/open-mmlab/mmaction2/pull/891))
 - Support Jester dataset ([#864](https://github.com/open-mmlab/mmaction2/pull/864))
 
 **Improvements**
@@ -28,6 +30,7 @@
 **ModelZoo**
 
 - Support Jester dataset ([#864](https://github.com/open-mmlab/mmaction2/pull/864))
+- Support ACRN and Focal Loss ([#891](https://github.com/open-mmlab/mmaction2/pull/891))
 
 ### 0.14.0 (30/04/2021)
 
