@@ -282,7 +282,7 @@ python demo/long_video_demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} $
 
 Optional arguments:
 
-- `OUT_FILE`: Path to the output video file.
+- `OUT_FILE`: Path to the output, either video or json file
 - `INPUT_STEP`: Input step for sampling frames, which can help to get more spare input. If not specified , it will be set to 1.
 - `DEVICE_TYPE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`. If not specified, it will be set to `cuda:0`.
 - `THRESHOLD`: Threshold of prediction score for action recognition. Only label with score higher than the threshold will be shown. If not specified, it will be set to 0.01.
