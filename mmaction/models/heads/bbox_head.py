@@ -122,8 +122,8 @@ class BBoxHeadAVA(nn.Module):
         # We do not predict bbox, so return None
         return cls_score, None
 
-    def get_targets(self, sampling_results, gt_bboxes, gt_labels,
-                    rcnn_train_cfg):
+    @staticmethod
+    def get_targets(sampling_results, gt_bboxes, gt_labels, rcnn_train_cfg):
         pos_proposals = [res.pos_bboxes for res in sampling_results]
         neg_proposals = [res.neg_bboxes for res in sampling_results]
         pos_gt_labels = [res.pos_gt_labels for res in sampling_results]
@@ -131,7 +131,8 @@ class BBoxHeadAVA(nn.Module):
                                       pos_gt_labels, rcnn_train_cfg)
         return cls_reg_targets
 
-    def recall_prec(self, pred_vec, target_vec):
+    @staticmethod
+    def recall_prec(pred_vec, target_vec):
         """
         Args:
             pred_vec (tensor[N x C]): each element is either 0 or 1
@@ -144,7 +145,7 @@ class BBoxHeadAVA(nn.Module):
         prec = correct.sum(1) / (pred_vec.sum(1) + 1e-6)
         return recall.mean(), prec.mean()
 
-    def multilabel_accuracy(self, pred, target, thr=0.5):
+    def multi_label_accuracy(self, pred, target, thr=0.5):
         pred = pred.sigmoid()
         pred_vec = pred > thr
         # Target is 0 or 1, so using 0.5 as the borderline is OK
@@ -189,7 +190,7 @@ class BBoxHeadAVA(nn.Module):
             F_loss = self.focal_alpha * (1 - pt)**self.focal_gamma * loss
             losses['loss_action_cls'] = torch.mean(F_loss)
 
-            recall_thr, prec_thr, recall_k, prec_k = self.multilabel_accuracy(
+            recall_thr, prec_thr, recall_k, prec_k = self.multi_label_accuracy(
                 cls_score, labels, thr=0.5)
             losses['recall@thr=0.5'] = recall_thr
             losses['prec@thr=0.5'] = prec_thr

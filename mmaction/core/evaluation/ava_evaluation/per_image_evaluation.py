@@ -182,8 +182,9 @@ class PerImageEvaluation:
             result_tp_fp_labels.append(tp_fp_labels)
         return result_scores, result_tp_fp_labels
 
-    def _get_overlaps_and_scores_box_mode(self, detected_boxes,
-                                          detected_scores, groundtruth_boxes):
+    @staticmethod
+    def _get_overlaps_and_scores_box_mode(detected_boxes, detected_scores,
+                                          groundtruth_boxes):
         """Computes overlaps and scores between detected and groudntruth boxes.
 
         Args:
@@ -340,13 +341,11 @@ class PerImageEvaluation:
             detected_masks_at_ith_class,
         )
 
-    def _remove_invalid_boxes(
-        self,
-        detected_boxes,
-        detected_scores,
-        detected_class_labels,
-        detected_masks=None,
-    ):
+    @staticmethod
+    def _remove_invalid_boxes(detected_boxes,
+                              detected_scores,
+                              detected_class_labels,
+                              detected_masks=None):
         """Removes entries with invalid boxes.
 
         A box is invalid if either its xmax is smaller than its xmin, or its

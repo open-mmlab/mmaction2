@@ -37,7 +37,7 @@ class LFBInferHead(nn.Module):
                  temporal_pool_type='avg',
                  spatial_pool_type='max'):
         super().__init__()
-        rank, world_size = get_dist_info()
+        rank, _ = get_dist_info()
         if rank == 0:
             if not osp.exists(lfb_prefix_path):
                 print(f'lfb prefix path {lfb_prefix_path} does not exist. '

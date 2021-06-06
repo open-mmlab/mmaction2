@@ -4,7 +4,6 @@ import warnings
 from math import inf
 
 import torch.distributed as dist
-from mmcv.runner import Hook
 from torch.nn.modules.batchnorm import _BatchNorm
 from torch.utils.data import DataLoader
 
@@ -39,6 +38,8 @@ except (ImportError, ModuleNotFoundError):
     from_mmcv = False
 
 if not from_mmcv:
+
+    from mmcv.runner import Hook
 
     class EvalHook(Hook):  # noqa: F811
         """Non-Distributed evaluation hook.

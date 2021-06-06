@@ -101,15 +101,13 @@ class DetectionEvaluator:
 class ObjectDetectionEvaluator(DetectionEvaluator):
     """A class to evaluate detections."""
 
-    def __init__(
-        self,
-        categories,
-        matching_iou_threshold=0.5,
-        evaluate_corlocs=False,
-        metric_prefix=None,
-        use_weighted_mean_ap=False,
-        evaluate_masks=False,
-    ):
+    def __init__(self,
+                 categories,
+                 matching_iou_threshold=0.5,
+                 evaluate_corlocs=False,
+                 metric_prefix=None,
+                 use_weighted_mean_ap=False,
+                 evaluate_masks=False):
         """Constructor.
 
         Args:
@@ -277,14 +275,8 @@ class ObjectDetectionEvaluator(DetectionEvaluator):
             2. per_category_ap: category specific results with keys of the form
                'PerformanceByCategory/mAP@<matching_iou_threshold>IOU/category'
         """
-        (
-            per_class_ap,
-            mean_ap,
-            _,
-            _,
-            per_class_corloc,
-            mean_corloc,
-        ) = self._evaluation.evaluate()
+        (per_class_ap, mean_ap, _, _, per_class_corloc,
+         mean_corloc) = self._evaluation.evaluate()
 
         metric = f'mAP@{self._matching_iou_threshold}IOU'
         pascal_metrics = {self._metric_prefix + metric: mean_ap}

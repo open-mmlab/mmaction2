@@ -180,7 +180,7 @@ class ResNetAudio(nn.Module):
         self.in_channels = in_channels
         self.base_channels = base_channels
         self.num_stages = num_stages
-        assert num_stages >= 1 and num_stages <= 4
+        assert 1 <= num_stages <= 4
         self.dilations = dilations
         self.conv1_kernel = conv1_kernel
         self.conv1_stride = conv1_stride
@@ -222,8 +222,8 @@ class ResNetAudio(nn.Module):
         self.feat_dim = self.block.expansion * self.base_channels * 2**(
             len(self.stage_blocks) - 1)
 
-    def make_res_layer(self,
-                       block,
+    @staticmethod
+    def make_res_layer(block,
                        inplanes,
                        planes,
                        blocks,
@@ -241,7 +241,7 @@ class ResNetAudio(nn.Module):
             planes (int): Number of channels for the output feature
                 in each block.
             blocks (int): Number of residual blocks.
-            strides (Sequence[int]): Strides of residual blocks of each stage.
+            stride (Sequence[int]): Strides of residual blocks of each stage.
                 Default: (1, 2, 2, 2).
             dilation (int): Spacing between kernel elements. Default: 1.
             factorize (int | Sequence[int]): Determine whether to factorize
