@@ -151,3 +151,11 @@ python tools/analysis/eval_metric.py ${CONFIG_FILE} ${RESULT_FILE} [--eval ${EVA
 ```shell
 python tools/print_config.py ${CONFIG} [-h] [--options ${OPTIONS [OPTIONS...]}]
 ```
+
+### 检查视频
+
+`tools/check_videos.py` 脚本利用指定视频编码器，遍历指定配置文件视频数据集中所有样本，寻找无效视频文件（文件破损或者文件不存在），并将无效文件路径保存到输出文件中。请注意，删除无效视频文件后，需要重新生成视频文件列表。
+
+```shell
+python tools/check_videos.py ${CONFIG} [-h] [--options OPTIONS [OPTIONS ...]] [--cfg-options CFG_OPTIONS [CFG_OPTIONS ...]] [--output-file OUTPUT_FILE] [--split SPLIT] [--decoder DECODER] [--remove-corrupted-videos]
+```
