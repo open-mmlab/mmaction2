@@ -117,7 +117,8 @@ def show_results(model, data, label, args):
     frame_size = (frame_width, frame_height)
 
     ind = 0
-    video_writer = cv2.VideoWriter(args.out_file, fourcc, fps, frame_size)
+    video_writer = None if args.out_file.endswith('.json') \
+        else cv2.VideoWriter(args.out_file, fourcc, fps, frame_size)
     prog_bar = mmcv.ProgressBar(num_frames)
     backup_frames = []
 

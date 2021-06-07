@@ -325,7 +325,14 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
 
     ```shell
     python demo/long_video_demo.py configs/recognition/i3d/i3d_r50_video_inference_32x2x1_100e_kinetics400_rgb.py \
-      checkpoints/i3d_r50_256p_32x2x1_100e_kinetics400_rgb_20200801-7d9f44de.pth PATH_TO_LONG_VIDEO demo/label_map_k400.txt PATH_TO_SAVED_VIDEO \
+      checkpoints/i3d_r50_256p_32x2x1_100e_kinetics400_rgb_20200801-7d9f44de.pth PATH_TO_LONG_VIDEO demo/label_map_k400.txt PATH_TO_SAVED_VIDEO
+    ```
+
+5. Predict different labels in a long video by using a I3D model on gpu and save the results as a `json` file
+
+    ```shell
+    python demo/long_video_demo.py configs/recognition/i3d/i3d_r50_video_inference_32x2x1_100e_kinetics400_rgb.py \
+      checkpoints/i3d_r50_256p_32x2x1_100e_kinetics400_rgb_20200801-7d9f44de.pth PATH_TO_LONG_VIDEO demo/label_map_k400.txt ./results.json
     ```
 
 ## SpatioTemporal Action Detection Webcam Demo
