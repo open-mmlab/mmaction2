@@ -31,9 +31,14 @@ def parse_args():
         '--output-file',
         default='invalid-video.txt',
         help='Output file path which keeps corrupted/missing video file paths')
-    parser.add_argument('--split', default='train')
     parser.add_argument(
-        '--decoder', default='decord', help='Video decoder type')
+        '--split',
+        default='train',
+        help='Dataset split, should be one of [train, val, test]')
+    parser.add_argument(
+        '--decoder',
+        default='decord',
+        help='Video decoder type, should be one of [decord, opencv, pyav]')
     parser.add_argument(
         '--remove-corrupted-videos',
         action='store_true',
