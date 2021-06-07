@@ -1,5 +1,19 @@
 ## Changelog
 
+### Master
+
+**Highlights**
+
+**New Features**
+
+**Improvements**
+
+- Add a tool to find invalid videos ([#907](https://github.com/open-mmlab/mmaction2/pull/907))
+
+**Bug and Typo Fixes**
+
+**ModelZoo**
+
 ### 0.15.0 (31/05/2021)
 
 **Highlights**
