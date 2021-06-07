@@ -69,14 +69,15 @@ class RandomSampleFrames:
     def __call__(self, results):
         """Select frames to verify.
 
-        Required key is "total_frames", added or modified key is "frame_inds".
+        Select the first, last and three random frames, Required key is
+        "total_frames", added or modified key is "frame_inds".
         Args:
             results (dict): The resulting dict to be modified and passed
                 to the next transform in pipeline.
         """
         assert results['total_frames'] > 0
 
-        # first and last elements
+        # first and last frames
         results['frame_inds'] = np.array([0, results['total_frames'] - 1])
 
         # choose 3 random frames
