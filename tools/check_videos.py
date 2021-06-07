@@ -84,12 +84,15 @@ if __name__ == '__main__':
             writer.write(dataset.video_infos[i]['filename'] + '\n')
             cnt += 1
 
-    print(f'Checked {len(dataset)} videos, {cnt} is/are corrupted/missing. ')
+    print(f'Checked {len(dataset)} videos, {cnt} is/are corrupted/missing.')
     writer.close()
 
     if args.remove_corrupted_videos:
         print('Start deleting corrupted videos')
+        cnt = 0
         with open(args.output_file, 'r') as f:
             for line in f:
                 if os.path.exists(line.strip()):
                     os.remove(line.strip())
+                    cnt += 1
+        print(f'Delete {cnt} corrupted videos.')
