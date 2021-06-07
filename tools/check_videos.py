@@ -29,7 +29,7 @@ def parse_args():
         "'--cfg-options model.backbone.depth=18 model.backbone.with_cp=True'")
     parser.add_argument(
         '--output-file',
-        default='corrupted-video.txt',
+        default='invalid-video.txt',
         help='Output file path which keeps corrupted/missing video file paths')
     parser.add_argument('--split', default='train')
     parser.add_argument(
