@@ -1,8 +1,10 @@
 import argparse
 import os
-import random
 import warnings
+from functools import partial
+from multiprocessing import Manager, Pool
 
+import numpy as np
 from mmcv import Config, DictAction
 from tqdm import tqdm
 
@@ -41,6 +43,11 @@ def parse_args():
         default='decord',
         help='Video decoder type, should be one of [decord, opencv, pyav]')
     parser.add_argument(
+        '--num-processes',
+        type=int,
+        default=5,
+        help='Number of processes to check videos')
+    parser.add_argument(
         '--remove-corrupted-videos',
         action='store_true',
         help='Whether to delete all corrupted videos')
@@ -70,15 +77,26 @@ class RandomSampleFrames:
         assert results['total_frames'] > 0
 
         # first and last elements
-        results['frame_inds'] = [0, results['total_frames'] - 1]
+        results['frame_inds'] = np.array([0, results['total_frames'] - 1])
 
         # choose 3 random frames
         if results['total_frames'] > 2:
-            for _ in range(3):
-                results['frame_inds'].append(
-                    random.randint(1, results['total_frames'] - 2))
+            results['frame_inds'] = np.concatenate([
+                results['frame_inds'],
+                np.random.randint(1, results['total_frames'] - 1, 3)
+            ])
 
         return results
+
+
+def _do_check_videos(lock, dataset, idx):
+    try:
+        dataset[idx]
+    except:  # noqa
+        # save invalid video path to output file
+        lock.acquire()
+        # writer.write(dataset.video_infos[idx]['filename'] + '\n')
+        lock.release()
 
 
 if __name__ == '__main__':
@@ -96,10 +114,9 @@ if __name__ == '__main__':
     cfg = Config.fromfile(args.config)
     cfg.merge_from_dict(args.cfg_options)
 
+    # build dataset
     dataset_type = cfg.data[args.split].type
     assert dataset_type == 'VideoDataset'
-
-    # Only video decoder is needed for the data pipeline
     cfg.data[args.split].pipeline = [
         dict(type=decoder_to_pipeline[args.decoder] + 'Init'),
         dict(type='RandomSampleFrames'),
@@ -108,18 +125,25 @@ if __name__ == '__main__':
     dataset = build_dataset(cfg.data[args.split],
                             dict(test_mode=(args.split != 'train')))
 
+    # prepare for checking
     writer = open(args.output_file, 'w')
-    cnt = 0
-    for i in tqdm(range(len(dataset))):
-        try:
-            dataset[i]
-        except:  # noqa
-            # save invalid video path to output file
-            writer.write(dataset.video_infos[i]['filename'] + '\n')
-            cnt += 1
+    pool = Pool(args.num_processes)
+    lock = Manager().Lock()
+    # worker_fn = partial(_do_check_videos, writer, lock, dataset)
+    worker_fn = partial(_do_check_videos, lock, dataset)
+    ids = range(len(dataset))
 
-    print(f'Checked {len(dataset)} videos, {cnt} is/are corrupted/missing.')
+    # start checking
+    for _ in tqdm(pool.imap_unordered(worker_fn, ids), total=len(ids)):
+        pass
+    pool.join()
+
+    # print results
+    pool.close()
     writer.close()
+    with open(args.output_file, 'r') as f:
+        print(f'Checked {len(dataset)} videos, '
+              f'{len(f)} is/are corrupted/missing.')
 
     if args.remove_corrupted_videos:
         print('Start deleting corrupted videos')
