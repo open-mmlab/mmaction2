@@ -346,7 +346,11 @@ class ResNet3d(nn.Module):
             Default: ``(1, 1, 1, 1)``.
         conv1_kernel (Sequence[int]): Kernel size of the first conv layer.
             Default: ``(5, 7, 7)``.
+        conv1_stride_s (int): Spatial stride of the first conv layer.
+            Default: 2.
         conv1_stride_t (int): Temporal stride of the first conv layer.
+            Default: 2.
+        pool1_stride_s (int): Spatial stride of the first pooling layer.
             Default: 2.
         pool1_stride_t (int): Temporal stride of the first pooling layer.
             Default: 2.
