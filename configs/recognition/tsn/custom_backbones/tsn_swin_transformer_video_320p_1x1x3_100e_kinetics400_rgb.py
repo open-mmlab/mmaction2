@@ -96,9 +96,8 @@ data = dict(
 evaluation = dict(
     interval=1, metrics=['top_k_accuracy', 'mean_class_accuracy'])
 
-
 # runtime settings
-work_dir = './work_dirs/tsn_swin_transformer_video_320p_1x1x3_100e_kinetics400_rgb/'
+work_dir = './work_dirs/tsn_swin_transformer_video_320p_1x1x3_100e_kinetics400_rgb/'  # noqa
 optimizer = dict(
     type='SGD',
     lr=0.0075,  # this lr is used for 8 gpus
