@@ -68,7 +68,7 @@ if __name__ == '__main__':
     dataset_type = cfg.data[args.split].type
     assert dataset_type == 'VideoDataset'
 
-    # modify video decord pipeline
+    # Only video decoder is needed for the data pipeline
     cfg.data[args.split].pipeline = [
         dict(type=decoder_to_pipeline[args.decoder])
     ]
@@ -81,6 +81,7 @@ if __name__ == '__main__':
         try:
             dataset[i]
         except:  # noqa
+            # save invalid video path to output file
             writer.write(dataset.video_infos[i]['filename'] + '\n')
             cnt += 1
 
