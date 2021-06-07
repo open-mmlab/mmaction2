@@ -49,7 +49,8 @@ class AudioTools:
                  sample_rate=16000,
                  num_mels=80,
                  fft_size=1280,
-                 hop_size=320):
+                 hop_size=320,
+                 spectrogram_type='lws'):
         self.frame_rate = frame_rate
         self.sample_rate = sample_rate
         self.silence_threshold = SILENCE_THRESHOLD
@@ -66,6 +67,8 @@ class AudioTools:
         self.allow_clipping_in_normalization = ALLOW_CLIPPING_IN_NORMALIZATION
         self.log_scale_min = LOG_SCALE_MIN
         self.norm_audio = NORM_AUDIO
+        self.spectrogram_type = spectrogram_type
+        assert spectrogram_type in ['lws', 'librosa']
 
     def load_wav(self, path):
         """Load an audio file into numpy array."""
@@ -248,9 +251,9 @@ class AudioTools:
         return wav
 
     def audio_to_spectrogram(self, wav):
-        if self.melspectrogram:
+        if self.spectrogram_type == 'lws':
             spectrogram = self.melspectrogram(wav).astype(np.float32).T
-        else:
+        elif self.spectrogram_type == 'librosa':
             spectrogram = self.generate_spectrogram_magphase(wav)
         return spectrogram
 
