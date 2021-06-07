@@ -89,7 +89,7 @@ class HVULoss(BaseWeightedLoss):
                 loss_cls = torch.sum(loss_cls, dim=-1)
             return dict(loss_cls=torch.mean(loss_cls))
 
-        elif self.loss_type == 'individual':
+        if self.loss_type == 'individual':
             losses = {}
             loss_weights = {}
             for name, num, start_idx in zip(self.categories,
