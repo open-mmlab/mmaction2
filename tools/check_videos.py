@@ -1,11 +1,12 @@
 import argparse
 import os
+import random
 import warnings
 
 from mmcv import Config, DictAction
 from tqdm import tqdm
 
-from mmaction.datasets import build_dataset
+from mmaction.datasets import PIPELINES, build_dataset
 
 
 def parse_args():
@@ -55,15 +56,40 @@ def parse_args():
     return args
 
 
+@PIPELINES.register_module()
+class RandomSampleFrames:
+
+    def __call__(self, results):
+        """Select frames to verify.
+
+        Required key is "total_frames", added or modified key is "frame_inds".
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        assert results['total_frames'] > 0
+
+        # first and last elements
+        results['frame_inds'] = [0, results['total_frames'] - 1]
+
+        # choose 3 random frames
+        if results['total_frames'] > 2:
+            for _ in range(3):
+                results['frame_inds'].append(
+                    random.randint(1, results['total_frames'] - 2))
+
+        return results
+
+
 if __name__ == '__main__':
     args = parse_args()
 
     assert args.split in ['train', 'val', 'test']
 
     decoder_to_pipeline = dict(
-        decord='DecordInit',
-        opencv='OpenCVInit',
-        pyav='PyAVInit',
+        decord='Decord',
+        opencv='OpenCV',
+        pyav='PyAV',
     )
     assert args.decoder in decoder_to_pipeline
 
@@ -75,7 +101,9 @@ if __name__ == '__main__':
 
     # Only video decoder is needed for the data pipeline
     cfg.data[args.split].pipeline = [
-        dict(type=decoder_to_pipeline[args.decoder])
+        dict(type=decoder_to_pipeline[args.decoder] + 'Init'),
+        dict(type='RandomSampleFrames'),
+        dict(type=decoder_to_pipeline[args.decoder] + 'Decode')
     ]
     dataset = build_dataset(cfg.data[args.split],
                             dict(test_mode=(args.split != 'train')))
