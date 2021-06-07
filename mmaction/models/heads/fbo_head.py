@@ -379,7 +379,7 @@ class FBOHead(nn.Module):
         lt_feat = lt_feat.permute(0, 2, 1).contiguous()
         return lt_feat.unsqueeze(-1).unsqueeze(-1)
 
-    def forward(self, x, rois, img_metas):
+    def forward(self, x, rois, img_metas, **kwargs):
         # [N, C, 1, 1, 1]
         st_feat = self.temporal_pool(x)
         st_feat = self.spatial_pool(st_feat)

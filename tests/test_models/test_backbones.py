@@ -485,6 +485,24 @@ def test_slowonly_backbone():
         # SlowOnly should contain no lateral connection
         ResNet3dSlowOnly(50, None, lateral=True)
 
+    # test SlowOnly for PoseC3D
+    so_50 = ResNet3dSlowOnly(
+        depth=50,
+        pretrained=None,
+        in_channels=17,
+        base_channels=32,
+        num_stages=3,
+        out_indices=(2, ),
+        stage_blocks=(4, 6, 3),
+        conv1_stride_s=1,
+        pool1_stride_s=1,
+        inflate=(0, 1, 1),
+        spatial_strides=(2, 2, 2),
+        temporal_strides=(1, 1, 2),
+        dilations=(1, 1, 1))
+    so_50.init_weights()
+    so_50.train()
+
     # test SlowOnly with normal config
     so_50 = ResNet3dSlowOnly(50, None)
     so_50.init_weights()

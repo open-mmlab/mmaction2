@@ -68,7 +68,7 @@ class LFBInferHead(nn.Module):
         # LFBInferHead has no parameters to be initialized.
         pass
 
-    def forward(self, x, rois, img_metas):
+    def forward(self, x, rois, img_metas, **kwargs):
         # [N, C, 1, 1, 1]
         features = self.temporal_pool(x)
         features = self.spatial_pool(features)
