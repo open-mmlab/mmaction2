@@ -89,13 +89,14 @@ class RandomSampleFrames:
         return results
 
 
-def _do_check_videos(lock, dataset, idx):
+def _do_check_videos(lock, dataset, output_file, idx):
     try:
         dataset[idx]
     except:  # noqa
         # save invalid video path to output file
         lock.acquire()
-        # writer.write(dataset.video_infos[idx]['filename'] + '\n')
+        with open(output_file, 'a') as f:
+            f.write(dataset.video_infos[idx]['filename'] + '\n')
         lock.release()
 
 
@@ -104,13 +105,14 @@ if __name__ == '__main__':
 
     assert args.split in ['train', 'val', 'test']
 
-    decoder_to_pipeline = dict(
+    decoder_to_pipeline_prefix = dict(
         decord='Decord',
         opencv='OpenCV',
         pyav='PyAV',
     )
-    assert args.decoder in decoder_to_pipeline
+    assert args.decoder in decoder_to_pipeline_prefix
 
+    # read config file
     cfg = Config.fromfile(args.config)
     cfg.merge_from_dict(args.cfg_options)
 
@@ -118,19 +120,20 @@ if __name__ == '__main__':
     dataset_type = cfg.data[args.split].type
     assert dataset_type == 'VideoDataset'
     cfg.data[args.split].pipeline = [
-        dict(type=decoder_to_pipeline[args.decoder] + 'Init'),
+        dict(type=decoder_to_pipeline_prefix[args.decoder] + 'Init'),
         dict(type='RandomSampleFrames'),
-        dict(type=decoder_to_pipeline[args.decoder] + 'Decode')
+        dict(type=decoder_to_pipeline_prefix[args.decoder] + 'Decode')
     ]
     dataset = build_dataset(cfg.data[args.split],
                             dict(test_mode=(args.split != 'train')))
 
     # prepare for checking
-    writer = open(args.output_file, 'w')
+    if os.path.exists(args.output_file):
+        # remove exsiting output file
+        os.remove(args.output_file)
     pool = Pool(args.num_processes)
     lock = Manager().Lock()
-    # worker_fn = partial(_do_check_videos, writer, lock, dataset)
-    worker_fn = partial(_do_check_videos, lock, dataset)
+    worker_fn = partial(_do_check_videos, lock, dataset, args.output_file)
     ids = range(len(dataset))
 
     # start checking
@@ -138,9 +141,8 @@ if __name__ == '__main__':
         pass
     pool.join()
 
-    # print results
+    # print results and release resources
     pool.close()
-    writer.close()
     with open(args.output_file, 'r') as f:
         print(f'Checked {len(dataset)} videos, '
               f'{len(f)} is/are corrupted/missing.')
