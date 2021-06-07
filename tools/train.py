@@ -161,7 +161,7 @@ def main():
 
     if cfg.omnisource:
         # If omnisource flag is set, cfg.data.train should be a list
-        assert type(cfg.data.train) is list
+        assert isinstance(cfg.data.train, list)
         datasets = [build_dataset(dataset) for dataset in cfg.data.train]
     else:
         datasets = [build_dataset(cfg.data.train)]

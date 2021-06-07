@@ -119,7 +119,7 @@ if __name__ == '__main__':
                     osp.basename(osp.dirname(p)), osp.basename(p)),
                 fullpath_list))
     elif args.level == 1:
-        frame_dir_list = list(map(lambda p: osp.basename(p), fullpath_list))
+        frame_dir_list = list(map(osp.basename, fullpath_list))
 
     pool = Pool(args.num_worker)
     pool.map(encode_video,
