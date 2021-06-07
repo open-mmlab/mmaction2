@@ -29,7 +29,7 @@ class OldStyleModel(nn.Module):
         self.conv = nn.Conv2d(3, 3, 1)
         self.cnt = 0
 
-    def forward(self, return_loss, **kwargs):
+    def forward(self, *args, **kwargs):
         result = [self.cnt]
         self.cnt += 1
         return result

@@ -12,7 +12,8 @@ from .base import check_flip
 
 class TestFlip:
 
-    def test_flip(self):
+    @staticmethod
+    def test_flip():
         with pytest.raises(ValueError):
             # direction must be in ['horizontal', 'vertical']
             Flip(direction='vertically')

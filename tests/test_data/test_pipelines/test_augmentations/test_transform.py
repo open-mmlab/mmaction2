@@ -11,7 +11,8 @@ from mmaction.datasets.pipelines.augmentations import PoseCompact
 
 class TestTransform:
 
-    def test_random_rescale(self):
+    @staticmethod
+    def test_random_rescale():
         with pytest.raises(AssertionError):
             # scale_range must be a tuple of int
             RandomRescale(scale_range=224)
@@ -48,7 +49,8 @@ class TestTransform:
                                         f'(scale_range={(300, 400)}, '
                                         'interpolation=bilinear)')
 
-    def test_resize(self):
+    @staticmethod
+    def test_resize():
         with pytest.raises(ValueError):
             # scale must be positive
             Resize(-0.5)
@@ -111,7 +113,8 @@ class TestTransform:
             f'(scale={(341, 256)}, keep_ratio={False}, ' +
             f'interpolation=bilinear, lazy={False})')
 
-    def test_random_scale(self):
+    @staticmethod
+    def test_random_scale():
         scales = ((200, 64), (250, 80))
         with pytest.raises(ValueError):
             RandomScale(scales, 'unsupport')
@@ -147,7 +150,8 @@ class TestTransform:
 
 class TestPoseCompact:
 
-    def test_pose_compact(self):
+    @staticmethod
+    def test_pose_compact():
         results = {}
         results['img_shape'] = (100, 100)
         fake_kp = np.zeros([1, 4, 2, 2])

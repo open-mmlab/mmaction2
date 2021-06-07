@@ -18,7 +18,8 @@ class ExampleDataset(Dataset):
     def __init__(self, test_mode=False):
         self.test_mode = test_mode
 
-    def evaluate(self, results, logger=None):
+    @staticmethod
+    def evaluate(results, logger=None):
         eval_results = OrderedDict()
         eval_results['acc'] = 1
         return eval_results
