@@ -7,6 +7,7 @@ from threading import Thread
 import cv2
 import numpy as np
 import torch
+from mmcv import Config, DictAction
 from mmcv.parallel import collate, scatter
 
 from mmaction.apis import init_recognizer
@@ -54,6 +55,14 @@ def parse_args():
         type=int,
         default=4,
         help='Set upper bound FPS value of model inference')
+    parser.add_argument(
+        '--cfg-options',
+        nargs='+',
+        action=DictAction,
+        default={},
+        help='override some settings in the used config, the key-value pair '
+        'in xxx=yyy format will be merged into config file. For example, '
+        "'--cfg-options model.backbone.depth=18 model.backbone.with_cp=True'")
     args = parser.parse_args()
     assert args.drawing_fps >= 0 and args.inference_fps >= 0, \
         'upper bound FPS value of drawing and inference should be set as ' \
@@ -168,7 +177,11 @@ def main():
     inference_fps = args.inference_fps
 
     device = torch.device(args.device)
-    model = init_recognizer(args.config, args.checkpoint, device=device)
+
+    cfg = Config.fromfile(args.config)
+    cfg.merge_from_dict(args.cfg_options)
+
+    model = init_recognizer(cfg, args.checkpoint, device=device)
     camera = cv2.VideoCapture(args.camera_id)
     data = dict(img_shape=None, modality='RGB', label=-1)
 
@@ -178,7 +191,7 @@ def main():
     # prepare test pipeline from non-camera pipeline
     cfg = model.cfg
     sample_length = 0
-    pipeline = cfg.test_pipeline
+    pipeline = cfg.data.test.pipeline
     pipeline_ = pipeline.copy()
     for step in pipeline:
         if 'SampleFrames' in step['type']:

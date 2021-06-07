@@ -8,6 +8,7 @@ import cv2
 import mmcv
 import numpy as np
 import torch
+from mmcv import Config, DictAction
 from mmcv.parallel import collate, scatter
 
 from mmaction.apis import init_recognizer
@@ -55,6 +56,14 @@ def parse_args():
               'which you sample frames, which equals to '
               'clip_len x frame_interval), if set as 0, the '
               'prediction stride is 1'))
+    parser.add_argument(
+        '--cfg-options',
+        nargs='+',
+        action=DictAction,
+        default={},
+        help='override some settings in the used config, the key-value pair '
+        'in xxx=yyy format will be merged into config file. For example, '
+        "'--cfg-options model.backbone.depth=18 model.backbone.with_cp=True'")
     args = parser.parse_args()
     return args
 
@@ -201,7 +210,11 @@ def main():
     args = parse_args()
 
     args.device = torch.device(args.device)
-    model = init_recognizer(args.config, args.checkpoint, device=args.device)
+
+    cfg = Config.fromfile(args.config)
+    cfg.merge_from_dict(args.cfg_options)
+
+    model = init_recognizer(cfg, args.checkpoint, device=args.device)
     data = dict(img_shape=None, modality='RGB', label=-1)
     with open(args.label, 'r') as f:
         label = [line.strip() for line in f]
@@ -209,7 +222,7 @@ def main():
     # prepare test pipeline from non-camera pipeline
     cfg = model.cfg
     sample_length = 0
-    pipeline = cfg.test_pipeline
+    pipeline = cfg.data.test.pipeline
     pipeline_ = pipeline.copy()
     for step in pipeline:
         if 'SampleFrames' in step['type']:

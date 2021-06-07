@@ -267,8 +267,8 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
 **Note:** Considering the efficiency difference for users' hardware, Some modifications might be done to suit the case.
 Users can change:
 
-1). `SampleFrames` step (especially the number of `clip_len` and `num_clips`) of `test_pipeline` in the config file.
-2). Change to the suitable Crop methods like `TenCrop`, `ThreeCrop`, `CenterCrop`, etc. in `test_pipeline` of the config file.
+1). `SampleFrames` step (especially the number of `clip_len` and `num_clips`) of `test_pipeline` in the config filem, like `--cfg-options data.test.pipeline.0.num_clips=3`.
+2). Change to the suitable Crop methods like `TenCrop`, `ThreeCrop`, `CenterCrop`, etc. in `test_pipeline` of the config file, like `--cfg-options data.test.pipeline.4.type=CenterCrop`.
 3). Change the number of `--average-size`. The smaller, the faster.
 
 ## Long video demo
