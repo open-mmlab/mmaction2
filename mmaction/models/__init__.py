@@ -15,13 +15,13 @@ from .losses import (BCELossWithLogits, BinaryLogisticRegressionLoss, BMNLoss,
                      CrossEntropyLoss, HVULoss, NLLLoss, OHEMHingeLoss,
                      SSNLoss)
 from .necks import TPN
-from .recognizers import (AudioRecognizer, BaseRecognizer, recognizer2d,
-                          recognizer3d)
+from .recognizers import (AudioRecognizer, BaseRecognizer, Recognizer2D,
+                          Recognizer3D)
 from .roi_extractors import SingleRoIExtractor3D
 
 __all__ = [
     'BACKBONES', 'HEADS', 'RECOGNIZERS', 'build_recognizer', 'build_head',
-    'build_backbone', 'recognizer2d', 'recognizer3d', 'C3D', 'ResNet',
+    'build_backbone', 'Recognizer2D', 'Recognizer3D', 'C3D', 'ResNet',
     'ResNet3d', 'ResNet2Plus1d', 'I3DHead', 'TSNHead', 'TSMHead', 'BaseHead',
     'BaseRecognizer', 'LOSSES', 'CrossEntropyLoss', 'NLLLoss', 'HVULoss',
     'ResNetTSM', 'ResNet3dSlowFast', 'SlowFastHead', 'Conv2plus1d',
