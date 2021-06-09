@@ -1,4 +1,5 @@
 import argparse
+import json
 import random
 from collections import deque
 from operator import itemgetter
@@ -32,7 +33,7 @@ def parse_args():
     parser.add_argument('checkpoint', help='checkpoint file/url')
     parser.add_argument('video_path', help='video file/url')
     parser.add_argument('label', help='label file')
-    parser.add_argument('out_file', help='output filename')
+    parser.add_argument('out_file', help='output result file in video/json')
     parser.add_argument(
         '--input-step',
         type=int,
@@ -58,6 +59,47 @@ def parse_args():
     return args
 
 
+def show_results_video(result_queue, text_info, thr, msg, frame, video_writer):
+    if len(result_queue) != 0:
+        text_info = {}
+        results = result_queue.popleft()
+        for i, result in enumerate(results):
+            selected_label, score = result
+            if score < thr:
+                break
+            location = (0, 40 + i * 20)
+            text = selected_label + ': ' + str(round(score, 2))
+            text_info[location] = text
+            cv2.putText(frame, text, location, FONTFACE, FONTSCALE, FONTCOLOR,
+                        THICKNESS, LINETYPE)
+    elif len(text_info):
+        for location, text in text_info.items():
+            cv2.putText(frame, text, location, FONTFACE, FONTSCALE, FONTCOLOR,
+                        THICKNESS, LINETYPE)
+    else:
+        cv2.putText(frame, msg, (0, 40), FONTFACE, FONTSCALE, MSGCOLOR,
+                    THICKNESS, LINETYPE)
+    video_writer.write(frame)
+    return text_info
+
+
+def get_results_json(result_queue, text_info, thr, msg, ind, out_json):
+    if len(result_queue) != 0:
+        text_info = {}
+        results = result_queue.popleft()
+        for i, result in enumerate(results):
+            selected_label, score = result
+            if score < thr:
+                break
+            text_info[i + 1] = selected_label + ': ' + str(round(score, 2))
+        out_json[ind] = text_info
+    elif len(text_info):
+        out_json[ind] = text_info
+    else:
+        out_json[ind] = msg
+    return text_info, out_json
+
+
 def show_results(model, data, label, args):
     frame_queue = deque(maxlen=args.sample_length)
     result_queue = deque(maxlen=1)
@@ -70,11 +112,13 @@ def show_results(model, data, label, args):
 
     msg = 'Preparing action recognition ...'
     text_info = {}
+    out_json = {}
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     frame_size = (frame_width, frame_height)
 
     ind = 0
-    video_writer = cv2.VideoWriter(args.out_file, fourcc, fps, frame_size)
+    video_writer = None if args.out_file.endswith('.json') \
+        else cv2.VideoWriter(args.out_file, fourcc, fps, frame_size)
     prog_bar = mmcv.ProgressBar(num_frames)
     backup_frames = []
 
@@ -108,28 +152,20 @@ def show_results(model, data, label, args):
             results = scores_sorted[:num_selected_labels]
             result_queue.append(results)
 
-        if len(result_queue) != 0:
-            text_info = {}
-            results = result_queue.popleft()
-            for i, result in enumerate(results):
-                selected_label, score = result
-                if score < args.threshold:
-                    break
-                location = (0, 40 + i * 20)
-                text = selected_label + ': ' + str(round(score, 2))
-                text_info[location] = text
-                cv2.putText(frame, text, location, FONTFACE, FONTSCALE,
-                            FONTCOLOR, THICKNESS, LINETYPE)
-        elif len(text_info):
-            for location, text in text_info.items():
-                cv2.putText(frame, text, location, FONTFACE, FONTSCALE,
-                            FONTCOLOR, THICKNESS, LINETYPE)
+        if args.out_file.endswith('.json'):
+            text_info, out_json = get_results_json(result_queue, text_info,
+                                                   args.threshold, msg, ind,
+                                                   out_json)
         else:
-            cv2.putText(frame, msg, (0, 40), FONTFACE, FONTSCALE, MSGCOLOR,
-                        THICKNESS, LINETYPE)
-        video_writer.write(frame)
+            text_info = show_results_video(result_queue, text_info,
+                                           args.threshold, msg, frame,
+                                           video_writer)
+
     cap.release()
     cv2.destroyAllWindows()
+    if args.out_file.endswith('.json'):
+        with open(args.out_file, 'w') as js:
+            json.dump(out_json, js)
 
 
 def inference(model, data, args, frame_queue):
