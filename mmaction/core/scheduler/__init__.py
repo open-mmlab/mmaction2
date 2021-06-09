@@ -1,3 +1,3 @@
-from .tin_lr_hook import TINLrUpdaterHook
+from .lr_updater import TINLrUpdaterHook
 
 __all__ = ['TINLrUpdaterHook']
