@@ -21,7 +21,7 @@ class Recognizer2D(BaseRecognizer):
 
         x = self.extract_feat(imgs)
 
-        if self.backbone_from == 'torchvision':
+        if self.backbone_from in ['torchvision', 'timm']:
             if len(x.shape) == 4 and (x.shape[2] > 1 or x.shape[3] > 1):
                 # apply adaptive avg pooling
                 x = nn.AdaptiveAvgPool2d(1)(x)
@@ -55,7 +55,7 @@ class Recognizer2D(BaseRecognizer):
 
         x = self.extract_feat(imgs)
 
-        if self.backbone_from == 'torchvision':
+        if self.backbone_from in ['torchvision', 'timm']:
             if len(x.shape) == 4 and (x.shape[2] > 1 or x.shape[3] > 1):
                 # apply adaptive avg pooling
                 x = nn.AdaptiveAvgPool2d(1)(x)
