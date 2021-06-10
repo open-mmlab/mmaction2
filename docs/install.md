@@ -1,4 +1,4 @@
-## Installation
+# Installation
 
 We provide some tips for MMAction2 installation in this file.
 
@@ -15,7 +15,7 @@ We provide some tips for MMAction2 installation in this file.
 
 <!-- TOC -->
 
-### Requirements
+## Requirements
 
 - Linux (Windows is not officially supported)
 - Python 3.6+
