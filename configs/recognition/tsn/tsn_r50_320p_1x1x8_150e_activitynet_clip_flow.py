@@ -1,6 +1,7 @@
 _base_ = ['../../_base_/models/tsn_r50.py', '../../_base_/default_runtime.py']
 
 # model settings
+# ``in_channels`` should be 2 * clip_len
 model = dict(
     backbone=dict(in_channels=10),
     cls_head=dict(num_classes=200, dropout_ratio=0.8))

@@ -1,5 +1,6 @@
 import os
 import os.path as osp
+import re
 from operator import itemgetter
 
 import mmcv
@@ -106,10 +107,23 @@ def inference_recognizer(model,
         filename_tmpl = cfg.data.test.get('filename_tmpl', 'img_{:05}.jpg')
         modality = cfg.data.test.get('modality', 'RGB')
         start_index = cfg.data.test.get('start_index', 1)
+
+        # count the number of frames that match the format of `filename_tmpl`
+        # RGB pattern example: img_{:05}.jpg -> ^img_\d+.jpg$
+        # Flow patteren example: {}_{:05d}.jpg -> ^x_\d+.jpg$
+        pattern = f'^{filename_tmpl}$'
+        if modality == 'Flow':
+            pattern = pattern.replace('{}', 'x')
+        pattern = pattern.replace(
+            pattern[pattern.find('{'):pattern.find('}') + 1], '\\d+')
+        total_frames = len(
+            list(
+                filter(lambda x: re.match(pattern, x) is not None,
+                       os.listdir(video_path))))
+
         data = dict(
             frame_dir=video_path,
-            total_frames=len(os.listdir(video_path)),
-            # assuming files in ``video_path`` are all named with ``filename_tmpl``  # noqa: E501
+            total_frames=total_frames,
             label=-1,
             start_index=start_index,
             filename_tmpl=filename_tmpl,

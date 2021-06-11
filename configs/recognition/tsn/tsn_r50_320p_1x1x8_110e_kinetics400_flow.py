@@ -1,5 +1,9 @@
 _base_ = ['../../_base_/models/tsn_r50.py', '../../_base_/default_runtime.py']
 
+# model settings
+# ``in_channels`` should be 2 * clip_len
+model = dict(backbone=dict(in_channels=10))
+
 # dataset settings
 dataset_type = 'RawframeDataset'
 data_root = 'data/kinetics400/rawframes_train_320p'
