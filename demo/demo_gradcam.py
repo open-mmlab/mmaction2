@@ -87,7 +87,6 @@ def build_inputs(model, video_path, use_frames=False):
         data = dict(
             frame_dir=video_path,
             total_frames=len(os.listdir(video_path)),
-            # assuming files in ``video_path`` are all named with ``filename_tmpl``  # noqa: E501
             label=-1,
             start_index=start_index,
             filename_tmpl=filename_tmpl,
