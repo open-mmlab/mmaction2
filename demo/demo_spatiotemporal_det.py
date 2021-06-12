@@ -8,6 +8,7 @@ import cv2
 import mmcv
 import numpy as np
 import torch
+from mmcv import DictAction
 from mmcv.runner import load_checkpoint
 from tqdm import tqdm
 
@@ -171,6 +172,14 @@ def parse_args():
         default=6,
         type=int,
         help='the fps of demo video output')
+    parser.add_argument(
+        '--cfg-options',
+        nargs='+',
+        action=DictAction,
+        default={},
+        help='override some settings in the used config, the key-value pair '
+        'in xxx=yyy format will be merged into config file. For example, '
+        "'--cfg-options model.backbone.depth=18 model.backbone.with_cp=True'")
     args = parser.parse_args()
     return args
 
@@ -288,7 +297,9 @@ def main():
 
     # Get clip_len, frame_interval and calculate center index of each clip
     config = mmcv.Config.fromfile(args.config)
-    val_pipeline = config['val_pipeline']
+    config.merge_from_dict(args.cfg_options)
+    val_pipeline = config.data.val.pipeline
+
     sampler = [x for x in val_pipeline if x['type'] == 'SampleAVAFrames'][0]
     clip_len, frame_interval = sampler['clip_len'], sampler['frame_interval']
     window_size = clip_len * frame_interval
