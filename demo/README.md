@@ -1,13 +1,35 @@
 # Demo
 
-## Demo link
+## Shortcuts
 
+- [Modify configs through script arguments](#modify-config-through-script-arguments): Tricks to directly modify configs through script arguments.
 - [Video demo](#video-demo): A demo script to predict the recognition result using a single video.
 - [SpatioTemporal Action Detection Video Demo](#spatiotemporal-action-detection-video-demo): A demo script to predict the SpatioTemporal Action Detection result using a single video.
 - [Video GradCAM Demo](#video-gradcam-demo): A demo script to visualize GradCAM results using a single video.
 - [Webcam demo](#webcam-demo): A demo script to implement real-time action recognition from a web camera.
 - [Long Video demo](#long-video-demo): a demo script to predict different labels using a single long video.
 - [SpatioTempoval Action Detection Webcam Demo](#spatiotemporal-action-detection-webcam-demo): A demo script to implement real-time spatio-temporval action detection from a web camera.
+
+## Modify configs through script arguments
+
+When running demos using our provided scripts, you may specify `--cfg-options` to in-place modify the config.
+
+- Update config keys of dict.
+
+  The config options can be specified following the order of the dict keys in the original config.
+  For example, `--cfg-options model.backbone.norm_eval=False` changes the all BN modules in model backbones to `train` mode.
+
+- Update keys inside a list of configs.
+
+  Some config dicts are composed as a list in your config. For example, the training pipeline `data.train.pipeline` is normally a list
+  e.g. `[dict(type='SampleFrames'), ...]`. If you want to change `'SampleFrames'` to `'DenseSampleFrames'` in the pipeline,
+  you may specify `--cfg-options data.train.pipeline.0.type=DenseSampleFrames`.
+
+- Update values of list/tuples.
+
+  If the value to be updated is a list or a tuple. For example, the config file normally sets `workflow=[('train', 1)]`. If you want to
+  change this key, you may specify `--cfg-options workflow="[(train,1),(val,1)]"`. Note that the quotation mark \" is necessary to
+  support list/tuple data types, and that **NO** white space is allowed inside the quotation marks in the specified value.
 
 ## Video demo
 
