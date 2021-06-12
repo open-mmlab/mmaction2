@@ -778,10 +778,9 @@ def main(args):
                                         args.device, args.det_score_thr)
 
     # init action detector
-    cfg = Config.fromfile(args.config)
-    cfg.merge_from_dict(args.cfg_options)
+    config = Config.fromfile(args.config)
+    config.merge_from_dict(args.cfg_options)
 
-    config = mmcv.Config.fromfile(cfg)
     try:
         # In our spatiotemporal detection demo, different actions should have
         # the same number of bboxes.
