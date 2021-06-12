@@ -4,7 +4,11 @@
 
 **Highlights**
 
+- Support using backbone from pytorch-image-models(timm)
+
 **New Features**
+
+- Support using backbones from pytorch-image-models(timm) for TSN ([#880](https://github.com/open-mmlab/mmaction2/pull/880))
 
 **Improvements**
 
@@ -13,6 +17,8 @@
 **Bug and Typo Fixes**
 
 **ModelZoo**
+
+- Add TSN with Swin Transformer backbone as an example for using pytorch-image-models(timm) backbones ([#880](https://github.com/open-mmlab/mmaction2/pull/880))
 
 ### 0.15.0 (31/05/2021)
 

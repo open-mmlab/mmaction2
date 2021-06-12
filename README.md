@@ -96,6 +96,7 @@ Supported methods for Action Recognition:
 - ✅ [MultiModality: Audio](configs/recognition_audio/resnet/README.md) (ArXiv'2020)
 - ✅ [TANet](configs/recognition/tanet/README.md) (ArXiv'2020)
 - ✅ [TRN](configs/recognition/trn/README.md) (CVPR'2015)
+- ✅ [PoseC3D](configs/skeleton/posec3d/README.md) (ArXiv'2021)
 
 </details>
 
@@ -115,6 +116,7 @@ Supported methods for Spatial Temporal Action Detection:
 <details open>
 <summary>(click to collapse)</summary>
 
+- ✅ [ACRN](configs/detection/acrn/README.md) (ECCV'2018)
 - ✅ [SlowOnly+Fast R-CNN](configs/detection/ava/README.md) (ICCV'2019)
 - ✅ [SlowFast+Fast R-CNN](configs/detection/ava/README.md) (ICCV'2019)
 - ✅ [Long-Term Feature Bank](configs/detection/lfb/README.md) (CVPR'2019)

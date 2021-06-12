@@ -5,6 +5,7 @@
 <!-- TOC -->
 
 - [安装依赖包](#安装依赖包)
+- [准备环境](#准备环境)
 - [MMAction2 的安装步骤](#MMAction2-的安装步骤)
 - [CPU 环境下的安装步骤](#CPU-环境下的安装步骤)
 - [利用 Docker 镜像安装 MMAction2](#利用-Docker-镜像安装-MMAction2)
@@ -46,7 +47,7 @@ conda install -y jpeg libtiff
 **注意**：用户需要首先运行 `pip uninstall mmcv` 命令，以确保 mmcv 被成功安装。
 如果 mmcv 和 mmcv-full 同时被安装, 会报 `ModuleNotFoundError` 的错误。
 
-### MMAction2 的安装步骤
+## 准备环境
 
 a. 创建并激活 conda 虚拟环境，如：
 
@@ -80,7 +81,20 @@ conda install pytorch=1.3.1 cudatoolkit=9.2 torchvision=0.4.2 -c pytorch
 
 如果 PyTorch 是由源码进行编译安装（而非直接下载预编译好的安装包），则可以使用更多的 CUDA 版本（如 9.0 版本）。
 
-c. 安装 mmcv。MMAction2 推荐用户使用如下的命令安装预编译好的 mmcv。
+## MMAction2 的安装步骤
+
+这里推荐用户使用 [MIM](https://github.com/open-mmlab/mim) 安装 MMAction2。
+
+```shell
+pip install openmim
+mim install mmaction2
+```
+
+MIM 可以自动安装 OpenMMLab 项目及其依赖。
+
+或者，用户也可以通过以下步骤手动安装 MMAction2。
+
+a. 安装 mmcv。MMAction2 推荐用户使用如下的命令安装预编译好的 mmcv。
 
 ```shell
 pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/{cu_version}/{torch_version}/index.html
@@ -113,14 +127,14 @@ pip install mmcv-full
 
 **注意**：如果 mmcv 已经被安装，用户需要使用 `pip uninstall mmcv` 命令进行卸载。如果 mmcv 和 mmcv-full 同时被安装, 会报 `ModuleNotFoundError` 的错误。
 
-d. 克隆 MMAction2 库。
+b. 克隆 MMAction2 库。
 
 ```shell
 git clone https://github.com/open-mmlab/mmaction2.git
 cd mmaction2
 ```
 
-e. 安装依赖包和 MMAction2。
+c. 安装依赖包和 MMAction2。
 
 ```shell
 pip install -r requirements/build.txt
@@ -133,7 +147,7 @@ pip install -v -e .  # or "python setup.py develop"
 CC=clang CXX=clang++ CFLAGS='-stdlib=libc++' pip install -e .
 ```
 
-f. 安装 mmdetection 以支持时空检测任务。
+d. 安装 mmdetection 以支持时空检测任务。
 
 如果用户不想做时空检测相关任务，这部分步骤可以选择跳过。
 
@@ -141,8 +155,8 @@ f. 安装 mmdetection 以支持时空检测任务。
 
 注意：
 
-1. 在步骤 d 中，git commit 的 id 将会被写到版本号中，如 0.6.0+2e7045c。这个版本号也会被保存到训练好的模型中。
-   这里推荐用户每次在步骤 d 中对本地代码和 github 上的源码进行同步。如果 C++/CUDA 代码被修改，就必须进行这一步骤。
+1. 在步骤 b 中，git commit 的 id 将会被写到版本号中，如 0.6.0+2e7045c。这个版本号也会被保存到训练好的模型中。
+   这里推荐用户每次在步骤 b 中对本地代码和 github 上的源码进行同步。如果 C++/CUDA 代码被修改，就必须进行这一步骤。
 
 2. 根据上述步骤，MMAction2 就会以 `dev` 模式被安装，任何本地的代码修改都会立刻生效，不需要再重新安装一遍（除非用户提交了 commits，并且想更新版本号）。
 
@@ -154,13 +168,13 @@ f. 安装 mmdetection 以支持时空检测任务。
    要想使用一些可选的依赖包，如 `decord`，用户需要通过 `pip install -r requirements/optional.txt` 进行安装，
    或者通过调用 `pip`（如 `pip install -v -e .[optional]`，这里的 `[optional]` 可替换为 `all`，`tests`，`build` 或 `optional`） 指定安装对应的依赖包，如 `pip install -v -e .[tests,build]`。
 
-### CPU 环境下的安装步骤
+## CPU 环境下的安装步骤
 
 MMAction2 可以在只有 CPU 的环境下安装（即无法使用 GPU 的环境）。
 
 在 CPU 模式下，用户可以运行 `demo/demo.py` 的代码。
 
-### 利用 Docker 镜像安装 MMAction2
+## 利用 Docker 镜像安装 MMAction2
 
 MMAction2 提供一个 [Dockerfile](/docker/Dockerfile) 用户创建 docker 镜像。
 
@@ -177,7 +191,7 @@ docker build -f ./docker/Dockerfile --rm -t mmaction2 .
 docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmaction2/data mmaction2
 ```
 
-### 源码安装 MMAction2
+## 源码安装 MMAction2
 
 这里提供了 conda 下安装 MMAction2 并链接数据集路径的完整脚本（假设 Kinetics-400 数据的路径在 $KINETICS400_ROOT）。
 
@@ -201,7 +215,7 @@ mkdir data
 ln -s $KINETICS400_ROOT data
 ```
 
-### 在多个 MMAction2 版本下进行开发
+## 在多个 MMAction2 版本下进行开发
 
 MMAction2 的训练和测试脚本已经修改了 `PYTHONPATH` 变量，以确保其能够运行当前目录下的 MMAction2。
 
@@ -211,7 +225,7 @@ MMAction2 的训练和测试脚本已经修改了 `PYTHONPATH` 变量，以确�
 PYTHONPATH="$(dirname $0)/..":$PYTHONPATH
 ```
 
-### 安装验证
+## 安装验证
 
 为了验证 MMAction2 和所需的依赖包是否已经安装成功，
 用户可以运行以下的 python 代码，以测试其是否能成功地初始化动作识别器，并进行演示视频的推理：
