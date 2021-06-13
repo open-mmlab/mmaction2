@@ -86,7 +86,7 @@ conda install pytorch=1.3.1 cudatoolkit=9.2 torchvision=0.4.2 -c pytorch
 这里推荐用户使用 [MIM](https://github.com/open-mmlab/mim) 安装 MMAction2。
 
 ```shell
-pip install openmim
+pip install git+https://github.com/open-mmlab/mim.git
 mim install mmaction2
 ```
 
