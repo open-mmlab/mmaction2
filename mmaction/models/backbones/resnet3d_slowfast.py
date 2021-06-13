@@ -120,7 +120,7 @@ class ResNet3dPathway(ResNet3d):
                 Default: ``pytorch``.
             inflate (int | Sequence[int]): Determine whether to inflate
                 for each block. Default: 1.
-            inflate_style (str): ``3x1x1`` or ``1x1x1``. which determines
+            inflate_style (str): ``3x1x1`` or ``3x3x3``. which determines
                 the kernel sizes and padding strides for conv1 and
                 conv2 in each block. Default: ``3x1x1``.
             non_local (int | Sequence[int]): Determine whether to apply

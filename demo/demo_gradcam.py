@@ -5,6 +5,7 @@ import os.path as osp
 import mmcv
 import numpy as np
 import torch
+from mmcv import Config, DictAction
 from mmcv.parallel import collate, scatter
 
 from mmaction.apis import init_recognizer
@@ -32,6 +33,14 @@ def parse_args():
         help='GradCAM target layer name')
     parser.add_argument('--out-filename', default=None, help='output filename')
     parser.add_argument('--fps', default=5, type=int)
+    parser.add_argument(
+        '--cfg-options',
+        nargs='+',
+        action=DictAction,
+        default={},
+        help='override some settings in the used config, the key-value pair '
+        'in xxx=yyy format will be merged into config file. For example, '
+        "'--cfg-options model.backbone.depth=18 model.backbone.with_cp=True'")
     parser.add_argument(
         '--target-resolution',
         nargs=2,
@@ -87,7 +96,6 @@ def build_inputs(model, video_path, use_frames=False):
         data = dict(
             frame_dir=video_path,
             total_frames=len(os.listdir(video_path)),
-            # assuming files in ``video_path`` are all named with ``filename_tmpl``  # noqa: E501
             label=-1,
             start_index=start_index,
             filename_tmpl=filename_tmpl,
@@ -161,12 +169,12 @@ def main():
     # assign the desired device.
     device = torch.device(args.device)
 
+    cfg = Config.fromfile(args.config)
+    cfg.merge_from_dict(args.cfg_options)
+
     # build the recognizer from a config file and checkpoint file/url
     model = init_recognizer(
-        args.config,
-        args.checkpoint,
-        device=device,
-        use_frames=args.use_frames)
+        cfg, args.checkpoint, device=device, use_frames=args.use_frames)
 
     inputs = build_inputs(model, args.video, use_frames=args.use_frames)
     gradcam = GradCAM(model, args.target_layer_name)

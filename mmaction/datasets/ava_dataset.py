@@ -150,6 +150,16 @@ class AVADataset(BaseDataset):
             self.video_infos = [self.video_infos[i] for i in valid_indexes]
 
     def parse_img_record(self, img_records):
+        """Merge image records of the same entity at the same time.
+
+        Args:
+            img_records (list[dict]): List of img_records (lines in AVA
+                annotations).
+
+        Returns:
+            tuple(list): A tuple consists of lists of bboxes, action labels and
+                entity_ids
+        """
         bboxes, labels, entity_ids = [], [], []
         while len(img_records) > 0:
             img_record = img_records[0]
@@ -184,6 +194,7 @@ class AVADataset(BaseDataset):
         return bboxes, labels, entity_ids
 
     def filter_exclude_file(self):
+        """Filter out records in the exclude_file."""
         valid_indexes = []
         if self.exclude_file is None:
             valid_indexes = list(range(len(self.video_infos)))
@@ -201,6 +212,7 @@ class AVADataset(BaseDataset):
         return valid_indexes
 
     def load_annotations(self):
+        """Load AVA annotations."""
         video_infos = []
         records_dict_by_img = defaultdict(list)
         with open(self.ann_file, 'r') as fin:
@@ -326,6 +338,7 @@ class AVADataset(BaseDataset):
         return self.pipeline(results)
 
     def dump_results(self, results, out):
+        """Dump predictions into a csv file."""
         assert out.endswith('csv')
         results2csv(self, results, out, self.custom_classes)
 
@@ -334,7 +347,7 @@ class AVADataset(BaseDataset):
                  metrics=('mAP', ),
                  metric_options=None,
                  logger=None):
-        # need to create a temp result file
+        """Evaluate the prediction results and report mAP."""
         assert len(metrics) == 1 and metrics[0] == 'mAP', (
             'For evaluation on AVADataset, you need to use metrics "mAP" '
             'See https://github.com/open-mmlab/mmaction2/pull/567 '
