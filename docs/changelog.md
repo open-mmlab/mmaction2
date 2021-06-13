@@ -12,6 +12,8 @@
 
 **Improvements**
 
+- Add a tool to find invalid videos ([#907](https://github.com/open-mmlab/mmaction2/pull/907))
+
 **Bug and Typo Fixes**
 
 **ModelZoo**
