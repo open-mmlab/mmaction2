@@ -89,7 +89,7 @@ If the contents here do not cover your issue, please create an issue using the [
 
 - **How to set memcached setting in config files?**
 
-    In MMAction2, you can pass memcached kwargs to `class DecordInit` for video dataset or `RawFrameDecode for` rawframes dataset.
+    In MMAction2, you can pass memcached kwargs to `class DecordInit` for video dataset or `RawFrameDecode` for rawframes dataset.
     For more details, you can refer to [`class FileClient`](https://github.com/open-mmlab/mmcv/blob/master/mmcv/fileio/file_client.py) in MMCV for more details.
 
     Here is an example to use memcached for rawframes dataset:
