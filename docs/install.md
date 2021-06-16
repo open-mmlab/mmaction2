@@ -86,7 +86,7 @@ If you build PyTorch from source instead of installing the prebuilt package, you
 We recommend you to install MMAction2 with [MIM](https://github.com/open-mmlab/mim).
 
 ```shell
-pip install openmim
+pip install git+https://github.com/open-mmlab/mim.git
 mim install mmaction2
 ```
 
