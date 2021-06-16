@@ -8,3 +8,4 @@ moviepy
 onnx
 onnxruntime
 PyTurboJPEG
+timm

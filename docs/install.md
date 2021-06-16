@@ -1,10 +1,11 @@
-## Installation
+# Installation
 
 We provide some tips for MMAction2 installation in this file.
 
 <!-- TOC -->
 
 - [Requirements](#requirements)
+- [Prepare Environment](#prepare-environment)
 - [Install MMAction2](#install-mmaction2)
 - [Install with CPU only](#install-with-cpu-only)
 - [Another option: Docker Image](#another-option--docker-image)
@@ -14,7 +15,7 @@ We provide some tips for MMAction2 installation in this file.
 
 <!-- TOC -->
 
-### Requirements
+## Requirements
 
 - Linux (Windows is not officially supported)
 - Python 3.6+
@@ -46,7 +47,7 @@ conda install -y jpeg libtiff
 **Note**:  You need to run `pip uninstall mmcv` first if you have mmcv installed.
 If mmcv and mmcv-full are both installed, there will be `ModuleNotFoundError`.
 
-### Install MMAction2
+## Prepare environment
 
 a. Create a conda virtual environment and activate it.
 
@@ -80,7 +81,20 @@ conda install pytorch=1.3.1 cudatoolkit=9.2 torchvision=0.4.2 -c pytorch
 
 If you build PyTorch from source instead of installing the prebuilt package, you can use more CUDA versions such as 9.0.
 
-c. Install mmcv, we recommend you to install the pre-build mmcv as below.
+## Install MMAction2
+
+We recommend you to install MMAction2 with [MIM](https://github.com/open-mmlab/mim).
+
+```shell
+pip install git+https://github.com/open-mmlab/mim.git
+mim install mmaction2
+```
+
+MIM can automatically install OpenMMLab projects and their requirements.
+
+Or, you can install MMAction2 manually:
+
+a. Install mmcv, we recommend you to install the pre-build mmcv as below.
 
 ```shell
 pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/{cu_version}/{torch_version}/index.html
@@ -113,14 +127,14 @@ pip install mmcv-full
 
 **Important:** You need to run `pip uninstall mmcv` first if you have mmcv installed. If mmcv and mmcv-full are both installed, there will be `ModuleNotFoundError`.
 
-d. Clone the MMAction2 repository.
+b. Clone the MMAction2 repository.
 
 ```shell
 git clone https://github.com/open-mmlab/mmaction2.git
 cd mmaction2
 ```
 
-e. Install build requirements and then install MMAction2.
+c. Install build requirements and then install MMAction2.
 
 ```shell
 pip install -r requirements/build.txt
@@ -133,7 +147,7 @@ If you build MMAction2 on macOS, replace the last command with
 CC=clang CXX=clang++ CFLAGS='-stdlib=libc++' pip install -e .
 ```
 
-f. Install mmdetection for spatial temporal detection tasks.
+d. Install mmdetection for spatial temporal detection tasks.
 
 This part is **optional** if you're not going to do spatial temporal detection.
 
@@ -141,8 +155,8 @@ See [here](https://github.com/open-mmlab/mmdetection#installation) to install mm
 
 Note:
 
-1. The git commit id will be written to the version number with step d, e.g. 0.6.0+2e7045c. The version will also be saved in trained models.
-   It is recommended that you run step d each time you pull some updates from github. If C++/CUDA codes are modified, then this step is compulsory.
+1. The git commit id will be written to the version number with step b, e.g. 0.6.0+2e7045c. The version will also be saved in trained models.
+   It is recommended that you run step b each time you pull some updates from github. If C++/CUDA codes are modified, then this step is compulsory.
 
 2. Following the above instructions, MMAction2 is installed on `dev` mode, any local modifications made to the code will take effect without the need to reinstall it (unless you submit some commits and want to update the version number).
 
@@ -156,13 +170,13 @@ Note:
    or specify desired extras when calling `pip` (e.g. `pip install -v -e .[optional]`,
    valid keys for the `[optional]` field are `all`, `tests`, `build`, and `optional`) like `pip install -v -e .[tests,build]`.
 
-### Install with CPU only
+## Install with CPU only
 
 The code can be built for CPU only environment (where CUDA isn't available).
 
 In CPU mode you can run the demo/demo.py for example.
 
-### Another option: Docker Image
+## Another option: Docker Image
 
 We provide a [Dockerfile](/docker/Dockerfile) to build an image.
 
@@ -179,7 +193,7 @@ Run it with command:
 docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmaction2/data mmaction2
 ```
 
-### A from-scratch setup script
+## A from-scratch setup script
 
 Here is a full script for setting up MMAction2 with conda and link the dataset path (supposing that your Kinetics-400 dataset path is $KINETICS400_ROOT).
 
@@ -203,7 +217,7 @@ mkdir data
 ln -s $KINETICS400_ROOT data
 ```
 
-### Developing with multiple MMAction2 versions
+## Developing with multiple MMAction2 versions
 
 The train and test scripts already modify the `PYTHONPATH` to ensure the script use the MMAction2 in the current directory.
 
@@ -213,7 +227,7 @@ To use the default MMAction2 installed in the environment rather than that you a
 PYTHONPATH="$(dirname $0)/..":$PYTHONPATH
 ```
 
-### Verification
+## Verification
 
 To verify whether MMAction2 and the required environment are installed correctly,
 we can run sample python codes to initialize a recognizer and inference a demo video:

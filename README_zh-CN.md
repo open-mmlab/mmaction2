@@ -49,7 +49,7 @@ MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLa
 
 ## 更新记录
 
-v0.14.0 版本已于 2021 年 4 月 30 日发布，可通过查阅 [更新日志](/docs/changelog.md) 了解更多细节以及发布历史
+v0.15.0 版本已于 2021 年 5 月 31 日发布，可通过查阅 [更新日志](/docs/changelog.md) 了解更多细节以及发布历史
 
 ## 基准测试
 
@@ -90,6 +90,7 @@ v0.14.0 版本已于 2021 年 4 月 30 日发布，可通过查阅 [更新日志
 - ✅ [MultiModality: Audio](/configs/recognition_audio/resnet/README_zh-CN.md) (ArXiv'2020)
 - ✅ [TANet](/configs/recognition/tanet/README_zh-CN.md) (ArXiv'2020)
 - ✅ [TRN](/configs/recognition/trn/README_zh-CN.md) (CVPR'2015)
+- ✅ [PoseC3D](configs/skeleton/posec3d/README.md) (ArXiv'2021)
 
 </details>
 
@@ -109,6 +110,7 @@ v0.14.0 版本已于 2021 年 4 月 30 日发布，可通过查阅 [更新日志
 <details open>
 <summary>(点击收起)</summary>
 
+- ✅ [ACRN](configs/detection/acrn/README_zh-CN.md) (ECCV'2018)
 - ✅ [SlowOnly+Fast R-CNN](/configs/detection/ava/README_zh-CN.md) (ICCV'2019)
 - ✅ [SlowFast+Fast R-CNN](/configs/detection/ava/README_zh-CN.md) (ICCV'2019)
 - ✅ [Long-Term Feature Bank](/configs/detection/lfb/README_zh-CN.md) (CVPR'2019)

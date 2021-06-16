@@ -16,6 +16,7 @@ import cv2
 import mmcv
 import numpy as np
 import torch
+from mmcv import Config, DictAction
 from mmcv.runner import load_checkpoint
 
 from mmaction.models import build_detector
@@ -118,6 +119,14 @@ def parse_args():
         default=8,
         type=int,
         help='Number of draw frames per clip.')
+    parser.add_argument(
+        '--cfg-options',
+        nargs='+',
+        action=DictAction,
+        default={},
+        help='override some settings in the used config, the key-value pair '
+        'in xxx=yyy format will be merged into config file. For example, '
+        "'--cfg-options model.backbone.depth=18 model.backbone.with_cp=True'")
 
     args = parser.parse_args()
     return args
@@ -290,6 +299,15 @@ class StdetPredictor:
             lines = f.readlines()
         lines = [x.strip().split(': ') for x in lines]
         self.label_map = {int(x[0]): x[1] for x in lines}
+        try:
+            if config['data']['train']['custom_classes'] is not None:
+                self.label_map = {
+                    id + 1: self.label_map[cls]
+                    for id, cls in enumerate(config['data']['train']
+                                             ['custom_classes'])
+                }
+        except KeyError:
+            pass
 
     def predict(self, task):
         """Spatio-temporval Action Detection model inference."""
@@ -336,7 +354,7 @@ class ClipHelper:
                  show=True,
                  stdet_input_shortside=256):
         # stdet sampling strategy
-        val_pipeline = config['val_pipeline']
+        val_pipeline = config.data.val.pipeline
         sampler = [x for x in val_pipeline
                    if x['type'] == 'SampleAVAFrames'][0]
         clip_len, frame_interval = sampler['clip_len'], sampler[
@@ -760,7 +778,9 @@ def main(args):
                                         args.device, args.det_score_thr)
 
     # init action detector
-    config = mmcv.Config.fromfile(args.config)
+    config = Config.fromfile(args.config)
+    config.merge_from_dict(args.cfg_options)
+
     try:
         # In our spatiotemporal detection demo, different actions should have
         # the same number of bboxes.

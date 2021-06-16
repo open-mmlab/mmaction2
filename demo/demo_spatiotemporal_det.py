@@ -8,6 +8,7 @@ import cv2
 import mmcv
 import numpy as np
 import torch
+from mmcv import DictAction
 from mmcv.runner import load_checkpoint
 from tqdm import tqdm
 
@@ -171,6 +172,14 @@ def parse_args():
         default=6,
         type=int,
         help='the fps of demo video output')
+    parser.add_argument(
+        '--cfg-options',
+        nargs='+',
+        action=DictAction,
+        default={},
+        help='override some settings in the used config, the key-value pair '
+        'in xxx=yyy format will be merged into config file. For example, '
+        "'--cfg-options model.backbone.depth=18 model.backbone.with_cp=True'")
     args = parser.parse_args()
     return args
 
@@ -281,9 +290,6 @@ def main():
     num_frame = len(frame_paths)
     h, w, _ = original_frames[0].shape
 
-    # Load label_map
-    label_map = load_label_map(args.label_map)
-
     # resize frames to shortside 256
     new_w, new_h = mmcv.rescale_size((w, h), (256, np.Inf))
     frames = [mmcv.imresize(img, (new_w, new_h)) for img in original_frames]
@@ -291,7 +297,9 @@ def main():
 
     # Get clip_len, frame_interval and calculate center index of each clip
     config = mmcv.Config.fromfile(args.config)
-    val_pipeline = config['val_pipeline']
+    config.merge_from_dict(args.cfg_options)
+    val_pipeline = config.data.val.pipeline
+
     sampler = [x for x in val_pipeline if x['type'] == 'SampleAVAFrames'][0]
     clip_len, frame_interval = sampler['clip_len'], sampler['frame_interval']
     window_size = clip_len * frame_interval
@@ -299,6 +307,18 @@ def main():
     # Note that it's 1 based here
     timestamps = np.arange(window_size // 2, num_frame + 1 - window_size // 2,
                            args.predict_stepsize)
+
+    # Load label_map
+    label_map = load_label_map(args.label_map)
+    try:
+        if config['data']['train']['custom_classes'] is not None:
+            label_map = {
+                id + 1: label_map[cls]
+                for id, cls in enumerate(config['data']['train']
+                                         ['custom_classes'])
+            }
+    except KeyError:
+        pass
 
     # Get Human detection results
     center_frames = [frame_paths[ind - 1] for ind in timestamps]
