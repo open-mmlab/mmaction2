@@ -346,7 +346,11 @@ class ResNet3d(nn.Module):
             Default: ``(1, 1, 1, 1)``.
         conv1_kernel (Sequence[int]): Kernel size of the first conv layer.
             Default: ``(5, 7, 7)``.
+        conv1_stride_s (int): Spatial stride of the first conv layer.
+            Default: 2.
         conv1_stride_t (int): Temporal stride of the first conv layer.
+            Default: 2.
+        pool1_stride_s (int): Spatial stride of the first pooling layer.
             Default: 2.
         pool1_stride_t (int): Temporal stride of the first pooling layer.
             Default: 2.
@@ -358,7 +362,7 @@ class ResNet3d(nn.Module):
             not freezing any parameters. Default: -1.
         inflate (Sequence[int]): Inflate Dims of each block.
             Default: (1, 1, 1, 1).
-        inflate_style (str): ``3x1x1`` or ``1x1x1``. which determines the
+        inflate_style (str): ``3x1x1`` or ``3x3x3``. which determines the
             kernel sizes and padding strides for conv1 and conv2 in each block.
             Default: '3x1x1'.
         conv_cfg (dict): Config for conv layers. required keys are ``type``
@@ -540,7 +544,7 @@ class ResNet3d(nn.Module):
                 Default: ``pytorch``.
             inflate (int | Sequence[int]): Determine whether to inflate
                 for each block. Default: 1.
-            inflate_style (str): ``3x1x1`` or ``1x1x1``. which determines
+            inflate_style (str): ``3x1x1`` or ``3x3x3``. which determines
                 the kernel sizes and padding strides for conv1 and conv2
                 in each block. Default: '3x1x1'.
             non_local (int | Sequence[int]): Determine whether to apply
@@ -875,7 +879,7 @@ class ResNet3dLayer(nn.Module):
             the first 1x1 conv layer. Default: 'pytorch'.
         all_frozen (bool): Frozen all modules in the layer. Default: False.
         inflate (int): Inflate Dims of each block. Default: 1.
-        inflate_style (str): ``3x1x1`` or ``1x1x1``. which determines the
+        inflate_style (str): ``3x1x1`` or ``3x3x3``. which determines the
             kernel sizes and padding strides for conv1 and conv2 in each block.
             Default: '3x1x1'.
         conv_cfg (dict): Config for conv layers. required keys are ``type``

@@ -7,7 +7,7 @@ class TINLrUpdaterHook(LrUpdaterHook):
 
     def __init__(self, min_lr, **kwargs):
         self.min_lr = min_lr
-        super(TINLrUpdaterHook, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def get_warmup_lr(self, cur_iters):
         if self.warmup == 'linear':

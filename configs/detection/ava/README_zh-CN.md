@@ -72,7 +72,7 @@
    如，lr=0.01 对应 4 GPUs x 2 video/gpu，以及 lr=0.08 对应 16 GPUs x 4 video/gpu。
 2. **Context** 表示同时使用 RoI 特征与全局特征进行分类，可带来约 1% mAP 的提升。
 
-对于数据集准备的细节，用户可参考 [数据准备](/docs_zh-CN/data_preparation.md)。
+对于数据集准备的细节，用户可参考 [数据准备](/docs_zh_CN/data_preparation.md)。
 
 ## 如何训练
 

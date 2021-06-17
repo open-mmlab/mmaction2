@@ -3,6 +3,7 @@ import os
 import os.path as osp
 
 import torch
+from mmcv import Config, DictAction
 
 from mmaction.apis import inference_recognizer, init_recognizer
 
@@ -13,6 +14,14 @@ def parse_args():
     parser.add_argument('checkpoint', help='checkpoint file/url')
     parser.add_argument('video', help='video file/url or rawframes directory')
     parser.add_argument('label', help='label file')
+    parser.add_argument(
+        '--cfg-options',
+        nargs='+',
+        action=DictAction,
+        default={},
+        help='override some settings in the used config, the key-value pair '
+        'in xxx=yyy format will be merged into config file. For example, '
+        "'--cfg-options model.backbone.depth=18 model.backbone.with_cp=True'")
     parser.add_argument(
         '--use-frames',
         default=False,
@@ -128,12 +137,13 @@ def main():
     args = parse_args()
     # assign the desired device.
     device = torch.device(args.device)
+
+    cfg = Config.fromfile(args.config)
+    cfg.merge_from_dict(args.cfg_options)
+
     # build the recognizer from a config file and checkpoint file/url
     model = init_recognizer(
-        args.config,
-        args.checkpoint,
-        device=device,
-        use_frames=args.use_frames)
+        cfg, args.checkpoint, device=device, use_frames=args.use_frames)
 
     # e.g. use ('backbone', ) to return backbone feature
     output_layer_names = None

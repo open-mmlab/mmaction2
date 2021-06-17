@@ -1,6 +1,15 @@
 # FAQ
 
+## Outline
+
 We list some common issues faced by many users and their corresponding solutions here.
+
+- [Installation](#installation)
+- [Data](#data)
+- [Training](#training)
+- [Testing](#testing)
+- [Deploying](#deploying)
+
 Feel free to enrich the list if you find any frequent issues and have ways to help others to solve them.
 If the contents here do not cover your issue, please create an issue using the [provided templates](/.github/ISSUE_TEMPLATE/error-report.md) and make sure you fill in all required information in the template.
 
@@ -8,8 +17,8 @@ If the contents here do not cover your issue, please create an issue using the [
 
 - **"No module named 'mmcv.ops'"; "No module named 'mmcv._ext'"**
 
-    1. Uninstall existing mmcv in the environment using `pip uninstall mmcv`.
-    2. Install mmcv-full following the [installation instruction](https://mmcv.readthedocs.io/en/latest/#installation).
+    1. Uninstall existing mmcv in the environment using `pip uninstall mmcv`
+    2. Install mmcv-full following the [installation instruction](https://mmcv.readthedocs.io/en/latest/#installation)
 
 - **"OSError: MoviePy Error: creation of None failed because of the following error"**
 
@@ -45,7 +54,7 @@ If the contents here do not cover your issue, please create an issue using the [
 
 ## Training
 
-- **How to just use trained recognizer models for backbone pre-training ?**
+- **How to just use trained recognizer models for backbone pre-training?**
 
     Refer to [Use Pre-Trained Model](https://github.com/open-mmlab/mmaction2/blob/master/docs/tutorials/2_finetune.md#use-pre-trained-model),
     in order to use the pre-trained model for the whole network, the new config adds the link of pre-trained models in the `load_from`.
@@ -53,7 +62,7 @@ If the contents here do not cover your issue, please create an issue using the [
     And to use backbone for pre-training, you can change `pretrained` value in the backbone dict of config files to the checkpoint path / url.
     When training, the unexpected keys will be ignored.
 
-- **How to visualize the training accuracy/loss curves in real-time ?**
+- **How to visualize the training accuracy/loss curves in real-time?**
 
     Use `TensorboardLoggerHook` in `log_config` like
 
@@ -71,24 +80,41 @@ If the contents here do not cover your issue, please create an issue using the [
     train_dataloader=dict(drop_last=True)
     ```
 
-- **How to fix stages of backbone when finetuning a model ?**
+- **How to fix stages of backbone when finetuning a model?**
 
     You can refer to [`def _freeze_stages()`](https://github.com/open-mmlab/mmaction2/blob/0149a0e8c1e0380955db61680c0006626fd008e9/mmaction/models/backbones/x3d.py#L458) and [`frozen_stages`](https://github.com/open-mmlab/mmaction2/blob/0149a0e8c1e0380955db61680c0006626fd008e9/mmaction/models/backbones/x3d.py#L183-L184),
     reminding to set `find_unused_parameters = True` in config files for distributed training or testing.
 
     Actually, users can set `frozen_stages` to freeze stages in backbones except C3D model, since all backbones inheriting from `ResNet` and `ResNet3D` support the inner function `_freeze_stages()`.
 
+- **How to set memcached setting in config files?**
+
+    In MMAction2, you can pass memcached kwargs to `class DecordInit` for video dataset or `RawFrameDecode` for rawframes dataset.
+    For more details, you can refer to [`class FileClient`](https://github.com/open-mmlab/mmcv/blob/master/mmcv/fileio/file_client.py) in MMCV for more details.
+
+    Here is an example to use memcached for rawframes dataset:
+
+    ```python
+    mc_cfg = dict(server_list_cfg='server_list_cfg', client_cfg='client_cfg', sys_path='sys_path')
+
+    train_pipeline = [
+      ...
+      dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
+      ...
+    ]
+    ```
+
 ## Testing
 
-- **How to make predicted score normalized by softmax within [0, 1] ?**
+- **How to make predicted score normalized by softmax within [0, 1]?**
 
     change this in the config, make `model['test_cfg'] = dict(average_clips='prob')`.
 
-- **What if the model is too large and the GPU memory can not fit even only one testing sample ?**
+- **What if the model is too large and the GPU memory can not fit even only one testing sample?**
 
     By default, the 3d models are tested with 10clips x 3crops, which are 30 views in total. For extremely large models, the GPU memory can not fit even only one testing sample (cuz there are 30 views). To handle this, you can set `max_testing_views=n` in `model['test_cfg']` of the config file. If so, n views will be used as a batch during forwarding to save GPU memory used.
 
-- **How to show test results ?**
+- **How to show test results?**
 
     During testing, we can use the command `--out xxx.json/pkl/yaml` to output result files for checking. The testing output has exactly the same order as the test dataset.
     Besides, we provide an analysis tool for evaluating a model using the output result files in [`tools/analysis/eval_metric.py`](/tools/analysis/eval_metric.py)
