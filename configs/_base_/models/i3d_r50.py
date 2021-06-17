@@ -6,6 +6,9 @@ model = dict(
         pretrained2d=True,
         pretrained='torchvision://resnet50',
         depth=50,
+        conv1_kernel=(5, 7, 7),
+        conv1_stride_t=2,
+        pool1_stride_t=2,
         conv_cfg=dict(type='Conv3d'),
         norm_eval=False,
         inflate=((1, 1, 1), (1, 0, 1, 0), (1, 0, 1, 0, 1, 0), (0, 1, 0)),
@@ -20,3 +23,5 @@ model = dict(
     # model training and testing settings
     train_cfg=None,
     test_cfg=dict(average_clips='prob'))
+
+# This setting refers to https://github.com/open-mmlab/mmaction/blob/master/mmaction/models/tenons/backbones/resnet_i3d.py#L329-L332  # noqa: E501
