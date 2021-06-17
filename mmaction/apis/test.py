@@ -131,7 +131,7 @@ if not from_mmcv:
             dist.broadcast(dir_tensor, 0)
             tmpdir = dir_tensor.cpu().numpy().tobytes().decode().rstrip()
         else:
-            tmpdir = osp.join('.non_dist_test', tmpdir)
+            tmpdir = osp.join('.dist_test', tmpdir)
             mmcv.mkdir_or_exist(tmpdir)
         # synchronizes all processes to make sure tmpdir exist
         dist.barrier()
