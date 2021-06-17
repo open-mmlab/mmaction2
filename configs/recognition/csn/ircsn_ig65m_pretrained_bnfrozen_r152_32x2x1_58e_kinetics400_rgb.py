@@ -1,7 +1,13 @@
-_base_ = ['../../_base_/models/csn_ig65m_pretrained.py']
+_base_ = ['../../_base_/models/ircsn_r152.py']
 
 # model settings
-model = dict(backbone=dict(norm_eval=True, bn_frozen=True))
+model = dict(
+    backbone=dict(
+        norm_eval=True,
+        bn_frozen=True,
+        pretrained=  # noqa: E251
+        'https://download.openmmlab.com/mmaction/recognition/csn/ircsn_from_scratch_r152_ig65m_20200807-771c4135.pth'  # noqa: E501
+    ))
 # dataset settings
 dataset_type = 'RawframeDataset'
 data_root = 'data/kinetics400/rawframes_train'

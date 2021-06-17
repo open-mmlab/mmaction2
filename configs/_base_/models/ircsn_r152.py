@@ -4,8 +4,7 @@ model = dict(
     backbone=dict(
         type='ResNet3dCSN',
         pretrained2d=False,
-        pretrained=  # noqa: E251
-        'https://download.openmmlab.com/mmaction/recognition/csn/ircsn_from_scratch_r152_ig65m_20200807-771c4135.pth',  # noqa: E501
+        pretrained=None,
         depth=152,
         with_pool2=False,
         bottleneck_mode='ir',
