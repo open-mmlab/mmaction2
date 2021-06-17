@@ -838,7 +838,7 @@ class ResNet3d(nn.Module):
             samples extracted by the backbone.
         """
         x = self.conv1(x)
-        if self.self.with_pool1:
+        if self.with_pool1:
             x = self.maxpool(x)
         outs = []
         for i, layer_name in enumerate(self.res_layers):
