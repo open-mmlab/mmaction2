@@ -95,7 +95,7 @@ Params: 28.04 M
 
 ### 导出 MMAction2 模型为 ONNX 格式（实验特性）
 
-`/tools/pytorch2onnx.py` 脚本用于将模型转换为 [ONNX](https://github.com/onnx/onnx) 格式。
+`/tools/deployment/pytorch2onnx.py` 脚本用于将模型转换为 [ONNX](https://github.com/onnx/onnx) 格式。
 同时，该脚本支持比较 PyTorch 模型和 ONNX 模型的输出结果，验证输出结果是否相同。
 本功能依赖于 `onnx` 以及 `onnxruntime`，使用前请先通过 `pip install onnx onnxruntime` 安装依赖包。
 请注意，可通过 `--softmax` 选项在行为识别器末尾添加 Softmax 层，从而获取 `[0, 1]` 范围内的预测结果。
@@ -103,31 +103,31 @@ Params: 28.04 M
 - 对于行为识别模型，请运行：
 
     ```shell
-    python tools/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --verify
+    python tools/deployment/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --verify
     ```
 
 - 对于时序动作检测模型，请运行：
 
     ```shell
-    python tools/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --is-localizer --shape $SHAPE --verify
+    python tools/deployment/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --is-localizer --shape $SHAPE --verify
     ```
 
 ### 发布模型
 
-`tools/publish_model.py` 脚本用于进行模型发布前的准备工作，主要包括：
+`tools/deployment/publish_model.py` 脚本用于进行模型发布前的准备工作，主要包括：
 
 (1) 将模型的权重张量转化为 CPU 张量。
 (2) 删除优化器状态信息。
 (3) 计算模型权重文件的哈希值，并将哈希值添加到文件名后。
 
 ```shell
-python tools/publish_model.py ${INPUT_FILENAME} ${OUTPUT_FILENAME}
+python tools/deployment/publish_model.py ${INPUT_FILENAME} ${OUTPUT_FILENAME}
 ```
 
 例如,
 
 ```shell
-python tools/publish_model.py work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb/latest.pth tsn_r50_1x1x3_100e_kinetics400_rgb.pth
+python tools/deployment/publish_model.py work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb/latest.pth tsn_r50_1x1x3_100e_kinetics400_rgb.pth
 ```
 
 最终，输出文件名为 `tsn_r50_1x1x3_100e_kinetics400_rgb-{hash id}.pth`。
@@ -154,8 +154,8 @@ python tools/print_config.py ${CONFIG} [-h] [--options ${OPTIONS [OPTIONS...]}]
 
 ### 检查视频
 
-`tools/check_videos.py` 脚本利用指定视频编码器，遍历指定配置文件视频数据集中所有样本，寻找无效视频文件（文件破损或者文件不存在），并将无效文件路径保存到输出文件中。请注意，删除无效视频文件后，需要重新生成视频文件列表。
+`tools/analysis/check_videos.py` 脚本利用指定视频编码器，遍历指定配置文件视频数据集中所有样本，寻找无效视频文件（文件破损或者文件不存在），并将无效文件路径保存到输出文件中。请注意，删除无效视频文件后，需要重新生成视频文件列表。
 
 ```shell
-python tools/check_videos.py ${CONFIG} [-h] [--options OPTIONS [OPTIONS ...]] [--cfg-options CFG_OPTIONS [CFG_OPTIONS ...]] [--output-file OUTPUT_FILE] [--split SPLIT] [--decoder DECODER] [--num-processes NUM_PROCESSES] [--remove-corrupted-videos]
+python tools/analysis/check_videos.py ${CONFIG} [-h] [--options OPTIONS [OPTIONS ...]] [--cfg-options CFG_OPTIONS [CFG_OPTIONS ...]] [--output-file OUTPUT_FILE] [--split SPLIT] [--decoder DECODER] [--num-processes NUM_PROCESSES] [--remove-corrupted-videos]
 ```

@@ -76,11 +76,11 @@ ln -s ${YOUR_FOLDER} $MMACTION2/data/$DATASET/rawframes
 #### denseflow 的替代项
 
 如果用户因依赖要求（如 Nvidia 显卡驱动版本），无法安装 [denseflow](https://github.com/open-mmlab/denseflow)，
-或者只需要一些关于光流提取的快速演示，可用 Python 脚本 `tools/flow_extraction.py` 替代 denseflow。
+或者只需要一些关于光流提取的快速演示，可用 Python 脚本 `tools/misc/flow_extraction.py` 替代 denseflow。
 这个脚本可用于一个或多个视频提取 RGB 帧和光流。注意，由于该脚本时在 CPU 上运行光流算法，其速度比 denseflow 慢很多。
 
 ```shell
-python tools/flow_extraction.py --input ${INPUT} [--prefix ${PREFIX}] [--dest ${DEST}] [--rgb-tmpl ${RGB_TMPL}] \
+python tools/misc/flow_extraction.py --input ${INPUT} [--prefix ${PREFIX}] [--dest ${DEST}] [--rgb-tmpl ${RGB_TMPL}] \
     [--flow-tmpl ${FLOW_TMPL}] [--start-idx ${START_IDX}] [--method ${METHOD}] [--bound ${BOUND}] [--save-rgb]
 ```
 
