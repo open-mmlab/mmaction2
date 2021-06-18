@@ -1,4 +1,6 @@
-_base_ = ['../../_base_/models/ircsn_r152.py']
+_base_ = [
+    '../../_base_/models/ircsn_r152.py', '../../_base_/default_runtime.py'
+]
 
 # model settings
 model = dict(
@@ -39,7 +41,6 @@ val_pipeline = [
     dict(type='FrameSelector'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
-    dict(type='Flip', flip_ratio=0),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
@@ -55,7 +56,6 @@ test_pipeline = [
     dict(type='FrameSelector'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='ThreeCrop', crop_size=256),
-    dict(type='Flip', flip_ratio=0),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
@@ -79,6 +79,9 @@ data = dict(
         ann_file=ann_file_val,
         data_prefix=data_root_val,
         pipeline=test_pipeline))
+evaluation = dict(
+    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+
 # optimizer
 optimizer = dict(
     type='SGD', lr=0.000125, momentum=0.9,
@@ -93,18 +96,6 @@ lr_config = dict(
     warmup_by_epoch=True,
     warmup_iters=16)
 total_epochs = 58
-checkpoint_config = dict(interval=2)
-evaluation = dict(
-    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
-log_config = dict(
-    interval=20,
-    hooks=[dict(type='TextLoggerHook'),
-           dict(type='TensorboardLoggerHook')])
-# runtime settings
-dist_params = dict(backend='nccl')
-log_level = 'INFO'
+
 work_dir = './work_dirs/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb'  # noqa: E501
-load_from = None
-resume_from = None
-workflow = [('train', 1)]
 find_unused_parameters = True

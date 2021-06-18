@@ -1,4 +1,6 @@
-_base_ = ['../../_base_/models/ircsn_r152.py']
+_base_ = [
+    './ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py'
+]
 
 # model settings
 model = dict(
