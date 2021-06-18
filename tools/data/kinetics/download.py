@@ -58,7 +58,7 @@ def download_clip(video_identifier,
                   output_filename,
                   start_time,
                   end_time,
-                  tmp_dir='./tmp/kinetics',
+                  tmp_dir='/tmp/kinetics/.tmp_dir',
                   num_attempts=5,
                   url_base='https://www.youtube.com/watch?v='):
     """Download a video from youtube if exists and is not blocked.
@@ -69,7 +69,7 @@ def download_clip(video_identifier,
     output_filename: str
         File path where the video will be stored.
     start_time: float
-        Indicates the begining time in seconds from where the video
+        Indicates the beginning time in seconds from where the video
         will be trimmed.
     end_time: float
         Indicates the ending time in seconds of the trimmed video.
@@ -175,8 +175,8 @@ def main(input_csv,
          output_dir,
          trim_format='%06d',
          num_jobs=24,
-         tmp_dir='kinetics'):
-    tmp_dir = os.path.join('.tmp', tmp_dir)
+         tmp_dir='/tmp/kinetics'):
+    tmp_dir = os.path.join(tmp_dir, '.tmp_dir')
 
     # Reading and parsing Kinetics.
     dataset = parse_kinetics_annotations(input_csv)
@@ -225,6 +225,6 @@ if __name__ == '__main__':
               'filename of trimmed videos: '
               'videoid_%0xd(start_time)_%0xd(end_time).mp4'))
     p.add_argument('-n', '--num-jobs', type=int, default=24)
-    p.add_argument('-t', '--tmp-dir', type=str, default='kinetics')
+    p.add_argument('-t', '--tmp-dir', type=str, default='/tmp/kinetics')
     # help='CSV file of the previous version of Kinetics.')
     main(**vars(p.parse_args()))

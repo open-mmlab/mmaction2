@@ -104,7 +104,7 @@ def _build_demo_runner(runner_type='EpochBasedRunner',
         ])
 
     tmp_dir = tempfile.mkdtemp()
-    tmp_dir = osp.join('.test_lr_tmp', tmp_dir)
+    tmp_dir = osp.join(tmp_dir, '.test_lr_tmp')
 
     runner = build_runner(
         dict(type=runner_type),

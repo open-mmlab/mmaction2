@@ -40,7 +40,7 @@ def download_clip(video_identifier,
                   output_filename,
                   start_time,
                   end_time,
-                  tmp_dir='./tmp/hvu',
+                  tmp_dir='/tmp/hvu/.tmp_dir',
                   num_attempts=5,
                   url_base='https://www.youtube.com/watch?v='):
     """Download a video from youtube if exists and is not blocked.
@@ -149,9 +149,9 @@ def main(input_csv,
          output_dir,
          trim_format='%06d',
          num_jobs=24,
-         tmp_dir='hvu'):
+         tmp_dir='/tmp/hvu'):
 
-    tmp_dir = os.path.join('./tmp', tmp_dir)
+    tmp_dir = os.path.join(tmp_dir, '.tmp_dir')
 
     # Reading and parsing HVU.
     dataset = parse_hvu_annotations(input_csv)
@@ -199,5 +199,5 @@ if __name__ == '__main__':
               'Note that the start_time is multiplied by 10 since '
               'decimal exists somewhere. '))
     p.add_argument('-n', '--num-jobs', type=int, default=24)
-    p.add_argument('-t', '--tmp-dir', type=str, default='hvu')
+    p.add_argument('-t', '--tmp-dir', type=str, default='/tmp/hvu')
     main(**vars(p.parse_args()))
