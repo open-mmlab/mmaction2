@@ -190,10 +190,10 @@ def test_resnet3d_backbone():
             resnet3d_34_frozen = resnet3d_34_frozen.cuda()
             imgs_gpu = imgs.cuda()
             feat = resnet3d_34_frozen(imgs_gpu)
-            assert feat.shape == torch.Size([1, 512, 1, 2, 2])
+            assert feat.shape == torch.Size([1, 512, 3, 2, 2])
     else:
         feat = resnet3d_34_frozen(imgs)
-        assert feat.shape == torch.Size([1, 512, 1, 2, 2])
+        assert feat.shape == torch.Size([1, 512, 3, 2, 2])
 
     # resnet3d with depth 50 inference
     input_shape = (1, 3, 6, 64, 64)
@@ -204,10 +204,10 @@ def test_resnet3d_backbone():
             resnet3d_50_frozen = resnet3d_50_frozen.cuda()
             imgs_gpu = imgs.cuda()
             feat = resnet3d_50_frozen(imgs_gpu)
-            assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
+            assert feat.shape == torch.Size([1, 2048, 3, 2, 2])
     else:
         feat = resnet3d_50_frozen(imgs)
-        assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
+        assert feat.shape == torch.Size([1, 2048, 3, 2, 2])
 
     # resnet3d with depth 50 in caffe style inference
     resnet3d_50_caffe = ResNet3d(50, None, pretrained2d=False, style='caffe')
@@ -220,10 +220,10 @@ def test_resnet3d_backbone():
             resnet3d_50_caffe = resnet3d_50_caffe.cuda()
             imgs_gpu = imgs.cuda()
             feat = resnet3d_50_caffe(imgs_gpu)
-            assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
+            assert feat.shape == torch.Size([1, 2048, 3, 2, 2])
     else:
         feat = resnet3d_50_caffe(imgs)
-        assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
+        assert feat.shape == torch.Size([1, 2048, 3, 2, 2])
 
     # resnet3d with depth 34 in caffe style inference
     resnet3d_34_caffe = ResNet3d(34, None, pretrained2d=False, style='caffe')
@@ -235,10 +235,10 @@ def test_resnet3d_backbone():
             resnet3d_34_caffe = resnet3d_34_caffe.cuda()
             imgs_gpu = imgs.cuda()
             feat = resnet3d_34_caffe(imgs_gpu)
-            assert feat.shape == torch.Size([1, 512, 1, 2, 2])
+            assert feat.shape == torch.Size([1, 512, 3, 2, 2])
     else:
         feat = resnet3d_34_caffe(imgs)
-        assert feat.shape == torch.Size([1, 512, 1, 2, 2])
+        assert feat.shape == torch.Size([1, 512, 3, 2, 2])
 
     # resnet3d with depth with 3x3x3 inflate_style inference
     resnet3d_50_1x1x1 = ResNet3d(
@@ -251,10 +251,10 @@ def test_resnet3d_backbone():
             resnet3d_50_1x1x1 = resnet3d_50_1x1x1.cuda()
             imgs_gpu = imgs.cuda()
             feat = resnet3d_50_1x1x1(imgs_gpu)
-            assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
+            assert feat.shape == torch.Size([1, 2048, 3, 2, 2])
     else:
         feat = resnet3d_50_1x1x1(imgs)
-        assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
+        assert feat.shape == torch.Size([1, 2048, 3, 2, 2])
 
     resnet3d_34_1x1x1 = ResNet3d(
         34, None, pretrained2d=False, inflate_style='3x3x3')
@@ -267,10 +267,10 @@ def test_resnet3d_backbone():
             resnet3d_34_1x1x1 = resnet3d_34_1x1x1.cuda()
             imgs_gpu = imgs.cuda()
             feat = resnet3d_34_1x1x1(imgs_gpu)
-            assert feat.shape == torch.Size([1, 512, 1, 2, 2])
+            assert feat.shape == torch.Size([1, 512, 3, 2, 2])
     else:
         feat = resnet3d_34_1x1x1(imgs)
-        assert feat.shape == torch.Size([1, 512, 1, 2, 2])
+        assert feat.shape == torch.Size([1, 512, 3, 2, 2])
 
     # resnet3d with non-local module
     non_local_cfg = dict(
@@ -293,7 +293,7 @@ def test_resnet3d_backbone():
                 assert hasattr(layer[i], 'non_local_block')
 
     feat = resnet3d_nonlocal(imgs)
-    assert feat.shape == torch.Size([1, 2048, 1, 2, 2])
+    assert feat.shape == torch.Size([1, 2048, 3, 2, 2])
 
 
 def test_resnet3d_layer():

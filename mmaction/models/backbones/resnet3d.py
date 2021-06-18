@@ -345,15 +345,15 @@ class ResNet3d(nn.Module):
         dilations (Sequence[int]): Dilation of each stage.
             Default: ``(1, 1, 1, 1)``.
         conv1_kernel (Sequence[int]): Kernel size of the first conv layer.
-            Default: ``(5, 7, 7)``.
+            Default: ``(3, 7, 7)``.
         conv1_stride_s (int): Spatial stride of the first conv layer.
             Default: 2.
         conv1_stride_t (int): Temporal stride of the first conv layer.
-            Default: 2.
+            Default: 1.
         pool1_stride_s (int): Spatial stride of the first pooling layer.
             Default: 2.
         pool1_stride_t (int): Temporal stride of the first pooling layer.
-            Default: 2.
+            Default: 1.
         with_pool2 (bool): Whether to use pool2. Default: True.
         style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
             layer is the 3x3 conv layer, otherwise the stride-two layer is
@@ -405,11 +405,11 @@ class ResNet3d(nn.Module):
                  spatial_strides=(1, 2, 2, 2),
                  temporal_strides=(1, 1, 1, 1),
                  dilations=(1, 1, 1, 1),
-                 conv1_kernel=(5, 7, 7),
+                 conv1_kernel=(3, 7, 7),
                  conv1_stride_s=2,
-                 conv1_stride_t=2,
+                 conv1_stride_t=1,
                  pool1_stride_s=2,
-                 pool1_stride_t=2,
+                 pool1_stride_t=1,
                  with_pool2=True,
                  style='pytorch',
                  frozen_stages=-1,
