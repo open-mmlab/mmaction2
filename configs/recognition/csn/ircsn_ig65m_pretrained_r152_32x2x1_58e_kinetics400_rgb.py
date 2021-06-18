@@ -96,3 +96,4 @@ lr_config = dict(
 total_epochs = 58
 
 work_dir = './work_dirs/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb'
+find_unused_parameters = True
