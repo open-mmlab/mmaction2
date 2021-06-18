@@ -190,7 +190,7 @@ def frame_extraction(video_path):
     Args:
         video_path (str): The video_path.
     """
-    # Load the video, extract frames into /tmp/video_name
+    # Load the video, extract frames into ./tmp/video_name
     target_dir = osp.join('./tmp', osp.basename(osp.splitext(video_path)[0]))
     os.makedirs(target_dir, exist_ok=True)
     # Should be able to handle videos up to several hours
