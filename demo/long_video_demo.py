@@ -109,7 +109,7 @@ def show_results_video(result_queue,
     return text_info
 
 
-def get_results_json(result_queue, text_info, msg, thr, ind, out_json):
+def get_results_json(result_queue, text_info, thr, msg, ind, out_json):
     if len(result_queue) != 0:
         text_info = {}
         results = result_queue.popleft()
@@ -180,7 +180,7 @@ def show_results(model, data, label, args):
 
         if args.out_file.endswith('.json'):
             text_info, out_json = get_results_json(result_queue, text_info,
-                                                   msg, args.threshold, ind,
+                                                   args.threshold, msg, ind,
                                                    out_json)
         else:
             text_info = show_results_video(result_queue, text_info,
