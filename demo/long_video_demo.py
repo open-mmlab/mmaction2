@@ -16,8 +16,6 @@ from mmaction.datasets.pipelines import Compose
 
 FONTFACE = cv2.FONT_HERSHEY_COMPLEX_SMALL
 FONTSCALE = 1
-FONTCOLOR = (255, 255, 255)  # BGR, white
-MSGCOLOR = (128, 128, 128)  # BGR, gray
 THICKNESS = 1
 LINETYPE = 1
 
@@ -64,11 +62,17 @@ def parse_args():
         help='override some settings in the used config, the key-value pair '
         'in xxx=yyy format will be merged into config file. For example, '
         "'--cfg-options model.backbone.depth=18 model.backbone.with_cp=True'")
+    parser.add_argument(
+        '--font-color',
+        nargs='+',
+        type=int,
+        default=(255, 255, 255),
+        help='font color (B, G, R) of the labels in output video')
     args = parser.parse_args()
     return args
 
 
-def show_results_video(result_queue, text_info, thr, msg, frame, video_writer):
+def show_results_video(result_queue, text_info, msg, thr, clr, fr, v_writer):
     if len(result_queue) != 0:
         text_info = {}
         results = result_queue.popleft()
@@ -79,20 +83,20 @@ def show_results_video(result_queue, text_info, thr, msg, frame, video_writer):
             location = (0, 40 + i * 20)
             text = selected_label + ': ' + str(round(score, 2))
             text_info[location] = text
-            cv2.putText(frame, text, location, FONTFACE, FONTSCALE, FONTCOLOR,
+            cv2.putText(fr, text, location, FONTFACE, FONTSCALE, clr,
                         THICKNESS, LINETYPE)
     elif len(text_info):
         for location, text in text_info.items():
-            cv2.putText(frame, text, location, FONTFACE, FONTSCALE, FONTCOLOR,
+            cv2.putText(fr, text, location, FONTFACE, FONTSCALE, clr,
                         THICKNESS, LINETYPE)
     else:
-        cv2.putText(frame, msg, (0, 40), FONTFACE, FONTSCALE, MSGCOLOR,
-                    THICKNESS, LINETYPE)
-    video_writer.write(frame)
+        cv2.putText(fr, msg, (0, 40), FONTFACE, FONTSCALE, clr, THICKNESS,
+                    LINETYPE)
+    v_writer.write(fr)
     return text_info
 
 
-def get_results_json(result_queue, text_info, thr, msg, ind, out_json):
+def get_results_json(result_queue, text_info, msg, thr, ind, out_json):
     if len(result_queue) != 0:
         text_info = {}
         results = result_queue.popleft()
@@ -163,12 +167,12 @@ def show_results(model, data, label, args):
 
         if args.out_file.endswith('.json'):
             text_info, out_json = get_results_json(result_queue, text_info,
-                                                   args.threshold, msg, ind,
+                                                   msg, args.threshold, ind,
                                                    out_json)
         else:
-            text_info = show_results_video(result_queue, text_info,
-                                           args.threshold, msg, frame,
-                                           video_writer)
+            text_info = show_results_video(result_queue, text_info, msg,
+                                           args.threshold, args.font_color,
+                                           frame, video_writer)
 
     cap.release()
     cv2.destroyAllWindows()
