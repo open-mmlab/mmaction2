@@ -72,7 +72,8 @@ def parse_args():
     return args
 
 
-def show_results_video(result_queue, text_info, msg, thr, clr, fr, v_writer):
+def show_results_video(result_queue, text_info, thr, msg, font_color, frame,
+                       video_writer):
     if len(result_queue) != 0:
         text_info = {}
         results = result_queue.popleft()
@@ -83,20 +84,20 @@ def show_results_video(result_queue, text_info, msg, thr, clr, fr, v_writer):
             location = (0, 40 + i * 20)
             text = selected_label + ': ' + str(round(score, 2))
             text_info[location] = text
-            cv2.putText(fr, text, location, FONTFACE, FONTSCALE, clr,
+            cv2.putText(frame, text, location, FONTFACE, FONTSCALE, font_color,
                         THICKNESS, LINETYPE)
     elif len(text_info):
         for location, text in text_info.items():
-            cv2.putText(fr, text, location, FONTFACE, FONTSCALE, clr,
+            cv2.putText(frame, text, location, FONTFACE, FONTSCALE, font_color,
                         THICKNESS, LINETYPE)
     else:
-        cv2.putText(fr, msg, (0, 40), FONTFACE, FONTSCALE, clr, THICKNESS,
-                    LINETYPE)
-    v_writer.write(fr)
+        cv2.putText(frame, msg, (0, 40), FONTFACE, FONTSCALE, font_color,
+                    THICKNESS, LINETYPE)
+    video_writer.write(frame)
     return text_info
 
 
-def get_results_json(result_queue, text_info, msg, thr, ind, out_json):
+def get_results_json(result_queue, text_info, thr, msg, ind, out_json):
     if len(result_queue) != 0:
         text_info = {}
         results = result_queue.popleft()
@@ -167,12 +168,13 @@ def show_results(model, data, label, args):
 
         if args.out_file.endswith('.json'):
             text_info, out_json = get_results_json(result_queue, text_info,
-                                                   msg, args.threshold, ind,
+                                                   args.threshold, msg, ind,
                                                    out_json)
         else:
-            text_info = show_results_video(result_queue, text_info, msg,
-                                           args.threshold, args.font_color,
-                                           frame, video_writer)
+            text_info = show_results_video(result_queue, text_info,
+                                           args.threshold, msg,
+                                           args.font_color, frame,
+                                           video_writer)
 
     cap.release()
     cv2.destroyAllWindows()
