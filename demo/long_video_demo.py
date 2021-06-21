@@ -72,8 +72,8 @@ def parse_args():
     return args
 
 
-def show_results_video(result_queue, text_info, thr, msg, font_color, frame,
-                       video_writer):
+def show_results_video(result_queue, text_info, thr, msg, frame, video_writer,
+                       font_color):
     if len(result_queue) != 0:
         text_info = {}
         results = result_queue.popleft()
