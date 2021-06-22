@@ -63,7 +63,7 @@ def parse_args():
         'in xxx=yyy format will be merged into config file. For example, '
         "'--cfg-options model.backbone.depth=18 model.backbone.with_cp=True'")
     parser.add_argument(
-        '--font-color',
+        '--label-color',
         nargs='+',
         type=int,
         default=(255, 255, 255),
@@ -84,7 +84,7 @@ def show_results_video(result_queue,
                        msg,
                        frame,
                        video_writer,
-                       font_color=(255, 255, 255),
+                       label_color=(255, 255, 255),
                        msg_color=(128, 128, 128)):
     if len(result_queue) != 0:
         text_info = {}
@@ -96,12 +96,12 @@ def show_results_video(result_queue,
             location = (0, 40 + i * 20)
             text = selected_label + ': ' + str(round(score, 2))
             text_info[location] = text
-            cv2.putText(frame, text, location, FONTFACE, FONTSCALE, font_color,
-                        THICKNESS, LINETYPE)
+            cv2.putText(frame, text, location, FONTFACE, FONTSCALE,
+                        label_color, THICKNESS, LINETYPE)
     elif len(text_info):
         for location, text in text_info.items():
-            cv2.putText(frame, text, location, FONTFACE, FONTSCALE, font_color,
-                        THICKNESS, LINETYPE)
+            cv2.putText(frame, text, location, FONTFACE, FONTSCALE,
+                        label_color, THICKNESS, LINETYPE)
     else:
         cv2.putText(frame, msg, (0, 40), FONTFACE, FONTSCALE, msg_color,
                     THICKNESS, LINETYPE)
@@ -185,7 +185,7 @@ def show_results(model, data, label, args):
         else:
             text_info = show_results_video(result_queue, text_info,
                                            args.threshold, msg, frame,
-                                           video_writer, args.font_color,
+                                           video_writer, args.label_color,
                                            args.msg_color)
 
     cap.release()
