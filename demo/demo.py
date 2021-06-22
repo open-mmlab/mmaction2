@@ -123,13 +123,14 @@ def get_output(video_path,
             h = int(w / frame_w * frame_h)
         frames = [cv2.imresize(f, (w, h)) for f in frames]
 
-    textsize = cv2.getTextSize(label, cv2.FONT_HERSHEY_DUPLEX, font_scale)[0]
+    textsize = cv2.getTextSize(label, cv2.FONT_HERSHEY_DUPLEX, font_scale,
+                               1)[0]
     textheight = textsize[1]
     padding = 10
     location = (padding, padding + textheight)
     for frame in frames:
         cv2.putText(frame, label, location, cv2.FONT_HERSHEY_DUPLEX,
-                    font_scale, font_color)
+                    font_scale, font_color, 1)
 
     # RGB order
     frames = [x[..., ::-1] for x in frames]
