@@ -107,10 +107,7 @@ if __name__ == '__main__':
     args = parse_args()
 
     decoder_to_pipeline_prefix = dict(
-        decord='Decord',
-        opencv='OpenCV',
-        pyav='PyAV',
-    )
+        decord='Decord', opencv='OpenCV', pyav='PyAV')
 
     # read config file
     cfg = Config.fromfile(args.config)
