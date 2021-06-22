@@ -134,10 +134,10 @@ def get_output(video_path,
     if isinstance(font_color, str):
         font_color = webcolors.name_to_rgb(font_color)[::-1]
 
+    frames = [np.array(frame) for frame in frames]
     for frame in frames:
-        cv2.putText(
-            np.array(frame), label, location, cv2.FONT_HERSHEY_DUPLEX,
-            font_scale, font_color, 1)
+        cv2.putText(frame, label, location, cv2.FONT_HERSHEY_DUPLEX,
+                    font_scale, font_color, 1)
 
     # RGB order
     frames = [x[..., ::-1] for x in frames]
