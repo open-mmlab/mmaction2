@@ -4,7 +4,9 @@ import os.path as osp
 
 import cv2
 import decord
+import numpy as np
 import torch
+import webcolors
 from mmcv import Config, DictAction
 
 from mmaction.apis import inference_recognizer, init_recognizer
@@ -128,13 +130,18 @@ def get_output(video_path,
     textheight = textsize[1]
     padding = 10
     location = (padding, padding + textheight)
+
+    if isinstance(font_color, str):
+        font_color = webcolors.name_to_rgb(font_color)[::-1]
+
     for frame in frames:
-        cv2.putText(frame, label, location, cv2.FONT_HERSHEY_DUPLEX,
-                    font_scale, font_color, 1)
+        cv2.putText(
+            np.array(frame), label, location, cv2.FONT_HERSHEY_DUPLEX,
+            font_scale, font_color, 1)
 
     # RGB order
     frames = [x[..., ::-1] for x in frames]
-    video_clips = ImageSequenceClip(frames)
+    video_clips = ImageSequenceClip(frames, fps=fps)
 
     out_type = osp.splitext(out_filename)[1][1:]
     if out_type == 'gif':
