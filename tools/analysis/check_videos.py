@@ -92,13 +92,6 @@ class RandomSampleFrames:
         return results
 
 
-def file_len(file):
-    with open(file) as f:
-        for i, _ in enumerate(f, 1):
-            pass
-    return i
-
-
 def _do_check_videos(lock, dataset, output_file, idx):
     try:
         dataset[idx]
@@ -150,8 +143,9 @@ if __name__ == '__main__':
     pool.join()
 
     if os.path.exists(args.output_file):
+        num_lines = sum(1 for _ in open(args.output_file))
         print(f'Checked {len(dataset)} videos, '
-              f'{file_len(args.output_file)} are corrupted/missing.')
+              f'{num_lines} are corrupted/missing.')
         if args.remove_corrupted_videos:
             print('Start deleting corrupted videos')
             cnt = 0
