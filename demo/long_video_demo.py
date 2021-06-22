@@ -68,12 +68,24 @@ def parse_args():
         type=int,
         default=(255, 255, 255),
         help='font color (B, G, R) of the labels in output video')
+    parser.add_argument(
+        '--msg-color',
+        nargs='+',
+        type=int,
+        default=(128, 128, 128),
+        help='font color (B, G, R) of the messages in output video')
     args = parser.parse_args()
     return args
 
 
-def show_results_video(result_queue, text_info, thr, msg, frame, video_writer,
-                       font_color):
+def show_results_video(result_queue,
+                       text_info,
+                       thr,
+                       msg,
+                       frame,
+                       video_writer,
+                       font_color=(255, 255, 255),
+                       msg_color=(128, 128, 128)):
     if len(result_queue) != 0:
         text_info = {}
         results = result_queue.popleft()
@@ -91,7 +103,7 @@ def show_results_video(result_queue, text_info, thr, msg, frame, video_writer,
             cv2.putText(frame, text, location, FONTFACE, FONTSCALE, font_color,
                         THICKNESS, LINETYPE)
     else:
-        cv2.putText(frame, msg, (0, 40), FONTFACE, FONTSCALE, font_color,
+        cv2.putText(frame, msg, (0, 40), FONTFACE, FONTSCALE, msg_color,
                     THICKNESS, LINETYPE)
     video_writer.write(frame)
     return text_info
@@ -172,9 +184,9 @@ def show_results(model, data, label, args):
                                                    out_json)
         else:
             text_info = show_results_video(result_queue, text_info,
-                                           args.threshold, msg,
-                                           args.font_color, frame,
-                                           video_writer)
+                                           args.threshold, msg, frame,
+                                           video_writer, args.font_color,
+                                           args.msg_color)
 
     cap.release()
     cv2.destroyAllWindows()

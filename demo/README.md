@@ -309,7 +309,8 @@ Optional arguments:
 - `DEVICE_TYPE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`. If not specified, it will be set to `cuda:0`.
 - `THRESHOLD`: Threshold of prediction score for action recognition. Only label with score higher than the threshold will be shown. If not specified, it will be set to 0.01.
 - `STRIDE`: By default, the demo generates a prediction for each single frame, which might cost lots of time. To speed up, you can set the argument `STRIDE` and then the demo will generate a prediction every `STRIDE x sample_length` frames (`sample_length` indicates the size of temporal window from which you sample frames, which equals to `clip_len x frame_interval`). For example, if the sample_length is 64 frames and you set `STRIDE` to 0.5, predictions will be generated every 32 frames. If set as 0, predictions will be generated for each frame. The desired value of `STRIDE` is (0, 1], while it also works for `STRIDE > 1` (the generated predictions will be too sparse). Default: 0.
-- `FONT_COLOR`: Color for the labels in BGR. Default is white.
+- `FONT_COLOR`: Font Color of the labels in (B, G, R). Default is white, that is (256, 256, 256).
+- `MSG_COLOR`: Font Color of the messages in (B, G, R). Default is gray, that is (128, 128, 128).
 
 Examples:
 
