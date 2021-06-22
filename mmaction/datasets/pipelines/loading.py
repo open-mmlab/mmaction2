@@ -772,6 +772,10 @@ class PyAVDecode:
     Args:
         multi_thread (bool): If set to True, it will apply multi
             thread processing. Default: False.
+        mode (str): Decoding mode. Options are 'accurate' and 'efficient'.
+            If set to 'accurate', it will decode videos into accurate frames.
+            If set to 'efficient', it will adopt fast seeking but only return
+            key frames. Default: 'accurate'.
     """
 
     def __init__(self, multi_thread=False, mode='accurate'):
@@ -843,12 +847,26 @@ class PyAVDecode:
 
     def __repr__(self):
         repr_str = self.__class__.__name__
-        repr_str += f'(multi_thread={self.multi_thread})'
+        repr_str += f'(multi_thread={self.multi_thread}, mode={self.mode})'
         return repr_str
 
 
 @PIPELINES.register_module()
 class PIMSInit:
+    """Use PIMS to initialize the video.
+
+    PIMS: https://github.com/soft-matter/pims
+
+    Args:
+        io_backend (str): io backend where frames are store.
+            Default: 'disk'.
+        mode (str): Decoding mode. Options are 'accurate' and 'efficient'.
+            If set to 'accurate', it will use ``pims.PyAVReaderIndexed`` to
+            decode videos into accurate frames. If set to 'efficient', it
+            will adopt fast seeking by using ``pims.PyAVReaderTimed`` but
+            only return key frames. Default: 'accurate'.
+        kwargs (dict): Args for file client.
+    """
 
     def __init__(self, io_backend='disk', mode='accurate', **kwargs):
         self.io_backend = io_backend
@@ -879,23 +897,34 @@ class PIMSInit:
         return results
 
     def __repr__(self):
-        repr_str = f'{self.__class__.__name__}(io_backend={self.io_backend})'
+        repr_str = (f'{self.__class__.__name__}(io_backend={self.io_backend}, '
+                    f'mode={self.mode})')
         return repr_str
 
 
 @PIPELINES.register_module()
 class PIMSDecode:
+    """Using PIMS to decode the videos.
+
+    PIMS: https://github.com/soft-matter/pims
+
+    Required keys are "video_reader" and "frame_inds",
+    added or modified keys are "imgs", "img_shape" and "original_shape".
+    """
 
     def __call__(self, results):
         container = results['video_reader']
 
+        if results['frame_inds'].ndim != 1:
+            results['frame_inds'] = np.squeeze(results['frame_inds'])
+
         frame_inds = results['frame_inds']
-        imgs = container[frame_inds]
+        imgs = [container[idx] for idx in frame_inds]
 
         results['video_reader'] = None
         del container
 
-        results['imgs'] = list(imgs)
+        results['imgs'] = imgs
         results['original_shape'] = imgs[0].shape[:2]
         results['img_shape'] = imgs[0].shape[:2]
 
@@ -992,6 +1021,12 @@ class DecordInit:
 
     Required keys are "filename",
     added or modified keys are "video_reader" and "total_frames".
+
+    Args:
+        io_backend (str): io backend where frames are store.
+            Default: 'disk'.
+        num_threads (int): Number of thread to decode the video. Default: 1.
+        kwargs (dict): Args for file client.
     """
 
     def __init__(self, io_backend='disk', num_threads=1, **kwargs):
@@ -1037,6 +1072,12 @@ class DecordDecode:
 
     Required keys are "video_reader", "filename" and "frame_inds",
     added or modified keys are "imgs" and "original_shape".
+
+    Args:
+        mode (str): Decoding mode. Options are 'accurate' and 'efficient'.
+            If set to 'accurate', it will decode videos into accurate frames.
+            If set to 'efficient', it will adopt fast seeking but only return
+            key frames. Default: 'accurate'.
     """
 
     def __init__(self, mode='accurate'):
@@ -1077,6 +1118,10 @@ class DecordDecode:
         results['img_shape'] = imgs[0].shape[:2]
 
         return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}(' f'mode={self.mode}')
+        return repr_str
 
 
 @PIPELINES.register_module()
