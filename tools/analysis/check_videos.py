@@ -45,6 +45,11 @@ def parse_args():
         choices=['decord', 'opencv', 'pyav'],
         help='Video decoder type, should be one of [decord, opencv, pyav]')
     parser.add_argument(
+        '--num-processes',
+        type=int,
+        default=(cpu_count() - 1 or 1),
+        help='Number of processes to check videos')
+    parser.add_argument(
         '--remove-corrupted-videos',
         action='store_true',
         help='Whether to delete all corrupted videos')
@@ -108,8 +113,6 @@ def _do_check_videos(lock, dataset, output_file, idx):
 if __name__ == '__main__':
     args = parse_args()
 
-    assert args.split in ['train', 'val', 'test']
-
     decoder_to_pipeline_prefix = dict(
         decord='Decord',
         opencv='OpenCV',
@@ -135,7 +138,7 @@ if __name__ == '__main__':
     if os.path.exists(args.output_file):
         # remove exsiting output file
         os.remove(args.output_file)
-    pool = Pool(cpu_count() - 1 or 1)
+    pool = Pool(args.num_processes)
     lock = Manager().Lock()
     worker_fn = partial(_do_check_videos, lock, dataset, args.output_file)
     ids = range(len(dataset))
@@ -159,4 +162,4 @@ if __name__ == '__main__':
                         cnt += 1
             print(f'Deleted {cnt} corrupted videos.')
     else:
-        print(f'Checked {len(dataset)} videos, ' 'none are corrupted/missing')
+        print(f'Checked {len(dataset)} videos, none are corrupted/missing')
