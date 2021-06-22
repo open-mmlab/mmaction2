@@ -6,5 +6,6 @@ lmdb
 moviepy
 onnx
 onnxruntime
+pims
 PyTurboJPEG
 timm
