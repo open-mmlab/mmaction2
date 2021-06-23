@@ -1,20 +1,18 @@
 Collections:
-- Metadata:
-    Training Data: null
-  Name: TPN
+- Name: TPN
   README: configs/recognition/tpn/README.md
 Models:
 - Config: configs/recognition/tpn/tpn_slowonly_r50_8x8x1_150e_kinetics_rgb.py
   In Collection: TPN
   Metadata:
     Architecture: ResNet50
+    Batch Size: 8
     Epochs: 150
     Parameters: 91498336
-    Training BatchSize / GPU: 8
+    Pretrained: ImageNet
+    Resolution: short-side 320
     Training Data: Kinetics-400
-    gpus: 32
-    pretrain: ImageNet
-    resolution: short-side 320
+    Training Resources: 32 GPUs
   Modality: RGB
   Name: tpn_slowonly_r50_8x8x1_150e_kinetics_rgb
   Results:
@@ -26,19 +24,17 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tpn/tpn_slowonly_r50_8x8x1_150e_kinetics_rgb/20200910_134330.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tpn/tpn_slowonly_r50_8x8x1_150e_kinetics_rgb/20200910_134330.log
   Weights: https://download.openmmlab.com/mmaction/recognition/tpn/tpn_slowonly_r50_8x8x1_150e_kinetics_rgb/tpn_slowonly_r50_8x8x1_150e_kinetics_rgb_20200910-b796d7a0.pth
-  gpu_mem(M): '6916'
-  inference_time(video/s): x
 - Config: configs/recognition/tpn/tpn_imagenet_pretrained_slowonly_r50_8x8x1_150e_kinetics_rgb.py
   In Collection: TPN
   Metadata:
     Architecture: ResNet50
+    Batch Size: 8
     Epochs: 150
     Parameters: 91498336
-    Training BatchSize / GPU: 8
+    Pretrained: ImageNet
+    Resolution: short-side 320
     Training Data: Kinetics-400
-    gpus: 32
-    pretrain: ImageNet
-    resolution: short-side 320
+    Training Resources: 32 GPUs
   Modality: RGB
   Name: tpn_imagenet_pretrained_slowonly_r50_8x8x1_150e_kinetics_rgb
   Results:
@@ -50,19 +46,17 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tpn/tpn_imagenet_pretrained_slowonly_r50_8x8x1_150e_kinetics_rgb/20200923_151919.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tpn/tpn_imagenet_pretrained_slowonly_r50_8x8x1_150e_kinetics_rgb/20200923_151919.log
   Weights: https://download.openmmlab.com/mmaction/recognition/tpn/tpn_imagenet_pretrained_slowonly_r50_8x8x1_150e_kinetics_rgb/tpn_imagenet_pretrained_slowonly_r50_8x8x1_150e_kinetics_rgb_20200923-52629684.pth
-  gpu_mem(M): '6916'
-  inference_time(video/s): x
 - Config: configs/recognition/tpn/tpn_tsm_r50_1x1x8_150e_sthv1_rgb.py
   In Collection: TPN
   Metadata:
     Architecture: ResNet50
+    Batch Size: 8
     Epochs: 150
     Parameters: 82445724
-    Training BatchSize / GPU: 8
+    Pretrained: TSM
+    Resolution: height 100
     Training Data: SthV1
-    gpus: 48
-    pretrain: TSM
-    resolution: height 100
+    Training Resources: 48 GPUs
   Modality: RGB
   Name: tpn_tsm_r50_1x1x8_150e_sthv1_rgb
   Results:
@@ -74,4 +68,3 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tpn/tpn_tsm_r50_1x1x8_150e_sthv1_rgb/20210311_162636.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tpn/tpn_tsm_r50_1x1x8_150e_sthv1_rgb/20210311_162636.log
   Weights: https://download.openmmlab.com/mmaction/recognition/tpn/tpn_tsm_r50_1x1x8_150e_sthv1_rgb/tpn_tsm_r50_1x1x8_150e_sthv1_rgb_20210311-28de4cd5.pth
-  gpu_mem(M): '8828'

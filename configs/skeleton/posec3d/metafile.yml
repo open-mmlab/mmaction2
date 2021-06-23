@@ -1,0 +1,118 @@
+Collections:
+- Name: PoseC3D
+  README: configs/skeleton/posec3d/README.md
+Models:
+- Config: configs/skeleton/posec3d/slowonly_r50_u48_240e_gym_keypoint.py
+  In Collection: PoseC3D
+  Metadata:
+    Architecture: SlowOnly-R50
+    Batch Size: 16
+    Epochs: 240
+    Parameters: 2044867
+    Training Data: FineGYM
+    Training Resources: 16 GPUs
+    pseudo heatmap: keypoint
+  Name: slowonly_r50_u48_240e_gym_keypoint
+  Results:
+  - Dataset: FineGYM
+    Metrics:
+    - Mean Top-1: 93.7
+    Task: Skeleton-based Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_gym_keypoint/slowonly_r50_u48_240e_gym_keypoint.json
+  Training Log: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_gym_keypoint/slowonly_r50_u48_240e_gym_keypoint.log
+  Weights: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_gym_keypoint/slowonly_r50_u48_240e_gym_keypoint-b07a98a0.pth
+- Config: configs/skeleton/posec3d/slowonly_r50_u48_240e_gym_limb.py
+  In Collection: PoseC3D
+  Metadata:
+    Architecture: SlowOnly-R50
+    Batch Size: 16
+    Epochs: 240
+    Parameters: 2044867
+    Training Data: FineGYM
+    Training Resources: 16 GPUs
+    pseudo heatmap: limb
+  Name: slowonly_r50_u48_240e_gym_limb
+  Results:
+  - Dataset: FineGYM
+    Metrics:
+    - Mean Top-1: 94.0
+    Task: Skeleton-based Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_gym_limb/slowonly_r50_u48_240e_gym_limb.json
+  Training Log: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_gym_limb/slowonly_r50_u48_240e_gym_limb.log
+  Weights: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_gym_limb/slowonly_r50_u48_240e_gym_limb-c0d7b482.pth
+- Config: configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu60_xsub_keypoint.py
+  In Collection: PoseC3D
+  Metadata:
+    Architecture: SlowOnly-R50
+    Batch Size: 16
+    Epochs: 240
+    Parameters: 2024860
+    Training Data: NTU60-XSub
+    Training Resources: 16 GPUs
+    pseudo heatmap: keypoint
+  Name: slowonly_r50_u48_240e_ntu60_xsub_keypoint
+  Results:
+  - Dataset: NTU60-XSub
+    Metrics:
+    - Top-1: 93.7
+    Task: Skeleton-based Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu60_xsub_keypoint/slowonly_r50_u48_240e_ntu60_xsub_keypoint.json
+  Training Log: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu60_xsub_keypoint/slowonly_r50_u48_240e_ntu60_xsub_keypoint.log
+  Weights: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu60_xsub_keypoint/slowonly_r50_u48_240e_ntu60_xsub_keypoint-f3adabf1.pth
+- Config: configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu60_xsub_limb.py
+  In Collection: PoseC3D
+  Metadata:
+    Architecture: SlowOnly-R50
+    Batch Size: 16
+    Epochs: 240
+    Parameters: 2024860
+    Training Data: NTU60-XSub
+    Training Resources: 16 GPUs
+    pseudo heatmap: limb
+  Name: slowonly_r50_u48_240e_ntu60_xsub_limb
+  Results:
+  - Dataset: NTU60-XSub
+    Metrics:
+    - Top-1: 93.4
+    Task: Skeleton-based Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu60_xsub_limb/slowonly_r50_u48_240e_ntu60_xsub_limb.json
+  Training Log: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu60_xsub_limb/slowonly_r50_u48_240e_ntu60_xsub_limb.log
+  Weights: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu60_xsub_limb/slowonly_r50_u48_240e_ntu60_xsub_limb-1d69006a.pth
+- Config: configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint.py
+  In Collection: PoseC3D
+  Metadata:
+    Architecture: SlowOnly-R50
+    Batch Size: 16
+    Epochs: 240
+    Parameters: 2055640
+    Training Data: NTU120-XSub
+    Training Resources: 16 GPUs
+    pseudo heatmap: keypoint
+  Name: slowonly_r50_u48_240e_ntu120_xsub_keypoint
+  Results:
+  - Dataset: NTU120-XSub
+    Metrics:
+    - Top-1: 86.3
+    Task: Skeleton-based Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint/slowonly_r50_u48_240e_ntu120_xsub_keypoint.json
+  Training Log: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint/slowonly_r50_u48_240e_ntu120_xsub_keypoint.log
+  Weights: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint/slowonly_r50_u48_240e_ntu120_xsub_keypoint-6736b03f.pth
+- Config: configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_limb.py
+  In Collection: PoseC3D
+  Metadata:
+    Architecture: SlowOnly-R50
+    Batch Size: 16
+    Epochs: 240
+    Parameters: 2055640
+    Training Data: NTU120-XSub
+    Training Resources: 16 GPUs
+    pseudo heatmap: limb
+  Name: slowonly_r50_u48_240e_ntu120_xsub_limb
+  Results:
+  - Dataset: NTU120-XSub
+    Metrics:
+    - Top-1: 85.7
+    Task: Skeleton-based Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_limb/slowonly_r50_u48_240e_ntu120_xsub_limb.json
+  Training Log: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_limb/slowonly_r50_u48_240e_ntu120_xsub_limb.log
+  Weights: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_limb/slowonly_r50_u48_240e_ntu120_xsub_limb-803c2317.pth?

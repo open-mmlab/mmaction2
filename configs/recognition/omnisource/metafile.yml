@@ -1,20 +1,18 @@
 Collections:
-- Metadata:
-    Training Data: null
-  Name: OmniSource
+- Name: OmniSource
   README: configs/recognition/omnisource/README.md
 Models:
 - Config: configs/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics/tsn_r50_1x1x8_100e_minikinetics_rgb.py
   In Collection: OmniSource
   Metadata:
     Architecture: ResNet50
+    Batch Size: 12
     Epochs: 100
     Input: 3seg
     Modality: RGB
     Parameters: 23917832
     Pretrained: ImageNet
     Resolution: short-side 320
-    Training BatchSize / GPU: 12
     Training Data: MiniKinetics
   Modality: RGB
   Name: tsn_r50_1x1x8_100e_minikinetics_rgb
@@ -31,13 +29,13 @@ Models:
   In Collection: OmniSource
   Metadata:
     Architecture: ResNet50
+    Batch Size: 12
     Epochs: 100
     Input: 3seg
     Modality: RGB
     Parameters: 23917832
     Pretrained: ImageNet
     Resolution: short-side 320
-    Training BatchSize / GPU: 12
     Training Data: MiniKinetics
   Modality: RGB
   Name: tsn_r50_1x1x8_100e_minikinetics_googleimage_rgb
@@ -54,13 +52,13 @@ Models:
   In Collection: OmniSource
   Metadata:
     Architecture: ResNet50
+    Batch Size: 12
     Epochs: 100
     Input: 3seg
     Modality: RGB
     Parameters: 23917832
     Pretrained: ImageNet
     Resolution: short-side 320
-    Training BatchSize / GPU: 12
     Training Data: MiniKinetics
   Modality: RGB
   Name: tsn_r50_1x1x8_100e_minikinetics_webimage_rgb
@@ -77,13 +75,13 @@ Models:
   In Collection: OmniSource
   Metadata:
     Architecture: ResNet50
+    Batch Size: 12
     Epochs: 100
     Input: 3seg
     Modality: RGB
     Parameters: 23917832
     Pretrained: ImageNet
     Resolution: short-side 320
-    Training BatchSize / GPU: 12
     Training Data: MiniKinetics
   Modality: RGB
   Name: tsn_r50_1x1x8_100e_minikinetics_insvideo_rgb
@@ -100,13 +98,13 @@ Models:
   In Collection: OmniSource
   Metadata:
     Architecture: ResNet50
+    Batch Size: 12
     Epochs: 100
     Input: 3seg
     Modality: RGB
     Parameters: 23917832
     Pretrained: ImageNet
     Resolution: short-side 320
-    Training BatchSize / GPU: 12
     Training Data: MiniKinetics
   Modality: RGB
   Name: tsn_r50_1x1x8_100e_minikinetics_kineticsraw_rgb
@@ -123,13 +121,13 @@ Models:
   In Collection: OmniSource
   Metadata:
     Architecture: ResNet50
+    Batch Size: 12
     Epochs: 100
     Input: 3seg
     Modality: RGB
     Parameters: 23917832
     Pretrained: ImageNet
     Resolution: short-side 320
-    Training BatchSize / GPU: 12
     Training Data: MiniKinetics
   Modality: RGB
   Name: tsn_r50_1x1x8_100e_minikinetics_omnisource_rgb
@@ -146,13 +144,13 @@ Models:
   In Collection: OmniSource
   Metadata:
     Architecture: ResNet50
+    Batch Size: 12
     Epochs: 256
     Input: 8x8
     Modality: RGB
     Parameters: 32044296
     Pretrained: None
     Resolution: short-side 320
-    Training BatchSize / GPU: 12
     Training Data: MiniKinetics
   Modality: RGB
   Name: slowonly_r50_8x8x1_256e_minikinetics_rgb
@@ -169,13 +167,13 @@ Models:
   In Collection: OmniSource
   Metadata:
     Architecture: ResNet50
+    Batch Size: 12
     Epochs: 256
     Input: 8x8
     Modality: RGB
     Parameters: 32044296
     Pretrained: None
     Resolution: short-side 320
-    Training BatchSize / GPU: 12
     Training Data: MiniKinetics
   Modality: RGB
   Name: slowonly_r50_8x8x1_256e_minikinetics_googleimage_rgb
@@ -192,13 +190,13 @@ Models:
   In Collection: OmniSource
   Metadata:
     Architecture: ResNet50
+    Batch Size: 12
     Epochs: 256
     Input: 8x8
     Modality: RGB
     Parameters: 32044296
     Pretrained: None
     Resolution: short-side 320
-    Training BatchSize / GPU: 12
     Training Data: MiniKinetics
   Modality: RGB
   Name: slowonly_r50_8x8x1_256e_minikinetics_webimage_rgb
@@ -215,13 +213,13 @@ Models:
   In Collection: OmniSource
   Metadata:
     Architecture: ResNet50
+    Batch Size: 12
     Epochs: 256
     Input: 8x8
     Modality: RGB
     Parameters: 32044296
     Pretrained: None
     Resolution: short-side 320
-    Training BatchSize / GPU: 12
     Training Data: MiniKinetics
   Modality: RGB
   Name: slowonly_r50_8x8x1_256e_minikinetics_insvideo_rgb
@@ -238,13 +236,13 @@ Models:
   In Collection: OmniSource
   Metadata:
     Architecture: ResNet50
+    Batch Size: 12
     Epochs: 256
     Input: 8x8
     Modality: RGB
     Parameters: 32044296
     Pretrained: None
     Resolution: short-side 320
-    Training BatchSize / GPU: 12
     Training Data: MiniKinetics
   Modality: RGB
   Name: slowonly_r50_8x8x1_256e_minikinetics_kineticsraw_rgb
@@ -261,13 +259,13 @@ Models:
   In Collection: OmniSource
   Metadata:
     Architecture: ResNet50
+    Batch Size: 12
     Epochs: 256
     Input: 8x8
     Modality: RGB
     Parameters: 32044296
     Pretrained: None
     Resolution: short-side 320
-    Training BatchSize / GPU: 12
     Training Data: MiniKinetics
   Modality: RGB
   Name: slowonly_r50_8x8x1_256e_minikinetics_omnisource_rgb
@@ -284,12 +282,12 @@ Models:
   In Collection: OmniSource
   Metadata:
     Architecture: ResNet50
+    Batch Size: 32
     Epochs: 100
     Parameters: 24327632
-    Training BatchSize / GPU: 32
+    Pretrained: ImageNet
+    Resolution: 340x256
     Training Data: Kinetics-400
-    pretrain: ImageNet
-    resolution: 340x256
   Modality: RGB
   Name: tsn_omnisource_r50_1x1x3_100e_kinetics_rgb
   Results:
@@ -299,18 +297,16 @@ Models:
       top5 acc: 91.0
     Task: Action Recognition
   Weights: https://download.openmmlab.com/mmaction/recognition/tsn/omni/tsn_imagenet_pretrained_r50_omni_1x1x3_kinetics400_rgb_20200926-54192355.pth
-  gpu_mem(M): '8344'
-  inference_time(video/s): x
 - Config: configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py
   In Collection: OmniSource
   Metadata:
     Architecture: ResNet50
+    Batch Size: 32
     Epochs: 100
     Parameters: 24327632
-    Training BatchSize / GPU: 32
+    Pretrained: IG-1B
+    Resolution: short-side 320
     Training Data: Kinetics-400
-    pretrain: IG-1B
-    resolution: short-side 320
   Modality: RGB
   Name: tsn_IG1B_pretrained_omnisource_r50_1x1x3_100e_kinetics_rgb
   Results:
@@ -320,18 +316,16 @@ Models:
       top5 acc: 91.9
     Task: Action Recognition
   Weights: https://download.openmmlab.com/mmaction/recognition/tsn/omni/tsn_1G1B_pretrained_r50_omni_1x1x3_kinetics400_rgb_20200926-2863fed0.pth
-  gpu_mem(M): '8344'
-  inference_time(video/s): x
 - Config: configs/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_rgb.py
   In Collection: OmniSource
   Metadata:
     Architecture: ResNet50
+    Batch Size: 8
     Epochs: 256
     Parameters: 32454096
-    Training BatchSize / GPU: 8
+    Pretrained: None
+    Resolution: short-side 320
     Training Data: Kinetics-400
-    pretrain: None
-    resolution: short-side 320
   Modality: RGB
   Name: slowonly_r50_omnisource_4x16x1_256e_kinetics400_rgb
   Results:
@@ -345,12 +339,12 @@ Models:
   In Collection: OmniSource
   Metadata:
     Architecture: ResNet101
+    Batch Size: 8
     Epochs: 196
     Parameters: 60359120
-    Training BatchSize / GPU: 8
+    Pretrained: None
+    Resolution: short-side 320
     Training Data: Kinetics-400
-    pretrain: None
-    resolution: short-side 320
   Modality: RGB
   Name: slowonly_r101_omnisource_8x8x1_196e_kinetics400_rgb
   Results:
