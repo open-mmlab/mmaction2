@@ -1,18 +1,16 @@
 Collections:
-- Metadata:
-    Training Data: null
-  Name: PoseC3D
+- Name: PoseC3D
   README: configs/skeleton/posec3d/README.md
 Models:
 - Config: configs/skeleton/posec3d/slowonly_r50_u48_240e_gym_keypoint.py
   In Collection: PoseC3D
   Metadata:
     Architecture: SlowOnly-R50
+    Batch Size: 16
     Epochs: 240
     Parameters: 2044867
-    Training BatchSize / GPU: 16
     Training Data: FineGYM
-    gpus: 16
+    Training Resources: 16 GPUs
     pseudo heatmap: keypoint
   Name: slowonly_r50_u48_240e_gym_keypoint
   Results:
@@ -27,11 +25,11 @@ Models:
   In Collection: PoseC3D
   Metadata:
     Architecture: SlowOnly-R50
+    Batch Size: 16
     Epochs: 240
     Parameters: 2044867
-    Training BatchSize / GPU: 16
     Training Data: FineGYM
-    gpus: 16
+    Training Resources: 16 GPUs
     pseudo heatmap: limb
   Name: slowonly_r50_u48_240e_gym_limb
   Results:
@@ -46,11 +44,11 @@ Models:
   In Collection: PoseC3D
   Metadata:
     Architecture: SlowOnly-R50
+    Batch Size: 16
     Epochs: 240
     Parameters: 2024860
-    Training BatchSize / GPU: 16
     Training Data: NTU60-XSub
-    gpus: 16
+    Training Resources: 16 GPUs
     pseudo heatmap: keypoint
   Name: slowonly_r50_u48_240e_ntu60_xsub_keypoint
   Results:
@@ -65,11 +63,11 @@ Models:
   In Collection: PoseC3D
   Metadata:
     Architecture: SlowOnly-R50
+    Batch Size: 16
     Epochs: 240
     Parameters: 2024860
-    Training BatchSize / GPU: 16
     Training Data: NTU60-XSub
-    gpus: 16
+    Training Resources: 16 GPUs
     pseudo heatmap: limb
   Name: slowonly_r50_u48_240e_ntu60_xsub_limb
   Results:
@@ -84,11 +82,11 @@ Models:
   In Collection: PoseC3D
   Metadata:
     Architecture: SlowOnly-R50
+    Batch Size: 16
     Epochs: 240
     Parameters: 2055640
-    Training BatchSize / GPU: 16
     Training Data: NTU120-XSub
-    gpus: 16
+    Training Resources: 16 GPUs
     pseudo heatmap: keypoint
   Name: slowonly_r50_u48_240e_ntu120_xsub_keypoint
   Results:
@@ -103,11 +101,11 @@ Models:
   In Collection: PoseC3D
   Metadata:
     Architecture: SlowOnly-R50
+    Batch Size: 16
     Epochs: 240
     Parameters: 2055640
-    Training BatchSize / GPU: 16
     Training Data: NTU120-XSub
-    gpus: 16
+    Training Resources: 16 GPUs
     pseudo heatmap: limb
   Name: slowonly_r50_u48_240e_ntu120_xsub_limb
   Results:

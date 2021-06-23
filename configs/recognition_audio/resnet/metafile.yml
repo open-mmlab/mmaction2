@@ -1,17 +1,15 @@
 Collections:
-- Metadata:
-    Training Data: null
-  Name: Audio
+- Name: Audio
   README: configs/recognition_audio/resnet/README.md
 Models:
 - Config: configs/recognition_audio/resnet/tsn_r18_64x1x1_100e_kinetics400_audio_feature.py
   In Collection: Audio
   Metadata:
     Architecture: ResNet18
+    Pretrained: None
     Training Data: Kinetics-400
-    gpus: 8
+    Training Resources: 8 GPUs
     n_fft: '1024'
-    pretrain: None
   Modality: Audio
   Name: tsn_r18_64x1x1_100e_kinetics400_audio_feature
   Results:
@@ -27,4 +25,3 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/audio_recognition/tsn_r18_64x1x1_100e_kinetics400_audio_feature/20201010_144630.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/audio_recognition/tsn_r18_64x1x1_100e_kinetics400_audio_feature/20201010_144630.log
   Weights: https://download.openmmlab.com/mmaction/recognition/audio_recognition/tsn_r18_64x1x1_100e_kinetics400_audio_feature/tsn_r18_64x1x1_100e_kinetics400_audio_feature_20201012-bf34df6c.pth
-  gpu_mem(M): '1897'
