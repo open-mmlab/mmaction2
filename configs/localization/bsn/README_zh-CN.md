@@ -72,7 +72,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 2. 推理 PGM 模型
 
     ```shell
-    python tools/bsn_proposal_generation.py ${CONFIG_FILE} [--mode ${MODE}]
+    python tools/misc/bsn_proposal_generation.py ${CONFIG_FILE} [--mode ${MODE}]
     ```
 
 3. 推理 PEM 模型
@@ -92,7 +92,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 2. 利用预训练模型进行 BSN(PGM) 模型的推理
 
     ```shell
-    python tools/bsn_proposal_generation.py configs/localization/bsn/bsn_pgm_400x100_activitynet_feature.py --mode train
+    python tools/misc/bsn_proposal_generation.py configs/localization/bsn/bsn_pgm_400x100_activitynet_feature.py --mode train
     ```
 
 3. 推理 BSN(PEM) 模型，并计算 'AR@AN' 指标，输出结果文件。
@@ -116,7 +116,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 2. PGM
 
     ```shell
-    python tools/bsn_proposal_generation.py ${CONFIG_FILE} [--mode ${MODE}]
+    python tools/misc/bsn_proposal_generation.py ${CONFIG_FILE} [--mode ${MODE}]
     ```
 
 3. PEM
@@ -136,7 +136,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 2. 在 ActivityNet 数据集上测试 PGM 模型。
 
     ```shell
-    python tools/bsn_proposal_generation.py configs/localization/bsn/bsn_pgm_400x100_activitynet_feature.py --mode test
+    python tools/misc/bsn_proposal_generation.py configs/localization/bsn/bsn_pgm_400x100_activitynet_feature.py --mode test
     ```
 
 3. 测试 PEM 模型，并计算 'AR@AN' 指标，输出结果文件。

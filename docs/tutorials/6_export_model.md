@@ -28,7 +28,7 @@ So far, our codebase supports onnx exporting from pytorch models trained with MM
 
 ## Usage
 
-For simple exporting, you can use the [script](/tools/pytorch2onnx.py) here. Note that the package `onnx` and `onnxruntime` are required for verification after exporting.
+For simple exporting, you can use the [script](/tools/deployment/pytorch2onnx.py) here. Note that the package `onnx` and `onnxruntime` are required for verification after exporting.
 
 ### Prerequisite
 
@@ -41,7 +41,7 @@ pip install onnx onnxruntime
 We provide a python script to export the pytorch model trained by MMAction2 to ONNX.
 
 ```shell
-python tools/pytorch2onnx.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--shape ${SHAPE}] \
+python tools/deployment/pytorch2onnx.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--shape ${SHAPE}] \
     [--verify] [--show] [--output-file ${OUTPUT_FILE}]  [--is-localizer] [--opset-version ${VERSION}]
 ```
 
@@ -60,7 +60,7 @@ Optional arguments:
 For recognizers, please run:
 
 ```shell
-python tools/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --verify
+python tools/deployment/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --verify
 ```
 
 ### Localizers
@@ -68,7 +68,7 @@ python tools/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --veri
 For localizers, please run:
 
 ```shell
-python tools/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --is-localizer --shape $SHAPE --verify
+python tools/deployment/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --is-localizer --shape $SHAPE --verify
 ```
 
 Please fire an issue if you discover any checkpoints that are not perfectly exported or suffer some loss in accuracy.

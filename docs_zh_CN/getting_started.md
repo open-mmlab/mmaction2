@@ -85,7 +85,7 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--out ${RESULT_FILE}] [-
 - `AVG_TYPE`：用于平均测试片段结果的选项。如果被设置为 `prob`，则会在平均测试片段结果之前施加 softmax 函数。否则，会直接进行平均。
 - `JOB_LAUNCHER`：分布式任务初始化启动器选项。可选值有 `none`，`pytorch`，`slurm`，`mpi`。特别地，如果被设置为 `none`, 则会以非分布式模式进行测试。
 - `LOCAL_RANK`：本地 rank 的 ID。如果没有被指定，则会被设置为 0。
-- `--onnx`: 如果指定，将通过 onnx 模型推理获取预测结果，输入参数 `CHECKPOINT_FILE` 应为 onnx 模型文件。Onnx 模型文件由 `/tools/pytorch2onnx.py` 脚本导出。目前，不支持多 GPU 测试以及动态张量形状（Dynamic shape）。请注意，数据集输出与模型输入张量的形状应保持一致。同时，不建议使用测试时数据增强，如 `ThreeCrop`，`TenCrop`，`twice_sample` 等。
+- `--onnx`: 如果指定，将通过 onnx 模型推理获取预测结果，输入参数 `CHECKPOINT_FILE` 应为 onnx 模型文件。Onnx 模型文件由 `/tools/deployment/pytorch2onnx.py` 脚本导出。目前，不支持多 GPU 测试以及动态张量形状（Dynamic shape）。请注意，数据集输出与模型输入张量的形状应保持一致。同时，不建议使用测试时数据增强，如 `ThreeCrop`，`TenCrop`，`twice_sample` 等。
 - `--tensorrt`: 如果指定，将通过 TensorRT 模型推理获取预测结果，输入参数 `CHECKPOINT_FILE` 应为 TensorRT 模型文件。TensorRT 模型文件由导出的 onnx 模型以及 TensorRT 官方模型转换工具生成。目前，不支持多 GPU 测试以及动态张量形状（Dynamic shape）。请注意，数据集输出与模型输入张量的形状应保持一致。同时，不建议使用测试时数据增强，如 `ThreeCrop`，`TenCrop`，`twice_sample` 等。
 
 例子：
