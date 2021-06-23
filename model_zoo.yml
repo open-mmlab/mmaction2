@@ -18,4 +18,6 @@ Import:
 - configs/recognition/trn/metafile.yml
 - configs/detection/ava/metafile.yml
 - configs/detection/lfb/metafile.yml
+- configs/detection/acrn/metafile.yml
 - configs/recognition_audio/resnet/metafile.yml
+- configs/skeleton/posec3d/metafile.yml

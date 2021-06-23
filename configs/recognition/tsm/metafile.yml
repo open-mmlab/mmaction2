@@ -685,3 +685,25 @@ Models:
   Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_cutmix_1x1x8_50e_sthv1_rgb/tsm_r50_cutmix_1x1x8_50e_sthv1_rgb-34934615.pth
   delta top1 acc (efficient/accurate): +0.34 / -0.24
   delta top5 acc (efficient/accurate): +0.21 / +0.59
+- Config: configs/recognition/tsm/tsm_r50_1x1x8_50e_jester_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 50
+    Parameters: 23563355
+    Training BatchSize / GPU: 8
+    Training Data: Jester
+    gpus: 8
+    pretrain: ImageNet
+    resolution: height 100
+  Modality: RGB
+  Name: tsm_r50_1x1x8_50e_jester_rgb
+  Results:
+  - Dataset: Jester
+    Metrics:
+    - top1 acc (efficient): 96.5
+    - top1 acc (accurate): 97.2
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_jester_rgb/tsm_r50_1x1x8_50e_jester_rgb.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_jester_rgb/tsm_r50_1x1x8_50e_jester_rgb.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_jester_rgb/tsm_r50_1x1x8_50e_jester_rgb-c799267e.pth

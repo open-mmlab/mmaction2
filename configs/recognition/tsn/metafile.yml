@@ -940,3 +940,24 @@ Models:
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsn/hvu/attribute/tsn_r18_1x1x8_100e_hvu_attribute_rgb_20201027.log
   Weights: https://download.openmmlab.com/mmaction/recognition/tsn/hvu/attribute/tsn_r18_1x1x8_100e_hvu_attribute_rgb_20201027-0b3b49d2.pth
   tag category: attribute
+- Config: configs/recognition/tsn/custom_backbones/tsn_swin_transformer_video_320p_1x1x3_100e_kinetics400_rgb.py
+  In Collection: TSN
+  Metadata:
+    Architecture: Swin Transformer
+    Epochs: 100
+    Parameters: 87153224
+    Training BatchSize / GPU: 24
+    Training Data: Kinetics400
+    gpus: 8
+    pretrain: ImageNet
+    resolution: short-side 320
+  Name: tsn_swin_transformer_video_320p_1x1x3_100e_kinetics400_rgb
+  Results:
+  - Dataset: Kinetics400
+    Metrics:
+    - top1 acc: 77.51
+    - top5 acc: 92.92
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsn/custom_backbones/tsn_swin_transformer_video_320p_1x1x3_100e_kinetics400_rgb/tsn_swin_transformer_video_320p_1x1x3_100e_kinetics400_rgb.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsn/custom_backbones/tsn_swin_transformer_video_320p_1x1x3_100e_kinetics400_rgb/tsn_swin_transformer_video_320p_1x1x3_100e_kinetics400_rgb.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsn/custom_backbones/tsn_swin_transformer_video_320p_1x1x3_100e_kinetics400_rgb/tsn_swin_transformer_video_320p_1x1x3_100e_kinetics400_rgb-805380f6.pth

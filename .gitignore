@@ -130,3 +130,4 @@ work_dirs/
 !tests/data/**/*.pth
 mmaction/configs/*
 mmaction/tools/*
+*.ipynb
