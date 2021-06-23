@@ -2,7 +2,7 @@ import argparse
 import os
 import warnings
 from functools import partial
-from multiprocessing import Manager, Pool
+from multiprocessing import Manager, Pool, cpu_count
 
 import numpy as np
 from mmcv import Config, DictAction
@@ -37,15 +37,17 @@ def parse_args():
     parser.add_argument(
         '--split',
         default='train',
-        help='Dataset split, should be one of [train, val, test]')
+        choices=['train', 'val', 'test'],
+        help='Dataset split')
     parser.add_argument(
         '--decoder',
         default='decord',
+        choices=['decord', 'opencv', 'pyav'],
         help='Video decoder type, should be one of [decord, opencv, pyav]')
     parser.add_argument(
         '--num-processes',
         type=int,
-        default=5,
+        default=(cpu_count() - 1 or 1),
         help='Number of processes to check videos')
     parser.add_argument(
         '--remove-corrupted-videos',
@@ -104,14 +106,8 @@ def _do_check_videos(lock, dataset, output_file, idx):
 if __name__ == '__main__':
     args = parse_args()
 
-    assert args.split in ['train', 'val', 'test']
-
     decoder_to_pipeline_prefix = dict(
-        decord='Decord',
-        opencv='OpenCV',
-        pyav='PyAV',
-    )
-    assert args.decoder in decoder_to_pipeline_prefix
+        decord='Decord', opencv='OpenCV', pyav='PyAV')
 
     # read config file
     cfg = Config.fromfile(args.config)
@@ -140,20 +136,21 @@ if __name__ == '__main__':
     # start checking
     for _ in tqdm(pool.imap_unordered(worker_fn, ids), total=len(ids)):
         pass
+    pool.close()
     pool.join()
 
-    # print results and release resources
-    pool.close()
-    with open(args.output_file, 'r') as f:
+    if os.path.exists(args.output_file):
+        num_lines = sum(1 for _ in open(args.output_file))
         print(f'Checked {len(dataset)} videos, '
-              f'{len(f)} is/are corrupted/missing.')
-
-    if args.remove_corrupted_videos:
-        print('Start deleting corrupted videos')
-        cnt = 0
-        with open(args.output_file, 'r') as f:
-            for line in f:
-                if os.path.exists(line.strip()):
-                    os.remove(line.strip())
-                    cnt += 1
-        print(f'Delete {cnt} corrupted videos.')
+              f'{num_lines} are corrupted/missing.')
+        if args.remove_corrupted_videos:
+            print('Start deleting corrupted videos')
+            cnt = 0
+            with open(args.output_file, 'r') as f:
+                for line in f:
+                    if os.path.exists(line.strip()):
+                        os.remove(line.strip())
+                        cnt += 1
+            print(f'Deleted {cnt} corrupted videos.')
+    else:
+        print(f'Checked {len(dataset)} videos, none are corrupted/missing')
