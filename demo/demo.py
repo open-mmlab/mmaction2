@@ -123,7 +123,7 @@ def get_output(video_path,
             w = int(h / frame_h * frame_w)
         if h == -1:
             h = int(w / frame_w * frame_h)
-        frames = [cv2.imresize(f, (w, h)) for f in frames]
+        frames = [cv2.resize(f, (w, h)) for f in frames]
 
     textsize = cv2.getTextSize(label, cv2.FONT_HERSHEY_DUPLEX, font_scale,
                                1)[0]

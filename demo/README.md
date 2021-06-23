@@ -37,7 +37,7 @@ We provide a demo script to predict the recognition result using a single video.
 
 ```shell
 python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} {LABEL_FILE} [--use-frames] \
-    [--device ${DEVICE_TYPE}] [--fps {FPS}] [--font-size {FONT_SIZE}] [--font-color {FONT_COLOR}] \
+    [--device ${DEVICE_TYPE}] [--fps {FPS}] [--font-scale {FONT_SCALE}] [--font-color {FONT_COLOR}] \
     [--target-resolution ${TARGET_RESOLUTION}] [--resize-algorithm {RESIZE_ALGORITHM}] [--out-filename {OUT_FILE}]
 ```
 
@@ -46,7 +46,7 @@ Optional arguments:
 - `--use-frames`: If specified, the demo will take rawframes as input. Otherwise, it will take a video as input.
 - `DEVICE_TYPE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`. If not specified, it will be set to `cuda:0`.
 - `FPS`: FPS value of the output video when using rawframes as input. If not specified, it wll be set to 30.
-- `FONT_SIZE`: Font size of the label added in the video. If not specified, it wll be set to 20.
+- `FONT_SCALE`: Font scale of the label added in the video. If not specified, it wll be 0.5.
 - `FONT_COLOR`: Font color of the label added in the video. If not specified, it will be `white`.
 - `TARGET_RESOLUTION`: Resolution(desired_width, desired_height) for resizing the frames before output when using a video as input. If not specified, it will be None and the frames are resized by keeping the existing aspect ratio.
 - `RESIZE_ALGORITHM`: Resize algorithm used for resizing. If not specified, it will be set to `bicubic`.
@@ -120,13 +120,13 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
         --out-filename demo/demo_out.mp4
     ```
 
-7. Recognize a video file as input by using a TSN model, then generate an mp4 file with a label in a red color and 10px fontsize.
+7. Recognize a video file as input by using a TSN model, then generate an mp4 file with a label in a red color and fontscale 1.
 
     ```shell
     # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
     python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
         checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
-        demo/demo.mp4 demo/label_map_k400.txt --font-size 10 --font-color red \
+        demo/demo.mp4 demo/label_map_k400.txt --font-scale 1 --font-color red \
         --out-filename demo/demo_out.mp4
     ```
 
