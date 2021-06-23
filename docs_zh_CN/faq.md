@@ -78,6 +78,10 @@
 
     实际上，除了少数模型，如 C3D 等，用户都能通过设置 `frozen_stages` 来冻结模型参数，因为大多数主干网络继承自 `ResNet` 和 `ResNet3D`，而这两个模型都支持 `_freeze_stages()` 方法。
 
+- **如何在配置文件中设置 `load_from` 参数以进行模型微调？**
+
+    MMAction2 在 `configs/_base_/default_runtime.py` 文件中将 `load_from=None` 设为默认。由于配置文件的可继承性，用户可直接在下游配置文件中设置 `load_from` 的值来进行更改。
+
 ## 测试
 
 - **如何将预测分值用 softmax 归一化到 [0, 1] 区间内？**
