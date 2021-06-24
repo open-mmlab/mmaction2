@@ -775,7 +775,9 @@ class PyAVDecode:
         mode (str): Decoding mode. Options are 'accurate' and 'efficient'.
             If set to 'accurate', it will decode videos into accurate frames.
             If set to 'efficient', it will adopt fast seeking but only return
-            key frames. Default: 'accurate'.
+            the nearest key frames, which may be duplicated and inaccurate,
+            and more suitable for large scene-based video datasets.
+            Default: 'accurate'.
     """
 
     def __init__(self, multi_thread=False, mode='accurate'):
@@ -861,10 +863,11 @@ class PIMSInit:
         io_backend (str): io backend where frames are store.
             Default: 'disk'.
         mode (str): Decoding mode. Options are 'accurate' and 'efficient'.
-            If set to 'accurate', it will use ``pims.PyAVReaderIndexed`` to
-            decode videos into accurate frames. If set to 'efficient', it
-            will adopt fast seeking by using ``pims.PyAVReaderTimed`` but
-            only return key frames. Default: 'accurate'.
+            If set to 'accurate', it will always use ``pims.PyAVReaderIndexed``
+            to decode videos into accurate frames. If set to 'efficient', it
+            will adopt fast seeking by using ``pims.PyAVReaderTimed``.
+            Both will return the accurate frames in most cases.
+            Default: 'accurate'.
         kwargs (dict): Args for file client.
     """
 
@@ -940,10 +943,6 @@ class PyAVDecodeMotionVector(PyAVDecode):
 
     Required keys are "video_reader" and "frame_inds",
     added or modified keys are "motion_vectors", "frame_inds".
-
-    Args:
-        multi_thread (bool): If set to True, it will apply multi
-            thread processing. Default: False.
     """
 
     @staticmethod
@@ -1077,7 +1076,8 @@ class DecordDecode:
         mode (str): Decoding mode. Options are 'accurate' and 'efficient'.
             If set to 'accurate', it will decode videos into accurate frames.
             If set to 'efficient', it will adopt fast seeking but only return
-            key frames. Default: 'accurate'.
+            key frames, which may be duplicated and inaccurate, and more
+            suitable for large scene-based video datasets. Default: 'accurate'.
     """
 
     def __init__(self, mode='accurate'):
@@ -1120,7 +1120,7 @@ class DecordDecode:
         return results
 
     def __repr__(self):
-        repr_str = (f'{self.__class__.__name__}(' f'mode={self.mode}')
+        repr_str = f'{self.__class__.__name__}(mode={self.mode})'
         return repr_str
 
 
@@ -1130,6 +1130,11 @@ class OpenCVInit:
 
     Required keys are "filename", added or modified keys are "new_path",
     "video_reader" and "total_frames".
+
+    Args:
+        io_backend (str): io backend where frames are store.
+            Default: 'disk'.
+        kwargs (dict): Args for file client.
     """
 
     def __init__(self, io_backend='disk', **kwargs):
