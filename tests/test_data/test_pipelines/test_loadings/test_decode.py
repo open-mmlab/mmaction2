@@ -241,7 +241,7 @@ class TestDecode(BaseTestLoading):
         assert np.shape(decord_decode_result['imgs']) == (len(
             video_result['frame_inds']), 256, 340, 3)
         assert repr(decord_decode) == (f'{decord_decode.__class__.__name__}('
-                                       f'model=efficient)')
+                                       f'mode=efficient)')
 
     def test_opencv_init(self):
         target_keys = ['new_path', 'video_reader', 'total_frames']
