@@ -7,7 +7,8 @@ from mmaction.datasets.pipelines import AudioAmplify, MelSpectrogram
 
 class TestAudio:
 
-    def test_audio_amplify(self):
+    @staticmethod
+    def test_audio_amplify():
         target_keys = ['audios', 'amplify_ratio']
         with pytest.raises(TypeError):
             # ratio should be float
@@ -21,7 +22,8 @@ class TestAudio:
         assert repr(amplifier) == (f'{amplifier.__class__.__name__}'
                                    f'(ratio={amplifier.ratio})')
 
-    def test_melspectrogram(self):
+    @staticmethod
+    def test_melspectrogram():
         target_keys = ['audios']
         with pytest.raises(TypeError):
             # ratio should be float

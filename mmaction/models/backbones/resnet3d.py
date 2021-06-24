@@ -935,7 +935,7 @@ class ResNet3dLayer(nn.Module):
         self.pretrained2d = pretrained2d
         self.stage = stage
         # stage index is 0 based
-        assert stage >= 0 and stage <= 3
+        assert 0 <= stage <= 3
         self.base_channels = base_channels
 
         self.spatial_stride = spatial_stride

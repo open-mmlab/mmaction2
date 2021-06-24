@@ -29,6 +29,7 @@ Note: This module operates on numpy boxes and box lists.
 
 import collections
 import logging
+import warnings
 from abc import ABCMeta, abstractmethod
 from collections import defaultdict
 
@@ -101,15 +102,13 @@ class DetectionEvaluator:
 class ObjectDetectionEvaluator(DetectionEvaluator):
     """A class to evaluate detections."""
 
-    def __init__(
-        self,
-        categories,
-        matching_iou_threshold=0.5,
-        evaluate_corlocs=False,
-        metric_prefix=None,
-        use_weighted_mean_ap=False,
-        evaluate_masks=False,
-    ):
+    def __init__(self,
+                 categories,
+                 matching_iou_threshold=0.5,
+                 evaluate_corlocs=False,
+                 metric_prefix=None,
+                 use_weighted_mean_ap=False,
+                 evaluate_masks=False):
         """Constructor.
 
         Args:
@@ -244,7 +243,8 @@ class ObjectDetectionEvaluator(DetectionEvaluator):
             detected_masks=detection_masks,
         )
 
-    def create_category_index(self, categories):
+    @staticmethod
+    def create_category_index(categories):
         """Creates dictionary of COCO compatible categories keyed by category
         id.
 
@@ -277,14 +277,8 @@ class ObjectDetectionEvaluator(DetectionEvaluator):
             2. per_category_ap: category specific results with keys of the form
                'PerformanceByCategory/mAP@<matching_iou_threshold>IOU/category'
         """
-        (
-            per_class_ap,
-            mean_ap,
-            _,
-            _,
-            per_class_corloc,
-            mean_corloc,
-        ) = self._evaluation.evaluate()
+        (per_class_ap, mean_ap, _, _, per_class_corloc,
+         mean_corloc) = self._evaluation.evaluate()
 
         metric = f'mAP@{self._matching_iou_threshold}IOU'
         pascal_metrics = {self._metric_prefix + metric: mean_ap}
@@ -355,15 +349,13 @@ ObjectDetectionEvalMetrics = collections.namedtuple(
 class ObjectDetectionEvaluation:
     """Internal implementation of Pascal object detection metrics."""
 
-    def __init__(
-        self,
-        num_groundtruth_classes,
-        matching_iou_threshold=0.5,
-        nms_iou_threshold=1.0,
-        nms_max_output_boxes=10000,
-        use_weighted_mean_ap=False,
-        label_id_offset=0,
-    ):
+    def __init__(self,
+                 num_groundtruth_classes,
+                 matching_iou_threshold=0.5,
+                 nms_iou_threshold=1.0,
+                 nms_max_output_boxes=10000,
+                 use_weighted_mean_ap=False,
+                 label_id_offset=0):
         if num_groundtruth_classes < 1:
             raise ValueError(
                 'Need at least 1 groundtruth class for evaluation.')
@@ -399,13 +391,11 @@ class ObjectDetectionEvaluation:
     def clear_detections(self):
         self._initialize_detections()
 
-    def add_single_ground_truth_image_info(
-        self,
-        image_key,
-        groundtruth_boxes,
-        groundtruth_class_labels,
-        groundtruth_masks=None,
-    ):
+    def add_single_ground_truth_image_info(self,
+                                           image_key,
+                                           groundtruth_boxes,
+                                           groundtruth_class_labels,
+                                           groundtruth_masks=None):
         """Adds groundtruth for a single image to be used for evaluation.
 
         Args:
@@ -420,8 +410,8 @@ class ObjectDetectionEvaluation:
                 masks. The mask values range from 0 to 1.
         """
         if image_key in self.groundtruth_boxes:
-            logging.warn(('image %s has already been added to the ground '
-                          'truth database.'), image_key)
+            warnings.warn(('image %s has already been added to the ground '
+                           'truth database.'), image_key)
             return
 
         self.groundtruth_boxes[image_key] = groundtruth_boxes
@@ -430,14 +420,12 @@ class ObjectDetectionEvaluation:
 
         self._update_ground_truth_statistics(groundtruth_class_labels)
 
-    def add_single_detected_image_info(
-        self,
-        image_key,
-        detected_boxes,
-        detected_scores,
-        detected_class_labels,
-        detected_masks=None,
-    ):
+    def add_single_detected_image_info(self,
+                                       image_key,
+                                       detected_boxes,
+                                       detected_scores,
+                                       detected_class_labels,
+                                       detected_masks=None):
         """Adds detections for a single image to be used for evaluation.
 
         Args:
@@ -468,8 +456,8 @@ class ObjectDetectionEvaluation:
             )
 
         if image_key in self.detection_keys:
-            logging.warn(('image %s has already been added to the ground '
-                          'truth database.'), image_key)
+            warnings.warn(('image %s has already been added to the ground '
+                           'truth database.'), image_key)
             return
 
         self.detection_keys.add(image_key)
@@ -536,8 +524,7 @@ class ObjectDetectionEvaluation:
             logging.info(
                 'The following classes have no ground truth examples: %s',
                 np.squeeze(np.argwhere(self.num_gt_instances_per_class == 0)) +
-                self.label_id_offset,
-            )
+                self.label_id_offset)
 
         if self.use_weighted_mean_ap:
             all_scores = np.array([], dtype=float)
@@ -557,10 +544,8 @@ class ObjectDetectionEvaluation:
                 all_scores = np.append(all_scores, scores)
                 all_tp_fp_labels = np.append(all_tp_fp_labels, tp_fp_labels)
             precision, recall = metrics.compute_precision_recall(
-                scores,
-                tp_fp_labels,
-                self.num_gt_instances_per_class[class_index],
-            )
+                scores, tp_fp_labels,
+                self.num_gt_instances_per_class[class_index])
             self.precisions_per_class.append(precision)
             self.recalls_per_class.append(recall)
             average_precision = metrics.compute_average_precision(
@@ -569,8 +554,7 @@ class ObjectDetectionEvaluation:
 
         self.corloc_per_class = metrics.compute_cor_loc(
             self.num_gt_imgs_per_class,
-            self.num_images_correctly_detected_per_class,
-        )
+            self.num_images_correctly_detected_per_class)
 
         if self.use_weighted_mean_ap:
             num_gt_instances = np.sum(self.num_gt_instances_per_class)

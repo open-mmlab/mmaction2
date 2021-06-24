@@ -114,7 +114,7 @@ def build_file_list(splits, frame_info, shuffle=False):
         for item in split:
             if item[0] not in frame_info:
                 continue
-            elif frame_info[item[0]][1] > 0:
+            if frame_info[item[0]][1] > 0:
                 # rawframes
                 rgb_cnt = frame_info[item[0]][1]
                 flow_cnt = frame_info[item[0]][2]

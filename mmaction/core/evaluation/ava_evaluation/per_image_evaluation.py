@@ -40,16 +40,14 @@ class PerImageEvaluation:
         self.matching_iou_threshold = matching_iou_threshold
         self.num_groundtruth_classes = num_groundtruth_classes
 
-    def compute_object_detection_metrics(
-        self,
-        detected_boxes,
-        detected_scores,
-        detected_class_labels,
-        groundtruth_boxes,
-        groundtruth_class_labels,
-        detected_masks=None,
-        groundtruth_masks=None,
-    ):
+    def compute_object_detection_metrics(self,
+                                         detected_boxes,
+                                         detected_scores,
+                                         detected_class_labels,
+                                         groundtruth_boxes,
+                                         groundtruth_class_labels,
+                                         detected_masks=None,
+                                         groundtruth_masks=None):
         """Evaluates detections as being tp, fp or ignored from a single image.
 
         The evaluation is done in two stages:
@@ -105,16 +103,14 @@ class PerImageEvaluation:
 
         return scores, tp_fp_labels
 
-    def _compute_tp_fp(
-        self,
-        detected_boxes,
-        detected_scores,
-        detected_class_labels,
-        groundtruth_boxes,
-        groundtruth_class_labels,
-        detected_masks=None,
-        groundtruth_masks=None,
-    ):
+    def _compute_tp_fp(self,
+                       detected_boxes,
+                       detected_scores,
+                       detected_class_labels,
+                       groundtruth_boxes,
+                       groundtruth_class_labels,
+                       detected_masks=None,
+                       groundtruth_masks=None):
         """Labels true/false positives of detections of an image across all
         classes.
 
@@ -159,18 +155,12 @@ class PerImageEvaluation:
         result_scores = []
         result_tp_fp_labels = []
         for i in range(self.num_groundtruth_classes):
-            (
-                gt_boxes_at_ith_class,
-                gt_masks_at_ith_class,
-                detected_boxes_at_ith_class,
-                detected_scores_at_ith_class,
-                detected_masks_at_ith_class,
-            ) = self._get_ith_class_arrays(detected_boxes, detected_scores,
-                                           detected_masks,
-                                           detected_class_labels,
-                                           groundtruth_boxes,
-                                           groundtruth_masks,
-                                           groundtruth_class_labels, i)
+            (gt_boxes_at_ith_class, gt_masks_at_ith_class,
+             detected_boxes_at_ith_class, detected_scores_at_ith_class,
+             detected_masks_at_ith_class) = self._get_ith_class_arrays(
+                 detected_boxes, detected_scores, detected_masks,
+                 detected_class_labels, groundtruth_boxes, groundtruth_masks,
+                 groundtruth_class_labels, i)
             scores, tp_fp_labels = self._compute_tp_fp_for_single_class(
                 detected_boxes=detected_boxes_at_ith_class,
                 detected_scores=detected_scores_at_ith_class,
@@ -182,8 +172,9 @@ class PerImageEvaluation:
             result_tp_fp_labels.append(tp_fp_labels)
         return result_scores, result_tp_fp_labels
 
-    def _get_overlaps_and_scores_box_mode(self, detected_boxes,
-                                          detected_scores, groundtruth_boxes):
+    @staticmethod
+    def _get_overlaps_and_scores_box_mode(detected_boxes, detected_scores,
+                                          groundtruth_boxes):
         """Computes overlaps and scores between detected and groudntruth boxes.
 
         Args:
@@ -214,14 +205,12 @@ class PerImageEvaluation:
         num_boxes = detected_boxlist.num_boxes()
         return iou, None, scores, num_boxes
 
-    def _compute_tp_fp_for_single_class(
-        self,
-        detected_boxes,
-        detected_scores,
-        groundtruth_boxes,
-        detected_masks=None,
-        groundtruth_masks=None,
-    ):
+    def _compute_tp_fp_for_single_class(self,
+                                        detected_boxes,
+                                        detected_scores,
+                                        groundtruth_boxes,
+                                        detected_masks=None,
+                                        groundtruth_masks=None):
         """Labels boxes detected with the same class from the same image as
         tp/fp.
 
@@ -249,15 +238,11 @@ class PerImageEvaluation:
         if detected_boxes.size == 0:
             return np.array([], dtype=float), np.array([], dtype=bool)
 
-        (
-            iou,
-            _,
-            scores,
-            num_detected_boxes,
-        ) = self._get_overlaps_and_scores_box_mode(
-            detected_boxes=detected_boxes,
-            detected_scores=detected_scores,
-            groundtruth_boxes=groundtruth_boxes)
+        (iou, _, scores,
+         num_detected_boxes) = self._get_overlaps_and_scores_box_mode(
+             detected_boxes=detected_boxes,
+             detected_scores=detected_scores,
+             groundtruth_boxes=groundtruth_boxes)
 
         if groundtruth_boxes.size == 0:
             return scores, np.zeros(num_detected_boxes, dtype=bool)
@@ -282,17 +267,11 @@ class PerImageEvaluation:
 
         return scores, tp_fp_labels
 
-    def _get_ith_class_arrays(
-        self,
-        detected_boxes,
-        detected_scores,
-        detected_masks,
-        detected_class_labels,
-        groundtruth_boxes,
-        groundtruth_masks,
-        groundtruth_class_labels,
-        class_index,
-    ):
+    @staticmethod
+    def _get_ith_class_arrays(detected_boxes, detected_scores, detected_masks,
+                              detected_class_labels, groundtruth_boxes,
+                              groundtruth_masks, groundtruth_class_labels,
+                              class_index):
         """Returns numpy arrays belonging to class with index `class_index`.
 
         Args:
@@ -332,21 +311,15 @@ class PerImageEvaluation:
             detected_masks_at_ith_class = detected_masks[selected_detections]
         else:
             detected_masks_at_ith_class = None
-        return (
-            gt_boxes_at_ith_class,
-            gt_masks_at_ith_class,
-            detected_boxes_at_ith_class,
-            detected_scores_at_ith_class,
-            detected_masks_at_ith_class,
-        )
+        return (gt_boxes_at_ith_class, gt_masks_at_ith_class,
+                detected_boxes_at_ith_class, detected_scores_at_ith_class,
+                detected_masks_at_ith_class)
 
-    def _remove_invalid_boxes(
-        self,
-        detected_boxes,
-        detected_scores,
-        detected_class_labels,
-        detected_masks=None,
-    ):
+    @staticmethod
+    def _remove_invalid_boxes(detected_boxes,
+                              detected_scores,
+                              detected_class_labels,
+                              detected_masks=None):
         """Removes entries with invalid boxes.
 
         A box is invalid if either its xmax is smaller than its xmin, or its
@@ -373,16 +346,13 @@ class PerImageEvaluation:
         """
         valid_indices = np.logical_and(
             detected_boxes[:, 0] < detected_boxes[:, 2],
-            detected_boxes[:, 1] < detected_boxes[:, 3],
-        )
+            detected_boxes[:, 1] < detected_boxes[:, 3])
         detected_boxes = detected_boxes[valid_indices]
         detected_scores = detected_scores[valid_indices]
         detected_class_labels = detected_class_labels[valid_indices]
         if detected_masks is not None:
             detected_masks = detected_masks[valid_indices]
         return [
-            detected_boxes,
-            detected_scores,
-            detected_class_labels,
-            detected_masks,
+            detected_boxes, detected_scores, detected_class_labels,
+            detected_masks
         ]

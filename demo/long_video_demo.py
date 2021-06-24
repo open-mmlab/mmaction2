@@ -215,7 +215,7 @@ def inference(model, data, args, frame_queue):
 
     if args.stride > 0:
         pred_stride = int(args.sample_length * args.stride)
-        for i in range(pred_stride):
+        for _ in range(pred_stride):
             frame_queue.popleft()
 
     # for case ``args.stride=0``

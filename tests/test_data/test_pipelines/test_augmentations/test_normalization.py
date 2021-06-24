@@ -8,7 +8,8 @@ from .base import check_normalize
 
 class TestNormalization:
 
-    def test_normalize(self):
+    @staticmethod
+    def test_normalize():
         with pytest.raises(TypeError):
             # mean must be list, tuple or np.ndarray
             Normalize(

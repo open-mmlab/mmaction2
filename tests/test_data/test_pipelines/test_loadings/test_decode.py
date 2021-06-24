@@ -259,7 +259,8 @@ class TestDecode(BaseTestLoading):
         assert np.shape(opencv_decode_result['imgs']) == (len(
             video_result['frame_inds']), 256, 340, 3)
 
-    def test_rawframe_selector(self):
+    @staticmethod
+    def test_rawframe_selector():
 
         with pytest.warns(UserWarning):
             FrameSelector(io_backend='disk')

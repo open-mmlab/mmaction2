@@ -74,7 +74,8 @@ class AudioTools:
         """Load an audio file into numpy array."""
         return librosa.core.load(path, sr=self.sample_rate)[0]
 
-    def audio_normalize(self, samples, desired_rms=0.1, eps=1e-4):
+    @staticmethod
+    def audio_normalize(samples, desired_rms=0.1, eps=1e-4):
         """RMS normalize the audio data."""
         rms = np.maximum(eps, np.sqrt(np.mean(samples**2)))
         samples = samples * (desired_rms / rms)
@@ -104,8 +105,8 @@ class AudioTools:
         if with_phase:
             spectro_phase = np.expand_dims(np.angle(spectro_phase), axis=0)
             return spectro_mag, spectro_phase
-        else:
-            return spectro_mag
+
+        return spectro_mag
 
     def save_wav(self, wav, path):
         """Save the wav to disk."""
@@ -146,7 +147,8 @@ class AudioTools:
 
         return quantized[start:end], mel[start:end, :]
 
-    def start_and_end_indices(self, quantized, silence_threshold=2):
+    @staticmethod
+    def start_and_end_indices(quantized, silence_threshold=2):
         """Trim the audio file when reaches the silence threshold."""
         for start in range(quantized.size):
             if abs(quantized[start] - 127) > silence_threshold:
@@ -183,7 +185,8 @@ class AudioTools:
         """
         return lws.lws(self.fft_size, self.get_hop_size(), mode='speech')
 
-    def lws_num_frames(self, length, fsize, fshift):
+    @staticmethod
+    def lws_num_frames(length, fsize, fshift):
         """Compute number of time frames of lws spectrogram.
 
         Please refer to <https://pypi.org/project/lws/1.2.6/>`_.
@@ -232,7 +235,8 @@ class AudioTools:
         min_level = np.exp(self.min_level_db / 20 * np.log(10))
         return 20 * np.log10(np.maximum(min_level, x))
 
-    def _db_to_amp(self, x):
+    @staticmethod
+    def _db_to_amp(x):
         return np.power(10.0, x * 0.05)
 
     def _normalize(self, S):

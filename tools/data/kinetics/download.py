@@ -185,7 +185,7 @@ def main(input_csv,
     # Download all clips.
     if num_jobs == 1:
         status_list = []
-        for i, row in dataset.iterrows():
+        for _, row in dataset.iterrows():
             status_list.append(
                 download_clip_wrapper(row, label_to_dir, trim_format, tmp_dir))
     else:

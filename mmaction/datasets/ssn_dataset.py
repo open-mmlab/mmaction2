@@ -767,7 +767,7 @@ class SSNDataset(BaseDataset):
         out_proposal_labels = []
         out_proposal_reg_targets = []
 
-        for idx, proposal in enumerate(results['out_proposals']):
+        for _, proposal in enumerate(results['out_proposals']):
             # proposal: [(video_id, SSNInstance), proposal_type]
             num_frames = proposal[0][1].num_video_frames
 

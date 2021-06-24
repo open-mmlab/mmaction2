@@ -105,6 +105,6 @@ if __name__ == '__main__':
                     osp.basename(osp.dirname(p)), osp.basename(p)),
                 fullpath_list))
     elif args.level == 1:
-        vid_list = list(map(lambda p: osp.basename(p), fullpath_list))
+        vid_list = list(map(osp.basename, fullpath_list))
     pool = Pool(args.num_worker)
     pool.map(resize_videos, zip(fullpath_list, vid_list))

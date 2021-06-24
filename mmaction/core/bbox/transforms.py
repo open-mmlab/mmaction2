@@ -15,22 +15,22 @@ def bbox2result(bboxes, labels, num_classes, thr=0.01):
     """
     if bboxes.shape[0] == 0:
         return list(np.zeros((num_classes - 1, 0, 5), dtype=np.float32))
-    else:
-        bboxes = bboxes.cpu().numpy()
-        labels = labels.cpu().numpy()
 
-        # We only handle multilabel now
-        assert labels.shape[-1] > 1
+    bboxes = bboxes.cpu().numpy()
+    labels = labels.cpu().numpy()
 
-        scores = labels  # rename for clarification
-        thr = (thr, ) * num_classes if isinstance(thr, float) else thr
-        assert scores.shape[1] == num_classes
-        assert len(thr) == num_classes
+    # We only handle multilabel now
+    assert labels.shape[-1] > 1
 
-        result = []
-        for i in range(num_classes - 1):
-            where = scores[:, i + 1] > thr[i + 1]
-            result.append(
-                np.concatenate((bboxes[where, :4], scores[where, i + 1:i + 2]),
-                               axis=1))
-        return result
+    scores = labels  # rename for clarification
+    thr = (thr, ) * num_classes if isinstance(thr, float) else thr
+    assert scores.shape[1] == num_classes
+    assert len(thr) == num_classes
+
+    result = []
+    for i in range(num_classes - 1):
+        where = scores[:, i + 1] > thr[i + 1]
+        result.append(
+            np.concatenate((bboxes[where, :4], scores[where, i + 1:i + 2]),
+                           axis=1))
+    return result

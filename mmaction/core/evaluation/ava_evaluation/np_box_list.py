@@ -120,8 +120,9 @@ class BoxList:
         x_max = box_coordinates[:, 3]
         return [y_min, x_min, y_max, x_max]
 
-    def _is_valid_boxes(self, data):
-        """Check whether data fullfills the format of N*[ymin, xmin, ymax,
+    @staticmethod
+    def _is_valid_boxes(data):
+        """Check whether data fulfills the format of N*[ymin, xmin, ymax,
         xmin].
 
         Args:
@@ -131,7 +132,7 @@ class BoxList:
             a boolean indicating whether all ymax of boxes are equal or greater
             than ymin, and all xmax of boxes are equal or greater than xmin.
         """
-        if len(data):
+        if len(data) != 0:
             for v in data:
                 if v[0] > v[2] or v[1] > v[3]:
                     return False

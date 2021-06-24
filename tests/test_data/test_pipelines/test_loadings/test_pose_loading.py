@@ -12,7 +12,8 @@ from mmaction.datasets.pipelines import (GeneratePoseTarget, LoadKineticsPose,
 
 class TestPoseLoading:
 
-    def test_uniform_sample_frames(self):
+    @staticmethod
+    def test_uniform_sample_frames():
         results = dict(total_frames=64, start_index=0)
         sampling = UniformSampleFrames(
             clip_len=8, num_clips=1, test_mode=True, seed=0)
@@ -96,7 +97,8 @@ class TestPoseLoading:
         assert sampling_results['num_clips'] == 1
         assert len(sampling_results['frame_inds']) == 8
 
-    def test_pose_decode(self):
+    @staticmethod
+    def test_pose_decode():
         kp = np.random.random([1, 16, 17, 2])
         kpscore = np.random.random([1, 16, 17])
         frame_inds = np.array([2, 4, 6, 8, 10])
@@ -116,7 +118,8 @@ class TestPoseLoading:
         assert_array_almost_equal(decode_results['keypoint'], kp)
         assert_array_almost_equal(decode_results['keypoint_score'], kpscore)
 
-    def test_load_kinetics_pose(self):
+    @staticmethod
+    def test_load_kinetics_pose():
 
         def get_mode(arr):
             cnt = defaultdict(lambda: 0)
@@ -204,7 +207,8 @@ class TestPoseLoading:
         assert np.max(return_results['keypoint']) <= 1
         assert num_frame == len(set(frame_inds[anno_inds]))
 
-    def test_generate_pose_target(self):
+    @staticmethod
+    def test_generate_pose_target():
         img_shape = (64, 64)
         kp = np.array([[[[24, 24], [40, 40], [24, 40]]]])
         kpscore = np.array([[[1., 1., 1.]]])

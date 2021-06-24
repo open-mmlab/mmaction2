@@ -7,7 +7,8 @@ from mmaction.datasets.pipelines import ColorJitter
 
 class TestColor:
 
-    def test_color_jitter(self):
+    @staticmethod
+    def test_color_jitter():
         imgs = list(
             np.random.randint(0, 255, size=(3, 112, 112, 3), dtype=np.uint8))
         results = dict(imgs=imgs)

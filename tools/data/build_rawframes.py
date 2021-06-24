@@ -35,16 +35,18 @@ def extract_frame(vid_item):
             out_full_path = osp.join(out_full_path, video_name)
 
             vr = mmcv.VideoReader(full_path)
-            for i in range(len(vr)):
-                if vr[i] is not None:
-                    w, h, c = np.shape(vr[i])
+            # for i in range(len(vr)):
+            for i, vr_frame in enumerate(vr):
+                if vr_frame is not None:
+                    w, h, _ = np.shape(vr_frame)
                     if args.new_short == 0:
                         if args.new_width == 0 or args.new_height == 0:
                             # Keep original shape
-                            out_img = vr[i]
+                            out_img = vr_frame
                         else:
-                            out_img = mmcv.imresize(vr[i], (args.new_width,
-                                                            args.new_height))
+                            out_img = mmcv.imresize(vr_frame,
+                                                    (args.new_width,
+                                                     args.new_height))
                     else:
                         if min(h, w) == h:
                             new_h = args.new_short
@@ -52,7 +54,7 @@ def extract_frame(vid_item):
                         else:
                             new_w = args.new_short
                             new_h = int((new_w / w) * h)
-                        out_img = mmcv.imresize(vr[i], (new_h, new_w))
+                        out_img = mmcv.imresize(vr_frame, (new_h, new_w))
                     mmcv.imwrite(out_img,
                                  f'{out_full_path}/img_{i + 1:05d}.jpg')
                 else:
@@ -229,7 +231,7 @@ if __name__ == '__main__':
                     osp.basename(osp.dirname(p)), osp.basename(p)),
                 fullpath_list))
     elif args.level == 1:
-        vid_list = list(map(lambda p: osp.basename(p), fullpath_list))
+        vid_list = list(map(osp.basename, fullpath_list))
 
     pool = Pool(args.num_worker)
     pool.map(
