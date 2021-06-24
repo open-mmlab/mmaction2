@@ -256,5 +256,6 @@ class BaseLocalizer(BaseTAGClassifier):
 
     def __init__(*args, **kwargs):
         warnings.warn('``BaseLocalizer`` is deprecated, please switch to'
-                      '``BaseTAPGenerator`` or ``BaseTAGClassifier``')
+                      '``BaseTAPGenerator`` or ``BaseTAGClassifier``. Details '
+                      'see https://github.com/open-mmlab/mmaction2/pull/913')
         super().__init__(*args, **kwargs)
