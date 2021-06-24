@@ -199,7 +199,8 @@ class TimeSformer(nn.Module):
                             dropout_layer=dict(
                                 type='DropPath', drop_prob=dpr[i])),
                         operation_order=('norm', 'self_attn', 'norm', 'ffn'),
-                        norm_cfg=dict(type='LN', eps=1e-6))
+                        norm_cfg=dict(type='LN', eps=1e-6),
+                        batch_first=True)
                     for i in range(num_transformer_layers)
                 ]
 
