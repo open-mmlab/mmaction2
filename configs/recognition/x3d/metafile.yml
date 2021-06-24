@@ -1,17 +1,15 @@
 Collections:
-- Metadata:
-    Training Data: null
-  Name: X3D
+- Name: X3D
   README: configs/recognition/x3d/README.md
 Models:
 - Config: configs/recognition/x3d/x3d_s_13x6x1_facebook_kinetics400_rgb.py
   In Collection: X3D
   Metadata:
     Architecture: X3D_S
+    Batch Size: 1
     Parameters: 3794322
-    Training BatchSize / GPU: 1
+    Resolution: short-side 320
     Training Data: Kinetics-400
-    resolution: short-side 320
   Modality: RGB
   Name: x3d_s_13x6x1_facebook_kinetics400_rgb
   Results:
@@ -27,10 +25,10 @@ Models:
   In Collection: X3D
   Metadata:
     Architecture: X3D_M
+    Batch Size: 1
     Parameters: 3794322
-    Training BatchSize / GPU: 1
+    Resolution: short-side 320
     Training Data: Kinetics-400
-    resolution: short-side 320
   Modality: RGB
   Name: x3d_m_16x5x1_facebook_kinetics400_rgb
   Results:

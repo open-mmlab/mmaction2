@@ -188,6 +188,8 @@ v0.15.0 版本已于 2021 年 5 月 31 日发布，可通过查阅 [更新日志
 - [如何导出模型为 onnx 格式](/docs_zh_CN/tutorials/6_export_model.md)
 - [如何自定义模型运行参数](/docs_zh_CN/tutorials/7_customize_runtime.md)
 
+MMAction2 也提供了相应的中文 Colab 教程，可以点击 [这里](https://colab.research.google.com/github/open-mmlab/mmaction2/blob/master/demo/mmaction2_tutorial_zh-CN.ipynb) 进行体验！
+
 ## 常见问题
 
 请参考 [FAQ](/docs_zh_CN/faq.md) 了解其他用户的常见问题

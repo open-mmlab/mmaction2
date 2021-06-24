@@ -90,7 +90,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
             self.video_infos_by_class = self.parse_by_class()
 
             class_prob = []
-            for k, samples in self.video_infos_by_class.items():
+            for _, samples in self.video_infos_by_class.items():
                 class_prob.append(len(samples) / len(self.video_infos))
             class_prob = [x**self.power for x in class_prob]
 

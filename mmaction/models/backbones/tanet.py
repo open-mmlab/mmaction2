@@ -41,32 +41,32 @@ class TABlock(nn.Module):
                                       'on Bottleneck block.')
 
     def forward(self, x):
-        if isinstance(self.block, Bottleneck):
+        assert isinstance(self.block, Bottleneck)
 
-            def _inner_forward(x):
-                """Forward wrapper for utilizing checkpoint."""
-                identity = x
+        def _inner_forward(x):
+            """Forward wrapper for utilizing checkpoint."""
+            identity = x
 
-                out = self.block.conv1(x)
-                out = self.tam(out)
-                out = self.block.conv2(out)
-                out = self.block.conv3(out)
+            out = self.block.conv1(x)
+            out = self.tam(out)
+            out = self.block.conv2(out)
+            out = self.block.conv3(out)
 
-                if self.block.downsample is not None:
-                    identity = self.block.downsample(x)
+            if self.block.downsample is not None:
+                identity = self.block.downsample(x)
 
-                out = out + identity
-
-                return out
-
-            if self.block.with_cp and x.requires_grad:
-                out = cp.checkpoint(_inner_forward, x)
-            else:
-                out = _inner_forward(x)
-
-            out = self.block.relu(out)
+            out = out + identity
 
             return out
+
+        if self.block.with_cp and x.requires_grad:
+            out = cp.checkpoint(_inner_forward, x)
+        else:
+            out = _inner_forward(x)
+
+        out = self.block.relu(out)
+
+        return out
 
 
 @BACKBONES.register_module()

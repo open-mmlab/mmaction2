@@ -58,10 +58,12 @@ class Model(nn.Module):
         super().__init__()
         self.linear = nn.Linear(2, 1)
 
-    def forward(self, x, **kwargs):
+    @staticmethod
+    def forward(x, **kwargs):
         return x
 
-    def train_step(self, data_batch, optimizer, **kwargs):
+    @staticmethod
+    def train_step(data_batch, optimizer, **kwargs):
         if not isinstance(data_batch, dict):
             data_batch = dict(x=data_batch)
         return data_batch

@@ -19,7 +19,7 @@ def check_crop(origin_imgs, result_imgs, result_bbox, num_crops=1):
 
     if result_bbox.ndim == 1:
         return check_single_crop(origin_imgs, result_imgs, result_bbox)
-    elif result_bbox.ndim == 2:
+    if result_bbox.ndim == 2:
         num_batch = len(origin_imgs)
         for i, bbox in enumerate(result_bbox):
             if num_crops == 10:
@@ -44,7 +44,7 @@ def check_crop(origin_imgs, result_imgs, result_bbox, num_crops=1):
 def check_flip(origin_imgs, result_imgs, flip_type):
     """Check if the origin_imgs are flipped correctly into result_imgs in
     different flip_types."""
-    n, h, w, c = np.shape(origin_imgs)
+    n, _, _, _ = np.shape(origin_imgs)
     if flip_type == 'horizontal':
         for i in range(n):
             if np.any(result_imgs[i] != np.fliplr(origin_imgs[i])):

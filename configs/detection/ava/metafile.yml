@@ -1,20 +1,18 @@
 Collections:
-- Metadata:
-    Training Data: null
-  Name: AVA
+- Name: AVA
   README: configs/detection/ava/README.md
 Models:
 - Config: configs/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb.py
   In Collection: AVA
   Metadata:
     Architecture: ResNet50
+    Batch Size: 16
     Epochs: 20
     Input: 4x16
     Pretrained: Kinetics-400
     Resolution: short-side 256
-    Training BatchSize / GPU: 16
     Training Data: AVA v2.1
-    gpus: 8
+    Training Resources: 8 GPUs
   Modality: RGB
   Name: slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb
   Results:
@@ -29,13 +27,13 @@ Models:
   In Collection: AVA
   Metadata:
     Architecture: ResNet50
+    Batch Size: 16
     Epochs: 20
     Input: 4x16
     Pretrained: OmniSource
     Resolution: short-side 256
-    Training BatchSize / GPU: 16
     Training Data: AVA v2.1
-    gpus: 8
+    Training Resources: 8 GPUs
   Modality: RGB
   Name: slowonly_omnisource_pretrained_r50_4x16x1_20e_ava_rgb
   Results:
@@ -50,13 +48,13 @@ Models:
   In Collection: AVA
   Metadata:
     Architecture: ResNet50
+    Batch Size: 12
     Epochs: 10
     Input: 4x16
     Pretrained: Kinetics-400
     Resolution: short-side 256
-    Training BatchSize / GPU: 12
     Training Data: AVA v2.1
-    gpus: 8
+    Training Resources: 8 GPUs
   Modality: RGB
   Name: slowonly_nl_kinetics_pretrained_r50_4x16x1_10e_ava_rgb
   Results:
@@ -71,13 +69,13 @@ Models:
   In Collection: AVA
   Metadata:
     Architecture: ResNet50
+    Batch Size: 6
     Epochs: 10
     Input: 8x8
     Pretrained: Kinetics-400
     Resolution: short-side 256
-    Training BatchSize / GPU: 6
     Training Data: AVA v2.1
-    gpus: 16
+    Training Resources: 16 GPUs
   Modality: RGB
   Name: slowonly_nl_kinetics_pretrained_r50_8x8x1_10e_ava_rgb
   Results:
@@ -92,13 +90,13 @@ Models:
   In Collection: AVA
   Metadata:
     Architecture: ResNet101
+    Batch Size: 6
     Epochs: 20
     Input: 8x8
     Pretrained: Kinetics-400
     Resolution: short-side 256
-    Training BatchSize / GPU: 6
     Training Data: AVA v2.1
-    gpus: 16
+    Training Resources: 16 GPUs
   Modality: RGB
   Name: slowonly_kinetics_pretrained_r101_8x8x1_20e_ava_rgb
   Results:
@@ -113,13 +111,13 @@ Models:
   In Collection: AVA
   Metadata:
     Architecture: ResNet101
+    Batch Size: 6
     Epochs: 20
     Input: 8x8
     Pretrained: OmniSource
     Resolution: short-side 256
-    Training BatchSize / GPU: 6
     Training Data: AVA v2.1
-    gpus: 16
+    Training Resources: 16 GPUs
   Modality: RGB
   Name: slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb
   Results:
@@ -134,13 +132,13 @@ Models:
   In Collection: AVA
   Metadata:
     Architecture: ResNet50
+    Batch Size: 9
     Epochs: 20
     Input: 32x2
     Pretrained: Kinetics-400
     Resolution: short-side 256
-    Training BatchSize / GPU: 9
     Training Data: AVA v2.1
-    gpus: 16
+    Training Resources: 16 GPUs
   Modality: RGB
   Name: slowfast_kinetics_pretrained_r50_4x16x1_20e_ava_rgb
   Results:
@@ -155,13 +153,13 @@ Models:
   In Collection: AVA
   Metadata:
     Architecture: ResNet50
+    Batch Size: 9
     Epochs: 20
     Input: 32x2
     Pretrained: Kinetics-400
     Resolution: short-side 256
-    Training BatchSize / GPU: 9
     Training Data: AVA v2.1
-    gpus: 16
+    Training Resources: 16 GPUs
   Modality: RGB
   Name: slowfast_context_kinetics_pretrained_r50_4x16x1_20e_ava_rgb
   Results:
@@ -176,13 +174,13 @@ Models:
   In Collection: AVA
   Metadata:
     Architecture: ResNet50
+    Batch Size: 5
     Epochs: 20
     Input: 32x2
     Pretrained: Kinetics-400
     Resolution: short-side 256
-    Training BatchSize / GPU: 5
     Training Data: AVA v2.1
-    gpus: 16
+    Training Resources: 16 GPUs
   Modality: RGB
   Name: slowfast_kinetics_pretrained_r50_8x8x1_20e_ava_rgb
   Results:
@@ -193,3 +191,66 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/detection/ava/slowfast_kinetics_pretrained_r50_8x8x1_20e_ava_rgb/slowfast_kinetics_pretrained_r50_8x8x1_20e_ava_rgb_20201217.json
   Training Log: https://download.openmmlab.com/mmaction/detection/ava/slowfast_kinetics_pretrained_r50_8x8x1_20e_ava_rgb/slowfast_kinetics_pretrained_r50_8x8x1_20e_ava_rgb_20201217.log
   Weights: https://download.openmmlab.com/mmaction/detection/ava/slowfast_kinetics_pretrained_r50_8x8x1_20e_ava_rgb/slowfast_kinetics_pretrained_r50_8x8x1_20e_ava_rgb_20201217-ae225e97.pth
+- Config: configs/detection/ava/slowfast_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.py
+  In Collection: AVA
+  Metadata:
+    Architecture: ResNet50
+    Batch Size: 6
+    Epochs: 10
+    Input: 32x2
+    Pretrained: Kinetics-400
+    Resolution: short-side 256
+    Training Data: AVA v2.2
+    Training Resources: 8 GPUs
+  Modality: RGB
+  Name: slowfast_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb
+  Results:
+  - Dataset: AVA v2.2
+    Metrics:
+      mAP: 26.1
+    Task: Spatial Temporal Action Detection
+  Training Json Log: https://download.openmmlab.com/mmaction/detection/ava/slowfast_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.json
+  Training Log: https://download.openmmlab.com/mmaction/detection/ava/slowfast_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.log
+  Weights: https://download.openmmlab.com/mmaction/detection/ava/slowfast_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb-b987b516.pth
+- Config: configs/detection/ava/slowfast_temporal_max_focal_alpha3_gamma1_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.py
+  In Collection: AVA
+  Metadata:
+    Architecture: ResNet50
+    Batch Size: 6
+    Epochs: 10
+    Input: 32x2
+    Pretrained: Kinetics-400
+    Resolution: short-side 256
+    Training Data: AVA v2.2
+    Training Resources: 8 GPUs
+  Modality: RGB
+  Name: slowfast_temporal_max_focal_alpha3_gamma1_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb
+  Results:
+  - Dataset: AVA v2.2
+    Metrics:
+      mAP: 26.8
+    Task: Spatial Temporal Action Detection
+  Training Json Log: https://download.openmmlab.com/mmaction/detection/ava/slowfast_temporal_max_focal_alpha3_gamma1_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_temporal_max_focal_alpha3_gamma1_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.json
+  Training Log: https://download.openmmlab.com/mmaction/detection/ava/slowfast_temporal_max_focal_alpha3_gamma1_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_temporal_max_focal_alpha3_gamma1_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.log
+  Weights: https://download.openmmlab.com/mmaction/detection/ava/slowfast_temporal_max_focal_alpha3_gamma1_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_temporal_max_focal_alpha3_gamma1_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb-345618cd.pth
+- Config: configs/detection/ava/slowfast_temporal_max_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.py
+  In Collection: AVA
+  Metadata:
+    Architecture: ResNet50
+    Batch Size: 6
+    Epochs: 10
+    Input: 32x2
+    Pretrained: Kinetics-400
+    Resolution: short-side 256
+    Training Data: AVA v2.2
+    Training Resources: 8 GPUs
+  Modality: RGB
+  Name: slowfast_temporal_max_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb
+  Results:
+  - Dataset: AVA v2.2
+    Metrics:
+      mAP: 26.4
+    Task: Spatial Temporal Action Detection
+  Training Json Log: https://download.openmmlab.com/mmaction/detection/ava/slowfast_temporal_max_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_temporal_max_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.json
+  Training Log: https://download.openmmlab.com/mmaction/detection/ava/slowfast_temporal_max_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_temporal_max_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.log
+  Weights: https://download.openmmlab.com/mmaction/detection/ava/slowfast_temporal_max_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_temporal_max_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb-874e0845.pth

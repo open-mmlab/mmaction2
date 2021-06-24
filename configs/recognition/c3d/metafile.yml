@@ -1,20 +1,18 @@
 Collections:
-- Metadata:
-    Training Data: null
-  Name: C3D
+- Name: C3D
   README: configs/recognition/c3d/README.md
 Models:
 - Config: configs/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb.py
   In Collection: C3D
   Metadata:
     Architecture: c3d
+    Batch Size: 30
     Epochs: 45
     Parameters: 78409573
-    Training BatchSize / GPU: 30
+    Pretrained: sports1m
+    Resolution: 128x171
     Training Data: UCF101
-    gpus: 8
-    pretrain: sports1m
-    resolution: 128x171
+    Training Resources: 8 GPUs
   Modality: RGB
   Name: c3d_sports1m_16x1x1_45e_ucf101_rgb.py
   Results:
@@ -26,5 +24,3 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb/20201021_140429.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb/20201021_140429.log
   Weights: https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb/c3d_sports1m_16x1x1_45e_ucf101_rgb_20201021-26655025.pth
-  gpu_mem(M): '6053'
-  inference_time(video/s): x

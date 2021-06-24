@@ -28,7 +28,7 @@
 
 ## 如何使用
 
-对于简单的模型导出，用户可以使用这里的 [脚本](/tools/pytorch2onnx.py)。
+对于简单的模型导出，用户可以使用这里的 [脚本](/tools/deployment/pytorch2onnx.py)。
 注意，需要安装 `onnx` 和 `onnxruntime` 包以进行导出后的验证。
 
 ### 准备工作
@@ -42,7 +42,7 @@ pip install onnx onnxruntime
 MMAction2 提供了一个 python 脚本，用于将 MMAction2 训练的 pytorch 模型导出到 ONNX。
 
 ```shell
-python tools/pytorch2onnx.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--shape ${SHAPE}] \
+python tools/deployment/pytorch2onnx.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--shape ${SHAPE}] \
     [--verify] [--show] [--output-file ${OUTPUT_FILE}]  [--is-localizer] [--opset-version ${VERSION}]
 ```
 
@@ -61,7 +61,7 @@ python tools/pytorch2onnx.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--shape ${SHAPE}
 对于行为识别器，可运行：
 
 ```shell
-python tools/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --verify
+python tools/deployment/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --verify
 ```
 
 ### 时序动作检测器
@@ -69,7 +69,7 @@ python tools/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --veri
 对于时序动作检测器，可运行：
 
 ```shell
-python tools/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --is-localizer --shape $SHAPE --verify
+python tools/deployment/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --is-localizer --shape $SHAPE --verify
 ```
 
 如果发现提供的模型权重文件没有被成功导出，或者存在精度损失，可以在本 repo 下提出问题（issue）。

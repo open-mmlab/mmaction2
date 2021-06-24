@@ -10,7 +10,8 @@ from .base import check_crop
 
 class TestCrops:
 
-    def test_random_crop(self):
+    @staticmethod
+    def test_random_crop():
         with pytest.raises(TypeError):
             # size must be an int
             RandomCrop(size=(112, 112))
@@ -63,7 +64,8 @@ class TestCrops:
         assert repr(random_crop) == (f'{random_crop.__class__.__name__}'
                                      f'(size={224}, lazy={False})')
 
-    def test_random_resized_crop(self):
+    @staticmethod
+    def test_random_resized_crop():
         with pytest.raises(TypeError):
             # area_range must be a tuple of float
             RandomResizedCrop(area_range=0.5)
@@ -116,7 +118,8 @@ class TestCrops:
         h, w = random_crop_result['img_shape']
         assert h == w == 256
 
-    def test_multi_scale_crop(self):
+    @staticmethod
+    def test_multi_scale_crop():
         with pytest.raises(TypeError):
             # input_size must be int or tuple of int
             MultiScaleCrop(0.5)
@@ -201,7 +204,8 @@ class TestCrops:
             f'max_wh_scale_gap={0}, random_crop={True}, '
             f'num_fixed_crops=5, lazy={False})')
 
-    def test_center_crop(self):
+    @staticmethod
+    def test_center_crop():
         with pytest.raises(TypeError):
             # crop_size must be int or tuple of int
             CenterCrop(0.5)
@@ -237,7 +241,8 @@ class TestCrops:
         assert repr(center_crop) == (f'{center_crop.__class__.__name__}'
                                      f'(crop_size={(224, 224)}, lazy={False})')
 
-    def test_three_crop(self):
+    @staticmethod
+    def test_three_crop():
         with pytest.raises(TypeError):
             # crop_size must be int or tuple of int
             ThreeCrop(0.5)
@@ -275,7 +280,8 @@ class TestCrops:
         assert repr(three_crop) == (f'{three_crop.__class__.__name__}'
                                     f'(crop_size={(224, 224)})')
 
-    def test_ten_crop(self):
+    @staticmethod
+    def test_ten_crop():
         with pytest.raises(TypeError):
             # crop_size must be int or tuple of int
             TenCrop(0.5)
@@ -302,7 +308,8 @@ class TestCrops:
         assert repr(ten_crop) == (f'{ten_crop.__class__.__name__}'
                                   f'(crop_size={(224, 224)})')
 
-    def test_multi_group_crop(self):
+    @staticmethod
+    def test_multi_group_crop():
         with pytest.raises(TypeError):
             # crop_size must be int or tuple of int
             MultiGroupCrop(0.5, 1)

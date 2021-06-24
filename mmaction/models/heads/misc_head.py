@@ -75,7 +75,7 @@ class ACRNHead(nn.Module):
             act_cfg=act_cfg)
 
         convs = []
-        for i in range(num_convs - 1):
+        for _ in range(num_convs - 1):
             conv = ConvModule(
                 out_channels,
                 out_channels,

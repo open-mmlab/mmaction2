@@ -1,0 +1,46 @@
+Collections:
+- Name: ACRN
+  README: configs/detection/acrn/README.md
+Models:
+- Config: configs/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava_rgb.py
+  In Collection: ACRN
+  Metadata:
+    Architecture: ResNet50
+    Batch Size: 6
+    Epochs: 10
+    Input: 32x2
+    Modality: RGB
+    Parameters: 92232057
+    Pretrained: Kinetics-400
+    Training Data: AVA v2.1
+    Training Resources: 8 GPUs
+  Name: slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava_rgb
+  Results:
+  - Dataset: AVA v2.1
+    Metrics:
+    - mAP: 27.1
+    Task: Spatial Temporal Action Detection
+  Training Json Log: https://download.openmmlab.com/mmaction/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava_rgb/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava_rgb.json
+  Training Log: https://download.openmmlab.com/mmaction/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava_rgb/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava_rgb.log
+  Weights: https://download.openmmlab.com/mmaction/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava_rgb/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava_rgb-49b07bf2.pth
+- Config: configs/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.py
+  In Collection: ACRN
+  Metadata:
+    Architecture: ResNet50
+    Batch Size: 6
+    Epochs: 10
+    Input: 32x2
+    Modality: RGB
+    Parameters: 92232057
+    Pretrained: Kinetics-400
+    Training Data: AVA v2.2
+    Training Resources: 8 GPUs
+  Name: slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb
+  Results:
+  - Dataset: AVA v2.2
+    Metrics:
+    - mAP: 27.8
+    Task: Spatial Temporal Action Detection
+  Training Json Log: https://download.openmmlab.com/mmaction/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.json
+  Training Log: https://download.openmmlab.com/mmaction/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.log
+  Weights: https://download.openmmlab.com/mmaction/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb-2be32625.pth

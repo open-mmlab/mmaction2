@@ -71,7 +71,7 @@ You can use the following commands to inference a model.
 2. For PGM Inference
 
     ```shell
-    python tools/bsn_proposal_generation.py ${CONFIG_FILE} [--mode ${MODE}]
+    python tools/misc/bsn_proposal_generation.py ${CONFIG_FILE} [--mode ${MODE}]
     ```
 
 3. For PEM Inference
@@ -91,7 +91,7 @@ Examples:
 2. Inference BSN(PGM) with pretrained model.
 
     ```shell
-    python tools/bsn_proposal_generation.py configs/localization/bsn/bsn_pgm_400x100_activitynet_feature.py --mode train
+    python tools/misc/bsn_proposal_generation.py configs/localization/bsn/bsn_pgm_400x100_activitynet_feature.py --mode train
     ```
 
 3. Inference BSN(PEM) with evaluation metric 'AR@AN' and output the results.
@@ -115,7 +115,7 @@ You can use the following commands to test a model.
 2. PGM
 
     ```shell
-    python tools/bsn_proposal_generation.py ${CONFIG_FILE} [--mode ${MODE}]
+    python tools/misc/bsn_proposal_generation.py ${CONFIG_FILE} [--mode ${MODE}]
     ```
 
 3. PEM
@@ -135,7 +135,7 @@ Examples:
 2. Test a PGM model on ActivityNet dataset.
 
     ```shell
-    python tools/bsn_proposal_generation.py configs/localization/bsn/bsn_pgm_400x100_activitynet_feature.py --mode test
+    python tools/misc/bsn_proposal_generation.py configs/localization/bsn/bsn_pgm_400x100_activitynet_feature.py --mode test
     ```
 
 3. Test a PEM model with with evaluation metric 'AR@AN' and output the results.

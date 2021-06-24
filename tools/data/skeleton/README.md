@@ -19,11 +19,13 @@ We release the skeleton annotations used in [Revisiting Skeleton-based Action Re
 
 ## Prepare Annotations
 
-Currently, we support three datasets: FineGYM, NTU60_XSub and NTU120_XSub. You can execute following scripts to prepare the annotations.
+Currently, we support one dataset: FineGYM. You can execute following scripts to prepare the annotations.
 
 ```shell
 bash download_annotations.sh ${DATASET}
 ```
+
+PS: Due to [Conditions of Use](http://rose1.ntu.edu.sg/Datasets/actionRecognition.asp) of the NTURGB-D dataset, we can not directly release the annotations used in our experiments. We will prepare a script for pose annotation generation ASAP. Once accomplished, you can use this script to generate all pose annotations used in our experiments.
 
 ## Visualization
 
@@ -66,8 +68,8 @@ For skeleton data visualization, you need also to prepare the RGB videos. Please
 **TODO**:
 
 - [x] FineGYM
-- [x] NTU60_XSub
-- [x] NTU120_XSub
+- [ ] NTU60_XSub
+- [ ] NTU120_XSub
 - [ ] NTU60_XView
 - [ ] NTU120_XSet
 - [ ] Kinetics

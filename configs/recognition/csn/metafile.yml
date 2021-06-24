@@ -1,20 +1,18 @@
 Collections:
-- Metadata:
-    Training Data: null
-  Name: CSN
+- Name: CSN
   README: configs/recognition/csn/README.md
 Models:
 - Config: configs/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb.py
   In Collection: CSN
   Metadata:
     Architecture: ResNet152
+    Batch Size: 3
     Epochs: 58
     Parameters: 29703568
-    Training BatchSize / GPU: 3
+    Pretrained: IG65M
+    Resolution: short-side 320
     Training Data: Kinetics-400
-    gpus: 32
-    pretrain: IG65M
-    resolution: short-side 320
+    Training Resources: 32 GPUs
   Modality: RGB
   Name: ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb.py
   Results:
@@ -26,19 +24,17 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb/20200728_031952.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb/20200728_031952.log
   Weights: https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb_20200803-fc66ce8d.pth
-  gpu_mem(M): '8517'
-  inference_time(video/s): x
 - Config: configs/recognition/csn/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py
   In Collection: CSN
   Metadata:
     Architecture: ResNet152
+    Batch Size: 3
     Epochs: 58
     Parameters: 29703568
-    Training BatchSize / GPU: 3
+    Pretrained: IG65M
+    Resolution: short-side 320
     Training Data: Kinetics-400
-    gpus: 32
-    pretrain: IG65M
-    resolution: short-side 320
+    Training Resources: 32 GPUs
   Modality: RGB
   Name: ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py
   Results:
@@ -50,5 +46,3 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb/20200809_053132.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb/20200809_053132.log
   Weights: https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb_20200812-9037a758.pth
-  gpu_mem(M): '8516'
-  inference_time(video/s): x
