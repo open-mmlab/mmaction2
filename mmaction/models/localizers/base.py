@@ -1,3 +1,4 @@
+import warnings
 from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
 
@@ -248,3 +249,12 @@ class BaseTAGClassifier(nn.Module, metaclass=ABCMeta):
         outputs = dict(results=results)
 
         return outputs
+
+
+class BaseLocalizer(BaseTAGClassifier):
+    """Deprecated class for ``BaseTAPGenerator`` and ``BaseTAGClassifier``."""
+
+    def __init__(*args, **kwargs):
+        warnings.warn('``BaseLocalizer`` is deprecated, please switch to'
+                      '``BaseTAPGenerator`` or ``BaseTAGClassifier``')
+        super().__init__(*args, **kwargs)
