@@ -8,6 +8,7 @@ Models:
     Architecture: ResNet34
     Batch Size: 8
     Epochs: 180
+    FLOPs: 53175572992
     Parameters: 63759281
     Pretrained: None
     Resolution: short-side 256
@@ -30,6 +31,7 @@ Models:
     Architecture: ResNet34
     Batch Size: 16
     Epochs: 180
+    FLOPs: 53175572992
     Parameters: 63759281
     Pretrained: None
     Resolution: short-side 256
@@ -52,6 +54,7 @@ Models:
     Architecture: ResNet34
     Batch Size: 8
     Epochs: 180
+    FLOPs: 53175572992
     Parameters: 63759281
     Pretrained: None
     Resolution: short-side 320
@@ -74,6 +77,7 @@ Models:
     Architecture: ResNet34
     Batch Size: 6
     Epochs: 180
+    FLOPs: 212701677568
     Parameters: 63759281
     Pretrained: None
     Resolution: short-side 320

@@ -8,6 +8,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 100
+    FLOPs: 43564040192
     Parameters: 28043472
     Pretrained: ImageNet
     Resolution: 340x256
@@ -30,6 +31,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 100
+    FLOPs: 43564040192
     Parameters: 28043472
     Pretrained: ImageNet
     Resolution: short-side 256
@@ -52,6 +54,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 100
+    FLOPs: 43564040192
     Parameters: 28043472
     Pretrained: ImageNet
     Resolution: short-side 256p
@@ -74,6 +77,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 100
+    FLOPs: 43564040192
     Parameters: 28043472
     Pretrained: ImageNet
     Resolution: 340x256
@@ -96,6 +100,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 100
+    FLOPs: 43564040192
     Parameters: 28043472
     Pretrained: ImageNet
     Resolution: short-side 256
@@ -118,6 +123,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 100
+    FLOPs: 43564040192
     Parameters: 28043472
     Pretrained: ImageNet
     Resolution: 340x256
@@ -140,6 +146,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 100
+    FLOPs: 43564040192
     Parameters: 28043472
     Pretrained: ImageNet
     Resolution: short-side 256
@@ -162,6 +169,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 100
+    FLOPs: 54334488576
     Parameters: 35397840
     Pretrained: ImageNet
     Resolution: short-side 256p
@@ -184,6 +192,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 100
+    FLOPs: 48962109440
     Parameters: 31723728
     Pretrained: ImageNet
     Resolution: short-side 256p
@@ -206,6 +215,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 100
+    FLOPs: 54334488576
     Parameters: 35397840
     Pretrained: ImageNet
     Resolution: short-side 256p

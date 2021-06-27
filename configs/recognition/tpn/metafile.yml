@@ -8,6 +8,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 150
+    FLOPs: 66014576640
     Parameters: 91498336
     Pretrained: ImageNet
     Resolution: short-side 320
@@ -30,6 +31,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 150
+    FLOPs: 66014576640
     Parameters: 91498336
     Pretrained: ImageNet
     Resolution: short-side 320
@@ -52,6 +54,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 150
+    FLOPs: 54202822656
     Parameters: 82445724
     Pretrained: TSM
     Resolution: height 100
