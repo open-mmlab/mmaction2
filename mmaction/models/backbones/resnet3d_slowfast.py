@@ -287,6 +287,7 @@ class ResNet3dPathway(ResNet3d):
             if new_shape[1] < old_shape[1]:
                 warnings.warn(f'The parameter of {module_name_2d} is not'
                               'loaded due to incompatible shapes. ')
+                return
             # Inplanes may be different due to lateral connections
             new_channels = new_shape[1] - old_shape[1]
             pad_shape = old_shape
