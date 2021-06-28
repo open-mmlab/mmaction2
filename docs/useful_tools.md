@@ -95,7 +95,7 @@ You may use the result for simple comparisons, but double check it before you ad
 
 ### MMAction2 model to ONNX (experimental)
 
-`/tools/pytorch2onnx.py` is a script to convert model to [ONNX](https://github.com/onnx/onnx) format.
+`/tools/deployment/pytorch2onnx.py` is a script to convert model to [ONNX](https://github.com/onnx/onnx) format.
 It also supports comparing the output results between Pytorch and ONNX model for verification.
 Run `pip install onnx onnxruntime` first to install the dependency.
 Please note that a softmax layer could be added for recognizers by `--softmax` option, in order to get predictions in range `[0, 1]`.
@@ -103,18 +103,18 @@ Please note that a softmax layer could be added for recognizers by `--softmax` o
 - For recognizers, please run:
 
     ```shell
-    python tools/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --verify
+    python tools/deployment/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --verify
     ```
 
 - For localizers, please run:
 
     ```shell
-    python tools/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --is-localizer --shape $SHAPE --verify
+    python tools/deployment/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --is-localizer --shape $SHAPE --verify
     ```
 
 ### Prepare a model for publishing
 
-`tools/publish_model.py` helps users to prepare their model for publishing.
+`tools/deployment/publish_model.py` helps users to prepare their model for publishing.
 
 Before you upload a model to AWS, you may want to:
 
@@ -123,13 +123,13 @@ Before you upload a model to AWS, you may want to:
 (3) compute the hash of the checkpoint file and append the hash id to the filename.
 
 ```shell
-python tools/publish_model.py ${INPUT_FILENAME} ${OUTPUT_FILENAME}
+python tools/deployment/publish_model.py ${INPUT_FILENAME} ${OUTPUT_FILENAME}
 ```
 
 E.g.,
 
 ```shell
-python tools/publish_model.py work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb/latest.pth tsn_r50_1x1x3_100e_kinetics400_rgb.pth
+python tools/deployment/publish_model.py work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb/latest.pth tsn_r50_1x1x3_100e_kinetics400_rgb.pth
 ```
 
 The final output filename will be `tsn_r50_1x1x3_100e_kinetics400_rgb-{hash id}.pth`.
@@ -157,8 +157,8 @@ python tools/print_config.py ${CONFIG} [-h] [--options ${OPTIONS [OPTIONS...]}]
 
 ### Check videos
 
-`tools/check_videos.py` uses specified video encoder to iterate all samples that are specified by the input configuration file, looks for invalid videos (corrupted or missing), and saves the corresponding file path to the output file. Please note that after deleting invalid videos, users need to regenerate the video file list.
+`tools/analysis/check_videos.py` uses specified video encoder to iterate all samples that are specified by the input configuration file, looks for invalid videos (corrupted or missing), and saves the corresponding file path to the output file. Please note that after deleting invalid videos, users need to regenerate the video file list.
 
 ```shell
-python tools/check_videos.py ${CONFIG} [-h] [--options OPTIONS [OPTIONS ...]] [--cfg-options CFG_OPTIONS [CFG_OPTIONS ...]] [--output-file OUTPUT_FILE] [--split SPLIT] [--decoder DECODER] [--num-processes NUM_PROCESSES] [--remove-corrupted-videos]
+python tools/analysis/check_videos.py ${CONFIG} [-h] [--options OPTIONS [OPTIONS ...]] [--cfg-options CFG_OPTIONS [CFG_OPTIONS ...]] [--output-file OUTPUT_FILE] [--split SPLIT] [--decoder DECODER] [--num-processes NUM_PROCESSES] [--remove-corrupted-videos]
 ```

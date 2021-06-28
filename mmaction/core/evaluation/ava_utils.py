@@ -35,14 +35,14 @@ def results2csv(dataset, results, out_file, custom_classes=None):
         csv_results = det2csv(dataset, results, custom_classes)
 
     # save space for float
-    def tostr(item):
+    def to_str(item):
         if isinstance(item, float):
             return f'{item:.3f}'
         return str(item)
 
     with open(out_file, 'w') as f:
         for csv_result in csv_results:
-            f.write(','.join(map(lambda x: tostr(x), csv_result)))
+            f.write(','.join(map(to_str, csv_result)))
             f.write('\n')
 
 
@@ -157,7 +157,6 @@ def ava_eval(result_file,
              label_file,
              ann_file,
              exclude_file,
-             max_dets=(100, ),
              verbose=True,
              custom_classes=None):
 
@@ -186,52 +185,52 @@ def ava_eval(result_file,
     if verbose:
         print_time('Reading detection results', start)
 
-    if result_type == 'mAP':
-        pascal_evaluator = det_eval.PascalDetectionEvaluator(categories)
+    # Evaluation for mAP
+    pascal_evaluator = det_eval.PascalDetectionEvaluator(categories)
 
-        start = time.time()
-        for image_key in gt_boxes:
-            if verbose and image_key in excluded_keys:
-                logging.info(
-                    'Found excluded timestamp in detections: %s.'
-                    'It will be ignored.', image_key)
-                continue
-            pascal_evaluator.add_single_ground_truth_image_info(
-                image_key, {
-                    standard_fields.InputDataFields.groundtruth_boxes:
-                    np.array(gt_boxes[image_key], dtype=float),
-                    standard_fields.InputDataFields.groundtruth_classes:
-                    np.array(gt_labels[image_key], dtype=int)
-                })
-        if verbose:
-            print_time('Convert groundtruth', start)
+    start = time.time()
+    for image_key in gt_boxes:
+        if verbose and image_key in excluded_keys:
+            logging.info(
+                'Found excluded timestamp in detections: %s.'
+                'It will be ignored.', image_key)
+            continue
+        pascal_evaluator.add_single_ground_truth_image_info(
+            image_key, {
+                standard_fields.InputDataFields.groundtruth_boxes:
+                np.array(gt_boxes[image_key], dtype=float),
+                standard_fields.InputDataFields.groundtruth_classes:
+                np.array(gt_labels[image_key], dtype=int)
+            })
+    if verbose:
+        print_time('Convert groundtruth', start)
 
-        start = time.time()
-        for image_key in boxes:
-            if verbose and image_key in excluded_keys:
-                logging.info(
-                    'Found excluded timestamp in detections: %s.'
-                    'It will be ignored.', image_key)
-                continue
-            pascal_evaluator.add_single_detected_image_info(
-                image_key, {
-                    standard_fields.DetectionResultFields.detection_boxes:
-                    np.array(boxes[image_key], dtype=float),
-                    standard_fields.DetectionResultFields.detection_classes:
-                    np.array(labels[image_key], dtype=int),
-                    standard_fields.DetectionResultFields.detection_scores:
-                    np.array(scores[image_key], dtype=float)
-                })
-        if verbose:
-            print_time('convert detections', start)
+    start = time.time()
+    for image_key in boxes:
+        if verbose and image_key in excluded_keys:
+            logging.info(
+                'Found excluded timestamp in detections: %s.'
+                'It will be ignored.', image_key)
+            continue
+        pascal_evaluator.add_single_detected_image_info(
+            image_key, {
+                standard_fields.DetectionResultFields.detection_boxes:
+                np.array(boxes[image_key], dtype=float),
+                standard_fields.DetectionResultFields.detection_classes:
+                np.array(labels[image_key], dtype=int),
+                standard_fields.DetectionResultFields.detection_scores:
+                np.array(scores[image_key], dtype=float)
+            })
+    if verbose:
+        print_time('convert detections', start)
 
-        start = time.time()
-        metrics = pascal_evaluator.evaluate()
-        if verbose:
-            print_time('run_evaluator', start)
-        for display_name in metrics:
-            print(f'{display_name}=\t{metrics[display_name]}')
-        return {
-            display_name: metrics[display_name]
-            for display_name in metrics if 'ByCategory' not in display_name
-        }
+    start = time.time()
+    metrics = pascal_evaluator.evaluate()
+    if verbose:
+        print_time('run_evaluator', start)
+    for display_name in metrics:
+        print(f'{display_name}=\t{metrics[display_name]}')
+    return {
+        display_name: metrics[display_name]
+        for display_name in metrics if 'ByCategory' not in display_name
+    }

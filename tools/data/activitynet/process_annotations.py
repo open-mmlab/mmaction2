@@ -24,12 +24,12 @@ video_dict_val = {}
 video_dict_test = {}
 video_dict_full = {}
 
-for i in range(len(video_record)):
-    video_name = video_record[i][0]
+for _, video_item in enumerate(video_record):
+    video_name = video_item[0]
     video_info = anno_database[video_name]
-    video_subset = video_record[i][5]
-    video_info['fps'] = video_record[i][3].astype(np.float)
-    video_info['rfps'] = video_record[i][4].astype(np.float)
+    video_subset = video_item[5]
+    video_info['fps'] = video_item[3].astype(np.float)
+    video_info['rfps'] = video_item[4].astype(np.float)
     video_dict_full[video_name] = video_info
     if video_subset == 'training':
         video_dict_train[video_name] = video_info

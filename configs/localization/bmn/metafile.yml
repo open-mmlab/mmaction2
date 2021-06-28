@@ -1,17 +1,15 @@
 Collections:
-- Metadata:
-    Training Data: null
-  Name: BMN
+- Name: BMN
   README: configs/localization/bmn/README.md
 Models:
 - Config: configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py
   In Collection: BMN
   Metadata:
+    Batch Size: 8
     Epochs: 9
-    Training BatchSize / GPU: 8
     Training Data: ActivityNet v1.3
+    Training Resources: 2 GPUs
     feature: cuhk_mean_100
-    gpus: 2
   Name: bmn_400x100_9e_2x8_activitynet_feature (cuhk_mean_100)
   Results:
   - Dataset: ActivityNet v1.3
@@ -26,16 +24,14 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature.log.json
   Training Log: https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature.log
   Weights: https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature_20200619-42a3b111.pth
-  gpu_mem(M): '5420'
-  iter time(s): '3.27'
 - Config: configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py
   In Collection: BMN
   Metadata:
+    Batch Size: 8
     Epochs: 9
-    Training BatchSize / GPU: 8
     Training Data: ActivityNet v1.3
+    Training Resources: 2 GPUs
     feature: mmaction_video
-    gpus: 2
   Name: bmn_400x100_9e_2x8_activitynet_feature (mmaction_video)
   Results:
   - Dataset: ActivityNet v1.3
@@ -50,16 +46,14 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809.json
   Training Log: https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809.log
   Weights: https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809-c9fd14d2.pth
-  gpu_mem(M): '5420'
-  iter time(s): '3.27'
 - Config: configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py
   In Collection: BMN
   Metadata:
+    Batch Size: 8
     Epochs: 9
-    Training BatchSize / GPU: 8
     Training Data: ActivityNet v1.3
+    Training Resources: 2 GPUs
     feature: mmaction_clip
-    gpus: 2
   Name: bmn_400x100_9e_2x8_activitynet_feature (mmaction_clip)
   Results:
   - Dataset: ActivityNet v1.3
@@ -74,5 +68,3 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809.json
   Training Log: https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809.log
   Weights: https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809-10d803ce.pth
-  gpu_mem(M): '5420'
-  iter time(s): '3.27'

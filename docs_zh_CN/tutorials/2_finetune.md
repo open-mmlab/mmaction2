@@ -85,6 +85,7 @@ checkpoint_config = dict(interval=5)
 ## 使用预训练模型
 
 若要将预训练模型用于整个网络（主干网络设置中的 `pretrained`，仅会在主干网络模型上加载预训练参数），可通过 `load_from` 指定模型文件路径或模型链接，实现预训练权重导入。
+MMAction2 在 `configs/_base_/default_runtime.py` 文件中将 `load_from=None` 设为默认。由于配置文件的可继承性，用户可直接在下游配置文件中设置 `load_from` 的值来进行更改。
 
 ```python
 # 将预训练模型用于整个 TSN 网络

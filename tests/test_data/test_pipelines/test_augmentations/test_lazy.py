@@ -10,7 +10,8 @@ from .base import check_crop, check_flip
 
 class TestLazy:
 
-    def test_init_lazy(self):
+    @staticmethod
+    def test_init_lazy():
         from mmaction.datasets.pipelines.augmentations import \
             _init_lazy_if_proper  # noqa: E501
         with pytest.raises(AssertionError):
@@ -41,7 +42,8 @@ class TestLazy:
         assert assert_dict_has_keys(result, ['img_shape'])
         assert 'lazy' not in result
 
-    def test_random_crop_lazy(self):
+    @staticmethod
+    def test_random_crop_lazy():
         with pytest.raises(TypeError):
             # size must be an int
             RandomCrop(size=(112, 112), lazy=True)
@@ -99,7 +101,8 @@ class TestLazy:
         assert repr(random_crop) == (f'{random_crop.__class__.__name__}'
                                      f'(size={224}, lazy={True})')
 
-    def test_random_resized_crop_lazy(self):
+    @staticmethod
+    def test_random_resized_crop_lazy():
 
         target_keys = ['imgs', 'crop_bbox', 'img_shape', 'lazy']
         # There will be a slight difference because of rounding
@@ -147,7 +150,8 @@ class TestLazy:
         h, w = random_crop_result['img_shape']
         assert h == w == 256
 
-    def test_multi_scale_crop_lazy(self):
+    @staticmethod
+    def test_multi_scale_crop_lazy():
         with pytest.raises(TypeError):
             # input_size must be int or tuple of int
             MultiScaleCrop(0.5, lazy=True)
@@ -237,7 +241,8 @@ class TestLazy:
             f'max_wh_scale_gap={0}, random_crop={True}, '
             f'num_fixed_crops={5}, lazy={True})')
 
-    def test_resize_lazy(self):
+    @staticmethod
+    def test_resize_lazy():
         with pytest.raises(ValueError):
             # scale must be positive
             Resize(-0.5, lazy=True)
@@ -290,7 +295,8 @@ class TestLazy:
                                 f'(scale={(341, 256)}, keep_ratio={False}, ' +
                                 f'interpolation=bilinear, lazy={True})')
 
-    def test_flip_lazy(self):
+    @staticmethod
+    def test_flip_lazy():
         with pytest.raises(ValueError):
             Flip(direction='vertically', lazy=True)
 
@@ -341,7 +347,8 @@ class TestLazy:
                               f'(flip_ratio={1}, direction=vertical, '
                               f'flip_label_map={None}, lazy={True})')
 
-    def test_center_crop_lazy(self):
+    @staticmethod
+    def test_center_crop_lazy():
         with pytest.raises(TypeError):
             # crop_size must be int or tuple of int
             CenterCrop(0.5)

@@ -128,3 +128,7 @@ work_dirs/
 !tests/data/**/*.pkl.json
 !tests/data/**/*.log.json
 !tests/data/**/*.pth
+
+# avoid soft links created by MIM
+mmaction/configs/*
+mmaction/tools/*

@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 DATASET=$1
-if [ "$DATASET" == "gym" ] || [ "$1" == "ntu60_xsub" ] || [ "$1" == "ntu120_xsub" ]; then
+if [ "$DATASET" == "gym" ]; then
         echo "We are processing $DATASET"
 else
-        echo "Bad Argument, we only support gym, ntu60_xsub, ntu120_xsub now."
+        echo "Bad Argument, we only support gym now."
         exit 0
 fi
 

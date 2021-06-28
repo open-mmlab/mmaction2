@@ -225,5 +225,5 @@ def train_model(model,
 
                 eval_res = test_dataset.evaluate(outputs, **eval_cfg)
                 runner.logger.info(f'Testing results of the {name} checkpoint')
-                for name, val in eval_res.items():
-                    runner.logger.info(f'{name}: {val:.04f}')
+                for metric_name, val in eval_res.items():
+                    runner.logger.info(f'{metric_name}: {val:.04f}')

@@ -10,7 +10,6 @@ def import_module_error_func(module_name):
         def new_func(*args, **kwargs):
             raise ImportError(
                 f'Please install {module_name} to use {func.__name__}.')
-            return func(*args, **kwargs)
 
         return new_func
 

@@ -1,19 +1,17 @@
 Collections:
-- Metadata:
-    Training Data: null
-  Name: SlowOnly
+- Name: SlowOnly
   README: configs/recognition/slowonly/README.md
 Models:
 - Config: configs/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_rgb.py
   In Collection: SlowOnly
   Metadata:
     Architecture: ResNet50
+    Batch Size: 8
     Epochs: 256
     Parameters: 32454096
-    Training BatchSize / GPU: 8
+    Pretrained: None
+    Resolution: short-side 320
     Training Data: Kinetics-400
-    pretrain: None
-    resolution: short-side 320
   Modality: RGB
   Name: slowonly_r50_omnisource_4x16x1_256e_kinetics400_rgb
   Results:
@@ -27,12 +25,12 @@ Models:
   In Collection: SlowOnly
   Metadata:
     Architecture: ResNet101
+    Batch Size: 8
     Epochs: 196
     Parameters: 60359120
-    Training BatchSize / GPU: 8
+    Pretrained: None
+    Resolution: short-side 320
     Training Data: Kinetics-400
-    pretrain: None
-    resolution: short-side 320
   Modality: RGB
   Name: slowonly_r101_8x8x1_196e_kinetics400_rgb
   Results:
@@ -46,12 +44,12 @@ Models:
   In Collection: SlowOnly
   Metadata:
     Architecture: ResNet101
+    Batch Size: 8
     Epochs: 196
     Parameters: 60359120
-    Training BatchSize / GPU: 8
+    Pretrained: None
+    Resolution: short-side 320
     Training Data: Kinetics-400
-    pretrain: None
-    resolution: short-side 320
   Modality: RGB
   Name: slowonly_r101_omnisource_8x8x1_196e_kinetics400_rgb
   Results:
@@ -65,13 +63,13 @@ Models:
   In Collection: SlowOnly
   Metadata:
     Architecture: ResNet50
+    Batch Size: 8
     Epochs: 256
     Parameters: 32454096
-    Training BatchSize / GPU: 8
+    Pretrained: None
+    Resolution: short-side 256
     Training Data: Kinetics-400
-    gpus: 32
-    pretrain: None
-    resolution: short-side 256
+    Training Resources: 32 GPUs
   Modality: RGB
   Name: slowonly_r50_4x16x1_256e_kinetics400_rgb
   Results:
@@ -83,19 +81,17 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_256p_4x16x1_256e_kinetics400_rgb/20200817_001411.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_256p_4x16x1_256e_kinetics400_rgb/20200817_001411.log
   Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_256p_4x16x1_256e_kinetics400_rgb/slowonly_r50_256p_4x16x1_256e_kinetics400_rgb_20200820-bea7701f.pth
-  gpu_mem(M): '3168'
-  inference_time(video/s): x
 - Config: configs/recognition/slowonly/slowonly_r50_video_4x16x1_256e_kinetics400_rgb.py
   In Collection: SlowOnly
   Metadata:
     Architecture: ResNet50
+    Batch Size: 24
     Epochs: 256
     Parameters: 32454096
-    Training BatchSize / GPU: 24
+    Pretrained: None
+    Resolution: short-side 320
     Training Data: Kinetics-400
-    gpus: 16
-    pretrain: None
-    resolution: short-side 320
+    Training Resources: 16 GPUs
   Modality: RGB
   Name: slowonly_r50_video_4x16x1_256e_kinetics400_rgb
   Results:
@@ -107,19 +103,17 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_video_320p_4x16x1_256e_kinetics400_rgb/slowonly_r50_video_320p_4x16x1_256e_kinetics400_rgb_20201014.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_video_320p_4x16x1_256e_kinetics400_rgb/slowonly_r50_video_320p_4x16x1_256e_kinetics400_rgb_20201014.log
   Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_video_320p_4x16x1_256e_kinetics400_rgb/slowonly_r50_video_320p_4x16x1_256e_kinetics400_rgb_20201014-c9cdc656.pth
-  gpu_mem(M): '8472'
-  inference_time(video/s): x
 - Config: configs/recognition/slowonly/slowonly_r50_8x8x1_256e_kinetics400_rgb.py
   In Collection: SlowOnly
   Metadata:
     Architecture: ResNet50
+    Batch Size: 8
     Epochs: 256
     Parameters: 32454096
-    Training BatchSize / GPU: 8
+    Pretrained: None
+    Resolution: short-side 256
     Training Data: Kinetics-400
-    gpus: 32
-    pretrain: None
-    resolution: short-side 256
+    Training Resources: 32 GPUs
   Modality: RGB
   Name: slowonly_r50_8x8x1_256e_kinetics400_rgb
   Results:
@@ -131,19 +125,17 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_256p_8x8x1_256e_kinetics400_rgb/20200817_003320.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_256p_8x8x1_256e_kinetics400_rgb/20200817_003320.log
   Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_256p_8x8x1_256e_kinetics400_rgb/slowonly_r50_256p_8x8x1_256e_kinetics400_rgb_20200820-75851a7d.pth
-  gpu_mem(M): '5820'
-  inference_time(video/s): x
 - Config: configs/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_rgb.py
   In Collection: SlowOnly
   Metadata:
     Architecture: ResNet50
+    Batch Size: 8
     Epochs: 256
     Parameters: 32454096
-    Training BatchSize / GPU: 8
+    Pretrained: None
+    Resolution: short-side 320
     Training Data: Kinetics-400
-    gpus: 16
-    pretrain: None
-    resolution: short-side 320
+    Training Resources: 16 GPUs
   Modality: RGB
   Name: slowonly_r50_4x16x1_256e_kinetics400_rgb
   Results:
@@ -155,19 +147,17 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_rgb/slowonly_r50_4x16_73.02_90.77.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_rgb/so_4x16.log
   Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_rgb/slowonly_r50_4x16x1_256e_kinetics400_rgb_20200704-a69556c6.pth
-  gpu_mem(M): '3168'
-  inference_time(video/s): 4.0 (40x3 frames)
 - Config: configs/recognition/slowonly/slowonly_r50_8x8x1_256e_kinetics400_rgb.py
   In Collection: SlowOnly
   Metadata:
     Architecture: ResNet50
+    Batch Size: 8
     Epochs: 256
     Parameters: 32454096
-    Training BatchSize / GPU: 8
+    Pretrained: None
+    Resolution: short-side 320
     Training Data: Kinetics-400
-    gpus: 24
-    pretrain: None
-    resolution: short-side 320
+    Training Resources: 24 GPUs
   Modality: RGB
   Name: slowonly_r50_8x8x1_256e_kinetics400_rgb
   Results:
@@ -179,19 +169,17 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_8x8x1_256e_kinetics400_rgb/slowonly_r50_8x8_74.93_91.92.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_8x8x1_256e_kinetics400_rgb/so_8x8.log
   Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_8x8x1_256e_kinetics400_rgb/slowonly_r50_8x8x1_256e_kinetics400_rgb_20200703-a79c555a.pth
-  gpu_mem(M): '5820'
-  inference_time(video/s): 2.3 (80x3 frames)
 - Config: configs/recognition/slowonly/slowonly_imagenet_pretrained_r50_4x16x1_150e_kinetics400_rgb.py
   In Collection: SlowOnly
   Metadata:
     Architecture: ResNet50
+    Batch Size: 8
     Epochs: 150
     Parameters: 32454096
-    Training BatchSize / GPU: 8
+    Pretrained: ImageNet
+    Resolution: short-side 320
     Training Data: Kinetics-400
-    gpus: 16
-    pretrain: ImageNet
-    resolution: short-side 320
+    Training Resources: 16 GPUs
   Modality: RGB
   Name: slowonly_imagenet_pretrained_r50_4x16x1_150e_kinetics400_rgb
   Results:
@@ -203,19 +191,17 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_4x16x1_150e_kinetics400_rgb/slowonly_imagenet_pretrained_r50_4x16x1_150e_kinetics400_rgb_20200912.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_4x16x1_150e_kinetics400_rgb/slowonly_imagenet_pretrained_r50_4x16x1_150e_kinetics400_rgb_20200912.log
   Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_4x16x1_150e_kinetics400_rgb/slowonly_imagenet_pretrained_r50_4x16x1_150e_kinetics400_rgb_20200912-1e8fc736.pth
-  gpu_mem(M): '3168'
-  inference_time(video/s): x
 - Config: configs/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x8x1_150e_kinetics400_rgb.py
   In Collection: SlowOnly
   Metadata:
     Architecture: ResNet50
+    Batch Size: 8
     Epochs: 150
     Parameters: 32454096
-    Training BatchSize / GPU: 8
+    Pretrained: ImageNet
+    Resolution: short-side 320
     Training Data: Kinetics-400
-    gpus: 32
-    pretrain: ImageNet
-    resolution: short-side 320
+    Training Resources: 32 GPUs
   Modality: RGB
   Name: slowonly_imagenet_pretrained_r50_8x8x1_150e_kinetics400_rgb
   Results:
@@ -227,19 +213,17 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x8x1_150e_kinetics400_rgb/slowonly_imagenet_pretrained_r50_8x8x1_150e_kinetics400_rgb_20200912.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x8x1_150e_kinetics400_rgb/slowonly_imagenet_pretrained_r50_8x8x1_150e_kinetics400_rgb_20200912.log
   Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x8x1_150e_kinetics400_rgb/slowonly_imagenet_pretrained_r50_8x8x1_150e_kinetics400_rgb_20200912-3f9ce182.pth
-  gpu_mem(M): '5820'
-  inference_time(video/s): x
 - Config: configs/recognition/slowonly/slowonly_nl_embedded_gaussian_r50_4x16x1_150e_kinetics400_rgb.py
   In Collection: SlowOnly
   Metadata:
     Architecture: ResNet50
+    Batch Size: 8
     Epochs: 150
     Parameters: 39808464
-    Training BatchSize / GPU: 8
+    Pretrained: ImageNet
+    Resolution: short-side 320
     Training Data: Kinetics-400
-    gpus: 16
-    pretrain: ImageNet
-    resolution: short-side 320
+    Training Resources: 16 GPUs
   Modality: RGB
   Name: slowonly_nl_embedded_gaussian_r50_4x16x1_150e_kinetics400_rgb
   Results:
@@ -251,19 +235,17 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_nl_embedded_gaussian_r50_4x16x1_150e_kinetics400_rgb/20210305_152630.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_nl_embedded_gaussian_r50_4x16x1_150e_kinetics400_rgb/20210305_152630.log
   Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_nl_embedded_gaussian_r50_4x16x1_150e_kinetics400_rgb/slowonly_nl_embedded_gaussian_r50_4x16x1_150e_kinetics400_rgb_20210308-0d6e5a69.pth
-  gpu_mem(M): '4435'
-  inference_time(video/s): x
 - Config: configs/recognition/slowonly/slowonly_nl_embedded_gaussian_r50_8x8x1_150e_kinetics400_rgb.py
   In Collection: SlowOnly
   Metadata:
     Architecture: ResNet50
+    Batch Size: 8
     Epochs: 150
     Parameters: 39808464
-    Training BatchSize / GPU: 8
+    Pretrained: ImageNet
+    Resolution: short-side 320
     Training Data: Kinetics-400
-    gpus: 32
-    pretrain: ImageNet
-    resolution: short-side 320
+    Training Resources: 32 GPUs
   Modality: RGB
   Name: slowonly_nl_embedded_gaussian_r50_8x8x1_150e_kinetics400_rgb
   Results:
@@ -275,19 +257,17 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_nl_embedded_gaussian_r50_8x8x1_150e_kinetics400_rgb/20210308_212250.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_nl_embedded_gaussian_r50_8x8x1_150e_kinetics400_rgb/20210308_212250.log
   Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_nl_embedded_gaussian_r50_8x8x1_150e_kinetics400_rgb/slowonly_nl_embedded_gaussian_r50_8x8x1_150e_kinetics400_rgb_20210308-e8dd9e82.pth
-  gpu_mem(M): '8895'
-  inference_time(video/s): x
 - Config: configs/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_flow.py
   In Collection: SlowOnly
   Metadata:
     Architecture: ResNet50
+    Batch Size: 24
     Epochs: 256
     Parameters: 32450960
-    Training BatchSize / GPU: 24
+    Pretrained: ImageNet
+    Resolution: short-side 320
     Training Data: Kinetics-400
-    gpus: 16
-    pretrain: ImageNet
-    resolution: short-side 320
+    Training Resources: 16 GPUs
   Modality: Flow
   Name: slowonly_r50_4x16x1_256e_kinetics400_flow
   Results:
@@ -299,19 +279,17 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_flow/slowonly_r50_4x16x1_256e_kinetics400_flow_61.8_83.6.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_flow/slowonly_r50_4x16x1_256e_kinetics400_flow_61.8_83.6.log
   Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_flow/slowonly_r50_4x16x1_256e_kinetics400_flow_20200704-decb8568.pth
-  gpu_mem(M): '8450'
-  inference_time(video/s): x
 - Config: configs/recognition/slowonly/slowonly_r50_8x8x1_256e_kinetics400_flow.py
   In Collection: SlowOnly
   Metadata:
     Architecture: ResNet50
+    Batch Size: 12
     Epochs: 196
     Parameters: 32450960
-    Training BatchSize / GPU: 12
+    Pretrained: ImageNet
+    Resolution: short-side 320
     Training Data: Kinetics-400
-    gpus: 32
-    pretrain: ImageNet
-    resolution: short-side 320
+    Training Resources: 32 GPUs
   Modality: Flow
   Name: slowonly_r50_8x8x1_196e_kinetics400_flow
   Results:
@@ -323,19 +301,17 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_8x8x1_256e_kinetics400_flow/slowonly_r50_8x8x1_196e_kinetics400_flow_65.8_86.3.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_8x8x1_256e_kinetics400_flow/slowonly_r50_8x8x1_196e_kinetics400_flow_65.8_86.3.log
   Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_8x8x1_256e_kinetics400_flow/slowonly_r50_8x8x1_256e_kinetics400_flow_20200704-6b384243.pth
-  gpu_mem(M): '8455'
-  inference_time(video/s): x
 - Config: configs/recognition/slowonly/slowonly_r50_video_8x8x1_256e_kinetics600_rgb.py
   In Collection: SlowOnly
   Metadata:
     Architecture: ResNet50
+    Batch Size: 12
     Epochs: 256
     Parameters: 32863896
-    Training BatchSize / GPU: 12
+    Pretrained: None
+    Resolution: short-side 256
     Training Data: Kinetics-600
-    gpus: 32
-    pretrain: None
-    resolution: short-side 256
+    Training Resources: 32 GPUs
   Modality: RGB
   Name: slowonly_r50_video_8x8x1_256e_kinetics600_rgb
   Results:
@@ -351,13 +327,13 @@ Models:
   In Collection: SlowOnly
   Metadata:
     Architecture: ResNet50
+    Batch Size: 12
     Epochs: 256
     Parameters: 33068796
-    Training BatchSize / GPU: 12
+    Pretrained: None
+    Resolution: short-side 256
     Training Data: Kinetics-700
-    gpus: 32
-    pretrain: None
-    resolution: short-side 256
+    Training Resources: 32 GPUs
   Modality: RGB
   Name: slowonly_r50_video_8x8x1_256e_kinetics700_rgb
   Results:
@@ -373,13 +349,13 @@ Models:
   In Collection: SlowOnly
   Metadata:
     Architecture: ResNet50
+    Batch Size: 24
     Epochs: 120
     Parameters: 32454096
-    Training BatchSize / GPU: 24
+    Pretrained: ImageNet
+    Resolution: short-side 256
     Training Data: GYM99
-    gpus: 16
-    pretrain: ImageNet
-    resolution: short-side 256
+    Training Resources: 16 GPUs
   Modality: RGB
   Name: slowonly_imagenet_pretrained_r50_4x16x1_120e_gym99_rgb
   Results:
@@ -395,13 +371,13 @@ Models:
   In Collection: SlowOnly
   Metadata:
     Architecture: ResNet50
+    Batch Size: 24
     Epochs: 120
     Parameters: 32450960
-    Training BatchSize / GPU: 24
+    Pretrained: Kinetics
+    Resolution: short-side 256
     Training Data: GYM99
-    gpus: 16
-    pretrain: Kinetics
-    resolution: short-side 256
+    Training Resources: 16 GPUs
   Modality: Flow
   Name: slowonly_kinetics_pretrained_r50_4x16x1_120e_gym99_flow
   Results:
@@ -413,3 +389,24 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_kinetics_pretrained_r50_4x16x1_120e_gym99_flow/slowonly_kinetics_pretrained_r50_4x16x1_120e_gym99_flow_20201111.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_kinetics_pretrained_r50_4x16x1_120e_gym99_flow/slowonly_kinetics_pretrained_r50_4x16x1_120e_gym99_flow_20201111.log
   Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_kinetics_pretrained_r50_4x16x1_120e_gym99_flow/slowonly_kinetics_pretrained_r50_4x16x1_120e_gym99_flow_20201111-66ecdb3c.pth
+- Config: configs/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x8x1_64e_jester_rgb.py
+  In Collection: SlowOnly
+  Metadata:
+    Architecture: ResNet50
+    Batch Size: 8
+    Epochs: 64
+    Parameters: 31689819
+    Pretrained: ImageNet
+    Resolution: height 100
+    Training Data: Jester
+    Training Resources: 8 GPUs
+  Modality: RGB
+  Name: slowonly_imagenet_pretrained_r50_8x8x1_64e_jester_rgb
+  Results:
+  - Dataset: Jester
+    Metrics:
+      top1 acc: 97.2
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x8x1_64e_jester_rgb/slowonly_imagenet_pretrained_r50_8x8x1_64e_jester_rgb.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x8x1_64e_jester_rgb/slowonly_imagenet_pretrained_r50_8x8x1_64e_jester_rgb.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x8x1_64e_jester_rgb/slowonly_imagenet_pretrained_r50_8x8x1_64e_jester_rgb-b56a5389.pth

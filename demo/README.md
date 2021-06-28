@@ -37,7 +37,7 @@ We provide a demo script to predict the recognition result using a single video.
 
 ```shell
 python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} {LABEL_FILE} [--use-frames] \
-    [--device ${DEVICE_TYPE}] [--fps {FPS}] [--font-size {FONT_SIZE}] [--font-color {FONT_COLOR}] \
+    [--device ${DEVICE_TYPE}] [--fps {FPS}] [--font-scale {FONT_SCALE}] [--font-color {FONT_COLOR}] \
     [--target-resolution ${TARGET_RESOLUTION}] [--resize-algorithm {RESIZE_ALGORITHM}] [--out-filename {OUT_FILE}]
 ```
 
@@ -46,7 +46,7 @@ Optional arguments:
 - `--use-frames`: If specified, the demo will take rawframes as input. Otherwise, it will take a video as input.
 - `DEVICE_TYPE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`. If not specified, it will be set to `cuda:0`.
 - `FPS`: FPS value of the output video when using rawframes as input. If not specified, it wll be set to 30.
-- `FONT_SIZE`: Font size of the label added in the video. If not specified, it wll be set to 20.
+- `FONT_SCALE`: Font scale of the label added in the video. If not specified, it wll be 0.5.
 - `FONT_COLOR`: Font color of the label added in the video. If not specified, it will be `white`.
 - `TARGET_RESOLUTION`: Resolution(desired_width, desired_height) for resizing the frames before output when using a video as input. If not specified, it will be None and the frames are resized by keeping the existing aspect ratio.
 - `RESIZE_ALGORITHM`: Resize algorithm used for resizing. If not specified, it will be set to `bicubic`.
@@ -120,13 +120,13 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
         --out-filename demo/demo_out.mp4
     ```
 
-7. Recognize a video file as input by using a TSN model, then generate an mp4 file with a label in a red color and 10px fontsize.
+7. Recognize a video file as input by using a TSN model, then generate an mp4 file with a label in a red color and fontscale 1.
 
     ```shell
     # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
     python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
         checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
-        demo/demo.mp4 demo/label_map_k400.txt --font-size 10 --font-color red \
+        demo/demo.mp4 demo/label_map_k400.txt --font-scale 1 --font-color red \
         --out-filename demo/demo_out.mp4
     ```
 
@@ -309,6 +309,8 @@ Optional arguments:
 - `DEVICE_TYPE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`. If not specified, it will be set to `cuda:0`.
 - `THRESHOLD`: Threshold of prediction score for action recognition. Only label with score higher than the threshold will be shown. If not specified, it will be set to 0.01.
 - `STRIDE`: By default, the demo generates a prediction for each single frame, which might cost lots of time. To speed up, you can set the argument `STRIDE` and then the demo will generate a prediction every `STRIDE x sample_length` frames (`sample_length` indicates the size of temporal window from which you sample frames, which equals to `clip_len x frame_interval`). For example, if the sample_length is 64 frames and you set `STRIDE` to 0.5, predictions will be generated every 32 frames. If set as 0, predictions will be generated for each frame. The desired value of `STRIDE` is (0, 1], while it also works for `STRIDE > 1` (the generated predictions will be too sparse). Default: 0.
+- `LABEL_COLOR`: Font Color of the labels in (B, G, R). Default is white, that is (256, 256, 256).
+- `MSG_COLOR`: Font Color of the messages in (B, G, R). Default is gray, that is (128, 128, 128).
 
 Examples:
 
@@ -343,11 +345,12 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
       demo/label_map_k400.txt PATH_TO_SAVED_VIDEO --input-step 3 --device cpu --threshold 0.2
     ```
 
-4. Predict different labels in a long video by using a I3D model on gpu, with input_step=1 and threshold=0.01 as default.
+4. Predict different labels in a long video by using a I3D model on gpu, with input_step=1, threshold=0.01 as default and print the labels in cyan.
 
     ```shell
     python demo/long_video_demo.py configs/recognition/i3d/i3d_r50_video_inference_32x2x1_100e_kinetics400_rgb.py \
-      checkpoints/i3d_r50_256p_32x2x1_100e_kinetics400_rgb_20200801-7d9f44de.pth PATH_TO_LONG_VIDEO demo/label_map_k400.txt PATH_TO_SAVED_VIDEO
+      checkpoints/i3d_r50_256p_32x2x1_100e_kinetics400_rgb_20200801-7d9f44de.pth PATH_TO_LONG_VIDEO demo/label_map_k400.txt PATH_TO_SAVED_VIDEO \
+      --label-color 255 255 0
     ```
 
 5. Predict different labels in a long video by using a I3D model on gpu and save the results as a `json` file

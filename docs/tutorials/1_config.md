@@ -414,8 +414,10 @@ which is convenient to conduct various experiments.
     evaluation = dict(  # Config of evaluation during training
         interval=5,  # Interval to perform evaluation
         metrics=['top_k_accuracy', 'mean_class_accuracy'],  # Metrics to be performed
-        metric_options=dict(top_k_accuracy=dict(topk=(1, 3))), # Set top-k accuracy to 1 and 3
+        metric_options=dict(top_k_accuracy=dict(topk=(1, 3))), # Set top-k accuracy to 1 and 3 during validation
         save_best='top_k_accuracy')  # set `top_k_accuracy` as key indicator to save best checkpoint
+    eval_config = dict(
+        metric_options=dict(top_k_accuracy=dict(topk=(1, 3)))) # Set top-k accuracy to 1 and 3 during testing. You can also use `--eval top_k_accuracy` to assign evaluation metrics
     log_config = dict(  # Config to register logger hook
         interval=20,  # Interval to print the log
         hooks=[  # Hooks to be implemented during training

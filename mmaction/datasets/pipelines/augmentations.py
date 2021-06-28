@@ -274,7 +274,8 @@ class Imgaug:
             self.aug = iaa.Sequential(
                 [self.imgaug_builder(t) for t in self.transforms])
 
-    def default_transforms(self):
+    @staticmethod
+    def default_transforms():
         """Default transforms for imgaug.
 
         Implement RandAugment by imgaug.
@@ -327,8 +328,8 @@ class Imgaug:
                         type='Cutout',
                         nb_iterations=1,
                         size=0.2 * cur_level,
-                        squared=True),
-                ]),
+                        squared=True)
+                ])
         ]
 
     def imgaug_builder(self, cfg):
@@ -554,14 +555,17 @@ class RandomCrop:
         self.size = size
         self.lazy = lazy
 
-    def _crop_kps(self, kps, crop_bbox):
+    @staticmethod
+    def _crop_kps(kps, crop_bbox):
         return kps - crop_bbox[:2]
 
-    def _crop_imgs(self, imgs, crop_bbox):
+    @staticmethod
+    def _crop_imgs(imgs, crop_bbox):
         x1, y1, x2, y2 = crop_bbox
         return [img[y1:y2, x1:x2] for img in imgs]
 
-    def _box_crop(self, box, crop_bbox):
+    @staticmethod
+    def _box_crop(box, crop_bbox):
         """Crop the bounding boxes according to the crop_bbox.
 
         Args:
@@ -1069,10 +1073,12 @@ class Resize:
             for img in imgs
         ]
 
-    def _resize_kps(self, kps, scale_factor):
+    @staticmethod
+    def _resize_kps(kps, scale_factor):
         return kps * scale_factor
 
-    def _box_resize(self, box, scale_factor):
+    @staticmethod
+    def _box_resize(box, scale_factor):
         """Rescale the bounding boxes according to the scale_factor.
 
         Args:
@@ -1264,7 +1270,8 @@ class Flip:
             kpscores = kpscores[:, :, new_order]
         return kps, kpscores
 
-    def _box_flip(self, box, img_width):
+    @staticmethod
+    def _box_flip(box, img_width):
         """Flip the bounding boxes given the width of the image.
 
         Args:

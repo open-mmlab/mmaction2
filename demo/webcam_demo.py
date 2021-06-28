@@ -77,7 +77,7 @@ def show_results():
     cur_time = time.time()
     while True:
         msg = 'Waiting for action ...'
-        ret, frame = camera.read()
+        _, frame = camera.read()
         frame_queue.append(np.array(frame[:, :, ::-1]))
 
         if len(result_queue) != 0:
@@ -93,7 +93,7 @@ def show_results():
                 cv2.putText(frame, text, location, FONTFACE, FONTSCALE,
                             FONTCOLOR, THICKNESS, LINETYPE)
 
-        elif len(text_info):
+        elif len(text_info) != 0:
             for location, text in text_info.items():
                 cv2.putText(frame, text, location, FONTFACE, FONTSCALE,
                             FONTCOLOR, THICKNESS, LINETYPE)

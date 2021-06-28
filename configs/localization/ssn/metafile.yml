@@ -1,16 +1,14 @@
 Collections:
-- Metadata:
-    Training Data: null
-  Name: SSN
+- Name: SSN
   README: configs/localization/ssn/README.md
 Models:
 - Config: configs/localization/ssn/ssn_r50_450e_thumos14_rgb_train.py
   In Collection: SSN
   Metadata:
     Architecture: ResNet50
+    Pretrained: ImageNet
     Training Data: THUMOS 14
-    gpus: 8
-    pretrain: ImageNet
+    Training Resources: 8 GPUs
   Name: ssn_r50_450e_thumos14_rgb
   Results:
   - Dataset: THUMOS 14
@@ -22,7 +20,6 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/localization/ssn/ssn_r50_450e_thumos14_rgb/20201005_144656.log.json
   Training Log: https://download.openmmlab.com/mmaction/localization/ssn/ssn_r50_450e_thumos14_rgb/20201005_144656.log
   Weights: https://download.openmmlab.com/mmaction/localization/ssn/ssn_r50_450e_thumos14_rgb/ssn_r50_450e_thumos14_rgb_20201012-1920ab16.pth
-  gpu_mem(M): '6352'
   reference mAP@0.3: '[27.61](https://github.com/open-mmlab/mmaction/tree/c7e3b7c11fb94131be9b48a8e3d510589addc3ce#Get%20started)'
   reference mAP@0.4: '[21.28](https://github.com/open-mmlab/mmaction/tree/c7e3b7c11fb94131be9b48a8e3d510589addc3ce#Get%20started)'
   reference mAP@0.5: '[14.57](https://github.com/open-mmlab/mmaction/tree/c7e3b7c11fb94131be9b48a8e3d510589addc3ce#Get%20started)'

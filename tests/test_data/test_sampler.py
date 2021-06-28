@@ -25,7 +25,7 @@ def test_distributed_sampler():
     sampler = DistributedSampler(dataset, num_replicas=1, rank=0)
     data_loader = DataLoader(dataset, batch_size=4, sampler=sampler)
     batches = []
-    for i, data in enumerate(data_loader):
+    for _, data in enumerate(data_loader):
         batches.append(data)
 
     assert len(batches) == 25
@@ -58,7 +58,7 @@ def test_class_specific_distributed_sampler():
         dataset, num_replicas=1, rank=0, dynamic_length=True)
     data_loader = DataLoader(dataset, batch_size=4, sampler=sampler)
     batches = []
-    for i, data in enumerate(data_loader):
+    for _, data in enumerate(data_loader):
         batches.append(data)
 
     assert len(batches) == 50

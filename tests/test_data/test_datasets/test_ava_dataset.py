@@ -155,7 +155,8 @@ class TestAVADataset:
         assert result['timestamp_start'] == 900
         assert result['timestamp_end'] == 1800
 
-    def test_ava_evaluate(self):
+    @staticmethod
+    def test_ava_evaluate():
         data_prefix = osp.normpath(
             osp.join(osp.dirname(__file__), '../../data', 'eval_detection'))
         ann_file = osp.join(data_prefix, 'gt.csv')
