@@ -183,7 +183,7 @@ class BMN(BaseLocalizer):
             torch.Tensor: The output of the module.
         """
         # x.shape [batch_size, self.feat_dim, self.tscale]
-        base_feature = self.x_1d_b(x)
+        base_feature = self.x_1d_b(x)  # b 400 100
         # base_feature.shape [batch_size, self.hidden_dim_1d, self.tscale]
         start = self.x_1d_s(base_feature).squeeze(1)
         # start.shape [batch_size, self.tscale]
@@ -287,8 +287,11 @@ class BMN(BaseLocalizer):
         match_score_confidence_list = []
         match_score_start_list = []
         match_score_end_list = []
+        print('len(gt_box)--',len(gt_bbox))  # 8
+
         for every_gt_bbox in gt_bbox:
             gt_iou_map = []
+            print('len(every_gt_bbox',len(every_gt_bbox))
             for start, end in every_gt_bbox:
                 if isinstance(start, torch.Tensor):
                     start = start.numpy()
@@ -302,6 +305,7 @@ class BMN(BaseLocalizer):
                 gt_iou_map.append(current_gt_iou_map)
             gt_iou_map = np.array(gt_iou_map).astype(np.float32)
             gt_iou_map = np.max(gt_iou_map, axis=0)
+            print('gt_iou_map',gt_iou_map.shape) # 100 100 
 
             gt_tmins = every_gt_bbox[:, 0]
             gt_tmaxs = every_gt_bbox[:, 1]
@@ -331,6 +335,8 @@ class BMN(BaseLocalizer):
             match_score_start_list.append(match_score_start)
             match_score_end_list.append(match_score_end)
         match_score_confidence_list = torch.Tensor(match_score_confidence_list)
+        print('match_score_confi',match_score_confidence_list.shape) # 8 100 100
+        ss
         match_score_start_list = torch.Tensor(match_score_start_list)
         match_score_end_list = torch.Tensor(match_score_end_list)
         return (match_score_confidence_list, match_score_start_list,

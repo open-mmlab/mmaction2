@@ -86,8 +86,10 @@ data = dict(
         ann_file=ann_file_test,
         data_prefix=data_root_val,
         pipeline=test_pipeline))
+# evaluation = dict(
+#     interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
 evaluation = dict(
-    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+    interval=1, metrics=['top_k_accuracy', 'mean_class_accuracy'])
 
 optimizer = dict(
     type='SGD',
@@ -96,4 +98,4 @@ optimizer = dict(
     weight_decay=0.0001)
 
 # runtime settings
-work_dir = './work_dirs/tsn_r50_video_1x1x16_100e_diving48_rgb/'
+work_dir = './work_dirs/tsn_r50_video_1x1x16_100e_diving48_rgb_preBN/'

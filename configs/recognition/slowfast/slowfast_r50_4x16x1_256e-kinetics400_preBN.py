@@ -85,9 +85,12 @@ data = dict(
         data_prefix=data_root_val,
         pipeline=test_pipeline))
 evaluation = dict(
-    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+    interval=1, metrics=['top_k_accuracy', 'mean_class_accuracy'])
 
 # optimizer
+# optimizer = dict(
+#     type='SGD', lr=0.1, momentum=0.9,
+#     weight_decay=0.0001)  # this lr is used for 8 gpus
 optimizer = dict(
     type='SGD', lr=0.1, momentum=0.9,
     weight_decay=0.0001)  # this lr is used for 8 gpus
@@ -99,7 +102,15 @@ lr_config = dict(
     warmup='linear',
     warmup_by_epoch=True,
     warmup_iters=34)
+# total_epochs = 256
 total_epochs = 256
+
+# precise_BN
+precise_bn=dict()
+# add checkpoint 
+load_from = None
+# load_from = '/mnt/lustre/liguankai/resume/slowfast_r50_4x16x1_256e_kinetics400_rgb_20200704-bcde7ed7.pth'
+
 
 # runtime settings
 checkpoint_config = dict(interval=4)

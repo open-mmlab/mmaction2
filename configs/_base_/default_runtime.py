@@ -3,7 +3,7 @@ log_config = dict(
     interval=20,
     hooks=[
         dict(type='TextLoggerHook'),
-        # dict(type='TensorboardLoggerHook'),
+        dict(type='TensorboardLoggerHook'),
     ])
 # runtime settings
 dist_params = dict(backend='nccl')
