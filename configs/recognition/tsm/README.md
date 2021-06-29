@@ -88,15 +88,15 @@
 
 |config | gpus | backbone | pretrain | top1 acc| top5 acc | gpu_mem(M) | ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[tsm_k400_pretrained_r50_1x1x8_25e_hmdb51_rgb](/configs/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_hmdb51_rgb.py)|8|ResNet50|Kinetics400|72.68|92.03|10388|[ckpt]()|[log]()|[json]()|
-|[tsm_k400_pretrained_r50_1x1x16_25e_hmdb51_rgb](/configs/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_hmdb51_rgb.py)|8|ResNet50|Kinetics400|74.77|93.86|10388|[ckpt]()|[log]()|[json]()|
+|[tsm_k400_pretrained_r50_1x1x8_25e_hmdb51_rgb](/configs/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_hmdb51_rgb.py)|8|ResNet50|Kinetics400|72.68|92.03|10388|[ckpt](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_hmdb51_rgb/tsm_k400_pretrained_r50_1x1x8_25e_hmdb51_rgb_20210630-10c74ee5.pth)|[log](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_hmdb51_rgb/20210605_182554.log)|[json](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_hmdb51_rgb/20210605_182554.log.json)|
+|[tsm_k400_pretrained_r50_1x1x16_25e_hmdb51_rgb](/configs/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_hmdb51_rgb.py)|8|ResNet50|Kinetics400|74.77|93.86|10388|[ckpt](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_hmdb51_rgb/tsm_k400_pretrained_r50_1x1x16_25e_hmdb51_rgb_20210630-4785548e.pth)|[log](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_hmdb51_rgb/20210605_182505.log)|[json](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_hmdb51_rgb/20210605_182505.log.json)|
 
 ### UCF101
 
 |config | gpus | backbone | pretrain | top1 acc| top5 acc | gpu_mem(M) | ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[tsm_k400_pretrained_r50_1x1x8_25e_ucf101_rgb](/configs/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_ucf101_rgb.py)|8|ResNet50|Kinetics400|94.50|99.58|10389|[ckpt]()|[log]()|[json]()|
-|[tsm_k400_pretrained_r50_1x1x16_25e_ucf101_rgb](/configs/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_ucf101_rgb.py)|8|ResNet50|Kinetics400|94.58|99.37|10389|[ckpt]()|[log]()|[json]()|
+|[tsm_k400_pretrained_r50_1x1x8_25e_ucf101_rgb](/configs/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_ucf101_rgb.py)|8|ResNet50|Kinetics400|94.50|99.58|10389|[ckpt](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_ucf101_rgb/tsm_k400_pretrained_r50_1x1x8_25e_ucf101_rgb_20210630-1fae312b.pth)|[log](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_ucf101_rgb/20210605_182720.log)|[json](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_ucf101_rgb/20210605_182720.log.json)|
+|[tsm_k400_pretrained_r50_1x1x16_25e_ucf101_rgb](/configs/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_ucf101_rgb.py)|8|ResNet50|Kinetics400|94.58|99.37|10389|[ckpt](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_ucf101_rgb/tsm_k400_pretrained_r50_1x1x16_25e_ucf101_rgb_20210630-8df9c358.pth)|[log](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_ucf101_rgb/20210605_182720.log)|[json](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_ucf101_rgb/20210605_182720.log.json)|
 
 Notes:
 

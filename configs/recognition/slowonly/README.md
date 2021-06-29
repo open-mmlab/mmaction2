@@ -81,21 +81,21 @@ In data benchmark, we compare two different data preprocessing methods: (1) Resi
 
 |config | gpus | backbone | pretrain | top1 acc| top5 acc | gpu_mem(M) | ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[slowonly_imagenet_pretrained_r50_8x4x1_64e_hmdb51_rgb](/configs/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_hmdb51_rgb.py)|8|ResNet50|ImageNet|37.52|71.50|5812|[ckpt]()|[log]()|[json]()|
-|[slowonly_k400_pretrained_r50_8x4x1_40e_hmdb51_rgb](/configs/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_hmdb51_rgb.py)|8|ResNet50|Kinetics400|65.95|91.05|5812|[ckpt]()|[log]()|[json]()|
+|[slowonly_imagenet_pretrained_r50_8x4x1_64e_hmdb51_rgb](/configs/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_hmdb51_rgb.py)|8|ResNet50|ImageNet|37.52|71.50|5812|[ckpt](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_hmdb51_rgb/slowonly_imagenet_pretrained_r50_8x4x1_64e_hmdb51_rgb_20210630-16faeb6a.pth)|[log](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_hmdb51_rgb/20210605_185256.log)|[json](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_hmdb51_rgb/20210605_185256.log.json)|
+|[slowonly_k400_pretrained_r50_8x4x1_40e_hmdb51_rgb](/configs/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_hmdb51_rgb.py)|8|ResNet50|Kinetics400|65.95|91.05|5812|[ckpt](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_hmdb51_rgb/slowonly_k400_pretrained_r50_8x4x1_40e_hmdb51_rgb_20210630-cee5f725.pth)|[log](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_hmdb51_rgb/20210606_010153.log)|[json](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_hmdb51_rgb/20210606_010153.log.json)|
 
 ### UCF101
 
 |config | gpus | backbone | pretrain | top1 acc| top5 acc | gpu_mem(M) | ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[slowonly_imagenet_pretrained_r50_8x4x1_64e_ucf101_rgb](/configs/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_ucf101_rgb.py)|8|ResNet50|ImageNet|71.35|89.35|5812|[ckpt]()|[log]()|[json]()|
-|[slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb](/configs/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb.py)|8|ResNet50|Kinetics400|92.78|99.42|5812|[ckpt]()|[log]()|[json]()|
+|[slowonly_imagenet_pretrained_r50_8x4x1_64e_ucf101_rgb](/configs/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_ucf101_rgb.py)|8|ResNet50|ImageNet|71.35|89.35|5812|[ckpt](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_ucf101_rgb/slowonly_imagenet_pretrained_r50_8x4x1_64e_ucf101_rgb_20210630-181e1661.pth)|[log](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_ucf101_rgb/20210605_213503.log)|[json](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_ucf101_rgb/20210605_213503.log.json)|
+|[slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb](/configs/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb.py)|8|ResNet50|Kinetics400|92.78|99.42|5812|[ckpt](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb/slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb_20210630-ee8c850f.pth)|[log](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb/20210606_010231.log)|[json](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb/20210606_010231.log.json)|
 
 ### Something-Something V1
 
 |config | gpus | backbone | pretrain | top1 acc| top5 acc | gpu_mem(M) | ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb](/configs/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb.py)|8|ResNet50|ImageNet|46.63|77.19|7759|[ckpt]()|[log]()|[json]()|
+|[slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb](/configs/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb.py)|8|ResNet50|ImageNet|46.63|77.19|7759|[ckpt](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb/slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb_20210630-ee8c850f.pth)|[log](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb/20210606_010231.log)|[json](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb/20210606_010231.log.json)|
 
 Notes:
 
