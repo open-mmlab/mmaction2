@@ -95,7 +95,9 @@ def parse_args():
         help='the threshold of human detection score')
     parser.add_argument('--video', help='video file/url')
     parser.add_argument(
-        '--label-map', default='demo/label_map_ava.txt', help='label map file')
+        '--label-map',
+        default='demo/label_map_ntu120.txt',
+        help='label map file')
     parser.add_argument(
         '--device', type=str, default='cuda:0', help='CPU/CUDA device option')
     parser.add_argument(
@@ -105,7 +107,7 @@ def parse_args():
         help='specify the short-side length of the image')
     parser.add_argument(
         '--out-filename',
-        default='demo/stdet_demo.mp4',
+        default='demo/posec3d_demo.mp4',
         help='output filename')
     parser.add_argument(
         '--cfg-options',
