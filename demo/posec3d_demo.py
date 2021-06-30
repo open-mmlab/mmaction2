@@ -12,7 +12,7 @@ from mmcv.runner import load_checkpoint
 from tqdm import tqdm
 
 from mmaction.datasets.pipelines import Compose
-from mmaction.models import build_models
+from mmaction.models import build_model
 from mmaction.utils import import_module_error_func
 
 try:
@@ -141,7 +141,7 @@ def frame_extraction(video_path, short_side):
     while flag:
         if new_h is None:
             h, w, _ = frame.shape
-            new_w, new_h = mmcv.rescale_size((w, h), (256, np.Inf))
+            new_w, new_h = mmcv.rescale_size((w, h), (short_side, np.Inf))
 
         frame = mmcv.imresize(frame, (new_w, new_h))
 
@@ -183,7 +183,8 @@ def pose_inference(args, frame_paths, det_results):
     model = init_pose_model(args.pose_config, args.pose_checkpoint,
                             args.device)
     ret = []
-    for f, d in zip(frame_paths, det_results):
+    print('Performing Human Pose Estimation for each frame')
+    for f, d in tqdm(zip(frame_paths, det_results)):
         # Align input format
         d = [dict(bbox=x) for x in list(d)]
         pose = inference_top_down_pose_model(
@@ -195,7 +196,8 @@ def pose_inference(args, frame_paths, det_results):
 def main():
     args = parse_args()
 
-    frame_paths, original_frames = frame_extraction(args.video)
+    frame_paths, original_frames = frame_extraction(args.video,
+                                                    args.short_side)
     num_frame = len(frame_paths)
     h, w, _ = original_frames[0].shape
 
@@ -240,7 +242,7 @@ def main():
     imgs = test_pipeline(fake_anno)['imgs'][None]
     imgs = imgs.to(args.device)
 
-    model = build_models(config.model)
+    model = build_model(config.model)
     load_checkpoint(model, args.checkpoint, map_location=args.device)
     model.to(args.device)
     model.eval()
@@ -251,8 +253,10 @@ def main():
     action_idx = np.argmax(output)
     action_label = label_map[action_idx]
 
+    pose_model = init_pose_model(args.pose_config, args.pose_checkpoint,
+                                 args.device)
     vis_frames = [
-        vis_pose_result(model, frame_paths[i], pose_results[i])
+        vis_pose_result(pose_model, frame_paths[i], pose_results[i])
         for i in range(num_frame)
     ]
     _ = [
@@ -260,8 +264,9 @@ def main():
                     FONTCOLOR, THICKNESS, LINETYPE) for frame in vis_frames
     ]
 
+    cv2.imwrite('frame.jpg', vis_frames[0])
     vid = mpy.ImageSequenceClip([x[:, :, ::-1] for x in vis_frames], fps=24)
-    vid.write_videofile(args.out_filename)
+    vid.write_videofile(args.out_filename, remove_temp=True)
 
     tmp_frame_dir = osp.dirname(frame_paths[0])
     shutil.rmtree(tmp_frame_dir)
