@@ -8,6 +8,7 @@ Models:
     Architecture: TANet
     Batch Size: 8
     Epochs: 100
+    FLOPs: 43065983104
     Parameters: 25590320
     Pretrained: ImageNet
     Resolution: short-side 320

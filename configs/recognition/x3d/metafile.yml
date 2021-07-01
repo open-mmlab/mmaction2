@@ -7,6 +7,7 @@ Models:
   Metadata:
     Architecture: X3D_S
     Batch Size: 1
+    FLOPs: 2967543760
     Parameters: 3794322
     Resolution: short-side 320
     Training Data: Kinetics-400
@@ -26,6 +27,7 @@ Models:
   Metadata:
     Architecture: X3D_M
     Batch Size: 1
+    FLOPs: 6490866832
     Parameters: 3794322
     Resolution: short-side 320
     Training Data: Kinetics-400

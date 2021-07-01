@@ -1,3 +1,5 @@
+import warnings
+
 import torch
 import torch.nn as nn
 from mmcv.cnn import ConvModule, kaiming_init
@@ -280,7 +282,12 @@ class ResNet3dPathway(ResNet3d):
         old_shape = conv2d_weight.shape
         new_shape = conv3d.weight.data.shape
         kernel_t = new_shape[2]
+
         if new_shape[1] != old_shape[1]:
+            if new_shape[1] < old_shape[1]:
+                warnings.warn(f'The parameter of {module_name_2d} is not'
+                              'loaded due to incompatible shapes. ')
+                return
             # Inplanes may be different due to lateral connections
             new_channels = new_shape[1] - old_shape[1]
             pad_shape = old_shape
@@ -291,6 +298,7 @@ class ResNet3dPathway(ResNet3d):
                  torch.zeros(pad_shape).type_as(conv2d_weight).to(
                      conv2d_weight.device)),
                 dim=1)
+
         new_weight = conv2d_weight.data.unsqueeze(2).expand_as(
             conv3d.weight) / kernel_t
         conv3d.weight.data.copy_(new_weight)

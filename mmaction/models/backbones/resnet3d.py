@@ -1,3 +1,5 @@
+import warnings
+
 import torch.nn as nn
 import torch.utils.checkpoint as cp
 from mmcv.cnn import (ConvModule, NonLocal3d, build_activation_layer,
@@ -666,6 +668,11 @@ class ResNet3d(nn.Module):
         for param_name, param in bn3d.named_parameters():
             param_2d_name = f'{module_name_2d}.{param_name}'
             param_2d = state_dict_2d[param_2d_name]
+            if param.data.shape != param_2d.shape:
+                warnings.warn(f'The parameter of {module_name_2d} is not'
+                              'loaded due to incompatible shapes. ')
+                return
+
             param.data.copy_(param_2d)
             inflated_param_names.append(param_2d_name)
 
