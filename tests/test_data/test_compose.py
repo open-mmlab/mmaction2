@@ -53,7 +53,12 @@ def test_compose_support_torchvision():
 
     # test Compose given a data pipeline
     imgs = [np.random.randn(256, 256, 3)] * 8
-    results = dict(imgs=imgs, abandoned_key=None, img_name='test_image.png')
+    results = dict(
+        imgs=imgs,
+        abandoned_key=None,
+        img_name='test_image.png',
+        clip_len=8,
+        num_clips=1)
     test_pipeline = [
         dict(type='torchvision.Grayscale', num_output_channels=3),
         dict(type='FormatShape', input_format='NCTHW'),
