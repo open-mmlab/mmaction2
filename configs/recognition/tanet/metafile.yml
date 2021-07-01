@@ -24,3 +24,53 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_dense_1x1x8_100e_kinetics400_rgb/tanet_r50_dense_1x1x8_100e_kinetics400_rgb_20210219.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_dense_1x1x8_100e_kinetics400_rgb/tanet_r50_dense_1x1x8_100e_kinetics400_rgb_20210219.log
   Weights: https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_dense_1x1x8_100e_kinetics400_rgb/tanet_r50_dense_1x1x8_100e_kinetics400_rgb_20210219-032c8e94.pth
+- Config: configs/recognition/tanet/tanet_r50_1x1x8_50e_sthv1_rgb.py
+  In Collection: TANet
+  Metadata:
+    Architecture: TANet
+    Epochs: 50
+    FLOPs: 32972787840
+    Parameters: 25127246
+    Batch Size: 8
+    Training Data: SthV1
+    Training Resources: 8 GPUs
+    Pretrained: ImageNet
+    Resolution: height 100
+  Modality: RGB
+  Name: tanet_r50_1x1x8_50e_sthv1_rgb
+  Results:
+  - Dataset: SthV1
+    Metrics:
+      top1 acc (accurate): 49.69
+      top1 acc (efficient): 47.45
+      top5 acc (accurate): 77.62
+      top5 acc (efficient): 76.00
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_1x1x8_50e_sthv1_rgb/20210606_205006.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_1x1x8_50e_sthv1_rgb/20210606_205006.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_1x1x8_50e_sthv1_rgb/tanet_r50_1x1x8_50e_sthv1_rgb_20210630-f4a48609.pth
+- Config: configs/recognition/tanet/tanet_r50_1x1x16_50e_sthv1_rgb.py
+  In Collection: TANet
+  Metadata:
+    Architecture: TANet
+    Epochs: 50
+    FLOPs: 65946542336
+    Parameters: 25134670
+    Batch Size: 8
+    Training Data: SthV1
+    gpus: 4
+    Pretrained: ImageNet
+    Resolution: height 100
+  Modality: RGB
+  Name: tanet_r50_1x1x16_50e_sthv1_rgb
+  Results:
+  - Dataset: SthV1
+    Metrics:
+      top1 acc (accurate): 50.41
+      top1 acc (efficient): 47.73
+      top5 acc (accurate): 78.47
+      top5 acc (efficient): 77.31
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_1x1x16_50e_sthv1_rgb/20210607_155335.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_1x1x16_50e_sthv1_rgb/20210607_155335.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_1x1x16_50e_sthv1_rgb/tanet_r50_1x1x16_50e_sthv1_rgb_20210630-7c19303c.pth

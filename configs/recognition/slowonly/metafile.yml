@@ -410,3 +410,113 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x8x1_64e_jester_rgb/slowonly_imagenet_pretrained_r50_8x8x1_64e_jester_rgb.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x8x1_64e_jester_rgb/slowonly_imagenet_pretrained_r50_8x8x1_64e_jester_rgb.log
   Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x8x1_64e_jester_rgb/slowonly_imagenet_pretrained_r50_8x8x1_64e_jester_rgb-b56a5389.pth
+- Config: configs/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_hmdb51_rgb.py
+  In Collection: SlowOnly
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 64
+    FLOPs: 54859765760
+    Parameters: 31738995
+    Batch Size: 8
+    Training Data: HMDB51
+    Training Resources: 8 GPUs
+    Pretrained: ImageNet
+  Modality: RGB
+  Name: slowonly_imagenet_pretrained_r50_8x4x1_64e_hmdb51_rgb
+  Results:
+  - Dataset: HMDB51
+    Metrics:
+      top1 acc: 37.52
+      top5 acc: 71.50
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_hmdb51_rgb/20210605_185256.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_hmdb51_rgb/20210605_185256.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_hmdb51_rgb/slowonly_imagenet_pretrained_r50_8x4x1_64e_hmdb51_rgb_20210630-16faeb6a.pth
+- Config: configs/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_hmdb51_rgb.py
+  In Collection: SlowOnly
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 40
+    FLOPs: 54859765760
+    Parameters: 31738995
+    Batch Size: 8
+    Training Data: HMDB51
+    Training Resources: 8 GPUs
+    Pretrained: Kinetics400
+  Modality: RGB
+  Name: slowonly_imagenet_pretrained_r50_8x4x1_64e_hmdb51_rgb
+  Results:
+  - Dataset: HMDB51
+    Metrics:
+      top1 acc: 65.95
+      top5 acc: 91.05
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_hmdb51_rgb/20210606_010153.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_hmdb51_rgb/20210606_010153.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_hmdb51_rgb/slowonly_k400_pretrained_r50_8x4x1_40e_hmdb51_rgb_20210630-cee5f725.pth
+- Config: configs/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_ucf101_rgb.py
+  In Collection: SlowOnly
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 64
+    FLOPs: 54859868160
+    Parameters: 31841445
+    Batch Size: 8
+    Training Data: UCF101
+    Training Resources: 8 GPUs
+    Pretrained: ImageNet
+  Modality: RGB
+  Name: slowonly_imagenet_pretrained_r50_8x4x1_64e_ucf101_rgb
+  Results:
+  - Dataset: UCF101
+    Metrics:
+      top1 acc: 71.35
+      top5 acc: 89.35
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_ucf101_rgb/20210605_213503.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_ucf101_rgb/20210605_213503.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_ucf101_rgb/slowonly_imagenet_pretrained_r50_8x4x1_64e_ucf101_rgb_20210630-181e1661.pth
+- Config: configs/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb.py
+  In Collection: SlowOnly
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 40
+    FLOPs: 54859868160
+    Parameters: 31841445
+    Batch Size: 8
+    Training Data: UCF101
+    Training Resources: 8 GPUs
+    Pretrained: Kinetics400
+  Modality: RGB
+  Name: slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb
+  Results:
+  - Dataset: UCF101
+    Metrics:
+      top1 acc: 92.78
+      top5 acc: 99.42
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb/20210606_010231.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb/20210606_010231.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb/slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb_20210630-ee8c850f.pth
+- Config: configs/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb.py
+  In Collection: SlowOnly
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 64
+    FLOPs: 53907910656
+    Parameters: 31991022
+    Batch Size: 8
+    Training Data: SthV1
+    Training Resources: 8 GPUs
+    Pretrained: ImageNet
+  Modality: RGB
+  Name: slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb
+  Results:
+  - Dataset: SthV1
+    Metrics:
+      top1 acc: 46.63
+      top5 acc: 77.19
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb/20210605_235410.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb/20210605_235410.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb_20210630-807a9a9a.pth

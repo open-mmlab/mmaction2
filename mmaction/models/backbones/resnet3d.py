@@ -410,6 +410,7 @@ class ResNet3d(nn.Module):
                  conv1_stride_t=1,
                  pool1_stride_s=2,
                  pool1_stride_t=1,
+                 with_pool1=True,
                  with_pool2=True,
                  style='pytorch',
                  frozen_stages=-1,
@@ -450,6 +451,7 @@ class ResNet3d(nn.Module):
         self.conv1_stride_t = conv1_stride_t
         self.pool1_stride_s = pool1_stride_s
         self.pool1_stride_t = pool1_stride_t
+        self.with_pool1 = with_pool1
         self.with_pool2 = with_pool2
         self.style = style
         self.frozen_stages = frozen_stages
@@ -836,7 +838,8 @@ class ResNet3d(nn.Module):
             samples extracted by the backbone.
         """
         x = self.conv1(x)
-        x = self.maxpool(x)
+        if self.with_pool1:
+            x = self.maxpool(x)
         outs = []
         for i, layer_name in enumerate(self.res_layers):
             res_layer = getattr(self, layer_name)

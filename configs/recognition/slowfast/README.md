@@ -29,6 +29,12 @@
 |[slowfast_r101_8x8x1_256e_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r101_8x8x1_256e_kinetics400_rgb.py) |short-side 256|8x4| ResNet101 |None|77.90|93.51||25994| [ckpt](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r101_8x8x1_256e_kinetics400_rgb/slowfast_r101_8x8x1_256e_kinetics400_rgb_20210218-0dd54025.pth) | [log](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r101_8x8x1_256e_kinetics400_rgb/20210218_121513.log)| [json](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r101_8x8x1_256e_kinetics400_rgb/20210218_121513.log.json)|
 |[slowfast_r152_r50_4x16x1_256e_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r152_r50_4x16x1_256e_kinetics400_rgb.py) |short-side 256|8x1| ResNet152 + ResNet50 |None|77.13|93.20||10077| [ckpt](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r152_4x16x1_256e_kinetics400_rgb/slowfast_r152_4x16x1_256e_kinetics400_rgb_20210122-bdeb6b87.pth) | [log](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r152_4x16x1_256e_kinetics400_rgb/20210122_131321.log)| [json](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r152_4x16x1_256e_kinetics400_rgb/20210122_131321.log.json)|
 
+### Something-Something V1
+
+|config | resolution | gpus | backbone |pretrain| top1 acc| top5 acc | inference_time(video/s) | gpu_mem(M) | ckpt | log| json|
+|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+|[slowfast_r50_16x8x1_22e_sthv1_rgb](/configs/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb.py)|height 100|8|ResNet50|Kinetics400|49.24|78.79|x|9293|[ckpt](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/slowfast_r50_16x8x1_22e_sthv1_rgb_20210630-53355c16.pth)|[log](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/20210606_225114.log)|[json](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/20210606_225114.log.json)|
+
 Notes:
 
 1. The **gpus** indicates the number of gpu we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.

@@ -668,3 +668,95 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_jester_rgb/tsm_r50_1x1x8_50e_jester_rgb.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_jester_rgb/tsm_r50_1x1x8_50e_jester_rgb.log
   Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_jester_rgb/tsm_r50_1x1x8_50e_jester_rgb-c799267e.pth
+- Config: configs/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_hmdb51_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 25
+    FLOPs: 32959844352
+    Parameters: 23612531
+    Batch Size: 12
+    Training Data: HMDB51
+    Training Resources: 8 GPUs
+    Pretrained: Kinetics400
+  Modality: RGB
+  Name: tsm_k400_pretrained_r50_1x1x8_25e_hmdb51_rgb
+  Results:
+  - Dataset: HMDB51
+    Metrics:
+      top1 acc: 72.68
+      top5 acc: 92.03
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_hmdb51_rgb/20210605_182554.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_hmdb51_rgb/20210605_182554.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_hmdb51_rgb/tsm_k400_pretrained_r50_1x1x8_25e_hmdb51_rgb_20210630-10c74ee5.pth
+  gpu_mem(M): '10388'
+- Config: configs/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_hmdb51_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 25
+    FLOPs: 65919688704
+    Parameters: 23612531
+    Batch Size: 6
+    Training Data: HMDB51
+    Training Resources: 8 GPUs
+    Pretrained: Kinetics400
+  Modality: RGB
+  Name: tsm_k400_pretrained_r50_1x1x16_25e_hmdb51_rgb
+  Results:
+  - Dataset: HMDB51
+    Metrics:
+      top1 acc: 74.77
+      top5 acc: 93.86
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_hmdb51_rgb/20210605_182505.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_hmdb51_rgb/20210605_182505.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_hmdb51_rgb/tsm_k400_pretrained_r50_1x1x16_25e_hmdb51_rgb_20210630-4785548e.pth
+  gpu_mem(M): '10388'
+- Config: configs/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_ucf101_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 25
+    FLOPs: 32960663552
+    Parameters: 23714981
+    Batch Size: 12
+    Training Data: UCF101
+    Training Resources: 8 GPUs
+    Pretrained: Kinetics400
+  Modality: RGB
+  Name: tsm_k400_pretrained_r50_1x1x8_25e_ucf101_rgb
+  Results:
+  - Dataset: UCF101
+    Metrics:
+      top1 acc: 94.50
+      top5 acc: 99.58
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_ucf101_rgb/20210605_182720.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_ucf101_rgb/20210605_182720.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_ucf101_rgb/tsm_k400_pretrained_r50_1x1x8_25e_ucf101_rgb_20210630-1fae312b.pth
+  gpu_mem(M): '10389'
+- Config: configs/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_ucf101_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 25
+    FLOPs: 65921327104
+    Parameters: 23714981
+    Batch Size: 6
+    Training Data: UCF101
+    Training Resources: 8 GPUs
+    Pretrained: Kinetics400
+  Modality: RGB
+  Name: tsm_k400_pretrained_r50_1x1x16_25e_ucf101_rgb
+  Results:
+  - Dataset: UCF101
+    Metrics:
+      top1 acc: 94.58
+      top5 acc: 99.37
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_ucf101_rgb/20210605_182720.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_ucf101_rgb/20210605_182720.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_ucf101_rgb/tsm_k400_pretrained_r50_1x1x16_25e_ucf101_rgb_20210630-8df9c358.pth
+  gpu_mem(M): '10389'

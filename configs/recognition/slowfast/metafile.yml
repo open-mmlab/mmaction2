@@ -178,3 +178,26 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r152_4x16x1_256e_kinetics400_rgb/20210122_131321.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r152_4x16x1_256e_kinetics400_rgb/20210122_131321.log
   Weights: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r152_4x16x1_256e_kinetics400_rgb/slowfast_r152_4x16x1_256e_kinetics400_rgb_20210122-bdeb6b87.pth
+- Config: configs/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb.py
+  In Collection: SlowFast
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 22
+    FLOPs: 132442627584
+    Parameters: 34044630
+    Batch Size: 4
+    Training Data: SthV1
+    Training Resources: 8 GPUs
+    Pretrained: Kinetics400
+    Resolution: height 100
+  Modality: RGB
+  Name: slowfast_r50_16x8x1_22e_sthv1_rgb
+  Results:
+  - Dataset: SthV1
+    Metrics:
+      top1 acc: 49.24
+      top5 acc: 78.79
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/20210606_225114.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/20210606_225114.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/slowfast_r50_16x8x1_22e_sthv1_rgb_20210630-53355c16.pth

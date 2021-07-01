@@ -1,6 +1,5 @@
 import torch.nn as nn
 import torch.nn.functional as F
-from mmcv.cnn import constant_init, kaiming_init, normal_init
 
 
 class TAM(nn.Module):
@@ -71,18 +70,6 @@ class TAM(nn.Module):
             nn.ReLU(inplace=True),
             nn.Conv1d(in_channels // beta, in_channels, 1, bias=False),
             nn.Sigmoid())
-
-        self.init_weights()
-
-    def init_weights(self):
-        """Initiate the parameters from scratch."""
-        for m in self.modules():
-            if isinstance(m, nn.Conv1d):
-                kaiming_init(m)
-            elif isinstance(m, nn.BatchNorm1d):
-                constant_init(m, 1)
-            elif isinstance(m, nn.Linear):
-                normal_init(m, std=self.init_std)
 
     def forward(self, x):
         """Defines the computation performed at every call.
