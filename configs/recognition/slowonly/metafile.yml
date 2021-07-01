@@ -432,8 +432,6 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_hmdb51_rgb/20210605_185256.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_hmdb51_rgb/20210605_185256.log
   Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_hmdb51_rgb/slowonly_imagenet_pretrained_r50_8x4x1_64e_hmdb51_rgb_20210630-16faeb6a.pth
-  gpu_mem(M): '5812'
-  inference_time(video/s): x
 - Config: configs/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_hmdb51_rgb.py
   In Collection: SlowOnly
   Metadata:
@@ -456,8 +454,6 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_hmdb51_rgb/20210606_010153.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_hmdb51_rgb/20210606_010153.log
   Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_hmdb51_rgb/slowonly_k400_pretrained_r50_8x4x1_40e_hmdb51_rgb_20210630-cee5f725.pth
-  gpu_mem(M): '5812'
-  inference_time(video/s): x
 - Config: configs/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_ucf101_rgb.py
   In Collection: SlowOnly
   Metadata:
@@ -480,8 +476,6 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_ucf101_rgb/20210605_213503.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_ucf101_rgb/20210605_213503.log
   Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_ucf101_rgb/slowonly_imagenet_pretrained_r50_8x4x1_64e_ucf101_rgb_20210630-181e1661.pth
-  gpu_mem(M): '5812'
-  inference_time(video/s): x
 - Config: configs/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb.py
   In Collection: SlowOnly
   Metadata:
@@ -504,8 +498,6 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb/20210606_010231.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb/20210606_010231.log
   Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb/slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb_20210630-ee8c850f.pth
-  gpu_mem(M): '5812'
-  inference_time(video/s): x
 - Config: configs/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb.py
   In Collection: SlowOnly
   Metadata:
@@ -528,5 +520,3 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb/20210605_235410.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb/20210605_235410.log
   Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb_20210630-807a9a9a.pth
-  gpu_mem(M): '7759'
-  inference_time(video/s): x
