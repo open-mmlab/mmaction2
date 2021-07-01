@@ -19,8 +19,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 74.75
-      top5 acc: 91.73
+      top1 accuracy: 74.75
+      top5 accuracy: 91.73
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_256p_4x16x1_256e_kinetics400_rgb/20200731_151706.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_256p_4x16x1_256e_kinetics400_rgb/20200731_151706.log
@@ -42,8 +42,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 74.34
-      top5 acc: 91.58
+      top1 accuracy: 74.34
+      top5 accuracy: 91.58
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb/20200812_160237.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb/20200812_160237.log
@@ -65,8 +65,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 75.64
-      top5 acc: 92.3
+      top1 accuracy: 75.64
+      top5 accuracy: 92.3
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_4x16x1_256e_kinetics400_rgb/20200704_232901.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_4x16x1_256e_kinetics400_rgb/20200704_232901.log
@@ -88,8 +88,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 75.61
-      top5 acc: 92.34
+      top1 accuracy: 75.61
+      top5 accuracy: 92.34
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_256p_8x8x1_256e_kinetics400_rgb/20200731_151537.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_256p_8x8x1_256e_kinetics400_rgb/20200731_151537.log
@@ -111,8 +111,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 76.94
-      top5 acc: 92.8
+      top1 accuracy: 76.94
+      top5 accuracy: 92.8
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb/20200716_192653.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb/20200716_192653.log
@@ -134,8 +134,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 76.69
-      top5 acc: 93.07
+      top1 accuracy: 76.69
+      top5 accuracy: 93.07
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r101_4x16x1_256e_kinetics400_rgb/20210118_133528.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r101_4x16x1_256e_kinetics400_rgb/20210118_133528.log
@@ -157,8 +157,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 77.9
-      top5 acc: 93.51
+      top1 accuracy: 77.9
+      top5 accuracy: 93.51
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r101_8x8x1_256e_kinetics400_rgb/20210218_121513.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r101_8x8x1_256e_kinetics400_rgb/20210218_121513.log
@@ -180,8 +180,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 77.13
-      top5 acc: 93.2
+      top1 accuracy: 77.13
+      top5 accuracy: 93.2
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r152_4x16x1_256e_kinetics400_rgb/20210122_131321.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r152_4x16x1_256e_kinetics400_rgb/20210122_131321.log
@@ -190,21 +190,21 @@ Models:
   In Collection: SlowFast
   Metadata:
     Architecture: ResNet50
+    Batch Size: 4
     Epochs: 22
     FLOPs: 132442627584
     Parameters: 34044630
-    Batch Size: 4
-    Training Data: SthV1
-    Training Resources: 8 GPUs
     Pretrained: Kinetics400
     Resolution: height 100
+    Training Data: SthV1
+    Training Resources: 8 GPUs
   Modality: RGB
   Name: slowfast_r50_16x8x1_22e_sthv1_rgb
   Results:
   - Dataset: SthV1
     Metrics:
-      top1 acc: 49.24
-      top5 acc: 78.79
+      top1 accuracy: 49.24
+      top5 accuracy: 78.79
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/20210606_225114.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/20210606_225114.log

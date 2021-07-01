@@ -18,7 +18,7 @@ Models:
   Results:
   - Dataset: AVA v2.1
     Metrics:
-    - mAP: 27.1
+      mAP: 27.1
     Task: Spatial Temporal Action Detection
   Training Json Log: https://download.openmmlab.com/mmaction/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava_rgb/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava_rgb.json
   Training Log: https://download.openmmlab.com/mmaction/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava_rgb/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava_rgb.log
@@ -39,7 +39,7 @@ Models:
   Results:
   - Dataset: AVA v2.2
     Metrics:
-    - mAP: 27.8
+      mAP: 27.8
     Task: Spatial Temporal Action Detection
   Training Json Log: https://download.openmmlab.com/mmaction/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.json
   Training Log: https://download.openmmlab.com/mmaction/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.log

@@ -16,7 +16,7 @@ Models:
   Results:
   - Dataset: FineGYM
     Metrics:
-    - Mean Top-1: 93.7
+      mean top1 accuracy: 93.7
     Task: Skeleton-based Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_gym_keypoint/slowonly_r50_u48_240e_gym_keypoint.json
   Training Log: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_gym_keypoint/slowonly_r50_u48_240e_gym_keypoint.log
@@ -35,7 +35,7 @@ Models:
   Results:
   - Dataset: FineGYM
     Metrics:
-    - Mean Top-1: 94.0
+      mean top1 accuracy: 94.0
     Task: Skeleton-based Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_gym_limb/slowonly_r50_u48_240e_gym_limb.json
   Training Log: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_gym_limb/slowonly_r50_u48_240e_gym_limb.log
@@ -54,7 +54,7 @@ Models:
   Results:
   - Dataset: NTU60-XSub
     Metrics:
-    - Top-1: 93.7
+      top1 accuracy: 93.7
     Task: Skeleton-based Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu60_xsub_keypoint/slowonly_r50_u48_240e_ntu60_xsub_keypoint.json
   Training Log: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu60_xsub_keypoint/slowonly_r50_u48_240e_ntu60_xsub_keypoint.log
@@ -73,7 +73,7 @@ Models:
   Results:
   - Dataset: NTU60-XSub
     Metrics:
-    - Top-1: 93.4
+      top1 accuracy: 93.4
     Task: Skeleton-based Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu60_xsub_limb/slowonly_r50_u48_240e_ntu60_xsub_limb.json
   Training Log: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu60_xsub_limb/slowonly_r50_u48_240e_ntu60_xsub_limb.log
@@ -92,7 +92,7 @@ Models:
   Results:
   - Dataset: NTU120-XSub
     Metrics:
-    - Top-1: 86.3
+      top1 accuracy: 86.3
     Task: Skeleton-based Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint/slowonly_r50_u48_240e_ntu120_xsub_keypoint.json
   Training Log: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint/slowonly_r50_u48_240e_ntu120_xsub_keypoint.log
@@ -111,7 +111,7 @@ Models:
   Results:
   - Dataset: NTU120-XSub
     Metrics:
-    - Top-1: 85.7
+      top1 accuracy: 85.7
     Task: Skeleton-based Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_limb/slowonly_r50_u48_240e_ntu120_xsub_limb.json
   Training Log: https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_limb/slowonly_r50_u48_240e_ntu120_xsub_limb.log

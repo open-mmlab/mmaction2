@@ -19,8 +19,8 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-      top1 acc: 44.25
-      top5 acc: 73.94
+      top1 accuracy: 44.25
+      top5 accuracy: 73.94
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tin/tin_r50_1x1x8_40e_sthv1_rgb/20200729_034132.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tin/tin_r50_1x1x8_40e_sthv1_rgb/20200729_034132.log
@@ -42,8 +42,8 @@ Models:
   Results:
   - Dataset: SthV2
     Metrics:
-      top1 acc: 56.7
-      top5 acc: 83.62
+      top1 accuracy: 56.7
+      top5 accuracy: 83.62
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tin/tin_r50_1x1x8_40e_sthv2_rgb/20200912_225451.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tin/tin_r50_1x1x8_40e_sthv2_rgb/20200912_225451.log
@@ -65,8 +65,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 70.89
-      top5 acc: 89.89
+      top1 accuracy: 70.89
+      top5 accuracy: 89.89
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tin/tin_tsm_finetune_r50_1x1x8_50e_kinetics400_rgb/20200809_142447.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tin/tin_tsm_finetune_r50_1x1x8_50e_kinetics400_rgb/20200809_142447.log
