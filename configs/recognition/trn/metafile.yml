@@ -18,10 +18,10 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-      top1 acc (accurate): 33.88
-      top1 acc (efficient): 31.62
-      top5 acc (accurate): 62.12
-      top5 acc (efficient): 60.01
+      top1 accuracy: 33.88
+      top1 accuracy (efficient): 31.62
+      top5 accuracy: 62.12
+      top5 accuracy (efficient): 60.01
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/20210326_103948.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/20210326_103948.log
@@ -42,10 +42,10 @@ Models:
   Results:
   - Dataset: SthV2
     Metrics:
-      top1 acc (accurate): 47.96
-      top1 acc (efficient): 45.14
-      top5 acc (accurate): 75.97
-      top5 acc (efficient): 73.21
+      top1 accuracy: 47.96
+      top1 accuracy (efficient): 45.14
+      top5 accuracy: 75.97
+      top5 accuracy (efficient): 73.21
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210326_103951.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210326_103951.log

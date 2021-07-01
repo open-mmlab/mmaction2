@@ -19,8 +19,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 80.14
-      top5 acc: 94.93
+      top1 accuracy: 80.14
+      top5 accuracy: 94.93
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb/20200728_031952.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb/20200728_031952.log
@@ -42,8 +42,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 82.76
-      top5 acc: 95.68
+      top1 accuracy: 82.76
+      top5 accuracy: 95.68
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb/20200809_053132.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb/20200809_053132.log
@@ -63,8 +63,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 77.8
-      top5 acc: 92.8
+      top1 accuracy: 77.8
+      top5 accuracy: 92.8
     Task: Action Recognition
   Weights: https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ipcsn_from_scratch_r152_32x2x1_180e_kinetics400_rgb_20210617-d565828d.pth
 - Config: configs/recognition/csn/ipcsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py
@@ -82,8 +82,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 82.5
-      top5 acc: 95.3
+      top1 accuracy: 82.5
+      top5 accuracy: 95.3
     Task: Action Recognition
   Weights: https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ipcsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb_20210617-c3be9793.pth
   inference_time(video/s): x
@@ -102,8 +102,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 78.8
-      top5 acc: 93.5
+      top1 accuracy: 78.8
+      top5 accuracy: 93.5
     Task: Action Recognition
   Weights: https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ipcsn_sports1m_pretrained_r152_32x2x1_58e_kinetics400_rgb_20210617-3367437a.pth
   inference_time(video/s): x
@@ -122,8 +122,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 76.5
-      top5 acc: 92.1
+      top1 accuracy: 76.5
+      top5 accuracy: 92.1
     Task: Action Recognition
   Weights: https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ircsn_from_scratch_r152_32x2x1_180e_kinetics400_rgb_20210617-5c933ae1.pth
   inference_time(video/s): x
@@ -142,8 +142,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 79.0
-      top5 acc: 94.2
+      top1 accuracy: 79.0
+      top5 accuracy: 94.2
     Task: Action Recognition
   Weights: https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ircsn_ig65m_pretrained_r50_32x2x1_58e_kinetics400_rgb_20210617-86d33018.pth
   inference_time(video/s): x
@@ -162,8 +162,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 78.2
-      top5 acc: 93.0
+      top1 accuracy: 78.2
+      top5 accuracy: 93.0
     Task: Action Recognition
   Weights: https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ircsn_sports1m_pretrained_r152_32x2x1_58e_kinetics400_rgb_20210617-b9b10241.pth
   inference_time(video/s): x
