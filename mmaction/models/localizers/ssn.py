@@ -3,11 +3,11 @@ import torch.nn as nn
 
 from .. import builder
 from ..builder import LOCALIZERS
-from .base import BaseLocalizer
+from .base import BaseTAGClassifier
 
 
 @LOCALIZERS.register_module()
-class SSN(BaseLocalizer):
+class SSN(BaseTAGClassifier):
     """Temporal Action Detection with Structured Segment Networks.
 
     Args:
