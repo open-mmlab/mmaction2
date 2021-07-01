@@ -1,3 +1,5 @@
+from distutils.version import LooseVersion
+
 import torch
 import torch.nn as nn
 from einops import rearrange
@@ -43,6 +45,9 @@ class DividedTemporalAttentionWithNorm(BaseModule):
         self.num_heads = num_heads
         self.num_frames = num_frames
         self.norm = build_norm_layer(norm_cfg, self.embed_dims)[1]
+
+        if LooseVersion(torch.__version__) < LooseVersion('1.9.0'):
+            kwargs.pop('batch_first', None)
         self.attn = nn.MultiheadAttention(embed_dims, num_heads, attn_drop,
                                           **kwargs)
         self.proj_drop = nn.Dropout(proj_drop)
@@ -118,6 +123,8 @@ class DividedSpatialAttentionWithNorm(BaseModule):
         self.num_heads = num_heads
         self.num_frames = num_frames
         self.norm = build_norm_layer(norm_cfg, self.embed_dims)[1]
+        if LooseVersion(torch.__version__) < LooseVersion('1.9.0'):
+            kwargs.pop('batch_first', None)
         self.attn = nn.MultiheadAttention(embed_dims, num_heads, attn_drop,
                                           **kwargs)
         self.proj_drop = nn.Dropout(proj_drop)
