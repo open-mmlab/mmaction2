@@ -9,8 +9,9 @@ import torch.nn as nn
 
 import mmaction
 from mmaction.models import (ACRNHead, AudioTSNHead, BBoxHeadAVA, FBOHead,
-                             I3DHead, LFBInferHead, SlowFastHead, TPNHead,
-                             TRNHead, TSMHead, TSNHead, X3DHead)
+                             I3DHead, LFBInferHead, SlowFastHead,
+                             TimeSformerHead, TPNHead, TRNHead, TSMHead,
+                             TSNHead, X3DHead)
 from .base import generate_backbone_demo_inputs
 
 
@@ -364,6 +365,23 @@ def test_trn_head():
             in_channels=2048,
             num_segments=8,
             relation_type='RelationModlue')
+
+
+def test_timesformer_head():
+    """Test loss method, layer construction, attributes and forward function in
+    timesformer head."""
+    timesformer_head = TimeSformerHead(num_classes=4, in_channels=64)
+    timesformer_head.init_weights()
+
+    assert timesformer_head.num_classes == 4
+    assert timesformer_head.in_channels == 64
+    assert timesformer_head.init_std == 0.02
+
+    input_shape = (2, 64)
+    feat = torch.rand(input_shape)
+
+    cls_scores = timesformer_head(feat)
+    assert cls_scores.shape == torch.Size([2, 4])
 
 
 @patch.object(mmaction.models.LFBInferHead, '__del__', Mock)

@@ -4,7 +4,7 @@
 
 <!-- [ALGORITHM] -->
 
-```latex
+```BibTeX
 @article{liu2020tam,
   title={TAM: Temporal Adaptive Module for Video Recognition},
   author={Liu, Zhaoyang and Wang, Limin and Wu, Wayne and Qian, Chen and Lu, Tong},
