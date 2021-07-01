@@ -7,6 +7,7 @@
 - [可视化输入视频的 GradCAM](#可视化输入视频的-GradCAM)
 - [使用网络摄像头的实时动作识别](#使用网络摄像头的实时动作识别)
 - [滑动窗口预测长视频中不同动作类别](#滑动窗口预测长视频中不同动作类别)
+- [基于人体姿态预测动作标签](#基于人体姿态预测动作标签)
 
 ## 预测视频的动作标签
 
@@ -395,4 +396,70 @@ python demo/webcam_demo_spatiotemporal_det.py \
     --predict-stepsize 40 \
     --output-fps 20 \
     --show
+```
+
+## 基于人体姿态预测动作标签
+
+MMAction2 提供本脚本实现基于人体姿态的动作标签预测。
+
+```shell
+python demo/demo_posec3d.py ${VIDEO_FILE} ${OUT_FILENAME} \
+    [--config ${SKELETON_BASED_ACTION_RECOGNITION_CONFIG_FILE}] \
+    [--checkpoint ${SKELETON_BASED_ACTION_RECOGNITION_CHECKPOINT}] \
+    [--det-config ${HUMAN_DETECTION_CONFIG_FILE}] \
+    [--det-checkpoint ${HUMAN_DETECTION_CHECKPOINT}] \
+    [--det-score-thr ${HUMAN_DETECTION_SCORE_THRESHOLD}] \
+    [--pose-config ${HUMAN_POSE_ESTIMATION_CONFIG_FILE}] \
+    [--pose-checkpoint ${HUMAN_POSE_ESTIMATION_CHECKPOINT}] \
+    [--label-map ${LABEL_MAP}] \
+    [--device ${DEVICE}] \
+    [--short-side] ${SHORT_SIDE}
+```
+
+可选参数：
+
+- `SPATIOTEMPORAL_ACTION_DETECTION_CONFIG_FILE`: 时空检测配置文件路径。
+- `SPATIOTEMPORAL_ACTION_DETECTION_CHECKPOINT`: 时空检测模型权重文件路径。
+- `ACTION_DETECTION_SCORE_THRESHOLD`: 动作检测分数阈值，默认为 0.4。
+- `HUMAN_DETECTION_CONFIG_FILE`: 人体检测配置文件路径。
+- `HUMAN_DETECTION_CHECKPOINT`: 人体检测模型权重文件路径。
+- `HUMAN_DETECTION_SCORE_THRE`: 人体检测分数阈值，默认为 0.9。
+- `INPUT_VIDEO`: 网络摄像头编号或本地视频文件路径，默认为 `0`。
+- `LABEL_MAP`: 所使用的标签映射文件，默认为 `demo/label_map_ava.txt`。
+- `DEVICE`: 指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或 cpu（`cpu`），默认为 `cuda:0`。
+- `OUTPUT_FPS`: 输出视频的帧率，默认为 15。
+- `OUTPUT_FILENAME`: 输出视频的路径，默认为 `None`。
+- `--show`: 是否通过 `cv2.imshow` 展示预测结果。
+- `DISPLAY_HEIGHT`: 输出结果图像高度，默认为 0。
+- `DISPLAY_WIDTH`: 输出结果图像宽度，默认为 0。若 `DISPLAY_HEIGHT <= 0 and DISPLAY_WIDTH <= 0`，则表示输出图像形状与输入视频形状相同。
+- `PREDICT_STEPSIZE`: 每 N 帧进行一次预测（以控制计算资源），默认为 8。
+- `CLIP_VIS_LENGTH`: 预测结果可视化持续帧数，即每次预测结果将可视化到 `CLIP_VIS_LENGTH` 帧中，默认为 8。
+
+- `SKELETON_BASED_ACTION_RECOGNITION_CONFIG_FILE`: 基于人体字体的动作识别模型配置文件路径。
+- `SKELETON_BASED_ACTION_RECOGNITION_CHECKPOINT`: 基于人体字体的动作识别模型权重文件路径。
+- `HUMAN_DETECTION_CONFIG_FILE`: 人体检测配置文件路径。
+- `HUMAN_DETECTION_CHECKPOINT`: 人体检测模型权重文件路径。
+- `HUMAN_DETECTION_SCORE_THRE`: 人体检测分数阈值，默认为 0.9。
+- `HUMAN_POSE_ESTIMATION_CONFIG_FILE`: 人体姿态估计模型配置文件路径 (需在 COCO-keypoint 数据集上训练)。
+- `HUMAN_POSE_ESTIMATION_CHECKPOINT`: 人体姿态估计模型权重文件路径 (需在 COCO-keypoint 数据集上训练).
+- `LABEL_MAP`: 所使用的标签映射文件，默认为 `demo/label_map_ntu120.txt`。
+- `DEVICE`: 指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或 cpu（`cpu`），默认为 `cuda:0`。
+- `SHORT_SIDE`: 视频抽帧时使用的短边长度，默认为 480。
+
+示例：
+
+以下示例假设用户的当前目录为 $MMACTION2。
+
+1. 使用 Faster RCNN 作为人体检测器，HRNetw32 作为人体姿态估计模型，PoseC3D-NTURGB+D-120-Xsub-keypoint 作为基于人体姿态的动作识别模型。
+
+```shell
+python demo/demo_posec3d.py demo/ntu_sample.avi demo/posec3d_demo.mp4 \
+    --config configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint.py \
+    --checkpoint https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint/slowonly_r50_u48_240e_ntu120_xsub_keypoint-6736b03f.pth \
+    --det-config demo/faster_rcnn_r50_fpn_2x_coco.py \
+    --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
+    --det-score-thr 0.9 \
+    --pose-config demo/hrnet_w32_coco_256x192.py \
+    --pose-checkpoint https://download.openmmlab.com/mmpose/top_down/hrnet/hrnet_w32_coco_256x192-c78dce93_20200708.pth \
+    --label-map demo/label_map_ntu120.txt
 ```

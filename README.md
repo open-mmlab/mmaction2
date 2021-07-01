@@ -27,6 +27,10 @@ The master branch works with **PyTorch 1.3+**.
   <img src="/docs/imgs/spatio-temporal-det.gif" width="800px"/><br>
     Spatio-Temporal Action Detection Results on AVA-2.1
 </div>
+<div align="center">
+  <img src="https://user-images.githubusercontent.com/34324155/123989146-2ecae680-d9fb-11eb-916b-b9db5563a9e5.gif" width="500px"/><br>
+    Skeleton-base Action Recognition Results on NTU-RGB+D-120
+</div>
 
 ### Major Features
 

@@ -9,6 +9,7 @@
 - [Webcam demo](#webcam-demo): A demo script to implement real-time action recognition from a web camera.
 - [Long Video demo](#long-video-demo): a demo script to predict different labels using a single long video.
 - [SpatioTempoval Action Detection Webcam Demo](#spatiotemporal-action-detection-webcam-demo): A demo script to implement real-time spatio-temporval action detection from a web camera.
+- [Skeleton-based Action Recognition Demo](#skeleton-based-action-recognition-demo): A demo script to predict the skeleton-based action recognition result using a single video.
 
 ## Modify configs through script arguments
 
@@ -437,4 +438,53 @@ python demo/webcam_demo_spatiotemporal_det.py \
     --predict-stepsize 40 \
     --output-fps 20 \
     --show
+```
+
+## Skeleton-based Action Recognition Demo
+
+We provide a demo script to predict the skeleton-based action recognition result using a single video.
+
+```shell
+python demo/demo_posec3d.py ${VIDEO_FILE} ${OUT_FILENAME} \
+    [--config ${SKELETON_BASED_ACTION_RECOGNITION_CONFIG_FILE}] \
+    [--checkpoint ${SKELETON_BASED_ACTION_RECOGNITION_CHECKPOINT}] \
+    [--det-config ${HUMAN_DETECTION_CONFIG_FILE}] \
+    [--det-checkpoint ${HUMAN_DETECTION_CHECKPOINT}] \
+    [--det-score-thr ${HUMAN_DETECTION_SCORE_THRESHOLD}] \
+    [--pose-config ${HUMAN_POSE_ESTIMATION_CONFIG_FILE}] \
+    [--pose-checkpoint ${HUMAN_POSE_ESTIMATION_CHECKPOINT}] \
+    [--label-map ${LABEL_MAP}] \
+    [--device ${DEVICE}] \
+    [--short-side] ${SHORT_SIDE}
+```
+
+Optional arguments:
+
+- `SKELETON_BASED_ACTION_RECOGNITION_CONFIG_FILE`: The skeleton-based action recognition config file path.
+- `SKELETON_BASED_ACTION_RECOGNITION_CHECKPOINT`: The skeleton-based action recognition checkpoint path or URL.
+- `HUMAN_DETECTION_CONFIG_FILE`: The human detection config file path.
+- `HUMAN_DETECTION_CHECKPOINT`: The human detection checkpoint URL.
+- `HUMAN_DETECTION_SCORE_THRE`: The score threshold for human detection. Default: 0.9.
+- `HUMAN_POSE_ESTIMATION_CONFIG_FILE`: The human pose estimation config file path (trained on COCO-Keypoint).
+- `HUMAN_POSE_ESTIMATION_CHECKPOINT`: The human pose estimation checkpoint URL (trained on COCO-Keypoint).
+- `LABEL_MAP`: The label map used. Default: `demo/label_map_ava.txt`.
+- `DEVICE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`.  Default: `cuda:0`.
+- `SHORT_SIDE`: The short side used for frame extraction. Default: 480.
+
+Examples:
+
+Assume that you are located at `$MMACTION2` .
+
+1. Use the Faster RCNN as the human detector, HRNetw32 as the pose estimator, PoseC3D-NTURGB+D-120-Xsub-keypoint as the skeleton-based action recognizer.
+
+```shell
+python demo/demo_posec3d.py demo/ntu_sample.avi demo/posec3d_demo.mp4 \
+    --config configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint.py \
+    --checkpoint https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint/slowonly_r50_u48_240e_ntu120_xsub_keypoint-6736b03f.pth \
+    --det-config demo/faster_rcnn_r50_fpn_2x_coco.py \
+    --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
+    --det-score-thr 0.9 \
+    --pose-config demo/hrnet_w32_coco_256x192.py \
+    --pose-checkpoint https://download.openmmlab.com/mmpose/top_down/hrnet/hrnet_w32_coco_256x192-c78dce93_20200708.pth \
+    --label-map demo/label_map_ntu120.txt
 ```

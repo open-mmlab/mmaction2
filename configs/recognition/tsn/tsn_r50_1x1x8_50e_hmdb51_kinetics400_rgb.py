@@ -7,12 +7,14 @@ _base_ = [
 model = dict(cls_head=dict(num_classes=51))
 
 # dataset settings
+split = 1
 dataset_type = 'RawframeDataset'
 data_root = 'data/hmdb51/rawframes'
 data_root_val = 'data/hmdb51/rawframes'
-ann_file_train = 'data/hmdb51/hmdb51_train_split_1_rawframes.txt'
-ann_file_val = 'data/hmdb51/hmdb51_val_split_1_rawframes.txt'
-ann_file_test = 'data/hmdb51/hmdb51_val_split_1_rawframes.txt'
+ann_file_train = f'data/hmdb51/hmdb51_train_split_{split}_rawframes.txt'
+ann_file_val = f'data/hmdb51/hmdb51_val_split_{split}_rawframes.txt'
+ann_file_test = f'data/hmdb51/hmdb51_val_split_{split}_rawframes.txt'
+
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [

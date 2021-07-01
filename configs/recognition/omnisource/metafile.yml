@@ -8,6 +8,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 12
     Epochs: 100
+    FLOPs: 134526976000
     Input: 3seg
     Modality: RGB
     Parameters: 23917832
@@ -19,8 +20,8 @@ Models:
   Results:
   - Dataset: MiniKinetics
     Metrics:
-      top1 acc: 77.4
-      top5 acc: 93.6
+      top1 accuracy: 77.4
+      top5 accuracy: 93.6
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/baseline/tsn_r50_1x1x8_100e_minikinetics_rgb_20201030.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/baseline/tsn_r50_1x1x8_100e_minikinetics_rgb_20201030.log
@@ -31,6 +32,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 12
     Epochs: 100
+    FLOPs: 134526976000
     Input: 3seg
     Modality: RGB
     Parameters: 23917832
@@ -42,8 +44,8 @@ Models:
   Results:
   - Dataset: MiniKinetics
     Metrics:
-      top1 acc: 78.0
-      top5 acc: 93.6
+      top1 accuracy: 78.0
+      top5 accuracy: 93.6
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/googleimage/tsn_r50_1x1x8_100e_minikinetics_googleimage_rgb_20201030.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/googleimage/tsn_r50_1x1x8_100e_minikinetics_googleimage_rgb_20201030.log
@@ -54,6 +56,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 12
     Epochs: 100
+    FLOPs: 134526976000
     Input: 3seg
     Modality: RGB
     Parameters: 23917832
@@ -65,8 +68,8 @@ Models:
   Results:
   - Dataset: MiniKinetics
     Metrics:
-      top1 acc: 78.6
-      top5 acc: 93.6
+      top1 accuracy: 78.6
+      top5 accuracy: 93.6
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/webimage/tsn_r50_1x1x8_100e_minikinetics_webimage_rgb_20201030.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/webimage/tsn_r50_1x1x8_100e_minikinetics_webimage_rgb_20201030.log
@@ -77,6 +80,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 12
     Epochs: 100
+    FLOPs: 134526976000
     Input: 3seg
     Modality: RGB
     Parameters: 23917832
@@ -88,8 +92,8 @@ Models:
   Results:
   - Dataset: MiniKinetics
     Metrics:
-      top1 acc: 80.6
-      top5 acc: 95.0
+      top1 accuracy: 80.6
+      top5 accuracy: 95.0
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/insvideo/tsn_r50_1x1x8_100e_minikinetics_insvideo_rgb_20201030.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/insvideo/tsn_r50_1x1x8_100e_minikinetics_insvideo_rgb_20201030.log
@@ -100,6 +104,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 12
     Epochs: 100
+    FLOPs: 134526976000
     Input: 3seg
     Modality: RGB
     Parameters: 23917832
@@ -111,8 +116,8 @@ Models:
   Results:
   - Dataset: MiniKinetics
     Metrics:
-      top1 acc: 78.6
-      top5 acc: 93.2
+      top1 accuracy: 78.6
+      top5 accuracy: 93.2
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/kineticsraw/tsn_r50_1x1x8_100e_minikinetics_kineticsraw_rgb_20201030.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/kineticsraw/tsn_r50_1x1x8_100e_minikinetics_kineticsraw_rgb_20201030.log
@@ -123,6 +128,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 12
     Epochs: 100
+    FLOPs: 134526976000
     Input: 3seg
     Modality: RGB
     Parameters: 23917832
@@ -134,8 +140,8 @@ Models:
   Results:
   - Dataset: MiniKinetics
     Metrics:
-      top1 acc: 81.3
-      top5 acc: 94.8
+      top1 accuracy: 81.3
+      top5 accuracy: 94.8
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/omnisource/tsn_r50_1x1x8_100e_minikinetics_omnisource_rgb_20201030.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/omnisource/tsn_r50_1x1x8_100e_minikinetics_omnisource_rgb_20201030.log
@@ -146,6 +152,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 12
     Epochs: 256
+    FLOPs: 54860070912
     Input: 8x8
     Modality: RGB
     Parameters: 32044296
@@ -157,8 +164,8 @@ Models:
   Results:
   - Dataset: MiniKinetics
     Metrics:
-      top1 acc: 78.6
-      top5 acc: 93.9
+      top1 accuracy: 78.6
+      top5 accuracy: 93.9
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/baseline/slowonly_r50_8x8x1_256e_minikinetics_rgb_20201030.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/baseline/slowonly_r50_8x8x1_256e_minikinetics_rgb_20201030.log
@@ -169,6 +176,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 12
     Epochs: 256
+    FLOPs: 54860070912
     Input: 8x8
     Modality: RGB
     Parameters: 32044296
@@ -180,8 +188,8 @@ Models:
   Results:
   - Dataset: MiniKinetics
     Metrics:
-      top1 acc: 80.8
-      top5 acc: 95.0
+      top1 accuracy: 80.8
+      top5 accuracy: 95.0
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/googleimage/slowonly_r50_8x8x1_256e_minikinetics_googleimage_rgb_20201030.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/googleimage/slowonly_r50_8x8x1_256e_minikinetics_googleimage_rgb_20201030.log
@@ -192,6 +200,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 12
     Epochs: 256
+    FLOPs: 54860070912
     Input: 8x8
     Modality: RGB
     Parameters: 32044296
@@ -203,8 +212,8 @@ Models:
   Results:
   - Dataset: MiniKinetics
     Metrics:
-      top1 acc: 81.3
-      top5 acc: 95.2
+      top1 accuracy: 81.3
+      top5 accuracy: 95.2
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/webimage/slowonly_r50_8x8x1_256e_minikinetics_webimage_rgb_20201030.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/webimage/slowonly_r50_8x8x1_256e_minikinetics_webimage_rgb_20201030.log
@@ -215,6 +224,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 12
     Epochs: 256
+    FLOPs: 54860070912
     Input: 8x8
     Modality: RGB
     Parameters: 32044296
@@ -226,8 +236,8 @@ Models:
   Results:
   - Dataset: MiniKinetics
     Metrics:
-      top1 acc: 82.4
-      top5 acc: 95.6
+      top1 accuracy: 82.4
+      top5 accuracy: 95.6
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/insvideo/slowonly_r50_8x8x1_256e_minikinetics_insvideo_rgb_20201030.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/insvideo/slowonly_r50_8x8x1_256e_minikinetics_insvideo_rgb_20201030.log
@@ -238,6 +248,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 12
     Epochs: 256
+    FLOPs: 54860070912
     Input: 8x8
     Modality: RGB
     Parameters: 32044296
@@ -249,8 +260,8 @@ Models:
   Results:
   - Dataset: MiniKinetics
     Metrics:
-      top1 acc: 80.3
-      top5 acc: 94.5
+      top1 accuracy: 80.3
+      top5 accuracy: 94.5
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/kineticsraw/slowonly_r50_8x8x1_256e_minikinetics_kineticsraw_rgb_20201030.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/kineticsraw/slowonly_r50_8x8x1_256e_minikinetics_kineticsraw_rgb_20201030.log
@@ -261,6 +272,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 12
     Epochs: 256
+    FLOPs: 54860070912
     Input: 8x8
     Modality: RGB
     Parameters: 32044296
@@ -272,8 +284,8 @@ Models:
   Results:
   - Dataset: MiniKinetics
     Metrics:
-      top1 acc: 82.9
-      top5 acc: 95.8
+      top1 accuracy: 82.9
+      top5 accuracy: 95.8
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/omnisource/slowonly_r50_8x8x1_256e_minikinetics_omnisource_rgb_20201030.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/omnisource/slowonly_r50_8x8x1_256e_minikinetics_omnisource_rgb_20201030.log
@@ -284,6 +296,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 32
     Epochs: 100
+    FLOPs: 102997721600
     Parameters: 24327632
     Pretrained: ImageNet
     Resolution: 340x256
@@ -293,8 +306,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 73.6
-      top5 acc: 91.0
+      top1 accuracy: 73.6
+      top5 accuracy: 91.0
     Task: Action Recognition
   Weights: https://download.openmmlab.com/mmaction/recognition/tsn/omni/tsn_imagenet_pretrained_r50_omni_1x1x3_kinetics400_rgb_20200926-54192355.pth
 - Config: configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py
@@ -303,6 +316,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 32
     Epochs: 100
+    FLOPs: 102997721600
     Parameters: 24327632
     Pretrained: IG-1B
     Resolution: short-side 320
@@ -312,8 +326,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 75.7
-      top5 acc: 91.9
+      top1 accuracy: 75.7
+      top5 accuracy: 91.9
     Task: Action Recognition
   Weights: https://download.openmmlab.com/mmaction/recognition/tsn/omni/tsn_1G1B_pretrained_r50_omni_1x1x3_kinetics400_rgb_20200926-2863fed0.pth
 - Config: configs/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_rgb.py
@@ -322,6 +336,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 256
+    FLOPs: 27430649856
     Parameters: 32454096
     Pretrained: None
     Resolution: short-side 320
@@ -331,8 +346,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 76.8
-      top5 acc: 92.5
+      top1 accuracy: 76.8
+      top5 accuracy: 92.5
     Task: Action Recognition
   Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/omni/slowonly_r50_omni_4x16x1_kinetics400_rgb_20200926-51b1f7ea.pth
 - Config: configs/recognition/slowonly/slowonly_r101_8x8x1_196e_kinetics400_rgb.py
@@ -341,6 +356,7 @@ Models:
     Architecture: ResNet101
     Batch Size: 8
     Epochs: 196
+    FLOPs: 112063447040
     Parameters: 60359120
     Pretrained: None
     Resolution: short-side 320
@@ -350,7 +366,7 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 80.4
-      top5 acc: 94.4
+      top1 accuracy: 80.4
+      top5 accuracy: 94.4
     Task: Action Recognition
   Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/omni/slowonly_r101_omni_8x8x1_kinetics400_rgb_20200926-b5dbb701.pth

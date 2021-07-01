@@ -1,3 +1,5 @@
+import warnings
+
 import torch.nn as nn
 import torch.utils.checkpoint as cp
 from mmcv.cnn import (ConvModule, NonLocal3d, build_activation_layer,
@@ -410,6 +412,7 @@ class ResNet3d(nn.Module):
                  conv1_stride_t=1,
                  pool1_stride_s=2,
                  pool1_stride_t=1,
+                 with_pool1=True,
                  with_pool2=True,
                  style='pytorch',
                  frozen_stages=-1,
@@ -450,6 +453,7 @@ class ResNet3d(nn.Module):
         self.conv1_stride_t = conv1_stride_t
         self.pool1_stride_s = pool1_stride_s
         self.pool1_stride_t = pool1_stride_t
+        self.with_pool1 = with_pool1
         self.with_pool2 = with_pool2
         self.style = style
         self.frozen_stages = frozen_stages
@@ -664,6 +668,11 @@ class ResNet3d(nn.Module):
         for param_name, param in bn3d.named_parameters():
             param_2d_name = f'{module_name_2d}.{param_name}'
             param_2d = state_dict_2d[param_2d_name]
+            if param.data.shape != param_2d.shape:
+                warnings.warn(f'The parameter of {module_name_2d} is not'
+                              'loaded due to incompatible shapes. ')
+                return
+
             param.data.copy_(param_2d)
             inflated_param_names.append(param_2d_name)
 
@@ -836,7 +845,8 @@ class ResNet3d(nn.Module):
             samples extracted by the backbone.
         """
         x = self.conv1(x)
-        x = self.maxpool(x)
+        if self.with_pool1:
+            x = self.maxpool(x)
         outs = []
         for i, layer_name in enumerate(self.res_layers):
             res_layer = getattr(self, layer_name)

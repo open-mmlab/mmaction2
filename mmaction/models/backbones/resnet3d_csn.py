@@ -43,7 +43,15 @@ class CSNBottleneck3d(Bottleneck3d):
         conv2 = []
         if self.bottleneck_mode == 'ip':
             conv2.append(
-                nn.Conv3d(planes, planes, kernel_size=1, stride=1, bias=False))
+                ConvModule(
+                    planes,
+                    planes,
+                    1,
+                    stride=1,
+                    bias=False,
+                    conv_cfg=self.conv_cfg,
+                    norm_cfg=self.norm_cfg,
+                    act_cfg=None))
         conv2_kernel_size = self.conv2.conv.kernel_size
         conv2_stride = self.conv2.conv.stride
         conv2_padding = self.conv2.conv.padding

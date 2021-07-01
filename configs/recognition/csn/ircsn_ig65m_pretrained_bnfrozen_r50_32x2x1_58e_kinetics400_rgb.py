@@ -2,12 +2,15 @@ _base_ = [
     '../../_base_/models/ircsn_r152.py', '../../_base_/default_runtime.py'
 ]
 
+# model settings
 model = dict(
     backbone=dict(
+        depth=50,
+        norm_eval=True,
+        bn_frozen=True,
         pretrained=  # noqa: E251
-        'https://download.openmmlab.com/mmaction/recognition/csn/ircsn_from_scratch_r152_ig65m_20200807-771c4135.pth'  # noqa: E501
+        'https://download.openmmlab.com/mmaction/recognition/csn/ircsn_from_scratch_r50_ig65m_20210617-ce545a37.pth'  # noqa: E501
     ))
-
 # dataset settings
 dataset_type = 'RawframeDataset'
 data_root = 'data/kinetics400/rawframes_train'
@@ -95,5 +98,5 @@ lr_config = dict(
     warmup_iters=16)
 total_epochs = 58
 
-work_dir = './work_dirs/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb'
+work_dir = './work_dirs/ircsn_ig65m_pretrained_bnfrozen_r50_32x2x1_58e_kinetics400_rgb'  # noqa: E501
 find_unused_parameters = True

@@ -8,6 +8,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 50
+    FLOPs: 32965562368
     Parameters: 24327632
     Pretrained: ImageNet
     Resolution: 340x256
@@ -18,8 +19,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 70.24
-      top5 acc: 89.56
+      top1 accuracy: 70.24
+      top5 accuracy: 89.56
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/20200607_211800.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/20200607_211800.log
@@ -30,6 +31,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 50
+    FLOPs: 32965562368
     Parameters: 24327632
     Pretrained: ImageNet
     Resolution: short-side 256
@@ -40,8 +42,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 70.59
-      top5 acc: 89.52
+      top1 accuracy: 70.59
+      top5 accuracy: 89.52
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_256p_1x1x8_50e_kinetics400_rgb/20200725_031623.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_256p_1x1x8_50e_kinetics400_rgb/20200725_031623.log
@@ -52,6 +54,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 50
+    FLOPs: 32965562368
     Parameters: 24327632
     Pretrained: ImageNet
     Resolution: short-side 256
@@ -62,8 +65,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 70.48
-      top5 acc: 89.4
+      top1 accuracy: 70.48
+      top5 accuracy: 89.4
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_gpu_normalize_1x1x8_50e_kinetics400_rgb/tsm_r50_gpu_normalize_1x1x8_50e_kinetics400_rgb_20210219.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_gpu_normalize_1x1x8_50e_kinetics400_rgb/tsm_r50_gpu_normalize_1x1x8_50e_kinetics400_rgb_20210219.log
@@ -74,6 +77,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 50
+    FLOPs: 32965562368
     Parameters: 24327632
     Pretrained: ImageNet
     Resolution: short-side 256
@@ -84,8 +88,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 70.25
-      top5 acc: 89.66
+      top1 accuracy: 70.25
+      top5 accuracy: 89.66
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x8_100e_kinetics400_rgb/tsm_r50_video_2d_1x1x8_50e_kinetics400_rgb.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x8_100e_kinetics400_rgb/tsm_r50_video_2d_1x1x8_50e_kinetics400_rgb.log
@@ -96,6 +100,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 100
+    FLOPs: 32965562368
     Parameters: 24327632
     Pretrained: ImageNet
     Resolution: 340x256
@@ -106,8 +111,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 72.9
-      top5 acc: 90.44
+      top1 accuracy: 72.9
+      top5 accuracy: 90.44
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_dense_1x1x8_100e_kinetics400_rgb/20200626_213415.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_dense_1x1x8_100e_kinetics400_rgb/20200626_213415.log
@@ -118,6 +123,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 100
+    FLOPs: 32965562368
     Parameters: 24327632
     Pretrained: ImageNet
     Resolution: short-side 256
@@ -128,8 +134,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 73.38
-      top5 acc: 91.02
+      top1 accuracy: 73.38
+      top5 accuracy: 91.02
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_dense_256p_1x1x8_100e_kinetics400_rgb/20200725_032043.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_dense_256p_1x1x8_100e_kinetics400_rgb/20200725_032043.log
@@ -140,6 +146,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 6
     Epochs: 50
+    FLOPs: 65931124736
     Parameters: 24327632
     Pretrained: ImageNet
     Resolution: 340x256
@@ -150,8 +157,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 72.09
-      top5 acc: 90.37
+      top1 accuracy: 72.09
+      top5 accuracy: 90.37
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_kinetics400_rgb/20201011_205356.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_kinetics400_rgb/20201011_205356.log
@@ -162,6 +169,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 6
     Epochs: 50
+    FLOPs: 65931124736
     Parameters: 24327632
     Pretrained: ImageNet
     Resolution: short-side 256
@@ -172,8 +180,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 71.89
-      top5 acc: 90.73
+      top1 accuracy: 71.89
+      top5 accuracy: 90.73
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_256p_1x1x16_50e_kinetics400_rgb/20201010_224825.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_256p_1x1x16_50e_kinetics400_rgb/20201010_224825.log
@@ -184,6 +192,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 50
+    FLOPs: 49457811456
     Parameters: 31682000
     Pretrained: ImageNet
     Resolution: short-side 320
@@ -194,8 +203,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 72.03
-      top5 acc: 90.25
+      top1 accuracy: 72.03
+      top5 accuracy: 90.25
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_nl_embedded_gaussian_r50_1x1x8_50e_kinetics400_rgb/20200724_120023.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_nl_embedded_gaussian_r50_1x1x8_50e_kinetics400_rgb/20200724_120023.log
@@ -206,6 +215,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 50
+    FLOPs: 41231355904
     Parameters: 28007888
     Pretrained: ImageNet
     Resolution: short-side 320
@@ -216,8 +226,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 70.7
-      top5 acc: 89.9
+      top1 accuracy: 70.7
+      top5 accuracy: 89.9
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_nl_gaussian_r50_1x1x8_50e_kinetics400_rgb/20200815_210253.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_nl_gaussian_r50_1x1x8_50e_kinetics400_rgb/20200815_210253.log
@@ -228,6 +238,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 50
+    FLOPs: 49457811456
     Parameters: 31682000
     Pretrained: ImageNet
     Resolution: short-side 320
@@ -238,8 +249,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 71.6
-      top5 acc: 90.34
+      top1 accuracy: 71.6
+      top5 accuracy: 90.34
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_nl_dot_product_r50_1x1x8_50e_kinetics400_rgb/20200723_220442.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_nl_dot_product_r50_1x1x8_50e_kinetics400_rgb/20200723_220442.log
@@ -250,6 +261,7 @@ Models:
     Architecture: MobileNetV2
     Batch Size: 8
     Epochs: 100
+    FLOPs: 3337519104
     Parameters: 2736272
     Pretrained: ImageNet
     Resolution: short-side 320
@@ -260,8 +272,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 acc: 68.46
-      top5 acc: 88.64
+      top1 accuracy: 68.46
+      top5 accuracy: 88.64
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_mobilenetv2_dense_1x1x8_100e_kinetics400_rgb/20210129_024936.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_mobilenetv2_dense_1x1x8_100e_kinetics400_rgb/20210129_024936.log
@@ -272,6 +284,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 50
+    FLOPs: 32959795200
     Parameters: 23606384
     Pretrained: ImageNet
     Training Data: Diving48
@@ -281,8 +294,8 @@ Models:
   Results:
   - Dataset: Diving48
     Metrics:
-      top1 acc: 75.99
-      top5 acc: 97.16
+      top1 accuracy: 75.99
+      top5 accuracy: 97.16
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x8_50e_diving48_rgb/20210426_012424.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x8_50e_diving48_rgb/20210426_012424.log
@@ -293,6 +306,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 4
     Epochs: 50
+    FLOPs: 65919590400
     Parameters: 23606384
     Pretrained: ImageNet
     Training Data: Diving48
@@ -302,8 +316,8 @@ Models:
   Results:
   - Dataset: Diving48
     Metrics:
-      top1 acc: 81.62
-      top5 acc: 97.66
+      top1 accuracy: 81.62
+      top5 accuracy: 97.66
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x16_50e_diving48_rgb/20210426_012823.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_video_1x1x16_50e_diving48_rgb/20210426_012823.log
@@ -314,6 +328,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 50
+    FLOPs: 32961859584
     Parameters: 23864558
     Pretrained: ImageNet
     Resolution: height 100
@@ -324,10 +339,10 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-      top1 acc (accurate): 47.7
-      top1 acc (efficient): 45.58
-      top5 acc (accurate): 76.12
-      top5 acc (efficient): 75.02
+      top1 accuracy: 47.7
+      top1 accuracy (efficient): 45.58
+      top5 accuracy: 76.12
+      top5 accuracy (efficient): 75.02
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv1_rgb/20210203_150227.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv1_rgb/20210203_150227.log
@@ -340,6 +355,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 50
+    FLOPs: 32961859584
     Parameters: 23864558
     Pretrained: ImageNet
     Resolution: height 100
@@ -350,10 +366,10 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-      top1 acc (accurate): 48.51
-      top1 acc (efficient): 47.1
-      top5 acc (accurate): 77.56
-      top5 acc (efficient): 76.02
+      top1 accuracy: 48.51
+      top1 accuracy (efficient): 47.1
+      top5 accuracy: 77.56
+      top5 accuracy (efficient): 76.02
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_flip_1x1x8_50e_sthv1_rgb/20210203_145829.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_flip_1x1x8_50e_sthv1_rgb/20210203_145829.log
@@ -366,6 +382,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 50
+    FLOPs: 32961859584
     Parameters: 23864558
     Pretrained: ImageNet
     Resolution: height 100
@@ -376,10 +393,10 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-      top1 acc (accurate): 48.9
-      top1 acc (efficient): 47.16
-      top5 acc (accurate): 77.92
-      top5 acc (efficient): 76.07
+      top1 accuracy: 48.9
+      top1 accuracy (efficient): 47.16
+      top5 accuracy: 77.92
+      top5 accuracy (efficient): 76.07
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_randaugment_1x1x8_50e_sthv1_rgb/tsm_r50_randaugment_1x1x8_50e_sthv1_rgb.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_randaugment_1x1x8_50e_sthv1_rgb/tsm_r50_randaugment_1x1x8_50e_sthv1_rgb.log
@@ -392,6 +409,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 50
+    FLOPs: 32961859584
     Parameters: 23864558
     Pretrained: ImageNet
     Resolution: height 100
@@ -402,10 +420,10 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-      top1 acc (accurate): 50.31
-      top1 acc (efficient): 47.85
-      top5 acc (accurate): 78.18
-      top5 acc (efficient): 76.78
+      top1 accuracy: 50.31
+      top1 accuracy (efficient): 47.85
+      top5 accuracy: 78.18
+      top5 accuracy (efficient): 76.78
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_flip_randaugment_1x1x8_50e_sthv1_rgb/tsm_r50_flip_randaugment_1x1x8_50e_sthv1_rgb.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_flip_randaugment_1x1x8_50e_sthv1_rgb/tsm_r50_flip_randaugment_1x1x8_50e_sthv1_rgb.log
@@ -418,6 +436,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 6
     Epochs: 50
+    FLOPs: 65923719168
     Parameters: 23864558
     Pretrained: ImageNet
     Resolution: height 100
@@ -428,10 +447,10 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-      top1 acc (accurate): 49.28
-      top1 acc (efficient): 47.62
-      top5 acc (accurate): 77.82
-      top5 acc (efficient): 76.63
+      top1 accuracy: 49.28
+      top1 accuracy (efficient): 47.62
+      top5 accuracy: 77.82
+      top5 accuracy (efficient): 76.63
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv1_rgb/20201010_221240.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv1_rgb/20201010_221240.log
@@ -444,6 +463,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 50
+    FLOPs: 62782459904
     Parameters: 42856686
     Pretrained: ImageNet
     Resolution: height 100
@@ -454,10 +474,10 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-      top1 acc (accurate): 48.43
-      top1 acc (efficient): 45.72
-      top5 acc (accurate): 76.72
-      top5 acc (efficient): 74.67
+      top1 accuracy: 48.43
+      top1 accuracy (efficient): 45.72
+      top5 accuracy: 76.72
+      top5 accuracy (efficient): 74.67
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv1_rgb/20201010_224055.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv1_rgb/20201010_224055.log
@@ -470,6 +490,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 6
     Epochs: 50
+    FLOPs: 32961859584
     Parameters: 23864558
     Pretrained: ImageNet
     Resolution: height 240
@@ -480,10 +501,10 @@ Models:
   Results:
   - Dataset: SthV2
     Metrics:
-      top1 acc (accurate): 61.12
-      top1 acc (efficient): 57.86
-      top5 acc (accurate): 86.26
-      top5 acc (efficient): 84.67
+      top1 accuracy: 61.12
+      top1 accuracy (efficient): 57.86
+      top5 accuracy: 86.26
+      top5 accuracy (efficient): 84.67
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb/20200912_140737.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb/20200912_140737.log
@@ -496,6 +517,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 6
     Epochs: 50
+    FLOPs: 32961859584
     Parameters: 23864558
     Pretrained: ImageNet
     Resolution: height 256
@@ -506,10 +528,10 @@ Models:
   Results:
   - Dataset: SthV2
     Metrics:
-      top1 acc (accurate): 63.84
-      top1 acc (efficient): 60.79
-      top5 acc (accurate): 88.3
-      top5 acc (efficient): 86.6
+      top1 accuracy: 63.84
+      top1 accuracy (efficient): 60.79
+      top5 accuracy: 88.3
+      top5 accuracy (efficient): 86.6
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb/20210401_143656.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb/20210401_143656.log
@@ -522,6 +544,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 6
     Epochs: 50
+    FLOPs: 65923719168
     Parameters: 23864558
     Pretrained: ImageNet
     Resolution: height 240
@@ -532,10 +555,10 @@ Models:
   Results:
   - Dataset: SthV2
     Metrics:
-      top1 acc (accurate): 62.04
-      top1 acc (efficient): 59.93
-      top5 acc (accurate): 87.35
-      top5 acc (efficient): 86.1
+      top1 accuracy: 62.04
+      top1 accuracy (efficient): 59.93
+      top5 accuracy: 87.35
+      top5 accuracy (efficient): 86.1
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv2_rgb/20201010_224215.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv2_rgb/20201010_224215.log
@@ -548,6 +571,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 6
     Epochs: 50
+    FLOPs: 32961859584
     Parameters: 23864558
     Pretrained: ImageNet
     Resolution: height 256
@@ -558,10 +582,10 @@ Models:
   Results:
   - Dataset: SthV2
     Metrics:
-      top1 acc (accurate): 63.19
-      top1 acc (efficient): 61.06
-      top5 acc (accurate): 87.93
-      top5 acc (efficient): 86.66
+      top1 accuracy: 63.19
+      top1 accuracy (efficient): 61.06
+      top5 accuracy: 87.93
+      top5 accuracy (efficient): 86.66
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv2_rgb/20210331_134458.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv2_rgb/20210331_134458.log
@@ -574,6 +598,7 @@ Models:
     Architecture: ResNet101
     Batch Size: 8
     Epochs: 50
+    FLOPs: 62782459904
     Parameters: 42856686
     Pretrained: ImageNet
     Resolution: height 240
@@ -584,10 +609,10 @@ Models:
   Results:
   - Dataset: SthV2
     Metrics:
-      top1 acc (accurate): 61.51
-      top1 acc (efficient): 58.59
-      top5 acc (accurate): 86.9
-      top5 acc (efficient): 85.07
+      top1 accuracy: 61.51
+      top1 accuracy (efficient): 58.59
+      top5 accuracy: 86.9
+      top5 accuracy (efficient): 85.07
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv2_rgb/20201010_224100.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv2_rgb/20201010_224100.log
@@ -600,6 +625,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 50
+    FLOPs: 43051352064
     Parameters: 23864558
     Pretrained: ImageNet
     Resolution: height 100
@@ -610,10 +636,10 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-      top1 acc (accurate): 48.49
-      top1 acc (efficient): 46.35
-      top5 acc (accurate): 76.88
-      top5 acc (efficient): 75.07
+      top1 accuracy: 48.49
+      top1 accuracy (efficient): 46.35
+      top5 accuracy: 76.88
+      top5 accuracy (efficient): 75.07
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_mixup_1x1x8_50e_sthv1_rgb/tsm_r50_mixup_1x1x8_50e_sthv1_rgb.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_mixup_1x1x8_50e_sthv1_rgb/tsm_r50_mixup_1x1x8_50e_sthv1_rgb.log
@@ -626,6 +652,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 50
+    FLOPs: 43051352064
     Parameters: 23864558
     Pretrained: ImageNet
     Resolution: height 100
@@ -636,10 +663,10 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-      top1 acc (accurate): 47.46
-      top1 acc (efficient): 45.92
-      top5 acc (accurate): 76.71
-      top5 acc (efficient): 75.23
+      top1 accuracy: 47.46
+      top1 accuracy (efficient): 45.92
+      top5 accuracy: 76.71
+      top5 accuracy (efficient): 75.23
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_cutmix_1x1x8_50e_sthv1_rgb/tsm_r50_cutmix_1x1x8_50e_sthv1_rgb.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_cutmix_1x1x8_50e_sthv1_rgb/tsm_r50_cutmix_1x1x8_50e_sthv1_rgb.log
@@ -652,6 +679,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 50
+    FLOPs: 43048943616
     Parameters: 23563355
     Pretrained: ImageNet
     Resolution: height 100
@@ -662,9 +690,101 @@ Models:
   Results:
   - Dataset: Jester
     Metrics:
-    - top1 acc (efficient): 96.5
-    - top1 acc (accurate): 97.2
+      top1 accuracy: 97.2
+      top1 accuracy (efficient): 96.5
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_jester_rgb/tsm_r50_1x1x8_50e_jester_rgb.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_jester_rgb/tsm_r50_1x1x8_50e_jester_rgb.log
   Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_jester_rgb/tsm_r50_1x1x8_50e_jester_rgb-c799267e.pth
+- Config: configs/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_hmdb51_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Batch Size: 12
+    Epochs: 25
+    FLOPs: 32959844352
+    Parameters: 23612531
+    Pretrained: Kinetics400
+    Training Data: HMDB51
+    Training Resources: 8 GPUs
+  Modality: RGB
+  Name: tsm_k400_pretrained_r50_1x1x8_25e_hmdb51_rgb
+  Results:
+  - Dataset: HMDB51
+    Metrics:
+      top1 accuracy: 72.68
+      top5 accuracy: 92.03
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_hmdb51_rgb/20210605_182554.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_hmdb51_rgb/20210605_182554.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_hmdb51_rgb/tsm_k400_pretrained_r50_1x1x8_25e_hmdb51_rgb_20210630-10c74ee5.pth
+  gpu_mem(M): '10388'
+- Config: configs/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_hmdb51_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Batch Size: 6
+    Epochs: 25
+    FLOPs: 65919688704
+    Parameters: 23612531
+    Pretrained: Kinetics400
+    Training Data: HMDB51
+    Training Resources: 8 GPUs
+  Modality: RGB
+  Name: tsm_k400_pretrained_r50_1x1x16_25e_hmdb51_rgb
+  Results:
+  - Dataset: HMDB51
+    Metrics:
+      top1 accuracy: 74.77
+      top5 accuracy: 93.86
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_hmdb51_rgb/20210605_182505.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_hmdb51_rgb/20210605_182505.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_hmdb51_rgb/tsm_k400_pretrained_r50_1x1x16_25e_hmdb51_rgb_20210630-4785548e.pth
+  gpu_mem(M): '10388'
+- Config: configs/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_ucf101_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Batch Size: 12
+    Epochs: 25
+    FLOPs: 32960663552
+    Parameters: 23714981
+    Pretrained: Kinetics400
+    Training Data: UCF101
+    Training Resources: 8 GPUs
+  Modality: RGB
+  Name: tsm_k400_pretrained_r50_1x1x8_25e_ucf101_rgb
+  Results:
+  - Dataset: UCF101
+    Metrics:
+      top1 accuracy: 94.5
+      top5 accuracy: 99.58
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_ucf101_rgb/20210605_182720.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_ucf101_rgb/20210605_182720.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x8_25e_ucf101_rgb/tsm_k400_pretrained_r50_1x1x8_25e_ucf101_rgb_20210630-1fae312b.pth
+  gpu_mem(M): '10389'
+- Config: configs/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_ucf101_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: ResNet50
+    Batch Size: 6
+    Epochs: 25
+    FLOPs: 65921327104
+    Parameters: 23714981
+    Pretrained: Kinetics400
+    Training Data: UCF101
+    Training Resources: 8 GPUs
+  Modality: RGB
+  Name: tsm_k400_pretrained_r50_1x1x16_25e_ucf101_rgb
+  Results:
+  - Dataset: UCF101
+    Metrics:
+      top1 accuracy: 94.58
+      top5 accuracy: 99.37
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_ucf101_rgb/20210605_182720.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_ucf101_rgb/20210605_182720.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_ucf101_rgb/tsm_k400_pretrained_r50_1x1x16_25e_ucf101_rgb_20210630-8df9c358.pth
+  gpu_mem(M): '10389'
