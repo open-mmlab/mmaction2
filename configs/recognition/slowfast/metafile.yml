@@ -186,11 +186,11 @@ Models:
     Architecture: ResNet50
     Epochs: 22
     Parameters: 34044630
-    Training BatchSize / GPU: 4
+    Batch Size: 4
     Training Data: SthV1
-    gpus: 8
-    pretrain: Kinetics400
-    resolution: height 100
+    Training Resources: 8 GPUs
+    Pretrained: Kinetics400
+    Resolution: height 100
   Modality: RGB
   Name: slowfast_r50_16x8x1_22e_sthv1_rgb
   Results:

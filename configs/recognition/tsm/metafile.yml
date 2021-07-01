@@ -674,10 +674,10 @@ Models:
     Architecture: ResNet50
     Epochs: 25
     Parameters: 23612531
-    Training BatchSize / GPU: 12
+    Batch Size: 12
     Training Data: HMDB51
-    gpus: 8
-    pretrain: Kinetics400
+    Training Resources: 8 GPUs
+    Pretrained: Kinetics400
   Modality: RGB
   Name: tsm_k400_pretrained_r50_1x1x8_25e_hmdb51_rgb
   Results:
@@ -696,10 +696,10 @@ Models:
     Architecture: ResNet50
     Epochs: 25
     Parameters: 23612531
-    Training BatchSize / GPU: 6
+    Batch Size: 6
     Training Data: HMDB51
-    gpus: 8
-    pretrain: Kinetics400
+    Training Resources: 8 GPUs
+    Pretrained: Kinetics400
   Modality: RGB
   Name: tsm_k400_pretrained_r50_1x1x16_25e_hmdb51_rgb
   Results:
@@ -718,10 +718,10 @@ Models:
     Architecture: ResNet50
     Epochs: 25
     Parameters: 23714981
-    Training BatchSize / GPU: 12
+    Batch Size: 12
     Training Data: UCF101
-    gpus: 8
-    pretrain: Kinetics400
+    Training Resources: 8 GPUs
+    Pretrained: Kinetics400
   Modality: RGB
   Name: tsm_k400_pretrained_r50_1x1x8_25e_ucf101_rgb
   Results:
@@ -740,10 +740,10 @@ Models:
     Architecture: ResNet50
     Epochs: 25
     Parameters: 23714981
-    Training BatchSize / GPU: 6
+    Batch Size: 6
     Training Data: UCF101
-    gpus: 8
-    pretrain: Kinetics400
+    Training Resources: 8 GPUs
+    Pretrained: Kinetics400
   Modality: RGB
   Name: tsm_k400_pretrained_r50_1x1x16_25e_ucf101_rgb
   Results:

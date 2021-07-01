@@ -416,10 +416,10 @@ Models:
     Architecture: ResNet50
     Epochs: 64
     Parameters: 31738995
-    Training BatchSize / GPU: 8
+    Batch Size: 8
     Training Data: HMDB51
-    gpus: 8
-    pretrain: ImageNet
+    Training Resources: 8 GPUs
+    Pretrained: ImageNet
   Modality: RGB
   Name: slowonly_imagenet_pretrained_r50_8x4x1_64e_hmdb51_rgb
   Results:
@@ -439,10 +439,10 @@ Models:
     Architecture: ResNet50
     Epochs: 40
     Parameters: 31738995
-    Training BatchSize / GPU: 8
+    Batch Size: 8
     Training Data: HMDB51
-    gpus: 8
-    pretrain: Kinetics400
+    Training Resources: 8 GPUs
+    Pretrained: Kinetics400
   Modality: RGB
   Name: slowonly_imagenet_pretrained_r50_8x4x1_64e_hmdb51_rgb
   Results:
@@ -462,10 +462,10 @@ Models:
     Architecture: ResNet50
     Epochs: 64
     Parameters: 31841445
-    Training BatchSize / GPU: 8
+    Batch Size: 8
     Training Data: UCF101
-    gpus: 8
-    pretrain: ImageNet
+    Training Resources: 8 GPUs
+    Pretrained: ImageNet
   Modality: RGB
   Name: slowonly_imagenet_pretrained_r50_8x4x1_64e_ucf101_rgb
   Results:
@@ -485,10 +485,10 @@ Models:
     Architecture: ResNet50
     Epochs: 40
     Parameters: 31841445
-    Training BatchSize / GPU: 8
+    Batch Size: 8
     Training Data: UCF101
-    gpus: 8
-    pretrain: Kinetics400
+    Training Resources: 8 GPUs
+    Pretrained: Kinetics400
   Modality: RGB
   Name: slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb
   Results:
@@ -508,10 +508,10 @@ Models:
     Architecture: ResNet50
     Epochs: 64
     Parameters: 31991022
-    Training BatchSize / GPU: 8
+    Batch Size: 8
     Training Data: SthV1
-    gpus: 8
-    pretrain: ImageNet
+    Training Resources: 8 GPUs
+    Pretrained: ImageNet
   Modality: RGB
   Name: slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb
   Results:

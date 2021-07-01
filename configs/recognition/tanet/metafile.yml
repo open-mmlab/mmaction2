@@ -32,11 +32,11 @@ Models:
     Architecture: TANet
     Epochs: 50
     Parameters: 25127246
-    Training BatchSize / GPU: 8
+    Batch Size: 8
     Training Data: SthV1
-    gpus: 8
-    pretrain: ImageNet
-    resolution: height 100
+    Training Resources: 8 GPUs
+    Pretrained: ImageNet
+    Resolution: height 100
   Modality: RGB
   Name: tanet_r50_1x1x8_50e_sthv1_rgb
   Results:
@@ -58,11 +58,11 @@ Models:
     Architecture: TANet
     Epochs: 50
     Parameters: 25134670
-    Training BatchSize / GPU: 8
+    Batch Size: 8
     Training Data: SthV1
     gpus: 4
-    pretrain: ImageNet
-    resolution: height 100
+    Pretrained: ImageNet
+    Resolution: height 100
   Modality: RGB
   Name: tanet_r50_1x1x16_50e_sthv1_rgb
   Results:
