@@ -19,7 +19,7 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 accuracy: 76.28
+      Top 1 Accuracy: 76.28
       top5 accuracy: 92.6
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_dense_1x1x8_100e_kinetics400_rgb/tanet_r50_dense_1x1x8_100e_kinetics400_rgb_20210219.json
@@ -42,8 +42,8 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-      top1 accuracy: 49.69
-      top1 accuracy (efficient): 47.45
+      Top 1 Accuracy: 49.69
+      Top 1 Accuracy (efficient): 47.45
       top5 accuracy: 77.62
       top5 accuracy (efficient): 76.0
     Task: Action Recognition
@@ -67,8 +67,8 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-      top1 accuracy: 50.41
-      top1 accuracy (efficient): 47.73
+      Top 1 Accuracy: 50.41
+      Top 1 Accuracy (efficient): 47.73
       top5 accuracy: 78.47
       top5 accuracy (efficient): 77.31
     Task: Action Recognition
