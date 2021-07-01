@@ -1,4 +1,5 @@
 import logging
+import os.path as osp
 import shutil
 import sys
 import tempfile
@@ -103,6 +104,8 @@ def _build_demo_runner(runner_type='EpochBasedRunner',
         ])
 
     tmp_dir = tempfile.mkdtemp()
+    tmp_dir = osp.join(tmp_dir, '.test_lr_tmp')
+
     runner = build_runner(
         dict(type=runner_type),
         default_args=dict(
