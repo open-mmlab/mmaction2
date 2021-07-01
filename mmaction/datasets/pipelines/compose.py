@@ -21,8 +21,8 @@ class Compose:
         for transform in transforms:
             if isinstance(transform, dict):
                 if transform['type'].startswith('torchvision.'):
-                    type = transform.pop('type')[12:]
-                    transform = TorchvisionTrans(type, **transform)
+                    trans_type = transform.pop('type')[12:]
+                    transform = TorchvisionTrans(trans_type, **transform)
                 else:
                     transform = build_from_cfg(transform, PIPELINES)
                 self.transforms.append(transform)
