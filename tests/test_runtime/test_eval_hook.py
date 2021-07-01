@@ -1,4 +1,5 @@
 import os.path as osp
+import shutil
 import tempfile
 import unittest.mock as mock
 import warnings
@@ -341,3 +342,5 @@ def test_start_param(EvalHookParam, _build_demo_runner, by_epoch):
         runner._iter = 1
     runner.run([dataloader], [('train', 1)], 3)
     assert evalhook.evaluate.call_count == 2  # after epoch 2 & 3
+
+    shutil.rmtree(runner.work_dir)
