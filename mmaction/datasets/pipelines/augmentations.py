@@ -58,7 +58,7 @@ class TorchvisionTrans:
     """Torchvision Augmentations, under torchvision.transforms.
 
     Args:
-        type: The name of the torchvision transformation.
+        type (str): The name of the torchvision transformation.
     """
 
     def __init__(self, type, **kwargs):
