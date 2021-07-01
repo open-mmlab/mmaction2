@@ -124,6 +124,7 @@ def train_model(model,
 
     # precise bn setting
     if cfg.get('precise_bn', False):
+        print('precise_BN here')
         precise_bn_dataset = build_dataset(cfg.data.train)
         dataloader_setting = dict(
             videos_per_gpu=cfg.data.get('videos_per_gpu', 1),

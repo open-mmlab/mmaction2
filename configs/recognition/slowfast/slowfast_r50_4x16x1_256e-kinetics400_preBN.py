@@ -8,11 +8,11 @@ dataset_type = 'RawframeDataset'
 # ann_file_train = 'data/kinetics400/kinetics400_train_list_rawframes.txt'
 # ann_file_val = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
 # ann_file_test = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
-data_root = 'data/kinetics400/kinetics_400_train_SH36_frames'
-data_root_val = 'data/kinetics400/kinetics_400_val_SH36_frames'
-ann_file_train = 'data/kinetics400/kinetics_train_list_hd320.txt'
-ann_file_val = 'data/kinetics400/kinetics_val_list_hd320.txt'
-ann_file_test = 'data/kinetics400/kinetics_val_list_hd320.txt'
+data_root = '/mnt/lustre21/DATAshare2/duanhaodong/Kinetics400/kinetics_400_train_SH36_frames'
+data_root_val = '/mnt/lustre21/DATAshare2/duanhaodong/Kinetics400/kinetics_400_val_SH36_frames'
+ann_file_train = '/mnt/lustre21/DATAshare2/duanhaodong/Kinetics400/kinetics_train_list_hd320.txt'
+ann_file_val = '/mnt/lustre21/DATAshare2/duanhaodong/Kinetics400/kinetics_val_list_hd320.txt'
+ann_file_test = '/mnt/lustre21/DATAshare2/duanhaodong/Kinetics400/kinetics_val_list_hd320.txt'
 
 mc_cfg = dict(
     server_list_cfg = '/mnt/lustre/share/memcached_client/server_list.conf',
@@ -41,7 +41,7 @@ val_pipeline = [
         frame_interval=2,
         num_clips=1,
         test_mode=True),
-    dict(type='RawFrameDecode'),
+    dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
     dict(type='Flip', flip_ratio=0),
@@ -57,7 +57,7 @@ test_pipeline = [
         frame_interval=2,
         num_clips=10,
         test_mode=True),
-    dict(type='RawFrameDecode'),
+    dict(type='RawFrameDecode', io_backend='memcached', **mc_cfg),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='ThreeCrop', crop_size=256),
     dict(type='Flip', flip_ratio=0),
@@ -92,7 +92,7 @@ evaluation = dict(
 #     type='SGD', lr=0.1, momentum=0.9,
 #     weight_decay=0.0001)  # this lr is used for 8 gpus
 optimizer = dict(
-    type='SGD', lr=0.1, momentum=0.9,
+    type='SGD', lr=0.2, momentum=0.9,
     weight_decay=0.0001)  # this lr is used for 8 gpus
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
@@ -102,17 +102,17 @@ lr_config = dict(
     warmup='linear',
     warmup_by_epoch=True,
     warmup_iters=34)
-# total_epochs = 256
 total_epochs = 256
 
 # precise_BN
-precise_bn=dict()
-# add checkpoint 
-load_from = None
-# load_from = '/mnt/lustre/liguankai/resume/slowfast_r50_4x16x1_256e_kinetics400_rgb_20200704-bcde7ed7.pth'
+precise_bn=dict(num_iters=200, interval=1)
 
+# add checkpoint 
+# load_from = None
+# load_from = '/mnt/lustre/liguankai/resume/slowfast_r50_4x16x1_256e_kinetics400_rgb_20200704-bcde7ed7.pth'
+# resume_from = '/mnt/lustre/liguankai/work_dir/sl_prebn/latest.pth'
 
 # runtime settings
 checkpoint_config = dict(interval=4)
-work_dir = './work_dirs/slowfast_r50_3d_4x16x1_256e_kinetics400_rgb'
+work_dir = './work_dirs/slowfast_r50_3d_4x16x1_256e_kinetics400_rgb_test'
 find_unused_parameters = False
