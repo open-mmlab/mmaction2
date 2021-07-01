@@ -1,12 +1,14 @@
 import random
 import warnings
 from collections.abc import Sequence
+from distutils.version import LooseVersion
 
 import mmcv
 import numpy as np
 from torch.nn.modules.utils import _pair
 
 from ..builder import PIPELINES
+from .formating import to_tensor
 
 
 def _combine_quadruple(a, b):
@@ -49,6 +51,43 @@ def _init_lazy_if_proper(results, lazy):
             results['lazy'] = lazyop
     else:
         assert 'lazy' not in results, 'Use Fuse after lazy operations'
+
+
+@PIPELINES.register_module()
+class TorchvisionTrans:
+    """Torchvision Augmentations, under torchvision.transforms.
+
+    Args:
+        type (str): The name of the torchvision transformation.
+    """
+
+    def __init__(self, type, **kwargs):
+        try:
+            import torchvision
+            import torchvision.transforms as tv_trans
+        except ImportError:
+            raise RuntimeError('Install torchvision to use TorchvisionTrans')
+        if LooseVersion(torchvision.__version__) < LooseVersion('0.8.0'):
+            raise RuntimeError('The version of torchvision should be at least '
+                               '0.8.0')
+
+        trans = getattr(tv_trans, type, None)
+        assert trans, f'Transform {type} not in torchvision'
+        self.trans = trans(**kwargs)
+
+    def __call__(self, results):
+        assert 'imgs' in results
+
+        imgs = [x.transpose(2, 0, 1) for x in results['imgs']]
+        imgs = to_tensor(np.stack(imgs))
+
+        imgs = self.trans(imgs).data.numpy()
+        imgs[imgs > 255] = 255
+        imgs[imgs < 0] = 0
+        imgs = imgs.astype(np.uint8)
+        imgs = [x.transpose(1, 2, 0) for x in imgs]
+        results['imgs'] = imgs
+        return results
 
 
 @PIPELINES.register_module()
@@ -152,35 +191,6 @@ class PoseCompact:
                     f'hw_ratio={self.hw_ratio}, '
                     f'allow_imgpad={self.allow_imgpad})')
         return repr_str
-
-
-class EntityBoxRescale:
-
-    def __init__(self, scale_factor):
-        raise NotImplementedError(
-            'This component should not be used in the '
-            'data pipeline and is removed in PR #782. Details see '
-            'https://github.com/open-mmlab/mmaction2/pull/782')
-
-
-@PIPELINES.register_module()
-class EntityBoxCrop:
-
-    def __init__(self, crop_bbox):
-        raise NotImplementedError(
-            'This component should not be used in the '
-            'data pipeline and is removed in PR #782. Details see '
-            'https://github.com/open-mmlab/mmaction2/pull/782')
-
-
-@PIPELINES.register_module()
-class EntityBoxFlip:
-
-    def __init__(self, img_shape):
-        raise NotImplementedError(
-            'This component should not be used in the '
-            'data pipeline and is removed in PR #782. Details see '
-            'https://github.com/open-mmlab/mmaction2/pull/782')
 
 
 @PIPELINES.register_module()
