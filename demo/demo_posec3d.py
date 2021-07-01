@@ -48,15 +48,16 @@ except ImportError:
     raise ImportError('Please install moviepy to enable output file')
 
 FONTFACE = cv2.FONT_HERSHEY_DUPLEX
-FONTSCALE = 0.5
+FONTSCALE = 0.75
 FONTCOLOR = (255, 255, 255)  # BGR, white
-MSGCOLOR = (128, 128, 128)  # BGR, gray
 THICKNESS = 1
 LINETYPE = 1
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='MMAction2 demo')
+    parser.add_argument('video', help='video file/url')
+    parser.add_argument('out_filename', help='output filename')
     parser.add_argument(
         '--config',
         default=('configs/skeleton/posec3d/'
@@ -93,7 +94,6 @@ def parse_args():
         type=float,
         default=0.9,
         help='the threshold of human detection score')
-    parser.add_argument('--video', help='video file/url')
     parser.add_argument(
         '--label-map',
         default='demo/label_map_ntu120.txt',
@@ -105,10 +105,6 @@ def parse_args():
         type=int,
         default=480,
         help='specify the short-side length of the image')
-    parser.add_argument(
-        '--out-filename',
-        default='demo/posec3d_demo.mp4',
-        help='output filename')
     parser.add_argument(
         '--cfg-options',
         nargs='+',
