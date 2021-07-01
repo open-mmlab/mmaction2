@@ -415,6 +415,7 @@ Models:
   Metadata:
     Architecture: ResNet50
     Epochs: 64
+    FLOPs: 54859765760
     Parameters: 31738995
     Batch Size: 8
     Training Data: HMDB51
@@ -438,6 +439,7 @@ Models:
   Metadata:
     Architecture: ResNet50
     Epochs: 40
+    FLOPs: 54859765760
     Parameters: 31738995
     Batch Size: 8
     Training Data: HMDB51
@@ -461,6 +463,7 @@ Models:
   Metadata:
     Architecture: ResNet50
     Epochs: 64
+    FLOPs: 54859868160
     Parameters: 31841445
     Batch Size: 8
     Training Data: UCF101
@@ -484,6 +487,7 @@ Models:
   Metadata:
     Architecture: ResNet50
     Epochs: 40
+    FLOPs: 54859868160
     Parameters: 31841445
     Batch Size: 8
     Training Data: UCF101
@@ -507,6 +511,7 @@ Models:
   Metadata:
     Architecture: ResNet50
     Epochs: 64
+    FLOPs: 53907910656
     Parameters: 31991022
     Batch Size: 8
     Training Data: SthV1

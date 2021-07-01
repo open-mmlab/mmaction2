@@ -31,6 +31,7 @@ Models:
   Metadata:
     Architecture: TANet
     Epochs: 50
+    FLOPs: 32972787840
     Parameters: 25127246
     Batch Size: 8
     Training Data: SthV1
@@ -57,6 +58,7 @@ Models:
   Metadata:
     Architecture: TANet
     Epochs: 50
+    FLOPs: 65946542336
     Parameters: 25134670
     Batch Size: 8
     Training Data: SthV1

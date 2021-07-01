@@ -185,6 +185,7 @@ Models:
   Metadata:
     Architecture: ResNet50
     Epochs: 22
+    FLOPs: 132442627584
     Parameters: 34044630
     Batch Size: 4
     Training Data: SthV1
