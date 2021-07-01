@@ -229,12 +229,6 @@ class TimeSformer(nn.Module):
             if 'state_dict' in state_dict:
                 state_dict = state_dict['state_dict']
 
-            old_state_dict_keys = list(state_dict.keys())
-            for old_key in old_state_dict_keys:
-                if 'attentions' in old_key:
-                    new_key = old_key.replace('attn.', 'attn.attn.')
-                    state_dict[new_key] = state_dict.pop(old_key)
-
             if self.attention_type == 'divided_space_time':
                 # modify the key names of norm layers
                 old_state_dict_keys = list(state_dict.keys())

@@ -3,7 +3,7 @@ import torch.nn as nn
 from einops import rearrange
 from mmcv.cnn import build_norm_layer, constant_init
 from mmcv.cnn.bricks.registry import ATTENTION, FEEDFORWARD_NETWORK
-from mmcv.cnn.bricks.transformer import FFN, MultiheadAttention, build_dropout
+from mmcv.cnn.bricks.transformer import FFN, build_dropout
 from mmcv.runner.base_module import BaseModule
 
 
@@ -43,8 +43,8 @@ class DividedTemporalAttentionWithNorm(BaseModule):
         self.num_heads = num_heads
         self.num_frames = num_frames
         self.norm = build_norm_layer(norm_cfg, self.embed_dims)[1]
-        self.attn = MultiheadAttention(embed_dims, num_heads, attn_drop,
-                                       **kwargs)
+        self.attn = nn.MultiheadAttention(embed_dims, num_heads, attn_drop,
+                                          **kwargs)
         self.proj_drop = nn.Dropout(proj_drop)
         self.dropout_layer = build_dropout(
             dropout_layer) if dropout_layer else nn.Identity()
@@ -68,7 +68,7 @@ class DividedTemporalAttentionWithNorm(BaseModule):
 
         # res_temporal [batch_size * num_patches, num_frames, embed_dims]
         query_t = self.norm(query_t.reshape(b * p, t, m)).permute(1, 0, 2)
-        res_temporal = self.attn(query_t, query_t, query_t).permute(1, 0, 2)
+        res_temporal = self.attn(query_t, query_t, query_t)[0].permute(1, 0, 2)
         res_temporal = self.dropout_layer(
             self.proj_drop(res_temporal.contiguous()))
         res_temporal = self.temporal_fc(res_temporal)
@@ -118,8 +118,8 @@ class DividedSpatialAttentionWithNorm(BaseModule):
         self.num_heads = num_heads
         self.num_frames = num_frames
         self.norm = build_norm_layer(norm_cfg, self.embed_dims)[1]
-        self.attn = MultiheadAttention(embed_dims, num_heads, attn_drop,
-                                       **kwargs)
+        self.attn = nn.MultiheadAttention(embed_dims, num_heads, attn_drop,
+                                          **kwargs)
         self.proj_drop = nn.Dropout(proj_drop)
         self.dropout_layer = build_dropout(
             dropout_layer) if dropout_layer else nn.Identity()
@@ -152,7 +152,7 @@ class DividedSpatialAttentionWithNorm(BaseModule):
 
         # res_spatial [batch_size * num_frames, num_patches + 1, embed_dims]
         query_s = self.norm(query_s).permute(1, 0, 2)
-        res_spatial = self.attn(query_s, query_s, query_s).permute(1, 0, 2)
+        res_spatial = self.attn(query_s, query_s, query_s)[0].permute(1, 0, 2)
         res_spatial = self.dropout_layer(
             self.proj_drop(res_spatial.contiguous()))
 
