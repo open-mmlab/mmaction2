@@ -8,6 +8,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 12
     Epochs: 100
+    FLOPs: 134526976000
     Input: 3seg
     Modality: RGB
     Parameters: 23917832
@@ -31,6 +32,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 12
     Epochs: 100
+    FLOPs: 134526976000
     Input: 3seg
     Modality: RGB
     Parameters: 23917832
@@ -54,6 +56,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 12
     Epochs: 100
+    FLOPs: 134526976000
     Input: 3seg
     Modality: RGB
     Parameters: 23917832
@@ -77,6 +80,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 12
     Epochs: 100
+    FLOPs: 134526976000
     Input: 3seg
     Modality: RGB
     Parameters: 23917832
@@ -100,6 +104,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 12
     Epochs: 100
+    FLOPs: 134526976000
     Input: 3seg
     Modality: RGB
     Parameters: 23917832
@@ -123,6 +128,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 12
     Epochs: 100
+    FLOPs: 134526976000
     Input: 3seg
     Modality: RGB
     Parameters: 23917832
@@ -146,6 +152,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 12
     Epochs: 256
+    FLOPs: 54860070912
     Input: 8x8
     Modality: RGB
     Parameters: 32044296
@@ -169,6 +176,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 12
     Epochs: 256
+    FLOPs: 54860070912
     Input: 8x8
     Modality: RGB
     Parameters: 32044296
@@ -192,6 +200,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 12
     Epochs: 256
+    FLOPs: 54860070912
     Input: 8x8
     Modality: RGB
     Parameters: 32044296
@@ -215,6 +224,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 12
     Epochs: 256
+    FLOPs: 54860070912
     Input: 8x8
     Modality: RGB
     Parameters: 32044296
@@ -238,6 +248,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 12
     Epochs: 256
+    FLOPs: 54860070912
     Input: 8x8
     Modality: RGB
     Parameters: 32044296
@@ -261,6 +272,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 12
     Epochs: 256
+    FLOPs: 54860070912
     Input: 8x8
     Modality: RGB
     Parameters: 32044296
@@ -284,6 +296,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 32
     Epochs: 100
+    FLOPs: 102997721600
     Parameters: 24327632
     Pretrained: ImageNet
     Resolution: 340x256
@@ -303,6 +316,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 32
     Epochs: 100
+    FLOPs: 102997721600
     Parameters: 24327632
     Pretrained: IG-1B
     Resolution: short-side 320
@@ -322,6 +336,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 8
     Epochs: 256
+    FLOPs: 27430649856
     Parameters: 32454096
     Pretrained: None
     Resolution: short-side 320
@@ -341,6 +356,7 @@ Models:
     Architecture: ResNet101
     Batch Size: 8
     Epochs: 196
+    FLOPs: 112063447040
     Parameters: 60359120
     Pretrained: None
     Resolution: short-side 320

@@ -8,6 +8,7 @@ Models:
     Architecture: ResNet152
     Batch Size: 3
     Epochs: 58
+    FLOPs: 98096676864
     Parameters: 29703568
     Pretrained: IG65M
     Resolution: short-side 320
@@ -30,6 +31,7 @@ Models:
     Architecture: ResNet152
     Batch Size: 3
     Epochs: 58
+    FLOPs: 98096676864
     Parameters: 29703568
     Pretrained: IG65M
     Resolution: short-side 320

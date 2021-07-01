@@ -8,6 +8,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 6
     Epochs: 40
+    FLOPs: 32962097536
     Parameters: 23895566
     Pretrained: ImageNet
     Resolution: height 100
@@ -30,6 +31,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 6
     Epochs: 40
+    FLOPs: 32962097536
     Parameters: 23895566
     Pretrained: ImageNet
     Resolution: height 240
@@ -52,6 +54,7 @@ Models:
     Architecture: ResNet50
     Batch Size: 6
     Epochs: 50
+    FLOPs: 32965800320
     Parameters: 24358640
     Pretrained: TSM-Kinetics400
     Resolution: short-side 256
