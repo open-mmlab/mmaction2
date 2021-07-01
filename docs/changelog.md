@@ -2,23 +2,56 @@
 
 ### Master
 
+### 0.16.0 (01/07/2021)
+
 **Highlights**
 
 - Support using backbone from pytorch-image-models(timm)
+- Support PIMS Decoder
+- Demo for skeleton-based action recognition
+- Support Timesformer
 
 **New Features**
 
 - Support using backbones from pytorch-image-models(timm) for TSN ([#880](https://github.com/open-mmlab/mmaction2/pull/880))
+- Support torchvision transformations in preprocessing pipelines ([#972](https://github.com/open-mmlab/mmaction2/pull/972))
+- Demo for skeleton-based action recognition ([#972](https://github.com/open-mmlab/mmaction2/pull/972))
+- Support Timesformer ([#839](https://github.com/open-mmlab/mmaction2/pull/839))
 
 **Improvements**
 
-- Add a tool to find invalid videos ([#907](https://github.com/open-mmlab/mmaction2/pull/907))
+- Add a tool to find invalid videos ([#907](https://github.com/open-mmlab/mmaction2/pull/907), [#950](https://github.com/open-mmlab/mmaction2/pull/950))
+- Add an option to specify spectrogram_type ([#909](https://github.com/open-mmlab/mmaction2/pull/909))
+- Add json output to video demo ([#906](https://github.com/open-mmlab/mmaction2/pull/906))
+- Add MIM related docs ([#918](https://github.com/open-mmlab/mmaction2/pull/918))
+- Rename lr to scheduler ([#916](https://github.com/open-mmlab/mmaction2/pull/916))
+- Support `--cfg-options` for demos ([#911](https://github.com/open-mmlab/mmaction2/pull/911))
+- Support number counting for flow-wise filename template ([#922](https://github.com/open-mmlab/mmaction2/pull/922))
+- Add Chinese tutorial ([#941](https://github.com/open-mmlab/mmaction2/pull/941))
+- Change ResNet3D default values ([#939](https://github.com/open-mmlab/mmaction2/pull/939))
+- Adjust script structure ([#935](https://github.com/open-mmlab/mmaction2/pull/935))
+- Add font color to args in long_video_demo ([#947](https://github.com/open-mmlab/mmaction2/pull/947))
+- Polish code style with Pylint ([#908](https://github.com/open-mmlab/mmaction2/pull/908))
+- Support PIMS Decoder ([#946](https://github.com/open-mmlab/mmaction2/pull/946))
+- Improve Metafiles ([#956](https://github.com/open-mmlab/mmaction2/pull/956), [#979](https://github.com/open-mmlab/mmaction2/pull/979), [#966](https://github.com/open-mmlab/mmaction2/pull/966))
+- Add links to download Kinetics400 validation ([#920](https://github.com/open-mmlab/mmaction2/pull/920))
+- Audit the usage of shutil.rmtree ([#943](https://github.com/open-mmlab/mmaction2/pull/943))
+- Polish localizer related codes([#913](https://github.com/open-mmlab/mmaction2/pull/913))
 
 **Bug and Typo Fixes**
+
+- Fix spatiotemporal detection demo ([#899](https://github.com/open-mmlab/mmaction2/pull/899))
+- Fix docstring for 3D inflate ([#925](https://github.com/open-mmlab/mmaction2/pull/925))
+- Fix bug of writing text to video with TextClip ([#952](https://github.com/open-mmlab/mmaction2/pull/952))
+- Fix mmcv install in CI ([#977](https://github.com/open-mmlab/mmaction2/pull/977))
 
 **ModelZoo**
 
 - Add TSN with Swin Transformer backbone as an example for using pytorch-image-models(timm) backbones ([#880](https://github.com/open-mmlab/mmaction2/pull/880))
+- Port CSN checkpoints from VMZ ([#945](https://github.com/open-mmlab/mmaction2/pull/945))
+- Release various checkpoints for UCF101, HMDB51 and Sthv1 ([#938](https://github.com/open-mmlab/mmaction2/pull/938))
+- Support Timesformer ([#839](https://github.com/open-mmlab/mmaction2/pull/839))
+- Update TSM modelzoo ([#981](https://github.com/open-mmlab/mmaction2/pull/981))
 
 ### 0.15.0 (31/05/2021)
 
