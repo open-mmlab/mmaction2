@@ -87,17 +87,21 @@ jobs:
         torch: [1.5.0+cu101, 1.6.0+cu101, 1.7.0+cu101, 1.8.0+cu101]
         include:
           - torch: 1.5.0+cu101
+            torch_version: torch1.5.0
             torchvision: 0.6.0+cu101
-            mmcv: 1.5.0+cu101
+            mmcv: "latest+1.5.0+cu101"
           - torch: 1.6.0+cu101
+            torch_version: torch1.6.0
             torchvision: 0.7.0+cu101
-            mmcv: 1.6.0+cu101
+            mmcv: "latest+1.6.0+cu101"
           - torch: 1.7.0+cu101
+            torch_version: torch1.7.0
             torchvision: 0.8.1+cu101
-            mmcv: 1.7.0+cu101
+            mmcv: "latest+1.7.0+cu101"
           - torch: 1.8.0+cu101
+            torch_version: torch1.8.0
             torchvision: 0.9.0+cu101
-            mmcv: 1.8.0+cu101
+            mmcv: "latest+1.8.0+cu101"
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
@@ -135,10 +139,11 @@ jobs:
         run: pip install torch==${{matrix.torch}} torchvision==${{matrix.torchvision}} -f https://download.pytorch.org/whl/torch_stable.html
       - name: Install mmaction dependencies
         run: |
-          pip install mmcv-full==latest+torch${{matrix.mmcv}} -f https://download.openmmlab.com/mmcv/dist/index.html --use-deprecated=legacy-resolver
+          pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu101/${{matrix.torch_version}}/index.html
           pip install -q git+https://github.com/open-mmlab/mmdetection/
           pip install -q git+https://github.com/open-mmlab/mmclassification/
           pip install -r requirements.txt
+          python -c 'import mmcv; print(mmcv.__version__)'
       - name: Build and install
         run: |
           rm -rf .eggs
