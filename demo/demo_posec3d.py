@@ -9,7 +9,6 @@ import numpy as np
 import torch
 from mmcv import DictAction
 from mmcv.runner import load_checkpoint
-from tqdm import tqdm
 
 from mmaction.datasets.pipelines import Compose
 from mmaction.models import build_model
@@ -123,7 +122,7 @@ def frame_extraction(video_path, short_side):
     Args:
         video_path (str): The video_path.
     """
-    # Load the video, extract frames into /tmp/video_name
+    # Load the video, extract frames into ./tmp/video_name
     target_dir = osp.join('./tmp', osp.basename(osp.splitext(video_path)[0]))
     os.makedirs(target_dir, exist_ok=True)
     # Should be able to handle videos up to several hours
@@ -167,11 +166,13 @@ def detection_inference(args, frame_paths):
                                           'trained on COCO')
     results = []
     print('Performing Human Detection for each frame')
-    for frame_path in tqdm(frame_paths):
+    prog_bar = mmcv.ProgressBar(len(frame_paths))
+    for frame_path in frame_paths:
         result = inference_detector(model, frame_path)
         # We only keep human detections with score larger than det_score_thr
         result = result[0][result[0][:, 4] >= args.det_score_thr]
         results.append(result)
+        prog_bar.update()
     return results
 
 
@@ -180,12 +181,13 @@ def pose_inference(args, frame_paths, det_results):
                             args.device)
     ret = []
     print('Performing Human Pose Estimation for each frame')
-    for f, d in tqdm(zip(frame_paths, det_results)):
+    prog_bar = mmcv.ProgressBar(len(frame_paths))
+    for f, d in zip(frame_paths, det_results):
         # Align input format
         d = [dict(bbox=x) for x in list(d)]
-        pose = inference_top_down_pose_model(
-            model, f, d, format='xyxy', bbox_thr=args.det_score_thr)[0]
+        pose = inference_top_down_pose_model(model, f, d, format='xyxy')[0]
         ret.append(pose)
+        prog_bar.update()
     return ret
 
 
@@ -255,10 +257,9 @@ def main():
         vis_pose_result(pose_model, frame_paths[i], pose_results[i])
         for i in range(num_frame)
     ]
-    _ = [
+    for frame in vis_frames:
         cv2.putText(frame, action_label, (10, 30), FONTFACE, FONTSCALE,
-                    FONTCOLOR, THICKNESS, LINETYPE) for frame in vis_frames
-    ]
+                    FONTCOLOR, THICKNESS, LINETYPE)
 
     cv2.imwrite('frame.jpg', vis_frames[0])
     vid = mpy.ImageSequenceClip([x[:, :, ::-1] for x in vis_frames], fps=24)
