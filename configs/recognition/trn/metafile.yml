@@ -18,8 +18,8 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-      top1 accuracy: 33.88
-      top1 accuracy (efficient): 31.62
+      Top 1 Accuracy: 33.88
+      Top 1 Accuracy (efficient): 31.62
       top5 accuracy: 62.12
       top5 accuracy (efficient): 60.01
     Task: Action Recognition
@@ -42,8 +42,8 @@ Models:
   Results:
   - Dataset: SthV2
     Metrics:
-      top1 accuracy: 47.96
-      top1 accuracy (efficient): 45.14
+      Top 1 Accuracy: 47.96
+      Top 1 Accuracy (efficient): 45.14
       top5 accuracy: 75.97
       top5 accuracy (efficient): 73.21
     Task: Action Recognition
