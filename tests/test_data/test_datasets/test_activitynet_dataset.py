@@ -1,4 +1,3 @@
-import os
 import os.path as osp
 import tempfile
 
@@ -130,13 +129,14 @@ class TestActivitynetDataset(BaseTestDataset):
             'external_data': {}
         }
 
-        tmp_filename = osp.join(tempfile.gettempdir(), 'result.json')
-        activitynet_dataset.dump_results(results, tmp_filename, 'json')
-        assert osp.isfile(tmp_filename)
-        with open(tmp_filename, 'r+') as f:
-            load_obj = mmcv.load(f, file_format='json')
-        assert load_obj == dump_results
-        os.remove(tmp_filename)
+        with tempfile.TemporaryDirectory() as tmpdir:
+
+            tmp_filename = osp.join(tmpdir, 'result.json')
+            activitynet_dataset.dump_results(results, tmp_filename, 'json')
+            assert osp.isfile(tmp_filename)
+            with open(tmp_filename, 'r+') as f:
+                load_obj = mmcv.load(f, file_format='json')
+            assert load_obj == dump_results
 
         # test dumping csv file
         results = [('test_video', np.array([[1, 2, 3, 4, 5], [6, 7, 8, 9,

@@ -1,5 +1,5 @@
 # model training and testing settings
-train_cfg = dict(
+train_cfg_ = dict(
     ssn=dict(
         assigner=dict(
             positive_iou_threshold=0.7,
@@ -15,7 +15,7 @@ train_cfg = dict(
             add_gt_as_proposals=True),
         loss_weight=dict(comp_loss_weight=0.1, reg_loss_weight=0.1),
         debug=False))
-test_cfg = dict(
+test_cfg_ = dict(
     ssn=dict(
         sampler=dict(test_interval=6, batch_size=16),
         evaluater=dict(
@@ -42,7 +42,7 @@ model = dict(
         num_classes=20,
         consensus=dict(type='STPPTest', stpp_stage=(1, 1, 1)),
         use_regression=True),
-    test_cfg=test_cfg)
+    test_cfg=test_cfg_)
 # dataset settings
 dataset_type = 'SSNDataset'
 data_root = './data/thumos14/rawframes/'
@@ -86,8 +86,8 @@ data = dict(
         type=dataset_type,
         ann_file=ann_file_test,
         data_prefix=data_root,
-        train_cfg=train_cfg,
-        test_cfg=test_cfg,
+        train_cfg=train_cfg_,
+        test_cfg=test_cfg_,
         aug_ratio=0.5,
         test_mode=True,
         pipeline=test_pipeline))
