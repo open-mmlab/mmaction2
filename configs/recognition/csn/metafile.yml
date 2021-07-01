@@ -46,3 +46,122 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb/20200809_053132.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb/20200809_053132.log
   Weights: https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb_20200812-9037a758.pth
+- Config: configs/recognition/csn/ipcsn_bnfrozen_r152_32x2x1_180e_kinetics400_rgb.py
+  In Collection: CSN
+  Metadata:
+    Architecture: ResNet152
+    Epochs: 180
+    FLOPs: 110337228800
+    Parameters: 33016592
+    Pretrained: None
+    Resolution: short-side 320
+    Training Data: Kinetics-400
+  Modality: RGB
+  Name: ipcsn_bnfrozen_r152_32x2x1_180e_kinetics400_rgb.py
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      top1 acc: 77.8
+      top5 acc: 92.8
+    Task: Action Recognition
+  Weights: https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ipcsn_from_scratch_r152_32x2x1_180e_kinetics400_rgb_20210617-d565828d.pth
+- Config: configs/recognition/csn/ipcsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py
+  In Collection: CSN
+  Metadata:
+    Architecture: ResNet152
+    Epochs: 58
+    FLOPs: 110337228800
+    Parameters: 33016592
+    Pretrained: IG65M
+    Resolution: short-side 320
+    Training Data: Kinetics-400
+  Modality: RGB
+  Name: ipcsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      top1 acc: 82.5
+      top5 acc: 95.3
+    Task: Action Recognition
+  Weights: https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ipcsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb_20210617-c3be9793.pth
+  inference_time(video/s): x
+- Config: configs/recognition/csn/ipcsn_sports1m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py
+  In Collection: CSN
+  Metadata:
+    Architecture: ResNet152
+    Epochs: 58
+    FLOPs: 110337228800
+    Parameters: 33016592
+    Pretrained: Sports1M
+    Resolution: short-side 320
+    Training Data: Kinetics-400
+  Modality: RGB
+  Name: ipcsn_sports1m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      top1 acc: 78.8
+      top5 acc: 93.5
+    Task: Action Recognition
+  Weights: https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ipcsn_sports1m_pretrained_r152_32x2x1_58e_kinetics400_rgb_20210617-3367437a.pth
+  inference_time(video/s): x
+- Config: configs/recognition/csn/ircsn_bnfrozen_r152_32x2x1_180e_kinetics400_rgb.py
+  In Collection: CSN
+  Metadata:
+    Architecture: ResNet152
+    Epochs: 180
+    FLOPs: 98096676864
+    Parameters: 29703568
+    Pretrained: None
+    Resolution: short-side 320
+    Training Data: Kinetics-400
+  Modality: RGB
+  Name: ircsn_bnfrozen_r152_32x2x1_180e_kinetics400_rgb.py
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      top1 acc: 76.5
+      top5 acc: 92.1
+    Task: Action Recognition
+  Weights: https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ircsn_from_scratch_r152_32x2x1_180e_kinetics400_rgb_20210617-5c933ae1.pth
+  inference_time(video/s): x
+- Config: configs/recognition/csn/ircsn_ig65m_pretrained_bnfrozen_r50_32x2x1_58e_kinetics400_rgb.py
+  In Collection: CSN
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 58
+    FLOPs: 56209211392
+    Parameters: 13131152
+    Pretrained: IG65M
+    Resolution: short-side 320
+    Training Data: Kinetics-400
+  Modality: RGB
+  Name: ircsn_ig65m_pretrained_bnfrozen_r50_32x2x1_58e_kinetics400_rgb.py
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      top1 acc: 79.0
+      top5 acc: 94.2
+    Task: Action Recognition
+  Weights: https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ircsn_ig65m_pretrained_r50_32x2x1_58e_kinetics400_rgb_20210617-86d33018.pth
+  inference_time(video/s): x
+- Config: configs/recognition/csn/ircsn_sports1m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py
+  In Collection: CSN
+  Metadata:
+    Architecture: ResNet152
+    Epochs: 58
+    FLOPs: 98096676864
+    Parameters: 29703568
+    Pretrained: Sports1M
+    Resolution: short-side 320
+    Training Data: Kinetics-400
+  Modality: RGB
+  Name: ircsn_sports1m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      top1 acc: 78.2
+      top5 acc: 93.0
+    Task: Action Recognition
+  Weights: https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ircsn_sports1m_pretrained_r152_32x2x1_58e_kinetics400_rgb_20210617-b9b10241.pth
+  inference_time(video/s): x

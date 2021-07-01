@@ -1,14 +1,12 @@
 _base_ = [
-    '../../_base_/models/ircsn_r152.py', '../../_base_/default_runtime.py'
+    './ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py'
 ]
 
+# model settings
 model = dict(
     backbone=dict(
-        pretrained=  # noqa: E251
-        'https://download.openmmlab.com/mmaction/recognition/csn/ircsn_from_scratch_r152_ig65m_20200807-771c4135.pth'  # noqa: E501
-    ))
+        norm_eval=True, bn_frozen=True, bottleneck_mode='ip', pretrained=None))
 
-# dataset settings
 dataset_type = 'RawframeDataset'
 data_root = 'data/kinetics400/rawframes_train'
 data_root_val = 'data/kinetics400/rawframes_val'
@@ -60,7 +58,7 @@ test_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
-    videos_per_gpu=3,
+    videos_per_gpu=4,
     workers_per_gpu=4,
     train=dict(
         type=dataset_type,
@@ -77,23 +75,18 @@ data = dict(
         ann_file=ann_file_val,
         data_prefix=data_root_val,
         pipeline=test_pipeline))
-evaluation = dict(
-    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
 
-# optimizer
 optimizer = dict(
-    type='SGD', lr=0.000125, momentum=0.9,
+    type='SGD', lr=0.08, momentum=0.9,
     weight_decay=0.0001)  # this lr is used for 8 gpus
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
 lr_config = dict(
-    policy='step',
-    step=[32, 48],
+    policy='CosineAnnealing',
+    min_lr=0,
     warmup='linear',
-    warmup_ratio=0.1,
     warmup_by_epoch=True,
-    warmup_iters=16)
-total_epochs = 58
+    warmup_iters=40)
+total_epochs = 180
 
-work_dir = './work_dirs/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb'
-find_unused_parameters = True
+work_dir = './work_dirs/ipcsn_bnfrozen_r152_32x2x1_180e_kinetics400_rgb'  # noqa: E501
