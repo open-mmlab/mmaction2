@@ -453,7 +453,7 @@ python demo/demo_posec3d.py ${VIDEO_FILE} ${OUT_FILENAME} \
 1. 使用 Faster RCNN 作为人体检测器，HRNetw32 作为人体姿态估计模型，PoseC3D-NTURGB+D-120-Xsub-keypoint 作为基于人体姿态的动作识别模型。
 
 ```shell
-python demo/demo_posec3d.py demo/ntu_sample.mp4 demo/posec3d_demo.mp4 \
+python demo/demo_posec3d.py demo/ntu_sample.avi demo/posec3d_demo.mp4 \
     --config configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint.py \
     --checkpoint https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint/slowonly_r50_u48_240e_ntu120_xsub_keypoint-6736b03f.pth \
     --det-config demo/faster_rcnn_r50_fpn_2x_coco.py \
