@@ -1,3 +1,5 @@
+einops
+scipy
 opencv-python
 recommonmark
 sphinx
