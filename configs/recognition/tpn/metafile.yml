@@ -19,7 +19,7 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 accuracy: 73.1
+      Top 1 Accuracy: 73.1
       top5 accuracy: 91.03
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tpn/tpn_slowonly_r50_8x8x1_150e_kinetics_rgb/20200910_134330.log.json
@@ -42,7 +42,7 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 accuracy: 76.2
+      Top 1 Accuracy: 76.2
       top5 accuracy: 92.44
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tpn/tpn_imagenet_pretrained_slowonly_r50_8x8x1_150e_kinetics_rgb/20200923_151919.log.json
@@ -65,7 +65,7 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-      top1 accuracy: 50.8
+      Top 1 Accuracy: 50.8
       top5 accuracy: 79.05
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tpn/tpn_tsm_r50_1x1x8_150e_sthv1_rgb/20210311_162636.log.json

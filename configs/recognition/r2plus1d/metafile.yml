@@ -19,7 +19,7 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 accuracy: 67.3
+      Top 1 Accuracy: 67.3
       top5 accuracy: 87.65
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_256p_8x8x1_180e_kinetics400_rgb/20200728_021421.log.json
@@ -42,7 +42,7 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 accuracy: 67.3
+      Top 1 Accuracy: 67.3
       top5 accuracy: 87.8
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb/20200724_201360.log
@@ -65,7 +65,7 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 accuracy: 68.68
+      Top 1 Accuracy: 68.68
       top5 accuracy: 88.36
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb/r2plus1d_r34_8x8_69.58_88.36.log.json
@@ -88,7 +88,7 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      top1 accuracy: 74.6
+      Top 1 Accuracy: 74.6
       top5 accuracy: 91.59
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_32x2x1_180e_kinetics400_rgb/r2plus1d_r34_32x2_74.6_91.6.log.json

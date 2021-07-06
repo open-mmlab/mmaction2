@@ -44,7 +44,7 @@ extensions = [
 ]
 
 # numpy and torch are required
-autodoc_mock_imports = ['mmaction.version', 'cv2', 'PIL']
+autodoc_mock_imports = ['mmaction.version', 'PIL']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
