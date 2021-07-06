@@ -55,7 +55,6 @@ test_pipeline = [
     dict(type='RawFrameDecode', decoding_backend='turbojpeg'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='ThreeCrop', crop_size=256),
-    dict(type='Flip', flip_ratio=0),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
