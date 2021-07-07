@@ -10,7 +10,7 @@ class TestRepeatDataset(BaseTestDataset):
         dataset_cfg = dict(
             type='RawframeDataset',
             ann_file=self.frame_ann_file,
-            pipeline=self.pipeline,
+            pipeline=self.frame_pipeline,
             data_prefix=self.data_prefix)
 
         repeat_dataset = RepeatDataset(dataset_cfg, 5)
