@@ -13,7 +13,7 @@ class TestConcatDataset(BaseTestDataset):
             pipeline=self.frame_pipeline,
             data_prefix=self.data_prefix)
         repeat_dataset_cfg = dict(
-            type='RepeatDataset', times=2, daatset=dataset_cfg)
+            type='RepeatDataset', times=2, dataset=dataset_cfg)
 
         concat_dataset = ConcatDataset(
             datasets=[dataset_cfg, repeat_dataset_cfg])

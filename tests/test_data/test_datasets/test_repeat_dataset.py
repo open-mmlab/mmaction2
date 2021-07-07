@@ -1,16 +1,19 @@
 import numpy as np
 
-from mmaction.datasets import RawframeDataset, RepeatDataset
+from mmaction.datasets import RepeatDataset
 from .base import BaseTestDataset
 
 
 class TestRepeatDataset(BaseTestDataset):
 
     def test_repeat_dataset(self):
-        rawframe_dataset = RawframeDataset(self.frame_ann_file,
-                                           self.frame_pipeline,
-                                           self.data_prefix)
-        repeat_dataset = RepeatDataset(rawframe_dataset, 5)
+        dataset_cfg = dict(
+            type='RawframeDataset',
+            ann_file=self.frame_ann_file,
+            pipeline=self.pipeline,
+            data_prefix=self.data_prefix)
+
+        repeat_dataset = RepeatDataset(dataset_cfg, 5)
         assert len(repeat_dataset) == 10
         result_a = repeat_dataset[0]
         result_b = repeat_dataset[2]
