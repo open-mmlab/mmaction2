@@ -1,4 +1,6 @@
-from .builder import DATASETS
+import numpy as np
+
+from .builder import DATASETS, build_dataset
 
 
 @DATASETS.register_module()
@@ -11,12 +13,15 @@ class RepeatDataset:
     epochs.
 
     Args:
-        dataset (:obj:`Dataset`): The dataset to be repeated.
+        dataset (dict): The config of the dataset to be repeated.
         times (int): Repeat times.
+        test_mode (bool): Store True when building test or validation dataset.
+            Default: False.
     """
 
-    def __init__(self, dataset, times):
-        self.dataset = dataset
+    def __init__(self, dataset, times, test_mode=False):
+        dataset['test_mode'] = test_mode
+        self.dataset = build_dataset(dataset)
         self.times = times
 
         self._ori_len = len(self.dataset)
@@ -28,3 +33,38 @@ class RepeatDataset:
     def __len__(self):
         """Length after repetition."""
         return self.times * self._ori_len
+
+
+@DATASETS.register_module()
+class ConcatDataset:
+    """A wrapper of concatenated dataset.
+
+    The length of concatenated dataset will be the sum of lengths of all
+    datasets. This is useful when you want to train a model with multiple data
+    sources.
+
+    Args:
+        datasets (list[dict]): The configs of the datasets.
+        test_mode (bool): Store True when building test or validation dataset.
+            Default: False.
+    """
+
+    def __init__(self, datasets, test_mode=False):
+
+        for item in datasets:
+            item['test_mode'] = test_mode
+
+        datasets = [build_dataset(cfg) for cfg in datasets]
+        self.datasets = datasets
+        self.lens = [len(x) for x in self.datasets]
+        self.cumsum = np.cumsum(self.lens)
+
+    def __getitem__(self, idx):
+        """Get data."""
+        dataset_idx = np.searchsorted(self.cumsum, idx, side='right')
+        item_idx = idx if dataset_idx == 0 else idx - self.cumsum[dataset_idx]
+        return self.datasets[dataset_idx][item_idx]
+
+    def __len__(self):
+        """Length after repetition."""
+        return sum(self.lens)
