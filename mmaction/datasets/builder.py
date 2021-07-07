@@ -36,12 +36,7 @@ def build_dataset(cfg, default_args=None):
     Returns:
         Dataset: The constructed dataset.
     """
-    if cfg['type'] == 'RepeatDataset':
-        from .dataset_wrappers import RepeatDataset
-        dataset = RepeatDataset(
-            build_dataset(cfg['dataset'], default_args), cfg['times'])
-    else:
-        dataset = build_from_cfg(cfg, DATASETS, default_args)
+    dataset = build_from_cfg(cfg, DATASETS, default_args)
     return dataset
 
 
