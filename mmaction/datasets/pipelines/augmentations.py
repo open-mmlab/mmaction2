@@ -118,9 +118,9 @@ class PytorchVideoTrans:
         assert 'imgs' in results
 
         assert 'gt_bboxes' not in results,\
-            f'{type} doesn\'t support bboxes yet.'
+            f'PytorchVideo {self.type} doesn\'t support bboxes yet.'
         assert 'proposals' not in results,\
-            f'{type} doesn\'t support bboxes yet.'
+            f'PytorchVideo {self.type} doesn\'t support bboxes yet.'
 
         imgs = [x.transpose(2, 0, 1) for x in results['imgs']]
         imgs = to_tensor(np.stack(imgs))
