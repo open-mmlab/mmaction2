@@ -91,6 +91,51 @@ class TorchvisionTrans:
 
 
 @PIPELINES.register_module()
+class PytorchVideoTrans:
+    """PytorchVideoTrans Augmentations, under pytorchvideo.transforms.
+
+    Args:
+        type (str): The name of the pytorchvideo transformation.
+    """
+
+    def __init__(self, type, **kwargs):
+        try:
+            import pytorchvideo.transforms as ptv_trans
+        except ImportError:
+            raise RuntimeError('Install pytorchvideo to use PytorchVideoTrans')
+
+        trans = getattr(ptv_trans, type, None)
+        assert trans, f'Transform {type} not in pytorchvideo'
+
+        supported_pytorchvideo_trans = ('AugMix', 'RandAugment')
+        assert type in supported_pytorchvideo_trans,\
+            f'PytorchVideo Transform {type} is not supported in MMAction2'
+
+        self.trans = trans(**kwargs)
+        self.type = type
+
+    def __call__(self, results):
+        assert 'imgs' in results
+
+        assert 'gt_bboxes' not in results,\
+            f'{type} doesn\'t support bboxes yet.'
+        assert 'proposals' not in results,\
+            f'{type} doesn\'t support bboxes yet.'
+
+        imgs = [x.transpose(2, 0, 1) for x in results['imgs']]
+        imgs = to_tensor(np.stack(imgs))
+
+        imgs = self.trans(imgs).data.numpy()
+        imgs[imgs > 255] = 255
+        imgs[imgs < 0] = 0
+        imgs = imgs.astype(np.uint8)
+        imgs = [x.transpose(1, 2, 0) for x in imgs]
+        results['imgs'] = imgs
+
+        return results
+
+
+@PIPELINES.register_module()
 class PoseCompact:
     """Convert the coordinates of keypoints to make it more compact.
     Specifically, it first find a tight bounding box that surrounds all joints
