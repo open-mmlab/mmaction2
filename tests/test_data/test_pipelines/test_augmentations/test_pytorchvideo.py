@@ -2,9 +2,18 @@ import numpy as np
 import pytest
 from mmcv.utils import assert_dict_has_keys
 
-from mmaction.datasets.pipelines import PytorchVideoTrans
+try:
+    import torch
+    from distutils.version import LooseVersion
+    from mmaction.datasets.pipelines import PytorchVideoTrans
+    pytorchvideo_ok = False
+    if LooseVersion(torch.__version__) >= LooseVersion('1.8.0'):
+        pytorchvideo_ok = True
+except (ImportError, ModuleNotFoundError):
+    pytorchvideo_ok = False
 
 
+@pytest.mark.skipif(not pytorchvideo_ok, reason='torch >= 1.8.0 is required')
 class TestPytorchVideoTrans:
 
     @staticmethod

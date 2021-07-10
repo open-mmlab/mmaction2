@@ -100,9 +100,13 @@ class PytorchVideoTrans:
 
     def __init__(self, type, **kwargs):
         try:
+            import torch
             import pytorchvideo.transforms as ptv_trans
         except ImportError:
             raise RuntimeError('Install pytorchvideo to use PytorchVideoTrans')
+        if LooseVersion(torch.__version__) < LooseVersion('1.8.0'):
+            raise RuntimeError(
+                'The version of PyTorch should be at least 1.8.0')
 
         trans = getattr(ptv_trans, type, None)
         assert trans, f'Transform {type} not in pytorchvideo'
