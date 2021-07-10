@@ -14,7 +14,7 @@ class TestPytorchVideoTrans:
             PytorchVideoTrans(type='BlaBla')
 
         with pytest.raises(AssertionError):
-            # THis trans exists in pytorchvideo but not supported in MMAction2
+            # This trans exists in pytorchvideo but not supported in MMAction2
             PytorchVideoTrans(type='MixUp')
 
         target_keys = ['imgs']
