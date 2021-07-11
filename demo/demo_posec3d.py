@@ -224,7 +224,8 @@ def main():
         modality='Pose',
         total_frames=num_frame)
     num_person = max([len(x) for x in pose_results])
-    num_keypoint = pose_results[0][0]['keypoints'].shape[0]
+    # Current PoseC3D models are trained on COCO-keypoints (17 keypoints)
+    num_keypoint = 17
     keypoint = np.zeros((num_person, num_frame, num_keypoint, 2),
                         dtype=np.float16)
     keypoint_score = np.zeros((num_person, num_frame, num_keypoint),

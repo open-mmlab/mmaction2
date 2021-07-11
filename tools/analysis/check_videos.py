@@ -4,9 +4,9 @@ import warnings
 from functools import partial
 from multiprocessing import Manager, Pool, cpu_count
 
+import mmcv
 import numpy as np
 from mmcv import Config, DictAction
-from tqdm import tqdm
 
 from mmaction.datasets import PIPELINES, build_dataset
 
@@ -134,8 +134,9 @@ if __name__ == '__main__':
     ids = range(len(dataset))
 
     # start checking
-    for _ in tqdm(pool.imap_unordered(worker_fn, ids), total=len(ids)):
-        pass
+    prog_bar = mmcv.ProgressBar(len(dataset))
+    for _ in pool.imap_unordered(worker_fn, ids):
+        prog_bar.update()
     pool.close()
     pool.join()
 
