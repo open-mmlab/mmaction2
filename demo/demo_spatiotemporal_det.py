@@ -10,7 +10,6 @@ import numpy as np
 import torch
 from mmcv import DictAction
 from mmcv.runner import load_checkpoint
-from tqdm import tqdm
 
 from mmaction.models import build_detector
 from mmaction.utils import import_module_error_func
@@ -225,11 +224,13 @@ def detection_inference(args, frame_paths):
                                           'trained on COCO')
     results = []
     print('Performing Human Detection for each frame')
-    for frame_path in tqdm(frame_paths):
+    prog_bar = mmcv.ProgressBar(len(frame_paths))
+    for frame_path in frame_paths:
         result = inference_detector(model, frame_path)
         # We only keep human detections with score larger than det_score_thr
         result = result[0][result[0][:, 4] >= args.det_score_thr]
         results.append(result)
+        prog_bar.update()
     return results
 
 
@@ -355,7 +356,9 @@ def main():
     predictions = []
 
     print('Performing SpatioTemporal Action Detection for each clip')
-    for timestamp, proposal in tqdm(zip(timestamps, human_detections)):
+    assert len(timestamps) == len(human_detections)
+    prog_bar = mmcv.ProgressBar(len(timestamps))
+    for timestamp, proposal in zip(timestamps, human_detections):
         if proposal.shape[0] == 0:
             predictions.append(None)
             continue
@@ -389,6 +392,7 @@ def main():
                         prediction[j].append((label_map[i + 1], result[i][j,
                                                                           4]))
             predictions.append(prediction)
+        prog_bar.update()
 
     results = []
     for human_detection, prediction in zip(human_detections, predictions):
