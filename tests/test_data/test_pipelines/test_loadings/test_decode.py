@@ -1,15 +1,14 @@
 import copy
 
 import numpy as np
-import pytest
 from mmcv.utils import assert_dict_has_keys
 
 from mmaction.datasets.pipelines import (AudioDecode, AudioDecodeInit,
                                          DecordDecode, DecordInit,
-                                         FrameSelector, OpenCVDecode,
-                                         OpenCVInit, PIMSDecode, PIMSInit,
-                                         PyAVDecode, PyAVDecodeMotionVector,
-                                         PyAVInit, RawFrameDecode)
+                                         OpenCVDecode, OpenCVInit, PIMSDecode,
+                                         PIMSInit, PyAVDecode,
+                                         PyAVDecodeMotionVector, PyAVInit,
+                                         RawFrameDecode)
 from .base import BaseTestLoading
 
 
@@ -307,12 +306,6 @@ class TestDecode(BaseTestLoading):
         assert opencv_decode_result['original_shape'] == (256, 340)
         assert np.shape(opencv_decode_result['imgs']) == (len(
             video_result['frame_inds']), 256, 340, 3)
-
-    @staticmethod
-    def test_rawframe_selector():
-
-        with pytest.warns(UserWarning):
-            FrameSelector(io_backend='disk')
 
     def test_rawframe_decode(self):
         target_keys = ['frame_inds', 'imgs', 'original_shape', 'modality']

@@ -1563,16 +1563,6 @@ class BuildPseudoClip:
 
 
 @PIPELINES.register_module()
-class FrameSelector(RawFrameDecode):
-    """Deprecated class for ``RawFrameDecode``."""
-
-    def __init__(self, *args, **kwargs):
-        warnings.warn('"FrameSelector" is deprecated, please switch to'
-                      '"RawFrameDecode"')
-        super().__init__(*args, **kwargs)
-
-
-@PIPELINES.register_module()
 class AudioFeatureSelector:
     """Sample the audio feature w.r.t. the frames selected.
 
