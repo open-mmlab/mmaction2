@@ -65,6 +65,9 @@ jobs:
         run: pip install git+https://github.com/open-mmlab/mmclassification/
       - name: Install unittest dependencies
         run: pip install -r requirements/tests.txt -r requirements/optional.txt
+      - name: Install PytorchVideo
+        run: pip install pytorchvideo
+        if: ${{matrix.torch >= 1.8.0}}
       - name: Build and install
         run: rm -rf .eggs && pip install -e .
       - name: Run unittests and generate coverage report
@@ -132,6 +135,9 @@ jobs:
           pip install -q git+https://github.com/open-mmlab/mmclassification/
           pip install -r requirements.txt
           python -c 'import mmcv; print(mmcv.__version__)'
+      - name: Install PytorchVideo
+        run: pip install pytorchvideo
+        if: ${{matrix.torch >= 1.8.0}}
       - name: Build and install
         run: |
           rm -rf .eggs

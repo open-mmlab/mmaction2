@@ -8,6 +8,5 @@ moviepy
 onnx
 onnxruntime
 pims
-pytorchvideo
 PyTurboJPEG
 timm
