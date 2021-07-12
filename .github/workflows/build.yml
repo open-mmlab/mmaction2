@@ -64,7 +64,7 @@ jobs:
         run: pip install -r requirements/tests.txt -r requirements/optional.txt
       - name: Install PytorchVideo
         run: pip install pytorchvideo
-        if: ${{matrix.torchvision == '0.9.0'}}
+        if: ${{matrix.torchvision >= '0.9.0'}}
       - name: Build and install
         run: rm -rf .eggs && pip install -e .
       - name: Run unittests and generate coverage report
@@ -131,7 +131,7 @@ jobs:
           python -c 'import mmcv; print(mmcv.__version__)'
       - name: Install PytorchVideo
         run: pip install pytorchvideo
-        if: ${{matrix.torchvision == '0.9.0+cu101'}}
+        if: ${{matrix.torchvision >= '0.9.0+cu101'}}
       - name: Build and install
         run: |
           rm -rf .eggs
@@ -210,6 +210,9 @@ jobs:
           pip install -q git+https://github.com/open-mmlab/mmclassification/
           pip install -r requirements.txt
           python -c 'import mmcv; print(mmcv.__version__)'
+      - name: Install PytorchVideo
+        run: pip install pytorchvideo
+        if: ${{matrix.torchvision >= '0.9.0+cu102'}}
       - name: Build and install
         run: |
           rm -rf .eggs
