@@ -42,9 +42,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Upgrade pip
         run: pip install pip --upgrade
-      - name: Install Pillow
-        run: pip install Pillow==6.2.2
-        if: ${{matrix.torchvision < 0.5}}
       - name: Install soundfile lib
         run: sudo apt-get install -y libsndfile1
       - name: Install onnx
@@ -67,7 +64,7 @@ jobs:
         run: pip install -r requirements/tests.txt -r requirements/optional.txt
       - name: Install PytorchVideo
         run: pip install pytorchvideo
-        if: ${{matrix.torchvision >= 0.9}}
+        if: ${{matrix.torchvision == '0.9.0'}}
       - name: Build and install
         run: rm -rf .eggs && pip install -e .
       - name: Run unittests and generate coverage report
@@ -115,9 +112,6 @@ jobs:
           export LD_LIBRARY_PATH=${CUDA_HOME}/lib64:${CUDA_HOME}/include:${LD_LIBRARY_PATH}
           export PATH=${CUDA_HOME}/bin:${PATH}
           sudo apt-get install -y ninja-build
-      - name: Install Pillow
-        run: pip install Pillow==6.2.2
-        if: ${{matrix.torchvision < 0.5}}
       - name: Install TurboJpeg lib
         run: sudo apt-get install -y libturbojpeg
       - name: Install soundfile lib
@@ -137,7 +131,7 @@ jobs:
           python -c 'import mmcv; print(mmcv.__version__)'
       - name: Install PytorchVideo
         run: pip install pytorchvideo
-        if: ${{matrix.torchvision >= 0.9}}
+        if: ${{matrix.torchvision == '0.9.0+cu101'}}
       - name: Build and install
         run: |
           rm -rf .eggs
