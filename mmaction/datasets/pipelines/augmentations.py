@@ -111,7 +111,10 @@ class PytorchVideoTrans:
         trans = getattr(ptv_trans, type, None)
         assert trans, f'Transform {type} not in pytorchvideo'
 
-        supported_pytorchvideo_trans = ('AugMix', 'RandAugment')
+        supported_pytorchvideo_trans = ('AugMix', 'RandAugment',
+                                        'RandomResizedCrop', 'ShortSideScale',
+                                        'RandomShortSideScale',
+                                        'UniformCropVideo')
         assert type in supported_pytorchvideo_trans,\
             f'PytorchVideo Transform {type} is not supported in MMAction2'
 
@@ -126,14 +129,26 @@ class PytorchVideoTrans:
         assert 'proposals' not in results,\
             f'PytorchVideo {self.type} doesn\'t support bboxes yet.'
 
-        imgs = [x.transpose(2, 0, 1) for x in results['imgs']]
-        imgs = to_tensor(np.stack(imgs))
+        if self.type in ('AugMix', 'RandAugment'):
+            # list[ndarray(h, w, 3)] -> torch.tensor(t, c, h, w)
+            imgs = [x.transpose(2, 0, 1) for x in results['imgs']]
+            imgs = to_tensor(np.stack(imgs))
+        else:
+            # list[ndarray(h, w, 3)] -> torch.tensor(c, t, h, w)
+            imgs = to_tensor(np.stack(imgs).transpose(3, 0, 1, 2))
 
         imgs = self.trans(imgs).data.numpy()
         imgs[imgs > 255] = 255
         imgs[imgs < 0] = 0
         imgs = imgs.astype(np.uint8)
-        imgs = [x.transpose(1, 2, 0) for x in imgs]
+
+        if self.type in ('AugMix', 'RandAugment'):
+            # torch.tensor(t, c, h, w) -> list[ndarray(h, w, 3)]
+            imgs = [x.transpose(1, 2, 0) for x in imgs]
+        else:
+            # torch.tensor(c, t, h, w) -> list[ndarray(h, w, 3)]
+            imgs = [x for x in imgs.transpose(1, 2, 3, 0)]
+
         results['imgs'] = imgs
 
         return results
