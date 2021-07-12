@@ -69,7 +69,7 @@ def parse_args():
         '--ext',
         type=str,
         default='mp4',
-        choices=['avi', 'mp4', 'webm'],
+        choices=['avi', 'mp4', 'webm', 'mkv'],
         help='video file extensions')
     parser.add_argument(
         '--scale',

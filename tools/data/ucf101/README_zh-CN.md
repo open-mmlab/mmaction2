@@ -34,7 +34,7 @@ bash download_videos.sh
 用户可使用以下脚本，对原视频进行裁剪，得到密集编码且更小尺寸的视频。
 
 ```
-python ../resize_video.py ../../../data/ucf101/videos/ ../../../data/ucf101/videos_256p_dense_cache --dense --level 2 --ext avi
+python ../resize_videos.py ../../../data/ucf101/videos/ ../../../data/ucf101/videos_256p_dense_cache --dense --level 2 --ext avi
 ```
 
 ## 步骤 3. 抽取视频帧和光流
