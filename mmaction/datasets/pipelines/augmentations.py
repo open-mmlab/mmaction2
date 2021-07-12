@@ -135,17 +135,26 @@ class PytorchVideoTrans:
             imgs = to_tensor(np.stack(imgs))
         else:
             # list[ndarray(h, w, 3)] -> torch.tensor(c, t, h, w)
-            imgs = to_tensor(np.stack(imgs).transpose(3, 0, 1, 2))
+            # uint8 -> float32
+            imgs = to_tensor(
+                np.stack(results['imgs']).transpose(3, 0, 1, 2) / 255.)
 
         imgs = self.trans(imgs).data.numpy()
-        imgs[imgs > 255] = 255
-        imgs[imgs < 0] = 0
-        imgs = imgs.astype(np.uint8)
 
         if self.type in ('AugMix', 'RandAugment'):
+            imgs[imgs > 255] = 255
+            imgs[imgs < 0] = 0
+            imgs = imgs.astype(np.uint8)
+
             # torch.tensor(t, c, h, w) -> list[ndarray(h, w, 3)]
             imgs = [x.transpose(1, 2, 0) for x in imgs]
         else:
+            # float32 -> uint8
+            imgs = imgs * 255
+            imgs[imgs > 255] = 255
+            imgs[imgs < 0] = 0
+            imgs = imgs.astype(np.uint8)
+
             # torch.tensor(c, t, h, w) -> list[ndarray(h, w, 3)]
             imgs = [x for x in imgs.transpose(1, 2, 3, 0)]
 
