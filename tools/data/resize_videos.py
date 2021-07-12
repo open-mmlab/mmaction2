@@ -31,14 +31,16 @@ def resize_videos(vid_item):
                f'-vf {"mpdecimate," if args.remove_dup else ""}'
                f'scale=-2:{args.scale} '
                f'{"-vsync vfr" if args.remove_dup else ""} '
-               f'-c:v libx264 {"-g 16" if args.dense else ""} '
+               f'-c:v {"libvpx" if args.ext=='webm' else "libx264"} '
+               f'{"-g 16" if args.dense else ""} '
                f'-an {out_full_path} -y')
     else:
         cmd = (f'ffmpeg -hide_banner -loglevel error -i {full_path} '
                f'-vf {"mpdecimate," if args.remove_dup else ""}'
                f'scale={args.scale}:-2 '
                f'{"-vsync vfr" if args.remove_dup else ""} '
-               f'-c:v libx264 {"-g 16" if args.dense else ""} '
+               f'-c:v {"libvpx" if args.ext=='webm' else "libx264"} '
+               f'{"-g 16" if args.dense else ""} '
                f'-an {out_full_path} -y')
     os.popen(cmd)
     print(f'{vid_path} done')
