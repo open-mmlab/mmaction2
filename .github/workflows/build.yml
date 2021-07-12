@@ -67,7 +67,7 @@ jobs:
         run: pip install -r requirements/tests.txt -r requirements/optional.txt
       - name: Install PytorchVideo
         run: pip install pytorchvideo
-        if: ${{matrix.torch >= 1.8.0}}
+        if: ${{matrix.torchvision >= 0.9}}
       - name: Build and install
         run: rm -rf .eggs && pip install -e .
       - name: Run unittests and generate coverage report
@@ -137,7 +137,7 @@ jobs:
           python -c 'import mmcv; print(mmcv.__version__)'
       - name: Install PytorchVideo
         run: pip install pytorchvideo
-        if: ${{matrix.torch >= 1.8.0}}
+        if: ${{matrix.torchvision >= 0.9}}
       - name: Build and install
         run: |
           rm -rf .eggs
