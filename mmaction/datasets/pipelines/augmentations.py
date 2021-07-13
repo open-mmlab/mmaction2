@@ -113,8 +113,7 @@ class PytorchVideoTrans:
 
         supported_pytorchvideo_trans = ('AugMix', 'RandAugment',
                                         'RandomResizedCrop', 'ShortSideScale',
-                                        'RandomShortSideScale',
-                                        'UniformCropVideo')
+                                        'RandomShortSideScale')
         assert type in supported_pytorchvideo_trans,\
             f'PytorchVideo Transform {type} is not supported in MMAction2'
 
@@ -136,9 +135,10 @@ class PytorchVideoTrans:
         else:
             # list[ndarray(h, w, 3)] -> torch.tensor(c, t, h, w)
             # uint8 -> float32
-            imgs = to_tensor(
-                np.stack(results['imgs']).transpose(3, 0, 1, 2) / 255.)
+            imgs = to_tensor((np.stack(results['imgs']).transpose(3, 0, 1, 2) /
+                              255.).astype(np.float32))
 
+        print(self.type, imgs.size(), imgs.dtype)
         imgs = self.trans(imgs).data.numpy()
 
         if self.type in ('AugMix', 'RandAugment'):
