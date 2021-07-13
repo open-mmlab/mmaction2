@@ -22,7 +22,7 @@ YoYo/v_YoYo_g25_c04.avi
 YoYo/v_YoYo_g25_c05.avi
 ```
 
-假设 UCF101 中的视频所在目录为`data/ucf101/videos`，视频列表的文件名为`ucf101.txt`，使用 TSN（Kinetics-400 预训练）从 UCF101 中提取片段级特征，用户可以使用脚本如下：
+假设 UCF101 中的视频所在目录为 `data/ucf101/videos`，视频列表的文件名为 `ucf101.txt`，使用 TSN（Kinetics-400 预训练）从 UCF101 中提取片段级特征，用户可以使用脚本如下：
 
 ```shell
 python tools/misc/clip_feature_extraction.py \
@@ -33,7 +33,7 @@ https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_320p_1x1x3_100e_
 --out ucf101_feature.pkl
 ```
 
-被提取的特征存储于`ucf101_feature.pkl`。
+被提取的特征存储于 `ucf101_feature.pkl`。
 
 用户也可以使用分布式片段级特征提取。以下是使用拥有 8 gpus 的计算节点的示例。
 
