@@ -2,7 +2,7 @@
 
 We provide easy to use scripts for feature extraction.
 
-## Clip-leval Feature Extraction
+## Clip-level Feature Extraction
 
 Clip-level feature extraction extract deep feature from a video clip, which usually lasts several to tens of seconds. The extracted feature is an n-dim vector for each clip. When performing multi-view feature extraction, e.g. n clips x m crops, the extracted feature will be the average of the n * m views.
 
