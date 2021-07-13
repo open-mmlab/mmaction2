@@ -17,6 +17,7 @@ def resize_videos(vid_item):
         bool: Whether generate video cache successfully.
     """
     full_path, vid_path = vid_item
+    # Change the output video extension to .mp4 if '--to-mp4' flag is set
     if args.to_mp4:
         vid_path = vid_path.split('.')
         assert len(vid_path) == 2, f"Video path '{vid_path}' contain more than one dot"
