@@ -27,7 +27,7 @@ train_pipeline = [
         max_wh_scale_gap=1,
         num_fixed_crops=13),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
-    dict(type='pytorchvideo.AugMix'),
+    dict(type='pytorchvideo.RandAugment'),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
@@ -57,7 +57,7 @@ test_pipeline = [
         test_mode=True),
     dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
-    dict(type='CenterCrop', crop_size=224),
+    dict(type='ThreeCrop', crop_size=256),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
@@ -91,4 +91,4 @@ evaluation = dict(
 optimizer = dict(weight_decay=0.0005)
 
 # runtime settings
-work_dir = './work_dirs/tsm_r50_augmix_1x1x8_50e_sthv1_rgb/'
+work_dir = './work_dirs/tsm_r50_ptv_randaugment_1x1x8_50e_sthv1_rgb/'
