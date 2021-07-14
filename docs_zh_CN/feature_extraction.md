@@ -1,12 +1,12 @@
-# Feature Extraction
+# 特征提取
 
-We provide easy to use scripts for feature extraction.
+MMAction2 为特征提取提供了便捷使用的脚本。
 
-## Clip-level Feature Extraction
+## 片段级特征提取
 
-Clip-level feature extraction extract deep feature from a video clip, which usually lasts several to tens of seconds. The extracted feature is an n-dim vector for each clip. When performing multi-view feature extraction, e.g. n clips x m crops, the extracted feature will be the average of the n * m views.
+片段级特征提取是从长度一般为几秒到几十秒不等的剪辑片段中提取深度特征。从每个片段中提取的特征是一个 n 维向量。当进行多视图特征提取时，例如 n 个片段 × m 种裁剪，提取的特征将会是 n*m 个视图的平均值。
 
-Before applying clip-level feature extraction, you need to prepare a video list (which include all videos that you want to extract feature from). For example, the video list for videos in UCF101 will look like:
+在应用片段级特征提取之前，用户需要准备一个视频列表包含所有想要进行特征提取的视频。例如，由 UCF101 中视频组成的视频列表如下：
 
 ```
 ApplyEyeMakeup/v_ApplyEyeMakeup_g01_c01.avi
@@ -22,7 +22,7 @@ YoYo/v_YoYo_g25_c04.avi
 YoYo/v_YoYo_g25_c05.avi
 ```
 
-Assume the root of UCF101 videos is `data/ucf101/videos` and the name of the video list is `ucf101.txt`, to extract clip-level feature of UCF101 videos with Kinetics-400 pretrained TSN, you can use the following script:
+假设 UCF101 中的视频所在目录为 `data/ucf101/videos`，视频列表的文件名为 `ucf101.txt`，使用 TSN（Kinetics-400 预训练）从 UCF101 中提取片段级特征，用户可以使用脚本如下：
 
 ```shell
 python tools/misc/clip_feature_extraction.py \
@@ -33,9 +33,9 @@ https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_320p_1x1x3_100e_
 --out ucf101_feature.pkl
 ```
 
-and the extracted feature will be stored in `ucf101_feature.pkl`
+被提取的特征存储于 `ucf101_feature.pkl`。
 
-You can also use distributed clip-level feature extraction. Below is an example for a node with 8 gpus.
+用户也可以使用分布式片段级特征提取。以下是使用拥有 8 gpus 的计算节点的示例。
 
 ```shell
 bash tools/misc/dist_clip_feature_extraction.sh \
@@ -47,7 +47,7 @@ https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_320p_1x1x3_100e_
 --out ucf101_feature.pkl
 ```
 
-To extract clip-level feature of UCF101 videos with Kinetics-400 pretrained SlowOnly, you can use the following script:
+使用 SlowOnly（Kinetics-400 预训练）从 UCF101 中提取片段级特征，用户可以使用脚本如下：
 
 ```shell
 python tools/misc/clip_feature_extraction.py \
@@ -58,7 +58,7 @@ https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_video_
 --out ucf101_feature.pkl
 ```
 
-The two config files demonstrates what a minimal config file for feature extraction looks like. You can also use other existing config files for feature extraction, as long as they use videos rather than raw frames for training and testing:
+这两个配置文件展示了用于特征提取的最小配置。用户也可以使用其他存在的配置文件进行特征提取，只要注意使用视频数据进行训练和测试，而不是原始帧数据。
 
 ```shell
 python tools/misc/clip_feature_extraction.py \
@@ -68,3 +68,4 @@ https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_video_
 --video-root data/ucf101/videos \
 --out ucf101_feature.pkl
 ```
+

@@ -17,6 +17,11 @@ def resize_videos(vid_item):
         bool: Whether generate video cache successfully.
     """
     full_path, vid_path = vid_item
+    # Change the output video extension to .mp4 if '--to-mp4' flag is set
+    if args.to_mp4:
+        vid_path = vid_path.split('.')
+        assert len(vid_path) == 2, f"Video path '{vid_path}' contain more than one dot"
+        vid_path = vid_path[0] + '.mp4'
     out_full_path = osp.join(args.out_dir, vid_path)
     dir_name = osp.dirname(vid_path)
     out_dir = osp.join(args.out_dir, dir_name)
@@ -71,6 +76,10 @@ def parse_args():
         default='mp4',
         choices=['avi', 'mp4', 'webm', 'mkv'],
         help='video file extensions')
+    parser.add_argument(
+        '--to-mp4',
+        action='store_true',
+        help='whether to output videos in mp4 format')
     parser.add_argument(
         '--scale',
         type=int,
