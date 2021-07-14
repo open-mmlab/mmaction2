@@ -2,6 +2,20 @@
 
 ### Master
 
+**Highlights**
+
+**New Features**
+
+- Support Pytorchvideo Transforms ([#1008](https://github.com/open-mmlab/mmaction2/pull/1008))
+
+**Improvements**
+
+**Bug and Typo Fixes**
+
+**ModelZoo**
+
+- Add TSM-R50 sthv1 models trained by PytorchVideo RandAugment and AugMix ([#1008](https://github.com/open-mmlab/mmaction2/pull/1008))
+
 ### 0.16.0 (01/07/2021)
 
 **Highlights**

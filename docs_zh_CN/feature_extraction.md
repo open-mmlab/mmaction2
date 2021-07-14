@@ -68,4 +68,3 @@ https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_video_
 --video-root data/ucf101/videos \
 --out ucf101_feature.pkl
 ```
-

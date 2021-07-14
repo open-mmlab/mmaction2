@@ -91,6 +91,78 @@ class TorchvisionTrans:
 
 
 @PIPELINES.register_module()
+class PytorchVideoTrans:
+    """PytorchVideoTrans Augmentations, under pytorchvideo.transforms.
+
+    Args:
+        type (str): The name of the pytorchvideo transformation.
+    """
+
+    def __init__(self, type, **kwargs):
+        try:
+            import torch
+            import pytorchvideo.transforms as ptv_trans
+        except ImportError:
+            raise RuntimeError('Install pytorchvideo to use PytorchVideoTrans')
+        if LooseVersion(torch.__version__) < LooseVersion('1.8.0'):
+            raise RuntimeError(
+                'The version of PyTorch should be at least 1.8.0')
+
+        trans = getattr(ptv_trans, type, None)
+        assert trans, f'Transform {type} not in pytorchvideo'
+
+        supported_pytorchvideo_trans = ('AugMix', 'RandAugment',
+                                        'RandomResizedCrop', 'ShortSideScale',
+                                        'RandomShortSideScale')
+        assert type in supported_pytorchvideo_trans,\
+            f'PytorchVideo Transform {type} is not supported in MMAction2'
+
+        self.trans = trans(**kwargs)
+        self.type = type
+
+    def __call__(self, results):
+        assert 'imgs' in results
+
+        assert 'gt_bboxes' not in results,\
+            f'PytorchVideo {self.type} doesn\'t support bboxes yet.'
+        assert 'proposals' not in results,\
+            f'PytorchVideo {self.type} doesn\'t support bboxes yet.'
+
+        if self.type in ('AugMix', 'RandAugment'):
+            # list[ndarray(h, w, 3)] -> torch.tensor(t, c, h, w)
+            imgs = [x.transpose(2, 0, 1) for x in results['imgs']]
+            imgs = to_tensor(np.stack(imgs))
+        else:
+            # list[ndarray(h, w, 3)] -> torch.tensor(c, t, h, w)
+            # uint8 -> float32
+            imgs = to_tensor((np.stack(results['imgs']).transpose(3, 0, 1, 2) /
+                              255.).astype(np.float32))
+
+        imgs = self.trans(imgs).data.numpy()
+
+        if self.type in ('AugMix', 'RandAugment'):
+            imgs[imgs > 255] = 255
+            imgs[imgs < 0] = 0
+            imgs = imgs.astype(np.uint8)
+
+            # torch.tensor(t, c, h, w) -> list[ndarray(h, w, 3)]
+            imgs = [x.transpose(1, 2, 0) for x in imgs]
+        else:
+            # float32 -> uint8
+            imgs = imgs * 255
+            imgs[imgs > 255] = 255
+            imgs[imgs < 0] = 0
+            imgs = imgs.astype(np.uint8)
+
+            # torch.tensor(c, t, h, w) -> list[ndarray(h, w, 3)]
+            imgs = [x for x in imgs.transpose(1, 2, 3, 0)]
+
+        results['imgs'] = imgs
+
+        return results
+
+
+@PIPELINES.register_module()
 class PoseCompact:
     """Convert the coordinates of keypoints to make it more compact.
     Specifically, it first find a tight bounding box that surrounds all joints
