@@ -138,7 +138,6 @@ class PytorchVideoTrans:
             imgs = to_tensor((np.stack(results['imgs']).transpose(3, 0, 1, 2) /
                               255.).astype(np.float32))
 
-        print(self.type, imgs.size(), imgs.dtype)
         imgs = self.trans(imgs).data.numpy()
 
         if self.type in ('AugMix', 'RandAugment'):
