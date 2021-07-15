@@ -24,7 +24,7 @@
 ### Something-Something V1
 
 |config | resolution | gpus | backbone| pretrain | top1 acc (efficient/accurate)| top5 acc (efficient/accurate)| gpu_mem(M)  | ckpt | log| json|
-|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
 |[tanet_r50_1x1x8_50e_sthv1_rgb](/configs/recognition/tanet/tanet_r50_1x1x8_50e_sthv1_rgb.py)|height 100|8|TANet|ImageNet|47.45/49.69|76.00/77.62|7127|[ckpt](https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_1x1x8_50e_sthv1_rgb/tanet_r50_1x1x8_50e_sthv1_rgb_20210630-f4a48609.pth)|[log](https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_1x1x8_50e_sthv1_rgb/20210606_205006.log)|[ckpt](https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_1x1x8_50e_sthv1_rgb/20210606_205006.log.json)|
 |[tanet_r50_1x1x16_50e_sthv1_rgb](/configs/recognition/tanet/tanet_r50_1x1x16_50e_sthv1_rgb.py)|height 100|8|TANet|ImageNet|47.73/50.41|77.31/78.47|7127|[ckpt](https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_1x1x16_50e_sthv1_rgb/tanet_r50_1x1x16_50e_sthv1_rgb_20210630-7c19303c.pth)|[log](https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_1x1x16_50e_sthv1_rgb/20210607_155335.log)|[ckpt](https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_1x1x16_50e_sthv1_rgb/20210607_155335.log.json)|
 
