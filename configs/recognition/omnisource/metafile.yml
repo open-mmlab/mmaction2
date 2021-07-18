@@ -21,7 +21,7 @@ Models:
   - Dataset: MiniKinetics
     Metrics:
       Top 1 Accuracy: 77.4
-      top5 accuracy: 93.6
+      Top 5 Accuracy: 93.6
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/baseline/tsn_r50_1x1x8_100e_minikinetics_rgb_20201030.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/baseline/tsn_r50_1x1x8_100e_minikinetics_rgb_20201030.log
@@ -45,7 +45,7 @@ Models:
   - Dataset: MiniKinetics
     Metrics:
       Top 1 Accuracy: 78.0
-      top5 accuracy: 93.6
+      Top 5 Accuracy: 93.6
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/googleimage/tsn_r50_1x1x8_100e_minikinetics_googleimage_rgb_20201030.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/googleimage/tsn_r50_1x1x8_100e_minikinetics_googleimage_rgb_20201030.log
@@ -69,7 +69,7 @@ Models:
   - Dataset: MiniKinetics
     Metrics:
       Top 1 Accuracy: 78.6
-      top5 accuracy: 93.6
+      Top 5 Accuracy: 93.6
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/webimage/tsn_r50_1x1x8_100e_minikinetics_webimage_rgb_20201030.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/webimage/tsn_r50_1x1x8_100e_minikinetics_webimage_rgb_20201030.log
@@ -93,7 +93,7 @@ Models:
   - Dataset: MiniKinetics
     Metrics:
       Top 1 Accuracy: 80.6
-      top5 accuracy: 95.0
+      Top 5 Accuracy: 95.0
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/insvideo/tsn_r50_1x1x8_100e_minikinetics_insvideo_rgb_20201030.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/insvideo/tsn_r50_1x1x8_100e_minikinetics_insvideo_rgb_20201030.log
@@ -117,7 +117,7 @@ Models:
   - Dataset: MiniKinetics
     Metrics:
       Top 1 Accuracy: 78.6
-      top5 accuracy: 93.2
+      Top 5 Accuracy: 93.2
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/kineticsraw/tsn_r50_1x1x8_100e_minikinetics_kineticsraw_rgb_20201030.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/kineticsraw/tsn_r50_1x1x8_100e_minikinetics_kineticsraw_rgb_20201030.log
@@ -141,7 +141,7 @@ Models:
   - Dataset: MiniKinetics
     Metrics:
       Top 1 Accuracy: 81.3
-      top5 accuracy: 94.8
+      Top 5 Accuracy: 94.8
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/omnisource/tsn_r50_1x1x8_100e_minikinetics_omnisource_rgb_20201030.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/omnisource/tsn_r50_1x1x8_100e_minikinetics_rgb/omnisource/tsn_r50_1x1x8_100e_minikinetics_omnisource_rgb_20201030.log
@@ -165,7 +165,7 @@ Models:
   - Dataset: MiniKinetics
     Metrics:
       Top 1 Accuracy: 78.6
-      top5 accuracy: 93.9
+      Top 5 Accuracy: 93.9
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/baseline/slowonly_r50_8x8x1_256e_minikinetics_rgb_20201030.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/baseline/slowonly_r50_8x8x1_256e_minikinetics_rgb_20201030.log
@@ -189,7 +189,7 @@ Models:
   - Dataset: MiniKinetics
     Metrics:
       Top 1 Accuracy: 80.8
-      top5 accuracy: 95.0
+      Top 5 Accuracy: 95.0
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/googleimage/slowonly_r50_8x8x1_256e_minikinetics_googleimage_rgb_20201030.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/googleimage/slowonly_r50_8x8x1_256e_minikinetics_googleimage_rgb_20201030.log
@@ -213,7 +213,7 @@ Models:
   - Dataset: MiniKinetics
     Metrics:
       Top 1 Accuracy: 81.3
-      top5 accuracy: 95.2
+      Top 5 Accuracy: 95.2
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/webimage/slowonly_r50_8x8x1_256e_minikinetics_webimage_rgb_20201030.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/webimage/slowonly_r50_8x8x1_256e_minikinetics_webimage_rgb_20201030.log
@@ -237,7 +237,7 @@ Models:
   - Dataset: MiniKinetics
     Metrics:
       Top 1 Accuracy: 82.4
-      top5 accuracy: 95.6
+      Top 5 Accuracy: 95.6
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/insvideo/slowonly_r50_8x8x1_256e_minikinetics_insvideo_rgb_20201030.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/insvideo/slowonly_r50_8x8x1_256e_minikinetics_insvideo_rgb_20201030.log
@@ -261,7 +261,7 @@ Models:
   - Dataset: MiniKinetics
     Metrics:
       Top 1 Accuracy: 80.3
-      top5 accuracy: 94.5
+      Top 5 Accuracy: 94.5
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/kineticsraw/slowonly_r50_8x8x1_256e_minikinetics_kineticsraw_rgb_20201030.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/kineticsraw/slowonly_r50_8x8x1_256e_minikinetics_kineticsraw_rgb_20201030.log
@@ -285,7 +285,7 @@ Models:
   - Dataset: MiniKinetics
     Metrics:
       Top 1 Accuracy: 82.9
-      top5 accuracy: 95.8
+      Top 5 Accuracy: 95.8
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/omnisource/slowonly_r50_8x8x1_256e_minikinetics_omnisource_rgb_20201030.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/omnisource/slowonly_r50_8x8x1_256e_minikinetics_rgb/omnisource/slowonly_r50_8x8x1_256e_minikinetics_omnisource_rgb_20201030.log
@@ -307,7 +307,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 73.6
-      top5 accuracy: 91.0
+      Top 5 Accuracy: 91.0
     Task: Action Recognition
   Weights: https://download.openmmlab.com/mmaction/recognition/tsn/omni/tsn_imagenet_pretrained_r50_omni_1x1x3_kinetics400_rgb_20200926-54192355.pth
 - Config: configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py
@@ -327,7 +327,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 75.7
-      top5 accuracy: 91.9
+      Top 5 Accuracy: 91.9
     Task: Action Recognition
   Weights: https://download.openmmlab.com/mmaction/recognition/tsn/omni/tsn_1G1B_pretrained_r50_omni_1x1x3_kinetics400_rgb_20200926-2863fed0.pth
 - Config: configs/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_rgb.py
@@ -347,7 +347,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 76.8
-      top5 accuracy: 92.5
+      Top 5 Accuracy: 92.5
     Task: Action Recognition
   Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/omni/slowonly_r50_omni_4x16x1_kinetics400_rgb_20200926-51b1f7ea.pth
 - Config: configs/recognition/slowonly/slowonly_r101_8x8x1_196e_kinetics400_rgb.py
@@ -367,6 +367,6 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 80.4
-      top5 accuracy: 94.4
+      Top 5 Accuracy: 94.4
     Task: Action Recognition
   Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/omni/slowonly_r101_omni_8x8x1_kinetics400_rgb_20200926-b5dbb701.pth

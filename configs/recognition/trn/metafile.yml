@@ -20,8 +20,8 @@ Models:
     Metrics:
       Top 1 Accuracy: 33.88
       Top 1 Accuracy (efficient): 31.62
-      top5 accuracy: 62.12
-      top5 accuracy (efficient): 60.01
+      Top 5 Accuracy: 62.12
+      Top 5 Accuracy (efficient): 60.01
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/20210326_103948.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/20210326_103948.log
@@ -44,8 +44,8 @@ Models:
     Metrics:
       Top 1 Accuracy: 47.96
       Top 1 Accuracy (efficient): 45.14
-      top5 accuracy: 75.97
-      top5 accuracy (efficient): 73.21
+      Top 5 Accuracy: 75.97
+      Top 5 Accuracy (efficient): 73.21
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210326_103951.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210326_103951.log

@@ -20,7 +20,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 76.28
-      top5 accuracy: 92.6
+      Top 5 Accuracy: 92.6
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_dense_1x1x8_100e_kinetics400_rgb/tanet_r50_dense_1x1x8_100e_kinetics400_rgb_20210219.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_dense_1x1x8_100e_kinetics400_rgb/tanet_r50_dense_1x1x8_100e_kinetics400_rgb_20210219.log
@@ -44,8 +44,8 @@ Models:
     Metrics:
       Top 1 Accuracy: 49.69
       Top 1 Accuracy (efficient): 47.45
-      top5 accuracy: 77.62
-      top5 accuracy (efficient): 76.0
+      Top 5 Accuracy: 77.62
+      Top 5 Accuracy (efficient): 76.0
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_1x1x8_50e_sthv1_rgb/20210606_205006.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_1x1x8_50e_sthv1_rgb/20210606_205006.log
@@ -69,8 +69,8 @@ Models:
     Metrics:
       Top 1 Accuracy: 50.41
       Top 1 Accuracy (efficient): 47.73
-      top5 accuracy: 78.47
-      top5 accuracy (efficient): 77.31
+      Top 5 Accuracy: 78.47
+      Top 5 Accuracy (efficient): 77.31
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_1x1x16_50e_sthv1_rgb/20210607_155335.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_1x1x16_50e_sthv1_rgb/20210607_155335.log
