@@ -120,6 +120,7 @@ test_pipeline = [
 data = dict(
     videos_per_gpu=12,
     workers_per_gpu=1,
+    test_dataloader=dict(videos_per_gpu=1),
     train_ratio=[2, 1, 1, 1],
     train=[
         dict(

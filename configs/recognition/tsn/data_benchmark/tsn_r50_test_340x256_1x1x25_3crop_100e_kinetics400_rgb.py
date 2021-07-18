@@ -23,6 +23,7 @@ test_pipeline = [
 ]
 data = dict(
     workers_per_gpu=4,
+    test_dataloader=dict(videos_per_gpu=1),
     test=dict(
         type=dataset_type,
         ann_file=ann_file_test,
