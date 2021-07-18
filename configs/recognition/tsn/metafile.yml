@@ -941,7 +941,7 @@ Models:
     Training Resources: 8 GPUs
   Name: tsn_swin_transformer_video_320p_1x1x3_100e_kinetics400_rgb
   Results:
-  - Dataset: Kinetics400
+  - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 77.51
       Top 5 Accuracy: 92.92
