@@ -40,7 +40,7 @@ Since the prefix of official JPGs is "%05d.jpg" (e.g., "00001.jpg"), users need 
 ```
 data = dict(
     videos_per_gpu=16,
-    workers_per_gpu=4,
+    workers_per_gpu=2,
     train=dict(
         type=dataset_type,
         ann_file=ann_file_train,

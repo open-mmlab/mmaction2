@@ -22,7 +22,7 @@ test_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
-    workers_per_gpu=4,
+    workers_per_gpu=2,
     test_dataloader=dict(videos_per_gpu=1),
     test=dict(
         type=dataset_type,
