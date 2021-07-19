@@ -89,7 +89,6 @@ total_epochs = 256
 
 # precise bn
 precise_bn = dict(num_iters=200, interval=1)
-
 # runtime settings
 checkpoint_config = dict(interval=4)
 work_dir = './work_dirs/slowfast_r50_3d_4x16x1_256e_kinetics400_rgb'
