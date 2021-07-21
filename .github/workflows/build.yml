@@ -189,7 +189,7 @@ jobs:
           sudo apt-get install -y ninja-build
       - name: Install Pillow
         run: pip install Pillow==6.2.2
-        if: ${{matrix.torchvision < 0.5}}
+        if: ${{matrix.torchvision < '0.5'}}
       - name: Install TurboJpeg lib
         run: sudo apt-get install -y libturbojpeg
       - name: Install soundfile lib
@@ -211,10 +211,7 @@ jobs:
         run: pip install pytorchvideo
         if: ${{matrix.torchvision == '0.10.0+cu102'}}
       - name: Build and install
-        run: |
-          rm -rf .eggs
-          python setup.py check -m -s
-          TORCH_CUDA_ARCH_LIST=7.0 pip install .
+        run: rm -rf .eggs && pip install -e .
       - name: Run unittests and generate coverage report
         run: |
           coverage run --branch --source mmaction -m pytest tests/
