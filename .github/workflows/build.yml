@@ -130,10 +130,7 @@ jobs:
           pip install -r requirements.txt
           python -c 'import mmcv; print(mmcv.__version__)'
       - name: Build and install
-        run: |
-          rm -rf .eggs
-          python setup.py check -m -s
-          TORCH_CUDA_ARCH_LIST=7.0 pip install .
+        run: rm -rf .eggs && pip install -e .
       - name: Run unittests and generate coverage report
         run: |
           coverage run --branch --source mmaction -m pytest tests/
