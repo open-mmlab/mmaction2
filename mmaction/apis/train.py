@@ -127,7 +127,7 @@ def train_model(model,
         precise_bn_dataset = build_dataset(cfg.data.train)
         dataloader_setting = dict(
             videos_per_gpu=cfg.data.get('videos_per_gpu', 1),
-            workers_per_gpu=0,  # save memory and time
+            workers_per_gpu=1,  # save memory and time
             num_gpus=len(cfg.gpu_ids),
             dist=distributed,
             seed=cfg.seed)
