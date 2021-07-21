@@ -87,6 +87,40 @@ def mean_class_accuracy(scores, labels):
     return mean_class_acc
 
 
+def top_k_correct_class(scores, labels, k=10):
+    pred = np.argmax(scores, axis=1)
+    cf_mat = confusion_matrix(pred, labels).astype(float)
+
+    cls_cnt = cf_mat.sum(axis=1)
+    cls_hit = np.diag(cf_mat)
+
+    hit_ratio = np.array(
+        [hit / cnt if cnt else 0.0 for cnt, hit in zip(cls_cnt, cls_hit)])
+    max_index = np.argsort(hit_ratio)[-k:][::-1]
+    max_value = hit_ratio[max_index]
+    results = []
+    for index, value in zip(max_index, max_value):
+        results.append((index, value))
+    return results
+
+
+def top_k_incorrect_class(scores, labels, k=10):
+    pred = np.argmax(scores, axis=1)
+    cf_mat = confusion_matrix(pred, labels).astype(float)
+
+    cls_cnt = cf_mat.sum(axis=1)
+    cls_hit = np.diag(cf_mat)
+
+    hit_ratio = np.array(
+        [hit / cnt if cnt else 0.0 for cnt, hit in zip(cls_cnt, cls_hit)])
+    min_index = np.argsort(hit_ratio)[:k]
+    min_value = hit_ratio[min_index]
+    results = []
+    for index, value in zip(min_index, min_value):
+        results.append((index, value))
+    return results
+
+
 def top_k_accuracy(scores, labels, topk=(1, )):
     """Calculate top k accuracy score.
 
