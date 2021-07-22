@@ -26,6 +26,15 @@ class TestSampling(BaseTestLoading):
                 clip_len=3, frame_interval=1, num_clips=5, start_index=1)
             SampleFrames(**config)
 
+        # Sample Frame with tail Frames
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        config = dict(
+            clip_len=3, frame_interval=1, num_clips=5, keep_tail_frames=True)
+        sample_frames = SampleFrames(**config)
+        sample_frames(video_result)
+        sample_frames(frame_result)
+
         # Sample Frame with no temporal_jitter
         # clip_len=3, frame_interval=1, num_clips=5
         video_result = copy.deepcopy(self.video_results)
