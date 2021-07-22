@@ -1449,14 +1449,28 @@ class Normalize:
 
 @PIPELINES.register_module()
 class ColorJitter:
-    """Perform ColorJitter to each img."""
-    # Do not support Flow Currently
+    """Perform ColorJitter to each img.
+
+    Required keys are "imgs", added or modified keys are "imgs".
+
+    Args:
+        brightness (float | tuple[float]): The jitter range for brightness, if
+            set as a float, the range will be (1 - brightness, 1 + brightness).
+            Default: 0.5.
+        contrast (float | tuple[float]): The jitter range for contrast, if set
+            as a float, the range will be (1 - contrast, 1 + contrast).
+            Default: 0.5.
+        saturation (float | tuple[float]): The jitter range for saturation, if
+            set as a float, the range will be (1 - saturation, 1 + saturation).
+            Default: 0.5.
+        hue (float | tuple[float]): The jitter range for hue, if set as a
+            float, the range will be (-hue, hue). Default: 0.1.
+    """
 
     @staticmethod
     def check_input(val, max, base):
         if isinstance(val, tuple):
-            assert ((val[0] <= val[1]) and (val[0] >= base - max)
-                    and (val[1] <= base + max))
+            assert base - max <= val[0] <= val[1] <= base + max
             return val
         assert val <= max
         return (base - val, base + val)
@@ -1484,7 +1498,7 @@ class ColorJitter:
         img = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
         return img.astype(np.float32)
 
-    def __init__(self, brightness=0.5, contrast=0.5, saturation=0.5, hue=0.07):
+    def __init__(self, brightness=0.5, contrast=0.5, saturation=0.5, hue=0.1):
         self.brightness = self.check_input(brightness, 1, 1)
         self.contrast = self.check_input(contrast, 1, 1)
         self.saturation = self.check_input(saturation, 1, 1)
@@ -1503,9 +1517,9 @@ class ColorJitter:
             s = np.random.uniform(
                 low=self.saturation[0], high=self.saturation[1])
             h = np.random.uniform(low=self.hue[0], high=self.hue[1])
-            st, ed = i * clip_len, (i + 1) * clip_len
+            start, end = i * clip_len, (i + 1) * clip_len
 
-            for img in imgs[st:ed]:
+            for img in imgs[start:end]:
                 img = img.astype(np.float32)
                 for fn_id in self.fn_idx:
                     if fn_id == 0 and b != 1:
