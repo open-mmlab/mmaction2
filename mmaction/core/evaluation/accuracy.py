@@ -87,7 +87,21 @@ def mean_class_accuracy(scores, labels):
     return mean_class_acc
 
 
-def top_k_correct_class(scores, labels, k=10):
+def top_k_accurate_classes(scores, labels, k=10):
+    """Calculate the most K accurate classes.
+
+    Given the prediction scores, ground truth label and top-k value,
+    compute the most K accurate classes.
+
+    Args:
+        scores (list[np.ndarray]): Prediction scores for each class.
+        labels (list[int] | np.ndarray): Ground truth labels.
+        k (int): Top-k values. Default: 10.
+
+    Return:
+        list: List of sorted (from high accuracy to low accuracy) top K
+        accurate classes in format of (label_id, acc_ratio).
+    """
     pred = np.argmax(scores, axis=1)
     cf_mat = confusion_matrix(pred, labels).astype(float)
 
@@ -98,13 +112,25 @@ def top_k_correct_class(scores, labels, k=10):
         [hit / cnt if cnt else 0.0 for cnt, hit in zip(cls_cnt, cls_hit)])
     max_index = np.argsort(hit_ratio)[-k:][::-1]
     max_value = hit_ratio[max_index]
-    results = []
-    for index, value in zip(max_index, max_value):
-        results.append((index, value))
+    results = list(zip(max_index, max_value))
     return results
 
 
-def top_k_incorrect_class(scores, labels, k=10):
+def top_k_inaccurate_classes(scores, labels, k=10):
+    """Calculate the most K inaccurate classes.
+
+    Given the prediction scores, ground truth label and top-k value,
+    compute the top K inaccurate classes.
+
+    Args:
+        scores (list[np.ndarray]): Prediction scores for each class.
+        labels (list[int] | np.ndarray): Ground truth labels.
+        k (int): Top-k values. Default: 10.
+
+    Return:
+        list: List of sorted (from low accuracy to high accuracy) top K
+        inaccurate classes in format of (label_id, acc_ratio).
+    """
     pred = np.argmax(scores, axis=1)
     cf_mat = confusion_matrix(pred, labels).astype(float)
 
@@ -115,9 +141,7 @@ def top_k_incorrect_class(scores, labels, k=10):
         [hit / cnt if cnt else 0.0 for cnt, hit in zip(cls_cnt, cls_hit)])
     min_index = np.argsort(hit_ratio)[:k]
     min_value = hit_ratio[min_index]
-    results = []
-    for index, value in zip(min_index, min_value):
-        results.append((index, value))
+    results = list(zip(min_index, min_value))
     return results
 
 
