@@ -22,6 +22,9 @@
   - [UCF101-24](/tools/data/ucf101_24/README_zh-CN.md) \[ [主页](http://www.thumos.info/download.html) \]
   - [JHMDB](/tools/data/jhmdb/README_zh-CN.md) \[ [主页](http://jhmdb.is.tue.mpg.de/) \]
 
+- 基于人体骨架的动作识别数据集：
+  - [PoseC3D Skeleton Dataset](/tools/data/skeleton/README.md) \[ [主页](https://kennymckormick.github.io/posec3d/) \]
+
 MMAction2 目前支持的数据集如上所列。
 MMAction2 在 `$MMACTION2/tools/data/` 路径下提供数据集准备脚本。
 每个数据集的详细准备教程也在 [Readthedocs](https://mmaction2.readthedocs.io/zh_CN/latest/supported_datasets.html) 中给出。
