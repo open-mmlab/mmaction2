@@ -10,7 +10,7 @@ from mmaction.core import (ActivityNetLocalization,
                            get_weighted_score, mean_average_precision,
                            mean_class_accuracy, mmit_mean_average_precision,
                            pairwise_temporal_iou, top_k_accuracy,
-                           top_k_accurate_classes, top_k_inaccurate_classes)
+                           top_k_classes)
 from mmaction.core.evaluation.ava_utils import ava_eval
 
 
@@ -320,27 +320,21 @@ def test_top_k_accurate_classes():
         np.array([0.2, 0.15, 0.3, 0.35]),  # 3
     ]
     label = np.array([3, 2, 2, 1, 3, 3])
-    results_top1 = top_k_accurate_classes(scores, label, 1)
-    results_top3 = top_k_accurate_classes(scores, label, 3)
+
+    with pytest.raises(AssertionError):
+        top_k_classes(scores, label, 1, mode='wrong')
+
+    results_top1 = top_k_classes(scores, label, 1)
+    results_top3 = top_k_classes(scores, label, 3)
     assert len(results_top1) == 1
     assert len(results_top3) == 3
     assert results_top3[0] == results_top1[0]
     assert results_top1 == [(3, 1.)]
     assert results_top3 == [(3, 1.), (2, 0.5), (1, 0.0)]
 
-
-def test_top_k_inaccurate_classes():
-    scores = [
-        np.array([0.1, 0.2, 0.3, 0.4]),  # 3
-        np.array([0.2, 0.3, 0.4, 0.1]),  # 2
-        np.array([0.3, 0.4, 0.1, 0.2]),  # 1
-        np.array([0.4, 0.1, 0.2, 0.3]),  # 0
-        np.array([0.25, 0.1, 0.3, 0.35]),  # 3
-        np.array([0.2, 0.15, 0.3, 0.35]),  # 3
-    ]
     label = np.array([3, 2, 1, 1, 3, 0])
-    results_top1 = top_k_inaccurate_classes(scores, label, 1)
-    results_top3 = top_k_inaccurate_classes(scores, label, 3)
+    results_top1 = top_k_classes(scores, label, 1, mode='inaccurate')
+    results_top3 = top_k_classes(scores, label, 3, mode='inaccurate')
     assert len(results_top1) == 1
     assert len(results_top3) == 3
     assert results_top3[0] == results_top1[0]

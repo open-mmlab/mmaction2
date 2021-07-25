@@ -3,8 +3,7 @@ from .accuracy import (average_precision_at_temporal_iou,
                        get_weighted_score, interpolated_precision_recall,
                        mean_average_precision, mean_class_accuracy,
                        mmit_mean_average_precision, pairwise_temporal_iou,
-                       softmax, top_k_accuracy, top_k_accurate_classes,
-                       top_k_inaccurate_classes)
+                       softmax, top_k_accuracy, top_k_classes)
 from .eval_detection import ActivityNetLocalization
 from .eval_hooks import DistEvalHook, EvalHook
 
@@ -14,5 +13,5 @@ __all__ = [
     'average_recall_at_avg_proposals', 'pairwise_temporal_iou',
     'average_precision_at_temporal_iou', 'ActivityNetLocalization', 'softmax',
     'interpolated_precision_recall', 'mmit_mean_average_precision',
-    'top_k_accurate_classes', 'top_k_inaccurate_classes'
+    'top_k_classes'
 ]
