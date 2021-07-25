@@ -27,6 +27,18 @@ bash download_annotations.sh ${DATASET}
 
 PS: Due to [Conditions of Use](http://rose1.ntu.edu.sg/Datasets/actionRecognition.asp) of the NTURGB-D dataset, we can not directly release the annotations used in our experiments. We will prepare a script for pose annotation generation ASAP. Once accomplished, you can use this script to generate all pose annotations used in our experiments.
 
+## The Format of PoseC3D Annotations
+
+Here we briefly introduce the format of PoseC3D Annotations, we will take `gym_train.pkl` as an example: the content of `gym_train.pkl` is a list of length 20484, each item is a dictionary that is the skeleton annotation of one video. Each dictionary has following fields:
+
+- kp: The keypoint coordinates, which is a numpy array of the shape N (#person) x T (temporal length) x K (#keypoints, 17 in our case) x 2 (x, y coordinate).
+- kpscore:  The keypoint confidence scores, which is a numpy array of the shape N (#person) x T (temporal length) x K (#keypoints, 17 in our case).
+- frame_dir: The corresponding video name.
+- label: The action category.
+- img_shape: The image shape of each frame.
+- original_shape: Same as above.
+- total_frames: The temporal length of the video.
+
 ## Visualization
 
 For skeleton data visualization, you need also to prepare the RGB videos. Please refer to [visualize_heatmap_volume](/demo/visualize_heatmap_volume.ipynb) for detailed process. Here we provide some visualization examples from NTU-60 and FineGYM.
