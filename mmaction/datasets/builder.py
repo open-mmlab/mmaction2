@@ -75,7 +75,7 @@ def build_dataloader(dataset,
         persistent_workers (bool): If True, the data loader will not shutdown
             the worker processes after a dataset has been consumed once.
             This allows to maintain the workers Dataset instances alive.
-            The argument also has effect in PyTorch>=1.7.0.
+            The argument also has effect in PyTorch>=1.8.0.
             Default: True
         kwargs (dict, optional): Any keyword argument to be used to initialize
             DataLoader.
