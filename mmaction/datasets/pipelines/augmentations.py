@@ -3,6 +3,7 @@ import warnings
 from collections.abc import Sequence
 from distutils.version import LooseVersion
 
+import cv2
 import mmcv
 import numpy as np
 from torch.nn.modules.utils import _pair
@@ -1520,183 +1521,98 @@ class Normalize:
 
 @PIPELINES.register_module()
 class ColorJitter:
-    """Randomly distort the brightness, contrast, saturation and hue of images,
-    and add PCA based noise into images.
+    """Perform ColorJitter to each img.
 
-    Note: The input images should be in RGB channel order.
-
-    Code Reference:
-    https://gluon-cv.mxnet.io/_modules/gluoncv/data/transforms/experimental/image.html
-    https://mxnet.apache.org/api/python/docs/_modules/mxnet/image/image.html#LightingAug
-
-    If specified to apply color space augmentation, it will distort the image
-    color space by changing brightness, contrast and saturation. Then, it will
-    add some random distort to the images in different color channels.
-    Note that the input images should be in original range [0, 255] and in RGB
-    channel sequence.
-
-    Required keys are "imgs", added or modified keys are "imgs", "eig_val",
-    "eig_vec", "alpha_std" and "color_space_aug".
+    Required keys are "imgs", added or modified keys are "imgs".
 
     Args:
-        color_space_aug (bool): Whether to apply color space augmentations. If
-            specified, it will change the brightness, contrast, saturation and
-            hue of images, then add PCA based noise to images. Otherwise, it
-            will directly add PCA based noise to images. Default: False.
-        alpha_std (float): Std in the normal Gaussian distribution of alpha.
-        eig_val (np.ndarray | None): Eigenvalues of [1 x 3] size for RGB
-            channel jitter. If set to None, it will use the default
-            eigenvalues. Default: None.
-        eig_vec (np.ndarray | None): Eigenvectors of [3 x 3] size for RGB
-            channel jitter. If set to None, it will use the default
-            eigenvectors. Default: None.
+        brightness (float | tuple[float]): The jitter range for brightness, if
+            set as a float, the range will be (1 - brightness, 1 + brightness).
+            Default: 0.5.
+        contrast (float | tuple[float]): The jitter range for contrast, if set
+            as a float, the range will be (1 - contrast, 1 + contrast).
+            Default: 0.5.
+        saturation (float | tuple[float]): The jitter range for saturation, if
+            set as a float, the range will be (1 - saturation, 1 + saturation).
+            Default: 0.5.
+        hue (float | tuple[float]): The jitter range for hue, if set as a
+            float, the range will be (-hue, hue). Default: 0.1.
     """
 
-    def __init__(self,
-                 color_space_aug=False,
-                 alpha_std=0.1,
-                 eig_val=None,
-                 eig_vec=None):
-        if eig_val is None:
-            # note that the data range should be [0, 255]
-            self.eig_val = np.array([55.46, 4.794, 1.148], dtype=np.float32)
-        else:
-            self.eig_val = eig_val
-
-        if eig_vec is None:
-            self.eig_vec = np.array([[-0.5675, 0.7192, 0.4009],
-                                     [-0.5808, -0.0045, -0.8140],
-                                     [-0.5836, -0.6948, 0.4203]],
-                                    dtype=np.float32)
-        else:
-            self.eig_vec = eig_vec
-
-        self.alpha_std = alpha_std
-        self.color_space_aug = color_space_aug
+    @staticmethod
+    def check_input(val, max, base):
+        if isinstance(val, tuple):
+            assert base - max <= val[0] <= val[1] <= base + max
+            return val
+        assert val <= max
+        return (base - val, base + val)
 
     @staticmethod
-    def brightness(img, delta):
-        """Brightness distortion.
-
-        Args:
-            img (np.ndarray): An input image.
-            delta (float): Delta value to distort brightness.
-                It ranges from [-32, 32).
-
-        Returns:
-            np.ndarray: A brightness distorted image.
-        """
-        if np.random.rand() > 0.5:
-            img = img + np.float32(delta)
-        return img
+    def rgb_to_grayscale(img):
+        return 0.2989 * img[..., 0] + 0.587 * img[..., 1] + 0.114 * img[..., 2]
 
     @staticmethod
-    def contrast(img, alpha):
-        """Contrast distortion.
-
-        Args:
-            img (np.ndarray): An input image.
-            alpha (float): Alpha value to distort contrast.
-                It ranges from [0.6, 1.4).
-
-        Returns:
-            np.ndarray: A contrast distorted image.
-        """
-        if np.random.rand() > 0.5:
-            img = img * np.float32(alpha)
-        return img
+    def adjust_contrast(img, factor):
+        val = np.mean(ColorJitter.rgb_to_grayscale(img))
+        return factor * img + (1 - factor) * val
 
     @staticmethod
-    def saturation(img, alpha):
-        """Saturation distortion.
-
-        Args:
-            img (np.ndarray): An input image.
-            alpha (float): Alpha value to distort the saturation.
-                It ranges from [0.6, 1.4).
-
-        Returns:
-            np.ndarray: A saturation distorted image.
-        """
-        if np.random.rand() > 0.5:
-            gray = img * np.array([0.299, 0.587, 0.114], dtype=np.float32)
-            gray = np.sum(gray, 2, keepdims=True)
-            gray *= (1.0 - alpha)
-            img = img * alpha
-            img = img + gray
-        return img
+    def adjust_saturation(img, factor):
+        gray = np.stack([ColorJitter.rgb_to_grayscale(img)] * 3, axis=-1)
+        return factor * img + (1 - factor) * gray
 
     @staticmethod
-    def hue(img, alpha):
-        """Hue distortion.
+    def adjust_hue(img, factor):
+        img = np.clip(img, 0, 255).astype(np.uint8)
+        hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
+        offset = int(factor * 255)
+        hsv[..., 0] = (hsv[..., 0] + offset) % 180
+        img = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
+        return img.astype(np.float32)
 
-        Args:
-            img (np.ndarray): An input image.
-            alpha (float): Alpha value to control the degree of rotation
-                for hue. It ranges from [-18, 18).
-
-        Returns:
-            np.ndarray: A hue distorted image.
-        """
-        if np.random.rand() > 0.5:
-            u = np.cos(alpha * np.pi)
-            w = np.sin(alpha * np.pi)
-            bt = np.array([[1.0, 0.0, 0.0], [0.0, u, -w], [0.0, w, u]],
-                          dtype=np.float32)
-            tyiq = np.array([[0.299, 0.587, 0.114], [0.596, -0.274, -0.321],
-                             [0.211, -0.523, 0.311]],
-                            dtype=np.float32)
-            ityiq = np.array([[1.0, 0.956, 0.621], [1.0, -0.272, -0.647],
-                              [1.0, -1.107, 1.705]],
-                             dtype=np.float32)
-            t = np.dot(np.dot(ityiq, bt), tyiq).T
-            t = np.array(t, dtype=np.float32)
-            img = np.dot(img, t)
-        return img
+    def __init__(self, brightness=0.5, contrast=0.5, saturation=0.5, hue=0.1):
+        self.brightness = self.check_input(brightness, 1, 1)
+        self.contrast = self.check_input(contrast, 1, 1)
+        self.saturation = self.check_input(saturation, 1, 1)
+        self.hue = self.check_input(hue, 0.5, 0)
+        self.fn_idx = np.random.permutation(4)
 
     def __call__(self, results):
         imgs = results['imgs']
-        out = []
-        if self.color_space_aug:
-            bright_delta = np.random.uniform(-32, 32)
-            contrast_alpha = np.random.uniform(0.6, 1.4)
-            saturation_alpha = np.random.uniform(0.6, 1.4)
-            hue_alpha = np.random.uniform(-18, 18)
-            jitter_coin = np.random.rand()
-            for img in imgs:
-                img = self.brightness(img, delta=bright_delta)
-                if jitter_coin > 0.5:
-                    img = self.contrast(img, alpha=contrast_alpha)
-                    img = self.saturation(img, alpha=saturation_alpha)
-                    img = self.hue(img, alpha=hue_alpha)
-                else:
-                    img = self.saturation(img, alpha=saturation_alpha)
-                    img = self.hue(img, alpha=hue_alpha)
-                    img = self.contrast(img, alpha=contrast_alpha)
-                out.append(img)
-        else:
-            out = imgs
+        num_clips, clip_len = 1, len(imgs)
 
-        # Add PCA based noise
-        alpha = np.random.normal(0, self.alpha_std, size=(3, ))
-        rgb = np.array(
-            np.dot(self.eig_vec * alpha, self.eig_val), dtype=np.float32)
-        rgb = rgb[None, None, ...]
+        new_imgs = []
+        for i in range(num_clips):
+            b = np.random.uniform(
+                low=self.brightness[0], high=self.brightness[1])
+            c = np.random.uniform(low=self.contrast[0], high=self.contrast[1])
+            s = np.random.uniform(
+                low=self.saturation[0], high=self.saturation[1])
+            h = np.random.uniform(low=self.hue[0], high=self.hue[1])
+            start, end = i * clip_len, (i + 1) * clip_len
 
-        results['imgs'] = [img + rgb for img in out]
-        results['eig_val'] = self.eig_val
-        results['eig_vec'] = self.eig_vec
-        results['alpha_std'] = self.alpha_std
-        results['color_space_aug'] = self.color_space_aug
-
+            for img in imgs[start:end]:
+                img = img.astype(np.float32)
+                for fn_id in self.fn_idx:
+                    if fn_id == 0 and b != 1:
+                        img *= b
+                    if fn_id == 1 and c != 1:
+                        img = self.adjust_contrast(img, c)
+                    if fn_id == 2 and s != 1:
+                        img = self.adjust_saturation(img, s)
+                    if fn_id == 3 and h != 0:
+                        img = self.adjust_hue(img, h)
+                img = np.clip(img, 0, 255).astype(np.uint8)
+                new_imgs.append(img)
+        results['imgs'] = new_imgs
         return results
 
     def __repr__(self):
         repr_str = (f'{self.__class__.__name__}('
-                    f'color_space_aug={self.color_space_aug}, '
-                    f'alpha_std={self.alpha_std}, '
-                    f'eig_val={self.eig_val}, '
-                    f'eig_vec={self.eig_vec})')
+                    f'brightness={self.brightness}, '
+                    f'contrast={self.contrast}, '
+                    f'saturation={self.saturation}, '
+                    f'hue={self.hue})')
         return repr_str
 
 
