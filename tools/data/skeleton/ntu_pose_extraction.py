@@ -6,7 +6,7 @@ import random as rd
 import shutil
 import string
 import warnings
-from collections import defaultdict  # isort: skip
+from collections import defaultdict
 
 import cv2
 import mmcv
@@ -331,5 +331,7 @@ def parse_args():
 if __name__ == '__main__':
     global_args = parse_args()
     args.device = global_args.device
+    args.video = global_args.video
+    args.output = global_args.output
     anno = ntu_pose_extraction(args.video)
-    mmcv.save(anno, args.output)
+    mmcv.dump(anno, args.output)
