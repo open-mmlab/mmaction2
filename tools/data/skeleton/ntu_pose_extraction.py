@@ -92,13 +92,13 @@ def removedup(bbox):
     def inside(box0, box1, thre=0.8):
         return intersection(box0, box1) / area(box0) > thre
 
-    num_bbox = bbox.shape[0]
-    if num_bbox == 1 or num_bbox == 0:
+    num_bboxes = bbox.shape[0]
+    if num_bboxes == 1 or num_bboxes == 0:
         return bbox
     valid = []
-    for i in range(num_bbox):
+    for i in range(num_bboxes):
         flag = True
-        for j in range(num_bbox):
+        for j in range(num_bboxes):
             if i != j and inside(bbox[i],
                                  bbox[j]) and bbox[i][4] <= bbox[j][4]:
                 flag = False
@@ -308,12 +308,12 @@ def ntu_pose_extraction(vid):
     anno = dict()
     anno['keypoint'] = pose_results[..., :2]
     anno['keypoint_score'] = pose_results[..., 2]
-    anno['frame_dir'] = vid.split('/')[-1].split('.')[0]
+    anno['frame_dir'] = osp.splitext(osp.basename(vid))[0]
     anno['img_shape'] = (1080, 1920)
     anno['original_shape'] = (1080, 1920)
     anno['total_frames'] = pose_results.shape[1]
-    anno['label'] = int(vid.split('/')[-1].split('A')[1][:3])
-    shutil.rmtree(frame_paths[0].split('/')[0])
+    anno['label'] = int(osp.basename(vid).split('A')[1][:3])
+    shutil.rmtree(osp.dirname(frame_paths[0]))
 
     return anno
 
