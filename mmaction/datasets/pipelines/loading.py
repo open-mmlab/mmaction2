@@ -1280,6 +1280,7 @@ class RawFrameDecode:
         for i, frame_idx in enumerate(results['frame_inds']):
             if frame_idx in cache:
                 imgs.append(cp.deepcopy(imgs[cache[frame_idx]]))
+                continue
             else:
                 cache[frame_idx] = i
 
