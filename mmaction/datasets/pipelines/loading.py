@@ -1283,8 +1283,8 @@ class RawFrameDecode:
                 if modality == 'RGB':
                     imgs.append(cp.deepcopy(imgs[cache[frame_idx]]))
                 else:
-                    imgs.append(cp.deepcopy(imgs[cache[2 * frame_idx]]))
-                    imgs.append(cp.deepcopy(imgs[cache[2 * frame_idx + 1]]))
+                    imgs.append(cp.deepcopy(imgs[2 * cache[frame_idx]]))
+                    imgs.append(cp.deepcopy(imgs[2 * cache[frame_idx] + 1]))
                 continue
             else:
                 cache[frame_idx] = i
