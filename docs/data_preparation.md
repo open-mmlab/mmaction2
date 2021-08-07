@@ -32,9 +32,9 @@ Similar to the datasets stated above, it is recommended organizing in `$MMACTION
 Please refer to the official website and/or the official script to prepare the videos.
 Note that the videos should be arranged in either
 
-(1). A two-level directory organized by `${CLASS_NAME}/${VIDEO_ID}`, which is recommended to be used for for action recognition datasets (such as UCF101 and Kinetics)
+(1). A two-level directory organized by `${CLASS_NAME}/${VIDEO_ID}`, which is recommended to be used for action recognition datasets (such as UCF101 and Kinetics)
 
-(2). A single-level directory, which is recommended to be used for for action detection datasets or those with multiple annotations per video (such as THUMOS14).
+(2). A single-level directory, which is recommended to be used for action detection datasets or those with multiple annotations per video (such as THUMOS14).
 
 ### Extract frames
 

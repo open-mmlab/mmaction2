@@ -167,3 +167,23 @@ Models:
     Task: Action Recognition
   Weights: https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ircsn_sports1m_pretrained_r152_32x2x1_58e_kinetics400_rgb_20210617-b9b10241.pth
   inference_time(video/s): x
+- Config: configs/recognition/csn/ircsn_bnfrozen_r50_32x2x1_180e_kinetics400_rgb.py
+  In Collection: CSN
+  Metadata:
+    Architecture: ResNet50
+    Epochs: 58
+    FLOPs: 56209211392
+    Parameters: 13131152
+    Pretrained: None
+    Resolution: short-side 320
+    Training Data: Kinetics-400
+  Modality: RGB
+  Name: ircsn_bnfrozen_r50_32x2x1_180e_kinetics400_rgb.py
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      Top 1 Accuracy: 73.6
+      top5 accuracy: 91.3
+    Task: Action Recognition
+  Weights: https://download.openmmlab.com/mmaction/recognition/csn/ircsn_bnfrozen_r50_32x2x1_180e_kinetics400_rgb/ircsn_bnfrozen_r50_32x2x1_180e_kinetics400_rgb_20210618-4e29e2e8.pth
+  inference_time(video/s): x

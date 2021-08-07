@@ -22,6 +22,9 @@
   - [UCF101-24](/tools/data/ucf101_24/README.md) \[ [Homepage](http://www.thumos.info/download.html) \]
   - [JHMDB](/tools/data/jhmdb/README.md) \[ [Homepage](http://jhmdb.is.tue.mpg.de/) \]
 
+- Skeleton-based Action Recognition
+  - [PoseC3D Skeleton Dataset](/tools/data/skeleton/README.md) \[ [Homepage](https://kennymckormick.github.io/posec3d/) \]
+
 The supported datasets are listed above.
 We provide shell scripts for data preparation under the path `$MMACTION2/tools/data/`.
 Below is the detailed tutorials of data deployment for each dataset.

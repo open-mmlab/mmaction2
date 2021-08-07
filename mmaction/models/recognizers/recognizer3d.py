@@ -64,18 +64,26 @@ class Recognizer3D(BaseRecognizer):
                 feat, _ = self.neck(feat)
 
         if self.feature_extraction:
-            # perform spatio-temporal pooling
-            avg_pool = nn.AdaptiveAvgPool3d(1)
-            if isinstance(feat, tuple):
-                feat = [avg_pool(x) for x in feat]
-                # concat them
-                feat = torch.cat(feat, axis=1)
-            else:
-                feat = avg_pool(feat)
-            # squeeze dimensions
-            feat = feat.reshape((batches, num_segs, -1))
-            # temporal average pooling
-            feat = feat.mean(axis=1)
+            feat_dim = len(feat[0].size()) if isinstance(feat, tuple) else len(
+                feat.size())
+            assert feat_dim in [
+                5, 2
+            ], ('Got feature of unknown architecture, '
+                'only 3D-CNN-like ([N, in_channels, T, H, W]), and '
+                'transformer-like ([N, in_channels]) features are supported.')
+            if feat_dim == 5:  # 3D-CNN architecture
+                # perform spatio-temporal pooling
+                avg_pool = nn.AdaptiveAvgPool3d(1)
+                if isinstance(feat, tuple):
+                    feat = [avg_pool(x) for x in feat]
+                    # concat them
+                    feat = torch.cat(feat, axis=1)
+                else:
+                    feat = avg_pool(feat)
+                # squeeze dimensions
+                feat = feat.reshape((batches, num_segs, -1))
+                # temporal average pooling
+                feat = feat.mean(axis=1)
             return feat
 
         # should have cls_head if not extracting features
