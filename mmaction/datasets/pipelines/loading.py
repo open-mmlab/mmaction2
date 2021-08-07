@@ -1278,6 +1278,7 @@ class RawFrameDecode:
 
         cache = {}
         for i, frame_idx in enumerate(results['frame_inds']):
+            # Avoid loading duplicated frames
             if frame_idx in cache:
                 if modality == 'RGB':
                     imgs.append(cp.deepcopy(imgs[cache[frame_idx]]))
