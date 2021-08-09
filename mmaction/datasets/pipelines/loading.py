@@ -1,3 +1,4 @@
+import copy as cp
 import io
 import os
 import os.path as osp
@@ -1275,7 +1276,19 @@ class RawFrameDecode:
 
         offset = results.get('offset', 0)
 
-        for frame_idx in results['frame_inds']:
+        cache = {}
+        for i, frame_idx in enumerate(results['frame_inds']):
+            # Avoid loading duplicated frames
+            if frame_idx in cache:
+                if modality == 'RGB':
+                    imgs.append(cp.deepcopy(imgs[cache[frame_idx]]))
+                else:
+                    imgs.append(cp.deepcopy(imgs[2 * cache[frame_idx]]))
+                    imgs.append(cp.deepcopy(imgs[2 * cache[frame_idx] + 1]))
+                continue
+            else:
+                cache[frame_idx] = i
+
             frame_idx += offset
             if modality == 'RGB':
                 filepath = osp.join(directory, filename_tmpl.format(frame_idx))
