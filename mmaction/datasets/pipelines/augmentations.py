@@ -1,11 +1,11 @@
 import random
 import warnings
 from collections.abc import Sequence
-from distutils.version import LooseVersion
 
 import cv2
 import mmcv
 import numpy as np
+from mmcv.utils import digit_version
 from torch.nn.modules.utils import _pair
 
 from ..builder import PIPELINES
@@ -68,7 +68,7 @@ class TorchvisionTrans:
             import torchvision.transforms as tv_trans
         except ImportError:
             raise RuntimeError('Install torchvision to use TorchvisionTrans')
-        if LooseVersion(torchvision.__version__) < LooseVersion('0.8.0'):
+        if digit_version(torchvision.__version__) < digit_version('0.8.0'):
             raise RuntimeError('The version of torchvision should be at least '
                                '0.8.0')
 
@@ -105,7 +105,7 @@ class PytorchVideoTrans:
             import pytorchvideo.transforms as ptv_trans
         except ImportError:
             raise RuntimeError('Install pytorchvideo to use PytorchVideoTrans')
-        if LooseVersion(torch.__version__) < LooseVersion('1.8.0'):
+        if digit_version(torch.__version__) < digit_version('1.8.0'):
             raise RuntimeError(
                 'The version of PyTorch should be at least 1.8.0')
 
