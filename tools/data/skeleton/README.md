@@ -19,13 +19,33 @@ We release the skeleton annotations used in [Revisiting Skeleton-based Action Re
 
 ## Prepare Annotations
 
-Currently, we support one dataset: FineGYM. You can execute following scripts to prepare the annotations.
+Currently, we support FineGYM and NTURGB+D. For FineGYM, you can execute following scripts to prepare the annotations.
 
 ```shell
 bash download_annotations.sh ${DATASET}
 ```
 
-PS: Due to [Conditions of Use](http://rose1.ntu.edu.sg/Datasets/actionRecognition.asp) of the NTURGB-D dataset, we can not directly release the annotations used in our experiments. We will prepare a script for pose annotation generation ASAP. Once accomplished, you can use this script to generate all pose annotations used in our experiments.
+Due to [Conditions of Use](http://rose1.ntu.edu.sg/Datasets/actionRecognition.asp) of the NTURGB+D dataset, we can not directly release the annotations used in our experiments. So that we provide a script to generate pose annotations for videos in NTURGB+D datasets, which generate a dictionary and save it as a single pickle file. You can create a list which contain all annotation dictionaries of corresponding videos and save them as a pickle file. Then you can get the `ntu60_xsub_train.pkl`, `ntu60_xsub_val.pkl`, `ntu120_xsub_train.pkl`, `ntu120_xsub_val.pkl` that we used in training.
+
+To generate 2D pose annotations for a single video, first, you need to install mmdetection and mmpose from src code. After that, you need to replace the placeholder `mmdet_root` and `mmpose_root` in `ntu_pose_extraction.py` with your installation path. Then you can use following scripts for NTURGB+D video pose extraction:
+
+```python
+python ntu_pose_extraction.py S001C001P001R001A001_rgb.avi S001C001P001R001A001.pkl
+```
+
+After you get pose annotations for all videos in a dataset split, like `ntu60_xsub_val`. You can gather them into a single list and save the list as `ntu60_xsub_val.pkl`. You can use those larger pickle files for training and testing.
+
+## The Format of PoseC3D Annotations
+
+Here we briefly introduce the format of PoseC3D Annotations, we will take `gym_train.pkl` as an example: the content of `gym_train.pkl` is a list of length 20484, each item is a dictionary that is the skeleton annotation of one video. Each dictionary has following fields:
+
+- keypoint: The keypoint coordinates, which is a numpy array of the shape N (#person) x T (temporal length) x K (#keypoints, 17 in our case) x 2 (x, y coordinate).
+- keypoint_score:  The keypoint confidence scores, which is a numpy array of the shape N (#person) x T (temporal length) x K (#keypoints, 17 in our case).
+- frame_dir: The corresponding video name.
+- label: The action category.
+- img_shape: The image shape of each frame.
+- original_shape: Same as above.
+- total_frames: The temporal length of the video.
 
 ## Visualization
 
@@ -68,8 +88,8 @@ For skeleton data visualization, you need also to prepare the RGB videos. Please
 **TODO**:
 
 - [x] FineGYM
-- [ ] NTU60_XSub
-- [ ] NTU120_XSub
-- [ ] NTU60_XView
-- [ ] NTU120_XSet
+- [x] NTU60_XSub
+- [x] NTU120_XSub
+- [x] NTU60_XView
+- [x] NTU120_XSet
 - [ ] Kinetics

@@ -1,3 +1,3 @@
-include mmaction/model-index.yml
-recursive-include mmaction/configs *.py *.yml
-recursive-include mmaction/tools *.sh *.py
+include mmaction/.mim/model-index.yml
+recursive-include mmaction/.mim/configs *.py *.yml
+recursive-include mmaction/.mim/tools *.sh *.py
