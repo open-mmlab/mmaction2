@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from ..builder import BACKBONES
 from .resnet3d import ResNet3d
 

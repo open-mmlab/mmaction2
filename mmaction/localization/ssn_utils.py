@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from itertools import groupby
 
 import numpy as np

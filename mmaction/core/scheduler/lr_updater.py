@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from mmcv.runner import HOOKS, LrUpdaterHook
 from mmcv.runner.hooks.lr_updater import annealing_cos
 
