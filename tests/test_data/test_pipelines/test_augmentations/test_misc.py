@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from mmaction.datasets.pipelines.augmentations import (_combine_quadruple,
                                                        _flip_quadruple)
 

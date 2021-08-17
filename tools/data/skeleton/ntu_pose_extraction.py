@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import abc
 import argparse
 import os

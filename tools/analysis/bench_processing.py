@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 """This file is for benchmark dataloading process. The command line to run this
 file is:
 

@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from .audio_tsn_head import AudioTSNHead
 from .base import BaseHead
 from .bbox_head import BBoxHeadAVA

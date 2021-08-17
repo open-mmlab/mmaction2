@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from .accuracy import (average_precision_at_temporal_iou,
                        average_recall_at_avg_proposals, confusion_matrix,
                        get_weighted_score, interpolated_precision_recall,

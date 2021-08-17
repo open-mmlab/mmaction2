@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from .activitynet_dataset import ActivityNetDataset
 from .audio_dataset import AudioDataset
 from .audio_feature_dataset import AudioFeatureDataset

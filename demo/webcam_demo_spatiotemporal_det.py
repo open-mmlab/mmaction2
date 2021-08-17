@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 """Webcam Spatio-Temporal Action Detection Demo.
 
 Some codes are based on https://github.com/facebookresearch/SlowFast

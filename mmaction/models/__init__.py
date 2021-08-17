@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from .backbones import (C3D, X3D, MobileNetV2, MobileNetV2TSM, ResNet,
                         ResNet2Plus1d, ResNet3d, ResNet3dCSN, ResNet3dLayer,
                         ResNet3dSlowFast, ResNet3dSlowOnly, ResNetAudio,
