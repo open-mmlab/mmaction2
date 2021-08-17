@@ -91,7 +91,7 @@ val_pipeline = [
 
 data = dict(
     videos_per_gpu=12,
-    workers_per_gpu=4,
+    workers_per_gpu=2,
     val_dataloader=dict(videos_per_gpu=1),
     test_dataloader=dict(videos_per_gpu=1),
     train=dict(

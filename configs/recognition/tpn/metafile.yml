@@ -66,7 +66,7 @@ Models:
   - Dataset: SthV1
     Metrics:
       Top 1 Accuracy: 50.8
-      top5 accuracy: 79.05
+      Top 5 Accuracy: 79.05
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tpn/tpn_tsm_r50_1x1x8_150e_sthv1_rgb/20210311_162636.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tpn/tpn_tsm_r50_1x1x8_150e_sthv1_rgb/20210311_162636.log

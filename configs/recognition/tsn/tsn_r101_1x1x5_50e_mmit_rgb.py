@@ -20,10 +20,9 @@ model = dict(
         dropout_ratio=0.5,
         init_std=0.01,
         multi_class=True,
-        label_smooth_eps=0))
-# model training and testing settings
-train_cfg = None
-test_cfg = dict(average_clips=None)
+        label_smooth_eps=0),
+    train_cfg=None,
+    test_cfg=dict(average_clips=None))
 
 # dataset settings
 dataset_type = 'RawframeDataset'
@@ -84,7 +83,8 @@ test_pipeline = [
 
 data = dict(
     videos_per_gpu=16,
-    workers_per_gpu=4,
+    workers_per_gpu=2,
+    test_dataloader=dict(videos_per_gpu=1),
     train=dict(
         type=dataset_type,
         ann_file=ann_file_train,

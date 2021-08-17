@@ -18,7 +18,7 @@ Models:
       Top 1 Accuracy: 19.7
       Top 1 Accuracy [w. RGB]: 71.5
       Top 1 Accuracy delta [w. RGB]: 0.39
-      top5 accuracy: 35.75
+      Top 5 Accuracy: 35.75
       top5 accuracy [w. RGB]: 90.18
       top5 accuracy delta [w. RGB]: 0.14
     Task: Action Recognition

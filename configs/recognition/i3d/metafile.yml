@@ -20,7 +20,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 72.68
-      top5 accuracy: 90.78
+      Top 5 Accuracy: 90.78
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb/20200614_060456.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb/20200614_060456.log
@@ -43,7 +43,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 73.27
-      top5 accuracy: 90.92
+      Top 5 Accuracy: 90.92
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_256p_32x2x1_100e_kinetics400_rgb/20200725_031555.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_256p_32x2x1_100e_kinetics400_rgb/20200725_031555.log
@@ -66,7 +66,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 72.85
-      top5 accuracy: 90.75
+      Top 5 Accuracy: 90.75
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_video_32x2x1_100e_kinetics400_rgb/20200706_143014.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_video_32x2x1_100e_kinetics400_rgb/20200706_143014.log
@@ -89,7 +89,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 72.77
-      top5 accuracy: 90.57
+      Top 5 Accuracy: 90.57
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_dense_32x2x1_100e_kinetics400_rgb/20200616_230011.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_dense_32x2x1_100e_kinetics400_rgb/20200616_230011.log
@@ -112,7 +112,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 73.48
-      top5 accuracy: 91.0
+      Top 5 Accuracy: 91.0
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_dense_256p_32x2x1_100e_kinetics400_rgb/20200725_031604.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_dense_256p_32x2x1_100e_kinetics400_rgb/20200725_031604.log
@@ -135,7 +135,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 72.32
-      top5 accuracy: 90.72
+      Top 5 Accuracy: 90.72
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_fast_32x2x1_100e_kinetics400_rgb/20200612_233836.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_fast_32x2x1_100e_kinetics400_rgb/20200612_233836.log
@@ -158,7 +158,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 73.24
-      top5 accuracy: 90.99
+      Top 5 Accuracy: 90.99
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_fast_256p_32x2x1_100e_kinetics400_rgb/20200725_031457.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_fast_256p_32x2x1_100e_kinetics400_rgb/20200725_031457.log
@@ -181,7 +181,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 74.71
-      top5 accuracy: 91.81
+      Top 5 Accuracy: 91.81
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_embedded_gaussian_r50_32x2x1_100e_kinetics400_rgb/20200813_034054.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_embedded_gaussian_r50_32x2x1_100e_kinetics400_rgb/20200813_034054.log
@@ -204,7 +204,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 73.37
-      top5 accuracy: 91.26
+      Top 5 Accuracy: 91.26
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_gaussian_r50_32x2x1_100e_kinetics400_rgb/20200813_034909.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_gaussian_r50_32x2x1_100e_kinetics400_rgb/20200813_034909.log
@@ -227,7 +227,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 73.92
-      top5 accuracy: 91.59
+      Top 5 Accuracy: 91.59
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_dot_product_r50_32x2x1_100e_kinetics400_rgb/20200814_044208.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_dot_product_r50_32x2x1_100e_kinetics400_rgb/20200814_044208.log

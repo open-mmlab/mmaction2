@@ -102,7 +102,7 @@ val_pipeline = [
 
 data = dict(
     videos_per_gpu=6,
-    workers_per_gpu=4,
+    workers_per_gpu=2,
     # During testing, each video may have different shape
     val_dataloader=dict(videos_per_gpu=1),
     test_dataloader=dict(videos_per_gpu=1),

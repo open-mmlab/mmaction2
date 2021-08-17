@@ -31,6 +31,7 @@ class ACRNHead(nn.Module):
             `requires_grad`. Default: dict(type='BN2d', requires_grad=True).
         act_cfg (dict): Config for activate layers.
             Default: dict(type='ReLU', inplace=True).
+        kwargs (dict): Other new arguments, to be compatible with MMDet update.
     """
 
     def __init__(self,
@@ -40,7 +41,8 @@ class ACRNHead(nn.Module):
                  num_convs=1,
                  conv_cfg=dict(type='Conv3d'),
                  norm_cfg=dict(type='BN3d', requires_grad=True),
-                 act_cfg=dict(type='ReLU', inplace=True)):
+                 act_cfg=dict(type='ReLU', inplace=True),
+                 **kwargs):
 
         super().__init__()
         self.in_channels = in_channels
