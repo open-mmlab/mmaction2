@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn.functional as F
 
 from ..builder import LOSSES

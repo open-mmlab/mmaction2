@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import mmcv
 
 tag_list = '../../../data/hvu/annotations/hvu_categories.csv'

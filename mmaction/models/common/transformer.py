@@ -1,5 +1,4 @@
-from distutils.version import LooseVersion
-
+# Copyright (c) OpenMMLab. All rights reserved.
 import torch
 import torch.nn as nn
 from einops import rearrange
@@ -7,6 +6,7 @@ from mmcv.cnn import build_norm_layer, constant_init
 from mmcv.cnn.bricks.registry import ATTENTION, FEEDFORWARD_NETWORK
 from mmcv.cnn.bricks.transformer import FFN, build_dropout
 from mmcv.runner.base_module import BaseModule
+from mmcv.utils import digit_version
 
 
 @ATTENTION.register_module()
@@ -46,7 +46,7 @@ class DividedTemporalAttentionWithNorm(BaseModule):
         self.num_frames = num_frames
         self.norm = build_norm_layer(norm_cfg, self.embed_dims)[1]
 
-        if LooseVersion(torch.__version__) < LooseVersion('1.9.0'):
+        if digit_version(torch.__version__) < digit_version('1.9.0'):
             kwargs.pop('batch_first', None)
         self.attn = nn.MultiheadAttention(embed_dims, num_heads, attn_drop,
                                           **kwargs)
@@ -123,7 +123,7 @@ class DividedSpatialAttentionWithNorm(BaseModule):
         self.num_heads = num_heads
         self.num_frames = num_frames
         self.norm = build_norm_layer(norm_cfg, self.embed_dims)[1]
-        if LooseVersion(torch.__version__) < LooseVersion('1.9.0'):
+        if digit_version(torch.__version__) < digit_version('1.9.0'):
             kwargs.pop('batch_first', None)
         self.attn = nn.MultiheadAttention(embed_dims, num_heads, attn_drop,
                                           **kwargs)

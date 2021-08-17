@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from .base import BaseTAGClassifier, BaseTAPGenerator
 from .bmn import BMN
 from .bsn import PEM, TEM

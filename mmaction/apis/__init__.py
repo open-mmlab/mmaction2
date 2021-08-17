@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from .inference import inference_recognizer, init_recognizer
 from .test import multi_gpu_test, single_gpu_test
 from .train import train_model

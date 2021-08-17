@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import copy
 import os.path as osp
 import warnings
@@ -223,16 +224,17 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
             if metric in [
                     'mean_average_precision', 'mmit_mean_average_precision'
             ]:
-                gt_labels = [
+                gt_labels_arrays = [
                     self.label2array(self.num_classes, label)
                     for label in gt_labels
                 ]
                 if metric == 'mean_average_precision':
-                    mAP = mean_average_precision(results, gt_labels)
+                    mAP = mean_average_precision(results, gt_labels_arrays)
                     eval_results['mean_average_precision'] = mAP
                     log_msg = f'\nmean_average_precision\t{mAP:.4f}'
                 elif metric == 'mmit_mean_average_precision':
-                    mAP = mmit_mean_average_precision(results, gt_labels)
+                    mAP = mmit_mean_average_precision(results,
+                                                      gt_labels_arrays)
                     eval_results['mmit_mean_average_precision'] = mAP
                     log_msg = f'\nmmit_mean_average_precision\t{mAP:.4f}'
                 print_log(log_msg, logger=logger)
