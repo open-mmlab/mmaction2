@@ -75,7 +75,7 @@ bash extract_frames.sh tvl1
 
 ## Step 4. Fetch File List
 
-Note: These files are not available temporarily, we will update the download link soon. 
+Note: These files are not available temporarily, we will update the download link soon.
 
 This part is **optional** if you do not use SSN model.
 
