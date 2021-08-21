@@ -121,7 +121,7 @@ class HVUDataset(BaseDataset):
         return video_infos
 
     @staticmethod
-    def label2array(num, label):
+    def label_to_array(num, label):
         arr = np.zeros(num, dtype=np.float32)
         arr[label] = 1.
         return arr
@@ -182,7 +182,7 @@ class HVUDataset(BaseDataset):
                 if category in gt_label
             ]
 
-            gts = [self.label2array(num, item) for item in gts]
+            gts = [self.label_to_array(num, item) for item in gts]
 
             mAP = mean_average_precision(preds, gts)
             eval_results[f'{category}_mAP'] = mAP

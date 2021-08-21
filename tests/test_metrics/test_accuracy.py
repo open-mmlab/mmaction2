@@ -117,10 +117,10 @@ def test_confusion_matrix():
 
 def test_topk():
     scores = [
-        np.array([-0.2203, -0.7538, 1.8789, 0.4451, -0.2526]),
-        np.array([-0.0413, 0.6366, 1.1155, 0.3484, 0.0395]),
-        np.array([0.0365, 0.5158, 1.1067, -0.9276, -0.2124]),
-        np.array([0.6232, 0.9912, -0.8562, 0.0148, 1.6413])
+        np.array([-0.2203, -0.7538, 1.8789, 0.4451, -0.2526]),  # 2 3 0 4 1
+        np.array([-0.0413, 0.6366, 1.1155, 0.3484, 0.0395]),  # 2 1 3 4 0
+        np.array([0.0365, 0.5158, 1.1067, -0.9276, -0.2124]),  # 2 1 0 4 3
+        np.array([0.6232, 0.9912, -0.8562, 0.0148, 1.6413])  # 4 1 0 3 2
     ]
 
     # top1 acc
@@ -161,6 +161,12 @@ def test_topk():
     assert res == [0, 0.5, 1.0]
     res = top_k_accuracy(scores, top5_labels_25_75_100, k)
     assert res == [0.25, 0.75, 1.0]
+
+    multi_labels = [3, [1, 2], [0, 1, 2], [1, 2, 3, 4]]
+    res = top_k_accuracy(scores, multi_labels, None, multi_class=True)
+    assert res == 0.6875
+    res = top_k_accuracy(scores, multi_labels, (1, 3, 5), multi_class=True)
+    assert res == [0.75, 2 / 3, 0.5]
 
 
 def test_mean_class_accuracy():

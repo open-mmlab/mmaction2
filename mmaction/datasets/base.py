@@ -131,7 +131,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         return video_infos_by_class
 
     @staticmethod
-    def label2array(num, label):
+    def label_to_array(num, label):
         arr = np.zeros(num, dtype=np.float32)
         arr[label] = 1.
         return arr
@@ -225,7 +225,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
                     'mean_average_precision', 'mmit_mean_average_precision'
             ]:
                 gt_labels_arrays = [
-                    self.label2array(self.num_classes, label)
+                    self.label_to_array(self.num_classes, label)
                     for label in gt_labels
                 ]
                 if metric == 'mean_average_precision':

@@ -127,24 +127,89 @@ def top_k_classes(scores, labels, k=10, mode='accurate'):
     return results
 
 
-def top_k_accuracy(scores, labels, topk=(1, )):
+def label_to_array(num_classes, label):
+    arr = np.zeros(num_classes, dtype=np.float32)
+    arr[label] = 1.
+    return arr
+
+
+def top_k_recall(scores, labels, topk=(1, )):
+    res = []
+    num_classes = scores[0].shape[0]
+    labels = [label_to_array(num_classes, label) for label in labels]
+    labels = np.array(labels)
+    label_number_arr = labels.sum(-1)
+    max_preds = np.argsort(scores, axis=1)
+    if topk is not None:
+        for k in topk:
+            max_k_preds = max_preds[:, -k:][:, ::-1]
+            max_k_preds = [
+                label_to_array(num_classes, max_k_pred)
+                for max_k_pred in max_k_preds
+            ]
+            match_array = (max_k_preds * labels) == 1
+            topk_recall_score = (match_array.sum(-1) / label_number_arr).mean()
+            res.append(topk_recall_score)
+    else:
+        max_preds_ = []
+        label_number_arr = labels.sum(-1)
+        for i, _ in enumerate(max_preds):
+            num_labels = int(label_number_arr[i])
+            max_pred = max_preds[i, -num_labels:][::-1]
+            max_pred = label_to_array(num_classes, max_pred)
+            max_preds_.append(max_pred)
+        match_array = (max_preds_ * labels) == 1
+        res = (match_array.sum(-1) / label_number_arr).mean()
+    return res
+
+
+def top_k_accuracy(scores, labels, topk=(1, ), multi_class=False):
     """Calculate top k accuracy score.
 
     Args:
         scores (list[np.ndarray]): Prediction scores for each class.
         labels (list[int]): Ground truth labels.
-        topk (tuple[int]): K value for top_k_accuracy. Default: (1, ).
+        topk (tuple[int] | None): K value for top_k_accuracy. Default: (1, ).
+        multi_class (bool): Determines whether it is a multi-class task.
+            Default: False.
 
     Returns:
         list[float]: Top k accuracy score for each k.
     """
     res = []
-    labels = np.array(labels)[:, np.newaxis]
-    for k in topk:
-        max_k_preds = np.argsort(scores, axis=1)[:, -k:][:, ::-1]
-        match_array = np.logical_or.reduce(max_k_preds == labels, axis=1)
-        topk_acc_score = match_array.sum() / match_array.shape[0]
-        res.append(topk_acc_score)
+    if multi_class:
+        num_classes = scores[0].shape[0]
+        labels = [label_to_array(num_classes, label) for label in labels]
+        labels = np.array(labels)
+        max_preds = np.argsort(scores, axis=1)
+        if topk is not None:
+            for k in topk:
+                max_k_preds = max_preds[:, -k:][:, ::-1]
+                max_k_preds = [
+                    label_to_array(num_classes, max_k_pred)
+                    for max_k_pred in max_k_preds
+                ]
+                match_array = (max_k_preds * labels) == 1
+                topk_acc_score = (match_array.sum(-1) / k).mean()
+                res.append(topk_acc_score)
+        else:
+            max_preds_ = []
+            label_number_arr = labels.sum(-1)
+            for i, _ in enumerate(max_preds):
+                num_labels = int(label_number_arr[i])
+                max_pred = max_preds[i, -num_labels:][::-1]
+                max_pred = label_to_array(num_classes, max_pred)
+                max_preds_.append(max_pred)
+            match_array = (max_preds_ * labels) == 1
+            res = (match_array.sum(-1) / label_number_arr).mean()
+    else:
+        labels = np.array(labels)[:, np.newaxis]
+        max_preds = np.argsort(scores, axis=1)
+        for k in topk:
+            max_k_preds = max_preds[:, -k:][:, ::-1]
+            match_array = np.logical_or.reduce(max_k_preds == labels, axis=1)
+            topk_acc_score = match_array.sum() / match_array.shape[0]
+            res.append(topk_acc_score)
 
     return res
 
