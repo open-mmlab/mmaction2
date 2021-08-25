@@ -370,7 +370,7 @@ which is convenient to conduct various experiments.
     ]
     data = dict(  # Config of data
         videos_per_gpu=32,  # Batch size of each single GPU
-        workers_per_gpu=4,  # Workers to pre-fetch data for each single GPU
+        workers_per_gpu=2,  # Workers to pre-fetch data for each single GPU
         train_dataloader=dict(  # Additional config of train dataloader
             drop_last=True),  # Whether to drop out the last batch of data in training
         val_dataloader=dict(  # Additional config of validation dataloader
@@ -593,7 +593,7 @@ We incorporate modular design into our config system, which is convenient to con
 
     data = dict(  # Config of data
         videos_per_gpu=16,  # Batch size of each single GPU
-        workers_per_gpu=4,  # Workers to pre-fetch data for each single GPU
+        workers_per_gpu=2,  # Workers to pre-fetch data for each single GPU
         val_dataloader=dict(   # Additional config of validation dataloader
             videos_per_gpu=1),  # Batch size of each single GPU during evaluation
         train=dict(   # Training dataset config
@@ -738,7 +738,7 @@ test_pipeline = [
 
 data = dict(
     videos_per_gpu=8,
-    workers_per_gpu=4,
+    workers_per_gpu=2,
     train=dict(
         type=dataset_type,
         ann_file=ann_file_train,

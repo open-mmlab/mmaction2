@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from .c3d import C3D
 from .mobilenet_v2 import MobileNetV2
 from .mobilenet_v2_tsm import MobileNetV2TSM

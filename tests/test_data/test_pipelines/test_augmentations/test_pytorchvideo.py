@@ -1,13 +1,13 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
 import pytest
-from mmcv.utils import assert_dict_has_keys
+from mmcv.utils import assert_dict_has_keys, digit_version
 
 try:
     import torch
-    from distutils.version import LooseVersion
     from mmaction.datasets.pipelines import PytorchVideoTrans
     pytorchvideo_ok = False
-    if LooseVersion(torch.__version__) >= LooseVersion('1.8.0'):
+    if digit_version(torch.__version__) >= digit_version('1.8.0'):
         pytorchvideo_ok = True
 except (ImportError, ModuleNotFoundError):
     pytorchvideo_ok = False

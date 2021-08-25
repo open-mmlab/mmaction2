@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
 from mmcv.cnn import CONV_LAYERS, build_norm_layer, constant_init, kaiming_init
 from torch.nn.modules.utils import _triple

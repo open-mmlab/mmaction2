@@ -20,7 +20,7 @@ Models:
   - Dataset: UCF101
     Metrics:
       Top 1 Accuracy: 83.27
-      top5 accuracy: 95.9
+      Top 5 Accuracy: 95.9
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb/20201021_140429.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb/20201021_140429.log

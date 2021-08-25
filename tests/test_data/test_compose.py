@@ -1,14 +1,14 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
 import pytest
-from mmcv.utils import assert_keys_equal
+from mmcv.utils import assert_keys_equal, digit_version
 
 from mmaction.datasets.pipelines import Compose, ImageToTensor
 
 try:
     import torchvision
-    from distutils.version import LooseVersion
     torchvision_ok = False
-    if LooseVersion(torchvision.__version__) >= LooseVersion('0.8.0'):
+    if digit_version(torchvision.__version__) >= digit_version('0.8.0'):
         torchvision_ok = True
 except (ImportError, ModuleNotFoundError):
     torchvision_ok = False

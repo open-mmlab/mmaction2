@@ -95,7 +95,7 @@
 
 |配置文件 | GPU 数量 | 主干网络 | 预训练 | top1 准确率| top5 准确率 | GPU 显存占用 (M) | ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb](/configs/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb.py)|8|ResNet50|ImageNet|46.63|77.19|7759|[ckpt](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb_20210630-807a9a9a.pth)|[log](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb/20210605_235410.log)|[json](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb/20210605_235410.log.json)|
+|[slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb](/configs/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb.py)|8|ResNet50|ImageNet|46.63|77.19|7759|[ckpt](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb/slowonly_r50_8x4x1_64e_sthv1_rgb-34901d23.pth)|[log](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb/slowonly_r50_8x4x1_64e_sthv1_rgb.log)|[json](https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb/slowonly_r50_8x4x1_64e_sthv1_rgb.json)|
 
 注：
 

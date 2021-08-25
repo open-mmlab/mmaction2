@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import abc
 import argparse
 import os
@@ -23,7 +24,7 @@ except ImportError:
 mmdet_root = ''
 mmpose_root = ''
 
-args = abc.ABC()
+args = abc.abstractproperty()
 args.det_config = f'{mmdet_root}/configs/faster_rcnn/faster_rcnn_r50_caffe_fpn_mstrain_1x_coco-person.py'  # noqa: E501
 args.det_checkpoint = 'https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_1x_coco-person/faster_rcnn_r50_fpn_1x_coco-person_20201216_175929-d022e227.pth'  # noqa: E501
 args.det_score_thr = 0.5

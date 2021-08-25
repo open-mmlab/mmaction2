@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from .base import (check_norm_state, generate_backbone_demo_inputs,
                    generate_detector_demo_inputs, generate_gradcam_inputs,
                    generate_recognizer_demo_inputs, get_audio_recognizer_cfg,

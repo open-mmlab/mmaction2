@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import copy
 import os
 import os.path as osp
@@ -164,15 +165,18 @@ class AVADataset(BaseDataset):
         while len(img_records) > 0:
             img_record = img_records[0]
             num_img_records = len(img_records)
-            selected_records = list(
-                filter(
-                    lambda x: np.array_equal(x['entity_box'], img_record[
-                        'entity_box']), img_records))
+
+            selected_records = [
+                x for x in img_records
+                if np.array_equal(x['entity_box'], img_record['entity_box'])
+            ]
+
             num_selected_records = len(selected_records)
-            img_records = list(
-                filter(
-                    lambda x: not np.array_equal(x['entity_box'], img_record[
-                        'entity_box']), img_records))
+            img_records = [
+                x for x in img_records if
+                not np.array_equal(x['entity_box'], img_record['entity_box'])
+            ]
+
             assert len(img_records) + num_selected_records == num_img_records
 
             bboxes.append(img_record['entity_box'])

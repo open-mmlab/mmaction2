@@ -19,7 +19,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 76.8
-      top5 accuracy: 92.5
+      Top 5 Accuracy: 92.5
     Task: Action Recognition
   Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/omni/slowonly_r50_omni_4x16x1_kinetics400_rgb_20200926-51b1f7ea.pth
 - Config: configs/recognition/slowonly/slowonly_r101_8x8x1_196e_kinetics400_rgb.py
@@ -39,7 +39,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 76.5
-      top5 accuracy: 92.7
+      Top 5 Accuracy: 92.7
     Task: Action Recognition
   Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/omni/slowonly_r101_without_omni_8x8x1_kinetics400_rgb_20200926-0c730aef.pth
 - Config: configs/recognition/slowonly/slowonly_r101_8x8x1_196e_kinetics400_rgb.py
@@ -59,7 +59,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 80.4
-      top5 accuracy: 94.4
+      Top 5 Accuracy: 94.4
     Task: Action Recognition
   Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/omni/slowonly_r101_omni_8x8x1_kinetics400_rgb_20200926-b5dbb701.pth
 - Config: configs/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_rgb.py
@@ -80,7 +80,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 72.76
-      top5 accuracy: 90.51
+      Top 5 Accuracy: 90.51
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_256p_4x16x1_256e_kinetics400_rgb/20200817_001411.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_256p_4x16x1_256e_kinetics400_rgb/20200817_001411.log
@@ -103,7 +103,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 72.9
-      top5 accuracy: 90.82
+      Top 5 Accuracy: 90.82
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_video_320p_4x16x1_256e_kinetics400_rgb/slowonly_r50_video_320p_4x16x1_256e_kinetics400_rgb_20201014.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_video_320p_4x16x1_256e_kinetics400_rgb/slowonly_r50_video_320p_4x16x1_256e_kinetics400_rgb_20201014.log
@@ -126,7 +126,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 74.42
-      top5 accuracy: 91.49
+      Top 5 Accuracy: 91.49
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_256p_8x8x1_256e_kinetics400_rgb/20200817_003320.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_256p_8x8x1_256e_kinetics400_rgb/20200817_003320.log
@@ -149,7 +149,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 73.02
-      top5 accuracy: 90.77
+      Top 5 Accuracy: 90.77
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_rgb/slowonly_r50_4x16_73.02_90.77.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_rgb/so_4x16.log
@@ -172,7 +172,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 74.93
-      top5 accuracy: 91.92
+      Top 5 Accuracy: 91.92
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_8x8x1_256e_kinetics400_rgb/slowonly_r50_8x8_74.93_91.92.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_8x8x1_256e_kinetics400_rgb/so_8x8.log
@@ -195,7 +195,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 73.39
-      top5 accuracy: 91.12
+      Top 5 Accuracy: 91.12
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_4x16x1_150e_kinetics400_rgb/slowonly_imagenet_pretrained_r50_4x16x1_150e_kinetics400_rgb_20200912.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_4x16x1_150e_kinetics400_rgb/slowonly_imagenet_pretrained_r50_4x16x1_150e_kinetics400_rgb_20200912.log
@@ -218,7 +218,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 75.55
-      top5 accuracy: 92.04
+      Top 5 Accuracy: 92.04
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x8x1_150e_kinetics400_rgb/slowonly_imagenet_pretrained_r50_8x8x1_150e_kinetics400_rgb_20200912.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x8x1_150e_kinetics400_rgb/slowonly_imagenet_pretrained_r50_8x8x1_150e_kinetics400_rgb_20200912.log
@@ -241,7 +241,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 74.54
-      top5 accuracy: 91.73
+      Top 5 Accuracy: 91.73
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_nl_embedded_gaussian_r50_4x16x1_150e_kinetics400_rgb/20210305_152630.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_nl_embedded_gaussian_r50_4x16x1_150e_kinetics400_rgb/20210305_152630.log
@@ -264,7 +264,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 76.07
-      top5 accuracy: 92.42
+      Top 5 Accuracy: 92.42
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_nl_embedded_gaussian_r50_8x8x1_150e_kinetics400_rgb/20210308_212250.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_nl_embedded_gaussian_r50_8x8x1_150e_kinetics400_rgb/20210308_212250.log
@@ -287,7 +287,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 61.79
-      top5 accuracy: 83.62
+      Top 5 Accuracy: 83.62
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_flow/slowonly_r50_4x16x1_256e_kinetics400_flow_61.8_83.6.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_flow/slowonly_r50_4x16x1_256e_kinetics400_flow_61.8_83.6.log
@@ -310,7 +310,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 65.76
-      top5 accuracy: 86.25
+      Top 5 Accuracy: 86.25
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_8x8x1_256e_kinetics400_flow/slowonly_r50_8x8x1_196e_kinetics400_flow_65.8_86.3.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_8x8x1_256e_kinetics400_flow/slowonly_r50_8x8x1_196e_kinetics400_flow_65.8_86.3.log
@@ -333,7 +333,7 @@ Models:
   - Dataset: Kinetics-600
     Metrics:
       Top 1 Accuracy: 77.5
-      top5 accuracy: 93.7
+      Top 5 Accuracy: 93.7
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_video_8x8x1_256e_kinetics600_rgb/slowonly_r50_video_8x8x1_256e_kinetics600_rgb_20201015.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_video_8x8x1_256e_kinetics600_rgb/slowonly_r50_video_8x8x1_256e_kinetics600_rgb_20201015.log
@@ -356,7 +356,7 @@ Models:
   - Dataset: Kinetics-700
     Metrics:
       Top 1 Accuracy: 65.0
-      top5 accuracy: 86.1
+      Top 5 Accuracy: 86.1
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_video_8x8x1_256e_kinetics700_rgb/slowonly_r50_video_8x8x1_256e_kinetics700_rgb_20201015.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_video_8x8x1_256e_kinetics700_rgb/slowonly_r50_video_8x8x1_256e_kinetics700_rgb_20201015.log
@@ -446,7 +446,7 @@ Models:
   - Dataset: HMDB51
     Metrics:
       Top 1 Accuracy: 37.52
-      top5 accuracy: 71.5
+      Top 5 Accuracy: 71.5
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_hmdb51_rgb/20210605_185256.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_hmdb51_rgb/20210605_185256.log
@@ -468,7 +468,7 @@ Models:
   - Dataset: HMDB51
     Metrics:
       Top 1 Accuracy: 65.95
-      top5 accuracy: 91.05
+      Top 5 Accuracy: 91.05
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_hmdb51_rgb/20210606_010153.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_hmdb51_rgb/20210606_010153.log
@@ -490,7 +490,7 @@ Models:
   - Dataset: UCF101
     Metrics:
       Top 1 Accuracy: 71.35
-      top5 accuracy: 89.35
+      Top 5 Accuracy: 89.35
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_ucf101_rgb/20210605_213503.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_ucf101_rgb/20210605_213503.log
@@ -512,7 +512,7 @@ Models:
   - Dataset: UCF101
     Metrics:
       Top 1 Accuracy: 92.78
-      top5 accuracy: 99.42
+      Top 5 Accuracy: 99.42
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb/20210606_010231.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb/20210606_010231.log
@@ -534,8 +534,8 @@ Models:
   - Dataset: SthV1
     Metrics:
       Top 1 Accuracy: 46.63
-      top5 accuracy: 77.19
+      Top 5 Accuracy: 77.19
     Task: Action Recognition
-  Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb/20210605_235410.log.json
-  Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb/20210605_235410.log
-  Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb_20210630-807a9a9a.pth
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb/slowonly_r50_8x4x1_64e_sthv1_rgb.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb/slowonly_r50_8x4x1_64e_sthv1_rgb.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb/slowonly_r50_8x4x1_64e_sthv1_rgb-34901d23.pth
