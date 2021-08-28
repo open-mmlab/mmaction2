@@ -25,7 +25,7 @@
 
 |config | resolution | gpus | backbone| pretrain | top1 acc (efficient/accurate)| top5 acc (efficient/accurate)| gpu_mem(M)  | ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[trn_r50_1x1x8_50e_sthv2_rgb](/configs/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb.py) | height 100 | 8 | ResNet50 | ImageNet | 45.14 / 47.96 |73.21 / 75.97 | 11010 | [ckpt](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/trn_r50_1x1x8_50e_sthv2_rgb_20210401-773eca7b.pth) | [log](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210326_103951.log)| [json](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210326_103951.log.json)|
+|[trn_r50_1x1x8_50e_sthv2_rgb](/configs/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb.py) | height 256 | 8 | ResNet50 | ImageNet | 48.39 / 51.28 |76.58 / 78.65 | 11010 | [ckpt](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/trn_r50_1x1x8_50e_sthv2_rgb_20210816-7abbc4c1.pth) | [log](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210816_221356.log)| [json](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210816_221356.log.json)|
 
 Notes:
 

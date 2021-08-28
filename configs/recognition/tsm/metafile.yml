@@ -562,33 +562,6 @@ Models:
     FLOPs: 32961859584
     Parameters: 23864558
     Pretrained: ImageNet
-    Resolution: height 240
-    Training Data: SthV2
-    Training Resources: 8 GPUs
-  Modality: RGB
-  Name: tsm_r50_1x1x8_50e_sthv2_rgb
-  Results:
-  - Dataset: SthV2
-    Metrics:
-      Top 1 Accuracy: 61.12
-      Top 1 Accuracy (efficient): 57.86
-      Top 5 Accuracy: 86.26
-      Top 5 Accuracy (efficient): 84.67
-    Task: Action Recognition
-  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb/20200912_140737.log.json
-  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb/20200912_140737.log
-  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb/tsm_r50_1x1x8_50e_sthv2_rgb_20200912-033c4ac6.pth
-  reference top1 acc (efficient/accurate): '[57.98 / 60.69](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
-  reference top5 acc (efficient/accurate): '[84.57 / 86.28](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
-- Config: configs/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb.py
-  In Collection: TSM
-  Metadata:
-    Architecture: ResNet50
-    Batch Size: 6
-    Epochs: 50
-    FLOPs: 32961859584
-    Parameters: 23864558
-    Pretrained: ImageNet
     Resolution: height 256
     Training Data: SthV2
     Training Resources: 8 GPUs
@@ -597,44 +570,17 @@ Models:
   Results:
   - Dataset: SthV2
     Metrics:
-      Top 1 Accuracy: 63.84
-      Top 1 Accuracy (efficient): 60.79
-      Top 5 Accuracy: 88.3
-      Top 5 Accuracy (efficient): 86.6
+      Top 1 Accuracy: 61.82
+      Top 1 Accuracy (efficient): 59.11
+      Top 5 Accuracy: 86.80
+      Top 5 Accuracy (efficient): 85.39
     Task: Action Recognition
-  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb/20210401_143656.log.json
-  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb/20210401_143656.log
-  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb/tsm_r50_256h_1x1x8_50e_sthv2_rgb_20210401-df97f3e1.pth
-  reference top1 acc (efficient/accurate): '[xx / 61.2](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
-  reference top5 acc (efficient/accurate): '[xx / xx](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb/20210816_224310.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb/20210816_224310.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb/tsm_r50_256h_1x1x8_50e_sthv2_rgb_20210816-032aa4da.pth
+  reference top1 acc (efficient/accurate): '[57.98 / 60.69](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+  reference top5 acc (efficient/accurate): '[84.57 / 86.28](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
 - Config: configs/recognition/tsm/tsm_r50_1x1x16_50e_sthv2_rgb.py
-  In Collection: TSM
-  Metadata:
-    Architecture: ResNet50
-    Batch Size: 6
-    Epochs: 50
-    FLOPs: 65923719168
-    Parameters: 23864558
-    Pretrained: ImageNet
-    Resolution: height 240
-    Training Data: SthV2
-    Training Resources: 8 GPUs
-  Modality: RGB
-  Name: tsm_r50_1x1x16_50e_sthv2_rgb
-  Results:
-  - Dataset: SthV2
-    Metrics:
-      Top 1 Accuracy: 62.04
-      Top 1 Accuracy (efficient): 59.93
-      Top 5 Accuracy: 87.35
-      Top 5 Accuracy (efficient): 86.1
-    Task: Action Recognition
-  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv2_rgb/20201010_224215.log.json
-  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv2_rgb/20201010_224215.log
-  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv2_rgb/tsm_r50_1x1x16_50e_sthv2_rgb_20201010-16469c6f.pth
-  reference top1 acc (efficient/accurate): '[58.90 / 60.98](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
-  reference top5 acc (efficient/accurate): '[85.29 / 86.60](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
-- Config: configs/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb.py
   In Collection: TSM
   Metadata:
     Architecture: ResNet50
@@ -670,7 +616,7 @@ Models:
     FLOPs: 62782459904
     Parameters: 42856686
     Pretrained: ImageNet
-    Resolution: height 240
+    Resolution: height 256
     Training Data: SthV2
     Training Resources: 8 GPUs
   Modality: RGB
@@ -678,16 +624,16 @@ Models:
   Results:
   - Dataset: SthV2
     Metrics:
-      Top 1 Accuracy: 61.51
-      Top 1 Accuracy (efficient): 58.59
-      Top 5 Accuracy: 86.9
-      Top 5 Accuracy (efficient): 85.07
+      Top 1 Accuracy: 63.84
+      Top 1 Accuracy (efficient): 60.88
+      Top 5 Accuracy: 88.30
+      Top 5 Accuracy (efficient): 86.56
     Task: Action Recognition
-  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv2_rgb/20201010_224100.log.json
-  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv2_rgb/20201010_224100.log
-  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv2_rgb/tsm_r101_1x1x8_50e_sthv2_rgb_20201010-98cdedb8.pth
-  reference top1 acc (efficient/accurate): '[58.89 / 61.36](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
-  reference top5 acc (efficient/accurate): '[85.14 / 87.00](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv2_rgb/20210401_143656.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv2_rgb/20210401_143656.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv2_rgb/tsm_r101_256h_1x1x8_50e_sthv2_rgb_20210401-df97f3e1.pth
+  reference top1 acc (efficient/accurate): '[xx / 63.3](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
+  reference top5 acc (efficient/accurate): '[xx / xx](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
 - Config: configs/recognition/tsm/tsm_r50_mixup_1x1x8_50e_sthv1_rgb.py
   In Collection: TSM
   Metadata:

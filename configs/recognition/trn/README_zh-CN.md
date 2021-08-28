@@ -19,13 +19,13 @@
 
 |配置文件 | 分辨率 | GPU 数量 | 主干网络| 预训练 | top1 准确率 (efficient/accurate)| top5 准确率 (efficient/accurate)| GPU 显存占用 (M)| ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[trn_r50_1x1x8_50e_sthv1_rgb](configs/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb.py) | 高 100 | 8 | ResNet50 | ImageNet | 31.62 / 33.88 |60.01 / 62.12| 11010 | [ckpt](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/trn_r50_1x1x8_50e_sthv1_rgb_20210401-163704a8.pth) | [log](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/20210326_103948.log)| [json](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/20210326_103948.log.json)|
+|[trn_r50_1x1x8_50e_sthv1_rgb](/configs/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb.py) | 高 100 | 8 | ResNet50 | ImageNet | 31.62 / 33.88 |60.01 / 62.12| 11010 | [ckpt](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/trn_r50_1x1x8_50e_sthv1_rgb_20210401-163704a8.pth) | [log](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/20210326_103948.log)| [json](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/20210326_103948.log.json)|
 
 ### Something-Something V2
 
 |配置文件 | 分辨率 | GPU 数量 | 主干网络| 预训练 | top1 准确率 (efficient/accurate)| top5 准确率 (efficient/accurate)| GPU 显存占用 (M)| ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[trn_r50_1x1x8_50e_sthv2_rgb](configs/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb.py) | 高 100 | 8 | ResNet50 | ImageNet | 45.14 / 47.96 |73.21 / 75.97 | 11010 | [ckpt](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/trn_r50_1x1x8_50e_sthv2_rgb_20210401-773eca7b.pth) | [log](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210326_103951.log)| [json](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210326_103951.log.json)|
+|[trn_r50_1x1x8_50e_sthv2_rgb](/configs/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb.py) | 高 256 | 8 | ResNet50 | ImageNet | 48.39 / 51.28 |76.58 / 78.65 | 11010 | [ckpt](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/trn_r50_1x1x8_50e_sthv2_rgb_20210816-7abbc4c1.pth) | [log](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210816_221356.log)| [json](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210816_221356.log.json)|
 
 注：
 

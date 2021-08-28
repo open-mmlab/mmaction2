@@ -616,7 +616,7 @@ Models:
     FLOPs: 32959365120
     Parameters: 23864558
     Pretrained: ImageNet
-    Resolution: height 240
+    Resolution: height 256
     Training Data: SthV2
     Training Resources: 8 GPUs
   Modality: RGB
@@ -624,12 +624,12 @@ Models:
   Results:
   - Dataset: SthV2
     Metrics:
-      Top 1 Accuracy: 32.97
-      Top 5 Accuracy: 63.62
+      Top 1 Accuracy: 28.59
+      Top 5 Accuracy: 59.56
     Task: Action Recognition
-  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_sthv2_rgb/20200915_114139.log.json
-  Training Log: https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_sthv2_rgb/20200915_114139.log
-  Weights: https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_sthv2_rgb/tsn_r50_1x1x8_50e_sthv2_rgb_20200915-f3b381a5.pth
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_sthv2_rgb/20210816_221116.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_sthv2_rgb/20210816_221116.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x8_50e_sthv2_rgb/tsn_r50_1x1x8_50e_sthv2_rgb_20210816-1aafee8f.pth
 - Config: configs/recognition/tsn/tsn_r50_1x1x16_50e_sthv2_rgb.py
   In Collection: TSN
   Metadata:
@@ -639,7 +639,7 @@ Models:
     FLOPs: 65918373888
     Parameters: 23864558
     Pretrained: ImageNet
-    Resolution: height 240
+    Resolution: height 256
     Training Data: SthV2
     Training Resources: 8 GPUs
   Modality: RGB
@@ -647,12 +647,12 @@ Models:
   Results:
   - Dataset: SthV2
     Metrics:
-      Top 1 Accuracy: 27.21
-      Top 5 Accuracy: 55.84
+      Top 1 Accuracy: 20.89
+      Top 5 Accuracy: 49.16
     Task: Action Recognition
-  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x16_50e_sthv2_rgb/20200917_105855.log.json
-  Training Log: https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x16_50e_sthv2_rgb/20200917_105855.log
-  Weights: https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x16_50e_sthv2_rgb/tsn_r50_1x1x16_50e_sthv2_rgb_20200917-80bc3611.pth
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x16_50e_sthv2_rgb/20210816_225256.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x16_50e_sthv2_rgb/20210816_225256.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x16_50e_sthv2_rgb/tsn_r50_1x1x16_50e_sthv2_rgb_20210816-5d23ac6e.pth
 - Config: configs/recognition/tsn/tsn_r50_1x1x6_100e_mit_rgb.py
   In Collection: TSN
   Metadata:
