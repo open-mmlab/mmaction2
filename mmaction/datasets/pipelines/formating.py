@@ -266,9 +266,7 @@ class FormatShape:
     def __init__(self, input_format, collapse=False):
         self.input_format = input_format
         self.collapse = collapse
-        if self.input_format not in [
-                'NCTHW', 'NCHW', 'NCHW_Flow', 'NPTCHW', 'NCTVM'
-        ]:
+        if self.input_format not in ['NCTHW', 'NCHW', 'NCHW_Flow', 'NPTCHW']:
             raise ValueError(
                 f'The input format {self.input_format} is invalid.')
 
