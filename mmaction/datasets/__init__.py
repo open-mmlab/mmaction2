@@ -15,7 +15,6 @@ from .image_dataset import ImageDataset
 from .pose_dataset import PoseDataset
 from .rawframe_dataset import RawframeDataset
 from .rawvideo_dataset import RawVideoDataset
-from .skeleton_feeder import SkeletonFeeder
 from .ssn_dataset import SSNDataset
 from .video_dataset import VideoDataset
 
@@ -25,5 +24,5 @@ __all__ = [
     'HVUDataset', 'AudioDataset', 'AudioFeatureDataset', 'ImageDataset',
     'RawVideoDataset', 'AVADataset', 'AudioVisualDataset',
     'BaseMiniBatchBlending', 'CutmixBlending', 'MixupBlending', 'DATASETS',
-    'PIPELINES', 'BLENDINGS', 'PoseDataset', 'ConcatDataset', 'SkeletonFeeder'
+    'PIPELINES', 'BLENDINGS', 'PoseDataset', 'ConcatDataset'
 ]
