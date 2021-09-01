@@ -266,7 +266,9 @@ class FormatShape:
     def __init__(self, input_format, collapse=False):
         self.input_format = input_format
         self.collapse = collapse
-        if self.input_format not in ['NCTHW', 'NCHW', 'NCHW_Flow', 'NPTCHW']:
+        if self.input_format not in [
+                'NCTHW', 'NCHW', 'NCHW_Flow', 'NPTCHW', 'NCTVM'
+        ]:
             raise ValueError(
                 f'The input format {self.input_format} is invalid.')
 
@@ -321,6 +323,19 @@ class FormatShape:
             # M = N_clips x L
             imgs = np.transpose(imgs, (0, 1, 4, 2, 3))
             # P x M x C x H x W
+        elif self.input_format == 'NCTVM':
+            keypoint = results['keypoint']
+            keypoint_confidence = results['keypoint_score']
+            keypoint_confidence = np.expand_dims(keypoint_confidence, -1)
+            keypoint_3d = np.concatenate((keypoint, keypoint_confidence),
+                                         axis=-1)
+            keypoint_3d = np.transpose(keypoint_3d, (3, 1, 2, 0))
+            imgs = keypoint_3d
+
+            if imgs.shape[-1] == 1:
+                pad = np.zeros_like(imgs)
+                imgs = np.concatenate((imgs, pad), axis=-1)
+
         if self.collapse:
             assert imgs.shape[0] == 1
             imgs = imgs.squeeze(0)
@@ -365,6 +380,34 @@ class FormatAudioShape:
         audios = audios.reshape(clip, 1, sample, freq)
         results['audios'] = audios
         results['input_shape'] = audios.shape
+        return results
+
+    def __repr__(self):
+        repr_str = self.__class__.__name__
+        repr_str += f"(input_format='{self.input_format}')"
+        return repr_str
+
+
+@PIPELINES.register_module()
+class FormatNtuPose:
+
+    def __init__(self, input_format):
+        self.input_format = input_format
+
+    def __call__(self, results):
+        keypoint = results['keypoint']
+        keypoint_confidence = results['keypoint_score']
+        keypoint_confidence = np.expand_dims(keypoint_confidence, -1)
+        keypoint_3d = np.concatenate((keypoint, keypoint_confidence), axis=-1)
+        keypoint_3d = np.transpose(keypoint_3d,
+                                   (3, 1, 2, 0))  # M T V C -> C T V M
+
+        if keypoint_3d.shape[-1] == 1:
+            pad = np.zeros_like(keypoint_3d)
+            keypoint_3d = np.concatenate((keypoint_3d, pad), axis=-1)
+
+        results['keypoint'] = keypoint_3d
+        results['input_shape'] = keypoint_3d.shape
         return results
 
     def __repr__(self):
