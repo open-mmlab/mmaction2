@@ -323,18 +323,6 @@ class FormatShape:
             # M = N_clips x L
             imgs = np.transpose(imgs, (0, 1, 4, 2, 3))
             # P x M x C x H x W
-        elif self.input_format == 'NCTVM':
-            keypoint = results['keypoint']
-            keypoint_confidence = results['keypoint_score']
-            keypoint_confidence = np.expand_dims(keypoint_confidence, -1)
-            keypoint_3d = np.concatenate((keypoint, keypoint_confidence),
-                                         axis=-1)
-            keypoint_3d = np.transpose(keypoint_3d, (3, 1, 2, 0))
-            imgs = keypoint_3d
-
-            if imgs.shape[-1] == 1:
-                pad = np.zeros_like(imgs)
-                imgs = np.concatenate((imgs, pad), axis=-1)
 
         if self.collapse:
             assert imgs.shape[0] == 1
