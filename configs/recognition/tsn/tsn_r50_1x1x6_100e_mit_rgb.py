@@ -7,17 +7,18 @@ _base_ = [
 model = dict(cls_head=dict(num_classes=339))
 
 # dataset settings
-dataset_type = 'RawframeDataset'
-data_root = 'data/mit/rawframes/training'
-data_root_val = '/data/mit/rawframes/validation/'
-ann_file_train = 'data/mit/mit_train_list_rawframes.txt'
-ann_file_val = 'data/mit/mit_val_list_rawframes.txt'
-ann_file_test = 'data/mit/mit_val_list_rawframes.txt'
+dataset_type = 'VideoDataset'
+data_root = 'data/mit/videos/training'
+data_root_val = '/data/mit/videos/validation/'
+ann_file_train = 'data/mit/mit_train_list_videos.txt'
+ann_file_val = 'data/mit/mit_val_list_videos.txt'
+ann_file_test = 'data/mit/mit_val_list_videos.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
+    dict(type='DecordInit'),
     dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=6),
-    dict(type='RawFrameDecode'),
+    dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(
         type='MultiScaleCrop',
@@ -33,13 +34,14 @@ train_pipeline = [
     dict(type='ToTensor', keys=['imgs', 'label'])
 ]
 val_pipeline = [
+    dict(type='DecordInit'),
     dict(
         type='SampleFrames',
         clip_len=1,
         frame_interval=1,
         num_clips=6,
         test_mode=True),
-    dict(type='RawFrameDecode'),
+    dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
     dict(type='Normalize', **img_norm_cfg),
@@ -48,13 +50,14 @@ val_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 test_pipeline = [
+    dict(type='DecordDecode'),
     dict(
         type='SampleFrames',
         clip_len=1,
         frame_interval=1,
         num_clips=6,
         test_mode=True),
-    dict(type='RawFrameDecode'),
+    dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='ThreeCrop', crop_size=256),
     dict(type='Normalize', **img_norm_cfg),
