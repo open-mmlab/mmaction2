@@ -64,7 +64,7 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
     # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
     python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
         checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
-        demo/demo.mp4 demo/label_map_k400.txt
+        demo/demo.mp4 tools/data/kinetics/label_map_k400.txt
     ```
 
 2. Recognize a video file as input by using a TSN model on cuda by default, loading checkpoint from url.
@@ -73,7 +73,7 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
     # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
     python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
         https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
-        demo/demo.mp4 demo/label_map_k400.txt
+        demo/demo.mp4 tools/data/kinetics/label_map_k400.txt
     ```
 
 3. Recognize a list of rawframes as input by using a TSN model on cpu.
@@ -90,7 +90,7 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
     # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
     python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
         checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
-        demo/demo.mp4 demo/label_map_k400.txt --out-filename demo/demo_out.mp4
+        demo/demo.mp4 tools/data/kinetics/label_map_k400.txt --out-filename demo/demo_out.mp4
     ```
 
 5. Recognize a list of rawframes as input by using a TSN model and then generate a gif file.
@@ -107,7 +107,7 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
     # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
     python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
         checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
-        demo/demo.mp4 demo/label_map_k400.txt --target-resolution 340 256 --resize-algorithm bilinear \
+        demo/demo.mp4 tools/data/kinetics/label_map_k400.txt --target-resolution 340 256 --resize-algorithm bilinear \
         --out-filename demo/demo_out.mp4
     ```
 
@@ -117,7 +117,7 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
     # For --target-resolution 170 -1, original resolution (340, 256) -> target resolution (170, 128)
     python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
         checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
-        demo/demo.mp4 demo/label_map_k400.txt --target-resolution 170 -1 --resize-algorithm bilinear \
+        demo/demo.mp4 tools/data/kinetics/label_map_k400.txt --target-resolution 170 -1 --resize-algorithm bilinear \
         --out-filename demo/demo_out.mp4
     ```
 
@@ -127,7 +127,7 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
     # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
     python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
         checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
-        demo/demo.mp4 demo/label_map_k400.txt --font-scale 1 --font-color red \
+        demo/demo.mp4 tools/data/kinetics/label_map_k400.txt --font-scale 1 --font-color red \
         --out-filename demo/demo_out.mp4
     ```
 
@@ -265,7 +265,7 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
 
     ```shell
     python demo/webcam_demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
-      checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth demo/label_map_k400.txt --average-size 5 \
+      checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth tools/data/kinetics/label_map_k400.txt --average-size 5 \
       --threshold 0.2 --device cpu
     ```
 
@@ -275,7 +275,7 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
     ```shell
     python demo/webcam_demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
       https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
-      demo/label_map_k400.txt --average-size 5 --threshold 0.2 --device cpu
+      tools/data/kinetics/label_map_k400.txt --average-size 5 --threshold 0.2 --device cpu
     ```
 
 3. Recognize the action from web camera as input by using a I3D model on gpu by default, averaging the score per 5 times
@@ -283,7 +283,7 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
 
     ```shell
     python demo/webcam_demo.py configs/recognition/i3d/i3d_r50_video_inference_32x2x1_100e_kinetics400_rgb.py \
-      checkpoints/i3d_r50_32x2x1_100e_kinetics400_rgb_20200614-c25ef9a4.pth demo/label_map_k400.txt \
+      checkpoints/i3d_r50_32x2x1_100e_kinetics400_rgb_20200614-c25ef9a4.pth tools/data/kinetics/label_map_k400.txt \
       --average-size 5 --threshold 0.2
     ```
 
@@ -323,7 +323,7 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
 
     ```shell
     python demo/long_video_demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
-      checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth PATH_TO_LONG_VIDEO demo/label_map_k400.txt PATH_TO_SAVED_VIDEO \
+      checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth PATH_TO_LONG_VIDEO tools/data/kinetics/label_map_k400.txt PATH_TO_SAVED_VIDEO \
       --input-step 3 --device cpu --threshold 0.2
     ```
 
@@ -333,7 +333,7 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
     ```shell
     python demo/long_video_demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
       https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
-      PATH_TO_LONG_VIDEO demo/label_map_k400.txt PATH_TO_SAVED_VIDEO --input-step 3 --device cpu --threshold 0.2
+      PATH_TO_LONG_VIDEO tools/data/kinetics/label_map_k400.txt PATH_TO_SAVED_VIDEO --input-step 3 --device cpu --threshold 0.2
     ```
 
 3. Predict different labels in a long video from web by using a TSN model on cpu, with 3 frames for input steps (that is, random sample one from each 3 frames)
@@ -343,14 +343,14 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
     python demo/long_video_demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
       https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
       https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4 \
-      demo/label_map_k400.txt PATH_TO_SAVED_VIDEO --input-step 3 --device cpu --threshold 0.2
+      tools/data/kinetics/label_map_k400.txt PATH_TO_SAVED_VIDEO --input-step 3 --device cpu --threshold 0.2
     ```
 
 4. Predict different labels in a long video by using a I3D model on gpu, with input_step=1, threshold=0.01 as default and print the labels in cyan.
 
     ```shell
     python demo/long_video_demo.py configs/recognition/i3d/i3d_r50_video_inference_32x2x1_100e_kinetics400_rgb.py \
-      checkpoints/i3d_r50_256p_32x2x1_100e_kinetics400_rgb_20200801-7d9f44de.pth PATH_TO_LONG_VIDEO demo/label_map_k400.txt PATH_TO_SAVED_VIDEO \
+      checkpoints/i3d_r50_256p_32x2x1_100e_kinetics400_rgb_20200801-7d9f44de.pth PATH_TO_LONG_VIDEO tools/data/kinetics/label_map_k400.txt PATH_TO_SAVED_VIDEO \
       --label-color 255 255 0
     ```
 
@@ -358,7 +358,7 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
 
     ```shell
     python demo/long_video_demo.py configs/recognition/i3d/i3d_r50_video_inference_32x2x1_100e_kinetics400_rgb.py \
-      checkpoints/i3d_r50_256p_32x2x1_100e_kinetics400_rgb_20200801-7d9f44de.pth PATH_TO_LONG_VIDEO demo/label_map_k400.txt ./results.json
+      checkpoints/i3d_r50_256p_32x2x1_100e_kinetics400_rgb_20200801-7d9f44de.pth PATH_TO_LONG_VIDEO tools/data/kinetics/label_map_k400.txt ./results.json
     ```
 
 ## SpatioTemporal Action Detection Webcam Demo

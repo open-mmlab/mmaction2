@@ -10,7 +10,7 @@ from mmaction.apis import inference_recognizer, init_recognizer
 video_config_file = 'configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py'  # noqa: E501
 frame_config_file = 'configs/recognition/tsn/tsn_r50_inference_1x1x3_100e_kinetics400_rgb.py'  # noqa: E501
 flow_frame_config_file = 'configs/recognition/tsn/tsn_r50_320p_1x1x3_110e_kinetics400_flow.py'  # noqa: E501
-label_path = 'demo/label_map_k400.txt'
+label_path = 'tools/data/kinetics/label_map_k400.txt'
 video_path = 'demo/demo.mp4'
 frames_path = 'tests/data/imgs'
 
