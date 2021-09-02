@@ -167,7 +167,7 @@ Optional arguments:
 - `HUMAN_DETECTION_CHECKPOINT`: The human detection checkpoint URL.
 - `HUMAN_DETECTION_SCORE_THRE`: The score threshold for human detection. Default: 0.9.
 - `ACTION_DETECTION_SCORE_THRESHOLD`: The score threshold for action detection. Default: 0.5.
-- `LABEL_MAP`: The label map used. Default: `demo/label_map_ava.txt`.
+- `LABEL_MAP`: The label map used. Default: `tools/data/ava/label_map.txt`.
 - `DEVICE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`.  Default: `cuda:0`.
 - `OUTPUT_FILENAME`: Path to the output file which is a video format. Default: `demo/stdet_demo.mp4`.
 - `PREDICT_STEPSIZE`: Make a prediction per N frames.  Default: 8.
@@ -188,7 +188,7 @@ python demo/demo_spatiotemporal_det.py --video demo/demo.mp4 \
     --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
     --det-score-thr 0.9 \
     --action-score-thr 0.5 \
-    --label-map demo/label_map_ava.txt \
+    --label-map tools/data/ava/label_map.txt \
     --predict-stepsize 8 \
     --output-stepsize 4 \
     --output-fps 6
@@ -394,7 +394,7 @@ Optional arguments:
 - `HUMAN_DETECTION_CHECKPOINT`: The human detection checkpoint URL.
 - `HUMAN_DETECTION_SCORE_THRE`: The score threshold for human detection. Default: 0.9.
 - `INPUT_VIDEO`: The webcam id or video path of the source. Default: `0`.
-- `LABEL_MAP`: The label map used. Default: `demo/label_map_ava.txt`.
+- `LABEL_MAP`: The label map used. Default: `tools/data/ava/label_map.txt`.
 - `DEVICE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`.  Default: `cuda:0`.
 - `OUTPUT_FPS`: The FPS of demo video output. Default: 15.
 - `OUTPUT_FILENAME`: Path to the output file which is a video format. Default: None.
@@ -434,7 +434,7 @@ python demo/webcam_demo_spatiotemporal_det.py \
     --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
     --det-score-thr 0.9 \
     --action-score-thr 0.5 \
-    --label-map demo/label_map_ava.txt \
+    --label-map tools/data/ava/label_map.txt \
     --predict-stepsize 40 \
     --output-fps 20 \
     --show
@@ -467,7 +467,7 @@ Optional arguments:
 - `HUMAN_DETECTION_SCORE_THRE`: The score threshold for human detection. Default: 0.9.
 - `HUMAN_POSE_ESTIMATION_CONFIG_FILE`: The human pose estimation config file path (trained on COCO-Keypoint).
 - `HUMAN_POSE_ESTIMATION_CHECKPOINT`: The human pose estimation checkpoint URL (trained on COCO-Keypoint).
-- `LABEL_MAP`: The label map used. Default: `demo/label_map_ava.txt`.
+- `LABEL_MAP`: The label map used. Default: `tools/data/ava/label_map.txt`.
 - `DEVICE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`.  Default: `cuda:0`.
 - `SHORT_SIDE`: The short side used for frame extraction. Default: 480.
 

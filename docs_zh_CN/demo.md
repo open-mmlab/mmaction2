@@ -143,7 +143,7 @@ python demo/demo_spatiotemporal_det.py --video ${VIDEO_FILE} \
 - `HUMAN_DETECTION_CHECKPOINT`: 人体检测模型权重文件路径。
 - `HUMAN_DETECTION_SCORE_THRE`: 人体检测分数阈值，默认为 0.9。
 - `ACTION_DETECTION_SCORE_THRESHOLD`: 动作检测分数阈值，默认为 0.5。
-- `LABEL_MAP`: 所使用的标签映射文件，默认为 `demo/label_map_ava.txt`。
+- `LABEL_MAP`: 所使用的标签映射文件，默认为 `tools/data/ava/label_map.txt`。
 - `DEVICE`:  指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或 cpu（`cpu`）。默认为 `cuda:0`。
 - `OUTPUT_FILENAME`: 输出视频的路径，默认为 `demo/stdet_demo.mp4`。
 - `PREDICT_STEPSIZE`: 每 N 帧进行一次预测（以节约计算资源），默认值为 8。
@@ -164,7 +164,7 @@ python demo/demo_spatiotemporal_det.py --video demo/demo.mp4 \
     --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
     --det-score-thr 0.9 \
     --action-score-thr 0.5 \
-    --label-map demo/label_map_ava.txt \
+    --label-map tools/data/ava/label_map.txt \
     --predict-stepsize 8 \
     --output-stepsize 4 \
     --output-fps 6
@@ -352,7 +352,7 @@ python demo/webcam_demo_spatiotemporal_det.py \
 - `HUMAN_DETECTION_CHECKPOINT`: 人体检测模型权重文件路径。
 - `HUMAN_DETECTION_SCORE_THRE`: 人体检测分数阈值，默认为 0.9。
 - `INPUT_VIDEO`: 网络摄像头编号或本地视频文件路径，默认为 `0`。
-- `LABEL_MAP`: 所使用的标签映射文件，默认为 `demo/label_map_ava.txt`。
+- `LABEL_MAP`: 所使用的标签映射文件，默认为 `tools/data/ava/label_map.txt`。
 - `DEVICE`:  指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或 cpu（`cpu`），默认为 `cuda:0`。
 - `OUTPUT_FPS`: 输出视频的帧率，默认为 15。
 - `OUTPUT_FILENAME`: 输出视频的路径，默认为 `None`。
@@ -392,7 +392,7 @@ python demo/webcam_demo_spatiotemporal_det.py \
     --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
     --det-score-thr 0.9 \
     --action-score-thr 0.5 \
-    --label-map demo/label_map_ava.txt \
+    --label-map tools/data/ava/label_map.txt \
     --predict-stepsize 40 \
     --output-fps 20 \
     --show
@@ -425,7 +425,7 @@ python demo/demo_posec3d.py ${VIDEO_FILE} ${OUT_FILENAME} \
 - `HUMAN_DETECTION_CHECKPOINT`: 人体检测模型权重文件路径。
 - `HUMAN_DETECTION_SCORE_THRE`: 人体检测分数阈值，默认为 0.9。
 - `INPUT_VIDEO`: 网络摄像头编号或本地视频文件路径，默认为 `0`。
-- `LABEL_MAP`: 所使用的标签映射文件，默认为 `demo/label_map_ava.txt`。
+- `LABEL_MAP`: 所使用的标签映射文件，默认为 `tools/data/ava/label_map.txt`。
 - `DEVICE`: 指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或 cpu（`cpu`），默认为 `cuda:0`。
 - `OUTPUT_FPS`: 输出视频的帧率，默认为 15。
 - `OUTPUT_FILENAME`: 输出视频的路径，默认为 `None`。
