@@ -1,6 +1,24 @@
 ## Changelog
 
-### Master
+### 0.18.0 (02/09/2021)
+
+**Improvement**
+
+- Add CopyRight ([#1099](https://github.com/open-mmlab/mmaction2/pull/1099))
+- Support NTU Pose Extraction ([#1076](https://github.com/open-mmlab/mmaction2/pull/1076))
+- Support Caching in RawFrameDecode ([#1078](https://github.com/open-mmlab/mmaction2/pull/1078))
+- Add citations & Support python3.9 CI & Use fixed-version sphinx ([#1125](https://github.com/open-mmlab/mmaction2/pull/1125))
+
+**Documentations**
+
+- Add Descriptions of PoseC3D dataset ([#1053](https://github.com/open-mmlab/mmaction2/pull/1053))
+
+**Bug and Typo Fixes**
+
+- Fix SSV2 checkpoints ([#1101](https://github.com/open-mmlab/mmaction2/pull/1101))
+- Fix CSN normalization ([#1116](https://github.com/open-mmlab/mmaction2/pull/1116))
+- Fix typo ([#1121](https://github.com/open-mmlab/mmaction2/pull/1121))
+- Fix new_crop_quadruple bug ([#1108](https://github.com/open-mmlab/mmaction2/pull/1108))
 
 ### 0.17.0 (03/08/2021)
 
