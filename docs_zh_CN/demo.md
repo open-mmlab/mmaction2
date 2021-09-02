@@ -442,7 +442,7 @@ python demo/demo_posec3d.py ${VIDEO_FILE} ${OUT_FILENAME} \
 - `HUMAN_DETECTION_SCORE_THRE`: 人体检测分数阈值，默认为 0.9。
 - `HUMAN_POSE_ESTIMATION_CONFIG_FILE`: 人体姿态估计模型配置文件路径 (需在 COCO-keypoint 数据集上训练)。
 - `HUMAN_POSE_ESTIMATION_CHECKPOINT`: 人体姿态估计模型权重文件路径 (需在 COCO-keypoint 数据集上训练).
-- `LABEL_MAP`: 所使用的标签映射文件，默认为 `demo/label_map_ntu120.txt`。
+- `LABEL_MAP`: 所使用的标签映射文件，默认为 `tools/data/skeleton/label_map_ntu120.txt`。
 - `DEVICE`: 指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或 cpu（`cpu`），默认为 `cuda:0`。
 - `SHORT_SIDE`: 视频抽帧时使用的短边长度，默认为 480。
 
@@ -461,5 +461,5 @@ python demo/demo_posec3d.py demo/ntu_sample.avi demo/posec3d_demo.mp4 \
     --det-score-thr 0.9 \
     --pose-config demo/hrnet_w32_coco_256x192.py \
     --pose-checkpoint https://download.openmmlab.com/mmpose/top_down/hrnet/hrnet_w32_coco_256x192-c78dce93_20200708.pth \
-    --label-map demo/label_map_ntu120.txt
+    --label-map tools/data/skeleton/label_map_ntu120.txt
 ```

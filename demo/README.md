@@ -486,5 +486,5 @@ python demo/demo_posec3d.py demo/ntu_sample.avi demo/posec3d_demo.mp4 \
     --det-score-thr 0.9 \
     --pose-config demo/hrnet_w32_coco_256x192.py \
     --pose-checkpoint https://download.openmmlab.com/mmpose/top_down/hrnet/hrnet_w32_coco_256x192-c78dce93_20200708.pth \
-    --label-map demo/label_map_ntu120.txt
+    --label-map tools/data/skeleton/label_map_ntu120.txt
 ```
