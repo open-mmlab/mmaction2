@@ -96,7 +96,7 @@ def parse_args():
         help='the threshold of human detection score')
     parser.add_argument(
         '--label-map',
-        default='demo/label_map_ntu120.txt',
+        default='tools/data/skeleton/label_map_ntu120.txt',
         help='label map file')
     parser.add_argument(
         '--device', type=str, default='cuda:0', help='CPU/CUDA device option')

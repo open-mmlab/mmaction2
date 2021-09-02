@@ -83,7 +83,9 @@ def parse_args():
         type=str,
         help='webcam id or input video file/url')
     parser.add_argument(
-        '--label-map', default='demo/label_map_ava.txt', help='label map file')
+        '--label-map',
+        default='tools/data/ava/label_map.txt',
+        help='label map file')
     parser.add_argument(
         '--device', type=str, default='cuda:0', help='CPU/CUDA device option')
     parser.add_argument(
