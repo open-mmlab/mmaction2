@@ -1,6 +1,9 @@
 Collections:
 - Name: X3D
   README: configs/recognition/x3d/README.md
+  Paper:
+    URL: https://arxiv.org/abs/2004.04730
+    Title: "X3D: Expanding Architectures for Efficient Video Recognition"
 Models:
 - Config: configs/recognition/x3d/x3d_s_13x6x1_facebook_kinetics400_rgb.py
   In Collection: X3D
@@ -13,11 +16,13 @@ Models:
     Training Data: Kinetics-400
   Modality: RGB
   Name: x3d_s_13x6x1_facebook_kinetics400_rgb
+  Converted From:
+    Weights: https://dl.fbaipublicfiles.com/pyslowfast/x3d_models/x3d_s.pyth
+    Code: https://github.com/facebookresearch/SlowFast/
   Results:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 73.2
-      top1 10-view: 72.7
     Task: Action Recognition
   Weights: https://download.openmmlab.com/mmaction/recognition/x3d/facebook/x3d_s_facebook_13x6x1_kinetics400_rgb_20201027-623825a0.pth
   reference top1 10-view: 73.1 [[SlowFast](https://github.com/facebookresearch/SlowFast/blob/master/MODEL_ZOO.md)]
@@ -33,11 +38,13 @@ Models:
     Training Data: Kinetics-400
   Modality: RGB
   Name: x3d_m_16x5x1_facebook_kinetics400_rgb
+  Converted From:
+    Weights: https://dl.fbaipublicfiles.com/pyslowfast/x3d_models/x3d_s.pyth
+    Code: https://github.com/facebookresearch/SlowFast/
   Results:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 75.6
-      top1 10-view: 75.0
     Task: Action Recognition
   Weights: https://download.openmmlab.com/mmaction/recognition/x3d/facebook/x3d_m_facebook_16x5x1_kinetics400_rgb_20201027-3f42382a.pth
   reference top1 10-view: 75.1 [[SlowFast](https://github.com/facebookresearch/SlowFast/blob/master/MODEL_ZOO.md)]

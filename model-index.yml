@@ -8,6 +8,7 @@ Import:
 - configs/recognition/r2plus1d/metafile.yml
 - configs/recognition/slowfast/metafile.yml
 - configs/recognition/slowonly/metafile.yml
+- configs/recognition/timesformer/metafile.yml
 - configs/recognition/tin/metafile.yml
 - configs/recognition/tpn/metafile.yml
 - configs/recognition/tsm/metafile.yml

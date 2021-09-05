@@ -1,6 +1,9 @@
 Collections:
 - Name: SlowOnly
   README: configs/recognition/slowonly/README.md
+  Paper:
+    URL: https://arxiv.org/abs/1812.03982
+    Title: SlowFast Networks for Video Recognition
 Models:
 - Config: configs/recognition/slowonly/slowonly_r50_4x16x1_256e_kinetics400_rgb.py
   In Collection: SlowOnly
@@ -15,6 +18,9 @@ Models:
     Training Data: Kinetics-400
   Modality: RGB
   Name: slowonly_r50_omnisource_4x16x1_256e_kinetics400_rgb
+  Converted From:
+    Weights: https://open-mmlab.s3.ap-northeast-2.amazonaws.com/mmaction/models/kinetics400/omnisource/slowonly_OmniSource_kinetics400_se_rgb_r50_seg1_4x16_scratch-71f7b8ee.pth
+    Code: https://github.com/open-mmlab/mmaction/
   Results:
   - Dataset: Kinetics-400
     Metrics:
@@ -55,6 +61,9 @@ Models:
     Training Data: Kinetics-400
   Modality: RGB
   Name: slowonly_r101_omnisource_8x8x1_196e_kinetics400_rgb
+  Converted From:
+    Weights: https://open-mmlab.s3.ap-northeast-2.amazonaws.com/mmaction/models/kinetics400/omnisource/slowonly_OmniSource_kinetics400_se_rgb_r101_seg1_8x8_scratch-2f838cb0.pth
+    Code: https://github.com/open-mmlab/mmaction/
   Results:
   - Dataset: Kinetics-400
     Metrics:

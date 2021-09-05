@@ -1,6 +1,9 @@
 Collections:
 - Name: LFB
   README: configs/detection/lfb/README.md
+  Paper:
+    URL: https://arxiv.org/abs/1812.05038
+    Title: Long-Term Feature Banks for Detailed Video Understanding
 Models:
 - Config: configs/detection/lfb/lfb_nl_kinetics_pretrained_slowonly_r50_4x16x1_20e_ava_rgb.py
   In Collection: LFB

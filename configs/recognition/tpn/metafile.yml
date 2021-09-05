@@ -1,6 +1,9 @@
 Collections:
 - Name: TPN
   README: configs/recognition/tpn/README.md
+  Paper:
+    URL: https://arxiv.org/abs/2004.03548
+    Title: Temporal Pyramid Network for Action Recognition
 Models:
 - Config: configs/recognition/tpn/tpn_slowonly_r50_8x8x1_150e_kinetics_rgb.py
   In Collection: TPN

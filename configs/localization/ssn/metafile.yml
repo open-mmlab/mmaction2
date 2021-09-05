@@ -1,6 +1,9 @@
 Collections:
 - Name: SSN
   README: configs/localization/ssn/README.md
+  Paper:
+    URL: https://arxiv.org/abs/1704.06228
+    Title: Temporal Action Detection with Structured Segment Networks
 Models:
 - Config: configs/localization/ssn/ssn_r50_450e_thumos14_rgb_train.py
   In Collection: SSN

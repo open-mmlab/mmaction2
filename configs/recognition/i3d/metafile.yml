@@ -1,6 +1,9 @@
 Collections:
 - Name: I3D
   README: configs/recognition/i3d/README.md
+  Paper:
+    URL: https://arxiv.org/abs/1705.07750
+    Title: Quo Vadis, Action Recognition? A New Model and the Kinetics Dataset
 Models:
 - Config: configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py
   In Collection: I3D
