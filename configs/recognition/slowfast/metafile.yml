@@ -1,6 +1,9 @@
 Collections:
 - Name: SlowFast
   README: configs/recognition/slowfast/README.md
+  Paper:
+    URL: https://arxiv.org/abs/1812.03982
+    Title: SlowFast Networks for Video Recognition
 Models:
 - Config: configs/recognition/slowfast/slowfast_r50_4x16x1_256e_kinetics400_rgb.py
   In Collection: SlowFast

@@ -1,6 +1,9 @@
 Collections:
 - Name: BSN
   README: configs/localization/bsn/README.md
+  Paper:
+    URL: https://arxiv.org/abs/1806.02964
+    Title: "BSN: Boundary Sensitive Network for Temporal Action Proposal Generation"
 Models:
 - Config:
   - configs/localization/bsn/bsn_pem_400x100_1x16_20e_activitynet_feature.py

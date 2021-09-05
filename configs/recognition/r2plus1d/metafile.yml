@@ -1,6 +1,9 @@
 Collections:
 - Name: R2Plus1D
   README: configs/recognition/r2plus1d/README.md
+  Paper:
+    URL: https://arxiv.org/abs/1711.11248
+    Title: A Closer Look at Spatiotemporal Convolutions for Action Recognition
 Models:
 - Config: configs/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kinetics400_rgb.py
   In Collection: R2Plus1D

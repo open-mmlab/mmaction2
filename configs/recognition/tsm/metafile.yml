@@ -1,6 +1,9 @@
 Collections:
 - Name: TSM
   README: configs/recognition/tsm/README.md
+  Paper:
+    URL: https://arxiv.org/abs/1811.08383
+    Title: "TSM: Temporal Shift Module for Efficient Video Understanding"
 Models:
 - Config: configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py
   In Collection: TSM

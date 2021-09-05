@@ -1,6 +1,9 @@
 Collections:
 - Name: TANet
   README: configs/recognition/tanet/README.md
+  Paper:
+    URL: https://arxiv.org/abs/2005.06803
+    Title: "TAM: Temporal Adaptive Module for Video Recognition"
 Models:
 - Config: configs/recognition/tanet/tanet_r50_dense_1x1x8_100e_kinetics400_rgb.py
   In Collection: TANet

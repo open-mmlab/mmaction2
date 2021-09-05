@@ -1,6 +1,9 @@
 Collections:
 - Name: AVA
   README: configs/detection/ava/README.md
+  Paper:
+    URL: https://arxiv.org/abs/1705.08421
+    Title: "AVA: A Video Dataset of Spatio-temporally Localized Atomic Visual Actions"
 Models:
 - Config: configs/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb.py
   In Collection: AVA
