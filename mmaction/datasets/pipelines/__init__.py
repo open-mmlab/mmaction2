@@ -6,7 +6,7 @@ from .augmentations import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
                             RandomScale, Resize, TenCrop, ThreeCrop,
                             TorchvisionTrans)
 from .compose import Compose
-from .formating import (Collect, FormatAudioShape, FormatNtuPose, FormatShape,
+from .formating import (Collect, FormatAudioShape, FormatGCNInput, FormatShape,
                         ImageToTensor, Rename, ToDataContainer, ToTensor,
                         Transpose)
 from .loading import (AudioDecode, AudioDecodeInit, AudioFeatureSelector,
@@ -19,7 +19,7 @@ from .loading import (AudioDecode, AudioDecodeInit, AudioFeatureSelector,
                       SampleAVAFrames, SampleFrames, SampleProposalFrames,
                       UntrimmedSampleFrames)
 from .pose_loading import (GeneratePoseTarget, LoadKineticsPose, PoseDecode,
-                           UniformSampleFrames)
+                           PoseNormalize, UniformSampleFrames)
 
 __all__ = [
     'SampleFrames', 'PyAVDecode', 'DecordDecode', 'DenseSampleFrames',
@@ -37,5 +37,5 @@ __all__ = [
     'RandomRescale', 'PyAVDecodeMotionVector', 'Rename', 'Imgaug',
     'UniformSampleFrames', 'PoseDecode', 'LoadKineticsPose',
     'GeneratePoseTarget', 'PIMSInit', 'PIMSDecode', 'TorchvisionTrans',
-    'PytorchVideoTrans', 'FormatNtuPose'
+    'PytorchVideoTrans', 'PoseNormalize', 'FormatGCNInput'
 ]

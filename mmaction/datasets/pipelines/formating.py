@@ -375,12 +375,30 @@ class FormatAudioShape:
 
 
 @PIPELINES.register_module()
-class FormatNtuPose:
+class FormatGCNInput:
+    """Format final skeleton shape to the given input_format.
 
-    def __init__(self, input_format):
+    Required keys are "keypoint" and "keypoint_score", added or modified
+    keys are "keypoint" and "input_shape".
+
+    Args:
+        input_format (str): Define the final skeleton format.
+    """
+
+    def __init__(self, input_format, num_person=2):
         self.input_format = input_format
+        if self.input_format not in ['NCTVM']:
+            raise ValueError(
+                f'The input format {self.input_format} is invalid.')
+        self.num_person = num_person
 
     def __call__(self, results):
+        """Performs the FormatShape formatting.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         keypoint = results['keypoint']
         keypoint_confidence = results['keypoint_score']
         keypoint_confidence = np.expand_dims(keypoint_confidence, -1)
@@ -388,8 +406,10 @@ class FormatNtuPose:
         keypoint_3d = np.transpose(keypoint_3d,
                                    (3, 1, 2, 0))  # M T V C -> C T V M
 
-        if keypoint_3d.shape[-1] == 1:
-            pad = np.zeros_like(keypoint_3d)
+        if keypoint_3d.shape[-1] < self.num_person:
+            pad_dim = self.num_person - keypoint_3d.shape[-1]
+            pad = np.zeros(
+                keypoint_3d.shape[:-1] + (pad_dim, ), dtype=keypoint_3d.dtype)
             keypoint_3d = np.concatenate((keypoint_3d, pad), axis=-1)
 
         results['keypoint'] = keypoint_3d

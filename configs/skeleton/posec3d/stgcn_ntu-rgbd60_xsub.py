@@ -1,36 +1,45 @@
 model = dict(
-    type='ST_GCN_18',
-    in_channels=3,
-    num_class=60,
-    dropout=0.5,
-    edge_importance_weighting=True,
-    # graph_cfg=dict(layout='ntu-rgb+d', strategy='spatial')
-    graph_cfg=dict(layout='coco', strategy='spatial'))
+    type='STGCN',
+    backbone=dict(
+        type='GCN_Backbone',
+        in_channels=3,
+        edge_importance_weighting=True,
+        graph_cfg=dict(layout='coco', strategy='spatial')),
+    cls_head=dict(
+        type='STGCNHead',
+        num_classes=60,
+        in_channels=256,
+        loss_cls=dict(type='CrossEntropyLoss')),
+    train_cfg=None,
+    test_cfg=None)
 
 dataset_type = 'PoseDataset'
 ann_file_train = 'data/posec3d/ntu60_xsub_train.pkl'
 ann_file_val = 'data/posec3d/ntu60_xsub_val.pkl'
 train_pipeline = [
-    dict(type='UniformSampleFrames', clip_len=300),
+    # dict(type='UniformSampleFrames', clip_len=300),
+    dict(type='PaddingWithLoop', clip_len=300),
     dict(type='PoseDecode'),
-    # dict(type='PoseCompact', hw_ratio=1., allow_imgpad=True),
-    dict(type='FormatNtuPose', input_format='NCTVM'),
+    dict(type='FormatGCNInput', input_format='NCTVM'),
+    dict(type='PoseNormalize'),
     dict(type='Collect', keys=['keypoint', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['keypoint'])
 ]
 val_pipeline = [
-    dict(type='UniformSampleFrames', clip_len=300, test_mode=True),
+    # dict(type='UniformSampleFrames', clip_len=300, test_mode=True),
+    dict(type='PaddingWithLoop', clip_len=300),
     dict(type='PoseDecode'),
-    # dict(type='PoseCompact', hw_ratio=1., allow_imgpad=True),
-    dict(type='FormatNtuPose', input_format='NCTVM'),
+    dict(type='FormatGCNInput', input_format='NCTVM'),
+    dict(type='PoseNormalize'),
     dict(type='Collect', keys=['keypoint', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['keypoint'])
 ]
 test_pipeline = [
-    dict(type='UniformSampleFrames', clip_len=300, test_mode=True),
+    # dict(type='UniformSampleFrames', clip_len=300, test_mode=True),
+    dict(type='PaddingWithLoop', clip_len=300),
     dict(type='PoseDecode'),
-    # dict(type='PoseCompact', hw_ratio=1., allow_imgpad=True),
-    dict(type='FormatNtuPose', input_format='NCTVM'),
+    dict(type='FormatGCNInput', input_format='NCTVM'),
+    dict(type='PoseNormalize'),
     dict(type='Collect', keys=['keypoint', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['keypoint'])
 ]
