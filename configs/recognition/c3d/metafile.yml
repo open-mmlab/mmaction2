@@ -1,6 +1,9 @@
 Collections:
 - Name: C3D
   README: configs/recognition/c3d/README.md
+  Paper:
+    URL: https://arxiv.org/abs/1412.0767
+    Title: Learning Spatiotemporal Features with 3D Convolutional Networks
 Models:
 - Config: configs/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb.py
   In Collection: C3D

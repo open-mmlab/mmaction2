@@ -1,7 +1,7 @@
 # Tutorial 2: Finetuning Models
 
 This tutorial provides instructions for users to use the pre-trained models
-to finetune them on other datasets, so that better performance can be get.
+to finetune them on other datasets, so that better performance can be achieved.
 
 <!-- TOC -->
 

@@ -4,11 +4,11 @@ _base_ = [
 
 # dataset settings
 dataset_type = 'RawframeDataset'
-data_root = 'data/gym/subaction_frames'
-data_root_val = 'data/gym/subaction_frames'
-ann_file_train = 'data/gym/annotations/gym99_train_frame.txt'
-ann_file_val = 'data/gym/annotations/gym99_val_frame.txt'
-ann_file_test = 'data/gym/annotations/gym99_val_frame.txt'
+data_root = 'data/gym/rawframes'
+data_root_val = 'data/gym/rawframes'
+ann_file_train = 'data/gym/annotations/gym99_train_list_rawframes.txt'
+ann_file_val = 'data/gym/annotations/gym99_val_list_rawframes.txt'
+ann_file_test = 'data/gym/annotations/gym99_val_list_rawframes.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [

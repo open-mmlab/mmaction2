@@ -41,7 +41,7 @@ for f in files:
         print(p)
         q = p.replace('\\', '\\\\').replace('?', '\\?')
         paperlinks[p] = ' '.join(
-            (f'[⇨]({splitext(basename(f))[0]}.html#{anchor(paperlink)})'
+            (f'[->]({splitext(basename(f))[0]}.html#{anchor(paperlink)})'
              for paperlink in re.findall(
                  rf'\btitle\s*=\s*{{\s*{q}\s*}}.*?\n## (.*?)\s*[,;]?\s*\n',
                  revcontent, re.DOTALL | re.IGNORECASE)))
@@ -122,7 +122,7 @@ for f in files:
         print(p)
         q = p.replace('\\', '\\\\').replace('?', '\\?')
         paperlinks[p] = ', '.join(
-            (f'[{p.strip()} ⇨]({splitext(basename(f))[0]}.html#{anchor(p)})'
+            (f'[{p.strip()} ->]({splitext(basename(f))[0]}.html#{anchor(p)})'
              for p in re.findall(
                  rf'\btitle\s*=\s*{{\s*{q}\s*}}.*?\n## (.*?)\s*[,;]?\s*\n',
                  revcontent, re.DOTALL | re.IGNORECASE)))

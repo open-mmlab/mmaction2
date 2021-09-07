@@ -1,6 +1,9 @@
 Collections:
 - Name: TRN
   README: configs/recognition/trn/README.md
+  Paper:
+    URL: https://arxiv.org/abs/1711.08496
+    Title: Temporal Relational Reasoning in Videos
 Models:
 - Config: configs/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb.py
   In Collection: TRN
@@ -34,7 +37,7 @@ Models:
     Epochs: 50
     Parameters: 26641154
     Pretrained: ImageNet
-    Resolution: height 100
+    Resolution: height 256
     Training Data: SthV2
     Training Resources: 8 GPUs
   Modality: RGB
@@ -42,11 +45,11 @@ Models:
   Results:
   - Dataset: SthV2
     Metrics:
-      Top 1 Accuracy: 47.96
-      Top 1 Accuracy (efficient): 45.14
-      Top 5 Accuracy: 75.97
-      Top 5 Accuracy (efficient): 73.21
+      Top 1 Accuracy: 51.28
+      Top 1 Accuracy (efficient): 48.39
+      Top 5 Accuracy: 78.65
+      Top 5 Accuracy (efficient): 76.58
     Task: Action Recognition
-  Training Json Log: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210326_103951.log.json
-  Training Log: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210326_103951.log
-  Weights: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/trn_r50_1x1x8_50e_sthv2_rgb_20210401-773eca7b.pth
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210816_221356.log.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210816_221356.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/trn_r50_1x1x8_50e_sthv2_rgb_20210816-7abbc4c1.pth

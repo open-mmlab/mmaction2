@@ -716,7 +716,7 @@ class RandomCrop:
         new_crop_quadruple = [
             old_x_ratio + x_ratio * old_w_ratio,
             old_y_ratio + y_ratio * old_h_ratio, w_ratio * old_w_ratio,
-            h_ratio * old_x_ratio
+            h_ratio * old_h_ratio
         ]
         results['crop_quadruple'] = np.array(
             new_crop_quadruple, dtype=np.float32)
@@ -879,7 +879,7 @@ class RandomResizedCrop(RandomCrop):
         new_crop_quadruple = [
             old_x_ratio + x_ratio * old_w_ratio,
             old_y_ratio + y_ratio * old_h_ratio, w_ratio * old_w_ratio,
-            h_ratio * old_x_ratio
+            h_ratio * old_h_ratio
         ]
         results['crop_quadruple'] = np.array(
             new_crop_quadruple, dtype=np.float32)
@@ -1060,7 +1060,7 @@ class MultiScaleCrop(RandomCrop):
         new_crop_quadruple = [
             old_x_ratio + x_ratio * old_w_ratio,
             old_y_ratio + y_ratio * old_h_ratio, w_ratio * old_w_ratio,
-            h_ratio * old_x_ratio
+            h_ratio * old_h_ratio
         ]
         results['crop_quadruple'] = np.array(
             new_crop_quadruple, dtype=np.float32)
@@ -1677,7 +1677,7 @@ class CenterCrop(RandomCrop):
         new_crop_quadruple = [
             old_x_ratio + x_ratio * old_w_ratio,
             old_y_ratio + y_ratio * old_h_ratio, w_ratio * old_w_ratio,
-            h_ratio * old_x_ratio
+            h_ratio * old_h_ratio
         ]
         results['crop_quadruple'] = np.array(
             new_crop_quadruple, dtype=np.float32)

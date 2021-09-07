@@ -4,6 +4,7 @@ cat  ../configs/localization/*/README_zh-CN.md | sed "s/md###t/html#t/g" | sed "
 cat  ../configs/recognition/*/README_zh-CN.md | sed "s/md###t/html#t/g" | sed "s/#/#&/" | sed '1i\# 动作识别模型' | sed 's/](\/docs_zh_CN\//](/g' | sed 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' > recognition_models.md
 cat  ../configs/recognition_audio/*/README_zh-CN.md | sed "s/md###t/html#t/g" | sed "s/#/#&/" | sed 's/](\/docs_zh_CN\//](/g' | sed 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' >> recognition_models.md
 cat  ../configs/detection/*/README_zh-CN.md  | sed "s/md###t/html#t/g" | sed "s/#/#&/" | sed '1i\# 时空动作检测模型' | sed 's/](\/docs_zh_CN\//](/g' | sed 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' > detection_models.md
+cat  ../configs/skeleton/*/README_zh-CN.md  | sed "s/md###t/html#t/g" | sed "s/#/#&/" | sed '1i\# 骨骼动作识别模型' | sed 's/](\/docs_zh_CN\//](/g' | sed 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' > skeleton_models.md
 
 # gather datasets
 cat  ../tools/data/*/README_zh-CN.md | sed 's/# 准备/# /g' | sed 's/#/#&/' > prepare_data.md
@@ -23,6 +24,9 @@ sed -i 's/(\/tools\/data\/hmdb51\/README_zh-CN.md/(#hmdb51/g' supported_datasets
 sed -i 's/(\/tools\/data\/jester\/README_zh-CN.md/(#jester/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/ava\/README_zh-CN.md/(#ava/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/gym\/README_zh-CN.md/(#gym/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/omnisource\/README_zh-CN.md/(#omnisource/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/diving48\/README_zh-CN.md/(#diving48/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/skeleton\/README_zh-CN.md/(#skeleton/g' supported_datasets.md
 
 cat prepare_data.md >> supported_datasets.md
 sed -i 's/](\/docs_zh_CN\//](/g' supported_datasets.md

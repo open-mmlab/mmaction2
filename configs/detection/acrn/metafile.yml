@@ -1,6 +1,9 @@
 Collections:
 - Name: ACRN
   README: configs/detection/acrn/README.md
+  Paper:
+    URL: https://arxiv.org/abs/1807.10982
+    Title: Actor-Centric Relation Network
 Models:
 - Config: configs/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava_rgb.py
   In Collection: ACRN
