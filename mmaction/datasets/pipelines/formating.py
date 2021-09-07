@@ -411,6 +411,8 @@ class FormatGCNInput:
             pad = np.zeros(
                 keypoint_3d.shape[:-1] + (pad_dim, ), dtype=keypoint_3d.dtype)
             keypoint_3d = np.concatenate((keypoint_3d, pad), axis=-1)
+        elif keypoint_3d.shape[-1] > self.num_person:
+            keypoint_3d = keypoint_3d[:, :, :, :self.num_person]
 
         results['keypoint'] = keypoint_3d
         results['input_shape'] = keypoint_3d.shape

@@ -1,4 +1,4 @@
 from .base import BaseGCN
-from .stgcn import STGCN
+from .skeletongcn import SkeletonGCN
 
-__all__ = ['BaseGCN', 'STGCN']
+__all__ = ['BaseGCN', 'SkeletonGCN']

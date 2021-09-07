@@ -1,7 +1,7 @@
 model = dict(
-    type='STGCN',
+    type='SkeletonGCN',
     backbone=dict(
-        type='GCN_Backbone',
+        type='STGCN',
         in_channels=3,
         edge_importance_weighting=True,
         graph_cfg=dict(layout='coco', strategy='spatial')),
@@ -17,7 +17,6 @@ dataset_type = 'PoseDataset'
 ann_file_train = 'data/posec3d/ntu60_xsub_train.pkl'
 ann_file_val = 'data/posec3d/ntu60_xsub_val.pkl'
 train_pipeline = [
-    # dict(type='UniformSampleFrames', clip_len=300),
     dict(type='PaddingWithLoop', clip_len=300),
     dict(type='PoseDecode'),
     dict(type='FormatGCNInput', input_format='NCTVM'),
@@ -26,7 +25,6 @@ train_pipeline = [
     dict(type='ToTensor', keys=['keypoint'])
 ]
 val_pipeline = [
-    # dict(type='UniformSampleFrames', clip_len=300, test_mode=True),
     dict(type='PaddingWithLoop', clip_len=300),
     dict(type='PoseDecode'),
     dict(type='FormatGCNInput', input_format='NCTVM'),
@@ -35,7 +33,6 @@ val_pipeline = [
     dict(type='ToTensor', keys=['keypoint'])
 ]
 test_pipeline = [
-    # dict(type='UniformSampleFrames', clip_len=300, test_mode=True),
     dict(type='PaddingWithLoop', clip_len=300),
     dict(type='PoseDecode'),
     dict(type='FormatGCNInput', input_format='NCTVM'),
@@ -80,4 +77,4 @@ log_level = 'INFO'
 work_dir = './work_dirs/st-gcn_ntu-xsub/'
 load_from = None
 resume_from = None
-workflow = [('train', 5), ('val', 1)]
+workflow = [('train', 1)]

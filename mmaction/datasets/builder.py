@@ -119,7 +119,6 @@ def build_dataloader(dataset,
         batch_size=batch_size,
         sampler=sampler,
         num_workers=num_workers,
-        # num_workers=0, # old st-gcn
         collate_fn=partial(collate, samples_per_gpu=videos_per_gpu),
         pin_memory=pin_memory,
         shuffle=shuffle,
