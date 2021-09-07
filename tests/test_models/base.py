@@ -161,3 +161,7 @@ def get_localizer_cfg(fname):
 
 def get_detector_cfg(fname):
     return get_cfg('detection', fname)
+
+
+def get_skeletongcn_cfg(fname):
+    return get_cfg('skeleton', fname)
