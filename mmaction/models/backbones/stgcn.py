@@ -167,11 +167,14 @@ class STGCN(nn.Module):
     """Backbone of Spatial temporal graph convolutional networks.
 
     Args:
-        in_channels (int): Number of channels in the input data
-        graph_cfg (dict): The arguments for building the graph
+        in_channels (int): Number of channels in the input data.
+        graph_cfg (dict): The arguments for building the graph.
         edge_importance_weighting (bool): If ``True``, adds a learnable
-            importance weighting to the edges of the graph
-        **kwargs (optional): Other parameters for graph convolution units
+            importance weighting to the edges of the graph. Default: True.
+        data_bn (bool): If 'True', adds data normalization to the inputs.
+            Default: True.
+        pretrained (str | None): Name of pretrained model.
+        **kwargs (optional): Other parameters for graph convolution units.
 
     Shape:
         - Input: :math:`(N, in_channels, T_{in}, V_{in}, M_{in})`

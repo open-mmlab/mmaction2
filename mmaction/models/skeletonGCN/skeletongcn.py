@@ -7,6 +7,7 @@ class SkeletonGCN(BaseGCN):
     """Spatial temporal graph convolutional networks."""
 
     def forward_train(self, skeletons, labels, **kwargs):
+        """Defines the computation performed at every call when training."""
         assert self.with_cls_head
         losses = dict()
 
@@ -19,6 +20,8 @@ class SkeletonGCN(BaseGCN):
         return losses
 
     def forward_test(self, skeletons):
+        """Defines the computation performed at every call when evaluation and
+        testing."""
         x = self.extract_feat(skeletons)
         assert self.with_cls_head
         output = self.cls_head(x)
