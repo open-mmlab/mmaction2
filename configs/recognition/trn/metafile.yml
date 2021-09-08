@@ -1,6 +1,9 @@
 Collections:
 - Name: TRN
   README: configs/recognition/trn/README.md
+  Paper:
+    URL: https://arxiv.org/abs/1711.08496
+    Title: Temporal Relational Reasoning in Videos
 Models:
 - Config: configs/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb.py
   In Collection: TRN

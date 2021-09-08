@@ -1,6 +1,9 @@
 Collections:
 - Name: PoseC3D
   README: configs/skeleton/posec3d/README.md
+  Paper:
+    URL: https://arxiv.org/abs/2104.13586
+    Title: Revisiting Skeleton-based Action Recognition
 Models:
 - Config: configs/skeleton/posec3d/slowonly_r50_u48_240e_gym_keypoint.py
   In Collection: PoseC3D

@@ -27,6 +27,7 @@
    recognition_models.md
    localization_models.md
    detection_models.md
+   skeleton_models.md
 
 .. toctree::
    :maxdepth: 2

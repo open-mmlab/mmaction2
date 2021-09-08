@@ -1,6 +1,9 @@
 Collections:
 - Name: BMN
   README: configs/localization/bmn/README.md
+  Paper:
+    URL: https://arxiv.org/abs/1907.09702
+    Title: "BMN: Boundary-Matching Network for Temporal Action Proposal Generation"
 Models:
 - Config: configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py
   In Collection: BMN

@@ -1,6 +1,9 @@
 Collections:
 - Name: TSN
   README: configs/recognition/tsn/README.md
+  Paper:
+    URL: https://arxiv.org/abs/1608.00859
+    Title: "Temporal Segment Networks: Towards Good Practices for Deep Action Recognition"
 Models:
 - Config: configs/recognition/tsn/tsn_r50_1x1x3_75e_ucf101_rgb.py
   In Collection: TSN
@@ -468,6 +471,9 @@ Models:
     Training Data: Kinetics-400
   Modality: RGB
   Name: tsn_omnisource_r50_1x1x3_100e_kinetics_rgb
+  Converted From:
+    Weights: https://open-mmlab.s3.ap-northeast-2.amazonaws.com/mmaction/models/kinetics400/omnisource/tsn_OmniSource_kinetics400_se_rgb_r50_seg3_f1s1_imagenet-4066cb7e.pth
+    Code: https://github.com/open-mmlab/mmaction
   Results:
   - Dataset: Kinetics-400
     Metrics:
@@ -488,6 +494,9 @@ Models:
     Training Data: Kinetics-400
   Modality: RGB
   Name: tsn_IG1B_pretrained_r50_1x1x3_100e_kinetics_rgb
+  Converted From:
+    Weights: https://open-mmlab.s3.ap-northeast-2.amazonaws.com/mmaction/models/kinetics400/omnisource/tsn_OmniSource_kinetics400_se_rgb_r50_seg3_f1s1_IG1B-25fc136b.pth
+    Code: https://github.com/open-mmlab/mmaction/
   Results:
   - Dataset: Kinetics-400
     Metrics:

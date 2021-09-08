@@ -1,6 +1,9 @@
 Collections:
 - Name: TIN
   README: configs/recognition/tin/README.md
+  Paper:
+    URL: https://arxiv.org/abs/2001.06499
+    Title: Temporal Interlacing Network
 Models:
 - Config: configs/recognition/tin/tin_r50_1x1x8_40e_sthv1_rgb.py
   In Collection: TIN
