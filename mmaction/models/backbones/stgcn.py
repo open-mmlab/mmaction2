@@ -10,10 +10,12 @@ from ..skeletonGCN.utils import Graph
 
 
 def zero(x):
+    """return zero."""
     return 0
 
 
 def iden(x):
+    """return input itself."""
     return x
 
 
@@ -88,6 +90,7 @@ class st_gcn_block(nn.Module):
         self.relu = nn.ReLU(inplace=True)
 
     def forward(self, x, A):
+        """Defines the computation performed at every call."""
         res = self.residual(x)
         x, A = self.gcn(x, A)
         x = self.tcn(x) + res
@@ -151,6 +154,7 @@ class ConvTemporalGraphical(nn.Module):
             bias=bias)
 
     def forward(self, x, A):
+        """Defines the computation performed at every call."""
         assert A.size(0) == self.kernel_size
 
         x = self.conv(x)
@@ -254,6 +258,13 @@ class STGCN(nn.Module):
             raise TypeError('pretrained must be a str or None')
 
     def forward(self, x):
+        """Defines the computation performed at every call.
+        Args:
+            x (torch.Tensor): The input data.
+
+        Returns:
+            torch.Tensor: The output of the module.
+        """
         # data normalization
         x = x.float()
         N, C, T, V, M = x.size()  # bs 3 300 25(17) 2
