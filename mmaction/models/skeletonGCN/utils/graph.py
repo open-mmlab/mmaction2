@@ -31,19 +31,19 @@ class Graph():
     """The Graph to model the skeletons extracted by the openpose.
 
     Args:
-        strategy (string): must be one of the follow candidates
-        - uniform: Uniform Labeling
-        - distance: Distance Partitioning
-        - spatial: Spatial Configuration
-        For more information, please refer to the section 'Partition
-        Strategies' in our paper (https://arxiv.org/abs/1801.07455).
-
         layout (string): must be one of the follow candidates
         - openpose: Is consists of 18 joints. For more information, please
             refer to
             https://github.com/CMU-Perceptual-Computing-Lab/openpose#output
         - ntu-rgb+d: Is consists of 25 joints. For more information, please
             refer to https://github.com/shahroudy/NTURGB-D
+
+        strategy (string): must be one of the follow candidates
+        - uniform: Uniform Labeling
+        - distance: Distance Partitioning
+        - spatial: Spatial Configuration
+        For more information, please refer to the section 'Partition
+        Strategies' in our paper (https://arxiv.org/abs/1801.07455).
 
         max_hop (int): the maximal distance between two connected nodes
         dilation (int): controls the spacing between the kernel points
@@ -66,7 +66,7 @@ class Graph():
         return self.A
 
     def get_edge(self, layout):
-        # edge is a list of [child, parent] paris
+        """This method returns the edge pairs of the layout."""
 
         if layout == 'openpose':
             self.num_node = 18
@@ -113,6 +113,8 @@ class Graph():
             raise ValueError('Do Not Exist This Layout.')
 
     def get_adjacency(self, strategy):
+        """This method returns the adjacency matrix according to strategy."""
+
         valid_hop = range(0, self.max_hop + 1, self.dilation)
         adjacency = np.zeros((self.num_node, self.num_node))
         for hop in valid_hop:
