@@ -157,8 +157,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      Top 1 Accuracy: 73.46
-      Top 5 Accuracy: 90.84
+      Top 1 Accuracy: 72.75
+      Top 5 Accuracy: 90.27
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_dense_1x1x8_50e_kinetics400_rgb/20210617_103245.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_dense_1x1x8_50e_kinetics400_rgb/20210617_103245.log
@@ -180,8 +180,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      Top 1 Accuracy: 74.55
-      Top 5 Accuracy: 91.74
+      Top 1 Accuracy: 74.10
+      Top 5 Accuracy: 91.36
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_dense_1x1x8_100e_kinetics400_rgb/20210613_034931.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_dense_1x1x8_100e_kinetics400_rgb/20210613_034931.log
@@ -249,8 +249,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      Top 1 Accuracy: 72.8
-      Top 5 Accuracy: 90.75
+      Top 1 Accuracy: 72.47
+      Top 5 Accuracy: 90.44
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_kinetics400_rgb/20210621_115844.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_kinetics400_rgb/20210621_115844.log
