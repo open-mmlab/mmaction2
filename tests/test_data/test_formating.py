@@ -6,7 +6,8 @@ from mmcv.parallel import DataContainer as DC
 from mmcv.utils import assert_dict_has_keys
 
 from mmaction.datasets.pipelines import (Collect, FormatAudioShape,
-                                         FormatShape, ImageToTensor, Rename,
+                                         FormatGCNInput, FormatShape,
+                                         ImageToTensor, Rename,
                                          ToDataContainer, ToTensor, Transpose)
 
 
@@ -193,3 +194,16 @@ def test_format_audio_shape():
     assert format_shape(results)['input_shape'] == (3, 1, 128, 8)
     assert repr(format_shape) == format_shape.__class__.__name__ + \
         "(input_format='NCTF')"
+
+
+def test_format_gcn_input():
+    with pytest.raises(ValueError):
+        # invalid input format
+        FormatGCNInput('XXXX')
+
+    # 'NCTVM' input format
+    results = dict(keypoint=np.random.randn(2, 300, 17, 3))
+    format_shape = FormatGCNInput('NCTVM')
+    assert format_shape(results)['input_shape'] == (3, 300, 17, 2)
+    assert repr(format_shape) == format_shape.__class__.__name__ + \
+        "(input_format='NCTVM')"
