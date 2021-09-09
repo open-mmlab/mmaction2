@@ -1,4 +1,3 @@
-import warnings
 from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
 
@@ -30,42 +29,7 @@ class BaseGCN(nn.Module, metaclass=ABCMeta):
         super().__init__()
         # record the source of the backbone
         self.backbone_from = 'mmaction2'
-
-        if backbone['type'].startswith('mmcls.'):
-            try:
-                import mmcls.models.builder as mmcls_builder
-            except (ImportError, ModuleNotFoundError):
-                raise ImportError('Please install mmcls to use this backbone.')
-            backbone['type'] = backbone['type'][6:]
-            self.backbone = mmcls_builder.build_backbone(backbone)
-            self.backbone_from = 'mmcls'
-        elif backbone['type'].startswith('torchvision.'):
-            try:
-                import torchvision.models
-            except (ImportError, ModuleNotFoundError):
-                raise ImportError('Please install torchvision to use this '
-                                  'backbone.')
-            backbone_type = backbone.pop('type')[12:]
-            self.backbone = torchvision.models.__dict__[backbone_type](
-                **backbone)
-            # disable the classifier
-            self.backbone.classifier = nn.Identity()
-            self.backbone.fc = nn.Identity()
-            self.backbone_from = 'torchvision'
-        elif backbone['type'].startswith('timm.'):
-            try:
-                import timm
-            except (ImportError, ModuleNotFoundError):
-                raise ImportError('Please install timm to use this '
-                                  'backbone.')
-            backbone_type = backbone.pop('type')[5:]
-            # disable the classifier
-            backbone['num_classes'] = 0
-            self.backbone = timm.create_model(backbone_type, **backbone)
-            self.backbone_from = 'timm'
-        else:
-            self.backbone = builder.build_backbone(backbone)
-
+        self.backbone = builder.build_backbone(backbone)
         self.cls_head = builder.build_head(cls_head) if cls_head else None
 
         self.train_cfg = train_cfg
@@ -82,11 +46,6 @@ class BaseGCN(nn.Module, metaclass=ABCMeta):
         """Initialize the model network weights."""
         if self.backbone_from in ['mmcls', 'mmaction2']:
             self.backbone.init_weights()
-        elif self.backbone_from in ['torchvision', 'timm']:
-            warnings.warn('We do not initialize weights for backbones in '
-                          f'{self.backbone_from}, since the weights for '
-                          f'backbones in {self.backbone_from} are initialized'
-                          'in their __init__ functions.')
         else:
             raise NotImplementedError('Unsupported backbone source '
                                       f'{self.backbone_from}!')
