@@ -205,7 +205,23 @@ def test_format_gcn_input():
     results = dict(
         keypoint=np.random.randn(2, 300, 17, 2),
         keypoint_score=np.random.randn(2, 300, 17))
-    format_shape = FormatGCNInput('NCTVM')
+    format_shape = FormatGCNInput('NCTVM', num_person=2)
+    assert format_shape(results)['input_shape'] == (3, 300, 17, 2)
+    assert repr(format_shape) == format_shape.__class__.__name__ + \
+        "(input_format='NCTVM')"
+
+    # test num_person < 2
+    results = dict(
+        keypoint=np.random.randn(1, 300, 17, 2),
+        keypoint_score=np.random.randn(1, 300, 17))
+    assert format_shape(results)['input_shape'] == (3, 300, 17, 2)
+    assert repr(format_shape) == format_shape.__class__.__name__ + \
+        "(input_format='NCTVM')"
+
+    # test num_person > 2
+    results = dict(
+        keypoint=np.random.randn(3, 300, 17, 2),
+        keypoint_score=np.random.randn(3, 300, 17))
     assert format_shape(results)['input_shape'] == (3, 300, 17, 2)
     assert repr(format_shape) == format_shape.__class__.__name__ + \
         "(input_format='NCTVM')"
