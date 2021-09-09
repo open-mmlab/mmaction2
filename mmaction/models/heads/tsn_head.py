@@ -74,6 +74,9 @@ class TSNHead(BaseHead):
         """
         # [N * num_segs, in_channels, 7, 7]
         if self.avg_pool is not None:
+            if isinstance(x, tuple):
+                shapes = [y.shape for y in x]
+                assert 1 == 0, f'x is tuple {shapes}'
             x = self.avg_pool(x)
             # [N * num_segs, in_channels, 1, 1]
         x = x.reshape((-1, num_segs) + x.shape[1:])
