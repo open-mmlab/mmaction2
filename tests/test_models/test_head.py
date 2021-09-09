@@ -528,7 +528,7 @@ def test_stgcn_head():
     assert stgcn_head.num_classes == 60
     assert stgcn_head.in_channels == 256
 
-    input_shape = (2, 3, 300, 17, 2)
+    input_shape = (2, 256, 75, 17)
     feat = torch.rand(input_shape)
 
     cls_scores = stgcn_head(feat)

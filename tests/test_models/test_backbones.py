@@ -783,4 +783,4 @@ def test_stgcn_backbone():
     stgcn.init_weights()
     stgcn.train()
     feat = stgcn(skeletons)
-    assert feat.shape == torch.size([2, 256, 75, 17])
+    assert feat.shape == torch.Size([2, 256, 75, 17])

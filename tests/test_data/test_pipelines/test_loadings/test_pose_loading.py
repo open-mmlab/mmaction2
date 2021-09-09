@@ -373,7 +373,7 @@ class TestPoseLoading:
     def test_pose_normalize():
         target_keys = ['keypoint', 'keypoint_norm_cfg']
         keypoints = np.random.randn(3, 300, 17, 2)
-        results = dict(keypoints=keypoints)
+        results = dict(keypoint=keypoints)
         pose_normalize = PoseNormalize(
             mean=[960., 540., 0.5],
             min_value=[0., 0., 0.],

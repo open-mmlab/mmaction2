@@ -202,7 +202,9 @@ def test_format_gcn_input():
         FormatGCNInput('XXXX')
 
     # 'NCTVM' input format
-    results = dict(keypoint=np.random.randn(2, 300, 17, 3))
+    results = dict(
+        keypoint=np.random.randn(2, 300, 17, 2),
+        keypoint_score=np.random.randn(2, 300, 17))
     format_shape = FormatGCNInput('NCTVM')
     assert format_shape(results)['input_shape'] == (3, 300, 17, 2)
     assert repr(format_shape) == format_shape.__class__.__name__ + \
