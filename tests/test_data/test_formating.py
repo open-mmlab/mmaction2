@@ -210,7 +210,7 @@ def test_format_gcn_input():
     assert repr(format_shape) == format_shape.__class__.__name__ + \
         "(input_format='NCTVM')"
 
-    # test num_person < 2
+    # test real num_person < 2
     results = dict(
         keypoint=np.random.randn(1, 300, 17, 2),
         keypoint_score=np.random.randn(1, 300, 17))
@@ -218,7 +218,7 @@ def test_format_gcn_input():
     assert repr(format_shape) == format_shape.__class__.__name__ + \
         "(input_format='NCTVM')"
 
-    # test num_person > 2
+    # test real num_person > 2
     results = dict(
         keypoint=np.random.randn(3, 300, 17, 2),
         keypoint_score=np.random.randn(3, 300, 17))
