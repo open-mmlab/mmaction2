@@ -683,4 +683,6 @@ class PoseNormalize:
         keypoint = results['keypoint']
         keypoint = (keypoint - self.mean) / (self.max_value - self.min_value)
         results['keypoint'] = keypoint
+        results['keypoint_norm_cfg'] = dict(
+            mean=self.mean, min_value=self.min_value, max_value=self.max_value)
         return results
