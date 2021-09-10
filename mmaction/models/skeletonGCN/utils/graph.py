@@ -2,51 +2,55 @@ import numpy as np
 
 
 def get_hop_distance(num_node, edge, max_hop=1):
-    A = np.zeros((num_node, num_node))
+    adj_mat = np.zeros((num_node, num_node))
     for i, j in edge:
-        A[i, j] = 1
-        A[j, i] = 1
+        adj_mat[i, j] = 1
+        adj_mat[j, i] = 1
 
     # compute hop steps
     hop_dis = np.zeros((num_node, num_node)) + np.inf
-    transfer_mat = [np.linalg.matrix_power(A, d) for d in range(max_hop + 1)]
+    transfer_mat = [
+        np.linalg.matrix_power(adj_mat, d) for d in range(max_hop + 1)
+    ]
     arrive_mat = (np.stack(transfer_mat) > 0)
     for d in range(max_hop, -1, -1):
         hop_dis[arrive_mat[d]] = d
     return hop_dis
 
 
-def normalize_digraph(A):
-    Dl = np.sum(A, 0)
-    num_node = A.shape[0]
-    Dn = np.zeros((num_node, num_node))
-    for i in range(num_node):
+def normalize_digraph(adj_matrix):
+    Dl = np.sum(adj_matrix, 0)
+    num_nodes = adj_matrix.shape[0]
+    Dn = np.zeros((num_nodes, num_nodes))
+    for i in range(num_nodes):
         if Dl[i] > 0:
             Dn[i, i] = Dl[i]**(-1)
-    AD = np.dot(A, Dn)
-    return AD
+    norm_matrix = np.dot(adj_matrix, Dn)
+    return norm_matrix
 
 
-class Graph():
+class Graph:
     """The Graph to model the skeletons extracted by the openpose.
 
     Args:
-        layout (string): must be one of the follow candidates
+        layout (str): must be one of the following candidates
         - openpose: Is consists of 18 joints. For more information, please
             refer to
             https://github.com/CMU-Perceptual-Computing-Lab/openpose#output
         - ntu-rgb+d: Is consists of 25 joints. For more information, please
             refer to https://github.com/shahroudy/NTURGB-D
 
-        strategy (string): must be one of the follow candidates
+        strategy (str): must be one of the follow candidates
         - uniform: Uniform Labeling
         - distance: Distance Partitioning
         - spatial: Spatial Configuration
         For more information, please refer to the section 'Partition
         Strategies' in our paper (https://arxiv.org/abs/1801.07455).
 
-        max_hop (int): the maximal distance between two connected nodes
-        dilation (int): controls the spacing between the kernel points
+        max_hop (int): the maximal distance between two connected nodes.
+            Dafault: 1
+        dilation (int): controls the spacing between the kernel points.
+            Default: 1
     """
 
     def __init__(self,
@@ -57,6 +61,8 @@ class Graph():
         self.max_hop = max_hop
         self.dilation = dilation
 
+        assert layout in ['openpose', 'ntu-rgb+d', 'ntu_edge', 'coco']
+        assert strategy in ['uniform', 'distance', 'spatial']
         self.get_edge(layout)
         self.hop_dis = get_hop_distance(
             self.num_node, self.edge, max_hop=max_hop)

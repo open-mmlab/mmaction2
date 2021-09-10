@@ -635,7 +635,7 @@ class GeneratePoseTarget:
 class PaddingWithLoop:
     """Sample frames from the video.
 
-    To sample an n-frame clip from the video, PaddingWithLoop sample
+    To sample an n-frame clip from the video, PaddingWithLoop samples
     the frames from zero index, and loop the frames if the length of
     video frames is less than te value of 'clip_len'.
 
@@ -668,6 +668,13 @@ class PaddingWithLoop:
 
 @PIPELINES.register_module()
 class PoseNormalize:
+    """Normalize the range of keypoint values to [-1,1].
+
+    Args:
+        mean (list): The mean value of the keypoint values.
+        min_value (list): The minimum value of the keypoint values.
+        max_value (list): The maximum value of the keypoint values.
+    """
 
     def __init__(self,
                  mean=[960., 540., 0.5],

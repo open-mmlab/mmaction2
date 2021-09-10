@@ -14,12 +14,12 @@ def zero(x):
     return 0
 
 
-def iden(x):
+def identity(x):
     """return input itself."""
     return x
 
 
-class st_gcn_block(nn.Module):
+class STGCNBlock(nn.Module):
     """Applies a spatial temporal graph convolution over an input graph
     sequence.
 
@@ -75,7 +75,7 @@ class st_gcn_block(nn.Module):
             self.residual = zero
 
         elif (in_channels == out_channels) and (stride == 1):
-            self.residual = iden
+            self.residual = identity
 
         else:
             self.residual = nn.Sequential(
@@ -83,19 +83,17 @@ class st_gcn_block(nn.Module):
                     in_channels,
                     out_channels,
                     kernel_size=1,
-                    stride=(stride, 1)),
-                nn.BatchNorm2d(out_channels),
-            )
+                    stride=(stride, 1)), nn.BatchNorm2d(out_channels))
 
         self.relu = nn.ReLU(inplace=True)
 
-    def forward(self, x, A):
+    def forward(self, x, adj_mat):
         """Defines the computation performed at every call."""
         res = self.residual(x)
-        x, A = self.gcn(x, A)
+        x, adj_mat = self.gcn(x, adj_mat)
         x = self.tcn(x) + res
 
-        return self.relu(x), A
+        return self.relu(x), adj_mat
 
 
 class ConvTemporalGraphical(nn.Module):
@@ -209,21 +207,21 @@ class STGCN(nn.Module):
         temporal_kernel_size = 9
         kernel_size = (temporal_kernel_size, spatial_kernel_size)
         self.data_bn = nn.BatchNorm1d(in_channels *
-                                      A.size(1)) if data_bn else iden
+                                      A.size(1)) if data_bn else identity
 
         kwargs0 = {k: v for k, v in kwargs.items() if k != 'dropout'}
         self.st_gcn_networks = nn.ModuleList((
-            st_gcn_block(
+            STGCNBlock(
                 in_channels, 64, kernel_size, 1, residual=False, **kwargs0),
-            st_gcn_block(64, 64, kernel_size, 1, **kwargs),
-            st_gcn_block(64, 64, kernel_size, 1, **kwargs),
-            st_gcn_block(64, 64, kernel_size, 1, **kwargs),
-            st_gcn_block(64, 128, kernel_size, 2, **kwargs),
-            st_gcn_block(128, 128, kernel_size, 1, **kwargs),
-            st_gcn_block(128, 128, kernel_size, 1, **kwargs),
-            st_gcn_block(128, 256, kernel_size, 2, **kwargs),
-            st_gcn_block(256, 256, kernel_size, 1, **kwargs),
-            st_gcn_block(256, 256, kernel_size, 1, **kwargs),
+            STGCNBlock(64, 64, kernel_size, 1, **kwargs),
+            STGCNBlock(64, 64, kernel_size, 1, **kwargs),
+            STGCNBlock(64, 64, kernel_size, 1, **kwargs),
+            STGCNBlock(64, 128, kernel_size, 2, **kwargs),
+            STGCNBlock(128, 128, kernel_size, 1, **kwargs),
+            STGCNBlock(128, 128, kernel_size, 1, **kwargs),
+            STGCNBlock(128, 256, kernel_size, 2, **kwargs),
+            STGCNBlock(256, 256, kernel_size, 1, **kwargs),
+            STGCNBlock(256, 256, kernel_size, 1, **kwargs),
         ))
 
         # initialize parameters for edge importance weighting
@@ -233,7 +231,7 @@ class STGCN(nn.Module):
                 for i in self.st_gcn_networks
             ])
         else:
-            self.edge_importance = [1] * len(self.st_gcn_networks)
+            self.edge_importance = [1 for _ in len(self.st_gcn_networks)]
 
         self.pretrained = pretrained
 
@@ -267,13 +265,13 @@ class STGCN(nn.Module):
         """
         # data normalization
         x = x.float()
-        N, C, T, V, M = x.size()  # bs 3 300 25(17) 2
+        n, c, t, v, m = x.size()  # bs 3 300 25(17) 2
         x = x.permute(0, 4, 3, 1, 2).contiguous()  # N M V C T
-        x = x.view(N * M, V * C, T)
+        x = x.view(n * m, v * c, t)
         x = self.data_bn(x)
-        x = x.view(N, M, V, C, T)
+        x = x.view(n, m, v, c, t)
         x = x.permute(0, 1, 3, 4, 2).contiguous()
-        x = x.view(N * M, C, T, V)  # bsx2 3 300 25(17)
+        x = x.view(n * m, c, t, v)  # bsx2 3 300 25(17)
 
         # forward
         for gcn, importance in zip(self.st_gcn_networks, self.edge_importance):
