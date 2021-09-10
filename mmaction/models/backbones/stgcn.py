@@ -231,7 +231,7 @@ class STGCN(nn.Module):
                 for i in self.st_gcn_networks
             ])
         else:
-            self.edge_importance = [1 for _ in len(self.st_gcn_networks)]
+            self.edge_importance = [1 for _ in self.st_gcn_networks]
 
         self.pretrained = pretrained
 
