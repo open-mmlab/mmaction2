@@ -151,17 +151,17 @@ class ConvTemporalGraphical(nn.Module):
             dilation=(t_dilation, 1),
             bias=bias)
 
-    def forward(self, x, A):
+    def forward(self, x, adj_mat):
         """Defines the computation performed at every call."""
-        assert A.size(0) == self.kernel_size
+        assert adj_mat.size(0) == self.kernel_size
 
         x = self.conv(x)
 
         n, kc, t, v = x.size()
         x = x.view(n, self.kernel_size, kc // self.kernel_size, t, v)
-        x = torch.einsum('nkctv,kvw->nctw', (x, A))
+        x = torch.einsum('nkctv,kvw->nctw', (x, adj_mat))
 
-        return x.contiguous(), A
+        return x.contiguous(), adj_mat
 
 
 @BACKBONES.register_module()
