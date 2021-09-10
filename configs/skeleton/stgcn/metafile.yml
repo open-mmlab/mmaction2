@@ -18,5 +18,5 @@ Models:
       mean Top 1 Accuracy: 86.91
     Task: Skeleton-based Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_ntu_rgbd60_xsub/stgcn_ntu_rgbd60_xsub.json
-  Training Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_ntu_rgbd60_xsub/stgcn_ntu_rgbd60_xsub_keypoint.log
+  Training Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_ntu_rgbd60_xsub/stgcn_ntu_rgbd60_xsub.log
   Weights: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_ntu_rgbd60_xsub/stgcn_ntu_rgbd60_xsub-f3adabf1.pth
