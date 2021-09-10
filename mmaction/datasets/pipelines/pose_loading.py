@@ -671,15 +671,15 @@ class PoseNormalize:
     """Normalize the range of keypoint values to [-1,1].
 
     Args:
-        mean (list): The mean value of the keypoint values.
-        min_value (list): The minimum value of the keypoint values.
-        max_value (list): The maximum value of the keypoint values.
+        mean (list | tuple): The mean value of the keypoint values.
+        min_value (list | tuple): The minimum value of the keypoint values.
+        max_value (list | tuple): The maximum value of the keypoint values.
     """
 
     def __init__(self,
-                 mean=[960., 540., 0.5],
-                 min_value=[0., 0., 0.],
-                 max_value=[1920, 1080, 1.]):
+                 mean=(960., 540., 0.5),
+                 min_value=(0., 0., 0.),
+                 max_value=(1920, 1080, 1.)):
         self.mean = np.array(mean, dtype=np.float32).reshape(-1, 1, 1, 1)
         self.min_value = np.array(
             min_value, dtype=np.float32).reshape(-1, 1, 1, 1)

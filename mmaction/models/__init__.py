@@ -22,7 +22,7 @@ from .necks import TPN
 from .recognizers import (AudioRecognizer, BaseRecognizer, Recognizer2D,
                           Recognizer3D)
 from .roi_extractors import SingleRoIExtractor3D
-from .skeletonGCN import BaseGCN, SkeletonGCN
+from .skeleton_gcn import BaseGCN, SkeletonGCN
 
 __all__ = [
     'BACKBONES', 'HEADS', 'RECOGNIZERS', 'build_recognizer', 'build_head',
