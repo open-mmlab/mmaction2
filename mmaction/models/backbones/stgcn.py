@@ -6,7 +6,7 @@ from mmcv.utils import _BatchNorm
 
 from ...utils import get_root_logger
 from ..builder import BACKBONES
-from ..skeletonGCN.utils import Graph
+from ..skeleton_gcn.utils import Graph
 
 
 def zero(x):
