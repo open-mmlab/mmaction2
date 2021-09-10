@@ -1,0 +1,22 @@
+Collections:
+- Name: STGCN
+  README: configs/skeleton/stgcn/README.md
+Models:
+  Config: configs/skeleton/stgcn/stgcn_ntu_rgbd60_xsub.py
+  In Collection: STGCN
+  Metadata:
+    Architecture: STGCN
+    Batch Size: 16
+    Epochs: 80
+    Parameters: 3088704
+    Training Data: NTU60
+    Training Resouces: 2 GPUs
+  Name: stgcn_ntu_rgbd60_xsub
+  Results:
+    Dataset: NTU60
+    Metrics:
+      mean Top 1 Accuracy: 86.91
+    Task: Skeleton-based Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_ntu_rgbd60_xsub/stgcn_ntu_rgbd60_xsub.json
+  Training Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_ntu_rgbd60_xsub/stgcn_ntu_rgbd60_xsub_keypoint.log
+  Weights: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_ntu_rgbd60_xsub/stgcn_ntu_rgbd60_xsub-f3adabf1.pth
