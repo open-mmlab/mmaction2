@@ -6,7 +6,7 @@ from ..base import generate_recognizer_demo_inputs, get_skeletongcn_cfg
 
 
 def test_skeletongcn():
-    config = get_skeletongcn_cfg('stgcn/stgcn_ntu-rgbd60_xsub.py')
+    config = get_skeletongcn_cfg('stgcn/stgcn_80e_ntu60_xsub_keypoint.py')
     with pytest.raises(TypeError):
         # "pretrained" must be a str or None
         config.model['backbone']['pretrained'] = ['None']
