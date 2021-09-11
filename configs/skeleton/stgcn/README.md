@@ -19,7 +19,7 @@
 
 | config                                                       | pseudo heatmap | gpus  |   backbone   | Top-1 |                             ckpt                             |                             log                              |                             json                             |
 | :----------------------------------------------------------- | :------------: | :---: | :----------: | :---: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
-| [stgcn_ntu_rgbd60_xsub](/configs/skeleton/stgcn/stgcn_ntu_rgbd60_xsub.py) |    keypoint    | 2 | STGCN | 86.91  | [ckpt](https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_ntu_rgbd60_xsub/stgcn_ntu_rgbd60_xsub-f3adabf1.pth) | [log](https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_ntu_rgbd60_xsub/stgcn_ntu_rgbd60_xsub.log) | [json](https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_ntu_rgbd60_xsub/stgcn_ntu_rgbd60_xsub.json) |
+| [stgcn_80e_ntu60_xsub_keypoint](/configs/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint.py) |    keypoint    | 2 | STGCN | 86.91  | [ckpt](https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint/stgcn_80e_ntu60_xsub_keypoint-f3adabf1.pth) | [log](https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint/stgcn_80e_ntu60_xsub_keypoint.log) | [json](https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint/stgcn_80e_ntu60_xsub_keypoint.json) |
 
 ## Train
 
@@ -32,8 +32,8 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 Example: train STGCN model on NTU60 dataset in a deterministic option with periodic validation.
 
 ```shell
-python tools/train.py configs/skeleton/stgcn/stgcn_ntu_rgbd60_xsub.py \
-    --work-dir work_dirs/stgcn_ntu_rgbd60_xsub \
+python tools/train.py configs/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint.py \
+    --work-dir work_dirs/stgcn_80e_ntu60_xsub_keypoint \
     --validate --seed 0 --deterministic
 ```
 
@@ -50,7 +50,7 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 Example: test STGCN model on NTU60 dataset and dump the result to a pickle file.
 
 ```shell
-python tools/test.py configs/skeleton/stgcn/stgcn_ntu_rgbd60_xsub.py \
+python tools/test.py configs/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint.py \
     checkpoints/SOME_CHECKPOINT.pth --eval top_k_accuracy mean_class_accuracy \
     --out result.pkl
 ```

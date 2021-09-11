@@ -74,7 +74,7 @@ log_config = dict(interval=100, hooks=[dict(type='TextLoggerHook')])
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/st-gcn_ntu-xsub/'
+work_dir = './work_dirs/stgcn_80e_ntu60_xsub_keypoint/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]

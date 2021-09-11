@@ -2,7 +2,7 @@ Collections:
 - Name: STGCN
   README: configs/skeleton/stgcn/README.md
 Models:
-  Config: configs/skeleton/stgcn/stgcn_ntu_rgbd60_xsub.py
+  Config: configs/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint.py
   In Collection: STGCN
   Metadata:
     Architecture: STGCN
@@ -11,12 +11,12 @@ Models:
     Parameters: 3088704
     Training Data: NTU60
     Training Resouces: 2 GPUs
-  Name: stgcn_ntu_rgbd60_xsub
+  Name: stgcn_80e_ntu60_xsub_keypoint
   Results:
     Dataset: NTU60
     Metrics:
       mean Top 1 Accuracy: 86.91
     Task: Skeleton-based Action Recognition
-  Training Json Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_ntu_rgbd60_xsub/stgcn_ntu_rgbd60_xsub.json
-  Training Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_ntu_rgbd60_xsub/stgcn_ntu_rgbd60_xsub.log
-  Weights: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_ntu_rgbd60_xsub/stgcn_ntu_rgbd60_xsub-f3adabf1.pth
+  Training Json Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint/stgcn_80e_ntu60_xsub_keypoint.json
+  Training Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint/stgcn_80e_ntu60_xsub_keypoint.log
+  Weights: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint/stgcn_80e_ntu60_xsub_keypoint-f3adabf1.pth
