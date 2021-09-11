@@ -26,4 +26,4 @@ class SkeletonGCN(BaseGCN):
         assert self.with_cls_head
         output = self.cls_head(x)
 
-        return output
+        return output.data.cpu().numpy()
