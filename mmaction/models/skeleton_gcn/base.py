@@ -97,14 +97,14 @@ class BaseGCN(nn.Module, metaclass=ABCMeta):
 
         return loss, log_vars
 
-    def forward(self, imgs, label=None, return_loss=True, **kwargs):
+    def forward(self, keypoints, label=None, return_loss=True, **kwargs):
         """Define the computation performed at every call."""
         if return_loss:
             if label is None:
                 raise ValueError('Label should not be None.')
-            return self.forward_train(imgs, label, **kwargs)
+            return self.forward_train(keypoints, label, **kwargs)
 
-        return self.forward_test(imgs, **kwargs)
+        return self.forward_test(keypoints, **kwargs)
 
     def extract_feat(self, skeletons):
         """Extract features through a backbone.
