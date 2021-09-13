@@ -7,10 +7,12 @@ from collections import defaultdict
 import numpy as np
 import pytest
 from mmcv import dump
+from mmcv.utils import assert_dict_has_keys
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from mmaction.datasets.pipelines import (GeneratePoseTarget, LoadKineticsPose,
-                                         PoseDecode, UniformSampleFrames)
+                                         PaddingWithLoop, PoseDecode,
+                                         PoseNormalize, UniformSampleFrames)
 
 
 class TestPoseLoading:
@@ -355,3 +357,35 @@ class TestPoseLoading:
             skeletons=((0, 1), (1, 2), (0, 2)))
         return_results = generate_pose_target(results)
         assert_array_almost_equal(return_results['imgs'], 0)
+
+    @staticmethod
+    def test_padding_with_loop():
+        results = dict(total_frames=3)
+        sampling = PaddingWithLoop(clip_len=6)
+        sampling_results = sampling(results)
+        assert sampling_results['clip_len'] == 6
+        assert sampling_results['frame_interval'] is None
+        assert sampling_results['num_clips'] == 1
+        assert_array_equal(sampling_results['frame_inds'],
+                           np.array([0, 1, 2, 0, 1, 2]))
+
+    @staticmethod
+    def test_pose_normalize():
+        target_keys = ['keypoint', 'keypoint_norm_cfg']
+        keypoints = np.random.randn(3, 300, 17, 2)
+        results = dict(keypoint=keypoints)
+        pose_normalize = PoseNormalize(
+            mean=[960., 540., 0.5],
+            min_value=[0., 0., 0.],
+            max_value=[1920, 1080, 1.])
+        normalize_results = pose_normalize(results)
+        assert assert_dict_has_keys(normalize_results, target_keys)
+        check_pose_normalize(keypoints, normalize_results['keypoint'],
+                             normalize_results['keypoint_norm_cfg'])
+
+
+def check_pose_normalize(origin_keypoints, result_keypoints, norm_cfg):
+    target_keypoints = result_keypoints.copy()
+    target_keypoints *= (norm_cfg['max_value'] - norm_cfg['min_value'])
+    target_keypoints += norm_cfg['mean']
+    assert_array_almost_equal(origin_keypoints, target_keypoints, decimal=4)

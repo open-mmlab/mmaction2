@@ -629,3 +629,67 @@ class GeneratePoseTarget:
                     f'left_kp={self.left_kp}, '
                     f'right_kp={self.right_kp})')
         return repr_str
+
+
+@PIPELINES.register_module()
+class PaddingWithLoop:
+    """Sample frames from the video.
+
+    To sample an n-frame clip from the video, PaddingWithLoop samples
+    the frames from zero index, and loop the frames if the length of
+    video frames is less than te value of 'clip_len'.
+
+    Required keys are "total_frames", added or modified keys
+    are "frame_inds", "clip_len", "frame_interval" and "num_clips".
+
+    Args:
+        clip_len (int): Frames of each sampled output clip.
+        num_clips (int): Number of clips to be sampled. Default: 1.
+    """
+
+    def __init__(self, clip_len, num_clips=1):
+
+        self.clip_len = clip_len
+        self.num_clips = num_clips
+
+    def __call__(self, results):
+        num_frames = results['total_frames']
+
+        start = 0
+        inds = np.arange(start, start + self.clip_len)
+        inds = np.mod(inds, num_frames)
+
+        results['frame_inds'] = inds.astype(np.int)
+        results['clip_len'] = self.clip_len
+        results['frame_interval'] = None
+        results['num_clips'] = self.num_clips
+        return results
+
+
+@PIPELINES.register_module()
+class PoseNormalize:
+    """Normalize the range of keypoint values to [-1,1].
+
+    Args:
+        mean (list | tuple): The mean value of the keypoint values.
+        min_value (list | tuple): The minimum value of the keypoint values.
+        max_value (list | tuple): The maximum value of the keypoint values.
+    """
+
+    def __init__(self,
+                 mean=(960., 540., 0.5),
+                 min_value=(0., 0., 0.),
+                 max_value=(1920, 1080, 1.)):
+        self.mean = np.array(mean, dtype=np.float32).reshape(-1, 1, 1, 1)
+        self.min_value = np.array(
+            min_value, dtype=np.float32).reshape(-1, 1, 1, 1)
+        self.max_value = np.array(
+            max_value, dtype=np.float32).reshape(-1, 1, 1, 1)
+
+    def __call__(self, results):
+        keypoint = results['keypoint']
+        keypoint = (keypoint - self.mean) / (self.max_value - self.min_value)
+        results['keypoint'] = keypoint
+        results['keypoint_norm_cfg'] = dict(
+            mean=self.mean, min_value=self.min_value, max_value=self.max_value)
+        return results

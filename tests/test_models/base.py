@@ -46,7 +46,7 @@ def generate_recognizer_demo_inputs(
 
     imgs = np.random.random(input_shape)
 
-    if model_type == '2D':
+    if model_type == '2D' or model_type == 'skeleton':
         gt_labels = torch.LongTensor([2] * N)
     elif model_type == '3D':
         gt_labels = torch.LongTensor([2] * M)
@@ -135,7 +135,7 @@ def get_cfg(config_type, fname):
     influencing other tests.
     """
     config_types = ('recognition', 'recognition_audio', 'localization',
-                    'detection')
+                    'detection', 'skeleton')
     assert config_type in config_types
 
     repo_dpath = osp.dirname(osp.dirname(osp.dirname(__file__)))
@@ -161,3 +161,7 @@ def get_localizer_cfg(fname):
 
 def get_detector_cfg(fname):
     return get_cfg('detection', fname)
+
+
+def get_skeletongcn_cfg(fname):
+    return get_cfg('skeleton', fname)

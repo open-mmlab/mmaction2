@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 from mmcv.utils import _BatchNorm
 
-from mmaction.models import (C3D, X3D, MobileNetV2TSM, ResNet2Plus1d,
+from mmaction.models import (C3D, STGCN, X3D, MobileNetV2TSM, ResNet2Plus1d,
                              ResNet3dCSN, ResNet3dSlowFast, ResNet3dSlowOnly,
                              ResNetAudio, ResNetTIN, ResNetTSM, TANet,
                              TimeSformer)
@@ -769,3 +769,162 @@ def test_resnet_tin_backbone():
     # resnet_tin with normal cfg inference
     feat = resnet_tin(imgs)
     assert feat.shape == torch.Size([8, 2048, 2, 2])
+
+
+def test_stgcn_backbone():
+    """Test STGCN backbone."""
+    # test coco layout, spatial strategy
+    input_shape = (1, 3, 300, 17, 2)
+    skeletons = generate_backbone_demo_inputs(input_shape)
+
+    stgcn = STGCN(
+        in_channels=3,
+        edge_importance_weighting=True,
+        graph_cfg=dict(layout='coco', strategy='spatial'))
+    stgcn.init_weights()
+    stgcn.train()
+    feat = stgcn(skeletons)
+    assert feat.shape == torch.Size([2, 256, 75, 17])
+
+    # test openpose layout, spatial strategy
+    input_shape = (1, 3, 300, 18, 2)
+    skeletons = generate_backbone_demo_inputs(input_shape)
+
+    stgcn = STGCN(
+        in_channels=3,
+        edge_importance_weighting=True,
+        graph_cfg=dict(layout='openpose', strategy='spatial'))
+    stgcn.init_weights()
+    stgcn.train()
+    feat = stgcn(skeletons)
+    assert feat.shape == torch.Size([2, 256, 75, 18])
+
+    # test ntu-rgb+d layout, spatial strategy
+    input_shape = (1, 3, 300, 25, 2)
+    skeletons = generate_backbone_demo_inputs(input_shape)
+
+    stgcn = STGCN(
+        in_channels=3,
+        edge_importance_weighting=True,
+        graph_cfg=dict(layout='ntu-rgb+d', strategy='spatial'))
+    stgcn.init_weights()
+    stgcn.train()
+    feat = stgcn(skeletons)
+    assert feat.shape == torch.Size([2, 256, 75, 25])
+
+    # test ntu_edge layout, spatial strategy
+    input_shape = (1, 3, 300, 24, 2)
+    skeletons = generate_backbone_demo_inputs(input_shape)
+
+    stgcn = STGCN(
+        in_channels=3,
+        edge_importance_weighting=True,
+        graph_cfg=dict(layout='ntu_edge', strategy='spatial'))
+    stgcn.init_weights()
+    stgcn.train()
+    feat = stgcn(skeletons)
+    assert feat.shape == torch.Size([2, 256, 75, 24])
+
+    # test coco layout, uniform strategy
+    input_shape = (1, 3, 300, 17, 2)
+    skeletons = generate_backbone_demo_inputs(input_shape)
+
+    stgcn = STGCN(
+        in_channels=3,
+        edge_importance_weighting=True,
+        graph_cfg=dict(layout='coco', strategy='uniform'))
+    stgcn.init_weights()
+    stgcn.train()
+    feat = stgcn(skeletons)
+    assert feat.shape == torch.Size([2, 256, 75, 17])
+
+    # test openpose layout, uniform strategy
+    input_shape = (1, 3, 300, 18, 2)
+    skeletons = generate_backbone_demo_inputs(input_shape)
+
+    stgcn = STGCN(
+        in_channels=3,
+        edge_importance_weighting=True,
+        graph_cfg=dict(layout='openpose', strategy='uniform'))
+    stgcn.init_weights()
+    stgcn.train()
+    feat = stgcn(skeletons)
+    assert feat.shape == torch.Size([2, 256, 75, 18])
+
+    # test ntu-rgb+d layout, uniform strategy
+    input_shape = (1, 3, 300, 25, 2)
+    skeletons = generate_backbone_demo_inputs(input_shape)
+
+    stgcn = STGCN(
+        in_channels=3,
+        edge_importance_weighting=True,
+        graph_cfg=dict(layout='ntu-rgb+d', strategy='uniform'))
+    stgcn.init_weights()
+    stgcn.train()
+    feat = stgcn(skeletons)
+    assert feat.shape == torch.Size([2, 256, 75, 25])
+
+    # test ntu_edge layout, uniform strategy
+    input_shape = (1, 3, 300, 24, 2)
+    skeletons = generate_backbone_demo_inputs(input_shape)
+
+    stgcn = STGCN(
+        in_channels=3,
+        edge_importance_weighting=True,
+        graph_cfg=dict(layout='ntu_edge', strategy='uniform'))
+    stgcn.init_weights()
+    stgcn.train()
+    feat = stgcn(skeletons)
+    assert feat.shape == torch.Size([2, 256, 75, 24])
+
+    # test coco layout, distance strategy
+    input_shape = (1, 3, 300, 17, 2)
+    skeletons = generate_backbone_demo_inputs(input_shape)
+
+    stgcn = STGCN(
+        in_channels=3,
+        edge_importance_weighting=True,
+        graph_cfg=dict(layout='coco', strategy='distance'))
+    stgcn.init_weights()
+    stgcn.train()
+    feat = stgcn(skeletons)
+    assert feat.shape == torch.Size([2, 256, 75, 17])
+
+    # test openpose layout, distance strategy
+    input_shape = (1, 3, 300, 18, 2)
+    skeletons = generate_backbone_demo_inputs(input_shape)
+
+    stgcn = STGCN(
+        in_channels=3,
+        edge_importance_weighting=True,
+        graph_cfg=dict(layout='openpose', strategy='distance'))
+    stgcn.init_weights()
+    stgcn.train()
+    feat = stgcn(skeletons)
+    assert feat.shape == torch.Size([2, 256, 75, 18])
+
+    # test ntu-rgb+d layout, distance strategy
+    input_shape = (1, 3, 300, 25, 2)
+    skeletons = generate_backbone_demo_inputs(input_shape)
+
+    stgcn = STGCN(
+        in_channels=3,
+        edge_importance_weighting=True,
+        graph_cfg=dict(layout='ntu-rgb+d', strategy='distance'))
+    stgcn.init_weights()
+    stgcn.train()
+    feat = stgcn(skeletons)
+    assert feat.shape == torch.Size([2, 256, 75, 25])
+
+    # test ntu_edge layout, distance strategy
+    input_shape = (1, 3, 300, 24, 2)
+    skeletons = generate_backbone_demo_inputs(input_shape)
+
+    stgcn = STGCN(
+        in_channels=3,
+        edge_importance_weighting=True,
+        graph_cfg=dict(layout='ntu_edge', strategy='distance'))
+    stgcn.init_weights()
+    stgcn.train()
+    feat = stgcn(skeletons)
+    assert feat.shape == torch.Size([2, 256, 75, 24])

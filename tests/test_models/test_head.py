@@ -10,7 +10,7 @@ import torch.nn as nn
 
 import mmaction
 from mmaction.models import (ACRNHead, AudioTSNHead, BBoxHeadAVA, FBOHead,
-                             I3DHead, LFBInferHead, SlowFastHead,
+                             I3DHead, LFBInferHead, SlowFastHead, STGCNHead,
                              TimeSformerHead, TPNHead, TRNHead, TSMHead,
                              TSNHead, X3DHead)
 from .base import generate_backbone_demo_inputs
@@ -517,3 +517,39 @@ def test_acrn_head():
     acrn_head = ACRNHead(32, 16, stride=2, num_convs=2)
     new_feat = acrn_head(roi_feat, feat, rois)
     assert new_feat.shape == (4, 16, 1, 8, 8)
+
+
+def test_stgcn_head():
+    """Test loss method, layer construction, attributes and forward function in
+    stgcn head."""
+    with pytest.raises(NotImplementedError):
+        # spatial_type not in ['avg', 'max']
+        stgcn_head = STGCNHead(
+            num_classes=60, in_channels=256, spatial_type='min')
+        stgcn_head.init_weights()
+
+    # spatial_type='avg'
+    stgcn_head = STGCNHead(num_classes=60, in_channels=256, spatial_type='avg')
+    stgcn_head.init_weights()
+
+    assert stgcn_head.num_classes == 60
+    assert stgcn_head.in_channels == 256
+
+    input_shape = (2, 256, 75, 17)
+    feat = torch.rand(input_shape)
+
+    cls_scores = stgcn_head(feat)
+    assert cls_scores.shape == torch.Size([1, 60])
+
+    # spatial_type='max'
+    stgcn_head = STGCNHead(num_classes=60, in_channels=256, spatial_type='max')
+    stgcn_head.init_weights()
+
+    assert stgcn_head.num_classes == 60
+    assert stgcn_head.in_channels == 256
+
+    input_shape = (2, 256, 75, 17)
+    feat = torch.rand(input_shape)
+
+    cls_scores = stgcn_head(feat)
+    assert cls_scores.shape == torch.Size([1, 60])

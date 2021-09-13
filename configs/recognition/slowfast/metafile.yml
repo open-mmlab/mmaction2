@@ -45,8 +45,8 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      Top 1 Accuracy: 74.34
-      Top 5 Accuracy: 91.58
+      Top 1 Accuracy: 73.95
+      Top 5 Accuracy: 91.50
     Task: Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb/20200812_160237.log.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb/20200812_160237.log
