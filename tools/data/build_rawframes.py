@@ -221,8 +221,23 @@ if __name__ == '__main__':
         print('Total number of videos found: ', len(fullpath_list))
 
     if args.resume:
-        fullpath_list = set(fullpath_list).difference(set(done_fullpath_list))
-        fullpath_list = list(fullpath_list)
+        done_fullpath_list_ = done_fullpath_list.copy()
+        if args.input_frames or args.mixed_ext:
+            ori_fullpath_list = []
+            for done_fullpath in done_fullpath_list_:
+                sub_path = done_fullpath.split('/')
+                sub_path[0] = args.src_dir
+                ori_fullpath_list.append('/'.join(sub_path))
+            fullpath_list = list(
+                set(fullpath_list).difference(ori_fullpath_list))
+        else:
+            ori_fullpath_list = []
+            for done_fullpath in done_fullpath_list_:
+                sub_path = done_fullpath.split('/')
+                sub_path[0] = args.src_dir
+                ori_fullpath_list.append('/'.join(sub_path) + '.' + args.ext)
+            fullpath_list = list(
+                set(fullpath_list).difference(ori_fullpath_list))
         print('Resuming. number of videos to be done: ', len(fullpath_list))
 
     if args.level == 2:
