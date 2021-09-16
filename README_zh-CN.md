@@ -121,6 +121,16 @@ v0.18.0 版本已于 2021 年 9 月 2 日发布，可通过查阅 [更新日志]
 
 </details>
 
+支持的基于骨骼点的动作识别方法:
+
+<details open>
+<summary>(点击收起)</summary>
+
+- ✅ [PoseC3D](configs/skeleton/posec3d/README.md) (ArXiv'2021)
+- ✅ [STGCN](configs/skeleton/stgcn/README.md) (AAAI'2018)
+
+</details>
+
 各个模型的结果和设置都可以在对应的 config 目录下的 *README_zh-CN.md* 中查看。整体的概况也可也在 [**模型库**](https://mmaction2.readthedocs.io/zh_CN/latest/recognition_models.html) 页面中查看
 
 我们将跟进学界的最新进展，并支持更多算法和框架。如果您对 MMAction2 有任何功能需求，请随时在 [问题](https://github.com/open-mmlab/mmaction2/issues/19) 中留言。
