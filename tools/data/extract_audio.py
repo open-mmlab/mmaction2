@@ -47,13 +47,12 @@ def parse_args():
 if __name__ == '__main__':
     args = parse_args()
 
-    mmcv.mkdir_or_exist(args.out_dir)
+    mmcv.mkdir_or_exist(args.dst_root)
 
-    print('Reading videos from folder: ', args.src_dir)
+    print('Reading videos from folder: ', args.root)
     print('Extension of videos: ', args.ext)
-    fullpath_list = glob.glob(args.src_dir + '/*' * args.level + '.' +
-                              args.ext)
-    done_fullpath_list = glob.glob(args.out_dir + '/*' * args.level + '.wav')
+    fullpath_list = glob.glob(args.root + '/*' * args.level + '.' + args.ext)
+    done_fullpath_list = glob.glob(args.dst_root + '/*' * args.level + '.wav')
     print('Total number of videos found: ', len(fullpath_list))
     print('Total number of videos extracted finished: ',
           len(done_fullpath_list))
