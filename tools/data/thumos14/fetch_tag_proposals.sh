@@ -7,5 +7,5 @@ if [[ ! -d "${PROP_DIR}" ]]; then
   mkdir -p ${PROP_DIR}
 fi
 
-wget https://openmmlab.oss-cn-hangzhou.aliyuncs.com/mmaction/dataset/thumos14/thumos14_tag_val_normalized_proposal_list.txt -P ${PROP_DIR}
-wget https://openmmlab.oss-cn-hangzhou.aliyuncs.com/mmaction/dataset/thumos14/thumos14_tag_test_normalized_proposal_list.txt -P ${PROP_DIR}
+wget https://download.openmmlab.com/mmaction/dataset/thumos14/thumos14_tag_val_normalized_proposal_list.txt -P ${PROP_DIR}
+wget https://download.openmmlab.com/mmaction/dataset/thumos14/thumos14_tag_test_normalized_proposal_list.txt -P ${PROP_DIR}
