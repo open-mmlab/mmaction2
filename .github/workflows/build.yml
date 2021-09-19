@@ -84,10 +84,10 @@ jobs:
     container:
       image: pytorch/pytorch:1.6.0-cuda10.1-cudnn7-devel
 
-    env:
-      CUDA: 10.1.105-1
-      CUDA_SHORT: 10.1
-      UBUNTU_VERSION: ubuntu1804
+    # env:
+    #   CUDA: 10.1.105-1
+    #   CUDA_SHORT: 10.1
+    #   UBUNTU_VERSION: ubuntu1804
     strategy:
       matrix:
         python-version: [3.7]
@@ -161,10 +161,10 @@ jobs:
     container:
       image: pytorch/pytorch:1.9.0-cuda10.2-cudnn7-devel
 
-    env:
-      CUDA: 10.2.89-1
-      CUDA_SHORT: 10.2
-      UBUNTU_VERSION: ubuntu1804
+    # env:
+    #   CUDA: 10.2.89-1
+    #   CUDA_SHORT: 10.2
+    #   UBUNTU_VERSION: ubuntu1804
     strategy:
       matrix:
         python-version: [3.7]
