@@ -133,6 +133,7 @@ Supported methods for Skeleton-based Action Recognition:
 <summary>(click to collapse)</summary>
 
 - ✅ [PoseC3D](configs/skeleton/posec3d/README.md) (ArXiv'2021)
+- ✅ [STGCN](configs/skeleton/stgcn/README.md) (AAAI'2018)
 
 </details>
 
