@@ -159,7 +159,7 @@ jobs:
   build_cu102:
     runs-on: ubuntu-18.04
     container:
-      image: pytorch/pytorch:1.6.0-cuda10.2-cudnn7-devel
+      image: pytorch/pytorch:1.9.0-cuda10.2-cudnn7-devel
 
     env:
       CUDA: 10.2.89-1
