@@ -91,7 +91,7 @@ jobs:
     strategy:
       matrix:
         python-version: [3.7]
-        torch: [1.5.0+cu101, 1.7.0+cu101]
+        torch: [1.5.0+cu101, 1.6.0+cu101, 1.7.0+cu101]
         include:
           - torch: 1.5.0+cu101
             torch_version: torch1.5.0
