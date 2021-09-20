@@ -6,5 +6,6 @@ opencv-python
 recommonmark
 scipy
 sphinx==4.0.2
+sphinx_copybutton
 sphinx_markdown_tables
 sphinx_rtd_theme==0.5.2

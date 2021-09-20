@@ -86,7 +86,8 @@ mmaction2
 
 ```
 
-**Note**: The `JHMDB-GT.pkl` exists as a cache, it contains 6 items as follows:
+:::{note}
+The `JHMDB-GT.pkl` exists as a cache, it contains 6 items as follows:
 
 1. `labels` (list): List of the 21 labels.
 2. `gttubes` (dict): Dictionary that contains the ground truth tubes for each video.
@@ -96,3 +97,5 @@ mmaction2
 4. `train_videos` (list): A list with `nsplits=1` elements, each one containing the list of training videos.
 5. `test_videos` (list): A list with `nsplits=1` elements, each one containing the list of testing videos.
 6. `resolution` (dict): Dictionary that outputs a tuple (h,w) of the resolution for each video, like `'pour/Bartender_School_Students_Practice_pour_u_cm_np1_fr_med_1': (240, 320)`.
+
+:::
