@@ -4,14 +4,15 @@ We provide some tips for MMAction2 installation in this file.
 
 <!-- TOC -->
 
-- [Requirements](#requirements)
-- [Prepare Environment](#prepare-environment)
-- [Install MMAction2](#install-mmaction2)
-- [Install with CPU only](#install-with-cpu-only)
-- [Another option: Docker Image](#another-option--docker-image)
-- [A from-scratch setup script](#a-from-scratch-setup-script)
-- [Developing with multiple MMAction2 versions](#developing-with-multiple-mmaction2-versions)
-- [Verification](#verification)
+- [Installation](#installation)
+  - [Requirements](#requirements)
+  - [Prepare environment](#prepare-environment)
+  - [Install MMAction2](#install-mmaction2)
+  - [Install with CPU only](#install-with-cpu-only)
+  - [Another option: Docker Image](#another-option-docker-image)
+  - [A from-scratch setup script](#a-from-scratch-setup-script)
+  - [Developing with multiple MMAction2 versions](#developing-with-multiple-mmaction2-versions)
+  - [Verification](#verification)
 
 <!-- TOC -->
 
@@ -29,10 +30,10 @@ We provide some tips for MMAction2 installation in this file.
 - [PyAV](https://github.com/mikeboers/PyAV) (optional): `conda install av -c conda-forge -y`
 - [PyTurboJPEG](https://github.com/lilohuang/PyTurboJPEG) (optional): `pip install PyTurboJPEG`
 - [denseflow](https://github.com/open-mmlab/denseflow) (optional): See [here](https://github.com/innerlee/setup) for simple install scripts.
-- [moviepy](https://zulko.github.io/moviepy/) (optional): `pip install moviepy`. See [here](https://zulko.github.io/moviepy/install.html) for official installation. **Note**(according to [this issue](https://github.com/Zulko/moviepy/issues/693)) that:
-    1. For Windows users, [ImageMagick](https://www.imagemagick.org/script/index.php) will not be automatically detected by MoviePy,
+- [moviepy](https://zulko.github.io/moviepy/) (optional): `pip install moviepy`. See [here](https://zulko.github.io/moviepy/install.html) for official installation.  **Note**(according to [this issue](https://github.com/Zulko/moviepy/issues/693)) that:
+  1. For Windows users, [ImageMagick](https://www.imagemagick.org/script/index.php) will not be automatically detected by MoviePy,
     there is a need to modify `moviepy/config_defaults.py` file by providing the path to the ImageMagick binary called `magick`, like `IMAGEMAGICK_BINARY = "C:\\Program Files\\ImageMagick_VERSION\\magick.exe"`
-    2. For Linux users, there is a need to modify the `/etc/ImageMagick-6/policy.xml` file by commenting out
+  2. For Linux users, there is a need to modify the `/etc/ImageMagick-6/policy.xml` file by commenting out
     `<policy domain="path" rights="none" pattern="@*" />` to `<!-- <policy domain="path" rights="none" pattern="@*" /> -->`, if [ImageMagick](https://www.imagemagick.org/script/index.php) is not detected by `moviepy`.
 - [Pillow-SIMD](https://docs.fast.ai/performance.html#pillow-simd) (optional): Install it by the following scripts.
 
@@ -44,8 +45,10 @@ CFLAGS="${CFLAGS} -mavx2" pip install --upgrade --no-cache-dir --force-reinstall
 conda install -y jpeg libtiff
 ```
 
-**Note**:  You need to run `pip uninstall mmcv` first if you have mmcv installed.
+:::{note}
+You need to run `pip uninstall mmcv` first if you have mmcv installed.
 If mmcv and mmcv-full are both installed, there will be `ModuleNotFoundError`.
+:::
 
 ## Prepare environment
 
@@ -62,7 +65,8 @@ b. Install PyTorch and torchvision following the [official instructions](https:/
 conda install pytorch torchvision -c pytorch
 ```
 
-Note: Make sure that your compilation CUDA version and runtime CUDA version match.
+:::{note}
+Make sure that your compilation CUDA version and runtime CUDA version match.
 You can check the supported CUDA version for precompiled packages on the [PyTorch website](https://pytorch.org/).
 
 `E.g.1` If you have CUDA 10.1 installed under `/usr/local/cuda` and would like to install PyTorch 1.5,
@@ -80,6 +84,7 @@ conda install pytorch=1.3.1 cudatoolkit=9.2 torchvision=0.4.2 -c pytorch
 ```
 
 If you build PyTorch from source instead of installing the prebuilt package, you can use more CUDA versions such as 9.0.
+:::
 
 ## Install MMAction2
 
@@ -153,7 +158,7 @@ This part is **optional** if you're not going to do spatial temporal detection.
 
 See [here](https://github.com/open-mmlab/mmdetection#installation) to install mmdetection.
 
-Note:
+:::{note}
 
 1. The git commit id will be written to the version number with step b, e.g. 0.6.0+2e7045c. The version will also be saved in trained models.
    It is recommended that you run step b each time you pull some updates from github. If C++/CUDA codes are modified, then this step is compulsory.
@@ -169,6 +174,8 @@ Note:
    To use optional dependencies like `decord`, either install them with `pip install -r requirements/optional.txt`
    or specify desired extras when calling `pip` (e.g. `pip install -v -e .[optional]`,
    valid keys for the `[optional]` field are `all`, `tests`, `build`, and `optional`) like `pip install -v -e .[tests,build]`.
+
+:::
 
 ## Install with CPU only
 
