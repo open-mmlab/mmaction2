@@ -174,7 +174,7 @@ In data benchmark, we compare:
 
 [2] The performance of HATNet and HATNet-multi are from the paper [Large Scale Holistic Video Understanding](https://pages.iai.uni-bonn.de/gall_juergen/download/HVU_eccv20.pdf). The proposed HATNet is a 2 branch Convolution Network (one 2D branch, one 3D branch) and share the same backbone(ResNet18) with us. The inputs of HATNet are 16 or 32 frames long video clips (which is much larger than us), while the input resolution is coarser (112 instead of 224). HATNet is trained on each individual task (each tag category) while HATNet-multi is trained on multiple tasks. Since there is no released codes or models for the HATNet, we just include the performance reported by the original paper.
 
-Notes:
+:::{note}
 
 1. The **gpus** indicates the number of gpu we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
    According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
@@ -183,6 +183,8 @@ Notes:
    not including the IO time and pre-processing time. For each setting, we use 1 gpu and set batch size (videos per gpu) to 1 to calculate the inference time.
 3. The values in columns named after "reference" are the results got by training on the original repo, using the same model settings.
 4. The validation set of Kinetics400 we used consists of 19796 videos. These videos are available at [Kinetics400-Validation](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155136485_link_cuhk_edu_hk/EbXw2WX94J1Hunyt3MWNDJUBz-nHvQYhO9pvKqm6g39PMA?e=a9QldB). The corresponding [data list](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_val_list.txt) (each line is of the format 'video_id, num_frames, label_index') and the [label map](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_class2ind.txt) are also available.
+
+:::
 
 For more details on data preparation, you can refer to
 
