@@ -97,6 +97,14 @@ html_theme_options = {
                     'description': 'Foundational library for computer vision'
                 },
                 {
+                    'name':
+                    'MMClassification',
+                    'url':
+                    'https://github.com/open-mmlab/mmclassification',
+                    'description':
+                    'Open source image classification toolbox based on PyTorch'
+                },
+                {
                     'name': 'MMDetection',
                     'url': 'https://github.com/open-mmlab/mmdetection',
                     'description': 'Object detection toolbox and benchmark'
