@@ -116,9 +116,9 @@ jobs:
           apt-get clean
           rm -rf /var/lib/apt/lists/*
       - name: Install TurboJpeg lib
-        run: python -m pip install libturbojpeg
+        run: apt-get install -y libturbojpeg
       - name: Install soundfile lib
-        run: python -m pip install libsndfile1
+        run: apt-get install -y libsndfile1
       - name: Install librosa and soundfile
         run: python -m pip install librosa soundfile
       - name: Install lmdb
