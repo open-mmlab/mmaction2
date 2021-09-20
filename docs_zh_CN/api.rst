@@ -1,6 +1,3 @@
-API Reference
-=============
-
 mmaction.apis
 -------------
 .. automodule:: mmaction.apis

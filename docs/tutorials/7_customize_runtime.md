@@ -4,26 +4,27 @@ In this tutorial, we will introduce some methods about how to customize optimiza
 
 <!-- TOC -->
 
-- [Customize Optimization Methods](#customize-optimization-methods)
-  - [Customize optimizer supported by PyTorch](#customize-optimizer-supported-by-pytorch)
-  - [Customize self-implemented optimizer](#customize-self-implemented-optimizer)
-    - [1. Define a new optimizer](#1-define-a-new-optimizer)
-    - [2. Add the optimizer to registry](#2-add-the-optimizer-to-registry)
-    - [3. Specify the optimizer in the config file](#3-specify-the-optimizer-in-the-config-file)
-  - [Customize optimizer constructor](#customize-optimizer-constructor)
-  - [Additional settings](#additional-settings)
-- [Customize Training Schedules](#customize-training-schedules)
-- [Customize Workflow](#customize-workflow)
-- [Customize Hooks](#customize-hooks)
-  - [Customize self-implemented hooks](#customize-self-implemented-hooks)
-    - [1. Implement a new hook](#1-implement-a-new-hook)
-    - [2. Register the new hook](#2-register-the-new-hook)
-    - [3. Modify the config](#3-modify-the-config)
-  - [Use hooks implemented in MMCV](#use-hooks-implemented-in-mmcv)
-  - [Modify default runtime hooks](#modify-default-runtime-hooks)
-    - [Checkpoint config](#checkpoint-config)
-    - [Log config](#log-config)
-    - [Evaluation config](#evaluation-config)
+- [Tutorial 7: Customize Runtime Settings](#tutorial-7-customize-runtime-settings)
+  - [Customize Optimization Methods](#customize-optimization-methods)
+    - [Customize optimizer supported by PyTorch](#customize-optimizer-supported-by-pytorch)
+    - [Customize self-implemented optimizer](#customize-self-implemented-optimizer)
+      - [1. Define a new optimizer](#1-define-a-new-optimizer)
+      - [2. Add the optimizer to registry](#2-add-the-optimizer-to-registry)
+      - [3. Specify the optimizer in the config file](#3-specify-the-optimizer-in-the-config-file)
+    - [Customize optimizer constructor](#customize-optimizer-constructor)
+    - [Additional settings](#additional-settings)
+  - [Customize Training Schedules](#customize-training-schedules)
+  - [Customize Workflow](#customize-workflow)
+  - [Customize Hooks](#customize-hooks)
+    - [Customize self-implemented hooks](#customize-self-implemented-hooks)
+      - [1. Implement a new hook](#1-implement-a-new-hook)
+      - [2. Register the new hook](#2-register-the-new-hook)
+      - [3. Modify the config](#3-modify-the-config)
+    - [Use hooks implemented in MMCV](#use-hooks-implemented-in-mmcv)
+    - [Modify default runtime hooks](#modify-default-runtime-hooks)
+      - [Checkpoint config](#checkpoint-config)
+      - [Log config](#log-config)
+      - [Evaluation config](#evaluation-config)
 
 <!-- TOC -->
 
@@ -205,12 +206,14 @@ In such case, we can set the workflow as
 
 so that 1 epoch for training and 1 epoch for validation will be run iteratively.
 
-**Note**:
+:::{note}
 
 1. The parameters of model will not be updated during val epoch.
 2. Keyword `total_epochs` in the config only controls the number of training epochs and will not affect the validation workflow.
 3. Workflows `[('train', 1), ('val', 1)]` and `[('train', 1)]` will not change the behavior of `EvalHook` because `EvalHook` is called by `after_train_epoch` and validation workflow only affect hooks that are called through `after_val_epoch`.
    Therefore, the only difference between `[('train', 1), ('val', 1)]` and ``[('train', 1)]`` is that the runner will calculate losses on validation set after each training epoch.
+
+:::
 
 ## Customize Hooks
 

@@ -253,7 +253,9 @@ Optional arguments:
 - `DRAWING_FPS`: Upper bound FPS value of the output drawing. If not specified, it will be set to 20.
 - `INFERENCE_FPS`: Upper bound FPS value of the output drawing. If not specified, it will be set to 4.
 
-**Note**: If your hardware is good enough, increasing the value of `DRAWING_FPS` and `INFERENCE_FPS` will get a better experience.
+:::{note}
+If your hardware is good enough, increasing the value of `DRAWING_FPS` and `INFERENCE_FPS` will get a better experience.
+:::
 
 Examples:
 
@@ -287,12 +289,14 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
       --average-size 5 --threshold 0.2
     ```
 
-**Note:** Considering the efficiency difference for users' hardware, Some modifications might be done to suit the case.
+:::{note}
+Considering the efficiency difference for users' hardware, Some modifications might be done to suit the case.
 Users can change:
 
 1). `SampleFrames` step (especially the number of `clip_len` and `num_clips`) of `test_pipeline` in the config file, like `--cfg-options data.test.pipeline.0.num_clips=3`.
 2). Change to the suitable Crop methods like `TenCrop`, `ThreeCrop`, `CenterCrop`, etc. in `test_pipeline` of the config file, like `--cfg-options data.test.pipeline.4.type=CenterCrop`.
 3). Change the number of `--average-size`. The smaller, the faster.
+:::
 
 ## Long video demo
 
