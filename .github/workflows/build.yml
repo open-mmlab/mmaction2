@@ -84,10 +84,10 @@ jobs:
     container:
       image: pytorch/pytorch:1.6.0-cuda10.1-cudnn7-devel
 
-    env:
-      CUDA: 10.1.105-1
-      CUDA_SHORT: 10.1
-      UBUNTU_VERSION: ubuntu1804
+    # env:
+    #   CUDA: 10.1.105-1
+    #   CUDA_SHORT: 10.1
+    #   UBUNTU_VERSION: ubuntu1804
     strategy:
       matrix:
         python-version: [3.7]
@@ -112,18 +112,21 @@ jobs:
         run: pip install pip --upgrade
       - name: Install CUDA
         run: |
-          export INSTALLER=cuda-repo-${UBUNTU_VERSION}_${CUDA}_amd64.deb
-          wget http://developer.download.nvidia.com/compute/cuda/repos/${UBUNTU_VERSION}/x86_64/${INSTALLER}
-          sudo dpkg -i ${INSTALLER}
-          wget https://developer.download.nvidia.com/compute/cuda/repos/${UBUNTU_VERSION}/x86_64/7fa2af80.pub
-          sudo apt-key add 7fa2af80.pub
-          sudo apt update -qq
-          sudo apt install -y cuda-${CUDA_SHORT/./-} cuda-cufft-dev-${CUDA_SHORT/./-}
-          sudo apt clean
-          export CUDA_HOME=/usr/local/cuda-${CUDA_SHORT}
-          export LD_LIBRARY_PATH=${CUDA_HOME}/lib64:${CUDA_HOME}/include:${LD_LIBRARY_PATH}
-          export PATH=${CUDA_HOME}/bin:${PATH}
-          sudo apt-get install -y ninja-build
+          # export INSTALLER=cuda-repo-${UBUNTU_VERSION}_${CUDA}_amd64.deb
+          # wget http://developer.download.nvidia.com/compute/cuda/repos/${UBUNTU_VERSION}/x86_64/${INSTALLER}
+          # sudo dpkg -i ${INSTALLER}
+          # wget https://developer.download.nvidia.com/compute/cuda/repos/${UBUNTU_VERSION}/x86_64/7fa2af80.pub
+          # sudo apt-key add 7fa2af80.pub
+          # sudo apt update -qq
+          # sudo apt install -y cuda-${CUDA_SHORT/./-} cuda-cufft-dev-${CUDA_SHORT/./-}
+          # sudo apt clean
+          # export CUDA_HOME=/usr/local/cuda-${CUDA_SHORT}
+          # export LD_LIBRARY_PATH=${CUDA_HOME}/lib64:${CUDA_HOME}/include:${LD_LIBRARY_PATH}
+          # export PATH=${CUDA_HOME}/bin:${PATH}
+          # sudo apt-get install -y ninja-build
+          apt-get update && apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6 python${{matrix.python-version}}-dev
+          apt-get clean
+          rm -rf /var/lib/apt/lists/*
       - name: Install TurboJpeg lib
         run: sudo apt-get install -y libturbojpeg
       - name: Install soundfile lib
