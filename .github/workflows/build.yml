@@ -112,37 +112,25 @@ jobs:
         run: pip install pip --upgrade
       - name: Install CUDA
         run: |
-          # export INSTALLER=cuda-repo-${UBUNTU_VERSION}_${CUDA}_amd64.deb
-          # wget http://developer.download.nvidia.com/compute/cuda/repos/${UBUNTU_VERSION}/x86_64/${INSTALLER}
-          # sudo dpkg -i ${INSTALLER}
-          # wget https://developer.download.nvidia.com/compute/cuda/repos/${UBUNTU_VERSION}/x86_64/7fa2af80.pub
-          # sudo apt-key add 7fa2af80.pub
-          # sudo apt update -qq
-          # sudo apt install -y cuda-${CUDA_SHORT/./-} cuda-cufft-dev-${CUDA_SHORT/./-}
-          # sudo apt clean
-          # export CUDA_HOME=/usr/local/cuda-${CUDA_SHORT}
-          # export LD_LIBRARY_PATH=${CUDA_HOME}/lib64:${CUDA_HOME}/include:${LD_LIBRARY_PATH}
-          # export PATH=${CUDA_HOME}/bin:${PATH}
-          # sudo apt-get install -y ninja-build
           apt-get update && apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6 python${{matrix.python-version}}-dev
           apt-get clean
           rm -rf /var/lib/apt/lists/*
       - name: Install TurboJpeg lib
-        run: sudo apt-get install -y libturbojpeg
+        run: python -m pip install libturbojpeg
       - name: Install soundfile lib
-        run: sudo apt-get install -y libsndfile1
+        run: python -m pip install libsndfile1
       - name: Install librosa and soundfile
-        run: pip install librosa soundfile
+        run: python -m pip install librosa soundfile
       - name: Install lmdb
-        run: pip install lmdb
+        run: python -m pip install lmdb
       - name: Install PyTorch
-        run: pip install torch==${{matrix.torch}} torchvision==${{matrix.torchvision}} -f https://download.pytorch.org/whl/torch_stable.html
+        run: python -m pip install torch==${{matrix.torch}} torchvision==${{matrix.torchvision}} -f https://download.pytorch.org/whl/torch_stable.html
       - name: Install mmaction dependencies
         run: |
-          pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu101/${{matrix.torch_version}}/index.html
-          pip install -q git+https://github.com/open-mmlab/mmdetection/
-          pip install -q git+https://github.com/open-mmlab/mmclassification/
-          pip install -r requirements.txt
+          python -V
+          python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu101/${{matrix.torch_version}}/index.html
+          python -m pip install -q git+https://github.com/open-mmlab/mmdetection/
+          python -m pip install -q git+https://github.com/open-mmlab/mmclassification/
           python -c 'import mmcv; print(mmcv.__version__)'
       - name: Build and install
         run: rm -rf .eggs && pip install -e .
