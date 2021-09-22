@@ -19,7 +19,7 @@ Apart from training/testing scripts, We provide lots of useful tools under the `
 
 `tools/analysis/analyze_logs.py` plots loss/top-k acc curves given a training log file. Run `pip install seaborn` first to install the dependency.
 
-![acc_curve_image](/resources/acc_curve.png)
+![acc_curve_image](https://github.com/open-mmlab/mmaction2/raw/master/resources/acc_curve.png)
 
 ```shell
 python tools/analysis/analyze_logs.py plot_curve ${JSON_LOGS} [--keys ${KEYS}] [--title ${TITLE}] [--legend ${LEGEND}] [--backend ${BACKEND}] [--style ${STYLE}] [--out ${OUT_FILE}]
