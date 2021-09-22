@@ -5,7 +5,7 @@ import os
 import os.path as osp
 import sys
 import warnings
-from multiprocessing import Pool
+from multiprocessing import Lock, Pool
 
 import mmcv
 import numpy as np
@@ -21,7 +21,7 @@ def extract_frame(vid_item):
     Returns:
         bool: Whether generate optical flow successfully.
     """
-    full_path, vid_path, vid_id, method, task = vid_item
+    full_path, vid_path, vid_id, method, task, report_file = vid_item
     if '/' in vid_path:
         act_name = osp.basename(osp.dirname(vid_path))
         out_full_path = osp.join(args.out_dir, act_name)
@@ -113,6 +113,13 @@ def extract_frame(vid_item):
 
     print(f'{task} {vid_id} {vid_path} {method} done')
     sys.stdout.flush()
+
+    lock.acquire()
+    with open(report_file, 'a') as f:
+        line = full_path + '\n'
+        f.write(line)
+    lock.release()
+
     return True
 
 
@@ -182,9 +189,19 @@ def parse_args():
         '--input-frames',
         action='store_true',
         help='Whether to extract flow frames based on rgb frames')
+    parser.add_argument(
+        '--report-file',
+        type=str,
+        default='build_report.txt',
+        help='report to record files which have been successfully processed')
     args = parser.parse_args()
 
     return args
+
+
+def init(lock_):
+    global lock
+    lock = lock_
 
 
 if __name__ == '__main__':
@@ -205,40 +222,32 @@ if __name__ == '__main__':
     if args.input_frames:
         print('Reading rgb frames from folder: ', args.src_dir)
         fullpath_list = glob.glob(args.src_dir + '/*' * args.level)
-        done_fullpath_list = glob.glob(args.out_dir + '/*' * args.level)
+        # done_fullpath_list = glob.glob(args.out_dir + '/*' * args.level)
         print('Total number of rgb frame folders found: ', len(fullpath_list))
     else:
         print('Reading videos from folder: ', args.src_dir)
         if args.mixed_ext:
             print('Extension of videos is mixed')
             fullpath_list = glob.glob(args.src_dir + '/*' * args.level)
-            done_fullpath_list = glob.glob(args.out_dir + '/*' * args.level)
+            # done_fullpath_list = glob.glob(args.out_dir + '/*' * args.level)
         else:
             print('Extension of videos: ', args.ext)
             fullpath_list = glob.glob(args.src_dir + '/*' * args.level + '.' +
                                       args.ext)
-            done_fullpath_list = glob.glob(args.out_dir + '/*' * args.level)
+            # done_fullpath_list = glob.glob(args.out_dir + '/*' * args.level)
         print('Total number of videos found: ', len(fullpath_list))
 
     if args.resume:
-        done_fullpath_list_ = done_fullpath_list.copy()
-        if args.input_frames or args.mixed_ext:
-            ori_fullpath_list = []
-            for done_fullpath in done_fullpath_list_:
-                sub_path = done_fullpath.split('/')
-                sub_path[0] = args.src_dir
-                ori_fullpath_list.append('/'.join(sub_path))
-            fullpath_list = list(
-                set(fullpath_list).difference(ori_fullpath_list))
-        else:
-            ori_fullpath_list = []
-            for done_fullpath in done_fullpath_list_:
-                sub_path = done_fullpath.split('/')
-                sub_path[0] = args.src_dir
-                ori_fullpath_list.append('/'.join(sub_path) + '.' + args.ext)
-            fullpath_list = list(
-                set(fullpath_list).difference(ori_fullpath_list))
-        print('Resuming. number of videos to be done: ', len(fullpath_list))
+        done_fullpath_list = []
+        with open(args.report_file) as f:
+            for line in f:
+                if line == '\n':
+                    continue
+                done_full_path = line.strip().split()[0]
+                done_fullpath_list.append(done_full_path)
+                # print(done_full_path)
+        done_fullpath_list = set(done_fullpath_list)
+        fullpath_list = list(set(fullpath_list).difference(done_fullpath_list))
 
     if args.level == 2:
         vid_list = list(
@@ -249,9 +258,13 @@ if __name__ == '__main__':
     elif args.level == 1:
         vid_list = list(map(osp.basename, fullpath_list))
 
-    pool = Pool(args.num_worker)
+    lock = Lock()
+    pool = Pool(args.num_worker, initializer=init, initargs=(lock, ))
     pool.map(
         extract_frame,
         zip(fullpath_list, vid_list, range(len(vid_list)),
             len(vid_list) * [args.flow_type],
-            len(vid_list) * [args.task]))
+            len(vid_list) * [args.task],
+            len(vid_list) * [args.report_file]))
+    pool.close()
+    pool.join()
