@@ -806,3 +806,25 @@ Models:
   Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_ucf101_rgb/20210605_182720.log
   Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_k400_pretrained_r50_1x1x16_25e_ucf101_rgb/tsm_k400_pretrained_r50_1x1x16_25e_ucf101_rgb_20210630-8df9c358.pth
   gpu_mem(M): '10389'
+- Config: configs/recognition/tsm/tsm_mobilenetv2_dense_1x1x8_100e_kinetics400_rgb.py
+  In Collection: TSM
+  Metadata:
+    Architecture: MobileNetV2
+    Batch Size: 8
+    Epochs: 100
+    FLOPs: 3337519104
+    Parameters: 2736272
+    Pretrained: ImageNet
+    Resolution: short-side 320
+    Training Data: Kinetics-400
+    Training Resources: 8 GPUs
+  Modality: RGB
+  Name: tsm_mobilenetv2_dense_1x1x8_kinetics400_rgb_port
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      Top 1 Accuracy: 69.89
+      Top 5 Accuracy: 89.01
+    Task: Action Recognition
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_mobilenetv2_dense_1x1x8_kinetics400_rgb_port_20210922-aa5cadf6.pth
+  gpu_mem(M): '3385'
