@@ -77,4 +77,4 @@ python tools/test.py configs/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb.py \
     --out result.json
 ```
 
-For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset#test-a-dataset).
+For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
