@@ -28,6 +28,8 @@ def extract_frame(vid_item):
     else:
         out_full_path = args.out_dir
 
+    run_success = -1
+
     if task == 'rgb':
         if args.use_opencv:
             # Not like using denseflow,
@@ -36,7 +38,6 @@ def extract_frame(vid_item):
             out_full_path = osp.join(out_full_path, video_name)
 
             vr = mmcv.VideoReader(full_path)
-            # for i in range(len(vr)):
             for i, vr_frame in enumerate(vr):
                 if vr_frame is not None:
                     w, h, _ = np.shape(vr_frame)
@@ -63,6 +64,7 @@ def extract_frame(vid_item):
                         'Length inconsistent!'
                         f'Early stop with {i + 1} out of {len(vr)} frames.')
                     break
+            run_success = 0
         else:
             if args.new_short == 0:
                 cmd = osp.join(
@@ -72,7 +74,7 @@ def extract_frame(vid_item):
                 cmd = osp.join(
                     f"denseflow '{full_path}' -b=20 -s=0 -o='{out_full_path}'"
                     f' -ns={args.new_short} -v')
-            os.system(cmd)
+            run_success = os.system(cmd)
     elif task == 'flow':
         if args.input_frames:
             if args.new_short == 0:
@@ -92,7 +94,7 @@ def extract_frame(vid_item):
                 cmd = osp.join(
                     f"denseflow '{full_path}' -a={method} -b=20 -s=1 -o='{out_full_path}'"  # noqa: E501
                     f' -ns={args.new_short} -v')
-        os.system(cmd)
+        run_success = os.system(cmd)
     else:
         if args.new_short == 0:
             cmd_rgb = osp.join(
@@ -108,17 +110,20 @@ def extract_frame(vid_item):
             cmd_flow = osp.join(
                 f"denseflow '{full_path}' -a={method} -b=20 -s=1 -o='{out_full_path}'"  # noqa: E501
                 f' -ns={args.new_short} -v')
-        os.system(cmd_rgb)
-        os.system(cmd_flow)
+        run_success_rgb = os.system(cmd_rgb)
+        run_success_flow = os.system(cmd_flow)
+        if run_success_flow == 0 and run_success_rgb == 0:
+            run_success = 0
 
-    print(f'{task} {vid_id} {vid_path} {method} done')
-    sys.stdout.flush()
+    if run_success:
+        print(f'{task} {vid_id} {vid_path} {method} done')
+        sys.stdout.flush()
 
-    lock.acquire()
-    with open(report_file, 'a') as f:
-        line = full_path + '\n'
-        f.write(line)
-    lock.release()
+        lock.acquire()
+        with open(report_file, 'a') as f:
+            line = full_path + '\n'
+            f.write(line)
+        lock.release()
 
     return True
 
