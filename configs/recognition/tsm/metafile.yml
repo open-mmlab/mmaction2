@@ -110,7 +110,7 @@ Models:
     Training Data: Kinetics-400
     Training Resources: 8 GPUs
   Modality: RGB
-  Name: tsm_r50_gpu_normalize_1x1x8_50e_kinetics400_rgb.py
+  Name: tsm_r50_gpu_normalize_1x1x8_50e_kinetics400_rgb
   Results:
   - Dataset: Kinetics-400
     Metrics:
