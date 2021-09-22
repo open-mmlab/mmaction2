@@ -222,19 +222,16 @@ if __name__ == '__main__':
     if args.input_frames:
         print('Reading rgb frames from folder: ', args.src_dir)
         fullpath_list = glob.glob(args.src_dir + '/*' * args.level)
-        # done_fullpath_list = glob.glob(args.out_dir + '/*' * args.level)
         print('Total number of rgb frame folders found: ', len(fullpath_list))
     else:
         print('Reading videos from folder: ', args.src_dir)
         if args.mixed_ext:
             print('Extension of videos is mixed')
             fullpath_list = glob.glob(args.src_dir + '/*' * args.level)
-            # done_fullpath_list = glob.glob(args.out_dir + '/*' * args.level)
         else:
             print('Extension of videos: ', args.ext)
             fullpath_list = glob.glob(args.src_dir + '/*' * args.level + '.' +
                                       args.ext)
-            # done_fullpath_list = glob.glob(args.out_dir + '/*' * args.level)
         print('Total number of videos found: ', len(fullpath_list))
 
     if args.resume:
@@ -245,7 +242,6 @@ if __name__ == '__main__':
                     continue
                 done_full_path = line.strip().split()[0]
                 done_fullpath_list.append(done_full_path)
-                # print(done_full_path)
         done_fullpath_list = set(done_fullpath_list)
         fullpath_list = list(set(fullpath_list).difference(done_fullpath_list))
 
