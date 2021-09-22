@@ -34,37 +34,41 @@ def extract_frame(vid_item):
         if args.use_opencv:
             # Not like using denseflow,
             # Use OpenCV will not make a sub directory with the video name
-            video_name = osp.splitext(osp.basename(vid_path))[0]
-            out_full_path = osp.join(out_full_path, video_name)
+            try:
+                video_name = osp.splitext(osp.basename(vid_path))[0]
+                out_full_path = osp.join(out_full_path, video_name)
 
-            vr = mmcv.VideoReader(full_path)
-            for i, vr_frame in enumerate(vr):
-                if vr_frame is not None:
-                    w, h, _ = np.shape(vr_frame)
-                    if args.new_short == 0:
-                        if args.new_width == 0 or args.new_height == 0:
-                            # Keep original shape
-                            out_img = vr_frame
+                vr = mmcv.VideoReader(full_path)
+                for i, vr_frame in enumerate(vr):
+                    if vr_frame is not None:
+                        w, h, _ = np.shape(vr_frame)
+                        if args.new_short == 0:
+                            if args.new_width == 0 or args.new_height == 0:
+                                # Keep original shape
+                                out_img = vr_frame
+                            else:
+                                out_img = mmcv.imresize(
+                                    vr_frame,
+                                    (args.new_width, args.new_height))
                         else:
-                            out_img = mmcv.imresize(vr_frame,
-                                                    (args.new_width,
-                                                     args.new_height))
+                            if min(h, w) == h:
+                                new_h = args.new_short
+                                new_w = int((new_h / h) * w)
+                            else:
+                                new_w = args.new_short
+                                new_h = int((new_w / w) * h)
+                            out_img = mmcv.imresize(vr_frame, (new_h, new_w))
+                        mmcv.imwrite(out_img,
+                                     f'{out_full_path}/img_{i + 1:05d}.jpg')
                     else:
-                        if min(h, w) == h:
-                            new_h = args.new_short
-                            new_w = int((new_h / h) * w)
-                        else:
-                            new_w = args.new_short
-                            new_h = int((new_w / w) * h)
-                        out_img = mmcv.imresize(vr_frame, (new_h, new_w))
-                    mmcv.imwrite(out_img,
-                                 f'{out_full_path}/img_{i + 1:05d}.jpg')
-                else:
-                    warnings.warn(
-                        'Length inconsistent!'
-                        f'Early stop with {i + 1} out of {len(vr)} frames.')
-                    break
-            run_success = 0
+                        warnings.warn(
+                            'Length inconsistent!'
+                            f'Early stop with {i + 1} out of {len(vr)} frames.'
+                        )
+                        break
+                run_success = 0
+            except Exception:
+                run_success = -1
         else:
             if args.new_short == 0:
                 cmd = osp.join(
@@ -115,7 +119,7 @@ def extract_frame(vid_item):
         if run_success_flow == 0 and run_success_rgb == 0:
             run_success = 0
 
-    if run_success:
+    if run_success == 0:
         print(f'{task} {vid_id} {vid_path} {method} done')
         sys.stdout.flush()
 
@@ -124,6 +128,9 @@ def extract_frame(vid_item):
             line = full_path + '\n'
             f.write(line)
         lock.release()
+    else:
+        print(f'{task} {vid_id} {vid_path} {method} got something wrong')
+        sys.stdout.flush()
 
     return True
 
