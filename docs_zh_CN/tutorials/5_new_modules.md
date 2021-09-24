@@ -253,7 +253,7 @@ lr_config = dict(policy='step', step=[20, 40])
 @HOOKS.register_module()
 class RelativeStepLrUpdaterHook(LrUpdaterHook):
     # 该类应当继承于 mmcv.LrUpdaterHook
-    def __init__(self, runner, steps, lrs, **kwargs):
+    def __init__(self, steps, lrs, **kwargs):
         super().__init__(**kwargs)
         assert len(steps) == (len(lrs))
         self.steps = steps

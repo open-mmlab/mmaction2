@@ -265,7 +265,7 @@ So far, the supported updaters can be find in [mmcv](https://github.com/open-mml
 # Register it here
 class RelativeStepLrUpdaterHook(LrUpdaterHook):
     # You should inheritate it from mmcv.LrUpdaterHook
-    def __init__(self, runner, steps, lrs, **kwargs):
+    def __init__(self, steps, lrs, **kwargs):
         super().__init__(**kwargs)
         assert len(steps) == (len(lrs))
         self.steps = steps
