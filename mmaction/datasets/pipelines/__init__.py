@@ -2,8 +2,8 @@
 from .augmentations import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
                             Imgaug, MelSpectrogram, MultiScaleCrop, Normalize,
                             PytorchVideoTrans, RandomCrop, RandomRescale,
-                            RandomResizedCrop, RandomScale, Resize, TenCrop,
-                            ThreeCrop, TorchvisionTrans)
+                            RandomResizedCrop, Resize, TenCrop, ThreeCrop,
+                            TorchvisionTrans)
 from .compose import Compose
 from .formating import (Collect, FormatAudioShape, FormatGCNInput, FormatShape,
                         ImageToTensor, Rename, ToDataContainer, ToTensor,
@@ -33,7 +33,7 @@ __all__ = [
     'SampleProposalFrames', 'ColorJitter', 'LoadHVULabel', 'SampleAVAFrames',
     'AudioAmplify', 'MelSpectrogram', 'AudioDecode', 'FormatAudioShape',
     'LoadAudioFeature', 'AudioFeatureSelector', 'AudioDecodeInit',
-    'RandomScale', 'ImageDecode', 'BuildPseudoClip', 'RandomRescale',
+    'ImageDecode', 'BuildPseudoClip', 'RandomRescale',
     'PyAVDecodeMotionVector', 'Rename', 'Imgaug', 'UniformSampleFrames',
     'PoseDecode', 'LoadKineticsPose', 'GeneratePoseTarget', 'PIMSInit',
     'PIMSDecode', 'TorchvisionTrans', 'PytorchVideoTrans', 'PoseNormalize',
