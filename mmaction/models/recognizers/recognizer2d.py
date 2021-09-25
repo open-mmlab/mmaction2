@@ -88,7 +88,7 @@ class Recognizer2D(BaseRecognizer):
         # `num_crops` is calculated by:
         #   1) `twice_sample` in `SampleFrames`
         #   2) `num_sample_positions` in `DenseSampleFrames`
-        #   3) `ThreeCrop/TenCrop/MultiGroupCrop` in `test_pipeline`
+        #   3) `ThreeCrop/TenCrop` in `test_pipeline`
         #   4) `num_clips` in `SampleFrames` or its subclass if `clip_len != 1`
 
         # should have cls_head if not extracting features
@@ -127,7 +127,7 @@ class Recognizer2D(BaseRecognizer):
         # `num_crops` is calculated by:
         #   1) `twice_sample` in `SampleFrames`
         #   2) `num_sample_positions` in `DenseSampleFrames`
-        #   3) `ThreeCrop/TenCrop/MultiGroupCrop` in `test_pipeline`
+        #   3) `ThreeCrop/TenCrop` in `test_pipeline`
         #   4) `num_clips` in `SampleFrames` or its subclass if `clip_len != 1`
         cls_score = self.cls_head(x, fcn_test=True)
 
