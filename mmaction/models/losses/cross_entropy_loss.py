@@ -51,7 +51,7 @@ class CrossEntropyLoss(BaseWeightedLoss):
         if cls_score.size() == label.size():
             # calculate loss for soft label
 
-            assert cls_score.dim() == 2, 'Only suppor 2-dim soft label'
+            assert cls_score.dim() == 2, 'Only support 2-dim soft label'
             assert len(kwargs) == 0, \
                 ('For now, no extra args are supported for soft label, '
                  f'but get {kwargs}')
