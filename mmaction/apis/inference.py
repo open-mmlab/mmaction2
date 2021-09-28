@@ -88,6 +88,8 @@ def inference_recognizer(model, video, outputs=None, as_tensor=True):
     # build the data pipeline
     test_pipeline = cfg.data.test.pipeline
     # Alter data pipelines & prepare inputs
+    if input_flag == 'dict':
+        data = video
     if input_flag == 'array':
         modality_map = {2: 'Flow', 3: 'RGB'}
         modality = modality_map.get(video.shape[-1])
