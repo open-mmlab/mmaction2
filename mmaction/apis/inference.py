@@ -48,7 +48,7 @@ def init_recognizer(config, checkpoint=None, device='cuda:0'):
 
 
 def inference_recognizer(model, video, outputs=None, as_tensor=True):
-    """Inference a video with the detector.
+    """Inference a video with the recognizer.
 
     Args:
         model (nn.Module): The loaded recognizer.
