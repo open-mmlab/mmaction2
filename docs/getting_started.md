@@ -152,6 +152,10 @@ labels = 'tools/data/kinetics/label_map_k400.txt'
 results = inference_recognizer(model, video, labels)
 
 # show the results
+labels = open('tools/data/kinetics/label_map_k400.txt').readlines()
+labels = [x.strip() for x in labels]
+results = [(labels[k[0]], k[1]) for k in results]
+
 print(f'The top-5 labels with corresponding scores are:')
 for result in results:
     print(f'{result[0]}: ', result[1])
@@ -181,6 +185,10 @@ labels = 'tools/data/kinetics/label_map_k400.txt'
 results = inference_recognizer(model, video, labels, use_frames=True)
 
 # show the results
+labels = open('tools/data/kinetics/label_map_k400.txt').readlines()
+labels = [x.strip() for x in labels]
+results = [(labels[k[0]], k[1]) for k in results]
+
 print(f'The top-5 labels with corresponding scores are:')
 for result in results:
     print(f'{result[0]}: ', result[1])
@@ -210,6 +218,10 @@ labels = 'tools/data/kinetics/label_map_k400.txt'
 results = inference_recognizer(model, video, labels)
 
 # show the results
+labels = open('tools/data/kinetics/label_map_k400.txt').readlines()
+labels = [x.strip() for x in labels]
+results = [(labels[k[0]], k[1]) for k in results]
+
 print(f'The top-5 labels with corresponding scores are:')
 for result in results:
     print(f'{result[0]}: ', result[1])
