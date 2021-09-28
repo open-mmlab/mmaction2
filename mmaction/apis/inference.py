@@ -15,10 +15,7 @@ from mmaction.datasets.pipelines import Compose
 from mmaction.models import build_recognizer
 
 
-def init_recognizer(config,
-                    checkpoint=None,
-                    device='cuda:0',
-                    use_frames=False):
+def init_recognizer(config, checkpoint=None, device='cuda:0'):
     """Initialize a recognizer from config file.
 
     Args:
@@ -28,7 +25,6 @@ def init_recognizer(config,
             the model will not load any weights. Default: None.
         device (str | :obj:`torch.device`): The desired device of returned
             tensor. Default: 'cuda:0'.
-        use_frames (bool): Whether to use rawframes as input. Default:False.
 
     Returns:
         nn.Module: The constructed recognizer.
