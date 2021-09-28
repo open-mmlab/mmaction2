@@ -70,7 +70,36 @@ plate_green = plate_green.split('-')
 plate_green = [hex2color(h) for h in plate_green]
 
 
-def visualize(frames, annotations, plate=plate_blue, max_num=5):
+def vis_pose_result(frame, pose_result, skeleton, kpt_score_thr=0.3, pose_kpt_color=None,
+                    pose_limb_color=None, radius=4, thickness=1):
+    for kpts in pose_result:
+        # draw each point on image
+        if pose_kpt_color is not None:
+            assert len(pose_kpt_color) == len(kpts)
+            for kid, kpt in enumerate(kpts):
+                x_coord, y_coord, kpt_score = int(kpt[0]), int(kpt[1]), kpt[2]
+                if kpt_score > kpt_score_thr:
+                    r, g, b = pose_kpt_color[kid]
+                    cv2.circle(frame, (int(x_coord), int(y_coord)), radius,
+                                (int(r), int(g), int(b)), -1)
+
+        # draw limbs
+        if skeleton is not None and pose_limb_color is not None:
+            assert len(pose_limb_color) == len(skeleton)
+            for sk_id, sk in enumerate(skeleton):
+                pos1 = (int(kpts[sk[0] - 1, 0]), int(kpts[sk[0] - 1, 1]))
+                pos2 = (int(kpts[sk[1] - 1, 0]), int(kpts[sk[1] - 1, 1]))
+                if (pos1[0] > 0 and pos1[0] < img_w and pos1[1] > 0
+                        and pos1[1] < img_h and pos2[0] > 0 and pos2[0] < img_w
+                        and pos2[1] > 0 and pos2[1] < img_h
+                        and kpts[sk[0] - 1, 2] > kpt_score_thr
+                        and kpts[sk[1] - 1, 2] > kpt_score_thr):
+                    r, g, b = pose_limb_color[sk_id]
+                    cv2.line(frame, pos1, pos2, (int(r), int(g), int(b)),
+                            thickness=thickness)
+                
+
+def visualize(frames, annotations, plate=plate_blue, max_num=5, pose_results, pose_model):
     """Visualize frames with predicted annotations.
 
     Args:
@@ -110,6 +139,20 @@ def visualize(frames, annotations, plate=plate_blue, max_num=5):
                 box = (box * scale_ratio).astype(np.int64)
                 st, ed = tuple(box[:2]), tuple(box[2:])
                 cv2.rectangle(frame, st, ed, plate[0], 2)
+                # add pose
+                # show the results
+                skeleton = [[16, 14], [14, 12], [17, 15], [15, 13], [12, 13], [6, 12],
+                    [7, 13], [6, 7], [6, 8], [7, 9], [8, 10], [9, 11], [2, 3],
+                    [1, 2], [1, 3], [2, 4], [3, 5], [4, 6], [5, 7]]
+                pose_limb_color = palette[[
+                    0, 0, 0, 0, 7, 7, 7, 9, 9, 9, 9, 9, 16, 16, 16, 16, 16, 16, 16
+                ]]
+                pose_kpt_color = palette[[
+                    16, 16, 16, 16, 16, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0
+                ]]
+                vis_pose_result(frame, pose_results[j], skeleton, kpt_score_thr=0.3, 
+                        pose_kpt_color, pose_limb_color, radius=4, thickness=1)
+
                 for k, lb in enumerate(label):
                     if k >= max_num:
                         break
