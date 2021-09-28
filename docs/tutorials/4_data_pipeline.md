@@ -4,11 +4,12 @@ In this tutorial, we will introduce some methods about the design of data pipeli
 
 <!-- TOC -->
 
-- [Design of Data Pipelines](#design-of-data-pipelines)
-  - [Data loading](#data-loading)
-  - [Pre-processing](#pre-processing)
-  - [Formatting](#formatting)
-- [Extend and Use Custom Pipelines](#extend-and-use-custom-pipelines)
+- [Tutorial 4: Customize Data Pipelines](#tutorial-4-customize-data-pipelines)
+  - [Design of Data Pipelines](#design-of-data-pipelines)
+    - [Data loading](#data-loading)
+    - [Pre-processing](#pre-processing)
+    - [Formatting](#formatting)
+  - [Extend and Use Custom Pipelines](#extend-and-use-custom-pipelines)
 
 <!-- TOC -->
 
@@ -193,11 +194,6 @@ For each operation, we list the related dict fields that are added/updated/remov
 - update: imgs
 
 `TenCrop`
-
-- add: crop_bbox, img_shape
-- update: imgs
-
-`MultiGroupCrop`
 
 - add: crop_bbox, img_shape
 - update: imgs
