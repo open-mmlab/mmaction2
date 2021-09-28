@@ -70,6 +70,8 @@ def inference_recognizer(model, video, outputs=None, as_tensor=True):
     elif isinstance(video, np.ndarray):
         assert len(video.shape) == 4, 'The shape should be T x H x W x C'
         input_flag = 'array'
+    elif isinstance(video, str) and video.startswith('http'):
+        input_flag = 'video'
     elif isinstance(video, str) and osp.exists(video):
         if osp.isfile(video):
             input_flag = 'video'
@@ -105,12 +107,12 @@ def inference_recognizer(model, video, outputs=None, as_tensor=True):
     if input_flag == 'video':
         data = dict(filename=video, label=-1, start_index=0, modality='RGB')
         if 'Init' not in test_pipeline[0]['type']:
-            test_pipeline = [dict(type='DecordInit')] + test_pipeline
+            test_pipeline = [dict(type='OpenCVInit')] + test_pipeline
         else:
-            test_pipeline[0] = dict(type='DecordInit')
+            test_pipeline[0] = dict(type='OpenCVInit')
         for i in range(len(test_pipeline)):
             if 'Decode' in test_pipeline[i]['type']:
-                test_pipeline[i] = dict(type='DecordDecode')
+                test_pipeline[i] = dict(type='OpenCVDecode')
     if input_flag == 'rawframes':
         filename_tmpl = cfg.data.test.get('filename_tmpl', 'img_{:05}.jpg')
         modality = cfg.data.test.get('modality', 'RGB')
