@@ -12,6 +12,8 @@ import torch
 from mmcv import DictAction
 from mmcv.runner import load_checkpoint
 
+from mmaction.datasets.pipelines import Compose
+from mmaction.models import build_model
 from mmaction.models import build_detector
 from mmaction.utils import import_module_error_func
 
@@ -158,6 +160,17 @@ def parse_args():
         default=('https://download.openmmlab.com/mmpose/top_down/hrnet/'
                  'hrnet_w32_coco_256x192-c78dce93_20200708.pth'),
         help='human pose estimation checkpoint file/url')
+    parser.add_argument(
+        '--skeleton-config',
+        default='configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint.py',
+        help='skeleton-based action recognition config file path (from mmpose)')
+    parser.add_argument(
+        '--skeleton-checkpoint',
+        default=('https://download.openmmlab.com/mmaction/skeleton/posec3d/'
+                 'slowonly_r50_u48_240e_ntu120_xsub_keypoint/'
+                 'slowonly_r50_u48_240e_ntu120_xsub_keypoint-6736b03f.pth'),
+        help='skeleton-based action recognition checkpoint file/url')
+    
     parser.add_argument(
         '--det-score-thr',
         type=float,
@@ -391,7 +404,8 @@ def main():
 
 
     #  build skeleton-based recognition model 
-    pose_results = pose_inference(args, frame_paths, human_detections)
+    # pose_results = pose_inference(args, frame_paths, human_detections)
+    pose_results = pose_inference(args, center_frames, human_detections)
 
     fake_anno = dict(
         frame_dict='',
@@ -416,10 +430,31 @@ def main():
     fake_anno['keypoint'] = keypoint
     fake_anno['keypoint_score'] = keypoint_score
 
-    imgs = 
+    skeleton_pipeline = Compose(config.skeleton_config.data.test_pipeline)
+    skeleton_imgs = skeleton_pipeline(fake_anno)['imgs'][None]
+    skeleton_imgs = skeleton_imgs.to(args.device)
 
+    skeleton_model = build_model(config.skeleton_config)
+    load_checkpoint(skeleton_model, args.skeleton_checkpoint, map_location=args.device)
+    skeleton_model.to(args.device)
+    skeleton_model.eval()
 
+    with torch.no_grad():
+        output = skeleton_model(return_loss=False, imgs=skeleton_imgs)
+    
+    action_idx = np.argmax(output)
+    action_label = label_map[action_idx]  # whole action label
 
+    pose_model = init_pose_model(args.pose_config, args.pose_checkpoint,
+                                 args.device)
+    # vis_frames = [
+    #     vis_pose_result(pose_model, frame_paths[i], pose_results[i])
+    #     for i in range(num_frame)
+    # ]
+
+    # for frame in vis_frames:
+    #     cv2.putText(frame, action_label, (10, 30), FONTFACE, FONTSCALE,
+    #                 FONTCOLOR, THICKNESS, LINETYPE)
 
 
 
