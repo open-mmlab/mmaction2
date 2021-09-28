@@ -106,6 +106,8 @@ def inference_recognizer(model, video, outputs=None, as_tensor=True):
         data = dict(filename=video, label=-1, start_index=0, modality='RGB')
         if 'Init' not in test_pipeline[0]['type']:
             test_pipeline = [dict(type='DecordInit')] + test_pipeline
+        else:
+            test_pipeline[0] = dict(type='DecordInit')
         for i in range(len(test_pipeline)):
             if 'Decode' in test_pipeline[i]['type']:
                 test_pipeline[i] = dict(type='DecordDecode')
