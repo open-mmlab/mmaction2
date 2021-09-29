@@ -43,7 +43,6 @@ except (ImportError, ModuleNotFoundError):
     def vis_pose_result(*args, **kwargs):
         pass 
 
-
 try:
     import moviepy.editor as mpy
 except ImportError:
@@ -70,8 +69,13 @@ plate_green = plate_green.split('-')
 plate_green = [hex2color(h) for h in plate_green]
 
 
-def vis_pose_result(frame, pose_result, skeleton, kpt_score_thr=0.3, pose_kpt_color=None,
+def vis_pose_result(frame, result, skeleton, kpt_score_thr=0.3, pose_kpt_color=None,
                     pose_limb_color=None, radius=4, thickness=1):
+    pose_result = []
+    for res in result:
+        pose_result.append(res['keypoints'])
+    img_h, img_w, _ = frame.shape
+
     for kpts in pose_result:
         # draw each point on image
         if pose_kpt_color is not None:
@@ -99,7 +103,7 @@ def vis_pose_result(frame, pose_result, skeleton, kpt_score_thr=0.3, pose_kpt_co
                             thickness=thickness)
                 
 
-def visualize(frames, annotations, plate=plate_blue, max_num=5, pose_results, pose_model):
+def visualize(frames, annotations, pose_results, action_result, plate=plate_blue, max_num=5):
     """Visualize frames with predicted annotations.
 
     Args:
@@ -130,6 +134,11 @@ def visualize(frames, annotations, plate=plate_blue, max_num=5, pose_results, po
         for j in range(nfpa):
             ind = i * nfpa + j
             frame = frames_[ind]
+
+            # add action result for whole video
+            cv2.putText(frame, action_result, (10,30), FONTFACE, FONTSCALE,
+                        FONTCOLOR, THICKNESS, LINETYPE)
+
             for ann in anno:
                 box = ann[0]
                 label = ann[1]
@@ -139,19 +148,25 @@ def visualize(frames, annotations, plate=plate_blue, max_num=5, pose_results, po
                 box = (box * scale_ratio).astype(np.int64)
                 st, ed = tuple(box[:2]), tuple(box[2:])
                 cv2.rectangle(frame, st, ed, plate[0], 2)
-                # add pose
-                # show the results
+
+                # add pose results
                 skeleton = [[16, 14], [14, 12], [17, 15], [15, 13], [12, 13], [6, 12],
                     [7, 13], [6, 7], [6, 8], [7, 9], [8, 10], [9, 11], [2, 3],
                     [1, 2], [1, 3], [2, 4], [3, 5], [4, 6], [5, 7]]
+                palette = np.array([[255, 128, 0], [255, 153, 51], [255, 178, 102],
+                        [230, 230, 0], [255, 153, 255], [153, 204, 255],
+                        [255, 102, 255], [255, 51, 255], [102, 178, 255],
+                        [51, 153, 255], [255, 153, 153], [255, 102, 102],
+                        [255, 51, 51], [153, 255, 153], [102, 255, 102],
+                        [51, 255, 51], [0, 255, 0], [0, 0, 255], [255, 0, 0],
+                        [255, 255, 255]])
                 pose_limb_color = palette[[
                     0, 0, 0, 0, 7, 7, 7, 9, 9, 9, 9, 9, 16, 16, 16, 16, 16, 16, 16
                 ]]
                 pose_kpt_color = palette[[
                     16, 16, 16, 16, 16, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0
                 ]]
-                vis_pose_result(frame, pose_results[j], skeleton, kpt_score_thr=0.3, 
-                        pose_kpt_color, pose_limb_color, radius=4, thickness=1)
+                vis_pose_result(frame, pose_results[j], skeleton, 0.3, pose_kpt_color, pose_limb_color)
 
                 for k, lb in enumerate(label):
                     if k >= max_num:
@@ -206,14 +221,11 @@ def parse_args():
     parser.add_argument(
         '--skeleton-config',
         default='configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint.py',
-        help='skeleton-based action recognition config file path (from mmpose)')
+        help='skeleton-based action recognition config file path')
     parser.add_argument(
         '--skeleton-checkpoint',
-        default=('https://download.openmmlab.com/mmaction/skeleton/posec3d/'
-                 'slowonly_r50_u48_240e_ntu120_xsub_keypoint/'
-                 'slowonly_r50_u48_240e_ntu120_xsub_keypoint-6736b03f.pth'),
+        default='/mnt/lustre21/DATAshare2/duanhaodong/posec3d/posec3d_k400.pth',
         help='skeleton-based action recognition checkpoint file/url')
-    
     parser.add_argument(
         '--det-score-thr',
         type=float,
@@ -233,7 +245,7 @@ def parse_args():
         '--device', type=str, default='cuda:0', help='CPU/CUDA device option')
     parser.add_argument(
         '--out-filename',
-        default='demo/stdet_demo.mp4',
+        default='demo/stdet+skeleton_demo.mp4',
         help='output filename')
     parser.add_argument(
         '--predict-stepsize',
@@ -324,8 +336,11 @@ def pose_inference(args, frame_paths, det_results):
     print('Performing Human Pose Estimation for each frame')
     prog_bar = mmcv.ProgressBar(len(frame_paths))
     for f, d in zip(frame_paths, det_results):
-        # Align input format 
+        # Align input format
+        # for x in list(d):
+        #     print(dict(bbox=x))
         d = [dict(bbox=x) for x in list(d)]
+        
         pose = inference_top_down_pose_model(model, f, d, format='xyxy')[0]
         ret.append(pose)
         prog_bar.update()
@@ -430,12 +445,19 @@ def main():
     center_frames = [frame_paths[ind - 1] for ind in timestamps]
     human_detections = detection_inference(args, center_frames)
     print(f'len(human-detections---{len(human_detections)}') # 28
+
+    pose_results = pose_inference(args, center_frames, human_detections)
+    # print(f'pose_results', pose_results[0])
+    
     
     for i in range(len(human_detections)):
         det = human_detections[i]
+        # print(f'--det shape--{det.shape}') # 5 5 
         det[:, 0:4:2] *= w_ratio
         det[:, 1:4:2] *= h_ratio
         human_detections[i] = torch.from_numpy(det[:, :4]).to(args.device)
+        # print(f'human-det[i] shape--{human_detections[i].shape}') # num_person(0-5) 4
+        
 
     # Get img_norm_cfg
     img_norm_cfg = config['img_norm_cfg']
@@ -447,9 +469,6 @@ def main():
 
 
     #  build skeleton-based recognition model 
-    # pose_results = pose_inference(args, frame_paths, human_detections)
-    pose_results = pose_inference(args, center_frames, human_detections)
-
     fake_anno = dict(
         frame_dict='',
         label=-1,
@@ -460,6 +479,7 @@ def main():
         total_frames=num_frame
     )
     num_person = max([len(x) for x in pose_results])
+    # print(f'num_person--{num_person}')
 
     num_keypoint = 17
     keypoint = np.zeros((num_person, num_frame, num_keypoint, 2), dtype=np.float16)
@@ -473,11 +493,12 @@ def main():
     fake_anno['keypoint'] = keypoint
     fake_anno['keypoint_score'] = keypoint_score
 
-    skeleton_pipeline = Compose(config.skeleton_config.data.test_pipeline)
+    skeleton_config = mmcv.Config.fromfile(args.skeleton_config)
+    skeleton_pipeline = Compose(skeleton_config.test_pipeline)
     skeleton_imgs = skeleton_pipeline(fake_anno)['imgs'][None]
     skeleton_imgs = skeleton_imgs.to(args.device)
 
-    skeleton_model = build_model(config.skeleton_config)
+    skeleton_model = build_model(skeleton_config.model)
     load_checkpoint(skeleton_model, args.skeleton_checkpoint, map_location=args.device)
     skeleton_model.to(args.device)
     skeleton_model.eval()
@@ -486,20 +507,8 @@ def main():
         output = skeleton_model(return_loss=False, imgs=skeleton_imgs)
     
     action_idx = np.argmax(output)
-    action_label = label_map[action_idx]  # whole action label
-
-    pose_model = init_pose_model(args.pose_config, args.pose_checkpoint,
-                                 args.device)
-    # vis_frames = [
-    #     vis_pose_result(pose_model, frame_paths[i], pose_results[i])
-    #     for i in range(num_frame)
-    # ]
-
-    # for frame in vis_frames:
-    #     cv2.putText(frame, action_label, (10, 30), FONTFACE, FONTSCALE,
-    #                 FONTCOLOR, THICKNESS, LINETYPE)
-
-
+    action_result = label_map[action_idx]  # action result for the whole video
+    # print(f'action_label--{action_result}')
 
     # Build STDET model
     try:
@@ -542,7 +551,6 @@ def main():
                 img_metas=[[dict(img_shape=(new_h, new_w))]],
                 proposals=[[proposal]])
             # print(f'spatial-temporal result--{result[0]}')
-            # ss
             result = result[0]
             prediction = []
             # N proposals
@@ -578,7 +586,7 @@ def main():
         for i in dense_timestamps(timestamps, dense_n)
     ]
     print('Performing visualization')
-    vis_frames = visualize(frames, results)
+    vis_frames = visualize(frames, results, pose_results, action_result)
     vid = mpy.ImageSequenceClip([x[:, :, ::-1] for x in vis_frames],
                                 fps=args.output_fps)
     vid.write_videofile(args.out_filename)
