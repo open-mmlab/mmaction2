@@ -58,6 +58,9 @@ class LoadHVULabel:
         category_mask = torch.zeros(self.num_categories)
 
         for category, tags in results['label'].items():
+            # skip if not training on this category
+            if category not in self.categories:
+                continue
             category_mask[self.categories.index(category)] = 1.
             start_idx = self.category2startidx[category]
             category_num = self.category2num[category]
