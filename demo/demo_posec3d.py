@@ -185,8 +185,6 @@ def pose_inference(args, frame_paths, det_results):
     prog_bar = mmcv.ProgressBar(len(frame_paths))
     for f, d in zip(frame_paths, det_results):
         # Align input format
-        for x in list(d):
-            print(dict(bbox=x))
         d = [dict(bbox=x) for x in list(d)]
         pose = inference_top_down_pose_model(model, f, d, format='xyxy')[0]
         ret.append(pose)
@@ -215,9 +213,6 @@ def main():
     det_results = detection_inference(args, frame_paths)
     torch.cuda.empty_cache()
 
-    # print(f'det_results--{det_results.shape}')
-    for i in range(len(det_results)):
-        print(f'det_res[i]--{det_results[i].shape}')  # 2 5
     pose_results = pose_inference(args, frame_paths, det_results)
     torch.cuda.empty_cache()
 
