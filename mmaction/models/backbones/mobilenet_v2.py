@@ -285,8 +285,8 @@ class MobileNetV2(nn.Module):
             self.conv1.eval()
             for param in self.conv1.parameters():
                 param.requires_grad = False
-        for i in range(self.frozen_stages):
-            layer_name = self.layers[i]
+        for i in range(1, self.frozen_stages + 1):
+            layer_name = self.layers[i - 1]
             layer = getattr(self, layer_name)
             layer.eval()
             for param in layer.parameters():
