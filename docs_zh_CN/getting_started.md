@@ -150,6 +150,10 @@ labels = 'tools/data/kinetics/label_map_k400.txt'
 results = inference_recognizer(model, video, labels)
 
 # 显示结果
+labels = open('tools/data/kinetics/label_map_k400.txt').readlines()
+labels = [x.strip() for x in labels]
+results = [(labels[k[0]], k[1]) for k in results]
+
 print(f'The top-5 labels with corresponding scores are:')
 for result in results:
     print(f'{result[0]}: ', result[1])
@@ -179,6 +183,10 @@ labels = 'tools/data/kinetics/label_map_k400.txt'
 results = inference_recognizer(model, video, labels, use_frames=True)
 
 # 显示结果
+labels = open('tools/data/kinetics/label_map_k400.txt').readlines()
+labels = [x.strip() for x in labels]
+results = [(labels[k[0]], k[1]) for k in results]
+
 print(f'The top-5 labels with corresponding scores are:')
 for result in results:
     print(f'{result[0]}: ', result[1])
@@ -207,7 +215,11 @@ video = 'https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4
 labels = 'tools/data/kinetics/label_map_k400.txt'
 results = inference_recognizer(model, video, labels)
 
-#  根据配置文件和检查点来建立模型
+# 显示结果
+labels = open('tools/data/kinetics/label_map_k400.txt').readlines()
+labels = [x.strip() for x in labels]
+results = [(labels[k[0]], k[1]) for k in results]
+
 print(f'The top-5 labels with corresponding scores are:')
 for result in results:
     print(f'{result[0]}: ', result[1])

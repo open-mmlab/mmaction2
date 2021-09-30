@@ -9,10 +9,8 @@ import mmcv
 import numpy as np
 import torch
 from mmcv import DictAction
-from mmcv.runner import load_checkpoint
 
-from mmaction.datasets.pipelines import Compose
-from mmaction.models import build_model
+from mmaction.apis import inference_recognizer, init_recognizer
 from mmaction.utils import import_module_error_func
 
 try:
@@ -204,7 +202,7 @@ def main():
     config = mmcv.Config.fromfile(args.config)
     config.merge_from_dict(args.cfg_options)
 
-    test_pipeline = Compose(config.data.test.pipeline)
+    model = init_recognizer(config, args.checkpoint, args.device)
 
     # Load label_map
     label_map = [x.strip() for x in open(args.label_map).readlines()]
@@ -239,19 +237,9 @@ def main():
     fake_anno['keypoint'] = keypoint
     fake_anno['keypoint_score'] = keypoint_score
 
-    imgs = test_pipeline(fake_anno)['imgs'][None]
-    imgs = imgs.to(args.device)
+    results = inference_recognizer(model, fake_anno)
 
-    model = build_model(config.model)
-    load_checkpoint(model, args.checkpoint, map_location=args.device)
-    model.to(args.device)
-    model.eval()
-
-    with torch.no_grad():
-        output = model(return_loss=False, imgs=imgs)
-
-    action_idx = np.argmax(output)
-    action_label = label_map[action_idx]
+    action_label = label_map[results[0][0]]
 
     pose_model = init_pose_model(args.pose_config, args.pose_checkpoint,
                                  args.device)
@@ -263,7 +251,6 @@ def main():
         cv2.putText(frame, action_label, (10, 30), FONTFACE, FONTSCALE,
                     FONTCOLOR, THICKNESS, LINETYPE)
 
-    cv2.imwrite('frame.jpg', vis_frames[0])
     vid = mpy.ImageSequenceClip([x[:, :, ::-1] for x in vis_frames], fps=24)
     vid.write_videofile(args.out_filename, remove_temp=True)
 
