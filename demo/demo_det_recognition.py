@@ -13,14 +13,13 @@ from mmcv import DictAction
 from mmcv.runner import load_checkpoint
 
 from mmaction.datasets.pipelines import Compose
-from mmaction.models import build_model
-from mmaction.models import build_detector
+from mmaction.models import build_detector, build_model
 from mmaction.utils import import_module_error_func
 
 try:
     from mmdet.apis import inference_detector, init_detector
-    from mmpose.apis import (init_pose_model, inference_top_down_pose_model,
-                             vis_pose_result)
+    from mmpose.apis import init_pose_model, inference_top_down_pose_model
+
 except (ImportError, ModuleNotFoundError):
 
     @import_module_error_func('mmdet')
@@ -33,15 +32,12 @@ except (ImportError, ModuleNotFoundError):
 
     @import_module_error_func('mmpose')
     def init_pose_model(*args, **kwargs):
-        pass 
+        pass
 
     @import_module_error_func('mmpose')
     def inference_top_down_pose_model(*args, **kwargs):
-        pass 
+        pass
 
-    @import_module_error_func('mmpose')
-    def vis_pose_result(*args, **kwargs):
-        pass 
 
 try:
     import moviepy.editor as mpy
@@ -69,8 +65,14 @@ plate_green = plate_green.split('-')
 plate_green = [hex2color(h) for h in plate_green]
 
 
-def vis_pose_result(frame, result, skeleton, kpt_score_thr=0.3, pose_kpt_color=None,
-                    pose_limb_color=None, radius=4, thickness=1):
+def vis_pose_result(frame,
+                    result,
+                    skeleton,
+                    kpt_score_thr=0.3,
+                    pose_kpt_color=None,
+                    pose_limb_color=None,
+                    radius=4,
+                    thickness=1):
     pose_result = []
     for res in result:
         pose_result.append(res['keypoints'])
@@ -85,7 +87,7 @@ def vis_pose_result(frame, result, skeleton, kpt_score_thr=0.3, pose_kpt_color=N
                 if kpt_score > kpt_score_thr:
                     r, g, b = pose_kpt_color[kid]
                     cv2.circle(frame, (int(x_coord), int(y_coord)), radius,
-                                (int(r), int(g), int(b)), -1)
+                               (int(r), int(g), int(b)), -1)
 
         # draw limbs
         if skeleton is not None and pose_limb_color is not None:
@@ -99,11 +101,19 @@ def vis_pose_result(frame, result, skeleton, kpt_score_thr=0.3, pose_kpt_color=N
                         and kpts[sk[0] - 1, 2] > kpt_score_thr
                         and kpts[sk[1] - 1, 2] > kpt_score_thr):
                     r, g, b = pose_limb_color[sk_id]
-                    cv2.line(frame, pos1, pos2, (int(r), int(g), int(b)),
-                            thickness=thickness)
-                
+                    cv2.line(
+                        frame,
+                        pos1,
+                        pos2, (int(r), int(g), int(b)),
+                        thickness=thickness)
 
-def visualize(frames, annotations, pose_results, action_result, plate=plate_blue, max_num=5):
+
+def visualize(frames,
+              annotations,
+              pose_results,
+              action_result,
+              plate=plate_blue,
+              max_num=5):
     """Visualize frames with predicted annotations.
 
     Args:
@@ -123,7 +133,7 @@ def visualize(frames, annotations, pose_results, action_result, plate=plate_blue
     frames_ = cp.deepcopy(frames)
     nf, na = len(frames), len(annotations)
     assert nf % na == 0
-    nfpa = len(frames) // len(annotations)  # 2 
+    nfpa = len(frames) // len(annotations)  # 2
     anno = None
     h, w, _ = frames[0].shape
     scale_ratio = np.array([w, h, w, h])
@@ -136,7 +146,7 @@ def visualize(frames, annotations, pose_results, action_result, plate=plate_blue
             frame = frames_[ind]
 
             # add action result for whole video
-            cv2.putText(frame, action_result, (10,30), FONTFACE, FONTSCALE,
+            cv2.putText(frame, action_result, (10, 30), FONTFACE, FONTSCALE,
                         FONTCOLOR, THICKNESS, LINETYPE)
 
             for ann in anno:
@@ -150,23 +160,29 @@ def visualize(frames, annotations, pose_results, action_result, plate=plate_blue
                 cv2.rectangle(frame, st, ed, plate[0], 2)
 
                 # add pose results
-                skeleton = [[16, 14], [14, 12], [17, 15], [15, 13], [12, 13], [6, 12],
-                    [7, 13], [6, 7], [6, 8], [7, 9], [8, 10], [9, 11], [2, 3],
-                    [1, 2], [1, 3], [2, 4], [3, 5], [4, 6], [5, 7]]
-                palette = np.array([[255, 128, 0], [255, 153, 51], [255, 178, 102],
-                        [230, 230, 0], [255, 153, 255], [153, 204, 255],
-                        [255, 102, 255], [255, 51, 255], [102, 178, 255],
-                        [51, 153, 255], [255, 153, 153], [255, 102, 102],
-                        [255, 51, 51], [153, 255, 153], [102, 255, 102],
-                        [51, 255, 51], [0, 255, 0], [0, 0, 255], [255, 0, 0],
-                        [255, 255, 255]])
+                skeleton = [[16, 14], [14, 12], [17, 15], [15, 13], [12, 13],
+                            [6, 12], [7, 13], [6, 7], [6, 8], [7, 9], [8, 10],
+                            [9, 11], [2, 3], [1, 2], [1, 3], [2, 4], [3, 5],
+                            [4, 6], [5, 7]]
+                palette = np.array([[255, 128, 0], [255, 153, 51],
+                                    [255, 178, 102], [230, 230, 0],
+                                    [255, 153, 255], [153, 204, 255],
+                                    [255, 102, 255], [255, 51, 255],
+                                    [102, 178, 255], [51, 153, 255],
+                                    [255, 153, 153], [255, 102, 102],
+                                    [255, 51, 51], [153, 255, 153],
+                                    [102, 255, 102], [51, 255, 51],
+                                    [0, 255, 0], [0, 0, 255], [255, 0, 0],
+                                    [255, 255, 255]])
                 pose_limb_color = palette[[
-                    0, 0, 0, 0, 7, 7, 7, 9, 9, 9, 9, 9, 16, 16, 16, 16, 16, 16, 16
+                    0, 0, 0, 0, 7, 7, 7, 9, 9, 9, 9, 9, 16, 16, 16, 16, 16, 16,
+                    16
                 ]]
                 pose_kpt_color = palette[[
                     16, 16, 16, 16, 16, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0
                 ]]
-                vis_pose_result(frame, pose_results[j], skeleton, 0.3, pose_kpt_color, pose_limb_color)
+                vis_pose_result(frame, pose_results[j], skeleton, 0.3,
+                                pose_kpt_color, pose_limb_color)
 
                 for k, lb in enumerate(label):
                     if k >= max_num:
@@ -207,7 +223,9 @@ def parse_args():
     parser.add_argument(
         '--det-checkpoint',
         default=('http://download.openmmlab.com/mmdetection/v2.0/'
-                'faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth'),
+                 'faster_rcnn/faster_rcnn_r50_fpn_2x_coco/'
+                 'faster_rcnn_r50_fpn_2x_coco_'
+                 'bbox_mAP-0.384_20200504_210434-a5d8aa15.pth'),
         help='human detection checkpoint file/url')
     parser.add_argument(
         '--pose-config',
@@ -220,11 +238,13 @@ def parse_args():
         help='human pose estimation checkpoint file/url')
     parser.add_argument(
         '--skeleton-config',
-        default='configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint.py',
+        default='configs/skeleton/posec3d/'
+        'slowonly_r50_u48_240e_ntu120_xsub_keypoint.py',
         help='skeleton-based action recognition config file path')
     parser.add_argument(
         '--skeleton-checkpoint',
-        default='/mnt/lustre21/DATAshare2/duanhaodong/posec3d/posec3d_k400.pth',
+        default='/mnt/lustre21/DATAshare2/duanhaodong/posec3d/'
+        'posec3d_k400.pth',
         help='skeleton-based action recognition checkpoint file/url')
     parser.add_argument(
         '--det-score-thr',
@@ -236,7 +256,8 @@ def parse_args():
         type=float,
         default=0.5,
         help='the threshold of human action score')
-    parser.add_argument('--video', default='demo/demo.mp4', help='video file/url')
+    parser.add_argument(
+        '--video', default='demo/demo.mp4', help='video file/url')
     parser.add_argument(
         '--label-map',
         default='tools/data/ava/label_map.txt',
@@ -321,7 +342,6 @@ def detection_inference(args, frame_paths):
     for frame_path in frame_paths:
         result = inference_detector(model, frame_path)
         # print(f'det result--{result}')
-        # ss
         # We only keep human detections with score larger than det_score_thr
         result = result[0][result[0][:, 4] >= args.det_score_thr]
         results.append(result)
@@ -340,7 +360,7 @@ def pose_inference(args, frame_paths, det_results):
         # for x in list(d):
         #     print(dict(bbox=x))
         d = [dict(bbox=x) for x in list(d)]
-        
+
         pose = inference_top_down_pose_model(model, f, d, format='xyxy')[0]
         ret.append(pose)
         prog_bar.update()
@@ -425,9 +445,10 @@ def main():
     # Note that it's 1 based here
     timestamps = np.arange(window_size // 2, num_frame + 1 - window_size // 2,
                            args.predict_stepsize)
-    print(f'timestamps--{timestamps}')  # [ 32  40  48  56  64  72  80  88  96 104 112 120 128 136 144 152 160 168
-                                            # 176 184 192 200 208 216 224 232 240 248]
-
+    print(
+        f'timestamps--{timestamps}'
+    )  # [ 32  40  48  56  64  72  80  88  96 104 112 120 128 136 144 152 160
+    # 168 176 184 192 200 208 216 224 232 240 248]
 
     # Load label_map
     label_map = load_label_map(args.label_map)
@@ -444,20 +465,18 @@ def main():
     # Get Human detection results
     center_frames = [frame_paths[ind - 1] for ind in timestamps]
     human_detections = detection_inference(args, center_frames)
-    print(f'len(human-detections---{len(human_detections)}') # 28
+    print(f'len(human-detections---{len(human_detections)}')  # 28
 
     pose_results = pose_inference(args, center_frames, human_detections)
     # print(f'pose_results', pose_results[0])
-    
-    
+
     for i in range(len(human_detections)):
         det = human_detections[i]
-        # print(f'--det shape--{det.shape}') # 5 5 
+        # print(f'--det shape--{det.shape}') # 5 5
         det[:, 0:4:2] *= w_ratio
         det[:, 1:4:2] *= h_ratio
         human_detections[i] = torch.from_numpy(det[:, :4]).to(args.device)
-        # print(f'human-det[i] shape--{human_detections[i].shape}') # num_person(0-5) 4
-        
+        # print(f'human-det[i] shape--{human_detections[i].shape}') # (0-5) 4
 
     # Get img_norm_cfg
     img_norm_cfg = config['img_norm_cfg']
@@ -467,8 +486,7 @@ def main():
     img_norm_cfg['mean'] = np.array(img_norm_cfg['mean'])
     img_norm_cfg['std'] = np.array(img_norm_cfg['std'])
 
-
-    #  build skeleton-based recognition model 
+    #  build skeleton-based recognition model
     fake_anno = dict(
         frame_dict='',
         label=-1,
@@ -476,13 +494,13 @@ def main():
         origin_shape=(h, w),
         start_index=0,
         modality='Pose',
-        total_frames=num_frame
-    )
+        total_frames=num_frame)
     num_person = max([len(x) for x in pose_results])
     # print(f'num_person--{num_person}')
 
     num_keypoint = 17
-    keypoint = np.zeros((num_person, num_frame, num_keypoint, 2), dtype=np.float16)
+    keypoint = np.zeros((num_person, num_frame, num_keypoint, 2),
+                        dtype=np.float16)
     keypoint_score = np.zeros((num_person, num_frame, num_keypoint),
                               dtype=np.float16)
     for i, poses in enumerate(pose_results):
@@ -499,13 +517,14 @@ def main():
     skeleton_imgs = skeleton_imgs.to(args.device)
 
     skeleton_model = build_model(skeleton_config.model)
-    load_checkpoint(skeleton_model, args.skeleton_checkpoint, map_location=args.device)
+    load_checkpoint(
+        skeleton_model, args.skeleton_checkpoint, map_location=args.device)
     skeleton_model.to(args.device)
     skeleton_model.eval()
 
     with torch.no_grad():
         output = skeleton_model(return_loss=False, imgs=skeleton_imgs)
-    
+
     action_idx = np.argmax(output)
     action_result = label_map[action_idx]  # action result for the whole video
     # print(f'action_label--{action_result}')
@@ -580,7 +599,7 @@ def main():
         print(f'start--{start}, new_frames_inds--{new_frame_inds}')
         return new_frame_inds.astype(np.int)
 
-    dense_n = int(args.predict_stepsize / args.output_stepsize)  # 2 
+    dense_n = int(args.predict_stepsize / args.output_stepsize)  # 2
     frames = [
         cv2.imread(frame_paths[i - 1])
         for i in dense_timestamps(timestamps, dense_n)
