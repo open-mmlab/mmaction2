@@ -2,6 +2,7 @@
 import os
 import os.path as osp
 import re
+import warnings
 from operator import itemgetter
 
 import mmcv
@@ -15,7 +16,7 @@ from mmaction.datasets.pipelines import Compose
 from mmaction.models import build_recognizer
 
 
-def init_recognizer(config, checkpoint=None, device='cuda:0'):
+def init_recognizer(config, checkpoint=None, device='cuda:0', **kwargs):
     """Initialize a recognizer from config file.
 
     Args:
@@ -29,6 +30,11 @@ def init_recognizer(config, checkpoint=None, device='cuda:0'):
     Returns:
         nn.Module: The constructed recognizer.
     """
+    if 'use_frames' in kwargs:
+        warnings.warn('The argument `use_frames` is deprecated PR #1191. '
+                      'Now you can use models trained with frames or videos '
+                      'arbitrarily. ')
+
     if isinstance(config, str):
         config = mmcv.Config.fromfile(config)
     elif not isinstance(config, mmcv.Config):
@@ -47,7 +53,7 @@ def init_recognizer(config, checkpoint=None, device='cuda:0'):
     return model
 
 
-def inference_recognizer(model, video, outputs=None, as_tensor=True):
+def inference_recognizer(model, video, outputs=None, as_tensor=True, **kwargs):
     """Inference a video with the recognizer.
 
     Args:
@@ -64,6 +70,15 @@ def inference_recognizer(model, video, outputs=None, as_tensor=True):
         dict[torch.tensor | np.ndarray]:
             Output feature maps from layers specified in `outputs`.
     """
+    if 'use_frames' in kwargs:
+        warnings.warn('The argument `use_frames` is deprecated PR #1191. '
+                      'Now you can use models trained with frames or videos '
+                      'arbitrarily. ')
+    if 'label_path' in kwargs:
+        warnings.warn('The argument `use_frames` is deprecated PR #1191. '
+                      'Now the label file is not needed in '
+                      'inference_recognizer. ')
+
     input_flag = None
     if isinstance(video, dict):
         input_flag = 'dict'
