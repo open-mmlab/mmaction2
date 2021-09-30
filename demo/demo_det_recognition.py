@@ -132,6 +132,7 @@ def visualize(frames,
     plate = [x[::-1] for x in plate]
     frames_ = cp.deepcopy(frames)
     nf, na = len(frames), len(annotations)
+    print(f'nf--{nf}, na--{na}')
     assert nf % na == 0
     nfpa = len(frames) // len(annotations)  # 2
     anno = None
@@ -149,16 +150,7 @@ def visualize(frames,
             cv2.putText(frame, action_result, (10, 30), FONTFACE, FONTSCALE,
                         FONTCOLOR, THICKNESS, LINETYPE)
 
-            for ann in anno:
-                box = ann[0]
-                label = ann[1]
-                if not len(label):
-                    continue
-                score = ann[2]
-                box = (box * scale_ratio).astype(np.int64)
-                st, ed = tuple(box[:2]), tuple(box[2:])
-                cv2.rectangle(frame, st, ed, plate[0], 2)
-
+            if j == 0:
                 # add pose results
                 skeleton = [[16, 14], [14, 12], [17, 15], [15, 13], [12, 13],
                             [6, 12], [7, 13], [6, 7], [6, 8], [7, 9], [8, 10],
@@ -181,8 +173,19 @@ def visualize(frames,
                 pose_kpt_color = palette[[
                     16, 16, 16, 16, 16, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0
                 ]]
-                vis_pose_result(frame, pose_results[j], skeleton, 0.3,
+                vis_pose_result(frame, pose_results[i], skeleton, 0.3,
                                 pose_kpt_color, pose_limb_color)
+
+            # add spatio-temporal action detection results
+            for ann in anno:
+                box = ann[0]
+                label = ann[1]
+                if not len(label):
+                    continue
+                score = ann[2]
+                box = (box * scale_ratio).astype(np.int64)
+                st, ed = tuple(box[:2]), tuple(box[2:])
+                cv2.rectangle(frame, st, ed, plate[0], 2)
 
                 for k, lb in enumerate(label):
                     if k >= max_num:
@@ -254,19 +257,23 @@ def parse_args():
     parser.add_argument(
         '--action-score-thr',
         type=float,
-        default=0.5,
+        default=0.35,
         help='the threshold of human action score')
     parser.add_argument(
-        '--video', default='demo/demo.mp4', help='video file/url')
+        '--video', default='demo/test4.mp4', help='video file/url')
     parser.add_argument(
         '--label-map',
         default='tools/data/ava/label_map.txt',
-        help='label map file')
+        help='label map file for spatio-temporal action detection')
+    parser.add_argument(
+        '--label-map-skeleton',
+        default='tools/data/kinetics/label_map_k400.txt',
+        help='label map file for skeleton-based action recognition')
     parser.add_argument(
         '--device', type=str, default='cuda:0', help='CPU/CUDA device option')
     parser.add_argument(
         '--out-filename',
-        default='demo/stdet+skeleton_demo.mp4',
+        default='demo/test4_demo2.mp4',
         help='output filename')
     parser.add_argument(
         '--predict-stepsize',
@@ -275,7 +282,7 @@ def parse_args():
         help='give out a prediction per n frames')
     parser.add_argument(
         '--output-stepsize',
-        default=4,
+        default=8,
         type=int,
         help=('show one frame per n frames in the demo, we should have: '
               'predict_stepsize % output_stepsize == 0'))
@@ -450,7 +457,7 @@ def main():
     )  # [ 32  40  48  56  64  72  80  88  96 104 112 120 128 136 144 152 160
     # 168 176 184 192 200 208 216 224 232 240 248]
 
-    # Load label_map
+    # Load spatio-temporal detection label_map
     label_map = load_label_map(args.label_map)
     try:
         if config['data']['train']['custom_classes'] is not None:
@@ -476,7 +483,7 @@ def main():
         det[:, 0:4:2] *= w_ratio
         det[:, 1:4:2] *= h_ratio
         human_detections[i] = torch.from_numpy(det[:, :4]).to(args.device)
-        # print(f'human-det[i] shape--{human_detections[i].shape}') # (0-5) 4
+        # print(f'human-det[i] shape--{human_detections[i].shape}') # (0-6) 4
 
     # Get img_norm_cfg
     img_norm_cfg = config['img_norm_cfg']
@@ -495,8 +502,8 @@ def main():
         start_index=0,
         modality='Pose',
         total_frames=num_frame)
-    num_person = max([len(x) for x in pose_results])
-    # print(f'num_person--{num_person}')
+    num_person = max([len(x) for x in pose_results])  # 6
+    print(f'num_person--{num_person}')
 
     num_keypoint = 17
     keypoint = np.zeros((num_person, num_frame, num_keypoint, 2),
@@ -525,9 +532,13 @@ def main():
     with torch.no_grad():
         output = skeleton_model(return_loss=False, imgs=skeleton_imgs)
 
+    label_map_skeleton = [
+        x.strip() for x in open(args.label_map_skeleton).readlines()
+    ]
     action_idx = np.argmax(output)
-    action_result = label_map[action_idx]  # action result for the whole video
-    # print(f'action_label--{action_result}')
+    action_result = label_map_skeleton[
+        action_idx]  # action result for the whole video
+    print(f'action_label--{action_result}')
 
     # Build STDET model
     try:
@@ -570,6 +581,8 @@ def main():
                 img_metas=[[dict(img_shape=(new_h, new_w))]],
                 proposals=[[proposal]])
             # print(f'spatial-temporal result--{result[0]}')
+            print(f'len(results[0]--{len(result[0])}')  # 80
+            print(f'proposal len--{len(proposal)}')  # 5
             result = result[0]
             prediction = []
             # N proposals
@@ -580,9 +593,12 @@ def main():
                 if i + 1 not in label_map:
                     continue
                 for j in range(proposal.shape[0]):
+                    # print('pred--',  result[i][j, 4])
                     if result[i][j, 4] > args.action_score_thr:
+                        # print('pred--', label_map[i+1], result[i][j,4])
                         prediction[j].append((label_map[i + 1], result[i][j,
                                                                           4]))
+
             predictions.append(prediction)
         prog_bar.update()
 
