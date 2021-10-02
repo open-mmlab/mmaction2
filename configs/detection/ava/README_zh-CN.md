@@ -1,7 +1,7 @@
 # AVA
 
 <div align="center">
-  <img src="/resources/spatio-temporal-det.gif" width="800px"/>
+  <img src="https://github.com/open-mmlab/mmaction2/raw/master/resources/spatio-temporal-det.gif" width="800px"/>
 </div>
 
 ## 简介

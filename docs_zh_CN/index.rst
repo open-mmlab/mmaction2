@@ -3,6 +3,8 @@
 
 您可以在页面左下角切换中英文文档。
 
+You can change the documentation language at the lower-left corner of the page.
+
 .. toctree::
    :maxdepth: 2
 

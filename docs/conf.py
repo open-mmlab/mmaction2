@@ -151,6 +151,10 @@ html_theme_options = {
                     'name': 'MMGeneration',
                     'url': 'https://github.com/open-mmlab/mmgeneration',
                 },
+                {
+                    'name': 'MMOCR',
+                    'url': 'https://github.com/open-mmlab/mmocr',
+                },
             ]
         },
         {

@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="/resources/mmaction2_logo.png" width="500"/>
+  <img src="https://github.com/open-mmlab/mmaction2/raw/master/resources/mmaction2_logo.png" width="500"/>
 </div>
 
 ## Introduction
@@ -20,11 +20,11 @@ It is a part of the [OpenMMLab](http://openmmlab.org/) project.
 The master branch works with **PyTorch 1.3+**.
 
 <div align="center">
-  <img src="/resources/mmaction2_overview.gif" width="450px"/><br>
+  <img src="https://github.com/open-mmlab/mmaction2/raw/master/resources/mmaction2_overview.gif" width="450px"/><br>
     Action Recognition Results on Kinetics-400
 </div>
 <div align="center">
-  <img src="/resources/spatio-temporal-det.gif" width="800px"/><br>
+  <img src="https://github.com/open-mmlab/mmaction2/raw/master/resources/spatio-temporal-det.gif" width="800px"/><br>
     Spatio-Temporal Action Detection Results on AVA-2.1
 </div>
 <div align="center">
