@@ -48,7 +48,6 @@ def train_model(model,
     dataloader_setting = dict(
         videos_per_gpu=cfg.data.get('videos_per_gpu', 1),
         workers_per_gpu=cfg.data.get('workers_per_gpu', 1),
-        persistent_workers=cfg.data.get('persistent_workers', False),
         num_gpus=len(cfg.gpu_ids),
         dist=distributed,
         seed=cfg.seed)
@@ -130,7 +129,6 @@ def train_model(model,
         dataloader_setting = dict(
             videos_per_gpu=cfg.data.get('videos_per_gpu', 1),
             workers_per_gpu=1,  # save memory and time
-            persistent_workers=cfg.data.get('persistent_workers', False),
             num_gpus=len(cfg.gpu_ids),
             dist=distributed,
             seed=cfg.seed)
@@ -146,7 +144,6 @@ def train_model(model,
         dataloader_setting = dict(
             videos_per_gpu=cfg.data.get('videos_per_gpu', 1),
             workers_per_gpu=cfg.data.get('workers_per_gpu', 1),
-            persistent_workers=cfg.data.get('persistent_workers', False),
             # cfg.gpus will be ignored if distributed
             num_gpus=len(cfg.gpu_ids),
             dist=distributed,
@@ -193,7 +190,6 @@ def train_model(model,
         dataloader_setting = dict(
             videos_per_gpu=cfg.data.get('videos_per_gpu', 1),
             workers_per_gpu=cfg.data.get('workers_per_gpu', 1),
-            persistent_workers=cfg.data.get('persistent_workers', False),
             num_gpus=len(cfg.gpu_ids),
             dist=distributed,
             shuffle=False)
