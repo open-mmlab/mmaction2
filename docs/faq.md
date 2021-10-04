@@ -4,11 +4,13 @@
 
 We list some common issues faced by many users and their corresponding solutions here.
 
-- [Installation](#installation)
-- [Data](#data)
-- [Training](#training)
-- [Testing](#testing)
-- [Deploying](#deploying)
+- [FAQ](#faq)
+  - [Outline](#outline)
+  - [Installation](#installation)
+  - [Data](#data)
+  - [Training](#training)
+  - [Testing](#testing)
+  - [Deploying](#deploying)
 
 Feel free to enrich the list if you find any frequent issues and have ways to help others to solve them.
 If the contents here do not cover your issue, please create an issue using the [provided templates](/.github/ISSUE_TEMPLATE/error-report.md) and make sure you fill in all required information in the template.
@@ -17,18 +19,18 @@ If the contents here do not cover your issue, please create an issue using the [
 
 - **"No module named 'mmcv.ops'"; "No module named 'mmcv._ext'"**
 
-    1. Uninstall existing mmcv in the environment using `pip uninstall mmcv`
-    2. Install mmcv-full following the [installation instruction](https://mmcv.readthedocs.io/en/latest/#installation)
+  1. Uninstall existing mmcv in the environment using `pip uninstall mmcv`
+  2. Install mmcv-full following the [installation instruction](https://mmcv.readthedocs.io/en/latest/#installation)
 
 - **"OSError: MoviePy Error: creation of None failed because of the following error"**
 
-    Refer to [install.md](https://github.com/open-mmlab/mmaction2/blob/master/docs/install.md#requirements)
-    1. For Windows users, [ImageMagick](https://www.imagemagick.org/script/index.php) will not be automatically detected by MoviePy,
-    there is a need to modify `moviepy/config_defaults.py` file by providing the path to the ImageMagick binary called `magick`,
-    like `IMAGEMAGICK_BINARY = "C:\\Program Files\\ImageMagick_VERSION\\magick.exe"`
-    2. For Linux users, there is a need to modify the `/etc/ImageMagick-6/policy.xml` file by commenting out
-    `<policy domain="path" rights="none" pattern="@*" />` to `<!-- <policy domain="path" rights="none" pattern="@*" /> -->`,
-    if ImageMagick is not detected by moviepy.
+  Refer to [install.md](https://github.com/open-mmlab/mmaction2/blob/master/docs/install.md#requirements)
+  1. For Windows users, [ImageMagick](https://www.imagemagick.org/script/index.php) will not be automatically detected by MoviePy, there is a need to modify `moviepy/config_defaults.py` file by providing the path to the ImageMagick binary called `magick`, like `IMAGEMAGICK_BINARY = "C:\\Program Files\\ImageMagick_VERSION\\magick.exe"`
+  2. For Linux users, there is a need to modify the `/etc/ImageMagick-6/policy.xml` file by commenting out `<policy domain="path" rights="none" pattern="@*" />` to `<!-- <policy domain="path" rights="none" pattern="@*" /> -->`, if ImageMagick is not detected by moviepy.
+
+- **"Why I got the error message 'Please install XXCODEBASE to use XXX' even if I have already installed XXCODEBASE?"**
+
+  You got that error message because our project failed to import a function or a class from XXCODEBASE. You can try to run the corresponding line to see what happens. One possible reason is, for some codebases in OpenMMLAB, you need to install mmcv-full before you install them.
 
 ## Data
 
