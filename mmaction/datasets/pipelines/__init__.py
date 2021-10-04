@@ -1,4 +1,4 @@
-# Copyright (c) OpenMMLab. All rights reserved.d
+# Copyright (c) OpenMMLab. All rights reserved.
 from .augmentations import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
                             Imgaug, MelSpectrogram, MultiScaleCrop, Normalize,
                             PytorchVideoTrans, RandomCrop, RandomRescale,
