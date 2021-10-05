@@ -67,7 +67,7 @@ class MMActionHandler(BaseHandler):
             assert isinstance(video_result, list)
 
             output[video_idx] = {
-                self.mapping[x[0]] if self.mapping else x[0]: x[1]
+                self.mapping[x[0]] if self.mapping else x[0]: float(x[1])
                 for x in video_result
             }
 
