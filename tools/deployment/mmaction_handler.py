@@ -1,7 +1,10 @@
 import base64
 import os
+import os.path as osp
+import warnings
 
-import mmcv
+import decord
+import numpy as np
 import torch
 from ts.torch_handler.base_handler import BaseHandler
 
@@ -9,7 +12,6 @@ from mmaction.apis import inference_recognizer, init_recognizer  # noqa: F401
 
 
 class MMActionHandler(BaseHandler):
-    threshold = 0.5
 
     def initialize(self, context):
         properties = context.system_properties
@@ -24,46 +26,49 @@ class MMActionHandler(BaseHandler):
         checkpoint = os.path.join(model_dir, serialized_file)
         self.config_file = os.path.join(model_dir, 'config.py')
 
+        mapping_file_path = osp.join(model_dir, 'label_map.txt')
+        if not os.path.isfile(mapping_file_path):
+            warnings.warn('Missing the label_map.txt file. '
+                          'Inference output will not include class name.')
+            self.mapping = None
+        else:
+            lines = open(mapping_file_path).readlines()
+            self.mapping = [x.strip() for x in lines]
+
         self.model = init_recognizer(self.config_file, checkpoint, self.device)
         self.initialized = True
 
     def preprocess(self, data):
-        images = []
+        videos = []
 
         for row in data:
-            image = row.get('data') or row.get('body')
-            if isinstance(image, str):
-                image = base64.b64decode(image)
-            image = mmcv.imfrombytes(image)
-            images.append(image)
+            video = row.get('data') or row.get('body')
+            if isinstance(video, str):
+                video = base64.b64decode(video)
+            # First save the bytes as a tmp file
+            with open('/tmp/tmp.mp4', 'wb') as fout:
+                fout.write(video)
 
-        return images
+            video = decord.VideoReader('/tmp/tmp.mp4')
+            frames = [x.asnumpy() for x in video]
+            videos.append(np.stack(frames))
+
+        return videos
 
     def inference(self, data, *args, **kwargs):
-        results = inference_recognizer(self.model, data)
+        results = [inference_recognizer(self.model, item) for item in data]
         return results
 
     def postprocess(self, data):
         # Format output following the example ObjectDetectionHandler format
         output = []
-        for image_index, image_result in enumerate(data):
+        for video_idx, video_result in enumerate(data):
             output.append([])
-            if isinstance(image_result, tuple):
-                bbox_result, segm_result = image_result
-                if isinstance(segm_result, tuple):
-                    segm_result = segm_result[0]  # ms rcnn
-            else:
-                bbox_result, segm_result = image_result, None
+            assert isinstance(video_result, list)
 
-            for class_index, class_result in enumerate(bbox_result):
-                class_name = self.model.CLASSES[class_index]
-                for bbox in class_result:
-                    bbox_coords = bbox[:-1].tolist()
-                    score = float(bbox[-1])
-                    if score >= self.threshold:
-                        output[image_index].append({
-                            class_name: bbox_coords,
-                            'score': score
-                        })
+            output[video_idx] = {
+                self.mapping[x[0]] if self.mapping else x[0]: x[1]
+                for x in video_result
+            }
 
         return output

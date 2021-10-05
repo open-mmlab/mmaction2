@@ -8,15 +8,15 @@ from .compose import Compose
 from .formating import (Collect, FormatAudioShape, FormatGCNInput, FormatShape,
                         ImageToTensor, Rename, ToDataContainer, ToTensor,
                         Transpose)
-from .loading import (AudioDecode, AudioDecodeInit, AudioFeatureSelector,
-                      BuildPseudoClip, DecordDecode, DecordInit,
-                      DenseSampleFrames, GenerateLocalizationLabels,
-                      ImageDecode, LoadAudioFeature, LoadHVULabel,
-                      LoadLocalizationFeature, LoadProposals, OpenCVDecode,
-                      OpenCVInit, PIMSDecode, PIMSInit, PyAVDecode,
-                      PyAVDecodeMotionVector, PyAVInit, RawFrameDecode,
-                      SampleAVAFrames, SampleFrames, SampleProposalFrames,
-                      UntrimmedSampleFrames)
+from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
+                      AudioFeatureSelector, BuildPseudoClip, DecordDecode,
+                      DecordInit, DenseSampleFrames,
+                      GenerateLocalizationLabels, ImageDecode,
+                      LoadAudioFeature, LoadHVULabel, LoadLocalizationFeature,
+                      LoadProposals, OpenCVDecode, OpenCVInit, PIMSDecode,
+                      PIMSInit, PyAVDecode, PyAVDecodeMotionVector, PyAVInit,
+                      RawFrameDecode, SampleAVAFrames, SampleFrames,
+                      SampleProposalFrames, UntrimmedSampleFrames)
 from .pose_loading import (GeneratePoseTarget, LoadKineticsPose,
                            PaddingWithLoop, PoseDecode, PoseNormalize,
                            UniformSampleFrames)
@@ -37,5 +37,5 @@ __all__ = [
     'PyAVDecodeMotionVector', 'Rename', 'Imgaug', 'UniformSampleFrames',
     'PoseDecode', 'LoadKineticsPose', 'GeneratePoseTarget', 'PIMSInit',
     'PIMSDecode', 'TorchvisionTrans', 'PytorchVideoTrans', 'PoseNormalize',
-    'FormatGCNInput', 'PaddingWithLoop'
+    'FormatGCNInput', 'PaddingWithLoop', 'ArrayDecode'
 ]

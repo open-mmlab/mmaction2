@@ -11,7 +11,7 @@ except ImportError:
     package_model = None
 
 
-def mmdet2torchserve(
+def mmaction2torchserve(
     config_file: str,
     checkpoint_file: str,
     output_folder: str,
@@ -19,14 +19,14 @@ def mmdet2torchserve(
     model_version: str = '1.0',
     force: bool = False,
 ):
-    """Converts MMDetection model (config + checkpoint) to TorchServe `.mar`.
+    """Converts MMAction2 model (config + checkpoint) to TorchServe `.mar`.
 
     Args:
         config_file:
-            In MMDetection config format.
+            In MMAction2 config format.
             The contents vary for each task repository.
         checkpoint_file:
-            In MMDetection checkpoint format.
+            In MMAction2 checkpoint format.
             The contents vary for each task repository.
         output_folder:
             Folder where `{model_name}.mar` will be created.
@@ -41,6 +41,8 @@ def mmdet2torchserve(
             If True, if there is an existing `{model_name}.mar`
             file under `output_folder` it will be overwritten.
     """
+    mmcv.mkdir_or_exist(output_folder)
+
     config = mmcv.Config.fromfile(config_file)
 
     with TemporaryDirectory() as tmpdir:
@@ -50,7 +52,7 @@ def mmdet2torchserve(
             **{
                 'model_file': f'{tmpdir}/config.py',
                 'serialized_file': checkpoint_file,
-                'handler': f'{Path(__file__).parent}/mmdet_handler.py',
+                'handler': f'{Path(__file__).parent}/mmaction_handler.py',
                 'model_name': model_name or Path(checkpoint_file).stem,
                 'version': model_version,
                 'export_path': output_folder,
@@ -66,7 +68,7 @@ def mmdet2torchserve(
 
 def parse_args():
     parser = ArgumentParser(
-        description='Convert MMDetection models to TorchServe `.mar` format.')
+        description='Convert MMAction2 models to TorchServe `.mar` format.')
     parser.add_argument('config', type=str, help='config file path')
     parser.add_argument('checkpoint', type=str, help='checkpoint file path')
     parser.add_argument(
@@ -103,5 +105,5 @@ if __name__ == '__main__':
         raise ImportError('`torch-model-archiver` is required.'
                           'Try: pip install torch-model-archiver')
 
-    mmdet2torchserve(args.config, args.checkpoint, args.output_folder,
-                     args.model_name, args.model_version, args.force)
+    mmaction2torchserve(args.config, args.checkpoint, args.output_folder,
+                        args.model_name, args.model_version, args.force)

@@ -85,9 +85,6 @@ def inference_recognizer(model, video, outputs=None, as_tensor=True, **kwargs):
     elif isinstance(video, np.ndarray):
         assert len(video.shape) == 4, 'The shape should be T x H x W x C'
         input_flag = 'array'
-        raise NotImplementedError(f'The input type {input_flag} is not '
-                                  'supported yet, this is an interface '
-                                  'reserved for torchserve. ')
     elif isinstance(video, str) and video.startswith('http'):
         input_flag = 'video'
     elif isinstance(video, str) and osp.exists(video):

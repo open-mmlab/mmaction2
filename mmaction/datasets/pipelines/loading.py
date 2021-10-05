@@ -1339,6 +1339,53 @@ class RawFrameDecode:
 
 
 @PIPELINES.register_module()
+class ArrayDecode:
+    """Load and decode frames with given indices from a 4D array.
+
+    Required keys are "array and "frame_inds", added or modified keys are
+    "imgs", "img_shape" and "original_shape".
+    """
+
+    def __call__(self, results):
+        """Perform the ``RawFrameDecode`` to pick frames given indices.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+
+        modality = results['modality']
+        array = results['array']
+
+        imgs = list()
+
+        if results['frame_inds'].ndim != 1:
+            results['frame_inds'] = np.squeeze(results['frame_inds'])
+
+        offset = results.get('offset', 0)
+
+        for i, frame_idx in enumerate(results['frame_inds']):
+
+            frame_idx += offset
+            if modality == 'RGB':
+                imgs.append(array[frame_idx])
+            elif modality == 'Flow':
+                imgs.extend(
+                    [array[frame_idx, ..., 0], array[frame_idx, ..., 1]])
+            else:
+                raise NotImplementedError
+
+        results['imgs'] = imgs
+        results['original_shape'] = imgs[0].shape[:2]
+        results['img_shape'] = imgs[0].shape[:2]
+
+        return results
+
+    def __repr__(self):
+        return f'{self.__class__.__name__}()'
+
+
+@PIPELINES.register_module()
 class ImageDecode:
     """Load and decode images.
 
