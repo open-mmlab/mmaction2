@@ -1,3 +1,4 @@
+import shutil
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -16,6 +17,7 @@ def mmaction2torchserve(
     checkpoint_file: str,
     output_folder: str,
     model_name: str,
+    label_file: str,
     model_version: str = '1.0',
     force: bool = False,
 ):
@@ -31,6 +33,8 @@ def mmaction2torchserve(
         output_folder:
             Folder where `{model_name}.mar` will be created.
             The file created will be in TorchServe archive format.
+        label_file:
+            A txt file which contains the action category names.
         model_name:
             If not None, used for naming the `{model_name}.mar` file
             that will be created under `output_folder`.
@@ -47,6 +51,7 @@ def mmaction2torchserve(
 
     with TemporaryDirectory() as tmpdir:
         config.dump(f'{tmpdir}/config.py')
+        shutil.copy(label_file, f'{tmpdir}/label_map.txt')
 
         args = Namespace(
             **{
@@ -58,7 +63,7 @@ def mmaction2torchserve(
                 'export_path': output_folder,
                 'force': force,
                 'requirements_file': None,
-                'extra_files': None,
+                'extra_files': f'{tmpdir}/label_map.txt',
                 'runtime': 'python',
                 'archive_format': 'default'
             })
@@ -84,6 +89,11 @@ def parse_args():
         'file that will be created under `output_folder`.'
         'If None, `{Path(checkpoint_file).stem}` will be used.')
     parser.add_argument(
+        '--label-file',
+        type=str,
+        default=None,
+        help='A txt file which contains the action category names. ')
+    parser.add_argument(
         '--model-version',
         type=str,
         default='1.0',
@@ -106,4 +116,5 @@ if __name__ == '__main__':
                           'Try: pip install torch-model-archiver')
 
     mmaction2torchserve(args.config, args.checkpoint, args.output_folder,
-                        args.model_name, args.model_version, args.force)
+                        args.model_name, args.label_file, args.model_version,
+                        args.force)
