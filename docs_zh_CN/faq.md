@@ -18,6 +18,11 @@
     需要获取名为 `magick` 的 ImageMagick 二进制包的路径，来修改 `moviepy/config_defaults.py` 文件中的 `IMAGEMAGICK_BINARY`，如 `IMAGEMAGICK_BINARY = "C:\\Program Files\\ImageMagick_VERSION\\magick.exe"`
     2. 对于 Linux 用户，如果 ImageMagick 没有被 moviepy 检测，需要注释掉 `/etc/ImageMagick-6/policy.xml` 文件中的 `<policy domain="path" rights="none" pattern="@*" />`，即改为 `<!-- <policy domain="path" rights="none" pattern="@*" /> -->`。
 
+- **"Please install XXCODEBASE to use XXX"**
+
+    如得到报错消息 "Please install XXCODEBASE to use XXX"，代表 MMAction2 无法从 XXCODEBASE 中 import XXX。用户可以执行对应 import 语句定位原因。
+    一个可能的原因是，对于部分 OpenMMLAB 中的代码库，需先安装 mmcv-full 后再进行安装。
+
 ## 数据
 
 - **FileNotFound 如 `No such file or directory: xxx/xxx/img_00300.jpg`**
