@@ -43,3 +43,4 @@ repos:
     rev: v2.1.0
     hooks:
       - id: codespell
+        args: ["--skip", "*.ipynb", "-L", "Gool,formating,te"]

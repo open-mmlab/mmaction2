@@ -138,7 +138,7 @@ if not from_mmcv:
         dist.barrier()
         # dump the part result to the dir
         mmcv.dump(result_part, osp.join(tmpdir, f'part_{rank}.pkl'))
-        # synchronizes all processes for loding pickle file
+        # synchronizes all processes for loading pickle file
         dist.barrier()
         # collect all parts
         if rank != 0:

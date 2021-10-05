@@ -280,8 +280,8 @@ class LoadKineticsPose:
 
         def mapinds(inds):
             uni = np.unique(inds)
-            mapp = {x: i for i, x in enumerate(uni)}
-            inds = [mapp[x] for x in inds]
+            map_ = {x: i for i, x in enumerate(uni)}
+            inds = [map_[x] for x in inds]
             return np.array(inds, dtype=np.int16)
 
         if self.squeeze:

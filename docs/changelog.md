@@ -37,7 +37,7 @@
 
 - Remove redundant augmentations in config files ([#996](https://github.com/open-mmlab/mmaction2/pull/996))
 - Make resource directory to hold common resource pictures ([#1011](https://github.com/open-mmlab/mmaction2/pull/1011))
-- Remove deperecated FrameSelector ([#1010](https://github.com/open-mmlab/mmaction2/pull/1010))
+- Remove deprecated FrameSelector ([#1010](https://github.com/open-mmlab/mmaction2/pull/1010))
 - Support Concat Dataset ([#1000](https://github.com/open-mmlab/mmaction2/pull/1000))
 - Add `to-mp4` option to resize_videos.py ([#1021](https://github.com/open-mmlab/mmaction2/pull/1021))
 - Add option to keep tail frames ([#1050](https://github.com/open-mmlab/mmaction2/pull/1050))
