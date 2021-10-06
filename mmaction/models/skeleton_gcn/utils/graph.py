@@ -48,7 +48,7 @@ class Graph:
         Strategies' in our paper (https://arxiv.org/abs/1801.07455).
 
         max_hop (int): the maximal distance between two connected nodes.
-            Dafault: 1
+            Default: 1
         dilation (int): controls the spacing between the kernel points.
             Default: 1
     """

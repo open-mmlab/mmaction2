@@ -408,7 +408,7 @@ class TestDecode(BaseTestLoading):
                                              240, 320)
         assert results['original_shape'] == (240, 320)
 
-        # test frame selector in turbojpeg decording backend
+        # test frame selector in turbojpeg decoding backend
         # when start_index = 0
         inputs = copy.deepcopy(self.frame_results)
         inputs['frame_inds'] = np.arange(0, self.total_frames, 5)
@@ -423,7 +423,7 @@ class TestDecode(BaseTestLoading):
                                              320, 3)
         assert results['original_shape'] == (240, 320)
 
-        # test frame selector in turbojpeg decording backend
+        # test frame selector in turbojpeg decoding backend
         inputs = copy.deepcopy(self.frame_results)
         inputs['frame_inds'] = np.arange(1, self.total_frames, 5)
         frame_selector = RawFrameDecode(

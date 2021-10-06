@@ -33,9 +33,9 @@ OmniSource/
 ├── annotations
 │   ├── googleimage_200
 │   │   ├── googleimage_200.txt                       File list of all valid images crawled from Google.
-│   │   ├── tsn_8seg_googleimage_200_duplicate.txt    Postive file list of images crawled from Google, which is similar to a validation example.
-│   │   ├── tsn_8seg_googleimage_200.txt              Postive file list of images crawled from Google, filtered by the teacher model.
-│   │   └── tsn_8seg_googleimage_200_wodup.txt        Postive file list of images crawled from Google, filtered by the teacher model, after de-duplication.
+│   │   ├── tsn_8seg_googleimage_200_duplicate.txt    Positive file list of images crawled from Google, which is similar to a validation example.
+│   │   ├── tsn_8seg_googleimage_200.txt              Positive file list of images crawled from Google, filtered by the teacher model.
+│   │   └── tsn_8seg_googleimage_200_wodup.txt        Positive file list of images crawled from Google, filtered by the teacher model, after de-duplication.
 │   ├── insimage_200
 │   │   ├── insimage_200.txt
 │   │   ├── tsn_8seg_insimage_200_duplicate.txt
@@ -89,7 +89,7 @@ The data should be placed in `data/OmniSource/`. When data preparation finished,
 data/OmniSource/
 ├── annotations
 │   ├── googleimage_200
-│   │   └── tsn_8seg_googleimage_200_wodup.txt    Postive file list of images crawled from Google, filtered by the teacher model, after de-duplication.
+│   │   └── tsn_8seg_googleimage_200_wodup.txt    Positive file list of images crawled from Google, filtered by the teacher model, after de-duplication.
 │   ├── insimage_200
 │   │   └── tsn_8seg_insimage_200_wodup.txt
 │   ├── insvideo_200

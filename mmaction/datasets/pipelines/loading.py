@@ -1593,7 +1593,7 @@ class AudioFeatureSelector:
 
     Args:
         fixed_length (int): As the features selected by frames sampled may
-            not be extactly the same, `fixed_length` will truncate or pad them
+            not be exactly the same, `fixed_length` will truncate or pad them
             into the same size. Default: 128.
     """
 

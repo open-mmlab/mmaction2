@@ -168,7 +168,7 @@ def main():
         datasets = [build_dataset(cfg.data.train)]
 
     if len(cfg.workflow) == 2:
-        # For simplicity, omnisource is not compatiable with val workflow,
+        # For simplicity, omnisource is not compatible with val workflow,
         # we recommend you to use `--validate`
         assert not cfg.omnisource
         if args.validate:

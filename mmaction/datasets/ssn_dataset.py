@@ -148,7 +148,7 @@ class SSNDataset(BaseDataset):
         aug_segments (list[int]): Number of segments in starting and
             ending period. Default: (2, 2).
         aug_ratio (int | float | tuple[int | float]): The ratio of the length
-            of augmentation to that of the proposal. Defualt: (0.5, 0.5).
+            of augmentation to that of the proposal. Default: (0.5, 0.5).
         clip_len (int): Frames of each sampled output clip.
             Default: 1.
         frame_interval (int): Temporal interval of adjacent sampled frames.
@@ -489,7 +489,7 @@ class SSNDataset(BaseDataset):
         return eval_results
 
     def construct_proposal_pools(self):
-        """Construct positve proposal pool, incomplete proposal pool and
+        """Construct positive proposal pool, incomplete proposal pool and
         background proposal pool of the entire dataset."""
         for video_info in self.video_infos:
             positives = self.get_positives(

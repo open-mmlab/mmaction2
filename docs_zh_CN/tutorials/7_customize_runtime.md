@@ -41,7 +41,7 @@ optimizer = dict(type='Adam', lr=0.0003, weight_decay=0.0001)
 要修改模型的学习率，用户只需要在优化程序的配置中修改 “lr” 即可。
 用户可根据 [PyTorch API 文档](https://pytorch.org/docs/stable/optim.html?highlight=optim#module-torch.optim) 进行参数设置
 
-例如，如果想使用 `Adam` 并设置参数为 `torch.optim.Adam(parms, lr=0.001, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, amsgrad=False)`，
+例如，如果想使用 `Adam` 并设置参数为 `torch.optim.Adam(params, lr=0.001, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, amsgrad=False)`，
 则需要进行如下修改
 
 ```python

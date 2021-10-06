@@ -10,7 +10,7 @@ Models:
     Epochs: 80
     Parameters: 3088704
     Training Data: NTU60
-    Training Resouces: 2 GPUs
+    Training Resources: 2 GPUs
   Name: stgcn_80e_ntu60_xsub_keypoint
   Results:
     Dataset: NTU60
