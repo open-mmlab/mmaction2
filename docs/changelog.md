@@ -1,5 +1,49 @@
 ## Changelog
 
+### 0.19.0 (07/10/2021)
+
+**Highlights**
+
+- Support ST-GCN
+- Refactor the inference API
+- Add code spell check hook
+
+**New Features**
+
+- Support ST-GCN ([#1123](https://github.com/open-mmlab/mmaction2/pull/1123))
+
+**Improvement**
+
+- Add label maps for every dataset ([#1127](https://github.com/open-mmlab/mmaction2/pull/1127))
+- Remove useless code MultiGroupCrop ([#1180](https://github.com/open-mmlab/mmaction2/pull/1180))
+- Refactor Inference API ([#1191](https://github.com/open-mmlab/mmaction2/pull/1191))
+- Add code spell check hook ([#1208](https://github.com/open-mmlab/mmaction2/pull/1208))
+- Use docker in CI ([#1159](https://github.com/open-mmlab/mmaction2/pull/1159))
+
+**Documentations**
+
+- Update metafiles to new OpenMMLAB protocols ([#1134](https://github.com/open-mmlab/mmaction2/pull/1134))
+- Switch to new doc style ([#1160](https://github.com/open-mmlab/mmaction2/pull/1160))
+- Improve the ERROR message ([#1203](https://github.com/open-mmlab/mmaction2/pull/1203))
+- Fix invalid URL in getting_started ([#1169](https://github.com/open-mmlab/mmaction2/pull/1169))
+
+**Bug and Typo Fixes**
+
+- Compatible with new MMClassification ([#1139](https://github.com/open-mmlab/mmaction2/pull/1139))
+- Add missing runtime dependencies ([#1144](https://github.com/open-mmlab/mmaction2/pull/1144))
+- Fix THUMOS tag proposals path ([#1156](https://github.com/open-mmlab/mmaction2/pull/1156))
+- Fix LoadHVULabel ([#1194](https://github.com/open-mmlab/mmaction2/pull/1194))
+- Switch the default value of `persistent_workers` to False ([#1202](https://github.com/open-mmlab/mmaction2/pull/1202))
+- Fix `_freeze_stages` for MobileNetV2 ([#1193](https://github.com/open-mmlab/mmaction2/pull/1193))
+- Fix resume when building rawframes ([#1150](https://github.com/open-mmlab/mmaction2/pull/1150))
+- Fix device bug for class weight ([#1188](https://github.com/open-mmlab/mmaction2/pull/1188))
+- Correct Arg names in extract_audio.py ([#1148](https://github.com/open-mmlab/mmaction2/pull/1148))
+
+**ModelZoo**
+
+- Add TSM-MobileNetV2 ported from TSM ([#1163](https://github.com/open-mmlab/mmaction2/pull/1163))
+- Add ST-GCN for NTURGB+D-XSub-60 ([#1123](https://github.com/open-mmlab/mmaction2/pull/1123))
+
 ### 0.18.0 (02/09/2021)
 
 **Improvement**
