@@ -24,8 +24,8 @@
 
 - Update metafiles to new OpenMMLAB protocols ([#1134](https://github.com/open-mmlab/mmaction2/pull/1134))
 - Switch to new doc style ([#1160](https://github.com/open-mmlab/mmaction2/pull/1160))
-- Improve the ERROR message ([#1203](https://github.com/open-mmlab/mmaction2/pull/1203)) 
-- Fix invalid URL in getting_started ([#1169](https://github.com/open-mmlab/mmaction2/pull/1169)) 
+- Improve the ERROR message ([#1203](https://github.com/open-mmlab/mmaction2/pull/1203))
+- Fix invalid URL in getting_started ([#1169](https://github.com/open-mmlab/mmaction2/pull/1169))
 
 **Bug and Typo Fixes**
 
