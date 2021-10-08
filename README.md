@@ -90,7 +90,7 @@ Supported methods for Action Recognition:
 - ✅ [OmniSource](configs/recognition/omnisource/README.md) (ECCV'2020)
 - ✅ [MultiModality: Audio](configs/recognition_audio/resnet/README.md) (ArXiv'2020)
 - ✅ [TANet](configs/recognition/tanet/README.md) (ArXiv'2020)
-- ✅ [TRN](configs/recognition/trn/README.md) (CVPR'2015)
+- ✅ [TRN](configs/recognition/trn/README.md) (ECCV'2018)
 - ✅ [Timesformer](configs/recognition/timesformer/README.md) (ICML'2021)
 
 </details>
