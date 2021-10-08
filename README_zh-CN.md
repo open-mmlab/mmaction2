@@ -85,7 +85,7 @@ v0.19.0 版本已于 2021 年 10 月 7 日发布，可通过查阅 [更新日志
 - ✅ [MultiModality: Audio](/configs/recognition_audio/resnet/README_zh-CN.md) (ArXiv'2020)
 - ✅ [TANet](/configs/recognition/tanet/README_zh-CN.md) (ArXiv'2020)
 - ✅ [TRN](/configs/recognition/trn/README_zh-CN.md) (ECCV'2018)
-- ✅ [PoseC3D](configs/skeleton/posec3d/README.md) (ArXiv'2021)
+- ✅ [Timesformer](configs/recognition/timesformer/README_zh-CN.md) (ICML'2021)
 
 </details>
 
