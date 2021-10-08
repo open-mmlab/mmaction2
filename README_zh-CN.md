@@ -59,7 +59,7 @@ MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLa
 - Rethinking Self-supervised Correspondence Learning: A Video Frame-level Similarity Perspective, ICCV 2021 **Oral**. [[论文]](https://arxiv.org/abs/2103.17263)[[代码]](https://github.com/xvjiarui/VFS)
 - Video Swin Transformer. [[论文]](https://arxiv.org/abs/2106.13230)[[代码]](https://github.com/SwinTransformer/Video-Swin-Transformer)
 
-更多详情可见 [projects.md](docs/projects.md)
+更多详情可见 [相关工作](docs/projects.md)
 
 ## 更新记录
 
