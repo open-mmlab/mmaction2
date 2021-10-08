@@ -510,6 +510,7 @@ def main():
     skeleton_imgs = skeleton_pipeline(fake_anno)['imgs'][None]
     skeleton_imgs = skeleton_imgs.to(args.device)
 
+    # Build recognition model
     skeleton_model = build_model(skeleton_config.model)
     load_checkpoint(
         skeleton_model, args.skeleton_checkpoint, map_location=args.device)
