@@ -32,7 +32,7 @@ The master branch works with **PyTorch 1.3+**.
     Skeleton-base Action Recognition Results on NTU-RGB+D-120
 </div>
 
-### Major Features
+## Major Features
 
 - **Modular design**
 
@@ -57,15 +57,23 @@ The master branch works with **PyTorch 1.3+**.
 
   We provide detailed documentation and API reference, as well as unittests.
 
+## Projects
+
+Currently, there are many research works and projects built on MMAction2 by users from community, such as:
+
+- Evidential Deep Learning for Open Set Action Recognition, ICCV 2021 **Oral**. [[paper]](https://arxiv.org/abs/2107.10161)[[github]](https://github.com/Cogito2012/DEAR)
+- Rethinking Self-supervised Correspondence Learning: A Video Frame-level Similarity Perspective, ICCV 2021 **Oral**. [[paper]](https://arxiv.org/abs/2103.17263)[[github]](https://github.com/xvjiarui/VFS)
+- Video Swin Transformer. [[paper]](https://arxiv.org/abs/2106.13230)[[github]](https://github.com/SwinTransformer/Video-Swin-Transformer)
+
+etc., check [projects.md](docs/projects.md) to see all related projects.
+
 ## Changelog
 
 v0.19.0 was released in 07/10/2021. Please refer to [changelog.md](docs/changelog.md) for details and release history.
 
 ## Benchmark
 
-To demonstrate the efficacy and efficiency of our framework, we compare MMAction2 with some other popular frameworks and official releases in terms of speed.
-
-Details can be found in [benchmark](docs/benchmark.md).
+To demonstrate the efficacy and efficiency of our framework, we compare MMAction2 with some other popular frameworks and official releases in terms of speed. Details can be found in [benchmark](docs/benchmark.md).
 
 ## ModelZoo
 

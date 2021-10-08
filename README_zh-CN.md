@@ -51,15 +51,23 @@ MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLa
 - **详尽的单元测试和文档**
   MMAction2 提供了详尽的说明文档，API 接口说明，全面的单元测试，以供社区参考
 
+## 相关工作
+
+目前有许多研究工作或工程项目基于 MMAction2 搭建，例如：
+
+- Evidential Deep Learning for Open Set Action Recognition, ICCV 2021 **Oral**. [[论文]](https://arxiv.org/abs/2107.10161)[[代码]](https://github.com/Cogito2012/DEAR)
+- Rethinking Self-supervised Correspondence Learning: A Video Frame-level Similarity Perspective, ICCV 2021 **Oral**. [[论文]](https://arxiv.org/abs/2103.17263)[[代码]](https://github.com/xvjiarui/VFS)
+- Video Swin Transformer. [[论文]](https://arxiv.org/abs/2106.13230)[[代码]](https://github.com/SwinTransformer/Video-Swin-Transformer)
+
+更多详情可见 [projects.md](docs/projects.md)
+
 ## 更新记录
 
 v0.19.0 版本已于 2021 年 10 月 7 日发布，可通过查阅 [更新日志](/docs/changelog.md) 了解更多细节以及发布历史
 
 ## 基准测试
 
-为了验证 MMAction2 框架的高精度和高效率，开发成员将其与当前其他主流框架进行速度对比
-
-更多详情可见 [基准测试](/docs_zh_CN/benchmark.md)
+为了验证 MMAction2 框架的高精度和高效率，开发成员将其与当前其他主流框架进行速度对比。更多详情可见 [基准测试](/docs_zh_CN/benchmark.md)
 
 ## 模型库
 

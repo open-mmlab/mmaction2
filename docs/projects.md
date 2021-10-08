@@ -12,7 +12,7 @@ As the page might not be completed, please feel free to create a PR to update th
 
 There are also projects released with papers.
 Some of the papers are published in top-tier conferences (CVPR, ICCV, and ECCV), the others are also highly influential.
-To make this list also a reference for the community to develop and compare new object detection algorithms, we list them following the time order of top-tier conferences.
+To make this list also a reference for the community to develop and compare new video understanding algorithms, we list them following the time order of top-tier conferences.
 Methods already supported and maintained by MMAction2 are not listed.
 
 - Evidential Deep Learning for Open Set Action Recognition, ICCV 2021 Oral. [[paper]](https://arxiv.org/abs/2107.10161)[[github]](https://github.com/Cogito2012/DEAR)
