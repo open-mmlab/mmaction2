@@ -260,7 +260,9 @@ def parse_args():
         default=0.35,
         help='the threshold of human action score')
     parser.add_argument(
-        '--video', default='demo/test4.mp4', help='video file/url')
+        '--video',
+        default='demo/test_stdet_recognition.mp4',
+        help='video file/url')
     parser.add_argument(
         '--label-map',
         default='tools/data/ava/label_map.txt',
@@ -273,7 +275,7 @@ def parse_args():
         '--device', type=str, default='cuda:0', help='CPU/CUDA device option')
     parser.add_argument(
         '--out-filename',
-        default='demo/test4_demo2.mp4',
+        default='demo/test_stdet_recognition_output.mp4',
         help='output filename')
     parser.add_argument(
         '--predict-stepsize',
@@ -348,7 +350,6 @@ def detection_inference(args, frame_paths):
     prog_bar = mmcv.ProgressBar(len(frame_paths))
     for frame_path in frame_paths:
         result = inference_detector(model, frame_path)
-        # print(f'det result--{result}')
         # We only keep human detections with score larger than det_score_thr
         result = result[0][result[0][:, 4] >= args.det_score_thr]
         results.append(result)
@@ -364,8 +365,6 @@ def pose_inference(args, frame_paths, det_results):
     prog_bar = mmcv.ProgressBar(len(frame_paths))
     for f, d in zip(frame_paths, det_results):
         # Align input format
-        # for x in list(d):
-        #     print(dict(bbox=x))
         d = [dict(bbox=x) for x in list(d)]
 
         pose = inference_top_down_pose_model(model, f, d, format='xyxy')[0]
@@ -429,9 +428,7 @@ def main():
 
     frame_paths, original_frames = frame_extraction(args.video)
     num_frame = len(frame_paths)
-    print(f'num_frames--{num_frame}')  # 280
     h, w, _ = original_frames[0].shape
-    print(f'h,w--{h,w}\n')
 
     # resize frames to shortside 256
     new_w, new_h = mmcv.rescale_size((w, h), (256, np.Inf))
@@ -445,17 +442,12 @@ def main():
 
     sampler = [x for x in val_pipeline if x['type'] == 'SampleAVAFrames'][0]
     clip_len, frame_interval = sampler['clip_len'], sampler['frame_interval']
-    print(f'clip_len--{clip_len}, frame_interval--{frame_interval}')  # 8 8
 
     window_size = clip_len * frame_interval  # 64
     assert clip_len % 2 == 0, 'We would like to have an even clip_len'
     # Note that it's 1 based here
     timestamps = np.arange(window_size // 2, num_frame + 1 - window_size // 2,
                            args.predict_stepsize)
-    print(
-        f'timestamps--{timestamps}'
-    )  # [ 32  40  48  56  64  72  80  88  96 104 112 120 128 136 144 152 160
-    # 168 176 184 192 200 208 216 224 232 240 248]
 
     # Load spatio-temporal detection label_map
     label_map = load_label_map(args.label_map)
@@ -472,18 +464,14 @@ def main():
     # Get Human detection results
     center_frames = [frame_paths[ind - 1] for ind in timestamps]
     human_detections = detection_inference(args, center_frames)
-    print(f'len(human-detections---{len(human_detections)}')  # 28
 
     pose_results = pose_inference(args, center_frames, human_detections)
-    # print(f'pose_results', pose_results[0])
 
     for i in range(len(human_detections)):
         det = human_detections[i]
-        # print(f'--det shape--{det.shape}') # 5 5
         det[:, 0:4:2] *= w_ratio
         det[:, 1:4:2] *= h_ratio
         human_detections[i] = torch.from_numpy(det[:, :4]).to(args.device)
-        # print(f'human-det[i] shape--{human_detections[i].shape}') # (0-6) 4
 
     # Get img_norm_cfg
     img_norm_cfg = config['img_norm_cfg']
@@ -502,8 +490,7 @@ def main():
         start_index=0,
         modality='Pose',
         total_frames=num_frame)
-    num_person = max([len(x) for x in pose_results])  # 6
-    print(f'num_person--{num_person}')
+    num_person = max([len(x) for x in pose_results])
 
     num_keypoint = 17
     keypoint = np.zeros((num_person, num_frame, num_keypoint, 2),
@@ -538,7 +525,6 @@ def main():
     action_idx = np.argmax(output)
     action_result = label_map_skeleton[
         action_idx]  # action result for the whole video
-    print(f'action_label--{action_result}')
 
     # Build STDET model
     try:
@@ -580,9 +566,6 @@ def main():
                 img=[input_tensor],
                 img_metas=[[dict(img_shape=(new_h, new_w))]],
                 proposals=[[proposal]])
-            # print(f'spatial-temporal result--{result[0]}')
-            print(f'len(results[0]--{len(result[0])}')  # 80
-            print(f'proposal len--{len(proposal)}')  # 5
             result = result[0]
             prediction = []
             # N proposals
@@ -593,9 +576,7 @@ def main():
                 if i + 1 not in label_map:
                     continue
                 for j in range(proposal.shape[0]):
-                    # print('pred--',  result[i][j, 4])
                     if result[i][j, 4] > args.action_score_thr:
-                        # print('pred--', label_map[i+1], result[i][j,4])
                         prediction[j].append((label_map[i + 1], result[i][j,
                                                                           4]))
 
@@ -612,7 +593,6 @@ def main():
         start = timestamps[0] - old_frame_interval / n * (n - 1) / 2
         new_frame_inds = np.arange(
             len(timestamps) * n) * old_frame_interval / n + start
-        print(f'start--{start}, new_frames_inds--{new_frame_inds}')
         return new_frame_inds.astype(np.int)
 
     dense_n = int(args.predict_stepsize / args.output_stepsize)  # 2
