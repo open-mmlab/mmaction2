@@ -9,7 +9,7 @@ Apart from training/testing scripts, We provide lots of useful tools under the `
 - [Model Conversion](#model-conversion)
   - [MMAction2 model to ONNX (experimental)](#mmaction2-model-to-onnx--experimental-)
   - [Prepare a model for publishing](#prepare-a-model-for-publishing)
-  - [MMAction2 model to TorchServe](#model-serving)
+- [Model Serving](#model-serving)
 - [Miscellaneous](#miscellaneous)
   - [Evaluating a metric](#evaluating-a-metric)
   - [Print the entire config](#print-the-entire-config)
@@ -146,7 +146,9 @@ In order to serve an `MMAction2` model with [`TorchServe`](https://pytorch.org/s
 ```shell
 python tools/deployment/mmaction2torchserve.py ${CONFIG_FILE} ${CHECKPOINT_FILE} \
 --output_folder ${MODEL_STORE} \
---model-name ${MODEL_NAME}
+--model-name ${MODEL_NAME} \
+--label-file ${LABLE_FILE}
+
 ```
 
 #### 2. Build `mmaction-serve` docker image
@@ -173,45 +175,23 @@ mmaction-serve:latest
 **Note**: ${MODEL_STORE} needs to be an absolute path.
 [Read the docs](https://github.com/pytorch/serve/blob/072f5d088cce9bb64b2a18af065886c9b01b317b/docs/rest_api.md) about the Inference (8080), Management (8081) and Metrics (8082) APis
 
-#### 4. Test deploymen [TODO !!!!!]
+#### 4. Test deployment
 
 ```shell
-curl -O curl -O https://raw.githubusercontent.com/pytorch/serve/master/docs/images/3dogs.jpg
-curl http://127.0.0.1:8080/predictions/${MODEL_NAME} -T 3dogs.jpg
+# Assume you are under the directory `mmaction2`
+curl http://127.0.0.1:8080/predictions/${MODEL_NAME} -T demo/demo.mp4
 ```
 
 You should obtain a respose similar to:
 
 ```json
-[
-  {
-    "dog": [
-      402.9117736816406,
-      124.19664001464844,
-      571.7910766601562,
-      292.6463623046875
-    ],
-    "score": 0.9561963081359863
-  },
-  {
-    "dog": [
-      293.90057373046875,
-      196.2908477783203,
-      417.4869079589844,
-      286.2522277832031
-    ],
-    "score": 0.9179860353469849
-  },
-  {
-    "dog": [
-      202.178466796875,
-      86.3709487915039,
-      311.9863586425781,
-      276.28411865234375
-    ],
-    "score": 0.8933767080307007
-  }
-]
+{
+  "arm wrestling": 1.0,
+  "rock scissors paper": 4.962051880497143e-10,
+  "shaking hands": 3.9761663406245873e-10,
+  "massaging feet": 1.1924419784925533e-10,
+  "stretching leg": 1.0601879096849842e-10
+}
 ```
 
 ## Miscellaneous

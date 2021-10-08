@@ -28,7 +28,8 @@ RUN pip install torchserve torch-model-archiver
 ARG PYTORCH
 ARG CUDA
 RUN ["/bin/bash", "-c", "pip install mmcv-full==${MMCV} -f https://download.openmmlab.com/mmcv/dist/cu${CUDA//./}/torch${PYTORCH}/index.html"]
-RUN pip install mmaction2==${MMACTION}
+# RUN pip install mmaction2==${MMACTION}
+RUN pip install git+https://github.com/open-mmlab/mmaction2.git
 
 RUN useradd -m model-server \
     && mkdir -p /home/model-server/tmp
