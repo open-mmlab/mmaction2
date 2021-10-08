@@ -9,7 +9,8 @@ try:
     from model_archiver.model_packaging import package_model
     from model_archiver.model_packaging_utils import ModelExportUtils
 except ImportError:
-    package_model = None
+    raise ImportError('`torch-model-archiver` is required.'
+                      'Try: pip install torch-model-archiver')
 
 
 def mmaction2torchserve(
@@ -101,10 +102,6 @@ def parse_args():
 
 if __name__ == '__main__':
     args = parse_args()
-
-    if package_model is None:
-        raise ImportError('`torch-model-archiver` is required.'
-                          'Try: pip install torch-model-archiver')
 
     mmaction2torchserve(args.config, args.checkpoint, args.output_folder,
                         args.model_name, args.label_file, args.model_version,
