@@ -66,7 +66,7 @@ class BoxList:
         """Add data to a specified field.
 
         Args:
-            field: a string parameter used to speficy a related field to be
+            field: a string parameter used to specify a related field to be
                 accessed.
             field_data: a numpy array of [N, ...] representing the data
                 associated with the field.
@@ -94,7 +94,7 @@ class BoxList:
         collection.
 
         Args:
-            field: a string parameter used to speficy a related field to be
+            field: a string parameter used to specify a related field to be
                 accessed.
 
         Returns:

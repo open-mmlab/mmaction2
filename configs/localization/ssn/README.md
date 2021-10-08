@@ -16,7 +16,7 @@ year = {2017}
 
 ## Model Zoo
 
-| config | gpus | backbone | pretrain | mAP@0.3 | mAP@0.4 | mAP@0.5 | reference mAP@0.3 | reference mAP@0.4 | reference mAP@0.5 | gpu_mem(M) | ckpt | log | json | refrence ckpt | refrence json
+| config | gpus | backbone | pretrain | mAP@0.3 | mAP@0.4 | mAP@0.5 | reference mAP@0.3 | reference mAP@0.4 | reference mAP@0.5 | gpu_mem(M) | ckpt | log | json | reference ckpt | reference json
 |:-:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:-:|:-:|:-:|:-:|---|:--:|:--:|
 |[ssn_r50_450e_thumos14_rgb](/configs/localization/ssn/ssn_r50_450e_thumos14_rgb_train.py) |8| ResNet50 | ImageNet |29.37|22.15|15.69|[27.61](https://github.com/open-mmlab/mmaction/tree/c7e3b7c11fb94131be9b48a8e3d510589addc3ce#Get%20started)|[21.28](https://github.com/open-mmlab/mmaction/tree/c7e3b7c11fb94131be9b48a8e3d510589addc3ce#Get%20started)|[14.57](https://github.com/open-mmlab/mmaction/tree/c7e3b7c11fb94131be9b48a8e3d510589addc3ce#Get%20started)|6352|[ckpt](https://download.openmmlab.com/mmaction/localization/ssn/ssn_r50_450e_thumos14_rgb/ssn_r50_450e_thumos14_rgb_20201012-1920ab16.pth)| [log](https://download.openmmlab.com/mmaction/localization/ssn/ssn_r50_450e_thumos14_rgb/20201005_144656.log)| [json](https://download.openmmlab.com/mmaction/localization/ssn/ssn_r50_450e_thumos14_rgb/20201005_144656.log.json)| [ckpt](https://download.openmmlab.com/mmaction/localization/ssn/mmaction_reference/ssn_r50_450e_thumos14_rgb_ref/ssn_r50_450e_thumos14_rgb_ref_20201014-b6f48f68.pth)| [json](https://download.openmmlab.com/mmaction/localization/ssn/mmaction_reference/ssn_r50_450e_thumos14_rgb_ref/20201008_103258.log.json)|
 

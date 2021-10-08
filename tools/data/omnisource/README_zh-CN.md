@@ -88,7 +88,7 @@ OmniSource/
 data/OmniSource/
 ├── annotations
 │   ├── googleimage_200
-│   │   └── tsn_8seg_googleimage_200_wodup.txt    Postive file list of images crawled from Google, filtered by the teacher model, after de-duplication.
+│   │   └── tsn_8seg_googleimage_200_wodup.txt    Positive file list of images crawled from Google, filtered by the teacher model, after de-duplication.
 │   ├── insimage_200
 │   │   └── tsn_8seg_insimage_200_wodup.txt
 │   ├── insvideo_200

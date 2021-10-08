@@ -363,7 +363,7 @@ class Imgaug:
         """Default transforms for imgaug.
 
         Implement RandAugment by imgaug.
-        Plase visit `https://arxiv.org/abs/1909.13719` for more information.
+        Please visit `https://arxiv.org/abs/1909.13719` for more information.
 
         Augmenters and hyper parameters are borrowed from the following repo:
         https://github.com/tensorflow/tpu/blob/master/models/official/efficientnet/autoaugment.py # noqa
@@ -1812,7 +1812,7 @@ class AudioAmplify:
             raise TypeError('Amplification ratio should be float.')
 
     def __call__(self, results):
-        """Perfrom the audio amplification.
+        """Perform the audio amplification.
 
         Args:
             results (dict): The resulting dict to be modified and passed
@@ -1838,8 +1838,8 @@ class MelSpectrogram:
     keys are "audios".
 
     Args:
-        window_size (int): The window size in milisecond. Default: 32.
-        step_size (int): The step size in milisecond. Default: 16.
+        window_size (int): The window size in millisecond. Default: 32.
+        step_size (int): The step size in millisecond. Default: 16.
         n_mels (int): Number of mels. Default: 80.
         fixed_length (int): The sample length of melspectrogram maybe not
             exactly as wished due to different fps, fix the length for batch

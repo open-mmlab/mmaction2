@@ -697,7 +697,7 @@ class ResNet3d(nn.Module):
 
         Args:
             logger (logging.Logger): The logger used to print
-                debugging infomation.
+                debugging information.
         """
 
         state_dict_r2d = _load_checkpoint(self.pretrained)

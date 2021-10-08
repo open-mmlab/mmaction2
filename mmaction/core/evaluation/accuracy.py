@@ -210,7 +210,7 @@ def binary_precision_recall_curve(y_score, y_true):
     Returns:
         precision (np.ndarray): The precision of different thresholds.
         recall (np.ndarray): The recall of different thresholds.
-        thresholds (np.ndarray): Different thresholds at which precison and
+        thresholds (np.ndarray): Different thresholds at which precision and
             recall are tested.
     """
     assert isinstance(y_score, np.ndarray)

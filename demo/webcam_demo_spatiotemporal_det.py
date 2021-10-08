@@ -160,7 +160,7 @@ class TaskInfo:
         self.processed_frames = None  # model inputs
         self.frames_inds = None  # select frames from processed frames
         self.img_shape = None  # model inputs, processed frame shape
-        # `action_preds` is `list[list[tuple]]`. The outter brackets indicate
+        # `action_preds` is `list[list[tuple]]`. The outer brackets indicate
         # different bboxes and the intter brackets indicate different action
         # results for the same bbox. tuple contains `class_name` and `score`.
         self.action_preds = None  # stdet results
@@ -333,7 +333,7 @@ class StdetPredictor:
                                            result[class_id][bbox_id, 4]))
 
         # update task
-        # `preds` is `list[list[tuple]]`. The outter brackets indicate
+        # `preds` is `list[list[tuple]]`. The outer brackets indicate
         # different bboxes and the intter brackets indicate different action
         # results for the same bbox. tuple contains `class_name` and `score`.
         task.add_action_preds(preds)
