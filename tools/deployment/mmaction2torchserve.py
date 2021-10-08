@@ -24,26 +24,17 @@ def mmaction2torchserve(
     """Converts MMAction2 model (config + checkpoint) to TorchServe `.mar`.
 
     Args:
-        config_file:
-            In MMAction2 config format.
-            The contents vary for each task repository.
-        checkpoint_file:
-            In MMAction2 checkpoint format.
-            The contents vary for each task repository.
-        output_folder:
-            Folder where `{model_name}.mar` will be created.
+        config_file (str): In MMAction2 config format.
+        checkpoint_file (str): In MMAction2 checkpoint format.
+        output_folder (str): Folder where `{model_name}.mar` will be created.
             The file created will be in TorchServe archive format.
-        label_file:
-            A txt file which contains the action category names.
-        model_name:
-            If not None, used for naming the `{model_name}.mar` file
-            that will be created under `output_folder`.
+        label_file (str): A txt file which contains the action category names.
+        model_name (str | None): If not None, used for naming the
+            `{model_name}.mar` file that will be created under `output_folder`.
             If None, `{Path(checkpoint_file).stem}` will be used.
-        model_version:
-            Model's version.
-        force:
-            If True, if there is an existing `{model_name}.mar`
-            file under `output_folder` it will be overwritten.
+        model_version (str): Model's version.
+        force (bool): If True, if there is an existing `{model_name}.mar` file
+            under `output_folder` it will be overwritten.
     """
     mmcv.mkdir_or_exist(output_folder)
 
