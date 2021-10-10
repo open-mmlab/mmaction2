@@ -135,7 +135,7 @@ MMAction2 也提供了相应的中文 Colab 教程，可以点击 [这里](https
 
 MMAction2 将跟进学界的最新进展，并支持更多算法和框架。如果您对 MMAction2 有任何功能需求，请随时在 [问题](https://github.com/open-mmlab/mmaction2/issues/19) 中留言。
 
-## [数据集](https://mmaction2.readthedocs.io/en/latest/supported_datasets.html)
+## 数据集
 
 <table style="margin-left:auto;margin-right:auto;font-size:1.3vw;padding:3px 5px;text-align:center;vertical-align:center;">
   <tr>
@@ -194,7 +194,7 @@ MMAction2 将跟进学界的最新进展，并支持更多算法和框架。如�
   </tr>
 </table>
 
-标记 * 代表对应数据集并未被完全支持，但提供相应的数据准备步骤。
+标记 * 代表对应数据集并未被完全支持，但提供相应的数据准备步骤。整体的概况也可也在 [**数据集**](https://mmaction2.readthedocs.io/en/latest/supported_datasets.html) 页面中查看
 
 ## 基准测试
 

@@ -139,7 +139,7 @@ A summary can be found on the [**model zoo**](https://mmaction2.readthedocs.io/e
 We will keep up with the latest progress of the community and support more popular algorithms and frameworks.
 If you have any feature requests, please feel free to leave a comment in [Issues](https://github.com/open-mmlab/mmaction2/issues/19).
 
-## Supported [Datasets](https://mmaction2.readthedocs.io/en/latest/supported_datasets.html)
+## Supported Datasets
 
 <table style="margin-left:auto;margin-right:auto;font-size:1.3vw;padding:3px 5px;text-align:center;vertical-align:center;">
   <tr>
@@ -198,7 +198,7 @@ If you have any feature requests, please feel free to leave a comment in [Issues
   </tr>
 </table>
 
-Datasets marked with * are not fully supported yet, but related dataset preparation steps are provided.
+Datasets marked with * are not fully supported yet, but related dataset preparation steps are provided. A summary can be found on the [**Supported Datasets**](https://mmaction2.readthedocs.io/en/latest/supported_datasets.html) page.
 
 ## Benchmark
 
