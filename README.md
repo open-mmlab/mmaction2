@@ -74,29 +74,29 @@ A Colab tutorial is also provided. You may preview the notebook [here](demo/mmac
     <td colspan="5" style="font-weight:bold;">Action Recognition</td>
   </tr>
   <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/c3d/README.md">C3D</a> (CVPR'2014)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tsn/README.md">TSN</a> (ECCV'2016)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/i3d/README.md">I3D</a> (CVPR'2017)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/i3d/README.md">I3D Non-Local</a> (CVPR'2018)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/r2plus1d/README.md">R(2+1)D</a> (CVPR'2018)</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/trn/README.md">TRN</a> (ECCV'2018)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tsm/README.md">TSM</a> (ICCV'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tsm/README.md">TSM Non-Local</a> (ICCV'2019)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/r2plus1d/README.md">R(2+1)D</a> (CVPR'2018)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/i3d/README.md">I3D</a> (CVPR'2017)</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/i3d/README.md">I3D Non-Local</a> (CVPR'2017)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/slowonly/README.md">SlowOnly</a> (ICCV'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/slowfast/README.md">SlowFast</a> (ICCV'2019)</td>
+  </tr>
+  <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/csn/README.md">CSN</a> (ICCV'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tin/README.md">TIN</a> (AAAI'2020)</td>
-  </tr>
-  <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tpn/README.md">TPN</a> (CVPR'2020)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/c3d/README.md">C3D</a> (CVPR'2014)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/x3d/README.md">X3D</a> (CVPR'2020)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/omnisource/README.md">OmniSource</a> (ECCV'2020)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition_audio/resnet/README.md">MultiModality: Audio</a> (ArXiv'2020)</td>
   </tr>
   <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition_audio/resnet/README.md">MultiModality: Audio</a> (ArXiv'2020)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tanet/README.md">TANet</a> (ArXiv'2020)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/trn/README.md">TRN</a> (ECCV'2018)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/timesformer/README.md">TimeSformer</a> (ICML'2021)</td>
     <td></td>
     <td></td>
@@ -105,9 +105,9 @@ A Colab tutorial is also provided. You may preview the notebook [here](demo/mmac
     <td colspan="5" style="font-weight:bold;">Action Localization</td>
   </tr>
   <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/localization/ssn/README.md">SSN</a> (ICCV'2017)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/localization/bsn/README.md">BSN</a> (ECCV'2018)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/localization/bmn/README.md">BMN</a> (ICCV'2019)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/localization/ssn/README.md">SSN</a> (ICCV'2017)</td>
     <td></td>
     <td></td>
   </tr>
@@ -125,8 +125,8 @@ A Colab tutorial is also provided. You may preview the notebook [here](demo/mmac
     <td colspan="5" style="font-weight:bold;">Skeleton-based Action Recognition</td>
   </tr>
   <tr>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/posec3d/README.md">PoseC3D</a> (ArXiv'2021)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/stgcn/README.md">ST-GCN</a> (AAAI'2018)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/posec3d/README.md">PoseC3D</a> (ArXiv'2021)</td>
     <td></td>
     <td></td>
     <td></td>
@@ -146,25 +146,25 @@ If you have any feature requests, please feel free to leave a comment in [Issues
     <td colspan="4" style="font-weight:bold;">Action Recognition</td>
   </tr>
   <tr>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/ucf101/README.md">UCF101</a> (<a href="https://www.crcv.ucf.edu/research/data-sets/ucf101/">Homepage</a>) (CRCV-IR-12-01)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/hmdb51/README.md">HMDB51</a> (<a href="https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/">Homepage</a>) (ICCV'2011)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/ucf101/README.md">UCF101</a> (<a href="https://www.crcv.ucf.edu/research/data-sets/ucf101/">Homepage</a>) (CRCV-IR-12-01)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/activitynet/README.md">ActivityNet</a> (<a href="http://activity-net.org/">Homepage</a>) (CVPR'2015)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/kinetics/README.md">Kinetics-[400/600/700]</a> (<a href="https://deepmind.com/research/open-source/kinetics/">Homepage</a>) (CVPR'2017)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/sthv1/README.md">SthV1</a> (<a href="https://20bn.com/datasets/something-something/v1/">Homepage</a>) (ICCV'2017)</td>
   </tr>
   <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/sthv1/README.md">SthV1</a> (<a href="https://20bn.com/datasets/something-something/v1/">Homepage</a>) (ICCV'2017)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/sthv2/README.md">SthV2</a> (<a href="https://20bn.com/datasets/something-something/">Homepage</a>) (ICCV'2017)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/diving48/README.md">Diving48</a> (<a href="http://www.svcl.ucsd.edu/projects/resound/dataset.html">Homepage</a>) (ECCV'2018)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/jester/README.md">Jester</a> (<a href="https://20bn.com/datasets/jester/v1">Homepage</a>) (ICCV'2019)</td>
+  </tr>
+  <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/mit/README.md">Moments in Time</a> (<a href="http://moments.csail.mit.edu/">Homepage</a>) (TPAMI'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/mmit/README.md">Multi-Moments in Time</a> (<a href="http://moments.csail.mit.edu/challenge_iccv_2019.html">Homepage</a>) (ArXiv'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/hvu/README.md">HVU</a> (<a href="https://github.com/holistic-video-understanding/HVU-Dataset">Homepage</a>) (ECCV'2020)</td>
-  </tr>
-  <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/omnisource/README.md">OmniSource</a> (<a href="https://kennymckormick.github.io/omnisource/">Homepage</a>) (ECCV'2020)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/jester/README.md">Jester</a> (<a href="https://20bn.com/datasets/jester/v1">Homepage</a>) (ICCV'2019)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/diving48/README.md">Diving48</a> (<a href="http://www.svcl.ucsd.edu/projects/resound/dataset.html">Homepage</a>) (ECCV'2018)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/gym/README.md">FineGYM</a> (<a href="ttps://sdolivia.github.io/FineGym/">Homepage</a>) (CVPR'2020)</td>
   </tr>
   <tr>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/activitynet/README.md">ActivityNet</a> (<a href="http://activity-net.org/">Homepage</a>) (CVPR'2015)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/gym/README.md">FineGYM</a> (<a href="ttps://sdolivia.github.io/FineGym/">Homepage</a>) (CVPR'2020)</td>
     <td></td>
     <td></td>
     <td></td>
@@ -173,8 +173,8 @@ If you have any feature requests, please feel free to leave a comment in [Issues
     <td colspan="4" style="font-weight:bold;">Action Localization</td>
   </tr>
   <tr>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/activitynet/README.md">ActivityNet</a> (<a href="http://activity-net.org/">Homepage</a>) (CVPR'2015)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/thumos14/README.md">THUMOS14</a> (<a href="https://www.crcv.ucf.edu/THUMOS14/download.html">Homepage</a>) (THUMOS Challenge 2014)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/activitynet/README.md">ActivityNet</a> (<a href="http://activity-net.org/">Homepage</a>) (CVPR'2015)</td>
     <td></td>
     <td></td>
   </tr>
@@ -182,9 +182,9 @@ If you have any feature requests, please feel free to leave a comment in [Issues
     <td colspan="4" style="font-weight:bold;">Spatio-Temporal Action Detection</td>
   </tr>
   <tr>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/ava/README.md">AVA</a> (<a href="https://research.google.com/ava/index.html">Homepage</a>) (CVPR'2018)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/ucf101_24/README.md">UCF101-24*</a> (<a href="http://www.thumos.info/download.html">Homepage</a>) (CRCV-IR-12-01)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/jhmdb/README.md">JHMDB*</a> (<a href="http://jhmdb.is.tue.mpg.de/">Homepage</a>) (ICCV'2015)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/ava/README.md">AVA</a> (<a href="https://research.google.com/ava/index.html">Homepage</a>) (CVPR'2018)</td>
     <td></td>
   </tr>
   <tr>
