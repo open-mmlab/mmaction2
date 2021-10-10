@@ -187,8 +187,8 @@ MMAction2 将跟进学界的最新进展，并支持更多算法和框架。如�
     <td colspan="4" style="font-weight:bold;">基于骨骼点的动作识别数据集</td>
   </tr>
   <tr>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/skeleton/README_zh-CN.md">PoseC3D-FineGYM</a> (<a href="https://kennymckormick.github.io/posec3d/">主页</a>) (ArXiv'2021)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/skeleton/README_zh-CN.md">PoseC3D-NTURGB+D</a> (<a href="https://kennymckormick.github.io/posec3d/">主页</a>) (ArXiv'2021)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/skeleton/README.md">PoseC3D-FineGYM</a> (<a href="https://kennymckormick.github.io/posec3d/">主页</a>) (ArXiv'2021)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/skeleton/README.md">PoseC3D-NTURGB+D</a> (<a href="https://kennymckormick.github.io/posec3d/">主页</a>) (ArXiv'2021)</td>
     <td></td>
     <td></td>
   </tr>
