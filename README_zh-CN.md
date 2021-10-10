@@ -19,176 +19,37 @@ MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLa
 主分支代码目前支持 **PyTorch 1.3 以上**的版本
 
 <div align="center">
-  <img src="https://github.com/open-mmlab/mmaction2/raw/master/resources/mmaction2_overview.gif" width="450px"/><br>
-    Kinetics-400 上的动作识别
+  <div style="float:left;margin-right:10px;">
+  <img src="https://github.com/open-mmlab/mmaction2/raw/master/resources/mmaction2_overview.gif" width="380px"><br>
+    <p style="font-size:1.5vw;">Kinetics-400 上的动作识别</p>
+  </div>
+  <div style="float:right;margin-right:0px;">
+  <img src="https://user-images.githubusercontent.com/34324155/123989146-2ecae680-d9fb-11eb-916b-b9db5563a9e5.gif" width="380px"><br>
+    <p style="font-size:1.5vw;">NTURGB+D-120 上的基于人体姿态的动作识别</p>
+  </div>
 </div>
 <div align="center">
   <img src="https://github.com/open-mmlab/mmaction2/raw/master/resources/spatio-temporal-det.gif" width="800px"/><br>
-    AVA-2.1 上的时空动作检测
-</div>
-<div align="center">
-  <img src="https://user-images.githubusercontent.com/34324155/123989146-2ecae680-d9fb-11eb-916b-b9db5563a9e5.gif" width="500px"/><br>
-    NTURGB+D-120 上的基于人体姿态的动作识别
+    <p style="font-size:1.5vw;">AVA-2.1 上的时空动作检测</p>
 </div>
 
 ## 主要特性
 
-- **模块化设计**
-  MMAction2 将统一的视频理解框架解耦成不同的模块组件，通过组合不同的模块组件，用户可以便捷地构建自定义的视频理解模型
+- **模块化设计**：MMAction2 将统一的视频理解框架解耦成不同的模块组件，通过组合不同的模块组件，用户可以便捷地构建自定义的视频理解模型
 
-- **支持多样的数据集**
-  MMAction2 支持多种数据集的准备和构建，包括 UCF101, Kinetics-[400/600/700], Something-Something V1&V2, Moments in Time, Multi-Moments in Time, THUMOS14 等
+- **支持多种任务和数据集**：MMAction2 支持多种视频理解任务，包括动作识别，时序动作检测，时空动作检测以及基于人体姿态的动作识别，总共支持 **27** 种算法和 **20** 种数据集
 
-- **支持多种视频理解任务**
-  MMAction2 支持多种主流的视频理解任务
-
-  - 动作识别：TSN, TSM, TIN, R(2+1)D, I3D, SlowOnly, SlowFast, CSN, Non-local 等
-  - 时序动作检测：BSN, BMN, SSN
-  - 时空动作检测：SlowOnly + Fast-RCNN, SlowFast + Fast-RCNN
-
-  具体可参考 [模型库](#模型库)
-
-- **详尽的单元测试和文档**
-  MMAction2 提供了详尽的说明文档，API 接口说明，全面的单元测试，以供社区参考
+- **详尽的单元测试和文档**：MMAction2 提供了详尽的说明文档，API 接口说明，全面的单元测试，以供社区参考
 
 ## 更新记录
 
+- 2021-09-11 支持 ST-GCN，一种广泛使用的基于人体姿态与 GCN 的动作识别方法！
+
 v0.19.0 版本已于 2021 年 10 月 7 日发布，可通过查阅 [更新日志](/docs/changelog.md) 了解更多细节以及发布历史
-
-## 基准测试
-
-| Model  |input| io backend | batch size x gpus | MMAction2 (s/iter) | MMAction (s/iter) | Temporal-Shift-Module (s/iter) | PySlowFast (s/iter) |
-| :--- | :---------------:|:---------------:| :---------------:| :---------------:  | :--------------------: | :----------------------------: | :-----------------: |
-| [TSN](/configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py)| 256p rawframes |Memcached| 32x8|**[0.32](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction2/tsn_256p_rawframes_memcahed_32x8.zip)** | [0.38](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction/tsn_256p_rawframes_memcached_32x8.zip)| [0.42](https://download.openmmlab.com/mmaction/benchmark/recognition/temporal_shift_module/tsn_256p_rawframes_memcached_32x8.zip)| x |
-| [TSN](/configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py)| 256p dense-encoded video |Disk| 32x8|**[0.61](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction2/tsn_256p_fast_videos_disk_32x8.zip)**| x | x | TODO |
-|[I3D heavy](/configs/recognition/i3d/i3d_r50_video_heavy_8x8x1_100e_kinetics400_rgb.py)|256p videos|Disk |8x8| **[0.34](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction2/i3d_heavy_256p_videos_disk_8x8.zip)** | x | x | [0.44](https://download.openmmlab.com/mmaction/benchmark/recognition/pyslowfast/pysf_i3d_r50_8x8_video.log) |
-| [I3D](/configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py)|256p rawframes|Memcached|8x8| **[0.43](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction2/i3d_256p_rawframes_memcahed_8x8.zip)** | [0.56](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction/i3d_256p_rawframes_memcached_8x8.zip) | x | x |
-| [TSM](/configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py) |256p rawframes|Memcached| 8x8|**[0.31](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction2/tsm_256p_rawframes_memcahed_8x8.zip)** | x | [0.41](https://download.openmmlab.com/mmaction/benchmark/recognition/temporal_shift_module/tsm_256p_rawframes_memcached_8x8.zip) | x |
-| [Slowonly](/configs/recognition/slowonly/slowonly_r50_video_4x16x1_256e_kinetics400_rgb.py)|256p videos|Disk|8x8 | **[0.32](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction2/slowonly_256p_videos_disk_8x8.zip)** | TODO | x | [0.34](https://download.openmmlab.com/mmaction/benchmark/recognition/pyslowfast/pysf_slowonly_r50_4x16_video.log) |
-| [Slowfast](/configs/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb.py)|256p videos|Disk|8x8 | **[0.69](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction2/slowfast_256p_videos_disk_8x8.zip)** | x | x | [1.04](https://download.openmmlab.com/mmaction/benchmark/recognition/pyslowfast/pysf_slowfast_r50_4x16_video.log) |
-| [R(2+1)D](/configs/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb.py)|256p videos |Disk| 8x8|**[0.45](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction2/r2plus1d_256p_videos_disk_8x8.zip)** | x | x | x |
-
-更多详情可见 [基准测试](/docs_zh_CN/benchmark.md)
-
-## 模型库
-
-支持的行为识别方法：
-
-<details open>
-<summary>(点击收起)</summary>
-
-- ✅ [TSN](/configs/recognition/tsn/README_zh-CN.md) (ECCV'2016)
-- ✅ [TSM](/configs/recognition/tsm/README_zh-CN.md) (ICCV'2019)
-- ✅ [TSM Non-Local](/configs/recognition/tsm/README_zh-CN.md) (ICCV'2019)
-- ✅ [R(2+1)D](/configs/recognition/r2plus1d/README_zh-CN.md) (CVPR'2018)
-- ✅ [I3D](/configs/recognition/i3d/README_zh-CN.md) (CVPR'2017)
-- ✅ [I3D Non-Local](/configs/recognition/i3d/README_zh-CN.md) (CVPR'2018)
-- ✅ [SlowOnly](/configs/recognition/slowonly/README_zh-CN.md) (ICCV'2019)
-- ✅ [SlowFast](/configs/recognition/slowfast/README_zh-CN.md) (ICCV'2019)
-- ✅ [CSN](/configs/recognition/csn/README_zh-CN.md) (ICCV'2019)
-- ✅ [TIN](/configs/recognition/tin/README_zh-CN.md) (AAAI'2020)
-- ✅ [TPN](/configs/recognition/tpn/README_zh-CN.md) (CVPR'2020)
-- ✅ [C3D](/configs/recognition/c3d/README_zh-CN.md) (CVPR'2014)
-- ✅ [X3D](/configs/recognition/x3d/README_zh-CN.md) (CVPR'2020)
-- ✅ [OmniSource](/configs/recognition/omnisource/README_zh-CN.md) (ECCV'2020)
-- ✅ [MultiModality: Audio](/configs/recognition_audio/resnet/README_zh-CN.md) (ArXiv'2020)
-- ✅ [TANet](/configs/recognition/tanet/README_zh-CN.md) (ArXiv'2020)
-- ✅ [TRN](/configs/recognition/trn/README_zh-CN.md) (CVPR'2015)
-- ✅ [PoseC3D](configs/skeleton/posec3d/README.md) (ArXiv'2021)
-
-</details>
-
-支持的时序动作检测方法：
-
-<details open>
-<summary>(点击收起)</summary>
-
-- ✅ [BSN](/configs/localization/bsn/README_zh-CN.md) (ECCV'2018)
-- ✅ [BMN](/configs/localization/bmn/README_zh-CN.md) (ICCV'2019)
-- ✅ [SSN](/configs/localization/ssn/README_zh-CN.md) (ICCV'2017)
-
-</details>
-
-支持的时空检测方法：
-
-<details open>
-<summary>(点击收起)</summary>
-
-- ✅ [ACRN](configs/detection/acrn/README_zh-CN.md) (ECCV'2018)
-- ✅ [SlowOnly+Fast R-CNN](/configs/detection/ava/README_zh-CN.md) (ICCV'2019)
-- ✅ [SlowFast+Fast R-CNN](/configs/detection/ava/README_zh-CN.md) (ICCV'2019)
-- ✅ [Long-Term Feature Bank](/configs/detection/lfb/README_zh-CN.md) (CVPR'2019)
-
-</details>
-
-支持的基于骨骼点的动作识别方法:
-
-<details open>
-<summary>(点击收起)</summary>
-
-- ✅ [PoseC3D](configs/skeleton/posec3d/README.md) (ArXiv'2021)
-- ✅ [STGCN](configs/skeleton/stgcn/README.md) (AAAI'2018)
-
-</details>
-
-各个模型的结果和设置都可以在对应的 config 目录下的 *README_zh-CN.md* 中查看。整体的概况也可也在 [**模型库**](https://mmaction2.readthedocs.io/zh_CN/latest/recognition_models.html) 页面中查看
-
-我们将跟进学界的最新进展，并支持更多算法和框架。如果您对 MMAction2 有任何功能需求，请随时在 [问题](https://github.com/open-mmlab/mmaction2/issues/19) 中留言。
-
-## 数据集
-
-支持的 [数据集](https://mmaction2.readthedocs.io/zh_CN/latest/supported_datasets.html)：
-
-支持的动作识别数据集：
-
-<details open>
-<summary>(点击收起)</summary>
-
-- ✅ [UCF101](/tools/data/ucf101/README_zh-CN.md) \[ [主页](https://www.crcv.ucf.edu/research/data-sets/ucf101/) \] (CRCV-IR-12-01)
-- ✅ [HMDB51](/tools/data/hmdb51/README_zh-CN.md) \[ [主页](https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/) \] (ICCV'2011)
-- ✅ [Kinetics-[400/600/700]](/tools/data/kinetics/README_zh-CN.md) \[ [主页](https://deepmind.com/research/open-source/kinetics) \] (CVPR'2017)
-- ✅ [Something-Something V1](/tools/data/sthv1/README_zh-CN.md) \[ [主页](https://20bn.com/datasets/something-something/v1) \] (ICCV'2017)
-- ✅ [Something-Something V2](/tools/data/sthv2/README_zh-CN.md) \[ [主页](https://20bn.com/datasets/something-something) \] (ICCV'2017)
-- ✅ [Moments in Time](/tools/data/mit/README_zh-CN.md) \[ [主页](http://moments.csail.mit.edu/) \] (TPAMI'2019)
-- ✅ [Multi-Moments in Time](/tools/data/mmit/README_zh-CN.md) \[ [主页](http://moments.csail.mit.edu/challenge_iccv_2019.html) \] (ArXiv'2019)
-- ✅ [HVU](/tools/data/hvu/README_zh-CN.md) \[ [主页](https://github.com/holistic-video-understanding/HVU-Dataset) \] (ECCV'2020)
-- ✅ [Jester](/tools/data/jester/README_zh-CN.md) \[ [主页](https://20bn.com/datasets/jester/v1) \] (ICCV'2019)
-- ✅ [GYM](/tools/data/gym/README_zh-CN.md) \[ [主页](https://sdolivia.github.io/FineGym/) \] (CVPR'2020)
-- ✅ [ActivityNet](/tools/data/activitynet/README_zh-CN.md) \[ [主页](http://activity-net.org/) \] (CVPR'2015)
-- ✅ [Diving48](/tools/data/diving48/README_zh-CN.md) \[ [主页](http://www.svcl.ucsd.edu/projects/resound/dataset.html) \] (ECCV'2018)
-
-</details>
-
-支持的时序动作检测数据集：
-
-<details open>
-<summary>(点击收起)</summary>
-
-- ✅ [ActivityNet](/tools/data/activitynet/README_zh-CN.md) \[ [主页](http://activity-net.org/) \] (CVPR'2015)
-- ✅ [THUMOS14](/tools/data/thumos14/README_zh-CN.md) \[ [主页](https://www.crcv.ucf.edu/THUMOS14/download.html) \] (THUMOS Challenge 2014)
-
-</details>
-
-支持的时空动作检测数据集：
-
-<details open>
-<summary>(点击收起)</summary>
-
-- ✅ [AVA](/tools/data/ava/README_zh-CN.md) \[ [主页](https://research.google.com/ava/index.html) \] (CVPR'2018)
-- 🔲 [UCF101-24](/tools/data/ucf101_24/README_zh-CN.md) \[ [主页](http://www.thumos.info/download.html) \] (CRCV-IR-12-01)
-- 🔲 [JHMDB](/tools/data/jhmdb/README_zh-CN.md) \[ [主页](http://jhmdb.is.tue.mpg.de/) \] (ICCV'2013)
-
-</details>
-
-标记 🔲 代表对应数据集并未被完全支持，但提供相应的数据准备步骤。
 
 ## 安装
 
 请参考 [安装指南](/docs_zh_CN/install.md) 进行安装
-
-## 数据集准备
-
-请参考 [数据准备](/docs_zh_CN/data_preparation.md) 了解数据集准备概况。所有支持的数据集都列于 [数据集清单](/docs_zh_CN/supported_datasets.md) 中
 
 ## 教程
 
@@ -204,9 +65,158 @@ v0.19.0 版本已于 2021 年 10 月 7 日发布，可通过查阅 [更新日志
 
 MMAction2 也提供了相应的中文 Colab 教程，可以点击 [这里](https://colab.research.google.com/github/open-mmlab/mmaction2/blob/master/demo/mmaction2_tutorial_zh-CN.ipynb) 进行体验！
 
+## 模型库
+
+<table style="margin-left:auto;margin-right:auto;font-size:1.3vw;padding:3px 5px;text-align:center;vertical-align:center;">
+  <tr>
+    <td colspan="5" style="font-weight:bold;">行为识别方法</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/c3d/README_zh-CN.md">C3D</a> (CVPR'2014)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tsn/README_zh-CN.md">TSN</a> (ECCV'2016)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/i3d/README_zh-CN.md">I3D</a> (CVPR'2017)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/i3d/README_zh-CN.md">I3D Non-Local</a> (CVPR'2018)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/r2plus1d/README_zh-CN.md">R(2+1)D</a> (CVPR'2018)</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/trn/README_zh-CN.md">TRN</a> (ECCV'2018)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tsm/README_zh-CN.md">TSM</a> (ICCV'2019)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tsm/README_zh-CN.md">TSM Non-Local</a> (ICCV'2019)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/slowonly/README_zh-CN.md">SlowOnly</a> (ICCV'2019)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/slowfast/README_zh-CN.md">SlowFast</a> (ICCV'2019)</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/csn/README_zh-CN.md">CSN</a> (ICCV'2019)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tin/README_zh-CN.md">TIN</a> (AAAI'2020)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tpn/README_zh-CN.md">TPN</a> (CVPR'2020)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/x3d/README_zh-CN.md">X3D</a> (CVPR'2020)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/omnisource/README_zh-CN.md">OmniSource</a> (ECCV'2020)</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition_audio/resnet/README_zh-CN.md">MultiModality: Audio</a> (ArXiv'2020)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tanet/README_zh-CN.md">TANet</a> (ArXiv'2020)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/timesformer/README_zh-CN.md">TimeSformer</a> (ICML'2021)</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td colspan="5" style="font-weight:bold;">时序动作检测方法</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/localization/ssn/README_zh-CN.md">SSN</a> (ICCV'2017)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/localization/bsn/README_zh-CN.md">BSN</a> (ECCV'2018)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/localization/bmn/README_zh-CN.md">BMN</a> (ICCV'2019)</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td colspan="5" style="font-weight:bold;">时空动作检测方法</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/detection/acrn/README_zh-CN.md">ACRN</a> (ECCV'2018)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/detection/ava/README_zh-CN.md">SlowOnly+Fast R-CNN</a> (ICCV'2019)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/detection/ava/README_zh-CN.md">SlowFast+Fast R-CNN</a> (ICCV'2019)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/detection/lfb/README_zh-CN.md">LFB</a> (CVPR'2019)</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td colspan="5" style="font-weight:bold;">基于骨骼点的动作识别方法</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/stgcn/README.md">ST-GCN</a> (AAAI'2018)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/posec3d/README.md">PoseC3D</a> (ArXiv'2021)</td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
+
+各个模型的结果和设置都可以在对应的 config 目录下的 *README_zh-CN.md* 中查看。整体的概况也可也在 [**模型库**](https://mmaction2.readthedocs.io/zh_CN/latest/recognition_models.html) 页面中查看
+
+MMAction2 将跟进学界的最新进展，并支持更多算法和框架。如果您对 MMAction2 有任何功能需求，请随时在 [问题](https://github.com/open-mmlab/mmaction2/issues/19) 中留言。
+
+## 数据集
+
+<table style="margin-left:auto;margin-right:auto;font-size:1.3vw;padding:3px 5px;text-align:center;vertical-align:center;">
+  <tr>
+    <td colspan="4" style="font-weight:bold;">动作识别数据集</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/hmdb51/README_zh-CN.md">HMDB51</a> (<a href="https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/">主页</a>) (ICCV'2011)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/ucf101/README_zh-CN.md">UCF101</a> (<a href="https://www.crcv.ucf.edu/research/data-sets/ucf101/">主页</a>) (CRCV-IR-12-01)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/activitynet/README_zh-CN.md">ActivityNet</a> (<a href="http://activity-net.org/">主页</a>) (CVPR'2015)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/kinetics/README_zh-CN.md">Kinetics-[400/600/700]</a> (<a href="https://deepmind.com/research/open-source/kinetics/">主页</a>) (CVPR'2017)</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/sthv1/README_zh-CN.md">SthV1</a> (<a href="https://20bn.com/datasets/something-something/v1/">主页</a>) (ICCV'2017)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/sthv2/README_zh-CN.md">SthV2</a> (<a href="https://20bn.com/datasets/something-something/">主页</a>) (ICCV'2017)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/diving48/README_zh-CN.md">Diving48</a> (<a href="http://www.svcl.ucsd.edu/projects/resound/dataset.html">主页</a>) (ECCV'2018)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/jester/README_zh-CN.md">Jester</a> (<a href="https://20bn.com/datasets/jester/v1">主页</a>) (ICCV'2019)</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/mit/README_zh-CN.md">Moments in Time</a> (<a href="http://moments.csail.mit.edu/">主页</a>) (TPAMI'2019)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/mmit/README_zh-CN.md">Multi-Moments in Time</a> (<a href="http://moments.csail.mit.edu/challenge_iccv_2019.html">主页</a>) (ArXiv'2019)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/hvu/README_zh-CN.md">HVU</a> (<a href="https://github.com/holistic-video-understanding/HVU-Dataset">主页</a>) (ECCV'2020)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/omnisource/README_zh-CN.md">OmniSource</a> (<a href="https://kennymckormick.github.io/omnisource/">主页</a>) (ECCV'2020)</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/gym/README_zh-CN.md">FineGYM</a> (<a href="ttps://sdolivia.github.io/FineGym/">主页</a>) (CVPR'2020)</td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td colspan="4" style="font-weight:bold;">时序动作检测数据集</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/thumos14/README_zh-CN.md">THUMOS14</a> (<a href="https://www.crcv.ucf.edu/THUMOS14/download.html">主页</a>) (THUMOS Challenge 2014)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/activitynet/README_zh-CN.md">ActivityNet</a> (<a href="http://activity-net.org/">主页</a>) (CVPR'2015)</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td colspan="4" style="font-weight:bold;">时空动作检测数据集</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/ucf101_24/README_zh-CN.md">UCF101-24*</a> (<a href="http://www.thumos.info/download.html">主页</a>) (CRCV-IR-12-01)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/jhmdb/README_zh-CN.md">JHMDB*</a> (<a href="http://jhmdb.is.tue.mpg.de/">主页</a>) (ICCV'2015)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/ava/README_zh-CN.md">AVA</a> (<a href="https://research.google.com/ava/index.html">主页</a>) (CVPR'2018)</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td colspan="4" style="font-weight:bold;">基于骨骼点的动作识别数据集</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/skeleton/README.md">PoseC3D-FineGYM</a> (<a href="https://kennymckormick.github.io/posec3d/">主页</a>) (ArXiv'2021)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/skeleton/README.md">PoseC3D-NTURGB+D</a> (<a href="https://kennymckormick.github.io/posec3d/">主页</a>) (ArXiv'2021)</td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
+
+标记 * 代表对应数据集并未被完全支持，但提供相应的数据准备步骤。整体的概况也可也在 [**数据集**](https://mmaction2.readthedocs.io/en/latest/supported_datasets.html) 页面中查看
+
+## 基准测试
+
+为了验证 MMAction2 框架的高精度和高效率，开发成员将其与当前其他主流框架进行速度对比。更多详情可见 [基准测试](/docs_zh_CN/benchmark.md)
+
+## 数据集准备
+
+请参考 [数据准备](/docs_zh_CN/data_preparation.md) 了解数据集准备概况。所有支持的数据集都列于 [数据集清单](/docs_zh_CN/supported_datasets.md) 中
+
 ## 常见问题
 
 请参考 [FAQ](/docs_zh_CN/faq.md) 了解其他用户的常见问题
+
+## 相关工作
+
+目前有许多研究工作或工程项目基于 MMAction2 搭建，例如：
+
+- Evidential Deep Learning for Open Set Action Recognition, ICCV 2021 **Oral**. [[论文]](https://arxiv.org/abs/2107.10161)[[代码]](https://github.com/Cogito2012/DEAR)
+- Rethinking Self-supervised Correspondence Learning: A Video Frame-level Similarity Perspective, ICCV 2021 **Oral**. [[论文]](https://arxiv.org/abs/2103.17263)[[代码]](https://github.com/xvjiarui/VFS)
+- Video Swin Transformer. [[论文]](https://arxiv.org/abs/2106.13230)[[代码]](https://github.com/SwinTransformer/Video-Swin-Transformer)
+
+更多详情可见 [相关工作](docs/projects.md)
 
 ## 许可
 

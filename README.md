@@ -20,194 +20,37 @@ It is a part of the [OpenMMLab](http://openmmlab.org/) project.
 The master branch works with **PyTorch 1.3+**.
 
 <div align="center">
-  <img src="https://github.com/open-mmlab/mmaction2/raw/master/resources/mmaction2_overview.gif" width="450px"/><br>
-    Action Recognition Results on Kinetics-400
+  <div style="float:left;margin-right:10px;">
+  <img src="https://github.com/open-mmlab/mmaction2/raw/master/resources/mmaction2_overview.gif" width="380px"><br>
+    <p style="font-size:1.5vw;">Action Recognition Results on Kinetics-400</p>
+  </div>
+  <div style="float:right;margin-right:0px;">
+  <img src="https://user-images.githubusercontent.com/34324155/123989146-2ecae680-d9fb-11eb-916b-b9db5563a9e5.gif" width="380px"><br>
+    <p style="font-size:1.5vw;">Skeleton-base Action Recognition Results on NTU-RGB+D-120</p>
+  </div>
 </div>
 <div align="center">
   <img src="https://github.com/open-mmlab/mmaction2/raw/master/resources/spatio-temporal-det.gif" width="800px"/><br>
-    Spatio-Temporal Action Detection Results on AVA-2.1
-</div>
-<div align="center">
-  <img src="https://user-images.githubusercontent.com/34324155/123989146-2ecae680-d9fb-11eb-916b-b9db5563a9e5.gif" width="500px"/><br>
-    Skeleton-base Action Recognition Results on NTU-RGB+D-120
+    <p style="font-size:1.5vw;">Spatio-Temporal Action Detection Results on AVA-2.1</p>
 </div>
 
-### Major Features
+## Major Features
 
-- **Modular design**
+- **Modular design**: We decompose a video understanding framework into different components. One can easily construct a customized video understanding framework by combining different modules.
 
-  We decompose the video understanding framework into different components and one can easily construct a customized
-  video understanding framework by combining different modules.
+- **Support four major video understanding tasks**: MMAction2 implements various algorithms for multiple video understanding tasks, including action recognition, action localization, spatio-temporal action detection, and skeleton-based action detection. We support **27** different algorithms and **20** different datasets for the four major tasks.
 
-- **Support for various datasets**
+- **Well tested and documented**: We provide detailed documentation and API reference, as well as unit tests.
 
-  The toolbox directly supports multiple datasets, UCF101, Kinetics-[400/600/700], Something-Something V1&V2, Moments in Time, Multi-Moments in Time, THUMOS14, etc.
+## News
 
-- **Support for multiple video understanding frameworks**
+- (2021-09-11) We support ST-GCN, a well-known GCN-based approach for skeleton-based action recognition!
 
-  MMAction2 implements popular frameworks for video understanding:
-
-  - For action recognition, various algorithms are implemented, including TSN, TSM, TIN, R(2+1)D, I3D, SlowOnly, SlowFast, CSN, Non-local, etc.
-
-  - For temporal action localization, we implement BSN, BMN, SSN.
-
-  - For spatial temporal detection, we implement SlowOnly, SlowFast.
-
-- **Well tested and documented**
-
-  We provide detailed documentation and API reference, as well as unittests.
-
-## Changelog
-
-v0.19.0 was released in 07/10/2021. Please refer to [changelog.md](docs/changelog.md) for details and release history.
-
-## Benchmark
-
-| Model  |input| io backend | batch size x gpus | MMAction2 (s/iter) | MMAction (s/iter) | Temporal-Shift-Module (s/iter) | PySlowFast (s/iter) |
-| :--- | :---------------:|:---------------:| :---------------:| :---------------:  | :--------------------: | :----------------------------: | :-----------------: |
-| [TSN](/configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py)| 256p rawframes |Memcached| 32x8|**[0.32](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction2/tsn_256p_rawframes_memcahed_32x8.zip)** | [0.38](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction/tsn_256p_rawframes_memcached_32x8.zip)| [0.42](https://download.openmmlab.com/mmaction/benchmark/recognition/temporal_shift_module/tsn_256p_rawframes_memcached_32x8.zip)| x |
-| [TSN](/configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py)| 256p dense-encoded video |Disk| 32x8|**[0.61](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction2/tsn_256p_fast_videos_disk_32x8.zip)**| x | x | TODO |
-|[I3D heavy](/configs/recognition/i3d/i3d_r50_video_heavy_8x8x1_100e_kinetics400_rgb.py)|256p videos|Disk |8x8| **[0.34](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction2/i3d_heavy_256p_videos_disk_8x8.zip)** | x | x | [0.44](https://download.openmmlab.com/mmaction/benchmark/recognition/pyslowfast/pysf_i3d_r50_8x8_video.log) |
-| [I3D](/configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py)|256p rawframes|Memcached|8x8| **[0.43](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction2/i3d_256p_rawframes_memcahed_8x8.zip)** | [0.56](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction/i3d_256p_rawframes_memcached_8x8.zip) | x | x |
-| [TSM](/configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py) |256p rawframes|Memcached| 8x8|**[0.31](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction2/tsm_256p_rawframes_memcahed_8x8.zip)** | x | [0.41](https://download.openmmlab.com/mmaction/benchmark/recognition/temporal_shift_module/tsm_256p_rawframes_memcached_8x8.zip) | x |
-| [Slowonly](/configs/recognition/slowonly/slowonly_r50_video_4x16x1_256e_kinetics400_rgb.py)|256p videos|Disk|8x8 | **[0.32](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction2/slowonly_256p_videos_disk_8x8.zip)** | TODO | x | [0.34](https://download.openmmlab.com/mmaction/benchmark/recognition/pyslowfast/pysf_slowonly_r50_4x16_video.log) |
-| [Slowfast](/configs/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb.py)|256p videos|Disk|8x8 | **[0.69](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction2/slowfast_256p_videos_disk_8x8.zip)** | x | x | [1.04](https://download.openmmlab.com/mmaction/benchmark/recognition/pyslowfast/pysf_slowfast_r50_4x16_video.log) |
-| [R(2+1)D](/configs/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb.py)|256p videos |Disk| 8x8|**[0.45](https://download.openmmlab.com/mmaction/benchmark/recognition/mmaction2/r2plus1d_256p_videos_disk_8x8.zip)** | x | x | x |
-
-Details can be found in [benchmark](docs/benchmark.md).
-
-## ModelZoo
-
-Supported methods for Action Recognition:
-
-<details open>
-<summary>(click to collapse)</summary>
-
-- ✅ [TSN](configs/recognition/tsn/README.md) (ECCV'2016)
-- ✅ [TSM](configs/recognition/tsm/README.md) (ICCV'2019)
-- ✅ [TSM Non-Local](configs/recognition/tsm/README.md) (ICCV'2019)
-- ✅ [R(2+1)D](configs/recognition/r2plus1d/README.md) (CVPR'2018)
-- ✅ [I3D](configs/recognition/i3d/README.md) (CVPR'2017)
-- ✅ [I3D Non-Local](configs/recognition/i3d/README.md) (CVPR'2018)
-- ✅ [SlowOnly](configs/recognition/slowonly/README.md) (ICCV'2019)
-- ✅ [SlowFast](configs/recognition/slowfast/README.md) (ICCV'2019)
-- ✅ [CSN](configs/recognition/csn/README.md) (ICCV'2019)
-- ✅ [TIN](configs/recognition/tin/README.md) (AAAI'2020)
-- ✅ [TPN](configs/recognition/tpn/README.md) (CVPR'2020)
-- ✅ [C3D](configs/recognition/c3d/README.md) (CVPR'2014)
-- ✅ [X3D](configs/recognition/x3d/README.md) (CVPR'2020)
-- ✅ [OmniSource](configs/recognition/omnisource/README.md) (ECCV'2020)
-- ✅ [MultiModality: Audio](configs/recognition_audio/resnet/README.md) (ArXiv'2020)
-- ✅ [TANet](configs/recognition/tanet/README.md) (ArXiv'2020)
-- ✅ [TRN](configs/recognition/trn/README.md) (CVPR'2015)
-- ✅ [Timesformer](configs/recognition/timesformer/README.md) (ICML'2021)
-
-</details>
-
-Supported methods for Temporal Action Detection:
-
-<details open>
-<summary>(click to collapse)</summary>
-
-- ✅ [BSN](configs/localization/bsn/README.md) (ECCV'2018)
-- ✅ [BMN](configs/localization/bmn/README.md) (ICCV'2019)
-- ✅ [SSN](configs/localization/ssn/README.md) (ICCV'2017)
-
-</details>
-
-Supported methods for Spatial Temporal Action Detection:
-
-<details open>
-<summary>(click to collapse)</summary>
-
-- ✅ [ACRN](configs/detection/acrn/README.md) (ECCV'2018)
-- ✅ [SlowOnly+Fast R-CNN](configs/detection/ava/README.md) (ICCV'2019)
-- ✅ [SlowFast+Fast R-CNN](configs/detection/ava/README.md) (ICCV'2019)
-- ✅ [Long-Term Feature Bank](configs/detection/lfb/README.md) (CVPR'2019)
-
-</details>
-
-Supported methods for Skeleton-based Action Recognition:
-
-<details open>
-<summary>(click to collapse)</summary>
-
-- ✅ [PoseC3D](configs/skeleton/posec3d/README.md) (ArXiv'2021)
-- ✅ [STGCN](configs/skeleton/stgcn/README.md) (AAAI'2018)
-
-</details>
-
-Results and models are available in the *README.md* of each method's config directory.
-A summary can be found in the [**model zoo**](https://mmaction2.readthedocs.io/en/latest/recognition_models.html) page.
-
-We will keep up with the latest progress of the community, and support more popular algorithms and frameworks.
-If you have any feature requests, please feel free to leave a comment in [Issues](https://github.com/open-mmlab/mmaction2/issues/19).
-
-## Dataset
-
-Supported [datasets](https://mmaction2.readthedocs.io/en/latest/supported_datasets.html):
-
-Supported datasets for Action Recognition:
-
-<details open>
-<summary>(click to collapse)</summary>
-
-- ✅ [UCF101](/tools/data/ucf101/README.md) \[ [Homepage](https://www.crcv.ucf.edu/research/data-sets/ucf101/) \] (CRCV-IR-12-01)
-- ✅ [HMDB51](/tools/data/hmdb51/README.md) \[ [Homepage](https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/) \] (ICCV'2011)
-- ✅ [Kinetics-[400/600/700]](/tools/data/kinetics/README.md) \[ [Homepage](https://deepmind.com/research/open-source/kinetics) \] (CVPR'2017)
-- ✅ [Something-Something V1](/tools/data/sthv1/README.md) \[ [Homepage](https://20bn.com/datasets/something-something/v1) \] (ICCV'2017)
-- ✅ [Something-Something V2](/tools/data/sthv2/README.md) \[ [Homepage](https://20bn.com/datasets/something-something) \] (ICCV'2017)
-- ✅ [Moments in Time](/tools/data/mit/README.md) \[ [Homepage](http://moments.csail.mit.edu/) \] (TPAMI'2019)
-- ✅ [Multi-Moments in Time](/tools/data/mmit/README.md) \[ [Homepage](http://moments.csail.mit.edu/challenge_iccv_2019.html) \] (ArXiv'2019)
-- ✅ [HVU](/tools/data/hvu/README.md) \[ [Homepage](https://github.com/holistic-video-understanding/HVU-Dataset) \] (ECCV'2020)
-- ✅ [Jester](/tools/data/jester/README.md) \[ [Homepage](https://20bn.com/datasets/jester/v1) \] (ICCV'2019)
-- ✅ [GYM](/tools/data/gym/README.md) \[ [Homepage](https://sdolivia.github.io/FineGym/) \] (CVPR'2020)
-- ✅ [ActivityNet](/tools/data/activitynet/README.md) \[ [Homepage](http://activity-net.org/) \] (CVPR'2015)
-- ✅ [Diving48](/tools/data/diving48/README.md) \[ [Homepage](http://www.svcl.ucsd.edu/projects/resound/dataset.html) \] (ECCV'2018)
-- ✅ [OmniSource](/tools/data/omnisource/README.md) \[ [Homepage](https://kennymckormick.github.io/omnisource/) \] (ECCV'2020)
-
-</details>
-
-Supported datasets for Temporal Action Detection
-
-<details open>
-<summary>(click to collapse)</summary>
-
-- ✅ [ActivityNet](/tools/data/activitynet/README.md) \[ [Homepage](http://activity-net.org/) \] (CVPR'2015)
-- ✅ [THUMOS14](/tools/data/thumos14/README.md) \[ [Homepage](https://www.crcv.ucf.edu/THUMOS14/download.html) \] (THUMOS Challenge 2014)
-
-</details>
-
-Supported datasets for Spatial Temporal Action Detection
-
-<details open>
-<summary>(click to collapse)</summary>
-
-- ✅ [AVA](/tools/data/ava/README.md) \[ [Homepage](https://research.google.com/ava/index.html) \] (CVPR'2018)
-- 🔲 [UCF101-24](/tools/data/ucf101_24/README.md) \[ [Homepage](http://www.thumos.info/download.html) \] (CRCV-IR-12-01)
-- 🔲 [JHMDB](/tools/data/jhmdb/README.md) \[ [Homepage](http://jhmdb.is.tue.mpg.de/) \] (ICCV'2013)
-
-</details>
-
-Supported datasets for Skeleton-based Action Detection
-
-<details open>
-<summary>(click to collapse)</summary>
-
-- ✅ [PoseC3D-FineGYM](/tools/data/skeleton/README.md) \[ [Homepage](https://kennymckormick.github.io/posec3d/) \] (arXiv'2021)
-
-</details>
-
-Datasets marked with 🔲 are not fully supported yet, but related dataset preparation steps are provided.
+**Release**: v0.19.0 was released in 07/10/2021. Please refer to [changelog.md](docs/changelog.md) for details and release history.
 
 ## Installation
 
 Please refer to [install.md](docs/install.md) for installation.
-
-## Data Preparation
-
-Please refer to [data_preparation.md](docs/data_preparation.md) for a general knowledge of data preparation.
-The supported datasets are listed in [supported_datasets.md](docs/supported_datasets.md)
 
 ## Get Started
 
@@ -224,9 +67,161 @@ There are also tutorials:
 
 A Colab tutorial is also provided. You may preview the notebook [here](demo/mmaction2_tutorial.ipynb) or directly [run](https://colab.research.google.com/github/open-mmlab/mmaction2/blob/master/demo/mmaction2_tutorial.ipynb) on Colab.
 
+## Supported Methods
+
+<table style="margin-left:auto;margin-right:auto;font-size:1.3vw;padding:3px 5px;text-align:center;vertical-align:center;">
+  <tr>
+    <td colspan="5" style="font-weight:bold;">Action Recognition</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/c3d/README.md">C3D</a> (CVPR'2014)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tsn/README.md">TSN</a> (ECCV'2016)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/i3d/README.md">I3D</a> (CVPR'2017)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/i3d/README.md">I3D Non-Local</a> (CVPR'2018)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/r2plus1d/README.md">R(2+1)D</a> (CVPR'2018)</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/trn/README.md">TRN</a> (ECCV'2018)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tsm/README.md">TSM</a> (ICCV'2019)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tsm/README.md">TSM Non-Local</a> (ICCV'2019)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/slowonly/README.md">SlowOnly</a> (ICCV'2019)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/slowfast/README.md">SlowFast</a> (ICCV'2019)</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/csn/README.md">CSN</a> (ICCV'2019)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tin/README.md">TIN</a> (AAAI'2020)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tpn/README.md">TPN</a> (CVPR'2020)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/x3d/README.md">X3D</a> (CVPR'2020)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/omnisource/README.md">OmniSource</a> (ECCV'2020)</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition_audio/resnet/README.md">MultiModality: Audio</a> (ArXiv'2020)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/tanet/README.md">TANet</a> (ArXiv'2020)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/timesformer/README.md">TimeSformer</a> (ICML'2021)</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td colspan="5" style="font-weight:bold;">Action Localization</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/localization/ssn/README.md">SSN</a> (ICCV'2017)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/localization/bsn/README.md">BSN</a> (ECCV'2018)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/localization/bmn/README.md">BMN</a> (ICCV'2019)</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td colspan="5" style="font-weight:bold;">Spatio-Temporal Action Detection</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/detection/acrn/README.md">ACRN</a> (ECCV'2018)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/detection/ava/README.md">SlowOnly+Fast R-CNN</a> (ICCV'2019)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/detection/ava/README.md">SlowFast+Fast R-CNN</a> (ICCV'2019)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/detection/lfb/README.md">LFB</a> (CVPR'2019)</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td colspan="5" style="font-weight:bold;">Skeleton-based Action Recognition</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/stgcn/README.md">ST-GCN</a> (AAAI'2018)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/posec3d/README.md">PoseC3D</a> (ArXiv'2021)</td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
+
+Results and models are available in the *README.md* of each method's config directory.
+A summary can be found on the [**model zoo**](https://mmaction2.readthedocs.io/en/latest/recognition_models.html) page.
+
+We will keep up with the latest progress of the community and support more popular algorithms and frameworks.
+If you have any feature requests, please feel free to leave a comment in [Issues](https://github.com/open-mmlab/mmaction2/issues/19).
+
+## Supported Datasets
+
+<table style="margin-left:auto;margin-right:auto;font-size:1.3vw;padding:3px 5px;text-align:center;vertical-align:center;">
+  <tr>
+    <td colspan="4" style="font-weight:bold;">Action Recognition</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/hmdb51/README.md">HMDB51</a> (<a href="https://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/">Homepage</a>) (ICCV'2011)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/ucf101/README.md">UCF101</a> (<a href="https://www.crcv.ucf.edu/research/data-sets/ucf101/">Homepage</a>) (CRCV-IR-12-01)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/activitynet/README.md">ActivityNet</a> (<a href="http://activity-net.org/">Homepage</a>) (CVPR'2015)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/kinetics/README.md">Kinetics-[400/600/700]</a> (<a href="https://deepmind.com/research/open-source/kinetics/">Homepage</a>) (CVPR'2017)</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/sthv1/README.md">SthV1</a> (<a href="https://20bn.com/datasets/something-something/v1/">Homepage</a>) (ICCV'2017)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/sthv2/README.md">SthV2</a> (<a href="https://20bn.com/datasets/something-something/">Homepage</a>) (ICCV'2017)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/diving48/README.md">Diving48</a> (<a href="http://www.svcl.ucsd.edu/projects/resound/dataset.html">Homepage</a>) (ECCV'2018)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/jester/README.md">Jester</a> (<a href="https://20bn.com/datasets/jester/v1">Homepage</a>) (ICCV'2019)</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/mit/README.md">Moments in Time</a> (<a href="http://moments.csail.mit.edu/">Homepage</a>) (TPAMI'2019)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/mmit/README.md">Multi-Moments in Time</a> (<a href="http://moments.csail.mit.edu/challenge_iccv_2019.html">Homepage</a>) (ArXiv'2019)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/hvu/README.md">HVU</a> (<a href="https://github.com/holistic-video-understanding/HVU-Dataset">Homepage</a>) (ECCV'2020)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/omnisource/README.md">OmniSource</a> (<a href="https://kennymckormick.github.io/omnisource/">Homepage</a>) (ECCV'2020)</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/gym/README.md">FineGYM</a> (<a href="ttps://sdolivia.github.io/FineGym/">Homepage</a>) (CVPR'2020)</td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td colspan="4" style="font-weight:bold;">Action Localization</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/thumos14/README.md">THUMOS14</a> (<a href="https://www.crcv.ucf.edu/THUMOS14/download.html">Homepage</a>) (THUMOS Challenge 2014)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/activitynet/README.md">ActivityNet</a> (<a href="http://activity-net.org/">Homepage</a>) (CVPR'2015)</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td colspan="4" style="font-weight:bold;">Spatio-Temporal Action Detection</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/ucf101_24/README.md">UCF101-24*</a> (<a href="http://www.thumos.info/download.html">Homepage</a>) (CRCV-IR-12-01)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/jhmdb/README.md">JHMDB*</a> (<a href="http://jhmdb.is.tue.mpg.de/">Homepage</a>) (ICCV'2015)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/ava/README.md">AVA</a> (<a href="https://research.google.com/ava/index.html">Homepage</a>) (CVPR'2018)</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td colspan="4" style="font-weight:bold;">Skeleton-based Action Recognition</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/skeleton/README.md">PoseC3D-FineGYM</a> (<a href="https://kennymckormick.github.io/posec3d/">Homepage</a>) (ArXiv'2021)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/skeleton/README.md">PoseC3D-NTURGB+D</a> (<a href="https://kennymckormick.github.io/posec3d/">Homepage</a>) (ArXiv'2021)</td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
+
+Datasets marked with * are not fully supported yet, but related dataset preparation steps are provided. A summary can be found on the [**Supported Datasets**](https://mmaction2.readthedocs.io/en/latest/supported_datasets.html) page.
+
+## Benchmark
+
+To demonstrate the efficacy and efficiency of our framework, we compare MMAction2 with some other popular frameworks and official releases in terms of speed. Details can be found in [benchmark](docs/benchmark.md).
+
+## Data Preparation
+
+Please refer to [data_preparation.md](docs/data_preparation.md) for a general knowledge of data preparation.
+The supported datasets are listed in [supported_datasets.md](docs/supported_datasets.md)
+
 ## FAQ
 
 Please refer to [FAQ](docs/faq.md) for frequently asked questions.
+
+## Projects built on MMAction2
+
+Currently, there are many research works and projects built on MMAction2 by users from community, such as:
+
+- Video Swin Transformer. [[paper]](https://arxiv.org/abs/2106.13230)[[github]](https://github.com/SwinTransformer/Video-Swin-Transformer)
+- Evidential Deep Learning for Open Set Action Recognition, ICCV 2021 **Oral**. [[paper]](https://arxiv.org/abs/2107.10161)[[github]](https://github.com/Cogito2012/DEAR)
+- Rethinking Self-supervised Correspondence Learning: A Video Frame-level Similarity Perspective, ICCV 2021 **Oral**. [[paper]](https://arxiv.org/abs/2103.17263)[[github]](https://github.com/xvjiarui/VFS)
+
+etc., check [projects.md](docs/projects.md) to see all related projects.
 
 ## License
 
@@ -251,9 +246,9 @@ We appreciate all contributions to improve MMAction2. Please refer to [CONTRIBUT
 
 ## Acknowledgement
 
-MMAction2 is an open source project that is contributed by researchers and engineers from various colleges and companies.
-We appreciate all the contributors who implement their methods or add new features, as well as users who give valuable feedbacks.
-We wish that the toolbox and benchmark could serve the growing research community by providing a flexible toolkit to reimplement existing methods and develop their own new models.
+MMAction2 is an open-source project that is contributed by researchers and engineers from various colleges and companies.
+We appreciate all the contributors who implement their methods or add new features and users who give valuable feedback.
+We wish that the toolbox and benchmark could serve the growing research community by providing a flexible toolkit to reimplement existing methods and develop their new models.
 
 ## Projects in OpenMMLab
 
