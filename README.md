@@ -21,11 +21,11 @@ The master branch works with **PyTorch 1.3+**.
 
 <div align="center">
   <div style="float:left;margin-right:10px;">
-  <img src="https://github.com/open-mmlab/mmaction2/raw/master/resources/mmaction2_overview.gif" width="400px"><br>
+  <img src="https://github.com/open-mmlab/mmaction2/raw/master/resources/mmaction2_overview.gif" width="380px"><br>
     <p style="font-size:1.5vw;">Action Recognition Results on Kinetics-400</p>
   </div>
   <div style="float:right;margin-right:0px;">
-  <img src="https://user-images.githubusercontent.com/34324155/123989146-2ecae680-d9fb-11eb-916b-b9db5563a9e5.gif" width="400px"><br>
+  <img src="https://user-images.githubusercontent.com/34324155/123989146-2ecae680-d9fb-11eb-916b-b9db5563a9e5.gif" width="380px"><br>
     <p style="font-size:1.5vw;">Skeleton-base Action Recognition Results on NTU-RGB+D-120</p>
   </div>
 </div>
