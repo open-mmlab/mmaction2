@@ -1,6 +1,5 @@
 import argparse
 import math
-import os
 import os.path as osp
 
 import mmcv
@@ -281,21 +280,17 @@ def gendata(data_path,
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Generate Pose Annotation for NTURGB-D raw skeleton data')
-    parser.add_argument('data_path', type=str, help='')
+    parser.add_argument('data_path', type=str, help='raw skeleton data path')
     parser.add_argument(
         'ignore_sample_path',
-        str=str,
+        type=str,
         default='samples_with_missing_skeletons.txt')
-    parser.add_argument(
-        'output_folder', type=str, help='output path', default='data/ntu/')
-    parser.add_argument('benchmark', type=str, default='xsub')
-    parser.add_argument('part', type=str, default='train')
+    parser.add_argument('output', type=str, help='output pickle name')
+    parser.add_argument('--benchmark', type=str, default='xsub')
+    parser.add_argument('--part', type=str, default='train')
     # parser.add_argument('--device', type=str, default='cuda:0')
     args = parser.parse_args()
 
-    output_path = os.path.join(args.output_folder, args.benchmark)
-    if not os.path.exists(output_path):
-        os.makedirs(output_path)
     anno = gendata(args.data_path, args.ignore_sample_path, args.benchmark,
                    args.part)
-    mmcv.dump(anno, output_path)
+    mmcv.dump(anno, args.output)
