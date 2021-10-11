@@ -236,7 +236,7 @@ def gendata(data_path,
                                  4])
 
         if benchmark == 'xsub':
-            istraining = (subject_id in training_cameras)
+            istraining = (subject_id in training_subjects)
         elif benchmark == 'xview':
             istraining = (camera_id in training_cameras)
         else:
