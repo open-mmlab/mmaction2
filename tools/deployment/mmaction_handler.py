@@ -6,9 +6,13 @@ import warnings
 import decord
 import numpy as np
 import torch
-from ts.torch_handler.base_handler import BaseHandler
 
 from mmaction.apis import inference_recognizer, init_recognizer  # noqa: F401
+
+try:
+    from ts.torch_handler.base_handler import BaseHandler
+except ImportError:
+    raise ImportError('`ts` is required. Try: pip install ts.')
 
 
 class MMActionHandler(BaseHandler):
