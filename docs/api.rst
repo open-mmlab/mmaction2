@@ -16,7 +16,7 @@ evaluation
 .. automodule:: mmaction.core.evaluation
     :members:
 
-lr
+scheduler
 ^^
 .. automodule:: mmaction.core.scheduler
     :members:

@@ -74,18 +74,18 @@ html_theme = 'pytorch_sphinx_theme'
 
 html_theme_path = [pytorch_sphinx_theme.get_html_theme_path()]
 html_theme_options = {
-    # 'logo_url': 'https://mmocr.readthedocs.io/en/latest/',
+    # 'logo_url': 'https://mmaction2.readthedocs.io/en/latest/',
     'menu': [
         {
             'name':
             'Tutorial',
             'url':
             'https://colab.research.google.com/github/'
-            'open-mmlab/mmocr/blob/main/demo/MMOCR_Tutorial.ipynb'
+            'open-mmlab/mmaction2/blob/master/demo/mmaction2_tutorial.ipynb'
         },
         {
             'name': 'GitHub',
-            'url': 'https://github.com/open-mmlab/mmocr'
+            'url': 'https://github.com/open-mmlab/mmaction2'
         },
         {
             'name':
