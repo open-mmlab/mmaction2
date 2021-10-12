@@ -12,10 +12,10 @@ import torch
 from mmcv import DictAction
 from mmcv.runner import load_checkpoint
 
+from mmaction.apis import inference_recognizer
 from mmaction.datasets.pipelines import Compose
 from mmaction.models import build_detector, build_model, build_recognizer
 from mmaction.utils import import_module_error_func
-from mmaction.apis import inference_recognizer, init_recognizer
 
 try:
     from mmdet.apis import inference_detector, init_detector
@@ -250,7 +250,7 @@ def parse_args():
         default='/mnt/lustre21/DATAshare2/duanhaodong/posec3d/'
         'posec3d_k400.pth',
         help='skeleton-based action recognition checkpoint file/url')
-    
+
     parser.add_argument(
         '--rgb-config',
         default='configs/recognition/tsn/'
@@ -505,6 +505,7 @@ def main():
     fake_anno['keypoint_score'] = keypoint_score
 
     skeleton_config = mmcv.Config.fromfile(args.skeleton_config)
+    skeleton_config.model.cls_head.num_classes = 400  # for K400 dataset
     skeleton_pipeline = Compose(skeleton_config.test_pipeline)
     skeleton_imgs = skeleton_pipeline(fake_anno)['imgs'][None]
     skeleton_imgs = skeleton_imgs.to(args.device)
@@ -525,19 +526,23 @@ def main():
     action_idx = np.argmax(output)
     skeleton_action_result = label_map_recognition[
         action_idx]  # skeleton-based action result for the whole video
+    print(f'skeleton_action_result--{skeleton_action_result}')
 
-    # Build rgb-based recognition model 
+    # Build rgb-based recognition model
     rgb_config = mmcv.Config.fromfile(args.rgb_config)
-    rgb_config.model.backbone.pretrained = None 
-    rgb_model = build_recognizer(rgb_config.model, test_cfg=rgb_config.get('test_cfg'))
+    rgb_config.model.backbone.pretrained = None
+    rgb_model = build_recognizer(
+        rgb_config.model, test_cfg=rgb_config.get('test_cfg'))
     load_checkpoint(rgb_model, args.rgb_checkpoint, map_location=args.device)
+    rgb_model.cfg = rgb_config
     rgb_model.to(args.device)
     rgb_model.eval()
-    action_results = inference_recognizer(rgb_model, args.video, args.label_map_recognition)
-    rgb_action_result = action_results[0][0] # rgb-based action result for the whole video
-    print(f'rgb_results--{action_results}')
-    ss
-    
+    action_results = inference_recognizer(rgb_model, args.video,
+                                          args.label_map_recognition)
+    rgb_action_result = action_results[0][
+        0]  # rgb-based action result for the whole video
+    print(f'rgb_results--{rgb_action_result}')
+
     for i in range(len(human_detections)):
         det = human_detections[i]
         det[:, 0:4:2] *= w_ratio
@@ -561,11 +566,13 @@ def main():
         pass
 
     stdet_config.model.backbone.pretrained = None
-    model = build_detector(stdet_config.model, test_cfg=stdet_config.get('test_cfg'))
+    stdet_model = build_detector(
+        stdet_config.model, test_cfg=stdet_config.get('test_cfg'))
 
-    load_checkpoint(model, args.stdet_checkpoint, map_location=args.device)
-    model.to(args.device)
-    model.eval()
+    load_checkpoint(
+        stdet_model, args.stdet_checkpoint, map_location=args.device)
+    stdet_model.to(args.device)
+    stdet_model.eval()
 
     predictions = []
 
@@ -587,7 +594,7 @@ def main():
         input_tensor = torch.from_numpy(input_array).to(args.device)
 
         with torch.no_grad():
-            result = model(
+            result = stdet_model(
                 return_loss=False,
                 img=[input_tensor],
                 img_metas=[[dict(img_shape=(new_h, new_w))]],
@@ -627,7 +634,8 @@ def main():
         for i in dense_timestamps(timestamps, dense_n)
     ]
     print('Performing visualization')
-    vis_frames = visualize(frames, results, pose_results, skeleton_action_result)
+    vis_frames = visualize(frames, results, pose_results,
+                           skeleton_action_result)
     vid = mpy.ImageSequenceClip([x[:, :, ::-1] for x in vis_frames],
                                 fps=args.output_fps)
     vid.write_videofile(args.out_filename)
