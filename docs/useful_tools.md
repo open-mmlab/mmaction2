@@ -4,14 +4,21 @@ Apart from training/testing scripts, We provide lots of useful tools under the `
 
 <!-- TOC -->
 
+- [Useful Tools Link](#useful-tools-link)
 - [Log Analysis](#log-analysis)
 - [Model Complexity](#model-complexity)
 - [Model Conversion](#model-conversion)
-  - [MMAction2 model to ONNX (experimental)](#mmaction2-model-to-onnx--experimental-)
+  - [MMAction2 model to ONNX (experimental)](#mmaction2-model-to-onnx-experimental)
   - [Prepare a model for publishing](#prepare-a-model-for-publishing)
+- [Model Serving](#model-serving)
+  - [1. Convert model from MMAction2 to TorchServe](#1-convert-model-from-mmaction2-to-torchserve)
+  - [2. Build `mmaction-serve` docker image](#2-build-mmaction-serve-docker-image)
+  - [3. Launch `mmaction-serve`](#3-launch-mmaction-serve)
+  - [4. Test deployment](#4-test-deployment)
 - [Miscellaneous](#miscellaneous)
   - [Evaluating a metric](#evaluating-a-metric)
   - [Print the entire config](#print-the-entire-config)
+  - [Check videos](#check-videos)
 
 <!-- TOC -->
 
@@ -135,6 +142,63 @@ python tools/deployment/publish_model.py work_dirs/tsn_r50_1x1x3_100e_kinetics40
 ```
 
 The final output filename will be `tsn_r50_1x1x3_100e_kinetics400_rgb-{hash id}.pth`.
+
+## Model Serving
+
+In order to serve an `MMAction2` model with [`TorchServe`](https://pytorch.org/serve/), you can follow the steps:
+
+### 1. Convert model from MMAction2 to TorchServe
+
+```shell
+python tools/deployment/mmaction2torchserve.py ${CONFIG_FILE} ${CHECKPOINT_FILE} \
+--output_folder ${MODEL_STORE} \
+--model-name ${MODEL_NAME} \
+--label-file ${LABLE_FILE}
+
+```
+
+### 2. Build `mmaction-serve` docker image
+
+```shell
+DOCKER_BUILDKIT=1 docker build -t mmaction-serve:latest docker/serve/
+```
+
+### 3. Launch `mmaction-serve`
+
+Check the official docs for [running TorchServe with docker](https://github.com/pytorch/serve/blob/master/docker/README.md#running-torchserve-in-a-production-docker-environment).
+
+Example:
+
+```shell
+docker run --rm \
+--cpus 8 \
+--gpus device=0 \
+-p8080:8080 -p8081:8081 -p8082:8082 \
+--mount type=bind,source=$MODEL_STORE,target=/home/model-server/model-store \
+mmaction-serve:latest
+```
+
+**Note**: ${MODEL_STORE} needs to be an absolute path.
+[Read the docs](https://github.com/pytorch/serve/blob/072f5d088cce9bb64b2a18af065886c9b01b317b/docs/rest_api.md) about the Inference (8080), Management (8081) and Metrics (8082) APis
+
+### 4. Test deployment
+
+```shell
+# Assume you are under the directory `mmaction2`
+curl http://127.0.0.1:8080/predictions/${MODEL_NAME} -T demo/demo.mp4
+```
+
+You should obtain a response similar to:
+
+```json
+{
+  "arm wrestling": 1.0,
+  "rock scissors paper": 4.962051880497143e-10,
+  "shaking hands": 3.9761663406245873e-10,
+  "massaging feet": 1.1924419784925533e-10,
+  "stretching leg": 1.0601879096849842e-10
+}
+```
 
 ## Miscellaneous
 

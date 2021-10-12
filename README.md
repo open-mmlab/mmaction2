@@ -44,7 +44,8 @@ The master branch works with **PyTorch 1.3+**.
 
 ## News
 
-- (2021-09-11) We support ST-GCN, a well-known GCN-based approach for skeleton-based action recognition!
+- (2021-10-12) We support **TorchServe**! Now recognition models in MMAction2 can be packed as a `.mar` file and served with TorchServe.
+- (2021-09-11) We support **ST-GCN**, a well-known GCN-based approach for skeleton-based action recognition!
 
 **Release**: v0.19.0 was released in 07/10/2021. Please refer to [changelog.md](docs/changelog.md) for details and release history.
 
