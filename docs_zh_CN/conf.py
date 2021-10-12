@@ -76,11 +76,12 @@ html_theme_options = {
             '教程',
             'url':
             'https://colab.research.google.com/github/'
-            'open-mmlab/mmocr/blob/main/demo/MMOCR_Tutorial.ipynb'
+            'open-mmlab/mmaction2/blob/master/demo/'
+            'mmaction2_tutorial_zh-CN.ipynb'
         },
         {
             'name': 'GitHub',
-            'url': 'https://github.com/open-mmlab/mmocr'
+            'url': 'https://github.com/open-mmlab/mmaction2'
         },
         {
             'name':
