@@ -13,8 +13,9 @@ from mmcv import DictAction
 from mmcv.runner import load_checkpoint
 
 from mmaction.datasets.pipelines import Compose
-from mmaction.models import build_detector, build_model
+from mmaction.models import build_detector, build_model, build_recognizer
 from mmaction.utils import import_module_error_func
+from mmaction.apis import inference_recognizer, init_recognizer
 
 try:
     from mmdet.apis import inference_detector, init_detector
@@ -208,12 +209,12 @@ def visualize(frames,
 def parse_args():
     parser = argparse.ArgumentParser(description='MMAction2 demo')
     parser.add_argument(
-        '--config',
+        '--stdet-config',
         default=('configs/detection/ava/'
                  'slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb.py'),
         help='spatio temporal detection config file path')
     parser.add_argument(
-        '--checkpoint',
+        '--stdet-checkpoint',
         default=('https://download.openmmlab.com/mmaction/detection/ava/'
                  'slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb/'
                  'slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb'
@@ -249,6 +250,19 @@ def parse_args():
         default='/mnt/lustre21/DATAshare2/duanhaodong/posec3d/'
         'posec3d_k400.pth',
         help='skeleton-based action recognition checkpoint file/url')
+    
+    parser.add_argument(
+        '--rgb-config',
+        default='configs/recognition/tsn/'
+        'tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py',
+        help='rgb-based action recognition config file path')
+    parser.add_argument(
+        '--rgb-checkpoint',
+        default='https://download.openmmlab.com/mmaction/recognition/'
+        'tsn/tsn_r50_1x1x3_100e_kinetics400_rgb/'
+        'tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth',
+        help='rgb-based action recognition checkpoint file/url')
+
     parser.add_argument(
         '--det-score-thr',
         type=float,
@@ -268,9 +282,9 @@ def parse_args():
         default='tools/data/ava/label_map.txt',
         help='label map file for spatio-temporal action detection')
     parser.add_argument(
-        '--label-map-skeleton',
+        '--label-map-recognition',
         default='tools/data/kinetics/label_map_k400.txt',
-        help='label map file for skeleton-based action recognition')
+        help='label map file for action recognition')
     parser.add_argument(
         '--device', type=str, default='cuda:0', help='CPU/CUDA device option')
     parser.add_argument(
@@ -436,9 +450,9 @@ def main():
     w_ratio, h_ratio = new_w / w, new_h / h
 
     # Get clip_len, frame_interval and calculate center index of each clip
-    config = mmcv.Config.fromfile(args.config)
-    config.merge_from_dict(args.cfg_options)
-    val_pipeline = config.data.val.pipeline
+    stdet_config = mmcv.Config.fromfile(args.stdet_config)
+    stdet_config.merge_from_dict(args.cfg_options)
+    val_pipeline = stdet_config.data.val.pipeline
 
     sampler = [x for x in val_pipeline if x['type'] == 'SampleAVAFrames'][0]
     clip_len, frame_interval = sampler['clip_len'], sampler['frame_interval']
@@ -452,10 +466,10 @@ def main():
     # Load spatio-temporal detection label_map
     label_map = load_label_map(args.label_map)
     try:
-        if config['data']['train']['custom_classes'] is not None:
+        if stdet_config['data']['train']['custom_classes'] is not None:
             label_map = {
                 id + 1: label_map[cls]
-                for id, cls in enumerate(config['data']['train']
+                for id, cls in enumerate(stdet_config['data']['train']
                                          ['custom_classes'])
             }
     except KeyError:
@@ -467,21 +481,6 @@ def main():
 
     pose_results = pose_inference(args, center_frames, human_detections)
 
-    for i in range(len(human_detections)):
-        det = human_detections[i]
-        det[:, 0:4:2] *= w_ratio
-        det[:, 1:4:2] *= h_ratio
-        human_detections[i] = torch.from_numpy(det[:, :4]).to(args.device)
-
-    # Get img_norm_cfg
-    img_norm_cfg = config['img_norm_cfg']
-    if 'to_rgb' not in img_norm_cfg and 'to_bgr' in img_norm_cfg:
-        to_bgr = img_norm_cfg.pop('to_bgr')
-        img_norm_cfg['to_rgb'] = to_bgr
-    img_norm_cfg['mean'] = np.array(img_norm_cfg['mean'])
-    img_norm_cfg['std'] = np.array(img_norm_cfg['std'])
-
-    #  build skeleton-based recognition model
     fake_anno = dict(
         frame_dict='',
         label=-1,
@@ -510,7 +509,7 @@ def main():
     skeleton_imgs = skeleton_pipeline(fake_anno)['imgs'][None]
     skeleton_imgs = skeleton_imgs.to(args.device)
 
-    # Build recognition model
+    # Build skeleton-based recognition model
     skeleton_model = build_model(skeleton_config.model)
     load_checkpoint(
         skeleton_model, args.skeleton_checkpoint, map_location=args.device)
@@ -520,25 +519,51 @@ def main():
     with torch.no_grad():
         output = skeleton_model(return_loss=False, imgs=skeleton_imgs)
 
-    label_map_skeleton = [
-        x.strip() for x in open(args.label_map_skeleton).readlines()
+    label_map_recognition = [
+        x.strip() for x in open(args.label_map_recognition).readlines()
     ]
     action_idx = np.argmax(output)
-    action_result = label_map_skeleton[
-        action_idx]  # action result for the whole video
+    skeleton_action_result = label_map_recognition[
+        action_idx]  # skeleton-based action result for the whole video
+
+    # Build rgb-based recognition model 
+    rgb_config = mmcv.Config.fromfile(args.rgb_config)
+    rgb_config.model.backbone.pretrained = None 
+    rgb_model = build_recognizer(rgb_config.model, test_cfg=rgb_config.get('test_cfg'))
+    load_checkpoint(rgb_model, args.rgb_checkpoint, map_location=args.device)
+    rgb_model.to(args.device)
+    rgb_model.eval()
+    action_results = inference_recognizer(rgb_model, args.video, args.label_map_recognition)
+    rgb_action_result = action_results[0][0] # rgb-based action result for the whole video
+    print(f'rgb_results--{action_results}')
+    ss
+    
+    for i in range(len(human_detections)):
+        det = human_detections[i]
+        det[:, 0:4:2] *= w_ratio
+        det[:, 1:4:2] *= h_ratio
+        human_detections[i] = torch.from_numpy(det[:, :4]).to(args.device)
+
+    # Get img_norm_cfg
+    img_norm_cfg = stdet_config['img_norm_cfg']
+    if 'to_rgb' not in img_norm_cfg and 'to_bgr' in img_norm_cfg:
+        to_bgr = img_norm_cfg.pop('to_bgr')
+        img_norm_cfg['to_rgb'] = to_bgr
+    img_norm_cfg['mean'] = np.array(img_norm_cfg['mean'])
+    img_norm_cfg['std'] = np.array(img_norm_cfg['std'])
 
     # Build STDET model
     try:
         # In our spatiotemporal detection demo, different actions should have
         # the same number of bboxes.
-        config['model']['test_cfg']['rcnn']['action_thr'] = .0
+        stdet_config['model']['test_cfg']['rcnn']['action_thr'] = .0
     except KeyError:
         pass
 
-    config.model.backbone.pretrained = None
-    model = build_detector(config.model, test_cfg=config.get('test_cfg'))
+    stdet_config.model.backbone.pretrained = None
+    model = build_detector(stdet_config.model, test_cfg=stdet_config.get('test_cfg'))
 
-    load_checkpoint(model, args.checkpoint, map_location=args.device)
+    load_checkpoint(model, args.stdet_checkpoint, map_location=args.device)
     model.to(args.device)
     model.eval()
 
@@ -602,7 +627,7 @@ def main():
         for i in dense_timestamps(timestamps, dense_n)
     ]
     print('Performing visualization')
-    vis_frames = visualize(frames, results, pose_results, action_result)
+    vis_frames = visualize(frames, results, pose_results, skeleton_action_result)
     vid = mpy.ImageSequenceClip([x[:, :, ::-1] for x in vis_frames],
                                 fps=args.output_fps)
     vid.write_videofile(args.out_filename)
