@@ -220,6 +220,13 @@ def parse_args():
                  'slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb'
                  '_20201217-16378594.pth'),
         help='spatio temporal detection checkpoint file/url')
+    
+    parser.add_argument(
+        '--skeleton-stdet-checkpoint',
+        default=('/mnt/lustre21/DATAshare2/duanhaodong/posec3d/'
+            'posec3d_ava.pth'),
+        help='skeleton-based spatio temporal detection checkpoint file/url')
+
     parser.add_argument(
         '--det-config',
         default='demo/faster_rcnn_r50_fpn_2x_coco.py',
@@ -266,7 +273,7 @@ def parse_args():
     parser.add_argument(
         '--det-score-thr',
         type=float,
-        default=0.9,
+        default=0.8,
         help='the threshold of human detection score')
     parser.add_argument(
         '--action-score-thr',
@@ -446,8 +453,10 @@ def main():
 
     # resize frames to shortside 256
     new_w, new_h = mmcv.rescale_size((w, h), (256, np.Inf))
+    print(f'new_w, new_h--{new_w, new_h}, w, h--{w, h}')
     frames = [mmcv.imresize(img, (new_w, new_h)) for img in original_frames]
     w_ratio, h_ratio = new_w / w, new_h / h
+    print(f'w_ratio, h_ratio--{w_ratio, h_ratio}')
 
     # Get clip_len, frame_interval and calculate center index of each clip
     stdet_config = mmcv.Config.fromfile(args.stdet_config)
@@ -462,6 +471,7 @@ def main():
     # Note that it's 1 based here
     timestamps = np.arange(window_size // 2, num_frame + 1 - window_size // 2,
                            args.predict_stepsize)
+    print(f'timestamps--{timestamps}') # len=30
 
     # Load spatio-temporal detection label_map
     label_map = load_label_map(args.label_map)
@@ -480,6 +490,7 @@ def main():
     human_detections = detection_inference(args, center_frames)
 
     pose_results = pose_inference(args, center_frames, human_detections)
+    # print(f'len(pose_res)--{len(pose_results)}')  # 30
 
     fake_anno = dict(
         frame_dict='',
@@ -493,14 +504,18 @@ def main():
 
     num_keypoint = 17
     keypoint = np.zeros((num_person, num_frame, num_keypoint, 2),
-                        dtype=np.float16)
+                        dtype=np.float16)  # M T V 2
     keypoint_score = np.zeros((num_person, num_frame, num_keypoint),
-                              dtype=np.float16)
+                              dtype=np.float16)  # M T V
     for i, poses in enumerate(pose_results):
+        # print('len-pose---', len(poses))  # 7
         for j, pose in enumerate(poses):
             pose = pose['keypoints']
             keypoint[j, i] = pose[:, :2]
             keypoint_score[j, i] = pose[:, 2]
+            # print('keypoint--',pose[:, :2])
+            # print('keypoint-score--', pose[:,2])
+        
     fake_anno['keypoint'] = keypoint
     fake_anno['keypoint_score'] = keypoint_score
 
@@ -509,6 +524,7 @@ def main():
     skeleton_pipeline = Compose(skeleton_config.test_pipeline)
     skeleton_imgs = skeleton_pipeline(fake_anno)['imgs'][None]
     skeleton_imgs = skeleton_imgs.to(args.device)
+    print('skeleton-imgs-input', skeleton_imgs.shape) # 1 20 17 48 64 64 
 
     # Build skeleton-based recognition model
     skeleton_model = build_model(skeleton_config.model)
@@ -543,6 +559,7 @@ def main():
         0]  # rgb-based action result for the whole video
     print(f'rgb_results--{rgb_action_result}')
 
+
     for i in range(len(human_detections)):
         det = human_detections[i]
         det[:, 0:4:2] *= w_ratio
@@ -556,6 +573,91 @@ def main():
         img_norm_cfg['to_rgb'] = to_bgr
     img_norm_cfg['mean'] = np.array(img_norm_cfg['mean'])
     img_norm_cfg['std'] = np.array(img_norm_cfg['std'])
+
+    print('Performing skeleton-based SpatioTemporal Action Detection for each clip')
+    skeleton_config.model.cls_head.num_classes = 81 # for AVA dataset
+    skeleton_stdet_model = build_model(skeleton_config.model)
+    load_checkpoint(
+        skeleton_stdet_model, args.skeleton_stdet_checkpoint, map_location=args.device)
+    skeleton_stdet_model.to(args.device)
+    skeleton_stdet_model.eval()
+
+    prog_bar = mmcv.ProgressBar(len(timestamps))
+    skeleton_predictions = []
+    for timestamp, proposal in zip(timestamps, human_detections):
+        if proposal.shape[0] == 0: # no people detected 
+            skeleton_predictions.append(None)
+            continue
+        
+        start_frame = timestamp - (clip_len // 2 - 1) * frame_interval
+        frame_inds = start_frame + np.arange(0, window_size, frame_interval)
+        frame_inds = list(frame_inds - 1)
+        print('frame_inds', frame_inds) # [7, 15, 23, 31, 39, 47, 55, 63]
+        num_frame = len(frame_inds) # 8
+        stdet_frames = [frame_paths[ind] for ind in frame_inds]
+
+        human_detection = detection_inference(args, stdet_frames)
+        pose_result = pose_inference(args, stdet_frames, human_detection)
+
+        num_person = max([len(x) for x in pose_result])
+        # for x in pose_result:
+        #     print(len(x),x) # len(x)=7 num_person个dict(bbox, keypoints)
+        #     ss
+
+        skeleton_prediction= [] 
+        for i in range(proposal.shape[0]):
+            skeleton_prediction.append([])
+
+        for i in range(proposal.shape[0]): # num_person
+            fake_anno = dict(
+                frame_dict='',
+                label=-1,
+                img_shape=(h, w),
+                origin_shape=(h, w),
+                start_index=0,
+                modality='Pose',
+                total_frames=num_frame)
+            num_person = 1
+
+            num_keypoint = 17
+            keypoint = np.zeros((num_person, num_frame, num_keypoint, 2),
+                                dtype=np.float16)  # M T V 2
+            keypoint_score = np.zeros((num_person, num_frame, num_keypoint),
+                                    dtype=np.float16)  # M T V
+
+            for j, poses in enumerate(pose_result): # num_frame
+                if i>=len(poses):
+                    continue
+                pose = poses[i]['keypoints']
+                keypoint[0, j] = pose[:, :2]
+                keypoint_score[0, j] = pose[:, 2]
+            fake_anno['keypoint'] = keypoint
+            fake_anno['keypoint_score'] = keypoint_score
+            
+            skeleton_imgs = skeleton_pipeline(fake_anno)['imgs'][None]
+            skeleton_imgs = skeleton_imgs.to(args.device)
+
+            with torch.no_grad():
+                output = skeleton_stdet_model(return_loss=False, imgs=skeleton_imgs)
+            print('output --', output.shape, output) # 1 num_classes(81)
+            action_idx = np.argmax(output)
+
+            if output[0, action_idx] > args.action_score_thr:
+                skeleton_prediction[i].append((label_map[action_idx], output[0, action_idx]))
+
+
+            # print('output_idx', action_idx)
+            print('action_score--',output[0, action_idx])
+            skeleton_stdet_result = label_map[action_idx]
+            print(f'skeleton_stdet result--{skeleton_stdet_result}')
+            ss
+
+            # crop the image -> resize -> extract pose -> as input for poseC3D
+
+        skeleton_predictions.append(skeleton_prediction)
+    prog_bar.update()
+    
+
 
     # Build STDET model
     try:
@@ -574,12 +676,12 @@ def main():
     stdet_model.to(args.device)
     stdet_model.eval()
 
-    predictions = []
+    predictions = [] # 30 7(num_person) 2
 
     print('Performing SpatioTemporal Action Detection for each clip')
     assert len(timestamps) == len(human_detections)
     prog_bar = mmcv.ProgressBar(len(timestamps))
-    for timestamp, proposal in zip(timestamps, human_detections):
+    for timestamp, proposal in zip(timestamps, human_detections): # 30 
         if proposal.shape[0] == 0:
             predictions.append(None)
             continue
@@ -587,11 +689,13 @@ def main():
         start_frame = timestamp - (clip_len // 2 - 1) * frame_interval
         frame_inds = start_frame + np.arange(0, window_size, frame_interval)
         frame_inds = list(frame_inds - 1)
+        print('frame_inds', frame_inds) # [7, 15, 23, 31, 39, 47, 55, 63]
         imgs = [frames[ind].astype(np.float32) for ind in frame_inds]
         _ = [mmcv.imnormalize_(img, **img_norm_cfg) for img in imgs]
         # THWC -> CTHW -> 1CTHW
         input_array = np.stack(imgs).transpose((3, 0, 1, 2))[np.newaxis]
         input_tensor = torch.from_numpy(input_array).to(args.device)
+        print('input_tensor', input_tensor.shape) # 1 3 8 256 455
 
         with torch.no_grad():
             result = stdet_model(
@@ -602,8 +706,12 @@ def main():
             result = result[0]
             prediction = []
             # N proposals
-            for i in range(proposal.shape[0]):
+            for i in range(proposal.shape[0]): # 7 num_person
                 prediction.append([])
+            # print('stdet-res--', len(result)) # 80 (num_classes)
+            # for x in result:
+            #     print(x.shape)  # 7(num_person) 5
+            
             # Perform action score thr
             for i in range(len(result)):
                 if i + 1 not in label_map:
@@ -616,8 +724,11 @@ def main():
             predictions.append(prediction)
         prog_bar.update()
 
+
+
+
     results = []
-    for human_detection, prediction in zip(human_detections, predictions):
+    for human_detection, prediction in zip(human_detections, skeleton_predictions):
         results.append(pack_result(human_detection, prediction, new_h, new_w))
 
     def dense_timestamps(timestamps, n):
