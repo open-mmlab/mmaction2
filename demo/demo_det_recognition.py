@@ -220,11 +220,11 @@ def parse_args():
                  'slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb'
                  '_20201217-16378594.pth'),
         help='spatio temporal detection checkpoint file/url')
-    
+
     parser.add_argument(
         '--skeleton-stdet-checkpoint',
         default=('/mnt/lustre21/DATAshare2/duanhaodong/posec3d/'
-            'posec3d_ava.pth'),
+                 'posec3d_ava.pth'),
         help='skeleton-based spatio temporal detection checkpoint file/url')
 
     parser.add_argument(
@@ -269,11 +269,15 @@ def parse_args():
         'tsn/tsn_r50_1x1x3_100e_kinetics400_rgb/'
         'tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth',
         help='rgb-based action recognition checkpoint file/url')
+    parser.add_argument(
+        '--use-skeleton-stdet',
+        default=True,
+        help='use skeleton-based spatio temporal detection method')
 
     parser.add_argument(
         '--det-score-thr',
         type=float,
-        default=0.8,
+        default=0.6,
         help='the threshold of human detection score')
     parser.add_argument(
         '--action-score-thr',
@@ -300,12 +304,12 @@ def parse_args():
         help='output filename')
     parser.add_argument(
         '--predict-stepsize',
-        default=8,
+        default=16,
         type=int,
         help='give out a prediction per n frames')
     parser.add_argument(
         '--output-stepsize',
-        default=8,
+        default=16,
         type=int,
         help=('show one frame per n frames in the demo, we should have: '
               'predict_stepsize % output_stepsize == 0'))
@@ -373,8 +377,11 @@ def detection_inference(args, frame_paths):
         result = inference_detector(model, frame_path)
         # We only keep human detections with score larger than det_score_thr
         result = result[0][result[0][:, 4] >= args.det_score_thr]
+        # print('len-result', len(result))
+        # print(result)
         results.append(result)
         prog_bar.update()
+
     return results
 
 
@@ -444,6 +451,25 @@ def pack_result(human_detection, result, img_h, img_w):
     return results
 
 
+def expand_bbox(bbox, h, w, ratio=2.0):
+    x1, y1, x2, y2 = bbox
+    center_x = (x1 + x2) // 2
+    center_y = (y1 + y2) // 2
+    width = x2 - x1
+    height = y2 - y1
+    new_width, new_height = width * ratio, height * ratio
+    new_x1 = max(0, int(center_x - new_width / 2))
+    new_x2 = min(int(center_x + new_width / 2), w)
+    new_y1 = max(0, int(center_y - new_height / 2))
+    new_y2 = min(int(center_y + new_height / 2), h)
+    return (new_x1, new_y1, new_x2, new_y2)
+
+
+def isBelong(bbox, area):
+    x1, y1, x2, y2 = bbox
+    return area[0] <= x1 < x2 <= area[2] and area[1] <= y1 < y2 <= area[3]
+
+
 def main():
     args = parse_args()
 
@@ -465,13 +491,14 @@ def main():
 
     sampler = [x for x in val_pipeline if x['type'] == 'SampleAVAFrames'][0]
     clip_len, frame_interval = sampler['clip_len'], sampler['frame_interval']
+    print(f'clip_len, frame_interval--{clip_len, frame_interval}')
 
     window_size = clip_len * frame_interval  # 64
     assert clip_len % 2 == 0, 'We would like to have an even clip_len'
     # Note that it's 1 based here
     timestamps = np.arange(window_size // 2, num_frame + 1 - window_size // 2,
                            args.predict_stepsize)
-    print(f'timestamps--{timestamps}') # len=30
+    print(f'timestamps--{timestamps}')  # len=30
 
     # Load spatio-temporal detection label_map
     label_map = load_label_map(args.label_map)
@@ -488,9 +515,20 @@ def main():
     # Get Human detection results
     center_frames = [frame_paths[ind - 1] for ind in timestamps]
     human_detections = detection_inference(args, center_frames)
+    # for x in human_detections[:2]:
+    #     print(x) # num_person X 5
+
+    # print('------------')
+    # ss
 
     pose_results = pose_inference(args, center_frames, human_detections)
-    # print(f'len(pose_res)--{len(pose_results)}')  # 30
+    print(f'len(pose_res)--{len(pose_results)}')  # 30
+    # for x in pose_results[:2]:
+    #     print('pose--',len(x)) # num_person
+    #     for person in x:
+    #         print(person['bbox'])
+
+    # ss
 
     fake_anno = dict(
         frame_dict='',
@@ -515,7 +553,7 @@ def main():
             keypoint_score[j, i] = pose[:, 2]
             # print('keypoint--',pose[:, :2])
             # print('keypoint-score--', pose[:,2])
-        
+
     fake_anno['keypoint'] = keypoint
     fake_anno['keypoint_score'] = keypoint_score
 
@@ -524,7 +562,7 @@ def main():
     skeleton_pipeline = Compose(skeleton_config.test_pipeline)
     skeleton_imgs = skeleton_pipeline(fake_anno)['imgs'][None]
     skeleton_imgs = skeleton_imgs.to(args.device)
-    print('skeleton-imgs-input', skeleton_imgs.shape) # 1 20 17 48 64 64 
+    print('skeleton-imgs-input', skeleton_imgs.shape)  # 1 20 17 48 64 64
 
     # Build skeleton-based recognition model
     skeleton_model = build_model(skeleton_config.model)
@@ -559,41 +597,29 @@ def main():
         0]  # rgb-based action result for the whole video
     print(f'rgb_results--{rgb_action_result}')
 
-
-    for i in range(len(human_detections)):
-        det = human_detections[i]
-        det[:, 0:4:2] *= w_ratio
-        det[:, 1:4:2] *= h_ratio
-        human_detections[i] = torch.from_numpy(det[:, :4]).to(args.device)
-
-    # Get img_norm_cfg
-    img_norm_cfg = stdet_config['img_norm_cfg']
-    if 'to_rgb' not in img_norm_cfg and 'to_bgr' in img_norm_cfg:
-        to_bgr = img_norm_cfg.pop('to_bgr')
-        img_norm_cfg['to_rgb'] = to_bgr
-    img_norm_cfg['mean'] = np.array(img_norm_cfg['mean'])
-    img_norm_cfg['std'] = np.array(img_norm_cfg['std'])
-
-    print('Performing skeleton-based SpatioTemporal Action Detection for each clip')
-    skeleton_config.model.cls_head.num_classes = 81 # for AVA dataset
+    print('Performing skeleton-based SpatioTemporal Action '
+          'Detection for each clip')
+    skeleton_config.model.cls_head.num_classes = 81  # for AVA dataset
     skeleton_stdet_model = build_model(skeleton_config.model)
     load_checkpoint(
-        skeleton_stdet_model, args.skeleton_stdet_checkpoint, map_location=args.device)
+        skeleton_stdet_model,
+        args.skeleton_stdet_checkpoint,
+        map_location=args.device)
     skeleton_stdet_model.to(args.device)
     skeleton_stdet_model.eval()
 
     prog_bar = mmcv.ProgressBar(len(timestamps))
     skeleton_predictions = []
-    for timestamp, proposal in zip(timestamps, human_detections):
-        if proposal.shape[0] == 0: # no people detected 
+    for timestamp, proposal in zip(timestamps, human_detections):  # frame
+        if proposal.shape[0] == 0:  # no people detected
             skeleton_predictions.append(None)
             continue
-        
+
         start_frame = timestamp - (clip_len // 2 - 1) * frame_interval
         frame_inds = start_frame + np.arange(0, window_size, frame_interval)
         frame_inds = list(frame_inds - 1)
-        print('frame_inds', frame_inds) # [7, 15, 23, 31, 39, 47, 55, 63]
-        num_frame = len(frame_inds) # 8
+        print('frame_inds', frame_inds)  # [7, 15, 23, 31, 39, 47, 55, 63]
+        num_frame = len(frame_inds)  # 8
         stdet_frames = [frame_paths[ind] for ind in frame_inds]
 
         human_detection = detection_inference(args, stdet_frames)
@@ -604,11 +630,11 @@ def main():
         #     print(len(x),x) # len(x)=7 num_person个dict(bbox, keypoints)
         #     ss
 
-        skeleton_prediction= [] 
-        for i in range(proposal.shape[0]):
+        skeleton_prediction = []
+        for i in range(proposal.shape[0]):  # num_person
             skeleton_prediction.append([])
 
-        for i in range(proposal.shape[0]): # num_person
+        for i in range(proposal.shape[0]):  # num_person
             fake_anno = dict(
                 frame_dict='',
                 label=-1,
@@ -623,41 +649,55 @@ def main():
             keypoint = np.zeros((num_person, num_frame, num_keypoint, 2),
                                 dtype=np.float16)  # M T V 2
             keypoint_score = np.zeros((num_person, num_frame, num_keypoint),
-                                    dtype=np.float16)  # M T V
+                                      dtype=np.float16)  # M T V
 
-            for j, poses in enumerate(pose_result): # num_frame
-                if i>=len(poses):
-                    continue
-                pose = poses[i]['keypoints']
-                keypoint[0, j] = pose[:, :2]
-                keypoint_score[0, j] = pose[:, 2]
+            # pose matching
+            person_bbox = proposal[i][:4]  # x1, y1, x2, y2
+            area = expand_bbox(person_bbox, h, w)
+
+            for j, poses in enumerate(pose_result):  # num_frame
+                for per_pose in poses:  # num_person
+                    if isBelong(per_pose['bbox'][:4], area):
+                        keypoint[0, j] = per_pose['keypoints'][:, :2]
+                        keypoint_score[0, j] = per_pose['keypoints'][:, 2]
+
             fake_anno['keypoint'] = keypoint
             fake_anno['keypoint_score'] = keypoint_score
-            
+
             skeleton_imgs = skeleton_pipeline(fake_anno)['imgs'][None]
             skeleton_imgs = skeleton_imgs.to(args.device)
 
             with torch.no_grad():
-                output = skeleton_stdet_model(return_loss=False, imgs=skeleton_imgs)
-            print('output --', output.shape, output) # 1 num_classes(81)
+                output = skeleton_stdet_model(
+                    return_loss=False, imgs=skeleton_imgs)
             action_idx = np.argmax(output)
 
             if output[0, action_idx] > args.action_score_thr:
-                skeleton_prediction[i].append((label_map[action_idx], output[0, action_idx]))
-
+                skeleton_prediction[i].append(
+                    (label_map[action_idx], output[0, action_idx]))
 
             # print('output_idx', action_idx)
-            print('action_score--',output[0, action_idx])
+            print('action_score--', output[0, action_idx])
             skeleton_stdet_result = label_map[action_idx]
             print(f'skeleton_stdet result--{skeleton_stdet_result}')
-            ss
-
-            # crop the image -> resize -> extract pose -> as input for poseC3D
 
         skeleton_predictions.append(skeleton_prediction)
-    prog_bar.update()
-    
 
+    prog_bar.update()
+
+    for i in range(len(human_detections)):
+        det = human_detections[i]
+        det[:, 0:4:2] *= w_ratio
+        det[:, 1:4:2] *= h_ratio
+        human_detections[i] = torch.from_numpy(det[:, :4]).to(args.device)
+
+    # Get img_norm_cfg
+    img_norm_cfg = stdet_config['img_norm_cfg']
+    if 'to_rgb' not in img_norm_cfg and 'to_bgr' in img_norm_cfg:
+        to_bgr = img_norm_cfg.pop('to_bgr')
+        img_norm_cfg['to_rgb'] = to_bgr
+    img_norm_cfg['mean'] = np.array(img_norm_cfg['mean'])
+    img_norm_cfg['std'] = np.array(img_norm_cfg['std'])
 
     # Build STDET model
     try:
@@ -676,26 +716,27 @@ def main():
     stdet_model.to(args.device)
     stdet_model.eval()
 
-    predictions = [] # 30 7(num_person) 2
+    predictions = []  # 30 7(num_person) 2
 
     print('Performing SpatioTemporal Action Detection for each clip')
     assert len(timestamps) == len(human_detections)
     prog_bar = mmcv.ProgressBar(len(timestamps))
-    for timestamp, proposal in zip(timestamps, human_detections): # 30 
+    for timestamp, proposal in zip(timestamps, human_detections):  # 30
         if proposal.shape[0] == 0:
             predictions.append(None)
             continue
+        # print('proposal', proposal.shape) # num_person(7) 4
 
         start_frame = timestamp - (clip_len // 2 - 1) * frame_interval
         frame_inds = start_frame + np.arange(0, window_size, frame_interval)
         frame_inds = list(frame_inds - 1)
-        print('frame_inds', frame_inds) # [7, 15, 23, 31, 39, 47, 55, 63]
+        print('frame_inds', frame_inds)  # [7, 15, 23, 31, 39, 47, 55, 63]
         imgs = [frames[ind].astype(np.float32) for ind in frame_inds]
         _ = [mmcv.imnormalize_(img, **img_norm_cfg) for img in imgs]
         # THWC -> CTHW -> 1CTHW
         input_array = np.stack(imgs).transpose((3, 0, 1, 2))[np.newaxis]
         input_tensor = torch.from_numpy(input_array).to(args.device)
-        print('input_tensor', input_tensor.shape) # 1 3 8 256 455
+        print('input_tensor', input_tensor.shape)  # 1 3 8 256 455
 
         with torch.no_grad():
             result = stdet_model(
@@ -706,12 +747,12 @@ def main():
             result = result[0]
             prediction = []
             # N proposals
-            for i in range(proposal.shape[0]): # 7 num_person
+            for i in range(proposal.shape[0]):  # 7 num_person
                 prediction.append([])
             # print('stdet-res--', len(result)) # 80 (num_classes)
             # for x in result:
             #     print(x.shape)  # 7(num_person) 5
-            
+
             # Perform action score thr
             for i in range(len(result)):
                 if i + 1 not in label_map:
@@ -724,11 +765,11 @@ def main():
             predictions.append(prediction)
         prog_bar.update()
 
-
-
-
+    if args.use_skeleton_stdet:
+        print('Use skeleton-based stdet')
+        predictions = skeleton_predictions
     results = []
-    for human_detection, prediction in zip(human_detections, skeleton_predictions):
+    for human_detection, prediction in zip(human_detections, predictions):
         results.append(pack_result(human_detection, prediction, new_h, new_w))
 
     def dense_timestamps(timestamps, n):
