@@ -13,14 +13,14 @@ from .common import (LFB, TAM, Conv2plus1d, ConvAudio,
 from .heads import (ACRNHead, AudioTSNHead, AVARoIHead, BaseHead, BBoxHeadAVA,
                     FBOHead, I3DHead, LFBInferHead, SlowFastHead, STGCNHead,
                     TimeSformerHead, TPNHead, TRNHead, TSMHead, TSNHead,
-                    X3DHead)
+                    X3DHead, SelfSupervisedTSMHead)
 from .localizers import BMN, PEM, TEM
 from .losses import (BCELossWithLogits, BinaryLogisticRegressionLoss, BMNLoss,
                      CrossEntropyLoss, HVULoss, NLLLoss, OHEMHingeLoss,
-                     SSNLoss)
+                     SSNLoss, SlowFastSelfSupervisedLoss)
 from .necks import TPN
 from .recognizers import (AudioRecognizer, BaseRecognizer, Recognizer2D,
-                          Recognizer3D)
+                          Recognizer3D, SlowFastSelfSupervisedRecognizer2D)
 from .roi_extractors import SingleRoIExtractor3D
 from .skeleton_gcn import BaseGCN, SkeletonGCN
 
@@ -40,5 +40,6 @@ __all__ = [
     'FBOHead', 'LFBInferHead', 'TRNHead', 'NECKS', 'TimeSformer',
     'TimeSformerHead', 'DividedSpatialAttentionWithNorm',
     'DividedTemporalAttentionWithNorm', 'FFNWithNorm', 'ACRNHead', 'BaseGCN',
-    'SkeletonGCN'
+    'SkeletonGCN', 'SlowFastSelfSupervisedRecognizer2D', 'SelfSupervisedTSMHead', 
+    'SlowFastSelfSupervisedLoss'
 ]
