@@ -99,4 +99,6 @@ For skeleton data visualization, you need also to prepare the RGB videos. Please
 - [x] NTU120_XSub
 - [x] NTU60_XView
 - [x] NTU120_XSet
+- [x] UCF101
+- [x] HMDB51
 - [ ] Kinetics

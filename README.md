@@ -44,6 +44,7 @@ The master branch works with **PyTorch 1.3+**.
 
 ## News
 
+- (2021-10-16) We support **PoseC3D** on UCF101 and HMDB51, achieves 87.0% and 69.3% Top-1 accuracy with 2D skeletons only. Pre-extracted 2D skeletons are also available.
 - (2021-10-12) We support **TorchServe**! Now recognition models in MMAction2 can be packed as a `.mar` file and served with TorchServe.
 - (2021-09-11) We support **ST-GCN**, a well-known GCN-based approach for skeleton-based action recognition!
 
