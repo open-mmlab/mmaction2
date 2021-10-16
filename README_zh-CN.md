@@ -161,7 +161,7 @@ MMAction2 将跟进学界的最新进展，并支持更多算法和框架。如�
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/omnisource/README_zh-CN.md">OmniSource</a> (<a href="https://kennymckormick.github.io/omnisource/">主页</a>) (ECCV'2020)</td>
   </tr>
   <tr>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/gym/README_zh-CN.md">FineGYM</a> (<a href="ttps://sdolivia.github.io/FineGym/">主页</a>) (CVPR'2020)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/gym/README_zh-CN.md">FineGYM</a> (<a href="https://sdolivia.github.io/FineGym/">主页</a>) (CVPR'2020)</td>
     <td></td>
     <td></td>
     <td></td>

@@ -165,7 +165,7 @@ If you have any feature requests, please feel free to leave a comment in [Issues
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/omnisource/README.md">OmniSource</a> (<a href="https://kennymckormick.github.io/omnisource/">Homepage</a>) (ECCV'2020)</td>
   </tr>
   <tr>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/gym/README.md">FineGYM</a> (<a href="ttps://sdolivia.github.io/FineGym/">Homepage</a>) (CVPR'2020)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/gym/README.md">FineGYM</a> (<a href="https://sdolivia.github.io/FineGym/">Homepage</a>) (CVPR'2020)</td>
     <td></td>
     <td></td>
     <td></td>
