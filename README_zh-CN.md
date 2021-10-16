@@ -191,8 +191,8 @@ MMAction2 将跟进学界的最新进展，并支持更多算法和框架。如�
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/skeleton/README.md">PoseC3D-FineGYM</a> (<a href="https://kennymckormick.github.io/posec3d/">主页</a>) (ArXiv'2021)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/skeleton/README.md">PoseC3D-NTURGB+D</a> (<a href="https://kennymckormick.github.io/posec3d/">主页</a>) (ArXiv'2021)</td>
-    <td></td>
-    <td></td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/skeleton/README.md">PoseC3D-UCF101</a> (<a href="https://kennymckormick.github.io/posec3d/">主页</a>) (ArXiv'2021)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/skeleton/README.md">PoseC3D-HMDB51</a> (<a href="https://kennymckormick.github.io/posec3d/">主页</a>) (ArXiv'2021)</td>
   </tr>
 </table>
 
