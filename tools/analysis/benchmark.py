@@ -38,7 +38,7 @@ def main():
     cfg.data.test.test_mode = True
 
     # build the dataloader
-    dataset = build_dataset(cfg.data.test, dict(test_mode=True))
+    dataset = build_dataset(cfg.data.val, dict(test_mode=True))
     data_loader = build_dataloader(
         dataset,
         videos_per_gpu=1,
