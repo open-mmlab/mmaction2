@@ -12,7 +12,8 @@ from mmcv.utils import print_log
 from torch.utils.data import Dataset
 
 from ..core import (mean_average_precision, mean_class_accuracy,
-                    mmit_mean_average_precision, top_k_accuracy)
+                    mmit_mean_average_precision, top_k_accuracy, 
+                    confusion_matrix)
 from .pipelines import Compose
 
 
@@ -179,7 +180,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
         metrics = metrics if isinstance(metrics, (list, tuple)) else [metrics]
         allowed_metrics = [
             'top_k_accuracy', 'mean_class_accuracy', 'mean_average_precision',
-            'mmit_mean_average_precision'
+            'mmit_mean_average_precision', 'confusion_matrix'
         ]
 
         for metric in metrics:
@@ -239,6 +240,16 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
                     log_msg = f'\nmmit_mean_average_precision\t{mAP:.4f}'
                 print_log(log_msg, logger=logger)
                 continue
+            
+            if metric == 'confusion_matrix':
+                results = np.array(results)
+                pred_labels = np.argmax(results, axis=1) 
+                conf_mat = confusion_matrix(pred_labels, gt_labels)
+                # eval_results['confusion_matrix'] =  conf_mat 
+                log_msg = f'\nCONFUSION MATRIX\n{conf_mat}\n'
+                print_log(log_msg, logger=logger)
+                continue
+
 
         return eval_results
 

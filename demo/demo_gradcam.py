@@ -94,9 +94,10 @@ def build_inputs(model, video_path, use_frames=False):
         filename_tmpl = cfg.data.test.get('filename_tmpl', 'img_{:05}.jpg')
         modality = cfg.data.test.get('modality', 'RGB')
         start_index = cfg.data.test.get('start_index', 1)
+        end_index = cfg.data.test.get('end_index', start_index + 60)
         data = dict(
             frame_dir=video_path,
-            total_frames=len(os.listdir(video_path)),
+            total_frames=end_index - start_index, # len(os.listdir(video_path))
             label=-1,
             start_index=start_index,
             filename_tmpl=filename_tmpl,
@@ -108,6 +109,7 @@ def build_inputs(model, video_path, use_frames=False):
             label=-1,
             start_index=start_index,
             modality='RGB')
+    
     data = test_pipeline(data)
     data = collate([data], samples_per_gpu=1)
     if next(model.parameters()).is_cuda:
@@ -164,11 +166,15 @@ def _resize_frames(frame_list,
     return frame_list
 
 
-def main():
-    args = parse_args()
+def main(args=None):
+    if not args:
+        args = parse_args()
 
     # assign the desired device.
     device = torch.device(args.device)
+
+    out_filedir = '/'.join(args.out_filename.split('/')[:-1])
+    os.makedirs(out_filedir, exist_ok=True)
 
     cfg = Config.fromfile(args.config)
     cfg.merge_from_dict(args.cfg_options)
@@ -205,5 +211,47 @@ def main():
             video_clips.write_videofile(args.out_filename, remove_temp=True)
 
 
+def get_gradcam_on_EK_images(config, out_filename):
+   
+    # assign the desired device.
+    device = 'cuda:0'
+    device = torch.device(device)
+
+    out_filedir = '/'.join(out_filename.split('/')[:-1])
+    os.makedirs(out_filedir, exist_ok=True)
+
+    cfg = Config.fromfile(config)
+    cfg.merge_from_dict(args.cfg_options)
+
+    # build the recognizer from a config file and checkpoint file/url
+    model = init_recognizer(
+        cfg, args.checkpoint, device=device, use_frames=args.use_frames)
+
+    inputs = build_inputs(model, args.video, use_frames=args.use_frames)
+    gradcam = GradCAM(model, args.target_layer_name)
+    results = gradcam(inputs)
+
+    if args.out_filename is not None:
+        try:
+            from moviepy.editor import ImageSequenceClip
+        except ImportError:
+            raise ImportError('Please install moviepy to enable output file.')
+
+        # frames_batches shape [B, T, H, W, 3], in RGB order
+        frames_batches = (results[0] * 255.).numpy().astype(np.uint8)
+        frames = frames_batches.reshape(-1, *frames_batches.shape[-3:])
+
+        frame_list = list(frames)
+        frame_list = _resize_frames(
+            frame_list,
+            args.target_resolution,
+            interpolation=args.resize_algorithm)
+
+        video_clips = ImageSequenceClip(frame_list, fps=args.fps)
+        out_type = osp.splitext(args.out_filename)[1][1:]
+        if out_type == 'gif':
+            video_clips.write_gif(args.out_filename)
+        else:
+            video_clips.write_videofile(args.out_filename, remove_temp=True)
 if __name__ == '__main__':
     main()
