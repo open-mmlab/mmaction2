@@ -15,6 +15,7 @@ model = dict(
             self_supervised_loss=dict(type='SlowFastSelfSupervisedLoss'))
 
 # dataset settings
+dataset_type = 'RawframeDataset'
 train_dataset_type = 'EpicKitchensSlowFastMMSADA'
 val_dataset_type = 'EpicKitchensMMSADA'
 img_norm_cfg = dict(

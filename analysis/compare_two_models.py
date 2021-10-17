@@ -19,6 +19,12 @@ import os
 import pickle 
 import pandas as pd 
 from collections import Counter 
+import cv2 
+from tqdm import tqdm
+import imageio
+import wandb
+from demo import demo_gradcam
+
 
 
 def read_pickle(filepath):
@@ -26,17 +32,63 @@ def read_pickle(filepath):
         g = pickle.load(f) 
     return g 
 
+
+
+def write_gif(frames, write_path):
+    with imageio.get_writer(write_path, mode='I') as writer:
+        for image in frames:
+            # image = imageio.imread(filename)
+            writer.append_data(image)
+
+
+
+def generate_html(write_dir):
+    gifs = glob(join(write_dir, '*.gif'))
+    html_code = f"""
+    <html>
+    <head>
+    <title>
+    {write_dir}
+    </title>
+    </head>
+    <ol>
+    """
+    for gif in gifs:
+        html_code += f"""
+        <li><img src={gif.split('/')[-1]}></li>\n\n
+        """
+    
+    html_code += """
+    </html>
+    """
+
+    with open(f'{write_dir}/index.html', 'w') as  f:
+        f.write(html_code) 
+
 def parse_args():
     parser = argparse.ArgumentParser(
         description='Compare Outputs of two models') 
     
-    parser.add_argument('--model-1', required=True, type=str) 
-    parser.add_argument('--model-2', required=True, type=str)
-    parser.add_argument('--test-domain', required=True, type=int)
+
+    # m1 should be the model whose predictions need to be compared with a baseline m2. 
+    parser.add_argument('-m1', '--model-1-pkl', required=True, type=str) 
+    parser.add_argument('-m2', '--model-2-pkl', required=True, type=str)
+    parser.add_argument('-t', '--test-domain', required=True, type=int)
+    parser.add_argument('-w', '--write-dir', default=None, type=str, help='Output Location of the video')
+    parser.add_argument('-v', '--verbose', action='store_true', help='Toggle to print individual statistics')
+    parser.add_argument('-g', '--generate-gifs', action='store_true', help='toggle to generate gifs')
+    parser.add_argument('-wd', '--wandb', default=None, help='Description of the run')
 
     args = parser.parse_args() 
     return args 
 
+def get_verbclass_to_verb_mapping(data_labels):
+    mapping = {}
+    for data in data_labels:
+        mapping[data['verb_class']] = data['verb'] 
+    return mapping 
+
+ 
 def load_annotations(domain_pickle_file_path):
     df = pd.read_pickle(domain_pickle_file_path) 
     data_labels = []
@@ -49,56 +101,125 @@ def load_annotations(domain_pickle_file_path):
         verb = line['verb']
         label = line['verb_class'] 
         label = int(label)
-        metadata_dict = {"index": count, "video_id": video_id, "verb_class": label, "verb": verb}
+        metadata_dict = {"index": count, "video_id": video_id, "verb_class": label, "verb": verb, **line}
         data_labels.append(metadata_dict)
         count += 1
     
     return data_labels
     
-def get_correct_predictions(test_labels, model_pkl):
-    correct_preds = [] 
+def get_correct_or_wrong_predictions(test_labels, model_pkl, correct=True):
+    result_preds = [] 
     for metadata, pred_logits in zip(test_labels, model_pkl):
         pred = np.argmax(pred_logits) 
         gt = metadata['verb_class'] 
-        if pred == int(gt):
-            correct_preds.append(metadata["index"]) 
+        if correct and pred == int(gt):
+            result_preds.append(metadata["index"]) 
+        elif not correct and pred != int(gt):
+            result_preds.append(metadata["index"])
     
-    return correct_preds
+    return result_preds
 
+def put_text(image, text, is_pred=False):
+    loc = (0, 10)
+    height, width, layer = image.shape 
+    if is_pred:
+        color = (255, 0, 0)
+    else:
+        color = (0, 0, 255) 
+    
+
+    if is_pred:
+        loc =  (0, height - 10) 
+    else:
+        loc = (0, 20) 
+
+    text = f'pred: {text}' if is_pred else f'gt: {text}' 
+    fontScale = 1
+    thickness = 2
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    image = cv2.putText(image, text, loc, font, fontScale, color, thickness, cv2.LINE_AA)
+    return image 
+
+def join_frames_to_video(data, domain, write_dir=None, pred_cls=None, gt_cls=None, args=None):
+
+    start_frame = data['start_frame']
+    stop_frame = data['stop_frame'] 
+    video_id = data['video_id'] 
+
+    frame_fmt = 'frame_{:010d}.jpg' 
+    frame_path_fmt = f'/home/ubuntu/datasets/action_recognition/EPIC_KITCHENS_UDA/frames_rgb_flow'\
+                 f'/rgb/test/D{domain}/{video_id}/{frame_fmt}'
+    
+    images = [] 
+
+    for i in range(start_frame, stop_frame + 1):
+        frame_path = frame_path_fmt.format(i) 
+        image = cv2.imread(frame_path) 
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        height, width, layer = image.shape
+
+        if pred_cls:
+            image = put_text(image, pred_cls, is_pred=True) 
+        if gt_cls:
+            image = put_text(image, gt_cls, is_pred=False)
+
+        size = (width, height) 
+        images.append(image) 
+
+    os.makedirs(write_dir, exist_ok=True)
+    write_path = f'{write_dir}/{video_id}_{start_frame}.gif'
+
+    write_gif(images, write_path)
 
 if __name__ == '__main__':
     args = parse_args() 
     test_domain_pickle_file_path = f"/home/ubuntu/users/maiti/projects/MM-SADA_Domain_Adaptation_Splits/D{args.test_domain}_test.pkl"
     test_labels = load_annotations(test_domain_pickle_file_path) 
-    model_1_pkl_path = join(args.model_1, 'output.pkl') 
-    model_2_pkl_path = join(args.model_2, 'output.pkl') 
+    verbclass_2_verb_mapping = get_verbclass_to_verb_mapping(test_labels)
+
+    model_1_pkl_path = args.model_1_pkl 
+    model_2_pkl_path = args.model_2_pkl  
     model_1_pkl = read_pickle(model_1_pkl_path) 
     model_2_pkl = read_pickle(model_2_pkl_path) 
 
-    model_1_correct_preds = get_correct_predictions(test_labels, model_1_pkl) 
-    model_2_correct_preds = get_correct_predictions(test_labels, model_2_pkl) 
+    model_1_wrong_preds = get_correct_or_wrong_predictions(test_labels, model_1_pkl, correct=False) 
+    model_2_wrong_preds = get_correct_or_wrong_predictions(test_labels, model_2_pkl, correct=False) 
 
     # Correct by 1st and wrong by the 2nd model
 
-    diff_in_preds = set(model_1_correct_preds) - set(model_2_correct_preds) 
+    diff_in_preds = set(model_1_wrong_preds) - set(model_2_wrong_preds) 
     missclassified_classes = [] 
     video_ids = [] 
-    for index in diff_in_preds:
-        print(test_labels[index]) 
-        missclassified_classes.append(test_labels[index]['verb']) 
-        video_ids.append(test_labels[index]['video_id'])
-    
-    print('##############################################################################')
-    print('Summary Of Misclassified Verbs')
-    print(Counter(missclassified_classes))
-    print('Summary of Missclassified Videos') 
-    print(Counter(video_ids))
-    print('##############################################################################')
 
+    if args.verbose:
+        for idx, index in enumerate(diff_in_preds):
+            print(f'S. No: {idx+1}')
+            print(test_labels[index]) 
+            missclassified_classes.append(test_labels[index]['verb']) 
+            video_ids.append(test_labels[index]['video_id'])
+        
+        print('##############################################################################')
+        print('Summary Of Misclassified Verbs')
+        print(Counter(missclassified_classes))
+        print('Summary of Missclassified Videos') 
+        print(Counter(video_ids))
+        print('##############################################################################')
 
+    if args.generate_gifs:
+        print('Generating Videos of the mistakes...')
+        for index in tqdm(diff_in_preds):
+            data = test_labels[index] 
+            pred_cls = verbclass_2_verb_mapping[np.argmax(model_1_pkl[index])]
+            gt_cls = data['verb'] 
+            join_frames_to_video(data, args.test_domain, write_dir=args.write_dir, pred_cls=pred_cls, gt_cls=gt_cls, args=args)
 
+    generate_html(args.write_dir)
 
-
-
-
-
+    if args.wandb:
+        wandb.init(project='action-recognition', 
+                   notes=args.wandb.split('_')[0],
+                   name=args.wandb.split('_')[1] 
+                   )
+        gifs = glob(join(args.write_dir, '*.gif')) 
+        for gif in gifs:
+            wandb.log({"Failure Cases": wandb.Image(gif, caption=gif.split('/')[-1])})
