@@ -2,7 +2,7 @@
 
 [Haodong Duan](https://github.com/kennymckormick), [Yue Zhao](https://github.com/zhaoyue-zephyrus), [Yuanjun Xiong](https://github.com/yjxiong), Wentao Liu, [Dahua Lin](https://github.com/lindahua)
 
-In ECCV, 2020. [Paper](https://arxiv.org/abs/2003.13042)
+In ECCV, 2020. [Paper](https://arxiv.org/abs/2003.13042), [Dataset](https://docs.google.com/forms/d/e/1FAIpQLSd8_GlmHzG8FcDbW-OEu__G7qLgOSYZpH-i5vYVJcu7wcb_TQ/viewform?usp=sf_link)
 
 ![pipeline](https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/omnisource/pipeline.png?raw=true)
 
