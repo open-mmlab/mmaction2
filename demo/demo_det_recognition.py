@@ -58,12 +58,12 @@ def hex2color(h):
     return (int(h[:2], 16), int(h[2:4], 16), int(h[4:], 16))
 
 
-plate_blue = '03045e-023e8a-0077b6-0096c7-00b4d8-48cae4'
-plate_blue = plate_blue.split('-')
-plate_blue = [hex2color(h) for h in plate_blue]
-plate_green = '004b23-006400-007200-008000-38b000-70e000'
-plate_green = plate_green.split('-')
-plate_green = [hex2color(h) for h in plate_green]
+PLATEBLUE = '03045e-023e8a-0077b6-0096c7-00b4d8-48cae4'
+PLATEBLUE = PLATEBLUE.split('-')
+PLATEBLUE = [hex2color(h) for h in PLATEBLUE]
+PLATEGREEN = '004b23-006400-007200-008000-38b000-70e000'
+PLATEGREEN = PLATEGREEN.split('-')
+PLATEGREEN = [hex2color(h) for h in PLATEGREEN]
 
 
 def vis_pose_result(frame,
@@ -96,9 +96,8 @@ def vis_pose_result(frame,
             for sk_id, sk in enumerate(skeleton):
                 pos1 = (int(kpts[sk[0] - 1, 0]), int(kpts[sk[0] - 1, 1]))
                 pos2 = (int(kpts[sk[1] - 1, 0]), int(kpts[sk[1] - 1, 1]))
-                if (pos1[0] > 0 and pos1[0] < img_w and pos1[1] > 0
-                        and pos1[1] < img_h and pos2[0] > 0 and pos2[0] < img_w
-                        and pos2[1] > 0 and pos2[1] < img_h
+                if (0 < pos1[0] < img_w and 0 < pos1[1] < img_h
+                        and 0 < pos2[0] < img_w and 0 < pos2[1] < img_h
                         and kpts[sk[0] - 1, 2] > kpt_score_thr
                         and kpts[sk[1] - 1, 2] > kpt_score_thr):
                     r, g, b = pose_limb_color[sk_id]
@@ -113,15 +112,18 @@ def visualize(frames,
               annotations,
               pose_results,
               action_result,
-              plate=plate_blue,
+              plate=PLATEBLUE,
               max_num=5):
     """Visualize frames with predicted annotations.
 
     Args:
         frames (list[np.ndarray]): Frames for visualization, note that
             len(frames) % len(annotations) should be 0.
-        annotations (list[list[tuple]]): The predicted results.
-        plate (str): The plate used for visualization. Default: plate_blue.
+        annotations (list[list[tuple]]): The predicted spatio-temporal
+            detection results.
+        pose_results (list[list[tuple]): The pose results.
+        action_result (str): The predicted action recognition results.
+        plate (str): The plate used for visualization. Default: PLATEBLUE.
         max_num (int): Max number of labels to visualize for a person box.
             Default: 5.
 
@@ -381,8 +383,6 @@ def detection_inference(args, frame_paths):
         result = inference_detector(model, frame_path)
         # We only keep human detections with score larger than det_score_thr
         result = result[0][result[0][:, 4] >= args.det_score_thr]
-        # print('len-result', len(result))
-        # print(result)
         results.append(result)
         prog_bar.update()
 
@@ -546,7 +546,8 @@ def skeleton_based_stdet(args, label_map, timestamps, human_detections,
                          pose_results, clip_len, frame_interval, window_size,
                          h, w):
     skeleton_config = mmcv.Config.fromfile(args.skeleton_config)
-    skeleton_config.model.cls_head.num_classes = 81  # for AVA dataset
+    num_class = max(label_map.keys()) + 1  # for AVA dataset (81)
+    skeleton_config.model.cls_head.num_classes = num_class
     skeleton_pipeline = Compose(skeleton_config.test_pipeline)
     skeleton_stdet_model = build_model(skeleton_config.model)
     load_checkpoint(
