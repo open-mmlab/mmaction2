@@ -502,8 +502,13 @@ def skeleton_based_action_recognition(args, pose_results, num_frame, h, w):
     fake_anno['keypoint'] = keypoint
     fake_anno['keypoint_score'] = keypoint_score
 
+    label_map_recognition = [
+        x.strip() for x in open(args.label_map_recognition).readlines()
+    ]
+    num_class = len(label_map_recognition)
+
     skeleton_config = mmcv.Config.fromfile(args.skeleton_config)
-    skeleton_config.model.cls_head.num_classes = 400  # for K400 dataset
+    skeleton_config.model.cls_head.num_classes = num_class  # for K400 dataset
     skeleton_pipeline = Compose(skeleton_config.test_pipeline)
     skeleton_imgs = skeleton_pipeline(fake_anno)['imgs'][None]
     skeleton_imgs = skeleton_imgs.to(args.device)
@@ -518,9 +523,6 @@ def skeleton_based_action_recognition(args, pose_results, num_frame, h, w):
     with torch.no_grad():
         output = skeleton_model(return_loss=False, imgs=skeleton_imgs)
 
-    label_map_recognition = [
-        x.strip() for x in open(args.label_map_recognition).readlines()
-    ]
     action_idx = np.argmax(output)
     skeleton_action_result = label_map_recognition[
         action_idx]  # skeleton-based action result for the whole video
