@@ -1,5 +1,6 @@
 import argparse
 import math
+import os
 import os.path as osp
 
 import mmcv
@@ -210,6 +211,7 @@ def read_xyz(file, max_body=2, num_joint=25):
 
 
 def gendata(data_path,
+            out_path,
             ignored_sample_path=None,
             benchmark='xsub',
             part='train',
@@ -224,10 +226,14 @@ def gendata(data_path,
 
     sample_name = []
     sample_label = []
-    anno = dict()
+    total_frames = []
+    results = []
 
-    filename = osp.basename(data_path)
-    if filename not in ignored_samples:
+    for filename in os.listdir(data_path):
+        if filename in ignored_samples:
+            continue
+
+        # if filename not in ignored_samples:
         action_class = int(filename[filename.find('A') + 1:filename.find('A') +
                                     4])
         subject_id = int(filename[filename.find('P') + 1:filename.find('P') +
@@ -251,46 +257,72 @@ def gendata(data_path,
 
         if issample:
             sample_name.append(filename)
-            sample_label.append(action_class - 1)
+            sample_label.append(action_class - 1)  # 0-59
 
-        fp = np.zeros((1, 3, max_frame, num_joint, max_body_true),
-                      dtype=np.float32)
+    fp = np.zeros((len(sample_label), 3, max_frame, num_joint, max_body_true),
+                  dtype=np.float32)
+
+    for i, s in enumerate(tqdm(sample_name)):
         data = read_xyz(
-            data_path, max_body=max_body_kinect, num_joint=num_joint)
-        fp[0, :, 0:data.shape[1], :, :] = data
+            osp.join(data_path, s),
+            max_body=max_body_kinect,
+            num_joint=num_joint)
+        fp[i, :, 0:data.shape[1], :, :] = data
+        total_frames.append(data.shape[1])
 
-        if pre_norm:
-            fp = pre_normalization(fp)
+    if pre_norm:
+        fp = pre_normalization(fp)
 
-        anno['keypoint'] = fp[0]
+    for i, s in enumerate(tqdm(sample_name)):
+        anno = dict()
+        anno['keypoint'] = fp[i]  # C T V M
         anno['keypoint_score'] = np.ones((3, max_frame, num_joint),
                                          dtype=np.float32)
-        anno['frame_dir'] = osp.splitext(osp.basename(data_path))[0]
+        anno['frame_dir'] = osp.splitext(s)[0]
         anno['img_shape'] = (1080, 1920)
         anno['img_shape'] = (1080, 1920)
-        anno['total_frames'] = data.shape[1]
-        anno['label'] = action_class
+        anno['total_frames'] = total_frames[i]
+        anno['label'] = sample_label[i]
 
-        return anno
+        results.append(anno)
 
-    else:
-        return None
+    output_path = '{}/{}.pkl'.format(out_path, part)
+    mmcv.dump(results, output_path)
+    print(f'{benchmark}-{part} finish~!')
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Generate Pose Annotation for NTURGB-D raw skeleton data')
-    parser.add_argument('data_path', type=str, help='raw skeleton data path')
     parser.add_argument(
-        'ignore_sample_path',
+        '--data_path',
         type=str,
-        default='samples_with_missing_skeletons.txt')
-    parser.add_argument('output', type=str, help='output pickle name')
+        help='raw skeleton data path',
+        default='/mnt/lustre/liguankai/data/ntu/nturgb+d_skeletons_60/')
+    parser.add_argument(
+        '--ignored_sample_path',
+        type=str,
+        default='/mnt/lustre/liguankai/data/samples_with_missing_skeletons.txt'
+    )
+    parser.add_argument(
+        '--out_folder',
+        type=str,
+        default='/mnt/lustre/liguankai/data/ntu/nturgb+d_skeletons_60_3d')
     parser.add_argument('--benchmark', type=str, default='xsub')
     parser.add_argument('--part', type=str, default='train')
-    # parser.add_argument('--device', type=str, default='cuda:0')
     args = parser.parse_args()
 
-    anno = gendata(args.data_path, args.ignore_sample_path, args.benchmark,
-                   args.part)
-    mmcv.dump(anno, args.output)
+    benchmark = ['xsub', 'xview']
+    part = ['train', 'val']
+
+    for b in benchmark:
+        for p in part:
+            out_path = osp.join(args.out_folder, b)
+            if not osp.exists(out_path):
+                os.makedirs(out_path)
+            gendata(
+                args.data_path,
+                out_path,
+                args.ignored_sample_path,
+                benchmark=b,
+                part=p)
