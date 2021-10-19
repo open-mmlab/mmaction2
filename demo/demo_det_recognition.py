@@ -19,7 +19,8 @@ from mmaction.utils import import_module_error_func
 
 try:
     from mmdet.apis import inference_detector, init_detector
-    from mmpose.apis import init_pose_model, inference_top_down_pose_model
+    from mmpose.apis import (init_pose_model, inference_top_down_pose_model,
+                             vis_pose_result)
 
 except (ImportError, ModuleNotFoundError):
 
@@ -37,6 +38,10 @@ except (ImportError, ModuleNotFoundError):
 
     @import_module_error_func('mmpose')
     def inference_top_down_pose_model(*args, **kwargs):
+        pass
+
+    @import_module_error_func('mmpose')
+    def vis_pose_result(*args, **kwargs):
         pass
 
 
@@ -66,52 +71,11 @@ PLATEGREEN = PLATEGREEN.split('-')
 PLATEGREEN = [hex2color(h) for h in PLATEGREEN]
 
 
-def vis_pose_result(frame,
-                    result,
-                    skeleton,
-                    kpt_score_thr=0.3,
-                    pose_kpt_color=None,
-                    pose_limb_color=None,
-                    radius=4,
-                    thickness=1):
-    pose_result = []
-    for res in result:
-        pose_result.append(res['keypoints'])
-    img_h, img_w, _ = frame.shape
-
-    for kpts in pose_result:
-        # draw each point on image
-        if pose_kpt_color is not None:
-            assert len(pose_kpt_color) == len(kpts)
-            for kid, kpt in enumerate(kpts):
-                x_coord, y_coord, kpt_score = int(kpt[0]), int(kpt[1]), kpt[2]
-                if kpt_score > kpt_score_thr:
-                    r, g, b = pose_kpt_color[kid]
-                    cv2.circle(frame, (int(x_coord), int(y_coord)), radius,
-                               (int(r), int(g), int(b)), -1)
-
-        # draw limbs
-        if skeleton is not None and pose_limb_color is not None:
-            assert len(pose_limb_color) == len(skeleton)
-            for sk_id, sk in enumerate(skeleton):
-                pos1 = (int(kpts[sk[0] - 1, 0]), int(kpts[sk[0] - 1, 1]))
-                pos2 = (int(kpts[sk[1] - 1, 0]), int(kpts[sk[1] - 1, 1]))
-                if (0 < pos1[0] < img_w and 0 < pos1[1] < img_h
-                        and 0 < pos2[0] < img_w and 0 < pos2[1] < img_h
-                        and kpts[sk[0] - 1, 2] > kpt_score_thr
-                        and kpts[sk[1] - 1, 2] > kpt_score_thr):
-                    r, g, b = pose_limb_color[sk_id]
-                    cv2.line(
-                        frame,
-                        pos1,
-                        pos2, (int(r), int(g), int(b)),
-                        thickness=thickness)
-
-
 def visualize(frames,
               annotations,
               pose_results,
               action_result,
+              pose_model,
               plate=PLATEBLUE,
               max_num=5):
     """Visualize frames with predicted annotations.
@@ -123,6 +87,7 @@ def visualize(frames,
             detection results.
         pose_results (list[list[tuple]): The pose results.
         action_result (str): The predicted action recognition results.
+        pose_model (nn.Module): The constructed pose model.
         plate (str): The plate used for visualization. Default: PLATEBLUE.
         max_num (int): Max number of labels to visualize for a person box.
             Default: 5.
@@ -135,12 +100,17 @@ def visualize(frames,
     plate = [x[::-1] for x in plate]
     frames_ = cp.deepcopy(frames)
     nf, na = len(frames), len(annotations)
-    print(f'nf--{nf}, na--{na}')
     assert nf % na == 0
-    nfpa = len(frames) // len(annotations)  # 2
+    nfpa = len(frames) // len(annotations)
     anno = None
     h, w, _ = frames[0].shape
     scale_ratio = np.array([w, h, w, h])
+
+    # add pose results
+    for i, pose_result in enumerate(pose_results):
+        ind = i * nfpa
+        frames_[ind] = vis_pose_result(pose_model, frames_[ind], pose_result)
+
     for i in range(na):
         anno = annotations[i]
         if anno is None:
@@ -152,32 +122,6 @@ def visualize(frames,
             # add action result for whole video
             cv2.putText(frame, action_result, (10, 30), FONTFACE, FONTSCALE,
                         FONTCOLOR, THICKNESS, LINETYPE)
-
-            if j == 0:
-                # add pose results
-                skeleton = [[16, 14], [14, 12], [17, 15], [15, 13], [12, 13],
-                            [6, 12], [7, 13], [6, 7], [6, 8], [7, 9], [8, 10],
-                            [9, 11], [2, 3], [1, 2], [1, 3], [2, 4], [3, 5],
-                            [4, 6], [5, 7]]
-                palette = np.array([[255, 128, 0], [255, 153, 51],
-                                    [255, 178, 102], [230, 230, 0],
-                                    [255, 153, 255], [153, 204, 255],
-                                    [255, 102, 255], [255, 51, 255],
-                                    [102, 178, 255], [51, 153, 255],
-                                    [255, 153, 153], [255, 102, 102],
-                                    [255, 51, 51], [153, 255, 153],
-                                    [102, 255, 102], [51, 255, 51],
-                                    [0, 255, 0], [0, 0, 255], [255, 0, 0],
-                                    [255, 255, 255]])
-                pose_limb_color = palette[[
-                    0, 0, 0, 0, 7, 7, 7, 9, 9, 9, 9, 9, 16, 16, 16, 16, 16, 16,
-                    16
-                ]]
-                pose_kpt_color = palette[[
-                    16, 16, 16, 16, 16, 9, 9, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0
-                ]]
-                vis_pose_result(frame, pose_results[i], skeleton, 0.3,
-                                pose_kpt_color, pose_limb_color)
 
             # add spatio-temporal action detection results
             for ann in anno:
@@ -211,12 +155,12 @@ def visualize(frames,
 def parse_args():
     parser = argparse.ArgumentParser(description='MMAction2 demo')
     parser.add_argument(
-        '--stdet-config',
+        '--rgb-stdet-config',
         default=('configs/detection/ava/'
                  'slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb.py'),
         help='spatio temporal detection config file path')
     parser.add_argument(
-        '--stdet-checkpoint',
+        '--rgb-stdet-checkpoint',
         default=('https://download.openmmlab.com/mmaction/detection/ava/'
                  'slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb/'
                  'slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb'
@@ -225,10 +169,9 @@ def parse_args():
 
     parser.add_argument(
         '--skeleton-stdet-checkpoint',
-        default=('/mnt/lustre21/DATAshare2/duanhaodong/posec3d/'
+        default=('https://download.openmmlab.com/mmaction/skeleton/posec3d/'
                  'posec3d_ava.pth'),
         help='skeleton-based spatio temporal detection checkpoint file/url')
-
     parser.add_argument(
         '--det-config',
         default='demo/faster_rcnn_r50_fpn_2x_coco.py',
@@ -256,10 +199,9 @@ def parse_args():
         help='skeleton-based action recognition config file path')
     parser.add_argument(
         '--skeleton-checkpoint',
-        default='/mnt/lustre21/DATAshare2/duanhaodong/posec3d/'
+        default='https://download.openmmlab.com/mmaction/skeleton/posec3d/'
         'posec3d_k400.pth',
         help='skeleton-based action recognition checkpoint file/url')
-
     parser.add_argument(
         '--rgb-config',
         default='configs/recognition/tsn/'
@@ -273,13 +215,20 @@ def parse_args():
         help='rgb-based action recognition checkpoint file/url')
     parser.add_argument(
         '--use-skeleton-stdet',
-        default=True,
+        default=False,
         help='use skeleton-based spatio temporal detection method')
     parser.add_argument(
+        '--use-rgb-stdet',
+        default=True,
+        help='use rgb-based spatio temporal detection method')
+    parser.add_argument(
         '--use-skeleton-recog',
-        default=False,
+        default=True,
         help='use skeleton-based action recognition method')
-
+    parser.add_argument(
+        '--use-rgb-recog',
+        default=False,
+        help='use rgb-based action recognition method')
     parser.add_argument(
         '--det-score-thr',
         type=float,
@@ -571,16 +520,16 @@ def skeleton_based_stdet(args, label_map, timestamps, human_detections,
         start_frame = timestamp - (clip_len // 2 - 1) * frame_interval
         frame_inds = start_frame + np.arange(0, window_size, frame_interval)
         frame_inds = list(frame_inds - 1)
-        num_frame = len(frame_inds)  # 8
+        num_frame = len(frame_inds)
 
         pose_result = [pose_results[ind] for ind in frame_inds]
         num_person = max([len(x) for x in pose_result])
 
         skeleton_prediction = []
+
         for i in range(proposal.shape[0]):  # num_person
             skeleton_prediction.append([])
 
-        for i in range(proposal.shape[0]):  # num_person
             fake_anno = dict(
                 frame_dict='',
                 label=-1,
@@ -616,27 +565,32 @@ def skeleton_based_stdet(args, label_map, timestamps, human_detections,
             with torch.no_grad():
                 output = skeleton_stdet_model(
                     return_loss=False, imgs=skeleton_imgs)
-            action_idx = np.argmax(output)
-
-            if output[0, action_idx] > args.action_score_thr:
-                skeleton_prediction[i].append(
-                    (label_map[action_idx], output[0, action_idx]))
+                output = output[0]
+                for k in range(len(output)):  # 81
+                    if k not in label_map:
+                        continue
+                    if output[k] > args.action_score_thr:
+                        skeleton_prediction[i].append(
+                            (label_map[k], output[k]))
 
         skeleton_predictions.append(skeleton_prediction)
-    prog_bar.update()
+        prog_bar.update()
 
     return skeleton_predictions
 
 
 def rgb_based_stdet(args, frames, label_map, timestamps, human_detections, w,
-                    h, new_w, new_h, w_ratio, h_ratio, clip_len,
-                    frame_interval, window_size):
+                    h, new_w, new_h, w_ratio, h_ratio, window_size):
 
-    stdet_config = mmcv.Config.fromfile(args.stdet_config)
-    stdet_config.merge_from_dict(args.cfg_options)
+    rgb_stdet_config = mmcv.Config.fromfile(args.rgb_stdet_config)
+    rgb_stdet_config.merge_from_dict(args.cfg_options)
+
+    val_pipeline = rgb_stdet_config.data.val.pipeline
+    sampler = [x for x in val_pipeline if x['type'] == 'SampleAVAFrames'][0]
+    clip_len, frame_interval = sampler['clip_len'], sampler['frame_interval']
 
     # Get img_norm_cfg
-    img_norm_cfg = stdet_config['img_norm_cfg']
+    img_norm_cfg = rgb_stdet_config['img_norm_cfg']
     if 'to_rgb' not in img_norm_cfg and 'to_bgr' in img_norm_cfg:
         to_bgr = img_norm_cfg.pop('to_bgr')
         img_norm_cfg['to_rgb'] = to_bgr
@@ -647,25 +601,23 @@ def rgb_based_stdet(args, frames, label_map, timestamps, human_detections, w,
     try:
         # In our spatiotemporal detection demo, different actions should have
         # the same number of bboxes.
-        stdet_config['model']['test_cfg']['rcnn']['action_thr'] = .0
+        rgb_stdet_config['model']['test_cfg']['rcnn']['action_thr'] = .0
     except KeyError:
         pass
 
-    stdet_config.model.backbone.pretrained = None
-    stdet_model = build_detector(
-        stdet_config.model, test_cfg=stdet_config.get('test_cfg'))
+    rgb_stdet_config.model.backbone.pretrained = None
+    rgb_stdet_model = build_detector(
+        rgb_stdet_config.model, test_cfg=rgb_stdet_config.get('test_cfg'))
 
     load_checkpoint(
-        stdet_model, args.stdet_checkpoint, map_location=args.device)
-    stdet_model.to(args.device)
-    stdet_model.eval()
+        rgb_stdet_model, args.rgb_stdet_checkpoint, map_location=args.device)
+    rgb_stdet_model.to(args.device)
+    rgb_stdet_model.eval()
 
     predictions = []
 
     print('Performing SpatioTemporal Action Detection for each clip')
-    # assert len(timestamps) == len(human_detections)
     prog_bar = mmcv.ProgressBar(len(timestamps))
-    # for timestamp, proposal in zip(timestamps, human_detections):
     for timestamp in timestamps:
         proposal = human_detections[timestamp - 1]
 
@@ -684,7 +636,7 @@ def rgb_based_stdet(args, frames, label_map, timestamps, human_detections, w,
         input_tensor = torch.from_numpy(input_array).to(args.device)
 
         with torch.no_grad():
-            result = stdet_model(
+            result = rgb_stdet_model(
                 return_loss=False,
                 img=[input_tensor],
                 img_metas=[[dict(img_shape=(new_h, new_w))]],
@@ -696,13 +648,14 @@ def rgb_based_stdet(args, frames, label_map, timestamps, human_detections, w,
                 prediction.append([])
 
             # Perform action score thr
-            for i in range(len(result)):
+            for i in range(len(result)):  # 80
                 if i + 1 not in label_map:
                     continue
                 for j in range(proposal.shape[0]):
                     if result[i][j, 4] > args.action_score_thr:
                         prediction[j].append((label_map[i + 1], result[i][j,
                                                                           4]))
+                        print('rgb-stdet', prediction[j])
             predictions.append(prediction)
         prog_bar.update()
 
@@ -737,57 +690,53 @@ def main():
 
     # Load spatio-temporal detection label_map
     stdet_label_map = load_label_map(args.label_map)
-    stdet_config = mmcv.Config.fromfile(args.stdet_config)
-    stdet_config.merge_from_dict(args.cfg_options)
+    rgb_stdet_config = mmcv.Config.fromfile(args.rgb_stdet_config)
+    rgb_stdet_config.merge_from_dict(args.cfg_options)
     try:
-        if stdet_config['data']['train']['custom_classes'] is not None:
+        if rgb_stdet_config['data']['train']['custom_classes'] is not None:
             stdet_label_map = {
                 id + 1: stdet_label_map[cls]
-                for id, cls in enumerate(stdet_config['data']['train']
+                for id, cls in enumerate(rgb_stdet_config['data']['train']
                                          ['custom_classes'])
             }
     except KeyError:
         pass
 
-    # skeleton-based action result for the whole video
-    skeleton_action_result = skeleton_based_action_recognition(
-        args, pose_results, num_frame, h, w)
-
-    # rgb-based action result for the whole video
-    rgb_action_result = rgb_based_action_recognition(args)
-
-    # skeleton-based stdet
-    skeleton_stdet_preds = skeleton_based_stdet(args, stdet_label_map,
-                                                timestamps, human_detections,
-                                                pose_results, clip_len,
-                                                frame_interval, window_size, h,
-                                                w)
-
-    for i in range(len(human_detections)):
-        det = human_detections[i]
-        det[:, 0:4:2] *= w_ratio
-        det[:, 1:4:2] *= h_ratio
-        human_detections[i] = torch.from_numpy(det[:, :4]).to(args.device)
-
-    # rgb-based stdet
-    rgb_stdet_preds = rgb_based_stdet(args, frames, stdet_label_map,
-                                      timestamps, human_detections, w, h,
-                                      new_w, new_h, w_ratio, h_ratio, clip_len,
-                                      frame_interval, window_size)
-
-    stdet_preds = None
-    if args.use_skeleton_stdet:
-        print('Use skeleton-based SpatioTemporal Action Detection')
-        stdet_preds = skeleton_stdet_preds
-    else:
-        stdet_preds = rgb_stdet_preds
-
     action_result = None
+    assert args.use_skeleton_recog ^ args.use_rgb_recog
     if args.use_skeleton_recog:
         print('use skeleton-based recognition')
-        action_result = rgb_action_result
-    else:
-        action_result = skeleton_action_result
+        action_result = skeleton_based_action_recognition(
+            args, pose_results, num_frame, h, w)
+    elif args.use_rgb_recog:
+        print('use rgb-based recognition')
+        action_result = rgb_based_action_recognition(args)
+
+    stdet_preds = None
+    assert args.use_skeleton_stdet ^ args.use_rgb_stdet
+    if args.use_skeleton_stdet:
+        print('Use skeleton-based SpatioTemporal Action Detection')
+        stdet_preds = skeleton_based_stdet(args, stdet_label_map, timestamps,
+                                           human_detections, pose_results,
+                                           clip_len, frame_interval,
+                                           window_size, h, w)
+        for i in range(len(human_detections)):
+            det = human_detections[i]
+            det[:, 0:4:2] *= w_ratio
+            det[:, 1:4:2] *= h_ratio
+            human_detections[i] = torch.from_numpy(det[:, :4]).to(args.device)
+
+    elif args.use_rgb_stdet:
+        print('Use rgb-based SpatioTemporal Action Detection')
+        for i in range(len(human_detections)):
+            det = human_detections[i]
+            det[:, 0:4:2] *= w_ratio
+            det[:, 1:4:2] *= h_ratio
+            human_detections[i] = torch.from_numpy(det[:, :4]).to(args.device)
+        stdet_preds = rgb_based_stdet(args, frames, stdet_label_map,
+                                      timestamps, human_detections, w, h,
+                                      new_w, new_h, w_ratio, h_ratio,
+                                      window_size)
 
     stdet_results = []
     for timestamp, prediction in zip(timestamps, stdet_preds):
@@ -809,9 +758,11 @@ def main():
         for i in dense_timestamps(timestamps, dense_n)
     ]
     print('Performing visualization')
-
+    pose_model = init_pose_model(args.pose_config, args.pose_checkpoint,
+                                 args.device)
     pose_results = [pose_results[timestamp - 1] for timestamp in timestamps]
-    vis_frames = visualize(frames, stdet_results, pose_results, action_result)
+    vis_frames = visualize(frames, stdet_results, pose_results, action_result,
+                           pose_model)
     vid = mpy.ImageSequenceClip([x[:, :, ::-1] for x in vis_frames],
                                 fps=args.output_fps)
     vid.write_videofile(args.out_filename)
