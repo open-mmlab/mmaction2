@@ -13,7 +13,7 @@ class Recognizer2D(BaseRecognizer):
 
     def forward_train(self, imgs, labels, **kwargs):
         """Defines the computation performed at every call when training."""
-
+        import ipdb; ipdb.set_trace() 
         assert self.with_cls_head
         batches = imgs.shape[0]
         imgs = imgs.reshape((-1, ) + imgs.shape[2:])
@@ -385,3 +385,74 @@ class SlowFastSelfSupervisedRecognizer2D(Recognizer2D):
             num_samples=len(next(iter(data_batch[0].values()))))
 
         return outputs
+
+
+
+@RECOGNIZERS.register_module()
+class VCOPSRecognizer2D(Recognizer2D):
+    """2D recognizer model framework for Video Clip Order Prediction"""
+    def __init__(self,
+                 backbone,
+                 cls_head=None,
+                 vcop_head=None, 
+                 neck=None,
+                 train_cfg=None,
+                 test_cfg=None,
+                 num_clips=1):
+        super().__init__(backbone, 
+                        cls_head=cls_head,
+                        neck=neck, 
+                        train_cfg=train_cfg, 
+                        test_cfg=test_cfg)
+        
+        self.num_clips = num_clips
+        self.vcop_head = builder.build_head(vcop_head)
+
+    def forward_train(self, imgs, labels, **kwargs):
+        """Defines the computation performed at every call when training."""
+        assert self.with_cls_head
+        assert self.vcop_head
+        batches = imgs.shape[0]
+        imgs = imgs.reshape((-1, ) + imgs.shape[2:])
+        num_segs = imgs.shape[0] // batches
+
+        losses = dict()
+
+        x = self.extract_feat(imgs)
+        vcop_loss = self.vcop_head(x.reshape(batches, self.num_clips, num_segs // self.num_clips, -1), 
+                                   return_loss=True)
+
+        if self.backbone_from in ['torchvision', 'timm']:
+            if len(x.shape) == 4 and (x.shape[2] > 1 or x.shape[3] > 1):
+                # apply adaptive avg pooling
+                x = nn.AdaptiveAvgPool2d(1)(x)
+            x = x.reshape((x.shape[0], -1))
+            x = x.reshape(x.shape + (1, 1))
+
+        if self.with_neck:
+            x = [
+                each.reshape((-1, num_segs) +
+                             each.shape[1:]).transpose(1, 2).contiguous()
+                for each in x
+            ]
+            x, loss_aux = self.neck(x, labels.squeeze())
+            x = x.squeeze(2)
+            num_segs = 1
+            losses.update(loss_aux)
+
+        cls_score = self.cls_head(x, num_segs)
+        # num_batch x num_clips x num_classes 
+        cls_score = cls_score.view(batches, -1, cls_score.size()[-1])
+        # num_batch x 1 x num_classes
+        cls_score = self.cls_head.consensus(cls_score) 
+
+        # num_batch x num_classes
+        cls_score = cls_score.squeeze(1)
+
+        gt_labels = labels.squeeze()
+        loss_cls = self.cls_head.loss(cls_score, gt_labels, **kwargs)
+        losses.update(loss_cls)
+        losses.update(vcop_loss)
+        return losses
+
+    
