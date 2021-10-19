@@ -19,7 +19,7 @@ We release the skeleton annotations used in [Revisiting Skeleton-based Action Re
 
 ## Prepare Annotations
 
-Currently, we support FineGYM and NTURGB+D. For FineGYM, you can execute following scripts to prepare the annotations.
+Currently, we support HMDB51, UCF101, FineGYM and NTURGB+D. For FineGYM, you can execute following scripts to prepare the annotations.
 
 ```shell
 bash download_annotations.sh ${DATASET}
@@ -33,6 +33,8 @@ For those who have not enough computations for pose extraction, we provide the o
 - ntu60_xsub_val: https://download.openmmlab.com/mmaction/posec3d/ntu60_xsub_val.pkl
 - ntu120_xsub_train: https://download.openmmlab.com/mmaction/posec3d/ntu120_xsub_train.pkl
 - ntu120_xsub_val: https://download.openmmlab.com/mmaction/posec3d/ntu120_xsub_val.pkl
+- hmdb51: https://download.openmmlab.com/mmaction/posec3d/hmdb51.pkl
+- ucf101: https://download.openmmlab.com/mmaction/posec3d/ucf101.pkl
 
 To generate 2D pose annotations for a single video, first, you need to install mmdetection and mmpose from src code. After that, you need to replace the placeholder `mmdet_root` and `mmpose_root` in `ntu_pose_extraction.py` with your installation path. Then you can use following scripts for NTURGB+D video pose extraction:
 
@@ -99,4 +101,6 @@ For skeleton data visualization, you need also to prepare the RGB videos. Please
 - [x] NTU120_XSub
 - [x] NTU60_XView
 - [x] NTU120_XSet
+- [x] UCF101
+- [x] HMDB51
 - [ ] Kinetics
