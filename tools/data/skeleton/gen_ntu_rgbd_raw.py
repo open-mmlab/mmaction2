@@ -5,7 +5,6 @@ import os.path as osp
 
 import mmcv
 import numpy as np
-from tqdm import tqdm
 
 training_subjects_60 = [
     1, 2, 4, 5, 8, 9, 13, 14, 15, 16, 17, 18, 19, 25, 27, 28, 31, 34, 35, 38
@@ -68,7 +67,8 @@ def pre_normalization(data, zaxis=[0, 1], xaxis=[8, 4]):
     s = np.transpose(data, [0, 4, 2, 3, 1])  # N C T V M -> N M T V C
 
     print('pad the null frames with the previous frames')
-    for i_s, skeleton in enumerate(tqdm(s)):
+    prog_bar = mmcv.ProgressBar(len(s))
+    for i_s, skeleton in enumerate(s):
         if skeleton.sum() == 0:
             print(i_s, ' has no skeleton')
         for i_p, person in enumerate(skeleton):
@@ -89,10 +89,12 @@ def pre_normalization(data, zaxis=[0, 1], xaxis=[8, 4]):
                             [person[0:i_f] for _ in range(num)], 0)[:rest]
                         s[i_s, i_p, i_f:] = pad
                         break
+        prog_bar.update()
 
     print('sub the center joint #1 (spine joint in ntu and '
           'neck joint in kinetics)')
-    for i_s, skeleton in enumerate(tqdm(s)):
+    prog_bar = mmcv.ProgressBar(len(s))
+    for i_s, skeleton in enumerate(s):
         if skeleton.sum() == 0:
             continue
         main_body_center = skeleton[0][:, 1:2, :].copy()
@@ -101,10 +103,12 @@ def pre_normalization(data, zaxis=[0, 1], xaxis=[8, 4]):
                 continue
             mask = (person.sum(-1) != 0).reshape(T, V, 1)
             s[i_s, i_p] = (s[i_s, i_p] - main_body_center) * mask
+        prog_bar.update()
 
     print('parallel the bone between hip(jpt 0) and '
           'spine(jpt 1) of the first person to the z axis')
-    for i_s, skeleton in enumerate(tqdm(s)):
+    prog_bar = mmcv.ProgressBar(len(s))
+    for i_s, skeleton in enumerate(s):
         if skeleton.sum() == 0:
             continue
         joint_bottom = skeleton[0, 0, zaxis[0]]
@@ -120,10 +124,12 @@ def pre_normalization(data, zaxis=[0, 1], xaxis=[8, 4]):
                     continue
                 for i_j, joint in enumerate(frame):
                     s[i_s, i_p, i_f, i_j] = np.dot(matrix_z, joint)
+        prog_bar.update()
 
     print('parallel the bone between right shoulder(jpt 8) and '
           'left shoulder(jpt 4) of the first person to the x axis')
-    for i_s, skeleton in enumerate(tqdm(s)):
+    prog_bar = mmcv.ProgressBar(len(s))
+    for i_s, skeleton in enumerate(s):
         if skeleton.sum() == 0:
             continue
         joint_rshoulder = skeleton[0, 0, xaxis[0]]
@@ -139,6 +145,7 @@ def pre_normalization(data, zaxis=[0, 1], xaxis=[8, 4]):
                     continue
                 for i_j, joint in enumerate(frame):
                     s[i_s, i_p, i_f, i_j] = np.dot(matrix_x, joint)
+        prog_bar.update()
 
     data = np.transpose(s, [0, 4, 2, 3, 1])
     return data
@@ -277,18 +284,21 @@ def gendata(data_path,
     fp = np.zeros((len(sample_label), 3, max_frame, num_joint, max_body_true),
                   dtype=np.float32)
 
-    for i, s in enumerate(tqdm(sample_name)):
+    prog_bar = mmcv.ProgressBar(len(sample_name))
+    for i, s in enumerate(sample_name):
         data = read_xyz(
             osp.join(data_path, s),
             max_body=max_body_kinect,
             num_joint=num_joint)
         fp[i, :, 0:data.shape[1], :, :] = data
         total_frames.append(data.shape[1])
+        prog_bar.update()
 
     if pre_norm:
         fp = pre_normalization(fp)
 
-    for i, s in enumerate(tqdm(sample_name)):
+    prog_bar = mmcv.ProgressBar(len(sample_name))
+    for i, s in enumerate(sample_name):
         anno = dict()
         anno['keypoint'] = fp[i]  # C T V M
         anno['keypoint_score'] = np.ones((3, max_frame, num_joint),
@@ -300,6 +310,7 @@ def gendata(data_path,
         anno['label'] = sample_label[i]
 
         results.append(anno)
+        prog_bar.update()
 
     output_path = '{}/{}.pkl'.format(out_path, part)
     mmcv.dump(results, output_path)
