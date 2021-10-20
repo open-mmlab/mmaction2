@@ -5,9 +5,9 @@ from .augmentations import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
                             RandomResizedCrop, Resize, TenCrop, ThreeCrop,
                             TorchvisionTrans)
 from .compose import Compose
-from .formating import (Collect, FormatAudioShape, FormatGCNInput, FormatShape,
-                        ImageToTensor, Rename, ToDataContainer, ToTensor,
-                        Transpose)
+from .formatting import (Collect, FormatAudioShape, FormatGCNInput,
+                         FormatShape, ImageToTensor, Rename, ToDataContainer,
+                         ToTensor, Transpose)
 from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
                       AudioFeatureSelector, BuildPseudoClip, DecordDecode,
                       DecordInit, DenseSampleFrames,

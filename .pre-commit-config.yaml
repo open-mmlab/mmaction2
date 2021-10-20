@@ -43,4 +43,4 @@ repos:
     rev: v2.1.0
     hooks:
       - id: codespell
-        args: ["--skip", "*.ipynb,tools/data/hvu/label_map.json", "-L", "formating,te,nd,thre,Gool,gool"]
+        args: ["--skip", "*.ipynb,tools/data/hvu/label_map.json", "-L", "te,nd,thre,Gool,gool"]
