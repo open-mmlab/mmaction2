@@ -335,8 +335,6 @@ if __name__ == '__main__':
         type=str,
         default='/mnt/lustre/liguankai/data/ntu/nturgb+d_skeletons_60_3d')
     parser.add_argument('--task', type=str, default='ntu60')
-    parser.add_argument('--benchmark', type=str, default='xsub')
-    parser.add_argument('--part', type=str, default='train')
     args = parser.parse_args()
 
     assert args.task in ['ntu60', 'ntu120']
