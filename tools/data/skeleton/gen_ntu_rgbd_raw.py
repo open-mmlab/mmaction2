@@ -7,10 +7,18 @@ import mmcv
 import numpy as np
 from tqdm import tqdm
 
-training_subjects = [
+training_subjects_60 = [
     1, 2, 4, 5, 8, 9, 13, 14, 15, 16, 17, 18, 19, 25, 27, 28, 31, 34, 35, 38
 ]
-training_cameras = [2, 3]
+training_cameras_60 = [2, 3]
+training_subjects_120 = [
+    1, 2, 4, 5, 8, 9, 13, 14, 15, 16, 17, 18, 19, 25, 27, 28, 31, 34, 35, 38,
+    45, 46, 47, 49, 50, 52, 53, 54, 55, 56, 57, 58, 59, 70, 74, 78, 80, 81, 82,
+    83, 84, 85, 86, 89, 91, 92, 93, 94, 95, 97, 98, 100, 103
+]
+training_setups_120 = [
+    2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32
+]
 max_body_true = 2
 max_body_kinect = 4
 num_joint = 25
@@ -213,6 +221,7 @@ def read_xyz(file, max_body=2, num_joint=25):
 def gendata(data_path,
             out_path,
             ignored_sample_path=None,
+            task='ntu60',
             benchmark='xsub',
             part='train',
             pre_norm=True):
@@ -233,7 +242,8 @@ def gendata(data_path,
         if filename in ignored_samples:
             continue
 
-        # if filename not in ignored_samples:
+        setup_number = int(filename[filename.find('S') + 1:filename.find('S') +
+                                    4])
         action_class = int(filename[filename.find('A') + 1:filename.find('A') +
                                     4])
         subject_id = int(filename[filename.find('P') + 1:filename.find('P') +
@@ -242,9 +252,14 @@ def gendata(data_path,
                                  4])
 
         if benchmark == 'xsub':
-            istraining = (subject_id in training_subjects)
+            if task == 'ntu60':
+                istraining = (subject_id in training_subjects_60)
+            else:
+                istraining = (subject_id in training_subjects_120)
         elif benchmark == 'xview':
-            istraining = (camera_id in training_cameras)
+            istraining = (camera_id in training_cameras_60)
+        elif benchmark == 'xsetup':
+            istraining = (setup_number in training_setups_120)
         else:
             raise ValueError()
 
@@ -257,7 +272,7 @@ def gendata(data_path,
 
         if issample:
             sample_name.append(filename)
-            sample_label.append(action_class - 1)  # 0-59
+            sample_label.append(action_class - 1)  # 0-59 /0 -119
 
     fp = np.zeros((len(sample_label), 3, max_frame, num_joint, max_body_true),
                   dtype=np.float32)
@@ -302,17 +317,23 @@ if __name__ == '__main__':
     parser.add_argument(
         '--ignored_sample_path',
         type=str,
-        default='/mnt/lustre/liguankai/data/samples_with_missing_skeletons.txt'
-    )
+        default='/mnt/lustre/liguankai/data/'
+        'NTU_RGBD_samples_with_missing_skeletons.txt')
     parser.add_argument(
         '--out_folder',
         type=str,
         default='/mnt/lustre/liguankai/data/ntu/nturgb+d_skeletons_60_3d')
+    parser.add_argument('--task', type=str, default='ntu60')
     parser.add_argument('--benchmark', type=str, default='xsub')
     parser.add_argument('--part', type=str, default='train')
     args = parser.parse_args()
 
-    benchmark = ['xsub', 'xview']
+    assert args.task in ['ntu60', 'ntu120']
+
+    if args.task == 'ntu60':
+        benchmark = ['xsub', 'xview']
+    else:
+        benchmark = ['xsub', 'xsetup']
     part = ['train', 'val']
 
     for b in benchmark:
@@ -324,5 +345,6 @@ if __name__ == '__main__':
                 args.data_path,
                 out_path,
                 args.ignored_sample_path,
+                args.task,
                 benchmark=b,
                 part=p)
