@@ -10,7 +10,7 @@ from mmcv.utils import digit_version
 from torch.nn.modules.utils import _pair
 
 from ..builder import PIPELINES
-from .formating import to_tensor
+from .formatting import to_tensor
 
 
 def _combine_quadruple(a, b):
