@@ -85,6 +85,12 @@ For skeleton data visualization, you need also to prepare the RGB videos. Please
 </thead>
 </table>
 
+## Convert the NTU RGB+D raw skeleton data to our format 
+Here we also provide the script for converting the NTU RGB+D raw skeleton data to our format.
+First, download the raw skeleton data of NTU-RGBD 60 and NTU-RGBD 120 from https://github.com/shahroudy/NTURGB-D.
+
+For NTU-RGBD 60, preprocess data and convert the data format with 'python gen_ntu_rgbd_raw.py --data_path your_raw_nturgbd60_skeleton_path --ignored_sample_path NTU_RGBD_samples_with_missing_skeletons.txt --out_folder your_nturgbd60_output_path --task ' 
+
 **TODO**:
 
 - [x] FineGYM
