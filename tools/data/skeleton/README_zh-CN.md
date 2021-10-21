@@ -14,13 +14,13 @@
 ## 简介
 
 MMAction2 发布 [Revisiting Skeleton-based Action Recognition](https://arxiv.org/abs/2104.13586) 论文中所使用的骨架标注。
-这里使用 [Faster-RCNN](https://github.com/open-mmlab/mmdetection/blob/master/configs/faster_rcnn/faster_rcnn_r50_caffe_fpn_mstrain_1x_coco-person.py) 作为人体检测器，
+默认使用 [Faster-RCNN](https://github.com/open-mmlab/mmdetection/blob/master/configs/faster_rcnn/faster_rcnn_r50_caffe_fpn_mstrain_1x_coco-person.py) 作为人体检测器，
 使用 [HRNet-w32](https://github.com/open-mmlab/mmpose/blob/master/configs/top_down/hrnet/coco/hrnet_w32_coco_256x192.py) 作为单人姿态估计模型。
 对于 FineGYM 数据集，MMAction2 使用的是运动员的真实框标注，而非检测器所出的框。目前，MMAction2 已发布 FineGYM 和 NTURGB-D Xsub 部分的骨架标注，其他数据集的标注也将很快发布。
 
 ## 准备标注文件
 
-目前，MMAction2 支持 HMDB51, UCF101, FineGYM 和 NTURGB+D 数据集。对于 FineGYM 数据集，用户可以使用以下脚本生成标注文件。
+目前，MMAction2 支持 HMDB51, UCF101, FineGYM 和 NTURGB+D 数据集。对于 FineGYM 数据集，用户可以使用以下脚本下载标注文件。
 
 ```shell
 bash download_annotations.sh ${DATASET}
@@ -70,7 +70,7 @@ python ntu_pose_extraction.py S001C001P001R001A001_rgb.avi S001C001P001R001A001.
   <tr>
     <td>
 <div align="center">
-  <b> Pose Estimation Results </b>
+  <b> 姿态估计结果 </b>
   <br/>
   <img src="https://user-images.githubusercontent.com/34324155/116529341-6fc95080-a90f-11eb-8f0d-57fdb35d1ba4.gif" width="455"/>
   <br/>
@@ -79,7 +79,7 @@ python ntu_pose_extraction.py S001C001P001R001A001_rgb.avi S001C001P001R001A001.
 </div></td>
     <td>
 <div align="center">
-  <b> Keypoint Heatmap Volume Visualization </b>
+  <b> 关键点热力图三维可视化 </b>
   <br/>
   <img src="https://user-images.githubusercontent.com/34324155/116529336-6dff8d00-a90f-11eb-807e-4d9168997655.gif" width="256"/>
   <br/>
@@ -88,7 +88,7 @@ python ntu_pose_extraction.py S001C001P001R001A001_rgb.avi S001C001P001R001A001.
 </div></td>
     <td>
 <div align="center">
-  <b> Limb Heatmap Volume Visualization </b>
+  <b> 肢体热力图三维可视化 </b>
   <br/>
   <img src="https://user-images.githubusercontent.com/34324155/116529322-6a6c0600-a90f-11eb-81df-6fbb36230bd0.gif" width="256"/>
   <br/>
@@ -99,7 +99,7 @@ python ntu_pose_extraction.py S001C001P001R001A001_rgb.avi S001C001P001R001A001.
 </thead>
 </table>
 
-**代办项**：
+**待办项**：
 
 - [x] FineGYM
 - [x] NTU60_XSub
