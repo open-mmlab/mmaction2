@@ -313,7 +313,7 @@ def ntu_pose_extraction(vid):
     anno['img_shape'] = (1080, 1920)
     anno['original_shape'] = (1080, 1920)
     anno['total_frames'] = pose_results.shape[1]
-    anno['label'] = int(osp.basename(vid).split('A')[1][:3])
+    anno['label'] = int(osp.basename(vid).split('A')[1][:3]) - 1
     shutil.rmtree(osp.dirname(frame_paths[0]))
 
     return anno
