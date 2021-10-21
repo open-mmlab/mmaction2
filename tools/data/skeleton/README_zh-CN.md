@@ -99,6 +99,22 @@ python ntu_pose_extraction.py S001C001P001R001A001_rgb.avi S001C001P001R001A001.
 </thead>
 </table>
 
+## 如何将 NTU RGB+D 原始数据转化为 MMAction2 格式
+
+这里介绍如何将 NTU RGB+D 原始数据转化为 MMAction2 格式。首先，需要从 https://github.com/shahroudy/NTURGB-D 下载原始 NTU-RGBD 60 和 NTU-RGBD 120 数据集的原始骨架数据。
+
+对于 NTU-RGBD 60 数据集，可使用以下脚本
+
+```python
+python gen_ntu_rgbd_raw.py --data-path your_raw_nturgbd60_skeleton_path --ignored-sample-path NTU_RGBD_samples_with_missing_skeletons.txt --out-folder your_nturgbd60_output_path --task ntu60
+```
+
+对于 NTU-RGBD 120 数据集，可使用以下脚本
+
+```python
+python gen_ntu_rgbd_raw.py --data-path your_raw_nturgbd120_skeleton_path --ignored-sample-path NTU_RGBD120_samples_with_missing_skeletons.txt --out-folder your_nturgbd120_output_path --task ntu120
+```
+
 **待办项**：
 
 - [x] FineGYM
