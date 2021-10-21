@@ -93,13 +93,13 @@ First, download the raw skeleton data of NTU-RGBD 60 and NTU-RGBD 120 from https
 For NTU-RGBD 60, preprocess data and convert the data format with
 
 ```python
-python gen_ntu_rgbd_raw.py --data-path your_raw_nturgbd60_skeleton_path --ignored_sample_path NTU_RGBD_samples_with_missing_skeletons.txt --out_folder your_nturgbd60_output_path --task ntu60
+python gen_ntu_rgbd_raw.py --data-path your_raw_nturgbd60_skeleton_path --ignored-sample-path NTU_RGBD_samples_with_missing_skeletons.txt --out-folder your_nturgbd60_output_path --task ntu60
 ```
 
 For NTU-RGBD 120, preprocess data and convert the data format with
 
 ```python
-python gen_ntu_rgbd_raw.py --data-path your_raw_nturgbd120_skeleton_path --ignored_sample_path NTU_RGBD120_samples_with_missing_skeletons.txt --out_folder your_nturgbd120_output_path --task ntu120
+python gen_ntu_rgbd_raw.py --data-path your_raw_nturgbd120_skeleton_path --ignored-sample-path NTU_RGBD120_samples_with_missing_skeletons.txt --out-folder your_nturgbd120_output_path --task ntu120
 ```
 
 **TODO**:
