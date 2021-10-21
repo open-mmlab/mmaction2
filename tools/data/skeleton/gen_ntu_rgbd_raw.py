@@ -322,11 +322,11 @@ if __name__ == '__main__':
         help='raw skeleton data path',
         default='data/ntu/nturgb+d_skeletons_60/')
     parser.add_argument(
-        '--ignored_sample_path',
+        '--ignored-sample-path',
         type=str,
         default='NTU_RGBD_samples_with_missing_skeletons.txt')
     parser.add_argument(
-        '--out_folder', type=str, default='data/ntu/nturgb+d_skeletons_60_3d')
+        '--out-folder', type=str, default='data/ntu/nturgb+d_skeletons_60_3d')
     parser.add_argument('--task', type=str, default='ntu60')
     args = parser.parse_args()
 
