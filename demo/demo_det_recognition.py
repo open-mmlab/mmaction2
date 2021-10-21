@@ -166,7 +166,6 @@ def parse_args():
                  'slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb'
                  '_20201217-16378594.pth'),
         help='spatio temporal detection checkpoint file/url')
-
     parser.add_argument(
         '--skeleton-stdet-checkpoint',
         default=('https://download.openmmlab.com/mmaction/skeleton/posec3d/'
@@ -215,19 +214,19 @@ def parse_args():
         help='rgb-based action recognition checkpoint file/url')
     parser.add_argument(
         '--use-skeleton-stdet',
-        default=False,
+        action='store_false',
         help='use skeleton-based spatio temporal detection method')
     parser.add_argument(
         '--use-rgb-stdet',
-        default=True,
+        action='store_true',
         help='use rgb-based spatio temporal detection method')
     parser.add_argument(
         '--use-skeleton-recog',
-        default=True,
+        action='store_false',
         help='use skeleton-based action recognition method')
     parser.add_argument(
         '--use-rgb-recog',
-        default=False,
+        action='store_true',
         help='use rgb-based action recognition method')
     parser.add_argument(
         '--det-score-thr',
@@ -244,11 +243,11 @@ def parse_args():
         default='demo/test_stdet_recognition.mp4',
         help='video file/url')
     parser.add_argument(
-        '--label-map',
+        '--label-map-stdet',
         default='tools/data/ava/label_map.txt',
         help='label map file for spatio-temporal action detection')
     parser.add_argument(
-        '--label-map-recognition',
+        '--label-map',
         default='tools/data/kinetics/label_map_k400.txt',
         help='label map file for action recognition')
     parser.add_argument(
@@ -451,10 +450,10 @@ def skeleton_based_action_recognition(args, pose_results, num_frame, h, w):
     fake_anno['keypoint'] = keypoint
     fake_anno['keypoint_score'] = keypoint_score
 
-    label_map_recognition = [
-        x.strip() for x in open(args.label_map_recognition).readlines()
+    label_map = [
+        x.strip() for x in open(args.label_map).readlines()
     ]
-    num_class = len(label_map_recognition)
+    num_class = len(label_map)
 
     skeleton_config = mmcv.Config.fromfile(args.skeleton_config)
     skeleton_config.model.cls_head.num_classes = num_class  # for K400 dataset
@@ -473,7 +472,7 @@ def skeleton_based_action_recognition(args, pose_results, num_frame, h, w):
         output = skeleton_model(return_loss=False, imgs=skeleton_imgs)
 
     action_idx = np.argmax(output)
-    skeleton_action_result = label_map_recognition[
+    skeleton_action_result = label_map[
         action_idx]  # skeleton-based action result for the whole video
     return skeleton_action_result
 
@@ -488,7 +487,7 @@ def rgb_based_action_recognition(args):
     rgb_model.to(args.device)
     rgb_model.eval()
     action_results = inference_recognizer(rgb_model, args.video,
-                                          args.label_map_recognition)
+                                          args.label_map)
     rgb_action_result = action_results[0][0]
     return rgb_action_result
 
@@ -689,7 +688,7 @@ def main():
                            args.predict_stepsize)
 
     # Load spatio-temporal detection label_map
-    stdet_label_map = load_label_map(args.label_map)
+    stdet_label_map = load_label_map(args.label_map_stdet)
     rgb_stdet_config = mmcv.Config.fromfile(args.rgb_stdet_config)
     rgb_stdet_config.merge_from_dict(args.cfg_options)
     try:
