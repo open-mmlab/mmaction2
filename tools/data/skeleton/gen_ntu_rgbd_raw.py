@@ -21,6 +21,7 @@ training_setups_120 = [
 max_body_true = 2
 max_body_kinect = 4
 num_joint = 25
+max_frame = 300
 
 
 def unit_vector(vector):
