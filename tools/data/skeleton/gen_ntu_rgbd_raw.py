@@ -281,16 +281,14 @@ def gendata(data_path,
             sample_name.append(filename)
             sample_label.append(action_class - 1)  # 0-59 /0 -119
 
-    fp = np.zeros((len(sample_label), 3, max_frame, num_joint, max_body_true),
-                  dtype=np.float32)
-
+    fp = []
     prog_bar = mmcv.ProgressBar(len(sample_name))
     for i, s in enumerate(sample_name):
         data = read_xyz(
             osp.join(data_path, s),
             max_body=max_body_kinect,
-            num_joint=num_joint)
-        fp[i, :, 0:data.shape[1], :, :] = data
+            num_joint=num_joint).astype(np.float32)
+        fp.append(data)
         total_frames.append(data.shape[1])
         prog_bar.update()
 
@@ -301,11 +299,9 @@ def gendata(data_path,
     for i, s in enumerate(sample_name):
         anno = dict()
         anno['keypoint'] = fp[i]  # C T V M
-        anno['keypoint_score'] = np.ones((3, max_frame, num_joint),
-                                         dtype=np.float32)
         anno['frame_dir'] = osp.splitext(s)[0]
         anno['img_shape'] = (1080, 1920)
-        anno['img_shape'] = (1080, 1920)
+        anno['original_shape'] = (1080, 1920)
         anno['total_frames'] = total_frames[i]
         anno['label'] = sample_label[i]
 
@@ -321,19 +317,16 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Generate Pose Annotation for NTURGB-D raw skeleton data')
     parser.add_argument(
-        '--data_path',
+        '--data-path',
         type=str,
         help='raw skeleton data path',
-        default='/mnt/lustre/liguankai/data/ntu/nturgb+d_skeletons_60/')
+        default='data/ntu/nturgb+d_skeletons_60/')
     parser.add_argument(
         '--ignored_sample_path',
         type=str,
-        default='/mnt/lustre/liguankai/data/'
-        'NTU_RGBD_samples_with_missing_skeletons.txt')
+        default='NTU_RGBD_samples_with_missing_skeletons.txt')
     parser.add_argument(
-        '--out_folder',
-        type=str,
-        default='/mnt/lustre/liguankai/data/ntu/nturgb+d_skeletons_60_3d')
+        '--out_folder', type=str, default='data/ntu/nturgb+d_skeletons_60_3d')
     parser.add_argument('--task', type=str, default='ntu60')
     args = parser.parse_args()
 
