@@ -279,7 +279,7 @@ def gendata(data_path,
 
         if issample:
             sample_name.append(filename)
-            sample_label.append(action_class - 1)  # 0-59 /0 -119
+            sample_label.append(action_class - 1)
 
     fp = []
     prog_bar = mmcv.ProgressBar(len(sample_name))
@@ -298,7 +298,7 @@ def gendata(data_path,
     prog_bar = mmcv.ProgressBar(len(sample_name))
     for i, s in enumerate(sample_name):
         anno = dict()
-        anno['keypoint'] = fp[i]  # C T V M
+        anno['keypoint'] = fp[i].transpose(3, 1, 2, 0)  # C T V M -> M T V C
         anno['frame_dir'] = osp.splitext(s)[0]
         anno['img_shape'] = (1080, 1920)
         anno['original_shape'] = (1080, 1920)
