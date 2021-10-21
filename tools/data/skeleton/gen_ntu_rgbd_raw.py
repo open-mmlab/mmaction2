@@ -281,14 +281,15 @@ def gendata(data_path,
             sample_name.append(filename)
             sample_label.append(action_class - 1)
 
-    fp = []
+    fp = np.zeros((len(sample_label), 3, max_frame, num_joint, max_body_true),
+                  dtype=np.float32)
     prog_bar = mmcv.ProgressBar(len(sample_name))
     for i, s in enumerate(sample_name):
         data = read_xyz(
             osp.join(data_path, s),
             max_body=max_body_kinect,
             num_joint=num_joint).astype(np.float32)
-        fp.append(data)
+        fp[i, :, 0:data.shape[1], :, :] = data
         total_frames.append(data.shape[1])
         prog_bar.update()
 
@@ -298,11 +299,12 @@ def gendata(data_path,
     prog_bar = mmcv.ProgressBar(len(sample_name))
     for i, s in enumerate(sample_name):
         anno = dict()
-        anno['keypoint'] = fp[i].transpose(3, 1, 2, 0)  # C T V M -> M T V C
+        anno['total_frames'] = total_frames[i]
+        anno['keypoint'] = fp[i, :, 0:total_frames[i], :, :].transpose(
+            3, 1, 2, 0)  # C T V M -> M T V C
         anno['frame_dir'] = osp.splitext(s)[0]
         anno['img_shape'] = (1080, 1920)
         anno['original_shape'] = (1080, 1920)
-        anno['total_frames'] = total_frames[i]
         anno['label'] = sample_label[i]
 
         results.append(anno)
