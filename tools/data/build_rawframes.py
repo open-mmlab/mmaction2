@@ -5,7 +5,7 @@ import os
 import os.path as osp
 import sys
 import warnings
-from multiprocessing import Pool
+from multiprocessing import Lock, Pool
 
 import mmcv
 import numpy as np
@@ -21,48 +21,54 @@ def extract_frame(vid_item):
     Returns:
         bool: Whether generate optical flow successfully.
     """
-    full_path, vid_path, vid_id, method, task = vid_item
+    full_path, vid_path, vid_id, method, task, report_file = vid_item
     if '/' in vid_path:
         act_name = osp.basename(osp.dirname(vid_path))
         out_full_path = osp.join(args.out_dir, act_name)
     else:
         out_full_path = args.out_dir
 
+    run_success = -1
+
     if task == 'rgb':
         if args.use_opencv:
             # Not like using denseflow,
             # Use OpenCV will not make a sub directory with the video name
-            video_name = osp.splitext(osp.basename(vid_path))[0]
-            out_full_path = osp.join(out_full_path, video_name)
+            try:
+                video_name = osp.splitext(osp.basename(vid_path))[0]
+                out_full_path = osp.join(out_full_path, video_name)
 
-            vr = mmcv.VideoReader(full_path)
-            # for i in range(len(vr)):
-            for i, vr_frame in enumerate(vr):
-                if vr_frame is not None:
-                    w, h, _ = np.shape(vr_frame)
-                    if args.new_short == 0:
-                        if args.new_width == 0 or args.new_height == 0:
-                            # Keep original shape
-                            out_img = vr_frame
+                vr = mmcv.VideoReader(full_path)
+                for i, vr_frame in enumerate(vr):
+                    if vr_frame is not None:
+                        w, h, _ = np.shape(vr_frame)
+                        if args.new_short == 0:
+                            if args.new_width == 0 or args.new_height == 0:
+                                # Keep original shape
+                                out_img = vr_frame
+                            else:
+                                out_img = mmcv.imresize(
+                                    vr_frame,
+                                    (args.new_width, args.new_height))
                         else:
-                            out_img = mmcv.imresize(vr_frame,
-                                                    (args.new_width,
-                                                     args.new_height))
+                            if min(h, w) == h:
+                                new_h = args.new_short
+                                new_w = int((new_h / h) * w)
+                            else:
+                                new_w = args.new_short
+                                new_h = int((new_w / w) * h)
+                            out_img = mmcv.imresize(vr_frame, (new_h, new_w))
+                        mmcv.imwrite(out_img,
+                                     f'{out_full_path}/img_{i + 1:05d}.jpg')
                     else:
-                        if min(h, w) == h:
-                            new_h = args.new_short
-                            new_w = int((new_h / h) * w)
-                        else:
-                            new_w = args.new_short
-                            new_h = int((new_w / w) * h)
-                        out_img = mmcv.imresize(vr_frame, (new_h, new_w))
-                    mmcv.imwrite(out_img,
-                                 f'{out_full_path}/img_{i + 1:05d}.jpg')
-                else:
-                    warnings.warn(
-                        'Length inconsistent!'
-                        f'Early stop with {i + 1} out of {len(vr)} frames.')
-                    break
+                        warnings.warn(
+                            'Length inconsistent!'
+                            f'Early stop with {i + 1} out of {len(vr)} frames.'
+                        )
+                        break
+                run_success = 0
+            except Exception:
+                run_success = -1
         else:
             if args.new_short == 0:
                 cmd = osp.join(
@@ -72,7 +78,7 @@ def extract_frame(vid_item):
                 cmd = osp.join(
                     f"denseflow '{full_path}' -b=20 -s=0 -o='{out_full_path}'"
                     f' -ns={args.new_short} -v')
-            os.system(cmd)
+            run_success = os.system(cmd)
     elif task == 'flow':
         if args.input_frames:
             if args.new_short == 0:
@@ -92,7 +98,7 @@ def extract_frame(vid_item):
                 cmd = osp.join(
                     f"denseflow '{full_path}' -a={method} -b=20 -s=1 -o='{out_full_path}'"  # noqa: E501
                     f' -ns={args.new_short} -v')
-        os.system(cmd)
+        run_success = os.system(cmd)
     else:
         if args.new_short == 0:
             cmd_rgb = osp.join(
@@ -108,11 +114,24 @@ def extract_frame(vid_item):
             cmd_flow = osp.join(
                 f"denseflow '{full_path}' -a={method} -b=20 -s=1 -o='{out_full_path}'"  # noqa: E501
                 f' -ns={args.new_short} -v')
-        os.system(cmd_rgb)
-        os.system(cmd_flow)
+        run_success_rgb = os.system(cmd_rgb)
+        run_success_flow = os.system(cmd_flow)
+        if run_success_flow == 0 and run_success_rgb == 0:
+            run_success = 0
 
-    print(f'{task} {vid_id} {vid_path} {method} done')
-    sys.stdout.flush()
+    if run_success == 0:
+        print(f'{task} {vid_id} {vid_path} {method} done')
+        sys.stdout.flush()
+
+        lock.acquire()
+        with open(report_file, 'a') as f:
+            line = full_path + '\n'
+            f.write(line)
+        lock.release()
+    else:
+        print(f'{task} {vid_id} {vid_path} {method} got something wrong')
+        sys.stdout.flush()
+
     return True
 
 
@@ -182,9 +201,19 @@ def parse_args():
         '--input-frames',
         action='store_true',
         help='Whether to extract flow frames based on rgb frames')
+    parser.add_argument(
+        '--report-file',
+        type=str,
+        default='build_report.txt',
+        help='report to record files which have been successfully processed')
     args = parser.parse_args()
 
     return args
+
+
+def init(lock_):
+    global lock
+    lock = lock_
 
 
 if __name__ == '__main__':
@@ -205,25 +234,28 @@ if __name__ == '__main__':
     if args.input_frames:
         print('Reading rgb frames from folder: ', args.src_dir)
         fullpath_list = glob.glob(args.src_dir + '/*' * args.level)
-        done_fullpath_list = glob.glob(args.out_dir + '/*' * args.level)
         print('Total number of rgb frame folders found: ', len(fullpath_list))
     else:
         print('Reading videos from folder: ', args.src_dir)
         if args.mixed_ext:
             print('Extension of videos is mixed')
             fullpath_list = glob.glob(args.src_dir + '/*' * args.level)
-            done_fullpath_list = glob.glob(args.out_dir + '/*' * args.level)
         else:
             print('Extension of videos: ', args.ext)
             fullpath_list = glob.glob(args.src_dir + '/*' * args.level + '.' +
                                       args.ext)
-            done_fullpath_list = glob.glob(args.out_dir + '/*' * args.level)
         print('Total number of videos found: ', len(fullpath_list))
 
     if args.resume:
-        fullpath_list = set(fullpath_list).difference(set(done_fullpath_list))
-        fullpath_list = list(fullpath_list)
-        print('Resuming. number of videos to be done: ', len(fullpath_list))
+        done_fullpath_list = []
+        with open(args.report_file) as f:
+            for line in f:
+                if line == '\n':
+                    continue
+                done_full_path = line.strip().split()[0]
+                done_fullpath_list.append(done_full_path)
+        done_fullpath_list = set(done_fullpath_list)
+        fullpath_list = list(set(fullpath_list).difference(done_fullpath_list))
 
     if args.level == 2:
         vid_list = list(
@@ -234,9 +266,13 @@ if __name__ == '__main__':
     elif args.level == 1:
         vid_list = list(map(osp.basename, fullpath_list))
 
-    pool = Pool(args.num_worker)
+    lock = Lock()
+    pool = Pool(args.num_worker, initializer=init, initargs=(lock, ))
     pool.map(
         extract_frame,
         zip(fullpath_list, vid_list, range(len(vid_list)),
             len(vid_list) * [args.flow_type],
-            len(vid_list) * [args.task]))
+            len(vid_list) * [args.task],
+            len(vid_list) * [args.report_file]))
+    pool.close()
+    pool.join()

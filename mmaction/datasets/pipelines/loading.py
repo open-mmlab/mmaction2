@@ -58,6 +58,9 @@ class LoadHVULabel:
         category_mask = torch.zeros(self.num_categories)
 
         for category, tags in results['label'].items():
+            # skip if not training on this category
+            if category not in self.categories:
+                continue
             category_mask[self.categories.index(category)] = 1.
             start_idx = self.category2startidx[category]
             category_num = self.category2num[category]
@@ -1336,6 +1339,53 @@ class RawFrameDecode:
 
 
 @PIPELINES.register_module()
+class ArrayDecode:
+    """Load and decode frames with given indices from a 4D array.
+
+    Required keys are "array and "frame_inds", added or modified keys are
+    "imgs", "img_shape" and "original_shape".
+    """
+
+    def __call__(self, results):
+        """Perform the ``RawFrameDecode`` to pick frames given indices.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+
+        modality = results['modality']
+        array = results['array']
+
+        imgs = list()
+
+        if results['frame_inds'].ndim != 1:
+            results['frame_inds'] = np.squeeze(results['frame_inds'])
+
+        offset = results.get('offset', 0)
+
+        for i, frame_idx in enumerate(results['frame_inds']):
+
+            frame_idx += offset
+            if modality == 'RGB':
+                imgs.append(array[frame_idx])
+            elif modality == 'Flow':
+                imgs.extend(
+                    [array[frame_idx, ..., 0], array[frame_idx, ..., 1]])
+            else:
+                raise NotImplementedError
+
+        results['imgs'] = imgs
+        results['original_shape'] = imgs[0].shape[:2]
+        results['img_shape'] = imgs[0].shape[:2]
+
+        return results
+
+    def __repr__(self):
+        return f'{self.__class__.__name__}()'
+
+
+@PIPELINES.register_module()
 class ImageDecode:
     """Load and decode images.
 
@@ -1590,7 +1640,7 @@ class AudioFeatureSelector:
 
     Args:
         fixed_length (int): As the features selected by frames sampled may
-            not be extactly the same, `fixed_length` will truncate or pad them
+            not be exactly the same, `fixed_length` will truncate or pad them
             into the same size. Default: 128.
     """
 

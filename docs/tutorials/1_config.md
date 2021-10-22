@@ -217,7 +217,7 @@ which is convenient to conduct various experiments.
     load_from = None  # load models as a pre-trained model from a given path. This will not resume training
     resume_from = None  # Resume checkpoints from a given path, the training will be resumed from the epoch when the checkpoint's is saved
     workflow = [('train', 1)]  # Workflow for runner. [('train', 1)] means there is only one workflow and the workflow named 'train' is executed once
-    output_config = dict(  # Config of localization ouput
+    output_config = dict(  # Config of localization output
         out=f'{work_dir}/results.json',  # Path to output file
         output_format='json')  # File format of output file
     ```

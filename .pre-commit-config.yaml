@@ -39,3 +39,8 @@ repos:
     hooks:
       - id: docformatter
         args: ["--in-place", "--wrap-descriptions", "79"]
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.1.0
+    hooks:
+      - id: codespell
+        args: ["--skip", "*.ipynb,tools/data/hvu/label_map.json", "-L", "te,nd,thre,Gool,gool"]

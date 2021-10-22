@@ -39,7 +39,7 @@ from . import metrics, per_image_evaluation, standard_fields
 
 
 class DetectionEvaluator:
-    """Interface for object detection evalution classes.
+    """Interface for object detection evaluation classes.
 
     Example usage of the Evaluator:
     ------------------------------

@@ -175,7 +175,7 @@ class FBONonLocal(nn.Module):
     Args:
         st_feat_channels (int): Channels of short-term features.
         lt_feat_channels (int): Channels of long-term features.
-        latent_channels (int): Channles of latent features.
+        latent_channels (int): Channels of latent features.
         num_st_feat (int): Number of short-term roi features.
         num_lt_feat (int): Number of long-term roi features.
         num_non_local_layers (int): Number of non-local layers, which is
@@ -289,7 +289,7 @@ class FBOAvg(nn.Module):
         self.avg_pool = nn.AdaptiveAvgPool3d((1, None, None))
 
     def init_weights(self, pretrained=None):
-        # FBOAvg has no parameters to be initalized.
+        # FBOAvg has no parameters to be initialized.
         pass
 
     def forward(self, st_feat, lt_feat):

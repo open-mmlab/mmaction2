@@ -19,7 +19,7 @@
 
 输入变量指定一个训练日志文件，可通过 `tools/analysis/analyze_logs.py` 脚本绘制 loss/top-k 曲线。本功能依赖于 `seaborn`，使用前请先通过 `pip install seaborn` 安装依赖包。
 
-![准确度曲线图](/resources/acc_curve.png)
+![准确度曲线图](https://github.com/open-mmlab/mmaction2/raw/master/resources/acc_curve.png)
 
 ```shell
 python tools/analysis/analyze_logs.py plot_curve ${JSON_LOGS} [--keys ${KEYS}] [--title ${TITLE}] [--legend ${LEGEND}] [--backend ${BACKEND}] [--style ${STYLE}] [--out ${OUT_FILE}]

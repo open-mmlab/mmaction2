@@ -174,8 +174,7 @@ def main():
     cfg.merge_from_dict(args.cfg_options)
 
     # build the recognizer from a config file and checkpoint file/url
-    model = init_recognizer(
-        cfg, args.checkpoint, device=device, use_frames=args.use_frames)
+    model = init_recognizer(cfg, args.checkpoint, device=device)
 
     inputs = build_inputs(model, args.video, use_frames=args.use_frames)
     gradcam = GradCAM(model, args.target_layer_name)

@@ -70,9 +70,9 @@ def read_csv(csv_file, class_whitelist=None):
         boxes: A dictionary mapping each unique image key (string) to a list of
         boxes, given as coordinates [y1, x1, y2, x2].
         labels: A dictionary mapping each unique image key (string) to a list
-        of integer class lables, matching the corresponding box in `boxes`.
+        of integer class labels, matching the corresponding box in `boxes`.
         scores: A dictionary mapping each unique image key (string) to a list
-        of score values lables, matching the corresponding label in `labels`.
+        of score values labels, matching the corresponding label in `labels`.
         If scores are not provided in the csv, then they will default to 1.0.
     """
     start = time.time()

@@ -110,7 +110,7 @@ def main():
         assert output_file.endswith('.pkl')
         length = int(length)
 
-        # prepare a psuedo sample
+        # prepare a pseudo sample
         tmpl = dict(
             frame_dir=frame_dir,
             total_frames=length,

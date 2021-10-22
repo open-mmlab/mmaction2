@@ -49,7 +49,7 @@ def build_dataloader(dataset,
                      seed=None,
                      drop_last=False,
                      pin_memory=True,
-                     persistent_workers=True,
+                     persistent_workers=False,
                      **kwargs):
     """Build PyTorch DataLoader.
 
@@ -76,7 +76,7 @@ def build_dataloader(dataset,
             the worker processes after a dataset has been consumed once.
             This allows to maintain the workers Dataset instances alive.
             The argument also has effect in PyTorch>=1.8.0.
-            Default: True
+            Default: False
         kwargs (dict, optional): Any keyword argument to be used to initialize
             DataLoader.
 

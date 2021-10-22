@@ -51,7 +51,7 @@ def download_clip(video_identifier,
     output_filename: str
         File path where the video will be stored.
     start_time: float
-        Indicates the begining time in seconds from where the video
+        Indicates the beginning time in seconds from where the video
         will be trimmed.
     end_time: float
         Indicates the ending time in seconds of the trimmed video.

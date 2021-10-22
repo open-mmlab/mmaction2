@@ -29,7 +29,7 @@ def test_to_tensor():
         results = dict(str='0')
         to_tensor(results)
 
-    # convert tensor, numpy, squence, int, float to tensor
+    # convert tensor, numpy, sequence, int, float to tensor
     target_keys = ['tensor', 'numpy', 'sequence', 'int', 'float']
     to_tensor = ToTensor(target_keys)
     original_results = dict(

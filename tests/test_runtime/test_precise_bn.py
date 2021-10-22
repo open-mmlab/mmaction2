@@ -123,7 +123,7 @@ def test_precise_bn():
         model=model, batch_processor=None, optimizer=optimizer, logger=logger)
 
     with pytest.raises(AssertionError):
-        # num_iters should be no larget than total
+        # num_iters should be no larger than total
         # iters
         precise_bn_hook = PreciseBNHook(precise_bn_loader, num_iters=5)
         runner.register_hook(precise_bn_hook)

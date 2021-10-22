@@ -80,7 +80,7 @@ class TestSSNDataset(BaseTestDataset):
         assert ssn_infos[0]['video_id'] == 'imgs'
         assert ssn_infos[0]['total_frames'] == 5
 
-        # test ssn datatset with normalized proposal file
+        # test ssn dataset with normalized proposal file
         with pytest.raises(Exception):
             ssn_dataset = SSNDataset(
                 self.proposal_norm_ann_file,

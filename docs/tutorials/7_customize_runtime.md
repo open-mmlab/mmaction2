@@ -4,27 +4,26 @@ In this tutorial, we will introduce some methods about how to customize optimiza
 
 <!-- TOC -->
 
-- [Tutorial 7: Customize Runtime Settings](#tutorial-7-customize-runtime-settings)
-  - [Customize Optimization Methods](#customize-optimization-methods)
-    - [Customize optimizer supported by PyTorch](#customize-optimizer-supported-by-pytorch)
-    - [Customize self-implemented optimizer](#customize-self-implemented-optimizer)
-      - [1. Define a new optimizer](#1-define-a-new-optimizer)
-      - [2. Add the optimizer to registry](#2-add-the-optimizer-to-registry)
-      - [3. Specify the optimizer in the config file](#3-specify-the-optimizer-in-the-config-file)
-    - [Customize optimizer constructor](#customize-optimizer-constructor)
-    - [Additional settings](#additional-settings)
-  - [Customize Training Schedules](#customize-training-schedules)
-  - [Customize Workflow](#customize-workflow)
-  - [Customize Hooks](#customize-hooks)
-    - [Customize self-implemented hooks](#customize-self-implemented-hooks)
-      - [1. Implement a new hook](#1-implement-a-new-hook)
-      - [2. Register the new hook](#2-register-the-new-hook)
-      - [3. Modify the config](#3-modify-the-config)
-    - [Use hooks implemented in MMCV](#use-hooks-implemented-in-mmcv)
-    - [Modify default runtime hooks](#modify-default-runtime-hooks)
-      - [Checkpoint config](#checkpoint-config)
-      - [Log config](#log-config)
-      - [Evaluation config](#evaluation-config)
+- [Customize Optimization Methods](#customize-optimization-methods)
+  - [Customize optimizer supported by PyTorch](#customize-optimizer-supported-by-pytorch)
+  - [Customize self-implemented optimizer](#customize-self-implemented-optimizer)
+    - [1. Define a new optimizer](#1-define-a-new-optimizer)
+    - [2. Add the optimizer to registry](#2-add-the-optimizer-to-registry)
+    - [3. Specify the optimizer in the config file](#3-specify-the-optimizer-in-the-config-file)
+  - [Customize optimizer constructor](#customize-optimizer-constructor)
+  - [Additional settings](#additional-settings)
+- [Customize Training Schedules](#customize-training-schedules)
+- [Customize Workflow](#customize-workflow)
+- [Customize Hooks](#customize-hooks)
+  - [Customize self-implemented hooks](#customize-self-implemented-hooks)
+    - [1. Implement a new hook](#1-implement-a-new-hook)
+    - [2. Register the new hook](#2-register-the-new-hook)
+    - [3. Modify the config](#3-modify-the-config)
+  - [Use hooks implemented in MMCV](#use-hooks-implemented-in-mmcv)
+  - [Modify default runtime hooks](#modify-default-runtime-hooks)
+    - [Checkpoint config](#checkpoint-config)
+    - [Log config](#log-config)
+    - [Evaluation config](#evaluation-config)
 
 <!-- TOC -->
 
@@ -42,7 +41,7 @@ optimizer = dict(type='Adam', lr=0.0003, weight_decay=0.0001)
 To modify the learning rate of the model, the users only need to modify the `lr` in the config of optimizer.
 The users can directly set arguments following the [API doc](https://pytorch.org/docs/stable/optim.html?highlight=optim#module-torch.optim) of PyTorch.
 
-For example, if you want to use `Adam` with the setting like `torch.optim.Adam(parms, lr=0.001, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, amsgrad=False)` in PyTorch,
+For example, if you want to use `Adam` with the setting like `torch.optim.Adam(params, lr=0.001, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, amsgrad=False)` in PyTorch,
 the modification could be set as the following.
 
 ```python

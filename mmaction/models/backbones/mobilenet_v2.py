@@ -129,8 +129,9 @@ class MobileNetV2(nn.Module):
             channels in each layer by this amount. Default: 1.0.
         out_indices (None or Sequence[int]): Output from which stages.
             Default: (7, ).
-        frozen_stages (int): Stages to be frozen (all param fixed).
-            Default: -1, which means not freezing any parameters.
+        frozen_stages (int): Stages to be frozen (all param fixed). Note that
+            the last stage in ``MobileNetV2`` is ``conv2``. Default: -1,
+            which means not freezing any parameters.
         conv_cfg (dict): Config dict for convolution layer.
             Default: None, which means using conv2d.
         norm_cfg (dict): Config dict for normalization layer.
@@ -169,8 +170,8 @@ class MobileNetV2(nn.Module):
                 raise ValueError('the item in out_indices must in '
                                  f'range(0, 8). But received {index}')
 
-        if frozen_stages not in range(-1, 8):
-            raise ValueError('frozen_stages must be in range(-1, 8). '
+        if frozen_stages not in range(-1, 9):
+            raise ValueError('frozen_stages must be in range(-1, 9). '
                              f'But received {frozen_stages}')
         self.out_indices = out_indices
         self.frozen_stages = frozen_stages
@@ -281,10 +282,12 @@ class MobileNetV2(nn.Module):
 
     def _freeze_stages(self):
         if self.frozen_stages >= 0:
+            self.conv1.eval()
             for param in self.conv1.parameters():
                 param.requires_grad = False
         for i in range(1, self.frozen_stages + 1):
-            layer = getattr(self, f'layer{i}')
+            layer_name = self.layers[i - 1]
+            layer = getattr(self, layer_name)
             layer.eval()
             for param in layer.parameters():
                 param.requires_grad = False
