@@ -107,9 +107,8 @@ def visualize(frames,
     scale_ratio = np.array([w, h, w, h])
 
     # add pose results
-    for i, pose_result in enumerate(pose_results):
-        ind = i * nfpa
-        frames_[ind] = vis_pose_result(pose_model, frames_[ind], pose_result)
+    for i in range(nf):
+        frames_[i] = vis_pose_result(pose_model, frames_[i], pose_results[i])
 
     for i in range(na):
         anno = annotations[i]
@@ -131,8 +130,8 @@ def visualize(frames,
                     continue
                 score = ann[2]
                 box = (box * scale_ratio).astype(np.int64)
-                st, ed = tuple(box[:2]), tuple(box[2:])
-                cv2.rectangle(frame, st, ed, plate[0], 2)
+                st, _ = tuple(box[:2]), tuple(box[2:])
+                # cv2.rectangle(frame, st, ed, plate[0], 2)
 
                 for k, lb in enumerate(label):
                     if k >= max_num:
@@ -214,20 +213,12 @@ def parse_args():
         help='rgb-based action recognition checkpoint file/url')
     parser.add_argument(
         '--use-skeleton-stdet',
-        action='store_false',
+        action='store_true',
         help='use skeleton-based spatio temporal detection method')
     parser.add_argument(
-        '--use-rgb-stdet',
-        action='store_true',
-        help='use rgb-based spatio temporal detection method')
-    parser.add_argument(
         '--use-skeleton-recog',
-        action='store_false',
-        help='use skeleton-based action recognition method')
-    parser.add_argument(
-        '--use-rgb-recog',
         action='store_true',
-        help='use rgb-based action recognition method')
+        help='use skeleton-based action recognition method')
     parser.add_argument(
         '--det-score-thr',
         type=float,
@@ -258,18 +249,18 @@ def parse_args():
         help='output filename')
     parser.add_argument(
         '--predict-stepsize',
-        default=32,
+        default=8,
         type=int,
-        help='give out a prediction per n frames')
+        help='give out a spatio-temporal detection prediction per n frames')
     parser.add_argument(
         '--output-stepsize',
-        default=32,
+        default=1,
         type=int,
         help=('show one frame per n frames in the demo, we should have: '
               'predict_stepsize % output_stepsize == 0'))
     parser.add_argument(
         '--output-fps',
-        default=6,
+        default=24,
         type=int,
         help='the fps of demo video output')
     parser.add_argument(
@@ -420,9 +411,25 @@ def expand_bbox(bbox, h, w, ratio=1.25):
     return (new_x1, new_y1, new_x2, new_y2)
 
 
-def is_belong(bbox, area):
-    x1, y1, x2, y2 = bbox
-    return area[0] <= x1 < x2 <= area[2] and area[1] <= y1 < y2 <= area[3]
+def cal_iou(box1, box2):
+    xmin1, ymin1, xmax1, ymax1 = box1
+    xmin2, ymin2, xmax2, ymax2 = box2
+
+    s1 = (xmax1 - xmin1) * (ymax1 - ymin1)
+    s2 = (xmax2 - xmin2) * (ymax2 - ymin2)
+
+    xmin = max(xmin1, xmin2)
+    ymin = max(ymin1, ymin2)
+    xmax = min(xmax1, xmax2)
+    ymax = min(ymax1, ymax2)
+
+    w = max(0, xmax - xmin)
+    h = max(0, ymax - ymin)
+    intersect = w * h
+    union = s1 + s2 - intersect
+    iou = intersect / union
+
+    return iou
 
 
 def skeleton_based_action_recognition(args, pose_results, num_frame, h, w):
@@ -450,9 +457,7 @@ def skeleton_based_action_recognition(args, pose_results, num_frame, h, w):
     fake_anno['keypoint'] = keypoint
     fake_anno['keypoint_score'] = keypoint_score
 
-    label_map = [
-        x.strip() for x in open(args.label_map).readlines()
-    ]
+    label_map = [x.strip() for x in open(args.label_map).readlines()]
     num_class = len(label_map)
 
     skeleton_config = mmcv.Config.fromfile(args.skeleton_config)
@@ -492,9 +497,13 @@ def rgb_based_action_recognition(args):
     return rgb_action_result
 
 
-def skeleton_based_stdet(args, label_map, timestamps, human_detections,
-                         pose_results, clip_len, frame_interval, window_size,
-                         h, w):
+def skeleton_based_stdet(args, label_map, human_detections, pose_results,
+                         num_frame, clip_len, frame_interval, h, w):
+    window_size = clip_len * frame_interval
+    assert clip_len % 2 == 0, 'We would like to have an even clip_len'
+    timestamps = np.arange(window_size // 2, num_frame + 1 - window_size // 2,
+                           args.predict_stepsize)
+
     skeleton_config = mmcv.Config.fromfile(args.skeleton_config)
     num_class = max(label_map.keys()) + 1  # for AVA dataset (81)
     skeleton_config.model.cls_head.num_classes = num_class
@@ -522,10 +531,8 @@ def skeleton_based_stdet(args, label_map, timestamps, human_detections,
         num_frame = len(frame_inds)
 
         pose_result = [pose_results[ind] for ind in frame_inds]
-        num_person = max([len(x) for x in pose_result])
 
         skeleton_prediction = []
-
         for i in range(proposal.shape[0]):  # num_person
             skeleton_prediction.append([])
 
@@ -540,20 +547,25 @@ def skeleton_based_stdet(args, label_map, timestamps, human_detections,
             num_person = 1
 
             num_keypoint = 17
-            keypoint = np.zeros((num_person, num_frame, num_keypoint, 2),
-                                dtype=np.float16)  # M T V 2
-            keypoint_score = np.zeros((num_person, num_frame, num_keypoint),
-                                      dtype=np.float16)  # M T V
+            keypoint = np.zeros(
+                (num_person, num_frame, num_keypoint, 2))  # M T V 2
+            keypoint_score = np.zeros(
+                (num_person, num_frame, num_keypoint))  # M T V
 
             # pose matching
             person_bbox = proposal[i][:4]
             area = expand_bbox(person_bbox, h, w)
 
             for j, poses in enumerate(pose_result):  # num_frame
-                for per_pose in poses:  # num_person
-                    if is_belong(per_pose['bbox'][:4], area):
-                        keypoint[0, j] = per_pose['keypoints'][:, :2]
-                        keypoint_score[0, j] = per_pose['keypoints'][:, 2]
+                max_iou = float('-inf')
+                index = -1
+                for k, per_pose in enumerate(poses):
+                    iou = cal_iou(per_pose['bbox'][:4], area)
+                    if max_iou < iou:
+                        index = k
+                        max_iou = iou
+                keypoint[0, j] = poses[index]['keypoints'][:, :2]
+                keypoint_score[0, j] = poses[index]['keypoints'][:, 2]
 
             fake_anno['keypoint'] = keypoint
             fake_anno['keypoint_score'] = keypoint_score
@@ -575,11 +587,11 @@ def skeleton_based_stdet(args, label_map, timestamps, human_detections,
         skeleton_predictions.append(skeleton_prediction)
         prog_bar.update()
 
-    return skeleton_predictions
+    return timestamps, skeleton_predictions
 
 
-def rgb_based_stdet(args, frames, label_map, timestamps, human_detections, w,
-                    h, new_w, new_h, w_ratio, h_ratio, window_size):
+def rgb_based_stdet(args, frames, label_map, human_detections, w, h, new_w,
+                    new_h, w_ratio, h_ratio):
 
     rgb_stdet_config = mmcv.Config.fromfile(args.rgb_stdet_config)
     rgb_stdet_config.merge_from_dict(args.cfg_options)
@@ -587,6 +599,12 @@ def rgb_based_stdet(args, frames, label_map, timestamps, human_detections, w,
     val_pipeline = rgb_stdet_config.data.val.pipeline
     sampler = [x for x in val_pipeline if x['type'] == 'SampleAVAFrames'][0]
     clip_len, frame_interval = sampler['clip_len'], sampler['frame_interval']
+    assert clip_len % 2 == 0, 'We would like to have an even clip_len'
+
+    window_size = clip_len * frame_interval
+    num_frame = len(frames)
+    timestamps = np.arange(window_size // 2, num_frame + 1 - window_size // 2,
+                           args.predict_stepsize)
 
     # Get img_norm_cfg
     img_norm_cfg = rgb_stdet_config['img_norm_cfg']
@@ -658,7 +676,7 @@ def rgb_based_stdet(args, frames, label_map, timestamps, human_detections, w,
             predictions.append(prediction)
         prog_bar.update()
 
-    return predictions
+    return timestamps, predictions
 
 
 def main():
@@ -677,16 +695,6 @@ def main():
     frames = [mmcv.imresize(img, (new_w, new_h)) for img in original_frames]
     w_ratio, h_ratio = new_w / w, new_h / h
 
-    # Get clip_len, frame_interval and calculate center index of each clip
-    clip_len = 30
-    frame_interval = 1
-
-    window_size = clip_len * frame_interval
-    assert clip_len % 2 == 0, 'We would like to have an even clip_len'
-    # Note that it's 1 based here
-    timestamps = np.arange(window_size // 2, num_frame + 1 - window_size // 2,
-                           args.predict_stepsize)
-
     # Load spatio-temporal detection label_map
     stdet_label_map = load_label_map(args.label_map_stdet)
     rgb_stdet_config = mmcv.Config.fromfile(args.rgb_stdet_config)
@@ -702,40 +710,41 @@ def main():
         pass
 
     action_result = None
-    assert args.use_skeleton_recog ^ args.use_rgb_recog
     if args.use_skeleton_recog:
-        print('use skeleton-based recognition')
+        print('Use skeleton-based recognition')
         action_result = skeleton_based_action_recognition(
             args, pose_results, num_frame, h, w)
-    elif args.use_rgb_recog:
-        print('use rgb-based recognition')
+    else:
+        print('Use rgb-based recognition')
         action_result = rgb_based_action_recognition(args)
 
     stdet_preds = None
-    assert args.use_skeleton_stdet ^ args.use_rgb_stdet
     if args.use_skeleton_stdet:
         print('Use skeleton-based SpatioTemporal Action Detection')
-        stdet_preds = skeleton_based_stdet(args, stdet_label_map, timestamps,
-                                           human_detections, pose_results,
-                                           clip_len, frame_interval,
-                                           window_size, h, w)
+        clip_len, frame_interval = 30, 1
+        timestamps, stdet_preds = skeleton_based_stdet(args, stdet_label_map,
+                                                       human_detections,
+                                                       pose_results, num_frame,
+                                                       clip_len,
+                                                       frame_interval, h, w)
         for i in range(len(human_detections)):
             det = human_detections[i]
             det[:, 0:4:2] *= w_ratio
             det[:, 1:4:2] *= h_ratio
             human_detections[i] = torch.from_numpy(det[:, :4]).to(args.device)
 
-    elif args.use_rgb_stdet:
+    else:
         print('Use rgb-based SpatioTemporal Action Detection')
         for i in range(len(human_detections)):
             det = human_detections[i]
             det[:, 0:4:2] *= w_ratio
             det[:, 1:4:2] *= h_ratio
             human_detections[i] = torch.from_numpy(det[:, :4]).to(args.device)
-        stdet_preds = rgb_based_stdet(args, frames, stdet_label_map,
-                                      timestamps, human_detections, w, h,
-                                      new_w, new_h, w_ratio, h_ratio,
-                                      window_size)
+        timestamps, stdet_preds = rgb_based_stdet(args, frames,
+                                                  stdet_label_map,
+                                                  human_detections, w, h,
+                                                  new_w, new_h, w_ratio,
+                                                  h_ratio)
 
     stdet_results = []
     for timestamp, prediction in zip(timestamps, stdet_preds):
@@ -745,21 +754,26 @@ def main():
 
     def dense_timestamps(timestamps, n):
         """Make it nx frames."""
-        old_frame_interval = (timestamps[1] - timestamps[0])  # 8
+        old_frame_interval = (timestamps[1] - timestamps[0])
         start = timestamps[0] - old_frame_interval / n * (n - 1) / 2
         new_frame_inds = np.arange(
             len(timestamps) * n) * old_frame_interval / n + start
         return new_frame_inds.astype(np.int)
 
-    dense_n = int(args.predict_stepsize / args.output_stepsize)  # 2
+    dense_n = int(args.predict_stepsize / args.output_stepsize)
+    output_timestamps = dense_timestamps(timestamps, dense_n)
     frames = [
-        cv2.imread(frame_paths[i - 1])
-        for i in dense_timestamps(timestamps, dense_n)
+        cv2.imread(frame_paths[timestamp - 1])
+        for timestamp in output_timestamps
     ]
+
     print('Performing visualization')
     pose_model = init_pose_model(args.pose_config, args.pose_checkpoint,
                                  args.device)
-    pose_results = [pose_results[timestamp - 1] for timestamp in timestamps]
+    pose_results = [
+        pose_results[timestamp - 1] for timestamp in output_timestamps
+    ]
+
     vis_frames = visualize(frames, stdet_results, pose_results, action_result,
                            pose_model)
     vid = mpy.ImageSequenceClip([x[:, :, ::-1] for x in vis_frames],
