@@ -15,6 +15,7 @@ from .tpn_head import TPNHead
 from .trn_head import TRNHead
 from .tsm_head import TSMHead, SelfSupervisedTSMHead
 from .vcop_head import VCOPHead
+from .slowfast_contrastive_head import SlowFastContrastiveHead
 from .tsn_head import TSNHead
 from .x3d_head import X3DHead
 
@@ -22,5 +23,5 @@ __all__ = [
     'TSNHead', 'I3DHead', 'BaseHead', 'TSMHead', 'SlowFastHead', 'SSNHead',
     'TPNHead', 'AudioTSNHead', 'X3DHead', 'BBoxHeadAVA', 'AVARoIHead',
     'FBOHead', 'LFBInferHead', 'TRNHead', 'TimeSformerHead', 'ACRNHead',
-    'STGCNHead', 'SelfSupervisedTSMHead', 'VCOPHead'
+    'STGCNHead', 'SelfSupervisedTSMHead', 'VCOPHead', 'SlowFastContrastiveHead'
 ]
