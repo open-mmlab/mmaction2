@@ -113,6 +113,8 @@ python tools/train.py configs/skeleton/posec3d/slowonly_r50_u48_240e_gym_keypoin
     --validate --seed 0 --deterministic
 ```
 
+For training with your custom dataset, you can refer to [Custom Dataset Training](https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/posec3d/custom_dataset_training.md).
+
 For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
 
 ## Test

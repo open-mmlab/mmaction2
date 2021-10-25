@@ -61,6 +61,8 @@ python ntu_pose_extraction.py S001C001P001R001A001_rgb.avi S001C001P001R001A001.
 - original_shape: 同 `img_shape`
 - total_frames: 视频时序长度
 
+如用户想使用自己的数据集训练 PoseC3D，可以参考 [Custom Dataset Training](https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/posec3d/custom_dataset_training.md)。
+
 ## 可视化
 
 为了可视化骨架数据，用户需要准备 RGB 的视频。详情可参考 [visualize_heatmap_volume](/demo/visualize_heatmap_volume.ipynb)。这里提供一些 NTU-60 和 FineGYM 上的例子

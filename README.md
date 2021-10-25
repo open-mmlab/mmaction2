@@ -42,8 +42,9 @@ The master branch works with **PyTorch 1.3+**.
 
 - **Well tested and documented**: We provide detailed documentation and API reference, as well as unit tests.
 
-## News
+## Updates
 
+- (2021-10-25) We provide a [guide](https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/posec3d/custom_dataset_training.md) on how to train PoseC3D with custom datasets, [bit-scientist](https://github.com/bit-scientist) authored this PR!
 - (2021-10-16) We support **PoseC3D** on UCF101 and HMDB51, achieves 87.0% and 69.3% Top-1 accuracy with 2D skeletons only. Pre-extracted 2D skeletons are also available.
 - (2021-10-12) We support **TorchServe**! Now recognition models in MMAction2 can be packed as a `.mar` file and served with TorchServe.
 - (2021-09-11) We support **ST-GCN**, a well-known GCN-based approach for skeleton-based action recognition!
