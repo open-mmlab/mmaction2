@@ -14,26 +14,26 @@ model = dict(
     test_cfg=None)
 
 dataset_type = 'PoseDataset'
-ann_file_train = '/mnt/lustre/liguankai/data/ntu/nturgb+d_skeletons_60_3d_nmtvc/xsub/train.pkl'
-ann_file_val = '/mnt/lustre/liguankai/data/ntu/nturgb+d_skeletons_60_3d_nmtvc/xsub/val.pkl'
+ann_file_train = 'data/ntu/nturgb+d_skeletons_60_3d_nmtvc/xsub/train.pkl'
+ann_file_val = 'data/ntu/nturgb+d_skeletons_60_3d_nmtvc/xsub/val.pkl'
 train_pipeline = [
     dict(type='PaddingWithLoop', clip_len=300),
     dict(type='PoseDecode'),
-    dict(type='FormatGCNInput2', input_format='NCTVM'),
+    dict(type='FormatGCNInput_3d', input_format='NCTVM'),
     dict(type='Collect', keys=['keypoint', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['keypoint'])
 ]
 val_pipeline = [
-    dict(type='PaddingWithLoop', clip_len=300), 
-    dict(type='PoseDecode'),  
-    dict(type='FormatGCNInput2', input_format='NCTVM'),
+    dict(type='PaddingWithLoop', clip_len=300),
+    dict(type='PoseDecode'),
+    dict(type='FormatGCNInput_3d', input_format='NCTVM'),
     dict(type='Collect', keys=['keypoint', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['keypoint'])
 ]
 test_pipeline = [
     dict(type='PaddingWithLoop', clip_len=300),
     dict(type='PoseDecode'),
-    dict(type='FormatGCNInput2', input_format='NCTVM'),
+    dict(type='FormatGCNInput_3d', input_format='NCTVM'),
     dict(type='Collect', keys=['keypoint', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['keypoint'])
 ]
@@ -75,5 +75,3 @@ work_dir = './work_dirs/stgcn_3d/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
-
-
