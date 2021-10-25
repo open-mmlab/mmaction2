@@ -107,8 +107,10 @@ def visualize(frames,
     scale_ratio = np.array([w, h, w, h])
 
     # add pose results
-    for i in range(nf):
-        frames_[i] = vis_pose_result(pose_model, frames_[i], pose_results[i])
+    if pose_results:
+        for i in range(nf):
+            frames_[i] = vis_pose_result(pose_model, frames_[i],
+                                         pose_results[i])
 
     for i in range(na):
         anno = annotations[i]
@@ -130,8 +132,9 @@ def visualize(frames,
                     continue
                 score = ann[2]
                 box = (box * scale_ratio).astype(np.int64)
-                st, _ = tuple(box[:2]), tuple(box[2:])
-                # cv2.rectangle(frame, st, ed, plate[0], 2)
+                st, ed = tuple(box[:2]), tuple(box[2:])
+                if not pose_results:
+                    cv2.rectangle(frame, st, ed, plate[0], 2)
 
                 for k, lb in enumerate(label):
                     if k >= max_num:
@@ -227,7 +230,7 @@ def parse_args():
     parser.add_argument(
         '--action-score-thr',
         type=float,
-        default=0.35,
+        default=0.25,
         help='the threshold of human action score')
     parser.add_argument(
         '--video',
@@ -245,7 +248,7 @@ def parse_args():
         '--device', type=str, default='cuda:0', help='CPU/CUDA device option')
     parser.add_argument(
         '--out-filename',
-        default='demo/test_stdet_recognition_output.mp4',
+        default='demo/test_stdet_recognition_output_ske_rgb.mp4',
         help='output filename')
     parser.add_argument(
         '--predict-stepsize',
@@ -516,9 +519,10 @@ def skeleton_based_stdet(args, label_map, human_detections, pose_results,
     skeleton_stdet_model.to(args.device)
     skeleton_stdet_model.eval()
 
-    prog_bar = mmcv.ProgressBar(len(timestamps))
     skeleton_predictions = []
 
+    print('Performing SpatioTemporal Action Detection for each clip')
+    prog_bar = mmcv.ProgressBar(len(timestamps))
     for timestamp in timestamps:
         proposal = human_detections[timestamp - 1]
         if proposal.shape[0] == 0:  # no people detected
@@ -672,7 +676,6 @@ def rgb_based_stdet(args, frames, label_map, human_detections, w, h, new_w,
                     if result[i][j, 4] > args.action_score_thr:
                         prediction[j].append((label_map[i + 1], result[i][j,
                                                                           4]))
-                        print('rgb-stdet', prediction[j])
             predictions.append(prediction)
         prog_bar.update()
 
@@ -688,7 +691,9 @@ def main():
 
     # Get Human detection results and pose results
     human_detections = detection_inference(args, frame_paths)
-    pose_results = pose_inference(args, frame_paths, human_detections)
+    pose_results = None
+    if args.use_skeleton_recog or args.use_skeleton_stdet:
+        pose_results = pose_inference(args, frame_paths, human_detections)
 
     # resize frames to shortside 256
     new_w, new_h = mmcv.rescale_size((w, h), (256, np.Inf))
@@ -770,9 +775,11 @@ def main():
     print('Performing visualization')
     pose_model = init_pose_model(args.pose_config, args.pose_checkpoint,
                                  args.device)
-    pose_results = [
-        pose_results[timestamp - 1] for timestamp in output_timestamps
-    ]
+
+    if args.use_skeleton_recog or args.use_skeleton_stdet:
+        pose_results = [
+            pose_results[timestamp - 1] for timestamp in output_timestamps
+        ]
 
     vis_frames = visualize(frames, stdet_results, pose_results, action_result,
                            pose_model)
