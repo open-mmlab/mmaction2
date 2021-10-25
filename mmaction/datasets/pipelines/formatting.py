@@ -422,3 +422,50 @@ class FormatGCNInput:
         repr_str = self.__class__.__name__
         repr_str += f"(input_format='{self.input_format}')"
         return repr_str
+
+
+@PIPELINES.register_module()
+class FormatGCNInput_3d:
+    """Format final skeleton(3d) shape to the given input_format.
+
+    Required keys are "keypoint", added or modified
+    keys are "keypoint" and "input_shape".
+
+    Args:
+        input_format (str): Define the final skeleton format.
+    """
+
+    def __init__(self, input_format, num_person=2):
+        self.input_format = input_format
+        if self.input_format not in ['NCTVM']:
+            raise ValueError(
+                f'The input format {self.input_format} is invalid.')
+        self.num_person = num_person
+
+    def __call__(self, results):
+        """Performs the FormatShape formatting.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        keypoint = results['keypoint']
+        keypoint_3d = np.transpose(keypoint,
+                                   (3, 1, 2, 0))  # M T V C -> C T V M
+
+        if keypoint_3d.shape[-1] < self.num_person:
+            pad_dim = self.num_person - keypoint_3d.shape[-1]
+            pad = np.zeros(
+                keypoint_3d.shape[:-1] + (pad_dim, ), dtype=keypoint_3d.dtype)
+            keypoint_3d = np.concatenate((keypoint_3d, pad), axis=-1)
+        elif keypoint_3d.shape[-1] > self.num_person:
+            keypoint_3d = keypoint_3d[:, :, :, :self.num_person]
+
+        results['keypoint'] = keypoint_3d
+        results['input_shape'] = keypoint.shape
+        return results
+
+    def __repr__(self):
+        repr_str = self.__class__.__name__
+        repr_str += f"(input_format='{self.input_format}')"
+        return repr_str

@@ -5,7 +5,7 @@ from .augmentations import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
                             RandomResizedCrop, Resize, TenCrop, ThreeCrop,
                             TorchvisionTrans)
 from .compose import Compose
-from .formatting import (Collect, FormatAudioShape, FormatGCNInput,
+from .formatting import (Collect, FormatAudioShape, FormatGCNInput, FormatGCNInput_3d,
                          FormatShape, ImageToTensor, Rename, ToDataContainer,
                          ToTensor, Transpose)
 from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
@@ -37,5 +37,5 @@ __all__ = [
     'PyAVDecodeMotionVector', 'Rename', 'Imgaug', 'UniformSampleFrames',
     'PoseDecode', 'LoadKineticsPose', 'GeneratePoseTarget', 'PIMSInit',
     'PIMSDecode', 'TorchvisionTrans', 'PytorchVideoTrans', 'PoseNormalize',
-    'FormatGCNInput', 'PaddingWithLoop', 'ArrayDecode'
+    'FormatGCNInput', 'PaddingWithLoop', 'ArrayDecode', 'FormatGCNInput_3d'
 ]
