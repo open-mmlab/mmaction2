@@ -43,6 +43,7 @@ MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLa
 
 ## 更新记录
 
+- (2021-10-25) 提供使用自定义数据集训练 PoseC3D 的 [教程](https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/posec3d/custom_dataset_training.md)，此 PR 由用户 [bit-scientist](https://github.com/bit-scientist) 完成！
 - (2021-10-16) 在 UCF101, HMDB51 上支持 **PoseC3D**，仅用 2D 关键点就可分别达到 87.0% 和 69.3% 的识别准确率。两数据集的预提取骨架特征可以公开下载。
 - (2021-10-12) 支持 **TorchServe**！目前可以使用 TorchServe 部署 MMAction2 中的动作识别模型。
 - (2021-09-11) 支持 **ST-GCN**，一种广泛使用的基于人体姿态与 GCN 的动作识别方法！
