@@ -19,21 +19,21 @@ ann_file_val = 'data/ntu/nturgb+d_skeletons_60_3d_nmtvc/xsub/val.pkl'
 train_pipeline = [
     dict(type='PaddingWithLoop', clip_len=300),
     dict(type='PoseDecode'),
-    dict(type='FormatGCNInput', input_format='NCTVM', skeleton_type='3d'),
+    dict(type='FormatGCNInput', input_format='NCTVM'),
     dict(type='Collect', keys=['keypoint', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['keypoint'])
 ]
 val_pipeline = [
     dict(type='PaddingWithLoop', clip_len=300),
     dict(type='PoseDecode'),
-    dict(type='FormatGCNInput', input_format='NCTVM', skeleton_type='3d'),
+    dict(type='FormatGCNInput', input_format='NCTVM'),
     dict(type='Collect', keys=['keypoint', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['keypoint'])
 ]
 test_pipeline = [
     dict(type='PaddingWithLoop', clip_len=300),
     dict(type='PoseDecode'),
-    dict(type='FormatGCNInput', input_format='NCTVM', skeleton_type='3d'),
+    dict(type='FormatGCNInput', input_format='NCTVM'),
     dict(type='Collect', keys=['keypoint', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['keypoint'])
 ]
@@ -71,7 +71,7 @@ log_config = dict(interval=100, hooks=[dict(type='TextLoggerHook')])
 # runtime settings
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/stgcn_3d/'
+work_dir = './work_dirs/stgcn_80e_ntu60_xsub_keypoint_3d/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]

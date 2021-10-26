@@ -378,21 +378,19 @@ class FormatAudioShape:
 class FormatGCNInput:
     """Format final skeleton shape to the given input_format.
 
-    Required keys are "keypoint" and "keypoint_score"(if skeleton_type='2d'),
+    Required keys are "keypoint" and "keypoint_score"(optional),
     added or modified keys are "keypoint" and "input_shape".
 
     Args:
         input_format (str): Define the final skeleton format.
     """
 
-    def __init__(self, input_format, num_person=2, skeleton_type='2d'):
+    def __init__(self, input_format, num_person=2):
         self.input_format = input_format
         if self.input_format not in ['NCTVM']:
             raise ValueError(
                 f'The input format {self.input_format} is invalid.')
         self.num_person = num_person
-        assert skeleton_type in ['2d', '3d']
-        self.skeleton_type = skeleton_type
 
     def __call__(self, results):
         """Performs the FormatShape formatting.
@@ -403,7 +401,7 @@ class FormatGCNInput:
         """
         keypoint = results['keypoint']
 
-        if self.skeleton_type == '2d':
+        if 'keypoint_score' in results:
             keypoint_confidence = results['keypoint_score']
             keypoint_confidence = np.expand_dims(keypoint_confidence, -1)
             keypoint_3d = np.concatenate((keypoint, keypoint_confidence),
