@@ -43,7 +43,7 @@ MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLa
 
 ## 更新记录
 
-- (2021-10-26) 在 NTU60 3d 关键点标注数据集上训练测试 **STGCN**, 可达到 84.61% (高于 [paper](https://www.aaai.org/ocs/index.php/AAAI/AAAI18/paper/viewPaper/17135]) 中的 81.5%) 的识别准确率。
+- (2021-10-26) 在 NTU60 3d 关键点标注数据集上训练测试 **STGCN**, 可达到 84.61% (高于 [paper](https://www.aaai.org/ocs/index.php/AAAI/AAAI18/paper/viewPaper/17135) 中的 81.5%) 的识别准确率。
 - (2021-10-25) 提供将 NTU60 和 NTU120 的 3d 骨骼点数据转换成我们项目的格式的脚本(tools/data/skeleton/gen_ntu_rgbd_raw.py)。
 - (2021-10-16) 在 UCF101, HMDB51 上支持 **PoseC3D**，仅用 2D 关键点就可分别达到 87.0% 和 69.3% 的识别准确率。两数据集的预提取骨架特征可以公开下载。
 - (2021-10-12) 支持 **TorchServe**！目前可以使用 TorchServe 部署 MMAction2 中的动作识别模型。
