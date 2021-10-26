@@ -233,7 +233,9 @@ def parse_args():
         default=0.35,
         help='the threshold of human action score')
     parser.add_argument(
-        '--video', default='demo/test_1026.mp4', help='video file/url')
+        '--video',
+        default='demo/test_stdet_recognition.mp4',
+        help='video file/url')
     parser.add_argument(
         '--label-map-stdet',
         default='tools/data/ava/label_map.txt',
