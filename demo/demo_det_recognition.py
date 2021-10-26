@@ -225,17 +225,15 @@ def parse_args():
     parser.add_argument(
         '--det-score-thr',
         type=float,
-        default=0.6,
+        default=0.7,
         help='the threshold of human detection score')
     parser.add_argument(
         '--action-score-thr',
         type=float,
-        default=0.25,
+        default=0.35,
         help='the threshold of human action score')
     parser.add_argument(
-        '--video',
-        default='demo/test_stdet_recognition.mp4',
-        help='video file/url')
+        '--video', default='demo/test_1026.mp4', help='video file/url')
     parser.add_argument(
         '--label-map-stdet',
         default='tools/data/ava/label_map.txt',
@@ -248,7 +246,7 @@ def parse_args():
         '--device', type=str, default='cuda:0', help='CPU/CUDA device option')
     parser.add_argument(
         '--out-filename',
-        default='demo/test_stdet_recognition_output_ske_rgb.mp4',
+        default='demo/test_stdet_recognition_output_rgb_ske.mp4',
         help='output filename')
     parser.add_argument(
         '--predict-stepsize',
@@ -532,7 +530,7 @@ def skeleton_based_stdet(args, label_map, human_detections, pose_results,
         start_frame = timestamp - (clip_len // 2 - 1) * frame_interval
         frame_inds = start_frame + np.arange(0, window_size, frame_interval)
         frame_inds = list(frame_inds - 1)
-        num_frame = len(frame_inds)
+        num_frame = len(frame_inds)  # 30
 
         pose_result = [pose_results[ind] for ind in frame_inds]
 
@@ -563,6 +561,8 @@ def skeleton_based_stdet(args, label_map, human_detections, pose_results,
             for j, poses in enumerate(pose_result):  # num_frame
                 max_iou = float('-inf')
                 index = -1
+                if len(poses) == 0:
+                    continue
                 for k, per_pose in enumerate(poses):
                     iou = cal_iou(per_pose['bbox'][:4], area)
                     if max_iou < iou:
