@@ -56,6 +56,8 @@ Here we briefly introduce the format of PoseC3D Annotations, we will take `gym_t
 - original_shape: Same as above.
 - total_frames: The temporal length of the video.
 
+For training with your custom dataset, you can refer to [Custom Dataset Training](https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/posec3d/custom_dataset_training.md).
+
 ## Visualization
 
 For skeleton data visualization, you need also to prepare the RGB videos. Please refer to [visualize_heatmap_volume](/demo/visualize_heatmap_volume.ipynb) for detailed process. Here we provide some visualization examples from NTU-60 and FineGYM.
