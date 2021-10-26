@@ -225,7 +225,7 @@ def parse_args():
     parser.add_argument(
         '--det-score-thr',
         type=float,
-        default=0.7,
+        default=0.9,
         help='the threshold of human detection score')
     parser.add_argument(
         '--action-score-thr',
@@ -248,7 +248,7 @@ def parse_args():
         '--device', type=str, default='cuda:0', help='CPU/CUDA device option')
     parser.add_argument(
         '--out-filename',
-        default='demo/test_stdet_recognition_output_rgb_ske.mp4',
+        default='demo/test_stdet_recognition_output.mp4',
         help='output filename')
     parser.add_argument(
         '--predict-stepsize',
