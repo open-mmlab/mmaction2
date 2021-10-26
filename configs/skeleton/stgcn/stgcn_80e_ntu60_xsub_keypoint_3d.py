@@ -19,21 +19,21 @@ ann_file_val = 'data/ntu/nturgb+d_skeletons_60_3d_nmtvc/xsub/val.pkl'
 train_pipeline = [
     dict(type='PaddingWithLoop', clip_len=300),
     dict(type='PoseDecode'),
-    dict(type='FormatGCNInput_3d', input_format='NCTVM'),
+    dict(type='FormatGCNInput', input_format='NCTVM', skeleton_type='3d'),
     dict(type='Collect', keys=['keypoint', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['keypoint'])
 ]
 val_pipeline = [
     dict(type='PaddingWithLoop', clip_len=300),
     dict(type='PoseDecode'),
-    dict(type='FormatGCNInput_3d', input_format='NCTVM'),
+    dict(type='FormatGCNInput', input_format='NCTVM', skeleton_type='3d'),
     dict(type='Collect', keys=['keypoint', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['keypoint'])
 ]
 test_pipeline = [
     dict(type='PaddingWithLoop', clip_len=300),
     dict(type='PoseDecode'),
-    dict(type='FormatGCNInput_3d', input_format='NCTVM'),
+    dict(type='FormatGCNInput', input_format='NCTVM', skeleton_type='3d'),
     dict(type='Collect', keys=['keypoint', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['keypoint'])
 ]
