@@ -378,8 +378,8 @@ class FormatAudioShape:
 class FormatGCNInput:
     """Format final skeleton shape to the given input_format.
 
-    Required keys are "keypoint" and "keypoint_score", added or modified
-    keys are "keypoint" and "input_shape".
+    Required keys are "keypoint" and "keypoint_score"(optional),
+    added or modified keys are "keypoint" and "input_shape".
 
     Args:
         input_format (str): Define the final skeleton format.
@@ -400,9 +400,15 @@ class FormatGCNInput:
                 to the next transform in pipeline.
         """
         keypoint = results['keypoint']
-        keypoint_confidence = results['keypoint_score']
-        keypoint_confidence = np.expand_dims(keypoint_confidence, -1)
-        keypoint_3d = np.concatenate((keypoint, keypoint_confidence), axis=-1)
+
+        if 'keypoint_score' in results:
+            keypoint_confidence = results['keypoint_score']
+            keypoint_confidence = np.expand_dims(keypoint_confidence, -1)
+            keypoint_3d = np.concatenate((keypoint, keypoint_confidence),
+                                         axis=-1)
+        else:
+            keypoint_3d = keypoint
+
         keypoint_3d = np.transpose(keypoint_3d,
                                    (3, 1, 2, 0))  # M T V C -> C T V M
 
