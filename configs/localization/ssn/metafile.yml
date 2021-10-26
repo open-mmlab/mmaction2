@@ -26,5 +26,5 @@ Models:
   reference mAP@0.3: '[27.61](https://github.com/open-mmlab/mmaction/tree/c7e3b7c11fb94131be9b48a8e3d510589addc3ce#Get%20started)'
   reference mAP@0.4: '[21.28](https://github.com/open-mmlab/mmaction/tree/c7e3b7c11fb94131be9b48a8e3d510589addc3ce#Get%20started)'
   reference mAP@0.5: '[14.57](https://github.com/open-mmlab/mmaction/tree/c7e3b7c11fb94131be9b48a8e3d510589addc3ce#Get%20started)'
-  refrence ckpt: '[ckpt](https://download.openmmlab.com/mmaction/localization/ssn/mmaction_reference/ssn_r50_450e_thumos14_rgb_ref/ssn_r50_450e_thumos14_rgb_ref_20201014-b6f48f68.pth)'
-  refrence json: '[json](https://download.openmmlab.com/mmaction/localization/ssn/mmaction_reference/ssn_r50_450e_thumos14_rgb_ref/20201008_103258.log.json)'
+  reference ckpt: '[ckpt](https://download.openmmlab.com/mmaction/localization/ssn/mmaction_reference/ssn_r50_450e_thumos14_rgb_ref/ssn_r50_450e_thumos14_rgb_ref_20201014-b6f48f68.pth)'
+  reference json: '[json](https://download.openmmlab.com/mmaction/localization/ssn/mmaction_reference/ssn_r50_450e_thumos14_rgb_ref/20201008_103258.log.json)'

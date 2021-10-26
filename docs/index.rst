@@ -3,6 +3,8 @@ Welcome to MMAction2's documentation!
 
 You can switch between Chinese and English documents in the lower-left corner of the layout.
 
+您可以在页面左下角切换文档语言。
+
 .. toctree::
    :maxdepth: 2
 

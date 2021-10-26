@@ -13,12 +13,12 @@ def generate_candidate_proposals(video_list,
                                  peak_threshold,
                                  tem_results_ext='.csv',
                                  result_dict=None):
-    """Generate Candidate Proposals with given temporal evalutation results.
+    """Generate Candidate Proposals with given temporal evaluation results.
     Each proposal file will contain:
     'tmin,tmax,tmin_score,tmax_score,score,match_iou,match_ioa'.
 
     Args:
-        video_list (list[int]): List of video indexs to generate proposals.
+        video_list (list[int]): List of video indexes to generate proposals.
         video_infos (list[dict]): List of video_info dict that contains
             'video_name', 'duration_frame', 'duration_second',
             'feature_frame', and 'annotations'.
@@ -140,7 +140,7 @@ def generate_bsp_feature(video_list,
     """Generate Boundary-Sensitive Proposal Feature with given proposals.
 
     Args:
-        video_list (list[int]): List of video indexs to generate bsp_feature.
+        video_list (list[int]): List of video indexes to generate bsp_feature.
         video_infos (list[dict]): List of video_info dict that contains
             'video_name'.
         tem_results_dir (str): Directory to load temporal evaluation

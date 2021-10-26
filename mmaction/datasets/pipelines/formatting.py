@@ -41,7 +41,7 @@ class ToTensor:
         self.keys = keys
 
     def __call__(self, results):
-        """Performs the ToTensor formating.
+        """Performs the ToTensor formatting.
 
         Args:
             results (dict): The resulting dict to be modified and passed
@@ -96,7 +96,7 @@ class ToDataContainer:
         self.fields = fields
 
     def __call__(self, results):
-        """Performs the ToDataContainer formating.
+        """Performs the ToDataContainer formatting.
 
         Args:
             results (dict): The resulting dict to be modified and passed
@@ -128,7 +128,7 @@ class ImageToTensor:
         self.keys = keys
 
     def __call__(self, results):
-        """Performs the ImageToTensor formating.
+        """Performs the ImageToTensor formatting.
 
         Args:
             results (dict): The resulting dict to be modified and passed
@@ -185,7 +185,7 @@ class Collect:
 
     Args:
         keys (Sequence[str]): Required keys to be collected.
-        meta_name (str): The name of the key that contains meta infomation.
+        meta_name (str): The name of the key that contains meta information.
             This key is always populated. Default: "img_metas".
         meta_keys (Sequence[str]): Keys that are collected under meta_name.
             The contents of the ``meta_name`` dictionary depends on
@@ -222,7 +222,7 @@ class Collect:
         self.nested = nested
 
     def __call__(self, results):
-        """Performs the Collect formating.
+        """Performs the Collect formatting.
 
         Args:
             results (dict): The resulting dict to be modified and passed
@@ -271,7 +271,7 @@ class FormatShape:
                 f'The input format {self.input_format} is invalid.')
 
     def __call__(self, results):
-        """Performs the FormatShape formating.
+        """Performs the FormatShape formatting.
 
         Args:
             results (dict): The resulting dict to be modified and passed
@@ -378,8 +378,8 @@ class FormatAudioShape:
 class FormatGCNInput:
     """Format final skeleton shape to the given input_format.
 
-    Required keys are "keypoint" and "keypoint_score", added or modified
-    keys are "keypoint" and "input_shape".
+    Required keys are "keypoint" and "keypoint_score"(optional),
+    added or modified keys are "keypoint" and "input_shape".
 
     Args:
         input_format (str): Define the final skeleton format.
@@ -400,9 +400,15 @@ class FormatGCNInput:
                 to the next transform in pipeline.
         """
         keypoint = results['keypoint']
-        keypoint_confidence = results['keypoint_score']
-        keypoint_confidence = np.expand_dims(keypoint_confidence, -1)
-        keypoint_3d = np.concatenate((keypoint, keypoint_confidence), axis=-1)
+
+        if 'keypoint_score' in results:
+            keypoint_confidence = results['keypoint_score']
+            keypoint_confidence = np.expand_dims(keypoint_confidence, -1)
+            keypoint_3d = np.concatenate((keypoint, keypoint_confidence),
+                                         axis=-1)
+        else:
+            keypoint_3d = keypoint
+
         keypoint_3d = np.transpose(keypoint_3d,
                                    (3, 1, 2, 0))  # M T V C -> C T V M
 

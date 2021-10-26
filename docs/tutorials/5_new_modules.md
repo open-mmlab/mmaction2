@@ -258,14 +258,14 @@ In the api for [`train.py`](/mmaction/apis/train.py), it will register the learn
 
 So far, the supported updaters can be find in [mmcv](https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/lr_updater.py), but if you want to customize a new learning rate updater, you may follow the steps below:
 
-1. First, write your own LrUpdaterHook in `$MMAction2/mmaction/core/lr`. The snippet followed is an example of customized lr updater that uses learning rate based on a specific learning rate ratio: `lrs`, by which the learning rate decreases at each `steps`:
+1. First, write your own LrUpdaterHook in `$MMAction2/mmaction/core/scheduler`. The snippet followed is an example of customized lr updater that uses learning rate based on a specific learning rate ratio: `lrs`, by which the learning rate decreases at each `steps`:
 
 ```python
 @HOOKS.register_module()
 # Register it here
 class RelativeStepLrUpdaterHook(LrUpdaterHook):
     # You should inheritate it from mmcv.LrUpdaterHook
-    def __init__(self, runner, steps, lrs, **kwargs):
+    def __init__(self, steps, lrs, **kwargs):
         super().__init__(**kwargs)
         assert len(steps) == (len(lrs))
         self.steps = steps

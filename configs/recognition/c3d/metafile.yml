@@ -18,7 +18,7 @@ Models:
     Training Data: UCF101
     Training Resources: 8 GPUs
   Modality: RGB
-  Name: c3d_sports1m_16x1x1_45e_ucf101_rgb.py
+  Name: c3d_sports1m_16x1x1_45e_ucf101_rgb
   Results:
   - Dataset: UCF101
     Metrics:

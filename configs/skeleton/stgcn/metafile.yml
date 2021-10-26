@@ -2,7 +2,7 @@ Collections:
 - Name: STGCN
   README: configs/skeleton/stgcn/README.md
 Models:
-  Config: configs/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint.py
+- Config: configs/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint.py
   In Collection: STGCN
   Metadata:
     Architecture: STGCN
@@ -10,7 +10,7 @@ Models:
     Epochs: 80
     Parameters: 3088704
     Training Data: NTU60
-    Training Resouces: 2 GPUs
+    Training Resources: 2 GPUs
   Name: stgcn_80e_ntu60_xsub_keypoint
   Results:
     Dataset: NTU60
@@ -20,3 +20,21 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint/stgcn_80e_ntu60_xsub_keypoint.json
   Training Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint/stgcn_80e_ntu60_xsub_keypoint.log
   Weights: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint/stgcn_80e_ntu60_xsub_keypoint-e7bb9653.pth
+- Config: configs/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint_3d.py
+  In Collection: STGCN
+  Metadata:
+    Architecture: STGCN
+    Batch Size: 32
+    Epochs: 80
+    Parameters: 3088704
+    Training Data: NTU60
+    Training Resources: 1 GPU
+  Name: stgcn_80e_ntu60_xsub_keypoint_3d
+  Results:
+    Dataset: NTU60
+    Metrics:
+      mean Top 1 Accuracy: 84.61
+    Task: Skeleton-based Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint_3d/stgcn_80e_ntu60_xsub_keypoint_3d.json
+  Training Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint_3d/stgcn_80e_ntu60_xsub_keypoint_3d.log
+  Weights: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint_3d/stgcn_80e_ntu60_xsub_keypoint_3d-13e7ccf0.pth

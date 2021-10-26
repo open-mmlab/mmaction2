@@ -4,11 +4,12 @@ In this tutorial, we will introduce some methods about the design of data pipeli
 
 <!-- TOC -->
 
-- [Design of Data Pipelines](#design-of-data-pipelines)
-  - [Data loading](#data-loading)
-  - [Pre-processing](#pre-processing)
-  - [Formatting](#formatting)
-- [Extend and Use Custom Pipelines](#extend-and-use-custom-pipelines)
+- [Tutorial 4: Customize Data Pipelines](#tutorial-4-customize-data-pipelines)
+  - [Design of Data Pipelines](#design-of-data-pipelines)
+    - [Data loading](#data-loading)
+    - [Pre-processing](#pre-processing)
+    - [Formatting](#formatting)
+  - [Extend and Use Custom Pipelines](#extend-and-use-custom-pipelines)
 
 <!-- TOC -->
 
@@ -27,7 +28,7 @@ A pipeline consists of a sequence of operations. Each operation takes a dict as 
 
 We present a typical pipeline in the following figure. The blue blocks are pipeline operations.
 With the pipeline going on, each operator can add new keys (marked as green) to the result dict or update the existing keys (marked as orange).
-![pipeline figure](/resources/data_pipeline.png)
+![pipeline figure](https://github.com/open-mmlab/mmaction2/raw/master/resources/data_pipeline.png)
 
 The operations are categorized into data loading, pre-processing and formatting.
 
@@ -193,11 +194,6 @@ For each operation, we list the related dict fields that are added/updated/remov
 - update: imgs
 
 `TenCrop`
-
-- add: crop_bbox, img_shape
-- update: imgs
-
-`MultiGroupCrop`
 
 - add: crop_bbox, img_shape
 - update: imgs

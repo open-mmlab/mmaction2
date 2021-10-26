@@ -23,6 +23,9 @@ class PoseDataset(BaseDataset):
     Args:
         ann_file (str): Path to the annotation file.
         pipeline (list[dict | callable]): A sequence of data transforms.
+        split (str | None): The dataset split used. Only applicable to UCF or
+            HMDB. Allowed choiced are 'train1', 'test1', 'train2', 'test2',
+            'train3', 'test3'. Default: None.
         valid_ratio (float | None): The valid_ratio for videos in KineticsPose.
             For a video with n frames, it is a valid training sample only if
             n * valid_ratio frames have human pose. None means not applicable
@@ -40,11 +43,14 @@ class PoseDataset(BaseDataset):
     def __init__(self,
                  ann_file,
                  pipeline,
+                 split=None,
                  valid_ratio=None,
                  box_thr=None,
                  class_prob=None,
                  **kwargs):
         modality = 'Pose'
+        # split, applicable to ucf or hmdb
+        self.split = split
 
         super().__init__(
             ann_file, pipeline, start_index=0, modality=modality, **kwargs)
@@ -92,8 +98,16 @@ class PoseDataset(BaseDataset):
     def load_pkl_annotations(self):
         data = mmcv.load(self.ann_file)
 
+        if self.split:
+            split, data = data['split'], data['annotations']
+            identifier = 'filename' if 'filename' in data[0] else 'frame_dir'
+            data = [x for x in data if x[identifier] in split[self.split]]
+
         for item in data:
             # Sometimes we may need to load anno from the file
             if 'filename' in item:
                 item['filename'] = osp.join(self.data_prefix, item['filename'])
+            if 'frame_dir' in item:
+                item['frame_dir'] = osp.join(self.data_prefix,
+                                             item['frame_dir'])
         return data

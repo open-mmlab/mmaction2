@@ -33,8 +33,8 @@ def test_mobilenetv2_backbone():
         model.init_weights()
 
     with pytest.raises(ValueError):
-        # frozen_stages must in range(1, 8)
-        MobileNetV2(frozen_stages=8)
+        # frozen_stages must in range(1, 9)
+        MobileNetV2(frozen_stages=9)
 
     with pytest.raises(ValueError):
         # tout_indices in range(-1, 8)
@@ -58,6 +58,18 @@ def test_mobilenetv2_backbone():
             if isinstance(mod, _BatchNorm):
                 assert mod.training is False
         for param in layer.parameters():
+            assert param.requires_grad is False
+
+    # Test MobileNetV2 with all stages frozen
+    frozen_stages = 8
+    model = MobileNetV2(frozen_stages=frozen_stages)
+    model.init_weights()
+    model.train()
+
+    for mod in model.modules():
+        if not isinstance(mod, MobileNetV2):
+            assert mod.training is False
+        for param in mod.parameters():
             assert param.requires_grad is False
 
     # Test MobileNetV2 with norm_eval=True

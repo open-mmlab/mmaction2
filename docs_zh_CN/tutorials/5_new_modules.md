@@ -246,14 +246,14 @@ lr_config = dict(policy='step', step=[20, 40])
 到目前位置，所有支持的更新器可参考 [mmcv](https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/lr_updater.py)，
 但如果用户想自定义学习率更新器，则需要遵循以下步骤：
 
-1. 首先，在 `$MMAction2/mmaction/core/lr` 编写自定义的学习率更新钩子（LrUpdaterHook）。以下片段是自定义学习率更新器的例子，它使用基于特定比率的学习率 `lrs`，并在每个 `steps` 处进行学习率衰减。以下代码段是自定义学习率更新器的例子：
+1. 首先，在 `$MMAction2/mmaction/core/scheduler` 编写自定义的学习率更新钩子（LrUpdaterHook）。以下片段是自定义学习率更新器的例子，它使用基于特定比率的学习率 `lrs`，并在每个 `steps` 处进行学习率衰减。以下代码段是自定义学习率更新器的例子：
 
 ```python
 # 在此注册
 @HOOKS.register_module()
 class RelativeStepLrUpdaterHook(LrUpdaterHook):
     # 该类应当继承于 mmcv.LrUpdaterHook
-    def __init__(self, runner, steps, lrs, **kwargs):
+    def __init__(self, steps, lrs, **kwargs):
         super().__init__(**kwargs)
         assert len(steps) == (len(lrs))
         self.steps = steps

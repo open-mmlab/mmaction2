@@ -15,7 +15,7 @@
 """Evaluate Object Detection result on a single image.
 
 Annotate each detected result as true positives or false positive according to
-a predefined IOU ratio. Non Maximum Supression is used by default. Multi class
+a predefined IOU ratio. Non Maximum Suppression is used by default. Multi class
 detection is supported by default. Based on the settings, per image evaluation
 is either performed on boxes or on object masks.
 """

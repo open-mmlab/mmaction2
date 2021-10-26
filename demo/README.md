@@ -46,8 +46,8 @@ Optional arguments:
 
 - `--use-frames`: If specified, the demo will take rawframes as input. Otherwise, it will take a video as input.
 - `DEVICE_TYPE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`. If not specified, it will be set to `cuda:0`.
-- `FPS`: FPS value of the output video when using rawframes as input. If not specified, it wll be set to 30.
-- `FONT_SCALE`: Font scale of the label added in the video. If not specified, it wll be 0.5.
+- `FPS`: FPS value of the output video when using rawframes as input. If not specified, it will be set to 30.
+- `FONT_SCALE`: Font scale of the label added in the video. If not specified, it will be 0.5.
 - `FONT_COLOR`: Font color of the label added in the video. If not specified, it will be `white`.
 - `TARGET_RESOLUTION`: Resolution(desired_width, desired_height) for resizing the frames before output when using a video as input. If not specified, it will be None and the frames are resized by keeping the existing aspect ratio.
 - `RESIZE_ALGORITHM`: Resize algorithm used for resizing. If not specified, it will be set to `bicubic`.
@@ -206,7 +206,7 @@ python demo/demo_gradcam.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} [--u
 
 - `--use-frames`: If specified, the demo will take rawframes as input. Otherwise, it will take a video as input.
 - `DEVICE_TYPE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`. If not specified, it will be set to `cuda:0`.
-- `FPS`: FPS value of the output video when using rawframes as input. If not specified, it wll be set to 30.
+- `FPS`: FPS value of the output video when using rawframes as input. If not specified, it will be set to 30.
 - `OUT_FILE`: Path to the output file which can be a video format or gif format. If not specified, it will be set to `None` and does not generate the output file.
 - `TARGET_LAYER_NAME`: Layer name to generate GradCAM localization map.
 - `TARGET_RESOLUTION`: Resolution(desired_width, desired_height) for resizing the frames before output when using a video as input. If not specified, it will be None and the frames are resized by keeping the existing aspect ratio.
