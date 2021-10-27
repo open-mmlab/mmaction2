@@ -160,14 +160,14 @@ def parse_args():
         '--rgb-stdet-config',
         default=('configs/detection/ava/'
                  'slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb.py'),
-        help='spatio temporal detection config file path')
+        help='rgb-based spatio temporal detection config file path')
     parser.add_argument(
         '--rgb-stdet-checkpoint',
         default=('https://download.openmmlab.com/mmaction/detection/ava/'
                  'slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb/'
                  'slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb'
                  '_20201217-16378594.pth'),
-        help='spatio temporal detection checkpoint file/url')
+        help='rgb-based spatio temporal detection checkpoint file/url')
     parser.add_argument(
         '--skeleton-stdet-checkpoint',
         default=('https://download.openmmlab.com/mmaction/skeleton/posec3d/'
@@ -230,11 +230,11 @@ def parse_args():
     parser.add_argument(
         '--action-score-thr',
         type=float,
-        default=0.35,
-        help='the threshold of human action score')
+        default=0.4,
+        help='the threshold of action prediction score')
     parser.add_argument(
         '--video',
-        default='demo/test_stdet_recognition.mp4',
+        default='demo/test_video_structuralize.mp4',
         help='video file/url')
     parser.add_argument(
         '--label-map-stdet',
