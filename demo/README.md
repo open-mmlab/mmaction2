@@ -609,7 +609,7 @@ python demo/demo_video_structuralize.py
     --label-map tools/data/kinetics/label_map_k400.txt
 ```
 
-4. Use the Faster RCNN as the human detector, HRNetw32 as the pose estimator,TSN-R50-1x1x3 as the rgb-based action recognizer, PoseC3D as the skeleton-based spatio temporal action detector. Making action detection predictions per 8 frames, and output 1 frame per 1 frame to the output video. The FPS of the output video is 24.
+4. Use the Faster RCNN as the human detector, HRNetw32 as the pose estimator, TSN-R50-1x1x3 as the rgb-based action recognizer, PoseC3D as the skeleton-based spatio temporal action detector. Making action detection predictions per 8 frames, and output 1 frame per 1 frame to the output video. The FPS of the output video is 24.
 
 ```shell
 python demo/demo_video_structuralize.py
