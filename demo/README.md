@@ -538,8 +538,8 @@ Optional arguments:
 - `SKELETON_BASED_ACTION_RECOGNITION_CHECKPOINT`: The skeleton-based action recognition checkpoint path or URL.
 - `RGB_BASED_ACTION_RECOGNITION_CONFIG_FILE`: The rgb-based action recognition config file path.
 - `RGB_BASED_ACTION_RECOGNITION_CHECKPOINT`: The rgb-based action recognition checkpoint path or URL.
-- `USE_SKELETON_BASED_SPATIO_TEMPORAL_DETECTION_METHOD`: Use sketon-based spatio temporal action detection method.
-- `USE_SKELETON_BASED_ACTION_RECOGNITION_METHOD`: Use sketon-based action recognition method.
+- `USE_SKELETON_BASED_SPATIO_TEMPORAL_DETECTION_METHOD`: Use skeleton-based spatio temporal action detection method.
+- `USE_SKELETON_BASED_ACTION_RECOGNITION_METHOD`: Use skeleton-based action recognition method.
 - `HUMAN_DETECTION_SCORE_THRE`: The score threshold for human detection. Default: 0.9.
 - `ACTION_DETECTION_SCORE_THRE`: The score threshold for action detection. Default: 0.4.
 - `LABEL_MAP_FOR_SPATIO_TEMPORAL_ACTION_DETECTION`: The label map for spatio temporal action detection used. Default: `tools/data/ava/label_map.txt`.
