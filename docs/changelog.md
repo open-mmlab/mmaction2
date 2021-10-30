@@ -1,5 +1,36 @@
 ## Changelog
 
+### 0.20.0 (07/10/2021)
+
+**Highlights**
+
+- Support TorchServe
+- Add video structuralize demo
+- Support using 3D skeletons for skeleton-based action recognition
+- Benchmark PoseC3D on UCF and HMDB
+
+**New Features**
+
+- Support TorchServe ([#1212](https://github.com/open-mmlab/mmaction2/pull/1212))
+- Support 3D skeletons pre-processing ([#1218](https://github.com/open-mmlab/mmaction2/pull/1218))
+- Support video structuralize demo ([#1197](https://github.com/open-mmlab/mmaction2/pull/1197))
+
+**Documentations**
+
+- Revise README.md and add projects.md ([#1214](https://github.com/open-mmlab/mmaction2/pull/1214))
+- Add CN docs for Skeleton dataset, PoseC3D and ST-GCN ([#1228](https://github.com/open-mmlab/mmaction2/pull/1228), [#1237](https://github.com/open-mmlab/mmaction2/pull/1237), [#1236](https://github.com/open-mmlab/mmaction2/pull/1236))
+- Add tutorial for custom dataset training for skeleton-based action recognition ([#1234](https://github.com/open-mmlab/mmaction2/pull/1234))
+
+**Bug and Typo Fixes**
+
+- Fix tutorial link ([#1219](https://github.com/open-mmlab/mmaction2/pull/1219))
+- Fix GYM links ([#1224](https://github.com/open-mmlab/mmaction2/pull/1224))
+
+**ModelZoo**
+
+- Benchmark PoseC3D on UCF and HMDB ([#1223](https://github.com/open-mmlab/mmaction2/pull/1223))
+- Add ST-GCN + 3D skeleton model for NTU60-XSub ([#1236](https://github.com/open-mmlab/mmaction2/pull/1236))
+
 ### 0.19.0 (07/10/2021)
 
 **Highlights**
