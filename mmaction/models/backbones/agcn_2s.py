@@ -236,8 +236,6 @@ class AGCN_2S(nn.Module):
     Args:
         in_channels (int): Number of channels in the input data.
         graph_cfg (dict): The arguments for building the graph.
-        edge_importance_weighting (bool): If ``True``, adds a learnable
-            importance weighting to the edges of the graph. Default: True.
         data_bn (bool): If 'True', adds data normalization to the inputs.
             Default: True.
         pretrained (str | None): Name of pretrained model.
@@ -255,7 +253,6 @@ class AGCN_2S(nn.Module):
     def __init__(self,
                  in_channels,
                  graph_cfg,
-                 edge_importance_weighting=True,
                  data_bn=True,
                  pretrained=None,
                  **kwargs):

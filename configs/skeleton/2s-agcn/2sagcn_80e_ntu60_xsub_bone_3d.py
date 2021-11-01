@@ -3,7 +3,6 @@ model = dict(
     backbone=dict(
         type='AGCN_2S',
         in_channels=3,
-        edge_importance_weighting=True,
         graph_cfg=dict(layout='ntu-rgb+d', strategy='spatial')),
     cls_head=dict(
         type='STGCNHead',
