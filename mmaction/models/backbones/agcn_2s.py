@@ -40,9 +40,9 @@ def identity(x):
     return x
 
 
-class STGCNBlock(nn.Module):
-    """Applies a spatial temporal graph convolution over an input graph
-    sequence.
+class AGCNBlock(nn.Module):
+    """Applies spatial graph convolution and  temporal convolution over an
+    input graph sequence.
 
     Args:
         in_channels (int): Number of channels in the input sequence data
@@ -166,14 +166,6 @@ class ConvTemporalGraphical(nn.Module):
         super().__init__()
 
         self.kernel_size = kernel_size
-        # self.conv = nn.Conv2d(
-        #     in_channels,
-        #     out_channels * kernel_size,
-        #     kernel_size=(t_kernel_size, 1),
-        #     padding=(t_padding, 0),
-        #     stride=(t_stride, 1),
-        #     dilation=(t_dilation, 1),
-        #     bias=bias)
 
         # self.PA = nn.Parameter(torch.FloatTensor(3, 17, 17))
         self.PA = nn.Parameter(torch.FloatTensor(3, adj_len, adj_len))
@@ -237,14 +229,6 @@ class ConvTemporalGraphical(nn.Module):
 
         return self.relu(y), adj_mat
 
-        # x = self.conv(x)
-
-        # n, kc, t, v = x.size()
-        # x = x.view(n, self.kernel_size, kc // self.kernel_size, t, v)
-        # x = torch.einsum('nkctv,kvw->nctw', (x, adj_mat))
-
-        # return x.contiguous(), adj_mat
-
 
 @BACKBONES.register_module()
 class AGCN_2S(nn.Module):
@@ -285,7 +269,6 @@ class AGCN_2S(nn.Module):
         A = torch.tensor(
             self.graph.A, dtype=torch.float32, requires_grad=False)
         self.register_buffer('A', A)
-        # print('A----',A.shape)
 
         # build networks
         spatial_kernel_size = A.size(0)
@@ -296,7 +279,7 @@ class AGCN_2S(nn.Module):
 
         kwargs0 = {k: v for k, v in kwargs.items() if k != 'dropout'}
         self.st_gcn_networks = nn.ModuleList((
-            STGCNBlock(
+            AGCNBlock(
                 in_channels,
                 64,
                 kernel_size,
@@ -304,15 +287,15 @@ class AGCN_2S(nn.Module):
                 adj_len=adj_len,
                 residual=False,
                 **kwargs0),
-            STGCNBlock(64, 64, kernel_size, 1, adj_len=adj_len, **kwargs),
-            STGCNBlock(64, 64, kernel_size, 1, adj_len=adj_len, **kwargs),
-            STGCNBlock(64, 64, kernel_size, 1, adj_len=adj_len, **kwargs),
-            STGCNBlock(64, 128, kernel_size, 2, adj_len=adj_len, **kwargs),
-            STGCNBlock(128, 128, kernel_size, 1, adj_len=adj_len, **kwargs),
-            STGCNBlock(128, 128, kernel_size, 1, adj_len=adj_len, **kwargs),
-            STGCNBlock(128, 256, kernel_size, 2, adj_len=adj_len, **kwargs),
-            STGCNBlock(256, 256, kernel_size, 1, adj_len=adj_len, **kwargs),
-            STGCNBlock(256, 256, kernel_size, 1, adj_len=adj_len, **kwargs),
+            AGCNBlock(64, 64, kernel_size, 1, adj_len=adj_len, **kwargs),
+            AGCNBlock(64, 64, kernel_size, 1, adj_len=adj_len, **kwargs),
+            AGCNBlock(64, 64, kernel_size, 1, adj_len=adj_len, **kwargs),
+            AGCNBlock(64, 128, kernel_size, 2, adj_len=adj_len, **kwargs),
+            AGCNBlock(128, 128, kernel_size, 1, adj_len=adj_len, **kwargs),
+            AGCNBlock(128, 128, kernel_size, 1, adj_len=adj_len, **kwargs),
+            AGCNBlock(128, 256, kernel_size, 2, adj_len=adj_len, **kwargs),
+            AGCNBlock(256, 256, kernel_size, 1, adj_len=adj_len, **kwargs),
+            AGCNBlock(256, 256, kernel_size, 1, adj_len=adj_len, **kwargs),
         ))
 
         self.pretrained = pretrained
@@ -357,6 +340,5 @@ class AGCN_2S(nn.Module):
 
         for gcn in self.st_gcn_networks:
             x, _ = gcn(x, self.A)
-            # print('gcn--',x.shape)
 
         return x
