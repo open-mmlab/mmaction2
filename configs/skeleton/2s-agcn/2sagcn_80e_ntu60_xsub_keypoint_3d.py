@@ -1,10 +1,9 @@
 model = dict(
     type='SkeletonGCN',
     backbone=dict(
-        type='STGCN2',
+        type='AGCN_2S',
         in_channels=3,
         edge_importance_weighting=True,
-        adj_len=25,
         graph_cfg=dict(layout='ntu-rgb+d', strategy='spatial')),
     cls_head=dict(
         type='STGCNHead',
@@ -15,8 +14,8 @@ model = dict(
     test_cfg=None)
 
 dataset_type = 'PoseDataset'
-ann_file_train = '/mnt/lustre/liguankai/data/ntu/nturgb+d_skeletons_60_3d_nmtvc/xsub/train.pkl'
-ann_file_val = '/mnt/lustre/liguankai/data/ntu/nturgb+d_skeletons_60_3d_nmtvc/xsub/val.pkl'
+ann_file_train = 'data/ntu/nturgb+d_skeletons_60_3d/xsub/train.pkl'
+ann_file_val = 'data/ntu/nturgb+d_skeletons_60_3d/xsub/val.pkl'
 train_pipeline = [
     dict(type='PaddingWithLoop', clip_len=300),
     dict(type='PoseDecode'),
@@ -26,7 +25,7 @@ train_pipeline = [
 ]
 val_pipeline = [
     dict(type='PaddingWithLoop', clip_len=300),
-    dict(type='PoseDecode'),  
+    dict(type='PoseDecode'),
     dict(type='FormatGCNInput', input_format='NCTVM'),
     dict(type='Collect', keys=['keypoint', 'label'], meta_keys=[]),
     dict(type='ToTensor', keys=['keypoint'])
@@ -70,7 +69,7 @@ evaluation = dict(interval=3, metrics=['top_k_accuracy'])
 log_config = dict(interval=100, hooks=[dict(type='TextLoggerHook')])
 
 # runtime settings
-dist_params = dict(backend='nccl',port='1031')
+dist_params = dict(backend='nccl', port='1031')
 log_level = 'INFO'
 work_dir = './work_dirs/2sagcn_80e_ntu60_xsub_keypoint_3d/'
 load_from = None
