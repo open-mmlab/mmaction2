@@ -50,6 +50,8 @@ class AGCNBlock(nn.Module):
         kernel_size (tuple): Size of the temporal convolving kernel and
             graph convolving kernel
         stride (int, optional): Stride of the temporal convolution. Default: 1
+        adj_len (int, optional): The length of the adjacency matrix.
+            Default: 17
         dropout (int, optional): Dropout rate of the final output. Default: 0
         residual (bool, optional): If ``True``, applies a residual mechanism.
             Default: ``True``
@@ -133,6 +135,8 @@ class ConvTemporalGraphical(nn.Module):
             of the input. Default: 0
         t_dilation (int, optional): Spacing between temporal kernel elements.
             Default: 1
+        adj_len (int, optional): The length of the adjacency matrix.
+            Default: 17
         bias (bool, optional): If ``True``, adds a learnable bias to the
             output. Default: ``True``
 
@@ -167,7 +171,6 @@ class ConvTemporalGraphical(nn.Module):
 
         self.kernel_size = kernel_size
 
-        # self.PA = nn.Parameter(torch.FloatTensor(3, 17, 17))
         self.PA = nn.Parameter(torch.FloatTensor(3, adj_len, adj_len))
         torch.nn.init.constant_(self.PA, 1e-6)
 
@@ -203,13 +206,8 @@ class ConvTemporalGraphical(nn.Module):
             conv_branch_init(self.conv_d[i], self.num_subset)
 
     def forward(self, x, adj_mat):
-        # add A B C
         """Defines the computation performed at every call."""
         assert adj_mat.size(0) == self.kernel_size
-
-        # print('adj_mat', adj_mat.shape) # 3 17 17
-        # print('x',x.shape)
-        # print('PA',self.PA.shape)55
 
         N, C, T, V = x.size()
         A = adj_mat + self.PA
@@ -260,7 +258,6 @@ class AGCN_2S(nn.Module):
                  edge_importance_weighting=True,
                  data_bn=True,
                  pretrained=None,
-                 adj_len=17,
                  **kwargs):
         super().__init__()
 
@@ -278,24 +275,24 @@ class AGCN_2S(nn.Module):
                                       A.size(1)) if data_bn else identity
 
         kwargs0 = {k: v for k, v in kwargs.items() if k != 'dropout'}
-        self.st_gcn_networks = nn.ModuleList((
+        self.agcn_networks = nn.ModuleList((
             AGCNBlock(
                 in_channels,
                 64,
                 kernel_size,
                 1,
-                adj_len=adj_len,
+                adj_len=A.size(1),
                 residual=False,
                 **kwargs0),
-            AGCNBlock(64, 64, kernel_size, 1, adj_len=adj_len, **kwargs),
-            AGCNBlock(64, 64, kernel_size, 1, adj_len=adj_len, **kwargs),
-            AGCNBlock(64, 64, kernel_size, 1, adj_len=adj_len, **kwargs),
-            AGCNBlock(64, 128, kernel_size, 2, adj_len=adj_len, **kwargs),
-            AGCNBlock(128, 128, kernel_size, 1, adj_len=adj_len, **kwargs),
-            AGCNBlock(128, 128, kernel_size, 1, adj_len=adj_len, **kwargs),
-            AGCNBlock(128, 256, kernel_size, 2, adj_len=adj_len, **kwargs),
-            AGCNBlock(256, 256, kernel_size, 1, adj_len=adj_len, **kwargs),
-            AGCNBlock(256, 256, kernel_size, 1, adj_len=adj_len, **kwargs),
+            AGCNBlock(64, 64, kernel_size, 1, adj_len=A.size(1), **kwargs),
+            AGCNBlock(64, 64, kernel_size, 1, adj_len=A.size(1), **kwargs),
+            AGCNBlock(64, 64, kernel_size, 1, adj_len=A.size(1), **kwargs),
+            AGCNBlock(64, 128, kernel_size, 2, adj_len=A.size(1), **kwargs),
+            AGCNBlock(128, 128, kernel_size, 1, adj_len=A.size(1), **kwargs),
+            AGCNBlock(128, 128, kernel_size, 1, adj_len=A.size(1), **kwargs),
+            AGCNBlock(128, 256, kernel_size, 2, adj_len=A.size(1), **kwargs),
+            AGCNBlock(256, 256, kernel_size, 1, adj_len=A.size(1), **kwargs),
+            AGCNBlock(256, 256, kernel_size, 1, adj_len=A.size(1), **kwargs),
         ))
 
         self.pretrained = pretrained
@@ -330,15 +327,15 @@ class AGCN_2S(nn.Module):
         """
         # data normalization
         x = x.float()
-        n, c, t, v, m = x.size()  # bs 3 300 25(17) 2
+        n, c, t, v, m = x.size()
         x = x.permute(0, 4, 3, 1, 2).contiguous()  # N M V C T
         x = x.view(n * m, v * c, t)
         x = self.data_bn(x)
         x = x.view(n, m, v, c, t)
         x = x.permute(0, 1, 3, 4, 2).contiguous()
-        x = x.view(n * m, c, t, v)  # bsx2 3 300 25(17)
+        x = x.view(n * m, c, t, v)
 
-        for gcn in self.st_gcn_networks:
+        for gcn in self.agcn_networks:
             x, _ = gcn(x, self.A)
 
         return x
