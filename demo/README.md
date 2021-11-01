@@ -8,8 +8,9 @@
 - [Video GradCAM Demo](#video-gradcam-demo): A demo script to visualize GradCAM results using a single video.
 - [Webcam demo](#webcam-demo): A demo script to implement real-time action recognition from a web camera.
 - [Long Video demo](#long-video-demo): a demo script to predict different labels using a single long video.
-- [SpatioTempoval Action Detection Webcam Demo](#spatiotemporal-action-detection-webcam-demo): A demo script to implement real-time spatio-temporval action detection from a web camera.
+- [SpatioTemporal Action Detection Webcam Demo](#spatiotemporal-action-detection-webcam-demo): A demo script to implement real-time spatio-temporal action detection from a web camera.
 - [Skeleton-based Action Recognition Demo](#skeleton-based-action-recognition-demo): A demo script to predict the skeleton-based action recognition result using a single video.
+- [Video Structuralize Demo](#video-structuralize-demo): A demo script to predict the skeleton-based and rgb-based action recognition and spatio-temporal action detection result using a single video.
 
 ## Modify configs through script arguments
 
@@ -491,4 +492,140 @@ python demo/demo_posec3d.py demo/ntu_sample.avi demo/posec3d_demo.mp4 \
     --pose-config demo/hrnet_w32_coco_256x192.py \
     --pose-checkpoint https://download.openmmlab.com/mmpose/top_down/hrnet/hrnet_w32_coco_256x192-c78dce93_20200708.pth \
     --label-map tools/data/skeleton/label_map_ntu120.txt
+```
+
+## Video Structuralize Demo
+
+We provide a demo script to to predict the skeleton-based and rgb-based action recognition and spatio-temporal action detection result using a single video.
+
+```shell
+python demo/demo_video_structuralize.py
+    [--rgb-stdet-config ${RGB_BASED_SPATIO_TEMPORAL_ACTION_DETECTION_CONFIG_FILE}] \
+    [--rgb-stdet-checkpoint ${RGB_BASED_SPATIO_TEMPORAL_ACTION_DETECTION_CHECKPOINT}] \
+    [--skeleton-stdet-checkpoint ${SKELETON_BASED_SPATIO_TEMPORAL_ACTION_DETECTION_CHECKPOINT}] \
+    [--det-config ${HUMAN_DETECTION_CONFIG_FILE}] \
+    [--det-checkpoint ${HUMAN_DETECTION_CHECKPOINT}] \
+    [--pose-config ${HUMAN_POSE_ESTIMATION_CONFIG_FILE}] \
+    [--pose-checkpoint ${HUMAN_POSE_ESTIMATION_CHECKPOINT}] \
+    [--skeleton-config ${SKELETON_BASED_ACTION_RECOGNITION_CONFIG_FILE}] \
+    [--skeleton-checkpoint ${SKELETON_BASED_ACTION_RECOGNITION_CHECKPOINT}] \
+    [--rgb-config ${RGB_BASED_ACTION_RECOGNITION_CONFIG_FILE}] \
+    [--rgb-checkpoint ${RGB_BASED_ACTION_RECOGNITION_CHECKPOINT}] \
+    [--use-skeleton-stdet ${USE_SKELETON_BASED_SPATIO_TEMPORAL_DETECTION_METHOD}] \
+    [--use-skeleton-recog ${USE_SKELETON_BASED_ACTION_RECOGNITION_METHOD}] \
+    [--det-score-thr ${HUMAN_DETECTION_SCORE_THRE}] \
+    [--action-score-thr ${ACTION_DETECTION_SCORE_THRE}] \
+    [--video ${VIDEO_FILE}] \
+    [--label-map-stdet ${LABEL_MAP_FOR_SPATIO_TEMPORAL_ACTION_DETECTION}] \
+    [--device ${DEVICE}] \
+    [--out-filename ${OUTPUT_FILENAME}] \
+    [--predict-stepsize ${PREDICT_STEPSIZE}] \
+    [--output-stepsize ${OUTPU_STEPSIZE}] \
+    [--output-fps ${OUTPUT_FPS}] \
+    [--cfg-options]
+```
+
+Optional arguments:
+
+- `RGB_BASED_SPATIO_TEMPORAL_ACTION_DETECTION_CONFIG_FILE`: The rgb-based spatio temoral action detection config file path.
+- `RGB_BASED_SPATIO_TEMPORAL_ACTION_DETECTION_CHECKPOINT`: The rgb-based spatio temoral action detection checkpoint path or URL.
+- `SKELETON_BASED_SPATIO_TEMPORAL_ACTION_DETECTION_CHECKPOINT`: The skeleton-based spatio temoral action detection checkpoint path or URL.
+- `HUMAN_DETECTION_CONFIG_FILE`: The human detection config file path.
+- `HUMAN_DETECTION_CHECKPOINT`: The human detection checkpoint URL.
+- `HUMAN_POSE_ESTIMATION_CONFIG_FILE`: The human pose estimation config file path (trained on COCO-Keypoint).
+- `HUMAN_POSE_ESTIMATION_CHECKPOINT`: The human pose estimation checkpoint URL (trained on COCO-Keypoint).
+- `SKELETON_BASED_ACTION_RECOGNITION_CONFIG_FILE`: The skeleton-based action recognition config file path.
+- `SKELETON_BASED_ACTION_RECOGNITION_CHECKPOINT`: The skeleton-based action recognition checkpoint path or URL.
+- `RGB_BASED_ACTION_RECOGNITION_CONFIG_FILE`: The rgb-based action recognition config file path.
+- `RGB_BASED_ACTION_RECOGNITION_CHECKPOINT`: The rgb-based action recognition checkpoint path or URL.
+- `USE_SKELETON_BASED_SPATIO_TEMPORAL_DETECTION_METHOD`: Use skeleton-based spatio temporal action detection method.
+- `USE_SKELETON_BASED_ACTION_RECOGNITION_METHOD`: Use skeleton-based action recognition method.
+- `HUMAN_DETECTION_SCORE_THRE`: The score threshold for human detection. Default: 0.9.
+- `ACTION_DETECTION_SCORE_THRE`: The score threshold for action detection. Default: 0.4.
+- `LABEL_MAP_FOR_SPATIO_TEMPORAL_ACTION_DETECTION`: The label map for spatio temporal action detection used. Default: `tools/data/ava/label_map.txt`.
+- `LABEL_MAP`: The label map for action recognition. Default: `tools/data/kinetics/label_map_k400.txt`.
+- `DEVICE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`.  Default: `cuda:0`.
+- `OUTPUT_FILENAME`: Path to the output file which is a video format. Default: `demo/test_stdet_recognition_output.mp4`.
+- `PREDICT_STEPSIZE`: Make a prediction per N frames.  Default: 8.
+- `OUTPUT_STEPSIZE`: Output 1 frame per N frames in the input video. Note that `PREDICT_STEPSIZE % OUTPUT_STEPSIZE == 0`. Default: 1.
+- `OUTPUT_FPS`: The FPS of demo video output. Default: 24.
+
+Examples:
+
+Assume that you are located at `$MMACTION2` .
+
+1. Use the Faster RCNN as the human detector, HRNetw32 as the pose estimator, PoseC3D as the skeleton-based action recognizer and the skeleton-based spatio temporal action detector. Making action detection predictions per 8 frames, and output 1 frame per 1 frame to the output video. The FPS of the output video is 24.
+
+```shell
+python demo/demo_video_structuralize.py
+    --skeleton-stdet-checkpoint https://download.openmmlab.com/mmaction/skeleton/posec3d/posec3d_ava.pth \
+    --det-config demo/faster_rcnn_r50_fpn_2x_coco.py \
+    --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
+    --pose-config demo/hrnet_w32_coco_256x192.py
+    --pose-checkpoint https://download.openmmlab.com/mmpose/top_down/hrnet/
+    hrnet_w32_coco_256x192-c78dce93_20200708.pth \
+    --skeleton-config configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint.py \
+    --skeleton-checkpoint https://download.openmmlab.com/mmaction/skeleton/posec3d/
+    posec3d_k400.pth \
+    --use-skeleton-stdet \
+    --use-skeleton-recog \
+    --label-map-stdet tools/data/ava/label_map.txt \
+    --label-map tools/data/kinetics/label_map_k400.txt
+```
+
+2. Use the Faster RCNN as the human detector, TSN-R50-1x1x3 as the rgb-based action recognizer, SlowOnly-8x8-R101 as the rgb-based spatio temporal action detector. Making action detection predictions per 8 frames, and output 1 frame per 1 frame to the output video. The FPS of the output video is 24.
+
+```shell
+python demo/demo_video_structuralize.py
+    --rgb-stdet-config configs/detection/ava/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb.py \
+    --rgb-stdet-checkpoint  https://download.openmmlab.com/mmaction/detection/ava/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb_20201217-16378594.pth \
+    --det-config demo/faster_rcnn_r50_fpn_2x_coco.py \
+    --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
+    --rgb-config configs/recognition/tsn/
+    tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
+    --rgb-checkpoint https://download.openmmlab.com/mmaction/recognition/
+    tsn/tsn_r50_1x1x3_100e_kinetics400_rgb/
+    tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
+    --label-map-stdet tools/data/ava/label_map.txt \
+    --label-map tools/data/kinetics/label_map_k400.txt
+```
+
+3. Use the Faster RCNN as the human detector, HRNetw32 as the pose estimator, PoseC3D as the skeleton-based action recognizer, SlowOnly-8x8-R101 as the rgb-based spatio temporal action detector. Making action detection predictions per 8 frames, and output 1 frame per 1 frame to the output video. The FPS of the output video is 24.
+
+```shell
+python demo/demo_video_structuralize.py
+    --rgb-stdet-config configs/detection/ava/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb.py \
+    --rgb-stdet-checkpoint  https://download.openmmlab.com/mmaction/detection/ava/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb_20201217-16378594.pth \
+    --det-config demo/faster_rcnn_r50_fpn_2x_coco.py \
+    --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
+    --pose-config demo/hrnet_w32_coco_256x192.py
+    --pose-checkpoint https://download.openmmlab.com/mmpose/top_down/hrnet/
+    hrnet_w32_coco_256x192-c78dce93_20200708.pth \
+    --skeleton-config configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint.py \
+    --skeleton-checkpoint https://download.openmmlab.com/mmaction/skeleton/posec3d/
+    posec3d_k400.pth \
+    --use-skeleton-recog \
+    --label-map-stdet tools/data/ava/label_map.txt \
+    --label-map tools/data/kinetics/label_map_k400.txt
+```
+
+4. Use the Faster RCNN as the human detector, HRNetw32 as the pose estimator, TSN-R50-1x1x3 as the rgb-based action recognizer, PoseC3D as the skeleton-based spatio temporal action detector. Making action detection predictions per 8 frames, and output 1 frame per 1 frame to the output video. The FPS of the output video is 24.
+
+```shell
+python demo/demo_video_structuralize.py
+    --skeleton-stdet-checkpoint https://download.openmmlab.com/mmaction/skeleton/posec3d/posec3d_ava.pth \
+    --det-config demo/faster_rcnn_r50_fpn_2x_coco.py \
+    --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
+    --pose-config demo/hrnet_w32_coco_256x192.py
+    --pose-checkpoint https://download.openmmlab.com/mmpose/top_down/hrnet/
+    hrnet_w32_coco_256x192-c78dce93_20200708.pth \
+    --skeleton-config configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint.py \
+    --rgb-config configs/recognition/tsn/
+    tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
+    --rgb-checkpoint https://download.openmmlab.com/mmaction/recognition/
+    tsn/tsn_r50_1x1x3_100e_kinetics400_rgb/
+    tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
+    --use-skeleton-stdet \
+    --label-map-stdet tools/data/ava/label_map.txt \
+    --label-map tools/data/kinetics/label_map_k400.txt
 ```

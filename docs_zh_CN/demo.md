@@ -2,12 +2,16 @@
 
 ## 目录
 
-- [预测视频的动作标签](#预测视频的动作标签)
-- [预测视频的时空检测结果](#预测视频的时空检测结果)
-- [可视化输入视频的 GradCAM](#可视化输入视频的-GradCAM)
-- [使用网络摄像头的实时动作识别](#使用网络摄像头的实时动作识别)
-- [滑动窗口预测长视频中不同动作类别](#滑动窗口预测长视频中不同动作类别)
-- [基于人体姿态预测动作标签](#基于人体姿态预测动作标签)
+- [Demo 示例](#demo-示例)
+  - [目录](#目录)
+  - [预测视频的动作标签](#预测视频的动作标签)
+  - [预测视频的时空检测结果](#预测视频的时空检测结果)
+  - [可视化输入视频的 GradCAM](#可视化输入视频的-gradcam)
+  - [使用网络摄像头的实时动作识别](#使用网络摄像头的实时动作识别)
+  - [滑动窗口预测长视频中不同动作类别](#滑动窗口预测长视频中不同动作类别)
+  - [基于网络摄像头的实时时空动作检测](#基于网络摄像头的实时时空动作检测)
+  - [基于人体姿态预测动作标签](#基于人体姿态预测动作标签)
+  - [视频结构化预测](#视频结构化预测)
 
 ## 预测视频的动作标签
 
@@ -435,8 +439,8 @@ python demo/demo_posec3d.py ${VIDEO_FILE} ${OUT_FILENAME} \
 - `PREDICT_STEPSIZE`: 每 N 帧进行一次预测（以控制计算资源），默认为 8。
 - `CLIP_VIS_LENGTH`: 预测结果可视化持续帧数，即每次预测结果将可视化到 `CLIP_VIS_LENGTH` 帧中，默认为 8。
 
-- `SKELETON_BASED_ACTION_RECOGNITION_CONFIG_FILE`: 基于人体字体的动作识别模型配置文件路径。
-- `SKELETON_BASED_ACTION_RECOGNITION_CHECKPOINT`: 基于人体字体的动作识别模型权重文件路径。
+- `SKELETON_BASED_ACTION_RECOGNITION_CONFIG_FILE`: 基于人体姿态的动作识别模型配置文件路径。
+- `SKELETON_BASED_ACTION_RECOGNITION_CHECKPOINT`: 基于人体姿态的动作识别模型权重文件路径。
 - `HUMAN_DETECTION_CONFIG_FILE`: 人体检测配置文件路径。
 - `HUMAN_DETECTION_CHECKPOINT`: 人体检测模型权重文件路径。
 - `HUMAN_DETECTION_SCORE_THRE`: 人体检测分数阈值，默认为 0.9。
@@ -462,4 +466,140 @@ python demo/demo_posec3d.py demo/ntu_sample.avi demo/posec3d_demo.mp4 \
     --pose-config demo/hrnet_w32_coco_256x192.py \
     --pose-checkpoint https://download.openmmlab.com/mmpose/top_down/hrnet/hrnet_w32_coco_256x192-c78dce93_20200708.pth \
     --label-map tools/data/skeleton/label_map_ntu120.txt
+```
+
+## 视频结构化预测
+
+MMAction2 提供本脚本实现基于人体姿态和RGB的视频结构化预测。
+
+```shell
+python demo/demo_video_structuralize.py
+    [--rgb-stdet-config ${RGB_BASED_SPATIO_TEMPORAL_ACTION_DETECTION_CONFIG_FILE}] \
+    [--rgb-stdet-checkpoint ${RGB_BASED_SPATIO_TEMPORAL_ACTION_DETECTION_CHECKPOINT}] \
+    [--skeleton-stdet-checkpoint ${SKELETON_BASED_SPATIO_TEMPORAL_ACTION_DETECTION_CHECKPOINT}] \
+    [--det-config ${HUMAN_DETECTION_CONFIG_FILE}] \
+    [--det-checkpoint ${HUMAN_DETECTION_CHECKPOINT}] \
+    [--pose-config ${HUMAN_POSE_ESTIMATION_CONFIG_FILE}] \
+    [--pose-checkpoint ${HUMAN_POSE_ESTIMATION_CHECKPOINT}] \
+    [--skeleton-config ${SKELETON_BASED_ACTION_RECOGNITION_CONFIG_FILE}] \
+    [--skeleton-checkpoint ${SKELETON_BASED_ACTION_RECOGNITION_CHECKPOINT}] \
+    [--rgb-config ${RGB_BASED_ACTION_RECOGNITION_CONFIG_FILE}] \
+    [--rgb-checkpoint ${RGB_BASED_ACTION_RECOGNITION_CHECKPOINT}] \
+    [--use-skeleton-stdet ${USE_SKELETON_BASED_SPATIO_TEMPORAL_DETECTION_METHOD}] \
+    [--use-skeleton-recog ${USE_SKELETON_BASED_ACTION_RECOGNITION_METHOD}] \
+    [--det-score-thr ${HUMAN_DETECTION_SCORE_THRE}] \
+    [--action-score-thr ${ACTION_DETECTION_SCORE_THRE}] \
+    [--video ${VIDEO_FILE}] \
+    [--label-map-stdet ${LABEL_MAP_FOR_SPATIO_TEMPORAL_ACTION_DETECTION}] \
+    [--device ${DEVICE}] \
+    [--out-filename ${OUTPUT_FILENAME}] \
+    [--predict-stepsize ${PREDICT_STEPSIZE}] \
+    [--output-stepsize ${OUTPU_STEPSIZE}] \
+    [--output-fps ${OUTPUT_FPS}] \
+    [--cfg-options]
+```
+
+可选参数：
+
+- `RGB_BASED_SPATIO_TEMPORAL_ACTION_DETECTION_CONFIG_FILE`: 基于 RGB 的时空检测配置文件路径。
+- `RGB_BASED_SPATIO_TEMPORAL_ACTION_DETECTION_CHECKPOINT`: 基于 RGB 的时空检测模型权重文件路径。
+- `SKELETON_BASED_SPATIO_TEMPORAL_ACTION_DETECTION_CHECKPOINT`: 基于人体姿态的时空检测模型权重文件路径。
+- `HUMAN_DETECTION_CONFIG_FILE`: 人体检测配置文件路径。
+- `HUMAN_DETECTION_CHECKPOINT`: The human detection checkpoint URL.
+- `HUMAN_POSE_ESTIMATION_CONFIG_FILE`: 人体姿态估计模型配置文件路径 (需在 COCO-keypoint 数据集上训练)。
+- `HUMAN_POSE_ESTIMATION_CHECKPOINT`: 人体姿态估计模型权重文件路径 (需在 COCO-keypoint 数据集上训练)。
+- `SKELETON_BASED_ACTION_RECOGNITION_CONFIG_FILE`: 基于人体姿态的动作识别模型配置文件路径。
+- `SKELETON_BASED_ACTION_RECOGNITION_CHECKPOINT`: 基于人体姿态的动作识别模型权重文件路径。
+- `RGB_BASED_ACTION_RECOGNITION_CONFIG_FILE`: 基于 RGB 的行为识别配置文件路径。
+- `RGB_BASED_ACTION_RECOGNITION_CHECKPOINT`: 基于 RGB 的行为识别模型权重文件路径。
+- `USE_SKELETON_BASED_SPATIO_TEMPORAL_DETECTION_METHOD`: 使用基于人体姿态的时空检测方法。
+- `USE_SKELETON_BASED_ACTION_RECOGNITION_METHOD`: 使用基于人体姿态的行为识别方法。
+- `HUMAN_DETECTION_SCORE_THRE`: 人体检测分数阈值，默认为 0.9。
+- `ACTION_DETECTION_SCORE_THRE`: 动作检测分数阈值，默认为 0.5。
+- `LABEL_MAP_FOR_SPATIO_TEMPORAL_ACTION_DETECTION`: 时空动作检测所使用的标签映射文件，默认为: `tools/data/ava/label_map.txt`。
+- `LABEL_MAP`: 行为识别所使用的标签映射文件, 默认为: `tools/data/kinetics/label_map_k400.txt`。
+- `DEVICE`: 指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或 cpu（`cpu`），默认为 `cuda:0`。
+- `OUTPUT_FILENAME`: 输出视频的路径，默认为 `demo/test_stdet_recognition_output.mp4`。
+- `PREDICT_STEPSIZE`: 每 N 帧进行一次预测（以节约计算资源），默认值为 8。
+- `OUTPUT_STEPSIZE`: 对于输入视频的每 N 帧，输出 1 帧至输出视频中， 默认值为 1，注意需满足 `PREDICT_STEPSIZE % OUTPUT_STEPSIZE == 0`。
+- `OUTPUT_FPS`: 输出视频的帧率，默认为 24。
+
+示例：
+
+以下示例假设用户的当前目录为 $MMACTION2。
+
+1. 使用 Faster RCNN 作为人体检测器，HRNetw32 作为人体姿态估计模型，PoseC3D 作为基于人体姿态的动作识别模型和时空动作检测器。每 8 帧进行一次预测，原视频中每 1 帧输出 1 帧至输出视频中，设置输出视频的帧率为 24。
+
+```shell
+python demo/demo_video_structuralize.py
+    --skeleton-stdet-checkpoint https://download.openmmlab.com/mmaction/skeleton/posec3d/posec3d_ava.pth \
+    --det-config demo/faster_rcnn_r50_fpn_2x_coco.py \
+    --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
+    --pose-config demo/hrnet_w32_coco_256x192.py
+    --pose-checkpoint https://download.openmmlab.com/mmpose/top_down/hrnet/
+    hrnet_w32_coco_256x192-c78dce93_20200708.pth \
+    --skeleton-config configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint.py \
+    --skeleton-checkpoint https://download.openmmlab.com/mmaction/skeleton/posec3d/
+    posec3d_k400.pth \
+    --use-skeleton-stdet \
+    --use-skeleton-recog \
+    --label-map-stdet tools/data/ava/label_map.txt \
+    --label-map tools/data/kinetics/label_map_k400.txt
+```
+
+2. 使用 Faster RCNN 作为人体检测器，TSN-R50-1x1x3 作为动作识别模型, SlowOnly-8x8-R101 作为时空动检测器。每 8 帧进行一次预测，原视频中每 1 帧输出 1 帧至输出视频中，设置输出视频的帧率为 24。
+
+```shell
+python demo/demo_video_structuralize.py
+    --rgb-stdet-config configs/detection/ava/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb.py \
+    --rgb-stdet-checkpoint  https://download.openmmlab.com/mmaction/detection/ava/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb_20201217-16378594.pth \
+    --det-config demo/faster_rcnn_r50_fpn_2x_coco.py \
+    --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
+    --rgb-config configs/recognition/tsn/
+    tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
+    --rgb-checkpoint https://download.openmmlab.com/mmaction/recognition/
+    tsn/tsn_r50_1x1x3_100e_kinetics400_rgb/
+    tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
+    --label-map-stdet tools/data/ava/label_map.txt \
+    --label-map tools/data/kinetics/label_map_k400.txt
+```
+
+3. 使用 Faster RCNN 作为人体检测器，HRNetw32 作为人体姿态估计模型，PoseC3D 作为基于人体姿态的动作识别模型, SlowOnly-8x8-R101 作为时空动作检测器。每 8 帧进行一次预测，原视频中每 1 帧输出 1 帧至输出视频中，设置输出视频的帧率为 24。
+
+```shell
+python demo/demo_video_structuralize.py
+    --rgb-stdet-config configs/detection/ava/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb.py \
+    --rgb-stdet-checkpoint  https://download.openmmlab.com/mmaction/detection/ava/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb_20201217-16378594.pth \
+    --det-config demo/faster_rcnn_r50_fpn_2x_coco.py \
+    --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
+    --pose-config demo/hrnet_w32_coco_256x192.py
+    --pose-checkpoint https://download.openmmlab.com/mmpose/top_down/hrnet/
+    hrnet_w32_coco_256x192-c78dce93_20200708.pth \
+    --skeleton-config configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint.py \
+    --skeleton-checkpoint https://download.openmmlab.com/mmaction/skeleton/posec3d/
+    posec3d_k400.pth \
+    --use-skeleton-recog \
+    --label-map-stdet tools/data/ava/label_map.txt \
+    --label-map tools/data/kinetics/label_map_k400.txt
+```
+
+4. 使用 Faster RCNN 作为人体检测器，HRNetw32 作为人体姿态估计模型，TSN-R50-1x1x3 作为动作识别模型, PoseC3D 作为基于人体姿态的时空动作检测器。每 8 帧进行一次预测，原视频中每 1 帧输出 1 帧至输出视频中，设置输出视频的帧率为 24。
+
+```shell
+python demo/demo_video_structuralize.py
+    --skeleton-stdet-checkpoint https://download.openmmlab.com/mmaction/skeleton/posec3d/posec3d_ava.pth \
+    --det-config demo/faster_rcnn_r50_fpn_2x_coco.py \
+    --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
+    --pose-config demo/hrnet_w32_coco_256x192.py
+    --pose-checkpoint https://download.openmmlab.com/mmpose/top_down/hrnet/
+    hrnet_w32_coco_256x192-c78dce93_20200708.pth \
+    --skeleton-config configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint.py \
+    --rgb-config configs/recognition/tsn/
+    tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
+    --rgb-checkpoint https://download.openmmlab.com/mmaction/recognition/
+    tsn/tsn_r50_1x1x3_100e_kinetics400_rgb/
+    tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
+    --use-skeleton-stdet \
+    --label-map-stdet tools/data/ava/label_map.txt \
+    --label-map tools/data/kinetics/label_map_k400.txt
 ```
