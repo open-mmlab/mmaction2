@@ -64,6 +64,7 @@ data = dict(
     train=dict(
         type=train_dataset_type,
         domain='D1',
+        sample_by_class=True,
         slow_pipeline=slow_train_pipeline, 
         fast_pipeline=fast_train_pipeline),
     val=dict(
@@ -81,7 +82,7 @@ evaluation = dict(
 
 # optimizer
 optimizer = dict(
-    lr=0.0075 * (3 / 8) * (8 / 6),  # this lr is used for 8 gpus
+    lr=0.0075 * (3 / 8) * (6 / 8),  # this lr is used for 8 gpus
 )
 optimizer_config = dict(grad_clip=dict(max_norm=20, norm_type=2))
 lr_config = dict(policy='step', step=[40, 80])
