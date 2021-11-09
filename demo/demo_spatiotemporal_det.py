@@ -352,7 +352,7 @@ def main():
     config.model.backbone.pretrained = None
     model = build_detector(config.model, test_cfg=config.get('test_cfg'))
 
-    load_checkpoint(model, args.checkpoint, map_location=args.device)
+    load_checkpoint(model, args.checkpoint, map_location='cpu')
     model.to(args.device)
     model.eval()
 
