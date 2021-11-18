@@ -141,6 +141,10 @@ html_theme_options = {
                     'url': 'https://mmediting.readthedocs.io/en/latest/',
                 },
                 {
+                    'name': 'MMFlow',
+                    'url': 'https://mmflow.readthedocs.io/en/latest/',
+                },
+                {
                     'name': 'MMGeneration',
                     'url': 'https://mmgeneration.readthedocs.io/en/latest/',
                 },
