@@ -116,7 +116,8 @@ def train_model(model,
     # register hooks
     runner.register_training_hooks(cfg.lr_config, optimizer_config,
                                    cfg.checkpoint_config, cfg.log_config,
-                                   cfg.get('momentum_config', None))
+                                   cfg.get('momentum_config', None), 
+                                   custom_hooks_config=cfg.get('custom_hooks', None))
     if distributed:
         if cfg.omnisource:
             runner.register_hook(OmniSourceDistSamplerSeedHook())
