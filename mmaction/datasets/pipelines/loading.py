@@ -1278,7 +1278,10 @@ class RawFrameDecode:
         if results['frame_inds'].ndim != 1:
             results['frame_inds'] = np.squeeze(results['frame_inds'])
 
-        offset = results.get('offset', 0)
+        if 'offset' in results:
+            offset = results.get('offset', 0)
+        else:
+            offset = results.get('start_index', 0)
 
         cache = {}
         for i, frame_idx in enumerate(results['frame_inds']):
