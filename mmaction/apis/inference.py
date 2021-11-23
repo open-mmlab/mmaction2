@@ -46,7 +46,7 @@ def init_recognizer(config, checkpoint=None, device='cuda:0', **kwargs):
     model = build_recognizer(config.model, test_cfg=config.get('test_cfg'))
 
     if checkpoint is not None:
-        load_checkpoint(model, checkpoint, map_location=device)
+        load_checkpoint(model, checkpoint, map_location='cpu')
     model.cfg = config
     model.to(device)
     model.eval()

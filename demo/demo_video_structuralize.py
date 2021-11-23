@@ -472,7 +472,7 @@ def skeleton_based_action_recognition(args, pose_results, num_frame, h, w):
     # Build skeleton-based recognition model
     skeleton_model = build_model(skeleton_config.model)
     load_checkpoint(
-        skeleton_model, args.skeleton_checkpoint, map_location=args.device)
+        skeleton_model, args.skeleton_checkpoint, map_location='cpu')
     skeleton_model.to(args.device)
     skeleton_model.eval()
 
@@ -490,7 +490,7 @@ def rgb_based_action_recognition(args):
     rgb_config.model.backbone.pretrained = None
     rgb_model = build_recognizer(
         rgb_config.model, test_cfg=rgb_config.get('test_cfg'))
-    load_checkpoint(rgb_model, args.rgb_checkpoint, map_location=args.device)
+    load_checkpoint(rgb_model, args.rgb_checkpoint, map_location='cpu')
     rgb_model.cfg = rgb_config
     rgb_model.to(args.device)
     rgb_model.eval()
@@ -515,7 +515,7 @@ def skeleton_based_stdet(args, label_map, human_detections, pose_results,
     load_checkpoint(
         skeleton_stdet_model,
         args.skeleton_stdet_checkpoint,
-        map_location=args.device)
+        map_location='cpu')
     skeleton_stdet_model.to(args.device)
     skeleton_stdet_model.eval()
 
@@ -633,7 +633,7 @@ def rgb_based_stdet(args, frames, label_map, human_detections, w, h, new_w,
         rgb_stdet_config.model, test_cfg=rgb_stdet_config.get('test_cfg'))
 
     load_checkpoint(
-        rgb_stdet_model, args.rgb_stdet_checkpoint, map_location=args.device)
+        rgb_stdet_model, args.rgb_stdet_checkpoint, map_location='cpu')
     rgb_stdet_model.to(args.device)
     rgb_stdet_model.eval()
 

@@ -9,13 +9,13 @@ Models:
     Batch Size: 16
     Epochs: 80
     Parameters: 3088704
-    Training Data: NTU60
+    Training Data: NTU60-XSub
     Training Resources: 2 GPUs
   Name: stgcn_80e_ntu60_xsub_keypoint
   Results:
-    Dataset: NTU60
+    Dataset: NTU60-XSub
     Metrics:
-      mean Top 1 Accuracy: 86.91
+      Top 1 Accuracy: 86.91
     Task: Skeleton-based Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint/stgcn_80e_ntu60_xsub_keypoint.json
   Training Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint/stgcn_80e_ntu60_xsub_keypoint.log
@@ -27,13 +27,13 @@ Models:
     Batch Size: 32
     Epochs: 80
     Parameters: 3088704
-    Training Data: NTU60
+    Training Data: NTU60-XSub
     Training Resources: 1 GPU
   Name: stgcn_80e_ntu60_xsub_keypoint_3d
   Results:
-    Dataset: NTU60
+    Dataset: NTU60-XSub
     Metrics:
-      mean Top 1 Accuracy: 84.61
+      Top 1 Accuracy: 84.61
     Task: Skeleton-based Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint_3d/stgcn_80e_ntu60_xsub_keypoint_3d.json
   Training Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint_3d/stgcn_80e_ntu60_xsub_keypoint_3d.log
