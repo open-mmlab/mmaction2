@@ -449,8 +449,9 @@ class SampleAVAFrames(SampleFrames):
             -self.frame_interval // 2, (self.frame_interval + 1) // 2,
             size=self.clip_len)
         frame_inds = self._get_clips(center_index, skip_offsets, shot_info)
+        start_index = results['start_index']
 
-        results['frame_inds'] = np.array(frame_inds, dtype=np.int)
+        results['frame_inds'] = np.array(frame_inds, dtype=np.int) + start_index
         results['clip_len'] = self.clip_len
         results['frame_interval'] = self.frame_interval
         results['num_clips'] = 1
@@ -1278,10 +1279,7 @@ class RawFrameDecode:
         if results['frame_inds'].ndim != 1:
             results['frame_inds'] = np.squeeze(results['frame_inds'])
 
-        if 'offset' in results:
-            offset = results.get('offset', 0)
-        else:
-            offset = results.get('start_index', 0)
+        offset = results.get('offset', 0)
 
         cache = {}
         for i, frame_idx in enumerate(results['frame_inds']):
