@@ -1,6 +1,17 @@
 # SSN
 
-## Introduction
+## Abstract
+
+<!-- [ABSTRACT] -->
+
+Detecting actions in untrimmed videos is an important yet challenging task. In this paper, we present the structured segment network (SSN), a novel framework which models the temporal structure of each action instance via a structured temporal pyramid. On top of the pyramid, we further introduce a decomposed discriminative model comprising two classifiers, respectively for classifying actions and determining completeness. This allows the framework to effectively distinguish positive proposals from background or incomplete ones, thus leading to both accurate recognition and localization. These components are integrated into a unified network that can be efficiently trained in an end-to-end fashion. Additionally, a simple yet effective temporal action proposal scheme, dubbed temporal actionness grouping (TAG) is devised to generate high quality action proposals. On two challenging benchmarks, THUMOS14 and ActivityNet, our method remarkably outperforms previous state-of-the-art methods, demonstrating superior accuracy and strong adaptivity in handling actions with various temporal structures.
+
+<!-- [IMAGE] -->
+<div align=center>
+<img src="https://user-images.githubusercontent.com/34324155/143016899-017893d3-a907-4487-90a2-cb884088266c.png" width="800"/>
+</div>
+
+## Citation
 
 <!-- [ALGORITHM] -->
 
