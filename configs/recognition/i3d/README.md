@@ -8,7 +8,7 @@ The paucity of videos in current action classification datasets (UCF-101 and HMD
 
 <!-- [IMAGE] -->
 <div align=center>
-<img src="https://user-images.githubusercontent.com/34324155/143017447-1b4aece5-313f-47f1-b766-1dd16c775deb.png" width="800"/>
+<img src="https://user-images.githubusercontent.com/34324155/143043624-1944704a-5d3e-4a3f-b258-1505c49f6092.png" width="800"/>
 </div>
 
 ## Citation
