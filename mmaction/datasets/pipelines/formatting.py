@@ -375,7 +375,7 @@ class FormatAudioShape:
 
 
 @PIPELINES.register_module()
-class FormatBone:
+class JointToBone:
     """Format final skeleton shape to the given input_format.
 
     Required keys are "keypoint" and "keypoint_score"(optional),
