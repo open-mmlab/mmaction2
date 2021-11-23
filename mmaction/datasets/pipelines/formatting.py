@@ -376,13 +376,13 @@ class FormatAudioShape:
 
 @PIPELINES.register_module()
 class JointToBone:
-    """Format final skeleton shape to the given input_format.
+    """Convert the joint information to bone information.
 
-    Required keys are "keypoint" and "keypoint_score"(optional),
-    added or modified keys are "keypoint" and "input_shape".
+    Required keys are "keypoint" ,
+    added or modified keys are "keypoint".
 
     Args:
-        input_format (str): Define the final skeleton format.
+        dataset (str): Define the type of dataset.
     """
 
     def __init__(self, dataset='xsub'):
