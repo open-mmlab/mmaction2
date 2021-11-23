@@ -419,7 +419,7 @@ class JointToBone:
         M, T, V, C = keypoint.shape
         bone = np.zeros((M, T, V, C), dtype=np.float32)
 
-        for v1, v2 in self.paris:
+        for v1, v2 in self.pairs:
             v1 -= 1
             v2 -= 1
             bone[:, :, v1, :] = keypoint[:, :, v1, :] - keypoint[:, :, v2, :]
