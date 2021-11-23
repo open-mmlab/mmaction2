@@ -1,7 +1,7 @@
 model = dict(
     type='SkeletonGCN',
     backbone=dict(
-        type='AGCN_2S',
+        type='AGCN',
         in_channels=3,
         graph_cfg=dict(layout='ntu-rgb+d', strategy='spatial')),
     cls_head=dict(
