@@ -4,7 +4,29 @@
 
 In ECCV, 2020. [Paper](https://arxiv.org/abs/2003.13042), [Dataset](https://docs.google.com/forms/d/e/1FAIpQLSd8_GlmHzG8FcDbW-OEu__G7qLgOSYZpH-i5vYVJcu7wcb_TQ/viewform?usp=sf_link)
 
-![pipeline](https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/omnisource/pipeline.png?raw=true)
+## Abstract
+
+<!-- [ABSTRACT] -->
+
+We introduce OmniSource, a novel framework for leveraging web data to train video recognition models. OmniSource overcomes the barriers between data formats, such as images, short videos, and long untrimmed videos for webly-supervised learning. First, data samples with multiple formats, curated by task-specific data collection and automatically filtered by a teacher model, are transformed into a unified form. Then a joint-training strategy is proposed to deal with the domain gaps between multiple data sources and formats in webly-supervised learning. Several good practices, including data balancing, resampling, and cross-dataset mixup are adopted in joint training. Experiments show that by utilizing data from multiple sources and formats, OmniSource is more data-efficient in training. With only 3.5M images and 800K minutes videos crawled from the internet without human labeling (less than 2% of prior works), our models learned with OmniSource improve Top-1 accuracy of 2D- and 3D-ConvNet baseline models by 3.0% and 3.9%, respectively, on the Kinetics-400 benchmark. With OmniSource, we establish new records with different pretraining strategies for video recognition. Our best models achieve 80.4%, 80.5%, and 83.6 Top-1 accuracies on the Kinetics-400 benchmark respectively for training-from-scratch, ImageNet pre-training and IG-65M pre-training.
+
+<!-- [IMAGE] -->
+<div align=center>
+<img src="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/omnisource/pipeline.png" width="800"/>
+</div>
+
+## Citation
+
+<!-- [ALGORITHM] -->
+
+```BibTeX
+@article{duan2020omni,
+  title={Omni-sourced Webly-supervised Learning for Video Recognition},
+  author={Duan, Haodong and Zhao, Yue and Xiong, Yuanjun and Liu, Wentao and Lin, Dahua},
+  journal={arXiv preprint arXiv:2003.13042},
+  year={2020}
+}
+```
 
 ## Model Zoo
 
@@ -55,18 +77,3 @@ We also list the benchmark in the original paper which run on Kinetics-400 for c
 | :--------------------: | :---------: | :---------: | :----------: | :---------: | :---------: | :---------: |
 |   TSN-3seg-ResNet50    | 70.6 / 89.4 | 71.5 / 89.5 | 72.0 / 90.0  | 72.0 / 90.3 | 71.7 / 89.6 | 73.6 / 91.0 |
 | SlowOnly-4x16-ResNet50 | 73.8 / 90.9 | 74.5 / 91.4 | 75.2 / 91.6  | 75.2 / 91.7 | 74.5 / 91.1 | 76.6 / 92.5 |
-
-## Citing OmniSource
-
-If you find OmniSource useful for your research, please consider citing the paper using the following BibTeX entry.
-
-<!-- [ALGORITHM] -->
-
-```BibTeX
-@article{duan2020omni,
-  title={Omni-sourced Webly-supervised Learning for Video Recognition},
-  author={Duan, Haodong and Zhao, Yue and Xiong, Yuanjun and Liu, Wentao and Lin, Dahua},
-  journal={arXiv preprint arXiv:2003.13042},
-  year={2020}
-}
-```
