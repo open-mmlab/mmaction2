@@ -65,7 +65,7 @@ class AVADataset(BaseDataset):
         start_index (int): Specify a start index for frames in consideration of
             different filename format. However, when taking videos as input,
             it should be set to 0, since frames loaded from videos count
-            from 0. Default: 1.
+            from 0. Default: 0.
         proposal_file (str): Path to the proposal file like
             ``ava_dense_proposals_{train, val}.FAIR.recall_93.9.pkl``.
             Default: None.
