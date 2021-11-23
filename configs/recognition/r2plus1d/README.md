@@ -8,7 +8,7 @@ In this paper we discuss several forms of spatiotemporal convolutions for video 
 
 <!-- [IMAGE] -->
 <div align=center>
-<img src="https://user-images.githubusercontent.com/34324155/143017839-eb825411-822f-4b48-8eaf-8a4d15888260.png" width="800"/>
+<img src="https://user-images.githubusercontent.com/34324155/143043885-3d00413c-b556-445e-9673-f5805c08c195.png" width="800"/>
 </div>
 
 ## Citation
