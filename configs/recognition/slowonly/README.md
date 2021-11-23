@@ -8,7 +8,7 @@ We present SlowFast networks for video recognition. Our model involves (i) a Slo
 
 <!-- [IMAGE] -->
 <div align=center>
-<img src="https://user-images.githubusercontent.com/34324155/143017899-c010f9cc-76dd-4c71-a19f-03e7271fcfb3.png" width="800"/>
+<img src="https://user-images.githubusercontent.com/34324155/143044111-94676f64-7ba8-4081-9011-f8054bed7030.png" width="800"/>
 </div>
 
 ## Citation
