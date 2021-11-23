@@ -8,7 +8,7 @@ We propose a simple, yet effective approach for spatiotemporal feature learning 
 
 <!-- [IMAGE] -->
 <div align=center>
-<img src="https://user-images.githubusercontent.com/34324155/143017213-cd4039f3-b5c8-402b-a80e-56fe118f0b6f.png" width="800"/>
+<img src="https://user-images.githubusercontent.com/34324155/143043383-8c26f5d6-d45e-47ae-be18-c23456eb84b9.png" width="800"/>
 </div>
 
 ## Citation
