@@ -449,8 +449,10 @@ class SampleAVAFrames(SampleFrames):
             -self.frame_interval // 2, (self.frame_interval + 1) // 2,
             size=self.clip_len)
         frame_inds = self._get_clips(center_index, skip_offsets, shot_info)
+        start_index = results.get('start_index', 0)
 
-        results['frame_inds'] = np.array(frame_inds, dtype=np.int)
+        frame_inds = np.array(frame_inds, dtype=np.int) + start_index
+        results['frame_inds'] = frame_inds
         results['clip_len'] = self.clip_len
         results['frame_interval'] = self.frame_interval
         results['num_clips'] = 1

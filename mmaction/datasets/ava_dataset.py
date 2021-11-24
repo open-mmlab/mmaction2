@@ -62,6 +62,10 @@ class AVADataset(BaseDataset):
             Default: None.
         filename_tmpl (str): Template for each filename.
             Default: 'img_{:05}.jpg'.
+        start_index (int): Specify a start index for frames in consideration of
+            different filename format. However, when taking videos as input,
+            it should be set to 0, since frames loaded from videos count
+            from 0. Default: 0.
         proposal_file (str): Path to the proposal file like
             ``ava_dense_proposals_{train, val}.FAIR.recall_93.9.pkl``.
             Default: None.
@@ -97,6 +101,7 @@ class AVADataset(BaseDataset):
                  pipeline,
                  label_file=None,
                  filename_tmpl='img_{:05}.jpg',
+                 start_index=0,
                  proposal_file=None,
                  person_det_score_thr=0.9,
                  num_classes=81,
@@ -135,6 +140,7 @@ class AVADataset(BaseDataset):
             pipeline,
             data_prefix,
             test_mode,
+            start_index=start_index,
             modality=modality,
             num_classes=num_classes)
 
