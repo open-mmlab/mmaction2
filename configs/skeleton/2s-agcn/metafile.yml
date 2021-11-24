@@ -8,14 +8,14 @@ Models:
     Architecture: AGCN
     Batch Size: 24
     Epochs: 80
-    Parameters: 3088704
-    Training Data: NTU60 (joint)
+    Parameters: 3472176
+    Training Data: NTU60-XSub (joint)
     Training Resources: 2 GPUs
   Name: agcn_80e_ntu60_xsub_keypoint_3d
   Results:
-    Dataset: NTU60 (joint)
+    Dataset: NTU60-XSub (joint)
     Metrics:
-      mean Top 1 Accuracy: 87.31
+      Top 1 Accuracy: 87.31
     Task: Skeleton-based Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_keypoint_3d/2sagcn_80e_ntu60_xsub_keypoint_3d.json
   Training Log: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_keypoint_3d/2sagcn_80e_ntu60_xsub_keypoint_3d.log
@@ -26,14 +26,14 @@ Models:
     Architecture: AGCN
     Batch Size: 24
     Epochs: 80
-    Parameters: 3088704
-    Training Data: NTU60 (bone)
+    Parameters: 3472176
+    Training Data: NTU60-XSub (bone)
     Training Resources: 2 GPU
   Name: agcn_80e_ntu60_xsub_bone_3d
   Results:
-    Dataset: NTU60 (bone)
+    Dataset: NTU60-XSub (bone)
     Metrics:
-      mean Top 1 Accuracy: 87.91
+      Top 1 Accuracy: 87.91
     Task: Skeleton-based Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_bone_3d/2sagcn_80e_ntu60_xsub_bone_3d.json
   Training Log: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_bone_3d/2sagcn_80e_ntu60_xsub_bone_3d.log

@@ -382,21 +382,21 @@ class JointToBone:
     added or modified keys are "keypoint".
 
     Args:
-        dataset (str): Define the type of dataset: 'xusb', 'xview', 'kinetics',
-            'coco'. Default: 'xsub'.
+        dataset (str): Define the type of dataset: 'nturgb+d', 'kinetics',
+            'coco'. Default: 'nturgb+d'.
     """
 
-    def __init__(self, dataset='xsub'):
+    def __init__(self, dataset='nturgb+d'):
         self.dataset = dataset
-        if self.dataset not in ['xview', 'xsub', 'kinetics', 'coco']:
+        if self.dataset not in ['nturgb+d', 'kinetics', 'coco']:
             raise ValueError(
                 f'The dataset type {self.dataset} is not supported')
-        if self.dataset == 'xview' or self.dataset == 'xsub':
-            self.pairs = ((1, 2), (2, 21), (3, 21), (4, 3), (5, 21), (6, 5),
-                          (7, 6), (8, 7), (9, 21), (10, 9), (11, 10), (12, 11),
-                          (13, 1), (14, 13), (15, 14), (16, 15), (17, 1),
-                          (18, 17), (19, 18), (20, 19), (22, 23), (21, 21),
-                          (23, 8), (24, 25), (25, 12))
+        if self.dataset == 'nturgb+d':
+            self.pairs = [(0, 1), (1, 20), (2, 20), (3, 2), (4, 20), (5, 4),
+                          (6, 5), (7, 6), (8, 20), (9, 8), (10, 9), (11, 10),
+                          (12, 0), (13, 12), (14, 13), (15, 14), (16, 0),
+                          (17, 16), (18, 17), (19, 18), (21, 22), (20, 20),
+                          (22, 7), (23, 24), (24, 11)]
         elif self.dataset == 'kinetics':
             self.pairs = ((0, 0), (1, 0), (2, 1), (3, 2), (4, 3), (5, 1),
                           (6, 5), (7, 6), (8, 2), (9, 8), (10, 9), (11, 5),
@@ -419,9 +419,6 @@ class JointToBone:
         bone = np.zeros((M, T, V, C), dtype=np.float32)
 
         for v1, v2 in self.pairs:
-            if self.dataset in ['xsub', 'xview']:
-                v1 -= 1
-                v2 -= 1
             bone[:, :, v1, :] = keypoint[:, :, v1, :] - keypoint[:, :, v2, :]
         results['keypoint'] = bone
         return results
