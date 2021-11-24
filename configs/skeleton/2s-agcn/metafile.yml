@@ -9,11 +9,11 @@ Models:
     Batch Size: 24
     Epochs: 80
     Parameters: 3472176
-    Training Data: NTU60-XSub (joint)
+    Training Data: NTU60-XSub
     Training Resources: 2 GPUs
   Name: agcn_80e_ntu60_xsub_keypoint_3d
   Results:
-    Dataset: NTU60-XSub (joint)
+    Dataset: NTU60-XSub
     Metrics:
       Top 1 Accuracy: 87.31
     Task: Skeleton-based Action Recognition
@@ -27,11 +27,11 @@ Models:
     Batch Size: 24
     Epochs: 80
     Parameters: 3472176
-    Training Data: NTU60-XSub (bone)
+    Training Data: NTU60-XSub
     Training Resources: 2 GPU
   Name: agcn_80e_ntu60_xsub_bone_3d
   Results:
-    Dataset: NTU60-XSub (bone)
+    Dataset: NTU60-XSub
     Metrics:
       Top 1 Accuracy: 87.91
     Task: Skeleton-based Action Recognition
