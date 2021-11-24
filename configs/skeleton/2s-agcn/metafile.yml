@@ -1,0 +1,40 @@
+Collections:
+- Name: AGCN
+  README: configs/skeleton/2s-agcn/README.md
+Models:
+- Config: configs/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_keypoint_3d.py
+  In Collection: AGCN
+  Metadata:
+    Architecture: AGCN
+    Batch Size: 24
+    Epochs: 80
+    Parameters: 3088704
+    Training Data: NTU60 (joint)
+    Training Resources: 2 GPUs
+  Name: agcn_80e_ntu60_xsub_keypoint_3d
+  Results:
+    Dataset: NTU60 (joint)
+    Metrics:
+      mean Top 1 Accuracy: 87.31
+    Task: Skeleton-based Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_keypoint_3d/2sagcn_80e_ntu60_xsub_keypoint_3d.json
+  Training Log: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_keypoint_3d/2sagcn_80e_ntu60_xsub_keypoint_3d.log
+  Weights: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_keypoint_3d/2sagcn_80e_ntu60_xsub_keypoint_3d-e7bb9653.pth
+- Config: configs/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_bone_3d.py
+  In Collection: AGCN
+  Metadata:
+    Architecture: AGCN
+    Batch Size: 24
+    Epochs: 80
+    Parameters: 3088704
+    Training Data: NTU60 (bone)
+    Training Resources: 2 GPU
+  Name: agcn_80e_ntu60_xsub_bone_3d
+  Results:
+    Dataset: NTU60 (bone)
+    Metrics:
+      mean Top 1 Accuracy: 87.91
+    Task: Skeleton-based Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_bone_3d/2sagcn_80e_ntu60_xsub_bone_3d.json
+  Training Log: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_bone_3d/2sagcn_80e_ntu60_xsub_bone_3d.log
+  Weights: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_bone_3d/2sagcn_80e_ntu60_xsub_bone_3d-13e7ccf0.pth

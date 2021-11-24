@@ -382,21 +382,16 @@ class JointToBone:
     added or modified keys are "keypoint".
 
     Args:
-        dataset (str): Define the type of dataset.
+        dataset (str): Define the type of dataset: 'xusb', 'xview', 'kinetics',
+            'coco'. Default: 'xsub'.
     """
 
     def __init__(self, dataset='xsub'):
         self.dataset = dataset
-        if self.dataset not in ['xview', 'xsub', 'kinectics']:
+        if self.dataset not in ['xview', 'xsub', 'kinetics', 'coco']:
             raise ValueError(
                 f'The dataset type {self.dataset} is not supported')
-        if self.dataset == 'xview':
-            self.pairs = ((1, 2), (2, 21), (3, 21), (4, 3), (5, 21), (6, 5),
-                          (7, 6), (8, 7), (9, 21), (10, 9), (11, 10), (12, 11),
-                          (13, 1), (14, 13), (15, 14), (16, 15), (17, 1),
-                          (18, 17), (19, 18), (20, 19), (22, 23), (21, 21),
-                          (23, 8), (24, 25), (25, 12))
-        elif self.dataset == 'xsub':
+        if self.dataset == 'xview' or self.dataset == 'xsub':
             self.pairs = ((1, 2), (2, 21), (3, 21), (4, 3), (5, 21), (6, 5),
                           (7, 6), (8, 7), (9, 21), (10, 9), (11, 10), (12, 11),
                           (13, 1), (14, 13), (15, 14), (16, 15), (17, 1),
@@ -407,6 +402,10 @@ class JointToBone:
                           (6, 5), (7, 6), (8, 2), (9, 8), (10, 9), (11, 5),
                           (12, 11), (13, 12), (14, 0), (15, 0), (16, 14), (17,
                                                                            15))
+        elif self.dataset == 'coco':
+            self.pairs = ((0, 0), (1, 0), (2, 0), (3, 1), (4, 2), (5, 0),
+                          (6, 0), (7, 5), (8, 6), (9, 7), (10, 8), (11, 0),
+                          (12, 0), (13, 11), (14, 12), (15, 13), (16, 14))
 
     def __call__(self, results):
         """Performs the Bone formatting.
@@ -420,8 +419,9 @@ class JointToBone:
         bone = np.zeros((M, T, V, C), dtype=np.float32)
 
         for v1, v2 in self.pairs:
-            v1 -= 1
-            v2 -= 1
+            if self.dataset in ['xsub', 'xview']:
+                v1 -= 1
+                v2 -= 1
             bone[:, :, v1, :] = keypoint[:, :, v1, :] - keypoint[:, :, v2, :]
         results['keypoint'] = bone
         return results
