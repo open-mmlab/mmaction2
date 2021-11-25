@@ -96,7 +96,7 @@ For skeleton data visualization, you need also to prepare the RGB videos. Please
 </thead>
 </table>
 
-## Convert the NTU RGB+D raw skeleton data to our format
+## Convert the NTU RGB+D raw skeleton data to our format (only applicable to GCN backbones)
 
 Here we also provide the script for converting the NTU RGB+D raw skeleton data to our format.
 First, download the raw skeleton data of NTU-RGBD 60 and NTU-RGBD 120 from https://github.com/shahroudy/NTURGB-D.
