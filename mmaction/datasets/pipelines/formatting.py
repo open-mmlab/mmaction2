@@ -375,6 +375,66 @@ class FormatAudioShape:
 
 
 @PIPELINES.register_module()
+class JointToBone:
+    """Convert the joint information to bone information.
+
+    Required keys are "keypoint" ,
+    added or modified keys are "keypoint".
+
+    Args:
+        dataset (str): Define the type of dataset: 'nturgb+d', 'openpose',
+            'coco'. Default: 'nturgb+d'.
+    """
+
+    def __init__(self, dataset='nturgb+d'):
+        self.dataset = dataset
+        if self.dataset not in ['nturgb+d', 'openpose', 'coco']:
+            raise ValueError(
+                f'The dataset type {self.dataset} is not supported')
+        if self.dataset == 'nturgb+d':
+            self.pairs = [(0, 1), (1, 20), (2, 20), (3, 2), (4, 20), (5, 4),
+                          (6, 5), (7, 6), (8, 20), (9, 8), (10, 9), (11, 10),
+                          (12, 0), (13, 12), (14, 13), (15, 14), (16, 0),
+                          (17, 16), (18, 17), (19, 18), (21, 22), (20, 20),
+                          (22, 7), (23, 24), (24, 11)]
+        elif self.dataset == 'openpose':
+            self.pairs = ((0, 0), (1, 0), (2, 1), (3, 2), (4, 3), (5, 1),
+                          (6, 5), (7, 6), (8, 2), (9, 8), (10, 9), (11, 5),
+                          (12, 11), (13, 12), (14, 0), (15, 0), (16, 14), (17,
+                                                                           15))
+        elif self.dataset == 'coco':
+            self.pairs = ((0, 0), (1, 0), (2, 0), (3, 1), (4, 2), (5, 0),
+                          (6, 0), (7, 5), (8, 6), (9, 7), (10, 8), (11, 0),
+                          (12, 0), (13, 11), (14, 12), (15, 13), (16, 14))
+
+    def __call__(self, results):
+        """Performs the Bone formatting.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        keypoint = results['keypoint']
+        M, T, V, C = keypoint.shape
+        bone = np.zeros((M, T, V, C), dtype=np.float32)
+
+        assert C in [2, 3]
+        for v1, v2 in self.pairs:
+            bone[..., v1, :] = keypoint[..., v1, :] - keypoint[..., v2, :]
+            if C == 3 and self.dataset in ['openpose', 'coco']:
+                score = (keypoint[..., v1, 2] + keypoint[..., v2, 2]) / 2
+                bone[..., v1, 2] = score
+
+        results['keypoint'] = bone
+        return results
+
+    def __repr__(self):
+        repr_str = self.__class__.__name__
+        repr_str += f"(dataset_type='{self.dataset}')"
+        return repr_str
+
+
+@PIPELINES.register_module()
 class FormatGCNInput:
     """Format final skeleton shape to the given input_format.
 
