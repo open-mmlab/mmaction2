@@ -27,6 +27,13 @@ for f in files:
     # title
     title = content.split('\n')[0].replace('#', '')
 
+    # skip IMAGE and ABSTRACT tags
+    content = [
+        x for x in content.split('\n')
+        if 'IMAGE' not in x and 'ABSTRACT' not in x
+    ]
+    content = '\n'.join(content)
+
     # count papers
     papers = set(
         (papertype, titlecase.titlecase(paper.lower().strip()))
