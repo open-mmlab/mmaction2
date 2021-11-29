@@ -3,7 +3,7 @@ model = dict(
     backbone=dict(
         type='AGCN',
         in_channels=3,
-        graph_cfg=dict(layout='ntu-rgb+d', strategy='spatial')),
+        graph_cfg=dict(layout='ntu-rgb+d', strategy='agcn')),
     cls_head=dict(
         type='STGCNHead',
         num_classes=60,
@@ -13,8 +13,10 @@ model = dict(
     test_cfg=None)
 
 dataset_type = 'PoseDataset'
-ann_file_train = 'data/ntu/nturgb+d_skeletons_60_3d/xsub/train.pkl'
-ann_file_val = 'data/ntu/nturgb+d_skeletons_60_3d/xsub/val.pkl'
+# ann_file_train = 'data/ntu/nturgb+d_skeletons_60_3d/xsub/train.pkl'
+# ann_file_val = 'data/ntu/nturgb+d_skeletons_60_3d/xsub/val.pkl'
+ann_file_train = '/mnt/lustre/liguankai/data/ntu/nturgb+d_skeletons_60_3d_nmtvc/xsub/train.pkl'
+ann_file_val = '/mnt/lustre/liguankai/data/ntu/nturgb+d_skeletons_60_3d_nmtvc/xsub/val.pkl'
 train_pipeline = [
     dict(type='PaddingWithLoop', clip_len=300),
     dict(type='PoseDecode'),
@@ -37,7 +39,7 @@ test_pipeline = [
     dict(type='ToTensor', keys=['keypoint'])
 ]
 data = dict(
-    videos_per_gpu=12,
+    videos_per_gpu=16,
     workers_per_gpu=2,
     test_dataloader=dict(videos_per_gpu=1),
     train=dict(
