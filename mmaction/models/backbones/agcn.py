@@ -4,7 +4,6 @@ import torch
 import torch.nn as nn
 from mmcv.cnn import constant_init, kaiming_init, normal_init
 from mmcv.runner import load_checkpoint
-from mmcv.utils import _BatchNorm
 
 from ...utils import get_root_logger
 from ..builder import BACKBONES
@@ -90,10 +89,15 @@ class AGCNBlock(nn.Module):
         self.gcn = ConvTemporalGraphical(
             in_channels, out_channels, kernel_size[1], adj_len=adj_len)
         self.tcn = nn.Sequential(
-            nn.BatchNorm2d(out_channels), nn.ReLU(inplace=True),
             nn.Conv2d(out_channels, out_channels, (kernel_size[0], 1),
-                      (stride, 1), padding), nn.BatchNorm2d(out_channels),
-            nn.Dropout(dropout, inplace=True))
+                      (stride, 1), padding), nn.BatchNorm2d(out_channels))
+
+        # tcn init
+        for m in self.tcn.modules():
+            if isinstance(m, nn.Conv2d):
+                conv_init(m)
+            elif isinstance(m, nn.BatchNorm2d):
+                bn_init(m, 1)
 
         if not residual:
             self.residual = zero
@@ -196,6 +200,15 @@ class ConvTemporalGraphical(nn.Module):
         self.soft = nn.Softmax(-2)
         self.relu = nn.ReLU()
 
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                conv_init(m)
+            elif isinstance(m, nn.BatchNorm2d):
+                bn_init(m, 1)
+        bn_init(self.bn, 1e-6)
+        for i in range(self.num_subset):
+            conv_branch_init(self.conv_d[i], self.num_subset)
+
     def forward(self, x, adj_mat):
         """Defines the computation performed at every call."""
         assert adj_mat.size(0) == self.kernel_size
@@ -295,13 +308,7 @@ class AGCN(nn.Module):
             load_checkpoint(self, self.pretrained, strict=False, logger=logger)
 
         elif self.pretrained is None:
-            for m in self.modules():
-                if isinstance(m, nn.Conv2d):
-                    kaiming_init(m)
-                elif isinstance(m, nn.Linear):
-                    normal_init(m)
-                elif isinstance(m, _BatchNorm):
-                    constant_init(m, 1)
+            pass
         else:
             raise TypeError('pretrained must be a str or None')
 
