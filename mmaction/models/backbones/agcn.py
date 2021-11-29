@@ -1,3 +1,5 @@
+import math
+
 import torch
 import torch.nn as nn
 from mmcv.cnn import constant_init, kaiming_init, normal_init
@@ -7,6 +9,25 @@ from mmcv.utils import _BatchNorm
 from ...utils import get_root_logger
 from ..builder import BACKBONES
 from ..skeleton_gcn.utils import Graph
+
+
+def conv_branch_init(conv, branches):
+    weight = conv.weight
+    n = weight.size(0)
+    k1 = weight.size(1)
+    k2 = weight.size(2)
+    normal_init(weight, mean=0, std=math.sqrt(2. / (n * k1 * k2 * branches)))
+    constant_init(conv.bias, 0)
+
+
+def conv_init(conv):
+    kaiming_init(conv.weight)
+    constant_init(conv.bias, 0)
+
+
+def bn_init(bn, scale):
+    constant_init(bn.weight, scale)
+    constant_init(bn.bias, 0)
 
 
 def zero(x):
