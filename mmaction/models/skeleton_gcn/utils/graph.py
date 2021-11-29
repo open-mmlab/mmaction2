@@ -172,11 +172,11 @@ class Graph:
             self.A = A
         elif strategy == 'agcn':
             A = []
-            link_adj = edge2mat(self.self_link, self.num_node)
+            link_mat = edge2mat(self.self_link, self.num_node)
             In = normalize_digraph(edge2mat(self.neighbor_link, self.num_node))
             outward = [(j, i) for (i, j) in self.neighbor_link]
             Out = normalize_digraph(edge2mat(outward, self.num_node))
-            A = np.stack((link_adj, In, Out))
+            A = np.stack((link_mat, In, Out))
             self.A = A
         else:
             raise ValueError('Do Not Exist This Strategy')
