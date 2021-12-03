@@ -147,6 +147,10 @@ html_theme_options = {
                     'url': 'https://mmgeneration.readthedocs.io/zh_CN/latest/',
                 },
                 {
+                    'name': 'MMHuman3D',
+                    'url': 'https://mmhuman3d.readthedocs.io/zh_CN/latest/',
+                },
+                {
                     'name': 'MMOCR',
                     'url': 'https://mmocr.readthedocs.io/zh_CN/latest/',
                 },
