@@ -258,6 +258,7 @@ MMAction2 是一款由不同学校和公司共同贡献的开源项目。我们�
 - [MMDetection](https://github.com/open-mmlab/mmdetection): OpenMMLab 检测工具箱与测试基准
 - [MMDetection3D](https://github.com/open-mmlab/mmdetection3d): OpenMMLab 新一代通用3D目标检测平台
 - [MMEditing](https://github.com/open-mmlab/mmediting): OpenMMLab 图像视频编辑工具箱
+- [MMFewShot](https://github.com/open-mmlab/mmfewshot): OpenMMLab 少样本学习代码库
 - [MMFlow](https://github.com/open-mmlab/mmflow): OpenMMLab 光流估计工具箱
 - [MMGeneration](https://github.com/open-mmlab/mmgeneration): OpenMMLab 图片视频生成模型工具箱
 - [MMOCR](https://github.com/open-mmlab/mmocr): OpenMMLab 全流程文字检测识别理解工具包
