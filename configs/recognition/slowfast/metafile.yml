@@ -206,9 +206,9 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-      Top 1 Accuracy: 49.24
-      Top 5 Accuracy: 78.79
+      Top 1 Accuracy: 49.67
+      Top 5 Accuracy: 79.00
     Task: Action Recognition
-  Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/20210606_225114.log.json
-  Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/20210606_225114.log
-  Weights: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/slowfast_r50_16x8x1_22e_sthv1_rgb_20210630-53355c16.pth
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/slowfast_r50_16x8x1_22e_sthv1_rgb.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/slowfast_r50_16x8x1_22e_sthv1_rgb.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/slowfast_r50_16x8x1_22e_sthv1_rgb_20211202-aaaf9279.pth

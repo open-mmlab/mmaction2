@@ -34,7 +34,7 @@
 
 |配置文件 | 分辨率 | GPU 数量 | 主干网络 |预训练| top1 准确率| top5 准确率 | 推理时间 (video/s) | GPU 显存占用 (M) | ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[slowfast_r50_16x8x1_22e_sthv1_rgb](/configs/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb.py)|高 100|8|ResNet50|Kinetics400|49.67|79.00|x|9293|[ckpt](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/slowfast_r50_16x8x1_22e_sthv1_rgb_20210630-53355c16.pth)|[log](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/20210606_225114.log)|[json](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/20210606_225114.log.json)|
+|[slowfast_r50_16x8x1_22e_sthv1_rgb](/configs/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb.py)|高 100|8|ResNet50|Kinetics400|49.67|79.00|x|9293|[ckpt](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/slowfast_r50_16x8x1_22e_sthv1_rgb_20211202-aaaf9279.pth)|[log](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/slowfast_r50_16x8x1_22e_sthv1_rgb.log)|[json](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/slowfast_r50_16x8x1_22e_sthv1_rgb.json)|
 
 注：
 

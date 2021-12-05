@@ -542,9 +542,9 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-      Top 1 Accuracy: 46.63
-      Top 5 Accuracy: 77.19
+      Top 1 Accuracy: 47.76
+      Top 5 Accuracy: 77.49
     Task: Action Recognition
-  Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb/slowonly_r50_8x4x1_64e_sthv1_rgb.json
-  Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb/slowonly_r50_8x4x1_64e_sthv1_rgb.log
-  Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb/slowonly_r50_8x4x1_64e_sthv1_rgb-34901d23.pth
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb/slowonly_imagenet_pretrained_r50_8x4x1_64e_sthv1_rgb_20211202-d034ff12.pth
