@@ -519,14 +519,14 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-      Top 1 Accuracy: 49.28
-      Top 1 Accuracy (efficient): 47.62
-      Top 5 Accuracy: 77.82
-      Top 5 Accuracy (efficient): 76.63
+      Top 1 Accuracy: 49.03
+      Top 1 Accuracy (efficient): 47.77
+      Top 5 Accuracy: 77.83
+      Top 5 Accuracy (efficient): 76.82
     Task: Action Recognition
-  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv1_rgb/20201010_221240.log.json
-  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv1_rgb/20201010_221240.log
-  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv1_rgb/tsm_r50_1x1x16_50e_sthv1_rgb_20201010-17fa49f6.pth
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv1_rgb/tsm_r50_1x1x16_50e_sthv1_rgb.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv1_rgb/tsm_r50_1x1x16_50e_sthv1_rgb.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x16_50e_sthv1_rgb/tsm_r50_1x1x16_50e_sthv1_rgb_20211202-b922e5d2.pth
   reference top1 acc (efficient/accurate): '[47.05 / 48.61](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
   reference top5 acc (efficient/accurate): '[76.40 / 77.96](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
 - Config: configs/recognition/tsm/tsm_r101_1x1x8_50e_sthv1_rgb.py
@@ -546,14 +546,14 @@ Models:
   Results:
   - Dataset: SthV1
     Metrics:
-      Top 1 Accuracy: 48.43
-      Top 1 Accuracy (efficient): 45.72
-      Top 5 Accuracy: 76.72
-      Top 5 Accuracy (efficient): 74.67
+      Top 1 Accuracy: 48.59
+      Top 1 Accuracy (efficient): 46.09
+      Top 5 Accuracy: 77.10
+      Top 5 Accuracy (efficient): 75.41
     Task: Action Recognition
-  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv1_rgb/20201010_224055.log.json
-  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv1_rgb/20201010_224055.log
-  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv1_rgb/tsm_r101_1x1x8_50e_sthv1_rgb_20201010-43fedf2e.pth
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv1_rgb/tsm_r101_1x1x8_50e_sthv1_rgb.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv1_rgb/tsm_r101_1x1x8_50e_sthv1_rgb.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r101_1x1x8_50e_sthv1_rgb/tsm_r101_1x1x8_50e_sthv1_rgb_20211202-49970a5b.pth
   reference top1 acc (efficient/accurate): '[46.64 / 48.13](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
   reference top5 acc (efficient/accurate): '[75.40 / 77.31](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd#training)'
 - Config: configs/recognition/tsm/tsm_r50_1x1x8_50e_sthv2_rgb.py

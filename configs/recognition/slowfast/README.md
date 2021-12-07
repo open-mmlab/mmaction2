@@ -45,7 +45,7 @@ We present SlowFast networks for video recognition. Our model involves (i) a Slo
 
 |config | resolution | gpus | backbone |pretrain| top1 acc| top5 acc | inference_time(video/s) | gpu_mem(M) | ckpt | log| json|
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[slowfast_r50_16x8x1_22e_sthv1_rgb](/configs/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb.py)|height 100|8|ResNet50|Kinetics400|49.24|78.79|x|9293|[ckpt](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/slowfast_r50_16x8x1_22e_sthv1_rgb_20210630-53355c16.pth)|[log](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/20210606_225114.log)|[json](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/20210606_225114.log.json)|
+|[slowfast_r50_16x8x1_22e_sthv1_rgb](/configs/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb.py)|height 100|8|ResNet50|Kinetics400|49.67|79.00|x|9293|[ckpt](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/slowfast_r50_16x8x1_22e_sthv1_rgb_20211202-aaaf9279.pth)|[log](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/slowfast_r50_16x8x1_22e_sthv1_rgb.log)|[json](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/slowfast_r50_16x8x1_22e_sthv1_rgb.json)|
 
 :::{note}
 
