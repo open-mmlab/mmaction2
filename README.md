@@ -44,7 +44,7 @@ The master branch works with **PyTorch 1.3+**.
 
 ## Updates
 
-- (2021-11-24) We support **2s-AGCN** on NTU60 XSub, achieve 86.82% Top-1 accuracy on joint stream and 87.91% Top-1 accuracy on bone stream respectively.
+- (2021-11-24) We support **2s-AGCN** on NTU60 XSub, achieve 86.06% Top-1 accuracy on joint stream and 86.89% Top-1 accuracy on bone stream respectively.
 - (2021-10-29) We provide a demo for skeleton-based and rgb-based spatio-temporal detection and action recognition (demo/demo_video_structuralize.py).
 - (2021-10-26) We train and test **ST-GCN** on NTU60 with 3D keypoint annotations, achieve 84.61% Top-1 accuracy (higher than 81.5% in the [paper](https://www.aaai.org/ocs/index.php/AAAI/AAAI18/paper/viewPaper/17135)).
 - (2021-10-25) We provide a script(tools/data/skeleton/gen_ntu_rgbd_raw.py) to convert the NTU60 and NTU120 3D raw skeleton data to our format.

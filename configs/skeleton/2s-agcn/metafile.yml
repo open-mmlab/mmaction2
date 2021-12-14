@@ -15,7 +15,7 @@ Models:
   Results:
     Dataset: NTU60-XSub
     Metrics:
-      Top 1 Accuracy: 86.08
+      Top 1 Accuracy: 86.06
     Task: Skeleton-based Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_keypoint_3d/2sagcn_80e_ntu60_xsub_keypoint_3d.json
   Training Log: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_keypoint_3d/2sagcn_80e_ntu60_xsub_keypoint_3d.log
