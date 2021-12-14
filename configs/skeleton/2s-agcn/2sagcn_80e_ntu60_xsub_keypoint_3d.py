@@ -3,7 +3,7 @@ model = dict(
     backbone=dict(
         type='AGCN',
         in_channels=3,
-        graph_cfg=dict(layout='ntu-rgb+d', strategy='spatial')),
+        graph_cfg=dict(layout='ntu-rgb+d', strategy='agcn')),
     cls_head=dict(
         type='STGCNHead',
         num_classes=60,
@@ -37,7 +37,7 @@ test_pipeline = [
     dict(type='ToTensor', keys=['keypoint'])
 ]
 data = dict(
-    videos_per_gpu=12,
+    videos_per_gpu=16,
     workers_per_gpu=2,
     test_dataloader=dict(videos_per_gpu=1),
     train=dict(
