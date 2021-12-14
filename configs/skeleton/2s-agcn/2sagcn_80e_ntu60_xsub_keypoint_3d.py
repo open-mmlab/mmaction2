@@ -13,10 +13,8 @@ model = dict(
     test_cfg=None)
 
 dataset_type = 'PoseDataset'
-# ann_file_train = 'data/ntu/nturgb+d_skeletons_60_3d/xsub/train.pkl'
-# ann_file_val = 'data/ntu/nturgb+d_skeletons_60_3d/xsub/val.pkl'
-ann_file_train = '/mnt/lustre/liguankai/data/ntu/nturgb+d_skeletons_60_3d_nmtvc/xsub/train.pkl'
-ann_file_val = '/mnt/lustre/liguankai/data/ntu/nturgb+d_skeletons_60_3d_nmtvc/xsub/val.pkl'
+ann_file_train = 'data/ntu/nturgb+d_skeletons_60_3d/xsub/train.pkl'
+ann_file_val = 'data/ntu/nturgb+d_skeletons_60_3d/xsub/val.pkl'
 train_pipeline = [
     dict(type='PaddingWithLoop', clip_len=300),
     dict(type='PoseDecode'),
