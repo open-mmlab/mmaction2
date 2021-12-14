@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
+import os
 import platform
 import subprocess
 
@@ -34,7 +35,7 @@ def process_checkpoint(in_file, out_file):
     else:
         out_file_name = out_file
     final_file = out_file_name + f'-{sha[:8]}.pth'
-    subprocess.Popen(['mv', out_file, final_file])
+    os.rename(out_file, final_file)
 
 
 def main():
