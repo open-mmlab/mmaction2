@@ -132,7 +132,7 @@ def main(input_csv, output_dir, anno_file, num_jobs=24, is_bsn_case=False):
 
     if is_bsn_case:
         anno_file_bak = anno_file.replace('.json', '_bak.json')
-        os.system(f'mv {anno_file} {anno_file_bak}')
+        os.rename(anno_file, anno_file_bak)
         mmcv.dump(annotation, anno_file)
 
 
