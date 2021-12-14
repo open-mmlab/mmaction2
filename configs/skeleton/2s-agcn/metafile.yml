@@ -15,11 +15,11 @@ Models:
   Results:
     Dataset: NTU60-XSub
     Metrics:
-      Top 1 Accuracy: 86.82
+      Top 1 Accuracy: 86.06
     Task: Skeleton-based Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_keypoint_3d/2sagcn_80e_ntu60_xsub_keypoint_3d.json
   Training Log: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_keypoint_3d/2sagcn_80e_ntu60_xsub_keypoint_3d.log
-  Weights: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_keypoint_3d/2sagcn_80e_ntu60_xsub_keypoint_3d-e9c57448.pth
+  Weights: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_keypoint_3d/2sagcn_80e_ntu60_xsub_keypoint_3d-3bed61ba.pth
 - Config: configs/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_bone_3d.py
   In Collection: AGCN
   Metadata:
@@ -33,8 +33,8 @@ Models:
   Results:
     Dataset: NTU60-XSub
     Metrics:
-      Top 1 Accuracy: 87.91
+      Top 1 Accuracy: 86.89
     Task: Skeleton-based Action Recognition
   Training Json Log: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_bone_3d/2sagcn_80e_ntu60_xsub_bone_3d.json
   Training Log: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_bone_3d/2sagcn_80e_ntu60_xsub_bone_3d.log
-  Weights: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_bone_3d/2sagcn_80e_ntu60_xsub_bone_3d-aef54a2d.pth
+  Weights: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_bone_3d/2sagcn_80e_ntu60_xsub_bone_3d-278b8815.pth

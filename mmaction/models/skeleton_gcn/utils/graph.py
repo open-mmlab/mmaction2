@@ -29,6 +29,13 @@ def normalize_digraph(adj_matrix):
     return norm_matrix
 
 
+def edge2mat(link, num_node):
+    A = np.zeros((num_node, num_node))
+    for i, j in link:
+        A[j, i] = 1
+    return A
+
+
 class Graph:
     """The Graph to model the skeletons extracted by the openpose.
 
@@ -62,7 +69,7 @@ class Graph:
         self.dilation = dilation
 
         assert layout in ['openpose', 'ntu-rgb+d', 'ntu_edge', 'coco']
-        assert strategy in ['uniform', 'distance', 'spatial']
+        assert strategy in ['uniform', 'distance', 'spatial', 'agcn']
         self.get_edge(layout)
         self.hop_dis = get_hop_distance(
             self.num_node, self.edge, max_hop=max_hop)
@@ -92,6 +99,8 @@ class Graph:
                               (15, 14), (16, 15), (17, 1), (18, 17), (19, 18),
                               (20, 19), (22, 23), (23, 8), (24, 25), (25, 12)]
             neighbor_link = [(i - 1, j - 1) for (i, j) in neighbor_1base]
+            self.self_link = self_link
+            self.neighbor_link = neighbor_link
             self.edge = self_link + neighbor_link
             self.center = 21 - 1
         elif layout == 'ntu_edge':
@@ -160,6 +169,14 @@ class Graph:
                     A.append(a_root + a_close)
                     A.append(a_further)
             A = np.stack(A)
+            self.A = A
+        elif strategy == 'agcn':
+            A = []
+            link_mat = edge2mat(self.self_link, self.num_node)
+            In = normalize_digraph(edge2mat(self.neighbor_link, self.num_node))
+            outward = [(j, i) for (i, j) in self.neighbor_link]
+            Out = normalize_digraph(edge2mat(outward, self.num_node))
+            A = np.stack((link_mat, In, Out))
             self.A = A
         else:
             raise ValueError('Do Not Exist This Strategy')
