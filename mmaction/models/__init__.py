@@ -16,8 +16,8 @@ from .heads import (ACRNHead, AudioTSNHead, AVARoIHead, BaseHead, BBoxHeadAVA,
                     X3DHead)
 from .localizers import BMN, PEM, TEM
 from .losses import (BCELossWithLogits, BinaryLogisticRegressionLoss, BMNLoss,
-                     CrossEntropyLoss, HVULoss, NLLLoss, OHEMHingeLoss,
-                     SSNLoss)
+                     CBFocalLoss, CrossEntropyLoss, HVULoss, NLLLoss,
+                     OHEMHingeLoss, SSNLoss)
 from .necks import TPN
 from .recognizers import (AudioRecognizer, BaseRecognizer, Recognizer2D,
                           Recognizer3D)
@@ -40,5 +40,5 @@ __all__ = [
     'FBOHead', 'LFBInferHead', 'TRNHead', 'NECKS', 'TimeSformer',
     'TimeSformerHead', 'DividedSpatialAttentionWithNorm',
     'DividedTemporalAttentionWithNorm', 'FFNWithNorm', 'ACRNHead', 'BaseGCN',
-    'SkeletonGCN'
+    'SkeletonGCN', 'CBFocalLoss'
 ]
