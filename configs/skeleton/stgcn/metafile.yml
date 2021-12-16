@@ -38,3 +38,75 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint_3d/stgcn_80e_ntu60_xsub_keypoint_3d.json
   Training Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint_3d/stgcn_80e_ntu60_xsub_keypoint_3d.log
   Weights: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint_3d/stgcn_80e_ntu60_xsub_keypoint_3d-13e7ccf0.pth
+- Config: configs/skeleton/stgcn/stgcn_80e_babel60.py
+  In Collection: STGCN
+  Metadata:
+    Architecture: STGCN
+    Batch Size: 128
+    Epochs: 80
+    Parameters: 3088704
+    Training Data: BABEL60
+    Training Resources: 8 GPU
+  Name: stgcn_80e_babel60
+  Results:
+    Dataset: BABEL60
+    Metrics:
+      Top 1 Accuracy: 42.39
+      Mean Top 1 Accuracy: 28.28
+    Task: Skeleton-based Action Recognition
+  Training Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_babel60/stgcn_80e_babel60.log
+  Weights: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_babel60/stgcn_80e_babel60-3d206418.pth
+- Config: configs/skeleton/stgcn/stgcn_80e_babel60_wfl.py
+  In Collection: STGCN
+  Metadata:
+    Architecture: STGCN
+    Batch Size: 128
+    Epochs: 80
+    Parameters: 3088704
+    Training Data: BABEL60
+    Training Resources: 8 GPU
+  Name: stgcn_80e_babel60_wfl
+  Results:
+    Dataset: BABEL60
+    Metrics:
+      Top 1 Accuracy: 40.31
+      Mean Top 1 Accuracy: 29.79
+    Task: Skeleton-based Action Recognition
+  Training Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_babel60_wfl/stgcn_80e_babel60_wfl.log
+  Weights: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_babel60_wfl/stgcn_80e_babel60_wfl-1a9102d7.pth
+- Config: configs/skeleton/stgcn/stgcn_80e_babel120.py
+  In Collection: STGCN
+  Metadata:
+    Architecture: STGCN
+    Batch Size: 128
+    Epochs: 80
+    Parameters: 3104320
+    Training Data: BABEL120
+    Training Resources: 8 GPU
+  Name: stgcn_80e_babel120
+  Results:
+    Dataset: BABEL120
+    Metrics:
+      Top 1 Accuracy: 38.95
+      Mean Top 1 Accuracy: 20.58
+    Task: Skeleton-based Action Recognition
+  Training Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_babel120/stgcn_80e_babel120.log
+  Weights: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_babel120/stgcn_80e_babel120-e41eb6d7.pth
+- Config: configs/skeleton/stgcn/stgcn_80e_babel120_wfl.py
+  In Collection: STGCN
+  Metadata:
+    Architecture: STGCN
+    Batch Size: 128
+    Epochs: 80
+    Parameters: 3104320
+    Training Data: BABEL120
+    Training Resources: 8 GPU
+  Name: stgcn_80e_babel120_wfl
+  Results:
+    Dataset: BABEL120
+    Metrics:
+      Top 1 Accuracy: 33.00
+      Mean Top 1 Accuracy: 24.33
+    Task: Skeleton-based Action Recognition
+  Training Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_babel120_wfl/stgcn_80e_babel120_wfl.log
+  Weights: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_babel120_wfl/stgcn_80e_babel120_wfl-3f2c100d.pth
