@@ -3,7 +3,7 @@ model = dict(
     backbone=dict(
         type='AGCN',
         in_channels=3,
-        graph_cfg=dict(layout='ntu-rgb+d', strategy='spatial')),
+        graph_cfg=dict(layout='ntu-rgb+d', strategy='agcn')),
     cls_head=dict(
         type='STGCNHead',
         num_classes=60,
@@ -68,7 +68,7 @@ evaluation = dict(interval=3, metrics=['top_k_accuracy'])
 log_config = dict(interval=100, hooks=[dict(type='TextLoggerHook')])
 
 # runtime settings
-dist_params = dict(backend='nccl', port='1031')
+dist_params = dict(backend='nccl')
 log_level = 'INFO'
 work_dir = './work_dirs/2sagcn_80e_ntu60_xsub_keypoint_3d/'
 load_from = None
