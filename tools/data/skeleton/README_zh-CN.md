@@ -117,6 +117,12 @@ python gen_ntu_rgbd_raw.py --data-path your_raw_nturgbd60_skeleton_path --ignore
 python gen_ntu_rgbd_raw.py --data-path your_raw_nturgbd120_skeleton_path --ignored-sample-path NTU_RGBD120_samples_with_missing_skeletons.txt --out-folder your_nturgbd120_output_path --task ntu120
 ```
 
+## 转换其他第三方项目的骨骼标注
+
+MMAction2 提供脚本以将其他第三方项目的骨骼标注转至 MMAction2 格式，如：
+
+- BABEL: `babel2mma2.py`
+
 **待办项**：
 
 - [x] FineGYM

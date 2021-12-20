@@ -113,6 +113,12 @@ For NTU-RGBD 120, preprocess data and convert the data format with
 python gen_ntu_rgbd_raw.py --data-path your_raw_nturgbd120_skeleton_path --ignored-sample-path NTU_RGBD120_samples_with_missing_skeletons.txt --out-folder your_nturgbd120_output_path --task ntu120
 ```
 
+## Convert annotations from third-party projects
+
+We provide scripts to convert skeleton annotations from third-party projects to MMAction2 formats:
+
+- BABEL: `babel2mma2.py`
+
 **TODO**:
 
 - [x] FineGYM
