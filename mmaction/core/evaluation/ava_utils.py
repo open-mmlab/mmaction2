@@ -85,15 +85,15 @@ def read_csv(csv_file, class_whitelist=None):
         assert len(row) in [7, 8], 'Wrong number of columns: ' + row
         image_key = make_image_key(row[0], row[1])
         x1, y1, x2, y2 = [float(n) for n in row[2:6]]
-        action_id = int(row[6])
-        if class_whitelist and action_id not in class_whitelist:
+        label = int(row[6])
+        if class_whitelist and label not in class_whitelist:
             continue
 
         score = 1.0
         if len(row) == 8:
             score = float(row[7])
 
-        entries[image_key].append((score, action_id, y1, x1, y2, x2))
+        entries[image_key].append((score, label, y1, x1, y2, x2))
 
     for image_key in entries:
         # Evaluation API assumes boxes with descending scores
