@@ -87,7 +87,7 @@ conda install pytorch=1.3.1 cudatoolkit=9.2 torchvision=0.4.2 -c pytorch
 
 ```shell
 pip install git+https://github.com/open-mmlab/mim.git
-mim install mmaction2
+mim install mmaction2 -f https://github.com/open-mmlab/mmaction2.git
 ```
 
 MIM 可以自动安装 OpenMMLab 项目及其依赖。

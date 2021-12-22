@@ -92,7 +92,7 @@ We recommend you to install MMAction2 with [MIM](https://github.com/open-mmlab/m
 
 ```shell
 pip install git+https://github.com/open-mmlab/mim.git
-mim install mmaction2
+mim install mmaction2 -f https://github.com/open-mmlab/mmaction2.git
 ```
 
 MIM can automatically install OpenMMLab projects and their requirements.
