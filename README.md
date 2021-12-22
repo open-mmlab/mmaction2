@@ -51,24 +51,24 @@ The master branch works with **PyTorch 1.3+**.
 - (2021-10-25) We provide a [guide](https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/posec3d/custom_dataset_training.md) on how to train PoseC3D with custom datasets, [bit-scientist](https://github.com/bit-scientist) authored this PR!
 - (2021-10-16) We support **PoseC3D** on UCF101 and HMDB51, achieves 87.0% and 69.3% Top-1 accuracy with 2D skeletons only. Pre-extracted 2D skeletons are also available.
 
-**Release**: v0.20.0 was released in 30/10/2021. Please refer to [changelog.md](docs/changelog.md) for details and release history.
+**Release**: v0.20.0 was released in 30/10/2021. Please refer to [changelog.md](docs/en/changelog.md) for details and release history.
 
 ## Installation
 
-Please refer to [install.md](docs/install.md) for installation.
+Please refer to [install.md](docs/en/install.md) for installation.
 
 ## Get Started
 
-Please see [getting_started.md](docs/getting_started.md) for the basic usage of MMAction2.
+Please see [getting_started.md](docs/en/getting_started.md) for the basic usage of MMAction2.
 There are also tutorials:
 
-- [learn about configs](docs/tutorials/1_config.md)
-- [finetuning models](docs/tutorials/2_finetune.md)
-- [adding new dataset](docs/tutorials/3_new_dataset.md)
-- [designing data pipeline](docs/tutorials/4_data_pipeline.md)
-- [adding new modules](docs/tutorials/5_new_modules.md)
-- [exporting model to onnx](docs/tutorials/6_export_model.md)
-- [customizing runtime settings](docs/tutorials/7_customize_runtime.md)
+- [learn about configs](docs/en/tutorials/1_config.md)
+- [finetuning models](docs/en/tutorials/2_finetune.md)
+- [adding new dataset](docs/en/tutorials/3_new_dataset.md)
+- [designing data pipeline](docs/en/tutorials/4_data_pipeline.md)
+- [adding new modules](docs/en/tutorials/5_new_modules.md)
+- [exporting model to onnx](docs/en/tutorials/6_export_model.md)
+- [customizing runtime settings](docs/en/tutorials/7_customize_runtime.md)
 
 A Colab tutorial is also provided. You may preview the notebook [here](demo/mmaction2_tutorial.ipynb) or directly [run](https://colab.research.google.com/github/open-mmlab/mmaction2/blob/master/demo/mmaction2_tutorial.ipynb) on Colab.
 
@@ -207,16 +207,16 @@ Datasets marked with * are not fully supported yet, but related dataset preparat
 
 ## Benchmark
 
-To demonstrate the efficacy and efficiency of our framework, we compare MMAction2 with some other popular frameworks and official releases in terms of speed. Details can be found in [benchmark](docs/benchmark.md).
+To demonstrate the efficacy and efficiency of our framework, we compare MMAction2 with some other popular frameworks and official releases in terms of speed. Details can be found in [benchmark](docs/en/benchmark.md).
 
 ## Data Preparation
 
-Please refer to [data_preparation.md](docs/data_preparation.md) for a general knowledge of data preparation.
-The supported datasets are listed in [supported_datasets.md](docs/supported_datasets.md)
+Please refer to [data_preparation.md](docs/en/data_preparation.md) for a general knowledge of data preparation.
+The supported datasets are listed in [supported_datasets.md](docs/en/supported_datasets.md)
 
 ## FAQ
 
-Please refer to [FAQ](docs/faq.md) for frequently asked questions.
+Please refer to [FAQ](docs/en/faq.md) for frequently asked questions.
 
 ## Projects built on MMAction2
 
@@ -226,7 +226,7 @@ Currently, there are many research works and projects built on MMAction2 by user
 - Evidential Deep Learning for Open Set Action Recognition, ICCV 2021 **Oral**. [[paper]](https://arxiv.org/abs/2107.10161)[[github]](https://github.com/Cogito2012/DEAR)
 - Rethinking Self-supervised Correspondence Learning: A Video Frame-level Similarity Perspective, ICCV 2021 **Oral**. [[paper]](https://arxiv.org/abs/2103.17263)[[github]](https://github.com/xvjiarui/VFS)
 
-etc., check [projects.md](docs/projects.md) to see all related projects.
+etc., check [projects.md](docs/en/projects.md) to see all related projects.
 
 ## License
 
