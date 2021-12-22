@@ -6,7 +6,7 @@
 
 English | [简体中文](/README_zh-CN.md)
 
-[![Documentation](https://readthedocs/en.org/projects/mmaction2/badge/?version=latest)](https://mmaction2.readthedocs/en.io/en/latest/)
+[![Documentation](https://readthedocs.org/projects/mmaction2/badge/?version=latest)](https://mmaction2.readthedocs/en.io/en/latest/)
 [![actions](https://github.com/open-mmlab/mmaction2/workflows/build/badge.svg)](https://github.com/open-mmlab/mmaction2/actions)
 [![codecov](https://codecov.io/gh/open-mmlab/mmaction2/branch/master/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmaction2)
 [![PyPI](https://img.shields.io/pypi/v/mmaction2)](https://pypi.org/project/mmaction2/)
@@ -139,7 +139,7 @@ A Colab tutorial is also provided. You may preview the notebook [here](demo/mmac
 </table>
 
 Results and models are available in the *README.md* of each method's config directory.
-A summary can be found on the [**model zoo**](https://mmaction2.readthedocs/en.io/en/latest/recognition_models.html) page.
+A summary can be found on the [**model zoo**](https://mmaction2.readthedocs.io/en/latest/recognition_models.html) page.
 
 We will keep up with the latest progress of the community and support more popular algorithms and frameworks.
 If you have any feature requests, please feel free to leave a comment in [Issues](https://github.com/open-mmlab/mmaction2/issues/19).
@@ -203,7 +203,7 @@ If you have any feature requests, please feel free to leave a comment in [Issues
   </tr>
 </table>
 
-Datasets marked with * are not fully supported yet, but related dataset preparation steps are provided. A summary can be found on the [**Supported Datasets**](https://mmaction2.readthedocs/en.io/en/latest/supported_datasets.html) page.
+Datasets marked with * are not fully supported yet, but related dataset preparation steps are provided. A summary can be found on the [**Supported Datasets**](https://mmaction2.readthedocs.io/en/latest/supported_datasets.html) page.
 
 ## Benchmark
 
