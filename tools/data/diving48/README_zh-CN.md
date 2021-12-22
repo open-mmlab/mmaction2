@@ -39,7 +39,7 @@ bash download_videos.sh
 
 官网提供的帧压缩包并不完整。若想获取完整的数据，可以使用以下步骤解帧。
 
-在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
+在抽取视频帧和光流之前，请参考 [安装指南](/docs/zh_cn/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
 如果拥有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 中。
 
@@ -120,4 +120,4 @@ mmaction2
 │   |   |   ├── ...
 ```
 
-关于对 Diving48 进行训练和验证，可以参考 [基础教程](/docs_zh_CN/getting_started.md)。
+关于对 Diving48 进行训练和验证，可以参考 [基础教程](/docs/zh_cn/getting_started.md)。

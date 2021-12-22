@@ -118,7 +118,7 @@ In data benchmark, we compare two different data preprocessing methods: (1) Resi
 
 :::
 
-For more details on data preparation, you can refer to corresponding parts in [Data Preparation](/docs/data_preparation.md).
+For more details on data preparation, you can refer to corresponding parts in [Data Preparation](/docs/en/data_preparation.md).
 
 ## Train
 
@@ -136,7 +136,7 @@ python tools/train.py configs/recognition/slowonly/slowonly_r50_4x16x1_256e_kine
     --validate --seed 0 --deterministic
 ```
 
-For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
+For more details, you can refer to **Training setting** part in [getting_started](/docs/en/getting_started.md#training-setting).
 
 ## Test
 
@@ -154,4 +154,4 @@ python tools/test.py configs/recognition/slowonly/slowonly_r50_4x16x1_256e_kinet
     --out result.json --average-clips=prob
 ```
 
-For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+For more details, you can refer to **Test a dataset** part in [getting_started](/docs/en/getting_started.md#test-a-dataset).
