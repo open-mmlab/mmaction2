@@ -17,10 +17,21 @@
 
 ### NTU60_XSub
 
-| 配置文件                                                       | 骨骼点 | GPU 数量  |   主干网络   | top1 准确率 |                             ckpt                             |                             log                              |                             json                             |
+| 配置文件                                                       | 骨骼点 | GPU 数量  |   主干网络   | Top-1 准确率 |                             ckpt                             |                             log                              |                             json                             |
 | :----------------------------------------------------------- | :------------: | :---: | :----------: | :---: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
 | [stgcn_80e_ntu60_xsub_keypoint](/configs/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint.py) |    2d    | 2 | STGCN | 86.91  | [ckpt](https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint/stgcn_80e_ntu60_xsub_keypoint-e7bb9653.pth) | [log](https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint/stgcn_80e_ntu60_xsub_keypoint.log) | [json](https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint/stgcn_80e_ntu60_xsub_keypoint.json) |
 | [stgcn_80e_ntu60_xsub_keypoint_3d](/configs/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint_3d.py) |    3d  | 1 | STGCN | 84.61  | [ckpt](https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint_3d/stgcn_80e_ntu60_xsub_keypoint_3d-13e7ccf0.pth) | [log](https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint_3d/stgcn_80e_ntu60_xsub_keypoint_3d.log) | [json](https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint_3d/stgcn_80e_ntu60_xsub_keypoint_3d.json) |
+
+### BABEL
+
+| 配置文件                                                     | GPU 数量 | 主干网络 | Top-1 准确率 | 类平均 Top-1 准确率 | Top-1 准确率 <br>（官方，使用 AGCN） | 类平均 Top-1 准确率<br>（官方，使用 AGCN） |                             ckpt                             |                             log                              |
+| ------------------------------------------------------------ | :------: | :------: | :----------: | :-----------------: | :----------------------------------: | :----------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| [stgcn_80e_babel60](/configs/skeleton/stgcn/stgcn_80e_babel60.py) |    8     |  ST-GCN  |  **42.39**   |      **28.28**      |                41.14                 |                   24.46                    | [ckpt](https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_babel60/stgcn_80e_babel60-3d206418.pth) | [log](https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_babel60/stgcn_80e_babel60.log) |
+| [stgcn_80e_babel60_wfl](/configs/skeleton/stgcn/stgcn_80e_babel60_wfl.py) |    8     |  ST-GCN  |  **40.31**   |        29.79        |                33.41                 |                 **30.42**                  | [ckpt](https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_babel60_wfl/stgcn_80e_babel60_wfl-1a9102d7.pth) | [log](https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_babel60/stgcn_80e_babel60_wfl.log) |
+| [stgcn_80e_babel120](/configs/skeleton/stgcn/stgcn_80e_babel120.py) |    8     |  ST-GCN  |  **38.95**   |      **20.58**      |                38.41                 |                   17.56                    | [ckpt](https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_babel120/stgcn_80e_babel120-e41eb6d7.pth) | [log](https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_babel60/stgcn_80e_babel120.log) |
+| [stgcn_80e_babel120_wfl](/configs/skeleton/stgcn/stgcn_80e_babel120_wfl.py) |    8     |  ST-GCN  |  **33.00**   |        24.33        |                27.91                 |                 **26.17***                 | [ckpt](https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_babel120_wfl/stgcn_80e_babel120_wfl-3f2c100d.pth) | [log](https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_babel60/stgcn_80e_babel120_wfl.log) |
+
+\* 注：此数字引自原 [论文](https://arxiv.org/pdf/2106.09696.pdf)， 实际公开的 [模型权重](https://github.com/abhinanda-punnakkal/BABEL/tree/main/action_recognition) 精度略低一些。
 
 ## 如何训练
 
