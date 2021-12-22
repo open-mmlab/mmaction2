@@ -44,3 +44,9 @@ repos:
     hooks:
       - id: codespell
         args: ["--skip", "*.ipynb,tools/data/hvu/label_map.json", "-L", "te,nd,thre,Gool,gool"]
+  - repo: https://github.com/open-mmlab/pre-commit-hooks
+    rev: v0.1.0  # Use the ref you want to point at
+    hooks:
+      - id: check-algo-readme
+      - id: check-copyright
+        args: ["mmaction", "tools", "tests"]  # these directories will be checked

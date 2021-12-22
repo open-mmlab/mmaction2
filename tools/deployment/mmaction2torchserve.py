@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import shutil
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
