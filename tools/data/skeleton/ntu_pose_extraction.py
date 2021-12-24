@@ -337,5 +337,6 @@ if __name__ == '__main__':
     args.device = global_args.device
     args.video = global_args.video
     args.output = global_args.output
+    args.skip_postproc = global_args.skip_postproc
     anno = ntu_pose_extraction(args.video, args.skip_postproc)
     mmcv.dump(anno, args.output)
