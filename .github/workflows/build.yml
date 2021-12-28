@@ -12,8 +12,8 @@ on:
       - '!demo/**'
       - '!docker/**'
       - '!tools/**'
-      - '!docs/en/**'
-      - '!docs/zh_cn/**'
+      - '!docs/**'
+      - '!docs_zh_CN/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

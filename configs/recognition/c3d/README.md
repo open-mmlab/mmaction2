@@ -45,7 +45,7 @@ eid = {arXiv:1412.0767}
 
 :::
 
-For more details on data preparation, you can refer to UCF-101 in [Data Preparation](/docs/en/data_preparation.md).
+For more details on data preparation, you can refer to UCF-101 in [Data Preparation](/docs/data_preparation.md).
 
 ## Train
 
@@ -62,7 +62,7 @@ python tools/train.py configs/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb
     --validate --seed 0 --deterministic
 ```
 
-For more details, you can refer to **Training setting** part in [getting_started](/docs/en/getting_started.md#training-setting).
+For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
 
 ## Test
 
@@ -79,4 +79,4 @@ python tools/test.py configs/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb.
     checkpoints/SOME_CHECKPOINT.pth --eval top_k_accuracy
 ```
 
-For more details, you can refer to **Test a dataset** part in [getting_started](/docs/en/getting_started.md#test-a-dataset).
+For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
