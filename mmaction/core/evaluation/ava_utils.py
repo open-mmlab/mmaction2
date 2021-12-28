@@ -1,6 +1,7 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 # This piece of code is directly adapted from ActivityNet official repo
 # https://github.com/activitynet/ActivityNet/blob/master/
-# Evaluation/get_ava_performance.py. Some unused codes are removed. 
+# Evaluation/get_ava_performance.py. Some unused codes are removed.
 import csv
 import logging
 import time
