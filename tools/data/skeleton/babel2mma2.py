@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 # In this example, we convert babel120_train to MMAction2 format
 # The required files can be downloaded from the homepage of BABEL project
 import numpy as np

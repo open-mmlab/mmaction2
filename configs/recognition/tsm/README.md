@@ -151,7 +151,7 @@ test_pipeline = [
 
 :::
 
-For more details on data preparation, you can refer to corresponding parts in [Data Preparation](/docs/data_preparation.md).
+For more details on data preparation, you can refer to corresponding parts in [Data Preparation](/docs/en/data_preparation.md).
 
 ## Train
 
@@ -169,7 +169,7 @@ python tools/train.py configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.
     --validate --seed 0 --deterministic
 ```
 
-For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
+For more details, you can refer to **Training setting** part in [getting_started](/docs/en/getting_started.md#training-setting).
 
 ## Test
 
@@ -187,4 +187,4 @@ python tools/test.py configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.p
     --out result.json
 ```
 
-For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+For more details, you can refer to **Test a dataset** part in [getting_started](/docs/en/getting_started.md#test-a-dataset).

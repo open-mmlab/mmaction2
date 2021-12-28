@@ -13,7 +13,7 @@
 
 - **"OSError: MoviePy Error: creation of None failed because of the following error"**
 
-    参照 [MMAction2 安装文档](https://github.com/open-mmlab/mmaction2/blob/master/docs_zh_CN/install.md#安装依赖包)
+    参照 [MMAction2 安装文档](https://github.com/open-mmlab/mmaction2/blob/master/docs/zh_cn/install.md#安装依赖包)
     1. 对于 Windows 用户，[ImageMagick](https://www.imagemagick.org/script/index.php) 不再被 MoviePy 自动检测，
     需要获取名为 `magick` 的 ImageMagick 二进制包的路径，来修改 `moviepy/config_defaults.py` 文件中的 `IMAGEMAGICK_BINARY`，如 `IMAGEMAGICK_BINARY = "C:\\Program Files\\ImageMagick_VERSION\\magick.exe"`
     2. 对于 Linux 用户，如果 ImageMagick 没有被 moviepy 检测，需要注释掉 `/etc/ImageMagick-6/policy.xml` 文件中的 `<policy domain="path" rights="none" pattern="@*" />`，即改为 `<!-- <policy domain="path" rights="none" pattern="@*" /> -->`。
@@ -48,7 +48,7 @@
 
 - **如何使用训练过的识别器作为主干网络的预训练模型？**
 
-    参照 [使用预训练模型](https://github.com/open-mmlab/mmaction2/blob/master/docs_zh_CN/tutorials/2_finetune.md#使用预训练模型)，
+    参照 [使用预训练模型](https://github.com/open-mmlab/mmaction2/blob/master/docs/zh_cn/tutorials/2_finetune.md#使用预训练模型)，
     如果想对整个网络使用预训练模型，可以在配置文件中，将 `load_from` 设置为预训练模型的链接。
 
     如果只想对主干网络使用预训练模型，可以在配置文件中，将主干网络 `backbone` 中的 `pretrained` 设置为预训练模型的地址或链接。
