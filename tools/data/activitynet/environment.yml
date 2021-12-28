@@ -33,4 +33,4 @@ dependencies:
     - python-dateutil==2.8.1
     - pytz==2020.1
     - six==1.14.0
-    - youtube-dl==2020.5.8
+    - youtube-dl
