@@ -22,7 +22,7 @@ If the contents here do not cover your issue, please create an issue using the [
 
 - **"OSError: MoviePy Error: creation of None failed because of the following error"**
 
-    Refer to [install.md](https://github.com/open-mmlab/mmaction2/blob/master/docs/en/install.md#requirements)
+    Refer to [install.md](https://github.com/open-mmlab/mmaction2/blob/master/docs/install.md#requirements)
     1. For Windows users, [ImageMagick](https://www.imagemagick.org/script/index.php) will not be automatically detected by MoviePy, there is a need to modify `moviepy/config_defaults.py` file by providing the path to the ImageMagick binary called `magick`, like `IMAGEMAGICK_BINARY = "C:\\Program Files\\ImageMagick_VERSION\\magick.exe"`
     2. For Linux users, there is a need to modify the `/etc/ImageMagick-6/policy.xml` file by commenting out `<policy domain="path" rights="none" pattern="@*" />` to `<!-- <policy domain="path" rights="none" pattern="@*" /> -->`, if ImageMagick is not detected by moviepy.
 
@@ -56,7 +56,7 @@ If the contents here do not cover your issue, please create an issue using the [
 
 - **How to just use trained recognizer models for backbone pre-training?**
 
-    Refer to [Use Pre-Trained Model](https://github.com/open-mmlab/mmaction2/blob/master/docs/en/tutorials/2_finetune.md#use-pre-trained-model),
+    Refer to [Use Pre-Trained Model](https://github.com/open-mmlab/mmaction2/blob/master/docs/tutorials/2_finetune.md#use-pre-trained-model),
     in order to use the pre-trained model for the whole network, the new config adds the link of pre-trained models in the `load_from`.
 
     And to use backbone for pre-training, you can change `pretrained` value in the backbone dict of config files to the checkpoint path / url.
@@ -106,7 +106,7 @@ If the contents here do not cover your issue, please create an issue using the [
 
 - **How to set `load_from` value in config files to finetune models?**
 
-    In MMAction2, We set `load_from=None` as default in `configs/_base_/default_runtime.py` and owing to [inheritance design](/docs/en/tutorials/1_config.md),
+    In MMAction2, We set `load_from=None` as default in `configs/_base_/default_runtime.py` and owing to [inheritance design](/docs/tutorials/1_config.md),
     users can directly change it by setting `load_from` in their configs.
 
 ## Testing

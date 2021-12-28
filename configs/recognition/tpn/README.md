@@ -51,7 +51,7 @@ Visual tempo characterizes the dynamics and the temporal scale of an action. Mod
 
 :::
 
-For more details on data preparation, you can refer to Kinetics400, Something-Something V1 and Something-Something V2 in [Data Preparation](/docs/en/data_preparation.md).
+For more details on data preparation, you can refer to Kinetics400, Something-Something V1 and Something-Something V2 in [Data Preparation](/docs/data_preparation.md).
 
 ## Train
 
@@ -68,7 +68,7 @@ python tools/train.py configs/recognition/tpn/tpn_slowonly_r50_8x8x1_150e_kineti
     --work-dir work_dirs/tpn_slowonly_r50_8x8x1_150e_kinetics_rgb [--validate --seed 0 --deterministic]
 ```
 
-For more details, you can refer to **Training setting** part in [getting_started](/docs/en/getting_started.md#training-setting).
+For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
 
 ## Test
 
@@ -86,4 +86,4 @@ python tools/test.py configs/recognition/tpn/tpn_slowonly_r50_8x8x1_150e_kinetic
     --out result.json --average-clips prob
 ```
 
-For more details, you can refer to **Test a dataset** part in [getting_started](/docs/en/getting_started.md#test-a-dataset).
+For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
