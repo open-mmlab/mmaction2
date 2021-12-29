@@ -16,7 +16,7 @@ def anchor(name):
 
 # Count algorithms
 
-files = sorted(glob.glob('../*_models.md'))
+files = sorted(glob.glob('*_models.md'))
 # files = sorted(glob.glob('docs/*_models.md'))
 
 stats = []
