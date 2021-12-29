@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-sed -i '$a\\n' ../demo/README.md
+sed -i '$a\\n' ../../demo/README.md
 
 # gather models
 cat  ../../configs/localization/*/README.md | sed "s/md#t/html#t/g" | sed "s/#/#&/" | sed '1i\# Action Localization Models' | sed 's/](\/docs\//](/g' | sed 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' | sed "s/getting_started.html##t/getting_started.html#t/g" > localization_models.md
