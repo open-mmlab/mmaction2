@@ -206,8 +206,6 @@ def train_model(model,
     if test['test_last'] or test['test_best']:
         best_ckpt_path = None
         if test['test_best']:
-            assert eval_hook is not None
-            best_ckpt_path = None
             ckpt_paths = [x for x in os.listdir(cfg.work_dir) if 'best' in x]
             ckpt_paths = [x for x in ckpt_paths if x.endswith('.pth')]
             if len(ckpt_paths) == 0:
@@ -246,7 +244,7 @@ def train_model(model,
         if test['test_last']:
             names.append('last')
             ckpts.append(None)
-        if test['test_best']:
+        if test['test_best'] and best_ckpt_path is not None:
             names.append('best')
             ckpts.append(best_ckpt_path)
 
