@@ -1,5 +1,52 @@
 ## Changelog
 
+### 0.21.0 (31/12/2021)
+
+**Highlights**
+
+- Support 2s-AGCN
+- Support publish models in Windows
+- Improve some sthv1 related models
+- Support BABEL
+
+**New Features**
+
+- Support 2s-AGCN([#1248](https://github.com/open-mmlab/mmaction2/pull/1248))
+- Support skip postproc in ntu_pose_extraction([#1295](https://github.com/open-mmlab/mmaction2/pull/1295))
+- Support publish models in Windows([#1325](https://github.com/open-mmlab/mmaction2/pull/1325))
+- Add copyright checkhook in pre-commit-config([#1344](https://github.com/open-mmlab/mmaction2/pull/1344))
+
+**Documentations**
+
+- Add MMFlow ([#1273](https://github.com/open-mmlab/mmaction2/pull/1273))
+- Revise README.md and add projects.md ([#1286](https://github.com/open-mmlab/mmaction2/pull/1286))
+- Add 2s-AGCN in Updates([#1289](https://github.com/open-mmlab/mmaction2/pull/1289))
+- Add MMFewShot([#1300](https://github.com/open-mmlab/mmaction2/pull/1300))
+- Add MMHuman3d([#1304](https://github.com/open-mmlab/mmaction2/pull/1304))
+- Update pre-commit([#1313](https://github.com/open-mmlab/mmaction2/pull/1313))
+- Use share menu from the theme instead([#1328](https://github.com/open-mmlab/mmaction2/pull/1328))
+- Update installation command([#1340](https://github.com/open-mmlab/mmaction2/pull/1340))
+
+**Bug and Typo Fixes**
+
+- Update the inference part in notebooks([#1256](https://github.com/open-mmlab/mmaction2/pull/1256))
+- Update the map_location([#1262]((https://github.com/open-mmlab/mmaction2/pull/1262)))
+- Fix bug that start_index is not used in RawFrameDecode([#1278](https://github.com/open-mmlab/mmaction2/pull/1278))
+- Fix bug in init_random_seed([#1282](https://github.com/open-mmlab/mmaction2/pull/1282))
+- Fix bug in setup.py([#1303](https://github.com/open-mmlab/mmaction2/pull/1303))
+- Fix interrogate error in workflows([#1305](https://github.com/open-mmlab/mmaction2/pull/1305))
+- Fix typo in slowfast config([#1309](https://github.com/open-mmlab/mmaction2/pull/1309))
+- Cancel previous runs that are not completed([#1327](https://github.com/open-mmlab/mmaction2/pull/1327))
+- Fix missing skip_postproc parameter([#1347](https://github.com/open-mmlab/mmaction2/pull/1347))
+- Update ssn.py([#1355](https://github.com/open-mmlab/mmaction2/pull/1355))
+- Use latest youtube-dl([#1357](https://github.com/open-mmlab/mmaction2/pull/1357))
+- Fix test-best([#1362](https://github.com/open-mmlab/mmaction2/pull/1362))
+
+**ModelZoo**
+
+- Improve some sthv1 related models([#1306](https://github.com/open-mmlab/mmaction2/pull/1306))
+- Support BABEL([#1332](https://github.com/open-mmlab/mmaction2/pull/1332))
+
 ### 0.20.0 (07/10/2021)
 
 **Highlights**
