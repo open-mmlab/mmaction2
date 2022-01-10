@@ -3,6 +3,7 @@ import copy as cp
 import os
 import os.path as osp
 
+import time
 import numpy as np
 import torch
 import torch.distributed as dist
@@ -202,6 +203,9 @@ def train_model(model,
     if cfg.omnisource:
         runner_kwargs = dict(train_ratio=train_ratio)
     runner.run(data_loaders, cfg.workflow, cfg.total_epochs, **runner_kwargs)
+    
+    dist.barrier()
+    time.sleep(5)
 
     if test['test_last'] or test['test_best']:
         best_ckpt_path = None
