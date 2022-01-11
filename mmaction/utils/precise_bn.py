@@ -130,7 +130,7 @@ class PreciseBNHook(Hook):
         interval (int): Perform precise bn interval (by epochs). Default: 1.
     """
 
-    def __init__(self, dataloader, num_iters=200, interval=1):
+    def __init__(self, dataloader, num_iters=200, interval=10):
         if not isinstance(dataloader, DataLoader):
             raise TypeError('dataloader must be a pytorch DataLoader, but got'
                             f' {type(dataloader)}')
@@ -145,6 +145,8 @@ class PreciseBNHook(Hook):
             print_log(
                 f'Running Precise BN for {self.num_iters} iterations',
                 logger=runner.logger)
+            self.dataloader = runner.data_loader
+            self.num_iters = min(self.num_iters, len(self.dataloader))
             update_bn_stats(
                 runner.model,
                 self.dataloader,
