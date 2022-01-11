@@ -50,14 +50,14 @@ def init_random_seed(seed=None, device='cuda'):
     return random_num.item()
 
 
-def train_model(model,
-                dataset,
-                cfg,
-                distributed=False,
-                validate=False,
-                test=dict(test_best=False, test_last=False),
-                timestamp=None,
-                meta=None):
+def train_model_multi(model,
+                      dataset,
+                      cfg,
+                      distributed=False,
+                      validate=False,
+                      test=dict(test_best=False, test_last=False),
+                      timestamp=None,
+                      meta=None):
     """Train model entry function.
 
     Args:
