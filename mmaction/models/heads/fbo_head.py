@@ -337,7 +337,9 @@ class FBOHead(nn.Module):
                  lfb_cfg,
                  fbo_cfg,
                  temporal_pool_type='avg',
-                 spatial_pool_type='max'):
+                 spatial_pool_type='max',
+                 pretrained=None,
+                 ):
         super().__init__()
         fbo_type = fbo_cfg.pop('type', 'non_local')
         assert fbo_type in FBOHead.fbo_dict
