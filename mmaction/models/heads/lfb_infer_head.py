@@ -31,8 +31,13 @@ class LFBInferHead(nn.Module):
             'max'. Default: 'max'.
     """
 
-    def __init__(
-        self, lfb_prefix_path, dataset_mode='train', use_half_precision=True, temporal_pool_type='avg', spatial_pool_type='max', pretrained=None):
+    def __init__(self,
+                 lfb_prefix_path,
+                 dataset_mode='train',
+                 use_half_precision=True,
+                 temporal_pool_type='avg',
+                 spatial_pool_type='max',
+                 pretrained=None):
         super().__init__()
         rank, _ = get_dist_info()
         if rank == 0:
@@ -47,6 +52,7 @@ class LFBInferHead(nn.Module):
         self.lfb_prefix_path = lfb_prefix_path
         self.dataset_mode = dataset_mode
         self.use_half_precision = use_half_precision
+        self.pretrained = pretrained
 
         # Pool by default
         if temporal_pool_type == 'avg':

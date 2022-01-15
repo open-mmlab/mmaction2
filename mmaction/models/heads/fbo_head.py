@@ -338,8 +338,7 @@ class FBOHead(nn.Module):
                  fbo_cfg,
                  temporal_pool_type='avg',
                  spatial_pool_type='max',
-                 pretrained=None,
-                 ):
+                 pretrained=None):
         super().__init__()
         fbo_type = fbo_cfg.pop('type', 'non_local')
         assert fbo_type in FBOHead.fbo_dict
@@ -348,6 +347,7 @@ class FBOHead(nn.Module):
 
         self.lfb_cfg = copy.deepcopy(lfb_cfg)
         self.fbo_cfg = copy.deepcopy(fbo_cfg)
+        self.pretrained = pretrained
 
         self.lfb = LFB(**self.lfb_cfg)
         self.fbo = self.fbo_dict[fbo_type](**self.fbo_cfg)
