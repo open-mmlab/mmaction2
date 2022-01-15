@@ -123,7 +123,7 @@ def read_exclusions(exclusions_file):
     if exclusions_file:
         reader = csv.reader(exclusions_file)
     for row in reader:
-        assert len(row) == 2, f'Expected only 2 columns, got: {len(row)}'
+        assert len(row) == 2, f'Expected only 2 columns, got: {row}'
         excluded.add(make_image_key(row[0], row[1]))
     return excluded
 
