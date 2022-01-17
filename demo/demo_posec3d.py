@@ -201,6 +201,10 @@ def main():
     # Get clip_len, frame_interval and calculate center index of each clip
     config = mmcv.Config.fromfile(args.config)
     config.merge_from_dict(args.cfg_options)
+    for component in config.data.test.pipeline:
+        if component['type'] == 'PoseNormalize':
+            component['mean'] = (w // 2, h // 2, .5)
+            component['max'] = (w, h, 1.)
 
     model = init_recognizer(config, args.checkpoint, args.device)
 
