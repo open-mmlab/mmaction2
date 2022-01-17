@@ -60,13 +60,13 @@ def parse_args():
         '--config',
         default=('configs/skeleton/posec3d/'
                  'slowonly_r50_u48_240e_ntu120_xsub_keypoint.py'),
-        help='posec3d config file path')
+        help='skeleton model config file path')
     parser.add_argument(
         '--checkpoint',
         default=('https://download.openmmlab.com/mmaction/skeleton/posec3d/'
                  'slowonly_r50_u48_240e_ntu120_xsub_keypoint/'
                  'slowonly_r50_u48_240e_ntu120_xsub_keypoint-6736b03f.pth'),
-        help='posec3d checkpoint file/url')
+        help='skeleton model checkpoint file/url')
     parser.add_argument(
         '--det-config',
         default='demo/faster_rcnn_r50_fpn_2x_coco.py',
@@ -204,7 +204,7 @@ def main():
     for component in config.data.test.pipeline:
         if component['type'] == 'PoseNormalize':
             component['mean'] = (w // 2, h // 2, .5)
-            component['max'] = (w, h, 1.)
+            component['max_value'] = (w, h, 1.)
 
     model = init_recognizer(config, args.checkpoint, args.device)
 
@@ -227,7 +227,7 @@ def main():
         modality='Pose',
         total_frames=num_frame)
     num_person = max([len(x) for x in pose_results])
-    # Current PoseC3D models are trained on COCO-keypoints (17 keypoints)
+
     num_keypoint = 17
     keypoint = np.zeros((num_person, num_frame, num_keypoint, 2),
                         dtype=np.float16)
