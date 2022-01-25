@@ -1,5 +1,9 @@
 # PoseC3D
 
+[Revisiting Skeleton-based Action Recognition](https://arxiv.org/abs/2104.13586)
+
+<!-- [ALGORITHM] -->
+
 ## Abstract
 
 <!-- [ABSTRACT] -->
@@ -12,8 +16,6 @@ Human skeleton, as a compact representation of human action, has received increa
 </div>
 
 ## Citation
-
-<!-- [ALGORITHM] -->
 
 ```BibTeX
 @misc{duan2021revisiting,
