@@ -1,5 +1,9 @@
 # TSM
 
+[TSM: Temporal Shift Module for Efficient Video Understanding](https://openaccess.thecvf.com/content_ICCV_2019/html/Lin_TSM_Temporal_Shift_Module_for_Efficient_Video_Understanding_ICCV_2019_paper.html)
+
+<!-- [ALGORITHM] -->
+
 ## Abstract
 
 <!-- [ABSTRACT] -->
@@ -12,8 +16,6 @@ The explosive growth in video streaming gives rise to challenges on performing v
 </div>
 
 ## Citation
-
-<!-- [ALGORITHM] -->
 
 ```BibTeX
 @inproceedings{lin2019tsm,

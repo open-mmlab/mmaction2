@@ -1,5 +1,9 @@
 # TimeSformer
 
+[Is Space-Time Attention All You Need for Video Understanding?](https://arxiv.org/abs/2102.05095)
+
+<!-- [ALGORITHM] -->
+
 ## Abstract
 
 <!-- [ABSTRACT] -->
@@ -12,8 +16,6 @@ We present a convolution-free approach to video classification built exclusively
 </div>
 
 ## Citation
-
-<!-- [ALGORITHM] -->
 
 ```BibTeX
 @misc{bertasius2021spacetime,

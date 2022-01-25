@@ -1,5 +1,9 @@
 # ResNet for Audio
 
+[Audiovisual SlowFast Networks for Video Recognition](https://arxiv.org/abs/2001.08740)
+
+<!-- [ALGORITHM] -->
+
 ## Abstract
 
 <!-- [ABSTRACT] -->
@@ -13,8 +17,6 @@ tecture for integrated audiovisual perception. AVSlowFast has Slow and Fast visu
 </div>
 
 ## Citation
-
-<!-- [ALGORITHM] -->
 
 ```BibTeX
 @article{xiao2020audiovisual,

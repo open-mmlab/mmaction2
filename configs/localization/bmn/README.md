@@ -1,5 +1,9 @@
 # BMN
 
+[Bmn: Boundary-matching network for temporal action proposal generation](https://openaccess.thecvf.com/content_ICCV_2019/html/Lin_BMN_Boundary-Matching_Network_for_Temporal_Action_Proposal_Generation_ICCV_2019_paper.html)
+
+<!-- [ALGORITHM] -->
+
 ## Abstract
 
 <!-- [ABSTRACT] -->
@@ -12,8 +16,6 @@ Temporal action proposal generation is an challenging and promising task which a
 </div>
 
 ## Citation
-
-<!-- [ALGORITHM] -->
 
 ```BibTeX
 @inproceedings{lin2019bmn,

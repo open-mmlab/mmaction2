@@ -1,5 +1,9 @@
 # BSN
 
+[Bsn: Boundary sensitive network for temporal action proposal generation](https://openaccess.thecvf.com/content_ECCV_2018/html/Tianwei_Lin_BSN_Boundary_Sensitive_ECCV_2018_paper.html)
+
+<!-- [ALGORITHM] -->
+
 ## Abstract
 
 <!-- [ABSTRACT] -->
@@ -12,8 +16,6 @@ Temporal action proposal generation is an important yet challenging problem, sin
 </div>
 
 ## Citation
-
-<!-- [ALGORITHM] -->
 
 ```BibTeX
 @inproceedings{lin2018bsn,

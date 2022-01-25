@@ -1,5 +1,9 @@
 # TSN
 
+[Temporal segment networks: Towards good practices for deep action recognition](https://link.springer.com/chapter/10.1007/978-3-319-46484-8_2)
+
+<!-- [ALGORITHM] -->
+
 ## Abstract
 
 <!-- [ABSTRACT] -->
@@ -12,8 +16,6 @@ Deep convolutional networks have achieved great success for visual recognition i
 </div>
 
 ## Citation
-
-<!-- [ALGORITHM] -->
 
 ```BibTeX
 @inproceedings{wang2016temporal,

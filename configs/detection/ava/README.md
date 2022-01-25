@@ -1,5 +1,9 @@
 # AVA
 
+[Ava: A video dataset of spatio-temporally localized atomic visual actions](https://openaccess.thecvf.com/content_cvpr_2018/html/Gu_AVA_A_Video_CVPR_2018_paper.html)
+
+<!-- [ALGORITHM] -->
+
 <div align="center">
   <img src="https://github.com/open-mmlab/mmaction2/raw/master/resources/spatio-temporal-det.gif" width="800px"/>
 </div>
@@ -29,8 +33,6 @@ AVA, with its realistic scene and action complexity, exposes the intrinsic diffi
   year={2018}
 }
 ```
-
-<!-- [ALGORITHM] -->
 
 ```BibTeX
 @article{duan2020omni,

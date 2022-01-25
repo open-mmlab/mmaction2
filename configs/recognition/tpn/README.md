@@ -1,5 +1,9 @@
 # TPN
 
+[Temporal Pyramid Network for Action Recognition](https://openaccess.thecvf.com/content_CVPR_2020/html/Yang_Temporal_Pyramid_Network_for_Action_Recognition_CVPR_2020_paper.html)
+
+<!-- [ALGORITHM] -->
+
 ## Abstract
 
 <!-- [ABSTRACT] -->
@@ -12,8 +16,6 @@ Visual tempo characterizes the dynamics and the temporal scale of an action. Mod
 </div>
 
 ## Citation
-
-<!-- [ALGORITHM] -->
 
 ```BibTeX
 @inproceedings{yang2020tpn,

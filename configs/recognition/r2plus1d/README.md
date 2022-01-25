@@ -1,5 +1,9 @@
 # R2plus1D
 
+[A closer look at spatiotemporal convolutions for action recognition](https://openaccess.thecvf.com/content_cvpr_2018/html/Tran_A_Closer_Look_CVPR_2018_paper.html)
+
+<!-- [ALGORITHM] -->
+
 ## Abstract
 
 <!-- [ABSTRACT] -->
@@ -12,8 +16,6 @@ In this paper we discuss several forms of spatiotemporal convolutions for video 
 </div>
 
 ## Citation
-
-<!-- [ALGORITHM] -->
 
 ```BibTeX
 @inproceedings{tran2018closer,

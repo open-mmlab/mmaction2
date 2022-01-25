@@ -1,5 +1,9 @@
 # TIN
 
+[Temporal Interlacing Network](https://ojs.aaai.org/index.php/AAAI/article/view/6872)
+
+<!-- [ALGORITHM] -->
+
 ## Abstract
 
 <!-- [ABSTRACT] -->
@@ -12,8 +16,6 @@ For a long time, the vision community tries to learn the spatio-temporal represe
 </div>
 
 ## Citation
-
-<!-- [ALGORITHM] -->
 
 ```BibTeX
 @article{shao2020temporal,

@@ -1,5 +1,9 @@
 # STGCN
 
+[Spatial temporal graph convolutional networks for skeleton-based action recognition](https://jivp-eurasipjournals.springeropen.com/articles/10.1186/s13640-019-0476-x)
+
+<!-- [ALGORITHM] -->
+
 ## Abstract
 
 <!-- [ABSTRACT] -->
@@ -12,8 +16,6 @@ Dynamics of human body skeletons convey significant information for human action
 </div>
 
 ## Citation
-
-<!-- [ALGORITHM] -->
 
 ```BibTeX
 @inproceedings{yan2018spatial,

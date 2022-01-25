@@ -1,5 +1,9 @@
 # SSN
 
+[Temporal Action Detection With Structured Segment Networks](https://openaccess.thecvf.com/content_iccv_2017/html/Zhao_Temporal_Action_Detection_ICCV_2017_paper.html)
+
+<!-- [ALGORITHM] -->
+
 ## Abstract
 
 <!-- [ABSTRACT] -->
@@ -12,8 +16,6 @@ Detecting actions in untrimmed videos is an important yet challenging task. In t
 </div>
 
 ## Citation
-
-<!-- [ALGORITHM] -->
 
 ```BibTeX
 @InProceedings{Zhao_2017_ICCV,
