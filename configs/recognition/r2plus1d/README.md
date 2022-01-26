@@ -1,5 +1,9 @@
 # R2plus1D
 
+[A closer look at spatiotemporal convolutions for action recognition](https://openaccess.thecvf.com/content_cvpr_2018/html/Tran_A_Closer_Look_CVPR_2018_paper.html)
+
+<!-- [ALGORITHM] -->
+
 ## Abstract
 
 <!-- [ABSTRACT] -->
@@ -11,21 +15,7 @@ In this paper we discuss several forms of spatiotemporal convolutions for video 
 <img src="https://user-images.githubusercontent.com/34324155/143043885-3d00413c-b556-445e-9673-f5805c08c195.png" width="800"/>
 </div>
 
-## Citation
-
-<!-- [ALGORITHM] -->
-
-```BibTeX
-@inproceedings{tran2018closer,
-  title={A closer look at spatiotemporal convolutions for action recognition},
-  author={Tran, Du and Wang, Heng and Torresani, Lorenzo and Ray, Jamie and LeCun, Yann and Paluri, Manohar},
-  booktitle={Proceedings of the IEEE conference on Computer Vision and Pattern Recognition},
-  pages={6450--6459},
-  year={2018}
-}
-```
-
-## Model Zoo
+## Results and Models
 
 ### Kinetics-400
 
@@ -83,3 +73,15 @@ python tools/test.py configs/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_kineti
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+
+## Citation
+
+```BibTeX
+@inproceedings{tran2018closer,
+  title={A closer look at spatiotemporal convolutions for action recognition},
+  author={Tran, Du and Wang, Heng and Torresani, Lorenzo and Ray, Jamie and LeCun, Yann and Paluri, Manohar},
+  booktitle={Proceedings of the IEEE conference on Computer Vision and Pattern Recognition},
+  pages={6450--6459},
+  year={2018}
+}
+```

@@ -1,5 +1,9 @@
 # BMN
 
+[Bmn: Boundary-matching network for temporal action proposal generation](https://openaccess.thecvf.com/content_ICCV_2019/html/Lin_BMN_Boundary-Matching_Network_for_Temporal_Action_Proposal_Generation_ICCV_2019_paper.html)
+
+<!-- [ALGORITHM] -->
+
 ## Abstract
 
 <!-- [ABSTRACT] -->
@@ -11,33 +15,7 @@ Temporal action proposal generation is an challenging and promising task which a
 <img src="https://user-images.githubusercontent.com/34324155/143016479-2ca7e8b6-a17b-4a4c-b4c9-ae731935cd91.png" width="800"/>
 </div>
 
-## Citation
-
-<!-- [ALGORITHM] -->
-
-```BibTeX
-@inproceedings{lin2019bmn,
-  title={Bmn: Boundary-matching network for temporal action proposal generation},
-  author={Lin, Tianwei and Liu, Xiao and Li, Xin and Ding, Errui and Wen, Shilei},
-  booktitle={Proceedings of the IEEE International Conference on Computer Vision},
-  pages={3889--3898},
-  year={2019}
-}
-```
-
-<!-- [DATASET] -->
-
-```BibTeX
-@article{zhao2017cuhk,
-  title={Cuhk \& ethz \& siat submission to activitynet challenge 2017},
-  author={Zhao, Y and Zhang, B and Wu, Z and Yang, S and Zhou, L and Yan, S and Wang, L and Xiong, Y and Lin, D and Qiao, Y and others},
-  journal={arXiv preprint arXiv:1710.08011},
-  volume={8},
-  year={2017}
-}
-```
-
-## Model Zoo
+## Results and Models
 
 ### ActivityNet feature
 
@@ -110,3 +88,27 @@ python tools/analysis/report_map.py --proposal path/to/proposal_file
 :::
 
 For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset) .
+
+## Citation
+
+```BibTeX
+@inproceedings{lin2019bmn,
+  title={Bmn: Boundary-matching network for temporal action proposal generation},
+  author={Lin, Tianwei and Liu, Xiao and Li, Xin and Ding, Errui and Wen, Shilei},
+  booktitle={Proceedings of the IEEE International Conference on Computer Vision},
+  pages={3889--3898},
+  year={2019}
+}
+```
+
+<!-- [DATASET] -->
+
+```BibTeX
+@article{zhao2017cuhk,
+  title={Cuhk \& ethz \& siat submission to activitynet challenge 2017},
+  author={Zhao, Y and Zhang, B and Wu, Z and Yang, S and Zhou, L and Yan, S and Wang, L and Xiong, Y and Lin, D and Qiao, Y and others},
+  journal={arXiv preprint arXiv:1710.08011},
+  volume={8},
+  year={2017}
+}
+```

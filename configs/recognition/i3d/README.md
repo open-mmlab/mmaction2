@@ -1,5 +1,11 @@
 # I3D
 
+[Quo Vadis, Action Recognition? A New Model and the Kinetics Dataset](https://openaccess.thecvf.com/content_cvpr_2017/html/Carreira_Quo_Vadis_Action_CVPR_2017_paper.html)
+
+[Non-local Neural Networks](https://openaccess.thecvf.com/content_cvpr_2018/html/Wang_Non-Local_Neural_Networks_CVPR_2018_paper.html)
+
+<!-- [ALGORITHM] -->
+
 ## Abstract
 
 <!-- [ABSTRACT] -->
@@ -11,33 +17,7 @@ The paucity of videos in current action classification datasets (UCF-101 and HMD
 <img src="https://user-images.githubusercontent.com/34324155/143043624-1944704a-5d3e-4a3f-b258-1505c49f6092.png" width="800"/>
 </div>
 
-## Citation
-
-<!-- [ALGORITHM] -->
-
-```BibTeX
-@inproceedings{inproceedings,
-  author = {Carreira, J. and Zisserman, Andrew},
-  year = {2017},
-  month = {07},
-  pages = {4724-4733},
-  title = {Quo Vadis, Action Recognition? A New Model and the Kinetics Dataset},
-  doi = {10.1109/CVPR.2017.502}
-}
-```
-
-<!-- [BACKBONE] -->
-
-```BibTeX
-@article{NonLocal2018,
-  author =   {Xiaolong Wang and Ross Girshick and Abhinav Gupta and Kaiming He},
-  title =    {Non-local Neural Networks},
-  journal =  {CVPR},
-  year =     {2018}
-}
-```
-
-## Model Zoo
+## Results and Models
 
 ### Kinetics-400
 
@@ -101,3 +81,27 @@ python tools/test.py configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+
+## Citation
+
+```BibTeX
+@inproceedings{inproceedings,
+  author = {Carreira, J. and Zisserman, Andrew},
+  year = {2017},
+  month = {07},
+  pages = {4724-4733},
+  title = {Quo Vadis, Action Recognition? A New Model and the Kinetics Dataset},
+  doi = {10.1109/CVPR.2017.502}
+}
+```
+
+<!-- [BACKBONE] -->
+
+```BibTeX
+@article{NonLocal2018,
+  author =   {Xiaolong Wang and Ross Girshick and Abhinav Gupta and Kaiming He},
+  title =    {Non-local Neural Networks},
+  journal =  {CVPR},
+  year =     {2018}
+}
+```

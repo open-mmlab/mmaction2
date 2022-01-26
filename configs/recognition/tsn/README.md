@@ -1,5 +1,9 @@
 # TSN
 
+[Temporal segment networks: Towards good practices for deep action recognition](https://link.springer.com/chapter/10.1007/978-3-319-46484-8_2)
+
+<!-- [ALGORITHM] -->
+
 ## Abstract
 
 <!-- [ABSTRACT] -->
@@ -11,22 +15,7 @@ Deep convolutional networks have achieved great success for visual recognition i
 <img src="https://user-images.githubusercontent.com/34324155/143019237-8823045b-dfa3-45cc-a992-ee83ab9d8459.png" width="800"/>
 </div>
 
-## Citation
-
-<!-- [ALGORITHM] -->
-
-```BibTeX
-@inproceedings{wang2016temporal,
-  title={Temporal segment networks: Towards good practices for deep action recognition},
-  author={Wang, Limin and Xiong, Yuanjun and Wang, Zhe and Qiao, Yu and Lin, Dahua and Tang, Xiaoou and Van Gool, Luc},
-  booktitle={European conference on computer vision},
-  pages={20--36},
-  year={2016},
-  organization={Springer}
-}
-```
-
-## Model Zoo
+## Results and Models
 
 ### UCF-101
 
@@ -243,3 +232,16 @@ python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+
+## Citation
+
+```BibTeX
+@inproceedings{wang2016temporal,
+  title={Temporal segment networks: Towards good practices for deep action recognition},
+  author={Wang, Limin and Xiong, Yuanjun and Wang, Zhe and Qiao, Yu and Lin, Dahua and Tang, Xiaoou and Van Gool, Luc},
+  booktitle={European conference on computer vision},
+  pages={20--36},
+  year={2016},
+  organization={Springer}
+}
+```
