@@ -1,5 +1,9 @@
 # C3D
 
+[Learning Spatiotemporal Features with 3D Convolutional Networks](https://openaccess.thecvf.com/content_iccv_2015/html/Tran_Learning_Spatiotemporal_Features_ICCV_2015_paper.html)
+
+<!-- [ALGORITHM] -->
+
 ## Abstract
 
 <!-- [ABSTRACT] -->
@@ -11,22 +15,7 @@ We propose a simple, yet effective approach for spatiotemporal feature learning 
 <img src="https://user-images.githubusercontent.com/34324155/143043383-8c26f5d6-d45e-47ae-be18-c23456eb84b9.png" width="800"/>
 </div>
 
-## Citation
-
-<!-- [ALGORITHM] -->
-
-```BibTeX
-@ARTICLE{2014arXiv1412.0767T,
-author = {Tran, Du and Bourdev, Lubomir and Fergus, Rob and Torresani, Lorenzo and Paluri, Manohar},
-title = {Learning Spatiotemporal Features with 3D Convolutional Networks},
-keywords = {Computer Science - Computer Vision and Pattern Recognition},
-year = 2014,
-month = dec,
-eid = {arXiv:1412.0767}
-}
-```
-
-## Model Zoo
+## Results and Models
 
 ### UCF-101
 
@@ -80,3 +69,18 @@ python tools/test.py configs/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb.
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+
+## Citation
+
+<!-- [ALGORITHM] -->
+
+```BibTeX
+@ARTICLE{2014arXiv1412.0767T,
+author = {Tran, Du and Bourdev, Lubomir and Fergus, Rob and Torresani, Lorenzo and Paluri, Manohar},
+title = {Learning Spatiotemporal Features with 3D Convolutional Networks},
+keywords = {Computer Science - Computer Vision and Pattern Recognition},
+year = 2014,
+month = dec,
+eid = {arXiv:1412.0767}
+}
+```

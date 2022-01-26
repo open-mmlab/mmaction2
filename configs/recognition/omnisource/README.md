@@ -1,8 +1,8 @@
 # Omni-sourced Webly-supervised Learning for Video Recognition
 
-[Haodong Duan](https://github.com/kennymckormick), [Yue Zhao](https://github.com/zhaoyue-zephyrus), [Yuanjun Xiong](https://github.com/yjxiong), Wentao Liu, [Dahua Lin](https://github.com/lindahua)
+[Omni-sourced Webly-supervised Learning for Video Recognition](https://arxiv.org/abs/2003.13042)
 
-In ECCV, 2020. [Paper](https://arxiv.org/abs/2003.13042), [Dataset](https://docs.google.com/forms/d/e/1FAIpQLSd8_GlmHzG8FcDbW-OEu__G7qLgOSYZpH-i5vYVJcu7wcb_TQ/viewform?usp=sf_link)
+[Dataset](https://docs.google.com/forms/d/e/1FAIpQLSd8_GlmHzG8FcDbW-OEu__G7qLgOSYZpH-i5vYVJcu7wcb_TQ/viewform?usp=sf_link)
 
 ## Abstract
 
@@ -15,20 +15,7 @@ We introduce OmniSource, a novel framework for leveraging web data to train vide
 <img src="https://github.com/open-mmlab/mmaction2/blob/master/configs/recognition/omnisource/pipeline.png" width="800"/>
 </div>
 
-## Citation
-
-<!-- [ALGORITHM] -->
-
-```BibTeX
-@article{duan2020omni,
-  title={Omni-sourced Webly-supervised Learning for Video Recognition},
-  author={Duan, Haodong and Zhao, Yue and Xiong, Yuanjun and Liu, Wentao and Lin, Dahua},
-  journal={arXiv preprint arXiv:2003.13042},
-  year={2020}
-}
-```
-
-## Model Zoo
+## Results and Models
 
 ### Kinetics-400 Model Release
 
@@ -77,3 +64,16 @@ We also list the benchmark in the original paper which run on Kinetics-400 for c
 | :--------------------: | :---------: | :---------: | :----------: | :---------: | :---------: | :---------: |
 |   TSN-3seg-ResNet50    | 70.6 / 89.4 | 71.5 / 89.5 | 72.0 / 90.0  | 72.0 / 90.3 | 71.7 / 89.6 | 73.6 / 91.0 |
 | SlowOnly-4x16-ResNet50 | 73.8 / 90.9 | 74.5 / 91.4 | 75.2 / 91.6  | 75.2 / 91.7 | 74.5 / 91.1 | 76.6 / 92.5 |
+
+## Citation
+
+<!-- [ALGORITHM] -->
+
+```BibTeX
+@article{duan2020omni,
+  title={Omni-sourced Webly-supervised Learning for Video Recognition},
+  author={Duan, Haodong and Zhao, Yue and Xiong, Yuanjun and Liu, Wentao and Lin, Dahua},
+  journal={arXiv preprint arXiv:2003.13042},
+  year={2020}
+}
+```
