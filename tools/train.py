@@ -186,28 +186,15 @@ def main():
             config=cfg.pretty_text)
 
     test_option = dict(test_last=args.test_last, test_best=args.test_best)
-    multigrid_cfg = cfg.get('multigrid', None)
-    if multigrid_cfg is not None:
-        from mmaction.apis import train_model_multi
-        train_model_multi(
-            model,
-            datasets,
-            cfg,
-            distributed=distributed,
-            validate=args.validate,
-            test=test_option,
-            timestamp=timestamp,
-            meta=meta)
-    else:
-        train_model(
-            model,
-            datasets,
-            cfg,
-            distributed=distributed,
-            validate=args.validate,
-            test=test_option,
-            timestamp=timestamp,
-            meta=meta)
+    train_model(
+        model,
+        datasets,
+        cfg,
+        distributed=distributed,
+        validate=args.validate,
+        test=test_option,
+        timestamp=timestamp,
+        meta=meta)
 
 
 if __name__ == '__main__':
