@@ -41,7 +41,7 @@ The paucity of videos in current action classification datasets (UCF-101 and HMD
 }
 ```
 
-## Model Zoo
+## Results and Models
 
 ### Kinetics-400
 

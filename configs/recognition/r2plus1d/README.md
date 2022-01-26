@@ -27,7 +27,7 @@ In this paper we discuss several forms of spatiotemporal convolutions for video 
 }
 ```
 
-## Model Zoo
+## Results and Models
 
 ### Kinetics-400
 

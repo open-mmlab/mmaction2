@@ -62,7 +62,7 @@ Human skeleton, as a compact representation of human action, has received increa
 </thead>
 </table>
 
-## Model Zoo
+## Results and Models
 
 ### FineGYM
 

@@ -28,7 +28,7 @@ Deep convolutional networks have achieved great success for visual recognition i
 }
 ```
 
-## Model Zoo
+## Results and Models
 
 ### UCF-101
 

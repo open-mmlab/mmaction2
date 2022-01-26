@@ -27,7 +27,7 @@ We present SlowFast networks for video recognition. Our model involves (i) a Slo
 }
 ```
 
-## Model Zoo
+## Results and Models
 
 ### Kinetics-400
 

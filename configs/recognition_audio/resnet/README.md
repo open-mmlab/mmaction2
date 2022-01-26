@@ -27,7 +27,7 @@ tecture for integrated audiovisual perception. AVSlowFast has Slow and Fast visu
 }
 ```
 
-## Model Zoo
+## Results and Models
 
 ### Kinetics-400
 

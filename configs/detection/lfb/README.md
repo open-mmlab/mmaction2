@@ -39,7 +39,7 @@ To understand the world, we humans constantly need to relate the present to the 
 }
 ```
 
-## Model Zoo
+## Results and Models
 
 ### AVA2.1
 

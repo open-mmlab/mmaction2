@@ -55,7 +55,7 @@ AVA, with its realistic scene and action complexity, exposes the intrinsic diffi
 }
 ```
 
-## Model Zoo
+## Results and Models
 
 ### AVA2.1
 

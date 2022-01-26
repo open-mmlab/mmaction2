@@ -39,7 +39,7 @@ Current state-of-the-art approaches for spatio-temporal action localization rely
 }
 ```
 
-## Model Zoo
+## Results and Models
 
 ### AVA2.1
 

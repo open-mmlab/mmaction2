@@ -26,7 +26,7 @@ Video data is with complex temporal dynamics due to various factors such as came
 }
 ```
 
-## Model Zoo
+## Results and Models
 
 ### Kinetics-400
 

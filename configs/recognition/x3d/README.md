@@ -28,7 +28,7 @@ This paper presents X3D, a family of efficient video networks that progressively
 }
 ```
 
-## Model Zoo
+## Results and Models
 
 ### Kinetics-400
 

@@ -26,7 +26,7 @@ Dynamics of human body skeletons convey significant information for human action
 }
 ```
 
-## Model Zoo
+## Results and Models
 
 ### NTU60_XSub
 

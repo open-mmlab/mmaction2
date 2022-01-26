@@ -26,7 +26,7 @@ Visual tempo characterizes the dynamics and the temporal scale of an action. Mod
 }
 ```
 
-## Model Zoo
+## Results and Models
 
 ### Kinetics-400
 

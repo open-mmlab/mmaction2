@@ -28,7 +28,7 @@ We introduce OmniSource, a novel framework for leveraging web data to train vide
 }
 ```
 
-## Model Zoo
+## Results and Models
 
 ### Kinetics-400 Model Release
 

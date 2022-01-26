@@ -40,7 +40,7 @@ doi = {10.1109/ICCV.2019.00565}
 }
 ```
 
-## Model Zoo
+## Results and Models
 
 ### Kinetics-400
 

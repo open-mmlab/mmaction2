@@ -27,7 +27,7 @@ year = {2017}
 }
 ```
 
-## Model Zoo
+## Results and Models
 
 | config | gpus | backbone | pretrain | mAP@0.3 | mAP@0.4 | mAP@0.5 | reference mAP@0.3 | reference mAP@0.4 | reference mAP@0.5 | gpu_mem(M) | ckpt | log | json | reference ckpt | reference json
 |:-:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:-:|:-:|:-:|:-:|---|:--:|:--:|

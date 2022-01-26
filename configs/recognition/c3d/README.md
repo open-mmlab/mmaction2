@@ -30,7 +30,7 @@ eid = {arXiv:1412.0767}
 }
 ```
 
-## Model Zoo
+## Results and Models
 
 ### UCF-101
 

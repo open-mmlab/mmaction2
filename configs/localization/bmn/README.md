@@ -39,7 +39,7 @@ Temporal action proposal generation is an challenging and promising task which a
 }
 ```
 
-## Model Zoo
+## Results and Models
 
 ### ActivityNet feature
 

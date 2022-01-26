@@ -27,7 +27,7 @@ In skeleton-based action recognition, graph convolutional networks (GCNs), which
 }
 ```
 
-## Model Zoo
+## Results and Models
 
 ### NTU60_XSub
 

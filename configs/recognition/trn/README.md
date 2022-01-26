@@ -26,7 +26,7 @@ Temporal relational reasoning, the ability to link meaningful transformations of
 }
 ```
 
-## Model Zoo
+## Results and Models
 
 ### Something-Something V1
 

@@ -26,7 +26,7 @@ For a long time, the vision community tries to learn the spatio-temporal represe
 }
 ```
 
-## Model Zoo
+## Results and Models
 
 ### Something-Something V1
 

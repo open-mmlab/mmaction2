@@ -37,7 +37,7 @@ The explosive growth in video streaming gives rise to challenges on performing v
 }
 ```
 
-## Model Zoo
+## Results and Models
 
 ### Kinetics-400
 

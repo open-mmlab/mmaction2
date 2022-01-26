@@ -28,7 +28,7 @@ We present a convolution-free approach to video classification built exclusively
 }
 ```
 
-## Model Zoo
+## Results and Models
 
 ### Kinetics-400
 
