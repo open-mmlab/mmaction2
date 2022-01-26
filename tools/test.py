@@ -15,7 +15,7 @@ from mmcv.runner.fp16_utils import wrap_fp16_model
 
 from mmaction.datasets import build_dataloader, build_dataset
 from mmaction.models import build_model
-from mmaction.utils import register_module_hooks
+from mmaction.utils import register_module_hooks, setup_multi_processes
 
 # TODO import test functions from mmcv and delete them from mmaction2
 try:
@@ -273,6 +273,9 @@ def main():
     cfg = Config.fromfile(args.config)
 
     cfg.merge_from_dict(args.cfg_options)
+
+    # set multi-process settings
+    setup_multi_processes(cfg)
 
     # Load output_config from cfg
     output_config = cfg.get('output_config', {})
