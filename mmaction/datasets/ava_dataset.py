@@ -93,8 +93,6 @@ class AVADataset(BaseDataset):
             default value is referred from the official website. Default: 1798.
     """
 
-    _FPS = 30
-
     def __init__(self,
                  ann_file,
                  exclude_file,
@@ -111,9 +109,11 @@ class AVADataset(BaseDataset):
                  modality='RGB',
                  num_max_proposals=1000,
                  timestamp_start=900,
-                 timestamp_end=1800):
+                 timestamp_end=1800,
+                 fps=30):
         # since it inherits from `BaseDataset`, some arguments
         # should be assigned before performing `load_annotations()`
+        self._FPS = fps  # Keep this as standard
         self.custom_classes = custom_classes
         if custom_classes is not None:
             assert num_classes == len(custom_classes) + 1
