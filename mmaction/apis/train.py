@@ -155,6 +155,25 @@ def train_model(model,
     runner.register_training_hooks(cfg.lr_config, optimizer_config,
                                    cfg.checkpoint_config, cfg.log_config,
                                    cfg.get('momentum_config', None))
+
+    # multigrid setting
+    multigrid_cfg = cfg.get('multigrid', None)
+    if multigrid_cfg is not None:
+        from mmaction.utils.multigrid import LongCycleHook, LongShortCycleHook
+        if multigrid_cfg.short_cycle:
+            multigrid_scheduler = LongShortCycleHook(cfg)
+        else:
+            multigrid_scheduler = LongCycleHook(cfg)
+        runner.register_hook(multigrid_scheduler)
+        logger.info('Finish register multigrid hook')
+
+        # subbn3d aggregation is HIGH, as it should be done before
+        # saving and evaluation
+        from mmaction.utils.multigrid import SubBatchNorm3dAggregationHook
+        subbn3d_aggre_hook = SubBatchNorm3dAggregationHook()
+        runner.register_hook(subbn3d_aggre_hook, priority='VERY_HIGH')
+        logger.info('Finish register subbn3daggre hook')
+
     if distributed:
         if cfg.omnisource:
             runner.register_hook(OmniSourceDistSamplerSeedHook())
@@ -175,7 +194,7 @@ def train_model(model,
                                                   **dataloader_setting)
         precise_bn_hook = PreciseBNHook(data_loader_precise_bn,
                                         **cfg.get('precise_bn'))
-        runner.register_hook(precise_bn_hook)
+        runner.register_hook(precise_bn_hook, priority='HIGHEST')
 
     if validate:
         eval_cfg = cfg.get('evaluation', {})
