@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 import torch
 import torch.nn as nn
 from mmcv.cnn import NORM_LAYERS
@@ -7,22 +9,21 @@ from mmcv.cnn import NORM_LAYERS
 class SubBatchNorm3D(nn.Module):
     """sub batchnorm 3d."""
 
-    def __init__(self, num_features, **args):
+    def __init__(self, num_features, **cfg):
         super(SubBatchNorm3D, self).__init__()
 
         self.num_features = num_features
-        if 'num_splits' in args:
-            self.num_splits = args['num_splits']
+        self.cfg_ = deepcopy(cfg)
+        if 'num_splits' in self.cfg_:
+            self.num_splits = self.cfg_.pop('num_splits')
         else:
             self.num_splits = 1
-        # print('sub bn num_splits', self.num_splits)
-        args['num_features'] = self.num_features
-        args['affine'] = False
-
-        self.bn = nn.BatchNorm3d(self.num_features, affine=False)
-        self.split_bn = nn.BatchNorm3d(
-            self.num_features * self.num_splits, affine=False)
-        self.affine = False
+        self.num_features_split = self.num_features * self.num_splits
+        # only keep one set of affine params, not in .bn or .split_bn
+        self.cfg_['affine'] = False
+        self.bn = nn.BatchNorm3d(num_features, **self.cfg_)
+        self.split_bn = nn.BatchNorm3d(self.num_features_split, **self.cfg_)
+        self.init_weights(cfg)
 
     def init_weights(self, cfg):
         if cfg.get('affine', True):
@@ -47,13 +48,12 @@ class SubBatchNorm3D(nn.Module):
         self.split_bn.
         """
         if self.split_bn.track_running_stats:
-            aggregate = self._get_aggregated_mean_std
-            self.bn.running_mean, self.bn.running_var = aggregate(
+            aggre_func = self._get_aggregated_mean_std
+            self.bn.running_mean.data, self.bn.running_var.data = aggre_func(
                 self.split_bn.running_mean, self.split_bn.running_var,
                 self.num_splits)
         else:
-            # print(' self split_bn not tracking running status---')
-            pass
+            print(' self split_bn not tracking running status---')
         self.bn.num_batches_tracked = self.split_bn.num_batches_tracked.detach(
         )
 
@@ -65,7 +65,7 @@ class SubBatchNorm3D(nn.Module):
             x = x.view(n, c, t, h, w)
         else:
             x = self.bn(x)
-        # if self.affine:
-        #     x = x * self.weight.view(-1, 1, 1, 1)
-        #     x = x + self.bias.view(-1, 1, 1, 1)
+        if self.affine:
+            x = x * self.weight.view(-1, 1, 1, 1)
+            x = x + self.bias.view(-1, 1, 1, 1)
         return x

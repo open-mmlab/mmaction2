@@ -1,9 +1,9 @@
 from .longcyclehook import LongCycleHook
 from .longshortcyclehook import LongShortCycleHook
-from .short_sampler import DistributedShortCycleSampler
+from .short_sampler import ShortCycleSampler
 from .subbn_aggregate import SubBatchNorm3dAggregationHook
 
 __all__ = [
-    'DistributedShortCycleSampler', 'LongCycleHook', 'LongShortCycleHook',
+    'ShortCycleSampler', 'LongCycleHook', 'LongShortCycleHook',
     'SubBatchNorm3dAggregationHook'
 ]
