@@ -15,17 +15,6 @@ For a long time, the vision community tries to learn the spatio-temporal represe
 <img src="https://user-images.githubusercontent.com/34324155/143018602-d32bd546-e4f5-442c-9173-e4303676efb3.png" width="800"/>
 </div>
 
-## Citation
-
-```BibTeX
-@article{shao2020temporal,
-    title={Temporal Interlacing Network},
-    author={Hao Shao and Shengju Qian and Yu Liu},
-    year={2020},
-    journal={AAAI},
-}
-```
-
 ## Results and Models
 
 ### Something-Something V1
@@ -99,3 +88,14 @@ python tools/test.py configs/recognition/tin/tin_r50_1x1x8_40e_sthv1_rgb.py \
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+
+## Citation
+
+```BibTeX
+@article{shao2020temporal,
+    title={Temporal Interlacing Network},
+    author={Hao Shao and Shengju Qian and Yu Liu},
+    year={2020},
+    journal={AAAI},
+}
+```

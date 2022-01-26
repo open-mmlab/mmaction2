@@ -15,19 +15,6 @@ We present a convolution-free approach to video classification built exclusively
 <img src="https://user-images.githubusercontent.com/34324155/143018542-7f782ec9-dca2-495e-9043-c13ad941a25c.png" width="800"/>
 </div>
 
-## Citation
-
-```BibTeX
-@misc{bertasius2021spacetime,
-    title   = {Is Space-Time Attention All You Need for Video Understanding?},
-    author  = {Gedas Bertasius and Heng Wang and Lorenzo Torresani},
-    year    = {2021},
-    eprint  = {2102.05095},
-    archivePrefix = {arXiv},
-    primaryClass = {cs.CV}
-}
-```
-
 ## Results and Models
 
 ### Kinetics-400
@@ -85,3 +72,16 @@ python tools/test.py configs/recognition/timesformer/timesformer_divST_8x32x1_15
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+
+## Citation
+
+```BibTeX
+@misc{bertasius2021spacetime,
+    title   = {Is Space-Time Attention All You Need for Video Understanding?},
+    author  = {Gedas Bertasius and Heng Wang and Lorenzo Torresani},
+    year    = {2021},
+    eprint  = {2102.05095},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.CV}
+}
+```

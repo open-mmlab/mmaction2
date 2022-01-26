@@ -15,17 +15,6 @@ Visual tempo characterizes the dynamics and the temporal scale of an action. Mod
 <img src="https://user-images.githubusercontent.com/34324155/143018779-1d2a398f-dbd3-405a-87e5-e188b61fcc86.png" width="800"/>
 </div>
 
-## Citation
-
-```BibTeX
-@inproceedings{yang2020tpn,
-  title={Temporal Pyramid Network for Action Recognition},
-  author={Yang, Ceyuan and Xu, Yinghao and Shi, Jianping and Dai, Bo and Zhou, Bolei},
-  booktitle={Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
-  year={2020},
-}
-```
-
 ## Results and Models
 
 ### Kinetics-400
@@ -89,3 +78,14 @@ python tools/test.py configs/recognition/tpn/tpn_slowonly_r50_8x8x1_150e_kinetic
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+
+## Citation
+
+```BibTeX
+@inproceedings{yang2020tpn,
+  title={Temporal Pyramid Network for Action Recognition},
+  author={Yang, Ceyuan and Xu, Yinghao and Shi, Jianping and Dai, Bo and Zhou, Bolei},
+  booktitle={Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  year={2020},
+}
+```

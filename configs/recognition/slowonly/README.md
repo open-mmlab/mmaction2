@@ -15,18 +15,6 @@ We present SlowFast networks for video recognition. Our model involves (i) a Slo
 <img src="https://user-images.githubusercontent.com/34324155/143044111-94676f64-7ba8-4081-9011-f8054bed7030.png" width="800"/>
 </div>
 
-## Citation
-
-```BibTeX
-@inproceedings{feichtenhofer2019slowfast,
-  title={Slowfast networks for video recognition},
-  author={Feichtenhofer, Christoph and Fan, Haoqi and Malik, Jitendra and He, Kaiming},
-  booktitle={Proceedings of the IEEE international conference on computer vision},
-  pages={6202--6211},
-  year={2019}
-}
-```
-
 ## Results and Models
 
 ### Kinetics-400
@@ -157,3 +145,15 @@ python tools/test.py configs/recognition/slowonly/slowonly_r50_4x16x1_256e_kinet
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+
+## Citation
+
+```BibTeX
+@inproceedings{feichtenhofer2019slowfast,
+  title={Slowfast networks for video recognition},
+  author={Feichtenhofer, Christoph and Fan, Haoqi and Malik, Jitendra and He, Kaiming},
+  booktitle={Proceedings of the IEEE international conference on computer vision},
+  pages={6202--6211},
+  year={2019}
+}
+```

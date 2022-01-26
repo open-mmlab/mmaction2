@@ -15,19 +15,6 @@ This paper presents X3D, a family of efficient video networks that progressively
 <img src="https://user-images.githubusercontent.com/34324155/143019391-6711febb-9e5d-4bec-85b9-65f5179e93a2.png" width="800"/>
 </div>
 
-## Citation
-
-```BibTeX
-@misc{feichtenhofer2020x3d,
-      title={X3D: Expanding Architectures for Efficient Video Recognition},
-      author={Christoph Feichtenhofer},
-      year={2020},
-      eprint={2004.04730},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
-}
-```
-
 ## Results and Models
 
 ### Kinetics-400
@@ -65,3 +52,16 @@ python tools/test.py configs/recognition/x3d/x3d_s_13x6x1_facebook_kinetics400_r
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+
+## Citation
+
+```BibTeX
+@misc{feichtenhofer2020x3d,
+      title={X3D: Expanding Architectures for Efficient Video Recognition},
+      author={Christoph Feichtenhofer},
+      year={2020},
+      eprint={2004.04730},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
+```

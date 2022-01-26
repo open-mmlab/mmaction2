@@ -15,18 +15,6 @@ In skeleton-based action recognition, graph convolutional networks (GCNs), which
 <img src="https://user-images.githubusercontent.com/30782254/143212681-a676d7a0-e92b-4a8a-ad8c-c5826eb58019.png" width="800"/>
 </div>
 
-## Citation
-
-```BibTeX
-@inproceedings{shi2019two,
-  title={Two-stream adaptive graph convolutional networks for skeleton-based action recognition},
-  author={Shi, Lei and Zhang, Yifan and Cheng, Jian and Lu, Hanqing},
-  booktitle={Proceedings of the IEEE/CVF conference on computer vision and pattern recognition},
-  pages={12026--12035},
-  year={2019}
-}
-```
-
 ## Results and Models
 
 ### NTU60_XSub
@@ -87,3 +75,15 @@ python tools/test.py configs/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_bone_3d.py \
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+
+## Citation
+
+```BibTeX
+@inproceedings{shi2019two,
+  title={Two-stream adaptive graph convolutional networks for skeleton-based action recognition},
+  author={Shi, Lei and Zhang, Yifan and Cheng, Jian and Lu, Hanqing},
+  booktitle={Proceedings of the IEEE/CVF conference on computer vision and pattern recognition},
+  pages={12026--12035},
+  year={2019}
+}
+```

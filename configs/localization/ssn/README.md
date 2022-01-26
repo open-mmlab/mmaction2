@@ -15,18 +15,6 @@ Detecting actions in untrimmed videos is an important yet challenging task. In t
 <img src="https://user-images.githubusercontent.com/34324155/143016899-017893d3-a907-4487-90a2-cb884088266c.png" width="800"/>
 </div>
 
-## Citation
-
-```BibTeX
-@InProceedings{Zhao_2017_ICCV,
-author = {Zhao, Yue and Xiong, Yuanjun and Wang, Limin and Wu, Zhirong and Tang, Xiaoou and Lin, Dahua},
-title = {Temporal Action Detection With Structured Segment Networks},
-booktitle = {Proceedings of the IEEE International Conference on Computer Vision (ICCV)},
-month = {Oct},
-year = {2017}
-}
-```
-
 ## Results and Models
 
 | config | gpus | backbone | pretrain | mAP@0.3 | mAP@0.4 | mAP@0.5 | reference mAP@0.3 | reference mAP@0.4 | reference mAP@0.5 | gpu_mem(M) | ckpt | log | json | reference ckpt | reference json
@@ -76,3 +64,15 @@ python tools/test.py configs/localization/ssn/ssn_r50_450e_thumos14_rgb_test.py 
 ```
 
 For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+
+## Citation
+
+```BibTeX
+@InProceedings{Zhao_2017_ICCV,
+author = {Zhao, Yue and Xiong, Yuanjun and Wang, Limin and Wu, Zhirong and Tang, Xiaoou and Lin, Dahua},
+title = {Temporal Action Detection With Structured Segment Networks},
+booktitle = {Proceedings of the IEEE International Conference on Computer Vision (ICCV)},
+month = {Oct},
+year = {2017}
+}
+```

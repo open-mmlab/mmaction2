@@ -15,17 +15,6 @@ Dynamics of human body skeletons convey significant information for human action
 <img src="https://user-images.githubusercontent.com/34324155/142995893-d6618728-072c-46e1-b276-9b88cf21a01c.png" width="800"/>
 </div>
 
-## Citation
-
-```BibTeX
-@inproceedings{yan2018spatial,
-  title={Spatial temporal graph convolutional networks for skeleton-based action recognition},
-  author={Yan, Sijie and Xiong, Yuanjun and Lin, Dahua},
-  booktitle={Thirty-second AAAI conference on artificial intelligence},
-  year={2018}
-}
-```
-
 ## Results and Models
 
 ### NTU60_XSub
@@ -81,3 +70,14 @@ python tools/test.py configs/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint.py \
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+
+## Citation
+
+```BibTeX
+@inproceedings{yan2018spatial,
+  title={Spatial temporal graph convolutional networks for skeleton-based action recognition},
+  author={Yan, Sijie and Xiong, Yuanjun and Lin, Dahua},
+  booktitle={Thirty-second AAAI conference on artificial intelligence},
+  year={2018}
+}
+```

@@ -15,18 +15,6 @@ Temporal action proposal generation is an important yet challenging problem, sin
 <img src="https://user-images.githubusercontent.com/34324155/143016692-69efafbd-cec6-47f1-af45-371d0ff78a97.png" width="800"/>
 </div>
 
-## Citation
-
-```BibTeX
-@inproceedings{lin2018bsn,
-  title={Bsn: Boundary sensitive network for temporal action proposal generation},
-  author={Lin, Tianwei and Zhao, Xu and Su, Haisheng and Wang, Chongjing and Yang, Ming},
-  booktitle={Proceedings of the European Conference on Computer Vision (ECCV)},
-  pages={3--19},
-  year={2018}
-}
-```
-
 ## Results and Models
 
 ### ActivityNet feature
@@ -170,3 +158,15 @@ Examples:
 :::
 
 For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+
+## Citation
+
+```BibTeX
+@inproceedings{lin2018bsn,
+  title={Bsn: Boundary sensitive network for temporal action proposal generation},
+  author={Lin, Tianwei and Zhao, Xu and Su, Haisheng and Wang, Chongjing and Yang, Ming},
+  booktitle={Proceedings of the European Conference on Computer Vision (ECCV)},
+  pages={3--19},
+  year={2018}
+}
+```

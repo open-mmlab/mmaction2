@@ -15,19 +15,6 @@ Human skeleton, as a compact representation of human action, has received increa
 <img src="https://user-images.githubusercontent.com/34324155/142995620-21b5536c-8cda-48cd-9cb9-50b70cab7a89.png" width="800"/>
 </div>
 
-## Citation
-
-```BibTeX
-@misc{duan2021revisiting,
-      title={Revisiting Skeleton-based Action Recognition},
-      author={Haodong Duan and Yue Zhao and Kai Chen and Dian Shao and Dahua Lin and Bo Dai},
-      year={2021},
-      eprint={2104.13586},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
-}
-```
-
 <table>
 <thead>
   <tr>
@@ -146,3 +133,16 @@ python tools/test.py configs/skeleton/posec3d/slowonly_r50_u48_240e_gym_keypoint
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+
+## Citation
+
+```BibTeX
+@misc{duan2021revisiting,
+      title={Revisiting Skeleton-based Action Recognition},
+      author={Haodong Duan and Yue Zhao and Kai Chen and Dian Shao and Dahua Lin and Bo Dai},
+      year={2021},
+      eprint={2104.13586},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
+```

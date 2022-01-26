@@ -15,17 +15,6 @@ Temporal relational reasoning, the ability to link meaningful transformations of
 <img src="https://user-images.githubusercontent.com/34324155/143018998-d2120c3d-a9a7-4e4c-90b1-1e5ff1fd5f06.png" width="800"/>
 </div>
 
-## Citation
-
-```BibTeX
-@article{zhou2017temporalrelation,
-    title = {Temporal Relational Reasoning in Videos},
-    author = {Zhou, Bolei and Andonian, Alex and Oliva, Aude and Torralba, Antonio},
-    journal={European Conference on Computer Vision},
-    year={2018}
-}
-```
-
 ## Results and Models
 
 ### Something-Something V1
@@ -91,3 +80,14 @@ python tools/test.py configs/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb.py \
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+
+## Citation
+
+```BibTeX
+@article{zhou2017temporalrelation,
+    title = {Temporal Relational Reasoning in Videos},
+    author = {Zhou, Bolei and Andonian, Alex and Oliva, Aude and Torralba, Antonio},
+    journal={European Conference on Computer Vision},
+    year={2018}
+}
+```

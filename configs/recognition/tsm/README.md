@@ -15,28 +15,6 @@ The explosive growth in video streaming gives rise to challenges on performing v
 <img src="https://user-images.githubusercontent.com/34324155/143019083-abc0de39-9ea1-4175-be5c-073c90de64c3.png" width="800"/>
 </div>
 
-## Citation
-
-```BibTeX
-@inproceedings{lin2019tsm,
-  title={TSM: Temporal Shift Module for Efficient Video Understanding},
-  author={Lin, Ji and Gan, Chuang and Han, Song},
-  booktitle={Proceedings of the IEEE International Conference on Computer Vision},
-  year={2019}
-}
-```
-
-<!-- [BACKBONE] -->
-
-```BibTeX
-@article{NonLocal2018,
-  author =   {Xiaolong Wang and Ross Girshick and Abhinav Gupta and Kaiming He},
-  title =    {Non-local Neural Networks},
-  journal =  {CVPR},
-  year =     {2018}
-}
-```
-
 ## Results and Models
 
 ### Kinetics-400
@@ -190,3 +168,25 @@ python tools/test.py configs/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.p
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+
+## Citation
+
+```BibTeX
+@inproceedings{lin2019tsm,
+  title={TSM: Temporal Shift Module for Efficient Video Understanding},
+  author={Lin, Ji and Gan, Chuang and Han, Song},
+  booktitle={Proceedings of the IEEE International Conference on Computer Vision},
+  year={2019}
+}
+```
+
+<!-- [BACKBONE] -->
+
+```BibTeX
+@article{NonLocal2018,
+  author =   {Xiaolong Wang and Ross Girshick and Abhinav Gupta and Kaiming He},
+  title =    {Non-local Neural Networks},
+  journal =  {CVPR},
+  year =     {2018}
+}
+```
