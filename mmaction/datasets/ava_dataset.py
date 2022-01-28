@@ -91,6 +91,7 @@ class AVADataset(BaseDataset):
             default value is referred from the official website. Default: 902.
         timestamp_end (int): The end point of included timestamps. The
             default value is referred from the official website. Default: 1798.
+        fps (int): Overrides the default FPS for the dataset. Default: 30.
     """
 
     def __init__(self,
