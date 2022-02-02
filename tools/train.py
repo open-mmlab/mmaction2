@@ -73,18 +73,6 @@ def parse_args():
         action='store_true',
         help=('whether to test the best checkpoint (if applicable) after '
               'training'))
-    group_gpus = parser.add_mutually_exclusive_group()
-    group_gpus.add_argument(
-        '--gpus',
-        type=int,
-        help='number of gpus to use '
-        '(only applicable to non-distributed training)')
-    group_gpus.add_argument(
-        '--gpu-ids',
-        type=int,
-        nargs='+',
-        help='ids of gpus to use '
-        '(only applicable to non-distributed training)')
     parser.add_argument('--seed', type=int, default=None, help='random seed')
     parser.add_argument(
         '--deterministic',
@@ -100,8 +88,8 @@ def parse_args():
         "'--cfg-options model.backbone.depth=18 model.backbone.with_cp=True'")
     parser.add_argument(
         '--launcher',
-        choices=['none', 'pytorch', 'slurm', 'mpi'],
-        default='none',
+        choices=['pytorch', 'slurm'],
+        default='pytorch',
         help='job launcher')
     parser.add_argument('--local_rank', type=int, default=0)
     args = parser.parse_args()
@@ -136,19 +124,10 @@ def main():
                                 osp.splitext(osp.basename(args.config))[0])
     if args.resume_from is not None:
         cfg.resume_from = args.resume_from
-    if args.gpu_ids is not None:
-        cfg.gpu_ids = args.gpu_ids
-    else:
-        cfg.gpu_ids = range(1) if args.gpus is None else range(args.gpus)
 
-    # init distributed env first, since logger depends on the dist info.
-    if args.launcher == 'none':
-        distributed = False
-    else:
-        distributed = True
-        init_dist(args.launcher, **cfg.dist_params)
-        _, world_size = get_dist_info()
-        cfg.gpu_ids = range(world_size)
+    init_dist(args.launcher, **cfg.dist_params)
+    _, world_size = get_dist_info()
+    cfg.gpu_ids = range(world_size)
 
     # The flag is used to determine whether it is omnisource training
     cfg.setdefault('omnisource', False)
@@ -177,7 +156,6 @@ def main():
     meta['env_info'] = env_info
 
     # log some basic info
-    logger.info(f'Distributed training: {distributed}')
     logger.info(f'Config: {cfg.pretty_text}')
 
     # set random seeds
@@ -228,7 +206,7 @@ def main():
         model,
         datasets,
         cfg,
-        distributed=distributed,
+        distributed=True,
         validate=args.validate,
         test=test_option,
         timestamp=timestamp,

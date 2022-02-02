@@ -9,7 +9,7 @@ import torch
 from mmcv import Config, DictAction
 from mmcv.cnn import fuse_conv_bn
 from mmcv.fileio.io import file_handlers
-from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
+from mmcv.parallel import MMDistributedDataParallel
 from mmcv.runner import get_dist_info, init_dist, load_checkpoint
 from mmcv.runner.fp16_utils import wrap_fp16_model
 
@@ -19,13 +19,11 @@ from mmaction.utils import register_module_hooks
 
 # TODO import test functions from mmcv and delete them from mmaction2
 try:
-    from mmcv.engine import multi_gpu_test, single_gpu_test
+    from mmcv.engine import multi_gpu_test
 except (ImportError, ModuleNotFoundError):
-    warnings.warn(
-        'DeprecationWarning: single_gpu_test, multi_gpu_test, '
-        'collect_results_cpu, collect_results_gpu from mmaction2 will be '
-        'deprecated. Please install mmcv through master branch.')
-    from mmaction.apis import multi_gpu_test, single_gpu_test
+    warnings.warn('DeprecationWarning: multi_gpu_test from mmaction2 will be '
+                  'deprecated. Please install mmcv through master branch.')
+    from mmaction.apis import multi_gpu_test
 
 
 def parse_args():
@@ -86,7 +84,7 @@ def parse_args():
         help='average type when averaging test clips')
     parser.add_argument(
         '--launcher',
-        choices=['none', 'pytorch', 'slurm', 'mpi'],
+        choices=['none', 'pytorch', 'slurm'],
         default='none',
         help='job launcher')
     parser.add_argument('--local_rank', type=int, default=0)
@@ -156,16 +154,11 @@ def inference_pytorch(args, cfg, distributed, data_loader):
     if args.fuse_conv_bn:
         model = fuse_conv_bn(model)
 
-    if not distributed:
-        model = MMDataParallel(model, device_ids=[0])
-        outputs = single_gpu_test(model, data_loader)
-    else:
-        model = MMDistributedDataParallel(
-            model.cuda(),
-            device_ids=[torch.cuda.current_device()],
-            broadcast_buffers=False)
-        outputs = multi_gpu_test(model, data_loader, args.tmpdir,
-                                 args.gpu_collect)
+    model = MMDistributedDataParallel(
+        model.cuda(),
+        device_ids=[torch.cuda.current_device()],
+        broadcast_buffers=False)
+    outputs = multi_gpu_test(model, data_loader, args.tmpdir, args.gpu_collect)
 
     return outputs
 
@@ -320,8 +313,11 @@ def main():
     cfg.data.test.test_mode = True
 
     # init distributed env first, since logger depends on the dist info.
+    distributed = False
     if args.launcher == 'none':
-        distributed = False
+        assert args.tensorrt or args.onnx, (
+            'Launcher can be set to none'
+            'if and only if `tensorrt` or `onnx` flag is on. ')
     else:
         distributed = True
         init_dist(args.launcher, **cfg.dist_params)
