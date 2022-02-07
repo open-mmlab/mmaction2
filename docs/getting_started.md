@@ -57,6 +57,9 @@ For using custom datasets, please refer to [Tutorial 3: Adding New Dataset](tuto
 We provide testing scripts to evaluate a whole dataset (Kinetics-400, Something-Something V1&V2, (Multi-)Moments in Time, etc.),
 and provide some high-level apis for easier integration to other projects.
 
+MMAction2 also supports testing with CPU. However, it will be **very slow** and should only be used for debugging on a device without GPU.
+To test with CPU, one should first disable all GPUs (if exist) with `export CUDA_VISIBLE_DEVICES=-1`, and then call the testing scripts directly with `python tools/test.py {OTHER_ARGS}`.
+
 ### Test a dataset
 
 - [x] single GPU
@@ -351,6 +354,9 @@ evaluation = dict(interval=5)  # This evaluate the model per 5 epoch.
 ```
 
 According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you need to set the learning rate proportional to the batch size if you use different GPUs or videos per GPU, e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
+
+MMAction2 also supports training with CPU. However, it will be **very slow** and should only be used for debugging on a device without GPU.
+To train with CPU, one should first disable all GPUs (if exist) with `export CUDA_VISIBLE_DEVICES=-1`, and then call the training scripts directly with `python tools/train.py {OTHER_ARGS}`.
 
 ### Train with a single GPU
 

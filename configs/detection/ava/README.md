@@ -1,5 +1,9 @@
 # AVA
 
+[Ava: A video dataset of spatio-temporally localized atomic visual actions](https://openaccess.thecvf.com/content_cvpr_2018/html/Gu_AVA_A_Video_CVPR_2018_paper.html)
+
+<!-- [ALGORITHM] -->
+
 <div align="center">
   <img src="https://github.com/open-mmlab/mmaction2/raw/master/resources/spatio-temporal-det.gif" width="800px"/>
 </div>
@@ -16,31 +20,6 @@ AVA, with its realistic scene and action complexity, exposes the intrinsic diffi
 <img src="https://user-images.githubusercontent.com/34324155/143015933-36eb7abd-d38f-4be6-a327-4d34c6f4edc1.png" width="800"/>
 </div>
 
-## Citation
-
-<!-- [DATASET] -->
-
-```BibTeX
-@inproceedings{gu2018ava,
-  title={Ava: A video dataset of spatio-temporally localized atomic visual actions},
-  author={Gu, Chunhui and Sun, Chen and Ross, David A and Vondrick, Carl and Pantofaru, Caroline and Li, Yeqing and Vijayanarasimhan, Sudheendra and Toderici, George and Ricco, Susanna and Sukthankar, Rahul and others},
-  booktitle={Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition},
-  pages={6047--6056},
-  year={2018}
-}
-```
-
-<!-- [ALGORITHM] -->
-
-```BibTeX
-@article{duan2020omni,
-  title={Omni-sourced Webly-supervised Learning for Video Recognition},
-  author={Duan, Haodong and Zhao, Yue and Xiong, Yuanjun and Liu, Wentao and Lin, Dahua},
-  journal={arXiv preprint arXiv:2003.13042},
-  year={2020}
-}
-```
-
 <!-- [ALGORITHM] -->
 
 ```BibTeX
@@ -53,7 +32,7 @@ AVA, with its realistic scene and action complexity, exposes the intrinsic diffi
 }
 ```
 
-## Model Zoo
+## Results and Models
 
 ### AVA2.1
 
@@ -141,3 +120,26 @@ python tools/test.py configs/detection/ava/slowonly_kinetics_pretrained_r50_8x8x
 ```
 
 For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset) .
+
+## Citation
+
+<!-- [DATASET] -->
+
+```BibTeX
+@inproceedings{gu2018ava,
+  title={Ava: A video dataset of spatio-temporally localized atomic visual actions},
+  author={Gu, Chunhui and Sun, Chen and Ross, David A and Vondrick, Carl and Pantofaru, Caroline and Li, Yeqing and Vijayanarasimhan, Sudheendra and Toderici, George and Ricco, Susanna and Sukthankar, Rahul and others},
+  booktitle={Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition},
+  pages={6047--6056},
+  year={2018}
+}
+```
+
+```BibTeX
+@article{duan2020omni,
+  title={Omni-sourced Webly-supervised Learning for Video Recognition},
+  author={Duan, Haodong and Zhao, Yue and Xiong, Yuanjun and Liu, Wentao and Lin, Dahua},
+  journal={arXiv preprint arXiv:2003.13042},
+  year={2020}
+}
+```

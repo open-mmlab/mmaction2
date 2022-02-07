@@ -1,5 +1,9 @@
 # ResNet for Audio
 
+[Audiovisual SlowFast Networks for Video Recognition](https://arxiv.org/abs/2001.08740)
+
+<!-- [ALGORITHM] -->
+
 ## Abstract
 
 <!-- [ABSTRACT] -->
@@ -12,20 +16,7 @@ tecture for integrated audiovisual perception. AVSlowFast has Slow and Fast visu
 <img src="https://user-images.githubusercontent.com/30782254/147050415-a30ad32a-ce52-452d-ac3d-91058c8d0cc9.png" width="800"/>
 </div>
 
-## Citation
-
-<!-- [ALGORITHM] -->
-
-```BibTeX
-@article{xiao2020audiovisual,
-  title={Audiovisual SlowFast Networks for Video Recognition},
-  author={Xiao, Fanyi and Lee, Yong Jae and Grauman, Kristen and Malik, Jitendra and Feichtenhofer, Christoph},
-  journal={arXiv preprint arXiv:2001.08740},
-  year={2020}
-}
-```
-
-## Model Zoo
+## Results and Models
 
 ### Kinetics-400
 
@@ -92,3 +83,14 @@ python tools/analysis/report_accuracy.py --scores ${AUDIO_RESULT_PKL} ${VISUAL_R
 
 + AUDIO_RESULT_PKL: The saved output file of `tools/test.py` by the argument `--out`.
 + VISUAL_RESULT_PKL: The saved output file of `tools/test.py` by the argument `--out`.
+
+## Citation
+
+```BibTeX
+@article{xiao2020audiovisual,
+  title={Audiovisual SlowFast Networks for Video Recognition},
+  author={Xiao, Fanyi and Lee, Yong Jae and Grauman, Kristen and Malik, Jitendra and Feichtenhofer, Christoph},
+  journal={arXiv preprint arXiv:2001.08740},
+  year={2020}
+}
+```
