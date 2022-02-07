@@ -159,11 +159,8 @@ def train_model(model,
     # multigrid setting
     multigrid_cfg = cfg.get('multigrid', None)
     if multigrid_cfg is not None:
-        from mmaction.utils.multigrid import LongCycleHook, LongShortCycleHook
-        if multigrid_cfg.short_cycle:
-            multigrid_scheduler = LongShortCycleHook(cfg)
-        else:
-            multigrid_scheduler = LongCycleHook(cfg)
+        from mmaction.utils.multigrid import LongShortCycleHook
+        multigrid_scheduler = LongShortCycleHook(cfg)
         runner.register_hook(multigrid_scheduler)
         logger.info('Finish register multigrid hook')
 
