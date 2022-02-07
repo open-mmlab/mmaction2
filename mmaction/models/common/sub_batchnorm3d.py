@@ -52,8 +52,6 @@ class SubBatchNorm3D(nn.Module):
             self.bn.running_mean.data, self.bn.running_var.data = aggre_func(
                 self.split_bn.running_mean, self.split_bn.running_var,
                 self.num_splits)
-        else:
-            print(' self split_bn not tracking running status---')
         self.bn.num_batches_tracked = self.split_bn.num_batches_tracked.detach(
         )
 
