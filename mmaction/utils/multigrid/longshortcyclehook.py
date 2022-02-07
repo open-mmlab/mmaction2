@@ -129,9 +129,8 @@ class LongShortCycleHook(Hook):
             short_cycle=self.multi_grid_cfg.short_cycle,
             multigrid_cfg=self.multi_grid_cfg,
             crop_size=base_s)
-        # print('Finish build multigrid loader')
         runner.data_loader = dataloader
-        # self.logger.info(f'rebuild runner.data_loader-------')
+        self.logger.info('Rebuild runner.data_loader')
 
         # the self._max_epochs is changed, therefore update here
         runner._max_iters = runner._max_epochs * len(runner.data_loader)
