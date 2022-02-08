@@ -16,7 +16,7 @@ from torch.utils.data import DataLoader, Dataset
 
 # TODO import eval hooks from mmcv and delete them from mmaction2
 try:
-    from mmcv.runner import EvalHook, DistEvalHook
+    from mmcv.runner import DistEvalHook, EvalHook
     pytest.skip(
         'EvalHook and DistEvalHook are supported in MMCV',
         allow_module_level=True)

@@ -102,8 +102,8 @@ class PytorchVideoTrans:
 
     def __init__(self, type, **kwargs):
         try:
-            import torch
             import pytorchvideo.transforms as ptv_trans
+            import torch
         except ImportError:
             raise RuntimeError('Install pytorchvideo to use PytorchVideoTrans')
         if digit_version(torch.__version__) < digit_version('1.8.0'):
