@@ -33,6 +33,9 @@ def main():
     cfg = Config.fromfile(args.config)
     cfg.merge_from_dict(args.cfg_options)
     model = init_recognizer(cfg, args.checkpoint, device=device)
+
+    if not args.audio.endswith('.npy'):
+        raise NotImplementedError('Demo works on extracted audio features')
     results = inference_recognizer(model, args.audio)
 
     labels = open(args.label).readlines()
