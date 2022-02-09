@@ -11,6 +11,7 @@
 - [SpatioTemporal Action Detection Webcam Demo](#spatiotemporal-action-detection-webcam-demo): A demo script to implement real-time spatio-temporal action detection from a web camera.
 - [Skeleton-based Action Recognition Demo](#skeleton-based-action-recognition-demo): A demo script to predict the skeleton-based action recognition result using a single video.
 - [Video Structuralize Demo](#video-structuralize-demo): A demo script to predict the skeleton-based and rgb-based action recognition and spatio-temporal action detection result using a single video.
+- [Audio Demo](#audio-demo): A demo script for audio files.
 
 ## Modify configs through script arguments
 
@@ -643,3 +644,28 @@ python demo/demo_video_structuralize.py
     --label-map-stdet tools/data/ava/label_map.txt \
     --label-map tools/data/kinetics/label_map_k400.txt
 ```
+
+## Audio Demo
+
+Demo script to predict the audio-based action recognition using a single audio feature. To extract audio features use the `build_audio_features.py` script.
+
+```shell
+python demo/demo_audio.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${AUDIO_FILE} {LABEL_FILE} [--device ${DEVICE_TYPE}]
+```
+
+Optional arguments:
+
+- `DEVICE_TYPE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`. If not specified, it will be set to `cuda:0`.
+
+Examples:
+
+Assume that you are located at `$MMACTION2` and have already downloaded the checkpoints to the directory `checkpoints/`,
+or use checkpoint url from `configs/` to directly load corresponding checkpoint, which will be automatically saved in `$HOME/.cache/torch/checkpoints`.
+
+1. Recognize an audio file as input by using a ResnetAudio model with a tsn head on cuda by default.
+
+    ```shell
+    # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
+    python demo/demo_audio.py configs/recognition_audio/audioonly/audioonly_r50_64x1x1_100e_kinetics400_audio_feature.py \
+        checkpoints/best_top1_acc_epoch.pth audio_feature.npy label_map.txt
+    ```
