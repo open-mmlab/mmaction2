@@ -4,14 +4,15 @@
 
 <!-- TOC -->
 
-- [安装依赖包](#安装依赖包)
-- [准备环境](#准备环境)
-- [MMAction2 的安装步骤](#MMAction2-的安装步骤)
-- [CPU 环境下的安装步骤](#CPU-环境下的安装步骤)
-- [利用 Docker 镜像安装 MMAction2](#利用-Docker-镜像安装-MMAction2)
-- [源码安装 MMAction2](#源码安装-MMAction2)
-- [在多个 MMAction2 版本下进行开发](#在多个-MMAction2-版本下进行开发)
-- [安装验证](#安装验证)
+- [安装](#安装)
+  - [安装依赖包](#安装依赖包)
+  - [准备环境](#准备环境)
+  - [MMAction2 的安装步骤](#mmaction2-的安装步骤)
+  - [CPU 环境下的安装步骤](#cpu-环境下的安装步骤)
+  - [利用 Docker 镜像安装 MMAction2](#利用-docker-镜像安装-mmaction2)
+  - [源码安装 MMAction2](#源码安装-mmaction2)
+  - [在多个 MMAction2 版本下进行开发](#在多个-mmaction2-版本下进行开发)
+  - [安装验证](#安装验证)
 
 <!-- TOC -->
 
@@ -30,10 +31,8 @@
 - [PyTurboJPEG](https://github.com/lilohuang/PyTurboJPEG) (可选项)：`pip install PyTurboJPEG`。
 - [denseflow](https://github.com/open-mmlab/denseflow) (可选项)：可参考 [这里](https://github.com/innerlee/setup) 获取简便安装步骤。
 - [moviepy](https://zulko.github.io/moviepy/) (可选项)：`pip install moviepy`. 官方安装步骤可参考 [这里](https://zulko.github.io/moviepy/install.html)。**特别地**，如果安装过程碰到 [这个问题](https://github.com/Zulko/moviepy/issues/693)，可参考：
-    1. 对于 Windows 用户, [ImageMagick](https://www.imagemagick.org/script/index.php) 将不会被 MoviePy 自动检测到，
-    用户需要对 `moviepy/config_defaults.py` 文件进行修改，以提供 ImageMagick 的二进制文件（即，`magick`）的路径，如 `IMAGEMAGICK_BINARY = "C:\\Program Files\\ImageMagick_VERSION\\magick.exe"`
-    2. 对于 Linux 用户, 如果 [ImageMagick](https://www.imagemagick.org/script/index.php) 没有被 `moviepy` 检测到，用于需要对 `/etc/ImageMagick-6/policy.xml` 文件进行修改，把文件中的
-    `<policy domain="path" rights="none" pattern="@*" />` 代码行修改为 `<!-- <policy domain="path" rights="none" pattern="@*" /> -->`。
+  1. 对于 Windows 用户, [ImageMagick](https://www.imagemagick.org/script/index.php) 将不会被 MoviePy 自动检测到，用户需要对 `moviepy/config_defaults.py` 文件进行修改，以提供 ImageMagick 的二进制文件（即，`magick`）的路径，如 `IMAGEMAGICK_BINARY = "C:\\Program Files\\ImageMagick_VERSION\\magick.exe"`
+  2. 对于 Linux 用户, 如果 [ImageMagick](https://www.imagemagick.org/script/index.php) 没有被 `moviepy` 检测到，用于需要对 `/etc/ImageMagick-6/policy.xml` 文件进行修改，把文件中的 `<policy domain="path" rights="none" pattern="@*" />` 代码行修改为 `<!-- <policy domain="path" rights="none" pattern="@*" /> -->`。
 - [Pillow-SIMD](https://docs.fast.ai/performance.html#pillow-simd) (可选项)：可使用如下脚本进行安装：
 
 ```shell
@@ -94,17 +93,18 @@ MIM 可以自动安装 OpenMMLab 项目及其依赖。
 
 或者，用户也可以通过以下步骤手动安装 MMAction2。
 
-a. 安装 mmcv。MMAction2 推荐用户使用如下的命令安装预编译好的 mmcv。
+a. 安装 mmcv-full，我们推荐您安装以下预构建包：
 
 ```shell
-pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/{cu_version}/{torch_version}/index.html
+# pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/{cu_version}/{torch_version}/index.html
+pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu102/torch1.10.0/index.html
 ```
 
-其中，命令里 url 的 ``{cu_version}`` 和 ``{torch_version}`` 变量需由用户进行指定。
-例如，如果想要安装 ``CUDA 11`` 和 ``PyTorch 1.7.0`` 下的最新版 ``mmcv-full``，可使用以下命令：
+PyTorch 在 1.x.0 和 1.x.1 之间通常是兼容的，故 mmcv-full 只提供 1.x.0 的编译包。如果你的 PyTorch 版本是 1.x.1，你可以放心地安装在 1.x.0 版本编译的 mmcv-full。
 
-```shell
-pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu110/torch1.7.0/index.html
+```
+# 我们可以忽略 PyTorch 的小版本号
+pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu102/torch1.10/index.html
 ```
 
 可查阅 [这里](https://github.com/open-mmlab/mmcv#installation) 以参考不同版本的 MMCV 所兼容的 PyTorch 和 CUDA 版本。
