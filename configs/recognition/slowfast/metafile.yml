@@ -114,8 +114,31 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      Top 1 Accuracy:
-      Top 5 Accuracy:
+      Top 1 Accuracy: 76.34
+      Top 5 Accuracy: 92.61
+    Task: Action Recognition
+  Training Json Log:
+  Training Log:
+  Weights:
+- Config: configs/recognition/slowfast/slowfast_prebn_r50_8x8x1_256e_kinetics400_rgb_steplr.py
+  In Collection: SlowFast
+  Metadata:
+    Architecture: ResNet50
+    Batch Size: 8
+    Epochs: 256
+    FLOPs: 66222034944
+    Parameters: 34565560
+    Pretrained: None
+    Resolution: short-side 320
+    Training Data: Kinetics-400
+    Training Resources: 32 GPUs
+  Modality: RGB
+  Name: slowfast_prebn_r50_8x8x1_256e_kinetics400_rgb_steplr
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      Top 1 Accuracy: 76.49
+      Top 5 Accuracy: 92.71
     Task: Action Recognition
   Training Json Log:
   Training Log:
