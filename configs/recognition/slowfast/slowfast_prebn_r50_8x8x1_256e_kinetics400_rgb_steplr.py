@@ -10,4 +10,4 @@ lr_config = dict(
 
 precise_bn = dict(num_iters=200, interval=5)
 
-work_dir = './work_dirs/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr'
+work_dir = './work_dirs/slowfast_prebn_r50_8x8x1_256e_kinetics400_rgb_steplr'
