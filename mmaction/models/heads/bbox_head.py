@@ -45,7 +45,7 @@ class BBoxHeadAVA(nn.Module):
             in_channels=2048,
             focal_gamma=0.,
             focal_alpha=1.,
-            num_classes=81, # The first class is reserved, to classify bbox as pos / neg
+            num_classes=81,  # First class reserved (BBox as pos/neg)
             dropout_ratio=0,
             dropout_before_pool=True,
             topk=(3, 5),
@@ -123,19 +123,23 @@ class BBoxHeadAVA(nn.Module):
         pos_proposals = [res.pos_bboxes for res in sampling_results]
         neg_proposals = [res.neg_bboxes for res in sampling_results]
         pos_gt_labels = [res.pos_gt_labels for res in sampling_results]
-        cls_reg_targets = bbox_target(pos_proposals, neg_proposals, pos_gt_labels, rcnn_train_cfg)
+        cls_reg_targets = bbox_target(
+            pos_proposals, neg_proposals, pos_gt_labels, rcnn_train_cfg
+        )
         return cls_reg_targets
 
     @staticmethod
     def get_recall_prec(pred_vec, target_vec):
         """
-        Computes the Recall/Precision for both multi-label and single label scenarios
+        Computes the Recall/Precision for both multi-label and single label
+        scenarios
 
         Note, that in both cases, the concept of correct/incorrect is the same.
         Args:
             pred_vec (tensor[N x C]): each element is either 0 or 1
-            target_vec (tensor[N x C]): each element is either 0 or 1 - for single label it is
-                expected that only one element is on (1) although this is not enforced.
+            target_vec (tensor[N x C]): each element is either 0 or 1 - for
+                single label it is expected that only one element is on (1)
+                although this is not enforced.
         """
         correct = pred_vec & target_vec
         recall = correct.sum(1) / target_vec.sum(1).float() # Enforce Float
@@ -161,10 +165,16 @@ class BBoxHeadAVA(nn.Module):
         target_bool = target > 0.5
 
         # Branch on Multilabel for computing output classification
-        pred = pred.sigmoid() if self.multilabel else torch.nn.Softmax(dim=1)(pred)
+        if self.multilabel:
+            pred = pred.sigmoid()
+        else:
+            pred = torch.nn.Softmax(dim=1)(pred)
 
         # Compute at threshold (K=1 for single)
-        pred_bool = pred > thr if self.multilabel else self.topk_to_matrix(pred, 1)
+        if self.multilabel:
+            pred_bool = pred > thr
+        else:
+            pred_bool = self.topk_to_matrix(pred, 1)
         recall_thr, prec_thr = self.get_recall_prec(pred_bool, target_bool)
 
         # Compute at various K
@@ -191,14 +201,17 @@ class BBoxHeadAVA(nn.Module):
         losses = dict()
         # Only use the cls_score
         if cls_score is not None:
-            labels = labels[:, 1:] # Get just the valid labels (i.e. ignore the first output)
+            labels = labels[:, 1:] # Get valid labels (ignore first)
             pos_inds = torch.sum(labels, dim=-1) > 0
             cls_score = cls_score[pos_inds, 1:]
             labels = labels[pos_inds]
 
             # Branch on multi/single label
-            #   Note that both losses compute the sigmoid/softmax before so no need to do.
-            loss_func = F.binary_cross_entropy_with_logits if self.multilabel else F.cross_entropy
+            #   Note that both losses compute the sigmoid/softmax before
+            if self.multilabel:
+                loss_func = F.binary_cross_entropy_with_logits
+            else:
+                loss_func = F.cross_entropy
 
             # Compute loss
             loss = loss_func(cls_score, labels, reduction='none')
@@ -206,7 +219,9 @@ class BBoxHeadAVA(nn.Module):
             F_loss = self.focal_alpha * (1 - pt)**self.focal_gamma * loss
             losses['loss_action_cls'] = torch.mean(F_loss)
 
-            recall_thr, prec_thr, recall_k, prec_k = self.topk_accuracy(cls_score, labels, thr=0.5)
+            recall_thr, prec_thr, recall_k, prec_k = self.topk_accuracy(
+                cls_score, labels, thr=0.5
+            )
             losses['recall@thr=0.5'] = recall_thr
             losses['prec@thr=0.5'] = prec_thr
             for i, k in enumerate(self.topk):
@@ -228,7 +243,10 @@ class BBoxHeadAVA(nn.Module):
 
         # Handle Multi/Single Label
         if cls_score is not None:
-            scores = cls_score.sigmoid() if self.multilabel else torch.nn.Softmax(dim=1)(cls_score)
+            if self.multilabel:
+                scores = cls_score.sigmoid()
+            else:
+                scores = torch.nn.Softmax(dim=1)(cls_score)
         else:
             scores = None
 
