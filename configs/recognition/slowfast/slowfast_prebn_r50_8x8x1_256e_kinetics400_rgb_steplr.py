@@ -8,4 +8,6 @@ lr_config = dict(
     warmup_iters=34,
     step=[94, 154, 196])
 
+precise_bn = dict(num_iters=200, interval=5)
+
 work_dir = './work_dirs/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr'
