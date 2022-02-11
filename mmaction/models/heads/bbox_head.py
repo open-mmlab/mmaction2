@@ -142,7 +142,7 @@ class BBoxHeadAVA(nn.Module):
                 although this is not enforced.
         """
         correct = pred_vec & target_vec
-        recall = correct.sum(1) / target_vec.sum(1).float() # Enforce Float
+        recall = correct.sum(1) / target_vec.sum(1).float()  # Enforce Float
         prec = correct.sum(1) / (pred_vec.sum(1) + 1e-6)
         return recall.mean(), prec.mean()
 
@@ -201,7 +201,7 @@ class BBoxHeadAVA(nn.Module):
         losses = dict()
         # Only use the cls_score
         if cls_score is not None:
-            labels = labels[:, 1:] # Get valid labels (ignore first)
+            labels = labels[:, 1:]  # Get valid labels (ignore first)
             pos_inds = torch.sum(labels, dim=-1) > 0
             cls_score = cls_score[pos_inds, 1:]
             labels = labels[pos_inds]

@@ -145,6 +145,7 @@ def test_bbox2result():
         )
     )
 
+
 def test_bbox_target():
     pos_bboxes = torch.tensor([[0.072, 0.47, 0.84, 0.898],
                                [0.23, 0.215, 0.781, 0.534],
