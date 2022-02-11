@@ -25,7 +25,6 @@
   [🤔Reporting Issues](https://github.com/open-mmlab/mmaction2/issues/new/choose)
 </div>
 
-
 ## Introduction
 
 English | [简体中文](/README_zh-CN.md)
