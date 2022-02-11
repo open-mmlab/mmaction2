@@ -19,6 +19,13 @@
   <div>&nbsp;</div>
 </div>
 
+[📘文档](https://mmaction2.readthedocs.io/en/latest/) |
+[🛠️安装指南](https://mmaction2.readthedocs.io/en/latest/install.html) |
+[👀模型库](https://mmaction2.readthedocs.io/en/latest/modelzoo.html) |
+[🆕更新](https://mmaction2.readthedocs.io/en/latest/changelog.html) |
+[🚀相关项目](https://github.com/open-mmlab/mmaction2/blob/master/docs/projects.md) |
+[🤔问题反馈](https://github.com/open-mmlab/mmaction2/issues/new/choose)
+
 ## 简介
 
 [English](/README.md) | 简体中文
