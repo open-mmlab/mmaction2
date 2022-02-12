@@ -11,7 +11,7 @@
 - [SpatioTemporal Action Detection Webcam Demo](#spatiotemporal-action-detection-webcam-demo): A demo script to implement real-time spatio-temporal action detection from a web camera.
 - [Skeleton-based Action Recognition Demo](#skeleton-based-action-recognition-demo): A demo script to predict the skeleton-based action recognition result using a single video.
 - [Video Structuralize Demo](#video-structuralize-demo): A demo script to predict the skeleton-based and rgb-based action recognition and spatio-temporal action detection result using a single video.
-- [Audio Demo](#audio-demo): A demo script for audio files.
+- [Audio Demo](#audio-demo): A demo script to predict the recognition result using a single audio file.
 
 ## Modify configs through script arguments
 
