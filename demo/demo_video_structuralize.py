@@ -19,7 +19,7 @@ from mmaction.utils import import_module_error_func
 
 try:
     from mmdet.apis import inference_detector, init_detector
-    from mmpose.apis import (init_pose_model, inference_top_down_pose_model,
+    from mmpose.apis import (inference_top_down_pose_model, init_pose_model,
                              vis_pose_result)
 
 except (ImportError, ModuleNotFoundError):

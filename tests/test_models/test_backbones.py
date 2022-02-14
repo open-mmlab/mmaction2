@@ -326,9 +326,10 @@ def test_resnet_tsm_backbone():
 
 def test_mobilenetv2_tsm_backbone():
     """Test mobilenetv2_tsm backbone."""
-    from mmaction.models.backbones.resnet_tsm import TemporalShift
-    from mmaction.models.backbones.mobilenet_v2 import InvertedResidual
     from mmcv.cnn import ConvModule
+
+    from mmaction.models.backbones.mobilenet_v2 import InvertedResidual
+    from mmaction.models.backbones.resnet_tsm import TemporalShift
 
     input_shape = (8, 3, 64, 64)
     imgs = generate_backbone_demo_inputs(input_shape)

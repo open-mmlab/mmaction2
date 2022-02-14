@@ -178,8 +178,8 @@ def inference_tensorrt(ckpt_path, distributed, data_loader, batch_size):
     assert not distributed, \
         'TensorRT engine inference only supports single gpu mode.'
     import tensorrt as trt
-    from mmcv.tensorrt.tensorrt_utils import (torch_dtype_from_trt,
-                                              torch_device_from_trt)
+    from mmcv.tensorrt.tensorrt_utils import (torch_device_from_trt,
+                                              torch_dtype_from_trt)
 
     # load engine
     with trt.Logger() as logger, trt.Runtime(logger) as runtime:
