@@ -16,7 +16,14 @@
       </a>
     </sup>
   </div>
-  <div>&nbsp;</div>
+
+  [📘文档](https://mmaction2.readthedocs.io/en/latest/) |
+  [🛠️安装指南](https://mmaction2.readthedocs.io/en/latest/install.html) |
+  [👀模型库](https://mmaction2.readthedocs.io/en/latest/modelzoo.html) |
+  [🆕更新](https://mmaction2.readthedocs.io/en/latest/changelog.html) |
+  [🚀进行中项目](https://github.com/open-mmlab/mmaction2/projects) |
+  [🤔问题反馈](https://github.com/open-mmlab/mmaction2/issues/new/choose)
+
 </div>
 
 ## 简介

@@ -16,7 +16,13 @@
       </a>
     </sup>
   </div>
-  <div>&nbsp;</div>
+
+  [📘Documentation](https://mmaction2.readthedocs.io/en/latest/) |
+  [🛠️Installation](https://mmaction2.readthedocs.io/en/latest/install.html) |
+  [👀Model Zoo](https://mmaction2.readthedocs.io/en/latest/modelzoo.html) |
+  [🆕Update News](https://mmaction2.readthedocs.io/en/latest/changelog.html) |
+  [🚀Ongoing Projects](https://github.com/open-mmlab/mmaction2/projects) |
+  [🤔Reporting Issues](https://github.com/open-mmlab/mmaction2/issues/new/choose)
 </div>
 
 ## Introduction
