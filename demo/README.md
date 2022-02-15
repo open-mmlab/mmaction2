@@ -647,7 +647,9 @@ python demo/demo_video_structuralize.py
 
 ## Audio Demo
 
-Demo script to predict the audio-based action recognition using a single audio feature. To extract audio features use the `build_audio_features.py` script.
+Demo script to predict the audio-based action recognition using a single audio feature.
+
+The script `extract_audio.py` can be used to extract audios from videos and the script `build_audio_features.py` can be used to extract the audio features.
 
 ```shell
 python demo/demo_audio.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${AUDIO_FILE} {LABEL_FILE} [--device ${DEVICE_TYPE}]
@@ -662,10 +664,11 @@ Examples:
 Assume that you are located at `$MMACTION2` and have already downloaded the checkpoints to the directory `checkpoints/`,
 or use checkpoint url from `configs/` to directly load corresponding checkpoint, which will be automatically saved in `$HOME/.cache/torch/checkpoints`.
 
-1. Recognize an audio file as input by using a ResnetAudio model with a tsn head on cuda by default.
+1. Recognize an audio file as input by using a tsn model on cuda by default.
 
     ```shell
-    # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
-    python demo/demo_audio.py configs/recognition_audio/audioonly/audioonly_r50_64x1x1_100e_kinetics400_audio_feature.py \
-        checkpoints/best_top1_acc_epoch.pth audio_feature.npy label_map.txt
+    python demo/demo_audio.py \
+        configs/recognition_audio/resnet/tsn_r18_64x1x1_100e_kinetics400_audio_feature.py \
+        https://download.openmmlab.com/mmaction/recognition/audio_recognition/tsn_r18_64x1x1_100e_kinetics400_audio_feature/tsn_r18_64x1x1_100e_kinetics400_audio_feature_20201012-bf34df6c.pth \
+        audio_feature.npy label_map_k400.txt
     ```
