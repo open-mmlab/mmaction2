@@ -2,18 +2,24 @@ name: build
 
 on:
   push:
-    paths:
-      - '!demo/**'
-      - '!docker/**'
-      - '!tools/**'
+    paths-ignore:
+      - ".github/**.md"
+      - "demo/**"
+      - "docker/**"
+      - "tools/**"
+      - "README.md"
+      - "README_zh-CN.md"
 
   pull_request:
-    paths:
-      - '!demo/**'
-      - '!docker/**'
-      - '!tools/**'
-      - '!docs/**'
-      - '!docs_zh_CN/**'
+    paths-ignore:
+      - ".github/**.md"
+      - "demo/**"
+      - "docker/**"
+      - "docs/**"
+      - "docs_zh-CN/**"
+      - "tools/**"
+      - "README.md"
+      - "README_zh-CN.md"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
