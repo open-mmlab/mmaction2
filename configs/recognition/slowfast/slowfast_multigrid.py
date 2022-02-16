@@ -11,7 +11,6 @@ model = dict(
             depth=50,
             pretrained=None,
             lateral=True,
-            # fusion_kernel=5,
             fusion_kernel=7,
             conv1_kernel=(1, 7, 7),
             dilations=(1, 1, 1, 1),
@@ -102,7 +101,7 @@ test_pipeline = [
     dict(type='ToTensor', keys=['imgs'])
 ]
 data = dict(
-    videos_per_gpu=6,
+    videos_per_gpu=8,
     workers_per_gpu=4,
     train=dict(
         type=dataset_type,
@@ -128,7 +127,7 @@ lr_config = dict(policy='step', step=[94, 154, 196])
 total_epochs = 239
 
 evaluation = dict(
-    interval=10, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
 log_config = dict(
     interval=20,
     hooks=[
@@ -138,21 +137,21 @@ log_config = dict(
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 
-checkpoint_config = dict(interval=10)
+checkpoint_config = dict(interval=5)
 workflow = [('train', 1)]
 
 find_unused_parameters = False
 
 multigrid = dict(
     long_cycle=True,
-    short_cycle=False,
+    short_cycle=True,
     epoch_factor=1.5,
     long_cycle_factors=[[0.25, 0.7071], [0.5, 0.7071], [0.5, 1], [1, 1]],
     short_cycle_factors=[0.5, 0.7071],
     default_s=(224, 224),
 )
 
-precise_bn = dict(num_iters=200, interval=1)
+precise_bn = dict(num_iters=200, interval=5)
 
 load_from = None
 resume_from = None
