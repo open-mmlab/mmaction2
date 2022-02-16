@@ -130,7 +130,7 @@ class PreciseBNHook(Hook):
         interval (int): Perform precise bn interval (by epochs). Default: 1.
     """
 
-    def __init__(self, dataloader, num_iters=200, interval=10):
+    def __init__(self, dataloader, num_iters=200, interval=1):
         if not isinstance(dataloader, DataLoader):
             raise TypeError('dataloader must be a pytorch DataLoader, but got'
                             f' {type(dataloader)}')
