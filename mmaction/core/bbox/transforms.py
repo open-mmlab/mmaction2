@@ -34,7 +34,7 @@ def bbox2result(bboxes, labels, num_classes, thr=0.01):
         multilabel = thr >= 0
         thr = (thr,) * num_classes
     else:
-        multilabel = False
+        multilabel = True
 
     # Check Shape
     assert scores.shape[1] == num_classes
