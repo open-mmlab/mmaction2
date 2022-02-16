@@ -7,9 +7,14 @@ def bbox2result(bboxes, labels, num_classes, thr=0.01):
     Convert detection results to a list of numpy arrays.
 
     This identifies single-label classification (as opposed to multi-label)
-    through the thr parameter which is set to a negative value
+    through the thr parameter which is set to a negative value.
 
-    TODO: Make more efficient
+    Currently, the way to set this is to set
+       `test_cfg.rcnn.action_thr=-1.0`
+    The ideal way, however, which is not yet implemented, is to have another
+    metric, mAP@top1 and set that within:
+       `evaluation.metrics=[...,'mAP@top1',...]`
+
     Args:
         bboxes (Tensor): shape (n, 4)
         labels (Tensor): shape (n, #num_classes)
