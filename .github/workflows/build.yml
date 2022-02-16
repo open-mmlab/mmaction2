@@ -237,7 +237,7 @@ jobs:
       - name: Show pip list
         run: pip list
       - name: Build and install
-        run: rm -rf .eggs && pip install -e .
+        run: pip install -e .
       - name: Run unittests
         run: coverage run --branch --source mmedit -m pytest tests -sv
       - name: Generate coverage report
