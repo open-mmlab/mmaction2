@@ -117,9 +117,9 @@ Models:
       Top 1 Accuracy: 76.34
       Top 5 Accuracy: 92.61
     Task: Action Recognition
-  Training Json Log:
-  Training Log:
-  Weights:
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr-43988bac.pth
 - Config: configs/recognition/slowfast/slowfast_prebn_r50_8x8x1_256e_kinetics400_rgb_steplr.py
   In Collection: SlowFast
   Metadata:
@@ -140,9 +140,9 @@ Models:
       Top 1 Accuracy: 76.58
       Top 5 Accuracy: 92.85
     Task: Action Recognition
-  Training Json Log:
-  Training Log:
-  Weights:
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_prebn_r50_8x8x1_256e_kinetics400_rgb_steplr/slowfast_prebn_r50_8x8x1_256e_kinetics400_rgb_steplr.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_prebn_r50_8x8x1_256e_kinetics400_rgb_steplr/slowfast_prebn_r50_8x8x1_256e_kinetics400_rgb_steplr.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_prebn_r50_8x8x1_256e_kinetics400_rgb_steplr/slowfast_prebn_r50_8x8x1_256e_kinetics400_rgb_steplr-28474e54.pth
 - Config: configs/recognition/slowfast/slowfast_r101_r50_4x16x1_256e_kinetics400_rgb.py
   In Collection: SlowFast
   Metadata:
