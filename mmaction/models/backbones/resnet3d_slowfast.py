@@ -39,11 +39,13 @@ class ResNet3dPathway(ResNet3d):
     def __init__(self,
                  *args,
                  lateral=False,
+                 lateral_norm=False,
                  speed_ratio=8,
                  channel_ratio=8,
                  fusion_kernel=5,
                  **kwargs):
         self.lateral = lateral
+        self.lateral_norm = lateral_norm
         self.speed_ratio = speed_ratio
         self.channel_ratio = channel_ratio
         self.fusion_kernel = fusion_kernel
@@ -61,8 +63,8 @@ class ResNet3dPathway(ResNet3d):
                 padding=((fusion_kernel - 1) // 2, 0, 0),
                 bias=False,
                 conv_cfg=self.conv_cfg,
-                norm_cfg=None,
-                act_cfg=None)
+                norm_cfg=self.norm_cfg if self.lateral_norm else None,
+                act_cfg=self.act_cfg if self.lateral_norm else None)
 
         self.lateral_connections = []
         for i in range(len(self.stage_blocks)):
@@ -82,8 +84,8 @@ class ResNet3dPathway(ResNet3d):
                         padding=((fusion_kernel - 1) // 2, 0, 0),
                         bias=False,
                         conv_cfg=self.conv_cfg,
-                        norm_cfg=None,
-                        act_cfg=None))
+                        norm_cfg=self.norm_cfg if self.lateral_norm else None,
+                        act_cfg=self.act_cfg if self.lateral_norm else None))
                 self.lateral_connections.append(lateral_name)
 
     def make_res_layer(self,

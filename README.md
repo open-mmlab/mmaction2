@@ -16,7 +16,13 @@
       </a>
     </sup>
   </div>
-  <div>&nbsp;</div>
+
+  [📘Documentation](https://mmaction2.readthedocs.io/en/latest/) |
+  [🛠️Installation](https://mmaction2.readthedocs.io/en/latest/install.html) |
+  [👀Model Zoo](https://mmaction2.readthedocs.io/en/latest/modelzoo.html) |
+  [🆕Update News](https://mmaction2.readthedocs.io/en/latest/changelog.html) |
+  [🚀Ongoing Projects](https://github.com/open-mmlab/mmaction2/projects) |
+  [🤔Reporting Issues](https://github.com/open-mmlab/mmaction2/issues/new/choose)
 </div>
 
 ## Introduction
@@ -148,6 +154,7 @@ A Colab tutorial is also provided. You may preview the notebook [here](demo/mmac
   </tr>
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/stgcn/README.md">ST-GCN</a> (AAAI'2018)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/2s-agcn/README.md">2s-AGCN</a> (CVPR'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/posec3d/README.md">PoseC3D</a> (ArXiv'2021)</td>
     <td></td>
     <td></td>
