@@ -193,7 +193,6 @@ class LongShortCycleHook(Hook):
                 cur_iters = cur_epochs / avg_bs[long_cycle_index]
                 total_iters += cur_iters
                 schedule.append((step_index, shapes[-1], cur_epochs))
-        # print('schedule---', schedule)
         iter_saving = default_iters / total_iters
         final_step_epochs = runner.max_epochs - steps[-1]
         # the fine-tuning phase to have the same amount of iteration
