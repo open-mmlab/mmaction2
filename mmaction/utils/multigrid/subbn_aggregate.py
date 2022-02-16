@@ -17,6 +17,4 @@ def aggregate_sub_bn_status(module):
 class SubBatchNorm3dAggregationHook(Hook):
 
     def after_train_epoch(self, runner):
-        count = aggregate_sub_bn_status(runner.model)
-        print(f'{count} module finish aggregating status')
-        # 110(lateral) 106(lateral no norm)
+        _ = aggregate_sub_bn_status(runner.model)

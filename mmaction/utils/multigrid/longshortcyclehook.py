@@ -76,8 +76,7 @@ class LongShortCycleHook(Hook):
         self._init_schedule(runner, self.multi_grid_cfg, self.data_cfg)
         steps = []
         steps = [s[-1] for s in self.schedule]
-        steps.insert(-1,
-                     (steps[-2] + steps[-1]) // 2)  # add finetune stage --343
+        steps.insert(-1, (steps[-2] + steps[-1]) // 2)  # add finetune stage
         for index, hook in enumerate(runner.hooks):
             if isinstance(hook, StepLrUpdaterHook):
                 base_lr = hook.base_lr[0]

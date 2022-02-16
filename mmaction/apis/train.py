@@ -171,12 +171,6 @@ def train_model(model,
         runner.register_hook(subbn3d_aggre_hook, priority='VERY_HIGH')
         logger.info('Finish register subbn3daggre hook')
 
-    if distributed:
-        if cfg.omnisource:
-            runner.register_hook(OmniSourceDistSamplerSeedHook())
-        else:
-            runner.register_hook(DistSamplerSeedHook())
-
     # precise bn setting
     if cfg.get('precise_bn', False):
         precise_bn_dataset = build_dataset(cfg.data.train)
@@ -192,6 +186,13 @@ def train_model(model,
         precise_bn_hook = PreciseBNHook(data_loader_precise_bn,
                                         **cfg.get('precise_bn'))
         runner.register_hook(precise_bn_hook, priority='HIGHEST')
+        logger.info('Finish register precisebn hook')
+
+    if distributed:
+        if cfg.omnisource:
+            runner.register_hook(OmniSourceDistSamplerSeedHook())
+        else:
+            runner.register_hook(DistSamplerSeedHook())
 
     if validate:
         eval_cfg = cfg.get('evaluation', {})
