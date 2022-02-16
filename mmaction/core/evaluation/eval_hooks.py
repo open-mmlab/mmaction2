@@ -9,8 +9,8 @@ from torch.nn.modules.batchnorm import _BatchNorm
 from torch.utils.data import DataLoader
 
 try:
-    from mmcv.runner import EvalHook as BasicEvalHook
     from mmcv.runner import DistEvalHook as BasicDistEvalHook
+    from mmcv.runner import EvalHook as BasicEvalHook
 
     from_mmcv = True
 

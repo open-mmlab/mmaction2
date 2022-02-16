@@ -13,6 +13,7 @@ def test_mobilenetv2_backbone():
     Modified from mmclassification.
     """
     from torch.nn.modules import GroupNorm
+
     from mmaction.models.backbones.mobilenet_v2 import InvertedResidual
 
     def is_norm(modules):
