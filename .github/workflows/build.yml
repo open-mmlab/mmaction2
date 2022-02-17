@@ -203,13 +203,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: [3.7]
-        torch: [1.9.0+cu102]
-        include:
-          - torch: 1.9.0+cu102
-            torch_version: torch1.9
-            torchvision: 0.10.0+cu102
-
         os: [windows-2022]
         python: [3.8]
         platform: [cpu, cu111]
