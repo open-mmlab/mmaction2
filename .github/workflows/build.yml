@@ -245,7 +245,3 @@ jobs:
         run: pip install -e .
       - name: Run unittests
         run: coverage run --branch --source mmedit -m pytest tests -sv
-      - name: Generate coverage report
-        run: |
-          coverage xml
-          coverage report -m
