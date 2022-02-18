@@ -12,6 +12,7 @@
   - [基于网络摄像头的实时时空动作检测](#基于网络摄像头的实时时空动作检测)
   - [基于人体姿态预测动作标签](#基于人体姿态预测动作标签)
   - [视频结构化预测](#视频结构化预测)
+  - [基于音频的动作识别](#基于音频的动作识别)
 
 ## 预测视频的动作标签
 
@@ -600,3 +601,30 @@ python demo/demo_video_structuralize.py
     --label-map-stdet tools/data/ava/label_map.txt \
     --label-map tools/data/kinetics/label_map_k400.txt
 ```
+
+## 基于音频的动作识别
+
+本脚本可用于进行基于音频特征的动作识别。
+
+脚本 `extract_audio.py` 可被用于从视频中提取音频，脚本 `build_audio_features.py` 可被用于基于音频文件提取音频特征。
+
+```shell
+python demo/demo_audio.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${AUDIO_FILE} {LABEL_FILE} [--device ${DEVICE}]
+```
+
+可选参数：
+
+- `DEVICE`: 指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或 cpu（`cpu`），默认为 `cuda:0`。
+
+示例：
+
+以下示例假设用户的当前目录为 $MMACTION2。
+
+1. 在 GPU 上，使用 TSN 模型进行基于音频特征的动作识别。
+
+    ```shell
+    python demo/demo_audio.py \
+        configs/recognition_audio/resnet/tsn_r18_64x1x1_100e_kinetics400_audio_feature.py \
+        https://download.openmmlab.com/mmaction/recognition/audio_recognition/tsn_r18_64x1x1_100e_kinetics400_audio_feature/tsn_r18_64x1x1_100e_kinetics400_audio_feature_20201012-bf34df6c.pth \
+        audio_feature.npy label_map_k400.txt
+    ```

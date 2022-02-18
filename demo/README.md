@@ -652,17 +652,17 @@ Demo script to predict the audio-based action recognition using a single audio f
 The script `extract_audio.py` can be used to extract audios from videos and the script `build_audio_features.py` can be used to extract the audio features.
 
 ```shell
-python demo/demo_audio.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${AUDIO_FILE} {LABEL_FILE} [--device ${DEVICE_TYPE}]
+python demo/demo_audio.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${AUDIO_FILE} {LABEL_FILE} [--device ${DEVICE}]
 ```
 
 Optional arguments:
 
-- `DEVICE_TYPE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`. If not specified, it will be set to `cuda:0`.
+- `DEVICE`: Type of device to run the demo. Allowed values are cuda devices like `cuda:0` or `cpu`. If not specified, it will be set to `cuda:0`.
 
 Examples:
 
 Assume that you are located at `$MMACTION2` and have already downloaded the checkpoints to the directory `checkpoints/`,
-or use checkpoint url from `configs/` to directly load corresponding checkpoint, which will be automatically saved in `$HOME/.cache/torch/checkpoints`.
+or use checkpoint url from `configs/` to directly load the corresponding checkpoint, which will be automatically saved in `$HOME/.cache/torch/checkpoints`.
 
 1. Recognize an audio file as input by using a tsn model on cuda by default.
 
