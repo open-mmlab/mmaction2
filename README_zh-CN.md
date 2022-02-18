@@ -16,7 +16,14 @@
       </a>
     </sup>
   </div>
-  <div>&nbsp;</div>
+
+  [📘文档](https://mmaction2.readthedocs.io/en/latest/) |
+  [🛠️安装指南](https://mmaction2.readthedocs.io/en/latest/install.html) |
+  [👀模型库](https://mmaction2.readthedocs.io/en/latest/modelzoo.html) |
+  [🆕更新](https://mmaction2.readthedocs.io/en/latest/changelog.html) |
+  [🚀进行中项目](https://github.com/open-mmlab/mmaction2/projects) |
+  [🤔问题反馈](https://github.com/open-mmlab/mmaction2/issues/new/choose)
+
 </div>
 
 ## 简介
@@ -146,6 +153,7 @@ MMAction2 也提供了相应的中文 Colab 教程，可以点击 [这里](https
   </tr>
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/stgcn/README.md">ST-GCN</a> (AAAI'2018)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/2s-agcn/README.md">2s-AGCN</a> (CVPR'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/posec3d/README.md">PoseC3D</a> (ArXiv'2021)</td>
     <td></td>
     <td></td>
