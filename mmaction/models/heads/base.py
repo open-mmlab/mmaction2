@@ -97,7 +97,7 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
 
         if not self.multi_class and cls_score.size() != labels.size():
             top_k_acc = top_k_accuracy(cls_score.detach().cpu().numpy(),
-                                       labels.detach().cpu().numpy(), 
+                                       labels.detach().cpu().numpy(),
                                        self.topk)
             for k, a in zip(self.topk, top_k_acc):
                 losses[f'top{k}_acc'] = torch.tensor(
