@@ -56,6 +56,10 @@ MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLa
   <img src="https://github.com/open-mmlab/mmaction2/raw/master/resources/spatio-temporal-det.gif" width="800px"/><br>
     <p style="font-size:1.5vw;">AVA-2.1 上的时空动作检测</p>
 </div>
+<div align="center">
+  <img src="https://github.com/open-mmlab/mmaction2/raw/master/resources/spatio-temporal-det.gif" width="800px"/><br>
+    <p style="font-size:1.5vw;">AVA-2.1 上的基于 skeleton 和 rgb 的时空动作检测和动作识别</p>
+</div>
 
 ## 主要特性
 
