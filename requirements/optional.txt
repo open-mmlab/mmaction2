@@ -1,6 +1,4 @@
 av
-decord >= 0.4.1
-einops
 imgaug
 librosa
 lmdb
