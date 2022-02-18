@@ -22,6 +22,8 @@ def confusion_matrix(y_pred, y_real, normalize=None):
 
     if isinstance(y_pred, list):
         y_pred = np.array(y_pred)
+        if y_pred.dtype == np.int32:
+            y_pred = y_pred.astype(np.int64)
     if not isinstance(y_pred, np.ndarray):
         raise TypeError(
             f'y_pred must be list or np.ndarray, but got {type(y_pred)}')
@@ -31,6 +33,8 @@ def confusion_matrix(y_pred, y_real, normalize=None):
 
     if isinstance(y_real, list):
         y_real = np.array(y_real)
+        if y_real.dtype == np.int32:
+            y_real = y_real.astype(np.int64)
     if not isinstance(y_real, np.ndarray):
         raise TypeError(
             f'y_real must be list or np.ndarray, but got {type(y_real)}')
