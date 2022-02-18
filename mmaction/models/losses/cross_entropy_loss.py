@@ -56,6 +56,8 @@ class CrossEntropyLoss(BaseWeightedLoss):
             assert len(kwargs) == 0, \
                 ('For now, no extra args are supported for soft label, '
                  f'but get {kwargs}')
+            if self.class_weight is not None:
+                self.class_weight = self.class_weight.to(cls_score.device)
 
             lsm = F.log_softmax(cls_score, 1)
             if self.class_weight is not None:
