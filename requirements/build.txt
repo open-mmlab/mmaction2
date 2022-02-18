@@ -1,7 +1,6 @@
 decord >= 0.4.1
 einops
 matplotlib
-# These must be installed before building mmaction2
 numpy
 opencv-contrib-python
 Pillow
