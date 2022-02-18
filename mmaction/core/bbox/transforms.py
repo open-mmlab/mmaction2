@@ -11,9 +11,10 @@ def bbox2result(bboxes, labels, num_classes, thr=0.01):
 
     Currently, the way to set this is to set
        `test_cfg.rcnn.action_thr=-1.0`
-    The ideal way, however, which is not yet implemented, is to have another
-    metric, mAP@top1 and set that within:
-       `evaluation.metrics=[...,'mAP@top1',...]`
+    ToDo: The ideal way would be for this to be automatically set when the
+    model cfg uses multilabel=False, however this could be a breaking change
+    and is left as a future exercise.
+    NB - this should not interfere with the evaluation in any case.
 
     Args:
         bboxes (Tensor): shape (n, 4)
