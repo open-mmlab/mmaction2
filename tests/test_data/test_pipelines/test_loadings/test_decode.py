@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy
+import platform
 
 import numpy as np
 from mmcv.utils import assert_dict_has_keys
@@ -408,34 +409,35 @@ class TestDecode(BaseTestLoading):
                                              240, 320)
         assert results['original_shape'] == (240, 320)
 
-        # test frame selector in turbojpeg decoding backend
-        # when start_index = 0
-        inputs = copy.deepcopy(self.frame_results)
-        inputs['frame_inds'] = np.arange(0, self.total_frames, 5)
-        # since the test images start with index 1, we plus 1 to frame_inds
-        # in order to pass the CI
-        inputs['frame_inds'] = inputs['frame_inds'] + 1
-        frame_selector = RawFrameDecode(
-            io_backend='disk', decoding_backend='turbojpeg')
-        results = frame_selector(inputs)
-        assert assert_dict_has_keys(results, target_keys)
-        assert np.shape(results['imgs']) == (len(inputs['frame_inds']), 240,
-                                             320, 3)
-        assert results['original_shape'] == (240, 320)
+        if platform.system() != 'Windows':
+            # test frame selector in turbojpeg decoding backend
+            # when start_index = 0
+            inputs = copy.deepcopy(self.frame_results)
+            inputs['frame_inds'] = np.arange(0, self.total_frames, 5)
+            # since the test images start with index 1, we plus 1 to frame_inds
+            # in order to pass the CI
+            inputs['frame_inds'] = inputs['frame_inds'] + 1
+            frame_selector = RawFrameDecode(
+                io_backend='disk', decoding_backend='turbojpeg')
+            results = frame_selector(inputs)
+            assert assert_dict_has_keys(results, target_keys)
+            assert np.shape(results['imgs']) == (len(inputs['frame_inds']),
+                                                 240, 320, 3)
+            assert results['original_shape'] == (240, 320)
 
-        # test frame selector in turbojpeg decoding backend
-        inputs = copy.deepcopy(self.frame_results)
-        inputs['frame_inds'] = np.arange(1, self.total_frames, 5)
-        frame_selector = RawFrameDecode(
-            io_backend='disk', decoding_backend='turbojpeg')
-        results = frame_selector(inputs)
-        assert assert_dict_has_keys(results, target_keys)
-        assert np.shape(results['imgs']) == (len(inputs['frame_inds']), 240,
-                                             320, 3)
-        assert results['original_shape'] == (240, 320)
-        assert repr(frame_selector) == (f'{frame_selector.__class__.__name__}('
-                                        f'io_backend=disk, '
-                                        f'decoding_backend=turbojpeg)')
+            # test frame selector in turbojpeg decoding backend
+            inputs = copy.deepcopy(self.frame_results)
+            inputs['frame_inds'] = np.arange(1, self.total_frames, 5)
+            frame_selector = RawFrameDecode(
+                io_backend='disk', decoding_backend='turbojpeg')
+            results = frame_selector(inputs)
+            assert assert_dict_has_keys(results, target_keys)
+            assert np.shape(results['imgs']) == (len(inputs['frame_inds']),
+                                                 240, 320, 3)
+            assert results['original_shape'] == (240, 320)
+            assert repr(frame_selector) == (
+                f'{frame_selector.__class__.__name__}(io_backend=disk, '
+                f'decoding_backend=turbojpeg)')
 
     def test_audio_decode_init(self):
         target_keys = ['audios', 'length', 'sample_rate']
