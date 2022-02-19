@@ -158,7 +158,6 @@ A Colab tutorial is also provided. You may preview the notebook [here](demo/mmac
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/posec3d/README.md">PoseC3D</a> (ArXiv'2021)</td>
     <td></td>
     <td></td>
-    <td></td>
   </tr>
 </table>
 
