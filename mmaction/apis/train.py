@@ -19,7 +19,7 @@ from ..utils import PreciseBNHook, get_root_logger
 from .test import multi_gpu_test
 
 
-def init_random_seed(seed=None, device='cuda'):
+def init_random_seed(seed=None, device='cuda', distributed=True):
     """Initialize random seed.
 
     If the seed is not set, the seed will be automatically randomized,
@@ -28,6 +28,8 @@ def init_random_seed(seed=None, device='cuda'):
         seed (int, Optional): The seed. Default to None.
         device (str): The device where the seed will be put on.
             Default to 'cuda'.
+        distributed (bool): Whether to use distributed training.
+            Default: True.
     Returns:
         int: Seed to be used.
     """
@@ -48,7 +50,8 @@ def init_random_seed(seed=None, device='cuda'):
     else:
         random_num = torch.tensor(0, dtype=torch.int32, device=device)
 
-    dist.broadcast(random_num, src=0)
+    if distributed:
+        dist.broadcast(random_num, src=0)
     return random_num.item()
 
 
@@ -203,7 +206,8 @@ def train_model(model,
         runner_kwargs = dict(train_ratio=train_ratio)
     runner.run(data_loaders, cfg.workflow, cfg.total_epochs, **runner_kwargs)
 
-    dist.barrier()
+    if distributed:
+        dist.barrier()
     time.sleep(5)
 
     if test['test_last'] or test['test_best']:
