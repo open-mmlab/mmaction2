@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy
+import platform
 
 import mmcv
 import pytest
@@ -8,6 +9,7 @@ import torch
 from mmaction.models import build_localizer
 
 
+@pytest.mark.skipif(platform.system() == 'Windows', reason='Windows mem limit')
 def test_ssn_train():
     train_cfg = mmcv.ConfigDict(
         dict(
@@ -105,6 +107,7 @@ def test_ssn_train():
     assert isinstance(losses, dict)
 
 
+@pytest.mark.skipif(platform.system() == 'Windows', reason='Windows mem limit')
 def test_ssn_test():
     test_cfg = mmcv.ConfigDict(
         dict(

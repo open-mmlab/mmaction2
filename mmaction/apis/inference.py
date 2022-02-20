@@ -89,7 +89,10 @@ def inference_recognizer(model, video, outputs=None, as_tensor=True, **kwargs):
         input_flag = 'video'
     elif isinstance(video, str) and osp.exists(video):
         if osp.isfile(video):
-            input_flag = 'video'
+            if video.endswith('.npy'):
+                input_flag = 'audio'
+            else:
+                input_flag = 'video'
         if osp.isdir(video):
             input_flag = 'rawframes'
     else:
@@ -157,6 +160,12 @@ def inference_recognizer(model, video, outputs=None, as_tensor=True, **kwargs):
         for i in range(len(test_pipeline)):
             if 'Decode' in test_pipeline[i]['type']:
                 test_pipeline[i] = dict(type='RawFrameDecode')
+    if input_flag == 'audio':
+        data = dict(
+            audio_path=video,
+            total_frames=len(np.load(video)),
+            start_index=cfg.data.test.get('start_index', 1),
+            label=-1)
 
     test_pipeline = Compose(test_pipeline)
     data = test_pipeline(data)

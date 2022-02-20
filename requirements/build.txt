@@ -1,3 +1,8 @@
-# These must be installed before building mmaction2
+decord >= 0.4.1
+einops
+matplotlib
 numpy
+opencv-contrib-python
+Pillow
+scipy
 torch>=1.3
