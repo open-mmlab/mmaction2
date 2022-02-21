@@ -12,6 +12,25 @@ except (ImportError, ModuleNotFoundError):
     mmdet_imported = False
 
 
+# Resolve cross-entropy function to support multi-target in Torch < 1.10
+#   This is a very basic 'hack', with minimal functionality to support the
+#   procedure under prior torch versions
+from packaging import version as pv
+
+if pv.parse(torch.__version__) < pv.parse('1.10'):
+    def cross_entropy_loss(input, target, reduction='None'):
+        input = input.log_softmax(dim=-1)  # Compute Log of Softmax
+        loss = -(input * target).sum(dim=-1)  # Compute Loss manually
+        if reduction.lower() == 'mean':
+            return loss.mean()
+        elif reduction.lower() == 'sum':
+            return loss.sum()
+        else:
+            return loss
+else:
+    cross_entropy_loss = F.cross_entropy
+
+
 class BBoxHeadAVA(nn.Module):
     """Simplest RoI head, with only two fc layers for classification and
     regression respectively.
@@ -229,7 +248,7 @@ class BBoxHeadAVA(nn.Module):
             if self.multilabel:
                 loss_func = F.binary_cross_entropy_with_logits
             else:
-                loss_func = F.cross_entropy
+                loss_func = cross_entropy_loss
 
             # Compute loss
             loss = loss_func(cls_score, labels, reduction='none')
