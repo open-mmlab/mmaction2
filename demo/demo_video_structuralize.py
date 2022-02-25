@@ -234,7 +234,8 @@ def parse_args():
         help='the threshold of action prediction score')
     parser.add_argument(
         '--video',
-        default='demo/test_video_structuralize.mp4',
+        # default='demo/test_video_structuralize.mp4',
+        default='struct.mp4',
         help='video file/url')
     parser.add_argument(
         '--label-map-stdet',
