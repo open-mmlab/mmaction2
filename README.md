@@ -53,7 +53,7 @@ The master branch works with **PyTorch 1.3+**.
   </div>
 </div>
 <div align="center">
-  <img src="https://user-images.githubusercontent.com/30782254/155670506-13fd3990-ce2b-4b55-a7e3-f24277d2f8d8.gif" width="320px"/><br>
+  <img src="https://user-images.githubusercontent.com/30782254/155706123-545faeff-c9c3-44eb-a47a-d216a4eebcc9.mp4" width="320px"/><br>
     <p style="font-size:1.5vw;">Skeleton-based Spatio-Temporal Action Detection and Action Recognition Results on Kinetics-400</p>
 </div>
 <div align="center">
