@@ -289,10 +289,11 @@ def test_timesformer():
 def test_c3d():
     config = get_recognizer_cfg('c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb.py')
     config.model['backbone']['pretrained'] = None
+    config.model['backbone']['out_dim'] = 512
 
     recognizer = build_recognizer(config.model)
 
-    input_shape = (1, 3, 3, 16, 112, 112)
+    input_shape = (1, 3, 3, 16, 28, 28)
     demo_inputs = generate_recognizer_demo_inputs(input_shape, '3D')
 
     imgs = demo_inputs['imgs']
