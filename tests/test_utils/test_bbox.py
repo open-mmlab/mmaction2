@@ -94,6 +94,7 @@ def test_bbox2result():
                            [0.079, 1.269, -0.263, -0.538],
                            [-0.853, 0.391, 0.103, 0.398]])
     num_classes = 4
+    #  Test for multi-label
     result = bbox2result(bboxes, labels, num_classes)
     assert np.all(
         np.isclose(
@@ -113,6 +114,22 @@ def test_bbox2result():
         np.isclose(
             result[2],
             np.array([[0.072, 0.47, 0.84, 0.898, 1.24],
+                      [0.236, 0.189, 0.689, 0.74, 0.438],
+                      [0.024, 0.398, 0.776, 0.719, 0.398]])))
+
+    # Test for single-label
+    result = bbox2result(bboxes, labels, num_classes, -1.0)
+    assert np.all(
+        np.isclose(result[0], np.array([[0.375, 0.371, 0.726, 0.804, 1.269]])))
+    assert np.all(
+        np.isclose(
+            result[1],
+            np.array([[0.23, 0.215, 0.781, 0.534, 0.037],
+                      [0.195, 0.128, 0.643, 0.944, 0.501]])))
+    assert np.all(
+        np.isclose(
+            result[2],
+            np.array([[0.072, 0.47, 0.84, 0.898, 1.240],
                       [0.236, 0.189, 0.689, 0.74, 0.438],
                       [0.024, 0.398, 0.776, 0.719, 0.398]])))
 
