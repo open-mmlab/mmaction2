@@ -46,10 +46,8 @@ def test_i3d_head():
 
 
 def test_bbox_head_ava():
-    """
-    Test loss method, layer construction, attributes and forward function in
-    bbox head.
-    """
+    """Test loss method, layer construction, attributes and forward function in
+    bbox head."""
     with pytest.raises(TypeError):
         # topk must be None, int or tuple[int]
         BBoxHeadAVA(topk=0.1)
@@ -77,38 +75,22 @@ def test_bbox_head_ava():
     # Test topk_to_matrix()
     assert torch.equal(
         BBoxHeadAVA.topk_to_matrix(cls_score[:, 1:], 1),
-        torch.tensor(
-            [[0, 0, 0, 1, 0, 0],
-             [0, 0, 1, 0, 0, 0],
-             [0, 0, 0, 0, 1, 0],
-             [0, 0, 0, 1, 0, 0]],
-            dtype=bool
-        )
-    )
+        torch.tensor([[0, 0, 0, 1, 0, 0], [0, 0, 1, 0, 0, 0],
+                      [0, 0, 0, 0, 1, 0], [0, 0, 0, 1, 0, 0]],
+                     dtype=bool))
     assert torch.equal(
         BBoxHeadAVA.topk_to_matrix(cls_score[:, 1:], 2),
-        torch.tensor(
-            [[0, 1, 0, 1, 0, 0],
-             [1, 0, 1, 0, 0, 0],
-             [0, 0, 0, 1, 1, 0],
-             [0, 0, 0, 1, 0, 1]],
-            dtype=bool
-        )
-    )
+        torch.tensor([[0, 1, 0, 1, 0, 0], [1, 0, 1, 0, 0, 0],
+                      [0, 0, 0, 1, 1, 0], [0, 0, 0, 1, 0, 1]],
+                     dtype=bool))
     assert torch.equal(
         BBoxHeadAVA.topk_to_matrix(cls_score[:, 1:], 3),
-        torch.tensor(
-            [[0, 1, 0, 1, 1, 0],
-             [1, 1, 1, 0, 0, 0],
-             [0, 0, 0, 1, 1, 1],
-             [1, 0, 0, 1, 0, 1]],
-            dtype=bool
-        )
-    )
+        torch.tensor([[0, 1, 0, 1, 1, 0], [1, 1, 1, 0, 0, 0],
+                      [0, 0, 0, 1, 1, 1], [1, 0, 0, 1, 0, 1]],
+                     dtype=bool))
     assert torch.equal(
         BBoxHeadAVA.topk_to_matrix(cls_score[:, 1:], 6),
-        torch.ones([4, 6], dtype=bool)
-    )
+        torch.ones([4, 6], dtype=bool))
 
     # Test Multi-Label Loss
     bbox_head = BBoxHeadAVA()  # Why is this here? isn't this redundant?
@@ -181,8 +163,7 @@ def test_bbox_head_ava():
             bboxes,
             torch.tensor([[0.89783341, 0.20043750, 0.89816672, 0.20087500],
                           [0.45499998, 0.69875002, 0.58166665, 0.86499995]])))
-    assert torch.all(
-        torch.isclose(scores, torch.tensor([0.56636, 0.43364])))
+    assert torch.all(torch.isclose(scores, torch.tensor([0.56636, 0.43364])))
 
 
 def test_x3d_head():

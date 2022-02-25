@@ -11,13 +11,13 @@ try:
 except (ImportError, ModuleNotFoundError):
     mmdet_imported = False
 
-
 # Resolve cross-entropy function to support multi-target in Torch < 1.10
 #   This is a very basic 'hack', with minimal functionality to support the
 #   procedure under prior torch versions
 from packaging import version as pv
 
 if pv.parse(torch.__version__) < pv.parse('1.10'):
+
     def cross_entropy_loss(input, target, reduction='None'):
         input = input.log_softmax(dim=-1)  # Compute Log of Softmax
         loss = -(input * target).sum(dim=-1)  # Compute Loss manually
@@ -142,15 +142,13 @@ class BBoxHeadAVA(nn.Module):
         pos_proposals = [res.pos_bboxes for res in sampling_results]
         neg_proposals = [res.neg_bboxes for res in sampling_results]
         pos_gt_labels = [res.pos_gt_labels for res in sampling_results]
-        cls_reg_targets = bbox_target(
-            pos_proposals, neg_proposals, pos_gt_labels, rcnn_train_cfg
-        )
+        cls_reg_targets = bbox_target(pos_proposals, neg_proposals,
+                                      pos_gt_labels, rcnn_train_cfg)
         return cls_reg_targets
 
     @staticmethod
     def get_recall_prec(pred_vec, target_vec):
-        """
-        Computes the Recall/Precision for both multi-label and single label
+        """Computes the Recall/Precision for both multi-label and single label
         scenarios.
 
         Note that the computation calculates the micro average.
@@ -169,9 +167,7 @@ class BBoxHeadAVA(nn.Module):
 
     @staticmethod
     def topk_to_matrix(probs, k):
-        """
-        Converts top-k to binary matrix
-        """
+        """Converts top-k to binary matrix."""
         topk_labels = probs.topk(k, 1, True, True)[1]
         topk_matrix = probs.new_full(probs.size(), 0, dtype=torch.bool)
         for i in range(probs.shape[0]):
@@ -179,9 +175,8 @@ class BBoxHeadAVA(nn.Module):
         return topk_matrix
 
     def topk_accuracy(self, pred, target, thr=0.5):
-        """
-        Computes the Top-K Accuracies for both single and multi-label scenarios
-        """
+        """Computes the Top-K Accuracies for both single and multi-label
+        scenarios."""
         # Define Target vector:
         target_bool = target > 0.5
 
@@ -230,8 +225,7 @@ class BBoxHeadAVA(nn.Module):
             # Compute First Recall/Precisions
             #   This has to be done first before normalising the label-space.
             recall_thr, prec_thr, recall_k, prec_k = self.topk_accuracy(
-                cls_score, labels, thr=0.5
-            )
+                cls_score, labels, thr=0.5)
             losses['recall@thr=0.5'] = recall_thr
             losses['prec@thr=0.5'] = prec_thr
             for i, k in enumerate(self.topk):

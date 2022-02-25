@@ -3,8 +3,7 @@ import numpy as np
 
 
 def bbox2result(bboxes, labels, num_classes, thr=0.01):
-    """
-    Convert detection results to a list of numpy arrays.
+    """Convert detection results to a list of numpy arrays.
 
     This identifies single-label classification (as opposed to multi-label)
     through the thr parameter which is set to a negative value.
@@ -38,7 +37,7 @@ def bbox2result(bboxes, labels, num_classes, thr=0.01):
     # Robustly check for multi/single-label:
     if not hasattr(thr, '__len__'):
         multilabel = thr >= 0
-        thr = (thr,) * num_classes
+        thr = (thr, ) * num_classes
     else:
         multilabel = True
 
@@ -53,9 +52,6 @@ def bbox2result(bboxes, labels, num_classes, thr=0.01):
         else:
             where = (scores[:, 1:].argmax(axis=1) == i)
         result.append(
-            np.concatenate(
-                (bboxes[where, :4], scores[where, i + 1:i + 2]),
-                axis=1
-            )
-        )
+            np.concatenate((bboxes[where, :4], scores[where, i + 1:i + 2]),
+                           axis=1))
     return result

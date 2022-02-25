@@ -120,30 +120,18 @@ def test_bbox2result():
     # Test for single-label
     result = bbox2result(bboxes, labels, num_classes, -1.0)
     assert np.all(
-        np.isclose(
-            result[0],
-            np.array([[0.375, 0.371, 0.726, 0.804, 1.269]])
-        )
-    )
+        np.isclose(result[0], np.array([[0.375, 0.371, 0.726, 0.804, 1.269]])))
     assert np.all(
         np.isclose(
             result[1],
-            np.array([
-                [0.23, 0.215, 0.781, 0.534, 0.037],
-                [0.195, 0.128, 0.643, 0.944, 0.501]
-            ])
-        )
-    )
+            np.array([[0.23, 0.215, 0.781, 0.534, 0.037],
+                      [0.195, 0.128, 0.643, 0.944, 0.501]])))
     assert np.all(
         np.isclose(
             result[2],
-            np.array([
-                [0.072, 0.47, 0.84, 0.898, 1.240],
-                [0.236, 0.189, 0.689, 0.74, 0.438],
-                [0.024, 0.398, 0.776, 0.719, 0.398]
-            ])
-        )
-    )
+            np.array([[0.072, 0.47, 0.84, 0.898, 1.240],
+                      [0.236, 0.189, 0.689, 0.74, 0.438],
+                      [0.024, 0.398, 0.776, 0.719, 0.398]])))
 
 
 def test_bbox_target():
