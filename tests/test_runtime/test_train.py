@@ -104,15 +104,6 @@ def test_train_model():
         train_model(model, dataset, config, validate=True)
 
     with tempfile.TemporaryDirectory() as tmpdir:
-        # train with Fp16OptimizerHook
-        cfg = copy.deepcopy(_cfg)
-        cfg['work_dir'] = tmpdir
-        cfg['fp16'] = dict(loss_scale=512.)
-        config = Config(cfg)
-        model.fp16_enabled = None
-        train_model(model, dataset, config)
-
-    with tempfile.TemporaryDirectory() as tmpdir:
         cfg = copy.deepcopy(_cfg)
         cfg['work_dir'] = tmpdir
         cfg['omnisource'] = True
