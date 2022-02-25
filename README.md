@@ -57,8 +57,8 @@ The master branch works with **PyTorch 1.3+**.
     <p style="font-size:1.5vw;">Spatio-Temporal Action Detection Results on AVA-2.1</p>
 </div>
 <div align="center">
-  <img src="https://github.com/open-mmlab/mmaction2/raw/master/resources/spatio-temporal-det.gif" width="800px"/><br>
-    <p style="font-size:1.5vw;">Skeleton-based and Rgb-based Spatio-Temporal Action Detection and Action Recognition Results on AVA-2.1</p>
+  <img src="https://user-images.githubusercontent.com/30782254/155670506-13fd3990-ce2b-4b55-a7e3-f24277d2f8d8.gif" width="800px"/><br>
+    <p style="font-size:1.5vw;">Skeleton-based Spatio-Temporal Action Detection and Action Recognition Results on AVA-2.1</p>
 </div>
 
 ## Major Features
