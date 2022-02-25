@@ -53,7 +53,7 @@ MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLa
   </div>
 </div>
 <div align="center">
-  <img src="https://user-images.githubusercontent.com/30782254/155708219-6180614d-4a03-4caf-9aba-5d61fda902c0.gif" width="320px"/><br>
+  <img src="https://user-images.githubusercontent.com/30782254/155708219-6180614d-4a03-4caf-9aba-5d61fda902c0.gif" width="580px"/><br>
     <p style="font-size:1.5vw;">Kinetics-400 上的基于 skeleton 的时空动作检测和动作识别</p>
 </div>
 <div align="center">
