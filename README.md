@@ -53,6 +53,10 @@ The master branch works with **PyTorch 1.3+**.
   </div>
 </div>
 <div align="center">
+  <img src="https://user-images.githubusercontent.com/30782254/155710881-bb26863e-fcb4-458e-b0c4-33cd79f96901.gif" width="580px"/><br>
+    <p style="font-size:1.5vw;">Skeleton-based Spatio-Temporal Action Detection and Action Recognition Results on Kinetics-400</p>
+</div>
+<div align="center">
   <img src="https://github.com/open-mmlab/mmaction2/raw/master/resources/spatio-temporal-det.gif" width="800px"/><br>
     <p style="font-size:1.5vw;">Spatio-Temporal Action Detection Results on AVA-2.1</p>
 </div>
@@ -156,7 +160,6 @@ A Colab tutorial is also provided. You may preview the notebook [here](demo/mmac
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/stgcn/README.md">ST-GCN</a> (AAAI'2018)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/2s-agcn/README.md">2s-AGCN</a> (CVPR'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/posec3d/README.md">PoseC3D</a> (ArXiv'2021)</td>
-    <td></td>
     <td></td>
     <td></td>
   </tr>

@@ -42,6 +42,7 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
             recognition task. Default: False.
         label_smooth_eps (float): Epsilon used in label smooth.
             Reference: arxiv.org/abs/1906.02629. Default: 0.
+        topk (int | tuple): Top-k accuracy. Default: (1, 5).
     """
 
     def __init__(self,
@@ -49,13 +50,20 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
                  in_channels,
                  loss_cls=dict(type='CrossEntropyLoss', loss_weight=1.0),
                  multi_class=False,
-                 label_smooth_eps=0.0):
+                 label_smooth_eps=0.0,
+                 topk=(1, 5)):
         super().__init__()
         self.num_classes = num_classes
         self.in_channels = in_channels
         self.loss_cls = build_loss(loss_cls)
         self.multi_class = multi_class
         self.label_smooth_eps = label_smooth_eps
+        assert isinstance(topk, (int, tuple))
+        if isinstance(topk, int):
+            topk = (topk, )
+        for _topk in topk:
+            assert _topk > 0, 'Top-k should be larger than 0'
+        self.topk = topk
 
     @abstractmethod
     def init_weights(self):
@@ -75,7 +83,7 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
 
         Returns:
             dict: A dict containing field 'loss_cls'(mandatory)
-            and 'top1_acc', 'top5_acc'(optional).
+            and 'topk_acc'(optional).
         """
         losses = dict()
         if labels.shape == torch.Size([]):
@@ -89,11 +97,11 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
 
         if not self.multi_class and cls_score.size() != labels.size():
             top_k_acc = top_k_accuracy(cls_score.detach().cpu().numpy(),
-                                       labels.detach().cpu().numpy(), (1, 5))
-            losses['top1_acc'] = torch.tensor(
-                top_k_acc[0], device=cls_score.device)
-            losses['top5_acc'] = torch.tensor(
-                top_k_acc[1], device=cls_score.device)
+                                       labels.detach().cpu().numpy(),
+                                       self.topk)
+            for k, a in zip(self.topk, top_k_acc):
+                losses[f'top{k}_acc'] = torch.tensor(
+                    a, device=cls_score.device)
 
         elif self.multi_class and self.label_smooth_eps != 0:
             labels = ((1 - self.label_smooth_eps) * labels +

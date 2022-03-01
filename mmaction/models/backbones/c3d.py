@@ -25,6 +25,8 @@ class C3D(nn.Module):
         act_cfg (dict | None): Config dict for activation layer. If set to
             None, it uses ``dict(type='ReLU')`` to construct layers.
             Default: None.
+        out_dim (int): The dimension of last layer feature (after flatten).
+            Depends on the input shape. Default: 8192.
         dropout_ratio (float): Probability of dropout layer. Default: 0.5.
         init_std (float): Std value for Initiation of fc layers. Default: 0.01.
     """
@@ -35,6 +37,7 @@ class C3D(nn.Module):
                  conv_cfg=None,
                  norm_cfg=None,
                  act_cfg=None,
+                 out_dim=8192,
                  dropout_ratio=0.5,
                  init_std=0.005):
         super().__init__()
@@ -76,7 +79,7 @@ class C3D(nn.Module):
         self.pool5 = nn.MaxPool3d(
             kernel_size=(2, 2, 2), stride=(2, 2, 2), padding=(0, 1, 1))
 
-        self.fc6 = nn.Linear(8192, 4096)
+        self.fc6 = nn.Linear(out_dim, 4096)
         self.fc7 = nn.Linear(4096, 4096)
 
         self.relu = nn.ReLU()
