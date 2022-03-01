@@ -45,4 +45,4 @@ repos:
     hooks:
       - id: check-algo-readme
       - id: check-copyright
-        args: ["mmaction"]  # these directories will be checked
+        args: ["mmaction", "tests", "demo", "tools"]  # these directories will be checked

@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 log_level = 'INFO'
 load_from = None
 resume_from = None
