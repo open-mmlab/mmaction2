@@ -127,7 +127,7 @@ lr_config = dict(policy='step', step=[94, 154, 196])
 total_epochs = 239
 
 evaluation = dict(
-    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+    interval=3, metrics=['top_k_accuracy', 'mean_class_accuracy'])
 log_config = dict(
     interval=20,
     hooks=[
@@ -137,7 +137,7 @@ log_config = dict(
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 
-checkpoint_config = dict(interval=5)
+checkpoint_config = dict(interval=3)
 workflow = [('train', 1)]
 
 find_unused_parameters = False
@@ -151,7 +151,7 @@ multigrid = dict(
     default_s=(224, 224),
 )
 
-precise_bn = dict(num_iters=200, interval=5)
+precise_bn = dict(num_iters=200, interval=3)
 
 load_from = None
 resume_from = None
