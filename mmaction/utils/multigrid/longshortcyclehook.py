@@ -125,9 +125,7 @@ class LongShortCycleHook(Hook):
             num_gpus=len(self.cfg.gpu_ids),
             drop_last=True,
             seed=self.cfg.get('seed', None),
-            short_cycle=self.multi_grid_cfg.short_cycle,
-            multigrid_cfg=self.multi_grid_cfg,
-            crop_size=base_s)
+        )
         runner.data_loader = dataloader
         self.logger.info('Rebuild runner.data_loader')
 
