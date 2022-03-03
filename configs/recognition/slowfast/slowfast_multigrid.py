@@ -17,7 +17,6 @@ model = dict(
             conv1_stride_t=1,
             pool1_stride_t=1,
             inflate=(0, 0, 1, 1),
-            norm_cfg=dict(type='SubBatchNorm3D'),
             norm_eval=False),
         fast_pathway=dict(
             type='resnet3d',
@@ -28,7 +27,6 @@ model = dict(
             conv1_kernel=(5, 7, 7),
             conv1_stride_t=1,
             pool1_stride_t=1,
-            norm_cfg=dict(type='SubBatchNorm3D'),
             norm_eval=False)),
     cls_head=dict(
         type='SlowFastHead',
