@@ -88,7 +88,6 @@ def build_dataloader(dataset,
     sample_by_class = getattr(dataset, 'sample_by_class', False)
 
     short_cycle = kwargs.pop('short_cycle', False)
-    # is_precise_bn = kwargs.pop('is_precise_bn', False)
     multigrid_cfg = kwargs.pop('multigrid_cfg', None)
     crop_size = kwargs.pop('crop_size', 224)
 

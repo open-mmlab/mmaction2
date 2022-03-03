@@ -14,10 +14,7 @@ class SubBatchNorm3D(nn.Module):
 
         self.num_features = num_features
         self.cfg_ = deepcopy(cfg)
-        if 'num_splits' in self.cfg_:
-            self.num_splits = self.cfg_.pop('num_splits')
-        else:
-            self.num_splits = 1
+        self.num_splits = self.cfg_.pop('num_splits', 1)
         self.num_features_split = self.num_features * self.num_splits
         # only keep one set of affine params, not in .bn or .split_bn
         self.cfg_['affine'] = False
@@ -58,6 +55,7 @@ class SubBatchNorm3D(nn.Module):
     def forward(self, x):
         if self.training:
             n, c, t, h, w = x.shape
+            assert n % self.num_splits == 0
             x = x.view(n // self.num_splits, c * self.num_splits, t, h, w)
             x = self.split_bn(x)
             x = x.view(n, c, t, h, w)
