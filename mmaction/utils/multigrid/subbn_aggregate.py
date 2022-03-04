@@ -16,6 +16,7 @@ def aggregate_sub_bn_status(module):
 
 @HOOKS.register_module()
 class SubBatchNorm3dAggregationHook(Hook):
+    """Recursively find all SubBN modules and aggregate sub-BN stats."""
 
     def after_train_epoch(self, runner):
         _ = aggregate_sub_bn_status(runner.model)
