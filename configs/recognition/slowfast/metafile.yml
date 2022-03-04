@@ -120,6 +120,29 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr.json
   Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr.log
   Weights: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr-43988bac.pth
+- Config: configs/recognition/slowfast/slowfast_multigrid_r50_8x8x1_358e_kinetics400_rgb.py
+  In Collection: SlowFast
+  Metadata:
+    Architecture: ResNet50
+    Batch Size: 8
+    Epochs: 256
+    FLOPs: 66222034944
+    Parameters: 34565560
+    Pretrained: None
+    Resolution: short-side 320
+    Training Data: Kinetics-400
+    Training Resources: 24 GPUs
+  Modality: RGB
+  Name: slowfast_multigrid_r50_8x8x1_358e_kinetics400_rgb
+  Results:
+  - Dataset: Kinetics-400
+    Metrics:
+      Top 1 Accuracy: 76.07
+      Top 5 Accuracy: 92.21
+    Task: Action Recognition
+  Training Json Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_multigrid_r50_8x8x1_358e_kinetics400_rgb/slowfast_multigrid_r50_8x8x1_358e_kinetics400_rgb.json
+  Training Log: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_multigrid_r50_8x8x1_358e_kinetics400_rgb/slowfast_multigrid_r50_8x8x1_358e_kinetics400_rgb.log
+  Weights: https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_multigrid_r50_8x8x1_358e_kinetics400_rgb/slowfast_multigrid_r50_8x8x1_358e_kinetics400_rgb-f82bd304.pth
 - Config: configs/recognition/slowfast/slowfast_prebn_r50_8x8x1_256e_kinetics400_rgb_steplr.py
   In Collection: SlowFast
   Metadata:

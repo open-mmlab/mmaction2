@@ -10,6 +10,7 @@ from mmcv.runner import get_dist_info
 from mmcv.utils import Registry, build_from_cfg, digit_version
 from torch.utils.data import DataLoader
 
+from ..utils.multigrid import ShortCycleSampler
 from .samplers import ClassSpecificDistributedSampler, DistributedSampler
 
 if platform.system() != 'Windows':
@@ -86,6 +87,10 @@ def build_dataloader(dataset,
     rank, world_size = get_dist_info()
     sample_by_class = getattr(dataset, 'sample_by_class', False)
 
+    short_cycle = kwargs.pop('short_cycle', False)
+    multigrid_cfg = kwargs.pop('multigrid_cfg', None)
+    crop_size = kwargs.pop('crop_size', 224)
+
     if dist:
         if sample_by_class:
             dynamic_length = getattr(dataset, 'dynamic_length', True)
@@ -102,7 +107,31 @@ def build_dataloader(dataset,
         shuffle = False
         batch_size = videos_per_gpu
         num_workers = workers_per_gpu
+
+        if short_cycle:
+            batch_sampler = ShortCycleSampler(sampler, batch_size,
+                                              multigrid_cfg, crop_size)
+            init_fn = partial(
+                worker_init_fn, num_workers=num_workers, rank=rank,
+                seed=seed) if seed is not None else None
+
+            if digit_version(torch.__version__) >= digit_version('1.8.0'):
+                kwargs['persistent_workers'] = persistent_workers
+
+            data_loader = DataLoader(
+                dataset,
+                batch_sampler=batch_sampler,
+                num_workers=num_workers,
+                pin_memory=pin_memory,
+                worker_init_fn=init_fn,
+                **kwargs)
+            return data_loader
+
     else:
+        if short_cycle:
+            raise NotImplementedError(
+                'Short cycle using non-dist is not supported')
+
         sampler = None
         batch_size = num_gpus * videos_per_gpu
         num_workers = num_gpus * workers_per_gpu

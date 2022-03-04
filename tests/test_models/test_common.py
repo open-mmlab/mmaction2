@@ -9,7 +9,7 @@ from mmcv.utils import assert_params_all_zeros
 from mmaction.models.common import (LFB, TAM, Conv2plus1d, ConvAudio,
                                     DividedSpatialAttentionWithNorm,
                                     DividedTemporalAttentionWithNorm,
-                                    FFNWithNorm)
+                                    FFNWithNorm, SubBatchNorm3D)
 
 
 def test_conv2plus1d():
@@ -136,3 +136,14 @@ def test_LFB():
         lmdb_map_size=1e6)
     lt_feat_lmdb = lfb_lmdb['video_1,930']
     assert lt_feat_lmdb.shape == (3 * 30, 16)
+
+
+def test_SubBatchNorm3D():
+    _cfg = dict(num_splits=2)
+    num_features = 4
+    sub_batchnorm_3d = SubBatchNorm3D(num_features, **_cfg)
+    assert sub_batchnorm_3d.bn.num_features == num_features
+    assert sub_batchnorm_3d.split_bn.num_features == num_features * 2
+
+    assert sub_batchnorm_3d.bn.affine is False
+    assert sub_batchnorm_3d.split_bn.affine is False
