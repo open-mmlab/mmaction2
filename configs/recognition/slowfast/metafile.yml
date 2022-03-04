@@ -115,7 +115,7 @@ Models:
   - Dataset: Kinetics-400
     Metrics:
       Top 1 Accuracy: 76.07
-      Top 5 Accuracy: 92.
+      Top 5 Accuracy: 92.21
     Task: Action Recognition
   Training Json Log:
   Training Log:
