@@ -11,6 +11,7 @@
 - [SpatioTemporal Action Detection Webcam Demo](#spatiotemporal-action-detection-webcam-demo): A demo script to implement real-time spatio-temporal action detection from a web camera.
 - [Skeleton-based Action Recognition Demo](#skeleton-based-action-recognition-demo): A demo script to predict the skeleton-based action recognition result using a single video.
 - [Video Structuralize Demo](#video-structuralize-demo): A demo script to predict the skeleton-based and rgb-based action recognition and spatio-temporal action detection result using a single video.
+- [Audio Demo](#audio-demo): A demo script to predict the recognition result using a single audio file.
 
 ## Modify configs through script arguments
 
@@ -450,7 +451,7 @@ python demo/webcam_demo_spatiotemporal_det.py \
 We provide a demo script to predict the skeleton-based action recognition result using a single video.
 
 ```shell
-python demo/demo_posec3d.py ${VIDEO_FILE} ${OUT_FILENAME} \
+python demo/demo_skeleton.py ${VIDEO_FILE} ${OUT_FILENAME} \
     [--config ${SKELETON_BASED_ACTION_RECOGNITION_CONFIG_FILE}] \
     [--checkpoint ${SKELETON_BASED_ACTION_RECOGNITION_CHECKPOINT}] \
     [--det-config ${HUMAN_DETECTION_CONFIG_FILE}] \
@@ -483,9 +484,23 @@ Assume that you are located at `$MMACTION2` .
 1. Use the Faster RCNN as the human detector, HRNetw32 as the pose estimator, PoseC3D-NTURGB+D-120-Xsub-keypoint as the skeleton-based action recognizer.
 
 ```shell
-python demo/demo_posec3d.py demo/ntu_sample.avi demo/posec3d_demo.mp4 \
+python demo/demo_skeleton.py demo/ntu_sample.avi demo/skeleton_demo.mp4 \
     --config configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint.py \
     --checkpoint https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint/slowonly_r50_u48_240e_ntu120_xsub_keypoint-6736b03f.pth \
+    --det-config demo/faster_rcnn_r50_fpn_2x_coco.py \
+    --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
+    --det-score-thr 0.9 \
+    --pose-config demo/hrnet_w32_coco_256x192.py \
+    --pose-checkpoint https://download.openmmlab.com/mmpose/top_down/hrnet/hrnet_w32_coco_256x192-c78dce93_20200708.pth \
+    --label-map tools/data/skeleton/label_map_ntu120.txt
+```
+
+2. Use the Faster RCNN as the human detector, HRNetw32 as the pose estimator, STGCN-NTURGB+D-60-Xsub-keypoint as the skeleton-based action recognizer.
+
+```shell
+python demo/demo_skeleton.py demo/ntu_sample.avi demo/skeleton_demo.mp4 \
+    --config configs/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint.py \
+    --checkpoint https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint/stgcn_80e_ntu60_xsub_keypoint-e7bb9653.pth \
     --det-config demo/faster_rcnn_r50_fpn_2x_coco.py \
     --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
     --det-score-thr 0.9 \
@@ -629,3 +644,31 @@ python demo/demo_video_structuralize.py
     --label-map-stdet tools/data/ava/label_map.txt \
     --label-map tools/data/kinetics/label_map_k400.txt
 ```
+
+## Audio Demo
+
+Demo script to predict the audio-based action recognition using a single audio feature.
+
+The script `extract_audio.py` can be used to extract audios from videos and the script `build_audio_features.py` can be used to extract the audio features.
+
+```shell
+python demo/demo_audio.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${AUDIO_FILE} {LABEL_FILE} [--device ${DEVICE}]
+```
+
+Optional arguments:
+
+- `DEVICE`: Type of device to run the demo. Allowed values are cuda devices like `cuda:0` or `cpu`. If not specified, it will be set to `cuda:0`.
+
+Examples:
+
+Assume that you are located at `$MMACTION2` and have already downloaded the checkpoints to the directory `checkpoints/`,
+or use checkpoint url from `configs/` to directly load the corresponding checkpoint, which will be automatically saved in `$HOME/.cache/torch/checkpoints`.
+
+1. Recognize an audio file as input by using a tsn model on cuda by default.
+
+    ```shell
+    python demo/demo_audio.py \
+        configs/recognition_audio/resnet/tsn_r18_64x1x1_100e_kinetics400_audio_feature.py \
+        https://download.openmmlab.com/mmaction/recognition/audio_recognition/tsn_r18_64x1x1_100e_kinetics400_audio_feature/tsn_r18_64x1x1_100e_kinetics400_audio_feature_20201012-bf34df6c.pth \
+        audio_feature.npy label_map_k400.txt
+    ```

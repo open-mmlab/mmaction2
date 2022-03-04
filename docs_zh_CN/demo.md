@@ -12,6 +12,7 @@
   - [基于网络摄像头的实时时空动作检测](#基于网络摄像头的实时时空动作检测)
   - [基于人体姿态预测动作标签](#基于人体姿态预测动作标签)
   - [视频结构化预测](#视频结构化预测)
+  - [基于音频的动作识别](#基于音频的动作识别)
 
 ## 预测视频的动作标签
 
@@ -407,7 +408,7 @@ python demo/webcam_demo_spatiotemporal_det.py \
 MMAction2 提供本脚本实现基于人体姿态的动作标签预测。
 
 ```shell
-python demo/demo_posec3d.py ${VIDEO_FILE} ${OUT_FILENAME} \
+python demo/demo_skeleton.py ${VIDEO_FILE} ${OUT_FILENAME} \
     [--config ${SKELETON_BASED_ACTION_RECOGNITION_CONFIG_FILE}] \
     [--checkpoint ${SKELETON_BASED_ACTION_RECOGNITION_CHECKPOINT}] \
     [--det-config ${HUMAN_DETECTION_CONFIG_FILE}] \
@@ -421,23 +422,6 @@ python demo/demo_posec3d.py ${VIDEO_FILE} ${OUT_FILENAME} \
 ```
 
 可选参数：
-
-- `SPATIOTEMPORAL_ACTION_DETECTION_CONFIG_FILE`: 时空检测配置文件路径。
-- `SPATIOTEMPORAL_ACTION_DETECTION_CHECKPOINT`: 时空检测模型权重文件路径。
-- `ACTION_DETECTION_SCORE_THRESHOLD`: 动作检测分数阈值，默认为 0.4。
-- `HUMAN_DETECTION_CONFIG_FILE`: 人体检测配置文件路径。
-- `HUMAN_DETECTION_CHECKPOINT`: 人体检测模型权重文件路径。
-- `HUMAN_DETECTION_SCORE_THRE`: 人体检测分数阈值，默认为 0.9。
-- `INPUT_VIDEO`: 网络摄像头编号或本地视频文件路径，默认为 `0`。
-- `LABEL_MAP`: 所使用的标签映射文件，默认为 `tools/data/ava/label_map.txt`。
-- `DEVICE`: 指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或 cpu（`cpu`），默认为 `cuda:0`。
-- `OUTPUT_FPS`: 输出视频的帧率，默认为 15。
-- `OUTPUT_FILENAME`: 输出视频的路径，默认为 `None`。
-- `--show`: 是否通过 `cv2.imshow` 展示预测结果。
-- `DISPLAY_HEIGHT`: 输出结果图像高度，默认为 0。
-- `DISPLAY_WIDTH`: 输出结果图像宽度，默认为 0。若 `DISPLAY_HEIGHT <= 0 and DISPLAY_WIDTH <= 0`，则表示输出图像形状与输入视频形状相同。
-- `PREDICT_STEPSIZE`: 每 N 帧进行一次预测（以控制计算资源），默认为 8。
-- `CLIP_VIS_LENGTH`: 预测结果可视化持续帧数，即每次预测结果将可视化到 `CLIP_VIS_LENGTH` 帧中，默认为 8。
 
 - `SKELETON_BASED_ACTION_RECOGNITION_CONFIG_FILE`: 基于人体姿态的动作识别模型配置文件路径。
 - `SKELETON_BASED_ACTION_RECOGNITION_CHECKPOINT`: 基于人体姿态的动作识别模型权重文件路径。
@@ -457,9 +441,23 @@ python demo/demo_posec3d.py ${VIDEO_FILE} ${OUT_FILENAME} \
 1. 使用 Faster RCNN 作为人体检测器，HRNetw32 作为人体姿态估计模型，PoseC3D-NTURGB+D-120-Xsub-keypoint 作为基于人体姿态的动作识别模型。
 
 ```shell
-python demo/demo_posec3d.py demo/ntu_sample.avi demo/posec3d_demo.mp4 \
+python demo/demo_skeleton.py demo/ntu_sample.avi demo/skeleton_demo.mp4 \
     --config configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint.py \
     --checkpoint https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint/slowonly_r50_u48_240e_ntu120_xsub_keypoint-6736b03f.pth \
+    --det-config demo/faster_rcnn_r50_fpn_2x_coco.py \
+    --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
+    --det-score-thr 0.9 \
+    --pose-config demo/hrnet_w32_coco_256x192.py \
+    --pose-checkpoint https://download.openmmlab.com/mmpose/top_down/hrnet/hrnet_w32_coco_256x192-c78dce93_20200708.pth \
+    --label-map tools/data/skeleton/label_map_ntu120.txt
+```
+
+2. 使用 Faster RCNN 作为人体检测器，HRNetw32 作为人体姿态估计模型，STGCN-NTURGB+D-60-Xsub-keypoint 作为基于人体姿态的动作识别模型。
+
+```shell
+python demo/demo_skeleton.py demo/ntu_sample.avi demo/skeleton_demo.mp4 \
+    --config configs/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint.py \
+    --checkpoint https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint/stgcn_80e_ntu60_xsub_keypoint-e7bb9653.pth \
     --det-config demo/faster_rcnn_r50_fpn_2x_coco.py \
     --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
     --det-score-thr 0.9 \
@@ -603,3 +601,30 @@ python demo/demo_video_structuralize.py
     --label-map-stdet tools/data/ava/label_map.txt \
     --label-map tools/data/kinetics/label_map_k400.txt
 ```
+
+## 基于音频的动作识别
+
+本脚本可用于进行基于音频特征的动作识别。
+
+脚本 `extract_audio.py` 可被用于从视频中提取音频，脚本 `build_audio_features.py` 可被用于基于音频文件提取音频特征。
+
+```shell
+python demo/demo_audio.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${AUDIO_FILE} {LABEL_FILE} [--device ${DEVICE}]
+```
+
+可选参数：
+
+- `DEVICE`: 指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或 cpu（`cpu`），默认为 `cuda:0`。
+
+示例：
+
+以下示例假设用户的当前目录为 $MMACTION2。
+
+1. 在 GPU 上，使用 TSN 模型进行基于音频特征的动作识别。
+
+    ```shell
+    python demo/demo_audio.py \
+        configs/recognition_audio/resnet/tsn_r18_64x1x1_100e_kinetics400_audio_feature.py \
+        https://download.openmmlab.com/mmaction/recognition/audio_recognition/tsn_r18_64x1x1_100e_kinetics400_audio_feature/tsn_r18_64x1x1_100e_kinetics400_audio_feature_20201012-bf34df6c.pth \
+        audio_feature.npy label_map_k400.txt
+    ```

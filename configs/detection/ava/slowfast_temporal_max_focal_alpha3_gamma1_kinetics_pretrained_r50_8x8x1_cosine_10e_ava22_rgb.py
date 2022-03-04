@@ -40,6 +40,8 @@ model = dict(
             type='BBoxHeadAVA',
             dropout_ratio=0.5,
             in_channels=2304,
+            focal_alpha=3.0,
+            focal_gamma=1.0,
             num_classes=81,
             multilabel=True)),
     train_cfg=dict(
@@ -100,7 +102,8 @@ train_pipeline = [
 ]
 # The testing is w/o. any cropping / flipping
 val_pipeline = [
-    dict(type='SampleAVAFrames', clip_len=32, frame_interval=2),
+    dict(
+        type='SampleAVAFrames', clip_len=32, frame_interval=2, test_mode=True),
     dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='Normalize', **img_norm_cfg),

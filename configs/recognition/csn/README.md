@@ -1,5 +1,9 @@
 # CSN
 
+[Video Classification With Channel-Separated Convolutional Networks](https://openaccess.thecvf.com/content_ICCV_2019/html/Tran_Video_Classification_With_Channel-Separated_Convolutional_Networks_ICCV_2019_paper.html)
+
+<!-- [ALGORITHM] -->
+
 ## Abstract
 
 <!-- [ABSTRACT] -->
@@ -11,34 +15,7 @@ Group convolution has been shown to offer great computational savings in various
 <img src="https://user-images.githubusercontent.com/34324155/143017317-1bd7e557-7d99-4964-8b89-ab5280945d54.png" width="800"/>
 </div>
 
-## Citation
-
-<!-- [ALGORITHM] -->
-
-```BibTeX
-@inproceedings{inproceedings,
-author = {Wang, Heng and Feiszli, Matt and Torresani, Lorenzo},
-year = {2019},
-month = {10},
-pages = {5551-5560},
-title = {Video Classification With Channel-Separated Convolutional Networks},
-doi = {10.1109/ICCV.2019.00565}
-}
-```
-
-<!-- [OTHERS] -->
-
-```BibTeX
-@inproceedings{ghadiyaram2019large,
-  title={Large-scale weakly-supervised pre-training for video action recognition},
-  author={Ghadiyaram, Deepti and Tran, Du and Mahajan, Dhruv},
-  booktitle={Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition},
-  pages={12046--12055},
-  year={2019}
-}
-```
-
-## Model Zoo
+## Results and Models
 
 ### Kinetics-400
 
@@ -103,3 +80,28 @@ python tools/test.py configs/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+
+## Citation
+
+```BibTeX
+@inproceedings{inproceedings,
+author = {Wang, Heng and Feiszli, Matt and Torresani, Lorenzo},
+year = {2019},
+month = {10},
+pages = {5551-5560},
+title = {Video Classification With Channel-Separated Convolutional Networks},
+doi = {10.1109/ICCV.2019.00565}
+}
+```
+
+<!-- [OTHERS] -->
+
+```BibTeX
+@inproceedings{ghadiyaram2019large,
+  title={Large-scale weakly-supervised pre-training for video action recognition},
+  author={Ghadiyaram, Deepti and Tran, Du and Mahajan, Dhruv},
+  booktitle={Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition},
+  pages={12046--12055},
+  year={2019}
+}
+```

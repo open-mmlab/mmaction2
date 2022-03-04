@@ -1,5 +1,9 @@
 # TANet
 
+[TAM: Temporal Adaptive Module for Video Recognition](https://openaccess.thecvf.com/content/ICCV2021/html/Liu_TAM_Temporal_Adaptive_Module_for_Video_Recognition_ICCV_2021_paper.html)
+
+<!-- [ALGORITHM] -->
+
 ## Abstract
 
 <!-- [ABSTRACT] -->
@@ -11,20 +15,7 @@ Video data is with complex temporal dynamics due to various factors such as came
 <img src="https://user-images.githubusercontent.com/34324155/143018253-c3e1ba5b-ac35-4c55-be28-0134b76888e8.png" width="800"/>
 </div>
 
-## Citation
-
-<!-- [ALGORITHM] -->
-
-```BibTeX
-@article{liu2020tam,
-  title={TAM: Temporal Adaptive Module for Video Recognition},
-  author={Liu, Zhaoyang and Wang, Limin and Wu, Wayne and Qian, Chen and Lu, Tong},
-  journal={arXiv preprint arXiv:2005.06803},
-  year={2020}
-}
-```
-
-## Model Zoo
+## Results and Models
 
 ### Kinetics-400
 
@@ -87,3 +78,14 @@ python tools/test.py configs/recognition/tanet/tanet_r50_dense_1x1x8_100e_kineti
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+
+## Citation
+
+```BibTeX
+@article{liu2020tam,
+  title={TAM: Temporal Adaptive Module for Video Recognition},
+  author={Liu, Zhaoyang and Wang, Limin and Wu, Wayne and Qian, Chen and Lu, Tong},
+  journal={arXiv preprint arXiv:2005.06803},
+  year={2020}
+}
+```

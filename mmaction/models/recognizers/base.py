@@ -104,6 +104,7 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         self.blending = None
         if train_cfg is not None and 'blending' in train_cfg:
             from mmcv.utils import build_from_cfg
+
             from mmaction.datasets.builder import BLENDINGS
             self.blending = build_from_cfg(train_cfg['blending'], BLENDINGS)
 

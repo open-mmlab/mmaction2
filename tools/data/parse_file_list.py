@@ -426,10 +426,10 @@ def parse_hmdb51_split(level):
     def generate_class_index_file():
         """This function will generate a `ClassInd.txt` for HMDB51 in a format
         like UCF101, where class id starts with 1."""
-        frame_path = 'data/hmdb51/rawframes'
+        video_path = 'data/hmdb51/videos'
         annotation_dir = 'data/hmdb51/annotations'
 
-        class_list = sorted(os.listdir(frame_path))
+        class_list = sorted(os.listdir(video_path))
         class_dict = dict()
         if not osp.exists(class_index_file):
             with open(class_index_file, 'w') as f:

@@ -1,5 +1,9 @@
 # ACRN
 
+[Actor-centric relation network](https://openaccess.thecvf.com/content_ECCV_2018/html/Chen_Sun_Actor-centric_Relation_Network_ECCV_2018_paper.html)
+
+<!-- [ALGORITHM] -->
+
 ## Abstract
 
 <!-- [ABSTRACT] -->
@@ -11,33 +15,7 @@ Current state-of-the-art approaches for spatio-temporal action localization rely
 <img src="https://user-images.githubusercontent.com/34324155/142996406-09ac1b09-2a9e-478c-9035-5fe7a80bc80b.png" width="800"/>
 </div>
 
-## Citation
-
-<!-- [DATASET] -->
-
-```BibTeX
-@inproceedings{gu2018ava,
-  title={Ava: A video dataset of spatio-temporally localized atomic visual actions},
-  author={Gu, Chunhui and Sun, Chen and Ross, David A and Vondrick, Carl and Pantofaru, Caroline and Li, Yeqing and Vijayanarasimhan, Sudheendra and Toderici, George and Ricco, Susanna and Sukthankar, Rahul and others},
-  booktitle={Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition},
-  pages={6047--6056},
-  year={2018}
-}
-```
-
-<!-- [ALGORITHM] -->
-
-```BibTeX
-@inproceedings{sun2018actor,
-  title={Actor-centric relation network},
-  author={Sun, Chen and Shrivastava, Abhinav and Vondrick, Carl and Murphy, Kevin and Sukthankar, Rahul and Schmid, Cordelia},
-  booktitle={Proceedings of the European Conference on Computer Vision (ECCV)},
-  pages={318--334},
-  year={2018}
-}
-```
-
-## Model Zoo
+## Results and Models
 
 ### AVA2.1
 
@@ -92,3 +70,27 @@ python tools/test.py configs/detection/acrn/slowfast_acrn_kinetics_pretrained_r5
 ```
 
 For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset) .
+
+## Citation
+
+<!-- [DATASET] -->
+
+```BibTeX
+@inproceedings{gu2018ava,
+  title={Ava: A video dataset of spatio-temporally localized atomic visual actions},
+  author={Gu, Chunhui and Sun, Chen and Ross, David A and Vondrick, Carl and Pantofaru, Caroline and Li, Yeqing and Vijayanarasimhan, Sudheendra and Toderici, George and Ricco, Susanna and Sukthankar, Rahul and others},
+  booktitle={Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition},
+  pages={6047--6056},
+  year={2018}
+}
+```
+
+```BibTeX
+@inproceedings{sun2018actor,
+  title={Actor-centric relation network},
+  author={Sun, Chen and Shrivastava, Abhinav and Vondrick, Carl and Murphy, Kevin and Sukthankar, Rahul and Schmid, Cordelia},
+  booktitle={Proceedings of the European Conference on Computer Vision (ECCV)},
+  pages={318--334},
+  year={2018}
+}
+```

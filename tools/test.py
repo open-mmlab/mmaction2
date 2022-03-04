@@ -15,7 +15,7 @@ from mmcv.runner.fp16_utils import wrap_fp16_model
 
 from mmaction.datasets import build_dataloader, build_dataset
 from mmaction.models import build_model
-from mmaction.utils import register_module_hooks
+from mmaction.utils import register_module_hooks, setup_multi_processes
 
 # TODO import test functions from mmcv and delete them from mmaction2
 try:
@@ -178,8 +178,8 @@ def inference_tensorrt(ckpt_path, distributed, data_loader, batch_size):
     assert not distributed, \
         'TensorRT engine inference only supports single gpu mode.'
     import tensorrt as trt
-    from mmcv.tensorrt.tensorrt_utils import (torch_dtype_from_trt,
-                                              torch_device_from_trt)
+    from mmcv.tensorrt.tensorrt_utils import (torch_device_from_trt,
+                                              torch_dtype_from_trt)
 
     # load engine
     with trt.Logger() as logger, trt.Runtime(logger) as runtime:
@@ -273,6 +273,9 @@ def main():
     cfg = Config.fromfile(args.config)
 
     cfg.merge_from_dict(args.cfg_options)
+
+    # set multi-process settings
+    setup_multi_processes(cfg)
 
     # Load output_config from cfg
     output_config = cfg.get('output_config', {})

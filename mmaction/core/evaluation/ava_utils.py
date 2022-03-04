@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 # This piece of code is directly adapted from ActivityNet official repo
 # https://github.com/activitynet/ActivityNet/blob/master/
 # Evaluation/get_ava_performance.py. Some unused codes are removed.
@@ -123,7 +124,7 @@ def read_exclusions(exclusions_file):
     if exclusions_file:
         reader = csv.reader(exclusions_file)
     for row in reader:
-        assert len(row) == 2, 'Expected only 2 columns, got: ' + row
+        assert len(row) == 2, f'Expected only 2 columns, got: {row}'
         excluded.add(make_image_key(row[0], row[1]))
     return excluded
 
