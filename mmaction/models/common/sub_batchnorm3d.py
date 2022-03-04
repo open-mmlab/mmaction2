@@ -8,7 +8,11 @@ from mmcv.cnn import NORM_LAYERS
 
 @NORM_LAYERS.register_module()
 class SubBatchNorm3D(nn.Module):
-    """sub batchnorm 3d."""
+    """Sub BatchNorm3d.
+
+    Args:
+        num_features (int): Dimensions of BatchNorm.
+    """
 
     def __init__(self, num_features, **cfg):
         super(SubBatchNorm3D, self).__init__()
