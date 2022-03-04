@@ -145,7 +145,6 @@ class PreciseBNHook(Hook):
             print_log(
                 f'Running Precise BN for {self.num_iters} iterations',
                 logger=runner.logger)
-            self.num_iters = min(self.num_iters, len(self.dataloader))
             update_bn_stats(
                 runner.model,
                 self.dataloader,
