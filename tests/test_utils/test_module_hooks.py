@@ -10,6 +10,7 @@ import torch
 from mmaction.models import build_recognizer
 from mmaction.utils import register_module_hooks
 from mmaction.utils.module_hooks import GPUNormalize
+from mmaction.utils.multigrid import LongShortCycleHook
 
 
 def test_register_module_hooks():
@@ -119,3 +120,25 @@ def test_gpu_normalize():
     gpu_normalize_cfg['input_format'] = '_format'
     with pytest.raises(ValueError):
         gpu_normalize = GPUNormalize(**gpu_normalize_cfg)
+
+
+def test_multigrid_hook():
+    multigrid_cfg = dict(data=dict(
+        videos_per_gpu=8,
+        workers_per_gpu=4,
+    ))
+    with pytest.raises(AssertionError):
+        LongShortCycleHook(multigrid_cfg)
+
+    multigrid_cfg = dict(
+        multigrid=dict(
+            long_cycle=True,
+            short_cycle=True,
+            epoch_factor=1.5,
+            long_cycle_factors=[[0.25, 0.7071], [0.5, 0.7071], [0.5, 1],
+                                [1, 1]],
+            short_cycle_factors=[0.5, 0.7071],
+            default_s=(224, 224),
+        ))
+    with pytest.raises(AssertionError):
+        LongShortCycleHook(multigrid_cfg)
