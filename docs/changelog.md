@@ -15,7 +15,7 @@
 - Support STGCN in demo_skeleton.py([#1391](https://github.com/open-mmlab/mmaction2/pull/1391))
 - Support CPU training([#1407](https://github.com/open-mmlab/mmaction2/pull/1407))
 - Support audio demo([#1425](https://github.com/open-mmlab/mmaction2/pull/1425))
-- Support topk customizing in models/heads/base.py([#1452])(https://github.com/open-mmlab/mmaction2/pull/1452))
+- Support topk customizing in models/heads/base.py([#1452](https://github.com/open-mmlab/mmaction2/pull/1452))
 
 **Documentations**
 
