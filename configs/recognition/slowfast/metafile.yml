@@ -131,7 +131,7 @@ Models:
     Pretrained: None
     Resolution: short-side 320
     Training Data: Kinetics-400
-    Training Resources: 24 GPUs
+    Training Resources: 16 GPUs
   Modality: RGB
   Name: slowfast_multigrid_r50_8x8x1_358e_kinetics400_rgb
   Results:
