@@ -1,5 +1,58 @@
 ## Changelog
 
+### 0.22.0 (03/05/2022)
+
+**Highlights**
+
+- Support Multigrid training strategy
+- Support CPU training
+- Support audio demo
+- Support topk customizing in models/heads/base.py
+
+**New Features**
+
+- Support Multigrid training strategy([#1378](https://github.com/open-mmlab/mmaction2/pull/1378))
+- Support STGCN in demo_skeleton.py([#1391](https://github.com/open-mmlab/mmaction2/pull/1391))
+- Support CPU training([#1407](https://github.com/open-mmlab/mmaction2/pull/1407))
+- Support audio demo([#1425](https://github.com/open-mmlab/mmaction2/pull/1425))
+- Support topk customizing in models/heads/base.py([#1452](https://github.com/open-mmlab/mmaction2/pull/1452))
+
+**Documentations**
+
+- Add OpenMMLab platform([#1393](https://github.com/open-mmlab/mmaction2/pull/1393))
+- Update links([#1394](https://github.com/open-mmlab/mmaction2/pull/1394))
+- Update readme in configs([#1404](https://github.com/open-mmlab/mmaction2/pull/1404))
+- Update instructions to install mmcv-full([#1426](https://github.com/open-mmlab/mmaction2/pull/1426))
+- Add shortcut([#1433](https://github.com/open-mmlab/mmaction2/pull/1433))
+- Update modelzoo([#1439](https://github.com/open-mmlab/mmaction2/pull/1439))
+- add video_structuralize in readme([#1455](https://github.com/open-mmlab/mmaction2/pull/1455))
+- Update OpenMMLab repo information([#1482](https://github.com/open-mmlab/mmaction2/pull/1482))
+
+**Bug and Typo Fixes**
+
+- Update train.py([#1375](https://github.com/open-mmlab/mmaction2/pull/1375))
+- Fix printout bug([#1382]((https://github.com/open-mmlab/mmaction2/pull/1382)))
+- Update multi processing setting([#1395](https://github.com/open-mmlab/mmaction2/pull/1395))
+- Setup multi processing both in train and test([#1405](https://github.com/open-mmlab/mmaction2/pull/1405))
+- Fix bug in nondistributed multi-gpu training([#1406](https://github.com/open-mmlab/mmaction2/pull/1406))
+- Add variable fps in  ava_dataset.py([#1409](https://github.com/open-mmlab/mmaction2/pull/1409))
+- Only support distributed training([#1414](https://github.com/open-mmlab/mmaction2/pull/1414))
+- Set test_mode for AVA configs([#1432](https://github.com/open-mmlab/mmaction2/pull/1432))
+- Support single label([#1434](https://github.com/open-mmlab/mmaction2/pull/1434))
+- Add check copyright([#1447](https://github.com/open-mmlab/mmaction2/pull/1447))
+- Support Windows CI([#1448](https://github.com/open-mmlab/mmaction2/pull/1448))
+- Fix wrong device of class_weight in models/losses/cross_entropy_loss.py([#1457](https://github.com/open-mmlab/mmaction2/pull/1457))
+- Fix bug caused by distributed([#1459](https://github.com/open-mmlab/mmaction2/pull/1459))
+- Update readme([#1460](https://github.com/open-mmlab/mmaction2/pull/1460))
+- Fix lint caused by colab automatic upload([#1461](https://github.com/open-mmlab/mmaction2/pull/1461))
+- Refine CI([#1471](https://github.com/open-mmlab/mmaction2/pull/1471))
+- Update pre-commit([#1474](https://github.com/open-mmlab/mmaction2/pull/1474))
+- Add deprecation message for deploy tool([#1483](https://github.com/open-mmlab/mmaction2/pull/1483))
+
+**ModelZoo**
+
+- Support slowfast_steplr([#1421](https://github.com/open-mmlab/mmaction2/pull/1421))
+
 ### 0.21.0 (31/12/2021)
 
 **Highlights**
