@@ -8,6 +8,7 @@ import warnings
 
 import mmcv
 import torch
+import torch.distributed as dist
 from mmcv import Config, DictAction
 from mmcv.runner import get_dist_info, init_dist, set_random_seed
 from mmcv.utils import get_git_hash
@@ -52,6 +53,10 @@ def parse_args():
         help='ids of gpus to use '
         '(only applicable to non-distributed training)')
     parser.add_argument('--seed', type=int, default=None, help='random seed')
+    parser.add_argument(
+        '--diff-seed',
+        action='store_true',
+        help='Whether or not set different seeds for different ranks')
     parser.add_argument(
         '--deterministic',
         action='store_true',
@@ -159,6 +164,7 @@ def main():
 
     # set random seeds
     seed = init_random_seed(args.seed, distributed=distributed)
+    seed = seed + dist.get_rank() if args.diff_seed else seed
     logger.info(f'Set random seed to {seed}, '
                 f'deterministic: {args.deterministic}')
     set_random_seed(seed, deterministic=args.deterministic)
