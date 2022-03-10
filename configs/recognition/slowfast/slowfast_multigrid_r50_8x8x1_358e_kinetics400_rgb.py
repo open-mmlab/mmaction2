@@ -149,4 +149,4 @@ precise_bn = dict(num_iters=200, interval=3)
 load_from = None
 resume_from = None
 
-work_dir = './work_dirs/slowfast_r50_3d_8x8x1_256e_kinetics400_rgb'
+work_dir = './work_dirs/slowfast_multigrid_r50_8x8x1_358e_kinetics400_rgb'
