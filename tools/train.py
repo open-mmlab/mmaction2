@@ -174,9 +174,10 @@ def main():
     logger.info(f'Config: {cfg.pretty_text}')
 
     # set random seeds
-    seed = init_random_seed(args.seed, device=args.device,
-                            distributed=distributed)
-    seed = seed + dist.get_rank() if args.diff_seed else seed
+    seed = init_random_seed(
+        args.seed, device=args.device, distributed=distributed)
+    if distributed:
+        seed = seed + dist.get_rank() if args.diff_seed else seed
     logger.info(f'Set random seed to {seed}, '
                 f'deterministic: {args.deterministic}')
     set_random_seed(seed, deterministic=args.deterministic)
