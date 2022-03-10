@@ -8,7 +8,10 @@ from mmcv.cnn import NORM_LAYERS
 
 @NORM_LAYERS.register_module()
 class SubBatchNorm3D(nn.Module):
-    """Sub BatchNorm3d.
+    """Sub BatchNorm3d splits the batch dimension into N splits, and run BN on
+    each of them separately (so that the stats are computed on each subset of
+    examples (1/N of batch) independently). During evaluation, it aggregates
+    the stats from all splits into one BN.
 
     Args:
         num_features (int): Dimensions of BatchNorm.
