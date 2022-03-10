@@ -42,6 +42,11 @@ def parse_args():
               'training'))
     group_gpus = parser.add_mutually_exclusive_group()
     group_gpus.add_argument(
+        '--device',
+        choices=['cuda', 'cpu'],
+        default='cuda',
+        help='device used for training')
+    group_gpus.add_argument(
         '--gpus',
         type=int,
         help='number of gpus to use '
@@ -163,7 +168,8 @@ def main():
     logger.info(f'Config: {cfg.pretty_text}')
 
     # set random seeds
-    seed = init_random_seed(args.seed, distributed=distributed)
+    seed = init_random_seed(args.seed, device=args.device,
+                            distributed=distributed)
     seed = seed + dist.get_rank() if args.diff_seed else seed
     logger.info(f'Set random seed to {seed}, '
                 f'deterministic: {args.deterministic}')
@@ -215,6 +221,7 @@ def main():
         validate=args.validate,
         test=test_option,
         timestamp=timestamp,
+        device='cpu' if args.device == 'cpu' else 'cuda',
         meta=meta)
 
 

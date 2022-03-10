@@ -10,7 +10,7 @@ from mmaction.core.lr import RelativeStepLrUpdaterHook
 from mmaction.utils import get_root_logger
 
 
-def modify_subbn3d_num_splits(logger, module, num_splits):
+def modify_subbn3d_num_splits(logger, module, num_splits, device='cuda'):
     """Recursively modify the number of splits of subbn3ds in module.
 
     Inheritates the running_mean and running_var from last subbn.bn.
@@ -18,6 +18,8 @@ def modify_subbn3d_num_splits(logger, module, num_splits):
         logger (:obj:`logging.Logger`): The logger to log information.
         module (nn.Module): The module to be modified.
         num_splits (int): The targeted number of splits.
+        device (str | :obj:`torch.device`): The desired device of returned
+            tensor. Default: 'cuda'.
     Returns:
         int: The number of subbn3d modules modified.
     """
@@ -25,8 +27,12 @@ def modify_subbn3d_num_splits(logger, module, num_splits):
     for child in module.children():
         from mmaction.models import SubBatchNorm3D
         if isinstance(child, SubBatchNorm3D):
-            new_split_bn = nn.BatchNorm3d(
-                child.num_features * num_splits, affine=False).cuda()
+            if device == 'cuda':
+                new_split_bn = nn.BatchNorm3d(
+                    child.num_features * num_splits, affine=False).cuda()
+            else:
+                new_split_bn = nn.BatchNorm3d(
+                    child.num_features * num_splits, affine=False).cpu()
             new_state_dict = new_split_bn.state_dict()
 
             for param_name, param in child.bn.state_dict().items():
@@ -125,8 +131,7 @@ class LongShortCycleHook(Hook):
             dist=True,
             num_gpus=len(self.cfg.gpu_ids),
             drop_last=True,
-            seed=self.cfg.get('seed', None),
-        )
+            seed=self.cfg.get('seed', None))
         runner.data_loader = dataloader
         self.logger.info('Rebuild runner.data_loader')
 

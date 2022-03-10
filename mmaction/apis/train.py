@@ -16,7 +16,7 @@ from ..core import (DistEvalHook, EvalHook, OmniSourceDistSamplerSeedHook,
                     OmniSourceRunner)
 from ..datasets import build_dataloader, build_dataset
 from ..utils import PreciseBNHook, get_root_logger
-from .test import multi_gpu_test
+from .test import multi_gpu_test, single_gpu_test
 
 
 def init_random_seed(seed=None, device='cuda', distributed=True):
@@ -62,6 +62,7 @@ def train_model(model,
                 validate=False,
                 test=dict(test_best=False, test_last=False),
                 timestamp=None,
+                device='gpu',
                 meta=None):
     """Train model entry function.
 
@@ -128,7 +129,12 @@ def train_model(model,
             broadcast_buffers=False,
             find_unused_parameters=find_unused_parameters)
     else:
-        model = MMDataParallel(model, device_ids=cfg.gpu_ids)
+        if device == 'cuda':
+            model = MMDataParallel(model, device_ids=cfg.gpu_ids)
+        elif device == 'cpu':
+            model = model.cpu()
+        else:
+            raise ValueError(f'unsupported device name {device}.')
 
     # build runner
     optimizer = build_optimizer(model, cfg.optimizer)
@@ -280,8 +286,12 @@ def train_model(model,
             if ckpt is not None:
                 runner.load_checkpoint(ckpt)
 
-            outputs = multi_gpu_test(runner.model, test_dataloader, tmpdir,
-                                     gpu_collect)
+            if distributed:
+                outputs = multi_gpu_test(runner.model, test_dataloader, tmpdir,
+                                         gpu_collect)
+            else:
+                outputs = single_gpu_test(model, test_dataloader)
+
             rank, _ = get_dist_info()
             if rank == 0:
                 out = osp.join(cfg.work_dir, f'{name}_pred.pkl')

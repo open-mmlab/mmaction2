@@ -91,6 +91,11 @@ def parse_args():
         help='job launcher')
     parser.add_argument('--local_rank', type=int, default=0)
     parser.add_argument(
+        '--device',
+        choices=['cpu', 'cuda'],
+        default='cuda',
+        help='device used for testing')
+    parser.add_argument(
         '--onnx',
         action='store_true',
         help='Whether to test with onnx model or not')
@@ -157,7 +162,10 @@ def inference_pytorch(args, cfg, distributed, data_loader):
         model = fuse_conv_bn(model)
 
     if not distributed:
-        model = MMDataParallel(model, device_ids=[0])
+        if args.device == 'cpu':
+            model = model.cpu()
+        else:
+            model = MMDataParallel(model, device_ids=[0])
         outputs = single_gpu_test(model, data_loader)
     else:
         model = MMDistributedDataParallel(
