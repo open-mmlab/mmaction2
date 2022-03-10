@@ -4,6 +4,7 @@ import warnings
 
 import mmcv
 from mmcv.runner import EpochBasedRunner, Hook
+from mmcv.runner.builder import RUNNERS
 from mmcv.runner.utils import get_host_info
 
 
@@ -28,6 +29,7 @@ class OmniSourceDistSamplerSeedHook(Hook):
                 data_loader.batch_sampler.sampler.set_epoch(runner.epoch)
 
 
+@RUNNERS.register_module()
 class OmniSourceRunner(EpochBasedRunner):
     """OmniSource Epoch-based Runner.
 

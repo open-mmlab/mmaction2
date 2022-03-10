@@ -11,7 +11,9 @@ from mmcv.utils import Registry, build_from_cfg, digit_version
 from torch.utils.data import DataLoader
 
 from ..utils.multigrid import ShortCycleSampler
-from .samplers import ClassSpecificDistributedSampler, DistributedSampler
+from .samplers import (ClassSpecificDistributedSampler,
+                       DistributedInfiniteSampler, DistributedSampler,
+                       InfiniteSampler)
 
 if platform.system() != 'Windows':
     # https://github.com/pytorch/pytorch/issues/973
@@ -51,6 +53,7 @@ def build_dataloader(dataset,
                      drop_last=False,
                      pin_memory=True,
                      persistent_workers=False,
+                     use_infinite_sampler=False,
                      **kwargs):
     """Build PyTorch DataLoader.
 
@@ -77,7 +80,11 @@ def build_dataloader(dataset,
             the worker processes after a dataset has been consumed once.
             This allows to maintain the workers Dataset instances alive.
             The argument also has effect in PyTorch>=1.8.0.
-            Default: False
+            Default: False.
+        use_infinite_sampler (bool): Whether to use infinite sampler.
+            Noted that infinite sampler will keep iterator of dataloader
+            running forever, which can avoid the overhead of worker
+            initialization between epochs. Default: False.
         kwargs (dict, optional): Any keyword argument to be used to initialize
             DataLoader.
 
@@ -92,7 +99,10 @@ def build_dataloader(dataset,
     crop_size = kwargs.pop('crop_size', 224)
 
     if dist:
-        if sample_by_class:
+        if use_infinite_sampler:
+            sampler = DistributedInfiniteSampler(
+                dataset, world_size, rank, shuffle=shuffle)
+        elif sample_by_class:
             dynamic_length = getattr(dataset, 'dynamic_length', True)
             sampler = ClassSpecificDistributedSampler(
                 dataset,
@@ -132,7 +142,8 @@ def build_dataloader(dataset,
             raise NotImplementedError(
                 'Short cycle using non-dist is not supported')
 
-        sampler = None
+        sampler = InfiniteSampler(dataset, seed=seed, shuffle=shuffle) \
+            if use_infinite_sampler else None
         batch_size = num_gpus * videos_per_gpu
         num_workers = num_gpus * workers_per_gpu
 
@@ -150,7 +161,7 @@ def build_dataloader(dataset,
         num_workers=num_workers,
         collate_fn=partial(collate, samples_per_gpu=videos_per_gpu),
         pin_memory=pin_memory,
-        shuffle=shuffle,
+        shuffle=shuffle if sampler is None else None,
         worker_init_fn=init_fn,
         drop_last=drop_last,
         **kwargs)
