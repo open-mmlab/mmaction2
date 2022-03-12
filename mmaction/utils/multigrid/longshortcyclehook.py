@@ -148,7 +148,6 @@ class LongShortCycleHook(Hook):
             base_t = int(round(self.default_t * t_factor))
             base_s = int(round(self.default_s * s_factor))
             if cfg.short_cycle:
-                # shape = [#frames, scale]
                 shapes = [[
                     base_t,
                     int(round(self.default_s * cfg.short_cycle_factors[0]))
