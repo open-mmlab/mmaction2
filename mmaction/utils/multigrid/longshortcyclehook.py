@@ -12,8 +12,8 @@ from mmaction.utils import get_root_logger
 
 def modify_subbn3d_num_splits(logger, module, num_splits):
     """Recursively modify the number of splits of subbn3ds in module.
-
     Inheritates the running_mean and running_var from last subbn.bn.
+
     Args:
         logger (:obj:`logging.Logger`): The logger to log information.
         module (nn.Module): The module to be modified.

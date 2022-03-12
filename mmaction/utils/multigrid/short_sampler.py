@@ -8,6 +8,14 @@ class ShortCycleSampler(Sampler):
 
     See paper "A Multigrid Method for Efficiently Training Video Models", Wu et
     al., 2019 (https://arxiv.org/abs/1912.00998) for details.
+
+    Args:
+        sampler (:obj: `torch.Sampler`): The default sampler to be warpped.
+        batch_size (int): The batchsize before short-cycle modification.
+        multi_grid_cfg (dict): The config dict for multigrid training.
+        crop_size (int): The actual spatial scale.
+        drop_last (bool): Whether to drop the last incomplete batch in epoch.
+            Default: True.
     """
 
     def __init__(self,
