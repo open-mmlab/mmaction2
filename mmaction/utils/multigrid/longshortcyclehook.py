@@ -12,8 +12,8 @@ from mmaction.utils import get_root_logger
 
 def modify_subbn3d_num_splits(logger, module, num_splits):
     """Recursively modify the number of splits of subbn3ds in module.
-
     Inheritates the running_mean and running_var from last subbn.bn.
+
     Args:
         logger (:obj:`logging.Logger`): The logger to log information.
         module (nn.Module): The module to be modified.
@@ -30,7 +30,6 @@ def modify_subbn3d_num_splits(logger, module, num_splits):
             new_state_dict = new_split_bn.state_dict()
 
             for param_name, param in child.bn.state_dict().items():
-                # print('param_name', param_name, param.size())
                 origin_param_shape = param.size()
                 new_param_shape = new_state_dict[param_name].size()
                 if len(origin_param_shape) == 1 and len(
@@ -59,6 +58,7 @@ class LongShortCycleHook(Hook):
     This hook defines multigrid training schedule and update cfg
         accordingly, which is proposed in `A Multigrid Method for Efficiently
         Training Video Models <https://arxiv.org/abs/1912.00998>`_.
+
     Args:
         cfg (:obj:`mmcv.ConfigDictg`): The whole config for the experiment.
     """
@@ -148,7 +148,6 @@ class LongShortCycleHook(Hook):
             base_t = int(round(self.default_t * t_factor))
             base_s = int(round(self.default_s * s_factor))
             if cfg.short_cycle:
-                # shape = [#frames, scale]
                 shapes = [[
                     base_t,
                     int(round(self.default_s * cfg.short_cycle_factors[0]))
@@ -228,11 +227,11 @@ class LongShortCycleHook(Hook):
         return self.schedule[-1][1]
 
     def _init_schedule(self, runner, multi_grid_cfg, data_cfg):
-        """Initialize the multi-grid shcedule.
+        """Initialize the multigrid shcedule.
 
         Args:
             runner (:obj: `mmcv.Runner`): The runner within which to train.
-            multi_grid_cfg (:obj: `mmcv.ConfigDict`): The multi-grid config.
+            multi_grid_cfg (:obj: `mmcv.ConfigDict`): The multigrid config.
             data_cfg (:obj: `mmcv.ConfigDict`): The data config.
         """
         self.default_bs = data_cfg.videos_per_gpu
