@@ -5,6 +5,8 @@ from collections import defaultdict
 import torch
 from torch.utils.data import DistributedSampler as _DistributedSampler
 
+from mmaction.core import sync_random_seed
+
 
 class DistributedSampler(_DistributedSampler):
     """DistributedSampler inheriting from
@@ -23,7 +25,12 @@ class DistributedSampler(_DistributedSampler):
         super().__init__(
             dataset, num_replicas=num_replicas, rank=rank, shuffle=shuffle)
         # for the compatibility from PyTorch 1.3+
-        self.seed = seed if seed is not None else 0
+        # In distributed sampling, different ranks should sample non-overlapped
+        # data in the dataset. Therefore, this function is used to make sure
+        # that each rank shuffles the data indices in the same order based
+        # on the same seed. Then different ranks could use different indices
+        # to select non-overlapped data from the same data list.
+        self.seed = sync_random_seed(seed) if seed is not None else 0
 
     def __iter__(self):
         # deterministically shuffle based on epoch

@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .bbox import *  # noqa: F401, F403
+from .dist_utils import *  # noqa: F401, F403
 from .evaluation import *  # noqa: F401, F403
 from .hooks import *  # noqa: F401, F403
 from .lr import *  # noqa: F401, F403
