@@ -55,11 +55,11 @@ def plot_curve(log_dicts, args):
                     f'{args.json_logs[i]} does not contain metric {metric}')
             xs = []
             ys = []
-            num_iters_per_epoch = log_dict[epochs[0]]['iter'][-1]
             for epoch in epochs:
                 iters = log_dict[epoch]['iter']
                 if log_dict[epoch]['mode'][-1] == 'val':
                     iters = iters[:-1]
+                num_iters_per_epoch = iters[-1]
                 xs.append(np.array(iters) + (epoch - 1) * num_iters_per_epoch)
                 ys.append(np.array(log_dict[epoch][metric][:len(iters)]))
             xs = np.concatenate(xs)
