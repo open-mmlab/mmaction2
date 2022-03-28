@@ -67,7 +67,7 @@ If you didn't install denseflow, you can still extract RGB frames using OpenCV b
 bash extract_rgb_frames_opencv.sh
 ```
 
-If both are required, run the following script to extract frames using "tvl1" algorithm.
+If Optical Flow is also required, run the following script to extract flow using "tvl1" algorithm.
 
 ```shell
 bash extract_frames.sh
