@@ -7,22 +7,16 @@ import torch
 
 from mmaction.core.bbox import bbox2result, bbox_target
 from mmaction.datasets import AVADataset
-from mmaction.utils import import_module_error_func
-
-try:
-    from mmdet.core.bbox import build_assigner, build_sampler
-except (ImportError, ModuleNotFoundError):
-
-    @import_module_error_func('mmdet')
-    def build_assigner(*args, **kwargs):
-        pass
-
-    @import_module_error_func('mmdet')
-    def build_sampler(*args, **kwargs):
-        pass
 
 
 def test_assigner_sampler():
+    try:
+        from mmdet.core.bbox import build_assigner, build_sampler
+    except (ImportError, ModuleNotFoundError):
+        raise ImportError(
+            'Failed to import `build_assigner` and `build_sampler` '
+            'from `mmdet.core.bbox`. The two APIs are required for '
+            'the testing in `test_bbox.py`! ')
     data_prefix = osp.normpath(
         osp.join(osp.dirname(__file__), '../data/eval_detection'))
     ann_file = osp.join(data_prefix, 'gt.csv')

@@ -120,4 +120,11 @@ else:
     # Just define an empty class, so that __init__ can import it.
     @import_module_error_class('mmdet')
     class AVARoIHead:
-        pass
+
+        def __init__(self, *args, **kwargs):
+            raise ImportError(
+                'Failed to import `bbox2roi` from `mmdet.core.bbox`, '
+                'or failed to import `HEADS` from `mmdet.models`, '
+                'or failed to import `StandardRoIHead` from '
+                '`mmdet.models.roi_heads`. You will be unable to use '
+                '`AVARoIHead`. ')

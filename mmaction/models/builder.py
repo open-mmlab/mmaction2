@@ -4,8 +4,6 @@ import warnings
 from mmcv.cnn import MODELS as MMCV_MODELS
 from mmcv.utils import Registry
 
-from mmaction.utils import import_module_error_func
-
 MODELS = Registry('models', parent=MMCV_MODELS)
 BACKBONES = MODELS
 NECKS = MODELS
@@ -20,9 +18,11 @@ except (ImportError, ModuleNotFoundError):
     # Define an empty registry and building func, so that can import
     DETECTORS = MODELS
 
-    @import_module_error_func('mmdet')
     def build_detector(cfg, train_cfg, test_cfg):
-        pass
+        warnings.warn(
+            'Failed to import `DETECTORS`, `build_detector` from '
+            '`mmdet.models.builder`. You will be unable to register or build '
+            'a spatio-temporal detection model. ')
 
 
 def build_backbone(cfg):
