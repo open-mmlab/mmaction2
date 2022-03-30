@@ -71,12 +71,12 @@ MMAction2 支持仅使用 CPU 进行测试。然而，这样做的速度**非常
 # 单 GPU 测试
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--out ${RESULT_FILE}] [--eval ${EVAL_METRICS}] \
     [--gpu-collect] [--tmpdir ${TMPDIR}] [--options ${OPTIONS}] [--average-clips ${AVG_TYPE}] \
-    [--launcher ${JOB_LAUNCHER}] [--local_rank ${LOCAL_RANK}] [--onnx] [--tensorrt]
+    [--launcher ${JOB_LAUNCHER}] [--local-rank ${LOCAL_RANK}] [--onnx] [--tensorrt]
 
 # 多 GPU 测试
 ./tools/dist_test.sh ${CONFIG_FILE} ${CHECKPOINT_FILE} ${GPU_NUM} [--out ${RESULT_FILE}] [--eval ${EVAL_METRICS}] \
     [--gpu-collect] [--tmpdir ${TMPDIR}] [--options ${OPTIONS}] [--average-clips ${AVG_TYPE}] \
-    [--launcher ${JOB_LAUNCHER}] [--local_rank ${LOCAL_RANK}]
+    [--launcher ${JOB_LAUNCHER}] [--local-rank ${LOCAL_RANK}]
 ```
 
 可选参数:
