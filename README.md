@@ -83,7 +83,21 @@ The master branch works with **PyTorch 1.3+**.
 
 ## Installation
 
-Please refer to [install.md](docs/install.md) for installation.
+MMAction2 depends on [PyTorch](https://pytorch.org/)], [MMCV](https://github.com/open-mmlab/mmcv), [MMDetection](https://github.com/open-mmlab/mmdetection) (optional), and [MMPose](https://github.com/open-mmlab/mmdetection)(optional).
+Below are quick steps for installation.
+Please refer to [install.md](docs/install.md) for more detailed instruction.
+
+```shell
+conda create -n open-mmlab python=3.8 pytorch=1.10 cudatoolkit=11.3 torchvision -c pytorch -y
+conda activate open-mmlab
+pip3 install openmim
+mim install mmcv-full
+mim install mmdet  # optional
+mim install mmpose  # optional
+git clone https://github.com/open-mmlab/mmaction2.git
+cd mmaction2
+pip3 install -e .
+```
 
 ## Get Started
 
