@@ -6,7 +6,6 @@ import os.path as osp
 import random as rd
 import shutil
 import string
-import warnings
 from collections import defaultdict
 
 import cv2
@@ -15,11 +14,17 @@ import numpy as np
 
 try:
     from mmdet.apis import inference_detector, init_detector
+except (ImportError, ModuleNotFoundError):
+    raise ImportError('Failed to import `inference_detector` and '
+                      '`init_detector` form `mmdet.apis`. These apis are '
+                      'required in this script! ')
+
+try:
     from mmpose.apis import inference_top_down_pose_model, init_pose_model
-except ImportError:
-    warnings.warn(
-        'Please install MMDet and MMPose for NTURGB+D pose extraction.'
-    )  # noqa: E501
+except (ImportError, ModuleNotFoundError):
+    raise ImportError('Failed to import `inference_top_down_pose_model` and '
+                      '`init_pose_model` form `mmpose.apis`. These apis are '
+                      'required in this script! ')
 
 mmdet_root = ''
 mmpose_root = ''
