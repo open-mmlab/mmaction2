@@ -1,8 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
 
-from mmaction.utils import import_module_error_class
-
 try:
     from mmdet.core.bbox import AssignResult, MaxIoUAssigner
     from mmdet.core.bbox.builder import BBOX_ASSIGNERS
@@ -134,6 +132,11 @@ if mmdet_imported:
 
 else:
     # define an empty class, so that can be imported
-    @import_module_error_class('mmdet')
     class MaxIoUAssignerAVA:
-        pass
+
+        def __init__(self, *args, **kwargs):
+            raise ImportError(
+                'Failed to import `AssignResult`, `MaxIoUAssigner` from '
+                '`mmdet.core.bbox` or failed to import `BBOX_ASSIGNERS` from '
+                '`mmdet.core.bbox.builder`. The class `MaxIoUAssignerAVA` is '
+                'invalid. ')

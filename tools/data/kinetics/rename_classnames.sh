@@ -26,4 +26,4 @@ ls ./videos_val | while read class; do \
   fi
 done
 
-cd ../../tools/data/${DATASET}/
+cd ../../tools/data/kinetics/

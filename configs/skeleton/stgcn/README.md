@@ -1,6 +1,6 @@
 # STGCN
 
-[Spatial temporal graph convolutional networks for skeleton-based action recognition](https://jivp-eurasipjournals.springeropen.com/articles/10.1186/s13640-019-0476-x)
+[Spatial temporal graph convolutional networks for skeleton-based action recognition](https://ojs.aaai.org/index.php/AAAI/article/view/12328)
 
 <!-- [ALGORITHM] -->
 

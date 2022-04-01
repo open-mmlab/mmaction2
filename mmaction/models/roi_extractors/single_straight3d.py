@@ -3,21 +3,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from mmaction.utils import import_module_error_class
-
-try:
-    from mmcv.ops import RoIAlign, RoIPool
-except (ImportError, ModuleNotFoundError):
-
-    @import_module_error_class('mmcv-full')
-    class RoIAlign(nn.Module):
-        pass
-
-    @import_module_error_class('mmcv-full')
-    class RoIPool(nn.Module):
-        pass
-
-
 try:
     from mmdet.models import ROI_EXTRACTORS
     mmdet_imported = True
@@ -74,6 +59,13 @@ class SingleRoIExtractor3D(nn.Module):
         self.temporal_pool_mode = temporal_pool_mode
 
         self.with_global = with_global
+
+        try:
+            from mmcv.ops import RoIAlign, RoIPool
+        except (ImportError, ModuleNotFoundError):
+            raise ImportError('Failed to import `RoIAlign` and `RoIPool` from '
+                              '`mmcv.ops`. The two modules will be used in '
+                              '`SingleRoIExtractor3D`! ')
 
         if self.roi_layer_type == 'RoIPool':
             self.roi_layer = RoIPool(self.output_size, self.spatial_scale)

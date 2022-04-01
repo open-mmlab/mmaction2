@@ -4,6 +4,7 @@ import copy as cp
 import os
 import os.path as osp
 import shutil
+import warnings
 
 import cv2
 import mmcv
@@ -15,35 +16,22 @@ from mmcv.runner import load_checkpoint
 from mmaction.apis import inference_recognizer
 from mmaction.datasets.pipelines import Compose
 from mmaction.models import build_detector, build_model, build_recognizer
-from mmaction.utils import import_module_error_func
 
 try:
     from mmdet.apis import inference_detector, init_detector
+except (ImportError, ModuleNotFoundError):
+    warnings.warn('Failed to import `inference_detector` and `init_detector` '
+                  'form `mmdet.apis`. These apis are required in '
+                  'skeleton-based applications! ')
+
+try:
     from mmpose.apis import (inference_top_down_pose_model, init_pose_model,
                              vis_pose_result)
-
 except (ImportError, ModuleNotFoundError):
-
-    @import_module_error_func('mmdet')
-    def inference_detector(*args, **kwargs):
-        pass
-
-    @import_module_error_func('mmdet')
-    def init_detector(*args, **kwargs):
-        pass
-
-    @import_module_error_func('mmpose')
-    def init_pose_model(*args, **kwargs):
-        pass
-
-    @import_module_error_func('mmpose')
-    def inference_top_down_pose_model(*args, **kwargs):
-        pass
-
-    @import_module_error_func('mmpose')
-    def vis_pose_result(*args, **kwargs):
-        pass
-
+    warnings.warn('Failed to import `inference_top_down_pose_model`, '
+                  '`init_pose_model`, and `vis_pose_result` form '
+                  '`mmpose.apis`. These apis are required in skeleton-based '
+                  'applications! ')
 
 try:
     import moviepy.editor as mpy
