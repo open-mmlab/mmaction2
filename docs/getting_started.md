@@ -72,12 +72,12 @@ You can use the following commands to test a dataset.
 # single-gpu testing
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--out ${RESULT_FILE}] [--eval ${EVAL_METRICS}] \
     [--gpu-collect] [--tmpdir ${TMPDIR}] [--options ${OPTIONS}] [--average-clips ${AVG_TYPE}] \
-    [--launcher ${JOB_LAUNCHER}] [--local-rank ${LOCAL_RANK}] [--onnx] [--tensorrt]
+    [--launcher ${JOB_LAUNCHER}] [--local_rank ${LOCAL_RANK}] [--onnx] [--tensorrt]
 
 # multi-gpu testing
 ./tools/dist_test.sh ${CONFIG_FILE} ${CHECKPOINT_FILE} ${GPU_NUM} [--out ${RESULT_FILE}] [--eval ${EVAL_METRICS}] \
     [--gpu-collect] [--tmpdir ${TMPDIR}] [--options ${OPTIONS}] [--average-clips ${AVG_TYPE}] \
-    [--launcher ${JOB_LAUNCHER}] [--local-rank ${LOCAL_RANK}]
+    [--launcher ${JOB_LAUNCHER}] [--local_rank ${LOCAL_RANK}]
 ```
 
 Optional arguments:
