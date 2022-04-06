@@ -1,5 +1,39 @@
 ## Changelog
 
+### 0.23.0 (04/01/2022)
+
+**Highlights**
+
+- Support different seeds
+- Provide multi-node training & testing script
+- Update error log
+
+**New Features**
+
+- Support different seeds([#1502](https://github.com/open-mmlab/mmaction2/pull/1502))
+- Provide multi-node training & testing script([#1521](https://github.com/open-mmlab/mmaction2/pull/1521))
+- Update error log([#1546](https://github.com/open-mmlab/mmaction2/pull/1546))
+
+**Documentations**
+
+- Update gpus in Slowfast readme([#1497](https://github.com/open-mmlab/mmaction2/pull/1497))
+- Fix work_dir in multigrid config([#1498](https://github.com/open-mmlab/mmaction2/pull/1498))
+- Add sub bn docs([#1503](https://github.com/open-mmlab/mmaction2/pull/1503))
+- Add shortcycle sampler docs([#1513](https://github.com/open-mmlab/mmaction2/pull/1513))
+- Update Windows Declaration([#1520](https://github.com/open-mmlab/mmaction2/pull/1520))
+- Update the link for ST-GCN([#1544](https://github.com/open-mmlab/mmaction2/pull/1544))
+- Update install commands([#1549](https://github.com/open-mmlab/mmaction2/pull/1549))
+
+**Bug and Typo Fixes**
+
+- Update colab tutorial install cmds([#1522](https://github.com/open-mmlab/mmaction2/pull/1522))
+- Fix num_iters_per_epoch in analyze_logs.py([#1530](https://github.com/open-mmlab/mmaction2/pull/1530))
+- Fix distributed_sampler([#1532](https://github.com/open-mmlab/mmaction2/pull/1532))
+- Fix cd dir error([#1545](https://github.com/open-mmlab/mmaction2/pull/1545))
+- Update arg names([#1548](https://github.com/open-mmlab/mmaction2/pull/1548))
+
+**ModelZoo**
+
 ### 0.22.0 (03/05/2022)
 
 **Highlights**
