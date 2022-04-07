@@ -18,6 +18,8 @@ class STGCNHead(BaseHead):
         spatial_type (str): Pooling type in spatial dimension. Default: 'avg'.
         num_person (int): Number of person. Default: 2.
         init_std (float): Std value for Initiation. Default: 0.01.
+        kwargs (dict, optional): Any keyword argument to be used to initialize
+            the head.
     """
 
     def __init__(self,
@@ -26,8 +28,9 @@ class STGCNHead(BaseHead):
                  loss_cls=dict(type='CrossEntropyLoss'),
                  spatial_type='avg',
                  num_person=2,
-                 init_std=0.01):
-        super().__init__(num_classes, in_channels, loss_cls)
+                 init_std=0.01,
+                 **kwargs):
+        super().__init__(num_classes, in_channels, loss_cls, **kwargs)
 
         self.spatial_type = spatial_type
         self.in_channels = in_channels
