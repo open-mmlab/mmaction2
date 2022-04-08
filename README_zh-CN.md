@@ -82,7 +82,7 @@ v0.23.0 版本已于 2022 年 4 月 1 日发布，可通过查阅 [更新日志]
 
 ## 安装
 
-MMAction2 依赖 [PyTorch](https://pytorch.org/)], [MMCV](https://github.com/open-mmlab/mmcv), [MMDetection](https://github.com/open-mmlab/mmdetection)(可选), [MMPose](https://github.com/open-mmlab/mmpose)(可选)，以下是安装的简要步骤。
+MMAction2 依赖 [PyTorch](https://pytorch.org/), [MMCV](https://github.com/open-mmlab/mmcv), [MMDetection](https://github.com/open-mmlab/mmdetection)(可选), [MMPose](https://github.com/open-mmlab/mmpose)(可选)，以下是安装的简要步骤。
 更详细的安装指南请参考 [install.md](docs_zh_CN/install.md)。
 
 ```shell
