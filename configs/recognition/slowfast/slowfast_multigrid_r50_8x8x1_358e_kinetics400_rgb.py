@@ -11,6 +11,7 @@ model = dict(
             depth=50,
             pretrained=None,
             lateral=True,
+            lateral_norm=True,
             fusion_kernel=7,
             conv1_kernel=(1, 7, 7),
             dilations=(1, 1, 1, 1),
