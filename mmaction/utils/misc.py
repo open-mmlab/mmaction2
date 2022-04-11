@@ -25,3 +25,16 @@ def get_thread_id():
 def get_shm_dir():
     """Get shm dir for temporary usage."""
     return '/dev/shm'
+
+
+def visualize_confusion_matrix(confusion_matrix):
+    """Visualize a confusion matrix.
+
+    Args:
+        confusion_matrix (np.array): the confusion matrix
+    """
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    plt.figure(figsize=(15, 10))
+    sns.heatmap(confusion_matrix, annot=True, square=True, cbar=True)
+    plt.show()
