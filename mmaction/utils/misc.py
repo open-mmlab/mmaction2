@@ -36,6 +36,6 @@ def visualize_confusion_matrix(confusion_matrix):
     import matplotlib.pyplot as plt
     import seaborn as sns
     plt.figure(figsize=(15, 10))
-    sns.set(font_scale=1.4)
+    sns.set(font_scale=1.5)
     sns.heatmap(confusion_matrix, annot=True, square=True, cbar=True)
     plt.show()
