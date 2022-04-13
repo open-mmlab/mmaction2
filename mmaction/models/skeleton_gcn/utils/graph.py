@@ -42,8 +42,7 @@ class Graph:
 
     Args:
         layout (str): must be one of the following candidates
-        - openpose: Is consists of 18 joints. For more information, please
-            refer to
+        - openpose: 18 or 25 joints. For more information, please refer to:
             https://github.com/CMU-Perceptual-Computing-Lab/openpose#output
         - ntu-rgb+d: Is consists of 25 joints. For more information, please
             refer to https://github.com/shahroudy/NTURGB-D
@@ -62,14 +61,16 @@ class Graph:
     """
 
     def __init__(self,
-                 layout='openpose',
+                 layout='openpose-18',
                  strategy='uniform',
                  max_hop=1,
                  dilation=1):
         self.max_hop = max_hop
         self.dilation = dilation
 
-        assert layout in ['openpose', 'ntu-rgb+d', 'ntu_edge', 'coco']
+        assert layout in [
+            'openpose-18', 'openpose-25', 'ntu-rgb+d', 'ntu_edge', 'coco'
+        ]
         assert strategy in ['uniform', 'distance', 'spatial', 'agcn']
         self.get_edge(layout)
         self.hop_dis = get_hop_distance(
@@ -82,13 +83,25 @@ class Graph:
     def get_edge(self, layout):
         """This method returns the edge pairs of the layout."""
 
-        if layout == 'openpose':
+        if layout == 'openpose-18':
             self.num_node = 18
             self_link = [(i, i) for i in range(self.num_node)]
             neighbor_link = [(4, 3), (3, 2), (7, 6), (6, 5),
                              (13, 12), (12, 11), (10, 9), (9, 8), (11, 5),
                              (8, 2), (5, 1), (2, 1), (0, 1), (15, 0), (14, 0),
                              (17, 15), (16, 14)]
+            self.edge = self_link + neighbor_link
+            self.center = 1
+        elif layout == 'openpose-25':
+            self.num_node = 25
+            self_link = [(i, i) for i in range(self.num_node)]
+            neighbor_link = [(4, 3), (3, 2), (7, 6), (6, 5), (23, 22),
+                             (22, 11), (24, 11), (11, 10), (10, 9), (9, 8),
+                             (20, 19), (19, 14), (21, 14), (14, 13), (13, 12),
+                             (12, 8), (8, 1), (5, 1), (2, 1), (0, 1), (15, 0),
+                             (16, 0), (17, 15), (18, 16)]
+            self.self_link = self_link
+            self.neighbor_link = neighbor_link
             self.edge = self_link + neighbor_link
             self.center = 1
         elif layout == 'ntu-rgb+d':
@@ -126,7 +139,7 @@ class Graph:
             self.edge = self_link + neighbor_link
             self.center = 0
         else:
-            raise ValueError('Do Not Exist This Layout.')
+            raise ValueError(f'{layout} is not supported.')
 
     def get_adjacency(self, strategy):
         """This method returns the adjacency matrix according to strategy."""

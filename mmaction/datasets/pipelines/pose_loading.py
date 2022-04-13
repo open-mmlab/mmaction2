@@ -232,7 +232,7 @@ class LoadKineticsPose:
         self.keypoint_weight = cp.deepcopy(keypoint_weight)
         self.source = source
 
-        if source == 'openpose':
+        if source == 'openpose-18':
             self.kpsubset = dict(
                 face=[0, 14, 15, 16, 17],
                 torso=[1, 2, 8, 5, 11],
@@ -292,7 +292,7 @@ class LoadKineticsPose:
         results['total_frames'] = total_frames
 
         h, w = results['img_shape']
-        if self.source == 'openpose':
+        if self.source == 'openpose-18':
             kps[:, :, 0] *= w
             kps[:, :, 1] *= h
 

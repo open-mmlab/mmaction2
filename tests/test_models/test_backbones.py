@@ -794,7 +794,7 @@ def test_stgcn_backbone():
     stgcn = STGCN(
         in_channels=3,
         edge_importance_weighting=True,
-        graph_cfg=dict(layout='openpose', strategy='spatial'))
+        graph_cfg=dict(layout='openpose-18', strategy='spatial'))
     stgcn.init_weights()
     stgcn.train()
     feat = stgcn(skeletons)
@@ -846,7 +846,7 @@ def test_stgcn_backbone():
     stgcn = STGCN(
         in_channels=3,
         edge_importance_weighting=True,
-        graph_cfg=dict(layout='openpose', strategy='uniform'))
+        graph_cfg=dict(layout='openpose-18', strategy='uniform'))
     stgcn.init_weights()
     stgcn.train()
     feat = stgcn(skeletons)
@@ -898,7 +898,7 @@ def test_stgcn_backbone():
     stgcn = STGCN(
         in_channels=3,
         edge_importance_weighting=True,
-        graph_cfg=dict(layout='openpose', strategy='distance'))
+        graph_cfg=dict(layout='openpose-18', strategy='distance'))
     stgcn.init_weights()
     stgcn.train()
     feat = stgcn(skeletons)

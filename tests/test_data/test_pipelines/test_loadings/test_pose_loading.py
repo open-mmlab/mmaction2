@@ -155,14 +155,14 @@ class TestPoseLoading:
                 LoadKineticsPose(squeeze=True, max_person=100, source='xxx')
 
             load_kinetics_pose = LoadKineticsPose(
-                squeeze=True, max_person=100, source='openpose')
+                squeeze=True, max_person=100, source='openpose-18')
 
             assert str(load_kinetics_pose) == (
                 'LoadKineticsPose(io_backend=disk, '
                 'squeeze=True, max_person=100, '
                 "keypoint_weight={'face': 1, "
                 "'torso': 2, 'limb': 3}, "
-                'source=openpose, kwargs={})')
+                'source=openpose-18, kwargs={})')
             return_results = load_kinetics_pose(inp)
             assert return_results['keypoint'].shape[:-1] == \
                 return_results['keypoint_score'].shape
@@ -175,7 +175,7 @@ class TestPoseLoading:
 
             inp = cp.deepcopy(results)
             load_kinetics_pose = LoadKineticsPose(
-                squeeze=False, max_person=100, source='openpose')
+                squeeze=False, max_person=100, source='openpose-18')
             return_results = load_kinetics_pose(inp)
             assert return_results['keypoint'].shape[:-1] == \
                 return_results['keypoint_score'].shape
