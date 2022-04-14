@@ -83,7 +83,7 @@ The master branch works with **PyTorch 1.3+**.
 
 ## Installation
 
-MMAction2 depends on [PyTorch](https://pytorch.org/)], [MMCV](https://github.com/open-mmlab/mmcv), [MMDetection](https://github.com/open-mmlab/mmdetection) (optional), and [MMPose](https://github.com/open-mmlab/mmdetection)(optional).
+MMAction2 depends on [PyTorch](https://pytorch.org/), [MMCV](https://github.com/open-mmlab/mmcv), [MMDetection](https://github.com/open-mmlab/mmdetection) (optional), and [MMPose](https://github.com/open-mmlab/mmdetection)(optional).
 Below are quick steps for installation.
 Please refer to [install.md](docs/install.md) for more detailed instruction.
 
