@@ -15,11 +15,11 @@ from mmcv.runner.hooks import Fp16OptimizerHook
 from ..core import (DistEvalHook, EvalHook, OmniSourceDistSamplerSeedHook,
                     OmniSourceRunner)
 from ..datasets import build_dataloader, build_dataset
-from ..utils import PreciseBNHook, get_root_logger
+from ..utils import PreciseBNHook, get_root_logger, build_ddp, current_device, default_device
 from .test import multi_gpu_test
 
 
-def init_random_seed(seed=None, device='cuda', distributed=True):
+def init_random_seed(seed=None, device=default_device, distributed=True):
     """Initialize random seed.
 
     If the seed is not set, the seed will be automatically randomized,
@@ -122,9 +122,11 @@ def train_model(model,
         find_unused_parameters = cfg.get('find_unused_parameters', False)
         # Sets the `find_unused_parameters` parameter in
         # torch.nn.parallel.DistributedDataParallel
-        model = MMDistributedDataParallel(
-            model.cuda(),
-            device_ids=[torch.cuda.current_device()],
+
+        model, DDP = build_ddp(model, default_device)
+        model = DDP(
+            model,
+            device_ids=[current_device()],
             broadcast_buffers=False,
             find_unused_parameters=find_unused_parameters)
     else:

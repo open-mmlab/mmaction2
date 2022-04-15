@@ -15,7 +15,8 @@ from mmcv.runner.fp16_utils import wrap_fp16_model
 
 from mmaction.datasets import build_dataloader, build_dataset
 from mmaction.models import build_model
-from mmaction.utils import register_module_hooks, setup_multi_processes
+from mmaction.utils import register_module_hooks, setup_multi_processes, \
+                           build_ddp, build_dp, current_device, default_device
 
 # TODO import test functions from mmcv and delete them from mmaction2
 try:
@@ -157,12 +158,14 @@ def inference_pytorch(args, cfg, distributed, data_loader):
         model = fuse_conv_bn(model)
 
     if not distributed:
-        model = MMDataParallel(model, device_ids=[0])
+        model, DP = build_dp(model, default_device)
+        model = DP(model, device_ids=[0])
         outputs = single_gpu_test(model, data_loader)
     else:
+        model, DDP = build_ddp(model, default_device)
         model = MMDistributedDataParallel(
-            model.cuda(),
-            device_ids=[torch.cuda.current_device()],
+            model,
+            device_ids=[current_device()],
             broadcast_buffers=False)
         outputs = multi_gpu_test(model, data_loader, args.tmpdir,
                                  args.gpu_collect)

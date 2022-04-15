@@ -261,8 +261,7 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
             if self.blending is not None:
                 imgs, label = self.blending(imgs, label)
             return self.forward_train(imgs, label, **kwargs)
-
-        return self.forward_test(imgs, **kwargs)
+        return self.forward_test(imgs.to("mlu"), **kwargs)
 
     def train_step(self, data_batch, optimizer, **kwargs):
         """The iteration step during training.
