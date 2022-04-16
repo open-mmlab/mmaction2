@@ -20,7 +20,7 @@ MMAction2 提供如下脚本以预测视频的动作标签。为得到 [0, 1] �
 
 ```shell
 python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} {LABEL_FILE} [--use-frames] \
-    [--device ${DEVICE_TYPE}] [--fps {FPS}] [--font-size {FONT_SIZE}] [--font-color {FONT_COLOR}] \
+    [--device ${DEVICE_TYPE}] [--fps {FPS}] [--font-scale {FONT_SCALE}] [--font-color {FONT_COLOR}] \
     [--target-resolution ${TARGET_RESOLUTION}] [--resize-algorithm {RESIZE_ALGORITHM}] [--out-filename {OUT_FILE}]
 ```
 
@@ -29,7 +29,7 @@ python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} {LABEL_FILE}
 - `--use-frames`: 如指定，代表使用帧目录作为输入；否则代表使用视频作为输入。
 - `DEVICE_TYPE`: 指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或 cpu（`cpu`）。默认为 `cuda:0`。
 - `FPS`: 使用帧目录作为输入时，代表输入的帧率。默认为 30。
-- `FONT_SIZE`: 输出视频上的字体大小。默认为 20。
+- `FONT_SCALE`: 输出视频上的字体缩放比例。默认为 0.5。
 - `FONT_COLOR`: 输出视频上的字体颜色，默认为白色（ `white`）。
 - `TARGET_RESOLUTION`: 输出视频的分辨率，如未指定，使用输入视频的分辨率。
 - `RESIZE_ALGORITHM`: 缩放视频时使用的插值方法，默认为 `bicubic`。

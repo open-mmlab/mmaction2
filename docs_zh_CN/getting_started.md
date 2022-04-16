@@ -151,7 +151,7 @@ model = init_recognizer(config_file, checkpoint_file, device=device)
 # 测试单个视频并显示其结果
 video = 'demo/demo.mp4'
 labels = 'tools/data/kinetics/label_map_k400.txt'
-results = inference_recognizer(model, video, labels)
+results = inference_recognizer(model, video)
 
 # 显示结果
 labels = open('tools/data/kinetics/label_map_k400.txt').readlines()
@@ -179,12 +179,12 @@ device = 'cuda:0' # or 'cpu'
 device = torch.device(device)
 
  # 根据配置文件和检查点来建立模型
-model = init_recognizer(config_file, checkpoint_file, device=device, use_frames=True)
+model = init_recognizer(config_file, checkpoint_file, device=device)
 
 # 测试单个视频的帧文件夹并显示其结果
 video = 'SOME_DIR_PATH/'
 labels = 'tools/data/kinetics/label_map_k400.txt'
-results = inference_recognizer(model, video, labels, use_frames=True)
+results = inference_recognizer(model, video)
 
 # 显示结果
 labels = open('tools/data/kinetics/label_map_k400.txt').readlines()
@@ -217,7 +217,7 @@ model = init_recognizer(config_file, checkpoint_file, device=device)
 # 测试单个视频的 url 并显示其结果
 video = 'https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4'
 labels = 'tools/data/kinetics/label_map_k400.txt'
-results = inference_recognizer(model, video, labels)
+results = inference_recognizer(model, video)
 
 # 显示结果
 labels = open('tools/data/kinetics/label_map_k400.txt').readlines()
