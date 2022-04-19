@@ -382,7 +382,7 @@ class JointToBone:
     added or modified keys are "keypoint".
 
     Args:
-        dataset (str): Define the type of dataset: 'nturgb+d', 'openpose',
+        dataset (str): Define the type of dataset: 'nturgb+d', 'openpose-18',
             'coco'. Default: 'nturgb+d'.
     """
 

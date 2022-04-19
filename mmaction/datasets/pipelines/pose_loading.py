@@ -214,7 +214,7 @@ class LoadKineticsPose:
             joint. Persons with low confidence scores are dropped (if exceed
             max_person). Default: dict(face=1, torso=2, limb=3).
         source (str): The sources of the keypoints used. Choices are 'mmpose'
-            and 'openpose'. Default: 'mmpose'.
+            and 'openpose-18'. Default: 'mmpose'.
         kwargs (dict, optional): Arguments for FileClient.
     """
 
