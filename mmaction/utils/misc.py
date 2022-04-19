@@ -27,7 +27,7 @@ def get_shm_dir():
     return '/dev/shm'
 
 
-def visualize_confusion_matrix(confusion_matrix):
+def visualize_confusion_matrix(confusion_matrix, out='confusion_matrix.png'):
     """Visualize a confusion matrix.
 
     Args:
@@ -38,4 +38,4 @@ def visualize_confusion_matrix(confusion_matrix):
     plt.figure(figsize=(15, 10))
     sns.set(font_scale=1.5)
     sns.heatmap(confusion_matrix, annot=True, square=True, cbar=True)
-    plt.show()
+    plt.savefig(out)

@@ -47,7 +47,8 @@ def parse_args():
         type=str,
         nargs='+',
         help='evaluation metrics, which depends on the dataset, e.g.,'
-        ' "top_k_accuracy", "mean_class_accuracy" for video dataset')
+        ' "top_k_accuracy", "mean_class_accuracy", "confusion_matrix" for'
+        ' video dataset')
     parser.add_argument(
         '--gpu-collect',
         action='store_true',

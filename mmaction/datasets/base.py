@@ -247,6 +247,7 @@ class BaseDataset(Dataset, metaclass=ABCMeta):
                 cm = confusion_matrix(y_pred, gt_labels, 'true')
                 print_log(cm, logger=logger)
                 visualize_confusion_matrix(cm)
+                print_log('Saved plot.', logger=logger)
                 continue
 
         return eval_results
