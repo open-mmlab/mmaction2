@@ -122,6 +122,7 @@ def inference_recognizer(model, video, outputs=None, as_tensor=True, **kwargs):
         for i in range(len(test_pipeline)):
             if 'Decode' in test_pipeline[i]['type']:
                 test_pipeline[i] = dict(type='ArrayDecode')
+        test_pipeline = [x for x in test_pipeline if 'Init' not in x['type']]
     if input_flag == 'video':
         data = dict(filename=video, label=-1, start_index=0, modality='RGB')
         if 'Init' not in test_pipeline[0]['type']:
