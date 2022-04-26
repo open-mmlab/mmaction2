@@ -7,7 +7,6 @@ import time
 import numpy as np
 import torch
 import torch.distributed as dist
-from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
 from mmcv.runner import (DistSamplerSeedHook, EpochBasedRunner, OptimizerHook,
                          build_optimizer, get_dist_info)
 from mmcv.runner.hooks import Fp16OptimizerHook
@@ -15,11 +14,12 @@ from mmcv.runner.hooks import Fp16OptimizerHook
 from ..core import (DistEvalHook, EvalHook, OmniSourceDistSamplerSeedHook,
                     OmniSourceRunner)
 from ..datasets import build_dataloader, build_dataset
-from ..utils import PreciseBNHook, get_root_logger
+from ..utils import (PreciseBNHook, build_ddp, build_dp, default_device,
+                     get_root_logger)
 from .test import multi_gpu_test
 
 
-def init_random_seed(seed=None, device='cuda', distributed=True):
+def init_random_seed(seed=None, device=default_device, distributed=True):
     """Initialize random seed.
 
     If the seed is not set, the seed will be automatically randomized,
@@ -122,13 +122,17 @@ def train_model(model,
         find_unused_parameters = cfg.get('find_unused_parameters', False)
         # Sets the `find_unused_parameters` parameter in
         # torch.nn.parallel.DistributedDataParallel
-        model = MMDistributedDataParallel(
-            model.cuda(),
-            device_ids=[torch.cuda.current_device()],
-            broadcast_buffers=False,
-            find_unused_parameters=find_unused_parameters)
+
+        model = build_ddp(
+            model,
+            default_device,
+            default_args=dict(
+                device_ids=[int(os.environ['LOCAL_RANK'])],
+                broadcast_buffers=False,
+                find_unused_parameters=find_unused_parameters))
     else:
-        model = MMDataParallel(model, device_ids=cfg.gpu_ids)
+        model = build_dp(
+            model, default_device, default_args=dict(device_ids=cfg.gpu_ids))
 
     # build runner
     optimizer = build_optimizer(model, cfg.optimizer)
