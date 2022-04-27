@@ -382,13 +382,13 @@ class JointToBone:
     added or modified keys are "keypoint".
 
     Args:
-        dataset (str): Define the type of dataset: 'nturgb+d', 'openpose',
+        dataset (str): Define the type of dataset: 'nturgb+d', 'openpose-18',
             'coco'. Default: 'nturgb+d'.
     """
 
     def __init__(self, dataset='nturgb+d'):
         self.dataset = dataset
-        if self.dataset not in ['nturgb+d', 'openpose', 'coco']:
+        if self.dataset not in ['nturgb+d', 'openpose-18', 'coco']:
             raise ValueError(
                 f'The dataset type {self.dataset} is not supported')
         if self.dataset == 'nturgb+d':
@@ -397,7 +397,7 @@ class JointToBone:
                           (12, 0), (13, 12), (14, 13), (15, 14), (16, 0),
                           (17, 16), (18, 17), (19, 18), (21, 22), (20, 20),
                           (22, 7), (23, 24), (24, 11)]
-        elif self.dataset == 'openpose':
+        elif self.dataset == 'openpose-18':
             self.pairs = ((0, 0), (1, 0), (2, 1), (3, 2), (4, 3), (5, 1),
                           (6, 5), (7, 6), (8, 2), (9, 8), (10, 9), (11, 5),
                           (12, 11), (13, 12), (14, 0), (15, 0), (16, 14), (17,
@@ -421,7 +421,7 @@ class JointToBone:
         assert C in [2, 3]
         for v1, v2 in self.pairs:
             bone[..., v1, :] = keypoint[..., v1, :] - keypoint[..., v2, :]
-            if C == 3 and self.dataset in ['openpose', 'coco']:
+            if C == 3 and self.dataset in ['openpose-18', 'coco']:
                 score = (keypoint[..., v1, 2] + keypoint[..., v2, 2]) / 2
                 bone[..., v1, 2] = score
 
