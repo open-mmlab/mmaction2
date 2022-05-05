@@ -79,7 +79,7 @@ The master branch works with **PyTorch 1.3+**.
 - (2021-10-25) We provide a [guide](https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/posec3d/custom_dataset_training.md) on how to train PoseC3D with custom datasets, [bit-scientist](https://github.com/bit-scientist) authored this PR!
 - (2021-10-16) We support **PoseC3D** on UCF101 and HMDB51, achieves 87.0% and 69.3% Top-1 accuracy with 2D skeletons only. Pre-extracted 2D skeletons are also available.
 
-**Release**: v0.23.0 was released in 01/04/2022. Please refer to [changelog.md](docs/changelog.md) for details and release history.
+**Release**: v0.24.0 was released in 05/05/2022. Please refer to [changelog.md](docs/changelog.md) for details and release history.
 
 ## Installation
 
