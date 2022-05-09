@@ -53,7 +53,7 @@ MMAction2 提供的所有配置文件都放置在 `$MMAction2/configs` 文件夹
 
 如果用户想实现一个独立于任何一个现有的方法结构的新方法，则需要像 `configs/recognition`, `configs/detection` 等一样，在 `configs/TASK` 中建立新的文件夹。
 
-更多详细内容，请参考 [mmcv](https://mmcv.readthedocs.io/en/latest/utils.html#config)。
+更多详细内容，请参考 [mmcv](https://mmcv.readthedocs.io/en/latest/understand_mmcv/config.html)。
 
 ## 配置文件命名规则
 
