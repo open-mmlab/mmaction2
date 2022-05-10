@@ -91,7 +91,8 @@ class AGCNBlock(nn.Module):
             in_channels, out_channels, kernel_size[1], adj_len=adj_len)
         self.tcn = nn.Sequential(
             nn.Conv2d(out_channels, out_channels, (kernel_size[0], 1),
-                      (stride, 1), padding), nn.BatchNorm2d(out_channels))
+                      (stride, 1), padding), nn.BatchNorm2d(out_channels),
+            nn.Dropout(dropout, inplace=True))
 
         # tcn init
         for m in self.tcn.modules():
