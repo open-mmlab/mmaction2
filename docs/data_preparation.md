@@ -137,7 +137,7 @@ python tools/data/extract_audio.py ${ROOT} ${DST_ROOT} [--ext ${EXT}] [--num-wor
 - `EXT`: Extension of the video files. e.g., `.mp4`.
 - `N_WORKERS`: Number of processes to be used.
 
-After extracting audios, you are free to decode and generate the spectrogram on-the-fly such as [this](/configs/audio_recognition/tsn_r50_64x1x1_kinetics400_audio.py). As for the annotations, you can directly use those of the rawframes as long as you keep the relative position of audio files same as the rawframes directory. However, extracting spectrogram on-the-fly is slow and bad for prototype iteration. Therefore, we also provide a script (and many useful tools to play with) for you to generation spectrogram off-line.
+After extracting audios, you are free to decode and generate the spectrogram on-the-fly such as [this](/configs/recognition_audio/resnet/tsn_r50_64x1x1_100e_kinetics400_audio.py). As for the annotations, you can directly use those of the rawframes as long as you keep the relative position of audio files same as the rawframes directory. However, extracting spectrogram on-the-fly is slow and bad for prototype iteration. Therefore, we also provide a script (and many useful tools to play with) for you to generation spectrogram off-line.
 
 ```shell
 cd $MMACTION2

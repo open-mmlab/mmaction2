@@ -138,7 +138,7 @@ python tools/data/extract_audio.py ${ROOT} ${DST_ROOT} [--ext ${EXT}] [--num-wor
 - `EXT`: 视频的后缀名，如 `.mp4`。
 - `N_WORKERS`: 使用的进程数量。
 
-成功提取出音频后，用户可参照 [配置文件](/configs/audio_recognition/tsn_r50_64x1x1_kinetics400_audio.py) 在线解码并生成梅尔频谱。如果音频文件的目录结构与帧文件夹一致，用户可以直接使用帧数据所用的标注文件作为音频数据的标注文件。在线解码的缺陷在于速度较慢，因此，MMAction2 也提供如下脚本用于离线地生成梅尔频谱。
+成功提取出音频后，用户可参照 [配置文件](/configs/recognition_audio/resnet/tsn_r50_64x1x1_100e_kinetics400_audio.py) 在线解码并生成梅尔频谱。如果音频文件的目录结构与帧文件夹一致，用户可以直接使用帧数据所用的标注文件作为音频数据的标注文件。在线解码的缺陷在于速度较慢，因此，MMAction2 也提供如下脚本用于离线地生成梅尔频谱。
 
 ```shell
 cd $MMACTION2
