@@ -18,7 +18,7 @@ def extract_audio_wav(line):
     try:
         if osp.exists(f'{dst_dir}/{video_id}.wav'):
             return
-        cmd = f'ffmpeg -i ./{line}  -map 0:a  -y {dst_dir}/{video_id}.wav'
+        cmd = f'ffmpeg -i {line}  -map 0:a  -y {dst_dir}/{video_id}.wav'
         os.popen(cmd)
     except BaseException:
         with open('extract_wav_err_file.txt', 'a+') as f:
@@ -38,7 +38,7 @@ def parse_args():
         choices=['avi', 'mp4', 'webm'],
         help='video file extensions')
     parser.add_argument(
-        '--num-worker', type=int, default=8, help='number of workers')
+        '--num-workers', type=int, default=8, help='number of workers')
     args = parser.parse_args()
 
     return args
