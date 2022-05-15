@@ -290,7 +290,7 @@ if __name__ == '__main__':
     parser.add_argument('audio_home_path', type=str)
     parser.add_argument('spectrogram_save_path', type=str)
     parser.add_argument('--level', type=int, default=1)
-    parser.add_argument('--ext', default='.m4a')
+    parser.add_argument('--ext', default='m4a')
     parser.add_argument('--num-workers', type=int, default=4)
     parser.add_argument('--part', type=str, default='1/1')
     args = parser.parse_args()
@@ -298,7 +298,8 @@ if __name__ == '__main__':
     mmcv.mkdir_or_exist(args.spectrogram_save_path)
 
     files = glob.glob(
-        osp.join(args.audio_home_path, '*/' * args.level, '*' + args.ext))
+        # osp.join(args.audio_home_path, '*/' * args.level, '*' + args.ext)
+        args.audio_home_path + '/*' * args.level + '.' + args.ext)
     print(f'found {len(files)} files.')
     files = sorted(files)
     if args.part is not None:
