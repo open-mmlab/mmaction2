@@ -299,8 +299,7 @@ if __name__ == '__main__':
 
     files = glob.glob(
         # osp.join(args.audio_home_path, '*/' * args.level, '*' + args.ext)
-        args.audio_home_path + '/*' * args.level + '.' + args.ext
-    )
+        args.audio_home_path + '/*' * args.level + '.' + args.ext)
     print(f'found {len(files)} files.')
     files = sorted(files)
     if args.part is not None:
