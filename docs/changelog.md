@@ -1,5 +1,27 @@
 ## Changelog
 
+### 0.24.0 (05/05/2022)
+
+**Highlights**
+
+- Support different seeds
+
+**New Features**
+
+- Add lateral norm in multigrid config ([#1567](https://github.com/open-mmlab/mmaction2/pull/1567))
+- Add openpose 25 joints in graph config ([#1578](https://github.com/open-mmlab/mmaction2/pull/1578))
+- Support MLU Backend ([#1608](https://github.com/open-mmlab/mmaction2/pull/1608))
+
+**Bug and Typo Fixes**
+
+- Fix local_rank ([#1558](https://github.com/open-mmlab/mmaction2/pull/1558))
+- Fix install typo ([#1571](https://github.com/open-mmlab/mmaction2/pull/1571))
+- Fix the inference API doc ([#1580](https://github.com/open-mmlab/mmaction2/pull/1580))
+- Fix zh-CN demo.md and getting_started.md ([#1587](https://github.com/open-mmlab/mmaction2/pull/1587))
+- Remove Recommonmark ([#1595](https://github.com/open-mmlab/mmaction2/pull/1595))
+- Fix inference with ndarray ([#1603](https://github.com/open-mmlab/mmaction2/pull/1603))
+- Fix the log error when `IterBasedRunner` is used ([#1606](https://github.com/open-mmlab/mmaction2/pull/1606))
+
 ### 0.23.0 (04/01/2022)
 
 **Highlights**

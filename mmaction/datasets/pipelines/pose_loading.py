@@ -4,14 +4,15 @@ import pickle
 
 import numpy as np
 from mmcv.fileio import FileClient
+from mmcv.transforms import BaseTransform
 from scipy.stats import mode
 
-from ..builder import PIPELINES
-from .augmentations import Flip
+from ..builder import TRANSFORMS
+from .transforms import Flip
 
 
-@PIPELINES.register_module()
-class UniformSampleFrames:
+@TRANSFORMS.register_module()
+class UniformSampleFrames(BaseTransform):
     """Uniformly sample frames from the video.
 
     To sample an n-frame clip from the video. UniformSampleFrames basically
@@ -111,7 +112,7 @@ class UniformSampleFrames:
             inds = np.concatenate(all_inds)
         return inds
 
-    def __call__(self, results):
+    def transform(self, results):
         num_frames = results['total_frames']
 
         if self.test_mode:
@@ -138,8 +139,8 @@ class UniformSampleFrames:
         return repr_str
 
 
-@PIPELINES.register_module()
-class PoseDecode:
+@TRANSFORMS.register_module()
+class PoseDecode(BaseTransform):
     """Load and decode pose with given indices.
 
     Required keys are "keypoint", "frame_inds" (optional), "keypoint_score"
@@ -147,29 +148,10 @@ class PoseDecode:
     applicable).
     """
 
-    @staticmethod
-    def _load_kp(kp, frame_inds):
-        """Load keypoints given frame indices.
+    def transform(self, results):
 
-        Args:
-            kp (np.ndarray): The keypoint coordinates.
-            frame_inds (np.ndarray): The frame indices.
-        """
-
-        return [x[frame_inds].astype(np.float32) for x in kp]
-
-    @staticmethod
-    def _load_kpscore(kpscore, frame_inds):
-        """Load keypoint scores given frame indices.
-
-        Args:
-            kpscore (np.ndarray): The confidence scores of keypoints.
-            frame_inds (np.ndarray): The frame indices.
-        """
-
-        return [x[frame_inds].astype(np.float32) for x in kpscore]
-
-    def __call__(self, results):
+        if 'total_frames' not in results:
+            results['total_frames'] = results['keypoint'].shape[1]
 
         if 'frame_inds' not in results:
             results['frame_inds'] = np.arange(results['total_frames'])
@@ -196,8 +178,8 @@ class PoseDecode:
         return repr_str
 
 
-@PIPELINES.register_module()
-class LoadKineticsPose:
+@TRANSFORMS.register_module()
+class LoadKineticsPose(BaseTransform):
     """Load Kinetics Pose given filename (The format should be pickle)
 
     Required keys are "filename", "total_frames", "img_shape", "frame_inds",
@@ -248,7 +230,7 @@ class LoadKineticsPose:
         self.kwargs = kwargs
         self.file_client = None
 
-    def __call__(self, results):
+    def transform(self, results):
 
         assert 'filename' in results
         filename = results.pop('filename')
@@ -345,8 +327,8 @@ class LoadKineticsPose:
         return repr_str
 
 
-@PIPELINES.register_module()
-class GeneratePoseTarget:
+@TRANSFORMS.register_module()
+class GeneratePoseTarget(BaseTransform):
     """Generate pseudo heatmaps based on joint coordinates and confidence.
 
     Required keys are "keypoint", "img_shape", "keypoint_score" (optional),
@@ -605,7 +587,7 @@ class GeneratePoseTarget:
 
         return imgs
 
-    def __call__(self, results):
+    def transform(self, results):
         if not self.double:
             results['imgs'] = np.stack(self.gen_an_aug(results))
         else:
@@ -631,8 +613,8 @@ class GeneratePoseTarget:
         return repr_str
 
 
-@PIPELINES.register_module()
-class PaddingWithLoop:
+@TRANSFORMS.register_module()
+class PaddingWithLoop(BaseTransform):
     """Sample frames from the video.
 
     To sample an n-frame clip from the video, PaddingWithLoop samples
@@ -652,11 +634,11 @@ class PaddingWithLoop:
         self.clip_len = clip_len
         self.num_clips = num_clips
 
-    def __call__(self, results):
+    def transform(self, results):
         num_frames = results['total_frames']
 
-        start = 0
-        inds = np.arange(start, start + self.clip_len)
+        start_index = results['start_index']
+        inds = np.arange(start_index, start_index + self.clip_len)
         inds = np.mod(inds, num_frames)
 
         results['frame_inds'] = inds.astype(np.int)
@@ -665,9 +647,15 @@ class PaddingWithLoop:
         results['num_clips'] = self.num_clips
         return results
 
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'clip_len={self.clip_len}, '
+                    f'num_clips={self.num_clips})')
+        return repr_str
 
-@PIPELINES.register_module()
-class PoseNormalize:
+
+@TRANSFORMS.register_module()
+class PoseNormalize(BaseTransform):
     """Normalize the range of keypoint values to [-1,1].
 
     Args:
@@ -686,10 +674,17 @@ class PoseNormalize:
         self.max_value = np.array(
             max_value, dtype=np.float32).reshape(-1, 1, 1, 1)
 
-    def __call__(self, results):
+    def transform(self, results):
         keypoint = results['keypoint']
         keypoint = (keypoint - self.mean) / (self.max_value - self.min_value)
         results['keypoint'] = keypoint
         results['keypoint_norm_cfg'] = dict(
             mean=self.mean, min_value=self.min_value, max_value=self.max_value)
         return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'mean={self.mean}, '
+                    f'min_value={self.min_value}, '
+                    f'max_value={self.max_value})')
+        return repr_str

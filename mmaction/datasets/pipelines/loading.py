@@ -9,15 +9,16 @@ import warnings
 import mmcv
 import numpy as np
 import torch
-from mmcv.fileio import FileClient
+from mmcv.transforms import BaseTransform
+from mmengine.fileio import FileClient
 from torch.nn.modules.utils import _pair
 
 from ...utils import get_random_string, get_shm_dir, get_thread_id
-from ..builder import PIPELINES
+from ..builder import TRANSFORMS
 
 
-@PIPELINES.register_module()
-class LoadHVULabel:
+@TRANSFORMS.register_module()
+class LoadHVULabel(BaseTransform):
     """Convert the HVU label from dictionaries to torch tensors.
 
     Required keys are "label", "categories", "category_nums", added or modified
@@ -41,7 +42,7 @@ class LoadHVULabel:
         self.category2startidx = dict(zip(categories, self.start_idx))
         self.hvu_initialized = True
 
-    def __call__(self, results):
+    def transform(self, results):
         """Convert the label dictionary to 3 tensors: "label", "mask" and
         "category_mask".
 
@@ -79,8 +80,8 @@ class LoadHVULabel:
         return repr_str
 
 
-@PIPELINES.register_module()
-class SampleFrames:
+@TRANSFORMS.register_module()
+class SampleFrames(BaseTransform):
     """Sample frames from the video.
 
     Required keys are "total_frames", "start_index" , added or modified keys
@@ -116,7 +117,6 @@ class SampleFrames:
                  twice_sample=False,
                  out_of_bound_opt='loop',
                  test_mode=False,
-                 start_index=None,
                  keep_tail_frames=False):
 
         self.clip_len = clip_len
@@ -128,11 +128,6 @@ class SampleFrames:
         self.test_mode = test_mode
         self.keep_tail_frames = keep_tail_frames
         assert self.out_of_bound_opt in ['loop', 'repeat_last']
-
-        if start_index is not None:
-            warnings.warn('No longer support "start_index" in "SampleFrames", '
-                          'it should be set in dataset class, see this pr: '
-                          'https://github.com/open-mmlab/mmaction2/pull/89')
 
     def _get_train_clips(self, num_frames):
         """Get clip offsets in train mode.
@@ -219,7 +214,7 @@ class SampleFrames:
 
         return clip_offsets
 
-    def __call__(self, results):
+    def transform(self, results):
         """Perform the SampleFrames loading.
 
         Args:
@@ -270,8 +265,8 @@ class SampleFrames:
         return repr_str
 
 
-@PIPELINES.register_module()
-class UntrimmedSampleFrames:
+@TRANSFORMS.register_module()
+class UntrimmedSampleFrames(BaseTransform):
     """Sample frames from the untrimmed video.
 
     Required keys are "filename", "total_frames", added or modified keys are
@@ -281,22 +276,13 @@ class UntrimmedSampleFrames:
         clip_len (int): The length of sampled clips. Default: 1.
         frame_interval (int): Temporal interval of adjacent sampled frames.
             Default: 16.
-        start_index (None): This argument is deprecated and moved to dataset
-            class (``BaseDataset``, ``VideoDatset``, ``RawframeDataset``, etc),
-            see this: https://github.com/open-mmlab/mmaction2/pull/89.
     """
 
-    def __init__(self, clip_len=1, frame_interval=16, start_index=None):
-
+    def __init__(self, clip_len=1, frame_interval=16):
         self.clip_len = clip_len
         self.frame_interval = frame_interval
 
-        if start_index is not None:
-            warnings.warn('No longer support "start_index" in "SampleFrames", '
-                          'it should be set in dataset class, see this pr: '
-                          'https://github.com/open-mmlab/mmaction2/pull/89')
-
-    def __call__(self, results):
+    def transform(self, results):
         """Perform the SampleFrames loading.
 
         Args:
@@ -329,7 +315,7 @@ class UntrimmedSampleFrames:
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class DenseSampleFrames(SampleFrames):
     """Select frames from the video by dense sample strategy.
 
@@ -421,7 +407,7 @@ class DenseSampleFrames(SampleFrames):
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class SampleAVAFrames(SampleFrames):
 
     def __init__(self, clip_len, frame_interval=2, test_mode=False):
@@ -437,7 +423,7 @@ class SampleAVAFrames(SampleFrames):
         frame_inds = np.clip(frame_inds, shot_info[0], shot_info[1] - 1)
         return frame_inds
 
-    def __call__(self, results):
+    def transform(self, results):
         fps = results['fps']
         timestamp = results['timestamp']
         timestamp_start = results['timestamp_start']
@@ -467,7 +453,7 @@ class SampleAVAFrames(SampleFrames):
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class SampleProposalFrames(SampleFrames):
     """Sample frames from proposals in the video.
 
@@ -677,7 +663,7 @@ class SampleProposalFrames(SampleFrames):
 
         return clip_offsets
 
-    def __call__(self, results):
+    def transform(self, results):
         """Perform the SampleFrames loading.
 
         Args:
@@ -723,8 +709,8 @@ class SampleProposalFrames(SampleFrames):
         return repr_str
 
 
-@PIPELINES.register_module()
-class PyAVInit:
+@TRANSFORMS.register_module()
+class PyAVInit(BaseTransform):
     """Using pyav to initialize the video.
 
     PyAV: https://github.com/mikeboers/PyAV
@@ -743,7 +729,7 @@ class PyAVInit:
         self.kwargs = kwargs
         self.file_client = None
 
-    def __call__(self, results):
+    def transform(self, results):
         """Perform the PyAV initialization.
 
         Args:
@@ -772,8 +758,8 @@ class PyAVInit:
         return repr_str
 
 
-@PIPELINES.register_module()
-class PyAVDecode:
+@TRANSFORMS.register_module()
+class PyAVDecode(BaseTransform):
     """Using PyAV to decode the video.
 
     PyAV: https://github.com/mikeboers/PyAV
@@ -805,7 +791,7 @@ class PyAVDecode:
                 if frame:
                     return frame.to_rgb().to_ndarray()
 
-    def __call__(self, results):
+    def transform(self, results):
         """Perform the PyAV decoding.
 
         Args:
@@ -865,8 +851,8 @@ class PyAVDecode:
         return repr_str
 
 
-@PIPELINES.register_module()
-class PIMSInit:
+@TRANSFORMS.register_module()
+class PIMSInit(BaseTransform):
     """Use PIMS to initialize the video.
 
     PIMS: https://github.com/soft-matter/pims
@@ -890,7 +876,7 @@ class PIMSInit:
         self.mode = mode
         assert mode in ['accurate', 'efficient']
 
-    def __call__(self, results):
+    def transform(self, results):
         try:
             import pims
         except ImportError:
@@ -917,8 +903,8 @@ class PIMSInit:
         return repr_str
 
 
-@PIPELINES.register_module()
-class PIMSDecode:
+@TRANSFORMS.register_module()
+class PIMSDecode(BaseTransform):
     """Using PIMS to decode the videos.
 
     PIMS: https://github.com/soft-matter/pims
@@ -927,7 +913,7 @@ class PIMSDecode:
     added or modified keys are "imgs", "img_shape" and "original_shape".
     """
 
-    def __call__(self, results):
+    def transform(self, results):
         container = results['video_reader']
 
         if results['frame_inds'].ndim != 1:
@@ -946,7 +932,7 @@ class PIMSDecode:
         return results
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class PyAVDecodeMotionVector(PyAVDecode):
     """Using pyav to decode the motion vectors from video.
 
@@ -976,7 +962,7 @@ class PyAVDecodeMotionVector(PyAVDecode):
 
         return mv
 
-    def __call__(self, results):
+    def transform(self, results):
         """Perform the PyAV motion vector decoding.
 
         Args:
@@ -1024,8 +1010,8 @@ class PyAVDecodeMotionVector(PyAVDecode):
         return results
 
 
-@PIPELINES.register_module()
-class DecordInit:
+@TRANSFORMS.register_module()
+class DecordInit(BaseTransform):
     """Using decord to initialize the video_reader.
 
     Decord: https://github.com/dmlc/decord
@@ -1046,7 +1032,7 @@ class DecordInit:
         self.kwargs = kwargs
         self.file_client = None
 
-    def __call__(self, results):
+    def transform(self, results):
         """Perform the Decord initialization.
 
         Args:
@@ -1075,8 +1061,8 @@ class DecordInit:
         return repr_str
 
 
-@PIPELINES.register_module()
-class DecordDecode:
+@TRANSFORMS.register_module()
+class DecordDecode(BaseTransform):
     """Using decord to decode the video.
 
     Decord: https://github.com/dmlc/decord
@@ -1096,7 +1082,7 @@ class DecordDecode:
         self.mode = mode
         assert mode in ['accurate', 'efficient']
 
-    def __call__(self, results):
+    def transform(self, results):
         """Perform the Decord decoding.
 
         Args:
@@ -1136,8 +1122,8 @@ class DecordDecode:
         return repr_str
 
 
-@PIPELINES.register_module()
-class OpenCVInit:
+@TRANSFORMS.register_module()
+class OpenCVInit(BaseTransform):
     """Using OpenCV to initialize the video_reader.
 
     Required keys are "filename", added or modified keys are "new_path",
@@ -1161,7 +1147,7 @@ class OpenCVInit:
                                        f'{random_string}_{thread_id}')
             os.mkdir(self.tmp_folder)
 
-    def __call__(self, results):
+    def transform(self, results):
         """Perform the OpenCV initialization.
 
         Args:
@@ -1197,15 +1183,15 @@ class OpenCVInit:
         return repr_str
 
 
-@PIPELINES.register_module()
-class OpenCVDecode:
+@TRANSFORMS.register_module()
+class OpenCVDecode(BaseTransform):
     """Using OpenCV to decode the video.
 
     Required keys are "video_reader", "filename" and "frame_inds", added or
     modified keys are "imgs", "img_shape" and "original_shape".
     """
 
-    def __call__(self, results):
+    def transform(self, results):
         """Perform the OpenCV decoding.
 
         Args:
@@ -1239,8 +1225,8 @@ class OpenCVDecode:
         return results
 
 
-@PIPELINES.register_module()
-class RawFrameDecode:
+@TRANSFORMS.register_module()
+class RawFrameDecode(BaseTransform):
     """Load and decode frames with given indices.
 
     Required keys are "frame_dir", "filename_tmpl" and "frame_inds",
@@ -1259,7 +1245,7 @@ class RawFrameDecode:
         self.kwargs = kwargs
         self.file_client = None
 
-    def __call__(self, results):
+    def transform(self, results):
         """Perform the ``RawFrameDecode`` to pick frames given indices.
 
         Args:
@@ -1340,15 +1326,15 @@ class RawFrameDecode:
         return repr_str
 
 
-@PIPELINES.register_module()
-class ArrayDecode:
+@TRANSFORMS.register_module()
+class ArrayDecode(BaseTransform):
     """Load and decode frames with given indices from a 4D array.
 
     Required keys are "array and "frame_inds", added or modified keys are
     "imgs", "img_shape" and "original_shape".
     """
 
-    def __call__(self, results):
+    def transform(self, results):
         """Perform the ``RawFrameDecode`` to pick frames given indices.
 
         Args:
@@ -1387,8 +1373,8 @@ class ArrayDecode:
         return f'{self.__class__.__name__}()'
 
 
-@PIPELINES.register_module()
-class ImageDecode:
+@TRANSFORMS.register_module()
+class ImageDecode(BaseTransform):
     """Load and decode images.
 
     Required key is "filename", added or modified keys are "imgs", "img_shape"
@@ -1407,7 +1393,7 @@ class ImageDecode:
         self.kwargs = kwargs
         self.file_client = None
 
-    def __call__(self, results):
+    def transform(self, results):
         """Perform the ``ImageDecode`` to load image given the file path.
 
         Args:
@@ -1433,8 +1419,8 @@ class ImageDecode:
         return results
 
 
-@PIPELINES.register_module()
-class AudioDecodeInit:
+@TRANSFORMS.register_module()
+class AudioDecodeInit(BaseTransform):
     """Using librosa to initialize the audio reader.
 
     Required keys are "audio_path", added or modified keys are "length",
@@ -1469,7 +1455,7 @@ class AudioDecodeInit:
         # librosa load raw audio file into a distribution of -1~+1
         return np.random.rand(shape).astype(np.float32) * 2 - 1
 
-    def __call__(self, results):
+    def transform(self, results):
         """Perform the librosa initialization.
 
         Args:
@@ -1505,8 +1491,8 @@ class AudioDecodeInit:
         return repr_str
 
 
-@PIPELINES.register_module()
-class LoadAudioFeature:
+@TRANSFORMS.register_module()
+class LoadAudioFeature(BaseTransform):
     """Load offline extracted audio features.
 
     Required keys are "audio_path", added or modified keys are "length",
@@ -1527,7 +1513,7 @@ class LoadAudioFeature:
         # spectrogram is normalized into a distribution of 0~1
         return np.random.rand(shape).astype(np.float32)
 
-    def __call__(self, results):
+    def transform(self, results):
         """Perform the numpy loading.
 
         Args:
@@ -1552,8 +1538,8 @@ class LoadAudioFeature:
         return repr_str
 
 
-@PIPELINES.register_module()
-class AudioDecode:
+@TRANSFORMS.register_module()
+class AudioDecode(BaseTransform):
     """Sample the audio w.r.t. the frames selected.
 
     Args:
@@ -1568,7 +1554,7 @@ class AudioDecode:
     def __init__(self, fixed_length=32000):
         self.fixed_length = fixed_length
 
-    def __call__(self, results):
+    def transform(self, results):
         """Perform the ``AudioDecode`` to pick audio clips."""
         audio = results['audios']
         frame_inds = results['frame_inds']
@@ -1603,8 +1589,8 @@ class AudioDecode:
         return results
 
 
-@PIPELINES.register_module()
-class BuildPseudoClip:
+@TRANSFORMS.register_module()
+class BuildPseudoClip(BaseTransform):
     """Build pseudo clips with one single image by repeating it n times.
 
     Required key is "imgs", added or modified key is "imgs", "num_clips",
@@ -1617,7 +1603,7 @@ class BuildPseudoClip:
     def __init__(self, clip_len):
         self.clip_len = clip_len
 
-    def __call__(self, results):
+    def transform(self, results):
         # the input should be one single image
         assert len(results['imgs']) == 1
         im = results['imgs'][0]
@@ -1633,8 +1619,8 @@ class BuildPseudoClip:
         return repr_str
 
 
-@PIPELINES.register_module()
-class AudioFeatureSelector:
+@TRANSFORMS.register_module()
+class AudioFeatureSelector(BaseTransform):
     """Sample the audio feature w.r.t. the frames selected.
 
     Required keys are "audios", "frame_inds", "num_clips", "length",
@@ -1649,7 +1635,7 @@ class AudioFeatureSelector:
     def __init__(self, fixed_length=128):
         self.fixed_length = fixed_length
 
-    def __call__(self, results):
+    def transform(self, results):
         """Perform the ``AudioFeatureSelector`` to pick audio feature clips.
 
         Args:
@@ -1694,8 +1680,8 @@ class AudioFeatureSelector:
         return repr_str
 
 
-@PIPELINES.register_module()
-class LoadLocalizationFeature:
+@TRANSFORMS.register_module()
+class LoadLocalizationFeature(BaseTransform):
     """Load Video features for localizer with given video_name list.
 
     Required keys are "video_name" and "data_prefix", added or modified keys
@@ -1711,7 +1697,7 @@ class LoadLocalizationFeature:
             raise NotImplementedError
         self.raw_feature_ext = raw_feature_ext
 
-    def __call__(self, results):
+    def transform(self, results):
         """Perform the LoadLocalizationFeature loading.
 
         Args:
@@ -1735,15 +1721,15 @@ class LoadLocalizationFeature:
         return repr_str
 
 
-@PIPELINES.register_module()
-class GenerateLocalizationLabels:
+@TRANSFORMS.register_module()
+class GenerateLocalizationLabels(BaseTransform):
     """Load video label for localizer with given video_name list.
 
     Required keys are "duration_frame", "duration_second", "feature_frame",
     "annotations", added or modified keys are "gt_bbox".
     """
 
-    def __call__(self, results):
+    def transform(self, results):
         """Perform the GenerateLocalizationLabels loading.
 
         Args:
@@ -1770,8 +1756,8 @@ class GenerateLocalizationLabels:
         return results
 
 
-@PIPELINES.register_module()
-class LoadProposals:
+@TRANSFORMS.register_module()
+class LoadProposals(BaseTransform):
     """Loading proposals with given proposal results.
 
     Required keys are "video_name", added or modified keys are 'bsp_feature',
@@ -1803,7 +1789,7 @@ class LoadProposals:
             raise NotImplementedError
         self.feature_ext = feature_ext
 
-    def __call__(self, results):
+    def transform(self, results):
         """Perform the LoadProposals loading.
 
         Args:

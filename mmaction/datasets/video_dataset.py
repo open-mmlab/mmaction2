@@ -1,7 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
 
-from .base import BaseDataset
+from mmengine.dataset import BaseDataset
+from mmengine.utils import check_file_exist
+
 from .builder import DATASETS
 
 
@@ -36,15 +38,25 @@ class VideoDataset(BaseDataset):
         **kwargs: Keyword arguments for ``BaseDataset``.
     """
 
-    def __init__(self, ann_file, pipeline, start_index=0, **kwargs):
-        super().__init__(ann_file, pipeline, start_index=start_index, **kwargs)
+    def __init__(self,
+                 ann_file,
+                 pipeline,
+                 data_prefix=dict(video=None),
+                 multi_class=False,
+                 num_classes=None,
+                 start_index=0,
+                 modality='RGB',
+                 **kwargs):
+        self.multi_class = multi_class
+        self.num_classes = num_classes
+        self.start_index = start_index
+        self.modality = modality
+        super().__init__(ann_file, pipeline=pipeline, data_prefix=data_prefix, **kwargs)
 
-    def load_annotations(self):
+    def load_data_list(self):
         """Load annotation file to get video information."""
-        if self.ann_file.endswith('.json'):
-            return self.load_json_annotations()
-
-        video_infos = []
+        check_file_exist(self.ann_file)
+        data_list = []
         with open(self.ann_file, 'r') as fin:
             for line in fin:
                 line_split = line.strip().split()
@@ -55,7 +67,19 @@ class VideoDataset(BaseDataset):
                 else:
                     filename, label = line_split
                     label = int(label)
-                if self.data_prefix is not None:
-                    filename = osp.join(self.data_prefix, filename)
-                video_infos.append(dict(filename=filename, label=label))
-        return video_infos
+                if self.data_prefix['video'] is not None:
+                    filename = osp.join(self.data_prefix['video'], filename)
+                data_list.append(dict(filename=filename, label=label))
+        return data_list
+
+    def get_data_info(self, idx: int) -> dict:
+        data_info = super().get_data_info(idx)
+        data_info['modality'] = self.modality
+        data_info['start_index'] = self.start_index
+
+        if self.multi_class:
+            onehot = torch.zeros(self.num_classes)
+            onehot[data_info['label']] = 1.
+            data_info['label'] = onehot
+
+        return data_info

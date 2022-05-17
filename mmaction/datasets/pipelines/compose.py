@@ -3,11 +3,11 @@ from collections.abc import Sequence
 
 from mmcv.utils import build_from_cfg
 
-from ..builder import PIPELINES
-from .augmentations import PytorchVideoTrans, TorchvisionTrans
+from ..builder import TRANSFORMS
+from .transforms import PytorchVideoTrans, TorchvisionTrans
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class Compose:
     """Compose a data pipeline with a sequence of transforms.
 

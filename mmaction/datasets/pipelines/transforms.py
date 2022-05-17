@@ -7,9 +7,10 @@ import cv2
 import mmcv
 import numpy as np
 from mmcv.utils import digit_version
+from mmcv.transforms import BaseTransform
 from torch.nn.modules.utils import _pair
 
-from ..builder import PIPELINES
+from ..builder import TRANSFORMS
 from .formatting import to_tensor
 
 
@@ -55,7 +56,7 @@ def _init_lazy_if_proper(results, lazy):
         assert 'lazy' not in results, 'Use Fuse after lazy operations'
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class TorchvisionTrans:
     """Torchvision Augmentations, under torchvision.transforms.
 
@@ -92,7 +93,7 @@ class TorchvisionTrans:
         return results
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class PytorchVideoTrans:
     """PytorchVideoTrans Augmentations, under pytorchvideo.transforms.
 
@@ -164,8 +165,8 @@ class PytorchVideoTrans:
         return results
 
 
-@PIPELINES.register_module()
-class PoseCompact:
+@TRANSFORMS.register_module()
+class PoseCompact(BaseTransform):
     """Convert the coordinates of keypoints to make it more compact.
     Specifically, it first find a tight bounding box that surrounds all joints
     in each frame, then we expand the tight box by a given padding ratio. For
@@ -207,7 +208,7 @@ class PoseCompact:
         self.allow_imgpad = allow_imgpad
         assert self.padding >= 0
 
-    def __call__(self, results):
+    def transform(self, results):
         img_shape = results['img_shape']
         h, w = img_shape
         kp = results['keypoint']
@@ -267,7 +268,7 @@ class PoseCompact:
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class Imgaug:
     """Imgaug augmentation.
 
@@ -507,7 +508,7 @@ class Imgaug:
         return results
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class Fuse:
     """Fuse lazy operations.
 
@@ -551,8 +552,8 @@ class Fuse:
         return results
 
 
-@PIPELINES.register_module()
-class RandomCrop:
+@TRANSFORMS.register_module()
+class RandomCrop(BaseTransform):
     """Vanilla square random crop that specifics the output size.
 
     Required keys in results are "img_shape", "keypoint" (optional), "imgs"
@@ -612,7 +613,7 @@ class RandomCrop:
                                                   crop_bbox)
         return results
 
-    def __call__(self, results):
+    def transform(self, results):
         """Performs the RandomCrop augmentation.
 
         Args:
@@ -697,7 +698,7 @@ class RandomCrop:
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class RandomResizedCrop(RandomCrop):
     """Random crop that specifics the area and height-weight ratio range.
 
@@ -779,7 +780,7 @@ class RandomResizedCrop(RandomCrop):
         y_offset = (img_h - crop_size) // 2
         return x_offset, y_offset, x_offset + crop_size, y_offset + crop_size
 
-    def __call__(self, results):
+    def transform(self, results):
         """Performs the RandomResizeCrop augmentation.
 
         Args:
@@ -857,7 +858,7 @@ class RandomResizedCrop(RandomCrop):
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class MultiScaleCrop(RandomCrop):
     """Crop images with a list of randomly selected scales.
 
@@ -914,7 +915,7 @@ class MultiScaleCrop(RandomCrop):
         self.num_fixed_crops = num_fixed_crops
         self.lazy = lazy
 
-    def __call__(self, results):
+    def transform(self, results):
         """Performs the MultiScaleCrop augmentation.
 
         Args:
@@ -1036,8 +1037,8 @@ class MultiScaleCrop(RandomCrop):
         return repr_str
 
 
-@PIPELINES.register_module()
-class Resize:
+@TRANSFORMS.register_module()
+class Resize(BaseTransform):
     """Resize images to a specific size.
 
     Required keys are "img_shape", "modality", "imgs" (optional), "keypoint"
@@ -1105,7 +1106,7 @@ class Resize:
         scale_factor = np.concatenate([scale_factor, scale_factor])
         return box * scale_factor
 
-    def __call__(self, results):
+    def transform(self, results):
         """Performs the Resize augmentation.
 
         Args:
@@ -1166,7 +1167,7 @@ class Resize:
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class RandomRescale:
     """Randomly resize images so that the short_edge is resized to a specific
     size in a given range. The scale ratio is unchanged after resizing.
@@ -1219,8 +1220,8 @@ class RandomRescale:
         return repr_str
 
 
-@PIPELINES.register_module()
-class Flip:
+@TRANSFORMS.register_module()
+class Flip(BaseTransform):
     """Flip the input images with a probability.
 
     Reverse the order of elements in the given imgs with a specific direction.
@@ -1299,7 +1300,7 @@ class Flip:
         box_[..., 2::4] = img_width - box[..., 0::4]
         return box_
 
-    def __call__(self, results):
+    def transform(self, results):
         """Performs the Flip augmentation.
 
         Args:
@@ -1366,8 +1367,8 @@ class Flip:
         return repr_str
 
 
-@PIPELINES.register_module()
-class Normalize:
+@TRANSFORMS.register_module()
+class Normalize(BaseTransform):
     """Normalize images with the given mean and std value.
 
     Required keys are "imgs", "img_shape", "modality", added or modified
@@ -1398,7 +1399,7 @@ class Normalize:
         self.to_bgr = to_bgr
         self.adjust_magnitude = adjust_magnitude
 
-    def __call__(self, results):
+    def transform(self, results):
         modality = results['modality']
 
         if modality == 'RGB':
@@ -1452,7 +1453,7 @@ class Normalize:
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class ColorJitter:
     """Perform ColorJitter to each img.
 
@@ -1549,7 +1550,7 @@ class ColorJitter:
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class CenterCrop(RandomCrop):
     """Crop the center area from images.
 
@@ -1570,7 +1571,7 @@ class CenterCrop(RandomCrop):
             raise TypeError(f'Crop_size must be int or tuple of int, '
                             f'but got {type(crop_size)}')
 
-    def __call__(self, results):
+    def transform(self, results):
         """Performs the CenterCrop augmentation.
 
         Args:
@@ -1649,7 +1650,7 @@ class CenterCrop(RandomCrop):
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class ThreeCrop:
     """Crop images into three crops.
 
@@ -1722,8 +1723,8 @@ class ThreeCrop:
         return repr_str
 
 
-@PIPELINES.register_module()
-class TenCrop:
+@TRANSFORMS.register_module()
+class TenCrop(BaseTransform):
     """Crop the images into 10 crops (corner + center + flip).
 
     Crop the four corners and the center part of the image with the same
@@ -1741,7 +1742,7 @@ class TenCrop:
             raise TypeError(f'Crop_size must be int or tuple of int, '
                             f'but got {type(crop_size)}')
 
-    def __call__(self, results):
+    def transform(self, results):
         """Performs the TenCrop augmentation.
 
         Args:
@@ -1794,7 +1795,7 @@ class TenCrop:
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class AudioAmplify:
     """Amplify the waveform.
 
@@ -1830,7 +1831,7 @@ class AudioAmplify:
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class MelSpectrogram:
     """MelSpectrogram. Transfer an audio wave into a melspectogram figure.
 

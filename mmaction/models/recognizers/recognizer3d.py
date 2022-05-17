@@ -1,7 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import Dict, List
+
 import torch
 from torch import nn
 
+from mmaction.core import ActionDataSample
 from ..builder import RECOGNIZERS
 from .base import BaseRecognizer
 
@@ -10,41 +13,33 @@ from .base import BaseRecognizer
 class Recognizer3D(BaseRecognizer):
     """3D recognizer model framework."""
 
-    def forward_train(self, imgs, labels, **kwargs):
-        """Defines the computation performed at every call when training."""
+    def loss(self, inputs, data_samples) -> Dict:
+        assert self.with_cls_head, 'cls head must be implemented.'
 
-        assert self.with_cls_head
-        imgs = imgs.reshape((-1, ) + imgs.shape[2:])
-        losses = dict()
+        inputs = inputs.reshape((-1, ) + inputs.shape[2:])
+        feats = self.extract_feat(inputs)
 
-        x = self.extract_feat(imgs)
+        # TODO
+        loss_aux = None
         if self.with_neck:
-            x, loss_aux = self.neck(x, labels.squeeze())
-            losses.update(loss_aux)
+            feats, loss_aux = self.neck(feats, data_samples)
 
-        cls_score = self.cls_head(x)
-        gt_labels = labels.squeeze()
-        loss_cls = self.cls_head.loss(cls_score, gt_labels, **kwargs)
-        losses.update(loss_cls)
+        return self.cls_head.loss(feats, data_samples, loss_aux=loss_aux)
 
-        return losses
-
-    def _do_test(self, imgs):
-        """Defines the computation performed at every call when evaluation,
-        testing and gradcam."""
-        batches = imgs.shape[0]
-        num_segs = imgs.shape[1]
-        imgs = imgs.reshape((-1, ) + imgs.shape[2:])
+    def predict(self, inputs, data_samples) -> List[ActionDataSample]:
+        batches = inputs.shape[0]
+        num_segs = inputs.shape[1]
+        inputs = inputs.reshape((-1, ) + inputs.shape[2:])
 
         if self.max_testing_views is not None:
-            total_views = imgs.shape[0]
+            total_views = inputs.shape[0]
             assert num_segs == total_views, (
                 'max_testing_views is only compatible '
                 'with batch_size == 1')
             view_ptr = 0
             feats = []
             while view_ptr < total_views:
-                batch_imgs = imgs[view_ptr:view_ptr + self.max_testing_views]
+                batch_imgs = inputs[view_ptr:view_ptr + self.max_testing_views]
                 x = self.extract_feat(batch_imgs)
                 if self.with_neck:
                     x, _ = self.neck(x)
@@ -53,20 +48,20 @@ class Recognizer3D(BaseRecognizer):
             # should consider the case that feat is a tuple
             if isinstance(feats[0], tuple):
                 len_tuple = len(feats[0])
-                feat = [
+                feats = [
                     torch.cat([x[i] for x in feats]) for i in range(len_tuple)
                 ]
-                feat = tuple(feat)
+                feats = tuple(feats)
             else:
-                feat = torch.cat(feats)
+                feats = torch.cat(feats)
         else:
-            feat = self.extract_feat(imgs)
+            feats = self.extract_feat(inputs)
             if self.with_neck:
-                feat, _ = self.neck(feat)
+                feats, _ = self.neck(feats)
 
         if self.feature_extraction:
-            feat_dim = len(feat[0].size()) if isinstance(feat, tuple) else len(
-                feat.size())
+            feat_dim = len(feats[0].size()) if isinstance(feats, tuple) else len(
+                feats.size())
             assert feat_dim in [
                 5, 2
             ], ('Got feature of unknown architecture, '
@@ -76,53 +71,16 @@ class Recognizer3D(BaseRecognizer):
                 # perform spatio-temporal pooling
                 avg_pool = nn.AdaptiveAvgPool3d(1)
                 if isinstance(feat, tuple):
-                    feat = [avg_pool(x) for x in feat]
+                    feats = [avg_pool(x) for x in feats]
                     # concat them
-                    feat = torch.cat(feat, axis=1)
+                    feats = torch.cat(feats, axis=1)
                 else:
-                    feat = avg_pool(feat)
+                    feats = avg_pool(feats)
                 # squeeze dimensions
-                feat = feat.reshape((batches, num_segs, -1))
+                feats = feats.reshape((batches, num_segs, -1))
                 # temporal average pooling
-                feat = feat.mean(axis=1)
-            return feat
+                feats = feats.mean(axis=1)
+            return feats
 
-        # should have cls_head if not extracting features
-        assert self.with_cls_head
-        cls_score = self.cls_head(feat)
-        cls_score = self.average_clip(cls_score, num_segs)
-        return cls_score
-
-    def forward_test(self, imgs):
-        """Defines the computation performed at every call when evaluation and
-        testing."""
-        return self._do_test(imgs).cpu().numpy()
-
-    def forward_dummy(self, imgs, softmax=False):
-        """Used for computing network FLOPs.
-
-        See ``tools/analysis/get_flops.py``.
-
-        Args:
-            imgs (torch.Tensor): Input images.
-
-        Returns:
-            Tensor: Class score.
-        """
-        assert self.with_cls_head
-        imgs = imgs.reshape((-1, ) + imgs.shape[2:])
-        x = self.extract_feat(imgs)
-
-        if self.with_neck:
-            x, _ = self.neck(x)
-
-        outs = self.cls_head(x)
-        if softmax:
-            outs = nn.functional.softmax(outs)
-        return (outs, )
-
-    def forward_gradcam(self, imgs):
-        """Defines the computation performed at every call when using gradcam
-        utils."""
-        assert self.with_cls_head
-        return self._do_test(imgs)
+        assert self.with_cls_head, 'cls head must be implemented.'
+        return self.cls_head.predict(feats, data_samples)
