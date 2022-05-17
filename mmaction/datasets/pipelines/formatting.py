@@ -4,145 +4,69 @@ from collections.abc import Sequence
 import mmcv
 import numpy as np
 import torch
-from mmcv.parallel import DataContainer as DC
+from mmcv.transforms import BaseTransform, to_tensor
+from mmengine.data import InstanceData, LabelData
 
-from ..builder import PIPELINES
-
-
-def to_tensor(data):
-    """Convert objects of various python types to :obj:`torch.Tensor`.
-
-    Supported types are: :class:`numpy.ndarray`, :class:`torch.Tensor`,
-    :class:`Sequence`, :class:`int` and :class:`float`.
-    """
-    if isinstance(data, torch.Tensor):
-        return data
-    if isinstance(data, np.ndarray):
-        return torch.from_numpy(data)
-    if isinstance(data, Sequence) and not mmcv.is_str(data):
-        return torch.tensor(data)
-    if isinstance(data, int):
-        return torch.LongTensor([data])
-    if isinstance(data, float):
-        return torch.FloatTensor([data])
-    raise TypeError(f'type {type(data)} cannot be converted to tensor.')
+from mmaction.core import ActionDataSample
+from ..builder import TRANSFORMS
 
 
-@PIPELINES.register_module()
-class ToTensor:
-    """Convert some values in results dict to `torch.Tensor` type in data
-    loader pipeline.
+@TRANSFORMS.register_module()
+class PackActionInputs(BaseTransform):
 
-    Args:
-        keys (Sequence[str]): Required keys to be converted.
-    """
+    mapping_table = {}
 
-    def __init__(self, keys):
-        self.keys = keys
+    def __init__(self, meta_keys=()):
+        self.meta_keys = meta_keys
 
-    def __call__(self, results):
-        """Performs the ToTensor formatting.
+    def transform(self, results):
+        """Method to pack the input data.
 
         Args:
-            results (dict): The resulting dict to be modified and passed
-                to the next transform in pipeline.
+            results (dict): Result dict from the data pipeline.
+
+        Returns:
+            dict:
+
+            - 'inputs' (obj:`torch.Tensor`): The forward data of models.
+            - 'data_sample' (obj:`DetDataSample`): The annotation info of the
+                sample.
         """
-        for key in self.keys:
-            results[key] = to_tensor(results[key])
-        return results
+        packed_results = dict()
+        if 'imgs' in results:
+            imgs = results['imgs']
+            packed_results['inputs'] = to_tensor(imgs)
+        elif 'keypoint' in results:
+            keypoint = results['keypoint']
+            packed_results['inputs'] = to_tensor(keypoint)
+        elif 'audios' in results:
+            pass
+        else:
+            raise ValueError('Input must be skeleton keypoints, images or audios.')
 
-    def __repr__(self):
-        return f'{self.__class__.__name__}(keys={self.keys})'
+        data_sample = ActionDataSample()
 
+        if 'gt_bboxes' in results:
+            instance_data = InstanceData()
+            instance_data.gt_bboxes = to_tensor(results['gt_bboxes'])
+            instance_data.gt_labels = to_tensor(results['gt_labels'])
+            data_sample.gt_instances = instance_data
+            data_sample.proposals = to_tensor(results['proposals'])
+        else:
+            label_data = LabelData()
+            label_data.item = to_tensor(results['label'])
+            data_sample.gt_labels = label_data
 
-@PIPELINES.register_module()
-class Rename:
-    """Rename the key in results.
+        packed_results['data_sample'] = data_sample
+        return packed_results
 
-    Args:
-        mapping (dict): The keys in results that need to be renamed. The key of
-            the dict is the original name, while the value is the new name. If
-            the original name not found in results, do nothing.
-            Default: dict().
-    """
-
-    def __init__(self, mapping):
-        self.mapping = mapping
-
-    def __call__(self, results):
-        for key, value in self.mapping.items():
-            if key in results:
-                assert isinstance(key, str) and isinstance(value, str)
-                assert value not in results, ('the new name already exists in '
-                                              'results')
-                results[value] = results[key]
-                results.pop(key)
-        return results
-
-
-@PIPELINES.register_module()
-class ToDataContainer:
-    """Convert the data to DataContainer.
-
-    Args:
-        fields (Sequence[dict]): Required fields to be converted
-            with keys and attributes. E.g.
-            fields=(dict(key='gt_bbox', stack=False),).
-            Note that key can also be a list of keys, if so, every tensor in
-            the list will be converted to DataContainer.
-    """
-
-    def __init__(self, fields):
-        self.fields = fields
-
-    def __call__(self, results):
-        """Performs the ToDataContainer formatting.
-
-        Args:
-            results (dict): The resulting dict to be modified and passed
-                to the next transform in pipeline.
-        """
-        for field in self.fields:
-            _field = field.copy()
-            key = _field.pop('key')
-            if isinstance(key, list):
-                for item in key:
-                    results[item] = DC(results[item], **_field)
-            else:
-                results[key] = DC(results[key], **_field)
-        return results
-
-    def __repr__(self):
-        return self.__class__.__name__ + f'(fields={self.fields})'
+    def __repr__(self) -> str:
+        repr_str = self.__class__.__name__
+        repr_str += f'(meta_keys={self.meta_keys})'
+        return repr_str
 
 
-@PIPELINES.register_module()
-class ImageToTensor:
-    """Convert image type to `torch.Tensor` type.
-
-    Args:
-        keys (Sequence[str]): Required keys to be converted.
-    """
-
-    def __init__(self, keys):
-        self.keys = keys
-
-    def __call__(self, results):
-        """Performs the ImageToTensor formatting.
-
-        Args:
-            results (dict): The resulting dict to be modified and passed
-                to the next transform in pipeline.
-        """
-        for key in self.keys:
-            results[key] = to_tensor(results[key].transpose(2, 0, 1))
-        return results
-
-    def __repr__(self):
-        return f'{self.__class__.__name__}(keys={self.keys})'
-
-
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class Transpose:
     """Transpose image channels to a given order.
 
@@ -171,86 +95,8 @@ class Transpose:
                 f'keys={self.keys}, order={self.order})')
 
 
-@PIPELINES.register_module()
-class Collect:
-    """Collect data from the loader relevant to the specific task.
-
-    This keeps the items in ``keys`` as it is, and collect items in
-    ``meta_keys`` into a meta item called ``meta_name``.This is usually
-    the last stage of the data loader pipeline.
-    For example, when keys='imgs', meta_keys=('filename', 'label',
-    'original_shape'), meta_name='img_metas', the results will be a dict with
-    keys 'imgs' and 'img_metas', where 'img_metas' is a DataContainer of
-    another dict with keys 'filename', 'label', 'original_shape'.
-
-    Args:
-        keys (Sequence[str]): Required keys to be collected.
-        meta_name (str): The name of the key that contains meta information.
-            This key is always populated. Default: "img_metas".
-        meta_keys (Sequence[str]): Keys that are collected under meta_name.
-            The contents of the ``meta_name`` dictionary depends on
-            ``meta_keys``.
-            By default this includes:
-
-            - "filename": path to the image file
-            - "label": label of the image file
-            - "original_shape": original shape of the image as a tuple
-                (h, w, c)
-            - "img_shape": shape of the image input to the network as a tuple
-                (h, w, c).  Note that images may be zero padded on the
-                bottom/right, if the batch tensor is larger than this shape.
-            - "pad_shape": image shape after padding
-            - "flip_direction": a str in ("horiziontal", "vertival") to
-                indicate if the image is fliped horizontally or vertically.
-            - "img_norm_cfg": a dict of normalization information:
-                - mean - per channel mean subtraction
-                - std - per channel std divisor
-                - to_rgb - bool indicating if bgr was converted to rgb
-        nested (bool): If set as True, will apply data[x] = [data[x]] to all
-            items in data. The arg is added for compatibility. Default: False.
-    """
-
-    def __init__(self,
-                 keys,
-                 meta_keys=('filename', 'label', 'original_shape', 'img_shape',
-                            'pad_shape', 'flip_direction', 'img_norm_cfg'),
-                 meta_name='img_metas',
-                 nested=False):
-        self.keys = keys
-        self.meta_keys = meta_keys
-        self.meta_name = meta_name
-        self.nested = nested
-
-    def __call__(self, results):
-        """Performs the Collect formatting.
-
-        Args:
-            results (dict): The resulting dict to be modified and passed
-                to the next transform in pipeline.
-        """
-        data = {}
-        for key in self.keys:
-            data[key] = results[key]
-
-        if len(self.meta_keys) != 0:
-            meta = {}
-            for key in self.meta_keys:
-                meta[key] = results[key]
-            data[self.meta_name] = DC(meta, cpu_only=True)
-        if self.nested:
-            for k in data:
-                data[k] = [data[k]]
-
-        return data
-
-    def __repr__(self):
-        return (f'{self.__class__.__name__}('
-                f'keys={self.keys}, meta_keys={self.meta_keys}, '
-                f'nested={self.nested})')
-
-
-@PIPELINES.register_module()
-class FormatShape:
+@TRANSFORMS.register_module()
+class FormatShape(BaseTransform):
     """Format final imgs shape to the given input_format.
 
     Required keys are "imgs", "num_clips" and "clip_len", added or modified
@@ -270,7 +116,7 @@ class FormatShape:
             raise ValueError(
                 f'The input format {self.input_format} is invalid.')
 
-    def __call__(self, results):
+    def transform(self, results):
         """Performs the FormatShape formatting.
 
         Args:
@@ -336,7 +182,7 @@ class FormatShape:
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class FormatAudioShape:
     """Format final audio shape to the given input_format.
 
@@ -374,8 +220,8 @@ class FormatAudioShape:
         return repr_str
 
 
-@PIPELINES.register_module()
-class JointToBone:
+@TRANSFORMS.register_module()
+class JointToBone(BaseTransform):
     """Convert the joint information to bone information.
 
     Required keys are "keypoint" ,
@@ -407,7 +253,7 @@ class JointToBone:
                           (6, 0), (7, 5), (8, 6), (9, 7), (10, 8), (11, 0),
                           (12, 0), (13, 11), (14, 12), (15, 13), (16, 14))
 
-    def __call__(self, results):
+    def transform(self, results):
         """Performs the Bone formatting.
 
         Args:
@@ -434,8 +280,8 @@ class JointToBone:
         return repr_str
 
 
-@PIPELINES.register_module()
-class FormatGCNInput:
+@TRANSFORMS.register_module()
+class FormatGCNInput(BaseTransform):
     """Format final skeleton shape to the given input_format.
 
     Required keys are "keypoint" and "keypoint_score"(optional),
@@ -452,7 +298,7 @@ class FormatGCNInput:
                 f'The input format {self.input_format} is invalid.')
         self.num_person = num_person
 
-    def __call__(self, results):
+    def transform(self, results):
         """Performs the FormatShape formatting.
 
         Args:
@@ -485,6 +331,7 @@ class FormatGCNInput:
         return results
 
     def __repr__(self):
-        repr_str = self.__class__.__name__
-        repr_str += f"(input_format='{self.input_format}')"
+        repr_str = (f'{self.__class__.__name__}('
+                    f'input_format={self.input_format}, ' 
+                    f'num_person={self.num_person})')
         return repr_str

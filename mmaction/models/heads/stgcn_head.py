@@ -33,8 +33,6 @@ class STGCNHead(BaseHead):
         super().__init__(num_classes, in_channels, loss_cls, **kwargs)
 
         self.spatial_type = spatial_type
-        self.in_channels = in_channels
-        self.num_classes = num_classes
         self.num_person = num_person
         self.init_std = init_std
 
@@ -53,7 +51,7 @@ class STGCNHead(BaseHead):
 
     def forward(self, x):
         # global pooling
-        assert self.pool is not None
+        assert self.pool is not None, 'pool must be implemented.'
         x = self.pool(x)
         x = x.view(x.shape[0] // self.num_person, self.num_person, -1, 1,
                    1).mean(dim=1)

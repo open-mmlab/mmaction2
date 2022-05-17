@@ -3,9 +3,9 @@ import copy
 import os.path as osp
 
 import torch
+from mmengine.dataset import BaseDataset
+from mmengine.utils import check_file_exist
 
-from mmaction.datasets.pipelines import Resize
-from .base import BaseDataset
 from .builder import DATASETS
 
 
@@ -61,10 +61,8 @@ class RawframeDataset(BaseDataset):
     Args:
         ann_file (str): Path to the annotation file.
         pipeline (list[dict | callable]): A sequence of data transforms.
-        data_prefix (str | None): Path to a directory where videos are held.
+        data_prefix (dict | None): Path to a directory where videos are held.
             Default: None.
-        test_mode (bool): Store True when building test or validation dataset.
-            Default: False.
         filename_tmpl (str): Template for each filename.
             Default: 'img_{:05}.jpg'.
         with_offset (bool): Determines whether the offset information is in
@@ -75,56 +73,34 @@ class RawframeDataset(BaseDataset):
             Default: None.
         modality (str): Modality of data. Support 'RGB', 'Flow'.
             Default: 'RGB'.
-        sample_by_class (bool): Sampling by class, should be set `True` when
-            performing inter-class data balancing. Only compatible with
-            `multi_class == False`. Only applies for training. Default: False.
-        power (float): We support sampling data with the probability
-            proportional to the power of its label frequency (freq ^ power)
-            when sampling data. `power == 1` indicates uniformly sampling all
-            data; `power == 0` indicates uniformly sampling all classes.
-            Default: 0.
-        dynamic_length (bool): If the dataset length is dynamic (used by
-            ClassSpecificDistributedSampler). Default: False.
     """
 
     def __init__(self,
                  ann_file,
                  pipeline,
-                 data_prefix=None,
-                 test_mode=False,
+                 data_prefix=dict(img=None),
                  filename_tmpl='img_{:05}.jpg',
                  with_offset=False,
                  multi_class=False,
                  num_classes=None,
                  start_index=1,
                  modality='RGB',
-                 sample_by_class=False,
-                 power=0.,
-                 dynamic_length=False,
                  **kwargs):
         self.filename_tmpl = filename_tmpl
         self.with_offset = with_offset
-        super().__init__(
-            ann_file,
-            pipeline,
-            data_prefix,
-            test_mode,
-            multi_class,
-            num_classes,
-            start_index,
-            modality,
-            sample_by_class=sample_by_class,
-            power=power,
-            dynamic_length=dynamic_length)
+        self.multi_class = multi_class
+        self.num_classes = num_classes
+        self.start_index = start_index
+        self.modality = modality
+        super().__init__(ann_file, pipeline=pipeline, data_prefix=data_prefix, **kwargs)
         self.short_cycle_factors = kwargs.get('short_cycle_factors',
                                               [0.5, 0.7071])
         self.default_s = kwargs.get('default_s', (224, 224))
 
-    def load_annotations(self):
+    def load_data_list(self):
         """Load annotation file to get video information."""
-        if self.ann_file.endswith('.json'):
-            return self.load_json_annotations()
-        video_infos = []
+        check_file_exist(self.ann_file)
+        data_list = []
         with open(self.ann_file, 'r') as fin:
             for line in fin:
                 line_split = line.strip().split()
@@ -132,8 +108,8 @@ class RawframeDataset(BaseDataset):
                 idx = 0
                 # idx for frame_dir
                 frame_dir = line_split[idx]
-                if self.data_prefix is not None:
-                    frame_dir = osp.join(self.data_prefix, frame_dir)
+                if self.data_prefix['img'] is not None:
+                    frame_dir = osp.join(self.data_prefix['img'], frame_dir)
                 video_info['frame_dir'] = frame_dir
                 idx += 1
                 if self.with_offset:
@@ -154,59 +130,20 @@ class RawframeDataset(BaseDataset):
                 else:
                     assert len(label) == 1
                     video_info['label'] = label[0]
-                video_infos.append(video_info)
+                data_list.append(video_info)
 
-        return video_infos
+        return data_list
 
-    def prepare_train_frames(self, idx):
-        """Prepare the frames for training given the index."""
-
-        def pipeline_for_a_sample(idx):
-            results = copy.deepcopy(self.video_infos[idx])
-            results['filename_tmpl'] = self.filename_tmpl
-            results['modality'] = self.modality
-            results['start_index'] = self.start_index
-
-            # prepare tensor in getitem
-            if self.multi_class:
-                onehot = torch.zeros(self.num_classes)
-                onehot[results['label']] = 1.
-                results['label'] = onehot
-
-            return self.pipeline(results)
-
-        if isinstance(idx, tuple):
-            index, short_cycle_idx = idx
-            last_resize = None
-            for trans in self.pipeline.transforms:
-                if isinstance(trans, Resize):
-                    last_resize = trans
-            origin_scale = self.default_s
-            long_cycle_scale = last_resize.scale
-
-            if short_cycle_idx in [0, 1]:
-                # 0 and 1 is hard-coded as PySlowFast
-                scale_ratio = self.short_cycle_factors[short_cycle_idx]
-                target_scale = tuple(
-                    [int(round(scale_ratio * s)) for s in origin_scale])
-                last_resize.scale = target_scale
-            res = pipeline_for_a_sample(index)
-            last_resize.scale = long_cycle_scale
-            return res
-        else:
-            return pipeline_for_a_sample(idx)
-
-    def prepare_test_frames(self, idx):
-        """Prepare the frames for testing given the index."""
-        results = copy.deepcopy(self.video_infos[idx])
-        results['filename_tmpl'] = self.filename_tmpl
-        results['modality'] = self.modality
-        results['start_index'] = self.start_index
+    def get_data_info(self, idx: int) -> dict:
+        data_info = super().get_data_info(idx)
+        data_info['filename_tmpl'] = self.filename_tmpl
+        data_info['modality'] = self.modality
+        data_info['start_index'] = self.start_index
 
         # prepare tensor in getitem
         if self.multi_class:
             onehot = torch.zeros(self.num_classes)
-            onehot[results['label']] = 1.
-            results['label'] = onehot
+            onehot[data_info['label']] = 1.
+            data_info['label'] = onehot
 
-        return self.pipeline(results)
+        return data_info

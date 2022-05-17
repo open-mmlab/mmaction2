@@ -1,13 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .augmentations import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
-                            Imgaug, MelSpectrogram, MultiScaleCrop, Normalize,
-                            PytorchVideoTrans, RandomCrop, RandomRescale,
-                            RandomResizedCrop, Resize, TenCrop, ThreeCrop,
-                            TorchvisionTrans)
+from .transforms import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
+                         Imgaug, MelSpectrogram, MultiScaleCrop, Normalize,
+                         PytorchVideoTrans, RandomCrop, RandomRescale,
+                         RandomResizedCrop, Resize, TenCrop, ThreeCrop,
+                         TorchvisionTrans)
 from .compose import Compose
-from .formatting import (Collect, FormatAudioShape, FormatGCNInput,
-                         FormatShape, ImageToTensor, JointToBone, Rename,
-                         ToDataContainer, ToTensor, Transpose)
+from .formatting import (PackActionInputs, FormatAudioShape, FormatGCNInput,
+                         FormatShape, JointToBone, Transpose)
 from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
                       AudioFeatureSelector, BuildPseudoClip, DecordDecode,
                       DecordInit, DenseSampleFrames,
@@ -26,7 +25,7 @@ __all__ = [
     'OpenCVDecode', 'MultiScaleCrop', 'RandomResizedCrop', 'RandomCrop',
     'Resize', 'Flip', 'Fuse', 'Normalize', 'ThreeCrop', 'CenterCrop',
     'TenCrop', 'ImageToTensor', 'Transpose', 'Collect', 'FormatShape',
-    'Compose', 'ToTensor', 'ToDataContainer', 'GenerateLocalizationLabels',
+    'Compose', 'GenerateLocalizationLabels',
     'LoadLocalizationFeature', 'LoadProposals', 'DecordInit', 'OpenCVInit',
     'PyAVInit', 'SampleProposalFrames', 'UntrimmedSampleFrames',
     'RawFrameDecode', 'DecordInit', 'OpenCVInit', 'PyAVInit',
@@ -37,5 +36,6 @@ __all__ = [
     'PyAVDecodeMotionVector', 'Rename', 'Imgaug', 'UniformSampleFrames',
     'PoseDecode', 'LoadKineticsPose', 'GeneratePoseTarget', 'PIMSInit',
     'PIMSDecode', 'TorchvisionTrans', 'PytorchVideoTrans', 'PoseNormalize',
-    'FormatGCNInput', 'PaddingWithLoop', 'ArrayDecode', 'JointToBone'
+    'FormatGCNInput', 'PaddingWithLoop', 'ArrayDecode', 'JointToBone',
+    'PackActionInputs'
 ]

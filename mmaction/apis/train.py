@@ -10,6 +10,7 @@ import torch.distributed as dist
 from mmcv.runner import (DistSamplerSeedHook, EpochBasedRunner, OptimizerHook,
                          build_optimizer, get_dist_info)
 from mmcv.runner.hooks import Fp16OptimizerHook
+from mmengine.model import MMDataParallel, MMDistributedDataParallel
 
 from ..core import (DistEvalHook, EvalHook, OmniSourceDistSamplerSeedHook,
                     OmniSourceRunner)

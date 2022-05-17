@@ -4,11 +4,11 @@ import math
 import torch
 import torch.nn as nn
 from mmcv.cnn import constant_init, kaiming_init, normal_init
-from mmcv.runner import load_checkpoint
+from mmengine.runner import load_checkpoint
 
 from ...utils import get_root_logger
 from ..builder import BACKBONES
-from ..skeleton_gcn.utils import Graph
+from ..recognizers.utils import Graph
 
 
 def conv_branch_init(conv, branches):

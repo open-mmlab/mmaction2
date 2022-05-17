@@ -1,3 +1,5 @@
+_base_ = '../../_base_/default_runtime.py'
+
 model = dict(
     type='Recognizer3D',
     backbone=dict(
@@ -20,9 +22,10 @@ model = dict(
         in_channels=512,
         num_classes=51,
         spatial_type='avg',
-        dropout_ratio=0.5),
-    train_cfg=dict(),
-    test_cfg=dict(average_clips='prob'))
+        dropout_ratio=0.5,
+        average_clips='prob'),
+    train_cfg=None,
+    test_cfg=None)
 
 dataset_type = 'PoseDataset'
 ann_file = 'data/posec3d/hmdb51.pkl'
@@ -43,8 +46,7 @@ train_pipeline = [
         with_kp=True,
         with_limb=False),
     dict(type='FormatShape', input_format='NCTHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs', 'label'])
+    dict(type='PackActionInputs')
 ]
 val_pipeline = [
     dict(type='UniformSampleFrames', clip_len=48, num_clips=1, test_mode=True),
@@ -59,8 +61,7 @@ val_pipeline = [
         with_kp=True,
         with_limb=False),
     dict(type='FormatShape', input_format='NCTHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs'])
+    dict(type='PackActionInputs')
 ]
 test_pipeline = [
     dict(
@@ -79,53 +80,66 @@ test_pipeline = [
         left_kp=left_kp,
         right_kp=right_kp),
     dict(type='FormatShape', input_format='NCTHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs'])
+    dict(type='PackActionInputs')
 ]
-data = dict(
-    videos_per_gpu=16,
-    workers_per_gpu=2,
-    test_dataloader=dict(videos_per_gpu=1),
-    train=dict(
+
+train_dataloader = dict(
+    batch_size=16,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=True),
+    dataset=dict(
         type='RepeatDataset',
         times=10,
         dataset=dict(
             type=dataset_type,
             ann_file=ann_file,
             split='train1',
-            data_prefix='',
-            pipeline=train_pipeline)),
-    val=dict(
+            pipeline=train_pipeline)))
+val_dataloader = dict(
+    batch_size=16,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
         type=dataset_type,
         ann_file=ann_file,
         split='test1',
-        data_prefix='',
-        pipeline=val_pipeline),
-    test=dict(
+        pipeline=val_pipeline,
+        test_mode=True))
+test_dataloader = dict(
+    batch_size=1,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
         type=dataset_type,
         ann_file=ann_file,
         split='test1',
-        data_prefix='',
-        pipeline=test_pipeline))
-# optimizer
+        pipeline=test_pipeline,
+        test_mode=True))
+
+val_evaluator = dict(type='AccMetric')
+test_evaluator = val_evaluator
+
+train_cfg = dict(by_epoch=True, max_epochs=12)
+val_cfg = dict(interval=1)
+test_cfg = dict()
+
+param_scheduler = [
+    dict(
+        type='MultiStepLR',
+        begin=0,
+        end=12,
+        by_epoch=True,
+        milestones=[9, 11],
+        gamma=0.1)
+]
+
 optimizer = dict(
     type='SGD', lr=0.01, momentum=0.9,
     weight_decay=0.0001)  # this lr is used for 8 gpus
-optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
-# learning policy
-lr_config = dict(policy='step', step=[9, 11])
-total_epochs = 12
-checkpoint_config = dict(interval=1)
-workflow = [('train', 1)]
-evaluation = dict(
-    interval=1, metrics=['top_k_accuracy', 'mean_class_accuracy'], topk=(1, 5))
-log_config = dict(
-    interval=20, hooks=[
-        dict(type='TextLoggerHook'),
-    ])
-dist_params = dict(backend='nccl')
-log_level = 'INFO'
-work_dir = './work_dirs/posec3d_iclr/slowonly_kinetics400_pretrained_r50_u48_120e_hmdb51_split1_keypoint'  # noqa: E501
-load_from = 'https://download.openmmlab.com/mmaction/skeleton/posec3d/k400_posec3d-041f49c6.pth'  # noqa: E501
-resume_from = None
-find_unused_parameters = True
+
+default_hooks = dict(
+    optimizer=dict(grad_clip=dict(max_norm=40, norm_type=2)))
+load_from = 'https://download.openmmlab.com/mmaction/skeleton/posec3d/k400_posec3d-041f49c6.pth' # noqa: E501

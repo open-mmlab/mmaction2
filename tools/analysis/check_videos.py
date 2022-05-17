@@ -9,7 +9,7 @@ import mmcv
 import numpy as np
 from mmcv import Config, DictAction
 
-from mmaction.datasets import PIPELINES, build_dataset
+from mmaction.datasets import TRANSFORMS, build_dataset
 
 
 def parse_args():
@@ -66,7 +66,7 @@ def parse_args():
     return args
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class RandomSampleFrames:
 
     def __call__(self, results):
