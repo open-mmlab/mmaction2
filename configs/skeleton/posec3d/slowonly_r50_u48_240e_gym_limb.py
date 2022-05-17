@@ -1,3 +1,5 @@
+_base_ = '../../_base_/default_runtime.py'
+
 model = dict(
     type='Recognizer3D',
     backbone=dict(
@@ -20,9 +22,10 @@ model = dict(
         in_channels=512,
         num_classes=99,
         spatial_type='avg',
-        dropout_ratio=0.5),
-    train_cfg=dict(),
-    test_cfg=dict(average_clips='prob'))
+        dropout_ratio=0.5,
+        average_clips='prob'),
+    train_cfg=None,
+    test_cfg=None)
 
 dataset_type = 'PoseDataset'
 ann_file_train = 'data/posec3d/gym_train.pkl'
@@ -48,8 +51,7 @@ train_pipeline = [
         with_limb=True,
         skeletons=skeletons),
     dict(type='FormatShape', input_format='NCTHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs', 'label'])
+    dict(type='PackActionInputs')
 ]
 val_pipeline = [
     dict(type='UniformSampleFrames', clip_len=48, num_clips=1, test_mode=True),
@@ -65,8 +67,7 @@ val_pipeline = [
         with_limb=True,
         skeletons=skeletons),
     dict(type='FormatShape', input_format='NCTHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs'])
+    dict(type='PackActionInputs')
 ]
 test_pipeline = [
     dict(
@@ -86,49 +87,48 @@ test_pipeline = [
         left_kp=left_kp,
         right_kp=right_kp),
     dict(type='FormatShape', input_format='NCTHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs'])
+    dict(type='PackActionInputs')
 ]
-data = dict(
-    videos_per_gpu=16,
-    workers_per_gpu=2,
-    test_dataloader=dict(videos_per_gpu=1),
-    train=dict(
-        type=dataset_type,
-        ann_file=ann_file_train,
-        data_prefix='',
-        pipeline=train_pipeline),
-    val=dict(
-        type=dataset_type,
-        ann_file=ann_file_val,
-        data_prefix='',
-        pipeline=val_pipeline),
-    test=dict(
-        type=dataset_type,
-        ann_file=ann_file_val,
-        data_prefix='',
-        pipeline=test_pipeline))
-# optimizer
+
+train_dataloader = dict(
+    batch_size=16,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=True),
+    dataset=dict(
+        type=dataset_type, ann_file=ann_file_train, pipeline=train_pipeline))
+val_dataloader = dict(
+    batch_size=16,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
+        type=dataset_type, ann_file=ann_file_val, pipeline=val_pipeline, test_mode=True))
+test_dataloader = dict(
+    batch_size=1,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
+        type=dataset_type, ann_file=ann_file_val, pipeline=test_pipeline, test_mode=True))
+
+val_evaluator = dict(type='AccMetric')
+test_evaluator = val_evaluator
+
+train_cfg = dict(by_epoch=True, max_epochs=240)
+val_cfg = dict(interval=10)
+test_cfg = dict()
+
+param_scheduler = [
+    dict(
+        type='CosineAnnealingLR',
+        eta_min=0,
+        T_max=240,
+        by_epoch=False)
+]
+
 optimizer = dict(
-    type='SGD', lr=0.2, momentum=0.9,
-    weight_decay=0.0003)  # this lr is used for 8 gpus
-optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
-# learning policy
-lr_config = dict(policy='CosineAnnealing', by_epoch=False, min_lr=0)
-total_epochs = 240
-checkpoint_config = dict(interval=10)
-workflow = [('train', 10)]
-evaluation = dict(
-    interval=10,
-    metrics=['top_k_accuracy', 'mean_class_accuracy'],
-    topk=(1, 5))
-log_config = dict(
-    interval=20, hooks=[
-        dict(type='TextLoggerHook'),
-    ])
-dist_params = dict(backend='nccl')
-log_level = 'INFO'
-work_dir = './work_dirs/posec3d/slowonly_r50_u48_240e_gym_limb'
-load_from = None
-resume_from = None
-find_unused_parameters = False
+    type='SGD', lr=0.2, momentum=0.9, weight_decay=0.0003)  # this lr is used for 8 gpus
+
+default_hooks = dict(
+    optimizer=dict(grad_clip=dict(max_norm=40, norm_type=2)))

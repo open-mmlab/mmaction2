@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 try:
-    from mmdet.models import ROI_EXTRACTORS
+    from mmdet.models import ROI_EXTRACTORS as MMDET_ROI_EXTRACTORS
     mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
     mmdet_imported = False
@@ -118,4 +118,4 @@ class SingleRoIExtractor3D(nn.Module):
 
 
 if mmdet_imported:
-    ROI_EXTRACTORS.register_module()(SingleRoIExtractor3D)
+    MMDET_ROI_EXTRACTORS.register_module()(SingleRoIExtractor3D)
