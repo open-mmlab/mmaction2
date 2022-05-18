@@ -4,26 +4,26 @@
 
 <!-- TOC -->
 
-- [定制优化方法](#定制优化方法)
-  - [使用 PyTorch 内置的优化器](#使用-PyTorch-内置的优化器)
-  - [定制用户自定义的优化器](#定制用户自定义的优化器)
-    - [1. 定义一个新的优化器](#1-定义一个新的优化器)
-    - [2. 注册优化器](#2-注册优化器)
-    - [3. 在配置文件中指定优化器](#3-在配置文件中指定优化器)
-  - [定制优化器构造器](#定制优化器构造器)
-  - [额外设定](#额外设定)
-- [定制学习率调整策略](#定制学习率调整策略)
-- [定制工作流](#定制工作流)
-- [定制钩子](#定制钩子)
-  - [定制用户自定义钩子](#定制用户自定义钩子)
-    - [1. 创建一个新钩子](#1-创建一个新钩子)
-    - [2. 注册新钩子](#2-注册新钩子)
-    - [3. 修改配置](#3-修改配置)
-  - [使用 MMCV 内置钩子](#使用-MMCV-内置钩子)
-  - [修改默认运行的钩子](#修改默认运行的钩子)
-    - [模型权重文件配置](#模型权重文件配置)
-    - [日志配置](#日志配置)
-    - [验证配置](#验证配置)
+- [定制优化方法](#%E5%AE%9A%E5%88%B6%E4%BC%98%E5%8C%96%E6%96%B9%E6%B3%95)
+  - [使用 PyTorch 内置的优化器](#%E4%BD%BF%E7%94%A8-PyTorch-%E5%86%85%E7%BD%AE%E7%9A%84%E4%BC%98%E5%8C%96%E5%99%A8)
+  - [定制用户自定义的优化器](#%E5%AE%9A%E5%88%B6%E7%94%A8%E6%88%B7%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84%E4%BC%98%E5%8C%96%E5%99%A8)
+    - [1. 定义一个新的优化器](#1-%E5%AE%9A%E4%B9%89%E4%B8%80%E4%B8%AA%E6%96%B0%E7%9A%84%E4%BC%98%E5%8C%96%E5%99%A8)
+    - [2. 注册优化器](#2-%E6%B3%A8%E5%86%8C%E4%BC%98%E5%8C%96%E5%99%A8)
+    - [3. 在配置文件中指定优化器](#3-%E5%9C%A8%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E4%B8%AD%E6%8C%87%E5%AE%9A%E4%BC%98%E5%8C%96%E5%99%A8)
+  - [定制优化器构造器](#%E5%AE%9A%E5%88%B6%E4%BC%98%E5%8C%96%E5%99%A8%E6%9E%84%E9%80%A0%E5%99%A8)
+  - [额外设定](#%E9%A2%9D%E5%A4%96%E8%AE%BE%E5%AE%9A)
+- [定制学习率调整策略](#%E5%AE%9A%E5%88%B6%E5%AD%A6%E4%B9%A0%E7%8E%87%E8%B0%83%E6%95%B4%E7%AD%96%E7%95%A5)
+- [定制工作流](#%E5%AE%9A%E5%88%B6%E5%B7%A5%E4%BD%9C%E6%B5%81)
+- [定制钩子](#%E5%AE%9A%E5%88%B6%E9%92%A9%E5%AD%90)
+  - [定制用户自定义钩子](#%E5%AE%9A%E5%88%B6%E7%94%A8%E6%88%B7%E8%87%AA%E5%AE%9A%E4%B9%89%E9%92%A9%E5%AD%90)
+    - [1. 创建一个新钩子](#1-%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E6%96%B0%E9%92%A9%E5%AD%90)
+    - [2. 注册新钩子](#2-%E6%B3%A8%E5%86%8C%E6%96%B0%E9%92%A9%E5%AD%90)
+    - [3. 修改配置](#3-%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE)
+  - [使用 MMCV 内置钩子](#%E4%BD%BF%E7%94%A8-MMCV-%E5%86%85%E7%BD%AE%E9%92%A9%E5%AD%90)
+  - [修改默认运行的钩子](#%E4%BF%AE%E6%94%B9%E9%BB%98%E8%AE%A4%E8%BF%90%E8%A1%8C%E7%9A%84%E9%92%A9%E5%AD%90)
+    - [模型权重文件配置](#%E6%A8%A1%E5%9E%8B%E6%9D%83%E9%87%8D%E6%96%87%E4%BB%B6%E9%85%8D%E7%BD%AE)
+    - [日志配置](#%E6%97%A5%E5%BF%97%E9%85%8D%E7%BD%AE)
+    - [验证配置](#%E9%AA%8C%E8%AF%81%E9%85%8D%E7%BD%AE)
 
 <!-- TOC -->
 
@@ -75,7 +75,7 @@ class MyOptimizer(Optimizer):
 
 - 修改 `mmaction/core/optimizer/__init__.py` 来进行调用
 
-    新定义的模块应导入到 `mmaction/core/optimizer/__init__.py` 中，以便注册器能找到新模块并将其添加：
+  新定义的模块应导入到 `mmaction/core/optimizer/__init__.py` 中，以便注册器能找到新模块并将其添加：
 
 ```python
 from .my_optimizer import MyOptimizer
@@ -134,32 +134,32 @@ class MyOptimizerConstructor:
 下面列出了一些可以稳定训练或加快训练速度的常用设置。用户亦可通过为 MMAction2 创建 PR，发布更多设置。
 
 - __使用梯度裁剪来稳定训练__
-    一些模型需要使用梯度裁剪来剪辑渐变以稳定训练过程。 一个例子如下：
+  一些模型需要使用梯度裁剪来剪辑渐变以稳定训练过程。 一个例子如下：
 
-    ```python
-    optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
-    ```
+  ```python
+  optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
+  ```
 
 - __使用动量调整来加速模型收敛__
-    MMAction2 支持动量调整器根据学习率修改模型的动量，从而使模型收敛更快。
-    动量调整程序通常与学习率调整器一起使用，例如，以下配置用于3D检测以加速收敛。
-    更多细节可参考 [CyclicLrUpdater](https://github.com/open-mmlab/mmcv/blob/f48241a65aebfe07db122e9db320c31b685dc674/mmcv/runner/hooks/lr_updater.py#L327)
-    和 [CyclicMomentumUpdater](https://github.com/open-mmlab/mmcv/blob/f48241a65aebfe07db122e9db320c31b685dc674/mmcv/runner/hooks/momentum_updater.py#L130)。
+  MMAction2 支持动量调整器根据学习率修改模型的动量，从而使模型收敛更快。
+  动量调整程序通常与学习率调整器一起使用，例如，以下配置用于3D检测以加速收敛。
+  更多细节可参考 [CyclicLrUpdater](https://github.com/open-mmlab/mmcv/blob/f48241a65aebfe07db122e9db320c31b685dc674/mmcv/runner/hooks/lr_updater.py#L327)
+  和 [CyclicMomentumUpdater](https://github.com/open-mmlab/mmcv/blob/f48241a65aebfe07db122e9db320c31b685dc674/mmcv/runner/hooks/momentum_updater.py#L130)。
 
-    ```python
-    lr_config = dict(
-        policy='cyclic',
-        target_ratio=(10, 1e-4),
-        cyclic_times=1,
-        step_ratio_up=0.4,
-    )
-    momentum_config = dict(
-        policy='cyclic',
-        target_ratio=(0.85 / 0.95, 1),
-        cyclic_times=1,
-        step_ratio_up=0.4,
-    )
-    ```
+  ```python
+  lr_config = dict(
+      policy='cyclic',
+      target_ratio=(10, 1e-4),
+      cyclic_times=1,
+      step_ratio_up=0.4,
+  )
+  momentum_config = dict(
+      policy='cyclic',
+      target_ratio=(0.85 / 0.95, 1),
+      cyclic_times=1,
+      step_ratio_up=0.4,
+  )
+  ```
 
 ## 定制学习率调整策略
 
@@ -168,20 +168,20 @@ class MyOptimizerConstructor:
 
 - Poly:
 
-    ```python
-    lr_config = dict(policy='poly', power=0.9, min_lr=1e-4, by_epoch=False)
-    ```
+  ```python
+  lr_config = dict(policy='poly', power=0.9, min_lr=1e-4, by_epoch=False)
+  ```
 
 - ConsineAnnealing:
 
-    ```python
-    lr_config = dict(
-        policy='CosineAnnealing',
-        warmup='linear',
-        warmup_iters=1000,
-        warmup_ratio=1.0 / 10,
-        min_lr_ratio=1e-5)
-    ```
+  ```python
+  lr_config = dict(
+      policy='CosineAnnealing',
+      warmup='linear',
+      warmup_iters=1000,
+      warmup_ratio=1.0 / 10,
+      min_lr_ratio=1e-5)
+  ```
 
 ## 定制工作流
 
@@ -209,7 +209,7 @@ workflow = [('train', 1)]
 2. 配置文件内的关键词 `total_epochs` 控制训练时期数，并且不会影响验证工作流程。
 3. 工作流 `[('train', 1), ('val', 1)]` 和 `[('train', 1)]` 不会改变 `EvalHook` 的行为。
    因为 `EvalHook` 由 `after_train_epoch` 调用，而验证工作流只会影响 `after_val_epoch` 调用的钩子。
-   因此，`[('train', 1), ('val', 1)]` 和 ``[('train', 1)]`` 的区别在于，runner 在完成每一轮训练后，会计算验证集上的损失。
+   因此，`[('train', 1), ('val', 1)]` 和 `[('train', 1)]` 的区别在于，runner 在完成每一轮训练后，会计算验证集上的损失。
 
 ## 定制钩子
 
@@ -256,7 +256,7 @@ class MyHook(Hook):
 
 - 修改 `mmaction/core/utils/__init__.py` 进行导入
 
-    新定义的模块应导入到 `mmaction/core/utils/__init__py` 中，以便注册表能找到并添加新模块：
+  新定义的模块应导入到 `mmaction/core/utils/__init__py` 中，以便注册表能找到并添加新模块：
 
 ```python
 from .my_hook import MyHook

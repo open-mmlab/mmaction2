@@ -80,8 +80,8 @@ contains tags of a specific category, can be handled with `VideoDataset` or `Raw
 recognition models can be trained with `BCELossWithLogits`.
 
 The following command generates file list for the tag category ${category}, note that the tag category you
-specified should be in the 6 tag categories available in HVU: ['action', 'attribute', 'concept', 'event',
-'object', 'scene'].
+specified should be in the 6 tag categories available in HVU: \['action', 'attribute', 'concept', 'event',
+'object', 'scene'\].
 
 ```shell
 python generate_sub_file_list.py path/to/filelist.json ${category}

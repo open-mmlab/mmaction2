@@ -4,13 +4,13 @@
 
 <!-- TOC -->
 
-- [自定义优化器](#自定义优化器)
-- [自定义优化器构造器](#自定义优化器构造器)
-- [开发新组件](#开发新组件)
-  - [添加新的 backbones](#添加新-backbones)
-  - [添加新的 heads](#添加新-heads)
-  - [添加新的 loss function](#添加新-loss-function)
-- [添加新的学习率调节器（更新器）](#添加新的学习率调节器（更新器）)
+- [自定义优化器](#%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BC%98%E5%8C%96%E5%99%A8)
+- [自定义优化器构造器](#%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BC%98%E5%8C%96%E5%99%A8%E6%9E%84%E9%80%A0%E5%99%A8)
+- [开发新组件](#%E5%BC%80%E5%8F%91%E6%96%B0%E7%BB%84%E4%BB%B6)
+  - [添加新的 backbones](#%E6%B7%BB%E5%8A%A0%E6%96%B0-backbones)
+  - [添加新的 heads](#%E6%B7%BB%E5%8A%A0%E6%96%B0-heads)
+  - [添加新的 loss function](#%E6%B7%BB%E5%8A%A0%E6%96%B0-loss-function)
+- [添加新的学习率调节器（更新器）](#%E6%B7%BB%E5%8A%A0%E6%96%B0%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%8E%87%E8%B0%83%E8%8A%82%E5%99%A8%EF%BC%88%E6%9B%B4%E6%96%B0%E5%99%A8%EF%BC%89)
 
 <!-- TOC -->
 
@@ -102,41 +102,41 @@ MMAction2 将模型组件分为 4 种基础模型：
 
 1. 创建新文件 `mmaction/models/backbones/resnet.py`
 
-    ```python
-    import torch.nn as nn
+   ```python
+   import torch.nn as nn
 
-    from ..builder import BACKBONES
+   from ..builder import BACKBONES
 
-    @BACKBONES.register_module()
-    class ResNet(nn.Module):
+   @BACKBONES.register_module()
+   class ResNet(nn.Module):
 
-        def __init__(self, arg1, arg2):
-            pass
+       def __init__(self, arg1, arg2):
+           pass
 
-        def forward(self, x):  # 应该返回一个元组
-            pass
+       def forward(self, x):  # 应该返回一个元组
+           pass
 
-        def init_weights(self, pretrained=None):
-            pass
-    ```
+       def init_weights(self, pretrained=None):
+           pass
+   ```
 
 2. 在 `mmaction/models/backbones/__init__.py` 中导入模型
 
-    ```python
-    from .resnet import ResNet
-    ```
+   ```python
+   from .resnet import ResNet
+   ```
 
 3. 在配置文件中使用它
 
-    ```python
-    model = dict(
-        ...
-        backbone=dict(
-            type='ResNet',
-            arg1=xxx,
-            arg2=xxx),
-    )
-    ```
+   ```python
+   model = dict(
+       ...
+       backbone=dict(
+           type='ResNet',
+           arg1=xxx,
+           arg2=xxx),
+   )
+   ```
 
 ### 添加新的 heads
 
@@ -144,45 +144,45 @@ MMAction2 将模型组件分为 4 种基础模型：
 
 1. 创建新文件 `mmaction/models/heads/tsn_head.py`
 
-    可以通过继承 [BaseHead](/mmaction/models/heads/base.py) 编写一个新的分类头，
-    并重写 `init_weights(self)` 和 `forward(self, x)` 方法
+   可以通过继承 [BaseHead](/mmaction/models/heads/base.py) 编写一个新的分类头，
+   并重写 `init_weights(self)` 和 `forward(self, x)` 方法
 
-    ```python
-    from ..builder import HEADS
-    from .base import BaseHead
+   ```python
+   from ..builder import HEADS
+   from .base import BaseHead
 
 
-    @HEADS.register_module()
-    class TSNHead(BaseHead):
+   @HEADS.register_module()
+   class TSNHead(BaseHead):
 
-        def __init__(self, arg1, arg2):
-            pass
+       def __init__(self, arg1, arg2):
+           pass
 
-        def forward(self, x):
-            pass
+       def forward(self, x):
+           pass
 
-        def init_weights(self):
-            pass
-    ```
+       def init_weights(self):
+           pass
+   ```
 
 2. 在 `mmaction/models/heads/__init__.py` 中导入模型
 
-    ```python
-    from .tsn_head import TSNHead
-    ```
+   ```python
+   from .tsn_head import TSNHead
+   ```
 
 3. 在配置文件中使用它
 
-    ```python
-    model = dict(
-        ...
-        cls_head=dict(
-            type='TSNHead',
-            num_classes=400,
-            in_channels=2048,
-            arg1=xxx,
-            arg2=xxx),
-    ```
+   ```python
+   model = dict(
+       ...
+       cls_head=dict(
+           type='TSNHead',
+           num_classes=400,
+           in_channels=2048,
+           arg1=xxx,
+           arg2=xxx),
+   ```
 
 ### 添加新的 loss function
 

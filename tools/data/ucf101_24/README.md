@@ -81,8 +81,8 @@ The `UCF101v2-GT.pkl` exists as a cache, it contains 6 items as follows:
 
 1. `labels` (list): List of the 24 labels.
 2. `gttubes` (dict): Dictionary that contains the ground truth tubes for each video.
-  A **gttube** is dictionary that associates with each index of label and a list of tubes.
-  A **tube** is a numpy array with `nframes` rows and 5 columns, each col is in format like `<frame index> <x1> <y1> <x2> <y2>`.
+   A **gttube** is dictionary that associates with each index of label and a list of tubes.
+   A **tube** is a numpy array with `nframes` rows and 5 columns, each col is in format like `<frame index> <x1> <y1> <x2> <y2>`.
 3. `nframes` (dict): Dictionary that contains the number of frames for each video, like `'HorseRiding/v_HorseRiding_g05_c02': 151`.
 4. `train_videos` (list): A list with `nsplits=1` elements, each one containing the list of training videos.
 5. `test_videos` (list): A list with `nsplits=1` elements, each one containing the list of testing videos.

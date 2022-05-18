@@ -4,15 +4,15 @@
 
 <!-- TOC -->
 
-- [安装](#安装)
-  - [安装依赖包](#安装依赖包)
-  - [准备环境](#准备环境)
-  - [MMAction2 的安装步骤](#mmaction2-的安装步骤)
-  - [CPU 环境下的安装步骤](#cpu-环境下的安装步骤)
-  - [利用 Docker 镜像安装 MMAction2](#利用-docker-镜像安装-mmaction2)
-  - [源码安装 MMAction2](#源码安装-mmaction2)
-  - [在多个 MMAction2 版本下进行开发](#在多个-mmaction2-版本下进行开发)
-  - [安装验证](#安装验证)
+- [安装](#%E5%AE%89%E8%A3%85)
+  - [安装依赖包](#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96%E5%8C%85)
+  - [准备环境](#%E5%87%86%E5%A4%87%E7%8E%AF%E5%A2%83)
+  - [MMAction2 的安装步骤](#mmaction2-%E7%9A%84%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4)
+  - [CPU 环境下的安装步骤](#cpu-%E7%8E%AF%E5%A2%83%E4%B8%8B%E7%9A%84%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4)
+  - [利用 Docker 镜像安装 MMAction2](#%E5%88%A9%E7%94%A8-docker-%E9%95%9C%E5%83%8F%E5%AE%89%E8%A3%85-mmaction2)
+  - [源码安装 MMAction2](#%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85-mmaction2)
+  - [在多个 MMAction2 版本下进行开发](#%E5%9C%A8%E5%A4%9A%E4%B8%AA-mmaction2-%E7%89%88%E6%9C%AC%E4%B8%8B%E8%BF%9B%E8%A1%8C%E5%BC%80%E5%8F%91)
+  - [安装验证](#%E5%AE%89%E8%A3%85%E9%AA%8C%E8%AF%81)
 
 <!-- TOC -->
 

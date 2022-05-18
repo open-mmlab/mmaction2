@@ -12,6 +12,7 @@ We present Audiovisual SlowFast Networks, an archi-
 tecture for integrated audiovisual perception. AVSlowFast has Slow and Fast visual pathways that are deeply inte- grated with a Faster Audio pathway to model vision and sound in a unified representation. We fuse audio and vi- sual features at multiple layers, enabling audio to con- tribute to the formation of hierarchical audiovisual con- cepts. To overcome training difficulties that arise from dif- ferent learning dynamics for audio and visual modalities, we introduce DropPathway, which randomly drops the Au- dio pathway during training as an effective regularization technique. Inspired by prior studies in neuroscience, we perform hierarchical audiovisual synchronization to learn joint audiovisual features. We report state-of-the-art results on six video action classification and detection datasets, perform detailed ablation studies, and show the gener- alization of AVSlowFast to learn self-supervised audiovi- sual features. Code will be made available at: https: //github.com/facebookresearch/SlowFast.
 
 <!-- [IMAGE] -->
+
 <div align=center>
 <img src="https://user-images.githubusercontent.com/30782254/147050415-a30ad32a-ce52-452d-ac3d-91058c8d0cc9.png" width="800"/>
 </div>
@@ -20,10 +21,10 @@ tecture for integrated audiovisual perception. AVSlowFast has Slow and Fast visu
 
 ### Kinetics-400
 
-|config | n_fft | gpus | backbone |pretrain| top1 acc/delta| top5 acc/delta | inference_time(video/s) | gpu_mem(M)| ckpt | log| json|
-|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[tsn_r18_64x1x1_100e_kinetics400_audio_feature](/configs/recognition_audio/resnet/tsn_r18_64x1x1_100e_kinetics400_audio_feature.py)|1024|8| ResNet18 | None |19.7|35.75|x|1897|[ckpt](https://download.openmmlab.com/mmaction/recognition/audio_recognition/tsn_r18_64x1x1_100e_kinetics400_audio_feature/tsn_r18_64x1x1_100e_kinetics400_audio_feature_20201012-bf34df6c.pth)|[log](https://download.openmmlab.com/mmaction/recognition/audio_recognition/tsn_r18_64x1x1_100e_kinetics400_audio_feature/20201010_144630.log)|[json](https://download.openmmlab.com/mmaction/recognition/audio_recognition/tsn_r18_64x1x1_100e_kinetics400_audio_feature/20201010_144630.log.json)|
-|[tsn_r18_64x1x1_100e_kinetics400_audio_feature](/configs/recognition_audio/resnet/tsn_r18_64x1x1_100e_kinetics400_audio_feature.py) + [tsn_r50_video_320p_1x1x3_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_video_320p_1x1x3_100e_kinetics400_rgb.py)|1024|8| ResNet(18+50) | None |71.50(+0.39)|90.18(+0.14)|x|x|x|x|x|
+| config                                                                                                                                                                                                                                                           | n_fft | gpus |   backbone    | pretrain | top1 acc/delta | top5 acc/delta | inference_time(video/s) | gpu_mem(M) |                                                                                              ckpt                                                                                               |                                                                      log                                                                       |                                                                         json                                                                         |
+| :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---: | :--: | :-----------: | :------: | :------------: | :------------: | :---------------------: | :--------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------: |
+| [tsn_r18_64x1x1_100e_kinetics400_audio_feature](/configs/recognition_audio/resnet/tsn_r18_64x1x1_100e_kinetics400_audio_feature.py)                                                                                                                              | 1024  |  8   |   ResNet18    |   None   |      19.7      |     35.75      |            x            |    1897    | [ckpt](https://download.openmmlab.com/mmaction/recognition/audio_recognition/tsn_r18_64x1x1_100e_kinetics400_audio_feature/tsn_r18_64x1x1_100e_kinetics400_audio_feature_20201012-bf34df6c.pth) | [log](https://download.openmmlab.com/mmaction/recognition/audio_recognition/tsn_r18_64x1x1_100e_kinetics400_audio_feature/20201010_144630.log) | [json](https://download.openmmlab.com/mmaction/recognition/audio_recognition/tsn_r18_64x1x1_100e_kinetics400_audio_feature/20201010_144630.log.json) |
+| [tsn_r18_64x1x1_100e_kinetics400_audio_feature](/configs/recognition_audio/resnet/tsn_r18_64x1x1_100e_kinetics400_audio_feature.py) + [tsn_r50_video_320p_1x1x3_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_video_320p_1x1x3_100e_kinetics400_rgb.py) | 1024  |  8   | ResNet(18+50) |   None   |  71.50(+0.39)  |  90.18(+0.14)  |            x            |     x      |                                                                                                x                                                                                                |                                                                       x                                                                        |                                                                          x                                                                           |
 
 :::{note}
 
@@ -35,7 +36,7 @@ tecture for integrated audiovisual perception. AVSlowFast has Slow and Fast visu
 
 :::
 
-For more details on data preparation, you can refer to ``Prepare audio`` in [Data Preparation](/docs/data_preparation.md).
+For more details on data preparation, you can refer to `Prepare audio` in [Data Preparation](/docs/data_preparation.md).
 
 ## Train
 
@@ -81,8 +82,8 @@ For multi-modality fusion, you can use the simple [script](/tools/analysis/repor
 python tools/analysis/report_accuracy.py --scores ${AUDIO_RESULT_PKL} ${VISUAL_RESULT_PKL} --datalist data/kinetics400/kinetics400_val_list_rawframes.txt --coefficient 1 1
 ```
 
-+ AUDIO_RESULT_PKL: The saved output file of `tools/test.py` by the argument `--out`.
-+ VISUAL_RESULT_PKL: The saved output file of `tools/test.py` by the argument `--out`.
+- AUDIO_RESULT_PKL: The saved output file of `tools/test.py` by the argument `--out`.
+- VISUAL_RESULT_PKL: The saved output file of `tools/test.py` by the argument `--out`.
 
 ## Citation
 
