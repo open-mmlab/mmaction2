@@ -117,6 +117,7 @@ html_static_path = ['_static']
 html_css_files = ['css/readthedocs.css']
 
 myst_enable_extensions = ['colon_fence']
+myst_heading_anchors = 3
 
 language = 'zh_CN'
 master_doc = 'index'
