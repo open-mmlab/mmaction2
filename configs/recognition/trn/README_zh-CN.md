@@ -17,15 +17,15 @@
 
 ### Something-Something V1
 
-|配置文件 | 分辨率 | GPU 数量 | 主干网络| 预训练 | top1 准确率 (efficient/accurate)| top5 准确率 (efficient/accurate)| GPU 显存占用 (M)| ckpt | log| json|
-|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[trn_r50_1x1x8_50e_sthv1_rgb](/configs/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb.py) | 高 100 | 8 | ResNet50 | ImageNet | 31.62 / 33.88 |60.01 / 62.12| 11010 | [ckpt](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/trn_r50_1x1x8_50e_sthv1_rgb_20210401-163704a8.pth) | [log](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/20210326_103948.log)| [json](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/20210326_103948.log.json)|
+| 配置文件                                                                                   |  分辨率  | GPU 数量 |   主干网络   |   预训练    | top1 准确率 (efficient/accurate) | top5 准确率 (efficient/accurate) | GPU 显存占用 (M) |                                                                     ckpt                                                                      |                                                      log                                                       |                                                         json                                                         |
+| :------------------------------------------------------------------------------------- | :---: | :----: | :------: | :------: | :---------------------------: | :---------------------------: | :----------: | :-------------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------: |
+| [trn_r50_1x1x8_50e_sthv1_rgb](/configs/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb.py) | 高 100 |   8    | ResNet50 | ImageNet |         31.62 / 33.88         |         60.01 / 62.12         |    11010     | [ckpt](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/trn_r50_1x1x8_50e_sthv1_rgb_20210401-163704a8.pth) | [log](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/20210326_103948.log) | [json](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb/20210326_103948.log.json) |
 
 ### Something-Something V2
 
-|配置文件 | 分辨率 | GPU 数量 | 主干网络| 预训练 | top1 准确率 (efficient/accurate)| top5 准确率 (efficient/accurate)| GPU 显存占用 (M)| ckpt | log| json|
-|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[trn_r50_1x1x8_50e_sthv2_rgb](/configs/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb.py) | 高 256 | 8 | ResNet50 | ImageNet | 48.39 / 51.28 |76.58 / 78.65 | 11010 | [ckpt](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/trn_r50_1x1x8_50e_sthv2_rgb_20210816-7abbc4c1.pth) | [log](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210816_221356.log)| [json](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210816_221356.log.json)|
+| 配置文件                                                                                   |  分辨率  | GPU 数量 |   主干网络   |   预训练    | top1 准确率 (efficient/accurate) | top5 准确率 (efficient/accurate) | GPU 显存占用 (M) |                                                                     ckpt                                                                      |                                                      log                                                       |                                                         json                                                         |
+| :------------------------------------------------------------------------------------- | :---: | :----: | :------: | :------: | :---------------------------: | :---------------------------: | :----------: | :-------------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------: |
+| [trn_r50_1x1x8_50e_sthv2_rgb](/configs/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb.py) | 高 256 |   8    | ResNet50 | ImageNet |         48.39 / 51.28         |         76.58 / 78.65         |    11010     | [ckpt](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/trn_r50_1x1x8_50e_sthv2_rgb_20210816-7abbc4c1.pth) | [log](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210816_221356.log) | [json](https://download.openmmlab.com/mmaction/recognition/trn/trn_r50_1x1x8_50e_sthv2_rgb/20210816_221356.log.json) |
 
 注：
 
@@ -57,7 +57,7 @@ python tools/train.py configs/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb.py \
     --validate --seed 0 --deterministic
 ```
 
-更多训练细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#训练配置) 中的 **训练配置** 部分。
+更多训练细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#%E8%AE%AD%E7%BB%83%E9%85%8D%E7%BD%AE) 中的 **训练配置** 部分。
 
 ## 如何测试
 
@@ -75,4 +75,4 @@ python tools/test.py configs/recognition/trn/trn_r50_1x1x8_50e_sthv1_rgb.py \
     --out result.json
 ```
 
-更多测试细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#测试某个数据集) 中的 **测试某个数据集** 部分。
+更多测试细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#%E6%B5%8B%E8%AF%95%E6%9F%90%E4%B8%AA%E6%95%B0%E6%8D%AE%E9%9B%86) 中的 **测试某个数据集** 部分。

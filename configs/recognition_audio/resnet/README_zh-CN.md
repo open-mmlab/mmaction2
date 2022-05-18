@@ -17,10 +17,10 @@
 
 ### Kinetics-400
 
-|配置文件 | n_fft | GPU 数量 | 主干网络 |预训练| top1 acc/delta| top5 acc/delta | 推理时间 (video/s) | GPU 显存占用 (M)| ckpt | log| json|
-|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[tsn_r18_64x1x1_100e_kinetics400_audio_feature](/configs/recognition_audio/resnet/tsn_r18_64x1x1_100e_kinetics400_audio_feature.py)|1024|8| ResNet18 | None |19.7|35.75|x|1897|[ckpt](https://download.openmmlab.com/mmaction/recognition/audio_recognition/tsn_r18_64x1x1_100e_kinetics400_audio_feature/tsn_r18_64x1x1_100e_kinetics400_audio_feature_20201012-bf34df6c.pth)|[log](https://download.openmmlab.com/mmaction/recognition/audio_recognition/tsn_r18_64x1x1_100e_kinetics400_audio_feature/20201010_144630.log)|[json](https://download.openmmlab.com/mmaction/recognition/audio_recognition/tsn_r18_64x1x1_100e_kinetics400_audio_feature/20201010_144630.log.json)|
-|[tsn_r18_64x1x1_100e_kinetics400_audio_feature](/configs/recognition_audio/resnet/tsn_r18_64x1x1_100e_kinetics400_audio_feature.py) + [tsn_r50_video_320p_1x1x3_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_video_320p_1x1x3_100e_kinetics400_rgb.py)|1024|8| ResNet(18+50) | None |71.50(+0.39)|90.18(+0.14)|x|x|x|x|x|
+| 配置文件                                                                                                                                                                                                                                                             | n_fft | GPU 数量 |     主干网络      | 预训练  | top1 acc/delta | top5 acc/delta | 推理时间 (video/s) | GPU 显存占用 (M) |                                                                                              ckpt                                                                                               |                                                                      log                                                                       |                                                                         json                                                                         |
+| :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---: | :----: | :-----------: | :--: | :------------: | :------------: | :------------: | :----------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------: |
+| [tsn_r18_64x1x1_100e_kinetics400_audio_feature](/configs/recognition_audio/resnet/tsn_r18_64x1x1_100e_kinetics400_audio_feature.py)                                                                                                                              | 1024  |   8    |   ResNet18    | None |      19.7      |     35.75      |       x        |     1897     | [ckpt](https://download.openmmlab.com/mmaction/recognition/audio_recognition/tsn_r18_64x1x1_100e_kinetics400_audio_feature/tsn_r18_64x1x1_100e_kinetics400_audio_feature_20201012-bf34df6c.pth) | [log](https://download.openmmlab.com/mmaction/recognition/audio_recognition/tsn_r18_64x1x1_100e_kinetics400_audio_feature/20201010_144630.log) | [json](https://download.openmmlab.com/mmaction/recognition/audio_recognition/tsn_r18_64x1x1_100e_kinetics400_audio_feature/20201010_144630.log.json) |
+| [tsn_r18_64x1x1_100e_kinetics400_audio_feature](/configs/recognition_audio/resnet/tsn_r18_64x1x1_100e_kinetics400_audio_feature.py) + [tsn_r50_video_320p_1x1x3_100e_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_video_320p_1x1x3_100e_kinetics400_rgb.py) | 1024  |   8    | ResNet(18+50) | None |  71.50(+0.39)  |  90.18(+0.14)  |       x        |      x       |                                                                                                x                                                                                                |                                                                       x                                                                        |                                                                          x                                                                           |
 
 注：
 
@@ -49,7 +49,7 @@ python tools/train.py configs/audio_recognition/tsn_r50_64x1x1_100e_kinetics400_
     --validate --seed 0 --deterministic
 ```
 
-更多训练细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#训练配置) 中的 **训练配置** 部分。
+更多训练细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#%E8%AE%AD%E7%BB%83%E9%85%8D%E7%BD%AE) 中的 **训练配置** 部分。
 
 ## 如何测试
 
@@ -67,7 +67,7 @@ python tools/test.py configs/audio_recognition/tsn_r50_64x1x1_100e_kinetics400_a
     --out result.json
 ```
 
-更多测试细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#测试某个数据集) 中的 **测试某个数据集** 部分。
+更多测试细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#%E6%B5%8B%E8%AF%95%E6%9F%90%E4%B8%AA%E6%95%B0%E6%8D%AE%E9%9B%86) 中的 **测试某个数据集** 部分。
 
 ## 融合
 
@@ -77,5 +77,5 @@ python tools/test.py configs/audio_recognition/tsn_r50_64x1x1_100e_kinetics400_a
 python tools/analysis/report_accuracy.py --scores ${AUDIO_RESULT_PKL} ${VISUAL_RESULT_PKL} --datalist data/kinetics400/kinetics400_val_list_rawframes.txt --coefficient 1 1
 ```
 
-+ AUDIO_RESULT_PKL: `tools/test.py` 脚本通过 `--out` 选项存储的输出文件。
-+ VISUAL_RESULT_PKL: `tools/test.py` 脚本通过 `--out` 选项存储的输出文件。
+- AUDIO_RESULT_PKL: `tools/test.py` 脚本通过 `--out` 选项存储的输出文件。
+- VISUAL_RESULT_PKL: `tools/test.py` 脚本通过 `--out` 选项存储的输出文件。

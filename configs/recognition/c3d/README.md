@@ -11,6 +11,7 @@
 We propose a simple, yet effective approach for spatiotemporal feature learning using deep 3-dimensional convolutional networks (3D ConvNets) trained on a large scale supervised video dataset. Our findings are three-fold: 1) 3D ConvNets are more suitable for spatiotemporal feature learning compared to 2D ConvNets; 2) A homogeneous architecture with small 3x3x3 convolution kernels in all layers is among the best performing architectures for 3D ConvNets; and 3) Our learned features, namely C3D (Convolutional 3D), with a simple linear classifier outperform state-of-the-art methods on 4 different benchmarks and are comparable with current best methods on the other 2 benchmarks. In addition, the features are compact: achieving 52.8% accuracy on UCF101 dataset with only 10 dimensions and also very efficient to compute due to the fast inference of ConvNets. Finally, they are conceptually very simple and easy to train and use.
 
 <!-- [IMAGE] -->
+
 <div align=center>
 <img src="https://user-images.githubusercontent.com/34324155/143043383-8c26f5d6-d45e-47ae-be18-c23456eb84b9.png" width="800"/>
 </div>
@@ -19,9 +20,9 @@ We propose a simple, yet effective approach for spatiotemporal feature learning 
 
 ### UCF-101
 
-| config | resolution | gpus | backbone | pretrain | top1 acc | top5 acc | testing protocol| inference_time(video/s)  | gpu_mem(M) | ckpt | log | json |
-|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[c3d_sports1m_16x1x1_45e_ucf101_rgb.py](/configs/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb.py)|128x171|8| c3d | sports1m | 83.27 | 95.90 | 10 clips x 1 crop | x | 6053 | [ckpt](https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb/c3d_sports1m_16x1x1_45e_ucf101_rgb_20201021-26655025.pth)|[log](https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb/20201021_140429.log)|[json](https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb/20201021_140429.log.json)|
+| config                                                                                                  | resolution | gpus | backbone | pretrain | top1 acc | top5 acc | testing protocol  | inference_time(video/s) | gpu_mem(M) |                                                                            ckpt                                                                             |                                                          log                                                          |                                                            json                                                             |
+| :------------------------------------------------------------------------------------------------------ | :--------: | :--: | :------: | :------: | :------: | :------: | :---------------: | :---------------------: | :--------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------: |
+| [c3d_sports1m_16x1x1_45e_ucf101_rgb.py](/configs/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb.py) |  128x171   |  8   |   c3d    | sports1m |  83.27   |  95.90   | 10 clips x 1 crop |            x            |    6053    | [ckpt](https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb/c3d_sports1m_16x1x1_45e_ucf101_rgb_20201021-26655025.pth) | [log](https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb/20201021_140429.log) | [json](https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb/20201021_140429.log.json) |
 
 :::{note}
 

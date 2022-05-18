@@ -4,7 +4,6 @@ about: Ask general questions to get help
 title: ''
 labels: ''
 assignees: ''
-
 ---
 
 Before raising a question, you may need to check the following listed items.

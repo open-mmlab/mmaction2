@@ -17,12 +17,13 @@
     </sup>
   </div>
 
-  [📘Documentation](https://mmaction2.readthedocs.io/en/latest/) |
-  [🛠️Installation](https://mmaction2.readthedocs.io/en/latest/install.html) |
-  [👀Model Zoo](https://mmaction2.readthedocs.io/en/latest/modelzoo.html) |
-  [🆕Update News](https://mmaction2.readthedocs.io/en/latest/changelog.html) |
-  [🚀Ongoing Projects](https://github.com/open-mmlab/mmaction2/projects) |
-  [🤔Reporting Issues](https://github.com/open-mmlab/mmaction2/issues/new/choose)
+[📘Documentation](https://mmaction2.readthedocs.io/en/latest/) |
+[🛠️Installation](https://mmaction2.readthedocs.io/en/latest/install.html) |
+[👀Model Zoo](https://mmaction2.readthedocs.io/en/latest/modelzoo.html) |
+[🆕Update News](https://mmaction2.readthedocs.io/en/latest/changelog.html) |
+[🚀Ongoing Projects](https://github.com/open-mmlab/mmaction2/projects) |
+[🤔Reporting Issues](https://github.com/open-mmlab/mmaction2/issues/new/choose)
+
 </div>
 
 ## Introduction
@@ -264,9 +265,9 @@ Please refer to [FAQ](docs/faq.md) for frequently asked questions.
 
 Currently, there are many research works and projects built on MMAction2 by users from community, such as:
 
-- Video Swin Transformer. [[paper]](https://arxiv.org/abs/2106.13230)[[github]](https://github.com/SwinTransformer/Video-Swin-Transformer)
-- Evidential Deep Learning for Open Set Action Recognition, ICCV 2021 **Oral**. [[paper]](https://arxiv.org/abs/2107.10161)[[github]](https://github.com/Cogito2012/DEAR)
-- Rethinking Self-supervised Correspondence Learning: A Video Frame-level Similarity Perspective, ICCV 2021 **Oral**. [[paper]](https://arxiv.org/abs/2103.17263)[[github]](https://github.com/xvjiarui/VFS)
+- Video Swin Transformer. [\[paper\]](https://arxiv.org/abs/2106.13230)[\[github\]](https://github.com/SwinTransformer/Video-Swin-Transformer)
+- Evidential Deep Learning for Open Set Action Recognition, ICCV 2021 **Oral**. [\[paper\]](https://arxiv.org/abs/2107.10161)[\[github\]](https://github.com/Cogito2012/DEAR)
+- Rethinking Self-supervised Correspondence Learning: A Video Frame-level Similarity Perspective, ICCV 2021 **Oral**. [\[paper\]](https://arxiv.org/abs/2103.17263)[\[github\]](https://github.com/xvjiarui/VFS)
 
 etc., check [projects.md](docs/projects.md) to see all related projects.
 

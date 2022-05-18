@@ -4,14 +4,14 @@
 
 <!-- TOC -->
 
-- [日志分析](#日志分析)
-- [模型复杂度分析](#模型复杂度分析)
-- [模型转换](#模型转换)
-  - [导出 MMAction2 模型为 ONNX 格式（实验特性）](#导出-MMAction2-模型为-ONNX-格式（实验特性）)
-  - [发布模型](#发布模型)
-- [其他脚本](#其他脚本)
-  - [指标评价](#指标评价)
-  - [打印完整配置](#打印完整配置)
+- [日志分析](#%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90)
+- [模型复杂度分析](#%E6%A8%A1%E5%9E%8B%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90)
+- [模型转换](#%E6%A8%A1%E5%9E%8B%E8%BD%AC%E6%8D%A2)
+  - [导出 MMAction2 模型为 ONNX 格式（实验特性）](#%E5%AF%BC%E5%87%BA-MMAction2-%E6%A8%A1%E5%9E%8B%E4%B8%BA-ONNX-%E6%A0%BC%E5%BC%8F%EF%BC%88%E5%AE%9E%E9%AA%8C%E7%89%B9%E6%80%A7%EF%BC%89)
+  - [发布模型](#%E5%8F%91%E5%B8%83%E6%A8%A1%E5%9E%8B)
+- [其他脚本](#%E5%85%B6%E4%BB%96%E8%84%9A%E6%9C%AC)
+  - [指标评价](#%E6%8C%87%E6%A0%87%E8%AF%84%E4%BB%B7)
+  - [打印完整配置](#%E6%89%93%E5%8D%B0%E5%AE%8C%E6%95%B4%E9%85%8D%E7%BD%AE)
 
 <!-- TOC -->
 
@@ -29,43 +29,43 @@ python tools/analysis/analyze_logs.py plot_curve ${JSON_LOGS} [--keys ${KEYS}] [
 
 - 绘制某日志文件对应的分类损失曲线图。
 
-    ```shell
-    python tools/analysis/analyze_logs.py plot_curve log.json --keys loss_cls --legend loss_cls
-    ```
+  ```shell
+  python tools/analysis/analyze_logs.py plot_curve log.json --keys loss_cls --legend loss_cls
+  ```
 
 - 绘制某日志文件对应的 top-1 和 top-5 准确率曲线图，并将曲线图导出为 PDF 文件。
 
-    ```shell
-    python tools/analysis/analyze_logs.py plot_curve log.json --keys top1_acc top5_acc --out results.pdf
-    ```
+  ```shell
+  python tools/analysis/analyze_logs.py plot_curve log.json --keys top1_acc top5_acc --out results.pdf
+  ```
 
 - 在同一图像内绘制两份日志文件对应的 top-1 准确率曲线图。
 
-    ```shell
-    python tools/analysis/analyze_logs.py plot_curve log1.json log2.json --keys top1_acc --legend run1 run2
-    ```
+  ```shell
+  python tools/analysis/analyze_logs.py plot_curve log1.json log2.json --keys top1_acc --legend run1 run2
+  ```
 
-    用户还可以通过本工具计算平均训练速度。
+  用户还可以通过本工具计算平均训练速度。
 
-    ```shell
-    python tools/analysis/analyze_logs.py cal_train_time ${JSON_LOGS} [--include-outliers]
-    ```
+  ```shell
+  python tools/analysis/analyze_logs.py cal_train_time ${JSON_LOGS} [--include-outliers]
+  ```
 
 - 计算某日志文件对应的平均训练速度。
 
-    ```shell
-    python tools/analysis/analyze_logs.py cal_train_time work_dirs/some_exp/20200422_153324.log.json
-    ```
+  ```shell
+  python tools/analysis/analyze_logs.py cal_train_time work_dirs/some_exp/20200422_153324.log.json
+  ```
 
-    预计输出结果如下所示：
+  预计输出结果如下所示：
 
-    ```text
-    -----Analyze train time of work_dirs/some_exp/20200422_153324.log.json-----
-    slowest epoch 60, average time is 0.9736
-    fastest epoch 18, average time is 0.9001
-    time std over epochs is 0.0177
-    average iter time: 0.9330 s/iter
-    ```
+  ```text
+  -----Analyze train time of work_dirs/some_exp/20200422_153324.log.json-----
+  slowest epoch 60, average time is 0.9736
+  fastest epoch 18, average time is 0.9001
+  time std over epochs is 0.0177
+  average iter time: 0.9330 s/iter
+  ```
 
 ## 模型复杂度分析
 
@@ -102,15 +102,15 @@ Params: 28.04 M
 
 - 对于行为识别模型，请运行：
 
-    ```shell
-    python tools/deployment/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --verify
-    ```
+  ```shell
+  python tools/deployment/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --verify
+  ```
 
 - 对于时序动作检测模型，请运行：
 
-    ```shell
-    python tools/deployment/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --is-localizer --shape $SHAPE --verify
-    ```
+  ```shell
+  python tools/deployment/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --is-localizer --shape $SHAPE --verify
+  ```
 
 ### 发布模型
 

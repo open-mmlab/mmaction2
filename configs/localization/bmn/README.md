@@ -11,6 +11,7 @@
 Temporal action proposal generation is an challenging and promising task which aims to locate temporal regions in real-world videos where action or event may occur. Current bottom-up proposal generation methods can generate proposals with precise boundary, but cannot efficiently generate adequately reliable confidence scores for retrieving proposals. To address these difficulties, we introduce the Boundary-Matching (BM) mechanism to evaluate confidence scores of densely distributed proposals, which denote a proposal as a matching pair of starting and ending boundaries and combine all densely distributed BM pairs into the BM confidence map. Based on BM mechanism, we propose an effective, efficient and end-to-end proposal generation method, named Boundary-Matching Network (BMN), which generates proposals with precise temporal boundaries as well as reliable confidence scores simultaneously. The two-branches of BMN are jointly trained in an unified framework. We conduct experiments on two challenging datasets: THUMOS-14 and ActivityNet-1.3, where BMN shows significant performance improvement with remarkable efficiency and generalizability. Further, combining with existing action classifier, BMN can achieve state-of-the-art temporal action detection performance.
 
 <!-- [IMAGE] -->
+
 <div align=center>
 <img src="https://user-images.githubusercontent.com/34324155/143016479-2ca7e8b6-a17b-4a4c-b4c9-ae731935cd91.png" width="800"/>
 </div>
@@ -19,12 +20,12 @@ Temporal action proposal generation is an challenging and promising task which a
 
 ### ActivityNet feature
 
-|config |feature | gpus | AR@100| AUC | AP@0.5 | AP@0.75 | AP@0.95 | mAP | gpu_mem(M) | iter time(s) | ckpt | log| json|
-|:-:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:-:|---|:-:|:-:|---|
-|[bmn_400x100_9e_2x8_activitynet_feature](/configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py) |cuhk_mean_100 |2|75.28|67.22|42.47|31.31|9.92|30.34|5420|3.27|[ckpt](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature_20200619-42a3b111.pth)| [log](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature.log)| [json](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature.log.json)|
-| |mmaction_video |2|75.43|67.22|42.62|31.56|10.86|30.77|5420|3.27|[ckpt](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809-c9fd14d2.pth)| [log](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809.log) | [json](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809.json) |
-| |mmaction_clip |2|75.35|67.38|43.08|32.19|10.73|31.15|5420|3.27|[ckpt](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809-10d803ce.pth)| [log](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809.log) | [json](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809.json) |
-| [BMN-official](https://github.com/JJBOY/BMN-Boundary-Matching-Network) (for reference)* |cuhk_mean_100 |-|75.27|67.49|42.22|30.98|9.22|30.00|-|-|-| - | - |
+|                                                    config                                                     |    feature     | gpus | AR@100 |  AUC  | AP@0.5 | AP@0.75 | AP@0.95 |  mAP  | gpu_mem(M) | iter time(s) |                                                                             ckpt                                                                             |                                                                       log                                                                        | json                                                                                                                                               |
+| :-----------------------------------------------------------------------------------------------------------: | :------------: | :--: | :----: | :---: | :----: | :-----: | :-----: | :---: | :--------: | ------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------: | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [bmn_400x100_9e_2x8_activitynet_feature](/configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py) | cuhk_mean_100  |  2   | 75.28  | 67.22 | 42.47  |  31.31  |  9.92   | 30.34 |    5420    | 3.27         | [ckpt](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature_20200619-42a3b111.pth) |    [log](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature.log)     | [json](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature.log.json)    |
+|                                                                                                               | mmaction_video |  2   | 75.43  | 67.22 | 42.62  |  31.56  |  10.86  | 30.77 |    5420    | 3.27         |  [ckpt](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809-c9fd14d2.pth)  | [log](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809.log) | [json](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809.json) |
+|                                                                                                               | mmaction_clip  |  2   | 75.35  | 67.38 | 43.08  |  32.19  |  10.73  | 31.15 |    5420    | 3.27         |   [ckpt](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809-10d803ce.pth)   |  [log](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809.log)  | [json](https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_clip/bmn_400x100_2x8_9e_mmaction_clip_20200809.json)   |
+|           [BMN-official](https://github.com/JJBOY/BMN-Boundary-Matching-Network) (for reference)\*            | cuhk_mean_100  |  -   | 75.27  | 67.49 | 42.22  |  30.98  |  9.22   | 30.00 |     -      | -            |                                                                              -                                                                               |                                                                        -                                                                         | -                                                                                                                                                  |
 
 :::{note}
 
@@ -36,7 +37,7 @@ Temporal action proposal generation is an challenging and promising task which a
 
 :::
 
-*We train BMN with the [official repo](https://github.com/JJBOY/BMN-Boundary-Matching-Network), evaluate its proposal generation and action detection performance with [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) for label assigning.
+\*We train BMN with the [official repo](https://github.com/JJBOY/BMN-Boundary-Matching-Network), evaluate its proposal generation and action detection performance with [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) for label assigning.
 
 For more details on data preparation, you can refer to ActivityNet feature in [Data Preparation](/docs/data_preparation.md).
 
@@ -81,9 +82,9 @@ python tools/analysis/report_map.py --proposal path/to/proposal_file
 
 1. (Optional) You can use the following command to generate a formatted proposal file, which will be fed into the action classifier (Currently supports SSN and P-GCN, not including TSN, I3D etc.) to get the classification result of proposals.
 
-    ```shell
-    python tools/data/activitynet/convert_proposal_format.py
-    ```
+   ```shell
+   python tools/data/activitynet/convert_proposal_format.py
+   ```
 
 :::
 

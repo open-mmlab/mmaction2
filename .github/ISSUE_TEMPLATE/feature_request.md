@@ -4,7 +4,6 @@ about: Suggest an idea for this project
 title: ''
 labels: ''
 assignees: ''
-
 ---
 
 Thanks for your feature request and we will review and plan for it when necessary.
@@ -15,8 +14,8 @@ If you feel we have help you, give us a STAR! :satisfied:
 **Motivation**
 
 A clear and concise description of the motivation of the feature.
-Ex1. It is inconvenient when [....].
-Ex2. There is a recent paper [....], which is very helpful for [....].
+Ex1. It is inconvenient when \[....\].
+Ex2. There is a recent paper \[....\], which is very helpful for \[....\].
 
 **Related resources**
 

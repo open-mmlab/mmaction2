@@ -125,31 +125,31 @@ For each operation, we list the related dict fields that are added/updated/remov
 
 `SampleFrames`
 
-- add: frame_inds, clip_len, frame_interval, num_clips, *total_frames
+- add: frame_inds, clip_len, frame_interval, num_clips, \*total_frames
 
 `DenseSampleFrames`
 
-- add: frame_inds, clip_len, frame_interval, num_clips, *total_frames
+- add: frame_inds, clip_len, frame_interval, num_clips, \*total_frames
 
 `PyAVDecode`
 
 - add: imgs, original_shape
-- update: *frame_inds
+- update: \*frame_inds
 
 `DecordDecode`
 
 - add: imgs, original_shape
-- update: *frame_inds
+- update: \*frame_inds
 
 `OpenCVDecode`
 
 - add: imgs, original_shape
-- update: *frame_inds
+- update: \*frame_inds
 
 `RawFrameDecode`
 
 - add: imgs, original_shape
-- update: *frame_inds
+- update: \*frame_inds
 
 ### Pre-processing
 
@@ -228,35 +228,35 @@ It is **noteworthy** that the first key, commonly `imgs`, will be used as the ma
 
 1. Write a new pipeline in any file, e.g., `my_pipeline.py`. It takes a dict as input and return a dict.
 
-    ```python
-    from mmaction.datasets import PIPELINES
+   ```python
+   from mmaction.datasets import PIPELINES
 
-    @PIPELINES.register_module()
-    class MyTransform:
+   @PIPELINES.register_module()
+   class MyTransform:
 
-        def __call__(self, results):
-            results['key'] = value
-            return results
-    ```
+       def __call__(self, results):
+           results['key'] = value
+           return results
+   ```
 
 2. Import the new class.
 
-    ```python
-    from .my_pipeline import MyTransform
-    ```
+   ```python
+   from .my_pipeline import MyTransform
+   ```
 
 3. Use it in config files.
 
-    ```python
-    img_norm_cfg = dict(
-         mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
-    train_pipeline = [
-        dict(type='DenseSampleFrames', clip_len=8, frame_interval=8, num_clips=1),
-        dict(type='RawFrameDecode', io_backend='disk'),
-        dict(type='MyTransform'),       # use a custom pipeline
-        dict(type='Normalize', **img_norm_cfg),
-        dict(type='FormatShape', input_format='NCTHW'),
-        dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-        dict(type='ToTensor', keys=['imgs', 'label'])
-    ]
-    ```
+   ```python
+   img_norm_cfg = dict(
+        mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
+   train_pipeline = [
+       dict(type='DenseSampleFrames', clip_len=8, frame_interval=8, num_clips=1),
+       dict(type='RawFrameDecode', io_backend='disk'),
+       dict(type='MyTransform'),       # use a custom pipeline
+       dict(type='Normalize', **img_norm_cfg),
+       dict(type='FormatShape', input_format='NCTHW'),
+       dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
+       dict(type='ToTensor', keys=['imgs', 'label'])
+   ]
+   ```
