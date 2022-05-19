@@ -2,7 +2,7 @@
 import json
 
 import numpy as np
-from mmcv.utils import print_log
+from mmengine.logging import print_log
 
 from ...utils import get_root_logger
 from .accuracy import interpolated_precision_recall, pairwise_temporal_iou

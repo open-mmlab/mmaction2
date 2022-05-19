@@ -5,7 +5,7 @@ import warnings
 from math import inf
 
 import torch.distributed as dist
-from torch.nn.modules.batchnorm import _BatchNorm
+from mmengine.utils.parrots_wrapper import _BatchNorm
 from torch.utils.data import DataLoader
 
 try:

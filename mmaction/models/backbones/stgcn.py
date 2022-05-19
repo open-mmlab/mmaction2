@@ -2,8 +2,8 @@
 import torch
 import torch.nn as nn
 from mmcv.cnn import constant_init, kaiming_init, normal_init
-from mmcv.utils import _BatchNorm
 from mmengine.runner import load_checkpoint
+from mmengine.utils.parrots_wrapper import _BatchNorm
 
 from ...utils import get_root_logger
 from ..builder import BACKBONES

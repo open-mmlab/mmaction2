@@ -2,7 +2,7 @@
 import torch
 import torch.nn as nn
 from mmcv.cnn import ConvModule, constant_init, kaiming_init
-from mmcv.utils import _BatchNorm
+from mmengine.utils.parrots_wrapper import _BatchNorm
 
 try:
     from mmdet.models.builder import SHARED_HEADS as MMDET_SHARED_HEADS

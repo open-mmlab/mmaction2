@@ -1,8 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
 from mmcv.cnn import ConvModule, constant_init, kaiming_init
-from mmcv.runner import _load_checkpoint, load_checkpoint
-from mmcv.utils import _BatchNorm
+from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
+from mmengine.utils.parrots_wrapper import _BatchNorm
 from torch.utils import checkpoint as cp
 
 from ...utils import get_root_logger
