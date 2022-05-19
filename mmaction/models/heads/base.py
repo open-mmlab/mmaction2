@@ -115,7 +115,8 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
         cls_scores = self(feats, **kwargs)
 
         labels = [x.gt_labels.item for x in data_samples]
-        labels = torch.tensor(labels, dtype=torch.long).to(feats.device)
+        labels = torch.stack(labels).to(feats.device)
+        labels = labels.squeeze()
 
         if labels.shape == torch.Size([]):
             labels = labels.unsqueeze(0)

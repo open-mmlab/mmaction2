@@ -4,7 +4,6 @@ import platform
 from mmengine import TRANSFORMS as MMEngine_TRANSFORMS
 from mmengine.registry import DATASETS as MMEngine_DATASETS
 from mmengine.registry import Registry
-from torch.utils.data import DataLoader
 
 if platform.system() != 'Windows':
     # https://github.com/pytorch/pytorch/issues/973
