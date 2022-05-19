@@ -1,9 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .transforms import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
-                         Imgaug, MelSpectrogram, MultiScaleCrop, Normalize,
-                         PytorchVideoTrans, RandomCrop, RandomRescale,
-                         RandomResizedCrop, Resize, TenCrop, ThreeCrop,
-                         TorchvisionTrans)
+                         MelSpectrogram, MultiScaleCrop, Normalize, RandomCrop,
+                         RandomRescale, RandomResizedCrop, Resize, TenCrop, ThreeCrop)
 from .compose import Compose
 from .formatting import (PackActionInputs, FormatAudioShape, FormatGCNInput,
                          FormatShape, JointToBone, Transpose)
@@ -19,23 +17,23 @@ from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
 from .pose_loading import (GeneratePoseTarget, LoadKineticsPose,
                            PaddingWithLoop, PoseDecode, PoseNormalize,
                            UniformSampleFrames)
+from .wrappers import (ImgAug, TorchVisionWrapper, PytorchVideoWrapper)
+
 
 __all__ = [
     'SampleFrames', 'PyAVDecode', 'DecordDecode', 'DenseSampleFrames',
     'OpenCVDecode', 'MultiScaleCrop', 'RandomResizedCrop', 'RandomCrop',
     'Resize', 'Flip', 'Fuse', 'Normalize', 'ThreeCrop', 'CenterCrop',
-    'TenCrop', 'ImageToTensor', 'Transpose', 'Collect', 'FormatShape',
-    'Compose', 'GenerateLocalizationLabels',
+    'TenCrop', 'Transpose', 'FormatShape', 'Compose', 'GenerateLocalizationLabels',
     'LoadLocalizationFeature', 'LoadProposals', 'DecordInit', 'OpenCVInit',
     'PyAVInit', 'SampleProposalFrames', 'UntrimmedSampleFrames',
     'RawFrameDecode', 'DecordInit', 'OpenCVInit', 'PyAVInit',
     'SampleProposalFrames', 'ColorJitter', 'LoadHVULabel', 'SampleAVAFrames',
     'AudioAmplify', 'MelSpectrogram', 'AudioDecode', 'FormatAudioShape',
     'LoadAudioFeature', 'AudioFeatureSelector', 'AudioDecodeInit',
-    'ImageDecode', 'BuildPseudoClip', 'RandomRescale',
-    'PyAVDecodeMotionVector', 'Rename', 'Imgaug', 'UniformSampleFrames',
+    'ImageDecode', 'BuildPseudoClip', 'RandomRescale', 'PIMSDecode', 'PoseNormalize',
+    'PyAVDecodeMotionVector', 'UniformSampleFrames',
     'PoseDecode', 'LoadKineticsPose', 'GeneratePoseTarget', 'PIMSInit',
-    'PIMSDecode', 'TorchvisionTrans', 'PytorchVideoTrans', 'PoseNormalize',
     'FormatGCNInput', 'PaddingWithLoop', 'ArrayDecode', 'JointToBone',
-    'PackActionInputs'
+    'PackActionInputs', 'ImgAug', 'TorchVisionWrapper', 'PytorchVideoWrapper'
 ]
