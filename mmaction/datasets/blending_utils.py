@@ -20,7 +20,7 @@ class BaseMiniBatchBlending(metaclass=ABCMeta):
     def do_blending(self, imgs, label, **kwargs):
         pass
 
-    def __call__(self, imgs, label, **kwargs):
+    def __call__(self, imgs, data_samples, **kwargs):
         """Blending data in a mini-batch.
 
         Images are float tensors with the shape of (B, N, C, H, W) for 2D
@@ -48,12 +48,18 @@ class BaseMiniBatchBlending(metaclass=ABCMeta):
                 the shape of (B, 1, num_classes) and all elements are in range
                 [0, 1].
         """
+        label = [x.gt_labels.item for x in data_samples]
+        label = torch.tensor(label, dtype=torch.long).to(imgs.device)
+
         one_hot_label = F.one_hot(label, num_classes=self.num_classes)
 
         mixed_imgs, mixed_label = self.do_blending(imgs, one_hot_label,
                                                    **kwargs)
 
-        return mixed_imgs, mixed_label
+        for label_item, sample in zip(mixed_label, data_samples):
+            sample.gt_labels.item = label_item
+
+        return mixed_imgs, data_samples
 
 
 @BLENDINGS.register_module()

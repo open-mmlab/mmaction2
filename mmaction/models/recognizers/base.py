@@ -93,7 +93,7 @@ class BaseRecognizer(BaseModule, metaclass=ABCMeta):
         # mini-batch blending, e.g. mixup, cutmix, etc.
         self.blending = None
         if train_cfg is not None and 'blending' in train_cfg:
-            from mmcv.utils import build_from_cfg
+            from mmengine.registry import build_from_cfg
             from mmaction.datasets.builder import BLENDINGS
             self.blending = build_from_cfg(train_cfg['blending'], BLENDINGS)
 
@@ -167,6 +167,8 @@ class BaseRecognizer(BaseModule, metaclass=ABCMeta):
         """Define the computation performed at every call."""
         inputs, data_samples = self.preprocess_data(data)
         if return_loss:
+            if self.blending is not None:
+                inputs, data_samples = self.blending(inputs, data_samples)
             return self.loss(inputs, data_samples)
         else:
             return self.predict(inputs, data_samples)

@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import torch
 import os.path as osp
 
 from mmengine.dataset import BaseDataset

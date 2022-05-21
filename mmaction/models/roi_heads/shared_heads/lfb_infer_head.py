@@ -5,7 +5,8 @@ import mmcv
 import torch
 import torch.distributed as dist
 import torch.nn as nn
-from mmcv.runner import get_dist_info
+from mmengine.dist import get_dist_info
+
 
 try:
     from mmdet.models.builder import SHARED_HEADS as MMDET_SHARED_HEADS

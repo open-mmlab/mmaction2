@@ -7,7 +7,7 @@ from mmcv import ConfigDict
 from mmcv.cnn import build_conv_layer, build_norm_layer, kaiming_init
 from mmcv.cnn.bricks.transformer import build_transformer_layer_sequence
 from mmcv.cnn.utils.weight_init import trunc_normal_
-from mmcv.runner import _load_checkpoint, load_state_dict
+from mmengine.runner.checkpoint import _load_checkpoint, load_state_dict
 from torch.nn.modules.utils import _pair
 
 from ...utils import get_root_logger
