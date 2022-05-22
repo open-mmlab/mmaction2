@@ -485,7 +485,8 @@ def rgb_based_action_recognition(args):
     action_results = inference_recognizer(
         rgb_model, args.video, label_path=args.label_map)
     rgb_action_result = action_results[0][0]
-    return rgb_action_result
+    label_map = [x.strip() for x in open(args.label_map).readlines()]
+    return label_map[rgb_action_result]
 
 
 def skeleton_based_stdet(args, label_map, human_detections, pose_results,
