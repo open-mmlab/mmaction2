@@ -1,7 +1,14 @@
-# optimizer
+train_cfg = dict(by_epoch=True, max_epochs=20)
+
+param_scheduler = [
+    dict(
+        type='MultiStepLR',
+        begin=0,
+        end=20,
+        by_epoch=True,
+        milestones=[10],
+        gamma=0.1)
+]
+
 optimizer = dict(
     type='Adam', lr=0.01, weight_decay=0.00001)  # this lr is used for 1 gpus
-optimizer_config = dict(grad_clip=None)
-# learning policy
-lr_config = dict(policy='step', step=10)
-total_epochs = 20
