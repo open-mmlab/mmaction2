@@ -4,7 +4,6 @@ from collections.abc import Sequence
 from mmcv.utils import build_from_cfg
 
 from ..builder import TRANSFORMS
-from .transforms import PytorchVideoTrans, TorchvisionTrans
 
 
 @TRANSFORMS.register_module()

@@ -1,7 +1,13 @@
 _base_ = ['tsm_r50_1x1x16_50e_kinetics400_rgb.py']
 
-optimizer_config = dict(grad_clip=dict(max_norm=20, norm_type=2))
-# learning policy
-lr_config = dict(policy='step', step=[40, 80])
-total_epochs = 100
-work_dir = './work_dirs/tsm_r50_1x1x16_100e_kinetics400_rgb/'
+train_cfg = dict(by_epoch=True, max_epochs=100)
+
+param_scheduler = [
+    dict(
+        type='MultiStepLR',
+        begin=0,
+        end=100,
+        by_epoch=True,
+        milestones=[40, 80],
+        gamma=0.1)
+]

@@ -1,4 +1,15 @@
-# optimizer
+train_cfg = dict(by_epoch=True, max_epochs=100)
+
+param_scheduler = [
+    dict(
+        type='MultiStepLR',
+        begin=0,
+        end=100,
+        by_epoch=True,
+        milestones=[40, 80],
+        gamma=0.1)
+]
+
 optimizer = dict(
     type='SGD',
     constructor='TSMOptimizerConstructor',
@@ -6,7 +17,3 @@ optimizer = dict(
     lr=0.01,  # this lr is used for 8 gpus
     momentum=0.9,
     weight_decay=0.0001)
-optimizer_config = dict(grad_clip=dict(max_norm=20, norm_type=2))
-# learning policy
-lr_config = dict(policy='step', step=[40, 80])
-total_epochs = 100
