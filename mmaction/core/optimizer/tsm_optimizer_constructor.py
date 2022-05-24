@@ -1,10 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
-from mmcv.runner import OPTIMIZER_BUILDERS, DefaultOptimizerConstructor
-from mmcv.utils import SyncBatchNorm, _BatchNorm, _ConvNd
+
+from mmengine.registry import OPTIMIZER_CONSTRUCTORS
+from mmengine.optim import DefaultOptimizerConstructor
+from mmengine.utils.parrots_wrapper import SyncBatchNorm_, _BatchNorm, _ConvNd
 
 
-@OPTIMIZER_BUILDERS.register_module()
+@OPTIMIZER_CONSTRUCTORS.register_module()
 class TSMOptimizerConstructor(DefaultOptimizerConstructor):
     """Optimizer constructor in TSM model.
 
@@ -58,7 +60,7 @@ class TSMOptimizerConstructor(DefaultOptimizerConstructor):
                 if len(m_params) == 2:
                     normal_bias.append(m_params[1])
             elif isinstance(m,
-                            (_BatchNorm, SyncBatchNorm, torch.nn.GroupNorm)):
+                            (_BatchNorm, SyncBatchNorm_, torch.nn.GroupNorm)):
                 for param in list(m.parameters()):
                     if param.requires_grad:
                         bn.append(param)

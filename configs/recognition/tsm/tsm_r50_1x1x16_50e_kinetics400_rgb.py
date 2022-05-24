@@ -30,8 +30,7 @@ train_pipeline = [
     dict(type='Flip', flip_ratio=0.5),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs', 'label'])
+    dict(type='PackActionInputs')
 ]
 val_pipeline = [
     dict(
@@ -45,8 +44,7 @@ val_pipeline = [
     dict(type='CenterCrop', crop_size=224),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs'])
+    dict(type='PackActionInputs')
 ]
 test_pipeline = [
     dict(
@@ -60,36 +58,52 @@ test_pipeline = [
     dict(type='TenCrop', crop_size=224),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs'])
+    dict(type='PackActionInputs')
 ]
-data = dict(
-    videos_per_gpu=6,
-    workers_per_gpu=2,
-    test_dataloader=dict(videos_per_gpu=1),
-    train=dict(
+
+train_dataloader = dict(
+    batch_size=6,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=True),
+    dataset=dict(
         type=dataset_type,
         ann_file=ann_file_train,
-        data_prefix=data_root,
-        pipeline=train_pipeline),
-    val=dict(
+        data_prefix=dict(img=data_root),
+        pipeline=train_pipeline))
+val_dataloader = dict(
+    batch_size=6,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
         type=dataset_type,
         ann_file=ann_file_val,
-        data_prefix=data_root_val,
-        pipeline=val_pipeline),
-    test=dict(
+        data_prefix=dict(img=data_root_val),
+        pipeline=val_pipeline,
+        test_mode=True))
+test_dataloader = dict(
+    batch_size=1,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
         type=dataset_type,
         ann_file=ann_file_test,
-        data_prefix=data_root_val,
-        pipeline=test_pipeline))
-evaluation = dict(
-    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+        data_prefix=dict(img=data_root_val),
+        pipeline=test_pipeline,
+        test_mode=True))
 
-# optimizer
+val_evaluator = dict(type='AccMetric')
+test_evaluator = val_evaluator
+
+val_cfg = dict(interval=5)
+test_cfg = dict()
+
 optimizer = dict(
     lr=0.0075,  # this lr is used for 8 gpus
 )
 
-# runtime settings
-checkpoint_config = dict(interval=5)
-work_dir = './work_dirs/tsm_r50_1x1x16_50e_kinetics400_rgb/'
+default_hooks = dict(
+    optimizer=dict(grad_clip=dict(max_norm=20, norm_type=2)),
+    checkpoint=dict(interval=5))

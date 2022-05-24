@@ -17,15 +17,17 @@ test_pipeline = [
     dict(type='CenterCrop', crop_size=224),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
-    dict(type='Collect', keys=['imgs'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs'])
+    dict(type='PackActionInputs')
 ]
 
-data = dict(
-    videos_per_gpu=1,
-    workers_per_gpu=2,
-    test=dict(
+test_dataloader = dict(
+    batch_size=1,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
         type=dataset_type,
         ann_file=None,
-        data_prefix=None,
-        pipeline=test_pipeline))
+        data_prefix=dict(video=None),
+        pipeline=test_pipeline,
+        test_mode=True))
