@@ -102,7 +102,7 @@ class SampleFrames:
         test_mode (bool): Store True when building test or validation dataset.
             Default: False.
         start_index (None): This argument is deprecated and moved to dataset
-            class (``BaseDataset``, ``VideoDatset``, ``RawframeDataset``, etc),
+            class (``BaseDataset``, ``VideoDataset``, ``RawframeDataset``, etc),
             see this: https://github.com/open-mmlab/mmaction2/pull/89.
         keep_tail_frames (bool): Whether to keep tail frames when sampling.
             Default: False.
@@ -282,7 +282,7 @@ class UntrimmedSampleFrames:
         frame_interval (int): Temporal interval of adjacent sampled frames.
             Default: 16.
         start_index (None): This argument is deprecated and moved to dataset
-            class (``BaseDataset``, ``VideoDatset``, ``RawframeDataset``, etc),
+            class (``BaseDataset``, ``VideoDataset``, ``RawframeDataset``, etc),
             see this: https://github.com/open-mmlab/mmaction2/pull/89.
     """
 
