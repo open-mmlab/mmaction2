@@ -158,7 +158,7 @@ class PoseCompact(BaseTransform):
 
 
 @TRANSFORMS.register_module()
-class Fuse:
+class Fuse(BaseTransform):
     """Fuse lazy operations.
 
     Fusion order:
@@ -169,7 +169,7 @@ class Fuse:
     Required keys in "lazy" are "crop_bbox", "interpolation", "flip_direction".
     """
 
-    def __call__(self, results):
+    def transform(self, results):
         if 'lazy' not in results:
             raise ValueError('No lazy operation detected')
         lazyop = results['lazy']
@@ -817,7 +817,7 @@ class Resize(BaseTransform):
 
 
 @TRANSFORMS.register_module()
-class RandomRescale:
+class RandomRescale(BaseTransform):
     """Randomly resize images so that the short_edge is resized to a specific
     size in a given range. The scale ratio is unchanged after resizing.
 
@@ -843,7 +843,7 @@ class RandomRescale:
         self.keep_ratio = True
         self.interpolation = interpolation
 
-    def __call__(self, results):
+    def transform(self, results):
         """Performs the Resize augmentation.
 
         Args:
@@ -1103,7 +1103,7 @@ class Normalize(BaseTransform):
 
 
 @TRANSFORMS.register_module()
-class ColorJitter:
+class ColorJitter(BaseTransform):
     """Perform ColorJitter to each img.
 
     Required keys are "imgs", added or modified keys are "imgs".
@@ -1160,7 +1160,7 @@ class ColorJitter:
         self.hue = self.check_input(hue, 0.5, 0)
         self.fn_idx = np.random.permutation(4)
 
-    def __call__(self, results):
+    def transform(self, results):
         imgs = results['imgs']
         num_clips, clip_len = 1, len(imgs)
 
@@ -1300,7 +1300,7 @@ class CenterCrop(RandomCrop):
 
 
 @TRANSFORMS.register_module()
-class ThreeCrop:
+class ThreeCrop(BaseTransform):
     """Crop images into three crops.
 
     Crop the images equally into three crops with equal intervals along the
@@ -1318,7 +1318,7 @@ class ThreeCrop:
             raise TypeError(f'Crop_size must be int or tuple of int, '
                             f'but got {type(crop_size)}')
 
-    def __call__(self, results):
+    def transform(self, results):
         """Performs the ThreeCrop augmentation.
 
         Args:
@@ -1445,7 +1445,7 @@ class TenCrop(BaseTransform):
 
 
 @TRANSFORMS.register_module()
-class AudioAmplify:
+class AudioAmplify(BaseTransform):
     """Amplify the waveform.
 
     Required keys are "audios", added or modified keys are "audios",
@@ -1461,7 +1461,7 @@ class AudioAmplify:
         else:
             raise TypeError('Amplification ratio should be float.')
 
-    def __call__(self, results):
+    def transform(self, results):
         """Perform the audio amplification.
 
         Args:
@@ -1481,7 +1481,7 @@ class AudioAmplify:
 
 
 @TRANSFORMS.register_module()
-class MelSpectrogram:
+class MelSpectrogram(BaseTransform):
     """MelSpectrogram. Transfer an audio wave into a melspectogram figure.
 
     Required keys are "audios", "sample_rate", "num_clips", added or modified
@@ -1511,7 +1511,7 @@ class MelSpectrogram:
         else:
             raise TypeError('All arguments should be int.')
 
-    def __call__(self, results):
+    def transform(self, results):
         """Perform MelSpectrogram transformation.
 
         Args:

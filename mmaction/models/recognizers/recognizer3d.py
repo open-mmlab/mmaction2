@@ -70,7 +70,7 @@ class Recognizer3D(BaseRecognizer):
             if feat_dim == 5:  # 3D-CNN architecture
                 # perform spatio-temporal pooling
                 avg_pool = nn.AdaptiveAvgPool3d(1)
-                if isinstance(feat, tuple):
+                if isinstance(feats, tuple):
                     feats = [avg_pool(x) for x in feats]
                     # concat them
                     feats = torch.cat(feats, axis=1)
