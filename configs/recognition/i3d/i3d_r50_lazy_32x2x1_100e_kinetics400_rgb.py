@@ -25,8 +25,7 @@ train_pipeline = [
     dict(type='Fuse'),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs', 'label'])
+    dict(type='PackActionInputs')
 ]
 val_pipeline = [
     dict(
@@ -42,8 +41,7 @@ val_pipeline = [
     dict(type='Fuse'),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs'])
+    dict(type='PackActionInputs')
 ]
 test_pipeline = [
     dict(
@@ -57,28 +55,38 @@ test_pipeline = [
     dict(type='ThreeCrop', crop_size=256),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs'])
+    dict(type='PackActionInputs')
 ]
-data = dict(
-    videos_per_gpu=8,
-    workers_per_gpu=2,
-    test_dataloader=dict(videos_per_gpu=1),
-    train=dict(
+
+train_dataloader = dict(
+    batch_size=8,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=True),
+    dataset=dict(
         type=dataset_type,
         ann_file=ann_file_train,
-        data_prefix=data_root,
-        pipeline=train_pipeline),
-    val=dict(
+        data_prefix=dict(img=data_root),
+        pipeline=train_pipeline))
+val_dataloader = dict(
+    batch_size=8,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
         type=dataset_type,
         ann_file=ann_file_val,
-        data_prefix=data_root_val,
-        pipeline=val_pipeline),
-    test=dict(
+        data_prefix=dict(img=data_root_val),
+        pipeline=val_pipeline,
+        test_mode=True))
+test_dataloader = dict(
+    batch_size=1,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
         type=dataset_type,
-        ann_file=ann_file_val,
-        data_prefix=data_root_val,
-        pipeline=test_pipeline))
-
-# runtime settings
-work_dir = './work_dirs/i3d_r50_lazy_32x2x1_100e_kinetics400_rgb/'
+        ann_file=ann_file_test,
+        data_prefix=dict(img=data_root_val),
+        pipeline=test_pipeline,
+        test_mode=True))

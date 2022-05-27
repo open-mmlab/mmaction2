@@ -1,7 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from collections.abc import Sequence
 
-import mmcv
 import numpy as np
 import torch
 from mmcv.transforms import BaseTransform, to_tensor
@@ -67,7 +66,7 @@ class PackActionInputs(BaseTransform):
 
 
 @TRANSFORMS.register_module()
-class Transpose:
+class Transpose(BaseTransform):
     """Transpose image channels to a given order.
 
     Args:
@@ -79,7 +78,7 @@ class Transpose:
         self.keys = keys
         self.order = order
 
-    def __call__(self, results):
+    def transform(self, results):
         """Performs the Transpose formatting.
 
         Args:
@@ -183,7 +182,7 @@ class FormatShape(BaseTransform):
 
 
 @TRANSFORMS.register_module()
-class FormatAudioShape:
+class FormatAudioShape(BaseTransform):
     """Format final audio shape to the given input_format.
 
     Required keys are "imgs", "num_clips" and "clip_len", added or modified
@@ -199,7 +198,7 @@ class FormatAudioShape:
             raise ValueError(
                 f'The input format {self.input_format} is invalid.')
 
-    def __call__(self, results):
+    def transform(self, results):
         """Performs the FormatShape formatting.
 
         Args:

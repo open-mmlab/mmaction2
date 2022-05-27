@@ -16,7 +16,8 @@ model = dict(
         in_channels=2048,
         spatial_type='avg',
         dropout_ratio=0.5,
-        init_std=0.01),
+        init_std=0.01,
+        average_clips='prob'),
     # model training and testing settings
     train_cfg=None,
-    test_cfg=dict(average_clips='prob', max_testing_views=10))
+    test_cfg=dict(max_testing_views=10))
