@@ -57,5 +57,5 @@ if __name__ == '__main__':
     print('Total number of videos extracted finished: ',
           len(done_fullpath_list))
 
-    pool = Pool(args.num_worker)
+    pool = Pool(args.num_workers)
     pool.map(extract_audio_wav, fullpath_list)
