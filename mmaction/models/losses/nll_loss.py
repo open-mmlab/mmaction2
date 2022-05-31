@@ -1,11 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn.functional as F
 
-from ..builder import LOSSES
+from mmaction.registry import MODELS
 from .base import BaseWeightedLoss
 
 
-@LOSSES.register_module()
+@MODELS.register_module()
 class NLLLoss(BaseWeightedLoss):
     """NLL Loss.
 

@@ -1,9 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from ..builder import BACKBONES
+from mmaction.registry import MODELS
 from .resnet3d import ResNet3d
 
 
-@BACKBONES.register_module()
+@MODELS.register_module()
 class ResNet2Plus1d(ResNet3d):
     """ResNet (2+1)d backbone.
 

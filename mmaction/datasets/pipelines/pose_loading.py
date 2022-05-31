@@ -3,11 +3,11 @@ import copy as cp
 import pickle
 
 import numpy as np
-from mmcv.fileio import FileClient
+from mmengine.fileio import FileClient
 from mmcv.transforms import BaseTransform
 from scipy.stats import mode
 
-from ..builder import TRANSFORMS
+from mmaction.registry import TRANSFORMS
 from .transforms import Flip
 
 

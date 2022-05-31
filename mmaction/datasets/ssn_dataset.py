@@ -7,13 +7,13 @@ from collections import OrderedDict
 import mmcv
 import numpy as np
 from torch.nn.modules.utils import _pair
+from mmengine.dataset import BaseDataset
+from mmengine.logging import MMLogger
 
+from mmaction.registry import DATASETS
 from ..core import softmax
 from ..localization import (eval_ap, load_localize_proposal_file,
                             perform_regression, temporal_iou, temporal_nms)
-from ..utils import get_root_logger
-from .base import BaseDataset
-from .builder import DATASETS
 
 
 class SSNInstance:
@@ -180,7 +180,7 @@ class SSNDataset(BaseDataset):
                  filter_gt=True,
                  use_regression=True,
                  verbose=False):
-        self.logger = get_root_logger()
+        self.logger = MMLogger.get_current_instance()
         super().__init__(
             ann_file,
             pipeline,

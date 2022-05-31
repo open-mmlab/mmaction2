@@ -3,10 +3,10 @@ import torch.nn as nn
 from mmcv.cnn import ConvModule, constant_init, kaiming_init
 from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
 from mmengine.utils.parrots_wrapper import _BatchNorm
+from mmengine.logging import MMLogger
 from torch.utils import checkpoint as cp
 
-from ...utils import get_root_logger
-from ..builder import BACKBONES
+from mmaction.registry import MODELS
 
 
 class BasicBlock(nn.Module):
@@ -293,7 +293,7 @@ def make_res_layer(block,
     return nn.Sequential(*layers)
 
 
-@BACKBONES.register_module()
+@MODELS.register_module()
 class ResNet(nn.Module):
     """ResNet backbone.
 
@@ -511,7 +511,7 @@ class ResNet(nn.Module):
         """Initiate the parameters either from existing checkpoint or from
         scratch."""
         if isinstance(self.pretrained, str):
-            logger = get_root_logger()
+            logger = MMLogger.get_current_instance()
             if self.torchvision_pretrain:
                 # torchvision's
                 self._load_torchvision_checkpoint(logger)

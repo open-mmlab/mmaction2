@@ -4,13 +4,13 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from ...localization import temporal_iop
-from ..builder import LOCALIZERS, build_loss
+from mmaction.localization import temporal_iop
+from mmaction.registry import MODELS
 from .base import BaseTAPGenerator
 from .utils import post_processing
 
 
-@LOCALIZERS.register_module()
+@MODELS.register_module()
 class TEM(BaseTAPGenerator):
     """Temporal Evaluation Model for Boundary Sensitive Network.
 
@@ -53,7 +53,7 @@ class TEM(BaseTAPGenerator):
         self.c_hidden = tem_hidden_dim
         self.match_threshold = tem_match_threshold
         self.output_dim = output_dim
-        self.loss_cls = build_loss(loss_cls)
+        self.loss_cls = MODELS.build(loss_cls)
         self.loss_weight = loss_weight
         self.conv1_ratio = conv1_ratio
         self.conv2_ratio = conv2_ratio
@@ -225,7 +225,7 @@ class TEM(BaseTAPGenerator):
         return self.forward_test(raw_feature, video_meta)
 
 
-@LOCALIZERS.register_module()
+@MODELS.register_module()
 class PEM(BaseTAPGenerator):
     """Proposals Evaluation Model for Boundary Sensitive Network.
 

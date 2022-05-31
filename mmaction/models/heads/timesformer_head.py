@@ -2,11 +2,11 @@
 import torch.nn as nn
 from mmcv.cnn import trunc_normal_init
 
-from ..builder import HEADS
+from mmaction.registry import MODELS
 from .base import BaseHead
 
 
-@HEADS.register_module()
+@MODELS.register_module()
 class TimeSformerHead(BaseHead):
     """Classification head for TimeSformer.
 

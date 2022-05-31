@@ -7,7 +7,7 @@ import torch
 import torch.distributed as dist
 import torch.nn as nn
 
-from .. import builder
+from mmaction.registry import MODELS
 
 
 class BaseTAPGenerator(nn.Module, metaclass=ABCMeta):
@@ -127,8 +127,8 @@ class BaseTAGClassifier(nn.Module, metaclass=ABCMeta):
 
     def __init__(self, backbone, cls_head, train_cfg=None, test_cfg=None):
         super().__init__()
-        self.backbone = builder.build_backbone(backbone)
-        self.cls_head = builder.build_head(cls_head)
+        self.backbone = MODELS.build(backbone)
+        self.cls_head = MODELS.build(cls_head)
 
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg

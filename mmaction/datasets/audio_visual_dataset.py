@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
 
-from .builder import DATASETS
+from mmaction.registry import DATASETS
 from .rawframe_dataset import RawframeDataset
 
 

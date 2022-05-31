@@ -1,16 +1,17 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
 
+from mmaction.registry import TASK_UTILS
+
 try:
     from mmdet.core.bbox import AssignResult, MaxIoUAssigner
-    from mmdet.core.bbox.builder import BBOX_ASSIGNERS
     mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
     mmdet_imported = False
 
 if mmdet_imported:
 
-    @BBOX_ASSIGNERS.register_module()
+    @TASK_UTILS.register_module()
     class MaxIoUAssignerAVA(MaxIoUAssigner):
         """Assign a corresponding gt bbox or background to each bbox.
 
@@ -34,7 +35,7 @@ if mmdet_imported:
 
         # The function is overridden, to handle the case that gt_label is not
         # int
-        def assign_wrt_overlaps(self, overlaps, gt_labels=None):
+        def assign_wrt_overlaps(self, overlaps, gt_labels):
             """Assign w.r.t. the overlaps of bboxes with gts.
 
             Args:
@@ -56,19 +57,16 @@ if mmdet_imported:
             if num_gts == 0 or num_bboxes == 0:
                 # No ground truth or boxes, return empty assignment
                 max_overlaps = overlaps.new_zeros((num_bboxes, ))
+                assigned_labels = overlaps.new_full((num_bboxes,),
+                                                    -1,
+                                                    dtype=torch.long)
                 if num_gts == 0:
                     # No truth, assign everything to background
                     assigned_gt_inds[:] = 0
-                if gt_labels is None:
-                    assigned_labels = None
-                else:
-                    assigned_labels = overlaps.new_full((num_bboxes, ),
-                                                        -1,
-                                                        dtype=torch.long)
                 return AssignResult(
-                    num_gts,
-                    assigned_gt_inds,
-                    max_overlaps,
+                    num_gts=num_gts,
+                    gt_inds=assigned_gt_inds,
+                    max_overlaps=max_overlaps,
                     labels=assigned_labels)
 
             # for each anchor, which gt best overlaps with it
@@ -109,25 +107,22 @@ if mmdet_imported:
                         else:
                             assigned_gt_inds[gt_argmax_overlaps[i]] = i + 1
 
-            if gt_labels is not None:
-                # consider multi-class case (AVA)
-                assert len(gt_labels[0]) > 1
-                assigned_labels = assigned_gt_inds.new_zeros(
-                    (num_bboxes, len(gt_labels[0])), dtype=torch.float32)
+            # consider multi-class case (AVA)
+            assert len(gt_labels[0]) > 1
+            assigned_labels = assigned_gt_inds.new_zeros(
+                (num_bboxes, len(gt_labels[0])), dtype=torch.float32)
 
-                # If not assigned, labels will be all 0
-                pos_inds = torch.nonzero(
-                    assigned_gt_inds > 0, as_tuple=False).squeeze()
-                if pos_inds.numel() > 0:
-                    assigned_labels[pos_inds] = gt_labels[
-                        assigned_gt_inds[pos_inds] - 1]
-            else:
-                assigned_labels = None
+            # If not assigned, labels will be all 0
+            pos_inds = torch.nonzero(
+                assigned_gt_inds > 0, as_tuple=False).squeeze()
+            if pos_inds.numel() > 0:
+                assigned_labels[pos_inds] = gt_labels[
+                    assigned_gt_inds[pos_inds] - 1]
 
             return AssignResult(
-                num_gts,
-                assigned_gt_inds,
-                max_overlaps,
+                num_gts=num_gts,
+                gt_inds=assigned_gt_inds,
+                max_overlaps=max_overlaps,
                 labels=assigned_labels)
 
 else:
@@ -137,6 +132,6 @@ else:
         def __init__(self, *args, **kwargs):
             raise ImportError(
                 'Failed to import `AssignResult`, `MaxIoUAssigner` from '
-                '`mmdet.core.bbox` or failed to import `BBOX_ASSIGNERS` from '
-                '`mmdet.core.bbox.builder`. The class `MaxIoUAssignerAVA` is '
+                '`mmdet.core.bbox` or failed to import `TASK_UTILS` from '
+                '`mmdet.registry`. The class `MaxIoUAssignerAVA` is '
                 'invalid. ')

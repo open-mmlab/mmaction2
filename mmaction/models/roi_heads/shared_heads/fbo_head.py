@@ -6,15 +6,10 @@ import torch.nn as nn
 from mmcv.cnn import ConvModule, constant_init, kaiming_init
 from mmengine.runner import load_checkpoint
 from mmengine.utils.parrots_wrapper import _BatchNorm
+from mmengine.logging import MMLogger
 
 from mmaction.models.common import LFB
-from mmaction.utils import get_root_logger
-
-try:
-    from mmdet.models.builder import SHARED_HEADS as MMDET_SHARED_HEADS
-    mmdet_imported = True
-except (ImportError, ModuleNotFoundError):
-    mmdet_imported = False
+from mmaction.registry import MODELS
 
 
 class NonLocalLayer(nn.Module):
@@ -113,7 +108,7 @@ class NonLocalLayer(nn.Module):
         """Initiate the parameters either from existing checkpoint or from
         scratch."""
         if isinstance(pretrained, str):
-            logger = get_root_logger()
+            logger = MMLogger.get_current_instance()
             logger.info(f'load model from: {pretrained}')
             load_checkpoint(self, pretrained, strict=False, logger=logger)
         elif pretrained is None:
@@ -246,7 +241,7 @@ class FBONonLocal(nn.Module):
 
     def init_weights(self, pretrained=None):
         if isinstance(pretrained, str):
-            logger = get_root_logger()
+            logger = MMLogger.get_current_instance()
             load_checkpoint(self, pretrained, strict=False, logger=logger)
         elif pretrained is None:
             kaiming_init(self.st_feat_conv)
@@ -313,6 +308,7 @@ class FBOMax(nn.Module):
         return out
 
 
+@MODELS.register_module()
 class FBOHead(nn.Module):
     """Feature Bank Operator Head.
 
@@ -395,7 +391,3 @@ class FBOHead(nn.Module):
 
         out = torch.cat([identity, fbo_feat], dim=1)
         return out
-
-
-if mmdet_imported:
-    MMDET_SHARED_HEADS.register_module()(FBOHead)

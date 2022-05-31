@@ -1,11 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
 
-from ..builder import HEADS
+from mmaction.registry import MODELS
 from .tsn_head import TSNHead
 
 
-@HEADS.register_module()
+@MODELS.register_module()
 class TPNHead(TSNHead):
     """Class head for TPN.
 

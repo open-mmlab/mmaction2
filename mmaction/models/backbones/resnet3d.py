@@ -7,14 +7,13 @@ from mmcv.cnn import (ConvModule, NonLocal3d, build_activation_layer,
                       constant_init, kaiming_init)
 from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
 from mmengine.utils.parrots_wrapper import _BatchNorm
+from mmengine.logging import MMLogger
 from torch.nn.modules.utils import _ntuple, _triple
 
-from ...utils import get_root_logger
-from ..builder import BACKBONES
+from mmaction.registry import MODELS
 
 try:
-    from mmdet.models import BACKBONES as MMDET_BACKBONES
-    from mmdet.models.builder import SHARED_HEADS as MMDET_SHARED_HEADS
+    from mmdet.registry import MODELS as MMDET_MODELS
     mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
     mmdet_imported = False
@@ -324,7 +323,7 @@ class Bottleneck3d(nn.Module):
         return out
 
 
-@BACKBONES.register_module()
+@MODELS.register_module()
 class ResNet3d(nn.Module):
     """ResNet 3d backbone.
 
@@ -804,7 +803,7 @@ class ResNet3d(nn.Module):
         if pretrained:
             self.pretrained = pretrained
         if isinstance(self.pretrained, str):
-            logger = get_root_logger()
+            logger = MMLogger.get_current_instance()
             logger.info(f'load model from: {self.pretrained}')
 
             if self.pretrained2d:
@@ -871,7 +870,7 @@ class ResNet3d(nn.Module):
                     m.eval()
 
 
-@BACKBONES.register_module()
+@MODELS.register_module()
 class ResNet3dLayer(nn.Module):
     """ResNet 3d Layer.
 
@@ -1030,5 +1029,5 @@ class ResNet3dLayer(nn.Module):
 
 
 if mmdet_imported:
-    MMDET_SHARED_HEADS.register_module()(ResNet3dLayer)
-    MMDET_BACKBONES.register_module()(ResNet3d)
+    MMDET_MODELS.register_module()(ResNet3dLayer)
+    MMDET_MODELS.register_module()(ResNet3d)

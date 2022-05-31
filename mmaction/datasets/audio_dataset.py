@@ -2,9 +2,9 @@
 import os.path as osp
 
 import torch
+from mmengine.dataset import BaseDataset
 
-from .base import BaseDataset
-from .builder import DATASETS
+from mmaction.registry import DATASETS
 
 
 @DATASETS.register_module()

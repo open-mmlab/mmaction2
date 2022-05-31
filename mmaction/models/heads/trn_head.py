@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 from mmcv.cnn import normal_init
 
-from ..builder import HEADS
+from mmaction.registry import MODELS
 from .base import BaseHead
 
 
@@ -109,7 +109,7 @@ class RelationModuleMultiScale(nn.Module):
         return act_all
 
 
-@HEADS.register_module()
+@MODELS.register_module()
 class TRNHead(BaseHead):
     """Class head for TRN.
 

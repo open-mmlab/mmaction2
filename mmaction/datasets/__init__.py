@@ -4,7 +4,6 @@ from .audio_dataset import AudioDataset
 from .audio_feature_dataset import AudioFeatureDataset
 from .audio_visual_dataset import AudioVisualDataset
 from .ava_dataset import AVADataset
-from .base import BaseDataset
 from .blending_utils import (BaseMiniBatchBlending, CutmixBlending,
                              MixupBlending)
 from .hvu_dataset import HVUDataset
@@ -14,13 +13,11 @@ from .rawframe_dataset import RawframeDataset
 from .rawvideo_dataset import RawVideoDataset
 from .ssn_dataset import SSNDataset
 from .video_dataset import VideoDataset
-from .builder import DATASETS, TRANSFORMS, BLENDINGS
+from .pipelines import *
 
 __all__ = [
-    'VideoDataset',
-    'RawframeDataset', 'BaseDataset', 'ActivityNetDataset', 'SSNDataset',
+    'VideoDataset', 'RawframeDataset', 'ActivityNetDataset',
     'HVUDataset', 'AudioDataset', 'AudioFeatureDataset', 'ImageDataset',
-    'RawVideoDataset', 'AVADataset', 'AudioVisualDataset',
-    'BaseMiniBatchBlending', 'CutmixBlending', 'MixupBlending', 'DATASETS',
-    'TRANSFORMS', 'BLENDINGS', 'PoseDataset'
+    'RawVideoDataset', 'AVADataset', 'AudioVisualDataset', 'SSNDataset',
+    'PoseDataset', 'BaseMiniBatchBlending', 'CutmixBlending', 'MixupBlending'
 ]

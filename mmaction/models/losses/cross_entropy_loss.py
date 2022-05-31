@@ -3,11 +3,11 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
-from ..builder import LOSSES
+from mmaction.registry import MODELS
 from .base import BaseWeightedLoss
 
 
-@LOSSES.register_module()
+@MODELS.register_module()
 class CrossEntropyLoss(BaseWeightedLoss):
     """Cross Entropy Loss.
 
@@ -83,7 +83,7 @@ class CrossEntropyLoss(BaseWeightedLoss):
         return loss_cls
 
 
-@LOSSES.register_module()
+@MODELS.register_module()
 class BCELossWithLogits(BaseWeightedLoss):
     """Binary Cross Entropy Loss with logits.
 
@@ -122,7 +122,7 @@ class BCELossWithLogits(BaseWeightedLoss):
         return loss_cls
 
 
-@LOSSES.register_module()
+@MODELS.register_module()
 class CBFocalLoss(BaseWeightedLoss):
     """Class Balanced Focal Loss. Adapted from https://github.com/abhinanda-
     punnakkal/BABEL/. This loss is used in the skeleton-based action

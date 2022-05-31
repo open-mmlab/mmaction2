@@ -5,9 +5,9 @@ import torch
 import torch.nn as nn
 from mmcv.cnn import constant_init, kaiming_init, normal_init
 from mmengine.runner import load_checkpoint
+from mmengine.logging import MMLogger
 
-from ...utils import get_root_logger
-from ..builder import BACKBONES
+from mmaction.registry import MODELS
 from ..recognizers.utils import Graph
 
 
@@ -233,7 +233,7 @@ class ConvTemporalGraphical(nn.Module):
         return self.relu(y), adj_mat
 
 
-@BACKBONES.register_module()
+@MODELS.register_module()
 class AGCN(nn.Module):
     """Backbone of Two-Stream Adaptive Graph Convolutional Networks for
     Skeleton-Based Action Recognition.
@@ -303,7 +303,7 @@ class AGCN(nn.Module):
         """Initiate the parameters either from existing checkpoint or from
         scratch."""
         if isinstance(self.pretrained, str):
-            logger = get_root_logger()
+            logger = MMLogger.get_current_instance()
             logger.info(f'load model from: {self.pretrained}')
 
             load_checkpoint(self, self.pretrained, strict=False, logger=logger)

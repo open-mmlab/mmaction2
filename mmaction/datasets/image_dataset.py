@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .builder import DATASETS
+from mmaction.registry import DATASETS
 from .video_dataset import VideoDataset
 
 

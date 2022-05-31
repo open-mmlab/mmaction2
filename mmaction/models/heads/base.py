@@ -11,7 +11,7 @@ from mmengine.data import LabelData
 import mmengine.dist as dist
 
 from mmaction.core import top_k_accuracy, ActionDataSample
-from ..builder import build_loss
+from mmaction.registry import MODELS
 
 
 class AvgConsensus(nn.Module):
@@ -64,7 +64,7 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
         super().__init__(init_cfg)
         self.num_classes = num_classes
         self.in_channels = in_channels
-        self.loss_cls = build_loss(loss_cls)
+        self.loss_cls = MODELS.build(loss_cls)
         self.multi_class = multi_class
         self.label_smooth_eps = label_smooth_eps
         self.average_clips = average_clips

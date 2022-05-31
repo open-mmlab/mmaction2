@@ -5,7 +5,7 @@ import numpy as np
 from mmengine.utils import digit_version
 from mmcv.transforms import BaseTransform, to_tensor
 
-from ..builder import TRANSFORMS
+from mmaction.registry import TRANSFORMS
 
 
 @TRANSFORMS.register_module()

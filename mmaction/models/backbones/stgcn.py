@@ -4,9 +4,9 @@ import torch.nn as nn
 from mmcv.cnn import constant_init, kaiming_init, normal_init
 from mmengine.runner import load_checkpoint
 from mmengine.utils.parrots_wrapper import _BatchNorm
+from mmengine.logging import MMLogger
 
-from ...utils import get_root_logger
-from ..builder import BACKBONES
+from mmaction.registry import MODELS
 from ..recognizers.utils import Graph
 
 
@@ -165,7 +165,7 @@ class ConvTemporalGraphical(nn.Module):
         return x.contiguous(), adj_mat
 
 
-@BACKBONES.register_module()
+@MODELS.register_module()
 class STGCN(nn.Module):
     """Backbone of Spatial temporal graph convolutional networks.
 
@@ -240,7 +240,7 @@ class STGCN(nn.Module):
         """Initiate the parameters either from existing checkpoint or from
         scratch."""
         if isinstance(self.pretrained, str):
-            logger = get_root_logger()
+            logger = MMLogger.get_current_instance()
             logger.info(f'load model from: {self.pretrained}')
 
             load_checkpoint(self, self.pretrained, strict=False, logger=logger)

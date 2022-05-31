@@ -4,9 +4,9 @@ import os.path as osp
 import random
 
 import mmcv
+from mmengine.dataset import BaseDataset
 
-from .base import BaseDataset
-from .builder import DATASETS
+from mmaction.registry import DATASETS
 
 
 @DATASETS.register_module()

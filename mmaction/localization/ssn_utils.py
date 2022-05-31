@@ -4,7 +4,7 @@ from itertools import groupby
 import numpy as np
 
 from ..core import average_precision_at_temporal_iou
-from . import temporal_iou
+from .proposal_utils import temporal_iou
 
 
 def load_localize_proposal_file(filename):

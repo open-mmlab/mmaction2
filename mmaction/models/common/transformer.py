@@ -6,7 +6,7 @@ from mmcv.cnn import build_norm_layer, constant_init
 from mmcv.cnn.bricks.registry import ATTENTION, FEEDFORWARD_NETWORK
 from mmcv.cnn.bricks.transformer import FFN, build_dropout
 from mmcv.runner.base_module import BaseModule
-from mmcv.utils import digit_version
+from mmengine.utils import digit_version
 
 
 @ATTENTION.register_module()

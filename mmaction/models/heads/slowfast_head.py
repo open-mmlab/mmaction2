@@ -3,11 +3,11 @@ import torch
 import torch.nn as nn
 from mmcv.cnn import normal_init
 
-from ..builder import HEADS
+from mmaction.registry import MODELS
 from .base import BaseHead
 
 
-@HEADS.register_module()
+@MODELS.register_module()
 class SlowFastHead(BaseHead):
     """The classification head for SlowFast.
 

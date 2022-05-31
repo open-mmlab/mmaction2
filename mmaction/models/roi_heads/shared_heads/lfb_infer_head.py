@@ -7,14 +7,10 @@ import torch.distributed as dist
 import torch.nn as nn
 from mmengine.dist import get_dist_info
 
-
-try:
-    from mmdet.models.builder import SHARED_HEADS as MMDET_SHARED_HEADS
-    mmdet_imported = True
-except (ImportError, ModuleNotFoundError):
-    mmdet_imported = False
+from mmaction.registry import MODELS
 
 
+@MODELS.register_module()
 class LFBInferHead(nn.Module):
     """Long-Term Feature Bank Infer Head.
 
@@ -143,7 +139,3 @@ class LFBInferHead(nn.Module):
             osp.join(self.lfb_prefix_path, f'lfb_{self.dataset_mode}.pkl'))
         torch.save(lfb, lfb_file_path)
         print(f'LFB has been constructed in {lfb_file_path}!')
-
-
-if mmdet_imported:
-    MMDET_SHARED_HEADS.register_module()(LFBInferHead)

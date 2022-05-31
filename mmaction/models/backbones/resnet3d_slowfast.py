@@ -5,14 +5,14 @@ import torch
 import torch.nn as nn
 from mmcv.cnn import ConvModule, kaiming_init
 from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
-from mmengine.logging import print_log
+from mmengine.logging import MMLogger, print_log
 
-from ...utils import get_root_logger
-from ..builder import BACKBONES
+from mmaction.registry import MODELS
 from .resnet3d import ResNet3d
 
+
 try:
-    from mmdet.models import BACKBONES as MMDET_BACKBONES
+    from mmdet.registry import MODELS as MMDET_MODELS
     mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
     mmdet_imported = False
@@ -379,7 +379,7 @@ def build_pathway(cfg, *args, **kwargs):
     return pathway
 
 
-@BACKBONES.register_module()
+@MODELS.register_module()
 class ResNet3dSlowFast(nn.Module):
     """Slowfast backbone.
 
@@ -468,7 +468,7 @@ class ResNet3dSlowFast(nn.Module):
             self.pretrained = pretrained
 
         if isinstance(self.pretrained, str):
-            logger = get_root_logger()
+            logger = MMLogger.get_current_instance()
             msg = f'load model from: {self.pretrained}'
             print_log(msg, logger=logger)
             # Directly load 3D model.
@@ -528,4 +528,4 @@ class ResNet3dSlowFast(nn.Module):
 
 
 if mmdet_imported:
-    MMDET_BACKBONES.register_module()(ResNet3dSlowFast)
+    MMDET_MODELS.register_module()(ResNet3dSlowFast)

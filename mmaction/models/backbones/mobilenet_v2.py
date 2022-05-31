@@ -4,9 +4,9 @@ import torch.utils.checkpoint as cp
 from mmcv.cnn import ConvModule, constant_init, kaiming_init
 from mmengine.runner import load_checkpoint
 from mmengine.utils.parrots_wrapper import _BatchNorm
+from mmengine.logging import MMLogger
 
-from ...utils import get_root_logger
-from ..builder import BACKBONES
+from mmaction.registry import MODELS
 
 
 def make_divisible(value, divisor, min_value=None, min_ratio=0.9):
@@ -119,7 +119,7 @@ class InvertedResidual(nn.Module):
         return out
 
 
-@BACKBONES.register_module()
+@MODELS.register_module()
 class MobileNetV2(nn.Module):
     """MobileNetV2 backbone.
 
@@ -254,7 +254,7 @@ class MobileNetV2(nn.Module):
 
     def init_weights(self):
         if isinstance(self.pretrained, str):
-            logger = get_root_logger()
+            logger = MMLogger.get_current_instance()
             load_checkpoint(self, self.pretrained, strict=False, logger=logger)
         elif self.pretrained is None:
             for m in self.modules():

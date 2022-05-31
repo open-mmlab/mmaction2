@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 from mmcv.cnn import ConvModule, constant_init, normal_init, xavier_init
 
-from ..builder import NECKS, build_loss
+from mmaction.registry import MODELS
 
 
 class Identity(nn.Module):
@@ -229,7 +229,7 @@ class AuxHead(nn.Module):
         self.loss_weight = loss_weight
         self.dropout = nn.Dropout(p=0.5)
         self.fc = nn.Linear(in_channels * 2, out_channels)
-        self.loss_cls = build_loss(loss_cls)
+        self.loss_cls = MODELS.build(loss_cls)
 
     def init_weights(self):
         for m in self.modules():
@@ -290,7 +290,7 @@ class TemporalModulation(nn.Module):
         return x
 
 
-@NECKS.register_module()
+@MODELS.register_module()
 class TPN(nn.Module):
     """TPN neck.
 

@@ -9,7 +9,7 @@ import numpy as np
 from mmcv.transforms import BaseTransform
 from torch.nn.modules.utils import _pair
 
-from ..builder import TRANSFORMS
+from mmaction.registry import TRANSFORMS
 
 
 def _combine_quadruple(a, b):

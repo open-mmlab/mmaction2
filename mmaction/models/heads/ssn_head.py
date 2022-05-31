@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 from mmcv.cnn import normal_init
 
-from ..builder import HEADS
+from mmaction.registry import MODELS
 
 
 def parse_stage_config(stage_cfg):
@@ -270,7 +270,7 @@ class STPPTest(nn.Module):
         return out_activity_scores, out_complete_scores, out_reg_scores
 
 
-@HEADS.register_module()
+@MODELS.register_module()
 class SSNHead(nn.Module):
     """The classification head for SSN.
 

@@ -3,7 +3,7 @@ import torch.nn as nn
 from mmcv.cnn import ConvModule
 from mmengine.utils.parrots_wrapper import _BatchNorm
 
-from ..builder import BACKBONES
+from mmaction.registry import MODELS
 from .resnet3d import Bottleneck3d, ResNet3d
 
 
@@ -74,7 +74,7 @@ class CSNBottleneck3d(Bottleneck3d):
         self.conv2 = nn.Sequential(*conv2)
 
 
-@BACKBONES.register_module()
+@MODELS.register_module()
 class ResNet3dCSN(ResNet3d):
     """ResNet backbone for CSN.
 
