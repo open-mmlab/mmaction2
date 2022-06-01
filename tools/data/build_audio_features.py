@@ -297,9 +297,7 @@ if __name__ == '__main__':
 
     mmcv.mkdir_or_exist(args.spectrogram_save_path)
 
-    files = glob.glob(
-        # osp.join(args.audio_home_path, '*/' * args.level, '*' + args.ext)
-        args.audio_home_path + '/*' * args.level + '.' + args.ext)
+    files = glob.glob(args.audio_home_path + '/*' * args.level + args.ext)
     print(f'found {len(files)} files.')
     files = sorted(files)
     if args.part is not None:
