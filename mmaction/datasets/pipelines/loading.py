@@ -4,7 +4,6 @@ import io
 import os
 import os.path as osp
 import shutil
-import warnings
 
 import mmcv
 import numpy as np
@@ -13,8 +12,8 @@ from mmcv.transforms import BaseTransform
 from mmengine.fileio import FileClient
 from torch.nn.modules.utils import _pair
 
-from ...utils import get_random_string, get_shm_dir, get_thread_id
-from ..builder import TRANSFORMS
+from mmaction.utils import get_random_string, get_shm_dir, get_thread_id
+from mmaction.registry import TRANSFORMS
 
 
 @TRANSFORMS.register_module()

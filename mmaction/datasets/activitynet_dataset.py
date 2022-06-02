@@ -7,10 +7,10 @@ from collections import OrderedDict
 
 import mmcv
 import numpy as np
+from mmengine.dataset import BaseDataset
 
+from mmaction.registry import DATASETS
 from ..core import average_recall_at_avg_proposals
-from .base import BaseDataset
-from .builder import DATASETS
 
 
 @DATASETS.register_module()

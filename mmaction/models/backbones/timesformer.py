@@ -8,10 +8,10 @@ from mmcv.cnn import build_conv_layer, build_norm_layer, kaiming_init
 from mmcv.cnn.bricks.transformer import build_transformer_layer_sequence
 from mmcv.cnn.utils.weight_init import trunc_normal_
 from mmengine.runner.checkpoint import _load_checkpoint, load_state_dict
+from mmengine.logging import MMLogger
 from torch.nn.modules.utils import _pair
 
-from ...utils import get_root_logger
-from ..builder import BACKBONES
+from mmaction.registry import MODELS
 
 
 class PatchEmbed(nn.Module):
@@ -63,7 +63,7 @@ class PatchEmbed(nn.Module):
         return x
 
 
-@BACKBONES.register_module()
+@MODELS.register_module()
 class TimeSformer(nn.Module):
     """TimeSformer. A PyTorch impl of `Is Space-Time Attention All You Need for
     Video Understanding? <https://arxiv.org/abs/2102.05095>`_
@@ -223,7 +223,7 @@ class TimeSformer(nn.Module):
         if pretrained:
             self.pretrained = pretrained
         if isinstance(self.pretrained, str):
-            logger = get_root_logger()
+            logger = MMLogger.get_current_instance()
             logger.info(f'load model from: {self.pretrained}')
 
             state_dict = _load_checkpoint(self.pretrained)

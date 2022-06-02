@@ -2,9 +2,8 @@
 import json
 
 import numpy as np
-from mmengine.logging import print_log
+from mmengine.logging import print_log, MMLogger
 
-from ...utils import get_root_logger
 from .accuracy import interpolated_precision_recall, pairwise_temporal_iou
 
 
@@ -35,7 +34,7 @@ class ActivityNetLocalization:
         self.tiou_thresholds = tiou_thresholds
         self.verbose = verbose
         self.ap = None
-        self.logger = get_root_logger()
+        self.logger = MMLogger.get_current_instance()
         # Import ground truth and predictions.
         self.ground_truth, self.activity_index = self._import_ground_truth(
             ground_truth_filename)

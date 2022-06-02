@@ -2,7 +2,6 @@
 from .transforms import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
                          MelSpectrogram, MultiScaleCrop, Normalize, RandomCrop,
                          RandomRescale, RandomResizedCrop, Resize, TenCrop, ThreeCrop)
-from .compose import Compose
 from .formatting import (PackActionInputs, FormatAudioShape, FormatGCNInput,
                          FormatShape, JointToBone, Transpose)
 from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
@@ -24,7 +23,7 @@ __all__ = [
     'SampleFrames', 'PyAVDecode', 'DecordDecode', 'DenseSampleFrames',
     'OpenCVDecode', 'MultiScaleCrop', 'RandomResizedCrop', 'RandomCrop',
     'Resize', 'Flip', 'Fuse', 'Normalize', 'ThreeCrop', 'CenterCrop',
-    'TenCrop', 'Transpose', 'FormatShape', 'Compose', 'GenerateLocalizationLabels',
+    'TenCrop', 'Transpose', 'FormatShape', 'GenerateLocalizationLabels',
     'LoadLocalizationFeature', 'LoadProposals', 'DecordInit', 'OpenCVInit',
     'PyAVInit', 'SampleProposalFrames', 'UntrimmedSampleFrames',
     'RawFrameDecode', 'DecordInit', 'OpenCVInit', 'PyAVInit',

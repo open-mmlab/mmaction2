@@ -2,11 +2,11 @@
 from typing import Dict, List
 
 from mmaction.core import ActionDataSample
-from ..builder import RECOGNIZERS
+from mmaction.registry import MODELS
 from .base import BaseRecognizer
 
 
-@RECOGNIZERS.register_module()
+@MODELS.register_module()
 class RecognizerGCN(BaseRecognizer):
     """GCN recognizer model framework."""
 

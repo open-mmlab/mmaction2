@@ -6,7 +6,7 @@ import torch
 from mmengine.dataset import BaseDataset
 from mmengine.utils import check_file_exist
 
-from .builder import DATASETS
+from mmaction.registry import DATASETS
 
 
 @DATASETS.register_module()
@@ -74,6 +74,8 @@ class RawframeDataset(BaseDataset):
         modality (str): Modality of data. Support 'RGB', 'Flow'.
             Default: 'RGB'.
     """
+
+    _fully_initialized: bool = False
 
     def __init__(self,
                  ann_file,

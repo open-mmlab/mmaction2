@@ -6,8 +6,10 @@ import torch
 from torch.utils.data import DistributedSampler as _DistributedSampler
 
 from mmaction.core import sync_random_seed
+from mmaction.registry import DATA_SAMPLERS
 
 
+@DATA_SAMPLERS.register_module()
 class DistributedSampler(_DistributedSampler):
     """DistributedSampler inheriting from
     ``torch.utils.data.DistributedSampler``.
@@ -51,6 +53,7 @@ class DistributedSampler(_DistributedSampler):
         return iter(indices)
 
 
+@DATA_SAMPLERS.register_module()
 class ClassSpecificDistributedSampler(_DistributedSampler):
     """ClassSpecificDistributedSampler inheriting from
     ``torch.utils.data.DistributedSampler``.

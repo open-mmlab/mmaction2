@@ -2,11 +2,11 @@
 import torch.nn as nn
 from mmcv.cnn import normal_init
 
-from ..builder import HEADS
+from mmaction.registry import MODELS
 from .base import BaseHead
 
 
-@HEADS.register_module()
+@MODELS.register_module()
 class AudioTSNHead(BaseHead):
     """Classification head for TSN on audio.
 

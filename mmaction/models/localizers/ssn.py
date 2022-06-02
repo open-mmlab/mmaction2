@@ -2,12 +2,11 @@
 import torch
 import torch.nn as nn
 
-from .. import builder
-from ..builder import LOCALIZERS
+from mmaction.registry import MODELS
 from .base import BaseTAGClassifier
 
 
-@LOCALIZERS.register_module()
+@MODELS.register_module()
 class SSN(BaseTAGClassifier):
     """Temporal Action Detection with Structured Segment Networks.
 
@@ -54,7 +53,7 @@ class SSN(BaseTAGClassifier):
             self.dropout = nn.Dropout(p=self.dropout_ratio)
         else:
             self.dropout = None
-        self.loss_cls = builder.build_loss(loss_cls)
+        self.loss_cls = MODELS.build(loss_cls)
 
     def forward_train(self, imgs, proposal_scale_factor, proposal_type,
                       proposal_labels, reg_targets, **kwargs):

@@ -5,13 +5,13 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-from ...localization import temporal_iop, temporal_iou
-from ..builder import LOCALIZERS, build_loss
+from mmaction.localization import temporal_iop, temporal_iou
+from mmaction.registry import MODELS
 from .base import BaseTAPGenerator
 from .utils import post_processing
 
 
-@LOCALIZERS.register_module()
+@MODELS.register_module()
 class BMN(BaseTAPGenerator):
     """Boundary Matching Network for temporal action proposal generation.
 
@@ -65,7 +65,7 @@ class BMN(BaseTAPGenerator):
         self.soft_nms_high_threshold = soft_nms_high_threshold
         self.post_process_top_k = post_process_top_k
         self.feature_extraction_interval = feature_extraction_interval
-        self.loss_cls = build_loss(loss_cls)
+        self.loss_cls = MODELS.build(loss_cls)
         self.hidden_dim_1d = hidden_dim_1d
         self.hidden_dim_2d = hidden_dim_2d
         self.hidden_dim_3d = hidden_dim_3d

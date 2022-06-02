@@ -1,15 +1,15 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from ..builder import BACKBONES
+from mmaction.registry import MODELS
 from .resnet3d_slowfast import ResNet3dPathway
 
 try:
-    from mmdet.models.builder import BACKBONES as MMDET_BACKBONES
+    from mmdet.registry import MODELS as MMDET_MODELS
     mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
     mmdet_imported = False
 
 
-@BACKBONES.register_module()
+@MODELS.register_module()
 class ResNet3dSlowOnly(ResNet3dPathway):
     """SlowOnly backbone based on ResNet3dPathway.
 
@@ -50,4 +50,4 @@ class ResNet3dSlowOnly(ResNet3dPathway):
 
 
 if mmdet_imported:
-    MMDET_BACKBONES.register_module()(ResNet3dSlowOnly)
+    MMDET_MODELS.register_module()(ResNet3dSlowOnly)

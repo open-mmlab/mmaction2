@@ -3,12 +3,12 @@ import torch.nn as nn
 from mmcv.cnn import ConvModule, constant_init, kaiming_init, normal_init
 from mmengine.runner import load_checkpoint
 from mmengine.utils.parrots_wrapper import _BatchNorm
+from mmengine.logging import MMLogger
 
-from ...utils import get_root_logger
-from ..builder import BACKBONES
+from mmaction.registry import MODELS
 
 
-@BACKBONES.register_module()
+@MODELS.register_module()
 class C3D(nn.Module):
     """C3D backbone.
 
@@ -89,7 +89,7 @@ class C3D(nn.Module):
         """Initiate the parameters either from existing checkpoint or from
         scratch."""
         if isinstance(self.pretrained, str):
-            logger = get_root_logger()
+            logger = MMLogger.get_current_instance()
             logger.info(f'load model from: {self.pretrained}')
 
             load_checkpoint(self, self.pretrained, strict=False, logger=logger)

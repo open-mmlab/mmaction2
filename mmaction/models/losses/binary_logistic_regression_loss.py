@@ -2,7 +2,7 @@
 import torch
 import torch.nn as nn
 
-from ..builder import LOSSES
+from mmaction.registry import MODELS
 
 
 def binary_logistic_regression_loss(reg_score,
@@ -29,7 +29,7 @@ def binary_logistic_regression_loss(reg_score,
     return loss
 
 
-@LOSSES.register_module()
+@MODELS.register_module()
 class BinaryLogisticRegressionLoss(nn.Module):
     """Binary Logistic Regression Loss.
 

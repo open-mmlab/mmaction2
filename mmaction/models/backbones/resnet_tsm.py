@@ -4,7 +4,7 @@ import torch.nn as nn
 from mmcv.cnn import NonLocal3d
 from torch.nn.modules.utils import _ntuple
 
-from ..builder import BACKBONES
+from mmaction.registry import MODELS
 from .resnet import ResNet
 
 
@@ -122,7 +122,7 @@ class TemporalShift(nn.Module):
         return out.view(n, c, h, w)
 
 
-@BACKBONES.register_module()
+@MODELS.register_module()
 class ResNetTSM(ResNet):
     """ResNet backbone for TSM.
 

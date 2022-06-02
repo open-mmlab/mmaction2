@@ -1,18 +1,15 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import copy
-import os
 import os.path as osp
 from collections import defaultdict
-from datetime import datetime
 
-import mmcv
 import numpy as np
-from mmcv.utils import print_log
+from mmengine.dataset import BaseDataset
+from mmengine.utils import check_file_exist
+from mmengine.fileio import load
+from mmengine.logging import MMLogger
 
-from ..core.evaluation.ava_utils import ava_eval, read_labelmap, results2csv
-from ..utils import get_root_logger
-from .base import BaseDataset
-from .builder import DATASETS
+from mmaction.registry import DATASETS
+from ..core.evaluation.ava_utils import read_labelmap
 
 
 @DATASETS.register_module()
@@ -63,9 +60,8 @@ class AVADataset(BaseDataset):
         filename_tmpl (str): Template for each filename.
             Default: 'img_{:05}.jpg'.
         start_index (int): Specify a start index for frames in consideration of
-            different filename format. However, when taking videos as input,
-            it should be set to 0, since frames loaded from videos count
-            from 0. Default: 0.
+            different filename format. However, when taking frames as input,
+            it should be set to 1, since frames from 1. Default: 1.
         proposal_file (str): Path to the proposal file like
             ``ava_dense_proposals_{train, val}.FAIR.recall_93.9.pkl``.
             Default: None.
@@ -80,7 +76,7 @@ class AVADataset(BaseDataset):
         custom_classes (list[int]): A subset of class ids from origin dataset.
             Please note that 0 should NOT be selected, and ``num_classes``
             should be equal to ``len(custom_classes) + 1``
-        data_prefix (str): Path to a directory where videos are held.
+        data_prefix (dict): Path to a directory where frames are held.
             Default: None.
         test_mode (bool): Store True when building test or validation dataset.
             Default: False.
@@ -98,22 +94,21 @@ class AVADataset(BaseDataset):
                  ann_file,
                  exclude_file,
                  pipeline,
-                 label_file=None,
+                 label_file,
                  filename_tmpl='img_{:05}.jpg',
-                 start_index=0,
+                 start_index=1,
                  proposal_file=None,
                  person_det_score_thr=0.9,
                  num_classes=81,
                  custom_classes=None,
-                 data_prefix=None,
+                 data_prefix=dict(img=None),
                  test_mode=False,
                  modality='RGB',
                  num_max_proposals=1000,
                  timestamp_start=900,
                  timestamp_end=1800,
-                 fps=30):
-        # since it inherits from `BaseDataset`, some arguments
-        # should be assigned before performing `load_annotations()`
+                 fps=30,
+                 **kwargs):
         self._FPS = fps  # Keep this as standard
         self.custom_classes = custom_classes
         if custom_classes is not None:
@@ -122,7 +117,7 @@ class AVADataset(BaseDataset):
             _, class_whitelist = read_labelmap(open(label_file))
             assert set(custom_classes).issubset(class_whitelist)
 
-            self.custom_classes = tuple([0] + custom_classes)
+            self.custom_classes = list([0] + custom_classes)
         self.exclude_file = exclude_file
         self.label_file = label_file
         self.proposal_file = proposal_file
@@ -135,27 +130,18 @@ class AVADataset(BaseDataset):
         self.num_max_proposals = num_max_proposals
         self.timestamp_start = timestamp_start
         self.timestamp_end = timestamp_end
-        self.logger = get_root_logger()
-        super().__init__(
-            ann_file,
-            pipeline,
-            data_prefix,
-            test_mode,
-            start_index=start_index,
-            modality=modality,
-            num_classes=num_classes)
+        self.start_index = start_index
+        self.modality = modality
+        super().__init__(ann_file,
+                         pipeline=pipeline,
+                         data_prefix=data_prefix,
+                         test_mode=test_mode,
+                         **kwargs)
 
         if self.proposal_file is not None:
-            self.proposals = mmcv.load(self.proposal_file)
+            self.proposals = load(self.proposal_file)
         else:
             self.proposals = None
-
-        if not test_mode:
-            valid_indexes = self.filter_exclude_file()
-            self.logger.info(
-                f'{len(valid_indexes)} out of {len(self.video_infos)} '
-                f'frames are valid.')
-            self.video_infos = [self.video_infos[i] for i in valid_indexes]
 
     def parse_img_record(self, img_records):
         """Merge image records of the same entity at the same time.
@@ -204,27 +190,10 @@ class AVADataset(BaseDataset):
         entity_ids = np.stack(entity_ids)
         return bboxes, labels, entity_ids
 
-    def filter_exclude_file(self):
-        """Filter out records in the exclude_file."""
-        valid_indexes = []
-        if self.exclude_file is None:
-            valid_indexes = list(range(len(self.video_infos)))
-        else:
-            exclude_video_infos = [
-                x.strip().split(',') for x in open(self.exclude_file)
-            ]
-            for i, video_info in enumerate(self.video_infos):
-                valid_indexes.append(i)
-                for video_id, timestamp in exclude_video_infos:
-                    if (video_info['video_id'] == video_id
-                            and video_info['timestamp'] == int(timestamp)):
-                        valid_indexes.pop()
-                        break
-        return valid_indexes
-
-    def load_annotations(self):
+    def load_data_list(self):
         """Load AVA annotations."""
-        video_infos = []
+        check_file_exist(self.ann_file)
+        data_list = []
         records_dict_by_img = defaultdict(list)
         with open(self.ann_file, 'r') as fin:
             for line in fin:
@@ -261,8 +230,8 @@ class AVADataset(BaseDataset):
             ann = dict(
                 gt_bboxes=bboxes, gt_labels=labels, entity_ids=entity_ids)
             frame_dir = video_id
-            if self.data_prefix is not None:
-                frame_dir = osp.join(self.data_prefix, frame_dir)
+            if self.data_prefix['img'] is not None:
+                frame_dir = osp.join(self.data_prefix['img'], frame_dir)
             video_info = dict(
                 frame_dir=frame_dir,
                 video_id=video_id,
@@ -271,25 +240,49 @@ class AVADataset(BaseDataset):
                 shot_info=shot_info,
                 fps=self._FPS,
                 ann=ann)
-            video_infos.append(video_info)
+            data_list.append(video_info)
 
-        return video_infos
+        return data_list
 
-    def prepare_train_frames(self, idx):
-        """Prepare the frames for training given the index."""
-        results = copy.deepcopy(self.video_infos[idx])
-        img_key = results['img_key']
+    def filter_data(self):
+        """Filter out records in the exclude_file."""
+        valid_indexes = []
+        if self.exclude_file is None:
+            valid_indexes = list(range(len(self.data_list)))
+        else:
+            exclude_video_infos = [
+                x.strip().split(',') for x in open(self.exclude_file)
+            ]
+            for i, data_info in enumerate(self.data_list):
+                valid_indexes.append(i)
+                for video_id, timestamp in exclude_video_infos:
+                    if (data_info['video_id'] == video_id
+                            and data_info['timestamp'] == int(timestamp)):
+                        valid_indexes.pop()
+                        break
 
-        results['filename_tmpl'] = self.filename_tmpl
-        results['modality'] = self.modality
-        results['start_index'] = self.start_index
-        results['timestamp_start'] = self.timestamp_start
-        results['timestamp_end'] = self.timestamp_end
+        logger = MMLogger.get_current_instance()
+        logger.info(
+            f'{len(valid_indexes)} out of {len(self.data_list)} '
+            f'frames are valid.')
+        data_list = [self.data_list[i] for i in valid_indexes]
+
+        return data_list
+
+    def get_data_info(self, idx: int) -> dict:
+        data_info = super().get_data_info(idx)
+        img_key = data_info['img_key']
+
+        data_info['filename_tmpl'] = self.filename_tmpl
+        data_info['modality'] = self.modality
+        data_info['start_index'] = self.start_index
+        data_info['timestamp_start'] = self.timestamp_start
+        data_info['timestamp_end'] = self.timestamp_end
 
         if self.proposals is not None:
             if img_key not in self.proposals:
-                results['proposals'] = np.array([[0, 0, 1, 1]])
-                results['scores'] = np.array([1])
+                data_info['proposals'] = np.array([[0, 0, 1, 1]])
+                data_info['scores'] = np.array([1])
             else:
                 proposals = self.proposals[img_key]
                 assert proposals.shape[-1] in [4, 5]
@@ -298,96 +291,15 @@ class AVADataset(BaseDataset):
                     positive_inds = (proposals[:, 4] >= thr)
                     proposals = proposals[positive_inds]
                     proposals = proposals[:self.num_max_proposals]
-                    results['proposals'] = proposals[:, :4]
-                    results['scores'] = proposals[:, 4]
+                    data_info['proposals'] = proposals[:, :4]
+                    data_info['scores'] = proposals[:, 4]
                 else:
                     proposals = proposals[:self.num_max_proposals]
-                    results['proposals'] = proposals
+                    data_info['proposals'] = proposals
 
-        ann = results.pop('ann')
-        results['gt_bboxes'] = ann['gt_bboxes']
-        results['gt_labels'] = ann['gt_labels']
-        results['entity_ids'] = ann['entity_ids']
+        ann = data_info.pop('ann')
+        data_info['gt_bboxes'] = ann['gt_bboxes']
+        data_info['gt_labels'] = ann['gt_labels']
+        data_info['entity_ids'] = ann['entity_ids']
 
-        return self.pipeline(results)
-
-    def prepare_test_frames(self, idx):
-        """Prepare the frames for testing given the index."""
-        results = copy.deepcopy(self.video_infos[idx])
-        img_key = results['img_key']
-
-        results['filename_tmpl'] = self.filename_tmpl
-        results['modality'] = self.modality
-        results['start_index'] = self.start_index
-        results['timestamp_start'] = self.timestamp_start
-        results['timestamp_end'] = self.timestamp_end
-
-        if self.proposals is not None:
-            if img_key not in self.proposals:
-                results['proposals'] = np.array([[0, 0, 1, 1]])
-                results['scores'] = np.array([1])
-            else:
-                proposals = self.proposals[img_key]
-                assert proposals.shape[-1] in [4, 5]
-                if proposals.shape[-1] == 5:
-                    thr = min(self.person_det_score_thr, max(proposals[:, 4]))
-                    positive_inds = (proposals[:, 4] >= thr)
-                    proposals = proposals[positive_inds]
-                    proposals = proposals[:self.num_max_proposals]
-                    results['proposals'] = proposals[:, :4]
-                    results['scores'] = proposals[:, 4]
-                else:
-                    proposals = proposals[:self.num_max_proposals]
-                    results['proposals'] = proposals
-
-        ann = results.pop('ann')
-        # Follow the mmdet variable naming style.
-        results['gt_bboxes'] = ann['gt_bboxes']
-        results['gt_labels'] = ann['gt_labels']
-        results['entity_ids'] = ann['entity_ids']
-
-        return self.pipeline(results)
-
-    def dump_results(self, results, out):
-        """Dump predictions into a csv file."""
-        assert out.endswith('csv')
-        results2csv(self, results, out, self.custom_classes)
-
-    def evaluate(self,
-                 results,
-                 metrics=('mAP', ),
-                 metric_options=None,
-                 logger=None):
-        """Evaluate the prediction results and report mAP."""
-        assert len(metrics) == 1 and metrics[0] == 'mAP', (
-            'For evaluation on AVADataset, you need to use metrics "mAP" '
-            'See https://github.com/open-mmlab/mmaction2/pull/567 '
-            'for more info.')
-        time_now = datetime.now().strftime('%Y%m%d_%H%M%S')
-        temp_file = f'AVA_{time_now}_result.csv'
-        results2csv(self, results, temp_file, self.custom_classes)
-
-        ret = {}
-        for metric in metrics:
-            msg = f'Evaluating {metric} ...'
-            if logger is None:
-                msg = '\n' + msg
-            print_log(msg, logger=logger)
-
-            eval_result = ava_eval(
-                temp_file,
-                metric,
-                self.label_file,
-                self.ann_file,
-                self.exclude_file,
-                custom_classes=self.custom_classes)
-            log_msg = []
-            for k, v in eval_result.items():
-                log_msg.append(f'\n{k}\t{v: .4f}')
-            log_msg = ''.join(log_msg)
-            print_log(log_msg, logger=logger)
-            ret.update(eval_result)
-
-        os.remove(temp_file)
-
-        return ret
+        return data_info

@@ -1,9 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
-
-from mmengine.registry import OPTIMIZER_CONSTRUCTORS
 from mmengine.optim import DefaultOptimizerConstructor
 from mmengine.utils.parrots_wrapper import SyncBatchNorm_, _BatchNorm, _ConvNd
+
+from mmaction.registry import OPTIMIZER_CONSTRUCTORS
 
 
 @OPTIMIZER_CONSTRUCTORS.register_module()

@@ -4,7 +4,7 @@ from copy import deepcopy
 import torch.nn as nn
 from torch.utils import checkpoint as cp
 
-from ..builder import BACKBONES
+from mmaction.registry import MODELS
 from ..common import TAM
 from .resnet import Bottleneck, ResNet
 
@@ -70,7 +70,7 @@ class TABlock(nn.Module):
         return out
 
 
-@BACKBONES.register_module()
+@MODELS.register_module()
 class TANet(ResNet):
     """Temporal Adaptive Network (TANet) backbone.
 

@@ -4,15 +4,12 @@ import torch.nn as nn
 from mmcv.cnn import ConvModule, constant_init, kaiming_init
 from mmengine.utils.parrots_wrapper import _BatchNorm
 
-try:
-    from mmdet.models.builder import SHARED_HEADS as MMDET_SHARED_HEADS
-    mmdet_imported = True
-except (ImportError, ModuleNotFoundError):
-    mmdet_imported = False
+from mmaction.registry import MODELS
 
 # Note: All these heads take 5D Tensors as input (N, C, T, H, W)
 
 
+@MODELS.register_module()
 class ACRNHead(nn.Module):
     """ACRN Head: Tile + 1x1 convolution + 3x3 convolution.
 
@@ -128,7 +125,3 @@ class ACRNHead(nn.Module):
             new_feat = conv(new_feat)
 
         return new_feat
-
-
-if mmdet_imported:
-    MMDET_SHARED_HEADS.register_module()(ACRNHead)

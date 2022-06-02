@@ -5,11 +5,11 @@ from collections import OrderedDict
 
 import mmcv
 import numpy as np
-from mmcv.utils import print_log
+from mmengine.logging import print_log
+from mmengine.dataset import BaseDataset
 
+from mmaction.registry import DATASETS
 from ..core import mean_average_precision
-from .base import BaseDataset
-from .builder import DATASETS
 
 
 @DATASETS.register_module()

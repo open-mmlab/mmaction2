@@ -7,9 +7,9 @@ from mmcv.cnn import (ConvModule, Swish, build_activation_layer, constant_init,
                       kaiming_init)
 from mmengine.runner import load_checkpoint
 from mmengine.utils.parrots_wrapper import _BatchNorm
+from mmengine.logging import MMLogger
 
-from ...utils import get_root_logger
-from ..builder import BACKBONES
+from mmaction.registry import MODELS
 
 
 class SEModule(nn.Module):
@@ -167,7 +167,7 @@ class BlockX3D(nn.Module):
 
 
 # We do not support initialize with 2D pretrain weight for X3D
-@BACKBONES.register_module()
+@MODELS.register_module()
 class X3D(nn.Module):
     """X3D backbone. https://arxiv.org/pdf/2004.04730.pdf.
 
@@ -477,7 +477,7 @@ class X3D(nn.Module):
         """Initiate the parameters either from existing checkpoint or from
         scratch."""
         if isinstance(self.pretrained, str):
-            logger = get_root_logger()
+            logger = MMLogger.get_current_instance()
             logger.info(f'load model from: {self.pretrained}')
 
             load_checkpoint(self, self.pretrained, strict=False, logger=logger)

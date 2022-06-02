@@ -3,11 +3,11 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from ..builder import LOSSES
+from mmaction.registry import MODELS
 from .ohem_hinge_loss import OHEMHingeLoss
 
 
-@LOSSES.register_module()
+@MODELS.register_module()
 class SSNLoss(nn.Module):
 
     @staticmethod

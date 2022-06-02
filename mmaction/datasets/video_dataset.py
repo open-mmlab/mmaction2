@@ -5,7 +5,7 @@ import os.path as osp
 from mmengine.dataset import BaseDataset
 from mmengine.utils import check_file_exist
 
-from .builder import DATASETS
+from mmaction.registry import DATASETS
 
 
 @DATASETS.register_module()

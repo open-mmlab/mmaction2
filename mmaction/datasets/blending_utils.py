@@ -5,7 +5,7 @@ import torch
 import torch.nn.functional as F
 from torch.distributions.beta import Beta
 
-from .builder import BLENDINGS
+from mmaction.registry import TASK_UTILS
 
 __all__ = ['BaseMiniBatchBlending', 'MixupBlending', 'CutmixBlending']
 
@@ -62,7 +62,7 @@ class BaseMiniBatchBlending(metaclass=ABCMeta):
         return mixed_imgs, data_samples
 
 
-@BLENDINGS.register_module()
+@TASK_UTILS.register_module()
 class MixupBlending(BaseMiniBatchBlending):
     """Implementing Mixup in a mini-batch.
 
@@ -93,7 +93,7 @@ class MixupBlending(BaseMiniBatchBlending):
         return mixed_imgs, mixed_label
 
 
-@BLENDINGS.register_module()
+@TASK_UTILS.register_module()
 class CutmixBlending(BaseMiniBatchBlending):
     """Implementing Cutmix in a mini-batch.
 

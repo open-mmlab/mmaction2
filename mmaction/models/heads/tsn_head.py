@@ -2,11 +2,11 @@
 import torch.nn as nn
 from mmcv.cnn import normal_init
 
-from ..builder import HEADS
+from mmaction.registry import MODELS
 from .base import AvgConsensus, BaseHead
 
 
-@HEADS.register_module()
+@MODELS.register_module()
 class TSNHead(BaseHead):
     """Class head for TSN.
 

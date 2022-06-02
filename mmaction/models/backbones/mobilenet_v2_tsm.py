@@ -1,10 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from ..builder import BACKBONES
+from mmaction.registry import MODELS
 from .mobilenet_v2 import InvertedResidual, MobileNetV2
 from .resnet_tsm import TemporalShift
 
 
-@BACKBONES.register_module()
+
+@MODELS.register_module()
 class MobileNetV2TSM(MobileNetV2):
     """MobileNetV2 backbone for TSM.
 

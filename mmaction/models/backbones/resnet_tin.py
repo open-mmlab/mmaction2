@@ -2,8 +2,9 @@
 import torch
 import torch.nn as nn
 
-from ..builder import BACKBONES
+from mmaction.registry import MODELS
 from .resnet_tsm import ResNetTSM
+
 
 
 def linear_sampler(data, offset):
@@ -303,7 +304,7 @@ class TemporalInterlace(nn.Module):
         return x_out
 
 
-@BACKBONES.register_module()
+@MODELS.register_module()
 class ResNetTIN(ResNetTSM):
     """ResNet backbone for TIN.
 

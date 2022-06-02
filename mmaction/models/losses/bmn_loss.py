@@ -3,11 +3,11 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from ..builder import LOSSES
+from mmaction.registry import MODELS
 from .binary_logistic_regression_loss import binary_logistic_regression_loss
 
 
-@LOSSES.register_module()
+@MODELS.register_module()
 class BMNLoss(nn.Module):
     """BMN Loss.
 

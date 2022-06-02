@@ -5,15 +5,15 @@ import re
 import warnings
 from operator import itemgetter
 
-import mmcv
+import mmengine
 import numpy as np
 import torch
 from mmcv.parallel import collate, scatter
-from mmcv.runner import load_checkpoint
+from mmengine.runner import load_checkpoint
+from mmengine.dataset import Compose
 
 from mmaction.core import OutputHook
-from mmaction.datasets.pipelines import Compose
-from mmaction.models import build_recognizer
+from mmaction.registry import MODELS
 
 
 def init_recognizer(config, checkpoint=None, device='cuda:0', **kwargs):
@@ -36,14 +36,14 @@ def init_recognizer(config, checkpoint=None, device='cuda:0', **kwargs):
                       'arbitrarily. ')
 
     if isinstance(config, str):
-        config = mmcv.Config.fromfile(config)
-    elif not isinstance(config, mmcv.Config):
+        config = mmengine.Config.fromfile(config)
+    elif not isinstance(config, mmengine.Config):
         raise TypeError('config must be a filename or Config object, '
                         f'but got {type(config)}')
 
     # pretrained model is unnecessary since we directly load checkpoint later
     config.model.backbone.pretrained = None
-    model = build_recognizer(config.model, test_cfg=config.get('test_cfg'))
+    model = MODELS.build(config.model, test_cfg=config.get('test_cfg'))
 
     if checkpoint is not None:
         load_checkpoint(model, checkpoint, map_location='cpu')

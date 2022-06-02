@@ -5,7 +5,7 @@ from typing import Any, Optional, Sequence, Tuple
 from mmengine.evaluator import BaseMetric
 
 from mmaction.core import mean_class_accuracy, top_k_accuracy
-from .builder import METRICS
+from mmaction.registry import METRICS
 
 
 @METRICS.register_module()

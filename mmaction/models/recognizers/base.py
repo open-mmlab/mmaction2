@@ -8,7 +8,7 @@ import torch.nn as nn
 from mmcv.runner import BaseModule
 from mmcv.runner import auto_fp16
 from mmaction.core import ActionDataSample, stack_batch
-from ..builder import build_backbone, build_head, build_neck
+from mmaction.registry import MODELS, TASK_UTILS
 
 
 class BaseRecognizer(BaseModule, metaclass=ABCMeta):
@@ -68,13 +68,13 @@ class BaseRecognizer(BaseModule, metaclass=ABCMeta):
             self.backbone = timm.create_model(backbone_type, **backbone)
             self.backbone_from = 'timm'
         else:
-            self.backbone = build_backbone(backbone)
+            self.backbone = MODELS.build(backbone)
 
         if neck is not None:
-            self.neck = build_neck(neck)
+            self.neck = MODELS.build(neck)
 
         if cls_head is not None:
-            self.cls_head = build_head(cls_head)
+            self.cls_head = MODELS.build(cls_head)
 
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
@@ -93,9 +93,7 @@ class BaseRecognizer(BaseModule, metaclass=ABCMeta):
         # mini-batch blending, e.g. mixup, cutmix, etc.
         self.blending = None
         if train_cfg is not None and 'blending' in train_cfg:
-            from mmengine.registry import build_from_cfg
-            from mmaction.datasets.builder import BLENDINGS
-            self.blending = build_from_cfg(train_cfg['blending'], BLENDINGS)
+            self.blending = TASK_UTILS.build(train_cfg['blending'])
 
         self.fp16_enabled = False
 
