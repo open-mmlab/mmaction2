@@ -17,14 +17,6 @@
     </sup>
   </div>
 
-[![Documentation](https://readthedocs.org/projects/mmaction2/badge/?version=latest)](https://mmaction2.readthedocs.io/en/latest/)
-[![actions](https://github.com/open-mmlab/mmaction2/workflows/build/badge.svg)](https://github.com/open-mmlab/mmaction2/actions)
-[![codecov](https://codecov.io/gh/open-mmlab/mmaction2/branch/master/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmaction2)
-[![PyPI](https://img.shields.io/pypi/v/mmaction2)](https://pypi.org/project/mmaction2/)
-[![LICENSE](https://img.shields.io/github/license/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/blob/master/LICENSE)
-[![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
-[![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
-
 [📘Documentation](https://mmaction2.readthedocs.io/en/latest/) |
 [🛠️Installation](https://mmaction2.readthedocs.io/en/latest/install.html) |
 [👀Model Zoo](https://mmaction2.readthedocs.io/en/latest/modelzoo.html) |
@@ -34,14 +26,22 @@
 
 </div>
 
+## Introduction
+
 English | [简体中文](/README_zh-CN.md)
 
-## Introduction
+[![Documentation](https://readthedocs.org/projects/mmaction2/badge/?version=latest)](https://mmaction2.readthedocs.io/en/latest/)
+[![actions](https://github.com/open-mmlab/mmaction2/workflows/build/badge.svg)](https://github.com/open-mmlab/mmaction2/actions)
+[![codecov](https://codecov.io/gh/open-mmlab/mmaction2/branch/master/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmaction2)
+[![PyPI](https://img.shields.io/pypi/v/mmaction2)](https://pypi.org/project/mmaction2/)
+[![LICENSE](https://img.shields.io/github/license/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/blob/master/LICENSE)
+[![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
+[![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 
 MMAction2 is an open-source toolbox for video understanding based on PyTorch.
 It is a part of the [OpenMMLab](http://openmmlab.org/) project.
 
-The master branch works with **PyTorch 1.5+**.
+The master branch works with **PyTorch 1.3+**.
 
 <div align="center">
   <div style="float:left;margin-right:10px;">
@@ -70,7 +70,7 @@ The master branch works with **PyTorch 1.5+**.
 
 - **Well tested and documented**: We provide detailed documentation and API reference, as well as unit tests.
 
-## What's New
+## Updates
 
 - (2022-03-04) We support **Multigrid** on Kinetics400, achieve 76.07% Top-1 accuracy and accelerate training speed.
 - (2021-11-24) We support **2s-AGCN** on NTU60 XSub, achieve 86.06% Top-1 accuracy on joint stream and 86.89% Top-1 accuracy on bone stream respectively.
@@ -271,15 +271,9 @@ Currently, there are many research works and projects built on MMAction2 by user
 
 etc., check [projects.md](docs/projects.md) to see all related projects.
 
-## Contributing
+## License
 
-We appreciate all contributions to improve MMAction2. Please refer to [CONTRIBUTING.md](https://github.com/open-mmlab/mmcv/blob/master/CONTRIBUTING.md) in MMCV for more details about the contributing guideline.
-
-## Acknowledgement
-
-MMAction2 is an open-source project that is contributed by researchers and engineers from various colleges and companies.
-We appreciate all the contributors who implement their methods or add new features and users who give valuable feedback.
-We wish that the toolbox and benchmark could serve the growing research community by providing a flexible toolkit to reimplement existing methods and develop their new models.
+This project is released under the [Apache 2.0 license](LICENSE).
 
 ## Citation
 
@@ -294,9 +288,15 @@ If you find this project useful in your research, please consider cite:
 }
 ```
 
-## License
+## Contributing
 
-This project is released under the [Apache 2.0 license](LICENSE).
+We appreciate all contributions to improve MMAction2. Please refer to [CONTRIBUTING.md](https://github.com/open-mmlab/mmcv/blob/master/CONTRIBUTING.md) in MMCV for more details about the contributing guideline.
+
+## Acknowledgement
+
+MMAction2 is an open-source project that is contributed by researchers and engineers from various colleges and companies.
+We appreciate all the contributors who implement their methods or add new features and users who give valuable feedback.
+We wish that the toolbox and benchmark could serve the growing research community by providing a flexible toolkit to reimplement existing methods and develop their new models.
 
 ## Projects in OpenMMLab
 
