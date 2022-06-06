@@ -93,7 +93,7 @@ test_dataloader = dict(
 val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 
-val_cfg = dict(interval=1)
+val_cfg = dict(interval=5)
 test_cfg = dict()
 
 default_hooks = dict(

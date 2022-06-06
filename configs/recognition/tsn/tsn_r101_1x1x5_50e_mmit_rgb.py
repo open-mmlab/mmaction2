@@ -3,6 +3,7 @@ _base_ = [
 ]
 
 # model settings
+num_classes = 313
 model = dict(
     type='Recognizer2D',
     backbone=dict(
@@ -12,7 +13,7 @@ model = dict(
         norm_eval=False),
     cls_head=dict(
         type='TSNHead',
-        num_classes=313,
+        num_classes=num_classes,
         in_channels=2048,
         spatial_type='avg',
         consensus=dict(type='AvgConsensus', dim=1),
@@ -48,8 +49,7 @@ train_pipeline = [
     dict(type='Flip', flip_ratio=0.5),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs', 'label'])
+    dict(type='PackActionInputs')
 ]
 val_pipeline = [
     dict(type='DecordInit'),
@@ -64,8 +64,7 @@ val_pipeline = [
     dict(type='CenterCrop', crop_size=224),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs'])
+    dict(type='PackActionInputs')
 ]
 test_pipeline = [
     dict(type='DecordInit'),
@@ -80,37 +79,57 @@ test_pipeline = [
     dict(type='CenterCrop', crop_size=256),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs'])
+    dict(type='PackActionInputs')
 ]
 
-data = dict(
-    videos_per_gpu=16,
-    workers_per_gpu=2,
-    test_dataloader=dict(videos_per_gpu=1),
-    train=dict(
+train_dataloader = dict(
+    batch_size=16,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=True),
+    dataset=dict(
         type=dataset_type,
         ann_file=ann_file_train,
-        data_prefix=data_root,
+        data_prefix=dict(img=data_root),
         pipeline=train_pipeline,
         multi_class=True,
-        num_classes=313),
-    val=dict(
+        num_classes=313))
+val_dataloader = dict(
+    batch_size=32,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
         type=dataset_type,
         ann_file=ann_file_val,
-        data_prefix=data_root_val,
+        data_prefix=dict(img=data_root_val),
         pipeline=val_pipeline,
         multi_class=True,
-        num_classes=313),
-    test=dict(
+        num_classes=313,
+        test_mode=True))
+test_dataloader = dict(
+    batch_size=1,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
         type=dataset_type,
         ann_file=ann_file_test,
-        data_prefix=data_root_val,
+        data_prefix=dict(img=data_root_val),
         pipeline=test_pipeline,
         multi_class=True,
-        num_classes=313))
-evaluation = dict(interval=5, metrics=['mmit_mean_average_precision'])
+        num_classes=313,
+        test_mode=True))
 
-# runtime settings
-checkpoint_config = dict(interval=5)
-work_dir = './work_dirs/tsn_r101_1x1x5_50e_mmit_rgb/'
+val_evaluator = dict(
+    type='AccMetric',
+    metrics=['mmit_mean_average_precision'],
+    num_classes=num_classes,
+    prefix="prec",
+)
+test_evaluator = val_evaluator
+
+val_cfg = dict(interval=5)
+test_cfg = dict()
+
+default_hooks = dict(checkpoint=dict(interval=5))

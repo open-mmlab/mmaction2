@@ -79,19 +79,34 @@ data = dict(
         ann_file=ann_file_test,
         data_prefix=data_root_val,
         pipeline=test_pipeline))
-evaluation = dict(
-    interval=1, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+
+val_evaluator = dict(type='AccMetric')
+test_evaluator = val_evaluator
+
+val_cfg = dict(interval=5)
+test_cfg = dict()
 
 # optimizer
 optimizer = dict(
     lr=0.001,  # this lr is used for 8 gpus
 )
-optimizer_config = dict(grad_clip=dict(max_norm=20, norm_type=2))
-# learning policy
-lr_config = dict(policy='step', step=[15, 30])
-total_epochs = 40
 
+# learning policy
+param_scheduler = [
+    dict(
+        type='MultiStepLR',
+        begin=0,
+        end=40,
+        by_epoch=True,
+        milestones=[15, 30],
+        gamma=0.1)
+]
+
+train_cfg = dict(by_epoch=True, max_epochs=40)
+
+default_hooks = dict(
+    optimizer=dict(grad_clip=dict(max_norm=20, norm_type=2)),
+    checkpoint=dict(interval=4))
 # runtime settings
-work_dir = './work_dirs/slowonly_k400_pretrained_r50_8x4x1_40e_ucf101_rgb'
+
 load_from = 'https://download.openmmlab.com/mmaction/recognition/slowonly/slowonly_r50_8x8x1_256e_kinetics400_rgb/slowonly_r50_8x8x1_256e_kinetics400_rgb_20200703-a79c555a.pth'  # noqa: E501
-find_unused_parameters = False

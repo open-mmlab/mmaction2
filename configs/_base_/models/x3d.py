@@ -8,7 +8,8 @@ model = dict(
         num_classes=400,
         spatial_type='avg',
         dropout_ratio=0.5,
-        fc1_bias=False),
+        fc1_bias=False,
+        average_clips='prob'),
     # model training and testing settings
     train_cfg=None,
-    test_cfg=dict(average_clips='prob'))
+    test_cfg=None)

@@ -1,10 +1,13 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import copy
 from collections import OrderedDict
 from typing import Any, Optional, Sequence, Tuple
 
+import numpy as np
 from mmengine.evaluator import BaseMetric
 
-from mmaction.core import mean_class_accuracy, top_k_accuracy
+from mmaction.core import (mean_average_precision, mean_class_accuracy,
+                           mmit_mean_average_precision, top_k_accuracy)
 from mmaction.registry import METRICS
 
 
@@ -14,14 +17,22 @@ class AccMetric(BaseMetric):
     default_prefix: Optional[str] = 'acc'
 
     def __init__(self,
-                 options=('top1', 'top5', 'mean1'),
+                 metrics=('top_k_accuracy', 'mean_class_accuracy'),
                  collect_device: str = 'cpu',
-                 prefix: Optional[str] = None):
+                 metric_options: Optional[dict] = dict(
+                     top_k_accuracy=dict(topk=(1, 5))),
+                 prefix: Optional[str] = None,
+                 num_classes: Optional[int] = None):
         super().__init__(collect_device=collect_device, prefix=prefix)
         # coco evaluation metrics
-        for opt in options:
-            assert opt in ['top1', 'top5', 'mean1']
-        self.options = options
+        for metric in metrics:
+            assert metric in [
+                'top_k_accuracy', 'mean_class_accuracy',
+                'mmit_mean_average_precision', 'mean_average_precision'
+            ]
+        self.metrics = metrics
+        self.metric_options = metric_options
+        self.num_classes = num_classes
 
     def process(self, data_batch: Sequence[Tuple[Any, dict]],
                 predictions: Sequence[dict]) -> None:
@@ -49,8 +60,51 @@ class AccMetric(BaseMetric):
         preds = [x['pred'] for x in results]
         labels = [x['label'] for x in results]
 
-        top1, top5 = top_k_accuracy(preds, labels, (1, 5))
-        mean1 = mean_class_accuracy(preds, labels)
+        eval_results = OrderedDict()
+        metric_options = copy.deepcopy(self.metric_options)
+        for metric in self.metrics:
+            if metric == 'top_k_accuracy':
+                topk = metric_options.setdefault('top_k_accuracy',
+                                                 {}).setdefault(
+                                                     'topk', (1, 5))
 
-        eval_results = OrderedDict(top1=top1, top5=top5, mean1=mean1)
+                if not isinstance(topk, (int, tuple)):
+                    raise TypeError('topk must be int or tuple of int, '
+                                    f'but got {type(topk)}')
+
+                if isinstance(topk, int):
+                    topk = (topk, )
+
+                top_k_acc = top_k_accuracy(preds, labels, topk)
+                for k, acc in zip(topk, top_k_acc):
+                    eval_results[f'top{k}'] = acc
+
+            if metric == 'mean_class_accuracy':
+                mean1 = mean_class_accuracy(preds, labels)
+                eval_results['mean1'] = mean1
+
+            if metric in [
+                    'mean_average_precision',
+                    'mmit_mean_average_precision',
+            ]:
+                gt_labels_arrays = [
+                    self.label2array(self.num_classes, label)
+                    for label in labels
+                ]
+
+                if metric == 'mean_average_precision':
+                    mAP = mean_average_precision(results, gt_labels_arrays)
+                    eval_results['mean_average_precision'] = mAP
+
+                elif metric == 'mmit_mean_average_precision':
+                    mAP = mmit_mean_average_precision(results,
+                                                      gt_labels_arrays)
+                    eval_results['mmit_mean_average_precision'] = mAP
+
         return eval_results
+
+    @staticmethod
+    def label2array(num, label):
+        arr = np.zeros(num, dtype=np.float32)
+        arr[label] = 1.
+        return arr

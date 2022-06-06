@@ -2,12 +2,18 @@ _base_ = ['./slowfast_r50_8x8x1_256e_kinetics400_rgb.py']
 
 model = dict(backbone=dict(slow_pathway=dict(lateral_norm=True)))
 
-lr_config = dict(
-    policy='step',
-    min_lr=0,
-    warmup='linear',
-    warmup_by_epoch=True,
-    warmup_iters=34,
-    step=[94, 154, 196])
-
-work_dir = './work_dirs/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr'
+param_scheduler = [
+    dict(
+        type='LinearLR',
+        start_factor=0.1,
+        by_epoch=True,  # 按迭代更新学习率
+        begin=0,
+        end=34),  # 预热前 500 次迭代
+    dict(
+        type='MultiStepLR',
+        begin=0,
+        end=256,
+        by_epoch=True,
+        milestones=[94, 154, 196],
+        gamma=0.1)
+]

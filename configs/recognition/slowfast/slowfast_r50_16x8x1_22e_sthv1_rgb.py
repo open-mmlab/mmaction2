@@ -30,8 +30,7 @@ train_pipeline = [
     dict(type='Flip', flip_ratio=0.5, flip_label_map=sthv1_flip_label_map),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs', 'label'])
+    dict(type='PackActionInputs')
 ]
 val_pipeline = [
     dict(
@@ -45,8 +44,7 @@ val_pipeline = [
     dict(type='CenterCrop', crop_size=256),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs'])
+    dict(type='PackActionInputs')
 ]
 test_pipeline = [
     dict(
@@ -60,52 +58,75 @@ test_pipeline = [
     dict(type='CenterCrop', crop_size=256),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs'])
+    dict(type='PackActionInputs')
 ]
-
-data = dict(
-    videos_per_gpu=4,
-    workers_per_gpu=2,
-    test_dataloader=dict(videos_per_gpu=1),
-    train=dict(
+train_dataloader = dict(
+    batch_size=4,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=True),
+    dataset=dict(
         type=dataset_type,
         ann_file=ann_file_train,
-        data_prefix=data_root,
+        data_prefix=dict(img=data_root),
         filename_tmpl='{:05}.jpg',
-        pipeline=train_pipeline),
-    val=dict(
+        pipeline=train_pipeline))
+val_dataloader = dict(
+    batch_size=4,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
         type=dataset_type,
         ann_file=ann_file_val,
-        data_prefix=data_root_val,
+        data_prefix=dict(img=data_root_val),
         filename_tmpl='{:05}.jpg',
-        pipeline=val_pipeline),
-    test=dict(
+        pipeline=val_pipeline,
+        test_mode=True))
+test_dataloader = dict(
+    batch_size=1,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
         type=dataset_type,
         ann_file=ann_file_test,
-        data_prefix=data_root_val,
+        data_prefix=dict(img=data_root_val),
         filename_tmpl='{:05}.jpg',
-        pipeline=test_pipeline))
+        pipeline=test_pipeline,
+        test_mode=True))
 
-evaluation = dict(
-    interval=1, metrics=['top_k_accuracy'], start=18, gpu_collect=True)
+val_evaluator = dict(type='AccMetric')
+test_evaluator = val_evaluator
+
+val_cfg = dict(interval=1)
+test_cfg = dict()
 
 # optimizer
 optimizer = dict(
     type='SGD', lr=0.06, momentum=0.9,
     weight_decay=0.000001)  # this lr is used for 8 gpus
-optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
+
 # learning policy
-lr_config = dict(
-    policy='step',
-    step=[14, 18],
-    warmup='linear',
-    warmup_by_epoch=False,
-    warmup_iters=16343 // 32)
-total_epochs = 22
+param_scheduler = [
+    dict(
+        type='LinearLR',
+        start_factor=0.1,
+        by_epoch=False,
+        begin=0,
+        end=16343 // 32),
+    dict(
+        type='MultiStepLR',
+        begin=0,
+        end=22,
+        by_epoch=True,
+        milestones=[14, 18],
+        gamma=0.1)
+]
+
+train_cfg = dict(by_epoch=True, max_epochs=22)
 
 # runtime settings
-checkpoint_config = dict(interval=1)
-work_dir = './work_dirs/slowfast_r50_16x8x1_22e_sthv1_rgb'
-load_from = 'https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb/slowfast_r50_8x8x1_256e_kinetics400_rgb_20200716-73547d2b.pth'  # noqa: E501
-find_unused_parameters = False
+default_hooks = dict(
+    optimizer=dict(grad_clip=dict(max_norm=40, norm_type=2)),
+    checkpoint=dict(interval=1))

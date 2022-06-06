@@ -15,7 +15,8 @@ model = dict(
         consensus=dict(type='AvgConsensus', dim=1),
         dropout_ratio=0.5,
         init_std=0.001,
-        is_shift=False),
+        is_shift=False,
+        average_clips='prob'),
     # model training and testing settings
     train_cfg=None,
-    test_cfg=dict(average_clips=None))
+    test_cfg=None)

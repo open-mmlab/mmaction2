@@ -30,7 +30,8 @@ model = dict(
         spatial_type='avg',
         consensus=dict(type='AvgConsensus', dim=1),
         dropout_ratio=0.5,
-        init_std=0.01),
+        init_std=0.01,
+        average_clips='prob'),
     # model training and testing settings
     train_cfg=None,
-    test_cfg=dict(average_clips='prob', fcn_test=True))
+    test_cfg=dict(fcn_test=True))

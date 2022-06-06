@@ -3,6 +3,7 @@ from typing import Dict, List
 
 import torch
 from torch import nn
+from typing_extensions import dataclass_transform
 
 from mmaction.core import ActionDataSample
 from mmaction.registry import MODELS
@@ -23,7 +24,8 @@ class Recognizer2D(BaseRecognizer):
         feats = self.extract_feat(inputs)
 
         if self.backbone_from in ['torchvision', 'timm']:
-            if len(feats.shape) == 4 and (feats.shape[2] > 1 or feats.shape[3] > 1):
+            if len(feats.shape) == 4 and (feats.shape[2] > 1
+                                          or feats.shape[3] > 1):
                 # apply adaptive avg pooling
                 feats = nn.AdaptiveAvgPool2d(1)(feats)
             feats = feats.reshape((feats.shape[0], -1))
@@ -32,19 +34,26 @@ class Recognizer2D(BaseRecognizer):
         loss_aux = None
         if self.with_neck:
             feats = [
-                each.reshape((-1, num_segs) +
-                             each.shape[1:]).transpose(1, 2).contiguous()
-                for each in feats
+                each.reshape((-1, num_segs) + each.shape[1:]).transpose(
+                    1, 2).contiguous() for each in feats
             ]
             feats, loss_aux = self.neck(feats, data_samples)
             feats = feats.squeeze(2)
             num_segs = 1
             losses.update(loss_aux)
 
-        return self.cls_head.loss(feats, data_samples,
-                                  loss_aux=loss_aux, num_segs=num_segs)
+        return self.cls_head.loss(
+            feats, data_samples, loss_aux=loss_aux, num_segs=num_segs)
 
     def predict(self, inputs, data_samples) -> List[ActionDataSample]:
+
+        if self.test_cfg is not None and self.test_cfg.get('fcn_test', False):
+            assert not self.feature_extraction
+            assert self.with_cls_head
+            return self._do_fcn_test(inputs, data_samples)
+        return self._do_test(inputs, data_samples)
+
+    def _do_test(self, inputs, data_samples) -> List[ActionDataSample]:
         batches = inputs.shape[0]
         inputs = inputs.reshape((-1, ) + inputs.shape[2:])
         num_segs = inputs.shape[0] // batches
@@ -52,7 +61,8 @@ class Recognizer2D(BaseRecognizer):
         feats = self.extract_feat(inputs)
 
         if self.backbone_from in ['torchvision', 'timm']:
-            if len(feats.shape) == 4 and (feats.shape[2] > 1 or feats.shape[3] > 1):
+            if len(feats.shape) == 4 and (feats.shape[2] > 1
+                                          or feats.shape[3] > 1):
                 # apply adaptive avg pooling
                 feats = nn.AdaptiveAvgPool2d(1)(feats)
             feats = feats.reshape((feats.shape[0], -1))
@@ -60,9 +70,8 @@ class Recognizer2D(BaseRecognizer):
 
         if self.with_neck:
             feats = [
-                each.reshape((-1, num_segs) +
-                             each.shape[1:]).transpose(1, 2).contiguous()
-                for each in feats
+                each.reshape((-1, num_segs) + each.shape[1:]).transpose(
+                    1, 2).contiguous() for each in feats
             ]
             feats, _ = self.neck(feats)
             feats = feats.squeeze(2)
@@ -89,3 +98,26 @@ class Recognizer2D(BaseRecognizer):
         # should have cls_head if not extracting features
         assert self.with_cls_head, 'cls head must be implemented.'
         return self.cls_head.predict(feats, data_samples, num_segs=num_segs)
+
+    def _do_fcn_test(self, inputs, data_samples) -> List[ActionDataSample]:
+
+        inputs = inputs.reshape((-1, ) + inputs.shape[2:])
+        num_segs = self.test_cfg.get('num_segs', self.backbone.num_segments)
+
+        if self.test_cfg.get('flip', False):
+            inputs = torch.flip(inputs, [-1])
+
+        feats = self.extract_feat(inputs)
+
+        if self.with_neck:
+            feats = [
+                each.reshape((-1, num_segs) + each.shape[1:]).transpose(
+                    1, 2).contiguous() for each in feats
+            ]
+            feats, _ = self.neck(feats)
+
+        else:
+            feats = feats.reshape((-1, num_segs) + feats.shape[1:]).transpose(
+                1, 2).contiguous()
+
+        return self.cls_head.predict(feats, data_samples, fcn_test=True)

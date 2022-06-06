@@ -20,8 +20,7 @@ train_pipeline = [
     dict(type='ColorJitter'),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs', 'label'])
+    dict(type='PackActionInputs')
 ]
 val_pipeline = [
     dict(
@@ -35,8 +34,7 @@ val_pipeline = [
     dict(type='CenterCrop', crop_size=224),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs'])
+    dict(type='PackActionInputs')
 ]
 test_pipeline = [
     dict(
@@ -51,9 +49,41 @@ test_pipeline = [
     dict(type='ThreeCrop', crop_size=256),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs'])
+    dict(type='PackActionInputs')
 ]
+train_dataloader = dict(
+    batch_size=8,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=True),
+    dataset=dict(
+        type=dataset_type,
+        ann_file=ann_file_train,
+        data_prefix=dict(img=data_root),
+        pipeline=train_pipeline))
+val_dataloader = dict(
+    batch_size=8,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
+        type=dataset_type,
+        ann_file=ann_file_val,
+        data_prefix=dict(img=data_root_val),
+        pipeline=val_pipeline,
+        test_mode=True))
+test_dataloader = dict(
+    batch_size=1,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
+        type=dataset_type,
+        ann_file=ann_file_test,
+        data_prefix=dict(img=data_root_val),
+        pipeline=test_pipeline,
+        test_mode=True))
+
 data = dict(
     videos_per_gpu=8,
     workers_per_gpu=8,
@@ -73,17 +103,27 @@ data = dict(
         ann_file=ann_file_test,
         data_prefix=data_root_val,
         pipeline=test_pipeline))
-evaluation = dict(
-    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+
+val_evaluator = dict(type='AccMetric')
+test_evaluator = val_evaluator
+
+val_cfg = dict(interval=5)
+test_cfg = dict()
 
 # optimizer
 optimizer = dict(
     type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0005,
     nesterov=True)  # this lr is used for 8 gpus
-optimizer_config = dict(grad_clip=dict(max_norm=20, norm_type=2))
-# learning policy
-lr_config = dict(policy='step', step=[75, 125])
-total_epochs = 150
+default_hooks = dict(optimizer=dict(grad_clip=dict(max_norm=20, norm_type=2)))
 
-# runtime settings
-work_dir = './work_dirs/tpn_tsm_r50_1x1x8_150e_kinetics400_rgb'
+# learning policy
+param_scheduler = [
+    dict(
+        type='MultiStepLR',
+        begin=0,
+        end=150,
+        by_epoch=True,
+        milestones=[75, 125],
+        gamma=0.1)
+]
+train_cfg = dict(by_epoch=True, max_epochs=150)

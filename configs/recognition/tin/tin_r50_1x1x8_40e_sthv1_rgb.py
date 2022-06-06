@@ -25,8 +25,7 @@ train_pipeline = [
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs', 'label'])
+    dict(type='PackActionInputs')
 ]
 val_pipeline = [
     dict(
@@ -40,8 +39,7 @@ val_pipeline = [
     dict(type='CenterCrop', crop_size=224),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs'])
+    dict(type='PackActionInputs')
 ]
 test_pipeline = [
     dict(
@@ -55,33 +53,49 @@ test_pipeline = [
     dict(type='CenterCrop', crop_size=224),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
-    dict(type='Collect', keys=['imgs', 'label'], meta_keys=[]),
-    dict(type='ToTensor', keys=['imgs'])
+    dict(type='PackActionInputs')
 ]
-data = dict(
-    videos_per_gpu=6,
-    workers_per_gpu=2,
-    test_dataloader=dict(videos_per_gpu=1),
-    train=dict(
+train_dataloader = dict(
+    batch_size=6,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=True),
+    dataset=dict(
         type=dataset_type,
         ann_file=ann_file_train,
-        data_prefix=data_root,
+        data_prefix=dict(img=data_root),
         filename_tmpl='{:05}.jpg',
-        pipeline=train_pipeline),
-    val=dict(
+        pipeline=train_pipeline))
+val_dataloader = dict(
+    batch_size=6,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
         type=dataset_type,
         ann_file=ann_file_val,
-        data_prefix=data_root_val,
+        data_prefix=dict(img=data_root_val),
         filename_tmpl='{:05}.jpg',
-        pipeline=val_pipeline),
-    test=dict(
+        pipeline=val_pipeline,
+        test_mode=True))
+test_dataloader = dict(
+    batch_size=1,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
         type=dataset_type,
         ann_file=ann_file_test,
-        data_prefix=data_root_val,
+        data_prefix=dict(img=data_root_val),
         filename_tmpl='{:05}.jpg',
-        pipeline=test_pipeline))
-evaluation = dict(
-    interval=5, metrics=['top_k_accuracy', 'mean_class_accuracy'])
+        pipeline=test_pipeline,
+        test_mode=True))
+
+val_evaluator = dict(type='AccMetric')
+test_evaluator = val_evaluator
+
+val_cfg = dict(interval=1)
+test_cfg = dict()
 
 # optimizer
 optimizer = dict(
@@ -91,16 +105,18 @@ optimizer = dict(
     lr=0.02,  # this lr is used for 8 gpus
     momentum=0.9,
     weight_decay=0.0005)
-optimizer_config = dict(grad_clip=dict(max_norm=20, norm_type=2))
-# learning policy
-lr_config = dict(
-    policy='CosineAnnealing',
-    min_lr_ratio=0.5,
-    warmup='linear',
-    warmup_ratio=0.1,
-    warmup_by_epoch=True,
-    warmup_iters=1)
-total_epochs = 40
+default_hooks = dict(optimizer=dict(grad_clip=dict(max_norm=20, norm_type=2)))
 
-# runtime settings
-work_dir = './work_dirs/tin_r50_1x1x8_40e_sthv1_rgb/'
+# learning policy
+param_scheduler = [
+    dict(type='LinearLR', start_factor=0.1, by_epoch=True, begin=0, end=1),
+    dict(
+        type='CosineAnnealingLR',
+        T_max=39,
+        eta_min=0,
+        by_epoch=True,
+        begin=1,
+        end=40)
+]
+
+train_cfg = dict(by_epoch=True, max_epochs=140)
