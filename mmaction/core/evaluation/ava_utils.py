@@ -13,12 +13,12 @@ from .ava_evaluation import object_detection_evaluation as det_eval
 from .ava_evaluation import standard_fields
 
 
-def det2csv(dataset, results, custom_classes):
+def det2csv(results, custom_classes):
     csv_results = []
-    for idx in range(len(dataset)):
-        video_id = dataset.video_infos[idx]['video_id']
-        timestamp = dataset.video_infos[idx]['timestamp']
-        result = results[idx]
+    for idx in range(len(results)):
+        video_id = results[idx]['video_id']
+        timestamp = results[idx]['timestamp']
+        result = results[idx]['outputs']
         for label, _ in enumerate(result):
             for bbox in result[label]:
                 bbox_ = tuple(bbox.tolist())
@@ -34,9 +34,8 @@ def det2csv(dataset, results, custom_classes):
 
 
 # results is organized by class
-def results2csv(dataset, results, out_file, custom_classes=None):
-    if isinstance(results[0], list):
-        csv_results = det2csv(dataset, results, custom_classes)
+def results2csv(results, out_file, custom_classes=None):
+    csv_results = det2csv(results, custom_classes)
 
     # save space for float
     def to_str(item):

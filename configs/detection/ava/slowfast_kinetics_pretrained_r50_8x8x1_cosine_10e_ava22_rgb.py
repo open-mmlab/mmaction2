@@ -1,5 +1,7 @@
+_base_ = '../../_base_/default_runtime.py'
+
 model = dict(
-    type='FastRCNN',
+    type='mmdet.FastRCNN',
     backbone=dict(
         type='ResNet3dSlowFast',
         pretrained=None,
@@ -47,16 +49,17 @@ model = dict(
                 type='MaxIoUAssignerAVA',
                 pos_iou_thr=0.9,
                 neg_iou_thr=0.9,
-                min_pos_iou=0.9),
+                min_pos_iou=0.9,
+                iou_calculator=dict(type='mmdet.BboxOverlaps2D')),
             sampler=dict(
-                type='RandomSampler',
+                type='mmdet.RandomSampler',
                 num=32,
                 pos_fraction=1,
                 neg_pos_ub=-1,
                 add_gt_as_proposals=True),
             pos_weight=1.0,
             debug=False)),
-    test_cfg=dict(rcnn=dict(action_thr=0.002)))
+    test_cfg=dict(rcnn=None))
 
 dataset_type = 'AVADataset'
 data_root = 'data/ava/rawframes'
@@ -85,17 +88,7 @@ train_pipeline = [
     dict(type='Flip', flip_ratio=0.5),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW', collapse=True),
-    dict(type='Rename', mapping=dict(imgs='img')),
-    dict(type='ToTensor', keys=['img', 'proposals', 'gt_bboxes', 'gt_labels']),
-    dict(
-        type='ToDataContainer',
-        fields=[
-            dict(key=['proposals', 'gt_bboxes', 'gt_labels'], stack=False)
-        ]),
-    dict(
-        type='Collect',
-        keys=['img', 'proposals', 'gt_bboxes', 'gt_labels'],
-        meta_keys=['scores', 'entity_ids'])
+    dict(type='PackActionInputs')
 ]
 # The testing is w/o. any cropping / flipping
 val_pipeline = [
@@ -105,64 +98,69 @@ val_pipeline = [
     dict(type='Resize', scale=(-1, 256)),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW', collapse=True),
-    dict(type='Rename', mapping=dict(imgs='img')),
-    dict(type='ToTensor', keys=['img', 'proposals']),
-    dict(type='ToDataContainer', fields=[dict(key='proposals', stack=False)]),
-    dict(
-        type='Collect',
-        keys=['img', 'proposals'],
-        meta_keys=['scores', 'img_shape'],
-        nested=True)
+    dict(type='PackActionInputs')
 ]
 
-data = dict(
-    videos_per_gpu=6,
-    workers_per_gpu=2,
-    val_dataloader=dict(videos_per_gpu=1),
-    test_dataloader=dict(videos_per_gpu=1),
-    train=dict(
+train_dataloader = dict(
+    batch_size=6,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=True),
+    dataset=dict(
         type=dataset_type,
         ann_file=ann_file_train,
         exclude_file=exclude_file_train,
         pipeline=train_pipeline,
         label_file=label_file,
         proposal_file=proposal_file_train,
-        person_det_score_thr=0.9,
-        data_prefix=data_root),
-    val=dict(
+        data_prefix=dict(img=data_root)))
+val_dataloader = dict(
+    batch_size=1,
+    num_workers=1,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
         type=dataset_type,
         ann_file=ann_file_val,
         exclude_file=exclude_file_val,
         pipeline=val_pipeline,
         label_file=label_file,
         proposal_file=proposal_file_val,
-        person_det_score_thr=0.9,
-        data_prefix=data_root))
-data['test'] = data['val']
-# optimizer
+        data_prefix=dict(img=data_root),
+        test_mode=True))
+test_dataloader = val_dataloader
+
+val_evaluator = dict(
+    type='AVAMetric',
+    ann_file=ann_file_val,
+    label_file=label_file,
+    exclude_file=exclude_file_val)
+test_evaluator = val_evaluator
+
+train_cfg = dict(by_epoch=True, max_epochs=10)
+val_cfg = dict(interval=1)
+test_cfg = dict()
+
+param_scheduler = [
+    dict(
+        type='LinearLR',
+        start_factor=0.1,
+        by_epoch=True,
+        begin=0,
+        end=2),
+    dict(
+        type='CosineAnnealing',
+        T_max=10,
+        eta_min=0,
+        begin=0,
+        end=10,
+        by_epoch=False)
+]
+
 optimizer = dict(type='SGD', lr=0.075, momentum=0.9, weight_decay=0.00001)
 # this lr is used for 8 gpus
-optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
-# learning policy
-lr_config = dict(
-    policy='CosineAnnealing',
-    by_epoch=False,
-    min_lr=0,
-    warmup='linear',
-    warmup_by_epoch=True,
-    warmup_iters=2,
-    warmup_ratio=0.1)
-total_epochs = 10
-checkpoint_config = dict(interval=1)
-workflow = [('train', 1)]
-evaluation = dict(interval=1)
-log_config = dict(
-    interval=20, hooks=[
-        dict(type='TextLoggerHook'),
-    ])
-dist_params = dict(backend='nccl')
-log_level = 'INFO'
-work_dir = './work_dirs/slowfast_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb'  # noqa: E501
+
+default_hooks = dict(
+    optimizer=dict(grad_clip=dict(max_norm=40, norm_type=2)))
+
 load_from = 'https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb/slowfast_r50_8x8x1_256e_kinetics400_rgb_20200716-73547d2b.pth'  # noqa: E501
-resume_from = None
-find_unused_parameters = False

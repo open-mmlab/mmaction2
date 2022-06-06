@@ -1,4 +1,7 @@
-_base_ = ['../_base_/models/slowonly_r50_nl.py']
+_base_ = [
+    '../../_base_/default_runtime.py',
+    '../_base_/models/slowonly_r50_nl.py'
+]
 
 dataset_type = 'AVADataset'
 data_root = 'data/ava/rawframes'
@@ -27,18 +30,7 @@ train_pipeline = [
     dict(type='Flip', flip_ratio=0.5),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW', collapse=True),
-    # Rename is needed to use mmdet detectors
-    dict(type='Rename', mapping=dict(imgs='img')),
-    dict(type='ToTensor', keys=['img', 'proposals', 'gt_bboxes', 'gt_labels']),
-    dict(
-        type='ToDataContainer',
-        fields=[
-            dict(key=['proposals', 'gt_bboxes', 'gt_labels'], stack=False)
-        ]),
-    dict(
-        type='Collect',
-        keys=['img', 'proposals', 'gt_bboxes', 'gt_labels'],
-        meta_keys=['scores', 'entity_ids'])
+    dict(type='PackActionInputs')
 ]
 # The testing is w/o. any cropping / flipping
 val_pipeline = [
@@ -47,73 +39,74 @@ val_pipeline = [
     dict(type='Resize', scale=(-1, 256)),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW', collapse=True),
-    # Rename is needed to use mmdet detectors
-    dict(type='Rename', mapping=dict(imgs='img')),
-    dict(type='ToTensor', keys=['img', 'proposals']),
-    dict(type='ToDataContainer', fields=[dict(key='proposals', stack=False)]),
-    dict(
-        type='Collect',
-        keys=['img', 'proposals'],
-        meta_keys=['scores', 'img_shape'],
-        nested=True)
+    dict(type='PackActionInputs')
 ]
 
-data = dict(
-    videos_per_gpu=6,
-    workers_per_gpu=2,
-    # During testing, each video may have different shape
-    val_dataloader=dict(videos_per_gpu=1),
-    test_dataloader=dict(videos_per_gpu=1),
-    train=dict(
+train_dataloader = dict(
+    batch_size=6,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=True),
+    dataset=dict(
         type=dataset_type,
         ann_file=ann_file_train,
         exclude_file=exclude_file_train,
         pipeline=train_pipeline,
         label_file=label_file,
         proposal_file=proposal_file_train,
-        person_det_score_thr=0.9,
-        data_prefix=data_root),
-    val=dict(
+        data_prefix=dict(img=data_root)))
+val_dataloader = dict(
+    batch_size=1,
+    num_workers=1,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
         type=dataset_type,
         ann_file=ann_file_val,
         exclude_file=exclude_file_val,
         pipeline=val_pipeline,
         label_file=label_file,
         proposal_file=proposal_file_val,
-        person_det_score_thr=0.9,
-        data_prefix=data_root))
-data['test'] = data['val']
+        data_prefix=dict(img=data_root),
+        test_mode=True))
+test_dataloader = val_dataloader
+
+val_evaluator = dict(
+    type='AVAMetric',
+    ann_file=ann_file_val,
+    label_file=label_file,
+    exclude_file=exclude_file_val)
+test_evaluator = val_evaluator
+
+train_cfg = dict(by_epoch=True, max_epochs=10)
+val_cfg = dict(interval=1)
+test_cfg = dict()
+
+param_scheduler = [
+    dict(
+        type='LinearLR',
+        start_factor=0.1,
+        by_epoch=False,
+        begin=0,
+        end=1600),
+    dict(
+        type='MultiStepLR',
+        begin=0,
+        end=10,
+        by_epoch=True,
+        milestones=[4, 6, 8],
+        gamma=0.1)
+]
 
 optimizer = dict(
     type='SGD', lr=0.15, momentum=0.9, weight_decay=1e-06, nesterov=True)
 # this lr is used for 8x2 gpus
 
-optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
-# learning policy
+default_hooks = dict(
+    optimizer=dict(grad_clip=dict(max_norm=40, norm_type=2)))
 
-lr_config = dict(
-    policy='step',
-    step=[4, 6, 8],
-    warmup='linear',
-    warmup_iters=1600,
-    warmup_ratio=0.01)
-total_epochs = 10
-
-checkpoint_config = dict(interval=1)
-workflow = [('train', 1)]
-evaluation = dict(interval=1, save_best='mAP@0.5IOU')
-log_config = dict(
-    interval=20, hooks=[
-        dict(type='TextLoggerHook'),
-    ])
-dist_params = dict(backend='nccl')
-log_level = 'INFO'
-work_dir = ('./work_dirs/ava/'
-            'slowonly_nl_kinetics_pretrained_r50_8x8x1_10e_ava_rgb')
 load_from = (
     'https://download.openmmlab.com/mmaction/recognition/slowonly/'
     'slowonly_nl_embedded_gaussian_r50_8x8x1_150e_kinetics400_rgb/'
     'slowonly_nl_embedded_gaussian_r50_8x8x1_150e_kinetics400_rgb_20210308-e8dd9e82.pth'  # noqa: E501
 )
-resume_from = None
-find_unused_parameters = False

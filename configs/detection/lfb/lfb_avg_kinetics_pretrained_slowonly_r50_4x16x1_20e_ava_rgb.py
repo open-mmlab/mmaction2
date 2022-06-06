@@ -1,4 +1,7 @@
-_base_ = ['../_base_/models/slowonly_r50.py']
+_base_ = [
+    '../_base_/models/slowonly_r50.py',
+    '../../_base_/default_runtime.py'
+]
 
 # model settings
 lfb_prefix_path = 'data/ava/lfb_half'
@@ -48,18 +51,7 @@ train_pipeline = [
     dict(type='Flip', flip_ratio=0.5),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW', collapse=True),
-    # Rename is needed to use mmdet detectors
-    dict(type='Rename', mapping=dict(imgs='img')),
-    dict(type='ToTensor', keys=['img', 'proposals', 'gt_bboxes', 'gt_labels']),
-    dict(
-        type='ToDataContainer',
-        fields=[
-            dict(key=['proposals', 'gt_bboxes', 'gt_labels'], stack=False)
-        ]),
-    dict(
-        type='Collect',
-        keys=['img', 'proposals', 'gt_bboxes', 'gt_labels'],
-        meta_keys=['scores', 'entity_ids', 'img_key'])
+    dict(type='PackActionInputs')
 ]
 # The testing is w/o. any cropping / flipping
 val_pipeline = [
@@ -69,69 +61,71 @@ val_pipeline = [
     dict(type='Resize', scale=(-1, 256)),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW', collapse=True),
-    # Rename is needed to use mmdet detectors
-    dict(type='Rename', mapping=dict(imgs='img')),
-    dict(type='ToTensor', keys=['img', 'proposals']),
-    dict(type='ToDataContainer', fields=[dict(key='proposals', stack=False)]),
-    dict(
-        type='Collect',
-        keys=['img', 'proposals'],
-        meta_keys=['scores', 'img_shape', 'img_key'],
-        nested=True)
+    dict(type='PackActionInputs')
 ]
 
-data = dict(
-    videos_per_gpu=12,
-    workers_per_gpu=2,
-    val_dataloader=dict(videos_per_gpu=1),
-    test_dataloader=dict(videos_per_gpu=1),
-    train=dict(
+train_dataloader = dict(
+    batch_size=12,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=True),
+    dataset=dict(
         type=dataset_type,
         ann_file=ann_file_train,
         exclude_file=exclude_file_train,
         pipeline=train_pipeline,
         label_file=label_file,
         proposal_file=proposal_file_train,
-        person_det_score_thr=0.9,
-        data_prefix=data_root),
-    val=dict(
+        data_prefix=dict(img=data_root)))
+val_dataloader = dict(
+    batch_size=1,
+    num_workers=1,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
         type=dataset_type,
         ann_file=ann_file_val,
         exclude_file=exclude_file_val,
         pipeline=val_pipeline,
         label_file=label_file,
         proposal_file=proposal_file_val,
-        person_det_score_thr=0.9,
-        data_prefix=data_root))
-data['test'] = data['val']
-evaluation = dict(interval=1, save_best='mAP@0.5IOU')
+        data_prefix=dict(img=data_root),
+        test_mode=True))
+test_dataloader = val_dataloader
+
+val_evaluator = dict(
+    type='AVAMetric',
+    ann_file=ann_file_val,
+    label_file=label_file,
+    exclude_file=exclude_file_val)
+test_evaluator = val_evaluator
+
+train_cfg = dict(by_epoch=True, max_epochs=20)
+val_cfg = dict(interval=1)
+test_cfg = dict()
+
+param_scheduler = [
+    dict(
+        type='LinearLR',
+        start_factor=0.1,
+        by_epoch=True,
+        begin=0,
+        end=5),
+    dict(
+        type='MultiStepLR',
+        begin=0,
+        end=20,
+        by_epoch=True,
+        milestones=[10, 15],
+        gamma=0.1)
+]
 
 optimizer = dict(type='SGD', lr=0.15, momentum=0.9, weight_decay=1e-05)
 # this lr is used for 8 gpus
 
-optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
-# learning policy
+default_hooks = dict(
+    optimizer=dict(grad_clip=dict(max_norm=40, norm_type=2)))
 
-lr_config = dict(
-    policy='step',
-    step=[10, 15],
-    warmup='linear',
-    warmup_by_epoch=True,
-    warmup_iters=5,
-    warmup_ratio=0.1)
-total_epochs = 20
-
-checkpoint_config = dict(interval=1)
-workflow = [('train', 1)]
-log_config = dict(
-    interval=20, hooks=[
-        dict(type='TextLoggerHook'),
-    ])
-dist_params = dict(backend='nccl')
-log_level = 'INFO'
-work_dir = './work_dirs/lfb/lfb_avg_kinetics_pretrained_slowonly_r50_4x16x1_20e_ava_rgb'  # noqa E501
 load_from = ('https://download.openmmlab.com/mmaction/recognition/slowonly/'
              'slowonly_r50_4x16x1_256e_kinetics400_rgb/'
              'slowonly_r50_4x16x1_256e_kinetics400_rgb_20200704-a69556c6.pth')
-resume_from = None
-find_unused_parameters = False

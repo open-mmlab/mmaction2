@@ -1,21 +1,25 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from collections.abc import Sequence
 
-import numpy as np
 import torch
+import numpy as np
 from mmcv.transforms import BaseTransform, to_tensor
 from mmengine.data import InstanceData, LabelData
 
 from mmaction.core import ActionDataSample
-from ..builder import TRANSFORMS
+from mmaction.registry import TRANSFORMS
 
 
 @TRANSFORMS.register_module()
 class PackActionInputs(BaseTransform):
 
-    mapping_table = {}
+    mapping_table = {
+        'gt_bboxes': 'bboxes',
+        'gt_labels': 'labels',
+    }
 
-    def __init__(self, meta_keys=()):
+    def __init__(self, meta_keys=('img_shape', 'img_key',
+                                  'video_id', 'timestamp')):
         self.meta_keys = meta_keys
 
     def transform(self, results):
@@ -47,10 +51,17 @@ class PackActionInputs(BaseTransform):
 
         if 'gt_bboxes' in results:
             instance_data = InstanceData()
-            instance_data.gt_bboxes = to_tensor(results['gt_bboxes'])
-            instance_data.gt_labels = to_tensor(results['gt_labels'])
+            for key in self.mapping_table.keys():
+                instance_data[self.mapping_table[key]] = to_tensor(results[key])
             data_sample.gt_instances = instance_data
-            data_sample.proposals = to_tensor(results['proposals'])
+
+            if 'proposals' in results:
+                data_sample.proposals = InstanceData(bboxes=to_tensor(results['proposals']))
+
+            img_meta = {}
+            for key in self.meta_keys:
+                img_meta[key] = results[key]
+            data_sample.set_metainfo(img_meta)
         else:
             label_data = LabelData()
             label_data.item = to_tensor(results['label'])

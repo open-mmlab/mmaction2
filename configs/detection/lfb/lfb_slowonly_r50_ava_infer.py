@@ -38,28 +38,19 @@ infer_pipeline = [
     dict(type='Resize', scale=(-1, 256)),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW', collapse=True),
-    # Rename is needed to use mmdet detectors
-    dict(type='Rename', mapping=dict(imgs='img')),
-    dict(type='ToTensor', keys=['img', 'proposals']),
-    dict(type='ToDataContainer', fields=[dict(key='proposals', stack=False)]),
-    dict(
-        type='Collect',
-        keys=['img', 'proposals'],
-        meta_keys=['scores', 'img_shape', 'img_key'],
-        nested=True)
+    dict(type='PackActionInputs')
 ]
 
-data = dict(
-    videos_per_gpu=1,
-    workers_per_gpu=2,
-    test=dict(
+train_dataloader = dict(
+    batch_size=1,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=True),
+    dataset=dict(
         type=dataset_type,
         ann_file=ann_file_infer,
         exclude_file=exclude_file_infer,
         pipeline=infer_pipeline,
         label_file=label_file,
         proposal_file=proposal_file_infer,
-        person_det_score_thr=0.9,
-        data_prefix=data_root))
-
-dist_params = dict(backend='nccl')
+        data_prefix=dict(img=data_root)))

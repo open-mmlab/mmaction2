@@ -6,10 +6,10 @@ import numpy as np
 from mmengine.dataset import BaseDataset
 from mmengine.utils import check_file_exist
 from mmengine.fileio import load
-from mmengine.logging import MMLogger
 
-from mmaction.registry import DATASETS
 from ..core.evaluation.ava_utils import read_labelmap
+from ..utils import get_root_logger
+from .builder import DATASETS
 
 
 @DATASETS.register_module()
@@ -76,7 +76,7 @@ class AVADataset(BaseDataset):
         custom_classes (list[int]): A subset of class ids from origin dataset.
             Please note that 0 should NOT be selected, and ``num_classes``
             should be equal to ``len(custom_classes) + 1``
-        data_prefix (dict): Path to a directory where frames are held.
+        data_prefix (dict): Path to a directory where video frames are held.
             Default: None.
         test_mode (bool): Store True when building test or validation dataset.
             Default: False.
@@ -102,7 +102,6 @@ class AVADataset(BaseDataset):
                  num_classes=81,
                  custom_classes=None,
                  data_prefix=dict(img=None),
-                 test_mode=False,
                  modality='RGB',
                  num_max_proposals=1000,
                  timestamp_start=900,
@@ -132,11 +131,8 @@ class AVADataset(BaseDataset):
         self.timestamp_end = timestamp_end
         self.start_index = start_index
         self.modality = modality
-        super().__init__(ann_file,
-                         pipeline=pipeline,
-                         data_prefix=data_prefix,
-                         test_mode=test_mode,
-                         **kwargs)
+        self.logger = get_root_logger()
+        super().__init__(ann_file, pipeline=pipeline, data_prefix=data_prefix, **kwargs)
 
         if self.proposal_file is not None:
             self.proposals = load(self.proposal_file)
@@ -261,8 +257,7 @@ class AVADataset(BaseDataset):
                         valid_indexes.pop()
                         break
 
-        logger = MMLogger.get_current_instance()
-        logger.info(
+        self.logger.info(
             f'{len(valid_indexes)} out of {len(self.data_list)} '
             f'frames are valid.')
         data_list = [self.data_list[i] for i in valid_indexes]

@@ -1,15 +1,16 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import List, Optional, Tuple, Union
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch import Tensor
+import numpy as np
+from mmengine.config import ConfigDict
+from mmengine.data import InstanceData
 
 from mmaction.core.bbox import bbox_target
-
-try:
-    from mmdet.models.builder import HEADS as MMDET_HEADS
-    mmdet_imported = True
-except (ImportError, ModuleNotFoundError):
-    mmdet_imported = False
+from mmaction.registry import MODELS
 
 # Resolve cross-entropy function to support multi-target in Torch < 1.10
 #   This is a very basic 'hack', with minimal functionality to support the
@@ -31,6 +32,7 @@ else:
     cross_entropy_loss = F.cross_entropy
 
 
+@MODELS.register_module()
 class BBoxHeadAVA(nn.Module):
     """Simplest RoI head, with only two fc layers for classification and
     regression respectively.
@@ -138,7 +140,7 @@ class BBoxHeadAVA(nn.Module):
         return cls_score, None
 
     @staticmethod
-    def get_targets(sampling_results, gt_bboxes, gt_labels, rcnn_train_cfg):
+    def get_targets(sampling_results, rcnn_train_cfg):
         pos_proposals = [res.pos_bboxes for res in sampling_results]
         neg_proposals = [res.neg_bboxes for res in sampling_results]
         pos_gt_labels = [res.pos_gt_labels for res in sampling_results]
@@ -252,13 +254,66 @@ class BBoxHeadAVA(nn.Module):
 
         return losses
 
-    def get_det_bboxes(self,
-                       rois,
-                       cls_score,
-                       img_shape,
-                       flip=False,
-                       crop_quadruple=None,
-                       cfg=None):
+    def get_results(self,
+                    rois: Tuple[Tensor],
+                    cls_scores: Tuple[Tensor],
+                    bbox_preds: Tuple[Tensor],
+                    batch_img_metas: List[dict],
+                    rcnn_test_cfg: Optional[ConfigDict] = None,
+                    rescale: bool = False,
+                    **kwargs) -> List[InstanceData]:
+        """Transform network outputs of a batch into bbox results.
+
+        Args:
+            rois (tuple[Tensor]): Tuple of boxes to be transformed.
+                Each has shape  (num_boxes, 5). last dimension 5 arrange as
+                (batch_index, x1, y1, x2, y2).
+            cls_scores (tuple[Tensor]): Tuple of box scores, each has shape
+                (num_boxes, num_classes + 1).
+            bbox_preds (tuple[Tensor]): Tuple of box energies / deltas, each
+                has shape (num_boxes, num_classes * 4).
+            batch_img_metas (list[dict]): List of image information.
+            rcnn_test_cfg (obj:`ConfigDict`, optional): `test_cfg` of R-CNN.
+                Defaults to None.
+            rescale (bool): If True, return boxes in original image space.
+                Defaults to False.
+
+        Returns:
+            list[:obj:`InstanceData`]: Instance segmentation
+            results of each image after the post process.
+            Each item usually contains following keys.
+
+                - scores (Tensor): Classification scores, has a shape
+                  (num_instance, )
+                - labels (Tensor): Labels of bboxes, has a shape
+                  (num_instances, ).
+                - bboxes (Tensor): Has a shape (num_instances, 4),
+                  the last dimension 4 arrange as (x1, y1, x2, y2).
+        """
+        result_list = []
+        for img_id in range(len(batch_img_metas)):
+            img_meta = batch_img_metas[img_id]
+            results = self._get_results_single(
+                roi=rois[img_id],
+                cls_score=cls_scores[img_id],
+                bbox_pred=bbox_preds[img_id],
+                img_meta=img_meta,
+                rescale=rescale,
+                rcnn_test_cfg=rcnn_test_cfg,
+                **kwargs)
+            result_list.append(results)
+
+        return result_list
+
+    def _get_results_single(self,
+                            roi: Tensor,
+                            cls_score: Tensor,
+                            bbox_pred: Tensor,
+                            img_meta: dict,
+                            rescale: bool = False,
+                            rcnn_test_cfg: Optional[ConfigDict] = None,
+                            **kwargs) -> InstanceData:
+        results = InstanceData()
 
         # might be used by testing w. augmentation
         if isinstance(cls_score, list):
@@ -273,12 +328,12 @@ class BBoxHeadAVA(nn.Module):
         else:
             scores = None
 
-        bboxes = rois[:, 1:]
+        bboxes = roi[:, 1:]
         assert bboxes.shape[-1] == 4
 
         # First reverse the flip
-        img_h, img_w = img_shape
-        if flip:
+        img_h, img_w = img_meta['img_shape']
+        if img_meta.get('flip', False):
             bboxes_ = bboxes.clone()
             bboxes_[:, 0] = img_w - 1 - bboxes[:, 2]
             bboxes_[:, 2] = img_w - 1 - bboxes[:, 0]
@@ -298,9 +353,10 @@ class BBoxHeadAVA(nn.Module):
 
             return decropped
 
+        crop_quadruple = img_meta.get('crop_quadruple', np.array([0, 0, 1, 1]))
         bboxes = _bbox_crop_undo(bboxes, crop_quadruple)
-        return bboxes, scores
 
+        results.bboxes = bboxes
+        results.scores = scores
 
-if mmdet_imported:
-    MMDET_HEADS.register_module()(BBoxHeadAVA)
+        return results

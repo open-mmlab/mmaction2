@@ -1,6 +1,6 @@
 # model setting
 model = dict(
-    type='FastRCNN',
+    type='mmdet.FastRCNN',
     backbone=dict(
         type='ResNet3dSlowOnly',
         depth=50,
@@ -38,13 +38,14 @@ model = dict(
                 type='MaxIoUAssignerAVA',
                 pos_iou_thr=0.9,
                 neg_iou_thr=0.9,
-                min_pos_iou=0.9),
+                min_pos_iou=0.9,
+                iou_calculator=dict(type='mmdet.BboxOverlaps2D')),
             sampler=dict(
-                type='RandomSampler',
+                type='mmdet.RandomSampler',
                 num=32,
                 pos_fraction=1,
                 neg_pos_ub=-1,
                 add_gt_as_proposals=True),
             pos_weight=1.0,
             debug=False)),
-    test_cfg=dict(rcnn=dict(action_thr=0.002)))
+    test_cfg=dict(rcnn=None))
