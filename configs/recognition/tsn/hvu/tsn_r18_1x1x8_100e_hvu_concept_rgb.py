@@ -7,7 +7,7 @@ _base_ = [
 # model settings
 category_nums = dict(
     action=739, attribute=117, concept=291, event=69, object=1678, scene=248)
-target_cate = 'object'
+target_cate = 'concept'
 
 model = dict(
     backbone=dict(pretrained='torchvision://resnet18', depth=18),
