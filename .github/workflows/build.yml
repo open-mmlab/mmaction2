@@ -111,6 +111,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Upgrade pip
         run: pip install pip --upgrade
+      - name: Fetch GPG keys
+        run: |
+          apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
+          apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/7fa2af80.pub
       - name: Install CUDA
         run: |
           apt-get update && apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libturbojpeg libsndfile1 libsm6 libxrender-dev libxext6 python${{matrix.python-version}}-dev
@@ -169,6 +173,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Upgrade pip
         run: pip install pip --upgrade
+      - name: Fetch GPG keys
+        run: |
+          apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
+          apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/7fa2af80.pub
       - name: Install CUDA
         run: |
           apt-get update && apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libturbojpeg libsndfile1 libsm6 libxrender-dev libxext6 python${{matrix.python-version}}-dev
@@ -213,7 +221,7 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - name: Upgrade pip
-        run: pip install pip --upgrade --user
+        run: python -m pip install pip --upgrade --user
       - name: Install librosa and soundfile
         run: python -m pip install librosa soundfile
       - name: Install lmdb
