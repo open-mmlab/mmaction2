@@ -2,6 +2,7 @@ coverage
 flake8
 interrogate
 isort==4.3.21
+protobuf<=3.20.1
 pytest
 pytest-runner
 xdoctest >= 0.10.0
