@@ -28,6 +28,7 @@ Then, you can download all data parts to `$MMACTION2/data/sthv2/` and use the fo
 
 ```shell
 cd $MMACTION2/data/sthv2/
+unzip "*.zip"
 cat 20bn-something-something-v2-?? | tar zx
 cd $MMACTION2/tools/data/sthv2/
 ```
