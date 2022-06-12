@@ -6,13 +6,9 @@ import os.path as osp
 from mmengine.config import Config, DictAction
 from mmengine.runner import Runner
 
-from mmaction.core import *  # noqa: F401,F403
-from mmaction.datasets import *  # noqa: F401,F403
-from mmaction.metrics import *  # noqa: F401,F403
-from mmaction.models import *  # noqa: F401,F403
+from mmaction.utils import register_all_modules
 
 
-# TODO: support fuse_conv_bn, visualization, and format_only
 def parse_args():
     parser = argparse.ArgumentParser(
         description='MMAction test (and eval) a model')
@@ -45,6 +41,10 @@ def parse_args():
 
 def main():
     args = parse_args()
+
+    # register all modules in mmaction into the registries
+    # do not init the default scope here because it will be init in the runner
+    register_all_modules(init_default_scope=False)
 
     cfg = Config.fromfile(args.config)
     cfg.launcher = args.launcher

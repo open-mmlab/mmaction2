@@ -382,7 +382,7 @@ class SSNHead(nn.Module):
         self.test_fc.bias.data = bias
         return True
 
-    def forward(self, x, test_mode=False):
+    def forward(self, x, test_mode=False, **kwargs):
         """Defines the computation performed at every call."""
         if not test_mode:
             x, proposal_scale_factor = x

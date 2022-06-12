@@ -71,8 +71,15 @@ class RawframeDataset(BaseDataset):
             recognition dataset. Default: False.
         num_classes (int | None): Number of classes in the dataset.
             Default: None.
+        start_index (int): Specify a start index for frames in consideration of
+            different filename format. However, when taking frames as input,
+            it should be set to 1, since raw frames count from 1.
+            Default: 1.
         modality (str): Modality of data. Support 'RGB', 'Flow'.
             Default: 'RGB'.
+        test_mode (bool): Store True when building test or validation dataset.
+            Default: False.
+        **kwargs: Keyword arguments for ``BaseDataset``.
     """
 
     _fully_initialized: bool = False
@@ -87,6 +94,7 @@ class RawframeDataset(BaseDataset):
                  num_classes=None,
                  start_index=1,
                  modality='RGB',
+                 test_mode=False,
                  **kwargs):
         self.filename_tmpl = filename_tmpl
         self.with_offset = with_offset
@@ -94,10 +102,11 @@ class RawframeDataset(BaseDataset):
         self.num_classes = num_classes
         self.start_index = start_index
         self.modality = modality
-        super().__init__(ann_file, pipeline=pipeline, data_prefix=data_prefix, **kwargs)
-        self.short_cycle_factors = kwargs.get('short_cycle_factors',
-                                              [0.5, 0.7071])
-        self.default_s = kwargs.get('default_s', (224, 224))
+        super().__init__(ann_file,
+                         pipeline=pipeline,
+                         data_prefix=data_prefix,
+                         test_mode=test_mode,
+                         **kwargs)
 
     def load_data_list(self):
         """Load annotation file to get video information."""

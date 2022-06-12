@@ -2,12 +2,6 @@
 from mmaction.registry import MODELS
 from .resnet3d_slowfast import ResNet3dPathway
 
-try:
-    from mmdet.registry import MODELS as MMDET_MODELS
-    mmdet_imported = True
-except (ImportError, ModuleNotFoundError):
-    mmdet_imported = False
-
 
 @MODELS.register_module()
 class ResNet3dSlowOnly(ResNet3dPathway):
@@ -47,7 +41,3 @@ class ResNet3dSlowOnly(ResNet3dPathway):
             **kwargs)
 
         assert not self.lateral
-
-
-if mmdet_imported:
-    MMDET_MODELS.register_module()(ResNet3dSlowOnly)

@@ -1,7 +1,4 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict, List
-
-from mmaction.core import ActionDataSample
 from mmaction.registry import MODELS
 from .base import BaseRecognizer
 
@@ -10,12 +7,27 @@ from .base import BaseRecognizer
 class RecognizerGCN(BaseRecognizer):
     """GCN recognizer model framework."""
 
-    def loss(self, inputs, data_samples) -> Dict:
-        feats = self.extract_feat(inputs)
-        assert self.with_cls_head, 'cls head must be implemented.'
-        return self.cls_head.loss(feats, data_samples)
+    def extract_feat(self, batch_inputs, stage='backbone', **kwargs):
+        """Extract features of different stages.
 
-    def predict(self, inputs, data_samples) -> List[ActionDataSample]:
-        feats = self.extract_feat(inputs)
-        assert self.with_cls_head, 'cls head must be implemented.'
-        return self.cls_head.predict(feats, data_samples)
+        Args:
+            batch_inputs (torch.Tensor): The input data.
+            stage (str): Which stage to output the feature.
+                Defaults to "backbone".
+        Returns:
+                torch.tensor: The extracted features.
+                dict: A dict recording the kwargs for downstream
+                    pipeline. These keys are usually included:
+                    `loss_aux`.
+        """
+
+        # Record the kwargs required by `loss` and `predict`
+        loss_predict_kwargs = dict()
+        x = self.backbone(batch_inputs)
+
+        if stage == 'backbone':
+            return x, loss_predict_kwargs
+
+        if self.with_cls_head and stage == 'head':
+            x = self.cls_head(x, **loss_predict_kwargs)
+            return x, loss_predict_kwargs

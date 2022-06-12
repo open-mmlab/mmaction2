@@ -1,4 +1,6 @@
-# model settings
+preprocess_cfg = dict(
+    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375])
+
 model = dict(
     type='Recognizer2D',
     backbone=dict(
@@ -13,7 +15,9 @@ model = dict(
         spatial_type='avg',
         consensus=dict(type='AvgConsensus', dim=1),
         dropout_ratio=0.4,
-        init_std=0.01),
-    # model training and testing settings
+        init_std=0.01,
+        average_clips=None),
+    data_preprocessor=dict(
+        type='ActionDataPreprocessor', **preprocess_cfg),
     train_cfg=None,
     test_cfg=None)

@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .transforms import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
+from .processing import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
                          MelSpectrogram, MultiScaleCrop, Normalize, RandomCrop,
                          RandomRescale, RandomResizedCrop, Resize, TenCrop, ThreeCrop)
 from .formatting import (PackActionInputs, FormatAudioShape, FormatGCNInput,

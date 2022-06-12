@@ -28,8 +28,9 @@ class X3DHead(BaseHead):
                  spatial_type='avg',
                  dropout_ratio=0.5,
                  init_std=0.01,
-                 fc1_bias=False):
-        super().__init__(num_classes, in_channels, loss_cls)
+                 fc1_bias=False,
+                 **kwargs):
+        super().__init__(num_classes, in_channels, loss_cls, **kwargs)
 
         self.spatial_type = spatial_type
         self.dropout_ratio = dropout_ratio
@@ -62,7 +63,7 @@ class X3DHead(BaseHead):
         normal_init(self.fc1, std=self.init_std)
         normal_init(self.fc2, std=self.init_std)
 
-    def forward(self, x):
+    def forward(self, x, **kwargs):
         """Defines the computation performed at every call.
 
         Args:

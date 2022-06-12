@@ -1,13 +1,13 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
-from mmengine.optim import DefaultOptimizerConstructor
+from mmengine.optim import DefaultOptimWrapperConstructor
 from mmengine.utils.parrots_wrapper import SyncBatchNorm_, _BatchNorm, _ConvNd
 
-from mmaction.registry import OPTIMIZER_CONSTRUCTORS
+from mmaction.registry import OPTIM_WRAPPER_CONSTRUCTORS
 
 
-@OPTIMIZER_CONSTRUCTORS.register_module()
-class TSMOptimizerConstructor(DefaultOptimizerConstructor):
+@OPTIM_WRAPPER_CONSTRUCTORS.register_module()
+class TSMOptimWrapperConstructor(DefaultOptimWrapperConstructor):
     """Optimizer constructor in TSM model.
 
     This constructor builds optimizer in different ways from the default one.
@@ -21,7 +21,7 @@ class TSMOptimizerConstructor(DefaultOptimizerConstructor):
        have a 2x lr multiplier and zero weight decay.
     """
 
-    def add_params(self, params, model):
+    def add_params(self, params, model, **kwargs):
         """Add parameters and their corresponding lr and wd to the params.
 
         Args:

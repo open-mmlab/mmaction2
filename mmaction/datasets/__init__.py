@@ -4,8 +4,6 @@ from .audio_dataset import AudioDataset
 from .audio_feature_dataset import AudioFeatureDataset
 from .audio_visual_dataset import AudioVisualDataset
 from .ava_dataset import AVADataset
-from .blending_utils import (BaseMiniBatchBlending, CutmixBlending,
-                             MixupBlending)
 from .hvu_dataset import HVUDataset
 from .image_dataset import ImageDataset
 from .pose_dataset import PoseDataset
@@ -19,5 +17,5 @@ __all__ = [
     'VideoDataset', 'RawframeDataset', 'ActivityNetDataset',
     'HVUDataset', 'AudioDataset', 'AudioFeatureDataset', 'ImageDataset',
     'RawVideoDataset', 'AVADataset', 'AudioVisualDataset', 'SSNDataset',
-    'PoseDataset', 'BaseMiniBatchBlending', 'CutmixBlending', 'MixupBlending'
+    'PoseDataset',
 ]

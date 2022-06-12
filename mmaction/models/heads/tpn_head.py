@@ -43,7 +43,7 @@ class TPNHead(TSNHead):
         self.new_cls.weight.copy_(self.fc_cls.weight[..., None, None, None])
         self.new_cls.bias.copy_(self.fc_cls.bias)
 
-    def forward(self, x, num_segs=None, fcn_test=False):
+    def forward(self, x, num_segs=None, fcn_test=False, **kwargs):
         """Defines the computation performed at every call.
 
         Args:

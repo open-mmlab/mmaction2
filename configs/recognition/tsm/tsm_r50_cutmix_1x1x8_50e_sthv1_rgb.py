@@ -1,40 +1,20 @@
 _base_ = [
-    '../../_base_/schedules/sgd_tsm_50e.py', '../../_base_/default_runtime.py'
+    '../../_base_/models/tsm_r50.py',
+    '../../_base_/schedules/sgd_tsm_50e.py',
+    '../../_base_/default_runtime.py'
 ]
 
-# model settings
 model = dict(
-    type='Recognizer2D',
-    backbone=dict(
-        type='ResNetTSM',
-        pretrained='torchvision://resnet50',
-        depth=50,
-        norm_eval=False,
-        shift_div=8),
-    cls_head=dict(
-        type='TSMHead',
-        num_classes=174,
-        in_channels=2048,
-        spatial_type='avg',
-        consensus=dict(type='AvgConsensus', dim=1),
-        dropout_ratio=0.5,
-        init_std=0.001,
-        is_shift=True,
-        average_clips='prob'),
-    # model training and testing settings
-    train_cfg=dict(
-        blending=dict(type='CutmixBlending', num_classes=174, alpha=.2)),
-    test_cfg=None)
+    cls_head=dict(num_classes=174),
+    data_preprocessor=dict(
+        blending=dict(type='CutmixBlending', num_classes=174, alpha=.2)))
 
-# dataset settings
 dataset_type = 'RawframeDataset'
 data_root = 'data/sthv1/rawframes'
 data_root_val = 'data/sthv1/rawframes'
 ann_file_train = 'data/sthv1/sthv1_train_list_rawframes.txt'
 ann_file_val = 'data/sthv1/sthv1_val_list_rawframes.txt'
 ann_file_test = 'data/sthv1/sthv1_val_list_rawframes.txt'
-img_norm_cfg = dict(
-    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
     dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=8),
     dict(type='RawFrameDecode'),
@@ -47,7 +27,6 @@ train_pipeline = [
         max_wh_scale_gap=1,
         num_fixed_crops=13),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
-    dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='PackActionInputs')
 ]
@@ -61,7 +40,6 @@ val_pipeline = [
     dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
-    dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='PackActionInputs')
 ]
@@ -76,7 +54,6 @@ test_pipeline = [
     dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='ThreeCrop', crop_size=256),
-    dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='PackActionInputs')
 ]
@@ -120,10 +97,6 @@ test_dataloader = dict(
 val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 
-val_cfg = dict(interval=2)
-test_cfg = dict()
+train_cfg = dict(val_interval=2)
 
-optimizer = dict(weight_decay=0.0005)
-
-default_hooks = dict(
-    optimizer=dict(grad_clip=dict(max_norm=20, norm_type=2)))
+optim_wrapper = dict(optimizer=dict(weight_decay=0.0005))

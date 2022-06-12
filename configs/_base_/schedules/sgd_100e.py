@@ -1,4 +1,10 @@
-train_cfg = dict(by_epoch=True, max_epochs=100)
+train_cfg = dict(
+    type='EpochBasedTrainLoop',
+    max_epochs=100,
+    val_begin=1,
+    val_interval=1)
+val_cfg = dict(type='ValLoop')
+test_cfg = dict(type='TestLoop')
 
 param_scheduler = [
     dict(
@@ -10,8 +16,6 @@ param_scheduler = [
         gamma=0.1)
 ]
 
-optimizer = dict(
-    type='SGD',
-    lr=0.01,  # this lr is used for 8 gpus
-    momentum=0.9,
-    weight_decay=0.0001)
+optim_wrapper = dict(
+    optimizer=dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001),
+    clip_grad=dict(max_norm=40, norm_type=2))

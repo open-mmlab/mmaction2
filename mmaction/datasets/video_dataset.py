@@ -32,10 +32,19 @@ class VideoDataset(BaseDataset):
     Args:
         ann_file (str): Path to the annotation file.
         pipeline (list[dict | callable]): A sequence of data transforms.
+        data_prefix (dict): Path to a directory where video are held. Default: None.
         start_index (int): Specify a start index for frames in consideration of
             different filename format. However, when taking videos as input,
             it should be set to 0, since frames loaded from videos count
             from 0. Default: 0.
+        multi_class (bool): Determines whether the dataset is a multi-class
+            dataset. Default: False.
+        num_classes (int | None): Number of classes of the dataset, used in
+            multi-class datasets. Default: None.
+        modality (str): Modality of data. Support 'RGB', 'Flow', 'Audio'.
+            Default: 'RGB'.
+        test_mode (bool): Store True when building test or validation dataset.
+            Default: False.
         **kwargs: Keyword arguments for ``BaseDataset``.
     """
 
@@ -47,12 +56,17 @@ class VideoDataset(BaseDataset):
                  num_classes=None,
                  start_index=0,
                  modality='RGB',
+                 test_mode=False,
                  **kwargs):
         self.multi_class = multi_class
         self.num_classes = num_classes
         self.start_index = start_index
         self.modality = modality
-        super().__init__(ann_file, pipeline=pipeline, data_prefix=data_prefix, **kwargs)
+        super().__init__(ann_file,
+                         pipeline=pipeline,
+                         data_prefix=data_prefix,
+                         test_mode=test_mode,
+                         **kwargs)
 
     def load_data_list(self):
         """Load annotation file to get video information."""

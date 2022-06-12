@@ -13,74 +13,90 @@ from .base import BaseRecognizer
 class Recognizer3D(BaseRecognizer):
     """3D recognizer model framework."""
 
-    def loss(self, inputs, data_samples) -> Dict:
-        assert self.with_cls_head, 'cls head must be implemented.'
+    def extract_feat(self,
+                     batch_inputs,
+                     stage='neck',
+                     data_samples=None,
+                     test_mode=False):
+        """Extract features of different stages.
 
-        inputs = inputs.reshape((-1, ) + inputs.shape[2:])
-        feats = self.extract_feat(inputs)
+        Args:
+            batch_inputs (torch.Tensor): The input data.
+            stage (str): Which stage to output the feature.
+                Defaults to "neck".
+            data_samples (List[ActionDataSample]): Action data
+                samples, which are only needed in training.
+                Defaults to None.
+            test_mode: (bool): Whether in test mode. Defaults to False.
 
-        # TODO
-        loss_aux = None
-        if self.with_neck:
-            feats, loss_aux = self.neck(feats, data_samples)
+        Returns:
+                torch.tensor: The extracted features.
+                dict: A dict recording the kwargs for downstream
+                    pipeline. These keys are usually included:
+                    `loss_aux`.
+        """
 
-        return self.cls_head.loss(feats, data_samples, loss_aux=loss_aux)
+        # Record the kwargs required by `loss` and `predict`
+        loss_predict_kwargs = dict()
 
-    def predict(self, inputs, data_samples) -> List[ActionDataSample]:
-        batches = inputs.shape[0]
-        num_segs = inputs.shape[1]
-        inputs = inputs.reshape((-1, ) + inputs.shape[2:])
+        num_segs = batch_inputs.shape[1]
+        # [N, num_crops, C, T, H, W] ->
+        # [N * num_crops, C, T, H, W]
+        # `num_crops` is calculated by:
+        #   1) `twice_sample` in `SampleFrames`
+        #   2) `num_sample_positions` in `DenseSampleFrames`
+        #   3) `ThreeCrop/TenCrop` in `test_pipeline`
+        #   4) `num_clips` in `SampleFrames` or its subclass if `clip_len != 1`
+        batch_inputs = batch_inputs.view((-1, ) + batch_inputs.shape[2:])
 
-        if self.max_testing_views is not None:
-            total_views = inputs.shape[0]
-            assert num_segs == total_views, (
-                'max_testing_views is only compatible '
-                'with batch_size == 1')
-            view_ptr = 0
-            feats = []
-            while view_ptr < total_views:
-                batch_imgs = inputs[view_ptr:view_ptr + self.max_testing_views]
-                x = self.extract_feat(batch_imgs)
+        # Check settings of test
+        if test_mode:
+            if self.test_cfg is not None and self.test_cfg.get('max_testing_views', False):
+                max_testing_views = self.test_cfg.get('max_testing_views')
+                assert isinstance(max_testing_views, int)
+
+                total_views = batch_inputs.shape[0]
+                assert num_segs == total_views, (
+                    'max_testing_views is only compatible '
+                    'with batch_size == 1')
+                view_ptr = 0
+                feats = []
+                while view_ptr < total_views:
+                    batch_imgs = batch_inputs[view_ptr:view_ptr + max_testing_views]
+                    feat = self.backbone(batch_imgs)
+                    if self.with_neck:
+                        feat, _ = self.neck(feat)
+                    feats.append(feat)
+                    view_ptr += max_testing_views
+                # should consider the case that feat is a tuple
+                if isinstance(feats[0], tuple):
+                    len_tuple = len(feats[0])
+                    feats = [
+                        torch.cat([each[i] for each in feats]) for i in range(len_tuple)
+                    ]
+                    x = tuple(feats)
+                else:
+                    x = torch.cat(feats)
+            else:
+                x = self.backbone(batch_inputs)
                 if self.with_neck:
                     x, _ = self.neck(x)
-                feats.append(x)
-                view_ptr += self.max_testing_views
-            # should consider the case that feat is a tuple
-            if isinstance(feats[0], tuple):
-                len_tuple = len(feats[0])
-                feats = [
-                    torch.cat([x[i] for x in feats]) for i in range(len_tuple)
-                ]
-                feats = tuple(feats)
-            else:
-                feats = torch.cat(feats)
+
+            return x, loss_predict_kwargs
+
         else:
-            feats = self.extract_feat(inputs)
+            x = self.backbone(batch_inputs)
+            if stage == 'backbone':
+                return x, loss_predict_kwargs
+
+            loss_aux = dict()
             if self.with_neck:
-                feats, _ = self.neck(feats)
+                x, loss_aux = self.neck(x, data_samples=data_samples)
 
-        if self.feature_extraction:
-            feat_dim = len(feats[0].size()) if isinstance(feats, tuple) else len(
-                feats.size())
-            assert feat_dim in [
-                5, 2
-            ], ('Got feature of unknown architecture, '
-                'only 3D-CNN-like ([N, in_channels, T, H, W]), and '
-                'transformer-like ([N, in_channels]) features are supported.')
-            if feat_dim == 5:  # 3D-CNN architecture
-                # perform spatio-temporal pooling
-                avg_pool = nn.AdaptiveAvgPool3d(1)
-                if isinstance(feats, tuple):
-                    feats = [avg_pool(x) for x in feats]
-                    # concat them
-                    feats = torch.cat(feats, axis=1)
-                else:
-                    feats = avg_pool(feats)
-                # squeeze dimensions
-                feats = feats.reshape((batches, num_segs, -1))
-                # temporal average pooling
-                feats = feats.mean(axis=1)
-            return feats
+            loss_predict_kwargs['loss_aux'] = loss_aux
+            if stage == 'neck':
+                return x, loss_predict_kwargs
 
-        assert self.with_cls_head, 'cls head must be implemented.'
-        return self.cls_head.predict(feats, data_samples)
+            if self.with_cls_head and stage == 'head':
+                x = self.cls_head(x, **loss_predict_kwargs)
+                return x, loss_predict_kwargs

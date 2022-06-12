@@ -6,7 +6,6 @@ from mmaction.registry import MODELS
 from .resnet_tsm import ResNetTSM
 
 
-
 def linear_sampler(data, offset):
     """Differentiable Temporal-wise Frame Sampling, which is essentially a
     linear interpolation process.

@@ -12,12 +12,6 @@ from torch.nn.modules.utils import _ntuple, _triple
 
 from mmaction.registry import MODELS
 
-try:
-    from mmdet.registry import MODELS as MMDET_MODELS
-    mmdet_imported = True
-except (ImportError, ModuleNotFoundError):
-    mmdet_imported = False
-
 
 class BasicBlock3d(nn.Module):
     """BasicBlock 3d block for ResNet3D.
@@ -1026,8 +1020,3 @@ class ResNet3dLayer(nn.Module):
             for m in self.modules():
                 if isinstance(m, _BatchNorm):
                     m.eval()
-
-
-if mmdet_imported:
-    MMDET_MODELS.register_module()(ResNet3dLayer)
-    MMDET_MODELS.register_module()(ResNet3d)

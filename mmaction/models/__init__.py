@@ -14,15 +14,18 @@ from .losses import (BCELossWithLogits, BinaryLogisticRegressionLoss, BMNLoss,
                      CBFocalLoss, CrossEntropyLoss, HVULoss, NLLLoss,
                      OHEMHingeLoss, SSNLoss)
 from .necks import TPN
-from .recognizers import (Recognizer3D, Recognizer2D, RecognizerGCN, AudioRecognizer,
+from .recognizers import (Recognizer3D, Recognizer2D, RecognizerGCN,
                           BaseRecognizer)
 from .roi_heads import (AVARoIHead, BBoxHeadAVA, SingleRoIExtractor3D,
                         FBOHead, LFBInferHead, ACRNHead)
+from .utils import (ActionDataPreprocessor, BaseMiniBatchBlending, CutmixBlending,
+                    MixupBlending)
+
 
 __all__ = [
     'C3D', 'ResNet', 'STGCN', 'ResNet3d', 'ResNet2Plus1d',
     'I3DHead', 'TSNHead', 'TSMHead', 'BaseHead', 'STGCNHead', 'Recognizer3D',
-    'Recognizer2D', 'RecognizerGCN', 'AudioRecognizer', 'BaseRecognizer',
+    'Recognizer2D', 'RecognizerGCN', 'BaseRecognizer',
     'CrossEntropyLoss', 'NLLLoss', 'HVULoss', 'ResNetTSM', 'ResNet3dSlowFast',
     'SlowFastHead', 'Conv2plus1d', 'CBFocalLoss', 'SubBatchNorm3D',
     'ResNet3dSlowOnly', 'BCELossWithLogits', 'PEM', 'TAM', 'TEM',
@@ -34,4 +37,6 @@ __all__ = [
     'FBOHead', 'LFBInferHead', 'TRNHead', 'TimeSformer',
     'TimeSformerHead', 'DividedSpatialAttentionWithNorm',
     'DividedTemporalAttentionWithNorm', 'FFNWithNorm', 'ACRNHead',
+    'ActionDataPreprocessor', 'BaseMiniBatchBlending', 'CutmixBlending',
+    'MixupBlending'
 ]

@@ -46,14 +46,12 @@ class AccMetric(BaseMetric):
             predictions (Sequence[dict]): A batch of outputs from
                 the model.
         """
-        num_batch = len(data_batch)
-        assert len(data_batch) == len(predictions)
-        for i in range(num_batch):
+        for data, pred in zip(data_batch, predictions):
             result = dict()
-            data_sample = data_batch[i]['data_sample']
-            pred = predictions[i]
-            result['label'] = data_sample['gt_labels']['item'].item()
-            result['pred'] = pred['pred_scores']['item'].cpu().numpy()
+            pred = pred['pred_scores']
+            label = data['data_sample']['gt_labels']
+            result['pred'] = pred['item'].cpu().numpy()
+            result['label'] = label['item'].item()
             self.results.append(result)
 
     def compute_metrics(self, results: list) -> dict:

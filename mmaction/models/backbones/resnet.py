@@ -567,7 +567,7 @@ class ResNet(nn.Module):
                 param.requires_grad = False
 
     def _partial_bn(self):
-        logger = get_root_logger()
+        logger = MMLogger.get_current_instance()
         logger.info('Freezing BatchNorm2D except the first one.')
         count_bn = 0
         for m in self.modules():

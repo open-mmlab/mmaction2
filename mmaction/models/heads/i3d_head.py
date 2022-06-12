@@ -51,7 +51,7 @@ class I3DHead(BaseHead):
         """Initiate the parameters from scratch."""
         normal_init(self.fc_cls, std=self.init_std)
 
-    def forward(self, x):
+    def forward(self, x, **kwargs):
         """Defines the computation performed at every call.
 
         Args:
