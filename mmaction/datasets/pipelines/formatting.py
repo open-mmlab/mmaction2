@@ -42,10 +42,9 @@ class PackActionInputs(BaseTransform):
         elif 'keypoint' in results:
             keypoint = results['keypoint']
             packed_results['inputs'] = to_tensor(keypoint)
-        elif 'audios' in results:
-            pass
         else:
-            raise ValueError('Input must be skeleton keypoints, images or audios.')
+            raise ValueError(
+                'Cannot get "img" or "keypoint" in the input dict of `PackActionInputs`.')
 
         data_sample = ActionDataSample()
 
@@ -57,16 +56,13 @@ class PackActionInputs(BaseTransform):
 
             if 'proposals' in results:
                 data_sample.proposals = InstanceData(bboxes=to_tensor(results['proposals']))
-
-            img_meta = {}
-            for key in self.meta_keys:
-                img_meta[key] = results[key]
-            data_sample.set_metainfo(img_meta)
         else:
             label_data = LabelData()
             label_data.item = to_tensor(results['label'])
             data_sample.gt_labels = label_data
 
+        img_meta = {k: results[k] for k in self.meta_keys if k in results}
+        data_sample.set_metainfo(img_meta)
         packed_results['data_sample'] = data_sample
         return packed_results
 
@@ -156,6 +152,17 @@ class FormatShape(BaseTransform):
             imgs = np.transpose(imgs, (0, 3, 1, 2))
             # M x C x H x W
         elif self.input_format == 'NCHW_Flow':
+            num_imgs = len(results['imgs'])
+            assert num_imgs % 2 == 0
+            n = num_imgs // 2
+            h, w = results['imgs'][0].shape
+            x_flow = np.empty((n, h, w), dtype=np.float32)
+            y_flow = np.empty((n, h, w), dtype=np.float32)
+            for i in range(n):
+                x_flow[i] = results['imgs'][2 * i]
+                y_flow[i] = results['imgs'][2 * i + 1]
+            imgs = np.stack([x_flow, y_flow], axis=-1)
+
             num_clips = results['num_clips']
             clip_len = results['clip_len']
             imgs = imgs.reshape((-1, num_clips, clip_len) + imgs.shape[1:])

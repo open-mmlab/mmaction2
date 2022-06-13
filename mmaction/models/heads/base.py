@@ -1,16 +1,14 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from abc import ABCMeta, abstractmethod
 from typing import List, Dict
-from collections import OrderedDict
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from mmcv.runner import BaseModule
 from mmengine.data import LabelData
-import mmengine.dist as dist
+from mmengine.model import BaseModule
 
-from mmaction.core import top_k_accuracy, ActionDataSample
+from mmaction.core import top_k_accuracy
 from mmaction.registry import MODELS
 
 
@@ -49,7 +47,8 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
         label_smooth_eps (float): Epsilon used in label smooth.
             Reference: arxiv.org/abs/1906.02629. Default: 0.
         topk (int | tuple): Top-k accuracy. Default: (1, 5).
-        init_cfg (dict): the initialization config.
+        average_clips (None | dict): Config for Averaging class scores
+            over multiple clips. Default: None.
     """
 
     def __init__(self,
@@ -61,7 +60,7 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
                  topk=(1, 5),
                  average_clips=None,
                  init_cfg=None):
-        super().__init__(init_cfg)
+        super(BaseHead, self).__init__(init_cfg=init_cfg)
         self.num_classes = num_classes
         self.in_channels = in_channels
         self.loss_cls = MODELS.build(loss_cls)
@@ -80,44 +79,34 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
         """Initiate the parameters either from existing checkpoint or from
         scratch."""
 
-    def predict(self, feats, data_samples, **kwargs) -> List[ActionDataSample]:
-        cls_scores = self(feats, **kwargs)
+    @abstractmethod
+    def forward(self, x, **kwargs):
+        """Defines the computation performed at every call."""
 
+    def predict(self, feats, data_samples, **kwargs) -> List[LabelData]:
+        cls_scores = self(feats, **kwargs)
+        return self.predict_by_feats(cls_scores, data_samples)
+
+    def predict_by_feats(self, cls_scores, data_samples) -> List[LabelData]:
         num_segs = cls_scores.shape[0] // len(data_samples)
         cls_scores = self.average_clip(cls_scores, num_segs=num_segs)
 
-        results = []
+        predictions: List[LabelData] = []
         for score in cls_scores:
-            label = LabelData()
-            label.item = score
-            result = ActionDataSample()
-            result.pred_scores = label
-            results.append(result)
-
-        return results
+            label = LabelData(item=score)
+            predictions.append(label)
+        return predictions
 
     def loss(self, feats, data_samples, **kwargs) -> Dict:
-        """Calculate the loss given output ``cls_score``, target ``labels``.
-
-        Args:
-            feats (torch.Tensor): The output features of the model.
-            data_samples (List[ActionDataSample]): The data samples of the model.
-
-        Returns:
-            dict: A dict containing field 'loss_cls'(mandatory)
-            and 'topk_acc'(optional).
-        """
-        losses = dict()
-        loss_aux = kwargs.pop('loss_aux', None)
-        if loss_aux is not None:
-            losses.update(loss_aux)
-
         cls_scores = self(feats, **kwargs)
+        return self.loss_by_feats(cls_scores, data_samples)
 
+    def loss_by_feats(self, cls_scores, data_samples) -> Dict:
         labels = [x.gt_labels.item for x in data_samples]
-        labels = torch.stack(labels).to(feats.device)
+        labels = torch.stack(labels).to(cls_scores.device)
         labels = labels.squeeze()
 
+        losses = dict()
         if labels.shape == torch.Size([]):
             labels = labels.unsqueeze(0)
         elif labels.dim() == 1 and labels.size()[0] == self.num_classes \
@@ -145,18 +134,9 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
             losses.update(loss_cls)
         else:
             losses['loss_cls'] = loss_cls
+        return losses
 
-        loss, log_vars = self._parse_losses(losses)
-
-        outputs = dict(
-            loss=loss, log_vars=log_vars, num_samples=len(data_samples))
-        return outputs
-
-    @abstractmethod
-    def forward(self, x):
-        """Defines the computation performed at every call."""
-
-    def average_clip(self, cls_scores, num_segs=1):
+    def average_clip(self, cls_scores, num_segs=1) -> torch.Tensor:
         """Averaging class scores over multiple clips.
 
         Using different averaging types ('score' or 'prob' or None,
@@ -188,39 +168,3 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
             cls_scores = cls_scores.mean(dim=1)
 
         return cls_scores
-
-    @staticmethod
-    def _parse_losses(losses):
-        """Parse the raw outputs (losses) of the network.
-
-        Args:
-            losses (dict): Raw output of the network, which usually contain
-                losses and other necessary information.
-
-        Returns:
-            tuple[Tensor, dict]: (loss, log_vars), loss is the loss tensor
-                which may be a weighted sum of all losses, log_vars contains
-                all the variables to be sent to the logger.
-        """
-        log_vars = OrderedDict()
-        for loss_name, loss_value in losses.items():
-            if isinstance(loss_value, torch.Tensor):
-                log_vars[loss_name] = loss_value.mean()
-            elif isinstance(loss_value, list):
-                log_vars[loss_name] = sum(_loss.mean() for _loss in loss_value)
-            else:
-                raise TypeError(
-                    f'{loss_name} is not a tensor or list of tensors')
-
-        loss = sum(_value for _key, _value in log_vars.items()
-                   if 'loss' in _key)
-
-        log_vars['loss'] = loss
-        for loss_name, loss_value in log_vars.items():
-            # reduce loss when distributed training
-            if dist.is_distributed():
-                loss_value = loss_value.data.clone()
-                dist.all_reduce(loss_value, op='mean')
-            log_vars[loss_name] = loss_value.item()
-
-        return loss, log_vars

@@ -49,7 +49,7 @@ class STGCNHead(BaseHead):
     def init_weights(self):
         normal_init(self.fc, std=self.init_std)
 
-    def forward(self, x):
+    def forward(self, x, **kwargs):
         # global pooling
         assert self.pool is not None, 'pool must be implemented.'
         x = self.pool(x)

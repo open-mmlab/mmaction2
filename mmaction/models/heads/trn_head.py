@@ -179,7 +179,7 @@ class TRNHead(BaseHead):
         normal_init(self.fc_cls, std=self.init_std)
         self.consensus.init_weights()
 
-    def forward(self, x, num_segs):
+    def forward(self, x, num_segs, **kwargs):
         """Defines the computation performed at every call.
 
         Args:

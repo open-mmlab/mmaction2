@@ -8,7 +8,7 @@ from mmcv.transforms import BaseTransform
 from scipy.stats import mode
 
 from mmaction.registry import TRANSFORMS
-from .transforms import Flip
+from .processing import Flip
 
 
 @TRANSFORMS.register_module()

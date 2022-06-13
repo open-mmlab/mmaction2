@@ -11,13 +11,6 @@ from mmaction.registry import MODELS
 from .resnet3d import ResNet3d
 
 
-try:
-    from mmdet.registry import MODELS as MMDET_MODELS
-    mmdet_imported = True
-except (ImportError, ModuleNotFoundError):
-    mmdet_imported = False
-
-
 class ResNet3dPathway(ResNet3d):
     """A pathway of Slowfast based on ResNet3d.
 
@@ -525,7 +518,3 @@ class ResNet3dSlowFast(nn.Module):
         out = (x_slow, x_fast)
 
         return out
-
-
-if mmdet_imported:
-    MMDET_MODELS.register_module()(ResNet3dSlowFast)

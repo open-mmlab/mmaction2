@@ -1,17 +1,19 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import warnings
 from abc import ABCMeta, abstractmethod
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 import torch
-import torch.nn as nn
-from mmcv.runner import BaseModule
-from mmcv.runner import auto_fp16
-from mmaction.core import ActionDataSample, stack_batch
-from mmaction.registry import MODELS, TASK_UTILS
+from mmengine.model import BaseModel, merge_dict
+
+from mmaction.core import ActionDataSample
+from mmaction.registry import MODELS
 
 
-class BaseRecognizer(BaseModule, metaclass=ABCMeta):
+ForwardResults = Union[Dict[str, torch.Tensor], List[ActionDataSample],
+                       Tuple[torch.Tensor], torch.Tensor]
+
+
+class BaseRecognizer(BaseModel, metaclass=ABCMeta):
     """Base class for recognizers.
 
     Args:
@@ -21,7 +23,8 @@ class BaseRecognizer(BaseModule, metaclass=ABCMeta):
         neck (dict | None): Neck for feature fusion. Default: None.
         train_cfg (dict | None): Config for training. Default: None.
         test_cfg (dict | None): Config for testing. Default: None.
-        init_cfg (dict, optional): Initialization config dict.
+        data_preprocessor (dict | None): Config for data preprocessor.
+            Default: None.
     """
 
     def __init__(self,
@@ -30,45 +33,16 @@ class BaseRecognizer(BaseModule, metaclass=ABCMeta):
                  neck=None,
                  train_cfg=None,
                  test_cfg=None,
-                 init_cfg=None):
-        super().__init__(init_cfg)
-        # record the source of the backbone
-        self.backbone_from = 'mmaction2'
+                 init_cfg=None,
+                 data_preprocessor=None):
+        if data_preprocessor is None:
+            data_preprocessor = dict(type='ActionDataPreprocessor')
 
-        if backbone['type'].startswith('mmcls.'):
-            try:
-                import mmcls.models.builder as mmcls_builder
-            except (ImportError, ModuleNotFoundError):
-                raise ImportError('Please install mmcls to use this backbone.')
-            backbone['type'] = backbone['type'][6:]
-            self.backbone = mmcls_builder.build_backbone(backbone)
-            self.backbone_from = 'mmcls'
-        elif backbone['type'].startswith('torchvision.'):
-            try:
-                import torchvision.models
-            except (ImportError, ModuleNotFoundError):
-                raise ImportError('Please install torchvision to use this '
-                                  'backbone.')
-            backbone_type = backbone.pop('type')[12:]
-            self.backbone = torchvision.models.__dict__[backbone_type](
-                **backbone)
-            # disable the classifier
-            self.backbone.classifier = nn.Identity()
-            self.backbone.fc = nn.Identity()
-            self.backbone_from = 'torchvision'
-        elif backbone['type'].startswith('timm.'):
-            try:
-                import timm
-            except (ImportError, ModuleNotFoundError):
-                raise ImportError('Please install timm to use this '
-                                  'backbone.')
-            backbone_type = backbone.pop('type')[5:]
-            # disable the classifier
-            backbone['num_classes'] = 0
-            self.backbone = timm.create_model(backbone_type, **backbone)
-            self.backbone_from = 'timm'
-        else:
-            self.backbone = MODELS.build(backbone)
+        super(BaseRecognizer, self).__init__(
+            init_cfg=init_cfg,
+            data_preprocessor=data_preprocessor)
+
+        self.backbone = MODELS.build(backbone)
 
         if neck is not None:
             self.neck = MODELS.build(neck)
@@ -79,27 +53,9 @@ class BaseRecognizer(BaseModule, metaclass=ABCMeta):
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
 
-        # max_testing_views should be int
-        self.max_testing_views = None
-        if test_cfg is not None and 'max_testing_views' in test_cfg:
-            self.max_testing_views = test_cfg['max_testing_views']
-            assert isinstance(self.max_testing_views, int)
-
-        if test_cfg is not None and 'feature_extraction' in test_cfg:
-            self.feature_extraction = test_cfg['feature_extraction']
-        else:
-            self.feature_extraction = False
-
-        # mini-batch blending, e.g. mixup, cutmix, etc.
-        self.blending = None
-        if train_cfg is not None and 'blending' in train_cfg:
-            self.blending = TASK_UTILS.build(train_cfg['blending'])
-
-        self.fp16_enabled = False
-
-    @property
-    def device(self):
-        return next(self.backbone.parameters()).device
+    @abstractmethod
+    def extract_feat(self, batch_inputs, **kwargs):
+        raise NotImplementedError
 
     @property
     def with_neck(self):
@@ -113,72 +69,49 @@ class BaseRecognizer(BaseModule, metaclass=ABCMeta):
 
     def init_weights(self):
         """Initialize the model network weights."""
-        if self.backbone_from in ['mmcls', 'mmaction2']:
-            self.backbone.init_weights()
-        elif self.backbone_from in ['torchvision', 'timm']:
-            warnings.warn('We do not initialize weights for backbones in '
-                          f'{self.backbone_from}, since the weights for '
-                          f'backbones in {self.backbone_from} are initialized'
-                          'in their __init__ functions.')
-        else:
-            raise NotImplementedError('Unsupported backbone source '
-                                      f'{self.backbone_from}!')
-
+        self.backbone.init_weights()
         if self.with_cls_head:
             self.cls_head.init_weights()
         if self.with_neck:
             self.neck.init_weights()
 
-    @auto_fp16()
-    def extract_feat(self, inputs):
-        """Extract features through a backbone.
+    def loss(self, batch_inputs, data_samples=None):
+        feats, loss_kwargs = \
+            self.extract_feat(batch_inputs, data_samples=data_samples)
+        # loss_aux will be a empty dict if self.with_neck is False
+        loss_aux = loss_kwargs.get('loss_aux', dict())
+        loss_cls = self.cls_head.loss(feats, data_samples, **loss_kwargs)
+        losses = merge_dict(loss_cls, loss_aux)
+        return losses
 
-        Args:
-            inputs (torch.Tensor): The input data.
+    def predict(self, batch_inputs, data_samples=None):
+        feats, predict_kwargs = self.extract_feat(batch_inputs, test_mode=True)
+        predictions = self.cls_head.predict(feats, data_samples, **predict_kwargs)
+        predictions = self.postprocess(predictions)
+        return predictions
 
-        Returns:
-            torch.tensor: The extracted features.
-        """
-        if (hasattr(self.backbone, 'features')
-                and self.backbone_from == 'torchvision'):
-            x = self.backbone.features(inputs)
-        elif self.backbone_from == 'timm':
-            x = self.backbone.forward_features(inputs)
-        elif self.backbone_from == 'mmcls':
-            x = self.backbone(inputs)
-            if isinstance(x, tuple):
-                assert len(x) == 1
-                x = x[0]
+    def _forward(self, batch_inputs, stage='backbone') -> torch.Tensor:
+        feats, _ = self.extract_feat(batch_inputs, stage=stage)
+        return feats
+
+    def forward(self,
+                batch_inputs: torch.Tensor,
+                data_samples: Optional[List[ActionDataSample]] = None,
+                mode: str = 'feat') -> ForwardResults:
+        if mode == 'feat':
+            return self._forward(batch_inputs)
+        if mode == 'predict':
+            return self.predict(batch_inputs, data_samples)
+        elif mode == 'loss':
+            return self.loss(batch_inputs, data_samples)
         else:
-            x = self.backbone(inputs)
-        return x
+            raise RuntimeError(f'Invalid mode "{mode}".')
 
-    @abstractmethod
-    def loss(self, inputs, data_samples) -> Dict:
-        pass
-
-    @abstractmethod
-    def predict(self, inputs, data_samples) -> List[ActionDataSample]:
-        pass
-
-    def forward(self, data, return_loss=False) -> Union[Dict, List[ActionDataSample]]:
-        """Define the computation performed at every call."""
-        inputs, data_samples = self.preprocess_data(data)
-        if return_loss:
-            if self.blending is not None:
-                inputs, data_samples = self.blending(inputs, data_samples)
-            return self.loss(inputs, data_samples)
-        else:
-            return self.predict(inputs, data_samples)
-
-    def preprocess_data(self, data):
-        inputs = [data_['inputs'] for data_ in data]
-        data_samples = [data_['data_sample'] for data_ in data]
-
-        data_samples = [
-            data_sample.to(self.device) for data_sample in data_samples
-        ]
-        inputs = [input.to(self.device) for input in inputs]
-        batch_inputs = stack_batch(inputs)
-
-        return batch_inputs, data_samples
+    @staticmethod
+    def postprocess(predictions) -> List[ActionDataSample]:
+        """ Convert predictions to `ActionDataSample`. """
+        for i in range(len(predictions)):
+            result = ActionDataSample()
+            result.pred_scores = predictions[i]
+            predictions[i] = result
+        return predictions

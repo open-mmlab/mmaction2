@@ -1,11 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict, List
-
 import torch
-from torch import nn
-from typing_extensions import dataclass_transform
 
-from mmaction.core import ActionDataSample
 from mmaction.registry import MODELS
 from .base import BaseRecognizer
 
@@ -14,110 +9,86 @@ from .base import BaseRecognizer
 class Recognizer2D(BaseRecognizer):
     """2D recognizer model framework."""
 
-    def loss(self, inputs, data_samples) -> Dict:
-        assert self.with_cls_head, 'cls head must be implemented.'
+    def extract_feat(self,
+                     batch_inputs,
+                     stage='neck',
+                     data_samples=None,
+                     test_mode=False):
+        """Extract features of different stages.
 
-        batches = inputs.shape[0]
-        inputs = inputs.reshape((-1, ) + inputs.shape[2:])
-        num_segs = inputs.shape[0] // batches
+        Args:
+            batch_inputs (torch.Tensor): The input data.
+            stage (str): Which stage to output the feature.
+                Defaults to "neck".
+            data_samples (List[ActionDataSample]): Action data
+                samples, which are only needed in training.
+                Defaults to None.
+            test_mode: (bool): Whether in test mode. Defaults to False.
 
-        feats = self.extract_feat(inputs)
+        Returns:
+                torch.tensor: The extracted features.
+                dict: A dict recording the kwargs for downstream
+                    pipeline. These keys are usually included:
+                    `num_segs`, `fcn_test`, `loss_aux`.
+        """
 
-        if self.backbone_from in ['torchvision', 'timm']:
-            if len(feats.shape) == 4 and (feats.shape[2] > 1
-                                          or feats.shape[3] > 1):
-                # apply adaptive avg pooling
-                feats = nn.AdaptiveAvgPool2d(1)(feats)
-            feats = feats.reshape((feats.shape[0], -1))
-            feats = feats.reshape(feats.shape + (1, 1))
+        # Record the kwargs required by `loss` and `predict`
+        loss_predict_kwargs = dict()
 
-        loss_aux = None
-        if self.with_neck:
-            feats = [
-                each.reshape((-1, num_segs) + each.shape[1:]).transpose(
-                    1, 2).contiguous() for each in feats
-            ]
-            feats, loss_aux = self.neck(feats, data_samples)
-            feats = feats.squeeze(2)
-            num_segs = 1
-            losses.update(loss_aux)
+        num_segs = batch_inputs.shape[1]
+        loss_predict_kwargs['num_segs'] = num_segs
 
-        return self.cls_head.loss(
-            feats, data_samples, loss_aux=loss_aux, num_segs=num_segs)
-
-    def predict(self, inputs, data_samples) -> List[ActionDataSample]:
-
-        if self.test_cfg is not None and self.test_cfg.get('fcn_test', False):
-            assert not self.feature_extraction
-            assert self.with_cls_head
-            return self._do_fcn_test(inputs, data_samples)
-        return self._do_test(inputs, data_samples)
-
-    def _do_test(self, inputs, data_samples) -> List[ActionDataSample]:
-        batches = inputs.shape[0]
-        inputs = inputs.reshape((-1, ) + inputs.shape[2:])
-        num_segs = inputs.shape[0] // batches
-
-        feats = self.extract_feat(inputs)
-
-        if self.backbone_from in ['torchvision', 'timm']:
-            if len(feats.shape) == 4 and (feats.shape[2] > 1
-                                          or feats.shape[3] > 1):
-                # apply adaptive avg pooling
-                feats = nn.AdaptiveAvgPool2d(1)(feats)
-            feats = feats.reshape((feats.shape[0], -1))
-            feats = feats.reshape(feats.shape + (1, 1))
-
-        if self.with_neck:
-            feats = [
-                each.reshape((-1, num_segs) + each.shape[1:]).transpose(
-                    1, 2).contiguous() for each in feats
-            ]
-            feats, _ = self.neck(feats)
-            feats = feats.squeeze(2)
-            num_segs = 1
-
-        if self.feature_extraction:
-            # perform spatial pooling
-            avg_pool = nn.AdaptiveAvgPool2d(1)
-            feats = avg_pool(feats)
-            # squeeze dimensions
-            feats = feats.reshape((batches, num_segs, -1))
-            # temporal average pooling
-            feats = feats.mean(axis=1)
-            return feats
-
-        # When using `TSNHead` or `TPNHead`, shape is [batch_size, num_classes]
-        # When using `TSMHead`, shape is [batch_size * num_crops, num_classes]
+        # [N, num_crops * num_segs, C, H, W] ->
+        # [N * num_crops * num_segs, C, H, W]
         # `num_crops` is calculated by:
         #   1) `twice_sample` in `SampleFrames`
         #   2) `num_sample_positions` in `DenseSampleFrames`
         #   3) `ThreeCrop/TenCrop` in `test_pipeline`
         #   4) `num_clips` in `SampleFrames` or its subclass if `clip_len != 1`
+        batch_inputs = batch_inputs.view((-1, ) + batch_inputs.shape[2:])
 
-        # should have cls_head if not extracting features
-        assert self.with_cls_head, 'cls head must be implemented.'
-        return self.cls_head.predict(feats, data_samples, num_segs=num_segs)
+        # Check settings of fcn_test
+        fcn_test = False
+        if test_mode:
+            if self.test_cfg is not None and self.test_cfg.get('fcn_test', False):
+                fcn_test = True
+                if self.test_cfg.get('flip', False):
+                    batch_inputs = torch.flip(batch_inputs, [-1])
+                num_segs = self.test_cfg.get('num_segs', self.backbone.num_segments)
+            loss_predict_kwargs['fcn_test'] = fcn_test
 
-    def _do_fcn_test(self, inputs, data_samples) -> List[ActionDataSample]:
+        x = self.backbone(batch_inputs)
 
-        inputs = inputs.reshape((-1, ) + inputs.shape[2:])
-        num_segs = self.test_cfg.get('num_segs', self.backbone.num_segments)
+        # Return features extracted through backbone
+        if stage == 'backbone':
+            return x, loss_predict_kwargs
 
-        if self.test_cfg.get('flip', False):
-            inputs = torch.flip(inputs, [-1])
-
-        feats = self.extract_feat(inputs)
-
+        loss_aux = dict()
         if self.with_neck:
-            feats = [
+            # x is a tuple with multiple feature maps
+            x = [
                 each.reshape((-1, num_segs) + each.shape[1:]).transpose(
-                    1, 2).contiguous() for each in feats
+                    1, 2).contiguous() for each in x
             ]
-            feats, _ = self.neck(feats)
+            x, loss_aux = self.neck(x, data_samples=data_samples)
+            if not fcn_test:
+                x = x.squeeze(2)
+                loss_predict_kwargs['num_segs'] = 1
 
-        else:
-            feats = feats.reshape((-1, num_segs) + feats.shape[1:]).transpose(
+        # full convolution (fcn) testing when no neck
+        elif fcn_test:
+            # [N * num_crops * num_segs, C', H', W'] ->
+            # [N * num_crops, C', num_segs, H', W']
+            x = x.reshape((-1, num_segs) + x.shape[1:]).transpose(
                 1, 2).contiguous()
 
-        return self.cls_head.predict(feats, data_samples, fcn_test=True)
+        loss_predict_kwargs['loss_aux'] = loss_aux
+        # Return features extracted through neck
+        if stage == 'neck':
+            return x, loss_predict_kwargs
+
+        # Return raw logits through head
+        if self.with_cls_head and stage == 'head':
+            # [N * num_crops, num_classes]
+            x = self.cls_head(x, **loss_predict_kwargs)
+            return x, loss_predict_kwargs

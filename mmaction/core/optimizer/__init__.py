@@ -1,4 +1,4 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .tsm_optimizer_constructor import TSMOptimizerConstructor
+from .tsm_optimizer_constructor import TSMOptimWrapperConstructor
 
-__all__ = ['TSMOptimizerConstructor']
+__all__ = ['TSMOptimWrapperConstructor']

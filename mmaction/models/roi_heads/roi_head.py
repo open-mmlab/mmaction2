@@ -4,7 +4,6 @@ from typing import List, Optional, Tuple, Union
 import torch
 from mmengine.config import ConfigDict
 from mmengine.data import InstanceData
-from mmdet.core import SamplingResult
 from torch import Tensor
 
 
@@ -13,7 +12,7 @@ from mmaction.registry import MODELS
 
 try:
     from mmdet.models.roi_heads import StandardRoIHead
-    from mmdet.core import bbox2roi
+    from mmdet.core import bbox2roi, SamplingResult
     mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
     mmdet_imported = False

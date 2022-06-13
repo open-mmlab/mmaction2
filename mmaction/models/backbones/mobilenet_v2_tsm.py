@@ -4,7 +4,6 @@ from .mobilenet_v2 import InvertedResidual, MobileNetV2
 from .resnet_tsm import TemporalShift
 
 
-
 @MODELS.register_module()
 class MobileNetV2TSM(MobileNetV2):
     """MobileNetV2 backbone for TSM.

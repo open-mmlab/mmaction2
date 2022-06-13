@@ -34,7 +34,7 @@ class TimeSformerHead(BaseHead):
         """Initiate the parameters from scratch."""
         trunc_normal_init(self.fc_cls, std=self.init_std)
 
-    def forward(self, x):
+    def forward(self, x, **kwargs):
         # [N, in_channels]
         cls_score = self.fc_cls(x)
         # [N, num_classes]

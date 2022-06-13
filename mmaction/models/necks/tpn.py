@@ -408,8 +408,14 @@ class TPN(nn.Module):
         if self.aux_head is not None:
             self.aux_head.init_weights()
 
-    def forward(self, x, target=None):
+    def forward(self, x, data_samples=None):
         loss_aux = dict()
+
+        target = None
+        if data_samples is not None:
+            target = [sample.gt_labels.item for sample in data_samples]
+            target = torch.stack(target)
+            target = target.squeeze()
 
         # Auxiliary loss
         if self.aux_head is not None:

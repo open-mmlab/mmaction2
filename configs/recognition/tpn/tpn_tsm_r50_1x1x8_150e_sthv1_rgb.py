@@ -1,16 +1,16 @@
 _base_ = [
-    '../../_base_/models/tpn_tsm_r50.py', '../../_base_/default_runtime.py'
+    '../../_base_/models/tpn_tsm_r50.py',
+    '../../_base_/default_runtime.py'
 ]
 
-# dataset settings
 dataset_type = 'RawframeDataset'
 data_root = 'data/sthv1/rawframes'
 data_root_val = 'data/sthv1/rawframes'
-ann_file_train = 'data/sthv1/sthv1_train_list_rawframes.txt'
-ann_file_val = 'data/sthv1/sthv1_val_list_rawframes.txt'
-ann_file_test = 'data/sthv1/sthv1_val_list_rawframes.txt'
-img_norm_cfg = dict(
-    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
+data_root = '/mnt/lustre/share_data/duanhaodong/sthv1/rawframes'
+data_root_val = '/mnt/lustre/share_data/duanhaodong/sthv1/rawframes'
+ann_file_train = '/mnt/lustre/share_data/duanhaodong/sthv1/sthv1_train_list_rawframes.txt'
+ann_file_val = '/mnt/lustre/share_data/duanhaodong/sthv1/sthv1_val_list_rawframes.txt'
+ann_file_test = '/mnt/lustre/share_data/duanhaodong/sthv1/sthv1_val_list_rawframes.txt'
 train_pipeline = [
     dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=8),
     dict(type='RawFrameDecode'),
@@ -18,7 +18,6 @@ train_pipeline = [
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
     dict(type='Flip', flip_ratio=0.5),
     dict(type='ColorJitter'),
-    dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='PackActionInputs')
 ]
@@ -32,7 +31,6 @@ val_pipeline = [
     dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
-    dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='PackActionInputs')
 ]
@@ -47,7 +45,6 @@ test_pipeline = [
     dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='ThreeCrop', crop_size=256),
-    dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='PackActionInputs')
 ]
@@ -60,6 +57,7 @@ train_dataloader = dict(
         type=dataset_type,
         ann_file=ann_file_train,
         data_prefix=dict(img=data_root),
+        filename_tmpl='{:05}.jpg',
         pipeline=train_pipeline))
 val_dataloader = dict(
     batch_size=8,
@@ -70,6 +68,7 @@ val_dataloader = dict(
         type=dataset_type,
         ann_file=ann_file_val,
         data_prefix=dict(img=data_root_val),
+        filename_tmpl='{:05}.jpg',
         pipeline=val_pipeline,
         test_mode=True))
 test_dataloader = dict(
@@ -81,42 +80,21 @@ test_dataloader = dict(
         type=dataset_type,
         ann_file=ann_file_test,
         data_prefix=dict(img=data_root_val),
+        filename_tmpl='{:05}.jpg',
         pipeline=test_pipeline,
         test_mode=True))
-
-data = dict(
-    videos_per_gpu=8,
-    workers_per_gpu=8,
-    test_dataloader=dict(videos_per_gpu=1),
-    train=dict(
-        type=dataset_type,
-        ann_file=ann_file_train,
-        data_prefix=data_root,
-        pipeline=train_pipeline),
-    val=dict(
-        type=dataset_type,
-        ann_file=ann_file_val,
-        data_prefix=data_root_val,
-        pipeline=val_pipeline),
-    test=dict(
-        type=dataset_type,
-        ann_file=ann_file_test,
-        data_prefix=data_root_val,
-        pipeline=test_pipeline))
 
 val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 
-val_cfg = dict(interval=5)
-test_cfg = dict()
+train_cfg = dict(
+    type='EpochBasedTrainLoop',
+    max_epochs=150,
+    val_begin=1,
+    val_interval=5)
+val_cfg = dict(type='ValLoop')
+test_cfg = dict(type='TestLoop')
 
-# optimizer
-optimizer = dict(
-    type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0005,
-    nesterov=True)  # this lr is used for 8 gpus
-default_hooks = dict(optimizer=dict(grad_clip=dict(max_norm=20, norm_type=2)))
-
-# learning policy
 param_scheduler = [
     dict(
         type='MultiStepLR',
@@ -126,4 +104,8 @@ param_scheduler = [
         milestones=[75, 125],
         gamma=0.1)
 ]
-train_cfg = dict(by_epoch=True, max_epochs=150)
+
+optim_wrapper = dict(
+    optimizer=dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0005,
+                   nesterov=True),
+    clip_grad=dict(max_norm=20, norm_type=2))

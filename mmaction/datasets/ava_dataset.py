@@ -6,10 +6,10 @@ import numpy as np
 from mmengine.dataset import BaseDataset
 from mmengine.utils import check_file_exist
 from mmengine.fileio import load
+from mmengine.logging import MMLogger
 
+from mmaction.registry import DATASETS
 from ..core.evaluation.ava_utils import read_labelmap
-from ..utils import get_root_logger
-from .builder import DATASETS
 
 
 @DATASETS.register_module()
@@ -103,6 +103,7 @@ class AVADataset(BaseDataset):
                  custom_classes=None,
                  data_prefix=dict(img=None),
                  modality='RGB',
+                 test_mode=False,
                  num_max_proposals=1000,
                  timestamp_start=900,
                  timestamp_end=1800,
@@ -131,8 +132,11 @@ class AVADataset(BaseDataset):
         self.timestamp_end = timestamp_end
         self.start_index = start_index
         self.modality = modality
-        self.logger = get_root_logger()
-        super().__init__(ann_file, pipeline=pipeline, data_prefix=data_prefix, **kwargs)
+        super().__init__(ann_file,
+                         pipeline=pipeline,
+                         data_prefix=data_prefix,
+                         test_mode=test_mode,
+                         **kwargs)
 
         if self.proposal_file is not None:
             self.proposals = load(self.proposal_file)
@@ -257,9 +261,8 @@ class AVADataset(BaseDataset):
                         valid_indexes.pop()
                         break
 
-        self.logger.info(
-            f'{len(valid_indexes)} out of {len(self.data_list)} '
-            f'frames are valid.')
+        logger = MMLogger.get_current_instance()
+        logger.info(f'{len(valid_indexes)} out of {len(self.data_list)} frames are valid.')
         data_list = [self.data_list[i] for i in valid_indexes]
 
         return data_list
