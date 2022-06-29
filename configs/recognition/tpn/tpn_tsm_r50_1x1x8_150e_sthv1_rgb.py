@@ -6,11 +6,9 @@ _base_ = [
 dataset_type = 'RawframeDataset'
 data_root = 'data/sthv1/rawframes'
 data_root_val = 'data/sthv1/rawframes'
-data_root = '/mnt/lustre/share_data/duanhaodong/sthv1/rawframes'
-data_root_val = '/mnt/lustre/share_data/duanhaodong/sthv1/rawframes'
-ann_file_train = '/mnt/lustre/share_data/duanhaodong/sthv1/sthv1_train_list_rawframes.txt'
-ann_file_val = '/mnt/lustre/share_data/duanhaodong/sthv1/sthv1_val_list_rawframes.txt'
-ann_file_test = '/mnt/lustre/share_data/duanhaodong/sthv1/sthv1_val_list_rawframes.txt'
+ann_file_train = 'data/sthv1/sthv1_train_list_rawframes.txt'
+ann_file_val = 'data/sthv1/sthv1_val_list_rawframes.txt'
+ann_file_test = 'data/sthv1/sthv1_val_list_rawframes.txt'
 train_pipeline = [
     dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=8),
     dict(type='RawFrameDecode'),

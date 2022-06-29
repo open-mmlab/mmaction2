@@ -2,7 +2,7 @@
 from typing import Sequence, Tuple, Union
 
 import torch
-from mmengine.model import BaseDataPreprocessor, stach_batch_imgs
+from mmengine.model import BaseDataPreprocessor, stack_batch
 
 from mmaction.registry import MODELS, TASK_UTILS
 
@@ -22,7 +22,6 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
         to_rgb (bool): whether to convert image from BGR to RGB.
             Defaults to False.
         blending (dict): Config for batch blending. Defaults to None.
-        device (int | :obj:`torch.device`): Target device.
     """
 
     def __init__(self,
@@ -32,9 +31,8 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
                  pad_value: Union[float, int] = 0,
                  to_rgb: bool = False,
                  blending: dict = None,
-                 format_shape: str = 'NCHW',
-                 device: Union[int, torch.device] = 'cpu'):
-        super().__init__(device)
+                 format_shape: str = 'NCHW'):
+        super().__init__()
         self.pad_size_divisor = pad_size_divisor
         self.pad_value = pad_value
         self.to_rgb = to_rgb
@@ -81,8 +79,8 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
         inputs, batch_data_samples = self.collate_data(data)
 
         # --- Pad and stack --
-        batch_inputs = stach_batch_imgs(inputs, self.pad_size_divisor,
-                                        self.pad_value)
+        batch_inputs = stack_batch(inputs, self.pad_size_divisor,
+                                   self.pad_value)
 
         # ------ To RGB ------
         if self.to_rgb:

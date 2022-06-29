@@ -652,39 +652,3 @@ class PaddingWithLoop(BaseTransform):
                     f'clip_len={self.clip_len}, '
                     f'num_clips={self.num_clips})')
         return repr_str
-
-
-@TRANSFORMS.register_module()
-class PoseNormalize(BaseTransform):
-    """Normalize the range of keypoint values to [-1,1].
-
-    Args:
-        mean (list | tuple): The mean value of the keypoint values.
-        min_value (list | tuple): The minimum value of the keypoint values.
-        max_value (list | tuple): The maximum value of the keypoint values.
-    """
-
-    def __init__(self,
-                 mean=(960., 540., 0.5),
-                 min_value=(0., 0., 0.),
-                 max_value=(1920, 1080, 1.)):
-        self.mean = np.array(mean, dtype=np.float32).reshape(-1, 1, 1, 1)
-        self.min_value = np.array(
-            min_value, dtype=np.float32).reshape(-1, 1, 1, 1)
-        self.max_value = np.array(
-            max_value, dtype=np.float32).reshape(-1, 1, 1, 1)
-
-    def transform(self, results):
-        keypoint = results['keypoint']
-        keypoint = (keypoint - self.mean) / (self.max_value - self.min_value)
-        results['keypoint'] = keypoint
-        results['keypoint_norm_cfg'] = dict(
-            mean=self.mean, min_value=self.min_value, max_value=self.max_value)
-        return results
-
-    def __repr__(self):
-        repr_str = (f'{self.__class__.__name__}('
-                    f'mean={self.mean}, '
-                    f'min_value={self.min_value}, '
-                    f'max_value={self.max_value})')
-        return repr_str

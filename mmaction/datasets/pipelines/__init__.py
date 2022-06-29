@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .processing import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
-                         MelSpectrogram, MultiScaleCrop, Normalize, RandomCrop,
+                         MelSpectrogram, MultiScaleCrop, RandomCrop,
                          RandomRescale, RandomResizedCrop, Resize, TenCrop, ThreeCrop)
 from .formatting import (PackActionInputs, FormatAudioShape, FormatGCNInput,
                          FormatShape, JointToBone, Transpose)
@@ -14,15 +14,14 @@ from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
                       RawFrameDecode, SampleAVAFrames, SampleFrames,
                       SampleProposalFrames, UntrimmedSampleFrames)
 from .pose_loading import (GeneratePoseTarget, LoadKineticsPose,
-                           PaddingWithLoop, PoseDecode, PoseNormalize,
-                           UniformSampleFrames)
+                           PaddingWithLoop, PoseDecode, UniformSampleFrames)
 from .wrappers import (ImgAug, TorchVisionWrapper, PytorchVideoWrapper)
 
 
 __all__ = [
     'SampleFrames', 'PyAVDecode', 'DecordDecode', 'DenseSampleFrames',
     'OpenCVDecode', 'MultiScaleCrop', 'RandomResizedCrop', 'RandomCrop',
-    'Resize', 'Flip', 'Fuse', 'Normalize', 'ThreeCrop', 'CenterCrop',
+    'Resize', 'Flip', 'Fuse', 'ThreeCrop', 'CenterCrop',
     'TenCrop', 'Transpose', 'FormatShape', 'GenerateLocalizationLabels',
     'LoadLocalizationFeature', 'LoadProposals', 'DecordInit', 'OpenCVInit',
     'PyAVInit', 'SampleProposalFrames', 'UntrimmedSampleFrames',
@@ -30,7 +29,7 @@ __all__ = [
     'SampleProposalFrames', 'ColorJitter', 'LoadHVULabel', 'SampleAVAFrames',
     'AudioAmplify', 'MelSpectrogram', 'AudioDecode', 'FormatAudioShape',
     'LoadAudioFeature', 'AudioFeatureSelector', 'AudioDecodeInit',
-    'ImageDecode', 'BuildPseudoClip', 'RandomRescale', 'PIMSDecode', 'PoseNormalize',
+    'ImageDecode', 'BuildPseudoClip', 'RandomRescale', 'PIMSDecode',
     'PyAVDecodeMotionVector', 'UniformSampleFrames',
     'PoseDecode', 'LoadKineticsPose', 'GeneratePoseTarget', 'PIMSInit',
     'FormatGCNInput', 'PaddingWithLoop', 'ArrayDecode', 'JointToBone',
