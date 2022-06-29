@@ -1,4 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import Sequence
+
 from mmaction.registry import MODELS
 from .resnet3d_slowfast import ResNet3dPathway
 
@@ -23,13 +25,13 @@ class ResNet3dSlowOnly(ResNet3dPathway):
 
     def __init__(self,
                  *args,
-                 lateral=False,
-                 conv1_kernel=(1, 7, 7),
-                 conv1_stride_t=1,
-                 pool1_stride_t=1,
-                 inflate=(0, 0, 1, 1),
-                 with_pool2=False,
-                 **kwargs):
+                 lateral: bool = False,
+                 conv1_kernel: Sequence[int] = (1, 7, 7),
+                 conv1_stride_t: int = 1,
+                 pool1_stride_t: int = 1,
+                 inflate: Sequence[int] = (0, 0, 1, 1),
+                 with_pool2: bool = False,
+                 **kwargs) -> None:
         super().__init__(
             *args,
             lateral=lateral,

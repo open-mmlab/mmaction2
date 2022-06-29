@@ -1,8 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
-import torch.nn as nn
 from mmcv.cnn import normal_init
+from torch import Tensor, nn
 
+from mmaction.core.utils import ConfigType
 from mmaction.registry import MODELS
 from .base import AvgConsensus, BaseHead
 
@@ -15,10 +16,10 @@ class TSMHead(BaseHead):
         num_classes (int): Number of classes to be classified.
         in_channels (int): Number of channels in input feature.
         num_segments (int): Number of frame segments. Default: 8.
-        loss_cls (dict): Config for building loss.
+        loss_cls (dict or ConfigDict): Config for building loss.
             Default: dict(type='CrossEntropyLoss')
         spatial_type (str): Pooling type in spatial dimension. Default: 'avg'.
-        consensus (dict): Consensus config dict.
+        consensus (dict or ConfigDict): Consensus config dict.
         dropout_ratio (float): Probability of dropout layer. Default: 0.4.
         init_std (float): Std value for Initiation. Default: 0.01.
         is_shift (bool): Indicating whether the feature is shifted.
@@ -30,17 +31,17 @@ class TSMHead(BaseHead):
     """
 
     def __init__(self,
-                 num_classes,
-                 in_channels,
-                 num_segments=8,
-                 loss_cls=dict(type='CrossEntropyLoss'),
-                 spatial_type='avg',
-                 consensus=dict(type='AvgConsensus', dim=1),
-                 dropout_ratio=0.8,
-                 init_std=0.001,
-                 is_shift=True,
-                 temporal_pool=False,
-                 **kwargs):
+                 num_classes: int,
+                 in_channels: int,
+                 num_segments: int = 8,
+                 loss_cls: ConfigType = dict(type='CrossEntropyLoss'),
+                 spatial_type: str = 'avg',
+                 consensus: ConfigType = dict(type='AvgConsensus', dim=1),
+                 dropout_ratio: float = 0.8,
+                 init_std: float = 0.001,
+                 is_shift: bool = True,
+                 temporal_pool: bool = False,
+                 **kwargs) -> None:
         super().__init__(num_classes, in_channels, loss_cls, **kwargs)
 
         self.spatial_type = spatial_type
@@ -70,22 +71,22 @@ class TSMHead(BaseHead):
         else:
             self.avg_pool = None
 
-    def init_weights(self):
+    def init_weights(self) -> None:
         """Initiate the parameters from scratch."""
         normal_init(self.fc_cls, std=self.init_std)
 
-    def forward(self, x, num_segs, **kwargs):
+    def forward(self, x: Tensor, num_segs: int, **kwargs) -> Tensor:
         """Defines the computation performed at every call.
 
         Args:
-            x (torch.Tensor): The input data.
+            x (Tensor): The input data.
             num_segs (int): Useless in TSMHead. By default, `num_segs`
                 is equal to `clip_len * num_clips * num_crops`, which is
                 automatically generated in Recognizer forward phase and
                 useless in TSM models. The `self.num_segments` we need is a
                 hyper parameter to build TSM models.
         Returns:
-            torch.Tensor: The classification scores for input samples.
+            Tensor: The classification scores for input samples.
         """
         # [N * num_segs, in_channels, 7, 7]
         if self.avg_pool is not None:
