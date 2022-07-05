@@ -1,15 +1,17 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import warnings
+from typing import List, Optional, OrderedDict, Sequence, Tuple, Union
 
-import torch.nn as nn
 import torch.utils.checkpoint as cp
 from mmcv.cnn import (ConvModule, NonLocal3d, build_activation_layer,
                       constant_init, kaiming_init)
+from mmengine.logging import MMLogger
 from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
 from mmengine.utils.parrots_wrapper import _BatchNorm
-from mmengine.logging import MMLogger
+from torch import Tensor, nn
 from torch.nn.modules.utils import _ntuple, _triple
 
+from mmaction.core.utils import ConfigType
 from mmaction.registry import MODELS
 
 
@@ -29,12 +31,13 @@ class BasicBlock3d(nn.Module):
         inflate (bool): Whether to inflate kernel. Default: True.
         non_local (bool): Determine whether to apply non-local module in this
             block. Default: False.
-        non_local_cfg (dict): Config for non-local module. Default: ``dict()``.
-        conv_cfg (dict): Config dict for convolution layer.
+        non_local_cfg (dict or ConfigType): Config for non-local module.
+            Default: ``dict()``.
+        conv_cfg (dict or ConfigType): Config dict for convolution layer.
             Default: ``dict(type='Conv3d')``.
-        norm_cfg (dict): Config for norm layers. required keys are ``type``,
-            Default: ``dict(type='BN3d')``.
-        act_cfg (dict): Config dict for activation layer.
+        norm_cfg (dict or ConfigType): Config for norm layers.
+            Required keys are ``type``. Default: ``dict(type='BN3d')``.
+        act_cfg (dict or ConfigType): Config dict for activation layer.
             Default: ``dict(type='ReLU')``.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
             memory while slowing down the training speed. Default: False.
@@ -42,21 +45,21 @@ class BasicBlock3d(nn.Module):
     expansion = 1
 
     def __init__(self,
-                 inplanes,
-                 planes,
-                 spatial_stride=1,
-                 temporal_stride=1,
-                 dilation=1,
-                 downsample=None,
-                 style='pytorch',
-                 inflate=True,
-                 non_local=False,
-                 non_local_cfg=dict(),
-                 conv_cfg=dict(type='Conv3d'),
-                 norm_cfg=dict(type='BN3d'),
-                 act_cfg=dict(type='ReLU'),
-                 with_cp=False,
-                 **kwargs):
+                 inplanes: int,
+                 planes: int,
+                 spatial_stride: int = 1,
+                 temporal_stride: int = 1,
+                 dilation: int = 1,
+                 downsample: Optional[nn.Module] = None,
+                 style: str = 'pytorch',
+                 inflate: bool = True,
+                 non_local: bool = False,
+                 non_local_cfg: ConfigType = dict(),
+                 conv_cfg: ConfigType = dict(type='Conv3d'),
+                 norm_cfg: ConfigType = dict(type='BN3d'),
+                 act_cfg: ConfigType = dict(type='ReLU'),
+                 with_cp: bool = False,
+                 **kwargs) -> None:
         super().__init__()
         assert style in ['pytorch', 'caffe']
         # make sure that only ``inflate_style`` is passed into kwargs
@@ -124,7 +127,7 @@ class BasicBlock3d(nn.Module):
             self.non_local_block = NonLocal3d(self.conv2.norm.num_features,
                                               **self.non_local_cfg)
 
-    def forward(self, x):
+    def forward(self, x: Tensor) -> Tensor:
         """Defines the computation performed at every call."""
 
         def _inner_forward(x):
@@ -184,21 +187,21 @@ class Bottleneck3d(nn.Module):
     expansion = 4
 
     def __init__(self,
-                 inplanes,
-                 planes,
-                 spatial_stride=1,
-                 temporal_stride=1,
-                 dilation=1,
-                 downsample=None,
-                 style='pytorch',
-                 inflate=True,
-                 inflate_style='3x1x1',
-                 non_local=False,
-                 non_local_cfg=dict(),
-                 conv_cfg=dict(type='Conv3d'),
-                 norm_cfg=dict(type='BN3d'),
-                 act_cfg=dict(type='ReLU'),
-                 with_cp=False):
+                 inplanes: int,
+                 planes: int,
+                 spatial_stride: int = 1,
+                 temporal_stride: int = 1,
+                 dilation: int = 1,
+                 downsample: Optional[nn.Module] = None,
+                 style: str = 'pytorch',
+                 inflate: bool = True,
+                 inflate_style: str = '3x1x1',
+                 non_local: bool = False,
+                 non_local_cfg: ConfigType = dict(),
+                 conv_cfg: ConfigType = dict(type='Conv3d'),
+                 norm_cfg: ConfigType = dict(type='BN3d'),
+                 act_cfg: ConfigType = dict(type='ReLU'),
+                 with_cp: bool = False) -> None:
         super().__init__()
         assert style in ['pytorch', 'caffe']
         assert inflate_style in ['3x1x1', '3x3x3']
@@ -288,7 +291,7 @@ class Bottleneck3d(nn.Module):
             self.non_local_block = NonLocal3d(self.conv3.norm.num_features,
                                               **self.non_local_cfg)
 
-    def forward(self, x):
+    def forward(self, x: Tensor) -> Tensor:
         """Defines the computation performed at every call."""
 
         def _inner_forward(x):
@@ -361,12 +364,12 @@ class ResNet3d(nn.Module):
         inflate_style (str): ``3x1x1`` or ``3x3x3``. which determines the
             kernel sizes and padding strides for conv1 and conv2 in each block.
             Default: '3x1x1'.
-        conv_cfg (dict): Config for conv layers. required keys are ``type``
-            Default: ``dict(type='Conv3d')``.
-        norm_cfg (dict): Config for norm layers. required keys are ``type`` and
-            ``requires_grad``.
+        conv_cfg (dict or ConfigDict): Config for conv layers.
+            Required keys are ``type``. Default: ``dict(type='Conv3d')``.
+        norm_cfg (dict or ConfigDict): Config for norm layers.
+            Required keys are ``type`` and ``requires_grad``.
             Default: ``dict(type='BN3d', requires_grad=True)``.
-        act_cfg (dict): Config dict for activation layer.
+        act_cfg (dict or ConfigDict): Config dict for activation layer.
             Default: ``dict(type='ReLU', inplace=True)``.
         norm_eval (bool): Whether to set BN layers to eval mode, namely, freeze
             running stats (mean and var). Default: False.
@@ -374,7 +377,8 @@ class ResNet3d(nn.Module):
             memory while slowing down the training speed. Default: False.
         non_local (Sequence[int]): Determine whether to apply non-local module
             in the corresponding block of each stages. Default: (0, 0, 0, 0).
-        non_local_cfg (dict): Config for non-local module. Default: ``dict()``.
+        non_local_cfg (dict or ConfigDict): Config for non-local module.
+            Default: ``dict()``.
         zero_init_residual (bool):
             Whether to use zero initialization for residual block,
             Default: True.
@@ -390,37 +394,37 @@ class ResNet3d(nn.Module):
     }
 
     def __init__(self,
-                 depth,
-                 pretrained,
-                 stage_blocks=None,
-                 pretrained2d=True,
-                 in_channels=3,
-                 num_stages=4,
-                 base_channels=64,
-                 out_indices=(3, ),
-                 spatial_strides=(1, 2, 2, 2),
-                 temporal_strides=(1, 1, 1, 1),
-                 dilations=(1, 1, 1, 1),
-                 conv1_kernel=(3, 7, 7),
-                 conv1_stride_s=2,
-                 conv1_stride_t=1,
-                 pool1_stride_s=2,
-                 pool1_stride_t=1,
-                 with_pool1=True,
-                 with_pool2=True,
-                 style='pytorch',
-                 frozen_stages=-1,
-                 inflate=(1, 1, 1, 1),
-                 inflate_style='3x1x1',
-                 conv_cfg=dict(type='Conv3d'),
-                 norm_cfg=dict(type='BN3d', requires_grad=True),
-                 act_cfg=dict(type='ReLU', inplace=True),
-                 norm_eval=False,
-                 with_cp=False,
-                 non_local=(0, 0, 0, 0),
-                 non_local_cfg=dict(),
-                 zero_init_residual=True,
-                 **kwargs):
+                 depth: int,
+                 pretrained: Optional[str],
+                 stage_blocks: Optional[Tuple] = None,
+                 pretrained2d: bool = True,
+                 in_channels: int = 3,
+                 num_stages: int = 4,
+                 base_channels: int = 64,
+                 out_indices: Sequence[int] = (3, ),
+                 spatial_strides: Sequence[int] = (1, 2, 2, 2),
+                 temporal_strides: Sequence[int] = (1, 1, 1, 1),
+                 dilations: Sequence[int] = (1, 1, 1, 1),
+                 conv1_kernel: Sequence[int] = (3, 7, 7),
+                 conv1_stride_s: int = 2,
+                 conv1_stride_t: int = 1,
+                 pool1_stride_s: int = 2,
+                 pool1_stride_t: int = 1,
+                 with_pool1: bool = True,
+                 with_pool2: bool = True,
+                 style: str = 'pytorch',
+                 frozen_stages: int = -1,
+                 inflate: Sequence[int] = (1, 1, 1, 1),
+                 inflate_style: str = '3x1x1',
+                 conv_cfg: ConfigType = dict(type='Conv3d'),
+                 norm_cfg: ConfigType = dict(type='BN3d', requires_grad=True),
+                 act_cfg: ConfigType = dict(type='ReLU', inplace=True),
+                 norm_eval: bool = False,
+                 with_cp: bool = False,
+                 non_local: Sequence[int] = (0, 0, 0, 0),
+                 non_local_cfg: ConfigType = dict(),
+                 zero_init_residual: bool = True,
+                 **kwargs) -> None:
         super().__init__()
         if depth not in self.arch_settings:
             raise KeyError(f'invalid depth {depth} for resnet')
@@ -505,23 +509,23 @@ class ResNet3d(nn.Module):
             len(self.stage_blocks) - 1)
 
     @staticmethod
-    def make_res_layer(block,
-                       inplanes,
-                       planes,
-                       blocks,
-                       spatial_stride=1,
-                       temporal_stride=1,
-                       dilation=1,
-                       style='pytorch',
-                       inflate=1,
-                       inflate_style='3x1x1',
-                       non_local=0,
-                       non_local_cfg=dict(),
-                       norm_cfg=None,
-                       act_cfg=None,
-                       conv_cfg=None,
-                       with_cp=False,
-                       **kwargs):
+    def make_res_layer(block: nn.Module,
+                       inplanes: int,
+                       planes: int,
+                       blocks: int,
+                       spatial_stride: Union[int, Sequence[int]] = 1,
+                       temporal_stride: Union[int, Sequence[int]] = 1,
+                       dilation: int = 1,
+                       style: type = 'pytorch',
+                       inflate: Union[int, Sequence[int]] = 1,
+                       inflate_style: str = '3x1x1',
+                       non_local: Union[int, Sequence[int]] = 0,
+                       non_local_cfg: ConfigType = dict(),
+                       norm_cfg: ConfigType = None,
+                       act_cfg: ConfigType = None,
+                       conv_cfg: ConfigType = None,
+                       with_cp: Optional[bool] = False,
+                       **kwargs) -> nn.Module:
         """Build residual layer for ResNet3D.
 
         Args:
@@ -550,9 +554,12 @@ class ResNet3d(nn.Module):
                 Default: 0.
             non_local_cfg (dict): Config for non-local module.
                 Default: ``dict()``.
-            conv_cfg (dict | None): Config for norm layers. Default: None.
-            norm_cfg (dict | None): Config for norm layers. Default: None.
-            act_cfg (dict | None): Config for activate layers. Default: None.
+            conv_cfg (dict or ConfigDict | None): Config for norm layers.
+                Default: None.
+            norm_cfg (dict or ConfigDict | None): Config for norm layers.
+                Default: None.
+            act_cfg (dict or ConfigDict | None): Config for activate layers.
+                Default: None.
             with_cp (bool | None): Use checkpoint or not. Using checkpoint
                 will save some memory while slowing down the training speed.
                 Default: False.
@@ -619,8 +626,9 @@ class ResNet3d(nn.Module):
         return nn.Sequential(*layers)
 
     @staticmethod
-    def _inflate_conv_params(conv3d, state_dict_2d, module_name_2d,
-                             inflated_param_names):
+    def _inflate_conv_params(conv3d: nn.Module, state_dict_2d: OrderedDict,
+                             module_name_2d: str,
+                             inflated_param_names: List[str]) -> None:
         """Inflate a conv module from 2d to 3d.
 
         Args:
@@ -647,8 +655,9 @@ class ResNet3d(nn.Module):
             inflated_param_names.append(bias_2d_name)
 
     @staticmethod
-    def _inflate_bn_params(bn3d, state_dict_2d, module_name_2d,
-                           inflated_param_names):
+    def _inflate_bn_params(bn3d: nn.Module, state_dict_2d: OrderedDict,
+                           module_name_2d: str,
+                           inflated_param_names: List[str]) -> None:
         """Inflate a norm module from 2d to 3d.
 
         Args:
@@ -744,10 +753,10 @@ class ResNet3d(nn.Module):
             logger.info(f'These parameters in the 2d checkpoint are not loaded'
                         f': {remaining_names}')
 
-    def inflate_weights(self, logger):
+    def inflate_weights(self, logger) -> None:
         self._inflate_weights(self, logger)
 
-    def _make_stem_layer(self):
+    def _make_stem_layer(self) -> None:
         """Construct the stem layers consists of a conv+norm+act module and a
         pooling layer."""
         self.conv1 = ConvModule(
@@ -770,7 +779,7 @@ class ResNet3d(nn.Module):
 
         self.pool2 = nn.MaxPool3d(kernel_size=(2, 1, 1), stride=(2, 1, 1))
 
-    def _freeze_stages(self):
+    def _freeze_stages(self) -> None:
         """Prevent all the parameters from being optimized before
         ``self.frozen_stages``."""
         if self.frozen_stages >= 0:
@@ -785,7 +794,7 @@ class ResNet3d(nn.Module):
                 param.requires_grad = False
 
     @staticmethod
-    def _init_weights(self, pretrained=None):
+    def _init_weights(self, pretrained: Optional[str] = None) -> None:
         """Initiate the parameters either from existing checkpoint or from
         scratch.
 
@@ -825,17 +834,17 @@ class ResNet3d(nn.Module):
         else:
             raise TypeError('pretrained must be a str or None')
 
-    def init_weights(self, pretrained=None):
+    def init_weights(self, pretrained=None) -> None:
         self._init_weights(self, pretrained)
 
-    def forward(self, x):
+    def forward(self, x: Tensor) -> Union[Tensor, Tuple[Tensor]]:
         """Defines the computation performed at every call.
 
         Args:
-            x (torch.Tensor): The input data.
+            x (Tensor): The input data.
 
         Returns:
-            torch.Tensor: The feature of the input
+            Tensor or Tuple[Tensor]: The feature of the input
             samples extracted by the backbone.
         """
         x = self.conv1(x)
@@ -854,7 +863,7 @@ class ResNet3d(nn.Module):
 
         return tuple(outs)
 
-    def train(self, mode=True):
+    def train(self, mode: bool = True) -> None:
         """Set the optimization status when training."""
         super().train(mode)
         self._freeze_stages()
@@ -886,12 +895,12 @@ class ResNet3dLayer(nn.Module):
         inflate_style (str): ``3x1x1`` or ``3x3x3``. which determines the
             kernel sizes and padding strides for conv1 and conv2 in each block.
             Default: '3x1x1'.
-        conv_cfg (dict): Config for conv layers. required keys are ``type``
-            Default: ``dict(type='Conv3d')``.
-        norm_cfg (dict): Config for norm layers. required keys are ``type`` and
-            ``requires_grad``.
+        conv_cfg (dict or ConfigDict): Config for conv layers.
+            Required keys are ``type``. Default: ``dict(type='Conv3d')``.
+        norm_cfg (dict or ConfigDict): Config for norm layers.
+            Required keys are ``type`` and ``requires_grad``.
             Default: ``dict(type='BN3d', requires_grad=True)``.
-        act_cfg (dict): Config dict for activation layer.
+        act_cfg (dict or ConfigDict): Config dict for activation layer.
             Default: ``dict(type='ReLU', inplace=True)``.
         norm_eval (bool): Whether to set BN layers to eval mode, namely, freeze
             running stats (mean and var). Default: False.
@@ -904,25 +913,25 @@ class ResNet3dLayer(nn.Module):
     """
 
     def __init__(self,
-                 depth,
-                 pretrained,
-                 pretrained2d=True,
-                 stage=3,
-                 base_channels=64,
-                 spatial_stride=2,
-                 temporal_stride=1,
-                 dilation=1,
-                 style='pytorch',
-                 all_frozen=False,
-                 inflate=1,
-                 inflate_style='3x1x1',
-                 conv_cfg=dict(type='Conv3d'),
-                 norm_cfg=dict(type='BN3d', requires_grad=True),
-                 act_cfg=dict(type='ReLU', inplace=True),
-                 norm_eval=False,
-                 with_cp=False,
-                 zero_init_residual=True,
-                 **kwargs):
+                 depth: int,
+                 pretrained: Optional[str],
+                 pretrained2d: bool = True,
+                 stage: int = 3,
+                 base_channels: int = 64,
+                 spatial_stride: int = 2,
+                 temporal_stride: int = 1,
+                 dilation: int = 1,
+                 style: str = 'pytorch',
+                 all_frozen: bool = False,
+                 inflate: int = 1,
+                 inflate_style: str = '3x1x1',
+                 conv_cfg: ConfigType = dict(type='Conv3d'),
+                 norm_cfg: ConfigType = dict(type='BN3d', requires_grad=True),
+                 act_cfg: ConfigType = dict(type='ReLU', inplace=True),
+                 norm_eval: bool = False,
+                 with_cp: bool = False,
+                 zero_init_residual: bool = True,
+                 **kwargs) -> None:
 
         super().__init__()
         self.arch_settings = ResNet3d.arch_settings
@@ -983,10 +992,10 @@ class ResNet3dLayer(nn.Module):
         self.layer_name = f'layer{stage + 1}'
         self.add_module(self.layer_name, res_layer)
 
-    def inflate_weights(self, logger):
+    def inflate_weights(self, logger) -> None:
         self._inflate_weights(self, logger)
 
-    def _freeze_stages(self):
+    def _freeze_stages(self) -> None:
         """Prevent all the parameters from being optimized before
         ``self.frozen_stages``."""
         if self.all_frozen:
@@ -998,21 +1007,21 @@ class ResNet3dLayer(nn.Module):
     def init_weights(self, pretrained=None):
         self._init_weights(self, pretrained)
 
-    def forward(self, x):
+    def forward(self, x: Tensor) -> Tensor:
         """Defines the computation performed at every call.
 
         Args:
-            x (torch.Tensor): The input data.
+            x (Tensor): The input data.
 
         Returns:
-            torch.Tensor: The feature of the input
+            Tensor: The feature of the input
             samples extracted by the backbone.
         """
         res_layer = getattr(self, self.layer_name)
         out = res_layer(x)
         return out
 
-    def train(self, mode=True):
+    def train(self, mode: bool = True) -> None:
         """Set the optimization status when training."""
         super().train(mode)
         self._freeze_stages()

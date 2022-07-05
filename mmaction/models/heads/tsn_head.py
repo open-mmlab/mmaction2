@@ -1,7 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import torch.nn as nn
 from mmcv.cnn import normal_init
+from torch import Tensor, nn
 
+from mmaction.core.utils import ConfigType
 from mmaction.registry import MODELS
 from .base import AvgConsensus, BaseHead
 
@@ -13,9 +14,10 @@ class TSNHead(BaseHead):
     Args:
         num_classes (int): Number of classes to be classified.
         in_channels (int): Number of channels in input feature.
-        loss_cls (dict): Config for building loss.
+        loss_cls (dict or ConfigDict): Config for building loss.
             Default: dict(type='CrossEntropyLoss').
-        spatial_type (str): Pooling type in spatial dimension. Default: 'avg'.
+        spatial_type (str or ConfigDict): Pooling type in spatial dimension.
+            Default: 'avg'.
         consensus (dict): Consensus config dict.
         dropout_ratio (float): Probability of dropout layer. Default: 0.4.
         init_std (float): Std value for Initiation. Default: 0.01.
@@ -24,14 +26,14 @@ class TSNHead(BaseHead):
     """
 
     def __init__(self,
-                 num_classes,
-                 in_channels,
-                 loss_cls=dict(type='CrossEntropyLoss'),
-                 spatial_type='avg',
-                 consensus=dict(type='AvgConsensus', dim=1),
-                 dropout_ratio=0.4,
-                 init_std=0.01,
-                 **kwargs):
+                 num_classes: int,
+                 in_channels: int,
+                 loss_cls: ConfigType = dict(type='CrossEntropyLoss'),
+                 spatial_type: str = 'avg',
+                 consensus: ConfigType = dict(type='AvgConsensus', dim=1),
+                 dropout_ratio: float = 0.4,
+                 init_std: float = 0.01,
+                 **kwargs) -> None:
         super().__init__(num_classes, in_channels, loss_cls=loss_cls, **kwargs)
 
         self.spatial_type = spatial_type
@@ -58,19 +60,19 @@ class TSNHead(BaseHead):
             self.dropout = None
         self.fc_cls = nn.Linear(self.in_channels, self.num_classes)
 
-    def init_weights(self):
+    def init_weights(self) -> None:
         """Initiate the parameters from scratch."""
         normal_init(self.fc_cls, std=self.init_std)
 
-    def forward(self, x, num_segs, **kwargs):
+    def forward(self, x: Tensor, num_segs: int, **kwargs) -> Tensor:
         """Defines the computation performed at every call.
 
         Args:
-            x (torch.Tensor): The input data.
+            x (Tensor): The input data.
             num_segs (int): Number of segments into which a video
                 is divided.
         Returns:
-            torch.Tensor: The classification scores for input samples.
+            Tensor: The classification scores for input samples.
         """
         # [N * num_segs, in_channels, 7, 7]
         if self.avg_pool is not None:
