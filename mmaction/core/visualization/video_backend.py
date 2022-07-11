@@ -4,10 +4,11 @@ import os.path as osp
 
 import cv2
 import numpy as np
-from mmengine.registry import VISBACKENDS
 from mmengine.visualization import (LocalVisBackend, TensorboardVisBackend,
                                     WandbVisBackend)
 from mmengine.visualization.vis_backend import force_init_env
+
+from mmaction.registry import VISBACKENDS
 
 try:
     import wandb
