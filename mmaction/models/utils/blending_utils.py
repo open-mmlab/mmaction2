@@ -3,24 +3,34 @@ from abc import ABCMeta, abstractmethod
 
 import torch
 import torch.nn.functional as F
+from torch import Tensor
 from torch.distributions.beta import Beta
 
-from mmaction.registry import TASK_UTILS
+from mmaction.registry import MODELS
+from mmaction.core.utils import SampleList
 
 __all__ = ['BaseMiniBatchBlending', 'MixupBlending', 'CutmixBlending']
 
 
 class BaseMiniBatchBlending(metaclass=ABCMeta):
-    """Base class for Image Aliasing."""
+    """Base class for Image Aliasing.
 
-    def __init__(self, num_classes):
+    Args:
+        num_classes (int): Number of classes.
+    """
+
+    def __init__(self, num_classes: int) -> None:
         self.num_classes = num_classes
 
     @abstractmethod
-    def do_blending(self, imgs, label, **kwargs):
-        pass
+    def do_blending(self, imgs: Tensor, label: Tensor, **kwargs) -> tuple:
+        """Blending images process."""
+        raise NotImplementedError
 
-    def __call__(self, imgs, data_samples, **kwargs):
+    def __call__(self,
+                 imgs: Tensor,
+                 batch_data_samples: SampleList,
+                 **kwargs) -> tuple:
         """Blending data in a mini-batch.
 
         Images are float tensors with the shape of (B, N, C, H, W) for 2D
@@ -34,21 +44,21 @@ class BaseMiniBatchBlending(metaclass=ABCMeta):
         the range [0, 1].
 
         Args:
-            imgs (torch.Tensor): Model input images, float tensor with the
+            imgs (Tensor): Model input images, float tensor with the
                 shape of (B, N, C, H, W) or (B, N, C, T, H, W).
-            label (torch.Tensor): Hard labels, integer tensor with the shape
-                of (B, 1) and all elements are in range [0, num_classes).
-            kwargs (dict, optional): Other keyword argument to be used to
-                blending imgs and labels in a mini-batch.
+            batch_data_samples (List[:obj:`ActionDataSample`]): The batch
+                data samples. It usually includes information such
+                as `gt_labels`.
 
         Returns:
-            mixed_imgs (torch.Tensor): Blending images, float tensor with the
+            mixed_imgs (Tensor): Blending images, float tensor with the
                 same shape of the input imgs.
-            mixed_label (torch.Tensor): Blended soft labels, float tensor with
-                the shape of (B, 1, num_classes) and all elements are in range
-                [0, 1].
+            batch_data_samples (List[:obj:`ActionDataSample`]): The modified batch
+                data samples. ``gt_labels`` in each data sample are converted from
+                a hard label to a blended soft label, float tensor with the shape of
+                (1, num_classes) and all elements are in range [0, 1].
         """
-        label = [x.gt_labels.item for x in data_samples]
+        label = [x.gt_labels.item for x in batch_data_samples]
         label = torch.tensor(label, dtype=torch.long).to(imgs.device)
 
         one_hot_label = F.one_hot(label, num_classes=self.num_classes)
@@ -56,13 +66,13 @@ class BaseMiniBatchBlending(metaclass=ABCMeta):
         mixed_imgs, mixed_label = self.do_blending(imgs, one_hot_label,
                                                    **kwargs)
 
-        for label_item, sample in zip(mixed_label, data_samples):
+        for label_item, sample in zip(mixed_label, batch_data_samples):
             sample.gt_labels.item = label_item
 
-        return mixed_imgs, data_samples
+        return mixed_imgs, batch_data_samples
 
 
-@TASK_UTILS.register_module()
+@MODELS.register_module()
 class MixupBlending(BaseMiniBatchBlending):
     """Implementing Mixup in a mini-batch.
 
@@ -75,12 +85,23 @@ class MixupBlending(BaseMiniBatchBlending):
         alpha (float): Parameters for Beta distribution.
     """
 
-    def __init__(self, num_classes, alpha=.2):
+    def __init__(self, num_classes: int, alpha: float = .2) -> None:
         super().__init__(num_classes=num_classes)
         self.beta = Beta(alpha, alpha)
 
-    def do_blending(self, imgs, label, **kwargs):
-        """Blending images with mixup."""
+    def do_blending(self, imgs: Tensor, label: Tensor, **kwargs) -> tuple:
+        """Blending images with mixup.
+
+        Args:
+            imgs (Tensor): Model input images, float tensor with the
+                shape of (B, N, C, H, W) or (B, N, C, T, H, W).
+            label (Tensor): One hot labels, integer tensor with the shape
+                of (B, num_classes).
+
+        Returns:
+            tuple: A tuple of blended images and labels.
+
+        """
         assert len(kwargs) == 0, f'unexpected kwargs for mixup {kwargs}'
 
         lam = self.beta.sample()
@@ -93,7 +114,7 @@ class MixupBlending(BaseMiniBatchBlending):
         return mixed_imgs, mixed_label
 
 
-@TASK_UTILS.register_module()
+@MODELS.register_module()
 class CutmixBlending(BaseMiniBatchBlending):
     """Implementing Cutmix in a mini-batch.
 
@@ -106,12 +127,12 @@ class CutmixBlending(BaseMiniBatchBlending):
         alpha (float): Parameters for Beta distribution.
     """
 
-    def __init__(self, num_classes, alpha=.2):
+    def __init__(self, num_classes: int, alpha: float = .2) -> None:
         super().__init__(num_classes=num_classes)
         self.beta = Beta(alpha, alpha)
 
     @staticmethod
-    def rand_bbox(img_size, lam):
+    def rand_bbox(img_size: torch.Size, lam: Tensor) -> tuple:
         """Generate a random boudning box."""
         w = img_size[-1]
         h = img_size[-2]
@@ -130,8 +151,20 @@ class CutmixBlending(BaseMiniBatchBlending):
 
         return bbx1, bby1, bbx2, bby2
 
-    def do_blending(self, imgs, label, **kwargs):
-        """Blending images with cutmix."""
+    def do_blending(self, imgs: Tensor, label: Tensor, **kwargs) -> tuple:
+        """Blending images with cutmix.
+
+        Args:
+            imgs (Tensor): Model input images, float tensor with the
+                shape of (B, N, C, H, W) or (B, N, C, T, H, W).
+            label (Tensor): One hot labels, integer tensor with the shape
+                of (B, num_classes).
+
+        Returns:
+            tuple: A tuple of blended images and labels.
+
+        """
+
         assert len(kwargs) == 0, f'unexpected kwargs for cutmix {kwargs}'
 
         batch_size = imgs.size(0)

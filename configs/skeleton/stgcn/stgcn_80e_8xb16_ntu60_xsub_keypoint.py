@@ -3,16 +3,7 @@ _base_ = [
     '../../_base_/default_runtime.py'
 ]
 
-preprocess_cfg = dict(
-    mean=[960., 540., 0.5],
-    std=[1920, 1080, 1.],
-    format_shape='NCTVM')
-
-model = dict(
-    backbone=dict(
-        graph_cfg=dict(layout='coco', strategy='spatial')),
-    data_preprocessor=dict(
-        type='ActionDataPreprocessor', **preprocess_cfg))
+model = dict(backbone=dict(graph_cfg=dict(layout='coco')))
 
 dataset_type = 'PoseDataset'
 ann_file_train = 'data/posec3d/ntu60_xsub_train.pkl'
@@ -35,21 +26,29 @@ train_dataloader = dict(
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
-        type=dataset_type, ann_file=ann_file_train, pipeline=train_pipeline))
+        type=dataset_type,
+        ann_file=ann_file_train,
+        pipeline=train_pipeline))
 val_dataloader = dict(
     batch_size=16,
     num_workers=2,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
-        type=dataset_type, ann_file=ann_file_val, pipeline=test_pipeline, test_mode=True))
+        type=dataset_type,
+        ann_file=ann_file_val,
+        pipeline=test_pipeline,
+        test_mode=True))
 test_dataloader = dict(
     batch_size=1,
     num_workers=2,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
-        type=dataset_type, ann_file=ann_file_val, pipeline=test_pipeline, test_mode=True))
+        type=dataset_type,
+        ann_file=ann_file_val,
+        pipeline=test_pipeline,
+        test_mode=True))
 
 val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
@@ -58,7 +57,7 @@ train_cfg = dict(
     type='EpochBasedTrainLoop',
     max_epochs=80,
     val_begin=1,
-    val_interval=3)
+    val_interval=5)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
@@ -73,7 +72,9 @@ param_scheduler = [
 ]
 
 optim_wrapper = dict(
-    optimizer=dict(type='SGD', lr=0.1, momentum=0.9, weight_decay=0.0001,
+    optimizer=dict(type='SGD', lr=0.4, momentum=0.9, weight_decay=0.0001,
                    nesterov=True))
 
-default_hooks = dict(checkpoint=dict(interval=3))
+default_hooks = dict(
+    checkpoint=dict(interval=5),
+    logger=dict(interval=100))

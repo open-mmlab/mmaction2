@@ -1,10 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from numbers import Number
 from typing import Sequence, Tuple, Union
 
 import torch
 from mmengine.model import BaseDataPreprocessor, stack_batch
 
-from mmaction.registry import MODELS, TASK_UTILS
+from mmaction.core.utils import OptConfigType
+from mmaction.registry import MODELS
 
 
 @MODELS.register_module()
@@ -12,16 +14,18 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
     """Data pre-processor for action recognition tasks.
 
     Args:
-        mean (Sequence[float or int): The pixel mean of channels of images
-            or stacked optical flow. Defaults to None.
-        std (Sequence[float or int]): The pixel standard deviation of channels
-            of images or stacked optical flow. Defaults to None.
+        mean (Sequence[float or int, optional): The pixel mean of channels
+            of images or stacked optical flow. Default: None.
+        std (Sequence[float or int], optional): The pixel standard deviation
+            of channels of images or stacked optical flow. Default: None.
         pad_size_divisor (int): The size of padded image should be
-            divisible by ``pad_size_divisor``. Defaults to 1.
-        pad_value (float or int): The padded pixel value. Defaults to 0.
-        to_rgb (bool): whether to convert image from BGR to RGB.
-            Defaults to False.
-        blending (dict): Config for batch blending. Defaults to None.
+            divisible by ``pad_size_divisor``. Default: 1.
+        pad_value (float or int): The padded pixel value. Default: 0.
+        to_rgb (bool): Whether to convert image from BGR to RGB.
+            Default: False.
+        blending (dict or ConfigDict, optional): Config for batch blending.
+            Default: None.
+        format_shape (str): Format shape of input data. Default: 'NCHW'.
     """
 
     def __init__(self,
@@ -30,8 +34,8 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
                  pad_size_divisor: int = 1,
                  pad_value: Union[float, int] = 0,
                  to_rgb: bool = False,
-                 blending: dict = None,
-                 format_shape: str = 'NCHW'):
+                 blending: OptConfigType = None,
+                 format_shape: str = 'NCHW') -> None:
         super().__init__()
         self.pad_size_divisor = pad_size_divisor
         self.pad_value = pad_value
@@ -58,13 +62,13 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
             self._enable_normalize = False
 
         if blending is not None:
-            self.blending = TASK_UTILS.build(blending)
+            self.blending = MODELS.build(blending)
         else:
             self.blending = None
 
     def forward(self,
                 data: Sequence[dict],
-                training: bool = False) -> Tuple[torch.Tensor, list]:
+                training: bool = False) -> tuple:
         """Perform normalization, padding, bgr2rgb conversion and batch
         augmentation based on ``BaseDataPreprocessor``.
 
@@ -73,7 +77,7 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
             training (bool): Whether to enable training time augmentation.
 
         Returns:
-            Tuple[torch.Tensor, list]: Data in the same format as the model
+            Tuple[Tensor, list]: Data in the same format as the model
             input.
         """
         inputs, batch_data_samples = self.collate_data(data)
