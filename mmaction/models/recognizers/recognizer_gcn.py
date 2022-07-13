@@ -11,14 +11,14 @@ class RecognizerGCN(BaseRecognizer):
         """Extract features of different stages.
 
         Args:
-            batch_inputs (torch.Tensor): The input data.
+            batch_inputs (Tensor): Raw Inputs of the recognizer.
             stage (str): Which stage to output the feature.
                 Defaults to "backbone".
+
         Returns:
-                torch.tensor: The extracted features.
-                dict: A dict recording the kwargs for downstream
-                    pipeline. These keys are usually included:
-                    `loss_aux`.
+            tuple or Tensor: The extracted features.
+            dict: A dict recording the kwargs for downstream
+            pipeline. This will be a empty in GCN recognizer.
         """
 
         # Record the kwargs required by `loss` and `predict`

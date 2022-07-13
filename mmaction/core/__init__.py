@@ -8,4 +8,10 @@ from .lr import *  # noqa: F401, F403
 from .optimizer import *  # noqa: F401, F403
 from .runner import *  # noqa: F401, F403
 from .scheduler import *  # noqa: F401, F403
+<<<<<<< HEAD
 from .visualization import *  # noqa: F401, F403
+from .utils import * # noqa: F401, F403
+=======
+from .utils import * # noqa: F401, F403
+from .visualization import *  # noqa: F401, F403
+>>>>>>> 8c8b3902 (type hint)

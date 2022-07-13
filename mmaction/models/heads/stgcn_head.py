@@ -1,8 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
+from torch import Tensor
 from mmcv.cnn import normal_init
 
 from mmaction.registry import MODELS
+from mmaction.core.utils import ConfigType
 from .base import BaseHead
 
 
@@ -13,23 +15,21 @@ class STGCNHead(BaseHead):
     Args:
         num_classes (int): Number of classes to be classified.
         in_channels (int): Number of channels in input feature.
-        loss_cls (dict): Config for building loss.
+        loss_cls (dict or ConfigDict): Config for building loss.
             Default: dict(type='CrossEntropyLoss')
         spatial_type (str): Pooling type in spatial dimension. Default: 'avg'.
         num_person (int): Number of person. Default: 2.
         init_std (float): Std value for Initiation. Default: 0.01.
-        kwargs (dict, optional): Any keyword argument to be used to initialize
-            the head.
     """
 
     def __init__(self,
-                 num_classes,
-                 in_channels,
-                 loss_cls=dict(type='CrossEntropyLoss'),
-                 spatial_type='avg',
-                 num_person=2,
-                 init_std=0.01,
-                 **kwargs):
+                 num_classes: int,
+                 in_channels: int,
+                 loss_cls: ConfigType = dict(type='CrossEntropyLoss'),
+                 spatial_type: str = 'avg',
+                 num_person: int = 2,
+                 init_std: float = 0.01,
+                 **kwargs) -> None:
         super().__init__(num_classes, in_channels, loss_cls, **kwargs)
 
         self.spatial_type = spatial_type
@@ -46,10 +46,20 @@ class STGCNHead(BaseHead):
 
         self.fc = nn.Conv2d(self.in_channels, self.num_classes, kernel_size=1)
 
-    def init_weights(self):
+    def init_weights(self) -> None:
+        """Initialize the model network weights."""
         normal_init(self.fc, std=self.init_std)
 
-    def forward(self, x, **kwargs):
+    def forward(self, x: Tensor, **kwargs) -> Tensor:
+        """Forward features from the upstream network.
+
+        Args:
+            x (Tensor): Features from the upstream network.
+
+        Returns:
+            Tensor: Classification scores with shape(k, num_classes).
+        """
+
         # global pooling
         assert self.pool is not None, 'pool must be implemented.'
         x = self.pool(x)
