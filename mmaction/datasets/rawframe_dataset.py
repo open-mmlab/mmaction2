@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy
 import os.path as osp
+import warnings
 
 import torch
 from mmengine.dataset import BaseDataset
@@ -96,17 +97,28 @@ class RawframeDataset(BaseDataset):
                  modality='RGB',
                  test_mode=False,
                  **kwargs):
+        warnings.warn(
+            f'We recommend using "VideoDataset" '
+            f'to load raw videos instead of using "RawframeDataset" '
+            f'to load raw frames. This can largely reduce the space usage of '
+            f'the disk. "RawframeDataset" is still supported now. ')
+        warnings.warn(f'"Normalize" is removed to '
+                      f'the model. Please assert it is not in the pipeline. '
+                      f'"Collect" and "ToTensor" operations are replaced with '
+                      f'"PackActionInputs". We recommend referring our '
+                      f'document or official provided config files.')
         self.filename_tmpl = filename_tmpl
         self.with_offset = with_offset
         self.multi_class = multi_class
         self.num_classes = num_classes
         self.start_index = start_index
         self.modality = modality
-        super().__init__(ann_file,
-                         pipeline=pipeline,
-                         data_prefix=data_prefix,
-                         test_mode=test_mode,
-                         **kwargs)
+        super().__init__(
+            ann_file,
+            pipeline=pipeline,
+            data_prefix=data_prefix,
+            test_mode=test_mode,
+            **kwargs)
 
     def load_data_list(self):
         """Load annotation file to get video information."""

@@ -3,7 +3,9 @@ from typing import List, Callable, Union, Optional
 
 import torch
 import os.path as osp
+import warnings
 
+import torch
 from mmengine.dataset import BaseDataset
 from mmengine.utils import check_file_exist
 
@@ -61,15 +63,26 @@ class VideoDataset(BaseDataset):
                  modality: str = 'RGB',
                  test_mode: bool = False,
                  **kwargs):
+        warnings.warn(
+            f'You are using "VideoDataset" to load raw videos. '
+            f'Please assert that "DecordInit" and "DecordDecode" are '
+            f'included in the pipeline.')
+        warnings.warn(
+            f'"Normalize" is removed to '
+            f'the model. Please assert it is not in the pipeline. '
+            f'"Collect" and "ToTensor" operations are replaced with '
+            f'"PackActionInputs". We recommend referring our '
+            f'document or official provided config files.')
         self.multi_class = multi_class
         self.num_classes = num_classes
         self.start_index = start_index
         self.modality = modality
-        super().__init__(ann_file,
-                         pipeline=pipeline,
-                         data_prefix=data_prefix,
-                         test_mode=test_mode,
-                         **kwargs)
+        super().__init__(
+            ann_file,
+            pipeline=pipeline,
+            data_prefix=data_prefix,
+            test_mode=test_mode,
+            **kwargs)
 
     def load_data_list(self):
         """Load annotation file to get video information."""
