@@ -1,5 +1,4 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .audio_tsn_head import AudioTSNHead
 from .base import BaseHead
 from .slowfast_head import SlowFastHead
 from .ssn_head import SSNHead
