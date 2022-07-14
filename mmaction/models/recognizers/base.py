@@ -1,13 +1,15 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from abc import ABCMeta, abstractmethod
 from typing import Dict, List, Optional, Tuple, Union
-
+import warnings
 import torch
 from torch import Tensor
 from mmengine.model import BaseModel, merge_dict
 
 from mmaction.core import ActionDataSample
 from mmaction.registry import MODELS
+ForwardResults = Union[Dict[str, torch.Tensor], List[ActionDataSample],
+                       Tuple[torch.Tensor], torch.Tensor]
 from mmaction.core.utils import (ConfigType, OptConfigType, OptMultiConfig,
                                  ForwardResults, SampleList, OptSampleList,
                                  LabelList)
@@ -42,6 +44,12 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
                  data_preprocessor: OptConfigType = None,
                  init_cfg: OptMultiConfig = None) -> None:
         if data_preprocessor is None:
+            warnings.warn(
+                'The "data_preprocessor (dict) in BaseRecognizer is None. '
+                'Please check whether it is defined in the config file. '
+                'Here we adopt the default '
+                '"data_preprocessor = dict(type=ActionDataPreprocessor)" '
+                'to build. This may cause unexpected failure.')
             data_preprocessor = dict(type='ActionDataPreprocessor')
 
         super(BaseRecognizer, self).__init__(
@@ -58,6 +66,12 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
 
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
+
+        assert 'average_clips' not in self.test_cfg, \
+            'Average_clips (dict) is ' \
+            'defined in the Head. Please see our document or the ' \
+            'official config files.'
+        
 
     @abstractmethod
     def extract_feat(self,
