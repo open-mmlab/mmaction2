@@ -1,7 +1,4 @@
 Import:
-- configs/localization/bmn/metafile.yml
-- configs/localization/bsn/metafile.yml
-- configs/localization/ssn/metafile.yml
 - configs/recognition/csn/metafile.yml
 - configs/recognition/i3d/metafile.yml
 - configs/recognition/omnisource/metafile.yml
@@ -18,7 +15,7 @@ Import:
 - configs/recognition/x3d/metafile.yml
 - configs/recognition/trn/metafile.yml
 - configs/detection/ava/metafile.yml
-- configs/detection/lfb/metafile.yml
 - configs/detection/acrn/metafile.yml
-- configs/recognition_audio/resnet/metafile.yml
+- configs/skeleton/stgcn/metafile.yml
+- configs/skeleton/2s-agcn/metafile.yml
 - configs/skeleton/posec3d/metafile.yml
