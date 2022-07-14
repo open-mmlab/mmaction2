@@ -7,17 +7,18 @@ _base_ = [
 model = dict(cls_head=dict(is_shift=True))
 
 # dataset settings
-dataset_type = 'RawframeDataset'
-data_root = 'data/kinetics400/rawframes_train'
-data_root_val = 'data/kinetics400/rawframes_val'
-ann_file_train = 'data/kinetics400/kinetics400_train_list_rawframes.txt'
-ann_file_val = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
-ann_file_test = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
+dataset_type = 'VideoDataset'
+data_root = 'data/kinetics400/videos_train'
+data_root_val = 'data/kinetics400/videos_val'
+ann_file_train = 'data/kinetics400/kinetics400_train_list_videos.txt'
+ann_file_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
+ann_file_test = 'data/kinetics400/kinetics400_val_list_videos.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
+    dict(type='DecordInit'),
     dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=8),
-    dict(type='RawFrameDecode'),
+    dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(
         type='MultiScaleCrop',
@@ -32,13 +33,14 @@ train_pipeline = [
     dict(type='PackActionInputs')
 ]
 val_pipeline = [
+    dict(type='DecordInit'),
     dict(
         type='SampleFrames',
         clip_len=1,
         frame_interval=1,
         num_clips=8,
         test_mode=True),
-    dict(type='RawFrameDecode'),
+    dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
     dict(type='Normalize', **img_norm_cfg),
@@ -46,13 +48,14 @@ val_pipeline = [
     dict(type='PackActionInputs')
 ]
 test_pipeline = [
+    dict(type='DecordInit'),
     dict(
         type='SampleFrames',
         clip_len=1,
         frame_interval=1,
         num_clips=8,
         test_mode=True),
-    dict(type='RawFrameDecode'),
+    dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
     dict(type='Normalize', **img_norm_cfg),
@@ -68,7 +71,7 @@ train_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         ann_file=ann_file_train,
-        data_prefix=dict(img=data_root),
+        data_prefix=dict(video=data_root),
         pipeline=train_pipeline))
 val_dataloader = dict(
     batch_size=6,
@@ -78,7 +81,7 @@ val_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         ann_file=ann_file_val,
-        data_prefix=dict(img=data_root_val),
+        data_prefix=dict(video=data_root_val),
         pipeline=val_pipeline,
         test_mode=True))
 test_dataloader = dict(
@@ -89,7 +92,7 @@ test_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         ann_file=ann_file_test,
-        data_prefix=dict(img=data_root_val),
+        data_prefix=dict(video=data_root_val),
         pipeline=test_pipeline,
         test_mode=True))
 

@@ -1,4 +1,10 @@
 # model settings
+
+preprocess_cfg = dict(
+    mean=[127.5, 127.5, 127.5],
+    std=[127.5, 127.5, 127.5],
+    format_shape='NCTHW')
+
 model = dict(
     type='Recognizer3D',
     backbone=dict(
@@ -36,6 +42,7 @@ model = dict(
         dropout_ratio=0.5,
         init_std=0.01,
         average_clips='prob'),
+    data_preprocessor=dict(type='ActionDataPreprocessor', **preprocess_cfg),
     # model training and testing settings
     train_cfg=None,
     test_cfg=None)

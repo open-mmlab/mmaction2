@@ -5,8 +5,7 @@ model = dict(backbone=dict(act_cfg=dict(type='ReLU')))
 
 # dataset settings
 dataset_type = 'VideoDataset'
-img_norm_cfg = dict(
-    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
+
 test_pipeline = [
     dict(type='DecordInit'),
     dict(
@@ -18,7 +17,6 @@ test_pipeline = [
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='ThreeCrop', crop_size=256),
-    dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='PackActionInputs')
 ]

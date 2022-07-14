@@ -1,5 +1,10 @@
 _base_ = ['../../_base_/default_runtime.py']
 
+preprocess_cfg = dict(
+    mean=[127.5, 127.5, 127.5],
+    std=[127.5, 127.5, 127.5],
+    format_shape='NCTHW')
+
 # model settings
 model = dict(
     type='Recognizer3D',
@@ -16,90 +21,92 @@ model = dict(
         transformer_layers=None,
         attention_type='joint_space_time',
         norm_cfg=dict(type='LN', eps=1e-6)),
-    cls_head=dict(type='TimeSformerHead', num_classes=400, in_channels=768),
+    cls_head=dict(
+        type='TimeSformerHead',
+        num_classes=400,
+        in_channels=768,
+        average_clips='prob'),
+    data_preprocessor=dict(type='ActionDataPreprocessor', **preprocess_cfg),
     # model training and testing settings
     train_cfg=None,
-    test_cfg=dict(average_clips='prob'))
+    test_cfg=None)
 
 # dataset settings
-dataset_type = 'RawframeDataset'
-data_root = 'data/kinetics400/rawframes_train'
-data_root_val = 'data/kinetics400/rawframes_val'
-ann_file_train = 'data/kinetics400/kinetics400_train_list_rawframes.txt'
-ann_file_val = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
-ann_file_test = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
-
-img_norm_cfg = dict(
-    mean=[127.5, 127.5, 127.5], std=[127.5, 127.5, 127.5], to_bgr=False)
+dataset_type = 'VideoDataset'
+data_root = 'data/kinetics400/videos_train'
+data_root_val = 'data/kinetics400/videos_val'
+ann_file_train = 'data/kinetics400/kinetics400_train_list_videos.txt'
+ann_file_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
+ann_file_test = 'data/kinetics400/kinetics400_val_list_videos.txt'
 
 train_pipeline = [
+    dict(type='DecordInit'),
     dict(type='SampleFrames', clip_len=8, frame_interval=32, num_clips=1),
-    dict(type='RawFrameDecode'),
+    dict(type='DecordDecode'),
     dict(type='RandomRescale', scale_range=(256, 320)),
     dict(type='RandomCrop', size=224),
     dict(type='Flip', flip_ratio=0.5),
-    dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='PackActionInputs')
 ]
 val_pipeline = [
+    dict(type='DecordInit'),
     dict(
         type='SampleFrames',
         clip_len=8,
         frame_interval=32,
         num_clips=1,
         test_mode=True),
-    dict(type='RawFrameDecode'),
+    dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
-    dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='PackActionInputs')
 ]
 test_pipeline = [
+    dict(type='DecordInit'),
     dict(
         type='SampleFrames',
         clip_len=8,
         frame_interval=32,
         num_clips=1,
         test_mode=True),
-    dict(type='RawFrameDecode'),
+    dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 224)),
     dict(type='ThreeCrop', crop_size=224),
-    dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='PackActionInputs')
 ]
 train_dataloader = dict(
-    batch_size=7,
-    num_workers=2,
+    batch_size=8,
+    num_workers=16,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
         type=dataset_type,
         ann_file=ann_file_train,
-        data_prefix=dict(img=data_root),
+        data_prefix=dict(video=data_root),
         pipeline=train_pipeline))
 val_dataloader = dict(
-    batch_size=7,
-    num_workers=2,
+    batch_size=8,
+    num_workers=16,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
         type=dataset_type,
         ann_file=ann_file_val,
-        data_prefix=dict(img=data_root_val),
+        data_prefix=dict(video=data_root_val),
         pipeline=val_pipeline,
         test_mode=True))
 test_dataloader = dict(
-    batch_size=1,
-    num_workers=2,
+    batch_size=8,
+    num_workers=16,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
         type=dataset_type,
         ann_file=ann_file_test,
-        data_prefix=dict(img=data_root_val),
+        data_prefix=dict(video=data_root_val),
         pipeline=test_pipeline,
         test_mode=True))
 
@@ -110,20 +117,16 @@ val_cfg = dict(interval=1)
 test_cfg = dict()
 
 # optimizer
-optimizer = dict(
-    type='SGD',
-    lr=0.004375,
-    momentum=0.9,
+optim_wrapper = dict(
+    optimizer=dict(
+        type='SGD', lr=0.005, momentum=0.9, weight_decay=1e-4, nesterov=True),
     paramwise_cfg=dict(
         custom_keys={
             '.backbone.cls_token': dict(decay_mult=0.0),
             '.backbone.pos_embed': dict(decay_mult=0.0),
             '.backbone.time_embed': dict(decay_mult=0.0)
         }),
-    weight_decay=1e-4,
-    nesterov=True)  # this lr is used for 8 gpus
-
-default_hooks = dict(optimizer=dict(grad_clip=dict(max_norm=40, norm_type=2)))
+    clip_grad=dict(max_norm=40, norm_type=2))
 
 # learning policy
 param_scheduler = [

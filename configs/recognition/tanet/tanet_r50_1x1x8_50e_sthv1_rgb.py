@@ -15,8 +15,6 @@ ann_file_val = 'data/sthv1/sthv1_val_list_rawframes.txt'
 ann_file_test = 'data/sthv1/sthv1_val_list_rawframes.txt'
 
 sthv1_flip_label_map = {2: 4, 4: 2, 30: 41, 41: 30, 52: 66, 66: 52}
-img_norm_cfg = dict(
-    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 
 train_pipeline = [
     dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=8),
@@ -31,7 +29,6 @@ train_pipeline = [
         num_fixed_crops=13),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
     dict(type='Flip', flip_ratio=0.5, flip_label_map=sthv1_flip_label_map),
-    dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='PackActionInputs')
 ]
@@ -45,7 +42,6 @@ val_pipeline = [
     dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
-    dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='PackActionInputs')
 ]
@@ -60,7 +56,6 @@ test_pipeline = [
     dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='ThreeCrop', crop_size=256),
-    dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='PackActionInputs')
 ]
@@ -112,7 +107,7 @@ param_scheduler = [
     dict(
         type='MultiStepLR',
         begin=0,
-        end=15,
+        end=50,
         by_epoch=True,
         milestones=[30, 40, 45],
         gamma=0.1)

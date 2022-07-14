@@ -108,4 +108,27 @@ optim_wrapper = dict(
     optimizer=dict(type='SGD', lr=0.3, momentum=0.9, weight_decay=0.0001),
     clip_grad=dict(max_norm=40, norm_type=2))
 
-default_hooks = dict(checkpoint=dict(interval=4))
+
+val_evaluator = dict(type='AccMetric')
+test_evaluator = val_evaluator
+
+val_cfg = dict(interval=5)
+test_cfg = dict()
+
+# learning policy
+param_scheduler = [
+    dict(
+        type='CosineAnnealingLR',
+        T_max=256,
+        eta_min=0,
+        by_epoch=True,
+        begin=0,
+        end=256)
+]
+train_cfg = dict(by_epoch=True, max_epochs=256)
+
+# runtime settings
+default_hooks = dict(
+    optimizer=dict(grad_clip=dict(max_norm=40, norm_type=2)),
+    checkpoint=dict(interval=4))
+
