@@ -1,4 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import List, Callable, Union, Optional
+
 import torch
 import os.path as osp
 
@@ -31,32 +33,33 @@ class VideoDataset(BaseDataset):
 
     Args:
         ann_file (str): Path to the annotation file.
-        pipeline (list[dict | callable]): A sequence of data transforms.
-        data_prefix (dict): Path to a directory where video are held. Default: None.
+        pipeline (List[dict or callable]): A sequence of data transforms.
+        data_prefix (dict): Path to a directory where videos are held.
+            Defaults to dict(video='').
+        multi_class (bool): Determines whether the dataset is a multi-class
+            dataset. Defaults to False.
+        num_classes (int, optional): Number of classes of the dataset, used in
+            multi-class datasets. Defaults to None.
         start_index (int): Specify a start index for frames in consideration of
             different filename format. However, when taking videos as input,
             it should be set to 0, since frames loaded from videos count
-            from 0. Default: 0.
-        multi_class (bool): Determines whether the dataset is a multi-class
-            dataset. Default: False.
-        num_classes (int | None): Number of classes of the dataset, used in
-            multi-class datasets. Default: None.
+            from 0. Defaults to 0.
         modality (str): Modality of data. Support 'RGB', 'Flow', 'Audio'.
-            Default: 'RGB'.
+            Defaults to 'RGB'.
         test_mode (bool): Store True when building test or validation dataset.
-            Default: False.
+            Defaults to False.
         **kwargs: Keyword arguments for ``BaseDataset``.
     """
 
     def __init__(self,
-                 ann_file,
-                 pipeline,
-                 data_prefix=dict(video=None),
-                 multi_class=False,
-                 num_classes=None,
-                 start_index=0,
-                 modality='RGB',
-                 test_mode=False,
+                 ann_file: str,
+                 pipeline: List[Union[dict, Callable]],
+                 data_prefix: dict = dict(video=''),
+                 multi_class: bool = False,
+                 num_classes: Optional[int] = None,
+                 start_index: int = 0,
+                 modality: str = 'RGB',
+                 test_mode: bool = False,
                  **kwargs):
         self.multi_class = multi_class
         self.num_classes = num_classes

@@ -1,4 +1,4 @@
-_base_ = './stgcn_80e_babel60.py'
+_base_ = './stgcn_80e_8xb16_babel60.py'
 
 samples_per_cls = [
     518, 1993, 6260, 508, 208, 3006, 431, 724, 4527, 2131, 199, 1255, 487, 302,

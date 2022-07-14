@@ -1,8 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
+from torch import Tensor
 
-
-def bbox2result(bboxes, labels, num_classes, thr=0.01):
+def bbox2result(bboxes: Tensor, labels: Tensor, num_classes: int, thr: float = 0.01) -> list:
     """Convert detection results to a list of numpy arrays.
 
     This identifies single-label classification (as opposed to multi-label)
@@ -16,14 +16,14 @@ def bbox2result(bboxes, labels, num_classes, thr=0.01):
     NB - this should not interfere with the evaluation in any case.
 
     Args:
-        bboxes (Tensor): shape (n, 4)
-        labels (Tensor): shape (n, #num_classes)
-        num_classes (int): class number, including background class
+        bboxes (Tensor): shape (n, 4).
+        labels (Tensor): shape (n, num_classes).
+        num_classes (int): class number, including background class.
         thr (float): The score threshold used when converting predictions to
             detection results. If a single negative value, uses single-label
-            classification
+            classification.
     Returns:
-        list(ndarray): bbox results of each class
+        List(ndarray): bbox results of each class.
     """
     if bboxes.shape[0] == 0:
         return list(np.zeros((num_classes - 1, 0, 5), dtype=np.float32))

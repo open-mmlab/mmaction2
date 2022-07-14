@@ -10,7 +10,14 @@ from mmengine.config import ConfigDict
 from mmengine.data import InstanceData
 
 from mmaction.core.bbox import bbox_target
-from mmaction.registry import MODELS
+from mmaction.core.utils import InstanceList, SamplingResultList
+
+try:
+    from mmdet.core.utils import SamplingResultList
+    from mmdet.registry import MODELS as MMDET_MODELS
+    mmdet_imported = True
+except (ImportError, ModuleNotFoundError):
+    mmdet_imported = False
 
 # Resolve cross-entropy function to support multi-target in Torch < 1.10
 #   This is a very basic 'hack', with minimal functionality to support the
@@ -31,47 +38,43 @@ if pv.parse(torch.__version__) < pv.parse('1.10'):
 else:
     cross_entropy_loss = F.cross_entropy
 
-
-@MODELS.register_module()
 class BBoxHeadAVA(nn.Module):
-    """Simplest RoI head, with only two fc layers for classification and
-    regression respectively.
+    """Simplest RoI head, with only one fc layer for classification.
 
     Args:
-        temporal_pool_type (str): The temporal pool type. Choices are 'avg' or
-            'max'. Default: 'avg'.
-        spatial_pool_type (str): The spatial pool type. Choices are 'avg' or
-            'max'. Default: 'max'.
-        in_channels (int): The number of input channels. Default: 2048.
+        temporal_pool_type (str): The temporal pool type. Choices are ``avg`` or
+            ``max``. Defaults to ``avg``.
+        spatial_pool_type (str): The spatial pool type. Choices are ``avg`` or
+            ``max``. Defaults to ``max``.
+        in_channels (int): The number of input channels. Defaults to 2048.
         focal_alpha (float): The hyper-parameter alpha for Focal Loss.
-            When alpha == 1 and gamma == 0, Focal Loss degenerates to
-            BCELossWithLogits. Default: 1.
+            When ``alpha == 1`` and ``gamma == 0``, Focal Loss degenerates to
+            BCELossWithLogits. Defaults to 1.
         focal_gamma (float): The hyper-parameter gamma for Focal Loss.
-            When alpha == 1 and gamma == 0, Focal Loss degenerates to
-            BCELossWithLogits. Default: 0.
-        num_classes (int): The number of classes. Default: 81.
-        dropout_ratio (float): A float in [0, 1], indicates the dropout_ratio.
-            Default: 0.
+            When ``alpha == 1`` and ``gamma == 0``, Focal Loss degenerates to
+            BCELossWithLogits. Defaults to 0.
+        num_classes (int): The number of classes. Defaults to 81.
+        dropout_ratio (float): A float in ``[0, 1]``, indicates the dropout_ratio.
+            Defaults to 0.
         dropout_before_pool (bool): Dropout Feature before spatial temporal
-            pooling. Default: True.
-        topk (int or tuple[int]): Parameter for evaluating Top-K accuracy.
-            Default: (3, 5)
-        multilabel (bool): Whether used for a multilabel task. Default: True.
+            pooling. Defaults to True.
+        topk (int or Tuple[int]): Parameter for evaluating Top-K accuracy.
+            Defaults to ``(3, 5)``.
+        multilabel (bool): Whether used for a multilabel task. Defaults to True.
     """
 
     def __init__(
             self,
-            temporal_pool_type='avg',
-            spatial_pool_type='max',
-            in_channels=2048,
-            focal_gamma=0.,
-            focal_alpha=1.,
-            num_classes=81,  # First class reserved (BBox as pos/neg)
-            dropout_ratio=0,
-            dropout_before_pool=True,
-            topk=(3, 5),
-            multilabel=True):
-
+            temporal_pool_type: str = 'avg',
+            spatial_pool_type: str = 'max',
+            in_channels: int = 2048,
+            focal_gamma: float = 0.,
+            focal_alpha: float = 1.,
+            num_classes: int = 81,  # First class reserved (BBox as pos/neg)
+            dropout_ratio: float = 0,
+            dropout_before_pool: bool = True,
+            topk: Union[int, Tuple[int]]=(3, 5),
+            multilabel: bool = True) -> None:
         super(BBoxHeadAVA, self).__init__()
         assert temporal_pool_type in ['max', 'avg']
         assert spatial_pool_type in ['max', 'avg']
@@ -118,13 +121,12 @@ class BBoxHeadAVA(nn.Module):
             self.dropout = nn.Dropout(dropout_ratio)
 
         self.fc_cls = nn.Linear(in_channels, num_classes)
-        self.debug_imgs = None
 
-    def init_weights(self):
+    def init_weights(self) -> None:
         nn.init.normal_(self.fc_cls.weight, 0, 0.01)
         nn.init.constant_(self.fc_cls.bias, 0)
 
-    def forward(self, x):
+    def forward(self, x: Tensor) -> Tensor:
         if self.dropout_before_pool and self.dropout_ratio > 0:
             x = self.dropout(x)
 
@@ -136,20 +138,20 @@ class BBoxHeadAVA(nn.Module):
 
         x = x.view(x.size(0), -1)
         cls_score = self.fc_cls(x)
-        # We do not predict bbox, so return None
-        return cls_score, None
+        return cls_score
 
     @staticmethod
-    def get_targets(sampling_results, rcnn_train_cfg):
-        pos_proposals = [res.pos_bboxes for res in sampling_results]
-        neg_proposals = [res.neg_bboxes for res in sampling_results]
+    def get_targets(sampling_results: SamplingResultList,
+                    rcnn_train_cfg: ConfigDict) -> tuple:
+        pos_proposals = [res.pos_priors for res in sampling_results]
+        neg_proposals = [res.neg_priors for res in sampling_results]
         pos_gt_labels = [res.pos_gt_labels for res in sampling_results]
-        cls_reg_targets = bbox_target(pos_proposals, neg_proposals,
+        cls_targets = bbox_target(pos_proposals, neg_proposals,
                                       pos_gt_labels, rcnn_train_cfg)
-        return cls_reg_targets
+        return cls_targets
 
     @staticmethod
-    def get_recall_prec(pred_vec, target_vec):
+    def get_recall_prec(pred_vec: Tensor, target_vec: Tensor) -> tuple:
         """Computes the Recall/Precision for both multi-label and single label
         scenarios.
 
@@ -168,7 +170,7 @@ class BBoxHeadAVA(nn.Module):
         return recall.mean(), prec.mean()
 
     @staticmethod
-    def topk_to_matrix(probs, k):
+    def topk_to_matrix(probs: Tensor, k: int) -> Tensor:
         """Converts top-k to binary matrix."""
         topk_labels = probs.topk(k, 1, True, True)[1]
         topk_matrix = probs.new_full(probs.size(), 0, dtype=torch.bool)
@@ -176,7 +178,7 @@ class BBoxHeadAVA(nn.Module):
             topk_matrix[i, topk_labels[i]] = 1
         return topk_matrix
 
-    def topk_accuracy(self, pred, target, thr=0.5):
+    def topk_accuracy(self, pred: Tensor, target: Tensor, thr: float = 0.5) -> tuple:
         """Computes the Top-K Accuracies for both single and multi-label
         scenarios."""
         # Define Target vector:
@@ -206,15 +208,29 @@ class BBoxHeadAVA(nn.Module):
         # Return all
         return recall_thr, prec_thr, recalls_k, precs_k
 
-    def loss(self,
-             cls_score,
-             bbox_pred,
-             rois,
-             labels,
-             label_weights,
-             bbox_targets=None,
-             bbox_weights=None,
-             reduce=True):
+    def loss_and_target(self,
+                        cls_score: Tensor,
+                        rois: Tensor,
+                        sampling_results: SamplingResultList,
+                        rcnn_train_cfg: ConfigDict,
+                        **kwargs) -> dict:
+        """Calculate the loss based on the features extracted by the bbox head.
+
+        Args:
+            cls_score (Tensor): Classification prediction
+                results of all class, has shape
+                (batch_size * num_proposals_single_image, num_classes)
+            rois (Tensor): RoIs with the shape (batch_size * num_proposals_single_image, 5)
+                where the first column indicates batch id of each RoI.
+            sampling_results (List[obj:SamplingResult]): Assign results of
+                all images in a batch after sampling.
+            rcnn_train_cfg (obj:ConfigDict): `train_cfg` of RCNN.
+
+        Returns:
+            dict: A dictionary of loss components.
+        """
+        cls_targets = self.get_targets(sampling_results, rcnn_train_cfg)
+        labels, _ = cls_targets
 
         losses = dict()
         # Only use the cls_score
@@ -252,17 +268,16 @@ class BBoxHeadAVA(nn.Module):
             F_loss = self.focal_alpha * (1 - pt)**self.focal_gamma * loss
             losses['loss_action_cls'] = torch.mean(F_loss)
 
-        return losses
+        return dict(loss_bbox=losses, bbox_targets=cls_targets)
 
-    def get_results(self,
-                    rois: Tuple[Tensor],
-                    cls_scores: Tuple[Tensor],
-                    bbox_preds: Tuple[Tensor],
-                    batch_img_metas: List[dict],
-                    rcnn_test_cfg: Optional[ConfigDict] = None,
-                    rescale: bool = False,
-                    **kwargs) -> List[InstanceData]:
-        """Transform network outputs of a batch into bbox results.
+    def predict_by_feat(self,
+                        rois: Tuple[Tensor],
+                        cls_scores: Tuple[Tensor],
+                        batch_img_metas: List[dict],
+                        rcnn_test_cfg: Optional[ConfigDict] = None,
+                        **kwargs) -> InstanceList:
+        """Transform a batch of output features extracted from the head into
+        bbox results.
 
         Args:
             rois (tuple[Tensor]): Tuple of boxes to be transformed.
@@ -293,26 +308,49 @@ class BBoxHeadAVA(nn.Module):
         result_list = []
         for img_id in range(len(batch_img_metas)):
             img_meta = batch_img_metas[img_id]
-            results = self._get_results_single(
+            results = self._predict_by_feat_single(
                 roi=rois[img_id],
                 cls_score=cls_scores[img_id],
-                bbox_pred=bbox_preds[img_id],
                 img_meta=img_meta,
-                rescale=rescale,
                 rcnn_test_cfg=rcnn_test_cfg,
                 **kwargs)
             result_list.append(results)
 
         return result_list
 
-    def _get_results_single(self,
-                            roi: Tensor,
-                            cls_score: Tensor,
-                            bbox_pred: Tensor,
-                            img_meta: dict,
-                            rescale: bool = False,
-                            rcnn_test_cfg: Optional[ConfigDict] = None,
-                            **kwargs) -> InstanceData:
+    def _predict_by_feat_single(self,
+                                roi: Tensor,
+                                cls_score: Tensor,
+                                img_meta: dict,
+                                rcnn_test_cfg: Optional[ConfigDict] = None,
+                                **kwargs) -> InstanceData:
+        """Transform a single image's features extracted from the head into
+        bbox results.
+
+        Args:
+            roi (Tensor): Boxes to be transformed. Has shape (num_boxes, 5).
+                last dimension 5 arrange as (batch_index, x1, y1, x2, y2).
+            cls_score (Tensor): Box scores, has shape
+                (num_boxes, num_classes + 1).
+            bbox_pred (Tensor): Box energies / deltas.
+                has shape (num_boxes, num_classes * 4).
+            img_meta (dict): image information.
+            rescale (bool): If True, return boxes in original image space.
+                Defaults to False.
+            rcnn_test_cfg (obj:`ConfigDict`): `test_cfg` of Bbox Head.
+                Defaults to None
+
+        Returns:
+            :obj:`InstanceData`: Detection results of each image\
+            Each item usually contains following keys.
+
+                - scores (Tensor): Classification scores, has a shape
+                  (num_instance, )
+                - labels (Tensor): Labels of bboxes, has a shape
+                  (num_instances, ).
+                - bboxes (Tensor): Has a shape (num_instances, 4),
+                  the last dimension 4 arrange as (x1, y1, x2, y2).
+        """
         results = InstanceData()
 
         # might be used by testing w. augmentation
@@ -360,3 +398,6 @@ class BBoxHeadAVA(nn.Module):
         results.scores = scores
 
         return results
+
+if mmdet_imported:
+    MMDET_MODELS.register_module()(BBoxHeadAVA)
