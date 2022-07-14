@@ -1,46 +1,52 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import Union, Tuple
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch import Tensor
 
-from mmaction.registry import MODELS
+try:
+    from mmdet.registry import MODELS as MMDET_MODELS
+    mmdet_imported = True
+except (ImportError, ModuleNotFoundError):
+    mmdet_imported = False
 
 
-@MODELS.register_module()
 class SingleRoIExtractor3D(nn.Module):
     """Extract RoI features from a single level feature map.
 
     Args:
-        roi_layer_type (str): Specify the RoI layer type. Default: 'RoIAlign'.
-        featmap_stride (int): Strides of input feature maps. Default: 16.
-        output_size (int | tuple): Size or (Height, Width). Default: 16.
+        roi_layer_type (str): Specify the RoI layer type. Defaults to ``RoIAlign``.
+        featmap_stride (int): Strides of input feature maps. Defaults to 16.
+        output_size (int or tuple): Size or (Height, Width). Defaults to 16.
         sampling_ratio (int): number of inputs samples to take for each
             output sample. 0 to take samples densely for current models.
-            Default: 0.
-        pool_mode (str, 'avg' or 'max'): pooling mode in each bin.
-            Default: 'avg'.
+            Defaults to 0.
+        pool_mode (str): pooling mode in each bin. Choices are ``avg`` or
+            ``max``. Defaults to ``avg``.
         aligned (bool): if False, use the legacy implementation in
             MMDetection. If True, align the results more perfectly.
-            Default: True.
+            Defaults to True.
         with_temporal_pool (bool): if True, avgpool the temporal dim.
-            Default: True.
+            Defaults to True.
         with_global (bool): if True, concatenate the RoI feature with global
-            feature. Default: False.
+            feature. Defaults to False.
 
     Note that sampling_ratio, pool_mode, aligned only apply when roi_layer_type
     is set as RoIAlign.
     """
 
     def __init__(self,
-                 roi_layer_type='RoIAlign',
-                 featmap_stride=16,
-                 output_size=16,
-                 sampling_ratio=0,
-                 pool_mode='avg',
-                 aligned=True,
-                 with_temporal_pool=True,
-                 temporal_pool_mode='avg',
-                 with_global=False):
+                 roi_layer_type: str = 'RoIAlign',
+                 featmap_stride: int = 16,
+                 output_size: int = 16,
+                 sampling_ratio: int = 0,
+                 pool_mode: str = 'avg',
+                 aligned: bool = True,
+                 with_temporal_pool: bool = True,
+                 temporal_pool_mode: str = 'avg',
+                 with_global: bool = False) -> None:
         super().__init__()
         self.roi_layer_type = roi_layer_type
         assert self.roi_layer_type in ['RoIPool', 'RoIAlign']
@@ -75,11 +81,22 @@ class SingleRoIExtractor3D(nn.Module):
                 aligned=self.aligned)
         self.global_pool = nn.AdaptiveAvgPool2d(self.output_size)
 
-    def init_weights(self):
-        pass
+    def forward(self,
+                feat: Union[Tensor, Tuple[Tensor]],
+                rois: Tensor) -> tuple:
+        """Forward function for extract roi features.
 
-    # The shape of feat is N, C, T, H, W
-    def forward(self, feat, rois):
+        Args:
+            feat (Tensor or Tuple[Tensor]): The image features extracted by
+                the upstream network. The shape of feat is N, C, T, H, W.
+            rois (Tensor): Input RoIs, shape (k, 5).
+
+        Returns:
+            tuple: A tuple of roi features and global features.
+
+                - roi_feats (Tensor): Extracted bbox RoI features.
+                - feat (Tensor): Global features of the video clip.
+        """
         if not isinstance(feat, tuple):
             feat = (feat, )
 
@@ -111,4 +128,8 @@ class SingleRoIExtractor3D(nn.Module):
                 roi_feat = roi_feat.contiguous()
             roi_feats.append(roi_feat)
 
-        return torch.stack(roi_feats, dim=2), feat
+        roi_feats = torch.stack(roi_feats, dim=2)
+        return roi_feats, feat
+
+if mmdet_imported:
+    MMDET_MODELS.register_module()(SingleRoIExtractor3D)

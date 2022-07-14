@@ -1,19 +1,27 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import List
+
 import torch
 import torch.nn.functional as F
+from torch import Tensor
+
+from mmaction.core.utils import ConfigType
 
 
-def bbox_target(pos_bboxes_list, neg_bboxes_list, gt_labels, cfg):
+def bbox_target(pos_bboxes_list: List[Tensor],
+                neg_bboxes_list: List[Tensor],
+                gt_labels: List[Tensor],
+                cfg: ConfigType) -> tuple:
     """Generate classification targets for bboxes.
 
     Args:
-        pos_bboxes_list (list[Tensor]): Positive bboxes list.
-        neg_bboxes_list (list[Tensor]): Negative bboxes list.
-        gt_labels (list[Tensor]): Groundtruth classification label list.
-        cfg (Config): RCNN config.
+        pos_bboxes_list (List[Tensor]): Positive bboxes list.
+        neg_bboxes_list (List[Tensor]): Negative bboxes list.
+        gt_labels (List[Tensor]): Groundtruth classification label list.
+        cfg (dict or ConfigDict): RCNN config.
 
     Returns:
-        (Tensor, Tensor): Label and label_weight for bboxes.
+        tuple: Label and label_weight for bboxes.
     """
     labels, label_weights = [], []
     pos_weight = 1.0 if cfg.pos_weight <= 0 else cfg.pos_weight

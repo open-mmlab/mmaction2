@@ -37,21 +37,31 @@ val_dataloader = dict(
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
-        type=dataset_type, ann_file=ann_file_val, pipeline=test_pipeline, test_mode=True))
+        type=dataset_type,
+        ann_file=ann_file_val,
+        pipeline=test_pipeline,
+        test_mode=True))
 test_dataloader = dict(
     batch_size=1,
     num_workers=2,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
-        type=dataset_type, ann_file=ann_file_val, pipeline=test_pipeline, test_mode=True))
+        type=dataset_type,
+        ann_file=ann_file_val,
+        pipeline=test_pipeline,
+        test_mode=True))
 
 val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 
-train_cfg = dict(by_epoch=True, max_epochs=16)
-val_cfg = dict(interval=1)
-test_cfg = dict()
+train_cfg = dict(
+    type='EpochBasedTrainLoop',
+    max_epochs=16,
+    val_begin=1,
+    val_interval=1)
+val_cfg = dict(type='ValLoop')
+test_cfg = dict(type='TestLoop')
 
 param_scheduler = [
     dict(
@@ -63,5 +73,8 @@ param_scheduler = [
         gamma=0.1)
 ]
 
-optimizer = dict(
-    type='SGD', lr=0.1, momentum=0.9, weight_decay=0.0001, nesterov=True)
+optim_wrapper = dict(
+    optimizer=dict(type='SGD', lr=0.1, momentum=0.9, weight_decay=0.0001,
+                   nesterov=True))
+
+default_hooks = dict(logger=dict(interval=100))

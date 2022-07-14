@@ -1,17 +1,17 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
-
-from mmaction.registry import TASK_UTILS
+from torch import Tensor
 
 try:
     from mmdet.core.bbox import AssignResult, MaxIoUAssigner
+    from mmdet.registry import TASK_UTILS as MMDET_TASK_UTILS
     mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
     mmdet_imported = False
 
 if mmdet_imported:
 
-    @TASK_UTILS.register_module()
+    @MMDET_TASK_UTILS.register_module()
     class MaxIoUAssignerAVA(MaxIoUAssigner):
         """Assign a corresponding gt bbox or background to each bbox.
 
@@ -28,21 +28,22 @@ if mmdet_imported:
             min_pos_iou (float): Minimum iou for a bbox to be considered as a
                 positive bbox. Positive samples can have smaller IoU than
                 pos_iou_thr due to the 4th step (assign max IoU sample to each
-                gt). Default: 0.
+                gt). Defaults to 0.
             gt_max_assign_all (bool): Whether to assign all bboxes with the
-                same highest overlap with some gt to that gt. Default: True.
+                same highest overlap with some gt to that gt. Defaults to True.
         """
 
         # The function is overridden, to handle the case that gt_label is not
         # int
-        def assign_wrt_overlaps(self, overlaps, gt_labels):
+        def assign_wrt_overlaps(self, overlaps: Tensor,
+                                gt_labels: Tensor) -> AssignResult:
             """Assign w.r.t. the overlaps of bboxes with gts.
 
             Args:
                 overlaps (Tensor): Overlaps between k gt_bboxes and n bboxes,
                     shape(k, n).
-                gt_labels (Tensor, optional): Labels of k gt_bboxes, shape
-                    (k, ).
+                gt_labels (Tensor): Labels of k gt_bboxes, shape
+                    (k, num_classes).
 
             Returns:
                 :obj:`AssignResult`: The assign result.

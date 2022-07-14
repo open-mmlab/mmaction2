@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
+from typing import List, Callable, Optional, Union
 from collections import defaultdict
 
 import numpy as np
@@ -9,6 +10,7 @@ from mmengine.fileio import load
 from mmengine.logging import MMLogger
 
 from mmaction.registry import DATASETS
+from mmaction.core import ConfigType
 from ..core.evaluation.ava_utils import read_labelmap
 
 
@@ -52,63 +54,62 @@ class AVADataset(BaseDataset):
             ``ava_{train, val}_{v2.1, v2.2}.csv``.
         exclude_file (str): Path to the excluded timestamp file like
             ``ava_{train, val}_excluded_timestamps_{v2.1, v2.2}.csv``.
-        pipeline (list[dict | callable]): A sequence of data transforms.
+        pipeline (list): A sequence of data transforms.
         label_file (str): Path to the label file like
             ``ava_action_list_{v2.1, v2.2}.pbtxt`` or
             ``ava_action_list_{v2.1, v2.2}_for_activitynet_2019.pbtxt``.
-            Default: None.
+            Defaults to None.
         filename_tmpl (str): Template for each filename.
-            Default: 'img_{:05}.jpg'.
+            Defaults to 'img_{:05}.jpg'.
         start_index (int): Specify a start index for frames in consideration of
             different filename format. However, when taking frames as input,
-            it should be set to 1, since frames from 1. Default: 1.
+            it should be set to 0, since frames from 0. Defaults to 0.
         proposal_file (str): Path to the proposal file like
             ``ava_dense_proposals_{train, val}.FAIR.recall_93.9.pkl``.
-            Default: None.
+            Defaults to None.
         person_det_score_thr (float): The threshold of person detection scores,
-            bboxes with scores above the threshold will be used. Default: 0.9.
+            bboxes with scores above the threshold will be used.
             Note that 0 <= person_det_score_thr <= 1. If no proposal has
             detection score larger than the threshold, the one with the largest
-            detection score will be used.
+            detection score will be used. Default: 0.9.
         num_classes (int): The number of classes of the dataset. Default: 81.
             (AVA has 80 action classes, another 1-dim is added for potential
             usage)
-        custom_classes (list[int]): A subset of class ids from origin dataset.
+        custom_classes (List[int]): A subset of class ids from origin dataset.
             Please note that 0 should NOT be selected, and ``num_classes``
-            should be equal to ``len(custom_classes) + 1``
+            should be equal to ``len(custom_classes) + 1``.
         data_prefix (dict): Path to a directory where video frames are held.
-            Default: None.
+            Default to ``dict(img='')``.
         test_mode (bool): Store True when building test or validation dataset.
-            Default: False.
-        modality (str): Modality of data. Support 'RGB', 'Flow'.
-                        Default: 'RGB'.
-        num_max_proposals (int): Max proposals number to store. Default: 1000.
+            Defaults to False.
+        modality (str): Modality of data. Support ``RGB``, ``Flow``. Defaults to ``RGB``.
+        num_max_proposals (int): Max proposals number to store. Defaults to 1000.
         timestamp_start (int): The start point of included timestamps. The
-            default value is referred from the official website. Default: 902.
+            default value is referred from the official website. Defaults to 902.
         timestamp_end (int): The end point of included timestamps. The
-            default value is referred from the official website. Default: 1798.
-        fps (int): Overrides the default FPS for the dataset. Default: 30.
+            default value is referred from the official website. Defaults to 1798.
+        fps (int): Overrides the default FPS for the dataset. Defaults to 30.
     """
 
     def __init__(self,
-                 ann_file,
-                 exclude_file,
-                 pipeline,
-                 label_file,
-                 filename_tmpl='img_{:05}.jpg',
-                 start_index=1,
-                 proposal_file=None,
-                 person_det_score_thr=0.9,
-                 num_classes=81,
-                 custom_classes=None,
-                 data_prefix=dict(img=None),
-                 modality='RGB',
-                 test_mode=False,
-                 num_max_proposals=1000,
-                 timestamp_start=900,
-                 timestamp_end=1800,
-                 fps=30,
-                 **kwargs):
+                 ann_file: str,
+                 exclude_file: str,
+                 pipeline: List[Union[ConfigType, Callable]],
+                 label_file: str,
+                 filename_tmpl: str = 'img_{:05}.jpg',
+                 start_index: int = 0,
+                 proposal_file: str = None,
+                 person_det_score_thr: float = 0.9,
+                 num_classes: int = 81,
+                 custom_classes: Optional[List[int]] = None,
+                 data_prefix: ConfigType = dict(img=''),
+                 modality: str = 'RGB',
+                 test_mode: bool = False,
+                 num_max_proposals: int =1000,
+                 timestamp_start: int = 900,
+                 timestamp_end: int = 1800,
+                 fps: int = 30,
+                 **kwargs) -> None:
         self._FPS = fps  # Keep this as standard
         self.custom_classes = custom_classes
         if custom_classes is not None:
@@ -143,16 +144,16 @@ class AVADataset(BaseDataset):
         else:
             self.proposals = None
 
-    def parse_img_record(self, img_records):
+    def parse_img_record(self, img_records: List[dict]) -> tuple:
         """Merge image records of the same entity at the same time.
 
         Args:
-            img_records (list[dict]): List of img_records (lines in AVA
+            img_records (List[dict]): List of img_records (lines in AVA
                 annotations).
 
         Returns:
-            tuple(list): A tuple consists of lists of bboxes, action labels and
-                entity_ids
+            Tuple(list): A tuple consists of lists of bboxes, action labels and
+                entity_ids.
         """
         bboxes, labels, entity_ids = [], [], []
         while len(img_records) > 0:
@@ -190,7 +191,7 @@ class AVADataset(BaseDataset):
         entity_ids = np.stack(entity_ids)
         return bboxes, labels, entity_ids
 
-    def load_data_list(self):
+    def load_data_list(self) -> List[dict]:
         """Load AVA annotations."""
         check_file_exist(self.ann_file)
         data_list = []
@@ -244,7 +245,7 @@ class AVADataset(BaseDataset):
 
         return data_list
 
-    def filter_data(self):
+    def filter_data(self) -> List[dict]:
         """Filter out records in the exclude_file."""
         valid_indexes = []
         if self.exclude_file is None:

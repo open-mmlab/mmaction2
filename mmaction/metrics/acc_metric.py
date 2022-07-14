@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy
 from collections import OrderedDict
-from typing import Any, Optional, Sequence, Tuple
+from typing import Any, Optional, Sequence, Tuple, Union
 
 import numpy as np
 from mmengine.evaluator import BaseMetric
@@ -17,7 +17,8 @@ class AccMetric(BaseMetric):
     default_prefix: Optional[str] = 'acc'
 
     def __init__(self,
-                 metrics=('top_k_accuracy', 'mean_class_accuracy'),
+                 metrics: Optional[Union[str, Tuple[str]]] =
+                    ('top_k_accuracy', 'mean_class_accuracy'),
                  collect_device: str = 'cpu',
                  metric_options: Optional[dict] = dict(
                      top_k_accuracy=dict(topk=(1, 5))),

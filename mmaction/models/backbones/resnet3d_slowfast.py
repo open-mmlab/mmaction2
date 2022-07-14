@@ -1,13 +1,16 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import warnings
+from typing import OrderedDict, List, Optional, Union, Sequence
 
 import torch
 import torch.nn as nn
+from torch import Tensor
 from mmcv.cnn import ConvModule, kaiming_init
 from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
 from mmengine.logging import MMLogger, print_log
 
 from mmaction.registry import MODELS
+from mmaction.core import ConfigType, OptConfigType
 from .resnet3d import ResNet3d
 
 
@@ -15,28 +18,28 @@ class ResNet3dPathway(ResNet3d):
     """A pathway of Slowfast based on ResNet3d.
 
     Args:
-        *args (arguments): Arguments same as :class:``ResNet3d``.
         lateral (bool): Determines whether to enable the lateral connection
-            from another pathway. Default: False.
+            from another pathway. Defaults to False.
+        lateral_norm (bool): Determines whether to enable the lateral norm
+            in lateral layers. Defaults to False.
         speed_ratio (int): Speed ratio indicating the ratio between time
             dimension of the fast and slow pathway, corresponding to the
-            ``alpha`` in the paper. Default: 8.
+            ``alpha`` in the paper. Defaults to 8.
         channel_ratio (int): Reduce the channel number of fast pathway
             by ``channel_ratio``, corresponding to ``beta`` in the paper.
-            Default: 8.
+            Defaults to 8.
         fusion_kernel (int): The kernel size of lateral fusion.
-            Default: 5.
-        **kwargs (keyword arguments): Keywords arguments for ResNet3d.
+            Defaults to 5.
     """
 
     def __init__(self,
                  *args,
-                 lateral=False,
-                 lateral_norm=False,
-                 speed_ratio=8,
-                 channel_ratio=8,
-                 fusion_kernel=5,
-                 **kwargs):
+                 lateral: bool = False,
+                 lateral_norm: bool = False,
+                 speed_ratio: int = 8,
+                 channel_ratio: int = 8,
+                 fusion_kernel: int = 5,
+                 **kwargs) -> None:
         self.lateral = lateral
         self.lateral_norm = lateral_norm
         self.speed_ratio = speed_ratio
@@ -82,56 +85,60 @@ class ResNet3dPathway(ResNet3d):
                 self.lateral_connections.append(lateral_name)
 
     def make_res_layer(self,
-                       block,
-                       inplanes,
-                       planes,
-                       blocks,
-                       spatial_stride=1,
-                       temporal_stride=1,
-                       dilation=1,
-                       style='pytorch',
-                       inflate=1,
-                       inflate_style='3x1x1',
-                       non_local=0,
-                       non_local_cfg=dict(),
-                       conv_cfg=None,
-                       norm_cfg=None,
-                       act_cfg=None,
-                       with_cp=False):
-        """Build residual layer for Slowfast.
+                       block: nn.Module,
+                       inplanes: int,
+                       planes: int,
+                       blocks: int,
+                       spatial_stride: Union[int, Sequence[int]] = 1,
+                       temporal_stride: Union[int, Sequence[int]] = 1,
+                       dilation: int = 1,
+                       style: str = 'pytorch',
+                       inflate: Union[int, Sequence[int]] = 1,
+                       inflate_style: str = '3x1x1',
+                       non_local: Union[int, Sequence[int]] = 0,
+                       non_local_cfg: ConfigType = dict(),
+                       norm_cfg: OptConfigType = None,
+                       act_cfg: OptConfigType = None,
+                       conv_cfg: OptConfigType = None,
+                       with_cp: Optional[bool] = False,
+                       **kwargs) -> nn.Module:
+        """Build residual layer for SlowFast.
 
         Args:
             block (nn.Module): Residual module to be built.
-            inplanes (int): Number of channels for the input
-                feature in each block.
-            planes (int): Number of channels for the output
-                feature in each block.
+            inplanes (int): Number of channels for the input feature
+                in each block.
+            planes (int): Number of channels for the output feature
+                in each block.
             blocks (int): Number of residual blocks.
-            spatial_stride (int | Sequence[int]): Spatial strides
-                in residual and conv layers. Default: 1.
+            spatial_stride (int | Sequence[int]): Spatial strides in
+                residual and conv layers. Defaults to 1.
             temporal_stride (int | Sequence[int]): Temporal strides in
-                residual and conv layers. Default: 1.
-            dilation (int): Spacing between kernel elements. Default: 1.
+                residual and conv layers. Defaults to 1.
+            dilation (int): Spacing between kernel elements. Defaults to 1.
             style (str): ``pytorch`` or ``caffe``. If set to ``pytorch``,
-                the stride-two layer is the 3x3 conv layer,
-                otherwise the stride-two layer is the first 1x1 conv layer.
+                the stride-two layer is the 3x3 conv layer, otherwise
+                the stride-two layer is the first 1x1 conv layer.
                 Default: ``pytorch``.
             inflate (int | Sequence[int]): Determine whether to inflate
-                for each block. Default: 1.
+                for each block. Defaults to 1.
             inflate_style (str): ``3x1x1`` or ``3x3x3``. which determines
-                the kernel sizes and padding strides for conv1 and
-                conv2 in each block. Default: ``3x1x1``.
+                the kernel sizes and padding strides for conv1 and conv2
+                in each block. Default: ``3x1x1``.
             non_local (int | Sequence[int]): Determine whether to apply
                 non-local module in the corresponding block of each stages.
-                Default: 0.
+                Defaults to 0.
             non_local_cfg (dict): Config for non-local module.
-                Default: ``dict()``.
-            conv_cfg (dict | None): Config for conv layers. Default: None.
-            norm_cfg (dict | None): Config for norm layers. Default: None.
-            act_cfg (dict | None): Config for activate layers. Default: None.
-            with_cp (bool): Use checkpoint or not. Using checkpoint will save
-                some memory while slowing down the training speed.
-                Default: False.
+                Defaults to ``dict()``.
+            conv_cfg (dict or ConfigDict, optional): Config for conv layers.
+                Defaults to None.
+            norm_cfg (dict or ConfigDict, optional): Config for norm layers.
+                Defaults to None.
+            act_cfg (dict or ConfigDict, optional): Config for activate layers.
+                Defaults to None.
+            with_cp (bool, optional): Use checkpoint or not. Using checkpoint
+                will save some memory while slowing down the training speed.
+                Defaults to False.
 
         Returns:
             nn.Module: A residual layer for the given config.
@@ -199,7 +206,7 @@ class ResNet3dPathway(ResNet3d):
 
         return nn.Sequential(*layers)
 
-    def inflate_weights(self, logger):
+    def inflate_weights(self, logger: MMLogger) -> None:
         """Inflate the resnet2d parameters to resnet3d pathway.
 
         The differences between resnet3d and resnet2d mainly lie in an extra
@@ -209,7 +216,7 @@ class ResNet3dPathway(ResNet3d):
         not be inflated from 2d weights.
 
         Args:
-            logger (logging.Logger): The logger used to print
+            logger (MMLogger): The logger used to print
                 debugging information.
         """
 
@@ -256,8 +263,9 @@ class ResNet3dPathway(ResNet3d):
             logger.info(f'These parameters in the 2d checkpoint are not loaded'
                         f': {remaining_names}')
 
-    def _inflate_conv_params(self, conv3d, state_dict_2d, module_name_2d,
-                             inflated_param_names):
+    def _inflate_conv_params(self, conv3d: nn.Module, state_dict_2d: OrderedDict,
+                             module_name_2d: str,
+                             inflated_param_names: List[str]) -> None:
         """Inflate a conv module from 2d to 3d.
 
         The differences of conv modules betweene 2d and 3d in Pathway
@@ -270,7 +278,7 @@ class ResNet3dPathway(ResNet3d):
             state_dict_2d (OrderedDict): The state dict of pretrained 2d model.
             module_name_2d (str): The name of corresponding conv module in the
                 2d model.
-            inflated_param_names (list[str]): List of parameters that have been
+            inflated_param_names (List[str]): List of parameters that have been
                 inflated.
         """
         weight_2d_name = module_name_2d + '.weight'
@@ -305,7 +313,7 @@ class ResNet3dPathway(ResNet3d):
             conv3d.bias.data.copy_(state_dict_2d[bias_2d_name])
             inflated_param_names.append(bias_2d_name)
 
-    def _freeze_stages(self):
+    def _freeze_stages(self) -> None:
         """Prevent all the parameters from being optimized before
         `self.frozen_stages`."""
         if self.frozen_stages >= 0:
@@ -327,7 +335,7 @@ class ResNet3dPathway(ResNet3d):
                 for param in conv_lateral.parameters():
                     param.requires_grad = False
 
-    def init_weights(self, pretrained=None):
+    def init_weights(self, pretrained: Optional[str] = None) -> None:
         """Initiate the parameters either from existing checkpoint or from
         scratch."""
         if pretrained:
@@ -348,12 +356,12 @@ pathway_cfg = {
 }
 
 
-def build_pathway(cfg, *args, **kwargs):
+def build_pathway(cfg: ConfigType, *args, **kwargs) -> nn.Module:
     """Build pathway.
 
     Args:
-        cfg (None or dict): cfg should contain:
-            - type (str): identify conv layer type.
+        cfg (dict or ConfigDict): cfg should contain:
+            - type (str): identify backbone type.
 
     Returns:
         nn.Module: Created pathway.
@@ -386,19 +394,18 @@ class ResNet3dSlowFast(nn.Module):
             multipling the ``interval`` in ``SampleFrames`` in the
             pipeline with ``resample_rate``, equivalent to the :math:`\\tau`
             in the paper, i.e. it processes only one out of
-            ``resample_rate * interval`` frames. Default: 8.
+            ``resample_rate * interval`` frames. Defaults to 8.
         speed_ratio (int): Speed ratio indicating the ratio between time
             dimension of the fast and slow pathway, corresponding to the
-            :math:`\\alpha` in the paper. Default: 8.
+            :math:`\\alpha` in the paper. Defaults to 8.
         channel_ratio (int): Reduce the channel number of fast pathway
             by ``channel_ratio``, corresponding to :math:`\\beta` in the paper.
-            Default: 8.
-        slow_pathway (dict): Configuration of slow branch, should contain
-            necessary arguments for building the specific type of pathway
-            and:
+            Defaults to 8.
+        slow_pathway (dict or ConfigDict): Configuration of slow branch, should
+            contain necessary arguments for building the specific type of pathway and:
             type (str): type of backbone the pathway bases on.
             lateral (bool): determine whether to build lateral connection
-            for the pathway.Default:
+            for the pathway. Defaults to
 
             .. code-block:: Python
 
@@ -407,8 +414,8 @@ class ResNet3dSlowFast(nn.Module):
                 conv1_kernel=(1, 7, 7), dilations=(1, 1, 1, 1),
                 conv1_stride_t=1, pool1_stride_t=1, inflate=(0, 0, 1, 1))
 
-        fast_pathway (dict): Configuration of fast branch, similar to
-            `slow_pathway`. Default:
+        fast_pathway (dict or ConfigDict): Configuration of fast branch,
+            similar to ``slow_pathway``. Defaults to
 
             .. code-block:: Python
 
@@ -419,10 +426,10 @@ class ResNet3dSlowFast(nn.Module):
 
     def __init__(self,
                  pretrained,
-                 resample_rate=8,
-                 speed_ratio=8,
-                 channel_ratio=8,
-                 slow_pathway=dict(
+                 resample_rate: int = 8,
+                 speed_ratio: int = 8,
+                 channel_ratio: int = 8,
+                 slow_pathway: ConfigType = dict(
                      type='resnet3d',
                      depth=50,
                      pretrained=None,
@@ -432,7 +439,7 @@ class ResNet3dSlowFast(nn.Module):
                      conv1_stride_t=1,
                      pool1_stride_t=1,
                      inflate=(0, 0, 1, 1)),
-                 fast_pathway=dict(
+                 fast_pathway: ConfigType = dict(
                      type='resnet3d',
                      depth=50,
                      pretrained=None,
@@ -440,7 +447,7 @@ class ResNet3dSlowFast(nn.Module):
                      base_channels=8,
                      conv1_kernel=(5, 7, 7),
                      conv1_stride_t=1,
-                     pool1_stride_t=1)):
+                     pool1_stride_t=1)) -> None:
         super().__init__()
         self.pretrained = pretrained
         self.resample_rate = resample_rate
@@ -454,7 +461,7 @@ class ResNet3dSlowFast(nn.Module):
         self.slow_path = build_pathway(slow_pathway)
         self.fast_path = build_pathway(fast_pathway)
 
-    def init_weights(self, pretrained=None):
+    def init_weights(self, pretrained: Optional[str] = None) -> None:
         """Initiate the parameters either from existing checkpoint or from
         scratch."""
         if pretrained:
@@ -473,14 +480,14 @@ class ResNet3dSlowFast(nn.Module):
         else:
             raise TypeError('pretrained must be a str or None')
 
-    def forward(self, x):
+    def forward(self, x: Tensor) -> tuple:
         """Defines the computation performed at every call.
 
         Args:
-            x (torch.Tensor): The input data.
+            x (Tensor): The input data.
 
         Returns:
-            tuple[torch.Tensor]: The feature of the input samples extracted
+            Tuple[Tensor]: The feature of the input samples extracted
                 by the backbone.
         """
         x_slow = nn.functional.interpolate(
