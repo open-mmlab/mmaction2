@@ -100,3 +100,7 @@ test_evaluator = val_evaluator
 train_cfg = dict(val_interval=2)
 
 optim_wrapper = dict(optimizer=dict(weight_decay=0.0005))
+
+val_cfg = dict(interval=2)
+test_cfg = dict()
+

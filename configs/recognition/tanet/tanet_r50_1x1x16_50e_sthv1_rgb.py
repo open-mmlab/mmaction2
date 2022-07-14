@@ -33,7 +33,6 @@ train_pipeline = [
         num_fixed_crops=13),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
     dict(type='Flip', flip_ratio=0.5, flip_label_map=sthv1_flip_label_map),
-    dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='PackActionInputs')
 ]
@@ -47,7 +46,6 @@ val_pipeline = [
     dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
-    dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='PackActionInputs')
 ]
@@ -62,7 +60,6 @@ test_pipeline = [
     dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='ThreeCrop', crop_size=256),
-    dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='PackActionInputs')
 ]
@@ -115,7 +112,7 @@ param_scheduler = [
     dict(
         type='MultiStepLR',
         begin=0,
-        end=15,
+        end=50,
         by_epoch=True,
         milestones=[30, 40, 45],
         gamma=0.1)

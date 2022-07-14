@@ -11,7 +11,7 @@ param_scheduler = [
         end=34),  # 预热前 500 次迭代
     dict(
         type='MultiStepLR',
-        begin=0,
+        begin=34,
         end=256,
         by_epoch=True,
         milestones=[94, 154, 196],
