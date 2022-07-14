@@ -1,6 +1,7 @@
 _base_ = ['./tsm_r50_1x1x8_50e_kinetics400_rgb.py']
 
-train_cfg = dict(by_epoch=True, max_epochs=100)
+train_cfg = dict(
+    type='EpochBasedTrainLoop', max_epochs=100, val_begin=1, val_interval=1)
 
 param_scheduler = [
     dict(
