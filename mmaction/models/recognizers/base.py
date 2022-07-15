@@ -67,11 +67,12 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
 
-        assert 'average_clips' not in self.test_cfg, \
-            'Average_clips (dict) is ' \
-            'defined in the Head. Please see our document or the ' \
-            'official config files.'
-        
+        if isinstance(self.test_cfg, ConfigType):
+            assert 'average_clips' not in self.test_cfg, \
+                'Average_clips (dict) is ' \
+                'defined in the Head. Please see our document or the ' \
+                'official config files.'
+            
 
     @abstractmethod
     def extract_feat(self,
