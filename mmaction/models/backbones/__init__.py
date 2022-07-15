@@ -9,7 +9,6 @@ from .resnet3d import ResNet3d, ResNet3dLayer
 from .resnet3d_csn import ResNet3dCSN
 from .resnet3d_slowfast import ResNet3dSlowFast
 from .resnet3d_slowonly import ResNet3dSlowOnly
-from .resnet_audio import ResNetAudio
 from .resnet_tin import ResNetTIN
 from .resnet_tsm import ResNetTSM
 from .stgcn import STGCN
