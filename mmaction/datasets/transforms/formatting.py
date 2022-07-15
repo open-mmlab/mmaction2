@@ -1,12 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from collections.abc import Sequence
 
-import torch
 import numpy as np
 from mmcv.transforms import BaseTransform, to_tensor
 from mmengine.data import InstanceData, LabelData
 
-from mmaction.core import ActionDataSample
+from mmaction.data import ActionDataSample
 from mmaction.registry import TRANSFORMS
 
 
