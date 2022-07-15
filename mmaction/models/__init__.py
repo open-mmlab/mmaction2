@@ -1,23 +1,21 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .backbones import (C3D, STGCN, X3D, MobileNetV2, MobileNetV2TSM, ResNet,
                         ResNet2Plus1d, ResNet3d, ResNet3dCSN, ResNet3dLayer,
-                        ResNet3dSlowFast, ResNet3dSlowOnly, ResNetAudio,
+                        ResNet3dSlowFast, ResNet3dSlowOnly,
                         ResNetTIN, ResNetTSM, TANet, TimeSformer)
-from .common import (LFB, TAM, Conv2plus1d, ConvAudio,
+from .common import (TAM, Conv2plus1d,
                      DividedSpatialAttentionWithNorm,
                      DividedTemporalAttentionWithNorm, FFNWithNorm,
                      SubBatchNorm3D)
-from .heads import (AudioTSNHead, BaseHead, I3DHead, SlowFastHead, STGCNHead,
+from .heads import (BaseHead, I3DHead, SlowFastHead, STGCNHead,
                     TimeSformerHead, TPNHead, TRNHead, TSMHead, TSNHead, X3DHead)
-from .localizers import BMN, PEM, TEM
 from .losses import (BCELossWithLogits, BinaryLogisticRegressionLoss, BMNLoss,
                      CBFocalLoss, CrossEntropyLoss, HVULoss, NLLLoss,
                      OHEMHingeLoss, SSNLoss)
 from .necks import TPN
 from .recognizers import (Recognizer3D, Recognizer2D, RecognizerGCN,
                           BaseRecognizer)
-from .roi_heads import (AVARoIHead, BBoxHeadAVA, SingleRoIExtractor3D,
-                        FBOHead, LFBInferHead, ACRNHead)
+from .roi_heads import (AVARoIHead, BBoxHeadAVA, SingleRoIExtractor3D, ACRNHead)
 from .utils import (ActionDataPreprocessor, BaseMiniBatchBlending, CutmixBlending,
                     MixupBlending)
 
@@ -28,14 +26,13 @@ __all__ = [
     'Recognizer2D', 'RecognizerGCN', 'BaseRecognizer',
     'CrossEntropyLoss', 'NLLLoss', 'HVULoss', 'ResNetTSM', 'ResNet3dSlowFast',
     'SlowFastHead', 'Conv2plus1d', 'CBFocalLoss', 'SubBatchNorm3D',
-    'ResNet3dSlowOnly', 'BCELossWithLogits', 'PEM', 'TAM', 'TEM',
-    'BinaryLogisticRegressionLoss', 'BMN', 'BMNLoss',
+    'ResNet3dSlowOnly', 'BCELossWithLogits', 'TAM',
+    'BinaryLogisticRegressionLoss', 'BMNLoss',
     'OHEMHingeLoss', 'SSNLoss', 'ResNet3dCSN', 'ResNetTIN',
-    'TPN', 'TPNHead',  'AudioTSNHead', 'X3D', 'X3DHead', 'ResNet3dLayer',
-    'SingleRoIExtractor3D', 'BBoxHeadAVA', 'ResNetAudio',
-    'ConvAudio', 'AVARoIHead', 'MobileNetV2', 'MobileNetV2TSM', 'TANet', 'LFB',
-    'FBOHead', 'LFBInferHead', 'TRNHead', 'TimeSformer',
-    'TimeSformerHead', 'DividedSpatialAttentionWithNorm',
+    'TPN', 'TPNHead',  'X3D', 'X3DHead', 'ResNet3dLayer',
+    'SingleRoIExtractor3D', 'BBoxHeadAVA',
+    'AVARoIHead', 'MobileNetV2', 'MobileNetV2TSM', 'TANet',
+    'TRNHead', 'TimeSformer', 'TimeSformerHead', 'DividedSpatialAttentionWithNorm',
     'DividedTemporalAttentionWithNorm', 'FFNWithNorm', 'ACRNHead',
     'ActionDataPreprocessor', 'BaseMiniBatchBlending', 'CutmixBlending',
     'MixupBlending'
