@@ -3,9 +3,9 @@ import numpy as np
 import pytest
 from mmcv.utils import assert_dict_has_keys
 
-from mmaction.datasets.pipelines import (CenterCrop, MultiScaleCrop,
-                                         RandomCrop, RandomResizedCrop,
-                                         TenCrop, ThreeCrop)
+from mmaction.datasets.transforms import (CenterCrop, MultiScaleCrop,
+                                          RandomCrop, RandomResizedCrop,
+                                          TenCrop, ThreeCrop)
 from .base import check_crop
 
 

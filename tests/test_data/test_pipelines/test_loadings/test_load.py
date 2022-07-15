@@ -7,9 +7,9 @@ import torch
 from mmcv.utils import assert_dict_has_keys
 from numpy.testing import assert_array_almost_equal
 
-from mmaction.datasets.pipelines import (LoadAudioFeature, LoadHVULabel,
-                                         LoadLocalizationFeature,
-                                         LoadProposals)
+from mmaction.datasets.transforms import (LoadAudioFeature, LoadHVULabel,
+                                          LoadLocalizationFeature,
+                                          LoadProposals)
 from .base import BaseTestLoading
 
 

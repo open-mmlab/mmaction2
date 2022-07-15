@@ -1,7 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .base import BaseHead
 from .slowfast_head import SlowFastHead
-from .ssn_head import SSNHead
 from .stgcn_head import STGCNHead
 from .timesformer_head import TimeSformerHead
 from .tpn_head import TPNHead
@@ -12,7 +11,7 @@ from .x3d_head import X3DHead
 from .i3d_head import I3DHead
 
 __all__ = [
-    'TSNHead', 'I3DHead', 'BaseHead', 'TSMHead', 'SlowFastHead', 'SSNHead',
-    'TPNHead', 'AudioTSNHead', 'X3DHead', 'TRNHead', 'TimeSformerHead',
+    'TSNHead', 'I3DHead', 'BaseHead', 'TSMHead', 'SlowFastHead',
+    'TPNHead', 'X3DHead', 'TRNHead', 'TimeSformerHead',
     'STGCNHead'
 ]

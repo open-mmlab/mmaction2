@@ -4,7 +4,7 @@ import random
 import string
 
 
-def get_random_string(length=15):
+def get_random_string(length: int = 15):
     """Get random string with letters and digits.
 
     Args:

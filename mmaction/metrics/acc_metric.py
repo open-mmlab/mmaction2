@@ -6,8 +6,8 @@ from typing import Any, Optional, Sequence, Tuple, Union
 import numpy as np
 from mmengine.evaluator import BaseMetric
 
-from mmaction.core import (mean_average_precision, mean_class_accuracy,
-                           mmit_mean_average_precision, top_k_accuracy)
+from mmaction.evaluation import (mean_average_precision, mean_class_accuracy,
+                                 mmit_mean_average_precision, top_k_accuracy)
 from mmaction.registry import METRICS
 
 

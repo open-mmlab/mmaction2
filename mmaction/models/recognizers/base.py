@@ -1,15 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from abc import ABCMeta, abstractmethod
-from typing import Dict, List, Optional, Tuple, Union
 import warnings
 import torch
 from torch import Tensor
 from mmengine.model import BaseModel, merge_dict
 
-from mmaction.core import ActionDataSample
+from mmaction.data import ActionDataSample
 from mmaction.registry import MODELS
-ForwardResults = Union[Dict[str, torch.Tensor], List[ActionDataSample],
-                       Tuple[torch.Tensor], torch.Tensor]
 from mmaction.core.utils import (ConfigType, OptConfigType, OptMultiConfig,
                                  ForwardResults, SampleList, OptSampleList,
                                  LabelList)
@@ -72,7 +69,7 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
                 'Average_clips (dict) is ' \
                 'defined in the Head. Please see our document or the ' \
                 'official config files.'
-            
+
 
     @abstractmethod
     def extract_feat(self,

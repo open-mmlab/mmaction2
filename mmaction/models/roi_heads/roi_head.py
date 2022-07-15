@@ -1,12 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import List, Optional, Tuple, Union
+from typing import List, Tuple, Union
 
-import torch
-from mmengine.config import ConfigDict
-from mmengine.data import InstanceData
 from torch import Tensor
 
-from mmaction.core import ActionDataSample
 from mmaction.core.utils import (InstanceList, SampleList, ConfigType,
                                  SamplingResultList)
 

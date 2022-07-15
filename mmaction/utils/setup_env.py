@@ -16,22 +16,27 @@ def register_all_modules(init_default_scope: bool = True) -> None:
             https://github.com/open-mmlab/mmengine/blob/main/docs/en/tutorials/registry.md
             Defaults to True.
     """  # noqa
-    import mmaction.core  # noqa: F401,F403
+    import mmaction.data  # noqa: F401,F403
     import mmaction.datasets  # noqa: F401,F403
-    import mmaction.metrics  # noqa: F401,F403
+    import mmaction.engine  # noqa: F401,F403
+    import mmaction.evaluation  # noqa: F401,F403
     import mmaction.models  # noqa: F401,F403
+    import mmaction.visualization  # noqa: F401,F403
+    import mmaction.metrics  # noqa: F401,F403
 
-    if not init_default_scope:
-        return
-
-    current_scope = DefaultScope.get_current_instance()
-    if current_scope is None:
-        DefaultScope.get_instance('mmaction', scope_name='mmaction')
-    elif current_scope.scope_name != 'mmaction':
-        warnings.warn(f'The current default scope "{current_scope.scope_name}"'
-                      ' is not "mmaction", `register_all_modules` will force the '
-                      'current default scope to be "mmaction". If this is not '
-                      'expected, please set `init_default_scope=False`.')
-        # avoid name conflict
-        new_instance_name = f'mmaction-{datetime.datetime.now()}'
-        DefaultScope.get_instance(new_instance_name, scope_name='mmaction')
+    if init_default_scope:
+        never_created = DefaultScope.get_current_instance() is None \
+                        or not DefaultScope.check_instance_created('mmaction')
+        if never_created:
+            DefaultScope.get_instance('mmaction', scope_name='mmaction')
+            return
+        current_scope = DefaultScope.get_current_instance()
+        if current_scope.scope_name != 'mmaction':
+            warnings.warn('The current default scope '
+                          f'"{current_scope.scope_name}" is not "mmaction", '
+                          '`register_all_modules` will force set the current'
+                          'default scope to "mmaction". If this is not as '
+                          'expected, please set `init_default_scope=False`.')
+            # avoid name conflict
+            new_instance_name = f'mmaction-{datetime.datetime.now()}'
+            DefaultScope.get_instance(new_instance_name, scope_name='mmaction')

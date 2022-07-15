@@ -10,7 +10,7 @@ import numpy as np
 from mmengine import Visualizer
 from mmengine.dist import master_only
 
-from mmaction.core import ActionDataSample
+from mmaction.data import ActionDataSample
 from mmaction.registry import VISBACKENDS, VISUALIZERS
 
 

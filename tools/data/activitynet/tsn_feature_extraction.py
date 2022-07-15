@@ -8,7 +8,7 @@ import mmcv
 import numpy as np
 import torch
 
-from mmaction.datasets.pipelines import Compose
+from mmaction.datasets.transforms import Compose
 from mmaction.models import build_model
 
 

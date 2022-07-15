@@ -11,7 +11,7 @@ from mmengine.logging import MMLogger
 
 from mmaction.registry import DATASETS
 from mmaction.core import ConfigType
-from ..core.evaluation.ava_utils import read_labelmap
+from mmaction.evaluation import read_labelmap
 
 
 @DATASETS.register_module()
@@ -105,7 +105,7 @@ class AVADataset(BaseDataset):
                  data_prefix: ConfigType = dict(img=''),
                  modality: str = 'RGB',
                  test_mode: bool = False,
-                 num_max_proposals: int =1000,
+                 num_max_proposals: int = 1000,
                  timestamp_start: int = 900,
                  timestamp_end: int = 1800,
                  fps: int = 30,
