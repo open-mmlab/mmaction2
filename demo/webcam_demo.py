@@ -12,7 +12,7 @@ from mmcv import Config, DictAction
 from mmcv.parallel import collate, scatter
 
 from mmaction.apis import init_recognizer
-from mmaction.datasets.pipelines import Compose
+from mmaction.datasets.transforms import Compose
 
 FONTFACE = cv2.FONT_HERSHEY_COMPLEX_SMALL
 FONTSCALE = 1

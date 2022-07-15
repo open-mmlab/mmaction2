@@ -6,8 +6,8 @@ import pytest
 from mmcv.utils import assert_dict_has_keys
 from numpy.testing import assert_array_almost_equal
 
-from mmaction.datasets.pipelines import RandomRescale, Resize
-from mmaction.datasets.pipelines.augmentations import PoseCompact
+from mmaction.datasets.transforms import RandomRescale, Resize
+from mmaction.datasets.transforms.augmentations import PoseCompact
 
 
 class TestTransform:

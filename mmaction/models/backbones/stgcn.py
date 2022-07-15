@@ -11,7 +11,7 @@ from mmengine.logging import MMLogger
 
 from mmaction.registry import MODELS
 from mmaction.core.utils import ConfigType
-from ..recognizers.utils import Graph
+from ..utils import Graph
 
 
 def zero(x: Tensor) -> int:

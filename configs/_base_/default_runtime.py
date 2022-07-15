@@ -15,6 +15,9 @@ env_cfg = dict(
 
 log_processor = dict(type='LogProcessor', window_size=20, by_epoch=True)
 
+vis_backends = [dict(type='LocalVisBackend')]
+visualizer = dict(type='ActionVisualizer', vis_backends=vis_backends)
+
 log_level = 'INFO'
 load_from = None
 resume = False

@@ -7,7 +7,7 @@ from mmengine.evaluator import BaseMetric
 
 from mmaction.core import bbox2result
 from mmaction.registry import METRICS
-from mmaction.core.evaluation.ava_utils import ava_eval, results2csv
+from mmaction.evaluation import ava_eval, results2csv
 
 
 @METRICS.register_module()

@@ -6,10 +6,10 @@ import pytest
 from mmcv.utils import assert_dict_has_keys
 from numpy.testing import assert_array_equal
 
-from mmaction.datasets.pipelines import (AudioFeatureSelector,
-                                         DenseSampleFrames, SampleAVAFrames,
-                                         SampleFrames, SampleProposalFrames,
-                                         UntrimmedSampleFrames)
+from mmaction.datasets.transforms import (AudioFeatureSelector,
+                                          DenseSampleFrames, SampleAVAFrames,
+                                          SampleFrames, SampleProposalFrames,
+                                          UntrimmedSampleFrames)
 from .base import BaseTestLoading
 
 

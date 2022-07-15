@@ -9,10 +9,11 @@ from torch import Tensor
 from mmengine.data import LabelData
 from mmengine.model import BaseModule
 
-from mmaction.core import top_k_accuracy
+from mmaction.evaluation import top_k_accuracy
 from mmaction.registry import MODELS
 from mmaction.core.utils import (ConfigType, OptConfigType, OptMultiConfig,
                                  LabelList, SampleList)
+
 
 class AvgConsensus(nn.Module):
     """Average consensus module.

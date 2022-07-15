@@ -6,7 +6,7 @@ from mmcv.utils import assert_dict_has_keys, digit_version
 try:
     import torch
 
-    from mmaction.datasets.pipelines import PytorchVideoTrans
+    from mmaction.datasets.transforms import PytorchVideoTrans
     pytorchvideo_ok = False
     if digit_version(torch.__version__) >= digit_version('1.8.0'):
         pytorchvideo_ok = True

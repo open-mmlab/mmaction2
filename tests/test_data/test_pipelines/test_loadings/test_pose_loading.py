@@ -10,9 +10,9 @@ from mmcv import dump
 from mmcv.utils import assert_dict_has_keys
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
-from mmaction.datasets.pipelines import (GeneratePoseTarget, LoadKineticsPose,
-                                         PaddingWithLoop, PoseDecode,
-                                         PoseNormalize, UniformSampleFrames)
+from mmaction.datasets.transforms import (GeneratePoseTarget, LoadKineticsPose,
+                                          PaddingWithLoop, PoseDecode,
+                                          PoseNormalize, UniformSampleFrames)
 
 
 class TestPoseLoading:

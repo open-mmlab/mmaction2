@@ -2,7 +2,7 @@
 import numpy as np
 from mmcv.utils import assert_dict_has_keys
 
-from mmaction.datasets.pipelines import ColorJitter
+from mmaction.datasets.transforms import ColorJitter
 
 
 class TestColor:

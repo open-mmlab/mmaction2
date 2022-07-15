@@ -8,7 +8,7 @@ from mmengine.runner import load_checkpoint
 from mmengine.logging import MMLogger
 
 from mmaction.registry import MODELS
-from ..recognizers.utils import Graph
+from ..utils import Graph
 
 
 def conv_branch_init(conv, branches):

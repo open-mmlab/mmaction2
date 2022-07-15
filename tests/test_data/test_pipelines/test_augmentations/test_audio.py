@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 from mmcv.utils import assert_dict_has_keys
 
-from mmaction.datasets.pipelines import AudioAmplify, MelSpectrogram
+from mmaction.datasets.transforms import AudioAmplify, MelSpectrogram
 
 
 class TestAudio:

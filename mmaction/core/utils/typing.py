@@ -6,7 +6,7 @@ import torch
 from mmengine.config import ConfigDict
 from mmengine.data import InstanceData, LabelData
 
-from ..data_structures import ActionDataSample
+from mmaction.data import ActionDataSample
 
 
 # Type hint of config data

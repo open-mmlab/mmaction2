@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 from mmcv.utils import assert_keys_equal, digit_version
 
-from mmaction.datasets.pipelines import Compose, ImageToTensor
+from mmaction.datasets.transforms import Compose, ImageToTensor
 
 try:
     import torchvision

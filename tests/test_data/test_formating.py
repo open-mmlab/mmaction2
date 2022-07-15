@@ -5,10 +5,10 @@ import torch
 from mmcv.parallel import DataContainer as DC
 from mmcv.utils import assert_dict_has_keys
 
-from mmaction.datasets.pipelines import (Collect, FormatAudioShape,
-                                         FormatGCNInput, FormatShape,
-                                         ImageToTensor, Rename,
-                                         ToDataContainer, ToTensor, Transpose)
+from mmaction.datasets.transforms import (Collect, FormatAudioShape,
+                                          FormatGCNInput, FormatShape,
+                                          ImageToTensor, Rename,
+                                          ToDataContainer, ToTensor, Transpose)
 
 
 def test_rename():

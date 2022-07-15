@@ -5,12 +5,12 @@ import platform
 import numpy as np
 from mmcv.utils import assert_dict_has_keys
 
-from mmaction.datasets.pipelines import (AudioDecode, AudioDecodeInit,
-                                         DecordDecode, DecordInit,
-                                         OpenCVDecode, OpenCVInit, PIMSDecode,
-                                         PIMSInit, PyAVDecode,
-                                         PyAVDecodeMotionVector, PyAVInit,
-                                         RawFrameDecode)
+from mmaction.datasets.transforms import (AudioDecode, AudioDecodeInit,
+                                          DecordDecode, DecordInit,
+                                          OpenCVDecode, OpenCVInit, PIMSDecode,
+                                          PIMSInit, PyAVDecode,
+                                          PyAVDecodeMotionVector, PyAVInit,
+                                          RawFrameDecode)
 from .base import BaseTestLoading
 
 

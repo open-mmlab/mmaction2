@@ -14,7 +14,7 @@ from mmcv import DictAction
 from mmcv.runner import load_checkpoint
 
 from mmaction.apis import inference_recognizer
-from mmaction.datasets.pipelines import Compose
+from mmaction.datasets.transforms import Compose
 from mmaction.models import build_detector, build_model, build_recognizer
 
 try:

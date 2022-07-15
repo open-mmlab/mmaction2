@@ -4,7 +4,6 @@ from typing import Dict, List
 import torch
 from torch import nn
 
-from mmaction.core import ActionDataSample
 from mmaction.registry import MODELS
 from .base import BaseRecognizer
 

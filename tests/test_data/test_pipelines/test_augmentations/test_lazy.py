@@ -3,9 +3,9 @@ import numpy as np
 import pytest
 from mmcv.utils import assert_dict_has_keys
 
-from mmaction.datasets.pipelines import (CenterCrop, Flip, Fuse,
-                                         MultiScaleCrop, RandomCrop,
-                                         RandomResizedCrop, Resize)
+from mmaction.datasets.transforms import (CenterCrop, Flip, Fuse,
+                                          MultiScaleCrop, RandomCrop,
+                                          RandomResizedCrop, Resize)
 from .base import check_crop, check_flip
 
 
@@ -13,7 +13,7 @@ class TestLazy:
 
     @staticmethod
     def test_init_lazy():
-        from mmaction.datasets.pipelines.augmentations import \
+        from mmaction.datasets.transforms.augmentations import \
             _init_lazy_if_proper  # noqa: E501
         with pytest.raises(AssertionError):
             # use lazy operation but "lazy" not in results
