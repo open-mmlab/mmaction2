@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import os.path as osp
+"""import os.path as osp.
 
 import torch
 
@@ -10,16 +10,13 @@ def test_assigner_sampler():
     try:
         from mmdet.core.bbox import build_assigner, build_sampler
     except (ImportError, ModuleNotFoundError):
-        # TODO!
-        return
-
         raise ImportError(
             'Failed to import `build_assigner` and `build_sampler` '
             'from `mmdet.core.bbox`. The two APIs are required for '
             'the testing in `test_bbox.py`! ')
 
     data_prefix = osp.normpath(
-        osp.join(osp.dirname(__file__), '../data/eval_detection'))
+        osp.join(osp.dirname(__file__), '../../../data/eval_detection'))
     ann_file = osp.join(data_prefix, 'gt.csv')
     label_file = osp.join(data_prefix, 'action_list.txt')
     proposal_file = osp.join(data_prefix, 'proposal.pkl')
@@ -73,3 +70,4 @@ def test_assigner_sampler():
     assert (sampling_result.neg_inds.shape[0] ==
             sampling_result.neg_bboxes.shape[0])
     return sampling_result
+"""

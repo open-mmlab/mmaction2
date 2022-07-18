@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy
 import os.path as osp
+import platform
 
 import mmcv
 import numpy as np
@@ -18,8 +19,6 @@ from mmaction.datasets.transforms import (AudioDecode, AudioDecodeInit,
                                           OpenCVInit, PIMSDecode, PIMSInit,
                                           PyAVDecode, PyAVDecodeMotionVector,
                                           PyAVInit, RawFrameDecode)
-
-# import platform
 
 
 class BaseTestLoading:
@@ -495,8 +494,7 @@ class TestDecode(BaseTestLoading):
         assert np.shape(results['imgs']) == (len(inputs['frame_inds']) * 2,
                                              240, 320)
         assert results['original_shape'] == (240, 320)
-        """
-        TODO
+
         if platform.system() != 'Windows':
             # test frame selector in turbojpeg decoding backend
             # when start_index = 0
@@ -526,7 +524,6 @@ class TestDecode(BaseTestLoading):
             assert repr(frame_selector) == (
                 f'{frame_selector.__class__.__name__}(io_backend=disk, '
                 f'decoding_backend=turbojpeg)')
-        """
 
     def test_audio_decode_init(self):
         target_keys = ['audios', 'length', 'sample_rate']
