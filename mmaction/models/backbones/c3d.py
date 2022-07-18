@@ -1,9 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
 from mmcv.cnn import ConvModule, constant_init, kaiming_init, normal_init
+from mmengine.logging import MMLogger
 from mmengine.runner import load_checkpoint
 from mmengine.utils.parrots_wrapper import _BatchNorm
-from mmengine.logging import MMLogger
 
 from mmaction.registry import MODELS
 

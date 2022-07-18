@@ -6,4 +6,3 @@ model = dict(
         speed_ratio=4,  # alpha
         channel_ratio=8,  # beta_inv
         slow_pathway=dict(fusion_kernel=7)))
-

@@ -5,9 +5,9 @@ from .accuracy import (average_precision_at_temporal_iou,
                        mean_average_precision, mean_class_accuracy,
                        mmit_mean_average_precision, pairwise_temporal_iou,
                        softmax, top_k_accuracy, top_k_classes)
+from .ava_utils import ava_eval, read_labelmap, results2csv
 from .eval_detection import ActivityNetLocalization
 from .eval_hooks import DistEvalHook, EvalHook
-from .ava_utils import read_labelmap, ava_eval, results2csv
 
 __all__ = [
     'DistEvalHook', 'EvalHook', 'top_k_accuracy', 'mean_class_accuracy',

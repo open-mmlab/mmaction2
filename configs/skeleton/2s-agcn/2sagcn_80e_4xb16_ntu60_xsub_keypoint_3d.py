@@ -1,7 +1,4 @@
-_base_ = [
-    '../../_base_/models/agcn.py',
-    '../../_base_/default_runtime.py'
-]
+_base_ = ['../../_base_/models/agcn.py', '../../_base_/default_runtime.py']
 
 dataset_type = 'PoseDataset'
 ann_file_train = 'data/ntu60/xsub/train.pkl'
@@ -25,9 +22,7 @@ train_dataloader = dict(
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
-        type=dataset_type,
-        ann_file=ann_file_train,
-        pipeline=train_pipeline))
+        type=dataset_type, ann_file=ann_file_train, pipeline=train_pipeline))
 val_dataloader = dict(
     batch_size=16,
     num_workers=2,
@@ -53,13 +48,9 @@ val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 
 train_cfg = dict(
-    type='EpochBasedTrainLoop',
-    max_epochs=80,
-    val_begin=1,
-    val_interval=2)
+    type='EpochBasedTrainLoop', max_epochs=80, val_begin=1, val_interval=2)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
-
 
 param_scheduler = [
     dict(
@@ -73,9 +64,6 @@ param_scheduler = [
 
 optim_wrapper = dict(
     optimizer=dict(
-        type='SGD', lr=0.1, momentum=0.9, weight_decay=0.0001,
-        nesterov=True))
+        type='SGD', lr=0.1, momentum=0.9, weight_decay=0.0001, nesterov=True))
 
-default_hooks = dict(
-    checkpoint=dict(interval=2),
-    logger=dict(interval=100))
+default_hooks = dict(checkpoint=dict(interval=2), logger=dict(interval=100))

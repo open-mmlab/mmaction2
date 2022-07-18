@@ -9,8 +9,8 @@ import mmengine
 import numpy as np
 import torch
 from mmcv.parallel import collate, scatter
-from mmengine.runner import load_checkpoint
 from mmengine.dataset import Compose
+from mmengine.runner import load_checkpoint
 
 from mmaction.core import OutputHook
 from mmaction.registry import MODELS

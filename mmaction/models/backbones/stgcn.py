@@ -3,14 +3,14 @@ from typing import Tuple
 
 import torch
 import torch.nn as nn
-from torch import Tensor
 from mmcv.cnn import constant_init, kaiming_init, normal_init
+from mmengine.logging import MMLogger
 from mmengine.runner import load_checkpoint
 from mmengine.utils.parrots_wrapper import _BatchNorm
-from mmengine.logging import MMLogger
+from torch import Tensor
 
-from mmaction.registry import MODELS
 from mmaction.core.utils import ConfigType
+from mmaction.registry import MODELS
 from ..utils import Graph
 
 
@@ -33,8 +33,10 @@ class STGCNBlock(nn.Module):
         out_channels (int): Number of channels produced by the convolution.
         kernel_size (Tuple[int]): Size of the temporal convolving kernel and
             graph convolving kernel.
-        stride (int, optional): Stride of the temporal convolution. Default: 1.
-        dropout (float, optional): Dropout rate of the final output. Default: 0.
+        stride (int, optional): Stride of the temporal convolution.
+            Default: 1.
+        dropout (float, optional): Dropout rate of the final output.
+            Default: 0.
         residual (bool, optional): If True, applies a residual mechanism.
             Default: True.
     """
@@ -80,16 +82,16 @@ class STGCNBlock(nn.Module):
         """Defines the computation performed at every call.
 
         Args:
-            x (Tensor): Input graph sequence in :math:`(N, in_channels, T_{in}, V)`
-                format.
+            x (Tensor): Input graph sequence in
+                :math:`(N, in_channels, T_{in}, V)` format.
             adj_mat (Tensor): Input graph adjacency matrix in :math:`(K, V, V)`
                 format.
 
         Returns:
             tuple: A tuple of output graph sequence and graph adjacency matrix.
 
-                - x (Tensor): Output graph sequence in :math:`(N, out_channels, T_{out}, V)`
-                    format.
+                - x (Tensor): Output graph sequence in
+                    :math:`(N, out_channels, T_{out}, V)` format.
                 - adj_mat (Tensor): graph adjacency matrix for output data in
                     :math:`(K, V, V)` format.
 
@@ -99,7 +101,6 @@ class STGCNBlock(nn.Module):
                 `,
             :math:`T_{in}/T_{out}` is a length of input/output sequence,
             :math:`V` is the number of graph nodes.
-
         """
         res = self.residual(x)
         x, adj_mat = self.gcn(x, adj_mat)
@@ -151,15 +152,16 @@ class ConvTemporalGraphical(nn.Module):
         """Defines the computation performed at every call.
 
         Args:
-            x (Tensor): Input graph sequence in :math:`(N, in_channels, T_{in}, V)`
-                format
-            adj_mat (Tensor): Input graph adjacency matrix in :math:`(K, V, V)` format.
+            x (Tensor): Input graph sequence in
+                :math:`(N, in_channels, T_{in}, V)` format
+            adj_mat (Tensor): Input graph adjacency matrix in
+                :math:`(K, V, V)` format.
 
         Returns:
             tuple: A tuple of output graph sequence and graph adjacency matrix.
 
-                - x (Tensor): Output graph sequence in :math:`(N, out_channels, T_{out}, V)`
-                    format.
+                - x (Tensor): Output graph sequence in
+                    :math:`(N, out_channels, T_{out}, V)` format.
                 - adj_mat (Tensor): graph adjacency matrix for output data in
                     :math:`(K, V, V)` format.
 
@@ -169,7 +171,6 @@ class ConvTemporalGraphical(nn.Module):
                 `,
             :math:`T_{in}/T_{out}` is a length of input/output sequence,
             :math:`V` is the number of graph nodes.
-
         """
         assert adj_mat.size(0) == self.kernel_size
 

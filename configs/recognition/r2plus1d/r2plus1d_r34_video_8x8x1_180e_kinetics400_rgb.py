@@ -84,4 +84,5 @@ test_dataloader = dict(
         test_mode=True))
 # optimizer
 optim_wrapper = dict(
-    optimizer=dict(type='SGD', lr=0.2, momentum=0.9, weight_decay=1e-4))  # this lr is used for 8 gpus
+    optimizer=dict(type='SGD', lr=0.2, momentum=0.9,
+                   weight_decay=1e-4))  # this lr is used for 8 gpus

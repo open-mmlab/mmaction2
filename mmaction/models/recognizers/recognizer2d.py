@@ -50,11 +50,13 @@ class Recognizer2D(BaseRecognizer):
         # Check settings of fcn_test
         fcn_test = False
         if test_mode:
-            if self.test_cfg is not None and self.test_cfg.get('fcn_test', False):
+            if self.test_cfg is not None and self.test_cfg.get(
+                    'fcn_test', False):
                 fcn_test = True
                 if self.test_cfg.get('flip', False):
                     batch_inputs = torch.flip(batch_inputs, [-1])
-                num_segs = self.test_cfg.get('num_segs', self.backbone.num_segments)
+                num_segs = self.test_cfg.get('num_segs',
+                                             self.backbone.num_segments)
             loss_predict_kwargs['fcn_test'] = fcn_test
 
         x = self.backbone(batch_inputs)
@@ -67,8 +69,9 @@ class Recognizer2D(BaseRecognizer):
         if self.with_neck:
             # x is a tuple with multiple feature maps
             x = [
-                each.reshape((-1, num_segs) + each.shape[1:]).transpose(
-                    1, 2).contiguous() for each in x
+                each.reshape((-1, num_segs) +
+                             each.shape[1:]).transpose(1, 2).contiguous()
+                for each in x
             ]
             x, loss_aux = self.neck(x, data_samples=data_samples)
             if not fcn_test:
@@ -79,8 +82,8 @@ class Recognizer2D(BaseRecognizer):
         elif fcn_test:
             # [N * num_crops * num_segs, C', H', W'] ->
             # [N * num_crops, C', num_segs, H', W']
-            x = x.reshape((-1, num_segs) + x.shape[1:]).transpose(
-                1, 2).contiguous()
+            x = x.reshape((-1, num_segs) +
+                          x.shape[1:]).transpose(1, 2).contiguous()
 
         loss_predict_kwargs['loss_aux'] = loss_aux
         # Return features extracted through neck

@@ -1,10 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
-from torch import Tensor
 from mmcv.cnn import normal_init
+from torch import Tensor
 
-from mmaction.registry import MODELS
 from mmaction.core.utils import ConfigType
+from mmaction.registry import MODELS
 from .base import BaseHead
 
 

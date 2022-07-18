@@ -8,10 +8,8 @@ from torch import Tensor
 from mmaction.core.utils import ConfigType
 
 
-def bbox_target(pos_bboxes_list: List[Tensor],
-                neg_bboxes_list: List[Tensor],
-                gt_labels: List[Tensor],
-                cfg: ConfigType) -> tuple:
+def bbox_target(pos_bboxes_list: List[Tensor], neg_bboxes_list: List[Tensor],
+                gt_labels: List[Tensor], cfg: ConfigType) -> tuple:
     """Generate classification targets for bboxes.
 
     Args:

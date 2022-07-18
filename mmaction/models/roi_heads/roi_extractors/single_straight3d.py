@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Union, Tuple
+from typing import Tuple, Union
 
 import torch
 import torch.nn as nn
@@ -17,7 +17,8 @@ class SingleRoIExtractor3D(nn.Module):
     """Extract RoI features from a single level feature map.
 
     Args:
-        roi_layer_type (str): Specify the RoI layer type. Defaults to ``RoIAlign``.
+        roi_layer_type (str): Specify the RoI layer type.
+            Defaults to ``RoIAlign``.
         featmap_stride (int): Strides of input feature maps. Defaults to 16.
         output_size (int or tuple): Size or (Height, Width). Defaults to 16.
         sampling_ratio (int): number of inputs samples to take for each
@@ -81,8 +82,7 @@ class SingleRoIExtractor3D(nn.Module):
                 aligned=self.aligned)
         self.global_pool = nn.AdaptiveAvgPool2d(self.output_size)
 
-    def forward(self,
-                feat: Union[Tensor, Tuple[Tensor]],
+    def forward(self, feat: Union[Tensor, Tuple[Tensor]],
                 rois: Tensor) -> tuple:
         """Forward function for extract roi features.
 
@@ -130,6 +130,7 @@ class SingleRoIExtractor3D(nn.Module):
 
         roi_feats = torch.stack(roi_feats, dim=2)
         return roi_feats, feat
+
 
 if mmdet_imported:
     MMDET_MODELS.register_module()(SingleRoIExtractor3D)

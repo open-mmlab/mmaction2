@@ -33,7 +33,6 @@ test_pipeline = [
     dict(type='PackActionInputs')
 ]
 
-
 test_dataloader = dict(
     batch_size=1,
     num_workers=2,
@@ -46,7 +45,4 @@ test_dataloader = dict(
         pipeline=test_pipeline,
         test_mode=True))
 
-env_cfg = dict(
-    dist_cfg=dict(backend='nccl')
-)
-
+env_cfg = dict(dist_cfg=dict(backend='nccl'))

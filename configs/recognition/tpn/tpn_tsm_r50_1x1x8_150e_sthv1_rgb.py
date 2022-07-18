@@ -1,6 +1,5 @@
 _base_ = [
-    '../../_base_/models/tpn_tsm_r50.py',
-    '../../_base_/default_runtime.py'
+    '../../_base_/models/tpn_tsm_r50.py', '../../_base_/default_runtime.py'
 ]
 
 dataset_type = 'RawframeDataset'
@@ -86,10 +85,7 @@ val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 
 train_cfg = dict(
-    type='EpochBasedTrainLoop',
-    max_epochs=150,
-    val_begin=1,
-    val_interval=5)
+    type='EpochBasedTrainLoop', max_epochs=150, val_begin=1, val_interval=5)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
@@ -104,7 +100,6 @@ param_scheduler = [
 ]
 
 optim_wrapper = dict(
-    optimizer=dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0005,
-                   nesterov=True),
+    optimizer=dict(
+        type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0005, nesterov=True),
     clip_grad=dict(max_norm=20, norm_type=2))
-

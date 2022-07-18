@@ -6,8 +6,8 @@ import torch.nn.functional as F
 from torch import Tensor
 from torch.distributions.beta import Beta
 
-from mmaction.registry import MODELS
 from mmaction.core.utils import SampleList
+from mmaction.registry import MODELS
 
 __all__ = ['BaseMiniBatchBlending', 'MixupBlending', 'CutmixBlending']
 
@@ -27,9 +27,7 @@ class BaseMiniBatchBlending(metaclass=ABCMeta):
         """Blending images process."""
         raise NotImplementedError
 
-    def __call__(self,
-                 imgs: Tensor,
-                 batch_data_samples: SampleList,
+    def __call__(self, imgs: Tensor, batch_data_samples: SampleList,
                  **kwargs) -> tuple:
         """Blending data in a mini-batch.
 
@@ -53,10 +51,11 @@ class BaseMiniBatchBlending(metaclass=ABCMeta):
         Returns:
             mixed_imgs (Tensor): Blending images, float tensor with the
                 same shape of the input imgs.
-            batch_data_samples (List[:obj:`ActionDataSample`]): The modified batch
-                data samples. ``gt_labels`` in each data sample are converted from
-                a hard label to a blended soft label, float tensor with the shape of
-                (1, num_classes) and all elements are in range [0, 1].
+            batch_data_samples (List[:obj:`ActionDataSample`]): The modified
+                batch data samples. ``gt_labels`` in each data sample are
+                converted from a hard label to a blended soft label, float
+                tensor with the shape of (1, num_classes) and all elements are
+                in range [0, 1].
         """
         label = [x.gt_labels.item for x in batch_data_samples]
         label = torch.tensor(label, dtype=torch.long).to(imgs.device)
@@ -100,7 +99,6 @@ class MixupBlending(BaseMiniBatchBlending):
 
         Returns:
             tuple: A tuple of blended images and labels.
-
         """
         assert len(kwargs) == 0, f'unexpected kwargs for mixup {kwargs}'
 
@@ -162,7 +160,6 @@ class CutmixBlending(BaseMiniBatchBlending):
 
         Returns:
             tuple: A tuple of blended images and labels.
-
         """
 
         assert len(kwargs) == 0, f'unexpected kwargs for cutmix {kwargs}'

@@ -125,7 +125,7 @@ val_evaluator = dict(
     type='AccMetric',
     metrics=['mmit_mean_average_precision'],
     num_classes=num_classes,
-    prefix="prec",
+    prefix='prec',
 )
 test_evaluator = val_evaluator
 

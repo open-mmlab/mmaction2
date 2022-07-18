@@ -1,15 +1,15 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from abc import ABCMeta, abstractmethod
 import warnings
-import torch
-from torch import Tensor
-from mmengine.model import BaseModel, merge_dict
+from abc import ABCMeta, abstractmethod
 
+from mmengine.model import BaseModel, merge_dict
+from torch import Tensor
+
+from mmaction.core.utils import (ConfigType, ForwardResults, LabelList,
+                                 OptConfigType, OptMultiConfig, OptSampleList,
+                                 SampleList)
 from mmaction.data import ActionDataSample
 from mmaction.registry import MODELS
-from mmaction.core.utils import (ConfigType, OptConfigType, OptMultiConfig,
-                                 ForwardResults, SampleList, OptSampleList,
-                                 LabelList)
 
 
 class BaseRecognizer(BaseModel, metaclass=ABCMeta):
@@ -50,8 +50,7 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
             data_preprocessor = dict(type='ActionDataPreprocessor')
 
         super(BaseRecognizer, self).__init__(
-            data_preprocessor=data_preprocessor,
-            init_cfg=init_cfg)
+            data_preprocessor=data_preprocessor, init_cfg=init_cfg)
 
         self.backbone = MODELS.build(backbone)
 
@@ -70,11 +69,8 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
                 'defined in the Head. Please see our document or the ' \
                 'official config files.'
 
-
     @abstractmethod
-    def extract_feat(self,
-                     batch_inputs: Tensor,
-                     **kwargs) -> ForwardResults:
+    def extract_feat(self, batch_inputs: Tensor, **kwargs) -> ForwardResults:
         """Extract features from raw inputs."""
         raise NotImplementedError
 
@@ -146,7 +142,9 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
         predictions = self.convert_to_datasample(predictions)
         return predictions
 
-    def _forward(self, batch_inputs: Tensor, stage: str = 'backbone',
+    def _forward(self,
+                 batch_inputs: Tensor,
+                 stage: str = 'backbone',
                  **kwargs) -> ForwardResults:
         """Network forward process. Usually includes backbone, neck and head
         forward without any post-processing.
@@ -215,8 +213,8 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
         Returns:
             List[:obj:`ActionDataSample`]: Recognition results wrapped by
             :obj:`ActionDataSample`. Each ActionDataSample usually contain
-            'pred_scores'. And the ``pred_scores`` usually contains following keys.
-
+            'pred_scores'. And the ``pred_scores`` usually contains following
+                keys:
                 - item (Tensor): Classification scores, has a shape
                     (num_classes, )
         """

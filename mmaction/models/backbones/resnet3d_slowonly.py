@@ -50,5 +50,6 @@ class ResNet3dSlowOnly(ResNet3dPathway):
 
         assert not self.lateral
 
+
 if mmdet_imported:
     MMDET_MODELS.register_module()(ResNet3dSlowOnly)

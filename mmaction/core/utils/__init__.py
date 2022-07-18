@@ -1,8 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .typing import (ConfigType, ForwardResults, InstanceList, MultiConfig,
-                     OptConfigType, OptInstanceList, OptMultiConfig,
-                     OptSampleList, SampleList, LabelList, OptLabelList,
-                     SamplingResultList, OptSamplingResultList)
+from .typing import (ConfigType, ForwardResults, InstanceList, LabelList,
+                     MultiConfig, OptConfigType, OptInstanceList, OptLabelList,
+                     OptMultiConfig, OptSampleList, OptSamplingResultList,
+                     SampleList, SamplingResultList)
 
 __all__ = [
     'ConfigType', 'OptConfigType', 'MultiConfig', 'OptMultiConfig',

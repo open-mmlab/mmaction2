@@ -22,7 +22,6 @@ model = dict(
         spatial_type='avg',
         dropout_ratio=0.5,
         average_clips='prob'),
-    data_preprocessor=dict(
-        type='ActionDataPreprocessor', **preprocess_cfg),
+    data_preprocessor=dict(type='ActionDataPreprocessor', **preprocess_cfg),
     train_cfg=None,
     test_cfg=None)

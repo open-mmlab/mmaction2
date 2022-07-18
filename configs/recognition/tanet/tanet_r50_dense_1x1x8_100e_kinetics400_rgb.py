@@ -119,4 +119,4 @@ train_cfg = dict(by_epoch=True, max_epochs=100)
 default_hooks = dict(checkpoint=dict(max_keep_ckpts=5))
 # runtime settings
 # resume = True
-# resume_from = 'work_dirs/tanet_r50_dense_1x1x8_100e_kinetics400_rgb/latest.pth'
+# resume_from = 'work_dirs/tanet_r50_dense_1x1x8_100e_kinetics400_rgb/latest.pth'  # noqa: E501

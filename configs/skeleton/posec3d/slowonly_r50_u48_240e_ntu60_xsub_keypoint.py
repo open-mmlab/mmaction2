@@ -97,14 +97,20 @@ val_dataloader = dict(
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
-        type=dataset_type, ann_file=ann_file_val, pipeline=val_pipeline, test_mode=True))
+        type=dataset_type,
+        ann_file=ann_file_val,
+        pipeline=val_pipeline,
+        test_mode=True))
 test_dataloader = dict(
     batch_size=1,
     num_workers=2,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
-        type=dataset_type, ann_file=ann_file_val, pipeline=test_pipeline, test_mode=True))
+        type=dataset_type,
+        ann_file=ann_file_val,
+        pipeline=test_pipeline,
+        test_mode=True))
 
 val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
@@ -114,15 +120,11 @@ val_cfg = dict(interval=10)
 test_cfg = dict()
 
 param_scheduler = [
-    dict(
-        type='CosineAnnealingLR',
-        eta_min=0,
-        T_max=240,
-        by_epoch=False)
+    dict(type='CosineAnnealingLR', eta_min=0, T_max=240, by_epoch=False)
 ]
 
 optimizer = dict(
-    type='SGD', lr=0.2, momentum=0.9, weight_decay=0.0003)  # this lr is used for 8 gpus
+    type='SGD', lr=0.2, momentum=0.9,
+    weight_decay=0.0003)  # this lr is used for 8 gpus
 
-default_hooks = dict(
-    optimizer=dict(grad_clip=dict(max_norm=40, norm_type=2)))
+default_hooks = dict(optimizer=dict(grad_clip=dict(max_norm=40, norm_type=2)))

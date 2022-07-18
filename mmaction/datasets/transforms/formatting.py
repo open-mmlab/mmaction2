@@ -1,6 +1,4 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from collections.abc import Sequence
-
 import numpy as np
 from mmcv.transforms import BaseTransform, to_tensor
 from mmengine.data import InstanceData, LabelData
@@ -17,8 +15,8 @@ class PackActionInputs(BaseTransform):
         'gt_labels': 'labels',
     }
 
-    def __init__(self, meta_keys=('img_shape', 'img_key',
-                                  'video_id', 'timestamp')):
+    def __init__(self,
+                 meta_keys=('img_shape', 'img_key', 'video_id', 'timestamp')):
         self.meta_keys = meta_keys
 
     def transform(self, results):
@@ -43,18 +41,21 @@ class PackActionInputs(BaseTransform):
             packed_results['inputs'] = to_tensor(keypoint)
         else:
             raise ValueError(
-                'Cannot get "img" or "keypoint" in the input dict of `PackActionInputs`.')
+                'Cannot get "img" or "keypoint" in the input dict of '
+                '`PackActionInputs`.')
 
         data_sample = ActionDataSample()
 
         if 'gt_bboxes' in results:
             instance_data = InstanceData()
             for key in self.mapping_table.keys():
-                instance_data[self.mapping_table[key]] = to_tensor(results[key])
+                instance_data[self.mapping_table[key]] = to_tensor(
+                    results[key])
             data_sample.gt_instances = instance_data
 
             if 'proposals' in results:
-                data_sample.proposals = InstanceData(bboxes=to_tensor(results['proposals']))
+                data_sample.proposals = InstanceData(
+                    bboxes=to_tensor(results['proposals']))
         else:
             label_data = LabelData()
             label_data.item = to_tensor(results['label'])
@@ -348,6 +349,6 @@ class FormatGCNInput(BaseTransform):
 
     def __repr__(self):
         repr_str = (f'{self.__class__.__name__}('
-                    f'input_format={self.input_format}, ' 
+                    f'input_format={self.input_format}, '
                     f'num_person={self.num_person})')
         return repr_str

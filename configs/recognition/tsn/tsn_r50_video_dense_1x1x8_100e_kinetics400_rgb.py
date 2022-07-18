@@ -97,4 +97,3 @@ test_evaluator = val_evaluator
 
 val_cfg = dict(interval=1)
 test_cfg = dict()
-

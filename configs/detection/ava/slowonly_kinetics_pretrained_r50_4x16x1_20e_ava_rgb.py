@@ -1,6 +1,5 @@
 _base_ = [
-    '../../_base_/default_runtime.py',
-    '../_base_/models/slowonly_r50.py'
+    '../../_base_/default_runtime.py', '../_base_/models/slowonly_r50.py'
 ]
 
 dataset_type = 'AVADataset'
@@ -75,20 +74,12 @@ val_evaluator = dict(
 test_evaluator = val_evaluator
 
 train_cfg = dict(
-    type='EpochBasedTrainLoop',
-    max_epochs=20,
-    val_begin=1,
-    val_interval=1)
+    type='EpochBasedTrainLoop', max_epochs=20, val_begin=1, val_interval=1)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
 param_scheduler = [
-    dict(
-        type='LinearLR',
-        start_factor=0.1,
-        by_epoch=True,
-        begin=0,
-        end=5),
+    dict(type='LinearLR', start_factor=0.1, by_epoch=True, begin=0, end=5),
     dict(
         type='MultiStepLR',
         begin=0,
@@ -99,7 +90,7 @@ param_scheduler = [
 ]
 
 optim_wrapper = dict(
-    optimizer = dict(type='SGD', lr=0.2, momentum=0.9, weight_decay=0.00001),
+    optimizer=dict(type='SGD', lr=0.2, momentum=0.9, weight_decay=0.00001),
     clip_grad=dict(max_norm=40, norm_type=2))
 
 load_from = ('https://download.openmmlab.com/mmaction/recognition/slowonly/'

@@ -1,6 +1,5 @@
 _base_ = [
-    '../../_base_/models/tsm_r50.py',
-    '../../_base_/schedules/sgd_tsm_50e.py',
+    '../../_base_/models/tsm_r50.py', '../../_base_/schedules/sgd_tsm_50e.py',
     '../../_base_/default_runtime.py'
 ]
 
@@ -103,4 +102,3 @@ optim_wrapper = dict(optimizer=dict(weight_decay=0.0005))
 
 val_cfg = dict(interval=2)
 test_cfg = dict()
-

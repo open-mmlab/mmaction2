@@ -100,5 +100,4 @@ test_cfg = dict()
 
 optimizer = dict(weight_decay=0.0005)
 
-default_hooks = dict(
-    optimizer=dict(grad_clip=dict(max_norm=20, norm_type=2)))
+default_hooks = dict(optimizer=dict(grad_clip=dict(max_norm=20, norm_type=2)))

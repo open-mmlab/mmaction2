@@ -85,4 +85,5 @@ optimizer = dict(
     weight_decay=0.0001)  # this lr is used for 8 gpus
 
 optim_wrapper = dict(
-    optimizer=dict(type='SGD', lr=0.075, momentum=0.9, weight_decay=1e-4))  # this lr is used for 8 gpus
+    optimizer=dict(type='SGD', lr=0.075, momentum=0.9,
+                   weight_decay=1e-4))  # this lr is used for 8 gpus

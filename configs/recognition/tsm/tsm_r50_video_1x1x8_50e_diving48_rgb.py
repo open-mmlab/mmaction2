@@ -103,5 +103,4 @@ test_evaluator = val_evaluator
 val_cfg = dict(interval=1)
 test_cfg = dict()
 
-default_hooks = dict(
-    optimizer=dict(grad_clip=dict(max_norm=20, norm_type=2)))
+default_hooks = dict(optimizer=dict(grad_clip=dict(max_norm=20, norm_type=2)))

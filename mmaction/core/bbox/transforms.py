@@ -2,7 +2,11 @@
 import numpy as np
 from torch import Tensor
 
-def bbox2result(bboxes: Tensor, labels: Tensor, num_classes: int, thr: float = 0.01) -> list:
+
+def bbox2result(bboxes: Tensor,
+                labels: Tensor,
+                num_classes: int,
+                thr: float = 0.01) -> list:
     """Convert detection results to a list of numpy arrays.
 
     This identifies single-label classification (as opposed to multi-label)

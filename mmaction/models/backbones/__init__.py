@@ -19,6 +19,6 @@ from .x3d import X3D
 __all__ = [
     'C3D', 'ResNet', 'ResNet3d', 'ResNetTSM', 'ResNet2Plus1d',
     'ResNet3dSlowFast', 'ResNet3dSlowOnly', 'ResNet3dCSN', 'ResNetTIN', 'X3D',
-    'ResNet3dLayer', 'MobileNetV2TSM', 'MobileNetV2', 'TANet',
-    'TimeSformer', 'STGCN', 'AGCN'
+    'ResNet3dLayer', 'MobileNetV2TSM', 'MobileNetV2', 'TANet', 'TimeSformer',
+    'STGCN', 'AGCN'
 ]

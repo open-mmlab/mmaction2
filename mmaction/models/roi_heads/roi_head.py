@@ -3,13 +3,13 @@ from typing import List, Tuple, Union
 
 from torch import Tensor
 
-from mmaction.core.utils import (InstanceList, SampleList, ConfigType,
+from mmaction.core.utils import (ConfigType, InstanceList, SampleList,
                                  SamplingResultList)
 
 try:
+    from mmdet.core import bbox2roi
     from mmdet.models.roi_heads import StandardRoIHead
     from mmdet.registry import MODELS as MMDET_MODELS
-    from mmdet.core import bbox2roi, SamplingResult
     mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
     mmdet_imported = False
@@ -19,13 +19,11 @@ if mmdet_imported:
     @MMDET_MODELS.register_module()
     class AVARoIHead(StandardRoIHead):
 
-        def loss(self,
-                 x: Union[Tensor, Tuple[Tensor]],
-                 rpn_results_list: InstanceList,
-                 batch_data_samples: SampleList,
-                 **kwargs) -> dict:
-            """Perform forward propagation and loss calculation of the detection
-            roi on the features of the upstream network.
+        def loss(self, x: Union[Tensor,
+                                Tuple[Tensor]], rpn_results_list: InstanceList,
+                 batch_data_samples: SampleList, **kwargs) -> dict:
+            """Perform forward propagation and loss calculation of the
+            detection roi on the features of the upstream network.
 
             Args:
                 x (Tensor or Tuple[Tensor]): The image features extracted by
@@ -54,9 +52,7 @@ if mmdet_imported:
                 assign_result = self.bbox_assigner.assign(
                     rpn_results, batch_gt_instances[i], None)
                 sampling_result = self.bbox_sampler.sample(
-                    assign_result,
-                    rpn_results,
-                    batch_gt_instances[i])
+                    assign_result, rpn_results, batch_gt_instances[i])
                 sampling_results.append(sampling_result)
 
             # LFB needs meta_info: 'img_key'
@@ -71,11 +67,8 @@ if mmdet_imported:
 
             return losses
 
-        def _bbox_forward(self,
-                          x: Union[Tensor, Tuple[Tensor]],
-                          rois: Tensor,
-                          batch_img_metas: List[dict],
-                          **kwargs) -> dict:
+        def _bbox_forward(self, x: Union[Tensor, Tuple[Tensor]], rois: Tensor,
+                          batch_img_metas: List[dict], **kwargs) -> dict:
             """Box head forward function used in both training and testing.
 
             Args:
@@ -106,18 +99,16 @@ if mmdet_imported:
             bbox_results = dict(cls_score=cls_score, bbox_feats=bbox_feats)
             return bbox_results
 
-        def bbox_loss(self,
-                      x: Union[Tensor, Tuple[Tensor]],
+        def bbox_loss(self, x: Union[Tensor, Tuple[Tensor]],
                       sampling_results: SamplingResultList,
-                      batch_img_metas: List[dict],
-                      **kwargs) -> dict:
-            """Perform forward propagation and loss calculation of the bbox head on
-            the features of the upstream network.
+                      batch_img_metas: List[dict], **kwargs) -> dict:
+            """Perform forward propagation and loss calculation of the bbox
+            head on the features of the upstream network.
 
             Args:
                 x (Tensor or Tuple[Tensor]): The image features extracted by
                     the upstream network.
-                sampling_results (List["obj:`SamplingResult`]): Sampling results.
+                sampling_results (List[SamplingResult]): Sampling results.
                 batch_img_metas (List[dict]): List of image information.
 
             Returns:
@@ -140,13 +131,11 @@ if mmdet_imported:
             bbox_results.update(loss_bbox=bbox_loss_and_target['loss_bbox'])
             return bbox_results
 
-        def predict(self,
-                    x: Union[Tensor, Tuple[Tensor]],
+        def predict(self, x: Union[Tensor, Tuple[Tensor]],
                     rpn_results_list: InstanceList,
-                    batch_data_samples: SampleList,
-                    **kwargs) -> InstanceList:
-            """Perform forward propagation of the roi head and predict detection
-            results on the features of the upstream network.
+                    batch_data_samples: SampleList, **kwargs) -> InstanceList:
+            """Perform forward propagation of the roi head and predict
+            detection results on the features of the upstream network.
 
             Args:
                 x (Tensor or Tuple[Tensor]): The image features extracted by
@@ -185,13 +174,11 @@ if mmdet_imported:
 
             return results_list
 
-        def predict_bbox(self,
-                         x: Tuple[Tensor],
-                         batch_img_metas: List[dict],
+        def predict_bbox(self, x: Tuple[Tensor], batch_img_metas: List[dict],
                          rpn_results_list: InstanceList,
                          rcnn_test_cfg: ConfigType) -> InstanceList:
-            """Perform forward propagation of the bbox head and predict detection
-            results on the features of the upstream network.
+            """Perform forward propagation of the bbox head and predict
+            detection results on the features of the upstream network.
 
             Args:
                 x (tuple[Tensor]): Feature maps of all scale level.
@@ -202,8 +189,8 @@ if mmdet_imported:
 
             Returns:
                 list[:obj:`InstanceData`]: Detection results of each image
-                after the post process. Each item usually contains following keys.
-
+                after the post process. Each item usually contains following
+                keys:
                     - scores (Tensor): Classification scores, has a shape
                       (num_instance, )
                     - labels (Tensor): Labels of bboxes, has a shape

@@ -1,6 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from numbers import Number
-from typing import Sequence, Tuple, Union
+from typing import Sequence, Union
 
 import torch
 from mmengine.model import BaseDataPreprocessor, stack_batch
@@ -44,7 +43,8 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
 
         if mean is not None:
             assert std is not None, 'To enable the normalization in ' \
-                                    'preprocessing, please specify both `mean` and `std`.'
+                                    'preprocessing, please specify both ' \
+                                    '`mean` and `std`.'
             # Enable the normalization in preprocessing.
             self._enable_normalize = True
             if self.format_shape == 'NCHW':
@@ -68,9 +68,7 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
         else:
             self.blending = None
 
-    def forward(self,
-                data: Sequence[dict],
-                training: bool = False) -> tuple:
+    def forward(self, data: Sequence[dict], training: bool = False) -> tuple:
         """Perform normalization, padding, bgr2rgb conversion and batch
         augmentation based on ``BaseDataPreprocessor``.
 

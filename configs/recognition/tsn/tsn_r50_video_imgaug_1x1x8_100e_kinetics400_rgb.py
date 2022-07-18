@@ -113,13 +113,13 @@ optimizer = dict(
     weight_decay=0.0001)  # this lr is used for 8 gpus
 
 default_hooks = dict(
-    optimizer=dict(type="OptimizerHook", grad_clip=dict(max_norm=40, norm_type=2)),
+    optimizer=dict(
+        type='OptimizerHook', grad_clip=dict(max_norm=40, norm_type=2)),
     timer=dict(type='IterTimerHook'),
     logger=dict(type='LoggerHook', interval=20),
     param_scheduler=dict(type='ParamSchedulerHook'),
     checkpoint=dict(type='CheckpointHook', interval=5),
     sampler_seed=dict(type='DistSamplerSeedHook'))
-    
 
 # learning policy
 param_scheduler = [
@@ -140,9 +140,7 @@ val_cfg = dict(interval=5)
 test_cfg = dict()
 
 # runtime settings
-env_cfg = dict(
-    dist_cfg=dict(backend='nccl')
-)
+env_cfg = dict(dist_cfg=dict(backend='nccl'))
 
 log_level = 'INFO'
 

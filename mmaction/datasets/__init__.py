@@ -2,10 +2,12 @@
 from .ava_dataset import AVADataset
 from .pose_dataset import PoseDataset
 from .rawframe_dataset import RawframeDataset
+from .transforms import *  # noqa: F401, F403
 from .video_dataset import VideoDataset
-from .transforms import *
 
 __all__ = [
-    'VideoDataset', 'RawframeDataset', 'AVADataset',
+    'VideoDataset',
+    'RawframeDataset',
+    'AVADataset',
     'PoseDataset',
 ]

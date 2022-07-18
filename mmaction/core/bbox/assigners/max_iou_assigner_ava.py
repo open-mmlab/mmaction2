@@ -58,7 +58,7 @@ if mmdet_imported:
             if num_gts == 0 or num_bboxes == 0:
                 # No ground truth or boxes, return empty assignment
                 max_overlaps = overlaps.new_zeros((num_bboxes, ))
-                assigned_labels = overlaps.new_full((num_bboxes,),
+                assigned_labels = overlaps.new_full((num_bboxes, ),
                                                     -1,
                                                     dtype=torch.long)
                 if num_gts == 0:

@@ -2,7 +2,7 @@
 import json
 
 import numpy as np
-from mmengine.logging import print_log, MMLogger
+from mmengine.logging import MMLogger, print_log
 
 from .accuracy import interpolated_precision_recall, pairwise_temporal_iou
 

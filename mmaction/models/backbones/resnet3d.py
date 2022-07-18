@@ -21,8 +21,10 @@ class BasicBlock3d(nn.Module):
     Args:
         inplanes (int): Number of channels for the input in first conv3d layer.
         planes (int): Number of channels produced by some norm/conv3d layers.
-        spatial_stride (int): Spatial stride in the conv3d layer. Defaults to 1.
-        temporal_stride (int): Temporal stride in the conv3d layer. Defaults to 1.
+        spatial_stride (int): Spatial stride in the conv3d layer.
+            Defaults to 1.
+        temporal_stride (int): Temporal stride in the conv3d layer.
+            Defaults to 1.
         dilation (int): Spacing between kernel elements. Defaults to 1.
         downsample (nn.Module or None): Downsample layer. Defaults to None.
         style (str): ``pytorch`` or ``caffe``. If set to ``pytorch``, the
@@ -161,8 +163,10 @@ class Bottleneck3d(nn.Module):
     Args:
         inplanes (int): Number of channels for the input in first conv3d layer.
         planes (int): Number of channels produced by some norm/conv3d layers.
-        spatial_stride (int): Spatial stride in the conv3d layer. Defaults to 1.
-        temporal_stride (int): Temporal stride in the conv3d layer. Defaults to 1.
+        spatial_stride (int): Spatial stride in the conv3d layer.
+            Defaults to 1.
+        temporal_stride (int): Temporal stride in the conv3d layer.
+            Defaults to 1.
         dilation (int): Spacing between kernel elements. Defaults to 1.
         downsample (nn.Module, optional): Downsample layer. Defaults to None.
         style (str): ``pytorch`` or ``caffe``. If set to ``pytorch``, the
@@ -326,15 +330,18 @@ class ResNet3d(nn.Module):
     """ResNet 3d backbone.
 
     Args:
-        depth (int): Depth of resnet, from {``18``, ``34``, ``50``, ``101``, ``152``}.
+        depth (int): Depth of resnet, from
+            {``18``, ``34``, ``50``, ``101``, ``152``}.
         pretrained (str, optional): Name of pretrained model. Defaults to None.
-        stage_blocks (tuple, optional): Set number of stages for each res layer.
-            Defaults to None.
+        stage_blocks (tuple, optional): Set number of stages for each res
+            layer. Defaults to None.
         pretrained2d (bool): Whether to load pretrained 2D model.
             Defaults to True.
         in_channels (int): Channel num of input features. Defaults to 3.
-        base_channels (int): Channel num of stem output features. Defaults to 64.
-        out_indices (Sequence[int]): Indices of output feature. Defaults to ```(3, )``.
+        base_channels (int): Channel num of stem output features.
+            Defaults to 64.
+        out_indices (Sequence[int]): Indices of output feature.
+            Defaults to ```(3, )``.
         num_stages (int): Resnet stages. Defaults to 4.
         spatial_strides (Sequence[int]):
             Spatial strides of residual blocks of each stage.
@@ -355,9 +362,9 @@ class ResNet3d(nn.Module):
         pool1_stride_t (int): Temporal stride of the first pooling layer.
             Defaults to 1.
         with_pool2 (bool): Whether to use pool2. Defaults to True.
-        style (str): ``pytorch`` or ``caffe``. If set to ``pytorch``, the stride-two
-            layer is the 3x3 conv layer, otherwise the stride-two layer is
-            the first 1x1 conv layer. Defaults to ``pytorch``.
+        style (str): ``pytorch`` or ``caffe``. If set to ``pytorch``, the
+            stride-two layer is the 3x3 conv layer, otherwise the stride-two
+            layer is the first 1x1 conv layer. Defaults to ``pytorch``.
         frozen_stages (int): Stages to be frozen (all param fixed). -1 means
             not freezing any parameters. Defaults to -1.
         inflate (Sequence[int]): Inflate Dims of each block.
@@ -377,7 +384,8 @@ class ResNet3d(nn.Module):
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
             memory while slowing down the training speed. Defaults to False.
         non_local (Sequence[int]): Determine whether to apply non-local module
-            in the corresponding block of each stages. Defaults to ``(0, 0, 0, 0)``.
+            in the corresponding block of each stages.
+            Defaults to ``(0, 0, 0, 0)``.
         non_local_cfg (dict or ConfigDict): Config for non-local module.
             Defaults to ``dict()``.
         zero_init_residual (bool):
@@ -878,18 +886,22 @@ class ResNet3dLayer(nn.Module):
     """ResNet 3d Layer.
 
     Args:
-        depth (int): Depth of resnet, from {``18``, ``34``, ``50``, ``101``, ``152``}.
+        depth (int): Depth of resnet,
+            from {``18``, ``34``, ``50``, ``101``, ``152``}.
         pretrained (str, optional): Name of pretrained model. Defaults to None.
         pretrained2d (bool): Whether to load pretrained 2D model.
             Defaults to True.
         stage (int): The index of Resnet stage. Defaults to 3.
-        base_channels (int): Channel num of stem output features. Defaults to 64.
-        spatial_stride (int): The 1st res block's spatial stride. Defaults to 2.
-        temporal_stride (int): The 1st res block's temporal stride. Defaults to 1.
+        base_channels (int): Channel num of stem output features.
+            Defaults to 64.
+        spatial_stride (int): The 1st res block's spatial stride.
+            Defaults to 2.
+        temporal_stride (int): The 1st res block's temporal stride.
+            Defaults to 1.
         dilation (int): The dilation. Defaults to 1.
-        style (str): ``pytorch`` or ``caffe``. If set to ``pytorch``, the stride-two
-            layer is the 3x3 conv layer, otherwise the stride-two layer is
-            the first 1x1 conv layer. Defaults to ``pytorch``.
+        style (str): ``pytorch`` or ``caffe``. If set to ``pytorch``, the
+            stride-two layer is the 3x3 conv layer, otherwise the stride-two
+            layer is the first 1x1 conv layer. Defaults to ``pytorch``.
         all_frozen (bool): Frozen all modules in the layer. Defaults to False.
         inflate (int): Inflate dims of each block. Defaults to 1.
         inflate_style (str): ``3x1x1`` or ``3x3x3``. which determines the
@@ -1002,7 +1014,7 @@ class ResNet3dLayer(nn.Module):
             for param in layer.parameters():
                 param.requires_grad = False
 
-    def init_weights(self, pretrained: Optional[str]=None) -> None:
+    def init_weights(self, pretrained: Optional[str] = None) -> None:
         self._init_weights(self, pretrained)
 
     def forward(self, x: Tensor) -> Tensor:

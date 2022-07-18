@@ -140,6 +140,5 @@ optimizer = dict(
     type='SGD', lr=0.01, momentum=0.9,
     weight_decay=0.0003)  # this lr is used for 8 gpus
 
-default_hooks = dict(
-    optimizer=dict(grad_clip=dict(max_norm=40, norm_type=2)))
+default_hooks = dict(optimizer=dict(grad_clip=dict(max_norm=40, norm_type=2)))
 load_from = 'https://download.openmmlab.com/mmaction/skeleton/posec3d/k400_posec3d-041f49c6.pth'  # noqa: E501

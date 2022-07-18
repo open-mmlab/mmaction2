@@ -12,7 +12,7 @@ ann_file_test = 'data/kinetics400/kinetics400_val_list_videos.txt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
-        dict(type='DecordInit'),
+    dict(type='DecordInit'),
     dict(type='SampleFrames', clip_len=8, frame_interval=8, num_clips=1),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
@@ -24,7 +24,7 @@ train_pipeline = [
     dict(type='PackActionInputs')
 ]
 val_pipeline = [
-        dict(type='DecordInit'),
+    dict(type='DecordInit'),
     dict(
         type='SampleFrames',
         clip_len=8,
@@ -39,7 +39,7 @@ val_pipeline = [
     dict(type='PackActionInputs')
 ]
 test_pipeline = [
-        dict(type='DecordInit'),
+    dict(type='DecordInit'),
     dict(
         type='SampleFrames',
         clip_len=8,
@@ -98,12 +98,7 @@ optimizer = dict(
 
 # learning policy
 param_scheduler = [
-    dict(
-        type='LinearLR',
-        start_factor=0.1,
-        by_epoch=True,
-        begin=0,
-        end=10),
+    dict(type='LinearLR', start_factor=0.1, by_epoch=True, begin=0, end=10),
     dict(
         type='MultiStepLR',
         begin=0,
@@ -112,7 +107,6 @@ param_scheduler = [
         milestones=[90, 130],
         gamma=0.1)
 ]
-
 
 train_cfg = dict(by_epoch=True, max_epochs=150)
 
