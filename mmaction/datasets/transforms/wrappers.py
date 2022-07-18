@@ -1,9 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import random
+
 import mmcv
 import numpy as np
-from mmengine.utils import digit_version
 from mmcv.transforms import BaseTransform, to_tensor
+from mmengine.utils import digit_version
 
 from mmaction.registry import TRANSFORMS
 
@@ -306,7 +307,7 @@ class ImgAug(BaseTransform):
 
     def transform(self, results):
         assert results['modality'] == 'RGB', 'Imgaug only support RGB images.'
-        in_type = results['imgs'][0].dtype.op
+        in_type = results['imgs'][0].dtype
 
         cur_aug = self.aug.to_deterministic()
 
@@ -315,7 +316,7 @@ class ImgAug(BaseTransform):
         ]
         img_h, img_w, _ = results['imgs'][0].shape
 
-        out_type = results['imgs'][0].dtype.op
+        out_type = results['imgs'][0].dtype
         assert in_type == out_type, \
             ('Imgaug input dtype and output dtype are not the same. ',
              f'Convert from {in_type} to {out_type}')
