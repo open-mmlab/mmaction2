@@ -1,22 +1,23 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from typing import List, Optional, Tuple, Union
 
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch import Tensor
-import numpy as np
 from mmengine.config import ConfigDict
 from mmengine.data import InstanceData
+from torch import Tensor
 
 from mmaction.core.bbox import bbox_target
-from mmaction.core.utils import InstanceList, SamplingResultList
+from mmaction.core.utils import InstanceList
 
 try:
     from mmdet.core.utils import SamplingResultList
     from mmdet.registry import MODELS as MMDET_MODELS
     mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
+    from mmaction.core.utils import SamplingResultList
     mmdet_imported = False
 
 # Resolve cross-entropy function to support multi-target in Torch < 1.10
@@ -38,12 +39,13 @@ if pv.parse(torch.__version__) < pv.parse('1.10'):
 else:
     cross_entropy_loss = F.cross_entropy
 
+
 class BBoxHeadAVA(nn.Module):
     """Simplest RoI head, with only one fc layer for classification.
 
     Args:
-        temporal_pool_type (str): The temporal pool type. Choices are ``avg`` or
-            ``max``. Defaults to ``avg``.
+        temporal_pool_type (str): The temporal pool type. Choices are ``avg``
+            or ``max``. Defaults to ``avg``.
         spatial_pool_type (str): The spatial pool type. Choices are ``avg`` or
             ``max``. Defaults to ``max``.
         in_channels (int): The number of input channels. Defaults to 2048.
@@ -54,13 +56,14 @@ class BBoxHeadAVA(nn.Module):
             When ``alpha == 1`` and ``gamma == 0``, Focal Loss degenerates to
             BCELossWithLogits. Defaults to 0.
         num_classes (int): The number of classes. Defaults to 81.
-        dropout_ratio (float): A float in ``[0, 1]``, indicates the dropout_ratio.
-            Defaults to 0.
+        dropout_ratio (float): A float in ``[0, 1]``, indicates the
+            dropout_ratio. Defaults to 0.
         dropout_before_pool (bool): Dropout Feature before spatial temporal
             pooling. Defaults to True.
         topk (int or Tuple[int]): Parameter for evaluating Top-K accuracy.
             Defaults to ``(3, 5)``.
-        multilabel (bool): Whether used for a multilabel task. Defaults to True.
+        multilabel (bool): Whether used for a multilabel task.
+            Defaults to True.
     """
 
     def __init__(
@@ -73,7 +76,7 @@ class BBoxHeadAVA(nn.Module):
             num_classes: int = 81,  # First class reserved (BBox as pos/neg)
             dropout_ratio: float = 0,
             dropout_before_pool: bool = True,
-            topk: Union[int, Tuple[int]]=(3, 5),
+            topk: Union[int, Tuple[int]] = (3, 5),
             multilabel: bool = True) -> None:
         super(BBoxHeadAVA, self).__init__()
         assert temporal_pool_type in ['max', 'avg']
@@ -123,10 +126,12 @@ class BBoxHeadAVA(nn.Module):
         self.fc_cls = nn.Linear(in_channels, num_classes)
 
     def init_weights(self) -> None:
+        """Initialize the classification head."""
         nn.init.normal_(self.fc_cls.weight, 0, 0.01)
         nn.init.constant_(self.fc_cls.bias, 0)
 
     def forward(self, x: Tensor) -> Tensor:
+        """Computes the classification logits given ROI features."""
         if self.dropout_before_pool and self.dropout_ratio > 0:
             x = self.dropout(x)
 
@@ -146,8 +151,8 @@ class BBoxHeadAVA(nn.Module):
         pos_proposals = [res.pos_priors for res in sampling_results]
         neg_proposals = [res.neg_priors for res in sampling_results]
         pos_gt_labels = [res.pos_gt_labels for res in sampling_results]
-        cls_targets = bbox_target(pos_proposals, neg_proposals,
-                                      pos_gt_labels, rcnn_train_cfg)
+        cls_targets = bbox_target(pos_proposals, neg_proposals, pos_gt_labels,
+                                  rcnn_train_cfg)
         return cls_targets
 
     @staticmethod
@@ -178,7 +183,10 @@ class BBoxHeadAVA(nn.Module):
             topk_matrix[i, topk_labels[i]] = 1
         return topk_matrix
 
-    def topk_accuracy(self, pred: Tensor, target: Tensor, thr: float = 0.5) -> tuple:
+    def topk_accuracy(self,
+                      pred: Tensor,
+                      target: Tensor,
+                      thr: float = 0.5) -> tuple:
         """Computes the Top-K Accuracies for both single and multi-label
         scenarios."""
         # Define Target vector:
@@ -208,20 +216,18 @@ class BBoxHeadAVA(nn.Module):
         # Return all
         return recall_thr, prec_thr, recalls_k, precs_k
 
-    def loss_and_target(self,
-                        cls_score: Tensor,
-                        rois: Tensor,
+    def loss_and_target(self, cls_score: Tensor, rois: Tensor,
                         sampling_results: SamplingResultList,
-                        rcnn_train_cfg: ConfigDict,
-                        **kwargs) -> dict:
+                        rcnn_train_cfg: ConfigDict, **kwargs) -> dict:
         """Calculate the loss based on the features extracted by the bbox head.
 
         Args:
             cls_score (Tensor): Classification prediction
                 results of all class, has shape
                 (batch_size * num_proposals_single_image, num_classes)
-            rois (Tensor): RoIs with the shape (batch_size * num_proposals_single_image, 5)
-                where the first column indicates batch id of each RoI.
+            rois (Tensor): RoIs with the shape
+                (batch_size * num_proposals_single_image, 5) where the first
+                column indicates batch id of each RoI.
             sampling_results (List[obj:SamplingResult]): Assign results of
                 all images in a batch after sampling.
             rcnn_train_cfg (obj:ConfigDict): `train_cfg` of RCNN.
@@ -398,6 +404,7 @@ class BBoxHeadAVA(nn.Module):
         results.scores = scores
 
         return results
+
 
 if mmdet_imported:
     MMDET_MODELS.register_module()(BBoxHeadAVA)

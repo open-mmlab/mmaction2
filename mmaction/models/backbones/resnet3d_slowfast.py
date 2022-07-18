@@ -1,16 +1,16 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import warnings
-from typing import OrderedDict, List, Optional, Union, Sequence
+from typing import List, Optional, OrderedDict, Sequence, Union
 
 import torch
 import torch.nn as nn
-from torch import Tensor
 from mmcv.cnn import ConvModule, kaiming_init
-from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
 from mmengine.logging import MMLogger, print_log
+from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
+from torch import Tensor
 
-from mmaction.registry import MODELS
 from mmaction.core import ConfigType, OptConfigType
+from mmaction.registry import MODELS
 from .resnet3d import ResNet3d
 
 
@@ -263,8 +263,8 @@ class ResNet3dPathway(ResNet3d):
             logger.info(f'These parameters in the 2d checkpoint are not loaded'
                         f': {remaining_names}')
 
-    def _inflate_conv_params(self, conv3d: nn.Module, state_dict_2d: OrderedDict,
-                             module_name_2d: str,
+    def _inflate_conv_params(self, conv3d: nn.Module,
+                             state_dict_2d: OrderedDict, module_name_2d: str,
                              inflated_param_names: List[str]) -> None:
         """Inflate a conv module from 2d to 3d.
 
@@ -402,9 +402,10 @@ class ResNet3dSlowFast(nn.Module):
             by ``channel_ratio``, corresponding to :math:`\\beta` in the paper.
             Defaults to 8.
         slow_pathway (dict or ConfigDict): Configuration of slow branch, should
-            contain necessary arguments for building the specific type of pathway and:
-            type (str): type of backbone the pathway bases on.
-            lateral (bool): determine whether to build lateral connection
+            contain necessary arguments for building the specific type of
+            pathway and:
+                type (str): type of backbone the pathway bases on.
+                lateral (bool): determine whether to build lateral connection
             for the pathway. Defaults to
 
             .. code-block:: Python
@@ -424,30 +425,32 @@ class ResNet3dSlowFast(nn.Module):
                 conv1_kernel=(5, 7, 7), conv1_stride_t=1, pool1_stride_t=1)
     """
 
-    def __init__(self,
-                 pretrained,
-                 resample_rate: int = 8,
-                 speed_ratio: int = 8,
-                 channel_ratio: int = 8,
-                 slow_pathway: ConfigType = dict(
-                     type='resnet3d',
-                     depth=50,
-                     pretrained=None,
-                     lateral=True,
-                     conv1_kernel=(1, 7, 7),
-                     dilations=(1, 1, 1, 1),
-                     conv1_stride_t=1,
-                     pool1_stride_t=1,
-                     inflate=(0, 0, 1, 1)),
-                 fast_pathway: ConfigType = dict(
-                     type='resnet3d',
-                     depth=50,
-                     pretrained=None,
-                     lateral=False,
-                     base_channels=8,
-                     conv1_kernel=(5, 7, 7),
-                     conv1_stride_t=1,
-                     pool1_stride_t=1)) -> None:
+    def __init__(
+        self,
+        pretrained,
+        resample_rate: int = 8,
+        speed_ratio: int = 8,
+        channel_ratio: int = 8,
+        slow_pathway: ConfigType = dict(
+            type='resnet3d',
+            depth=50,
+            pretrained=None,
+            lateral=True,
+            conv1_kernel=(1, 7, 7),
+            dilations=(1, 1, 1, 1),
+            conv1_stride_t=1,
+            pool1_stride_t=1,
+            inflate=(0, 0, 1, 1)),
+        fast_pathway: ConfigType = dict(
+            type='resnet3d',
+            depth=50,
+            pretrained=None,
+            lateral=False,
+            base_channels=8,
+            conv1_kernel=(5, 7, 7),
+            conv1_stride_t=1,
+            pool1_stride_t=1)
+    ) -> None:
         super().__init__()
         self.pretrained = pretrained
         self.resample_rate = resample_rate

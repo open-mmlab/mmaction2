@@ -1,6 +1,5 @@
 _base_ = [
-    '../../_base_/default_runtime.py',
-    '../_base_/models/slowonly_r50.py'
+    '../../_base_/default_runtime.py', '../_base_/models/slowonly_r50.py'
 ]
 
 dataset_type = 'AVADataset'
@@ -84,12 +83,7 @@ val_cfg = dict(interval=1)
 test_cfg = dict()
 
 param_scheduler = [
-    dict(
-        type='LinearLR',
-        start_factor=0.1,
-        by_epoch=True,
-        begin=0,
-        end=5),
+    dict(type='LinearLR', start_factor=0.1, by_epoch=True, begin=0, end=5),
     dict(
         type='MultiStepLR',
         begin=0,
@@ -102,8 +96,7 @@ param_scheduler = [
 optimizer = dict(type='SGD', lr=0.2, momentum=0.9, weight_decay=0.00001)
 # this lr is used for 8 gpus
 
-default_hooks = dict(
-    optimizer=dict(grad_clip=dict(max_norm=40, norm_type=2)))
+default_hooks = dict(optimizer=dict(grad_clip=dict(max_norm=40, norm_type=2)))
 
 load_from = ('https://download.openmmlab.com/mmaction/recognition/slowonly/'
              'omni/'

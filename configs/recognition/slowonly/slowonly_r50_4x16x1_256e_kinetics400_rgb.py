@@ -116,4 +116,3 @@ train_cfg = dict(by_epoch=True, max_epochs=256)
 default_hooks = dict(
     optimizer=dict(grad_clip=dict(max_norm=40, norm_type=2)),
     checkpoint=dict(interval=4))
-

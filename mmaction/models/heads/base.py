@@ -1,18 +1,18 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from abc import ABCMeta, abstractmethod
-from typing import List, Tuple, Dict, Union
+from typing import Tuple, Union
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch import Tensor
 from mmengine.data import LabelData
 from mmengine.model import BaseModule
+from torch import Tensor
 
+from mmaction.core.utils import (ConfigType, LabelList, OptConfigType,
+                                 OptMultiConfig, SampleList)
 from mmaction.evaluation import top_k_accuracy
 from mmaction.registry import MODELS
-from mmaction.core.utils import (ConfigType, OptConfigType, OptMultiConfig,
-                                 LabelList, SampleList)
 
 
 class AvgConsensus(nn.Module):
@@ -91,12 +91,10 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
         """Defines the computation performed at every call."""
         raise NotImplementedError
 
-    def loss(self,
-             feats: Union[Tensor, Tuple[Tensor]],
-             batch_data_samples: SampleList,
-             **kwargs) -> dict:
-        """Perform forward propagation of head and loss calculation
-        on the features of the upstream network.
+    def loss(self, feats: Union[Tensor, Tuple[Tensor]],
+             batch_data_samples: SampleList, **kwargs) -> dict:
+        """Perform forward propagation of head and loss calculation on the
+        features of the upstream network.
 
         Args:
             feats (Tensor or Tuple[Tensor]): Features from upstream network.
@@ -109,8 +107,7 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
         cls_scores = self(feats, **kwargs)
         return self.loss_by_feat(cls_scores, batch_data_samples)
 
-    def loss_by_feat(self,
-                     cls_scores: Union[Tensor, Tuple[Tensor]],
+    def loss_by_feat(self, cls_scores: Union[Tensor, Tuple[Tensor]],
                      batch_data_samples: SampleList) -> dict:
         """Calculate the loss based on the features extracted by the head.
 
@@ -157,12 +154,10 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
             losses['loss_cls'] = loss_cls
         return losses
 
-    def predict(self,
-                feats: Union[Tensor, Tuple[Tensor]],
-                batch_data_samples: SampleList,
-                **kwargs) -> LabelList:
-        """Perform forward propagation of head and predict recognition
-        results on the features of the upstream network.
+    def predict(self, feats: Union[Tensor, Tuple[Tensor]],
+                batch_data_samples: SampleList, **kwargs) -> LabelList:
+        """Perform forward propagation of head and predict recognition results
+        on the features of the upstream network.
 
         Args:
             feats (Tensor or Tuple[Tensor]): Features from upstream network.
@@ -180,9 +175,8 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
         cls_scores = self(feats, **kwargs)
         return self.predict_by_feat(cls_scores, batch_data_samples)
 
-    def predict_by_feat(self,
-                         cls_scores: Tensor,
-                         batch_data_samples: SampleList) -> LabelList:
+    def predict_by_feat(self, cls_scores: Tensor,
+                        batch_data_samples: SampleList) -> LabelList:
         """Transform a batch of output features extracted from the head into
         prediction results.
 
@@ -210,9 +204,7 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
             predictions.append(label)
         return predictions
 
-    def average_clip(self,
-                     cls_scores: Tensor,
-                     num_segs: int = 1) -> Tensor:
+    def average_clip(self, cls_scores: Tensor, num_segs: int = 1) -> Tensor:
         """Averaging class scores over multiple clips.
 
         Using different averaging types ('score' or 'prob' or None,

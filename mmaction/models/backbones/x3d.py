@@ -5,9 +5,9 @@ import torch.nn as nn
 import torch.utils.checkpoint as cp
 from mmcv.cnn import (ConvModule, Swish, build_activation_layer, constant_init,
                       kaiming_init)
+from mmengine.logging import MMLogger
 from mmengine.runner import load_checkpoint
 from mmengine.utils.parrots_wrapper import _BatchNorm
-from mmengine.logging import MMLogger
 
 from mmaction.registry import MODELS
 
@@ -36,6 +36,14 @@ class SEModule(nn.Module):
         return int(width_out)
 
     def forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (Tensor): The input data.
+
+        Returns:
+            Tensor: The output of the module.
+        """
         module_input = x
         x = self.avg_pool(x)
         x = self.fc1(x)

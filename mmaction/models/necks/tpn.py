@@ -232,6 +232,7 @@ class AuxHead(nn.Module):
         self.loss_cls = MODELS.build(loss_cls)
 
     def init_weights(self):
+        """Initiate the parameters from scratch."""
         for m in self.modules():
             if isinstance(m, nn.Linear):
                 normal_init(m, std=0.01)
@@ -397,8 +398,8 @@ class TPN(nn.Module):
             self.aux_head = None
         self.init_weights()
 
-    # default init_weights for conv(msra) and norm in ConvModule
     def init_weights(self):
+        """default init_weights for conv(msra) and norm in ConvModule."""
         for m in self.modules():
             if isinstance(m, nn.Conv3d):
                 xavier_init(m, distribution='uniform')

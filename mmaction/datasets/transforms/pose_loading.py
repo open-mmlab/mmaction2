@@ -3,8 +3,8 @@ import copy as cp
 import pickle
 
 import numpy as np
-from mmengine.fileio import FileClient
 from mmcv.transforms import BaseTransform
+from mmengine.fileio import FileClient
 from scipy.stats import mode
 
 from mmaction.registry import TRANSFORMS

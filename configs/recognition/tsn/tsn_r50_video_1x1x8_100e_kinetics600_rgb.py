@@ -102,5 +102,4 @@ optimizer = dict(
     weight_decay=0.0001)  # this lr is used for 8 gpus
 
 # runtime settings
-default_hooks = dict(
-    checkpoint=dict(interval=5))
+default_hooks = dict(checkpoint=dict(interval=5))

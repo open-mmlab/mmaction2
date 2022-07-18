@@ -32,6 +32,3 @@ test_dataloader = dict(
         data_prefix=None,
         pipeline=test_pipeline,
         test_mode=True))
-
-
-

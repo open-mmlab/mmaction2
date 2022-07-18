@@ -1,17 +1,17 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
-from typing import List, Callable, Optional, Union
 from collections import defaultdict
+from typing import Callable, List, Optional, Union
 
 import numpy as np
 from mmengine.dataset import BaseDataset
-from mmengine.utils import check_file_exist
 from mmengine.fileio import load
 from mmengine.logging import MMLogger
+from mmengine.utils import check_file_exist
 
-from mmaction.registry import DATASETS
 from mmaction.core import ConfigType
 from mmaction.evaluation import read_labelmap
+from mmaction.registry import DATASETS
 
 
 @DATASETS.register_module()
@@ -82,12 +82,15 @@ class AVADataset(BaseDataset):
             Default to ``dict(img='')``.
         test_mode (bool): Store True when building test or validation dataset.
             Defaults to False.
-        modality (str): Modality of data. Support ``RGB``, ``Flow``. Defaults to ``RGB``.
-        num_max_proposals (int): Max proposals number to store. Defaults to 1000.
+        modality (str): Modality of data. Support ``RGB``, ``Flow``.
+            Defaults to ``RGB``.
+        num_max_proposals (int): Max proposals number to store.
+            Defaults to 1000.
         timestamp_start (int): The start point of included timestamps. The
-            default value is referred from the official website. Defaults to 902.
-        timestamp_end (int): The end point of included timestamps. The
-            default value is referred from the official website. Defaults to 1798.
+            default value is referred from the official website.
+            Defaults to 902.
+        timestamp_end (int): The end point of included timestamps. The default
+            value is referred from the official website. Defaults to 1798.
         fps (int): Overrides the default FPS for the dataset. Defaults to 30.
     """
 
@@ -133,11 +136,12 @@ class AVADataset(BaseDataset):
         self.timestamp_end = timestamp_end
         self.start_index = start_index
         self.modality = modality
-        super().__init__(ann_file,
-                         pipeline=pipeline,
-                         data_prefix=data_prefix,
-                         test_mode=test_mode,
-                         **kwargs)
+        super().__init__(
+            ann_file,
+            pipeline=pipeline,
+            data_prefix=data_prefix,
+            test_mode=test_mode,
+            **kwargs)
 
         if self.proposal_file is not None:
             self.proposals = load(self.proposal_file)
@@ -263,7 +267,8 @@ class AVADataset(BaseDataset):
                         break
 
         logger = MMLogger.get_current_instance()
-        logger.info(f'{len(valid_indexes)} out of {len(self.data_list)} frames are valid.')
+        logger.info(f'{len(valid_indexes)} out of {len(self.data_list)}'
+                    f' frames are valid.')
         data_list = [self.data_list[i] for i in valid_indexes]
 
         return data_list

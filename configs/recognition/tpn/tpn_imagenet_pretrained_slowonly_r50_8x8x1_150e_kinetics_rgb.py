@@ -94,7 +94,8 @@ test_cfg = dict()
 optim_wrapper = dict(
     optimizer=dict(
         type='SGD', lr=0.01, momentum=0.9, weight_decay=1e-4, nesterov=True),
-    clip_grad=dict(max_norm=40, norm_type=2),)
+    clip_grad=dict(max_norm=40, norm_type=2),
+)
 
 param_scheduler = [
     dict(
@@ -108,4 +109,3 @@ param_scheduler = [
 
 train_cfg = dict(by_epoch=True, max_epochs=150)
 default_hooks = dict(checkpoint=dict(max_keep_ckpts=5))
-

@@ -1,7 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import random
 import warnings
-from collections.abc import Sequence
 
 import cv2
 import mmcv

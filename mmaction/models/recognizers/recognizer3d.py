@@ -1,8 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict, List
-
 import torch
-from torch import nn
 
 from mmaction.registry import MODELS
 from .base import BaseRecognizer
@@ -50,7 +47,8 @@ class Recognizer3D(BaseRecognizer):
 
         # Check settings of test
         if test_mode:
-            if self.test_cfg is not None and self.test_cfg.get('max_testing_views', False):
+            if self.test_cfg is not None and self.test_cfg.get(
+                    'max_testing_views', False):
                 max_testing_views = self.test_cfg.get('max_testing_views')
                 assert isinstance(max_testing_views, int)
 
@@ -61,7 +59,8 @@ class Recognizer3D(BaseRecognizer):
                 view_ptr = 0
                 feats = []
                 while view_ptr < total_views:
-                    batch_imgs = batch_inputs[view_ptr:view_ptr + max_testing_views]
+                    batch_imgs = batch_inputs[view_ptr:view_ptr +
+                                              max_testing_views]
                     feat = self.backbone(batch_imgs)
                     if self.with_neck:
                         feat, _ = self.neck(feat)
@@ -71,7 +70,8 @@ class Recognizer3D(BaseRecognizer):
                 if isinstance(feats[0], tuple):
                     len_tuple = len(feats[0])
                     feats = [
-                        torch.cat([each[i] for each in feats]) for i in range(len_tuple)
+                        torch.cat([each[i] for each in feats])
+                        for i in range(len_tuple)
                     ]
                     x = tuple(feats)
                 else:

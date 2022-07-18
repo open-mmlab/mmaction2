@@ -12,8 +12,8 @@ from mmcv.transforms import BaseTransform
 from mmengine.fileio import FileClient
 from torch.nn.modules.utils import _pair
 
-from mmaction.utils import get_random_string, get_shm_dir, get_thread_id
 from mmaction.registry import TRANSFORMS
+from mmaction.utils import get_random_string, get_shm_dir, get_thread_id
 
 
 @TRANSFORMS.register_module()

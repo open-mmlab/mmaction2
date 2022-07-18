@@ -109,5 +109,4 @@ optimizer = dict(
     lr=0.005,  # this lr is used for 8 gpus
 )
 
-default_hooks = dict(
-    optimizer=dict(grad_clip=dict(max_norm=20, norm_type=2)))
+default_hooks = dict(optimizer=dict(grad_clip=dict(max_norm=20, norm_type=2)))

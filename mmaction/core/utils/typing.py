@@ -8,7 +8,6 @@ from mmengine.data import InstanceData, LabelData
 
 from mmaction.data import ActionDataSample
 
-
 # Type hint of config data
 ConfigType = Union[ConfigDict, dict]
 OptConfigType = Optional[ConfigType]
@@ -28,10 +27,13 @@ OptSampleList = Optional[SampleList]
 ForwardResults = Union[Dict[str, torch.Tensor], List[ActionDataSample],
                        Tuple[torch.Tensor], torch.Tensor]
 
+
 class SamplingResult:
     """Dummy :class:`SamplingResult` in mmdet."""
+
     def __init__(self, *args, **kwargs):
         pass
+
 
 SamplingResultList = List[SamplingResult]
 OptSamplingResultList = Optional[SamplingResultList]

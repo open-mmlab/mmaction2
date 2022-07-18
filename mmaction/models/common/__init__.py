@@ -6,7 +6,6 @@ from .transformer import (DividedSpatialAttentionWithNorm,
                           DividedTemporalAttentionWithNorm, FFNWithNorm)
 
 __all__ = [
-    'Conv2plus1d', 'TAM',
-    'DividedSpatialAttentionWithNorm', 'DividedTemporalAttentionWithNorm',
-    'FFNWithNorm', 'SubBatchNorm3D'
+    'Conv2plus1d', 'TAM', 'DividedSpatialAttentionWithNorm',
+    'DividedTemporalAttentionWithNorm', 'FFNWithNorm', 'SubBatchNorm3D'
 ]

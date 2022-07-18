@@ -92,7 +92,6 @@ test_dataloader = dict(
         pipeline=test_pipeline,
         test_mode=True))
 
-
 val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 

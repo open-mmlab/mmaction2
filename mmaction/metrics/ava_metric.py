@@ -6,8 +6,8 @@ from typing import Any, Optional, Sequence, Tuple
 from mmengine.evaluator import BaseMetric
 
 from mmaction.core import bbox2result
-from mmaction.registry import METRICS
 from mmaction.evaluation import ava_eval, results2csv
+from mmaction.registry import METRICS
 
 
 @METRICS.register_module()
@@ -54,8 +54,11 @@ class AVAMetric(BaseMetric):
             pred = pred['pred_instances']
             result['video_id'] = data['data_sample']['video_id']
             result['timestamp'] = data['data_sample']['timestamp']
-            outputs = bbox2result(pred['bboxes'], pred['scores'],
-                                  num_classes=self.num_classes, thr=self.action_thr)
+            outputs = bbox2result(
+                pred['bboxes'],
+                pred['scores'],
+                num_classes=self.num_classes,
+                thr=self.action_thr)
             result['outputs'] = outputs
             self.results.append(result)
 

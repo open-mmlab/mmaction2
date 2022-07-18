@@ -1,9 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .processing import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
-                         MelSpectrogram, MultiScaleCrop, RandomCrop,
-                         RandomRescale, RandomResizedCrop, Resize, TenCrop, ThreeCrop)
-from .formatting import (PackActionInputs, FormatAudioShape, FormatGCNInput,
-                         FormatShape, JointToBone, Transpose)
+from .formatting import (FormatAudioShape, FormatGCNInput, FormatShape,
+                         JointToBone, PackActionInputs, Transpose)
 from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
                       AudioFeatureSelector, BuildPseudoClip, DecordDecode,
                       DecordInit, DenseSampleFrames,
@@ -15,14 +12,17 @@ from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
                       SampleProposalFrames, UntrimmedSampleFrames)
 from .pose_loading import (GeneratePoseTarget, LoadKineticsPose,
                            PaddingWithLoop, PoseDecode, UniformSampleFrames)
-from .wrappers import (ImgAug, TorchVisionWrapper, PytorchVideoWrapper)
-
+from .processing import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
+                         MelSpectrogram, MultiScaleCrop, RandomCrop,
+                         RandomRescale, RandomResizedCrop, Resize, TenCrop,
+                         ThreeCrop)
+from .wrappers import ImgAug, PytorchVideoWrapper, TorchVisionWrapper
 
 __all__ = [
     'SampleFrames', 'PyAVDecode', 'DecordDecode', 'DenseSampleFrames',
     'OpenCVDecode', 'MultiScaleCrop', 'RandomResizedCrop', 'RandomCrop',
-    'Resize', 'Flip', 'Fuse', 'ThreeCrop', 'CenterCrop',
-    'TenCrop', 'Transpose', 'FormatShape', 'GenerateLocalizationLabels',
+    'Resize', 'Flip', 'Fuse', 'ThreeCrop', 'CenterCrop', 'TenCrop',
+    'Transpose', 'FormatShape', 'GenerateLocalizationLabels',
     'LoadLocalizationFeature', 'LoadProposals', 'DecordInit', 'OpenCVInit',
     'PyAVInit', 'SampleProposalFrames', 'UntrimmedSampleFrames',
     'RawFrameDecode', 'DecordInit', 'OpenCVInit', 'PyAVInit',
@@ -30,8 +30,8 @@ __all__ = [
     'AudioAmplify', 'MelSpectrogram', 'AudioDecode', 'FormatAudioShape',
     'LoadAudioFeature', 'AudioFeatureSelector', 'AudioDecodeInit',
     'ImageDecode', 'BuildPseudoClip', 'RandomRescale', 'PIMSDecode',
-    'PyAVDecodeMotionVector', 'UniformSampleFrames',
-    'PoseDecode', 'LoadKineticsPose', 'GeneratePoseTarget', 'PIMSInit',
-    'FormatGCNInput', 'PaddingWithLoop', 'ArrayDecode', 'JointToBone',
-    'PackActionInputs', 'ImgAug', 'TorchVisionWrapper', 'PytorchVideoWrapper'
+    'PyAVDecodeMotionVector', 'UniformSampleFrames', 'PoseDecode',
+    'LoadKineticsPose', 'GeneratePoseTarget', 'PIMSInit', 'FormatGCNInput',
+    'PaddingWithLoop', 'ArrayDecode', 'JointToBone', 'PackActionInputs',
+    'ImgAug', 'TorchVisionWrapper', 'PytorchVideoWrapper'
 ]

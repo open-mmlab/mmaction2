@@ -16,14 +16,16 @@ class AccMetric(BaseMetric):
     """Accuracy evaluation metric."""
     default_prefix: Optional[str] = 'acc'
 
-    def __init__(self,
-                 metrics: Optional[Union[str, Tuple[str]]] =
-                    ('top_k_accuracy', 'mean_class_accuracy'),
-                 collect_device: str = 'cpu',
-                 metric_options: Optional[dict] = dict(
-                     top_k_accuracy=dict(topk=(1, 5))),
-                 prefix: Optional[str] = None,
-                 num_classes: Optional[int] = None):
+    def __init__(
+            self,
+            metrics: Optional[Union[str,
+                                    Tuple[str]]] = ('top_k_accuracy',
+                                                    'mean_class_accuracy'),
+            collect_device: str = 'cpu',
+            metric_options: Optional[dict] = dict(
+                top_k_accuracy=dict(topk=(1, 5))),
+            prefix: Optional[str] = None,
+            num_classes: Optional[int] = None):
         super().__init__(collect_device=collect_device, prefix=prefix)
         # coco evaluation metrics
         for metric in metrics:

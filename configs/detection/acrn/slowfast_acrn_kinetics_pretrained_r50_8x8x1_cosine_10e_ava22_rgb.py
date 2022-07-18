@@ -144,12 +144,7 @@ val_cfg = dict(interval=1)
 test_cfg = dict()
 
 param_scheduler = [
-    dict(
-        type='LinearLR',
-        start_factor=0.1,
-        by_epoch=True,
-        begin=0,
-        end=2),
+    dict(type='LinearLR', start_factor=0.1, by_epoch=True, begin=0, end=2),
     dict(
         type='CosineAnnealingLR',
         T_max=10,
@@ -161,7 +156,6 @@ param_scheduler = [
 
 optimizer = dict(type='SGD', lr=0.075, momentum=0.9, weight_decay=0.00001)
 
-default_hooks = dict(
-    optimizer=dict(grad_clip=dict(max_norm=40, norm_type=2)))
+default_hooks = dict(optimizer=dict(grad_clip=dict(max_norm=40, norm_type=2)))
 
 load_from = 'https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb/slowfast_r50_8x8x1_256e_kinetics400_rgb_20200716-73547d2b.pth'  # noqa: E501

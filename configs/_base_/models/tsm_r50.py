@@ -19,7 +19,6 @@ model = dict(
         init_std=0.001,
         is_shift=True,
         average_clips='prob'),
-    data_preprocessor=dict(
-        type='ActionDataPreprocessor', **preprocess_cfg),
+    data_preprocessor=dict(type='ActionDataPreprocessor', **preprocess_cfg),
     train_cfg=None,
     test_cfg=None)

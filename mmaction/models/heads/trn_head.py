@@ -32,10 +32,17 @@ class RelationModule(nn.Module):
             nn.ReLU(), nn.Linear(bottleneck_dim, self.num_classes))
 
     def init_weights(self):
-        # Use the default kaiming_uniform for all nn.linear layers.
+        """Use the default kaiming_uniform for all nn.linear layers."""
         pass
 
     def forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (Tensor): The input data.
+        Returns:
+            Tensor: The classification scores for input samples.
+        """
         # [N, num_segs * hidden_dim]
         x = x.view(x.size(0), -1)
         x = self.classifier(x)
@@ -83,7 +90,7 @@ class RelationModuleMultiScale(nn.Module):
             self.fc_fusion_scales.append(fc_fusion)
 
     def init_weights(self):
-        # Use the default kaiming_uniform for all nn.linear layers.
+        """Use the default kaiming_uniform for all nn.linear layers."""
         pass
 
     def forward(self, x):

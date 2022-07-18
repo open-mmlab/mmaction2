@@ -34,7 +34,6 @@ model = dict(
         dropout_ratio=0.5,
         init_std=0.01,
         average_clips='prob'),
-    data_preprocessor=dict(
-        type='ActionDataPreprocessor', **preprocess_cfg),
+    data_preprocessor=dict(type='ActionDataPreprocessor', **preprocess_cfg),
     train_cfg=None,
     test_cfg=dict(fcn_test=True))

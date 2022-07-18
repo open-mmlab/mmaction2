@@ -1,7 +1,4 @@
-_base_ = [
-    '../../_base_/models/stgcn.py',
-    '../../_base_/default_runtime.py'
-]
+_base_ = ['../../_base_/models/stgcn.py', '../../_base_/default_runtime.py']
 
 model = dict(cls_head=dict(num_classes=120, num_person=1))
 
@@ -56,10 +53,7 @@ val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 
 train_cfg = dict(
-    type='EpochBasedTrainLoop',
-    max_epochs=16,
-    val_begin=1,
-    val_interval=1)
+    type='EpochBasedTrainLoop', max_epochs=16, val_begin=1, val_interval=1)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
@@ -74,7 +68,7 @@ param_scheduler = [
 ]
 
 optim_wrapper = dict(
-    optimizer=dict(type='SGD', lr=0.1, momentum=0.9, weight_decay=0.0001,
-                   nesterov=True))
+    optimizer=dict(
+        type='SGD', lr=0.1, momentum=0.9, weight_decay=0.0001, nesterov=True))
 
 default_hooks = dict(logger=dict(interval=100))

@@ -93,12 +93,7 @@ test_dataloader = dict(
 train_cfg = dict(by_epoch=True, max_epochs=180)
 
 param_scheduler = [
-    dict(
-        type='LinearLR',
-        start_factor=0.1,
-        by_epoch=True,
-        begin=0,
-        end=40),
+    dict(type='LinearLR', start_factor=0.1, by_epoch=True, begin=0, end=40),
     dict(
         type='CosineAnnealingLR',
         T_max=180,

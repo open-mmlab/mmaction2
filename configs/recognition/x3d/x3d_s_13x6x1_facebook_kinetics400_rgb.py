@@ -33,7 +33,4 @@ test_dataloader = dict(
         pipeline=test_pipeline,
         test_mode=True))
 
-env_cfg = dict(
-    dist_cfg=dict(backend='nccl')
-)
-
+env_cfg = dict(dist_cfg=dict(backend='nccl'))

@@ -1,12 +1,7 @@
 train_cfg = dict(by_epoch=True, max_epochs=150)
 
 param_scheduler = [
-    dict(
-        type='LinearLR',
-        start_factor=0.1,
-        by_epoch=True,
-        begin=0,
-        end=10),
+    dict(type='LinearLR', start_factor=0.1, by_epoch=True, begin=0, end=10),
     dict(
         type='MultiStepLR',
         begin=0,

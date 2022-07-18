@@ -1,6 +1,5 @@
 _base_ = [
-    '../../_base_/models/slowonly_r50.py',
-    '../../_base_/default_runtime.py'
+    '../../_base_/models/slowonly_r50.py', '../../_base_/default_runtime.py'
 ]
 
 model = dict(backbone=dict(pretrained=None))
@@ -87,10 +86,7 @@ val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 
 train_cfg = dict(
-    type='EpochBasedTrainLoop',
-    max_epochs=256,
-    val_begin=1,
-    val_interval=5)
+    type='EpochBasedTrainLoop', max_epochs=256, val_begin=1, val_interval=5)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
@@ -107,7 +103,6 @@ param_scheduler = [
 optim_wrapper = dict(
     optimizer=dict(type='SGD', lr=0.3, momentum=0.9, weight_decay=0.0001),
     clip_grad=dict(max_norm=40, norm_type=2))
-
 
 val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
@@ -131,4 +126,3 @@ train_cfg = dict(by_epoch=True, max_epochs=256)
 default_hooks = dict(
     optimizer=dict(grad_clip=dict(max_norm=40, norm_type=2)),
     checkpoint=dict(interval=4))
-

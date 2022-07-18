@@ -118,7 +118,8 @@ optimizer = dict(
     lr=0.0015,  # this lr is used for 8 gpus
 )
 
-default_hooks = dict(
-    optimizer=dict(grad_clip=dict(max_norm=20, norm_type=2)))
+default_hooks = dict(optimizer=dict(grad_clip=dict(max_norm=20, norm_type=2)))
 
-load_from = 'https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/tsm_r50_1x1x8_50e_kinetics400_rgb_20210701-68d582b4.pth'
+load_from = 'https://download.openmmlab.com/mmaction/recognition/tsm/' \
+            'tsm_r50_1x1x8_50e_kinetics400_rgb/' \
+            'tsm_r50_1x1x8_50e_kinetics400_rgb_20210701-68d582b4.pth'

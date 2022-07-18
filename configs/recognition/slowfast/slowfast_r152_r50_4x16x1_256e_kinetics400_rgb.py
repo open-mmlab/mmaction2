@@ -157,4 +157,3 @@ default_hooks = dict(
         type='OptimizerHook', grad_clip=dict(max_norm=40, norm_type=2)),
     checkpoint=dict(type='CheckpointHook', interval=4),
     logger=dict(type='LoggerHook', interval=20))
-

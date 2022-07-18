@@ -18,6 +18,10 @@ except ImportError:
 
 @VISBACKENDS.register_module()
 class LocalVisBackend(LocalVisBackend):
+    """Local visualization backend class with video support.
+
+    See mmengine.visualization.LocalVisBackend for more details.
+    """
 
     @force_init_env
     def add_video(self,
@@ -45,6 +49,12 @@ class LocalVisBackend(LocalVisBackend):
 
 @VISBACKENDS.register_module()
 class WandbVisBackend(WandbVisBackend):
+    """Wandb visualization backend class with video support. See
+    mmengine.visualization.WandbVisBackend for more details.
+
+    Note that this requires the ``wandb`` and ``moviepy`` package. A wandb
+    account login is also required.
+    """
 
     @force_init_env
     def add_video(self,
@@ -68,6 +78,11 @@ class WandbVisBackend(WandbVisBackend):
 
 @VISBACKENDS.register_module()
 class TensorboardVisBackend(TensorboardVisBackend):
+    """Tensorboard visualization backend class with video support. See
+    mmengine.visualization.TensorboardVisBackend for more details.
+
+    Note that this requires the ``future`` and ``tensorboard`` package.
+    """
 
     @force_init_env
     def add_video(self,
