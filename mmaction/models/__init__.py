@@ -1,8 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .backbones import (C3D, STGCN, X3D, MobileNetV2, MobileNetV2TSM, ResNet,
-                        ResNet2Plus1d, ResNet3d, ResNet3dCSN, ResNet3dLayer,
-                        ResNet3dSlowFast, ResNet3dSlowOnly, ResNetTIN,
-                        ResNetTSM, TANet, TimeSformer, AGCN)
+from .backbones import (AGCN, C3D, STGCN, X3D, MobileNetV2, MobileNetV2TSM,
+                        ResNet, ResNet2Plus1d, ResNet3d, ResNet3dCSN,
+                        ResNet3dLayer, ResNet3dSlowFast, ResNet3dSlowOnly,
+                        ResNetTIN, ResNetTSM, TANet, TimeSformer)
 from .common import (TAM, Conv2plus1d, DividedSpatialAttentionWithNorm,
                      DividedTemporalAttentionWithNorm, FFNWithNorm,
                      SubBatchNorm3D)

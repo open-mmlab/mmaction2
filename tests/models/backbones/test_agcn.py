@@ -12,8 +12,7 @@ def test_AGCN_backbone():
     skeletons = generate_backbone_demo_inputs(input_shape)
 
     agcn = AGCN(
-        in_channels=3,
-        graph_cfg=dict(layout='ntu-rgb+d', strategy='agcn'))
+        in_channels=3, graph_cfg=dict(layout='ntu-rgb+d', strategy='agcn'))
     agcn.init_weights()
     agcn.train()
     feat = agcn(skeletons)
