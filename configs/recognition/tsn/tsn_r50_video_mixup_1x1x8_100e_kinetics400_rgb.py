@@ -21,7 +21,7 @@ model = dict(
     # model training and testing settings
     train_cfg=dict(
         blending=dict(type='MixupBlending', num_classes=400, alpha=.2)),
-    test_cfg=dict(average_clips=None))
+    test_cfg=None)
 
 # dataset settings
 dataset_type = 'VideoDataset'

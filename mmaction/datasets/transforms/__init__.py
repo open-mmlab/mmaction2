@@ -9,7 +9,7 @@ from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
                       LoadProposals, OpenCVDecode, OpenCVInit, PIMSDecode,
                       PIMSInit, PyAVDecode, PyAVDecodeMotionVector, PyAVInit,
                       RawFrameDecode, SampleAVAFrames, SampleFrames,
-                      SampleProposalFrames, UntrimmedSampleFrames)
+                      UntrimmedSampleFrames)
 from .pose_loading import (GeneratePoseTarget, LoadKineticsPose,
                            PaddingWithLoop, PoseDecode, UniformSampleFrames)
 from .processing import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
@@ -24,9 +24,8 @@ __all__ = [
     'Resize', 'Flip', 'Fuse', 'ThreeCrop', 'CenterCrop', 'TenCrop',
     'Transpose', 'FormatShape', 'GenerateLocalizationLabels',
     'LoadLocalizationFeature', 'LoadProposals', 'DecordInit', 'OpenCVInit',
-    'PyAVInit', 'SampleProposalFrames', 'UntrimmedSampleFrames',
-    'RawFrameDecode', 'DecordInit', 'OpenCVInit', 'PyAVInit',
-    'SampleProposalFrames', 'ColorJitter', 'LoadHVULabel', 'SampleAVAFrames',
+    'PyAVInit', 'UntrimmedSampleFrames', 'RawFrameDecode', 'DecordInit',
+    'OpenCVInit', 'PyAVInit', 'ColorJitter', 'LoadHVULabel', 'SampleAVAFrames',
     'AudioAmplify', 'MelSpectrogram', 'AudioDecode', 'FormatAudioShape',
     'LoadAudioFeature', 'AudioFeatureSelector', 'AudioDecodeInit',
     'ImageDecode', 'BuildPseudoClip', 'RandomRescale', 'PIMSDecode',

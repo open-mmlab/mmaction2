@@ -53,7 +53,7 @@ class WandbVisBackend(WandbVisBackend):
     mmengine.visualization.WandbVisBackend for more details.
 
     Note that this requires the ``wandb`` and ``moviepy`` package. A wandb
-    account login is also required.
+    account login is also required at ``https://wandb.ai/authorize``.
     """
 
     @force_init_env
