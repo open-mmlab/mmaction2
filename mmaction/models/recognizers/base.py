@@ -63,7 +63,7 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
 
-        if isinstance(self.test_cfg, ConfigType):
+        if hasattr(self.test_cfg, '__iter__'):
             assert 'average_clips' not in self.test_cfg, \
                 'Average_clips (dict) is ' \
                 'defined in the Head. Please see our document or the ' \
