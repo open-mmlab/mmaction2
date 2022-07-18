@@ -36,6 +36,14 @@ class SEModule(nn.Module):
         return int(width_out)
 
     def forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (Tensor): The input data.
+
+        Returns:
+            Tensor: The output of the module.
+        """
         module_input = x
         x = self.avg_pool(x)
         x = self.fc1(x)

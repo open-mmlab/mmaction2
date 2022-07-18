@@ -58,6 +58,14 @@ class PatchEmbed(nn.Module):
         kaiming_init(self.projection, mode='fan_in', nonlinearity='linear')
 
     def forward(self, x):
+        """Defines the computation performed at every call.
+
+        Args:
+            x (Tensor): The input data.
+
+        Returns:
+            Tensor: The output of the module.
+        """
         x = rearrange(x, 'b c t h w -> (b t) c h w')
         x = self.projection(x).flatten(2).transpose(1, 2)
         return x

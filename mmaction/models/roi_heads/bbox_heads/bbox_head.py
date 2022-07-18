@@ -126,10 +126,12 @@ class BBoxHeadAVA(nn.Module):
         self.fc_cls = nn.Linear(in_channels, num_classes)
 
     def init_weights(self) -> None:
+        """Initialize the classification head."""
         nn.init.normal_(self.fc_cls.weight, 0, 0.01)
         nn.init.constant_(self.fc_cls.bias, 0)
 
     def forward(self, x: Tensor) -> Tensor:
+        """Computes the classification logits given ROI features."""
         if self.dropout_before_pool and self.dropout_ratio > 0:
             x = self.dropout(x)
 
