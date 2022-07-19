@@ -101,7 +101,7 @@ class BaseHead(nn.Module, metaclass=ABCMeta):
                                        self.topk)
             for k, a in zip(self.topk, top_k_acc):
                 losses[f'top{k}_acc'] = torch.tensor(
-                    a, device=cls_score.device)
+                    a, device=cls_score.device, dtype=cls_score.dtype)
 
         elif self.multi_class and self.label_smooth_eps != 0:
             labels = ((1 - self.label_smooth_eps) * labels +

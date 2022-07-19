@@ -33,6 +33,7 @@ def build_dp(model, device='cuda', default_args=None):
     elif device == 'mps':
         from mmcv.device.mps import MPSDataParallel
         dp_factory['mps'] = MPSDataParallel
+        model = model.to('mps')
 
     return dp_factory[device](model, **default_args)
 
