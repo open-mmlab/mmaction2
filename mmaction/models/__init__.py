@@ -24,6 +24,7 @@ from .recognizers import (AudioRecognizer, BaseRecognizer, Recognizer2D,
                           Recognizer3D)
 from .roi_extractors import SingleRoIExtractor3D
 from .skeleton_gcn import BaseGCN, SkeletonGCN
+from .contrib import *
 
 __all__ = [
     'BACKBONES', 'HEADS', 'RECOGNIZERS', 'build_recognizer', 'build_head',
