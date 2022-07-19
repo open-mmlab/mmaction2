@@ -125,6 +125,10 @@ def main():
         elif args.gpus is not None:
             warnings.warn('Non-distributed training can only use 1 gpu now. ')
             cfg.gpu_ids = range(1)
+        elif args.device is not None:
+            warnings.warn('Non-distributed training on device %s. ' %
+                          args.device)
+            cfg.gpu_ids = range(1)
 
     # init distributed env first, since logger depends on the dist info.
     if args.launcher == 'none':
