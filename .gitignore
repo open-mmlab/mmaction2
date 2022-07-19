@@ -113,6 +113,7 @@ venv.bak/
 *.log.json
 benchlist.txt
 work_dirs/
+.DS_Store
 
 # Pytorch
 *.pth
