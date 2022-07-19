@@ -10,8 +10,10 @@ ddp_factory = {'cuda': MMDistributedDataParallel}
 def build_dp(model, device='cuda', default_args=None):
     """build DataParallel module by device type.
 
-    if device is cuda, return a MMDataParallel model; if device is mlu,
-    return a MLUDataParallel model.
+    if device is cuda, return a MMDataParallel model;
+    if device is mlu, return a MLUDataParallel model;
+    if device is mps, return a MPSDataParallel model.
+
     Args:
         model(nn.Module): model to be parallelized.
         device(str): device type, cuda, cpu or mlu. Defaults to cuda.
@@ -28,6 +30,9 @@ def build_dp(model, device='cuda', default_args=None):
         from mmcv.device.mlu import MLUDataParallel
         dp_factory['mlu'] = MLUDataParallel
         model = model.mlu()
+    elif device == 'mps':
+        from mmcv.device.mps import MPSDataParallel
+        dp_factory['mps'] = MPSDataParallel
 
     return dp_factory[device](model, **default_args)
 
@@ -81,11 +86,17 @@ def is_mlu_available():
     return hasattr(torch, 'is_mlu_available') and torch.is_mlu_available()
 
 
+def is_mps_available():
+    """Returns a bool indicating if MPS is currently available."""
+    return hasattr(torch.backends, 'mps') and torch.backends.mps.is_available()
+
+
 def get_device():
     """Returns an available device, cpu, cuda or mlu."""
     is_device_available = {
         'cuda': torch.cuda.is_available(),
-        'mlu': is_mlu_available()
+        'mlu': is_mlu_available(),
+        'mps': is_mps_available()
     }
     device_list = [k for k, v in is_device_available.items() if v]
     return device_list[0] if len(device_list) == 1 else 'cpu'
