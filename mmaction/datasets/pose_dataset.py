@@ -1,9 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import List, Callable, Union, Optional
+
 from mmengine.dataset import BaseDataset
 from mmengine.fileio import load
 from mmengine.utils import check_file_exist
 
 from mmaction.registry import DATASETS
+from mmaction.utils import ConfigType
 
 
 @DATASETS.register_module()
@@ -19,29 +22,30 @@ class PoseDataset(BaseDataset):
 
     Args:
         ann_file (str): Path to the annotation file.
-        pipeline (list[dict | callable]): A sequence of data transforms.
-        split (str | None): The dataset split used. Only applicable to UCF or
-            HMDB. Allowed choices are 'train1', 'test1', 'train2', 'test2',
-            'train3', 'test3'. Default: None.
-        modality (str): Modality of data. Support 'RGB', 'Flow'.
-            Default: 'Pose'.
-        **kwargs: Keyword arguments for ``BaseDataset``.
+        pipeline (list): A sequence of data transforms.
+        split (str, optional): The dataset split used. Only applicable to ``UCF`` or ``HMDB``.
+            Allowed choices are ``train1``, ``test1``, ``train2``, ``test2``,
+            ``train3``, ``test3``. Defaults to None.
+        start_index (int): Specify a start index for frames in consideration of
+            different filename format. Defaults to 1.
+        modality (str): Modality of data. Support ``RGB``, ``Flow``.
+            Defaults to ``Pose``.
     """
 
     def __init__(self,
-                 ann_file,
-                 pipeline,
-                 split=None,
-                 start_index=0,
-                 modality='Pose',
-                 **kwargs):
+                 ann_file: str,
+                 pipeline: List[Union[ConfigType, Callable]],
+                 split: Optional[str] = None,
+                 start_index: int = 0,
+                 modality: str = 'Pose',
+                 **kwargs) -> None:
         # split, applicable to ucf or hmdb
         self.split = split
         self.start_index = start_index
         self.modality = modality
         super().__init__(ann_file, pipeline=pipeline, **kwargs)
 
-    def load_data_list(self):
+    def load_data_list(self) -> List[dict]:
         """Load annotation file to get skeleton information."""
         assert self.ann_file.endswith('.pkl')
         check_file_exist(self.ann_file)

@@ -5,10 +5,10 @@ from abc import ABCMeta, abstractmethod
 from mmengine.model import BaseModel, merge_dict
 from torch import Tensor
 
-from mmaction.core.utils import (ConfigType, ForwardResults, LabelList,
+from mmaction.utils import (ConfigType, ForwardResults, LabelList,
                                  OptConfigType, OptMultiConfig, OptSampleList,
                                  SampleList)
-from mmaction.data import ActionDataSample
+from mmaction.data_elements import ActionDataSample
 from mmaction.registry import MODELS
 
 

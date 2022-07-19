@@ -3,7 +3,7 @@ from typing import List, Tuple, Union
 
 from torch import Tensor
 
-from mmaction.core.utils import (ConfigType, InstanceList, SampleList,
+from mmaction.utils import (ConfigType, InstanceList, SampleList,
                                  SamplingResultList)
 
 try:

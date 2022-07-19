@@ -1,12 +1,14 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
 import warnings
+from typing import List, Union, Callable, Optional
 
 import torch
 from mmengine.dataset import BaseDataset
 from mmengine.utils import check_file_exist
 
 from mmaction.registry import DATASETS
+from mmaction.utils import ConfigType
 
 
 @DATASETS.register_module()
@@ -60,41 +62,40 @@ class RawframeDataset(BaseDataset):
 
     Args:
         ann_file (str): Path to the annotation file.
-        pipeline (list[dict | callable]): A sequence of data transforms.
-        data_prefix (dict | None): Path to a directory where videos are held.
-            Default: None.
+        pipeline (list): A sequence of data transforms.
+        data_prefix (dict or ConfigDict): Path to a directory where video frames
+            are held. Defaults to ``dict(img='')``.
         filename_tmpl (str): Template for each filename.
-            Default: 'img_{:05}.jpg'.
+            Defaults to ``img_{:05}.jpg``.
         with_offset (bool): Determines whether the offset information is in
-            ann_file. Default: False.
+            ann_file. Defaults to False.
         multi_class (bool): Determines whether it is a multi-class
-            recognition dataset. Default: False.
-        num_classes (int | None): Number of classes in the dataset.
-            Default: None.
+            recognition dataset. Defaults to False.
+        num_classes (int, optional): Number of classes in the dataset.
+            Defaults to None.
         start_index (int): Specify a start index for frames in consideration of
             different filename format. However, when taking frames as input,
             it should be set to 1, since raw frames count from 1.
-            Default: 1.
-        modality (str): Modality of data. Support 'RGB', 'Flow'.
-            Default: 'RGB'.
+            Defaults to 1.
+        modality (str): Modality of data. Support ``RGB``, ``Flow``.
+            Defaults to ``RGB``.
         test_mode (bool): Store True when building test or validation dataset.
-            Default: False.
-        **kwargs: Keyword arguments for ``BaseDataset``.
+            Defaults to False.
     """
 
     _fully_initialized: bool = False
 
     def __init__(self,
-                 ann_file,
-                 pipeline,
-                 data_prefix=dict(img=''),
-                 filename_tmpl='img_{:05}.jpg',
-                 with_offset=False,
-                 multi_class=False,
-                 num_classes=None,
-                 start_index=1,
-                 modality='RGB',
-                 test_mode=False,
+                 ann_file: str,
+                 pipeline: List[Union[ConfigType, Callable]],
+                 data_prefix: ConfigType = dict(img=''),
+                 filename_tmpl: str = 'img_{:05}.jpg',
+                 with_offset: bool = False,
+                 multi_class: bool = False,
+                 num_classes: Optional[int] = None,
+                 start_index: int = 1,
+                 modality: str = 'RGB',
+                 test_mode: bool = False,
                  **kwargs):
         warnings.warn(
             'We recommend using "VideoDataset" '
@@ -119,7 +120,7 @@ class RawframeDataset(BaseDataset):
             test_mode=test_mode,
             **kwargs)
 
-    def load_data_list(self):
+    def load_data_list(self) -> List[dict]:
         """Load annotation file to get video information."""
         check_file_exist(self.ann_file)
         data_list = []

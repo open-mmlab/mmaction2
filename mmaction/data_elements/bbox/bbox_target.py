@@ -5,18 +5,17 @@ import torch
 import torch.nn.functional as F
 from torch import Tensor
 
-from mmaction.core.utils import ConfigType
 
 
 def bbox_target(pos_bboxes_list: List[Tensor], neg_bboxes_list: List[Tensor],
-                gt_labels: List[Tensor], cfg: ConfigType) -> tuple:
+                gt_labels: List[Tensor], cfg: dict) -> tuple:
     """Generate classification targets for bboxes.
 
     Args:
         pos_bboxes_list (List[Tensor]): Positive bboxes list.
         neg_bboxes_list (List[Tensor]): Negative bboxes list.
         gt_labels (List[Tensor]): Groundtruth classification label list.
-        cfg (dict or ConfigDict): RCNN config.
+        cfg (dict): RCNN config.
 
     Returns:
         tuple: Label and label_weight for bboxes.

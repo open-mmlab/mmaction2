@@ -1,7 +1,6 @@
 Import:
 - configs/recognition/csn/metafile.yml
 - configs/recognition/i3d/metafile.yml
-- configs/recognition/omnisource/metafile.yml
 - configs/recognition/r2plus1d/metafile.yml
 - configs/recognition/slowfast/metafile.yml
 - configs/recognition/slowonly/metafile.yml

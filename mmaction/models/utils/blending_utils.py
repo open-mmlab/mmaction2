@@ -6,7 +6,7 @@ import torch.nn.functional as F
 from torch import Tensor
 from torch.distributions.beta import Beta
 
-from mmaction.core.utils import SampleList
+from mmaction.utils import SampleList
 from mmaction.registry import MODELS
 
 __all__ = ['BaseMiniBatchBlending', 'MixupBlending', 'CutmixBlending']

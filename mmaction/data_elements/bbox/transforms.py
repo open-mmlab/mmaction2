@@ -20,8 +20,8 @@ def bbox2result(bboxes: Tensor,
     NB - this should not interfere with the evaluation in any case.
 
     Args:
-        bboxes (Tensor): shape (n, 4).
-        labels (Tensor): shape (n, num_classes).
+        bboxes (Tensor): shape ``(n, 4)``.
+        labels (Tensor): shape ``(n, num_classes)``.
         num_classes (int): class number, including background class.
         thr (float): The score threshold used when converting predictions to
             detection results. If a single negative value, uses single-label

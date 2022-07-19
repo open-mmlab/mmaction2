@@ -19,6 +19,10 @@ model = dict(
         dropout_ratio=0.5,
         init_std=0.01,
         average_clips='prob'),
-    # model training and testing settings
+    data_preprocessor=dict(
+        type='ActionDataPreprocessor',
+        mean=[104, 117, 128],
+        std=[1, 1, 1],
+        format_shape='NCTHW'),
     train_cfg=None,
     test_cfg=None)

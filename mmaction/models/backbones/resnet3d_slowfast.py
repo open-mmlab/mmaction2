@@ -9,7 +9,7 @@ from mmengine.logging import MMLogger, print_log
 from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
 from torch import Tensor
 
-from mmaction.core import ConfigType, OptConfigType
+from mmaction.utils import ConfigType, OptConfigType
 from mmaction.registry import MODELS
 from .resnet3d import ResNet3d
 

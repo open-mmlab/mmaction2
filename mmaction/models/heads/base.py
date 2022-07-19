@@ -9,7 +9,7 @@ from mmengine.data import LabelData
 from mmengine.model import BaseModule
 from torch import Tensor
 
-from mmaction.core.utils import (ConfigType, LabelList, OptConfigType,
+from mmaction.utils import (ConfigType, LabelList, OptConfigType,
                                  OptMultiConfig, SampleList)
 from mmaction.evaluation import top_k_accuracy
 from mmaction.registry import MODELS

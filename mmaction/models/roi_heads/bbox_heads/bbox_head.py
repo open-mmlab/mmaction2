@@ -9,8 +9,8 @@ from mmengine.config import ConfigDict
 from mmengine.data import InstanceData
 from torch import Tensor
 
-from mmaction.core.bbox import bbox_target
-from mmaction.core.utils import InstanceList
+from mmaction.data_elements.bbox import bbox_target
+from mmaction.utils import InstanceList
 
 try:
     from mmdet.core.utils import SamplingResultList

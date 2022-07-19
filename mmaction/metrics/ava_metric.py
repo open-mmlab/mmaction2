@@ -1,11 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os
 from datetime import datetime
-from typing import Any, Optional, Sequence, Tuple
+from typing import Any, Optional, Sequence, Tuple, List
 
 from mmengine.evaluator import BaseMetric
 
-from mmaction.core import bbox2result
+from mmaction.data_elements import bbox2result
 from mmaction.evaluation import ava_eval, results2csv
 from mmaction.registry import METRICS
 
@@ -13,16 +13,16 @@ from mmaction.registry import METRICS
 @METRICS.register_module()
 class AVAMetric(BaseMetric):
     """Accuracy evaluation metric."""
-    default_prefix: Optional[str] = 'ava'
+    default_prefix: Optional[str] = 'mAP'
 
     def __init__(self,
-                 ann_file,
-                 exclude_file,
-                 label_file,
-                 options=('mAP', ),
-                 action_thr=0.002,
-                 num_classes=81,
-                 custom_classes=None,
+                 ann_file: str,
+                 exclude_file: str,
+                 label_file: str,
+                 options: Tuple[str] = ('mAP', ),
+                 action_thr: float = 0.002,
+                 num_classes: int = 81,
+                 custom_classes: Optional[List[int]] = None,
                  collect_device: str = 'cpu',
                  prefix: Optional[str] = None):
         super().__init__(collect_device=collect_device, prefix=prefix)

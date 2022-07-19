@@ -27,6 +27,13 @@ class AccMetric(BaseMetric):
             prefix: Optional[str] = None,
             num_classes: Optional[int] = None):
         super().__init__(collect_device=collect_device, prefix=prefix)
+        if not isinstance(metrics, (str, tuple)):
+            raise TypeError('metrics must be str or tuple of str, '
+                            f'but got {type(metrics)}')
+
+        if isinstance(metrics, str):
+            metrics = (metrics, )
+
         # coco evaluation metrics
         for metric in metrics:
             assert metric in [
