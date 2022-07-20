@@ -30,12 +30,12 @@ def generate_backbone_demo_inputs(input_shape=(1, 3, 64, 64)):
 
 
 def generate_recognizer_demo_inputs(
-        input_shape=(1, 3, 3, 224, 224), model_type='2D'):
+        input_shape=(1, 3, 3, 192, 192), model_type='2D'):
     """Create a superset of inputs needed to run test or train batches.
 
     Args:
         input_shape (tuple): input batch dimensions.
-            Default: (1, 250, 3, 224, 224).
+            Default: (1, 250, 3, 192, 192).
         model_type (str): Model type for data generation, from {'2D', '3D'}.
             Default:'2D'
     """
@@ -60,7 +60,7 @@ def generate_recognizer_demo_inputs(
 
 
 def generate_detector_demo_inputs(
-        input_shape=(1, 3, 4, 224, 224), num_classes=81, train=True,
+        input_shape=(1, 3, 4, 192, 192), num_classes=81, train=True,
         device='cpu'):
     num_samples = input_shape[0]
     if not train:
@@ -103,12 +103,12 @@ def generate_detector_demo_inputs(
     return dict(img=[img], proposals=[proposals], img_metas=[img_metas])
 
 
-def generate_gradcam_inputs(input_shape=(1, 3, 3, 224, 224), model_type='2D'):
+def generate_gradcam_inputs(input_shape=(1, 3, 3, 192, 192), model_type='2D'):
     """Create a superset of inputs needed to run gradcam.
 
     Args:
         input_shape (tuple[int]): input batch dimensions.
-            Default: (1, 3, 3, 224, 224).
+            Default: (1, 3, 3, 192, 192).
         model_type (str): Model type for data generation, from {'2D', '3D'}.
             Default:'2D'
     return:
