@@ -33,7 +33,3 @@ class SamplingResult:
 
     def __init__(self, *args, **kwargs):
         pass
-
-
-SamplingResultList = List[SamplingResult]
-OptSamplingResultList = Optional[SamplingResultList]

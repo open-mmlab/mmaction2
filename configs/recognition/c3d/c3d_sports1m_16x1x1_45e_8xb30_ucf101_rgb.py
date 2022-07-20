@@ -8,12 +8,13 @@ dataset_type = 'VideoDataset'
 data_root = 'data/ucf101/videos'
 data_root_val = 'data/ucf101/videos'
 split = 1  # official train/test splits. valid numbers: 1, 2, 3
-ann_file_train = f'data/ucf101/ucf101_train_split_{split}_rawframes.txt'
-ann_file_val = f'data/ucf101/ucf101_val_split_{split}_rawframes.txt'
-ann_file_test = f'data/ucf101/ucf101_val_split_{split}_rawframes.txt'
+ann_file_train = f'data/ucf101/ucf101_train_split_{split}_videos.txt'
+ann_file_val = f'data/ucf101/ucf101_val_split_{split}_videos.txt'
+ann_file_test = f'data/ucf101/ucf101_val_split_{split}_videos.txt'
 train_pipeline = [
+    dict(type='DecordInit'),
     dict(type='SampleFrames', clip_len=16, frame_interval=1, num_clips=1),
-    dict(type='RawFrameDecode'),
+    dict(type='DecordDecode'),
     dict(type='Resize', scale=(128, 171), keep_ratio=False),
     dict(type='RandomCrop', size=112),
     dict(type='Flip', flip_ratio=0.5),
@@ -21,26 +22,28 @@ train_pipeline = [
     dict(type='PackActionInputs')
 ]
 val_pipeline = [
+    dict(type='DecordInit'),
     dict(
         type='SampleFrames',
         clip_len=16,
         frame_interval=1,
         num_clips=1,
         test_mode=True),
-    dict(type='RawFrameDecode'),
+    dict(type='DecordDecode'),
     dict(type='Resize', scale=(128, 171), keep_ratio=False),
     dict(type='CenterCrop', crop_size=112),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='PackActionInputs')
 ]
 test_pipeline = [
+    dict(type='DecordInit'),
     dict(
         type='SampleFrames',
         clip_len=16,
         frame_interval=1,
         num_clips=10,
         test_mode=True),
-    dict(type='RawFrameDecode'),
+    dict(type='DecordDecode'),
     dict(type='Resize', scale=(128, 171), keep_ratio=False),
     dict(type='CenterCrop', crop_size=112),
     dict(type='FormatShape', input_format='NCTHW'),
