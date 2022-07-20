@@ -17,14 +17,14 @@ def test_bmn_train():
     if torch.cuda.is_available():
         localizer_bmn = build_localizer(model_cfg.model).cuda()
         raw_feature = torch.rand(3, 400, 100).cuda()
-        gt_bbox = np.array([[[0.1, 0.3], [0.375, 0.625]]] * 8)
+        gt_bbox = np.array([[[0.1, 0.3], [0.375, 0.625]]] * 3)
         losses = localizer_bmn(raw_feature, gt_bbox)
         assert isinstance(losses, dict)
 
     else:
         localizer_bmn = build_localizer(model_cfg.model)
         raw_feature = torch.rand(3, 400, 100)
-        gt_bbox = torch.Tensor([[[0.1, 0.3], [0.375, 0.625]]] * 8)
+        gt_bbox = torch.Tensor([[[0.1, 0.3], [0.375, 0.625]]] * 3)
         losses = localizer_bmn(raw_feature, gt_bbox)
         assert isinstance(losses, dict)
 
