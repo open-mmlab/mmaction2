@@ -8,6 +8,7 @@ from mmengine.dataset import BaseDataset
 from mmengine.utils import check_file_exist
 
 from mmaction.registry import DATASETS
+from mmaction.utils import ConfigType
 
 
 @DATASETS.register_module()
@@ -34,8 +35,8 @@ class VideoDataset(BaseDataset):
     Args:
         ann_file (str): Path to the annotation file.
         pipeline (List[dict or callable]): A sequence of data transforms.
-        data_prefix (dict): Path to a directory where videos are held.
-            Defaults to dict(video='').
+        data_prefix (dict or ConfigDict): Path to a directory where videos
+            are held. Defaults to ``dict(video='')``.
         multi_class (bool): Determines whether the dataset is a multi-class
             dataset. Defaults to False.
         num_classes (int, optional): Number of classes of the dataset, used in
@@ -44,17 +45,16 @@ class VideoDataset(BaseDataset):
             different filename format. However, when taking videos as input,
             it should be set to 0, since frames loaded from videos count
             from 0. Defaults to 0.
-        modality (str): Modality of data. Support 'RGB', 'Flow', 'Audio'.
-            Defaults to 'RGB'.
+        modality (str): Modality of data. Support ``RGB``, ``Flow``.
+            Defaults to ``RGB``.
         test_mode (bool): Store True when building test or validation dataset.
             Defaults to False.
-        **kwargs: Keyword arguments for ``BaseDataset``.
     """
 
     def __init__(self,
                  ann_file: str,
                  pipeline: List[Union[dict, Callable]],
-                 data_prefix: dict = dict(video=''),
+                 data_prefix: ConfigType = dict(video=''),
                  multi_class: bool = False,
                  num_classes: Optional[int] = None,
                  start_index: int = 0,
@@ -80,7 +80,7 @@ class VideoDataset(BaseDataset):
             test_mode=test_mode,
             **kwargs)
 
-    def load_data_list(self):
+    def load_data_list(self) -> List[dict]:
         """Load annotation file to get video information."""
         check_file_exist(self.ann_file)
         data_list = []

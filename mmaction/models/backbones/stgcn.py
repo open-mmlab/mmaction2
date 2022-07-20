@@ -9,7 +9,7 @@ from mmengine.runner import load_checkpoint
 from mmengine.utils.parrots_wrapper import _BatchNorm
 from torch import Tensor
 
-from mmaction.core.utils import ConfigType
+from mmaction.utils import ConfigType
 from mmaction.registry import MODELS
 from ..utils import Graph
 

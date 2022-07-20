@@ -8,7 +8,7 @@ from mmengine.utils.parrots_wrapper import _BatchNorm
 from torch import Tensor, nn
 from torch.utils import checkpoint as cp
 
-from mmaction.core.utils import ConfigType
+from mmaction.utils import ConfigType
 from mmaction.registry import MODELS
 
 

@@ -2,7 +2,7 @@
 from mmcv.cnn import normal_init
 from torch import Tensor, nn
 
-from mmaction.core.utils import ConfigType
+from mmaction.utils import ConfigType
 from mmaction.registry import MODELS
 from .base import BaseHead
 

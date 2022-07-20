@@ -5,7 +5,7 @@ Collections:
     URL: https://arxiv.org/abs/1412.0767
     Title: Learning Spatiotemporal Features with 3D Convolutional Networks
 Models:
-- Config: configs/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb.py
+- Config: configs/recognition/c3d/c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb.py
   In Collection: C3D
   Metadata:
     Architecture: c3d
@@ -18,7 +18,7 @@ Models:
     Training Data: UCF101
     Training Resources: 8 GPUs
   Modality: RGB
-  Name: c3d_sports1m_16x1x1_45e_ucf101_rgb
+  Name: c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb.py
   Results:
   - Dataset: UCF101
     Metrics:

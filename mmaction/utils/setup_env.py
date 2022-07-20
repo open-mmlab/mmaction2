@@ -16,7 +16,7 @@ def register_all_modules(init_default_scope: bool = True) -> None:
             https://github.com/open-mmlab/mmengine/blob/main/docs/en/tutorials/registry.md
             Defaults to True.
     """  # noqa
-    import mmaction.data  # noqa: F401,F403
+    import mmaction.data_elements  # noqa: F401,F403
     import mmaction.datasets  # noqa: F401,F403
     import mmaction.engine  # noqa: F401,F403
     import mmaction.evaluation  # noqa: F401,F403

@@ -11,7 +11,7 @@ from mmengine.utils.parrots_wrapper import _BatchNorm
 from torch import Tensor, nn
 from torch.nn.modules.utils import _ntuple, _triple
 
-from mmaction.core.utils import ConfigType, OptConfigType
+from mmaction.utils import ConfigType, OptConfigType
 from mmaction.registry import MODELS
 
 
