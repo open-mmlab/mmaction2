@@ -14,7 +14,6 @@ Models:
     FLOPs: 38615475200
     Parameters: 78409573
     Pretrained: sports1m
-    Resolution: 128x171
     Training Data: UCF101
     Training Resources: 8 GPUs
   Modality: RGB
