@@ -3,16 +3,18 @@ from typing import List, Tuple, Union
 
 from torch import Tensor
 
-from mmaction.utils import (ConfigType, InstanceList, SampleList,
-                            SamplingResultList)
+from mmaction.utils import (ConfigType, InstanceList, SampleList)
 
 try:
-    from mmdet.core import bbox2roi
+    from mmdet.structures.bbox import bbox2roi
     from mmdet.models.roi_heads import StandardRoIHead
+    from mmdet.models.task_modules.samplers import SamplingResult
     from mmdet.registry import MODELS as MMDET_MODELS
     mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
+    from mmaction.utils import SamplingResult
     mmdet_imported = False
+
 
 if mmdet_imported:
 
@@ -100,7 +102,7 @@ if mmdet_imported:
             return bbox_results
 
         def bbox_loss(self, x: Union[Tensor, Tuple[Tensor]],
-                      sampling_results: SamplingResultList,
+                      sampling_results: List[SamplingResult],
                       batch_img_metas: List[dict], **kwargs) -> dict:
             """Perform forward propagation and loss calculation of the bbox
             head on the features of the upstream network.

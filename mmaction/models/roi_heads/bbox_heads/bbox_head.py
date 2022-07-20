@@ -13,11 +13,11 @@ from mmaction.data_elements.bbox import bbox_target
 from mmaction.utils import InstanceList
 
 try:
-    from mmdet.core.utils import SamplingResultList
+    from mmdet.models.task_modules.samplers import SamplingResult
     from mmdet.registry import MODELS as MMDET_MODELS
     mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
-    from mmaction.core.utils import SamplingResultList
+    from mmaction.utils import SamplingResult
     mmdet_imported = False
 
 # Resolve cross-entropy function to support multi-target in Torch < 1.10
@@ -146,7 +146,7 @@ class BBoxHeadAVA(nn.Module):
         return cls_score
 
     @staticmethod
-    def get_targets(sampling_results: SamplingResultList,
+    def get_targets(sampling_results: List[SamplingResult],
                     rcnn_train_cfg: ConfigDict) -> tuple:
         pos_proposals = [res.pos_priors for res in sampling_results]
         neg_proposals = [res.neg_priors for res in sampling_results]
@@ -217,7 +217,7 @@ class BBoxHeadAVA(nn.Module):
         return recall_thr, prec_thr, recalls_k, precs_k
 
     def loss_and_target(self, cls_score: Tensor, rois: Tensor,
-                        sampling_results: SamplingResultList,
+                        sampling_results: List[SamplingResult],
                         rcnn_train_cfg: ConfigDict, **kwargs) -> dict:
         """Calculate the loss based on the features extracted by the bbox head.
 
