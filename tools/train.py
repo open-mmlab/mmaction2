@@ -14,6 +14,11 @@ def parse_args():
     parser.add_argument('config', help='train config file path')
     parser.add_argument('--work-dir', help='the dir to save logs and models')
     parser.add_argument(
+        '--amp',
+        action='store_true',
+        default=False,
+        help='enable automatic-mixed-precision training')
+    parser.add_argument(
         '--cfg-options',
         nargs='+',
         action=DictAction,
@@ -56,6 +61,11 @@ def main():
         # use config filename as default work_dir if cfg.work_dir is None
         cfg.work_dir = osp.join('./work_dirs',
                                 osp.splitext(osp.basename(args.config))[0])
+
+    # enable automatic-mixed-precision training
+    if args.amp:
+        cfg.optim_wrapper.type = 'AmpOptimWrapper'
+        cfg.optim_wrapper.loss_scale = 'dynamic'
 
     runner = Runner.from_cfg(cfg)
     runner.train()
