@@ -6,6 +6,7 @@ from .backbones import (AGCN, C3D, STGCN, X3D, MobileNetV2, MobileNetV2TSM,
 from .common import (TAM, Conv2plus1d, DividedSpatialAttentionWithNorm,
                      DividedTemporalAttentionWithNorm, FFNWithNorm,
                      SubBatchNorm3D)
+from .data_preprocessors import ActionDataPreprocessor
 from .heads import (BaseHead, I3DHead, SlowFastHead, STGCNHead,
                     TimeSformerHead, TPNHead, TRNHead, TSMHead, TSNHead,
                     X3DHead)
@@ -16,8 +17,7 @@ from .necks import TPN
 from .recognizers import (BaseRecognizer, Recognizer2D, Recognizer3D,
                           RecognizerGCN)
 from .roi_heads import ACRNHead, AVARoIHead, BBoxHeadAVA, SingleRoIExtractor3D
-from .utils import (BaseMiniBatchBlending, CutmixBlending, MixupBlending)
-from .data_preprocessors import ActionDataPreprocessor
+from .utils import BaseMiniBatchBlending, CutmixBlending, MixupBlending
 
 __all__ = [
     'C3D', 'ResNet', 'STGCN', 'ResNet3d', 'ResNet2Plus1d', 'I3DHead',

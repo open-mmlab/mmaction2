@@ -6,7 +6,6 @@ import torch.nn.functional as F
 from torch import Tensor
 
 
-
 def bbox_target(pos_bboxes_list: List[Tensor], neg_bboxes_list: List[Tensor],
                 gt_labels: List[Tensor], cfg: dict) -> tuple:
     """Generate classification targets for bboxes.

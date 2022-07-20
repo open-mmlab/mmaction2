@@ -8,7 +8,6 @@ from mmengine.data import InstanceData, LabelData
 
 from mmaction.data_elements import ActionDataSample
 
-
 # Type hint of config data
 ConfigType = Union[ConfigDict, dict]
 OptConfigType = Optional[ConfigType]

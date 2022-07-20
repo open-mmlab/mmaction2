@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os
 from datetime import datetime
-from typing import Any, Optional, Sequence, Tuple, List
+from typing import Any, List, Optional, Sequence, Tuple
 
 from mmengine.evaluator import BaseMetric
 

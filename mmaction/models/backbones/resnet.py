@@ -8,8 +8,8 @@ from mmengine.utils.parrots_wrapper import _BatchNorm
 from torch import Tensor, nn
 from torch.utils import checkpoint as cp
 
-from mmaction.utils import ConfigType
 from mmaction.registry import MODELS
+from mmaction.utils import ConfigType
 
 
 class BasicBlock(nn.Module):

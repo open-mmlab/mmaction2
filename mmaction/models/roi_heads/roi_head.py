@@ -4,7 +4,7 @@ from typing import List, Tuple, Union
 from torch import Tensor
 
 from mmaction.utils import (ConfigType, InstanceList, SampleList,
-                                 SamplingResultList)
+                            SamplingResultList)
 
 try:
     from mmdet.core import bbox2roi
