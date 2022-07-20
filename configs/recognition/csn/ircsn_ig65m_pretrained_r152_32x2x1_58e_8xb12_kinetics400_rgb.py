@@ -2,19 +2,15 @@ _base_ = [
     '../../_base_/models/ircsn_r152.py', '../../_base_/default_runtime.py'
 ]
 
-# model settings
 model = dict(
     backbone=dict(
-        depth=50,
-        norm_eval=True,
-        bn_frozen=True,
         pretrained=  # noqa: E251
-        'https://download.openmmlab.com/mmaction/recognition/csn/ircsn_from_scratch_r50_ig65m_20210617-ce545a37.pth'  # noqa: E501
+        'https://download.openmmlab.com/mmaction/recognition/csn/ircsn_from_scratch_r152_ig65m_20200807-771c4135.pth'  # noqa: E501
     ))
 
 # dataset settings
 dataset_type = 'VideoDataset'
-root = './data/Kinetics400/'
+root = './data/kinetics400/'
 data_root = root + 'videos_train'
 data_root_val = root + 'videos_val'
 data_root_test = data_root_val
@@ -64,8 +60,8 @@ test_pipeline = [
 ]
 
 train_dataloader = dict(
-    batch_size=3,
-    num_workers=2,
+    batch_size=12,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
@@ -74,8 +70,8 @@ train_dataloader = dict(
         data_prefix=dict(video=data_root),
         pipeline=train_pipeline))
 val_dataloader = dict(
-    batch_size=3,
-    num_workers=2,
+    batch_size=1,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
@@ -86,7 +82,7 @@ val_dataloader = dict(
         test_mode=True))
 test_dataloader = dict(
     batch_size=1,
-    num_workers=2,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
@@ -100,7 +96,7 @@ val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 
 train_cfg = dict(
-    type='EpochBasedTrainLoop', max_epochs=58, val_begin=1, val_interval=1)
+    type='EpochBasedTrainLoop', max_epochs=58, val_begin=1, val_interval=5)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
@@ -109,19 +105,18 @@ param_scheduler = [
     dict(
         type='MultiStepLR',
         begin=0,
-        end=58,
+        end=60,
         by_epoch=True,
         milestones=[32, 48],
         gamma=0.1)
 ]
 
 optimizer = dict(
-    type='SGD', lr=0.000125, momentum=0.9,
+    type='SGD', lr=0.0005, momentum=0.9,
     weight_decay=0.0001)  # this lr is used for 8 gpus
 
 optim_wrapper = dict(
     optimizer=optimizer, clip_grad=dict(max_norm=40, norm_type=2))
 
 default_hooks = dict(checkpoint=dict(interval=2, max_keep_ckpts=5))
-
-find_unused_parameters = True
+# find_unused_parameters = True
