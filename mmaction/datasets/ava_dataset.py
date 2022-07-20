@@ -9,9 +9,9 @@ from mmengine.fileio import load
 from mmengine.logging import MMLogger
 from mmengine.utils import check_file_exist
 
-from mmaction.utils import ConfigType
 from mmaction.evaluation import read_labelmap
 from mmaction.registry import DATASETS
+from mmaction.utils import ConfigType
 
 
 @DATASETS.register_module()

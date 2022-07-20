@@ -11,8 +11,8 @@ from mmengine.utils.parrots_wrapper import _BatchNorm
 from torch import Tensor, nn
 from torch.nn.modules.utils import _ntuple, _triple
 
-from mmaction.utils import ConfigType, OptConfigType
 from mmaction.registry import MODELS
+from mmaction.utils import ConfigType, OptConfigType
 
 
 class BasicBlock3d(nn.Module):

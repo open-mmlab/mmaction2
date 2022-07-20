@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import List, Callable, Union, Optional
+from typing import Callable, List, Optional, Union
 
 from mmengine.dataset import BaseDataset
 from mmengine.fileio import load
@@ -23,9 +23,9 @@ class PoseDataset(BaseDataset):
     Args:
         ann_file (str): Path to the annotation file.
         pipeline (list): A sequence of data transforms.
-        split (str, optional): The dataset split used. Only applicable to ``UCF`` or ``HMDB``.
-            Allowed choices are ``train1``, ``test1``, ``train2``, ``test2``,
-            ``train3``, ``test3``. Defaults to None.
+        split (str, optional): The dataset split used. Only applicable to
+            ``UCF`` or ``HMDB``. Allowed choices are ``train1``, ``test1``,
+            ``train2``, ``test2``, ``train3``, ``test3``. Defaults to None.
         start_index (int): Specify a start index for frames in consideration of
             different filename format. Defaults to 1.
         modality (str): Modality of data. Support ``RGB``, ``Flow``.

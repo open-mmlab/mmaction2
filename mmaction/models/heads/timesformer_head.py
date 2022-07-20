@@ -2,8 +2,8 @@
 from mmcv.cnn import trunc_normal_init
 from torch import Tensor, nn
 
-from mmaction.utils import ConfigType
 from mmaction.registry import MODELS
+from mmaction.utils import ConfigType
 from .base import BaseHead
 
 

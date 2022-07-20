@@ -3,8 +3,8 @@ import torch
 from mmcv.cnn import normal_init
 from torch import Tensor, nn
 
-from mmaction.utils import ConfigType
 from mmaction.registry import MODELS
+from mmaction.utils import ConfigType
 from .base import AvgConsensus, BaseHead
 
 

@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
 import warnings
-from typing import List, Union, Callable, Optional
+from typing import Callable, List, Optional, Union
 
 import torch
 from mmengine.dataset import BaseDataset
@@ -63,8 +63,8 @@ class RawframeDataset(BaseDataset):
     Args:
         ann_file (str): Path to the annotation file.
         pipeline (list): A sequence of data transforms.
-        data_prefix (dict or ConfigDict): Path to a directory where video frames
-            are held. Defaults to ``dict(img='')``.
+        data_prefix (dict or ConfigDict): Path to a directory where video
+            frames are held. Defaults to ``dict(img='')``.
         filename_tmpl (str): Template for each filename.
             Defaults to ``img_{:05}.jpg``.
         with_offset (bool): Determines whether the offset information is in
