@@ -7,13 +7,12 @@ import sys
 from multiprocessing import Pool
 
 
-def resize_videos(vid_item):
+def resize_videos(vid_item, args):
     """Generate resized video cache.
 
     Args:
         vid_item (list): Video item containing video full path,
             video relative path.
-
     Returns:
         bool: Whether generate video cache successfully.
     """
@@ -51,6 +50,11 @@ def resize_videos(vid_item):
     print(f'{vid_path} done')
     sys.stdout.flush()
     return True
+
+
+def run_with_args(item):
+    vid_item, args = item
+    return resize_videos(vid_item, args)
 
 
 def parse_args():
@@ -118,4 +122,5 @@ if __name__ == '__main__':
     elif args.level == 1:
         vid_list = list(map(osp.basename, fullpath_list))
     pool = Pool(args.num_worker)
-    pool.map(resize_videos, zip(fullpath_list, vid_list))
+    vid_items = zip(fullpath_list, vid_list)
+    pool.map(run_with_args, [(item, args) for item in vid_items])
