@@ -9,6 +9,7 @@ from multiprocessing import Pool
 
 def resize_videos(vid_item, args):
     """Generate resized video cache.
+
     Args:
         vid_item (list): Video item containing video full path,
             video relative path.
@@ -52,7 +53,7 @@ def resize_videos(vid_item, args):
 
 
 def run_with_args(item):
-    vid_item, args = item 
+    vid_item, args = item
     return resize_videos(vid_item, args)
 
 
