@@ -15,7 +15,7 @@ train_pipeline = [
     dict(type='DecordInit'),
     dict(type='SampleFrames', clip_len=16, frame_interval=1, num_clips=1),
     dict(type='DecordDecode'),
-    dict(type='Resize', scale=(128, 171), keep_ratio=False),
+    dict(type='RandomRescale', scale_range=(128, 160)),
     dict(type='RandomCrop', size=112),
     dict(type='Flip', flip_ratio=0.5),
     dict(type='FormatShape', input_format='NCTHW'),
@@ -30,7 +30,7 @@ val_pipeline = [
         num_clips=1,
         test_mode=True),
     dict(type='DecordDecode'),
-    dict(type='Resize', scale=(128, 171), keep_ratio=False),
+    dict(type='Resize', scale=(-1, 128)),
     dict(type='CenterCrop', crop_size=112),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='PackActionInputs')
@@ -44,7 +44,7 @@ test_pipeline = [
         num_clips=10,
         test_mode=True),
     dict(type='DecordDecode'),
-    dict(type='Resize', scale=(128, 171), keep_ratio=False),
+    dict(type='Resize', scale=(-1, 128)),
     dict(type='CenterCrop', crop_size=112),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='PackActionInputs')
@@ -52,7 +52,7 @@ test_pipeline = [
 
 train_dataloader = dict(
     batch_size=30,
-    num_workers=2,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
@@ -62,7 +62,7 @@ train_dataloader = dict(
         pipeline=train_pipeline))
 val_dataloader = dict(
     batch_size=30,
-    num_workers=2,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
@@ -73,7 +73,7 @@ val_dataloader = dict(
         test_mode=True))
 test_dataloader = dict(
     batch_size=1,
-    num_workers=2,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
