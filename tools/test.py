@@ -8,14 +8,15 @@ import mmcv
 import torch
 from mmcv import Config, DictAction
 from mmcv.cnn import fuse_conv_bn
+from mmcv.device import get_device
 from mmcv.fileio.io import file_handlers
 from mmcv.runner import get_dist_info, init_dist, load_checkpoint
 from mmcv.runner.fp16_utils import wrap_fp16_model
 
 from mmaction.datasets import build_dataloader, build_dataset
 from mmaction.models import build_model
-from mmaction.utils import (build_ddp, build_dp, default_device,
-                            register_module_hooks, setup_multi_processes)
+from mmaction.utils import (build_ddp, build_dp, register_module_hooks,
+                            setup_multi_processes)
 
 # TODO import test functions from mmcv and delete them from mmaction2
 try:
@@ -98,6 +99,11 @@ def parse_args():
         '--tensorrt',
         action='store_true',
         help='Whether to test with TensorRT engine or not')
+    parser.add_argument(
+        '--device',
+        choices=['cpu', 'cuda', 'ipu'],
+        default='cuda',
+        help='device used for testing')
     args = parser.parse_args()
     if 'LOCAL_RANK' not in os.environ:
         os.environ['LOCAL_RANK'] = str(args.local_rank)
@@ -158,12 +164,12 @@ def inference_pytorch(args, cfg, distributed, data_loader):
 
     if not distributed:
         model = build_dp(
-            model, default_device, default_args=dict(device_ids=cfg.gpu_ids))
+            model, args.device, default_args=dict(device_ids=cfg.gpu_ids))
         outputs = single_gpu_test(model, data_loader)
     else:
         model = build_ddp(
             model,
-            default_device,
+            args.device,
             default_args=dict(
                 device_ids=[int(os.environ['LOCAL_RANK'])],
                 broadcast_buffers=False))
@@ -324,6 +330,8 @@ def main():
     if cfg.get('cudnn_benchmark', False):
         torch.backends.cudnn.benchmark = True
     cfg.data.test.test_mode = True
+
+    cfg.device = args.device or get_device()
 
     # init distributed env first, since logger depends on the dist info.
     if args.launcher == 'none':

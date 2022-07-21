@@ -10,6 +10,7 @@ import mmcv
 import torch
 import torch.distributed as dist
 from mmcv import Config, DictAction
+from mmcv.device import get_device
 from mmcv.runner import get_dist_info, init_dist, set_random_seed
 from mmcv.utils import get_git_hash
 
@@ -41,6 +42,8 @@ def parse_args():
         help=('whether to test the best checkpoint (if applicable) after '
               'training'))
     group_gpus = parser.add_mutually_exclusive_group()
+    group_gpus.add_argument(
+        '--device', help='device used for training. (Deprecated)')
     group_gpus.add_argument(
         '--gpus',
         type=int,
@@ -122,6 +125,10 @@ def main():
         elif args.gpus is not None:
             warnings.warn('Non-distributed training can only use 1 gpu now. ')
             cfg.gpu_ids = range(1)
+        elif args.device is not None:
+            warnings.warn('Non-distributed training on device %s. ' %
+                          args.device)
+            cfg.gpu_ids = range(1)
 
     # init distributed env first, since logger depends on the dist info.
     if args.launcher == 'none':
@@ -163,7 +170,8 @@ def main():
     logger.info(f'Config: {cfg.pretty_text}')
 
     # set random seeds
-    seed = init_random_seed(args.seed, distributed=distributed)
+    cfg.device = args.device or get_device()
+    seed = init_random_seed(args.seed, device=cfg.device)
     seed = seed + dist.get_rank() if args.diff_seed else seed
     logger.info(f'Set random seed to {seed}, '
                 f'deterministic: {args.deterministic}')
