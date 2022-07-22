@@ -15,7 +15,7 @@ train_pipeline = [
     dict(type='DecordInit'),
     dict(type='SampleFrames', clip_len=16, frame_interval=1, num_clips=1),
     dict(type='DecordDecode'),
-    dict(type='RandomRescale', scale_range=(128, 160)),
+    dict(type='Resize', scale=(-1, 128)),
     dict(type='RandomCrop', size=112),
     dict(type='Flip', flip_ratio=0.5),
     dict(type='FormatShape', input_format='NCTHW'),
