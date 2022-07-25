@@ -8,17 +8,6 @@ model = dict(
         pool1_stride_t=1,
         with_pool2=True))
 
-# dataset settings
-dataset_type = 'VideoDataset'
-root = './data/kinetics400/'
-data_root = root + 'videos_train'
-data_root_val = root + 'videos_val'
-data_root_test = data_root_val
-
-ann_file_train = root + 'kinetics400_train_list_videos.txt'
-ann_file_val = root + 'kinetics400_val_list_videos.txt'
-ann_file_test = ann_file_val
-
 train_pipeline = [
     dict(type='DecordInit'),
     dict(type='SampleFrames', clip_len=8, frame_interval=8, num_clips=1),

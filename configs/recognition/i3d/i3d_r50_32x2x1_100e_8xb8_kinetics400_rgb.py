@@ -8,7 +8,6 @@ dataset_type = 'VideoDataset'
 root = './data/kinetics400/'
 data_root = root + 'videos_train'
 data_root_val = root + 'videos_val'
-data_root_test = data_root_val
 
 ann_file_train = root + 'kinetics400_train_list_videos.txt'
 ann_file_val = root + 'kinetics400_val_list_videos.txt'
