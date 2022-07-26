@@ -1,6 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
-import warnings
 from typing import Callable, List, Optional, Union
 
 import torch
@@ -61,14 +60,6 @@ class VideoDataset(BaseDataset):
                  modality: str = 'RGB',
                  test_mode: bool = False,
                  **kwargs):
-        warnings.warn('You are using "VideoDataset" to load raw videos. '
-                      'Please assert that "DecordInit" and "DecordDecode" are '
-                      'included in the pipeline.')
-        warnings.warn('"Normalize" is removed to '
-                      'the model. Please assert it is not in the pipeline. '
-                      '"Collect" and "ToTensor" operations are replaced with '
-                      '"PackActionInputs". We recommend referring our '
-                      'document or official provided config files.')
         self.multi_class = multi_class
         self.num_classes = num_classes
         self.start_index = start_index
