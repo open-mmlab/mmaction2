@@ -183,7 +183,7 @@ def main():
 
     print('The top-5 labels with corresponding scores are:')
     for result in results:
-        print(f'{result[0]}: ', result[1])
+        print(f'{result[0]}: ', '%.2f%%' % (result[1].item() * 100))
 
     if args.out_filename is not None:
 

@@ -73,36 +73,20 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
         demo/demo.mp4 tools/data/kinetics/label_map_k400.txt
     ```
 
-3. Recognize a list of rawframes as input by using a TSN model on cpu.
-
-    ```shell
-    python demo/demo.py configs/recognition/tsn/tsn_r50_inference_1x1x3_100e_kinetics400_rgb.py \
-        checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
-        PATH_TO_FRAMES/ LABEL_FILE --use-frames --device cpu
-    ```
-
 4. Recognize a video file as input by using a TSN model and then generate an mp4 file.
 
     ```shell
     # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
-    python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
+    python demo/demo.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
         checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
         demo/demo.mp4 tools/data/kinetics/label_map_k400.txt --out-filename demo/demo_out.mp4
-    ```
-
-5. Recognize a list of rawframes as input by using a TSN model and then generate a gif file.
-
-    ```shell
-    python demo/demo.py configs/recognition/tsn/tsn_r50_inference_1x1x3_100e_kinetics400_rgb.py \
-        checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
-        PATH_TO_FRAMES/ LABEL_FILE --use-frames --out-filename demo/demo_out.gif
     ```
 
 6. Recognize a video file as input by using a TSN model, then generate an mp4 file with a given resolution and resize algorithm.
 
     ```shell
     # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
-    python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
+    python demo/demo.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
         checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
         demo/demo.mp4 tools/data/kinetics/label_map_k400.txt --target-resolution 340 256 --resize-algorithm bilinear \
         --out-filename demo/demo_out.mp4
@@ -112,7 +96,7 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
     # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
     # If either dimension is set to -1, the frames are resized by keeping the existing aspect ratio
     # For --target-resolution 170 -1, original resolution (340, 256) -> target resolution (170, 128)
-    python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
+    python demo/demo.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
         checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
         demo/demo.mp4 tools/data/kinetics/label_map_k400.txt --target-resolution 170 -1 --resize-algorithm bilinear \
         --out-filename demo/demo_out.mp4
@@ -122,18 +106,10 @@ or use checkpoint url from `configs/` to directly load corresponding checkpoint,
 
     ```shell
     # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
-    python demo/demo.py configs/recognition/tsn/tsn_r50_video_inference_1x1x3_100e_kinetics400_rgb.py \
+    python demo/demo.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
         checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
         demo/demo.mp4 tools/data/kinetics/label_map_k400.txt --font-scale 1 --font-color red \
         --out-filename demo/demo_out.mp4
-    ```
-
-8. Recognize a list of rawframes as input by using a TSN model and then generate an mp4 file with 24 fps.
-
-    ```shell
-    python demo/demo.py configs/recognition/tsn/tsn_r50_inference_1x1x3_100e_kinetics400_rgb.py \
-        checkpoints/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth \
-        PATH_TO_FRAMES/ LABEL_FILE --use-frames --fps 24 --out-filename demo/demo_out.gif
     ```
 
 ## SpatioTemporal Action Detection Video Demo
@@ -179,8 +155,8 @@ Assume that you are located at `$MMACTION2` .
 
 ```shell
 python demo/demo_spatiotemporal_det.py --video demo/demo.mp4 \
-    --config configs/detection/ava/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb.py \
-    --checkpoint https://download.openmmlab.com/mmaction/detection/ava/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb_20201217-16378594.pth \
+    --config configs/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb.py \
+    --checkpoint https://download.openmmlab.com/mmaction/detection/ava/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb/slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb_20201217-40061d5f.pth \
     --det-config demo/faster_rcnn_r50_fpn_2x_coco.py \
     --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
     --det-score-thr 0.9 \
@@ -280,3 +256,4 @@ or use checkpoint url from `configs/` to directly load the corresponding checkpo
         https://download.openmmlab.com/mmaction/recognition/audio_recognition/tsn_r18_64x1x1_100e_kinetics400_audio_feature/tsn_r18_64x1x1_100e_kinetics400_audio_feature_20201012-bf34df6c.pth \
         audio_feature.npy label_map_k400.txt
     ```
+
