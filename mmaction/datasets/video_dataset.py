@@ -84,11 +84,7 @@ class VideoDataset(BaseDataset):
                     filename, label = line_split[0], line_split[1:]
                     label = list(map(int, label))
                 else:
-                    try:
-                        filename, label = line_split
-                    except:
-                        print(filename)
-                        print(label)
+                    filename, label = line_split
                     label = int(label)
                 if self.data_prefix['video'] is not None:
                     filename = osp.join(self.data_prefix['video'], filename)
