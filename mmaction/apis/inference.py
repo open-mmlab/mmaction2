@@ -175,7 +175,8 @@ def inference_recognizer(model, video, outputs=None, as_tensor=True, **kwargs):
 
     # forward the model
     with OutputHook(model, outputs=outputs, as_tensor=as_tensor) as h:
-        scores = model.val_step(data)[0].scores
+        scores = model.val_step(data)[0].pred_scores.item
+        scores = scores.softmax(dim=-1)
         returned_features = h.layer_outputs if outputs else None
 
     num_classes = scores.shape[-1]
