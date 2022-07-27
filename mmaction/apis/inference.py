@@ -7,11 +7,10 @@ from operator import itemgetter
 
 import mmengine
 import numpy as np
-import torch
-from mmcv.parallel import collate, scatter
+
+from mmengine.data import pseudo_collate
 from mmengine.dataset import Compose
 from mmengine.runner import load_checkpoint
-from mmengine.data import pseudo_collate
 
 from mmaction.engine import OutputHook
 from mmaction.registry import MODELS
@@ -105,7 +104,7 @@ def inference_recognizer(model, video, outputs=None, as_tensor=True, **kwargs):
     assert outputs is None or isinstance(outputs, (tuple, list))
 
     cfg = model.cfg
-    device = next(model.parameters()).device  # model device
+
     # build the data pipeline
     test_pipeline = cfg.test_pipeline
     # Alter data pipelines & prepare inputs

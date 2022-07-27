@@ -9,13 +9,12 @@ import cv2
 import mmcv
 import numpy as np
 import torch
+from mmengine import DictAction, load_checkpoint
+from mmengine.data import InstanceData
 
+from mmaction.data_elements import ActionDataSample
 from mmaction.registry import MODELS
 from mmaction.utils import register_all_modules
-from mmengine.data import InstanceData, LabelData
-from mmaction.data_elements import ActionDataSample
-
-from mmengine import Config, DictAction, load_checkpoint
 
 try:
     import mmdet
@@ -228,7 +227,7 @@ def detection_inference(args, frame_paths):
         # We only keep human detections with score larger than det_score_thr
         bboxes = result.pred_instances.bboxes
         scores = result.pred_instances.scores
-        result = bboxes[scores> args.det_score_thr]
+        result = bboxes[scores > args.det_score_thr]
         results.append(result)
         prog_bar.update()
     return results
@@ -289,7 +288,7 @@ def main():
 
     register_all_modules(init_default_scope=True)
     mmdet.utils.register_all_modules(init_default_scope=True)
-    
+
     frame_paths, original_frames = frame_extraction(args.video)
     num_frame = len(frame_paths)
     h, w, _ = original_frames[0].shape
@@ -353,8 +352,7 @@ def main():
     img_norm_cfg = dict(
         mean=np.array(config.model.data_preprocessor.mean),
         std=np.array(config.model.data_preprocessor.std),
-        to_rgb=False
-    )
+        to_rgb=False)
 
     print('Performing SpatioTemporal Action Detection for each clip')
     assert len(timestamps) == len(human_detections)
@@ -373,14 +371,12 @@ def main():
         input_array = np.stack(imgs).transpose((3, 0, 1, 2))[np.newaxis]
         input_tensor = torch.from_numpy(input_array).to(args.device)
 
-        packed_results = dict()
-
         datasample = ActionDataSample()
         datasample.proposals = InstanceData(bboxes=proposal)
         datasample.set_metainfo(dict(img_shape=(new_h, new_w)))
         with torch.no_grad():
             result = model(input_tensor, [datasample], mode='predict')
-            scores = result[0].pred_instances.scores 
+            scores = result[0].pred_instances.scores
             prediction = []
             # N proposals
             for i in range(proposal.shape[0]):
@@ -391,7 +387,8 @@ def main():
                     continue
                 for j in range(proposal.shape[0]):
                     if scores[j, i] > args.action_score_thr:
-                        prediction[j].append((label_map[i + 1], scores[j, i].item()))
+                        prediction[j].append(
+                            (label_map[i + 1], scores[j, i].item()))
             predictions.append(prediction)
         prog_bar.update()
 
@@ -424,4 +421,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

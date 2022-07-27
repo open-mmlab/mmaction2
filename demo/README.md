@@ -31,7 +31,7 @@ When running demos using our provided scripts, you may specify `--cfg-options` t
 
 ## Video demo
 
-We provide a demo script to predict the recognition result using a single video. 
+We provide a demo script to predict the recognition result using a single video.
 
 ```shell
 python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} {LABEL_FILE} [--use-frames] \
@@ -256,4 +256,3 @@ or use checkpoint url from `configs/` to directly load the corresponding checkpo
         https://download.openmmlab.com/mmaction/recognition/audio_recognition/tsn_r18_64x1x1_100e_kinetics400_audio_feature/tsn_r18_64x1x1_100e_kinetics400_audio_feature_20201012-bf34df6c.pth \
         audio_feature.npy label_map_k400.txt
     ```
-

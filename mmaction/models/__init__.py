@@ -17,8 +17,8 @@ from .necks import TPN
 from .recognizers import (BaseRecognizer, Recognizer2D, Recognizer3D,
                           RecognizerGCN)
 from .roi_heads import ACRNHead, AVARoIHead, BBoxHeadAVA, SingleRoIExtractor3D
-from .utils import BaseMiniBatchBlending, CutmixBlending, MixupBlending
 from .task_modules import MaxIoUAssignerAVA
+from .utils import BaseMiniBatchBlending, CutmixBlending, MixupBlending
 
 __all__ = [
     'C3D', 'ResNet', 'STGCN', 'ResNet3d', 'ResNet2Plus1d', 'I3DHead',

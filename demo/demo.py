@@ -10,8 +10,8 @@ import torch
 import webcolors
 from mmengine import Config, DictAction
 
+from mmaction.apis import inference_recognizer, init_recognizer
 from mmaction.utils import register_all_modules
-from mmaction.apis import init_recognizer, inference_recognizer
 
 
 def parse_args():
@@ -165,7 +165,6 @@ def main():
 
     # build the recognizer from a config file and checkpoint file/url
     model = init_recognizer(cfg, args.checkpoint, device=device)
-
 
     # e.g. use ('backbone', ) to return backbone feature
     output_layer_names = None
