@@ -7,7 +7,6 @@ from operator import itemgetter
 
 import mmengine
 import numpy as np
-
 from mmengine.data import pseudo_collate
 from mmengine.dataset import Compose
 from mmengine.runner import load_checkpoint

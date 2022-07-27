@@ -7,7 +7,6 @@
 - [SpatioTemporal Action Detection Video Demo](#spatiotemporal-action-detection-video-demo): A demo script to predict the SpatioTemporal Action Detection result using a single video.
 - [Skeleton-based Action Recognition Demo](#skeleton-based-action-recognition-demo): A demo script to predict the skeleton-based action recognition result using a single video.
 
-
 ## Modify configs through script arguments
 
 When running demos using our provided scripts, you may specify `--cfg-options` to in-place modify the config.
@@ -229,7 +228,6 @@ python demo/demo_skeleton.py demo/ntu_sample.avi demo/skeleton_demo.mp4 \
     --pose-checkpoint https://download.openmmlab.com/mmpose/top_down/hrnet/hrnet_w32_coco_256x192-c78dce93_20200708.pth \
     --label-map tools/data/skeleton/label_map_ntu120.txt
 ```
-
 
 Demo script to predict the audio-based action recognition using a single audio feature.
 
