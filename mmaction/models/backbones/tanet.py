@@ -94,10 +94,11 @@ class TANet(ResNet):
         assert num_segments >= 3
         self.num_segments = num_segments
         self.tam_cfg = deepcopy(tam_cfg)
-
-    def init_weights(self):
         super().init_weights()
         self.make_tam_modeling()
+
+    def init_weights(self):
+        pass
 
     def make_tam_modeling(self):
         """Replace ResNet-Block with TA-Block."""
