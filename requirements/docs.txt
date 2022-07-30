@@ -1,6 +1,6 @@
 docutils==0.16.0
 einops
-markdown<3.4.0
+markdown
 myst-parser
 opencv-python!=4.5.5.62,!=4.5.5.64
 # Skip problematic opencv-python versions
