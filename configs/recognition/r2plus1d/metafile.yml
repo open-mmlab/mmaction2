@@ -17,6 +17,7 @@ Models:
       Parameters: 63759281
       Pretrained: None
       Resolution: short-side 320
+      Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
     Results:
@@ -40,6 +41,7 @@ Models:
       Parameters: 63759281
       Pretrained: None
       Resolution: short-side 320
+      Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
     Results:
