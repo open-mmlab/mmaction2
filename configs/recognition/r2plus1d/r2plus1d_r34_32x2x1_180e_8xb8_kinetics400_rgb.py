@@ -1,7 +1,4 @@
-_base_ = ['./r2plus1d_r34_8x8x1_180e_kinetics400_rgb.py']
-
-# model settings
-model = dict(backbone=dict(act_cfg=dict(type='ReLU')))
+_base_ = ['./r2plus1d_r34_8x8x1_180e_8xb8_kinetics400_rgb.py']
 
 # dataset settings
 dataset_type = 'VideoDataset'
@@ -10,10 +7,9 @@ data_root_val = 'data/kinetics400/videos_val'
 ann_file_train = 'data/kinetics400/kinetics400_train_list_videos.txt'
 ann_file_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
 ann_file_test = 'data/kinetics400/kinetics400_val_list_videos.txt'
-
 train_pipeline = [
     dict(type='DecordInit'),
-    dict(type='SampleFrames', clip_len=8, frame_interval=8, num_clips=1),
+    dict(type='SampleFrames', clip_len=32, frame_interval=2, num_clips=1),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='RandomResizedCrop'),
@@ -26,8 +22,8 @@ val_pipeline = [
     dict(type='DecordInit'),
     dict(
         type='SampleFrames',
-        clip_len=8,
-        frame_interval=8,
+        clip_len=32,
+        frame_interval=2,
         num_clips=1,
         test_mode=True),
     dict(type='DecordDecode'),
@@ -40,8 +36,8 @@ test_pipeline = [
     dict(type='DecordInit'),
     dict(
         type='SampleFrames',
-        clip_len=8,
-        frame_interval=8,
+        clip_len=32,
+        frame_interval=2,
         num_clips=10,
         test_mode=True),
     dict(type='DecordDecode'),
@@ -51,8 +47,8 @@ test_pipeline = [
     dict(type='PackActionInputs')
 ]
 train_dataloader = dict(
-    batch_size=16,
-    num_workers=16,
+    batch_size=8,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
@@ -61,8 +57,8 @@ train_dataloader = dict(
         data_prefix=dict(video=data_root),
         pipeline=train_pipeline))
 val_dataloader = dict(
-    batch_size=16,
-    num_workers=16,
+    batch_size=8,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
@@ -73,7 +69,7 @@ val_dataloader = dict(
         test_mode=True))
 test_dataloader = dict(
     batch_size=1,
-    num_workers=16,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
@@ -82,7 +78,3 @@ test_dataloader = dict(
         data_prefix=dict(video=data_root_val),
         pipeline=test_pipeline,
         test_mode=True))
-# optimizer
-optim_wrapper = dict(
-    optimizer=dict(type='SGD', lr=0.2, momentum=0.9,
-                   weight_decay=1e-4))  # this lr is used for 8 gpus
