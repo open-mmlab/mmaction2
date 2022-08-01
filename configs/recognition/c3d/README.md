@@ -21,7 +21,7 @@ We propose a simple, yet effective approach for spatiotemporal feature learning 
 
 | config | resolution | gpus | backbone | pretrain | top1 acc | top5 acc | testing protocol| inference_time(video/s)  | gpu_mem(M) | ckpt | log |
 |:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb.py](/configs/recognition/c3d/c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb.py)|128x171|8| c3d | sports1m | 82.92 | 96.11 | 10 clips x 1 crop | x | 6067 | [ckpt](https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb/c3d_sports1m_16x1x1_45e_ucf101_rgb_20201021-26655025.pth)|[log](https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb/20201021_140429.log)|[json]
+|[c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb.py](/configs/recognition/c3d/c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb.py)|128x171|8| c3d | sports1m | 82.92 | 96.11 | 10 clips x 1 crop | x | 6067 | [ckpt](https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb/c3d_sports1m_16x1x1_45e_ucf101_rgb_20201021-26655025.pth)|[log](https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb/20201021_140429.log)|
 
 :::{note}
 
