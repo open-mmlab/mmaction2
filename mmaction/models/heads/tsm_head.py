@@ -4,7 +4,7 @@ import torch.nn as nn
 from mmcv.cnn import normal_init
 
 from ..builder import HEADS
-from .base import AvgConsensus, BaseHead
+from .base import AvgConsensus, AdaptiveConcatPool2d, BaseHead
 
 
 @HEADS.register_module()
@@ -66,9 +66,17 @@ class TSMHead(BaseHead):
 
         if self.spatial_type == 'avg':
             # use `nn.AdaptiveAvgPool2d` to adaptively match the in_channels.
-            self.avg_pool = nn.AdaptiveAvgPool2d(1)
+            self.spatial_pool = nn.AdaptiveAvgPool2d(1)
+        elif self.spatial_type == 'max':
+            # use `nn.AdaptiveMaxPool2d` to adaptively match the in_channels.
+            self.spatial_pool = nn.AdaptiveMaxPool2d(1)
+        elif self.spatial_type == 'concat':
+            # Concat `nn.AdaptiveAvgPool2d` and `nn.AdaptiveMaxPool2d`
+            # The input to the Linear layer will be doubled
+            self.spatial_pool = AdaptiveConcatPool2d(1)
+            self.fc_cls = nn.Linear(2*self.in_channels, self.num_classes)
         else:
-            self.avg_pool = None
+            self.spatial_pool = None
 
     def init_weights(self):
         """Initiate the parameters from scratch."""
@@ -88,8 +96,8 @@ class TSMHead(BaseHead):
             torch.Tensor: The classification scores for input samples.
         """
         # [N * num_segs, in_channels, 7, 7]
-        if self.avg_pool is not None:
-            x = self.avg_pool(x)
+        if self.spatial_pool is not None:
+            x = self.spatial_pool(x)
         # [N * num_segs, in_channels, 1, 1]
         x = torch.flatten(x, 1)
         # [N * num_segs, in_channels]

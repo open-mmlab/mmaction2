@@ -25,6 +25,20 @@ class AvgConsensus(nn.Module):
         return x.mean(dim=self.dim, keepdim=True)
 
 
+class AdaptiveConcatPool2d(nn.Module):
+    """Concatanate AdaptiveAvgPool and AdaptiveMaxPool
+    Args:
+        sz (int):  the target output size of the image of the form H x W
+        e.g., if output_size=1, the output tensor will have HxW -> 1x1
+    """
+    def __init__(self, sz=1):
+        super().__init__()
+        self.output_size = sz
+        self.ap = nn.AdaptiveAvgPool2d(sz)
+        self.mp = nn.AdaptiveMaxPool2d(sz)
+    def forward(self, x): return torch.cat([self.mp(x), self.ap(x)], 1)
+
+
 class BaseHead(nn.Module, metaclass=ABCMeta):
     """Base class for head.
 
