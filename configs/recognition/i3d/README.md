@@ -21,18 +21,14 @@ The paucity of videos in current action classification datasets (UCF-101 and HMD
 
 ### Kinetics-400
 
-|config | resolution | gpus | backbone |pretrain| top1 acc| top5 acc | inference_time(video/s) | gpu_mem(M)| ckpt | log| json|
-|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[i3d_r50_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py) |340x256|8| ResNet50|ImageNet |72.68|90.78|1.7 (320x3 frames)| 5170|[ckpt](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb/i3d_r50_32x2x1_100e_kinetics400_rgb_20200614-c25ef9a4.pth) | [log](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb/20200614_060456.log)| [json](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb/20200614_060456.log.json)|
-|[i3d_r50_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py) |short-side 256|8| ResNet50|ImageNet | 73.27|90.92|x|5170|[ckpt](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_256p_32x2x1_100e_kinetics400_rgb/i3d_r50_256p_32x2x1_100e_kinetics400_rgb_20200801-7d9f44de.pth)|[log](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_256p_32x2x1_100e_kinetics400_rgb/20200725_031555.log)|[json](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_256p_32x2x1_100e_kinetics400_rgb/20200725_031555.log.json)|
-|[i3d_r50_video_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_video_32x2x1_100e_kinetics400_rgb.py)|short-side 256p|8| ResNet50 |ImageNet|72.85 |90.75 |x|5170|[ckpt](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_video_32x2x1_100e_kinetics400_rgb/i3d_r50_video_32x2x1_100e_kinetics400_rgb_20200826-e31c6f52.pth)|[log](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_video_32x2x1_100e_kinetics400_rgb/20200706_143014.log)|[json](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_video_32x2x1_100e_kinetics400_rgb/20200706_143014.log.json)|
-|[i3d_r50_dense_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_dense_32x2x1_100e_kinetics400_rgb.py) |340x256|8x2| ResNet50| ImageNet|72.77|90.57|1.7 (320x3 frames)| 5170| [ckpt](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_dense_32x2x1_100e_kinetics400_rgb/i3d_r50_dense_32x2x1_100e_kinetics400_rgb_20200616-2bbb4361.pth) | [log](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_dense_32x2x1_100e_kinetics400_rgb/20200616_230011.log)| [json](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_dense_32x2x1_100e_kinetics400_rgb/20200616_230011.log.json)|
-|[i3d_r50_dense_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_dense_32x2x1_100e_kinetics400_rgb.py) |short-side 256|8| ResNet50| ImageNet|73.48|91.00|x| 5170| [ckpt](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_dense_256p_32x2x1_100e_kinetics400_rgb/i3d_r50_dense_256p_32x2x1_100e_kinetics400_rgb_20200725-24eb54cc.pth)|[log](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_dense_256p_32x2x1_100e_kinetics400_rgb/20200725_031604.log)|[json](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_dense_256p_32x2x1_100e_kinetics400_rgb/20200725_031604.log.json)|
-|[i3d_r50_lazy_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_lazy_32x2x1_100e_kinetics400_rgb.py) |340x256|8| ResNet50 |ImageNet|72.32|90.72|1.8 (320x3 frames)| 5170| [ckpt](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_fast_32x2x1_100e_kinetics400_rgb/i3d_r50_fast_32x2x1_100e_kinetics400_rgb_20200612-000e4d2a.pth) | [log](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_fast_32x2x1_100e_kinetics400_rgb/20200612_233836.log)| [json](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_fast_32x2x1_100e_kinetics400_rgb/20200612_233836.log.json)|
-|[i3d_r50_lazy_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_lazy_32x2x1_100e_kinetics400_rgb.py) |short-side 256|8| ResNet50| ImageNet|73.24|90.99|x| 5170| [ckpt](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_fast_256p_32x2x1_100e_kinetics400_rgb/i3d_r50_fast_256p_32x2x1_100e_kinetics400_rgb_20200817-4e90d1d5.pth)| [log](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_fast_256p_32x2x1_100e_kinetics400_rgb/20200725_031457.log) | [json](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_fast_256p_32x2x1_100e_kinetics400_rgb/20200725_031457.log.json) |
-|[i3d_nl_embedded_gaussian_r50_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_nl_embedded_gaussian_r50_32x2x1_100e_kinetics400_rgb.py)|short-side 256p|8x4| ResNet50 |ImageNet|74.71|91.81|x|6438|[ckpt](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_embedded_gaussian_r50_32x2x1_100e_kinetics400_rgb/i3d_nl_embedded_gaussian_r50_32x2x1_100e_kinetics400_rgb_20200813-6e6aef1b.pth)|[log](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_embedded_gaussian_r50_32x2x1_100e_kinetics400_rgb/20200813_034054.log)|[json](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_embedded_gaussian_r50_32x2x1_100e_kinetics400_rgb/20200813_034054.log.json)|
-|[i3d_nl_gaussian_r50_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_nl_gaussian_r50_32x2x1_100e_kinetics400_rgb.py)|short-side 256p|8x4| ResNet50 |ImageNet|73.37|91.26|x|4944|[ckpt](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_gaussian_r50_32x2x1_100e_kinetics400_rgb/i3d_nl_gaussian_r50_32x2x1_100e_kinetics400_rgb_20200815-17f84aa2.pth)|[log](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_gaussian_r50_32x2x1_100e_kinetics400_rgb/20200813_034909.log)|[json](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_gaussian_r50_32x2x1_100e_kinetics400_rgb/20200813_034909.log.json)|
-|[i3d_nl_dot_product_r50_32x2x1_100e_kinetics400_rgb](/configs/recognition/i3d/i3d_nl_dot_product_r50_32x2x1_100e_kinetics400_rgb.py)|short-side 256p|8x4| ResNet50 |ImageNet|73.92|91.59|x|4832|[ckpt](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_dot_product_r50_32x2x1_100e_kinetics400_rgb/i3d_nl_dot_product_r50_32x2x1_100e_kinetics400_rgb_20200814-7c30d5bb.pth)|[log](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_dot_product_r50_32x2x1_100e_kinetics400_rgb/20200814_044208.log)|[json](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_dot_product_r50_32x2x1_100e_kinetics400_rgb/20200814_044208.log.json)|
+|config | resolution | gpus | backbone |pretrain| top1 acc| top5 acc | inference_time(video/s) | gpu_mem(M)| ckpt | log|
+|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+|[i3d_r50_32x2x1_100e_8xb8_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_32x2x1_100e_8xb8_kinetics400_rgb.py) |short-side 320|8| ResNet50|ImageNet |73.22|91.11|1.7 (320x3 frames)| 5149|[ckpt](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb/i3d_r50_32x2x1_100e_kinetics400_rgb_20200614-c25ef9a4.pth) | [log](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb/20200614_060456.log)|
+|[i3d_r50_dense_32x2x1_100e_8xb8_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_dense_32x2x1_100e_8xb8_kinetics400_rgb.py) |short-side 320|8| ResNet50| ImageNet|73.77|91.35|1.7 (320x3 frames)| 5151| [ckpt](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_dense_256p_32x2x1_100e_kinetics400_rgb/i3d_r50_dense_256p_32x2x1_100e_kinetics400_rgb_20200725-24eb54cc.pth)|[log](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_dense_256p_32x2x1_100e_kinetics400_rgb/20200725_031604.log)|
+|[i3d_r50_heavy_32x2x1_100e_8xb8_kinetics400_rgb](/configs/recognition/i3d/i3d_r50_heavy_32x2x1_100e_8xb8_kinetics400_rgb.py) |short-side 320|8| ResNet50| ImageNet|76.08|92.34|x| 17350| [ckpt](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_dense_256p_32x2x1_100e_kinetics400_rgb/i3d_r50_dense_256p_32x2x1_100e_kinetics400_rgb_20200725-24eb54cc.pth)|[log](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_r50_dense_256p_32x2x1_100e_kinetics400_rgb/20200725_031604.log)|
+|[i3d_nl_dot_product_r50_32x2x1_100e_8xb8_kinetics400_rgb](/configs/recognition/i3d/i3d_nl_dot_product_r50_32x2x1_100e_8xb8_kinetics400_rgb.py)|short-side 320|8| ResNet50 |ImageNet|74.76|91.84|x|6245|[ckpt](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_dot_product_r50_32x2x1_100e_kinetics400_rgb/i3d_nl_dot_product_r50_32x2x1_100e_kinetics400_rgb_20200814-7c30d5bb.pth)|[log](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_dot_product_r50_32x2x1_100e_kinetics400_rgb/20200814_044208.log)|
+|[i3d_nl_embedded_gaussian_r50_32x2x1_100e_8xb8_kinetics400_rgb](/configs/recognition/i3d/i3d_nl_embedded_gaussian_r50_32x2x1_100e_8xb8_kinetics400_rgb.py)|short-side 320|8| ResNet50 |ImageNet|74.69|91.69|x|6415|[ckpt](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_embedded_gaussian_r50_32x2x1_100e_kinetics400_rgb/i3d_nl_embedded_gaussian_r50_32x2x1_100e_kinetics400_rgb_20200813-6e6aef1b.pth)|[log](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_embedded_gaussian_r50_32x2x1_100e_kinetics400_rgb/20200813_034054.log)|
+|[i3d_nl_gaussian_r50_32x2x1_100e_8xb8_kinetics400_rgb](/configs/recognition/i3d/i3d_nl_gaussian_r50_32x2x1_100e_8xb8_kinetics400_rgb.py)|short-side 320|8| ResNet50 |ImageNet|73.90|91.15|x|6108|[ckpt](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_gaussian_r50_32x2x1_100e_kinetics400_rgb/i3d_nl_gaussian_r50_32x2x1_100e_kinetics400_rgb_20200815-17f84aa2.pth)|[log](https://download.openmmlab.com/mmaction/recognition/i3d/i3d_nl_gaussian_r50_32x2x1_100e_kinetics400_rgb/20200813_034909.log)|
 
 :::{note}
 
@@ -54,12 +50,11 @@ You can use the following command to train a model.
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
-Example: train I3D model on Kinetics-400 dataset in a deterministic option with periodic validation.
+Example: train I3D model on Kinetics-400 dataset in a deterministic option.
 
 ```shell
-python tools/train.py configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py \
-    --work-dir work_dirs/i3d_r50_32x2x1_100e_kinetics400_rgb \
-    --validate --seed 0 --deterministic
+python tools/train.py configs/recognition/i3d/i3d_r50_32x2x1_100e_8xb8_kinetics400_rgb.py \
+    --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
 For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
@@ -72,12 +67,11 @@ You can use the following command to test a model.
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-Example: test I3D model on Kinetics-400 dataset and dump the result to a json file.
+Example: test I3D model on Kinetics-400 dataset.
 
 ```shell
-python tools/test.py configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb.py \
-    checkpoints/SOME_CHECKPOINT.pth --eval top_k_accuracy mean_class_accuracy \
-    --out result.json --average-clips prob
+python tools/test.py configs/recognition/i3d/i3d_r50_32x2x1_100e_8xb8_kinetics400_rgb.py \
+    checkpoints/SOME_CHECKPOINT.pth
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).

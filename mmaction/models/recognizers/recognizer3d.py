@@ -1,7 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
+from torch import Tensor
 
 from mmaction.registry import MODELS
+from mmaction.utils import SampleList
 from .base import BaseRecognizer
 
 
@@ -10,26 +12,25 @@ class Recognizer3D(BaseRecognizer):
     """3D recognizer model framework."""
 
     def extract_feat(self,
-                     batch_inputs,
-                     stage='neck',
-                     data_samples=None,
-                     test_mode=False):
+                     batch_inputs: Tensor,
+                     stage: str = 'neck',
+                     batch_data_samples: SampleList = None,
+                     test_mode: bool = False) -> tuple:
         """Extract features of different stages.
 
         Args:
-            batch_inputs (torch.Tensor): The input data.
+            batch_inputs (Tensor): The input data.
             stage (str): Which stage to output the feature.
-                Defaults to "neck".
-            data_samples (List[ActionDataSample]): Action data
-                samples, which are only needed in training.
-                Defaults to None.
+                Defaults to ``neck``.
+            batch_data_samples (List[:obj:`ActionDataSample`]): Action data
+                samples, which are only needed in training. Defaults to None.
             test_mode: (bool): Whether in test mode. Defaults to False.
 
         Returns:
-                torch.tensor: The extracted features.
+                Tensor: The extracted features.
                 dict: A dict recording the kwargs for downstream
                     pipeline. These keys are usually included:
-                    `loss_aux`.
+                    ``loss_aux``.
         """
 
         # Record the kwargs required by `loss` and `predict`
@@ -45,10 +46,12 @@ class Recognizer3D(BaseRecognizer):
         #   4) `num_clips` in `SampleFrames` or its subclass if `clip_len != 1`
         batch_inputs = batch_inputs.view((-1, ) + batch_inputs.shape[2:])
 
-        # Check settings of test
+        # Check settings of test.
         if test_mode:
-            if self.test_cfg is not None and self.test_cfg.get(
-                    'max_testing_views', False):
+            if self.test_cfg is not None:
+                loss_predict_kwargs['fcn_test'] = self.test_cfg.get(
+                    'fcn_test', False)
+            if self.test_cfg.get('max_testing_views', False):
                 max_testing_views = self.test_cfg.get('max_testing_views')
                 assert isinstance(max_testing_views, int)
 
@@ -82,20 +85,23 @@ class Recognizer3D(BaseRecognizer):
                     x, _ = self.neck(x)
 
             return x, loss_predict_kwargs
-
         else:
+            # Return features extracted through backbone.
             x = self.backbone(batch_inputs)
             if stage == 'backbone':
                 return x, loss_predict_kwargs
 
             loss_aux = dict()
             if self.with_neck:
-                x, loss_aux = self.neck(x, data_samples=data_samples)
+                x, loss_aux = self.neck(
+                    x, batch_data_samples=batch_data_samples)
 
+            # Return features extracted through neck.
             loss_predict_kwargs['loss_aux'] = loss_aux
             if stage == 'neck':
                 return x, loss_predict_kwargs
 
+            # Return raw logits through head.
             if self.with_cls_head and stage == 'head':
                 x = self.cls_head(x, **loss_predict_kwargs)
                 return x, loss_predict_kwargs

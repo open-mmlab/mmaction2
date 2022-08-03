@@ -2,6 +2,7 @@
 import warnings
 from abc import ABCMeta, abstractmethod
 
+import torch.nn as nn
 from mmengine.model import BaseModel, merge_dict
 from torch import Tensor
 
@@ -18,18 +19,18 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
     Args:
         backbone (dict or ConfigDict): Backbone modules to extract feature.
         cls_head (dict or ConfigDict, optional): Classification head to
-            process feature. Default: None.
+            process feature. Defaults to None.
         neck (dict or ConfigDict, optional): Neck for feature fusion.
-            Default: None.
+            Defaults to None.
         train_cfg (dict or ConfigDict, optional): Config for training.
-            Default: None.
+            Defaults to None.
         test_cfg (dict or ConfigDict, optional): Config for testing.
-            Default: None.
+            Defaults to None.
         data_preprocessor (dict or ConfigDict, optional): The pre-process
            config of :class:`ActionDataPreprocessor`.  it usually includes,
-            ``mean``, ``std`` and ``format_shape``.
+            ``mean``, ``std`` and ``format_shape``. Defaults to None.
         init_cfg (dict or ConfigDict, optional): Config to control the
-           initialization. Default: None.
+           initialization. Defaults to None.
     """
 
     def __init__(self,
@@ -41,18 +42,49 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
                  data_preprocessor: OptConfigType = None,
                  init_cfg: OptMultiConfig = None) -> None:
         if data_preprocessor is None:
-            warnings.warn(
-                'The "data_preprocessor (dict) in BaseRecognizer is None. '
-                'Please check whether it is defined in the config file. '
-                'Here we adopt the default '
-                '"data_preprocessor = dict(type=ActionDataPreprocessor)" '
-                'to build. This may cause unexpected failure.')
+            # This preprocessor will only stack batch data samples.
             data_preprocessor = dict(type='ActionDataPreprocessor')
 
         super(BaseRecognizer, self).__init__(
             data_preprocessor=data_preprocessor, init_cfg=init_cfg)
 
-        self.backbone = MODELS.build(backbone)
+        # record the source of the backbone
+        self.backbone_from = 'mmaction2'
+
+        if backbone['type'].startswith('mmcls.'):
+            try:
+                # Register all mmcls models.
+                import mmcls.models  # noqa: F401
+            except (ImportError, ModuleNotFoundError):
+                raise ImportError('Please install mmcls to use this backbone.')
+            self.backbone = MODELS.build(backbone)
+            self.backbone_from = 'mmcls'
+        elif backbone['type'].startswith('torchvision.'):
+            try:
+                import torchvision.models
+            except (ImportError, ModuleNotFoundError):
+                raise ImportError('Please install torchvision to use this '
+                                  'backbone.')
+            backbone_type = backbone.pop('type')[12:]
+            self.backbone = torchvision.models.__dict__[backbone_type](
+                **backbone)
+            # disable the classifier
+            self.backbone.classifier = nn.Identity()
+            self.backbone.fc = nn.Identity()
+            self.backbone_from = 'torchvision'
+        elif backbone['type'].startswith('timm.'):
+            try:
+                import timm
+            except (ImportError, ModuleNotFoundError):
+                raise ImportError('Please install timm to use this '
+                                  'backbone.')
+            backbone_type = backbone.pop('type')[5:]
+            # disable the classifier
+            backbone['num_classes'] = 0
+            self.backbone = timm.create_model(backbone_type, **backbone)
+            self.backbone_from = 'timm'
+        else:
+            self.backbone = MODELS.build(backbone)
 
         if neck is not None:
             self.neck = MODELS.build(neck)
@@ -63,16 +95,9 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
 
-        if hasattr(self.test_cfg, '__iter__'):
-            assert 'average_clips' not in self.test_cfg, \
-                'Average_clips (dict) is ' \
-                'defined in the Head. Please see our document or the ' \
-                'official config files.'
-
     @abstractmethod
     def extract_feat(self, batch_inputs: Tensor, **kwargs) -> ForwardResults:
         """Extract features from raw inputs."""
-        raise NotImplementedError
 
     @property
     def with_neck(self) -> bool:
@@ -86,7 +111,14 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
 
     def init_weights(self) -> None:
         """Initialize the model network weights."""
-        self.backbone.init_weights()
+        if self.backbone_from in ['mmcls', 'mmaction2']:
+            self.backbone.init_weights()
+        elif self.backbone_from in ['torchvision', 'timm']:
+            warnings.warn('We do not initialize weights for backbones in '
+                          f'{self.backbone_from}, since the weights for '
+                          f'backbones in {self.backbone_from} are initialized'
+                          'in their __init__ functions.')
+
         if self.with_cls_head:
             self.cls_head.init_weights()
         if self.with_neck:
@@ -101,15 +133,16 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
                 These should usually be mean centered and std scaled.
             batch_data_samples (List[:obj:`ActionDataSample`]): The batch
                 data samples. It usually includes information such
-                as `gt_labels`.
+                as ``gt_labels``.
 
         Returns:
             dict: A dictionary of loss components.
         """
         feats, loss_kwargs = \
-            self.extract_feat(batch_inputs, data_samples=batch_data_samples)
+            self.extract_feat(batch_inputs,
+                              batch_data_samples=batch_data_samples)
 
-        # loss_aux will be a empty dict if self.with_neck is False
+        # loss_aux will be a empty dict if `self.with_neck` is False.
         loss_aux = loss_kwargs.get('loss_aux', dict())
         loss_cls = self.cls_head.loss(feats, batch_data_samples, **loss_kwargs)
         losses = merge_dict(loss_cls, loss_aux)
@@ -122,14 +155,15 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
 
         Args:
             batch_inputs (Tensor): Raw Inputs of the recognizer.
+                These should usually be mean centered and std scaled.
             batch_data_samples (List[:obj:`ActionDataSample`]): The batch
                 data samples. It usually includes information such
-                as `gt_labels`.
+                as ``gt_labels``.
 
         Returns:
             List[:obj:`ActionDataSample`]: Return the recognition results.
-            The returns value is ActionDataSample, which usually contain
-            'pred_scores'. And the ``pred_scores`` usually contains
+            The returns value is ``ActionDataSample``, which usually contains
+            ``pred_scores``. And the ``pred_scores`` usually contains
             following keys.
 
                 - item (Tensor): Classification scores, has a shape
@@ -138,7 +172,7 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
         feats, predict_kwargs = self.extract_feat(batch_inputs, test_mode=True)
         predictions = self.cls_head.predict(feats, batch_data_samples,
                                             **predict_kwargs)
-        # connvert to ActionDataSample
+        # convert to ActionDataSample.
         predictions = self.convert_to_datasample(predictions)
         return predictions
 
@@ -167,30 +201,30 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
                 **kwargs) -> ForwardResults:
         """The unified entry for a forward process in both training and test.
 
-        The method should accept three modes: "tensor", "predict" and "loss":
+        The method should accept three modes:
 
-        - "tensor": Forward the whole network and return tensor or tuple of
+        - ``tensor``: Forward the whole network and return tensor or tuple of
         tensor without any post-processing, same as a common nn.Module.
-        - "predict": Forward and return the predictions, which are fully
+        - ``predict``: Forward and return the predictions, which are fully
         processed to a list of :obj:`ActionDataSample`.
-        - "loss": Forward and return a dict of losses according to the given
+        - ``loss``: Forward and return a dict of losses according to the given
         inputs and data samples.
 
         Note that this method doesn't handle neither back propagation nor
         optimizer updating, which are done in the :meth:`train_step`.
 
         Args:
-            batch_inputs (torch.Tensor): The input tensor with shape
+            batch_inputs (Tensor): The input tensor with shape
                 (N, C, ...) in general.
             batch_data_samples (List[:obj:`ActionDataSample`], optional): The
                 annotation data of every samples. Defaults to None.
-            mode (str): Return what kind of value. Defaults to 'tensor'.
+            mode (str): Return what kind of value. Defaults to ``tensor``.
 
         Returns:
             The return type depends on ``mode``.
 
             - If ``mode="tensor"``, return a tensor or a tuple of tensor.
-            - If ``mode="predict"``, return a list of :obj:`ActionDataSample`.
+            - If ``mode="predict"``, return a list of ``ActionDataSample``.
             - If ``mode="loss"``, return a dict of tensor.
         """
         if mode == 'tensor':
@@ -204,19 +238,15 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
                                'Only supports loss, predict and tensor mode')
 
     def convert_to_datasample(self, predictions: LabelList) -> SampleList:
-        """Convert predictions to `ActionDataSample`.
+        """Convert predictions to ``ActionDataSample``.
 
         Args:
             predictions (List[:obj:`LabelData`]): Recognition results wrapped
-                by :obj:`LabelData`.
+                by ``LabelData``.
 
         Returns:
             List[:obj:`ActionDataSample`]: Recognition results wrapped by
-            :obj:`ActionDataSample`. Each ActionDataSample usually contain
-            'pred_scores'. And the ``pred_scores`` usually contains following
-                keys:
-                - item (Tensor): Classification scores, has a shape
-                    (num_classes, )
+            ``ActionDataSample``.
         """
         predictions_list = []
         for i in range(len(predictions)):

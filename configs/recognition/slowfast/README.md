@@ -19,25 +19,13 @@ We present SlowFast networks for video recognition. Our model involves (i) a Slo
 
 ### Kinetics-400
 
-|config | resolution | gpus | backbone |pretrain| top1 acc| top5 acc | inference_time(video/s) | gpu_mem(M) | ckpt | log| json|
-|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[slowfast_r50_4x16x1_256e_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r50_4x16x1_256e_kinetics400_rgb.py) |short-side 256|8x4| ResNet50|None |74.75|91.73|x|6203|[ckpt](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_256p_4x16x1_256e_kinetics400_rgb/slowfast_r50_256p_4x16x1_256e_kinetics400_rgb_20200728-145f1097.pth)|[log](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_256p_4x16x1_256e_kinetics400_rgb/20200731_151706.log)|[json](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_256p_4x16x1_256e_kinetics400_rgb/20200731_151706.log.json)|
-|[slowfast_r50_video_4x16x1_256e_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb.py) |short-side 256|8| ResNet50|None |73.95|91.50|x|6203|[ckpt](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb/slowfast_r50_video_4x16x1_256e_kinetics400_rgb_20200826-f85b90c5.pth)|[log](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb/20200812_160237.log)|[json](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_video_4x16x1_256e_kinetics400_rgb/20200812_160237.log.json)|
-|[slowfast_r50_4x16x1_256e_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r50_4x16x1_256e_kinetics400_rgb.py) |short-side 320|8x2| ResNet50|None |76.0|92.54|1.6 ((32+4)x10x3 frames)|6203|[ckpt](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_4x16x1_256e_kinetics400_rgb/slowfast_r50_4x16x1_256e_kinetics400_rgb_20210722-04e43ed4.pth)| [log](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_4x16x1_256e_kinetics400_rgb/slowfast_r50_4x16x1_20210722.log)| [json](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_4x16x1_256e_kinetics400_rgb/slowfast_r50_4x16x1_20210722.log.json)|
-|[slowfast_prebn_r50_4x16x1_256e_kinetics400_rgb](/configs/recognition/slowfast/slowfast_prebn_r50_4x16x1_256e_kinetics400_rgb.py) |short-side 320|8x2| ResNet50|None |76.34|92.67|x|6203|[ckpt](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_prebn_r50_4x16x1_256e_kinetics400_rgb/slowfast_prebn_r50_4x16x1_256e_kinetics400_rgb_20210722-bb725050.pth)|[log](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_prebn_r50_4x16x1_256e_kinetics400_rgb/slowfast_prebn_r50_4x16x1_20210722.log)|[json](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_prebn_r50_4x16x1_256e_kinetics400_rgb/slowfast_prebn_r50_4x16x1_20210722.log.json)|
-|[slowfast_r50_8x8x1_256e_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb.py) |short-side 320|8x3| ResNet50 |None|76.94|92.8|1.3 ((32+8)x10x3 frames)|9062| [ckpt](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb/slowfast_r50_8x8x1_256e_kinetics400_rgb_20200716-73547d2b.pth) | [log](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb/20200716_192653.log)| [json](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb/20200716_192653.log.json)|
-|[slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr](/configs/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr.py) |short-side 320|8x4| ResNet50 |None|76.34|92.61||9062| [ckpt](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr-43988bac.pth) | [log](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr.log)| [json](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr.json)|
-|[slowfast_multigrid_r50_8x8x1_358e_kinetics400_rgb](/configs/recognition/slowfast/slowfast_multigrid_r50_8x8x1_358e_kinetics400_rgb.py) |short-side 320|8x2| ResNet50 |None|76.07|92.21|x|9062| [ckpt](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_multigrid_r50_8x8x1_358e_kinetics400_rgb/slowfast_multigrid_r50_8x8x1_358e_kinetics400_rgb-f82bd304.pth) | [log](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_multigrid_r50_8x8x1_358e_kinetics400_rgb/slowfast_multigrid_r50_8x8x1_358e_kinetics400_rgb.log)| [json](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_multigrid_r50_8x8x1_358e_kinetics400_rgb/slowfast_multigrid_r50_8x8x1_358e_kinetics400_rgb.json)|
-|[slowfast_prebn_r50_8x8x1_256e_kinetics400_rgb_steplr](/configs/recognition/slowfast/slowfast_perbn_r50_8x8x1_256e_kinetics400_rgb_steplr.py) |short-side 320|8x4| ResNet50 |None|76.58|92.85||9062| [ckpt](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_prebn_r50_8x8x1_256e_kinetics400_rgb_steplr/slowfast_prebn_r50_8x8x1_256e_kinetics400_rgb_steplr-28474e54.pth) | [log](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_prebn_r50_8x8x1_256e_kinetics400_rgb_steplr/slowfast_prebn_r50_8x8x1_256e_kinetics400_rgb_steplr.log)| [json](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_prebn_r50_8x8x1_256e_kinetics400_rgb_steplr/slowfast_prebn_r50_8x8x1_256e_kinetics400_rgb_steplr.json)|
-|[slowfast_r101_r50_4x16x1_256e_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r101_r50_4x16x1_256e_kinetics400_rgb.py) |short-side 256|8x1| ResNet101 + ResNet50 |None|76.69|93.07||16628| [ckpt](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r101_4x16x1_256e_kinetics400_rgb/slowfast_r101_4x16x1_256e_kinetics400_rgb_20210218-d8b58813.pth) | [log](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r101_4x16x1_256e_kinetics400_rgb/20210118_133528.log)| [json](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r101_4x16x1_256e_kinetics400_rgb/20210118_133528.log.json)|
-|[slowfast_r101_8x8x1_256e_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r101_8x8x1_256e_kinetics400_rgb.py) |short-side 256|8x4| ResNet101 |None|77.90|93.51||25994| [ckpt](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r101_8x8x1_256e_kinetics400_rgb/slowfast_r101_8x8x1_256e_kinetics400_rgb_20210218-0dd54025.pth) | [log](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r101_8x8x1_256e_kinetics400_rgb/20210218_121513.log)| [json](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r101_8x8x1_256e_kinetics400_rgb/20210218_121513.log.json)|
-|[slowfast_r152_r50_4x16x1_256e_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r152_r50_4x16x1_256e_kinetics400_rgb.py) |short-side 256|8x1| ResNet152 + ResNet50 |None|77.13|93.20||10077| [ckpt](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r152_4x16x1_256e_kinetics400_rgb/slowfast_r152_4x16x1_256e_kinetics400_rgb_20210122-bdeb6b87.pth) | [log](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r152_4x16x1_256e_kinetics400_rgb/20210122_131321.log)| [json](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r152_4x16x1_256e_kinetics400_rgb/20210122_131321.log.json)|
-
-### Something-Something V1
-
-|config | resolution | gpus | backbone |pretrain| top1 acc| top5 acc | inference_time(video/s) | gpu_mem(M) | ckpt | log| json|
-|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[slowfast_r50_16x8x1_22e_sthv1_rgb](/configs/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb.py)|height 100|8|ResNet50|Kinetics400|49.67|79.00|x|9293|[ckpt](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/slowfast_r50_16x8x1_22e_sthv1_rgb_20211202-aaaf9279.pth)|[log](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/slowfast_r50_16x8x1_22e_sthv1_rgb.log)|[json](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_16x8x1_22e_sthv1_rgb/slowfast_r50_16x8x1_22e_sthv1_rgb.json)|
+|config | resolution | gpus | backbone |pretrain| top1 acc| top5 acc | inference_time(video/s) | gpu_mem(M) | ckpt | log|
+|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+|[slowfast_r50_4x16x1_256e_8xb8_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r50_4x16x1_256e_8xb8_kinetics400_rgb.py) |short-side 320|8| ResNet50|None |75.51|92.05|x|6331|[ckpt](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_256p_4x16x1_256e_kinetics400_rgb/slowfast_r50_256p_4x16x1_256e_kinetics400_rgb_20200728-145f1097.pth)|[log](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_256p_4x16x1_256e_kinetics400_rgb/20200731_151706.log)|
+|[slowfast_r50_8x8x1_256e_8xb8_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r50_8x8x1_256e_8xb8_kinetics400_rgb.py) |short-side 320|8| ResNet50 |None|76.24|92.3|1.3 ((32+8)x10x3 frames)|9201| [ckpt](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb/slowfast_r50_8x8x1_256e_kinetics400_rgb_20200716-73547d2b.pth) | [log](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb/20200716_192653.log)|
+|[slowfast_r50_8x8x1_256e_8xb8_kinetics400_rgb_steplr](/configs/recognition/slowfast/slowfast_r50_8x8x1_256e_8xb8_kinetics400_rgb_steplr.py) |short-side 320|8| ResNet50 |None|75.72|92.37|x|9401| [ckpt](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr-43988bac.pth) | [log](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr/slowfast_r50_8x8x1_256e_kinetics400_rgb_steplr.log)|
+|[slowfast_r101_8x8x1_256e_8xb8_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r101_8x8x1_256e_8xb8_kinetics400_rgb.py) |short-side 320|8| ResNet101 |None|76.29|91.97|x|13454| [ckpt](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r101_8x8x1_256e_kinetics400_rgb/slowfast_r101_8x8x1_256e_kinetics400_rgb_20210218-0dd54025.pth) | [log](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r101_8x8x1_256e_kinetics400_rgb/20210218_121513.log)|
+|[slowfast_r101_r50_4x16x1_256e_8xb8_kinetics400_rgb](/configs/recognition/slowfast/slowfast_r101_r50_4x16x1_256e_8xb8_kinetics400_rgb.py) |short-side 320|8| ResNet101 + ResNet50 |None|76.33|93.03|x|8018| [ckpt](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r101_4x16x1_256e_kinetics400_rgb/slowfast_r101_4x16x1_256e_kinetics400_rgb_20210218-d8b58813.pth) | [log](https://download.openmmlab.com/mmaction/recognition/slowfast/slowfast_r101_4x16x1_256e_kinetics400_rgb/20210118_133528.log)|
 
 :::{note}
 
@@ -59,12 +47,11 @@ You can use the following command to train a model.
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
-Example: train SlowFast model on Kinetics-400 dataset in a deterministic option with periodic validation.
+Example: train SlowFast model on Kinetics-400 dataset in a deterministic option.
 
 ```shell
-python tools/train.py configs/recognition/slowfast/slowfast_r50_4x16x1_256e_kinetics400_rgb.py \
-    --work-dir work_dirs/slowfast_r50_4x16x1_256e_kinetics400_rgb \
-    --validate --seed 0 --deterministic
+python tools/train.py configs/recognition/slowfast/slowfast_r50_4x16x1_256e_8xb8_kinetics400_rgb.py \
+    --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
 For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
@@ -77,12 +64,11 @@ You can use the following command to test a model.
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-Example: test SlowFast model on Kinetics-400 dataset and dump the result to a json file.
+Example: test SlowFast model on Kinetics-400 dataset.
 
 ```shell
-python tools/test.py configs/recognition/slowfast/slowfast_r50_4x16x1_256e_kinetics400_rgb.py \
-    checkpoints/SOME_CHECKPOINT.pth --eval top_k_accuracy mean_class_accuracy \
-    --out result.json --average-clips=prob
+python tools/test.py configs/recognition/slowfast/slowfast_r50_4x16x1_256e_8xb8_kinetics400_rgb.py \
+    checkpoints/SOME_CHECKPOINT.pth
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).

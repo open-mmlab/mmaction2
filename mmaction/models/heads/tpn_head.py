@@ -1,5 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import Optional
+
 import torch.nn as nn
+from torch import Tensor
 
 from mmaction.registry import MODELS
 from .tsn_head import TSNHead
@@ -7,24 +10,9 @@ from .tsn_head import TSNHead
 
 @MODELS.register_module()
 class TPNHead(TSNHead):
-    """Class head for TPN.
+    """Class head for TPN."""
 
-    Args:
-        num_classes (int): Number of classes to be classified.
-        in_channels (int): Number of channels in input feature.
-        loss_cls (dict): Config for building loss.
-            Default: dict(type='CrossEntropyLoss').
-        spatial_type (str): Pooling type in spatial dimension. Default: 'avg'.
-        consensus (dict): Consensus config dict.
-        dropout_ratio (float): Probability of dropout layer. Default: 0.4.
-        init_std (float): Std value for Initiation. Default: 0.01.
-        multi_class (bool): Determines whether it is a multi-class
-            recognition task. Default: False.
-        label_smooth_eps (float): Epsilon used in label smooth.
-            Reference: https://arxiv.org/abs/1906.02629. Default: 0.
-    """
-
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
         if self.spatial_type == 'avg':
@@ -36,25 +24,29 @@ class TPNHead(TSNHead):
         self.avg_pool2d = None
         self.new_cls = None
 
-    def _init_new_cls(self):
+    def _init_new_cls(self) -> None:
         self.new_cls = nn.Conv3d(self.in_channels, self.num_classes, 1, 1, 0)
         if next(self.fc_cls.parameters()).is_cuda:
             self.new_cls = self.new_cls.cuda()
         self.new_cls.weight.copy_(self.fc_cls.weight[..., None, None, None])
         self.new_cls.bias.copy_(self.fc_cls.bias)
 
-    def forward(self, x, num_segs=None, fcn_test=False, **kwargs):
+    def forward(self,
+                x,
+                num_segs: Optional[int] = None,
+                fcn_test: bool = False,
+                **kwargs) -> Tensor:
         """Defines the computation performed at every call.
 
         Args:
-            x (torch.Tensor): The input data.
-            num_segs (int | None): Number of segments into which a video
-                is divided. Default: None.
+            x (Tensor): The input data.
+            num_segs (int, optional): Number of segments into which a video
+                is divided. Defaults to None.
             fcn_test (bool): Whether to apply full convolution (fcn) testing.
-                Default: False.
+                Defaults to False.
 
         Returns:
-            torch.Tensor: The classification scores for input samples.
+            Tensor: The classification scores for input samples.
         """
         if fcn_test:
             if self.avg_pool3d:
