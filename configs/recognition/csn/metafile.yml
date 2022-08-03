@@ -89,6 +89,9 @@ Models:
       Metrics:
        Top 1 Accuracy: 77.69
        Top 5 Accuracy: 92.93
+    Converted From:
+      Weights: https://www.dropbox.com/s/3fihu6ti60047mu/ipCSN_152_kinetics_from_scratch_f129594342.pkl?dl=0
+      Code: https://github.com/facebookresearch/VMZ/tree/b61b08194bc3273bef4c45fdfdd36c56c8579ff3
 
   - Name: ircsn_bnfrozen_r152_32x2x1_180e_kinetics400_rgb
     Config: configs/recognition/csn/ircsn_bnfrozen_r152_32x2x1_180e_kinetics400_rgb.py
@@ -110,6 +113,9 @@ Models:
       Metrics:
        Top 1 Accuracy: 76.25
        Top 5 Accuracy: 92.11
+    Converted From:
+      Weights: https://www.dropbox.com/s/46gcm7up60ssx5c/irCSN_152_kinetics_from_scratch_f98268019.pkl?dl=0
+      Code: https://github.com/facebookresearch/VMZ/tree/b61b08194bc3273bef4c45fdfdd36c56c8579ff3
 
   - Name: ipcsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb
     Config: configs/recognition/csn/ipcsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py
@@ -131,6 +137,9 @@ Models:
       Metrics:
        Top 1 Accuracy: 82.51
        Top 5 Accuracy: 95.52
+    Converted From:
+      Weights: https://www.dropbox.com/s/zpp3p0vn2i7bibl/ipCSN_152_ft_kinetics_from_ig65m_f133090949.pkl?dl=0
+      Code: https://github.com/facebookresearch/VMZ/tree/b61b08194bc3273bef4c45fdfdd36c56c8579ff3
 
   - Name: ircsn_bnfrozen_r50_32x2x1_180e_kinetics400_rgb
     Config: configs/recognition/csn/ircsn_bnfrozen_r50_32x2x1_180e_kinetics400_rgb.py
@@ -152,6 +161,9 @@ Models:
       Metrics:
        Top 1 Accuracy: 79.16
        Top 5 Accuracy: 94.08
+    Converted From:
+      Weights: https://www.dropbox.com/s/gmd8r87l3wmkn3h/irCSN_152_ft_kinetics_from_ig65m_f126851907.pkl?dl=0
+      Code: https://github.com/facebookresearch/VMZ/tree/b61b08194bc3273bef4c45fdfdd36c56c8579ff3
 
   - Name: ipcsn_sports1m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb
     Config: configs/recognition/csn/ipcsn_sports1m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py
@@ -173,6 +185,9 @@ Models:
       Metrics:
        Top 1 Accuracy: 78.77
        Top 5 Accuracy: 93.78
+    Converted From:
+      Weights: https://www.dropbox.com/s/ir7cr0hda36knux/ipCSN_152_ft_kinetics_from_sports1m_f111279053.pkl?dl=0
+      Code: https://github.com/facebookresearch/VMZ/tree/b61b08194bc3273bef4c45fdfdd36c56c8579ff3
 
   - Name: ircsn_sports1m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb
     Config: configs/recognition/csn/ircsn_sports1m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py
@@ -194,3 +209,6 @@ Models:
       Metrics:
        Top 1 Accuracy: 78.82
        Top 5 Accuracy: 93.34
+    Converted From:
+      Weights: https://www.dropbox.com/s/zuoj1aqouh6bo6k/irCSN_152_ft_kinetics_from_sports1m_f101599884.pkl?dl=0
+      Code: https://github.com/facebookresearch/VMZ/tree/b61b08194bc3273bef4c45fdfdd36c56c8579ff3
