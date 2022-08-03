@@ -1,50 +1,6 @@
-default_scope = 'mmaction'
-
-preprocess_cfg = dict(
-    mean=[123.675, 116.28, 103.53],
-    std=[58.395, 57.12, 57.375],
-    format_shape='NCTHW')
-
-model = dict(
-    type='Recognizer3D',
-    backbone=dict(
-        type='ResNet3dSlowFast',
-        pretrained=None,
-        resample_rate=4,  # tau
-        speed_ratio=4,  # alpha
-        channel_ratio=8,  # beta_inv
-        slow_pathway=dict(
-            type='resnet3d',
-            depth=101,
-            pretrained=None,
-            lateral=True,
-            fusion_kernel=7,
-            conv1_kernel=(1, 7, 7),
-            dilations=(1, 1, 1, 1),
-            conv1_stride_t=1,
-            pool1_stride_t=1,
-            inflate=(0, 0, 1, 1),
-            norm_eval=False),
-        fast_pathway=dict(
-            type='resnet3d',
-            depth=101,
-            pretrained=None,
-            lateral=False,
-            base_channels=8,
-            conv1_kernel=(5, 7, 7),
-            conv1_stride_t=1,
-            pool1_stride_t=1,
-            norm_eval=False)),
-    cls_head=dict(
-        type='SlowFastHead',
-        in_channels=2304,  # 2048+256
-        num_classes=400,
-        spatial_type='avg',
-        dropout_ratio=0.5,
-        average_clips='prob'),
-    data_preprocessor=dict(type='ActionDataPreprocessor', **preprocess_cfg),
-    train_cfg=None,
-    test_cfg=dict(max_testing_views=10))
+_base_ = [
+    '../../_base_/models/slowfast_r50.py', '../../_base_/default_runtime.py'
+]
 
 dataset_type = 'VideoDataset'
 data_root = 'data/kinetics400/videos_train'
@@ -94,7 +50,7 @@ test_pipeline = [
 ]
 train_dataloader = dict(
     batch_size=8,
-    num_workers=16,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
@@ -103,8 +59,8 @@ train_dataloader = dict(
         data_prefix=dict(video=data_root),
         pipeline=train_pipeline))
 val_dataloader = dict(
-    batch_size=1,
-    num_workers=16,
+    batch_size=8,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
@@ -115,7 +71,7 @@ val_dataloader = dict(
         test_mode=True))
 test_dataloader = dict(
     batch_size=1,
-    num_workers=16,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
@@ -125,9 +81,17 @@ test_dataloader = dict(
         pipeline=test_pipeline,
         test_mode=True))
 
+val_evaluator = dict(type='AccMetric')
+test_evaluator = val_evaluator
+
+train_cfg = dict(
+    type='EpochBasedTrainLoop', max_epochs=256, val_begin=1, val_interval=20)
+val_cfg = dict(type='ValLoop')
+test_cfg = dict(type='TestLoop')
+
 optim_wrapper = dict(
     optimizer=dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=1e-4),
-    clip_grad=dict(max_norm=40, norm_type=2))  # this
+    clip_grad=dict(max_norm=40, norm_type=2))
 
 param_scheduler = [
     dict(type='LinearLR', start_factor=0.1, by_epoch=True, begin=0, end=34),
@@ -140,20 +104,4 @@ param_scheduler = [
         end=256)
 ]
 
-train_cfg = dict(by_epoch=True, max_epochs=256)
-
-val_evaluator = dict(type='AccMetric')
-test_evaluator = val_evaluator
-
-val_cfg = dict(interval=20)
-test_cfg = dict()
-
-env_cfg = dict(dist_cfg=dict(backend='nccl'))
-
-log_level = 'INFO'
-load_from = None
-resume_from = None
-
-default_hooks = dict(
-    checkpoint=dict(type='CheckpointHook', max_keep_ckpts=3, interval=1),
-    logger=dict(type='LoggerHook', interval=20))
+default_hooks = dict(checkpoint=dict(max_keep_ckpts=3))
