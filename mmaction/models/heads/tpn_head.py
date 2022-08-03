@@ -31,8 +31,11 @@ class TPNHead(TSNHead):
         self.new_cls.weight.copy_(self.fc_cls.weight[..., None, None, None])
         self.new_cls.bias.copy_(self.fc_cls.bias)
 
-    def forward(self, x, num_segs: Optional[int] = None,
-                fcn_test: bool = False, **kwargs) -> Tensor:
+    def forward(self,
+                x,
+                num_segs: Optional[int] = None,
+                fcn_test: bool = False,
+                **kwargs) -> Tensor:
         """Defines the computation performed at every call.
 
         Args:

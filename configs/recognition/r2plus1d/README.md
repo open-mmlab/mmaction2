@@ -48,7 +48,7 @@ Example: train R(2+1)D model on Kinetics-400 dataset in a deterministic option.
 
 ```shell
 python tools/train.py configs/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_8xb8_kinetics400_rgb.py \
-    --cfg-options randomness.seed=0 randomness.deterministic=True 
+    --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
 For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).

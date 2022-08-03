@@ -65,7 +65,7 @@ Example: test TANet model on Kinetics-400 dataset.
 
 ```shell
 python tools/test.py configs/recognition/tanet/tanet_r50_dense_1x1x8_100e_8xb8_kinetics400_rgb.py \
-    checkpoints/SOME_CHECKPOINT.pth 
+    checkpoints/SOME_CHECKPOINT.pth
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).

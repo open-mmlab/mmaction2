@@ -54,7 +54,7 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
         if backbone['type'].startswith('mmcls.'):
             try:
                 # Register all mmcls models.
-                import mmcls.models
+                import mmcls.models  # noqa: F401
             except (ImportError, ModuleNotFoundError):
                 raise ImportError('Please install mmcls to use this backbone.')
             self.backbone = MODELS.build(backbone)
@@ -139,7 +139,8 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
             dict: A dictionary of loss components.
         """
         feats, loss_kwargs = \
-            self.extract_feat(batch_inputs, batch_data_samples=batch_data_samples)
+            self.extract_feat(batch_inputs,
+                              batch_data_samples=batch_data_samples)
 
         # loss_aux will be a empty dict if `self.with_neck` is False.
         loss_aux = loss_kwargs.get('loss_aux', dict())
@@ -200,7 +201,7 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
                 **kwargs) -> ForwardResults:
         """The unified entry for a forward process in both training and test.
 
-        The method should accept three modes: ``tensor``, ``predict`` and ``loss``:
+        The method should accept three modes:
 
         - ``tensor``: Forward the whole network and return tensor or tuple of
         tensor without any post-processing, same as a common nn.Module.

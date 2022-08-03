@@ -4,11 +4,11 @@ from typing import Optional, Tuple, Union
 import numpy as np
 import torch
 import torch.nn as nn
-from torch import Tensor
 from mmcv.cnn import ConvModule, constant_init, normal_init, xavier_init
+from torch import Tensor
 
 from mmaction.registry import MODELS
-from mmaction.utils import ConfigType, SampleList, OptConfigType
+from mmaction.utils import ConfigType, OptConfigType, SampleList
 
 
 class DownSample(nn.Module):
@@ -41,19 +41,21 @@ class DownSample(nn.Module):
             Defaults to ``(1, 2, 2)``.
     """
 
-    def __init__(self,
-                 in_channels: int,
-                 out_channels: int,
-                 kernel_size: Union[int, Tuple[int]] = (3, 1, 1),
-                 stride: Union[int, Tuple[int]] = (1, 1, 1),
-                 padding: Union[int, Tuple[int]] = (1, 0, 0),
-                 groups: int = 1,
-                 bias: Union[bool, str] = False,
-                 conv_cfg: ConfigType = dict(type='Conv3d'),
-                 norm_cfg: OptConfigType = None,
-                 act_cfg: OptConfigType = None,
-                 downsample_position: str = 'after',
-                 downsample_scale: Union[int, Tuple[int]] = (1, 2, 2)) -> None:
+    def __init__(
+        self,
+        in_channels: int,
+        out_channels: int,
+        kernel_size: Union[int, Tuple[int]] = (3, 1, 1),
+        stride: Union[int, Tuple[int]] = (1, 1, 1),
+        padding: Union[int, Tuple[int]] = (1, 0, 0),
+        groups: int = 1,
+        bias: Union[bool, str] = False,
+        conv_cfg: ConfigType = dict(type='Conv3d'),
+        norm_cfg: OptConfigType = None,
+        act_cfg: OptConfigType = None,
+        downsample_position: str = 'after',
+        downsample_scale: Union[int, Tuple[int]] = (1, 2, 2)
+    ) -> None:
         super().__init__()
         self.conv = ConvModule(
             in_channels,
@@ -96,14 +98,17 @@ class LevelFusion(nn.Module):
         mid_channels (Tuple[int]): Channel numbers of middle features tuple.
         out_channels (int): Channel numbers of output features.
         downsample_scales (Tuple[int | Tuple[int]]): downsample scales for
-            each :class:`DownSample` module. Defaults to ``((1, 1, 1), (1, 1, 1))``.
+            each :class:`DownSample` module.
+            Defaults to ``((1, 1, 1), (1, 1, 1))``.
     """
 
-    def __init__(self,
-                 in_channels: Tuple[int],
-                 mid_channels: Tuple[int],
-                 out_channels: int,
-                 downsample_scales: Tuple[int, Tuple[int]] = ((1, 1, 1), (1, 1, 1))) -> None:
+    def __init__(
+        self,
+        in_channels: Tuple[int],
+        mid_channels: Tuple[int],
+        out_channels: int,
+        downsample_scales: Tuple[int, Tuple[int]] = ((1, 1, 1), (1, 1, 1))
+    ) -> None:
         super().__init__()
         num_stages = len(in_channels)
 
@@ -205,15 +210,17 @@ class AuxHead(nn.Module):
         out_channels (int): Channel number of output features.
         loss_weight (float): weight of loss for the auxiliary head.
             Defaults to 0.5.
-        loss_cls (dict or ConfigDict): loss_cls (dict): Config for building loss.
+        loss_cls (dict or ConfigDict): Config for building loss.
             Defaults to ``dict(type='CrossEntropyLoss')``.
     """
 
-    def __init__(self,
-                 in_channels: int,
-                 out_channels: int,
-                 loss_weight: float = 0.5,
-                 loss_cls: ConfigType = dict(type='CrossEntropyLoss')) -> None:
+    def __init__(
+        self,
+        in_channels: int,
+        out_channels: int,
+        loss_weight: float = 0.5,
+        loss_cls: ConfigType = dict(type='CrossEntropyLoss')
+    ) -> None:
         super().__init__()
 
         self.conv = ConvModule(
@@ -276,7 +283,9 @@ class TemporalModulation(nn.Module):
         downsample_scale (int): Downsample scale for maxpooling. Defaults to 8.
     """
 
-    def __init__(self, in_channels: int, out_channels: int,
+    def __init__(self,
+                 in_channels: int,
+                 out_channels: int,
                  downsample_scale: int = 8) -> None:
         super().__init__()
 
@@ -309,20 +318,22 @@ class TPN(nn.Module):
     Args:
         in_channels (Tuple[int]): Channel numbers of input features tuple.
         out_channels (int): Channel number of output feature.
-        spatial_modulation_cfg (dict or ConfigDict, optional): Config for spatial
-            modulation layers. Required keys are ``in_channels`` and ``out_channels``.
+        spatial_modulation_cfg (dict or ConfigDict, optional): Config for
+            spatial modulation layers. Required keys are ``in_channels`` and
+            ``out_channels``. Defaults to None.
+        temporal_modulation_cfg (dict or ConfigDict, optional): Config for
+            temporal modulation layers. Defaults to None.
+        upsample_cfg (dict or ConfigDict, optional): Config for upsample
+            layers. The keys are same as that in :class:``nn.Upsample``.
             Defaults to None.
-        temporal_modulation_cfg (dict or ConfigDict, optional): Config for temporal
-            modulation layers. Defaults to None.
-        upsample_cfg (dict or ConfigDict, optional): Config for upsample layers.
-            The keys are same as that in :class:``nn.Upsample``. Defaults to None.
-        downsample_cfg (dict or ConfigDict, optional): Config for downsample layers.
-            Defaults to None.
-        level_fusion_cfg (dict or ConfigDict, optional): Config for level fusion layers.
-            Required keys are ``in_channels``, ``mid_channels``, ``out_channels``.
-            Defaults to None.
-        aux_head_cfg (dict or ConfigDict, optional): Config for aux head layers.
-            Required keys are ``out_channels``. Defaults to None.
+        downsample_cfg (dict or ConfigDict, optional): Config for downsample
+            layers. Defaults to None.
+        level_fusion_cfg (dict or ConfigDict, optional): Config for level
+            fusion layers.
+            Required keys are ``in_channels``, ``mid_channels``,
+            ``out_channels``. Defaults to None.
+        aux_head_cfg (dict or ConfigDict, optional): Config for aux head
+            layers. Required keys are ``out_channels``. Defaults to None.
         flow_type (str): Flow type to combine the features. Options are
             ``cascade`` and ``parallel``. Defaults to ``cascade``.
     """
@@ -416,11 +427,13 @@ class TPN(nn.Module):
         if self.aux_head is not None:
             self.aux_head.init_weights()
 
-    def forward(self, x: Tuple[Tensor],
+    def forward(self,
+                x: Tuple[Tensor],
                 batch_data_samples: Optional[SampleList] = None) -> tuple:
 
         loss_aux = dict()
-        # Calculate auxiliary loss if auxiliary head and `batch_data_samples` are not None.
+        # Calculate auxiliary loss if `self.aux_head`
+        # and `batch_data_samples` are not None.
         if self.aux_head is not None and batch_data_samples is not None:
             loss_aux = self.aux_head.loss(x[-2], batch_data_samples)
 

@@ -49,7 +49,7 @@ Example: train TimeSformer model on Kinetics-400 dataset in a deterministic opti
 
 ```shell
 python tools/train.py configs/recognition/timesformer/timesformer_divST_8x32x1_15e_8xb8_kinetics400_rgb.py \
-    --cfg-options randomness.seed=0 randomness.deterministic=True 
+    --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
 For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
@@ -66,7 +66,7 @@ Example: test TimeSformer model on Kinetics-400 dataset.
 
 ```shell
 python tools/test.py configs/recognition/timesformer/timesformer_divST_8x32x1_15e_8xb8_kinetics400_rgb.py \
-    checkpoints/SOME_CHECKPOINT.pth 
+    checkpoints/SOME_CHECKPOINT.pth
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).

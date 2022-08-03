@@ -90,7 +90,6 @@ train_cfg = dict(
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
-
 optim_wrapper = dict(
     optimizer=dict(
         type='SGD', lr=0.01, momentum=0.9, weight_decay=1e-4, nesterov=True),

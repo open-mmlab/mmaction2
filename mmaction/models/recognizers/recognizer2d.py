@@ -46,7 +46,7 @@ class Recognizer2D(BaseRecognizer):
         #   2) `num_sample_positions` in `DenseSampleFrames`
         #   3) `ThreeCrop/TenCrop` in `test_pipeline`
         #   4) `num_clips` in `SampleFrames` or its subclass if `clip_len != 1`
-        batch_inputs = batch_inputs.view((-1,) + batch_inputs.shape[2:])
+        batch_inputs = batch_inputs.view((-1, ) + batch_inputs.shape[2:])
 
         # Check settings of `fcn_test`.
         fcn_test = False

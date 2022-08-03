@@ -48,7 +48,7 @@ Example: train C3D model on UCF-101 dataset in a deterministic option.
 
 ```shell
 python tools/train.py configs/recognition/c3d/c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb.py \
-    --cfg-options randomness.seed=0 randomness.deterministic=True 
+    --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
 For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).

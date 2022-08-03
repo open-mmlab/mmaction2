@@ -49,7 +49,8 @@ class Recognizer3D(BaseRecognizer):
         # Check settings of test.
         if test_mode:
             if self.test_cfg is not None:
-                loss_predict_kwargs['fcn_test'] = self.test_cfg.get('fcn_test', False)
+                loss_predict_kwargs['fcn_test'] = self.test_cfg.get(
+                    'fcn_test', False)
             if self.test_cfg.get('max_testing_views', False):
                 max_testing_views = self.test_cfg.get('max_testing_views')
                 assert isinstance(max_testing_views, int)
@@ -92,7 +93,8 @@ class Recognizer3D(BaseRecognizer):
 
             loss_aux = dict()
             if self.with_neck:
-                x, loss_aux = self.neck(x, batch_data_samples=batch_data_samples)
+                x, loss_aux = self.neck(
+                    x, batch_data_samples=batch_data_samples)
 
             # Return features extracted through neck.
             loss_predict_kwargs['loss_aux'] = loss_aux
