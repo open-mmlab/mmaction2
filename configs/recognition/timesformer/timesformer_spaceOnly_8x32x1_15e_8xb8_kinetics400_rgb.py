@@ -19,7 +19,7 @@ model = dict(
         in_channels=3,
         dropout_ratio=0.,
         transformer_layers=None,
-        attention_type='divided_space_time',
+        attention_type='space_only',
         norm_cfg=dict(type='LN', eps=1e-6)),
     cls_head=dict(
         type='TimeSformerHead',
@@ -79,7 +79,7 @@ test_pipeline = [
 ]
 train_dataloader = dict(
     batch_size=8,
-    num_workers=16,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
@@ -89,7 +89,7 @@ train_dataloader = dict(
         pipeline=train_pipeline))
 val_dataloader = dict(
     batch_size=8,
-    num_workers=16,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
@@ -100,7 +100,7 @@ val_dataloader = dict(
         test_mode=True))
 test_dataloader = dict(
     batch_size=1,
-    num_workers=16,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
@@ -113,8 +113,10 @@ test_dataloader = dict(
 val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 
-val_cfg = dict(interval=1)
-test_cfg = dict()
+train_cfg = dict(
+    type='EpochBasedTrainLoop', max_epochs=15, val_begin=1, val_interval=1)
+val_cfg = dict(type='ValLoop')
+test_cfg = dict(type='TestLoop')
 
 optim_wrapper = dict(
     optimizer=dict(
@@ -137,7 +139,4 @@ param_scheduler = [
         gamma=0.1)
 ]
 
-train_cfg = dict(by_epoch=True, max_epochs=15)
-
-# runtime settings
 default_hooks = dict(checkpoint=dict(interval=5))
