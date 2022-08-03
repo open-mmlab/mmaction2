@@ -9,11 +9,9 @@ data_root_val = 'data/kinetics400/videos_val'
 ann_file_train = 'data/kinetics400/kinetics400_train_list_videos.txt'
 ann_file_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
 ann_file_test = 'data/kinetics400/kinetics400_val_list_videos.txt'
-img_norm_cfg = dict(
-    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
     dict(type='DecordInit'),
-    dict(type='SampleFrames', clip_len=8, frame_interval=8, num_clips=1),
+    dict(type='SampleFrames', clip_len=2, frame_interval=8, num_clips=1),
     dict(type='DecordDecode'),
     dict(type='RandomResizedCrop'),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
@@ -41,9 +39,9 @@ test_pipeline = [
     dict(type='DecordInit'),
     dict(
         type='SampleFrames',
-        clip_len=8,
+        clip_len=2,
         frame_interval=8,
-        num_clips=10,
+        num_clips=1,
         test_mode=True),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
@@ -87,10 +85,12 @@ test_dataloader = dict(
 val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 
-val_cfg = dict(interval=10)
-test_cfg = dict()
+train_cfg = dict(
+    type='EpochBasedTrainLoop', max_epochs=150, val_begin=1, val_interval=10)
+val_cfg = dict(type='ValLoop')
+test_cfg = dict(type='TestLoop')
 
-# optimizer
+
 optim_wrapper = dict(
     optimizer=dict(
         type='SGD', lr=0.01, momentum=0.9, weight_decay=1e-4, nesterov=True),
@@ -107,5 +107,4 @@ param_scheduler = [
         gamma=0.1)
 ]
 
-train_cfg = dict(by_epoch=True, max_epochs=150)
 default_hooks = dict(checkpoint=dict(max_keep_ckpts=5))
