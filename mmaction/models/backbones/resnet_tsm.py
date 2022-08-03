@@ -165,6 +165,14 @@ class ResNetTSM(ResNet):
         self.non_local_stages = _ntuple(self.num_stages)(non_local)
         self.non_local_cfg = non_local_cfg
 
+        super().init_weights()
+        if self.is_shift:
+            self.make_temporal_shift()
+        if len(self.non_local_cfg) != 0:
+            self.make_non_local()
+        if self.temporal_pool:
+            self.make_temporal_pool()
+
     def make_temporal_shift(self):
         """Make temporal shift for some layers."""
         if self.temporal_pool:
@@ -284,12 +292,4 @@ class ResNetTSM(ResNet):
                                                  self.non_local_cfg)
 
     def init_weights(self):
-        """Initiate the parameters either from existing checkpoint or from
-        scratch."""
-        super().init_weights()
-        if self.is_shift:
-            self.make_temporal_shift()
-        if len(self.non_local_cfg) != 0:
-            self.make_non_local()
-        if self.temporal_pool:
-            self.make_temporal_pool()
+        pass
