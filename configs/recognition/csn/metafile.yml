@@ -174,8 +174,8 @@ Models:
        Top 1 Accuracy: 78.77
        Top 5 Accuracy: 93.78
 
-  - Name: ipcsn_sports1m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb
-    Config: configs/recognition/csn/ipcsn_sports1m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py
+  - Name: ircsn_sports1m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb
+    Config: configs/recognition/csn/ircsn_sports1m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py
     In Collection: CSN
     Metadata:
       Architecture: ResNet152
