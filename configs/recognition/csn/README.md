@@ -33,7 +33,7 @@ Group convolution has been shown to offer great computational savings in various
 
 :::{note}
 
-1. The **gpus** indicates the number of gpu (32G V100) we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
+1. The **gpus** indicates the number of gpu (80G A100) we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
    According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
    e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
 2. The **inference_time** is got by this [benchmark script](/tools/analysis/benchmark.py), where we use the sampling frames strategy of the test setting and only care about the model inference time,
@@ -53,12 +53,11 @@ You can use the following command to train a model.
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
-Example: train CSN model on Kinetics-400 dataset in a deterministic option with periodic validation.
+Example: train CSN model on Kinetics-400 dataset in a deterministic option.
 
 ```shell
-python tools/train.py configs/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb.py \
-    --work-dir work_dirs/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb \
-    --validate --seed 0 --deterministic
+python tools/train.py configs/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_8xb12_kinetics400_rgb.py  \
+    --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
 For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
@@ -71,12 +70,11 @@ You can use the following command to test a model.
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-Example: test CSN model on Kinetics-400 dataset and dump the result to a json file.
+Example: test CSN model on Kinetics-400 dataset.
 
 ```shell
-python tools/test.py configs/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb.py \
-    checkpoints/SOME_CHECKPOINT.pth --eval top_k_accuracy mean_class_accuracy \
-    --out result.json --average-clips prob
+python tools/test.py configs/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_8xb12_kinetics400_rgb.py \
+    checkpoints/SOME_CHECKPOINT.pth
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
