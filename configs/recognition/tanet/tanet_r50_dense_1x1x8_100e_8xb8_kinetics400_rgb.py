@@ -58,7 +58,7 @@ test_pipeline = [
 
 train_dataloader = dict(
     batch_size=8,
-    num_workers=2,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
@@ -68,7 +68,7 @@ train_dataloader = dict(
         pipeline=train_pipeline))
 val_dataloader = dict(
     batch_size=8,
-    num_workers=2,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
@@ -79,7 +79,7 @@ val_dataloader = dict(
         test_mode=True))
 test_dataloader = dict(
     batch_size=8,
-    num_workers=2,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
@@ -92,10 +92,11 @@ test_dataloader = dict(
 val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 
-val_cfg = dict(interval=10)
-test_cfg = dict()
+train_cfg = dict(
+    type='EpochBasedTrainLoop', max_epochs=100, val_begin=1, val_interval=10)
+val_cfg = dict(type='ValLoop')
+test_cfg = dict(type='TestLoop')
 
-# optimizer
 optim_wrapper = dict(
     optimizer=dict(
         type='SGD', lr=0.005, momentum=0.9, weight_decay=1e-4, nesterov=True),
@@ -103,8 +104,6 @@ optim_wrapper = dict(
     clip_grad=dict(max_norm=20, norm_type=2),
     constructor='TSMOptimWrapperConstructor')
 
-# learning policy
-lr_config = dict(policy='step', step=[50, 75, 90])
 param_scheduler = [
     dict(
         type='MultiStepLR',
@@ -115,8 +114,4 @@ param_scheduler = [
         gamma=0.1)
 ]
 
-train_cfg = dict(by_epoch=True, max_epochs=100)
 default_hooks = dict(checkpoint=dict(max_keep_ckpts=5))
-# runtime settings
-# resume = True
-# resume_from = 'work_dirs/tanet_r50_dense_1x1x8_100e_kinetics400_rgb/latest.pth'  # noqa: E501

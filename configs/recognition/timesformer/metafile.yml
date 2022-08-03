@@ -1,9 +1,9 @@
 Collections:
-- Name: TimeSformer
-  README: configs/recognition/timesformer/README.md
-  Paper:
-    URL: https://arxiv.org/abs/2102.05095
-    Title: 'Is Space-Time Attention All You Need for Video Understanding'
+  - Name: TimeSformer
+    README: configs/recognition/timesformer/README.md
+    Paper:
+      URL: https://arxiv.org/abs/2102.05095
+      Title: 'Is Space-Time Attention All You Need for Video Understanding'
 
 Models:
   - Name: timesformer_divST_8x32x1_15e_8xb8_kinetics400_rgb
