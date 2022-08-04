@@ -9,8 +9,10 @@ from .base import BaseRecognizer
 class RecognizerGCN(BaseRecognizer):
     """GCN recognizer model framework."""
 
-    def extract_feat(self, batch_inputs: Tensor,
-                     stage: str = 'backbone', **kwargs) -> tuple:
+    def extract_feat(self,
+                     batch_inputs: Tensor,
+                     stage: str = 'backbone',
+                     **kwargs) -> tuple:
         """Extract features of different stages.
 
         Args:
