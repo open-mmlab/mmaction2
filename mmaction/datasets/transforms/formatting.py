@@ -3,8 +3,8 @@ import numpy as np
 from mmcv.transforms import BaseTransform, to_tensor
 from mmengine.data import InstanceData, LabelData
 
-from mmaction.structures import ActionDataSample
 from mmaction.registry import TRANSFORMS
+from mmaction.structures import ActionDataSample
 
 
 @TRANSFORMS.register_module()
