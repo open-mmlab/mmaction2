@@ -7,9 +7,8 @@ model = dict(
     backbone=dict(
         norm_eval=True,
         bn_frozen=True,
-        pretrained=  # noqa: E251
-        'https://download.openmmlab.com/mmaction/recognition/csn/ircsn_from_scratch_r152_ig65m_20200807-771c4135.pth'  # noqa: E501
-    ))
+        pretrained='https://download.openmmlab.com/mmaction/recognition/csn/'
+        'ircsn_from_scratch_r152_ig65m_20200807-771c4135.pth'))
 
 # dataset settings
 dataset_type = 'VideoDataset'
@@ -72,6 +71,7 @@ train_dataloader = dict(
         ann_file=ann_file_train,
         data_prefix=dict(video=data_root),
         pipeline=train_pipeline))
+
 val_dataloader = dict(
     batch_size=1,
     num_workers=8,
@@ -83,6 +83,7 @@ val_dataloader = dict(
         data_prefix=dict(video=data_root_val),
         pipeline=val_pipeline,
         test_mode=True))
+
 test_dataloader = dict(
     batch_size=1,
     num_workers=8,
@@ -99,7 +100,7 @@ val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 
 train_cfg = dict(
-    type='EpochBasedTrainLoop', max_epochs=58, val_begin=1, val_interval=1)
+    type='EpochBasedTrainLoop', max_epochs=58, val_begin=1, val_interval=3)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
@@ -113,14 +114,14 @@ param_scheduler = [
         milestones=[32, 48],
         gamma=0.1)
 ]
-
-optimizer = dict(
-    type='SGD', lr=0.0005, momentum=0.9,
-    weight_decay=0.0001)  # this lr is used for 8 gpus
-
+"""
+The learning rate is for total_batch_size = 8 x 12 (num_gpus x batch_size)
+If you want to use other batch size or number of GPU settings, please update
+the learning rate with the linear scaling rule.
+"""
 optim_wrapper = dict(
-    optimizer=optimizer, clip_grad=dict(max_norm=40, norm_type=2))
+    optimizer=dict(type='SGD', lr=5e-4, momentum=0.9, weight_decay=1e-4),
+    clip_grad=dict(max_norm=40, norm_type=2))
 
 default_hooks = dict(checkpoint=dict(interval=2, max_keep_ckpts=5))
-
 find_unused_parameters = True

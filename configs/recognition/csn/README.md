@@ -19,21 +19,21 @@ Group convolution has been shown to offer great computational savings in various
 
 ### Kinetics-400
 
-|config | resolution | gpus | backbone |pretrain| top1 acc| top5 acc | inference_time(video/s) | gpu_mem(M)| ckpt | log| json|
-|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[ircsn_bnfrozen_r50_32x2x1_180e_kinetics400_rgb](/configs/recognition/csn/ircsn_bnfrozen_r50_32x2x1_180e_kinetics400_rgb.py)|short-side 320|x| ResNet50 | None | 73.6 | 91.3 | x | x | [ckpt](https://download.openmmlab.com/mmaction/recognition/csn/ircsn_bnfrozen_r50_32x2x1_180e_kinetics400_rgb/ircsn_bnfrozen_r50_32x2x1_180e_kinetics400_rgb_20210618-4e29e2e8.pth) | [log](https://download.openmmlab.com/mmaction/recognition/csn/ircsn_bnfrozen_r50_32x2x1_180e_kinetics400_rgb/20210618_182414.log) | [json](https://download.openmmlab.com/mmaction/recognition/csn/ircsn_bnfrozen_r50_32x2x1_180e_kinetics400_rgb/20210618_182414.log.json) |
-|[ircsn_ig65m_pretrained_bnfrozen_r50_32x2x1_58e_kinetics400_rgb](/configs/recognition/csn/ircsn_ig65m_pretrained_bnfrozen_r50_32x2x1_58e_kinetics400_rgb.py)|short-side 320|x| ResNet50 | IG65M | 79.0 | 94.2 | x | x | [infer_ckpt](https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ircsn_ig65m_pretrained_r50_32x2x1_58e_kinetics400_rgb_20210617-86d33018.pth) | x | x |
-|[ircsn_bnfrozen_r152_32x2x1_180e_kinetics400_rgb](/configs/recognition/csn/ircsn_bnfrozen_r152_32x2x1_180e_kinetics400_rgb.py)|short-side 320|x| ResNet152 | None | 76.5 | 92.1 | x | x | [infer_ckpt](https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ircsn_from_scratch_r152_32x2x1_180e_kinetics400_rgb_20210617-5c933ae1.pth) | x | x |
-|[ircsn_sports1m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb](/configs/recognition/csn/ircsn_sports1m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py)|short-side 320|x| ResNet152 | Sports1M | 78.2 | 93.0 | x | x | [infer_ckpt](https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ircsn_sports1m_pretrained_r152_32x2x1_58e_kinetics400_rgb_20210617-b9b10241.pth) | x | x |
-|[ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py](/configs/recognition/csn/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py)|short-side 320|8x4| ResNet152 | IG65M|82.76/82.6|95.68/95.3|x|8516|[ckpt](https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb_20200812-9037a758.pth)/[infer_ckpt](https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb_20210617-e63ee1bd.pth)|[log](https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb/20200809_053132.log)|[json](https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb/20200809_053132.log.json)|
-|[ipcsn_bnfrozen_r152_32x2x1_180e_kinetics400_rgb](/configs/recognition/csn/ipcsn_bnfrozen_r152_32x2x1_180e_kinetics400_rgb.py)|short-side 320|x| ResNet152 | None | 77.8 | 92.8 | x | x | [infer_ckpt](https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ipcsn_from_scratch_r152_32x2x1_180e_kinetics400_rgb_20210617-d565828d.pth) | x | x |
-|[ipcsn_sports1m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb](/configs/recognition/csn/ipcsn_sports1m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py)|short-side 320|x| ResNet152 | Sports1M | 78.8 | 93.5 | x | x | [infer_ckpt](https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ipcsn_sports1m_pretrained_r152_32x2x1_58e_kinetics400_rgb_20210617-3367437a.pth) | x | x |
-|[ipcsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb](/configs/recognition/csn/ipcsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py)|short-side 320|x| ResNet152 | IG65M | 82.5 | 95.3 | x | x | [infer_ckpt](https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ipcsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb_20210617-c3be9793.pth) | x | x |
-|[ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb.py](/configs/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb.py)|short-side 320|8x4| ResNet152 | IG65M|80.14|94.93|x|8517|[ckpt](https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb_20200803-fc66ce8d.pth)|[log](https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb/20200728_031952.log)|[json](https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb/20200728_031952.log.json)|
+|config | resolution | gpus | backbone |pretrain| top1 acc| top5 acc | inference_time(video/s) | gpu_mem(M)| ckpt | log|
+|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+|[ircsn_bnfrozen_r50_32x2x1_180e_kinetics400_rgb](/configs/recognition/csn/ircsn_bnfrozen_r50_32x2x1_180e_kinetics400_rgb.py)|short-side 320|x| ResNet50 | None | 79.16 | 94.09 | x | x | [infer_ckpt](https://download.openmmlab.com/mmaction/recognition/csn/ircsn_bnfrozen_r50_32x2x1_180e_kinetics400_rgb/ircsn_bnfrozen_r50_32x2x1_180e_kinetics400_rgb_20210618-4e29e2e8.pth) | [log](https://download.openmmlab.com/mmaction/recognition/csn/ircsn_bnfrozen_r50_32x2x1_180e_kinetics400_rgb/20210618_182414.log) |
+|[ircsn_ig65m_pretrained_bnfrozen_r50_32x2x1_58e_8xb12_kinetics400_rgb](/configs/recognition/csn/ircsn_ig65m_pretrained_bnfrozen_r50_32x2x1_58e_8xb12_kinetics400_rgb.py)|short-side 320|8| ResNet50 | IG65M | 79.17 | 94.14 | x | 22238 | [ckpt](https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ircsn_ig65m_pretrained_r50_32x2x1_58e_kinetics400_rgb_20210617-86d33018.pth) | x |
+|[ircsn_bnfrozen_r152_32x2x1_180e_kinetics400_rgb](/configs/recognition/csn/ircsn_bnfrozen_r152_32x2x1_180e_kinetics400_rgb.py)|short-side 320|x| ResNet152 | None | 79.17 | 94.14 | x | x | [infer_ckpt](https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ircsn_from_scratch_r152_32x2x1_180e_kinetics400_rgb_20210617-5c933ae1.pth) | x |
+|[ircsn_sports1m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb](/configs/recognition/csn/ircsn_sports1m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py)|short-side 320|x| ResNet152 | Sports1M | 78.82 | 93.34 | x | x | [infer_ckpt](https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ircsn_sports1m_pretrained_r152_32x2x1_58e_kinetics400_rgb_20210617-b9b10241.pth) | x |
+|[ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_8xb12_kinetics400_rgb](/configs/recognition/csn/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_8xb12_kinetics400_rgb.py)|short-side 320|8| ResNet152 | IG65M|82.58|95.76|x|32703|[ckpt](https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb_20200812-9037a758.pth)|[log](https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb/20200809_053132.log)|
+|[ipcsn_bnfrozen_r152_32x2x1_180e_kinetics400_rgb](/configs/recognition/csn/ipcsn_bnfrozen_r152_32x2x1_180e_kinetics400_rgb.py)|short-side 320|x| ResNet152 | None | 77.69 | 92.83 | x | x | [infer_ckpt](https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ipcsn_from_scratch_r152_32x2x1_180e_kinetics400_rgb_20210617-d565828d.pth) | x |
+|[ipcsn_sports1m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb](/configs/recognition/csn/ipcsn_sports1m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py)|short-side 320|x| ResNet152 | Sports1M | 78.77 | 93.78 | x | x | [infer_ckpt](https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ipcsn_sports1m_pretrained_r152_32x2x1_58e_kinetics400_rgb_20210617-3367437a.pth) | x |
+|[ipcsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb](/configs/recognition/csn/ipcsn_ig65m_pretrained_bnfrozen_r152_32x2x1_58e_kinetics400_rgb.py)|short-side 320|x| ResNet152 | IG65M | 82.51 | 95.52 | x | x | [infer_ckpt](https://download.openmmlab.com/mmaction/recognition/csn/vmz/vmz_ipcsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb_20210617-c3be9793.pth) | x |
+|[ircsn_ig65m_pretrained_r152_32x2x1_58e_8xb12_kinetics400_rgb](/configs/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_8xb12_kinetics400_rgb.py)|short-side 320|8| ResNet152 | IG65M|82.66|95.82|x|32703|[ckpt](https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb_20200803-fc66ce8d.pth)|[log](https://download.openmmlab.com/mmaction/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb/20200728_031952.log)|
 
 :::{note}
 
-1. The **gpus** indicates the number of gpu (32G V100) we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
+1. The **gpus** indicates the number of gpu (80G A100) we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
    According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
    e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
 2. The **inference_time** is got by this [benchmark script](/tools/analysis/benchmark.py), where we use the sampling frames strategy of the test setting and only care about the model inference time,
@@ -53,12 +53,11 @@ You can use the following command to train a model.
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
-Example: train CSN model on Kinetics-400 dataset in a deterministic option with periodic validation.
+Example: train CSN model on Kinetics-400 dataset in a deterministic option.
 
 ```shell
-python tools/train.py configs/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb.py \
-    --work-dir work_dirs/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb \
-    --validate --seed 0 --deterministic
+python tools/train.py configs/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_8xb12_kinetics400_rgb.py  \
+    --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
 For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
@@ -71,12 +70,11 @@ You can use the following command to test a model.
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-Example: test CSN model on Kinetics-400 dataset and dump the result to a json file.
+Example: test CSN model on Kinetics-400 dataset.
 
 ```shell
-python tools/test.py configs/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_kinetics400_rgb.py \
-    checkpoints/SOME_CHECKPOINT.pth --eval top_k_accuracy mean_class_accuracy \
-    --out result.json --average-clips prob
+python tools/test.py configs/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_8xb12_kinetics400_rgb.py \
+    checkpoints/SOME_CHECKPOINT.pth
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
