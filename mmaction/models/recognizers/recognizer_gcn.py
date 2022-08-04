@@ -1,4 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from torch import Tensor
+
 from mmaction.registry import MODELS
 from .base import BaseRecognizer
 
@@ -7,18 +9,21 @@ from .base import BaseRecognizer
 class RecognizerGCN(BaseRecognizer):
     """GCN recognizer model framework."""
 
-    def extract_feat(self, batch_inputs, stage='backbone', **kwargs):
+    def extract_feat(self,
+                     batch_inputs: Tensor,
+                     stage: str = 'backbone',
+                     **kwargs) -> tuple:
         """Extract features of different stages.
 
         Args:
-            batch_inputs (Tensor): Raw Inputs of the recognizer.
+            batch_inputs (Tensor): The input data.
             stage (str): Which stage to output the feature.
-                Defaults to "backbone".
+                Defaults to ``backbone``.
 
         Returns:
-            tuple or Tensor: The extracted features.
+            Tensor: The extracted features.
             dict: A dict recording the kwargs for downstream
-            pipeline. This will be a empty in GCN recognizer.
+                pipeline. This will be an empty dict in GCN recognizer.
         """
 
         # Record the kwargs required by `loss` and `predict`
