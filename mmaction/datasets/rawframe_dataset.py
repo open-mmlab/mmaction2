@@ -1,6 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
-import warnings
 from typing import Callable, List, Optional, Union
 
 import torch
@@ -97,16 +96,6 @@ class RawframeDataset(BaseDataset):
                  modality: str = 'RGB',
                  test_mode: bool = False,
                  **kwargs):
-        warnings.warn(
-            'We recommend using "VideoDataset" '
-            'to load raw videos instead of using "RawframeDataset" '
-            'to load raw frames. This can largely reduce the space usage of '
-            'the disk. "RawframeDataset" is still supported now. ')
-        warnings.warn('"Normalize" is removed to '
-                      'the model. Please assert it is not in the pipeline. '
-                      '"Collect" and "ToTensor" operations are replaced with '
-                      '"PackActionInputs". We recommend referring our '
-                      'document or official provided config files.')
         self.filename_tmpl = filename_tmpl
         self.with_offset = with_offset
         self.multi_class = multi_class
