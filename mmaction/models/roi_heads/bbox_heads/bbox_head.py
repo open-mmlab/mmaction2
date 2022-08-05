@@ -9,7 +9,7 @@ from mmengine.config import ConfigDict
 from mmengine.data import InstanceData
 from torch import Tensor
 
-from mmaction.data_elements.bbox import bbox_target
+from mmaction.structures.bbox import bbox_target
 from mmaction.utils import InstanceList
 
 try:

@@ -6,8 +6,8 @@ import torch.nn as nn
 from mmengine.model import BaseModel, merge_dict
 from torch import Tensor
 
-from mmaction.data_elements import ActionDataSample
 from mmaction.registry import MODELS
+from mmaction.structures import ActionDataSample
 from mmaction.utils import (ConfigType, ForwardResults, LabelList,
                             OptConfigType, OptMultiConfig, OptSampleList,
                             SampleList)

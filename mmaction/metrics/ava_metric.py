@@ -5,9 +5,9 @@ from typing import Any, List, Optional, Sequence, Tuple
 
 from mmengine.evaluator import BaseMetric
 
-from mmaction.data_elements import bbox2result
 from mmaction.evaluation import ava_eval, results2csv
 from mmaction.registry import METRICS
+from mmaction.structures import bbox2result
 
 
 @METRICS.register_module()

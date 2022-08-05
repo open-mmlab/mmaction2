@@ -6,7 +6,7 @@ import torch
 from mmengine.config import ConfigDict
 from mmengine.data import InstanceData, LabelData
 
-from mmaction.data_elements import ActionDataSample
+from mmaction.structures import ActionDataSample
 
 # Type hint of config data
 ConfigType = Union[ConfigDict, dict]
