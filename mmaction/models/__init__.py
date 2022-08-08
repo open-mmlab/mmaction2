@@ -17,6 +17,7 @@ from .necks import TPN
 from .recognizers import (BaseRecognizer, Recognizer2D, Recognizer3D,
                           RecognizerGCN)
 from .roi_heads import ACRNHead, AVARoIHead, BBoxHeadAVA, SingleRoIExtractor3D
+from .task_modules import MaxIoUAssignerAVA
 from .utils import BaseMiniBatchBlending, CutmixBlending, MixupBlending
 
 __all__ = [
@@ -32,5 +33,5 @@ __all__ = [
     'TimeSformer', 'TimeSformerHead', 'DividedSpatialAttentionWithNorm',
     'DividedTemporalAttentionWithNorm', 'FFNWithNorm', 'ACRNHead',
     'ActionDataPreprocessor', 'BaseMiniBatchBlending', 'CutmixBlending',
-    'MixupBlending', 'AGCN'
+    'MixupBlending', 'AGCN', 'MaxIoUAssignerAVA'
 ]
