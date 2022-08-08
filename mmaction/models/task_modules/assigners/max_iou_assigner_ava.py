@@ -3,7 +3,7 @@ import torch
 from torch import Tensor
 
 try:
-    from mmdet.core.bbox import AssignResult, MaxIoUAssigner
+    from mmdet.models.task_modules import AssignResult, MaxIoUAssigner
     from mmdet.registry import TASK_UTILS as MMDET_TASK_UTILS
     mmdet_imported = True
 except (ImportError, ModuleNotFoundError):
