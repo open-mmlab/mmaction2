@@ -8,9 +8,10 @@ import decord
 import numpy as np
 import torch
 import webcolors
-from mmcv import Config, DictAction
+from mmengine import Config, DictAction
 
 from mmaction.apis import inference_recognizer, init_recognizer
+from mmaction.utils import register_all_modules
 
 
 def parse_args():
@@ -159,6 +160,9 @@ def main():
     cfg = Config.fromfile(args.config)
     cfg.merge_from_dict(args.cfg_options)
 
+    # register all modules in mmaction2 into the registries
+    register_all_modules()
+
     # build the recognizer from a config file and checkpoint file/url
     model = init_recognizer(cfg, args.checkpoint, device=device)
 
@@ -178,7 +182,7 @@ def main():
 
     print('The top-5 labels with corresponding scores are:')
     for result in results:
-        print(f'{result[0]}: ', result[1])
+        print(f'{result[0]}: ', '%.2f%%' % (result[1].item() * 100))
 
     if args.out_filename is not None:
 

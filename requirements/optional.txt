@@ -9,3 +9,4 @@ packaging
 pims
 PyTurboJPEG
 timm
+webcolors

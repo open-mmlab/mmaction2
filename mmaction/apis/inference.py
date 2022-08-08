@@ -7,12 +7,11 @@ from operator import itemgetter
 
 import mmengine
 import numpy as np
-import torch
-from mmcv.parallel import collate, scatter
+from mmengine.data import pseudo_collate
 from mmengine.dataset import Compose
 from mmengine.runner import load_checkpoint
 
-from mmaction.core import OutputHook
+from mmaction.engine import OutputHook
 from mmaction.registry import MODELS
 
 
@@ -43,7 +42,7 @@ def init_recognizer(config, checkpoint=None, device='cuda:0', **kwargs):
 
     # pretrained model is unnecessary since we directly load checkpoint later
     config.model.backbone.pretrained = None
-    model = MODELS.build(config.model, test_cfg=config.get('test_cfg'))
+    model = MODELS.build(config.model)
 
     if checkpoint is not None:
         load_checkpoint(model, checkpoint, map_location='cpu')
@@ -104,9 +103,9 @@ def inference_recognizer(model, video, outputs=None, as_tensor=True, **kwargs):
     assert outputs is None or isinstance(outputs, (tuple, list))
 
     cfg = model.cfg
-    device = next(model.parameters()).device  # model device
+
     # build the data pipeline
-    test_pipeline = cfg.data.test.pipeline
+    test_pipeline = cfg.test_pipeline
     # Alter data pipelines & prepare inputs
     if input_flag == 'dict':
         data = video
@@ -170,16 +169,12 @@ def inference_recognizer(model, video, outputs=None, as_tensor=True, **kwargs):
 
     test_pipeline = Compose(test_pipeline)
     data = test_pipeline(data)
-    data = collate([data], samples_per_gpu=1)
-
-    if next(model.parameters()).is_cuda:
-        # scatter to specified GPU
-        data = scatter(data, [device])[0]
+    data = pseudo_collate([data])
 
     # forward the model
     with OutputHook(model, outputs=outputs, as_tensor=as_tensor) as h:
-        with torch.no_grad():
-            scores = model(return_loss=False, **data)[0]
+        scores = model.val_step(data)[0].pred_scores.item
+        scores = scores.softmax(dim=-1)
         returned_features = h.layer_outputs if outputs else None
 
     num_classes = scores.shape[-1]

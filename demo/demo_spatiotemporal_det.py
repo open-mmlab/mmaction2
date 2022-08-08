@@ -9,12 +9,15 @@ import cv2
 import mmcv
 import numpy as np
 import torch
-from mmcv import DictAction
-from mmcv.runner import load_checkpoint
+from mmengine import DictAction, load_checkpoint
+from mmengine.data import InstanceData
 
-from mmaction.models import build_detector
+from mmaction.data_elements import ActionDataSample
+from mmaction.registry import MODELS
+from mmaction.utils import register_all_modules
 
 try:
+    import mmdet
     from mmdet.apis import inference_detector, init_detector
 except (ImportError, ModuleNotFoundError):
     raise ImportError('Failed to import `inference_detector` and '
@@ -216,15 +219,15 @@ def detection_inference(args, frame_paths):
         list[np.ndarray]: The human detection results.
     """
     model = init_detector(args.det_config, args.det_checkpoint, args.device)
-    assert model.CLASSES[0] == 'person', ('We require you to use a detector '
-                                          'trained on COCO')
     results = []
     print('Performing Human Detection for each frame')
     prog_bar = mmcv.ProgressBar(len(frame_paths))
     for frame_path in frame_paths:
         result = inference_detector(model, frame_path)
         # We only keep human detections with score larger than det_score_thr
-        result = result[0][result[0][:, 4] >= args.det_score_thr]
+        bboxes = result.pred_instances.bboxes
+        scores = result.pred_instances.scores
+        result = bboxes[scores > args.det_score_thr]
         results.append(result)
         prog_bar.update()
     return results
@@ -283,6 +286,9 @@ def pack_result(human_detection, result, img_h, img_w):
 def main():
     args = parse_args()
 
+    register_all_modules(init_default_scope=True)
+    mmdet.utils.register_all_modules(init_default_scope=True)
+
     frame_paths, original_frames = frame_extraction(args.video)
     num_frame = len(frame_paths)
     h, w, _ = original_frames[0].shape
@@ -295,7 +301,7 @@ def main():
     # Get clip_len, frame_interval and calculate center index of each clip
     config = mmcv.Config.fromfile(args.config)
     config.merge_from_dict(args.cfg_options)
-    val_pipeline = config.data.val.pipeline
+    val_pipeline = config.val_pipeline
 
     sampler = [x for x in val_pipeline if x['type'] == 'SampleAVAFrames'][0]
     clip_len, frame_interval = sampler['clip_len'], sampler['frame_interval']
@@ -324,32 +330,29 @@ def main():
         det = human_detections[i]
         det[:, 0:4:2] *= w_ratio
         det[:, 1:4:2] *= h_ratio
-        human_detections[i] = torch.from_numpy(det[:, :4]).to(args.device)
-
-    # Get img_norm_cfg
-    img_norm_cfg = config['img_norm_cfg']
-    if 'to_rgb' not in img_norm_cfg and 'to_bgr' in img_norm_cfg:
-        to_bgr = img_norm_cfg.pop('to_bgr')
-        img_norm_cfg['to_rgb'] = to_bgr
-    img_norm_cfg['mean'] = np.array(img_norm_cfg['mean'])
-    img_norm_cfg['std'] = np.array(img_norm_cfg['std'])
+        human_detections[i] = det[:, :4].to(args.device)
 
     # Build STDET model
     try:
         # In our spatiotemporal detection demo, different actions should have
         # the same number of bboxes.
-        config['model']['test_cfg']['rcnn']['action_thr'] = .0
+        config['model']['test_cfg']['rcnn'] = dict(action_thr=0)
     except KeyError:
         pass
 
     config.model.backbone.pretrained = None
-    model = build_detector(config.model, test_cfg=config.get('test_cfg'))
+    model = MODELS.build(config.model)
 
     load_checkpoint(model, args.checkpoint, map_location='cpu')
     model.to(args.device)
     model.eval()
 
     predictions = []
+
+    img_norm_cfg = dict(
+        mean=np.array(config.model.data_preprocessor.mean),
+        std=np.array(config.model.data_preprocessor.std),
+        to_rgb=False)
 
     print('Performing SpatioTemporal Action Detection for each clip')
     assert len(timestamps) == len(human_detections)
@@ -368,25 +371,24 @@ def main():
         input_array = np.stack(imgs).transpose((3, 0, 1, 2))[np.newaxis]
         input_tensor = torch.from_numpy(input_array).to(args.device)
 
+        datasample = ActionDataSample()
+        datasample.proposals = InstanceData(bboxes=proposal)
+        datasample.set_metainfo(dict(img_shape=(new_h, new_w)))
         with torch.no_grad():
-            result = model(
-                return_loss=False,
-                img=[input_tensor],
-                img_metas=[[dict(img_shape=(new_h, new_w))]],
-                proposals=[[proposal]])
-            result = result[0]
+            result = model(input_tensor, [datasample], mode='predict')
+            scores = result[0].pred_instances.scores
             prediction = []
             # N proposals
             for i in range(proposal.shape[0]):
                 prediction.append([])
             # Perform action score thr
-            for i in range(len(result)):
+            for i in range(scores.shape[1]):
                 if i + 1 not in label_map:
                     continue
                 for j in range(proposal.shape[0]):
-                    if result[i][j, 4] > args.action_score_thr:
-                        prediction[j].append((label_map[i + 1], result[i][j,
-                                                                          4]))
+                    if scores[j, i] > args.action_score_thr:
+                        prediction[j].append(
+                            (label_map[i + 1], scores[j, i].item()))
             predictions.append(prediction)
         prog_bar.update()
 

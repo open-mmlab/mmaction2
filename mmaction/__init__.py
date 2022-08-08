@@ -12,7 +12,7 @@ mmcv_version = digit_version(mmcv.__version__)
 mmengine_minimum_version = '0.0.0'
 mmengine_maximum_version = '0.2.0'
 mmengine_version = digit_version(mmengine.__version__)
-
+"""
 assert (digit_version(mmcv_minimum_version) <= mmcv_version
         <= digit_version(mmcv_maximum_version)), \
     f'MMCV=={mmcv.__version__} is used but incompatible. ' \
@@ -23,5 +23,5 @@ assert (digit_version(mmengine_minimum_version) <= mmengine_version
     f'MMEngine=={mmengine.__version__} is used but incompatible. ' \
     f'Please install mmengine>={mmengine_minimum_version}, ' \
     f'<={mmengine_maximum_version}.'
-
+"""
 __all__ = ['__version__']
