@@ -75,7 +75,7 @@ class MyOptimizer(Optimizer):
 
 - 修改 `mmaction/core/optimizer/__init__.py` 来进行调用
 
-    新定义的模块应导入到 `mmaction/core/optimizer/__init__.py` 中，以便注册器能找到新模块并将其添加：
+  新定义的模块应导入到 `mmaction/core/optimizer/__init__.py` 中，以便注册器能找到新模块并将其添加：
 
 ```python
 from .my_optimizer import MyOptimizer
@@ -134,32 +134,32 @@ class MyOptimizerConstructor:
 下面列出了一些可以稳定训练或加快训练速度的常用设置。用户亦可通过为 MMAction2 创建 PR，发布更多设置。
 
 - __使用梯度裁剪来稳定训练__
-    一些模型需要使用梯度裁剪来剪辑渐变以稳定训练过程。 一个例子如下：
+  一些模型需要使用梯度裁剪来剪辑渐变以稳定训练过程。 一个例子如下：
 
-    ```python
-    optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
-    ```
+  ```python
+  optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
+  ```
 
 - __使用动量调整来加速模型收敛__
-    MMAction2 支持动量调整器根据学习率修改模型的动量，从而使模型收敛更快。
-    动量调整程序通常与学习率调整器一起使用，例如，以下配置用于3D检测以加速收敛。
-    更多细节可参考 [CyclicLrUpdater](https://github.com/open-mmlab/mmcv/blob/f48241a65aebfe07db122e9db320c31b685dc674/mmcv/runner/hooks/lr_updater.py#L327)
-    和 [CyclicMomentumUpdater](https://github.com/open-mmlab/mmcv/blob/f48241a65aebfe07db122e9db320c31b685dc674/mmcv/runner/hooks/momentum_updater.py#L130)。
+  MMAction2 支持动量调整器根据学习率修改模型的动量，从而使模型收敛更快。
+  动量调整程序通常与学习率调整器一起使用，例如，以下配置用于3D检测以加速收敛。
+  更多细节可参考 [CyclicLrUpdater](https://github.com/open-mmlab/mmcv/blob/f48241a65aebfe07db122e9db320c31b685dc674/mmcv/runner/hooks/lr_updater.py#L327)
+  和 [CyclicMomentumUpdater](https://github.com/open-mmlab/mmcv/blob/f48241a65aebfe07db122e9db320c31b685dc674/mmcv/runner/hooks/momentum_updater.py#L130)。
 
-    ```python
-    lr_config = dict(
-        policy='cyclic',
-        target_ratio=(10, 1e-4),
-        cyclic_times=1,
-        step_ratio_up=0.4,
-    )
-    momentum_config = dict(
-        policy='cyclic',
-        target_ratio=(0.85 / 0.95, 1),
-        cyclic_times=1,
-        step_ratio_up=0.4,
-    )
-    ```
+  ```python
+  lr_config = dict(
+      policy='cyclic',
+      target_ratio=(10, 1e-4),
+      cyclic_times=1,
+      step_ratio_up=0.4,
+  )
+  momentum_config = dict(
+      policy='cyclic',
+      target_ratio=(0.85 / 0.95, 1),
+      cyclic_times=1,
+      step_ratio_up=0.4,
+  )
+  ```
 
 ## 定制学习率调整策略
 
@@ -168,20 +168,20 @@ class MyOptimizerConstructor:
 
 - Poly:
 
-    ```python
-    lr_config = dict(policy='poly', power=0.9, min_lr=1e-4, by_epoch=False)
-    ```
+  ```python
+  lr_config = dict(policy='poly', power=0.9, min_lr=1e-4, by_epoch=False)
+  ```
 
 - ConsineAnnealing:
 
-    ```python
-    lr_config = dict(
-        policy='CosineAnnealing',
-        warmup='linear',
-        warmup_iters=1000,
-        warmup_ratio=1.0 / 10,
-        min_lr_ratio=1e-5)
-    ```
+  ```python
+  lr_config = dict(
+      policy='CosineAnnealing',
+      warmup='linear',
+      warmup_iters=1000,
+      warmup_ratio=1.0 / 10,
+      min_lr_ratio=1e-5)
+  ```
 
 ## 定制工作流
 
@@ -209,7 +209,7 @@ workflow = [('train', 1)]
 2. 配置文件内的关键词 `total_epochs` 控制训练时期数，并且不会影响验证工作流程。
 3. 工作流 `[('train', 1), ('val', 1)]` 和 `[('train', 1)]` 不会改变 `EvalHook` 的行为。
    因为 `EvalHook` 由 `after_train_epoch` 调用，而验证工作流只会影响 `after_val_epoch` 调用的钩子。
-   因此，`[('train', 1), ('val', 1)]` 和 ``[('train', 1)]`` 的区别在于，runner 在完成每一轮训练后，会计算验证集上的损失。
+   因此，`[('train', 1), ('val', 1)]` 和 `[('train', 1)]` 的区别在于，runner 在完成每一轮训练后，会计算验证集上的损失。
 
 ## 定制钩子
 
@@ -256,7 +256,7 @@ class MyHook(Hook):
 
 - 修改 `mmaction/core/utils/__init__.py` 进行导入
 
-    新定义的模块应导入到 `mmaction/core/utils/__init__py` 中，以便注册表能找到并添加新模块：
+  新定义的模块应导入到 `mmaction/core/utils/__init__py` 中，以便注册表能找到并添加新模块：
 
 ```python
 from .my_hook import MyHook

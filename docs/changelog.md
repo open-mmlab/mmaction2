@@ -87,7 +87,7 @@
 **Bug and Typo Fixes**
 
 - Update train.py([#1375](https://github.com/open-mmlab/mmaction2/pull/1375))
-- Fix printout bug([#1382]((https://github.com/open-mmlab/mmaction2/pull/1382)))
+- Fix printout bug([#1382](<(https://github.com/open-mmlab/mmaction2/pull/1382)>))
 - Update multi processing setting([#1395](https://github.com/open-mmlab/mmaction2/pull/1395))
 - Setup multi processing both in train and test([#1405](https://github.com/open-mmlab/mmaction2/pull/1405))
 - Fix bug in nondistributed multi-gpu training([#1406](https://github.com/open-mmlab/mmaction2/pull/1406))
@@ -139,7 +139,7 @@
 **Bug and Typo Fixes**
 
 - Update the inference part in notebooks([#1256](https://github.com/open-mmlab/mmaction2/pull/1256))
-- Update the map_location([#1262]((https://github.com/open-mmlab/mmaction2/pull/1262)))
+- Update the map_location([#1262](<(https://github.com/open-mmlab/mmaction2/pull/1262)>))
 - Fix bug that start_index is not used in RawFrameDecode([#1278](https://github.com/open-mmlab/mmaction2/pull/1278))
 - Fix bug in init_random_seed([#1282](https://github.com/open-mmlab/mmaction2/pull/1282))
 - Fix bug in setup.py([#1303](https://github.com/open-mmlab/mmaction2/pull/1303))
@@ -464,7 +464,7 @@
 - Add TSN with Densenet161 backbone as an example for using TorchVision backbones ([#720](https://github.com/open-mmlab/mmaction2/pull/720))
 - Add slowonly_nl_embedded_gaussian_r50_4x16x1_150e_kinetics400_rgb ([#690](https://github.com/open-mmlab/mmaction2/pull/690))
 - Add slowonly_nl_embedded_gaussian_r50_8x8x1_150e_kinetics400_rgb ([#704](https://github.com/open-mmlab/mmaction2/pull/704))
-- Add slowonly_nl_kinetics_pretrained_r50_4x16x1(8x8x1)_20e_ava_rgb ([#730](https://github.com/open-mmlab/mmaction2/pull/730))
+- Add slowonly_nl_kinetics_pretrained_r50_4x16x1(8x8x1)\_20e_ava_rgb ([#730](https://github.com/open-mmlab/mmaction2/pull/730))
 
 ### 0.12.0 (28/02/2021)
 

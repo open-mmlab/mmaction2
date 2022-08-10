@@ -29,43 +29,43 @@ python tools/analysis/analyze_logs.py plot_curve ${JSON_LOGS} [--keys ${KEYS}] [
 
 - 绘制某日志文件对应的分类损失曲线图。
 
-    ```shell
-    python tools/analysis/analyze_logs.py plot_curve log.json --keys loss_cls --legend loss_cls
-    ```
+  ```shell
+  python tools/analysis/analyze_logs.py plot_curve log.json --keys loss_cls --legend loss_cls
+  ```
 
 - 绘制某日志文件对应的 top-1 和 top-5 准确率曲线图，并将曲线图导出为 PDF 文件。
 
-    ```shell
-    python tools/analysis/analyze_logs.py plot_curve log.json --keys top1_acc top5_acc --out results.pdf
-    ```
+  ```shell
+  python tools/analysis/analyze_logs.py plot_curve log.json --keys top1_acc top5_acc --out results.pdf
+  ```
 
 - 在同一图像内绘制两份日志文件对应的 top-1 准确率曲线图。
 
-    ```shell
-    python tools/analysis/analyze_logs.py plot_curve log1.json log2.json --keys top1_acc --legend run1 run2
-    ```
+  ```shell
+  python tools/analysis/analyze_logs.py plot_curve log1.json log2.json --keys top1_acc --legend run1 run2
+  ```
 
-    用户还可以通过本工具计算平均训练速度。
+  用户还可以通过本工具计算平均训练速度。
 
-    ```shell
-    python tools/analysis/analyze_logs.py cal_train_time ${JSON_LOGS} [--include-outliers]
-    ```
+  ```shell
+  python tools/analysis/analyze_logs.py cal_train_time ${JSON_LOGS} [--include-outliers]
+  ```
 
 - 计算某日志文件对应的平均训练速度。
 
-    ```shell
-    python tools/analysis/analyze_logs.py cal_train_time work_dirs/some_exp/20200422_153324.log.json
-    ```
+  ```shell
+  python tools/analysis/analyze_logs.py cal_train_time work_dirs/some_exp/20200422_153324.log.json
+  ```
 
-    预计输出结果如下所示：
+  预计输出结果如下所示：
 
-    ```text
-    -----Analyze train time of work_dirs/some_exp/20200422_153324.log.json-----
-    slowest epoch 60, average time is 0.9736
-    fastest epoch 18, average time is 0.9001
-    time std over epochs is 0.0177
-    average iter time: 0.9330 s/iter
-    ```
+  ```text
+  -----Analyze train time of work_dirs/some_exp/20200422_153324.log.json-----
+  slowest epoch 60, average time is 0.9736
+  fastest epoch 18, average time is 0.9001
+  time std over epochs is 0.0177
+  average iter time: 0.9330 s/iter
+  ```
 
 ## 模型复杂度分析
 
@@ -102,15 +102,15 @@ Params: 28.04 M
 
 - 对于行为识别模型，请运行：
 
-    ```shell
-    python tools/deployment/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --verify
-    ```
+  ```shell
+  python tools/deployment/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --verify
+  ```
 
 - 对于时序动作检测模型，请运行：
 
-    ```shell
-    python tools/deployment/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --is-localizer --shape $SHAPE --verify
-    ```
+  ```shell
+  python tools/deployment/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --is-localizer --shape $SHAPE --verify
+  ```
 
 ### 发布模型
 

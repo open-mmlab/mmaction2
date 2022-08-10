@@ -1,6 +1,6 @@
 exclude: ^tests/data/
 repos:
-  - repo: https://gitlab.com/pycqa/flake8.git
+  - repo: https://github.com/PyCQA/flake8
     rev: 3.8.3
     hooks:
       - id: flake8
@@ -25,11 +25,6 @@ repos:
         args: ["--remove"]
       - id: mixed-line-ending
         args: ["--fix=lf"]
-  - repo: https://github.com/markdownlint/markdownlint
-    rev: v0.11.0
-    hooks:
-      - id: markdownlint
-        args: [ "-r", "~MD002,~MD013,~MD024,~MD029,~MD033,~MD034,~MD036" ]
   - repo: https://github.com/myint/docformatter
     rev: v1.3.1
     hooks:
@@ -39,10 +34,28 @@ repos:
     rev: v2.1.0
     hooks:
       - id: codespell
-        args: ["--skip", "*.ipynb,tools/data/hvu/label_map.json", "-L", "te,nd,thre,Gool,gool"]
-  - repo: https://github.com/open-mmlab/pre-commit-hooks
-    rev: v0.2.0  # Use the ref you want to point at
+        args: ["--skip", "*.ipynb", "-L", "Gool,tread,gool,mot"]
+  - repo: https://github.com/executablebooks/mdformat
+    rev: 0.7.14
     hooks:
-      - id: check-algo-readme
+      - id: mdformat
+        args: ["--number", "--table-width", "200"]
+        additional_dependencies:
+          - mdformat-openmmlab
+          - mdformat_frontmatter
+          - linkify-it-py
+  # - repo: local
+  #   hooks:
+  #     - id: update-model-index
+  #       name: update-model-index
+  #       description: Collect model information and update model-index.yml
+  #       entry: .dev_scripts/github/update_model_index.py
+  #       additional_dependencies: [mmcv]
+  #       language: python
+  #       files: ^configs/.*\.md$
+  #       require_serial: true
+  - repo: https://github.com/open-mmlab/pre-commit-hooks
+    rev: v0.2.0
+    hooks:
       - id: check-copyright
-        args: ["mmaction", "tests", "demo", "tools"]  # these directories will be checked
+        args: ["mmaction", "tests", "demo", "tools", "--excludes"]

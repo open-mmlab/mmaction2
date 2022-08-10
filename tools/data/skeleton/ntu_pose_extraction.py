@@ -95,8 +95,8 @@ def area(b):
 
 def removedup(bbox):
 
-    def inside(box0, box1, thre=0.8):
-        return intersection(box0, box1) / area(box0) > thre
+    def inside(box0, box1, threshold=0.8):
+        return intersection(box0, box1) / area(box0) > threshold
 
     num_bboxes = bbox.shape[0]
     if num_bboxes == 1 or num_bboxes == 0:
@@ -117,8 +117,8 @@ def removedup(bbox):
 def is_easy_example(det_results, num_person):
     threshold = 0.95
 
-    def thre_bbox(bboxes, thre=threshold):
-        shape = [sum(bbox[:, -1] > thre) for bbox in bboxes]
+    def thre_bbox(bboxes, threshold=threshold):
+        shape = [sum(bbox[:, -1] > threshold) for bbox in bboxes]
         ret = np.all(np.array(shape) == shape[0])
         return shape[0] if ret else -1
 
