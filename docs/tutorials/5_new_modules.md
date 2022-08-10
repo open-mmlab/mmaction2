@@ -115,41 +115,41 @@ Here we show how to develop new components with an example of TSN.
 
 1. Create a new file `mmaction/models/backbones/resnet.py`.
 
-    ```python
-    import torch.nn as nn
+   ```python
+   import torch.nn as nn
 
-    from ..builder import BACKBONES
+   from ..builder import BACKBONES
 
-    @BACKBONES.register_module()
-    class ResNet(nn.Module):
+   @BACKBONES.register_module()
+   class ResNet(nn.Module):
 
-        def __init__(self, arg1, arg2):
-            pass
+       def __init__(self, arg1, arg2):
+           pass
 
-        def forward(self, x):  # should return a tuple
-            pass
+       def forward(self, x):  # should return a tuple
+           pass
 
-        def init_weights(self, pretrained=None):
-            pass
-    ```
+       def init_weights(self, pretrained=None):
+           pass
+   ```
 
 2. Import the module in `mmaction/models/backbones/__init__.py`.
 
-    ```python
-    from .resnet import ResNet
-    ```
+   ```python
+   from .resnet import ResNet
+   ```
 
 3. Use it in your config file.
 
-    ```python
-    model = dict(
-        ...
-        backbone=dict(
-            type='ResNet',
-            arg1=xxx,
-            arg2=xxx),
-    )
-    ```
+   ```python
+   model = dict(
+       ...
+       backbone=dict(
+           type='ResNet',
+           arg1=xxx,
+           arg2=xxx),
+   )
+   ```
 
 ### Add new heads
 
@@ -157,45 +157,45 @@ Here we show how to develop a new head with the example of TSNHead as the follow
 
 1. Create a new file `mmaction/models/heads/tsn_head.py`.
 
-    You can write a new classification head inheriting from [BaseHead](/mmaction/models/heads/base.py),
-    and overwrite `init_weights(self)` and `forward(self, x)` method.
+   You can write a new classification head inheriting from [BaseHead](/mmaction/models/heads/base.py),
+   and overwrite `init_weights(self)` and `forward(self, x)` method.
 
-    ```python
-    from ..builder import HEADS
-    from .base import BaseHead
+   ```python
+   from ..builder import HEADS
+   from .base import BaseHead
 
 
-    @HEADS.register_module()
-    class TSNHead(BaseHead):
+   @HEADS.register_module()
+   class TSNHead(BaseHead):
 
-        def __init__(self, arg1, arg2):
-            pass
+       def __init__(self, arg1, arg2):
+           pass
 
-        def forward(self, x):
-            pass
+       def forward(self, x):
+           pass
 
-        def init_weights(self):
-            pass
-    ```
+       def init_weights(self):
+           pass
+   ```
 
 2. Import the module in `mmaction/models/heads/__init__.py`
 
-    ```python
-    from .tsn_head import TSNHead
-    ```
+   ```python
+   from .tsn_head import TSNHead
+   ```
 
 3. Use it in your config file
 
-    ```python
-    model = dict(
-        ...
-        cls_head=dict(
-            type='TSNHead',
-            num_classes=400,
-            in_channels=2048,
-            arg1=xxx,
-            arg2=xxx),
-    ```
+   ```python
+   model = dict(
+       ...
+       cls_head=dict(
+           type='TSNHead',
+           num_classes=400,
+           in_channels=2048,
+           arg1=xxx,
+           arg2=xxx),
+   ```
 
 ### Add new loss
 

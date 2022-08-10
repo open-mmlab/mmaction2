@@ -1,4 +1,4 @@
-# Preparing Kinetics-[400/600/700]
+# Preparing Kinetics-\[400/600/700\]
 
 ## Introduction
 
@@ -21,9 +21,9 @@ Before we start, please make sure that the directory is located at `$MMACTION2/t
 :::{note}
 Because of the expirations of some YouTube links, the sizes of kinetics dataset copies may be different. Here are the sizes of our kinetics dataset copies that used to train all checkpoints.
 
-| Dataset | training videos | validation videos |
-| :---------------:|:---------------:|:---------------:|
-| kinetics400 | 240436 | 19796 |
+|   Dataset   | training videos | validation videos |
+| :---------: | :-------------: | :---------------: |
+| kinetics400 |     240436      |       19796       |
 
 :::
 

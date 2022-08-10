@@ -19,12 +19,12 @@
 
 ### Kinetics-400
 
-|配置文件 | 分辨率 | 主干网络 | top1 10-view | top1 30-view | 参考代码的 top1 10-view | 参考代码的 top1 30-view | ckpt |
-|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[x3d_s_13x6x1_facebook_kinetics400_rgb](/configs/recognition/x3d/x3d_s_13x6x1_facebook_kinetics400_rgb.py)|短边 320| X3D_S | 72.7 | 73.2 | 73.1 [[SlowFast](https://github.com/facebookresearch/SlowFast/blob/master/MODEL_ZOO.md)] | 73.5 [[SlowFast](https://github.com/facebookresearch/SlowFast/blob/master/MODEL_ZOO.md)] | [ckpt](https://download.openmmlab.com/mmaction/recognition/x3d/facebook/x3d_s_facebook_13x6x1_kinetics400_rgb_20201027-623825a0.pth)[1] |
-|[x3d_m_16x5x1_facebook_kinetics400_rgb](/configs/recognition/x3d/x3d_m_16x5x1_facebook_kinetics400_rgb.py)|短边 320| X3D_M | 75.0 | 75.6 | 75.1 [[SlowFast](https://github.com/facebookresearch/SlowFast/blob/master/MODEL_ZOO.md)] | 76.2 [[SlowFast](https://github.com/facebookresearch/SlowFast/blob/master/MODEL_ZOO.md)] | [ckpt](https://download.openmmlab.com/mmaction/recognition/x3d/facebook/x3d_m_facebook_16x5x1_kinetics400_rgb_20201027-3f42382a.pth)[1] |
+| 配置文件                          |  分辨率  | 主干网络 | top1 10-view | top1 30-view |             参考代码的 top1 10-view             |             参考代码的 top1 30-view             |               ckpt                |
+| :-------------------------------- | :------: | :------: | :----------: | :----------: | :---------------------------------------------: | :---------------------------------------------: | :-------------------------------: |
+| [x3d_s_13x6x1_facebook_kinetics400_rgb](/configs/recognition/x3d/x3d_s_13x6x1_facebook_kinetics400_rgb.py) | 短边 320 |  X3D_S   |     72.7     |     73.2     | 73.1 \[[SlowFast](https://github.com/facebookresearch/SlowFast/blob/master/MODEL_ZOO.md)\] | 73.5 \[[SlowFast](https://github.com/facebookresearch/SlowFast/blob/master/MODEL_ZOO.md)\] | [ckpt](https://download.openmmlab.com/mmaction/recognition/x3d/facebook/x3d_s_facebook_13x6x1_kinetics400_rgb_20201027-623825a0.pth)\[1\] |
+| [x3d_m_16x5x1_facebook_kinetics400_rgb](/configs/recognition/x3d/x3d_m_16x5x1_facebook_kinetics400_rgb.py) | 短边 320 |  X3D_M   |     75.0     |     75.6     | 75.1 \[[SlowFast](https://github.com/facebookresearch/SlowFast/blob/master/MODEL_ZOO.md)\] | 76.2 \[[SlowFast](https://github.com/facebookresearch/SlowFast/blob/master/MODEL_ZOO.md)\] | [ckpt](https://download.openmmlab.com/mmaction/recognition/x3d/facebook/x3d_m_facebook_16x5x1_kinetics400_rgb_20201027-3f42382a.pth)\[1\] |
 
-[1] 这里的模型是从 [SlowFast](https://github.com/facebookresearch/SlowFast/) 代码库中导入并在 MMAction2 使用的数据上进行测试的。目前仅支持 X3D 模型的测试，训练部分将会在近期提供。
+\[1\] 这里的模型是从 [SlowFast](https://github.com/facebookresearch/SlowFast/) 代码库中导入并在 MMAction2 使用的数据上进行测试的。目前仅支持 X3D 模型的测试，训练部分将会在近期提供。
 
 注：
 

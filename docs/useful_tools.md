@@ -36,43 +36,43 @@ Examples:
 
 - Plot the classification loss of some run.
 
-    ```shell
-    python tools/analysis/analyze_logs.py plot_curve log.json --keys loss_cls --legend loss_cls
-    ```
+  ```shell
+  python tools/analysis/analyze_logs.py plot_curve log.json --keys loss_cls --legend loss_cls
+  ```
 
 - Plot the top-1 acc and top-5 acc of some run, and save the figure to a pdf.
 
-    ```shell
-    python tools/analysis/analyze_logs.py plot_curve log.json --keys top1_acc top5_acc --out results.pdf
-    ```
+  ```shell
+  python tools/analysis/analyze_logs.py plot_curve log.json --keys top1_acc top5_acc --out results.pdf
+  ```
 
 - Compare the top-1 acc of two runs in the same figure.
 
-    ```shell
-    python tools/analysis/analyze_logs.py plot_curve log1.json log2.json --keys top1_acc --legend run1 run2
-    ```
+  ```shell
+  python tools/analysis/analyze_logs.py plot_curve log1.json log2.json --keys top1_acc --legend run1 run2
+  ```
 
-    You can also compute the average training speed.
+  You can also compute the average training speed.
 
-    ```shell
-    python tools/analysis/analyze_logs.py cal_train_time ${JSON_LOGS} [--include-outliers]
-    ```
+  ```shell
+  python tools/analysis/analyze_logs.py cal_train_time ${JSON_LOGS} [--include-outliers]
+  ```
 
 - Compute the average training speed for a config file.
 
-    ```shell
-    python tools/analysis/analyze_logs.py cal_train_time work_dirs/some_exp/20200422_153324.log.json
-    ```
+  ```shell
+  python tools/analysis/analyze_logs.py cal_train_time work_dirs/some_exp/20200422_153324.log.json
+  ```
 
-    The output is expected to be like the following.
+  The output is expected to be like the following.
 
-    ```text
-    -----Analyze train time of work_dirs/some_exp/20200422_153324.log.json-----
-    slowest epoch 60, average time is 0.9736
-    fastest epoch 18, average time is 0.9001
-    time std over epochs is 0.0177
-    average iter time: 0.9330 s/iter
-    ```
+  ```text
+  -----Analyze train time of work_dirs/some_exp/20200422_153324.log.json-----
+  slowest epoch 60, average time is 0.9736
+  fastest epoch 18, average time is 0.9001
+  time std over epochs is 0.0177
+  average iter time: 0.9330 s/iter
+  ```
 
 ## Model Complexity
 
@@ -111,15 +111,15 @@ Please note that a softmax layer could be added for recognizers by `--softmax` o
 
 - For recognizers, please run:
 
-    ```shell
-    python tools/deployment/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --verify
-    ```
+  ```shell
+  python tools/deployment/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --verify
+  ```
 
 - For localizers, please run:
 
-    ```shell
-    python tools/deployment/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --is-localizer --shape $SHAPE --verify
-    ```
+  ```shell
+  python tools/deployment/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --is-localizer --shape $SHAPE --verify
+  ```
 
 ### Prepare a model for publishing
 

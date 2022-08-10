@@ -11,6 +11,7 @@
 In this paper we discuss several forms of spatiotemporal convolutions for video analysis and study their effects on action recognition. Our motivation stems from the observation that 2D CNNs applied to individual frames of the video have remained solid performers in action recognition. In this work we empirically demonstrate the accuracy advantages of 3D CNNs over 2D CNNs within the framework of residual learning. Furthermore, we show that factorizing the 3D convolutional filters into separate spatial and temporal components yields significantly advantages in accuracy. Our empirical study leads to the design of a new spatiotemporal convolutional block "R(2+1)D" which gives rise to CNNs that achieve results comparable or superior to the state-of-the-art on Sports-1M, Kinetics, UCF101 and HMDB51.
 
 <!-- [IMAGE] -->
+
 <div align=center>
 <img src="https://user-images.githubusercontent.com/34324155/143043885-3d00413c-b556-445e-9673-f5805c08c195.png" width="800"/>
 </div>
@@ -19,10 +20,10 @@ In this paper we discuss several forms of spatiotemporal convolutions for video 
 
 ### Kinetics-400
 
-|config | resolution | gpus | backbone | pretrain| top1 acc| top5 acc | inference_time(video/s) | gpu_mem(M) | ckpt | log|
-|:--|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|[r2plus1d_r34_8x8x1_180e_8xb8_kinetics400_rgb.py](/configs/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_8xb8_kinetics400_rgb.py) | short-side 320|8| ResNet34|None |69.35|88.32|x|5036|[ckpt](https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_256p_8x8x1_180e_kinetics400_rgb/r2plus1d_r34_256p_8x8x1_180e_kinetics400_rgb_20200729-aa94765e.pth)|[log](https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_256p_8x8x1_180e_kinetics400_rgb/20200728_021421.log)|
-|[r2plus1d_r34_32x2x1_180e_8xb8_kinetics400_rgb.py](/configs/recognition/r2plus1d/r2plus1d_r34_32x2x1_180e_8xb8_kinetics400_rgb.py) | short-side 320|8| ResNet34|None |75.27|92.03|x|17006|[ckpt](https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb_20200826-ab35a529.pth)|[log](https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb/20200724_201360.log.json)|
+| config                                   |   resolution   | gpus | backbone | pretrain | top1 acc | top5 acc | inference_time(video/s) | gpu_mem(M) |                  ckpt                   |                  log                   |
+| :--------------------------------------- | :------------: | :--: | :------: | :------: | :------: | :------: | :---------------------: | :--------: | :-------------------------------------: | :------------------------------------: |
+| [r2plus1d_r34_8x8x1_180e_8xb8_kinetics400_rgb.py](/configs/recognition/r2plus1d/r2plus1d_r34_8x8x1_180e_8xb8_kinetics400_rgb.py) | short-side 320 |  8   | ResNet34 |   None   |  69.35   |  88.32   |            x            |    5036    | [ckpt](https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_256p_8x8x1_180e_kinetics400_rgb/r2plus1d_r34_256p_8x8x1_180e_kinetics400_rgb_20200729-aa94765e.pth) | [log](https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_256p_8x8x1_180e_kinetics400_rgb/20200728_021421.log) |
+| [r2plus1d_r34_32x2x1_180e_8xb8_kinetics400_rgb.py](/configs/recognition/r2plus1d/r2plus1d_r34_32x2x1_180e_8xb8_kinetics400_rgb.py) | short-side 320 |  8   | ResNet34 |   None   |  75.27   |  92.03   |            x            |   17006    | [ckpt](https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb_20200826-ab35a529.pth) | [log](https://download.openmmlab.com/mmaction/recognition/r2plus1d/r2plus1d_r34_video_8x8x1_180e_kinetics400_rgb/20200724_201360.log.json) |
 
 :::{note}
 
