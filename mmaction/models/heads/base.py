@@ -134,15 +134,16 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
             # shape.
             labels = labels.unsqueeze(0)
 
-        if not self.multi_class and cls_scores.size() != labels.size():
+        if cls_scores.size() != labels.size():
             top_k_acc = top_k_accuracy(cls_scores.detach().cpu().numpy(),
                                        labels.detach().cpu().numpy(),
                                        self.topk)
             for k, a in zip(self.topk, top_k_acc):
                 losses[f'top{k}_acc'] = torch.tensor(
                     a, device=cls_scores.device)
-
-        elif self.multi_class and self.label_smooth_eps != 0:
+        if self.label_smooth_eps != 0:
+            if cls_scores.size() != labels.size():
+                labels = F.one_hot(labels, num_classes=self.num_classes)
             labels = ((1 - self.label_smooth_eps) * labels +
                       self.label_smooth_eps / self.num_classes)
 

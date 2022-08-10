@@ -41,15 +41,15 @@ class BaseActionDataset(BaseDataset, metaclass=ABCMeta):
                  start_index: int = 0,
                  modality: str = 'RGB',
                  **kwargs) -> None:
+        self.multi_class = multi_class
+        self.num_classes = num_classes
+        self.start_index = start_index
+        self.modality = modality
         super().__init__(ann_file,
                          pipeline=pipeline,
                          data_prefix=data_prefix,
                          test_mode=test_mode,
                          **kwargs)
-        self.multi_class = multi_class
-        self.num_classes = num_classes
-        self.start_index = start_index
-        self.modality = modality
 
     def get_data_info(self, idx: int) -> dict:
         """Get annotation by index."""
