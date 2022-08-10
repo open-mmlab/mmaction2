@@ -2,16 +2,15 @@
 import os.path as osp
 from typing import Callable, List, Optional, Union
 
-import torch
-from mmengine.dataset import BaseDataset
 from mmengine.utils import check_file_exist
 
 from mmaction.registry import DATASETS
 from mmaction.utils import ConfigType
+from .base import BaseActionDataset
 
 
 @DATASETS.register_module()
-class RawframeDataset(BaseDataset):
+class RawframeDataset(BaseActionDataset):
     """Rawframe dataset for action recognition.
 
     The dataset loads raw frames and apply specified transforms to return a
@@ -61,7 +60,8 @@ class RawframeDataset(BaseDataset):
 
     Args:
         ann_file (str): Path to the annotation file.
-        pipeline (list): A sequence of data transforms.
+        pipeline (List[Union[dict, ConfigDict, Callable]]): A sequence of
+            data transforms.
         data_prefix (dict or ConfigDict): Path to a directory where video
             frames are held. Defaults to ``dict(img='')``.
         filename_tmpl (str): Template for each filename.
@@ -82,8 +82,6 @@ class RawframeDataset(BaseDataset):
             Defaults to False.
     """
 
-    _fully_initialized: bool = False
-
     def __init__(self,
                  ann_file: str,
                  pipeline: List[Union[ConfigType, Callable]],
@@ -95,18 +93,18 @@ class RawframeDataset(BaseDataset):
                  start_index: int = 1,
                  modality: str = 'RGB',
                  test_mode: bool = False,
-                 **kwargs):
+                 **kwargs) -> None:
         self.filename_tmpl = filename_tmpl
         self.with_offset = with_offset
-        self.multi_class = multi_class
-        self.num_classes = num_classes
-        self.start_index = start_index
-        self.modality = modality
         super().__init__(
             ann_file,
             pipeline=pipeline,
             data_prefix=data_prefix,
             test_mode=test_mode,
+            multi_class=multi_class,
+            num_classes=num_classes,
+            start_index=start_index,
+            modality=modality,
             **kwargs)
 
     def load_data_list(self) -> List[dict]:
@@ -147,15 +145,7 @@ class RawframeDataset(BaseDataset):
         return data_list
 
     def get_data_info(self, idx: int) -> dict:
+        """Get annotation by index."""
         data_info = super().get_data_info(idx)
         data_info['filename_tmpl'] = self.filename_tmpl
-        data_info['modality'] = self.modality
-        data_info['start_index'] = self.start_index
-
-        # prepare tensor in getitem
-        if self.multi_class:
-            onehot = torch.zeros(self.num_classes)
-            onehot[data_info['label']] = 1.
-            data_info['label'] = onehot
-
         return data_info

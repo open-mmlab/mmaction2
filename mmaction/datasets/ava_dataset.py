@@ -4,7 +4,6 @@ from collections import defaultdict
 from typing import Callable, List, Optional, Union
 
 import numpy as np
-from mmengine.dataset import BaseDataset
 from mmengine.fileio import load
 from mmengine.logging import MMLogger
 from mmengine.utils import check_file_exist
@@ -12,10 +11,11 @@ from mmengine.utils import check_file_exist
 from mmaction.evaluation import read_labelmap
 from mmaction.registry import DATASETS
 from mmaction.utils import ConfigType
+from .base import BaseActionDataset
 
 
 @DATASETS.register_module()
-class AVADataset(BaseDataset):
+class AVADataset(BaseActionDataset):
     """AVA dataset for spatial temporal detection.
 
     Based on official AVA annotation files, the dataset loads raw frames,
@@ -54,7 +54,8 @@ class AVADataset(BaseDataset):
             ``ava_{train, val}_{v2.1, v2.2}.csv``.
         exclude_file (str): Path to the excluded timestamp file like
             ``ava_{train, val}_excluded_timestamps_{v2.1, v2.2}.csv``.
-        pipeline (list): A sequence of data transforms.
+        pipeline (List[Union[dict, ConfigDict, Callable]]): A sequence of
+            data transforms.
         label_file (str): Path to the label file like
             ``ava_action_list_{v2.1, v2.2}.pbtxt`` or
             ``ava_action_list_{v2.1, v2.2}_for_activitynet_2019.pbtxt``.
@@ -75,9 +76,9 @@ class AVADataset(BaseDataset):
         num_classes (int): The number of classes of the dataset. Default: 81.
             (AVA has 80 action classes, another 1-dim is added for potential
             usage)
-        custom_classes (List[int]): A subset of class ids from origin dataset.
-            Please note that 0 should NOT be selected, and ``num_classes``
-            should be equal to ``len(custom_classes) + 1``.
+        custom_classes (List[int], optional): A subset of class ids from origin
+            dataset. Please note that 0 should NOT be selected, and
+            ``num_classes`` should be equal to ``len(custom_classes) + 1``.
         data_prefix (dict or ConfigDict): Path to a directory where video
             frames are held. Defaults to ``dict(img='')``.
         test_mode (bool): Store True when building test or validation dataset.
@@ -129,18 +130,19 @@ class AVADataset(BaseDataset):
             'The value of '
             'person_det_score_thr should in [0, 1]. ')
         self.person_det_score_thr = person_det_score_thr
-        self.num_classes = num_classes
-        self.filename_tmpl = filename_tmpl
-        self.num_max_proposals = num_max_proposals
         self.timestamp_start = timestamp_start
         self.timestamp_end = timestamp_end
-        self.start_index = start_index
-        self.modality = modality
+        self.num_max_proposals = num_max_proposals
+        self.filename_tmpl = filename_tmpl
+
         super().__init__(
             ann_file,
             pipeline=pipeline,
             data_prefix=data_prefix,
             test_mode=test_mode,
+            num_classes=num_classes,
+            start_index=start_index,
+            modality=modality,
             **kwargs)
 
         if self.proposal_file is not None:
@@ -274,12 +276,11 @@ class AVADataset(BaseDataset):
         return data_list
 
     def get_data_info(self, idx: int) -> dict:
+        """Get annotation by index."""
         data_info = super().get_data_info(idx)
         img_key = data_info['img_key']
 
         data_info['filename_tmpl'] = self.filename_tmpl
-        data_info['modality'] = self.modality
-        data_info['start_index'] = self.start_index
         data_info['timestamp_start'] = self.timestamp_start
         data_info['timestamp_end'] = self.timestamp_end
 

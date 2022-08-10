@@ -1,16 +1,16 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from typing import Callable, List, Optional, Union
 
-from mmengine.dataset import BaseDataset
 from mmengine.fileio import load
 from mmengine.utils import check_file_exist
 
 from mmaction.registry import DATASETS
 from mmaction.utils import ConfigType
+from .base import BaseActionDataset
 
 
 @DATASETS.register_module()
-class PoseDataset(BaseDataset):
+class PoseDataset(BaseActionDataset):
     """Pose dataset for action recognition.
 
     The dataset loads pose and apply specified transforms to return a
@@ -27,9 +27,8 @@ class PoseDataset(BaseDataset):
             ``UCF`` or ``HMDB``. Allowed choices are ``train1``, ``test1``,
             ``train2``, ``test2``, ``train3``, ``test3``. Defaults to None.
         start_index (int): Specify a start index for frames in consideration of
-            different filename format. Defaults to 1.
-        modality (str): Modality of data. Support ``RGB``, ``Flow``.
-            Defaults to ``Pose``.
+            different filename format. Defaults to 0.
+        modality (str): Modality of data. Defaults to ``Pose``.
     """
 
     def __init__(self,
@@ -39,11 +38,14 @@ class PoseDataset(BaseDataset):
                  start_index: int = 0,
                  modality: str = 'Pose',
                  **kwargs) -> None:
-        # split, applicable to ucf or hmdb
+        # split, applicable to ``ucf101`` or ``hmdb51``
         self.split = split
-        self.start_index = start_index
-        self.modality = modality
-        super().__init__(ann_file, pipeline=pipeline, **kwargs)
+        super().__init__(
+            ann_file,
+            pipeline=pipeline,
+            start_index=start_index,
+            modality=modality,
+            **kwargs)
 
     def load_data_list(self) -> List[dict]:
         """Load annotation file to get skeleton information."""
@@ -57,10 +59,3 @@ class PoseDataset(BaseDataset):
             data_list = [x for x in data if x[identifier] in split[self.split]]
 
         return data_list
-
-    def get_data_info(self, idx: int) -> dict:
-        data_info = super().get_data_info(idx)
-        data_info['modality'] = self.modality
-        data_info['start_index'] = self.start_index
-
-        return data_info

@@ -2,16 +2,15 @@
 import os.path as osp
 from typing import Callable, List, Optional, Union
 
-import torch
-from mmengine.dataset import BaseDataset
 from mmengine.utils import check_file_exist
 
 from mmaction.registry import DATASETS
 from mmaction.utils import ConfigType
+from .base import BaseActionDataset
 
 
 @DATASETS.register_module()
-class VideoDataset(BaseDataset):
+class VideoDataset(BaseActionDataset):
     """Video dataset for action recognition.
 
     The dataset loads raw videos and apply specified transforms to return a
@@ -33,7 +32,8 @@ class VideoDataset(BaseDataset):
 
     Args:
         ann_file (str): Path to the annotation file.
-        pipeline (List[dict or callable]): A sequence of data transforms.
+        pipeline (List[Union[dict, ConfigDict, Callable]]): A sequence of
+            data transforms.
         data_prefix (dict or ConfigDict): Path to a directory where videos
             are held. Defaults to ``dict(video='')``.
         multi_class (bool): Determines whether the dataset is a multi-class
@@ -59,15 +59,15 @@ class VideoDataset(BaseDataset):
                  start_index: int = 0,
                  modality: str = 'RGB',
                  test_mode: bool = False,
-                 **kwargs):
-        self.multi_class = multi_class
-        self.num_classes = num_classes
-        self.start_index = start_index
-        self.modality = modality
+                 **kwargs) -> None:
         super().__init__(
             ann_file,
             pipeline=pipeline,
             data_prefix=data_prefix,
+            multi_class=multi_class,
+            num_classes=num_classes,
+            start_index=start_index,
+            modality=modality,
             test_mode=test_mode,
             **kwargs)
 
@@ -89,15 +89,3 @@ class VideoDataset(BaseDataset):
                     filename = osp.join(self.data_prefix['video'], filename)
                 data_list.append(dict(filename=filename, label=label))
         return data_list
-
-    def get_data_info(self, idx: int) -> dict:
-        data_info = super().get_data_info(idx)
-        data_info['modality'] = self.modality
-        data_info['start_index'] = self.start_index
-
-        if self.multi_class:
-            onehot = torch.zeros(self.num_classes)
-            onehot[data_info['label']] = 1.
-            data_info['label'] = onehot
-
-        return data_info
