@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import List, Callable, Union, Optional
 from abc import ABCMeta
+from typing import Callable, List, Optional, Union
 
 import torch
 from mmengine.dataset import BaseDataset
@@ -45,11 +45,12 @@ class BaseActionDataset(BaseDataset, metaclass=ABCMeta):
         self.num_classes = num_classes
         self.start_index = start_index
         self.modality = modality
-        super().__init__(ann_file,
-                         pipeline=pipeline,
-                         data_prefix=data_prefix,
-                         test_mode=test_mode,
-                         **kwargs)
+        super().__init__(
+            ann_file,
+            pipeline=pipeline,
+            data_prefix=data_prefix,
+            test_mode=test_mode,
+            **kwargs)
 
     def get_data_info(self, idx: int) -> dict:
         """Get annotation by index."""

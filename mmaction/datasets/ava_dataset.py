@@ -77,8 +77,8 @@ class AVADataset(BaseActionDataset):
             (AVA has 80 action classes, another 1-dim is added for potential
             usage)
         custom_classes (List[int], optional): A subset of class ids from origin
-            dataset. Please note that 0 should NOT be selected, and ``num_classes``
-            should be equal to ``len(custom_classes) + 1``.
+            dataset. Please note that 0 should NOT be selected, and
+            ``num_classes`` should be equal to ``len(custom_classes) + 1``.
         data_prefix (dict or ConfigDict): Path to a directory where video
             frames are held. Defaults to ``dict(img='')``.
         test_mode (bool): Store True when building test or validation dataset.

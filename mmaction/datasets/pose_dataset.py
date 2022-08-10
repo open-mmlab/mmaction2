@@ -28,7 +28,7 @@ class PoseDataset(BaseActionDataset):
             ``train2``, ``test2``, ``train3``, ``test3``. Defaults to None.
         start_index (int): Specify a start index for frames in consideration of
             different filename format. Defaults to 0.
-        modality (str): Modality of data. Support ``Pose``. Defaults to ``Pose``.
+        modality (str): Modality of data. Defaults to ``Pose``.
     """
 
     def __init__(self,
@@ -40,11 +40,12 @@ class PoseDataset(BaseActionDataset):
                  **kwargs) -> None:
         # split, applicable to ``ucf101`` or ``hmdb51``
         self.split = split
-        super().__init__(ann_file,
-                         pipeline=pipeline,
-                         start_index=start_index,
-                         modality=modality,
-                         **kwargs)
+        super().__init__(
+            ann_file,
+            pipeline=pipeline,
+            start_index=start_index,
+            modality=modality,
+            **kwargs)
 
     def load_data_list(self) -> List[dict]:
         """Load annotation file to get skeleton information."""
