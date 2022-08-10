@@ -619,7 +619,7 @@ class PaddingWithLoop(BaseTransform):
 
     To sample an n-frame clip from the video, PaddingWithLoop samples
     the frames from zero index, and loop the frames if the length of
-    video frames is less than te value of 'clip_len'.
+    video frames is less than the value of 'clip_len'.
 
     Required keys are "total_frames", added or modified keys
     are "frame_inds", "clip_len", "frame_interval" and "num_clips".

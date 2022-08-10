@@ -98,35 +98,35 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [--out ${RESULT_FILE}] [-
 
 1. 在 Kinetics-400 数据集下测试 TSN （不存储测试结果为文件），并验证 `top-k accuracy` 和 `mean class accuracy` 指标
 
-    ```shell
-    python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
-        checkpoints/SOME_CHECKPOINT.pth \
-        --eval top_k_accuracy mean_class_accuracy
-    ```
+   ```shell
+   python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
+       checkpoints/SOME_CHECKPOINT.pth \
+       --eval top_k_accuracy mean_class_accuracy
+   ```
 
 2. 使用 8 块 GPU 在 Something-Something V1 下测试 TSN，并验证 `top-k accuracy` 指标
 
-    ```shell
-    ./tools/dist_test.sh configs/recognition/tsn/tsn_r50_1x1x8_50e_sthv1_rgb.py \
-        checkpoints/SOME_CHECKPOINT.pth \
-        8 --out results.pkl --eval top_k_accuracy
-    ```
+   ```shell
+   ./tools/dist_test.sh configs/recognition/tsn/tsn_r50_1x1x8_50e_sthv1_rgb.py \
+       checkpoints/SOME_CHECKPOINT.pth \
+       8 --out results.pkl --eval top_k_accuracy
+   ```
 
 3. 在 slurm 分布式环境中测试 TSN 在 Kinetics-400 数据集下的 `top-k accuracy` 指标
 
-    ```shell
-    python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
-        checkpoints/SOME_CHECKPOINT.pth \
-        --launcher slurm --eval top_k_accuracy
-    ```
+   ```shell
+   python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
+       checkpoints/SOME_CHECKPOINT.pth \
+       --launcher slurm --eval top_k_accuracy
+   ```
 
 4. 在 Something-Something V1 下测试 onnx 格式的 TSN 模型，并验证 `top-k accuracy` 指标
 
-    ```shell
-    python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
-        checkpoints/SOME_CHECKPOINT.onnx \
-        --eval top_k_accuracy --onnx
-    ```
+   ```shell
+   python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
+       checkpoints/SOME_CHECKPOINT.onnx \
+       --eval top_k_accuracy --onnx
+   ```
 
 ### 使用高级 API 对视频和帧文件夹进行测试
 
@@ -257,54 +257,54 @@ MMAction2 将模型组件分为 4 种基础模型：
 
 1. 创建 `mmaction/models/backbones/resnet_tsm.py` 文件
 
-    ```python
-    from ..builder import BACKBONES
-    from .resnet import ResNet
+   ```python
+   from ..builder import BACKBONES
+   from .resnet import ResNet
 
-    @BACKBONES.register_module()
-    class ResNetTSM(ResNet):
+   @BACKBONES.register_module()
+   class ResNetTSM(ResNet):
 
-      def __init__(self,
-                   depth,
-                   num_segments=8,
-                   is_shift=True,
-                   shift_div=8,
-                   shift_place='blockres',
-                   temporal_pool=False,
-                   **kwargs):
-          pass
+     def __init__(self,
+                  depth,
+                  num_segments=8,
+                  is_shift=True,
+                  shift_div=8,
+                  shift_place='blockres',
+                  temporal_pool=False,
+                  **kwargs):
+         pass
 
-      def forward(self, x):
-          # implementation is ignored
-          pass
-    ```
+     def forward(self, x):
+         # implementation is ignored
+         pass
+   ```
 
 2. 从 `mmaction/models/backbones/__init__.py` 中导入模型
 
-    ```python
-    from .resnet_tsm import ResNetTSM
-    ```
+   ```python
+   from .resnet_tsm import ResNetTSM
+   ```
 
 3. 修改模型文件
 
-    ```python
-    backbone=dict(
-      type='ResNet',
-      pretrained='torchvision://resnet50',
-      depth=50,
-      norm_eval=False)
-    ```
+   ```python
+   backbone=dict(
+     type='ResNet',
+     pretrained='torchvision://resnet50',
+     depth=50,
+     norm_eval=False)
+   ```
 
    修改为
 
-    ```python
-    backbone=dict(
-        type='ResNetTSM',
-        pretrained='torchvision://resnet50',
-        depth=50,
-        norm_eval=False,
-        shift_div=8)
-    ```
+   ```python
+   backbone=dict(
+       type='ResNetTSM',
+       pretrained='torchvision://resnet50',
+       depth=50,
+       norm_eval=False,
+       shift_div=8)
+   ```
 
 ### 构建新模型
 

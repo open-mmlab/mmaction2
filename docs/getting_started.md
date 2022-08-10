@@ -99,35 +99,35 @@ Assume that you have already downloaded the checkpoints to the directory `checkp
 
 1. Test TSN on Kinetics-400 (without saving the test results) and evaluate the top-k accuracy and mean class accuracy.
 
-    ```shell
-    python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
-        checkpoints/SOME_CHECKPOINT.pth \
-        --eval top_k_accuracy mean_class_accuracy
-    ```
+   ```shell
+   python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
+       checkpoints/SOME_CHECKPOINT.pth \
+       --eval top_k_accuracy mean_class_accuracy
+   ```
 
 2. Test TSN on Something-Something V1 with 8 GPUS, and evaluate the top-k accuracy.
 
-    ```shell
-    ./tools/dist_test.sh configs/recognition/tsn/tsn_r50_1x1x8_50e_sthv1_rgb.py \
-        checkpoints/SOME_CHECKPOINT.pth \
-        8 --out results.pkl --eval top_k_accuracy
-    ```
+   ```shell
+   ./tools/dist_test.sh configs/recognition/tsn/tsn_r50_1x1x8_50e_sthv1_rgb.py \
+       checkpoints/SOME_CHECKPOINT.pth \
+       8 --out results.pkl --eval top_k_accuracy
+   ```
 
 3. Test TSN on Kinetics-400 in slurm environment and evaluate the top-k accuracy
 
-    ```shell
-    python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
-        checkpoints/SOME_CHECKPOINT.pth \
-        --launcher slurm --eval top_k_accuracy
-    ```
+   ```shell
+   python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
+       checkpoints/SOME_CHECKPOINT.pth \
+       --launcher slurm --eval top_k_accuracy
+   ```
 
 4. Test TSN on Something-Something V1 with onnx model and evaluate the top-k accuracy
 
-    ```shell
-    python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
-        checkpoints/SOME_CHECKPOINT.onnx \
-        --eval top_k_accuracy --onnx
-    ```
+   ```shell
+   python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
+       checkpoints/SOME_CHECKPOINT.onnx \
+       --eval top_k_accuracy --onnx
+   ```
 
 ### High-level APIs for testing a video and rawframes
 
@@ -266,54 +266,54 @@ in [TSM: Temporal Shift Module for Efficient Video Understanding](https://arxiv.
 
 1. create a new file in `mmaction/models/backbones/resnet_tsm.py`.
 
-    ```python
-    from ..builder import BACKBONES
-    from .resnet import ResNet
+   ```python
+   from ..builder import BACKBONES
+   from .resnet import ResNet
 
-    @BACKBONES.register_module()
-    class ResNetTSM(ResNet):
+   @BACKBONES.register_module()
+   class ResNetTSM(ResNet):
 
-      def __init__(self,
-                   depth,
-                   num_segments=8,
-                   is_shift=True,
-                   shift_div=8,
-                   shift_place='blockres',
-                   temporal_pool=False,
-                   **kwargs):
-          pass
+     def __init__(self,
+                  depth,
+                  num_segments=8,
+                  is_shift=True,
+                  shift_div=8,
+                  shift_place='blockres',
+                  temporal_pool=False,
+                  **kwargs):
+         pass
 
-      def forward(self, x):
-          # implementation is ignored
-          pass
-    ```
+     def forward(self, x):
+         # implementation is ignored
+         pass
+   ```
 
 2. Import the module in `mmaction/models/backbones/__init__.py`
 
-    ```python
-    from .resnet_tsm import ResNetTSM
-    ```
+   ```python
+   from .resnet_tsm import ResNetTSM
+   ```
 
 3. modify the config file from
 
-    ```python
-    backbone=dict(
-      type='ResNet',
-      pretrained='torchvision://resnet50',
-      depth=50,
-      norm_eval=False)
-    ```
+   ```python
+   backbone=dict(
+     type='ResNet',
+     pretrained='torchvision://resnet50',
+     depth=50,
+     norm_eval=False)
+   ```
 
    to
 
-    ```python
-    backbone=dict(
-        type='ResNetTSM',
-        pretrained='torchvision://resnet50',
-        depth=50,
-        norm_eval=False,
-        shift_div=8)
-    ```
+   ```python
+   backbone=dict(
+       type='ResNetTSM',
+       pretrained='torchvision://resnet50',
+       depth=50,
+       norm_eval=False,
+       shift_div=8)
+   ```
 
 ### Write a new model
 
