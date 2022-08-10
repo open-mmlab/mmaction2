@@ -64,7 +64,7 @@ data_root = '/home/jaeguk/workspace/data/ava/frames'
 anno_root = '/home/jaeguk/workspace/data/ava/annotations'
 
 ann_file_train = f'{anno_root}/ava_train_v2.2_sampled_12.csv'
-ann_file_val = f'{anno_root}/ava_val_v2.2_sampled.csv'
+ann_file_val = f'{anno_root}/ava_val_v2.2_sampled_3.csv'
 
 exclude_file_train = None
 exclude_file_val = None
