@@ -99,7 +99,7 @@ class AVADataset(BaseDataset):
                  exclude_file,
                  pipeline,
                  label_file=None,
-                 filename_tmpl='img_{:05}.jpg',
+                 filename_tmpl='_{:06}.jpg',
                  start_index=0,
                  proposal_file=None,
                  person_det_score_thr=0.9,
@@ -279,8 +279,7 @@ class AVADataset(BaseDataset):
         """Prepare the frames for training given the index."""
         results = copy.deepcopy(self.video_infos[idx])
         img_key = results['img_key']
-
-        results['filename_tmpl'] = self.filename_tmpl
+        results['filename_tmpl'] = self.get_filename_tmpl(img_key)
         results['modality'] = self.modality
         results['start_index'] = self.start_index
         results['timestamp_start'] = self.timestamp_start
@@ -315,8 +314,7 @@ class AVADataset(BaseDataset):
         """Prepare the frames for testing given the index."""
         results = copy.deepcopy(self.video_infos[idx])
         img_key = results['img_key']
-
-        results['filename_tmpl'] = self.filename_tmpl
+        results['filename_tmpl'] = self.get_filename_tmpl(img_key)
         results['modality'] = self.modality
         results['start_index'] = self.start_index
         results['timestamp_start'] = self.timestamp_start
@@ -347,6 +345,9 @@ class AVADataset(BaseDataset):
         results['entity_ids'] = ann['entity_ids']
 
         return self.pipeline(results)
+
+    def get_filename_tmpl(self, img_key):
+        return img_key.split(',')[0] + self.filename_tmpl
 
     def dump_results(self, results, out):
         """Dump predictions into a csv file."""
@@ -391,3 +392,9 @@ class AVADataset(BaseDataset):
         os.remove(temp_file)
 
         return ret
+
+
+@DATASETS.register_module()
+class JHMDBDataset(AVADataset):
+    def get_filename_tmpl(self, img_key):
+        return self.filename_tmpl
