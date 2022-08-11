@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import List, Optional, OrderedDict, Sequence, Tuple, Union
+from collections import OrderedDict
+from typing import List, Optional, Sequence, Tuple, Union
 
 from mmcv.cnn import ConvModule, constant_init, kaiming_init
 from mmengine.logging import MMLogger

@@ -46,8 +46,11 @@ jobs:
       - run:
           name: Install Libraries
           command: |
+            sudo add-apt-repository ppa:savoury1/ffmpeg4
             sudo apt-get update
-            sudo apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6 libturbojpeg
+            sudo apt-get upgrade
+            sudo apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6 libturbojpeg pkg-config
+            sudo apt-get install -y libavdevice-dev libavfilter-dev libopus-dev libvpx-dev libsrtp2-dev libsndfile1
       - run:
           name: Configure Python & pip
           command: |

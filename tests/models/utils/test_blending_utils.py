@@ -2,8 +2,8 @@
 import torch
 from mmengine.data import LabelData
 
-from mmaction.data import ActionDataSample
 from mmaction.models import CutmixBlending, MixupBlending
+from mmaction.structures import ActionDataSample
 
 
 def get_label(label_):

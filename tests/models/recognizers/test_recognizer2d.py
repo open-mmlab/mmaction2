@@ -200,7 +200,7 @@ def test_trn():
 
 def test_tpn():
     register_all_modules()
-    config = get_recognizer_cfg('tpn/tpn_tsm_r50_1x1x8_150e_sthv1_rgb.py')
+    config = get_recognizer_cfg('tpn/tpn_tsm_r50_1x1x8_150e_8xb8_sthv1_rgb.py')
     config.model['backbone']['pretrained'] = None
 
     recognizer = MODELS.build(config.model)
@@ -232,7 +232,7 @@ def test_tpn():
 def test_tanet():
     register_all_modules()
     config = get_recognizer_cfg(
-        'tanet/tanet_r50_dense_1x1x8_100e_kinetics400_rgb.py')
+        'tanet/tanet_r50_dense_1x1x8_100e_8xb8_kinetics400_rgb.py')
     config.model['backbone']['pretrained'] = None
 
     recognizer = MODELS.build(config.model)

@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import warnings
-from typing import List, Optional, OrderedDict, Sequence, Tuple, Union
+from collections import OrderedDict
+from typing import List, Optional, Sequence, Tuple, Union
 
 import torch.utils.checkpoint as cp
 from mmcv.cnn import (ConvModule, NonLocal3d, build_activation_layer,

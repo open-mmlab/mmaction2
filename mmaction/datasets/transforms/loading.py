@@ -149,9 +149,9 @@ class SampleFrames(BaseTransform):
             if num_frames > ori_clip_len - 1:
                 base_offsets = np.arange(self.num_clips) * avg_interval
                 clip_offsets = (base_offsets + np.random.uniform(
-                    0, avg_interval, self.num_clips)).astype(np.int)
+                    0, avg_interval, self.num_clips)).astype(np.int32)
             else:
-                clip_offsets = np.zeros((self.num_clips, ), dtype=np.int)
+                clip_offsets = np.zeros((self.num_clips, ), dtype=np.int32)
         else:
             avg_interval = (num_frames - ori_clip_len + 1) // self.num_clips
 
@@ -167,7 +167,7 @@ class SampleFrames(BaseTransform):
                 ratio = (num_frames - ori_clip_len + 1.0) / self.num_clips
                 clip_offsets = np.around(np.arange(self.num_clips) * ratio)
             else:
-                clip_offsets = np.zeros((self.num_clips, ), dtype=np.int)
+                clip_offsets = np.zeros((self.num_clips, ), dtype=np.int32)
 
         return clip_offsets
 
@@ -189,11 +189,11 @@ class SampleFrames(BaseTransform):
         avg_interval = (num_frames - ori_clip_len + 1) / float(self.num_clips)
         if num_frames > ori_clip_len - 1:
             base_offsets = np.arange(self.num_clips) * avg_interval
-            clip_offsets = (base_offsets + avg_interval / 2.0).astype(np.int)
+            clip_offsets = (base_offsets + avg_interval / 2.0).astype(np.int32)
             if self.twice_sample:
                 clip_offsets = np.concatenate([clip_offsets, base_offsets])
         else:
-            clip_offsets = np.zeros((self.num_clips, ), dtype=np.int)
+            clip_offsets = np.zeros((self.num_clips, ), dtype=np.int32)
         return clip_offsets
 
     def _sample_clips(self, num_frames):
@@ -245,7 +245,7 @@ class SampleFrames(BaseTransform):
 
         start_index = results['start_index']
         frame_inds = np.concatenate(frame_inds) + start_index
-        results['frame_inds'] = frame_inds.astype(np.int)
+        results['frame_inds'] = frame_inds.astype(np.int32)
         results['clip_len'] = self.clip_len
         results['frame_interval'] = self.frame_interval
         results['num_clips'] = self.num_clips
@@ -300,7 +300,7 @@ class UntrimmedSampleFrames(BaseTransform):
         frame_inds = np.clip(frame_inds, 0, total_frames - 1)
 
         frame_inds = np.concatenate(frame_inds) + start_index
-        results['frame_inds'] = frame_inds.astype(np.int)
+        results['frame_inds'] = frame_inds.astype(np.int32)
         results['clip_len'] = self.clip_len
         results['frame_interval'] = self.frame_interval
         results['num_clips'] = num_clips
@@ -435,7 +435,7 @@ class SampleAVAFrames(SampleFrames):
         frame_inds = self._get_clips(center_index, skip_offsets, shot_info)
         start_index = results.get('start_index', 0)
 
-        frame_inds = np.array(frame_inds, dtype=np.int) + start_index
+        frame_inds = np.array(frame_inds, dtype=np.int32) + start_index
         results['frame_inds'] = frame_inds
         results['clip_len'] = self.clip_len
         results['frame_interval'] = self.frame_interval

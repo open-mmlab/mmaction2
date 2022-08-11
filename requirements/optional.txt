@@ -1,4 +1,5 @@
-av
+av>=9.0
+future
 imgaug
 librosa
 lmdb
@@ -8,4 +9,7 @@ onnxruntime
 packaging
 pims
 PyTurboJPEG
+soundfile
+tensorboard
 timm
+wandb
