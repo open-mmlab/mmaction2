@@ -1,5 +1,7 @@
 av>=9.0
+future
 imgaug
+librosa
 librosa
 lmdb
 moviepy
@@ -8,8 +10,6 @@ onnxruntime
 packaging
 pims
 PyTurboJPEG
-timm
-librosa
-future
 tensorboard
+timm
 wandb
