@@ -1,7 +1,7 @@
 av>=9.0
 future
 imgaug
-librosa
+SoundFile
 librosa
 lmdb
 moviepy
