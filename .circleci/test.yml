@@ -47,7 +47,7 @@ jobs:
           name: Install Libraries
           command: |
             sudo apt-get update
-            sudo apt-get install -y ffmpeg-dev libsm6 libxext6 git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6 libturbojpeg
+            sudo apt-get install -y ffmpeg libavformat-dev libsm6 libxext6 git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6 libturbojpeg
       - run:
           name: Configure Python & pip
           command: |
