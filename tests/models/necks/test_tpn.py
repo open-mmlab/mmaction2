@@ -5,8 +5,8 @@ import pytest
 import torch
 from mmengine.data import LabelData
 
-from mmaction.data import ActionDataSample
 from mmaction.models import TPN
+from mmaction.structures import ActionDataSample
 from ..base import generate_backbone_demo_inputs
 
 

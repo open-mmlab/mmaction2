@@ -55,7 +55,7 @@ class UniformSampleFrames(BaseTransform):
             basic = np.arange(clip_len)
             inds = np.random.choice(
                 clip_len + 1, num_frames - clip_len, replace=False)
-            offset = np.zeros(clip_len + 1, dtype=np.int64)
+            offset = np.zeros(clip_len + 1, dtype=np.int32)
             offset[inds] = 1
             offset = np.cumsum(offset)
             inds = basic + offset[:-1]
@@ -94,7 +94,7 @@ class UniformSampleFrames(BaseTransform):
                 basic = np.arange(clip_len)
                 inds = np.random.choice(
                     clip_len + 1, num_frames - clip_len, replace=False)
-                offset = np.zeros(clip_len + 1, dtype=np.int64)
+                offset = np.zeros(clip_len + 1, dtype=np.int32)
                 offset[inds] = 1
                 offset = np.cumsum(offset)
                 inds = basic + offset[:-1]
@@ -124,7 +124,7 @@ class UniformSampleFrames(BaseTransform):
         start_index = results['start_index']
         inds = inds + start_index
 
-        results['frame_inds'] = inds.astype(np.int)
+        results['frame_inds'] = inds.astype(np.int32)
         results['clip_len'] = self.clip_len
         results['frame_interval'] = None
         results['num_clips'] = self.num_clips
@@ -641,7 +641,7 @@ class PaddingWithLoop(BaseTransform):
         inds = np.arange(start_index, start_index + self.clip_len)
         inds = np.mod(inds, num_frames)
 
-        results['frame_inds'] = inds.astype(np.int)
+        results['frame_inds'] = inds.astype(np.int32)
         results['clip_len'] = self.clip_len
         results['frame_interval'] = None
         results['num_clips'] = self.num_clips

@@ -6,7 +6,7 @@ import decord
 import torch
 from mmengine.data import LabelData
 
-from mmaction.data import ActionDataSample
+from mmaction.structures import ActionDataSample
 from mmaction.visualization import ActionVisualizer
 
 

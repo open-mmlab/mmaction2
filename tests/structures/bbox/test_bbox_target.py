@@ -3,7 +3,7 @@ from abc import abstractproperty
 
 import torch
 
-from mmaction.core.bbox import bbox_target
+from mmaction.structures import bbox_target
 
 
 def test_bbox_target():

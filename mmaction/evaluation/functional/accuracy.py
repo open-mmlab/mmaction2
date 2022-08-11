@@ -406,7 +406,7 @@ def average_recall_at_avg_proposals(ground_truth,
             true_positives_temporal_iou = score >= temporal_iou
             # Get number of proposals as a percentage of total retrieved.
             pcn_proposals = np.minimum(
-                (score.shape[1] * pcn_list).astype(np.int), score.shape[1])
+                (score.shape[1] * pcn_list).astype(np.int32), score.shape[1])
 
             for j, num_retrieved_proposals in enumerate(pcn_proposals):
                 # Compute the number of matches

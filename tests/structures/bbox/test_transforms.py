@@ -2,7 +2,7 @@
 import numpy as np
 import torch
 
-from mmaction.core.bbox import bbox2result
+from mmaction.structures import bbox2result
 
 
 def test_bbox2result():
