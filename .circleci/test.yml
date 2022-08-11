@@ -142,6 +142,7 @@ workflows:
               only:
                 - dev-1.x
                 - test-1.x
+                - add-circle-ci
       - build_cpu:
           name: minimum_version_cpu
           torch: 1.6.0
@@ -155,6 +156,7 @@ workflows:
               only:
                 - dev-1.x
                 - test-1.x
+                - add-circle-ci
       - build_cpu:
           name: maximum_version_cpu
           torch: 1.9.0
@@ -200,6 +202,7 @@ workflows:
               only:
                 - dev-1.x
                 - test-1.x
+                - add-circle-ci
       - build_cpu:
           name: minimum_version_cpu
           torch: 1.6.0
@@ -213,6 +216,7 @@ workflows:
               only:
                 - dev-1.x
                 - test-1.x
+                - add-circle-ci
       - build_cpu:
           name: maximum_version_cpu
           torch: 1.9.0
