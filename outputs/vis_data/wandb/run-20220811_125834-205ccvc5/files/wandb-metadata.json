@@ -1,0 +1,21 @@
+{
+    "os": "Darwin-20.6.0-x86_64-i386-64bit",
+    "python": "3.7.13",
+    "heartbeatAt": "2022-08-11T04:58:39.607424",
+    "startedAt": "2022-08-11T04:58:34.581756",
+    "docker": null,
+    "cpu_count": 4,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "-m pytest.__main__",
+    "git": {
+        "remote": "git@github.com:open-mmlab/mmaction2.git",
+        "commit": "41a8ccf639f8b942650e123355186e6a85240d3b"
+    },
+    "email": "kaiorhu@gmail.com",
+    "root": "/Users/hukai/Desktop/hukai_mmaction2/mmaction2",
+    "host": "MacBook-KaiHu.local",
+    "username": "hukai",
+    "executable": "/Users/hukai/conda/envs/py37/bin/python"
+}
