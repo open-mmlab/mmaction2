@@ -22,12 +22,12 @@ We propose a simple, yet effective approach for spatiotemporal feature learning 
 
 | config                               | resolution | gpus | backbone | pretrain | top1 acc | top5 acc | testing protocol  | inference_time(video/s) | gpu_mem(M) |                ckpt                |                log                 |
 | :----------------------------------- | :--------: | :--: | :------: | :------: | :------: | :------: | :---------------: | :---------------------: | :--------: | :--------------------------------: | :--------------------------------: |
-| [c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb.py](/configs/recognition/c3d/c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb.py) |  128x171   |  8   |   c3d    | sports1m |  82.92   |  96.11   | 10 clips x 1 crop |            x            |    6067    | [ckpt](https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb/c3d_sports1m_16x1x1_45e_ucf101_rgb_20201021-26655025.pth) | [log](https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb/20201021_140429.log) |
+| [c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb.py](/configs/recognition/c3d/c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb.py) |  128x171   |  8   |   c3d    | sports1m |  82.92   |  96.11   | 10 clips x 1 crop |            x            |    6067    | [ckpt](https://download.openmmlab.com/mmaction/v2.0/recognition/c3d/c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb/c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb_20220811-31723200.pth) | [log](https://download.openmmlab.com/mmaction/v2.0/recognition/c3d/c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb/20220722_140343.log) |
 
 :::{note}
 
 1. The author of C3D normalized UCF-101 with volume mean and used SVM to classify videos, while we normalized the dataset with RGB mean value and used a linear classifier.
-2. The **gpus** indicates the number of gpu (32G V100) we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
+2. The **gpus** indicates the number of gpu (80G A100) we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
    According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
    e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
 3. The **inference_time** is got by this [benchmark script](/tools/analysis/benchmark.py), where we use the sampling frames strategy of the test setting and only care about the model inference time,
