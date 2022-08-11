@@ -9,3 +9,7 @@ packaging
 pims
 PyTurboJPEG
 timm
+librosa
+future
+tensorboard
+wandb

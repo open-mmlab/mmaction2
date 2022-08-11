@@ -53,6 +53,7 @@ def test_tensorboard_visbackend():
     return
 
 
+"""
 def test_wandb_visbackend():
     video = decord.VideoReader('./demo/demo.mp4')
     video = video.get_batch(range(32)).asnumpy()
@@ -75,3 +76,4 @@ def test_wandb_visbackend():
             break
     assert flag, 'Cannot find wandb folder!'
     return
+"""
