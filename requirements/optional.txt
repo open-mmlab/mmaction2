@@ -1,4 +1,4 @@
-av
+av>=9.0
 imgaug
 librosa
 lmdb
