@@ -496,6 +496,8 @@ class TestDecode(BaseTestLoading):
         assert results['original_shape'] == (240, 320)
 
         if platform.system() != 'Windows':
+            pass
+            # cannot install turbojpeg for CI
             # test frame selector in turbojpeg decoding backend
             # when start_index = 0
             inputs = copy.deepcopy(self.frame_results)

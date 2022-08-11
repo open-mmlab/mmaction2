@@ -100,6 +100,11 @@ class TestAudio:
         results['num_clips'] = 1
         results['sample_rate'] = 16000
         mel = MelSpectrogram()
+        try:
+            import soundfile as sf  # noqa: F401
+        except (OSError, ImportError):
+            return
+
         results = mel(results)
         assert assert_dict_has_keys(results, target_keys)
 

@@ -1,7 +1,6 @@
 av>=9.0
 future
 imgaug
-SoundFile
 librosa
 lmdb
 moviepy
@@ -10,6 +9,7 @@ onnxruntime
 packaging
 pims
 PyTurboJPEG
+soundfile
 tensorboard
 timm
 wandb
