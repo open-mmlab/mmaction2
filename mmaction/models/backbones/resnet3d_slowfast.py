@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import warnings
-from typing import List, Optional, OrderedDict, Sequence, Union
+from typing import List, Optional, Sequence, Union
+from collections import OrderedDict
 
 import torch
 import torch.nn as nn
