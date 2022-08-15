@@ -24,9 +24,8 @@ Models:
       Metrics:
         Top 1 Accuracy: 77.96
         Top 5 Accuracy: 93.57
-#    Training Json Log: https://download.openmmlab.com/mmaction/recognition/timesformer/timesformer_divST_8x32x1_15e_kinetics400_rgb/timesformer_divST_8x32x1_15e_kinetics400_rgb.json
-#    Training Log: https://download.openmmlab.com/mmaction/recognition/timesformer/timesformer_divST_8x32x1_15e_kinetics400_rgb/timesformer_divST_8x32x1_15e_kinetics400_rgb.log
-#    Weights: https://download.openmmlab.com/mmaction/recognition/timesformer/timesformer_divST_8x32x1_15e_kinetics400_rgb/timesformer_divST_8x32x1_15e_kinetics400_rgb-3f8e5d03.pth
+    Training Log: https://download.openmmlab.com/mmaction/v2.0/recognition/timesformer/timesformer_divST_8x32x1_15e_8xb8_kinetics400_rgb/20220614_113611.log
+    Weights: https://download.openmmlab.com/mmaction/v2.0/recognition/timesformer/timesformer_divST_8x32x1_15e_8xb8_kinetics400_rgb/timesformer_divST_8x32x1_15e_8xb8_kinetics400_rgb_20220815-a4d0d01f.pth
 
   - Name: timesformer_jointST_8x32x1_15e_8xb8_kinetics400_rgb
     Config: configs/recognition/timesformer/timesformer_jointST_8x32x1_15e_8xb8_kinetics400_rgb.py
@@ -46,9 +45,8 @@ Models:
       Metrics:
         Top 1 Accuracy: 76.93
         Top 5 Accuracy: 93.27
-#    Training Json Log: https://download.openmmlab.com/mmaction/recognition/timesformer/timesformer_jointST_8x32x1_15e_kinetics400_rgb/timesformer_jointST_8x32x1_15e_kinetics400_rgb.json
-#    Training Log: https://download.openmmlab.com/mmaction/recognition/timesformer/timesformer_jointST_8x32x1_15e_kinetics400_rgb/timesformer_jointST_8x32x1_15e_kinetics400_rgb.log
-#    Weights: https://download.openmmlab.com/mmaction/recognition/timesformer/timesformer_jointST_8x32x1_15e_kinetics400_rgb/timesformer_jointST_8x32x1_15e_kinetics400_rgb-0d6e3984.pth
+    Training Log: https://download.openmmlab.com/mmaction/v2.0/recognition/timesformer/timesformer_jointST_8x32x1_15e_8xb8_kinetics400_rgb/20220614_180320.log
+    Weights: https://download.openmmlab.com/mmaction/v2.0/recognition/timesformer/timesformer_jointST_8x32x1_15e_8xb8_kinetics400_rgb/timesformer_jointST_8x32x1_15e_8xb8_kinetics400_rgb_20220815-8022d1c0.pth
 
   - Name: timesformer_spaceOnly_8x32x1_15e_8xb8_kinetics400_rgb
     Config: configs/recognition/timesformer/timesformer_spaceOnly_8x32x1_15e_8xb8_kinetics400_rgb.py
@@ -68,6 +66,5 @@ Models:
       Metrics:
         Top 1 Accuracy: 76.98
         Top 5 Accuracy: 92.83
-#    Training Json Log: https://download.openmmlab.com/mmaction/recognition/timesformer/timesformer_spaceOnly_8x32x1_15e_kinetics400_rgb/timesformer_spaceOnly_8x32x1_15e_kinetics400_rgb.json
-#    Training Log: https://download.openmmlab.com/mmaction/recognition/timesformer/timesformer_spaceOnly_8x32x1_15e_kinetics400_rgb/timesformer_spaceOnly_8x32x1_15e_kinetics400_rgb.log
-#    Weights: https://download.openmmlab.com/mmaction/recognition/timesformer/timesformer_spaceOnly_8x32x1_15e_kinetics400_rgb/timesformer_spaceOnly_8x32x1_15e_kinetics400_rgb-0cf829cd.pth
+    Training Log: https://download.openmmlab.com/mmaction/v2.0/recognition/timesformer/timesformer_spaceOnly_8x32x1_15e_8xb8_kinetics400_rgb/20220615_101108.log
+    Weights: https://download.openmmlab.com/mmaction/v2.0/recognition/timesformer/timesformer_spaceOnly_8x32x1_15e_8xb8_kinetics400_rgb/timesformer_spaceOnly_8x32x1_15e_8xb8_kinetics400_rgb_20220815-78f05367.pth
