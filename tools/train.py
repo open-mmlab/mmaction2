@@ -10,7 +10,7 @@ from mmaction.utils import register_all_modules
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Train a classifier')
+    parser = argparse.ArgumentParser(description='Train a action recognizer')
     parser.add_argument('config', help='train config file path')
     parser.add_argument('--work-dir', help='the dir to save logs and models')
     parser.add_argument(
