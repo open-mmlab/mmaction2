@@ -20,14 +20,14 @@ Temporal relational reasoning, the ability to link meaningful transformations of
 
 ### Something-Something V1
 
-| config                      | resolution | gpus | backbone | pretrain | top1 acc (efficient/accurate) | top5 acc (efficient/accurate) | gpu_mem(M) |           ckpt            |           log            |
-| :-------------------------- | :--------: | :--: | :------: | :------: | :---------------------------: | :---------------------------: | :--------: | :-----------------------: | :----------------------: |
+| config                              | resolution | gpus | backbone | pretrain | top1 acc (efficient/accurate) | top5 acc (efficient/accurate) | gpu_mem(M) |                ckpt                |                log                |
+| :---------------------------------- | :--------: | :--: | :------: | :------: | :---------------------------: | :---------------------------: | :--------: | :--------------------------------: | :-------------------------------: |
 | [trn_r50_1x1x8_50e_8xb16_sthv1_rgb](/configs/recognition/trn/trn_r50_1x1x8_50e_8xb16_sthv1_rgb.py) | height 100 |  8   | ResNet50 | ImageNet |         31.81 / 33.86         |         60.47 / 62.24         |   11037    | [ckpt](https://download.openmmlab.com/mmaction/v2.0/recognition/trn/trn_r50_1x1x8_50e_8xb16_sthv1_rgb/trn_r50_1x1x8_50e_8xb16_sthv1_rgb_20220815-e13db2e9.pth) | [log](https://download.openmmlab.com/mmaction/v2.0/recognition/trn/trn_r50_1x1x8_50e_8xb16_sthv1_rgb/20220808_143221.log) |
 
 ### Something-Something V2
 
-| config                      | resolution | gpus | backbone | pretrain | top1 acc (efficient/accurate) | top5 acc (efficient/accurate) | gpu_mem(M) |           ckpt            |           log            |
-| :-------------------------- | :--------: | :--: | :------: | :------: | :---------------------------: | :---------------------------: | :--------: | :-----------------------: | :----------------------: |
+| config                              | resolution | gpus | backbone | pretrain | top1 acc (efficient/accurate) | top5 acc (efficient/accurate) | gpu_mem(M) |                ckpt                |                log                |
+| :---------------------------------- | :--------: | :--: | :------: | :------: | :---------------------------: | :---------------------------: | :--------: | :--------------------------------: | :-------------------------------: |
 | [trn_r50_1x1x8_50e_8xb16_sthv2_rgb](/configs/recognition/trn/trn_r50_1x1x8_50e_8xb16_sthv2_rgb.py) | height 240 |  8   | ResNet50 | ImageNet |         48.54 / 51.53         |         76.53 / 78.60         |   11037    | [ckpt](https://download.openmmlab.com/mmaction/v2.0/recognition/trn/trn_r50_1x1x8_50e_8xb16_sthv2_rgb/trn_r50_1x1x8_50e_8xb16_sthv2_rgb_20220815-e01617db.pth) | [log](https://download.openmmlab.com/mmaction/v2.0/recognition/trn/trn_r50_1x1x8_50e_8xb16_sthv2_rgb/20220808_143256.log) |
 
 :::{note}
