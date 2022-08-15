@@ -96,9 +96,7 @@ train_dataloader = dict(
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
-        type=dataset_type,
-        ann_file=ann_file_train,
-        pipeline=train_pipeline))
+        type=dataset_type, ann_file=ann_file_train, pipeline=train_pipeline))
 val_dataloader = dict(
     batch_size=16,
     num_workers=8,
