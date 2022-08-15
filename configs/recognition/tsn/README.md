@@ -74,12 +74,11 @@ You can use the following command to train a model.
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
-Example: train TSN model on Kinetics-400 dataset in a deterministic option with periodic validation.
+Example: train TSN model on Kinetics-400 dataset in a deterministic option.
 
 ```shell
-python tools/train.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
-    --work-dir work_dirs/tsn_r50_1x1x3_100e_kinetics400_rgb \
-    --validate --seed 0 --deterministic
+python tools/train.py configs/recognition/tsn/tsn_r50_1x1x3_100e_8xb32_kinetics400_rgb.py  \
+    --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
 For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
@@ -92,12 +91,11 @@ You can use the following command to test a model.
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-Example: test TSN model on Kinetics-400 dataset and dump the result to a json file.
+Example: test TSN model on Kinetics-400 dataset.
 
 ```shell
-python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py \
-    checkpoints/SOME_CHECKPOINT.pth --eval top_k_accuracy mean_class_accuracy \
-    --out result.json
+python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_8xb32_kinetics400_rgb.py \
+    checkpoints/SOME_CHECKPOINT.pth
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).

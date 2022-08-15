@@ -1,0 +1,154 @@
+Collections:
+  - Name: TSN
+    README: configs/recognition/tsn/README.md
+    Paper:
+      URL: https://arxiv.org/abs/1608.00859
+      Title: "Temporal Segment Networks: Towards Good Practices for Deep Action Recognition"
+
+Models:
+  - Name: tsn_r50_1x1x3_100e_8xb32_kinetics400_rgb
+    Config: configs/recognition/tsn/tsn_r50_1x1x3_100e_8xb32_kinetics400_rgb.py
+    In Collection: TSN
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 32
+      Epochs: 100
+      FLOPs: 102997721600
+      Parameters: 24327632
+      Pretrained: ImageNet
+      Resolution: short-side 320
+      Training Data: Kinetics-400
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 72.77
+        Top 5 Accuracy: 90.66
+
+  - Name: tsn_r50_1x1x5_100e_8xb32_kinetics400_rgb
+    Config: configs/recognition/tsn/tsn_r50_1x1x5_100e_8xb32_kinetics400_rgb.py
+    In Collection: TSN
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 32
+      Epochs: 100
+      FLOPs: 32959827968
+      Parameters: 24327632
+      Pretrained: ImageNet
+      Resolution: short-side 320
+      Training Data: Kinetics-400
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 73.73
+        Top 5 Accuracy: 91.15
+
+  - Name: tsn_r50_1x1x8_100e_8xb32_kinetics400_rgb
+    Config: configs/recognition/tsn/tsn_r50_1x1x8_100e_8xb32_kinetics400_rgb.py
+    In Collection: TSN
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 32
+      Epochs: 100
+      FLOPs: 43048605696
+      Parameters: 24327632
+      Pretrained: ImageNet
+      Resolution: short-side 320
+      Training Data: Kinetics-400
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 74.21
+        Top 5 Accuracy: 91.36
+
+  - Name: tsn_r50_dense_1x1x5_100e_8xb32_kinetics400_rgb
+    Config: configs/recognition/tsn/tsn_r50_dense_1x1x5_100e_8xb32_kinetics400_rgb.py
+    In Collection: TSN
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 32
+      Epochs: 100
+      FLOPs: 32959827968
+      Parameters: 24327632
+      Pretrained: ImageNet
+      Resolution: short-side 320
+      Training Data: Kinetics-400
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 71.37
+        Top 5 Accuracy: 89.66
+
+  - Name: tsn_rn101_32x4d_1x1x3_100e_8xb32_kinetics400_rgb
+    Config: configs/recognition/tsn/custom_backbones/tsn_rn101_32x4d_1x1x3_100e_8xb32_kinetics400_rgb.py
+    In Collection: TSN
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 32
+      Epochs: 100
+      FLOPs: 262238208000
+      Parameters: 42948304
+      Pretrained: ImageNet
+      Resolution: short-side 320
+      Training Data: Kinetics-400
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 72.79
+        Top 5 Accuracy: 90.40
+
+  - Name: tsn_dense161_1x1x3_100e_8xb32_kinetics400_rgb
+    Config: configs/recognition/tsn/custom_backbones/tsn_dense161_1x1x3_100e_8xb32_kinetics400_rgb.py
+    In Collection: TSN
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 32
+      Epochs: 100
+      FLOPs: 255225561600
+      Parameters: 27355600
+      Pretrained: ImageNet
+      Resolution: short-side 320
+      Training Data: Kinetics-400
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 68.31
+        Top 5 Accuracy: 87.79
+
+  - Name: tsn_swin_transformer_1x1x3_100e_8xb32_kinetics400_rgb
+    Config: configs/recognition/tsn/custom_backbones/tsn_swin_transformer_1x1x3_100e_8xb32_kinetics400_rgb.py
+    In Collection: TSN
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 32
+      Epochs: 100
+      FLOPs: 32959827968
+      Parameters: 87153224
+      Pretrained: ImageNet
+      Resolution: short-side 320
+      Training Data: Kinetics-400
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 76.90
+        Top 5 Accuracy: 92.55
