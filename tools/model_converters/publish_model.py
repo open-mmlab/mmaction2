@@ -1,9 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
+import datetime
 import os
 import platform
 import subprocess
-import datetime
 
 import torch
 
