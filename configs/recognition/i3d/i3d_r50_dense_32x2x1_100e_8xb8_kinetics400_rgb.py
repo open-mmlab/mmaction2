@@ -2,14 +2,11 @@ _base_ = ['./i3d_r50_32x2x1_100e_8xb8_kinetics400_rgb.py']
 
 # dataset settings
 dataset_type = 'VideoDataset'
-root = './data/kinetics400/'
-data_root = root + 'videos_train'
-data_root_val = root + 'videos_val'
-
-ann_file_train = root + 'kinetics400_train_list_videos.txt'
-ann_file_val = root + 'kinetics400_val_list_videos.txt'
-ann_file_test = ann_file_val
-
+data_root = 'data/kinetics400/videos_train'
+data_root_val = 'data/kinetics400/videos_val'
+ann_file_train = 'data/kinetics400/kinetics400_train_list_videos.txt'
+ann_file_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
+ann_file_test = 'data/kinetics400/kinetics400_val_list_videos.txt'
 train_pipeline = [
     dict(type='DecordInit'),
     dict(type='DenseSampleFrames', clip_len=32, frame_interval=2, num_clips=1),
