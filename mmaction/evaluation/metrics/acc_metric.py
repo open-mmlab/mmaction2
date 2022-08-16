@@ -101,12 +101,11 @@ class AccMetric(BaseMetric):
                 ]
 
                 if metric == 'mean_average_precision':
-                    mAP = mean_average_precision(results, gt_labels_arrays)
+                    mAP = mean_average_precision(preds, gt_labels_arrays)
                     eval_results['mean_average_precision'] = mAP
 
                 elif metric == 'mmit_mean_average_precision':
-                    mAP = mmit_mean_average_precision(results,
-                                                      gt_labels_arrays)
+                    mAP = mmit_mean_average_precision(preds, gt_labels_arrays)
                     eval_results['mmit_mean_average_precision'] = mAP
 
         return eval_results
