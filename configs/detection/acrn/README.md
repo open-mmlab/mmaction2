@@ -20,14 +20,14 @@ Current state-of-the-art approaches for spatio-temporal action localization rely
 
 ### AVA2.1
 
-|                  Model                   | Modality |  Pretrained  | Backbone | Input | gpus | mAP  |                   log                   |                   ckpt                   |
-| :--------------------------------------: | :------: | :----------: | :------: | :---: | :--: | :--: | :-------------------------------------: | :--------------------------------------: | :--------------------------------------: |
+|                                       Model                                       | Modality |  Pretrained  | Backbone | Input | gpus |  mAP  |                  log                   |                  ckpt                   |
+| :-------------------------------------------------------------------------------: | :------: | :----------: | :------: | :---: | :--: | :---: | :------------------------------------: | :-------------------------------------: |
 | [slowfast_acrn_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb8_ava_rgb](/configs/detection/acrn/slowfast_acrn_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb8_ava_rgb.py) |   RGB    | Kinetics-400 | ResNet50 | 32x2  |  8   | 27.58 | [log](https://download.openmmlab.com/) | [ckpt](https://download.openmmlab.com/) |
 
 ### AVA2.2
 
-|                  Model                   | Modality |  Pretrained  | Backbone | Input | gpus | mAP  |                   log                   |                   ckpt                   |
-| :--------------------------------------: | :------: | :----------: | :------: | :---: | :--: | :--: | :-------------------------------------: | :--------------------------------------: | :--------------------------------------: |
+|                                       Model                                       | Modality |  Pretrained  | Backbone | Input | gpus |  mAP  |                  log                   |                  ckpt                   |
+| :-------------------------------------------------------------------------------: | :------: | :----------: | :------: | :---: | :--: | :---: | :------------------------------------: | :-------------------------------------: |
 | [slowfast_acrn_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb8_ava22_rgb](/configs/detection/acrn/slowfast_acrn_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb8_ava22_rgb.py) |   RGB    | Kinetics-400 | ResNet50 | 32x2  |  8   | 27.63 | [log](https://download.openmmlab.com/) | [ckpt](https://download.openmmlab.com/) |
 
 :::{note}
