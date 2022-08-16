@@ -37,16 +37,15 @@ AVA, with its realistic scene and action complexity, exposes the intrinsic diffi
 
 ### AVA2.1
 
-|                Model                 | Modality |  Pretrained  | Backbone  | Input | gpus |   Resolution   |  mAP  |                 log                 |                 ckpt                 |
-| :----------------------------------: | :------: | :----------: | :-------: | :---: | :--: | :------------: | :---: | :---------------------------------: | :----------------------------------: |
-| [slowonly_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb](/configs/detection/ava/slowonly_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb.py) |   RGB    | Kinetics-400 | ResNet50  | 4x16  |  8   | short-side 256 | 20.76  | [log](https://download.openmmlab.com/) | [ckpt](https://download.openmmlab.com/) |
-| [slowonly_nl_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb](/configs/detection/ava/slowonly_nl_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb.py) |   RGB    | Kinetics-400 | ResNet50  | 4x16  |  8   | short-side 256 | 21.49  | [log](https://download.openmmlab.com/) | [ckpt](https://download.openmmlab.com/) |
-| [slowonly_nl_kinetics400_pretrained_r50_8x8x1_20e_8xb16_ava_rgb](/configs/detection/ava/slowonly_nl_kinetics400_pretrained_r50_8x8x1_20e_8xb16_ava_rgb.py) |   RGB    | Kinetics-400 | ResNet50  | 8x8  |  8   | short-side 256 | 23.74  | [log](https://download.openmmlab.com/) | [ckpt](https://download.openmmlab.com/) |
-| [slowonly_kinetics400_pretrained_r101_8x8x1_20e_8xb16_ava_rgb](/configs/detection/ava/slowonly_kinetics400_pretrained_r101_8x8x1_20e_8xb16_ava_rgb.py) |   RGB    | Kinetics-400 | ResNet101  | 8x8  |  8   | short-side 256 | 24.82  | [log](https://download.openmmlab.com/) | [ckpt](https://download.openmmlab.com/) |
-| [slowfast_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb](/configs/detection/ava/slowfast_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb.py) |   RGB    | Kinetics-400 | ResNet50  | 4x16  |  8   | short-side 256 | 24.27  | [log](https://download.openmmlab.com/) | [ckpt](https://download.openmmlab.com/) |
-| [slowfast_context_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb](/configs/detection/ava/slowfast_context_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb.py) |   RGB    | Kinetics-400 | ResNet50  | 4x16  |  8   | short-side 256 | 25.25  | [log](https://download.openmmlab.com/) | [ckpt](https://download.openmmlab.com/) |
-| [slowfast_kinetics400_pretrained_r50_8x8x1_20e_8xb8_ava_rgb](/configs/detection/ava/slowfast_kinetics400_pretrained_r50_8x8x1_20e_8xb8_ava_rgb.py) |   RGB    | Kinetics-400 | ResNet50  | 8x8  |  8   | short-side 256 | 25.73  | [log](https://download.openmmlab.com/) | [ckpt](https://download.openmmlab.com/) |
-
+|                               Model                                | Modality |  Pretrained  | Backbone  | Input | gpus |   Resolution   |  mAP  |                  log                   |                  ckpt                   |
+| :----------------------------------------------------------------: | :------: | :----------: | :-------: | :---: | :--: | :------------: | :---: | :------------------------------------: | :-------------------------------------: |
+| [slowonly_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb](/configs/detection/ava/slowonly_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb.py) |   RGB    | Kinetics-400 | ResNet50  | 4x16  |  8   | short-side 256 | 20.76 | [log](https://download.openmmlab.com/) | [ckpt](https://download.openmmlab.com/) |
+| [slowonly_nl_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb](/configs/detection/ava/slowonly_nl_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb.py) |   RGB    | Kinetics-400 | ResNet50  | 4x16  |  8   | short-side 256 | 21.49 | [log](https://download.openmmlab.com/) | [ckpt](https://download.openmmlab.com/) |
+| [slowonly_nl_kinetics400_pretrained_r50_8x8x1_20e_8xb16_ava_rgb](/configs/detection/ava/slowonly_nl_kinetics400_pretrained_r50_8x8x1_20e_8xb16_ava_rgb.py) |   RGB    | Kinetics-400 | ResNet50  |  8x8  |  8   | short-side 256 | 23.74 | [log](https://download.openmmlab.com/) | [ckpt](https://download.openmmlab.com/) |
+| [slowonly_kinetics400_pretrained_r101_8x8x1_20e_8xb16_ava_rgb](/configs/detection/ava/slowonly_kinetics400_pretrained_r101_8x8x1_20e_8xb16_ava_rgb.py) |   RGB    | Kinetics-400 | ResNet101 |  8x8  |  8   | short-side 256 | 24.82 | [log](https://download.openmmlab.com/) | [ckpt](https://download.openmmlab.com/) |
+| [slowfast_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb](/configs/detection/ava/slowfast_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb.py) |   RGB    | Kinetics-400 | ResNet50  | 4x16  |  8   | short-side 256 | 24.27 | [log](https://download.openmmlab.com/) | [ckpt](https://download.openmmlab.com/) |
+| [slowfast_context_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb](/configs/detection/ava/slowfast_context_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb.py) |   RGB    | Kinetics-400 | ResNet50  | 4x16  |  8   | short-side 256 | 25.25 | [log](https://download.openmmlab.com/) | [ckpt](https://download.openmmlab.com/) |
+| [slowfast_kinetics400_pretrained_r50_8x8x1_20e_8xb8_ava_rgb](/configs/detection/ava/slowfast_kinetics400_pretrained_r50_8x8x1_20e_8xb8_ava_rgb.py) |   RGB    | Kinetics-400 | ResNet50  |  8x8  |  8   | short-side 256 | 25.73 | [log](https://download.openmmlab.com/) | [ckpt](https://download.openmmlab.com/) |
 
 ### AVA2.2
 
@@ -83,7 +82,6 @@ python tools/train.py configs/detection/ava/slowonly_kinetics400_pretrained_r50_
 ```
 
 For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting) .
-
 
 ## Test
 
