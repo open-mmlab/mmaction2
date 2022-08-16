@@ -1,30 +1,29 @@
 Collections:
-- Name: C3D
-  README: configs/recognition/c3d/README.md
-  Paper:
-    URL: https://arxiv.org/abs/1412.0767
-    Title: 'Learning Spatiotemporal Features with 3D Convolutional Networks'
+  - Name: C3D
+    README: configs/recognition/c3d/README.md
+    Paper:
+      URL: https://arxiv.org/abs/1412.0767
+      Title: 'Learning Spatiotemporal Features with 3D Convolutional Networks'
 
 Models:
-- Name: c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb.py
-- Config: configs/recognition/c3d/c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb.py
-  In Collection: C3D
-  Metadata:
-    Architecture: c3d
-    Batch Size: 30
-    Epochs: 45
-    FLOPs: 38615475200
-    Parameters: 78409573
-    Pretrained: sports1m
-    Training Data: UCF101
-    Training Resources: 8 GPUs
-  Modality: RGB
-  Results:
-  - Dataset: UCF101
-    Task: Action Recognition
-    Metrics:
-      Top 1 Accuracy: 82.92
-      Top 5 Accuracy: 96.11
-#  Training Json Log: https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb/20201021_140429.log.json
-#  Training Log: https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb/20201021_140429.log
-#  Weights: https://download.openmmlab.com/mmaction/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb/c3d_sports1m_16x1x1_45e_ucf101_rgb_20201021-26655025.pth
+  - Name: c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb
+    Config: configs/recognition/c3d/c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb.py
+    In Collection: C3D
+    Metadata:
+      Architecture: c3d
+      Batch Size: 30
+      Epochs: 45
+      FLOPs: 38615475200
+      Parameters: 78409573
+      Pretrained: sports1m
+      Training Data: UCF101
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: UCF101
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 82.92
+        Top 5 Accuracy: 96.11
+    Training Log: https://download.openmmlab.com/mmaction/v2.0/recognition/c3d/c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb/20220722_140343.log
+    Weights: https://download.openmmlab.com/mmaction/v2.0/recognition/c3d/c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb/c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb_20220811-31723200.pth
