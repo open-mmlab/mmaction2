@@ -51,7 +51,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 Example: train ACRN with SlowFast backbone on AVA in a deterministic option.
 
 ```shell
-python tools/train.py configs/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.py \
+python tools/train.py configs/detection/acrn/slowfast_acrn_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb8_ava_rgb.py \
     --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
@@ -65,10 +65,10 @@ You can use the following command to test a model.
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-Example: test ACRN with SlowFast backbone on AVA and dump the result to a csv file.
+Example: test ACRN with SlowFast backbone.
 
 ```shell
-python tools/test.py configs/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.py checkpoints/SOME_CHECKPOINT.pth --eval mAP --out results.csv
+python tools/test.py configs/detection/acrn/slowfast_acrn_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb8_ava_rgb.py checkpoints/SOME_CHECKPOINT.pth
 ```
 
 For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset) .
