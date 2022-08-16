@@ -28,8 +28,8 @@ model = dict(
     test_cfg=None)
 
 dataset_type = 'PoseDataset'
-ann_file_train = 'data/ntu60/xsub/train_2d.pkl'
-ann_file_val = 'data/ntu60/xsub/val_2d.pkl'
+ann_file_train = 'data/posec3d/ntu60_xsub_train.pkl'
+ann_file_val = 'data/posec3d/ntu60_xsub_val.pkl'
 left_kp = [1, 3, 5, 7, 9, 11, 13, 15]
 right_kp = [2, 4, 6, 8, 10, 12, 14, 16]
 skeletons = [[0, 5], [0, 6], [5, 7], [7, 9], [6, 8], [8, 10], [5, 11],
@@ -92,14 +92,14 @@ test_pipeline = [
 
 train_dataloader = dict(
     batch_size=16,
-    num_workers=2,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
         type=dataset_type, ann_file=ann_file_train, pipeline=train_pipeline))
 val_dataloader = dict(
     batch_size=16,
-    num_workers=2,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
@@ -109,7 +109,7 @@ val_dataloader = dict(
         test_mode=True))
 test_dataloader = dict(
     batch_size=1,
-    num_workers=2,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
@@ -121,16 +121,22 @@ test_dataloader = dict(
 val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 
-train_cfg = dict(by_epoch=True, max_epochs=240)
-val_cfg = dict(interval=10)
-test_cfg = dict()
+train_cfg = dict(
+    type='EpochBasedTrainLoop', max_epochs=240, val_begin=1, val_interval=10)
+val_cfg = dict(type='ValLoop')
+test_cfg = dict(type='TestLoop')
 
 param_scheduler = [
-    dict(type='CosineAnnealingLR', eta_min=0, T_max=240, by_epoch=False)
+    dict(
+        type='CosineAnnealingLR',
+        eta_min=0,
+        T_max=240,
+        by_epoch=True,
+        convert_to_iter_based=True)
 ]
 
-optimizer = dict(
-    type='SGD', lr=0.2, momentum=0.9,
-    weight_decay=0.0003)  # this lr is used for 8 gpus
+optim_wrapper = dict(
+    optimizer=dict(type='SGD', lr=0.2, momentum=0.9, weight_decay=0.0003),
+    clip_grad=dict(max_norm=40, norm_type=2))
 
-default_hooks = dict(optimizer=dict(grad_clip=dict(max_norm=40, norm_type=2)))
+default_hooks = dict(checkpoint=dict(max_keep_ckpts=3))
