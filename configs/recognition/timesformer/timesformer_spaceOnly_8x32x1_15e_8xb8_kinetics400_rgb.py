@@ -1,10 +1,5 @@
 _base_ = ['../../_base_/default_runtime.py']
 
-preprocess_cfg = dict(
-    mean=[127.5, 127.5, 127.5],
-    std=[127.5, 127.5, 127.5],
-    format_shape='NCTHW')
-
 # model settings
 model = dict(
     type='Recognizer3D',
@@ -26,10 +21,11 @@ model = dict(
         num_classes=400,
         in_channels=768,
         average_clips='prob'),
-    data_preprocessor=dict(type='ActionDataPreprocessor', **preprocess_cfg),
-    # model training and testing settings
-    train_cfg=None,
-    test_cfg=None)
+    data_preprocessor=dict(
+        type='ActionDataPreprocessor',
+        mean=[127.5, 127.5, 127.5],
+        std=[127.5, 127.5, 127.5],
+        format_shape='NCTHW'))
 
 # dataset settings
 dataset_type = 'VideoDataset'
