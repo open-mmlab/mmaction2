@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
+import datetime
 import os
 import platform
 import subprocess
@@ -18,9 +19,15 @@ def parse_args():
 
 def process_checkpoint(in_file, out_file):
     checkpoint = torch.load(in_file, map_location='cpu')
-    # remove optimizer for smaller file size
-    if 'optimizer' in checkpoint:
-        del checkpoint['optimizer']
+    # remove some unnecessary keys for smaller file size
+    unnecessary_keys = ['message_hub', 'optimizer', 'param_scheduler']
+    for k in unnecessary_keys:
+        if k in checkpoint:
+            del checkpoint[k]
+    unnecessary_params = ['data_preprocessor.mean', 'data_preprocessor.std']
+    for k in unnecessary_params:
+        if k in checkpoint['state_dict']:
+            del checkpoint['state_dict'][k]
     # if it is necessary to remove some sensitive data in checkpoint['meta'],
     # add the code here.
     torch.save(checkpoint, out_file)
@@ -34,7 +41,9 @@ def process_checkpoint(in_file, out_file):
         out_file_name = out_file[:-4]
     else:
         out_file_name = out_file
-    final_file = out_file_name + f'-{sha[:8]}.pth'
+
+    current_date = datetime.datetime.now().strftime('%Y%m%d')
+    final_file = out_file_name + f'_{current_date}-{sha[:8]}.pth'
     os.rename(out_file, final_file)
 
 
