@@ -20,15 +20,15 @@ Current state-of-the-art approaches for spatio-temporal action localization rely
 
 ### AVA2.1
 
-|                  Model                   | Modality |  Pretrained  | Backbone | Input | gpus | mAP  |                   log                   |                   json                   |                   ckpt                   |
-| :--------------------------------------: | :------: | :----------: | :------: | :---: | :--: | :--: | :-------------------------------------: | :--------------------------------------: | :--------------------------------------: |
-| [slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava_rgb](/configs/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava_rgb.py) |   RGB    | Kinetics-400 | ResNet50 | 32x2  |  8   | 27.1 | [log](https://download.openmmlab.com/mmaction/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava_rgb/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava_rgb.log) | [json](https://download.openmmlab.com/mmaction/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava_rgb/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava_rgb.json) | [ckpt](https://download.openmmlab.com/mmaction/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava_rgb/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava_rgb-49b07bf2.pth) |
+|                                       Model                                       | Modality |  Pretrained  | Backbone | Input | gpus |  mAP  |                  log                   |                  ckpt                   |
+| :-------------------------------------------------------------------------------: | :------: | :----------: | :------: | :---: | :--: | :---: | :------------------------------------: | :-------------------------------------: |
+| [slowfast_acrn_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb8_ava_rgb](/configs/detection/acrn/slowfast_acrn_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb8_ava_rgb.py) |   RGB    | Kinetics-400 | ResNet50 | 32x2  |  8   | 27.58 | [log](https://download.openmmlab.com/) | [ckpt](https://download.openmmlab.com/) |
 
 ### AVA2.2
 
-|                  Model                   | Modality |  Pretrained  | Backbone | Input | gpus | mAP  |                   log                   |                   json                   |                   ckpt                   |
-| :--------------------------------------: | :------: | :----------: | :------: | :---: | :--: | :--: | :-------------------------------------: | :--------------------------------------: | :--------------------------------------: |
-| [slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb](/configs/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.py) |   RGB    | Kinetics-400 | ResNet50 | 32x2  |  8   | 27.8 | [log](https://download.openmmlab.com/mmaction/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.log) | [json](https://download.openmmlab.com/mmaction/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.json) | [ckpt](https://download.openmmlab.com/mmaction/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb-2be32625.pth) |
+|                                       Model                                       | Modality |  Pretrained  | Backbone | Input | gpus |  mAP  |                  log                   |                  ckpt                   |
+| :-------------------------------------------------------------------------------: | :------: | :----------: | :------: | :---: | :--: | :---: | :------------------------------------: | :-------------------------------------: |
+| [slowfast_acrn_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb8_ava22_rgb](/configs/detection/acrn/slowfast_acrn_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb8_ava22_rgb.py) |   RGB    | Kinetics-400 | ResNet50 | 32x2  |  8   | 27.63 | [log](https://download.openmmlab.com/) | [ckpt](https://download.openmmlab.com/) |
 
 :::{note}
 
@@ -48,10 +48,11 @@ You can use the following command to train a model.
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
-Example: train ACRN with SlowFast backbone on AVA with periodic validation.
+Example: train ACRN with SlowFast backbone on AVA in a deterministic option.
 
 ```shell
-python tools/train.py configs/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.py --validate
+python tools/train.py configs/detection/acrn/slowfast_acrn_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb8_ava_rgb.py \
+    --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
 For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
@@ -64,10 +65,10 @@ You can use the following command to test a model.
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-Example: test ACRN with SlowFast backbone on AVA and dump the result to a csv file.
+Example: test ACRN with SlowFast backbone.
 
 ```shell
-python tools/test.py configs/detection/acrn/slowfast_acrn_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.py checkpoints/SOME_CHECKPOINT.pth --eval mAP --out results.csv
+python tools/test.py configs/detection/acrn/slowfast_acrn_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb8_ava_rgb.py checkpoints/SOME_CHECKPOINT.pth
 ```
 
 For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset) .
