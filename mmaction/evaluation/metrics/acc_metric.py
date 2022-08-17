@@ -36,6 +36,8 @@ class AccMetric(BaseMetric):
 
         if isinstance(metric_list, str):
             metrics = (metric_list, )
+        else:
+            metrics = metric_list
 
         # coco evaluation metrics
         for metric in metrics:
