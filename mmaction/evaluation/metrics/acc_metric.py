@@ -18,21 +18,24 @@ class AccMetric(BaseMetric):
 
     def __init__(
             self,
-            metrics: Optional[Union[str,
-                                    Tuple[str]]] = ('top_k_accuracy',
-                                                    'mean_class_accuracy'),
+            metric_list: Optional[Union[str,
+                                        Tuple[str]]] = ('top_k_accuracy',
+                                                        'mean_class_accuracy'),
             collect_device: str = 'cpu',
             metric_options: Optional[dict] = dict(
                 top_k_accuracy=dict(topk=(1, 5))),
             prefix: Optional[str] = None,
             num_classes: Optional[int] = None):
+        # TODO: fix the metric_list argument with a better one.
+        # `metrics` is not a safe argument here with mmengine.
+        # we have to replace it with `metric_list`.
         super().__init__(collect_device=collect_device, prefix=prefix)
-        if not isinstance(metrics, (str, tuple)):
-            raise TypeError('metrics must be str or tuple of str, '
-                            f'but got {type(metrics)}')
+        if not isinstance(metric_list, (str, tuple)):
+            raise TypeError('metric_list must be str or tuple of str, '
+                            f'but got {type(metric_list)}')
 
-        if isinstance(metrics, str):
-            metrics = (metrics, )
+        if isinstance(metric_list, str):
+            metrics = (metric_list, )
 
         # coco evaluation metrics
         for metric in metrics:
@@ -40,6 +43,10 @@ class AccMetric(BaseMetric):
                 'top_k_accuracy', 'mean_class_accuracy',
                 'mmit_mean_average_precision', 'mean_average_precision'
             ]
+            if metric in [
+                    'mmit_mean_average_precision', 'mean_average_precision'
+            ]:
+                assert type(num_classes) == int
         self.metrics = metrics
         self.metric_options = metric_options
         self.num_classes = num_classes
