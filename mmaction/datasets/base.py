@@ -33,7 +33,7 @@ class BaseActionDataset(BaseDataset, metaclass=ABCMeta):
 
     def __init__(self,
                  ann_file: str,
-                 pipeline: List[Union[dict, Callable]],
+                 pipeline: List[Union[ConfigType, Callable]],
                  data_prefix: Optional[ConfigType] = dict(prefix=''),
                  test_mode: bool = False,
                  multi_class: bool = False,

@@ -3,8 +3,8 @@ import warnings
 from abc import ABCMeta, abstractmethod
 
 import torch.nn as nn
-from mmengine.model import BaseModel, merge_dict
 from torch import Tensor
+from mmengine.model import BaseModel, merge_dict
 
 from mmaction.registry import MODELS
 from mmaction.utils import (ConfigType, ForwardResults, InstanceList,

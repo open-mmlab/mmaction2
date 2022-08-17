@@ -28,7 +28,6 @@ class PoseDataset(BaseActionDataset):
             ``train2``, ``test2``, ``train3``, ``test3``. Defaults to None.
         start_index (int): Specify a start index for frames in consideration of
             different filename format. Defaults to 0.
-        modality (str): Modality of data. Defaults to ``Pose``.
     """
 
     def __init__(self,
@@ -36,7 +35,6 @@ class PoseDataset(BaseActionDataset):
                  pipeline: List[Union[ConfigType, Callable]],
                  split: Optional[str] = None,
                  start_index: int = 0,
-                 modality: str = 'Pose',
                  **kwargs) -> None:
         # split, applicable to ``ucf101`` or ``hmdb51``
         self.split = split
@@ -44,7 +42,7 @@ class PoseDataset(BaseActionDataset):
             ann_file,
             pipeline=pipeline,
             start_index=start_index,
-            modality=modality,
+            modality='Pose',
             **kwargs)
 
     def load_data_list(self) -> List[dict]:
