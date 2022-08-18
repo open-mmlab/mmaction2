@@ -15,3 +15,6 @@ param_scheduler = [
 
 optimizer = dict(
     type='Adam', lr=0.01, weight_decay=0.00001)  # this lr is used for 1 gpus
+
+optim_wrapper = dict(
+    optimizer=optimizer, clip_grad=dict(max_norm=40, norm_type=2))
