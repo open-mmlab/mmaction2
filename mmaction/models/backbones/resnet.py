@@ -2,6 +2,7 @@
 from collections import OrderedDict
 from typing import List, Optional, Sequence, Tuple, Union
 
+import torch
 import mmengine
 import torch.nn as nn
 from mmcv.cnn import ConvModule, constant_init, kaiming_init
@@ -312,7 +313,7 @@ class ResNet(nn.Module):
     Args:
         depth (int): Depth of resnet, from ``{18, 34, 50, 101, 152}``.
         pretrained (str, optional): Name of pretrained model. Defaults to None.
-        torchvision_pretrain (bool): Whether load pretrained model from
+        torchvision_pretrain (bool): Whether to load pretrained model from
             torchvision. Defaults to True.
         in_channels (int): Channel num of input features. Defaults to 3.
         num_stages (int): Resnet stages. Defaults to 4.
