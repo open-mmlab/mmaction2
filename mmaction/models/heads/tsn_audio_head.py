@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import torch
+import torch.nn as nn
 from mmcv.cnn import normal_init
-from torch import Tensor, nn
 
 from mmaction.registry import MODELS
 from mmaction.utils import ConfigType
@@ -50,12 +51,14 @@ class TSNAudioHead(BaseHead):
         """Initiate the parameters from scratch."""
         normal_init(self.fc_cls, std=self.init_std)
 
-    def forward(self, x) -> Tensor:
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Defines the computation performed at every call.
+
         Args:
-            x (Tensor): The input data.
+            x (torch.Tensor): The input data.
+
         Returns:
-            Tensor: The classification scores for input samples.
+            torch.Tensor: The classification scores for input samples.
         """
         # [N * num_segs, in_channels, h, w]
         x = self.avg_pool(x)
