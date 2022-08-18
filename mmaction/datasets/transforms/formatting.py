@@ -21,13 +21,10 @@ class PackActionInputs(BaseTransform):
 
     def transform(self, results):
         """Method to pack the input data.
-
         Args:
             results (dict): Result dict from the data pipeline.
-
         Returns:
             dict:
-
             - 'inputs' (obj:`torch.Tensor`): The forward data of models.
             - 'data_sample' (obj:`DetDataSample`): The annotation info of the
                 sample.
@@ -39,13 +36,10 @@ class PackActionInputs(BaseTransform):
         elif 'keypoint' in results:
             keypoint = results['keypoint']
             packed_results['inputs'] = to_tensor(keypoint)
-        elif 'raw_feature' in results:
-            raw_feature = results['raw_feature']
-            packed_results['inputs'] = to_tensor(raw_feature)
         else:
             raise ValueError(
-                'Cannot get "img", "keypoint" or "raw_feature" in the input '
-                'dict of `PackActionInputs`.')
+                'Cannot get "img" or "keypoint" in the input dict of '
+                '`PackActionInputs`.')
 
         data_sample = ActionDataSample()
 
@@ -59,14 +53,60 @@ class PackActionInputs(BaseTransform):
             if 'proposals' in results:
                 data_sample.proposals = InstanceData(
                     bboxes=to_tensor(results['proposals']))
-        elif 'gt_bbox' in results:  # for localization tasks
-            instance_data = InstanceData()
-            instance_data['gt_bbox'] = to_tensor(results['gt_bbox'])
-            data_sample.gt_instances = instance_data
-        elif 'label' in results:
+        else:
             label_data = LabelData()
             label_data.item = to_tensor(results['label'])
             data_sample.gt_labels = label_data
+
+        img_meta = {k: results[k] for k in self.meta_keys if k in results}
+        data_sample.set_metainfo(img_meta)
+        packed_results['data_sample'] = data_sample
+        return packed_results
+
+    def __repr__(self) -> str:
+        repr_str = self.__class__.__name__
+        repr_str += f'(meta_keys={self.meta_keys})'
+        return repr_str
+
+
+@TRANSFORMS.register_module()
+class PackLocalizationInputs(BaseTransform):
+
+    def __init__(self, keys=(), meta_keys=('video_name', )):
+        self.keys = keys
+        self.meta_keys = meta_keys
+
+    def transform(self, results):
+        """Method to pack the input data.
+
+        Args:
+            results (dict): Result dict from the data pipeline.
+
+        Returns:
+            dict:
+
+            - 'inputs' (obj:`torch.Tensor`): The forward data of models.
+            - 'data_sample' (obj:`DetDataSample`): The annotation info of the
+                sample.
+        """
+        packed_results = dict()
+        if 'raw_feature' in results:
+            raw_feature = results['raw_feature']
+            packed_results['inputs'] = to_tensor(raw_feature)
+        elif 'bsp_feature' in results:
+            bsp_feature = results['bsp_feature']
+            packed_results['inputs'] = to_tensor(bsp_feature)
+        else:
+            raise ValueError(
+                'Cannot get "raw_feature" or "bsp_feature" in the input '
+                'dict of `PackActionInputs`.')
+
+        data_sample = ActionDataSample()
+        instance_data = InstanceData()
+        for key in self.keys:
+            if key in results:
+                instance_data[key] = to_tensor(results[key])
+        data_sample.gt_instances = instance_data
 
         img_meta = {k: results[k] for k in self.meta_keys if k in results}
         data_sample.set_metainfo(img_meta)

@@ -1,4 +1,7 @@
-_base_ = ['../../_base_/models/bsn_tem.py', '../../_base_/default_runtime.py']
+_base_ = [
+    '../../_base_/models/bsn_pem.py', '../../_base_/schedules/adam_20e.py',
+    '../../_base_/default_runtime.py'
+]
 
 # dataset settings
 dataset_type = 'ActivityNetDataset'
@@ -6,22 +9,36 @@ data_root = 'data/ActivityNet/activitynet_feature_cuhk/csv_mean_100/'
 data_root_val = 'data/ActivityNet/activitynet_feature_cuhk/csv_mean_100/'
 ann_file_train = 'data/ActivityNet/anet_anno_train.json'
 ann_file_val = 'data/ActivityNet/anet_anno_val.json'
-ann_file_test = 'data/ActivityNet/anet_anno_full.json'
+ann_file_test = 'data/ActivityNet/anet_anno_val.json'
+
+work_dir = 'work_dirs/bsn_400x100_20e_1x16_activitynet_feature/'
+pgm_proposals_dir = f'{work_dir}/pgm_proposals/'
+pgm_features_dir = f'{work_dir}/pgm_features/'
 
 train_pipeline = [
-    dict(type='LoadLocalizationFeature'),
-    dict(type='GenerateLocalizationLabels'),
-    dict(type='PackLocalizationInputs', meta_keys=('video_name', ))
+    dict(
+        type='LoadProposals',
+        top_k=500,
+        pgm_proposals_dir=pgm_proposals_dir,
+        pgm_features_dir=pgm_features_dir),
+    dict(
+        type='PackLocalizationInputs',
+        keys=('reference_temporal_iou', ),
+        meta_keys=())
 ]
 val_pipeline = [
-    dict(type='LoadLocalizationFeature'),
-    dict(type='GenerateLocalizationLabels'),
-    dict(type='PackLocalizationInputs', meta_keys=('video_name', ))
+    dict(
+        type='LoadProposals',
+        top_k=1000,
+        pgm_proposals_dir=pgm_proposals_dir,
+        pgm_features_dir=pgm_features_dir),
+    dict(
+        type='PackLocalizationInputs',
+        keys=('tmin', 'tmax', 'tmin_score', 'tmax_score'),
+        meta_keys=('video_name', 'duration_second', 'duration_frame',
+                   'annotations', 'feature_frame')),
 ]
-test_pipeline = [
-    dict(type='LoadLocalizationFeature'),
-    dict(type='PackLocalizationInputs', meta_keys=('video_name', ))
-]
+test_pipeline = val_pipeline
 
 train_dataloader = dict(
     batch_size=16,
@@ -33,6 +50,7 @@ train_dataloader = dict(
         ann_file=ann_file_train,
         data_prefix=dict(video=data_root),
         pipeline=train_pipeline))
+
 val_dataloader = dict(
     batch_size=1,
     num_workers=8,
@@ -44,6 +62,7 @@ val_dataloader = dict(
         data_prefix=dict(video=data_root_val),
         pipeline=val_pipeline,
         test_mode=True))
+
 test_dataloader = dict(
     batch_size=1,
     num_workers=8,
@@ -56,32 +75,8 @@ test_dataloader = dict(
         pipeline=test_pipeline,
         test_mode=True))
 
-train_cfg = dict(
-    type='EpochBasedTrainLoop', max_epochs=20, val_begin=1, val_interval=1)
-val_cfg = dict(type='ValLoop')
-test_cfg = dict(type='TestLoop')
-
-optim_wrapper = dict(
-    optimizer=dict(type='Adam', lr=0.001, weight_decay=0.0001),
-    clip_grad=dict(max_norm=40, norm_type=2))
-
-param_scheduler = [
-    dict(
-        type='MultiStepLR',
-        begin=0,
-        end=20,
-        by_epoch=True,
-        milestones=[7, 14],
-        gamma=0.1)
-]
-
-default_hooks = dict(checkpoint=dict(max_keep_ckpts=3, save_best=None))
-
-work_dir = 'work_dirs/bsn_400x100_20e_1x16_activitynet_feature/'
-tem_results_dir = f'{work_dir}/tem_results/'
-
 test_evaluator = dict(
     type='BSNMetric',
-    metric_type='TEM',
-    dump_config=dict(out=tem_results_dir, output_format='csv'))
+    metric_type='AR@AN',
+    dump_config=dict(out=f'{work_dir}/results.json', output_format='json'))
 val_evaluator = test_evaluator
