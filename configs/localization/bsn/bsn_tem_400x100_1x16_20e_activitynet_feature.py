@@ -75,7 +75,7 @@ param_scheduler = [
         gamma=0.1)
 ]
 
-default_hooks = dict(checkpoint=dict(max_keep_ckpts=3))
+default_hooks = dict(checkpoint=dict(max_keep_ckpts=3, save_best=None))
 
 work_dir = 'work_dirs/bsn_400x100_20e_1x16_activitynet_feature/'
 tem_results_dir = f'{work_dir}/tem_results/'
