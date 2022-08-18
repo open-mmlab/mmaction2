@@ -51,7 +51,7 @@ test_dataloader = dict(
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
         type=dataset_type,
-        ann_file=ann_file_val,
+        ann_file=ann_file_test,
         data_prefix=dict(video=data_root_val),
         pipeline=test_pipeline,
         test_mode=True))

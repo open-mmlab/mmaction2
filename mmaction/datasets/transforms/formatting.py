@@ -59,7 +59,7 @@ class PackActionInputs(BaseTransform):
             if 'proposals' in results:
                 data_sample.proposals = InstanceData(
                     bboxes=to_tensor(results['proposals']))
-        elif 'gt_bbox' in results:
+        elif 'gt_bbox' in results:  # for localization tasks
             instance_data = InstanceData()
             instance_data['gt_bbox'] = to_tensor(results['gt_bbox'])
             data_sample.gt_instances = instance_data
