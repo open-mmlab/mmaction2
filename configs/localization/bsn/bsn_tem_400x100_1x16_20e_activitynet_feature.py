@@ -11,12 +11,18 @@ ann_file_test = 'data/ActivityNet/anet_anno_full.json'
 train_pipeline = [
     dict(type='LoadLocalizationFeature'),
     dict(type='GenerateLocalizationLabels'),
-    dict(type='PackLocalizationInputs', meta_keys=('video_name', ))
+    dict(
+        type='PackLocalizationInputs',
+        keys=('gt_bbox', ),
+        meta_keys=('video_name', ))
 ]
 val_pipeline = [
     dict(type='LoadLocalizationFeature'),
     dict(type='GenerateLocalizationLabels'),
-    dict(type='PackLocalizationInputs', meta_keys=('video_name', ))
+    dict(
+        type='PackLocalizationInputs',
+        keys=('gt_bbox', ),
+        meta_keys=('video_name', ))
 ]
 test_pipeline = [
     dict(type='LoadLocalizationFeature'),
