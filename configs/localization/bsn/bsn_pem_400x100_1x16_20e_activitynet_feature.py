@@ -75,8 +75,12 @@ test_dataloader = dict(
         pipeline=test_pipeline,
         test_mode=True))
 
+train_cfg = dict(val_interval=20)
+
 test_evaluator = dict(
     type='BSNMetric',
     metric_type='AR@AN',
     dump_config=dict(out=f'{work_dir}/results.json', output_format='json'))
 val_evaluator = test_evaluator
+
+default_hooks = dict(checkpoint=dict(max_keep_ckpts=3, save_best=None))
