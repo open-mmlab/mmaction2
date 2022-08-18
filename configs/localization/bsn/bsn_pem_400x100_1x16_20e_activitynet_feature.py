@@ -34,7 +34,7 @@ val_pipeline = [
         pgm_features_dir=pgm_features_dir),
     dict(
         type='PackLocalizationInputs',
-        keys=('tmin', 'tmax', 'tmin_score', 'tmax_score'),
+        keys=('tmin', 'tmax', 'tmin_score', 'tmax_score', 'bsp_feature'),
         meta_keys=('video_name', 'duration_second', 'duration_frame',
                    'annotations', 'feature_frame')),
 ]
