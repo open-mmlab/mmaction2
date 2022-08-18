@@ -332,10 +332,10 @@ class PEM(BaseModel):
 
     def loss(self, batch_inputs, batch_data_samples, **kwargs):
         pem_output = self._forward(batch_inputs)
-        reference_temporal_iou = [
+        reference_temporal_iou = torch.cat([
             sample.gt_instances['reference_temporal_iou']
             for sample in batch_data_samples
-        ]
+        ])
         device = pem_output.device
         reference_temporal_iou = reference_temporal_iou.to(device)
 
