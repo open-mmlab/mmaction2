@@ -63,7 +63,7 @@ class PackActionInputs(BaseTransform):
             instance_data = InstanceData()
             instance_data['gt_bbox'] = to_tensor(results['gt_bbox'])
             data_sample.gt_instances = instance_data
-        else:
+        elif 'label' in results:
             label_data = LabelData()
             label_data.item = to_tensor(results['label'])
             data_sample.gt_labels = label_data
