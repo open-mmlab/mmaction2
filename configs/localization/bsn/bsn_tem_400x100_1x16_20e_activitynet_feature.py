@@ -83,5 +83,6 @@ tem_results_dir = f'{work_dir}/tem_results/'
 
 test_evaluator = dict(
     type='BSNMetric',
-    metric_type='TSM',
+    metric_type='TEM',
     dump_config=dict(out=tem_results_dir, output_format='csv'))
+val_evaluator = test_evaluator

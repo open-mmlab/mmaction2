@@ -59,6 +59,10 @@ class PackActionInputs(BaseTransform):
             if 'proposals' in results:
                 data_sample.proposals = InstanceData(
                     bboxes=to_tensor(results['proposals']))
+        elif 'gt_bbox' in results:
+            instance_data = InstanceData()
+            instance_data['gt_bbox'] = to_tensor(results['gt_bbox'])
+            data_sample.gt_instances = instance_data
         else:
             label_data = LabelData()
             label_data.item = to_tensor(results['label'])

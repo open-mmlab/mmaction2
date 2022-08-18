@@ -124,7 +124,9 @@ class TEM(BaseModel):
         score_start = tem_output[:, 1, :]
         score_end = tem_output[:, 2, :]
 
-        gt_bbox = [sample['gt_bbox'] for sample in batch_data_samples]
+        gt_bbox = [
+            sample.gt_instances['gt_bbox'] for sample in batch_data_samples
+        ]
         label_action, label_start, label_end = self.generate_labels(gt_bbox)
         device = batch_inputs.device
         label_action = label_action.to(device)
@@ -154,7 +156,7 @@ class TEM(BaseModel):
 
         video_results = []
         for batch_idx, _ in enumerate(batch_action):
-            video_name = batch_data_samples[batch_idx]['video_name']
+            video_name = batch_data_samples[batch_idx].metainfo['video_name']
             video_action = batch_action[batch_idx]
             video_start = batch_start[batch_idx]
             video_end = batch_end[batch_idx]
