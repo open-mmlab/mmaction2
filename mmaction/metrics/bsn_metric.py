@@ -30,7 +30,6 @@ class BSNMetric(BaseMetric):
         assert 'out' in dump_config
         self.output_format = dump_config.pop('output_format', 'csv')
         self.out = dump_config['out']
-        os.makedirs(self.out, exist_ok=True)
 
         self.metric_options = metric_options
         if self.metric_type == 'AR@AN':
@@ -93,6 +92,7 @@ class BSNMetric(BaseMetric):
             }
             mmengine.dump(output_dict, self.out)
         elif self.output_format == 'csv':
+            os.makedirs(self.out, exist_ok=True)
             header = 'action,start,end,tmin,tmax'
             for result in results:
                 video_name, outputs = result
