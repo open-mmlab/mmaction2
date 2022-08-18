@@ -7,8 +7,8 @@ import mmcv
 import numpy as np
 import torch.multiprocessing as mp
 
-from mmaction.localization import (generate_bsp_feature,
-                                   generate_candidate_proposals)
+from mmaction.models.localizers.utils import (generate_bsp_feature,
+                                              generate_candidate_proposals)
 
 
 def load_video_infos(ann_file):
