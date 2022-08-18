@@ -2,47 +2,44 @@ _base_ = [
     '../../_base_/models/tsn_r50_audio.py', '../../_base_/default_runtime.py'
 ]
 
+# model settings
+model = dict(backbone=dict(depth=18), cls_head=dict(in_channels=512))
+
 # dataset settings
 dataset_type = 'AudioDataset'
-data_root = 'data/kinetics400/audios_train'
-data_root_val = 'data/kinetics400/audios_val'
-ann_file_train = 'data/kinetics400/kinetics400_train_list_audios.txt'
-ann_file_val = 'data/kinetics400/kinetics400_val_list_audios.txt'
-ann_file_test = 'data/kinetics400/kinetics400_val_list_audios.txt'
+data_root = 'data/kinetics400/audio_feature_train'
+data_root_val = 'data/kinetics400/audio_feature_val'
+ann_file_train = 'data/kinetics400/kinetics400_train_list_audio_features.txt'
+ann_file_val = 'data/kinetics400/kinetics400_val_list_audio_features.txt'
+ann_file_test = 'data/kinetics400/kinetics400_val_list_audio_features.txt'
 train_pipeline = [
-    dict(type='AudioDecodeInit'),
+    dict(type='LoadAudioFeature'),
     dict(type='SampleFrames', clip_len=64, frame_interval=1, num_clips=1),
-    dict(type='AudioDecode'),
-    dict(type='AudioAmplify', ratio=1.5),
-    dict(type='MelSpectrogram'),
+    dict(type='AudioFeatureSelector'),
     dict(type='FormatAudioShape', input_format='NCTF'),
     dict(type='PackActionInputs')
 ]
 val_pipeline = [
-    dict(type='AudioDecodeInit'),
+    dict(type='LoadAudioFeature'),
     dict(
         type='SampleFrames',
         clip_len=64,
         frame_interval=1,
         num_clips=1,
         test_mode=True),
-    dict(type='AudioDecode'),
-    dict(type='AudioAmplify', ratio=1.5),
-    dict(type='MelSpectrogram'),
+    dict(type='AudioFeatureSelector'),
     dict(type='FormatAudioShape', input_format='NCTF'),
     dict(type='PackActionInputs')
 ]
 test_pipeline = [
-    dict(type='AudioDecodeInit'),
+    dict(type='LoadAudioFeature'),
     dict(
         type='SampleFrames',
         clip_len=64,
         frame_interval=1,
         num_clips=10,
         test_mode=True),
-    dict(type='AudioDecodeInit'),
-    dict(type='AudioAmplify', ratio=1.5),
-    dict(type='MelSpectrogram'),
+    dict(type='AudioFeatureSelector'),
     dict(type='FormatAudioShape', input_format='NCTF'),
     dict(type='PackActionInputs')
 ]
@@ -56,6 +53,7 @@ train_dataloader = dict(
         type=dataset_type,
         ann_file=ann_file_train,
         data_prefix=dict(audio=data_root),
+        suffix='.npy',
         pipeline=train_pipeline))
 val_dataloader = dict(
     batch_size=320,
@@ -67,6 +65,7 @@ val_dataloader = dict(
         ann_file=ann_file_val,
         pipeline=val_pipeline,
         data_prefix=dict(audio=data_root_val),
+        suffix='.npy',
         test_mode=True))
 test_dataloader = dict(
     batch_size=1,
@@ -78,6 +77,7 @@ test_dataloader = dict(
         ann_file=ann_file_test,
         pipeline=test_pipeline,
         data_prefix=dict(audio=data_root_val),
+        suffix='.npy',
         test_mode=True))
 
 val_evaluator = dict(type='AccMetric')
