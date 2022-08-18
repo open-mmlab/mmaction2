@@ -1551,8 +1551,11 @@ class LoadProposals(BaseTransform):
         if self.feature_ext == '.npy':
             bsp_feature = np.load(feature_path).astype(np.float32)
 
-        bsp_feature = bsp_feature[:self.top_k, :]
+        if bsp_feature.shape[0] < self.top_k:
+            num_repeat = self.top_k // bsp_feature.shape[0] + 1
+            bsp_feature = np.vstack([bsp_feature] * num_repeat)
 
+        bsp_feature = bsp_feature[:self.top_k, :]
         results['bsp_feature'] = bsp_feature
         results['tmin'] = tmin
         results['tmax'] = tmax
