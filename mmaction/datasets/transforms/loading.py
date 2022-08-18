@@ -1536,7 +1536,7 @@ class LoadProposals(BaseTransform):
             pgm_proposals = np.loadtxt(
                 proposal_path, dtype=np.float32, delimiter=',', skiprows=1)
 
-        if pgm_proposals.shape[0] < self.topk:
+        if pgm_proposals.shape[0] < self.top_k:
             num_repeat = self.top_k // pgm_proposals.shape[0] + 1
             pgm_proposals = np.vstack([pgm_proposals] * num_repeat)
         pgm_proposals = np.array(pgm_proposals[:self.top_k])
