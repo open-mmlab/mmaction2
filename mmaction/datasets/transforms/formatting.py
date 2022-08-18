@@ -39,10 +39,13 @@ class PackActionInputs(BaseTransform):
         elif 'keypoint' in results:
             keypoint = results['keypoint']
             packed_results['inputs'] = to_tensor(keypoint)
+        elif 'raw_feature' in results:
+            raw_feature = results['raw_feature']
+            packed_results['inputs'] = to_tensor(raw_feature)
         else:
             raise ValueError(
-                'Cannot get "img" or "keypoint" in the input dict of '
-                '`PackActionInputs`.')
+                'Cannot get "img", "keypoint" or "raw_feature" in the input '
+                'dict of `PackActionInputs`.')
 
         data_sample = ActionDataSample()
 
