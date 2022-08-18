@@ -75,8 +75,7 @@ param_scheduler = [
         gamma=0.1)
 ]
 
-default_hooks = dict(
-    checkpoint=dict(max_keep_ckpts=3, filename_tmpl='tem_epoch_{}.pth'))
+default_hooks = dict(checkpoint=dict(max_keep_ckpts=3))
 
 work_dir = 'work_dirs/bsn_400x100_20e_1x16_activitynet_feature/'
 tem_results_dir = f'{work_dir}/tem_results/'
