@@ -1,12 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-<<<<<<< ecc062f7c6eef89af6bc8be9e9571ddbdb54b4f7
-from torch import Tensor, nn
-from mmengine.model.weight_init import normal_init
-=======
 import torch
 import torch.nn as nn
-from mmcv.cnn import normal_init
->>>>>>> update audio models
+from mmengine.model.weight_init import normal_init
 
 from mmaction.registry import MODELS
 from mmaction.utils import ConfigType
@@ -56,19 +51,11 @@ class TSNAudioHead(BaseHead):
         """Initiate the parameters from scratch."""
         normal_init(self.fc_cls, std=self.init_std)
 
-<<<<<<< ecc062f7c6eef89af6bc8be9e9571ddbdb54b4f7
-    def forward(self, x, **kwargs) -> Tensor:
-        """Defines the computation performed at every call.
-
-        Args:
-            x (Tensor): The input data.
-=======
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Defines the computation performed at every call.
 
         Args:
             x (torch.Tensor): The input data.
->>>>>>> update audio models
 
         Returns:
             torch.Tensor: The classification scores for input samples.
