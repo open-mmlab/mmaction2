@@ -23,7 +23,7 @@ train_pipeline = [
         pgm_features_dir=pgm_features_dir),
     dict(
         type='PackLocalizationInputs',
-        keys=('reference_temporal_iou', ),
+        keys=('reference_temporal_iou', 'bsp_feature'),
         meta_keys=())
 ]
 val_pipeline = [

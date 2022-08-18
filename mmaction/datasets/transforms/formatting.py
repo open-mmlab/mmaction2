@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
+import torch
 from mmcv.transforms import BaseTransform, to_tensor
 from mmengine.data import InstanceData, LabelData
 
@@ -94,8 +95,7 @@ class PackLocalizationInputs(BaseTransform):
             raw_feature = results['raw_feature']
             packed_results['inputs'] = to_tensor(raw_feature)
         elif 'bsp_feature' in results:
-            bsp_feature = results['bsp_feature']
-            packed_results['inputs'] = to_tensor(bsp_feature)
+            packed_results['inputs'] = torch.tensor(0.)
         else:
             raise ValueError(
                 'Cannot get "raw_feature" or "bsp_feature" in the input '

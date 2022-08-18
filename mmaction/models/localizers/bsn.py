@@ -325,19 +325,23 @@ class PEM(BaseModel):
         Returns:
             torch.Tensor: The output of the module.
         """
-        x = torch.cat(list(x))
         x = F.relu(self.fc1_ratio * self.fc1(x))
         x = torch.sigmoid(self.fc2_ratio * self.fc2(x))
         return x
 
     def loss(self, batch_inputs, batch_data_samples, **kwargs):
-        pem_output = self._forward(batch_inputs)
+        device = self.fc1.weight.device
+
+        bsp_feature = torch.cat([
+            sample.gt_instances['bsp_feature'] for sample in batch_data_samples
+        ]).to(device)
+
         reference_temporal_iou = torch.cat([
             sample.gt_instances['reference_temporal_iou']
             for sample in batch_data_samples
-        ])
-        device = pem_output.device
-        reference_temporal_iou = reference_temporal_iou.to(device)
+        ]).to(device)
+
+        pem_output = self._forward(bsp_feature)
 
         anchors_temporal_iou = pem_output.view(-1)
         u_hmask = (reference_temporal_iou >
@@ -382,7 +386,13 @@ class PEM(BaseModel):
 
     def predict(self, batch_inputs, batch_data_samples, **kwargs):
         """Define the computation performed at every call when testing."""
-        pem_output = self._forward(batch_inputs).view(-1).cpu().numpy()
+        device = self.fc1.weight.device
+
+        bsp_feature = torch.cat([
+            sample.gt_instances['bsp_feature'] for sample in batch_data_samples
+        ]).to(device)
+
+        pem_output = self._forward(bsp_feature).view(-1).cpu().numpy()
         pem_output = pem_output.reshape(-1, 1)
 
         gt_instances = [sample.gt_instances for sample in batch_data_samples]
