@@ -5,6 +5,7 @@ from collections import OrderedDict
 from typing import Any, Optional, Sequence, Tuple
 
 import mmcv
+import mmengine
 import numpy as np
 from mmengine.evaluator import BaseMetric
 
@@ -90,7 +91,7 @@ class BSNMetric(BaseMetric):
                 'results': result_dict,
                 'external_data': {}
             }
-            mmcv.dump(output_dict, self.out)
+            mmengine.dump(output_dict, self.out)
         elif self.output_format == 'csv':
             header = 'action,start,end,tmin,tmax'
             for result in results:
