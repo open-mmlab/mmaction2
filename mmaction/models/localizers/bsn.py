@@ -376,7 +376,7 @@ class PEM(BaseModel):
         return loss_dict
 
     def _parse(self, gt_instances, key):
-        out = torch.cat([gt['key'] for gt in gt_instances])
+        out = torch.cat([gt[key] for gt in gt_instances])
         out = out.view(-1).cpu().numpy().reshape(-1, 1)
         return out
 
