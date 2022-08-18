@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os
 import os.path as osp
+from collections import OrderedDict
 from typing import Any, Optional, Sequence, Tuple
 
 import mmcv
@@ -37,6 +38,7 @@ class BSNMetric(BaseMetric):
     def compute_metrics(self, results: list) -> dict:
         if self.metric_type == 'TSM':
             self.dump_results(results)
+            return OrderedDict()
 
     def dump_results(self, results, version='VERSION 1.3'):
         if self.output_format == 'json':
