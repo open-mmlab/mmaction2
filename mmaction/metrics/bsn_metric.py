@@ -31,12 +31,12 @@ class BSNMetric(BaseMetric):
 
     def process(self, data_batch: Sequence[Tuple[Any, dict]],
                 predictions: Sequence[dict]) -> None:
-        if self.metric_type == 'TSM':
+        if self.metric_type == 'TEM':
             for pred in predictions:
                 self.results.append(pred)
 
     def compute_metrics(self, results: list) -> dict:
-        if self.metric_type == 'TSM':
+        if self.metric_type == 'TEM':
             self.dump_results(results)
             return OrderedDict()
 
