@@ -2,8 +2,8 @@
 from collections import OrderedDict
 from typing import List, Optional, Sequence, Tuple, Union
 
-import torch
 import mmengine
+import torch
 import torch.nn as nn
 from mmcv.cnn import ConvModule, constant_init, kaiming_init
 from mmengine.logging import MMLogger

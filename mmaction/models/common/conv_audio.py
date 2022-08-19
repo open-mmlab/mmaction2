@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Union, Tuple
+from typing import Tuple, Union
 
 import torch
 import torch.nn as nn
@@ -10,6 +10,7 @@ from torch.nn.modules.utils import _pair
 @CONV_LAYERS.register_module()
 class ConvAudio(nn.Module):
     """Conv2d module for AudioResNet backbone.
+
         <https://arxiv.org/abs/2001.08740>`_.
 
     Args:

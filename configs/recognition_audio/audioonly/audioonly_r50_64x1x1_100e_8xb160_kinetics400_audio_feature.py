@@ -98,5 +98,5 @@ optim_wrapper = dict(
     optimizer=dict(type='SGD', lr=2.0, momentum=0.9, weight_decay=0.0001),
     clip_grad=dict(max_norm=40, norm_type=2))
 
-default_hooks = dict(checkpoint=dict(max_keep_ckpts=3, interval=5),
-                     logger=dict(interval=1))
+default_hooks = dict(
+    checkpoint=dict(max_keep_ckpts=3, interval=5), logger=dict(interval=1))
