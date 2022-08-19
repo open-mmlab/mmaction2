@@ -1291,8 +1291,8 @@ class AudioDecode(BaseTransform):
             not be exactly the same, ``fixed_length`` will truncate or pad them
             into the same size. Defaults to 32000.
 
-    Required keys are ``frame_inds``, ``num_clips``, ``total_frames``, ``length``,
-    added or modified keys are ``audios``, ``audios_shape``.
+    Required keys are ``frame_inds``, ``num_clips``, ``total_frames``,
+    ``length``, added or modified keys are ``audios``, ``audios_shape``.
     """
 
     def __init__(self, fixed_length: int = 32000) -> None:

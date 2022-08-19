@@ -1398,8 +1398,8 @@ class AudioAmplify(BaseTransform):
 class MelSpectrogram(BaseTransform):
     """MelSpectrogram. Transfer an audio wave into a melspectogram figure.
 
-    Required keys are ``audios``, ``sample_rate``, ``num_clips``, added or modified
-    keys are ``audios``.
+    Required keys are ``audios``, ``sample_rate``, ``num_clips``, added or
+    modified keys are ``audios``.
 
     Args:
         window_size (int): The window size in millisecond. Defaults to 32.

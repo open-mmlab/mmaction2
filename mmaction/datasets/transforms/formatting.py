@@ -50,8 +50,8 @@ class PackActionInputs(BaseTransform):
             packed_results['inputs'] = to_tensor(audios)
         else:
             raise ValueError(
-                'Cannot get `imgs`, `keypoint` or `audios` in the input dict of '
-                '`PackActionInputs`.')
+                'Cannot get `imgs`, `keypoint` or `audios` in the input dict '
+                'of `PackActionInputs`.')
 
         data_sample = ActionDataSample()
 
@@ -261,8 +261,8 @@ class FormatShape(BaseTransform):
 class FormatAudioShape(BaseTransform):
     """Format final audio shape to the given input_format.
 
-    Required keys are ``audios``, ``num_clips`` and ``clip_len``, added or modified
-    keys are ``audios`` and ``input_shape``.
+    Required keys are ``audios``, ``num_clips`` and ``clip_len``, added or
+    modified keys are ``audios`` and ``input_shape``.
 
     Args:
         input_format (str): Define the final imgs format.
