@@ -5,7 +5,7 @@ from mmcv.cnn import normal_init
 
 from mmaction.registry import MODELS
 from mmaction.utils import ConfigType
-from .base import AvgConsensus, BaseHead
+from .base import BaseHead
 
 
 @MODELS.register_module()
@@ -17,7 +17,8 @@ class TSNAudioHead(BaseHead):
         in_channels (int): Number of channels in input feature.
         loss_cls (Union[dict, ConfigDict]): Config for building loss.
             Defaults to ``dict(type='CrossEntropyLoss')``.
-        spatial_type (str): Pooling type in spatial dimension. Defaults to ``avg``.
+        spatial_type (str): Pooling type in spatial dimension.
+            Defaults to ``avg``.
         dropout_ratio (float): Probability of dropout layer. Defaults to 0.4.
         init_std (float): Std value for Initiation. Defaults to 0.01.
     """

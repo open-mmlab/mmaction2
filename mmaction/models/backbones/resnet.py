@@ -254,8 +254,8 @@ def make_res_layer(block: nn.Module,
             Defaults to None.
         norm_cfg (Union[dict, ConfigDict], optional): Config for norm layers.
             Defaults to None.
-        act_cfg (Union[dict, ConfigDict], optional): Config for activate layers.
-            Defaults to None.
+        act_cfg (Union[dict, ConfigDict], optional): Config for activate
+            layers. Defaults to None.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
             memory while slowing down the training speed. Defaults to False.
 
@@ -315,7 +315,8 @@ class ResNet(nn.Module):
             torchvision. Defaults to True.
         in_channels (int): Channel num of input features. Defaults to 3.
         num_stages (int): Resnet stages. Defaults to 4.
-        out_indices (Sequence[int]): Indices of output feature. Defaults to (3, ).
+        out_indices (Sequence[int]): Indices of output feature.
+            Defaults to (3, ).
         strides (Sequence[int]): Strides of the first block of each stage.
             Defaults to ``(1, 2, 2, 2)``.
         dilations (Sequence[int]): Dilation of each stage.

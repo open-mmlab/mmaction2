@@ -1,6 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from collections import OrderedDict
-from typing import List, Optional, Sequence, Tuple, Union
+from typing import Optional, Sequence
 
 import torch
 import torch.nn as nn
