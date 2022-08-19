@@ -34,11 +34,7 @@ model = dict(
             pool1_stride_t=1,
             spatial_strides=(1, 2, 2, 1))),
     roi_head=dict(
-        shared_head=dict(
-            type='ACRNHead',
-            _scope_='mmaction',
-            in_channels=4608,
-            out_channels=2304),
+        shared_head=dict(type='ACRNHead', in_channels=4608, out_channels=2304),
         bbox_head=dict(in_channels=2304)))
 
 dataset_type = 'AVADataset'
