@@ -8,7 +8,8 @@ from ..base import generate_recognizer_demo_inputs, get_recognizer_cfg
 
 def test_tsn():
     register_all_modules()
-    config = get_recognizer_cfg('tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py')
+    config = get_recognizer_cfg(
+        'tsn/tsn_r50_1x1x3_100e_8xb32_kinetics400_rgb.py')
     config.model['backbone']['pretrained'] = None
 
     recognizer = MODELS.build(config.model)
@@ -122,7 +123,8 @@ def test_tsn():
 
 def test_tsm():
     register_all_modules()
-    config = get_recognizer_cfg('tsm/tsm_r50_1x1x8_50e_kinetics400_rgb.py')
+    config = get_recognizer_cfg(
+        'tsm/tsm_r50_1x1x8_50e_8xb16_kinetics400_rgb.py')
     config.model['backbone']['pretrained'] = None
 
     recognizer = MODELS.build(config.model)
@@ -161,7 +163,8 @@ def test_tsm():
 
 def test_trn():
     register_all_modules()
-    config = get_recognizer_cfg('trn/trn_r50_1x1x8_50e_sthv1_rgb.py')
+    config = get_recognizer_cfg(
+        'trn/trn_r50_1x1x8_50e_8xb16_sthv1_rgb.py')
     config.model['backbone']['pretrained'] = None
 
     recognizer = MODELS.build(config.model)
