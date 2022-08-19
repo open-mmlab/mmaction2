@@ -19,7 +19,6 @@ def register_all_modules(init_default_scope: bool = True) -> None:
     import mmaction.datasets  # noqa: F401,F403
     import mmaction.engine  # noqa: F401,F403
     import mmaction.evaluation  # noqa: F401,F403
-    import mmaction.metrics  # noqa: F401,F403
     import mmaction.models  # noqa: F401,F403
     import mmaction.structures  # noqa: F401,F403
     import mmaction.visualization  # noqa: F401,F403
