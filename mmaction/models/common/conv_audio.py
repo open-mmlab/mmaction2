@@ -22,7 +22,8 @@ class ConvAudio(nn.Module):
             Defaults to ``concat``.
         stride (Union[int, Tuple[int]]): Same as ``nn.Conv2d``. Defaults to 1.
         padding (Union[int, Tuple[int]]): Same as ``nn.Conv2d``. Defaults to 0.
-        dilation (Union[int, Tuple[int]]): Same as ``nn.Conv2d``. Defaults to 1.
+        dilation (Union[int, Tuple[int]]): Same as ``nn.Conv2d``. 
+            Defaults to 1.
         groups (int): Same as ``nn.Conv2d``. Defaults to 1.
         bias (Union[bool, str]): If specified as ``auto``, it will be decided
             by the ``norm_cfg``. Bias will be set as True if ``norm_cfg``
