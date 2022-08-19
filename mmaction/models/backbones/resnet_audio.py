@@ -257,9 +257,9 @@ class ResNetAudio(nn.Module):
             stride (int): Strides of residual blocks of each stage.
                 Defaults to  1.
             dilation (int): Spacing between kernel elements. Defaults to 1.
-            factorize (Uninon[int, Sequence[int]]): Determine whether to 
+            factorize (Uninon[int, Sequence[int]]): Determine whether to
                 factorize for each block. Defaults to 1.
-            norm_cfg (Union[dict, ConfigDict], optional): Config for norm 
+            norm_cfg (Union[dict, ConfigDict], optional): Config for norm
                 layers. Defaults to None.
             with_cp (bool): Use checkpoint or not. Using checkpoint will save
                 some memory while slowing down the training speed.
