@@ -12,8 +12,8 @@ from .base import BaseActionDataset
 
 @DATASETS.register_module()
 class AudioDataset(BaseActionDataset):
-    """Audio dataset for action recognition. Annotation file can be
-    that of the rawframe dataset, or:
+    """Audio dataset for action recognition. Annotation file can be that of the
+    rawframe dataset, or:
 
     .. code-block:: txt
         some/directory-1.wav 163 1
@@ -53,13 +53,14 @@ class AudioDataset(BaseActionDataset):
                  suffix: str = '.wav',
                  **kwargs) -> None:
         self.suffix = suffix
-        super().__init__(ann_file,
-                         pipeline,
-                         data_prefix=data_prefix,
-                         multi_class=multi_class,
-                         num_classes=num_classes,
-                         modality='Audio',
-                         **kwargs)
+        super().__init__(
+            ann_file,
+            pipeline,
+            data_prefix=data_prefix,
+            multi_class=multi_class,
+            num_classes=num_classes,
+            modality='Audio',
+            **kwargs)
 
     def load_data_list(self) -> List[dict]:
         """Load annotation file to get video information."""
@@ -76,7 +77,8 @@ class AudioDataset(BaseActionDataset):
                         filename = osp.join(self.data_prefix['audio'],
                                             filename + self.suffix)
                     else:
-                        filename = osp.join(self.data_prefix['audio'], filename)
+                        filename = osp.join(self.data_prefix['audio'],
+                                            filename)
                 video_info['audio_path'] = filename
                 idx += 1
                 # idx for total_frames

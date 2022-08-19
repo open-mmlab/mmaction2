@@ -17,6 +17,7 @@ from mmaction.utils import ConfigType
 
 class Bottleneck2dAudio(nn.Module):
     """Bottleneck2D block for ResNet2D.
+
     Args:
         inplanes (int): Number of channels for the input in first conv3d layer.
         planes (int): Number of channels produced by some norm/conv3d layers.
@@ -123,6 +124,7 @@ class Bottleneck2dAudio(nn.Module):
 @MODELS.register_module()
 class ResNetAudio(nn.Module):
     """ResNet 2d audio backbone. Reference:
+
         <https://arxiv.org/abs/2001.08740>`_.
 
     Args:
@@ -307,8 +309,8 @@ class ResNetAudio(nn.Module):
         return nn.Sequential(*layers)
 
     def _make_stem_layer(self) -> None:
-        """Construct the stem layers consists of a ``conv+norm+act`` module
-        and a pooling layer."""
+        """Construct the stem layers consists of a ``conv+norm+act`` module and
+        a pooling layer."""
         self.conv1 = ConvModule(
             self.in_channels,
             self.base_channels,

@@ -11,6 +11,7 @@ from .base import BaseHead
 @MODELS.register_module()
 class TSNAudioHead(BaseHead):
     """Classification head for TSN on audio.
+
     Args:
         num_classes (int): Number of classes to be classified.
         in_channels (int): Number of channels in input feature.

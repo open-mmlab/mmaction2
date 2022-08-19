@@ -1190,12 +1190,12 @@ class AudioDecodeInit(BaseTransform):
 
     @staticmethod
     def _zero_pad(shape: int) -> np.ndarray:
-        """Zero padding method"""
+        """Zero padding method."""
         return np.zeros(shape, dtype=np.float32)
 
     @staticmethod
     def _random_pad(shape: int) -> np.ndarray:
-        """Random padding method"""
+        """Random padding method."""
         # librosa load raw audio file into a distribution of -1~+1
         return np.random.rand(shape).astype(np.float32) * 2 - 1
 

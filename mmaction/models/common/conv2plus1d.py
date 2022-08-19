@@ -32,16 +32,18 @@ class Conv2plus1d(nn.Module):
             Defaults to ``dict(type='BN3d')``.
     """
 
-    def __init__(self,
-                 in_channels: int,
-                 out_channels: int,
-                 kernel_size: Union[int, Tuple[int]],
-                 stride: Union[int, Tuple[int]] = 1,
-                 padding: Union[int, Tuple[int]] = 0,
-                 dilation: Union[int, Tuple[int]] = 1,
-                 groups: int = 1,
-                 bias: Union[bool, str] = True,
-                 norm_cfg: ConfigType = dict(type='BN3d')) -> None:
+    def __init__(
+        self,
+        in_channels: int,
+        out_channels: int,
+        kernel_size: Union[int, Tuple[int]],
+        stride: Union[int, Tuple[int]] = 1,
+        padding: Union[int, Tuple[int]] = 0,
+        dilation: Union[int, Tuple[int]] = 1,
+        groups: int = 1,
+        bias: Union[bool, str] = True,
+        norm_cfg: ConfigType = dict(type='BN3d')
+    ) -> None:
         super().__init__()
 
         kernel_size = _triple(kernel_size)
