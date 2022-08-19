@@ -165,8 +165,7 @@ def test_tsm():
 
 def test_trn():
     register_all_modules()
-    config = get_recognizer_cfg(
-        'trn/trn_r50_1x1x8_50e_8xb16_sthv1_rgb.py')
+    config = get_recognizer_cfg('trn/trn_r50_1x1x8_50e_8xb16_sthv1_rgb.py')
     config.model['backbone']['pretrained'] = None
 
     recognizer = MODELS.build(config.model)
