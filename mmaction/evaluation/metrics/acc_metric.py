@@ -26,7 +26,7 @@ class AccMetric(BaseMetric):
                 top_k_accuracy=dict(topk=(1, 5))),
             prefix: Optional[str] = None,
             num_classes: Optional[int] = None):
-            
+
         # TODO: fix the metric_list argument with a better one.
         # `metrics` is not a safe argument here with mmengine.
         # we have to replace it with `metric_list`.
