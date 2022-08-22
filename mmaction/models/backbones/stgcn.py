@@ -3,8 +3,8 @@ from typing import Tuple
 
 import torch
 import torch.nn as nn
-from mmcv.cnn import constant_init, kaiming_init, normal_init
 from mmengine.logging import MMLogger
+from mmengine.model.utils import constant_init, kaiming_init, normal_init
 from mmengine.runner import load_checkpoint
 from mmengine.utils.parrots_wrapper import _BatchNorm
 from torch import Tensor

@@ -1,7 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
 import torch.nn as nn
-from mmcv.cnn import ConvModule, constant_init, kaiming_init
+from mmcv.cnn import ConvModule
+from mmengine.model.utils import constant_init, kaiming_init
 from mmengine.utils.parrots_wrapper import _BatchNorm
 
 from mmaction.registry import MODELS
