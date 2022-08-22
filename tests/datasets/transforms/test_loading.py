@@ -86,6 +86,8 @@ class BaseTestLoading:
                 'segment': [3.0, 5.0],
                 'label': 'Rock climbing'
             }])
+        cls.action_results['feature_path'] = osp.join(cls.raw_feature_dir,
+                                                      'v_test1.csv')
 
         cls.ava_results = dict(
             fps=30, timestamp=902, timestamp_start=840, shot_info=(0, 27000))
@@ -640,7 +642,7 @@ class TestLoad(BaseTestLoading):
         action_result = copy.deepcopy(self.action_results)
 
         # test error cases
-        with pytest.raises(NotImplementedError):
+        with pytest.raises(TypeError):
             load_localization_feature = LoadLocalizationFeature(
                 'unsupport_ext')
 
@@ -652,9 +654,8 @@ class TestLoad(BaseTestLoading):
                                     target_keys)
         assert load_localization_feature_result['raw_feature'].shape == (400,
                                                                          5)
-        assert repr(load_localization_feature) == (
-            f'{load_localization_feature.__class__.__name__}('
-            f'raw_feature_ext=.csv)')
+        assert repr(load_localization_feature
+                    ) == f'{load_localization_feature.__class__.__name__}'
 
     def test_load_proposals(self):
         target_keys = [

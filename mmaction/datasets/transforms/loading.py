@@ -1449,8 +1449,7 @@ class LoadLocalizationFeature(BaseTransform):
         return results
 
     def __repr__(self):
-        repr_str = (f'{self.__class__.__name__}('
-                    f'raw_feature_ext={self.raw_feature_ext})')
+        repr_str = f'{self.__class__.__name__}'
         return repr_str
 
 

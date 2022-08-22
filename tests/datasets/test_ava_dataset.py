@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
 
-import mmcv
+import mmengine
 import numpy as np
 from mmcv.utils import assert_dict_has_keys
 from numpy.testing import assert_array_equal
@@ -25,7 +25,7 @@ class TestAVADataset:
         cls.pipeline = [
             dict(dict(type='SampleAVAFrames', clip_len=32, frame_interval=2))
         ]
-        cls.proposal = mmcv.load(cls.proposal_file)
+        cls.proposal = mmengine.load(cls.proposal_file)
 
     def test_ava_dataset(self):
         register_all_modules()

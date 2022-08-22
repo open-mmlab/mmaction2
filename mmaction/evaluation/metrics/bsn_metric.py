@@ -37,6 +37,16 @@ class BSNMetric(BaseMetric):
 
     def process(self, data_batch: Sequence[Tuple[Any, dict]],
                 predictions: Sequence[dict]) -> None:
+        """Process one batch of data samples and predictions. The processed
+        results should be stored in ``self.results``, which will be used to
+        compute the metrics when all batches have been processed.
+
+        Args:
+            data_batch (Sequence[Tuple[Any, dict]]): A batch of data
+                from the dataloader.
+            predictions (Sequence[dict]): A batch of outputs from
+                the model.
+        """
         for pred in predictions:
             self.results.append(pred)
         if self.metric_type == 'AR@AN':
@@ -51,12 +61,23 @@ class BSNMetric(BaseMetric):
                 self.ground_truth[video_id] = np.array(this_video_gt)
 
     def compute_metrics(self, results: list) -> dict:
+        """Compute the metrics from processed results.
+
+        If `metric_type` is 'TEM', only dump middle results and do not compute
+        any metrics.
+        Args:
+            results (list): The processed results of each batch.
+        Returns:
+            dict: The computed metrics. The keys are the names of the metrics,
+            and the values are corresponding results.
+        """
         self.dump_results(results)
         if self.metric_type == 'AR@AN':
             return self.compute_ARAN(results)
         return OrderedDict()
 
     def compute_ARAN(self, results: list) -> dict:
+        """AR@AN evaluation metric."""
         temporal_iou_thresholds = self.metric_options.setdefault(
             'AR@AN', {}).setdefault('temporal_iou_thresholds',
                                     np.linspace(0.5, 0.95, 10))
@@ -83,6 +104,7 @@ class BSNMetric(BaseMetric):
         return eval_results
 
     def dump_results(self, results, version='VERSION 1.3'):
+        """Save middle or final results to disk."""
         if self.output_format == 'json':
             result_dict = self.proposals2json(results)
             output_dict = {

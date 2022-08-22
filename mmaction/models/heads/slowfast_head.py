@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
-from mmcv.cnn import normal_init
+from mmengine.model.utils import normal_init
 from torch import Tensor, nn
 
 from mmaction.registry import MODELS

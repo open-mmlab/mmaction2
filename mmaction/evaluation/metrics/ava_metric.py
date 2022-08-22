@@ -12,7 +12,7 @@ from mmaction.structures import bbox2result
 
 @METRICS.register_module()
 class AVAMetric(BaseMetric):
-    """Accuracy evaluation metric."""
+    """AVA evaluation metric."""
     default_prefix: Optional[str] = 'mAP'
 
     def __init__(self,
@@ -63,6 +63,14 @@ class AVAMetric(BaseMetric):
             self.results.append(result)
 
     def compute_metrics(self, results: list) -> dict:
+        """Compute the metrics from processed results.
+
+        Args:
+            results (list): The processed results of each batch.
+        Returns:
+            dict: The computed metrics. The keys are the names of the metrics,
+            and the values are corresponding results.
+        """
         time_now = datetime.now().strftime('%Y%m%d_%H%M%S')
         temp_file = f'AVA_{time_now}_result.csv'
         results2csv(results, temp_file, self.custom_classes)

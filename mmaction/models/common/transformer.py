@@ -2,14 +2,16 @@
 import torch
 import torch.nn as nn
 from einops import rearrange
-from mmcv.cnn import build_norm_layer, constant_init
-from mmcv.cnn.bricks.registry import ATTENTION, FEEDFORWARD_NETWORK
+from mmcv.cnn import build_norm_layer
 from mmcv.cnn.bricks.transformer import FFN, build_dropout
-from mmcv.runner.base_module import BaseModule
+from mmengine.model import BaseModule
+from mmengine.model.utils import constant_init
 from mmengine.utils import digit_version
 
+from mmaction.registry import MODELS
 
-@ATTENTION.register_module()
+
+@MODELS.register_module()
 class DividedTemporalAttentionWithNorm(BaseModule):
     """Temporal Attention in Divided Space Time Attention.
 
@@ -87,7 +89,7 @@ class DividedTemporalAttentionWithNorm(BaseModule):
         return new_query
 
 
-@ATTENTION.register_module()
+@MODELS.register_module()
 class DividedSpatialAttentionWithNorm(BaseModule):
     """Spatial Attention in Divided Space Time Attention.
 
@@ -176,7 +178,7 @@ class DividedSpatialAttentionWithNorm(BaseModule):
         return new_query
 
 
-@FEEDFORWARD_NETWORK.register_module()
+@MODELS.register_module()
 class FFNWithNorm(FFN):
     """FFN with pre normalization layer.
 
