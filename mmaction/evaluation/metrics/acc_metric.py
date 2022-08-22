@@ -26,6 +26,7 @@ class AccMetric(BaseMetric):
                 top_k_accuracy=dict(topk=(1, 5))),
             prefix: Optional[str] = None,
             num_classes: Optional[int] = None):
+
         # TODO: fix the metric_list argument with a better one.
         # `metrics` is not a safe argument here with mmengine.
         # we have to replace it with `metric_list`.
@@ -45,10 +46,12 @@ class AccMetric(BaseMetric):
                 'top_k_accuracy', 'mean_class_accuracy',
                 'mmit_mean_average_precision', 'mean_average_precision'
             ]
+
             if metric in [
                     'mmit_mean_average_precision', 'mean_average_precision'
             ]:
                 assert type(num_classes) == int
+
         self.metrics = metrics
         self.metric_options = metric_options
         self.num_classes = num_classes

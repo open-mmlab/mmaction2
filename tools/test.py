@@ -60,7 +60,8 @@ def main():
         cfg.work_dir = osp.join('./work_dirs',
                                 osp.splitext(osp.basename(args.config))[0])
 
-    if hasattr(cfg.model.backbone, 'pretrained'):
+    if hasattr(cfg.model, 'backbone') and hasattr(cfg.model.backbone,
+                                                  'pretrained'):
         cfg.model.backbone.pretrained = None
 
     cfg.load_from = args.checkpoint

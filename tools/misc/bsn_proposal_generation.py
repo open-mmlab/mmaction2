@@ -4,11 +4,12 @@ import os
 import os.path as osp
 
 import mmcv
+import mmengine
 import numpy as np
 import torch.multiprocessing as mp
 
-from mmaction.localization import (generate_bsp_feature,
-                                   generate_candidate_proposals)
+from mmaction.models.localizers.utils import (generate_bsp_feature,
+                                              generate_candidate_proposals)
 
 
 def load_video_infos(ann_file):
@@ -21,7 +22,7 @@ def load_video_infos(ann_file):
         list[dict]: A list containing annotations for videos.
     """
     video_infos = []
-    anno_database = mmcv.load(ann_file)
+    anno_database = mmengine.load(ann_file)
     for video_name in anno_database:
         video_info = anno_database[video_name]
         video_info['video_name'] = video_name

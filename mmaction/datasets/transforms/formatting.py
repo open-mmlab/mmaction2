@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
+import torch
 from mmcv.transforms import BaseTransform, to_tensor
 from mmengine.data import InstanceData, LabelData
 
@@ -21,13 +22,10 @@ class PackActionInputs(BaseTransform):
 
     def transform(self, results):
         """Method to pack the input data.
-
         Args:
             results (dict): Result dict from the data pipeline.
-
         Returns:
             dict:
-
             - 'inputs' (obj:`torch.Tensor`): The forward data of models.
             - 'data_sample' (obj:`DetDataSample`): The annotation info of the
                 sample.
@@ -60,6 +58,55 @@ class PackActionInputs(BaseTransform):
             label_data = LabelData()
             label_data.item = to_tensor(results['label'])
             data_sample.gt_labels = label_data
+
+        img_meta = {k: results[k] for k in self.meta_keys if k in results}
+        data_sample.set_metainfo(img_meta)
+        packed_results['data_sample'] = data_sample
+        return packed_results
+
+    def __repr__(self) -> str:
+        repr_str = self.__class__.__name__
+        repr_str += f'(meta_keys={self.meta_keys})'
+        return repr_str
+
+
+@TRANSFORMS.register_module()
+class PackLocalizationInputs(BaseTransform):
+
+    def __init__(self, keys=(), meta_keys=('video_name', )):
+        self.keys = keys
+        self.meta_keys = meta_keys
+
+    def transform(self, results):
+        """Method to pack the input data.
+
+        Args:
+            results (dict): Result dict from the data pipeline.
+
+        Returns:
+            dict:
+
+            - 'inputs' (obj:`torch.Tensor`): The forward data of models.
+            - 'data_sample' (obj:`DetDataSample`): The annotation info of the
+                sample.
+        """
+        packed_results = dict()
+        if 'raw_feature' in results:
+            raw_feature = results['raw_feature']
+            packed_results['inputs'] = to_tensor(raw_feature)
+        elif 'bsp_feature' in results:
+            packed_results['inputs'] = torch.tensor(0.)
+        else:
+            raise ValueError(
+                'Cannot get "raw_feature" or "bsp_feature" in the input '
+                'dict of `PackActionInputs`.')
+
+        data_sample = ActionDataSample()
+        instance_data = InstanceData()
+        for key in self.keys:
+            if key in results:
+                instance_data[key] = to_tensor(results[key])
+        data_sample.gt_instances = instance_data
 
         img_meta = {k: results[k] for k in self.meta_keys if k in results}
         data_sample.set_metainfo(img_meta)

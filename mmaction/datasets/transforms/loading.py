@@ -1426,18 +1426,12 @@ class AudioFeatureSelector(BaseTransform):
 class LoadLocalizationFeature(BaseTransform):
     """Load Video features for localizer with given video_name list.
 
-    Required keys are "video_name" and "data_prefix", added or modified keys
+    The required key is "feature_path", added or modified keys
     are "raw_feature".
 
     Args:
         raw_feature_ext (str): Raw feature file extension.  Default: '.csv'.
     """
-
-    def __init__(self, raw_feature_ext='.csv'):
-        valid_raw_feature_ext = ('.csv', )
-        if raw_feature_ext not in valid_raw_feature_ext:
-            raise NotImplementedError
-        self.raw_feature_ext = raw_feature_ext
 
     def transform(self, results):
         """Perform the LoadLocalizationFeature loading.
@@ -1446,10 +1440,7 @@ class LoadLocalizationFeature(BaseTransform):
             results (dict): The resulting dict to be modified and passed
                 to the next transform in pipeline.
         """
-        video_name = results['video_name']
-        data_prefix = results['data_prefix']
-
-        data_path = osp.join(data_prefix, video_name + self.raw_feature_ext)
+        data_path = results['feature_path']
         raw_feature = np.loadtxt(
             data_path, dtype=np.float32, delimiter=',', skiprows=1)
 
@@ -1558,7 +1549,6 @@ class LoadProposals(BaseTransform):
             bsp_feature = np.load(feature_path).astype(np.float32)
 
         bsp_feature = bsp_feature[:self.top_k, :]
-
         results['bsp_feature'] = bsp_feature
         results['tmin'] = tmin
         results['tmax'] = tmax
