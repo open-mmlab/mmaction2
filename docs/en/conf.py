@@ -24,7 +24,7 @@ sys.path.insert(0, os.path.abspath('..'))
 project = 'MMAction2'
 copyright = '2020, OpenMMLab'
 author = 'MMAction2 Authors'
-version_file = '../../mmaction/version.py'
+version_file = '../.././mmaction/version.py'
 
 
 def get_version():
@@ -127,7 +127,7 @@ myst_enable_extensions = ['colon_fence']
 
 
 def builder_inited_handler(app):
-    subprocess.run(['./merge_docs.sh'])
+    # subprocess.run(['./merge_docs.sh'])
     subprocess.run(['./stat.py'])
 
 
