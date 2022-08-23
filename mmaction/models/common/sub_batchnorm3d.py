@@ -3,10 +3,11 @@ from copy import deepcopy
 
 import torch
 import torch.nn as nn
-from mmcv.cnn import NORM_LAYERS
+
+from mmaction.registry import MODELS
 
 
-@NORM_LAYERS.register_module()
+@MODELS.register_module()
 class SubBatchNorm3D(nn.Module):
     """Sub BatchNorm3d splits the batch dimension into N splits, and run BN on
     each of them separately (so that the stats are computed on each subset of

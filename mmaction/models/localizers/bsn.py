@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from mmengine.model import BaseModel
+from mmengine.model.utils import constant_init, kaiming_init
 
 # from mmaction.utils import register_all_modules
 from mmaction.registry import MODELS
@@ -80,7 +81,13 @@ class TEM(BaseModel):
         self.anchors_tmins, self.anchors_tmaxs = self._temporal_anchors()
 
     def init_weights(self) -> None:
-        pass
+        """Initiate the parameters either from existing checkpoint or from
+        scratch."""
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                kaiming_init(m)
+            elif isinstance(m, nn.BatchNorm2d):
+                constant_init(m, 1)
 
     def _temporal_anchors(self, tmin_offset=0., tmax_offset=1.):
         """Generate temporal anchors.
@@ -117,6 +124,18 @@ class TEM(BaseModel):
         return x
 
     def loss(self, batch_inputs, batch_data_samples, **kwargs):
+        """Calculate losses from a batch of inputs and data samples.
+
+        Args:
+            batch_inputs (Tensor): Raw Inputs of the recognizer.
+                These should usually be mean centered and std scaled.
+            batch_data_samples (List[:obj:`ActionDataSample`]): The batch
+                data samples. It usually includes information such
+                as ``gt_labels``.
+
+        Returns:
+            dict: A dictionary of loss components.
+        """
         tem_output = self._forward(batch_inputs)
 
         score_action = tem_output[:, 0, :]
@@ -317,6 +336,15 @@ class PEM(BaseModel):
             out_features=self.output_dim,
             bias=True)
 
+    def init_weights(self) -> None:
+        """Initiate the parameters either from existing checkpoint or from
+        scratch."""
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                kaiming_init(m)
+            elif isinstance(m, nn.BatchNorm2d):
+                constant_init(m, 1)
+
     def _forward(self, x):
         """Define the computation performed at every call.
 
@@ -330,6 +358,18 @@ class PEM(BaseModel):
         return x
 
     def loss(self, batch_inputs, batch_data_samples, **kwargs):
+        """Calculate losses from a batch of inputs and data samples.
+
+        Args:
+            batch_inputs (Tensor): Raw Inputs of the recognizer.
+                These should usually be mean centered and std scaled.
+            batch_data_samples (List[:obj:`ActionDataSample`]): The batch
+                data samples. It usually includes information such
+                as ``gt_labels``.
+
+        Returns:
+            dict: A dictionary of loss components.
+        """
         device = self.fc1.weight.device
 
         bsp_feature = torch.cat([

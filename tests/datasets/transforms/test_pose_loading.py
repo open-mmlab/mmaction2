@@ -6,7 +6,7 @@ from collections import defaultdict
 
 import numpy as np
 import pytest
-from mmcv import dump
+from mmengine import dump
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from mmaction.datasets.transforms import (GeneratePoseTarget, LoadKineticsPose,

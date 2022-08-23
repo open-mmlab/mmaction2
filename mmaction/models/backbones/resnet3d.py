@@ -4,9 +4,9 @@ from collections import OrderedDict
 from typing import List, Optional, Sequence, Tuple, Union
 
 import torch.utils.checkpoint as cp
-from mmcv.cnn import (ConvModule, NonLocal3d, build_activation_layer,
-                      constant_init, kaiming_init)
+from mmcv.cnn import ConvModule, NonLocal3d, build_activation_layer
 from mmengine.logging import MMLogger
+from mmengine.model.utils import constant_init, kaiming_init
 from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
 from mmengine.utils.parrots_wrapper import _BatchNorm
 from torch import Tensor, nn

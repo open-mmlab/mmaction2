@@ -4,7 +4,8 @@ from typing import Optional, Tuple, Union
 import numpy as np
 import torch
 import torch.nn as nn
-from mmcv.cnn import ConvModule, constant_init, normal_init, xavier_init
+from mmcv.cnn import ConvModule
+from mmengine.model.utils import constant_init, normal_init, xavier_init
 from torch import Tensor
 
 from mmaction.registry import MODELS

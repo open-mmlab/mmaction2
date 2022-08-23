@@ -77,6 +77,14 @@ class AccMetric(BaseMetric):
             self.results.append(result)
 
     def compute_metrics(self, results: list) -> dict:
+        """Compute the metrics from processed results.
+
+        Args:
+            results (list): The processed results of each batch.
+        Returns:
+            dict: The computed metrics. The keys are the names of the metrics,
+            and the values are corresponding results.
+        """
         preds = [x['pred'] for x in results]
         labels = [x['label'] for x in results]
 
