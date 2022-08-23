@@ -101,7 +101,7 @@ param_scheduler = [
 
 work_dir = './work_dirs/bmn_400x100_2x8_9e_activitynet_feature/'
 test_evaluator = dict(
-    type='BSNMetric',
+    type='ANetMetric',
     metric_type='AR@AN',
     dump_config=dict(out=f'{work_dir}/results.json', output_format='json'))
 val_evaluator = test_evaluator

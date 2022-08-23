@@ -15,8 +15,8 @@ from mmaction.utils import ConfigType
 
 
 @METRICS.register_module()
-class BSNMetric(BaseMetric):
-    """BSN evaluation metric."""
+class ANetMetric(BaseMetric):
+    """ActivityNet dataset evaluation metric."""
 
     def __init__(self,
                  metric_type: str = 'TEM',
