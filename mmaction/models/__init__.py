@@ -10,7 +10,7 @@ from .data_preprocessors import ActionDataPreprocessor
 from .heads import (BaseHead, I3DHead, SlowFastHead, STGCNHead,
                     TimeSformerHead, TPNHead, TRNHead, TSMHead, TSNHead,
                     X3DHead)
-from .localizers import PEM, TEM
+from .localizers import BMN, PEM, TEM
 from .losses import (BCELossWithLogits, BinaryLogisticRegressionLoss, BMNLoss,
                      CBFocalLoss, CrossEntropyLoss, HVULoss, NLLLoss,
                      OHEMHingeLoss, SSNLoss)
@@ -34,5 +34,5 @@ __all__ = [
     'TimeSformer', 'TimeSformerHead', 'DividedSpatialAttentionWithNorm',
     'DividedTemporalAttentionWithNorm', 'FFNWithNorm', 'ACRNHead',
     'ActionDataPreprocessor', 'BaseMiniBatchBlending', 'CutmixBlending',
-    'MixupBlending', 'AGCN', 'MaxIoUAssignerAVA', 'TEM', 'PEM'
+    'MixupBlending', 'AGCN', 'MaxIoUAssignerAVA', 'TEM', 'PEM', 'BMN'
 ]

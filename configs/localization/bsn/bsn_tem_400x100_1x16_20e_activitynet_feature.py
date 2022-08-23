@@ -63,7 +63,7 @@ test_dataloader = dict(
         test_mode=True))
 
 train_cfg = dict(
-    type='EpochBasedTrainLoop', max_epochs=20, val_begin=1, val_interval=1)
+    type='EpochBasedTrainLoop', max_epochs=20, val_begin=1, val_interval=20)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
@@ -80,8 +80,6 @@ param_scheduler = [
         milestones=[7, 14],
         gamma=0.1)
 ]
-
-default_hooks = dict(checkpoint=dict(max_keep_ckpts=3, save_best=None))
 
 work_dir = 'work_dirs/bsn_400x100_20e_1x16_activitynet_feature/'
 tem_results_dir = f'{work_dir}/tem_results/'

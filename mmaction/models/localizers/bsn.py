@@ -6,7 +6,6 @@ import torch.nn.functional as F
 from mmengine.model import BaseModel
 from mmengine.model.utils import constant_init, kaiming_init
 
-# from mmaction.utils import register_all_modules
 from mmaction.registry import MODELS
 from .utils import post_processing, temporal_iop
 

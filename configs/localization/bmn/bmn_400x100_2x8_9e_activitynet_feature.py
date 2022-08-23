@@ -1,6 +1,5 @@
 _base_ = [
-    '../../_base_/models/bsn_pem.py', '../../_base_/schedules/adam_20e.py',
-    '../../_base_/default_runtime.py'
+    '../../_base_/models/bmn_400x100.py', '../../_base_/default_runtime.py'
 ]
 
 # dataset settings
@@ -11,34 +10,33 @@ ann_file_train = 'data/ActivityNet/anet_anno_train.json'
 ann_file_val = 'data/ActivityNet/anet_anno_val.json'
 ann_file_test = 'data/ActivityNet/anet_anno_val.json'
 
-work_dir = 'work_dirs/bsn_400x100_20e_1x16_activitynet_feature/'
-pgm_proposals_dir = f'{work_dir}/pgm_proposals/'
-pgm_features_dir = f'{work_dir}/pgm_features/'
-
 train_pipeline = [
-    dict(
-        type='LoadProposals',
-        top_k=500,
-        pgm_proposals_dir=pgm_proposals_dir,
-        pgm_features_dir=pgm_features_dir),
+    dict(type='LoadLocalizationFeature'),
+    dict(type='GenerateLocalizationLabels'),
     dict(
         type='PackLocalizationInputs',
-        keys=('reference_temporal_iou', 'bsp_feature'),
-        meta_keys=())
+        keys=('gt_bbox', ),
+        meta_keys=('video_name', ))
 ]
+
 val_pipeline = [
-    dict(
-        type='LoadProposals',
-        top_k=1000,
-        pgm_proposals_dir=pgm_proposals_dir,
-        pgm_features_dir=pgm_features_dir),
+    dict(type='LoadLocalizationFeature'),
+    dict(type='GenerateLocalizationLabels'),
     dict(
         type='PackLocalizationInputs',
-        keys=('tmin', 'tmax', 'tmin_score', 'tmax_score', 'bsp_feature'),
+        keys=('gt_bbox', ),
         meta_keys=('video_name', 'duration_second', 'duration_frame',
-                   'annotations', 'feature_frame')),
+                   'annotations', 'feature_frame'))
 ]
-test_pipeline = val_pipeline
+
+test_pipeline = [
+    dict(type='LoadLocalizationFeature'),
+    dict(
+        type='PackLocalizationInputs',
+        keys=('gt_bbox', ),
+        meta_keys=('video_name', 'duration_second', 'duration_frame',
+                   'annotations', 'feature_frame'))
+]
 
 train_dataloader = dict(
     batch_size=16,
@@ -75,8 +73,33 @@ test_dataloader = dict(
         pipeline=test_pipeline,
         test_mode=True))
 
-train_cfg = dict(val_interval=20)
+max_epochs = 9
+train_cfg = dict(
+    type='EpochBasedTrainLoop',
+    max_epochs=max_epochs,
+    val_begin=1,
+    val_interval=max_epochs)
 
+val_cfg = dict(type='ValLoop')
+test_cfg = dict(type='TestLoop')
+
+optim_wrapper = dict(
+    optimizer=dict(type='Adam', lr=0.001, weight_decay=0.0001),
+    clip_grad=dict(max_norm=40, norm_type=2))
+
+param_scheduler = [
+    dict(
+        type='MultiStepLR',
+        begin=0,
+        end=max_epochs,
+        by_epoch=True,
+        milestones=[
+            7,
+        ],
+        gamma=0.1)
+]
+
+work_dir = './work_dirs/bmn_400x100_2x8_9e_activitynet_feature/'
 test_evaluator = dict(
     type='BSNMetric',
     metric_type='AR@AN',
