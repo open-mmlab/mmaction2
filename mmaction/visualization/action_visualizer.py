@@ -140,8 +140,8 @@ class ActionVisualizer(Visualizer):
         self.fig_save_cfg = fig_save_cfg
         self.fig_show_cfg = fig_show_cfg
 
-        (self.fig_save, self.ax_save,
-         self.fig_save_num) = self._initialize_fig(fig_save_cfg)
+        (self.fig_save_canvas, self.fig_save,
+         self.ax_save) = self._initialize_fig(fig_save_cfg)
         self.dpi = self.fig_save.get_dpi()
 
     @master_only
