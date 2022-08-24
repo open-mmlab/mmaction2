@@ -4,6 +4,7 @@ import warnings
 
 import cv2
 import mmcv
+import mmengine
 import numpy as np
 from mmcv.transforms import BaseTransform
 from torch.nn.modules.utils import _pair
@@ -370,10 +371,10 @@ class RandomResizedCrop(RandomCrop):
         self.area_range = area_range
         self.aspect_ratio_range = aspect_ratio_range
         self.lazy = lazy
-        if not mmcv.is_tuple_of(self.area_range, float):
+        if not mmengine.is_tuple_of(self.area_range, float):
             raise TypeError(f'Area_range must be a tuple of float, '
                             f'but got {type(area_range)}')
-        if not mmcv.is_tuple_of(self.aspect_ratio_range, float):
+        if not mmengine.is_tuple_of(self.aspect_ratio_range, float):
             raise TypeError(f'Aspect_ratio_range must be a tuple of float, '
                             f'but got {type(aspect_ratio_range)}')
 
@@ -546,7 +547,7 @@ class MultiScaleCrop(RandomCrop):
                  num_fixed_crops=5,
                  lazy=False):
         self.input_size = _pair(input_size)
-        if not mmcv.is_tuple_of(self.input_size, int):
+        if not mmengine.is_tuple_of(self.input_size, int):
             raise TypeError(f'Input_size must be int or tuple of int, '
                             f'but got {type(input_size)}')
 
@@ -834,7 +835,7 @@ class RandomRescale(BaseTransform):
     def __init__(self, scale_range, interpolation='bilinear'):
         self.scale_range = scale_range
         # make sure scale_range is legal, first make sure the type is OK
-        assert mmcv.is_tuple_of(scale_range, int)
+        assert mmengine.is_tuple_of(scale_range, int)
         assert len(scale_range) == 2
         assert scale_range[0] < scale_range[1]
         assert np.all([x > 0 for x in scale_range])
@@ -1129,7 +1130,7 @@ class CenterCrop(RandomCrop):
     def __init__(self, crop_size, lazy=False):
         self.crop_size = _pair(crop_size)
         self.lazy = lazy
-        if not mmcv.is_tuple_of(self.crop_size, int):
+        if not mmengine.is_tuple_of(self.crop_size, int):
             raise TypeError(f'Crop_size must be int or tuple of int, '
                             f'but got {type(crop_size)}')
 
@@ -1227,7 +1228,7 @@ class ThreeCrop(BaseTransform):
 
     def __init__(self, crop_size):
         self.crop_size = _pair(crop_size)
-        if not mmcv.is_tuple_of(self.crop_size, int):
+        if not mmengine.is_tuple_of(self.crop_size, int):
             raise TypeError(f'Crop_size must be int or tuple of int, '
                             f'but got {type(crop_size)}')
 
@@ -1300,7 +1301,7 @@ class TenCrop(BaseTransform):
 
     def __init__(self, crop_size):
         self.crop_size = _pair(crop_size)
-        if not mmcv.is_tuple_of(self.crop_size, int):
+        if not mmengine.is_tuple_of(self.crop_size, int):
             raise TypeError(f'Crop_size must be int or tuple of int, '
                             f'but got {type(crop_size)}')
 

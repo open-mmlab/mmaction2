@@ -3,9 +3,9 @@ import numpy as np
 import torch
 import torch.nn as nn
 from einops import rearrange
-from mmcv import ConfigDict
 from mmcv.cnn import build_conv_layer, build_norm_layer
 from mmcv.cnn.bricks.transformer import build_transformer_layer_sequence
+from mmengine import ConfigDict
 from mmengine.logging import MMLogger
 from mmengine.model.utils import kaiming_init, trunc_normal_
 from mmengine.runner.checkpoint import _load_checkpoint, load_state_dict
