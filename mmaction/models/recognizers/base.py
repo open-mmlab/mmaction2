@@ -7,10 +7,9 @@ from mmengine.model import BaseModel, merge_dict
 from torch import Tensor
 
 from mmaction.registry import MODELS
-from mmaction.structures import ActionDataSample
-from mmaction.utils import (ConfigType, ForwardResults, LabelList,
+from mmaction.utils import (ConfigType, ForwardResults, InstanceList,
                             OptConfigType, OptMultiConfig, OptSampleList,
-                            SampleList, InstanceList)
+                            SampleList)
 
 
 class BaseRecognizer(BaseModel, metaclass=ABCMeta):
@@ -124,8 +123,7 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
         if self.with_neck:
             self.neck.init_weights()
 
-    def loss(self, inputs: Tensor, data_samples: SampleList,
-             **kwargs) -> dict:
+    def loss(self, inputs: Tensor, data_samples: SampleList, **kwargs) -> dict:
         """Calculate losses from a batch of inputs and data samples.
 
         Args:
@@ -237,10 +235,8 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
             raise RuntimeError(f'Invalid mode "{mode}". '
                                'Only supports loss, predict and tensor mode')
 
-    def convert_to_datasample(
-        self,
-        inputs: SampleList,
-        data_samples: InstanceList) -> SampleList:
+    def convert_to_datasample(self, inputs: SampleList,
+                              data_samples: InstanceList) -> SampleList:
         """Convert predictions to ``ActionDataSample``.
 
         Args:

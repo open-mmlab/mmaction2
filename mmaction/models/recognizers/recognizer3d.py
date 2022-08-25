@@ -63,8 +63,7 @@ class Recognizer3D(BaseRecognizer):
                 view_ptr = 0
                 feats = []
                 while view_ptr < total_views:
-                    batch_imgs = inputs[view_ptr:view_ptr +
-                                              max_testing_views]
+                    batch_imgs = inputs[view_ptr:view_ptr + max_testing_views]
                     feat = self.backbone(batch_imgs)
                     if self.with_neck:
                         feat, _ = self.neck(feat)
@@ -94,8 +93,7 @@ class Recognizer3D(BaseRecognizer):
 
             loss_aux = dict()
             if self.with_neck:
-                x, loss_aux = self.neck(
-                    x, data_samples=data_samples)
+                x, loss_aux = self.neck(x, data_samples=data_samples)
 
             # Return features extracted through neck.
             loss_predict_kwargs['loss_aux'] = loss_aux

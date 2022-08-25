@@ -5,9 +5,9 @@ import copy
 import torch
 import torch.nn as nn
 from mmcv.cnn import ConvModule
-from mmengine.runner import load_checkpoint
 from mmengine.logging import MMLogger
 from mmengine.model.weight_init import constant_init, kaiming_init
+from mmengine.runner import load_checkpoint
 from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
 
 from mmaction.registry import MODELS

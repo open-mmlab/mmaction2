@@ -7,8 +7,8 @@ from typing import Dict, List, Optional, Sequence, Tuple, Union
 import matplotlib.pyplot as plt
 import mmcv
 import numpy as np
-from mmengine.visualization import Visualizer
 from mmengine.dist import master_only
+from mmengine.visualization import Visualizer
 
 from mmaction.registry import VISBACKENDS, VISUALIZERS
 from mmaction.structures import ActionDataSample
