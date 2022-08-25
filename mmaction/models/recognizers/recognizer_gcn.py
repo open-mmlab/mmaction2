@@ -10,13 +10,13 @@ class RecognizerGCN(BaseRecognizer):
     """GCN recognizer model framework."""
 
     def extract_feat(self,
-                     batch_inputs: Tensor,
+                     inputs: Tensor,
                      stage: str = 'backbone',
                      **kwargs) -> tuple:
         """Extract features of different stages.
 
         Args:
-            batch_inputs (Tensor): The input data.
+            inputs (Tensor): The input data.
             stage (str): Which stage to output the feature.
                 Defaults to ``backbone``.
 
@@ -28,7 +28,7 @@ class RecognizerGCN(BaseRecognizer):
 
         # Record the kwargs required by `loss` and `predict`
         loss_predict_kwargs = dict()
-        x = self.backbone(batch_inputs)
+        x = self.backbone(inputs)
 
         if stage == 'backbone':
             return x, loss_predict_kwargs

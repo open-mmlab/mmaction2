@@ -4,7 +4,7 @@ from typing import Dict, List, Optional, Tuple, Union
 
 import torch
 from mmengine.config import ConfigDict
-from mmengine.data import InstanceData, LabelData
+from mmengine.structures import InstanceData, LabelData
 
 from mmaction.structures import ActionDataSample
 

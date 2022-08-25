@@ -3,7 +3,7 @@ import copy
 
 import pytest
 import torch
-from mmengine.data import LabelData
+from mmengine.structures import LabelData
 
 from mmaction.models import TPN
 from mmaction.structures import ActionDataSample

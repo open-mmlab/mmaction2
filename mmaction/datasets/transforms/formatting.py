@@ -2,7 +2,7 @@
 import numpy as np
 import torch
 from mmcv.transforms import BaseTransform, to_tensor
-from mmengine.data import InstanceData, LabelData
+from mmengine.structures import InstanceData, LabelData
 
 from mmaction.registry import TRANSFORMS
 from mmaction.structures import ActionDataSample
@@ -27,7 +27,7 @@ class PackActionInputs(BaseTransform):
         Returns:
             dict:
             - 'inputs' (obj:`torch.Tensor`): The forward data of models.
-            - 'data_sample' (obj:`DetDataSample`): The annotation info of the
+            - 'data_samples' (obj:`DetDataSample`): The annotation info of the
                 sample.
         """
         packed_results = dict()
@@ -61,7 +61,7 @@ class PackActionInputs(BaseTransform):
 
         img_meta = {k: results[k] for k in self.meta_keys if k in results}
         data_sample.set_metainfo(img_meta)
-        packed_results['data_sample'] = data_sample
+        packed_results['data_samples'] = data_sample
         return packed_results
 
     def __repr__(self) -> str:
@@ -87,7 +87,7 @@ class PackLocalizationInputs(BaseTransform):
             dict:
 
             - 'inputs' (obj:`torch.Tensor`): The forward data of models.
-            - 'data_sample' (obj:`DetDataSample`): The annotation info of the
+            - 'data_samples' (obj:`DetDataSample`): The annotation info of the
                 sample.
         """
         packed_results = dict()
@@ -110,7 +110,7 @@ class PackLocalizationInputs(BaseTransform):
 
         img_meta = {k: results[k] for k in self.meta_keys if k in results}
         data_sample.set_metainfo(img_meta)
-        packed_results['data_sample'] = data_sample
+        packed_results['data_samples'] = data_sample
         return packed_results
 
     def __repr__(self) -> str:

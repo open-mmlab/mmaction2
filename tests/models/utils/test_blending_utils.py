@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
-from mmengine.data import LabelData
+from mmengine.structures import LabelData
 
 from mmaction.models import CutmixBlending, MixupBlending
 from mmaction.structures import ActionDataSample

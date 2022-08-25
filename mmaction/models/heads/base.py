@@ -5,7 +5,7 @@ from typing import Tuple, Union
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from mmengine.data import LabelData
+from mmengine.structures import LabelData
 from mmengine.model import BaseModule
 from torch import Tensor
 

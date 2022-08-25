@@ -7,7 +7,7 @@ from typing import Dict, List, Optional, Sequence, Tuple, Union
 import matplotlib.pyplot as plt
 import mmcv
 import numpy as np
-from mmengine import Visualizer
+from mmengine.visualization import Visualizer
 from mmengine.dist import master_only
 
 from mmaction.registry import VISBACKENDS, VISUALIZERS
@@ -64,7 +64,7 @@ class ActionVisualizer(Visualizer):
         >>> import decord
         >>> from pathlib import Path
         >>> from mmaction.core import ActionDataSample, ActionVisualizer
-        >>> from mmengine.data import LabelData
+        >>> from mmengine.structures import LabelData
         >>> # Example frame
         >>> video = decord.VideoReader('./demo/demo.mp4')
         >>> video = video.get_batch(range(32)).asnumpy()

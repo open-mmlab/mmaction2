@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import decord
 import torch
-from mmengine.data import LabelData
+from mmengine.structures import LabelData
 
 from mmaction.structures import ActionDataSample
 from mmaction.visualization import ActionVisualizer
