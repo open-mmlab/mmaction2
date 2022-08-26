@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from mmcv.utils import assert_dict_has_keys
+from mmengine.testing import assert_dict_has_keys
 
 from mmaction.datasets import RawframeDataset
 from mmaction.utils import register_all_modules

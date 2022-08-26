@@ -4,7 +4,7 @@ import os.path as osp
 
 import mmcv
 import numpy as np
-from mmcv.utils import assert_dict_has_keys
+from mmengine.testing import assert_dict_has_keys
 from numpy.testing import assert_array_equal
 
 from mmaction.datasets.transforms import (AudioFeatureSelector,

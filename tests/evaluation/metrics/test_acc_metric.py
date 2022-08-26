@@ -6,18 +6,17 @@ from mmaction.evaluation import AccMetric
 
 def generate_data(num_classes=5, random_label=False):
     data_batch = []
-    predictions = []
+    data_samples = []
     for i in range(num_classes * 10):
         logit = torch.randn(num_classes)
-        pred = dict(pred_scores=dict(item=logit))
-        predictions.append(pred)
         if random_label:
             label = torch.randint(num_classes, size=[])
         else:
             label = torch.tensor(logit.argmax().item())
-        data = dict(data_sample=dict(gt_labels=dict(item=label)))
-        data_batch.append(data)
-    return data_batch, predictions
+        data_sample = dict(
+            pred_scores=dict(item=logit), gt_labels=dict(item=label))
+        data_samples.append(data_sample)
+    return data_batch, data_samples
 
 
 def test_accmetric():

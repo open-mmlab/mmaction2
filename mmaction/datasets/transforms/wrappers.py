@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import random
 
-import mmcv
+import mmengine
 import numpy as np
 from mmcv.transforms import BaseTransform, to_tensor
 from mmengine.utils import digit_version
@@ -285,7 +285,7 @@ class ImgAug(BaseTransform):
         args = cfg.copy()
 
         obj_type = args.pop('type')
-        if mmcv.is_str(obj_type):
+        if mmengine.is_str(obj_type):
             obj_cls = getattr(iaa, obj_type) if hasattr(iaa, obj_type) \
                 else getattr(iaa.pillike, obj_type)
         elif issubclass(obj_type, iaa.Augmenter):
