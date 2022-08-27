@@ -12,17 +12,17 @@ class Recognizer2D(BaseRecognizer):
     """2D recognizer model framework."""
 
     def extract_feat(self,
-                     batch_inputs: Tensor,
+                     inputs: Tensor,
                      stage: str = 'neck',
-                     batch_data_samples: SampleList = None,
+                     data_samples: SampleList = None,
                      test_mode: bool = False) -> tuple:
         """Extract features of different stages.
 
         Args:
-            batch_inputs (Tensor): The input data.
+            inputs (Tensor): The input data.
             stage (str): Which stage to output the feature.
                 Defaults to ``neck``.
-            batch_data_samples (List[:obj:`ActionDataSample`]): Action data
+            data_samples (List[:obj:`ActionDataSample`]): Action data
                 samples, which are only needed in training. Defaults to None.
             test_mode: (bool): Whether in test mode. Defaults to False.
 
@@ -36,7 +36,7 @@ class Recognizer2D(BaseRecognizer):
         # Record the kwargs required by `loss` and `predict`.
         loss_predict_kwargs = dict()
 
-        num_segs = batch_inputs.shape[1]
+        num_segs = inputs.shape[1]
         loss_predict_kwargs['num_segs'] = num_segs
 
         # [N, num_crops * num_segs, C, H, W] ->
@@ -46,7 +46,7 @@ class Recognizer2D(BaseRecognizer):
         #   2) `num_sample_positions` in `DenseSampleFrames`
         #   3) `ThreeCrop/TenCrop` in `test_pipeline`
         #   4) `num_clips` in `SampleFrames` or its subclass if `clip_len != 1`
-        batch_inputs = batch_inputs.view((-1, ) + batch_inputs.shape[2:])
+        inputs = inputs.view((-1, ) + inputs.shape[2:])
 
         # Check settings of `fcn_test`.
         fcn_test = False
@@ -61,16 +61,16 @@ class Recognizer2D(BaseRecognizer):
         # Extract features through backbone.
         if (hasattr(self.backbone, 'features')
                 and self.backbone_from == 'torchvision'):
-            x = self.backbone.features(batch_inputs)
+            x = self.backbone.features(inputs)
         elif self.backbone_from == 'timm':
-            x = self.backbone.forward_features(batch_inputs)
+            x = self.backbone.forward_features(inputs)
         elif self.backbone_from == 'mmcls':
-            x = self.backbone(batch_inputs)
+            x = self.backbone(inputs)
             if isinstance(x, tuple):
                 assert len(x) == 1
                 x = x[0]
         else:
-            x = self.backbone(batch_inputs)
+            x = self.backbone(inputs)
 
         if self.backbone_from in ['torchvision', 'timm']:
             # Transformer-based feature shape: B x L x C.
@@ -94,7 +94,7 @@ class Recognizer2D(BaseRecognizer):
                              each.shape[1:]).transpose(1, 2).contiguous()
                 for each in x
             ]
-            x, loss_aux = self.neck(x, batch_data_samples=batch_data_samples)
+            x, loss_aux = self.neck(x, data_samples=data_samples)
             if not fcn_test:
                 x = x.squeeze(2)
                 loss_predict_kwargs['num_segs'] = 1

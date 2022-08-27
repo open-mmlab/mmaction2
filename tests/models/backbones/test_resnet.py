@@ -2,7 +2,7 @@
 import pytest
 import torch
 import torch.nn as nn
-from mmcv.utils import _BatchNorm
+from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
 
 from mmaction.models import ResNet
 from ..base import check_norm_state, generate_backbone_demo_inputs

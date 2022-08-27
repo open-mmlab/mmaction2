@@ -12,17 +12,17 @@ class Recognizer3D(BaseRecognizer):
     """3D recognizer model framework."""
 
     def extract_feat(self,
-                     batch_inputs: Tensor,
+                     inputs: Tensor,
                      stage: str = 'neck',
-                     batch_data_samples: SampleList = None,
+                     data_samples: SampleList = None,
                      test_mode: bool = False) -> tuple:
         """Extract features of different stages.
 
         Args:
-            batch_inputs (Tensor): The input data.
+            inputs (Tensor): The input data.
             stage (str): Which stage to output the feature.
                 Defaults to ``neck``.
-            batch_data_samples (List[:obj:`ActionDataSample`]): Action data
+            data_samples (List[:obj:`ActionDataSample`]): Action data
                 samples, which are only needed in training. Defaults to None.
             test_mode: (bool): Whether in test mode. Defaults to False.
 
@@ -36,7 +36,7 @@ class Recognizer3D(BaseRecognizer):
         # Record the kwargs required by `loss` and `predict`
         loss_predict_kwargs = dict()
 
-        num_segs = batch_inputs.shape[1]
+        num_segs = inputs.shape[1]
         # [N, num_crops, C, T, H, W] ->
         # [N * num_crops, C, T, H, W]
         # `num_crops` is calculated by:
@@ -44,7 +44,7 @@ class Recognizer3D(BaseRecognizer):
         #   2) `num_sample_positions` in `DenseSampleFrames`
         #   3) `ThreeCrop/TenCrop` in `test_pipeline`
         #   4) `num_clips` in `SampleFrames` or its subclass if `clip_len != 1`
-        batch_inputs = batch_inputs.view((-1, ) + batch_inputs.shape[2:])
+        inputs = inputs.view((-1, ) + inputs.shape[2:])
 
         # Check settings of test.
         if test_mode:
@@ -56,15 +56,14 @@ class Recognizer3D(BaseRecognizer):
                 max_testing_views = self.test_cfg.get('max_testing_views')
                 assert isinstance(max_testing_views, int)
 
-                total_views = batch_inputs.shape[0]
+                total_views = inputs.shape[0]
                 assert num_segs == total_views, (
                     'max_testing_views is only compatible '
                     'with batch_size == 1')
                 view_ptr = 0
                 feats = []
                 while view_ptr < total_views:
-                    batch_imgs = batch_inputs[view_ptr:view_ptr +
-                                              max_testing_views]
+                    batch_imgs = inputs[view_ptr:view_ptr + max_testing_views]
                     feat = self.backbone(batch_imgs)
                     if self.with_neck:
                         feat, _ = self.neck(feat)
@@ -81,21 +80,20 @@ class Recognizer3D(BaseRecognizer):
                 else:
                     x = torch.cat(feats)
             else:
-                x = self.backbone(batch_inputs)
+                x = self.backbone(inputs)
                 if self.with_neck:
                     x, _ = self.neck(x)
 
             return x, loss_predict_kwargs
         else:
             # Return features extracted through backbone.
-            x = self.backbone(batch_inputs)
+            x = self.backbone(inputs)
             if stage == 'backbone':
                 return x, loss_predict_kwargs
 
             loss_aux = dict()
             if self.with_neck:
-                x, loss_aux = self.neck(
-                    x, batch_data_samples=batch_data_samples)
+                x, loss_aux = self.neck(x, data_samples=data_samples)
 
             # Return features extracted through neck.
             loss_predict_kwargs['loss_aux'] = loss_aux

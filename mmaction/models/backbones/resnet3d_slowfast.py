@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 from mmcv.cnn import ConvModule
 from mmengine.logging import MMLogger, print_log
-from mmengine.model.utils import kaiming_init
+from mmengine.model.weight_init import kaiming_init
 from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
 from torch import Tensor
 

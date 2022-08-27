@@ -7,8 +7,7 @@ from mmengine.model import BaseModel, merge_dict
 from torch import Tensor
 
 from mmaction.registry import MODELS
-from mmaction.structures import ActionDataSample
-from mmaction.utils import (ConfigType, ForwardResults, LabelList,
+from mmaction.utils import (ConfigType, ForwardResults, InstanceList,
                             OptConfigType, OptMultiConfig, OptSampleList,
                             SampleList)
 
@@ -96,7 +95,7 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
         self.test_cfg = test_cfg
 
     @abstractmethod
-    def extract_feat(self, batch_inputs: Tensor, **kwargs) -> ForwardResults:
+    def extract_feat(self, inputs: Tensor, **kwargs) -> ForwardResults:
         """Extract features from raw inputs."""
 
     @property
@@ -124,14 +123,13 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
         if self.with_neck:
             self.neck.init_weights()
 
-    def loss(self, batch_inputs: Tensor, batch_data_samples: SampleList,
-             **kwargs) -> dict:
+    def loss(self, inputs: Tensor, data_samples: SampleList, **kwargs) -> dict:
         """Calculate losses from a batch of inputs and data samples.
 
         Args:
-            batch_inputs (Tensor): Raw Inputs of the recognizer.
+            inputs (Tensor): Raw Inputs of the recognizer.
                 These should usually be mean centered and std scaled.
-            batch_data_samples (List[:obj:`ActionDataSample`]): The batch
+            data_samples (List[:obj:`ActionDataSample`]): The batch
                 data samples. It usually includes information such
                 as ``gt_labels``.
 
@@ -139,24 +137,24 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
             dict: A dictionary of loss components.
         """
         feats, loss_kwargs = \
-            self.extract_feat(batch_inputs,
-                              batch_data_samples=batch_data_samples)
+            self.extract_feat(inputs,
+                              data_samples=data_samples)
 
         # loss_aux will be a empty dict if `self.with_neck` is False.
         loss_aux = loss_kwargs.get('loss_aux', dict())
-        loss_cls = self.cls_head.loss(feats, batch_data_samples, **loss_kwargs)
+        loss_cls = self.cls_head.loss(feats, data_samples, **loss_kwargs)
         losses = merge_dict(loss_cls, loss_aux)
         return losses
 
-    def predict(self, batch_inputs: Tensor, batch_data_samples: SampleList,
+    def predict(self, inputs: Tensor, data_samples: SampleList,
                 **kwargs) -> SampleList:
         """Predict results from a batch of inputs and data samples with post-
         processing.
 
         Args:
-            batch_inputs (Tensor): Raw Inputs of the recognizer.
+            inputs (Tensor): Raw Inputs of the recognizer.
                 These should usually be mean centered and std scaled.
-            batch_data_samples (List[:obj:`ActionDataSample`]): The batch
+            data_samples (List[:obj:`ActionDataSample`]): The batch
                 data samples. It usually includes information such
                 as ``gt_labels``.
 
@@ -169,34 +167,34 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
                 - item (Tensor): Classification scores, has a shape
                     (num_classes, )
         """
-        feats, predict_kwargs = self.extract_feat(batch_inputs, test_mode=True)
-        predictions = self.cls_head.predict(feats, batch_data_samples,
+        feats, predict_kwargs = self.extract_feat(inputs, test_mode=True)
+        predictions = self.cls_head.predict(feats, data_samples,
                                             **predict_kwargs)
         # convert to ActionDataSample.
-        predictions = self.convert_to_datasample(predictions)
+        predictions = self.convert_to_datasample(data_samples, predictions)
         return predictions
 
     def _forward(self,
-                 batch_inputs: Tensor,
+                 inputs: Tensor,
                  stage: str = 'backbone',
                  **kwargs) -> ForwardResults:
         """Network forward process. Usually includes backbone, neck and head
         forward without any post-processing.
 
         Args:
-            batch_inputs (Tensor): Raw Inputs of the recognizer.
+            inputs (Tensor): Raw Inputs of the recognizer.
             stage (str): Which stage to output the features.
 
         Returns:
             tuple or Tensor: Features from ``backbone`` or ``neck`` or ``head``
             forward.
         """
-        feats, _ = self.extract_feat(batch_inputs, stage=stage)
+        feats, _ = self.extract_feat(inputs, stage=stage)
         return feats
 
     def forward(self,
-                batch_inputs: Tensor,
-                batch_data_samples: OptSampleList = None,
+                inputs: Tensor,
+                data_samples: OptSampleList = None,
                 mode: str = 'tensor',
                 **kwargs) -> ForwardResults:
         """The unified entry for a forward process in both training and test.
@@ -214,9 +212,9 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
         optimizer updating, which are done in the :meth:`train_step`.
 
         Args:
-            batch_inputs (Tensor): The input tensor with shape
+            inputs (Tensor): The input tensor with shape
                 (N, C, ...) in general.
-            batch_data_samples (List[:obj:`ActionDataSample`], optional): The
+            data_samples (List[:obj:`ActionDataSample`], optional): The
                 annotation data of every samples. Defaults to None.
             mode (str): Return what kind of value. Defaults to ``tensor``.
 
@@ -228,29 +226,29 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
             - If ``mode="loss"``, return a dict of tensor.
         """
         if mode == 'tensor':
-            return self._forward(batch_inputs, **kwargs)
+            return self._forward(inputs, **kwargs)
         if mode == 'predict':
-            return self.predict(batch_inputs, batch_data_samples, **kwargs)
+            return self.predict(inputs, data_samples, **kwargs)
         elif mode == 'loss':
-            return self.loss(batch_inputs, batch_data_samples, **kwargs)
+            return self.loss(inputs, data_samples, **kwargs)
         else:
             raise RuntimeError(f'Invalid mode "{mode}". '
                                'Only supports loss, predict and tensor mode')
 
-    def convert_to_datasample(self, predictions: LabelList) -> SampleList:
+    def convert_to_datasample(self, inputs: SampleList,
+                              data_samples: InstanceList) -> SampleList:
         """Convert predictions to ``ActionDataSample``.
 
         Args:
-            predictions (List[:obj:`LabelData`]): Recognition results wrapped
+            inputs (List[:obj:`ActionDataSample`]): The input data
+            data_samples (List[:obj:`LabelData`]): Recognition results wrapped
                 by ``LabelData``.
 
         Returns:
             List[:obj:`ActionDataSample`]: Recognition results wrapped by
             ``ActionDataSample``.
         """
-        predictions_list = []
-        for i in range(len(predictions)):
-            result = ActionDataSample()
-            result.pred_scores = predictions[i]
-            predictions_list.append(result)
-        return predictions_list
+
+        for data_sample, pred_instances in zip(inputs, data_samples):
+            data_sample.pred_scores = pred_instances
+        return inputs

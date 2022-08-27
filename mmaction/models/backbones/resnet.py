@@ -4,9 +4,9 @@ from typing import List, Optional, Sequence, Tuple, Union
 
 from mmcv.cnn import ConvModule
 from mmengine.logging import MMLogger
-from mmengine.model.utils import constant_init, kaiming_init
+from mmengine.model.weight_init import constant_init, kaiming_init
 from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
-from mmengine.utils.parrots_wrapper import _BatchNorm
+from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
 from torch import Tensor, nn
 from torch.utils import checkpoint as cp
 

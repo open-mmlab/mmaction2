@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import pytest
 import torch
-from mmcv.utils import _BatchNorm
+from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
 
 from mmaction.models import MobileNetV2
 from ..base import check_norm_state, generate_backbone_demo_inputs

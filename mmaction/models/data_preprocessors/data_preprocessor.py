@@ -80,7 +80,8 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
             Tuple[Tensor, list]: Data in the same format as the model
             input.
         """
-        inputs, batch_data_samples = self.collate_data(data)
+        data = super().forward(data)
+        inputs, batch_data_samples = data['inputs'], data['data_samples']
 
         # --- Pad and stack --
         batch_inputs = stack_batch(inputs, self.pad_size_divisor,

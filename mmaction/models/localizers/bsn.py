@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from mmengine.model import BaseModel
-from mmengine.model.utils import constant_init, kaiming_init
+from mmengine.model.weight_init import constant_init, kaiming_init
 
 # from mmaction.utils import register_all_modules
 from mmaction.registry import MODELS

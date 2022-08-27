@@ -2,7 +2,7 @@
 import numpy as np
 import torch
 from mmcv.transforms import BaseTransform, to_tensor
-from mmengine.data import InstanceData, LabelData
+from mmengine.structures import InstanceData, LabelData
 
 from mmaction.registry import TRANSFORMS
 from mmaction.structures import ActionDataSample
@@ -27,7 +27,7 @@ class PackActionInputs(BaseTransform):
         Returns:
             dict:
             - 'inputs' (obj:`torch.Tensor`): The forward data of models.
-            - 'data_sample' (obj:`DetDataSample`): The annotation info of the
+            - 'data_samples' (obj:`DetDataSample`): The annotation info of the
                 sample.
         """
         packed_results = dict()
@@ -61,7 +61,7 @@ class PackActionInputs(BaseTransform):
 
         img_meta = {k: results[k] for k in self.meta_keys if k in results}
         data_sample.set_metainfo(img_meta)
-        packed_results['data_sample'] = data_sample
+        packed_results['data_samples'] = data_sample
         return packed_results
 
     def __repr__(self) -> str:
@@ -87,7 +87,7 @@ class PackLocalizationInputs(BaseTransform):
             dict:
 
             - 'inputs' (obj:`torch.Tensor`): The forward data of models.
-            - 'data_sample' (obj:`DetDataSample`): The annotation info of the
+            - 'data_samples' (obj:`DetDataSample`): The annotation info of the
                 sample.
         """
         packed_results = dict()
@@ -110,7 +110,7 @@ class PackLocalizationInputs(BaseTransform):
 
         img_meta = {k: results[k] for k in self.meta_keys if k in results}
         data_sample.set_metainfo(img_meta)
-        packed_results['data_sample'] = data_sample
+        packed_results['data_samples'] = data_sample
         return packed_results
 
     def __repr__(self) -> str:
@@ -152,24 +152,24 @@ class Transpose(BaseTransform):
 class FormatShape(BaseTransform):
     """Format final imgs shape to the given input_format.
 
-    Required keys are "imgs", "num_clips" and "clip_len", added or modified
-    keys are "imgs" and "input_shape".
+    Required keys are ``imgs``, ``num_clips`` and ``clip_len``,
+    added or modified keys are ``imgs`` and ``input_shape``.
 
     Args:
         input_format (str): Define the final imgs format.
         collapse (bool): To collpase input_format N... to ... (NCTHW to CTHW,
             etc.) if N is 1. Should be set as True when training and testing
-            detectors. Default: False.
+            detectors. Defaults to False.
     """
 
-    def __init__(self, input_format, collapse=False):
+    def __init__(self, input_format: str, collapse: bool = False) -> None:
         self.input_format = input_format
         self.collapse = collapse
         if self.input_format not in ['NCTHW', 'NCHW', 'NCHW_Flow', 'NPTCHW']:
             raise ValueError(
                 f'The input format {self.input_format} is invalid.')
 
-    def transform(self, results):
+    def transform(self, results: dict) -> dict:
         """Performs the FormatShape formatting.
 
         Args:
@@ -250,20 +250,20 @@ class FormatShape(BaseTransform):
 class FormatAudioShape(BaseTransform):
     """Format final audio shape to the given input_format.
 
-    Required keys are "imgs", "num_clips" and "clip_len", added or modified
-    keys are "imgs" and "input_shape".
+    Required keys are ``imgs``, ``num_clips`` and ``clip_len``, added
+    or modified keys are ``imgs`` and ``input_shape``.
 
     Args:
         input_format (str): Define the final imgs format.
     """
 
-    def __init__(self, input_format):
+    def __init__(self, input_format: str) -> None:
         self.input_format = input_format
         if self.input_format not in ['NCTF']:
             raise ValueError(
                 f'The input format {self.input_format} is invalid.')
 
-    def transform(self, results):
+    def transform(self, results: dict) -> dict:
         """Performs the FormatShape formatting.
 
         Args:

@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
 import torch.nn as nn
-from mmcv.utils import assert_params_all_zeros
+from mmengine.testing import assert_params_all_zeros
 
 from mmaction.models.common import (DividedSpatialAttentionWithNorm,
                                     DividedTemporalAttentionWithNorm,

@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
 import pytest
-from mmcv.utils import assert_dict_has_keys
+from mmengine.testing import assert_dict_has_keys
 
 from mmaction.datasets.transforms import (FormatAudioShape, FormatGCNInput,
                                           FormatShape, Transpose)
@@ -45,7 +45,7 @@ def test_format_shape():
     assert repr(format_shape) == format_shape.__class__.__name__ + \
         "(input_format='NCTHW')"
 
-    # 'NPTCHW' input format
+    # `NPTCHW` input format
     results = dict(
         imgs=np.random.randn(72, 224, 224, 3),
         num_clips=9,
@@ -60,7 +60,7 @@ def test_format_audio_shape():
         # invalid input format
         FormatAudioShape('XXXX')
 
-    # 'NCTF' input format
+    # `NCTF` input format
     results = dict(audios=np.random.randn(3, 128, 8))
     format_shape = FormatAudioShape('NCTF')
     assert format_shape(results)['input_shape'] == (3, 1, 128, 8)

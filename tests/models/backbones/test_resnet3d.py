@@ -2,7 +2,7 @@
 import pytest
 import torch
 import torch.nn as nn
-from mmcv.utils import _BatchNorm
+from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
 
 from mmaction.models import ResNet3d, ResNet3dLayer
 from ..base import check_norm_state, generate_backbone_demo_inputs
@@ -76,7 +76,7 @@ def test_resnet3d_backbone():
     resnet3d_50_pretrain.init_weights()
     resnet3d_50_pretrain.train()
     assert check_norm_state(resnet3d_50_pretrain.modules(), False)
-    from mmcv.runner import _load_checkpoint
+    from mmengine.runner.checkpoint import _load_checkpoint
     chkp_2d = _load_checkpoint('torchvision://resnet50')
     for name, module in resnet3d_50_pretrain.named_modules():
         if len(name.split('.')) == 4:
