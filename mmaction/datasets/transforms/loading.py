@@ -868,16 +868,15 @@ class DecordDecode(BaseTransform):
 class OpenCVInit(BaseTransform):
     """Using OpenCV to initialize the video_reader.
 
-    Required keys are "filename", added or modified keys are "new_path",
-    "video_reader" and "total_frames".
+    Required keys are ``filename``, added or modified keys are ``new_path``,
+    ``video_reader`` and ``total_frames``.
 
     Args:
         io_backend (str): io backend where frames are store.
-            Default: 'disk'.
-        kwargs (dict): Args for file client.
+            Defaults to ``disk``.
     """
 
-    def __init__(self, io_backend='disk', **kwargs):
+    def __init__(self, io_backend: str = 'disk', **kwargs) -> None:
         self.io_backend = io_backend
         self.kwargs = kwargs
         self.file_client = None
@@ -889,7 +888,7 @@ class OpenCVInit(BaseTransform):
                                        f'{random_string}_{thread_id}')
             os.mkdir(self.tmp_folder)
 
-    def transform(self, results):
+    def transform(self, results: dict) -> dict:
         """Perform the OpenCV initialization.
 
         Args:
@@ -929,11 +928,11 @@ class OpenCVInit(BaseTransform):
 class OpenCVDecode(BaseTransform):
     """Using OpenCV to decode the video.
 
-    Required keys are "video_reader", "filename" and "frame_inds", added or
-    modified keys are "imgs", "img_shape" and "original_shape".
+    Required keys are ``video_reader``, ``filename`` and ``frame_inds``, added
+    or modified keys are ``imgs``, ``img_shape`` and ``original_shape``.
     """
 
-    def transform(self, results):
+    def transform(self, results: dict) -> dict:
         """Perform the OpenCV decoding.
 
         Args:

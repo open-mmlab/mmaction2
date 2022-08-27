@@ -1,16 +1,15 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
-import os
 import os.path as osp
+from typing import Optional, Tuple
 
 import cv2
-import decord
 import numpy as np
-import torch
 import webcolors
-from mmcv import Config, DictAction
+from mmengine import Config, DictAction
 
 from mmaction.apis import inference_recognizer, init_recognizer
+from mmaction.utils import register_all_modules
 
 
 def parse_args():
@@ -23,15 +22,9 @@ def parse_args():
         '--cfg-options',
         nargs='+',
         action=DictAction,
-        default={},
         help='override some settings in the used config, the key-value pair '
         'in xxx=yyy format will be merged into config file. For example, '
         "'--cfg-options model.backbone.depth=18 model.backbone.with_cp=True'")
-    parser.add_argument(
-        '--use-frames',
-        default=False,
-        action='store_true',
-        help='whether to use rawframes as input')
     parser.add_argument(
         '--device', type=str, default='cuda:0', help='CPU/CUDA device option')
     parser.add_argument(
@@ -57,24 +50,18 @@ def parse_args():
         help='Target resolution (w, h) for resizing the frames when using a '
         'video as input. If either dimension is set to -1, the frames are '
         'resized by keeping the existing aspect ratio')
-    parser.add_argument(
-        '--resize-algorithm',
-        default='bicubic',
-        help='resize algorithm applied to generate video')
     parser.add_argument('--out-filename', default=None, help='output filename')
     args = parser.parse_args()
     return args
 
 
-def get_output(video_path,
-               out_filename,
-               label,
-               fps=30,
-               font_scale=0.5,
-               font_color='white',
-               target_resolution=None,
-               resize_algorithm='bicubic',
-               use_frames=False):
+def get_output(video_path: str,
+               out_filename: str,
+               label: str,
+               fps: int = 30,
+               font_scale: float = 0.5,
+               font_color: str = 'white',
+               target_resolution: Optional[Tuple[int]] = None) -> None:
     """Get demo output using ``moviepy``.
 
     This function will generate video file or gif file from raw video or
@@ -82,40 +69,31 @@ def get_output(video_path,
     you can refer to: https://github.com/Zulko/moviepy.
 
     Args:
-        video_path (str): The video file path or the rawframes directory path.
-            If ``use_frames`` is set to True, it should be rawframes directory
-            path. Otherwise, it should be video file path.
+        video_path (str): The video file path.
         out_filename (str): Output filename for the generated file.
         label (str): Predicted label of the generated file.
-        fps (int): Number of picture frames to read per second. Default: 30.
-        font_scale (float): Font scale of the label. Default: 0.5.
-        font_color (str): Font color of the label. Default: 'white'.
-        target_resolution (None | tuple[int | None]): Set to
-            (desired_width desired_height) to have resized frames. If either
-            dimension is None, the frames are resized by keeping the existing
-            aspect ratio. Default: None.
-        resize_algorithm (str): Support "bicubic", "bilinear", "neighbor",
-            "lanczos", etc. Default: 'bicubic'. For more information,
-            see https://ffmpeg.org/ffmpeg-scaler.html
-        use_frames: Determine Whether to use rawframes as input. Default:False.
+        fps (int): Number of picture frames to read per second. Defaults to 30.
+        font_scale (float): Font scale of the label. Defaults to 0.5.
+        font_color (str): Font color of the label. Defaults to ``white``.
+        target_resolution (Tuple[int], optional): Set to
+            (desired_width desired_height) to have resized frames. If
+            either dimension is None, the frames are resized by keeping
+            the existing aspect ratio. Defaults to None.
     """
 
     if video_path.startswith(('http://', 'https://')):
         raise NotImplementedError
 
     try:
+        import decord
         from moviepy.editor import ImageSequenceClip
     except ImportError:
-        raise ImportError('Please install moviepy to enable output file.')
+        raise ImportError('Please install moviepy and decord to '
+                          'enable output file.')
 
-    # Channel Order is BGR
-    if use_frames:
-        frame_list = sorted(
-            [osp.join(video_path, x) for x in os.listdir(video_path)])
-        frames = [cv2.imread(x) for x in frame_list]
-    else:
-        video = decord.VideoReader(video_path)
-        frames = [x.asnumpy()[..., ::-1] for x in video]
+    # Channel Order is `BGR`
+    video = decord.VideoReader(video_path)
+    frames = [x.asnumpy()[..., ::-1] for x in video]
 
     if target_resolution:
         w, h = target_resolution
@@ -153,24 +131,18 @@ def get_output(video_path,
 
 def main():
     args = parse_args()
-    # assign the desired device.
-    device = torch.device(args.device)
+
+    # Register all modules in mmaction2 into the registries
+    register_all_modules()
 
     cfg = Config.fromfile(args.config)
-    cfg.merge_from_dict(args.cfg_options)
+    if args.cfg_options is not None:
+        cfg.merge_from_dict(args.cfg_options)
 
-    # build the recognizer from a config file and checkpoint file/url
-    model = init_recognizer(cfg, args.checkpoint, device=device)
+    # Build the recognizer from a config file and checkpoint file/url
+    model = init_recognizer(cfg, args.checkpoint, device=args.device)
 
-    # e.g. use ('backbone', ) to return backbone feature
-    output_layer_names = None
-
-    # test a single video or rawframes of a single video
-    if output_layer_names:
-        results, returned_feature = inference_recognizer(
-            model, args.video, outputs=output_layer_names)
-    else:
-        results = inference_recognizer(model, args.video)
+    results = inference_recognizer(model, args.video)
 
     labels = open(args.label).readlines()
     labels = [x.strip() for x in labels]
@@ -198,9 +170,7 @@ def main():
             fps=args.fps,
             font_scale=args.font_scale,
             font_color=args.font_color,
-            target_resolution=args.target_resolution,
-            resize_algorithm=args.resize_algorithm,
-            use_frames=args.use_frames)
+            target_resolution=args.target_resolution)
 
 
 if __name__ == '__main__':
