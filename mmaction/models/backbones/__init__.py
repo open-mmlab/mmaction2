@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .agcn import AGCN
+from .c2d_r50 import C2D_R50
 from .c3d import C3D
 from .mobilenet_v2 import MobileNetV2
 from .mobilenet_v2_tsm import MobileNetV2TSM
@@ -18,7 +19,7 @@ from .timesformer import TimeSformer
 from .x3d import X3D
 
 __all__ = [
-    'C3D', 'ResNet', 'ResNet3d', 'ResNetTSM', 'ResNet2Plus1d',
+    'C2D_R50', 'C3D', 'ResNet', 'ResNet3d', 'ResNetTSM', 'ResNet2Plus1d',
     'ResNet3dSlowFast', 'ResNet3dSlowOnly', 'ResNet3dCSN', 'ResNetTIN', 'X3D',
     'ResNetAudio', 'ResNet3dLayer', 'MobileNetV2TSM', 'MobileNetV2', 'TANet',
     'TimeSformer', 'STGCN', 'AGCN'
