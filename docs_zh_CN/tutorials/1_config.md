@@ -415,10 +415,12 @@ MMAction2 将模块化设计整合到配置文件系统中，以便执行各类�
       save_best='top_k_accuracy')  # 设置 `top_k_accuracy` 作为指示器，用于存储最好的模型权重文件
   log_config = dict(  # 注册日志钩子的设置
       interval=20,  # 打印日志间隔
-      hooks=[  # 训练期间执行的钩子
-          dict(type='TextLoggerHook'),  # 记录训练过程信息的日志
-          # dict(type='TensorboardLoggerHook'),  # 同时支持 Tensorboard 日志
-      ])
+      hooks=[ # 训练期间执行的钩子
+        dict(type='TextLoggerHook', by_epoch=False),
+        dict(type='TensorboardLoggerHook', by_epoch=False),
+        dict(type='WandbLoggerHook', by_epoch=False,
+             init_kwargs={'entity': entity, 'project': project, 'config': cfg_dict}), # 同样支持 Wandb 日志
+    ])
 
   # 运行设置
   dist_params = dict(backend='nccl')  # 建立分布式训练的设置，其中端口号也可以设置

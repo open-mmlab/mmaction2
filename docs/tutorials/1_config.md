@@ -646,9 +646,13 @@ We incorporate modular design into our config system, which is convenient to con
       interval=1, save_best='mAP@0.5IOU')  # Interval to perform evaluation and the key for saving best checkpoint
   log_config = dict(  # Config to register logger hook
       interval=20,  # Interval to print the log
-      hooks=[  # Hooks to be implemented during training
-          dict(type='TextLoggerHook'),  # The logger used to record the training process
-      ])
+    hooks=[ # Hooks to be implemented during training
+        dict(type='TextLoggerHook', by_epoch=False),
+        dict(type='TensorboardLoggerHook', by_epoch=False),
+        dict(type='WandbLoggerHook', by_epoch=False,
+             init_kwargs={'entity': entity, 'project': project, 'config': cfg_dict}), # The Wandb logger is also supported, It requires `wandb` to be installed.
+        # ClearMLLoggerHook, DvcliveLoggerHook, MlflowLoggerHook, NeptuneLoggerHook, PaviLoggerHook, SegmindLoggerHook are also supported based on MMCV implementation.
+    ])
 
   # runtime settings
   dist_params = dict(backend='nccl')  # Parameters to setup distributed training, the port can also be set
