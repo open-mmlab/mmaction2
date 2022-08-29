@@ -133,7 +133,8 @@ class BMN(BaseModel):
         self.anchors_tmins, self.anchors_tmaxs = self._temporal_anchors(
             -0.5, 1.5)
         self.match_map = self._match_map()
-        self.bm_mask = self._get_bm_mask()
+        # self.bm_mask = self._get_bm_mask()
+        self.register_buffer('bm_mask', self._get_bm_mask())
 
     def init_weights(self) -> None:
         """Initiate the parameters either from existing checkpoint or from
@@ -201,9 +202,14 @@ class BMN(BaseModel):
             sample.gt_instances['gt_bbox'] for sample in batch_data_samples
         ]
         confidence, label_start, label_end = self.generate_labels(gt_bbox)
+
+        device = batch_inputs.device
+        confidence = confidence.to(device)
+        label_start = label_start.to(device)
+        label_end = label_end.to(device)
+
         loss = self.loss_cls(confidence_map, start, end, confidence,
-                             label_start, label_end,
-                             self.bm_mask.to(batch_inputs.device))
+                             label_start, label_end, self.bm_mask)
         loss_dict = dict(loss=loss[0])
         return loss_dict
 
@@ -405,6 +411,7 @@ class BMN(BaseModel):
 
     def generate_labels(self, gt_bbox):
         """Generate training labels."""
+        # TODO: do this without numpy
         match_score_confidence_list = []
         match_score_start_list = []
         match_score_end_list = []

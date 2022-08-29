@@ -185,6 +185,7 @@ class TEM(BaseModel):
 
     def generate_labels(self, gt_bbox):
         """Generate training labels."""
+        # TODO: do this without numpy
         match_score_action_list = []
         match_score_start_list = []
         match_score_end_list = []
