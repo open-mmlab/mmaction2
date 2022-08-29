@@ -127,9 +127,8 @@ myst_enable_extensions = ['colon_fence']
 
 
 def builder_inited_handler(app):
-    subprocess.run(['./merge_docs.sh'])
+    subprocess.run(['bash', './merge_docs.sh'])
     subprocess.run(['./stat.py'])
-    pass
 
 
 def setup(app):
