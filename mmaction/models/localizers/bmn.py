@@ -424,8 +424,8 @@ class BMN(BaseModel):
             gt_iou_map = np.array(gt_iou_map).astype(np.float32)
             gt_iou_map = np.max(gt_iou_map, axis=0)
 
-            gt_tmins = every_gt_bbox[:, 0]
-            gt_tmaxs = every_gt_bbox[:, 1]
+            gt_tmins = every_gt_bbox[:, 0].cpu().numpy()
+            gt_tmaxs = every_gt_bbox[:, 1].cpu().numpy()
 
             gt_len_pad = 3 * (1. / self.tscale)
 
