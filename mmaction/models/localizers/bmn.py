@@ -458,6 +458,11 @@ class BMN(BaseModel):
             match_score_confidence_list.append(gt_iou_map)
             match_score_start_list.append(match_score_start)
             match_score_end_list.append(match_score_end)
+
+        match_score_confidence_list = np.array(match_score_confidence_list)
+        match_score_start_list = np.array(match_score_start_list)
+        match_score_end_list = np.array(match_score_end_list)
+
         match_score_confidence_list = torch.Tensor(match_score_confidence_list)
         match_score_start_list = torch.Tensor(match_score_start_list)
         match_score_end_list = torch.Tensor(match_score_end_list)
