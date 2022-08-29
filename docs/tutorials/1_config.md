@@ -205,10 +205,13 @@ which is convenient to conduct various experiments.
       metrics=['AR@AN'])  # Metrics to be performed
   log_config = dict(  # Config to register logger hook
       interval=50,  # Interval to print the log
-      hooks=[  # Hooks to be implemented during training
-          dict(type='TextLoggerHook'),  # The logger used to record the training process
-          # dict(type='TensorboardLoggerHook'),  # The Tensorboard logger is also supported
-      ])
+    hooks=[ # Hooks to be implemented during training
+        dict(type='TextLoggerHook', by_epoch=False),
+        dict(type='TensorboardLoggerHook', by_epoch=False),
+        dict(type='WandbLoggerHook', by_epoch=False,
+             init_kwargs={'entity': 'WandBUserOrGroupEntity', 'project': "WandBProjectName", 'config': cfg_dict}), # The Wandb logger is also supported, It requires `wandb` to be installed.
+        # ClearMLLoggerHook, DvcliveLoggerHook, MlflowLoggerHook, NeptuneLoggerHook, PaviLoggerHook, SegmindLoggerHook are also supported based on MMCV implementation.
+    ])
 
   # runtime settings
   dist_params = dict(backend='nccl')  # Parameters to setup distributed training, the port can also be set
@@ -420,10 +423,13 @@ which is convenient to conduct various experiments.
       metric_options=dict(top_k_accuracy=dict(topk=(1, 3)))) # Set top-k accuracy to 1 and 3 during testing. You can also use `--eval top_k_accuracy` to assign evaluation metrics
   log_config = dict(  # Config to register logger hook
       interval=20,  # Interval to print the log
-      hooks=[  # Hooks to be implemented during training
-          dict(type='TextLoggerHook'),  # The logger used to record the training process
-          # dict(type='TensorboardLoggerHook'),  # The Tensorboard logger is also supported
-      ])
+    hooks=[ # Hooks to be implemented during training
+        dict(type='TextLoggerHook', by_epoch=False),
+        dict(type='TensorboardLoggerHook', by_epoch=False),
+        dict(type='WandbLoggerHook', by_epoch=False,
+             init_kwargs={'entity': 'WandBUserOrGroupEntity', 'project': "WandBProjectName", 'config': cfg_dict}), # The Wandb logger is also supported, It requires `wandb` to be installed.
+        # ClearMLLoggerHook, DvcliveLoggerHook, MlflowLoggerHook, NeptuneLoggerHook, PaviLoggerHook, SegmindLoggerHook are also supported based on MMCV implementation.
+    ])
 
   # runtime settings
   dist_params = dict(backend='nccl')  # Parameters to setup distributed training, the port can also be set
@@ -650,7 +656,7 @@ We incorporate modular design into our config system, which is convenient to con
         dict(type='TextLoggerHook', by_epoch=False),
         dict(type='TensorboardLoggerHook', by_epoch=False),
         dict(type='WandbLoggerHook', by_epoch=False,
-             init_kwargs={'entity': entity, 'project': project, 'config': cfg_dict}), # The Wandb logger is also supported, It requires `wandb` to be installed.
+             init_kwargs={'entity': 'WandBUserOrGroupEntity', 'project': "WandBProjectName", 'config': cfg_dict}), # The Wandb logger is also supported, It requires `wandb` to be installed.
         # ClearMLLoggerHook, DvcliveLoggerHook, MlflowLoggerHook, NeptuneLoggerHook, PaviLoggerHook, SegmindLoggerHook are also supported based on MMCV implementation.
     ])
 
