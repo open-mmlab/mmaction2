@@ -130,7 +130,7 @@ jobs:
         run: |
           python -V
           python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu101/${{matrix.torch_version}}/index.html
-          python -m pip install -q git+https://github.com/open-mmlab/mmdetection/
+          CFLAGS=`python -c 'import sysconfig;print("-I"+sysconfig.get_paths()["include"])'`  python -m pip install -q git+https://github.com/open-mmlab/mmdetection/
           python -m pip install -q git+https://github.com/open-mmlab/mmclassification/
           python -m pip install -r requirements.txt
           python -c 'import mmcv; print(mmcv.__version__)'
@@ -192,7 +192,7 @@ jobs:
         run: |
           python -V
           python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu102/${{matrix.torch_version}}/index.html
-          python -m pip install -q git+https://github.com/open-mmlab/mmdetection/
+          CFLAGS=`python -c 'import sysconfig;print("-I"+sysconfig.get_paths()["include"])'`  python -m pip install -q git+https://github.com/open-mmlab/mmdetection/
           python -m pip install -q git+https://github.com/open-mmlab/mmclassification/
           python -m pip install -r requirements.txt
           python -c 'import mmcv; print(mmcv.__version__)'
