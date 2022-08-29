@@ -13,7 +13,7 @@ Models:
     Training Data: ActivityNet v1.3
     Training Resources: 2 GPUs
     feature: cuhk_mean_100
-  Name: bmn_400x100_9e_2x8_activitynet_feature (cuhk_mean_100)
+  Name: bmn_400x100_2x8_9e_activitynet_feature
   Results:
   - Dataset: ActivityNet v1.3
     Metrics:
@@ -27,7 +27,7 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature.log.json
   Training Log: https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature.log
   Weights: https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_9e_activitynet_feature/bmn_400x100_9e_activitynet_feature_20200619-42a3b111.pth
-- Config: configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py
+- Config: configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature_mmaction_video.py
   In Collection: BMN
   Metadata:
     Batch Size: 8
@@ -35,7 +35,7 @@ Models:
     Training Data: ActivityNet v1.3
     Training Resources: 2 GPUs
     feature: mmaction_video
-  Name: bmn_400x100_9e_2x8_activitynet_feature (mmaction_video)
+  Name: bmn_400x100_2x8_9e_activitynet_feature_mmaction_video
   Results:
   - Dataset: ActivityNet v1.3
     Metrics:
@@ -49,7 +49,7 @@ Models:
   Training Json Log: https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809.json
   Training Log: https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809.log
   Weights: https://download.openmmlab.com/mmaction/localization/bmn/bmn_400x100_2x8_9e_mmaction_video/bmn_400x100_2x8_9e_mmaction_video_20200809-c9fd14d2.pth
-- Config: configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py
+- Config: configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature_mmaction_clip.py
   In Collection: BMN
   Metadata:
     Batch Size: 8
@@ -57,7 +57,7 @@ Models:
     Training Data: ActivityNet v1.3
     Training Resources: 2 GPUs
     feature: mmaction_clip
-  Name: bmn_400x100_9e_2x8_activitynet_feature (mmaction_clip)
+  Name: bmn_400x100_2x8_9e_activitynet_feature_mmaction_clip
   Results:
   - Dataset: ActivityNet v1.3
     Metrics:
