@@ -208,8 +208,10 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
       hooks=[ # 训练期间执行的钩子
         dict(type='TextLoggerHook', by_epoch=False),
         dict(type='TensorboardLoggerHook', by_epoch=False),
-        dict(type='WandbLoggerHook', by_epoch=False,
-             init_kwargs={'entity': 'WandBUserOrGroupEntity', 'project': "WandBProjectName", 'config': cfg_dict}), # 同样支持 Wandb 日志
+        dict(type='WandbLoggerHook', by_epoch=False, # 还支持 Wandb 记录器，它需要安装 `wandb`。
+             init_kwargs={'entity': "entity", # 用于登录wandb的实体
+                          'project': "project", # WandB中的项目名称
+                          'config': cfg_dict}), # 检查 https://docs.wandb.ai/ref/python/init 以获取更多初始化参数
     ])
 
   # 运行设置
@@ -420,8 +422,10 @@ MMAction2 将模块化设计整合到配置文件系统中，以便执行各类�
       hooks=[ # 训练期间执行的钩子
         dict(type='TextLoggerHook', by_epoch=False),
         dict(type='TensorboardLoggerHook', by_epoch=False),
-        dict(type='WandbLoggerHook', by_epoch=False,
-             init_kwargs={'entity': 'WandBUserOrGroupEntity', 'project': "WandBProjectName", 'config': cfg_dict}), # 同样支持 Wandb 日志
+        dict(type='WandbLoggerHook', by_epoch=False, # 还支持 Wandb 记录器，它需要安装 `wandb`。
+             init_kwargs={'entity': "entity", # 用于登录wandb的实体
+                          'project': "project", # WandB中的项目名称
+                          'config': cfg_dict}), # 检查 https://docs.wandb.ai/ref/python/init 以获取更多初始化参数
     ])
 
   # 运行设置
@@ -647,8 +651,10 @@ MMAction2 将模块化设计整合到配置文件系统中，以便于执行各�
       hooks=[ # 训练期间执行的钩子
         dict(type='TextLoggerHook', by_epoch=False),
         dict(type='TensorboardLoggerHook', by_epoch=False),
-        dict(type='WandbLoggerHook', by_epoch=False,
-             init_kwargs={'entity': 'WandBUserOrGroupEntity', 'project': "WandBProjectName", 'config': cfg_dict}), # 同样支持 Wandb 日志
+        dict(type='WandbLoggerHook', by_epoch=False, # 还支持 Wandb 记录器，它需要安装 `wandb`。
+             init_kwargs={'entity': "entity", # 用于登录wandb的实体
+                          'project': "project", # WandB中的项目名称
+                          'config': cfg_dict}), # 检查 https://docs.wandb.ai/ref/python/init 以获取更多初始化参数
     ])
 
   # 运行设置
