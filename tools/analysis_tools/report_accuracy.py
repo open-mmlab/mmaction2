@@ -1,19 +1,20 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 
-from mmcv import load
+from mmengine import load
 from scipy.special import softmax
 
-from mmaction.core.evaluation import (get_weighted_score, mean_class_accuracy,
-                                      top_k_accuracy)
+from mmaction.evaluation.functional import (get_weighted_score,
+                                            mean_class_accuracy,
+                                            top_k_accuracy)
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Fusing multiple scores')
     parser.add_argument(
-        '--scores',
+        '--preds',
         nargs='+',
-        help='list of scores',
+        help='list of predict result',
         default=['demo/fuse/rgb.pkl', 'demo/fuse/flow.pkl'])
     parser.add_argument(
         '--coefficients',
@@ -32,9 +33,19 @@ def parse_args():
 
 def main():
     args = parse_args()
-    assert len(args.scores) == len(args.coefficients)
-    score_list = args.scores
-    score_list = [load(f) for f in score_list]
+    assert len(args.preds) == len(args.coefficients)
+    data_sample_list = args.preds
+    data_sample_list = [load(f) for f in data_sample_list]
+    score_list = []
+    for data_samples in data_sample_list:
+        scores = [
+            sample['pred_scores']['item'].numpy() for sample in data_samples
+        ]
+        score_list.append(scores)
+    labels = [
+        sample['gt_labels']['item'].item() for sample in data_sample_list[0]
+    ]
+
     if args.apply_softmax:
 
         def apply_softmax(scores):
@@ -43,8 +54,8 @@ def main():
         score_list = [apply_softmax(scores) for scores in score_list]
 
     weighted_scores = get_weighted_score(score_list, args.coefficients)
-    data = open(args.datalist).readlines()
-    labels = [int(x.strip().split()[-1]) for x in data]
+    # data = open(args.datalist).readlines()
+    # labels = [int(x.strip().split()[-1]) for x in data]
 
     mean_class_acc = mean_class_accuracy(weighted_scores, labels)
     top_1_acc, top_5_acc = top_k_accuracy(weighted_scores, labels, (1, 5))
