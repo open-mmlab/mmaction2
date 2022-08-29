@@ -398,3 +398,57 @@ class AVADataset(BaseDataset):
 class JHMDBDataset(AVADataset):
     def get_filename_tmpl(self, img_key):
         return self.filename_tmpl
+    #TODO remove load_annotations and set start_index as 1
+    def load_annotations(self):
+        """Load AVA annotations."""
+        video_infos = []
+        records_dict_by_img = defaultdict(list)
+        with open(self.ann_file, 'r') as fin:
+            for line in fin:
+                line_split = line.strip().split(',')
+
+                label = int(line_split[6])
+                if self.custom_classes is not None:
+                    if label not in self.custom_classes:
+                        continue
+                    label = self.custom_classes.index(label)
+
+                video_id = line_split[0]
+                timestamp = int(line_split[1])
+                img_key = f'{video_id},{timestamp:05d}'
+
+                entity_box = np.array(list(map(float, line_split[2:6])))
+                entity_id = int(line_split[7])
+                shot_info = (1, (self.timestamp_end - self.timestamp_start) *
+                             self._FPS)
+
+                video_info = dict(
+                    video_id=video_id,
+                    timestamp=timestamp,
+                    entity_box=entity_box,
+                    label=label,
+                    entity_id=entity_id,
+                    shot_info=shot_info)
+                records_dict_by_img[img_key].append(video_info)
+
+        for img_key in records_dict_by_img:
+            video_id, timestamp = img_key.split(',')
+            bboxes, labels, entity_ids = self.parse_img_record(
+                records_dict_by_img[img_key])
+            ann = dict(
+                gt_bboxes=bboxes, gt_labels=labels, entity_ids=entity_ids)
+            frame_dir = video_id
+            if self.data_prefix is not None:
+                frame_dir = osp.join(self.data_prefix, frame_dir)
+            video_info = dict(
+                frame_dir=frame_dir,
+                video_id=video_id,
+                timestamp=int(timestamp),
+                img_key=img_key,
+                shot_info=shot_info,
+                fps=self._FPS,
+                ann=ann)
+            video_infos.append(video_info)
+
+        return video_infos
+

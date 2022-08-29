@@ -39,8 +39,8 @@ model = dict(
         bbox_head=dict(
             type='BBoxHeadAVA',
             in_channels=2304,
-            num_classes=81,
-            multilabel=True,
+            num_classes=22,
+            multilabel=False,
             dropout_ratio=0.5)),
     train_cfg=dict(
         rcnn=dict(
@@ -63,22 +63,22 @@ dataset_type = 'JHMDBDataset'
 data_root = '/home/jaeguk/workspace/data/JHMDB/frames'
 anno_root = '/home/jaeguk/workspace/data/JHMDB/annotations'
 
-ann_file_train = f'{anno_root}/JHMDB_train.csv'
-ann_file_val = f'{anno_root}/JHMDB_val.csv'
+ann_file_train = f'{anno_root}/JHMDB_train_105.csv'
+ann_file_val = f'{anno_root}/JHMDB_valid_42.csv'
 
 exclude_file_train = None
 exclude_file_val = None
 
 label_file = f'{anno_root}/JHMDB_actionlist.pbtxt'
 
-proposal_file_train = None
-proposal_file_val = None
+proposal_file_train = f'{anno_root}/JHMDB_dense_proposals_instances_train.pkl'
+proposal_file_val = f'{anno_root}/JHMDB_dense_proposals_instances_valid.pkl'
 
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 
 train_pipeline = [
-    dict(type='SampleAVAFrames', clip_len=32, frame_interval=2),
+    dict(type='SampleAVAFrames', clip_len=32, frame_interval=1),
     dict(type='RawFrameDecode'),
     dict(type='RandomRescale', scale_range=(256, 320)),
     dict(type='RandomCrop', size=256),
@@ -101,7 +101,7 @@ train_pipeline = [
 # The testing is w/o. any cropping / flipping
 val_pipeline = [
     dict(
-        type='SampleAVAFrames', clip_len=32, frame_interval=2, test_mode=True),
+        type='SampleAVAFrames', clip_len=32, frame_interval=1, test_mode=True),
     dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='Normalize', **img_norm_cfg),
@@ -118,8 +118,8 @@ val_pipeline = [
 ]
 
 data = dict(
-    videos_per_gpu=5,
-    workers_per_gpu=2,
+    videos_per_gpu=4,
+    workers_per_gpu=0,
     val_dataloader=dict(videos_per_gpu=1),
     test_dataloader=dict(videos_per_gpu=1),
     train=dict(
@@ -129,9 +129,14 @@ data = dict(
         pipeline=train_pipeline,
         label_file=label_file,
         proposal_file=proposal_file_train,
-        person_det_score_thr=0.9,
+        person_det_score_thr=0.5,
         data_prefix=data_root,
-        filename_tmpl='{:06}.jpg'),
+        filename_tmpl='{:05}.png',
+        timestamp_start=1,
+        timestamp_end=30,
+        num_classes=22,
+        fps=1
+    ),
     val=dict(
         type=dataset_type,
         ann_file=ann_file_val,
@@ -139,13 +144,18 @@ data = dict(
         pipeline=val_pipeline,
         label_file=label_file,
         proposal_file=proposal_file_val,
-        person_det_score_thr=0.9,
+        person_det_score_thr=0.5,
         data_prefix=data_root,
-        filename_tmpl='{:06}.jpg'))
+        filename_tmpl='{:05}.png',
+        timestamp_start=1,
+        timestamp_end=30,
+        num_classes=22,
+        fps=1
+    )
+)
 data['test'] = data['val']
 
-optimizer = dict(type='SGD', lr=0.075, momentum=0.9, weight_decay=0.00001)
-# this lr is used for 8 gpus
+optimizer = dict(type='SGD', lr=0.001, momentum=0.9, weight_decay=0.00001)
 
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
@@ -162,15 +172,17 @@ checkpoint_config = dict(interval=1)
 workflow = [('train', 1)]
 evaluation = dict(interval=1, save_best='mAP@0.5IOU')
 log_config = dict(
-    interval=20, hooks=[
+    interval=10, hooks=[
         dict(type='TextLoggerHook'),
     ])
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 work_dir = ('./work_dirs/ava/'
-            'slowfast_kinetics_pretrained_r50_8x8x1_20e_ava_rgb')
-load_from = ('https://download.openmmlab.com/mmaction/detection/ava/slowfast_kinetics_pretrained_r50_8x8x1_20e_ava_rgb/slowfast_kinetics_pretrained_r50_8x8x1_20e_ava_rgb_20201217-ae225e97.pth')
+            'slowfast_kinetics_pretrained_r50_8x8x1_20e_ava_rgb/'
+            'JHMDB_tiny')
+load_from = ('https://download.openmmlab.com/mmaction/detection/ava/'
+             'slowfast_kinetics_pretrained_r50_8x8x1_20e_ava_rgb/'
+             'slowfast_kinetics_pretrained_r50_8x8x1_20e_ava_rgb_20201217-ae225e97.pth')
 resume_from = None
 find_unused_parameters = False
 
-gpu_ids = [1] # TODO: Set gpu ids porperly

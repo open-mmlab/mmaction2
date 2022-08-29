@@ -4,9 +4,9 @@ model = dict(
     backbone=dict(
         type='ResNet3dSlowFast',
         pretrained=None,
-        resample_rate=4,    # tau
-        speed_ratio=4,      # alpha
-        channel_ratio=8,    # beta inv
+        resample_rate=4,
+        speed_ratio=4,
+        channel_ratio=8,
         slow_pathway=dict(
             type='resnet3d',
             depth=50,
@@ -39,8 +39,8 @@ model = dict(
         bbox_head=dict(
             type='BBoxHeadAVA',
             in_channels=2304,
-            num_classes=81,
-            multilabel=True,
+            num_classes=11,   # This part will be differnt with AVA
+            multilabel=False,  # This part will be differnt with AVA
             dropout_ratio=0.5)),
     train_cfg=dict(
         rcnn=dict(
@@ -59,27 +59,26 @@ model = dict(
             debug=False)),
     test_cfg=dict(rcnn=dict(action_thr=0.002)))
 
-dataset_type = 'AVADataset'
-data_root = '/home/jaeguk/workspace/data/ava/frames'
-anno_root = '/home/jaeguk/workspace/data/ava/annotations'
+dataset_type = 'JHMDBDataset'
+data_root = '/home/jaeguk/workspace/data/ucf101-sampled/frames'
+anno_root = '/home/jaeguk/workspace/data/ucf101-sampled/annotations'
 
-ann_file_train = f'{anno_root}/ava_train_v2.2_sampled_12.csv'
-ann_file_val = f'{anno_root}/ava_val_v2.2_sampled_3.csv'
+ann_file_train = f'{anno_root}/ucf101-sampled_train_50.csv'
+ann_file_val = f'{anno_root}/ucf101-sampled_valid_20.csv'
 
 exclude_file_train = None
 exclude_file_val = None
 
-label_file = f'{anno_root}/ava_action_list_v2.2_sampled.pbtxt'
+label_file = f'{anno_root}/ucf101-sampled_actionlist.pbtxt'
 
-proposal_file_train = (f'{anno_root}/ava_dense_proposals_train.FAIR.'
-                       'recall_93.9.pkl')
-proposal_file_val = f'{anno_root}/ava_dense_proposals_val.FAIR.recall_93.9.pkl'
+proposal_file_train = f'{anno_root}/ucf101-sampled_dense_proposals_instances_train.pkl'
+proposal_file_val = f'{anno_root}/ucf101-sampled_dense_proposals_instances_valid.pkl'
 
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 
 train_pipeline = [
-    dict(type='SampleAVAFrames', clip_len=32, frame_interval=2),
+    dict(type='SampleAVAFrames', clip_len=32, frame_interval=1),
     dict(type='RawFrameDecode'),
     dict(type='RandomRescale', scale_range=(256, 320)),
     dict(type='RandomCrop', size=256),
@@ -102,7 +101,7 @@ train_pipeline = [
 # The testing is w/o. any cropping / flipping
 val_pipeline = [
     dict(
-        type='SampleAVAFrames', clip_len=32, frame_interval=2, test_mode=True),
+        type='SampleAVAFrames', clip_len=32, frame_interval=1, test_mode=True),
     dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='Normalize', **img_norm_cfg),
@@ -130,8 +129,14 @@ data = dict(
         pipeline=train_pipeline,
         label_file=label_file,
         proposal_file=proposal_file_train,
-        person_det_score_thr=0.9,
-        data_prefix=data_root),
+        person_det_score_thr=0.5,
+        data_prefix=data_root,
+        filename_tmpl='{:05}.jpg',
+        timestamp_start=1,
+        timestamp_end=80,
+        num_classes=11,
+        fps=1
+    ),
     val=dict(
         type=dataset_type,
         ann_file=ann_file_val,
@@ -139,34 +144,44 @@ data = dict(
         pipeline=val_pipeline,
         label_file=label_file,
         proposal_file=proposal_file_val,
-        person_det_score_thr=0.9,
-        data_prefix=data_root))
+        person_det_score_thr=0.5,
+        data_prefix=data_root,
+        filename_tmpl='{:05}.jpg',
+        timestamp_start=1,
+        timestamp_end=60,
+        num_classes=11,
+        fps=1
+    )
+)
 data['test'] = data['val']
 
-optimizer = dict(type='SGD', lr=0.003, momentum=0.9, weight_decay=0.00001)
+optimizer = dict(type='SGD', lr=0.001, momentum=0.9, weight_decay=0.00001)
 
 optimizer_config = dict(grad_clip=dict(max_norm=40, norm_type=2))
 # learning policy
 
+total_epochs = 200
 lr_config = dict(
     policy='step',
-    step=[10, 15],
+    step=[int(total_epochs * 0.75), int(total_epochs * 0.9)],
     warmup='linear',
     warmup_by_epoch=True,
-    warmup_iters=1,
+    warmup_iters=5,
     warmup_ratio=0.1)
-total_epochs = 20
 checkpoint_config = dict(interval=1)
 workflow = [('train', 1)]
 evaluation = dict(interval=1, save_best='mAP@0.5IOU')
 log_config = dict(
-    interval=1, hooks=[
+    interval=10, hooks=[
         dict(type='TextLoggerHook'),
     ])
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 work_dir = ('./work_dirs/ava/'
-            'slowfast_kinetics_pretrained_r50_8x8x1_20e_ava_rgb_part')
+            'slowfast_kinetics_pretrained_r50_8x8x1_20e_ava_rgb/'
+            'ucf101-sampled_tiny')
 load_from = ('https://download.openmmlab.com/mmaction/detection/ava/slowfast_kinetics_pretrained_r50_8x8x1_20e_ava_rgb/slowfast_kinetics_pretrained_r50_8x8x1_20e_ava_rgb_20201217-ae225e97.pth')
 resume_from = None
 find_unused_parameters = False
+
+gpu_ids = [1] # TODO: Set gpu ids porperly
