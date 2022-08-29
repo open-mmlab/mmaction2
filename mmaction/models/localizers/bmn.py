@@ -5,7 +5,6 @@ import numpy as np
 import torch
 import torch.nn as nn
 from mmengine.model import BaseModel
-from mmengine.model.utils import constant_init, kaiming_init
 
 from mmaction.registry import MODELS
 from .utils import post_processing, temporal_iop, temporal_iou
@@ -137,13 +136,8 @@ class BMN(BaseModel):
         self.register_buffer('bm_mask', self._get_bm_mask())
 
     def init_weights(self) -> None:
-        """Initiate the parameters either from existing checkpoint or from
-        scratch."""
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                kaiming_init(m)
-            elif isinstance(m, nn.BatchNorm2d):
-                constant_init(m, 1)
+        """Initiate the parameters from scratch."""
+        pass
 
     def forward(self, batch_inputs, batch_data_samples, mode, **kwargs):
         """The unified entry for a forward process in both training and test.
@@ -197,18 +191,20 @@ class BMN(BaseModel):
         Returns:
             dict: A dictionary of loss components.
         """
-        confidence_map, start, end = self._forward(batch_inputs)
         gt_bbox = [
             sample.gt_instances['gt_bbox'] for sample in batch_data_samples
         ]
-        confidence, label_start, label_end = self.generate_labels(gt_bbox)
+        label_confidence, label_start, label_end = self.generate_labels(
+            gt_bbox)
 
         device = batch_inputs.device
-        confidence = confidence.to(device)
+        label_confidence = label_confidence.to(device)
         label_start = label_start.to(device)
         label_end = label_end.to(device)
 
-        loss = self.loss_cls(confidence_map, start, end, confidence,
+        confidence_map, start, end = self._forward(batch_inputs)
+
+        loss = self.loss_cls(confidence_map, start, end, label_confidence,
                              label_start, label_end, self.bm_mask)
         loss_dict = dict(loss=loss[0])
         return loss_dict
@@ -417,11 +413,12 @@ class BMN(BaseModel):
         match_score_end_list = []
         for every_gt_bbox in gt_bbox:
             gt_iou_map = []
+            every_gt_bbox = every_gt_bbox.cpu()
             for start, end in every_gt_bbox:
                 if isinstance(start, torch.Tensor):
-                    start = start.cpu().numpy()
+                    start = start.numpy()
                 if isinstance(end, torch.Tensor):
-                    end = end.cpu().numpy()
+                    end = end.numpy()
                 current_gt_iou_map = temporal_iou(self.match_map[:, 0],
                                                   self.match_map[:, 1], start,
                                                   end)
@@ -431,8 +428,8 @@ class BMN(BaseModel):
             gt_iou_map = np.array(gt_iou_map).astype(np.float32)
             gt_iou_map = np.max(gt_iou_map, axis=0)
 
-            gt_tmins = every_gt_bbox[:, 0].cpu().numpy()
-            gt_tmaxs = every_gt_bbox[:, 1].cpu().numpy()
+            gt_tmins = every_gt_bbox[:, 0]
+            gt_tmaxs = every_gt_bbox[:, 1]
 
             gt_len_pad = 3 * (1. / self.tscale)
 
@@ -458,11 +455,6 @@ class BMN(BaseModel):
             match_score_confidence_list.append(gt_iou_map)
             match_score_start_list.append(match_score_start)
             match_score_end_list.append(match_score_end)
-
-        match_score_confidence_list = np.array(match_score_confidence_list)
-        match_score_start_list = np.array(match_score_start_list)
-        match_score_end_list = np.array(match_score_end_list)
-
         match_score_confidence_list = torch.Tensor(match_score_confidence_list)
         match_score_start_list = torch.Tensor(match_score_start_list)
         match_score_end_list = torch.Tensor(match_score_end_list)
