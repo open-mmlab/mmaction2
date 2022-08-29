@@ -412,9 +412,9 @@ class BMN(BaseModel):
             gt_iou_map = []
             for start, end in every_gt_bbox:
                 if isinstance(start, torch.Tensor):
-                    start = start.numpy()
+                    start = start.cpu().numpy()
                 if isinstance(end, torch.Tensor):
-                    end = end.numpy()
+                    end = end.cpu().numpy()
                 current_gt_iou_map = temporal_iou(self.match_map[:, 0],
                                                   self.match_map[:, 1], start,
                                                   end)
