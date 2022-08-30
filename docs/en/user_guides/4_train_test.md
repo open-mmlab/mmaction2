@@ -12,12 +12,11 @@ Here is the full usage of the script:
 python tools/train.py ${CONFIG_FILE} [ARGS]
 ```
 
-````{note}
 By default, MMAction2 prefers GPU to CPU. If you want to train a model on CPU, please empty `CUDA_VISIBLE_DEVICES` or set it to -1 to make GPU invisible to the program.
+
 ```bash
 CUDA_VISIBLE_DEVICES=-1 python tools/train.py ${CONFIG_FILE} [ARGS]
 ```
-````
 
 | ARGS                                  | Description                                                                                                                                                         |
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -127,12 +126,11 @@ Here is the full usage of the script:
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [ARGS]
 ```
 
-````{note}
-By default, MMClassification prefers GPU to CPU. If you want to test a model on CPU, please empty `CUDA_VISIBLE_DEVICES` or set it to -1 to make GPU invisible to the program.
+By default, MMAction2 prefers GPU to CPU. If you want to test a model on CPU, please empty `CUDA_VISIBLE_DEVICES` or set it to -1 to make GPU invisible to the program.
+
 ```bash
 CUDA_VISIBLE_DEVICES=-1 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [ARGS]
 ```
-````
 
 | ARGS                                  | Description                                                                                                                                                         |
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
