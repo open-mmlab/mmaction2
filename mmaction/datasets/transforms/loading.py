@@ -1164,20 +1164,21 @@ class ImageDecode(BaseTransform):
 class AudioDecodeInit(BaseTransform):
     """Using librosa to initialize the audio reader.
 
-    Required keys are "audio_path", added or modified keys are "length",
-    "sample_rate", "audios".
+    Required keys are ``audio_path``, added or modified keys are ``length``,
+    ``sample_rate``, ``audios``.
 
     Args:
         io_backend (str): io backend where frames are store.
-            Default: 'disk'.
-        sample_rate (int): Audio sampling times per second. Default: 16000.
+            Defaults to ``disk``.
+        sample_rate (int): Audio sampling times per second. Defaults to 16000.
+        pad_method (str): Padding method. Defaults to ``zero``.
     """
 
     def __init__(self,
-                 io_backend='disk',
-                 sample_rate=16000,
-                 pad_method='zero',
-                 **kwargs):
+                 io_backend: str = 'disk',
+                 sample_rate: int = 16000,
+                 pad_method: str = 'zero',
+                 **kwargs) -> None:
         self.io_backend = io_backend
         self.sample_rate = sample_rate
         if pad_method in ['random', 'zero']:
@@ -1188,15 +1189,17 @@ class AudioDecodeInit(BaseTransform):
         self.file_client = None
 
     @staticmethod
-    def _zero_pad(shape):
+    def _zero_pad(shape: int) -> np.ndarray:
+        """Zero padding method."""
         return np.zeros(shape, dtype=np.float32)
 
     @staticmethod
-    def _random_pad(shape):
+    def _random_pad(shape: int) -> np.ndarray:
+        """Random padding method."""
         # librosa load raw audio file into a distribution of -1~+1
         return np.random.rand(shape).astype(np.float32) * 2 - 1
 
-    def transform(self, results):
+    def transform(self, results: dict) -> dict:
         """Perform the librosa initialization.
 
         Args:
@@ -1285,17 +1288,17 @@ class AudioDecode(BaseTransform):
 
     Args:
         fixed_length (int): As the audio clip selected by frames sampled may
-            not be exactly the same, `fixed_length` will truncate or pad them
-            into the same size. Default: 32000.
+            not be exactly the same, ``fixed_length`` will truncate or pad them
+            into the same size. Defaults to 32000.
 
-    Required keys are "frame_inds", "num_clips", "total_frames", "length",
-    added or modified keys are "audios", "audios_shape".
+    Required keys are ``frame_inds``, ``num_clips``, ``total_frames``,
+    ``length``, added or modified keys are ``audios``, ``audios_shape``.
     """
 
-    def __init__(self, fixed_length=32000):
+    def __init__(self, fixed_length: int = 32000) -> None:
         self.fixed_length = fixed_length
 
-    def transform(self, results):
+    def transform(self, results: dict) -> dict:
         """Perform the ``AudioDecode`` to pick audio clips."""
         audio = results['audios']
         frame_inds = results['frame_inds']
@@ -1328,6 +1331,11 @@ class AudioDecode(BaseTransform):
         results['audios'] = np.array(resampled_clips)
         results['audios_shape'] = results['audios'].shape
         return results
+
+    def __repr__(self):
+        repr_str = self.__class__.__name__
+        repr_str += f"(fixed_length='{self.fixed_length}')"
+        return repr_str
 
 
 @TRANSFORMS.register_module()

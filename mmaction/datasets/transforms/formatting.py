@@ -10,6 +10,13 @@ from mmaction.structures import ActionDataSample
 
 @TRANSFORMS.register_module()
 class PackActionInputs(BaseTransform):
+    """Pack the inputs data for the recognition.
+
+    Args:
+        meta_keys (Sequence[str]): The meta keys to saved in the
+            ``metainfo`` of the packed ``data_sample``.
+            Defaults to ``('img_shape', 'img_key', 'video_id', 'timestamp')``.
+    """
 
     mapping_table = {
         'gt_bboxes': 'bboxes',
@@ -20,15 +27,16 @@ class PackActionInputs(BaseTransform):
                  meta_keys=('img_shape', 'img_key', 'video_id', 'timestamp')):
         self.meta_keys = meta_keys
 
-    def transform(self, results):
+    def transform(self, results: dict) -> dict:
         """Method to pack the input data.
         Args:
             results (dict): Result dict from the data pipeline.
+
         Returns:
             dict:
-            - 'inputs' (obj:`torch.Tensor`): The forward data of models.
-            - 'data_samples' (obj:`DetDataSample`): The annotation info of the
-                sample.
+            - 'inputs' (Tensor): The forward data of models.
+            - 'data_sample' (ActionDataSample): The annotation info of the
+              sample.
         """
         packed_results = dict()
         if 'imgs' in results:
@@ -37,10 +45,13 @@ class PackActionInputs(BaseTransform):
         elif 'keypoint' in results:
             keypoint = results['keypoint']
             packed_results['inputs'] = to_tensor(keypoint)
+        elif 'audios' in results:
+            audios = results['audios']
+            packed_results['inputs'] = to_tensor(audios)
         else:
             raise ValueError(
-                'Cannot get "img" or "keypoint" in the input dict of '
-                '`PackActionInputs`.')
+                'Cannot get `imgs`, `keypoint` or `audios` in the input dict '
+                'of `PackActionInputs`.')
 
         data_sample = ActionDataSample()
 
@@ -250,8 +261,8 @@ class FormatShape(BaseTransform):
 class FormatAudioShape(BaseTransform):
     """Format final audio shape to the given input_format.
 
-    Required keys are ``imgs``, ``num_clips`` and ``clip_len``, added
-    or modified keys are ``imgs`` and ``input_shape``.
+    Required keys are ``audios``, ``num_clips`` and ``clip_len``, added or
+    modified keys are ``audios`` and ``input_shape``.
 
     Args:
         input_format (str): Define the final imgs format.

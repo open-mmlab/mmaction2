@@ -1,10 +1,14 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import Tuple, Union
+
+import torch
 import torch.nn as nn
 from mmcv.cnn import build_norm_layer
 from mmengine.model.weight_init import constant_init, kaiming_init
 from torch.nn.modules.utils import _triple
 
 from mmaction.registry import MODELS
+from mmaction.utils import ConfigType
 
 
 @MODELS.register_module()
@@ -14,28 +18,33 @@ class Conv2plus1d(nn.Module):
     https://arxiv.org/pdf/1711.11248.pdf.
 
     Args:
-        in_channels (int): Same as nn.Conv3d.
-        out_channels (int): Same as nn.Conv3d.
-        kernel_size (int | tuple[int]): Same as nn.Conv3d.
-        stride (int | tuple[int]): Same as nn.Conv3d.
-        padding (int | tuple[int]): Same as nn.Conv3d.
-        dilation (int | tuple[int]): Same as nn.Conv3d.
-        groups (int): Same as nn.Conv3d.
-        bias (bool | str): If specified as `auto`, it will be decided by the
-            norm_cfg. Bias will be set as True if norm_cfg is None, otherwise
-            False.
+        in_channels (int): Same as ``nn.Conv3d``.
+        out_channels (int): Same as ``nn.Conv3d``.
+        kernel_size (Union[int, Tuple[int]]): Same as ``nn.Conv3d``.
+        stride (Union[int, Tuple[int]]): Same as ``nn.Conv3d``. Defaults to 1.
+        padding (Union[int, Tuple[int]]): Same as ``nn.Conv3d``. Defaults to 0.
+        dilation (Union[int, Tuple[int]]): Same as ``nn.Conv3d``.
+            Defaults to 1.
+        groups (int): Same as ``nn.Conv3d``. Defaults to 1.
+        bias (Union[bool, str]): If specified as `auto`, it will be decided by
+            the norm_cfg. Bias will be set as True if norm_cfg is None,
+            otherwise False.
+        norm_cfg (Union[dict, ConfigDict]): Config for norm layers.
+            Defaults to ``dict(type='BN3d')``.
     """
 
-    def __init__(self,
-                 in_channels,
-                 out_channels,
-                 kernel_size,
-                 stride=1,
-                 padding=0,
-                 dilation=1,
-                 groups=1,
-                 bias=True,
-                 norm_cfg=dict(type='BN3d')):
+    def __init__(
+        self,
+        in_channels: int,
+        out_channels: int,
+        kernel_size: Union[int, Tuple[int]],
+        stride: Union[int, Tuple[int]] = 1,
+        padding: Union[int, Tuple[int]] = 0,
+        dilation: Union[int, Tuple[int]] = 1,
+        groups: int = 1,
+        bias: Union[bool, str] = True,
+        norm_cfg: ConfigType = dict(type='BN3d')
+    ) -> None:
         super().__init__()
 
         kernel_size = _triple(kernel_size)
@@ -86,7 +95,7 @@ class Conv2plus1d(nn.Module):
 
         self.init_weights()
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Defines the computation performed at every call.
 
         Args:
@@ -101,7 +110,7 @@ class Conv2plus1d(nn.Module):
         x = self.conv_t(x)
         return x
 
-    def init_weights(self):
+    def init_weights(self) -> None:
         """Initiate the parameters from scratch."""
         kaiming_init(self.conv_s)
         kaiming_init(self.conv_t)

@@ -1362,20 +1362,20 @@ class TenCrop(BaseTransform):
 class AudioAmplify(BaseTransform):
     """Amplify the waveform.
 
-    Required keys are "audios", added or modified keys are "audios",
-    "amplify_ratio".
+    Required keys are ``audios``, added or modified keys are ``audios``,
+    ``amplify_ratio``.
 
     Args:
         ratio (float): The ratio used to amplify the audio waveform.
     """
 
-    def __init__(self, ratio):
+    def __init__(self, ratio: float) -> None:
         if isinstance(ratio, float):
             self.ratio = ratio
         else:
             raise TypeError('Amplification ratio should be float.')
 
-    def transform(self, results):
+    def transform(self, results: dict) -> dict:
         """Perform the audio amplification.
 
         Args:
@@ -1398,23 +1398,23 @@ class AudioAmplify(BaseTransform):
 class MelSpectrogram(BaseTransform):
     """MelSpectrogram. Transfer an audio wave into a melspectogram figure.
 
-    Required keys are "audios", "sample_rate", "num_clips", added or modified
-    keys are "audios".
+    Required keys are ``audios``, ``sample_rate``, ``num_clips``, added or
+    modified keys are ``audios``.
 
     Args:
-        window_size (int): The window size in millisecond. Default: 32.
-        step_size (int): The step size in millisecond. Default: 16.
-        n_mels (int): Number of mels. Default: 80.
+        window_size (int): The window size in millisecond. Defaults to 32.
+        step_size (int): The step size in millisecond. Defaults to 16.
+        n_mels (int): Number of mels. Defaults to 80.
         fixed_length (int): The sample length of melspectrogram maybe not
             exactly as wished due to different fps, fix the length for batch
-            collation by truncating or padding. Default: 128.
+            collation by truncating or padding. Defaults to 128.
     """
 
     def __init__(self,
-                 window_size=32,
-                 step_size=16,
-                 n_mels=80,
-                 fixed_length=128):
+                 window_size: int = 32,
+                 step_size: int = 16,
+                 n_mels: int = 80,
+                 fixed_length: int = 128) -> None:
         if all(
                 isinstance(x, int)
                 for x in [window_size, step_size, n_mels, fixed_length]):
@@ -1425,7 +1425,7 @@ class MelSpectrogram(BaseTransform):
         else:
             raise TypeError('All arguments should be int.')
 
-    def transform(self, results):
+    def transform(self, results: dict) -> dict:
         """Perform MelSpectrogram transformation.
 
         Args:
@@ -1453,7 +1453,7 @@ class MelSpectrogram(BaseTransform):
                 mel = mel[:self.fixed_length, :]
             else:
                 mel = np.pad(
-                    mel, ((0, mel.shape[-1] - self.fixed_length), (0, 0)),
+                    mel, ((0, self.fixed_length - mel.shape[0]), (0, 0)),
                     mode='edge')
             melspectrograms.append(mel)
 

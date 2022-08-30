@@ -1,0 +1,26 @@
+Collections:
+  - Name: Audio
+    README: configs/recognition_audio/resnet/README.md
+    Paper:
+      URL: https://arxiv.org/abs/2001.08740
+      Title: "Audiovisual SlowFast Networks for Video Recognition"
+
+Models:
+  - Name: tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature
+    Config: configs/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature.py
+    In Collection: Audio
+    Metadata:
+      Architecture: ResNet18
+      Pretrained: None
+      Training Data: Kinetics-400
+      Training Resources: 8 GPUs
+      n_fft: 1024
+    Modality: Audio
+    Results:
+      - Dataset: Kinetics-400
+        Task: Action Recognition
+        Metrics:
+          Top 1 Accuracy: 19.7
+          Top 5 Accuracy: 35.75
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature_20201012-bf34df6c.pth

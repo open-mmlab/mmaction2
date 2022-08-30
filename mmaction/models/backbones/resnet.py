@@ -2,12 +2,14 @@
 from collections import OrderedDict
 from typing import List, Optional, Sequence, Tuple, Union
 
+import mmengine
+import torch
+import torch.nn as nn
 from mmcv.cnn import ConvModule
 from mmengine.logging import MMLogger
 from mmengine.model.weight_init import constant_init, kaiming_init
 from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
 from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
-from torch import Tensor, nn
 from torch.utils import checkpoint as cp
 
 from mmaction.registry import MODELS
@@ -20,21 +22,21 @@ class BasicBlock(nn.Module):
     Args:
         inplanes (int): Number of channels for the input in first conv2d layer.
         planes (int): Number of channels produced by some norm/conv2d layers.
-        stride (int): Stride in the conv layer. Default: 1.
-        dilation (int): Spacing between kernel elements. Default: 1.
-        downsample (nn.Module | None): Downsample layer. Default: None.
-        style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
-            layer is the 3x3 conv layer, otherwise the stride-two layer is
-            the first 1x1 conv layer. Default: 'pytorch'.
-        conv_cfg (dict or ConfigDict): Config for norm layers.
-            Default: dict(type='Conv').
-        norm_cfg (dict or ConfigDict):
-            Config for norm layers. required keys are `type` and
-            `requires_grad`. Default: dict(type='BN2d', requires_grad=True).
-        act_cfg (dict or ConfigDict): Config for activate layers.
-            Default: dict(type='ReLU', inplace=True).
+        stride (int): Stride in the conv layer. Defaults to 1.
+        dilation (int): Spacing between kernel elements. Defaults to 1.
+        downsample (nn.Module, optional): Downsample layer. Defaults to None.
+        style (str): ``pytorch`` or ``caffe``. If set to ``pytorch``, the
+            stride-two layer is the 3x3 conv layer, otherwise the stride-two
+            layer is the first 1x1 conv layer. Defaults to ``pytorch``.
+        conv_cfg (Union[dict, ConfigDict]): Config for norm layers.
+            Defaults to ``dict(type='Conv')``.
+        norm_cfg (Union[dict, ConfigDict]): Config for norm layers. required
+            keys are ``type`` and ``requires_grad``.
+            Defaults to ``dict(type='BN2d', requires_grad=True)``.
+        act_cfg (Union[dict, ConfigDict]): Config for activate layers.
+            Defaults to ``dict(type='ReLU', inplace=True)``.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
-            memory while slowing down the training speed. Default: False.
+            memory while slowing down the training speed. Defaults to False.
     """
     expansion = 1
 
@@ -83,14 +85,14 @@ class BasicBlock(nn.Module):
         self.norm_cfg = norm_cfg
         assert not with_cp
 
-    def forward(self, x: Tensor) -> Tensor:
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Defines the computation performed at every call.
 
         Args:
-            x (Tensor): The input data.
+            x (torch.Tensor): The input data.
 
         Returns:
-            Tensor: The output of the module.
+            torch.Tensor: The output of the module.
         """
         identity = x
 
@@ -113,22 +115,22 @@ class Bottleneck(nn.Module):
         inplanes (int):
             Number of channels for the input feature in first conv layer.
         planes (int):
-            Number of channels produced by some norm layes and conv layers
-        stride (int): Spatial stride in the conv layer. Default: 1.
-        dilation (int): Spacing between kernel elements. Default: 1.
-        downsample (nn.Module | None): Downsample layer. Default: None.
-        style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
-            layer is the 3x3 conv layer, otherwise the stride-two layer is
-            the first 1x1 conv layer. Default: 'pytorch'.
-        conv_cfg (dict or ConfigDict): Config for norm layers.
-            Default: dict(type='Conv').
-        norm_cfg (dict or ConfigDict):
-            Config for norm layers. required keys are `type` and
-            `requires_grad`. Default: dict(type='BN2d', requires_grad=True).
-        act_cfg (dict or ConfigDict): Config for activate layers.
-            Default: dict(type='ReLU', inplace=True).
+            Number of channels produced by some norm layes and conv layers.
+        stride (int): Spatial stride in the conv layer. Defaults to 1.
+        dilation (int): Spacing between kernel elements. Defaults to 1.
+        downsample (nn.Module, optional): Downsample layer. Defaults to None.
+        style (str): ``pytorch`` or ``caffe``. If set to ``pytorch``, the
+            stride-two layer is the 3x3 conv layer, otherwise the stride-two
+            layer is the first 1x1 conv layer. Defaults to ``pytorch``.
+        conv_cfg (Union[dict, ConfigDict]): Config for norm layers.
+            Defaults to ``dict(type='Conv')``.
+        norm_cfg (Union[dict, ConfigDict]): Config for norm layers. required
+            keys are ``type`` and ``requires_grad``.
+            Defaults to ``dict(type='BN2d', requires_grad=True)``.
+        act_cfg (Union[dict, ConfigDict]): Config for activate layers.
+            Defaults to ``dict(type='ReLU', inplace=True)``.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
-            memory while slowing down the training speed. Default: False.
+            memory while slowing down the training speed. Defaults to False.
     """
 
     expansion = 4
@@ -191,14 +193,14 @@ class Bottleneck(nn.Module):
         self.norm_cfg = norm_cfg
         self.with_cp = with_cp
 
-    def forward(self, x: Tensor) -> Tensor:
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Defines the computation performed at every call.
 
         Args:
-            x (Tensor): The input data.
+            x (torch.Tensor): The input data.
 
         Returns:
-            Tensor: The output of the module.
+            torch.Tensor: The output of the module.
         """
 
         def _inner_forward(x):
@@ -244,19 +246,19 @@ def make_res_layer(block: nn.Module,
         inplanes (int): Number of channels for the input feature in each block.
         planes (int): Number of channels for the output feature in each block.
         blocks (int): Number of residual blocks.
-        stride (int): Stride in the conv layer. Default: 1.
-        dilation (int): Spacing between kernel elements. Default: 1.
-        style (str): `pytorch` or `caffe`. If set to "pytorch", the stride-two
-            layer is the 3x3 conv layer, otherwise the stride-two layer is
-            the first 1x1 conv layer. Default: 'pytorch'.
-        conv_cfg (dict or ConfigDict| None): Config for norm layers.
-            Default: None.
-        norm_cfg (dict or ConfigDict| None): Config for norm layers.
-            Default: None.
-        act_cfg (dict or ConfigDict| None): Config for activate layers.
-            Default: None.
+        stride (int): Stride in the conv layer. Defaults to 1.
+        dilation (int): Spacing between kernel elements. Defaults to 1.
+        style (str): ``pytorch`` or ``caffe``. If set to ``pytorch``, the
+            stride-two layer is the 3x3 conv layer, otherwise the stride-two
+            layer is the first 1x1 conv layer. Defaults to ``pytorch``.
+        conv_cfg (Union[dict, ConfigDict], optional): Config for norm layers.
+            Defaults to None.
+        norm_cfg (Union[dict, ConfigDict], optional): Config for norm layers.
+            Defaults to None.
+        act_cfg (Union[dict, ConfigDict], optional): Config for activate
+            layers. Defaults to None.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
-            memory while slowing down the training speed. Default: False.
+            memory while slowing down the training speed. Defaults to False.
 
     Returns:
         nn.Module: A residual layer for the given config.
@@ -308,30 +310,35 @@ class ResNet(nn.Module):
     """ResNet backbone.
 
     Args:
-        depth (int): Depth of resnet, from {18, 34, 50, 101, 152}.
-        pretrained (str | None): Name of pretrained model. Default: None.
-        in_channels (int): Channel num of input features. Default: 3.
-        num_stages (int): Resnet stages. Default: 4.
+        depth (int): Depth of resnet, from ``{18, 34, 50, 101, 152}``.
+        pretrained (str, optional): Name of pretrained model. Defaults to None.
+        torchvision_pretrain (bool): Whether to load pretrained model from
+            torchvision. Defaults to True.
+        in_channels (int): Channel num of input features. Defaults to 3.
+        num_stages (int): Resnet stages. Defaults to 4.
+        out_indices (Sequence[int]): Indices of output feature.
+            Defaults to (3, ).
         strides (Sequence[int]): Strides of the first block of each stage.
-        out_indices (Sequence[int]): Indices of output feature. Default: (3, ).
+            Defaults to ``(1, 2, 2, 2)``.
         dilations (Sequence[int]): Dilation of each stage.
-        style (str): ``pytorch`` or ``caffe``. If set to "pytorch", the
+            Defaults to ``(1, 1, 1, 1)``.
+        style (str): ``pytorch`` or ``caffe``. If set to ``pytorch``, the
             stride-two layer is the 3x3 conv layer, otherwise the stride-two
-            layer is the first 1x1 conv layer. Default: ``pytorch``.
+            layer is the first 1x1 conv layer. Defaults to ``pytorch``.
         frozen_stages (int): Stages to be frozen (all param fixed). -1 means
-            not freezing any parameters. Default: -1.
+            not freezing any parameters. Defaults to -1.
         conv_cfg (dict or ConfigDict): Config for norm layers.
-            Default: dict(type='Conv').
-        norm_cfg (dict or ConfigDict):
-            Config for norm layers. required keys are `type` and
-            `requires_grad`. Default: dict(type='BN2d', requires_grad=True).
-        act_cfg (dict or ConfigDict): Config for activate layers.
-            Default: dict(type='ReLU', inplace=True).
+            Defaults ``dict(type='Conv')``.
+        norm_cfg (Union[dict, ConfigDict]): Config for norm layers. required
+            keys are ``type`` and ``requires_grad``.
+            Defaults to ``dict(type='BN2d', requires_grad=True)``.
+        act_cfg (Union[dict, ConfigDict]): Config for activate layers.
+            Defaults to ``dict(type='ReLU', inplace=True)``.
         norm_eval (bool): Whether to set BN layers to eval mode, namely, freeze
-            running stats (mean and var). Default: False.
-        partial_bn (bool): Whether to use partial bn. Default: False.
+            running stats (mean and var). Defaults to False.
+        partial_bn (bool): Whether to use partial bn. Defaults to False.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
-            memory while slowing down the training speed. Default: False.
+            memory while slowing down the training speed. Defaults to False.
     """
 
     arch_settings = {
@@ -487,7 +494,8 @@ class ResNet(nn.Module):
                     param.data.copy_(param_tv)
                     loaded_param_names.append(param_tv_name)
 
-    def _load_torchvision_checkpoint(self, logger=None) -> None:
+    def _load_torchvision_checkpoint(self,
+                                     logger: mmengine.MMLogger = None) -> None:
         """Initiate the parameters from torchvision pretrained checkpoint."""
         state_dict_torchvision = _load_checkpoint(self.pretrained)
         if 'state_dict' in state_dict_torchvision:
@@ -542,15 +550,16 @@ class ResNet(nn.Module):
         else:
             raise TypeError('pretrained must be a str or None')
 
-    def forward(self, x: Tensor) -> Union[Tensor, Tuple[Tensor]]:
+    def forward(self, x: torch.Tensor) \
+            -> Union[torch.Tensor, Tuple[torch.Tensor]]:
         """Defines the computation performed at every call.
 
         Args:
-            x (Tensor): The input data.
+            x (torch.Tensor): The input data.
 
         Returns:
-            Tensor or Tuple[Tensor]: The feature of the input samples extracted
-            by the backbone.
+            Union[torch.Tensor or Tuple[torch.Tensor]]: The feature of the
+                input samples extracted by the backbone.
         """
         x = self.conv1(x)
         x = self.maxpool(x)
