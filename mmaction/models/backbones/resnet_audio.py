@@ -4,10 +4,11 @@ from typing import Optional, Sequence
 import torch
 import torch.nn as nn
 import torch.utils.checkpoint as cp
-from mmcv.cnn import ConvModule, constant_init, kaiming_init
+from mmcv.cnn import ConvModule
 from mmengine.logging import MMLogger
+from mmengine.model.weight_init import constant_init, kaiming_init
 from mmengine.runner import load_checkpoint
-from mmengine.utils.parrots_wrapper import _BatchNorm
+from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
 from torch.nn.modules.utils import _ntuple
 
 from mmaction.registry import MODELS
@@ -27,7 +28,7 @@ class Bottleneck2dAudio(nn.Module):
         norm_cfg (dict): Config for norm layers. required keys are ``type`` and
             ``requires_grad``. Defaults to None.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
-            memory while slowing down the training speed. Defaults to False.
+            memory while slowing down the trgaining speed. Defaults to False.
     """
     expansion = 4
 

@@ -3,11 +3,14 @@ from typing import Tuple, Union
 
 import torch
 import torch.nn as nn
-from mmcv.cnn import CONV_LAYERS, ConvModule, constant_init, kaiming_init
+from mmcv.cnn import ConvModule
+from mmengine.model.weight_init import constant_init, kaiming_init
 from torch.nn.modules.utils import _pair
 
+from mmaction.registry import MODELS
 
-@CONV_LAYERS.register_module()
+
+@MODELS.register_module()
 class ConvAudio(nn.Module):
     """Conv2d module for AudioResNet backbone.
 

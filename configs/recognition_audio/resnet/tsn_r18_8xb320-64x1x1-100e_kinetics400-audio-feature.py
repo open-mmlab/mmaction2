@@ -34,7 +34,7 @@ test_pipeline = [
         type='SampleFrames',
         clip_len=64,
         frame_interval=1,
-        num_clips=1,
+        num_clips=10,
         test_mode=True),
     dict(type='AudioFeatureSelector'),
     dict(type='FormatAudioShape', input_format='NCTF'),
@@ -65,7 +65,7 @@ val_dataloader = dict(
         suffix='.npy',
         test_mode=True))
 test_dataloader = dict(
-    batch_size=32,
+    batch_size=1,
     num_workers=2,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
@@ -86,16 +86,12 @@ val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
 param_scheduler = [
-    dict(
-        type='CosineAnnealingLR',
-        eta_min=0,
-        T_max=100,
-        by_epoch=True)
+    dict(type='CosineAnnealingLR', eta_min=0, T_max=100, by_epoch=True)
 ]
 
 optim_wrapper = dict(
     optimizer=dict(type='SGD', lr=0.1, momentum=0.9, weight_decay=0.0001),
     clip_grad=dict(max_norm=40, norm_type=2))
 
-default_hooks = dict(checkpoint=dict(max_keep_ckpts=3, interval=5),
-                     logger=dict(interval=20))
+default_hooks = dict(
+    checkpoint=dict(max_keep_ckpts=3, interval=5), logger=dict(interval=20))

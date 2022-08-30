@@ -5,12 +5,11 @@ from typing import List, Optional, Sequence, Tuple, Union
 import mmengine
 import torch
 import torch.nn as nn
-from mmcv.cnn import ConvModule, constant_init, kaiming_init
+from mmcv.cnn import ConvModule
 from mmengine.logging import MMLogger
 from mmengine.model.weight_init import constant_init, kaiming_init
 from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
 from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
-from torch import Tensor, nn
 from torch.utils import checkpoint as cp
 
 from mmaction.registry import MODELS

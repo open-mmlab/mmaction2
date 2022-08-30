@@ -49,7 +49,7 @@ test_pipeline = [
 
 train_dataloader = dict(
     batch_size=320,
-    num_workers=8,
+    num_workers=2,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
@@ -59,7 +59,7 @@ train_dataloader = dict(
         pipeline=train_pipeline))
 val_dataloader = dict(
     batch_size=320,
-    num_workers=8,
+    num_workers=2,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
@@ -70,7 +70,7 @@ val_dataloader = dict(
         test_mode=True))
 test_dataloader = dict(
     batch_size=1,
-    num_workers=8,
+    num_workers=2,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
@@ -89,16 +89,12 @@ val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
 param_scheduler = [
-    dict(
-        type='CosineAnnealingLR',
-        eta_min=0,
-        T_max=100,
-        by_epoch=True)
+    dict(type='CosineAnnealingLR', eta_min=0, T_max=100, by_epoch=True)
 ]
 
 optim_wrapper = dict(
     optimizer=dict(type='SGD', lr=0.1, momentum=0.9, weight_decay=0.0001),
     clip_grad=dict(max_norm=40, norm_type=2))
 
-default_hooks = dict(checkpoint=dict(max_keep_ckpts=3, interval=5),
-                     logger=dict(interval=20))
+default_hooks = dict(
+    checkpoint=dict(max_keep_ckpts=3, interval=5), logger=dict(interval=20))
