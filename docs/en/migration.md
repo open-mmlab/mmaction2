@@ -1,6 +1,6 @@
 # Migration from MMAction2 0.x
 
-We introduce some modifications in MMAction2 1.x, and some of them are BC-breading. To migrate your projects from MMAction2 0.x smoothly, please read this tutorial.
+We introduce some modifications in MMAction2 1.x, and some of them are BC-breaking. To migrate your projects from MMAction2 0.x smoothly, please read this tutorial.
 
 ## New dependencies
 
@@ -32,7 +32,7 @@ Changes in **`data`**:
 - The original `data` field is splited to `train_dataloader`, `val_dataloader` and
   `test_dataloader`. This allows us to configure them in fine-grained. For example,
   you can specify different sampler and batch size during training and test.
-- The `samples_per_gpu` is renamed to `batch_size`.
+- The `videos_per_gpu` is renamed to `batch_size`.
 - The `workers_per_gpu` is renamed to `num_workers`.
 
 <table class="docutils">
@@ -42,7 +42,7 @@ Changes in **`data`**:
 
 ```python
 data = dict(
-    samples_per_gpu=32,
+    videos_per_gpu=32,
     workers_per_gpu=2,
     train=dict(...),
     val=dict(...),
@@ -79,7 +79,7 @@ test_dataloader = val_dataloader
 
 Changes in **`pipeline`**:
 
-- The original formatting transforms **`ToTensor`**、**`Collect`** are combined as `PackActionInputs`.
+- The original formatting transforms **`ToTensor`**, **`Collect`** are combined as `PackActionInputs` for action recognition task; and **`ToTensor`**, **`Collect`**, **`ToDataContainer`** are combined as `PackLocalizationInputs`
 - We don't recommend to do **`Normalize`** in the dataset pipeline. Please remove it from pipelines and set it in the `model.data_preprocessor` field.
 
 <table class="docutils">
@@ -441,23 +441,37 @@ The `mmaction.core` package is renamed to [`mmaction.engine`](mmaction.engine).
 | `optimizers` |                                Moved to `mmaction.engine.optimizers`                                |
 |   `utils`    | Removed, the distributed environment related functions can be found in the `mmengine.dist` package. |
 
-### `mmaction.datasets`(TODO)
+### `mmaction.datasets`
+
+The documentation can be found [here](mmaction.datasets)
+Changes in [`BaseDataset`](mmaction.datasets.Base):
+
+|   Method of Dataset    |                    Changes                    |
+| :--------------------: | :-------------------------------------------: |
+| `prepare_train_frames` |          Replaced by `get_data_info`          |
+| `preprare_test_frames` |          Replaced by `get_data_info`          |
+|       `evaluate`       |  Removed, use `mmengine.evaluator.Evaluator`  |
+|     `dump_results`     | Removed, use `mmengine.evaluator.DumpResults` |
+|   `load_annotations`   |         Replaced by `load_data_list`          |
+
+Now, you can write a new Dataset class inherited from \[BaseDataset\] and overwrite `load_data_list` only. To load more data information, you could overwrite `get_data_info` like `RawframeDataset` and `AVADataset`.
+The `mmaction.datasets.pipelines` is renamed to `mmaction.datasets.transforms` and the `mmaction.datasets.pipelines.augmentations` is renamed to `mmaction.datasets.pipelines.augmentations.processing`
 
 ### `mmaction.models`
 
 The documentation can be found [here](mmaction.models). The interface of all **backbones**, **necks** and **losses** didn't change.
 
-Changes in [`ImageClassifier`](mmaction.models.ImageClassifier):
+Changes in [`BaseRecognizer`](mmaction.models.BaseRecognizer):
 
-| Method of classifiers |                                                                     Changes                                                                      |
-| :-------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------: |
-|    `extract_feat`     |                                                                    No changes                                                                    |
-|       `forward`       | Now only accepts three arguments: `inputs`, `data_samples` and `mode`. See [the documentation](mmaction.models.BaseRecognizer) for more details. |
-|    `forward_train`    |                                                               Replaced by `loss`.                                                                |
-|     `simple_test`     |                                                              Replaced by `predict`.                                                              |
-|     `train_step`      |              The `optimizer` argument is replaced by `optim_wrapper` and it accepts [`OptimWrapper`](mmengine.optim.OptimWrapper).               |
-|      `val_step`       |                                   The original `val_step` is the same as `train_step`, now it calls `predict`.                                   |
-|      `test_step`      |                                                   New method, and it's the same as `val_step`.                                                   |
+| Method of recognizer |                                                                     Changes                                                                      |
+| :------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------: |
+|    `extract_feat`    |                                                                    No changes                                                                    |
+|      `forward`       | Now only accepts three arguments: `inputs`, `data_samples` and `mode`. See [the documentation](mmaction.models.BaseRecognizer) for more details. |
+|   `forward_train`    |                                                               Replaced by `loss`.                                                                |
+|    `forward_test`    |                                                              Replaced by `predict`.                                                              |
+|     `train_step`     |              The `optimizer` argument is replaced by `optim_wrapper` and it accepts [`OptimWrapper`](mmengine.optim.OptimWrapper).               |
+|      `val_step`      |                                   The original `val_step` is the same as `train_step`, now it calls `predict`.                                   |
+|     `test_step`      |                                                   New method, and it's the same as `val_step`.                                                   |
 
 Changes in [heads](mmaction.models.heads)\[TODO\]
 
