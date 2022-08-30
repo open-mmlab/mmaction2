@@ -141,7 +141,7 @@ not clear on which to choose, follow our recommendations:
 Please make sure the GPU driver satisfies the minimum version requirements. See [this table](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html#cuda-major-component-versions__table-cuda-toolkit-driver-versions) for more information.
 
 ```{note}
-Installing CUDA runtime libraries is enough if you follow our best prac``tices,
+Installing CUDA runtime libraries is enough if you follow our best practices,
 because no CUDA code will be compiled locally. However if you hope to compile
 MMCV from source or develop other CUDA operators, you need to install the
 complete CUDA toolkit from NVIDIA's [website](https://developer.nvidia.com/cuda-downloads),
