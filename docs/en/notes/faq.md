@@ -20,7 +20,7 @@ If the contents here do not cover your issue, please create an issue using the [
 - **"No module named 'mmcv.ops'"; "No module named 'mmcv.\_ext'"**
 
   1. Uninstall existing mmcv in the environment using `pip uninstall mmcv`
-  2. Install mmcv-full following the [installation instruction](https://mmcv.readthedocs.io/en/latest/#installation)
+  2. Install mmcv following the [installation instruction](https://mmcv.readthedocs.io/en/latest/#installation)
 
 - **"OSError: MoviePy Error: creation of None failed because of the following error"**
 
