@@ -67,7 +67,7 @@ class VisualizationHook(Hook):
             return
 
         batch_size = len(data_samples)
-        images = data_batch['inputs']
+        videos = data_batch['inputs']
         start_idx = batch_size * batch_idx
         end_idx = start_idx + batch_size
 
@@ -75,24 +75,27 @@ class VisualizationHook(Hook):
         first_sample_id = math.ceil(start_idx / self.interval) * self.interval
 
         for sample_id in range(first_sample_id, end_idx, self.interval):
-            image = images[sample_id - start_idx]
-            image = image.permute(1, 2, 0).numpy().astype('uint8')
+            video = videos[sample_id - start_idx]
+            # move channel to the last
+            video = video.permute(1, 2, 3, 0).numpy().astype('uint8')
 
             data_sample = data_samples[sample_id - start_idx]
-            if 'img_path' in data_sample:
+            if 'filename' in data_sample:
                 # osp.basename works on different platforms even file clients.
-                sample_name = osp.basename(data_sample.get('img_path'))
+                sample_name = osp.basename(data_sample.get('filename'))
+            elif 'frame_dir' in data_sample:
+                sample_name = osp.basename(data_sample.get('frame_dir'))
             else:
                 sample_name = str(sample_id)
 
             draw_args = self.draw_args
             if self.out_dir is not None:
-                draw_args['out_file'] = self.file_client.join_path(
-                    self.out_dir, f'{sample_name}_{step}.png')
+                draw_args['out_folder'] = self.file_client.join_path(
+                    self.out_dir, f'{sample_name}_{step}')
 
             self._visualizer.add_datasample(
                 sample_name,
-                image=image,
+                video=video,
                 data_sample=data_sample,
                 step=step,
                 **self.draw_args,
