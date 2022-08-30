@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from mmengine.model.utils import trunc_normal_init
+from mmengine.model.weight_init import trunc_normal_init
 from torch import Tensor, nn
 
 from mmaction.registry import MODELS

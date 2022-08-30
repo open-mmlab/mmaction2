@@ -6,9 +6,9 @@ from typing import List, Optional, Sequence, Tuple, Union
 import torch.utils.checkpoint as cp
 from mmcv.cnn import ConvModule, NonLocal3d, build_activation_layer
 from mmengine.logging import MMLogger
-from mmengine.model.utils import constant_init, kaiming_init
+from mmengine.model.weight_init import constant_init, kaiming_init
 from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
-from mmengine.utils.parrots_wrapper import _BatchNorm
+from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
 from torch import Tensor, nn
 from torch.nn.modules.utils import _ntuple, _triple
 

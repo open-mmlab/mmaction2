@@ -5,7 +5,7 @@ from einops import rearrange
 from mmcv.cnn import build_norm_layer
 from mmcv.cnn.bricks.transformer import FFN, build_dropout
 from mmengine.model import BaseModule
-from mmengine.model.utils import constant_init
+from mmengine.model.weight_init import constant_init
 from mmengine.utils import digit_version
 
 from mmaction.registry import MODELS

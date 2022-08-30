@@ -4,7 +4,7 @@ import itertools
 import numpy as np
 import torch
 import torch.nn as nn
-from mmengine.model.utils import normal_init
+from mmengine.model.weight_init import normal_init
 
 from mmaction.registry import MODELS
 from .base import BaseHead

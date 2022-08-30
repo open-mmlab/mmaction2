@@ -1,7 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
 from mmengine.optim import DefaultOptimWrapperConstructor
-from mmengine.utils.parrots_wrapper import SyncBatchNorm_, _BatchNorm, _ConvNd
+from mmengine.utils.dl_utils.parrots_wrapper import (SyncBatchNorm_,
+                                                     _BatchNorm, _ConvNd)
 
 from mmaction.registry import OPTIM_WRAPPER_CONSTRUCTORS
 

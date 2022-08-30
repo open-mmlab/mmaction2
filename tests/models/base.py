@@ -1,10 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
 
-import mmcv
+import mmengine
 import numpy as np
 import torch
-from mmcv.utils import _BatchNorm
+from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
 
 
 def check_norm_state(modules, train_state):
@@ -143,7 +143,7 @@ def get_cfg(config_type, fname):
     config_fpath = osp.join(config_dpath, fname)
     if not osp.exists(config_dpath):
         raise Exception('Cannot find config path')
-    config = mmcv.Config.fromfile(config_fpath)
+    config = mmengine.Config.fromfile(config_fpath)
     return config
 
 

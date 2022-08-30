@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
 import torch.nn.functional as F
-from mmcv import ConfigDict
+from mmengine import ConfigDict
 
 from mmaction.models import OHEMHingeLoss, SSNLoss
 

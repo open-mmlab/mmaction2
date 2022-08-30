@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
 from mmcv.cnn import ConvModule
-from mmengine.utils.parrots_wrapper import _BatchNorm
+from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
 
 from mmaction.registry import MODELS
 from .resnet3d import Bottleneck3d, ResNet3d

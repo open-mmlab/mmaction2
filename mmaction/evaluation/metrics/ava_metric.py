@@ -38,7 +38,7 @@ class AVAMetric(BaseMetric):
             self.custom_classes = list([0] + custom_classes)
 
     def process(self, data_batch: Sequence[Tuple[Any, dict]],
-                predictions: Sequence[dict]) -> None:
+                data_samples: Sequence[dict]) -> None:
         """Process one batch of data samples and predictions. The processed
         results should be stored in ``self.results``, which will be used to
         compute the metrics when all batches have been processed.
@@ -46,14 +46,14 @@ class AVAMetric(BaseMetric):
         Args:
             data_batch (Sequence[Tuple[Any, dict]]): A batch of data
                 from the dataloader.
-            predictions (Sequence[dict]): A batch of outputs from
+            data_samples (Sequence[dict]): A batch of outputs from
                 the model.
         """
-        for data, pred in zip(data_batch, predictions):
+        for data_sample in data_samples:
             result = dict()
-            pred = pred['pred_instances']
-            result['video_id'] = data['data_sample']['video_id']
-            result['timestamp'] = data['data_sample']['timestamp']
+            pred = data_sample['pred_instances']
+            result['video_id'] = data_sample['video_id']
+            result['timestamp'] = data_sample['timestamp']
             outputs = bbox2result(
                 pred['bboxes'],
                 pred['scores'],

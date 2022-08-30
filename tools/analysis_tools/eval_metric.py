@@ -1,37 +1,28 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 
-import mmcv
-from mmcv import Config, DictAction
+import mmengine
+from mmengine import Config, DictAction
+from mmengine.evaluator import Evaluator
 
-from mmaction.datasets import build_dataset
+from mmaction.utils import register_all_modules
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Evaluate metric of the '
-                                     'results saved in pkl/yaml/json format')
+                                     'results saved in pkl format')
     parser.add_argument('config', help='Config of the model')
-    parser.add_argument('results', help='Results in pkl/yaml/json format')
-    parser.add_argument(
-        '--eval',
-        type=str,
-        nargs='+',
-        help='evaluation metrics, which depends on the dataset, e.g.,'
-        ' "top_k_accuracy", "mean_class_accuracy" for video dataset')
+    parser.add_argument('pkl_results', help='Results in pickle format')
     parser.add_argument(
         '--cfg-options',
         nargs='+',
         action=DictAction,
-        default={},
         help='override some settings in the used config, the key-value pair '
-        'in xxx=yyy format will be merged into config file. For example, '
-        "'--cfg-options model.backbone.depth=18 model.backbone.with_cp=True'")
-    parser.add_argument(
-        '--eval-options',
-        nargs='+',
-        action=DictAction,
-        help='custom options for evaluation, the key-value pair in xxx=yyy '
-        'format will be kwargs for dataset.evaluate() function')
+        'in xxx=yyy format will be merged into config file. If the value to '
+        'be overwritten is a list, it should be like key="[a,b]" or key=a,b '
+        'It also allows nested list/tuple values, e.g. key="[(a,b),(c,d)]" '
+        'Note that the quotation marks are necessary and that no white space '
+        'is allowed.')
     args = parser.parse_args()
     return args
 
@@ -39,27 +30,18 @@ def parse_args():
 def main():
     args = parse_args()
 
+    register_all_modules()
+
+    # load config
     cfg = Config.fromfile(args.config)
-
-    assert args.eval is not None
-
     if args.cfg_options is not None:
         cfg.merge_from_dict(args.cfg_options)
-    cfg.data.test.test_mode = True
 
-    dataset = build_dataset(cfg.data.test)
-    outputs = mmcv.load(args.results)
+    data_samples = mmengine.load(args.pkl_results)
 
-    kwargs = {} if args.eval_options is None else args.eval_options
-    eval_kwargs = cfg.get('evaluation', {}).copy()
-    # hard-code way to remove EvalHook args
-    for key in [
-            'interval', 'tmpdir', 'start', 'gpu_collect', 'save_best', 'rule',
-            'by_epoch'
-    ]:
-        eval_kwargs.pop(key, None)
-    eval_kwargs.update(dict(metrics=args.eval, **kwargs))
-    print(dataset.evaluate(outputs, **eval_kwargs))
+    evaluator = Evaluator(cfg.test_evaluator)
+    eval_results = evaluator.offline_evaluate(data_samples)
+    print(eval_results)
 
 
 if __name__ == '__main__':

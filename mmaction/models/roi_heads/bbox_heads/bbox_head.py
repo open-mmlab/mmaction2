@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from mmengine.config import ConfigDict
-from mmengine.data import InstanceData
+from mmengine.structures import InstanceData
 from torch import Tensor
 
 from mmaction.structures.bbox import bbox_target
