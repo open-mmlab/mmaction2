@@ -20,9 +20,9 @@ We present Audiovisual SlowFast Networks, an architecture for integrated audiovi
 
 ### Kinetics-400
 
-| config | n_fft | top1 acc | top5 acc | gpu_mem(M) | ckpt | log |
-| :-- | :---: | :--: | :------------: | :--------: | :--------: | :-: |
-| [tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature](/configs/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature.py) | 1024 | 19.7 | 35.75 | 1897 | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature_20201012-bf34df6c.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature.log) |
+| config                                                     | n_fft | top1 acc | top5 acc | gpu_mem(M) |                           ckpt                           |                           log                           |
+| :--------------------------------------------------------- | :---: | :------: | :------: | :--------: | :------------------------------------------------------: | :-----------------------------------------------------: |
+| [tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature](/configs/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature.py) | 1024  |   19.7   |  35.75   |    1897    | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature_20201012-bf34df6c.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio-feature.log) |
 
 :::{note}
 

@@ -9,6 +9,11 @@ from .transforms import *  # noqa: F401, F403
 from .video_dataset import VideoDataset
 
 __all__ = [
-    'VideoDataset', 'RawframeDataset', 'AVADataset', 'PoseDataset',
-    'BaseActionDataset', 'ActivityNetDataset', 'AudioDataset',
+    'VideoDataset',
+    'RawframeDataset',
+    'AVADataset',
+    'PoseDataset',
+    'BaseActionDataset',
+    'ActivityNetDataset',
+    'AudioDataset',
 ]
