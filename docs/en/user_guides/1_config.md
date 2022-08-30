@@ -6,21 +6,18 @@ you may run `python tools/analysis_tools/print_config.py /PATH/TO/CONFIG` to see
 
 <!-- TOC -->
 
-- [Tutorial 1: Learn about Configs](#tutorial-1-learn-about-configs)
-  - [Modify config through script arguments](#modify-config-through-script-arguments)
-  - [Config File Structure](#config-file-structure)
-  - [Config File Naming Convention](#config-file-naming-convention)
-    - [Config System for Action localization](#config-system-for-action-localization)
-    - [Config System for Action Recognition](#config-system-for-action-recognition)
-    - [Config System for Spatio-Temporal Action Detection](#config-system-for-spatio-temporal-action-detection)
-  - [FAQ](#faq)
-    - [Use intermediate variables in configs](#use-intermediate-variables-in-configs)
+- [Modify config through script arguments](#modify-config-through-script-arguments)
+- [Config File Structure](#config-file-structure)
+- [Config File Naming Convention](#config-file-naming-convention)
+  - [Config System for Action localization](#config-system-for-action-localization)
+  - [Config System for Action Recognition](#config-system-for-action-recognition)
+  - [Config System for Spatio-Temporal Action Detection](#config-system-for-spatio-temporal-action-detection)
 
 <!-- TOC -->
 
 ## Modify config through script arguments
 
-When submitting jobs using "tools/train.py" or "tools/test.py", you may specify `--cfg-options` to in-place modify the config.
+When submitting jobs using `tools/train.py` or `tools/test.py`, you may specify `--cfg-options` to in-place modify the config.
 
 - Update config keys of dict.
 
@@ -37,11 +34,11 @@ When submitting jobs using "tools/train.py" or "tools/test.py", you may specify 
 
   If the value to be updated is a list or a tuple. For example, the config file normally sets `model.data_preprocessor.mean=[123.675, 116.28, 103.53]`. If you want to
   change this key, you may specify `--cfg-options model.data_preprocessor.mean="[128,128,128]"`. Note that the quotation mark " is necessary to
-  support list/tuple data types, and that **NO** white space is allowed inside the quotation marks in the specified value.
+  support list/tuple data types.
 
 ## Config File Structure
 
-There are 3 basic component types under `config/_base_`, model, schedule, default_runtime.
+There are 3 basic component types under `config/_base_`, models, schedules, default_runtime.
 Many methods could be easily constructed with one of each like TSN, I3D, SlowOnly, etc.
 The configs that are composed by components from `_base_` are called _primitive_.
 
@@ -56,184 +53,27 @@ Please refer to [mmcv](https://mmcv.readthedocs.io/en/latest/understand_mmcv/con
 
 ## Config File Naming Convention
 
-We follow the style below to name config files. Contributors are advised to follow the same style. The config file names are divided into several parts. Logically, different parts are concatenated by underscores `'_'`, and words in the same part are concatenated by dashes `'-'`.
+We follow the style below to name config files. Contributors are advised to follow the same style. The config file names are divided into several parts. Logically, different parts are concatenated by underscores `'_'`, and settings in the same part are concatenated by dashes `'-'`.
 
 ```
-{model}_[model setting]_{backbone}_[misc]_{data setting}-[gpu x batch_per_gpu]-{schedule}_{dataset}-{modality}
+{algorithm info}_{module info}_{training info}_{data info}.py
 ```
 
 `{xxx}` is required field and `[yyy]` is optional.
 
-- `{model}`: model type, e.g. `tsn`, `i3d`, etc.
-- `[model setting]`: specific setting for some models.
-- `{backbone}`: backbone type, e.g. `r50` (ResNet-50), etc.
-- `[misc]`: miscellaneous setting/plugins of model, e.g. `dense`, `320p`, `video`, etc.
-- `{data setting}`: frame sample setting in `{clip_len}x{frame_interval}x{num_clips}` format.
-- `[gpu x batch_per_gpu]`: GPUs and samples per GPU.
-- `{schedule}`: training schedule, e.g. `20e` means 20 epochs.
-- `{dataset}`: dataset name, e.g. `kinetics400`, `mmit`, etc.
-- `{modality}`: frame modality, e.g. `rgb`, `flow`, etc.
-
-### Config System for Action localization
-
-We incorporate modular design into our config system,
-which is convenient to conduct various experiments.
-
-- An Example of BMN
-
-  To help the users have a basic idea of a complete config structure and the modules in an action localization system,
-  we make brief comments on the config of BMN as the following.
-  For more detailed usage and alternative for per parameter in each module, please refer to the [API documentation](https://mmaction2.readthedocs.io/en/latest/api.html).
-
-  ```python
-  # model settings
-  model = dict(  # Config of the model
-      type='BMN',  # Type of the localizer
-      temporal_dim=100,  # Total frames selected for each video
-      boundary_ratio=0.5,  # Ratio for determining video boundaries
-      num_samples=32,  # Number of samples for each proposal
-      num_samples_per_bin=3,  # Number of bin samples for each sample
-      feat_dim=400,  # Dimension of feature
-      soft_nms_alpha=0.4,  # Soft NMS alpha
-      soft_nms_low_threshold=0.5,  # Soft NMS low threshold
-      soft_nms_high_threshold=0.9,  # Soft NMS high threshold
-      post_process_top_k=100)  # Top k proposals in post process
-
-  # dataset settings
-  dataset_type = 'ActivityNetDataset'  # Type of dataset for training, validation and testing
-  data_root = 'data/activitynet_feature_cuhk/csv_mean_100/'  # Root path to data for training
-  data_root_val = 'data/activitynet_feature_cuhk/csv_mean_100/'  # Root path to data for validation and testing
-  ann_file_train = 'data/ActivityNet/anet_anno_train.json'  # Path to the annotation file for training
-  ann_file_val = 'data/ActivityNet/anet_anno_val.json'  # Path to the annotation file for validation
-  ann_file_test = 'data/ActivityNet/anet_anno_test.json'  # Path to the annotation file for testing
-
-  train_pipeline = [  # List of training pipeline steps
-      dict(type='LoadLocalizationFeature'),  # Load localization feature pipeline
-      dict(type='GenerateLocalizationLabels'),  # Generate localization labels pipeline
-      dict(
-          type='PackLocalizationInputs', # Pack localization data
-          keys=('gt_bbox'), # Keys of input
-          meta_keys=('video_name'))] # Meta keys of input
-  val_pipeline = [  # List of validation pipeline steps
-      dict(type='LoadLocalizationFeature'),  # Load localization feature pipeline
-      dict(type='GenerateLocalizationLabels'),  # Generate localization labels pipeline
-      dict(
-          type='PackLocalizationInputs',  # Pack localization data
-          keys=('gt_bbox'),   # Keys of input
-          meta_keys=('video_name', 'duration_second', 'duration_frame',
-                     'annotations', 'feature_frame'))]  # Meta keys of input
-  test_pipeline = [  # List of testing pipeline steps
-      dict(type='LoadLocalizationFeature'),  # Load localization feature pipeline
-      dict(
-          type='PackLocalizationInputs',  # Pack localization data
-          keys=('gt_bbox'),  # Keys of input
-          meta_keys=('video_name', 'duration_second', 'duration_frame',
-                     'annotations', 'feature_frame'))]  # Meta keys of input
-  train_dataloader = dict(  # Config of train dataloader
-      batch_size=8,  # Batch size of each single GPU during training
-      num_workers=8,  # Workers to pre-fetch data for each single GPU during training
-      persistent_workers=True,  # Maintain the workers `Dataset` instances alive
-      sampler=dict(type='DefaultSampler', shuffle=True),
-      dataset=dict(
-        type=dataset_type,
-        ann_file=ann_file_train,
-        data_prefix=dict(video=data_root),
-        pipeline=train_pipeline))
-  val_dataloader = dict(  # Config of validation dataloader
-      batch_size=1,  # Batch size of each single GPU during evaluation
-      num_workers=8,  # Workers to pre-fetch data for each single GPU during evaluation
-      persistent_workers=True,  # Maintain the workers `Dataset` instances alive
-      sampler=dict(type='DefaultSampler', shuffle=False),
-      dataset=dict(
-          type=dataset_type,
-          ann_file=ann_file_val,
-          data_prefix=dict(video=data_root_val),
-          pipeline=val_pipeline,
-          test_mode=True))
-  test_dataloader = dict(  # Config of test dataloader
-      batch_size=1,  # Batch size of each single GPU during testing
-      num_workers=8,  # Workers to pre-fetch data for each single GPU during testing
-      persistent_workers=True,  # Maintain the workers `Dataset` instances alive
-      sampler=dict(type='DefaultSampler', shuffle=False),
-      dataset=dict(
-          type=dataset_type,
-          ann_file=ann_file_val,
-          data_prefix=dict(video=data_root_val),
-          pipeline=test_pipeline,
-          test_mode=True))
-  # evaluator settings
-  val_evaluator = dict(
-    type='ANetMetric',  # The evaluator object used for computing metrics for validation
-    metric_type='AR@AN',  # Metrics to be performed
-    dump_config=dict(  # Config of localization output
-        out=f'{work_dir}/results.json',  # Path to output file
-        output_format='json'))  # File format of output file
-  test_evaluator = val_evaluator   # Set test_evaluator as val_evaluator
-
-  max_epochs = 9  # Total epochs to train the model
-  train_cfg = dict(  # Config of training loop
-    type='EpochBasedTrainLoop',  # name of training loop
-    max_epochs=max_epochs,  # Total training epochs
-    val_begin=1,  # The epoch that begins validating
-    val_interval=1)  # Validation interval
-  val_cfg = dict(  # Config of validating loop
-    type='ValLoop')  # name of validating loop
-  test_cfg = dict( # Config of testing loop
-    type='TestLoop')  # name of testing loop
-
-  # learning policy
-  param_scheduler = [dict(  # Parameter scheduler for updating optimizer parameters, support dict or list
-      type='MultiStepLR',  # Decays the parameter once the number of epoch reach milestone
-      begin=0,  # Step at which to start updating the parameters
-      end=max_epochs,  # Step at which to stop updating the parameters
-      by_epoch=True,  # Whether the scheduled parameters are updated by epochs
-      milestones=[7, ],  # Steps to decay the learning rate
-      gamma=0.1)  # Multiplicative factor of parameter value decay
-    ]
-  # optimizer
-  optim_wrapper = dict(  # Common interface for updating parameters
-    optimizer=dict(  # Optimizer used to update model parameters
-      type='Adam',  # Type of optimizer
-      lr=0.001,  # learning rate
-      weight_decay=0.0001),  # Weight decay of SGD
-    clip_grad=dict(max_norm=40, norm_type=2))  # Use gradient clip
-
-
-  # runtime settings
-  default_scope = 'mmaction'  # Scope of current task used to reset the current registry
-  default_hooks = dict( # Hooks to execute default actions like updating model parameters and saving checkpoints.
-      runtime_info=dict(type='RuntimeInfoHook'),  # The hook to updates runtime information into message hub
-      timer=dict(type='IterTimerHook'),  # The logger used to record time spent during iteration
-      logger=dict(
-        type='LoggerHook',  # The logger used to record the training/validation/testing phase
-        interval=20,  # Interval to print the log
-        ignore_last=False), # Ignore the log of last iterations in each epoch
-      param_scheduler=dict(type='ParamSchedulerHook'),  # The hook to update some hyper-parameters in optimizer
-      checkpoint=dict(
-        type='CheckpointHook',  # The hook to save checkpoints periodically
-        interval=3,  # The saving period
-        save_best='auto',  # Specified metric to mearsure the best checkpoint during evaluation
-        max_keep_ckpts=3),  # The maximum checkpoints to keep
-      sampler_seed=dict(type='DistSamplerSeedHook'))  # Data-loading sampler for distributed training
-  env_cfg = dict( # Dict for setting environment
-      cudnn_benchmark=False,
-      mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0), # Parameters to setup multiprocessing
-      dist_cfg=dict(backend='nccl')) # Parameters to setup distributed training, the port can also be set
-
-  log_processor = dict(
-    type='LogProcessor',  # Log processor used to format log information
-    window_size=20,  # Default smooth interval
-    by_epoch=True)  # Whether to format logs with epoch stype
-  vis_backends = [  # Visual backend config list
-    dict(type='LocalVisBackend')]  # Local visualization backend
-  visualizer = dict(
-      type='ActionVisualizer',  # Universal Visualizer for classification task
-      vis_backends=[dict(type='LocalVisBackend')])  # Local visualization backend
-  log_level = 'INFO'  # The level of logging
-  resume = False  # Resume from a checkpoint
-  load_from = None  # load checkpoint as a pre-trained model from a given path. If resume == True, resume training from the checkpoint, otherwise load checkpoint without resuming
-  work_dir = './work_dirs/bmn_400x100_2x8_9e_activitynet_feature/'  # Directory to save the model checkpoints and logs for the current experiments
-  ```
+- `{algorithm info}`:
+  - `{model}`: model type, e.g. `tsn`, `i3d`, etc.
+  - `[model setting]`: specific setting for some models.
+- `{module info}`:
+  - `[pretained info]`: pretrained information, e.g. `kinetics400-pretrained`, etc.
+  - `{backbone}`: backbone type and pretrained information, e.g. `r50` (ResNet-50), etc.
+- `training info`:
+  - `{gpu x batch_per_gpu]}`: GPUs and samples per GPU.
+  - `{pipeline setting}`: frame sample setting in `{clip_len}x{frame_interval}x{num_clips}` format.
+  - `{schedule}`: training schedule, e.g. `20e` means 20 epochs.
+- `data info`:
+  - `{dataset}`: dataset name, e.g. `kinetics400`, `mmit`, etc.
+  - `{modality}`: frame modality, e.g. `rgb`, `flow`, etc.
 
 ### Config System for Action Recognition
 
@@ -674,90 +514,163 @@ We incorporate modular design into our config system, which is convenient to con
               'slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb')
   ```
 
-## FAQ
+### Config System for Action localization
 
-### Use intermediate variables in configs
+We incorporate modular design into our config system,
+which is convenient to conduct various experiments.
 
-Some intermediate variables are used in the config files, like `train_pipeline`/`val_pipeline`/`test_pipeline`,
-`ann_file_train`/`ann_file_val`/`ann_file_test`, `img_norm_cfg` etc.
+- An Example of BMN
 
-For Example, we would like to first define `train_pipeline`/`val_pipeline`/`test_pipeline` and pass them into `data`.
-Thus, `train_pipeline`/`val_pipeline`/`test_pipeline` are intermediate variable.
+  To help the users have a basic idea of a complete config structure and the modules in an action localization system,
+  we make brief comments on the config of BMN as the following.
+  For more detailed usage and alternative for per parameter in each module, please refer to the [API documentation](https://mmaction2.readthedocs.io/en/latest/api.html).
 
-we also define `ann_file_train`/`ann_file_val`/`ann_file_test` and `data_root`/`data_root_val` to provide data pipeline some
-basic information.
+  ```python
+  # model settings
+  model = dict(  # Config of the model
+      type='BMN',  # Type of the localizer
+      temporal_dim=100,  # Total frames selected for each video
+      boundary_ratio=0.5,  # Ratio for determining video boundaries
+      num_samples=32,  # Number of samples for each proposal
+      num_samples_per_bin=3,  # Number of bin samples for each sample
+      feat_dim=400,  # Dimension of feature
+      soft_nms_alpha=0.4,  # Soft NMS alpha
+      soft_nms_low_threshold=0.5,  # Soft NMS low threshold
+      soft_nms_high_threshold=0.9,  # Soft NMS high threshold
+      post_process_top_k=100)  # Top k proposals in post process
 
-```python
-...
-dataset_type = 'RawframeDataset'
-data_root = 'data/kinetics400/rawframes_train'
-data_root_val = 'data/kinetics400/rawframes_val'
-ann_file_train = 'data/kinetics400/kinetics400_train_list_rawframes.txt'
-ann_file_val = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
-ann_file_test = 'data/kinetics400/kinetics400_val_list_rawframes.txt'
+  # dataset settings
+  dataset_type = 'ActivityNetDataset'  # Type of dataset for training, validation and testing
+  data_root = 'data/activitynet_feature_cuhk/csv_mean_100/'  # Root path to data for training
+  data_root_val = 'data/activitynet_feature_cuhk/csv_mean_100/'  # Root path to data for validation and testing
+  ann_file_train = 'data/ActivityNet/anet_anno_train.json'  # Path to the annotation file for training
+  ann_file_val = 'data/ActivityNet/anet_anno_val.json'  # Path to the annotation file for validation
+  ann_file_test = 'data/ActivityNet/anet_anno_test.json'  # Path to the annotation file for testing
 
-train_pipeline = [
-    dict(type='SampleFrames', clip_len=32, frame_interval=2, num_clips=1),
-    dict(type='RawFrameDecode'),
-    dict(type='Resize', scale=(-1, 256)),
-    dict(
-        type='MultiScaleCrop',
-        input_size=224,
-        scales=(1, 0.8),
-        random_crop=False,
-        max_wh_scale_gap=0),
-    dict(type='Resize', scale=(224, 224), keep_ratio=False),
-    dict(type='Flip', flip_ratio=0.5),
-    dict(type='FormatShape', input_format='NCTHW'),
-	dict(type='PackActionInputs')
-]
-val_pipeline = [
-    dict(
-        type='SampleFrames',
-        clip_len=32,
-        frame_interval=2,
-        num_clips=1,
-        test_mode=True),
-    dict(type='RawFrameDecode'),
-    dict(type='Resize', scale=(-1, 256)),
-    dict(type='CenterCrop', crop_size=224),
-    dict(type='FormatShape', input_format='NCTHW'),
-    dict(type='PackActionInputs')
-]
-test_pipeline = [
-    dict(
-        type='SampleFrames',
-        clip_len=32,
-        frame_interval=2,
-        num_clips=10,
-        test_mode=True),
-    dict(type='RawFrameDecode'),
-    dict(type='Resize', scale=(-1, 256)),
-    dict(type='ThreeCrop', crop_size=256),
-    dict(type='FormatShape', input_format='NCTHW'),
-    dict(type='PackActionInputs')
-]
-
-train_dataloader = dict(
-    batch_size=32,
-    num_workers=8,
-    dataset=dict(
+  train_pipeline = [  # List of training pipeline steps
+      dict(type='LoadLocalizationFeature'),  # Load localization feature pipeline
+      dict(type='GenerateLocalizationLabels'),  # Generate localization labels pipeline
+      dict(
+          type='PackLocalizationInputs', # Pack localization data
+          keys=('gt_bbox'), # Keys of input
+          meta_keys=('video_name'))] # Meta keys of input
+  val_pipeline = [  # List of validation pipeline steps
+      dict(type='LoadLocalizationFeature'),  # Load localization feature pipeline
+      dict(type='GenerateLocalizationLabels'),  # Generate localization labels pipeline
+      dict(
+          type='PackLocalizationInputs',  # Pack localization data
+          keys=('gt_bbox'),   # Keys of input
+          meta_keys=('video_name', 'duration_second', 'duration_frame',
+                     'annotations', 'feature_frame'))]  # Meta keys of input
+  test_pipeline = [  # List of testing pipeline steps
+      dict(type='LoadLocalizationFeature'),  # Load localization feature pipeline
+      dict(
+          type='PackLocalizationInputs',  # Pack localization data
+          keys=('gt_bbox'),  # Keys of input
+          meta_keys=('video_name', 'duration_second', 'duration_frame',
+                     'annotations', 'feature_frame'))]  # Meta keys of input
+  train_dataloader = dict(  # Config of train dataloader
+      batch_size=8,  # Batch size of each single GPU during training
+      num_workers=8,  # Workers to pre-fetch data for each single GPU during training
+      persistent_workers=True,  # Maintain the workers `Dataset` instances alive
+      sampler=dict(type='DefaultSampler', shuffle=True),
+      dataset=dict(
         type=dataset_type,
         ann_file=ann_file_train,
         data_prefix=dict(video=data_root),
         pipeline=train_pipeline))
-val_dataloader = dict(
-    dataset=dict(
-        type=dataset_type,
-        ann_file=ann_file_val,
-        data_prefix=dict(video=data_root_val),
-        pipeline=val_pipeline,
-        test_mode=True))
-test_dataloader = dict(
-    dataset=dict(
-        type=dataset_type,
-        ann_file=ann_file_val,
-        data_prefix=dict(video=data_root_val),
-        pipeline=test_pipeline,
-        test_mode=True))
-```
+  val_dataloader = dict(  # Config of validation dataloader
+      batch_size=1,  # Batch size of each single GPU during evaluation
+      num_workers=8,  # Workers to pre-fetch data for each single GPU during evaluation
+      persistent_workers=True,  # Maintain the workers `Dataset` instances alive
+      sampler=dict(type='DefaultSampler', shuffle=False),
+      dataset=dict(
+          type=dataset_type,
+          ann_file=ann_file_val,
+          data_prefix=dict(video=data_root_val),
+          pipeline=val_pipeline,
+          test_mode=True))
+  test_dataloader = dict(  # Config of test dataloader
+      batch_size=1,  # Batch size of each single GPU during testing
+      num_workers=8,  # Workers to pre-fetch data for each single GPU during testing
+      persistent_workers=True,  # Maintain the workers `Dataset` instances alive
+      sampler=dict(type='DefaultSampler', shuffle=False),
+      dataset=dict(
+          type=dataset_type,
+          ann_file=ann_file_val,
+          data_prefix=dict(video=data_root_val),
+          pipeline=test_pipeline,
+          test_mode=True))
+  # evaluator settings
+  val_evaluator = dict(
+    type='ANetMetric',  # The evaluator object used for computing metrics for validation
+    metric_type='AR@AN',  # Metrics to be performed
+    dump_config=dict(  # Config of localization output
+        out=f'{work_dir}/results.json',  # Path to output file
+        output_format='json'))  # File format of output file
+  test_evaluator = val_evaluator   # Set test_evaluator as val_evaluator
+
+  max_epochs = 9  # Total epochs to train the model
+  train_cfg = dict(  # Config of training loop
+    type='EpochBasedTrainLoop',  # name of training loop
+    max_epochs=max_epochs,  # Total training epochs
+    val_begin=1,  # The epoch that begins validating
+    val_interval=1)  # Validation interval
+  val_cfg = dict(  # Config of validating loop
+    type='ValLoop')  # name of validating loop
+  test_cfg = dict( # Config of testing loop
+    type='TestLoop')  # name of testing loop
+
+  # learning policy
+  param_scheduler = [dict(  # Parameter scheduler for updating optimizer parameters, support dict or list
+      type='MultiStepLR',  # Decays the parameter once the number of epoch reach milestone
+      begin=0,  # Step at which to start updating the parameters
+      end=max_epochs,  # Step at which to stop updating the parameters
+      by_epoch=True,  # Whether the scheduled parameters are updated by epochs
+      milestones=[7, ],  # Steps to decay the learning rate
+      gamma=0.1)  # Multiplicative factor of parameter value decay
+    ]
+  # optimizer
+  optim_wrapper = dict(  # Common interface for updating parameters
+    optimizer=dict(  # Optimizer used to update model parameters
+      type='Adam',  # Type of optimizer
+      lr=0.001,  # learning rate
+      weight_decay=0.0001),  # Weight decay of SGD
+    clip_grad=dict(max_norm=40, norm_type=2))  # Use gradient clip
+
+
+  # runtime settings
+  default_scope = 'mmaction'  # Scope of current task used to reset the current registry
+  default_hooks = dict( # Hooks to execute default actions like updating model parameters and saving checkpoints.
+      runtime_info=dict(type='RuntimeInfoHook'),  # The hook to updates runtime information into message hub
+      timer=dict(type='IterTimerHook'),  # The logger used to record time spent during iteration
+      logger=dict(
+        type='LoggerHook',  # The logger used to record the training/validation/testing phase
+        interval=20,  # Interval to print the log
+        ignore_last=False), # Ignore the log of last iterations in each epoch
+      param_scheduler=dict(type='ParamSchedulerHook'),  # The hook to update some hyper-parameters in optimizer
+      checkpoint=dict(
+        type='CheckpointHook',  # The hook to save checkpoints periodically
+        interval=3,  # The saving period
+        save_best='auto',  # Specified metric to mearsure the best checkpoint during evaluation
+        max_keep_ckpts=3),  # The maximum checkpoints to keep
+      sampler_seed=dict(type='DistSamplerSeedHook'))  # Data-loading sampler for distributed training
+  env_cfg = dict( # Dict for setting environment
+      cudnn_benchmark=False,
+      mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0), # Parameters to setup multiprocessing
+      dist_cfg=dict(backend='nccl')) # Parameters to setup distributed training, the port can also be set
+
+  log_processor = dict(
+    type='LogProcessor',  # Log processor used to format log information
+    window_size=20,  # Default smooth interval
+    by_epoch=True)  # Whether to format logs with epoch stype
+  vis_backends = [  # Visual backend config list
+    dict(type='LocalVisBackend')]  # Local visualization backend
+  visualizer = dict(
+      type='ActionVisualizer',  # Universal Visualizer for classification task
+      vis_backends=[dict(type='LocalVisBackend')])  # Local visualization backend
+  log_level = 'INFO'  # The level of logging
+  resume = False  # Resume from a checkpoint
+  load_from = None  # load checkpoint as a pre-trained model from a given path. If resume == True, resume training from the checkpoint, otherwise load checkpoint without resuming
+  work_dir = './work_dirs/bmn_400x100_2x8_9e_activitynet_feature/'  # Directory to save the model checkpoints and logs for the current experiments
+  ```
