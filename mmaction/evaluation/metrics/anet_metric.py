@@ -49,9 +49,11 @@ class ANetMetric(BaseMetric):
         """
         for pred in predictions:
             self.results.append(pred)
+
         if self.metric_type == 'AR@AN':
+            data_batch = data_batch['data_samples']
             for data_sample in data_batch:
-                video_info = data_sample['data_sample']
+                video_info = data_sample.metainfo
                 video_id = video_info['video_name'][2:]
                 this_video_gt = []
                 for ann in video_info['annotations']:
