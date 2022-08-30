@@ -461,7 +461,7 @@ class PEM(BaseModel):
         ]
         return output
 
-    def forward(self, batch_inputs, batch_data_samples, mode, **kwargs):
+    def forward(self, inputs, data_samples, mode, **kwargs):
         """The unified entry for a forward process in both training and test.
 
         The method should accept three modes:
@@ -490,12 +490,13 @@ class PEM(BaseModel):
             - If ``mode="predict"``, return a list of ``ActionDataSample``.
             - If ``mode="loss"``, return a dict of tensor.
         """
+        inputs = torch.stack(inputs)
         if mode == 'tensor':
-            return self._forward(batch_inputs, **kwargs)
+            return self._forward(inputs, **kwargs)
         if mode == 'predict':
-            return self.predict(batch_inputs, batch_data_samples, **kwargs)
+            return self.predict(inputs, data_samples, **kwargs)
         elif mode == 'loss':
-            return self.loss(batch_inputs, batch_data_samples, **kwargs)
+            return self.loss(inputs, data_samples, **kwargs)
         else:
             raise RuntimeError(f'Invalid mode "{mode}". '
                                'Only supports loss, predict and tensor mode')
