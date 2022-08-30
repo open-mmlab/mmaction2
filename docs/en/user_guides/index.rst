@@ -5,7 +5,7 @@ Train & Test
    :maxdepth: 1
 
    1_config.md
-   2_dataset_prepare.md
+   2_data_prepare.md
    3_inference.md
    4_train_test.md
 
