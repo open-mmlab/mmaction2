@@ -43,6 +43,7 @@ train_dataloader = dict(
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
+    drop_last=True,
     dataset=dict(
         type=dataset_type,
         ann_file=ann_file_train,
