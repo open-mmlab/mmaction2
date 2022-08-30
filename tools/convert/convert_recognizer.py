@@ -204,7 +204,6 @@ def convert(config_path, output_config_path):
     cfg.log_level = 'INFO'
     cfg.load_from = None
     cfg.resume = False
-    cfg.resume_from = None
 
     cfg.pop('workflow')
     cfg.pop('mp_start_method')
