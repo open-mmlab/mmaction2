@@ -26,6 +26,9 @@ You can switch between Chinese and English documents in the lower-left corner of
    :caption: Model Zoo
 
    model_zoo.md
+   recognition_models.md
+   detection_models.md
+   skeleton_models.md
 
 .. toctree::
    :maxdepth: 1

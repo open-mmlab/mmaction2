@@ -12,6 +12,7 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
+import subprocess
 import sys
 
 import pytorch_sphinx_theme
@@ -126,9 +127,8 @@ myst_enable_extensions = ['colon_fence']
 
 
 def builder_inited_handler(app):
-    # subprocess.run(['./merge_docs.sh'])
-    # subprocess.run(['./stat.py'])
-    pass
+    subprocess.run(['bash', './merge_docs.sh'])
+    subprocess.run(['bash', './stat.py'])
 
 
 def setup(app):
