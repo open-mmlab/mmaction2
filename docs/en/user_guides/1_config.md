@@ -10,6 +10,7 @@ you may run `python tools/analysis_tools/print_config.py /PATH/TO/CONFIG` to see
   - [Modify config through script arguments](#modify-config-through-script-arguments)
   - [Config File Structure](#config-file-structure)
   - [Config File Naming Convention](#config-file-naming-convention)
+    - [Config System for Action localization](#config-system-for-action-localization)
     - [Config System for Action Recognition](#config-system-for-action-recognition)
     - [Config System for Spatio-Temporal Action Detection](#config-system-for-spatio-temporal-action-detection)
   - [FAQ](#faq)
@@ -30,7 +31,7 @@ When submitting jobs using "tools/train.py" or "tools/test.py", you may specify 
 
   Some config dicts are composed as a list in your config. For example, the training pipeline `data.train.pipeline` is normally a list
   e.g. `[dict(type='SampleFrames'), ...]`. If you want to change `'SampleFrames'` to `'DenseSampleFrames'` in the pipeline,
-  you may specify `--cfg-options data.train.pipeline.0.type=DenseSampleFrames`.
+  you may specify `--cfg-options train_pipeline.0.type=DenseSampleFrames`.
 
 - Update values of list/tuples.
 
@@ -55,7 +56,7 @@ Please refer to [mmcv](https://mmcv.readthedocs.io/en/latest/understand_mmcv/con
 
 ## Config File Naming Convention
 
-We follow the style below to name config files. Contributors are advised to follow the same style.
+We follow the style below to name config files. Contributors are advised to follow the same style. The config file names are divided into several parts. Logically, different parts are concatenated by underscores `'_'`, and words in the same part are concatenated by dashes `'-'`.
 
 ```
 {model}_[model setting]_{backbone}_[misc]_{data setting}-[gpu x batch_per_gpu]-{schedule}_{dataset}-{modality}
@@ -72,6 +73,167 @@ We follow the style below to name config files. Contributors are advised to foll
 - `{schedule}`: training schedule, e.g. `20e` means 20 epochs.
 - `{dataset}`: dataset name, e.g. `kinetics400`, `mmit`, etc.
 - `{modality}`: frame modality, e.g. `rgb`, `flow`, etc.
+
+### Config System for Action localization
+
+We incorporate modular design into our config system,
+which is convenient to conduct various experiments.
+
+- An Example of BMN
+
+  To help the users have a basic idea of a complete config structure and the modules in an action localization system,
+  we make brief comments on the config of BMN as the following.
+  For more detailed usage and alternative for per parameter in each module, please refer to the [API documentation](https://mmaction2.readthedocs.io/en/latest/api.html).
+
+  ```python
+  # model settings
+  model = dict(  # Config of the model
+      type='BMN',  # Type of the localizer
+      temporal_dim=100,  # Total frames selected for each video
+      boundary_ratio=0.5,  # Ratio for determining video boundaries
+      num_samples=32,  # Number of samples for each proposal
+      num_samples_per_bin=3,  # Number of bin samples for each sample
+      feat_dim=400,  # Dimension of feature
+      soft_nms_alpha=0.4,  # Soft NMS alpha
+      soft_nms_low_threshold=0.5,  # Soft NMS low threshold
+      soft_nms_high_threshold=0.9,  # Soft NMS high threshold
+      post_process_top_k=100)  # Top k proposals in post process
+
+  # dataset settings
+  dataset_type = 'ActivityNetDataset'  # Type of dataset for training, validation and testing
+  data_root = 'data/activitynet_feature_cuhk/csv_mean_100/'  # Root path to data for training
+  data_root_val = 'data/activitynet_feature_cuhk/csv_mean_100/'  # Root path to data for validation and testing
+  ann_file_train = 'data/ActivityNet/anet_anno_train.json'  # Path to the annotation file for training
+  ann_file_val = 'data/ActivityNet/anet_anno_val.json'  # Path to the annotation file for validation
+  ann_file_test = 'data/ActivityNet/anet_anno_test.json'  # Path to the annotation file for testing
+
+  train_pipeline = [  # List of training pipeline steps
+      dict(type='LoadLocalizationFeature'),  # Load localization feature pipeline
+      dict(type='GenerateLocalizationLabels'),  # Generate localization labels pipeline
+      dict(
+          type='PackLocalizationInputs', # Pack localization data
+          keys=('gt_bbox'), # Keys of input
+          meta_keys=('video_name'))] # Meta keys of input
+  val_pipeline = [  # List of validation pipeline steps
+      dict(type='LoadLocalizationFeature'),  # Load localization feature pipeline
+      dict(type='GenerateLocalizationLabels'),  # Generate localization labels pipeline
+      dict(
+          type='PackLocalizationInputs',  # Pack localization data
+          keys=('gt_bbox'),   # Keys of input
+          meta_keys=('video_name', 'duration_second', 'duration_frame',
+                     'annotations', 'feature_frame'))]  # Meta keys of input
+  test_pipeline = [  # List of testing pipeline steps
+      dict(type='LoadLocalizationFeature'),  # Load localization feature pipeline
+      dict(
+          type='PackLocalizationInputs',  # Pack localization data
+          keys=('gt_bbox'),  # Keys of input
+          meta_keys=('video_name', 'duration_second', 'duration_frame',
+                     'annotations', 'feature_frame'))]  # Meta keys of input
+  train_dataloader = dict(  # Config of train dataloader
+      batch_size=8,  # Batch size of each single GPU during training
+      num_workers=8,  # Workers to pre-fetch data for each single GPU during training
+      persistent_workers=True,  # Maintain the workers `Dataset` instances alive
+      sampler=dict(type='DefaultSampler', shuffle=True),
+      dataset=dict(
+        type=dataset_type,
+        ann_file=ann_file_train,
+        data_prefix=dict(video=data_root),
+        pipeline=train_pipeline))
+  val_dataloader = dict(  # Config of validation dataloader
+      batch_size=1,  # Batch size of each single GPU during evaluation
+      num_workers=8,  # Workers to pre-fetch data for each single GPU during evaluation
+      persistent_workers=True,  # Maintain the workers `Dataset` instances alive
+      sampler=dict(type='DefaultSampler', shuffle=False),
+      dataset=dict(
+          type=dataset_type,
+          ann_file=ann_file_val,
+          data_prefix=dict(video=data_root_val),
+          pipeline=val_pipeline,
+          test_mode=True))
+  test_dataloader = dict(  # Config of test dataloader
+      batch_size=1,  # Batch size of each single GPU during testing
+      num_workers=8,  # Workers to pre-fetch data for each single GPU during testing
+      persistent_workers=True,  # Maintain the workers `Dataset` instances alive
+      sampler=dict(type='DefaultSampler', shuffle=False),
+      dataset=dict(
+          type=dataset_type,
+          ann_file=ann_file_val,
+          data_prefix=dict(video=data_root_val),
+          pipeline=test_pipeline,
+          test_mode=True))
+  # evaluator settings
+  val_evaluator = dict(
+    type='ANetMetric',  # The evaluator object used for computing metrics for validation
+    metric_type='AR@AN',  # Metrics to be performed
+    dump_config=dict(  # Config of localization output
+        out=f'{work_dir}/results.json',  # Path to output file
+        output_format='json'))  # File format of output file
+  test_evaluator = val_evaluator   # Set test_evaluator as val_evaluator
+
+  max_epochs = 9  # Total epochs to train the model
+  train_cfg = dict(  # Config of training loop
+    type='EpochBasedTrainLoop',  # name of training loop
+    max_epochs=max_epochs,  # Total training epochs
+    val_begin=1,  # The epoch that begins validating
+    val_interval=1)  # Validation interval
+  val_cfg = dict(  # Config of validating loop
+    type='ValLoop')  # name of validating loop
+  test_cfg = dict( # Config of testing loop
+    type='TestLoop')  # name of testing loop
+
+  # learning policy
+  param_scheduler = [dict(  # Parameter scheduler for updating optimizer parameters, support dict or list
+      type='MultiStepLR',  # Decays the parameter once the number of epoch reach milestone
+      begin=0,  # Step at which to start updating the parameters
+      end=max_epochs,  # Step at which to stop updating the parameters
+      by_epoch=True,  # Whether the scheduled parameters are updated by epochs
+      milestones=[7, ],  # Steps to decay the learning rate
+      gamma=0.1)  # Multiplicative factor of parameter value decay
+    ]
+  # optimizer
+  optim_wrapper = dict(  # Common interface for updating parameters
+    optimizer=dict(  # Optimizer used to update model parameters
+      type='Adam',  # Type of optimizer
+      lr=0.001,  # learning rate
+      weight_decay=0.0001),  # Weight decay of SGD
+    clip_grad=dict(max_norm=40, norm_type=2))  # Use gradient clip
+
+
+  # runtime settings
+  default_scope = 'mmaction'  # Scope of current task used to reset the current registry
+  default_hooks = dict( # Hooks to execute default actions like updating model parameters and saving checkpoints.
+      runtime_info=dict(type='RuntimeInfoHook'),  # The hook to updates runtime information into message hub
+      timer=dict(type='IterTimerHook'),  # The logger used to record time spent during iteration
+      logger=dict(
+        type='LoggerHook',  # The logger used to record the training/validation/testing phase
+        interval=20,  # Interval to print the log
+        ignore_last=False), # Ignore the log of last iterations in each epoch
+      param_scheduler=dict(type='ParamSchedulerHook'),  # The hook to update some hyper-parameters in optimizer
+      checkpoint=dict(
+        type='CheckpointHook',  # The hook to save checkpoints periodically
+        interval=3,  # The saving period
+        save_best='auto',  # Specified metric to mearsure the best checkpoint during evaluation
+        max_keep_ckpts=3),  # The maximum checkpoints to keep
+      sampler_seed=dict(type='DistSamplerSeedHook'))  # Data-loading sampler for distributed training
+  env_cfg = dict( # Dict for setting environment
+      cudnn_benchmark=False,
+      mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0), # Parameters to setup multiprocessing
+      dist_cfg=dict(backend='nccl')) # Parameters to setup distributed training, the port can also be set
+
+  log_processor = dict(
+    type='LogProcessor',  # Log processor used to format log information
+    window_size=20,  # Default smooth interval
+    by_epoch=True)  # Whether to format logs with epoch stype
+  vis_backends = [  # Visual backend config list
+    dict(type='LocalVisBackend')]  # Local visualization backend
+  visualizer = dict(
+      type='ActionVisualizer',  # Universal Visualizer for classification task
+      vis_backends=[dict(type='LocalVisBackend')])  # Local visualization backend
+  log_level = 'INFO'  # The level of logging
+  resume = False  # Resume from a checkpoint
+  load_from = None  # load checkpoint as a pre-trained model from a given path. If resume == True, resume training from the checkpoint, otherwise load checkpoint without resuming
+  work_dir = './work_dirs/bmn_400x100_2x8_9e_activitynet_feature/'  # Directory to save the model checkpoints and logs for the current experiments
+  ```
 
 ### Config System for Action Recognition
 
@@ -110,67 +272,6 @@ which is convenient to conduct various experiments.
           # model training and testing settings
           train_cfg=None,  # Config of training hyperparameters for TSN
           test_cfg=None)  # Config for testing hyperparameters for TSN.
-
-  train_cfg = dict(  # Config of training loop
-    type='EpochBasedTrainLoop',  # name of training loop
-    max_epochs=100,  # Total training epochs
-    val_begin=1,  # The epoch that begins validating
-    val_interval=1)  # Validation interval
-  val_cfg = dict(  # Config of validating loop
-    type='ValLoop')  # name of validating loop
-  test_cfg = dict( # Config of testing loop
-    type='TestLoop')  # name of testing loop
-
-  param_scheduler = [dict(  # Parameter scheduler for updating optimizer parameters, support dict or list
-      type='MultiStepLR',  # Decays the parameter once the number of epoch reach milestone
-      begin=0,  # Step at which to start updating the parameters
-      end=100,  # Step at which to stop updating the parameters
-      by_epoch=True,  # Whether the scheduled parameters are updated by epochs
-      milestones=[40, 80],  # Steps to decay the learning rate
-      gamma=0.1)  # Multiplicative factor of parameter value decay
-    ]
-  optim_wrapper = dict(  # Common interface for updating parameters
-    optimizer=dict(  # Optimizer used to update model parameters
-      type='SGD',  # Type of optimizer
-      lr=0.01,  # learning rate
-      momentum=0.9,  # momentum factor
-      weight_decay=0.0001),  # Weight decay of SGD
-    clip_grad=dict(max_norm=40, norm_type=2))  # Use gradient clip
-
-  # runtime settings
-  default_scope = 'mmaction'  # Scope of current task used to reset the current registry
-  default_hooks = dict( # Hooks to execute default actions like updating model parameters and saving checkpoints.
-      runtime_info=dict(type='RuntimeInfoHook'),  # The hook to updates runtime information into message hub
-      timer=dict(type='IterTimerHook'),  # The logger used to record time spent during iteration
-      logger=dict(
-        type='LoggerHook',  # The logger used to record the training/validation/testing phase
-        interval=20,  # Interval to print the log
-        ignore_last=False), # Ignore the log of last iterations in each epoch
-      param_scheduler=dict(type='ParamSchedulerHook'),  # The hook to update some hyper-parameters in optimizer
-      checkpoint=dict(
-        type='CheckpointHook',  # The hook to save checkpoints periodically
-        interval=3,  # The saving period
-        save_best='auto',  # Specified metric to mearsure the best checkpoint during evaluation
-        max_keep_ckpts=3),  # The maximum checkpoints to keep
-      sampler_seed=dict(type='DistSamplerSeedHook'))  # Data-loading sampler for distributed training
-  env_cfg = dict( # Dict for setting environment
-      cudnn_benchmark=False,
-      mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0), # Parameters to setup multiprocessing
-      dist_cfg=dict(backend='nccl')) # Parameters to setup distributed training, the port can also be set
-
-  log_processor = dict(
-    type='LogProcessor',  # Log processor used to format log information
-    window_size=20,  # Default smooth interval
-    by_epoch=True)  # Whether to format logs with epoch stype
-  vis_backends = [  # Visual backend config list
-    dict(type='LocalVisBackend')]  # Local visualization backend
-  visualizer = dict(
-      type='ActionVisualizer',  # Universal Visualizer for classification task
-      vis_backends=[dict(type='LocalVisBackend')])  # Local visualization backend
-  log_level = 'INFO'  # The level of logging
-  resume = False  # Resume from a checkpoint
-  load_from = None  # load checkpoint as a pre-trained model from a given path. If resume == True, resume training from the checkpoint, otherwise load checkpoint without resuming
-  work_dir = './work_dirs/tsn_r50_8xb32-1x1x3-100e_kinetics400-rgb/'  # Directory to save the model checkpoints and logs for the current experiments
 
   # dataset settings
   dataset_type = 'RawframeDataset'  # Type of dataset for training, validation and testing
@@ -300,6 +401,67 @@ which is convenient to conduct various experiments.
   val_evaluator = dict(type='AccMetric')  # The evaluator object used for computing metrics for validation
   test_evaluator = dict(type='AccMetric')  # The evaluator object used for computing metrics for test steps
 
+  train_cfg = dict(  # Config of training loop
+    type='EpochBasedTrainLoop',  # name of training loop
+    max_epochs=100,  # Total training epochs
+    val_begin=1,  # The epoch that begins validating
+    val_interval=1)  # Validation interval
+  val_cfg = dict(  # Config of validating loop
+    type='ValLoop')  # name of validating loop
+  test_cfg = dict( # Config of testing loop
+    type='TestLoop')  # name of testing loop
+  # learning policy
+  param_scheduler = [dict(  # Parameter scheduler for updating optimizer parameters, support dict or list
+      type='MultiStepLR',  # Decays the parameter once the number of epoch reach milestone
+      begin=0,  # Step at which to start updating the parameters
+      end=100,  # Step at which to stop updating the parameters
+      by_epoch=True,  # Whether the scheduled parameters are updated by epochs
+      milestones=[40, 80],  # Steps to decay the learning rate
+      gamma=0.1)  # Multiplicative factor of parameter value decay
+    ]
+  # optimizer
+  optim_wrapper = dict(  # Common interface for updating parameters
+    optimizer=dict(  # Optimizer used to update model parameters
+      type='SGD',  # Type of optimizer
+      lr=0.01,  # learning rate
+      momentum=0.9,  # momentum factor
+      weight_decay=0.0001),  # Weight decay of SGD
+    clip_grad=dict(max_norm=40, norm_type=2))  # Use gradient clip
+
+  # runtime settings
+  default_scope = 'mmaction'  # Scope of current task used to reset the current registry
+  default_hooks = dict( # Hooks to execute default actions like updating model parameters and saving checkpoints.
+      runtime_info=dict(type='RuntimeInfoHook'),  # The hook to updates runtime information into message hub
+      timer=dict(type='IterTimerHook'),  # The logger used to record time spent during iteration
+      logger=dict(
+        type='LoggerHook',  # The logger used to record the training/validation/testing phase
+        interval=20,  # Interval to print the log
+        ignore_last=False), # Ignore the log of last iterations in each epoch
+      param_scheduler=dict(type='ParamSchedulerHook'),  # The hook to update some hyper-parameters in optimizer
+      checkpoint=dict(
+        type='CheckpointHook',  # The hook to save checkpoints periodically
+        interval=3,  # The saving period
+        save_best='auto',  # Specified metric to mearsure the best checkpoint during evaluation
+        max_keep_ckpts=3),  # The maximum checkpoints to keep
+      sampler_seed=dict(type='DistSamplerSeedHook'))  # Data-loading sampler for distributed training
+  env_cfg = dict( # Dict for setting environment
+      cudnn_benchmark=False,
+      mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0), # Parameters to setup multiprocessing
+      dist_cfg=dict(backend='nccl')) # Parameters to setup distributed training, the port can also be set
+
+  log_processor = dict(
+    type='LogProcessor',  # Log processor used to format log information
+    window_size=20,  # Default smooth interval
+    by_epoch=True)  # Whether to format logs with epoch stype
+  vis_backends = [  # Visual backend config list
+    dict(type='LocalVisBackend')]  # Local visualization backend
+  visualizer = dict(
+      type='ActionVisualizer',  # Universal Visualizer for classification task
+      vis_backends=[dict(type='LocalVisBackend')])  # Local visualization backend
+  log_level = 'INFO'  # The level of logging
+  resume = False  # Resume from a checkpoint
+  load_from = None  # load checkpoint as a pre-trained model from a given path. If resume == True, resume training from the checkpoint, otherwise load checkpoint without resuming
+  work_dir = './work_dirs/tsn_r50_8xb32-1x1x3-100e_kinetics400-rgb/'  # Directory to save the model checkpoints and logs for the current experiments
   ```
 
 ### Config System for Spatio-Temporal Action Detection
@@ -444,16 +606,14 @@ We incorporate modular design into our config system, which is convenient to con
           pipeline=val_pipeline,
           test_mode=True))
   test_dataloader = val_dataloader  # Set test_dataloader as val_dataloader
-
-  # optimizer
-  lr_config = dict(  # Learning rate scheduler config used to register LrUpdater hook
-      policy='step',  # Policy of scheduler, also support CosineAnnealing, Cyclic, etc. Refer to details of supported LrUpdater from https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/lr_updater.py#L9
-      step=[40, 80],  # Steps to decay the learning rate
-      warmup='linear',  # Warmup strategy
-      warmup_by_epoch=True,  # Warmup_iters indicates iter num or epoch num
-      warmup_iters=5,   # Number of iters or epochs for warmup
-      warmup_ratio=0.1)   # The initial learning rate is warmup_ratio * lr
-
+  # evaluation settings
+  val_evaluator = dict(
+    type='AVAMetric',  # The evaluator object used for computing metrics for validation
+    ann_file=ann_file_val,
+    label_file=label_file,
+    exclude_file=exclude_file_val)
+  test_evaluator = val_evaluator  # Set test_evaluator as val_evaluator
+  # learning policy
   param_scheduler = [ # Parameter scheduler for updating optimizer parameters, support dict or list
       dict(type='LinearLR',  # Decays the learning rate of each parameter group by linearly changing small multiplicative factor
           start_factor=0.1,  # The number we multiply parameter value in the first epoch
@@ -466,7 +626,7 @@ We incorporate modular design into our config system, which is convenient to con
           by_epoch=True,   # Whether the scheduled parameters are updated by epochs
           milestones=[10, 15],  # Steps to decay the learning rate
           gamma=0.1)]  # Multiplicative factor of parameter value decay
-
+  # optimizer
   optim_wrapper = dict(  # Common interface for updating parameters
     optimizer=dict(  # Optimizer used to update model parameters
       type='SGD',  # Type of optimizer
@@ -474,21 +634,6 @@ We incorporate modular design into our config system, which is convenient to con
       momentum=0.9,  # momentum factor
       weight_decay=0.0001),  # Weight decay of SGD
     clip_grad=dict(max_norm=40, norm_type=2))  # Use gradient clip
-
-  total_epochs = 20  # Total epochs to train the model
-  checkpoint_config = dict(  # Config to set the checkpoint hook, Refer to https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/checkpoint.py for implementation
-      interval=1)   # Interval to save checkpoint
-  evaluation = dict(  # Config of evaluation during training
-      interval=1,
-      save_best='mAP@0.5IOU')  # Interval to perform evaluation and the key for saving best checkpoint
-
-  # evaluation settings
-  val_evaluator = dict(
-    type='AVAMetric',  # The evaluator object used for computing metrics for validation
-    ann_file=ann_file_val,
-    label_file=label_file,
-    exclude_file=exclude_file_val)
-  test_evaluator = val_evaluator  # Set test_evaluator as val_evaluator
 
   # runtime settings
   default_scope = 'mmaction'  # Scope of current task used to reset the current registry
@@ -510,7 +655,6 @@ We incorporate modular design into our config system, which is convenient to con
       cudnn_benchmark=False,
       mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0), # Parameters to setup multiprocessing
       dist_cfg=dict(backend='nccl')) # Parameters to setup distributed training, the port can also be set
-
   log_processor = dict(
     type='LogProcessor',  # Log processor used to format log information
     window_size=20,  # Default smooth interval
