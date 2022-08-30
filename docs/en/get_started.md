@@ -45,7 +45,7 @@ We recommend that users follow our best practices to install MMAction2. However,
 
 ```shell
 pip install -U openmim
-mim install mmengine "mmcv-full>=2.0rc0"
+mim install mmengine 'mmcv>=2.0.0rc1'
 ```
 
 **Step 2.** Install MMAction2.
@@ -141,7 +141,7 @@ not clear on which to choose, follow our recommendations:
 Please make sure the GPU driver satisfies the minimum version requirements. See [this table](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html#cuda-major-component-versions__table-cuda-toolkit-driver-versions) for more information.
 
 ```{note}
-Installing CUDA runtime libraries is enough if you follow our best practices,
+Installing CUDA runtime libraries is enough if you follow our best prac``tices,
 because no CUDA code will be compiled locally. However if you hope to compile
 MMCV from source or develop other CUDA operators, you need to install the
 complete CUDA toolkit from NVIDIA's [website](https://developer.nvidia.com/cuda-downloads),
@@ -159,10 +159,10 @@ To install MMCV with pip instead of MIM, please follow
 [MMCV installation guides](https://mmcv.readthedocs.io/en/dev-2.x/get_started/installation.html).
 This requires manually specifying a find-url based on PyTorch version and its CUDA version.
 
-For example, the following command install mmcv-full built for PyTorch 1.10.x and CUDA 11.3.
+For example, the following command install mmcv built for PyTorch 1.10.x and CUDA 11.3.
 
 ```shell
-pip install "mmcv-full>=2.0rc0" -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.10/index.html
+pip install 'mmcv>=2.0.0rc1' -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.10/index.html
 ```
 
 ### Install on CPU-only platforms
