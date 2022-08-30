@@ -6,13 +6,14 @@ you may run `python tools/analysis_tools/print_config.py /PATH/TO/CONFIG` to see
 
 <!-- TOC -->
 
-- [Modify config through script arguments](#modify-config-through-script-arguments)
-- [Config File Structure](#config-file-structure)
-- [Config File Naming Convention](#config-file-naming-convention)
-  - [Config System for Action Recognition](#config-system-for-action-recognition)
-  - [Config System for Spatio-Temporal Action Detection](#config-system-for-spatio-temporal-action-detection)
-- [FAQ](#faq)
-  - [Use intermediate variables in configs](#use-intermediate-variables-in-configs)
+- [Tutorial 1: Learn about Configs](#tutorial-1-learn-about-configs)
+  - [Modify config through script arguments](#modify-config-through-script-arguments)
+  - [Config File Structure](#config-file-structure)
+  - [Config File Naming Convention](#config-file-naming-convention)
+    - [Config System for Action Recognition](#config-system-for-action-recognition)
+    - [Config System for Spatio-Temporal Action Detection](#config-system-for-spatio-temporal-action-detection)
+  - [FAQ](#faq)
+    - [Use intermediate variables in configs](#use-intermediate-variables-in-configs)
 
 <!-- TOC -->
 
@@ -167,9 +168,8 @@ which is convenient to conduct various experiments.
       type='ActionVisualizer',  # Universal Visualizer for classification task
       vis_backends=[dict(type='LocalVisBackend')])  # Local visualization backend
   log_level = 'INFO'  # The level of logging
-  load_from = None  # load models as a pre-trained model from a given path. This will not resume training
-  resume = False  # Resume from a checkpoints
-  resume_from = None  # Resume checkpoints from a given path, the training will be resumed from the epoch when the checkpoint's is saved
+  resume = False  # Resume from a checkpoint
+  load_from = None  # load checkpoint as a pre-trained model from a given path. If resume == True, resume training from the checkpoint, otherwise load checkpoint without resuming
   work_dir = './work_dirs/tsn_r50_8xb32-1x1x3-100e_kinetics400-rgb/'  # Directory to save the model checkpoints and logs for the current experiments
 
   # dataset settings
@@ -524,8 +524,8 @@ We incorporate modular design into our config system, which is convenient to con
   load_from = ('https://download.openmmlab.com/mmaction/recognition/slowonly/'  # load models as a pre-trained model from a given path. This will not resume training
                'slowonly_r50_4x16x1_256e_kinetics400_rgb/'
                'slowonly_r50_4x16x1_256e_kinetics400_rgb_20200704-a69556c6.pth')
-  resume = False  # Resume from a checkpoints
-  resume_from = None  # Resume checkpoints from a given path, the training will be resumed from the epoch when the checkpoint's is saved
+  resume = False  # Resume from a checkpoint
+  load_from = None  # load checkpoint as a pre-trained model from a given path. If resume == True, resume training from the checkpoint, otherwise load checkpoint without resuming
   work_dir = ('./work_dirs/ava/'  # Directory to save the model checkpoints and logs for the current experiments
               'slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb')
   ```
