@@ -139,7 +139,7 @@ class BMN(BaseModel):
         """Initiate the parameters from scratch."""
         pass
 
-    def forward(self, batch_inputs, batch_data_samples, mode, **kwargs):
+    def forward(self, inputs, data_samples, mode, **kwargs):
         """The unified entry for a forward process in both training and test.
 
         The method should accept three modes:
@@ -155,9 +155,9 @@ class BMN(BaseModel):
         optimizer updating, which are done in the :meth:`train_step`.
 
         Args:
-            batch_inputs (Tensor): The input tensor with shape
+            inputs (Tensor): The input tensor with shape
                 (N, C, ...) in general.
-            batch_data_samples (List[:obj:`ActionDataSample`], optional): The
+            data_samples (List[:obj:`ActionDataSample`], optional): The
                 annotation data of every samples. Defaults to None.
             mode (str): Return what kind of value. Defaults to ``tensor``.
 
@@ -169,11 +169,11 @@ class BMN(BaseModel):
             - If ``mode="loss"``, return a dict of tensor.
         """
         if mode == 'tensor':
-            return self._forward(batch_inputs, **kwargs)
+            return self._forward(inputs, **kwargs)
         if mode == 'predict':
-            return self.predict(batch_inputs, batch_data_samples, **kwargs)
+            return self.predict(inputs, data_samples, **kwargs)
         elif mode == 'loss':
-            return self.loss(batch_inputs, batch_data_samples, **kwargs)
+            return self.loss(inputs, data_samples, **kwargs)
         else:
             raise RuntimeError(f'Invalid mode "{mode}". '
                                'Only supports loss, predict and tensor mode')
