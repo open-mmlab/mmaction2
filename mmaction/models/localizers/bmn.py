@@ -168,6 +168,7 @@ class BMN(BaseModel):
             - If ``mode="predict"``, return a list of ``ActionDataSample``.
             - If ``mode="loss"``, return a dict of tensor.
         """
+        inputs = torch.stack(inputs)
         if mode == 'tensor':
             return self._forward(inputs, **kwargs)
         if mode == 'predict':
