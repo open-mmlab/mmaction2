@@ -22,7 +22,7 @@ if mmdet_imported:
 
         def loss(self, x: Union[Tensor,
                                 Tuple[Tensor]], rpn_results_list: InstanceList,
-                 batch_data_samples: SampleList, **kwargs) -> dict:
+                 data_samples: SampleList, **kwargs) -> dict:
             """Perform forward propagation and loss calculation of the
             detection roi on the features of the upstream network.
 
@@ -31,19 +31,19 @@ if mmdet_imported:
                     the upstream network.
                 rpn_results_list (List[:obj:`InstanceData`]): List of region
                     proposals.
-                batch_data_samples (List[:obj:`ActionDataSample`]): The batch
+                data_samples (List[:obj:`ActionDataSample`]): The batch
                     data samples.
 
             Returns:
                 Dict[str, Tensor]: A dictionary of loss components.
             """
-            assert len(rpn_results_list) == len(batch_data_samples)
+            assert len(rpn_results_list) == len(data_samples)
             batch_gt_instances = []
-            for data_sample in batch_data_samples:
+            for data_sample in data_samples:
                 batch_gt_instances.append(data_sample.gt_instances)
 
             # assign gts and sample proposals
-            num_imgs = len(batch_data_samples)
+            num_imgs = len(data_samples)
             sampling_results = []
             for i in range(num_imgs):
                 # rename rpn_results.bboxes to rpn_results.priors
@@ -58,7 +58,7 @@ if mmdet_imported:
 
             # LFB needs meta_info: 'img_key'
             batch_img_metas = [
-                data_samples.metainfo for data_samples in batch_data_samples
+                data_samples.metainfo for data_samples in data_samples
             ]
 
             losses = dict()
@@ -133,8 +133,8 @@ if mmdet_imported:
             return bbox_results
 
         def predict(self, x: Union[Tensor, Tuple[Tensor]],
-                    rpn_results_list: InstanceList,
-                    batch_data_samples: SampleList, **kwargs) -> InstanceList:
+                    rpn_results_list: InstanceList, data_samples: SampleList,
+                    **kwargs) -> InstanceList:
             """Perform forward propagation of the roi head and predict
             detection results on the features of the upstream network.
 
@@ -143,7 +143,7 @@ if mmdet_imported:
                     the upstream network.
                 rpn_results_list (List[:obj:`InstanceData`]): list of region
                     proposals.
-                batch_data_samples (List[:obj:`ActionDataSample`]): The batch
+                data_samples (List[:obj:`ActionDataSample`]): The batch
                     data samples.
 
             Returns:
@@ -157,7 +157,7 @@ if mmdet_imported:
             """
             assert self.with_bbox, 'Bbox head must be implemented.'
             batch_img_metas = [
-                data_samples.metainfo for data_samples in batch_data_samples
+                data_samples.metainfo for data_samples in data_samples
             ]
             if isinstance(x, tuple):
                 x_shape = x[0].shape
