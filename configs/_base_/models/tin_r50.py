@@ -1,9 +1,7 @@
 # model settings
 
 preprocess_cfg = dict(
-    mean=[127.5, 127.5, 127.5],
-    std=[127.5, 127.5, 127.5],
-    format_shape='NCTHW')
+    mean=[127.5, 127.5, 127.5], std=[127.5, 127.5, 127.5], format_shape='NCHW')
 
 model = dict(
     type='Recognizer2D',

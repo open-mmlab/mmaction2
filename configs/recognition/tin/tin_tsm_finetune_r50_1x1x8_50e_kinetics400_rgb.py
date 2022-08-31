@@ -13,8 +13,6 @@ data_root_val = 'data/kinetics400/videos_val'
 ann_file_train = 'data/kinetics400/kinetics400_train_list_videos.txt'
 ann_file_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
 ann_file_test = 'data/kinetics400/kinetics400_val_list_videos.txt'
-img_norm_cfg = dict(
-    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 train_pipeline = [
     dict(type='DecordInit'),
     dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=8),
@@ -28,7 +26,6 @@ train_pipeline = [
         max_wh_scale_gap=1),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
     dict(type='Flip', flip_ratio=0.5),
-    dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='PackActionInputs')
 ]
@@ -43,7 +40,6 @@ val_pipeline = [
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
-    dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='PackActionInputs')
 ]
@@ -58,7 +54,6 @@ test_pipeline = [
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
-    dict(type='Normalize', **img_norm_cfg),
     dict(type='FormatShape', input_format='NCHW'),
     dict(type='PackActionInputs')
 ]
@@ -99,11 +94,8 @@ test_dataloader = dict(
 val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 
-val_cfg = dict(interval=5)
-test_cfg = dict()
+train_cfg = dict(val_interval=5)
 
 # optimizer
-optimizer = dict(
-    constructor='TSMOptimizerConstructor', paramwise_cfg=dict(fc_lr5=True))
-
-default_hooks = dict(optimizer=dict(grad_clip=dict(max_norm=20, norm_type=2)))
+optim_wrapper = dict(
+    constructor='TSMOptimWrapperConstructor', paramwise_cfg=dict(fc_lr5=True))
