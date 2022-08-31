@@ -1,4 +1,4 @@
-_base_ = ['./r2plus1d_r34_8x8x1_180e_8xb8_kinetics400_rgb.py']
+_base_ = ['./r2plus1d_r34_8xb8-8x8x1-180e_kinetics400-rgb.py']
 
 # dataset settings
 dataset_type = 'VideoDataset'
