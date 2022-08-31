@@ -78,9 +78,7 @@ test_dataloader = dict(
 train_cfg = dict(val_interval=20)
 
 test_evaluator = dict(
-    type='BSNMetric',
+    type='ANetMetric',
     metric_type='AR@AN',
     dump_config=dict(out=f'{work_dir}/results.json', output_format='json'))
 val_evaluator = test_evaluator
-
-default_hooks = dict(checkpoint=dict(max_keep_ckpts=3, save_best=None))
