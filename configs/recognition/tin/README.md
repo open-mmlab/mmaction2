@@ -20,23 +20,23 @@ For a long time, the vision community tries to learn the spatio-temporal represe
 
 ### Something-Something V1
 
-| config                       | resolution | gpus | backbone | pretrain | top1 acc | top5 acc | reference top1 acc | reference top5 acc | gpu_mem(M) |            ckpt             |            log             |            json             |
-| :--------------------------- | :--------: | :--: | :------: | :------: | :------: | :------: | :----------------: | :----------------: | :--------: | :-------------------------: | :------------------------: | :-------------------------: |
-| [tin_r50_1x1x8_40e_sthv1_rgb](/configs/recognition/tin/tin_r50_1x1x8_40e_sthv1_rgb.py) | height 100 | 8x4  | ResNet50 | ImageNet |  44.25   |  73.94   |       44.04        |       72.72        |    6181    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tin/tin_r50_1x1x8_40e_sthv1_rgb/tin_r50_1x1x8_40e_sthv1_rgb_20200729-4a33db86.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tin/tin_r50_1x1x8_40e_sthv1_rgb/20200729_034132.log) | [json](https://download.openmmlab.com/mmaction/recognition/tin/tin_r50_1x1x8_40e_sthv1_rgb/20200729_034132.log.json) |
+| frame sampling strategy | resolution | gpus | backbone | pretrain | top1 acc | top5 acc | reference top1 acc | reference top5 acc | testing protocol | inference time(video/s) | gpu_mem(M) |      config       |      ckpt       |      log       |
+| :---------------------: | :--------: | :--: | :------: | :------: | :------: | :------: | :----------------: | :----------------: | :--------------: | :---------------------: | :--------: | :---------------: | :-------------: | :------------: |
+|          1x1x8          | height 100 | 8x4  | ResNet50 | ImageNet |  44.25   |  73.94   |       44.04        |       72.72        | 8 clips x 3 crop |            x            |    6181    | [config](/configs/recognition/tin/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv1-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/recognition/tin/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv1-rgb/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv1-rgb_20200729-4a33db86.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tin/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv1-rgb/20200729_034132.log) |
 
 ### Something-Something V2
 
-| config                       | resolution | gpus | backbone | pretrain | top1 acc | top5 acc | reference top1 acc | reference top5 acc | gpu_mem(M) |            ckpt             |            log             |            json             |
-| :--------------------------- | :--------: | :--: | :------: | :------: | :------: | :------: | :----------------: | :----------------: | :--------: | :-------------------------: | :------------------------: | :-------------------------: |
-| [tin_r50_1x1x8_40e_sthv2_rgb](/configs/recognition/tin/tin_r50_1x1x8_40e_sthv2_rgb.py) | height 240 | 8x4  | ResNet50 | ImageNet |  56.70   |  83.62   |       56.48        |       83.45        |    6185    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tin/tin_r50_1x1x8_40e_sthv2_rgb/tin_r50_1x1x8_40e_sthv2_rgb_20200912-b27a7337.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tin/tin_r50_1x1x8_40e_sthv2_rgb/20200912_225451.log) | [json](https://download.openmmlab.com/mmaction/recognition/tin/tin_r50_1x1x8_40e_sthv2_rgb/20200912_225451.log.json) |
+| frame sampling strategy | resolution | gpus | backbone | pretrain | top1 acc | top5 acc | reference top1 acc | reference top5 acc | testing protocol | inference time(video/s) | gpu_mem(M) |      config       |      ckpt       |      log       |
+| :---------------------: | :--------: | :--: | :------: | :------: | :------: | :------: | :----------------: | :----------------: | :--------------: | :---------------------: | :--------: | :---------------: | :-------------: | :------------: |
+|          1x1x8          | height 240 | 8x4  | ResNet50 | ImageNet |  56.70   |  83.62   |       56.48        |       83.45        | 8 clips x 3 crop |            x            |    6185    | [config](/configs/recognition/tin/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv2-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/recognition/tin/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv2-rgb/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv2-rgb_20200912-b27a7337.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tin/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv2-rgb/20200912_225451.log) |
 
 ### Kinetics-400
 
-| config                              |   resolution   | gpus | backbone |    pretrain     | top1 acc | top5 acc | gpu_mem(M) |               ckpt                |               log                |               json                |
-| :---------------------------------- | :------------: | :--: | :------: | :-------------: | :------: | :------: | :--------: | :-------------------------------: | :------------------------------: | :-------------------------------: |
-| [tin_tsm_finetune_r50_1x1x8_50e_kinetics400_rgb](/configs/recognition/tin/tin_tsm_finetune_r50_1x1x8_50e_kinetics400_rgb.py) | short-side 256 | 8x4  | ResNet50 | TSM-Kinetics400 |  70.89   |  89.89   |    6187    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tin/tin_tsm_finetune_r50_1x1x8_50e_kinetics400_rgb/tin_tsm_finetune_r50_1x1x8_50e_kinetics400_rgb_20200810-4a146a70.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tin/tin_tsm_finetune_r50_1x1x8_50e_kinetics400_rgb/20200809_142447.log) | [json](https://download.openmmlab.com/mmaction/recognition/tin/tin_tsm_finetune_r50_1x1x8_50e_kinetics400_rgb/20200809_142447.log.json) |
+| frame sampling strategy |   resolution   | gpus | backbone |    pretrain     | top1 acc | top5 acc | testing protocol | inference time(video/s) | gpu_mem(M) |          config           |          ckpt           |           log           |
+| :---------------------: | :------------: | :--: | :------: | :-------------: | :------: | :------: | :--------------: | :---------------------: | :--------: | :-----------------------: | :---------------------: | :---------------------: |
+|          1x1x8          | short-side 256 | 8x4  | ResNet50 | TSM-Kinetics400 |  70.89   |  89.89   | 8 clips x 3 crop |            x            |    6185    | [config](/configs/recognition/tin/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv2-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/recognition/tin/tin_kinetics400-pretrained-tsm-r50_1x1x8-50e_kinetics400-rgb/tin_kinetics400-pretrained-tsm-r50_1x1x8-50e_kinetics400-rgb_20200810-4a146a70.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tin/tin_kinetics400-pretrained-tsm-r50_1x1x8-50e_kinetics400-rgb/20200809_142447.log) |
 
-Here, we use `finetune` to indicate that we use [TSM model](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/tsm_r50_1x1x8_50e_kinetics400_rgb_20200607-af7fb746.pth) trained on Kinetics-400 to finetune the TIN model on Kinetics-400.
+Here, we use `finetune` to indicate that we use [TSM model](https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb_20220831-64d69186.pth) trained on Kinetics-400 to finetune the TIN model on Kinetics-400.
 
 :::{note}
 
@@ -45,14 +45,12 @@ Here, we use `finetune` to indicate that we use [TSM model](https://download.ope
 2. The **gpus** indicates the number of gpu we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
    According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
    e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
-3. The **inference_time** is got by this [benchmark script](/tools/analysis/benchmark.py), where we use the sampling frames strategy of the test setting and only care about the model inference time,
-   not including the IO time and pre-processing time. For each setting, we use 1 gpu and set batch size (videos per gpu) to 1 to calculate the inference time.
-4. The values in columns named after "reference" are the results got by training on the original repo, using the same model settings.
-5. The validation set of Kinetics400 we used consists of 19796 videos. These videos are available at [Kinetics400-Validation](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155136485_link_cuhk_edu_hk/EbXw2WX94J1Hunyt3MWNDJUBz-nHvQYhO9pvKqm6g39PMA?e=a9QldB). The corresponding [data list](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_val_list.txt) (each line is of the format 'video_id, num_frames, label_index') and the [label map](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_class2ind.txt) are also available.
+3. The values in columns named after "reference" are the results got by training on the original repo, using the same model settings.
+4. The validation set of Kinetics400 we used consists of 19796 videos. These videos are available at [Kinetics400-Validation](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155136485_link_cuhk_edu_hk/EbXw2WX94J1Hunyt3MWNDJUBz-nHvQYhO9pvKqm6g39PMA?e=a9QldB). The corresponding [data list](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_val_list.txt) (each line is of the format 'video_id, num_frames, label_index') and the [label map](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_class2ind.txt) are also available.
 
 :::
 
-For more details on data preparation, you can refer to Kinetics400, Something-Something V1 and Something-Something V2 in [Data Preparation](/docs/data_preparation.md).
+For more details on data preparation, you can refer to Kinetics400, Something-Something V1 and Something-Something V2 in [Prepare Datasets](/docs/en/user_guides/2_data_prepare.md).
 
 ## Train
 
@@ -65,12 +63,11 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 Example: train TIN model on Something-Something V1 dataset in a deterministic option with periodic validation.
 
 ```shell
-python tools/train.py configs/recognition/tin/tin_r50_1x1x8_40e_sthv1_rgb.py \
-    --work-dir work_dirs/tin_r50_1x1x8_40e_sthv1_rgb \
-    --validate --seed 0 --deterministic
+python tools/train.py configs/recognition/tin/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv1-rgb.py \
+    --work-dir work_dirs/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv1-rgb
 ```
 
-For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
+For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Test
 
@@ -83,12 +80,11 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 Example: test TIN model on Something-Something V1 dataset and dump the result to a json file.
 
 ```shell
-python tools/test.py configs/recognition/tin/tin_r50_1x1x8_40e_sthv1_rgb.py \
-    checkpoints/SOME_CHECKPOINT.pth --eval top_k_accuracy mean_class_accuracy \
-    --out result.json
+python tools/test.py configs/recognition/tin/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv1-rgb.py \
+    checkpoints/SOME_CHECKPOINT.pth --dump result.json
 ```
 
-For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Citation
 
