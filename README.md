@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/open-mmlab/mmaction2/raw/master/resources/mmaction2_logo.png" width="600"/>
+  <img src="https://github.com/open-mmlab/mmaction2/raw/1.x/resources/mmaction2_logo.png" width="600"/>
   <div>&nbsp;</div>
   <div align="center">
     <b><font size="5">OpenMMLab website</font></b>
