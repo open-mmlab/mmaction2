@@ -23,8 +23,7 @@ Temporal action proposal generation is an challenging and promising task which a
 |                                        config                                         |    feature    | gpus |  AUC  | AR@100 | gpu_mem(M) |                  ckpt                   |                  log                   |
 | :-----------------------------------------------------------------------------------: | :-----------: | :--: | :---: | :----: | :--------: | :-------------------------------------: | :------------------------------------: |
 | [bmn_400x100_9e_2x8_activitynet_feature](/configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py) | cuhk_mean_100 |  2   | 67.17 | 75.14  |    5420    | [ckpt](https://download.openmmlab.com/) | [log](https://download.openmmlab.com/) |
-
-| [BMN-official](https://github.com/JJBOY/BMN-Boundary-Matching-Network) (for reference)\* | cuhk_mean_100  | - | 67.49 | 75.27 | - | - | - |
+| [BMN-official](https://github.com/JJBOY/BMN-Boundary-Matching-Network) (for reference)\* | cuhk_mean_100 |  -   | 67.49 | 75.27  |     -      |                    -                    |                   -                    |
 
 :::{note}
 
@@ -45,7 +44,7 @@ For more details on data preparation, you can refer to ActivityNet feature in [D
 Train BMN model on ActivityNet features dataset.
 
 ```shell
-CUDA_VISIBLE_DEVICES=0,1 bash tools/dist_train.sh configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py 2
+bash tools/dist_train.sh configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py 2
 ```
 
 For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting) .
