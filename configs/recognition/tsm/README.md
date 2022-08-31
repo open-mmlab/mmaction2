@@ -30,7 +30,7 @@ The explosive growth in video streaming gives rise to challenges on performing v
 |          1x1x8          | short-size 320 |  8   | ResNet50 Nonlocal | ImageNet |  73.37   |  90.82   | 8 clips x 10 crop  |            x            |   19925    | [config](/configs/recognition/tsm/tsm_imagenet-pretrained-r50-nl-gaussian_8xb16-1x1x8-50e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50-nl-gaussian_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50-nl-gaussian_8xb16-1x1x8-50e_kinetics400-rgb_20220831-7e54dacf.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50-nl-gaussian_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50-nl-gaussian_8xb16-1x1x8-50e_kinetics400-rgb.log) |
 |          1x1x8          | short-size 320 |  8   | ResNet50 Nonlocal | ImageNet |  74.45   |  91.11   | 8 clips x 10 crop  |            x            |   19726    | [config](/configs/recognition/tsm/tsm_imagenet-pretrained-r50-nl-embedded_gaussian_8xb16-1x1x8-50e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50-nl-embedded_gaussian_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50-nl-embedded_gaussian_8xb16-1x1x8-50e_kinetics400-rgb_20220831-35eddb57.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50-nl-embedded_gaussian_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50-nl-embedded_gaussian_8xb16-1x1x8-50e_kinetics400-rgb.log) |
 
-:::{note}
+Note:
 
 1. The **gpus** indicates the number of gpu we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
    According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
@@ -69,9 +69,8 @@ test_pipeline = [
 
 2. The validation set of Kinetics400 we used consists of 19796 videos. These videos are available at [Kinetics400-Validation](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155136485_link_cuhk_edu_hk/EbXw2WX94J1Hunyt3MWNDJUBz-nHvQYhO9pvKqm6g39PMA?e=a9QldB). The corresponding [data list](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_val_list.txt) (each line is of the format 'video_id, num_frames, label_index') and the [label map](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_class2ind.txt) are also available.
 
-:::
 
-For more details on data preparation, you can refer to the **Prepare videos** part in [data prepare](/docs/en/user_guides/2_data_prepare.md).
+For more details on data preparation, you can refer to the **Prepare videos** part in the [Data Preparation Tutorial](/docs/en/user_guides/2_data_prepare.md).
 
 ## Train
 
@@ -88,7 +87,7 @@ python tools/train.py configs/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-
     --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
-For more details, you can refer to the **Training** part in [train_test](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Test
 
@@ -105,7 +104,7 @@ python tools/test.py configs/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1
     checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
-For more details, you can refer to the **Test** part in [train_test](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Citation
 
