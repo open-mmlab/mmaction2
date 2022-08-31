@@ -92,35 +92,35 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
         raise NotImplementedError
 
     def loss(self, feats: Union[Tensor, Tuple[Tensor]],
-             batch_data_samples: SampleList, **kwargs) -> dict:
+             data_samples: SampleList, **kwargs) -> dict:
         """Perform forward propagation of head and loss calculation on the
         features of the upstream network.
 
         Args:
             feats (Tensor or Tuple[Tensor]): Features from upstream network.
-            batch_data_samples (List[:obj:`ActionDataSample`]): The batch
+            data_samples (List[:obj:`ActionDataSample`]): The batch
                 data samples.
 
         Returns:
             dict: A dictionary of loss components.
         """
         cls_scores = self(feats, **kwargs)
-        return self.loss_by_feat(cls_scores, batch_data_samples)
+        return self.loss_by_feat(cls_scores, data_samples)
 
     def loss_by_feat(self, cls_scores: Union[Tensor, Tuple[Tensor]],
-                     batch_data_samples: SampleList) -> dict:
+                     data_samples: SampleList) -> dict:
         """Calculate the loss based on the features extracted by the head.
 
         Args:
             cls_scores (Tensor): Classification prediction results of
                 all class, has shape (batch_size, num_classes).
-            batch_data_samples (List[:obj:`ActionDataSample`]): The batch
+            data_samples (List[:obj:`ActionDataSample`]): The batch
                 data samples.
 
         Returns:
             dict: A dictionary of loss components.
         """
-        labels = [x.gt_labels.item for x in batch_data_samples]
+        labels = [x.gt_labels.item for x in data_samples]
         labels = torch.stack(labels).to(cls_scores.device)
         labels = labels.squeeze()
 
@@ -156,13 +156,13 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
         return losses
 
     def predict(self, feats: Union[Tensor, Tuple[Tensor]],
-                batch_data_samples: SampleList, **kwargs) -> LabelList:
+                data_samples: SampleList, **kwargs) -> LabelList:
         """Perform forward propagation of head and predict recognition results
         on the features of the upstream network.
 
         Args:
             feats (Tensor or Tuple[Tensor]): Features from upstream network.
-            batch_data_samples (List[:obj:`ActionDataSample`]): The batch
+            data_samples (List[:obj:`ActionDataSample`]): The batch
                 data samples.
 
         Returns:
@@ -174,17 +174,17 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
                     (num_classes, )
         """
         cls_scores = self(feats, **kwargs)
-        return self.predict_by_feat(cls_scores, batch_data_samples)
+        return self.predict_by_feat(cls_scores, data_samples)
 
     def predict_by_feat(self, cls_scores: Tensor,
-                        batch_data_samples: SampleList) -> LabelList:
+                        data_samples: SampleList) -> LabelList:
         """Transform a batch of output features extracted from the head into
         prediction results.
 
         Args:
             cls_scores (Tensor): Classification scores, has a shape
                     (num_classes, )
-            batch_data_samples (List[:obj:`ActionDataSample`]): The
+            data_samples (List[:obj:`ActionDataSample`]): The
                 annotation data of every samples. It usually includes
                 information such as `gt_labels`.
 
@@ -196,7 +196,7 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
                 - item (Tensor): Classification scores, has a shape
                     (num_classes, )
         """
-        num_segs = cls_scores.shape[0] // len(batch_data_samples)
+        num_segs = cls_scores.shape[0] // len(data_samples)
         cls_scores = self.average_clip(cls_scores, num_segs=num_segs)
 
         predictions: LabelList = []

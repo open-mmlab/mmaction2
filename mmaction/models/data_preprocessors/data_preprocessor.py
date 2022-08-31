@@ -81,7 +81,7 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
             input.
         """
         data = super().forward(data)
-        inputs, batch_data_samples = data['inputs'], data['data_samples']
+        inputs, data_samples = data['inputs'], data['data_samples']
 
         # --- Pad and stack --
         batch_inputs = stack_batch(inputs, self.pad_size_divisor,
@@ -104,7 +104,8 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
 
         # ----- Blending -----
         if training and self.blending is not None:
-            batch_inputs, batch_data_samples = self.blending(
-                batch_inputs, batch_data_samples)
+            batch_inputs, data_samples = self.blending(batch_inputs,
+                                                       data_samples)
 
-        return batch_inputs, batch_data_samples
+        data['inputs'] = batch_inputs
+        return data

@@ -248,11 +248,10 @@ class AuxHead(nn.Module):
             if isinstance(m, nn.BatchNorm3d):
                 constant_init(m, 1)
 
-    def loss(self, x: Tensor,
-             batch_data_samples: Optional[SampleList]) -> dict:
+    def loss(self, x: Tensor, data_samples: Optional[SampleList]) -> dict:
         """Calculate auxiliary loss."""
         x = self(x)
-        labels = [x.gt_labels.item for x in batch_data_samples]
+        labels = [x.gt_labels.item for x in data_samples]
         labels = torch.stack(labels).to(x.device)
         labels = labels.squeeze()
         if labels.shape == torch.Size([]):
@@ -430,13 +429,13 @@ class TPN(nn.Module):
 
     def forward(self,
                 x: Tuple[Tensor],
-                batch_data_samples: Optional[SampleList] = None) -> tuple:
+                data_samples: Optional[SampleList] = None) -> tuple:
 
         loss_aux = dict()
         # Calculate auxiliary loss if `self.aux_head`
-        # and `batch_data_samples` are not None.
-        if self.aux_head is not None and batch_data_samples is not None:
-            loss_aux = self.aux_head.loss(x[-2], batch_data_samples)
+        # and `data_samples` are not None.
+        if self.aux_head is not None and data_samples is not None:
+            loss_aux = self.aux_head.loss(x[-2], data_samples)
 
         # Spatial Modulation
         spatial_modulation_outs = self.spatial_modulation(x)
