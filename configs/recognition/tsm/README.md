@@ -86,7 +86,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 Example: train TSM model on Kinetics-400 dataset in a deterministic option.
 
 ```shell
-python tools/train.py configs/recognition/tsm/tsm_r50_1x1x16_50e_kinetics400_rgb.py \
+python tools/train.py configs/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb.py \
     --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
@@ -103,7 +103,7 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 Example: test TSM model on Kinetics-400 dataset and dump the result to a pkl file.
 
 ```shell
-python tools/test.py configs/recognition/tsm/tsm_r50_1x1x16_50e_kinetics400_rgb.py \
+python tools/test.py configs/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb.py \
     checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
