@@ -315,16 +315,16 @@ class ResNetTIN(ResNetTSM):
         kwargs (dict, optional): Arguments for ResNet.
     """
 
-    def __init__(self,
-                 depth,
-                 num_segments=8,
-                 is_tin=True,
-                 shift_div=4,
-                 **kwargs):
-        super().__init__(depth, **kwargs)
-        self.num_segments = num_segments
+    def __init__(self, depth, is_tin=True, shift_div=4, **kwargs):
         self.is_tin = is_tin
         self.shift_div = shift_div
+        super().__init__(depth, **kwargs)
+
+    def init_stucture(self):
+        if self.is_tin:
+            self.make_temporal_interlace()
+        if len(self.non_local_cfg) != 0:
+            self.make_non_local()
 
     def make_temporal_interlace(self):
         """Make temporal interlace for some layers."""
@@ -368,10 +368,4 @@ class ResNetTIN(ResNetTSM):
                                            self.shift_div)
 
     def init_weights(self):
-        """Initiate the parameters either from existing checkpoint or from
-        scratch."""
-        super(ResNetTSM, self).init_weights()
-        if self.is_tin:
-            self.make_temporal_interlace()
-        if len(self.non_local_cfg) != 0:
-            self.make_non_local()
+        pass
