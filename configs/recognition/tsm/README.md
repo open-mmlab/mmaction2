@@ -71,7 +71,7 @@ test_pipeline = [
 
 :::
 
-For more details on data preparation, you can refer to corresponding parts in [data prepare](/docs/en/user_guides/2_data_prepare.md).
+For more details on data preparation, you can refer to the **Prepare videos** part in [data prepare](/docs/en/user_guides/2_data_prepare.md).
 
 ## Train
 
@@ -88,7 +88,7 @@ python tools/train.py configs/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-
     --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
-For more details, you can refer to **Training** part in [train_test](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Training** part in [train_test](/docs/en/user_guides/4_train_test.md).
 
 ## Test
 
@@ -105,7 +105,7 @@ python tools/test.py configs/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1
     checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
-For more details, you can refer to **Test** part in [train_test](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Test** part in [train_test](/docs/en/user_guides/4_train_test.md).
 
 ## Citation
 
