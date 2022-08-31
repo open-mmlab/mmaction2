@@ -1,4 +1,4 @@
-_base_ = ['tsm_r50_1x1x8_50e_8xb16_kinetics400_rgb.py']
+_base_ = ['tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb.py']
 
 train_cfg = dict(
     type='EpochBasedTrainLoop', max_epochs=100, val_begin=1, val_interval=1)

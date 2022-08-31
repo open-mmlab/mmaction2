@@ -20,24 +20,23 @@ The explosive growth in video streaming gives rise to challenges on performing v
 
 ### Kinetics-400
 
-| config                                   |   resolution   | gpus | backbone | pretrain | top1 acc | top5 acc | inference_time(video/s) | gpu_mem(M) |                  ckpt                   |                  log                   |
-| :--------------------------------------- | :------------: | :--: | :------: | :------: | :------: | :------: | :---------------------: | :--------: | :-------------------------------------: | :------------------------------------: |
-| [tsm_r50_1x1x8_50e_8xb16_kinetics400_rgb](/configs/recognition/tsm/tsm_r50_1x1x8_50e_8xb16_kinetics400_rgb.py) | short-side 320 |  8   | ResNet50 | ImageNet |  72.96   |  90.45   |            x            |   13723    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/tsm_r50_1x1x8_50e_kinetics400_rgb_20200607-af7fb746.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/20200607_211800.log) |
-| [tsm_r50_1x1x8_100e_8xb16_kinetics400_rgb](/configs/recognition/tsm/tsm_r50_1x1x8_100e_8xb16_kinetics400_rgb.py) | short-side 320 |  8   | ResNet50 | ImageNet |  73.11   |  90.06   |            x            |   13723    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/tsm_r50_1x1x8_50e_kinetics400_rgb_20200607-af7fb746.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/20200607_211800.log) |
-| [tsm_r50_1x1x16_50e_8xb16_kinetics400_rgb](/configs/recognition/tsm/tsm_r50_1x1x16_50e_8xb16_kinetics400_rgb.py) | short-side 320 |  8   | ResNet50 | ImageNet |  74.64   |  91.42   |            x            |   27044    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/tsm_r50_1x1x8_50e_kinetics400_rgb_20200607-af7fb746.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/20200607_211800.log) |
-| [tsm_r50_dense_1x1x8_50e_8xb16_kinetics400_rgb](/configs/recognition/tsm/tsm_r50_dense_1x1x8_50e_8xb16_kinetics400_rgb.py) | short-side 320 |  8   | ResNet50 | ImageNet |  73.39   |  90.78   |            x            |   13723    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/tsm_r50_1x1x8_50e_kinetics400_rgb_20200607-af7fb746.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/20200607_211800.log) |
-| [tsm_nl_embedded_gaussian_r50_1x1x8_50e_8xb16_kinetics400_rgb](/configs/recognition/tsm/tsm_nl_embedded_gaussian_r50_1x1x8_50e_8xb16_kinetics400_rgb.py) | short-side 320 |  8   | ResNet50 | ImageNet |  74.45   |  91.11   |            x            |   19726    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/tsm_r50_1x1x8_50e_kinetics400_rgb_20200607-af7fb746.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/20200607_211800.log) |
-| [tsm_nl_dot_product_r50_1x1x8_50e_8xb16_kinetics400_rgb](/configs/recognition/tsm/tsm_nl_dot_product_r50_1x1x8_50e_8xb16_kinetics400_rgb.py) | short-side 320 |  8   | ResNet50 | ImageNet |  74.17   |  90.95   |            x            |   18413    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/tsm_r50_1x1x8_50e_kinetics400_rgb_20200607-af7fb746.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/20200607_211800.log) |
-| [tsm_nl_gaussian_r50_1x1x8_50e_8xb16_kinetics400_rgb](/configs/recognition/tsm/tsm_nl_gaussian_r50_1x1x8_50e_8xb16_kinetics400_rgb.py) | short-side 320 |  8   | ResNet50 | ImageNet |  73.37   |  90.82   |            x            |   19925    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/tsm_r50_1x1x8_50e_kinetics400_rgb_20200607-af7fb746.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/20200607_211800.log) |
+| frame sampling strategy |   resolution   | gpus |     backbone      | pretrain | top1 acc | top5 acc |  testing protocol  | inference time(video/s) | gpu_mem(M) |          config          |          ckpt          |          log          |
+| :---------------------: | :------------: | :--: | :---------------: | :------: | :------: | :------: | :----------------: | :---------------------: | :--------: | :----------------------: | :--------------------: | :-------------------: |
+|          1x1x8          | short-size 320 |  8   |     ResNet50      | ImageNet |  72.95   |  90.45   | 8 clips x 10 crop  |            x            |   13723    | [config](/configs/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb_20220831-64d69186.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb.log) |
+|          1x1x8          | short-size 320 |  8   |     ResNet50      | ImageNet |  73.11   |  90.06   | 8 clips x 10 crop  |            x            |   13723    | [config](/configs/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-100e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-100e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-1x1x8-100e_kinetics400-rgb_20220831-a6db1e5d.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-100e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-1x1x8-100e_kinetics400-rgb.log) |
+|         1x1x16          | short-size 320 |  8   |     ResNet50      | ImageNet |  74.64   |  91.42   | 16 clips x 10 crop |            x            |   27044    | [config](/configs/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x16-50e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x16-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-1x1x16-50e_kinetics400-rgb_20220831-042b1748.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x16-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-1x1x16-50e_kinetics400-rgb.log) |
+|      1x1x8 (dense)      | short-size 320 |  8   |     ResNet50      | ImageNet |  73.39   |  90.78   | 8 clips x 10 crop  |            x            |   13723    | [config](/configs/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-dense-1x1x8-50e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-dense-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-dense-1x1x8-50e_kinetics400-rgb_20220831-f55d3c2b.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-dense-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-dense-1x1x8-50e_kinetics400-rgb.log) |
+|          1x1x8          | short-size 320 |  8   | ResNet50 Nonlocal | ImageNet |  74.17   |  90.95   | 8 clips x 10 crop  |            x            |   18413    | [config](/configs/recognition/tsm/tsm_imagenet-pretrained-r50-nl-dot-product_8xb16-1x1x8-50e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50-nl-dot-product_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50-nl-dot-product_8xb16-1x1x8-50e_kinetics400-rgb_20220831-108bfde5.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50-nl-dot-product_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50-nl-dot-product_8xb16-1x1x8-50e_kinetics400-rgb.log) |
+|          1x1x8          | short-size 320 |  8   | ResNet50 Nonlocal | ImageNet |  73.37   |  90.82   | 8 clips x 10 crop  |            x            |   19925    | [config](/configs/recognition/tsm/tsm_imagenet-pretrained-r50-nl-gaussian_8xb16-1x1x8-50e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50-nl-gaussian_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50-nl-gaussian_8xb16-1x1x8-50e_kinetics400-rgb_20220831-7e54dacf.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50-nl-gaussian_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50-nl-gaussian_8xb16-1x1x8-50e_kinetics400-rgb.log) |
+|          1x1x8          | short-size 320 |  8   | ResNet50 Nonlocal | ImageNet |  74.45   |  91.11   | 8 clips x 10 crop  |            x            |   19726    | [config](/configs/recognition/tsm/tsm_imagenet-pretrained-r50-nl-embedded_gaussian_8xb16-1x1x8-50e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50-nl-embedded_gaussian_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50-nl-embedded_gaussian_8xb16-1x1x8-50e_kinetics400-rgb_20220831-35eddb57.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50-nl-embedded_gaussian_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50-nl-embedded_gaussian_8xb16-1x1x8-50e_kinetics400-rgb.log) |
 
-:::{note}
+Note:
 
 1. The **gpus** indicates the number of gpu we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
    According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
    e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
-2. The **inference_time** is got by this [benchmark script](/tools/analysis/benchmark.py), where we use the sampling frames strategy of the test setting and only care about the model inference time,
-   not including the IO time and pre-processing time. For each setting, we use 1 gpu and set batch size (videos per gpu) to 1 to calculate the inference time.
-3. The values in columns named after "reference" are the results got by training on the original repo, using the same model settings. The checkpoints for reference repo can be downloaded [here](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_reference_ckpt.rar).
+
+<!--  3. The values in columns named after "reference" are the results got by training on the original repo, using the same model settings. The checkpoints for reference repo can be downloaded [here](https://download.openmmlab.com/mmaction/recognition/tsm/tsm_reference_ckpt.rar).
 4. There are two kinds of test settings for Something-Something dataset, efficient setting (center crop x 1 clip) and accurate setting (Three crop x 2 clip), which is referred from the [original repo](https://github.com/mit-han-lab/temporal-shift-module/tree/8d53d6fda40bea2f1b37a6095279c4b454d672bd).
    We use efficient setting as default provided in config files, and it can be changed to accurate setting by
 
@@ -64,12 +63,13 @@ test_pipeline = [
 ```
 
 5. When applying Mixup and CutMix, we use the hyper parameter `alpha=0.2`.
-6. The validation set of Kinetics400 we used consists of 19796 videos. These videos are available at [Kinetics400-Validation](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155136485_link_cuhk_edu_hk/EbXw2WX94J1Hunyt3MWNDJUBz-nHvQYhO9pvKqm6g39PMA?e=a9QldB). The corresponding [data list](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_val_list.txt) (each line is of the format 'video_id, num_frames, label_index') and the [label map](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_class2ind.txt) are also available.
+
 7. The **infer_ckpt** means those checkpoints are ported from [TSM](https://github.com/mit-han-lab/temporal-shift-module/blob/master/test_models.py).
+-->
 
-:::
+2. The validation set of Kinetics400 we used consists of 19796 videos. These videos are available at [Kinetics400-Validation](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155136485_link_cuhk_edu_hk/EbXw2WX94J1Hunyt3MWNDJUBz-nHvQYhO9pvKqm6g39PMA?e=a9QldB). The corresponding [data list](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_val_list.txt) (each line is of the format 'video_id, num_frames, label_index') and the [label map](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_class2ind.txt) are also available.
 
-For more details on data preparation, you can refer to corresponding parts in [Data Preparation](/docs/data_preparation.md).
+For more details on data preparation, you can refer to the **Prepare videos** part in the [Data Preparation Tutorial](/docs/en/user_guides/2_data_prepare.md).
 
 ## Train
 
@@ -82,11 +82,11 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 Example: train TSM model on Kinetics-400 dataset in a deterministic option.
 
 ```shell
-python tools/train.py configs/recognition/tsm/tsm_r50_1x1x16_50e_kinetics400_rgb.py \
+python tools/train.py configs/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb.py \
     --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
-For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
+For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Test
 
@@ -96,14 +96,14 @@ You can use the following command to test a model.
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-Example: test TSM model on Kinetics-400 dataset.
+Example: test TSM model on Kinetics-400 dataset and dump the result to a pkl file.
 
 ```shell
-python tools/test.py configs/recognition/tsm/tsm_r50_1x1x16_50e_kinetics400_rgb.py \
-    checkpoints/SOME_CHECKPOINT.pth
+python tools/test.py configs/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb.py \
+    checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
-For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Citation
 
@@ -119,7 +119,7 @@ For more details, you can refer to **Test a dataset** part in [getting_started](
 <!-- [BACKBONE] -->
 
 ```BibTeX
-@article{NonLocal2018,
+@article{Nonlocal2018,
   author =   {Xiaolong Wang and Ross Girshick and Abhinav Gupta and Kaiming He},
   title =    {Non-local Neural Networks},
   journal =  {CVPR},
