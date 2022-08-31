@@ -3,8 +3,8 @@ import math
 import os.path as osp
 from typing import Optional, Sequence
 
-from mmcls.registry import HOOKS
-from mmcls.structures import ClsDataSample
+from mmaction.registry import HOOKS
+from mmaction.structures import ActionDataSample
 from mmengine import FileClient
 from mmengine.hooks import Hook
 from mmengine.runner import EpochBasedTrainLoop, Runner
@@ -53,7 +53,7 @@ class VisualizationHook(Hook):
     def _draw_samples(self,
                       batch_idx: int,
                       data_batch: dict,
-                      data_samples: Sequence[ClsDataSample],
+                      data_samples: Sequence[ActionDataSample],
                       step: int = 0) -> None:
         """Visualize every ``self.interval`` samples from a data batch.
 
