@@ -3,12 +3,13 @@ import math
 import os.path as osp
 from typing import Optional, Sequence
 
-from mmaction.registry import HOOKS
-from mmaction.structures import ActionDataSample
 from mmengine import FileClient
 from mmengine.hooks import Hook
 from mmengine.runner import EpochBasedTrainLoop, Runner
 from mmengine.visualization import Visualizer
+
+from mmaction.registry import HOOKS
+from mmaction.structures import ActionDataSample
 
 
 @HOOKS.register_module()
