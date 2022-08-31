@@ -6,8 +6,8 @@ Collections:
       Title: "TSM: Temporal Shift Module for Efficient Video Understanding"
 
 Models:
-  - Name: tsm_r50_1x1x8_50e_8xb16_kinetics400_rgb
-    Config: configs/recognition/tsm/tsm_r50_1x1x8_50e_8xb16_kinetics400_rgb.py
+  - Name: tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb
+    Config: configs/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb.py
     In Collection: TSM
     Metadata:
       Architecture: ResNet50
@@ -24,11 +24,13 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 72.96
+        Top 1 Accuracy: 72.95
         Top 5 Accuracy: 90.45
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb_20220831-64d69186.pth
 
-  - Name: tsm_r50_1x1x8_100e_8xb16_kinetics400_rgb
-    Config: configs/recognition/tsm/tsm_r50_1x1x8_100e_8xb16_kinetics400_rgb.py
+  - Name: tsm_imagenet-pretrained-r50_8xb16-1x1x8-100e_kinetics400-rgb
+    Config: configs/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-100e_kinetics400-rgb
     In Collection: TSM
     Metadata:
       Architecture: ResNet50
@@ -47,9 +49,11 @@ Models:
       Metrics:
         Top 1 Accuracy: 73.11
         Top 5 Accuracy: 90.06
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-100e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-1x1x8-100e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-100e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-1x1x8-100e_kinetics400-rgb_20220831-a6db1e5d.pth
 
-  - Name: tsm_r50_1x1x16_50e_8xb16_kinetics400_rgb
-    Config: configs/recognition/tsm/tsm_r50_1x1x16_50e_8xb16_kinetics400_rgb.py
+  - Name: tsm_imagenet-pretrained-r50_8xb16-1x1x16-50e_kinetics400-rgb
+    Config: tsm_imagenet-pretrained-r50_8xb16-1x1x16-50e_kinetics400-rgb.py
     In Collection: TSM
     Metadata:
       Architecture: ResNet50
@@ -68,9 +72,11 @@ Models:
       Metrics:
         Top 1 Accuracy: 74.64
         Top 5 Accuracy: 91.42
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x16-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-1x1x16-50e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x16-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-1x1x16-50e_kinetics400-rgb_20220831-042b1748.pth
 
-  - Name: tsm_r50_dense_1x1x8_50e_8xb16_kinetics400_rgb
-    Config: configs/recognition/tsm/tsm_r50_dense_1x1x8_50e_8xb16_kinetics400_rgb.py
+  - Name: tsm_imagenet-pretrained-r50_8xb16-dense-1x1x8-50e_kinetics400-rgb
+    Config: configs/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-dense-1x1x8-50e_kinetics400-rgb.py
     In Collection: TSM
     Metadata:
       Architecture: ResNet50
@@ -89,9 +95,11 @@ Models:
       Metrics:
         Top 1 Accuracy: 73.39
         Top 5 Accuracy: 90.78
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-dense-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-dense-1x1x8-50e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50_8xb16-dense-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50_8xb16-dense-1x1x8-50e_kinetics400-rgb_20220831-f55d3c2b.pth
 
-  - Name: tsm_nl_embedded_gaussian_r50_1x1x8_50e_8xb16_kinetics400_rgb
-    Config: configs/recognition/tsm/tsm_nl_embedded_gaussian_r50_1x1x8_50e_8xb16_kinetics400_rgb.py
+  - Name: tsm_imagenet-pretrained-r50-nl-embedded_gaussian_8xb16-1x1x8-50e_kinetics400-rgb
+    Config: configs/recognition/tsm/tsm_imagenet-pretrained-r50-nl-embedded_gaussian_8xb16-1x1x8-50e_kinetics400-rgb.py
     In Collection: TSM
     Metadata:
       Architecture: ResNet50
@@ -110,9 +118,11 @@ Models:
       Metrics:
         Top 1 Accuracy: 74.45
         Top 5 Accuracy: 91.11
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50-nl-embedded_gaussian_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50-nl-embedded_gaussian_8xb16-1x1x8-50e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50-nl-embedded_gaussian_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50-nl-embedded_gaussian_8xb16-1x1x8-50e_kinetics400-rgb_20220831-35eddb57.pth
 
-  - Name: tsm_nl_dot_product_r50_1x1x8_50e_8xb16_kinetics400_rgb
-    Config: configs/recognition/tsm/tsm_nl_dot_product_r50_1x1x8_50e_8xb16_kinetics400_rgb.py
+  - Name: tsm_imagenet-pretrained-r50-nl-dot-product_8xb16-1x1x8-50e_kinetics400-rgb
+    Config: configs/recognition/tsm/tsm_imagenet-pretrained-r50-nl-dot-product_8xb16-1x1x8-50e_kinetics400-rgb.py
     In Collection: TSM
     Metadata:
       Architecture: ResNet50
@@ -131,9 +141,11 @@ Models:
       Metrics:
         Top 1 Accuracy: 74.17
         Top 5 Accuracy: 90.95
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50-nl-dot-product_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50-nl-dot-product_8xb16-1x1x8-50e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50-nl-dot-product_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50-nl-dot-product_8xb16-1x1x8-50e_kinetics400-rgb_20220831-108bfde5.pth
 
-  - Name: tsm_nl_gaussian_r50_1x1x8_50e_8xb16_kinetics400_rgb
-    Config: configs/recognition/tsm/tsm_nl_gaussian_r50_1x1x8_50e_8xb16_kinetics400_rgb.py
+  - Name: tsm_imagenet-pretrained-r50-nl-gaussian_8xb16-1x1x8-50e_kinetics400-rgb
+    Config: configs/recognition/tsm/tsm_imagenet-pretrained-r50-nl-gaussian_8xb16-1x1x8-50e_kinetics400-rgb.py
     In Collection: TSM
     Metadata:
       Architecture: ResNet50
@@ -152,3 +164,5 @@ Models:
       Metrics:
         Top 1 Accuracy: 73.37
         Top 5 Accuracy: 90.82
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50-nl-gaussian_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50-nl-gaussian_8xb16-1x1x8-50e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsm/tsm_imagenet-pretrained-r50-nl-gaussian_8xb16-1x1x8-50e_kinetics400-rgb/tsm_imagenet-pretrained-r50-nl-gaussian_8xb16-1x1x8-50e_kinetics400-rgb_20220831-7e54dacf.pth
