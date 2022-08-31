@@ -100,11 +100,11 @@ You can use the following command to test a model.
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-Example: test TSM model on Kinetics-400 dataset.
+Example: test TSM model on Kinetics-400 dataset and dump the result to a pkl file.
 
 ```shell
 python tools/test.py configs/recognition/tsm/tsm_r50_1x1x16_50e_kinetics400_rgb.py \
-    checkpoints/SOME_CHECKPOINT.pth
+    checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
 For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
