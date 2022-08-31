@@ -1,4 +1,4 @@
-_base_ = ['./i3d_r50_32x2x1_100e_8xb8_kinetics400_rgb.py']
+_base_ = ['./i3d_r50_8xb8-32x2x1-100e_kinetics400-rgb.py']
 
 # model settings
 model = dict(
