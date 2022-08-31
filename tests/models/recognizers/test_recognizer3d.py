@@ -73,7 +73,7 @@ def test_i3d():
 def test_r2plus1d():
     register_all_modules()
     config = get_recognizer_cfg(
-        'r2plus1d/r2plus1d_r34_8x8x1_180e_8xb8_kinetics400_rgb.py')
+        'r2plus1d/r2plus1d_r34_8xb8-8x8x1-180e_kinetics400-rgb.py')
     config.model['backbone']['pretrained2d'] = False
     config.model['backbone']['pretrained'] = None
     config.model['backbone']['norm_cfg'] = dict(type='BN3d')
