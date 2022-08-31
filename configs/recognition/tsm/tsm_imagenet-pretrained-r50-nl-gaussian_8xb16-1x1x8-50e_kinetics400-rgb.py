@@ -1,4 +1,4 @@
-_base_ = ['tsm_r50_1x1x8_50e_8xb16_kinetics400_rgb.py']
+_base_ = ['tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb.py']
 
 # model settings
 model = dict(
@@ -8,5 +8,5 @@ model = dict(
             sub_sample=True,
             use_scale=False,
             norm_cfg=dict(type='BN3d', requires_grad=True),
-            mode='embedded_gaussian'),
+            mode='gaussian'),
     ))
