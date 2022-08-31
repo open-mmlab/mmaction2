@@ -6,8 +6,8 @@ Collections:
       Title: 'Learning Spatiotemporal Features with 3D Convolutional Networks'
 
 Models:
-  - Name: c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb
-    Config: configs/recognition/c3d/c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb.py
+  - Name: c3d_sports1m-pretrained_8xb30-16x1x1-45e_ucf101-rgb
+    Config: configs/recognition/c3d/c3d_sports1m-pretrained_8xb30-16x1x1-45e_ucf101-rgb.py
     In Collection: C3D
     Metadata:
       Architecture: c3d
@@ -25,5 +25,5 @@ Models:
       Metrics:
         Top 1 Accuracy: 82.92
         Top 5 Accuracy: 96.11
-    Training Log: https://download.openmmlab.com/mmaction/v2.0/recognition/c3d/c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb/20220722_140343.log
-    Weights: https://download.openmmlab.com/mmaction/v2.0/recognition/c3d/c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb/c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb_20220811-31723200.pth
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/c3d/c3d_sports1m-pretrained_8xb30-16x1x1-45e_ucf101-rgb/c3d_sports1m-pretrained_8xb30-16x1x1-45e_ucf101-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/c3d/c3d_sports1m-pretrained_8xb30-16x1x1-45e_ucf101-rgb/c3d_sports1m-pretrained_8xb30-16x1x1-45e_ucf101-rgb_20220811-31723200.pth
