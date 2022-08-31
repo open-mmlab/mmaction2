@@ -20,8 +20,8 @@ Temporal action proposal generation is an challenging and promising task which a
 
 ### ActivityNet feature
 
-|                                        config                                         |    feature    | gpus |  AUC  | AR@1 | AR@5 | AR@10 | AR@100 | gpu_mem(M) |                  ckpt                   |                  log                   |
-| :-----------------------------------------------------------------------------------: | :-----------: | :--: | :---: | :----: | :--------: | :-------------------------------------: | :------------------------------------: |
+| config | feature | gpus | AUC | AR@1 | AR@5 | AR@10 | AR@100 | gpu_mem(M) | ckpt | log |
+| :----: | :--- -: | :--: | :-: | :--: | :--: | :---: | :----: | :---------:| :---------:| :---------:|
 | [bmn_400x100_9e_2x8_activitynet_feature](/configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py) | cuhk_mean_100 |  2   | 67.17 | 33.65 |49.63|56.81| 75.14  |    5420    | [ckpt](https://download.openmmlab.com/) | [log](https://download.openmmlab.com/) |
 | [BMN-official](https://github.com/JJBOY/BMN-Boundary-Matching-Network) (for reference)\* | cuhk_mean_100 |  -   | 67.49 |-|-|-|75.27  |     -      |                    -                    |                   -                    |
 
