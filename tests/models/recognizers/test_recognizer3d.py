@@ -124,7 +124,7 @@ def test_r2plus1d():
 def test_slowfast():
     register_all_modules()
     config = get_recognizer_cfg(
-        'slowfast/slowfast_r50_4x16x1_256e_8xb8_kinetics400_rgb.py')
+        'slowfast/slowfast_r50_8xb8-4x16x1-256e_kinetics400-rgb.py')
 
     recognizer = MODELS.build(config.model)
 
