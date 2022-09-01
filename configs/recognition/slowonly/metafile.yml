@@ -166,3 +166,49 @@ Models:
           Top 5 Accuracy: 92.18
     Training Log:
     Weights:
+
+  - Name: slowonly_imagenet-pretrained-r50_16xb16-4x16x1-steplr-150e_kinetics700-rgb
+    Config: configs/recognition/slowonly/slowonly_imagenet-pretrained-r50_16xb16-4x16x1-steplr-150e_kinetics700-rgb.py
+    In Collection: SlowOnly
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 16
+      Epochs: 150
+      FLOPs: 27430649856
+      Parameters: 32454096
+      Pretrained: ImageNet
+      Resolution: short-side 320
+      Training Data: Kinetics-400
+      Training Resources: 16 GPUs
+    Modality: RGB
+    Results:
+      - Dataset: Kinetics-700
+        Task: Action Recognition
+        Metrics:
+          Top 1 Accuracy: 65.18
+          Top 5 Accuracy: 86.05
+    Training Log:
+    Weights:
+
+  - Name: slowonly_imagenet-pretrained-r50_16xb16-8x8x1-steplr-150e_kinetics700-rgb
+    Config: configs/recognition/slowonly/slowonly_imagenet-pretrained-r50_16xb16-8x8x1-steplr-150e_kinetics700-rgb.py
+    In Collection: SlowOnly
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 16
+      Epochs: 150
+      FLOPs: 54860480512
+      Parameters: 32454096
+      Pretrained: ImageNet
+      Resolution: short-side 320
+      Training Data: Kinetics-400
+      Training Resources: 16 GPUs
+    Modality: RGB
+    Results:
+      - Dataset: Kinetics-700
+        Task: Action Recognition
+        Metrics:
+          Top 1 Accuracy: 66.93
+          Top 5 Accuracy: 87.47
+    Training Log:
+    Weights:

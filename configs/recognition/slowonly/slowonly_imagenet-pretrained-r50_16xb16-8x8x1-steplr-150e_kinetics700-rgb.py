@@ -1,4 +1,4 @@
-_base_ = [('slowonly_imagenet-pretrained-r50_8xb16-'
+_base_ = [('slowonly_imagenet-pretrained-r50_16xb16-'
            '4x16x1-steplr-150e_kinetics700-rgb.py')]
 
 # dataset settings
