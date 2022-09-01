@@ -20,10 +20,10 @@ In skeleton-based action recognition, graph convolutional networks (GCNs), which
 
 ### NTU60_XSub
 
-| config                                         | type  | gpus | backbone | Top-1 |                     ckpt                     |                     log                     |                     json                      |
-| :--------------------------------------------- | :---: | :--: | :------: | :---: | :------------------------------------------: | :-----------------------------------------: | :-------------------------------------------: |
-| [2sagcn_80e_ntu60_xsub_keypoint_3d](/configs/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_keypoint_3d.py) | joint |  1   |   AGCN   | 86.06 | [ckpt](https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_keypoint_3d/2sagcn_80e_ntu60_xsub_keypoint_3d-3bed61ba.pth) | [log](https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_keypoint_3d/2sagcn_80e_ntu60_xsub_keypoint_3d.log) | [json](https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_keypoint_3d/2sagcn_80e_ntu60_xsub_keypoint_3d.json) |
-| [2sagcn_80e_ntu60_xsub_bone_3d](/configs/skeleton/ss-agcn/2sagcn_80e_ntu60_xsub_bone_3d.py) | bone  |  2   |   AGCN   | 86.89 | [ckpt](https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_bone_3d/2sagcn_80e_ntu60_xsub_bone_3d-278b8815.pth) | [log](https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_bone_3d/2sagcn_80e_ntu60_xsub_bone_3d.log) | [json](https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_bone_3d/2sagcn_80e_ntu60_xsub_bone_3d.json) |
+| frame sampling strategy | type  | gpus | backbone | top1 acc | testing protocol |                     config                      |                     ckpt                      |                     log                      |
+| :---------------------: | :---: | :--: | :------: | :------: | :--------------: | :---------------------------------------------: | :-------------------------------------------: | :------------------------------------------: |
+|       padding 300       | joint |  1   |   AGCN   |  86.06   |     1 clips      | [config](/configs/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d.py) | [ckpt](https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d-3bed61ba.pth) | [log](https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d.log) |
+|       padding 300       | bone  |  2   |   AGCN   |  86.89   |     1 clips      | [config](/configs/skeleton/2s-agcn/2sagcn_4xb16-80e-ntu60_xsub_bone-3d.py) | [ckpt](https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_4xb16-80e-ntu60_xsub_bone-3d/2sagcn_4xb16-80e-ntu60_xsub_bone-3d-278b8815.pth) | [log](https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_4xb16-80e-ntu60_xsub_bone-3d/2sagcn_4xb16-80e-ntu60_xsub_bone-3d.log) |
 
 ## Train
 
@@ -36,20 +36,18 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 Example: train AGCN model on joint data of NTU60 dataset in a deterministic option with periodic validation.
 
 ```shell
-python tools/train.py configs/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_keypoint_3d.py \
-    --work-dir work_dirs/2sagcn_80e_ntu60_xsub_keypoint_3d \
-    --validate --seed 0 --deterministic
+python tools/train.py configs/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d.py \
+    --work-dir work_dirs/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d
 ```
 
 Example: train AGCN model on bone data of NTU60 dataset in a deterministic option with periodic validation.
 
 ```shell
-python tools/train.py configs/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_bone_3d.py \
-    --work-dir work_dirs/2sagcn_80e_ntu60_xsub_bone_3d \
-    --validate --seed 0 --deterministic
+python tools/train.py configs/skeleton/2s-agcn/2sagcn_4xb16-80e-ntu60_xsub_bone-3d.py \
+    --work-dir work_dirs/2sagcn_4xb16-80e-ntu60_xsub_bone-3d
 ```
 
-For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
+For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Test
 
@@ -62,20 +60,18 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 Example: test AGCN model on joint data of NTU60 dataset and dump the result to a pickle file.
 
 ```shell
-python tools/test.py configs/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_keypoint_3d.py \
-    checkpoints/SOME_CHECKPOINT.pth --eval top_k_accuracy mean_class_accuracy \
-    --out joint_result.pkl
+python tools/test.py configs/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d.py \
+    checkpoints/SOME_CHECKPOINT.pth --dump joint_result.pkl
 ```
 
 Example: test AGCN model on bone data of NTU60 dataset and dump the result to a pickle file.
 
 ```shell
-python tools/test.py configs/skeleton/2s-agcn/2sagcn_80e_ntu60_xsub_bone_3d.py \
-    checkpoints/SOME_CHECKPOINT.pth --eval top_k_accuracy mean_class_accuracy \
-    --out bone_result.pkl
+python tools/test.py configs/skeleton/2s-agcn/2sagcn_4xb16-80e-ntu60_xsub_bone-3d.py \
+    checkpoints/SOME_CHECKPOINT.pth --dump bone_result.pkl
 ```
 
-For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Citation
 
