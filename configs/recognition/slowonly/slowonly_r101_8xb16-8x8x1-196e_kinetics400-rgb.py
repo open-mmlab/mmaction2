@@ -1,12 +1,11 @@
-_base_ = ['./slowonly_r50_8x8x1_256e_kinetics400_rgb.py']
+_base_ = ['slowonly_r50_8xb16-8x8x1-256e_kinetics400-rgb.py']
 
 # model settings
 model = dict(backbone=dict(depth=101, pretrained=None))
 
-# optimizer
-optimizer = dict(
-    type='SGD', lr=0.1, momentum=0.9,
-    weight_decay=0.0001)  # this lr is used for 8 gpus
+train_cfg = dict(
+    type='EpochBasedTrainLoop', max_epochs=196, val_begin=1, val_interval=5)
+
 # learning policy
 param_scheduler = [
     dict(type='LinearLR', start_factor=0.1, by_epoch=True, begin=0, end=34),
@@ -18,5 +17,3 @@ param_scheduler = [
         begin=34,
         end=196)
 ]
-train_cfg = dict(by_epoch=True, max_epochs=196)
-# runtime settings
