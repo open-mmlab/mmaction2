@@ -49,8 +49,9 @@ Models:
         Metrics:
           Top 1 Accuracy: 74.82
           Top 5 Accuracy: 91.80
-    Training Log:
-    Weights:
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/slowonly_r50_8xb16-8x8x1-256e_kinetics400-rgb/slowonly_r50_8xb16-8x8x1-256e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/slowonly_r50_8xb16-8x8x1-256e_kinetics400-rgb/slowonly_r50_8xb16-8x8x1-256e_kinetics400-rgb_20220901-2132fc87.pth
+
 
   - Name: slowonly_r101_8xb16-8x8x1-196e_kinetics400-rgb
     Config: configs/recognition/slowonly/slowonly_r101_8xb16-8x8x1-196e_kinetics400-rgb.py
@@ -72,8 +73,8 @@ Models:
         Metrics:
           Top 1 Accuracy: 76.28
           Top 5 Accuracy: 92.70
-    Training Log:
-    Weights:
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/slowonly_r101_8xb16-8x8x1-196e_kinetics400-rgb/slowonly_r101_8xb16-8x8x1-196e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/slowonly_r101_8xb16-8x8x1-196e_kinetics400-rgb/slowonly_r101_8xb16-8x8x1-196e_kinetics400-rgb_20220901-e6281431.pth
 
   - Name: slowonly_imagenet-pretrained-r50_8xb16-4x16x1-steplr-150e_kinetics400-rgb
     Config: configs/recognition/slowonly/slowonly_imagenet-pretrained-r50_8xb16-4x16x1-steplr-150e_kinetics400-rgb.py
@@ -95,8 +96,8 @@ Models:
         Metrics:
           Top 1 Accuracy: 74.83
           Top 5 Accuracy: 91.60
-    Training Log:
-    Weights:
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/slowonly_imagenet-pretrained-r50_8xb16-4x16x1-steplr-150e_kinetics400-rgb/slowonly_imagenet-pretrained-r50_8xb16-4x16x1-steplr-150e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/slowonly_imagenet-pretrained-r50_8xb16-4x16x1-steplr-150e_kinetics400-rgb/slowonly_imagenet-pretrained-r50_8xb16-4x16x1-steplr-150e_kinetics400-rgb_20220901-e7b65fad.pth
 
   - Name: slowonly_imagenet-pretrained-r50_8xb16-8x8x1-steplr-150e_kinetics400-rgb
     Config: configs/recognition/slowonly/slowonly_imagenet-pretrained-r50_8xb16-8x8x1-steplr-150e_kinetics400-rgb.py
@@ -118,8 +119,9 @@ Models:
         Metrics:
           Top 1 Accuracy: 75.96
           Top 5 Accuracy: 92.40
-    Training Log:
-    Weights:
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/slowonly_imagenet-pretrained-r50_8xb16-8x8x1-steplr-150e_kinetics400-rgb/slowonly_imagenet-pretrained-r50_8xb16-8x8x1-steplr-150e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/slowonly_imagenet-pretrained-r50_8xb16-8x8x1-steplr-150e_kinetics400-rgb/slowonly_imagenet-pretrained-r50_8xb16-8x8x1-steplr-150e_kinetics400-rgb_20220901-df42dc84.pth
+
 
   - Name: slowonly_imagenet-pretrained-r50-nl-embedded-gaussian_8xb16-4x16x1-steplr-150e_kinetics400-rgb
     Config: configs/recognition/slowonly/slowonly_imagenet-pretrained-r50-nl-embedded-gaussian_8xb16-4x16x1-steplr-150e_kinetics400-rgb.py
@@ -141,8 +143,8 @@ Models:
         Metrics:
           Top 1 Accuracy: 74.84
           Top 5 Accuracy: 91.41
-    Training Log:
-    Weights:
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/slowonly_imagenet-pretrained-r50-nl-embedded-gaussian_8xb16-4x16x1-steplr-150e_kinetics400-rgb/slowonly_imagenet-pretrained-r50-nl-embedded-gaussian_8xb16-4x16x1-steplr-150e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/slowonly_imagenet-pretrained-r50-nl-embedded-gaussian_8xb16-4x16x1-steplr-150e_kinetics400-rgb/slowonly_imagenet-pretrained-r50-nl-embedded-gaussian_8xb16-4x16x1-steplr-150e_kinetics400-rgb_20220901-cf739c75.pth
 
   - Name: slowonly_imagenet-pretrained-r50-nl-embedded-gaussian_8xb16-8x8x1-steplr-150e_kinetics400-rgb
     Config: configs/recognition/slowonly/slowonly_imagenet-pretrained-r50-nl-embedded-gaussian_8xb16-4x16x1-steplr-150e_kinetics400-rgb.py
@@ -164,8 +166,8 @@ Models:
         Metrics:
           Top 1 Accuracy: 76.35
           Top 5 Accuracy: 92.18
-    Training Log:
-    Weights:
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/slowonly_imagenet-pretrained-r50_8xb16-8x8x1-steplr-150e_kinetics400-rgb/slowonly_imagenet-pretrained-r50_8xb16-8x8x1-steplr-150e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/slowonly_imagenet-pretrained-r50_8xb16-8x8x1-steplr-150e_kinetics400-rgb/slowonly_imagenet-pretrained-r50_8xb16-8x8x1-steplr-150e_kinetics400-rgb_20220901-df42dc84.pth
 
   - Name: slowonly_imagenet-pretrained-r50_16xb16-4x16x1-steplr-150e_kinetics700-rgb
     Config: configs/recognition/slowonly/slowonly_imagenet-pretrained-r50_16xb16-4x16x1-steplr-150e_kinetics700-rgb.py
@@ -187,8 +189,8 @@ Models:
         Metrics:
           Top 1 Accuracy: 65.18
           Top 5 Accuracy: 86.05
-    Training Log:
-    Weights:
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/slowonly_imagenet-pretrained-r50_16xb16-4x16x1-steplr-150e_kinetics700-rgb/slowonly_imagenet-pretrained-r50_16xb16-4x16x1-steplr-150e_kinetics700-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/slowonly_imagenet-pretrained-r50_8xb16-4x16x1-steplr-150e_kinetics700-rgb/slowonly_imagenet-pretrained-r50_16xb16-4x16x1-steplr-150e_kinetics700-rgb_20220901-f73b3e89.pth
 
   - Name: slowonly_imagenet-pretrained-r50_16xb16-8x8x1-steplr-150e_kinetics700-rgb
     Config: configs/recognition/slowonly/slowonly_imagenet-pretrained-r50_16xb16-8x8x1-steplr-150e_kinetics700-rgb.py
@@ -210,5 +212,5 @@ Models:
         Metrics:
           Top 1 Accuracy: 66.93
           Top 5 Accuracy: 87.47
-    Training Log:
-    Weights:
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/slowonly_imagenet-pretrained-r50_16xb16-8x8x1-steplr-150e_kinetics700-rgb/slowonly_imagenet-pretrained-r50_16xb16-8x8x1-steplr-150e_kinetics700-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/slowonly_imagenet-pretrained-r50_8xb16-8x8x1-steplr-150e_kinetics700-rgb/slowonly_imagenet-pretrained-r50_16xb16-8x8x1-steplr-150e_kinetics700-rgb_20220901-4098e1eb.pth
