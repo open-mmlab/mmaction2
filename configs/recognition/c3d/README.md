@@ -29,7 +29,7 @@ We propose a simple, yet effective approach for spatiotemporal feature learning 
    According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
    e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
 
-For more details on data preparation, you can refer to UCF-101 in [data prepare](/docs/en/user_guides/2_data_prepare.md).
+For more details on data preparation, you can refer to the **Prepare videos** part in the [Data Preparation Tutorial](/docs/en/user_guides/2_data_prepare.md).
 
 ## Train
 
@@ -46,7 +46,7 @@ python tools/train.py configs/recognition/c3d/c3d_sports1m-pretrained_8xb30-16x1
     --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
-For more details, you can refer to **Training** part in [train_test](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Test
 
@@ -63,7 +63,7 @@ python tools/test.py configs/recognition/c3d_sports1m-pretrained_8xb30-16x1x1-45
     checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
-For more details, you can refer to **Test** part in [train_test](/docs/en/user_guides/4_train_test.md).
+For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Citation
 
