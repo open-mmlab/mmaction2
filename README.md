@@ -28,8 +28,6 @@
 
 ## Introduction
 
-English | [简体中文](/README_zh-CN.md)
-
 [![Documentation](https://readthedocs.org/projects/mmaction2/badge/?version=latest)](https://mmaction2.readthedocs.io/en/1.x/)
 [![actions](https://github.com/open-mmlab/mmaction2/workflows/build/badge.svg)](https://github.com/open-mmlab/mmaction2/actions)
 [![codecov](https://codecov.io/gh/open-mmlab/mmaction2/branch/master/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmaction2)
@@ -213,10 +211,6 @@ If you have any feature requests, please feel free to leave a comment in [Issues
 
 Datasets marked with * are not fully supported yet, but related dataset preparation steps are provided. A summary can be found on the [**Supported Datasets**](https://mmaction2.readthedocs.io/en/latest/supported_datasets.html) page.
 
-## Benchmark
-
-To demonstrate the efficacy and efficiency of our framework, we compare MMAction2 with some other popular frameworks and official releases in terms of speed. Details can be found in [benchmark](docs/benchmark.md).
-
 ## Data Preparation
 
 Please refer to [data_preparation.md](docs/en/user_guides/2_data_prepare.md) for a general knowledge of data preparation.
@@ -233,7 +227,7 @@ Currently, there are many research works and projects built on MMAction2 by user
 - Evidential Deep Learning for Open Set Action Recognition, ICCV 2021 **Oral**. [\[paper\]](https://arxiv.org/abs/2107.10161)[\[github\]](https://github.com/Cogito2012/DEAR)
 - Rethinking Self-supervised Correspondence Learning: A Video Frame-level Similarity Perspective, ICCV 2021 **Oral**. [\[paper\]](https://arxiv.org/abs/2103.17263)[\[github\]](https://github.com/xvjiarui/VFS)
 
-etc., check [projects.md](docs/projects.md) to see all related projects.
+etc., check [projects.md](docs/en/notes/projects.md) to see all related projects.
 
 ## License
 
