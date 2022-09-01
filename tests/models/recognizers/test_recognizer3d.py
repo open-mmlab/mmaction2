@@ -262,7 +262,7 @@ def test_tpn():
 def test_timesformer():
     register_all_modules()
     config = get_recognizer_cfg(
-        'timesformer/timesformer_divST_8x32x1_15e_8xb8_kinetics400_rgb.py')
+        'timesformer/timesformer_divST_8xb8-8x32x1-15e_kinetics400-rgb.py')
     config.model['backbone']['pretrained'] = None
     config.model['backbone']['img_size'] = 32
 
