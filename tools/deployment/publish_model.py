@@ -20,7 +20,7 @@ def parse_args():
 def process_checkpoint(in_file, out_file):
     checkpoint = torch.load(in_file, map_location='cpu')
     # remove some unnecessary keys for smaller file size
-    unnecessary_keys = ['message_hub', 'optimizer', 'param_scheduler']
+    unnecessary_keys = ['message_hub', 'optimizer', 'param_schedulers']
     for k in unnecessary_keys:
         if k in checkpoint:
             del checkpoint[k]
