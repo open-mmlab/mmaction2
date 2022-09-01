@@ -47,12 +47,12 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 Example: train STGCN model on NTU60 dataset in a deterministic option with periodic validation.
 
 ```shell
-python tools/train.py configs/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint.py \
-    --work-dir work_dirs/stgcn_80e_ntu60_xsub_keypoint \
-    --validate --seed 0 --deterministic
+python tools/train.py configs/skeleton/stgcn/stgcn_1xb16-80e_ntu60-xsub-keypoint.py \
+    --work-dir work_dirs/stgcn_1xb16-80e_ntu60-xsub-keypoint \
+    --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
-For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
+For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Test
 
@@ -65,12 +65,12 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 Example: test STGCN model on NTU60 dataset and dump the result to a pickle file.
 
 ```shell
-python tools/test.py configs/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint.py \
+python tools/test.py configs/skeleton/stgcn/stgcn_1xb16-80e_ntu60-xsub-keypoint.py \
     checkpoints/SOME_CHECKPOINT.pth --eval top_k_accuracy mean_class_accuracy \
     --out result.pkl
 ```
 
-For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Citation
 
