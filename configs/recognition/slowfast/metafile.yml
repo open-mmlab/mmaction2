@@ -27,7 +27,7 @@ Models:
           Top 1 Accuracy: 75.27
           Top 5 Accuracy: 92.27
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/slowfast/slowfast_r50_8xb8-4x16x1-256e_kinetics400-rgb/slowfast_r50_8xb8-4x16x1-256e_kinetics400-rgb.log
-    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/slowfast/slowfast_r50_8xb8-4x16x1-256e_kinetics400-rgb/slowfast_r50_8xb8-4x16x1-256e_kinetics400-rgb_20220901-da72e0f7.pth
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/slowfast/slowfast_r50_8xb8-4x16x1-256e_kinetics400-rgb/slowfast_r50_8xb8-4x16x1-256e_kinetics400-rgb_20220901-701b0f6f.pth
 
   - Name: slowfast_r50_8xb8-8x8x1-256e_kinetics400-rgb
     Config: configs/recognition/slowfast/slowfast_r50_8xb8-8x8x1-256e_kinetics400-rgb.py
@@ -96,7 +96,7 @@ Models:
         Top 1 Accuracy: 78.30
         Top 5 Accuracy: 93.77
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/slowfast/slowfast_r101_8xb8-8x8x1-256e_kinetics400-rgb/slowfast_r101_8xb8-8x8x1-256e_kinetics400-rgb.log
-    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/slowfast/slowfast_r101_8xb8-8x8x1-256e_kinetics400-rgb/slowfast_r101_8xb8-8x8x1-256e_kinetics400-rgb_20220818-9c0e09bd.pth
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/slowfast/slowfast_r101_8xb8-8x8x1-256e_kinetics400-rgb/slowfast_r101_8xb8-8x8x1-256e_kinetics400-rgb_20220901-9c0e09bd.pth
 
   - Name: slowfast_r101-r50_32xb8-4x16x1-256e_kinetics400-rgb
     Config: configs/recognition/slowfast/slowfast_r101-r50_32xb8-4x16x1-256e_kinetics400-rgb.py
@@ -119,4 +119,4 @@ Models:
         Top 5 Accuracy: 92.82
       Task: Action Recognition
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/slowfast/slowfast_r101-r50_32xb8-4x16x1-256e_kinetics400-rgb/slowfast_r101-r50_32xb8-4x16x1-256e_kinetics400-rgb.log
-    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/slowfast/slowfast_r101-r50_32xb8-4x16x1-256e_kinetics400-rgb/slowfast_r101-r50_32xb8-4x16x1-256e_kinetics400-rgb_20220901-adaa50d5.pth
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/slowfast/slowfast_r101-r50_32xb8-4x16x1-256e_kinetics400-rgb/slowfast_r101-r50_32xb8-4x16x1-256e_kinetics400-rgb_20220901-a77ac3ee.pth
