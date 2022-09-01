@@ -1,4 +1,4 @@
-_base_ = ['./slowfast_r50_4x16x1_256e_8xb8_kinetics400_rgb.py']
+_base_ = ['slowfast_r50_8xb8-4x16x1-256e_kinetics400-rgb.py']
 
 model = dict(
     backbone=dict(

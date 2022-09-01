@@ -8,7 +8,6 @@ data_root_val = 'data/kinetics400/videos_val'
 ann_file_train = 'data/kinetics400/kinetics400_train_list_videos.txt'
 ann_file_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
 ann_file_test = 'data/kinetics400/kinetics400_val_list_videos.txt'
-
 train_pipeline = [
     dict(type='DecordInit'),
     dict(type='SampleFrames', clip_len=32, frame_interval=2, num_clips=1),
@@ -85,23 +84,30 @@ val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 
 train_cfg = dict(
-    type='EpochBasedTrainLoop', max_epochs=256, val_begin=1, val_interval=20)
+    type='EpochBasedTrainLoop', max_epochs=256, val_begin=1, val_interval=5)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
 optim_wrapper = dict(
-    optimizer=dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=1e-4),
+    optimizer=dict(type='SGD', lr=0.1, momentum=0.9, weight_decay=1e-4),
     clip_grad=dict(max_norm=40, norm_type=2))
 
 param_scheduler = [
-    dict(type='LinearLR', start_factor=0.1, by_epoch=True, begin=0, end=34),
+    dict(
+        type='LinearLR',
+        start_factor=0.1,
+        by_epoch=True,
+        begin=0,
+        end=34,
+        convert_to_iter_based=True),
     dict(
         type='CosineAnnealingLR',
-        T_max=222,
+        T_max=256,
         eta_min=0,
         by_epoch=True,
-        begin=34,
+        begin=0,
         end=256)
 ]
 
-default_hooks = dict(checkpoint=dict(max_keep_ckpts=3))
+default_hooks = dict(
+    checkpoint=dict(interval=4, max_keep_ckpts=3), logger=dict(interval=100))
