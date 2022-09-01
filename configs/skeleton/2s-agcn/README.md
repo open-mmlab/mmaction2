@@ -22,8 +22,8 @@ In skeleton-based action recognition, graph convolutional networks (GCNs), which
 
 | frame sampling strategy | type  | gpus | backbone | top1 acc | testing protocol |                     config                      |                     ckpt                      |                     log                      |
 | :---------------------: | :---: | :--: | :------: | :------: | :--------------: | :---------------------------------------------: | :-------------------------------------------: | :------------------------------------------: |
-|       padding 300       | joint |  1   |   AGCN   |  86.06   |     1 clips      | [config](/configs/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d.py) | [ckpt](https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d-3bed61ba.pth) | [log](https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d.log) |
-|       padding 300       | bone  |  2   |   AGCN   |  86.89   |     1 clips      | [config](/configs/skeleton/2s-agcn/2sagcn_4xb16-80e-ntu60_xsub_bone-3d.py) | [ckpt](https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_4xb16-80e-ntu60_xsub_bone-3d/2sagcn_4xb16-80e-ntu60_xsub_bone-3d-278b8815.pth) | [log](https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_4xb16-80e-ntu60_xsub_bone-3d/2sagcn_4xb16-80e-ntu60_xsub_bone-3d.log) |
+|       padding 300       | joint |  1   |   AGCN   |  86.06   |     1 clips      | [config](/configs/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d-3bed61ba.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d.log) |
+|       padding 300       | bone  |  2   |   AGCN   |  86.89   |     1 clips      | [config](/configs/skeleton/2s-agcn/2sagcn_4xb16-80e-ntu60_xsub_bone-3d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e-ntu60_xsub_bone-3d/2sagcn_4xb16-80e-ntu60_xsub_bone-3d-278b8815.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e-ntu60_xsub_bone-3d/2sagcn_4xb16-80e-ntu60_xsub_bone-3d.log) |
 
 ## Train
 
@@ -37,14 +37,16 @@ Example: train AGCN model on joint data of NTU60 dataset in a deterministic opti
 
 ```shell
 python tools/train.py configs/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d.py \
-    --work-dir work_dirs/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d
+    --work-dir work_dirs/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d \
+    --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
 Example: train AGCN model on bone data of NTU60 dataset in a deterministic option with periodic validation.
 
 ```shell
 python tools/train.py configs/skeleton/2s-agcn/2sagcn_4xb16-80e-ntu60_xsub_bone-3d.py \
-    --work-dir work_dirs/2sagcn_4xb16-80e-ntu60_xsub_bone-3d
+    --work-dir work_dirs/2sagcn_4xb16-80e-ntu60_xsub_bone-3d \
+    --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
 For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).

@@ -25,8 +25,8 @@ Models:
       Top 1 Accuracy: 44.25
       Top 5 Accuracy: 73.94
     Task: Action Recognition
-  Training Log: https://download.openmmlab.com/mmaction/recognition/tin/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv1-rgb/20200729_034132.log
-  Weights: https://download.openmmlab.com/mmaction/recognition/tin/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv1-rgb/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv1-rgb_20200729-4a33db86.pth
+  Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tin/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv1-rgb/20200729_034132.log
+  Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tin/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv1-rgb/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv1-rgb_20200729-4a33db86.pth
 - Config: configs/recognition/tin/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv2-rgb.py
   In Collection: TIN
   Metadata:
@@ -47,8 +47,8 @@ Models:
       Top 1 Accuracy: 56.7
       Top 5 Accuracy: 83.62
     Task: Action Recognition
-  Training Log: https://download.openmmlab.com/mmaction/recognition/tin/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv2-rgb/20200912_225451.log
-  Weights: https://download.openmmlab.com/mmaction/recognition/tin/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv2-rgb/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv2-rgb_20200912-b27a7337.pth
+  Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tin/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv2-rgb/20200912_225451.log
+  Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tin/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv2-rgb/tin_imagenet-pretrained-r50_8xb6-1x1x8-40e_sthv2-rgb_20200912-b27a7337.pth
 - Config: configs/recognition/tin/tin_kinetics400-pretrained-tsm-r50_1x1x8-50e_kinetics400-rgb.py
   In Collection: TIN
   Metadata:
@@ -69,5 +69,5 @@ Models:
       Top 1 Accuracy: 70.89
       Top 5 Accuracy: 89.89
     Task: Action Recognition
-  Training Log: https://download.openmmlab.com/mmaction/recognition/tin/tin_kinetics400-pretrained-tsm-r50_1x1x8-50e_kinetics400-rgb/20200809_142447.log
-  Weights: https://download.openmmlab.com/mmaction/recognition/tin/tin_kinetics400-pretrained-tsm-r50_1x1x8-50e_kinetics400-rgb/tin_kinetics400-pretrained-tsm-r50_1x1x8-50e_kinetics400-rgb_20200810-4a146a70.pth
+  Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tin/tin_kinetics400-pretrained-tsm-r50_1x1x8-50e_kinetics400-rgb/20200809_142447.log
+  Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tin/tin_kinetics400-pretrained-tsm-r50_1x1x8-50e_kinetics400-rgb/tin_kinetics400-pretrained-tsm-r50_1x1x8-50e_kinetics400-rgb_20200810-4a146a70.pth
