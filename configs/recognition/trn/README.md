@@ -20,17 +20,15 @@ Temporal relational reasoning, the ability to link meaningful transformations of
 
 ### Something-Something V1
 
-| config                              | resolution | gpus | backbone | pretrain | top1 acc (efficient/accurate) | top5 acc (efficient/accurate) | gpu_mem(M) |                ckpt                |                log                |
-| :---------------------------------- | :--------: | :--: | :------: | :------: | :---------------------------: | :---------------------------: | :--------: | :--------------------------------: | :-------------------------------: |
-| [trn_r50_1x1x8_50e_8xb16_sthv1_rgb](/configs/recognition/trn/trn_r50_1x1x8_50e_8xb16_sthv1_rgb.py) | height 100 |  8   | ResNet50 | ImageNet |         31.81 / 33.86         |         60.47 / 62.24         |   11037    | [ckpt](https://download.openmmlab.com/mmaction/v2.0/recognition/trn/trn_r50_1x1x8_50e_8xb16_sthv1_rgb/trn_r50_1x1x8_50e_8xb16_sthv1_rgb_20220815-e13db2e9.pth) | [log](https://download.openmmlab.com/mmaction/v2.0/recognition/trn/trn_r50_1x1x8_50e_8xb16_sthv1_rgb/20220808_143221.log) |
+| frame sampling strategy | resolution | gpus | backbone | pretrain | top1 acc (efficient/accurate) | top5 acc (efficient/accurate) | gpu_mem(M) |            config            |            ckpt            |            log            |
+| :---------------------: | :--------: | :--: | :------: | :------: | :---------------------------: | :---------------------------: | :--------: | :--------------------------: | :------------------------: | :-----------------------: |
+|          1x1x8          | height 100 |  8   | ResNet50 | ImageNet |         31.81 / 33.86         |         60.47 / 62.24         |   11037    | [config](/configs/recognition/trn/trn_r50_8xb16-1x1x8-50e_sthv1-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_r50_8xb16-1x1x8-50e_sthv1-rgb/trn_r50_8xb16-1x1x8-50e_sthv1-rgb_20220815-e13db2e9.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_r50_8xb16-1x1x8-50e_sthv1-rgb/trn_r50_8xb16-1x1x8-50e_sthv1-rgb.log) |
 
 ### Something-Something V2
 
-| config                              | resolution | gpus | backbone | pretrain | top1 acc (efficient/accurate) | top5 acc (efficient/accurate) | gpu_mem(M) |                ckpt                |                log                |
-| :---------------------------------- | :--------: | :--: | :------: | :------: | :---------------------------: | :---------------------------: | :--------: | :--------------------------------: | :-------------------------------: |
-| [trn_r50_1x1x8_50e_8xb16_sthv2_rgb](/configs/recognition/trn/trn_r50_1x1x8_50e_8xb16_sthv2_rgb.py) | height 240 |  8   | ResNet50 | ImageNet |         48.54 / 51.53         |         76.53 / 78.60         |   11037    | [ckpt](https://download.openmmlab.com/mmaction/v2.0/recognition/trn/trn_r50_1x1x8_50e_8xb16_sthv2_rgb/trn_r50_1x1x8_50e_8xb16_sthv2_rgb_20220815-e01617db.pth) | [log](https://download.openmmlab.com/mmaction/v2.0/recognition/trn/trn_r50_1x1x8_50e_8xb16_sthv2_rgb/20220808_143256.log) |
-
-:::{note}
+| frame sampling strategy | resolution | gpus | backbone | pretrain | top1 acc (efficient/accurate) | top5 acc (efficient/accurate) | gpu_mem(M) |            config            |            ckpt            |            log            |
+| :---------------------: | :--------: | :--: | :------: | :------: | :---------------------------: | :---------------------------: | :--------: | :--------------------------: | :------------------------: | :-----------------------: |
+|          1x1x8          | height 240 |  8   | ResNet50 | ImageNet |         48.54 / 51.53         |         76.53 / 78.60         |   11037    | [config](/configs/recognition/trn/trn_r50_8xb16-1x1x8-50e_sthv2-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_r50_8xb16-1x1x8-50e_sthv2-rgb/trn_r50_8xb16-1x1x8-50e_sthv2-rgb_20220815-e01617db.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_r50_8xb16-1x1x8-50e_sthv2-rgb/trn_r50_8xb16-1x1x8-50e_sthv2-rgb.log) |
 
 1. The **gpus** indicates the number of gpu we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
    According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
@@ -39,12 +37,7 @@ Temporal relational reasoning, the ability to link meaningful transformations of
 3. In the original [repository](https://github.com/zhoubolei/TRN-pytorch), the author augments data with random flipping on something-something dataset, but the augmentation method may be wrong due to the direct actions, such as `push left to right`. So, we replaced `flip` with `flip with label mapping`, and change the testing method `TenCrop`, which has five flipped crops, to `Twice Sample & ThreeCrop`.
 4. We use `ResNet50` instead of `BNInception` as the backbone of TRN. When Training `TRN-ResNet50` on sthv1 dataset in the original repository, we get top1 (top5) accuracy 30.542 (58.627) vs. ours 31.81 (60.47).
 
-:::
-
-For more details on data preparation, you can refer to
-
-- [preparing_sthv1](/tools/data/sthv1/README.md)
-- [preparing_sthv2](/tools/data/sthv2/README.md)
+For more details on data preparation, you can refer to [sthv1](/tools/data/sthv1/README.md) and [sthv2](/tools/data/sthv2/README.md).
 
 ## Train
 
@@ -54,14 +47,14 @@ You can use the following command to train a model.
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
-Example: train TRN model on sthv1 dataset in a deterministic option.
+Example: train TRN model on sthv1 dataset in a deterministic option with periodic validation.
 
 ```shell
-python tools/train.py configs/recognition/trn/trn_r50_1x1x8_50e_8xb16_sthv1_rgb.py \
+python tools/train.py configs/recognition/trn/trn_r50_8xb16-1x1x8-50e_sthv1-rgb.py \
     --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
-For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
+For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Test
 
@@ -71,14 +64,14 @@ You can use the following command to test a model.
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-Example: test TRN model on sthv1 dataset.
+Example: test TRN model on sthv1 dataset and dump the result to a pkl file.
 
 ```shell
-python tools/test.py configs/recognition/trn/trn_r50_1x1x8_50e_8xb16_sthv1_rgb.py \
-    checkpoints/SOME_CHECKPOINT.pth
+python tools/test.py configs/recognition/trn/trn_r50_8xb16-1x1x8-50e_sthv1-rgb.py \
+    checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
-For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Citation
 
