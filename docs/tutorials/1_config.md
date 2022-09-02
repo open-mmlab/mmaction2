@@ -1,6 +1,7 @@
 # Tutorial 1: Learn about Configs
 
-We use python files as configs, incorporate modular and inheritance design into our config system, which is convenient to conduct various experiments.
+We use python files as configs, incorporate modular and inheritance design into our config system, which is convenient
+to conduct various experiments.
 You can find all the provided configs under `$MMAction2/configs`. If you wish to inspect the config file,
 you may run `python tools/analysis/print_config.py /PATH/TO/CONFIG` to see the complete config.
 
@@ -19,24 +20,31 @@ you may run `python tools/analysis/print_config.py /PATH/TO/CONFIG` to see the c
 
 ## Modify config through script arguments
 
-When submitting jobs using "tools/train.py" or "tools/test.py", you may specify `--cfg-options` to in-place modify the config.
+When submitting jobs using "tools/train.py" or "tools/test.py", you may specify `--cfg-options` to in-place modify the
+config.
 
 - Update config keys of dict.
 
   The config options can be specified following the order of the dict keys in the original config.
-  For example, `--cfg-options model.backbone.norm_eval=False` changes the all BN modules in model backbones to `train` mode.
+  For example, `--cfg-options model.backbone.norm_eval=False` changes the all BN modules in model backbones to `train`
+  mode.
 
 - Update keys inside a list of configs.
 
-  Some config dicts are composed as a list in your config. For example, the training pipeline `data.train.pipeline` is normally a list
-  e.g. `[dict(type='SampleFrames'), ...]`. If you want to change `'SampleFrames'` to `'DenseSampleFrames'` in the pipeline,
+  Some config dicts are composed as a list in your config. For example, the training pipeline `data.train.pipeline` is
+  normally a list
+  e.g. `[dict(type='SampleFrames'), ...]`. If you want to change `'SampleFrames'` to `'DenseSampleFrames'` in the
+  pipeline,
   you may specify `--cfg-options data.train.pipeline.0.type=DenseSampleFrames`.
 
 - Update values of list/tuples.
 
-  If the value to be updated is a list or a tuple. For example, the config file normally sets `workflow=[('train', 1)]`. If you want to
-  change this key, you may specify `--cfg-options workflow="[(train,1),(val,1)]"`. Note that the quotation mark " is necessary to
-  support list/tuple data types, and that **NO** white space is allowed inside the quotation marks in the specified value.
+  If the value to be updated is a list or a tuple. For example, the config file normally sets `workflow=[('train', 1)]`.
+  If you want to
+  change this key, you may specify `--cfg-options workflow="[(train,1),(val,1)]"`. Note that the quotation mark " is
+  necessary to
+  support list/tuple data types, and that **NO** white space is allowed inside the quotation marks in the specified
+  value.
 
 ## Config File Structure
 
@@ -44,12 +52,16 @@ There are 3 basic component types under `config/_base_`, model, schedule, defaul
 Many methods could be easily constructed with one of each like TSN, I3D, SlowOnly, etc.
 The configs that are composed by components from `_base_` are called _primitive_.
 
-For all configs under the same folder, it is recommended to have only **one** _primitive_ config. All other configs should inherit from the _primitive_ config. In this way, the maximum of inheritance level is 3.
+For all configs under the same folder, it is recommended to have only **one** _primitive_ config. All other configs
+should inherit from the _primitive_ config. In this way, the maximum of inheritance level is 3.
 
 For easy understanding, we recommend contributors to inherit from exiting methods.
-For example, if some modification is made base on TSN, users may first inherit the basic TSN structure by specifying `_base_ = ../tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py`, then modify the necessary fields in the config files.
+For example, if some modification is made base on TSN, users may first inherit the basic TSN structure by
+specifying `_base_ = ../tsn/tsn_r50_1x1x3_100e_kinetics400_rgb.py`, then modify the necessary fields in the config
+files.
 
-If you are building an entirely new method that does not share the structure with any of the existing methods, you may create a folder under `configs/TASK`.
+If you are building an entirely new method that does not share the structure with any of the existing methods, you may
+create a folder under `configs/TASK`.
 
 Please refer to [mmcv](https://mmcv.readthedocs.io/en/latest/understand_mmcv/config.html) for detailed documentation.
 
@@ -82,7 +94,8 @@ which is convenient to conduct various experiments.
 
   To help the users have a basic idea of a complete config structure and the modules in an action localization system,
   we make brief comments on the config of BMN as the following.
-  For more detailed usage and alternative for per parameter in each module, please refer to the [API documentation](https://mmaction2.readthedocs.io/en/latest/api.html).
+  For more detailed usage and alternative for per parameter in each module, please refer to
+  the [API documentation](https://mmaction2.readthedocs.io/en/latest/api.html).
 
   ```python
   # model settings
@@ -210,7 +223,7 @@ which is convenient to conduct various experiments.
         dict(type='TensorboardLoggerHook', by_epoch=False),
         dict(type='WandbLoggerHook', by_epoch=False, # The Wandb logger is also supported, It requires `wandb` to be installed.
              init_kwargs={'entity': "entity", # The entity used to log on Wandb
-                          'project': "project", # Project name in WandB 
+                          'project': "project", # Project name in WandB
                           'config': cfg_dict}), # Check https://docs.wandb.ai/ref/python/init for more init arguments.
         # ClearMLLoggerHook, DvcliveLoggerHook, MlflowLoggerHook, NeptuneLoggerHook, PaviLoggerHook, SegmindLoggerHook are also supported based on MMCV implementation.
     ])
@@ -430,7 +443,7 @@ which is convenient to conduct various experiments.
         dict(type='TensorboardLoggerHook', by_epoch=False),
         dict(type='WandbLoggerHook', by_epoch=False, # The Wandb logger is also supported, It requires `wandb` to be installed.
              init_kwargs={'entity': "entity", # The entity used to log on Wandb
-                          'project': "project", # Project name in WandB 
+                          'project': "project", # Project name in WandB
                           'config': cfg_dict}), # Check https://docs.wandb.ai/ref/python/init for more init arguments.
         # ClearMLLoggerHook, DvcliveLoggerHook, MlflowLoggerHook, NeptuneLoggerHook, PaviLoggerHook, SegmindLoggerHook are also supported based on MMCV implementation.
     ])
@@ -451,7 +464,8 @@ We incorporate modular design into our config system, which is convenient to con
 
 - An Example of FastRCNN
 
-  To help the users have a basic idea of a complete config structure and the modules in a spatio-temporal action detection system,
+  To help the users have a basic idea of a complete config structure and the modules in a spatio-temporal action
+  detection system,
   we make brief comments on the config of FastRCNN as the following.
   For more detailed usage and alternative for per parameter in each module, please refer to the API documentation.
 
@@ -569,7 +583,7 @@ We incorporate modular design into our config system, which is convenient to con
       dict(  # Config of SampleFrames
           type='AVASampleFrames',  # Sample frames pipeline, sampling frames from video
           clip_len=4,  # Frames of each sampled output clip
-          frame_interval=16)  # Temporal interval of adjacent sampled frames
+          frame_interval=16),  # Temporal interval of adjacent sampled frames
       dict(  # Config of RawFrameDecode
           type='RawFrameDecode'),  # Load and decode Frames pipeline, picking raw frames with given indices
       dict(  # Config of Resize
@@ -661,7 +675,7 @@ We incorporate modular design into our config system, which is convenient to con
         dict(type='TensorboardLoggerHook', by_epoch=False),
         dict(type='WandbLoggerHook', by_epoch=False, # The Wandb logger is also supported, It requires `wandb` to be installed.
              init_kwargs={'entity': "entity", # The entity used to log on Wandb
-                          'project': "project", # Project name in WandB 
+                          'project': "project", # Project name in WandB
                           'config': cfg_dict}), # Check https://docs.wandb.ai/ref/python/init for more init arguments.
         # ClearMLLoggerHook, DvcliveLoggerHook, MlflowLoggerHook, NeptuneLoggerHook, PaviLoggerHook, SegmindLoggerHook are also supported based on MMCV implementation.
     ])
@@ -687,7 +701,8 @@ Some intermediate variables are used in the config files, like `train_pipeline`/
 For Example, we would like to first define `train_pipeline`/`val_pipeline`/`test_pipeline` and pass them into `data`.
 Thus, `train_pipeline`/`val_pipeline`/`test_pipeline` are intermediate variable.
 
-we also define `ann_file_train`/`ann_file_val`/`ann_file_test` and `data_root`/`data_root_val` to provide data pipeline some
+we also define `ann_file_train`/`ann_file_val`/`ann_file_test` and `data_root`/`data_root_val` to provide data pipeline
+some
 basic information.
 
 In addition, we use `img_norm_cfg` as intermediate variables to construct data augmentation components.
