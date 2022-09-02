@@ -66,7 +66,7 @@ git checkout 1.x
 pip install -v -e .
 # "-v" means verbose, or more output
 # "-e" means installing a project in editable mode,
-# thus any local modifications made to the code will take effect without reinstallation.
+# thus any local modifications made to the code will take effect without re-installation.
 ```
 
 Optionally, if you want to contribute to MMAction2 or experience experimental functions, please checkout to the `dev-1.x` branch:
