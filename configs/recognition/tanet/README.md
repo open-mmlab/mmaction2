@@ -22,7 +22,7 @@ Video data is with complex temporal dynamics due to various factors such as came
 
 | frame sampling strategy |   resolution   | gpus | backbone | pretrain | top1 acc | top5 acc |   reference top1 acc    |    reference top5 acc    | testing protocol | inference time(video/s) | gpu_mem(M) |    config    |    ckpt    |    log    |
 | :---------------------: | :------------: | :--: | :------: | :------: | :------: | :------: | :---------------------: | :----------------------: | :--------------: | :---------------------: | :--------: | :----------: | :--------: | :-------: |
-|      1x1x8 (dense)      | short-side 320 |  8   |  TANet   | ImageNet |  76.22   |  92.31   | [76.22](https://github.com/liu-zhy/temporal-adaptive-module/blob/master/scripts/test_tam_kinetics_rgb_8f.sh) | [92.53](https://github.com/liu-zhy/temporal-adaptive-module/blob/master/scripts/test_tam_kinetics_rgb_8f.sh) | 8 clips x 3 crop |            x            |    7125    | [config](/configs/recognition/tanet/tanet_r50_8xb8-dense-1x1x8-100e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_8xb8-dense-1x1x8-100e_kinetics400-rgb/tanet_r50_8xb8-dense-1x1x8-100e_kinetics400-rgb_20210219-032c8e94.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_8xb8-dense-1x1x8-100e_kinetics400-rgb/tanet_r50_8xb8-dense-1x1x8-100e_kinetics400-rgb_20210219.log) |
+|      1x1x8 (dense)      | short-side 320 |  8   |  TANet   | ImageNet |  76.22   |  92.31   | [76.22](https://github.com/liu-zhy/temporal-adaptive-module/blob/master/scripts/test_tam_kinetics_rgb_8f.sh) | [92.53](https://github.com/liu-zhy/temporal-adaptive-module/blob/master/scripts/test_tam_kinetics_rgb_8f.sh) | 8 clips x 3 crop |            x            |    7125    | [config](/configs/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_8xb8-dense-1x1x8-100e_kinetics400-rgb/tanet_r50_8xb8-dense-1x1x8-100e_kinetics400-rgb_20210219-032c8e94.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tanet/tanet_r50_8xb8-dense-1x1x8-100e_kinetics400-rgb/tanet_r50_8xb8-dense-1x1x8-100e_kinetics400-rgb_20210219.log) |
 
 :::{note}
 
@@ -47,7 +47,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 Example: train TANet model on Kinetics-400 dataset in a deterministic option.
 
 ```shell
-python tools/train.py configs/recognition/tanet/tanet_r50_8xb8-dense-1x1x8-100e_kinetics400-rgb.py \
+python tools/train.py configs/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb.py \
     --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
@@ -64,7 +64,7 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 Example: test TANet model on Kinetics-400 dataset.
 
 ```shell
-python tools/test.py configs/recognition/tanet/tanet_r50_8xb8-dense-1x1x8-100e_kinetics400-rgb.py \
+python tools/test.py configs/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb.py \
     checkpoints/SOME_CHECKPOINT.pth
 ```
 

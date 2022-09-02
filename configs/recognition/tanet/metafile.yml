@@ -7,7 +7,7 @@ Collections:
 
 Models:
 - Name: tanet_r50_8xb8-dense-1x1x8-100e_kinetics400-rgb
-  Config: configs/recognition/tanet/tanet_r50_8xb8-dense-1x1x8-100e_kinetics400-rgb.py
+  Config: configs/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb.py
   In Collection: TANet
   Metadata:
     Architecture: TANet

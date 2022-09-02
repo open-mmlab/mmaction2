@@ -2,6 +2,13 @@ _base_ = [
     '../../_base_/models/tanet_r50.py', '../../_base_/default_runtime.py'
 ]
 
+file_client_args = dict(
+    io_backend='petrel',
+    path_mapping=dict({
+        'data/kinetics400':
+        's254:s3://openmmlab/datasets/action/Kinetics400'
+    }))
+
 # dataset settings
 dataset_type = 'VideoDataset'
 data_root = 'data/kinetics400/videos_train'
@@ -11,7 +18,7 @@ ann_file_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
 ann_file_test = 'data/kinetics400/kinetics400_val_list_videos.txt'
 
 train_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(type='DenseSampleFrames', clip_len=1, frame_interval=1, num_clips=8),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
@@ -28,7 +35,7 @@ train_pipeline = [
     dict(type='PackActionInputs')
 ]
 val_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(
         type='DenseSampleFrames',
         clip_len=1,
@@ -42,7 +49,7 @@ val_pipeline = [
     dict(type='PackActionInputs')
 ]
 test_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(
         type='DenseSampleFrames',
         clip_len=1,
@@ -93,16 +100,15 @@ val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 
 train_cfg = dict(
-    type='EpochBasedTrainLoop', max_epochs=100, val_begin=1, val_interval=10)
+    type='EpochBasedTrainLoop', max_epochs=100, val_begin=1, val_interval=5)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
 optim_wrapper = dict(
-    optimizer=dict(
-        type='SGD', lr=0.005, momentum=0.9, weight_decay=1e-4, nesterov=True),
+    constructor='TSMOptimWrapperConstructor',
     paramwise_cfg=dict(fc_lr5=True),
-    clip_grad=dict(max_norm=20, norm_type=2),
-    constructor='TSMOptimWrapperConstructor')
+    optimizer=dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=1e-4),
+    clip_grad=dict(max_norm=20, norm_type=2))
 
 param_scheduler = [
     dict(
@@ -114,4 +120,5 @@ param_scheduler = [
         gamma=0.1)
 ]
 
-default_hooks = dict(checkpoint=dict(max_keep_ckpts=5))
+default_hooks = dict(
+    checkpoint=dict(max_keep_ckpts=5), logger=dict(interval=100))
