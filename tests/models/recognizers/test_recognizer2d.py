@@ -126,7 +126,7 @@ def test_tsn():
 def test_tsm():
     register_all_modules()
     config = get_recognizer_cfg(
-        'tsm/tsm_r50_1x1x8_50e_8xb16_kinetics400_rgb.py')
+        'tsm/tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_kinetics400-rgb.py')
     config.model['backbone']['pretrained'] = None
 
     recognizer = MODELS.build(config.model)
