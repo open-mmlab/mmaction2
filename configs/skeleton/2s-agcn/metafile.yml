@@ -17,9 +17,9 @@ Models:
     Metrics:
       Top 1 Accuracy: 86.06
     Task: Skeleton-based Action Recognition
-  Training Json Log: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d.json
-  Training Log: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d.log
-  Weights: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d-3bed61ba.pth
+  Training Json Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d.json
+  Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d.log
+  Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d-3bed61ba.pth
 - Config: configs/skeleton/2s-agcn/2sagcn_4xb16-80e-ntu60_xsub_bone-3d.py
   In Collection: AGCN
   Metadata:
@@ -35,6 +35,6 @@ Models:
     Metrics:
       Top 1 Accuracy: 86.89
     Task: Skeleton-based Action Recognition
-  Training Json Log: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_4xb16-80e-ntu60_xsub_bone-3d/2sagcn_4xb16-80e-ntu60_xsub_bone-3d.json
-  Training Log: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_4xb16-80e-ntu60_xsub_bone-3d/2sagcn_4xb16-80e-ntu60_xsub_bone-3d.log
-  Weights: https://download.openmmlab.com/mmaction/skeleton/2s-agcn/2sagcn_4xb16-80e-ntu60_xsub_bone-3d/2sagcn_4xb16-80e-ntu60_xsub_bone-3d-278b8815.pth
+  Training Json Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e-ntu60_xsub_bone-3d/2sagcn_4xb16-80e-ntu60_xsub_bone-3d.json
+  Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e-ntu60_xsub_bone-3d/2sagcn_4xb16-80e-ntu60_xsub_bone-3d.log
+  Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e-ntu60_xsub_bone-3d/2sagcn_4xb16-80e-ntu60_xsub_bone-3d-278b8815.pth
