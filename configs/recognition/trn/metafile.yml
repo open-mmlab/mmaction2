@@ -4,9 +4,10 @@ Collections:
     Paper:
       URL: https://arxiv.org/abs/1711.08496
       Title: 'Temporal Relational Reasoning in Videos'
+
 Models:
-  - Name: trn_r50_1x1x8_50e_8xb16_sthv1_rgb
-    Config: configs/recognition/trn/trn_r50_1x1x8_50e_8xb16_sthv1_rgb.py
+  - Name: trn_r50_8xb16-1x1x8-50e_sthv1-rgb
+    Config: configs/recognition/trn/trn_r50_8xb16-1x1x8-50e_sthv1-rgb.py
     In Collection: TRN
     Metadata:
       Architecture: ResNet50
@@ -26,11 +27,11 @@ Models:
         Top 1 Accuracy (efficient): 31.81
         Top 5 Accuracy: 62.24
         Top 5 Accuracy (efficient): 60.47
-    Training Log: https://download.openmmlab.com/mmaction/v2.0/recognition/trn/trn_r50_1x1x8_50e_8xb16_sthv1_rgb/20220808_143221.log
-    Weights: https://download.openmmlab.com/mmaction/v2.0/recognition/trn/trn_r50_1x1x8_50e_8xb16_sthv1_rgb/trn_r50_1x1x8_50e_8xb16_sthv1_rgb_20220815-e13db2e9.pth
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_r50_8xb16-1x1x8-50e_sthv1-rgb/trn_r50_8xb16-1x1x8-50e_sthv1-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_r50_8xb16-1x1x8-50e_sthv1-rgb/trn_r50_8xb16-1x1x8-50e_sthv1-rgb_20220815-e13db2e9.pth
 
-  - Name: trn_r50_1x1x8_50e_8xb16_sthv2_rgb
-    Config: configs/recognition/trn/trn_r50_1x1x8_50e_8xb16_sthv2_rgb.py
+  - Name: trn_r50_8xb16-1x1x8-50e_sthv2-rgb
+    Config: configs/recognition/trn/trn_r50_8xb16-1x1x8-50e_sthv2-rgb.py
     In Collection: TRN
     Metadata:
       Architecture: ResNet50
@@ -50,5 +51,5 @@ Models:
         Top 1 Accuracy (efficient): 48.54
         Top 5 Accuracy: 78.60
         Top 5 Accuracy (efficient): 76.53
-    Training Log: https://download.openmmlab.com/mmaction/v2.0/recognition/trn/trn_r50_1x1x8_50e_8xb16_sthv2_rgb/20220808_143256.log
-    Weights: https://download.openmmlab.com/mmaction/v2.0/recognition/trn/trn_r50_1x1x8_50e_8xb16_sthv2_rgb/trn_r50_1x1x8_50e_8xb16_sthv2_rgb_20220815-e01617db.pth
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_r50_8xb16-1x1x8-50e_sthv2-rgb/trn_r50_8xb16-1x1x8-50e_sthv2-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_r50_8xb16-1x1x8-50e_sthv2-rgb/trn_r50_8xb16-1x1x8-50e_sthv2-rgb_20220815-e01617db.pth
