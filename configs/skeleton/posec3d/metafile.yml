@@ -4,6 +4,7 @@ Collections:
     Paper:
       URL: https://arxiv.org/abs/2104.13586
       Title: "Revisiting Skeleton-based Action Recognition"
+
 Models:
   - Name: slowonly_r50_8xb16-u48-240e_gym-keypoint
     Config: configs/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-keypoint.py
@@ -21,7 +22,7 @@ Models:
       Task: Skeleton-based Action Recognition
       Metrics:
         mean Top 1 Accuracy: 93.4
-    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-keypoint/20220805_150313.log
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-keypoint/slowonly_r50_8xb16-u48-240e_gym-keypoint.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-keypoint/slowonly_r50_8xb16-u48-240e_gym-keypoint_20220815-da338c58.pth
 
   - Name: slowonly_r50_8xb16-u48-240e_gym-limb
@@ -40,7 +41,7 @@ Models:
       Task: Skeleton-based Action Recognition
       Metrics:
         mean Top 1 Accuracy: 93.7
-    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-limb/20220805_150302.log
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-limb/slowonly_r50_8xb16-u48-240e_gym-limb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-limb/slowonly_r50_8xb16-u48-240e_gym-limb_20220815-2e6e3c5c.pth
 
   - Name: slowonly_r50_8xb16-u48-240e_ntu60-xsub-keypoint
@@ -59,7 +60,7 @@ Models:
       Task: Skeleton-based Action Recognition
       Metrics:
         Top 1 Accuracy: 93.6
-    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_ntu60-xsub-keypoint/20220805_124409.log
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_ntu60-xsub-keypoint/slowonly_r50_8xb16-u48-240e_ntu60-xsub-keypoint.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_ntu60-xsub-keypoint/slowonly_r50_8xb16-u48-240e_ntu60-xsub-keypoint_20220815-38db104b.pth
 
   - Name: slowonly_r50_8xb16-u48-240e_ntu60-xsub-limb
@@ -78,7 +79,7 @@ Models:
       Task: Skeleton-based Action Recognition
       Metrics:
         Top 1 Accuracy: 93.5
-    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_ntu60-xsub-limb/20220805_123439.log
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_ntu60-xsub-limb/slowonly_r50_8xb16-u48-240e_ntu60-xsub-limb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_ntu60-xsub-limb/slowonly_r50_8xb16-u48-240e_ntu60-xsub-limb_20220815-af2f119a.pth
 
   - Name: slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint
@@ -97,7 +98,7 @@ Models:
       Task: Skeleton-based Action Recognition
       Metrics:
         Top 1 Accuracy: 69.2
-    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint/20220805_143455.log
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint_20220815-17eaa484.pth
 
   - Name: slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_ucf101-split1-keypoint
@@ -116,5 +117,5 @@ Models:
       Task: Skeleton-based Action Recognition
       Metrics:
         Top 1 Accuracy: 86.9
-    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_ucf101-split1-keypoint/20220805_130002.log
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_ucf101-split1-keypoint/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_ucf101-split1-keypoint.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_ucf101-split1-keypoint/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_ucf101-split1-keypoint_20220815-9972260d.pth
