@@ -52,7 +52,7 @@ test_pipeline = [
     dict(type='PackActionInputs')
 ]
 train_dataloader = dict(
-    batch_size=6,
+    batch_size=1,
     num_workers=2,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
@@ -91,7 +91,7 @@ val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 
 train_cfg = dict(
-    type='EpochBasedTrainLoop', max_epochs=140, val_begin=1, val_interval=1)
+    type='EpochBasedTrainLoop', max_epochs=40, val_begin=1, val_interval=1)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
