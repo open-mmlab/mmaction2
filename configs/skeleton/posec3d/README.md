@@ -78,14 +78,10 @@ Human skeleton, as a compact representation of human action, has received increa
 | :---------------------: | :------------: | :--: | :----------: | :------: | :---------------: | :----------------------------------------: | :--------------------------------------: | :--------------------------------------: |
 |       uniform 48        |    keypoint    |  8   | SlowOnly-R50 |   69.2   | 10 clips x 1 crop | [config](/configs/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint_20220815-17eaa484.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint.log) |
 
-:::{note}
-
 1. The **gpus** indicates the number of gpu we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
    According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
    e.g., lr=0.01 for 8 GPUs x 8 videos/gpu and lr=0.04 for 16 GPUs x 16 videos/gpu.
-2. You can follow the guide in [Preparing Skeleton Dataset](https://github.com/open-mmlab/mmaction2/tree/master/tools/data/skeleton) to obtain skeleton annotations used in the above configs.
-
-:::
+2. You can follow the guide in [Preparing Skeleton Dataset](/tools/data/skeleton/README.md) to obtain skeleton annotations used in the above configs.
 
 ## Train
 
@@ -102,7 +98,7 @@ python tools/train.py configs/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-k
     --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
-For training with your custom dataset, you can refer to [Custom Dataset Training](https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/posec3d/custom_dataset_training.md).
+For training with your custom dataset, you can refer to [Custom Dataset Training](/configs/skeleton/posec3d/custom_dataset_training.md).
 
 For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
