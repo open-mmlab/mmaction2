@@ -2,7 +2,7 @@ Collections:
 - Name: STGCN
   README: configs/skeleton/stgcn/README.md
 Models:
-- Config: configs/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint.py
+- Config: configs/skeleton/stgcn/stgcn_1xb16-80e_ntu60-xsub-keypoint.py
   In Collection: STGCN
   Metadata:
     Architecture: STGCN
@@ -11,16 +11,15 @@ Models:
     Parameters: 3088704
     Training Data: NTU60-XSub
     Training Resources: 2 GPUs
-  Name: stgcn_80e_ntu60_xsub_keypoint
+  Name: stgcn_1xb16-80e_ntu60-xsub-keypoint
   Results:
     Dataset: NTU60-XSub
     Metrics:
       Top 1 Accuracy: 86.91
     Task: Skeleton-based Action Recognition
-  Training Json Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint/stgcn_80e_ntu60_xsub_keypoint.json
-  Training Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint/stgcn_80e_ntu60_xsub_keypoint.log
-  Weights: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint/stgcn_80e_ntu60_xsub_keypoint-e7bb9653.pth
-- Config: configs/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint_3d.py
+  Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_1xb16-80e_ntu60-xsub-keypoint/stgcn_1xb16-80e_ntu60-xsub-keypoint.log
+  Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_1xb16-80e_ntu60-xsub-keypoint/stgcn_1xb16-80e_ntu60-xsub-keypoint-e7bb9653.pth
+- Config: configs/skeleton/stgcn/stgcn_1xb32-80e-ntu60_xsub-keypoint-3d.py
   In Collection: STGCN
   Metadata:
     Architecture: STGCN
@@ -29,16 +28,15 @@ Models:
     Parameters: 3088704
     Training Data: NTU60-XSub
     Training Resources: 1 GPU
-  Name: stgcn_80e_ntu60_xsub_keypoint_3d
+  Name: stgcn_1xb32-80e-ntu60_xsub-keypoint-3d
   Results:
     Dataset: NTU60-XSub
     Metrics:
       Top 1 Accuracy: 84.61
     Task: Skeleton-based Action Recognition
-  Training Json Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint_3d/stgcn_80e_ntu60_xsub_keypoint_3d.json
-  Training Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint_3d/stgcn_80e_ntu60_xsub_keypoint_3d.log
-  Weights: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint_3d/stgcn_80e_ntu60_xsub_keypoint_3d-13e7ccf0.pth
-- Config: configs/skeleton/stgcn/stgcn_80e_babel60.py
+  Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_1xb32-80e-ntu60_xsub-keypoint-3d/stgcn_1xb32-80e-ntu60_xsub-keypoint-3d.log
+  Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_1xb32-80e-ntu60_xsub-keypoint-3d/stgcn_1xb32-80e-ntu60_xsub-keypoint-3d-13e7ccf0.pth
+- Config: configs/skeleton/stgcn/stgcn_8xb16-80e_babel60.py
   In Collection: STGCN
   Metadata:
     Architecture: STGCN
@@ -47,16 +45,16 @@ Models:
     Parameters: 3088704
     Training Data: BABEL60
     Training Resources: 8 GPU
-  Name: stgcn_80e_babel60
+  Name: stgcn_8xb16-80e_babel60
   Results:
     Dataset: BABEL60
     Metrics:
       Top 1 Accuracy: 42.39
       Mean Top 1 Accuracy: 28.28
     Task: Skeleton-based Action Recognition
-  Training Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_babel60/stgcn_80e_babel60.log
-  Weights: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_babel60/stgcn_80e_babel60-3d206418.pth
-- Config: configs/skeleton/stgcn/stgcn_80e_babel60_wfl.py
+  Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-80e_babel60/stgcn_8xb16-80e_babel60.log
+  Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-80e_babel60/stgcn_8xb16-80e_babel60-3d206418.pth
+- Config: configs/skeleton/stgcn/stgcn_8xb16-80e-babel60-wfl.py
   In Collection: STGCN
   Metadata:
     Architecture: STGCN
@@ -65,16 +63,16 @@ Models:
     Parameters: 3088704
     Training Data: BABEL60
     Training Resources: 8 GPU
-  Name: stgcn_80e_babel60_wfl
+  Name: stgcn_8xb16-80e-babel60-wfl
   Results:
     Dataset: BABEL60
     Metrics:
       Top 1 Accuracy: 40.31
       Mean Top 1 Accuracy: 29.79
     Task: Skeleton-based Action Recognition
-  Training Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_babel60_wfl/stgcn_80e_babel60_wfl.log
-  Weights: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_babel60_wfl/stgcn_80e_babel60_wfl-1a9102d7.pth
-- Config: configs/skeleton/stgcn/stgcn_80e_babel120.py
+  Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-80e-babel60-wfl/stgcn_8xb16-80e-babel60-wfl.log
+  Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-80e-babel60-wfl/stgcn_8xb16-80e-babel60-wfl-1a9102d7.pth
+- Config: configs/skeleton/stgcn/stgcn_8xb16-80e_babel120.py
   In Collection: STGCN
   Metadata:
     Architecture: STGCN
@@ -83,16 +81,16 @@ Models:
     Parameters: 3104320
     Training Data: BABEL120
     Training Resources: 8 GPU
-  Name: stgcn_80e_babel120
+  Name: stgcn_8xb16-80e_babel120
   Results:
     Dataset: BABEL120
     Metrics:
       Top 1 Accuracy: 38.95
       Mean Top 1 Accuracy: 20.58
     Task: Skeleton-based Action Recognition
-  Training Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_babel120/stgcn_80e_babel120.log
-  Weights: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_babel120/stgcn_80e_babel120-e41eb6d7.pth
-- Config: configs/skeleton/stgcn/stgcn_80e_babel120_wfl.py
+  Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-80e_babel120/stgcn_8xb16-80e_babel120.log
+  Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-80e_babel120/stgcn_8xb16-80e_babel120-e41eb6d7.pth
+- Config: configs/skeleton/stgcn/stgcn_8xb16-80e_babel120-wfl.py
   In Collection: STGCN
   Metadata:
     Architecture: STGCN
@@ -101,12 +99,12 @@ Models:
     Parameters: 3104320
     Training Data: BABEL120
     Training Resources: 8 GPU
-  Name: stgcn_80e_babel120_wfl
+  Name: stgcn_8xb16-80e_babel120-wfl
   Results:
     Dataset: BABEL120
     Metrics:
       Top 1 Accuracy: 33.00
       Mean Top 1 Accuracy: 24.33
     Task: Skeleton-based Action Recognition
-  Training Log: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_babel120_wfl/stgcn_80e_babel120_wfl.log
-  Weights: https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_babel120_wfl/stgcn_80e_babel120_wfl-3f2c100d.pth
+  Training Log: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-80e_babel120-wfl/stgcn_8xb16-80e_babel120-wfl.log
+  Weights: https://download.openmmlab.com/mmaction/v1.0/skeleton/stgcn/stgcn_8xb16-80e_babel120-wfl/stgcn_8xb16-80e_babel120-wfl-3f2c100d.pth
