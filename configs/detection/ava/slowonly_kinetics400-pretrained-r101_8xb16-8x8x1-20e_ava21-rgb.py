@@ -1,6 +1,12 @@
-_base_ = ['slowonly_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb.py']
+_base_ = ['slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb.py']
 
-model = dict(backbone=dict(depth=101))
+model = dict(
+    backbone=dict(
+        depth=101,
+        pretrained=(
+            'https://download.openmmlab.com/mmaction/recognition/slowonly/'
+            'omni/slowonly_r101_without_omni_8x8x1_kinetics400_rgb_'
+            '20200926-0c730aef.pth')))
 
 dataset_type = 'AVADataset'
 data_root = 'data/ava/rawframes'
@@ -64,7 +70,3 @@ val_dataloader = dict(
         data_prefix=dict(img=data_root),
         test_mode=True))
 test_dataloader = val_dataloader
-
-load_from = ('https://download.openmmlab.com/mmaction/recognition/slowonly/'
-             'omni/slowonly_r101_without_omni_8x8x1_'
-             'kinetics400_rgb_20200926-0c730aef.pth')

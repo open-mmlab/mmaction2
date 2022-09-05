@@ -7,7 +7,10 @@ model = dict(
         _delete_=True,
         type='ResNet3dSlowFast',
         _scope_='mmaction',
-        pretrained=None,
+        pretrained=(
+            'https://download.openmmlab.com/mmaction/recognition/slowfast/'
+            'slowfast_r50_8x8x1_256e_kinetics400_rgb/'
+            'slowfast_r50_8x8x1_256e_kinetics400_rgb_20200716-73547d2b.pth'),
         resample_rate=4,
         speed_ratio=4,
         channel_ratio=8,
@@ -134,7 +137,3 @@ param_scheduler = [
 optim_wrapper = dict(
     optimizer=dict(type='SGD', lr=0.1, momentum=0.9, weight_decay=0.00001),
     clip_grad=dict(max_norm=40, norm_type=2))
-
-load_from = ('https://download.openmmlab.com/mmaction/recognition/slowfast/'
-             'slowfast_r50_8x8x1_256e_kinetics400_rgb/'
-             'slowfast_r50_8x8x1_256e_kinetics400_rgb_20200716-73547d2b.pth')

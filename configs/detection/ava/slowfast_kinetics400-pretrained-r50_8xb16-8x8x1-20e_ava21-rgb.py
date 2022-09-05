@@ -1,8 +1,14 @@
-_base_ = ['slowfast_kinetics_pretrained_r50_4x16x1_20e_ava_rgb.py']
+_base_ = ['slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb.py']
 
 model = dict(
     backbone=dict(
-        resample_rate=4, speed_ratio=4, slow_pathway=dict(fusion_kernel=7)))
+        resample_rate=4,
+        speed_ratio=4,
+        slow_pathway=dict(fusion_kernel=7),
+        prtrained=(
+            'https://download.openmmlab.com/mmaction/recognition/slowfast/'
+            'slowfast_r50_8x8x1_256e_kinetics400_rgb/'
+            'slowfast_r50_8x8x1_256e_kinetics400_rgb_20200716-73547d2b.pth')))
 
 dataset_type = 'AVADataset'
 data_root = 'data/ava/rawframes'
@@ -38,10 +44,6 @@ train_dataloader = dict(
         label_file=label_file,
         proposal_file=proposal_file_train,
         data_prefix=dict(img=data_root)))
-
-load_from = ('https://download.openmmlab.com/mmaction/recognition/slowfast/'
-             'slowfast_r50_8x8x1_256e_kinetics400_rgb/'
-             'slowfast_r50_8x8x1_256e_kinetics400_rgb_20200716-73547d2b.pth')
 
 optim_wrapper = dict(
     optimizer=dict(type='SGD', lr=0.1, momentum=0.9, weight_decay=0.00001),

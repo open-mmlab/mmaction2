@@ -1,4 +1,6 @@
-_base_ = ['lfb_nl_kinetics_pretrained_slowonly_r50_4x16x1_20e_ava_rgb.py']
+_base_ = [
+    'slowonly-lfb-nl_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb.py'
+]
 
 model = dict(
     roi_head=dict(

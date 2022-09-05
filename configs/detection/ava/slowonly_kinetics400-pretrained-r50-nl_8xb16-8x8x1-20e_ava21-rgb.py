@@ -1,4 +1,14 @@
-_base_ = ['slowonly_nl_kinetics400_pretrained_r50_4x16x1_20e_8x16_ava_rgb.py']
+_base_ = [
+    'slowonly_kinetics400-pretrained-r50-nl_8xb16-4x16x1-20e_ava21-rgb.py'
+]
+
+model = dict(
+    backbone=dict(
+        pretrained=(
+            'https://download.openmmlab.com/mmaction/recognition/slowonly/'
+            'slowonly_nl_embedded_gaussian_r50_8x8x1_150e_kinetics400_rgb/'
+            'slowonly_nl_embedded_gaussian_r50_8x8x1_150e_kinetics400_rgb_'
+            '20210308-e8dd9e82.pth')))
 
 dataset_type = 'AVADataset'
 data_root = 'data/ava/rawframes'
@@ -62,9 +72,3 @@ val_dataloader = dict(
         data_prefix=dict(img=data_root),
         test_mode=True))
 test_dataloader = val_dataloader
-
-load_from = (
-    'https://download.openmmlab.com/mmaction/recognition/slowonly/'
-    'slowonly_nl_embedded_gaussian_r50_8x8x1_150e_kinetics400_rgb/'
-    'slowonly_nl_embedded_gaussian_r50_8x8x1_150e_kinetics400_rgb_20210308-e8dd9e82.pth'  # noqa: E501
-)
