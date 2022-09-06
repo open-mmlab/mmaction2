@@ -1,4 +1,4 @@
-_base_ = ['tsn_r50_1x1x3_100e_kinetics400_rgb.py']
+_base_ = ['tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py']
 
 # model settings
 model = dict(cls_head=dict(dropout_ratio=0.5, init_std=0.001))
