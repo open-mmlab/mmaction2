@@ -108,7 +108,7 @@ test_dataloader = dict(
 val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 
-optim_wrapper = dict(optimizer=dict(lr=0.005, weight_decay=0.001))
+optim_wrapper = dict(optimizer=dict(lr=0.0025, weight_decay=0.001))
 
 param_scheduler = [
     dict(
