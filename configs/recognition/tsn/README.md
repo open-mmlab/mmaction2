@@ -76,11 +76,11 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 Example: train TSN model on Kinetics-400 dataset in a deterministic option.
 
 ```shell
-python tools/train.py configs/recognition/tsn/tsn_r50_1x1x3_100e_8xb32_kinetics400_rgb.py  \
+python tools/train.py configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py  \
     --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
-For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
+For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Test
 
@@ -90,14 +90,14 @@ You can use the following command to test a model.
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-Example: test TSN model on Kinetics-400 dataset.
+Example: test TSN model on Kinetics-400 dataset and dump the result to a pkl file.
 
 ```shell
-python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_8xb32_kinetics400_rgb.py \
-    checkpoints/SOME_CHECKPOINT.pth
+python tools/test.py configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py \
+    checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
-For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Citation
 
