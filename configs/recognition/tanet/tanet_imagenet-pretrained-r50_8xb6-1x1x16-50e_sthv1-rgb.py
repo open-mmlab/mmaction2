@@ -70,7 +70,7 @@ test_pipeline = [
 ]
 
 train_dataloader = dict(
-    batch_size=4,
+    batch_size=6,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
@@ -81,7 +81,7 @@ train_dataloader = dict(
         filename_tmpl='{:05}.jpg',
         pipeline=train_pipeline))
 val_dataloader = dict(
-    batch_size=4,
+    batch_size=6,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
@@ -108,7 +108,7 @@ test_dataloader = dict(
 val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 
-optim_wrapper = dict(optimizer=dict(lr=0.0025, weight_decay=0.001))
+optim_wrapper = dict(optimizer=dict(lr=0.0075, weight_decay=0.001))
 
 param_scheduler = [
     dict(
