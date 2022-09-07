@@ -250,7 +250,8 @@ class AuxHead(nn.Module):
             if isinstance(m, nn.BatchNorm3d):
                 constant_init(m, 1)
 
-    def loss(self, x: torch.Tensor, data_samples: Optional[SampleList]) -> dict:
+    def loss(self, x: torch.Tensor,
+             data_samples: Optional[SampleList]) -> dict:
         """Calculate auxiliary loss."""
         x = self(x)
         labels = [x.gt_labels.item for x in data_samples]

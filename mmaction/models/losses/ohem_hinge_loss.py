@@ -53,8 +53,8 @@ class OHEMHingeLoss(torch.autograd.Function):
 
     @staticmethod
     def backward(ctx, grad_output):
-        """Defines a formula for differentiating the operation with backward mode
-        automatic differentiation."""
+        """Defines a formula for differentiating the operation with backward
+        mode automatic differentiation."""
 
         labels = ctx.labels
         slopes = ctx.slopes
