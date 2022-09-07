@@ -1,5 +1,5 @@
 _base_ = [
-    'slowfast_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb6_ava22_rgb.py'
+    'slowfast_kinetics400-pretrained-r50_8xb6-8x8x1-cosine-10e_ava22-rgb.py'
 ]
 
 model = dict(
