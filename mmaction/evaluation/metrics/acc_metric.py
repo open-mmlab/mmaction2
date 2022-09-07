@@ -132,6 +132,7 @@ class AccMetric(BaseMetric):
 
     @staticmethod
     def label2array(num, label):
+        """Convert multi-label to array."""
         arr = np.zeros(num, dtype=np.float32)
         arr[label] = 1.
         return arr

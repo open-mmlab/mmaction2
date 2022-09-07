@@ -3,6 +3,7 @@ import numpy as np
 
 
 def get_hop_distance(num_node, edge, max_hop=1):
+    """Get n-hop distance matrix by edges."""
     adj_mat = np.zeros((num_node, num_node))
     for i, j in edge:
         adj_mat[i, j] = 1
@@ -20,6 +21,7 @@ def get_hop_distance(num_node, edge, max_hop=1):
 
 
 def normalize_digraph(adj_matrix):
+    """Normalize the digraph."""
     Dl = np.sum(adj_matrix, 0)
     num_nodes = adj_matrix.shape[0]
     Dn = np.zeros((num_nodes, num_nodes))
@@ -31,6 +33,7 @@ def normalize_digraph(adj_matrix):
 
 
 def edge2mat(link, num_node):
+    """Get adjacency matrix from edges."""
     A = np.zeros((num_node, num_node))
     for i, j in link:
         A[j, i] = 1
@@ -42,17 +45,17 @@ class Graph:
 
     Args:
         layout (str): must be one of the following candidates
-        - openpose: 18 or 25 joints. For more information, please refer to:
-            https://github.com/CMU-Perceptual-Computing-Lab/openpose#output
-        - ntu-rgb+d: Is consists of 25 joints. For more information, please
-            refer to https://github.com/shahroudy/NTURGB-D
+            - openpose: 18 or 25 joints. For more information, please refer to:
+                https://github.com/CMU-Perceptual-Computing-Lab/openpose#output
+            - ntu-rgb+d: Is consists of 25 joints. For more information, please
+                refer to https://github.com/shahroudy/NTURGB-D
 
         strategy (str): must be one of the follow candidates
-        - uniform: Uniform Labeling
-        - distance: Distance Partitioning
-        - spatial: Spatial Configuration
-        For more information, please refer to the section 'Partition
-        Strategies' in our paper (https://arxiv.org/abs/1801.07455).
+            - uniform: Uniform Labeling
+            - distance: Distance Partitioning
+            - spatial: Spatial Configuration
+            For more information, please refer to the section 'Partition
+            Strategies' in our paper (https://arxiv.org/abs/1801.07455).
 
         max_hop (int): the maximal distance between two connected nodes.
             Default: 1
@@ -185,7 +188,6 @@ class Graph:
             A = np.stack(A)
             self.A = A
         elif strategy == 'agcn':
-            A = []
             link_mat = edge2mat(self.self_link, self.num_node)
             In = normalize_digraph(edge2mat(self.neighbor_link, self.num_node))
             outward = [(j, i) for (i, j) in self.neighbor_link]

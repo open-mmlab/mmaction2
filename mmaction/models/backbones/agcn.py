@@ -12,6 +12,7 @@ from ..utils import Graph
 
 
 def conv_branch_init(conv, branches):
+    """Utility function for initialize conv branch."""
     weight = conv.weight
     n = weight.size(0)
     k1 = weight.size(1)
@@ -21,11 +22,13 @@ def conv_branch_init(conv, branches):
 
 
 def conv_init(conv):
+    """Utility function for initialize conv."""
     kaiming_init(conv.weight)
     constant_init(conv.bias, 0)
 
 
 def bn_init(bn, scale):
+    """Utility function for initialize bn."""
     constant_init(bn.weight, scale)
     constant_init(bn.bias, 0)
 

@@ -21,15 +21,16 @@ class UniformSampleFrames(BaseTransform):
     random seed is set during testing, to make the sampling results
     deterministic.
 
-    Required keys are "total_frames", "start_index" , added or modified keys
-    are "frame_inds", "clip_len", "frame_interval" and "num_clips".
+    Required keys are ``'total_frames'``, ``'start_index'`` , added or
+    modified keys are ``'frame_inds'``, ``'clip_len'``,
+    ``'frame_interval'`` and ``'num_clips'``.
 
     Args:
         clip_len (int): Frames of each sampled output clip.
-        num_clips (int): Number of clips to be sampled. Default: 1.
+        num_clips (int): Number of clips to be sampled. Defaults to 1.
         test_mode (bool): Store True when building test or validation dataset.
-            Default: False.
-        seed (int): The random seed used during test time. Default: 255.
+            Defaults to False.
+        seed (int): The random seed used during test time. Defaults to 255.
     """
 
     def __init__(self, clip_len, num_clips=1, test_mode=False, seed=255):
@@ -113,6 +114,12 @@ class UniformSampleFrames(BaseTransform):
         return inds
 
     def transform(self, results):
+        """Perform the SampleFrames loading.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         num_frames = results['total_frames']
 
         if self.test_mode:
@@ -149,7 +156,12 @@ class PoseDecode(BaseTransform):
     """
 
     def transform(self, results):
+        """Perform the pose decoding.
 
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         if 'total_frames' not in results:
             results['total_frames'] = results['keypoint'].shape[1]
 
@@ -231,7 +243,12 @@ class LoadKineticsPose(BaseTransform):
         self.file_client = None
 
     def transform(self, results):
+        """Perform the kinetics pose decoding.
 
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         assert 'filename' in results
         filename = results.pop('filename')
 
@@ -588,6 +605,12 @@ class GeneratePoseTarget(BaseTransform):
         return imgs
 
     def transform(self, results):
+        """Generate pseudo heatmaps based on joint coordinates and confidence.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         if not self.double:
             results['imgs'] = np.stack(self.gen_an_aug(results))
         else:
@@ -635,6 +658,12 @@ class PaddingWithLoop(BaseTransform):
         self.num_clips = num_clips
 
     def transform(self, results):
+        """Sample frames from the video.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         num_frames = results['total_frames']
 
         start_index = results['start_index']

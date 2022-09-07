@@ -6,6 +6,7 @@ import mmaction
 
 
 def collect_env():
+    """Collect the information of the running environments."""
     env_info = collect_basic_env()
     env_info['MMAction2'] = (
         mmaction.__version__ + '+' + get_git_hash(digits=7))

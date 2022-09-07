@@ -42,6 +42,7 @@ class TABlock(nn.Module):
                                       'on Bottleneck block.')
 
     def forward(self, x):
+        """Defines the computation performed at every call."""
         assert isinstance(self.block, Bottleneck)
 
         def _inner_forward(x):
@@ -98,6 +99,7 @@ class TANet(ResNet):
         self.make_tam_modeling()
 
     def init_weights(self):
+        """Initialize weights."""
         pass
 
     def make_tam_modeling(self):

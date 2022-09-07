@@ -32,6 +32,7 @@ class SubBatchNorm3D(nn.Module):
         self.init_weights(cfg)
 
     def init_weights(self, cfg):
+        """Initialize weights."""
         if cfg.get('affine', True):
             self.weight = torch.nn.Parameter(torch.ones(self.num_features))
             self.bias = torch.nn.Parameter(torch.zeros(self.num_features))
@@ -40,6 +41,7 @@ class SubBatchNorm3D(nn.Module):
             self.affine = False
 
     def _get_aggregated_mean_std(self, means, stds, n):
+        """Calculate aggregated mean and std."""
         mean = means.view(n, -1).sum(0) / n
         std = stds.view(n, -1).sum(0) / n + (
             (means.view(n, -1) - mean)**2).view(n, -1).sum(0) / n
@@ -62,6 +64,7 @@ class SubBatchNorm3D(nn.Module):
         )
 
     def forward(self, x):
+        """Defines the computation performed at every call."""
         if self.training:
             n, c, t, h, w = x.shape
             assert n % self.num_splits == 0
