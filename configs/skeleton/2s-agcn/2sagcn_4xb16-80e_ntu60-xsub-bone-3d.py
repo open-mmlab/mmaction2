@@ -31,14 +31,14 @@ val_dataloader = dict(
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
-        type=dataset_type, ann_file=ann_file_train, pipeline=train_pipeline))
+        type=dataset_type, ann_file=ann_file_val, pipeline=train_pipeline))
 test_dataloader = dict(
     batch_size=1,
     num_workers=2,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
-        type=dataset_type, ann_file=ann_file_train, pipeline=train_pipeline))
+        type=dataset_type, ann_file=ann_file_val, pipeline=train_pipeline))
 
 val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
