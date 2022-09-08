@@ -20,12 +20,13 @@ Deep convolutional networks have achieved great success for visual recognition i
 
 ### Kinetics-400
 
-| config                                   |   resolution   | gpus | backbone | pretrain | top1 acc | top5 acc | inference_time(video/s) | gpu_mem(M) |                  ckpt                   |                  log                   |
-| :--------------------------------------- | :------------: | :--: | :------: | :------: | :------: | :------: | :---------------------: | :--------: | :-------------------------------------: | :------------------------------------: |
-| [tsn_r50_1x1x3_100e_8xb32_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_1x1x3_100e_8xb32_kinetics400_rgb.py) | short-side 320 |  8   | ResNet50 | ImageNet |  72.77   |  90.66   |            x            |    8321    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb/20200614_063526.log) |
-| [tsn_r50_1x1x5_100e_8xb32_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_1x1x5_100e_8xb32_kinetics400_rgb.py) | short-side 320 |  8   | ResNet50 | ImageNet |  73.73   |  91.15   |            x            |   13616    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb/20200614_063526.log) |
-| [tsn_r50_1x1x8_100e_8xb32_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_1x1x8_100e_8xb32_kinetics400_rgb.py) | short-side 320 |  8   | ResNet50 | ImageNet |  74.21   |  91.36   |            x            |   21549    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb/20200614_063526.log) |
-| [tsn_r50_dense_1x1x5_100e_8xb32_kinetics400_rgb](/configs/recognition/tsn/tsn_r50_dense_1x1x5_100e_8xb32_kinetics400_rgb.py) | short-side 320 |  8   | ResNet50 | ImageNet |  71.37   |  89.66   |            x            |   13616    | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb/tsn_r50_1x1x3_100e_kinetics400_rgb_20200614-e508be42.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/tsn_r50_1x1x3_100e_kinetics400_rgb/20200614_063526.log) |
+| frame sampling strategy | scheduler |   resolution   | gpus | backbone  | pretrain | top1 acc | top5 acc |  testing protocol  | inference time(video/s) | gpu_mem(M) |         config          |          ckpt          |          log          |
+| :---------------------: | :-------: | :------------: | :--: | :-------: | :------: | :------: | :------: | :----------------: | :---------------------: | :--------: | :---------------------: | :--------------------: | :-------------------: |
+|          1x1x3          | MultiStep | short-side 320 |  8   | ResNet50  | ImageNet |  72.77   |  90.66   | 25 clips x 10 crop |            x            |    8321    | [config](/configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb_20220906-cd10898e.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.log) |
+|          1x1x5          | MultiStep | short-side 320 |  8   | ResNet50  | ImageNet |  73.73   |  91.15   | 25 clips x 10 crop |            x            |   13616    | [config](/configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x5-100e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x5-100e_kinetics400-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x5-100e_kinetics400-rgb_20220906-65d68713.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x5-100e_kinetics400-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x5-100e_kinetics400-rgb.log) |
+|          1x1x8          | MultiStep | short-side 320 |  8   | ResNet50  | ImageNet |  74.21   |  91.36   | 25 clips x 10 crop |            x            |   21549    | [config](/configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb_20220906-2692d16c.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb.log) |
+|       dense-1x1x5       | MultiStep | short-side 320 |  8   | ResNet50  | ImageNet |  71.37   |  89.66   | 25 clips x 10 crop |            x            |   13616    | [config](/configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-dense-1x1x5-100e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-dense-1x1x5-100e_kinetics400-rgb/tsn_imagenet-pretrained-r50_8xb32-dense-1x1x5-100e_kinetics400-rgb_20220906-dcbc6e01.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-dense-1x1x5-100e_kinetics400-rgb/tsn_imagenet-pretrained-r50_8xb32-dense-1x1x5-100e_kinetics400-rgb.log) |
+|          1x1x8          | MultiStep | short-side 320 |  8   | ResNet101 | ImageNet |  75.91   |  92.21   | 25 clips x 10 crop |            x            |   13616    | [config](/configs/recognition/tsn/tsn_imagenet-pretrained-r101_8xb32-1x1x8-100e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r101_8xb32-1x1x8-100e_kinetics400-rgb/tsn_imagenet-pretrained-r101_8xb32-1x1x8-100e_kinetics400-rgb_20220906-c0d7d41e.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r101_8xb32-1x1x8-100e_kinetics400-rgb/tsn_imagenet-pretrained-r101_8xb32-1x1x8-100e_kinetics400-rgb.log) |
 
 ### Using backbones from 3rd-party in TSN
 
@@ -35,25 +36,19 @@ It's possible and convenient to use a 3rd-party backbone for TSN under the frame
 - [x] Backbones from [TorchVision](https://github.com/pytorch/vision/)
 - [x] Backbones from [TIMM (pytorch-image-models)](https://github.com/rwightman/pytorch-image-models)
 
-| config                                   |   resolution   | gpus |                  backbone                  | pretrain | top1 acc | top5 acc |                  ckpt                  |                  log                   |
-| :--------------------------------------- | :------------: | :--: | :----------------------------------------: | :------: | :------: | :------: | :------------------------------------: | :------------------------------------: |
-| [tsn_rn101_32x4d_1x1x3_100e_8xb32_kinetics400_rgb](/configs/recognition/tsn/custom_backbones/tsn_rn101_32x4d_1x1x3_100e_8xb32_kinetics400_rgb.py) | short-side 320 |  8   | ResNeXt101-32x4d \[[MMCls](https://github.com/open-mmlab/mmclassification/tree/master/configs/resnext)\] | ImageNet |  72.79   |  90.40   | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/custom_backbones/tsn_rn101_32x4d_320p_1x1x3_100e_kinetics400_rgb-16a8b561.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/custom_backbones/tsn_rn101_32x4d_320p_1x1x3_100e_kinetics400_rgb.log) |
-| [tsn_dense161_1x1x3_100e_8xb32_kinetics400_rgb](/configs/recognition/tsn/custom_backbones/tsn_dense161_1x1x3_100e_8xb32_kinetics400_rgb.py) | short-side 320 |  8   | Densenet-161 \[[TorchVision](https://github.com/pytorch/vision/)\] | ImageNet |  68.31   |  87.79   | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/custom_backbones/tsn_dense161_320p_1x1x3_100e_kinetics400_rgb/tsn_dense161_320p_1x1x3_100e_kinetics400_rgb-cbe85332.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/custom_backbones/tsn_dense161_320p_1x1x3_100e_kinetics400_rgb/tsn_dense161_320p_1x1x3_100e_kinetics400_rgb.log) |
-| [tsn_swin_transformer_1x1x3_100e_8xb32_kinetics400_rgb](/configs/recognition/tsn/custom_backbones/tsn_swin_transformer_1x1x3_100e_8xb32_kinetics400_rgb.py) | short-side 320 |  8   | Swin Transformer Base \[[timm](https://github.com/rwightman/pytorch-image-models)\] | ImageNet |  76.90   |  92.55   | [ckpt](https://download.openmmlab.com/mmaction/recognition/tsn/custom_backbones/tsn_swin_transformer_video_320p_1x1x3_100e_kinetics400_rgb/tsn_swin_transformer_video_320p_1x1x3_100e_kinetics400_rgb-805380f6.pth) | [log](https://download.openmmlab.com/mmaction/recognition/tsn/custom_backbones/tsn_swin_transformer_video_320p_1x1x3_100e_kinetics400_rgb/tsn_swin_transformer_video_320p_1x1x3_100e_kinetics400_rgb.log) |
+| frame sampling strategy | scheduler |   resolution   | gpus |     backbone     | pretrain | top1 acc | top5 acc |  testing protocol  | inference time(video/s) | gpu_mem(M) |        config         |        ckpt         |         log         |
+| :---------------------: | :-------: | :------------: | :--: | :--------------: | :------: | :------: | :------: | :----------------: | :---------------------: | :--------: | :-------------------: | :-----------------: | :-----------------: |
+|          1x1x3          | MultiStep | short-side 320 |  8   |    ResNext101    | ImageNet |  72.79   |  90.40   | 25 clips x 10 crop |            x            |   31832    | [config](/configs/recognition/tsn/custom_backbones/tsn_imagenet-pretrained-rn101-32x4d_8xb32-1x1x3-100e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-rn101-32x4d_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-rn101-32x4d_8xb32-1x1x3-100e_kinetics400-rgb_20220906-23cff032.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-rn101-32x4d_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-rn101-32x4d_8xb32-1x1x3-100e_kinetics400-rgb.log) |
+|          1x1x3          | MultiStep | short-side 320 |  8   |   DenseNet161    | ImageNet |  71.83   |  90.02   | 25 clips x 10 crop |            x            |   22701    | [config](/configs/recognition/tsn/custom_backbones/tsn_imagenet-pretrained-dense161_8xb32-1x1x3-100e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-dense161_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-dense161_8xb32-1x1x3-100e_kinetics400-rgb_20220906-5f4c0daf.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-dense161_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-dense161_8xb32-1x1x3-100e_kinetics400-rgb.log) |
+|          1x1x3          | MultiStep | short-side 320 |  8   | Swin Transformer | ImageNet |  76.90   |  92.55   | 25 clips x 10 crop |            x            |   24014    | [config](/configs/recognition/tsn/custom_backbones/tsn_imagenet-pretrained-swin-transformer_8xb32-1x1x3-100e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-swin-transformer_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-swin-transformer_8xb32-1x1x3-100e_kinetics400-rgb_20220906-65ed814e.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-swin-transformer_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-swin-transformer_8xb32-1x1x3-100e_kinetics400-rgb.log) |
 
 1. Note that some backbones in TIMM are not supported due to multiple reasons. Please refer to to [PR #880](https://github.com/open-mmlab/mmaction2/pull/880) for details.
 
-:::{note}
-
-1. The **gpus** indicates the number of gpu we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
+2. The **gpus** indicates the number of gpu we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
    According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
    e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
-2. The **inference_time** is got by this [benchmark script](/tools/analysis/benchmark.py), where we use the sampling frames strategy of the test setting and only care about the model inference time,
-   not including the IO time and pre-processing time. For each setting, we use 1 gpu and set batch size (videos per gpu) to 1 to calculate the inference time.
-3. The values in columns named after "reference" are the results got by training on the original repo, using the same model settings.
-4. The validation set of Kinetics400 we used consists of 19796 videos. These videos are available at [Kinetics400-Validation](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155136485_link_cuhk_edu_hk/EbXw2WX94J1Hunyt3MWNDJUBz-nHvQYhO9pvKqm6g39PMA?e=a9QldB). The corresponding [data list](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_val_list.txt) (each line is of the format 'video_id, num_frames, label_index') and the [label map](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_class2ind.txt) are also available.
 
-:::
+3. The validation set of Kinetics400 we used consists of 19796 videos. These videos are available at [Kinetics400-Validation](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155136485_link_cuhk_edu_hk/EbXw2WX94J1Hunyt3MWNDJUBz-nHvQYhO9pvKqm6g39PMA?e=a9QldB). The corresponding [data list](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_val_list.txt) (each line is of the format 'video_id, num_frames, label_index') and the [label map](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_class2ind.txt) are also available.
 
 For more details on data preparation, you can refer to
 
@@ -77,11 +72,11 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 Example: train TSN model on Kinetics-400 dataset in a deterministic option.
 
 ```shell
-python tools/train.py configs/recognition/tsn/tsn_r50_1x1x3_100e_8xb32_kinetics400_rgb.py  \
+python tools/train.py configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py  \
     --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
-For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
+For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Test
 
@@ -91,14 +86,14 @@ You can use the following command to test a model.
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-Example: test TSN model on Kinetics-400 dataset.
+Example: test TSN model on Kinetics-400 dataset and dump the result to a pkl file.
 
 ```shell
-python tools/test.py configs/recognition/tsn/tsn_r50_1x1x3_100e_8xb32_kinetics400_rgb.py \
-    checkpoints/SOME_CHECKPOINT.pth
+python tools/test.py configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py \
+    checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
-For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+For more details, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Citation
 
