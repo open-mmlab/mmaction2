@@ -1,4 +1,4 @@
-_base_ = ['../tsn_r50_1x1x3_100e_8xb32_kinetics400_rgb.py']
+_base_ = ['../tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py']
 
 checkpoint = 'https://download.openmmlab.com/mmclassification/v0/' \
              'resnext/resnext50_32x4d_b32x8_imagenet_20210429-56066e27.pth'

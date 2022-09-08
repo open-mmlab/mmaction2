@@ -6,8 +6,8 @@ Collections:
       Title: "Temporal Segment Networks: Towards Good Practices for Deep Action Recognition"
 
 Models:
-  - Name: tsn_r50_1x1x3_100e_8xb32_kinetics400_rgb
-    Config: configs/recognition/tsn/tsn_r50_1x1x3_100e_8xb32_kinetics400_rgb.py
+  - Name: tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb
+    Config: configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py
     In Collection: TSN
     Metadata:
       Architecture: ResNet50
@@ -26,9 +26,11 @@ Models:
       Metrics:
         Top 1 Accuracy: 72.77
         Top 5 Accuracy: 90.66
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb_20220906-cd10898e.pth
 
-  - Name: tsn_r50_1x1x5_100e_8xb32_kinetics400_rgb
-    Config: configs/recognition/tsn/tsn_r50_1x1x5_100e_8xb32_kinetics400_rgb.py
+  - Name: tsn_imagenet-pretrained-r50_8xb32-1x1x5-100e_kinetics400-rgb
+    Config: configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x5-100e_kinetics400-rgb.py
     In Collection: TSN
     Metadata:
       Architecture: ResNet50
@@ -47,9 +49,11 @@ Models:
       Metrics:
         Top 1 Accuracy: 73.73
         Top 5 Accuracy: 91.15
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x5-100e_kinetics400-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x5-100e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x5-100e_kinetics400-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x5-100e_kinetics400-rgb_20220906-65d68713.pth
 
-  - Name: tsn_r50_1x1x8_100e_8xb32_kinetics400_rgb
-    Config: configs/recognition/tsn/tsn_r50_1x1x8_100e_8xb32_kinetics400_rgb.py
+  - Name: tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb
+    Config: configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb.py
     In Collection: TSN
     Metadata:
       Architecture: ResNet50
@@ -68,9 +72,11 @@ Models:
       Metrics:
         Top 1 Accuracy: 74.21
         Top 5 Accuracy: 91.36
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb_20220906-2692d16c.pth
 
-  - Name: tsn_r50_dense_1x1x5_100e_8xb32_kinetics400_rgb
-    Config: configs/recognition/tsn/tsn_r50_dense_1x1x5_100e_8xb32_kinetics400_rgb.py
+  - Name: tsn_imagenet-pretrained-r50_8xb32-dense-1x1x5-100e_kinetics400-rgb
+    Config: configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-dense-1x1x5-100e_kinetics400-rgb.py
     In Collection: TSN
     Metadata:
       Architecture: ResNet50
@@ -89,12 +95,37 @@ Models:
       Metrics:
         Top 1 Accuracy: 71.37
         Top 5 Accuracy: 89.66
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-dense-1x1x5-100e_kinetics400-rgb/tsn_imagenet-pretrained-r50_8xb32-dense-1x1x5-100e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-dense-1x1x5-100e_kinetics400-rgb/tsn_imagenet-pretrained-r50_8xb32-dense-1x1x5-100e_kinetics400-rgb_20220906-dcbc6e01.pth
 
-  - Name: tsn_rn101_32x4d_1x1x3_100e_8xb32_kinetics400_rgb
-    Config: configs/recognition/tsn/custom_backbones/tsn_rn101_32x4d_1x1x3_100e_8xb32_kinetics400_rgb.py
+  - Name: tsn_imagenet-pretrained-r101_8xb32-1x1x8-100e_kinetics400-rgb
+    Config: configs/recognition/tsn/tsn_imagenet-pretrained-r101_8xb32-1x1x8-100e_kinetics400-rgb.py
     In Collection: TSN
     Metadata:
-      Architecture: ResNet50
+      Architecture: ResNet101
+      Batch Size: 32
+      Epochs: 100
+      FLOPs: 43048605696
+      Parameters: 24327632
+      Pretrained: ImageNet
+      Resolution: short-side 320
+      Training Data: Kinetics-400
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 75.91
+        Top 5 Accuracy: 92.21
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r101_8xb32-1x1x8-100e_kinetics400-rgb/tsn_imagenet-pretrained-r101_8xb32-1x1x8-100e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r101_8xb32-1x1x8-100e_kinetics400-rgb/tsn_imagenet-pretrained-r101_8xb32-1x1x8-100e_kinetics400-rgb_20220906-c0d7d41e.pth
+
+  - Name: tsn_imagenet-pretrained-rn101-32x4d_8xb32-1x1x3-100e_kinetics400-rgb
+    Config: configs/recognition/tsn/custom_backbones/tsn_imagenet-pretrained-rn101-32x4d_8xb32-1x1x3-100e_kinetics400-rgb.py
+    In Collection: TSN
+    Metadata:
+      Architecture: ResNext101
       Batch Size: 32
       Epochs: 100
       FLOPs: 262238208000
@@ -110,12 +141,15 @@ Models:
       Metrics:
         Top 1 Accuracy: 72.79
         Top 5 Accuracy: 90.40
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-rn101-32x4d_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-rn101-32x4d_8xb32-1x1x3-100e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-rn101-32x4d_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-rn101-32x4d_8xb32-1x1x3-100e_kinetics400-rgb_20220906-23cff032.pth
 
-  - Name: tsn_dense161_1x1x3_100e_8xb32_kinetics400_rgb
-    Config: configs/recognition/tsn/custom_backbones/tsn_dense161_1x1x3_100e_8xb32_kinetics400_rgb.py
+
+  - Name: tsn_imagenet-pretrained-dense161_8xb32-1x1x3-100e_kinetics400-rgb
+    Config: configs/recognition/tsn/custom_backbones/tsn_imagenet-pretrained-dense161_8xb32-1x1x3-100e_kinetics400-rgb.py
     In Collection: TSN
     Metadata:
-      Architecture: ResNet50
+      Architecture: DenseNet161
       Batch Size: 32
       Epochs: 100
       FLOPs: 255225561600
@@ -129,11 +163,13 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 68.31
-        Top 5 Accuracy: 87.79
+        Top 1 Accuracy: 71.83
+        Top 5 Accuracy: 90.02
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-dense161_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-dense161_8xb32-1x1x3-100e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-dense161_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-dense161_8xb32-1x1x3-100e_kinetics400-rgb_20220906-5f4c0daf.pth
 
-  - Name: tsn_swin_transformer_1x1x3_100e_8xb32_kinetics400_rgb
-    Config: configs/recognition/tsn/custom_backbones/tsn_swin_transformer_1x1x3_100e_8xb32_kinetics400_rgb.py
+  - Name: tsn_imagenet-pretrained-swin-transformer_8xb32-1x1x3-100e_kinetics400-rgb
+    Config: configs/recognition/tsn/custom_backbones/tsn_imagenet-pretrained-swin-transformer_8xb32-1x1x3-100e_kinetics400-rgb.py
     In Collection: TSN
     Metadata:
       Architecture: ResNet50
@@ -152,3 +188,5 @@ Models:
       Metrics:
         Top 1 Accuracy: 76.90
         Top 5 Accuracy: 92.55
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-swin-transformer_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-swin-transformer_8xb32-1x1x3-100e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-swin-transformer_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-swin-transformer_8xb32-1x1x3-100e_kinetics400-rgb_20220906-65ed814e.pth
