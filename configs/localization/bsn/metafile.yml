@@ -6,11 +6,11 @@ Collections:
     Title: "BSN: Boundary Sensitive Network for Temporal Action Proposal Generation"
 
 Models:
-  - Name: bsn_400x100_1x16_20e_activitynet_feature (cuhk_mean_100)
+  - Name: bsn_400x100_1xb16_20e_activitynet_feature (cuhk_mean_100)
     Config:
-      - configs/localization/bsn/bsn_tem_1x16-400x100-20e_activitynet-feature.py
+      - configs/localization/bsn/bsn_tem_1xb16-400x100-20e_activitynet-feature.py
       - configs/localization/bsn/bsn_pgm_400x100_activitynet-feature.py
-      - configs/localization/bsn/bsn_pem_1x16-400x100-20e_activitynet-feature.py
+      - configs/localization/bsn/bsn_pem_1xb16-400x100-20e_activitynet-feature.py
     In Collection: BSN
     Metadata:
       Batch Size: 16
@@ -29,8 +29,8 @@ Models:
               AR@10: 55.28
               AR@100: 74.27
     Training Log:
-      - https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_tem_1x16-400x100-20e_activitynet-feature.log
-      - https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_pem_1x16-400x100-20e_activitynet-feature.log
+      - https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_tem_1xb16-400x100-20e_activitynet-feature.log
+      - https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_pem_1xb16-400x100-20e_activitynet-feature.log
     Weights:
-      - https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_tem_1x16-400x100-20e_activitynet-feature_20220908-9da79951.pth
-      - https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_pem_1x16-400x100-20e_activitynet-feature_20220908-ec2eb21d.pth
+      - https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_tem_1xb16-400x100-20e_activitynet-feature_20220908-9da79951.pth
+      - https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_pem_1xb16-400x100-20e_activitynet-feature_20220908-ec2eb21d.pth

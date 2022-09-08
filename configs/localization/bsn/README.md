@@ -22,7 +22,7 @@ Temporal action proposal generation is an important yet challenging problem, sin
 
 |    feature    | gpus | pretrain |  AUC  | AR@1  | AR@5  | AR@10 | AR@100 |   gpu_mem(M)    | iter time(s) |                   config                   |                   ckpt                   |                   log                    |
 | :-----------: | :--: | :------: | :---: | :---: | :---: | :---: | :----: | :-------------: | :----------: | :----------------------------------------: | :--------------------------------------: | :--------------------------------------: |
-| cuhk_mean_100 |  1   |   None   | 66.26 | 32.71 | 48.43 | 55.28 | 74.27  | 43(TEM)+25(PEM) |      -       | [config_TEM](/configs/localization/bsn/bsn_tem_1x16-400x100-20e_activitynet-feature.py) [config_PGM](/configs/localization/bsn/bsn_pgm_400x100_activitynet-feature.py) [config_PEM](/configs/localization/bsn/bsn_pem_1x16-400x100-20e_activitynet-feature.py) | [ckpt_TEM](https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_tem_1x16-400x100-20e_activitynet-feature_20220908-9da79951.pth) [ckpt_PEM](https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_pem_1x16-400x100-20e_activitynet-feature_20220908-ec2eb21d.pth) | [log_tem](https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_tem_1x16-400x100-20e_activitynet-feature.log) [log_pem](https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_pem_1x16-400x100-20e_activitynet-feature.log) |
+| cuhk_mean_100 |  1   |   None   | 66.26 | 32.71 | 48.43 | 55.28 | 74.27  | 43(TEM)+25(PEM) |      -       | [config_TEM](/configs/localization/bsn/bsn_tem_1xb16-400x100-20e_activitynet-feature.py) [config_PGM](/configs/localization/bsn/bsn_pgm_400x100_activitynet-feature.py) [config_PEM](/configs/localization/bsn/bsn_pem_1xb16-400x100-20e_activitynet-feature.py) | [ckpt_TEM](https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_tem_1xb16-400x100-20e_activitynet-feature_20220908-9da79951.pth) [ckpt_PEM](https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_pem_1xb16-400x100-20e_activitynet-feature_20220908-ec2eb21d.pth) | [log_tem](https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_tem_1xb16-400x100-20e_activitynet-feature.log) [log_pem](https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_pem_1xb16-400x100-20e_activitynet-feature.log) |
 
 1. The **gpus** indicates the number of gpu we used to get the checkpoint.
    According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
@@ -36,14 +36,14 @@ For more details on data preparation, you can refer to [ActivityNet Data Prepara
 The traing of the BSN model is three-stages. Firstly train the Temporal evaluation module (TEM):
 
 ```shell
-python3 tools/train.py configs/localization/bsn/bsn_tem_1x16-400x100-20e_activitynet-feature.py
+python3 tools/train.py configs/localization/bsn/bsn_tem_1xb16-400x100-20e_activitynet-feature.py
 ```
 
 After training use the TEM module to generate the probabilities sequence (actionness, starting, and ending) for the training and validation dataset:
 
 ```shell
-python tools/test.py configs/localization/bsn/bsn_tem_400x100_1x16_20e_activitynet_feature.py \
-    work_dirs/bsn_400x100_20e_1x16_activitynet_feature/tem_epoch_20.pth
+python tools/test.py configs/localization/bsn/bsn_tem_400x100_1xb16_20e_activitynet_feature.py \
+    work_dirs/bsn_400x100_20e_1xb16_activitynet_feature/tem_epoch_20.pth
 ```
 
 The second step is to run the Proposal generation module (PGM) to generate Boundary-Sensitive Proposal (BSP) feature for the training and validation dataset:
@@ -56,7 +56,7 @@ python tools/misc/bsn_proposal_generation.py configs/localization/bsn/bsn_pgm_40
 The last step is to train (and validate) the Proposal evaluation module (PEM):
 
 ```shell
-python python tools/train.py configs/localization/bsn/bsn_pem_1x16-400x100-20e_activitynet-feature.py
+python python tools/train.py configs/localization/bsn/bsn_pem_1xb16-400x100-20e_activitynet-feature.py
 ```
 
 (Optional) You can use the following command to generate a formatted proposal file, which will be fed into the action classifier (Currently supports only SSN and P-GCN, not including TSN, I3D etc.) to get the classification result of proposals.
