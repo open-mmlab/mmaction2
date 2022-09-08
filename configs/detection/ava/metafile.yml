@@ -6,8 +6,8 @@ Collections:
     Title: "AVA: A Video Dataset of Spatio-temporally Localized Atomic Visual Actions"
 
 Models:
-  - Name: slowonly_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb
-    Config: configs/detection/ava/slowonly_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb.py
+  - Name: slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb
+    Config: configs/detection/ava/slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb.py
     In Collection: AVA
     Metadata:
       Architecture: ResNet50
@@ -23,9 +23,31 @@ Models:
         Task: Action Detection
         Metrics:
               mAP: 20.76
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/ava/slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb/slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/detection/ava/slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb/slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb_20220906-953ef5fe.pth
 
-  - Name: slowonly_nl_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb
-    Config: configs/detection/ava/slowonly_nl_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb.py
+  - Name: slowonly_kinetics700-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb
+    Config: configs/detection/ava/slowonly_kinetics700-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb.py
+    In Collection: AVA
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 16
+      Epochs: 20
+      Pretrained: Kinetics-700
+      Resolution: short-side 320
+      Training Data: AVA v2.1
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+      - Dataset: AVA v2.1
+        Task: Action Detection
+        Metrics:
+              mAP: 22.77
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/ava/slowonly_kinetics700-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb/slowonly_kinetics700-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/detection/ava/slowonly_kinetics700-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb/slowonly_kinetics700-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb_20220906-b3b6d44e.pth
+
+  - Name: slowonly_kinetics400-pretrained-r50-nl_8xb16-4x16x1-20e_ava21-rgb
+    Config: configs/detection/ava/slowonly_kinetics400-pretrained-r50-nl_8xb16-4x16x1-20e_ava21-rgb.py
     In Collection: AVA
     Metadata:
       Architecture: ResNet50
@@ -41,9 +63,11 @@ Models:
         Task: Action Detection
         Metrics:
               mAP: 21.49
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/ava/slowonly_kinetics400-pretrained-r50-nl_8xb16-4x16x1-20e_ava21-rgb/slowonly_kinetics400-pretrained-r50-nl_8xb16-4x16x1-20e_ava21-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/detection/ava/slowonly_kinetics400-pretrained-r50-nl_8xb16-4x16x1-20e_ava21-rgb/slowonly_kinetics400-pretrained-r50-nl_8xb16-4x16x1-20e_ava21-rgb_20220906-5ae3f91b.pth
 
-  - Name: slowonly_nl_kinetics400_pretrained_r50_8x8x1_20e_8xb16_ava_rgb
-    Config: configs/detection/ava/slowonly_nl_kinetics400_pretrained_r50_8x8x1_20e_8xb16_ava_rgb.py
+  - Name: slowonly_kinetics400-pretrained-r50-nl_8xb16-8x8x1-20e_ava21-rgb
+    Config: configs/detection/ava/slowonly_kinetics400-pretrained-r50-nl_8xb16-8x8x1-20e_ava21-rgb.py
     In Collection: AVA
     Metadata:
       Architecture: ResNet50
@@ -59,9 +83,11 @@ Models:
         Task: Action Detection
         Metrics:
               mAP: 23.47
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/ava/slowonly_kinetics400-pretrained-r50-nl_8xb16-8x8x1-20e_ava21-rgb/slowonly_kinetics400-pretrained-r50-nl_8xb16-8x8x1-20e_ava21-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/detection/ava/slowonly_kinetics400-pretrained-r50-nl_8xb16-8x8x1-20e_ava21-rgb/slowonly_kinetics400-pretrained-r50-nl_8xb16-8x8x1-20e_ava21-rgb_20220906-9760eadb.pth
 
-  - Name: slowonly_kinetics400_pretrained_r101_8x8x1_20e_8xb16_ava_rgb
-    Config: configs/detection/ava/slowonly_kinetics400_pretrained_r101_8x8x1_20e_8xb16_ava_rgb.py
+  - Name: slowonly_kinetics400-pretrained-r101_8xb16-8x8x1-20e_ava21-rgb
+    Config: configs/detection/ava/slowonly_kinetics400-pretrained-r101_8xb16-8x8x1-20e_ava21-rgb.py
     In Collection: AVA
     Metadata:
       Architecture: ResNet101
@@ -77,9 +103,11 @@ Models:
         Task: Action Detection
         Metrics:
               mAP: 24.82
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/ava/slowonly_kinetics400-pretrained-r101_8xb16-8x8x1-20e_ava21-rgb/slowonly_kinetics400-pretrained-r101_8xb16-8x8x1-20e_ava21-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/detection/ava/slowonly_kinetics400-pretrained-r101_8xb16-8x8x1-20e_ava21-rgb/slowonly_kinetics400-pretrained-r101_8xb16-8x8x1-20e_ava21-rgb_20220906-43f16877.pth
 
-  - Name: slowfast_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb
-    Config: configs/detection/ava/slowfast_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb.py
+  - Name: slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb
+    Config: configs/detection/ava/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb.py
     In Collection: AVA
     Metadata:
       Architecture: ResNet50
@@ -95,9 +123,11 @@ Models:
         Task: Action Detection
         Metrics:
               mAP: 24.27
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/ava/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb/slowonly_kinetics400-pretrained-r101_8xb16-8x8x1-20e_ava21-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/detection/ava/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb_20220906-5180ea3c.pth
 
-  - Name: slowfast_context_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb
-    Config: configs/detection/ava/slowfast_context_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb.py
+  - Name: slowfast_kinetics400-pretrained-r50-context_8xb16-4x16x1-20e_ava21-rgb
+    Config: configs/detection/ava/slowfast_kinetics400-pretrained-r50-context_8xb16-4x16x1-20e_ava21-rgb.py
     In Collection: AVA
     Metadata:
       Architecture: ResNet50
@@ -113,9 +143,11 @@ Models:
         Task: Action Detection
         Metrics:
               mAP: 25.25
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/ava/slowfast_kinetics400-pretrained-r50-context_8xb16-4x16x1-20e_ava21-rgb/slowfast_kinetics400-pretrained-r50-context_8xb16-4x16x1-20e_ava21-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/detection/ava/slowfast_kinetics400-pretrained-r50-context_8xb16-4x16x1-20e_ava21-rgb/slowfast_kinetics400-pretrained-r50-context_8xb16-4x16x1-20e_ava21-rgb_20220906-5bb4f6f2.pth
 
-  - Name: slowfast_kinetics400_pretrained_r50_8x8x1_20e_8xb8_ava_rgb
-    Config: configs/detection/ava/slowfast_kinetics400_pretrained_r50_8x8x1_20e_8xb8_ava_rgb.py
+  - Name: slowfast_kinetics400-pretrained-r50_8xb8-8x8x1-20e_ava21-rgb
+    Config: configs/detection/ava/slowfast_kinetics400-pretrained-r50_8xb8-8x8x1-20e_ava21-rgb.py
     In Collection: AVA
     Metadata:
       Architecture: ResNet50
@@ -131,9 +163,11 @@ Models:
         Task: Action Detection
         Metrics:
               mAP: 25.73
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/ava/slowfast_kinetics400-pretrained-r50_8xb8-8x8x1-20e_ava21-rgb/slowfast_kinetics400-pretrained-r50_8xb8-8x8x1-20e_ava21-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/detection/ava/slowfast_kinetics400-pretrained-r50_8xb8-8x8x1-20e_ava21-rgb/slowfast_kinetics400-pretrained-r50_8xb8-8x8x1-20e_ava21-rgb_20220906-39133ec7.pth
 
-  - Name: slowfast_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb6_ava22_rgb
-    Config: configs/detection/ava/slowfast_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb6_ava22_rgb.py
+  - Name: slowfast_kinetics400-pretrained-r50_8xb6-8x8x1-cosine-10e_ava22-rgb
+    Config: configs/detection/ava/slowfast_kinetics400-pretrained-r50_8xb6-8x8x1-cosine-10e_ava22-rgb.py
     In Collection: AVA
     Metadata:
       Architecture: ResNet50
@@ -149,9 +183,11 @@ Models:
         Task: Action Detection
         Metrics:
               mAP: 25.98
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/ava/slowfast_kinetics400-pretrained-r50_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_kinetics400-pretrained-r50_8xb6-8x8x1-cosine-10e_ava22-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/detection/ava/slowfast_kinetics400-pretrained-r50_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_kinetics400-pretrained-r50_8xb6-8x8x1-cosine-10e_ava22-rgb_20220906-d934a48f.pth
 
-  - Name: slowfast_temporal_max_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb
-    Config: configs/detection/ava/slowfast_temporal_max_kinetics_pretrained_r50_8x8x1_cosine_10e_ava22_rgb.py
+  - Name: slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb
+    Config: configs/detection/ava/slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb.py
     In Collection: AVA
     Metadata:
       Architecture: ResNet50
@@ -167,9 +203,11 @@ Models:
         Task: Action Detection
         Metrics:
               mAP: 26.38
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/ava/slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/detection/ava/slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_kinetics400-pretrained-r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb_20220906-13a9078e.pth
 
-  - Name: slowfast_temporal_max_focal_alpha3_gamma1_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb6_ava22_rgb
-    Config: configs/detection/ava/slowfast_temporal_max_focal_alpha3_gamma1_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb6_ava22_rgb.py
+  - Name: slowfast_kinetics400-pretrained-r50-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb
+    Config: configs/detection/ava/slowfast_kinetics400-pretrained-r50-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb.py
     In Collection: AVA
     Metadata:
       Architecture: ResNet50
@@ -185,3 +223,5 @@ Models:
         Task: Action Detection
         Metrics:
               mAP: 26.59
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/ava/slowfast_kinetics400-pretrained-r50-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_kinetics400-pretrained-r50-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/detection/ava/slowfast_kinetics400-pretrained-r50-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb/slowfast_kinetics400-pretrained-r50-temporal-max-focal-alpha3-gamma1_8xb6-8x8x1-cosine-10e_ava22-rgb_20220906-dd59e26f.pth

@@ -1,4 +1,4 @@
-_base_ = ['slowfast_kinetics400_pretrained_r50_4x16x1_20e_8xb16_ava_rgb.py']
+_base_ = ['slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb.py']
 
 model = dict(
     roi_head=dict(

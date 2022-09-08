@@ -6,8 +6,8 @@ Collections:
     Title: "Actor-Centric Relation Network"
 
 Models:
-  - Name: slowfast_acrn_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb8_ava_rgb
-    Config: configs/detection/ava/slowfast_acrn_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb8_ava_rgb.py
+  - Name: slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava21-rgb
+    Config: configs/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava21-rgb.py
     In Collection: ACRN
     Metadata:
       Architecture: ResNet50
@@ -23,9 +23,11 @@ Models:
         Task: Action Detection
         Metrics:
               mAP: 27.58
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava21-rgb/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava21-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava21-rgb/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava21-rgb_20220906-0dae1a90.pth
 
-  - Name: slowfast_acrn_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb8_ava22_rgb
-    Config: configs/detection/ava/slowfast_acrn_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb8_ava22_rgb.py
+  - Name: slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava22-rgb
+    Config: configs/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava22-rgb.py
     In Collection: ACRN
     Metadata:
       Architecture: ResNet50
@@ -41,3 +43,5 @@ Models:
         Task: Action Detection
         Metrics:
               mAP: 27.63
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava22-rgb/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava22-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava22-rgb/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava22-rgb_20220906-0dae1a90.pth
