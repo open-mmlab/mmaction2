@@ -1,0 +1,47 @@
+Collections:
+- Name: LFB
+  README: configs/detection/lfb/README.md
+  Paper:
+    URL: https://arxiv.org/abs/1812.05038
+    Title: "Long-Term Feature Banks for Detailed Video Understanding"
+
+Models:
+  - Name: slowonly-lfb-nl_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb
+    Config: configs/detection/lfb/slowonly-lfb-nl_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb.py
+    In Collection: LFB
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 12
+      Epochs: 20
+      Pretrained: Kinetics-400
+      Resolution: short-side 320
+      Training Data: AVA v2.1
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+      - Dataset: AVA v2.1
+        Task: Action Detection
+        Metrics:
+              mAP: 24.05
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/lfb/slowonly-lfb-nl_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb/slowonly-lfb-nl_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/detection/lfb/slowonly-lfb-nl_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb/slowonly-lfb-nl_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb_20220906-4c5b9f25.pth
+
+  - Name: slowonly-lfb-max_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb
+    Config: slowonly-lfb-max_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb.py
+    In Collection: LFB
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 12
+      Epochs: 20
+      Pretrained: Kinetics-400
+      Resolution: short-side 320
+      Training Data: AVA v2.1
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+      - Dataset: AVA v2.1
+        Task: Action Detection
+        Metrics:
+              mAP: 22.15
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/lfb/slowonly-lfb-max_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb/slowonly-lfb-max_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/detection/lfb/slowonly-lfb-max_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb/slowonly-lfb-max_kinetics400-pretrained-r50_8xb12-4x16x1-20e_ava21-rgb_20220906-4963135b.pth

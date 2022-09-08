@@ -1,4 +1,11 @@
-_base_ = ['slowfast_kinetics400_pretrained_r50_8x8x1_20e_8xb8_ava_rgb.py']
+_base_ = ['slowfast_kinetics400-pretrained-r50_8xb16-8x8x1-20e_ava21-rgb.py']
+
+model = dict(
+    backbone=dict(
+        pretrained=(
+            'https://download.openmmlab.com/mmaction/recognition/slowfast/'
+            'slowfast_r50_8x8x1_256e_kinetics400_rgb/'
+            'slowfast_r50_8x8x1_256e_kinetics400_rgb_20200716-73547d2b.pth')))
 
 dataset_type = 'AVADataset'
 data_root = 'data/ava/rawframes'
@@ -95,7 +102,3 @@ param_scheduler = [
 optim_wrapper = dict(
     optimizer=dict(type='SGD', lr=0.075, momentum=0.9, weight_decay=0.00001),
     clip_grad=dict(max_norm=40, norm_type=2))
-
-load_from = ('https://download.openmmlab.com/mmaction/recognition/slowfast/'
-             'slowfast_r50_8x8x1_256e_kinetics400_rgb/'
-             'slowfast_r50_8x8x1_256e_kinetics400_rgb_20200716-73547d2b.pth')
