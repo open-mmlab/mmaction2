@@ -1,10 +1,8 @@
 _base_ = ['../../_base_/models/stgcn.py', '../../_base_/default_runtime.py']
 
-model = dict(backbone=dict(graph_cfg=dict(layout='coco')))
-
 dataset_type = 'PoseDataset'
-ann_file_train = 'data/posec3d/ntu60_xsub_train.pkl'
-ann_file_val = 'data/posec3d/ntu60_xsub_val.pkl'
+ann_file_train = 'data/ntu/nturgb+d_skeletons_60_3d/xsub/train.pkl'
+ann_file_val = 'data/ntu/nturgb+d_skeletons_60_3d/xsub/val.pkl'
 train_pipeline = [
     dict(type='PaddingWithLoop', clip_len=300),
     dict(type='PoseDecode'),
@@ -17,6 +15,7 @@ test_pipeline = [
     dict(type='FormatGCNInput', input_format='NCTVM'),
     dict(type='PackActionInputs')
 ]
+
 train_dataloader = dict(
     batch_size=16,
     num_workers=2,
@@ -65,6 +64,6 @@ param_scheduler = [
 
 optim_wrapper = dict(
     optimizer=dict(
-        type='SGD', lr=0.4, momentum=0.9, weight_decay=0.0001, nesterov=True))
+        type='SGD', lr=0.1, momentum=0.9, weight_decay=0.0001, nesterov=True))
 
 default_hooks = dict(checkpoint=dict(interval=5), logger=dict(interval=100))
