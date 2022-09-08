@@ -2,6 +2,38 @@ _base_ = [
     '../../_base_/default_runtime.py', '../_base_/models/slowonly_r50.py'
 ]
 
+# model settings
+lfb_prefix_path = 'data/ava/lfb_half'
+
+max_num_sampled_feat = 5
+window_size = 60
+lfb_channels = 2048
+dataset_modes = ('train', 'val')
+
+model = dict(
+    roi_head=dict(
+        shared_head=dict(
+            type='FBOHead',
+            lfb_cfg=dict(
+                lfb_prefix_path=lfb_prefix_path,
+                max_num_sampled_feat=max_num_sampled_feat,
+                window_size=window_size,
+                lfb_channels=lfb_channels,
+                dataset_modes=dataset_modes,
+                device='gpu'),
+            fbo_cfg=dict(
+                type='non_local',
+                st_feat_channels=2048,
+                lt_feat_channels=lfb_channels,
+                latent_channels=512,
+                num_st_feat=1,
+                num_lt_feat=window_size * max_num_sampled_feat,
+                num_non_local_layers=2,
+                st_feat_dropout_ratio=0.2,
+                lt_feat_dropout_ratio=0.2,
+                pre_activate=True)),
+        bbox_head=dict(in_channels=2560)))
+
 dataset_type = 'AVADataset'
 data_root = 'data/ava/rawframes'
 anno_root = 'data/ava/annotations'
@@ -38,7 +70,7 @@ val_pipeline = [
 ]
 
 train_dataloader = dict(
-    batch_size=16,
+    batch_size=12,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
@@ -49,7 +81,9 @@ train_dataloader = dict(
         pipeline=train_pipeline,
         label_file=label_file,
         proposal_file=proposal_file_train,
-        data_prefix=dict(img=data_root)))
+        data_prefix=dict(img=data_root),
+        person_det_score_thr=0.9))
+
 val_dataloader = dict(
     batch_size=1,
     num_workers=8,
@@ -63,15 +97,20 @@ val_dataloader = dict(
         label_file=label_file,
         proposal_file=proposal_file_val,
         data_prefix=dict(img=data_root),
+        person_det_score_thr=0.85,
         test_mode=True))
+
 test_dataloader = val_dataloader
 
 val_evaluator = dict(
     type='AVAMetric',
     ann_file=ann_file_val,
     label_file=label_file,
-    exclude_file=exclude_file_val)
+    exclude_file=exclude_file_val,
+    action_thr=0.0)
 test_evaluator = val_evaluator
+
+default_hooks = dict(checkpoint=dict(interval=3, max_keep_ckpts=3))
 
 train_cfg = dict(
     type='EpochBasedTrainLoop', max_epochs=20, val_begin=1, val_interval=1)
@@ -79,7 +118,13 @@ val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
 param_scheduler = [
-    dict(type='LinearLR', start_factor=0.1, by_epoch=True, begin=0, end=5),
+    dict(
+        type='LinearLR',
+        start_factor=0.1,
+        by_epoch=True,
+        begin=0,
+        end=5,
+        convert_to_iter_based=True),
     dict(
         type='MultiStepLR',
         begin=0,
@@ -90,9 +135,5 @@ param_scheduler = [
 ]
 
 optim_wrapper = dict(
-    optimizer=dict(type='SGD', lr=0.2, momentum=0.9, weight_decay=0.00001),
-    clip_grad=dict(max_norm=40, norm_type=2))
-
-load_from = ('https://download.openmmlab.com/mmaction/recognition/slowonly/'
-             'slowonly_r50_4x16x1_256e_kinetics400_rgb/'
-             'slowonly_r50_4x16x1_256e_kinetics400_rgb_20200704-a69556c6.pth')
+    optimizer=dict(type='SGD', lr=0.15, momentum=0.9, weight_decay=1e-05),
+    clip_grad=dict(max_norm=20, norm_type=2))
