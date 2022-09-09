@@ -65,16 +65,16 @@ jobs:
             python -V
             python -m pip install torch==<< parameters.torch >>+cpu torchvision==<< parameters.torchvision >>+cpu -f https://download.pytorch.org/whl/torch_stable.html
       - run:
+          name: Install PytorchVideo
+          command: |
+            if [ ${{parameters.torchvision == '0.10.0'}} ]; then python -m pip install pytorchvideo; fi
+      - run:
           name: Install mmaction dependencies
           command: |
             python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cpu/torch${MMCV_TORCH}/index.html
             python -m pip install git+https://github.com/open-mmlab/mmdetection/
             python -m pip install git+https://github.com/open-mmlab/mmclassification/
             python -m pip install -r requirements.txt
-      - run:
-          name: Install PytorchVideo
-          command: |
-            python -m pip install pytorchvideo
       - run:
           name: Build and install
           command: |
