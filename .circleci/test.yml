@@ -70,7 +70,7 @@ jobs:
             python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cpu/torch${MMCV_TORCH}/index.html
             python -m pip install git+https://github.com/open-mmlab/mmdetection/
             python -m pip install git+https://github.com/open-mmlab/mmclassification/
-            python -m pip install -r requirements.txt -r requirements/optional.txt
+            python -m pip install -r requirements.txt
       - run:
           name: Build and install
           command: |
@@ -114,7 +114,7 @@ jobs:
             docker exec mmaction pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/${MMCV_CUDA}/torch${MMCV_TORCH}/index.html
             docker exec mmaction pip install git+https://github.com/open-mmlab/mmdetection/
             docker exec mmaction pip install git+https://github.com/open-mmlab/mmclassification/
-            docker exec mmaction pip install -r requirements.txt -r requirements/optional.txt
+            docker exec mmaction pip install -r requirements.txt
       - run:
           name: Build and install
           command: |
@@ -149,7 +149,7 @@ workflows:
           name: minimum_version_cpu
           torch: 1.6.0
           torchvision: 0.7.0
-          python: 3.6.9  # The lowest python 3.6.x version available on CircleCI images
+          python: 3.7.0  # The lowest python 3.6.x version available on CircleCI images
           requires:
             - lint
       - build_cpu:
