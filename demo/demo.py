@@ -6,6 +6,7 @@ from typing import Optional, Tuple
 import cv2
 import numpy as np
 import webcolors
+from operator import itemgetter
 from mmengine import Config, DictAction
 
 from mmaction.apis import inference_recognizer, init_recognizer
@@ -141,12 +142,16 @@ def main():
 
     # Build the recognizer from a config file and checkpoint file/url
     model = init_recognizer(cfg, args.checkpoint, device=args.device)
+    result = inference_recognizer(model, args.video)
 
-    results = inference_recognizer(model, args.video)
+    pred_scores = result.pred_scores.item.tolist()
+    score_tuples = tuple(zip(range(len(pred_scores)), pred_scores))
+    score_sorted = sorted(score_tuples, key=itemgetter(1), reverse=True)
+    top5_label = score_sorted[:5]
 
     labels = open(args.label).readlines()
     labels = [x.strip() for x in labels]
-    results = [(labels[k[0]], k[1]) for k in results]
+    results = [(labels[k[0]], k[1]) for k in top5_label]
 
     print('The top-5 labels with corresponding scores are:')
     for result in results:
