@@ -65,7 +65,7 @@ jobs:
             python -V
             python -m pip install torch==<< parameters.torch >>+cpu torchvision==<< parameters.torchvision >>+cpu -f https://download.pytorch.org/whl/torch_stable.html
       - when:
-            condition: parameters.torchvision == '0.10.0'
+            condition: << parameters.torch >> == '0.10.0'
             steps:
               - run: python -m pip install pytorchvideo
       - run:
