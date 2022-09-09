@@ -35,7 +35,7 @@ We provide some tips for MMAction2 installation in this file.
      there is a need to modify `moviepy/config_defaults.py` file by providing the path to the ImageMagick binary called `magick`, like `IMAGEMAGICK_BINARY = "C:\\Program Files\\ImageMagick_VERSION\\magick.exe"`
   2. For Linux users, there is a need to modify the `/etc/ImageMagick-6/policy.xml` file by commenting out
      `<policy domain="path" rights="none" pattern="@*" />` to `<!-- <policy domain="path" rights="none" pattern="@*" /> -->`, if [ImageMagick](https://www.imagemagick.org/script/index.php) is not detected by `moviepy`.
-- [Pillow-SIMD](https://docs.fast.ai/performance.html#pillow-simd) (optional): Install it by the following scripts.
+- [Pillow-SIMD](https://github.com/uploadcare/pillow-simd) (optional): Install it by the following scripts.
 
 ```shell
 conda uninstall -y --force pillow pil jpeg libtiff libjpeg-turbo
