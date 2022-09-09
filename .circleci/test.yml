@@ -67,7 +67,8 @@ jobs:
       - run:
           name: Install PytorchVideo
           command: |
-            if [ ${{parameters.torchvision == '0.10.0'}} ]; then python -m pip install pytorchvideo; fi
+            python -m pip install pytorchvideo
+          when: ${{parameters.torchvision == '0.10.0'}}
       - run:
           name: Install mmaction dependencies
           command: |
