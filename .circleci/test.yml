@@ -72,6 +72,10 @@ jobs:
             python -m pip install git+https://github.com/open-mmlab/mmclassification/
             python -m pip install -r requirements.txt
       - run:
+          name: Install PytorchVideo
+          command: |
+            python -m pip install pytorchvideo
+      - run:
           name: Build and install
           command: |
             python -m pip install -e .
@@ -116,6 +120,10 @@ jobs:
             docker exec mmaction pip install git+https://github.com/open-mmlab/mmclassification/
             docker exec mmaction pip install -r requirements.txt
       - run:
+          name: Install PytorchVideo
+          command: |
+            python -m pip install pytorchvideo
+      - run:
           name: Build and install
           command: |
             docker exec mmaction pip install -e .
@@ -149,7 +157,7 @@ workflows:
           name: minimum_version_cpu
           torch: 1.6.0
           torchvision: 0.7.0
-          python: 3.7.4  # The lowest python 3.6.x version available on CircleCI images
+          python: 3.6.9  # The lowest python 3.6.x version available on CircleCI images
           requires:
             - lint
       - build_cpu:
