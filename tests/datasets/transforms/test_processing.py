@@ -10,8 +10,9 @@ from numpy.testing import assert_array_almost_equal
 from mmaction.datasets.transforms import (AudioAmplify, CenterCrop,
                                           ColorJitter, Flip, Fuse,
                                           MelSpectrogram, MultiScaleCrop,
-                                          RandomCrop, RandomResizedCrop,
-                                          Resize, TenCrop, ThreeCrop)
+                                          PoseCompact, RandomCrop,
+                                          RandomResizedCrop, Resize, TenCrop,
+                                          ThreeCrop)
 
 
 def check_crop(origin_imgs, result_imgs, result_bbox, num_crops=1):
@@ -68,6 +69,51 @@ def check_flip(origin_imgs, result_imgs, flip_type):
                 return False
         # yapf: enable
     return True
+
+
+class TestPoseCompact:
+
+    @staticmethod
+    def test_pose_compact():
+        results = {}
+        results['img_shape'] = (100, 100)
+        fake_kp = np.zeros([1, 4, 2, 2])
+        fake_kp[:, :, 0] = [10, 10]
+        fake_kp[:, :, 1] = [90, 90]
+        results['keypoint'] = fake_kp
+
+        pose_compact = PoseCompact(
+            padding=0, threshold=0, hw_ratio=None, allow_imgpad=False)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (80, 80)
+        assert str(pose_compact) == (
+            'PoseCompact(padding=0, threshold=0, hw_ratio=None, '
+            'allow_imgpad=False)')
+
+        pose_compact = PoseCompact(
+            padding=0.3, threshold=0, hw_ratio=None, allow_imgpad=False)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (100, 100)
+
+        pose_compact = PoseCompact(
+            padding=0.3, threshold=0, hw_ratio=None, allow_imgpad=True)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (104, 104)
+
+        pose_compact = PoseCompact(
+            padding=0, threshold=100, hw_ratio=None, allow_imgpad=False)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (100, 100)
+
+        pose_compact = PoseCompact(
+            padding=0, threshold=0, hw_ratio=0.75, allow_imgpad=True)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (80, 106)
 
 
 class TestAudio:

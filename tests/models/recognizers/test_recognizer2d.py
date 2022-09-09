@@ -9,7 +9,7 @@ from ..base import generate_recognizer_demo_inputs, get_recognizer_cfg
 def test_tsn():
     register_all_modules()
     config = get_recognizer_cfg(
-        'tsn/tsn_r50_1x1x3_100e_8xb32_kinetics400_rgb.py')
+        'tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py')
     config.model['backbone']['pretrained'] = None
 
     recognizer = MODELS.build(config.model)
@@ -204,7 +204,7 @@ def test_trn():
 
 def test_tpn():
     register_all_modules()
-    config = get_recognizer_cfg('tpn/tpn_tsm_r50_1x1x8_150e_8xb8_sthv1_rgb.py')
+    config = get_recognizer_cfg('tpn/tpn-tsm_r50_8xb8-1x1x8-150e_sthv1-rgb.py')
     config.model['backbone']['pretrained'] = None
 
     recognizer = MODELS.build(config.model)
@@ -236,7 +236,7 @@ def test_tpn():
 def test_tanet():
     register_all_modules()
     config = get_recognizer_cfg(
-        'tanet/tanet_r50_dense_1x1x8_100e_8xb8_kinetics400_rgb.py')
+        'tanet/tanet_r50_8xb8-dense-1x1x8-100e_kinetics400-rgb.py')
     config.model['backbone']['pretrained'] = None
 
     recognizer = MODELS.build(config.model)

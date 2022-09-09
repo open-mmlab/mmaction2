@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .formatting import (FormatAudioShape, FormatGCNInput, FormatShape,
-                         JointToBone, PackActionInputs, Transpose)
+                         JointToBone, PackActionInputs, PackLocalizationInputs,
+                         Transpose)
 from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
                       AudioFeatureSelector, BuildPseudoClip, DecordDecode,
                       DecordInit, DenseSampleFrames,
@@ -13,9 +14,9 @@ from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
 from .pose_loading import (GeneratePoseTarget, LoadKineticsPose,
                            PaddingWithLoop, PoseDecode, UniformSampleFrames)
 from .processing import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
-                         MelSpectrogram, MultiScaleCrop, RandomCrop,
-                         RandomRescale, RandomResizedCrop, Resize, TenCrop,
-                         ThreeCrop)
+                         MelSpectrogram, MultiScaleCrop, PoseCompact,
+                         RandomCrop, RandomRescale, RandomResizedCrop, Resize,
+                         TenCrop, ThreeCrop)
 from .wrappers import ImgAug, PytorchVideoWrapper, TorchVisionWrapper
 
 __all__ = [
@@ -32,5 +33,6 @@ __all__ = [
     'PyAVDecodeMotionVector', 'UniformSampleFrames', 'PoseDecode',
     'LoadKineticsPose', 'GeneratePoseTarget', 'PIMSInit', 'FormatGCNInput',
     'PaddingWithLoop', 'ArrayDecode', 'JointToBone', 'PackActionInputs',
-    'ImgAug', 'TorchVisionWrapper', 'PytorchVideoWrapper'
+    'PackLocalizationInputs', 'ImgAug', 'TorchVisionWrapper',
+    'PytorchVideoWrapper', 'PoseCompact'
 ]
