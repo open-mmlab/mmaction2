@@ -64,12 +64,10 @@ jobs:
           command: |
             python -V
             python -m pip install torch==<< parameters.torch >>+cpu torchvision==<< parameters.torchvision >>+cpu -f https://download.pytorch.org/whl/torch_stable.html
-      - run:
-          name: Install PytorchVideo
-          command: |
-            if ${{parameters.torchvision == '0.10.0'}}; then
-              python -m pip install pytorchvideo
-            fi
+      - when:
+            condition: parameters.torchvision == '0.10.0'
+            steps:
+              - run: python -m pip install pytorchvideo
       - run:
           name: Install mmaction dependencies
           command: |
