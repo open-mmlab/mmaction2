@@ -114,7 +114,7 @@ jobs:
             docker exec mmaction pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/${MMCV_CUDA}/torch${MMCV_TORCH}/index.html
             docker exec mmaction pip install git+https://github.com/open-mmlab/mmdetection/
             docker exec mmaction pip install git+https://github.com/open-mmlab/mmclassification/
-            docker exec mmaction pip install -r requirements.txt
+            docker exec mmaction pip install -r requirements.txt -r requirements/optional.txt
       - run:
           name: Build and install
           command: |
