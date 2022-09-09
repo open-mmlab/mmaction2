@@ -73,8 +73,8 @@ jobs:
           name: Install mmaction dependencies
           command: |
             python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cpu/torch${MMCV_TORCH}/index.html
-            python -m pip install git+https://github.com/open-mmlab/mmdetection/
-            python -m pip install git+https://github.com/open-mmlab/mmclassification/
+            python -m pip install mmdet
+            python -m pip install mmcls
             python -m pip install -r requirements.txt
       - run:
           name: Build and install
