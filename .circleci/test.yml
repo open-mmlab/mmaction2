@@ -66,6 +66,7 @@ jobs:
             pip install -U openmim
             mim install 'mmcv >= 2.0.0rc1'
             pip install git+ssh://git@github.com/open-mmlab/mmdetection.git@dev-3.x
+            pip install git+https://github.com/open-mmlab/mmclassification.git@1.x
             pip install -r requirements.txt
       - when:
           condition:
@@ -98,12 +99,6 @@ jobs:
     resource_class: gpu.nvidia.small
     steps:
       - checkout
-      # - run:
-      #     # Cloning repos in VM since Docker doesn't have access to the private key
-      #     name: Clone Repos
-      #     command: |
-      #       git clone -b main --depth 1 ssh://git@github.com/open-mmlab/mmengine.git /home/circleci/mmengine
-      #       git clone -b dev-3.x --depth 1 ssh://git@github.com/open-mmlab/mmdetection.git /home/circleci/mmdetection
       - run:
           name: Build Docker image
           command: |
@@ -116,10 +111,11 @@ jobs:
       - run:
           name: Install mmaction dependencies
           command: |
-            docker exec mmaction pip install git+ssh://git@github.com/open-mmlab/mmengine.git@main
+            docker exec mmaction pip install git+https://git@github.com/open-mmlab/mmengine.git@main
             docker exec mmaction pip install -U openmim
             docker exec mmaction mim install 'mmcv >= 2.0.0rc1'
-            docker exec mmaction pip install git+ssh://git@github.com/open-mmlab/mmdetection.git@dev-3.x
+            docker exec mmaction pip install git+https://git@github.com/open-mmlab/mmdetection.git@3.x
+            docker exec mmaction pip install git+https://github.com/open-mmlab/mmclassification.git@1.x
             docker exec mmaction pip install -r requirements.txt
       - when:
           condition:
