@@ -25,7 +25,7 @@ jobs:
           name: Check docstring coverage
           command: |
             pip install interrogate
-            interrogate -v --ignore-init-method --ignore-module --ignore-nested-functions --ignore-regex "__repr__" --fail-under 50 mmaction
+            interrogate -v --ignore-init-method --ignore-module --ignore-nested-functions --ignore-magic --ignore-regex "__repr__" --fail-under 90 mmocr
   build_cpu:
     parameters:
       # The python version must match available image tags in
@@ -44,11 +44,8 @@ jobs:
       - run:
           name: Install Libraries
           command: |
-            sudo add-apt-repository ppa:savoury1/ffmpeg4
             sudo apt-get update
-            sudo apt-get upgrade
-            sudo apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6 libturbojpeg pkg-config
-            sudo apt-get install -y libavdevice-dev libavfilter-dev libopus-dev libvpx-dev libsrtp2-dev libsndfile1
+            sudo apt-get install -y ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6 libgl1-mesa-glx libjpeg-dev zlib1g-dev libtinfo-dev libncurses5
       - run:
           name: Configure Python & pip
           command: |
@@ -60,13 +57,13 @@ jobs:
             python -V
             pip install torch==<< parameters.torch >>+cpu torchvision==<< parameters.torchvision >>+cpu -f https://download.pytorch.org/whl/torch_stable.html
       - run:
-          name: Install mmaction dependencies
+          name: Install mmocr dependencies
           command: |
-            pip install git+ssh://git@github.com/open-mmlab/mmengine.git@main
+            pip install git+https://github.com/open-mmlab/mmengine.git@main
             pip install -U openmim
             mim install 'mmcv >= 2.0.0rc1'
-            pip install git+ssh://git@github.com/open-mmlab/mmdetection.git@dev-3.x
-            pip install -r requirements.txt
+            pip install git+https://github.com/open-mmlab/mmdetection.git@dev-3.x
+            pip install -r requirements/tests.txt
       - run:
           name: Build and install
           command: |
@@ -74,7 +71,7 @@ jobs:
       - run:
           name: Run unittests
           command: |
-            coverage run --branch --source mmaction -m pytest tests/
+            coverage run --branch --source mmocr -m pytest tests/
             coverage xml
             coverage report -m
   build_cuda:
@@ -93,33 +90,34 @@ jobs:
     resource_class: gpu.nvidia.small
     steps:
       - checkout
-      # - run:
-      #     # Cloning repos in VM since Docker doesn't have access to the private key
-      #     name: Clone Repos
-      #     command: |
-      #       git clone -b main --depth 1 ssh://git@github.com/open-mmlab/mmengine.git /home/circleci/mmengine
-      #       git clone -b dev-3.x --depth 1 ssh://git@github.com/open-mmlab/mmdetection.git /home/circleci/mmdetection
+      - run:
+          # Cloning repos in VM since Docker doesn't have access to the private key
+          name: Clone Repos
+          command: |
+            git clone -b main --depth 1 https://github.com/open-mmlab/mmengine.git /home/circleci/mmengine
+            git clone -b dev-3.x --depth 1 https://github.com/open-mmlab/mmdetection.git /home/circleci/mmdetection
       - run:
           name: Build Docker image
           command: |
-            docker build .circleci/docker -t mmaction:gpu --build-arg PYTORCH=<< parameters.torch >> --build-arg CUDA=<< parameters.cuda >> --build-arg CUDNN=<< parameters.cudnn >>
-            docker run --gpus all -t -d -v /home/circleci/project:/mmaction -v /home/circleci/mmengine:/mmengine -v /home/circleci/mmdetection:/mmdetection -w /mmaction --name mmaction mmaction:gpu
+            docker build .circleci/docker -t mmocr:gpu --build-arg PYTORCH=<< parameters.torch >> --build-arg CUDA=<< parameters.cuda >> --build-arg CUDNN=<< parameters.cudnn >>
+            docker run --gpus all -t -d -v /home/circleci/project:/mmocr -v /home/circleci/mmengine:/mmengine -v /home/circleci/mmdetection:/mmdetection -w /mmocr --name mmocr mmocr:gpu
       - run:
-          name: Install mmaction dependencies
+          name: Install mmocr dependencies
           command: |
-            docker exec mmaction pip install git+ssh://git@github.com/open-mmlab/mmengine.git@main
-            docker exec mmaction pip install -U openmim
-            docker exec mmaction mim install 'mmcv >= 2.0.0rc1'
-            docker exec mmaction pip install git+ssh://git@github.com/open-mmlab/mmdetection.git@dev-3.x
-            docker exec mmaction pip install -r requirements.txt
+            docker exec mmocr pip install -e /mmengine
+            docker exec mmocr pip install -U openmim
+            docker exec mmocr mim install 'mmcv >= 2.0.0rc1'
+            docker exec mmocr pip install -e /mmdetection
+            docker exec mmocr pip install -r requirements/tests.txt
       - run:
           name: Build and install
           command: |
-            docker exec mmaction pip install -e .
+            docker exec mmocr pip install -e .
       - run:
           name: Run unittests
           command: |
-            docker exec mmaction pytest tests/
+            docker exec mmocr pytest tests/
+
 workflows:
   pr_stage_lint:
     when: << pipeline.parameters.lint_only >>
@@ -142,7 +140,7 @@ workflows:
             branches:
               ignore:
                 - dev-1.x
-                - 1.x
+                - test-1.x
       - build_cpu:
           name: minimum_version_cpu
           torch: 1.6.0
