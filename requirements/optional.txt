@@ -1,4 +1,5 @@
 av
+dataclasses; python_version == '3.6'
 imgaug
 librosa
 lmdb
