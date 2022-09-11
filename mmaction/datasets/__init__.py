@@ -5,15 +5,12 @@ from .ava_dataset import AVADataset
 from .base import BaseActionDataset
 from .pose_dataset import PoseDataset
 from .rawframe_dataset import RawframeDataset
+from .repeat_aug_dataset import RepeatAugDataset, repeat_pseudo_collate
 from .transforms import *  # noqa: F401, F403
 from .video_dataset import VideoDataset
 
 __all__ = [
-    'VideoDataset',
-    'RawframeDataset',
-    'AVADataset',
-    'PoseDataset',
-    'BaseActionDataset',
-    'ActivityNetDataset',
-    'AudioDataset',
+    'AVADataset', 'ActivityNetDataset', 'AudioDataset', 'BaseActionDataset',
+    'PoseDataset', 'RawframeDataset', 'RepeatAugDataset', 'VideoDataset',
+    'repeat_pseudo_collate'
 ]
