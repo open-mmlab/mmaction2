@@ -88,7 +88,11 @@ val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 
 train_cfg = dict(
-    type='EpochBasedTrainLoop', max_epochs=256, val_begin=1, val_interval=5)
+    type='EpochBasedTrainLoop',
+    max_epochs=256 // num_repeats,
+    val_begin=1,
+    val_interval=5 // num_repeats)
+
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
@@ -102,16 +106,18 @@ param_scheduler = [
         start_factor=0.1,
         by_epoch=True,
         begin=0,
-        end=34,
+        end=34 // num_repeats,
         convert_to_iter_based=True),
     dict(
         type='CosineAnnealingLR',
-        T_max=256,
+        T_max=256 // num_repeats,
         eta_min=0,
         by_epoch=True,
         begin=0,
-        end=256)
+        end=256 // num_repeats,
+        convert_to_iter_based=True)
 ]
 
 default_hooks = dict(
-    checkpoint=dict(interval=4, max_keep_ckpts=3), logger=dict(interval=100))
+    checkpoint=dict(interval=4 // num_repeats, max_keep_ckpts=3),
+    logger=dict(interval=100 // num_repeats))
