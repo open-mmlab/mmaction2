@@ -122,16 +122,18 @@ class RepeatAugDataset(VideoDataset):
         data_info['frame_inds'] = np.concatenate(frame_inds_list)
 
         data_info = transforms[2](data_info)  # DecordDecode
+        imgs = data_info.pop('imgs')
 
         data_info_list = []
         for repeat in range(self.num_repeats):
             data_info_ = deepcopy(data_info)
             start = frame_inds_length[repeat]
             end = frame_inds_length[repeat + 1]
-            data_info_['imgs'] = data_info_['imgs'][start:end]
+            data_info_['imgs'] = imgs[start:end]
             for transform in transforms[3:]:
                 data_info_ = transform(data_info_)
             data_info_list.append(data_info_)
+        del imgs
         return data_info_list
 
 
