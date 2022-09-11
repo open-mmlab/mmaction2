@@ -40,9 +40,9 @@ jobs:
           sudo apt-get update
           sudo apt-get upgrade
           sudo apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libxrender-dev libturbojpeg pkg-config
-          sudo apt-get install -y libavdevice-dev libavfilter-dev libopus-dev libvpx-dev libsrtp2-dev libsndfile1  protobuf-compile libprotobuf-dev
-      # - name: Install wheel
-      #   run: pip install wheel
+          sudo apt-get install -y libavdevice-dev libavfilter-dev libopus-dev libvpx-dev
+      - name: Install wheel
+        run: pip install wheel
       - name: Install librosa and soundfile
         run: pip install librosa soundfile
       - name: Install lmdb
