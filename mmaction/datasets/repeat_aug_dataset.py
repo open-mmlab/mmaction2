@@ -3,21 +3,21 @@ from copy import deepcopy
 from typing import Any, Callable, List, Optional, Sequence, Union
 
 import numpy as np
-from mmengine.dataset.utils import pseudo_collate
-from mmengine.registry import Registry
+from mmengine.dataset import COLLATE_FUNCTIONS, pseudo_collate
 
 from mmaction.registry import DATASETS
 from mmaction.utils import ConfigType
 from .video_dataset import VideoDataset
 
-COLLATE_FUNCTIONS = Registry('Collate Functions')
 
-
-def get_type(transform):
-    if type(transform) == dict:
+def get_type(transform: Union[dict, Callable]) -> str:
+    """get the type of the transform."""
+    if isinstance(transform, dict) and 'type' in transform:
         return transform['type']
     elif callable(transform):
         return transform.__repr__().split('(')[0]
+    else:
+        raise TypeError
 
 
 @DATASETS.register_module()
@@ -73,7 +73,7 @@ class RepeatAugDataset(VideoDataset):
                  **kwargs) -> None:
 
         flag = get_type(pipeline[0]) == 'DecordInit' and \
-               get_type([2]['type']) == 'DecordDecode'
+               get_type(pipeline[2]) == 'DecordDecode'
 
         assert flag, ('RepeatAugDataset requires decord as the video loading'
                       ' backend, will support more backends in the future')
@@ -104,17 +104,24 @@ class RepeatAugDataset(VideoDataset):
         data_info = self.get_data_info(idx)
         data_info = transforms[0](data_info)  # DecordInit
 
-        frame_inds_list = []
-        frame_inds_length = [0]
+        frame_inds_list, frame_inds_length = [], [0]
+
+        fake_data_info = dict(
+            total_frames=data_info['total_frames'],
+            start_index=data_info['start_index'])
+
         for repeat in range(self.num_repeats):
-            data_info_ = transforms[1](deepcopy(data_info))  # SampleFrames
+            data_info_ = transforms[1](fake_data_info)  # SampleFrames
             frame_inds = data_info_['frame_inds']
-            frame_inds = frame_inds.reshape(-1)
-            frame_inds_list.append(frame_inds)
+            frame_inds_list.append(frame_inds.reshape(-1))
             frame_inds_length.append(frame_inds.size + frame_inds_length[-1])
 
-        data_info_['frame_inds'] = np.concatenate(frame_inds_list)
-        data_info = transforms[2](data_info_)  # DecordDecode
+        for key in data_info_:
+            data_info[key] = data_info_[key]
+
+        data_info['frame_inds'] = np.concatenate(frame_inds_list)
+
+        data_info = transforms[2](data_info)  # DecordDecode
 
         data_info_list = []
         for repeat in range(self.num_repeats):
