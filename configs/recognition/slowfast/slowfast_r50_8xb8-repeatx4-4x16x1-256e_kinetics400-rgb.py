@@ -49,8 +49,9 @@ test_pipeline = [
 ]
 
 num_repeats = 4
+
 train_dataloader = dict(
-    batch_size=8 // num_repeats,
+    batch_size=8,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
@@ -97,7 +98,8 @@ val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
 optim_wrapper = dict(
-    optimizer=dict(type='SGD', lr=0.1, momentum=0.9, weight_decay=1e-4),
+    optimizer=dict(
+        type='SGD', lr=0.1 * num_repeats, momentum=0.9, weight_decay=1e-4),
     clip_grad=dict(max_norm=40, norm_type=2))
 
 param_scheduler = [
