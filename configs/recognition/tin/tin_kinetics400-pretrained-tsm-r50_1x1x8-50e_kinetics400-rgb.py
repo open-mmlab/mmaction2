@@ -99,3 +99,4 @@ train_cfg = dict(val_interval=5)
 # optimizer
 optim_wrapper = dict(
     constructor='TSMOptimWrapperConstructor', paramwise_cfg=dict(fc_lr5=True))
+load_from = 'https://download.openmmlab.com/mmaction/recognition/tsm/tsm_r50_1x1x8_50e_kinetics400_rgb/tsm_r50_1x1x8_50e_kinetics400_rgb_20200607-af7fb746.pth'  # noqa: E501
