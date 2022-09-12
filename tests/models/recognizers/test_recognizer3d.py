@@ -16,7 +16,7 @@ def assert_output(x):
 def test_i3d():
     register_all_modules()
     config = get_recognizer_cfg(
-        'i3d/i3d_r50_8xb8-32x2x1-100e_kinetics400-rgb.py')
+        'i3d/i3d_imagenet-pretrained-r50_8xb8-32x2x1-100e_kinetics400-rgb.py')
     config.model['backbone']['pretrained2d'] = False
     config.model['backbone']['pretrained'] = None
 
