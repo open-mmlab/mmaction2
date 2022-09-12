@@ -1,4 +1,7 @@
-_base_ = ['./i3d_imagenet-pretrained-r50-nl-dot-product_8xb8-32x2x1-100e_kinetics400-rgb.py']
+_base_ = [
+    'i3d_imagenet-pretrained-r50-nl-dot-product_' +
+    '8xb8-32x2x1-100e_kinetics400-rgb.py'
+]
 
 # model settings
 model = dict(
