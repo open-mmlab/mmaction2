@@ -86,15 +86,15 @@ class LFB:
         self.dataset_modes = dataset_modes
         self.device = device
 
-        if 'LOCAL_RANK' in os.environ:
-            local_rank = int(os.environ['LOCAL_RANK'])
-        else:
-            rank, world_size = get_dist_info()
-            gpus_per_node = torch.cuda.device_count()
-            local_rank = rank % gpus_per_node
-
+        rank, world_size = get_dist_info()
         # Loading LFB
         if self.device == 'gpu':
+            if 'LOCAL_RANK' in os.environ:
+                local_rank = int(os.environ['LOCAL_RANK'])
+            else:
+                gpus_per_node = torch.cuda.device_count()
+                local_rank = rank % gpus_per_node
+
             self.load_lfb(f'cuda:{local_rank}')
         elif self.device == 'cpu':
             if world_size > 1:
