@@ -183,7 +183,7 @@ def test_slowfast():
 def test_csn():
     register_all_modules()
     config = get_recognizer_cfg(
-        'csn/ircsn_ig65m_pretrained_r152_32x2x1_58e_8xb12_kinetics400_rgb.py')
+        'csn/ircsn_ig65m-pretrained-r152_8xb12-32x2x1-58e_kinetics400-rgb.py')
     config.model['backbone']['pretrained2d'] = False
     config.model['backbone']['pretrained'] = None
 
@@ -233,7 +233,7 @@ def test_csn():
 def test_tpn():
     register_all_modules()
     config = get_recognizer_cfg(
-        'tpn/tpn_slowonly_r50_8x8x1_150e_8xb8_kinetics_rgb.py')
+        'tpn/tpn-slowonly_r50_8xb8-8x8x1-150e_kinetics400-rgb.py')
     config.model['backbone']['pretrained'] = None
 
     recognizer = MODELS.build(config.model)
@@ -292,7 +292,7 @@ def test_timesformer():
 def test_c3d():
     register_all_modules()
     config = get_recognizer_cfg(
-        'c3d/c3d_sports1m_16x1x1_45e_8xb30_ucf101_rgb.py')
+        'c3d/c3d_sports1m-pretrained_8xb30-16x1x1-45e_ucf101-rgb.py')
     config.model['backbone']['pretrained'] = None
     config.model['backbone']['out_dim'] = 512
 
