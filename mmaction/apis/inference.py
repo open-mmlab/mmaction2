@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from pathlib import Path
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Dict, Union
 
 import mmengine
 import torch
@@ -48,32 +48,36 @@ def init_recognizer(config: Union[str, Path, mmengine.Config],
 
 
 def inference_recognizer(model: nn.Module,
-                         video: str) -> ActionDataSample:
+                         video: Union[str, dict]) -> ActionDataSample:
     """Inference a video with the recognizer.
 
     Args:
         model (nn.Module): The loaded recognizer.
-        video (str): The video file path.
+        video (Union[str, dict]): The video file path or the results
+            dictionary (the input of pipeline).
 
     Returns:
         :obj:`ActionDataSample`: The inference results. Specifically, the
         predicted scores are saved at ``result.pred_scores.item``.
     """
     cfg = model.cfg
-
-    # Build the data pipeline
     val_pipeline_cfg = cfg.val_dataloader.dataset.pipeline
-    if 'Init' not in val_pipeline_cfg[0]['type']:
-        val_pipeline_cfg = [dict(type='OpenCVInit')] + val_pipeline_cfg
-    else:
-        val_pipeline_cfg[0] = dict(type='OpenCVInit')
-    for i in range(len(val_pipeline_cfg)):
-        if 'Decode' in val_pipeline_cfg[i]['type']:
-            val_pipeline_cfg[i] = dict(type='OpenCVDecode')
     val_pipeline = Compose(val_pipeline_cfg)
 
-    # Prepare & process inputs
-    data = dict(filename=video, label=-1, start_index=0, modality='RGB')
+    input_flag = None
+    if isinstance(video, dict):
+        input_flag = 'dict'
+    elif isinstance(video, str):
+        input_flag = 'video'
+    else:
+        raise RuntimeError(f'The type of argument `video` is not supported: '
+                           f'{type(video)}')
+
+    if input_flag == 'dict':
+        data = video
+    if input_flag == 'video':
+        data = dict(filename=video, label=-1, start_index=0, modality='RGB')
+
     data = val_pipeline(data)
     data = pseudo_collate([data])
 
@@ -88,7 +92,8 @@ def detection_inference(det_config: Union[str, Path, mmengine.Config],
                         det_checkpoint: str,
                         frame_paths: List[str],
                         det_score_thr: float = 0.9,
-                        device: Union[str, torch.device] = 'cuda:0') -> list:
+                        det_cat_id: int = 0,
+                        device: Union[str, torch.device] = 'cuda:0') -> tuple:
     """Detect human boxes given frame paths.
 
     Args:
@@ -98,41 +103,47 @@ def detection_inference(det_config: Union[str, Path, mmengine.Config],
         frame_paths (List[str]): The paths of frames to do detection inference.
         det_score_thr (float): The threshold of human detection score.
             Defaults to 0.9.
+        det_cat_id (int): The category id for bounding box detection model.
+            Defaults to 0.
         device (Union[str, torch.device]): The desired device of returned
             tensor. Defaults to ``'cuda:0'``.
 
     Returns:
         List[np.ndarray]: List of detected human boxes.
+        List[:obj:`DetDataSample`]: List of data samples, generally used
+            to visualize data.
     """
-
     try:
         from mmdet.apis import inference_detector, init_detector
+        from mmdet.structures import DetDataSample
     except (ImportError, ModuleNotFoundError):
         raise ImportError('Failed to import `inference_detector` and '
                           '`init_detector` from `mmdet.apis`. These apis are '
                           'required in this inference api! ')
 
     model = init_detector(det_config, det_checkpoint, device)
-    assert model.dataset_meta['CLASSES'][0] == 'person', \
-        'We require you to use a detector trained on COCO.'
 
     results = []
+    data_samples = []
     print('Performing Human Detection for each frame')
     for frame_path in track_iter_progress(frame_paths):
-        result = inference_detector(model, frame_path)
-        # We only keep human detections with score larger than det_score_thr
-        pred_instances = result.pred_instances
-        pred_instances = pred_instances[pred_instances.scores > det_score_thr]
-        results.append(pred_instances.bboxes.cpu().numpy())
+        det_data_sample: DetDataSample = inference_detector(model, frame_path)
+        pred_instance = det_data_sample.pred_instances.cpu().numpy()
+        bboxes = pred_instance.bboxes
+        # We only keep human detection bboxs with score larger than `det_score_thr`.
+        bboxes = bboxes[np.logical_and(pred_instance.labels == det_cat_id,
+                                       pred_instance.scores > det_score_thr)]
+        results.append(bboxes)
+        data_samples.append(det_data_sample)
 
-    return results
+    return results, data_samples
 
 
 def pose_inference(pose_config: Union[str, Path, mmengine.Config],
                    pose_checkpoint: str,
                    frame_paths: List[str],
                    det_results: List[np.ndarray],
-                   device: Union[str, torch.device] = 'cuda:0'):
+                   device: Union[str, torch.device] = 'cuda:0') -> tuple:
     """Perform Top-Down pose estimation.
 
     Args:
@@ -145,20 +156,29 @@ def pose_inference(pose_config: Union[str, Path, mmengine.Config],
             tensor. Defaults to ``'cuda:0'``.
 
     Returns:
-
-
+        List[List[Dict[str, np.ndarray]]]: List of pose estimation results.
+        List[:obj:`PoseDataSample`]: List of data samples, generally used
+            to visualize data.
     """
     try:
         from mmpose.apis import inference_topdown, init_model
+        from mmpose.structures import PoseDataSample, merge_data_samples
     except (ImportError, ModuleNotFoundError):
         raise ImportError('Failed to import `inference_topdown` and '
                           '`init_model` from `mmpose.apis`. These apis '
                           'are required in this inference api! ')
 
     model = init_model(pose_config, pose_checkpoint, device)
-    ret = []
+
+    results = []
+    data_samples = []
     print('Performing Human Pose Estimation for each frame')
     for f, d in track_iter_progress(list(zip(frame_paths, det_results))):
-        pose = inference_topdown(model, f, d, bbox_format='xyxy')[0]
-        ret.append(pose)
-    return ret
+        pose_data_samples: List[PoseDataSample] \
+            = inference_topdown(model, f, d, bbox_format='xyxy')
+        pose_data_sample = merge_data_samples(pose_data_samples)
+        poses = pose_data_sample.pred_instances.to_dict()
+        results.append(poses)
+        data_samples.append(pose_data_sample)
+
+    return results, data_samples
