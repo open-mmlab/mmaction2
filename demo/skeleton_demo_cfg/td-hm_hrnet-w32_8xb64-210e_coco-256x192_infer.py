@@ -86,3 +86,8 @@ test_dataloader = dict(
         test_mode=True,
         pipeline=test_pipeline,
     ))
+
+# visualizer
+vis_backends = [dict(type='LocalVisBackend')]
+visualizer = dict(
+    type='mmpose.PoseLocalVisualizer', vis_backends=vis_backends, name='visualizer')

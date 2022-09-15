@@ -2,7 +2,6 @@
 import argparse
 import os.path as osp
 import shutil
-import tempfile
 
 import cv2
 import mmengine
@@ -10,7 +9,9 @@ import mmcv
 import numpy as np
 import torch
 from mmengine import DictAction
+from mmengine.utils import track_iter_progress
 
+from mmaction.registry import VISUALIZERS
 from mmaction.apis import (inference_recognizer, init_recognizer,
                            detection_inference, pose_inference)
 from mmaction.utils import frame_extract, register_all_modules
@@ -26,16 +27,6 @@ FONTCOLOR = (255, 255, 255)  # BGR, white
 THICKNESS = 1
 LINETYPE = 1
 
-
-# python demo/demo_skeleton.py demo/ntu_sample.avi demo/skeleton_demo.mp4 \
-#     --config configs/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint.py \
-#     --checkpoint https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu120_xsub_keypoint/slowonly_r50_u48_240e_ntu120_xsub_keypoint-6736b03f.pth \
-#     --det-config demo/faster_rcnn_r50_fpn_2x_coco.py \
-#     --det-checkpoint http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth \
-#     --det-score-thr 0.9 \
-#     --pose-config demo/hrnet_w32_coco_256x192.py \
-#     --pose-checkpoint https://download.openmmlab.com/mmpose/top_down/hrnet/hrnet_w32_coco_256x192-c78dce93_20200708.pth \
-#     --label-map tools/data/skeleton/label_map_ntu120.txt
 
 def parse_args():
     parser = argparse.ArgumentParser(description='MMAction2 demo')
@@ -54,7 +45,7 @@ def parse_args():
         help='skeleton model checkpoint file/url')
     parser.add_argument(
         '--det-config',
-        default='demo/faster-rcnn_r50_fpn_2x_coco_infer.py',
+        default='demo/skeleton_demo_cfg/faster-rcnn_r50_fpn_2x_coco_infer.py',
         help='human detection config file path (from mmdet)')
     parser.add_argument(
         '--det-checkpoint',
@@ -74,7 +65,8 @@ def parse_args():
         help='Category id for bounding box detection model')
     parser.add_argument(
         '--pose-config',
-        default='demo/td-hm_hrnet-w32_8xb64-210e_coco-256x192_infer.py',
+        default='demo/skeleton_demo_cfg/'
+                'td-hm_hrnet-w32_8xb64-210e_coco-256x192_infer.py',
         help='human pose estimation config file path (from mmpose)')
     parser.add_argument(
         '--pose-checkpoint',
@@ -104,13 +96,41 @@ def parse_args():
     return args
 
 
+def visualize(args, frames, data_samples, action_label):
+    pose_config = mmengine.Config.fromfile(args.pose_config)
+    visualizer = VISUALIZERS.build(pose_config.visualizer)
+    visualizer.set_dataset_meta(data_samples[0].dataset_meta)
+
+    vis_frames = []
+    print('Drawing skeleton for each frame')
+    for d, f in track_iter_progress(list(zip(data_samples, frames))):
+        f = mmcv.imconvert(f, 'bgr', 'rgb')
+        visualizer.add_datasample(
+            'result',
+            f,
+            data_sample=d,
+            draw_gt=False,
+            draw_heatmap=False,
+            draw_bbox=False,
+            show=False,
+            wait_time=0,
+            out_file=None,
+            kpt_score_thr=0.3)
+        vis_frame = visualizer.get_image()
+        cv2.putText(vis_frame, action_label, (10, 30), FONTFACE, FONTSCALE,
+                    FONTCOLOR, THICKNESS, LINETYPE)
+        vis_frames.append(vis_frame)
+
+    vid = mpy.ImageSequenceClip(vis_frames, fps=24)
+    vid.write_videofile(args.out_filename, remove_temp=True)
+
+
 def main():
     args = parse_args()
-    frame_paths, original_frames = frame_extract(args.video, args.short_side)
-    # frame_paths = frame_paths[:4]
+    frame_paths, frames = frame_extract(args.video, args.short_side)
 
     num_frame = len(frame_paths)
-    h, w, _ = original_frames[0].shape
+    h, w, _ = frames[0].shape
 
     # Get Human detection results.
     det_results, _ = detection_inference(args.det_config,
@@ -128,8 +148,6 @@ def main():
                                                      det_results,
                                                      args.device)
     torch.cuda.empty_cache()
-
-    # Register all modules in mmaction2 into the registries.
 
     fake_anno = dict(
         frame_dir='',
@@ -167,20 +185,7 @@ def main():
     label_map = [x.strip() for x in open(args.label_map).readlines()]
     action_label = label_map[max_pred_index]
 
-
-
-
-    vis_frames = [
-        vis_pose_result(pose_model, frame_paths[i], pose_results[i])
-        for i in range(num_frame)
-    ]
-
-    for frame in vis_frames:
-        cv2.putText(frame, action_label, (10, 30), FONTFACE, FONTSCALE,
-                    FONTCOLOR, THICKNESS, LINETYPE)
-
-    vid = mpy.ImageSequenceClip([x[:, :, ::-1] for x in vis_frames], fps=24)
-    vid.write_videofile(args.out_filename, remove_temp=True)
+    visualize(args, frames, pose_data_samples, action_label)
 
     tmp_frame_dir = osp.dirname(frame_paths[0])
     shutil.rmtree(tmp_frame_dir)
