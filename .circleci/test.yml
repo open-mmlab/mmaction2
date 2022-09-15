@@ -36,8 +36,6 @@ jobs:
         type: string
       torchvision:
         type: string
-      mmcv:
-        type: string
     docker:
       - image: cimg/python:<< parameters.python >>
     resource_class: large
@@ -54,30 +52,37 @@ jobs:
       - run:
           name: Configure Python & pip
           command: |
-            python -m pip install --upgrade pip
-            python -m pip install wheel
+            pip install --upgrade pip
+            pip install wheel
       - run:
           name: Install PyTorch
           command: |
             python -V
-            python -m pip install torch==<< parameters.torch >>+cpu torchvision==<< parameters.torchvision >>+cpu -f https://download.pytorch.org/whl/torch_stable.html
+            pip install torch==<< parameters.torch >>+cpu torchvision==<< parameters.torchvision >>+cpu -f https://download.pytorch.org/whl/torch_stable.html
       - run:
           name: Install mmaction dependencies
           command: |
-            python -m pip install git+ssh://git@github.com/open-mmlab/mmengine.git@main
-            python -m pip install << parameters.mmcv >>
-            python -m pip install git+ssh://git@github.com/open-mmlab/mmdetection.git@dev-3.x
-            python -m pip install -r requirements.txt
+            pip install git+ssh://git@github.com/open-mmlab/mmengine.git@main
+            pip install -U openmim
+            mim install 'mmcv >= 2.0.0rc1'
+            pip install git+ssh://git@github.com/open-mmlab/mmdetection.git@dev-3.x
+            pip install git+https://github.com/open-mmlab/mmclassification.git@1.x
+            pip install -r requirements.txt
+      - when:
+          condition:
+            equal: [ "0.10.0", << parameters.torchvision >> ]
+          steps:
+            - run: python -m pip install pytorchvideo
       - run:
           name: Build and install
           command: |
-            python -m pip install -e .
+            pip install -e .
       - run:
           name: Run unittests
           command: |
-            python -m coverage run --branch --source mmaction -m pytest tests/
-            python -m coverage xml
-            python -m coverage report -m
+            coverage run --branch --source mmaction -m pytest tests/
+            coverage xml
+            coverage report -m
   build_cuda:
     parameters:
       torch:
@@ -88,8 +93,6 @@ jobs:
       cudnn:
         type: integer
         default: 7
-      mmcv:
-        type: string
     machine:
       image: ubuntu-2004-cuda-11.4:202110-01
       # docker_layer_caching: true
@@ -97,23 +100,28 @@ jobs:
     steps:
       - checkout
       - run:
-          # Cloning repos in VM since Docker doesn't have access to the private key
-          name: Clone Repos
-          command: |
-            git clone -b main --depth 1 ssh://git@github.com/open-mmlab/mmengine.git /home/circleci/mmengine
-            git clone -b dev-3.x --depth 1 ssh://git@github.com/open-mmlab/mmdetection.git /home/circleci/mmdetection
-      - run:
           name: Build Docker image
           command: |
             docker build .circleci/docker -t mmaction:gpu --build-arg PYTORCH=<< parameters.torch >> --build-arg CUDA=<< parameters.cuda >> --build-arg CUDNN=<< parameters.cudnn >>
-            docker run --gpus all -t -d -v /home/circleci/project:/mmaction -v /home/circleci/mmengine:/mmengine -v /home/circleci/mmdetection:/mmdetection -w /mmaction --name mmaction mmaction:gpu
+            docker run --gpus all -t -d -v /home/circleci/project:/mmaction -w /mmaction --name mmaction mmaction:gpu
+            docker exec mmaction apt-get update
+            docker exec mmaction apt-get upgrade -y
+            docker exec mmaction apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6 libturbojpeg pkg-config
+            docker exec mmaction apt-get install -y libavdevice-dev libavfilter-dev libopus-dev libvpx-dev libsrtp2-dev libsndfile1
       - run:
           name: Install mmaction dependencies
           command: |
-            docker exec mmaction pip install -e /mmengine
-            docker exec mmaction pip install << parameters.mmcv >>
-            docker exec mmaction pip install -e /mmdetection
+            docker exec mmaction pip install git+https://git@github.com/open-mmlab/mmengine.git@main
+            docker exec mmaction pip install -U openmim
+            docker exec mmaction mim install 'mmcv >= 2.0.0rc1'
+            docker exec mmaction pip install git+https://git@github.com/open-mmlab/mmdetection.git@3.x
+            docker exec mmaction pip install git+https://github.com/open-mmlab/mmclassification.git@1.x
             docker exec mmaction pip install -r requirements.txt
+      - when:
+          condition:
+            equal: [ "10.2", << parameters.cuda >> ]
+          steps:
+            - run: docker exec mmaction python -m pip install pytorchvideo
       - run:
           name: Build and install
           command: |
@@ -121,7 +129,7 @@ jobs:
       - run:
           name: Run unittests
           command: |
-            docker exec mmaction python -m pytest tests/
+            docker exec mmaction pytest tests/
 workflows:
   pr_stage_lint:
     when: << pipeline.parameters.lint_only >>
@@ -132,7 +140,7 @@ workflows:
             branches:
               ignore:
                 - dev-1.x
-                - test-1.x
+                - 1.x
   pr_stage_test:
     when:
       not:
@@ -144,43 +152,19 @@ workflows:
             branches:
               ignore:
                 - dev-1.x
-                - test-1.x
-  merge_stage_test:
-    when:
-      not:
-        << pipeline.parameters.lint_only >>
-    jobs:
-      - build_cuda:
-          name: minimum_version_gpu
-          torch: 1.6.0
-          # Use double quotation mark to explicitly specify its type
-          # as string instead of number
-          mmcv: https://download.openmmlab.com/mmcv/dev-2.x/cu101/torch1.6.0/mmcv_full-2.0.0rc0-cp37-cp37m-manylinux1_x86_64.whl
-          cuda: "10.1"
-          filters:
-            branches:
-              only:
-                - dev-1.x
-                - test-1.x
+                - 1.x
       - build_cpu:
           name: minimum_version_cpu
           torch: 1.6.0
           torchvision: 0.7.0
           python: 3.6.9  # The lowest python 3.6.x version available on CircleCI images
-          mmcv: https://download.openmmlab.com/mmcv/dev-2.x/cpu/torch1.6.0/mmcv_full-2.0.0rc0-cp36-cp36m-manylinux1_x86_64.whl
-          # requires:
-          #   - lint
-          filters:
-            branches:
-              only:
-                - dev-1.x
-                - test-1.x
+          requires:
+            - lint
       - build_cpu:
           name: maximum_version_cpu
-          torch: 1.9.0
-          torchvision: 0.10.0
+          torch: 1.12.1
+          torchvision: 0.13.1
           python: 3.9.0
-          mmcv: https://download.openmmlab.com/mmcv/dev-2.x/cpu/torch1.9.0/mmcv_full-2.0.0rc0-cp39-cp39-manylinux1_x86_64.whl
           requires:
             - minimum_version_cpu
       - hold:
@@ -193,6 +177,20 @@ workflows:
           # Use double quotation mark to explicitly specify its type
           # as string instead of number
           cuda: "10.2"
-          mmcv: https://download.openmmlab.com/mmcv/dev-2.x/cu102/torch1.8.0/mmcv_full-2.0.0rc0-cp37-cp37m-manylinux1_x86_64.whl
           requires:
             - hold
+  merge_stage_test:
+    when:
+      not:
+        << pipeline.parameters.lint_only >>
+    jobs:
+      - build_cuda:
+          name: minimum_version_gpu
+          torch: 1.6.0
+          # Use double quotation mark to explicitly specify its type
+          # as string instead of number
+          cuda: "10.1"
+          filters:
+            branches:
+              only:
+                - dev-1.x

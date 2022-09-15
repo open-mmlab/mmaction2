@@ -9,7 +9,7 @@ from ..base import generate_recognizer_demo_inputs, get_skeletongcn_cfg
 def test_recognizer_gcn():
     register_all_modules()
     config = get_skeletongcn_cfg(
-        'stgcn/stgcn_80e_1xb16_ntu60_xsub_keypoint.py')
+        'stgcn/stgcn_1xb16-80e_ntu60-xsub-keypoint.py')
     """
     TODO
     with pytest.raises(TypeError):

@@ -1,4 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import platform
+
 import pytest
 import torch
 import torch.nn as nn
@@ -8,6 +10,7 @@ from mmaction.models import ResNet3d, ResNet3dLayer
 from ..base import check_norm_state, generate_backbone_demo_inputs
 
 
+@pytest.mark.skipif(platform.system() == 'Windows', reason='Windows mem limit')
 def test_resnet3d_backbone():
     """Test resnet3d backbone."""
     with pytest.raises(AssertionError):

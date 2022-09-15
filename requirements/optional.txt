@@ -4,7 +4,8 @@ imgaug
 librosa
 lmdb
 moviepy
-onnx
+onnx==1.11.0; python_version == '3.6'
+onnx; python_version >= '3.7'
 onnxruntime
 packaging
 pims
