@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 # codec settings
 codec = dict(
     type='MSRAHeatmap', input_size=(192, 256), heatmap_size=(48, 64), sigma=2)
@@ -90,4 +91,6 @@ test_dataloader = dict(
 # visualizer
 vis_backends = [dict(type='LocalVisBackend')]
 visualizer = dict(
-    type='mmpose.PoseLocalVisualizer', vis_backends=vis_backends, name='visualizer')
+    type='mmpose.PoseLocalVisualizer',
+    vis_backends=vis_backends,
+    name='visualizer')

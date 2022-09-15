@@ -376,8 +376,7 @@ class FormatGCNInput(BaseTransform):
         input_format (str): Define the final skeleton format.
     """
 
-    def __init__(self, input_format: str,
-                 num_person: int = 2) -> None:
+    def __init__(self, input_format: str, num_person: int = 2) -> None:
         self.input_format = input_format
         if self.input_format not in ['NCTVM']:
             raise ValueError(

@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .collect_env import collect_env
 from .gradcam_utils import GradCAM
-from .misc import get_random_string, get_shm_dir, get_thread_id, frame_extract
+from .misc import frame_extract, get_random_string, get_shm_dir, get_thread_id
 from .setup_env import register_all_modules
 from .typing import *  # noqa: F401,F403
 
