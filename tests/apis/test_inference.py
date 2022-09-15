@@ -1,15 +1,14 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import pytest
 import os.path as osp
-import torch
-import torch.nn as nn
 from pathlib import Path
 from unittest import TestCase
+
+import torch
 from parameterized import parameterized
 
 from mmaction.apis import inference_recognizer, init_recognizer
-from mmaction.utils import register_all_modules
 from mmaction.structures import ActionDataSample
+from mmaction.utils import register_all_modules
 
 
 class TestInference(TestCase):
@@ -19,7 +18,8 @@ class TestInference(TestCase):
 
     @parameterized.expand([(('configs/recognition/tsn/'
                              'tsn_imagenet-pretrained-r50_8xb32-'
-                             '1x1x3-100e_kinetics400-rgb.py'), ('cpu', 'cuda'))])
+                             '1x1x3-100e_kinetics400-rgb.py'), ('cpu', 'cuda'))
+                           ])
     def test_init_recognizer(self, config, devices):
         project_dir = osp.abspath(osp.dirname(osp.dirname(__file__)))
         project_dir = osp.join(project_dir, '..')
@@ -44,8 +44,8 @@ class TestInference(TestCase):
 
     @parameterized.expand([(('configs/recognition/tsn/'
                              'tsn_imagenet-pretrained-r50_8xb32-'
-                             '1x1x3-100e_kinetics400-rgb.py'),
-                            'demo/demo.mp4', ('cpu', 'cuda'))])
+                             '1x1x3-100e_kinetics400-rgb.py'), 'demo/demo.mp4',
+                            ('cpu', 'cuda'))])
     def test_inference_recognizer(self, config, video_path, devices):
         project_dir = osp.abspath(osp.dirname(osp.dirname(__file__)))
         project_dir = osp.join(project_dir, '..')

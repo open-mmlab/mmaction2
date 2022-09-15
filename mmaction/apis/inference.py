@@ -6,7 +6,6 @@ import mmengine
 import numpy as np
 import torch
 import torch.nn as nn
-from torchvision.transforms import Compose
 from mmengine.dataset import Compose, pseudo_collate
 from mmengine.runner import load_checkpoint
 from mmengine.utils import track_iter_progress
@@ -48,11 +47,10 @@ def init_recognizer(config: Union[str, Path, mmengine.Config],
     return model
 
 
-def inference_recognizer(
-        model: nn.Module,
-        video: Union[str, dict],
-        test_pipeline: Optional[Compose] = None
-) -> ActionDataSample:
+def inference_recognizer(model: nn.Module,
+                         video: Union[str, dict],
+                         test_pipeline: Optional[Compose] = None
+                         ) -> ActionDataSample:
     """Inference a video with the recognizer.
 
     Args:
