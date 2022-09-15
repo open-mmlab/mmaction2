@@ -1,12 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import os
 import ctypes
+import os
+import os.path as osp
 import random
 import string
-import os.path as osp
 
-import mmcv
 import cv2
+import mmcv
 import numpy as np
 
 

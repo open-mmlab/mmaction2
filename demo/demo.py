@@ -1,12 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 import os.path as osp
+from operator import itemgetter
 from typing import Optional, Tuple
 
 import cv2
 import numpy as np
 import webcolors
-from operator import itemgetter
 from mmengine import Config, DictAction
 
 from mmaction.apis import inference_recognizer, init_recognizer

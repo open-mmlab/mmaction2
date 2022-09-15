@@ -931,7 +931,6 @@ class OpenCVDecode(BaseTransform):
     Required keys are ``'video_reader'``, ``'filename'`` and ``'frame_inds'``,
     added or modified keys are ``'imgs'``, ``'img_shape'`` and
     ``'original_shape'``.
-
     """
 
     def transform(self, results: dict) -> dict:
@@ -972,17 +971,31 @@ class OpenCVDecode(BaseTransform):
 class RawFrameDecode(BaseTransform):
     """Load and decode frames with given indices.
 
-    Required keys are ``'frame_dir'``, ``'filename_tmpl'`` and ``'frame_inds'``,
-    added or modified keys are ``'imgs'``, ``'img_shape'`` and ``'original_shape'``.
+    Required Keys:
+
+    - frame_dir
+    - filename_tmpl
+    - frame_inds
+    - modality
+    - offset (optional)
+
+    Added Keys:
+
+    - img
+    - img_shape
+    - original_shape
 
     Args:
-        io_backend (str): IO backend where frames are stored. Defaults to ``'disk'``.
+        io_backend (str): IO backend where frames are stored.
+            Defaults to ``'disk'``.
         decoding_backend (str): Backend used for image decoding.
             Defaults to ``'cv2'``.
     """
 
-    def __init__(self, io_backend: str = 'disk',
-                 decoding_backend: str = 'cv2', **kwargs) -> None:
+    def __init__(self,
+                 io_backend: str = 'disk',
+                 decoding_backend: str = 'cv2',
+                 **kwargs) -> None:
         self.io_backend = io_backend
         self.decoding_backend = decoding_backend
         self.kwargs = kwargs

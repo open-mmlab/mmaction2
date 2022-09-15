@@ -4,16 +4,16 @@ import os.path as osp
 import shutil
 
 import cv2
-import mmengine
 import mmcv
+import mmengine
 import numpy as np
 import torch
 from mmengine import DictAction
 from mmengine.utils import track_iter_progress
 
+from mmaction.apis import (detection_inference, inference_recognizer,
+                           init_recognizer, pose_inference)
 from mmaction.registry import VISUALIZERS
-from mmaction.apis import (inference_recognizer, init_recognizer,
-                           detection_inference, pose_inference)
 from mmaction.utils import frame_extract, register_all_modules
 
 try:
@@ -49,9 +49,10 @@ def parse_args():
         help='human detection config file path (from mmdet)')
     parser.add_argument(
         '--det-checkpoint',
-        default=(
-            'https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_rcnn_r50_fpn_2x_coco'
-            '/faster_rcnn_r50_fpn_2x_coco_bbox_mAP-0.384_20200504_210434-a5d8aa15.pth'),
+        default=('http://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/'
+                 'faster_rcnn_r50_fpn_2x_coco/'
+                 'faster_rcnn_r50_fpn_2x_coco_'
+                 'bbox_mAP-0.384_20200504_210434-a5d8aa15.pth'),
         help='human detection checkpoint file/url')
     parser.add_argument(
         '--det-score-thr',
@@ -66,7 +67,7 @@ def parse_args():
     parser.add_argument(
         '--pose-config',
         default='demo/skeleton_demo_cfg/'
-                'td-hm_hrnet-w32_8xb64-210e_coco-256x192_infer.py',
+        'td-hm_hrnet-w32_8xb64-210e_coco-256x192_infer.py',
         help='human pose estimation config file path (from mmpose)')
     parser.add_argument(
         '--pose-checkpoint',
@@ -90,8 +91,8 @@ def parse_args():
         action=DictAction,
         default={},
         help='override some settings in the used config, the key-value pair '
-             'in xxx=yyy format will be merged into config file. For example, '
-             "'--cfg-options model.backbone.depth=18 model.backbone.with_cp=True'")
+        'in xxx=yyy format will be merged into config file. For example, '
+        "'--cfg-options model.backbone.depth=18 model.backbone.with_cp=True'")
     args = parser.parse_args()
     return args
 
@@ -133,19 +134,15 @@ def main():
     h, w, _ = frames[0].shape
 
     # Get Human detection results.
-    det_results, _ = detection_inference(args.det_config,
-                                         args.det_checkpoint,
-                                         frame_paths,
-                                         args.det_score_thr,
-                                         args.det_cat_id,
-                                         args.device)
+    det_results, _ = detection_inference(args.det_config, args.det_checkpoint,
+                                         frame_paths, args.det_score_thr,
+                                         args.det_cat_id, args.device)
     torch.cuda.empty_cache()
 
     # Get Pose estimation results.
     pose_results, pose_data_samples = pose_inference(args.pose_config,
                                                      args.pose_checkpoint,
-                                                     frame_paths,
-                                                     det_results,
+                                                     frame_paths, det_results,
                                                      args.device)
     torch.cuda.empty_cache()
 

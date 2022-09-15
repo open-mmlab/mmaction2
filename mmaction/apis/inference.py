@@ -1,11 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from pathlib import Path
-from typing import List, Optional, Dict, Union
+from typing import List, Optional, Union
 
 import mmengine
+import numpy as np
 import torch
 import torch.nn as nn
-import numpy as np
 from mmengine.dataset import Compose, pseudo_collate
 from mmengine.runner import load_checkpoint
 from mmengine.utils import track_iter_progress
@@ -129,7 +129,8 @@ def detection_inference(det_config: Union[str, Path, mmengine.Config],
         det_data_sample: DetDataSample = inference_detector(model, frame_path)
         pred_instance = det_data_sample.pred_instances.cpu().numpy()
         bboxes = pred_instance.bboxes
-        # We only keep human detection bboxs with score larger than `det_score_thr`.
+        # We only keep human detection bboxs with score larger
+        # than `det_score_thr` and category id equal to `det_cat_id`.
         bboxes = bboxes[np.logical_and(pred_instance.labels == det_cat_id,
                                        pred_instance.scores > det_score_thr)]
         results.append(bboxes)
