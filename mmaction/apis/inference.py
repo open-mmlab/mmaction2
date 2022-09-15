@@ -31,7 +31,7 @@ def init_recognizer(config: Union[str, Path, mmengine.Config],
     Returns:
         nn.Module: The constructed recognizer.
     """
-    if isinstance(config, str):
+    if isinstance(config, (str, Path)):
         config = mmengine.Config.fromfile(config)
     elif not isinstance(config, mmengine.Config):
         raise TypeError('config must be a filename or Config object, '
@@ -70,7 +70,7 @@ def inference_recognizer(
 
     if test_pipeline is None:
         cfg = model.cfg
-        test_pipeline_cfg = cfg.test_dataloader.dataset.pipeline
+        test_pipeline_cfg = cfg.test_pipeline
         test_pipeline = Compose(test_pipeline_cfg)
 
     input_flag = None
