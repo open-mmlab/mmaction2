@@ -103,8 +103,7 @@ def detection_inference(det_config: Union[str, Path, mmengine.Config],
         frame_paths (List[str]): The paths of frames to do detection inference.
         det_score_thr (float): The threshold of human detection score.
             Defaults to 0.9.
-        det_cat_id (int): The category id for bounding box detection model.
-            Defaults to 0.
+        det_cat_id (int): The category id for human detection. Defaults to 0.
         device (Union[str, torch.device]): The desired device of returned
             tensor. Defaults to ``'cuda:0'``.
 

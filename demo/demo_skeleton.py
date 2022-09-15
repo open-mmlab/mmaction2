@@ -62,7 +62,7 @@ def parse_args():
         '--det-cat-id',
         type=int,
         default=0,
-        help='Category id for bounding box detection model')
+        help='the category id for human detection')
     parser.add_argument(
         '--pose-config',
         default='demo/skeleton_demo_cfg/'
