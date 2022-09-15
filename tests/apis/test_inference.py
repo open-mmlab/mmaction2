@@ -48,7 +48,10 @@ def test_video_inference_recognizer():
             # Use CenterCrop to reduce memory in order to pass CI
             ops['type'] = 'CenterCrop'
 
-    top5_label = inference_recognizer(model, video_path)
-    scores = [item[1] for item in top5_label]
-    assert len(top5_label) == 5
-    assert scores == sorted(scores, reverse=True)
+    result = inference_recognizer(model, video_path)
+
+    assert result.pred_scores.item.size() == 400
+
+    # scores = [item[1] for item in top5_label]
+    # assert len(top5_label) == 5
+    # assert scores == sorted(scores, reverse=True)

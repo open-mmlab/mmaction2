@@ -6,6 +6,7 @@ import mmengine
 import numpy as np
 import torch
 import torch.nn as nn
+from torchvision.transforms import Compose
 from mmengine.dataset import Compose, pseudo_collate
 from mmengine.runner import load_checkpoint
 from mmengine.utils import track_iter_progress
@@ -47,22 +48,30 @@ def init_recognizer(config: Union[str, Path, mmengine.Config],
     return model
 
 
-def inference_recognizer(model: nn.Module,
-                         video: Union[str, dict]) -> ActionDataSample:
+def inference_recognizer(
+        model: nn.Module,
+        video: Union[str, dict],
+        test_pipeline: Optional[Compose] = None
+) -> ActionDataSample:
     """Inference a video with the recognizer.
 
     Args:
         model (nn.Module): The loaded recognizer.
         video (Union[str, dict]): The video file path or the results
             dictionary (the input of pipeline).
+        test_pipeline (:obj:`Compose`, optional): The test pipeline.
+            If not specified, the test pipeline in the config will be
+            used. Defaults to None.
 
     Returns:
         :obj:`ActionDataSample`: The inference results. Specifically, the
         predicted scores are saved at ``result.pred_scores.item``.
     """
-    cfg = model.cfg
-    val_pipeline_cfg = cfg.val_dataloader.dataset.pipeline
-    val_pipeline = Compose(val_pipeline_cfg)
+
+    if test_pipeline is None:
+        cfg = model.cfg
+        test_pipeline_cfg = cfg.test_dataloader.dataset.pipeline
+        test_pipeline = Compose(test_pipeline_cfg)
 
     input_flag = None
     if isinstance(video, dict):
@@ -78,12 +87,12 @@ def inference_recognizer(model: nn.Module,
     if input_flag == 'video':
         data = dict(filename=video, label=-1, start_index=0, modality='RGB')
 
-    data = val_pipeline(data)
+    data = test_pipeline(data)
     data = pseudo_collate([data])
 
     # Forward the model
     with torch.no_grad():
-        result = model.val_step(data)[0]
+        result = model.test_step(data)[0]
 
     return result
 
