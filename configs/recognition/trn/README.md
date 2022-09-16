@@ -22,13 +22,13 @@ Temporal relational reasoning, the ability to link meaningful transformations of
 
 | frame sampling strategy | resolution | gpus | backbone | pretrain | top1 acc (efficient/accurate) | top5 acc (efficient/accurate) | gpu_mem(M) |            config            |            ckpt            |            log            |
 | :---------------------: | :--------: | :--: | :------: | :------: | :---------------------------: | :---------------------------: | :--------: | :--------------------------: | :------------------------: | :-----------------------: |
-|          1x1x8          | height 100 |  8   | ResNet50 | ImageNet |         31.81 / 33.86         |         60.47 / 62.24         |   11037    | [config](/configs/recognition/trn/trn_r50_8xb16-1x1x8-50e_sthv1-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_r50_8xb16-1x1x8-50e_sthv1-rgb/trn_r50_8xb16-1x1x8-50e_sthv1-rgb_20220815-e13db2e9.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_r50_8xb16-1x1x8-50e_sthv1-rgb/trn_r50_8xb16-1x1x8-50e_sthv1-rgb.log) |
+|          1x1x8          | height 100 |  8   | ResNet50 | ImageNet |         31.81 / 33.86         |         60.47 / 62.24         |   11037    | [config](/configs/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb_20220815-e13db2e9.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb.log) |
 
 ### Something-Something V2
 
 | frame sampling strategy | resolution | gpus | backbone | pretrain | top1 acc (efficient/accurate) | top5 acc (efficient/accurate) | gpu_mem(M) |            config            |            ckpt            |            log            |
 | :---------------------: | :--------: | :--: | :------: | :------: | :---------------------------: | :---------------------------: | :--------: | :--------------------------: | :------------------------: | :-----------------------: |
-|          1x1x8          | height 240 |  8   | ResNet50 | ImageNet |         48.54 / 51.53         |         76.53 / 78.60         |   11037    | [config](/configs/recognition/trn/trn_r50_8xb16-1x1x8-50e_sthv2-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_r50_8xb16-1x1x8-50e_sthv2-rgb/trn_r50_8xb16-1x1x8-50e_sthv2-rgb_20220815-e01617db.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_r50_8xb16-1x1x8-50e_sthv2-rgb/trn_r50_8xb16-1x1x8-50e_sthv2-rgb.log) |
+|          1x1x8          | height 240 |  8   | ResNet50 | ImageNet |         48.54 / 51.53         |         76.53 / 78.60         |   11037    | [config](/configs/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb_20220815-e01617db.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb.log) |
 
 1. The **gpus** indicates the number of gpu we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
    According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
@@ -50,7 +50,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 Example: train TRN model on sthv1 dataset in a deterministic option with periodic validation.
 
 ```shell
-python tools/train.py configs/recognition/trn/trn_r50_8xb16-1x1x8-50e_sthv1-rgb.py \
+python tools/train.py configs/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb.py \
     --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
@@ -67,7 +67,7 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 Example: test TRN model on sthv1 dataset and dump the result to a pkl file.
 
 ```shell
-python tools/test.py configs/recognition/trn/trn_r50_8xb16-1x1x8-50e_sthv1-rgb.py \
+python tools/test.py configs/recognition/trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb.py \
     checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
