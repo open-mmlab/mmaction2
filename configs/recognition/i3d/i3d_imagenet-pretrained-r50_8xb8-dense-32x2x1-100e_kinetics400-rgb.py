@@ -1,4 +1,4 @@
-_base_ = ['./i3d_r50_8xb8-32x2x1-100e_kinetics400-rgb.py']
+_base_ = ['./i3d_imagenet-pretrained-r50_8xb8-32x2x1-100e_kinetics400-rgb.py']
 
 # dataset settings
 dataset_type = 'VideoDataset'
