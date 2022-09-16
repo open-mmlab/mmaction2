@@ -42,6 +42,15 @@ or use checkpoint url from to directly load corresponding checkpoint, which will
        demo/demo.mp4 tools/data/kinetics/label_map_k400.txt
    ```
 
+3. Recognize a video file as input by using a TSN model and then generate an mp4 file.
+
+   ```shell
+   # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
+   python demo/demo.py configs/recognition/tsn/tsn_r50_8xb32-1x1x8-100e_kinetics400-rgb.py \
+       checkpoints/tsn_r50_8xb32-1x1x8-100e_kinetics400-rgb_20220818-2692d16c.pth \
+       demo/demo.mp4 tools/data/kinetics/label_map_k400.txt --out-filename demo/demo_out.mp4
+   ```
+
 ## Inference with Skeleton-based Action Recognition Models
 
 MMAction2 provides an inference script to predict the skeleton-based action recognition result using a single video.
@@ -82,7 +91,7 @@ Assume that you are located at `$MMACTION2` .
 1. Use the Faster-RCNN as the human detector, HRNetw32 as the pose estimator, PoseC3D-NTURGB+D-60-XSub-Keypoint as the skeleton-based action recognizer.
 
 ```shell
-python demo/demo_skeleton.py demo/demo_skeleton.avi demo/demo_skeleton_out.mp4 \
+python demo/demo_skeleton.py demo/demo_skeleton.mp4 demo/demo_skeleton_out.mp4 \
     --config configs/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_ntu60-xsub-keypoint.py \
     --checkpoint https://download.openmmlab.com/mmaction/skeleton/posec3d/slowonly_r50_u48_240e_ntu60_xsub_keypoint/slowonly_r50_u48_240e_ntu60_xsub_keypoint-f3adabf1.pth \
     --det-config demo/skeleton_demo_cfg/faster-rcnn_r50_fpn_2x_coco_infer.py \
@@ -97,7 +106,7 @@ python demo/demo_skeleton.py demo/demo_skeleton.avi demo/demo_skeleton_out.mp4 \
 2. Use the Faster-RCNN as the human detector, HRNetw32 as the pose estimator, STGCN-NTURGB+D-60-XSub-Keypoint as the skeleton-based action recognizer.
 
 ```shell
-python demo/demo_skeleton.py demo/demo_skeleton.avi demo/demo_skeleton_out.mp4 \
+python demo/demo_skeleton.py demo/demo_skeleton.mp4 demo/demo_skeleton_out.mp4 \
     --config configs/skeleton/stgcn/stgcn_1xb16-80e_ntu60-xsub-keypoint.py \
     --checkpoint https://download.openmmlab.com/mmaction/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint/stgcn_80e_ntu60_xsub_keypoint-e7bb9653.pth \
     --det-config demo/skeleton_demo_cfg/faster-rcnn_r50_fpn_2x_coco_infer.py \

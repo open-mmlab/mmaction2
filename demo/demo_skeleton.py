@@ -112,7 +112,7 @@ def visualize(args, frames, data_samples, action_label):
             data_sample=d,
             draw_gt=False,
             draw_heatmap=False,
-            draw_bbox=False,
+            draw_bbox=True,
             show=False,
             wait_time=0,
             out_file=None,
