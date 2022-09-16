@@ -357,23 +357,33 @@ class JointToBone(BaseTransform):
 
 @TRANSFORMS.register_module()
 class FormatGCNInput(BaseTransform):
-    """Format final skeleton shape to the given input_format.
+    """Format final skeleton shape to the given ``input_format``.
 
-    Required keys are "keypoint" and "keypoint_score"(optional),
-    added or modified keys are "keypoint" and "input_shape".
+    Required Keys:
+
+    - keypoint
+    - keypoint_score (optional)
+
+    Modified Key:
+
+    - keypoint
+
+    Added Key:
+
+    - input_shape
 
     Args:
         input_format (str): Define the final skeleton format.
     """
 
-    def __init__(self, input_format, num_person=2):
+    def __init__(self, input_format: str, num_person: int = 2) -> None:
         self.input_format = input_format
         if self.input_format not in ['NCTVM']:
             raise ValueError(
                 f'The input format {self.input_format} is invalid.')
         self.num_person = num_person
 
-    def transform(self, results):
+    def transform(self, results: dict) -> dict:
         """Performs the FormatShape formatting.
 
         Args:
