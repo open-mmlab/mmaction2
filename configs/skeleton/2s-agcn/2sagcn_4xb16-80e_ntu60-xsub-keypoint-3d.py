@@ -68,3 +68,11 @@ optim_wrapper = dict(
 
 default_hooks = dict(
     checkpoint=dict(interval=2, max_keep_ckpts=5), logger=dict(interval=100))
+
+custom_hooks = [dict(type='SyncBuffersHook')]
+
+# Default setting for scaling LR automatically
+#   - `enable` means enable scaling LR automatically
+#       or not by default.
+#   - `base_batch_size` = (4 GPUs) x (16 samples per GPU).
+auto_scale_lr = dict(enable=False, base_batch_size=64)
