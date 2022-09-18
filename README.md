@@ -17,10 +17,10 @@
     </sup>
   </div>
 
-[📘Documentation](https://mmaction2.readthedocs.io/en/1.x/) |
-[🛠️Installation](https://mmaction2.readthedocs.io/en/1.x/get_started.html) |
+[📘Documentation](https://mmaction2.readthedocs.io/en/dev-1.x/index.html) |
+[🛠️Installation](https://mmaction2.readthedocs.io/en/dev-1.x/get_started.html#installation) |
 [👀Model Zoo](https://mmaction2.readthedocs.io/en/dev-1.x/modelzoo.html) |
-[🆕Update News](https://mmaction2.readthedocs.io/en/1.x/notes/changelog.html) |
+[🆕Update News](https://mmaction2.readthedocs.io/en/dev-1.x/notes/changelog.html) |
 [🚀Ongoing Projects](https://github.com/open-mmlab/mmaction2/projects) |
 [🤔Reporting Issues](https://github.com/open-mmlab/mmaction2/issues/new/choose)
 
@@ -77,7 +77,7 @@ The master branch works with **PyTorch 1.6+**.
 
 ## Installation
 
-Please refer to [install.md](https://mmaction2.readthedocs.io/en/1.x/get_started.html) for more detailed instructions.
+Please refer to [install.md](https://github.com/open-mmlab/mmaction2/blob/dev-1.x/docs/en/get_started.md) for more detailed instructions.
 
 ## Supported Methods
 
