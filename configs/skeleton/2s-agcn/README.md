@@ -20,10 +20,10 @@ In skeleton-based action recognition, graph convolutional networks (GCNs), which
 
 ### NTU60_XSub
 
-| type  | gpus | backbone | pretrain |top1 acc |                    config                      |                     ckpt                      |                     log                      |
-| :---: | :--: | :------: | :---:|:------: | :---------------------------------------------: | :-------------------------------------------: | :------------------------------------------: |
-| joint |  4   |   AGCN   | None | 85.92   | [config](/configs/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-keypoint-3d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-keypoint-3d/2sagcn_4xb16-80e_ntu60-xsub-keypoint-3d_20220918-3108f53f.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-keypoint-3d/2sagcn_4xb16-80e_ntu60-xsub-keypoint-3d.log) |
-| bone  |  4   |   AGCN   |  None | 87.02   | [config](/configs/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-bone-3d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-bone-3d/2sagcn_4xb16-80e_ntu60-xsub-bone-3d_20220918-46a76b9b.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-bone-3d/2sagcn_4xb16-80e_ntu60-xsub-bone-3d.log) |
+| type  | gpus | backbone | pretrain | top1 acc |                          config                           |                          ckpt                           |                           log                           |
+| :---: | :--: | :------: | :------: | :------: | :-------------------------------------------------------: | :-----------------------------------------------------: | :-----------------------------------------------------: |
+| joint |  4   |   AGCN   |   None   |  85.92   | [config](/configs/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-keypoint-3d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-keypoint-3d/2sagcn_4xb16-80e_ntu60-xsub-keypoint-3d_20220918-3108f53f.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-keypoint-3d/2sagcn_4xb16-80e_ntu60-xsub-keypoint-3d.log) |
+| bone  |  4   |   AGCN   |   None   |  87.02   | [config](/configs/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-bone-3d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-bone-3d/2sagcn_4xb16-80e_ntu60-xsub-bone-3d_20220918-46a76b9b.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-bone-3d/2sagcn_4xb16-80e_ntu60-xsub-bone-3d.log) |
 
 ## Train
 
