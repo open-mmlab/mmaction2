@@ -1,30 +1,78 @@
 Collections:
-- Name: TANet
-  README: configs/recognition/tanet/README.md
-  Paper:
-    URL: https://arxiv.org/abs/2005.06803
-    Title: "TAM: Temporal Adaptive Module for Video Recognition"
+  - Name: TANet
+    README: configs/recognition/tanet/README.md
+    Paper:
+      URL: https://arxiv.org/abs/2005.06803
+      Title: "TAM: Temporal Adaptive Module for Video Recognition"
 
 Models:
-- Name: tanet_r50_8xb8-dense-1x1x8-100e_kinetics400-rgb
-  Config: configs/recognition/tanet/tanet_r50_8xb8-dense-1x1x8-100e_kinetics400-rgb.py
-  In Collection: TANet
-  Metadata:
-    Architecture: TANet
-    Batch Size: 8
-    Epochs: 100
-    FLOPs: 43065983104
-    Parameters: 25590320
-    Pretrained: ImageNet
-    Resolution: short-side 320
-    Training Data: Kinetics-400
-    Training Resources: 8 GPUs
-  Modality: RGB
-  Results:
-  - Dataset: Kinetics-400
-    Task: Action Recognition
-    Metrics:
-      Top 1 Accuracy: 76.22
-      Top 5 Accuracy: 92.31
-  Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_r50_8xb8-dense-1x1x8-100e_kinetics400-rgb/tanet_r50_8xb8-dense-1x1x8-100e_kinetics400-rgb_20210219.log
-  Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_r50_8xb8-dense-1x1x8-100e_kinetics400-rgb/tanet_r50_8xb8-dense-1x1x8-100e_kinetics400-rgb_20210219-032c8e94.pth
+  - Name: tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb
+    Config: configs/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb.py
+    In Collection: TANet
+    Metadata:
+      Architecture: TANet
+      Batch Size: 8
+      Epochs: 100
+      FLOPs: 43065983104
+      Parameters: 25590320
+      Pretrained: ImageNet
+      Resolution: short-side 320
+      Training Data: Kinetics-400
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 76.25
+        Top 5 Accuracy: 92.41
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb_20220919-a34346bc.pth
+  - Name: tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb
+    Config: configs/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb.py
+    In Collection: TANet
+    Metadata:
+      Architecture: TANet
+      Batch Size: 8
+      Epochs: 50
+      FLOPs: 32972787840
+      Parameters: 25127246
+      Pretrained: ImageNet
+      Resolution: height 100
+      Training Data: SthV1
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: SthV1
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 49.71
+        Top 1 Accuracy (efficient): 46.98
+        Top 5 Accuracy: 77.43
+        Top 5 Accuracy (efficient): 75.75
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb/tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb/tanet_imagenet-pretrained-r50_8xb8-1x1x8-50e_sthv1-rgb_20220906-de50e4ef.pth
+  - Name: tanet_imagenet-pretrained-r50_8xb6-1x1x16-50e_sthv1-rgb
+    Config: configs/recognition/tanet/tanet_imagenet-pretrained-r50_8xb6-1x1x16-50e_sthv1-rgb.py
+    In Collection: TANet
+    Metadata:
+      Architecture: TANet
+      Batch Size: 8
+      Epochs: 50
+      FLOPs: 65946542336
+      Parameters: 25134670
+      Pretrained: ImageNet
+      Resolution: height 100
+      Training Data: SthV1
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: SthV1
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 50.95
+        Top 1 Accuracy (efficient): 48.24
+        Top 5 Accuracy: 79.28
+        Top 5 Accuracy (efficient): 78.16
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb6-1x1x16-50e_sthv1-rgb/tanet_imagenet-pretrained-r50_8xb6-1x1x16-50e_sthv1-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb6-1x1x16-50e_sthv1-rgb/tanet_imagenet-pretrained-r50_8xb6-1x1x16-50e_sthv1-rgb_20220919-cc37e9b8.pth
