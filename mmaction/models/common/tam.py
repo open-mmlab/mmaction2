@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -12,35 +13,35 @@ class TAM(nn.Module):
     Args:
         in_channels (int): Channel num of input features.
         num_segments (int): Number of frame segments.
-        alpha (int): ```alpha``` in the paper and is the ratio of the
+        alpha (int): ``alpha`` in the paper and is the ratio of the
             intermediate channel number to the initial channel number in the
-            global branch. Default: 2.
-        adaptive_kernel_size (int): ```K``` in the paper and is the size of the
-            adaptive kernel size in the global branch. Default: 3.
-        beta (int): ```beta``` in the paper and is set to control the model
-            complexity in the local branch. Default: 4.
+            global branch. Defaults to 2.
+        adaptive_kernel_size (int): ``K`` in the paper and is the size of the
+            adaptive kernel size in the global branch. Defaults to 3.
+        beta (int): ``beta`` in the paper and is set to control the model
+            complexity in the local branch. Defaults to 4.
         conv1d_kernel_size (int): Size of the convolution kernel of Conv1d in
-            the local branch. Default: 3.
+            the local branch. Defaults to 3.
         adaptive_convolution_stride (int): The first dimension of strides in
-            the adaptive convolution of ```Temporal Adaptive Aggregation```.
-            Default: 1.
+            the adaptive convolution of ``Temporal Adaptive Aggregation``.
+            Defaults to 1.
         adaptive_convolution_padding (int): The first dimension of paddings in
-            the adaptive convolution of ```Temporal Adaptive Aggregation```.
-            Default: 1.
-        init_std (float): Std value for initiation of `nn.Linear`. Default:
+            the adaptive convolution of ``Temporal Adaptive Aggregation``.
+            Defaults to 1.
+        init_std (float): Std value for initiation of `nn.Linear`. Defaults to
             0.001.
     """
 
     def __init__(self,
-                 in_channels,
-                 num_segments,
-                 alpha=2,
-                 adaptive_kernel_size=3,
-                 beta=4,
-                 conv1d_kernel_size=3,
-                 adaptive_convolution_stride=1,
-                 adaptive_convolution_padding=1,
-                 init_std=0.001):
+                 in_channels: int,
+                 num_segments: int,
+                 alpha: int = 2,
+                 adaptive_kernel_size: int = 3,
+                 beta: int = 4,
+                 conv1d_kernel_size: int = 3,
+                 adaptive_convolution_stride: int = 1,
+                 adaptive_convolution_padding: int = 1,
+                 init_std: float = 0.001) -> None:
         super().__init__()
 
         assert beta > 0 and alpha > 0
@@ -72,7 +73,7 @@ class TAM(nn.Module):
             nn.Conv1d(in_channels // beta, in_channels, 1, bias=False),
             nn.Sigmoid())
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Defines the computation performed at every call.
 
         Args:

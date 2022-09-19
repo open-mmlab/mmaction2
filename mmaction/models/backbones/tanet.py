@@ -1,6 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from copy import deepcopy
+from typing import Optional
 
+import torch
 import torch.nn as nn
 from torch.utils import checkpoint as cp
 
@@ -23,10 +25,10 @@ class TABlock(nn.Module):
         block (nn.Module): Residual blocks to be substituted.
         num_segments (int): Number of frame segments.
         tam_cfg (dict): Config for temporal adaptive module (TAM).
-            Default: dict().
     """
 
-    def __init__(self, block, num_segments, tam_cfg=dict()):
+    def __init__(self, block: nn.Module, num_segments: int,
+                 tam_cfg: dict) -> None:
         super().__init__()
         self.tam_cfg = deepcopy(tam_cfg)
         self.block = block
@@ -41,7 +43,9 @@ class TABlock(nn.Module):
                                       'implemented except the pattern based '
                                       'on Bottleneck block.')
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Defines the computation performed at every call."""
+
         assert isinstance(self.block, Bottleneck)
 
         def _inner_forward(x):
@@ -81,18 +85,21 @@ class TANet(ResNet):
     instantiate TANet.
 
     Args:
-        depth (int): Depth of resnet, from {18, 34, 50, 101, 152}.
+        depth (int): Depth of resnet, from ``{18, 34, 50, 101, 152}``.
         num_segments (int): Number of frame segments.
-        tam_cfg (dict | None): Config for temporal adaptive module (TAM).
-            Default: dict().
-        **kwargs (keyword arguments, optional): Arguments for ResNet except
-            ```depth```.
+        tam_cfg (dict, optional): Config for temporal adaptive module (TAM).
+            Defaults to None.
     """
 
-    def __init__(self, depth, num_segments, tam_cfg=dict(), **kwargs):
+    def __init__(self,
+                 depth: int,
+                 num_segments: int,
+                 tam_cfg: Optional[dict] = None,
+                 **kwargs) -> None:
         super().__init__(depth, **kwargs)
         assert num_segments >= 3
         self.num_segments = num_segments
+        tam_cfg = dict() if tam_cfg is None else tam_cfg
         self.tam_cfg = deepcopy(tam_cfg)
         super().init_weights()
         self.make_tam_modeling()
