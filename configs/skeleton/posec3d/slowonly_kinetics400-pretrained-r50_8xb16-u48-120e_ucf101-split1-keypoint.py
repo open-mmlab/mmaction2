@@ -143,4 +143,4 @@ optim_wrapper = dict(
 
 default_hooks = dict(checkpoint=dict(max_keep_ckpts=3))
 
-load_from = 'https://download.openmmlab.com/mmaction/v2.0/skeleton/posec3d/k400_posec3d-041f49c6.pth'  # noqa: E501
+load_from = 'https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/k400_posec3d-041f49c6.pth'  # noqa: E501

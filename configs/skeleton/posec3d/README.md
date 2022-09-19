@@ -54,38 +54,34 @@ Human skeleton, as a compact representation of human action, has received increa
 
 ### FineGYM
 
-| frame sampling strategy | pseudo heatmap | gpus |   backbone   | top1 acc | testing protocol |                   config                   |                   ckpt                    |                   log                    |
-| :---------------------: | :------------: | :--: | :----------: | :------: | :--------------: | :----------------------------------------: | :---------------------------------------: | :--------------------------------------: |
-|       uniform 48        |    keypoint    |  8   | SlowOnly-R50 |   93.4   |     10 clips     | [config](/configs/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-keypoint.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-keypoint/slowonly_r50_8xb16-u48-240e_gym-keypoint_20220815-da338c58.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-keypoint/20220805_150313.log) |
-|       uniform 48        |      limb      |  8   | SlowOnly-R50 |   93.7   |     10 clips     | [config](/configs/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-limb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-limb/slowonly_r50_8xb16-u48-240e_gym-limb_20220815-2e6e3c5c.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-limb/20220805_150302.log) |
+| frame sampling strategy | pseudo heatmap | gpus |   backbone   | Mean Top-1 | testing protocol  |                  config                   |                   ckpt                   |                   log                   |
+| :---------------------: | :------------: | :--: | :----------: | :--------: | :---------------: | :---------------------------------------: | :--------------------------------------: | :-------------------------------------: |
+|       uniform 48        |    keypoint    |  8   | SlowOnly-R50 |    93.4    | 10 clips x 1 crop | [config](/configs/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-keypoint.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-keypoint/slowonly_r50_8xb16-u48-240e_gym-keypoint_20220815-da338c58.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-keypoint/slowonly_r50_8xb16-u48-240e_gym-keypoint.log) |
+|       uniform 48        |      limb      |  8   | SlowOnly-R50 |    93.7    | 10 clips x 1 crop | [config](/configs/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-limb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-limb/slowonly_r50_8xb16-u48-240e_gym-limb_20220815-2e6e3c5c.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-limb/slowonly_r50_8xb16-u48-240e_gym-limb.log) |
 
 ### NTU60_XSub
 
-| frame sampling strategy | pseudo heatmap | gpus |   backbone   | top1 acc | testing protocol |                   config                   |                   ckpt                    |                   log                    |
-| :---------------------: | :------------: | :--: | :----------: | :------: | :--------------: | :----------------------------------------: | :---------------------------------------: | :--------------------------------------: |
-|       uniform 48        |    keypoint    |  8   | SlowOnly-R50 |   93.6   |     10 clips     | [config](/configs/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_ntu60-xsub-keypoint.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_ntu60-xsub-keypoint/slowonly_r50_8xb16-u48-240e_ntu60-xsub-keypoint_20220815-38db104b.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_ntu60-xsub-keypoint/20220805_124409.log) |
-|       uniform 48        |      limb      |  8   | SlowOnly-R50 |   93.5   |     10 clips     | [config](/configs/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_ntu60-xsub-keypoint.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_ntu60-xsub-limb/slowonly_r50_8xb16-u48-240e_ntu60-xsub-limb_20220815-af2f119a.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_ntu60-xsub-limb/20220805_123439.log) |
+| frame sampling strategy | pseudo heatmap | gpus |   backbone   | top1 acc | testing protocol  |                   config                   |                   ckpt                   |                   log                    |
+| :---------------------: | :------------: | :--: | :----------: | :------: | :---------------: | :----------------------------------------: | :--------------------------------------: | :--------------------------------------: |
+|       uniform 48        |    keypoint    |  8   | SlowOnly-R50 |   93.6   | 10 clips x 1 crop | [config](/configs/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_ntu60-xsub-keypoint.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_ntu60-xsub-keypoint/slowonly_r50_8xb16-u48-240e_ntu60-xsub-keypoint_20220815-38db104b.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_ntu60-xsub-keypoint/slowonly_r50_8xb16-u48-240e_ntu60-xsub-keypoint.log) |
+|       uniform 48        |      limb      |  8   | SlowOnly-R50 |   93.5   | 10 clips x 1 crop | [config](/configs/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_ntu60-xsub-keypoint.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_ntu60-xsub-limb/slowonly_r50_8xb16-u48-240e_ntu60-xsub-limb_20220815-af2f119a.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_ntu60-xsub-limb/slowonly_r50_8xb16-u48-240e_ntu60-xsub-limb.log) |
 
 ### UCF101
 
-| frame sampling strategy | pseudo heatmap | gpus |   backbone   | top1 acc | testing protocol |                   config                   |                   ckpt                    |                   log                    |
-| :---------------------: | :------------: | :--: | :----------: | :------: | :--------------: | :----------------------------------------: | :---------------------------------------: | :--------------------------------------: |
-|       uniform 48        |    keypoint    |  8   | SlowOnly-R50 |   86.9   |     10 clips     | [config](/configs/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_ucf101-split1-keypoint.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_ucf101-split1-keypoint/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_ucf101-split1-keypoint_20220815-9972260d.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_ucf101-split1-keypoint/20220805_130002.log) |
+| frame sampling strategy | pseudo heatmap | gpus |   backbone   | top1 acc | testing protocol  |                   config                   |                   ckpt                   |                   log                    |
+| :---------------------: | :------------: | :--: | :----------: | :------: | :---------------: | :----------------------------------------: | :--------------------------------------: | :--------------------------------------: |
+|       uniform 48        |    keypoint    |  8   | SlowOnly-R50 |   86.9   | 10 clips x 1 crop | [config](/configs/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_ucf101-split1-keypoint.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_ucf101-split1-keypoint/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_ucf101-split1-keypoint_20220815-9972260d.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_ucf101-split1-keypoint/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_ucf101-split1-keypoint.log) |
 
 ### HMDB51
 
-| frame sampling strategy | pseudo heatmap | gpus |   backbone   | top1 acc | testing protocol |                   config                   |                   ckpt                    |                   log                    |
-| :---------------------: | :------------: | :--: | :----------: | :------: | :--------------: | :----------------------------------------: | :---------------------------------------: | :--------------------------------------: |
-|       uniform 48        |    keypoint    |  8   | SlowOnly-R50 |   69.2   |     10 clips     | [config](/configs/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint_20220815-17eaa484.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint/20220805_143455.log) |
-
-:::{note}
+| frame sampling strategy | pseudo heatmap | gpus |   backbone   | top1 acc | testing protocol  |                   config                   |                   ckpt                   |                   log                    |
+| :---------------------: | :------------: | :--: | :----------: | :------: | :---------------: | :----------------------------------------: | :--------------------------------------: | :--------------------------------------: |
+|       uniform 48        |    keypoint    |  8   | SlowOnly-R50 |   69.2   | 10 clips x 1 crop | [config](/configs/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint_20220815-17eaa484.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/posec3d/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint/slowonly_kinetics400-pretrained-r50_8xb16-u48-120e_hmdb51-split1-keypoint.log) |
 
 1. The **gpus** indicates the number of gpu we used to get the checkpoint. It is noteworthy that the configs we provide are used for 8 gpus as default.
    According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
    e.g., lr=0.01 for 8 GPUs x 8 videos/gpu and lr=0.04 for 16 GPUs x 16 videos/gpu.
-2. You can follow the guide in [Preparing Skeleton Dataset](https://github.com/open-mmlab/mmaction2/tree/master/tools/data/skeleton) to obtain skeleton annotations used in the above configs.
-
-:::
+2. You can follow the guide in [Preparing Skeleton Dataset](/tools/data/skeleton/README.md) to obtain skeleton annotations used in the above configs.
 
 ## Train
 
@@ -102,7 +98,7 @@ python tools/train.py configs/skeleton/posec3d/slowonly_r50_8xb16-u48-240e_gym-k
     --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
-For training with your custom dataset, you can refer to [Custom Dataset Training](https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/posec3d/custom_dataset_training.md).
+For training with your custom dataset, you can refer to [Custom Dataset Training](/configs/skeleton/posec3d/custom_dataset_training.md).
 
 For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 

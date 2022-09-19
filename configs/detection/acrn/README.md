@@ -20,25 +20,23 @@ Current state-of-the-art approaches for spatio-temporal action localization rely
 
 ### AVA2.1
 
-|                                       Model                                       | Modality |  Pretrained  | Backbone | Input | gpus |  mAP  |                  log                   |                  ckpt                   |
-| :-------------------------------------------------------------------------------: | :------: | :----------: | :------: | :---: | :--: | :---: | :------------------------------------: | :-------------------------------------: |
-| [slowfast_acrn_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb8_ava_rgb](/configs/detection/acrn/slowfast_acrn_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb8_ava_rgb.py) |   RGB    | Kinetics-400 | ResNet50 | 32x2  |  8   | 27.58 | [log](https://download.openmmlab.com/) | [ckpt](https://download.openmmlab.com/) |
+| frame sampling strategy | resolution | gpus |     backbone      |   pretrain   |  mAP  | gpu_mem(M) |                  config                   |                  ckpt                   |                   log                   |
+| :---------------------: | :--------: | :--: | :---------------: | :----------: | :---: | :--------: | :---------------------------------------: | :-------------------------------------: | :-------------------------------------: |
+|          8x8x1          |    raw     |  8   | SlowFast ResNet50 | Kinetics-400 | 27.58 |   15263    | [config](/configs/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava21-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava21-rgb/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava21-rgb_20220906-0dae1a90.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava21-rgb/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava21-rgb.log) |
 
 ### AVA2.2
 
-|                                       Model                                       | Modality |  Pretrained  | Backbone | Input | gpus |  mAP  |                  log                   |                  ckpt                   |
-| :-------------------------------------------------------------------------------: | :------: | :----------: | :------: | :---: | :--: | :---: | :------------------------------------: | :-------------------------------------: |
-| [slowfast_acrn_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb8_ava22_rgb](/configs/detection/acrn/slowfast_acrn_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb8_ava22_rgb.py) |   RGB    | Kinetics-400 | ResNet50 | 32x2  |  8   | 27.63 | [log](https://download.openmmlab.com/) | [ckpt](https://download.openmmlab.com/) |
+| frame sampling strategy | resolution | gpus |     backbone      |   pretrain   |  mAP  | gpu_mem(M) |                  config                   |                  ckpt                   |                   log                   |
+| :---------------------: | :--------: | :--: | :---------------: | :----------: | :---: | :--------: | :---------------------------------------: | :-------------------------------------: | :-------------------------------------: |
+|          8x8x1          |    raw     |  8   | SlowFast ResNet50 | Kinetics-400 | 27.63 |   15263    | [config](/configs/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava22-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava22-rgb/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava22-rgb_20220906-0dae1a90.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava22-rgb/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava22-rgb.log) |
 
-:::{note}
+Note:
 
 1. The **gpus** indicates the number of gpu we used to get the checkpoint.
    According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
    e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
 
-:::
-
-For more details on data preparation, you can refer to AVA in [Data Preparation](/docs/data_preparation.md).
+For more details on data preparation, you can refer to to [AVA Data Preparation](/tools/data/ava/README.md).
 
 ## Train
 
@@ -51,11 +49,11 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 Example: train ACRN with SlowFast backbone on AVA in a deterministic option.
 
 ```shell
-python tools/train.py configs/detection/acrn/slowfast_acrn_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb8_ava_rgb.py \
+python tools/train.py configs/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava21-rgb.py \
     --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
-For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
+For more details and optional arguments infos, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Test
 
@@ -65,13 +63,14 @@ You can use the following command to test a model.
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-Example: test ACRN with SlowFast backbone.
+Example: test ACRN with SlowFast backbone on AVA and dump the result to a pkl file.
 
 ```shell
-python tools/test.py configs/detection/acrn/slowfast_acrn_kinetics400_pretrained_r50_8x8x1_cosine_10e_8xb8_ava_rgb.py checkpoints/SOME_CHECKPOINT.pth
+python tools/test.py configs/detection/acrn/slowfast-acrn_kinetics400-pretrained-r50_8xb8-8x8x1-cosine-10e_ava21-rgb.py \
+    checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
-For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset) .
+For more details and optional arguments infos, you can refer to the **Test** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Citation
 
