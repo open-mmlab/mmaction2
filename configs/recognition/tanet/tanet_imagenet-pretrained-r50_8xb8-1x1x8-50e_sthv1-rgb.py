@@ -3,14 +3,6 @@ _base_ = [
     '../../_base_/schedules/sgd_tsm_50e.py'
 ]
 
-file_client_args = dict(
-    io_backend='petrel',
-    path_mapping=dict({
-        'data/sthv1':
-        's204:s3://openmmlab/datasets/action/sthv1'
-    }))
-
-
 # model settings
 model = dict(cls_head=dict(num_classes=174, dropout_ratio=0.6))
 
@@ -25,7 +17,7 @@ ann_file_test = 'data/sthv1/sthv1_val_list_rawframes.txt'
 sthv1_flip_label_map = {2: 4, 4: 2, 30: 41, 41: 30, 52: 66, 66: 52}
 train_pipeline = [
     dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=8),
-    dict(type='RawFrameDecode', **file_client_args),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(
         type='MultiScaleCrop',
@@ -46,7 +38,7 @@ val_pipeline = [
         frame_interval=1,
         num_clips=8,
         test_mode=True),
-    dict(type='RawFrameDecode', **file_client_args),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
     dict(type='FormatShape', input_format='NCHW'),
@@ -60,7 +52,7 @@ test_pipeline = [
         num_clips=8,
         twice_sample=True,
         test_mode=True),
-    dict(type='RawFrameDecode', **file_client_args),
+    dict(type='RawFrameDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='ThreeCrop', crop_size=256),
     dict(type='FormatShape', input_format='NCHW'),

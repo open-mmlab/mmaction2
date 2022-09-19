@@ -3,13 +3,6 @@ _base_ = [
     '../../_base_/default_runtime.py'
 ]
 
-file_client_args = dict(
-    io_backend='petrel',
-    path_mapping=dict({
-        'data/kinetics400':
-        's254:s3://openmmlab/datasets/action/Kinetics400'
-    }))
-
 # dataset settings
 dataset_type = 'VideoDataset'
 data_root = 'data/kinetics400/videos_train'
@@ -19,7 +12,7 @@ ann_file_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
 ann_file_test = 'data/kinetics400/kinetics400_val_list_videos.txt'
 
 train_pipeline = [
-    dict(type='DecordInit', **file_client_args),
+    dict(type='DecordInit'),
     dict(type='DenseSampleFrames', clip_len=1, frame_interval=1, num_clips=8),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
@@ -36,7 +29,7 @@ train_pipeline = [
     dict(type='PackActionInputs')
 ]
 val_pipeline = [
-    dict(type='DecordInit', **file_client_args),
+    dict(type='DecordInit'),
     dict(
         type='DenseSampleFrames',
         clip_len=1,
@@ -50,7 +43,7 @@ val_pipeline = [
     dict(type='PackActionInputs')
 ]
 test_pipeline = [
-    dict(type='DecordInit', **file_client_args),
+    dict(type='DecordInit'),
     dict(
         type='DenseSampleFrames',
         clip_len=1,
