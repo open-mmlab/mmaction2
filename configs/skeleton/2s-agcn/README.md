@@ -20,10 +20,10 @@ In skeleton-based action recognition, graph convolutional networks (GCNs), which
 
 ### NTU60_XSub
 
-| frame sampling strategy | type  | gpus | backbone | top1 acc | testing protocol |                     config                      |                     ckpt                      |                     log                      |
-| :---------------------: | :---: | :--: | :------: | :------: | :--------------: | :---------------------------------------------: | :-------------------------------------------: | :------------------------------------------: |
-|       padding 300       | joint |  1   |   AGCN   |  86.06   |     1 clips      | [config](/configs/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d-3bed61ba.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d.log) |
-|       padding 300       | bone  |  2   |   AGCN   |  86.89   |     1 clips      | [config](/configs/skeleton/2s-agcn/2sagcn_4xb16-80e-ntu60_xsub_bone-3d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e-ntu60_xsub_bone-3d/2sagcn_4xb16-80e-ntu60_xsub_bone-3d-278b8815.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e-ntu60_xsub_bone-3d/2sagcn_4xb16-80e-ntu60_xsub_bone-3d.log) |
+| type  | gpus | backbone | pretrain | top1 acc |                          config                           |                          ckpt                           |                           log                           |
+| :---: | :--: | :------: | :------: | :------: | :-------------------------------------------------------: | :-----------------------------------------------------: | :-----------------------------------------------------: |
+| joint |  4   |   AGCN   |   None   |  85.92   | [config](/configs/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-keypoint-3d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-keypoint-3d/2sagcn_4xb16-80e_ntu60-xsub-keypoint-3d_20220918-3108f53f.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-keypoint-3d/2sagcn_4xb16-80e_ntu60-xsub-keypoint-3d.log) |
+| bone  |  4   |   AGCN   |   None   |  87.02   | [config](/configs/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-bone-3d.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-bone-3d/2sagcn_4xb16-80e_ntu60-xsub-bone-3d_20220918-46a76b9b.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-bone-3d/2sagcn_4xb16-80e_ntu60-xsub-bone-3d.log) |
 
 ## Train
 
@@ -33,19 +33,17 @@ You can use the following command to train a model.
 python tools/train.py ${CONFIG_FILE} [optional arguments]
 ```
 
-Example: train AGCN model on joint data of NTU60 dataset in a deterministic option with periodic validation.
+Example: train AGCN model on **joint data** of NTU60 dataset in a deterministic option with periodic validation.
 
 ```shell
-python tools/train.py configs/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d.py \
-    --work-dir work_dirs/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d \
+python tools/train.py configs/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-keypoint-3d.py \
     --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
-Example: train AGCN model on bone data of NTU60 dataset in a deterministic option with periodic validation.
+Example: train AGCN model on **bone data** of NTU60 dataset in a deterministic option with periodic validation.
 
 ```shell
-python tools/train.py configs/skeleton/2s-agcn/2sagcn_4xb16-80e-ntu60_xsub_bone-3d.py \
-    --work-dir work_dirs/2sagcn_4xb16-80e-ntu60_xsub_bone-3d \
+python tools/train.py configs/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-bone-3d.py \
     --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
@@ -59,17 +57,17 @@ You can use the following command to test a model.
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 ```
 
-Example: test AGCN model on joint data of NTU60 dataset and dump the result to a pickle file.
+Example: test AGCN model on **joint data** of NTU60 dataset and dump the result to a pickle file.
 
 ```shell
-python tools/test.py configs/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60_xsub_keypoint-3d.py \
+python tools/test.py configs/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-keypoint-3d.py \
     checkpoints/SOME_CHECKPOINT.pth --dump joint_result.pkl
 ```
 
-Example: test AGCN model on bone data of NTU60 dataset and dump the result to a pickle file.
+Example: test AGCN model on **bone data** of NTU60 dataset and dump the result to a pickle file.
 
 ```shell
-python tools/test.py configs/skeleton/2s-agcn/2sagcn_4xb16-80e-ntu60_xsub_bone-3d.py \
+python tools/test.py configs/skeleton/2s-agcn/2sagcn_4xb16-80e_ntu60-xsub-bone-3d.py \
     checkpoints/SOME_CHECKPOINT.pth --dump bone_result.pkl
 ```
 
