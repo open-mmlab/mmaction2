@@ -1,5 +1,6 @@
 _base_ = [
-    '../../_base_/models/tanet_r50.py', '../../_base_/schedules/sgd_tsm_100e.py',
+    '../../_base_/models/tanet_r50.py',
+    '../../_base_/schedules/sgd_tsm_100e.py', 
     '../../_base_/default_runtime.py'
 ]
 
