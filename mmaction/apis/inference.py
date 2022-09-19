@@ -126,8 +126,9 @@ def detection_inference(det_config: Union[str, Path, mmengine.Config],
         raise ImportError('Failed to import `inference_detector` and '
                           '`init_detector` from `mmdet.apis`. These apis are '
                           'required in this inference api! ')
-
-    model = init_detector(det_config, det_checkpoint, device)
+    model = init_detector(config=det_config, 
+                          checkpoint=det_checkpoint, 
+                          device=device)
 
     results = []
     data_samples = []
