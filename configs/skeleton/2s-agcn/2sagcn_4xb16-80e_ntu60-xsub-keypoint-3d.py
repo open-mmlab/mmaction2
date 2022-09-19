@@ -1,8 +1,8 @@
 _base_ = ['../../_base_/models/agcn.py', '../../_base_/default_runtime.py']
 
 dataset_type = 'PoseDataset'
-ann_file_train = 'data/ntu60/xsub/train.pkl'
-ann_file_val = 'data/ntu60/xsub/val.pkl'
+ann_file_train = 'data/ntu/nturgb+d_skeletons_60_3d/xsub/train.pkl'
+ann_file_val = 'data/ntu/nturgb+d_skeletons_60_3d/xsub/val.pkl'
 train_pipeline = [
     dict(type='PaddingWithLoop', clip_len=300),
     dict(type='PoseDecode'),
@@ -66,4 +66,13 @@ optim_wrapper = dict(
     optimizer=dict(
         type='SGD', lr=0.1, momentum=0.9, weight_decay=0.0001, nesterov=True))
 
-default_hooks = dict(checkpoint=dict(interval=2), logger=dict(interval=100))
+default_hooks = dict(
+    checkpoint=dict(interval=2, max_keep_ckpts=5), logger=dict(interval=100))
+
+custom_hooks = [dict(type='SyncBuffersHook')]
+
+# Default setting for scaling LR automatically
+#   - `enable` means enable scaling LR automatically
+#       or not by default.
+#   - `base_batch_size` = (4 GPUs) x (16 samples per GPU).
+auto_scale_lr = dict(enable=False, base_batch_size=64)
