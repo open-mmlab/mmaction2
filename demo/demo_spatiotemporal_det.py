@@ -7,16 +7,16 @@ import shutil
 
 import cv2
 import mmcv
+import mmengine
 import numpy as np
 import torch
-import mmengine
 from mmengine import DictAction
 from mmengine.runner import load_checkpoint
 from mmengine.structures import InstanceData
 
+from mmaction.apis import detection_inference
 from mmaction.registry import MODELS
 from mmaction.structures import ActionDataSample
-from mmaction.apis import detection_inference
 from mmaction.utils import register_all_modules
 
 try:
@@ -47,6 +47,7 @@ plate_green = [hex2color(h) for h in plate_green]
 
 def visualize(frames, annotations, plate=plate_blue, max_num=5):
     """Visualize frames with predicted annotations.
+
     Args:
         frames (list[np.ndarray]): Frames for visualization, note that
             len(frames) % len(annotations) should be 0.
@@ -103,6 +104,7 @@ def visualize(frames, annotations, plate=plate_blue, max_num=5):
 
 def frame_extraction(video_path):
     """Extract frames given video_path.
+
     Args:
         video_path (str): The video_path.
     """
@@ -128,6 +130,7 @@ def frame_extraction(video_path):
 
 def load_label_map(file_path):
     """Load Label Map.
+
     Args:
         file_path (str): The file path of label map.
     Returns:
@@ -140,6 +143,7 @@ def load_label_map(file_path):
 
 def abbrev(name):
     """Get the abbreviation of label name:
+
     'take (an object) from (a person)' -> 'take ... from ...'
     """
     while name.find('(') != -1:
@@ -150,6 +154,7 @@ def abbrev(name):
 
 def pack_result(human_detection, result, img_h, img_w):
     """Short summary.
+
     Args:
         human_detection (np.ndarray): Human detection result.
         result (type): The predicted label of each human proposal.
@@ -288,9 +293,9 @@ def main():
     # Get Human detection results
     center_frames = [frame_paths[ind - 1] for ind in timestamps]
 
-    human_detections, _ = detection_inference(args.det_config, 
+    human_detections, _ = detection_inference(args.det_config,
                                               args.det_checkpoint,
-                                              center_frames, 
+                                              center_frames,
                                               args.det_score_thr,
                                               args.det_cat_id, args.device)
     torch.cuda.empty_cache()
