@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from functools import reduce
 from operator import mul
-from typing import List
+from typing import List, Optional
 
 import torch.nn as nn
 from mmengine.logging import print_log
@@ -16,10 +16,19 @@ class SwinOptimWrapperConstructor(DefaultOptimWrapperConstructor):
     def add_params(self,
                    params: List[dict],
                    module: nn.Module,
-                   prefix: str = '',
+                   prefix: Optional[str] = None,
                    **kwargs) -> None:
-        custom_keys = self.paramwise_cfg.get('custom_keys', {})
+        """Add all parameters of module to the params list.
 
+        The parameters of the given module will be added to the list of param
+        groups, with specific rules defined by paramwise_cfg.
+
+        Args:
+            params (List[dict]): A list of param groups, it will be modified
+                in place.
+            module (nn.Module): The module to be added.
+            prefix (str, optional): The prefix of the module. Defaults to None.
+        """
         for name, param in module.named_parameters(recurse=False):
             param_group = {'params': [param]}
             if not param.requires_grad:
@@ -31,15 +40,16 @@ class SwinOptimWrapperConstructor(DefaultOptimWrapperConstructor):
                 param_group['weight_decay'] = self.base_wd
 
             processing_keys = [
-                key for key in custom_keys if key in f'{prefix}.{name}'
+                key for key in self.paramwise_cfg if key in f'{prefix}.{name}'
             ]
             if processing_keys:
                 param_group['lr'] *= \
-                    reduce(mul, [custom_keys[key].get('lr_mult', 1.)
+                    reduce(mul, [self.paramwise_cfg[key].get('lr_mult', 1.)
                                  for key in processing_keys])
                 if self.base_wd is not None:
                     param_group['weight_decay'] *= \
-                        reduce(mul, [custom_keys[key].get('decay_mult', 1.)
+                        reduce(mul, [self.paramwise_cfg[key].
+                               get('decay_mult', 1.)
                                      for key in processing_keys])
 
             params.append(param_group)
@@ -49,8 +59,8 @@ class SwinOptimWrapperConstructor(DefaultOptimWrapperConstructor):
                     continue
                 full_name = f'{prefix}.{name}' if prefix else name
                 print_log(
-                    f'paramwise_options -- \
-                    {full_name}: {key} = {round(value, 8)}',
+                    f'paramwise_options -- '
+                    f'{full_name}: {key} = {round(value, 8)}',
                     logger='current')
 
         for child_name, child_mod in module.named_children():

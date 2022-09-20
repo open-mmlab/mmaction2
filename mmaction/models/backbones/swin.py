@@ -789,9 +789,6 @@ class SwinTransformer3D(nn.Module):
 
         msg = self.load_state_dict(state_dict, strict=False)
         logger.info(msg)
-        logger.info(f"=> loaded successfully '{self.pretrained}'")
-        del checkpoint
-        torch.cuda.empty_cache()
 
     def init_weights(self, pretrained: Optional[str] = None) -> None:
         """Initialize the weights in backbone.
