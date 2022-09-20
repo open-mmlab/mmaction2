@@ -11,7 +11,8 @@ import torch.utils.checkpoint as checkpoint
 from einops import rearrange
 from mmengine.logging import MMLogger
 from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
-from timm.models.layers import DropPath, trunc_normal_
+from mmcv.cnn.bricks import DropPath
+from mmengine.model.weight_init import trunc_normal_
 from torch import Tensor
 
 from mmaction.registry import MODELS
@@ -733,9 +734,9 @@ class SwinTransformer3D(nn.Module):
         """Inflate the swin2d parameters to swin3d.
 
         The differences between swin3d and swin2d mainly lie in an extra
-        axis. To utilize the pretrained parameters in 2d model,
-        the weight of swin2d models should be inflated to fit in the shapes of
-        the 3d counterpart.
+        axis. To utilize the pretrained parameters in 2d model, the weight
+        of swin2d models should be inflated to fit in the shapes of the
+        3d counterpart.
 
         Args:
             logger (MMLogger): The logger used to print debugging information.
