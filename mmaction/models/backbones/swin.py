@@ -17,7 +17,8 @@ from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
 from mmaction.registry import MODELS
 
 
-def window_partition(x: torch.Tensor, window_size: Sequence[int]) -> torch.Tensor:
+def window_partition(x: torch.Tensor,
+                     window_size: Sequence[int]) -> torch.Tensor:
     """
     Args:
         x (torch.Tensor): The input features with size ``(B, D, H, W, C)``.
@@ -35,8 +36,8 @@ def window_partition(x: torch.Tensor, window_size: Sequence[int]) -> torch.Tenso
     return windows
 
 
-def window_reverse(windows: torch.Tensor, window_size: Sequence[int], B: int, D: int,
-                   H: int, W: int) -> torch.Tensor:
+def window_reverse(windows: torch.Tensor, window_size: Sequence[int], B: int,
+                   D: int, H: int, W: int) -> torch.Tensor:
     """
     Args:
         windows (torch.Tensor): Input windows with size
@@ -149,11 +150,14 @@ class WindowAttention3D(nn.Module):
         trunc_normal_(self.relative_position_bias_table, std=.02)
         self.softmax = nn.Softmax(dim=-1)
 
-    def forward(self, x: torch.Tensor, mask: Optional[torch.Tensor] = None) -> torch.Tensor:
+    def forward(self,
+                x: torch.Tensor,
+                mask: Optional[torch.Tensor] = None) -> torch.Tensor:
         """Forward function.
 
         Args:
-            x (torch.Tensor): input features with shape of ``(B*num_windows, N, C)``.
+            x (torch.Tensor): input features with shape of
+                ``(B*num_windows, N, C)``.
             mask (torch.Tensor, optional): (0/-inf) mask with shape of
                 ``(num_windows, N, N)``. Defaults to None.
         """
@@ -301,7 +305,8 @@ class SwinTransformerBlock3D(nn.Module):
             act_layer=act_layer,
             drop=drop)
 
-    def forward_part1(self, x: torch.Tensor, mask_matrix: torch.Tensor) -> torch.Tensor:
+    def forward_part1(self, x: torch.Tensor,
+                      mask_matrix: torch.Tensor) -> torch.Tensor:
         """Forward function part1 including ``LN`` and ``W-MSA`` or ``SW-
         MSA``."""
         B, D, H, W, C = x.shape
@@ -353,7 +358,8 @@ class SwinTransformerBlock3D(nn.Module):
         """Forward function part2 including ``LN`` and ``MLP``."""
         return self.drop_path(self.mlp(self.norm2(x)))
 
-    def forward(self, x: torch.Tensor, mask_matrix: torch.Tensor) -> torch.Tensor:
+    def forward(self, x: torch.Tensor,
+                mask_matrix: torch.Tensor) -> torch.Tensor:
         """Forward function.
 
         Args:
