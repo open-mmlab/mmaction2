@@ -60,11 +60,6 @@ def parse_args():
         default=0.9,
         help='the threshold of human detection score')
     parser.add_argument(
-        '--action-score-thr',
-        type=float,
-        default=0.5,
-        help='the threshold of human action score')
-    parser.add_argument(
         '--det-cat-id',
         type=int,
         default=0,
