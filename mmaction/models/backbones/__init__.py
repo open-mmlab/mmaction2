@@ -13,10 +13,10 @@ from .resnet_audio import ResNetAudio
 from .resnet_tin import ResNetTIN
 from .resnet_tsm import ResNetTSM
 from .stgcn import STGCN
+from .swin import SwinTransformer3D
 from .tanet import TANet
 from .timesformer import TimeSformer
 from .x3d import X3D
-from .swin import SwinTransformer3D
 
 __all__ = [
     'C3D', 'ResNet', 'ResNet3d', 'ResNetTSM', 'ResNet2Plus1d',
