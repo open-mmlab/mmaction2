@@ -13,15 +13,14 @@ from mmcv.cnn.bricks import DropPath
 from mmengine.logging import MMLogger
 from mmengine.model.weight_init import trunc_normal_
 from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
-from torch import Tensor
 
 from mmaction.registry import MODELS
 
 
-def window_partition(x: Tensor, window_size: Sequence[int]) -> Tensor:
+def window_partition(x: torch.Tensor, window_size: Sequence[int]) -> torch.Tensor:
     """
     Args:
-        x (Tensor): The input features with size ``(B, D, H, W, C)``.
+        x (torch.Tensor): The input features with size ``(B, D, H, W, C)``.
         window_size (Sequence[int]): The window size, ``(w_d, w_h, w_w)``.
 
     Returns:
@@ -36,11 +35,11 @@ def window_partition(x: Tensor, window_size: Sequence[int]) -> Tensor:
     return windows
 
 
-def window_reverse(windows: Tensor, window_size: Sequence[int], B: int, D: int,
-                   H: int, W: int) -> Tensor:
+def window_reverse(windows: torch.Tensor, window_size: Sequence[int], B: int, D: int,
+                   H: int, W: int) -> torch.Tensor:
     """
     Args:
-        windows (Tensor): Input windows with size
+        windows (torch.Tensor): Input windows with size
             ``(B*num_windows, w_d, w_h, w_w, C)``.
         window_size (Sequence[int]): The window size, ``(w_d, w_h, w_w)``.
         B (int): Batch size of images.
@@ -49,7 +48,7 @@ def window_reverse(windows: Tensor, window_size: Sequence[int], B: int, D: int,
         W (int): Width of image.
 
     Returns:
-        Tensor: The feature maps reversed from windows with
+        torch.Tensor: The feature maps reversed from windows with
             size ``(B, D, H, W, C)``.
     """
     x = windows.view(B, D // window_size[0], H // window_size[1],
@@ -150,12 +149,12 @@ class WindowAttention3D(nn.Module):
         trunc_normal_(self.relative_position_bias_table, std=.02)
         self.softmax = nn.Softmax(dim=-1)
 
-    def forward(self, x: Tensor, mask: Optional[Tensor] = None) -> Tensor:
+    def forward(self, x: torch.Tensor, mask: Optional[torch.Tensor] = None) -> torch.Tensor:
         """Forward function.
 
         Args:
-            x (Tensor): input features with shape of ``(B*num_windows, N, C)``.
-            mask (Tensor, optional): (0/-inf) mask with shape of
+            x (torch.Tensor): input features with shape of ``(B*num_windows, N, C)``.
+            mask (torch.Tensor, optional): (0/-inf) mask with shape of
                 ``(num_windows, N, N)``. Defaults to None.
         """
         B_, N, C = x.shape
@@ -217,7 +216,7 @@ class Mlp(nn.Module):
         self.fc2 = nn.Linear(hidden_features, out_features)
         self.drop = nn.Dropout(drop)
 
-    def forward(self, x: Tensor) -> Tensor:
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Forward function."""
         x = self.fc1(x)
         x = self.act(x)
@@ -302,7 +301,7 @@ class SwinTransformerBlock3D(nn.Module):
             act_layer=act_layer,
             drop=drop)
 
-    def forward_part1(self, x: Tensor, mask_matrix: Tensor) -> Tensor:
+    def forward_part1(self, x: torch.Tensor, mask_matrix: torch.Tensor) -> torch.Tensor:
         """Forward function part1 including ``LN`` and ``W-MSA`` or ``SW-
         MSA``."""
         B, D, H, W, C = x.shape
@@ -350,16 +349,16 @@ class SwinTransformerBlock3D(nn.Module):
             x = x[:, :D, :H, :W, :].contiguous()
         return x
 
-    def forward_part2(self, x: Tensor) -> Tensor:
+    def forward_part2(self, x: torch.Tensor) -> torch.Tensor:
         """Forward function part2 including ``LN`` and ``MLP``."""
         return self.drop_path(self.mlp(self.norm2(x)))
 
-    def forward(self, x: Tensor, mask_matrix: Tensor) -> Tensor:
+    def forward(self, x: torch.Tensor, mask_matrix: torch.Tensor) -> torch.Tensor:
         """Forward function.
 
         Args:
-            x (Tensor): Input feature, tensor size ``(B, D, H, W, C)``.
-            mask_matrix (Tensor): Attention mask for cyclic shift.
+            x (torch.Tensor): Input feature, tensor size ``(B, D, H, W, C)``.
+            mask_matrix (torch.Tensor): Attention mask for cyclic shift.
         """
 
         shortcut = x
@@ -392,11 +391,11 @@ class PatchMerging(nn.Module):
         self.reduction = nn.Linear(4 * dim, 2 * dim, bias=False)
         self.norm = norm_layer(4 * dim)
 
-    def forward(self, x: Tensor) -> Tensor:
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Forward function.
 
         Args:
-            x (Tensor): Input feature, tensor size ``(B, D, H, W, C)``.
+            x (torch.Tensor): Input feature, tensor size ``(B, D, H, W, C)``.
         """
         B, D, H, W, C = x.shape
 
@@ -421,7 +420,7 @@ class PatchMerging(nn.Module):
 @lru_cache()
 def compute_mask(D: int, H: int, W: int, window_size: Sequence[int],
                  shift_size: Sequence[int],
-                 device: Union[str, torch.device]) -> Tensor:
+                 device: Union[str, torch.device]) -> torch.Tensor:
     img_mask = torch.zeros((1, D, H, W, 1), device=device)  # 1 Dp Hp Wp 1
     cnt = 0
     for d in slice(-window_size[0]), slice(-window_size[0],
@@ -519,11 +518,11 @@ class BasicLayer(nn.Module):
         if self.downsample is not None:
             self.downsample = downsample(dim=dim, norm_layer=norm_layer)
 
-    def forward(self, x: Tensor) -> Tensor:
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Forward function.
 
         Args:
-            x (Tensor): Input feature, tensor size ``(B, C, D, H, W)``.
+            x (torch.Tensor): Input feature, tensor size ``(B, C, D, H, W)``.
         """
         # calculate attention mask for SW-MSA
         B, C, D, H, W = x.shape
@@ -575,7 +574,7 @@ class PatchEmbed3D(nn.Module):
         else:
             self.norm = None
 
-    def forward(self, x: Tensor) -> Tensor:
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Forward function."""
         # padding
         _, _, D, H, W = x.size()
@@ -827,7 +826,7 @@ class SwinTransformer3D(nn.Module):
         else:
             raise TypeError('pretrained must be a str or None')
 
-    def forward(self, x: Tensor) -> Tensor:
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Forward function."""
         x = self.patch_embed(x)
 
