@@ -9,10 +9,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.utils.checkpoint as checkpoint
 from einops import rearrange
-from mmengine.logging import MMLogger
-from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
 from mmcv.cnn.bricks import DropPath
+from mmengine.logging import MMLogger
 from mmengine.model.weight_init import trunc_normal_
+from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
 from torch import Tensor
 
 from mmaction.registry import MODELS
