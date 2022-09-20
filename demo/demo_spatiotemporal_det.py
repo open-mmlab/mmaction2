@@ -182,15 +182,15 @@ def parse_args():
     parser.add_argument('out_filename', help='output filename')
     parser.add_argument(
         '--config',
-        default=('configs/detection/ava/slowfast_kinetics400-pretrained-'
-                 'r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb.py'),
+        default=('configs/detection/ava/slowonly_kinetics400-pretrained-'
+                 'r101_8xb16-8x8x1-20e_ava21-rgb.py'),
         help='spatialtemporal detection model config file path')
     parser.add_argument(
         '--checkpoint',
         default=('https://download.openmmlab.com/mmaction/detection/ava/'
-                 'slowfast_temporal_max_kinetics_pretrained_r50_8x8x1_'
-                 'cosine_10e_ava22_rgb/slowfast_temporal_max_kinetics_'
-                 'pretrained_r50_8x8x1_cosine_10e_ava22_rgb-874e0845.pth'),
+                 'slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb/'
+                 'slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb_'
+                 '20201217-16378594.pth'),
         help='spatialtemporal detection model checkpoint file/url')
     parser.add_argument(
         '--det-config',
@@ -213,6 +213,11 @@ def parse_args():
         type=int,
         default=0,
         help='the category id for human detection')
+    parser.add_argument(
+        '--action-score-thr',
+        type=float,
+        default=0.5,
+        help='the threshold of human action score')
     parser.add_argument(
         '--label-map',
         default='tools/data/ava/label_map.txt',
@@ -356,12 +361,12 @@ def main():
                 prediction.append([])
             # Perform action score thr
             for i in range(scores.shape[1]):
-                if i + 1 not in label_map:
+                if i not in label_map:
                     continue
                 for j in range(proposal.shape[0]):
                     if scores[j, i] > args.action_score_thr:
-                        prediction[j].append(
-                            (label_map[i + 1], scores[j, i].item()))
+                        prediction[j].append((label_map[i], scores[j,
+                                                                   i].item()))
             predictions.append(prediction)
         prog_bar.update()
 
