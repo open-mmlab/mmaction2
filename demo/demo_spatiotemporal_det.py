@@ -178,7 +178,7 @@ def parse_args():
     parser.add_argument(
         '--config',
         default=('configs/detection/ava/slowfast_kinetics400-pretrained-'
-                 'r50_8xb8-8x8x1-20e_ava21-rgb.py'),
+                 'r50-temporal-max_8xb6-8x8x1-cosine-10e_ava22-rgb.py'),
         help='spatialtemporal detection model config file path')
     parser.add_argument(
         '--checkpoint',
@@ -298,7 +298,7 @@ def main():
         det = human_detections[i]
         det[:, 0:4:2] *= w_ratio
         det[:, 1:4:2] *= h_ratio
-        human_detections[i] = det[:, :4].to(args.device)
+        human_detections[i] = torch.from_numpy(det[:, :4]).to(args.device)
 
     # Build STDET model
     try:
@@ -324,7 +324,7 @@ def main():
 
     print('Performing SpatioTemporal Action Detection for each clip')
     assert len(timestamps) == len(human_detections)
-    prog_bar = mmcv.ProgressBar(len(timestamps))
+    prog_bar = mmengine.ProgressBar(len(timestamps))
     for timestamp, proposal in zip(timestamps, human_detections):
         if proposal.shape[0] == 0:
             predictions.append(None)
