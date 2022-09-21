@@ -17,6 +17,21 @@ from mmaction.utils import ConfigType, OptConfigType
 
 
 class Attention(BaseModule):
+    """Multi-head Self-attention.
+
+    Args:
+        embed_dims (int): Dimensions of embedding.
+        num_heads (int): Number of parallel attention heads.
+        qkv_bias (bool): If True, add a learnable bias to q and v.
+            Defaults to True.
+        qk_scale (float | optional): Override default qk scale of
+            ``head_dim ** -0.5`` if set. Defaults to None.
+        attn_drop_rate (float): Dropout ratio of attention weight.
+            Defaults to 0.
+        drop_rate (float | optional): Dropout ratio of output. Defaults to 0.
+        init_cfg (dict | None): The Config for initialization. Defaults to
+            None.
+    """
 
     def __init__(self,
                  embed_dims: int,
@@ -47,6 +62,13 @@ class Attention(BaseModule):
         self.v_bias = nn.Parameter(torch.zeros(self.embed_dims))
 
     def forward(self, x: Tensor) -> Tensor:
+        """Defines the computation performed at every call.
+
+        Args:
+            x (Tensor): The input data with size of (B, N, C).
+        Returns:
+            Tensor: The output of the attention block, same size as inputs.
+        """
         B, N, C = x.shape
 
         if hasattr(self, 'q_bias'):
@@ -72,6 +94,31 @@ class Attention(BaseModule):
 
 
 class Block(BaseModule):
+    """The basic block in the Vision Transformer.
+
+    Args:
+        embed_dims (int): Dimensions of embedding.
+        num_heads (int): Number of parallel attention heads.
+        mlp_ratio (int): The ratio between the hidden layer and the input layer
+            in the FFN. Defaults to 4.
+        qkv_bias (bool): If True, add a learnable bias to q and v.
+            Defaults to True.
+        qk_scale (float | optional): Override default qk scale of
+            ``head_dim ** -0.5`` if set. Defaults to None.
+        drop_rate (float | optional): Dropout ratio of output. Defaults to 0.
+        attn_drop_rate (float): Dropout ratio of attention weight.
+            Defaults to 0.
+        drop_path_rate (float): Dropout ratio of the residual branch.
+            Defaults to 0.
+        init_values (float): Value to init the multiplier of the residual
+            branch. Defaults to 0.
+        act_cfg (dict): Config for activation layer in FFN. Defaults to
+            `dict(type='GELU')`.
+        norm_cfg (dict): Config for norm layers. Defaults to
+            `dict(type='LN', eps=1e-6)`.
+        init_cfg (dict | None): The Config for initialization. Defaults to
+            None.
+    """
 
     def __init__(self,
                  embed_dims: int,
@@ -120,6 +167,13 @@ class Block(BaseModule):
                 init_values * torch.ones((dim)), requires_grad=True)
 
     def forward(self, x: Tensor) -> Tensor:
+        """Defines the computation performed at every call.
+
+        Args:
+            x (Tensor): The input data with size of (B, N, C).
+        Returns:
+            Tensor: The output of the attention block, same size as inputs.
+        """
         if hasattr(self, 'gamma_1'):
             x = x + self.drop_path(self.gamma_1 * self.attn(self.norm1(x)))
             x = x + self.drop_path(self.gamma_2 * self.mlp(self.norm2(x)))
@@ -156,7 +210,43 @@ def get_sinusoid_encoding(n_position: int, embed_dims: int):
 
 @MODELS.register_module()
 class VisionTransformer(BaseModule):
-    """Vision Transformer with support for patch or hybrid CNN input stage."""
+    """Vision Transformer with support for patch or hybrid CNN input stage. An
+    impl of `VideoMAE: Masked Autoencoders are Data-Efficient Learners for
+    Self-Supervised Video Pre-Training <https://arxiv.org/pdf/2203.12602.pdf>`_
+
+    Args:
+        img_size (int | tuple): Size of input image. Defaults to 224.
+        patch_size (int): Spatial size of one patch. Defaults to 16.
+        in_channels (int): The number of channels of he input. Defaults to 3.
+        embed_dims (int): Dimensions of embedding. Defaults to 768.
+        depth (int): number of blocks in the transformer. Defaults to 12.
+        num_heads (int): Number of parallel attention heads in
+            TransformerCoder. Defaults to 12.
+        mlp_ratio (int): The ratio between the hidden layer and the input layer
+            in the FFN. Defaults to 4.
+        qkv_bias (bool): If True, add a learnable bias to q and v.
+            Defaults to True.
+        qk_scale (float | optional): Override default qk scale of
+            ``head_dim ** -0.5`` if set. Defaults to None.
+        drop_rate (float | optional): Dropout ratio of output. Defaults to 0.
+        attn_drop_rate (float): Dropout ratio of attention weight.
+            Defaults to 0.
+        drop_path_rate (float): Dropout ratio of the residual branch.
+            Defaults to 0.
+        norm_cfg (dict): Config for norm layers. Defaults to
+            `dict(type='LN', eps=1e-6)`.
+        init_values (float): Value to init the multiplier of the residual
+            branch. Defaults to 0.
+        use_learnable_pos_emb (bool): If True, use learnable positional
+            embedding, othersize use sinusoid encoding. Defaults to False.
+        num_frames (int): Number of frames in the video. Defaults to 16.
+        tubelet_size (int): Temporal size of one patch. Defaults to 2.
+        use_mean_pooling (bool): If True, take the mean pooling over all
+            positions. Defaults to True.
+        init_cfg (dict | None): The Config for initialization. Defaults to
+            None.
+        pretrained (str | None): Name of pretrained model. Default: None.
+    """
 
     def __init__(self,
                  img_size: int = 224,
@@ -179,7 +269,7 @@ class VisionTransformer(BaseModule):
                  use_mean_pooling: int = True,
                  init_cfg: OptConfigType = None,
                  pretrained: Optional[str] = None,
-                 **kwargs):
+                 **kwargs) -> None:
         super().__init__(init_cfg=init_cfg)
         self.pretrained = pretrained
         patch_size = to_2tuple(patch_size)
