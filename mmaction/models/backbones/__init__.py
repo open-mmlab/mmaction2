@@ -15,11 +15,12 @@ from .resnet_tsm import ResNetTSM
 from .stgcn import STGCN
 from .tanet import TANet
 from .timesformer import TimeSformer
+from .vit_mae import VisionTransformer
 from .x3d import X3D
 
 __all__ = [
-    'C3D', 'ResNet', 'ResNet3d', 'ResNetTSM', 'ResNet2Plus1d',
-    'ResNet3dSlowFast', 'ResNet3dSlowOnly', 'ResNet3dCSN', 'ResNetTIN', 'X3D',
-    'ResNet3dLayer', 'MobileNetV2TSM', 'MobileNetV2', 'TANet', 'TimeSformer',
-    'STGCN', 'AGCN', 'ResNetAudio'
+    'AGCN', 'C3D', 'MobileNetV2', 'MobileNetV2TSM', 'ResNet', 'ResNet2Plus1d',
+    'ResNet3d', 'ResNet3dCSN', 'ResNet3dLayer', 'ResNet3dSlowFast',
+    'ResNet3dSlowOnly', 'ResNetAudio', 'ResNetTIN', 'ResNetTSM', 'STGCN',
+    'TANet', 'TimeSformer', 'VisionTransformer', 'X3D'
 ]
