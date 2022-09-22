@@ -33,7 +33,7 @@ ann_file_test = 'data/kinetics400/kinetics400_val_list_videos.txt'
 test_pipeline = [
     dict(type='DecordInit'),
     dict(
-        type='SampleFrames',
+        type='SampleFramesV2',
         clip_len=16,
         frame_interval=4,
         num_clips=5,
