@@ -5,8 +5,8 @@ _base_ = [
 model = dict(cls_head=dict(num_classes=700))
 
 dataset_type = 'VideoDataset'
-data_root = 'data/kinetics700/train'
-data_root_val = 'data/kinetics700/val'
+data_root = 'data/kinetics700/videos_train'
+data_root_val = 'data/kinetics700/videos_val'
 ann_file_train = 'data/kinetics700/kinetics700_train_list_videos.txt'
 ann_file_val = 'data/kinetics700/kinetics700_val_list_videos.txt'
 ann_file_test = 'data/kinetics700/kinetics700_val_list_videos.txt'
