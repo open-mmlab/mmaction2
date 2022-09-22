@@ -236,8 +236,8 @@ def test_tpn():
 
 def test_tanet():
     register_all_modules()
-    config = get_recognizer_cfg(
-        'tanet/tanet_r50_8xb8-dense-1x1x8-100e_kinetics400-rgb.py')
+    config = get_recognizer_cfg('tanet/tanet_imagenet-pretrained-r50_8xb8-'
+                                'dense-1x1x8-100e_kinetics400-rgb.py')
     config.model['backbone']['pretrained'] = None
 
     recognizer = MODELS.build(config.model)

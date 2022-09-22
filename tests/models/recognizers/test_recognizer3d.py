@@ -317,3 +317,34 @@ def test_c3d():
     recognizer(imgs, gradcam=True)
     for one_img in img_list:
         recognizer(one_img, gradcam=True)
+
+
+def test_vit_mae():
+    register_all_modules()
+    config = get_recognizer_cfg(
+        'vit_mae/vit_mae-pretrained-vit-base_16x4x1_kinetics-400.py')
+    config.model['backbone']['pretrained'] = None
+    config.model['backbone']['img_size'] = 64
+    config.model['backbone']['num_frames'] = 4
+
+    recognizer = MODELS.build(config.model)
+
+    input_shape = (1, 3, 3, 4, 64, 64)
+    demo_inputs = generate_recognizer_demo_inputs(input_shape, '3D')
+
+    imgs = demo_inputs['imgs']
+    gt_labels = demo_inputs['gt_labels']
+
+    losses = recognizer(imgs, gt_labels)
+    assert_output(losses)
+
+    # Test forward test
+    with torch.no_grad():
+        img_list = [img[None, :] for img in imgs]
+        for one_img in img_list:
+            recognizer(one_img, None, return_loss=False)
+
+    # Test forward gradcam
+    recognizer(imgs, gradcam=True)
+    for one_img in img_list:
+        recognizer(one_img, gradcam=True)
