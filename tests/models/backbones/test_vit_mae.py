@@ -13,6 +13,7 @@ def test_vit_backbone():
         qkv_bias=True,
         drop_path_rate=0.2,
         init_values=0.1)
+    model.init_weights()
 
     assert model(x).shape == torch.Size([1, 768])
     model.eval()
@@ -22,7 +23,9 @@ def test_vit_backbone():
         img_size=64,
         num_frames=8,
         use_learnable_pos_emb=True,
+        drop_rate=0.1,
         use_mean_pooling=False)
+    model.init_weights()
 
     assert model(x).shape == torch.Size([1, 768])
     model.eval()
