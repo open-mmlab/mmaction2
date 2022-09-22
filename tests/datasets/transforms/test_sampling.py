@@ -9,7 +9,8 @@ from numpy.testing import assert_array_equal
 
 from mmaction.datasets.transforms import (AudioFeatureSelector,
                                           DenseSampleFrames, SampleAVAFrames,
-                                          SampleFrames, UntrimmedSampleFrames)
+                                          SampleFrames, SampleFramesV2,
+                                          UntrimmedSampleFrames)
 
 
 class BaseTestLoading:
@@ -398,6 +399,300 @@ class TestSampling(BaseTestLoading):
         assert len(sample_frames_results['frame_inds']) == 48
         sample_frames_results = sample_frames(frame_result)
         assert len(sample_frames_results['frame_inds']) == 48
+        assert np.max(sample_frames_results['frame_inds']) <= 40
+        assert np.min(sample_frames_results['frame_inds']) >= 1
+
+    def test_sample_framesv2(self):
+        target_keys = [
+            'frame_inds', 'clip_len', 'frame_interval', 'num_clips',
+            'total_frames'
+        ]
+
+        # Sample Frame with tail Frames
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        config = dict(
+            clip_len=3, frame_interval=1, num_clips=5, keep_tail_frames=True)
+        sample_frames = SampleFramesV2(**config)
+        sample_frames(video_result)
+        sample_frames(frame_result)
+
+        # Sample Frame with no temporal_jitter
+        # clip_len=3, frame_interval=1, num_clips=5
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        config = dict(
+            clip_len=3, frame_interval=1, num_clips=5, temporal_jitter=False)
+        sample_frames = SampleFramesV2(**config)
+        sample_frames_results = sample_frames(video_result)
+        assert assert_dict_has_keys(sample_frames_results, target_keys)
+        assert len(sample_frames_results['frame_inds']) == 15
+        sample_frames_results = sample_frames(frame_result)
+        assert len(sample_frames_results['frame_inds']) == 15
+        assert np.max(sample_frames_results['frame_inds']) <= 5
+        assert np.min(sample_frames_results['frame_inds']) >= 1
+        assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
+                                       f'clip_len={3}, '
+                                       f'frame_interval={1}, '
+                                       f'num_clips={5}, '
+                                       f'temporal_jitter={False}, '
+                                       f'twice_sample={False}, '
+                                       f'out_of_bound_opt=loop, '
+                                       f'test_mode={False})')
+
+        # Sample Frame with no temporal_jitter
+        # clip_len=5, frame_interval=1, num_clips=5,
+        # out_of_bound_opt='repeat_last'
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        config = dict(
+            clip_len=5,
+            frame_interval=1,
+            num_clips=5,
+            temporal_jitter=False,
+            out_of_bound_opt='repeat_last')
+        sample_frames = SampleFrames(**config)
+        sample_frames_results = sample_frames(video_result)
+        assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
+                                       f'clip_len={5}, '
+                                       f'frame_interval={1}, '
+                                       f'num_clips={5}, '
+                                       f'temporal_jitter={False}, '
+                                       f'twice_sample={False}, '
+                                       f'out_of_bound_opt=repeat_last, '
+                                       f'test_mode={False})')
+
+        def check_monotonous(arr):
+            length = arr.shape[0]
+            for i in range(length - 1):
+                if arr[i] > arr[i + 1]:
+                    return False
+            return True
+
+        assert assert_dict_has_keys(sample_frames_results, target_keys)
+        assert len(sample_frames_results['frame_inds']) == 25
+        frame_inds = sample_frames_results['frame_inds'].reshape([5, 5])
+        for i in range(5):
+            assert check_monotonous(frame_inds[i])
+
+        sample_frames_results = sample_frames(frame_result)
+        assert len(sample_frames_results['frame_inds']) == 25
+        frame_inds = sample_frames_results['frame_inds'].reshape([5, 5])
+        for i in range(5):
+            assert check_monotonous(frame_inds[i])
+        assert np.max(sample_frames_results['frame_inds']) <= 5
+        assert np.min(sample_frames_results['frame_inds']) >= 1
+
+        # Sample Frame with temporal_jitter
+        # clip_len=4, frame_interval=2, num_clips=5
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        config = dict(
+            clip_len=4, frame_interval=2, num_clips=5, temporal_jitter=True)
+        sample_frames = SampleFrames(**config)
+        sample_frames_results = sample_frames(video_result)
+        assert assert_dict_has_keys(sample_frames_results, target_keys)
+        assert len(sample_frames_results['frame_inds']) == 20
+        sample_frames_results = sample_frames(frame_result)
+        assert len(sample_frames_results['frame_inds']) == 20
+        assert np.max(sample_frames_results['frame_inds']) <= 5
+        assert np.min(sample_frames_results['frame_inds']) >= 1
+        assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
+                                       f'clip_len={4}, '
+                                       f'frame_interval={2}, '
+                                       f'num_clips={5}, '
+                                       f'temporal_jitter={True}, '
+                                       f'twice_sample={False}, '
+                                       f'out_of_bound_opt=loop, '
+                                       f'test_mode={False})')
+
+        # Sample Frame with no temporal_jitter in test mode
+        # clip_len=4, frame_interval=1, num_clips=6
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        config = dict(
+            clip_len=4,
+            frame_interval=1,
+            num_clips=6,
+            temporal_jitter=False,
+            test_mode=True)
+        sample_frames = SampleFramesV2(**config)
+        sample_frames_results = sample_frames(video_result)
+        assert assert_dict_has_keys(sample_frames_results, target_keys)
+        assert len(sample_frames_results['frame_inds']) == 24
+        sample_frames_results = sample_frames(frame_result)
+        assert len(sample_frames_results['frame_inds']) == 24
+        assert np.max(sample_frames_results['frame_inds']) <= 5
+        assert np.min(sample_frames_results['frame_inds']) >= 1
+        assert repr(sample_frames) == (f'{sample_frames.__class__.__name__}('
+                                       f'clip_len={4}, '
+                                       f'frame_interval={1}, '
+                                       f'num_clips={6}, '
+                                       f'temporal_jitter={False}, '
+                                       f'twice_sample={False}, '
+                                       f'out_of_bound_opt=loop, '
+                                       f'test_mode={True})')
+
+        # Sample Frame with no temporal_jitter in test mode
+        # clip_len=3, frame_interval=1, num_clips=6
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        config = dict(
+            clip_len=3,
+            frame_interval=1,
+            num_clips=6,
+            temporal_jitter=False,
+            test_mode=True)
+        sample_frames = SampleFramesV2(**config)
+        sample_frames_results = sample_frames(video_result)
+        assert assert_dict_has_keys(sample_frames_results, target_keys)
+        assert len(sample_frames_results['frame_inds']) == 18
+        sample_frames_results = sample_frames(frame_result)
+        assert len(sample_frames_results['frame_inds']) == 18
+        assert np.max(sample_frames_results['frame_inds']) <= 5
+        assert np.min(sample_frames_results['frame_inds']) >= 1
+
+        # Sample Frame with no temporal_jitter to get clip_offsets
+        # clip_len=1, frame_interval=1, num_clips=8
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        frame_result['total_frames'] = 6
+        config = dict(
+            clip_len=1,
+            frame_interval=1,
+            num_clips=8,
+            temporal_jitter=False,
+            test_mode=True)
+        sample_frames = SampleFramesV2(**config)
+        sample_frames_results = sample_frames(video_result)
+        assert assert_dict_has_keys(sample_frames_results, target_keys)
+        assert len(sample_frames_results['frame_inds']) == 8
+        sample_frames_results = sample_frames(frame_result)
+        assert len(sample_frames_results['frame_inds']) == 8
+        assert_array_equal(sample_frames_results['frame_inds'],
+                           np.array([1, 2, 2, 3, 4, 5, 5, 6]))
+
+        # Sample Frame with no temporal_jitter to get clip_offsets
+        # clip_len=1, frame_interval=1, num_clips=8
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        frame_result['total_frames'] = 6
+        config = dict(
+            clip_len=1,
+            frame_interval=1,
+            num_clips=8,
+            temporal_jitter=False,
+            test_mode=True)
+        sample_frames = SampleFramesV2(**config)
+        sample_frames_results = sample_frames(video_result)
+        assert sample_frames_results['start_index'] == 0
+        assert assert_dict_has_keys(sample_frames_results, target_keys)
+        assert len(sample_frames_results['frame_inds']) == 8
+        sample_frames_results = sample_frames(frame_result)
+        assert len(sample_frames_results['frame_inds']) == 8
+        assert_array_equal(sample_frames_results['frame_inds'],
+                           np.array([1, 2, 2, 3, 4, 5, 5, 6]))
+
+        # Sample Frame with no temporal_jitter to get clip_offsets zero
+        # clip_len=6, frame_interval=1, num_clips=1
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        frame_result['total_frames'] = 5
+        config = dict(
+            clip_len=6,
+            frame_interval=1,
+            num_clips=1,
+            temporal_jitter=False,
+            test_mode=True)
+        sample_frames = SampleFramesV2(**config)
+        sample_frames_results = sample_frames(video_result)
+        assert sample_frames_results['start_index'] == 0
+        assert assert_dict_has_keys(sample_frames_results, target_keys)
+        assert len(sample_frames_results['frame_inds']) == 6
+        sample_frames_results = sample_frames(frame_result)
+        assert len(sample_frames_results['frame_inds']) == 6
+        assert_array_equal(sample_frames_results['frame_inds'],
+                           [1, 2, 3, 4, 5, 1])
+
+        # Sample Frame with no temporal_jitter to get avg_interval <= 0
+        # clip_len=12, frame_interval=1, num_clips=20
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        frame_result['total_frames'] = 30
+        config = dict(
+            clip_len=12,
+            frame_interval=1,
+            num_clips=20,
+            temporal_jitter=False,
+            test_mode=False)
+        sample_frames = SampleFramesV2(**config)
+        sample_frames_results = sample_frames(video_result)
+        assert sample_frames_results['start_index'] == 0
+        assert assert_dict_has_keys(sample_frames_results, target_keys)
+        assert len(sample_frames_results['frame_inds']) == 240
+        sample_frames_results = sample_frames(frame_result)
+        assert len(sample_frames_results['frame_inds']) == 240
+        assert np.max(sample_frames_results['frame_inds']) <= 30
+        assert np.min(sample_frames_results['frame_inds']) >= 1
+
+        # Sample Frame with no temporal_jitter to get clip_offsets
+        # clip_len=1, frame_interval=1, num_clips=8
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        frame_result['total_frames'] = 6
+        config = dict(
+            clip_len=1,
+            frame_interval=1,
+            num_clips=8,
+            temporal_jitter=False,
+            test_mode=False)
+        sample_frames = SampleFramesV2(**config)
+        sample_frames_results = sample_frames(video_result)
+        assert assert_dict_has_keys(sample_frames_results, target_keys)
+        assert sample_frames_results['start_index'] == 0
+        assert len(sample_frames_results['frame_inds']) == 8
+        sample_frames_results = sample_frames(frame_result)
+        assert len(sample_frames_results['frame_inds']) == 8
+
+        # Sample Frame with no temporal_jitter to get clip_offsets zero
+        # clip_len=12, frame_interval=1, num_clips=2
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        frame_result['total_frames'] = 10
+        config = dict(
+            clip_len=12,
+            frame_interval=1,
+            num_clips=2,
+            temporal_jitter=False,
+            test_mode=False)
+        sample_frames = SampleFramesV2(**config)
+        sample_frames_results = sample_frames(video_result)
+        assert sample_frames_results['start_index'] == 0
+        assert assert_dict_has_keys(sample_frames_results, target_keys)
+        assert len(sample_frames_results['frame_inds']) == 24
+        sample_frames_results = sample_frames(frame_result)
+        assert len(sample_frames_results['frame_inds']) == 24
+        assert np.max(sample_frames_results['frame_inds']) <= 10
+        assert np.min(sample_frames_results['frame_inds']) >= 1
+
+        # Sample Frame using twice sample
+        # clip_len=12, frame_interval=1, num_clips=2
+        video_result = copy.deepcopy(self.video_results)
+        frame_result = copy.deepcopy(self.frame_results)
+        frame_result['total_frames'] = 40
+        config = dict(
+            clip_len=12,
+            frame_interval=1,
+            num_clips=2,
+            temporal_jitter=False,
+            test_mode=True)
+        sample_frames = SampleFramesV2(**config)
+        sample_frames_results = sample_frames(video_result)
+        assert sample_frames_results['start_index'] == 0
+        assert assert_dict_has_keys(sample_frames_results, target_keys)
+        assert len(sample_frames_results['frame_inds']) == 24
+        sample_frames_results = sample_frames(frame_result)
+        assert len(sample_frames_results['frame_inds']) == 24
         assert np.max(sample_frames_results['frame_inds']) <= 40
         assert np.min(sample_frames_results['frame_inds']) >= 1
 
