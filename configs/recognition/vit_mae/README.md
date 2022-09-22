@@ -14,10 +14,10 @@ Pre-training video transformers on extra large-scale datasets is generally requi
 
 ### Kinetics-400
 
-| frame sampling strategy |   resolution   | backbone  | top1 acc | top5 acc | reference top1 acc | reference top5 acc | testing protocol | config | ckpt |
-| :---------------------: | :------------: | :-------: | :------: | :------: | :----------------: | :----------------: | :--------------: | :----: | :--: |
-|         16x4x1          | short-side 320 | ViT base  |   81.3   |   95.0   |        81.5        |        95.1        | 5 clips x 3 crop | config | ckpt |
-|         16x4x1          | short-side 320 | ViT large |   84.9   |   96.7   |        85.2        |        96.8        | 5 clips x 3 crop | config | ckpt |
+| frame sampling strategy |   resolution   | backbone  | top1 acc | top5 acc | reference top1 acc | reference top5 acc | testing protocol |                    config                    |                    ckpt                    |
+| :---------------------: | :------------: | :-------: | :------: | :------: | :----------------: | :----------------: | :--------------: | :------------------------------------------: | :----------------------------------------: |
+|         16x4x1          | short-side 320 | ViT base  |   81.3   |   95.0   |        81.5        |        95.1        | 5 clips x 3 crop | [config](/configs/recognition/vit_mae/vit_mae-pretrained-vit-base_16x4x1_kinetics-400.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/)\[1\] |
+|         16x4x1          | short-side 320 | ViT large |   84.9   |   96.7   |        85.2        |        96.8        | 5 clips x 3 crop | [config](/configs/recognition/vit_mae/vit_mae-pretrained-vit-large_16x4x1_kinetics-400.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/)\[1\] |
 
 \[1\] The models are ported from the repo [VideoMAE](https://github.com/MCG-NJU/VideoMAE) and tested on our data. Currently, we only support the testing of X3D models, training will be available soon.
 
