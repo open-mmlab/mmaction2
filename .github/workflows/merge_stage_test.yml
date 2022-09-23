@@ -103,8 +103,6 @@ jobs:
         run: pip install pip --upgrade
       - name: Install soundfile lib
         run: sudo apt-get install -y libsndfile1
-      - name: Install onnx
-        run: pip install onnx
       - name: Install librosa and soundfile
         run: pip install librosa soundfile
       - name: Install lmdb
