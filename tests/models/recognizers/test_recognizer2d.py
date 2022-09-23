@@ -205,7 +205,8 @@ def test_trn():
 
 def test_tpn():
     register_all_modules()
-    config = get_recognizer_cfg('tpn/tpn-tsm_r50_8xb8-1x1x8-150e_sthv1-rgb.py')
+    config = get_recognizer_cfg(
+        'tpn/tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb.py')
     config.model['backbone']['pretrained'] = None
 
     recognizer = MODELS.build(config.model)
