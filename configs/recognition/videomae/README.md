@@ -22,8 +22,8 @@ Pre-training video transformers on extra large-scale datasets is generally requi
 
 | frame sampling strategy |   resolution   | backbone  | top1 acc | top5 acc |          reference top1 acc           |          reference top5 acc           | testing protocol |          config           |          ckpt           |
 | :---------------------: | :------------: | :-------: | :------: | :------: | :-----------------------------------: | :-----------------------------------: | :--------------: | :-----------------------: | :---------------------: |
-|         16x4x1          | short-side 320 | ViT base  |   81.3   |   95.0   | 81.5 \[[VideoMAE](https://github.com/MCG-NJU/VideoMAE/blob/main/MODEL_ZOO.md)\] | 95.1 \[[VideoMAE](https://github.com/MCG-NJU/VideoMAE/blob/main/MODEL_ZOO.md)\] | 5 clips x 3 crop | [config](/configs/recognition/vit_mae/vit_mae-pretrained-vit-base_16x4x1_kinetics-400.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/) \[1\] |
-|         16x4x1          | short-side 320 | ViT large |   85.3   |   96.7   | 85.2 \[[VideoMAE](https://github.com/MCG-NJU/VideoMAE/blob/main/MODEL_ZOO.md)\] | 96.8 \[[VideoMAE](https://github.com/MCG-NJU/VideoMAE/blob/main/MODEL_ZOO.md)\] | 5 clips x 3 crop | [config](/configs/recognition/vit_mae/vit_mae-pretrained-vit-large_16x4x1_kinetics-400.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/) \[1\] |
+|         16x4x1          | short-side 320 | ViT base  |   81.3   |   95.0   | 81.5 \[[VideoMAE](https://github.com/MCG-NJU/VideoMAE/blob/main/MODEL_ZOO.md)\] | 95.1 \[[VideoMAE](https://github.com/MCG-NJU/VideoMAE/blob/main/MODEL_ZOO.md)\] | 5 clips x 3 crop | [config](/configs/recognition/videomae/videomae-pretrained-vit-base_16x4x1_kinetics-400.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/) \[1\] |
+|         16x4x1          | short-side 320 | ViT large |   85.3   |   96.7   | 85.2 \[[VideoMAE](https://github.com/MCG-NJU/VideoMAE/blob/main/MODEL_ZOO.md)\] | 96.8 \[[VideoMAE](https://github.com/MCG-NJU/VideoMAE/blob/main/MODEL_ZOO.md)\] | 5 clips x 3 crop | [config](/configs/recognition/videomae/videomae-pretrained-vit-large_16x4x1_kinetics-400.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/) \[1\] |
 
 \[1\] The models are ported from the repo [VideoMAE](https://github.com/MCG-NJU/VideoMAE) and tested on our data. Currently, we only support the testing of VideoMAE models, training will be available soon.
 
@@ -43,7 +43,7 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 Example: test ViT-base model on Kinetics-400 dataset and dump the result to a pkl file.
 
 ```shell
-python tools/test.py configs/recognition/vit_mae/vit_mae-pretrained-vit-base_16x4x1_kinetics-400.py \
+python tools/test.py configs/recognition/videomae/videomae-pretrained-vit-base_16x4x1_kinetics-400.py \
     checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
