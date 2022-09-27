@@ -20,12 +20,9 @@ Temporal action proposal generation is an challenging and promising task which a
 
 ### ActivityNet feature
 
-|                                 config                                 |    feature    | gpus |  AUC  | AR@1  | AR@5  | AR@10 | AR@100 | gpu_mem(M) |                  ckpt                   |                  log                   |
-| :--------------------------------------------------------------------: | :-----------: | :--: | :---: | :---: | :---: | :---: | :----: | :--------: | :-------------------------------------: | :------------------------------------: |
-| [bmn_400x100_9e_2x8_activitynet_feature](/configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py) | cuhk_mean_100 |  2   | 67.17 | 33.65 | 49.63 | 56.81 | 75.14  |    5420    | [ckpt](https://download.openmmlab.com/) | [log](https://download.openmmlab.com/) |
-| [BMN-official](https://github.com/JJBOY/BMN-Boundary-Matching-Network) (for reference)\* | cuhk_mean_100 |  -   | 67.49 |   -   |   -   |   -   | 75.27  |     -      |                    -                    |                   -                    |
-
-:::{note}
+|    feature    | gpus | pretrain |  AUC  | AR@1  | AR@5  | AR@10 | AR@100 | gpu_mem(M) | iter time(s) |                    config                    |                    ckpt                    |                    log                    |
+| :-----------: | :--: | :------: | :---: | :---: | :---: | :---: | :----: | :--------: | :----------: | :------------------------------------------: | :----------------------------------------: | :---------------------------------------: |
+| cuhk_mean_100 |  2   |   None   | 67.25 | 32.89 | 49.43 | 56.64 | 75.29  |    5412    |      -       | [config](/configs/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature_20220908-79f92857.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature.log) |
 
 1. The **gpus** indicates the number of gpu we used to get the checkpoint.
    According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
@@ -33,11 +30,9 @@ Temporal action proposal generation is an challenging and promising task which a
 2. For feature column, cuhk_mean_100 denotes the widely used cuhk activitynet feature extracted by [anet2016-cuhk](https://github.com/yjxiong/anet2016-cuhk).
 3. We evaluate the action detection performance of BMN, using  [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) submission for ActivityNet2017 Untrimmed Video Classification Track to assign label for each action proposal.
 
-:::
-
 \*We train BMN with the [official repo](https://github.com/JJBOY/BMN-Boundary-Matching-Network), evaluate its proposal generation and action detection performance with [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) for label assigning.
 
-For more details on data preparation, you can refer to ActivityNet feature in [Data Preparation](/docs/data_preparation.md).
+For more details on data preparation, you can refer to [ActivityNet Data Preparation](/tools/data/activitynet/README.md).
 
 ## Train
 
@@ -47,7 +42,7 @@ Train BMN model on ActivityNet features dataset.
 bash tools/dist_train.sh configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py 2
 ```
 
-For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting) .
+For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Test
 
@@ -57,7 +52,7 @@ Test BMN on ActivityNet feature dataset.
 python3 tools/test.py  configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py CHECKPOINT.PTH
 ```
 
-For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset) .
+For more details, you can refer to the **Testing** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Citation
 
