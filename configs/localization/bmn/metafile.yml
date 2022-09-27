@@ -6,8 +6,8 @@ Collections:
     Title: "BMN: Boundary-Matching Network for Temporal Action Proposal Generation"
 
 Models:
-  - Name: bmn_400x100_2x8_9e_activitynet_feature
-    Config: configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py
+  - Name: bmn_2xb8-400x100-9e_activitynet-feature
+    Config: configs/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature.py
     In Collection: BMN
     Metadata:
       Batch Size: 8
@@ -20,10 +20,10 @@ Models:
       - Dataset: ActivityNet v1.3
         Task: Temporal Action Localization
         Metrics:
-              AUC: 67.18
-              AR@1: 33.65
-              AR@5: 49.63
-              AR@10: 56.81
-              AR@100: 75.14
-    Training Log: https://download.openmmlab.com/
-    Weights: https://download.openmmlab.com/
+              AUC: 67.25
+              AR@1: 32.89
+              AR@5: 49.43
+              AR@10: 56.64
+              AR@100: 75.29
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/localization/bmn/bmn_2xb8-400x100-9e_activitynet-feature_20220908-79f92857.pth
