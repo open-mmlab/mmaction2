@@ -7,7 +7,7 @@ from mmcv.cnn import build_norm_layer
 from mmcv.cnn.bricks import DropPath
 from mmcv.cnn.bricks.transformer import FFN, PatchEmbed
 from mmengine.logging import MMLogger
-from mmengine.model import BaseModule, trunc_normal_init
+from mmengine.model import BaseModule
 from mmengine.runner.checkpoint import _load_checkpoint, load_state_dict
 from mmengine.utils import to_2tuple
 from torch import Tensor, nn
@@ -24,22 +24,22 @@ class Attention(BaseModule):
         num_heads (int): Number of parallel attention heads.
         qkv_bias (bool): If True, add a learnable bias to q and v.
             Defaults to True.
-        qk_scale (float | optional): Override default qk scale of
+        qk_scale (float, optional): Override default qk scale of
             ``head_dim ** -0.5`` if set. Defaults to None.
         attn_drop_rate (float): Dropout ratio of attention weight.
             Defaults to 0.
-        drop_rate (float | optional): Dropout ratio of output. Defaults to 0.
-        init_cfg (dict | None): The Config for initialization. Defaults to
-            None.
+        drop_rate (float): Dropout ratio of output. Defaults to 0.
+        init_cfg (dict or ConfigDict, optional): The Config 
+            for initialization. Defaults to None.
     """
 
     def __init__(self,
                  embed_dims: int,
                  num_heads: int = 8,
-                 qkv_bias: bool = False,
+                 qkv_bias: bool = True,
                  qk_scale: Optional[float] = None,
-                 attn_drop_rate: int = 0.,
-                 drop_rate: int = 0.,
+                 attn_drop_rate: float = 0.,
+                 drop_rate: float = 0.,
                  init_cfg: OptConfigType = None,
                  **kwargs) -> None:
         super().__init__(init_cfg=init_cfg)
@@ -99,32 +99,32 @@ class Block(BaseModule):
     Args:
         embed_dims (int): Dimensions of embedding.
         num_heads (int): Number of parallel attention heads.
-        mlp_ratio (int): The ratio between the hidden layer and the input layer
-            in the FFN. Defaults to 4.
+        mlp_ratio (int): The ratio between the hidden layer and the 
+            input layer in the FFN. Defaults to 4.
         qkv_bias (bool): If True, add a learnable bias to q and v.
             Defaults to True.
-        qk_scale (float | optional): Override default qk scale of
+        qk_scale (float): Override default qk scale of
             ``head_dim ** -0.5`` if set. Defaults to None.
-        drop_rate (float | optional): Dropout ratio of output. Defaults to 0.
+        drop_rate (float): Dropout ratio of output. Defaults to 0.
         attn_drop_rate (float): Dropout ratio of attention weight.
             Defaults to 0.
         drop_path_rate (float): Dropout ratio of the residual branch.
             Defaults to 0.
-        init_values (float): Value to init the multiplier of the residual
-            branch. Defaults to 0.
-        act_cfg (dict): Config for activation layer in FFN. Defaults to
-            `dict(type='GELU')`.
-        norm_cfg (dict): Config for norm layers. Defaults to
-            `dict(type='LN', eps=1e-6)`.
-        init_cfg (dict | None): The Config for initialization. Defaults to
-            None.
+        init_values (float): Value to init the multiplier of the 
+            residual branch. Defaults to 0.
+        act_cfg (dict or ConfigDict): Config for activation layer in FFN. 
+            Defaults to `dict(type='GELU')`.
+        norm_cfg (dict or ConfigDict): Config for norm layers. 
+            Defaults to `dict(type='LN', eps=1e-6)`.
+        init_cfg (dict or ConfigDict, optional): The Config 
+            for initialization. Defaults to None.
     """
 
     def __init__(self,
                  embed_dims: int,
                  num_heads: int,
                  mlp_ratio: int = 4.,
-                 qkv_bias: bool = False,
+                 qkv_bias: bool = True,
                  qk_scale: Optional[float] = None,
                  drop_rate: float = 0.,
                  attn_drop_rate: float = 0.,
@@ -162,9 +162,9 @@ class Block(BaseModule):
     def _init_gammas(self, init_values: float, dim: int) -> None:
         if type(init_values) == float and init_values > 0:
             self.gamma_1 = nn.Parameter(
-                init_values * torch.ones((dim)), requires_grad=True)
+                init_values * torch.ones(dim), requires_grad=True)
             self.gamma_2 = nn.Parameter(
-                init_values * torch.ones((dim)), requires_grad=True)
+                init_values * torch.ones(dim), requires_grad=True)
 
     def forward(self, x: Tensor) -> Tensor:
         """Defines the computation performed at every call.
@@ -172,7 +172,7 @@ class Block(BaseModule):
         Args:
             x (Tensor): The input data with size of (B, N, C).
         Returns:
-            Tensor: The output of the attention block, same size as inputs.
+            Tensor: The output of the transformer block, same size as inputs.
         """
         if hasattr(self, 'gamma_1'):
             x = x + self.drop_path(self.gamma_1 * self.attn(self.norm1(x)))
@@ -183,7 +183,7 @@ class Block(BaseModule):
         return x
 
 
-def get_sinusoid_encoding(n_position: int, embed_dims: int):
+def get_sinusoid_encoding(n_position: int, embed_dims: int) -> Tensor:
     """Generate sinusoid encoding table.
 
     Sinusoid encoding is a kind of relative position encoding method came from
@@ -192,7 +192,8 @@ def get_sinusoid_encoding(n_position: int, embed_dims: int):
         n_position (int): The length of the input token.
         embed_dims (int): The position embedding dimension.
     Returns:
-        :obj:`torch.FloatTensor`: The sinusoid encoding table.
+        :obj:`torch.FloatTensor`: The sinusoid encoding table of size
+        (1, n_position, embed_dims)
     """
 
     vec = torch.arange(embed_dims, dtype=torch.float64)
@@ -215,37 +216,40 @@ class VisionTransformer(BaseModule):
     Self-Supervised Video Pre-Training <https://arxiv.org/pdf/2203.12602.pdf>`_
 
     Args:
-        img_size (int | tuple): Size of input image. Defaults to 224.
+        img_size (int or tuple): Size of input image. 
+            Defaults to 224.
         patch_size (int): Spatial size of one patch. Defaults to 16.
-        in_channels (int): The number of channels of he input. Defaults to 3.
+        in_channels (int): The number of channels of he input. 
+            Defaults to 3.
         embed_dims (int): Dimensions of embedding. Defaults to 768.
-        depth (int): number of blocks in the transformer. Defaults to 12.
+        depth (int): number of blocks in the transformer. 
+            Defaults to 12.
         num_heads (int): Number of parallel attention heads in
             TransformerCoder. Defaults to 12.
-        mlp_ratio (int): The ratio between the hidden layer and the input layer
-            in the FFN. Defaults to 4.
+        mlp_ratio (int): The ratio between the hidden layer and the 
+            input layer in the FFN. Defaults to 4.
         qkv_bias (bool): If True, add a learnable bias to q and v.
             Defaults to True.
-        qk_scale (float | optional): Override default qk scale of
+        qk_scale (float, optional): Override default qk scale of
             ``head_dim ** -0.5`` if set. Defaults to None.
-        drop_rate (float | optional): Dropout ratio of output. Defaults to 0.
+        drop_rate (float): Dropout ratio of output. Defaults to 0.
         attn_drop_rate (float): Dropout ratio of attention weight.
             Defaults to 0.
         drop_path_rate (float): Dropout ratio of the residual branch.
             Defaults to 0.
-        norm_cfg (dict): Config for norm layers. Defaults to
-            `dict(type='LN', eps=1e-6)`.
-        init_values (float): Value to init the multiplier of the residual
+        norm_cfg (dict or Configdict): Config for norm layers. 
+            Defaults to `dict(type='LN', eps=1e-6)`.
+        init_values (float): Value to init the multiplier of the residual 
             branch. Defaults to 0.
-        use_learnable_pos_emb (bool): If True, use learnable positional
+        use_learnable_pos_emb (bool): If True, use learnable positional 
             embedding, othersize use sinusoid encoding. Defaults to False.
         num_frames (int): Number of frames in the video. Defaults to 16.
         tubelet_size (int): Temporal size of one patch. Defaults to 2.
-        use_mean_pooling (bool): If True, take the mean pooling over all
+        use_mean_pooling (bool): If True, take the mean pooling over all 
             positions. Defaults to True.
-        init_cfg (dict | None): The Config for initialization. Defaults to
-            None.
-        pretrained (str | None): Name of pretrained model. Default: None.
+        init_cfg (dict or Configdict, optional): The Config for initialization. 
+            Defaults to None.
+        pretrained (str, optional): Name of pretrained model. Default: None.
     """
 
     def __init__(self,
@@ -256,18 +260,18 @@ class VisionTransformer(BaseModule):
                  depth: int = 12,
                  num_heads: int = 12,
                  mlp_ratio: int = 4.,
-                 qkv_bias: int = False,
+                 qkv_bias: bool = True,
                  qk_scale: int = None,
-                 drop_rate: int = 0.,
-                 attn_drop_rate: int = 0.,
-                 drop_path_rate: int = 0.,
+                 drop_rate: float = 0.,
+                 attn_drop_rate: float = 0.,
+                 drop_path_rate: float = 0.,
                  norm_cfg: ConfigType = dict(type='LN', eps=1e-6),
                  init_values: int = 0.,
                  use_learnable_pos_emb: bool = False,
                  num_frames: int = 16,
                  tubelet_size: int = 2,
                  use_mean_pooling: int = True,
-                 init_cfg: OptConfigType = None,
+                 init_cfg: Optional[ConfigType] = None,
                  pretrained: Optional[str] = None,
                  **kwargs) -> None:
         super().__init__(init_cfg=init_cfg)
@@ -291,9 +295,11 @@ class VisionTransformer(BaseModule):
         if use_learnable_pos_emb:
             self.pos_embed = nn.Parameter(
                 torch.zeros(1, num_patches, embed_dims))
+            nn.init.trunc_normal_(self.pos_embed, std=.02)
         else:
             # sine-cosine positional embeddings is on the way
-            self.pos_embed = get_sinusoid_encoding(num_patches, embed_dims)
+            pos_embed = get_sinusoid_encoding(num_patches, embed_dims)
+            self.register_buffer('pos_embed', pos_embed)
 
         self.pos_drop = nn.Dropout(p=drop_rate)
 
@@ -324,8 +330,6 @@ class VisionTransformer(BaseModule):
     def init_weights(self) -> None:
         """Initiate the parameters either from existing checkpoint or from
         scratch."""
-        if self.pos_embed is not None:
-            trunc_normal_init(self.pos_embed, std=.02)
 
         if isinstance(self.pretrained, str):
             logger = MMLogger.get_current_instance()
@@ -338,7 +342,7 @@ class VisionTransformer(BaseModule):
         elif self.pretrained is None:
             for m in self.modules():
                 if isinstance(m, nn.Linear):
-                    trunc_normal_init(m.weight, std=.02)
+                    nn.init.trunc_normal_(m.weight, std=.02)
                     if isinstance(m, nn.Linear) and m.bias is not None:
                         nn.init.constant_(m.bias, 0)
                 elif isinstance(m, nn.LayerNorm):
@@ -359,9 +363,7 @@ class VisionTransformer(BaseModule):
         x = self.patch_embed(x)[0]
         B, _, _ = x.size()
 
-        if self.pos_embed is not None:
-            pos_embed = self.pos_embed.expand(B, -1, -1).type_as(x)
-            x = x + pos_embed.to(x.device).clone().detach()
+        x = x + self.pos_embed
         x = self.pos_drop(x)
 
         for blk in self.blocks:
