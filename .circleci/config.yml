@@ -20,7 +20,7 @@ workflows:
           # line:
           # <regex path-to-test> <parameter-to-set> <value-of-pipeline-parameter>
           mapping: |
-            mmocr/.* lint_only false
+            mmaction/.* lint_only false
             requirements/.* lint_only false
             tests/.* lint_only false
             tools/.* lint_only false
