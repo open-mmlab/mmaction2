@@ -741,31 +741,24 @@ class SwinTransformer3D(BaseModule):
         init_cfg (dict, optional): Config dict for initialization.
             Defaults to None.
     """
-
     arch_zoo = {
-        **dict.fromkeys(['t', 'tiny'], {
-                            'embed_dims': 96,
-                            'depths': [2, 2, 6, 2],
-                            'num_heads': [3, 6, 12, 24]
-                        }),
-        **dict.fromkeys(['s', 'small'], {
-                            'embed_dims': 96,
-                            'depths': [2, 2, 18, 2],
-                            'num_heads': [3, 6, 12, 24]
-                        }),
-        **dict.fromkeys(
-            ['b', 'base'], {
-                'embed_dims': 128,
-                'depths': [2, 2, 18, 2],
-                'num_heads': [4, 8, 16, 32]
-            }),
-        **dict.fromkeys(
-            ['l', 'large'], {
-                'embed_dims': 192,
-                'depths': [2, 2, 18, 2],
-                'num_heads': [6, 12, 24, 48]
-            }),
-    }
+        **dict.fromkeys(['t', 'tiny'],
+                        {'embed_dims': 96,
+                         'depths': [2, 2, 6, 2],
+                         'num_heads': [3, 6, 12, 24]}),
+        **dict.fromkeys(['s', 'small'],
+                        {'embed_dims': 96,
+                         'depths': [2, 2, 18, 2],
+                         'num_heads': [3, 6, 12, 24]}),
+        **dict.fromkeys(['b', 'base'],
+                        {'embed_dims': 128,
+                         'depths': [2, 2, 18, 2],
+                         'num_heads': [4, 8, 16, 32]}),
+        **dict.fromkeys(['l', 'large'],
+                        {'embed_dims': 192,
+                         'depths': [2, 2, 18, 2],
+                         'num_heads': [6, 12, 24, 48]}),
+    }  # yapf: disable
 
     def __init__(self,
                  arch: str = 'tiny',
