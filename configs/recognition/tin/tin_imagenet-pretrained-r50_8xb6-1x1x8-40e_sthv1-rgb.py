@@ -105,7 +105,7 @@ optim_wrapper = dict(
     ),
     constructor='TSMOptimWrapperConstructor',
     paramwise_cfg=dict(fc_lr5=True),
-    clip_grad=dict(max_norm=40, norm_type=2))
+    clip_grad=dict(max_norm=20, norm_type=2))
 
 # learning policy
 param_scheduler = [
