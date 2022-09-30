@@ -315,12 +315,11 @@ class ResNetTIN(ResNetTSM):
         kwargs (dict, optional): Arguments for ResNet.
     """
 
-    def __init__(self, depth, is_tin=True, shift_div=4, **kwargs):
+    def __init__(self, depth, is_tin=True, **kwargs):
         self.is_tin = is_tin
-        self.shift_div = shift_div
         super().__init__(depth, **kwargs)
 
-    def init_stucture(self):
+    def init_structure(self):
         if self.is_tin:
             self.make_temporal_interlace()
         if len(self.non_local_cfg) != 0:
