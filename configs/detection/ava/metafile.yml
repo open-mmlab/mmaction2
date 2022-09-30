@@ -123,7 +123,7 @@ Models:
         Task: Action Detection
         Metrics:
               mAP: 24.27
-    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/ava/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb/slowonly_kinetics400-pretrained-r101_8xb16-8x8x1-20e_ava21-rgb.log
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/detection/ava/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/detection/ava/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb/slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb_20220906-5180ea3c.pth
 
   - Name: slowfast_kinetics400-pretrained-r50-context_8xb16-4x16x1-20e_ava21-rgb
