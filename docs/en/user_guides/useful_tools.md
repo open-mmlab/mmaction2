@@ -9,7 +9,6 @@ Apart from training/testing scripts, We provide lots of useful tools under the `
 - [Other Useful Tools](#other-useful-tools)
   - [Useful Tools Link](#useful-tools-link)
   - [Model Conversion](#model-conversion)
-    - [MMAction2 model to ONNX (experimental)](#mmaction2-model-to-onnx-experimental)
     - [Prepare a model for publishing](#prepare-a-model-for-publishing)
   - [Miscellaneous](#miscellaneous)
     - [Evaluating a metric](#evaluating-a-metric)
@@ -19,25 +18,6 @@ Apart from training/testing scripts, We provide lots of useful tools under the `
 <!-- TOC -->
 
 ## Model Conversion
-
-### MMAction2 model to ONNX (experimental)
-
-`/tools/deployment/pytorch2onnx.py` is a script to convert model to [ONNX](https://github.com/onnx/onnx) format.
-It also supports comparing the output results between Pytorch and ONNX model for verification.
-Run `pip install onnx onnxruntime` first to install the dependency.
-Please note that a softmax layer could be added for recognizers by `--softmax` option, in order to get predictions in range `[0, 1]`.
-
-- For recognizers, please run:
-
-  ```shell
-  python tools/deployment/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --shape $SHAPE --verify
-  ```
-
-- For localizers, please run:
-
-  ```shell
-  python tools/deployment/pytorch2onnx.py $CONFIG_PATH $CHECKPOINT_PATH --is-localizer --shape $SHAPE --verify
-  ```
 
 ### Prepare a model for publishing
 
