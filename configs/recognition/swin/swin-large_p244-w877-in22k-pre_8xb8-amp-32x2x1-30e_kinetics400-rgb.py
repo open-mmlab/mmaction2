@@ -1,12 +1,15 @@
 _base_ = [
-    '../../_base_/models/swin/swin_large.py', '../../_base_/default_runtime.py'
+    '../../_base_/models/swin_tiny.py', '../../_base_/default_runtime.py'
 ]
 
 model = dict(
     backbone=dict(
+        arch='large',
+        drop_path_rate=0.4,
         pretrained=  # noqa: E251
         'https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_large_patch4_window7_224_22k.pth'  # noqa: E501
-    ))
+    ),
+    cls_head=dict(in_channels=1024))
 
 # dataset settings
 dataset_type = 'VideoDataset'

@@ -4,6 +4,8 @@ _base_ = [
 
 model = dict(
     backbone=dict(
+        arch='small',
+        drop_path_rate=0.2,
         pretrained=  # noqa: E251
         'https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_small_patch4_window7_224.pth'  # noqa: E501
     ))
