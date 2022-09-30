@@ -9,7 +9,7 @@ model = dict(
         pretrained=  # noqa: E251
         'https://download.openmmlab.com/mmaction/v1.0/recognition/swin/swin_large_patch4_window7_224_22k.pth'  # noqa: E501
     ),
-    cls_head=dict(in_channels=1024))
+    cls_head=dict(in_channels=1536))
 
 # dataset settings
 dataset_type = 'VideoDataset'
