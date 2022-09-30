@@ -165,9 +165,9 @@ class ResNetTSM(ResNet):
         self.non_local_stages = _ntuple(self.num_stages)(non_local)
         self.non_local_cfg = non_local_cfg
         super().init_weights()
-        self.init_stucture()
+        self.init_structure()
 
-    def init_stucture(self):
+    def init_structure(self):
         if self.is_shift:
             self.make_temporal_shift()
         if len(self.non_local_cfg) != 0:
