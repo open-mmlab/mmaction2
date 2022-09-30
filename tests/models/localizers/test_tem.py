@@ -33,7 +33,7 @@ def get_localization_data_sample():
 @pytest.mark.skipif(platform.system() == 'Windows', reason='Windows mem limit')
 def test_tem():
     model_cfg = get_localizer_cfg(
-        'bsn/bsn_tem_400x100_1x16_20e_activitynet_feature.py')
+        'bsn/bsn_tem_1xb16-400x100-20e_activitynet-feature.py')
 
     localizer_tem = MODELS.build(model_cfg.model)
     raw_feature = torch.rand(8, 400, 100)
