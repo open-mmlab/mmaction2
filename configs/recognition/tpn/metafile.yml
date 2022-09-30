@@ -22,12 +22,11 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      Top 1 Accuracy: 73.58
-      top5 accuracy: 91.35
+      Top 1 Accuracy: 74.20
+      top5 accuracy: 91.48
     Task: Action Recognition
-  Training Json Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tpn/tpn-slowonly_r50_8xb8-8x8x1-150e_kinetics400-rgb/tpn-slowonly_r50_8xb8-8x8x1-150e_kinetics400-rgb.json
   Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tpn/tpn-slowonly_r50_8xb8-8x8x1-150e_kinetics400-rgb/tpn-slowonly_r50_8xb8-8x8x1-150e_kinetics400-rgb.log
-  Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tpn/tpn-slowonly_r50_8xb8-8x8x1-150e_kinetics400-rgb/tpn-slowonly_r50_8xb8-8x8x1-150e_kinetics400-rgb-c568e7ad.pth
+  Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tpn/tpn-slowonly_r50_8xb8-8x8x1-150e_kinetics400-rgb/tpn-slowonly_r50_8xb8-8x8x1-150e_kinetics400-rgb_20220913-97d0835d.pth
 - Config: configs/recognition/tpn/tpn-slowonly_imagenet-pretrained-r50_8xb8-8x8x1-150e_kinetics400-rgb.py
   In Collection: TPN
   Metadata:
@@ -45,13 +44,12 @@ Models:
   Results:
   - Dataset: Kinetics-400
     Metrics:
-      Top 1 Accuracy: 76.59
-      top5 accuracy: 92.72
+      Top 1 Accuracy: 76.74
+      top5 accuracy: 92.57
     Task: Action Recognition
-  Training Json Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tpn/tpn-slowonly_imagenet-pretrained-r50_8xb8-8x8x1-150e_kinetics400-rgb/tpn-slowonly_imagenet-pretrained-r50_8xb8-8x8x1-150e_kinetics400-rgb.json
   Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tpn/tpn-slowonly_imagenet-pretrained-r50_8xb8-8x8x1-150e_kinetics400-rgb/tpn-slowonly_imagenet-pretrained-r50_8xb8-8x8x1-150e_kinetics400-rgb.log
-  Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tpn/tpn-slowonly_imagenet-pretrained-r50_8xb8-8x8x1-150e_kinetics400-rgb/tpn-slowonly_imagenet-pretrained-r50_8xb8-8x8x1-150e_kinetics400-rgb-44362b55.pth
-- Config: configs/recognition/tpn/tpn-tsm_r50_8xb8-1x1x8-150e_sthv1-rgb.py
+  Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tpn/tpn-slowonly_imagenet-pretrained-r50_8xb8-8x8x1-150e_kinetics400-rgb/tpn-slowonly_imagenet-pretrained-r50_8xb8-8x8x1-150e_kinetics400-rgb_20220913-fed3f4c1.pth
+- Config: configs/recognition/tpn/tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb.py
   In Collection: TPN
   Metadata:
     Architecture: ResNet50
@@ -64,13 +62,12 @@ Models:
     Training Data: SthV1
     Training Resources: 48 GPUs
   Modality: RGB
-  Name: tpn-tsm_r50_8xb8-1x1x8-150e_sthv1-rgb
+  Name: tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb
   Results:
   - Dataset: SthV1
     Metrics:
-      Top 1 Accuracy: 51.50
-      Top 5 Accuracy: 79.15
+      Top 1 Accuracy: 48.98
+      Top 5 Accuracy: 78.91
     Task: Action Recognition
-  Training Json Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tpn/tpn-tsm_r50_8xb8-1x1x8-150e_sthv1-rgb/tpn-tsm_r50_8xb8-1x1x8-150e_sthv1-rgb.json
-  Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tpn/tpn-tsm_r50_8xb8-1x1x8-150e_sthv1-rgb/tpn-tsm_r50_8xb8-1x1x8-150e_sthv1-rgb.log
-  Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tpn/tpn-tsm_r50_8xb8-1x1x8-150e_sthv1-rgb/tpn-tsm_r50_8xb8-1x1x8-150e_sthv1-rgb_20211202-c28ed83f.pth
+  Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tpn/tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb/tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb.log
+  Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tpn/tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb/tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb_20220913-d2f5c300.pth

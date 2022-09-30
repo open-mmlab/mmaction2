@@ -362,7 +362,7 @@ default_hooks = dict(
 )
 
 visualizer = dict(
-    type='ClsVisualizer',
+    type='ActionVisualizer',
     vis_backends=[dict(type='LocalVisBackend'), dict(type='TensorboardVisBackend')],
 )
 ```
@@ -402,7 +402,7 @@ visualizer instance in the runner to handle results & log visualization and save
 
 ```python
 visualizer = dict(
-    type='ClsVisualizer',
+    type='ActionVisualizer',
     vis_backends=[
         dict(type='LocalVisBackend'),
         # Uncomment the below line to save the log and visualization results to TensorBoard.
@@ -473,7 +473,13 @@ Changes in [`BaseRecognizer`](mmaction.models.BaseRecognizer):
 |      `val_step`      |                                   The original `val_step` is the same as `train_step`, now it calls `predict`.                                   |
 |     `test_step`      |                                                   New method, and it's the same as `val_step`.                                                   |
 
-Changes in [heads](mmaction.models.heads)\[TODO\]
+Changes in [heads](mmaction.models.heads)
+
+| Function  |                                                                          Changes                                                                          |
+| :-------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| `forward` |                                                                        No changes                                                                         |
+|  `loss`   | It accepts `data_samples` instead of `labels` to calculate loss. The `data_samples` is a list of [ActionDataSample](mmaction.structures.ActionDataSample) |
+| `predict` |                                                    New method, and it returns the recognition results                                                     |
 
 ### `mmaction.utils`
 
