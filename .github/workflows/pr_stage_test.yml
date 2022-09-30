@@ -1,7 +1,7 @@
 name: pr_stage_test
 
 on:
-  push:
+  pull_request:
     paths-ignore:
       - 'README.md'
       - 'README_zh-CN.md'
@@ -121,6 +121,11 @@ jobs:
         run: |
           python setup.py check -m -s
           TORCH_CUDA_ARCH_LIST=7.0 pip install -e .
+      - name: Run unittests and generate coverage report
+        run: |
+          coverage run --branch --source mmaction -m pytest tests/
+          coverage xml
+          coverage report -m
 
   build_windows:
     runs-on: ${{ matrix.os }}
