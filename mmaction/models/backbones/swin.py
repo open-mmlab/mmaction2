@@ -1004,7 +1004,7 @@ class SwinTransformer3D(BaseModule):
             if i < self.num_layers - 1:
                 x = rearrange(x, 'b d h w c -> b c d h w')
 
-        if len(outs) == 0:
+        if len(outs) == 1:
             return outs[0]
 
         return tuple(outs)
