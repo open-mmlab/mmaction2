@@ -33,7 +33,7 @@ def get_localization_data_sample():
 @pytest.mark.skipif(platform.system() == 'Windows', reason='Windows mem limit')
 def test_bmn_loss():
     model_cfg = get_localizer_cfg(
-        'bmn/bmn_400x100_2x8_9e_activitynet_feature.py')
+        'bmn/bmn_2xb8-400x100-9e_activitynet-feature.py')
 
     if 0 and torch.cuda.is_available():
         raw_feature = [torch.rand(400, 100).cuda()]
@@ -53,7 +53,7 @@ def test_bmn_loss():
 @pytest.mark.skipif(platform.system() == 'Windows', reason='Windows mem limit')
 def test_bmn_predict():
     model_cfg = get_localizer_cfg(
-        'bmn/bmn_400x100_2x8_9e_activitynet_feature.py')
+        'bmn/bmn_2xb8-400x100-9e_activitynet-feature.py')
 
     if 0 and torch.cuda.is_available():
         localizer_bmn = MODELS.build(model_cfg.model).cuda()
@@ -73,7 +73,7 @@ def test_bmn_predict():
 @pytest.mark.skipif(platform.system() == 'Windows', reason='Windows mem limit')
 def test_bmn_tensor():
     model_cfg = get_localizer_cfg(
-        'bmn/bmn_400x100_2x8_9e_activitynet_feature.py')
+        'bmn/bmn_2xb8-400x100-9e_activitynet-feature.py')
 
     if 0 and torch.cuda.is_available():
         localizer_bmn = MODELS.build(model_cfg.model).cuda()
