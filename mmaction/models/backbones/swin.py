@@ -942,6 +942,16 @@ class SwinTransformer3D(BaseModule):
             state_dict[k] = relative_position_bias_table_pretrained.repeat(
                 2 * wd - 1, 1)
 
+        # In the original swin2d checkpoint, the last layer of the
+        # backbone is the norm layer, and the original attribute
+        # name is `norm`. We changed it to `norm3` which means it
+        # is the last norm layer of stage 4.
+        if hasattr(self, 'norm3'):
+            state_dict['norm3.weight'] = state_dict['norm.weight']
+            state_dict['norm3.bias'] = state_dict['norm.bias']
+            del state_dict['norm.weight']
+            del state_dict['norm.bias']
+
         msg = self.load_state_dict(state_dict, strict=False)
         logger.info(msg)
 
