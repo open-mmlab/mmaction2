@@ -713,7 +713,6 @@ class SwinTransformer3D(BaseModule):
             - **depths** (Sequence[int]): The number of blocks in each stage.
             - **num_heads** (Sequence[int]): The number of heads in attention
             modules of each stage.
-            Defaults to ``'tiny'``.
         pretrained (str, optional): Name of pretrained model.
             Defaults to None.
         pretrained2d (bool): Whether to load pretrained 2D model.
