@@ -768,7 +768,7 @@ class SwinTransformer3D(BaseModule):
     }  # yapf: disable
 
     def __init__(self,
-                 arch: Union[str, Dict] = 'tiny',
+                 arch: Union[str, Dict],
                  pretrained: Optional[str] = None,
                  pretrained2d: bool = True,
                  patch_size: Union[int, Sequence[int]] = (2, 4, 4),
