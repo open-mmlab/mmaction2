@@ -706,6 +706,14 @@ class SwinTransformer3D(BaseModule):
     <https://arxiv.org/abs/2106.13230>`_
 
     Args:
+        arch (str or dict): Video Swin Transformer architecture. If use string,
+            choose from 'tiny', 'small', 'base' and 'large'. If use dict, it
+            should have below keys:
+            - **embed_dims** (int): The dimensions of embedding.
+            - **depths** (Sequence[int]): The number of blocks in each stage.
+            - **num_heads** (Sequence[int]): The number of heads in attention
+            modules of each stage.
+            Defaults to ``'tiny'``.
         pretrained (str, optional): Name of pretrained model.
             Defaults to None.
         pretrained2d (bool): Whether to load pretrained 2D model.
@@ -761,7 +769,7 @@ class SwinTransformer3D(BaseModule):
     }  # yapf: disable
 
     def __init__(self,
-                 arch: str = 'tiny',
+                 arch: Union[str, Dict] = 'tiny',
                  pretrained: Optional[str] = None,
                  pretrained2d: bool = True,
                  patch_size: Union[int, Sequence[int]] = (2, 4, 4),
