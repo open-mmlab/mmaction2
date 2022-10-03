@@ -808,8 +808,11 @@ class SwinTransformer3D(BaseModule):
         self.embed_dims = self.arch_settings['embed_dims']
         self.depths = self.arch_settings['depths']
         self.num_heads = self.arch_settings['num_heads']
+        assert len(self.depths) == len(self.num_heads)
         self.num_layers = len(self.depths)
+        assert 1 <= self.num_layers <= 4
         self.out_indices = out_indices
+        assert max(out_indices) < self.num_layers
         self.out_after_downsample = out_after_downsample
         self.frozen_stages = frozen_stages
         self.window_size = window_size
@@ -983,7 +986,6 @@ class SwinTransformer3D(BaseModule):
         if pretrained:
             self.pretrained = pretrained
         if isinstance(self.pretrained, str):
-            self.apply(_init_weights)
             logger = MMLogger.get_current_instance()
             logger.info(f'load model from: {self.pretrained}')
 
