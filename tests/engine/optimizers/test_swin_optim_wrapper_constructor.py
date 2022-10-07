@@ -36,10 +36,7 @@ def test_swin_optim_wrapper_constructor():
     model = ExampleModel()
     optim_wrapper_cfg = dict(
         optimizer=dict(
-            type='AdamW',
-            lr=base_lr,
-            weight_decay=base_wd,
-            betas=betas))
+            type='AdamW', lr=base_lr, weight_decay=base_wd, betas=betas))
     paramwise_cfg = {
         'base.param1': dict(lr_mult=2.),
         'base.conv1.weight': dict(lr_mult=3.),
@@ -69,7 +66,8 @@ def test_swin_optim_wrapper_constructor():
     assert param1['weight_decay'] == base_wd
     # conv1.weight
     conv1_weight = param_groups[1]
-    assert conv1_weight['lr'] == base_lr * paramwise_cfg['base.conv1.weight']['lr_mult']
+    assert conv1_weight['lr'] == \
+           base_lr * paramwise_cfg['base.conv1.weight']['lr_mult']
     assert conv1_weight['weight_decay'] == base_wd
     # conv2.weight
     conv2_weight = param_groups[2]
