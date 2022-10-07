@@ -82,11 +82,13 @@ def test_swin_optim_wrapper_constructor():
     # bn.weight
     bn_weight = param_groups[4]
     assert bn_weight['lr'] == base_lr
-    assert bn_weight['weight_decay'] == base_wd * paramwise_cfg['bn']['decay_mult']
+    assert bn_weight['weight_decay'] == \
+           base_wd * paramwise_cfg['bn']['decay_mult']
     # bn.bias
     bn_bias = param_groups[5]
     assert bn_bias['lr'] == base_lr
-    assert bn_bias['weight_decay'] == base_wd * paramwise_cfg['bn']['decay_mult']
+    assert bn_bias['weight_decay'] == \
+           base_wd * paramwise_cfg['bn']['decay_mult']
     # sub.param1
     sub_param1 = param_groups[6]
     assert sub_param1['lr'] == base_lr * paramwise_cfg['sub']['lr_mult']
@@ -98,15 +100,18 @@ def test_swin_optim_wrapper_constructor():
     # sub.conv1.bias
     sub_conv1_bias = param_groups[8]
     assert sub_conv1_bias['lr'] == base_lr * paramwise_cfg['sub']['lr_mult']
-    assert sub_conv1_bias['weight_decay'] == base_wd * paramwise_cfg['sub.conv1.bias']['decay_mult']
+    assert sub_conv1_bias['weight_decay'] == \
+           base_wd * paramwise_cfg['sub.conv1.bias']['decay_mult']
     # sub.gn.weight
     sub_gn_weight = param_groups[9]
     assert sub_gn_weight['lr'] == base_lr * paramwise_cfg['sub']['lr_mult']
-    assert sub_gn_weight['weight_decay'] == base_wd * paramwise_cfg['gn']['decay_mult']
+    assert sub_gn_weight['weight_decay'] == \
+           base_wd * paramwise_cfg['gn']['decay_mult']
     # sub.gn.bias
     sub_gn_bias = param_groups[10]
     assert sub_gn_bias['lr'] == base_lr * paramwise_cfg['sub']['lr_mult']
-    assert sub_gn_bias['weight_decay'] == base_wd * paramwise_cfg['gn']['decay_mult']
+    assert sub_gn_bias['weight_decay'] == \
+           base_wd * paramwise_cfg['gn']['decay_mult']
     # sub.fc.weight
     sub_fc_weight = param_groups[11]
     assert sub_fc_weight['lr'] == base_lr * paramwise_cfg['sub']['lr_mult']
