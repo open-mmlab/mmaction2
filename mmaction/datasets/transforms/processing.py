@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import random
 import warnings
+from typing import Union, Optional, Tuple, Dict, List
 
 import cv2
 import mmcv
@@ -57,35 +58,44 @@ def _init_lazy_if_proper(results, lazy):
 @TRANSFORMS.register_module()
 class PoseCompact(BaseTransform):
     """Convert the coordinates of keypoints to make it more compact.
+
     Specifically, it first find a tight bounding box that surrounds all joints
     in each frame, then we expand the tight box by a given padding ratio. For
     example, if 'padding == 0.25', then the expanded box has unchanged center,
     and 1.25x width and height.
 
-    Required keys in results are "img_shape", "keypoint", add or modified keys
-    are "img_shape", "keypoint", "crop_quadruple".
+    Required Keys:
+
+        - img_shape
+        - keypoint
+
+    Modified Keys:
+
+        - img_shape
+        - keypoint
+
+    Added Keys:
+
+        - crop_quadruple
 
     Args:
-        padding (float): The padding size. Default: 0.25.
+        padding (float): The padding size. Defaults to 0.25.
         threshold (int): The threshold for the tight bounding box. If the width
             or height of the tight bounding box is smaller than the threshold,
-            we do not perform the compact operation. Default: 10.
-        hw_ratio (float | tuple[float] | None): The hw_ratio of the expanded
+            we do not perform the compact operation. Defaults to 10.
+        hw_ratio (float or tuple[float], optional): The hw_ratio of the expanded
             box. Float indicates the specific ratio and tuple indicates a
             ratio range. If set as None, it means there is no requirement on
-            hw_ratio. Default: None.
+            hw_ratio. Defaults to None.
         allow_imgpad (bool): Whether to allow expanding the box outside the
-            image to meet the hw_ratio requirement. Default: True.
-
-    Returns:
-        type: Description of returned object.
+            image to meet the hw_ratio requirement. Defaults to True.
     """
 
     def __init__(self,
-                 padding=0.25,
-                 threshold=10,
-                 hw_ratio=None,
-                 allow_imgpad=True):
+                 padding: float = 0.25,
+                 threshold: int = 10,
+                 hw_ratio: Optional[Union[float, Tuple[float]]] = None,
+                 allow_imgpad: bool = True) -> None:
 
         self.padding = padding
         self.threshold = threshold
@@ -97,7 +107,15 @@ class PoseCompact(BaseTransform):
         self.allow_imgpad = allow_imgpad
         assert self.padding >= 0
 
-    def transform(self, results):
+    def transform(self, results: dict) -> dict:
+        """The transform function of :class:`PoseCompact`.
+
+        Args:
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
+        """
         img_shape = results['img_shape']
         h, w = img_shape
         kp = results['keypoint']
@@ -351,23 +369,40 @@ class RandomCrop(BaseTransform):
 class RandomResizedCrop(RandomCrop):
     """Random crop that specifics the area and height-weight ratio range.
 
-    Required keys in results are "img_shape", "crop_bbox", "imgs" (optional),
-    "keypoint" (optional), added or modified keys are "imgs", "keypoint",
-    "crop_bbox" and "lazy"; Required keys in "lazy" are "flip", "crop_bbox",
-    added or modified key is "crop_bbox".
+    Required Keys:
+
+        - img_shape
+        - imgs (optional)
+        - keypoint (optional)
+        - gt_bboxes (optional)
+        - lazy (optional)
+
+    Modified Keys:
+
+        - crop_quadruple
+        - img_shape
+        - imgs
+        - keypoint
+        - gt_bboxes
+        - lazy
+
+    Added Keys:
+
+        - crop_quadruple
+        - crop_bbox
 
     Args:
-        area_range (Tuple[float]): The candidate area scales range of
-            output cropped images. Default: (0.08, 1.0).
-        aspect_ratio_range (Tuple[float]): The candidate aspect ratio range of
-            output cropped images. Default: (3 / 4, 4 / 3).
-        lazy (bool): Determine whether to apply lazy operation. Default: False.
+        area_range (tuple[float]): The candidate area scales range of
+            output cropped images. Defaults to ``(0.08, 1.0)``.
+        aspect_ratio_range (tuple[float]): The candidate aspect ratio range of
+            output cropped images. Defaults to ``(3 / 4, 4 / 3)``.
+        lazy (bool): Determine whether to apply lazy operation. Defaults to False.
     """
 
     def __init__(self,
-                 area_range=(0.08, 1.0),
-                 aspect_ratio_range=(3 / 4, 4 / 3),
-                 lazy=False):
+                 area_range: Tuple[float] = (0.08, 1.0),
+                 aspect_ratio_range: Tuple[float] = (3 / 4, 4 / 3),
+                 lazy: bool = False) -> None:
         self.area_range = area_range
         self.aspect_ratio_range = aspect_ratio_range
         self.lazy = lazy
@@ -379,25 +414,26 @@ class RandomResizedCrop(RandomCrop):
                             f'but got {type(aspect_ratio_range)}')
 
     @staticmethod
-    def get_crop_bbox(img_shape,
-                      area_range,
-                      aspect_ratio_range,
-                      max_attempts=10):
+    def get_crop_bbox(img_shape: Tuple[int],
+                      area_range: Tuple[float],
+                      aspect_ratio_range: Tuple[float],
+                      max_attempts: int = 10) -> Tuple[int]:
         """Get a crop bbox given the area range and aspect ratio range.
 
         Args:
-            img_shape (Tuple[int]): Image shape
-            area_range (Tuple[float]): The candidate area scales range of
-                output cropped images. Default: (0.08, 1.0).
-            aspect_ratio_range (Tuple[float]): The candidate aspect
-                ratio range of output cropped images. Default: (3 / 4, 4 / 3).
-                max_attempts (int): The maximum of attempts. Default: 10.
+            img_shape (tuple[int]): Image shape.
+            area_range (tuple[float]): The candidate area scales range of
+                output cropped images. Defaults to ``(0.08, 1.0)``.
+            aspect_ratio_range (tuple[float]): The candidate aspect
+                ratio range of output cropped images.
+                Defaults to ``(3 / 4, 4 / 3)``.
             max_attempts (int): Max attempts times to generate random candidate
                 bounding box. If it doesn't qualified one, the center bounding
-                box will be used.
+                box will be used. Defaults to 10.
+
         Returns:
-            (list[int]) A random crop bbox within the area range and aspect
-            ratio range.
+            tuple[int]: A random crop bbox within the area range and aspect
+                ratio range.
         """
         assert 0 < area_range[0] <= area_range[1] <= 1
         assert 0 < aspect_ratio_range[0] <= aspect_ratio_range[1]
@@ -429,12 +465,14 @@ class RandomResizedCrop(RandomCrop):
         y_offset = (img_h - crop_size) // 2
         return x_offset, y_offset, x_offset + crop_size, y_offset + crop_size
 
-    def transform(self, results):
-        """Performs the RandomResizeCrop augmentation.
+    def transform(self, results: dict) -> dict:
+        """The transform function of :class:`RandomResizedCrop`.
 
         Args:
-            results (dict): The resulting dict to be modified and passed
-                to the next transform in pipeline.
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
         """
         _init_lazy_if_proper(results, self.lazy)
         if 'keypoint' in results:
@@ -690,13 +728,32 @@ class MultiScaleCrop(RandomCrop):
 class Resize(BaseTransform):
     """Resize images to a specific size.
 
-    Required keys are "img_shape", "modality", "imgs" (optional), "keypoint"
-    (optional), added or modified keys are "imgs", "img_shape", "keep_ratio",
-    "scale_factor", "lazy", "resize_size". Required keys in "lazy" is None,
-    added or modified key is "interpolation".
+    Required Keys:
+
+        - img_shape
+        - imgs (optional)
+        - keypoint (optional)
+        - gt_bboxes (optional)
+        - proposals (optional)
+        - lazy (optional)
+
+    Modified Keys:
+
+        - scale_factor
+        - img_shape
+        - imgs
+        - keypoint
+        - gt_bboxes
+        - proposals
+        - lazy
+
+    Added Keys:
+
+        - scale_factor
+        - keep_ratio
 
     Args:
-        scale (float | Tuple[int]): If keep_ratio is True, it serves as scaling
+        scale (float or tuple[int]): If keep_ratio is True, it serves as scaling
             factor or maximum size:
             If it is a float number, the image will be rescaled by this
             factor, else if it is a tuple of 2 integers, the image will
@@ -704,17 +761,17 @@ class Resize(BaseTransform):
             Otherwise, it serves as (w, h) of output size.
         keep_ratio (bool): If set to True, Images will be resized without
             changing the aspect ratio. Otherwise, it will resize images to a
-            given size. Default: True.
+            given size. Defaults to True.
         interpolation (str): Algorithm used for interpolation:
-            "nearest" | "bilinear". Default: "bilinear".
-        lazy (bool): Determine whether to apply lazy operation. Default: False.
+            'nearest' | 'bilinear'. Defaults to ``'bilinear'``.
+        lazy (bool): Determine whether to apply lazy operation. Defaults to False.
     """
 
     def __init__(self,
-                 scale,
-                 keep_ratio=True,
-                 interpolation='bilinear',
-                 lazy=False):
+                 scale: Union[float, Tuple[int]],
+                 keep_ratio: bool = True,
+                 interpolation: str = 'bilinear',
+                 lazy: bool = False) -> None:
         if isinstance(scale, float):
             if scale <= 0:
                 raise ValueError(f'Invalid scale {scale}, must be positive.')
@@ -740,11 +797,17 @@ class Resize(BaseTransform):
         ]
 
     @staticmethod
-    def _resize_kps(kps, scale_factor):
+    def _resize_kps(kps: np.ndarray, scale_factor: np.ndarray) -> np.ndarray:
+        """Rescale the keypoints according to the scale_factor.
+
+        Args:
+            kps (np.ndarray): The keypoints.
+            scale_factor (np.ndarray): The scale factor used for rescaling.
+        """
         return kps * scale_factor
 
     @staticmethod
-    def _box_resize(box, scale_factor):
+    def _box_resize(box: np.ndarray, scale_factor: np.ndarray) -> np.ndarray:
         """Rescale the bounding boxes according to the scale_factor.
 
         Args:
@@ -755,14 +818,15 @@ class Resize(BaseTransform):
         scale_factor = np.concatenate([scale_factor, scale_factor])
         return box * scale_factor
 
-    def transform(self, results):
-        """Performs the Resize augmentation.
+    def transform(self, results: dict) -> dict:
+        """The transform function of :class:`Resize`.
 
         Args:
-            results (dict): The resulting dict to be modified and passed
-                to the next transform in pipeline.
-        """
+            results (dict): The result dict.
 
+        Returns:
+            dict: The result dict.
+        """
         _init_lazy_if_proper(results, self.lazy)
         if 'keypoint' in results:
             assert not self.lazy, ('Keypoint Augmentations are not compatible '
@@ -875,35 +939,56 @@ class Flip(BaseTransform):
 
     Reverse the order of elements in the given imgs with a specific direction.
     The shape of the imgs is preserved, but the elements are reordered.
+    The Flip augmentation should be placed after any cropping / reshaping
+    augmentations, to make sure crop_quadruple is calculated properly.
 
-    Required keys are "img_shape", "modality", "imgs" (optional), "keypoint"
-    (optional), added or modified keys are "imgs", "keypoint", "lazy" and
-    "flip_direction". Required keys in "lazy" is None, added or modified key
-    are "flip" and "flip_direction". The Flip augmentation should be placed
-    after any cropping / reshaping augmentations, to make sure crop_quadruple
-    is calculated properly.
+    Required Keys:
+
+        - modality
+        - label (optional)
+        - imgs (optional)
+        - keypoint (optional)
+        - keypoint_score (optional)
+        - gt_bboxes (optional)
+        - proposals (optional)
+        - lazy (optional)
+
+    Modified Keys:
+
+        - label
+        - imgs
+        - keypoint
+        - keypoint_score
+        - gt_bboxes
+        - proposals
+        - lazy
+
+    Added Keys:
+
+        - flip
+        - flip_direction
 
     Args:
-        flip_ratio (float): Probability of implementing flip. Default: 0.5.
+        flip_ratio (float): Probability of implementing flip. Defaults to 0.5.
         direction (str): Flip imgs horizontally or vertically. Options are
-            "horizontal" | "vertical". Default: "horizontal".
-        flip_label_map (Dict[int, int] | None): Transform the label of the
-            flipped image with the specific label. Default: None.
-        left_kp (list[int]): Indexes of left keypoints, used to flip keypoints.
-            Default: None.
-        right_kp (list[ind]): Indexes of right keypoints, used to flip
-            keypoints. Default: None.
-        lazy (bool): Determine whether to apply lazy operation. Default: False.
+            'horizontal' | 'vertical', Defaults to ``'horizontal'``.
+        flip_label_map (dict[int, int], optional): Transform the label of the
+            flipped image with the specific label. Defaults to None.
+        left_kp (list[int], optional): Indexes of left keypoints, used to
+            flip keypoints. Defaults to None.
+        right_kp (list[int], optional): Indexes of right keypoints, used to
+            flip keypoints. Defaults to None.
+        lazy (bool): Determine whether to apply lazy operation. Defaults to False.
     """
     _directions = ['horizontal', 'vertical']
 
     def __init__(self,
-                 flip_ratio=0.5,
-                 direction='horizontal',
-                 flip_label_map=None,
-                 left_kp=None,
-                 right_kp=None,
-                 lazy=False):
+                 flip_ratio: float = 0.5,
+                 direction: str = 'horizontal',
+                 flip_label_map: Optional[Dict[int, int]] = None,
+                 left_kp: Optional[List[int]] = None,
+                 right_kp: Optional[List[int]] = None,
+                 lazy: bool = False) -> None:
         if direction not in self._directions:
             raise ValueError(f'Direction {direction} is not supported. '
                              f'Currently support ones are {self._directions}')
@@ -914,7 +999,13 @@ class Flip(BaseTransform):
         self.right_kp = right_kp
         self.lazy = lazy
 
-    def _flip_imgs(self, imgs, modality):
+    def _flip_imgs(self, imgs: List[np.ndarray], modality: str) -> list:
+        """Flip the imgs given the modality of the image.
+
+        Args:
+            imgs (list[np.ndarray]): The images.
+            modality (str): The modality of image.
+        """
         _ = [mmcv.imflip_(img, self.direction) for img in imgs]
         lt = len(imgs)
         if modality == 'Flow':
@@ -923,7 +1014,15 @@ class Flip(BaseTransform):
                 imgs[i] = mmcv.iminvert(imgs[i])
         return imgs
 
-    def _flip_kps(self, kps, kpscores, img_width):
+    def _flip_kps(self, kps: np.ndarray, kpscores: np.ndarray,
+                  img_width: int) -> tuple:
+        """Flip the keypoints given the width of the image.
+
+        Args:
+            kps (np.ndarray): The keypoints.
+            kpscores (np.ndarray): The keypoint scores.
+            img_width (int): The img width.
+        """
         kp_x = kps[..., 0]
         kp_x[kp_x != 0] = img_width - kp_x[kp_x != 0]
         new_order = list(range(kps.shape[2]))
@@ -937,7 +1036,7 @@ class Flip(BaseTransform):
         return kps, kpscores
 
     @staticmethod
-    def _box_flip(box, img_width):
+    def _box_flip(box: np.ndarray, img_width: int) -> np.ndarray:
         """Flip the bounding boxes given the width of the image.
 
         Args:
@@ -949,12 +1048,14 @@ class Flip(BaseTransform):
         box_[..., 2::4] = img_width - box[..., 0::4]
         return box_
 
-    def transform(self, results):
-        """Performs the Flip augmentation.
+    def transform(self, results: dict) -> dict:
+        """The transform function of :class:`Flip`.
 
         Args:
-            results (dict): The resulting dict to be modified and passed
-                to the next transform in pipeline.
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
         """
         _init_lazy_if_proper(results, self.lazy)
         if 'keypoint' in results:

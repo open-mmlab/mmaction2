@@ -21,25 +21,34 @@ class UniformSampleFrames(BaseTransform):
     random seed is set during testing, to make the sampling results
     deterministic.
 
-    Required keys are "total_frames", "start_index" , added or modified keys
-    are "frame_inds", "clip_len", "frame_interval" and "num_clips".
+    Required Keys:
+
+        - total_frames
+        - start_index
+
+    Added Keys:
+
+        - frame_inds
+        - frame_interval
+        - num_clips
+        - clip_len
 
     Args:
         clip_len (int): Frames of each sampled output clip.
-        num_clips (int): Number of clips to be sampled. Default: 1.
+        num_clips (int): Number of clips to be sampled. Defaults to 1.
         test_mode (bool): Store True when building test or validation dataset.
-            Default: False.
-        seed (int): The random seed used during test time. Default: 255.
+            Defaults to False.
+        seed (int): The random seed used during test time. Defaults to 255.
     """
 
-    def __init__(self, clip_len, num_clips=1, test_mode=False, seed=255):
-
+    def __init__(self, clip_len: int, num_clips: int = 1,
+                 test_mode: bool = False, seed: int = 255) -> None:
         self.clip_len = clip_len
         self.num_clips = num_clips
         self.test_mode = test_mode
         self.seed = seed
 
-    def _get_train_clips(self, num_frames, clip_len):
+    def _get_train_clips(self, num_frames: int, clip_len: int) -> np.ndarray:
         """Uniformly sample indices for training clips.
 
         Args:
@@ -68,7 +77,7 @@ class UniformSampleFrames(BaseTransform):
             inds = bst + offset
         return inds
 
-    def _get_test_clips(self, num_frames, clip_len):
+    def _get_test_clips(self, num_frames: int, clip_len: int) -> np.ndarray:
         """Uniformly sample indices for testing clips.
 
         Args:
@@ -112,7 +121,15 @@ class UniformSampleFrames(BaseTransform):
             inds = np.concatenate(all_inds)
         return inds
 
-    def transform(self, results):
+    def transform(self, results: dict) -> dict:
+        """The transform function of :class:`UniformSampleFrames`.
+
+        Args:
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
+        """
         num_frames = results['total_frames']
 
         if self.test_mode:
@@ -143,13 +160,29 @@ class UniformSampleFrames(BaseTransform):
 class PoseDecode(BaseTransform):
     """Load and decode pose with given indices.
 
-    Required keys are "keypoint", "frame_inds" (optional), "keypoint_score"
-    (optional), added or modified keys are "keypoint", "keypoint_score" (if
-    applicable).
+    Required Keys:
+
+        - keypoint
+        - keypoint_score (optional)
+        - offset (optional)
+        - total_frames (optional)
+        - frame_inds (optional)
+
+    Modified Keys:
+
+        - keypoint
+        - keypoint_score
     """
 
-    def transform(self, results):
+    def transform(self, results: dict) -> dict:
+        """The transform function of :class:`PoseDecode`.
 
+        Args:
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
+        """
         if 'total_frames' not in results:
             results['total_frames'] = results['keypoint'].shape[1]
 
@@ -167,9 +200,8 @@ class PoseDecode(BaseTransform):
             results['keypoint_score'] = kpscore[:,
                                                 frame_inds].astype(np.float32)
 
-        if 'keypoint' in results:
-            results['keypoint'] = results['keypoint'][:, frame_inds].astype(
-                np.float32)
+        results['keypoint'] = results['keypoint'][:, frame_inds].astype(
+            np.float32)
 
         return results
 
