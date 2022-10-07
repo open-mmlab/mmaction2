@@ -16,7 +16,7 @@ class SwinOptimWrapperConstructor(DefaultOptimWrapperConstructor):
     def add_params(self,
                    params: List[dict],
                    module: nn.Module,
-                   prefix: Optional[str] = None,
+                   prefix: str = 'base',
                    **kwargs) -> None:
         """Add all parameters of module to the params list.
 
@@ -24,10 +24,10 @@ class SwinOptimWrapperConstructor(DefaultOptimWrapperConstructor):
         groups, with specific rules defined by paramwise_cfg.
 
         Args:
-            params (List[dict]): A list of param groups, it will be modified
+            params (list[dict]): A list of param groups, it will be modified
                 in place.
             module (nn.Module): The module to be added.
-            prefix (str, optional): The prefix of the module. Defaults to None.
+            prefix (str): The prefix of the module. Defaults to ``'base'``.
         """
         for name, param in module.named_parameters(recurse=False):
             param_group = {'params': [param]}
