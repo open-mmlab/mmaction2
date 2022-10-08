@@ -1,8 +1,9 @@
 av
+dataclasses; python_version == '3.6'
 imgaug
 librosa
 lmdb
-moviepy
+moviepy==1.0.3
 onnx
 onnxruntime
 packaging

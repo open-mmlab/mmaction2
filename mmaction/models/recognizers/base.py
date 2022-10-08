@@ -8,6 +8,7 @@ import torch.distributed as dist
 import torch.nn as nn
 import torch.nn.functional as F
 from mmcv.runner import auto_fp16
+from mmcv.utils import digit_version
 
 from .. import builder
 
@@ -55,8 +56,13 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
                 raise ImportError('Please install torchvision to use this '
                                   'backbone.')
             backbone_type = backbone.pop('type')[12:]
-            self.backbone = torchvision.models.__dict__[backbone_type](
-                **backbone)
+            if digit_version(
+                    torchvision.__version__) < digit_version('0.14.0a0'):
+                self.backbone = torchvision.models.__dict__[backbone_type](
+                    **backbone)
+            else:
+                self.backbone = torchvision.models.get_model(
+                    backbone_type, **backbone)
             # disable the classifier
             self.backbone.classifier = nn.Identity()
             self.backbone.fc = nn.Identity()

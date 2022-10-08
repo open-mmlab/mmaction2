@@ -50,7 +50,7 @@ The master branch works with **PyTorch 1.5+**.
   </div>
   <div style="float:right;margin-right:0px;">
   <img src="https://user-images.githubusercontent.com/34324155/123989146-2ecae680-d9fb-11eb-916b-b9db5563a9e5.gif" width="380px"><br>
-    <p style="font-size:1.5vw;">Skeleton-base Action Recognition Results on NTU-RGB+D-120</p>
+    <p style="font-size:1.5vw;">Skeleton-based Action Recognition Results on NTU-RGB+D-120</p>
   </div>
 </div>
 <div align="center">
