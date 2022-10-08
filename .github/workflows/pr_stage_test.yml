@@ -56,6 +56,8 @@ jobs:
       - name: Install PytorchVideo
         run: pip install pytorchvideo
         # if: ${{matrix.torchvision == '0.10.0'}}
+      - name: Install timm
+        run: python -m pip install timm
       - name: Build and install
         run: rm -rf .eggs && pip install -e .
       - name: Run unittests and generate coverage report
@@ -123,7 +125,7 @@ jobs:
           TORCH_CUDA_ARCH_LIST=7.0 pip install -e .
       - name: Run unittests and generate coverage report
         run: |
-          coverage run --branch --source mmaction -m pytest tests/
+          coverage run --branch --source mmaction -m pytest tests/ -k 'not timm'
           coverage xml
           coverage report -m
 
@@ -150,6 +152,8 @@ jobs:
         run: pip install lmdb
       - name: Install PyTorch
         run: pip install torch==1.8.1+${{matrix.platform}} torchvision==0.9.1+${{matrix.platform}} -f https://download.pytorch.org/whl/lts/1.8/torch_lts.html
+      - name: Install timm
+        run: python -m pip install timm
       - name: Install mmaction dependencies
         run: |
           pip install git+https://github.com/open-mmlab/mmengine.git@main
