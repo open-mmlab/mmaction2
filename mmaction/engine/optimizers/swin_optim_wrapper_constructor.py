@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from functools import reduce
 from operator import mul
-from typing import List, Optional
+from typing import List
 
 import torch.nn as nn
 from mmengine.logging import print_log
