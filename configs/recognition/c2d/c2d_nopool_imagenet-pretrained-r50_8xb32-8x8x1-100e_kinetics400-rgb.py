@@ -1,16 +1,12 @@
-# c2d 8x8 setting is kept same as official repo:
-# https://github.com/facebookresearch/video-nonlocal-net/tree/main/scripts/run_c2d_baseline_400k.sh
+# c2d_nopool 8x8 setting is kept same as official repo:
+# https://github.com/facebookresearch/SlowFast/blob/main/configs/Kinetics/c2/C2D_NOPOOL_8x8_R50.yaml
 
 _base_ = [
-    '../../_base_/models/c2d_r50.py', '../../_base_/schedules/sgd_100e.py',
+    '../../_base_/models/tsn_r50.py', '../../_base_/schedules/sgd_100e.py',
     '../../_base_/default_runtime.py'
 ]
 
 # dataset settings
-file_client_args = dict(
-    io_backend='petrel',
-    path_mapping=dict(
-        {'data/kinetics400': 's3://openmmlab/datasets/action/Kinetics400'}))
 dataset_type = 'VideoDataset'
 data_root = 'data/kinetics400/videos_train'
 data_root_val = 'data/kinetics400/videos_val'
@@ -18,7 +14,7 @@ ann_file_train = 'data/kinetics400/kinetics400_train_list_videos.txt'
 ann_file_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
 
 train_pipeline = [
-    dict(type='DecordInit', **file_client_args),
+    dict(type='DecordInit'),
     dict(type='SampleFrames', clip_len=8, frame_interval=8, num_clips=1),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
@@ -30,11 +26,11 @@ train_pipeline = [
         max_wh_scale_gap=1),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
     dict(type='Flip', flip_ratio=0.5),
-    dict(type='FormatShape', input_format='NCTHW'),
+    dict(type='FormatShape', input_format='NCHW'),
     dict(type='PackActionInputs')
 ]
 val_pipeline = [
-    dict(type='DecordInit', **file_client_args),
+    dict(type='DecordInit'),
     dict(
         type='SampleFrames',
         clip_len=8,
@@ -44,11 +40,11 @@ val_pipeline = [
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
-    dict(type='FormatShape', input_format='NCTHW'),
+    dict(type='FormatShape', input_format='NCHW'),
     dict(type='PackActionInputs')
 ]
 test_pipeline = [
-    dict(type='DecordInit', **file_client_args),
+    dict(type='DecordInit'),
     dict(
         type='SampleFrames',
         clip_len=8,
@@ -58,7 +54,7 @@ test_pipeline = [
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 224)),
     dict(type='ThreeCrop', crop_size=224),
-    dict(type='FormatShape', input_format='NCTHW'),
+    dict(type='FormatShape', input_format='NCHW'),
     dict(type='PackActionInputs')
 ]
 
