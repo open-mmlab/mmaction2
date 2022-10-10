@@ -57,13 +57,13 @@ class C2D_R50(ResNet):
 
         # Format 3D -> Format 2D -> conv1 -> Format 3D -> pool3d -> Format 2D
         batches = x.shape[0]
-        x = torch.permute(x, (0, 2, 1, 3, 4))
+        x = x.permute((0, 2, 1, 3, 4))
         x = x.reshape(-1, x.shape[2], x.shape[3], x.shape[4])
         x = self.conv1(x)
         x = x.reshape(batches, -1, x.shape[1], x.shape[2], x.shape[3])
-        x = torch.permute(x, (0, 2, 1, 3, 4))
+        x = x.permute((0, 2, 1, 3, 4))
         x = self.maxpool3d_1(x)
-        x = torch.permute(x, (0, 2, 1, 3, 4))
+        x = x.permute((0, 2, 1, 3, 4))
         x = x.reshape(-1, x.shape[2], x.shape[3], x.shape[4])
         outs = []
         for i, layer_name in enumerate(self.res_layers):
@@ -72,14 +72,14 @@ class C2D_R50(ResNet):
             if i == 0:
                 # Format 2D -> Format 3D -> pool3d -> Format 2D
                 x = x.reshape(batches, -1, x.shape[1], x.shape[2], x.shape[3])
-                x = torch.permute(x, (0, 2, 1, 3, 4))
+                x = x.permute((0, 2, 1, 3, 4))
                 x = self.maxpool3d_2(x)
-                x = torch.permute(x, (0, 2, 1, 3, 4))
+                x = x.permute((0, 2, 1, 3, 4))
                 x = x.reshape(-1, x.shape[2], x.shape[3], x.shape[4])
             if i in self.out_indices:
                 # Format 2D -> Format 3D
                 x = x.reshape(batches, -1, x.shape[1], x.shape[2], x.shape[3])
-                x = torch.permute(x, (0, 2, 1, 3, 4))
+                x = x.permute((0, 2, 1, 3, 4))
                 outs.append(x)
         if len(outs) == 1:
             return outs[0]
