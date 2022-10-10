@@ -21,7 +21,6 @@ C2D_Nopool implementation in MMAction2 is kept same as the ["SlowFast" repo](htt
 <!-- [IMAGE] -->
 
 
-
 ## Results and Models
 
 ### Kinetics-400
