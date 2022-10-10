@@ -1,6 +1,3 @@
-# c2d 8x8 setting is kept same as official repo:
-# https://github.com/facebookresearch/video-nonlocal-net/tree/main/scripts/run_c2d_baseline_400k.sh
-
 _base_ = [
     '../../_base_/models/c2d_r50.py', '../../_base_/schedules/sgd_100e.py',
     '../../_base_/default_runtime.py'

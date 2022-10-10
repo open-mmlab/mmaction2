@@ -1,6 +1,3 @@
-# c2d_nopool 8x8 setting is kept same as official repo:
-# https://github.com/facebookresearch/SlowFast/blob/main/configs/Kinetics/c2/C2D_NOPOOL_8x8_R50.yaml
-
 _base_ = [
     '../../_base_/models/tsn_r50.py', '../../_base_/schedules/sgd_100e.py',
     '../../_base_/default_runtime.py'
