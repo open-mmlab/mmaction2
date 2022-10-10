@@ -11,7 +11,9 @@ from mmaction.registry import MODELS
 
 @MODELS.register_module()
 class C2D_R50(ResNet):
-    """C2D_R50 backbone. Comparing to ResNet-50, another temporal-pool is added
+    """C2D_R50 backbone.
+
+    Comparing to ResNet-50, another temporal-pool is added
     after first bottleneck. Detailed structure is kept same as "video-nonlocal-
     net" repo. Please refer to https://github.com/facebookresearch/video-nonlo
     cal-net/blob/main/configs/DBG_kinetics_resnet_4gpu_c2d_nonlocal_300k.yaml.
