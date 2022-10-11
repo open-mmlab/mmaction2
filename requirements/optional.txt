@@ -9,4 +9,3 @@ onnxruntime
 packaging
 pims
 PyTurboJPEG
-timm
