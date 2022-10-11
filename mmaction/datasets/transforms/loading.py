@@ -266,6 +266,256 @@ class SampleFrames(BaseTransform):
 
 
 @TRANSFORMS.register_module()
+class SampleFramesV2(SampleFrames):
+    """Sample frames from the video.
+
+    Required keys are "total_frames", "start_index" , added or modified keys
+    are "frame_inds", "frame_interval" and "num_clips".
+    Args:
+        clip_len (int): Frames of each sampled output clip.
+        frame_interval (int): Temporal interval of adjacent sampled frames.
+            Default: 1.
+        num_clips (int): Number of clips to be sampled. Default: 1.
+        temporal_jitter (bool): Whether to apply temporal jittering.
+            Default: False.
+        out_of_bound_opt (str): The way to deal with out of bounds frame
+            indexes. Available options are 'loop', 'repeat_last'.
+            Default: 'loop'.
+        test_mode (bool): Store True when building test or validation dataset.
+            Default: False.
+        start_index (None): This argument is deprecated and moved to dataset
+            class (``BaseDataset``, ``VideoDatset``, ``RawframeDataset``, etc),
+            see this: https://github.com/open-mmlab/mmaction2/pull/89.
+        keep_tail_frames (bool): Whether to keep tail frames when sampling.
+            Default: False.
+    """
+
+    def __init__(self,
+                 clip_len,
+                 frame_interval=1,
+                 num_clips=1,
+                 temporal_jitter=False,
+                 out_of_bound_opt='loop',
+                 test_mode=False,
+                 keep_tail_frames=False):
+        super().__init__(clip_len, frame_interval, num_clips, temporal_jitter,
+                         False, out_of_bound_opt, test_mode, keep_tail_frames)
+
+    def _get_train_clips(self, num_frames):
+        """Get clip offsets in train mode.
+
+        Args:
+            num_frames (int): Total number of frame in the video.
+        Returns:
+            np.ndarray: Sampled frame indices in train mode.
+        """
+        ori_clip_len = (self.clip_len - 1) * self.frame_interval + 1
+        max_offset = max(num_frames - ori_clip_len, 0)
+
+        num_segments = max(self.num_clips - 1, 1)
+        offset_between = max_offset / num_segments
+        clip_offsets = np.arange(self.num_clips) * offset_between
+        clip_offsets += np.random.uniform(0, offset_between, self.num_clips)
+        clip_offsets = np.round(clip_offsets).astype(np.int32)
+        return clip_offsets
+
+    def _get_test_clips(self, num_frames):
+        """Get clip offsets in test mode.
+
+        If the total number of frames is
+        not enough, it will return all zero indices.
+        Args:
+            num_frames (int): Total number of frame in the video.
+        Returns:
+            np.ndarray: Sampled frame indices in test mode.
+        """
+        ori_clip_len = (self.clip_len - 1) * self.frame_interval + 1
+        max_offset = max(num_frames - ori_clip_len, 0)
+
+        num_segments = max(self.num_clips - 1, 1)
+        offset_between = max_offset / float(num_segments)
+        clip_offsets = np.arange(self.num_clips) * offset_between
+        clip_offsets = np.round(clip_offsets).astype(np.int32)
+        return clip_offsets
+
+
+@TRANSFORMS.register_module()
+class UniformSampleFrames(BaseTransform):
+    """Uniformly sample frames from the video.
+
+    To sample an n-frame clip from the video. UniformSampleFrames basically
+    divide the video into n segments of equal length and randomly sample one
+    frame from each segment. To make the testing results reproducible, a
+    random seed is set during testing, to make the sampling results
+    deterministic.
+
+    Required keys are "total_frames", "start_index" , added or modified keys
+    are "frame_inds", "clip_len", "frame_interval" and "num_clips".
+
+    Args:
+        clip_len (int): Frames of each sampled output clip.
+        num_clips (int): Number of clips to be sampled. Default: 1.
+        test_mode (bool): Store True when building test or validation dataset.
+            Default: False.
+        out_of_bound_opt (str): The way to deal with out of bounds frame
+            indexes. Available options are 'loop', 'repeat_frame'.
+            Default: 'loop'.
+        seed (int): The random seed used during test time. Default: 255.
+    """
+
+    def __init__(self,
+                 clip_len,
+                 num_clips=1,
+                 test_mode=False,
+                 seed=255,
+                 out_of_bound_opt='loop'):
+
+        self.clip_len = clip_len
+        self.num_clips = num_clips
+        self.test_mode = test_mode
+        self.seed = seed
+        self.out_of_bound_opt = out_of_bound_opt
+        assert self.out_of_bound_opt in ['loop', 'repeat_frame']
+
+    def _get_train_clips(self, num_frames):
+        """Uniformly sample indices for training clips.
+
+        Args:
+            num_frames (int): The number of frames.
+        """
+
+        assert self.num_clips == 1
+        if num_frames < self.clip_len:
+            start = np.random.randint(0, num_frames)
+            inds = np.arange(start, start + self.clip_len)
+        elif self.clip_len <= num_frames < 2 * self.clip_len:
+            basic = np.arange(self.clip_len)
+            inds = np.random.choice(
+                self.clip_len + 1, num_frames - self.clip_len, replace=False)
+            offset = np.zeros(self.clip_len + 1, dtype=np.int32)
+            offset[inds] = 1
+            offset = np.cumsum(offset)
+            inds = basic + offset[:-1]
+        else:
+            bids = np.array([
+                i * num_frames // self.clip_len
+                for i in range(self.clip_len + 1)
+            ])
+            bsize = np.diff(bids)
+            bst = bids[:self.clip_len]
+            offset = np.random.randint(bsize)
+            inds = bst + offset
+        return inds
+
+    def _get_test_clips(self, num_frames):
+        """Uniformly sample indices for testing clips.
+
+        Args:
+            num_frames (int): The number of frames.
+        """
+
+        np.random.seed(self.seed)
+        if num_frames < self.clip_len:
+            # Then we use a simple strategy
+            if num_frames < self.num_clips:
+                start_inds = list(range(self.num_clips))
+            else:
+                start_inds = [
+                    i * num_frames // self.num_clips
+                    for i in range(self.num_clips)
+                ]
+            inds = np.concatenate(
+                [np.arange(i, i + self.clip_len) for i in start_inds])
+        elif self.clip_len <= num_frames < self.clip_len * 2:
+            all_inds = []
+            for i in range(self.num_clips):
+                basic = np.arange(self.clip_len)
+                inds = np.random.choice(
+                    self.clip_len + 1,
+                    num_frames - self.clip_len,
+                    replace=False)
+                offset = np.zeros(self.clip_len + 1, dtype=np.int32)
+                offset[inds] = 1
+                offset = np.cumsum(offset)
+                inds = basic + offset[:-1]
+                all_inds.append(inds)
+            inds = np.concatenate(all_inds)
+        else:
+            bids = np.array([
+                i * num_frames // self.clip_len
+                for i in range(self.clip_len + 1)
+            ])
+            bsize = np.diff(bids)
+            bst = bids[:self.clip_len]
+            all_inds = []
+            for i in range(self.num_clips):
+                offset = np.random.randint(bsize)
+                all_inds.append(bst + offset)
+            inds = np.concatenate(all_inds)
+        return inds
+
+    def _get_repeat_sample_clips(self, num_frames):
+        """Repeat sample when video is shorter than clip_len Modified from
+        https://github.com/facebookresearch/SlowFast/blob/64ab
+        cc90ccfdcbb11cf91d6e525bed60e92a8796/slowfast/datasets/ssv2.py#L159.
+
+        When video frames is shorter than target clip len, this strategy would
+        repeat sample frame, rather than loop sample in 'loop' mode.
+        In test mode, this strategy would sample the middle frame of each
+        segment, rather than set a random seed, and therefore only support
+        sample 1 clip.
+
+        Args:
+            num_frames (int): Total number of frame in the video.
+        Returns:
+            seq (list): the indexes of frames of sampled from the video.
+        """
+        assert self.num_clips == 1
+        seg_size = float(num_frames - 1) / self.clip_len
+        inds = []
+        for i in range(self.clip_len):
+            start = int(np.round(seg_size * i))
+            end = int(np.round(seg_size * (i + 1)))
+            if not self.test_mode:
+                inds.append(np.random.randint(start, end + 1))
+            else:
+                inds.append((start + end) // 2)
+
+        return np.array(inds)
+
+    def transform(self, results):
+        num_frames = results['total_frames']
+
+        if self.out_of_bound_opt == 'loop':
+            if self.test_mode:
+                inds = self._get_test_clips(num_frames)
+            else:
+                inds = self._get_train_clips(num_frames)
+            inds = np.mod(inds, num_frames)
+        elif self.out_of_bound_opt == 'repeat_frame':
+            inds = self._get_repeat_sample_clips(num_frames)
+        else:
+            raise ValueError('Illegal out_of_bound option.')
+
+        start_index = results['start_index']
+        inds = inds + start_index
+
+        results['frame_inds'] = inds.astype(np.int32)
+        results['clip_len'] = self.clip_len
+        results['frame_interval'] = None
+        results['num_clips'] = self.num_clips
+        return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'clip_len={self.clip_len}, '
+                    f'num_clips={self.num_clips}, '
+                    f'test_mode={self.test_mode}, '
+                    f'seed={self.seed})')
+        return repr_str
+
+
+@TRANSFORMS.register_module()
 class UntrimmedSampleFrames(BaseTransform):
     """Sample frames from the untrimmed video.
 
