@@ -98,28 +98,6 @@ def test_tsn():
         img_list = [img[None, :] for img in imgs]
         for one_img in img_list:
             recognizer(one_img, None, return_loss=False)
-
-    # test timm backbones
-    timm_backbone = dict(type='timm.efficientnet_b0', pretrained=False)
-    config.model['backbone'] = timm_backbone
-    config.model['cls_head']['in_channels'] = 1280
-
-    recognizer = MODELS.build(config.model)
-
-    input_shape = (1, 3, 3, 32, 32)
-    demo_inputs = generate_recognizer_demo_inputs(input_shape)
-
-    imgs = demo_inputs['imgs']
-    gt_labels = demo_inputs['gt_labels']
-
-    losses = recognizer(imgs, gt_labels)
-    assert isinstance(losses, torch.Tensor)
-
-    # Test forward test
-    with torch.no_grad():
-        img_list = [img[None, :] for img in imgs]
-        for one_img in img_list:
-            recognizer(one_img, None, return_loss=False)
     """
 
 
@@ -273,3 +251,30 @@ def test_tanet():
     recognizer(imgs, gradcam=True)
     for one_img in img_list:
         recognizer(one_img, gradcam=True)
+
+
+def test_timm_backbone():
+    # test tsn from timm
+    config = get_recognizer_cfg(
+        'tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py')
+    config.model['backbone']['pretrained'] = None
+    timm_backbone = dict(type='timm.efficientnet_b0', pretrained=False)
+    config.model['backbone'] = timm_backbone
+    config.model['cls_head']['in_channels'] = 1280
+
+    recognizer = MODELS.build(config.model)
+
+    input_shape = (1, 3, 3, 32, 32)
+    demo_inputs = generate_recognizer_demo_inputs(input_shape)
+
+    imgs = demo_inputs['imgs']
+    gt_labels = demo_inputs['gt_labels']
+
+    losses = recognizer(imgs, gt_labels)
+    assert isinstance(losses, torch.Tensor)
+
+    # Test forward test
+    with torch.no_grad():
+        img_list = [img[None, :] for img in imgs]
+        for one_img in img_list:
+            recognizer(one_img, None, return_loss=False)
