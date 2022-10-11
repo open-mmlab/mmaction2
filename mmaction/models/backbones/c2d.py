@@ -10,18 +10,14 @@ from mmaction.registry import MODELS
 
 
 @MODELS.register_module()
-class C2D_R50(ResNet):
-    """C2D_R50 backbone.
+class C2D(ResNet):
+    """C2D backbone.
 
     Comparing to ResNet-50, another temporal-pool is added
     after first bottleneck. Detailed structure is kept same as "video-nonlocal-
     net" repo. Please refer to https://github.com/facebookresearch/video-nonlo
     cal-net/blob/main/configs/DBG_kinetics_resnet_4gpu_c2d_nonlocal_300k.yaml.
     """
-
-    # get args for super class
-    def __init__(self, depth=50, **kwargs):
-        super().__init__(depth=depth, **kwargs)
 
     def _make_stem_layer(self) -> None:
         """Construct the stem layers consists of a conv+norm+act module and a

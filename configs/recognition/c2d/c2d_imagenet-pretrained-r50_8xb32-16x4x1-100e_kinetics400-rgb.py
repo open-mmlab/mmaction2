@@ -18,7 +18,7 @@ file_client_args = dict(backend='disk')
 
 train_pipeline = [
     dict(type='DecordInit', **file_client_args),
-    dict(type='SampleFrames', clip_len=8, frame_interval=8, num_clips=1),
+    dict(type='SampleFrames', clip_len=16, frame_interval=4, num_clips=1),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(
@@ -36,8 +36,8 @@ val_pipeline = [
     dict(type='DecordInit', **file_client_args),
     dict(
         type='SampleFrames',
-        clip_len=8,
-        frame_interval=8,
+        clip_len=16,
+        frame_interval=4,
         num_clips=1,
         test_mode=True),
     dict(type='DecordDecode'),
@@ -50,8 +50,8 @@ test_pipeline = [
     dict(type='DecordInit', **file_client_args),
     dict(
         type='SampleFrames',
-        clip_len=8,
-        frame_interval=8,
+        clip_len=16,
+        frame_interval=4,
         num_clips=10,
         test_mode=True),
     dict(type='DecordDecode'),

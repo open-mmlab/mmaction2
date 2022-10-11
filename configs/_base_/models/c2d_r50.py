@@ -1,7 +1,8 @@
 model = dict(
     type='Recognizer3D',
     backbone=dict(
-        type='C2D_R50',
+        type='C2D',
+        depth=50,
         pretrained='https://download.pytorch.org/models/resnet50-11ad3fa6.pth',
         norm_eval=False),
     cls_head=dict(
@@ -16,6 +17,4 @@ model = dict(
         type='ActionDataPreprocessor',
         mean=[123.675, 116.28, 103.53],
         std=[58.395, 57.12, 57.375],
-        format_shape='NCTHW'),
-    train_cfg=None,
-    test_cfg=None)
+        format_shape='NCTHW'))

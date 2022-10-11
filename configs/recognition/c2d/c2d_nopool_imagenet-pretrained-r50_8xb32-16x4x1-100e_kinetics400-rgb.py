@@ -1,5 +1,5 @@
 _base_ = [
-    '../../_base_/models/c2d_r50.py', '../../_base_/schedules/sgd_100e.py',
+    '../../_base_/models/tsn_r50.py', '../../_base_/schedules/sgd_100e.py',
     '../../_base_/default_runtime.py'
 ]
 
@@ -18,7 +18,7 @@ file_client_args = dict(backend='disk')
 
 train_pipeline = [
     dict(type='DecordInit', **file_client_args),
-    dict(type='SampleFrames', clip_len=8, frame_interval=8, num_clips=1),
+    dict(type='SampleFrames', clip_len=16, frame_interval=4, num_clips=1),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(
@@ -29,35 +29,35 @@ train_pipeline = [
         max_wh_scale_gap=1),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
     dict(type='Flip', flip_ratio=0.5),
-    dict(type='FormatShape', input_format='NCTHW'),
+    dict(type='FormatShape', input_format='NCHW'),
     dict(type='PackActionInputs')
 ]
 val_pipeline = [
     dict(type='DecordInit', **file_client_args),
     dict(
         type='SampleFrames',
-        clip_len=8,
-        frame_interval=8,
+        clip_len=16,
+        frame_interval=4,
         num_clips=1,
         test_mode=True),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
-    dict(type='FormatShape', input_format='NCTHW'),
+    dict(type='FormatShape', input_format='NCHW'),
     dict(type='PackActionInputs')
 ]
 test_pipeline = [
     dict(type='DecordInit', **file_client_args),
     dict(
         type='SampleFrames',
-        clip_len=8,
-        frame_interval=8,
+        clip_len=16,
+        frame_interval=4,
         num_clips=10,
         test_mode=True),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 224)),
     dict(type='ThreeCrop', crop_size=224),
-    dict(type='FormatShape', input_format='NCTHW'),
+    dict(type='FormatShape', input_format='NCHW'),
     dict(type='PackActionInputs')
 ]
 
