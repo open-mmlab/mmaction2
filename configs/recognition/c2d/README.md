@@ -13,7 +13,7 @@ Both convolutional and recurrent operations are building blocks that process one
 <!-- [IMAGE] -->
 
 <div align=center>
-<img src="https://user-images.githubusercontent.com/37479394/195236689-7a7e464d-9b32-4da6-931e-64872759518f.png" width="300"/>
+<img src="https://user-images.githubusercontent.com/37479394/195236689-7a7e464d-9b32-4da6-931e-64872759518f.png" width="400"/>
 
 </div>
 
@@ -31,12 +31,12 @@ NOTICE:
 
 ### Kinetics-400
 
-| frame sampling strategy | scheduler |  resolution   | gpus |  backbone   | pretrain | top1 acc | top5 acc |  reference top1 acc   |  reference top5 acc   | testing protocol  | inference time(video/s) | gpu_mem(M) |  config   |   ckpt   |   log   |
-| :---------------------: | :-------: | :-----------: | :--: | :---------: | :------: | :------: | :------: | :-------------------: | :-------------------: | :---------------: | :---------------------: | :--------: | :-------: | :------: | :-----: |
-|          8x8x1          | MultiStep | short-side 320 |  8   | ResNet50<br> | ImageNet |  73.16   |  90.88   | [67.2](https://github.com/facebookresearch/SlowFast/blob/main/MODEL_ZOO.md#kinetics-400-and-600) | [87.8](https://github.com/facebookresearch/SlowFast/blob/main/MODEL_ZOO.md#kinetics-400-and-600) | 10 clips x 3 crop |            x            |   21547    | [config](/configs/recognition/c2d/c2d_nopool_imagenet-pretrained-r50_8xb32-8x8x1-100e_kinetics400-rgb.py) | [ckpt TODO](TODO) | [log TODO](TODO) |
-|          8x8x1          | MultiStep | short-side 320 |  8   | ResNet101<br> | ImageNet |   TODO   |   TODO   |           x           |           x           | 10 clips x 3 crop |            x            |    TODO    | [config](/configs/recognition/c2d/c2d_nopool_imagenet-pretrained-r101_8xb32-8x8x1-100e_kinetics400-rgb.py) | [ckpt TODO](TODO) | [log TODO](TODO) |
-|          8x8x1          | MultiStep | short-side 320 |  8   | ResNet50<br>(temporal pool) | ImageNet |  71.78   |  89.90   | [71.9](https://github.com/facebookresearch/video-nonlocal-net#modifications-for-improving-speed) | [90.0](https://github.com/facebookresearch/video-nonlocal-net#modifications-for-improving-speed) | 10 clips x 3 crop |            x            |   17006    | [config](/configs/recognition/c2d/c2d_imagenet-pretrained-r50_8xb32-8x8x1-100e_kinetics400-rgb.py) | [ckpt TODO](TODO) | [log TODO](TODO) |
-|         16x4x1          | MultiStep | short-side 320 |  8   | ResNet50<br>(temporal pool) | ImageNet |   TODO   |   TODO   |           x           |           x           | 10 clips x 3 crop |            x            |    TODO    | [config](/configs/recognition/c2d/c2d_imagenet-pretrained-r50_8xb32-16x4x1-100e_kinetics400-rgb.py) | [ckpt TODO](TODO) | [log TODO](TODO) |
+| frame sampling strategy | scheduler |   resolution   | gpus |    backbone    | pretrain | top1 acc | top5 acc |    reference top1 acc    |    reference top5 acc    | testing protocol  | gpu_mem(M) | params |    config    |    ckpt    |    log    |
+| :---------------------: | :-------: | :------------: | :--: | :------------: | :------: | :------: | :------: | :----------------------: | :----------------------: | :---------------: | :--------: | :----: | :----------: | :--------: | :-------: |
+|          8x8x1          | MultiStep | short-side 320 |  8   |  ResNet50<br>  | ImageNet |  73.16   |  90.88   | [67.2](https://github.com/facebookresearch/SlowFast/blob/main/MODEL_ZOO.md#kinetics-400-and-600) | [87.8](https://github.com/facebookresearch/SlowFast/blob/main/MODEL_ZOO.md#kinetics-400-and-600) | 10 clips x 3 crop |   21547    |  TODO  | [config](/configs/recognition/c2d/c2d_nopool_imagenet-pretrained-r50_8xb32-8x8x1-100e_kinetics400-rgb.py) | [ckpt TODO](TODO) | [log TODO](TODO) |
+|          8x8x1          | MultiStep | short-side 320 |  8   | ResNet101<br>  | ImageNet |   TODO   |   TODO   |            x             |            x             | 10 clips x 3 crop |    TODO    |  TODO  | [config](/configs/recognition/c2d/c2d_nopool_imagenet-pretrained-r101_8xb32-8x8x1-100e_kinetics400-rgb.py) | [ckpt TODO](TODO) | [log TODO](TODO) |
+|          8x8x1          | MultiStep | short-side 320 |  8   | ResNet50<br>(TemporalPool) | ImageNet |  71.78   |  89.90   | [71.9](https://github.com/facebookresearch/video-nonlocal-net#modifications-for-improving-speed) | [90.0](https://github.com/facebookresearch/video-nonlocal-net#modifications-for-improving-speed) | 10 clips x 3 crop |   17006    |  TODO  | [config](/configs/recognition/c2d/c2d_imagenet-pretrained-r50_8xb32-8x8x1-100e_kinetics400-rgb.py) | [ckpt TODO](TODO) | [log TODO](TODO) |
+|         16x4x1          | MultiStep | short-side 320 |  8   | ResNet50<br>(TemporalPool) | ImageNet |   TODO   |   TODO   |            x             |            x             | 10 clips x 3 crop |    TODO    |  TODO  | [config](/configs/recognition/c2d/c2d_imagenet-pretrained-r50_8xb32-16x4x1-100e_kinetics400-rgb.py) | [ckpt TODO](TODO) | [log TODO](TODO) |
 
 1. The values in columns named after "reference" are the results reported in the original repo, using the same model settings.
 2. The **gpus** indicates the number of gpus we used to get the checkpoint. If you want to use a different number of gpus or videos per gpu, the best way is to set `--auto-scale-lr` when calling `tools/train.py`, this parameter will auto-scale the learning rate according to the actual batch size and the original batch size.
