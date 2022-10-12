@@ -22,7 +22,7 @@ NOTICE:
 - The figure above is baseline ResNet-50 C2D model. The dimensions of 3D output maps and filter kernels are in T×H×W (2D kernels in H×W), with the number of channels following. The input is 8×224×224. Residual blocks are shown in brackets.
 - C2D implementations are slightly different between 1.The paper above; 2."SlowFast" repo; 3."Video-Nonlocal-Net" repo.
   C2D implementation in MMAction2 is kept same as the ["Video-Nonlocal-Net" repo](https://github.com/facebookresearch/video-nonlocal-net#modifications-for-improving-speed) & [config](https://github.com/facebookresearch/video-nonlocal-net/tree/main/scripts/run_c2d_baseline_400k.sh). The figure above shows the structure.
-  This structure brings significant improvement in training/testing speed with almost the same performance, comparing to the settings in the [paper](https://arxiv.org/abs/1711.07971)
+  This structure brings significant improvement in training/testing speed with almost the same performance, comparing to the settings in the [paper](https://arxiv.org/abs/1711.07971).
   Specifically, in MMAction2 implementation:
   - pool_1 = nn.MaxPool3d(kernel_size=(1, 3, 3), stride=(1, 2, 2), padding=(0, 0, 0))
   - pool_2 = nn.MaxPool3d(kernel_size=(2, 1, 1), stride=(2, 1, 1), padding=(0, 0, 0))
