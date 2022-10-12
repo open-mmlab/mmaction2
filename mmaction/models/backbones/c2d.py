@@ -13,10 +13,14 @@ from mmaction.registry import MODELS
 class C2D(ResNet):
     """C2D backbone.
 
-    Comparing to ResNet-50, another temporal-pool is added
-    after first bottleneck. Detailed structure is kept same as "video-nonlocal-
-    net" repo. Please refer to https://github.com/facebookresearch/video-nonlo
-    cal-net/blob/main/configs/DBG_kinetics_resnet_4gpu_c2d_nonlocal_300k.yaml.
+    Comparing to ResNet-50, another temporal-pool is added after the first
+    bottleneck. Detailed structure is kept same as "video-nonlocal-net" repo.
+    Please refer to https://github.com/facebookresearch/video-nonlocal-net/blob
+    /main/configs/DBG_kinetics_resnet_4gpu_c2d_nonlocal_300k.yaml
+    Please note that there are some improvement comparing to "Non-local Neural
+    Networks" paper (https://arxiv.org/abs/1711.07971).
+    Differences are noted at https://github.com/facebookresearch/video-nonlocal
+    -net#modifications-for-improving-speed
     """
 
     def _make_stem_layer(self) -> None:
