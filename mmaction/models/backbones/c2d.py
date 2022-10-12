@@ -13,14 +13,14 @@ from mmaction.registry import MODELS
 class C2D(ResNet):
     """C2D backbone.
 
-    Comparing to ResNet-50, another temporal-pool is added after the first
+    Comparing to ResNet-50, a temporal-pool is added after the first
     bottleneck. Detailed structure is kept same as "video-nonlocal-net" repo.
     Please refer to https://github.com/facebookresearch/video-nonlocal-net/blob
-    /main/configs/DBG_kinetics_resnet_4gpu_c2d_nonlocal_300k.yaml
-    Please note that there are some improvement comparing to "Non-local Neural
+    /main/scripts/run_c2d_baseline_400k.sh.
+    Please note that there are some improvements compared to "Non-local Neural
     Networks" paper (https://arxiv.org/abs/1711.07971).
     Differences are noted at https://github.com/facebookresearch/video-nonlocal
-    -net#modifications-for-improving-speed
+    -net#modifications-for-improving-speed.
     """
 
     def _make_stem_layer(self) -> None:
@@ -52,34 +52,36 @@ class C2D(ResNet):
             Union[torch.Tensor or Tuple[torch.Tensor]]: The feature of the
                 input samples extracted by the backbone.
         """
-        # Format 3D: (N, C, T, H, W)
-        # Format 2D: (N*T, C, H, W)
 
-        # Format 3D -> Format 2D -> conv1 -> Format 3D -> pool3d -> Format 2D
         batches = x.shape[0]
-        x = x.permute((0, 2, 1, 3, 4))
-        x = x.reshape(-1, x.shape[2], x.shape[3], x.shape[4])
+
+        def _convert_to_2d(x: torch.Tensor) -> torch.Tensor:
+            """(N, C, T, H, W) -> (N x T, C, H, W)"""
+            x = x.permute((0, 2, 1, 3, 4))
+            x = x.reshape(-1, x.shape[2], x.shape[3], x.shape[4])
+            return x
+
+        def _convert_to_3d(x: torch.Tensor) -> torch.Tensor:
+            """(N x T, C, H, W) -> (N, C, T, H, W)"""
+            x = x.reshape(batches, -1, x.shape[1], x.shape[2], x.shape[3])
+            x = x.permute((0, 2, 1, 3, 4))
+            return x
+
+        x = _convert_to_2d(x)
         x = self.conv1(x)
-        x = x.reshape(batches, -1, x.shape[1], x.shape[2], x.shape[3])
-        x = x.permute((0, 2, 1, 3, 4))
+        x = _convert_to_3d(x)
         x = self.maxpool3d_1(x)
-        x = x.permute((0, 2, 1, 3, 4))
-        x = x.reshape(-1, x.shape[2], x.shape[3], x.shape[4])
+        x = _convert_to_2d(x)
         outs = []
         for i, layer_name in enumerate(self.res_layers):
             res_layer = getattr(self, layer_name)
             x = res_layer(x)
             if i == 0:
-                # Format 2D -> Format 3D -> pool3d -> Format 2D
-                x = x.reshape(batches, -1, x.shape[1], x.shape[2], x.shape[3])
-                x = x.permute((0, 2, 1, 3, 4))
+                x = _convert_to_3d(x)
                 x = self.maxpool3d_2(x)
-                x = x.permute((0, 2, 1, 3, 4))
-                x = x.reshape(-1, x.shape[2], x.shape[3], x.shape[4])
+                x = _convert_to_2d(x)
             if i in self.out_indices:
-                # Format 2D -> Format 3D
-                x = x.reshape(batches, -1, x.shape[1], x.shape[2], x.shape[3])
-                x = x.permute((0, 2, 1, 3, 4))
+                x = _convert_to_3d(x)
                 outs.append(x)
         if len(outs) == 1:
             return outs[0]
