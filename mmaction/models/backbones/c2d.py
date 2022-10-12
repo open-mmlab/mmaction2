@@ -13,7 +13,7 @@ from mmaction.registry import MODELS
 class C2D(ResNet):
     """C2D backbone.
 
-    Comparing to ResNet-50, a temporal-pool is added after the first
+    Compared to ResNet-50, a temporal-pool is added after the first
     bottleneck. Detailed structure is kept same as "video-nonlocal-net" repo.
     Please refer to https://github.com/facebookresearch/video-nonlocal-net/blob
     /main/scripts/run_c2d_baseline_400k.sh.
