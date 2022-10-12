@@ -1,4 +1,4 @@
-_base_ = ['c2d_in1k-pre-r50-nopool_8xb32-8x8x1-100e_kinetics400-rgb.py']
+_base_ = ['c2d_r50-nopool-in1k-pre_8xb32-8x8x1-100e_kinetics400-rgb.py']
 
 model = dict(
     backbone=dict(
