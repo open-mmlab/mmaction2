@@ -6,7 +6,7 @@ from ..base import generate_backbone_demo_inputs
 
 
 def test_c2d_backbone():
-    """Test c2d_r50 backbone."""
+    """Test c2d backbone."""
     input_shape = (1, 3, 8, 64, 64)
     imgs = generate_backbone_demo_inputs(input_shape)
 
