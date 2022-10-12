@@ -56,7 +56,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 Example: train C2D model on Kinetics-400 dataset in a deterministic option with periodic validation.
 
 ```shell
-python tools/train.py configs/recognition/c2d/c2d_imagenet-pretrained-r50_8xb32-8x8x1-100e_kinetics400-rgb.py  \
+python tools/train.py configs/recognition/c2d/c2d_r50-in1k-pre_8xb32-8x8x1-100e_kinetics400-rgb.py  \
     --cfg-options randomness.seed=0 randomness.deterministic=True
 ```
 
@@ -73,7 +73,7 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 Example: test C2D model on Kinetics-400 dataset and dump the result to a pkl file.
 
 ```shell
-python tools/test.py configs/recognition/c2d/c2d_imagenet-pretrained-r50_8xb32-8x8x1-100e_kinetics400-rgb.py \
+python tools/test.py configs/recognition/c2d/c2d_r50-in1k-pre_8xb32-8x8x1-100e_kinetics400-rgb.py \
     checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
