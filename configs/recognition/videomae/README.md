@@ -20,17 +20,17 @@ Pre-training video transformers on extra large-scale datasets is generally requi
 
 ### Kinetics-400
 
-| frame sampling strategy |   resolution   | backbone  | top1 acc | top5 acc |          reference top1 acc           |          reference top5 acc           | testing protocol |          config           |          ckpt           |
-| :---------------------: | :------------: | :-------: | :------: | :------: | :-----------------------------------: | :-----------------------------------: | :--------------: | :-----------------------: | :---------------------: |
-|         16x4x1          | short-side 320 | ViT base  |   81.3   |   95.0   | 81.5 \[[VideoMAE](https://github.com/MCG-NJU/VideoMAE/blob/main/MODEL_ZOO.md)\] | 95.1 \[[VideoMAE](https://github.com/MCG-NJU/VideoMAE/blob/main/MODEL_ZOO.md)\] | 5 clips x 3 crop | [config](/configs/recognition/videomae/videomae-pretrained-vit-base_16x4x1_kinetics-400.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/) \[1\] |
-|         16x4x1          | short-side 320 | ViT large |   85.3   |   96.7   | 85.2 \[[VideoMAE](https://github.com/MCG-NJU/VideoMAE/blob/main/MODEL_ZOO.md)\] | 96.8 \[[VideoMAE](https://github.com/MCG-NJU/VideoMAE/blob/main/MODEL_ZOO.md)\] | 5 clips x 3 crop | [config](/configs/recognition/videomae/videomae-pretrained-vit-large_16x4x1_kinetics-400.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/) \[1\] |
+| frame sampling strategy |   resolution   | backbone | top1 acc | top5 acc |          reference top1 acc           |          reference top5 acc           | testing protocol |          config           |           ckpt           |
+| :---------------------: | :------------: | :------: | :------: | :------: | :-----------------------------------: | :-----------------------------------: | :--------------: | :-----------------------: | :----------------------: |
+|         16x4x1          | short-side 320 | ViT-B16  |   81.3   |   95.0   | 81.5 \[[VideoMAE](https://github.com/MCG-NJU/VideoMAE/blob/main/MODEL_ZOO.md)\] | 95.1 \[[VideoMAE](https://github.com/MCG-NJU/VideoMAE/blob/main/MODEL_ZOO.md)\] | 5 clips x 3 crop | [config](/configs/recognition/videomae/vit-base-p16_videomae-k400-pre_16x4x1_kinetics-400.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/videomae/vit-base-p16_videomae-k400-pre_16x4x1_kinetics-400_20221013-860a3cd3.pth) \[1\] |
+|         16x4x1          | short-side 320 | ViT-L16  |   85.3   |   96.7   | 85.2 \[[VideoMAE](https://github.com/MCG-NJU/VideoMAE/blob/main/MODEL_ZOO.md)\] | 96.8 \[[VideoMAE](https://github.com/MCG-NJU/VideoMAE/blob/main/MODEL_ZOO.md)\] | 5 clips x 3 crop | [config](/configs/recognition/videomae/vit-large-p16_videomae-k400-pre_16x4x1_kinetics-400.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/videomae/vit-large-p16_videomae-k400-pre_16x4x1_kinetics-400_20221013-229dbb03.pth) \[1\] |
 
 \[1\] The models are ported from the repo [VideoMAE](https://github.com/MCG-NJU/VideoMAE) and tested on our data. Currently, we only support the testing of VideoMAE models, training will be available soon.
 
 1. The values in columns named after "reference" are the results got by testing the checkpoint released on the original repo and codes, using the same dataset with ours.
 2. The validation set of Kinetics400 we used consists of 19796 videos. These videos are available at [Kinetics400-Validation](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155136485_link_cuhk_edu_hk/EbXw2WX94J1Hunyt3MWNDJUBz-nHvQYhO9pvKqm6g39PMA?e=a9QldB). The corresponding [data list](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_val_list.txt) (each line is of the format 'video_id, num_frames, label_index') and the [label map](https://download.openmmlab.com/mmaction/dataset/k400_val/kinetics_class2ind.txt) are also available.
 
-For more details on data preparation, you can refer to [Kinetics400](/tools/data/kinetics/README.md).
+For more details on data preparation, you can refer to [preparing Kinetics400](/tools/data/kinetics/README.md).
 
 ## Test
 
@@ -43,7 +43,7 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 Example: test ViT-base model on Kinetics-400 dataset and dump the result to a pkl file.
 
 ```shell
-python tools/test.py configs/recognition/videomae/videomae-pretrained-vit-base_16x4x1_kinetics-400.py \
+python tools/test.py configs/recognition/videomae/vit-base-p16_videomae-k400-pre_16x4x1_kinetics-400.py \
     checkpoints/SOME_CHECKPOINT.pth --dump result.pkl
 ```
 
