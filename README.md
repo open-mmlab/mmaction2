@@ -72,8 +72,7 @@ The master branch works with **PyTorch 1.6+**.
 
 **v1.0.0rc1** was released in 14/10/2022:
 
-- Unifies interfaces of all components based on [MMEngine](https://github.com/open-mmlab/mmengine).
-- Faster training and testing speed with complete support of mixed precision training.
+- support Video Swin Transformer
 
 ## Installation
 
