@@ -20,7 +20,7 @@
 - Fix link in doc ([#1986](https://github.com/open-mmlab/mmaction2/pull/1986), [#1967](https://github.com/open-mmlab/mmaction2/pull/1967), [#1951](https://github.com/open-mmlab/mmaction2/pull/1951), [#1926](https://github.com/open-mmlab/mmaction2/pull/1926),[#1944](https://github.com/open-mmlab/mmaction2/pull/1944), [#1944](https://github.com/open-mmlab/mmaction2/pull/1944), [#1927](https://github.com/open-mmlab/mmaction2/pull/1927), [#1925](https://github.com/open-mmlab/mmaction2/pull/1925))
 - Fix CI ([#1987](https://github.com/open-mmlab/mmaction2/pull/1987), [#1930](https://github.com/open-mmlab/mmaction2/pull/1930), [#1923](https://github.com/open-mmlab/mmaction2/pull/1923))
 - Fix pre-commit hook config ([#1971](https://github.com/open-mmlab/mmaction2/pull/1971))
-- Fix TIN config ([#1912](https://github.com/open-mmlab/mmaction2/pull/1912)
+- Fix TIN config ([#1912](https://github.com/open-mmlab/mmaction2/pull/1912))
 - Fix UT for BMN and BSN ([#1966](https://github.com/open-mmlab/mmaction2/pull/1966))
 - Fix UT for Recognizer2D ([#1937](https://github.com/open-mmlab/mmaction2/pull/1937))
 - Fix BSN and BMN configs for localization ([#1913](https://github.com/open-mmlab/mmaction2/pull/1913))
