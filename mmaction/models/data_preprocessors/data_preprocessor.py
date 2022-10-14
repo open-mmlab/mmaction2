@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Sequence, Union
+from typing import Sequence, Union, Optional
 
 import torch
 from mmengine.model import BaseDataPreprocessor, stack_batch
@@ -14,26 +14,27 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
 
     Args:
         mean (Sequence[float or int, optional): The pixel mean of channels
-            of images or stacked optical flow. Default: None.
+            of images or stacked optical flow. Defaults to None.
         std (Sequence[float or int], optional): The pixel standard deviation
-            of channels of images or stacked optical flow. Default: None.
+            of channels of images or stacked optical flow. Defaults to None.
         pad_size_divisor (int): The size of padded image should be
-            divisible by ``pad_size_divisor``. Default: 1.
-        pad_value (float or int): The padded pixel value. Default: 0.
+            divisible by ``pad_size_divisor``. Defaults to 1.
+        pad_value (float or int): The padded pixel value. Defaults to 0.
         to_rgb (bool): Whether to convert image from BGR to RGB.
-            Default: False.
-        blending (dict or ConfigDict, optional): Config for batch blending.
-            Default: None.
-        format_shape (str): Format shape of input data. Default: 'NCHW'.
+            Defaults to False.
+        blending (dict, optional): Config for batch blending.
+            Defaults to None.
+        format_shape (str): Format shape of input data.
+            Defaults to ``'NCHW'``.
     """
 
     def __init__(self,
-                 mean: Sequence[Union[float, int]] = None,
-                 std: Sequence[Union[float, int]] = None,
+                 mean: Optional[Sequence[Union[float, int]]] = None,
+                 std: Optional[Sequence[Union[float, int]]] = None,
                  pad_size_divisor: int = 1,
                  pad_value: Union[float, int] = 0,
                  to_rgb: bool = False,
-                 blending: OptConfigType = None,
+                 blending: Optional[dict] = None,
                  format_shape: str = 'NCHW') -> None:
         super().__init__()
         self.pad_size_divisor = pad_size_divisor
@@ -77,10 +78,10 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
             training (bool): Whether to enable training time augmentation.
 
         Returns:
-            Tuple[Tensor, list]: Data in the same format as the model
-            input.
+            Tuple[torch.Tensor, list]: Data in the same format as the model
+                input.
         """
-        data = super().forward(data)
+        data = self.cast_data(data)
         inputs, data_samples = data['inputs'], data['data_samples']
 
         # --- Pad and stack --
