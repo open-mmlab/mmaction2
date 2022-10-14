@@ -1,10 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import torch
 from unittest.mock import MagicMock
 
+import torch
+
 from mmaction.registry import MODELS
-from mmaction.utils import register_all_modules
 from mmaction.structures import ActionDataSample
+from mmaction.utils import register_all_modules
 from ..base import get_recognizer_cfg
 
 
