@@ -17,17 +17,6 @@
     </sup>
   </div>
 
-[📘Documentation](https://mmaction2.readthedocs.io/en/1.x/) |
-[🛠️Installation](https://mmaction2.readthedocs.io/en/1.x/get_started.html) |
-[👀Model Zoo](https://mmaction2.readthedocs.io/en/dev-1.x/modelzoo.html) |
-[🆕Update News](https://mmaction2.readthedocs.io/en/1.x/notes/changelog.html) |
-[🚀Ongoing Projects](https://github.com/open-mmlab/mmaction2/projects) |
-[🤔Reporting Issues](https://github.com/open-mmlab/mmaction2/issues/new/choose)
-
-</div>
-
-## Introduction
-
 [![Documentation](https://readthedocs.org/projects/mmaction2/badge/?version=latest)](https://mmaction2.readthedocs.io/en/1.x/)
 [![actions](https://github.com/open-mmlab/mmaction2/workflows/build/badge.svg)](https://github.com/open-mmlab/mmaction2/actions)
 [![codecov](https://codecov.io/gh/open-mmlab/mmaction2/branch/master/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmaction2)
@@ -36,10 +25,21 @@
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 
+[📘Documentation](https://mmaction2.readthedocs.io/en/1.x/) |
+[🛠️Installation](https://mmaction2.readthedocs.io/en/1.x/get_started.html) |
+[👀Model Zoo](https://mmaction2.readthedocs.io/en/1.x/modelzoo.html) |
+[🆕Update News](https://mmaction2.readthedocs.io/en/1.x/notes/changelog.html) |
+[🚀Ongoing Projects](https://github.com/open-mmlab/mmaction2/projects) |
+[🤔Reporting Issues](https://github.com/open-mmlab/mmaction2/issues/new/choose)
+
+</div>
+
+## Introduction
+
 MMAction2 is an open-source toolbox for video understanding based on PyTorch.
 It is a part of the [OpenMMLab](http://openmmlab.org/) project.
 
-The master branch works with **PyTorch 1.6+**.
+The 1.x branch works with **PyTorch 1.6+**.
 
 <div align="center">
   <div style="float:left;margin-right:10px;">
@@ -48,7 +48,7 @@ The master branch works with **PyTorch 1.6+**.
   </div>
   <div style="float:right;margin-right:0px;">
   <img src="https://user-images.githubusercontent.com/34324155/123989146-2ecae680-d9fb-11eb-916b-b9db5563a9e5.gif" width="380px"><br>
-    <p style="font-size:1.5vw;">Skeleton-base Action Recognition Results on NTU-RGB+D-120</p>
+    <p style="font-size:1.5vw;">Skeleton-based Action Recognition Results on NTU-RGB+D-120</p>
   </div>
 </div>
 <div align="center">
@@ -70,10 +70,9 @@ The master branch works with **PyTorch 1.6+**.
 
 ## What's New
 
-**v1.0.0rc0** was released in 31/8/2022:
+- (2022-10-11) We support **Video Swin Transformer** on Kinetics400 and additionally train a Swin-L model on Kinetics700 to extract video features for downstream tasks.
 
-- Unifies interfaces of all components based on [MMEngine](https://github.com/open-mmlab/mmengine).
-- Faster training and testing speed with complete support of mixed precision training.
+**Release**: v1.0.0rc1 was released in 14/10/2022. Please refer to [changelog.md](docs/en/notes/changelog.md) for details and release history.
 
 ## Installation
 
@@ -109,8 +108,7 @@ Please refer to [install.md](https://mmaction2.readthedocs.io/en/1.x/get_started
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition_audio/resnet/README.md">MultiModality: Audio</a> (ArXiv'2020)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/tanet/README.md">TANet</a> (ArXiv'2020)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/timesformer/README.md">TimeSformer</a> (ICML'2021)</td>
-    <td></td>
-    <td></td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/swin/README.md">VideoSwin</a> (CVPR'2022)</td>
   </tr>
   <tr>
     <td colspan="5" style="font-weight:bold;">Action Localization</td>
@@ -138,14 +136,14 @@ Please refer to [install.md](https://mmaction2.readthedocs.io/en/1.x/get_started
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/skeleton/stgcn/README.md">ST-GCN</a> (AAAI'2018)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/skeleton/2s-agcn/README.md">2s-AGCN</a> (CVPR'2019)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/skeleton/posec3d/README.md">PoseC3D</a> (ArXiv'2021)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/skeleton/posec3d/README.md">PoseC3D</a> (CVPR'2022)</td>
     <td></td>
     <td></td>
   </tr>
 </table>
 
 Results and models are available in the *README.md* of each method's config directory.
-A summary can be found on the [**model zoo**](https://mmaction2.readthedocs.io/en/dev-1.x/modelzoo.html) page.
+A summary can be found on the [**model zoo**](https://mmaction2.readthedocs.io/en/1.x/modelzoo.html) page.
 
 We will keep up with the latest progress of the community and support more popular algorithms and frameworks.
 If you have any feature requests, please feel free to leave a comment in [Issues](https://github.com/open-mmlab/mmaction2/issues/19).
@@ -258,6 +256,8 @@ We wish that the toolbox and benchmark could serve the growing research communit
 
 ## Projects in OpenMMLab
 
+- [MMEngine](https://github.com/open-mmlab/mmengine): OpenMMLab foundational library for training deep learning models.
+- [MMCV](https://github.com/open-mmlab/mmcv): OpenMMLab foundational library for computer vision.
 - [MIM](https://github.com/open-mmlab/mim): MIM installs OpenMMLab packages.
 - [MMClassification](https://github.com/open-mmlab/mmclassification): OpenMMLab image classification toolbox and benchmark.
 - [MMDetection](https://github.com/open-mmlab/mmdetection): OpenMMLab detection toolbox and benchmark.
