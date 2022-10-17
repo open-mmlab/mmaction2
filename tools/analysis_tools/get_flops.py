@@ -13,8 +13,8 @@ except ImportError:
 from fvcore.nn.print_model_statistics import _format_size
 from mmengine import Config
 
-from mmaction.utils import register_all_modules
 from mmaction.registry import MODELS
+from mmaction.utils import register_all_modules
 
 
 def parse_args():
@@ -90,4 +90,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
