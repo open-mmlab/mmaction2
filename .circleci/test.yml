@@ -64,6 +64,16 @@ jobs:
           command: |
             python -V
             python -m pip install torch==<< parameters.torch >>+cpu torchvision==<< parameters.torchvision >>+cpu -f https://download.pytorch.org/whl/torch_stable.html
+      - when:
+          condition:
+            equal: [ "1.9.0", << parameters.torch >> ]
+          steps:
+            - run: python -m pip install timm
+      - when:
+          condition:
+            equal: [ "1.6.0", << parameters.torch >> ]
+          steps:
+            - run: python -m pip install timm==0.6.7
       - run:
           name: Install mmaction dependencies
           command: |
@@ -124,6 +134,16 @@ jobs:
             docker exec mmaction pip install git+https://github.com/open-mmlab/mmdetection/
             docker exec mmaction pip install git+https://github.com/open-mmlab/mmclassification/
             docker exec mmaction pip install -r requirements.txt
+      - when:
+          condition:
+            equal: [ "1.8.1", << parameters.torch >> ]
+          steps:
+            - run: docker exec mmaction pip install timm
+      - when:
+          condition:
+            equal: [ "1.6.0", << parameters.torch >> ]
+          steps:
+            - run: docker exec mmaction pip install timm==0.6.7
       - when:
           condition:
             equal: [ "10.2", << parameters.cuda >> ]
