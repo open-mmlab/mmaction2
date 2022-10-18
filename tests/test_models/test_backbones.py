@@ -6,10 +6,10 @@ import torch
 import torch.nn as nn
 from mmcv.utils import _BatchNorm
 
-from mmaction.models import (C2D_R50, C3D, STGCN, X3D, MobileNetV2TSM,
-                             ResNet2Plus1d, ResNet3dCSN, ResNet3dSlowFast,
-                             ResNet3dSlowOnly, ResNetAudio, ResNetTIN,
-                             ResNetTSM, TANet, TimeSformer)
+from mmaction.models import (C3D, STGCN, X3D, MobileNetV2TSM, ResNet2Plus1d,
+                             ResNet3dCSN, ResNet3dSlowFast, ResNet3dSlowOnly,
+                             ResNetAudio, ResNetTIN, ResNetTSM, TANet,
+                             TimeSformer)
 from mmaction.models.backbones.resnet_tsm import NL3DWrapper
 from .base import check_norm_state, generate_backbone_demo_inputs
 
@@ -688,19 +688,6 @@ def test_timesformer_backbone():
     with pytest.raises(AssertionError):
         # Wrong transformer_layers type
         timesformer = TimeSformer(8, 64, 16, transformer_layers='wrong_type')
-
-
-def test_c2d_r50_backbone():
-    """Test c2d_r50 backbone."""
-    input_shape = (1, 3, 8, 64, 64)
-    imgs = generate_backbone_demo_inputs(input_shape)
-
-    # c2d_r50 inference test
-    c2d_r50 = C2D_R50()
-    c2d_r50.init_weights()
-    c2d_r50.train()
-    feat = c2d_r50(imgs)
-    assert feat.shape == torch.Size([1, 2048, 4, 2, 2])
 
 
 def test_c3d_backbone():
