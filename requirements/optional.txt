@@ -1,5 +1,6 @@
 av>=9.0
 future
+fvcore
 imgaug
 librosa
 lmdb
@@ -10,4 +11,3 @@ PyTurboJPEG
 soundfile
 tensorboard
 wandb
-fvcore
