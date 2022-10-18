@@ -12,8 +12,8 @@ except ImportError:
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Train a recognizer')
-    parser.add_argument('config', help='train config file path')
+    parser = argparse.ArgumentParser(description='Get model flops and params')
+    parser.add_argument('config', help='config file path')
     parser.add_argument(
         '--shape',
         type=int,
