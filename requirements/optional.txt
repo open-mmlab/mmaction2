@@ -10,3 +10,4 @@ PyTurboJPEG
 soundfile
 tensorboard
 wandb
+fvcore
