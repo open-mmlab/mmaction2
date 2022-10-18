@@ -51,7 +51,6 @@ def main():
 
     register_all_modules()
     model = MODELS.build(cfg.model)
-    model = model.cuda()
     model.eval()
 
     if hasattr(model, 'extract_feat'):
