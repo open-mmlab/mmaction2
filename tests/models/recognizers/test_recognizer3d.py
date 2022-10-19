@@ -107,8 +107,8 @@ def test_slowonly():
 
 def test_tpn_slowonly():
     register_all_modules()
-    config = get_recognizer_cfg(
-        'tpn/tpn-slowonly_imagenet-pretrained-r50_8xb8-8x8x1-150e_kinetics400-rgb.py')
+    config = get_recognizer_cfg('tpn/tpn-slowonly_imagenet-pretrained-r50_'
+                                '8xb8-8x8x1-150e_kinetics400-rgb.py')
     config.model['backbone']['pretrained2d'] = False
     config.model['backbone']['pretrained'] = None
     input_shape = (1, 3, 4, 48, 48)  # M C T H W
