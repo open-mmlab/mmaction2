@@ -1,11 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Sequence, Union, Optional
+from typing import Optional, Sequence, Union
 
 import torch
 from mmengine.model import BaseDataPreprocessor, stack_batch
 
 from mmaction.registry import MODELS
-from mmaction.utils import OptConfigType
 
 
 @MODELS.register_module()

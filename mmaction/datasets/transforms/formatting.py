@@ -25,7 +25,11 @@ class PackActionInputs(BaseTransform):
         'gt_labels': 'labels',
     }
 
-    def __init__(self, meta_keys: Sequence[str] = ('img_shape', 'img_key', 'video_id', 'timestamp')) -> None:
+    def __init__(
+        self,
+        meta_keys: Sequence[str] = ('img_shape', 'img_key', 'video_id',
+                                    'timestamp')
+    ) -> None:
         self.meta_keys = meta_keys
 
     def transform(self, results: dict) -> dict:
