@@ -1,4 +1,3 @@
-# Copyright (c) OpenMMLab. All rights reserved.
 import torch
 from unittest.mock import MagicMock
 
@@ -20,15 +19,19 @@ def train_test_step(cfg, input_shape):
     optim_wrapper = MagicMock()
     loss_vars = recognizer.train_step(data_batch, optim_wrapper)
     assert 'loss' in loss_vars
+    assert 'loss_cls' in loss_vars
     optim_wrapper.update_params.assert_called_once()
 
     # test test_step
-    predictions = recognizer.test_step(data_batch)
+    with torch.no_grad():
+        predictions = recognizer.test_step(data_batch)
     score = predictions[0].pred_scores.item
     assert len(predictions) == 1
     assert score.shape, torch.Size([num_classes])
     assert torch.min(score) >= 0
     assert torch.max(score) <= 1
+
+    return loss_vars, predictions
 
 
 def test_i3d():
@@ -88,3 +91,25 @@ def test_c3d():
     config.model['backbone']['out_dim'] = 512
     input_shape = (1, 3, 16, 28, 28)  # M C T H W
     train_test_step(config, input_shape=input_shape)
+
+
+def test_slowonly():
+    register_all_modules()
+    config = get_recognizer_cfg(
+        'slowonly/slowonly_r50_8xb16-4x16x1-256e_kinetics400-rgb.py')
+    config.model['backbone']['pretrained2d'] = False
+    config.model['backbone']['pretrained'] = None
+    input_shape = (1, 3, 4, 32, 32)  # M C T H W
+    train_test_step(config, input_shape=input_shape)
+
+
+def test_tpn_slowonly():
+    register_all_modules()
+    config = get_recognizer_cfg(
+        'tpn/tpn-slowonly_imagenet-pretrained-r50_8xb8-8x8x1-150e_kinetics400-rgb.py')
+    config.model['backbone']['pretrained2d'] = False
+    config.model['backbone']['pretrained'] = None
+    input_shape = (1, 3, 4, 48, 48)  # M C T H W
+    loss_vars, _ = train_test_step(config, input_shape=input_shape)
+    assert 'loss_aux' in loss_vars
+    assert loss_vars['loss_cls'] + loss_vars['loss_aux'] == loss_vars['loss']
