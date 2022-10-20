@@ -10,7 +10,7 @@ from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
                       LoadProposals, OpenCVDecode, OpenCVInit, PIMSDecode,
                       PIMSInit, PyAVDecode, PyAVDecodeMotionVector, PyAVInit,
                       RawFrameDecode, SampleAVAFrames, SampleFrames,
-                      SampleFramesV2, UntrimmedSampleFrames)
+                      UntrimmedSampleFrames)
 from .pose_loading import (GeneratePoseTarget, LoadKineticsPose,
                            PaddingWithLoop, PoseDecode, UniformSampleFrames)
 from .processing import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
@@ -34,5 +34,5 @@ __all__ = [
     'LoadKineticsPose', 'GeneratePoseTarget', 'PIMSInit', 'FormatGCNInput',
     'PaddingWithLoop', 'ArrayDecode', 'JointToBone', 'PackActionInputs',
     'PackLocalizationInputs', 'ImgAug', 'TorchVisionWrapper',
-    'PytorchVideoWrapper', 'PoseCompact', 'SampleFramesV2'
+    'PytorchVideoWrapper', 'PoseCompact'
 ]

@@ -322,7 +322,7 @@ def test_c3d():
 def test_vit_mae():
     register_all_modules()
     config = get_recognizer_cfg(
-        'videomae/videomae-pretrained-vit-base_16x4x1_kinetics-400.py')
+        'videomae/vit-base-p16_videomae-k400-pre_16x4x1_kinetics-400.py')
     config.model['backbone']['pretrained'] = None
     config.model['backbone']['img_size'] = 64
     config.model['backbone']['num_frames'] = 4

@@ -174,9 +174,7 @@ class SampleFrames(BaseTransform):
     def _get_test_clips(self, num_frames):
         """Get clip offsets in test mode.
 
-        Calculate the average interval for selected frames, and shift them
-        fixedly by avg_interval/2. If set twice_sample True, it will sample
-        frames together without fixed shift. If the total number of frames is
+        If the total number of frames is
         not enough, it will return all zero indices.
 
         Args:
@@ -185,15 +183,15 @@ class SampleFrames(BaseTransform):
         Returns:
             np.ndarray: Sampled frame indices in test mode.
         """
-        ori_clip_len = self.clip_len * self.frame_interval
-        avg_interval = (num_frames - ori_clip_len + 1) / float(self.num_clips)
-        if num_frames > ori_clip_len - 1:
-            base_offsets = np.arange(self.num_clips) * avg_interval
-            clip_offsets = (base_offsets + avg_interval / 2.0).astype(np.int32)
-            if self.twice_sample:
-                clip_offsets = np.concatenate([clip_offsets, base_offsets])
-        else:
-            clip_offsets = np.zeros((self.num_clips, ), dtype=np.int32)
+        k = 2 if self.twice_sample else 1
+        num_clips = self.num_clips * k
+        ori_clip_len = (self.clip_len - 1) * self.frame_interval + 1
+        max_offset = max(num_frames - ori_clip_len, 0)
+
+        num_segments = max(num_clips - 1, 1)
+        offset_between = max_offset / float(num_segments)
+        clip_offsets = np.arange(num_clips) * offset_between
+        clip_offsets = np.round(clip_offsets).astype(np.int32)
         return clip_offsets
 
     def _sample_clips(self, num_frames):
@@ -261,84 +259,6 @@ class SampleFrames(BaseTransform):
                     f'out_of_bound_opt={self.out_of_bound_opt}, '
                     f'test_mode={self.test_mode})')
         return repr_str
-
-
-@TRANSFORMS.register_module()
-class SampleFramesV2(SampleFrames):
-    """Sample frames from the video.
-
-    Required keys are "total_frames", "start_index" , added or modified keys
-    are "frame_inds", "frame_interval" and "num_clips".
-
-    Args:
-        clip_len (int): Frames of each sampled output clip.
-        frame_interval (int): Temporal interval of adjacent sampled frames.
-            Default: 1.
-        num_clips (int): Number of clips to be sampled. Default: 1.
-        temporal_jitter (bool): Whether to apply temporal jittering.
-            Default: False.
-        out_of_bound_opt (str): The way to deal with out of bounds frame
-            indexes. Available options are 'loop', 'repeat_last'.
-            Default: 'loop'.
-        test_mode (bool): Store True when building test or validation dataset.
-            Default: False.
-        start_index (None): This argument is deprecated and moved to dataset
-            class (``BaseDataset``, ``VideoDatset``, ``RawframeDataset``, etc),
-            see this: https://github.com/open-mmlab/mmaction2/pull/89.
-        keep_tail_frames (bool): Whether to keep tail frames when sampling.
-            Default: False.
-    """
-
-    def __init__(self,
-                 clip_len,
-                 frame_interval=1,
-                 num_clips=1,
-                 temporal_jitter=False,
-                 out_of_bound_opt='loop',
-                 test_mode=False,
-                 keep_tail_frames=False):
-        super().__init__(clip_len, frame_interval, num_clips, temporal_jitter,
-                         False, out_of_bound_opt, test_mode, keep_tail_frames)
-
-    def _get_train_clips(self, num_frames):
-        """Get clip offsets in train mode.
-
-        Args:
-            num_frames (int): Total number of frame in the video.
-
-        Returns:
-            np.ndarray: Sampled frame indices in train mode.
-        """
-        ori_clip_len = (self.clip_len - 1) * self.frame_interval + 1
-        max_offset = max(num_frames - ori_clip_len, 0)
-
-        num_segments = max(self.num_clips - 1, 1)
-        offset_between = max_offset / num_segments
-        clip_offsets = np.arange(self.num_clips) * offset_between
-        clip_offsets += np.random.uniform(0, offset_between, self.num_clips)
-        clip_offsets = np.round(clip_offsets).astype(np.int32)
-        return clip_offsets
-
-    def _get_test_clips(self, num_frames):
-        """Get clip offsets in test mode.
-
-        If the total number of frames is
-        not enough, it will return all zero indices.
-
-        Args:
-            num_frames (int): Total number of frame in the video.
-
-        Returns:
-            np.ndarray: Sampled frame indices in test mode.
-        """
-        ori_clip_len = (self.clip_len - 1) * self.frame_interval + 1
-        max_offset = max(num_frames - ori_clip_len, 0)
-
-        num_segments = max(self.num_clips - 1, 1)
-        offset_between = max_offset / float(num_segments)
-        clip_offsets = np.arange(self.num_clips) * offset_between
-        clip_offsets = np.round(clip_offsets).astype(np.int32)
-        return clip_offsets
 
 
 @TRANSFORMS.register_module()
