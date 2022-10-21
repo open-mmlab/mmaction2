@@ -1,5 +1,5 @@
 _base_ = [
-    'swin-large_p244-w877-in22k-pre_8xb8-amp-32x2x1-30e_kinetics400-rgb.py'
+    'swin-large-p244-w877-in22k-pre_8xb8-amp-32x2x1-30e_kinetics400-rgb.py'
 ]
 
 model = dict(cls_head=dict(num_classes=700))
