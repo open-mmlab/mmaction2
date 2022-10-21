@@ -81,7 +81,7 @@ Models:
     Metadata:
       Architecture: Swin-L
       Batch Size: 8
-      Epochs: 100
+      Epochs: 30
       FLOPs: 604G
       Parameters: 197M
       Pretrained: ImageNet-22K
@@ -104,7 +104,7 @@ Models:
     Metadata:
       Architecture: Swin-L
       Batch Size: 8
-      Epochs: 100
+      Epochs: 30
       FLOPs: 604G
       Parameters: 197M
       Pretrained: ImageNet-22K

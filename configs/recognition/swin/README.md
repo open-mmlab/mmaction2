@@ -29,7 +29,7 @@ The vision community is witnessing a modeling shift from CNNs to Transformers, w
 
 ### Kinetics-700
 
-| frame sampling strategy |   resolution   | gpus | backbone |   pretrain   | top1 acc | top5 acc | testing protocol | gpu_mem(M) | Flops |params |          config          |          ckpt          |          log           |
+| frame sampling strategy |   resolution   | gpus | backbone |   pretrain   | top1 acc | top5 acc | testing protocol | gpu_mem(M) | FLOPs |params |          config          |          ckpt          |          log           |
 | :---------------------: | :------------: | :--: | :------: | :----------: | :------: | :------: | :--------------: | :---------------------: | :--------: | :----: | :----------------------: | :--------------------: | :--------------------: |
 |         32x2x1          | short-side 320 |  16  |  Swin-L  | ImageNet-22k |  75.26   |  92.44   | 4 clips x 3 crops |   68898  | 604G | 197M | [config](/configs/recognition/swin/swin-large-p244-w877_in22k-pre_16xb8-amp-32x2x1-30e_kinetics700-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/swin/swin-large-p244-w877_in22k-pre_16xb8-amp-32x2x1-30e_kinetics700-rgb/swin-large-p244-w877_in22k-pre_16xb8-amp-32x2x1-30e_kinetics700-rgb_20220930-f8d74db7.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/swin/swin-large-p244-w877_in22k-pre_16xb8-amp-32x2x1-30e_kinetics700-rgb/swin-large-p244-w877_in22k-pre_16xb8-amp-32x2x1-30e_kinetics700-rgb.py.log) |
 
