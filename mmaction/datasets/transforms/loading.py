@@ -188,10 +188,13 @@ class SampleFrames(BaseTransform):
         ori_clip_len = (self.clip_len - 1) * self.frame_interval + 1
         max_offset = max(num_frames - ori_clip_len, 0)
 
-        num_segments = max(num_clips - 1, 1)
-        offset_between = max_offset / float(num_segments)
-        clip_offsets = np.arange(num_clips) * offset_between
-        clip_offsets = np.round(clip_offsets).astype(np.int32)
+        if num_clips > 1:
+            num_segments = num_clips - 1
+            offset_between = max_offset / float(num_segments)
+            clip_offsets = np.arange(num_clips) * offset_between
+            clip_offsets = np.round(clip_offsets).astype(np.int32)
+        else:
+            clip_offsets = np.array([max_offset//2])
         return clip_offsets
 
     def _sample_clips(self, num_frames):
