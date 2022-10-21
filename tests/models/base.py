@@ -21,7 +21,7 @@ def generate_backbone_demo_inputs(input_shape=(1, 3, 64, 64)):
 
     Args:
         input_shape (tuple): input batch dimensions.
-            Default: (1, 3, 64, 64).
+            Defaults to ``(1, 3, 64, 64)``.
     """
     imgs = np.random.random(input_shape)
     imgs = torch.FloatTensor(imgs)
@@ -29,6 +29,7 @@ def generate_backbone_demo_inputs(input_shape=(1, 3, 64, 64)):
     return imgs
 
 
+# TODO Remove this API
 def generate_recognizer_demo_inputs(
         input_shape=(1, 3, 3, 224, 224), model_type='2D'):
     """Create a superset of inputs needed to run test or train batches.
