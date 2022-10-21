@@ -28,7 +28,6 @@ train_pipeline = [
         op='RandAugment',
         magnitude=7,
         num_layers=4),
-    dict(type='Flip', flip_ratio=0.5),
     dict(type='RandomErasing', erase_prob=0.25, mode='rand'),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='PackActionInputs')
@@ -105,7 +104,8 @@ base_lr = 1.6e-3
 optim_wrapper = dict(
     type='AmpOptimWrapper',
     optimizer=dict(
-        type='AdamW', lr=base_lr, betas=(0.9, 0.999), weight_decay=0.05))
+        type='AdamW', lr=base_lr, betas=(0.9, 0.999), weight_decay=0.05),
+    paramwise_cfg=dict(norm_decay_mult=0.0, bias_decay_mult=0.0))
 
 param_scheduler = [
     dict(

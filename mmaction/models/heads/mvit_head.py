@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from typing import List, Tuple
 
-from mmengine.model.weight_init import trunc_normal_init
+from mmengine.model.weight_init import constant_init, trunc_normal_init
 from torch import Tensor, nn
 
 from mmaction.registry import MODELS
@@ -10,8 +10,8 @@ from .base import BaseHead
 
 
 @MODELS.register_module()
-class MVitHead(BaseHead):
-    """Classification head for TimeSformer.
+class MViTHead(BaseHead):
+    """Classification head for Multi-scale ViT.
 
     Args:
         num_classes (int): Number of classes to be classified.
@@ -42,7 +42,8 @@ class MVitHead(BaseHead):
 
     def init_weights(self) -> None:
         """Initiate the parameters from scratch."""
-        trunc_normal_init(self.fc_cls, std=self.init_std)
+        trunc_normal_init(self.fc_cls.weight, std=self.init_std)
+        constant_init(self.fc_cls.bias, 0.02)
 
     def pre_logits(self, feats: Tuple[List[Tensor]]) -> Tensor:
         """The process before the final classification head.

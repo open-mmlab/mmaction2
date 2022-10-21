@@ -9,6 +9,17 @@ model = dict(
         spatial_size=312,
         drop_path_rate=0.75,
     ),
+    data_preprocessor=dict(
+        type='ActionDataPreprocessor',
+        mean=[114.75, 114.75, 114.75],
+        std=[57.375, 57.375, 57.375],
+        blending=dict(
+            type='RandomBatchAugment',
+            augments=[
+                dict(type='MixupBlending', alpha=0.8, num_classes=400),
+                dict(type='CutmixBlending', alpha=1, num_classes=400)
+            ]),
+        format_shape='NCTHW'),
     cls_head=dict(in_channels=1152, num_classes=174),
     test_cfg=dict(max_testing_views=5))
 
@@ -36,7 +47,6 @@ train_pipeline = [
         op='RandAugment',
         magnitude=7,
         num_layers=4),
-    dict(type='Flip', flip_ratio=0.5),
     dict(type='RandomErasing', erase_prob=0.25, mode='rand'),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='PackActionInputs')

@@ -7,8 +7,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 from mmcv.cnn import build_activation_layer, build_norm_layer
 from mmcv.cnn.bricks import DropPath
+from mmengine.logging import MMLogger
 from mmengine.model import BaseModule, ModuleList
-from mmengine.model.weight_init import trunc_normal_
+from mmengine.model.weight_init import constant_init, trunc_normal_
+from mmengine.runner import load_checkpoint
 from mmengine.utils import to_3tuple
 
 from mmaction.registry import MODELS
@@ -332,7 +334,6 @@ class MultiScaleAttention(BaseModule):
         if not self.rel_pos_zero_init:
             trunc_normal_(self.rel_pos_h, std=0.02)
             trunc_normal_(self.rel_pos_w, std=0.02)
-        if not self.rel_pos_zero_init:
             trunc_normal_(self.rel_pos_t, std=0.02)
 
     def forward(self, x, in_size):
@@ -672,10 +673,9 @@ class MViT(BaseModule):
                      stride=(2, 4, 4),
                      padding=(1, 3, 3)),
                  init_cfg=None):
-        if pretrained:
-            init_cfg = dict(type='Pretrained', checkpoint=pretrained)
         super().__init__(init_cfg=init_cfg)
 
+        self.pretrained = pretrained
         if isinstance(arch, str):
             arch = arch.lower()
             assert arch in set(self.arch_zoo), \
@@ -793,13 +793,27 @@ class MViT(BaseModule):
                     norm_layer = build_norm_layer(norm_cfg, out_dims)[1]
                     self.add_module(f'norm{stage_index}', norm_layer)
 
-    def init_weights(self):
-        super().init_weights()
+    def init_weights(self, pretrained: Optional[str] = None) -> None:
 
-        if (isinstance(self.init_cfg, dict)
-                and self.init_cfg['type'] == 'Pretrained'):
-            # Suppress default init if use pretrained model.
-            return
+        def _init_weights(m):
+            if isinstance(m, (nn.Linear, nn.Conv2d, nn.Conv3d)):
+                trunc_normal_(m.weight, std=0.02)
+                if isinstance(m, nn.Linear) and m.bias is not None:
+                    constant_init(m.bias, 0.02)
+            elif isinstance(m, nn.LayerNorm):
+                constant_init(m.bias, 0.02)
+                constant_init(m.weight, 1.0)
+
+        if pretrained:
+            self.pretrained = pretrained
+        if isinstance(self.pretrained, str):
+            logger = MMLogger.get_current_instance()
+            logger.info(f'load model from: {self.pretrained}')
+            load_checkpoint(self, self.pretrained, strict=False, logger=logger)
+        elif self.pretrained is None:
+            self.apply(_init_weights)
+        else:
+            raise TypeError('pretrained must be a str or None')
 
         if self.use_abs_pos_embed:
             trunc_normal_(self.pos_embed, std=0.02)

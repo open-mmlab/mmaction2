@@ -2,6 +2,19 @@ _base_ = [
     '../../_base_/models/mvit_small.py', '../../_base_/default_runtime.py'
 ]
 
+model = dict(
+    data_preprocessor=dict(
+        type='ActionDataPreprocessor',
+        mean=[114.75, 114.75, 114.75],
+        std=[57.375, 57.375, 57.375],
+        blending=dict(
+            type='RandomBatchAugment',
+            augments=[
+                dict(type='MixupBlending', alpha=0.8, num_classes=400),
+                dict(type='CutmixBlending', alpha=1, num_classes=400)
+            ]),
+        format_shape='NCTHW'), )
+
 # dataset settings
 dataset_type = 'VideoDataset'
 data_root = 'data/kinetics400/videos_train'

@@ -92,7 +92,7 @@ class TestMViT(TestCase):
         self.assertFalse(torch.allclose(model.pos_embed, torch.tensor(0.)))
 
     def test_forward(self):
-        imgs = torch.randn(1, 3, 16, 224, 224)
+        imgs = torch.randn(1, 3, 6, 64, 64)
 
         cfg = deepcopy(self.cfg)
         model = MViT(**cfg)
@@ -100,7 +100,7 @@ class TestMViT(TestCase):
         self.assertIsInstance(outs, tuple)
         self.assertEqual(len(outs), 1)
         patch_token, cls_token = outs[-1]
-        self.assertEqual(patch_token.shape, (1, 768, 8, 7, 7))
+        self.assertEqual(patch_token.shape, (1, 768, 3, 2, 2))
 
         # Test forward with multi out scales
         cfg = deepcopy(self.cfg)
@@ -113,13 +113,13 @@ class TestMViT(TestCase):
             stride = 2**stage
             patch_token, cls_token = out
             self.assertEqual(patch_token.shape,
-                             (1, 96 * stride, 8, 56 // stride, 56 // stride))
+                             (1, 96 * stride, 3, 16 // stride, 16 // stride))
             self.assertEqual(cls_token.shape, (1, 96 * stride))
 
         # Test forward with dynamic input size
-        imgs1 = torch.randn(1, 3, 16, 224, 224)
-        imgs2 = torch.randn(1, 3, 16, 256, 256)
-        imgs3 = torch.randn(1, 3, 16, 256, 309)
+        imgs1 = torch.randn(1, 3, 2, 64, 64)
+        imgs2 = torch.randn(1, 3, 2, 96, 96)
+        imgs3 = torch.randn(1, 3, 2, 96, 128)
         cfg = deepcopy(self.cfg)
         model = MViT(**cfg)
         for imgs in [imgs1, imgs2, imgs3]:
