@@ -54,12 +54,14 @@ class ActionDataPreprocessor(BaseDataPreprocessor):
             else:
                 raise ValueError(f'Invalid format shape: {format_shape}')
 
-            self.register_buffer('mean',
-                                 torch.tensor(mean, dtype=torch.float32).view(normalizer_shape),
-                                 False)
-            self.register_buffer('std',
-                                 torch.tensor(std, dtype=torch.float32).view(normalizer_shape),
-                                 False)
+            self.register_buffer(
+                'mean',
+                torch.tensor(mean, dtype=torch.float32).view(normalizer_shape),
+                False)
+            self.register_buffer(
+                'std',
+                torch.tensor(std, dtype=torch.float32).view(normalizer_shape),
+                False)
         else:
             self._enable_normalize = False
 
