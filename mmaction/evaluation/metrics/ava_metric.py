@@ -1,41 +1,18 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import os
-from datetime import datetime
-from typing import Any, List, Optional, Sequence, Tuple
-
-from mmengine.evaluator import BaseMetric
-
-from mmaction.evaluation import ava_eval, results2csv
+from typing import Any, Sequence, Tuple
 from mmaction.registry import METRICS
 from mmaction.structures import bbox2result
 
+from mmeval import AVAMeanAP as MMEVAL_AVAMeanAP
+
 
 @METRICS.register_module()
-class AVAMetric(BaseMetric):
-    """AVA evaluation metric."""
-    default_prefix: Optional[str] = 'mAP'
-
+class AVAMetric(MMEVAL_AVAMeanAP):
     def __init__(self,
-                 ann_file: str,
-                 exclude_file: str,
-                 label_file: str,
-                 options: Tuple[str] = ('mAP', ),
                  action_thr: float = 0.002,
-                 num_classes: int = 81,
-                 custom_classes: Optional[List[int]] = None,
-                 collect_device: str = 'cpu',
-                 prefix: Optional[str] = None):
-        super().__init__(collect_device=collect_device, prefix=prefix)
-        assert len(options) == 1
-        self.ann_file = ann_file
-        self.exclude_file = exclude_file
-        self.label_file = label_file
-        self.num_classes = num_classes
-        self.options = options
+                 **kwargs):
+        super().__init__(**kwargs)
         self.action_thr = action_thr
-        self.custom_classes = custom_classes
-        if custom_classes is not None:
-            self.custom_classes = list([0] + custom_classes)
 
     def process(self, data_batch: Sequence[Tuple[Any, dict]],
                 data_samples: Sequence[dict]) -> None:
@@ -60,29 +37,12 @@ class AVAMetric(BaseMetric):
                 num_classes=self.num_classes,
                 thr=self.action_thr)
             result['outputs'] = outputs
-            self.results.append(result)
+            self.add(result)
 
-    def compute_metrics(self, results: list) -> dict:
-        """Compute the metrics from processed results.
-
-        Args:
-            results (list): The processed results of each batch.
-        Returns:
-            dict: The computed metrics. The keys are the names of the metrics,
-            and the values are corresponding results.
+    def evaluate(self, *args, **kwargs) -> dict:
+        """Returns metric results and reset state.
+        This method would be invoked by ``mmengine.Evaluator``.
         """
-        time_now = datetime.now().strftime('%Y%m%d_%H%M%S')
-        temp_file = f'AVA_{time_now}_result.csv'
-        results2csv(results, temp_file, self.custom_classes)
+        metric_results = self.compute(*args, **kwargs)
 
-        eval_results = ava_eval(
-            temp_file,
-            self.options[0],
-            self.label_file,
-            self.ann_file,
-            self.exclude_file,
-            custom_classes=self.custom_classes)
-
-        os.remove(temp_file)
-
-        return eval_results
+        return metric_results
