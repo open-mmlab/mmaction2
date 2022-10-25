@@ -26,6 +26,7 @@ class AVAMetric(MMEVAL_AVAMeanAP):
             data_samples (Sequence[dict]): A batch of outputs from
                 the model.
         """
+        batch_res = []
         for data_sample in data_samples:
             result = dict()
             pred = data_sample['pred_instances']
@@ -37,7 +38,8 @@ class AVAMetric(MMEVAL_AVAMeanAP):
                 num_classes=self.num_classes,
                 thr=self.action_thr)
             result['outputs'] = outputs
-            self.add(result)
+            batch_res.append(result)
+        self.add(batch_res)
 
     def evaluate(self, *args, **kwargs) -> dict:
         """Returns metric results and reset state.
