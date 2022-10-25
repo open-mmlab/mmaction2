@@ -174,9 +174,7 @@ class SampleFrames(BaseTransform):
     def _get_test_clips(self, num_frames):
         """Get clip offsets in test mode.
 
-        Calculate the average interval for selected frames, and shift them
-        fixedly by avg_interval/2. If set twice_sample True, it will sample
-        frames together without fixed shift. If the total number of frames is
+        If the total number of frames is
         not enough, it will return all zero indices.
 
         Args:
@@ -185,15 +183,18 @@ class SampleFrames(BaseTransform):
         Returns:
             np.ndarray: Sampled frame indices in test mode.
         """
-        ori_clip_len = self.clip_len * self.frame_interval
-        avg_interval = (num_frames - ori_clip_len + 1) / float(self.num_clips)
-        if num_frames > ori_clip_len - 1:
-            base_offsets = np.arange(self.num_clips) * avg_interval
-            clip_offsets = (base_offsets + avg_interval / 2.0).astype(np.int32)
-            if self.twice_sample:
-                clip_offsets = np.concatenate([clip_offsets, base_offsets])
+        k = 2 if self.twice_sample else 1
+        num_clips = self.num_clips * k
+        ori_clip_len = (self.clip_len - 1) * self.frame_interval + 1
+        max_offset = max(num_frames - ori_clip_len, 0)
+
+        if num_clips > 1:
+            num_segments = num_clips - 1
+            offset_between = max_offset / float(num_segments)
+            clip_offsets = np.arange(num_clips) * offset_between
+            clip_offsets = np.round(clip_offsets).astype(np.int32)
         else:
-            clip_offsets = np.zeros((self.num_clips, ), dtype=np.int32)
+            clip_offsets = np.array([max_offset // 2])
         return clip_offsets
 
     def _sample_clips(self, num_frames):

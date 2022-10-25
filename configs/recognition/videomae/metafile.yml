@@ -1,0 +1,43 @@
+Collections:
+- Name: VideoMAE
+  README: configs/recognition/videomae/README.md
+  Paper:
+    URL: https://arxiv.org/abs/2203.12602
+    Title: "VideoMAE: Masked Autoencoders are Data-Efficient Learners for Self-Supervised Video Pre-Training"
+
+Models:
+  - Name: vit-base-p16_videomae-k400-pre_16x4x1_kinetics-400
+    Config: configs/recognition/videomae/vit-base-p16_videomae-k400-pre_16x4x1_kinetics-400.py
+    In Collection: VideoMAE
+    Metadata:
+      Architecture: ViT-B
+      Resolution: short-side 320
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/MCG-NJU/VideoMAE/blob/main/MODEL_ZOO.md
+      Code: https://github.com/MCG-NJU/VideoMAE/
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 81.3
+        Top 5 Accuracy: 95.0
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/videomae/vit-base-p16_videomae-k400-pre_16x4x1_kinetics-400_20221013-860a3cd3.pth
+
+  - Name: vit-large-p16_videomae-k400-pre_16x4x1_kinetics-400
+    Config: configs/recognition/videomae/vit-large-p16_videomae-k400-pre_16x4x1_kinetics-400.py
+    In Collection: VideoMAE
+    Metadata:
+      Architecture: ViT-L
+      Resolution: short-side 320
+    Modality: RGB
+    Converted From:
+      Weights: https://github.com/MCG-NJU/VideoMAE/blob/main/MODEL_ZOO.md
+      Code: https://github.com/MCG-NJU/VideoMAE/
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 85.3
+        Top 5 Accuracy: 96.7
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/videomae/vit-large-p16_videomae-k400-pre_16x4x1_kinetics-400_20221013-229dbb03.pth
