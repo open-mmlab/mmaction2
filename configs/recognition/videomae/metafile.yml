@@ -10,7 +10,7 @@ Models:
     Config: configs/recognition/videomae/vit-base-p16_videomae-k400-pre_16x4x1_kinetics-400.py
     In Collection: VideoMAE
     Metadata:
-      Architecture: ViT-B16
+      Architecture: ViT-B
       Resolution: short-side 320
     Modality: RGB
     Converted From:
@@ -28,7 +28,7 @@ Models:
     Config: configs/recognition/videomae/vit-large-p16_videomae-k400-pre_16x4x1_kinetics-400.py
     In Collection: VideoMAE
     Metadata:
-      Architecture: ViT-L16
+      Architecture: ViT-L
       Resolution: short-side 320
     Modality: RGB
     Converted From:
