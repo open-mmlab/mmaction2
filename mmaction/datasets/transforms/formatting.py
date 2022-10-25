@@ -1,4 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import Sequence
+
 import numpy as np
 import torch
 from mmcv.transforms import BaseTransform, to_tensor
@@ -23,20 +25,24 @@ class PackActionInputs(BaseTransform):
         'gt_labels': 'labels',
     }
 
-    def __init__(self,
-                 meta_keys=('img_shape', 'img_key', 'video_id', 'timestamp')):
+    def __init__(
+        self,
+        meta_keys: Sequence[str] = ('img_shape', 'img_key', 'video_id',
+                                    'timestamp')
+    ) -> None:
         self.meta_keys = meta_keys
 
     def transform(self, results: dict) -> dict:
         """Method to pack the input data.
+
         Args:
             results (dict): Result dict from the data pipeline.
 
         Returns:
             dict:
-            - 'inputs' (Tensor): The forward data of models.
-            - 'data_sample' (ActionDataSample): The annotation info of the
-              sample.
+                - 'inputs' (torch.Tensor): The forward data of models.
+                - 'data_sample' (:obj:`ActionDataSample`): The annotation
+                  info of the sample.
         """
         packed_results = dict()
         if 'imgs' in results:
