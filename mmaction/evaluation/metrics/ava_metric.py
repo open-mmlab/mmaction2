@@ -44,5 +44,6 @@ class AVAMetric(MMEVAL_AVAMeanAP):
         This method would be invoked by ``mmengine.Evaluator``.
         """
         metric_results = self.compute(*args, **kwargs)
+        self.reset()
 
         return metric_results
