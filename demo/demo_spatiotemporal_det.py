@@ -179,7 +179,10 @@ def pack_result(human_detection, result, img_h, img_w):
 def parse_args():
     parser = argparse.ArgumentParser(description='MMAction2 demo')
     parser.add_argument('video', help='video file/url')
-    parser.add_argument('out_filename', help='output filename')
+    parser.add_argument(
+        '--out_filename',
+        help='output filename',
+        default='demo/stdet_demo.mp4')
     parser.add_argument(
         '--config',
         default=('configs/detection/ava/slowonly_kinetics400-pretrained-'
