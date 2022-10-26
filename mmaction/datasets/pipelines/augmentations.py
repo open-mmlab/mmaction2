@@ -443,10 +443,11 @@ class Imgaug:
             raise TypeError(
                 f'type must be a str or valid type, but got {type(obj_type)}')
 
-        if 'children' in args:
-            args['children'] = [
-                self.imgaug_builder(child) for child in args['children']
-            ]
+        for aug_list_key in ['children', 'then_list', 'else_list']:
+            if aug_list_key in args:
+                args[aug_list_key] = [
+                    self.imgaug_builder(child) for child in args[aug_list_key]
+                ]
 
         return obj_cls(**args)
 
