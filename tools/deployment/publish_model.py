@@ -26,7 +26,7 @@ def process_checkpoint(in_file, out_file):
             del checkpoint[k]
     unnecessary_params = ['data_preprocessor.mean', 'data_preprocessor.std']
     for k in unnecessary_params:
-        if k in checkpoint['state_dict']:
+        if 'state_dict' in checkpoint and k in checkpoint['state_dict']:
             del checkpoint['state_dict'][k]
     # if it is necessary to remove some sensitive data in checkpoint['meta'],
     # add the code here.
