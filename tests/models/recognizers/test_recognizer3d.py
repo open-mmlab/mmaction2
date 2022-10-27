@@ -125,3 +125,12 @@ def test_swin():
     config.model['backbone']['pretrained'] = None
     input_shape = (1, 3, 4, 64, 64)  # M C T H W
     train_test_step(config, input_shape=input_shape)
+
+
+def test_c2d():
+    register_all_modules()
+    config = get_recognizer_cfg(
+        'c2d/c2d_r50-in1k-pre_8xb32-8x8x1-100e_kinetics400-rgb.py')
+    config.model['backbone']['pretrained'] = None
+    input_shape = (1, 3, 8, 64, 64)  # M C T H W
+    train_test_step(config, input_shape=input_shape)
