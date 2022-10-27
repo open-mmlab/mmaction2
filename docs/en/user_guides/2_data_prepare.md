@@ -18,7 +18,7 @@ We provide some tips for MMAction2 data preparation in this file.
 
 MMAction2 supports two types of data format: raw frames and video. The former is widely used in previous projects such as [TSN](https://github.com/yjxiong/temporal-segment-networks).
 This is fast when SSD is available but fails to scale to the fast-growing datasets.
-(For example, the newest edition of [Kinetics](https://deepmind.com/research/open-source/open-source-datasets/kinetics/) has 650K  videos and the total frames will take up several TBs.)
+(For example, the newest edition of [Kinetics](https://www.deepmind.com/open-source/kinetics) has 650K  videos and the total frames will take up several TBs.)
 The latter saves much space but has to do the computation intensive video decoding at execution time.
 To make video decoding faster, we support several efficient video loading libraries, such as [decord](https://github.com/zhreshold/decord), [PyAV](https://github.com/PyAV-Org/PyAV), etc.
 
@@ -135,7 +135,7 @@ python tools/data/extract_audio.py ${ROOT} ${DST_ROOT} [--ext ${EXT}] [--num-wor
 - `EXT`: Extension of the video files. e.g., `mp4`.
 - `N_WORKERS`: Number of processes to be used.
 
-After extracting audios, you are free to decode and generate the spectrogram on-the-fly such as [this](/configs/recognition_audio/resnet/tsn_r50_64x1x1_100e_kinetics400_audio.py). As for the annotations, you can directly use those of the rawframes as long as you keep the relative position of audio files same as the rawframes directory. However, extracting spectrogram on-the-fly is slow and bad for prototype iteration. Therefore, we also provide a script (and many useful tools to play with) for you to generation spectrogram off-line.
+After extracting audios, you are free to decode and generate the spectrogram on-the-fly such as [this](/configs/recognition_audio/resnet/tsn_r18_8xb320-64x1x1-100e_kinetics400-audio.py). As for the annotations, you can directly use those of the rawframes as long as you keep the relative position of audio files same as the rawframes directory. However, extracting spectrogram on-the-fly is slow and bad for prototype iteration. Therefore, we also provide a script (and many useful tools to play with) for you to generation spectrogram off-line.
 
 ```shell
 cd $MMACTION2

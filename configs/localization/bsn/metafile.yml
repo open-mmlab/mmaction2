@@ -1,0 +1,36 @@
+Collections:
+- Name: BMN
+  README: configs/localization/bsn/README.md
+  Paper:
+    URL: https://arxiv.org/abs/1806.02964
+    Title: "BSN: Boundary Sensitive Network for Temporal Action Proposal Generation"
+
+Models:
+  - Name: bsn_400x100_1xb16_20e_activitynet_feature (cuhk_mean_100)
+    Config:
+      - configs/localization/bsn/bsn_tem_1xb16-400x100-20e_activitynet-feature.py
+      - configs/localization/bsn/bsn_pgm_400x100_activitynet-feature.py
+      - configs/localization/bsn/bsn_pem_1xb16-400x100-20e_activitynet-feature.py
+    In Collection: BSN
+    Metadata:
+      Batch Size: 16
+      Epochs: 20
+      Training Data: ActivityNet v1.3
+      Training Resources: 1 GPU
+      feature: cuhk_mean_100
+    Modality: RGB
+    Results:
+      - Dataset: ActivityNet v1.3
+        Task: Temporal Action Localization
+        Metrics:
+              AUC: 66.26
+              AR@1: 32.71
+              AR@5: 48.43
+              AR@10: 55.28
+              AR@100: 74.27
+    Training Log:
+      - https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_tem_1xb16-400x100-20e_activitynet-feature.log
+      - https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_pem_1xb16-400x100-20e_activitynet-feature.log
+    Weights:
+      - https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_tem_1xb16-400x100-20e_activitynet-feature_20220908-9da79951.pth
+      - https://download.openmmlab.com/mmaction/v1.0/localization/bsn/bsn_pem_1xb16-400x100-20e_activitynet-feature_20220908-ec2eb21d.pth

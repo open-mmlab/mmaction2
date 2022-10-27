@@ -10,7 +10,6 @@ We list some common issues faced by many users and their corresponding solutions
   - [Data](#data)
   - [Training](#training)
   - [Testing](#testing)
-  - [Deploying](#deploying)
 
 Feel free to enrich the list if you find any frequent issues and have ways to help others to solve them.
 If the contents here do not cover your issue, please create an issue using the [provided templates](/.github/ISSUE_TEMPLATE/error-report.md) and make sure you fill in all required information in the template.
@@ -101,9 +100,3 @@ If the contents here do not cover your issue, please create an issue using the [
 - **What if the model is too large and the GPU memory can not fit even only one testing sample?**
 
   By default, the 3d models are tested with 10clips x 3crops, which are 30 views in total. For extremely large models, the GPU memory can not fit even only one testing sample (cuz there are 30 views). To handle this, you can set `max_testing_views=n` in `model['test_cfg']` of the config file. If so, n views will be used as a batch during forwarding to save GPU memory used.
-
-## Deploying
-
-- **Why is the onnx model converted by mmaction2 throwing error when converting to other frameworks such as TensorRT?**
-
-  For now, we can only make sure that models in mmaction2 are onnx-compatible. However, some operations in onnx may be unsupported by your target framework for deployment, e.g. TensorRT in [this issue](https://github.com/open-mmlab/mmaction2/issues/414). When such situation occurs, we suggest you raise an issue and ask the community to help as long as `pytorch2onnx.py` works well and is verified numerically.

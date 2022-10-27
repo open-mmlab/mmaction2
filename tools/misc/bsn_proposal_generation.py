@@ -3,7 +3,6 @@ import argparse
 import os
 import os.path as osp
 
-import mmcv
 import mmengine
 import numpy as np
 import torch.multiprocessing as mp
@@ -81,7 +80,7 @@ def generate_proposals(ann_file, tem_results_dir, pgm_proposals_dir,
 
     # save results
     os.makedirs(pgm_proposals_dir, exist_ok=True)
-    prog_bar = mmcv.ProgressBar(num_videos)
+    prog_bar = mmengine.ProgressBar(num_videos)
     header = 'tmin,tmax,tmin_score,tmax_score,score,match_iou,match_ioa'
     for video_name in result_dict:
         proposals = result_dict[video_name]
@@ -148,7 +147,7 @@ def generate_features(ann_file, tem_results_dir, pgm_proposals_dir,
 
     # save results
     os.makedirs(pgm_features_dir, exist_ok=True)
-    prog_bar = mmcv.ProgressBar(num_videos)
+    prog_bar = mmengine.ProgressBar(num_videos)
     for video_name in feature_return_dict.keys():
         bsp_feature = feature_return_dict[video_name]
         feature_path = osp.join(pgm_features_dir, video_name + '.npy')
@@ -171,7 +170,7 @@ def parse_args():
 def main():
     print('Begin Proposal Generation Module')
     args = parse_args()
-    cfg = mmcv.Config.fromfile(args.config)
+    cfg = mmengine.Config.fromfile(args.config)
     tem_results_dir = cfg.tem_results_dir
     pgm_proposals_dir = cfg.pgm_proposals_dir
     pgm_features_dir = cfg.pgm_features_dir

@@ -9,7 +9,7 @@ from ..base import generate_recognizer_demo_inputs, get_recognizer_cfg
 def test_tsn():
     register_all_modules()
     config = get_recognizer_cfg(
-        'tsn/tsn_r50_1x1x3_100e_8xb32_kinetics400_rgb.py')
+        'tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py')
     config.model['backbone']['pretrained'] = None
 
     recognizer = MODELS.build(config.model)
@@ -98,28 +98,6 @@ def test_tsn():
         img_list = [img[None, :] for img in imgs]
         for one_img in img_list:
             recognizer(one_img, None, return_loss=False)
-
-    # test timm backbones
-    timm_backbone = dict(type='timm.efficientnet_b0', pretrained=False)
-    config.model['backbone'] = timm_backbone
-    config.model['cls_head']['in_channels'] = 1280
-
-    recognizer = MODELS.build(config.model)
-
-    input_shape = (1, 3, 3, 32, 32)
-    demo_inputs = generate_recognizer_demo_inputs(input_shape)
-
-    imgs = demo_inputs['imgs']
-    gt_labels = demo_inputs['gt_labels']
-
-    losses = recognizer(imgs, gt_labels)
-    assert isinstance(losses, torch.Tensor)
-
-    # Test forward test
-    with torch.no_grad():
-        img_list = [img[None, :] for img in imgs]
-        for one_img in img_list:
-            recognizer(one_img, None, return_loss=False)
     """
 
 
@@ -165,7 +143,8 @@ def test_tsm():
 
 def test_trn():
     register_all_modules()
-    config = get_recognizer_cfg('trn/trn_r50_8xb16-1x1x8-50e_sthv1-rgb.py')
+    config = get_recognizer_cfg(
+        'trn/trn_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv1-rgb.py')
     config.model['backbone']['pretrained'] = None
 
     recognizer = MODELS.build(config.model)
@@ -204,7 +183,8 @@ def test_trn():
 
 def test_tpn():
     register_all_modules()
-    config = get_recognizer_cfg('tpn/tpn_tsm_r50_1x1x8_150e_8xb8_sthv1_rgb.py')
+    config = get_recognizer_cfg(
+        'tpn/tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb.py')
     config.model['backbone']['pretrained'] = None
 
     recognizer = MODELS.build(config.model)
@@ -235,8 +215,8 @@ def test_tpn():
 
 def test_tanet():
     register_all_modules()
-    config = get_recognizer_cfg(
-        'tanet/tanet_r50_dense_1x1x8_100e_8xb8_kinetics400_rgb.py')
+    config = get_recognizer_cfg('tanet/tanet_imagenet-pretrained-r50_8xb8-'
+                                'dense-1x1x8-100e_kinetics400-rgb.py')
     config.model['backbone']['pretrained'] = None
 
     recognizer = MODELS.build(config.model)
@@ -271,3 +251,30 @@ def test_tanet():
     recognizer(imgs, gradcam=True)
     for one_img in img_list:
         recognizer(one_img, gradcam=True)
+
+
+def test_timm_backbone():
+    # test tsn from timm
+    config = get_recognizer_cfg(
+        'tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py')
+    config.model['backbone']['pretrained'] = None
+    timm_backbone = dict(type='timm.efficientnet_b0', pretrained=False)
+    config.model['backbone'] = timm_backbone
+    config.model['cls_head']['in_channels'] = 1280
+
+    recognizer = MODELS.build(config.model)
+
+    input_shape = (1, 3, 3, 32, 32)
+    demo_inputs = generate_recognizer_demo_inputs(input_shape)
+
+    imgs = demo_inputs['imgs']
+    gt_labels = demo_inputs['gt_labels']
+
+    losses = recognizer(imgs, gt_labels)
+    assert isinstance(losses, torch.Tensor)
+
+    # Test forward test
+    with torch.no_grad():
+        img_list = [img[None, :] for img in imgs]
+        for one_img in img_list:
+            recognizer(one_img, None, return_loss=False)

@@ -25,9 +25,6 @@ model = dict(
         type='ActionDataPreprocessor',
         mean=[123.675, 116.28, 103.53],
         std=[58.395, 57.12, 57.375],
-        format_shape='NCTHW'),
-    # model training and testing settings
-    train_cfg=None,
-    test_cfg=None)
+        format_shape='NCTHW'))
 
 # This setting refers to https://github.com/open-mmlab/mmaction/blob/master/mmaction/models/tenons/backbones/resnet_i3d.py#L329-L332  # noqa: E501

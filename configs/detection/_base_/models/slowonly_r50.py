@@ -4,7 +4,10 @@ model = dict(
     backbone=dict(
         type='ResNet3dSlowOnly',
         depth=50,
-        pretrained=None,
+        pretrained=(
+            'https://download.openmmlab.com/mmaction/recognition/slowonly/'
+            'slowonly_r50_4x16x1_256e_kinetics400_rgb/'
+            'slowonly_r50_4x16x1_256e_kinetics400_rgb_20200704-a69556c6.pth'),
         pretrained2d=False,
         lateral=False,
         num_stages=4,

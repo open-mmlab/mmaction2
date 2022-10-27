@@ -230,7 +230,7 @@ class TEM(BaseModel):
         return (match_score_action_list, match_score_start_list,
                 match_score_end_list)
 
-    def forward(self, batch_inputs, batch_data_samples, mode, **kwargs):
+    def forward(self, inputs, data_samples, mode, **kwargs):
         """The unified entry for a forward process in both training and test.
 
         The method should accept three modes:
@@ -246,9 +246,9 @@ class TEM(BaseModel):
         optimizer updating, which are done in the :meth:`train_step`.
 
         Args:
-            batch_inputs (Tensor): The input tensor with shape
+            inputs (Tensor): The input tensor with shape
                 (N, C, ...) in general.
-            batch_data_samples (List[:obj:`ActionDataSample`], optional): The
+            data_samples (List[:obj:`ActionDataSample`], optional): The
                 annotation data of every samples. Defaults to None.
             mode (str): Return what kind of value. Defaults to ``tensor``.
 
@@ -259,12 +259,15 @@ class TEM(BaseModel):
             - If ``mode="predict"``, return a list of ``ActionDataSample``.
             - If ``mode="loss"``, return a dict of tensor.
         """
+        if type(inputs) is not torch.Tensor:
+            inputs = torch.stack(inputs)
+
         if mode == 'tensor':
-            return self._forward(batch_inputs, **kwargs)
+            return self._forward(inputs, **kwargs)
         if mode == 'predict':
-            return self.predict(batch_inputs, batch_data_samples, **kwargs)
+            return self.predict(inputs, data_samples, **kwargs)
         elif mode == 'loss':
-            return self.loss(batch_inputs, batch_data_samples, **kwargs)
+            return self.loss(inputs, data_samples, **kwargs)
         else:
             raise RuntimeError(f'Invalid mode "{mode}". '
                                'Only supports loss, predict and tensor mode')

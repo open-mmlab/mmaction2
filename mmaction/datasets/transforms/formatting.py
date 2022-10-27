@@ -1,4 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import Sequence
+
 import numpy as np
 import torch
 from mmcv.transforms import BaseTransform, to_tensor
@@ -23,20 +25,24 @@ class PackActionInputs(BaseTransform):
         'gt_labels': 'labels',
     }
 
-    def __init__(self,
-                 meta_keys=('img_shape', 'img_key', 'video_id', 'timestamp')):
+    def __init__(
+        self,
+        meta_keys: Sequence[str] = ('img_shape', 'img_key', 'video_id',
+                                    'timestamp')
+    ) -> None:
         self.meta_keys = meta_keys
 
     def transform(self, results: dict) -> dict:
         """Method to pack the input data.
+
         Args:
             results (dict): Result dict from the data pipeline.
 
         Returns:
             dict:
-            - 'inputs' (Tensor): The forward data of models.
-            - 'data_sample' (ActionDataSample): The annotation info of the
-              sample.
+                - 'inputs' (torch.Tensor): The forward data of models.
+                - 'data_sample' (:obj:`ActionDataSample`): The annotation
+                  info of the sample.
         """
         packed_results = dict()
         if 'imgs' in results:
@@ -357,23 +363,33 @@ class JointToBone(BaseTransform):
 
 @TRANSFORMS.register_module()
 class FormatGCNInput(BaseTransform):
-    """Format final skeleton shape to the given input_format.
+    """Format final skeleton shape to the given ``input_format``.
 
-    Required keys are "keypoint" and "keypoint_score"(optional),
-    added or modified keys are "keypoint" and "input_shape".
+    Required Keys:
+
+    - keypoint
+    - keypoint_score (optional)
+
+    Modified Key:
+
+    - keypoint
+
+    Added Key:
+
+    - input_shape
 
     Args:
         input_format (str): Define the final skeleton format.
     """
 
-    def __init__(self, input_format, num_person=2):
+    def __init__(self, input_format: str, num_person: int = 2) -> None:
         self.input_format = input_format
         if self.input_format not in ['NCTVM']:
             raise ValueError(
                 f'The input format {self.input_format} is invalid.')
         self.num_person = num_person
 
-    def transform(self, results):
+    def transform(self, results: dict) -> dict:
         """Performs the FormatShape formatting.
 
         Args:

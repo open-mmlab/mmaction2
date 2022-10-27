@@ -1,8 +1,26 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import Union
+
+import numpy as np
+import torch
 from mmengine.structures import BaseDataElement, InstanceData, LabelData
 
 
 class ActionDataSample(BaseDataElement):
+
+    def set_gt_labels(self, value: Union[int,
+                                         np.ndarray]) -> 'ActionDataSample':
+        """Set label of ``gt_labels``."""
+        if isinstance(value, int):
+            value = torch.LongTensor([value])
+        elif isinstance(value, np.ndarray):
+            value = torch.from_numpy(value)
+        else:
+            raise TypeError(f'Type {type(value)} is not an '
+                            f'available label type.')
+
+        self.gt_labels = LabelData(item=value)
+        return self
 
     @property
     def gt_labels(self):

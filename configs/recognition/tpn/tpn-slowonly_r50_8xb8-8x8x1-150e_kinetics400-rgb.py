@@ -1,5 +1,5 @@
 _base_ = [
-    './tpn_imagenet_pretrained_slowonly_r50_8x8x1_150e_8xb8_kinetics_rgb.py'
+    './tpn-slowonly_imagenet-pretrained-r50_8xb8-8x8x1-150e_kinetics400-rgb.py'
 ]
 
 # model settings

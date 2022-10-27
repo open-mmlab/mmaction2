@@ -99,22 +99,29 @@ test_cfg = dict(type='TestLoop')
 optim_wrapper = dict(
     optimizer=dict(
         type='SGD',
-        lr=0.02,
+        lr=0.01,
         momentum=0.9,
         weight_decay=0.0005,
     ),
     constructor='TSMOptimWrapperConstructor',
     paramwise_cfg=dict(fc_lr5=True),
-    clip_grad=dict(max_norm=40, norm_type=2))
+    clip_grad=dict(max_norm=20, norm_type=2))
 
 # learning policy
 param_scheduler = [
-    dict(type='LinearLR', start_factor=0.1, by_epoch=True, begin=0, end=1),
+    dict(
+        type='LinearLR',
+        start_factor=0.1,
+        by_epoch=True,
+        begin=0,
+        end=1,
+        convert_to_iter_based=True),
     dict(
         type='CosineAnnealingLR',
         T_max=39,
         eta_min=0,
         by_epoch=True,
+        convert_to_iter_based=True,
         begin=1,
         end=40)
 ]
