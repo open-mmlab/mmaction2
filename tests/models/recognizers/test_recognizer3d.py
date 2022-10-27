@@ -115,3 +115,13 @@ def test_tpn_slowonly():
     loss_vars, _ = train_test_step(config, input_shape=input_shape)
     assert 'loss_aux' in loss_vars
     assert loss_vars['loss_cls'] + loss_vars['loss_aux'] == loss_vars['loss']
+
+
+def test_swin():
+    register_all_modules()
+    config = get_recognizer_cfg('swin/swin-tiny-p244-w877_in1k-pre_'
+                                '8xb8-amp-32x2x1-30e_kinetics400-rgb.py')
+    config.model['backbone']['pretrained2d'] = False
+    config.model['backbone']['pretrained'] = None
+    input_shape = (1, 3, 4, 64, 64)  # M C T H W
+    train_test_step(config, input_shape=input_shape)
