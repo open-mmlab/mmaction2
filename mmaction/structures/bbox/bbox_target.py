@@ -16,7 +16,7 @@ def bbox_target(pos_bboxes_list: List[torch.Tensor],
         pos_bboxes_list (List[torch.Tensor]): Positive bboxes list.
         neg_bboxes_list (List[torch.Tensor]): Negative bboxes list.
         gt_labels (List[torch.Tensor]): Groundtruth classification label list.
-        cfg (Union[dict, mmengine.ConfigDict]]): RCNN config.
+        cfg (dict | mmengine.ConfigDict): RCNN config.
 
     Returns:
         tuple: Label and label_weight for bboxes.
