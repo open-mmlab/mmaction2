@@ -1,5 +1,5 @@
 _base_ = [
-    'swin-large_p244-w877-in22k-pre_8xb8-amp-32x2x1-30e_kinetics400-rgb.py'
+    'swin-large-p244-w877_in22k-pre_8xb8-amp-32x2x1-30e_kinetics400-rgb.py'
 ]
 
 model = dict(cls_head=dict(num_classes=700))
@@ -15,7 +15,7 @@ ann_file_test = 'data/kinetics700/kinetics700_val_list_videos.txt'
 #     io_backend='petrel',
 #     path_mapping=dict(
 #         {'data/kinetics700': 's3://openmmlab/datasets/action/Kinetics700'}))
-file_client_args = dict(backend='disk')
+file_client_args = dict(io_backend='disk')
 train_pipeline = [
     dict(type='DecordInit', **file_client_args),
     dict(type='SampleFrames', clip_len=32, frame_interval=2, num_clips=1),
