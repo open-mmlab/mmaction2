@@ -109,7 +109,7 @@ Models:
       Parameters: 197M
       Pretrained: ImageNet-22K
       Resolution: short-side 320
-      Training Data: Kinetics-400
+      Training Data: Kinetics-700
       Training Resources: 16 GPUs
     Modality: RGB
     Results:
