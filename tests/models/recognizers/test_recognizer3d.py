@@ -64,6 +64,7 @@ def test_slowfast():
     input_shape = (1, 3, 16, 64, 64)  # M C T H W
     train_test_step(config, input_shape=input_shape)
 
+
 def test_csn():
     register_all_modules()
     config = get_recognizer_cfg(
