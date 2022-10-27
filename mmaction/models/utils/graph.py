@@ -41,39 +41,39 @@ def edge2mat(link, num_node):
 
 
 class Graph:
-    """The Graph to model the skeletons extracted by the openpose.
+    """The Graph to model the different layout of skeletons.
 
     Args:
-        layout (str): must be one of the following candidates
+        layout (str): Must be one of the following candidates
             - openpose: 18 or 25 joints. For more information, please refer to:
                 https://github.com/CMU-Perceptual-Computing-Lab/openpose#output
-            - ntu-rgb+d: Is consists of 25 joints. For more information, please
-                refer to https://github.com/shahroudy/NTURGB-D
+            - ntu-rgb+d: 25 joints. For more information, please refer to:
+                https://github.com/shahroudy/NTURGB-D
+            - coco: 17 joints. For more information, please refer to:
+                https://github.com/jin-s13/COCO-WholeBody
 
-        strategy (str): must be one of the follow candidates
+        strategy (str): Must be one of the follow candidates
             - uniform: Uniform Labeling
             - distance: Distance Partitioning
             - spatial: Spatial Configuration
             For more information, please refer to the section 'Partition
-            Strategies' in our paper (https://arxiv.org/abs/1801.07455).
+            Strategies' in the paper (https://arxiv.org/abs/1801.07455).
 
-        max_hop (int): the maximal distance between two connected nodes.
-            Default: 1
+        max_hop (int): The maximal distance between two connected nodes.
+            Defaults to 1.
         dilation (int): controls the spacing between the kernel points.
-            Default: 1
+            Defaults to 1.
     """
 
     def __init__(self,
-                 layout='openpose-18',
-                 strategy='uniform',
-                 max_hop=1,
-                 dilation=1):
+                 layout: str = 'openpose-18',
+                 strategy: str = 'uniform',
+                 max_hop: int = 1,
+                 dilation: int = 1) -> None:
         self.max_hop = max_hop
         self.dilation = dilation
 
-        assert layout in [
-            'openpose-18', 'openpose-25', 'ntu-rgb+d', 'ntu_edge', 'coco'
-        ]
+        assert layout in ['openpose-18', 'openpose-25', 'ntu-rgb+d', 'coco']
         assert strategy in ['uniform', 'distance', 'spatial', 'agcn']
         self.get_edge(layout)
         self.hop_dis = get_hop_distance(
@@ -83,7 +83,7 @@ class Graph:
     def __str__(self):
         return self.A
 
-    def get_edge(self, layout):
+    def get_edge(self, layout: str) -> None:
         """This method returns the edge pairs of the layout."""
 
         if layout == 'openpose-18':
@@ -120,17 +120,6 @@ class Graph:
             self.neighbor_link = neighbor_link
             self.edge = self_link + neighbor_link
             self.center = 21 - 1
-        elif layout == 'ntu_edge':
-            self.num_node = 24
-            self_link = [(i, i) for i in range(self.num_node)]
-            neighbor_1base = [(1, 2), (3, 2), (4, 3), (5, 2), (6, 5), (7, 6),
-                              (8, 7), (9, 2), (10, 9), (11, 10), (12, 11),
-                              (13, 1), (14, 13), (15, 14), (16, 15), (17, 1),
-                              (18, 17), (19, 18), (20, 19), (21, 22), (22, 8),
-                              (23, 24), (24, 12)]
-            neighbor_link = [(i - 1, j - 1) for (i, j) in neighbor_1base]
-            self.edge = self_link + neighbor_link
-            self.center = 2
         elif layout == 'coco':
             self.num_node = 17
             self_link = [(i, i) for i in range(self.num_node)]
