@@ -72,6 +72,16 @@ The master branch works with **PyTorch 1.5+**.
 
 ## What's New
 
+### 🌟 Preview of 1.x version
+
+A brand new version of **MMAction2 v1.0.0rc0** was released in 01/09/2022:
+
+- Unified interfaces of all components based on [MMEngine](https://github.com/open-mmlab/mmengine).
+- Faster training and testing speed with complete support of mixed precision training.
+- More flexible [architecture](https://mmaction2.readthedocs.io/en/1.x).
+
+Find more new features in [1.x branch](https://github.com/open-mmlab/mmaction2/tree/1.x). Issues and PRs are welcome!
+
 ### 💎 Stable version
 
 - (2022-03-04) We support **Multigrid** on Kinetics400, achieve 76.07% Top-1 accuracy and accelerate training speed.
@@ -83,16 +93,6 @@ The master branch works with **PyTorch 1.5+**.
 - (2021-10-16) We support **PoseC3D** on UCF101 and HMDB51, achieves 87.0% and 69.3% Top-1 accuracy with 2D skeletons only. Pre-extracted 2D skeletons are also available.
 
 **Release**: v0.24.0 was released in 05/05/2022. Please refer to [changelog.md](docs/changelog.md) for details and release history.
-
-### 🌟 Preview of 1.x version
-
-A brand new version of **MMAction2 v1.0.0rc0** was released in 01/09/2022:
-
-- Unifies interfaces of all components based on [MMEngine](https://github.com/open-mmlab/mmengine).
-- Faster training and testing speed with complete support of mixed precision training.
-- Refactored and more flexible [architecture](https://mmaction2.readthedocs.io/en/1.x).
-
-Find more new features in [1.x branch](https://github.com/open-mmlab/mmaction2/tree/1.x). Issues and PRs are welcome!
 
 ## Installation
 

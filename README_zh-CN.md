@@ -71,6 +71,16 @@ MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLa
 
 ## 更新记录
 
+### 🌟 1.x 预览版本
+
+全新的 **MMAction2 v1.0.0rc0** 版本已经在 2022.09.01 发布：
+
+- 基于 [MMEngine](https://github.com/open-mmlab/mmengine) 统一了各组件接口。
+- 全面支持混合精度，训练测试速度更快。
+- 更加灵活的[架构](https://mmaction2.readthedocs.io/en/1.x)。
+
+欢迎在 [1.x branch](https://github.com/open-mmlab/mmaction2/tree/1.x) 发现更多的新特性。欢迎 issue 和 PR。
+
 ### 💎 稳定版本
 
 - (2022-03-04) 在 K400 上支持 **Multigrid** 训练，达到 76.07% 的识别准确率并加快了训练速度。
@@ -82,16 +92,6 @@ MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLa
 - (2021-10-16) 在 UCF101, HMDB51 上支持 **PoseC3D**，仅用 2D 关键点就可分别达到 87.0% 和 69.3% 的识别准确率。两数据集的预提取骨架特征可以公开下载。
 
 v0.24.0 版本已于 2022 年 5 月 5 日发布，可通过查阅 [更新日志](/docs/changelog.md) 了解更多细节以及发布历史
-
-### 🌟 1.x 预览版本
-
-全新的 **MMAction2 v1.0.0rc0** 版本已经在 2022.09.01 发布：
-
-- 基于 [MMEngine](https://github.com/open-mmlab/mmengine) 统一了各组件接口。
-- 全面支持混合精度，训练测试速度更快。
-- 重构之后更加灵活的[架构](https://mmaction2.readthedocs.io/en/1.x)。
-
-欢迎在 [1.x branch](https://github.com/open-mmlab/mmaction2/tree/1.x) 发现更多的新特性。欢迎 issue 和 PR。
 
 ## 安装
 
