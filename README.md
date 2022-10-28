@@ -71,6 +71,7 @@ The 1.x branch works with **PyTorch 1.6+**.
 ## What's New
 
 - (2022-10-11) We support **Video Swin Transformer** on Kinetics400 and additionally train a Swin-L model on Kinetics700 to extract video features for downstream tasks.
+- (2022-10-28) We support **C2D** on Kinetics400, achieve 73.57% Top-1 accuracy (higher than 71.8% in the [paper](https://arxiv.org/abs/1711.07971)).
 
 **Release**: v1.0.0rc1 was released in 14/10/2022. Please refer to [changelog.md](docs/en/notes/changelog.md) for details and release history.
 
@@ -88,17 +89,18 @@ Please refer to [install.md](https://mmaction2.readthedocs.io/en/1.x/get_started
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/c3d/README.md">C3D</a> (CVPR'2014)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/tsn/README.md">TSN</a> (ECCV'2016)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/i3d/README.md">I3D</a> (CVPR'2017)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/c2d/README.md">C2D</a> (CVPR'2018)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/i3d/README.md">I3D Non-Local</a> (CVPR'2018)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/r2plus1d/README.md">R(2+1)D</a> (CVPR'2018)</td>
   </tr>
   <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/r2plus1d/README.md">R(2+1)D</a> (CVPR'2018)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/trn/README.md">TRN</a> (ECCV'2018)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/tsm/README.md">TSM</a> (ICCV'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/tsm/README.md">TSM Non-Local</a> (ICCV'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/slowonly/README.md">SlowOnly</a> (ICCV'2019)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/slowfast/README.md">SlowFast</a> (ICCV'2019)</td>
   </tr>
   <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/slowfast/README.md">SlowFast</a> (ICCV'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/csn/README.md">CSN</a> (ICCV'2019)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/tin/README.md">TIN</a> (AAAI'2020)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/tpn/README.md">TPN</a> (CVPR'2020)</td>
