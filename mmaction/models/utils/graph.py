@@ -1,11 +1,25 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
 
+from typing import List, Tuple
 
-def get_hop_distance(num_node, edge, max_hop=1):
-    """Get n-hop distance matrix by edges."""
+
+def get_hop_distance(num_node: int,
+                     edges: List[Tuple[int, int]],
+                     max_hop: int = 1) -> np.ndarray:
+    """Get n-hop distance matrix by edges.
+
+    Args:
+        num_node (int): The number of nodes of the graph.
+        edges (list[tuple[int, int]]): The edges of the graph.
+        max_hop (int): The maximal distance between two connected nodes.
+            Defaults to 1.
+
+    Returns:
+        hop_dis (np.ndarray): The n-hop distance matrix.
+    """
     adj_mat = np.zeros((num_node, num_node))
-    for i, j in edge:
+    for i, j in edges:
         adj_mat[i, j] = 1
         adj_mat[j, i] = 1
 
@@ -20,8 +34,15 @@ def get_hop_distance(num_node, edge, max_hop=1):
     return hop_dis
 
 
-def normalize_digraph(adj_matrix):
-    """Normalize the digraph."""
+def normalize_digraph(adj_matrix: np.ndarray) -> np.ndarray:
+    """Normalize the digraph.
+
+    Args:
+        adj_matrix (np.ndarray): The adjacency matrix.
+
+    Returns:
+        norm_matrix (np.ndarray): The normalized adjacency matrix.
+    """
     Dl = np.sum(adj_matrix, 0)
     num_nodes = adj_matrix.shape[0]
     Dn = np.zeros((num_nodes, num_nodes))
@@ -50,7 +71,7 @@ class Graph:
             - ntu-rgb+d: 25 joints. For more information, please refer to:
                 https://github.com/shahroudy/NTURGB-D
             - coco: 17 joints. For more information, please refer to:
-                https://github.com/jin-s13/COCO-WholeBody
+                https://cocodataset.org/
 
         strategy (str): Must be one of the follow candidates
             - uniform: Uniform Labeling
@@ -133,7 +154,7 @@ class Graph:
         else:
             raise ValueError(f'{layout} is not supported.')
 
-    def get_adjacency(self, strategy):
+    def get_adjacency(self, strategy: str):
         """This method returns the adjacency matrix according to strategy."""
 
         valid_hop = range(0, self.max_hop + 1, self.dilation)
