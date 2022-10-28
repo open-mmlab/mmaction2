@@ -15,7 +15,7 @@ Models:
       Epochs: 100
       FLOPs: 33G
       Parameters: 24.3M
-      Pretrained: ImageNet-1K
+      Pretrained: ImageNet
       Resolution: short-side 320
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
@@ -38,7 +38,7 @@ Models:
       Epochs: 100
       FLOPs: 63G
       Parameters: 43.3M
-      Pretrained: ImageNet-1K
+      Pretrained: ImageNet
       Resolution: short-side 320
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
@@ -61,7 +61,7 @@ Models:
       Epochs: 100
       FLOPs: 19G
       Parameters: 24.3M
-      Pretrained: ImageNet-1K
+      Pretrained: ImageNet
       Resolution: short-side 320
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
@@ -84,7 +84,7 @@ Models:
       Epochs: 100
       FLOPs: 39G
       Parameters: 24.3M
-      Pretrained: ImageNet-22K
+      Pretrained: ImageNet
       Resolution: short-side 320
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
