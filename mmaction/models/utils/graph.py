@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import numpy as np
-
 from typing import List, Tuple
+
+import numpy as np
 
 
 def get_hop_distance(num_node: int,

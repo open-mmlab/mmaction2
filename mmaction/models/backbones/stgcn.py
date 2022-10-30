@@ -10,7 +10,6 @@ from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
 from torch import Tensor
 
 from mmaction.registry import MODELS
-from mmaction.utils import ConfigType
 from ..utils import Graph
 
 
