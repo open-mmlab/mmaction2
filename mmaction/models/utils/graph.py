@@ -53,10 +53,18 @@ def normalize_digraph(adj_matrix: np.ndarray) -> np.ndarray:
     return norm_matrix
 
 
-def edge2mat(link, num_node):
-    """Get adjacency matrix from edges."""
+def edge2mat(edges: List[Tuple[int, int]], num_node: int) -> np.ndarray:
+    """Get adjacency matrix from edges.
+
+    Args:
+        edges (list[tuple[int, int]]): The edges of the graph.
+        num_node (int): The number of nodes of the graph.
+
+    Returns:
+        np.ndarray: The adjacency matrix.
+    """
     A = np.zeros((num_node, num_node))
-    for i, j in link:
+    for i, j in edges:
         A[j, i] = 1
     return A
 
