@@ -12,7 +12,6 @@ from ..utils import Graph
 
 
 def conv_branch_init(conv, branches):
-    """Utility function for initialize conv branch."""
     weight = conv.weight
     n = weight.size(0)
     k1 = weight.size(1)
