@@ -22,7 +22,6 @@ def conv_branch_init(conv, branches):
 
 
 def conv_init(conv):
-    """Utility function for initialize conv."""
     kaiming_init(conv.weight)
     constant_init(conv.bias, 0)
 
