@@ -78,8 +78,8 @@ class STGCNBlock(nn.Module):
 
                 - x (torch.Tensor): Output graph sequence in
                     :math:`(N, out_channels, T_{out}, V)` format.
-                - adj_mat (torch.Tensor): graph adjacency matrix for output data in
-                    :math:`(K, V, V)` format.
+                - adj_mat (torch.Tensor): graph adjacency matrix for
+                    output data in :math:`(K, V, V)` format.
 
         where
             :math:`N` is the batch size,
