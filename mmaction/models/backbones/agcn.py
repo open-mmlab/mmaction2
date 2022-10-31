@@ -26,7 +26,6 @@ def conv_init(conv):
 
 
 def bn_init(bn, scale):
-    """Utility function for initialize bn."""
     constant_init(bn.weight, scale)
     constant_init(bn.bias, 0)
 
