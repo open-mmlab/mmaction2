@@ -17,7 +17,6 @@ def _combine_quadruple(a, b):
 
 
 def _flip_quadruple(a):
-    """Utility function for flipping quadruple."""
     return 1 - a[0] - a[2], a[1], a[2], a[3]
 
 
