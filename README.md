@@ -72,6 +72,18 @@ The master branch works with **PyTorch 1.5+**.
 
 ## What's New
 
+### 🌟 Preview of 1.x version
+
+A brand new version of **MMAction2 v1.0.0rc0** was released in 01/09/2022:
+
+- Unified interfaces of all components based on [MMEngine](https://github.com/open-mmlab/mmengine).
+- Faster training and testing speed with complete support of mixed precision training.
+- More flexible [architecture](https://mmaction2.readthedocs.io/en/1.x).
+
+Find more new features in [1.x branch](https://github.com/open-mmlab/mmaction2/tree/1.x). Issues and PRs are welcome!
+
+### 💎 Stable version
+
 - (2022-03-04) We support **Multigrid** on Kinetics400, achieve 76.07% Top-1 accuracy and accelerate training speed.
 - (2021-11-24) We support **2s-AGCN** on NTU60 XSub, achieve 86.06% Top-1 accuracy on joint stream and 86.89% Top-1 accuracy on bone stream respectively.
 - (2021-10-29) We provide a demo for skeleton-based and rgb-based spatio-temporal detection and action recognition (demo/demo_video_structuralize.py).

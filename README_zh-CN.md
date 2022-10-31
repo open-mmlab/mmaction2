@@ -70,6 +70,19 @@ MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLa
 
 ## 更新记录
 
+### 🌟 1.x 预览版本
+
+全新的 **MMAction2 v1.0.0rc0** 版本已经在 2022.09.01 发布：
+
+- 基于 [MMEngine](https://github.com/open-mmlab/mmengine) 统一了各组件接口。
+- 全面支持混合精度，训练测试速度更快。
+- 更加灵活的[架构](https://mmaction2.readthedocs.io/en/1.x)。
+
+欢迎在 [1.x branch](https://github.com/open-mmlab/mmaction2/tree/1.x) 发现更多的新特性。欢迎 issue 和 PR。
+
+### 💎 稳定版本
+
+- (2022-03-04) 在 K400 上支持 **Multigrid** 训练，达到 76.07% 的识别准确率并加快了训练速度。
 - (2021-11-24) 在 NTU60 XSub 上支持 **2s-AGCN**， 在 joint stream 和 bone stream 上分别达到 86.06% 和 86.89% 的识别准确率。
 - (2021-10-29) 支持基于 skeleton 模态和 rgb 模态的时空动作检测和行为识别 demo (demo/demo_video_structuralize.py)。
 - (2021-10-26) 在 NTU60 3d 关键点标注数据集上训练测试 **STGCN**, 可达到 84.61% (高于 [paper](https://www.aaai.org/ocs/index.php/AAAI/AAAI18/paper/viewPaper/17135) 中的 81.5%) 的识别准确率。
