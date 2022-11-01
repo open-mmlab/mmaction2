@@ -34,8 +34,7 @@ def parse_args():
 def main():
     args = parse_args()
     assert len(args.preds) == len(args.coefficients)
-    data_sample_list = args.preds
-    data_sample_list = [load(f) for f in data_sample_list]
+    data_sample_list = [load(f) for f in args.preds]
     score_list = []
     for data_samples in data_sample_list:
         scores = [
@@ -54,9 +53,6 @@ def main():
         score_list = [apply_softmax(scores) for scores in score_list]
 
     weighted_scores = get_weighted_score(score_list, args.coefficients)
-    # data = open(args.datalist).readlines()
-    # labels = [int(x.strip().split()[-1]) for x in data]
-
     mean_class_acc = mean_class_accuracy(weighted_scores, labels)
     top_1_acc, top_5_acc = top_k_accuracy(weighted_scores, labels, (1, 5))
     print(f'Mean Class Accuracy: {mean_class_acc:.04f}')
