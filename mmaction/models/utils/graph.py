@@ -1,10 +1,25 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import List, Tuple
+
 import numpy as np
 
 
-def get_hop_distance(num_node, edge, max_hop=1):
+def get_hop_distance(num_node: int,
+                     edges: List[Tuple[int, int]],
+                     max_hop: int = 1) -> np.ndarray:
+    """Get n-hop distance matrix by edges.
+
+    Args:
+        num_node (int): The number of nodes of the graph.
+        edges (list[tuple[int, int]]): The edges of the graph.
+        max_hop (int): The maximal distance between two connected nodes.
+            Defaults to 1.
+
+    Returns:
+        hop_dis (np.ndarray): The n-hop distance matrix.
+    """
     adj_mat = np.zeros((num_node, num_node))
-    for i, j in edge:
+    for i, j in edges:
         adj_mat[i, j] = 1
         adj_mat[j, i] = 1
 
@@ -19,7 +34,15 @@ def get_hop_distance(num_node, edge, max_hop=1):
     return hop_dis
 
 
-def normalize_digraph(adj_matrix):
+def normalize_digraph(adj_matrix: np.ndarray) -> np.ndarray:
+    """Normalize the digraph.
+
+    Args:
+        adj_matrix (np.ndarray): The adjacency matrix.
+
+    Returns:
+        norm_matrix (np.ndarray): The normalized adjacency matrix.
+    """
     Dl = np.sum(adj_matrix, 0)
     num_nodes = adj_matrix.shape[0]
     Dn = np.zeros((num_nodes, num_nodes))
@@ -30,47 +53,56 @@ def normalize_digraph(adj_matrix):
     return norm_matrix
 
 
-def edge2mat(link, num_node):
+def edge2mat(edges: List[Tuple[int, int]], num_node: int) -> np.ndarray:
+    """Get adjacency matrix from edges.
+
+    Args:
+        edges (list[tuple[int, int]]): The edges of the graph.
+        num_node (int): The number of nodes of the graph.
+
+    Returns:
+        np.ndarray: The adjacency matrix.
+    """
     A = np.zeros((num_node, num_node))
-    for i, j in link:
+    for i, j in edges:
         A[j, i] = 1
     return A
 
 
 class Graph:
-    """The Graph to model the skeletons extracted by the openpose.
+    """The Graph to model the different layout of skeletons.
 
     Args:
-        layout (str): must be one of the following candidates
-        - openpose: 18 or 25 joints. For more information, please refer to:
-            https://github.com/CMU-Perceptual-Computing-Lab/openpose#output
-        - ntu-rgb+d: Is consists of 25 joints. For more information, please
-            refer to https://github.com/shahroudy/NTURGB-D
+        layout (str): Must be one of the following candidates
+            - openpose: 18 or 25 joints. For more information, please refer to:
+                https://github.com/CMU-Perceptual-Computing-Lab/openpose#output
+            - ntu-rgb+d: 25 joints. For more information, please refer to:
+                https://github.com/shahroudy/NTURGB-D
+            - coco: 17 joints. For more information, please refer to:
+                https://cocodataset.org/
 
-        strategy (str): must be one of the follow candidates
-        - uniform: Uniform Labeling
-        - distance: Distance Partitioning
-        - spatial: Spatial Configuration
-        For more information, please refer to the section 'Partition
-        Strategies' in our paper (https://arxiv.org/abs/1801.07455).
+        strategy (str): Must be one of the follow candidates
+            - uniform: Uniform Labeling
+            - distance: Distance Partitioning
+            - spatial: Spatial Configuration
+            For more information, please refer to the section 'Partition
+            Strategies' in the paper (https://arxiv.org/abs/1801.07455).
 
-        max_hop (int): the maximal distance between two connected nodes.
-            Default: 1
+        max_hop (int): The maximal distance between two connected nodes.
+            Defaults to 1.
         dilation (int): controls the spacing between the kernel points.
-            Default: 1
+            Defaults to 1.
     """
 
     def __init__(self,
-                 layout='openpose-18',
-                 strategy='uniform',
-                 max_hop=1,
-                 dilation=1):
+                 layout: str = 'openpose-18',
+                 strategy: str = 'uniform',
+                 max_hop: int = 1,
+                 dilation: int = 1) -> None:
         self.max_hop = max_hop
         self.dilation = dilation
 
-        assert layout in [
-            'openpose-18', 'openpose-25', 'ntu-rgb+d', 'ntu_edge', 'coco'
-        ]
+        assert layout in ['openpose-18', 'openpose-25', 'ntu-rgb+d', 'coco']
         assert strategy in ['uniform', 'distance', 'spatial', 'agcn']
         self.get_edge(layout)
         self.hop_dis = get_hop_distance(
@@ -80,7 +112,7 @@ class Graph:
     def __str__(self):
         return self.A
 
-    def get_edge(self, layout):
+    def get_edge(self, layout: str) -> None:
         """This method returns the edge pairs of the layout."""
 
         if layout == 'openpose-18':
@@ -117,17 +149,6 @@ class Graph:
             self.neighbor_link = neighbor_link
             self.edge = self_link + neighbor_link
             self.center = 21 - 1
-        elif layout == 'ntu_edge':
-            self.num_node = 24
-            self_link = [(i, i) for i in range(self.num_node)]
-            neighbor_1base = [(1, 2), (3, 2), (4, 3), (5, 2), (6, 5), (7, 6),
-                              (8, 7), (9, 2), (10, 9), (11, 10), (12, 11),
-                              (13, 1), (14, 13), (15, 14), (16, 15), (17, 1),
-                              (18, 17), (19, 18), (20, 19), (21, 22), (22, 8),
-                              (23, 24), (24, 12)]
-            neighbor_link = [(i - 1, j - 1) for (i, j) in neighbor_1base]
-            self.edge = self_link + neighbor_link
-            self.center = 2
         elif layout == 'coco':
             self.num_node = 17
             self_link = [(i, i) for i in range(self.num_node)]
@@ -141,7 +162,7 @@ class Graph:
         else:
             raise ValueError(f'{layout} is not supported.')
 
-    def get_adjacency(self, strategy):
+    def get_adjacency(self, strategy: str):
         """This method returns the adjacency matrix according to strategy."""
 
         valid_hop = range(0, self.max_hop + 1, self.dilation)
@@ -185,7 +206,6 @@ class Graph:
             A = np.stack(A)
             self.A = A
         elif strategy == 'agcn':
-            A = []
             link_mat = edge2mat(self.self_link, self.num_node)
             In = normalize_digraph(edge2mat(self.neighbor_link, self.num_node))
             outward = [(j, i) for (i, j) in self.neighbor_link]

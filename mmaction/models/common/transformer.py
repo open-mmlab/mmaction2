@@ -60,9 +60,11 @@ class DividedTemporalAttentionWithNorm(BaseModule):
         self.init_weights()
 
     def init_weights(self):
+        """Initialize weights."""
         constant_init(self.temporal_fc, val=0, bias=0)
 
     def forward(self, query, key=None, value=None, residual=None, **kwargs):
+        """Defines the computation performed at every call."""
         assert residual is None, (
             'Always adding the shortcut in the forward function')
 
@@ -136,10 +138,11 @@ class DividedSpatialAttentionWithNorm(BaseModule):
         self.init_weights()
 
     def init_weights(self):
-        # init DividedSpatialAttentionWithNorm by default
+        """init DividedSpatialAttentionWithNorm by default."""
         pass
 
     def forward(self, query, key=None, value=None, residual=None, **kwargs):
+        """Defines the computation performed at every call."""
         assert residual is None, (
             'Always adding the shortcut in the forward function')
 
@@ -214,5 +217,6 @@ class FFNWithNorm(FFN):
         self.norm = build_norm_layer(norm_cfg, self.embed_dims)[1]
 
     def forward(self, x, residual=None):
+        """Defines the computation performed at every call."""
         assert residual is None, ('Cannot apply pre-norm with FFNWithNorm')
         return super().forward(self.norm(x), x)

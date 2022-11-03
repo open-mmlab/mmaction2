@@ -79,6 +79,7 @@ class ActivityNetDataset(BaseActionDataset):
             **kwargs)
 
     def load_data_list(self) -> List[dict]:
+        """Load annotation file to get video information."""
         check_file_exist(self.ann_file)
         data_list = []
         anno_database = mmengine.load(self.ann_file)
