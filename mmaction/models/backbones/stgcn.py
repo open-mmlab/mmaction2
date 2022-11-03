@@ -7,21 +7,9 @@ from mmengine.logging import MMLogger
 from mmengine.model.weight_init import constant_init, kaiming_init, normal_init
 from mmengine.runner import load_checkpoint
 from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
-from torch import Tensor
 
 from mmaction.registry import MODELS
-from mmaction.utils import ConfigType
 from ..utils import Graph
-
-
-def zero(x: Tensor) -> int:
-    """return zero."""
-    return 0
-
-
-def identity(x: Tensor) -> Tensor:
-    """return input itself."""
-    return x
 
 
 class STGCNBlock(nn.Module):
@@ -63,11 +51,9 @@ class STGCNBlock(nn.Module):
             nn.Dropout(dropout, inplace=True))
 
         if not residual:
-            self.residual = zero
-
+            self.residual = lambda x: 0
         elif (in_channels == out_channels) and (stride == 1):
-            self.residual = identity
-
+            self.residual = lambda x: x
         else:
             self.residual = nn.Sequential(
                 nn.Conv2d(
@@ -78,27 +64,27 @@ class STGCNBlock(nn.Module):
 
         self.relu = nn.ReLU(inplace=True)
 
-    def forward(self, x: Tensor, adj_mat: Tensor) -> tuple:
+    def forward(self, x: torch.Tensor, adj_mat: torch.Tensor) -> tuple:
         """Defines the computation performed at every call.
 
         Args:
-            x (Tensor): Input graph sequence in
+            x (torch.Tensor): Input graph sequence in
                 :math:`(N, in_channels, T_{in}, V)` format.
-            adj_mat (Tensor): Input graph adjacency matrix in :math:`(K, V, V)`
-                format.
+            adj_mat (torch.Tensor): Input graph adjacency matrix in
+                :math:`(K, V, V)` format.
 
         Returns:
             tuple: A tuple of output graph sequence and graph adjacency matrix.
 
-                - x (Tensor): Output graph sequence in
+                - x (torch.Tensor): Output graph sequence in
                     :math:`(N, out_channels, T_{out}, V)` format.
-                - adj_mat (Tensor): graph adjacency matrix for output data in
-                    :math:`(K, V, V)` format.
+                - adj_mat (torch.Tensor): graph adjacency matrix for
+                    output data in :math:`(K, V, V)` format.
 
         where
-            :math:`N` is a batch size,
-            :math:`K` is the spatial kernel size, as :math:`K == kernel_size[1]
-                `,
+            :math:`N` is the batch size,
+            :math:`K` is the spatial kernel size, as
+                :math:`K == kernel_size[1]`,
             :math:`T_{in}/T_{out}` is a length of input/output sequence,
             :math:`V` is the number of graph nodes.
         """
@@ -115,8 +101,8 @@ class ConvTemporalGraphical(nn.Module):
     Args:
         in_channels (int): Number of channels in the input sequence data.
         out_channels (int): Number of channels produced by the convolution.
-        kernel_size (int): Size of the graph convolving kernel.
-        t_kernel_size (int): Size of the temporal convolving kernel.
+        kernel_size (int): Size of the graph convolution kernel.
+        t_kernel_size (int): Size of the temporal convolution kernel.
         t_stride (int, optional): Stride of the temporal convolution.
             Default: 1.
         t_padding (int, optional): Temporal zero-padding added to both sides
@@ -148,13 +134,13 @@ class ConvTemporalGraphical(nn.Module):
             dilation=(t_dilation, 1),
             bias=bias)
 
-    def forward(self, x: Tensor, adj_mat: Tensor) -> tuple:
+    def forward(self, x: torch.Tensor, adj_mat: torch.Tensor) -> tuple:
         """Defines the computation performed at every call.
 
         Args:
-            x (Tensor): Input graph sequence in
+            x (torch.Tensor): Input graph sequence in
                 :math:`(N, in_channels, T_{in}, V)` format
-            adj_mat (Tensor): Input graph adjacency matrix in
+            adj_mat (torch.Tensor): Input graph adjacency matrix in
                 :math:`(K, V, V)` format.
 
         Returns:
@@ -178,24 +164,24 @@ class ConvTemporalGraphical(nn.Module):
 
         n, kc, t, v = x.size()
         x = x.view(n, self.kernel_size, kc // self.kernel_size, t, v)
-        x = torch.einsum('nkctv,kvw->nctw', (x, adj_mat))
-        x = x.contiguous()
+        x = torch.einsum('nkctv,kvw->nctw', (x, adj_mat)).contiguous()
 
         return x, adj_mat
 
 
 @MODELS.register_module()
 class STGCN(nn.Module):
-    """Backbone of Spatial temporal graph convolutional networks.
+    """Backbone of spatial temporal graph convolutional networks.
 
     Args:
-        in_channels (int): Number of channels in the input data.
-        graph_cfg (dict or ConfigDict): The arguments for building the graph.
-        edge_importance_weighting (bool): If ``True``, adds a learnable
-            importance weighting to the edges of the graph. Default: True.
-        data_bn (bool): If 'True', adds data normalization to the inputs.
-            Default: True.
-        pretrained (str or None): Name of pretrained model.
+        in_channels (int): Number of channels of the input data.
+        graph_cfg (dict): The arguments for building the graph.
+        edge_importance_weighting (bool): If ``True``, add a learnable
+            importance weighting to the edges of the graph. Defaults to True.
+        data_bn (bool): If ``True``, adds data normalization to the inputs.
+            Defaults to True.
+        pretrained (str, optional): Path of pretrained model.
+        **kwargs: Keyword parameters passed to graph convolution units.
 
     Shape:
         - Input: :math:`(N, in_channels, T_{in}, V_{in}, M_{in})`
@@ -208,7 +194,7 @@ class STGCN(nn.Module):
 
     def __init__(self,
                  in_channels: int,
-                 graph_cfg: ConfigType,
+                 graph_cfg: dict,
                  edge_importance_weighting: bool = True,
                  data_bn: bool = True,
                  pretrained: str = None,
@@ -226,7 +212,7 @@ class STGCN(nn.Module):
         temporal_kernel_size = 9
         kernel_size = (temporal_kernel_size, spatial_kernel_size)
         self.data_bn = nn.BatchNorm1d(in_channels *
-                                      A.size(1)) if data_bn else identity
+                                      A.size(1)) if data_bn else nn.Identity()
 
         kwargs0 = {k: v for k, v in kwargs.items() if k != 'dropout'}
         self.st_gcn_networks = nn.ModuleList((
@@ -274,13 +260,14 @@ class STGCN(nn.Module):
         else:
             raise TypeError('pretrained must be a str or None')
 
-    def forward(self, x: Tensor) -> Tensor:
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Defines the computation performed at every call.
+
         Args:
-            x (Tensor): The input data.
+            x (torch.Tensor): The input data.
 
         Returns:
-            Tensor: The output of the module.
+            torch.Tensor: The output of the module.
         """
         # data normalization
         x = x.float()

@@ -54,6 +54,7 @@ class PatchEmbed(nn.Module):
         self.init_weights()
 
     def init_weights(self):
+        """Initialize weights."""
         # Lecun norm from ClassyVision
         kaiming_init(self.projection, mode='fan_in', nonlinearity='linear')
 

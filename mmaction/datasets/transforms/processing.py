@@ -98,6 +98,12 @@ class PoseCompact(BaseTransform):
         assert self.padding >= 0
 
     def transform(self, results):
+        """Convert the coordinates of keypoints to make it more compact.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         img_shape = results['img_shape']
         h, w = img_shape
         kp = results['keypoint']
@@ -170,6 +176,12 @@ class Fuse(BaseTransform):
     """
 
     def transform(self, results):
+        """Fuse lazy operations.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         if 'lazy' not in results:
             raise ValueError('No lazy operation detected')
         lazyop = results['lazy']
@@ -223,10 +235,12 @@ class RandomCrop(BaseTransform):
 
     @staticmethod
     def _crop_kps(kps, crop_bbox):
+        """Static method for cropping keypoint."""
         return kps - crop_bbox[:2]
 
     @staticmethod
     def _crop_imgs(imgs, crop_bbox):
+        """Static method for cropping images."""
         x1, y1, x2, y2 = crop_bbox
         return [img[y1:y2, x1:x2] for img in imgs]
 
@@ -733,6 +747,7 @@ class Resize(BaseTransform):
         self.lazy = lazy
 
     def _resize_imgs(self, imgs, new_w, new_h):
+        """Static method for resizing keypoint."""
         return [
             mmcv.imresize(
                 img, (new_w, new_h), interpolation=self.interpolation)
@@ -741,6 +756,7 @@ class Resize(BaseTransform):
 
     @staticmethod
     def _resize_kps(kps, scale_factor):
+        """Static method for resizing keypoint."""
         return kps * scale_factor
 
     @staticmethod
@@ -915,6 +931,7 @@ class Flip(BaseTransform):
         self.lazy = lazy
 
     def _flip_imgs(self, imgs, modality):
+        """Utility function for flipping images."""
         _ = [mmcv.imflip_(img, self.direction) for img in imgs]
         lt = len(imgs)
         if modality == 'Flow':
@@ -924,6 +941,7 @@ class Flip(BaseTransform):
         return imgs
 
     def _flip_kps(self, kps, kpscores, img_width):
+        """Utility function for flipping keypoint."""
         kp_x = kps[..., 0]
         kp_x[kp_x != 0] = img_width - kp_x[kp_x != 0]
         new_order = list(range(kps.shape[2]))
@@ -1075,6 +1093,12 @@ class ColorJitter(BaseTransform):
         self.fn_idx = np.random.permutation(4)
 
     def transform(self, results):
+        """Perform ColorJitter.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         imgs = results['imgs']
         num_clips, clip_len = 1, len(imgs)
 

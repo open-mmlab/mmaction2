@@ -27,6 +27,7 @@ class SEModule(nn.Module):
 
     @staticmethod
     def _round_width(width, multiplier, min_width=8, divisor=8):
+        """Round width of filters based on width multiplier."""
         width *= multiplier
         min_width = min_width or divisor
         width_out = max(min_width,

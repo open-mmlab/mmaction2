@@ -28,6 +28,7 @@ class LoadHVULabel(BaseTransform):
         self.kwargs = kwargs
 
     def init_hvu_info(self, categories, category_nums):
+        """Initialize hvu information."""
         assert len(categories) == len(category_nums)
         self.categories = categories
         self.category_nums = category_nums
@@ -414,6 +415,7 @@ class SampleAVAFrames(SampleFrames):
         super().__init__(clip_len, frame_interval, test_mode=test_mode)
 
     def _get_clips(self, center_index, skip_offsets, shot_info):
+        """Get clip offsets."""
         start = center_index - (self.clip_len // 2) * self.frame_interval
         end = center_index + ((self.clip_len + 1) // 2) * self.frame_interval
         frame_inds = list(range(start, end, self.frame_interval))
@@ -423,6 +425,12 @@ class SampleAVAFrames(SampleFrames):
         return frame_inds
 
     def transform(self, results):
+        """Perform the SampleFrames loading.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         fps = results['fps']
         timestamp = results['timestamp']
         timestamp_start = results['timestamp_start']
@@ -620,6 +628,12 @@ class PIMSInit(BaseTransform):
         assert mode in ['accurate', 'efficient']
 
     def transform(self, results):
+        """Perform the PIMS initialization.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         try:
             import pims
         except ImportError:
@@ -657,6 +671,13 @@ class PIMSDecode(BaseTransform):
     """
 
     def transform(self, results):
+        """Perform the PIMS decoding.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+
         container = results['video_reader']
 
         if results['frame_inds'].ndim != 1:
@@ -1266,10 +1287,12 @@ class LoadAudioFeature(BaseTransform):
 
     @staticmethod
     def _zero_pad(shape):
+        """Zero padding method."""
         return np.zeros(shape, dtype=np.float32)
 
     @staticmethod
     def _random_pad(shape):
+        """Random padding method."""
         # spectrogram is normalized into a distribution of 0~1
         return np.random.rand(shape).astype(np.float32)
 
@@ -1369,6 +1392,12 @@ class BuildPseudoClip(BaseTransform):
         self.clip_len = clip_len
 
     def transform(self, results):
+        """Perform the building of pseudo clips.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
         # the input should be one single image
         assert len(results['imgs']) == 1
         im = results['imgs'][0]
