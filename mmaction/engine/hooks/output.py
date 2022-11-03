@@ -7,6 +7,7 @@ import torch
 
 class OutputHook:
     """Output feature map of some layers.
+
     Args:
         module (nn.Module): The whole module to get layers.
         outputs (tuple[str] | list[str]): Layer name to output. Default: None.
