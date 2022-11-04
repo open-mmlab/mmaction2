@@ -78,7 +78,7 @@ On the second machine:
 NNODES=2 NODE_RANK=1 PORT=$MASTER_PORT MASTER_ADDR=$MASTER_ADDR bash tools/dist_train.sh $CONFIG $GPUS
 ```
 
-Compared with multi-GPUs in a single machine, you need to specify some extra environment variables:
+The following extra environment variables need to be specified to train or test models with multiple machines:
 
 | ENV_VARS      | Description                                                                  |
 | ------------- | ---------------------------------------------------------------------------- |
