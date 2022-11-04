@@ -25,9 +25,9 @@
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmaction2.svg)](https://github.com/open-mmlab/mmaction2/issues)
 
-[📘文档](https://mmaction2.readthedocs.io/en/latest/) |
-[🛠️安装指南](https://mmaction2.readthedocs.io/en/latest/install.html) |
-[👀模型库](https://mmaction2.readthedocs.io/en/latest/modelzoo.html) |
+[📘文档](https://mmaction2.readthedocs.io/zh_CN/latest/) |
+[🛠️安装指南](https://mmaction2.readthedocs.io/zh_CN/latest/install.html) |
+[👀模型库](https://mmaction2.readthedocs.io/zh_CN/latest/modelzoo.html) |
 [🆕更新](https://mmaction2.readthedocs.io/en/latest/changelog.html) |
 [🚀进行中项目](https://github.com/open-mmlab/mmaction2/projects) |
 [🤔问题反馈](https://github.com/open-mmlab/mmaction2/issues/new/choose)
@@ -38,7 +38,7 @@
 
 ## 简介
 
-MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLab](http://openmmlab.org/) 项目的成员之一
+MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLab](https://github.com/open-mmlab) 项目的成员之一
 
 主分支代码目前支持 **PyTorch 1.5 以上**的版本
 
