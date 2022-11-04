@@ -23,6 +23,7 @@ class MViTHead(BaseHead):
             Defaults to `dict(type='CrossEntropyLoss')`.
         dropout_ratio (float): Probability of dropout layer. Default: 0.5.
         init_std (float): Std value for Initiation. Defaults to 0.02.
+        init_scale (float): Scale factor for Initiation parameters. Default: 1.
         kwargs (dict, optional): Any keyword argument to be used to initialize
             the head.
     """
@@ -33,9 +34,11 @@ class MViTHead(BaseHead):
                  loss_cls: ConfigType = dict(type='CrossEntropyLoss'),
                  dropout_ratio: float = 0.5,
                  init_std: float = 0.02,
+                 init_scale: float = 1.0,
                  **kwargs) -> None:
         super().__init__(num_classes, in_channels, loss_cls, **kwargs)
         self.init_std = init_std
+        self.init_scale = init_scale
         self.dropout_ratio = dropout_ratio
         if self.dropout_ratio != 0:
             self.dropout = nn.Dropout(p=self.dropout_ratio)
@@ -47,6 +50,8 @@ class MViTHead(BaseHead):
         """Initiate the parameters from scratch."""
         trunc_normal_init(self.fc_cls.weight, std=self.init_std)
         constant_init(self.fc_cls.bias, 0.02)
+        self.fc_cls.weight.data.mul_(self.init_scale)
+        self.fc_cls.bias.data.mul_(self.init_scale)
 
     def pre_logits(self, feats: Tuple[List[Tensor]]) -> Tensor:
         """The process before the final classification head.
