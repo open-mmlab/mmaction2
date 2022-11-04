@@ -11,6 +11,7 @@ Here is the full usage of the script:
 ```shell
 python tools/train.py ${CONFIG_FILE} [ARGS]
 ```
+
 ````{note}
 By default, MMAction2 prefers GPU to CPU. If you want to train a model on CPU, please empty `CUDA_VISIBLE_DEVICES` or set it to -1 to make GPU invisible to the program.
 
