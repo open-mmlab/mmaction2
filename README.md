@@ -112,6 +112,7 @@ Please refer to [install.md](https://mmaction2.readthedocs.io/en/1.x/get_started
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/tanet/README.md">TANet</a> (ArXiv'2020)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/timesformer/README.md">TimeSformer</a> (ICML'2021)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/swin/README.md">VideoSwin</a> (CVPR'2022)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/videomae/README.md">VideoMAE</a> (NeurIPS'2022)</td>
   </tr>
   <tr>
     <td colspan="5" style="font-weight:bold;">Action Localization</td>
