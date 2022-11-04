@@ -36,7 +36,7 @@ CUDA_VISIBLE_DEVICES=-1 python tools/train.py ${CONFIG_FILE} [ARGS]
 We provide a shell script to start a multi-GPUs task with `torch.distributed.launch`.
 
 ```shell
-bash ./tools/dist_train.sh ${CONFIG_FILE} ${GPU_NUM} [PY_ARGS]
+bash tools/dist_train.sh ${CONFIG_FILE} ${GPU_NUM} [PY_ARGS]
 ```
 
 | ARGS          | Description                                                                        |
@@ -49,7 +49,7 @@ You can also specify extra arguments of the launcher by environment variables. F
 communication port of the launcher to 29666 by the below command:
 
 ```shell
-PORT=29666 bash ./tools/dist_train.sh ${CONFIG_FILE} ${GPU_NUM} [PY_ARGS]
+PORT=29666 bash tools/dist_train.sh ${CONFIG_FILE} ${GPU_NUM} [PY_ARGS]
 ```
 
 If you want to startup multiple training jobs and use different GPUs, you can launch them by specifying
@@ -57,7 +57,7 @@ different port and visible devices.
 
 ```shell
 CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=29500 bash ./tools/dist_train.sh ${CONFIG_FILE1} 4 [PY_ARGS]
-CUDA_VISIBLE_DEVICES=4,5,6,7 GPUS=29501 bash ./tools/dist_train.sh ${CONFIG_FILE2} 4 [PY_ARGS]
+CUDA_VISIBLE_DEVICES=4,5,6,7 PORT=29501 bash ./tools/dist_train.sh ${CONFIG_FILE2} 4 [PY_ARGS]
 ```
 
 ### Training with multiple machines
@@ -94,7 +94,7 @@ Usually it is slow if you do not have high speed networking like InfiniBand.
 If you run MMAction2 on a cluster managed with [slurm](https://slurm.schedmd.com/), you can use the script `slurm_train.sh`.
 
 ```shell
-[ENV_VARS] ./tools/slurm_train.sh ${PARTITION} ${JOB_NAME} ${CONFIG_FILE} ${WORK_DIR} [PY_ARGS]
+[ENV_VARS] ./tools/slurm_train.sh ${PARTITION} ${JOB_NAME} ${CONFIG_FILE} [PY_ARGS]
 ```
 
 Here are the arguments description of the script.
@@ -153,7 +153,7 @@ CUDA_VISIBLE_DEVICES=-1 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [
 We provide a shell script to start a multi-GPUs task with `torch.distributed.launch`.
 
 ```shell
-bash ./tools/dist_test.sh ${CONFIG_FILE} ${CHECKPOINT_FILE} ${GPU_NUM} [PY_ARGS]
+bash tools/dist_test.sh ${CONFIG_FILE} ${CHECKPOINT_FILE} ${GPU_NUM} [PY_ARGS]
 ```
 
 | ARGS              | Description                                                                      |
@@ -167,15 +167,15 @@ You can also specify extra arguments of the launcher by environment variables. F
 communication port of the launcher to 29666 by the below command:
 
 ```shell
-PORT=29666 bash ./tools/dist_test.sh ${CONFIG_FILE} ${CHECKPOINT_FILE} ${GPU_NUM} [PY_ARGS]
+PORT=29666 bash tools/dist_test.sh ${CONFIG_FILE} ${CHECKPOINT_FILE} ${GPU_NUM} [PY_ARGS]
 ```
 
 If you want to startup multiple test jobs and use different GPUs, you can launch them by specifying
 different port and visible devices.
 
 ```shell
-CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=29500 bash ./tools/dist_test.sh ${CONFIG_FILE1} ${CHECKPOINT_FILE} 4 [PY_ARGS]
-CUDA_VISIBLE_DEVICES=4,5,6,7 GPUS=29501 bash ./tools/dist_test.sh ${CONFIG_FILE2} ${CHECKPOINT_FILE} 4 [PY_ARGS]
+CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=29500 bash tools/dist_test.sh ${CONFIG_FILE1} ${CHECKPOINT_FILE} 4 [PY_ARGS]
+CUDA_VISIBLE_DEVICES=4,5,6,7 PORT=29501 bash tools/dist_test.sh ${CONFIG_FILE2} ${CHECKPOINT_FILE} 4 [PY_ARGS]
 ```
 
 ### Test with multiple machines
@@ -196,7 +196,7 @@ On the second machine:
 NNODES=2 NODE_RANK=1 PORT=$MASTER_PORT MASTER_ADDR=$MASTER_ADDR bash tools/dist_test.sh $CONFIG $CHECKPOINT_FILE $GPUS
 ```
 
-Comparing with multi-GPUs in a single machine, you need to specify some extra environment variables:
+Compared with multi-GPUs in a single machine, you need to specify some extra environment variables:
 
 | ENV_VARS      | Description                                                                  |
 | ------------- | ---------------------------------------------------------------------------- |
