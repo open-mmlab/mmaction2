@@ -38,7 +38,7 @@
 
 ## 简介
 
-MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLab](https://github.com/open-mmlab) 项目的成员之一
+MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLab](https://openmmlab.com/) 项目的成员之一
 
 主分支代码目前支持 **PyTorch 1.5 以上**的版本
 
