@@ -11,12 +11,13 @@ Here is the full usage of the script:
 ```shell
 python tools/train.py ${CONFIG_FILE} [ARGS]
 ```
-
+````{note}
 By default, MMAction2 prefers GPU to CPU. If you want to train a model on CPU, please empty `CUDA_VISIBLE_DEVICES` or set it to -1 to make GPU invisible to the program.
 
 ```bash
 CUDA_VISIBLE_DEVICES=-1 python tools/train.py ${CONFIG_FILE} [ARGS]
 ```
+````
 
 | ARGS                                  | Description                                                                                                                                                         |
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -76,7 +77,7 @@ On the second machine:
 NNODES=2 NODE_RANK=1 PORT=$MASTER_PORT MASTER_ADDR=$MASTER_ADDR bash tools/dist_train.sh $CONFIG $GPUS
 ```
 
-Comparing with multi-GPUs in a single machine, you need to specify some extra environment variables:
+Compared with multi-GPUs in a single machine, you need to specify some extra environment variables:
 
 | ENV_VARS      | Description                                                                  |
 | ------------- | ---------------------------------------------------------------------------- |
@@ -102,7 +103,6 @@ Here are the arguments description of the script.
 | `PARTITION`   | The partition to use in your cluster.                                              |
 | `JOB_NAME`    | The name of your job, you can name it as you like.                                 |
 | `CONFIG_FILE` | The path to the config file.                                                       |
-| `WORK_DIR`    | The target folder to save logs and checkpoints.                                    |
 | `[PYARGS]`    | The other optional arguments of `tools/train.py`, see [here](#train-with-your-pc). |
 
 Here are the environment variables can be used to configure the slurm job.
@@ -126,18 +126,19 @@ Here is the full usage of the script:
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [ARGS]
 ```
 
+````{note}
 By default, MMAction2 prefers GPU to CPU. If you want to test a model on CPU, please empty `CUDA_VISIBLE_DEVICES` or set it to -1 to make GPU invisible to the program.
 
 ```bash
 CUDA_VISIBLE_DEVICES=-1 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [ARGS]
 ```
+````
 
 | ARGS                                  | Description                                                                                                                                                         |
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `CONFIG_FILE`                         | The path to the config file.                                                                                                                                        |
 | `CHECKPOINT_FILE`                     | The path to the checkpoint file (It can be a http link)                                                                                                             |
-| `--work-dir WORK_DIR`                 | The directory to save the file containing evaluation metrics.                                                                                                       |
-| `--out OUT`                           | The path to save the file containing evaluation metrics.                                                                                                            |
+| `--work-dir WORK_DIR`                 | The directory to save the file containing evaluation metrics. Defaults to a folder with the same name of the config file under `./work_dirs`.                       |
 | `--dump DUMP`                         | The path to dump all outputs of the model for offline evaluation.                                                                                                   |
 | `--cfg-options CFG_OPTIONS`           | Override some settings in the used config, the key-value pair in xxx=yyy format will be merged into the config file. If the value to be overwritten is a list, it should be of the form of either `key="[a,b]"` or `key=a,b`. The argument also allows nested list/tuple values, e.g. `key="[(a,b),(c,d)]"`. Note that the quotation marks are necessary and that no white space is allowed. |
 | `--show-dir SHOW_DIR`                 | The directory to save the result visualization images.                                                                                                              |
