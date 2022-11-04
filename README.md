@@ -39,7 +39,7 @@ English | [简体中文](/README_zh-CN.md)
 ## Introduction
 
 MMAction2 is an open-source toolbox for video understanding based on PyTorch.
-It is a part of the [OpenMMLab](http://openmmlab.org/) project.
+It is a part of the [OpenMMLab](https://github.com/open-mmlab) project.
 
 The master branch works with **PyTorch 1.5+**.
 
