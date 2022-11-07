@@ -271,12 +271,12 @@ which is convenient to conduct various experiments.
     clip_grad=dict(max_norm=40, norm_type=2))  # Use gradient clip
 
   # runtime settings
-  default_scope = 'mmaction'  # Scope of current task used to reset the current registry
-  default_hooks = dict( # Hooks to execute default actions like updating model parameters and saving checkpoints.
+  default_scope = 'mmaction'  # The default registry scope to find modules. Refer to https://mmengine.readthedocs.io/en/latest/tutorials/registry.html
+  default_hooks = dict(  # Hooks to execute default actions like updating model parameters and saving checkpoints.
       runtime_info=dict(type='RuntimeInfoHook'),  # The hook to updates runtime information into message hub
       timer=dict(type='IterTimerHook'),  # The logger used to record time spent during iteration
       logger=dict(
-        type='LoggerHook',  # The logger used to record the training/validation/testing phase
+        type='LoggerHook',  # The logger used to record logs during training/validation/testing phase
         interval=20,  # Interval to print the log
         ignore_last=False), # Ignore the log of last iterations in each epoch
       param_scheduler=dict(type='ParamSchedulerHook'),  # The hook to update some hyper-parameters in optimizer
@@ -286,23 +286,23 @@ which is convenient to conduct various experiments.
         save_best='auto',  # Specified metric to mearsure the best checkpoint during evaluation
         max_keep_ckpts=3),  # The maximum checkpoints to keep
       sampler_seed=dict(type='DistSamplerSeedHook'))  # Data-loading sampler for distributed training
-  env_cfg = dict( # Dict for setting environment
-      cudnn_benchmark=False,
+  env_cfg = dict(  # Dict for setting environment
+      cudnn_benchmark=False,  # Whether to enable cudnn benchmark
       mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0), # Parameters to setup multiprocessing
       dist_cfg=dict(backend='nccl')) # Parameters to setup distributed training, the port can also be set
 
   log_processor = dict(
     type='LogProcessor',  # Log processor used to format log information
     window_size=20,  # Default smooth interval
-    by_epoch=True)  # Whether to format logs with epoch stype
+    by_epoch=True)  # Whether to format logs with epoch type
   vis_backends = [  # Visual backend config list
     dict(type='LocalVisBackend')]  # Local visualization backend
   visualizer = dict(
       type='ActionVisualizer',  # Universal Visualizer for classification task
       vis_backends=[dict(type='LocalVisBackend')])  # Local visualization backend
   log_level = 'INFO'  # The level of logging
-  resume = False  # Resume from a checkpoint
-  load_from = None  # load checkpoint as a pre-trained model from a given path. If resume == True, resume training from the checkpoint, otherwise load checkpoint without resuming
+  resume = False  # Whether to resume from the checkpoint defined in `load_from`. If `load_from` is None, it will resume the latest checkpoint in the `work_dir`.
+  load_from = None  # Load model checkpoint as a pre-trained model from a given path. This will not resume training.
   ```
 
 ### Config System for Spatio-Temporal Action Detection
