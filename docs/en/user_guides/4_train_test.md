@@ -80,12 +80,12 @@ NNODES=2 NODE_RANK=1 PORT=$MASTER_PORT MASTER_ADDR=$MASTER_ADDR bash tools/dist_
 
 The following extra environment variables need to be specified to train or test models with multiple machines:
 
-| ENV_VARS      | Description                                                                  |
-| ------------- | ---------------------------------------------------------------------------- |
-| `NNODES`      | The total number of machines.                                                |
-| `NODE_RANK`   | The index of the local machine.                                              |
-| `PORT`        | The communication port, it should be the same in all machines.               |
-| `MASTER_ADDR` | The IP address of the master machine, it should be the same in all machines. |
+| ENV_VARS      | Description                                                                                           |
+| ------------- | ----------------------------------------------------------------------------------------------------- |
+| `NNODES`      | The total number of machines. Defaults to 1.                                                          |
+| `NODE_RANK`   | The index of the local machine. Defaults to 0.                                                        |
+| `PORT`        | The communication port, it should be the same in all machines. Defaults to 29500.                     |
+| `MASTER_ADDR` | The IP address of the master machine, it should be the same in all machines. Defaults to `127.0.0.1`. |
 
 Usually it is slow if you do not have high speed networking like InfiniBand.
 
@@ -174,8 +174,8 @@ If you want to startup multiple test jobs and use different GPUs, you can launch
 different port and visible devices.
 
 ```shell
-CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=29500 bash tools/dist_test.sh ${CONFIG1} ${CHECKPOINT} 4 [PY_ARGS]
-CUDA_VISIBLE_DEVICES=4,5,6,7 PORT=29501 bash tools/dist_test.sh ${CONFIG2} ${CHECKPOINT} 4 [PY_ARGS]
+CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=29500 bash tools/dist_test.sh ${CONFIG} ${CHECKPOINT} 4 [PY_ARGS]
+CUDA_VISIBLE_DEVICES=4,5,6,7 PORT=29501 bash tools/dist_test.sh ${CONFIG} ${CHECKPOINT} 4 [PY_ARGS]
 ```
 
 ### Test with multiple machines
@@ -198,12 +198,12 @@ NNODES=2 NODE_RANK=1 PORT=$MASTER_PORT MASTER_ADDR=$MASTER_ADDR bash tools/dist_
 
 Compared with multi-GPUs in a single machine, you need to specify some extra environment variables:
 
-| ENV_VARS      | Description                                                                  |
-| ------------- | ---------------------------------------------------------------------------- |
-| `NNODES`      | The total number of machines.                                                |
-| `NODE_RANK`   | The index of the local machine.                                              |
-| `PORT`        | The communication port, it should be the same in all machines.               |
-| `MASTER_ADDR` | The IP address of the master machine, it should be the same in all machines. |
+| ENV_VARS      | Description                                                                                           |
+| ------------- | ----------------------------------------------------------------------------------------------------- |
+| `NNODES`      | The total number of machines. Defaults to 1.                                                          |
+| `NODE_RANK`   | The index of the local machine. Defaults to 0.                                                        |
+| `PORT`        | The communication port, it should be the same in all machines. Defaults to 29500.                     |
+| `MASTER_ADDR` | The IP address of the master machine, it should be the same in all machines. Defaults to `127.0.0.1`. |
 
 Usually it is slow if you do not have high speed networking like InfiniBand.
 
