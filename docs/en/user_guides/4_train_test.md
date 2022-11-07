@@ -24,12 +24,12 @@ CUDA_VISIBLE_DEVICES=-1 python tools/train.py ${CONFIG_FILE} [ARGS]
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `CONFIG_FILE`                         | The path to the config file.                                                                                                                                        |
 | `--work-dir WORK_DIR`                 | The target folder to save logs and checkpoints. Defaults to a folder with the same name of the config file under `./work_dirs`.                                     |
-| `--resume [RESUME]`                   | Resume training. If a path is specified, resume from it, while if not specified, try to auto resume from the latest checkpoint.                                            |
+| `--resume [RESUME]`                   | Resume training. If a path is specified, resume from it, while if not specified, try to auto resume from the latest checkpoint.                                     |
 | `--amp`                               | Enable automatic-mixed-precision training.                                                                                                                          |
 | `--no-validate`                       | **Not suggested**. Disable checkpoint evaluation during training.                                                                                                   |
 | `--auto-scale-lr`                     | Auto scale the learning rate according to the actual batch size and the original batch size.                                                                        |
 | `--cfg-options CFG_OPTIONS`           | Override some settings in the used config, the key-value pair in xxx=yyy format will be merged into the config file. If the value to be overwritten is a list, it should be of the form of either `key="[a,b]"` or `key=a,b`. The argument also allows nested list/tuple values, e.g. `key="[(a,b),(c,d)]"`. Note that the quotation marks are necessary and that no white space is allowed. |
-| `--launcher {none,pytorch,slurm,mpi}` | Options for job launcher. Defaults to `none`.                                                                                                                                          |
+| `--launcher {none,pytorch,slurm,mpi}` | Options for job launcher. Defaults to `none`.                                                                                                                       |
 
 ### Training with multiple GPUs
 
@@ -39,11 +39,11 @@ We provide a shell script to start a multi-GPUs task with `torch.distributed.lau
 bash tools/dist_train.sh ${CONFIG} ${GPUS} [PY_ARGS]
 ```
 
-| ARGS          | Description                                                                        |
-| ------------- | ---------------------------------------------------------------------------------- |
-| `CONFIG` | The path to the config file.                                                       |
+| ARGS       | Description                                                                        |
+| ---------- | ---------------------------------------------------------------------------------- |
+| `CONFIG`   | The path to the config file.                                                       |
 | `GPUS`     | The number of GPUs to be used.                                                     |
-| `[PYARGS]`    | The other optional arguments of `tools/train.py`, see [here](#train-with-your-pc). |
+| `[PYARGS]` | The other optional arguments of `tools/train.py`, see [here](#train-with-your-pc). |
 
 You can also specify extra arguments of the launcher by environment variables. For example, change the
 communication port of the launcher to 29666 by the following command:
@@ -99,19 +99,19 @@ If you run MMAction2 on a cluster managed with [slurm](https://slurm.schedmd.com
 
 Here are the arguments description of the script.
 
-| ARGS          | Description                                                                        |
-| ------------- | ---------------------------------------------------------------------------------- |
-| `PARTITION`   | The partition to use in your cluster.                                              |
-| `JOB_NAME`    | The name of your job, you can name it as you like.                                 |
-| `CONFIG` | The path to the config file.                                                       |
-| `[PYARGS]`    | The other optional arguments of `tools/train.py`, see [here](#train-with-your-pc). |
+| ARGS        | Description                                                                        |
+| ----------- | ---------------------------------------------------------------------------------- |
+| `PARTITION` | The partition to use in your cluster.                                              |
+| `JOB_NAME`  | The name of your job, you can name it as you like.                                 |
+| `CONFIG`    | The path to the config file.                                                       |
+| `[PYARGS]`  | The other optional arguments of `tools/train.py`, see [here](#train-with-your-pc). |
 
 Here are the environment variables can be used to configure the slurm job.
 
 | ENV_VARS        | Description                                                                                                |
 | --------------- | ---------------------------------------------------------------------------------------------------------- |
 | `GPUS`          | The number of GPUs to be used. Defaults to 8.                                                              |
-| `GPUS_PER_NODE` | The number of GPUs to be allocated per node. Defaults to 8.                                                            |
+| `GPUS_PER_NODE` | The number of GPUs to be allocated per node. Defaults to 8.                                                |
 | `CPUS_PER_TASK` | The number of CPUs to be allocated per task (Usually one GPU corresponds to one task). Defaults to 5.      |
 | `SRUN_ARGS`     | The other arguments of `srun`. Available options can be found [here](https://slurm.schedmd.com/srun.html). |
 
@@ -144,9 +144,9 @@ CUDA_VISIBLE_DEVICES=-1 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [
 | `--cfg-options CFG_OPTIONS`           | Override some settings in the used config, the key-value pair in xxx=yyy format will be merged into the config file. If the value to be overwritten is a list, it should be of the form of either `key="[a,b]"` or `key=a,b`. The argument also allows nested list/tuple values, e.g. `key="[(a,b),(c,d)]"`. Note that the quotation marks are necessary and that no white space is allowed. |
 | `--show-dir SHOW_DIR`                 | The directory to save the result visualization images.                                                                                                              |
 | `--show`                              | Visualize the prediction result in a window.                                                                                                                        |
-| `--interval INTERVAL`                 | The interval of samples to visualize. Defaults to 1.                                                                                                                           |
+| `--interval INTERVAL`                 | The interval of samples to visualize. Defaults to 1.                                                                                                                |
 | `--wait-time WAIT_TIME`               | The display time of every window (in seconds). Defaults to 2.                                                                                                       |
-| `--launcher {none,pytorch,slurm,mpi}` | Options for job launcher. Defaults to `none`.                                                                                                                                            |
+| `--launcher {none,pytorch,slurm,mpi}` | Options for job launcher. Defaults to `none`.                                                                                                                       |
 
 ### Test with multiple GPUs
 
@@ -156,12 +156,12 @@ We provide a shell script to start a multi-GPUs task with `torch.distributed.lau
 bash tools/dist_test.sh ${CONFIG} ${CHECKPOINT} ${GPUS} [PY_ARGS]
 ```
 
-| ARGS              | Description                                                                      |
-| ----------------- | -------------------------------------------------------------------------------- |
+| ARGS         | Description                                                                      |
+| ------------ | -------------------------------------------------------------------------------- |
 | `CONFIG`     | The path to the config file.                                                     |
 | `CHECKPOINT` | The path to the checkpoint file (It can be a http link)                          |
-| `GPUS`         | The number of GPUs to be used.                                                   |
-| `[PYARGS]`        | The other optional arguments of `tools/test.py`, see [here](#test-with-your-pc). |
+| `GPUS`       | The number of GPUs to be used.                                                   |
+| `[PYARGS]`   | The other optional arguments of `tools/test.py`, see [here](#test-with-your-pc). |
 
 You can also specify extra arguments of the launcher by environment variables. For example, change the
 communication port of the launcher to 29666 by the following command:
@@ -217,19 +217,19 @@ If you run MMAction2 on a cluster managed with [slurm](https://slurm.schedmd.com
 
 Here are the arguments description of the script.
 
-| ARGS              | Description                                                                      |
-| ----------------- | -------------------------------------------------------------------------------- |
-| `PARTITION`       | The partition to use in your cluster.                                            |
-| `JOB_NAME`        | The name of your job, you can name it as you like.                               |
+| ARGS         | Description                                                                      |
+| ------------ | -------------------------------------------------------------------------------- |
+| `PARTITION`  | The partition to use in your cluster.                                            |
+| `JOB_NAME`   | The name of your job, you can name it as you like.                               |
 | `CONFIG`     | The path to the config file.                                                     |
 | `CHECKPOINT` | The path to the checkpoint file (It can be a http link)                          |
-| `[PYARGS]`        | The other optional arguments of `tools/test.py`, see [here](#test-with-your-pc). |
+| `[PYARGS]`   | The other optional arguments of `tools/test.py`, see [here](#test-with-your-pc). |
 
 Here are the environment variables can be used to configure the slurm job.
 
 | ENV_VARS        | Description                                                                                                |
 | --------------- | ---------------------------------------------------------------------------------------------------------- |
 | `GPUS`          | The number of GPUs to be used. Defaults to 8.                                                              |
-| `GPUS_PER_NODE` | The number of GPUs to be allocated per node. Defaults to 8.                                                               |
+| `GPUS_PER_NODE` | The number of GPUs to be allocated per node. Defaults to 8.                                                |
 | `CPUS_PER_TASK` | The number of CPUs to be allocated per task (Usually one GPU corresponds to one task). Defaults to 5.      |
 | `SRUN_ARGS`     | The other arguments of `srun`. Available options can be found [here](https://slurm.schedmd.com/srun.html). |
