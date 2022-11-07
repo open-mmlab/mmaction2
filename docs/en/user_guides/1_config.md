@@ -109,9 +109,9 @@ which is convenient to conduct various experiments.
           mean=[123.675, 116.28, 103.53],  # Mean values of different channels to normalize
           std=[58.395, 57.12, 57.375],  # Std values of different channels to normalize
           format_shape='NCHW'),  # Final image shape format
-          # model training and testing settings
-          train_cfg=None,  # Config of training hyperparameters for TSN
-          test_cfg=None)  # Config for testing hyperparameters for TSN.
+      # model training and testing settings
+      train_cfg=None,  # Config of training hyperparameters for TSN
+      test_cfg=None)  # Config for testing hyperparameters for TSN.
 
   # dataset settings
   dataset_type = 'RawframeDataset'  # Type of dataset for training, validation and testing
@@ -218,7 +218,7 @@ which is convenient to conduct various experiments.
       persistent_workers=True,  # If `True`, the dataloader will not shut down the worker processes after an epoch end
       sampler=dict(
         type='DefaultSampler',
-        shuffle=False),  # # Not shuffle during validation and testing
+        shuffle=False),  # Not shuffle during validation and testing
       dataset=dict(
           type=dataset_type,
           ann_file=ann_file_val,  # Path of annotation file
@@ -231,44 +231,45 @@ which is convenient to conduct various experiments.
       persistent_workers=True,  # If `True`, the dataloader will not shut down the worker processes after an epoch end
       sampler=dict(
         type='DefaultSampler',
-        shuffle=False),  # # Not shuffle during validation and testing
+        shuffle=False),  # Not shuffle during validation and testing
       dataset=dict(
           type=dataset_type,
           ann_file=ann_file_val,  # Path of annotation file
           data_prefix=dict(img=data_root_val),  # Prefix of frame path
           pipeline=test_pipeline,
           test_mode=True))
-  val_evaluator = dict(type='AccMetric')  # The evaluator object used for computing metrics for validation
-  test_evaluator = dict(type='AccMetric')  # The evaluator object used for computing metrics for testing
+  val_evaluator = dict(type='AccMetric')  # Config of validation evaluator
+  test_evaluator = val_evaluator  # Config of testing evaluator
 
   train_cfg = dict(  # Config of training loop
     type='EpochBasedTrainLoop',  # Name of training loop
     max_epochs=100,  # Total training epochs
     val_begin=1,  # The epoch that begins validating
     val_interval=1)  # Validation interval
-  val_cfg = dict(  # Config of validating loop
-    type='ValLoop')  # Name of validating loop
+  val_cfg = dict(  # Config of validation loop
+    type='ValLoop')  # Name of validation loop
   test_cfg = dict( # Config of testing loop
     type='TestLoop')  # Name of testing loop
 
   # learning policy
   param_scheduler = [dict(  # Parameter scheduler for updating optimizer parameters, support dict or list
-      type='MultiStepLR',  # Decays the parameter once the number of epoch reach milestone
+      type='MultiStepLR',  # Decays the learning rate once the number of epoch reaches one of the milestones
       begin=0,  # Step at which to start updating the parameters
       end=100,  # Step at which to stop updating the parameters
       by_epoch=True,  # Whether the scheduled parameters are updated by epochs
       milestones=[40, 80],  # Steps to decay the learning rate
-      gamma=0.1)  # Multiplicative factor of parameter value decay
+      gamma=0.1)  # Multiplicative factor of learning rate decay
   ]
 
   # optimizer
-  optim_wrapper = dict(  # Optimizer wrapper config
-    optimizer=dict(  # Optimizer used to update model parameters
-      type='SGD',  # Type of optimizer
-      lr=0.01,  # learning rate
+  optim_wrapper = dict(  # Config of optimizer wrapper
+    type='OptimWrapper',  # Name of optimizer wrapper, switch to AmpOptimWrapper to enable mixed precision training.
+    optimizer=dict(  # Config of optimizer. Support all kinds of optimizers in PyTorch. Refer to https://pytorch.org/docs/stable/optim.html#algorithms
+      type='SGD',  # Name of optimizer
+      lr=0.01,  # Learning rate
       momentum=0.9,  # Momentum factor
-      weight_decay=0.0001),  # Weight decay of SGD
-    clip_grad=dict(max_norm=40, norm_type=2))  # Use gradient clip
+      weight_decay=0.0001),  # Weight decay
+    clip_grad=dict(max_norm=40, norm_type=2))  # Config of gradient clip
 
   # runtime settings
   default_scope = 'mmaction'  # The default registry scope to find modules. Refer to https://mmengine.readthedocs.io/en/latest/tutorials/registry.html
@@ -289,20 +290,20 @@ which is convenient to conduct various experiments.
   env_cfg = dict(  # Dict for setting environment
       cudnn_benchmark=False,  # Whether to enable cudnn benchmark
       mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0), # Parameters to setup multiprocessing
-      dist_cfg=dict(backend='nccl')) # Parameters to setup distributed training, the port can also be set
+      dist_cfg=dict(backend='nccl')) # Parameters to setup distributed environment, the port can also be set
 
   log_processor = dict(
     type='LogProcessor',  # Log processor used to format log information
     window_size=20,  # Default smooth interval
     by_epoch=True)  # Whether to format logs with epoch type
-  vis_backends = [  # Visual backend config list
+  vis_backends = [  # List of visualization backends
     dict(type='LocalVisBackend')]  # Local visualization backend
   visualizer = dict(
-      type='ActionVisualizer',  # Universal Visualizer for classification task
-      vis_backends=[dict(type='LocalVisBackend')])  # Local visualization backend
+      type='ActionVisualizer',  # Name of visualizer
+      vis_backends=vis_backends)
   log_level = 'INFO'  # The level of logging
-  resume = False  # Whether to resume from the checkpoint defined in `load_from`. If `load_from` is None, it will resume the latest checkpoint in the `work_dir`.
   load_from = None  # Load model checkpoint as a pre-trained model from a given path. This will not resume training.
+  resume = False  # Whether to resume from the checkpoint defined in `load_from`. If `load_from` is None, it will resume the latest checkpoint in the `work_dir`.
   ```
 
 ### Config System for Spatio-Temporal Action Detection
