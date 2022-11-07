@@ -203,7 +203,7 @@ which is convenient to conduct various experiments.
   train_dataloader = dict(  # Config of train dataloader
       batch_size=32,  # Batch size of each single GPU during training
       num_workers=8,  # Workers to pre-fetch data for each single GPU during training
-      persistent_workers=True,  # If `True`, the dataloader will not shut down the worker processes after an epoch end, which can accelerate training speed.
+      persistent_workers=True,  # If `True`, the dataloader will not shut down the worker processes after an epoch end, which can accelerate training speed
       sampler=dict(
         type='DefaultSampler',  # DefaultSampler which supports both distributed and non-distributed training. Refer to https://github.com/open-mmlab/mmengine/blob/main/mmengine/dataset/sampler.py
         shuffle=True),  # Randomly shuffle the training data in each epoch
@@ -238,6 +238,8 @@ which is convenient to conduct various experiments.
           data_prefix=dict(img=data_root_val),  # Prefix of frame path
           pipeline=test_pipeline,
           test_mode=True))
+
+  # evaluation settings
   val_evaluator = dict(type='AccMetric')  # Config of validation evaluator
   test_evaluator = val_evaluator  # Config of testing evaluator
 
@@ -251,19 +253,19 @@ which is convenient to conduct various experiments.
   test_cfg = dict( # Config of testing loop
     type='TestLoop')  # Name of testing loop
 
-  # learning policy
-  param_scheduler = [dict(  # Parameter scheduler for updating optimizer parameters, support dict or list
-      type='MultiStepLR',  # Decays the learning rate once the number of epoch reaches one of the milestones
-      begin=0,  # Step at which to start updating the parameters
-      end=100,  # Step at which to stop updating the parameters
-      by_epoch=True,  # Whether the scheduled parameters are updated by epochs
-      milestones=[40, 80],  # Steps to decay the learning rate
-      gamma=0.1)  # Multiplicative factor of learning rate decay
+  # Learning policy
+  param_scheduler = [  # Parameter scheduler for updating optimizer parameters, support dict or list
+      dict(type='MultiStepLR',  # Decays the learning rate once the number of epoch reaches one of the milestones
+        begin=0,  # Step at which to start updating the parameters
+        end=100,  # Step at which to stop updating the parameters
+        by_epoch=True,  # Whether the scheduled parameters are updated by epochs
+        milestones=[40, 80],  # Steps to decay the learning rate
+        gamma=0.1)  # Multiplicative factor of learning rate decay
   ]
 
   # optimizer
   optim_wrapper = dict(  # Config of optimizer wrapper
-    type='OptimWrapper',  # Name of optimizer wrapper, switch to AmpOptimWrapper to enable mixed precision training.
+    type='OptimWrapper',  # Name of optimizer wrapper, switch to AmpOptimWrapper to enable mixed precision training
     optimizer=dict(  # Config of optimizer. Support all kinds of optimizers in PyTorch. Refer to https://pytorch.org/docs/stable/optim.html#algorithms
       type='SGD',  # Name of optimizer
       lr=0.01,  # Learning rate
@@ -320,6 +322,7 @@ We incorporate modular design into our config system, which is convenient to con
   # model setting
   model = dict(  # Config of the model
       type='FastRCNN',  # Type of the detector
+      _scope_='mmdet',  # The scope of current config
       backbone=dict(  # Dict for backbone
           type='ResNet3dSlowOnly',  # Name of the backbone
           depth=50, # Depth of ResNet model
@@ -363,11 +366,8 @@ We incorporate modular design into our config system, which is convenient to con
                   pos_fraction=1, # Positive bbox fraction of the sampler
                   neg_pos_ub=-1,  # Upper bound of the ratio of num negative to num positive
                   add_gt_as_proposals=True), # Add gt bboxes as proposals
-              pos_weight=1.0, # Loss weight of positive examples
-              debug=False)), # Debug mode
-      test_cfg=dict( # Testing config of FastRCNN
-          rcnn=dict(  # Dict for rcnn testing config
-              action_thr=0.002))) # The threshold of an action
+              pos_weight=1.0)),  # Loss weight of positive examples
+      test_cfg=dict(rcnn=None))  # Testing config of FastRCNN
 
   # dataset settings
   dataset_type = 'AVADataset' # Type of dataset for training, validation and testing
@@ -385,8 +385,7 @@ We incorporate modular design into our config system, which is convenient to con
   proposal_file_train = f'{anno_root}/ava_dense_proposals_train.FAIR.recall_93.9.pkl'  # Path to the human detection proposals for training examples
   proposal_file_val = f'{anno_root}/ava_dense_proposals_val.FAIR.recall_93.9.pkl'  # Path to the human detection proposals for validation examples
 
-  #
-  train_pipeline = [  # List of training pipeline steps
+  train_pipeline = [  # Training data processing pipeline
       dict(  # Config of SampleFrames
           type='AVASampleFrames',  # Sample frames pipeline, sampling frames from video
           clip_len=4,  # Frames of each sampled output clip
@@ -409,7 +408,7 @@ We incorporate modular design into our config system, which is convenient to con
       dict(type='PackActionInputs') # Pack input data
   ]
 
-  val_pipeline = [  # List of validation pipeline steps
+  val_pipeline = [  # Validation data processing pipeline
       dict(  # Config of SampleFrames
           type='AVASampleFrames',  # Sample frames pipeline, sampling frames from video
           clip_len=4,  # Frames of each sampled output clip
@@ -429,53 +428,77 @@ We incorporate modular design into our config system, which is convenient to con
   train_dataloader = dict(  # Config of train dataloader
       batch_size=32,  # Batch size of each single GPU during training
       num_workers=8,  # Workers to pre-fetch data for each single GPU during training
-      persistent_workers=True,  # Maintain the workers `Dataset` instances alive
-      sampler=dict(type='DefaultSampler', shuffle=True),  # Shuffle the dataset
-      dataset=dict(
+      persistent_workers=True,  # If `True`, the dataloader will not shut down the worker processes after an epoch end, which can accelerate training speed
+      sampler=dict(
+        type='DefaultSampler',  # DefaultSampler which supports both distributed and non-distributed training. Refer to https://github.com/open-mmlab/mmengine/blob/main/mmengine/dataset/sampler.py
+        shuffle=True),  # Randomly shuffle the training data in each epoch
+      dataset=dict(  # Config of training dataset
         type=dataset_type,
-        ann_file=ann_file_train,
-        data_prefix=dict(video=data_root),
+        ann_file=ann_file_train,  # Path of annotation file
+        exclude_file=exclude_file_train,  # Path of exclude annotation file
+        label_file=label_file,  # Path of label file
+        data_prefix=dict(img=data_root),  # Prefix of frame path
+        proposal_file=proposal_file_train,  # Path of human detection proposals
         pipeline=train_pipeline))
   val_dataloader = dict(  # Config of validation dataloader
       batch_size=1,  # Batch size of each single GPU during evaluation
       num_workers=8,  # Workers to pre-fetch data for each single GPU during evaluation
-      persistent_workers=True,  # Maintain the workers `Dataset` instances alive
-      sampler=dict(type='DefaultSampler', shuffle=False),  # Dont Shuffle the dataset
-      dataset=dict(
-          type=dataset_type,
-          ann_file=ann_file_val,
-          data_prefix=dict(video=data_root_val),
-          pipeline=val_pipeline,
-          test_mode=True))
-  test_dataloader = val_dataloader  # Set test_dataloader as val_dataloader
+      persistent_workers=True,  # If `True`, the dataloader will not shut down the worker processes after an epoch end, which can accelerate training speed
+      sampler=dict(
+        type='DefaultSampler',
+        shuffle=False),  # Not shuffle during validation and testing
+      dataset=dict(  # Config of validation dataset
+        type=dataset_type,
+        ann_file=ann_file_val,  # Path of annotation file
+        exclude_file=exclude_file_val,  # Path of exclude annotation file
+        label_file=label_file,  # Path of label file
+        data_prefix=dict(img=data_root_val),  # Prefix of frame path
+        proposal_file=proposal_file_val,  # Path of human detection proposals
+        pipeline=val_pipeline,
+        test_mode=True))
+  test_dataloader = val_dataloader  # Config of testing dataloader
+
   # evaluation settings
-  val_evaluator = dict(
-    type='AVAMetric',  # The evaluator object used for computing metrics for validation
+  val_evaluator = dict(  # Config of validation evaluator
+    type='AVAMetric',
     ann_file=ann_file_val,
     label_file=label_file,
     exclude_file=exclude_file_val)
-  test_evaluator = val_evaluator  # Set test_evaluator as val_evaluator
-  # learning policy
+  test_evaluator = val_evaluator  # Config of testing evaluator
+
+  train_cfg = dict(  # Config of training loop
+    type='EpochBasedTrainLoop',  # Name of training loop
+    max_epochs=20,  # Total training epochs
+    val_begin=1,  # The epoch that begins validating
+    val_interval=1)  # Validation interval
+  val_cfg = dict(  # Config of validation loop
+    type='ValLoop')  # Name of validation loop
+  test_cfg = dict( # Config of testing loop
+    type='TestLoop')  # Name of testing loop
+
+  # Learning policy
   param_scheduler = [ # Parameter scheduler for updating optimizer parameters, support dict or list
       dict(type='LinearLR',  # Decays the learning rate of each parameter group by linearly changing small multiplicative factor
-          start_factor=0.1,  # The number we multiply parameter value in the first epoch
+        start_factor=0.1,  # The number we multiply learning rate in the first epoch
     	  by_epoch=True,  # Whether the scheduled parameters are updated by epochs
     	  begin=0,  # Step at which to start updating the parameters
     	  end=5),  # Step at which to stop updating the parameters
-      dict(type='MultiStepLR',  # Decays the parameter once the number of epoch reach milestone
-          begin=0,  # Step at which to start updating the parameters
-          end=20,  # Step at which to stop updating the parameters
-          by_epoch=True,   # Whether the scheduled parameters are updated by epochs
-          milestones=[10, 15],  # Steps to decay the learning rate
-          gamma=0.1)]  # Multiplicative factor of parameter value decay
+      dict(type='MultiStepLR',  # Decays the learning rate once the number of epoch reaches one of the milestones
+        begin=0,  # Step at which to start updating the parameters
+        end=20,  # Step at which to stop updating the parameters
+        by_epoch=True,   # Whether the scheduled parameters are updated by epochs
+        milestones=[10, 15],  # Steps to decay the learning rate
+        gamma=0.1)]  # Multiplicative factor of learning rate decay
+
   # optimizer
-  optim_wrapper = dict(  # Common interface for updating parameters
-    optimizer=dict(  # Optimizer used to update model parameters
-      type='SGD',  # Type of optimizer
-      lr=0.2,  # learning rate
-      momentum=0.9,  # momentum factor
-      weight_decay=0.0001),  # Weight decay of SGD
-    clip_grad=dict(max_norm=40, norm_type=2))  # Use gradient clip
+  optim_wrapper = dict(  # Config of optimizer wrapper
+    type='OptimWrapper',  # Name of optimizer wrapper, switch to AmpOptimWrapper to enable mixed precision training
+    optimizer=dict(  # Config of optimizer. Support all kinds of optimizers in PyTorch. Refer to https://pytorch.org/docs/stable/optim.html#algorithms
+      type='SGD',  # Name of optimizer
+      lr=0.2,  # Learning rate
+      momentum=0.9,  # Momentum factor
+      weight_decay=0.0001),  # Weight decay
+    clip_grad=dict(max_norm=40, norm_type=2))  # Config of gradient clip
 
   # runtime settings
   default_scope = 'mmaction'  # Scope of current task used to reset the current registry
@@ -507,13 +530,10 @@ We incorporate modular design into our config system, which is convenient to con
       type='ActionVisualizer',  # Universal Visualizer for classification task
       vis_backends=[dict(type='LocalVisBackend')])  # Local visualization backend
   log_level = 'INFO'  # The level of logging
-  load_from = ('https://download.openmmlab.com/mmaction/recognition/slowonly/'  # load models as a pre-trained model from a given path. This will not resume training
+  load_from = ('https://download.openmmlab.com/mmaction/recognition/slowonly/'
                'slowonly_r50_4x16x1_256e_kinetics400_rgb/'
-               'slowonly_r50_4x16x1_256e_kinetics400_rgb_20200704-a69556c6.pth')
-  resume = False  # Resume from a checkpoint
-  load_from = None  # load checkpoint as a pre-trained model from a given path. If resume == True, resume training from the checkpoint, otherwise load checkpoint without resuming
-  work_dir = ('./work_dirs/ava/'  # Directory to save the model checkpoints and logs for the current experiments
-              'slowonly_kinetics_pretrained_r50_4x16x1_20e_ava_rgb')
+               'slowonly_r50_4x16x1_256e_kinetics400_rgb_20200704-a69556c6.pth')  # Load model checkpoint as a pre-trained model from a given path. This will not resume training.
+  resume = False  # Whether to resume from the checkpoint defined in `load_from`. If `load_from` is None, it will resume the latest checkpoint in the `work_dir`.
   ```
 
 ### Config System for Action localization
