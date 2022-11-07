@@ -48,7 +48,7 @@ For example, if some modification is made based on TSN, users may first inherit 
 
 If you are building an entirely new method that does not share the structure with any of the existing methods, you may create a folder under `configs/TASK`.
 
-Please refer to [mmcv](https://mmcv.readthedocs.io/en/latest/understand_mmcv/config.html) for detailed documentation.
+Please refer to [mmengine](https://mmengine.readthedocs.io/en/latest/tutorials/config.html) for detailed documentation.
 
 ## Config File Naming Convention
 
@@ -103,7 +103,7 @@ which is convenient to conduct various experiments.
           consensus=dict(type='AvgConsensus', dim=1),  # Config of consensus module
           dropout_ratio=0.4,  # Probability in dropout layer
           init_std=0.01, # Std value for linear layer initiation
-          average_clips=None),
+          average_clips=None),  # Method to average multiple clip results
       data_preprocessor=dict(  # Dict for data preprocessor
           type='ActionDataPreprocessor',  # Name of data preprocessor
           mean=[123.675, 116.28, 103.53],  # Mean values of different channels to normalize
@@ -121,7 +121,7 @@ which is convenient to conduct various experiments.
   ann_file_val = 'data/kinetics400/kinetics400_val_list_rawframes.txt'  # Path to the annotation file for validation
   ann_file_test = 'data/kinetics400/kinetics400_val_list_rawframes.txt'  # Path to the annotation file for testing
 
-  train_pipeline = [  # List of training pipeline steps
+  train_pipeline = [  # Training data processing pipeline
       dict(  # Config of SampleFrames
           type='SampleFrames',  # Sample frames pipeline, sampling frames from video
           clip_len=1,  # Frames of each sampled output clip
@@ -151,7 +151,7 @@ which is convenient to conduct various experiments.
       dict(  # Config of PackActionInputs
           type='PackActionInputs')  # Pack input data
   ]
-  val_pipeline = [  # List of validation pipeline steps
+  val_pipeline = [  # Validation data processing pipeline
       dict(  # Config of SampleFrames
           type='SampleFrames',  # Sample frames pipeline, sampling frames from video
           clip_len=1,  # Frames of each sampled output clip
@@ -169,16 +169,13 @@ which is convenient to conduct various experiments.
       dict(  # Config of Flip
           type='Flip',  # Flip pipeline
           flip_ratio=0),  # Probability of implementing flip
-      dict(  # Config of Normalize
-          type='Normalize',  # Normalize pipeline
-          **img_norm_cfg),  # Config of image normalization
       dict(  # Config of FormatShape
           type='FormatShape',  # Format shape pipeline, Format final image shape to the given input_format
           input_format='NCHW'),  # Final image shape format
       dict(  # Config of PackActionInputs
           type='PackActionInputs')  # Pack input data
   ]
-  test_pipeline = [  # List of testing pipeline steps
+  test_pipeline = [  # Testing data processing pipeline
       dict(  # Config of SampleFrames
           type='SampleFrames',  # Sample frames pipeline, sampling frames from video
           clip_len=1,  # Frames of each sampled output clip
@@ -196,9 +193,6 @@ which is convenient to conduct various experiments.
       dict(  # Config of Flip
           type='Flip',  # Flip pipeline
           flip_ratio=0),  # Probability of implementing flip
-      dict(  # Config of Normalize
-          type='Normalize',  # Normalize pipeline
-          **img_norm_cfg),  # Config of image normalization
       dict(  # Config of FormatShape
           type='FormatShape',  # Format shape pipeline, Format final image shape to the given input_format
           input_format='NCHW'),  # Final image shape format
@@ -209,47 +203,54 @@ which is convenient to conduct various experiments.
   train_dataloader = dict(  # Config of train dataloader
       batch_size=32,  # Batch size of each single GPU during training
       num_workers=8,  # Workers to pre-fetch data for each single GPU during training
-      persistent_workers=True,
-      sampler=dict(type='DefaultSampler', shuffle=True),
-      dataset=dict(
+      persistent_workers=True,  # If `True`, the dataloader will not shut down the worker processes after an epoch end, which can accelerate training speed.
+      sampler=dict(
+        type='DefaultSampler',  # DefaultSampler which supports both distributed and non-distributed training. Refer to https://github.com/open-mmlab/mmengine/blob/main/mmengine/dataset/sampler.py
+        shuffle=True),  # Randomly shuffle the training data in each epoch
+      dataset=dict(  # Config of training dataset
         type=dataset_type,
-        ann_file=ann_file_train,
-        data_prefix=dict(video=data_root),
+        ann_file=ann_file_train,  # Path of annotation file
+        data_prefix=dict(img=data_root),  # Prefix of frame path
         pipeline=train_pipeline))
   val_dataloader = dict(  # Config of validation dataloader
-      batch_size=1,  # Batch size of each single GPU during evaluation
-      num_workers=8,  # Workers to pre-fetch data for each single GPU during evaluation
-      persistent_workers=True,  # Maintain the workers `Dataset` instances alive
-      sampler=dict(type='DefaultSampler', shuffle=False),
+      batch_size=1,  # Batch size of each single GPU during validation
+      num_workers=8,  # Workers to pre-fetch data for each single GPU during validation
+      persistent_workers=True,  # If `True`, the dataloader will not shut down the worker processes after an epoch end
+      sampler=dict(
+        type='DefaultSampler',
+        shuffle=False),  # # Not shuffle during validation and testing
       dataset=dict(
           type=dataset_type,
-          ann_file=ann_file_val,
-          data_prefix=dict(video=data_root_val),
+          ann_file=ann_file_val,  # Path of annotation file
+          data_prefix=dict(img=data_root_val),  # Prefix of frame path
           pipeline=val_pipeline,
           test_mode=True))
   test_dataloader = dict(  # Config of test dataloader
       batch_size=32,  # Batch size of each single GPU during testing
       num_workers=8,  # Workers to pre-fetch data for each single GPU during testing
-      persistent_workers=True,  # Maintain the workers `Dataset` instances alive
-      sampler=dict(type='DefaultSampler', shuffle=False),
+      persistent_workers=True,  # If `True`, the dataloader will not shut down the worker processes after an epoch end
+      sampler=dict(
+        type='DefaultSampler',
+        shuffle=False),  # # Not shuffle during validation and testing
       dataset=dict(
           type=dataset_type,
-          ann_file=ann_file_val,
-          data_prefix=dict(video=data_root_val),
+          ann_file=ann_file_val,  # Path of annotation file
+          data_prefix=dict(img=data_root_val),  # Prefix of frame path
           pipeline=test_pipeline,
           test_mode=True))
   val_evaluator = dict(type='AccMetric')  # The evaluator object used for computing metrics for validation
-  test_evaluator = dict(type='AccMetric')  # The evaluator object used for computing metrics for test steps
+  test_evaluator = dict(type='AccMetric')  # The evaluator object used for computing metrics for testing
 
   train_cfg = dict(  # Config of training loop
-    type='EpochBasedTrainLoop',  # name of training loop
+    type='EpochBasedTrainLoop',  # Name of training loop
     max_epochs=100,  # Total training epochs
     val_begin=1,  # The epoch that begins validating
     val_interval=1)  # Validation interval
   val_cfg = dict(  # Config of validating loop
-    type='ValLoop')  # name of validating loop
+    type='ValLoop')  # Name of validating loop
   test_cfg = dict( # Config of testing loop
-    type='TestLoop')  # name of testing loop
+    type='TestLoop')  # Name of testing loop
+
   # learning policy
   param_scheduler = [dict(  # Parameter scheduler for updating optimizer parameters, support dict or list
       type='MultiStepLR',  # Decays the parameter once the number of epoch reach milestone
@@ -258,13 +259,14 @@ which is convenient to conduct various experiments.
       by_epoch=True,  # Whether the scheduled parameters are updated by epochs
       milestones=[40, 80],  # Steps to decay the learning rate
       gamma=0.1)  # Multiplicative factor of parameter value decay
-    ]
+  ]
+
   # optimizer
-  optim_wrapper = dict(  # Common interface for updating parameters
+  optim_wrapper = dict(  # Optimizer wrapper config
     optimizer=dict(  # Optimizer used to update model parameters
       type='SGD',  # Type of optimizer
       lr=0.01,  # learning rate
-      momentum=0.9,  # momentum factor
+      momentum=0.9,  # Momentum factor
       weight_decay=0.0001),  # Weight decay of SGD
     clip_grad=dict(max_norm=40, norm_type=2))  # Use gradient clip
 
@@ -301,7 +303,6 @@ which is convenient to conduct various experiments.
   log_level = 'INFO'  # The level of logging
   resume = False  # Resume from a checkpoint
   load_from = None  # load checkpoint as a pre-trained model from a given path. If resume == True, resume training from the checkpoint, otherwise load checkpoint without resuming
-  work_dir = './work_dirs/tsn_r50_8xb32-1x1x3-100e_kinetics400-rgb/'  # Directory to save the model checkpoints and logs for the current experiments
   ```
 
 ### Config System for Spatio-Temporal Action Detection
