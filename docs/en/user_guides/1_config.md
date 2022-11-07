@@ -205,20 +205,20 @@ which is convenient to conduct various experiments.
       num_workers=8,  # Workers to pre-fetch data for each single GPU during training
       persistent_workers=True,  # If `True`, the dataloader will not shut down the worker processes after an epoch end, which can accelerate training speed
       sampler=dict(
-        type='DefaultSampler',  # DefaultSampler which supports both distributed and non-distributed training. Refer to https://github.com/open-mmlab/mmengine/blob/main/mmengine/dataset/sampler.py
-        shuffle=True),  # Randomly shuffle the training data in each epoch
+          type='DefaultSampler',  # DefaultSampler which supports both distributed and non-distributed training. Refer to https://github.com/open-mmlab/mmengine/blob/main/mmengine/dataset/sampler.py
+          shuffle=True),  # Randomly shuffle the training data in each epoch
       dataset=dict(  # Config of training dataset
-        type=dataset_type,
-        ann_file=ann_file_train,  # Path of annotation file
-        data_prefix=dict(img=data_root),  # Prefix of frame path
-        pipeline=train_pipeline))
+          type=dataset_type,
+          ann_file=ann_file_train,  # Path of annotation file
+          data_prefix=dict(img=data_root),  # Prefix of frame path
+          pipeline=train_pipeline))
   val_dataloader = dict(  # Config of validation dataloader
       batch_size=1,  # Batch size of each single GPU during validation
       num_workers=8,  # Workers to pre-fetch data for each single GPU during validation
       persistent_workers=True,  # If `True`, the dataloader will not shut down the worker processes after an epoch end
       sampler=dict(
-        type='DefaultSampler',
-        shuffle=False),  # Not shuffle during validation and testing
+          type='DefaultSampler',
+          shuffle=False),  # Not shuffle during validation and testing
       dataset=dict(
           type=dataset_type,
           ann_file=ann_file_val,  # Path of annotation file
@@ -230,8 +230,8 @@ which is convenient to conduct various experiments.
       num_workers=8,  # Workers to pre-fetch data for each single GPU during testing
       persistent_workers=True,  # If `True`, the dataloader will not shut down the worker processes after an epoch end
       sampler=dict(
-        type='DefaultSampler',
-        shuffle=False),  # Not shuffle during validation and testing
+          type='DefaultSampler',
+          shuffle=False),  # Not shuffle during validation and testing
       dataset=dict(
           type=dataset_type,
           ann_file=ann_file_val,  # Path of annotation file
@@ -244,34 +244,34 @@ which is convenient to conduct various experiments.
   test_evaluator = val_evaluator  # Config of testing evaluator
 
   train_cfg = dict(  # Config of training loop
-    type='EpochBasedTrainLoop',  # Name of training loop
-    max_epochs=100,  # Total training epochs
-    val_begin=1,  # The epoch that begins validating
-    val_interval=1)  # Validation interval
+      type='EpochBasedTrainLoop',  # Name of training loop
+      max_epochs=100,  # Total training epochs
+      val_begin=1,  # The epoch that begins validating
+      val_interval=1)  # Validation interval
   val_cfg = dict(  # Config of validation loop
-    type='ValLoop')  # Name of validation loop
+      type='ValLoop')  # Name of validation loop
   test_cfg = dict( # Config of testing loop
-    type='TestLoop')  # Name of testing loop
+      type='TestLoop')  # Name of testing loop
 
-  # Learning policy
+  # learning policy
   param_scheduler = [  # Parameter scheduler for updating optimizer parameters, support dict or list
       dict(type='MultiStepLR',  # Decays the learning rate once the number of epoch reaches one of the milestones
-        begin=0,  # Step at which to start updating the parameters
-        end=100,  # Step at which to stop updating the parameters
-        by_epoch=True,  # Whether the scheduled parameters are updated by epochs
-        milestones=[40, 80],  # Steps to decay the learning rate
-        gamma=0.1)  # Multiplicative factor of learning rate decay
+          begin=0,  # Step at which to start updating the parameters
+          end=100,  # Step at which to stop updating the parameters
+          by_epoch=True,  # Whether the scheduled parameters are updated by epochs
+          milestones=[40, 80],  # Steps to decay the learning rate
+          gamma=0.1)  # Multiplicative factor of learning rate decay
   ]
 
   # optimizer
   optim_wrapper = dict(  # Config of optimizer wrapper
-    type='OptimWrapper',  # Name of optimizer wrapper, switch to AmpOptimWrapper to enable mixed precision training
-    optimizer=dict(  # Config of optimizer. Support all kinds of optimizers in PyTorch. Refer to https://pytorch.org/docs/stable/optim.html#algorithms
-      type='SGD',  # Name of optimizer
-      lr=0.01,  # Learning rate
-      momentum=0.9,  # Momentum factor
-      weight_decay=0.0001),  # Weight decay
-    clip_grad=dict(max_norm=40, norm_type=2))  # Config of gradient clip
+      type='OptimWrapper',  # Name of optimizer wrapper, switch to AmpOptimWrapper to enable mixed precision training
+      optimizer=dict(  # Config of optimizer. Support all kinds of optimizers in PyTorch. Refer to https://pytorch.org/docs/stable/optim.html#algorithms
+          type='SGD',  # Name of optimizer
+          lr=0.01,  # Learning rate
+          momentum=0.9,  # Momentum factor
+          weight_decay=0.0001),  # Weight decay
+      clip_grad=dict(max_norm=40, norm_type=2))  # Config of gradient clip
 
   # runtime settings
   default_scope = 'mmaction'  # The default registry scope to find modules. Refer to https://mmengine.readthedocs.io/en/latest/tutorials/registry.html
@@ -279,15 +279,15 @@ which is convenient to conduct various experiments.
       runtime_info=dict(type='RuntimeInfoHook'),  # The hook to updates runtime information into message hub
       timer=dict(type='IterTimerHook'),  # The logger used to record time spent during iteration
       logger=dict(
-        type='LoggerHook',  # The logger used to record logs during training/validation/testing phase
-        interval=20,  # Interval to print the log
-        ignore_last=False), # Ignore the log of last iterations in each epoch
+          type='LoggerHook',  # The logger used to record logs during training/validation/testing phase
+          interval=20,  # Interval to print the log
+          ignore_last=False), # Ignore the log of last iterations in each epoch
       param_scheduler=dict(type='ParamSchedulerHook'),  # The hook to update some hyper-parameters in optimizer
       checkpoint=dict(
-        type='CheckpointHook',  # The hook to save checkpoints periodically
-        interval=3,  # The saving period
-        save_best='auto',  # Specified metric to mearsure the best checkpoint during evaluation
-        max_keep_ckpts=3),  # The maximum checkpoints to keep
+          type='CheckpointHook',  # The hook to save checkpoints periodically
+          interval=3,  # The saving period
+          save_best='auto',  # Specified metric to mearsure the best checkpoint during evaluation
+          max_keep_ckpts=3),  # The maximum checkpoints to keep
       sampler_seed=dict(type='DistSamplerSeedHook'))  # Data-loading sampler for distributed training
   env_cfg = dict(  # Dict for setting environment
       cudnn_benchmark=False,  # Whether to enable cudnn benchmark
@@ -295,12 +295,12 @@ which is convenient to conduct various experiments.
       dist_cfg=dict(backend='nccl')) # Parameters to setup distributed environment, the port can also be set
 
   log_processor = dict(
-    type='LogProcessor',  # Log processor used to format log information
-    window_size=20,  # Default smooth interval
-    by_epoch=True)  # Whether to format logs with epoch type
+      type='LogProcessor',  # Log processor used to format log information
+      window_size=20,  # Default smooth interval
+      by_epoch=True)  # Whether to format logs with epoch type
   vis_backends = [  # List of visualization backends
-    dict(type='LocalVisBackend')]  # Local visualization backend
-  visualizer = dict(
+      dict(type='LocalVisBackend')]  # Local visualization backend
+  visualizer = dict(  # Config of visualizer
       type='ActionVisualizer',  # Name of visualizer
       vis_backends=vis_backends)
   log_level = 'INFO'  # The level of logging
@@ -430,105 +430,106 @@ We incorporate modular design into our config system, which is convenient to con
       num_workers=8,  # Workers to pre-fetch data for each single GPU during training
       persistent_workers=True,  # If `True`, the dataloader will not shut down the worker processes after an epoch end, which can accelerate training speed
       sampler=dict(
-        type='DefaultSampler',  # DefaultSampler which supports both distributed and non-distributed training. Refer to https://github.com/open-mmlab/mmengine/blob/main/mmengine/dataset/sampler.py
-        shuffle=True),  # Randomly shuffle the training data in each epoch
+          type='DefaultSampler',  # DefaultSampler which supports both distributed and non-distributed training. Refer to https://github.com/open-mmlab/mmengine/blob/main/mmengine/dataset/sampler.py
+          shuffle=True),  # Randomly shuffle the training data in each epoch
       dataset=dict(  # Config of training dataset
-        type=dataset_type,
-        ann_file=ann_file_train,  # Path of annotation file
-        exclude_file=exclude_file_train,  # Path of exclude annotation file
-        label_file=label_file,  # Path of label file
-        data_prefix=dict(img=data_root),  # Prefix of frame path
-        proposal_file=proposal_file_train,  # Path of human detection proposals
-        pipeline=train_pipeline))
+          type=dataset_type,
+          ann_file=ann_file_train,  # Path of annotation file
+          exclude_file=exclude_file_train,  # Path of exclude annotation file
+          label_file=label_file,  # Path of label file
+          data_prefix=dict(img=data_root),  # Prefix of frame path
+          proposal_file=proposal_file_train,  # Path of human detection proposals
+          pipeline=train_pipeline))
   val_dataloader = dict(  # Config of validation dataloader
       batch_size=1,  # Batch size of each single GPU during evaluation
       num_workers=8,  # Workers to pre-fetch data for each single GPU during evaluation
       persistent_workers=True,  # If `True`, the dataloader will not shut down the worker processes after an epoch end, which can accelerate training speed
       sampler=dict(
-        type='DefaultSampler',
-        shuffle=False),  # Not shuffle during validation and testing
+          type='DefaultSampler',
+          shuffle=False),  # Not shuffle during validation and testing
       dataset=dict(  # Config of validation dataset
-        type=dataset_type,
-        ann_file=ann_file_val,  # Path of annotation file
-        exclude_file=exclude_file_val,  # Path of exclude annotation file
-        label_file=label_file,  # Path of label file
-        data_prefix=dict(img=data_root_val),  # Prefix of frame path
-        proposal_file=proposal_file_val,  # Path of human detection proposals
-        pipeline=val_pipeline,
-        test_mode=True))
+          type=dataset_type,
+          ann_file=ann_file_val,  # Path of annotation file
+          exclude_file=exclude_file_val,  # Path of exclude annotation file
+          label_file=label_file,  # Path of label file
+          data_prefix=dict(img=data_root_val),  # Prefix of frame path
+          proposal_file=proposal_file_val,  # Path of human detection proposals
+          pipeline=val_pipeline,
+          test_mode=True))
   test_dataloader = val_dataloader  # Config of testing dataloader
 
   # evaluation settings
   val_evaluator = dict(  # Config of validation evaluator
-    type='AVAMetric',
-    ann_file=ann_file_val,
-    label_file=label_file,
-    exclude_file=exclude_file_val)
+      type='AVAMetric',
+      ann_file=ann_file_val,
+      label_file=label_file,
+      exclude_file=exclude_file_val)
   test_evaluator = val_evaluator  # Config of testing evaluator
 
   train_cfg = dict(  # Config of training loop
-    type='EpochBasedTrainLoop',  # Name of training loop
-    max_epochs=20,  # Total training epochs
-    val_begin=1,  # The epoch that begins validating
-    val_interval=1)  # Validation interval
+      type='EpochBasedTrainLoop',  # Name of training loop
+      max_epochs=20,  # Total training epochs
+      val_begin=1,  # The epoch that begins validating
+      val_interval=1)  # Validation interval
   val_cfg = dict(  # Config of validation loop
-    type='ValLoop')  # Name of validation loop
+      type='ValLoop')  # Name of validation loop
   test_cfg = dict( # Config of testing loop
-    type='TestLoop')  # Name of testing loop
+      type='TestLoop')  # Name of testing loop
 
-  # Learning policy
+  # learning policy
   param_scheduler = [ # Parameter scheduler for updating optimizer parameters, support dict or list
       dict(type='LinearLR',  # Decays the learning rate of each parameter group by linearly changing small multiplicative factor
-        start_factor=0.1,  # The number we multiply learning rate in the first epoch
+          start_factor=0.1,  # The number we multiply learning rate in the first epoch
     	  by_epoch=True,  # Whether the scheduled parameters are updated by epochs
     	  begin=0,  # Step at which to start updating the parameters
     	  end=5),  # Step at which to stop updating the parameters
       dict(type='MultiStepLR',  # Decays the learning rate once the number of epoch reaches one of the milestones
-        begin=0,  # Step at which to start updating the parameters
-        end=20,  # Step at which to stop updating the parameters
-        by_epoch=True,   # Whether the scheduled parameters are updated by epochs
-        milestones=[10, 15],  # Steps to decay the learning rate
-        gamma=0.1)]  # Multiplicative factor of learning rate decay
+          begin=0,  # Step at which to start updating the parameters
+          end=20,  # Step at which to stop updating the parameters
+          by_epoch=True,   # Whether the scheduled parameters are updated by epochs
+          milestones=[10, 15],  # Steps to decay the learning rate
+          gamma=0.1)]  # Multiplicative factor of learning rate decay
 
   # optimizer
   optim_wrapper = dict(  # Config of optimizer wrapper
-    type='OptimWrapper',  # Name of optimizer wrapper, switch to AmpOptimWrapper to enable mixed precision training
-    optimizer=dict(  # Config of optimizer. Support all kinds of optimizers in PyTorch. Refer to https://pytorch.org/docs/stable/optim.html#algorithms
-      type='SGD',  # Name of optimizer
-      lr=0.2,  # Learning rate
-      momentum=0.9,  # Momentum factor
-      weight_decay=0.0001),  # Weight decay
-    clip_grad=dict(max_norm=40, norm_type=2))  # Config of gradient clip
+      type='OptimWrapper',  # Name of optimizer wrapper, switch to AmpOptimWrapper to enable mixed precision training
+      optimizer=dict(  # Config of optimizer. Support all kinds of optimizers in PyTorch. Refer to https://pytorch.org/docs/stable/optim.html#algorithms
+          type='SGD',  # Name of optimizer
+          lr=0.2,  # Learning rate
+          momentum=0.9,  # Momentum factor
+          weight_decay=0.0001),  # Weight decay
+      clip_grad=dict(max_norm=40, norm_type=2))  # Config of gradient clip
 
   # runtime settings
-  default_scope = 'mmaction'  # Scope of current task used to reset the current registry
-  default_hooks = dict( # Hooks to execute default actions like updating model parameters and saving checkpoints.
+  default_scope = 'mmaction'  # The default registry scope to find modules. Refer to https://mmengine.readthedocs.io/en/latest/tutorials/registry.html
+  default_hooks = dict(  # Hooks to execute default actions like updating model parameters and saving checkpoints.
       runtime_info=dict(type='RuntimeInfoHook'),  # The hook to updates runtime information into message hub
       timer=dict(type='IterTimerHook'),  # The logger used to record time spent during iteration
       logger=dict(
-        type='LoggerHook',  # The logger used to record the training/validation/testing phase
-        interval=20,  # Interval to print the log
-        ignore_last=False), # Ignore the log of last iterations in each epoch
+          type='LoggerHook',  # The logger used to record logs during training/validation/testing phase
+          interval=20,  # Interval to print the log
+          ignore_last=False), # Ignore the log of last iterations in each epoch
       param_scheduler=dict(type='ParamSchedulerHook'),  # The hook to update some hyper-parameters in optimizer
       checkpoint=dict(
-        type='CheckpointHook',  # The hook to save checkpoints periodically
-        interval=3,  # The saving period
-        save_best='auto',  # Specified metric to mearsure the best checkpoint during evaluation
-        max_keep_ckpts=3),  # The maximum checkpoints to keep
+          type='CheckpointHook',  # The hook to save checkpoints periodically
+          interval=3,  # The saving period
+          save_best='auto',  # Specified metric to mearsure the best checkpoint during evaluation
+          max_keep_ckpts=3),  # The maximum checkpoints to keep
       sampler_seed=dict(type='DistSamplerSeedHook'))  # Data-loading sampler for distributed training
-  env_cfg = dict( # Dict for setting environment
-      cudnn_benchmark=False,
+  env_cfg = dict(  # Dict for setting environment
+      cudnn_benchmark=False,  # Whether to enable cudnn benchmark
       mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0), # Parameters to setup multiprocessing
-      dist_cfg=dict(backend='nccl')) # Parameters to setup distributed training, the port can also be set
+      dist_cfg=dict(backend='nccl')) # Parameters to setup distributed environment, the port can also be set
+
   log_processor = dict(
-    type='LogProcessor',  # Log processor used to format log information
-    window_size=20,  # Default smooth interval
-    by_epoch=True)  # Whether to format logs with epoch stype
-  vis_backends = [  # Visual backend config list
-    dict(type='LocalVisBackend')]  # Local visualization backend
-  visualizer = dict(
-      type='ActionVisualizer',  # Universal Visualizer for classification task
-      vis_backends=[dict(type='LocalVisBackend')])  # Local visualization backend
+      type='LogProcessor',  # Log processor used to format log information
+      window_size=20,  # Default smooth interval
+      by_epoch=True)  # Whether to format logs with epoch type
+  vis_backends = [  # List of visualization backends
+      dict(type='LocalVisBackend')]  # Local visualization backend
+  visualizer = dict(  # Config of visualizer
+      type='ActionVisualizer',  # Name of visualizer
+      vis_backends=vis_backends)
   log_level = 'INFO'  # The level of logging
   load_from = ('https://download.openmmlab.com/mmaction/recognition/slowonly/'
                'slowonly_r50_4x16x1_256e_kinetics400_rgb/'
