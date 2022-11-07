@@ -26,26 +26,25 @@ When submitting jobs using `tools/train.py` or `tools/test.py`, you may specify 
 
 - Update keys inside a list of configs.
 
-  Some config dicts are composed as a list in your config. For example, the training pipeline `data.train.pipeline` is normally a list
+  Some config dicts are composed as a list in your config. For example, the training pipeline `train_pipeline` is normally a list
   e.g. `[dict(type='SampleFrames'), ...]`. If you want to change `'SampleFrames'` to `'DenseSampleFrames'` in the pipeline,
   you may specify `--cfg-options train_pipeline.0.type=DenseSampleFrames`.
 
 - Update values of list/tuples.
 
   If the value to be updated is a list or a tuple. For example, the config file normally sets `model.data_preprocessor.mean=[123.675, 116.28, 103.53]`. If you want to
-  change this key, you may specify `--cfg-options model.data_preprocessor.mean="[128,128,128]"`. Note that the quotation mark " is necessary to
-  support list/tuple data types.
+  change this key, you may specify `--cfg-options model.data_preprocessor.mean="[128,128,128]"`. Note that the quotation mark " is necessary to support list/tuple data types.
 
 ## Config File Structure
 
-There are 3 basic component types under `config/_base_`, models, schedules, default_runtime.
+There are 3 basic component types under `configs/_base_`, models, schedules, default_runtime.
 Many methods could be easily constructed with one of each like TSN, I3D, SlowOnly, etc.
 The configs that are composed by components from `_base_` are called _primitive_.
 
 For all configs under the same folder, it is recommended to have only **one** _primitive_ config. All other configs should inherit from the _primitive_ config. In this way, the maximum of inheritance level is 3.
 
 For easy understanding, we recommend contributors to inherit from exiting methods.
-For example, if some modification is made base on TSN, users may first inherit the basic TSN structure by specifying `_base_ = ../tsn/tsn_r50_8xb32-1x1x3-100e_kinetics400-rgb.py`, then modify the necessary fields in the config files.
+For example, if some modification is made based on TSN, users may first inherit the basic TSN structure by specifying `_base_ = ../tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py`, then modify the necessary fields in the config files.
 
 If you are building an entirely new method that does not share the structure with any of the existing methods, you may create a folder under `configs/TASK`.
 
@@ -62,18 +61,19 @@ We follow the style below to name config files. Contributors are advised to foll
 `{xxx}` is required field and `[yyy]` is optional.
 
 - `{algorithm info}`:
-  - `{model}`: model type, e.g. `tsn`, `i3d`, etc.
-  - `[model setting]`: specific setting for some models.
+  - `{model}`: model type, e.g. `tsn`, `i3d`, `swin`, `vit`, etc.
+  - `[model setting]`: specific setting for some models, e.g. `base`, `p16`, `w877`, etc.
 - `{module info}`:
-  - `[pretained info]`: pretrained information, e.g. `kinetics400-pretrained`, etc.
-  - `{backbone}`: backbone type and pretrained information, e.g. `r50` (ResNet-50), etc.
-- `training info`:
+  - `[pretained info]`: pretrained information, e.g. `kinetics400-pretrained`, `in1k-pre`, etc.
+  - `{backbone}`: backbone type. e.g. `r50` (ResNet-50), etc.
+  - `[backbone setting]`: specific setting for some backbones, e.g. `nl-dot-product`, `bnfrozen`, `nopool`, etc.
+- `{training info}`:
   - `{gpu x batch_per_gpu]}`: GPUs and samples per GPU.
-  - `{pipeline setting}`: frame sample setting in `{clip_len}x{frame_interval}x{num_clips}` format.
-  - `{schedule}`: training schedule, e.g. `20e` means 20 epochs.
-- `data info`:
+  - `{pipeline setting}`: frame sample setting, e.g. `dense`, `{clip_len}x{frame_interval}x{num_clips}`, `u48`, etc.
+  - `{schedule}`: training schedule, e.g. `coslr-20e`.
+- `{data info}`:
   - `{dataset}`: dataset name, e.g. `kinetics400`, `mmit`, etc.
-  - `{modality}`: frame modality, e.g. `rgb`, `flow`, etc.
+  - `{modality}`: data modality, e.g. `rgb`, `flow`, `keypoint-2d`, etc.
 
 ### Config System for Action Recognition
 
