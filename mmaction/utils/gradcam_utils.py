@@ -41,8 +41,6 @@ class GradCAM:
 
         import matplotlib.pyplot as plt
         self.colormap = plt.get_cmap(colormap)
-        self.data_mean = torch.tensor(model.cfg.img_norm_cfg['mean'])
-        self.data_std = torch.tensor(model.cfg.img_norm_cfg['std'])
         self._register_hooks(target_layer_name)
 
     def _register_hooks(self, layer_name):
@@ -68,7 +66,7 @@ class GradCAM:
         target_layer.register_forward_hook(get_activations)
         target_layer.register_backward_hook(get_gradients)
 
-    def _calculate_localization_map(self, inputs, use_labels, delta=1e-20):
+    def _calculate_localization_map(self, data, use_labels, delta=1e-20):
         """Calculate localization map for all inputs with Grad-CAM.
 
         Args:
@@ -86,27 +84,31 @@ class GradCAM:
                 preds (torch.Tensor): Model predictions for `inputs` with
                     shape (batch_size, num_classes).
         """
-        inputs['imgs'] = inputs['imgs'].clone()
+        inputs, data_samples = data['inputs'], data['data_samples']
 
+        # use score before softmax
+        self.model.cls_head.average_clips = None
         # model forward & backward
-        preds = self.model(gradcam=True, **inputs)
+        result = self.model.test_step(data)[0]
         if use_labels:
-            labels = inputs['label']
+            labels = [sample.gt_labels for sample in data_samples]
+            # labels = inputs['label']
             if labels.ndim == 1:
                 labels = labels.unsqueeze(-1)
-            score = torch.gather(preds, dim=1, index=labels)
+            score = torch.gather(result.pred_scores.item, dim=1, index=labels)
         else:
-            score = torch.max(preds, dim=-1)[0]
+            score = torch.max(result.pred_scores.item, dim=-1)[0]
         self.model.zero_grad()
         score = torch.sum(score)
         score.backward()
 
+        imgs = torch.stack(inputs)
         if self.is_recognizer2d:
             # [batch_size, num_segments, 3, H, W]
-            b, t, _, h, w = inputs['imgs'].size()
+            b, t, _, h, w = imgs.size()
         else:
             # [batch_size, num_crops*num_clips, 3, clip_len, H, W]
-            b1, b2, _, t, h, w = inputs['imgs'].size()
+            b1, b2, _, t, h, w = imgs.size()
             b = b1 * b2
 
         gradients = self.target_gradients
@@ -149,7 +151,7 @@ class GradCAM:
             localization_map_max - localization_map_min + delta)
         localization_map = localization_map.data
 
-        return localization_map.squeeze(dim=1), preds
+        return localization_map.squeeze(dim=1), result.pred_scores
 
     def _alpha_blending(self, localization_map, input_imgs, alpha):
         """Blend heatmaps and model input images and get visulization results.
@@ -172,7 +174,7 @@ class GradCAM:
         heatmap = self.colormap(localization_map.detach().numpy())
         heatmap = heatmap[:, :, :, :, :3]
         heatmap = torch.from_numpy(heatmap)
-
+        input_imgs = torch.stack(input_imgs)
         # Permute input imgs to [B, T, H, W, 3], like heatmap
         if self.is_recognizer2d:
             # Recognizer2D input (B, T, C, H, W)
@@ -184,9 +186,9 @@ class GradCAM:
             curr_inp = curr_inp.permute(0, 2, 3, 4, 1)
 
         # renormalize input imgs to [0, 1]
-        curr_inp = curr_inp.cpu()
-        curr_inp *= self.data_std
-        curr_inp += self.data_mean
+        curr_inp = curr_inp.cpu().float()
+        # curr_inp *= self.data_std
+        # curr_inp += self.data_mean
         curr_inp /= 255.
 
         # alpha blending
@@ -194,7 +196,7 @@ class GradCAM:
 
         return blended_imgs
 
-    def __call__(self, inputs, use_labels=False, alpha=0.5):
+    def __call__(self, data, use_labels=False, alpha=0.5):
         """Visualize the localization maps on their corresponding inputs as
         heatmap, using Grad-CAM.
 
@@ -219,10 +221,10 @@ class GradCAM:
         # localization_map shape [B, T, H, W]
         # preds shape [batch_size, num_classes]
         localization_map, preds = self._calculate_localization_map(
-            inputs, use_labels=use_labels)
+            data, use_labels=use_labels)
 
         # blended_imgs shape [B, T, H, W, 3]
-        blended_imgs = self._alpha_blending(localization_map, inputs['imgs'],
+        blended_imgs = self._alpha_blending(localization_map, data['inputs'],
                                             alpha)
 
         # blended_imgs shape [B, T, H, W, 3]
