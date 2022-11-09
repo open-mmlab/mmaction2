@@ -19,8 +19,8 @@ def parse_args():
         type=str,
         const='auto',
         help='If specify checkpint path, resume from it, while if not '
-             'specify, try to auto resume from the latest checkpoint '
-             'in the work directory.')
+        'specify, try to auto resume from the latest checkpoint '
+        'in the work directory.')
     parser.add_argument(
         '--amp',
         action='store_true',
@@ -33,7 +33,7 @@ def parse_args():
         '--auto-scale-lr',
         action='store_true',
         help='whether to auto scale the learning rate according to the '
-             'actual batch size and the original batch size.')
+        'actual batch size and the original batch size.')
     parser.add_argument('--seed', type=int, default=None, help='random seed')
     parser.add_argument(
         '--diff-rank-seed',
@@ -48,11 +48,11 @@ def parse_args():
         nargs='+',
         action=DictAction,
         help='override some settings in the used config, the key-value pair '
-             'in xxx=yyy format will be merged into config file. If the value to '
-             'be overwritten is a list, it should be like key="[a,b]" or key=a,b '
-             'It also allows nested list/tuple values, e.g. key="[(a,b),(c,d)]" '
-             'Note that the quotation marks are necessary and that no white space '
-             'is allowed.')
+        'in xxx=yyy format will be merged into config file. If the value to '
+        'be overwritten is a list, it should be like key="[a,b]" or key=a,b '
+        'It also allows nested list/tuple values, e.g. key="[(a,b),(c,d)]" '
+        'Note that the quotation marks are necessary and that no white space '
+        'is allowed.')
     parser.add_argument(
         '--launcher',
         choices=['none', 'pytorch', 'slurm', 'mpi'],
