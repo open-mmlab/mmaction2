@@ -38,7 +38,7 @@ def parse_args():
     parser.add_argument(
         '--diff-rank-seed',
         action='store_true',
-        help='Whether or not set different seeds for different ranks')
+        help='whether or not set different seeds for different ranks')
     parser.add_argument(
         '--deterministic',
         action='store_true',
