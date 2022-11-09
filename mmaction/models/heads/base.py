@@ -225,13 +225,12 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
                              f'Currently supported ones are '
                              f'["score", "prob", None]')
 
-        if self.average_clips is None:
-            return cls_scores
-
         batch_size = cls_scores.shape[0]
         cls_scores = cls_scores.view(batch_size // num_segs, num_segs, -1)
 
-        if self.average_clips == 'prob':
+        if self.average_clip is None:
+            return cls_scores
+        elif self.average_clips == 'prob':
             cls_scores = F.softmax(cls_scores, dim=2).mean(dim=1)
         elif self.average_clips == 'score':
             cls_scores = cls_scores.mean(dim=1)
