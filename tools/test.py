@@ -3,9 +3,7 @@ import argparse
 import os
 import os.path as osp
 
-import mmengine
 from mmengine.config import Config, DictAction
-from mmengine.hooks import Hook
 from mmengine.runner import Runner
 
 from mmaction.utils import register_all_modules
@@ -19,7 +17,6 @@ def parse_args():
     parser.add_argument(
         '--work-dir',
         help='the directory to save the file containing evaluation metrics')
-    parser.add_argument('--out', help='the file to save metric results.')
     parser.add_argument(
         '--dump',
         type=str,
@@ -117,16 +114,6 @@ def main():
 
     # build the runner from config
     runner = Runner.from_cfg(cfg)
-
-    if args.out:
-
-        class SaveMetricHook(Hook):
-
-            def after_test_epoch(self, _, metrics=None):
-                if metrics is not None:
-                    mmengine.dump(metrics, args.out)
-
-        runner.register_hook(SaveMetricHook(), 'LOWEST')
 
     # start testing
     runner.test()
