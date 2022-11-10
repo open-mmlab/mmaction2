@@ -106,10 +106,11 @@ def merge_args(cfg, args):
         cfg.auto_scale_lr.enable = True
 
     # set random seeds
-    cfg.randomness = dict(
-        seed=args.seed,
-        diff_rank_seed=args.diff_rank_seed,
-        deterministic=args.deterministic)
+    if cfg.get('randomness', None) is None:
+        cfg.randomness = dict(
+            seed=args.seed,
+            diff_rank_seed=args.diff_rank_seed,
+            deterministic=args.deterministic)
 
     if args.cfg_options is not None:
         cfg.merge_from_dict(args.cfg_options)
