@@ -138,3 +138,5 @@ mmaction/tools/*
 # unignore ipython notebook files in demo
 !demo/*.ipynb
 mmaction/.mim
+
+lab
