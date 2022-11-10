@@ -29,9 +29,20 @@ def train_test_step(cfg, input_shape):
         predictions = recognizer.test_step(data_batch)
     score = predictions[0].pred_scores.item
     assert len(predictions) == 1
-    assert score.shape, torch.Size([num_classes])
+    assert score.shape == torch.Size([num_classes])
     assert torch.min(score) >= 0
     assert torch.max(score) <= 1
+
+    # test when average_clips is None
+    recognizer.cls_head.average_clips = None
+    num_views = 3
+    input_shape = (num_views, *input_shape[1:])
+    data_batch['inputs'] = [torch.randint(0, 256, input_shape)]
+    with torch.no_grad():
+        predictions = recognizer.test_step(data_batch)
+    score = predictions[0].pred_scores.item
+    assert len(predictions) == 1
+    assert score.shape == torch.Size([num_views, num_classes])
 
     return loss_vars, predictions
 
