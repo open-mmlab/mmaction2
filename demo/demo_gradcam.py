@@ -109,11 +109,7 @@ def build_inputs(model, video_path, use_frames=False):
             start_index=start_index,
             modality='RGB')
     data = test_pipeline(data)
-    # data = collate([data], samples_per_gpu=1)
     data = pseudo_collate([data])
-    # if next(model.parameters()).is_cuda:
-    #     # scatter to specified GPU
-    #     data = scatter(data, [device])[0]
 
     return data
 

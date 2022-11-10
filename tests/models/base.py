@@ -104,31 +104,6 @@ def generate_detector_demo_inputs(
     return dict(img=[img], proposals=[proposals], img_metas=[img_metas])
 
 
-def generate_gradcam_inputs(input_shape=(1, 3, 3, 224, 224), model_type='2D'):
-    """Create a superset of inputs needed to run gradcam.
-
-    Args:
-        input_shape (tuple[int]): input batch dimensions.
-            Default: (1, 3, 3, 224, 224).
-        model_type (str): Model type for data generation, from {'2D', '3D'}.
-            Default:'2D'
-    return:
-        dict: model inputs, including two keys, ``imgs`` and ``label``.
-    """
-    imgs = np.random.random(input_shape)
-
-    if model_type in ['2D', '3D']:
-        gt_labels = torch.LongTensor([2] * input_shape[0])
-    else:
-        raise ValueError(f'Data type {model_type} is not available')
-
-    inputs = {
-        'imgs': torch.FloatTensor(imgs),
-        'label': gt_labels,
-    }
-    return inputs
-
-
 def get_cfg(config_type, fname):
     """Grab configs necessary to create a recognizer.
 
