@@ -7,9 +7,8 @@ import torch.nn as nn
 from mmengine.model import BaseModel, merge_dict
 
 from mmaction.registry import MODELS
-from mmaction.utils import (ConfigType, ForwardResults, LabelList,
-                            OptConfigType, OptMultiConfig, OptSampleList,
-                            SampleList)
+from mmaction.utils import (ConfigType, ForwardResults, OptConfigType,
+                            OptMultiConfig, OptSampleList, SampleList)
 
 
 class BaseRecognizer(BaseModel, metaclass=ABCMeta):
@@ -172,8 +171,6 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
         feats, predict_kwargs = self.extract_feat(inputs, test_mode=True)
         predictions = self.cls_head.predict(feats, data_samples,
                                             **predict_kwargs)
-        # wrap in ActionDataSample.
-        predictions = self.wrap_in_datasample(data_samples, predictions)
         return predictions
 
     def _forward(self,
@@ -236,23 +233,3 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
         else:
             raise RuntimeError(f'Invalid mode "{mode}". '
                                'Only supports loss, predict and tensor mode')
-
-    def wrap_in_datasample(self, data_samples: SampleList,
-                           predictions: LabelList) -> SampleList:
-        """Wrap predictions in ``ActionDataSample``.
-
-        Args:
-            data_samples (List[``ActionDataSample``]): The input data.
-            predictions (List[``LabelList``]): Recognition results wrapped
-                by ``LabelData``.
-
-        Returns:
-            List[``ActionDataSample``]: Recognition results wrapped by
-            ``ActionDataSample``.
-        """
-        assert len(data_samples) == len(predictions), (
-            'The num of data_samples and pred_instances is not equal!')
-
-        for data_sample, pred_scores in zip(data_samples, predictions):
-            data_sample.pred_scores = pred_scores
-        return data_samples

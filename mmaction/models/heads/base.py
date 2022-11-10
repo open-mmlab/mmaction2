@@ -166,12 +166,8 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
                 data samples.
 
         Returns:
-            List[:obj:`LabelData`]: Recognition results wrapped
-                by :obj:`LabelData`. Each item usually contains
-                following keys.
-
-                - item (Tensor): Classification scores, has a shape
-                    (num_classes, )
+             List[:obj:`ActionDataSample`]: Recognition results wrapped
+                by :obj:`ActionDataSample`.
         """
         cls_scores = self(feats, **kwargs)
         return self.predict_by_feat(cls_scores, data_samples)
@@ -189,21 +185,16 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
                 information such as `gt_labels`.
 
         Returns:
-            List[:obj:`LabelData`]: Recognition results wrapped
-                by :obj:`LabelData`. Each item usually contains following
-                keys.
-
-                - item (Tensor): Classification scores, has a shape
-                    (num_classes, )
+            List[:obj:`ActionDataSample`]: Recognition results wrapped
+                by :obj:`ActionDataSample`.
         """
         num_segs = cls_scores.shape[0] // len(data_samples)
         cls_scores = self.average_clip(cls_scores, num_segs=num_segs)
 
-        predictions: LabelList = []
-        for score in cls_scores:
-            label = LabelData(item=score)
-            predictions.append(label)
-        return predictions
+        for data_sample, score in zip(data_samples, cls_scores):
+            prediction = LabelData(item=score)
+            data_sample.pred_scores = prediction
+        return data_samples
 
     def average_clip(self, cls_scores: Tensor, num_segs: int = 1) -> Tensor:
         """Averaging class scores over multiple clips.
@@ -228,7 +219,7 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
         batch_size = cls_scores.shape[0]
         cls_scores = cls_scores.view(batch_size // num_segs, num_segs, -1)
 
-        if self.average_clip is None:
+        if self.average_clips is None:
             return cls_scores
         elif self.average_clips == 'prob':
             cls_scores = F.softmax(cls_scores, dim=2).mean(dim=1)
