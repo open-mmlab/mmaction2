@@ -258,7 +258,7 @@ which is convenient to conduct various experiments.
           by_epoch=True,  # Whether the scheduled learning rate is updated by epochs
           milestones=[40, 80],  # Steps to decay the learning rate
           gamma=0.1)]  # Multiplicative factor of learning rate decay
-  
+
   # optimizer
   optim_wrapper = dict(  # Config of optimizer wrapper
       type='OptimWrapper',  # Name of optimizer wrapper, switch to AmpOptimWrapper to enable mixed precision training
@@ -628,7 +628,7 @@ which is convenient to conduct various experiments.
           data_prefix=dict(video=data_root_val),  # Prefix of video path
           pipeline=test_pipeline,
           test_mode=True))
-  
+
   # evaluation settings
   work_dir = './work_dirs/bmn_400x100_2x8_9e_activitynet_feature/'  # Directory to save the model checkpoints and logs for the current experiments
   val_evaluator = dict(
