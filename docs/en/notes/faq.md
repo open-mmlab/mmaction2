@@ -12,14 +12,14 @@ We list some common issues faced by many users and their corresponding solutions
   - [Testing](#testing)
 
 Feel free to enrich the list if you find any frequent issues and have ways to help others to solve them.
-If the contents here do not cover your issue, please create an issue using the [provided templates](/.github/ISSUE_TEMPLATE/error-report.md) and make sure you fill in all required information in the template.
+If the contents here do not cover your issue, please create an issue using the [provided templates](/.github/ISSUE_TEMPLATE/error-report.md) and make sure to fill in all required information in the template.
 
 ## Installation
 
 - **"No module named 'mmcv.ops'"; "No module named 'mmcv.\_ext'"**
 
   1. Uninstall existing mmcv in the environment using `pip uninstall mmcv`
-  2. Install mmcv following the [installation instruction](https://mmcv.readthedocs.io/en/latest/#installation)
+  2. Install mmcv following the [installation instruction](https://mmcv.readthedocs.io/en/2.x/get_started/installation.html#install-mmcv)
 
 - **"OSError: MoviePy Error: creation of None failed because of the following error"**
 
@@ -65,8 +65,8 @@ If the contents here do not cover your issue, please create an issue using the [
 
 - **How to fix stages of backbone when finetuning a model?**
 
-  You can refer to [`def _freeze_stages()`](https://github.com/open-mmlab/mmaction2/blob/0149a0e8c1e0380955db61680c0006626fd008e9/mmaction/models/backbones/x3d.py#L458) and [`frozen_stages`](https://github.com/open-mmlab/mmaction2/blob/0149a0e8c1e0380955db61680c0006626fd008e9/mmaction/models/backbones/x3d.py#L183-L184),
-  reminding to set `find_unused_parameters = True` in config files for distributed training or testing.
+  You can refer to [`def _freeze_stages()`](https://github.com/open-mmlab/mmaction2/blob/0149a0e8c1e0380955db61680c0006626fd008e9/mmaction/models/backbones/x3d.py#L458) and [`frozen_stages`](https://github.com/open-mmlab/mmaction2/blob/0149a0e8c1e0380955db61680c0006626fd008e9/mmaction/models/backbones/x3d.py#L183-L184).
+  Reminding to set `find_unused_parameters = True` in config files for distributed training or testing.
 
   Actually, users can set `frozen_stages` to freeze stages in backbones except C3D model, since all backbones inheriting from `ResNet` and `ResNet3D` support the inner function `_freeze_stages()`.
 
