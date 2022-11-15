@@ -9,15 +9,14 @@ model = dict(cls_head=dict(num_classes=339))
 # dataset settings
 dataset_type = 'VideoDataset'
 data_root = 'data/mit/videos/training'
-data_root_val = 'data/mit/videos/validation/'
+data_root_val = 'data/mit/videos/validation'
 ann_file_train = 'data/mit/mit_train_list_videos.txt'
 ann_file_val = 'data/mit/mit_val_list_videos.txt'
 ann_file_test = 'data/mit/mit_val_list_videos.txt'
 
 file_client_args = dict(
     io_backend='petrel',
-    path_mapping=dict(
-        {'data/mit': 's3://openmmlab/datasets/action/mit'}))
+    path_mapping=dict({'data/mit': 's3://openmmlab/datasets/action/mit'}))
 # file_client_args = dict(io_backend='disk')
 train_pipeline = [
     dict(type='DecordInit', **file_client_args),
@@ -99,4 +98,10 @@ test_dataloader = dict(
 val_evaluator = dict(type='AccMetric')
 test_evaluator = val_evaluator
 
-default_hooks = dict(checkpoint=dict(interval=3, max_keep_ckpts=3))
+default_hooks = dict(checkpoint=dict(interval=5, max_keep_ckpts=3))
+
+# Default setting for scaling LR automatically
+#   - `enable` means enable scaling LR automatically
+#       or not by default.
+#   - `base_batch_size` = (8 GPUs) x (16 samples per GPU).
+auto_scale_lr = dict(enable=False, base_batch_size=128)
