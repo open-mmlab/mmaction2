@@ -549,7 +549,7 @@ which is convenient to conduct various experiments.
   ```python
   # model settings
   model = dict(  # Config of the model
-      type='BMN',  # Name of the localizer
+      type='BMN',  # Class name of the localizer
       temporal_dim=100,  # Total frames selected for each video
       boundary_ratio=0.5,  # Ratio for determining video boundaries
       num_samples=32,  # Number of samples for each proposal
