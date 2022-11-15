@@ -1,25 +1,19 @@
 # Migration from MMAction2 0.x
 
-We introduce some modifications in MMAction2 1.x, and some of them are BC-breaking. To migrate your projects from MMAction2 0.x smoothly, please read this tutorial.
+MMAction2 1.x introduced major refactorings and modifications including some BC-breaking changes. We provide this tutorial to help you migrate your projects from MMAction2 0.x smoothly.
 
 ## New dependencies
 
-MMAction2 1.x depends on some new packages, you can prepare a new clean environment and install again
-according to the [install tutorial](./get_started.md). Or install the below packages manually.
+MMAction2 1.x depends on the following packages. You are recommended to prepare a new clean environment and install them according to [install tutorial](./get_started.md)
 
-1. [MMEngine](https://github.com/open-mmlab/mmengine): MMEngine is the core the OpenMMLab 2.0 architecture,
-   and we splited many compentents unrelated to computer vision from MMCV to MMEngine.
-2. [MMCV](https://github.com/open-mmlab/mmcv): The computer vision package of OpenMMLab. This is not a new
-   dependency, but you need to upgrade it to above `2.0.0rc0` version.
+1. [MMEngine](https://github.com/open-mmlab/mmengine): MMEngine is a foundational library for training deep learning model introduced in OpenMMLab 2.0 architecture
+2. [MMCV](https://github.com/open-mmlab/mmcv): MMCV is a foundational library for computer vision. MMAction2 1.x requires `mmcv>=2.0.0rc0` which is more compact and efficient than `mmcv-full==1.x`
 
 ## Configuration files
 
-In MMAction2 1.x, we refactored the structure of configuration files, and the original files are not usable.
+In MMAction2 1.x, we refactored the structure of configuration files. The configuration files with the old style will be incompatible.
 
-<!-- TODO: migration tool -->
-
-In this section, we will introduce all changes of the configuration files. And we assume you already have
-ideas of the [config files](./user_guides/config.md).
+In this section, we will introduce all changes of the configuration files. And we assume you are already familiar with the [config files](./user_guides/config.md).
 
 ### Model settings
 
@@ -27,7 +21,7 @@ No changes in `model.backbone`, `model.neck` and `model.head` fields.
 
 ### Data settings
 
-Changes in **`data`**:
+#### Changes in **`data`**
 
 - The original `data` field is splited to `train_dataloader`, `val_dataloader` and
   `test_dataloader`. This allows us to configure them in fine-grained. For example,
@@ -77,7 +71,7 @@ test_dataloader = val_dataloader
 </tr>
 </table>
 
-Changes in **`pipeline`**:
+#### Changes in **`pipeline`**
 
 - The original formatting transforms **`ToTensor`**, **`Collect`** are combined as `PackActionInputs` for action recognition task; and **`ToTensor`**, **`Collect`**, **`ToDataContainer`** are combined as `PackLocalizationInputs`
 - We don't recommend to do **`Normalize`** in the dataset pipeline. Please remove it from pipelines and set it in the `model.data_preprocessor` field.
@@ -140,11 +134,10 @@ train_pipeline = [
 </tr>
 </table>
 
-Changes in **`evaluation`**:
+#### Changes in **`evaluation`**
 
-- The **`evaluation`** field is splited to `val_evaluator` and `test_evaluator`. And it won't supports `interval` and `save_best` arguments.
-  The `interval` is moved to `train_cfg.val_interval`, see [the schedule settings](./user_guides/1_config.md#schedule-settings) and the `save_best`
-  is moved to `default_hooks.checkpoint.save_best`, see [the runtime settings](./user_guides/1_config.md#runtime-settings).
+- The **`evaluation`** field is splited to `val_evaluator` and `test_evaluator`. And it won't support `interval` and `save_best` arguments.
+- he `interval` is moved to `train_cfg.val_interval` (see [the schedule settings](./user_guides/1_config.md#schedule-settings)), and the `save_best` is moved to `default_hooks.checkpoint.save_best` (see [the runtime settings](./user_guides/1_config.md#runtime-settings)).
 - The 'mean_average_precision', 'mean_class_accuracy', 'mmit_mean_average_precision', 'top_k_accuracy' are combined as `AccMetric`, and use `metric_list`to specify to calculate which metric
 - The `AVAMetric` is used to evaluate AVA Dataset
 - The `BSNMetric` is used to evaluate BSN model
@@ -176,11 +169,11 @@ test_evaluator = val_evaluator
 
 ### Schedule settings
 
-Changes in **`optimizer`** and **`optimizer_config`**:
+#### Changes in **`optimizer`** and **`optimizer_config`**
 
-- Now we use `optim_wrapper` field to specify all configuration about the optimization process. And the
-  `optimizer` is a sub field of `optim_wrapper` now.
-- `paramwise_cfg` is also a sub field of `optim_wrapper`, instead of `optimizer`.
+- Now we use `optim_wrapper` field to configure the optimization process. And the
+  `optimizer` becomes a sub field of `optim_wrapper`.
+- `paramwise_cfg` is also a sub field of `optim_wrapper` parallel to `optimizer`.
 - `optimizer_config` is removed now, and all configurations of it are moved to `optim_wrapper`.
 - `grad_clip` is renamed to `clip_grad`.
 
@@ -222,7 +215,7 @@ optim_wrapper = dict(
 </tr>
 </table>
 
-Changes in **`lr_config`**:
+#### Changes in **`lr_config`**
 
 - The `lr_config` field is removed and we use new `param_scheduler` to replace it.
 - The `warmup` related arguments are removed, since we use schedulers combination to implement this
@@ -270,7 +263,7 @@ param_scheduler = [
 </tr>
 </table>
 
-Changes in **`runner`**:
+#### Changes in **`runner`**
 
 Most configuration in the original `runner` field is moved to `train_cfg`, `val_cfg` and `test_cfg`, which
 configure the loop in training, validation and test.
@@ -305,7 +298,7 @@ the functionalities of `Runner` are also changed. You can find more details in [
 
 ### Runtime settings
 
-Changes in **`checkpoint_config`** and **`log_config`**:
+#### Changes in **`checkpoint_config`** and **`log_config`**
 
 The `checkpoint_config` are moved to `default_hooks.checkpoint` and the `log_config` are moved to `default_hooks.logger`.
 And we move many hooks settings from the script code to the `default_hooks` field in the runtime configuration.
@@ -371,7 +364,7 @@ visualizer = dict(
 </tr>
 </table>
 
-Changes in **`load_from`** and **`resume_from`**:
+#### Changes in **`load_from`** and **`resume_from`**
 
 - The `resume_from` is removed. And we use `resume` and `load_from` to replace it.
   - If `resume=True` and `load_from` is not None, resume training from the checkpoint in `load_from`.
@@ -379,8 +372,9 @@ Changes in **`load_from`** and **`resume_from`**:
   - If `resume=False` and `load_from` is not None, only load the checkpoint, not resume training.
   - If `resume=False` and `load_from` is None, do not load nor resume.
 
-Changes in **`dist_params`**: The `dist_params` field is a sub field of `env_cfg` now. And there are some new
-configurations in the `env_cfg`.
+#### Changes in **`dist_params`**
+
+The `dist_params` field is a sub field of `env_cfg` now. And there are some new configurations in the `env_cfg`.
 
 ```python
 env_cfg = dict(
@@ -395,10 +389,13 @@ env_cfg = dict(
 )
 ```
 
-Changes in **`workflow`**: `workflow` related functionalities are removed.
+#### Changes in **`workflow`**
 
-New field **`visualizer`**: The visualizer is a new design in OpenMMLab 2.0 architecture. We use a
-visualizer instance in the runner to handle results & log visualization and save to different backends.
+`Workflow` related functionalities are removed.
+
+#### New field **`visualizer`**
+
+The visualizer is a new design in OpenMMLab 2.0 architecture. We use a visualizer instance in the runner to handle results & log visualization and save to different backends.
 
 ```python
 visualizer = dict(
@@ -411,7 +408,9 @@ visualizer = dict(
 )
 ```
 
-New field **`default_scope`**: The start point to search module for all registries. The `default_scope` in MMAction2 is `mmaction`. See [the registry tutorial](TODO) for more details.
+#### New field **`default_scope`**
+
+The start point to search module for all registries. The `default_scope` in MMAction2 is `mmaction`. See [the registry tutorial](TODO) for more details.
 
 ## Packages
 
@@ -444,7 +443,8 @@ The `mmaction.core` package is renamed to [`mmaction.engine`](mmaction.engine).
 ### `mmaction.datasets`
 
 The documentation can be found [here](mmaction.datasets)
-Changes in [`BaseDataset`](mmaction.datasets.Base):
+
+#### Changes in [`BaseDataset`](mmaction.datasets.Base):
 
 |   Method of Dataset    |                    Changes                    |
 | :--------------------: | :-------------------------------------------: |
@@ -461,7 +461,7 @@ The `mmaction.datasets.pipelines` is renamed to `mmaction.datasets.transforms` a
 
 The documentation can be found [here](mmaction.models). The interface of all **backbones**, **necks** and **losses** didn't change.
 
-Changes in [`BaseRecognizer`](mmaction.models.BaseRecognizer):
+#### Changes in [`BaseRecognizer`](mmaction.models.BaseRecognizer):
 
 | Method of recognizer |                                                                     Changes                                                                      |
 | :------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------: |
@@ -473,7 +473,7 @@ Changes in [`BaseRecognizer`](mmaction.models.BaseRecognizer):
 |      `val_step`      |                                   The original `val_step` is the same as `train_step`, now it calls `predict`.                                   |
 |     `test_step`      |                                                   New method, and it's the same as `val_step`.                                                   |
 
-Changes in [heads](mmaction.models.heads)
+#### Changes in [heads](mmaction.models.heads)
 
 | Function  |                                                                          Changes                                                                          |
 | :-------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------: |
