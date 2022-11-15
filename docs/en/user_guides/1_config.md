@@ -89,7 +89,7 @@ which is convenient to conduct various experiments.
   ```python
   # model settings
   model = dict(  # Config of the model
-      type='Recognizer2D',  # Name of the recognizer
+      type='Recognizer2D',  # Class name of the recognizer
       backbone=dict(  # Dict for backbone
           type='ResNet',  # Name of the backbone
           pretrained='torchvision://resnet50',  # The url/site of the pretrained model
