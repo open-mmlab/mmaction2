@@ -28,6 +28,9 @@ CUDA_VISIBLE_DEVICES=-1 python tools/train.py ${CONFIG_FILE} [ARGS]
 | `--amp`                               | Enable automatic-mixed-precision training.                                                                                                                          |
 | `--no-validate`                       | **Not suggested**. Disable checkpoint evaluation during training.                                                                                                   |
 | `--auto-scale-lr`                     | Auto scale the learning rate according to the actual batch size and the original batch size.                                                                        |
+| `--seed`                              | Random seed.                                                                                                                                                        |
+| `--diff-rank-seed`                    | Whether or not set different seeds for different ranks.                                                                                                             |
+| `--deterministic`                     | Whether to set deterministic options for CUDNN backend.                                                                                                             |
 | `--cfg-options CFG_OPTIONS`           | Override some settings in the used config, the key-value pair in xxx=yyy format will be merged into the config file. If the value to be overwritten is a list, it should be of the form of either `key="[a,b]"` or `key=a,b`. The argument also allows nested list/tuple values, e.g. `key="[(a,b),(c,d)]"`. Note that the quotation marks are necessary and that no white space is allowed. |
 | `--launcher {none,pytorch,slurm,mpi}` | Options for job launcher. Defaults to `none`.                                                                                                                       |
 
