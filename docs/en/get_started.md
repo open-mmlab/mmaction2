@@ -87,7 +87,7 @@ pip install "mmaction2>=1.0rc0"
 
 To verify whether MMAction2 is installed correctly, we provide some sample codes to run an inference demo.
 
-**Step 1.** We need to download config and checkpoint files.
+**Step 1.** Download the config and checkpoint files.
 
 ```shell
 mim download mmaction2 --config tsn_r50_8xb32-1x1x8-100e_kinetics400-rgb --dest .
@@ -95,7 +95,7 @@ mim download mmaction2 --config tsn_r50_8xb32-1x1x8-100e_kinetics400-rgb --dest 
 
 **Step 2.** Verify the inference demo.
 
-Option (a). If you install mmaction2 from source, just run the following command:
+Option (a). If you install mmaction2 from source, you can run the following command:
 
 ```shell
 # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
@@ -106,7 +106,7 @@ python demo/demo.py tsn_r50_8xb32-1x1x8-100e_kinetics400-rgb.py \
 
 You will see the top-5 labels with corresponding scores in your terminal.
 
-Option (b). If you install mmaction2 as a python package, open you python interpreter and copy&paste the following codes.
+Option (b). If you install mmaction2 as a python package, you can run the following codes in your python enterpreter, which will do the similar verification:
 
 ```python
 from mmaction.apis import init_recognizer, inference_recognizer
@@ -132,7 +132,7 @@ for result in results:
 
 ### CUDA versions
 
-When installing PyTorch, you need to specify the version of CUDA. If you are
+When installing PyTorch, you may need to specify the version of CUDA. If you are
 not clear on which to choose, follow our recommendations:
 
 - For Ampere-based NVIDIA GPUs, such as GeForce 30 series and NVIDIA A100, CUDA 11 is a must.
@@ -151,7 +151,7 @@ version of cudatoolkit in `conda install` command.
 
 ### Install MMCV without MIM
 
-MMCV contains C++ and CUDA extensions, thus depending on PyTorch in a complex
+MMCV contains C++ and CUDA extensions, so it depends on PyTorch in a complex
 way. MIM solves such dependencies automatically and makes the installation
 easier. However, it is not a must.
 
@@ -167,7 +167,7 @@ pip install 'mmcv>=2.0.0rc1' -f https://download.openmmlab.com/mmcv/dist/cu113/t
 
 ### Install on CPU-only platforms
 
-MMAction2 can be built for CPU only environment. In CPU mode you can train, test or inference a model.
+MMAction2 can be built for CPU-only environment. In CPU mode you can train, test or inference a model.
 
 Some functionalities are gone in this mode, usually GPU-compiled ops. But don't
-worry, almost all models in MMAction2 don't depends on these ops.
+worry, almost all models in MMAction2 don't depend on these ops.
