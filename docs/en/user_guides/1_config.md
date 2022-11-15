@@ -318,7 +318,7 @@ We incorporate modular design into our config system, which is convenient to con
   ```python
   # model setting
   model = dict(  # Config of the model
-      type='FastRCNN',  # Name of the detector
+      type='FastRCNN',  # Class name of the detector
       _scope_='mmdet',  # The scope of current config
       backbone=dict(  # Dict for backbone
           type='ResNet3dSlowOnly',  # Name of the backbone
