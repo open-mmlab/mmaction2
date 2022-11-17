@@ -1,4 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import Union, Dict, List
+
 import torch
 import torch.nn as nn
 
@@ -16,16 +18,16 @@ class GCNHead(BaseHead):
         loss_cls (dict): Config for building loss.
             Defaults to ``dict(type='CrossEntropyLoss')``.
         dropout (float): Probability of dropout layer. Defaults to 0.
-        init_cfg (dict): Config to control the initialization.
+        init_cfg (dict or list[dict]): Config to control the initialization.
             Defaults to ``dict(type='Normal', std=0.01)``.
     """
 
     def __init__(self,
                  num_classes: int,
                  in_channels: int,
-                 loss_cls: dict = dict(type='CrossEntropyLoss'),
+                 loss_cls: Dict = dict(type='CrossEntropyLoss'),
                  dropout: float = 0.,
-                 init_cfg: dict = dict(type='Normal', std=0.01),
+                 init_cfg: Union[Dict, List[Dict]] = dict(type='Normal', layer='Linear', std=0.01),
                  **kwargs) -> None:
         super().__init__(num_classes,
                          in_channels,
