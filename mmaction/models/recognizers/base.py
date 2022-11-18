@@ -7,9 +7,8 @@ import torch.nn as nn
 from mmengine.model import BaseModel, merge_dict
 
 from mmaction.registry import MODELS
-from mmaction.utils import (ConfigType, ForwardResults, InstanceList,
-                            OptConfigType, OptMultiConfig, OptSampleList,
-                            SampleList)
+from mmaction.utils import (ConfigType, ForwardResults, OptConfigType,
+                            OptMultiConfig, OptSampleList, SampleList)
 
 
 class BaseRecognizer(BaseModel, metaclass=ABCMeta):
@@ -172,8 +171,6 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
         feats, predict_kwargs = self.extract_feat(inputs, test_mode=True)
         predictions = self.cls_head.predict(feats, data_samples,
                                             **predict_kwargs)
-        # convert to ActionDataSample.
-        predictions = self.convert_to_datasample(data_samples, predictions)
         return predictions
 
     def _forward(self,
@@ -236,21 +233,3 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
         else:
             raise RuntimeError(f'Invalid mode "{mode}". '
                                'Only supports loss, predict and tensor mode')
-
-    def convert_to_datasample(self, inputs: SampleList,
-                              data_samples: InstanceList) -> SampleList:
-        """Convert predictions to ``ActionDataSample``.
-
-        Args:
-            inputs (List[``ActionDataSample``]): The input data.
-            data_samples (List[``LabelData``]): Recognition results wrapped
-                by ``LabelData``.
-
-        Returns:
-            List[``ActionDataSample``]: Recognition results wrapped by
-            ``ActionDataSample``.
-        """
-
-        for data_sample, pred_instances in zip(inputs, data_samples):
-            data_sample.pred_scores = pred_instances
-        return inputs

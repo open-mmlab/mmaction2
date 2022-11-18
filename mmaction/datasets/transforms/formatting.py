@@ -169,12 +169,18 @@ class Transpose(BaseTransform):
 class FormatShape(BaseTransform):
     """Format final imgs shape to the given input_format.
 
-    Required keys are ``imgs``, ``num_clips`` and ``clip_len``,
-    added or modified keys are ``imgs`` and ``input_shape``.
+    Required keys:
+        - imgs
+        - num_clips
+        - clip_len
+
+    Modified Keys:
+        - img
+        - input_shape
 
     Args:
         input_format (str): Define the final imgs format.
-        collapse (bool): To collpase input_format N... to ... (NCTHW to CTHW,
+        collapse (bool): To collapse input_format N... to ... (NCTHW to CTHW,
             etc.) if N is 1. Should be set as True when training and testing
             detectors. Defaults to False.
     """
@@ -197,7 +203,7 @@ class FormatShape(BaseTransform):
             results['imgs'] = np.array(results['imgs'])
         imgs = results['imgs']
         # [M x H x W x C]
-        # M = 1 * N_crops * N_clips * L
+        # M = 1 * N_crops * N_clips * T
         if self.collapse:
             assert results['num_clips'] == 1
 
@@ -206,11 +212,11 @@ class FormatShape(BaseTransform):
             clip_len = results['clip_len']
 
             imgs = imgs.reshape((-1, num_clips, clip_len) + imgs.shape[1:])
-            # N_crops x N_clips x L x H x W x C
+            # N_crops x N_clips x T x H x W x C
             imgs = np.transpose(imgs, (0, 1, 5, 2, 3, 4))
-            # N_crops x N_clips x C x L x H x W
+            # N_crops x N_clips x C x T x H x W
             imgs = imgs.reshape((-1, ) + imgs.shape[2:])
-            # M' x C x L x H x W
+            # M' x C x T x H x W
             # M' = N_crops x N_clips
         elif self.input_format == 'NCHW':
             imgs = np.transpose(imgs, (0, 3, 1, 2))
@@ -230,14 +236,14 @@ class FormatShape(BaseTransform):
             num_clips = results['num_clips']
             clip_len = results['clip_len']
             imgs = imgs.reshape((-1, num_clips, clip_len) + imgs.shape[1:])
-            # N_crops x N_clips x L x H x W x C
+            # N_crops x N_clips x T x H x W x C
             imgs = np.transpose(imgs, (0, 1, 2, 5, 3, 4))
-            # N_crops x N_clips x L x C x H x W
+            # N_crops x N_clips x T x C x H x W
             imgs = imgs.reshape((-1, imgs.shape[2] * imgs.shape[3]) +
                                 imgs.shape[4:])
             # M' x C' x H x W
             # M' = N_crops x N_clips
-            # C' = L x C
+            # C' = T x C
         elif self.input_format == 'NPTCHW':
             num_proposals = results['num_proposals']
             num_clips = results['num_clips']
@@ -245,7 +251,7 @@ class FormatShape(BaseTransform):
             imgs = imgs.reshape((num_proposals, num_clips * clip_len) +
                                 imgs.shape[1:])
             # P x M x H x W x C
-            # M = N_clips x L
+            # M = N_clips x T
             imgs = np.transpose(imgs, (0, 1, 4, 2, 3))
             # P x M x C x H x W
 

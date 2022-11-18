@@ -13,7 +13,7 @@ model = dict(
         consensus=dict(type='AvgConsensus', dim=1),
         dropout_ratio=0.4,
         init_std=0.01,
-        average_clips=None),
+        average_clips='prob'),
     data_preprocessor=dict(
         type='ActionDataPreprocessor',
         mean=[123.675, 116.28, 103.53],
