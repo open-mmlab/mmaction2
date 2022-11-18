@@ -23,7 +23,8 @@ class GradCAM:
             https://matplotlib.org/3.3.0/tutorials/colors/colormaps.html
     """
 
-    def __init__(self, model: nn.Module,
+    def __init__(self,
+                 model: nn.Module,
                  target_layer_name: str,
                  colormap: str = 'viridis') -> None:
         from ..models.recognizers import Recognizer2D, Recognizer3D
@@ -67,7 +68,8 @@ class GradCAM:
         target_layer.register_forward_hook(get_activations)
         target_layer.register_backward_hook(get_gradients)
 
-    def _calculate_localization_map(self, data: dict,
+    def _calculate_localization_map(self,
+                                    data: dict,
                                     use_labels: bool,
                                     delta=1e-20) -> tuple:
         """Calculate localization map for all inputs with Grad-CAM.
@@ -156,8 +158,7 @@ class GradCAM:
 
         return localization_map.squeeze(dim=1), preds
 
-    def _alpha_blending(self,
-                        localization_map: torch.Tensor,
+    def _alpha_blending(self, localization_map: torch.Tensor,
                         input_imgs: torch.Tensor,
                         alpha: float) -> torch.Tensor:
         """Blend heatmaps and model input images and get visulization results.
@@ -201,7 +202,8 @@ class GradCAM:
 
         return blended_imgs
 
-    def __call__(self, data: dict,
+    def __call__(self,
+                 data: dict,
                  use_labels: bool = False,
                  alpha: float = 0.5) -> tuple:
         """Visualize the localization maps on their corresponding inputs as

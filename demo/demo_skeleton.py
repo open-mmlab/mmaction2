@@ -45,7 +45,7 @@ def parse_args():
         help='skeleton model checkpoint file/url')
     parser.add_argument(
         '--det-config',
-        default='demo/skeleton_demo_cfg/faster-rcnn_r50_fpn_2x_coco_infer.py',
+        default='demo/demo_configs/faster-rcnn_r50_fpn_2x_coco_infer.py',
         help='human detection config file path (from mmdet)')
     parser.add_argument(
         '--det-checkpoint',
@@ -66,7 +66,7 @@ def parse_args():
         help='the category id for human detection')
     parser.add_argument(
         '--pose-config',
-        default='demo/skeleton_demo_cfg/'
+        default='demo/demo_configs/'
         'td-hm_hrnet-w32_8xb64-210e_coco-256x192_infer.py',
         help='human pose estimation config file path (from mmpose)')
     parser.add_argument(

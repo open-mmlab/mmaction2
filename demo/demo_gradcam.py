@@ -1,8 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict, List, Tuple, Optional
 import argparse
 import os
 import os.path as osp
+from typing import Dict, List, Optional, Tuple
 
 import mmcv
 import numpy as np
