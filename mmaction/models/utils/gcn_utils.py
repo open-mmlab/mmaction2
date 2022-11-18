@@ -99,7 +99,7 @@ class unit_gcn(BaseModule):
         return self.act(self.bn(x) + res)
 
 
-class unit_tcn(nn.Module):
+class unit_tcn(BaseModule):
     """The basic unit of graph convolutional network.
 
     Args:
@@ -120,14 +120,17 @@ class unit_tcn(nn.Module):
     """
 
     def __init__(self,
-                 in_channels,
-                 out_channels,
-                 kernel_size=9,
-                 stride=1,
-                 dilation=1,
-                 norm='BN',
-                 dropout=0,
-                 init_cfg: Optional[Union[Dict, List[Dict]]] = None) -> None:
+                 in_channels: int,
+                 out_channels: int,
+                 kernel_size: int = 9,
+                 stride: int = 1,
+                 dilation: int = 1,
+                 norm: str = 'BN',
+                 dropout: float = 0,
+                 init_cfg: Union[Dict, List[Dict]] = [
+                     dict(type='Constant', layer='BatchNorm2d', val=1),
+                     dict(type='Kaiming', layer='Conv2d', mode='fan_out'),
+                 ]) -> None:
 
         super().__init__(init_cfg=init_cfg)
 
@@ -151,7 +154,3 @@ class unit_tcn(nn.Module):
 
     def forward(self, x):
         return self.drop(self.bn(self.conv(x)))
-
-    def init_weights(self):
-        conv_init(self.conv)
-        bn_init(self.bn, 1)
