@@ -1,22 +1,21 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import Dict, List, Tuple, Optional
 import argparse
 import os
 import os.path as osp
 
 import mmcv
 import numpy as np
-import torch
+import torch.nn as nn
 from mmengine import Config, DictAction
 from mmengine.dataset import Compose, pseudo_collate
 
 from mmaction.apis import init_recognizer
-# from mmaction.datasets.pipelines import Compose
 from mmaction.utils import GradCAM, register_all_modules
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='MMAction2 GradCAM demo')
-
     parser.add_argument('config', help='test config file path')
     parser.add_argument('checkpoint', help='checkpoint file/url')
     parser.add_argument('video', help='video file/url or rawframes directory')
@@ -59,7 +58,9 @@ def parse_args():
     return args
 
 
-def build_inputs(model, video_path, use_frames=False):
+def build_inputs(model: nn.Module,
+                 video_path: str,
+                 use_frames: bool = False) -> Dict:
     """build inputs for GradCAM.
 
     Note that, building inputs for GradCAM is exactly the same as building
@@ -69,9 +70,11 @@ def build_inputs(model, video_path, use_frames=False):
         model (nn.Module): Recognizer model.
         video_path (str): video file/url or rawframes directory.
         use_frames (bool): whether to use rawframes as input.
+            Defaults to False.
+
     Returns:
         dict: Both GradCAM inputs and Recognizer test stage inputs,
-            including two keys, ``imgs`` and ``label``.
+        including two keys, ``inputs`` and ``data_samples``.
     """
     if not (osp.exists(video_path) or video_path.startswith('http')):
         raise RuntimeError(f"'{video_path}' is missing")
@@ -92,7 +95,6 @@ def build_inputs(model, video_path, use_frames=False):
     if use_frames:
         filename_tmpl = cfg.test_dataloader.dataset.get(
             'filename_tmpl', 'img_{:05}.jpg')
-        modality = cfg.test_dataloader.dataset.get('modality', 'RGB')
         start_index = cfg.test_dataloader.dataset.get('start_index', 1)
         data = dict(
             frame_dir=video_path,
@@ -100,7 +102,7 @@ def build_inputs(model, video_path, use_frames=False):
             label=-1,
             start_index=start_index,
             filename_tmpl=filename_tmpl,
-            modality=modality)
+            modality='RGB')
     else:
         start_index = cfg.test_dataloader.dataset.get('start_index', 0)
         data = dict(
@@ -114,29 +116,29 @@ def build_inputs(model, video_path, use_frames=False):
     return data
 
 
-def _resize_frames(frame_list,
-                   scale,
-                   keep_ratio=True,
-                   interpolation='bilinear'):
-    """resize frames according to given scale.
+def _resize_frames(frame_list: List[np.ndarray],
+                   scale: Optional[Tuple[int]] = None,
+                   keep_ratio: bool = True,
+                   interpolation: str = 'bilinear') -> List[np.ndarray]:
+    """Resize frames according to given scale.
 
-    Codes are modified from `mmaction2/datasets/pipelines/augmentation.py`,
+    Codes are modified from `mmaction/datasets/transforms/processing.py`,
     `Resize` class.
 
     Args:
-        frame_list (list[np.ndarray]): frames to be resized.
+        frame_list (list[np.ndarray]): Frames to be resized.
         scale (tuple[int]): If keep_ratio is True, it serves as scaling
             factor or maximum size: the image will be rescaled as large
             as possible within the scale. Otherwise, it serves as (w, h)
             of output size.
         keep_ratio (bool): If set to True, Images will be resized without
             changing the aspect ratio. Otherwise, it will resize images to a
-            given size. Default: True.
+            given size. Defaults to True.
         interpolation (str): Algorithm used for interpolation:
-            "nearest" | "bilinear". Default: "bilinear".
+            'nearest' | 'bilinear'. Defaults to ``'bilinear'``.
+
     Returns:
-        list[np.ndarray]: Both GradCAM and Recognizer test stage inputs,
-            including two keys, ``imgs`` and ``label``.
+        list[np.ndarray]: Resized frames.
     """
     if scale is None or (scale[0] == -1 and scale[1] == -1):
         return frame_list
@@ -167,14 +169,11 @@ def main():
     # Register all modules in mmaction2 into the registries
     register_all_modules()
 
-    # assign the desired device.
-    device = torch.device(args.device)
-
     cfg = Config.fromfile(args.config)
     cfg.merge_from_dict(args.cfg_options)
 
-    # build the recognizer from a config file and checkpoint file/url
-    model = init_recognizer(cfg, args.checkpoint, device=device)
+    # Build the recognizer from a config file and checkpoint file/url
+    model = init_recognizer(cfg, args.checkpoint, device=args.device)
 
     inputs = build_inputs(model, args.video, use_frames=args.use_frames)
     gradcam = GradCAM(model, args.target_layer_name)

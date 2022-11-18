@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
+import torch.nn as nn
 import torch.nn.functional as F
 
 
@@ -11,20 +12,20 @@ class GradCAM:
     https://github.com/facebookresearch/SlowFast/blob/master/slowfast/visualization/gradcam_utils.py # noqa
     For more information about GradCAM, please visit:
     https://arxiv.org/pdf/1610.02391.pdf
+
+    Args:
+        model (nn.Module): the recognizer model to be used.
+        target_layer_name (str): name of convolutional layer to
+            be used to get gradients and feature maps from for creating
+            localization maps.
+        colormap (str): matplotlib colormap used to create
+            heatmap. Defaults to 'viridis'. For more information, please visit
+            https://matplotlib.org/3.3.0/tutorials/colors/colormaps.html
     """
 
-    def __init__(self, model, target_layer_name, colormap='viridis'):
-        """Create GradCAM class with recognizer, target layername & colormap.
-
-        Args:
-            model (nn.Module): the recognizer model to be used.
-            target_layer_name (str): name of convolutional layer to
-                be used to get gradients and feature maps from for creating
-                localization maps.
-            colormap (Optional[str]): matplotlib colormap used to create
-                heatmap. Default: 'viridis'. For more information, please visit
-                https://matplotlib.org/3.3.0/tutorials/colors/colormaps.html
-        """
+    def __init__(self, model: nn.Module,
+                 target_layer_name: str,
+                 colormap: str = 'viridis') -> None:
         from ..models.recognizers import Recognizer2D, Recognizer3D
         if isinstance(model, Recognizer2D):
             self.is_recognizer2d = True
@@ -43,7 +44,7 @@ class GradCAM:
         self.colormap = plt.get_cmap(colormap)
         self._register_hooks(target_layer_name)
 
-    def _register_hooks(self, layer_name):
+    def _register_hooks(self, layer_name: str) -> None:
         """Register forward and backward hook to a layer, given layer_name, to
         obtain gradients and activations.
 
@@ -66,7 +67,9 @@ class GradCAM:
         target_layer.register_forward_hook(get_activations)
         target_layer.register_backward_hook(get_gradients)
 
-    def _calculate_localization_map(self, data, use_labels, delta=1e-20):
+    def _calculate_localization_map(self, data: dict,
+                                    use_labels: bool,
+                                    delta=1e-20) -> tuple:
         """Calculate localization map for all inputs with Grad-CAM.
 
         Args:
@@ -76,12 +79,12 @@ class GradCAM:
             delta (float): used in localization map normalization,
                 must be small enough. Please make sure
                 `localization_map_max - localization_map_min >> delta`
+
         Returns:
-            tuple[torch.Tensor, torch.Tensor]: (localization_map, preds)
-                localization_map (torch.Tensor): the localization map for
-                    input imgs.
-                preds (torch.Tensor): Model predictions for `inputs` with
-                    shape (batch_size, num_classes).
+            localization_map (torch.Tensor): the localization map for
+            input imgs.
+            preds (torch.Tensor): Model predictions with shape
+            (batch_size, num_classes).
         """
         inputs = data['inputs']
 
@@ -93,7 +96,7 @@ class GradCAM:
         preds = torch.stack(preds)
 
         if use_labels:
-            labels = [sample.gt_labels.item for sample in results]
+            labels = [result.gt_labels.item for result in results]
             labels = torch.stack(labels)
             score = torch.gather(preds, dim=1, index=labels)
         else:
@@ -153,26 +156,30 @@ class GradCAM:
 
         return localization_map.squeeze(dim=1), preds
 
-    def _alpha_blending(self, localization_map, input_imgs, alpha):
+    def _alpha_blending(self,
+                        localization_map: torch.Tensor,
+                        input_imgs: torch.Tensor,
+                        alpha: float) -> torch.Tensor:
         """Blend heatmaps and model input images and get visulization results.
 
         Args:
             localization_map (torch.Tensor): localization map for all inputs,
-                generated with Grad-CAM
-            input_imgs (torch.Tensor): model inputs, normed images.
+                generated with Grad-CAM.
+            input_imgs (torch.Tensor): model inputs, raw images.
             alpha (float): transparency level of the heatmap,
                 in the range [0, 1].
+
         Returns:
             torch.Tensor: blending results for localization map and input
-                images, with shape [B, T, H, W, 3] and pixel values in
-                RGB order within range [0, 1].
+            images, with shape [B, T, H, W, 3] and pixel values in
+            RGB order within range [0, 1].
         """
         # localization_map shape [B, T, H, W]
         localization_map = localization_map.cpu()
 
         # heatmap shape [B, T, H, W, 3] in RGB order
         heatmap = self.colormap(localization_map.detach().numpy())
-        heatmap = heatmap[:, :, :, :, :3]
+        heatmap = heatmap[..., :3]
         heatmap = torch.from_numpy(heatmap)
         input_imgs = torch.stack(input_imgs)
         # Permute input imgs to [B, T, H, W, 3], like heatmap
@@ -194,7 +201,9 @@ class GradCAM:
 
         return blended_imgs
 
-    def __call__(self, data, use_labels=False, alpha=0.5):
+    def __call__(self, data: dict,
+                 use_labels: bool = False,
+                 alpha: float = 0.5) -> tuple:
         """Visualize the localization maps on their corresponding inputs as
         heatmap, using Grad-CAM.
 
@@ -206,12 +215,13 @@ class GradCAM:
         Args:
             data (dict): model inputs, generated by test pipeline.
             use_labels (bool): Whether to use given labels to generate
-                localization map. Labels are in ``inputs['label']``.
+                localization map.
             alpha (float): transparency level of the heatmap,
                 in the range [0, 1].
+
         Returns:
             blended_imgs (torch.Tensor): Visualization results, blended by
-                localization maps and model inputs.
+            localization maps and model inputs.
             preds (torch.Tensor): Model predictions for inputs.
         """
 
