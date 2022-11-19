@@ -14,8 +14,7 @@ def test_stgcn_backbone():
     num_joints = 18
     model = STGCN(graph_cfg=dict(layout='openpose', mode=mode))
     model.init_weights()
-    inputs = torch.randn(batch_size, num_person,
-                         num_frames, num_joints, 3)
+    inputs = torch.randn(batch_size, num_person, num_frames, num_joints, 3)
     output = model(inputs)
     assert output.shape == torch.Size([2, 2, 256, 38, 18])
 
@@ -23,8 +22,7 @@ def test_stgcn_backbone():
     num_joints = 25
     model = STGCN(graph_cfg=dict(layout='nturgb+d', mode=mode))
     model.init_weights()
-    inputs = torch.randn(batch_size, num_person,
-                         num_frames, num_joints, 3)
+    inputs = torch.randn(batch_size, num_person, num_frames, num_joints, 3)
     output = model(inputs)
     assert output.shape == torch.Size([2, 2, 256, 38, 25])
 
@@ -39,8 +37,10 @@ def test_stgcn_backbone():
     # custom settings
     # add additional residual connection for the first four gcns
     stage_cfgs = {'gcn_with_res': [True] * 4 + [False] * 6}
-    model = STGCN(graph_cfg=dict(layout='coco', mode=mode),
-                  num_stages=10, stage_cfgs=stage_cfgs)
+    model = STGCN(
+        graph_cfg=dict(layout='coco', mode=mode),
+        num_stages=10,
+        stage_cfgs=stage_cfgs)
     model.init_weights()
     output = model(inputs)
     assert output.shape == torch.Size([2, 2, 256, 38, 17])
