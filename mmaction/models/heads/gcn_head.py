@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Union, Dict, List
+from typing import Dict, List, Union
 
 import torch
 import torch.nn as nn
@@ -27,13 +27,15 @@ class GCNHead(BaseHead):
                  in_channels: int,
                  loss_cls: Dict = dict(type='CrossEntropyLoss'),
                  dropout: float = 0.,
-                 init_cfg: Union[Dict, List[Dict]] = dict(type='Normal', layer='Linear', std=0.01),
+                 init_cfg: Union[Dict, List[Dict]] = dict(
+                     type='Normal', layer='Linear', std=0.01),
                  **kwargs) -> None:
-        super().__init__(num_classes,
-                         in_channels,
-                         loss_cls=loss_cls,
-                         init_cfg=init_cfg,
-                         **kwargs)
+        super().__init__(
+            num_classes,
+            in_channels,
+            loss_cls=loss_cls,
+            init_cfg=init_cfg,
+            **kwargs)
         self.dropout_ratio = dropout
         if self.dropout_ratio != 0:
             self.dropout = nn.Dropout(p=self.dropout_ratio)
@@ -54,7 +56,7 @@ class GCNHead(BaseHead):
         """
 
         N, M, C, T, V = x.shape
-        x = x.view(N*M, C, T, V)
+        x = x.view(N * M, C, T, V)
         x = self.pool(x)
         x = x.view(N, M, C)
         x = x.mean(dim=1)

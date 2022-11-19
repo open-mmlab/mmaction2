@@ -1,12 +1,13 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from typing import List, Tuple, Union
 
-import torch
 import numpy as np
+import torch
 
 
 def k_adjacency(A: Union[torch.Tensor, np.ndarray],
-                k: int, with_self: bool = False,
+                k: int,
+                with_self: bool = False,
                 self_factor: float = 1) -> np.ndarray:
     """Construct k-adjacency matrix.
 
@@ -30,7 +31,8 @@ def k_adjacency(A: Union[torch.Tensor, np.ndarray],
     Iden = np.eye(len(A), dtype=A.dtype)
     if k == 0:
         return Iden
-    Ak = np.minimum(np.linalg.matrix_power(A + Iden, k), 1) - np.minimum(np.linalg.matrix_power(A + Iden, k - 1), 1)
+    Ak = np.minimum(np.linalg.matrix_power(A + Iden, k), 1) - np.minimum(
+        np.linalg.matrix_power(A + Iden, k - 1), 1)
     if with_self:
         Ak += (self_factor * Iden)
     return Ak
@@ -70,7 +72,7 @@ def normalize_digraph(A: np.ndarray, dim: int = 0) -> np.ndarray:
 
     for i in range(w):
         if Dl[i] > 0:
-            Dn[i, i] = Dl[i] ** (-1)
+            Dn[i, i] = Dl[i]**(-1)
 
     AD = np.dot(A, Dn)
     return AD
@@ -98,9 +100,7 @@ def get_hop_distance(num_node: int,
 
     # compute hop steps
     hop_dis = np.zeros((num_node, num_node)) + np.inf
-    transfer_mat = [
-        np.linalg.matrix_power(A, d) for d in range(max_hop + 1)
-    ]
+    transfer_mat = [np.linalg.matrix_power(A, d) for d in range(max_hop + 1)]
     arrive_mat = (np.stack(transfer_mat) > 0)
     for d in range(max_hop, -1, -1):
         hop_dis[arrive_mat[d]] = d
@@ -144,29 +144,24 @@ class Graph:
 
         if layout == 'openpose':
             self.num_node = 18
-            self.inward = [
-                (4, 3), (3, 2), (7, 6), (6, 5), (13, 12), (12, 11), (10, 9),
-                (9, 8), (11, 5), (8, 2), (5, 1), (2, 1), (0, 1), (15, 0),
-                (14, 0), (17, 15), (16, 14)
-            ]
+            self.inward = [(4, 3), (3, 2), (7, 6), (6, 5), (13, 12), (12, 11),
+                           (10, 9), (9, 8), (11, 5), (8, 2), (5, 1), (2, 1),
+                           (0, 1), (15, 0), (14, 0), (17, 15), (16, 14)]
             self.center = 1
         elif layout == 'nturgb+d':
             self.num_node = 25
-            neighbor_base = [
-                (1, 2), (2, 21), (3, 21), (4, 3), (5, 21), (6, 5), (7, 6),
-                (8, 7), (9, 21), (10, 9), (11, 10), (12, 11), (13, 1),
-                (14, 13), (15, 14), (16, 15), (17, 1), (18, 17), (19, 18),
-                (20, 19), (22, 8), (23, 8), (24, 12), (25, 12)
-            ]
+            neighbor_base = [(1, 2), (2, 21), (3, 21), (4, 3), (5, 21), (6, 5),
+                             (7, 6), (8, 7), (9, 21), (10, 9), (11, 10),
+                             (12, 11), (13, 1), (14, 13), (15, 14), (16, 15),
+                             (17, 1), (18, 17), (19, 18), (20, 19), (22, 8),
+                             (23, 8), (24, 12), (25, 12)]
             self.inward = [(i - 1, j - 1) for (i, j) in neighbor_base]
             self.center = 21 - 1
         elif layout == 'coco':
             self.num_node = 17
-            self.inward = [
-                (15, 13), (13, 11), (16, 14), (14, 12), (11, 5), (12, 6),
-                (9, 7), (7, 5), (10, 8), (8, 6), (5, 0), (6, 0),
-                (1, 0), (3, 1), (2, 0), (4, 2)
-            ]
+            self.inward = [(15, 13), (13, 11), (16, 14), (14, 12), (11, 5),
+                           (12, 6), (9, 7), (7, 5), (10, 8), (8, 6), (5, 0),
+                           (6, 0), (1, 0), (3, 1), (2, 0), (4, 2)]
             self.center = 0
         else:
             raise ValueError(f'Do Not Exist This Layout: {layout}')

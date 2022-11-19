@@ -3,8 +3,7 @@ _base_ = '../../_base_/default_runtime.py'
 model = dict(
     type='RecognizerGCN',
     backbone=dict(
-        type='STGCN',
-        graph_cfg=dict(layout='nturgb+d', mode='stgcn_spatial')),
+        type='STGCN', graph_cfg=dict(layout='nturgb+d', mode='stgcn_spatial')),
     cls_head=dict(type='GCNHead', num_classes=60, in_channels=256))
 
 dataset_type = 'PoseDataset'
@@ -42,10 +41,11 @@ train_dataloader = dict(
     dataset=dict(
         type='RepeatDataset',
         times=5,
-        dataset=dict(type=dataset_type,
-                     ann_file=ann_file,
-                     pipeline=train_pipeline,
-                     split='xsub_train')))
+        dataset=dict(
+            type=dataset_type,
+            ann_file=ann_file,
+            pipeline=train_pipeline,
+            split='xsub_train')))
 val_dataloader = dict(
     batch_size=16,
     num_workers=2,

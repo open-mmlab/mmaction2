@@ -1,9 +1,10 @@
-from typing import Optional, Dict, List, Union
+# Copyright (c) OpenMMLab. All rights reserved.
+from typing import Dict, List, Optional, Union
 
 import torch
 import torch.nn as nn
-from mmengine.model import BaseModule, Sequential
 from mmcv.cnn import build_activation_layer, build_norm_layer
+from mmengine.model import BaseModule, Sequential
 
 
 class unit_gcn(BaseModule):
@@ -32,7 +33,7 @@ class unit_gcn(BaseModule):
                  A: torch.Tensor,
                  adaptive: str = 'importance',
                  conv_pos: str = 'pre',
-                 with_res:  bool = False,
+                 with_res: bool = False,
                  norm: str = 'BN',
                  act: str = 'ReLU',
                  init_cfg: Optional[Union[Dict, List[Dict]]] = None) -> None:
@@ -84,7 +85,10 @@ class unit_gcn(BaseModule):
 
         A_switch = {None: self.A, 'init': self.A}
         if hasattr(self, 'PA'):
-            A_switch.update({'offset': self.A + self.PA, 'importance': self.A * self.PA})
+            A_switch.update({
+                'offset': self.A + self.PA,
+                'importance': self.A * self.PA
+            })
         A = A_switch[self.adaptive]
 
         if self.conv_pos == 'pre':
@@ -108,7 +112,8 @@ class unit_tcn(BaseModule):
         kernel_size (int): Size of the temporal convolution kernel.
             Defaults to 9.
         stride (int): Stride of the temporal convolution. Defaults to 1.
-        dilation (int): Spacing between temporal kernel elements. Defaults to 1.
+        dilation (int): Spacing between temporal kernel elements.
+            Defaults to 1.
         norm (str): The name of norm layer. Defaults to ``'BN'``.
         dropout (float): Dropout probability. Defaults to 0.
         init_cfg (dict or list[dict]): Initialization config dict. Defaults to
@@ -118,18 +123,20 @@ class unit_tcn(BaseModule):
             ]``.
     """
 
-    def __init__(self,
-                 in_channels: int,
-                 out_channels: int,
-                 kernel_size: int = 9,
-                 stride: int = 1,
-                 dilation: int = 1,
-                 norm: str = 'BN',
-                 dropout: float = 0,
-                 init_cfg: Union[Dict, List[Dict]] = [
-                     dict(type='Constant', layer='BatchNorm2d', val=1),
-                     dict(type='Kaiming', layer='Conv2d', mode='fan_out')
-                 ]) -> None:
+    def __init__(
+        self,
+        in_channels: int,
+        out_channels: int,
+        kernel_size: int = 9,
+        stride: int = 1,
+        dilation: int = 1,
+        norm: str = 'BN',
+        dropout: float = 0,
+        init_cfg: Union[Dict, List[Dict]] = [
+            dict(type='Constant', layer='BatchNorm2d', val=1),
+            dict(type='Kaiming', layer='Conv2d', mode='fan_out')
+        ]
+    ) -> None:
         super().__init__(init_cfg=init_cfg)
 
         self.in_channels = in_channels
