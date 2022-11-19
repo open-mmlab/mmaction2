@@ -2,7 +2,7 @@ from typing import Optional, Dict, List, Union
 
 import torch
 import torch.nn as nn
-from mmengine.model import BaseModule
+from mmengine.model import BaseModule, Sequential
 from mmcv.cnn import build_activation_layer, build_norm_layer
 
 
@@ -22,8 +22,8 @@ class unit_gcn(BaseModule):
             Defaults to False.
         norm (str): The name of norm layer. Defaults to ``'BN'``.
         act (str): The name of activation layer. Defaults to ``'Relu'``.
-        init_cfg (dict or list[dict], optional): Config to control
-            the initialization. Defaults to None.
+        init_cfg (dict or list[dict], optional): Initialization config dict.
+            Defaults to None.
     """
 
     def __init__(self,
@@ -71,7 +71,7 @@ class unit_gcn(BaseModule):
 
         if self.with_res:
             if in_channels != out_channels:
-                self.down = nn.Sequential(
+                self.down = Sequential(
                     nn.Conv2d(in_channels, out_channels, 1),
                     build_norm_layer(self.norm_cfg, out_channels)[1])
             else:
@@ -100,23 +100,22 @@ class unit_gcn(BaseModule):
 
 
 class unit_tcn(BaseModule):
-    """The basic unit of graph convolutional network.
+    """The basic unit of temporal convolutional network.
 
     Args:
         in_channels (int): Number of input channels.
         out_channels (int): Number of output channels.
-        A (torch.Tensor): The adjacency matrix defined in the graph
-            with shape of `(num_subsets, num_nodes, num_nodes)`.
-        adaptive (str): The strategy for adapting the weights of the
-            adjacency matrix. Defaults to ``'importance'``.
-        conv_pos (str): The position of the 1x1 2D conv.
-            Defaults to ``'pre'``.
-        with_res (bool): Whether to use residual connection.
-            Defaults to False.
+        kernel_size (int): Size of the temporal convolution kernel.
+            Defaults to 9.
+        stride (int): Stride of the temporal convolution. Defaults to 1.
+        dilation (int): Spacing between temporal kernel elements. Defaults to 1.
         norm (str): The name of norm layer. Defaults to ``'BN'``.
-        act (str): The name of activation layer. Defaults to ``'Relu'``.
-        init_cfg (dict or list[dict], optional): Config to control
-            the initialization. Defaults to None.
+        dropout (float): Dropout probability. Defaults to 0.
+        init_cfg (dict or list[dict]): Initialization config dict. Defaults to
+            ``[
+                dict(type='Constant', layer='BatchNorm2d', val=1),
+                dict(type='Kaiming', layer='Conv2d', mode='fan_out')
+            ]``.
     """
 
     def __init__(self,
@@ -129,9 +128,8 @@ class unit_tcn(BaseModule):
                  dropout: float = 0,
                  init_cfg: Union[Dict, List[Dict]] = [
                      dict(type='Constant', layer='BatchNorm2d', val=1),
-                     dict(type='Kaiming', layer='Conv2d', mode='fan_out'),
+                     dict(type='Kaiming', layer='Conv2d', mode='fan_out')
                  ]) -> None:
-
         super().__init__(init_cfg=init_cfg)
 
         self.in_channels = in_channels
@@ -152,5 +150,6 @@ class unit_tcn(BaseModule):
         self.drop = nn.Dropout(dropout, inplace=True)
         self.stride = stride
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Defines the computation performed at every call."""
         return self.drop(self.bn(self.conv(x)))
