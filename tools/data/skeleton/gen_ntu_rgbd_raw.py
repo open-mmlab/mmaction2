@@ -1,8 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Optional, List, Tuple, Dict
 import argparse
 import os
 import os.path as osp
+from typing import Dict, List, Optional, Tuple
 
 import mmengine
 import numpy as np
@@ -94,28 +94,27 @@ def read_xyz(file: str, max_body: int = 4, num_joint: int = 25) -> np.ndarray:
     return data
 
 
-def get_names_and_labels(
-        data_path: str,
-        task: str,
-        benchmark: str,
-        ignored_samples: Optional[List[str]] = None) -> Tuple:
-    training_names = []
-    training_labels = []
-    validation_names = []
-    validation_labels = []
+def get_names_and_labels(data_path: str,
+                         task: str,
+                         benchmark: str,
+                         ignored_samples: Optional[List[str]] = None) -> Tuple:
+    train_names = []
+    train_labels = []
+    val_names = []
+    val_labels = []
 
     for filename in os.listdir(data_path):
         if ignored_samples is not None and filename in ignored_samples:
             continue
 
-        setup_number = int(filename[filename.find('S') + 1:
-                                    filename.find('S') + 4])
-        action_class = int(filename[filename.find('A') + 1:
-                                    filename.find('A') + 4])
-        subject_id = int(filename[filename.find('P') + 1:
-                                  filename.find('P') + 4])
-        camera_id = int(filename[filename.find('C') + 1:
-                                 filename.find('C') + 4])
+        setup_number = int(filename[filename.find('S') + 1:filename.find('S') +
+                                    4])
+        action_class = int(filename[filename.find('A') + 1:filename.find('A') +
+                                    4])
+        subject_id = int(filename[filename.find('P') + 1:filename.find('P') +
+                                  4])
+        camera_id = int(filename[filename.find('C') + 1:filename.find('C') +
+                                 4])
 
         if benchmark == 'xsub':
             if task == 'ntu60':
@@ -130,13 +129,13 @@ def get_names_and_labels(
             raise ValueError()
 
         if istraining:
-            training_names.append(filename)
-            training_labels.append(action_class - 1)
+            train_names.append(filename)
+            train_labels.append(action_class - 1)
         else:
-            validation_names.append(filename)
-            validation_labels.append(action_class - 1)
+            val_names.append(filename)
+            val_labels.append(action_class - 1)
 
-    return training_names, training_labels, validation_names, validation_labels
+    return train_names, train_labels, val_names, val_labels
 
 
 def gendata(data_path: str,
@@ -161,14 +160,14 @@ def gendata(data_path: str,
     names = None
     labels = None
     for benchmark in benchmarks:
-        training_names, training_labels, validation_names, validation_labels = \
+        train_names, train_labels, val_names, val_labels = \
             get_names_and_labels(data_path, task, benchmark, ignored_samples)
-        split[f'{benchmark}_train'] = [osp.splitext(s)[0] for s in training_names]
-        split[f'{benchmark}_val'] = [osp.splitext(s)[0] for s in validation_names]
+        split[f'{benchmark}_train'] = [osp.splitext(s)[0] for s in train_names]
+        split[f'{benchmark}_val'] = [osp.splitext(s)[0] for s in val_names]
 
         if names is None and labels is None:
-            names = training_names + validation_names
-            labels = training_labels + validation_labels
+            names = train_names + val_names
+            labels = train_labels + val_labels
 
     total_frames = []
     results = []
@@ -192,7 +191,7 @@ def gendata(data_path: str,
         anno['keypoint'] = fp[i, :, 0:total_frames[i], :, :].transpose(
             3, 1, 2, 0)  # C T V M -> M T V C
         anno['frame_dir'] = osp.splitext(s)[0]
-        anno['label'] = names[i]
+        anno['label'] = labels[i]
 
         results.append(anno)
         prog_bar.update()
@@ -226,8 +225,5 @@ if __name__ == '__main__':
     if not osp.exists(args.out_folder):
         os.makedirs(args.out_folder)
 
-    gendata(
-        args.data_path,
-        args.out_folder,
-        args.ignored_sample_path,
-        args.task)
+    gendata(args.data_path, args.out_folder, args.ignored_sample_path,
+            args.task)
