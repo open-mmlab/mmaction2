@@ -90,7 +90,9 @@ def read_xyz(file: str, max_body: int = 4, num_joint: int = 25) -> np.ndarray:
     energy = np.array([get_nonzero_std(x) for x in data])
     index = energy.argsort()[::-1][0:max_body_true]
     data = data[index]
-    data = data.transpose(3, 1, 2, 0)
+
+    # filter padding body
+    data = data[data.sum((1, 2, 3)) == 0]
     return data
 
 
@@ -169,35 +171,23 @@ def gendata(data_path: str,
             names = train_names + val_names
             labels = train_labels + val_labels
 
-    total_frames = []
     results = []
 
-    fp = np.zeros((len(names), 3, max_frame, num_joint, max_body_true),
-                  dtype=np.float16)
     prog_bar = mmengine.ProgressBar(len(names))
     for i, s in enumerate(names):
-        data = read_xyz(
+        ske = read_xyz(
             osp.join(data_path, s),
             max_body=max_body_kinect,
             num_joint=num_joint).astype(np.float16)
-        fp[i, :, 0:data.shape[1], :, :] = data
-        total_frames.append(data.shape[1])
-        prog_bar.update()
 
-    prog_bar = mmengine.ProgressBar(len(names))
-    for i, s in enumerate(names):
         anno = dict()
-        anno['total_frames'] = total_frames[i]
-        anno['keypoint'] = fp[i, :, 0:total_frames[i], :, :].transpose(
-            3, 1, 2, 0)  # C T V M -> M T V C
         anno['frame_dir'] = osp.splitext(s)[0]
         anno['label'] = labels[i]
-
-        results.append(anno)
+        anno['keypoint'] = ske
+        anno['total_frames'] = ske.shape[1]
         prog_bar.update()
 
     annotations = {'split': split, 'annotations': results}
-
     mmengine.dump(annotations, f'{out_path}/{task}_3d.pkl')
 
 
