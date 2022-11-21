@@ -173,13 +173,13 @@ def gendata(data_path: str,
     results = []
 
     fp = np.zeros((len(names), 3, max_frame, num_joint, max_body_true),
-                  dtype=np.float32)
+                  dtype=np.float16)
     prog_bar = mmengine.ProgressBar(len(names))
     for i, s in enumerate(names):
         data = read_xyz(
             osp.join(data_path, s),
             max_body=max_body_kinect,
-            num_joint=num_joint).astype(np.float32)
+            num_joint=num_joint).astype(np.float16)
         fp[i, :, 0:data.shape[1], :, :] = data
         total_frames.append(data.shape[1])
         prog_bar.update()
