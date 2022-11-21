@@ -2,18 +2,33 @@ _base_ = [
     '../../_base_/models/evl_vitb16_8f.py', '../../_base_/default_runtime.py'
 ]
 
-# optimizer
-optimizer = dict(type='AdamW', lr=4e-4, weight_decay=0.05)
-optimizer_config = dict(grad_clip=None)
-fp16 = dict(loss_scale='dynamic')
 # learning policy
-lr_config = dict(policy='CosineAnnealing', min_lr=0)
-total_epochs = 50
+num_epochs = 50
+train_cfg = dict(
+    type='EpochBasedTrainLoop',
+    max_epochs=num_epochs,
+    val_begin=1,
+    val_interval=1)
+val_cfg = dict(type='ValLoop')
+test_cfg = dict(type='TestLoop')
+
+param_scheduler = [
+    dict(
+        type='CosineAnnealingLR',
+        eta_min=0,
+        T_max=num_epochs,
+        begin=0,
+        end=num_epochs,
+        by_epoch=True)
+]
+
+optim_wrapper = dict(
+    # type='AmpOptimWrapper',
+    optimizer=dict(type='AdamW', lr=4e-4, weight_decay=0.05))
 
 # model settings
 model = dict(
-    backbone=dict(
-        backbone_path='/mnt/petrelfs/wangyiqin/clip_weight/ViT-B-16.pt'),
+    backbone=dict(backbone_path='data/clip_weight/ViT-B-16.pt'),
     cls_head=dict(num_classes=400))
 
 # dataset settings
@@ -42,14 +57,15 @@ train_pipeline = [
     dict(type='SampleFrames', clip_len=8, frame_interval=16, num_clips=1),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
-    dict(
-        type='MultiScaleCrop',
-        input_size=224,
-        scales=(1, 0.875, 0.75, 0.66),
-        random_crop=False,
-        max_wh_scale_gap=1),
+    dict(type='RandomResizedCrop'),
+    # dict(
+    #     type='MultiScaleCrop',
+    #     input_size=224,
+    #     scales=(1, 0.875, 0.75, 0.66),
+    #     random_crop=False,
+    #     max_wh_scale_gap=1),
     dict(type='Resize', scale=(224, 224), keep_ratio=False),
-    dict(type='Flip', flip_ratio=0.5),
+    # dict(type='Flip', flip_ratio=0.5),
     dict(type='FormatShape', input_format='NCTHW'),
     dict(type='PackActionInputs')
 ]
@@ -83,7 +99,7 @@ test_pipeline = [
 ]
 
 train_dataloader = dict(
-    batch_size=64,
+    batch_size=32,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
@@ -93,7 +109,7 @@ train_dataloader = dict(
         data_prefix=dict(video=data_root),
         pipeline=train_pipeline))
 val_dataloader = dict(
-    batch_size=64,
+    batch_size=32,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
@@ -123,5 +139,5 @@ default_hooks = dict(checkpoint=dict(interval=1, max_keep_ckpts=3))
 # Default setting for scaling LR automatically
 #   - `enable` means enable scaling LR automatically
 #       or not by default.
-#   - `base_batch_size` = (4 GPUs) x (64 samples per GPU).
+#   - `base_batch_size` = (8 GPUs) x (32 samples per GPU).
 auto_scale_lr = dict(enable=False, base_batch_size=256)

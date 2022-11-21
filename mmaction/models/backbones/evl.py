@@ -14,7 +14,6 @@ from mmengine.runner import load_checkpoint
 from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
 
 from mmaction.registry import MODELS
-from ..builder import BACKBONES
 
 
 def load_weights_clip(load_path: str) -> Dict[str, torch.Tensor]:
