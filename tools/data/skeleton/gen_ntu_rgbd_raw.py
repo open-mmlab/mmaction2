@@ -196,9 +196,7 @@ def gendata(data_path: str,
         results.append(anno)
         prog_bar.update()
 
-    annotations = {}
-    annotations['split'] = split
-    annotations['annotations'] = results
+    annotations = {'split': split, 'annotations': results}
 
     mmengine.dump(annotations, f'{out_path}/{task}_3d.pkl')
 
