@@ -30,18 +30,19 @@ optim_wrapper = dict(
 model = dict(
     backbone=dict(backbone_path='data/clip_weight/ViT-B-16.pt'),
     cls_head=dict(num_classes=400))
-
+'''
 # dataset settings
-# dataset_type = 'VideoDataset'
-# data_root = 'data/kinetics400/videos_train'
-# data_root_val = 'data/kinetics400/videos_val'
-# ann_file_train = 'data/kinetics400/kinetics400_train_list_videos.txt'
-# ann_file_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
+dataset_type = 'VideoDataset'
+data_root = 'data/kinetics400/videos_train'
+data_root_val = 'data/kinetics400/videos_val'
+ann_file_train = 'data/kinetics400/kinetics400_train_list_videos.txt'
+ann_file_val = 'data/kinetics400/kinetics400_val_list_videos.txt'
 
-# file_client_args = dict(
-#     io_backend='petrel',
-#     path_mapping=dict(
-#         {'data/kinetics400': 's3://openmmlab/datasets/action/Kinetics400'}))
+file_client_args = dict(
+    io_backend='petrel',
+    path_mapping=dict(
+        {'data/kinetics400': 's3://openmmlab/datasets/action/Kinetics400'}))
+'''
 
 # dataset settings
 dataset_type = 'VideoDataset'

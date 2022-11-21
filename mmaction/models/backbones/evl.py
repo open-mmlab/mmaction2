@@ -7,11 +7,6 @@ from typing import Dict, List, Tuple
 import numpy as np
 import torch
 import torch.nn as nn
-from mmcv.cnn import ConvModule
-from mmengine.logging import MMLogger
-from mmengine.model.weight_init import constant_init, kaiming_init, normal_init
-from mmengine.runner import load_checkpoint
-from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
 
 from mmaction.registry import MODELS
 
@@ -93,7 +88,7 @@ weight_loader_fn_dict = {
 
 
 class QuickGELU(nn.Module):
-    """from official CLIP repo"""
+    """from official CLIP repo."""
 
     def forward(self, x: torch.Tensor):
         return x * torch.sigmoid(1.702 * x)
@@ -109,9 +104,7 @@ class LayerNorm(nn.LayerNorm):
 
 
 class Attention(nn.Module):
-    '''
-    A generalized attention module with more flexibility.
-    '''
+    """A generalized attention module with more flexibility."""
 
     def __init__(
         self,

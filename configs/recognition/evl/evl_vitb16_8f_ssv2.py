@@ -31,17 +31,18 @@ model = dict(
     backbone=dict(backbone_path='data/clip_weight/ViT-B-16.pt'),
     cls_head=dict(num_classes=174),
     test_cfg=dict(num_frames=8))  # for tsn-style sampling, add num_frames
-
+'''
 # dataset settings
-# dataset_type = 'VideoDataset'
-# data_root = 'data/sthv2/videos'
-# data_root_val = 'data/sthv2/videos'
-# ann_file_train = 'data/sthv2_train_list_videos.txt'
-# ann_file_val = 'data/sthv2_val_list_videos.txt'
+dataset_type = 'VideoDataset'
+data_root = 'data/sthv2/videos'
+data_root_val = 'data/sthv2/videos'
+ann_file_train = 'data/sthv2_train_list_videos.txt'
+ann_file_val = 'data/sthv2_val_list_videos.txt'
 
-# file_client_args = dict(
-#     io_backend='petrel',
-#     path_mapping=dict({'data/sthv2': 's3://openmmlab/datasets/action/sthv2'}))
+file_client_args = dict(
+    io_backend='petrel',
+    path_mapping=dict({'data/sthv2': 's3://openmmlab/datasets/action/sthv2'}))
+'''
 # dataset settings
 dataset_type = 'VideoDataset'
 data_root = '/nvme/dataset/video/sthv2/videos'

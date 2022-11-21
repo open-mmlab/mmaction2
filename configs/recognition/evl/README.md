@@ -2,8 +2,6 @@
 
 <!-- [ALGORITHM] -->
 
-
-
 ## Abstract
 
 <!-- [ABSTRACT] -->
@@ -21,14 +19,12 @@ Video recognition has been dominated by the end-to-end learning paradigm -- firs
 
 ### Kinetics-400
 
-| frame sampling strategy | scheduler |   resolution   | gpus  | backbone | pretrain | top1 acc | top5 acc |   reference top1 acc    |   reference top5 acc    | testing protocol  | gpu_mem(M) | params(M) | Flops(G) |                  config                   |     ckpt     |     log      |
-| :---------------------: | :-------: | :------------: | :---: | :------: | :------: | :------: | :------: | :---------------------: | :---------------------: | :---------------: | :--------: | :-------: | :------: | :---------------------------------------: | :----------: | :----------: |
-|         8x16x1          | MultiStep | short-side 320 |   8   | ViT-B/16 |   CLIP   |  82.17   |  95.63   | 82.6(test_in_mmaction2) | 96.0(test_in_mmaction2) | 10 clips x 3 crop |    TODO    |   TODO    |   TODO   | [config](/configs/recognition/evl/xxx.py) | [TODO](TODO) | [TODO](TODO) |
+| frame sampling strategy | scheduler |   resolution   | gpus | backbone | pretrain | top1 acc | top5 acc |   reference top1 acc    |   reference top5 acc    | testing protocol  | gpu_mem(M) | params(M) | Flops(G) |   config    |   ckpt    |   log    |
+| :---------------------: | :-------: | :------------: | :--: | :------: | :------: | :------: | :------: | :---------------------: | :---------------------: | :---------------: | :--------: | :-------: | :------: | :---------: | :-------: | :------: |
+|         8x16x1          | MultiStep | short-side 320 |  8   | ViT-B/16 |   CLIP   |  82.17   |  95.63   | 82.6(test_in_mmaction2) | 96.0(test_in_mmaction2) | 10 clips x 3 crop |    TODO    |   TODO    |   TODO   | [config](/configs/recognition/evl/xxx.py) | [TODO](TODO) | [TODO](TODO) |
 
 ### SSv2
 
-| frame sampling strategy | scheduler |   resolution   | gpus  | backbone | pretrain | top1 acc | top5 acc |  reference top1 acc   | reference top5 acc | testing protocol  | gpu_mem(M) | params(M) | Flops(G) |                  config                   |     ckpt     |     log      |
-| :---------------------: | :-------: | :------------: | :---: | :------: | :------: | :------: | :------: | :-------------------: | :----------------: | :---------------: | :--------: | :-------: | :------: | :---------------------------------------: | :----------: | :----------: |
-|         8x16x1          | MultiStep | short-side 320 |   8   | ViT-B/16 |   CLIP   |  59.10   |  84.62   | 58.6(copy_from_paper) |        N/A         | 10 clips x 3 crop |    TODO    |   TODO    |   TODO   | [config](/configs/recognition/evl/xxx.py) | [TODO](TODO) | [TODO](TODO) |
-
-
+| frame sampling strategy | scheduler |   resolution   | gpus | backbone | pretrain | top1 acc | top5 acc |  reference top1 acc   | reference top5 acc | testing protocol  | gpu_mem(M) | params(M) | Flops(G) |    config     |    ckpt     |     log     |
+| :---------------------: | :-------: | :------------: | :--: | :------: | :------: | :------: | :------: | :-------------------: | :----------------: | :---------------: | :--------: | :-------: | :------: | :-----------: | :---------: | :---------: |
+|         8x16x1          | MultiStep | short-side 320 |  8   | ViT-B/16 |   CLIP   |  59.10   |  84.62   | 58.6(copy_from_paper) |        N/A         | 10 clips x 3 crop |    TODO    |   TODO    |   TODO   | [config](/configs/recognition/evl/xxx.py) | [TODO](TODO) | [TODO](TODO) |
