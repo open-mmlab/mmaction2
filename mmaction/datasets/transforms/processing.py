@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import Dict, List
 import random
 import warnings
 
@@ -1494,9 +1495,49 @@ class MelSpectrogram(BaseTransform):
 
 
 @TRANSFORMS.register_module()
-class PreNormalize3D:
+class PreNormalize3D(BaseTransform):
     """PreNormalize for NTURGB+D 3D keypoints (x, y, z).
-    Codes adapted from https://github.com/lshiwjx/2s-AGCN."""
+
+    PreNormalize3D first subtracts the coordinates of each joint
+    from the coordinates of the 'spine' (joint #1 in ntu) of the first person
+    in the first frame. Subsequently, it performs a 3D rotation to fix the Z
+    axis parallel to the 3D vector from the 'hip' (joint #0) and the 'spine'
+    (joint #1) and the X axis toward the 3D vector from the 'right shoulder'
+    (joint #8) and the 'left shoulder' (joint #4). Codes adapted from
+    https://github.com/lshiwjx/2s-AGCN.
+
+    Required Keys:
+
+        - keypoint
+        - total_frames (optional)
+
+    Modified Keys:
+
+        - keypoint
+
+    Added Keys:
+
+        - body_center
+
+    Args:
+        zaxis (list[int]): The target Z axis for the 3D rotation.
+            Defaults to ``[0, 1]``.
+        xaxis (list[int]): The target X axis for the 3D rotation.
+            Defaults to ``[8, 4]``.
+        align_spine (bool): Whether to perform a 3D rotation to align the spine.
+            Defaults to True.
+        align_center (bool): Whether to align the body center. Defaults to True.
+    """
+
+    def __init__(self,
+                 zaxis: List[int] = [0, 1],
+                 xaxis: List[int] = [8, 4],
+                 align_spine: bool = True,
+                 align_center: bool = True) -> None:
+        self.zaxis = zaxis
+        self.xaxis = xaxis
+        self.align_spine = align_spine
+        self.align_center = align_center
 
     def unit_vector(self, vector: np.ndarray) -> np.ndarray:
         """Returns the unit vector of the vector."""
@@ -1510,7 +1551,7 @@ class PreNormalize3D:
         v2_u = self.unit_vector(v2)
         return np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0))
 
-    def rotation_matrix(self, axis, theta):
+    def rotation_matrix(self, axis: np.ndarray, theta: float) -> np.ndarray:
         """Returns the rotation matrix associated with counterclockwise rotation
         about the given axis by theta radians."""
         if np.abs(axis).sum() < 1e-6 or np.abs(theta) < 1e-6:
@@ -1525,13 +1566,15 @@ class PreNormalize3D:
                         [2 * (bc - ad), aa + cc - bb - dd, 2 * (cd + ab)],
                         [2 * (bd + ac), 2 * (cd - ab), aa + dd - bb - cc]])
 
-    def __init__(self, zaxis=[0, 1], xaxis=[8, 4], align_spine=True, align_center=True):
-        self.zaxis = zaxis
-        self.xaxis = xaxis
-        self.align_spine = align_spine
-        self.align_center = align_center
+    def transform(self, results: Dict) -> Dict:
+        """The transform function of :class:`PreNormalize3D`.
 
-    def __call__(self, results):
+        Args:
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
+        """
         skeleton = results['keypoint']
         total_frames = results.get('total_frames', skeleton.shape[1])
 
@@ -1582,3 +1625,11 @@ class PreNormalize3D:
         results['total_frames'] = T_new
         results['body_center'] = main_body_center
         return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'zaxis={self.zaxis}, '
+                    f'xaxis={self.xaxis}, '
+                    f'align_spine={self.align_spine}, '
+                    f'align_center={self.align_center})')
+        return repr_str
