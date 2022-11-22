@@ -607,7 +607,8 @@ class MViT(BaseModule):
         >>> register_all_modules()
         >>>
         >>> cfg = dict(type='MViT', arch='tiny', out_scales=[0, 1, 2, 3])
-        >>> model = model = MODELS.build(cfg)
+        >>> model = MODELS.build(cfg)
+        >>> model.init_weights()
         >>> inputs = torch.rand(1, 3, 16, 224, 224)
         >>> outputs = model(inputs)
         >>> for i, output in enumerate(outputs):
