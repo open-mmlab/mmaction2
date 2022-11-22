@@ -92,7 +92,7 @@ def read_xyz(file: str, max_body: int = 4, num_joint: int = 25) -> np.ndarray:
     data = data[index]
 
     # filter padding body
-    data = data[data.sum((1, 2, 3)) == 0]
+    data = data[data.sum((1, 2, 3)) != 0]
     return data
 
 
