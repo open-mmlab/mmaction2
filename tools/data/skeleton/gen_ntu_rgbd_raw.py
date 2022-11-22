@@ -211,8 +211,7 @@ if __name__ == '__main__':
 
     assert args.task in ['ntu60', 'ntu120']
 
-    if not osp.exists(args.out_folder):
-        os.makedirs(args.out_folder)
+    mmengine.mkdir_or_exist(args.out_folder)
 
     gendata(args.data_path, args.out_folder, args.ignored_sample_path,
             args.task)
