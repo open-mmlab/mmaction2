@@ -10,10 +10,21 @@ You can switch between Chinese and English documents in the lower-left corner of
    get_started.md
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: User Guides
 
-   user_guides/index.rst
+   user_guides/1_config.md
+   user_guides/2_data_prepare.md
+   user_guides/3_inference.md
+   user_guides/4_train_test.md
+   user_guides/5_deployment.md
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Useful Tools
+
+   user_guides/useful_tools.md
+   user_guides/visualization.md
 
 .. toctree::
    :maxdepth: 1
