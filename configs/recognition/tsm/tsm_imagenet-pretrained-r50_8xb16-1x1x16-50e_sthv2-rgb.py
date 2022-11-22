@@ -49,14 +49,8 @@ test_pipeline = [
     dict(type='PackActionInputs')
 ]
 
-train_dataloader = dict(
-    dataset=dict(
-        pipeline=train_pipeline))
+train_dataloader = dict(dataset=dict(pipeline=train_pipeline))
 
-val_dataloader = dict(
-    dataset=dict(
-        pipeline=val_pipeline))
+val_dataloader = dict(dataset=dict(pipeline=val_pipeline))
 
-test_dataloader = dict(
-        pipeline=test_pipeline,
-        test_mode=True)
+test_dataloader = dict(pipeline=test_pipeline, test_mode=True)

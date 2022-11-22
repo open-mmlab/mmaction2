@@ -8,7 +8,6 @@ data_root = 'data/sthv2/videos'
 ann_file_train = 'data/sthv2/sthv2_train_list_videos.txt'
 ann_file_val = 'data/sthv2/sthv2_val_list_videos.txt'
 
-
 test_pipeline = [
     dict(type='DecordInit'),
     dict(
@@ -27,14 +26,10 @@ test_pipeline = [
 
 train_dataloader = dict(
     batch_size=16,
-    dataset=dict(
-        ann_file=ann_file_train,
-        data_prefix=dict(video=data_root)))
+    dataset=dict(ann_file=ann_file_train, data_prefix=dict(video=data_root)))
 
 val_dataloader = dict(
-    dataset=dict(
-        ann_file=ann_file_val,
-        data_prefix=dict(video=data_root)))
+    dataset=dict(ann_file=ann_file_val, data_prefix=dict(video=data_root)))
 
 test_dataloader = dict(
     dataset=dict(
@@ -56,5 +51,4 @@ param_scheduler = [
         gamma=0.1)
 ]
 
-optim_wrapper = dict(
-    optimizer=dict(lr=0.02, weight_decay=0.0005))
+optim_wrapper = dict(optimizer=dict(lr=0.02, weight_decay=0.0005))
