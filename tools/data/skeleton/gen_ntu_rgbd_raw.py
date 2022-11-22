@@ -185,6 +185,7 @@ def gendata(data_path: str,
         anno['label'] = labels[i]
         anno['keypoint'] = ske
         anno['total_frames'] = ske.shape[1]
+        results.append(anno)
         prog_bar.update()
 
     annotations = {'split': split, 'annotations': results}
