@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Optional
+from typing import Dict, List, Optional, Union
 
 import torch
 import torch.nn.functional as F
@@ -245,9 +245,12 @@ class VisionTransformer(BaseModule):
         tubelet_size (int): Temporal size of one patch. Defaults to 2.
         use_mean_pooling (bool): If True, take the mean pooling over all
             positions. Defaults to True.
-        init_cfg (dict or Configdict, optional): The Config for initialization.
-            Defaults to None.
         pretrained (str, optional): Name of pretrained model. Default: None.
+        init_cfg (dict or list[Dict]): Initialization config dict. Defaults to
+            ``[
+            dict(type='TruncNormal', layer='Linear', std=0.02, bias=0.),
+            dict(type='Constant', layer='LayerNorm', val=1., bias=0.)
+            ]``.
     """
 
     def __init__(self,
@@ -270,7 +273,7 @@ class VisionTransformer(BaseModule):
                  tubelet_size: int = 2,
                  use_mean_pooling: int = True,
                  pretrained: Optional[str] = None,
-                 init_cfg: Optional[ConfigType] = [
+                 init_cfg: Optional[Union[Dict, List[Dict]]] = [
                      dict(
                          type='TruncNormal', layer='Linear', std=0.02,
                          bias=0.),

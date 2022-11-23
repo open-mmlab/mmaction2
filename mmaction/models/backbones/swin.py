@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from functools import lru_cache, reduce
 from operator import mul
-from typing import Dict, Optional, Sequence, Tuple, Union
+from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 import numpy as np
 import torch
@@ -747,8 +747,11 @@ class SwinTransformer3D(BaseModule):
             Defaults to ``(3, )``.
         out_after_downsample (bool): Whether to output the feature map of a
             stage after the following downsample layer. Defaults to False.
-        init_cfg (dict, optional): Config dict for initialization.
-            Defaults to None.
+        init_cfg (dict or list[Dict]): Initialization config dict. Defaults to
+            ``[
+            dict(type='TruncNormal', layer='Linear', std=0.02, bias=0.),
+            dict(type='Constant', layer='LayerNorm', val=1., bias=0.)
+            ]``.
     """
     arch_zoo = {
         **dict.fromkeys(['t', 'tiny'],
@@ -790,7 +793,7 @@ class SwinTransformer3D(BaseModule):
         with_cp: bool = False,
         out_indices: Sequence[int] = (3, ),
         out_after_downsample=False,
-        init_cfg: Optional[Dict] = [
+        init_cfg: Optional[Union[Dict, List[Dict]]] = [
             dict(type='TruncNormal', layer='Linear', std=0.02, bias=0.),
             dict(type='Constant', layer='LayerNorm', val=1., bias=0.)
         ]
