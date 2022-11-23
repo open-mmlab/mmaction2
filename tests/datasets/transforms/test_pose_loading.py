@@ -426,6 +426,21 @@ class TestPoseLoading:
         assert repr(to_motion) == 'ToMotion(dataset=nturgb+d, ' \
                                   'source=keypoint, target=motion)'
 
+    @staticmethod
+    def test_merge_ske_feat():
+        with pytest.raises(KeyError):
+            MergeSkeFeat()(dict(b=np.random.randn(2, 40, 25, 3)))
+
+        results = dict(j=np.random.randn(2, 20, 25, 3),
+                       b=np.random.randn(2, 20, 25, 3))
+        merge_ske_feat = MergeSkeFeat(feat_list=['j', 'b'])
+        results = merge_ske_feat(results)
+
+        assert assert_dict_has_keys(results, ['keypoint'])
+        assert results['keypoint'].shape == (2, 20, 25, 6)
+        assert repr(merge_ske_feat) == "MergeSkeFeat(feat_list=['j', 'b'], " \
+                                       "target=keypoint, axis=-1)"
+
 
 def check_pose_normalize(origin_keypoints, result_keypoints, norm_cfg):
     target_keypoints = result_keypoints.copy()
