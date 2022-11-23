@@ -95,6 +95,7 @@ class STGCN(BaseModule):
         Examples:
         >>> import torch
         >>> from mmaction.models import STGCN
+        >>>
         >>> mode = 'stgcn_spatial'
         >>> batch_size, num_person, num_frames = 2, 2, 150
         >>>

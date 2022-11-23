@@ -755,3 +755,64 @@ class JointToBone(BaseTransform):
                     f'dataset={self.dataset}, '
                     f'target={self.target})')
         return repr_str
+
+
+@TRANSFORMS.register_module()
+class ToMotion(BaseTransform):
+    """Covert the joint information or bone information
+    to corresponding motion information.
+
+    Required Keys:
+
+        - keypoint
+
+    Added Keys:
+
+        - motion
+
+    Args:
+        dataset (str): Define the type of dataset: 'nturgb+d', 'openpose',
+            'coco'. Defaults to ``'nturgb+d'``.
+        source (str): The source key for the joint or bone information.
+            Defaults to ``'keypoint'``.
+        target (str): The target key for the motion information.
+            Defaults to ``'motion'``.
+    """
+
+    def __init__(self,
+                 dataset: str = 'nturgb+d',
+                 source: str = 'keypoint',
+                 target: str = 'motion') -> None:
+        self.dataset = dataset
+        self.source = source
+        self.target = target
+
+    def transform(self, results: Dict) -> Dict:
+        """The transform function of :class:`ToMotion`.
+
+        Args:
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
+        """
+        data = results[self.source]
+        M, T, V, C = data.shape
+        motion = np.zeros_like(data)
+
+        assert C in [2, 3]
+        motion[:, :T - 1] = np.diff(data, axis=1)
+        if C == 3 and self.dataset in ['openpose', 'coco']:
+            score = (data[:, :T - 1, :, 2] + data[:, 1:, :, 2]) / 2
+            motion[:, :T - 1, :, 2] = score
+
+        results[self.target] = motion
+
+        return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'dataset={self.dataset}, '
+                    f'source={self.source}, '
+                    f'target={self.target})')
+        return repr_str
