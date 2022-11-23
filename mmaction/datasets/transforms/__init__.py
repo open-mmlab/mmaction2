@@ -13,7 +13,7 @@ from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
                       UntrimmedSampleFrames)
 from .pose_loading import (GeneratePoseTarget, LoadKineticsPose,
                            PaddingWithLoop, PoseDecode, UniformSampleFrames,
-                           JointToBone)
+                           JointToBone, ToMotion)
 from .processing import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
                          MelSpectrogram, MultiScaleCrop, PoseCompact,
                          RandomCrop, RandomRescale, RandomResizedCrop, Resize,
@@ -35,5 +35,5 @@ __all__ = [
     'LoadKineticsPose', 'GeneratePoseTarget', 'PIMSInit', 'FormatGCNInput',
     'PaddingWithLoop', 'ArrayDecode', 'JointToBone', 'PackActionInputs',
     'PackLocalizationInputs', 'ImgAug', 'TorchVisionWrapper',
-    'PytorchVideoWrapper', 'PoseCompact', 'PreNormalize3D'
+    'PytorchVideoWrapper', 'PoseCompact', 'PreNormalize3D', 'ToMotion'
 ]

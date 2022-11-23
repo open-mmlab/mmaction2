@@ -12,7 +12,8 @@ from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from mmaction.datasets.transforms import (GeneratePoseTarget, LoadKineticsPose,
                                           PaddingWithLoop, PoseDecode,
-                                          UniformSampleFrames, JointToBone)
+                                          UniformSampleFrames, JointToBone,
+                                          ToMotion)
 
 
 class TestPoseLoading:
@@ -408,6 +409,22 @@ class TestPoseLoading:
         results = joint_to_bone(results)
         assert assert_dict_has_keys(results, ['keypoint', 'bone'])
         assert repr(joint_to_bone) == 'JointToBone(dataset=coco, target=bone)'
+
+    @staticmethod
+    def test_to_motion():
+        with pytest.raises(AssertionError):
+            ToMotion()(dict(keypoint=np.random.randn(2, 40, 25, 4)))
+
+        with pytest.raises(KeyError):
+            ToMotion(source='j')(dict(keypoint=np.random.randn(2, 40, 25, 4)))
+
+        results = dict(keypoint=np.random.randn(2, 40, 25, 3))
+        to_motion = ToMotion()
+        results = to_motion(results)
+        assert_array_equal(results['motion'][:, -1, :, :], np.zeros((2, 25, 3)))
+        assert assert_dict_has_keys(results, ['keypoint', 'motion'])
+        assert repr(to_motion) == 'ToMotion(dataset=nturgb+d, ' \
+                                  'source=keypoint, target=motion)'
 
 
 def check_pose_normalize(origin_keypoints, result_keypoints, norm_cfg):
