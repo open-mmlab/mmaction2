@@ -90,7 +90,7 @@ To verify whether MMAction2 is installed correctly, we provide some sample codes
 **Step 1.** Download the config and checkpoint files.
 
 ```shell
-mim download mmaction2 --config tsn_r50_8xb32-1x1x8-100e_kinetics400-rgb --dest .
+mim download mmaction2 --config tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb --dest .
 ```
 
 **Step 2.** Verify the inference demo.
@@ -99,30 +99,37 @@ Option (a). If you install mmaction2 from source, you can run the following comm
 
 ```shell
 # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
-python demo/demo.py tsn_r50_8xb32-1x1x8-100e_kinetics400-rgb.py \
-    tsn_r50_8xb32-1x1x8-100e_kinetics400-rgb_20220818-2692d16c.pth \
+python demo/demo.py tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb.py \
+    tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb_20220906-2692d16c.pth \
     demo/demo.mp4 tools/data/kinetics/label_map_k400.txt
 ```
 
 You will see the top-5 labels with corresponding scores in your terminal.
 
-Option (b). If you install mmaction2 as a python package, you can run the following codes in your python enterpreter, which will do the similar verification:
+Option (b). If you install mmaction2 as a python package, you can run the following codes in your python interpreter, which will do the similar verification:
 
 ```python
+from operator import itemgetter
 from mmaction.apis import init_recognizer, inference_recognizer
 from mmaction.utils import register_all_modules
 
-config_file = 'tsn_r50_8xb32-1x1x8-100e_kinetics400-rgb.py'
-checkpoint_file = 'tsn_r50_8xb32-1x1x8-100e_kinetics400-rgb_20220818-2692d16c.pth'
+config_file = 'tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb.py'
+checkpoint_file = 'tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb_20220906-2692d16c.pth'
 video_file = 'demo/demo.mp4'
 label_file = 'tools/data/kinetics/label_map_k400.txt'
 register_all_modules()  # register all modules and set mmaction2 as the default scope.
 model = init_recognizer(config_file, checkpoint_file, device='cpu')  # or device='cuda:0'
-results = inference_recognizer(model, video_file)
+result = inference_recognizer(model, video_file)
+
+pred_scores = result.pred_scores.item.tolist()
+score_tuples = tuple(zip(range(len(pred_scores)), pred_scores))
+score_sorted = sorted(score_tuples, key=itemgetter(1), reverse=True)
+top5_label = score_sorted[:5]
 
 labels = open(label_file).readlines()
 labels = [x.strip() for x in labels]
-results = [(labels[k[0]], k[1]) for k in results]
+results = [(labels[k[0]], k[1]) for k in top5_label]
+
 print('The top-5 labels with corresponding scores are:')
 for result in results:
     print(f'{result[0]}: ', result[1])
@@ -156,7 +163,7 @@ way. MIM solves such dependencies automatically and makes the installation
 easier. However, it is not a must.
 
 To install MMCV with pip instead of MIM, please follow
-[MMCV installation guides](https://mmcv.readthedocs.io/en/dev-2.x/get_started/installation.html).
+[MMCV installation guides](https://mmcv.readthedocs.io/en/2.x/get_started/installation.html).
 This requires manually specifying a find-url based on PyTorch version and its CUDA version.
 
 For example, the following command install mmcv built for PyTorch 1.10.x and CUDA 11.3.
