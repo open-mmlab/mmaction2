@@ -6,7 +6,7 @@ import torch.nn.functional as F
 from mmcv.cnn import build_norm_layer
 from mmcv.cnn.bricks import DropPath
 from mmcv.cnn.bricks.transformer import FFN, PatchEmbed
-from mmengine.model import BaseModule
+from mmengine.model import BaseModule, ModuleList
 from mmengine.utils import to_2tuple
 from torch import Tensor, nn
 
@@ -315,7 +315,7 @@ class VisionTransformer(BaseModule):
         # stochastic depth decay rule
         dpr = [x.item() for x in torch.linspace(0, drop_path_rate, depth)]
 
-        self.blocks = nn.ModuleList([
+        self.blocks = ModuleList([
             Block(
                 embed_dims=embed_dims,
                 num_heads=num_heads,
