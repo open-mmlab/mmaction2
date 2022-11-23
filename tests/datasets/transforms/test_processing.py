@@ -12,7 +12,7 @@ from mmaction.datasets.transforms import (AudioAmplify, CenterCrop,
                                           MelSpectrogram, MultiScaleCrop,
                                           PoseCompact, RandomCrop,
                                           RandomResizedCrop, Resize, TenCrop,
-                                          ThreeCrop)
+                                          ThreeCrop, PreNormalize3D)
 
 
 def check_crop(origin_imgs, result_imgs, result_bbox, num_crops=1):
@@ -114,6 +114,51 @@ class TestPoseCompact:
         inp = copy.deepcopy(results)
         ret = pose_compact(inp)
         assert ret['img_shape'] == (80, 106)
+
+    @staticmethod
+    def test_pre_normalize3d():
+        target_keys = ['keypoint', 'total_frames', 'body_center']
+
+        results = {}
+        results['keypoint'] = np.random.randn(2, 40, 25, 3)
+        results['total_frames'] = 40
+
+        pre_normalize3d = PreNormalize3D(align_center=True,
+                                         align_spine=True,
+                                         align_shoulder=False)
+
+        inp = copy.deepcopy(results)
+        ret1 = pre_normalize3d(inp)
+
+        inp = copy.deepcopy(ret1)
+        ret2 = pre_normalize3d(inp)
+
+        assert np.array_equal(ret2['body_center'], np.zeros(3))
+        assert np.array_equal(ret1['keypoint'], ret2['keypoint'])
+
+        pre_normalize3d = PreNormalize3D(align_center=True,
+                                         align_spine=False,
+                                         align_shoulder=True)
+
+        inp = copy.deepcopy(results)
+        ret3 = pre_normalize3d(inp)
+
+        inp = copy.deepcopy(ret3)
+        ret4 = pre_normalize3d(inp)
+
+        assert np.array_equal(ret4['body_center'], np.zeros(3))
+        assert np.array_equal(ret3['keypoint'], ret4['keypoint'])
+
+        assert_dict_has_keys(ret1, target_keys)
+        assert_dict_has_keys(ret2, target_keys)
+        assert_dict_has_keys(ret3, target_keys)
+        assert_dict_has_keys(ret4, target_keys)
+        assert repr(pre_normalize3d) == (
+            f'{pre_normalize3d.__class__.__name__}('
+            f'zaxis={pre_normalize3d.zaxis}, '
+            f'xaxis={pre_normalize3d.xaxis}, '
+            f'align_spine={pre_normalize3d.align_spine}, '
+            f'align_center={pre_normalize3d.align_center})')
 
 
 class TestAudio:
@@ -704,7 +749,6 @@ class TestLazy:
 
     @staticmethod
     def test_random_resized_crop_lazy():
-
         target_keys = ['imgs', 'crop_bbox', 'img_shape', 'lazy']
         # There will be a slight difference because of rounding
         eps = 0.01
@@ -888,7 +932,7 @@ class TestLazy:
             [341 / 320, 256 / 240], dtype=np.float32))
         assert resize_results_fuse['img_shape'] == (256, 341)
 
-        assert repr(resize) == (f'{resize.__class__.__name__ }'
+        assert repr(resize) == (f'{resize.__class__.__name__}'
                                 f'(scale={(341, 256)}, keep_ratio={False}, ' +
                                 f'interpolation=bilinear, lazy={True})')
 

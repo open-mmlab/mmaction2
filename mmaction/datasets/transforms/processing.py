@@ -1524,20 +1524,25 @@ class PreNormalize3D(BaseTransform):
             Defaults to ``[0, 1]``.
         xaxis (list[int]): The target X axis for the 3D rotation.
             Defaults to ``[8, 4]``.
-        align_spine (bool): Whether to perform a 3D rotation to align the spine.
+        align_spine (bool): Whether to perform a 3D rotation to
+            align the spine. Defaults to True.
+        align_shoulder (bool): Whether to perform a 3D rotation
+            to align the shoulder. Defaults to True.
+        align_center (bool): Whether to align the body center.
             Defaults to True.
-        align_center (bool): Whether to align the body center. Defaults to True.
     """
 
     def __init__(self,
                  zaxis: List[int] = [0, 1],
                  xaxis: List[int] = [8, 4],
                  align_spine: bool = True,
+                 align_shoulder: bool = True,
                  align_center: bool = True) -> None:
         self.zaxis = zaxis
         self.xaxis = xaxis
-        self.align_spine = align_spine
         self.align_center = align_center
+        self.align_spine = align_spine
+        self.align_shoulder = align_shoulder
 
     def unit_vector(self, vector: np.ndarray) -> np.ndarray:
         """Returns the unit vector of the vector."""
@@ -1614,6 +1619,7 @@ class PreNormalize3D(BaseTransform):
             matrix_z = self.rotation_matrix(axis, angle)
             skeleton = np.einsum('abcd,kd->abck', skeleton, matrix_z)
 
+        if self.align_shoulder:
             joint_rshoulder = skeleton[0, 0, self.xaxis[0]]
             joint_lshoulder = skeleton[0, 0, self.xaxis[1]]
             axis = np.cross(joint_rshoulder - joint_lshoulder, [1, 0, 0])
