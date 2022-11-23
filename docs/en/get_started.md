@@ -178,3 +178,20 @@ MMAction2 can be built for CPU-only environment. In CPU mode you can train, test
 
 Some functionalities are gone in this mode, usually GPU-compiled ops. But don't
 worry, almost all models in MMAction2 don't depend on these ops.
+
+### Using MMAction2 with Docker
+
+We provide a [Dockerfile](https://github.com/open-mmlab/mmaction2/blob/1.x/docker/Dockerfile)
+to build an image. Ensure that your [docker version](https://docs.docker.com/engine/install/) >=19.03.
+
+```shell
+# build an image with PyTorch 1.6.0, CUDA 10.1, CUDNN 7.
+# If you prefer other versions, just modified the Dockerfile
+docker build -f ./docker/Dockerfile --rm -t mmaction2 .
+```
+
+Run it with
+
+```shell
+docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmaction2/data mmaction2
+```
