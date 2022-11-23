@@ -7,11 +7,12 @@ from collections import defaultdict
 import numpy as np
 import pytest
 from mmengine import dump
+from mmengine.testing import assert_dict_has_keys
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from mmaction.datasets.transforms import (GeneratePoseTarget, LoadKineticsPose,
                                           PaddingWithLoop, PoseDecode,
-                                          UniformSampleFrames)
+                                          UniformSampleFrames, JointToBone)
 
 
 class TestPoseLoading:
@@ -112,7 +113,7 @@ class TestPoseLoading:
         assert str(pose_decode) == ('PoseDecode()')
         decode_results = pose_decode(results)
         assert_array_almost_equal(decode_results['keypoint'], kp[:,
-                                                                 frame_inds])
+                                                              frame_inds])
         assert_array_almost_equal(decode_results['keypoint_score'],
                                   kpscore[:, frame_inds])
 
@@ -124,7 +125,6 @@ class TestPoseLoading:
 
     @staticmethod
     def test_load_kinetics_pose():
-
         def get_mode(arr):
             cnt = defaultdict(lambda: 0)
             for num in arr:
@@ -164,7 +164,7 @@ class TestPoseLoading:
                 'source=openpose-18, kwargs={})')
             return_results = load_kinetics_pose(inp)
             assert return_results['keypoint'].shape[:-1] == \
-                return_results['keypoint_score'].shape
+                   return_results['keypoint_score'].shape
 
             num_person = return_results['keypoint'].shape[0]
             num_frame = return_results['keypoint'].shape[1]
@@ -177,7 +177,7 @@ class TestPoseLoading:
                 squeeze=False, max_person=100, source='openpose-18')
             return_results = load_kinetics_pose(inp)
             assert return_results['keypoint'].shape[:-1] == \
-                return_results['keypoint_score'].shape
+                   return_results['keypoint_score'].shape
 
             num_person = return_results['keypoint'].shape[0]
             num_frame = return_results['keypoint'].shape[1]
@@ -191,7 +191,7 @@ class TestPoseLoading:
                 squeeze=True, max_person=100, source='mmpose')
             return_results = load_kinetics_pose(inp)
             assert return_results['keypoint'].shape[:-1] == \
-                return_results['keypoint_score'].shape
+                   return_results['keypoint_score'].shape
 
             num_person = return_results['keypoint'].shape[0]
             num_frame = return_results['keypoint'].shape[1]
@@ -205,7 +205,7 @@ class TestPoseLoading:
                 squeeze=True, max_person=2, source='mmpose')
             return_results = load_kinetics_pose(inp)
             assert return_results['keypoint'].shape[:-1] == \
-                return_results['keypoint_score'].shape
+                   return_results['keypoint_score'].shape
 
             num_person = return_results['keypoint'].shape[0]
             num_frame = return_results['keypoint'].shape[1]
@@ -227,7 +227,7 @@ class TestPoseLoading:
             modality='Pose')
 
         generate_pose_target = GeneratePoseTarget(
-            sigma=1, with_kp=True, left_kp=(0, ), right_kp=(1, ), skeletons=())
+            sigma=1, with_kp=True, left_kp=(0,), right_kp=(1,), skeletons=())
         assert str(generate_pose_target) == ('GeneratePoseTarget(sigma=1, '
                                              'use_score=True, with_kp=True, '
                                              'with_limb=False, skeletons=(), '
@@ -241,7 +241,7 @@ class TestPoseLoading:
         results = dict(img_shape=img_shape, keypoint=kp, modality='Pose')
 
         generate_pose_target = GeneratePoseTarget(
-            sigma=1, with_kp=True, left_kp=(0, ), right_kp=(1, ), skeletons=())
+            sigma=1, with_kp=True, left_kp=(0,), right_kp=(1,), skeletons=())
         return_results = generate_pose_target(results)
         assert return_results['imgs'].shape == (8, 64, 64, 3)
         assert_array_almost_equal(return_results['imgs'][0],
@@ -251,8 +251,8 @@ class TestPoseLoading:
             sigma=1,
             with_kp=False,
             with_limb=True,
-            left_kp=(0, ),
-            right_kp=(1, ),
+            left_kp=(0,),
+            right_kp=(1,),
             skeletons=((0, 1), (1, 2), (0, 2)))
         return_results = generate_pose_target(results)
         assert return_results['imgs'].shape == (8, 64, 64, 3)
@@ -263,8 +263,8 @@ class TestPoseLoading:
             sigma=1,
             with_kp=True,
             with_limb=True,
-            left_kp=(0, ),
-            right_kp=(1, ),
+            left_kp=(0,),
+            right_kp=(1,),
             skeletons=((0, 1), (1, 2), (0, 2)))
         return_results = generate_pose_target(results)
         assert return_results['imgs'].shape == (8, 64, 64, 6)
@@ -276,8 +276,8 @@ class TestPoseLoading:
             with_kp=True,
             with_limb=True,
             double=True,
-            left_kp=(0, ),
-            right_kp=(1, ),
+            left_kp=(0,),
+            right_kp=(1,),
             skeletons=((0, 1), (1, 2), (0, 2)))
         return_results = generate_pose_target(results)
         imgs = return_results['imgs']
@@ -298,7 +298,7 @@ class TestPoseLoading:
             keypoint_score=kpscore,
             modality='Pose')
         generate_pose_target = GeneratePoseTarget(
-            sigma=1, with_kp=True, left_kp=(0, ), right_kp=(1, ), skeletons=())
+            sigma=1, with_kp=True, left_kp=(0,), right_kp=(1,), skeletons=())
         return_results = generate_pose_target(results)
         assert_array_almost_equal(return_results['imgs'], 0)
 
@@ -316,8 +316,8 @@ class TestPoseLoading:
             sigma=1,
             with_kp=False,
             with_limb=True,
-            left_kp=(0, ),
-            right_kp=(1, ),
+            left_kp=(0,),
+            right_kp=(1,),
             skeletons=((0, 1), (1, 2), (0, 2)))
         return_results = generate_pose_target(results)
         assert_array_almost_equal(return_results['imgs'], 0)
@@ -333,7 +333,7 @@ class TestPoseLoading:
             keypoint_score=kpscore,
             modality='Pose')
         generate_pose_target = GeneratePoseTarget(
-            sigma=1, with_kp=True, left_kp=(0, ), right_kp=(1, ), skeletons=())
+            sigma=1, with_kp=True, left_kp=(0,), right_kp=(1,), skeletons=())
         return_results = generate_pose_target(results)
         assert_array_almost_equal(return_results['imgs'], 0)
 
@@ -351,8 +351,8 @@ class TestPoseLoading:
             sigma=1,
             with_kp=False,
             with_limb=True,
-            left_kp=(0, ),
-            right_kp=(1, ),
+            left_kp=(0,),
+            right_kp=(1,),
             skeletons=((0, 1), (1, 2), (0, 2)))
         return_results = generate_pose_target(results)
         assert_array_almost_equal(return_results['imgs'], 0)
@@ -367,6 +367,47 @@ class TestPoseLoading:
         assert sampling_results['num_clips'] == 1
         assert_array_equal(sampling_results['frame_inds'],
                            np.array([0, 1, 2, 0, 1, 2]))
+
+    @staticmethod
+    def test_joint_to_bone():
+        with pytest.raises(ValueError):
+            JointToBone(dataset='invalid')
+
+        with pytest.raises(AssertionError):
+            JointToBone()(dict(keypoint=np.random.randn(2, 40, 25, 4)))
+
+        results = dict(keypoint=np.random.randn(2, 40, 25, 3))
+        joint_to_bone = JointToBone(dataset='nturgb+d')
+        center_index = 20
+        results = joint_to_bone(results)
+        assert_array_equal(results['keypoint'][..., center_index, :],
+                           np.zeros((2, 40, 3)))
+
+        results = dict(keypoint=np.random.randn(2, 40, 18, 3))
+        joint_to_bone = JointToBone(dataset='openpose')
+        center_index = 0
+        center_score = results['keypoint'][..., center_index, 2]
+        results = joint_to_bone(results)
+        assert_array_equal(results['keypoint'][..., center_index, :2],
+                           np.zeros((2, 40, 2)))
+        assert_array_almost_equal(results['keypoint'][..., center_index, 2],
+                                  center_score)
+
+        results = dict(keypoint=np.random.randn(2, 40, 17, 3))
+        joint_to_bone = JointToBone(dataset='coco')
+        center_index = 0
+        center_score = results['keypoint'][..., center_index, 2]
+        results = joint_to_bone(results)
+        assert_array_equal(results['keypoint'][..., center_index, :2],
+                           np.zeros((2, 40, 2)))
+        assert_array_almost_equal(results['keypoint'][..., center_index, 2],
+                                  center_score)
+
+        results = dict(keypoint=np.random.randn(2, 40, 17, 3))
+        joint_to_bone = JointToBone(dataset='coco', target='bone')
+        results = joint_to_bone(results)
+        assert assert_dict_has_keys(results, ['keypoint', 'bone'])
+        assert repr(joint_to_bone) == 'JointToBone(dataset=coco, target=bone)'
 
 
 def check_pose_normalize(origin_keypoints, result_keypoints, norm_cfg):

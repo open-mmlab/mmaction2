@@ -1636,6 +1636,7 @@ class PreNormalize3D(BaseTransform):
         repr_str = (f'{self.__class__.__name__}('
                     f'zaxis={self.zaxis}, '
                     f'xaxis={self.xaxis}, '
+                    f'align_center={self.align_center}, '
                     f'align_spine={self.align_spine}, '
-                    f'align_center={self.align_center})')
+                    f'align_shoulder={self.align_shoulder})')
         return repr_str

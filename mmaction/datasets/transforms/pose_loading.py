@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import Dict, List
 import copy as cp
 import pickle
 
@@ -680,4 +681,77 @@ class PaddingWithLoop(BaseTransform):
         repr_str = (f'{self.__class__.__name__}('
                     f'clip_len={self.clip_len}, '
                     f'num_clips={self.num_clips})')
+        return repr_str
+
+
+@TRANSFORMS.register_module()
+class JointToBone(BaseTransform):
+    """Convert the joint information to bone information.
+
+    Required Keys:
+
+        - keypoint
+
+    Modified Keys:
+
+        - keypoint
+
+    Args:
+        dataset (str): Define the type of dataset: 'nturgb+d', 'openpose',
+            'coco'. Defaults to ``'nturgb+d'``.
+        target (str): The target key for the bone information.
+            Defaults to ``'keypoint'``.
+    """
+
+    def __init__(self,
+                 dataset: str = 'nturgb+d',
+                 target: str = 'keypoint') -> None:
+        self.dataset = dataset
+        self.target = target
+        if self.dataset not in ['nturgb+d', 'openpose', 'coco']:
+            raise ValueError(
+                f'The dataset type {self.dataset} is not supported')
+        if self.dataset == 'nturgb+d':
+            self.pairs = [(0, 1), (1, 20), (2, 20), (3, 2), (4, 20), (5, 4),
+                          (6, 5), (7, 6), (8, 20), (9, 8), (10, 9), (11, 10),
+                          (12, 0), (13, 12), (14, 13), (15, 14), (16, 0),
+                          (17, 16), (18, 17), (19, 18), (21, 22), (20, 20),
+                          (22, 7), (23, 24), (24, 11)]
+        elif self.dataset == 'openpose':
+            self.pairs = ((0, 0), (1, 0), (2, 1), (3, 2), (4, 3), (5, 1),
+                          (6, 5), (7, 6), (8, 2), (9, 8), (10, 9), (11, 5),
+                          (12, 11), (13, 12), (14, 0), (15, 0), (16, 14), (17,
+                                                                           15))
+        elif self.dataset == 'coco':
+            self.pairs = ((0, 0), (1, 0), (2, 0), (3, 1), (4, 2), (5, 0),
+                          (6, 0), (7, 5), (8, 6), (9, 7), (10, 8), (11, 0),
+                          (12, 0), (13, 11), (14, 12), (15, 13), (16, 14))
+
+    def transform(self, results: Dict) -> Dict:
+        """The transform function of :class:`JointToBone`.
+
+        Args:
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
+        """
+        keypoint = results['keypoint']
+        M, T, V, C = keypoint.shape
+        bone = np.zeros((M, T, V, C), dtype=np.float32)
+
+        assert C in [2, 3]
+        for v1, v2 in self.pairs:
+            bone[..., v1, :] = keypoint[..., v1, :] - keypoint[..., v2, :]
+            if C == 3 and self.dataset in ['openpose', 'coco']:
+                score = (keypoint[..., v1, 2] + keypoint[..., v2, 2]) / 2
+                bone[..., v1, 2] = score
+
+        results[self.target] = bone
+        return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'dataset={self.dataset}, '
+                    f'target={self.target})')
         return repr_str

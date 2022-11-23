@@ -115,6 +115,7 @@ class STGCN(BaseModule):
         >>>                      num_frames, num_joints, 3)
         >>> output = model(inputs)
         >>> print(output.shape)
+        >>>
         >>> # coco layout
         >>> num_joints = 17
         >>> model = STGCN(graph_cfg=dict(layout='coco', mode=mode))

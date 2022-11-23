@@ -5,7 +5,7 @@ import mmcv
 import numpy as np
 import pytest
 from mmengine.testing import assert_dict_has_keys
-from numpy.testing import assert_array_almost_equal
+from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from mmaction.datasets.transforms import (AudioAmplify, CenterCrop,
                                           ColorJitter, Flip, Fuse,
@@ -65,7 +65,8 @@ def check_flip(origin_imgs, result_imgs, flip_type):
     else:
         # yapf: disable
         for i in range(n):
-            if np.any(result_imgs[i] != np.transpose(np.fliplr(np.transpose(origin_imgs[i], (1, 0, 2))), (1, 0, 2))):  # noqa:E501
+            if np.any(result_imgs[i] != np.transpose(np.fliplr(np.transpose(origin_imgs[i], (1, 0, 2))),
+                                                     (1, 0, 2))):  # noqa:E501
                 return False
         # yapf: enable
     return True
@@ -119,9 +120,7 @@ class TestPoseCompact:
     def test_pre_normalize3d():
         target_keys = ['keypoint', 'total_frames', 'body_center']
 
-        results = {}
-        results['keypoint'] = np.random.randn(2, 40, 25, 3)
-        results['total_frames'] = 40
+        results = dict(keypoint=np.random.randn(2, 40, 25, 3), total_frames=40)
 
         pre_normalize3d = PreNormalize3D(align_center=True,
                                          align_spine=True,
@@ -133,8 +132,8 @@ class TestPoseCompact:
         inp = copy.deepcopy(ret1)
         ret2 = pre_normalize3d(inp)
 
-        assert np.array_equal(ret2['body_center'], np.zeros(3))
-        assert np.array_equal(ret1['keypoint'], ret2['keypoint'])
+        assert_array_equal(ret2['body_center'], np.zeros(3))
+        assert_array_equal(ret1['keypoint'], ret2['keypoint'])
 
         pre_normalize3d = PreNormalize3D(align_center=True,
                                          align_spine=False,
@@ -146,19 +145,13 @@ class TestPoseCompact:
         inp = copy.deepcopy(ret3)
         ret4 = pre_normalize3d(inp)
 
-        assert np.array_equal(ret4['body_center'], np.zeros(3))
-        assert np.array_equal(ret3['keypoint'], ret4['keypoint'])
+        assert_array_equal(ret4['body_center'], np.zeros(3))
+        assert_array_equal(ret3['keypoint'], ret4['keypoint'])
 
-        assert_dict_has_keys(ret1, target_keys)
-        assert_dict_has_keys(ret2, target_keys)
-        assert_dict_has_keys(ret3, target_keys)
-        assert_dict_has_keys(ret4, target_keys)
-        assert repr(pre_normalize3d) == (
-            f'{pre_normalize3d.__class__.__name__}('
-            f'zaxis={pre_normalize3d.zaxis}, '
-            f'xaxis={pre_normalize3d.xaxis}, '
-            f'align_spine={pre_normalize3d.align_spine}, '
-            f'align_center={pre_normalize3d.align_center})')
+        assert assert_dict_has_keys(ret1, target_keys)
+        assert repr(pre_normalize3d) == 'PreNormalize3D(zaxis=[0, 1], ' \
+                                        'xaxis=[8, 4], align_center=True, ' \
+                                        'align_spine=False, align_shoulder=True)'
 
 
 class TestAudio:
