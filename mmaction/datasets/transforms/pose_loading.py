@@ -865,3 +865,49 @@ class MergeSkeFeat(BaseTransform):
                     f'target={self.target}, '
                     f'axis={self.axis})')
         return repr_str
+
+
+# @TRANSFORMS.register_module()
+# class GenSkeFeat(BaseTransform):
+#     """Generate skeleton features.
+#
+#     Required Keys:
+#
+#         - keypoint
+#
+#     Args:
+#         feat_list (list[str]): The list of the keys of features.
+#             Defaults to ``['keypoint']``.
+#         target (str): The target key for the merged multi-stream information.
+#             Defaults to ``'keypoint'``.
+#         axis (int): The axis along which the features will be joined.
+#             Defaults to -1.
+#     """
+#
+#
+#     def __init__(self,
+#                  dataset='nturgb+d',
+#                  feats=['j'],
+#                  axis=-1):
+#         self.dataset = dataset
+#         self.feats = feats
+#         self.axis = axis
+#         ops = []
+#         if 'b' in feats or 'bm' in feats:
+#             ops.append(JointToBone(dataset=dataset, target='b'))
+#         ops.append(Rename({'keypoint': 'j'}))
+#         if 'jm' in feats:
+#             ops.append(ToMotion(dataset=dataset, source='j', target='jm'))
+#         if 'bm' in feats:
+#             ops.append(ToMotion(dataset=dataset, source='b', target='bm'))
+#         ops.append(MergeSkeFeat(feat_list=feats, axis=axis))
+#         self.ops = Compose(ops)
+#
+#     def transform(self, results: Dict) -> Dict:
+#         if 'keypoint_score' in results and 'keypoint' in results:
+#             assert self.dataset != 'nturgb+d'
+#             assert results['keypoint'].shape[-1] == 2, 'Only 2D keypoints have keypoint_score. '
+#             keypoint = results.pop('keypoint')
+#             keypoint_score = results.pop('keypoint_score')
+#             results['keypoint'] = np.concatenate([keypoint, keypoint_score[..., None]], -1)
+#         return self.ops(results)
