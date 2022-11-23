@@ -191,11 +191,12 @@ def test_tpn():
     config = get_recognizer_cfg(
         'tpn/tpn-tsm_imagenet-pretrained-r50_8xb8-1x1x8-150e_sthv1-rgb.py')
     config.model['backbone']['pretrained'] = None
+    config.model['backbone']['num_segments'] = 4
     config.model.test_cfg['fcn_test'] = False
     recognizer = MODELS.build(config.model)
     recognizer.cfg = config
 
-    input_shape = (1, 8, 3, 32, 32)
+    input_shape = (1, 4, 3, 16, 16)
     _do_test_2D_models(recognizer, target_layer_name, input_shape, 174)
 
     config = get_recognizer_cfg(
@@ -204,7 +205,7 @@ def test_tpn():
     config.model.test_cfg['fcn_test'] = False
     recognizer = MODELS.build(config.model)
     recognizer.cfg = config
-    input_shape = (1, 3, 3, 8, 32, 32)
+    input_shape = (1, 3, 3, 4, 16, 16)
     _do_test_3D_models(recognizer, target_layer_name, input_shape)
 
 
