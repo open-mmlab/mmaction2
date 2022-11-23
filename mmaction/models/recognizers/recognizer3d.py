@@ -83,7 +83,10 @@ class Recognizer3D(BaseRecognizer):
 
                     return tuple(out_feats)
 
-                x = recursively_cat(feats)
+                if isinstance(feats[0], tuple):
+                    x = recursively_cat(feats)
+                else:
+                    x = torch.cat(feats)
             else:
                 x = self.backbone(inputs)
                 if self.with_neck:
