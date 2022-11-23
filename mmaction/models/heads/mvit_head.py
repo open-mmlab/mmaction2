@@ -13,6 +13,9 @@ from .base import BaseHead
 class MViTHead(BaseHead):
     """Classification head for Multi-scale ViT.
 
+    A PyTorch implement of : `MViTv2: Improved Multiscale Vision Transformers
+    for Classification and Detection <https://arxiv.org/abs/2112.01526>`_
+
     Args:
         num_classes (int): Number of classes to be classified.
         in_channels (int): Number of channels in input feature.

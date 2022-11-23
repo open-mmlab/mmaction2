@@ -270,23 +270,32 @@ class UniformSampleFrames(BaseTransform):
     """Uniformly sample frames from the video.
 
     To sample an n-frame clip from the video. UniformSampleFrames basically
-    divide the video into n segments of equal length and randomly sample one
+    divides the video into n segments of equal length and randomly samples one
     frame from each segment. To make the testing results reproducible, a
     random seed is set during testing, to make the sampling results
     deterministic.
 
-    Required keys are "total_frames", "start_index" , added or modified keys
-    are "frame_inds", "clip_len", "frame_interval" and "num_clips".
+    Required keys:
+
+    - total_frames
+    - start_index
+
+    Added keys:
+
+    - frame_inds
+    - clip_len
+    - frame_interval
+    - num_clips
 
     Args:
         clip_len (int): Frames of each sampled output clip.
         num_clips (int): Number of clips to be sampled. Default: 1.
         test_mode (bool): Store True when building test or validation dataset.
             Default: False.
+        seed (int): The random seed used during test time. Default: 255.
         out_of_bound_opt (str): The way to deal with out of bounds frame
             indexes. Available options are 'loop', 'repeat_frame'.
             Default: 'loop'.
-        seed (int): The random seed used during test time. Default: 255.
     """
 
     def __init__(self,

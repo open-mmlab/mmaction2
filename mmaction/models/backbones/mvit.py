@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Optional, Sequence
+from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 import numpy as np
 import torch
@@ -17,11 +17,11 @@ from mmaction.registry import MODELS
 from ..utils.embed import PatchEmbed3D
 
 
-def resize_pos_embed(pos_embed,
-                     src_shape,
-                     dst_shape,
-                     mode='trilinear',
-                     num_extra_tokens=1):
+def resize_pos_embed(pos_embed: torch.Tensor,
+                     src_shape: Tuple[int],
+                     dst_shape: Tuple[int],
+                     mode: str = 'trilinear',
+                     num_extra_tokens: int = 1) -> torch.Tensor:
     """Resize pos_embed weights.
 
     Args:
@@ -63,7 +63,8 @@ def resize_pos_embed(pos_embed,
     return torch.cat((extra_tokens, dst_weight), dim=1)
 
 
-def resize_decomposed_rel_pos(rel_pos, q_size, k_size):
+def resize_decomposed_rel_pos(rel_pos: torch.Tensor, q_size: int,
+                              k_size: int) -> torch.Tensor:
     """Get relative positional embeddings according to the relative positions
     of query and key sizes.
 
@@ -100,14 +101,14 @@ def resize_decomposed_rel_pos(rel_pos, q_size, k_size):
     return resized[relative_coords.long()]
 
 
-def add_decomposed_rel_pos(attn,
-                           q,
-                           q_shape,
-                           k_shape,
-                           rel_pos_h,
-                           rel_pos_w,
-                           rel_pos_t,
-                           with_cls_token=False):
+def add_decomposed_rel_pos(attn: torch.Tensor,
+                           q: torch.Tensor,
+                           q_shape: Sequence[int],
+                           k_shape: Sequence[int],
+                           rel_pos_h: torch.Tensor,
+                           rel_pos_w: torch.Tensor,
+                           rel_pos_t: torch.Tensor,
+                           with_cls_token: bool = False) -> torch.Tensor:
     """Spatiotemporal Relative Positional Embeddings."""
     sp_idx = 1 if with_cls_token else 0
     B, num_heads, _, C = q.shape
@@ -155,11 +156,11 @@ class MLP(BaseModule):
     """
 
     def __init__(self,
-                 in_channels,
-                 hidden_channels=None,
-                 out_channels=None,
-                 act_cfg=dict(type='GELU'),
-                 init_cfg=None):
+                 in_channels: int,
+                 hidden_channels: Optional[int] = None,
+                 out_channels: Optional[int] = None,
+                 act_cfg: Dict = dict(type='GELU'),
+                 init_cfg: Optional[Dict] = None) -> None:
         super().__init__(init_cfg=init_cfg)
         out_channels = out_channels or in_channels
         hidden_channels = hidden_channels or in_channels
@@ -167,7 +168,7 @@ class MLP(BaseModule):
         self.act = build_activation_layer(act_cfg)
         self.fc2 = nn.Linear(hidden_channels, out_channels)
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.fc1(x)
         x = self.act(x)
         x = self.fc2(x)
@@ -176,9 +177,9 @@ class MLP(BaseModule):
 
 def attention_pool(x: torch.Tensor,
                    pool: nn.Module,
-                   in_size: tuple,
+                   in_size: Tuple[int],
                    with_cls_token: bool = False,
-                   norm: Optional[nn.Module] = None):
+                   norm: Optional[nn.Module] = None) -> tuple:
     """Pooling the feature tokens.
 
     Args:
@@ -260,20 +261,20 @@ class MultiScaleAttention(BaseModule):
     """
 
     def __init__(self,
-                 in_dims,
-                 out_dims,
-                 num_heads,
-                 qkv_bias=True,
-                 norm_cfg=dict(type='LN'),
-                 pool_kernel=(3, 3, 3),
-                 stride_q=(1, 1, 1),
-                 stride_kv=(1, 1, 1),
-                 rel_pos_embed=True,
-                 residual_pooling=True,
-                 input_size=None,
-                 rel_pos_zero_init=False,
-                 with_cls_token=True,
-                 init_cfg=None):
+                 in_dims: int,
+                 out_dims: int,
+                 num_heads: int,
+                 qkv_bias: bool = True,
+                 norm_cfg: Dict = dict(type='LN'),
+                 pool_kernel: Tuple[int] = (3, 3, 3),
+                 stride_q: Tuple[int] = (1, 1, 1),
+                 stride_kv: Tuple[int] = (1, 1, 1),
+                 rel_pos_embed: bool = True,
+                 residual_pooling: bool = True,
+                 input_size: Optional[Tuple[int]] = None,
+                 rel_pos_zero_init: bool = False,
+                 with_cls_token: bool = True,
+                 init_cfg: Optional[dict] = None) -> None:
         super().__init__(init_cfg=init_cfg)
         self.num_heads = num_heads
         self.with_cls_token = with_cls_token
@@ -322,7 +323,7 @@ class MultiScaleAttention(BaseModule):
             self.rel_pos_t = nn.Parameter(
                 torch.zeros(2 * input_size[0] - 1, head_dim))
 
-    def init_weights(self):
+    def init_weights(self) -> None:
         """Weight initialization."""
         super().init_weights()
 
@@ -336,7 +337,7 @@ class MultiScaleAttention(BaseModule):
             trunc_normal_(self.rel_pos_w, std=0.02)
             trunc_normal_(self.rel_pos_t, std=0.02)
 
-    def forward(self, x, in_size):
+    def forward(self, x: torch.Tensor, in_size: Tuple[int]) -> tuple:
         """Forward the MultiScaleAttention."""
         B, N, _ = x.shape  # (B, H*W, C)
 
@@ -427,25 +428,25 @@ class MultiScaleBlock(BaseModule):
 
     def __init__(
         self,
-        in_dims,
-        out_dims,
-        num_heads,
-        mlp_ratio=4.0,
-        qkv_bias=True,
-        drop_path=0.0,
-        norm_cfg=dict(type='LN'),
-        act_cfg=dict(type='GELU'),
-        qkv_pool_kernel=(3, 3, 3),
-        stride_q=(1, 1, 1),
-        stride_kv=(1, 1, 1),
-        rel_pos_embed=True,
-        residual_pooling=True,
-        with_cls_token=True,
-        dim_mul_in_attention=True,
-        input_size=None,
-        rel_pos_zero_init=False,
-        init_cfg=None,
-    ):
+        in_dims: int,
+        out_dims: int,
+        num_heads: int,
+        mlp_ratio: float = 4.0,
+        qkv_bias: bool = True,
+        drop_path: float = 0.0,
+        norm_cfg: Dict = dict(type='LN'),
+        act_cfg: Dict = dict(type='GELU'),
+        qkv_pool_kernel: Tuple = (3, 3, 3),
+        stride_q: Tuple = (1, 1, 1),
+        stride_kv: Tuple = (1, 1, 1),
+        rel_pos_embed: bool = True,
+        residual_pooling: bool = True,
+        with_cls_token: bool = True,
+        dim_mul_in_attention: bool = True,
+        input_size: Optional[Tuple[int]] = None,
+        rel_pos_zero_init: bool = False,
+        init_cfg: Optional[Dict] = None,
+    ) -> None:
         super().__init__(init_cfg=init_cfg)
         self.with_cls_token = with_cls_token
         self.in_dims = in_dims
@@ -499,7 +500,7 @@ class MultiScaleBlock(BaseModule):
             self.pool_skip = None
             self.init_out_size = input_size
 
-    def forward(self, x, in_size):
+    def forward(self, x: torch.Tensor, in_size: Tuple[int]) -> tuple:
         x_norm = self.norm1(x)
         x_attn, out_size = self.attn(x_norm, in_size)
 
@@ -647,33 +648,33 @@ class MViT(BaseModule):
     num_extra_tokens = 1
 
     def __init__(self,
-                 arch='base',
-                 spatial_size=224,
-                 temporal_size=16,
-                 in_channels=3,
-                 pretrained=None,
-                 out_scales=-1,
-                 drop_path_rate=0.,
-                 use_abs_pos_embed=False,
-                 interpolate_mode='trilinear',
-                 pool_kernel=(3, 3, 3),
-                 dim_mul=2,
-                 head_mul=2,
-                 adaptive_kv_stride=(1, 8, 8),
-                 rel_pos_embed=True,
-                 residual_pooling=True,
-                 dim_mul_in_attention=True,
-                 with_cls_token=True,
-                 output_cls_token=True,
-                 rel_pos_zero_init=False,
-                 mlp_ratio=4.,
-                 qkv_bias=True,
-                 norm_cfg=dict(type='LN', eps=1e-6),
-                 patch_cfg=dict(
+                 arch: str = 'base',
+                 spatial_size: int = 224,
+                 temporal_size: int = 16,
+                 in_channels: int = 3,
+                 pretrained: Optional[str] = None,
+                 out_scales: Union[int, Sequence[int]] = -1,
+                 drop_path_rate: float = 0.,
+                 use_abs_pos_embed: bool = False,
+                 interpolate_mode: str = 'trilinear',
+                 pool_kernel: tuple = (3, 3, 3),
+                 dim_mul: int = 2,
+                 head_mul: int = 2,
+                 adaptive_kv_stride: tuple = (1, 8, 8),
+                 rel_pos_embed: bool = True,
+                 residual_pooling: bool = True,
+                 dim_mul_in_attention: bool = True,
+                 with_cls_token: bool = True,
+                 output_cls_token: bool = True,
+                 rel_pos_zero_init: bool = False,
+                 mlp_ratio: float = 4.,
+                 qkv_bias: bool = True,
+                 norm_cfg: Dict = dict(type='LN', eps=1e-6),
+                 patch_cfg: Dict = dict(
                      kernel_size=(3, 7, 7),
                      stride=(2, 4, 4),
                      padding=(1, 3, 3)),
-                 init_cfg=None):
+                 init_cfg: Optional[Dict] = None) -> None:
         super().__init__(init_cfg=init_cfg)
 
         self.pretrained = pretrained
@@ -819,7 +820,8 @@ class MViT(BaseModule):
         if self.use_abs_pos_embed:
             trunc_normal_(self.pos_embed, std=0.02)
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) ->\
+            Tuple[Union[torch.Tensor, List[torch.Tensor]]]:
         """Forward the MViT."""
         B = x.shape[0]
         x, patch_resolution = self.patch_embed(x)
