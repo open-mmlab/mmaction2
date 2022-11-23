@@ -290,11 +290,11 @@ class UniformSampleFrames(BaseTransform):
     """
 
     def __init__(self,
-                 clip_len,
-                 num_clips=1,
-                 test_mode=False,
-                 seed=255,
-                 out_of_bound_opt='loop'):
+                 clip_len: int,
+                 num_clips: int = 1,
+                 test_mode: bool = False,
+                 seed: int = 255,
+                 out_of_bound_opt: str = 'loop') -> None:
 
         self.clip_len = clip_len
         self.num_clips = num_clips
@@ -303,7 +303,7 @@ class UniformSampleFrames(BaseTransform):
         self.out_of_bound_opt = out_of_bound_opt
         assert self.out_of_bound_opt in ['loop', 'repeat_frame']
 
-    def _get_train_clips(self, num_frames):
+    def _get_train_clips(self, num_frames: int):
         """Uniformly sample indices for training clips.
 
         Args:
@@ -333,7 +333,7 @@ class UniformSampleFrames(BaseTransform):
             inds = bst + offset
         return inds
 
-    def _get_test_clips(self, num_frames):
+    def _get_test_clips(self, num_frames: int):
         """Uniformly sample indices for testing clips.
 
         Args:
@@ -380,7 +380,7 @@ class UniformSampleFrames(BaseTransform):
             inds = np.concatenate(all_inds)
         return inds
 
-    def _get_repeat_sample_clips(self, num_frames):
+    def _get_repeat_sample_clips(self, num_frames: int) -> np.array:
         """Repeat sample when video is shorter than clip_len Modified from
         https://github.com/facebookresearch/SlowFast/blob/64ab
         cc90ccfdcbb11cf91d6e525bed60e92a8796/slowfast/datasets/ssv2.py#L159.
@@ -409,7 +409,7 @@ class UniformSampleFrames(BaseTransform):
 
         return np.array(inds)
 
-    def transform(self, results):
+    def transform(self, results: dict):
         num_frames = results['total_frames']
 
         if self.out_of_bound_opt == 'loop':
