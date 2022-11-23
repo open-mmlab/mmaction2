@@ -816,3 +816,52 @@ class ToMotion(BaseTransform):
                     f'source={self.source}, '
                     f'target={self.target})')
         return repr_str
+
+
+@TRANSFORMS.register_module()
+class MergeSkeFeat(BaseTransform):
+    """Merge multi-stream features.
+
+    Required Keys:
+
+        - keypoint
+
+    Args:
+        feat_list (list[str]): The list of the keys of features.
+            Defaults to ``['keypoint']``.
+        target (str): The target key for the merged multi-stream information.
+            Defaults to ``'keypoint'``.
+        axis (int): The axis along which the features will be joined.
+            Defaults to -1.
+    """
+
+    def __init__(self,
+                 feat_list: List[str] = ['keypoint'],
+                 target: str = 'keypoint',
+                 axis: int = -1) -> None:
+        self.feat_list = feat_list
+        self.target = target
+        self.axis = axis
+
+    def transform(self, results: Dict) -> Dict:
+        """The transform function of :class:`MergeSkeFeat`.
+
+        Args:
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
+        """
+        feats = []
+        for name in self.feat_list:
+            feats.append(results.pop(name))
+        feats = np.concatenate(feats, axis=self.axis)
+        results[self.target] = feats
+        return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'feat_list={self.feat_list}, '
+                    f'target={self.target}, '
+                    f'axis={self.axis})')
+        return repr_str

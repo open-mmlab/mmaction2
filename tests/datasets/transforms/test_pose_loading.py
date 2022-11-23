@@ -13,7 +13,7 @@ from numpy.testing import assert_array_almost_equal, assert_array_equal
 from mmaction.datasets.transforms import (GeneratePoseTarget, LoadKineticsPose,
                                           PaddingWithLoop, PoseDecode,
                                           UniformSampleFrames, JointToBone,
-                                          ToMotion)
+                                          ToMotion, MergeSkeFeat)
 
 
 class TestPoseLoading:
