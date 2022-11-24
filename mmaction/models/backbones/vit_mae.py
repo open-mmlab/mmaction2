@@ -246,7 +246,7 @@ class VisionTransformer(BaseModule):
         use_mean_pooling (bool): If True, take the mean pooling over all
             positions. Defaults to True.
         pretrained (str, optional): Name of pretrained model. Default: None.
-        init_cfg (dict or list[Dict]): Initialization config dict. Defaults to
+        init_cfg (dict or list[dict]): Initialization config dict. Defaults to
             ``[
             dict(type='TruncNormal', layer='Linear', std=0.02, bias=0.),
             dict(type='Constant', layer='LayerNorm', val=1., bias=0.)

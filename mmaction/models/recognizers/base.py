@@ -8,7 +8,7 @@ from mmengine.model import BaseModel, merge_dict
 
 from mmaction.registry import MODELS
 from mmaction.utils import (ConfigType, ForwardResults, OptConfigType,
-                            OptMultiConfig, OptSampleList, SampleList)
+                            OptSampleList, SampleList)
 
 
 class BaseRecognizer(BaseModel, metaclass=ABCMeta):
