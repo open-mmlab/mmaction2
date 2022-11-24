@@ -448,9 +448,9 @@ The `mmaction.core` package is renamed to [`mmaction.engine`](mmaction.engine).
 
 The documentation can be found [here](mmaction.datasets)
 
-#### Changes in [`BaseDataset`](mmaction.datasets.Base):
+#### Changes in [`BaseActionDataset`](mmaction.datasets.BaseActionDataset):
 
-|   Method of Dataset    |                    Changes                    |
+|         Method         |                    Changes                    |
 | :--------------------: | :-------------------------------------------: |
 | `prepare_train_frames` |          Replaced by `get_data_info`          |
 | `preprare_test_frames` |          Replaced by `get_data_info`          |
@@ -458,7 +458,7 @@ The documentation can be found [here](mmaction.datasets)
 |     `dump_results`     | Removed, use `mmengine.evaluator.DumpResults` |
 |   `load_annotations`   |         Replaced by `load_data_list`          |
 
-Now, you can write a new Dataset class inherited from \[BaseDataset\] and overwrite `load_data_list` only. To load more data information, you could overwrite `get_data_info` like `RawframeDataset` and `AVADataset`.
+Now, you can write a new Dataset class inherited from `BaseActionDataset` and overwrite `load_data_list` only. To load more data information, you could overwrite `get_data_info` like `RawframeDataset` and `AVADataset`.
 The `mmaction.datasets.pipelines` is renamed to `mmaction.datasets.transforms` and the `mmaction.datasets.pipelines.augmentations` is renamed to `mmaction.datasets.pipelines.processing`.
 
 ### `mmaction.models`
@@ -467,23 +467,23 @@ The documentation can be found [here](mmaction.models). The interface of all **b
 
 #### Changes in [`BaseRecognizer`](mmaction.models.BaseRecognizer):
 
-| Method of recognizer |                                                                     Changes                                                                      |
-| :------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------: |
-|    `extract_feat`    |                                                                    No changes                                                                    |
-|      `forward`       | Now only accepts three arguments: `inputs`, `data_samples` and `mode`. See [the documentation](mmaction.models.BaseRecognizer) for more details. |
-|   `forward_train`    |                                                               Replaced by `loss`.                                                                |
-|    `forward_test`    |                                                              Replaced by `predict`.                                                              |
-|     `train_step`     |              The `optimizer` argument is replaced by `optim_wrapper` and it accepts [`OptimWrapper`](mmengine.optim.OptimWrapper).               |
-|      `val_step`      |                                   The original `val_step` is the same as `train_step`, now it calls `predict`.                                   |
-|     `test_step`      |                                                   New method, and it's the same as `val_step`.                                                   |
+|     Method      |                                                                                Changes                                                                                 |
+| :-------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| `extract_feat`  | Enhanced method, which now supports output features of three stages (`backbone`, `neck`, `head`) and can handle different modes, such as `train_mode` and `test_mode`. |
+|    `forward`    |            Now only accepts three arguments: `inputs`, `data_samples` and `mode`. See [the documentation](mmaction.models.BaseRecognizer) for more details.            |
+| `forward_train` |                                                                          Replaced by `loss`.                                                                           |
+| `forward_test`  |                                                                         Replaced by `predict`.                                                                         |
+|  `train_step`   |                         The `optimizer` argument is replaced by `optim_wrapper` and it accepts [`OptimWrapper`](mmengine.optim.OptimWrapper).                          |
+|   `val_step`    |                                              The original `val_step` is the same as `train_step`, now it calls `predict`.                                              |
+|   `test_step`   |                                                              New method, and it's the same as `val_step`.                                                              |
 
-#### Changes in [heads](mmaction.models.heads)
+#### Changes in [BaseHead](mmaction.models.BaseHead):
 
-| Function  |                                                                          Changes                                                                           |
-| :-------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| `forward` |                                                                         No changes                                                                         |
-|  `loss`   | It accepts `data_samples` instead of `labels` to calculate loss. The `data_samples` is a list of [ActionDataSample](mmaction.structures.ActionDataSample). |
-| `predict` |                                                    New method, and it returns the recognition results.                                                     |
+|  Method   |                                                                                        Changes                                                                                         |
+| :-------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| `forward` |                                                                                       No changes                                                                                       |
+|  `loss`   | It accepts `feats` and `data_samples` instead of `cls_score` and `labels` to calculate loss. The `data_samples` is a list of [ActionDataSample](mmaction.structures.ActionDataSample). |
+| `predict` |                                                  New method. It accepts `feats` and `data_samples` to predict classification scores.                                                   |
 
 ### `mmaction.utils`
 
