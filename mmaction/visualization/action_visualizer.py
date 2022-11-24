@@ -203,7 +203,7 @@ class ActionVisualizer(Visualizer):
 
         resulted_video = []
         for frame_idx, frame in enumerate(video):
-            frame_name = 'frame %d of %s' % (frame_idx, name)
+            frame_name = 'frame %d of %s' % (frame_idx + 1, name)
             if rescale_factor is not None:
                 frame = mmcv.imrescale(frame, rescale_factor)
 
