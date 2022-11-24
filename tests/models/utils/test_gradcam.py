@@ -1,4 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import platform
+
 import pytest
 import torch
 
@@ -185,6 +187,7 @@ def test_csn():
     _do_test_3D_models(recognizer, target_layer_name, input_shape)
 
 
+@pytest.mark.skipif(platform.system() == 'Windows', reason='Windows mem limit')
 def test_tpn():
     target_layer_name = 'backbone/layer4/1/relu'
 
