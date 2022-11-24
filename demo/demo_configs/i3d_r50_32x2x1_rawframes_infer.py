@@ -3,8 +3,6 @@ _base_ = ['../../configs/_base_/models/i3d_r50.py']
 
 # dataset settings
 dataset_type = 'RawframeDataset'
-img_norm_cfg = dict(
-    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_bgr=False)
 test_pipeline = [
     dict(
         type='SampleFrames',
