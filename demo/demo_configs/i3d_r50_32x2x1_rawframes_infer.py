@@ -18,8 +18,8 @@ test_pipeline = [
 ]
 
 test_dataloader = dict(
-    videos_per_gpu=1,
-    workers_per_gpu=2,
+    batch_size=1,
+    num_workers=2,
     dataset=dict(
         type=dataset_type,
         ann_file=None,
