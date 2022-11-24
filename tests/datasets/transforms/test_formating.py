@@ -9,7 +9,7 @@ from mmengine.structures import InstanceData, LabelData
 from mmengine.testing import assert_dict_has_keys
 
 from mmaction.datasets.transforms import (FormatAudioShape, FormatGCNInput,
-                                          FormatShape, Transpose)
+                                          FormatShape, Transpose, Rename)
 from mmaction.registry import TRANSFORMS
 from mmaction.structures import ActionDataSample
 from mmaction.utils import register_all_modules
@@ -147,6 +147,18 @@ class TestPackLocalizationInputs(unittest.TestCase):
             repr(transform),
             "PackLocalizationInputs(meta_keys=['video_name', 'feature_frame'])"
         )
+
+
+def test_rename():
+    org_name = 'a'
+    new_name = 'b'
+    mapping = {org_name: new_name}
+    rename = Rename(mapping)
+    results = dict(a=2)
+    results = rename(results)
+    assert results['b'] == 2
+    assert 'a' not in results
+    assert repr(rename) == "Rename(mapping={'a': 'b'})"
 
 
 def test_transpose():
