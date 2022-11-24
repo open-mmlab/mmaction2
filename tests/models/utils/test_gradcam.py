@@ -70,29 +70,15 @@ def _do_test_3D_models(recognizer,
         'data_samples': [ActionDataSample().set_gt_labels(2)]
     }
 
-    # parrots 3dconv is only implemented on gpu
-    if torch.__version__ == 'parrots':
-        if torch.cuda.is_available():
-            recognizer = recognizer.cuda()
-            gradcam = GradCAM(recognizer, target_layer_name)
+    gradcam = GradCAM(recognizer, target_layer_name)
 
-            blended_imgs, preds = gradcam(demo_data)
-            assert blended_imgs.size() == blended_imgs_target_shape
-            assert preds.size() == preds_target_shape
+    blended_imgs, preds = gradcam(demo_data)
+    assert blended_imgs.size() == blended_imgs_target_shape
+    assert preds.size() == preds_target_shape
 
-            blended_imgs, preds = gradcam(demo_data, True)
-            assert blended_imgs.size() == blended_imgs_target_shape
-            assert preds.size() == preds_target_shape
-    else:
-        gradcam = GradCAM(recognizer, target_layer_name)
-
-        blended_imgs, preds = gradcam(demo_data)
-        assert blended_imgs.size() == blended_imgs_target_shape
-        assert preds.size() == preds_target_shape
-
-        blended_imgs, preds = gradcam(demo_data, True)
-        assert blended_imgs.size() == blended_imgs_target_shape
-        assert preds.size() == preds_target_shape
+    blended_imgs, preds = gradcam(demo_data, True)
+    assert blended_imgs.size() == blended_imgs_target_shape
+    assert preds.size() == preds_target_shape
 
 
 def test_tsn():

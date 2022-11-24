@@ -24,7 +24,7 @@ def init_recognizer(config: Union[str, Path, mmengine.Config],
             path, :obj:`Path` or the config object.
         checkpoint (str, optional): Checkpoint path/url. If set to None,
             the model will not load any weights. Defaults to None.
-        device (str or torch.device): The desired device of returned
+        device (str | torch.device): The desired device of returned
             tensor. Defaults to ``'cuda:0'``.
 
     Returns:
