@@ -212,6 +212,7 @@ def test_tpn():
     _do_test_3D_models(recognizer, target_layer_name, input_shape)
 
 
+@pytest.mark.skipif(platform.system() == 'Windows', reason='Windows mem limit')
 def test_c3d():
     config = get_recognizer_cfg(
         'c3d/c3d_sports1m-pretrained_8xb30-16x1x1-45e_ucf101-rgb.py')
