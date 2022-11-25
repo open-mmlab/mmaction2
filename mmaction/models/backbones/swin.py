@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from functools import lru_cache, reduce
 from operator import mul
-from typing import Dict, Optional, Sequence, Tuple, Union
+from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 import numpy as np
 import torch
@@ -14,7 +14,7 @@ from mmcv.cnn.bricks import DropPath
 from mmengine.logging import MMLogger
 from mmengine.model import BaseModule, ModuleList
 from mmengine.model.weight_init import trunc_normal_
-from mmengine.runner.checkpoint import _load_checkpoint, load_checkpoint
+from mmengine.runner.checkpoint import _load_checkpoint
 
 from mmaction.registry import MODELS
 
@@ -747,8 +747,11 @@ class SwinTransformer3D(BaseModule):
             Defaults to ``(3, )``.
         out_after_downsample (bool): Whether to output the feature map of a
             stage after the following downsample layer. Defaults to False.
-        init_cfg (dict, optional): Config dict for initialization.
-            Defaults to None.
+        init_cfg (dict or list[dict]): Initialization config dict. Defaults to
+            ``[
+            dict(type='TruncNormal', layer='Linear', std=0.02, bias=0.),
+            dict(type='Constant', layer='LayerNorm', val=1., bias=0.)
+            ]``.
     """
     arch_zoo = {
         **dict.fromkeys(['t', 'tiny'],
@@ -769,27 +772,32 @@ class SwinTransformer3D(BaseModule):
                          'num_heads': [6, 12, 24, 48]}),
     }  # yapf: disable
 
-    def __init__(self,
-                 arch: Union[str, Dict],
-                 pretrained: Optional[str] = None,
-                 pretrained2d: bool = True,
-                 patch_size: Union[int, Sequence[int]] = (2, 4, 4),
-                 in_channels: int = 3,
-                 window_size: Sequence[int] = (8, 7, 7),
-                 mlp_ratio: float = 4.,
-                 qkv_bias: bool = True,
-                 qk_scale: Optional[float] = None,
-                 drop_rate: float = 0.,
-                 attn_drop_rate: float = 0.,
-                 drop_path_rate: float = 0.1,
-                 act_cfg: Dict = dict(type='GELU'),
-                 norm_cfg: Dict = dict(type='LN'),
-                 patch_norm: bool = True,
-                 frozen_stages: int = -1,
-                 with_cp: bool = False,
-                 out_indices: Sequence[int] = (3, ),
-                 out_after_downsample=False,
-                 init_cfg: Optional[Dict] = None) -> None:
+    def __init__(
+        self,
+        arch: Union[str, Dict],
+        pretrained: Optional[str] = None,
+        pretrained2d: bool = True,
+        patch_size: Union[int, Sequence[int]] = (2, 4, 4),
+        in_channels: int = 3,
+        window_size: Sequence[int] = (8, 7, 7),
+        mlp_ratio: float = 4.,
+        qkv_bias: bool = True,
+        qk_scale: Optional[float] = None,
+        drop_rate: float = 0.,
+        attn_drop_rate: float = 0.,
+        drop_path_rate: float = 0.1,
+        act_cfg: Dict = dict(type='GELU'),
+        norm_cfg: Dict = dict(type='LN'),
+        patch_norm: bool = True,
+        frozen_stages: int = -1,
+        with_cp: bool = False,
+        out_indices: Sequence[int] = (3, ),
+        out_after_downsample: bool = False,
+        init_cfg: Optional[Union[Dict, List[Dict]]] = [
+            dict(type='TruncNormal', layer='Linear', std=0.02, bias=0.),
+            dict(type='Constant', layer='LayerNorm', val=1., bias=0.)
+        ]
+    ) -> None:
         super().__init__(init_cfg=init_cfg)
 
         self.pretrained = pretrained
@@ -967,40 +975,18 @@ class SwinTransformer3D(BaseModule):
         msg = self.load_state_dict(state_dict, strict=False)
         logger.info(msg)
 
-    def init_weights(self, pretrained: Optional[str] = None) -> None:
-        """Initialize the weights in backbone.
-
-        Args:
-            pretrained (str, optional): Path to pre-trained weights.
-                Defaults to None.
-        """
-
-        def _init_weights(m):
-            if isinstance(m, nn.Linear):
-                trunc_normal_(m.weight, std=.02)
-                if isinstance(m, nn.Linear) and m.bias is not None:
-                    nn.init.constant_(m.bias, 0)
-            elif isinstance(m, nn.LayerNorm):
-                nn.init.constant_(m.bias, 0)
-                nn.init.constant_(m.weight, 1.0)
-
-        if pretrained:
-            self.pretrained = pretrained
-        if isinstance(self.pretrained, str):
+    def init_weights(self) -> None:
+        """Initialize the weights in backbone."""
+        if self.pretrained2d:
             logger = MMLogger.get_current_instance()
             logger.info(f'load model from: {self.pretrained}')
-
-            if self.pretrained2d:
-                # Inflate 2D model into 3D model.
-                self.inflate_weights(logger)
-            else:
-                # Directly load 3D model.
-                load_checkpoint(
-                    self, self.pretrained, strict=False, logger=logger)
-        elif self.pretrained is None:
-            self.apply(_init_weights)
+            # Inflate 2D model into 3D model.
+            self.inflate_weights(logger)
         else:
-            raise TypeError('pretrained must be a str or None')
+            if self.pretrained:
+                self.init_cfg = dict(
+                    type='Pretrained', checkpoint=self.pretrained)
+            super().init_weights()
 
     def forward(self, x: torch.Tensor) -> \
             Union[Tuple[torch.Tensor], torch.Tensor]:
