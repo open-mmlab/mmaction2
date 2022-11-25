@@ -4,6 +4,7 @@ All kinds of contributions are welcome, including but not limited to the followi
 
 - Fixes (typo, bugs)
 - New features and components
+- Add documentation or translate the documentation into other languages
 
 ## Workflow
 
@@ -28,11 +29,13 @@ We use the following tools for linting and formatting:
 - [flake8](http://flake8.pycqa.org/en/latest/): linter
 - [yapf](https://github.com/google/yapf): formatter
 - [isort](https://github.com/timothycrosley/isort): sort imports
+- [codespell](https://github.com/codespell-project/codespell): A Python utility to fix common misspellings in text files.
+- [mdformat](https://github.com/executablebooks/mdformat): Mdformat is an opinionated Markdown formatter that can be used to enforce a consistent style in Markdown files.
+- [docformatter](https://github.com/myint/docformatter): A formatter to format docstring.
 
 Style configurations of yapf and isort can be found in [setup.cfg](../../../setup.cfg).
 
-We use [pre-commit hook](https://pre-commit.com/) that checks and formats for `flake8`, `yapf`, `isort`, `trailing whitespaces`,
-fixes `end-of-files`, sorts `requirments.txt` automatically on every commit.
+We use [pre-commit hook](https://pre-commit.com/) that checks and formats for `flake8`, `yapf`, `isort`, `trailing whitespaces`, `markdown files`, fixes `end-of-files`, sorts `requirments.txt` automatically on every commit.
 The config for a pre-commit hook is stored in [.pre-commit-config](../../../.pre-commit-config.yaml).
 
 After you clone the repository, you will need to install initialize pre-commit hook.
@@ -43,26 +46,13 @@ pip install -U pre-commit
 
 From the repository folder
 
-```
-pre-commit install
-```
-
-If you are facing an issue when installing markdown lint, you may install ruby for markdown lint by
-referring to [this repo](https://github.com/innerlee/setup) by following the usage and taking [`zzruby.sh`](https://github.com/innerlee/setup/blob/master/zzruby.sh)
-
-or by the following steps
-
 ```shell
-# install rvm
-curl -L https://get.rvm.io | bash -s -- --autolibs=read-fail
-rvm autolibs disable
-# install ruby
-rvm install 2.7.1
+pre-commit install
 ```
 
 After this on every commit check code linters and formatter will be enforced.
 
-Before you create a PR, make sure that your code lints and is formatted by yapf.
+> Before you create a PR, make sure that your code lints and is formatted by yapf.
 
 ### C++ and CUDA
 

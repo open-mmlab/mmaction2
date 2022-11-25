@@ -87,42 +87,49 @@ pip install "mmaction2>=1.0rc0"
 
 To verify whether MMAction2 is installed correctly, we provide some sample codes to run an inference demo.
 
-**Step 1.** We need to download config and checkpoint files.
+**Step 1.** Download the config and checkpoint files.
 
 ```shell
-mim download mmaction2 --config tsn_r50_8xb32-1x1x8-100e_kinetics400-rgb --dest .
+mim download mmaction2 --config tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb --dest .
 ```
 
 **Step 2.** Verify the inference demo.
 
-Option (a). If you install mmaction2 from source, just run the following command:
+Option (a). If you install mmaction2 from source, you can run the following command:
 
 ```shell
 # The demo.mp4 and label_map_k400.txt are both from Kinetics-400
-python demo/demo.py tsn_r50_8xb32-1x1x8-100e_kinetics400-rgb.py \
-    tsn_r50_8xb32-1x1x8-100e_kinetics400-rgb_20220818-2692d16c.pth \
+python demo/demo.py tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb.py \
+    tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb_20220906-2692d16c.pth \
     demo/demo.mp4 tools/data/kinetics/label_map_k400.txt
 ```
 
 You will see the top-5 labels with corresponding scores in your terminal.
 
-Option (b). If you install mmaction2 as a python package, open you python interpreter and copy&paste the following codes.
+Option (b). If you install mmaction2 as a python package, you can run the following codes in your python interpreter, which will do the similar verification:
 
 ```python
+from operator import itemgetter
 from mmaction.apis import init_recognizer, inference_recognizer
 from mmaction.utils import register_all_modules
 
-config_file = 'tsn_r50_8xb32-1x1x8-100e_kinetics400-rgb.py'
-checkpoint_file = 'tsn_r50_8xb32-1x1x8-100e_kinetics400-rgb_20220818-2692d16c.pth'
+config_file = 'tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb.py'
+checkpoint_file = 'tsn_imagenet-pretrained-r50_8xb32-1x1x8-100e_kinetics400-rgb_20220906-2692d16c.pth'
 video_file = 'demo/demo.mp4'
 label_file = 'tools/data/kinetics/label_map_k400.txt'
 register_all_modules()  # register all modules and set mmaction2 as the default scope.
 model = init_recognizer(config_file, checkpoint_file, device='cpu')  # or device='cuda:0'
-results = inference_recognizer(model, video_file)
+result = inference_recognizer(model, video_file)
+
+pred_scores = result.pred_scores.item.tolist()
+score_tuples = tuple(zip(range(len(pred_scores)), pred_scores))
+score_sorted = sorted(score_tuples, key=itemgetter(1), reverse=True)
+top5_label = score_sorted[:5]
 
 labels = open(label_file).readlines()
 labels = [x.strip() for x in labels]
-results = [(labels[k[0]], k[1]) for k in results]
+results = [(labels[k[0]], k[1]) for k in top5_label]
+
 print('The top-5 labels with corresponding scores are:')
 for result in results:
     print(f'{result[0]}: ', result[1])
@@ -132,7 +139,7 @@ for result in results:
 
 ### CUDA versions
 
-When installing PyTorch, you need to specify the version of CUDA. If you are
+When installing PyTorch, you may need to specify the version of CUDA. If you are
 not clear on which to choose, follow our recommendations:
 
 - For Ampere-based NVIDIA GPUs, such as GeForce 30 series and NVIDIA A100, CUDA 11 is a must.
@@ -151,12 +158,12 @@ version of cudatoolkit in `conda install` command.
 
 ### Install MMCV without MIM
 
-MMCV contains C++ and CUDA extensions, thus depending on PyTorch in a complex
+MMCV contains C++ and CUDA extensions, so it depends on PyTorch in a complex
 way. MIM solves such dependencies automatically and makes the installation
 easier. However, it is not a must.
 
 To install MMCV with pip instead of MIM, please follow
-[MMCV installation guides](https://mmcv.readthedocs.io/en/dev-2.x/get_started/installation.html).
+[MMCV installation guides](https://mmcv.readthedocs.io/en/2.x/get_started/installation.html).
 This requires manually specifying a find-url based on PyTorch version and its CUDA version.
 
 For example, the following command install mmcv built for PyTorch 1.10.x and CUDA 11.3.
@@ -167,7 +174,24 @@ pip install 'mmcv>=2.0.0rc1' -f https://download.openmmlab.com/mmcv/dist/cu113/t
 
 ### Install on CPU-only platforms
 
-MMAction2 can be built for CPU only environment. In CPU mode you can train, test or inference a model.
+MMAction2 can be built for CPU-only environment. In CPU mode you can train, test or inference a model.
 
 Some functionalities are gone in this mode, usually GPU-compiled ops. But don't
-worry, almost all models in MMAction2 don't depends on these ops.
+worry, almost all models in MMAction2 don't depend on these ops.
+
+### Using MMAction2 with Docker
+
+We provide a [Dockerfile](https://github.com/open-mmlab/mmaction2/blob/1.x/docker/Dockerfile)
+to build an image. Ensure that your [docker version](https://docs.docker.com/engine/install/) >=19.03.
+
+```shell
+# build an image with PyTorch 1.6.0, CUDA 10.1, CUDNN 7.
+# If you prefer other versions, just modified the Dockerfile
+docker build -f ./docker/Dockerfile --rm -t mmaction2 .
+```
+
+Run it with
+
+```shell
+docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmaction2/data mmaction2
+```
