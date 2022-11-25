@@ -4,7 +4,7 @@ import torch
 from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
 
 from mmaction.models import ResNet2Plus1d
-from ..base import generate_backbone_demo_inputs
+from mmaction.testing import generate_backbone_demo_inputs
 
 
 def test_resnet2plus1d_backbone():

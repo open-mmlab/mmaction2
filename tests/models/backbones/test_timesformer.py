@@ -3,7 +3,7 @@ import pytest
 import torch
 
 from mmaction.models import TimeSformer
-from ..base import generate_backbone_demo_inputs
+from mmaction.testing import generate_backbone_demo_inputs
 
 
 def test_timesformer_backbone():

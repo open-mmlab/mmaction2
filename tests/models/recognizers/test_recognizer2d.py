@@ -2,8 +2,9 @@
 import torch
 
 from mmaction.registry import MODELS
+from mmaction.testing import (generate_recognizer_demo_inputs,
+                              get_recognizer_cfg)
 from mmaction.utils import register_all_modules
-from ..base import generate_recognizer_demo_inputs, get_recognizer_cfg
 
 
 def test_tsn():

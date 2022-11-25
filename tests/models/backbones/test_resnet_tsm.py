@@ -7,7 +7,7 @@ import torch.nn as nn
 
 from mmaction.models import ResNetTSM
 from mmaction.models.backbones.resnet_tsm import NL3DWrapper
-from ..base import generate_backbone_demo_inputs
+from mmaction.testing import generate_backbone_demo_inputs
 
 
 def test_resnet_tsm_backbone():
