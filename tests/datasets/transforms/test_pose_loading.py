@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import copy
 import copy as cp
 import os.path as osp
 import tempfile
@@ -13,7 +14,7 @@ from numpy.testing import assert_array_almost_equal, assert_array_equal
 from mmaction.datasets.transforms import (GeneratePoseTarget, LoadKineticsPose,
                                           PaddingWithLoop, PoseDecode,
                                           UniformSampleFrames, JointToBone,
-                                          ToMotion, MergeSkeFeat)
+                                          ToMotion, MergeSkeFeat, GenSkeFeat)
 
 
 class TestPoseLoading:
@@ -440,6 +441,31 @@ class TestPoseLoading:
         assert results['keypoint'].shape == (2, 20, 25, 6)
         assert repr(merge_ske_feat) == "MergeSkeFeat(feat_list=['j', 'b'], " \
                                        "target=keypoint, axis=-1)"
+
+    @staticmethod
+    def test_gen_ske_feat():
+        results = dict(keypoint=np.random.randn(1, 10, 25, 3))
+
+        gen_ske_feat = GenSkeFeat(dataset='nturgb+d', feats=['j'])
+        inp = copy.deepcopy(results)
+        ret1 = gen_ske_feat(inp)
+        assert_array_equal(ret1['keypoint'], results['keypoint'])
+
+        gen_ske_feat = GenSkeFeat(dataset='nturgb+d',
+                                  feats=['j', 'b', 'jm', 'bm'])
+        inp = copy.deepcopy(results)
+        ret2 = gen_ske_feat(inp)
+        assert ret2['keypoint'].shape == (1, 10, 25, 12)
+
+        results = dict(keypoint=np.random.randn(1, 10, 17, 2),
+                       keypoint_score=np.random.randn(1, 10, 17))
+        gen_ske_feat = GenSkeFeat(dataset='coco',
+                                  feats=['j', 'b', 'jm', 'bm'])
+        results = gen_ske_feat(results)
+        assert results['keypoint'].shape == (1, 10, 17, 12)
+
+        assert repr(gen_ske_feat) == "GenSkeFeat(dataset=coco, " \
+                                     "feats=['j', 'b', 'jm', 'bm'], axis=-1)"
 
 
 def check_pose_normalize(origin_keypoints, result_keypoints, norm_cfg):
