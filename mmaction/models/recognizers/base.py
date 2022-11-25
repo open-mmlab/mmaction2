@@ -8,7 +8,7 @@ from mmengine.model import BaseModel, merge_dict
 
 from mmaction.registry import MODELS
 from mmaction.utils import (ConfigType, ForwardResults, OptConfigType,
-                            OptMultiConfig, OptSampleList, SampleList)
+                            OptSampleList, SampleList)
 
 
 class BaseRecognizer(BaseModel, metaclass=ABCMeta):
@@ -28,8 +28,6 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
         data_preprocessor (Union[ConfigDict, dict], optional): The pre-process
            config of :class:`ActionDataPreprocessor`.  it usually includes,
             ``mean``, ``std`` and ``format_shape``. Defaults to None.
-        init_cfg (Union[ConfigDict, dict], optional): Config to control the
-           initialization. Defaults to None.
     """
 
     def __init__(self,
@@ -38,14 +36,13 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
                  neck: OptConfigType = None,
                  train_cfg: OptConfigType = None,
                  test_cfg: OptConfigType = None,
-                 data_preprocessor: OptConfigType = None,
-                 init_cfg: OptMultiConfig = None) -> None:
+                 data_preprocessor: OptConfigType = None) -> None:
         if data_preprocessor is None:
             # This preprocessor will only stack batch data samples.
             data_preprocessor = dict(type='ActionDataPreprocessor')
 
-        super(BaseRecognizer, self).__init__(
-            data_preprocessor=data_preprocessor, init_cfg=init_cfg)
+        super(BaseRecognizer,
+              self).__init__(data_preprocessor=data_preprocessor)
 
         # Record the source of the backbone.
         self.backbone_from = 'mmaction2'
@@ -110,18 +107,12 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
 
     def init_weights(self) -> None:
         """Initialize the model network weights."""
-        if self.backbone_from in ['mmcls', 'mmaction2']:
-            self.backbone.init_weights()
-        elif self.backbone_from in ['torchvision', 'timm']:
+        super().init_weights()
+        if self.backbone_from in ['torchvision', 'timm']:
             warnings.warn('We do not initialize weights for backbones in '
                           f'{self.backbone_from}, since the weights for '
-                          f'backbones in {self.backbone_from} are initialized'
+                          f'backbones in {self.backbone_from} are initialized '
                           'in their __init__ functions.')
-
-        if self.with_cls_head:
-            self.cls_head.init_weights()
-        if self.with_neck:
-            self.neck.init_weights()
 
     def loss(self, inputs: torch.Tensor, data_samples: SampleList,
              **kwargs) -> dict:
