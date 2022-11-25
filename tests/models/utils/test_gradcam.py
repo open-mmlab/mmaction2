@@ -6,9 +6,9 @@ import torch
 
 from mmaction.registry import MODELS
 from mmaction.structures import ActionDataSample
+from mmaction.testing import get_recognizer_cfg
 from mmaction.utils import register_all_modules
 from mmaction.utils.gradcam_utils import GradCAM
-from ..base import get_recognizer_cfg
 
 register_all_modules()
 
