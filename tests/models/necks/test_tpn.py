@@ -7,7 +7,7 @@ from mmengine.structures import LabelData
 
 from mmaction.models import TPN
 from mmaction.structures import ActionDataSample
-from ..base import generate_backbone_demo_inputs
+from mmaction.testing import generate_backbone_demo_inputs
 
 
 def get_label(label_):

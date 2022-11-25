@@ -4,7 +4,7 @@ import torch
 from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
 
 from mmaction.models import ResNet3dSlowFast
-from ..base import generate_backbone_demo_inputs
+from mmaction.testing import generate_backbone_demo_inputs
 
 
 def test_slowfast_backbone():

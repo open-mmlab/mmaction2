@@ -8,8 +8,8 @@ from mmengine.structures import InstanceData
 
 from mmaction.registry import MODELS
 from mmaction.structures import ActionDataSample
+from mmaction.testing import get_localizer_cfg
 from mmaction.utils import register_all_modules
-from ..base import get_localizer_cfg
 
 register_all_modules()
 
