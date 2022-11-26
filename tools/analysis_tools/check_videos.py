@@ -3,13 +3,15 @@ import argparse
 import os
 import warnings
 from functools import partial
-from multiprocessing import Manager, Pool, cpu_count
+from multiprocessing import Manager, cpu_count
 
-import mmcv
 import numpy as np
-from mmcv import Config, DictAction
+from mmengine import Config, DictAction, track_parallel_progress
 
-from mmaction.datasets import TRANSFORMS, build_dataset
+from mmaction.registry import DATASETS, TRANSFORMS
+from mmaction.utils import register_all_modules
+
+register_all_modules()
 
 
 def parse_args():
@@ -46,7 +48,7 @@ def parse_args():
         choices=['decord', 'opencv', 'pyav'],
         help='Video decoder type, should be one of [decord, opencv, pyav]')
     parser.add_argument(
-        '--num-processes',
+        '--nproc',
         type=int,
         default=(cpu_count() - 1 or 1),
         help='Number of processes to check videos')
@@ -93,14 +95,14 @@ class RandomSampleFrames:
         return results
 
 
-def _do_check_videos(lock, dataset, output_file, idx):
+def _do_check_videos(lock, pipeline, output_file, data_info):
     try:
-        dataset[idx]
+        pipeline(data_info)
     except:  # noqa
         # save invalid video path to output file
         lock.acquire()
         with open(output_file, 'a') as f:
-            f.write(dataset.video_infos[idx]['filename'] + '\n')
+            f.write(data_info['filename'] + '\n')
         lock.release()
 
 
@@ -115,31 +117,33 @@ if __name__ == '__main__':
     cfg.merge_from_dict(args.cfg_options)
 
     # build dataset
-    dataset_type = cfg.data[args.split].type
+    dataset_cfg = cfg.get(f'{args.split}_dataloader').dataset
+    dataset_type = dataset_cfg.type
     assert dataset_type == 'VideoDataset'
-    cfg.data[args.split].pipeline = [
+    dataset_cfg.pipeline = [
         dict(type=decoder_to_pipeline_prefix[args.decoder] + 'Init'),
         dict(type='RandomSampleFrames'),
         dict(type=decoder_to_pipeline_prefix[args.decoder] + 'Decode')
     ]
-    dataset = build_dataset(cfg.data[args.split],
-                            dict(test_mode=(args.split != 'train')))
+
+    dataset = DATASETS.build(dataset_cfg)
+    dataset_cfg.pop('type')
+    pipeline = dataset.pipeline
 
     # prepare for checking
     if os.path.exists(args.output_file):
         # remove existing output file
         os.remove(args.output_file)
-    pool = Pool(args.num_processes)
+
     lock = Manager().Lock()
-    worker_fn = partial(_do_check_videos, lock, dataset, args.output_file)
-    ids = range(len(dataset))
+    worker_fn = partial(_do_check_videos, lock, pipeline, args.output_file)
+    # avoid copy dataset for multiprocess
+    data_info_list = [
+        dataset.get_data_info(idx) for idx in range(len(dataset))
+    ]
 
     # start checking
-    prog_bar = mmcv.ProgressBar(len(dataset))
-    for _ in pool.imap_unordered(worker_fn, ids):
-        prog_bar.update()
-    pool.close()
-    pool.join()
+    track_parallel_progress(worker_fn, data_info_list, nproc=args.nproc)
 
     if os.path.exists(args.output_file):
         num_lines = sum(1 for _ in open(args.output_file))
