@@ -94,3 +94,9 @@ optim_wrapper = dict(
         type='SGD', lr=0.1, momentum=0.9, weight_decay=0.0005, nesterov=True))
 
 default_hooks = dict(checkpoint=dict(interval=1), logger=dict(interval=100))
+
+# Default setting for scaling LR automatically
+#   - `enable` means enable scaling LR automatically
+#       or not by default.
+#   - `base_batch_size` = (8 GPUs) x (16 samples per GPU).
+auto_scale_lr = dict(enable=False, base_batch_size=128)
