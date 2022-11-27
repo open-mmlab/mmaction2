@@ -1632,7 +1632,7 @@ class PreNormalize3D(BaseTransform):
         results['body_center'] = main_body_center
         return results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__name__}('
                     f'zaxis={self.zaxis}, '
                     f'xaxis={self.xaxis}, '

@@ -351,13 +351,13 @@ class FormatGCNInput(BaseTransform):
 
     Required Keys:
 
-    - keypoint
-    - keypoint_score (optional)
-    - num_clips (optional)
+        - keypoint
+        - keypoint_score (optional)
+        - num_clips (optional)
 
     Modified Key:
 
-    - keypoint
+        - keypoint
 
     Args:
         num_person (int): The maximum number of people. Defaults to 2.
@@ -403,7 +403,7 @@ class FormatGCNInput(BaseTransform):
         results['keypoint'] = np.ascontiguousarray(keypoint)
         return results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__name__}('
                     f'num_person={self.num_person}, '
                     f'mode={self.mode})')

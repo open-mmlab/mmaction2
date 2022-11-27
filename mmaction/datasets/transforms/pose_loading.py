@@ -572,7 +572,7 @@ class JointToBone(BaseTransform):
         results[self.target] = bone
         return results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__name__}('
                     f'dataset={self.dataset}, '
                     f'target={self.target})')
@@ -632,7 +632,7 @@ class ToMotion(BaseTransform):
 
         return results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__name__}('
                     f'dataset={self.dataset}, '
                     f'source={self.source}, '
@@ -677,7 +677,7 @@ class MergeSkeFeat(BaseTransform):
         results[self.target] = feats
         return results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__name__}('
                     f'feat_list={self.feat_list}, '
                     f'target={self.target}, '
@@ -738,7 +738,7 @@ class GenSkeFeat(BaseTransform):
             results['keypoint'] = np.concatenate([keypoint, keypoint_score[..., None]], -1)
         return self.ops(results)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__name__}('
                     f'dataset={self.dataset}, '
                     f'feats={self.feats}, '
@@ -793,6 +793,6 @@ class PoseDecode(BaseTransform):
 
         return results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = f'{self.__class__.__name__}()'
         return repr_str
