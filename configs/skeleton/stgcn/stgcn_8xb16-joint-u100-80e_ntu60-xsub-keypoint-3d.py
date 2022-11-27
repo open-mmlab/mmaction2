@@ -11,7 +11,7 @@ ann_file = 'data/skeleton/ntu60_3d.pkl'
 train_pipeline = [
     dict(type='PreNormalize3D'),
     dict(type='GenSkeFeat', dataset='nturgb+d', feats=['j']),
-    dict(type='UniformSample', clip_len=100),
+    dict(type='UniformSampleFrames', clip_len=100),
     dict(type='PoseDecode'),
     dict(type='FormatGCNInput', num_person=2),
     dict(type='PackActionInputs')
@@ -19,7 +19,7 @@ train_pipeline = [
 val_pipeline = [
     dict(type='PreNormalize3D'),
     dict(type='GenSkeFeat', dataset='nturgb+d', feats=['j']),
-    dict(type='UniformSample', clip_len=100, num_clips=1, test_mode=True),
+    dict(type='UniformSampleFrames', clip_len=100, num_clips=1, test_mode=True),
     dict(type='PoseDecode'),
     dict(type='FormatGCNInput', num_person=2),
     dict(type='PackActionInputs')
@@ -27,7 +27,7 @@ val_pipeline = [
 test_pipeline = [
     dict(type='PreNormalize3D'),
     dict(type='GenSkeFeat', dataset='nturgb+d', feats=['j']),
-    dict(type='UniformSample', clip_len=100, num_clips=10, test_mode=True),
+    dict(type='UniformSampleFrames', clip_len=100, num_clips=10, test_mode=True),
     dict(type='PoseDecode'),
     dict(type='FormatGCNInput', num_person=2),
     dict(type='PackActionInputs')
@@ -69,11 +69,11 @@ test_dataloader = dict(
         split='xsub_val',
         test_mode=True))
 
-val_evaluator = dict(type='AccMetric')
+val_evaluator = [dict(type='AccMetric')]
 test_evaluator = val_evaluator
 
 train_cfg = dict(
-    type='EpochBasedTrainLoop', max_epochs=80, val_begin=1, val_interval=5)
+    type='EpochBasedTrainLoop', max_epochs=16, val_begin=1, val_interval=1)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
@@ -90,4 +90,4 @@ optim_wrapper = dict(
     optimizer=dict(
         type='SGD', lr=0.1, momentum=0.9, weight_decay=0.0005, nesterov=True))
 
-default_hooks = dict(checkpoint=dict(interval=5), logger=dict(interval=100))
+default_hooks = dict(checkpoint=dict(interval=1), logger=dict(interval=100))

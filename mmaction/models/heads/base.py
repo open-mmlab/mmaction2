@@ -81,12 +81,6 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
         self.topk = topk
 
     @abstractmethod
-    def init_weights(self) -> None:
-        """Initiate the parameters either from existing checkpoint or from
-        scratch."""
-        raise NotImplementedError
-
-    @abstractmethod
     def forward(self, x, **kwargs) -> Tensor:
         """Defines the computation performed at every call."""
         raise NotImplementedError
