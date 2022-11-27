@@ -20,27 +20,6 @@ from mmaction.datasets.transforms import (GeneratePoseTarget, LoadKineticsPose,
 class TestPoseLoading:
 
     @staticmethod
-    def test_pose_decode():
-        kp = np.random.random([1, 16, 17, 2])
-        kpscore = np.random.random([1, 16, 17])
-        frame_inds = np.array([2, 4, 6, 8, 10])
-        results = dict(
-            keypoint=kp, keypoint_score=kpscore, frame_inds=frame_inds)
-        pose_decode = PoseDecode()
-        assert str(pose_decode) == 'PoseDecode()'
-        decode_results = pose_decode(results)
-        assert_array_almost_equal(decode_results['keypoint'], kp[:,
-                                                              frame_inds])
-        assert_array_almost_equal(decode_results['keypoint_score'],
-                                  kpscore[:, frame_inds])
-
-        results = dict(keypoint=kp, keypoint_score=kpscore, total_frames=16)
-        pose_decode = PoseDecode()
-        decode_results = pose_decode(results)
-        assert_array_almost_equal(decode_results['keypoint'], kp)
-        assert_array_almost_equal(decode_results['keypoint_score'], kpscore)
-
-    @staticmethod
     def test_load_kinetics_pose():
         def get_mode(arr):
             cnt = defaultdict(lambda: 0)
@@ -291,36 +270,36 @@ class TestPoseLoading:
             JointToBone(dataset='invalid')
 
         with pytest.raises(AssertionError):
-            JointToBone()(dict(keypoint=np.random.randn(2, 40, 25, 4)))
+            JointToBone()(dict(keypoint=np.random.randn(2, 15, 25, 4)))
 
-        results = dict(keypoint=np.random.randn(2, 40, 25, 3))
+        results = dict(keypoint=np.random.randn(2, 15, 25, 3))
         joint_to_bone = JointToBone(dataset='nturgb+d')
         center_index = 20
         results = joint_to_bone(results)
         assert_array_equal(results['keypoint'][..., center_index, :],
-                           np.zeros((2, 40, 3)))
+                           np.zeros((2, 15, 3)))
 
-        results = dict(keypoint=np.random.randn(2, 40, 18, 3))
+        results = dict(keypoint=np.random.randn(2, 15, 18, 3))
         joint_to_bone = JointToBone(dataset='openpose')
         center_index = 0
         center_score = results['keypoint'][..., center_index, 2]
         results = joint_to_bone(results)
         assert_array_equal(results['keypoint'][..., center_index, :2],
-                           np.zeros((2, 40, 2)))
+                           np.zeros((2, 15, 2)))
         assert_array_almost_equal(results['keypoint'][..., center_index, 2],
                                   center_score)
 
-        results = dict(keypoint=np.random.randn(2, 40, 17, 3))
+        results = dict(keypoint=np.random.randn(2, 15, 17, 3))
         joint_to_bone = JointToBone(dataset='coco')
         center_index = 0
         center_score = results['keypoint'][..., center_index, 2]
         results = joint_to_bone(results)
         assert_array_equal(results['keypoint'][..., center_index, :2],
-                           np.zeros((2, 40, 2)))
+                           np.zeros((2, 15, 2)))
         assert_array_almost_equal(results['keypoint'][..., center_index, 2],
                                   center_score)
 
-        results = dict(keypoint=np.random.randn(2, 40, 17, 3))
+        results = dict(keypoint=np.random.randn(2, 15, 17, 3))
         joint_to_bone = JointToBone(dataset='coco', target='bone')
         results = joint_to_bone(results)
         assert assert_dict_has_keys(results, ['keypoint', 'bone'])
@@ -329,12 +308,12 @@ class TestPoseLoading:
     @staticmethod
     def test_to_motion():
         with pytest.raises(AssertionError):
-            ToMotion()(dict(keypoint=np.random.randn(2, 40, 25, 4)))
+            ToMotion()(dict(keypoint=np.random.randn(2, 15, 25, 4)))
 
         with pytest.raises(KeyError):
-            ToMotion(source='j')(dict(keypoint=np.random.randn(2, 40, 25, 4)))
+            ToMotion(source='j')(dict(keypoint=np.random.randn(2, 15, 25, 4)))
 
-        results = dict(keypoint=np.random.randn(2, 40, 25, 3))
+        results = dict(keypoint=np.random.randn(2, 15, 25, 3))
         to_motion = ToMotion()
         results = to_motion(results)
         assert_array_equal(results['motion'][:, -1, :, :], np.zeros((2, 25, 3)))
@@ -345,15 +324,15 @@ class TestPoseLoading:
     @staticmethod
     def test_merge_ske_feat():
         with pytest.raises(KeyError):
-            MergeSkeFeat()(dict(b=np.random.randn(2, 40, 25, 3)))
+            MergeSkeFeat()(dict(b=np.random.randn(2, 15, 25, 3)))
 
-        results = dict(j=np.random.randn(2, 20, 25, 3),
-                       b=np.random.randn(2, 20, 25, 3))
+        results = dict(j=np.random.randn(2, 10, 25, 3),
+                       b=np.random.randn(2, 10, 25, 3))
         merge_ske_feat = MergeSkeFeat(feat_list=['j', 'b'])
         results = merge_ske_feat(results)
 
         assert assert_dict_has_keys(results, ['keypoint'])
-        assert results['keypoint'].shape == (2, 20, 25, 6)
+        assert results['keypoint'].shape == (2, 10, 25, 6)
         assert repr(merge_ske_feat) == "MergeSkeFeat(feat_list=['j', 'b'], " \
                                        "target=keypoint, axis=-1)"
 
@@ -378,9 +357,31 @@ class TestPoseLoading:
                                   feats=['j', 'b', 'jm', 'bm'])
         results = gen_ske_feat(results)
         assert results['keypoint'].shape == (1, 10, 17, 12)
-
+        assert assert_dict_has_keys(results, ['keypoint'])
+        assert not assert_dict_has_keys(results, ['j', 'b', 'jm', 'bm'])
         assert repr(gen_ske_feat) == "GenSkeFeat(dataset=coco, " \
                                      "feats=['j', 'b', 'jm', 'bm'], axis=-1)"
+
+    @staticmethod
+    def test_pose_decode():
+        kp = np.random.random([1, 16, 17, 2])
+        kpscore = np.random.random([1, 16, 17])
+        frame_inds = np.array([2, 4, 6, 8, 10])
+        results = dict(
+            keypoint=kp, keypoint_score=kpscore, frame_inds=frame_inds)
+        pose_decode = PoseDecode()
+        assert repr(pose_decode) == 'PoseDecode()'
+        decode_results = pose_decode(results)
+        assert_array_almost_equal(decode_results['keypoint'],
+                                  kp[:, frame_inds])
+        assert_array_almost_equal(decode_results['keypoint_score'],
+                                  kpscore[:, frame_inds])
+
+        results = dict(keypoint=kp, keypoint_score=kpscore, total_frames=16)
+        pose_decode = PoseDecode()
+        decode_results = pose_decode(results)
+        assert_array_almost_equal(decode_results['keypoint'], kp)
+        assert_array_almost_equal(decode_results['keypoint_score'], kpscore)
 
 
 def check_pose_normalize(origin_keypoints, result_keypoints, norm_cfg):
