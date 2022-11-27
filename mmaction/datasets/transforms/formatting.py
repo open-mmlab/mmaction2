@@ -12,11 +12,22 @@ from mmaction.structures import ActionDataSample
 
 @TRANSFORMS.register_module()
 class PackActionInputs(BaseTransform):
-    """Pack the inputs data for the recognition.
+    """Pack the input data for the recognition.
+
+    PackActionInputs first packs one of 'imgs', 'keypoint' and 'audios' into
+    the `packed_results['inputs']`, which are the three basic input modalities
+    for the task of rgb-based, skeleton-based and audio-based action
+    recognition, as well as spatio-temporal action detection in the case
+    of 'img'. Next, it prepares a `data_sample` for the task of action
+    recognition (only a single label of `torch.LongTensor` format, which is
+    saved in the `data_sample.gt_labels.item`) or spatio-temporal action
+    detection respectively. Then, it saves the meta keys defined in
+    the `meta_keys` in `data_sample.metainfo`, and packs the `data_sample`
+    into the `packed_results['data_samples']`.
 
     Args:
         meta_keys (Sequence[str]): The meta keys to saved in the
-            ``metainfo`` of the packed ``data_sample``.
+            `metainfo` of the `data_sample`.
             Defaults to ``('img_shape', 'img_key', 'video_id', 'timestamp')``.
     """
 
@@ -32,17 +43,14 @@ class PackActionInputs(BaseTransform):
     ) -> None:
         self.meta_keys = meta_keys
 
-    def transform(self, results: dict) -> dict:
-        """Method to pack the input data.
+    def transform(self, results: Dict) -> Dict:
+        """The transform function of :class:`PackActionInputs`.
 
         Args:
-            results (dict): Result dict from the data pipeline.
+            results (dict): The result dict.
 
         Returns:
-            dict:
-                - 'inputs' (torch.Tensor): The forward data of models.
-                - 'data_sample' (:obj:`ActionDataSample`): The annotation
-                  info of the sample.
+            dict: The result dict.
         """
         packed_results = dict()
         if 'imgs' in results:

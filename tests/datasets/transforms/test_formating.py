@@ -10,7 +10,8 @@ from mmengine.structures import InstanceData, LabelData
 from mmengine.testing import assert_dict_has_keys
 
 from mmaction.datasets.transforms import (FormatAudioShape, FormatGCNInput,
-                                          FormatShape, Transpose, Rename)
+                                          FormatShape, Transpose, Rename,
+                                          PackActionInputs)
 from mmaction.registry import TRANSFORMS
 from mmaction.structures import ActionDataSample
 from mmaction.utils import register_all_modules
@@ -22,16 +23,14 @@ class TestPackActionInputs(unittest.TestCase):
 
     def test_transform(self):
         # keypoint input
-        data = dict(
-            keypoint=np.random.randn(3, 300, 17, 2),
-            label=[1],
-            filename='test.txt')
-
-        cfg = dict(type='PackActionInputs')
-        transform = TRANSFORMS.build(cfg)
-        results = transform(copy.deepcopy(data))
+        results = dict(keypoint=np.random.randn(1, 2, 300, 17, 3), label=1)
+        transform = PackActionInputs()
+        results = transform(results)
         self.assertIn('inputs', results)
+        self.assertIn('data_samples', results)
         self.assertIsInstance(results['inputs'], torch.Tensor)
+        self.assertEqual(results['data_samples'].gt_labels.item,
+                         torch.LongTensor([1]))
 
         # audio input
         data = dict(
