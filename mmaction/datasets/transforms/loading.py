@@ -296,8 +296,11 @@ class UniformSampleFrames(BaseTransform):
         seed (int): The random seed used during test time. Defaults to 255.
     """
 
-    def __init__(self, clip_len: int, num_clips: int = 1,
-                 test_mode: bool = False, seed: int = 255) -> None:
+    def __init__(self,
+                 clip_len: int,
+                 num_clips: int = 1,
+                 test_mode: bool = False,
+                 seed: int = 255) -> None:
         self.clip_len = clip_len
         self.num_clips = num_clips
         self.test_mode = test_mode
@@ -358,7 +361,8 @@ class UniformSampleFrames(BaseTransform):
                 inds = np.arange(start_ind, start_ind + clip_len)
             elif clip_len <= num_frames < clip_len * 2:
                 basic = np.arange(clip_len)
-                inds = np.random.choice(clip_len + 1, num_frames - clip_len, replace=False)
+                inds = np.random.choice(
+                    clip_len + 1, num_frames - clip_len, replace=False)
                 offset = np.zeros(clip_len + 1, dtype=np.int64)
                 offset[inds] = 1
                 offset = np.cumsum(offset)

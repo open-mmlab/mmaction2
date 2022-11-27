@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import torch
 from typing import Tuple
+
+import torch
 
 from mmaction.registry import MODELS
 from .base import BaseRecognizer

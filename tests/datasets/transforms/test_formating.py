@@ -3,15 +3,15 @@ import copy
 import unittest
 
 import numpy as np
-from numpy.testing import assert_array_equal
 import pytest
 import torch
 from mmengine.structures import InstanceData, LabelData
 from mmengine.testing import assert_dict_has_keys
+from numpy.testing import assert_array_equal
 
 from mmaction.datasets.transforms import (FormatAudioShape, FormatGCNInput,
-                                          FormatShape, Transpose, Rename,
-                                          PackActionInputs)
+                                          FormatShape, PackActionInputs,
+                                          Rename, Transpose)
 from mmaction.registry import TRANSFORMS
 from mmaction.structures import ActionDataSample
 from mmaction.utils import register_all_modules

@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .formatting import (FormatAudioShape, FormatGCNInput, FormatShape,
-                         PackActionInputs, PackLocalizationInputs,
-                         Transpose, Rename)
+                         PackActionInputs, PackLocalizationInputs, Rename,
+                         Transpose)
 from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
                       AudioFeatureSelector, BuildPseudoClip, DecordDecode,
                       DecordInit, DenseSampleFrames,
@@ -10,14 +10,15 @@ from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
                       LoadProposals, OpenCVDecode, OpenCVInit, PIMSDecode,
                       PIMSInit, PyAVDecode, PyAVDecodeMotionVector, PyAVInit,
                       RawFrameDecode, SampleAVAFrames, SampleFrames,
-                      UntrimmedSampleFrames, UniformSampleFrames)
-from .pose_loading import (GeneratePoseTarget, LoadKineticsPose,
-                           PadTo, PoseDecode, JointToBone,
-                           ToMotion, MergeSkeFeat, GenSkeFeat)
+                      UniformSampleFrames, UntrimmedSampleFrames)
+from .pose_loading import (GeneratePoseTarget, GenSkeFeat, JointToBone,
+                           LoadKineticsPose, MergeSkeFeat, PadTo, PoseDecode,
+                           ToMotion)
 from .processing import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
                          MelSpectrogram, MultiScaleCrop, PoseCompact,
-                         RandomCrop, RandomRescale, RandomResizedCrop, Resize,
-                         TenCrop, ThreeCrop, PreNormalize3D, PreNormalize2D)
+                         PreNormalize2D, PreNormalize3D, RandomCrop,
+                         RandomRescale, RandomResizedCrop, Resize, TenCrop,
+                         ThreeCrop)
 from .wrappers import ImgAug, PytorchVideoWrapper, TorchVisionWrapper
 
 __all__ = [

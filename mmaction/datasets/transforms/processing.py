@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict, List, Tuple
 import random
 import warnings
+from typing import Dict, List, Tuple
 
 import cv2
 import mmcv
@@ -1557,8 +1557,8 @@ class PreNormalize3D(BaseTransform):
         return np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0))
 
     def rotation_matrix(self, axis: np.ndarray, theta: float) -> np.ndarray:
-        """Returns the rotation matrix associated with counterclockwise rotation
-        about the given axis by theta radians."""
+        """Returns the rotation matrix associated with counterclockwise
+        rotation about the given axis by theta radians."""
         if np.abs(axis).sum() < 1e-6 or np.abs(theta) < 1e-6:
             return np.eye(3)
         axis = np.asarray(axis)
@@ -1568,8 +1568,8 @@ class PreNormalize3D(BaseTransform):
         aa, bb, cc, dd = a * a, b * b, c * c, d * d
         bc, ad, ac, ab, bd, cd = b * c, a * d, a * c, a * b, b * d, c * d
         return np.array([[aa + bb - cc - dd, 2 * (bc + ad), 2 * (bd - ac)],
-                        [2 * (bc - ad), aa + cc - bb - dd, 2 * (cd + ab)],
-                        [2 * (bd + ac), 2 * (cd - ab), aa + dd - bb - cc]])
+                         [2 * (bc - ad), aa + cc - bb - dd, 2 * (cd + ab)],
+                         [2 * (bd + ac), 2 * (cd - ab), aa + dd - bb - cc]])
 
     def transform(self, results: Dict) -> Dict:
         """The transform function of :class:`PreNormalize3D`.
@@ -1588,11 +1588,16 @@ class PreNormalize3D(BaseTransform):
         if skeleton.sum() == 0:
             return results
 
-        index0 = [i for i in range(T) if not np.all(np.isclose(skeleton[0, i], 0))]
+        index0 = [
+            i for i in range(T) if not np.all(np.isclose(skeleton[0, i], 0))
+        ]
 
         assert M in [1, 2]
         if M == 2:
-            index1 = [i for i in range(T) if not np.all(np.isclose(skeleton[1, i], 0))]
+            index1 = [
+                i for i in range(T)
+                if not np.all(np.isclose(skeleton[1, i], 0))
+            ]
             if len(index0) < len(index1):
                 skeleton = skeleton[:, np.array(index1)]
                 skeleton = skeleton[[1, 0]]
@@ -1623,7 +1628,8 @@ class PreNormalize3D(BaseTransform):
             joint_rshoulder = skeleton[0, 0, self.xaxis[0]]
             joint_lshoulder = skeleton[0, 0, self.xaxis[1]]
             axis = np.cross(joint_rshoulder - joint_lshoulder, [1, 0, 0])
-            angle = self.angle_between(joint_rshoulder - joint_lshoulder, [1, 0, 0])
+            angle = self.angle_between(joint_rshoulder - joint_lshoulder,
+                                       [1, 0, 0])
             matrix_x = self.rotation_matrix(axis, angle)
             skeleton = np.einsum('abcd,kd->abck', skeleton, matrix_x)
 

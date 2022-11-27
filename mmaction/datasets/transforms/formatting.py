@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Sequence, Dict
+from typing import Dict, Sequence
 
 import numpy as np
 import torch
@@ -372,8 +372,7 @@ class FormatGCNInput(BaseTransform):
         mode (str): The padding mode. Defaults to ``'zero'``.
     """
 
-    def __init__(self, num_person: int = 2,
-                 mode: str = 'zero') -> None:
+    def __init__(self, num_person: int = 2, mode: str = 'zero') -> None:
         self.num_person = num_person
         assert mode in ['zero', 'loop']
         self.mode = mode
@@ -389,12 +388,14 @@ class FormatGCNInput(BaseTransform):
         """
         keypoint = results['keypoint']
         if 'keypoint_score' in results:
-            keypoint = np.concatenate((keypoint, results['keypoint_score'][..., None]), axis=-1)
+            keypoint = np.concatenate(
+                (keypoint, results['keypoint_score'][..., None]), axis=-1)
 
         cur_num_person = keypoint.shape[0]
         if cur_num_person < self.num_person:
             pad_dim = self.num_person - cur_num_person
-            pad = np.zeros((pad_dim, ) + keypoint.shape[1:], dtype=keypoint.dtype)
+            pad = np.zeros(
+                (pad_dim, ) + keypoint.shape[1:], dtype=keypoint.dtype)
             keypoint = np.concatenate((keypoint, pad), axis=0)
             if self.mode == 'loop' and cur_num_person == 1:
                 for i in range(1, self.num_person):
@@ -406,7 +407,8 @@ class FormatGCNInput(BaseTransform):
         M, T, V, C = keypoint.shape
         nc = results.get('num_clips', 1)
         assert T % nc == 0
-        keypoint = keypoint.reshape((M, nc, T // nc, V, C)).transpose(1, 0, 2, 3, 4)
+        keypoint = keypoint.reshape(
+            (M, nc, T // nc, V, C)).transpose(1, 0, 2, 3, 4)
 
         results['keypoint'] = np.ascontiguousarray(keypoint)
         return results

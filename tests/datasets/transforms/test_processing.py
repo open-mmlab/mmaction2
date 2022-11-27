@@ -10,10 +10,10 @@ from numpy.testing import assert_array_almost_equal, assert_array_equal
 from mmaction.datasets.transforms import (AudioAmplify, CenterCrop,
                                           ColorJitter, Flip, Fuse,
                                           MelSpectrogram, MultiScaleCrop,
-                                          PoseCompact, RandomCrop,
+                                          PoseCompact, PreNormalize2D,
+                                          PreNormalize3D, RandomCrop,
                                           RandomResizedCrop, Resize, TenCrop,
-                                          ThreeCrop, PreNormalize3D,
-                                          PreNormalize2D)
+                                          ThreeCrop)
 
 
 def check_crop(origin_imgs, result_imgs, result_bbox, num_crops=1):
@@ -66,8 +66,7 @@ def check_flip(origin_imgs, result_imgs, flip_type):
     else:
         # yapf: disable
         for i in range(n):
-            if np.any(result_imgs[i] != np.transpose(np.fliplr(np.transpose(origin_imgs[i], (1, 0, 2))),
-                                                     (1, 0, 2))):  # noqa:E501
+            if np.any(result_imgs[i] != np.transpose(np.fliplr(np.transpose(origin_imgs[i], (1, 0, 2))), (1, 0, 2))):  # noqa:E501
                 return False
         # yapf: enable
     return True
@@ -123,9 +122,8 @@ class TestPose:
 
         results = dict(keypoint=np.random.randn(2, 40, 25, 3), total_frames=40)
 
-        pre_normalize3d = PreNormalize3D(align_center=True,
-                                         align_spine=True,
-                                         align_shoulder=False)
+        pre_normalize3d = PreNormalize3D(
+            align_center=True, align_spine=True, align_shoulder=False)
 
         inp = copy.deepcopy(results)
         ret1 = pre_normalize3d(inp)
@@ -136,9 +134,8 @@ class TestPose:
         assert_array_equal(ret2['body_center'], np.zeros(3))
         assert_array_equal(ret1['keypoint'], ret2['keypoint'])
 
-        pre_normalize3d = PreNormalize3D(align_center=True,
-                                         align_spine=False,
-                                         align_shoulder=True)
+        pre_normalize3d = PreNormalize3D(
+            align_center=True, align_spine=False, align_shoulder=True)
 
         inp = copy.deepcopy(results)
         ret3 = pre_normalize3d(inp)
@@ -152,7 +149,8 @@ class TestPose:
         assert assert_dict_has_keys(ret1, target_keys)
         assert repr(pre_normalize3d) == 'PreNormalize3D(zaxis=[0, 1], ' \
                                         'xaxis=[8, 4], align_center=True, ' \
-                                        'align_spine=False, align_shoulder=True)'
+                                        'align_spine=False, ' \
+                                        'align_shoulder=True)'
 
     @staticmethod
     def test_pre_normalize2d():
@@ -162,20 +160,20 @@ class TestPose:
             target_kps[..., 1] = target_kps[..., 1] * h / 2 + h / 2
             assert_array_almost_equal(origin_kps, target_kps, decimal=4)
 
-        results = dict(keypoint=np.random.randn(1, 40, 17, 2),
-                       img_shape=(480, 854))
+        results = dict(
+            keypoint=np.random.randn(1, 40, 17, 2), img_shape=(480, 854))
         pre_normalize_2d = PreNormalize2D(img_shape=(1080, 1920))
         inp = copy.deepcopy(results)
         ret1 = pre_normalize_2d(inp)
-        check_pose_normalize(results['keypoint'], ret1['keypoint'],
-                             h=480, w=854)
+        check_pose_normalize(
+            results['keypoint'], ret1['keypoint'], h=480, w=854)
 
         results = dict(keypoint=np.random.randn(1, 40, 17, 2))
         pre_normalize_2d = PreNormalize2D(img_shape=(1080, 1920))
         inp = copy.deepcopy(results)
         ret2 = pre_normalize_2d(inp)
-        check_pose_normalize(results['keypoint'], ret2['keypoint'],
-                             h=1080, w=1920)
+        check_pose_normalize(
+            results['keypoint'], ret2['keypoint'], h=1080, w=1920)
 
         assert repr(pre_normalize_2d) == \
                'PreNormalize2D(img_shape=(1080, 1920))'

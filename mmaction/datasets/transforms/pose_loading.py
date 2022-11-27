@@ -1,17 +1,17 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict, List
 import copy as cp
 import pickle
+from typing import Dict, List
 
 import numpy as np
 from mmcv.transforms import BaseTransform
-from mmengine.fileio import FileClient
 from mmengine.dataset import Compose
+from mmengine.fileio import FileClient
 from scipy.stats import mode
 
 from mmaction.registry import TRANSFORMS
-from .processing import Flip
 from .formatting import Rename
+from .processing import Flip
 
 
 @TRANSFORMS.register_module()
@@ -145,9 +145,9 @@ class LoadKineticsPose(BaseTransform):
                 val = new_kpscore[:np_frame, i]
 
                 val = (
-                        np.sum(val[:, kpgrp['face']], 1) * weight['face'] +
-                        np.sum(val[:, kpgrp['torso']], 1) * weight['torso'] +
-                        np.sum(val[:, kpgrp['limb']], 1) * weight['limb'])
+                    np.sum(val[:, kpgrp['face']], 1) * weight['face'] +
+                    np.sum(val[:, kpgrp['torso']], 1) * weight['torso'] +
+                    np.sum(val[:, kpgrp['limb']], 1) * weight['limb'])
                 inds = sorted(range(np_frame), key=lambda x: -val[x])
                 new_kpscore[:np_frame, i] = new_kpscore[inds, i]
                 new_kp[:np_frame, i] = new_kp[inds, i]
@@ -259,11 +259,11 @@ class GeneratePoseTarget(BaseTransform):
                 continue
             y = y[:, None]
 
-            patch = np.exp(-((x - mu_x) ** 2 + (y - mu_y) ** 2) / 2 / sigma ** 2)
+            patch = np.exp(-((x - mu_x)**2 + (y - mu_y)**2) / 2 / sigma**2)
             patch = patch * max_value
             heatmap[st_y:ed_y,
-            st_x:ed_x] = np.maximum(heatmap[st_y:ed_y, st_x:ed_x],
-                                    patch)
+                    st_x:ed_x] = np.maximum(heatmap[st_y:ed_y, st_x:ed_x],
+                                            patch)
 
         return heatmap
 
@@ -316,13 +316,13 @@ class GeneratePoseTarget(BaseTransform):
             y_0 = np.zeros_like(y)
 
             # distance to start keypoints
-            d2_start = ((x - start[0]) ** 2 + (y - start[1]) ** 2)
+            d2_start = ((x - start[0])**2 + (y - start[1])**2)
 
             # distance to end keypoints
-            d2_end = ((x - end[0]) ** 2 + (y - end[1]) ** 2)
+            d2_end = ((x - end[0])**2 + (y - end[1])**2)
 
             # the distance between start and end keypoints.
-            d2_ab = ((start[0] - end[0]) ** 2 + (start[1] - end[1]) ** 2)
+            d2_ab = ((start[0] - end[0])**2 + (start[1] - end[1])**2)
 
             if d2_ab < 1:
                 full_map = self.generate_a_heatmap(img_h, img_w, [start],
@@ -338,14 +338,14 @@ class GeneratePoseTarget(BaseTransform):
 
             position = np.stack([x + y_0, y + x_0], axis=-1)
             projection = start + np.stack([coeff, coeff], axis=-1) * (
-                    end - start)
+                end - start)
             d2_line = position - projection
-            d2_line = d2_line[:, :, 0] ** 2 + d2_line[:, :, 1] ** 2
+            d2_line = d2_line[:, :, 0]**2 + d2_line[:, :, 1]**2
             d2_seg = (
-                    a_dominate * d2_start + b_dominate * d2_end +
-                    seg_dominate * d2_line)
+                a_dominate * d2_start + b_dominate * d2_end +
+                seg_dominate * d2_line)
 
-            patch = np.exp(-d2_seg / 2. / sigma ** 2)
+            patch = np.exp(-d2_seg / 2. / sigma**2)
             patch = patch * value_coeff
 
             heatmap[min_y:max_y, min_x:max_x] = np.maximum(
@@ -535,8 +535,8 @@ class JointToBone(BaseTransform):
 
 @TRANSFORMS.register_module()
 class ToMotion(BaseTransform):
-    """Covert the joint information or bone information
-    to corresponding motion information.
+    """Convert the joint information or bone information to corresponding
+    motion information.
 
     Required Keys:
 
@@ -686,10 +686,12 @@ class GenSkeFeat(BaseTransform):
         """
         if 'keypoint_score' in results and 'keypoint' in results:
             assert self.dataset != 'nturgb+d'
-            assert results['keypoint'].shape[-1] == 2, 'Only 2D keypoints have keypoint_score. '
+            assert results['keypoint'].shape[
+                -1] == 2, 'Only 2D keypoints have keypoint_score. '
             keypoint = results.pop('keypoint')
             keypoint_score = results.pop('keypoint_score')
-            results['keypoint'] = np.concatenate([keypoint, keypoint_score[..., None]], -1)
+            results['keypoint'] = np.concatenate(
+                [keypoint, keypoint_score[..., None]], -1)
         return self.ops(results)
 
     def __repr__(self) -> str:
@@ -739,11 +741,13 @@ class PoseDecode(BaseTransform):
         offset = results.get('offset', 0)
         frame_inds = results['frame_inds'] + offset
 
-        results['keypoint'] = results['keypoint'][:, frame_inds].astype(np.float32)
+        results['keypoint'] = results['keypoint'][:, frame_inds].astype(
+            np.float32)
 
         if 'keypoint_score' in results:
             kpscore = results['keypoint_score']
-            results['keypoint_score'] = kpscore[:, frame_inds].astype(np.float32)
+            results['keypoint_score'] = kpscore[:,
+                                                frame_inds].astype(np.float32)
 
         return results
 
