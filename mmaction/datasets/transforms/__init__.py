@@ -10,10 +10,10 @@ from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
                       LoadProposals, OpenCVDecode, OpenCVInit, PIMSDecode,
                       PIMSInit, PyAVDecode, PyAVDecodeMotionVector, PyAVInit,
                       RawFrameDecode, SampleAVAFrames, SampleFrames,
-                      UntrimmedSampleFrames)
+                      UntrimmedSampleFrames, UniformSampleFrames)
 from .pose_loading import (GeneratePoseTarget, LoadKineticsPose,
-                           PaddingWithLoop, PoseDecode, UniformSampleFrames,
-                           JointToBone, ToMotion, MergeSkeFeat, GenSkeFeat)
+                           PaddingWithLoop, PoseDecode, JointToBone,
+                           ToMotion, MergeSkeFeat, GenSkeFeat)
 from .processing import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
                          MelSpectrogram, MultiScaleCrop, PoseCompact,
                          RandomCrop, RandomRescale, RandomResizedCrop, Resize,

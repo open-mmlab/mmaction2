@@ -13,96 +13,11 @@ from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from mmaction.datasets.transforms import (GeneratePoseTarget, LoadKineticsPose,
                                           PaddingWithLoop, PoseDecode,
-                                          UniformSampleFrames, JointToBone,
+                                          JointToBone,
                                           ToMotion, MergeSkeFeat, GenSkeFeat)
 
 
 class TestPoseLoading:
-
-    @staticmethod
-    def test_uniform_sample_frames():
-        results = dict(total_frames=64, start_index=0)
-        sampling = UniformSampleFrames(
-            clip_len=8, num_clips=1, test_mode=True, seed=0)
-
-        assert str(sampling) == ('UniformSampleFrames(clip_len=8, '
-                                 'num_clips=1, test_mode=True, seed=0)')
-        sampling_results = sampling(results)
-        assert sampling_results['clip_len'] == 8
-        assert sampling_results['frame_interval'] is None
-        assert sampling_results['num_clips'] == 1
-        assert_array_equal(sampling_results['frame_inds'],
-                           np.array([4, 15, 21, 24, 35, 43, 51, 63]))
-
-        results = dict(total_frames=15, start_index=0)
-        sampling = UniformSampleFrames(
-            clip_len=8, num_clips=1, test_mode=True, seed=0)
-        sampling_results = sampling(results)
-        assert sampling_results['clip_len'] == 8
-        assert sampling_results['frame_interval'] is None
-        assert sampling_results['num_clips'] == 1
-        assert_array_equal(sampling_results['frame_inds'],
-                           np.array([0, 2, 4, 6, 8, 9, 11, 13]))
-
-        results = dict(total_frames=7, start_index=0)
-        sampling = UniformSampleFrames(
-            clip_len=8, num_clips=1, test_mode=True, seed=0)
-        sampling_results = sampling(results)
-        assert sampling_results['clip_len'] == 8
-        assert sampling_results['frame_interval'] is None
-        assert sampling_results['num_clips'] == 1
-        assert_array_equal(sampling_results['frame_inds'],
-                           np.array([0, 1, 2, 3, 4, 5, 6, 0]))
-
-        results = dict(total_frames=7, start_index=0)
-        sampling = UniformSampleFrames(
-            clip_len=8, num_clips=8, test_mode=True, seed=0)
-        sampling_results = sampling(results)
-        assert sampling_results['clip_len'] == 8
-        assert sampling_results['frame_interval'] is None
-        assert sampling_results['num_clips'] == 8
-        assert len(sampling_results['frame_inds']) == 64
-
-        results = dict(total_frames=64, start_index=0)
-        sampling = UniformSampleFrames(
-            clip_len=8, num_clips=4, test_mode=True, seed=0)
-        sampling_results = sampling(results)
-        assert sampling_results['clip_len'] == 8
-        assert sampling_results['frame_interval'] is None
-        assert sampling_results['num_clips'] == 4
-        assert_array_equal(
-            sampling_results['frame_inds'],
-            np.array([
-                4, 15, 21, 24, 35, 43, 51, 63, 1, 11, 21, 26, 36, 47, 54, 56,
-                0, 12, 18, 25, 38, 47, 55, 62, 0, 9, 21, 25, 37, 40, 49, 60
-            ]))
-
-        results = dict(total_frames=64, start_index=0)
-        sampling = UniformSampleFrames(
-            clip_len=8, num_clips=1, test_mode=False, seed=0)
-        sampling_results = sampling(results)
-        assert sampling_results['clip_len'] == 8
-        assert sampling_results['frame_interval'] is None
-        assert sampling_results['num_clips'] == 1
-        assert len(sampling_results['frame_inds']) == 8
-
-        results = dict(total_frames=7, start_index=0)
-        sampling = UniformSampleFrames(
-            clip_len=8, num_clips=1, test_mode=False, seed=0)
-        sampling_results = sampling(results)
-        assert sampling_results['clip_len'] == 8
-        assert sampling_results['frame_interval'] is None
-        assert sampling_results['num_clips'] == 1
-        assert len(sampling_results['frame_inds']) == 8
-
-        results = dict(total_frames=15, start_index=0)
-        sampling = UniformSampleFrames(
-            clip_len=8, num_clips=1, test_mode=False, seed=0)
-        sampling_results = sampling(results)
-        assert sampling_results['clip_len'] == 8
-        assert sampling_results['frame_interval'] is None
-        assert sampling_results['num_clips'] == 1
-        assert len(sampling_results['frame_inds']) == 8
 
     @staticmethod
     def test_pose_decode():
@@ -112,7 +27,7 @@ class TestPoseLoading:
         results = dict(
             keypoint=kp, keypoint_score=kpscore, frame_inds=frame_inds)
         pose_decode = PoseDecode()
-        assert str(pose_decode) == ('PoseDecode()')
+        assert str(pose_decode) == 'PoseDecode()'
         decode_results = pose_decode(results)
         assert_array_almost_equal(decode_results['keypoint'], kp[:,
                                                               frame_inds])
