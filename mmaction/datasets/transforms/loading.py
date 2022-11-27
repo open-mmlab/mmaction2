@@ -395,6 +395,26 @@ class UniformSampleFrames(BaseTransform):
         start_index = results.get('start_index', 0)
         inds = inds + start_index
 
+        if 'keypoint' in results:
+            kp = results['keypoint']
+            assert num_frames == kp.shape[1]
+            num_person = kp.shape[0]
+            num_persons = [num_person] * num_frames
+            for i in range(num_frames):
+                j = num_person - 1
+                while j >= 0 and np.all(np.abs(kp[j, i]) < 1e-5):
+                    j -= 1
+                num_persons[i] = j + 1
+            transitional = [False] * num_frames
+            for i in range(1, num_frames - 1):
+                if num_persons[i] != num_persons[i - 1]:
+                    transitional[i] = transitional[i - 1] = True
+                if num_persons[i] != num_persons[i + 1]:
+                    transitional[i] = transitional[i + 1] = True
+            inds_int = inds.astype(np.int)
+            coeff = np.array([transitional[i] for i in inds_int])
+            inds = (coeff * inds_int + (1 - coeff) * inds).astype(np.float32)
+
         results['frame_inds'] = inds.astype(np.int32)
         results['clip_len'] = self.clip_len
         results['frame_interval'] = None
