@@ -347,66 +347,64 @@ class FormatAudioShape(BaseTransform):
 
 @TRANSFORMS.register_module()
 class FormatGCNInput(BaseTransform):
-    """Format final skeleton shape to the given ``input_format``.
+    """Format final skeleton shape.
 
     Required Keys:
 
     - keypoint
     - keypoint_score (optional)
+    - num_clips (optional)
 
     Modified Key:
 
     - keypoint
 
-    Added Key:
-
-    - input_shape
-
     Args:
-        input_format (str): Define the final skeleton format.
+        num_person (int): The maximum number of people. Defaults to 2.
+        mode (str): The padding mode. Defaults to ``'zero'``.
     """
 
-    def __init__(self, input_format: str, num_person: int = 2) -> None:
-        self.input_format = input_format
-        if self.input_format not in ['NCTVM']:
-            raise ValueError(
-                f'The input format {self.input_format} is invalid.')
+    def __init__(self, num_person: int = 2,
+                 mode: str = 'zero') -> None:
         self.num_person = num_person
+        assert mode in ['zero', 'loop']
+        self.mode = mode
 
-    def transform(self, results: dict) -> dict:
-        """Performs the FormatShape formatting.
+    def transform(self, results: Dict) -> Dict:
+        """The transform function of :class:`FormatGCNInput`.
 
         Args:
-            results (dict): The resulting dict to be modified and passed
-                to the next transform in pipeline.
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
         """
         keypoint = results['keypoint']
-
         if 'keypoint_score' in results:
-            keypoint_confidence = results['keypoint_score']
-            keypoint_confidence = np.expand_dims(keypoint_confidence, -1)
-            keypoint_3d = np.concatenate((keypoint, keypoint_confidence),
-                                         axis=-1)
-        else:
-            keypoint_3d = keypoint
+            keypoint = np.concatenate((keypoint, results['keypoint_score'][..., None]), axis=-1)
 
-        keypoint_3d = np.transpose(keypoint_3d,
-                                   (3, 1, 2, 0))  # M T V C -> C T V M
+        cur_num_person = keypoint.shape[0]
+        if cur_num_person < self.num_person:
+            pad_dim = self.num_person - cur_num_person
+            pad = np.zeros((pad_dim, ) + keypoint.shape[1:], dtype=keypoint.dtype)
+            keypoint = np.concatenate((keypoint, pad), axis=0)
+            if self.mode == 'loop' and cur_num_person == 1:
+                for i in range(1, self.num_person):
+                    keypoint[i] = keypoint[0]
 
-        if keypoint_3d.shape[-1] < self.num_person:
-            pad_dim = self.num_person - keypoint_3d.shape[-1]
-            pad = np.zeros(
-                keypoint_3d.shape[:-1] + (pad_dim, ), dtype=keypoint_3d.dtype)
-            keypoint_3d = np.concatenate((keypoint_3d, pad), axis=-1)
-        elif keypoint_3d.shape[-1] > self.num_person:
-            keypoint_3d = keypoint_3d[:, :, :, :self.num_person]
+        elif cur_num_person > self.num_person:
+            keypoint = keypoint[:self.num_person]
 
-        results['keypoint'] = keypoint_3d
-        results['input_shape'] = keypoint_3d.shape
+        M, T, V, C = keypoint.shape
+        nc = results.get('num_clips', 1)
+        assert T % nc == 0
+        keypoint = keypoint.reshape((M, nc, T // nc, V, C)).transpose(1, 0, 2, 3, 4)
+
+        results['keypoint'] = np.ascontiguousarray(keypoint)
         return results
 
     def __repr__(self):
         repr_str = (f'{self.__class__.__name__}('
-                    f'input_format={self.input_format}, '
-                    f'num_person={self.num_person})')
+                    f'num_person={self.num_person}, '
+                    f'mode={self.mode})')
         return repr_str
