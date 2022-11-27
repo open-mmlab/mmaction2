@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict, List
+from typing import Dict, List, Tuple
 import random
 import warnings
 
@@ -1639,4 +1639,47 @@ class PreNormalize3D(BaseTransform):
                     f'align_center={self.align_center}, '
                     f'align_spine={self.align_spine}, '
                     f'align_shoulder={self.align_shoulder})')
+        return repr_str
+
+
+@TRANSFORMS.register_module()
+class PreNormalize2D(BaseTransform):
+    """Normalize the range of keypoint values.
+
+    Required Keys:
+
+        - keypoint
+        - img_shape (optional)
+
+    Modified Keys:
+
+        - keypoint
+
+    Args:
+        img_shape (tuple[int]): The resolution of the original video.
+            Defaults to ``(1080, 1920)``.
+    """
+
+    def __init__(self, img_shape: Tuple[int] = (1080, 1920)) -> None:
+        self.img_shape = img_shape
+
+    def transform(self, results: Dict) -> Dict:
+        """The transform function of :class:`PreNormalize2D`.
+
+        Args:
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
+        """
+        h, w = results.get('img_shape', self.img_shape)
+        results['keypoint'][..., 0] = \
+            (results['keypoint'][..., 0] - (w / 2)) / (w / 2)
+        results['keypoint'][..., 1] = \
+            (results['keypoint'][..., 1] - (h / 2)) / (h / 2)
+        return results
+
+    def __repr__(self) -> str:
+        repr_str = (f'{self.__class__.__name__}('
+                    f'img_shape={self.img_shape})')
         return repr_str

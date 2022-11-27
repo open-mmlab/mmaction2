@@ -392,10 +392,3 @@ class TestPoseLoading:
         kp = ret2['keypoint']
         assert ret2['total_frames'] == 6
         assert_array_equal(kp[:, 3:], np.zeros((2, 3, 17, 3)))
-
-
-def check_pose_normalize(origin_keypoints, result_keypoints, norm_cfg):
-    target_keypoints = result_keypoints.copy()
-    target_keypoints *= (norm_cfg['max_value'] - norm_cfg['min_value'])
-    target_keypoints += norm_cfg['mean']
-    assert_array_almost_equal(origin_keypoints, target_keypoints, decimal=4)

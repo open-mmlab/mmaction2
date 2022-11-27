@@ -12,7 +12,8 @@ from mmaction.datasets.transforms import (AudioAmplify, CenterCrop,
                                           MelSpectrogram, MultiScaleCrop,
                                           PoseCompact, RandomCrop,
                                           RandomResizedCrop, Resize, TenCrop,
-                                          ThreeCrop, PreNormalize3D)
+                                          ThreeCrop, PreNormalize3D,
+                                          PreNormalize2D)
 
 
 def check_crop(origin_imgs, result_imgs, result_bbox, num_crops=1):
@@ -72,7 +73,7 @@ def check_flip(origin_imgs, result_imgs, flip_type):
     return True
 
 
-class TestPoseCompact:
+class TestPose:
 
     @staticmethod
     def test_pose_compact():
@@ -152,6 +153,32 @@ class TestPoseCompact:
         assert repr(pre_normalize3d) == 'PreNormalize3D(zaxis=[0, 1], ' \
                                         'xaxis=[8, 4], align_center=True, ' \
                                         'align_spine=False, align_shoulder=True)'
+
+    @staticmethod
+    def test_pre_normalize2d():
+
+        def check_pose_normalize(origin_kps, target_kps, h, w):
+            target_kps[..., 0] = target_kps[..., 0] * w / 2 + w / 2
+            target_kps[..., 1] = target_kps[..., 1] * h / 2 + h / 2
+            assert_array_almost_equal(origin_kps, target_kps, decimal=4)
+
+        results = dict(keypoint=np.random.randn(1, 40, 17, 2),
+                       img_shape=(480, 854))
+        pre_normalize_2d = PreNormalize2D(img_shape=(1080, 1920))
+        inp = copy.deepcopy(results)
+        ret1 = pre_normalize_2d(inp)
+        check_pose_normalize(results['keypoint'], ret1['keypoint'],
+                             h=480, w=854)
+
+        results = dict(keypoint=np.random.randn(1, 40, 17, 2))
+        pre_normalize_2d = PreNormalize2D(img_shape=(1080, 1920))
+        inp = copy.deepcopy(results)
+        ret2 = pre_normalize_2d(inp)
+        check_pose_normalize(results['keypoint'], ret2['keypoint'],
+                             h=1080, w=1920)
+
+        assert repr(pre_normalize_2d) == \
+               'PreNormalize2D(img_shape=(1080, 1920))'
 
 
 class TestAudio:

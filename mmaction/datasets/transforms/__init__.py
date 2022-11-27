@@ -17,7 +17,7 @@ from .pose_loading import (GeneratePoseTarget, LoadKineticsPose,
 from .processing import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
                          MelSpectrogram, MultiScaleCrop, PoseCompact,
                          RandomCrop, RandomRescale, RandomResizedCrop, Resize,
-                         TenCrop, ThreeCrop, PreNormalize3D)
+                         TenCrop, ThreeCrop, PreNormalize3D, PreNormalize2D)
 from .wrappers import ImgAug, PytorchVideoWrapper, TorchVisionWrapper
 
 __all__ = [
@@ -36,5 +36,5 @@ __all__ = [
     'PadTo', 'ArrayDecode', 'JointToBone', 'PackActionInputs',
     'PackLocalizationInputs', 'ImgAug', 'TorchVisionWrapper',
     'PytorchVideoWrapper', 'PoseCompact', 'PreNormalize3D', 'ToMotion',
-    'MergeSkeFeat', 'Rename', 'GenSkeFeat'
+    'MergeSkeFeat', 'Rename', 'GenSkeFeat', 'PreNormalize2D'
 ]

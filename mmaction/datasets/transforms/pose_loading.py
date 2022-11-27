@@ -762,12 +762,14 @@ class PadTo(BaseTransform):
 
     Required Keys:
 
+        - keypoint
         - total_frames
         - start_index (optional)
 
     Modified Keys:
 
         - keypoint
+        - total_frames
 
     Args:
         length (int): The maximum length of the sampled output clip.
