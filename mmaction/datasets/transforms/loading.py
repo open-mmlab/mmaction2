@@ -279,7 +279,7 @@ class UniformSampleFrames(BaseTransform):
     Required Keys:
 
         - total_frames
-        - start_index
+        - start_index (optional)
 
     Added Keys:
 
@@ -392,7 +392,7 @@ class UniformSampleFrames(BaseTransform):
             inds = self._get_train_clips(num_frames, self.clip_len)
 
         inds = np.mod(inds, num_frames)
-        start_index = results['start_index']
+        start_index = results.get('start_index', 0)
         inds = inds + start_index
 
         results['frame_inds'] = inds.astype(np.int32)

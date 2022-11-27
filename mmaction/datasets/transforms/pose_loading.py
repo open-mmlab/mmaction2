@@ -461,52 +461,6 @@ class GeneratePoseTarget(BaseTransform):
 
 
 @TRANSFORMS.register_module()
-class PaddingWithLoop(BaseTransform):
-    """Sample frames from the video.
-
-    To sample an n-frame clip from the video, PaddingWithLoop samples
-    the frames from zero index, and loop the frames if the length of
-    video frames is less than the value of 'clip_len'.
-
-    Required keys are "total_frames", added or modified keys
-    are "frame_inds", "clip_len", "frame_interval" and "num_clips".
-
-    Args:
-        clip_len (int): Frames of each sampled output clip.
-        num_clips (int): Number of clips to be sampled. Default: 1.
-    """
-
-    def __init__(self, clip_len, num_clips=1):
-        self.clip_len = clip_len
-        self.num_clips = num_clips
-
-    def transform(self, results):
-        """Sample frames from the video.
-
-        Args:
-            results (dict): The resulting dict to be modified and passed
-                to the next transform in pipeline.
-        """
-        num_frames = results['total_frames']
-
-        start_index = results['start_index']
-        inds = np.arange(start_index, start_index + self.clip_len)
-        inds = np.mod(inds, num_frames)
-
-        results['frame_inds'] = inds.astype(np.int32)
-        results['clip_len'] = self.clip_len
-        results['frame_interval'] = None
-        results['num_clips'] = self.num_clips
-        return results
-
-    def __repr__(self):
-        repr_str = (f'{self.__class__.__name__}('
-                    f'clip_len={self.clip_len}, '
-                    f'num_clips={self.num_clips})')
-        return repr_str
-
-
-@TRANSFORMS.register_module()
 class JointToBone(BaseTransform):
     """Convert the joint information to bone information.
 
@@ -795,4 +749,61 @@ class PoseDecode(BaseTransform):
 
     def __repr__(self) -> str:
         repr_str = f'{self.__class__.__name__}()'
+        return repr_str
+
+
+@TRANSFORMS.register_module()
+class PadTo(BaseTransform):
+    """Sample frames from the video.
+
+    To sample an n-frame clip from the video, PadTo samples
+    the frames from zero index, and loop or zero pad the frames
+    if the length of video frames is less than the value of `length`.
+
+    Required Keys:
+
+        - total_frames
+        - start_index (optional)
+
+    Modified Keys:
+
+        - keypoint
+
+    Args:
+        length (int): The maximum length of the sampled output clip.
+        mode (str): The padding mode. Defaults to ``'loop'``.
+    """
+
+    def __init__(self, length: int, mode: str = 'loop') -> None:
+        self.length = length
+        assert mode in ['loop', 'zero']
+        self.mode = mode
+
+    def transform(self, results: Dict) -> Dict:
+        """The transform function of :class:`PadTo`.
+
+        Args:
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
+        """
+        total_frames = results['total_frames']
+        assert total_frames <= self.length
+        start_index = results.get('start_index', 0)
+        inds = np.arange(start_index, start_index + self.length)
+        inds = np.mod(inds, total_frames)
+
+        keypoint = results['keypoint'][:, inds].copy()
+        if self.mode == 'zero':
+            keypoint[:, total_frames:] = 0
+
+        results['keypoint'] = keypoint
+        results['total_frames'] = self.length
+        return results
+
+    def __repr__(self) -> str:
+        repr_str = (f'{self.__class__.__name__}('
+                    f'length={self.length}, '
+                    f'mode={self.mode})')
         return repr_str

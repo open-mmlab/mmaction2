@@ -176,7 +176,7 @@ class Rename(BaseTransform):
                 results.pop(key)
         return results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__name__}('
                     f'mapping={self.mapping})')
         return repr_str

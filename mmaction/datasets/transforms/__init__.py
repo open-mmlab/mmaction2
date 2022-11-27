@@ -12,7 +12,7 @@ from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
                       RawFrameDecode, SampleAVAFrames, SampleFrames,
                       UntrimmedSampleFrames, UniformSampleFrames)
 from .pose_loading import (GeneratePoseTarget, LoadKineticsPose,
-                           PaddingWithLoop, PoseDecode, JointToBone,
+                           PadTo, PoseDecode, JointToBone,
                            ToMotion, MergeSkeFeat, GenSkeFeat)
 from .processing import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
                          MelSpectrogram, MultiScaleCrop, PoseCompact,
@@ -33,7 +33,7 @@ __all__ = [
     'ImageDecode', 'BuildPseudoClip', 'RandomRescale', 'PIMSDecode',
     'PyAVDecodeMotionVector', 'UniformSampleFrames', 'PoseDecode',
     'LoadKineticsPose', 'GeneratePoseTarget', 'PIMSInit', 'FormatGCNInput',
-    'PaddingWithLoop', 'ArrayDecode', 'JointToBone', 'PackActionInputs',
+    'PadTo', 'ArrayDecode', 'JointToBone', 'PackActionInputs',
     'PackLocalizationInputs', 'ImgAug', 'TorchVisionWrapper',
     'PytorchVideoWrapper', 'PoseCompact', 'PreNormalize3D', 'ToMotion',
     'MergeSkeFeat', 'Rename', 'GenSkeFeat'

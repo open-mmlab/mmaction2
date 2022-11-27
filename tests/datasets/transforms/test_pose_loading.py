@@ -12,7 +12,7 @@ from mmengine.testing import assert_dict_has_keys
 from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from mmaction.datasets.transforms import (GeneratePoseTarget, LoadKineticsPose,
-                                          PaddingWithLoop, PoseDecode,
+                                          PadTo, PoseDecode,
                                           JointToBone,
                                           ToMotion, MergeSkeFeat, GenSkeFeat)
 
@@ -254,17 +254,6 @@ class TestPoseLoading:
         assert_array_almost_equal(return_results['imgs'], 0)
 
     @staticmethod
-    def test_padding_with_loop():
-        results = dict(total_frames=3, start_index=0)
-        sampling = PaddingWithLoop(clip_len=6)
-        sampling_results = sampling(results)
-        assert sampling_results['clip_len'] == 6
-        assert sampling_results['frame_interval'] is None
-        assert sampling_results['num_clips'] == 1
-        assert_array_equal(sampling_results['frame_inds'],
-                           np.array([0, 1, 2, 0, 1, 2]))
-
-    @staticmethod
     def test_joint_to_bone():
         with pytest.raises(ValueError):
             JointToBone(dataset='invalid')
@@ -382,6 +371,27 @@ class TestPoseLoading:
         decode_results = pose_decode(results)
         assert_array_almost_equal(decode_results['keypoint'], kp)
         assert_array_almost_equal(decode_results['keypoint_score'], kpscore)
+
+    @staticmethod
+    def test_padding_to():
+        with pytest.raises(AssertionError):
+            PadTo(length=4, mode='invalid')
+
+        results = dict(keypoint=np.random.randn(2, 3, 17, 3),
+                       total_frames=3, start_index=0)
+
+        inp = copy.deepcopy(results)
+        pad_to = PadTo(length=6, mode='loop')
+        ret1 = pad_to(inp)
+        kp = ret1['keypoint']
+        assert_array_equal(kp[:, :3], kp[:, 3:])
+
+        inp = copy.deepcopy(results)
+        pad_to = PadTo(length=6, mode='zero')
+        ret2 = pad_to(inp)
+        kp = ret2['keypoint']
+        assert ret2['total_frames'] == 6
+        assert_array_equal(kp[:, 3:], np.zeros((2, 3, 17, 3)))
 
 
 def check_pose_normalize(origin_keypoints, result_keypoints, norm_cfg):
