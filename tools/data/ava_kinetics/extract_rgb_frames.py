@@ -24,7 +24,7 @@ if __name__ == '__main__':
         '--avakinetics_root',
         type=str,
         default='../../../data/ava_kinetics',
-        help='the path to save ava-kinetics videos')
+        help='the path to save ava-kinetics dataset')
     p.add_argument(
         '--num_workers',
         type=int,

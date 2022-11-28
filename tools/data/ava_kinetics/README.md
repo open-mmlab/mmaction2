@@ -74,7 +74,7 @@ Arguments:
 
 - `avakinetics_anotation`: the directory to ava-kinetics anotations. Defaults to `./ava_kinetics_v1_0`.
 - `kinetics_list`: the path to the videos file list as mentioned in Step 1. If you have prepared the Kinetics700 dataset following `mmaction2`, it should be `$MMACTION2/data/kinetics700/kinetics700_train_list_videos.txt`.
-- `avakinetics_root`: the directory to save the trimmed ava-kinetics videos. Defaults to `$MMACTION2/data/ava_kinetics`.
+- `avakinetics_root`: the directory to save the ava-kinetics dataset. Defaults to `$MMACTION2/data/ava_kinetics`.
 - `num_workers`: number of workers used to cut videos. Defaults to -1 and use all available cpus.
 
 There should be about 100k videos. It is OK if some videos are missing and we will ignore them in the next steps.
@@ -92,7 +92,7 @@ python3 extract_rgb_frames.py --avakinetics_root=$AVAKINETICS_ROOT \
 
 Arguments:
 
-- `avakinetics_root`: the directory to save the trimmed ava-kinetics videos. Defaults to `$MMACTION2/data/ava_kinetics`.
+- `avakinetics_root`: the directory to save the ava-kinetics dataset. Defaults to `$MMACTION2/data/ava_kinetics`.
 - `num_workers`: number of workers used to cut videos. Defaults to -1 and use all available cpus.
 
 ## Step 5. Prepare Annotations
@@ -110,10 +110,10 @@ python3 prepare_annotation.py --avakinetics_anotation=$AVAKINETICS_ANOTATION \
 Arguments:
 
 - `avakinetics_anotation`: the directory to ava-kinetics anotations. Defaults to `./ava_kinetics_v1_0`.
-- `avakinetics_root`: the directory to save the trimmed ava-kinetics videos. Defaults to `$MMACTION2/data/ava_kinetics`.
+- `avakinetics_root`: the directory to save the ava-kinetics dataset. Defaults to `$MMACTION2/data/ava_kinetics`.
 - `num_workers`: number of workers used to cut videos. Defaults to -1 and use all available cpus.
 
-## Step 4. Fetch Proposal Files
+## Step 6. Fetch Proposal Files
 
 The pre-computed proposals for AVA dataset are provided by FAIR's [Long-Term Feature Banks](https://github.com/facebookresearch/video-long-term-feature-banks). For the Kinetics part, we use `Cascade R-CNN X-101-64x4d-FPN` from [mmdetection](https://download.openmmlab.com/mmdetection/v2.0/cascade_rcnn/cascade_rcnn_x101_64x4d_fpn_1x_coco/cascade_rcnn_x101_64x4d_fpn_1x_coco_20200515_075702-43ce6a30.pth) to fetch the proposals. Here is the script:
 
@@ -126,12 +126,42 @@ python3 fetch_proposal.py --avakinetics_root=$AVAKINETICS_ROOT \
 
 ```
 
+It  will generate a `kinetics_proposal.pkl` file at `$MMACTION2/data/ava_kinetics/`.
+
 Arguments:
 
-- `avakinetics_root`: the directory to save the trimmed ava-kinetics videos. Defaults to `$MMACTION2/data/ava_kinetics`.
+- `avakinetics_root`: the directory to save the ava-kinetics dataset. Defaults to `$MMACTION2/data/ava_kinetics`.
 - `datalist`: path to the `kinetics_train.csv` file generated at Step 3.
 - `picklepath`: path to save the extracted proposal pickle file.
 - `config`: the config file for the human detection model. Defaults to `X-101-64x4d-FPN.py`.
 - `checkpoint`: the checkpoint for the human detection model. Defaults to the `mmdetection` pretraining checkpoint.
 
-## Step 5. Merge AVA and Kinetics
+## Step 7. Merge AVA to AVA-Kinetics
+
+Now we are done with the preparations for the Kinetics part. We need to merge the AVA part into the `ava_kinetics` folder (assuming you have AVA dataset ready at `$MMACTION2/data/ava`). First we make a copy of the AVA anotation to the `ava_kinetics` folder (recall that you are at `$MMACTION2/tools/data/ava_kinetics/`):
+
+```shell
+cp -r ../../../data/ava/annotations/ ../../../data/ava_kinetics/
+```
+
+Next we merge the generated anotation files of the Kinetics part to AVA. Please check: you should have two files `kinetics_train.csv` and `kinetics_proposal.pkl` at `$MMACTION2/data/ava_kinetics/` generated from Step 5 and Step 6. Run the following script to merge these two files into `$MMACTION2/data/ava_kinetics/annotations/ava_train_v2.2.csv` and `ava_dense_proposals_train.FAIR.recall_93.9.pkl` respectively.
+
+```shell
+python3 merge_annotations.py --avakinetics_root=$AVAKINETICS_ROOT
+```
+
+Arguments:
+
+- `avakinetics_root`: the directory to save the ava-kinetics dataset. Defaults to `$MMACTION2/data/ava_kinetics`.
+
+Finally, we need to merge the rawframes of AVA part. You can either copy/move them or generate soft links. The following script is an example to use soft links:
+
+```shell
+python3 softlink_ava.py --avakinetics_root=$AVAKINETICS_ROOT \
+                        --ava_root=$AVA_ROOT
+```
+
+Arguments:
+
+- `avakinetics_root`: the directory to save the ava-kinetics dataset. Defaults to `$MMACTION2/data/ava_kinetics`.
+- `ava_root`: the directory to save the ava dataset. Defaults to `$MMACTION2/data/ava`.

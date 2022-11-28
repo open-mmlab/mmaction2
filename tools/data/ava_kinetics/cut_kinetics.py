@@ -156,7 +156,7 @@ if __name__ == '__main__':
         '--avakinetics_root',
         type=str,
         default='../../../data/ava_kinetics',
-        help='the path to save ava-kinetics videos')
+        help='the path to save ava-kinetics dataset')
     args = p.parse_args()
 
     if args.num_workers > 0:
