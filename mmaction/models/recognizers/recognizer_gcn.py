@@ -36,7 +36,7 @@ class RecognizerGCN(BaseRecognizer):
 
         if test_mode:
             bs, nc = inputs.shape[:2]
-            inputs = inputs.reshape((bs * nc) + inputs.shape[2:])
+            inputs = inputs.reshape((bs * nc, ) + inputs.shape[2:])
         else:
             assert inputs.shape[1] == 1
             inputs = inputs[:, 0]
