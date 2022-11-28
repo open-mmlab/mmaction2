@@ -7,11 +7,9 @@ import os
 def extract_rgb(video_name, frame_path, video_path):
     video_id = video_name.split('.')[0]
     os.makedirs('%s/%s' % (frame_path, video_id), exist_ok=True)
-    cmd = "ffmpeg -i %s/%s -r 30 -q:v 1 %s/%s" % (video_path, 
-                                                  video_name, 
-                                                  frame_path, 
-                                                  video_id)
-    cmd += 'img_%05d.jpg'
+    cmd = 'ffmpeg -i %s/%s -r 30 -q:v 1 %s/%s' % (video_path, video_name,
+                                                  frame_path, video_id)
+    cmd += '/img_%05d.jpg'
     return cmd
 
 
@@ -44,9 +42,10 @@ if __name__ == '__main__':
     frame_path = root + '/rawframes/'
     os.makedirs(frame_path, exist_ok=True)
 
-    all_videos = os.listdir(video_path)
+    all_cmds = [
+        extract_rgb(video_name, frame_path, video_path)
+        for video_name in os.listdir(video_path)
+    ]
 
-    all_cmds = [extract_rgb(video_name, frame_path, video_path) for video_name in all_videos]
-
-    pool = multiprocessing.Pool(args.num_workers)
+    pool = multiprocessing.Pool(num_workers)
     out = pool.map(run_cmd, all_cmds)

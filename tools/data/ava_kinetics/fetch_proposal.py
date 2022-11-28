@@ -4,30 +4,30 @@ import multiprocessing as mp
 import os
 import pickle
 
-import decord
 import numpy as np
 from mmdet.apis import inference_detector, init_detector
 from mmdet.utils import register_all_modules
+from PIL import Image
 
 
 def get_vid_from_path(path):
-    video_id = path.split('/')[-1].split('.')[0]
+    video_id = path.split('/')[-1]
     video_id = video_id.split('_')[:-2]
     return '_'.join(video_id)
 
 
-def prepare_det_lookup(datalist):
+def prepare_det_lookup(datalist, frame_root):
     with open(datalist) as f:
         records = f.readlines()
     det_lookup = {}
     for record in records:
         record = record.split(',')
-        video_path = record[0]
-        video_id = get_vid_from_path(video_path)
+        folder_path = record[0]
+        video_id = get_vid_from_path(folder_path)
         frame_id = int(record[1])
         for idx in range(frame_id - 1, frame_id + 2):
             proposal_id = '%s,%04d' % (video_id, idx)
-            det_lookup[proposal_id] = video_path
+            det_lookup[proposal_id] = '%s/%s' % (frame_root, folder_path)
     return det_lookup
 
 
@@ -44,20 +44,15 @@ def single_worker(rank, det_lookup, args):
         args.config, args.checkpoint, device='cuda:%d' % rank)
 
     lookup = {}
-    tol = len(detect_sublist)
     for count, key in enumerate(detect_sublist):
-        progress = round(count / tol * 100)
-        if progress % 5 == 1:
-            print('Finished %d%%' % progress)
         try:
-            video_path = det_lookup[key]
-            start = int(video_path.split('/')[-1].split('_')[-2])
+            folder_path = det_lookup[key]
+            start = int(folder_path.split('/')[-1].split('_')[-2])
             time = int(key.split(',')[1])
             frame_id = (time - start) * 30 + 1
-            vr = decord.VideoReader(video_path)
-            frame = vr.get_batch([frame_id]).asnumpy()[0]
-            H, W, _ = frame.shape
-            result = inference_detector(model, frame)
+            frame_path = '%s/img_%05d.jpg' % (folder_path, frame_id)
+            img = Image.open(frame_path)
+            result = inference_detector(model, frame_path)
             bboxes = result._pred_instances.bboxes.cpu()
             scores = result._pred_instances.scores.cpu()
             labels = result._pred_instances.labels.cpu()
@@ -70,10 +65,10 @@ def single_worker(rank, det_lookup, args):
             if scores.numel() > 0:
                 result_ = []
                 for idx, (h1, w1, h2, w2) in enumerate(bboxes):
-                    h1 /= W
-                    h2 /= W
-                    w1 /= H
-                    w2 /= H
+                    h1 /= img.size[0]
+                    h2 /= img.size[0]
+                    w1 /= img.size[1]
+                    w2 /= img.size[1]
                     score = scores[idx].item()
                     result_.append((h1, w1, h2, w2, score))
                 lookup[key] = np.array(result_)
@@ -87,6 +82,11 @@ def single_worker(rank, det_lookup, args):
 
 if __name__ == '__main__':
     p = argparse.ArgumentParser()
+    p.add_argument(
+        '--avakinetics_root',
+        type=str,
+        default='../../../data/ava_kinetics',
+        help='the path to save ava-kinetics videos')
     p.add_argument(
         '--datalist',
         type=str,
@@ -113,7 +113,8 @@ if __name__ == '__main__':
 
     args = p.parse_args()
 
-    det_lookup = prepare_det_lookup(args.datalist)
+    frame_root = args.avakinetics_root + '/rawframes/'
+    det_lookup = prepare_det_lookup(args.datalist, frame_root)
 
     processes = []
     for rank in range(args.num_gpus):

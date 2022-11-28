@@ -38,10 +38,10 @@ def filter_missing_videos(kinetics_list: str, frame_lookup: dict) -> dict:
         kinetics_list (str): Path to the kinetics700 dataset list.
             The content of the list should be:
                 ```
-                Path_to_video1\n
-                Path_to_video2\n
+                Path_to_video1 label_1\n
+                Path_to_video2 label_2\n
                 ...
-                Path_to_videon\n
+                Path_to_videon label_n\n
                 ```
             The start and end of the video must be contained in the filename.
             For example:
@@ -98,7 +98,8 @@ def filter_missing_videos(kinetics_list: str, frame_lookup: dict) -> dict:
     return video_lookup
 
 
-template = 'ffmpeg -ss %d -t %d -accurate_seek -i %s -avoid_negative_ts 1 %s'
+template = ('ffmpeg -ss %d -t %d -accurate_seek -i'
+            ' %s -r 30 -avoid_negative_ts 1 %s')
 
 
 def generate_cut_cmds(video_lookup: dict, data_root: str) -> List[str]:
@@ -158,6 +159,11 @@ if __name__ == '__main__':
         help='the path to save ava-kinetics videos')
     args = p.parse_args()
 
+    if args.num_workers > 0:
+        num_workers = args.num_workers
+    else:
+        num_workers = max(multiprocessing.cpu_count() - 1, 1)
+
     # Find videos from the Kinetics700 dataset required for AVA-Kinetics
     kinetics_train = args.avakinetics_anotation + '/kinetics_train_v1.0.csv'
     frame_lookup = get_kinetics_frames(kinetics_train)
@@ -170,10 +176,6 @@ if __name__ == '__main__':
     all_cmds = generate_cut_cmds(video_lookup, video_path)
 
     # Cut and save the videos for AVA-Kinetics
-    if args.num_workers > 0:
-        num_workers = args.num_workers
-    else:
-        num_workers = max(multiprocessing.cpu_count() - 1, 1)
     pool = multiprocessing.Pool(num_workers)
     _ = pool.map(run_cmd, all_cmds)
 

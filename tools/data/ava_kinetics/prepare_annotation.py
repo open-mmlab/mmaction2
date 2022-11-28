@@ -4,24 +4,23 @@ import multiprocessing
 import os
 from collections import defaultdict
 
-import decord
+FPS = 30
 
 
-def get_video_info(video_path):
-    filename = video_path.split('/')[-1]
-    filename = filename.split('.')[0].split('_')
+def get_video_info(frame_folder):
+    folder_name = frame_folder.split('/')[-1]
+    filename = folder_name.split('_')
     video_id = '_'.join(filename[:-2])
     start = int(filename[-2])
-    vr = decord.VideoReader(video_path)
-    length = len(vr) // vr.get_avg_fps()
-    return (video_id, start, start + length, video_path)
+    length = len(os.listdir(frame_folder)) // FPS
+    return (video_id, start, start + length, folder_name)
 
 
-def get_avaialble_clips(video_root, num_cpus):
-    videos = os.listdir(video_root)
-    videos = ['%s/%s' % (video_root, video) for video in videos]
+def get_avaialble_clips(frame_root, num_cpus):
+    folders = os.listdir(frame_root)
+    folders = ['%s/%s' % (frame_root, folder) for folder in folders]
     pool = multiprocessing.Pool(num_cpus)
-    outputs = pool.map(get_video_info, videos)
+    outputs = pool.map(get_video_info, folders)
     lookup = defaultdict(list)
     for record in outputs:
         lookup[record[0]].append(record[1:])
@@ -44,7 +43,6 @@ def filter_train_list(kinetics_anotation_file, lookup):
                 break
         if flag is False:
             continue
-        video_path = os.path.abspath(video_path)
         string = '%s,%d,%.3f,%.3f,%.3f,%.3f,%d,-1\n' % (
             video_path, int(float(line[1])), float(line[2]), float(
                 line[3]), float(line[4]), float(line[5]), int(float(line[6])))
@@ -75,8 +73,10 @@ if __name__ == '__main__':
         num_workers = args.num_workers
     else:
         num_workers = max(multiprocessing.cpu_count() - 1, 1)
-    lookup = get_avaialble_clips(args.avakinetics_root + '/videos/',
-                                 num_workers)
+
+    frame_root = args.avakinetics_root + '/rawframes/'
+    frame_root = os.path.abspath(frame_root)
+    lookup = get_avaialble_clips(frame_root, num_workers)
 
     kinetics_train = args.avakinetics_anotation + '/kinetics_train_v1.0.csv'
     filtered_list = filter_train_list(kinetics_train, lookup)
