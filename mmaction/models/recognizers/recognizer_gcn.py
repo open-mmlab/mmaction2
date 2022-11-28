@@ -14,6 +14,7 @@ class RecognizerGCN(BaseRecognizer):
     def extract_feat(self,
                      inputs: torch.Tensor,
                      stage: str = 'backbone',
+                     test_mode: bool = False,
                      **kwargs) -> Tuple:
         """Extract features at the given stage.
 
@@ -22,6 +23,7 @@ class RecognizerGCN(BaseRecognizer):
                 `(B, num_clips, num_person, clip_len, num_joints, 3 or 2)`.
             stage (str): The stage to output the features.
                 Defaults to ``'backbone'``.
+            test_mode: (bool): Whether in test mode. Defaults to False.
 
         Returns:
             tuple: THe extracted features and a dict recording the kwargs
@@ -31,8 +33,14 @@ class RecognizerGCN(BaseRecognizer):
 
         # Record the kwargs required by `loss` and `predict`
         loss_predict_kwargs = dict()
-        assert inputs.shape[1] == 1
-        inputs = inputs[:, 0]
+
+        if test_mode:
+            bs, nc = inputs.shape[:2]
+            inputs = inputs.reshape((bs * nc) + inputs.shape[2:])
+        else:
+            assert inputs.shape[1] == 1
+            inputs = inputs[:, 0]
+
         x = self.backbone(inputs)
 
         if stage == 'backbone':

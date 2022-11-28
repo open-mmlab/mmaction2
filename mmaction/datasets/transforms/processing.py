@@ -1662,11 +1662,11 @@ class PreNormalize2D(BaseTransform):
         - keypoint
 
     Args:
-        img_shape (tuple[int]): The resolution of the original video.
+        img_shape (tuple[int, int]): The resolution of the original video.
             Defaults to ``(1080, 1920)``.
     """
 
-    def __init__(self, img_shape: Tuple[int] = (1080, 1920)) -> None:
+    def __init__(self, img_shape: Tuple[int, int] = (1080, 1920)) -> None:
         self.img_shape = img_shape
 
     def transform(self, results: Dict) -> Dict:

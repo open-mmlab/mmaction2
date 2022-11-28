@@ -27,6 +27,7 @@ class GCNHead(BaseHead):
                  in_channels: int,
                  loss_cls: Dict = dict(type='CrossEntropyLoss'),
                  dropout: float = 0.,
+                 average_clips: str = 'prob',
                  init_cfg: Union[Dict, List[Dict]] = dict(
                      type='Normal', layer='Linear', std=0.01),
                  **kwargs) -> None:
@@ -34,6 +35,7 @@ class GCNHead(BaseHead):
             num_classes,
             in_channels,
             loss_cls=loss_cls,
+            average_clips=average_clips,
             init_cfg=init_cfg,
             **kwargs)
         self.dropout_ratio = dropout
