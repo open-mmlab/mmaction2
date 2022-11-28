@@ -1,22 +1,22 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
-from collections import defaultdict
-from typing import List
 import multiprocessing
 import os
+from collections import defaultdict
+from typing import List
 
 import decord
 
 
 def get_kinetics_frames(kinetics_anotation_file: str) -> dict:
-    """
-    Given the AVA-kinetics anotation file, return a lookup to map the video id 
-        and the the set of timestamps involved of this video id.
+    """Given the AVA-kinetics anotation file, return a lookup to map the video
+    id and the the set of timestamps involved of this video id.
+
     Args:
-        kinetics_anotation_file (str): Path to the AVA-like anotation file for 
+        kinetics_anotation_file (str): Path to the AVA-like anotation file for
             the kinetics subset.
     Returns:
-        dict: the dict keys are the kinetics videos' video id. The values are 
+        dict: the dict keys are the kinetics videos' video id. The values are
             the set of timestamps involved.
     """
     with open(kinetics_anotation_file) as f:
@@ -31,12 +31,11 @@ def get_kinetics_frames(kinetics_anotation_file: str) -> dict:
 
 
 def filter_missing_videos(kinetics_list: str, frame_lookup: dict) -> dict:
-    """
-    Given the kinetics700 dataset list, remove the video ids from the lookup 
-        that are missing videos or frames.
+    """Given the kinetics700 dataset list, remove the video ids from the lookup
+    that are missing videos or frames.
 
     Args:
-        kinetics_list (str): Path to the kinetics700 dataset list. 
+        kinetics_list (str): Path to the kinetics700 dataset list.
             The content of the list should be:
                 ```
                 Path_to_video1\n
@@ -44,21 +43,21 @@ def filter_missing_videos(kinetics_list: str, frame_lookup: dict) -> dict:
                 ...
                 Path_to_videon\n
                 ```
-            The start and end of the video must be contained in the filename. 
+            The start and end of the video must be contained in the filename.
             For example:
                 ```
                 class602/o3lCwWyyc_s_000012_000022.mp4\n
                 ```
         frame_lookup (dict): the dict from `get_kinetics_frames`.
     Returns:
-        dict: the dict keys are the kinetics videos' video id. The values are 
+        dict: the dict keys are the kinetics videos' video id. The values are
             the a list of tuples:
                 (start_of_the_video, end_of_the_video, video_path)
     """
     video_lookup = defaultdict(set)
     with open(kinetics_list) as f:
         for line in f.readlines():
-            video_path = line.split(' ')[0]  # remove lable information
+            video_path = line.split(' ')[0]  # remove label information
             video_name = video_path.split('/')[-1]  # get the file name
             video_name = video_name.split('.')[0]  # remove file extensions
             video_name = video_name.split('_')
@@ -76,7 +75,7 @@ def filter_missing_videos(kinetics_list: str, frame_lookup: dict) -> dict:
             video_lookup[video_id].add((start, end, video_path))
 
     # Some frame ids exist in multiple videos in the Kinetics dataset.
-    # The reason is the part of one video may fall into differnet categories.
+    # The reason is the part of one video may fall into different categories.
     # Remove the duplicated records
     for video in video_lookup:
         if len(video_lookup[video]) == 1:
@@ -107,13 +106,9 @@ def generate_cut_cmds(video_lookup: dict, data_root: str) -> List[str]:
     for video_id in video_lookup:
         for start, end, video_path in video_lookup[video_id]:
             start0 = int(video_path.split('_')[-2])
-            new_path = '%s/%s_%06d_%06d.mp4' % (data_root, 
-                                                video_id, 
-                                                start, 
+            new_path = '%s/%s_%06d_%06d.mp4' % (data_root, video_id, start,
                                                 end)
-            cmd = template % (start - start0,
-                              end - start,
-                              video_path,
+            cmd = template % (start - start0, end - start, video_path,
                               new_path)
             cmds.append(cmd)
     return cmds
@@ -125,10 +120,8 @@ def run_cmd(cmd):
 
 
 def remove_failed_video(vide_path: str) -> None:
-    """
-    Given the path to the video, delete the video if it cannot be read or if 
-    the actual length of the video is 0.75 seconds shorter than expected.
-    """
+    """Given the path to the video, delete the video if it cannot be read or if
+    the actual length of the video is 0.75 seconds shorter than expected."""
     try:
         v = decord.VideoReader(vide_path)
         fps = v.get_avg_fps()
@@ -144,16 +137,25 @@ def remove_failed_video(vide_path: str) -> None:
 
 if __name__ == '__main__':
     p = argparse.ArgumentParser()
-    p.add_argument('--avakinetics_anotation', type=str, 
-                   default='./ava_kinetics_v1_0',
-                   help='the directory to ava-kinetics anotations')
-    p.add_argument('--kinetics_list', type=str, 
-                   help='the datalist of the kinetics700 training videos')
-    p.add_argument('--num_workers', type=int, default=-1,
-                   help='number of workers used for multiprocessing')
-    p.add_argument('--avakinetics_root', type=str,
-                   default='../../../data/ava_kinetics',
-                   help='the path to save ava-kinetics videos')
+    p.add_argument(
+        '--avakinetics_anotation',
+        type=str,
+        default='./ava_kinetics_v1_0',
+        help='the directory to ava-kinetics anotations')
+    p.add_argument(
+        '--kinetics_list',
+        type=str,
+        help='the datalist of the kinetics700 training videos')
+    p.add_argument(
+        '--num_workers',
+        type=int,
+        default=-1,
+        help='number of workers used for multiprocessing')
+    p.add_argument(
+        '--avakinetics_root',
+        type=str,
+        default='../../../data/ava_kinetics',
+        help='the path to save ava-kinetics videos')
     args = p.parse_args()
 
     # Find videos from the Kinetics700 dataset required for AVA-Kinetics
