@@ -47,7 +47,7 @@ def single_worker(rank, det_lookup, args):
         start = int(video_path.split('/')[-1].split('_')[-2])
         time = int(key.split(',')[1])
         frame_id = (time - start) * 30 + 1
-        frame = decord.VideoReader(video_path).get_batch([frame_id])[0]
+        frame = decord.VideoReader(video_path).get_batch([frame_id]).asnumpy()[0]
         H, W, _ = frame    
         try:
             video_path = det_lookup[key]
