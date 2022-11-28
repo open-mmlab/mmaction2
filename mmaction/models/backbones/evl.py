@@ -677,4 +677,5 @@ class EVL(nn.Module):
         ]
 
         x = self.decoder(features).squeeze(1)
+        x = self.layer_norm(x)
         return x
