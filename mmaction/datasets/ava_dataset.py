@@ -308,3 +308,117 @@ class AVADataset(BaseActionDataset):
         data_info['entity_ids'] = ann['entity_ids']
 
         return data_info
+
+
+@DATASETS.register_module()
+class AVAKineticsDataset(AVADataset):
+    """AVA-Kinetics dataset for spatial temporal detection."""
+
+    def get_timestamp(self, video_id):
+        if len(video_id) == 11:
+            return self.timestamp_start, self.timestamp_end
+        video_id = video_id.split('_')
+        if len(video_id) >= 3:
+            start = int(video_id[-2])
+            end = int(video_id[-1])
+            video_id = '_'.join(video_id[:-2])
+            return start, end
+        return self.timestamp_start, self.timestamp_end
+
+    def load_data_list(self) -> List[dict]:
+        """Load AVA annotations."""
+        check_file_exist(self.ann_file)
+        data_list = []
+        records_dict_by_img = defaultdict(list)
+        with open(self.ann_file, 'r') as fin:
+            for line in fin:
+                line_split = line.strip().split(',')
+
+                label = int(line_split[6])
+                if self.custom_classes is not None:
+                    if label not in self.custom_classes:
+                        continue
+                    label = self.custom_classes.index(label)
+
+                video_id = line_split[0]
+                timestamp = int(line_split[1])
+                img_key = f'{video_id},{timestamp:04d}'
+
+                entity_box = np.array(list(map(float, line_split[2:6])))
+                entity_id = int(line_split[7])
+                start, end = self.get_timestamp(video_id)
+                shot_info = (1, (end - start) * self._FPS + 1)
+
+                video_info = dict(
+                    video_id=video_id,
+                    timestamp=timestamp,
+                    entity_box=entity_box,
+                    label=label,
+                    entity_id=entity_id,
+                    shot_info=shot_info)
+                records_dict_by_img[img_key].append(video_info)
+
+        for img_key in records_dict_by_img:
+            video_id, timestamp = img_key.split(',')
+            start, end = self.get_timestamp(video_id)
+            bboxes, labels, entity_ids = self.parse_img_record(
+                records_dict_by_img[img_key])
+            ann = dict(
+                gt_bboxes=bboxes, gt_labels=labels, entity_ids=entity_ids)
+            frame_dir = video_id
+            if self.data_prefix['img'] is not None:
+                frame_dir = osp.join(self.data_prefix['img'], frame_dir)
+            video_info = dict(
+                frame_dir=frame_dir,
+                video_id=video_id,
+                timestamp=int(timestamp),
+                timestamp_start=start,
+                timestamp_end=end,
+                img_key=img_key,
+                shot_info=shot_info,
+                fps=self._FPS,
+                ann=ann)
+            data_list.append(video_info)
+
+        return data_list
+
+    def get_data_info(self, idx: int) -> dict:
+        """Get annotation by index."""
+        data_info = super().get_data_info(idx)
+        img_key = data_info['img_key']
+        data_info['filename_tmpl'] = self.filename_tmpl
+        if 'timestamp_start' not in data_info:
+            data_info['timestamp_start'] = self.timestamp_start
+            data_info['timestamp_end'] = self.timestamp_end
+
+        if self.proposals is not None:
+            if len(img_key) == 16:
+                proposal_key = img_key
+            else:
+                video_id, timestamp = img_key.split(',')
+                vid = '_'.join(video_id.split('_')[:-2])
+                proposal_key = f'{vid},{timestamp:04d}'
+
+            if proposal_key not in self.proposals:
+                data_info['proposals'] = np.array([[0, 0, 1, 1]])
+                data_info['scores'] = np.array([1])
+            else:
+                proposals = self.proposals[proposal_key]
+                assert proposals.shape[-1] in [4, 5]
+                if proposals.shape[-1] == 5:
+                    thr = min(self.person_det_score_thr, max(proposals[:, 4]))
+                    positive_inds = (proposals[:, 4] >= thr)
+                    proposals = proposals[positive_inds]
+                    proposals = proposals[:self.num_max_proposals]
+                    data_info['proposals'] = proposals[:, :4]
+                    data_info['scores'] = proposals[:, 4]
+                else:
+                    proposals = proposals[:self.num_max_proposals]
+                    data_info['proposals'] = proposals
+
+        ann = data_info.pop('ann')
+        data_info['gt_bboxes'] = ann['gt_bboxes']
+        data_info['gt_labels'] = ann['gt_labels']
+        data_info['entity_ids'] = ann['entity_ids']
+
+        return data_info
