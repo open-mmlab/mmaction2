@@ -61,6 +61,7 @@ def main():
             format(model.__class__.__name__))
 
     inputs = (torch.randn((1, *input_shape)), )
+    print(inputs[0].shape)
     flops_ = FlopCountAnalysis(model, inputs)
     activations_ = ActivationCountAnalysis(model, inputs)
 
