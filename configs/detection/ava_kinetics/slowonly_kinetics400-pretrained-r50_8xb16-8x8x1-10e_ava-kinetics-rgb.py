@@ -2,6 +2,17 @@ _base_ = [
     '../../_base_/default_runtime.py', '../_base_/models/slowonly_r50.py'
 ]
 
+
+url = ('https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/'
+       'slowonly_imagenet-pretrained-r50_8xb16-8x8x1-steplr-150e_kinetics400-'
+       'rgb/slowonly_imagenet-pretrained-r50_8xb16-8x8x1-steplr-150e_'
+       'kinetics400-rgb_20220901-df42dc84.pth')
+
+model = dict(
+    init_cfg=dict(
+        type='Pretrained',
+        checkpoint=url))
+
 dataset_type = 'AVAKineticsDataset'
 data_root = 'data/ava_kinetics/rawframes'
 anno_root = 'data/ava_kinetics/annotations'
@@ -24,11 +35,11 @@ proposal_file_val = f'{anno_root}/ava_dense_proposals_val.FAIR.recall_93.9.pkl'
 file_client_args = dict(
     io_backend='petrel',
     path_mapping=dict(
-        {'data/ava_kinetics/rawframes/': 
+        {'data/ava_kinetics/rawframes/':
             's3://openmmlab/datasets/action/ava/rawframes/'}))
 
 train_pipeline = [
-    dict(type='SampleAVAFrames', clip_len=4, frame_interval=16),
+    dict(type='SampleAVAFrames', clip_len=8, frame_interval=8),
     dict(type='RawFrameDecode', **file_client_args),
     dict(type='RandomRescale', scale_range=(256, 320)),
     dict(type='RandomCrop', size=256),
@@ -39,7 +50,7 @@ train_pipeline = [
 # The testing is w/o. any cropping / flipping
 val_pipeline = [
     dict(
-        type='SampleAVAFrames', clip_len=4, frame_interval=16, test_mode=True),
+        type='SampleAVAFrames', clip_len=8, frame_interval=8, test_mode=True),
     dict(type='RawFrameDecode', **file_client_args),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='FormatShape', input_format='NCTHW', collapse=True),
@@ -47,7 +58,7 @@ val_pipeline = [
 ]
 
 train_dataloader = dict(
-    batch_size=16,
+    batch_size=8,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
@@ -83,21 +94,30 @@ val_evaluator = dict(
 test_evaluator = val_evaluator
 
 train_cfg = dict(
-    type='EpochBasedTrainLoop', max_epochs=20, val_begin=1, val_interval=1)
+    type='EpochBasedTrainLoop', max_epochs=10, val_begin=1, val_interval=1)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
 param_scheduler = [
-    dict(type='LinearLR', start_factor=0.1, by_epoch=True, begin=0, end=5),
     dict(
-        type='MultiStepLR',
-        begin=0,
-        end=20,
+        type='LinearLR',
+        start_factor=0.1,
         by_epoch=True,
-        milestones=[10, 15],
-        gamma=0.1)
+        begin=0,
+        end=2,
+        convert_to_iter_based=True),
+    dict(
+        type='CosineAnnealingLR',
+        T_max=8,
+        eta_min=0,
+        by_epoch=True,
+        begin=2,
+        end=10,
+        convert_to_iter_based=True)
 ]
 
 optim_wrapper = dict(
-    optimizer=dict(type='SGD', lr=0.2, momentum=0.9, weight_decay=0.00001),
+    optimizer=dict(type='SGD', lr=0.1, momentum=0.9, weight_decay=0.00001),
     clip_grad=dict(max_norm=40, norm_type=2))
+
+default_hooks = dict(checkpoint=dict(max_keep_ckpts=2))
