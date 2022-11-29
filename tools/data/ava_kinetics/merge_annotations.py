@@ -46,7 +46,7 @@ if __name__ == '__main__':
 
     check_file(kinetics_proposal)
     check_file(ava_proposal)
-    
+
     lookup = pickle.load(open(kinetics_proposal, 'rb'))
     lookup.update(pickle.load(open(ava_proposal, 'rb')))
 
