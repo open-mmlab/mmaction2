@@ -24,17 +24,13 @@ def parse_args():
     parser.add_argument('--label', default=None, type=str, help='label file')
     parser.add_argument(
         '--output-dir',
+        '-o',
         default=None,
         type=str,
         help='If there is no display interface, you can save it.')
     parser.add_argument(
-        '--show-frames',
-        default=False,
-        action='store_true',
-        help='Whether to display the frames of the video. Defaults to False,'
-        'Please make sure you have the display interface')
-    parser.add_argument(
         '--phase',
+        '-p',
         default='train',
         type=str,
         choices=['train', 'test', 'val'],
@@ -42,6 +38,7 @@ def parse_args():
         ' Defaults to "train".')
     parser.add_argument(
         '--show-number',
+        '-n',
         type=int,
         default=sys.maxsize,
         help='number of images selected to visualize, must bigger than 0. if '
@@ -67,6 +64,7 @@ def parse_args():
         'Defaults to "transformed".')
     parser.add_argument(
         '--rescale-factor',
+        '-r',
         type=float,
         help='video rescale factor, which is useful if the output is too '
         'large or too small.')
@@ -235,8 +233,7 @@ def main():
 
         file_id = f'video_{i}'
         video = [x[..., ::-1] for x in video]
-        visualizer.add_datasample(
-            file_id, video, data_sample, show_frames=args.show_frames)
+        visualizer.add_datasample(file_id, video, data_sample)
         progress_bar.update()
 
 
