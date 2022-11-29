@@ -180,7 +180,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='MMAction2 demo')
     parser.add_argument('video', help='video file/url')
     parser.add_argument(
-        '--out_filename',
+        'out_filename',
         help='output filename',
         default='demo/stdet_demo.mp4')
     parser.add_argument(

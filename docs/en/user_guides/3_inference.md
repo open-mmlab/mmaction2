@@ -142,20 +142,20 @@ python demo/demo_spatiotemporal_det.py --video ${VIDEO_FILE} \
 
 Optional arguments:
 
-- `OUTPUT_FILENAME`: Path to the output file which is a video format. Default: `demo/stdet_demo.mp4`.
+- `OUTPUT_FILENAME`: Path to the output file which is a video format. Defaults to `demo/stdet_demo.mp4`.
 - `SPATIOTEMPORAL_ACTION_DETECTION_CONFIG_FILE`: The spatiotemporal action detection config file path.
 - `SPATIOTEMPORAL_ACTION_DETECTION_CHECKPOINT`: The spatiotemporal action detection checkpoint URL.
 - `HUMAN_DETECTION_CONFIG_FILE`: The human detection config file path.
 - `HUMAN_DETECTION_CHECKPOINT`: The human detection checkpoint URL.
-- `HUMAN_DETECTION_SCORE_THRESHOLD`: The score threshold for human detection. Default: 0.9.
+- `HUMAN_DETECTION_SCORE_THRESHOLD`: The score threshold for human detection. Defaults to 0.9.
 - `HUMAN_DETECTION_CATEGORY_ID`: The category id for human detection. Defaults to 0.
-- `ACTION_DETECTION_SCORE_THRESHOLD`: The score threshold for action detection. Default: 0.5.
-- `LABEL_MAP`: The label map used. Default: `tools/data/ava/label_map.txt`.
-- `DEVICE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`.  Default: `cuda:0`.
+- `ACTION_DETECTION_SCORE_THRESHOLD`: The score threshold for action detection. Defaults to 0.5.
+- `LABEL_MAP`: The label map used. Defaults to `tools/data/ava/label_map.txt`.
+- `DEVICE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`.  Defaults to `cuda:0`.
 - `SHORT_SIDE`: The short side used for frame extraction. Defaults to 256.
-- `PREDICT_STEPSIZE`: Make a prediction per N frames.  Default: 8.
-- `OUTPUT_STEPSIZE`: Output 1 frame per N frames in the input video. Note that `PREDICT_STEPSIZE % OUTPUT_STEPSIZE == 0`. Default: 4.
-- `OUTPUT_FPS`: The FPS of demo video output. Default: 6.
+- `PREDICT_STEPSIZE`: Make a prediction per N frames.  Defaults to 8.
+- `OUTPUT_STEPSIZE`: Output 1 frame per N frames in the input video. Note that `PREDICT_STEPSIZE % OUTPUT_STEPSIZE == 0`. Defaults to 4.
+- `OUTPUT_FPS`: The FPS of demo video output. Defaults to 6.
 
 Examples:
 
@@ -164,7 +164,7 @@ Assume that you are located at `$MMACTION2` .
 1. Use the Faster RCNN as the human detector, SlowOnly-8x8-R101 as the action detector. Making predictions per 8 frames, and output 1 frame per 4 frames to the output video. The FPS of the output video is 4.
 
 ```shell
-python demo/demo_spatiotemporal_det.py demo/demo.mp4 demo/stdet_demo.mp4 \
+python demo/demo_spatiotemporal_det.py demo/demo.mp4 demo/demo_spatiotemporal_det.mp4 \
     --config configs/detection/ava/slowonly_kinetics400-pretrained-r101_8xb16-8x8x1-20e_ava21-rgb.py \
     --checkpoint https://download.openmmlab.com/mmaction/detection/ava/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb/slowonly_omnisource_pretrained_r101_8x8x1_20e_ava_rgb_20201217-16378594.pth \
     --det-config demo/skeleton_demo_cfg/faster-rcnn_r50_fpn_2x_coco_infer.py \
