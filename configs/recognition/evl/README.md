@@ -37,4 +37,6 @@ Video recognition has been dominated by the end-to-end learning paradigm -- firs
 
 3. Some "transform" functions are not implemented yet, e.g. "ImgAug", "RandomErasing".
 
-4. I may not be available to update the code in December. Sorry for the inconvenience. I'll contact you guys after I finish the refactoring and match all the results.
+4. Unit test is not added yet.
+
+5. I may not be available to update the code in December. Sorry for the inconvenience. I'll contact you guys after I finish the refactoring and match all the results.
