@@ -15,10 +15,7 @@ ann_file_test = 'data/sthv2/sthv2_val_list_videos.txt'
 file_client_args = dict(io_backend='disk')
 train_pipeline = [
     dict(type='DecordInit', **file_client_args),
-    dict(
-        type='UniformSampleFrames',
-        clip_len=16,
-        out_of_bound_opt='repeat_frame'),
+    dict(type='UniformSample', clip_len=16),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='RandomResizedCrop'),
@@ -34,11 +31,7 @@ train_pipeline = [
 ]
 val_pipeline = [
     dict(type='DecordInit', **file_client_args),
-    dict(
-        type='UniformSampleFrames',
-        clip_len=16,
-        out_of_bound_opt='repeat_frame',
-        test_mode=True),
+    dict(type='UniformSample', clip_len=16, test_mode=True),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='CenterCrop', crop_size=224),
@@ -47,11 +40,7 @@ val_pipeline = [
 ]
 test_pipeline = [
     dict(type='DecordInit', **file_client_args),
-    dict(
-        type='UniformSampleFrames',
-        clip_len=16,
-        out_of_bound_opt='repeat_frame',
-        test_mode=True),
+    dict(type='UniformSample', clip_len=16, test_mode=True),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 224)),
     dict(type='ThreeCrop', crop_size=224),

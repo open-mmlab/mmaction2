@@ -10,9 +10,9 @@ from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
                       LoadProposals, OpenCVDecode, OpenCVInit, PIMSDecode,
                       PIMSInit, PyAVDecode, PyAVDecodeMotionVector, PyAVInit,
                       RawFrameDecode, SampleAVAFrames, SampleFrames,
-                      UniformSampleFrames, UntrimmedSampleFrames)
+                      UniformSample, UntrimmedSampleFrames)
 from .pose_loading import (GeneratePoseTarget, LoadKineticsPose,
-                           PaddingWithLoop, PoseDecode)
+                           PaddingWithLoop, PoseDecode, UniformSampleFrames)
 from .processing import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
                          MelSpectrogram, MultiScaleCrop, PoseCompact,
                          RandomCrop, RandomRescale, RandomResizedCrop, Resize,
@@ -30,9 +30,9 @@ __all__ = [
     'AudioAmplify', 'MelSpectrogram', 'AudioDecode', 'FormatAudioShape',
     'LoadAudioFeature', 'AudioFeatureSelector', 'AudioDecodeInit',
     'ImageDecode', 'BuildPseudoClip', 'RandomRescale', 'PIMSDecode',
-    'PyAVDecodeMotionVector', 'UniformSampleFrames', 'PoseDecode',
-    'LoadKineticsPose', 'GeneratePoseTarget', 'PIMSInit', 'FormatGCNInput',
-    'PaddingWithLoop', 'ArrayDecode', 'JointToBone', 'PackActionInputs',
-    'PackLocalizationInputs', 'ImgAug', 'TorchVisionWrapper',
-    'PytorchVideoWrapper', 'PoseCompact'
+    'PyAVDecodeMotionVector', 'UniformSample', 'UniformSampleFrames',
+    'PoseDecode', 'LoadKineticsPose', 'GeneratePoseTarget', 'PIMSInit',
+    'FormatGCNInput', 'PaddingWithLoop', 'ArrayDecode', 'JointToBone',
+    'PackActionInputs', 'PackLocalizationInputs', 'ImgAug',
+    'TorchVisionWrapper', 'PytorchVideoWrapper', 'PoseCompact'
 ]
