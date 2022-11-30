@@ -9,8 +9,7 @@ from numpy.testing import assert_array_equal
 
 from mmaction.datasets.transforms import (AudioFeatureSelector,
                                           DenseSampleFrames, SampleAVAFrames,
-                                          SampleFrames, UniformSampleFrames,
-                                          UntrimmedSampleFrames)
+                                          SampleFrames, UntrimmedSampleFrames)
 
 
 class BaseTestLoading:
