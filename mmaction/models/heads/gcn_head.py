@@ -19,7 +19,7 @@ class GCNHead(BaseHead):
             Defaults to ``dict(type='CrossEntropyLoss')``.
         dropout (float): Probability of dropout layer. Defaults to 0.
         init_cfg (dict or list[dict]): Config to control the initialization.
-            Defaults to ``dict(type='Normal', std=0.01)``.
+            Defaults to ``dict(type='Normal', layer='Linear', std=0.01)``.
     """
 
     def __init__(self,
@@ -67,5 +67,5 @@ class GCNHead(BaseHead):
         if self.dropout is not None:
             x = self.dropout(x)
 
-        cls_score = self.fc(x)
-        return cls_score
+        cls_scores = self.fc(x)
+        return cls_scores
