@@ -1,17 +1,18 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy as cp
 import pickle
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 import numpy as np
 from mmcv.transforms import BaseTransform
 from mmengine.dataset import Compose
 from mmengine.fileio import FileClient
 from scipy.stats import mode
+from torch.nn.modules.utils import _pair
 
 from mmaction.registry import TRANSFORMS
 from .formatting import Rename
-from .processing import Flip
+from .processing import Flip, _combine_quadruple
 
 
 @TRANSFORMS.register_module()
@@ -461,6 +462,312 @@ class GeneratePoseTarget(BaseTransform):
 
 
 @TRANSFORMS.register_module()
+class PoseCompact(BaseTransform):
+    """Convert the coordinates of keypoints to make it more compact.
+    Specifically, it first find a tight bounding box that surrounds all joints
+    in each frame, then we expand the tight box by a given padding ratio. For
+    example, if 'padding == 0.25', then the expanded box has unchanged center,
+    and 1.25x width and height.
+
+    Required keys in results are "img_shape", "keypoint", add or modified keys
+    are "img_shape", "keypoint", "crop_quadruple".
+
+    Args:
+        padding (float): The padding size. Default: 0.25.
+        threshold (int): The threshold for the tight bounding box. If the width
+            or height of the tight bounding box is smaller than the threshold,
+            we do not perform the compact operation. Default: 10.
+        hw_ratio (float | tuple[float] | None): The hw_ratio of the expanded
+            box. Float indicates the specific ratio and tuple indicates a
+            ratio range. If set as None, it means there is no requirement on
+            hw_ratio. Default: None.
+        allow_imgpad (bool): Whether to allow expanding the box outside the
+            image to meet the hw_ratio requirement. Default: True.
+
+    Returns:
+        type: Description of returned object.
+    """
+
+    def __init__(self,
+                 padding=0.25,
+                 threshold=10,
+                 hw_ratio=None,
+                 allow_imgpad=True):
+
+        self.padding = padding
+        self.threshold = threshold
+        if hw_ratio is not None:
+            hw_ratio = _pair(hw_ratio)
+
+        self.hw_ratio = hw_ratio
+
+        self.allow_imgpad = allow_imgpad
+        assert self.padding >= 0
+
+    def transform(self, results):
+        """Convert the coordinates of keypoints to make it more compact.
+
+        Args:
+            results (dict): The resulting dict to be modified and passed
+                to the next transform in pipeline.
+        """
+        img_shape = results['img_shape']
+        h, w = img_shape
+        kp = results['keypoint']
+
+        # Make NaN zero
+        kp[np.isnan(kp)] = 0.
+        kp_x = kp[..., 0]
+        kp_y = kp[..., 1]
+
+        min_x = np.min(kp_x[kp_x != 0], initial=np.Inf)
+        min_y = np.min(kp_y[kp_y != 0], initial=np.Inf)
+        max_x = np.max(kp_x[kp_x != 0], initial=-np.Inf)
+        max_y = np.max(kp_y[kp_y != 0], initial=-np.Inf)
+
+        # The compact area is too small
+        if max_x - min_x < self.threshold or max_y - min_y < self.threshold:
+            return results
+
+        center = ((max_x + min_x) / 2, (max_y + min_y) / 2)
+        half_width = (max_x - min_x) / 2 * (1 + self.padding)
+        half_height = (max_y - min_y) / 2 * (1 + self.padding)
+
+        if self.hw_ratio is not None:
+            half_height = max(self.hw_ratio[0] * half_width, half_height)
+            half_width = max(1 / self.hw_ratio[1] * half_height, half_width)
+
+        min_x, max_x = center[0] - half_width, center[0] + half_width
+        min_y, max_y = center[1] - half_height, center[1] + half_height
+
+        # hot update
+        if not self.allow_imgpad:
+            min_x, min_y = int(max(0, min_x)), int(max(0, min_y))
+            max_x, max_y = int(min(w, max_x)), int(min(h, max_y))
+        else:
+            min_x, min_y = int(min_x), int(min_y)
+            max_x, max_y = int(max_x), int(max_y)
+
+        kp_x[kp_x != 0] -= min_x
+        kp_y[kp_y != 0] -= min_y
+
+        new_shape = (max_y - min_y, max_x - min_x)
+        results['img_shape'] = new_shape
+
+        # the order is x, y, w, h (in [0, 1]), a tuple
+        crop_quadruple = results.get('crop_quadruple', (0., 0., 1., 1.))
+        new_crop_quadruple = (min_x / w, min_y / h, (max_x - min_x) / w,
+                              (max_y - min_y) / h)
+        crop_quadruple = _combine_quadruple(crop_quadruple, new_crop_quadruple)
+        results['crop_quadruple'] = crop_quadruple
+        return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}(padding={self.padding}, '
+                    f'threshold={self.threshold}, '
+                    f'hw_ratio={self.hw_ratio}, '
+                    f'allow_imgpad={self.allow_imgpad})')
+        return repr_str
+
+
+@TRANSFORMS.register_module()
+class PreNormalize3D(BaseTransform):
+    """PreNormalize for NTURGB+D 3D keypoints (x, y, z).
+
+    PreNormalize3D first subtracts the coordinates of each joint
+    from the coordinates of the 'spine' (joint #1 in ntu) of the first person
+    in the first frame. Subsequently, it performs a 3D rotation to fix the Z
+    axis parallel to the 3D vector from the 'hip' (joint #0) and the 'spine'
+    (joint #1) and the X axis toward the 3D vector from the 'right shoulder'
+    (joint #8) and the 'left shoulder' (joint #4). Codes adapted from
+    https://github.com/lshiwjx/2s-AGCN.
+
+    Required Keys:
+
+        - keypoint
+        - total_frames (optional)
+
+    Modified Keys:
+
+        - keypoint
+
+    Added Keys:
+
+        - body_center
+
+    Args:
+        zaxis (list[int]): The target Z axis for the 3D rotation.
+            Defaults to ``[0, 1]``.
+        xaxis (list[int]): The target X axis for the 3D rotation.
+            Defaults to ``[8, 4]``.
+        align_spine (bool): Whether to perform a 3D rotation to
+            align the spine. Defaults to True.
+        align_shoulder (bool): Whether to perform a 3D rotation
+            to align the shoulder. Defaults to True.
+        align_center (bool): Whether to align the body center.
+            Defaults to True.
+    """
+
+    def __init__(self,
+                 zaxis: List[int] = [0, 1],
+                 xaxis: List[int] = [8, 4],
+                 align_spine: bool = True,
+                 align_shoulder: bool = True,
+                 align_center: bool = True) -> None:
+        self.zaxis = zaxis
+        self.xaxis = xaxis
+        self.align_center = align_center
+        self.align_spine = align_spine
+        self.align_shoulder = align_shoulder
+
+    def unit_vector(self, vector: np.ndarray) -> np.ndarray:
+        """Returns the unit vector of the vector."""
+        return vector / np.linalg.norm(vector)
+
+    def angle_between(self, v1: np.ndarray, v2: np.ndarray) -> float:
+        """Returns the angle in radians between vectors 'v1' and 'v2'."""
+        if np.abs(v1).sum() < 1e-6 or np.abs(v2).sum() < 1e-6:
+            return 0
+        v1_u = self.unit_vector(v1)
+        v2_u = self.unit_vector(v2)
+        return np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0))
+
+    def rotation_matrix(self, axis: np.ndarray, theta: float) -> np.ndarray:
+        """Returns the rotation matrix associated with counterclockwise
+        rotation about the given axis by theta radians."""
+        if np.abs(axis).sum() < 1e-6 or np.abs(theta) < 1e-6:
+            return np.eye(3)
+        axis = np.asarray(axis)
+        axis = axis / np.sqrt(np.dot(axis, axis))
+        a = np.cos(theta / 2.0)
+        b, c, d = -axis * np.sin(theta / 2.0)
+        aa, bb, cc, dd = a * a, b * b, c * c, d * d
+        bc, ad, ac, ab, bd, cd = b * c, a * d, a * c, a * b, b * d, c * d
+        return np.array([[aa + bb - cc - dd, 2 * (bc + ad), 2 * (bd - ac)],
+                         [2 * (bc - ad), aa + cc - bb - dd, 2 * (cd + ab)],
+                         [2 * (bd + ac), 2 * (cd - ab), aa + dd - bb - cc]])
+
+    def transform(self, results: Dict) -> Dict:
+        """The transform function of :class:`PreNormalize3D`.
+
+        Args:
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
+        """
+        skeleton = results['keypoint']
+        total_frames = results.get('total_frames', skeleton.shape[1])
+
+        M, T, V, C = skeleton.shape
+        assert T == total_frames
+        if skeleton.sum() == 0:
+            return results
+
+        index0 = [
+            i for i in range(T) if not np.all(np.isclose(skeleton[0, i], 0))
+        ]
+
+        assert M in [1, 2]
+        if M == 2:
+            index1 = [
+                i for i in range(T)
+                if not np.all(np.isclose(skeleton[1, i], 0))
+            ]
+            if len(index0) < len(index1):
+                skeleton = skeleton[:, np.array(index1)]
+                skeleton = skeleton[[1, 0]]
+            else:
+                skeleton = skeleton[:, np.array(index0)]
+        else:
+            skeleton = skeleton[:, np.array(index0)]
+
+        T_new = skeleton.shape[1]
+
+        if self.align_center:
+            if skeleton.shape[2] == 25:
+                main_body_center = skeleton[0, 0, 1].copy()
+            else:
+                main_body_center = skeleton[0, 0, -1].copy()
+            mask = ((skeleton != 0).sum(-1) > 0)[..., None]
+            skeleton = (skeleton - main_body_center) * mask
+
+        if self.align_spine:
+            joint_bottom = skeleton[0, 0, self.zaxis[0]]
+            joint_top = skeleton[0, 0, self.zaxis[1]]
+            axis = np.cross(joint_top - joint_bottom, [0, 0, 1])
+            angle = self.angle_between(joint_top - joint_bottom, [0, 0, 1])
+            matrix_z = self.rotation_matrix(axis, angle)
+            skeleton = np.einsum('abcd,kd->abck', skeleton, matrix_z)
+
+        if self.align_shoulder:
+            joint_rshoulder = skeleton[0, 0, self.xaxis[0]]
+            joint_lshoulder = skeleton[0, 0, self.xaxis[1]]
+            axis = np.cross(joint_rshoulder - joint_lshoulder, [1, 0, 0])
+            angle = self.angle_between(joint_rshoulder - joint_lshoulder,
+                                       [1, 0, 0])
+            matrix_x = self.rotation_matrix(axis, angle)
+            skeleton = np.einsum('abcd,kd->abck', skeleton, matrix_x)
+
+        results['keypoint'] = skeleton
+        results['total_frames'] = T_new
+        results['body_center'] = main_body_center
+        return results
+
+    def __repr__(self) -> str:
+        repr_str = (f'{self.__class__.__name__}('
+                    f'zaxis={self.zaxis}, '
+                    f'xaxis={self.xaxis}, '
+                    f'align_center={self.align_center}, '
+                    f'align_spine={self.align_spine}, '
+                    f'align_shoulder={self.align_shoulder})')
+        return repr_str
+
+
+@TRANSFORMS.register_module()
+class PreNormalize2D(BaseTransform):
+    """Normalize the range of keypoint values.
+
+    Required Keys:
+
+        - keypoint
+        - img_shape (optional)
+
+    Modified Keys:
+
+        - keypoint
+
+    Args:
+        img_shape (tuple[int, int]): The resolution of the original video.
+            Defaults to ``(1080, 1920)``.
+    """
+
+    def __init__(self, img_shape: Tuple[int, int] = (1080, 1920)) -> None:
+        self.img_shape = img_shape
+
+    def transform(self, results: Dict) -> Dict:
+        """The transform function of :class:`PreNormalize2D`.
+
+        Args:
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
+        """
+        h, w = results.get('img_shape', self.img_shape)
+        results['keypoint'][..., 0] = \
+            (results['keypoint'][..., 0] - (w / 2)) / (w / 2)
+        results['keypoint'][..., 1] = \
+            (results['keypoint'][..., 1] - (h / 2)) / (h / 2)
+        return results
+
+    def __repr__(self) -> str:
+        repr_str = (f'{self.__class__.__name__}('
+                    f'img_shape={self.img_shape})')
+        return repr_str
+
+
+@TRANSFORMS.register_module()
 class JointToBone(BaseTransform):
     """Convert the joint information to bone information.
 
@@ -703,25 +1010,120 @@ class GenSkeFeat(BaseTransform):
 
 
 @TRANSFORMS.register_module()
-class PoseDecode(BaseTransform):
-    """Load and decode pose with given indices.
+class UniformSampleFrames(BaseTransform):
+    """Uniformly sample frames from the video.
+
+    To sample an n-frame clip from the video. UniformSampleFrames basically
+    divide the video into n segments of equal length and randomly sample one
+    frame from each segment. To make the testing results reproducible, a
+    random seed is set during testing, to make the sampling results
+    deterministic.
 
     Required Keys:
 
-        - keypoint
-        - total_frames (optional)
-        - frame_inds (optional)
-        - offset (optional)
-        - keypoint_score (optional)
+        - total_frames
+        - start_index (optional)
 
-    Modified Keys:
+    Added Keys:
 
-        - keypoint
-        - keypoint_score (optional)
+        - frame_inds
+        - frame_interval
+        - num_clips
+        - clip_len
+
+    Args:
+        clip_len (int): Frames of each sampled output clip.
+        num_clips (int): Number of clips to be sampled. Defaults to 1.
+        test_mode (bool): Store True when building test or validation dataset.
+            Defaults to False.
+        seed (int): The random seed used during test time. Defaults to 255.
     """
 
+    def __init__(self,
+                 clip_len: int,
+                 num_clips: int = 1,
+                 test_mode: bool = False,
+                 seed: int = 255) -> None:
+        self.clip_len = clip_len
+        self.num_clips = num_clips
+        self.test_mode = test_mode
+        self.seed = seed
+
+    def _get_train_clips(self, num_frames: int, clip_len: int) -> np.ndarray:
+        """Uniformly sample indices for training clips.
+
+        Args:
+            num_frames (int): The number of frames.
+            clip_len (int): The length of the clip.
+
+        Returns:
+            np.ndarray: The sampled indices for training clips.
+        """
+        all_inds = []
+        for clip_idx in range(self.num_clips):
+            if num_frames < clip_len:
+                start = np.random.randint(0, num_frames)
+                inds = np.arange(start, start + clip_len)
+            elif clip_len <= num_frames < 2 * clip_len:
+                basic = np.arange(clip_len)
+                inds = np.random.choice(
+                    clip_len + 1, num_frames - clip_len, replace=False)
+                offset = np.zeros(clip_len + 1, dtype=np.int32)
+                offset[inds] = 1
+                offset = np.cumsum(offset)
+                inds = basic + offset[:-1]
+            else:
+                bids = np.array(
+                    [i * num_frames // clip_len for i in range(clip_len + 1)])
+                bsize = np.diff(bids)
+                bst = bids[:clip_len]
+                offset = np.random.randint(bsize)
+                inds = bst + offset
+
+            all_inds.append(inds)
+
+        return np.concatenate(all_inds)
+
+    def _get_test_clips(self, num_frames: int, clip_len: int) -> np.ndarray:
+        """Uniformly sample indices for testing clips.
+
+        Args:
+            num_frames (int): The number of frames.
+            clip_len (int): The length of the clip.
+
+        Returns:
+            np.ndarray: The sampled indices for testing clips.
+        """
+
+        np.random.seed(self.seed)
+        all_inds = []
+        for i in range(self.num_clips):
+            if num_frames < clip_len:
+                start_ind = i if num_frames < self.num_clips \
+                    else i * num_frames // self.num_clips
+                inds = np.arange(start_ind, start_ind + clip_len)
+            elif clip_len <= num_frames < clip_len * 2:
+                basic = np.arange(clip_len)
+                inds = np.random.choice(
+                    clip_len + 1, num_frames - clip_len, replace=False)
+                offset = np.zeros(clip_len + 1, dtype=np.int64)
+                offset[inds] = 1
+                offset = np.cumsum(offset)
+                inds = basic + offset[:-1]
+            else:
+                bids = np.array(
+                    [i * num_frames // clip_len for i in range(clip_len + 1)])
+                bsize = np.diff(bids)
+                bst = bids[:clip_len]
+                offset = np.random.randint(bsize)
+                inds = bst + offset
+
+            all_inds.append(inds)
+
+        return np.concatenate(all_inds)
+
     def transform(self, results: Dict) -> Dict:
-        """The transform function of :class:`PoseDecode`.
+        """The transform function of :class:`UniformSampleFrames`.
 
         Args:
             results (dict): The result dict.
@@ -729,30 +1131,49 @@ class PoseDecode(BaseTransform):
         Returns:
             dict: The result dict.
         """
-        if 'total_frames' not in results:
-            results['total_frames'] = results['keypoint'].shape[1]
+        num_frames = results['total_frames']
 
-        if 'frame_inds' not in results:
-            results['frame_inds'] = np.arange(results['total_frames'])
+        if self.test_mode:
+            inds = self._get_test_clips(num_frames, self.clip_len)
+        else:
+            inds = self._get_train_clips(num_frames, self.clip_len)
 
-        if results['frame_inds'].ndim != 1:
-            results['frame_inds'] = np.squeeze(results['frame_inds'])
+        inds = np.mod(inds, num_frames)
+        start_index = results.get('start_index', 0)
+        inds = inds + start_index
 
-        offset = results.get('offset', 0)
-        frame_inds = results['frame_inds'] + offset
+        if 'keypoint' in results:
+            kp = results['keypoint']
+            assert num_frames == kp.shape[1]
+            num_person = kp.shape[0]
+            num_persons = [num_person] * num_frames
+            for i in range(num_frames):
+                j = num_person - 1
+                while j >= 0 and np.all(np.abs(kp[j, i]) < 1e-5):
+                    j -= 1
+                num_persons[i] = j + 1
+            transitional = [False] * num_frames
+            for i in range(1, num_frames - 1):
+                if num_persons[i] != num_persons[i - 1]:
+                    transitional[i] = transitional[i - 1] = True
+                if num_persons[i] != num_persons[i + 1]:
+                    transitional[i] = transitional[i + 1] = True
+            inds_int = inds.astype(np.int)
+            coeff = np.array([transitional[i] for i in inds_int])
+            inds = (coeff * inds_int + (1 - coeff) * inds).astype(np.float32)
 
-        results['keypoint'] = results['keypoint'][:, frame_inds].astype(
-            np.float32)
-
-        if 'keypoint_score' in results:
-            kpscore = results['keypoint_score']
-            results['keypoint_score'] = kpscore[:,
-                                                frame_inds].astype(np.float32)
-
+        results['frame_inds'] = inds.astype(np.int32)
+        results['clip_len'] = self.clip_len
+        results['frame_interval'] = None
+        results['num_clips'] = self.num_clips
         return results
 
-    def __repr__(self) -> str:
-        repr_str = f'{self.__class__.__name__}()'
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'clip_len={self.clip_len}, '
+                    f'num_clips={self.num_clips}, '
+                    f'test_mode={self.test_mode}, '
+                    f'seed={self.seed})')
         return repr_str
 
 
@@ -812,4 +1233,58 @@ class PadTo(BaseTransform):
         repr_str = (f'{self.__class__.__name__}('
                     f'length={self.length}, '
                     f'mode={self.mode})')
+        return repr_str
+
+
+@TRANSFORMS.register_module()
+class PoseDecode(BaseTransform):
+    """Load and decode pose with given indices.
+
+    Required Keys:
+
+        - keypoint
+        - total_frames (optional)
+        - frame_inds (optional)
+        - offset (optional)
+        - keypoint_score (optional)
+
+    Modified Keys:
+
+        - keypoint
+        - keypoint_score (optional)
+    """
+
+    def transform(self, results: Dict) -> Dict:
+        """The transform function of :class:`PoseDecode`.
+
+        Args:
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
+        """
+        if 'total_frames' not in results:
+            results['total_frames'] = results['keypoint'].shape[1]
+
+        if 'frame_inds' not in results:
+            results['frame_inds'] = np.arange(results['total_frames'])
+
+        if results['frame_inds'].ndim != 1:
+            results['frame_inds'] = np.squeeze(results['frame_inds'])
+
+        offset = results.get('offset', 0)
+        frame_inds = results['frame_inds'] + offset
+
+        results['keypoint'] = results['keypoint'][:, frame_inds].astype(
+            np.float32)
+
+        if 'keypoint_score' in results:
+            kpscore = results['keypoint_score']
+            results['keypoint_score'] = kpscore[:,
+                                                frame_inds].astype(np.float32)
+
+        return results
+
+    def __repr__(self) -> str:
+        repr_str = f'{self.__class__.__name__}()'
         return repr_str

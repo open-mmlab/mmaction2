@@ -14,10 +14,12 @@ from numpy.testing import assert_array_almost_equal, assert_array_equal
 from mmaction.datasets.transforms import (GeneratePoseTarget, GenSkeFeat,
                                           JointToBone, LoadKineticsPose,
                                           MergeSkeFeat, PadTo, PoseDecode,
-                                          ToMotion)
+                                          ToMotion, PreNormalize3D,
+                                          PreNormalize2D, PoseCompact,
+                                          UniformSampleFrames)
 
 
-class TestPoseLoading:
+class TestPoseTransforms:
 
     @staticmethod
     def test_load_kinetics_pose():
@@ -255,6 +257,110 @@ class TestPoseLoading:
         assert_array_almost_equal(return_results['imgs'], 0)
 
     @staticmethod
+    def test_pose_compact():
+        results = {}
+        results['img_shape'] = (100, 100)
+        fake_kp = np.zeros([1, 4, 2, 2])
+        fake_kp[:, :, 0] = [10, 10]
+        fake_kp[:, :, 1] = [90, 90]
+        results['keypoint'] = fake_kp
+
+        pose_compact = PoseCompact(
+            padding=0, threshold=0, hw_ratio=None, allow_imgpad=False)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (80, 80)
+        assert str(pose_compact) == (
+            'PoseCompact(padding=0, threshold=0, hw_ratio=None, '
+            'allow_imgpad=False)')
+
+        pose_compact = PoseCompact(
+            padding=0.3, threshold=0, hw_ratio=None, allow_imgpad=False)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (100, 100)
+
+        pose_compact = PoseCompact(
+            padding=0.3, threshold=0, hw_ratio=None, allow_imgpad=True)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (104, 104)
+
+        pose_compact = PoseCompact(
+            padding=0, threshold=100, hw_ratio=None, allow_imgpad=False)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (100, 100)
+
+        pose_compact = PoseCompact(
+            padding=0, threshold=0, hw_ratio=0.75, allow_imgpad=True)
+        inp = copy.deepcopy(results)
+        ret = pose_compact(inp)
+        assert ret['img_shape'] == (80, 106)
+
+    @staticmethod
+    def test_pre_normalize3d():
+        target_keys = ['keypoint', 'total_frames', 'body_center']
+
+        results = dict(keypoint=np.random.randn(2, 40, 25, 3), total_frames=40)
+
+        pre_normalize3d = PreNormalize3D(
+            align_center=True, align_spine=True, align_shoulder=False)
+
+        inp = copy.deepcopy(results)
+        ret1 = pre_normalize3d(inp)
+
+        inp = copy.deepcopy(ret1)
+        ret2 = pre_normalize3d(inp)
+
+        assert_array_equal(ret2['body_center'], np.zeros(3))
+        assert_array_equal(ret1['keypoint'], ret2['keypoint'])
+
+        pre_normalize3d = PreNormalize3D(
+            align_center=True, align_spine=False, align_shoulder=True)
+
+        inp = copy.deepcopy(results)
+        ret3 = pre_normalize3d(inp)
+
+        inp = copy.deepcopy(ret3)
+        ret4 = pre_normalize3d(inp)
+
+        assert_array_equal(ret4['body_center'], np.zeros(3))
+        assert_array_equal(ret3['keypoint'], ret4['keypoint'])
+
+        assert assert_dict_has_keys(ret1, target_keys)
+        assert repr(pre_normalize3d) == 'PreNormalize3D(zaxis=[0, 1], ' \
+                                        'xaxis=[8, 4], align_center=True, ' \
+                                        'align_spine=False, ' \
+                                        'align_shoulder=True)'
+
+    @staticmethod
+    def test_pre_normalize2d():
+
+        def check_pose_normalize(origin_kps, target_kps, h, w):
+            target_kps[..., 0] = target_kps[..., 0] * w / 2 + w / 2
+            target_kps[..., 1] = target_kps[..., 1] * h / 2 + h / 2
+            assert_array_almost_equal(origin_kps, target_kps, decimal=4)
+
+        results = dict(
+            keypoint=np.random.randn(1, 40, 17, 2), img_shape=(480, 854))
+        pre_normalize_2d = PreNormalize2D(img_shape=(1080, 1920))
+        inp = copy.deepcopy(results)
+        ret1 = pre_normalize_2d(inp)
+        check_pose_normalize(
+            results['keypoint'], ret1['keypoint'], h=480, w=854)
+
+        results = dict(keypoint=np.random.randn(1, 40, 17, 2))
+        pre_normalize_2d = PreNormalize2D(img_shape=(1080, 1920))
+        inp = copy.deepcopy(results)
+        ret2 = pre_normalize_2d(inp)
+        check_pose_normalize(
+            results['keypoint'], ret2['keypoint'], h=1080, w=1920)
+
+        assert repr(pre_normalize_2d) == \
+               'PreNormalize2D(img_shape=(1080, 1920))'
+
+    @staticmethod
     def test_joint_to_bone():
         with pytest.raises(ValueError):
             JointToBone(dataset='invalid')
@@ -354,28 +460,92 @@ class TestPoseLoading:
                                      "feats=['j', 'b', 'jm', 'bm'], axis=-1)"
 
     @staticmethod
-    def test_pose_decode():
-        kp = np.random.random([1, 16, 17, 2])
-        kpscore = np.random.random([1, 16, 17])
-        frame_inds = np.array([2, 4, 6, 8, 10])
-        results = dict(
-            keypoint=kp, keypoint_score=kpscore, frame_inds=frame_inds)
-        pose_decode = PoseDecode()
-        assert repr(pose_decode) == 'PoseDecode()'
-        decode_results = pose_decode(results)
-        assert_array_almost_equal(decode_results['keypoint'], kp[:,
-                                                                 frame_inds])
-        assert_array_almost_equal(decode_results['keypoint_score'],
-                                  kpscore[:, frame_inds])
+    def test_uniform_sample_frames():
+        results = dict(total_frames=64, start_index=0)
+        sampling = UniformSampleFrames(
+            clip_len=8, num_clips=1, test_mode=True, seed=0)
 
-        results = dict(keypoint=kp, keypoint_score=kpscore, total_frames=16)
-        pose_decode = PoseDecode()
-        decode_results = pose_decode(results)
-        assert_array_almost_equal(decode_results['keypoint'], kp)
-        assert_array_almost_equal(decode_results['keypoint_score'], kpscore)
+        assert repr(sampling) == ('UniformSampleFrames(clip_len=8, '
+                                  'num_clips=1, test_mode=True, seed=0)')
+        sampling_results = sampling(results)
+        assert sampling_results['clip_len'] == 8
+        assert sampling_results['frame_interval'] is None
+        assert sampling_results['num_clips'] == 1
+        assert_array_equal(sampling_results['frame_inds'],
+                           np.array([4, 15, 21, 24, 35, 43, 51, 63]))
+
+        results = dict(total_frames=15, start_index=0)
+        sampling = UniformSampleFrames(
+            clip_len=8, num_clips=1, test_mode=True, seed=0)
+        sampling_results = sampling(results)
+        assert sampling_results['clip_len'] == 8
+        assert sampling_results['frame_interval'] is None
+        assert sampling_results['num_clips'] == 1
+        assert_array_equal(sampling_results['frame_inds'],
+                           np.array([0, 2, 4, 6, 8, 9, 11, 13]))
+
+        results = dict(total_frames=7, start_index=0)
+        sampling = UniformSampleFrames(
+            clip_len=8, num_clips=1, test_mode=True, seed=0)
+        sampling_results = sampling(results)
+        assert sampling_results['clip_len'] == 8
+        assert sampling_results['frame_interval'] is None
+        assert sampling_results['num_clips'] == 1
+        assert_array_equal(sampling_results['frame_inds'],
+                           np.array([0, 1, 2, 3, 4, 5, 6, 0]))
+
+        results = dict(total_frames=7, start_index=0)
+        sampling = UniformSampleFrames(
+            clip_len=8, num_clips=8, test_mode=True, seed=0)
+        sampling_results = sampling(results)
+        assert sampling_results['clip_len'] == 8
+        assert sampling_results['frame_interval'] is None
+        assert sampling_results['num_clips'] == 8
+        assert len(sampling_results['frame_inds']) == 64
+
+        results = dict(total_frames=64, start_index=0)
+        sampling = UniformSampleFrames(
+            clip_len=8, num_clips=4, test_mode=True, seed=0)
+        sampling_results = sampling(results)
+        assert sampling_results['clip_len'] == 8
+        assert sampling_results['frame_interval'] is None
+        assert sampling_results['num_clips'] == 4
+        assert_array_equal(
+            sampling_results['frame_inds'],
+            np.array([
+                4, 15, 21, 24, 35, 43, 51, 63, 1, 11, 21, 26, 36, 47, 54, 56,
+                0, 12, 18, 25, 38, 47, 55, 62, 0, 9, 21, 25, 37, 40, 49, 60
+            ]))
+
+        results = dict(total_frames=64, start_index=0)
+        sampling = UniformSampleFrames(
+            clip_len=8, num_clips=1, test_mode=False, seed=0)
+        sampling_results = sampling(results)
+        assert sampling_results['clip_len'] == 8
+        assert sampling_results['frame_interval'] is None
+        assert sampling_results['num_clips'] == 1
+        assert len(sampling_results['frame_inds']) == 8
+
+        results = dict(total_frames=7, start_index=0)
+        sampling = UniformSampleFrames(
+            clip_len=8, num_clips=1, test_mode=False, seed=0)
+        sampling_results = sampling(results)
+        assert sampling_results['clip_len'] == 8
+        assert sampling_results['frame_interval'] is None
+        assert sampling_results['num_clips'] == 1
+        assert len(sampling_results['frame_inds']) == 8
+
+        results = dict(total_frames=15, start_index=0)
+        sampling = UniformSampleFrames(
+            clip_len=8, num_clips=1, test_mode=False, seed=0)
+        sampling_results = sampling(results)
+        assert sampling_results['clip_len'] == 8
+        assert sampling_results['frame_interval'] is None
+        assert sampling_results['num_clips'] == 1
+        assert len(sampling_results['frame_inds']) == 8
 
     @staticmethod
-    def test_padding_to():
+    def test_pad_to():
         with pytest.raises(AssertionError):
             PadTo(length=4, mode='invalid')
 
@@ -396,3 +566,24 @@ class TestPoseLoading:
         kp = ret2['keypoint']
         assert ret2['total_frames'] == 6
         assert_array_equal(kp[:, 3:], np.zeros((2, 3, 17, 3)))
+
+    @staticmethod
+    def test_pose_decode():
+        kp = np.random.random([1, 16, 17, 2])
+        kpscore = np.random.random([1, 16, 17])
+        frame_inds = np.array([2, 4, 6, 8, 10])
+        results = dict(
+            keypoint=kp, keypoint_score=kpscore, frame_inds=frame_inds)
+        pose_decode = PoseDecode()
+        assert repr(pose_decode) == 'PoseDecode()'
+        decode_results = pose_decode(results)
+        assert_array_almost_equal(decode_results['keypoint'], kp[:,
+                                                                 frame_inds])
+        assert_array_almost_equal(decode_results['keypoint_score'],
+                                  kpscore[:, frame_inds])
+
+        results = dict(keypoint=kp, keypoint_score=kpscore, total_frames=16)
+        pose_decode = PoseDecode()
+        decode_results = pose_decode(results)
+        assert_array_almost_equal(decode_results['keypoint'], kp)
+        assert_array_almost_equal(decode_results['keypoint_score'], kpscore)

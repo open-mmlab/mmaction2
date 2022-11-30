@@ -10,13 +10,13 @@ from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
                       LoadProposals, OpenCVDecode, OpenCVInit, PIMSDecode,
                       PIMSInit, PyAVDecode, PyAVDecodeMotionVector, PyAVInit,
                       RawFrameDecode, SampleAVAFrames, SampleFrames,
-                      UniformSampleFrames, UntrimmedSampleFrames)
-from .pose_loading import (GeneratePoseTarget, GenSkeFeat, JointToBone,
-                           LoadKineticsPose, MergeSkeFeat, PadTo, PoseDecode,
-                           ToMotion)
+                      UntrimmedSampleFrames)
+from .pose_transforms import (GeneratePoseTarget, GenSkeFeat, JointToBone,
+                              LoadKineticsPose, MergeSkeFeat, PadTo, PoseDecode,
+                              ToMotion, UniformSampleFrames, PoseCompact,
+                              PreNormalize2D, PreNormalize3D)
 from .processing import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
-                         MelSpectrogram, MultiScaleCrop, PoseCompact,
-                         PreNormalize2D, PreNormalize3D, RandomCrop,
+                         MelSpectrogram, MultiScaleCrop, RandomCrop,
                          RandomRescale, RandomResizedCrop, Resize, TenCrop,
                          ThreeCrop)
 from .wrappers import ImgAug, PytorchVideoWrapper, TorchVisionWrapper

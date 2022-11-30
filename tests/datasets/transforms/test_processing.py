@@ -5,15 +5,13 @@ import mmcv
 import numpy as np
 import pytest
 from mmengine.testing import assert_dict_has_keys
-from numpy.testing import assert_array_almost_equal, assert_array_equal
+from numpy.testing import assert_array_almost_equal
 
 from mmaction.datasets.transforms import (AudioAmplify, CenterCrop,
                                           ColorJitter, Flip, Fuse,
                                           MelSpectrogram, MultiScaleCrop,
-                                          PoseCompact, PreNormalize2D,
-                                          PreNormalize3D, RandomCrop,
-                                          RandomResizedCrop, Resize, TenCrop,
-                                          ThreeCrop)
+                                          RandomCrop, RandomResizedCrop,
+                                          Resize, TenCrop, ThreeCrop)
 
 
 def check_crop(origin_imgs, result_imgs, result_bbox, num_crops=1):
@@ -70,113 +68,6 @@ def check_flip(origin_imgs, result_imgs, flip_type):
                 return False
         # yapf: enable
     return True
-
-
-class TestPose:
-
-    @staticmethod
-    def test_pose_compact():
-        results = {}
-        results['img_shape'] = (100, 100)
-        fake_kp = np.zeros([1, 4, 2, 2])
-        fake_kp[:, :, 0] = [10, 10]
-        fake_kp[:, :, 1] = [90, 90]
-        results['keypoint'] = fake_kp
-
-        pose_compact = PoseCompact(
-            padding=0, threshold=0, hw_ratio=None, allow_imgpad=False)
-        inp = copy.deepcopy(results)
-        ret = pose_compact(inp)
-        assert ret['img_shape'] == (80, 80)
-        assert str(pose_compact) == (
-            'PoseCompact(padding=0, threshold=0, hw_ratio=None, '
-            'allow_imgpad=False)')
-
-        pose_compact = PoseCompact(
-            padding=0.3, threshold=0, hw_ratio=None, allow_imgpad=False)
-        inp = copy.deepcopy(results)
-        ret = pose_compact(inp)
-        assert ret['img_shape'] == (100, 100)
-
-        pose_compact = PoseCompact(
-            padding=0.3, threshold=0, hw_ratio=None, allow_imgpad=True)
-        inp = copy.deepcopy(results)
-        ret = pose_compact(inp)
-        assert ret['img_shape'] == (104, 104)
-
-        pose_compact = PoseCompact(
-            padding=0, threshold=100, hw_ratio=None, allow_imgpad=False)
-        inp = copy.deepcopy(results)
-        ret = pose_compact(inp)
-        assert ret['img_shape'] == (100, 100)
-
-        pose_compact = PoseCompact(
-            padding=0, threshold=0, hw_ratio=0.75, allow_imgpad=True)
-        inp = copy.deepcopy(results)
-        ret = pose_compact(inp)
-        assert ret['img_shape'] == (80, 106)
-
-    @staticmethod
-    def test_pre_normalize3d():
-        target_keys = ['keypoint', 'total_frames', 'body_center']
-
-        results = dict(keypoint=np.random.randn(2, 40, 25, 3), total_frames=40)
-
-        pre_normalize3d = PreNormalize3D(
-            align_center=True, align_spine=True, align_shoulder=False)
-
-        inp = copy.deepcopy(results)
-        ret1 = pre_normalize3d(inp)
-
-        inp = copy.deepcopy(ret1)
-        ret2 = pre_normalize3d(inp)
-
-        assert_array_equal(ret2['body_center'], np.zeros(3))
-        assert_array_equal(ret1['keypoint'], ret2['keypoint'])
-
-        pre_normalize3d = PreNormalize3D(
-            align_center=True, align_spine=False, align_shoulder=True)
-
-        inp = copy.deepcopy(results)
-        ret3 = pre_normalize3d(inp)
-
-        inp = copy.deepcopy(ret3)
-        ret4 = pre_normalize3d(inp)
-
-        assert_array_equal(ret4['body_center'], np.zeros(3))
-        assert_array_equal(ret3['keypoint'], ret4['keypoint'])
-
-        assert assert_dict_has_keys(ret1, target_keys)
-        assert repr(pre_normalize3d) == 'PreNormalize3D(zaxis=[0, 1], ' \
-                                        'xaxis=[8, 4], align_center=True, ' \
-                                        'align_spine=False, ' \
-                                        'align_shoulder=True)'
-
-    @staticmethod
-    def test_pre_normalize2d():
-
-        def check_pose_normalize(origin_kps, target_kps, h, w):
-            target_kps[..., 0] = target_kps[..., 0] * w / 2 + w / 2
-            target_kps[..., 1] = target_kps[..., 1] * h / 2 + h / 2
-            assert_array_almost_equal(origin_kps, target_kps, decimal=4)
-
-        results = dict(
-            keypoint=np.random.randn(1, 40, 17, 2), img_shape=(480, 854))
-        pre_normalize_2d = PreNormalize2D(img_shape=(1080, 1920))
-        inp = copy.deepcopy(results)
-        ret1 = pre_normalize_2d(inp)
-        check_pose_normalize(
-            results['keypoint'], ret1['keypoint'], h=480, w=854)
-
-        results = dict(keypoint=np.random.randn(1, 40, 17, 2))
-        pre_normalize_2d = PreNormalize2D(img_shape=(1080, 1920))
-        inp = copy.deepcopy(results)
-        ret2 = pre_normalize_2d(inp)
-        check_pose_normalize(
-            results['keypoint'], ret2['keypoint'], h=1080, w=1920)
-
-        assert repr(pre_normalize_2d) == \
-               'PreNormalize2D(img_shape=(1080, 1920))'
 
 
 class TestAudio:
