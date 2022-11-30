@@ -150,7 +150,7 @@ Now we are done with the preparations for the Kinetics part. We need to merge th
 cp -r ../../../data/ava/annotations/ ../../../data/ava_kinetics/
 ```
 
-Next we merge the generated anotation files of the Kinetics part to AVA. Please check: you should have two files `kinetics_train.csv` and `kinetics_proposal.pkl` at `$MMACTION2/data/ava_kinetics/` generated from Step 5 and Step 6. Run the following script to merge these two files into `$MMACTION2/data/ava_kinetics/annotations/ava_train_v2.2.csv` and `ava_dense_proposals_train.FAIR.recall_93.9.pkl` respectively.
+Next we merge the generated anotation files of the Kinetics part to AVA. Please check: you should have two files `kinetics_train.csv` and `kinetics_proposal.pkl` at `$MMACTION2/data/ava_kinetics/` generated from Step 5 and Step 6. Run the following script to merge these two files into `$MMACTION2/data/ava_kinetics/annotations/ava_train_v2.2.csv` and `$MMACTION2/data/ava_kinetics/annotations/ava_dense_proposals_train.FAIR.recall_93.9.pkl` respectively.
 
 ```shell
 python3 merge_annotations.py --avakinetics_root=$AVAKINETICS_ROOT
