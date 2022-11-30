@@ -111,7 +111,7 @@ Arguments:
 
 - `avakinetics_anotation`: the directory to ava-kinetics anotations. Defaults to `./ava_kinetics_v1_0`.
 - `avakinetics_root`: the directory to save the ava-kinetics dataset. Defaults to `$MMACTION2/data/ava_kinetics`.
-- `num_workers`: number of workers used to cut videos. Defaults to -1 and use all available cpus.
+- `num_workers`: number of workers used to prepare annotations. Defaults to -1 and use all available cpus.
 
 ## Step 6. Fetch Proposal Files
 
