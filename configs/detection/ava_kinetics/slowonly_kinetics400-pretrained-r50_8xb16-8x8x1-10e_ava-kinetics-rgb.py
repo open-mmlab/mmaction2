@@ -2,16 +2,12 @@ _base_ = [
     '../../_base_/default_runtime.py', '../_base_/models/slowonly_r50.py'
 ]
 
-
 url = ('https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/'
        'slowonly_imagenet-pretrained-r50_8xb16-8x8x1-steplr-150e_kinetics400-'
        'rgb/slowonly_imagenet-pretrained-r50_8xb16-8x8x1-steplr-150e_'
        'kinetics400-rgb_20220901-df42dc84.pth')
 
-model = dict(
-    init_cfg=dict(
-        type='Pretrained',
-        checkpoint=url))
+model = dict(init_cfg=dict(type='Pretrained', checkpoint=url))
 
 dataset_type = 'AVAKineticsDataset'
 data_root = 'data/ava_kinetics/rawframes'
@@ -34,9 +30,10 @@ proposal_file_val = f'{anno_root}/ava_dense_proposals_val.FAIR.recall_93.9.pkl'
 
 file_client_args = dict(
     io_backend='petrel',
-    path_mapping=dict(
-        {'data/ava_kinetics/rawframes/':
-            's3://openmmlab/datasets/action/ava/rawframes/'}))
+    path_mapping=dict({
+        'data/ava_kinetics/rawframes/':
+        's3://openmmlab/datasets/action/ava/rawframes/'
+    }))
 
 train_pipeline = [
     dict(type='SampleAVAFrames', clip_len=8, frame_interval=8),
@@ -49,8 +46,7 @@ train_pipeline = [
 ]
 # The testing is w/o. any cropping / flipping
 val_pipeline = [
-    dict(
-        type='SampleAVAFrames', clip_len=8, frame_interval=8, test_mode=True),
+    dict(type='SampleAVAFrames', clip_len=8, frame_interval=8, test_mode=True),
     dict(type='RawFrameDecode', **file_client_args),
     dict(type='Resize', scale=(-1, 256)),
     dict(type='FormatShape', input_format='NCTHW', collapse=True),

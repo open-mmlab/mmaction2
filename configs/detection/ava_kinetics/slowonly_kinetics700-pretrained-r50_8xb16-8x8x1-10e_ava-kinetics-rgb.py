@@ -7,7 +7,4 @@ url = ('https://download.openmmlab.com/mmaction/v1.0/recognition/slowonly/'
        'rgb/slowonly_imagenet-pretrained-r50_16xb16-8x8x1-steplr-150e_'
        'kinetics700-rgb_20221013-15b93b10.pth')
 
-model = dict(
-    init_cfg=dict(
-        type='Pretrained',
-        checkpoint=url))
+model = dict(init_cfg=dict(type='Pretrained', checkpoint=url))
