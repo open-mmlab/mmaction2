@@ -43,9 +43,13 @@ def filter_train_list(kinetics_anotation_file, lookup):
                 break
         if flag is False:
             continue
-        string = '%s,%d,%.3f,%.3f,%.3f,%.3f,%d,-1\n' % (
-            video_path, int(float(line[1])), float(line[2]), float(
-                line[3]), float(line[4]), float(line[5]), int(float(line[6])))
+
+        frame_idx, x1, y1, x2, y2, label = list(map(float, line[1:7]))
+        frame_idx, label = int(frame_idx), int(label)
+
+        string = (f'{video_path},{frame_idx},'
+                  f'{x1:.3f},{y1:.3f},{x2:.3f},{y2:.3f},{label},-1\n')
+
         filtered.append(string)
     return filtered
 
