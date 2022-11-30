@@ -12,9 +12,9 @@ from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
                       RawFrameDecode, SampleAVAFrames, SampleFrames,
                       UntrimmedSampleFrames)
 from .pose_transforms import (GeneratePoseTarget, GenSkeFeat, JointToBone,
-                              LoadKineticsPose, MergeSkeFeat, PadTo, PoseDecode,
-                              ToMotion, UniformSampleFrames, PoseCompact,
-                              PreNormalize2D, PreNormalize3D)
+                              LoadKineticsPose, MergeSkeFeat, PadTo,
+                              PoseCompact, PoseDecode, PreNormalize2D,
+                              PreNormalize3D, ToMotion, UniformSampleFrames)
 from .processing import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
                          MelSpectrogram, MultiScaleCrop, RandomCrop,
                          RandomRescale, RandomResizedCrop, Resize, TenCrop,

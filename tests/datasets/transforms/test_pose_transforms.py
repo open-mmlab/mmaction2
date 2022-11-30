@@ -13,9 +13,9 @@ from numpy.testing import assert_array_almost_equal, assert_array_equal
 
 from mmaction.datasets.transforms import (GeneratePoseTarget, GenSkeFeat,
                                           JointToBone, LoadKineticsPose,
-                                          MergeSkeFeat, PadTo, PoseDecode,
-                                          ToMotion, PreNormalize3D,
-                                          PreNormalize2D, PoseCompact,
+                                          MergeSkeFeat, PadTo, PoseCompact,
+                                          PoseDecode, PreNormalize2D,
+                                          PreNormalize3D, ToMotion,
                                           UniformSampleFrames)
 
 
