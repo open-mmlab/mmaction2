@@ -93,7 +93,7 @@ python3 extract_rgb_frames.py --avakinetics_root=$AVAKINETICS_ROOT \
 Arguments:
 
 - `avakinetics_root`: the directory to save the ava-kinetics dataset. Defaults to `$MMACTION2/data/ava_kinetics`.
-- `num_workers`: number of workers used to cut videos. Defaults to -1 and use all available cpus.
+- `num_workers`: number of workers used to extract frames. Defaults to -1 and use all available cpus.
 
 ## Step 5. Prepare Annotations
 
