@@ -1,33 +1,27 @@
 # Migration from MMAction2 0.x
 
-We introduce some modifications in MMAction2 1.x, and some of them are BC-breaking. To migrate your projects from MMAction2 0.x smoothly, please read this tutorial.
+MMAction2 1.x introduced major refactorings and modifications including some BC-breaking changes. We provide this tutorial to help you migrate your projects from MMAction2 0.x smoothly.
 
 ## New dependencies
 
-MMAction2 1.x depends on some new packages, you can prepare a new clean environment and install again
-according to the [install tutorial](./get_started.md). Or install the below packages manually.
+MMAction2 1.x depends on the following packages. You are recommended to prepare a new clean environment and install them according to [install tutorial](./get_started.md)
 
-1. [MMEngine](https://github.com/open-mmlab/mmengine): MMEngine is the core the OpenMMLab 2.0 architecture,
-   and we splited many compentents unrelated to computer vision from MMCV to MMEngine.
-2. [MMCV](https://github.com/open-mmlab/mmcv): The computer vision package of OpenMMLab. This is not a new
-   dependency, but you need to upgrade it to above `2.0.0rc0` version.
+1. [MMEngine](https://github.com/open-mmlab/mmengine): MMEngine is a foundational library for training deep learning model introduced in OpenMMLab 2.0 architecture.
+2. [MMCV](https://github.com/open-mmlab/mmcv): MMCV is a foundational library for computer vision. MMAction2 1.x requires `mmcv>=2.0.0rc0` which is more compact and efficient than `mmcv-full==1.x`.
 
 ## Configuration files
 
-In MMAction2 1.x, we refactored the structure of configuration files, and the original files are not usable.
+In MMAction2 1.x, we refactored the structure of configuration files. The configuration files with the old style will be incompatible.
 
-<!-- TODO: migration tool -->
-
-In this section, we will introduce all changes of the configuration files. And we assume you already have
-ideas of the [config files](./user_guides/config.md).
+In this section, we will introduce all changes of the configuration files. And we assume you are already familiar with the [config files](./user_guides/config.md).
 
 ### Model settings
 
-No changes in `model.backbone`, `model.neck` and `model.head` fields.
+No changes in `model.backbone` and `model.neck`. For `model.cls_head`, we move the `average_clips` inside it, which is originally set in `model.test_cfg`.
 
 ### Data settings
 
-Changes in **`data`**:
+#### Changes in **`data`**
 
 - The original `data` field is splited to `train_dataloader`, `val_dataloader` and
   `test_dataloader`. This allows us to configure them in fine-grained. For example,
@@ -77,9 +71,9 @@ test_dataloader = val_dataloader
 </tr>
 </table>
 
-Changes in **`pipeline`**:
+#### Changes in **`pipeline`**
 
-- The original formatting transforms **`ToTensor`**, **`Collect`** are combined as `PackActionInputs` for action recognition task; and **`ToTensor`**, **`Collect`**, **`ToDataContainer`** are combined as `PackLocalizationInputs`
+- The original formatting transforms **`ToTensor`**, **`Collect`** are combined as `PackActionInputs`.
 - We don't recommend to do **`Normalize`** in the dataset pipeline. Please remove it from pipelines and set it in the `model.data_preprocessor` field.
 
 <table class="docutils">
@@ -140,14 +134,13 @@ train_pipeline = [
 </tr>
 </table>
 
-Changes in **`evaluation`**:
+#### Changes in **`evaluation`**
 
-- The **`evaluation`** field is splited to `val_evaluator` and `test_evaluator`. And it won't supports `interval` and `save_best` arguments.
-  The `interval` is moved to `train_cfg.val_interval`, see [the schedule settings](./user_guides/1_config.md#schedule-settings) and the `save_best`
-  is moved to `default_hooks.checkpoint.save_best`, see [the runtime settings](./user_guides/1_config.md#runtime-settings).
-- The 'mean_average_precision', 'mean_class_accuracy', 'mmit_mean_average_precision', 'top_k_accuracy' are combined as `AccMetric`, and use `metric_list`to specify to calculate which metric
-- The `AVAMetric` is used to evaluate AVA Dataset
-- The `BSNMetric` is used to evaluate BSN model
+- The **`evaluation`** field is splited to `val_evaluator` and `test_evaluator`. And it won't support `interval` and `save_best` arguments.
+- The `interval` is moved to `train_cfg.val_interval` and the `save_best` is moved to `default_hooks.checkpoint.save_best`.
+- The 'mean_average_precision', 'mean_class_accuracy', 'mmit_mean_average_precision', 'top_k_accuracy' are combined as `AccMetric`, and you could use `metric_list` to specify which metric to calculate.
+- The `AVAMetric` is used to evaluate AVA Dataset.
+- The `ANetMetric` is used to evaluate ActivityNet Dataset.
 
 <table class="docutils">
 <tr>
@@ -166,7 +159,9 @@ evaluation = dict(
 <td>
 
 ```python
-val_evaluator = dict(type='AccMetric')
+val_evaluator = dict(
+    type='AccMetric',
+    metric_list=('top_k_accuracy', 'mean_class_accuracy'))
 test_evaluator = val_evaluator
 ```
 
@@ -176,11 +171,11 @@ test_evaluator = val_evaluator
 
 ### Schedule settings
 
-Changes in **`optimizer`** and **`optimizer_config`**:
+#### Changes in **`optimizer`** and **`optimizer_config`**
 
-- Now we use `optim_wrapper` field to specify all configuration about the optimization process. And the
-  `optimizer` is a sub field of `optim_wrapper` now.
-- `paramwise_cfg` is also a sub field of `optim_wrapper`, instead of `optimizer`.
+- Now we use `optim_wrapper` field to configure the optimization process. And the
+  `optimizer` becomes a sub field of `optim_wrapper`.
+- `paramwise_cfg` is also a sub field of `optim_wrapper` parallel to `optimizer`.
 - `optimizer_config` is removed now, and all configurations of it are moved to `optim_wrapper`.
 - `grad_clip` is renamed to `clip_grad`.
 
@@ -222,14 +217,14 @@ optim_wrapper = dict(
 </tr>
 </table>
 
-Changes in **`lr_config`**:
+#### Changes in **`lr_config`**
 
 - The `lr_config` field is removed and we use new `param_scheduler` to replace it.
 - The `warmup` related arguments are removed, since we use schedulers combination to implement this
   functionality.
 
 The new schedulers combination mechanism is very flexible, and you can use it to design many kinds of learning
-rate / momentum curves. See [the tutorial](TODO) for more details.
+rate / momentum curves.
 
 <table class="docutils">
 <tr>
@@ -270,7 +265,7 @@ param_scheduler = [
 </tr>
 </table>
 
-Changes in **`runner`**:
+#### Changes in **`runner`**
 
 Most configuration in the original `runner` field is moved to `train_cfg`, `val_cfg` and `test_cfg`, which
 configure the loop in training, validation and test.
@@ -291,9 +286,9 @@ runner = dict(type='EpochBasedRunner', max_epochs=100)
 
 ```python
 # The `val_interval` is the original `evaluation.interval`.
-train_cfg = dict(by_epoch=True, max_epochs=100, val_interval=1)
-val_cfg = dict()   # Use the default validation loop.
-test_cfg = dict()  # Use the default test loop.
+train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=100, val_begin=1, val_interval=1)
+val_cfg = dict(type='ValLoop')   # Use the default validation loop.
+test_cfg = dict(type='TestLoop')  # Use the default test loop.
 ```
 
 </td>
@@ -301,17 +296,20 @@ test_cfg = dict()  # Use the default test loop.
 </table>
 
 In fact, in OpenMMLab 2.0, we introduced `Loop` to control the behaviors in training, validation and test. And
-the functionalities of `Runner` are also changed. You can find more details in [the MMEngine tutorials](TODO).
+the functionalities of `Runner` are also changed. You can find more details in the [MMEngine tutorials](https://mmengine.readthedocs.io/en/latest/tutorials/runner.html).
 
 ### Runtime settings
 
-Changes in **`checkpoint_config`** and **`log_config`**:
+#### Changes in **`checkpoint_config`** and **`log_config`**
 
 The `checkpoint_config` are moved to `default_hooks.checkpoint` and the `log_config` are moved to `default_hooks.logger`.
 And we move many hooks settings from the script code to the `default_hooks` field in the runtime configuration.
 
 ```python
 default_hooks = dict(
+    # update runtime information, e.g. current iter and lr.
+    runtime_info=dict(type='RuntimeInfoHook'),
+
     # record the time of every iterations.
     timer=dict(type='IterTimerHook'),
 
@@ -324,11 +322,11 @@ default_hooks = dict(
     # save checkpoint per epoch, and automatically save the best checkpoint.
     checkpoint=dict(type='CheckpointHook', interval=1, save_best='auto'),
 
-    # set sampler seed in distributed evrionment.
+    # set sampler seed in distributed environment.
     sampler_seed=dict(type='DistSamplerSeedHook'),
 
-    # validation results visualization, set True to enable it.
-    visualization=dict(type='VisualizationHook', enable=False),
+    # synchronize model buffers at the end of each epoch.
+    sync_buffers=dict(type='SyncBuffersHook')
 )
 ```
 
@@ -371,7 +369,7 @@ visualizer = dict(
 </tr>
 </table>
 
-Changes in **`load_from`** and **`resume_from`**:
+#### Changes in **`load_from`** and **`resume_from`**
 
 - The `resume_from` is removed. And we use `resume` and `load_from` to replace it.
   - If `resume=True` and `load_from` is not None, resume training from the checkpoint in `load_from`.
@@ -379,8 +377,9 @@ Changes in **`load_from`** and **`resume_from`**:
   - If `resume=False` and `load_from` is not None, only load the checkpoint, not resume training.
   - If `resume=False` and `load_from` is None, do not load nor resume.
 
-Changes in **`dist_params`**: The `dist_params` field is a sub field of `env_cfg` now. And there are some new
-configurations in the `env_cfg`.
+#### Changes in **`dist_params`**
+
+The `dist_params` field is a sub field of `env_cfg` now. And there are some new configurations in the `env_cfg`.
 
 ```python
 env_cfg = dict(
@@ -395,10 +394,13 @@ env_cfg = dict(
 )
 ```
 
-Changes in **`workflow`**: `workflow` related functionalities are removed.
+#### Changes in **`workflow`**
 
-New field **`visualizer`**: The visualizer is a new design in OpenMMLab 2.0 architecture. We use a
-visualizer instance in the runner to handle results & log visualization and save to different backends.
+`Workflow` related functionalities are removed.
+
+#### New field **`visualizer`**
+
+The visualizer is a new design in OpenMMLab 2.0 architecture. We use a visualizer instance in the runner to handle results & log visualization and save to different backends.
 
 ```python
 visualizer = dict(
@@ -411,7 +413,9 @@ visualizer = dict(
 )
 ```
 
-New field **`default_scope`**: The start point to search module for all registries. The `default_scope` in MMAction2 is `mmaction`. See [the registry tutorial](TODO) for more details.
+#### New field **`default_scope`**
+
+The start point to search module for all registries. The `default_scope` in MMAction2 is `mmaction`. See [the registry tutorial](https://mmengine.readthedocs.io/en/latest/tutorials/registry.html) for more details.
 
 ## Packages
 
@@ -426,7 +430,6 @@ The documentation can be found [here](mmaction.apis).
 |     `train_model`      |      Removed, use `runner.train` to train.      |
 |    `multi_gpu_test`    |       Removed, use `runner.test` to test.       |
 |   `single_gpu_test`    |       Removed, use `runner.test` to test.       |
-|  `show_result_pyplot`  |              Waiting for support.               |
 |   `set_random_seed`    | Removed, use `mmengine.runner.set_random_seed`. |
 |   `init_random_seed`   | Removed, use `mmengine.dist.sync_random_seed`.  |
 
@@ -437,16 +440,17 @@ The `mmaction.core` package is renamed to [`mmaction.engine`](mmaction.engine).
 | Sub package  |                                               Changes                                               |
 | :----------: | :-------------------------------------------------------------------------------------------------: |
 | `evaluation` |                         Removed, use the metrics in `mmaction.evaluation`.                          |
-|    `hook`    |                                  Moved to `mmaction.engine.hooks`                                   |
-| `optimizers` |                                Moved to `mmaction.engine.optimizers`                                |
+|   `hooks`    |                                  Moved to `mmaction.engine.hooks`                                   |
+| `optimizer`  |                                Moved to `mmaction.engine.optimizers`                                |
 |   `utils`    | Removed, the distributed environment related functions can be found in the `mmengine.dist` package. |
 
 ### `mmaction.datasets`
 
 The documentation can be found [here](mmaction.datasets)
-Changes in [`BaseDataset`](mmaction.datasets.Base):
 
-|   Method of Dataset    |                    Changes                    |
+#### Changes in [`BaseActionDataset`](mmaction.datasets.BaseActionDataset):
+
+|         Method         |                    Changes                    |
 | :--------------------: | :-------------------------------------------: |
 | `prepare_train_frames` |          Replaced by `get_data_info`          |
 | `preprare_test_frames` |          Replaced by `get_data_info`          |
@@ -454,44 +458,40 @@ Changes in [`BaseDataset`](mmaction.datasets.Base):
 |     `dump_results`     | Removed, use `mmengine.evaluator.DumpResults` |
 |   `load_annotations`   |         Replaced by `load_data_list`          |
 
-Now, you can write a new Dataset class inherited from \[BaseDataset\] and overwrite `load_data_list` only. To load more data information, you could overwrite `get_data_info` like `RawframeDataset` and `AVADataset`.
-The `mmaction.datasets.pipelines` is renamed to `mmaction.datasets.transforms` and the `mmaction.datasets.pipelines.augmentations` is renamed to `mmaction.datasets.pipelines.augmentations.processing`
+Now, you can write a new Dataset class inherited from `BaseActionDataset` and overwrite `load_data_list` only. To load more data information, you could overwrite `get_data_info` like `RawframeDataset` and `AVADataset`.
+The `mmaction.datasets.pipelines` is renamed to `mmaction.datasets.transforms` and the `mmaction.datasets.pipelines.augmentations` is renamed to `mmaction.datasets.pipelines.processing`.
 
 ### `mmaction.models`
 
 The documentation can be found [here](mmaction.models). The interface of all **backbones**, **necks** and **losses** didn't change.
 
-Changes in [`BaseRecognizer`](mmaction.models.BaseRecognizer):
+#### Changes in [`BaseRecognizer`](mmaction.models.BaseRecognizer):
 
-| Method of recognizer |                                                                     Changes                                                                      |
-| :------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------: |
-|    `extract_feat`    |                                                                    No changes                                                                    |
-|      `forward`       | Now only accepts three arguments: `inputs`, `data_samples` and `mode`. See [the documentation](mmaction.models.BaseRecognizer) for more details. |
-|   `forward_train`    |                                                               Replaced by `loss`.                                                                |
-|    `forward_test`    |                                                              Replaced by `predict`.                                                              |
-|     `train_step`     |              The `optimizer` argument is replaced by `optim_wrapper` and it accepts [`OptimWrapper`](mmengine.optim.OptimWrapper).               |
-|      `val_step`      |                                   The original `val_step` is the same as `train_step`, now it calls `predict`.                                   |
-|     `test_step`      |                                                   New method, and it's the same as `val_step`.                                                   |
+|     Method      |                                                                                Changes                                                                                 |
+| :-------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| `extract_feat`  | Enhanced method, which now supports output features of three stages (`backbone`, `neck`, `head`) and can handle different modes, such as `train_mode` and `test_mode`. |
+|    `forward`    |            Now only accepts three arguments: `inputs`, `data_samples` and `mode`. See [the documentation](mmaction.models.BaseRecognizer) for more details.            |
+| `forward_train` |                                                                          Replaced by `loss`.                                                                           |
+| `forward_test`  |                                                                         Replaced by `predict`.                                                                         |
+|  `train_step`   |                         The `optimizer` argument is replaced by `optim_wrapper` and it accepts [`OptimWrapper`](mmengine.optim.OptimWrapper).                          |
+|   `val_step`    |                                              The original `val_step` is the same as `train_step`, now it calls `predict`.                                              |
+|   `test_step`   |                                                              New method, and it's the same as `val_step`.                                                              |
 
-Changes in [heads](mmaction.models.heads)
+#### Changes in [BaseHead](mmaction.models.BaseHead):
 
-| Function  |                                                                          Changes                                                                          |
-| :-------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| `forward` |                                                                        No changes                                                                         |
-|  `loss`   | It accepts `data_samples` instead of `labels` to calculate loss. The `data_samples` is a list of [ActionDataSample](mmaction.structures.ActionDataSample) |
-| `predict` |                                                    New method, and it returns the recognition results                                                     |
+|  Method   |                                                                                        Changes                                                                                         |
+| :-------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| `forward` |                                                                                       No changes                                                                                       |
+|  `loss`   | It accepts `feats` and `data_samples` instead of `cls_score` and `labels` to calculate loss. The `data_samples` is a list of [ActionDataSample](mmaction.structures.ActionDataSample). |
+| `predict` |                                                  New method. It accepts `feats` and `data_samples` to predict classification scores.                                                   |
 
 ### `mmaction.utils`
 
-|           Function           |                            Changes                            |
-| :--------------------------: | :-----------------------------------------------------------: |
-|        `collect_env`         |                          No changes                           |
-|      `get_root_logger`       |     Removed, use `mmengine.MMLogger.get_current_instance`     |
-|       `load_json_log`        |                      Waiting for support                      |
-|   `setup_multi_processes`    | Removed, use `mmengine.utils.dl_utils.setup_multi_processes`. |
-| `wrap_non_distributed_model` |        Removed, we auto wrap the model in the runner.         |
-|   `wrap_distributed_model`   |        Removed, we auto wrap the model in the runner.         |
-|     `auto_select_device`     |       Removed, we auto select the device in the runner.       |
+|        Function         |                            Changes                            |
+| :---------------------: | :-----------------------------------------------------------: |
+|      `collect_env`      |                          No changes                           |
+|    `get_root_logger`    |     Removed, use `mmengine.MMLogger.get_current_instance`     |
+| `setup_multi_processes` | Removed, use `mmengine.utils.dl_utils.setup_multi_processes`. |
 
 ### Other changes
 

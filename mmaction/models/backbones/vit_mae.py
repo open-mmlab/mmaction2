@@ -1,14 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Optional
+from typing import Dict, List, Optional, Union
 
 import torch
 import torch.nn.functional as F
 from mmcv.cnn import build_norm_layer
 from mmcv.cnn.bricks import DropPath
 from mmcv.cnn.bricks.transformer import FFN, PatchEmbed
-from mmengine.logging import MMLogger
-from mmengine.model import BaseModule
-from mmengine.runner.checkpoint import _load_checkpoint, load_state_dict
+from mmengine.model import BaseModule, ModuleList
 from mmengine.utils import to_2tuple
 from torch import Tensor, nn
 
@@ -247,9 +245,12 @@ class VisionTransformer(BaseModule):
         tubelet_size (int): Temporal size of one patch. Defaults to 2.
         use_mean_pooling (bool): If True, take the mean pooling over all
             positions. Defaults to True.
-        init_cfg (dict or Configdict, optional): The Config for initialization.
-            Defaults to None.
         pretrained (str, optional): Name of pretrained model. Default: None.
+        init_cfg (dict or list[dict]): Initialization config dict. Defaults to
+            ``[
+            dict(type='TruncNormal', layer='Linear', std=0.02, bias=0.),
+            dict(type='Constant', layer='LayerNorm', val=1., bias=0.)
+            ]``.
     """
 
     def __init__(self,
@@ -271,11 +272,19 @@ class VisionTransformer(BaseModule):
                  num_frames: int = 16,
                  tubelet_size: int = 2,
                  use_mean_pooling: int = True,
-                 init_cfg: Optional[ConfigType] = None,
                  pretrained: Optional[str] = None,
+                 init_cfg: Optional[Union[Dict, List[Dict]]] = [
+                     dict(
+                         type='TruncNormal', layer='Linear', std=0.02,
+                         bias=0.),
+                     dict(type='Constant', layer='LayerNorm', val=1., bias=0.)
+                 ],
                  **kwargs) -> None:
+
+        if pretrained:
+            self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
         super().__init__(init_cfg=init_cfg)
-        self.pretrained = pretrained
+
         patch_size = to_2tuple(patch_size)
         img_size = to_2tuple(img_size)
 
@@ -306,7 +315,7 @@ class VisionTransformer(BaseModule):
         # stochastic depth decay rule
         dpr = [x.item() for x in torch.linspace(0, drop_path_rate, depth)]
 
-        self.blocks = nn.ModuleList([
+        self.blocks = ModuleList([
             Block(
                 embed_dims=embed_dims,
                 num_heads=num_heads,
@@ -326,30 +335,6 @@ class VisionTransformer(BaseModule):
         else:
             self.norm = build_norm_layer(norm_cfg, embed_dims)[1]
             self.fc_norm = None
-
-    def init_weights(self) -> None:
-        """Initiate the parameters either from existing checkpoint or from
-        scratch."""
-
-        if isinstance(self.pretrained, str):
-            logger = MMLogger.get_current_instance()
-            logger.info(f'load model from: {self.pretrained}')
-
-            state_dict = _load_checkpoint(self.pretrained)
-            if 'state_dict' in state_dict:
-                state_dict = state_dict['state_dict']
-            load_state_dict(self, state_dict, strict=False, logger=logger)
-        elif self.pretrained is None:
-            for m in self.modules():
-                if isinstance(m, nn.Linear):
-                    nn.init.trunc_normal_(m.weight, std=.02)
-                    if isinstance(m, nn.Linear) and m.bias is not None:
-                        nn.init.constant_(m.bias, 0)
-                elif isinstance(m, nn.LayerNorm):
-                    nn.init.constant_(m.bias, 0)
-                    nn.init.constant_(m.weight, 1.0)
-        else:
-            raise TypeError('pretrained must be a str or None')
 
     def forward(self, x: Tensor) -> Tensor:
         """Defines the computation performed at every call.

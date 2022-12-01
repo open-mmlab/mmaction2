@@ -2,8 +2,9 @@
 import torch
 
 from mmaction.registry import MODELS
+from mmaction.testing import (generate_recognizer_demo_inputs,
+                              get_recognizer_cfg)
 from mmaction.utils import register_all_modules
-from ..base import generate_recognizer_demo_inputs, get_recognizer_cfg
 
 
 def test_tsn():
@@ -255,6 +256,7 @@ def test_tanet():
 
 def test_timm_backbone():
     # test tsn from timm
+    register_all_modules()
     config = get_recognizer_cfg(
         'tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb.py')
     config.model['backbone']['pretrained'] = None
