@@ -26,5 +26,5 @@ __all__ = [
     'ResNet3dSlowFast', 'ResNet3dSlowOnly', 'ResNet3dCSN', 'ResNetTIN', 'X3D',
     'ResNet3dLayer', 'MobileNetV2TSM', 'MobileNetV2', 'TANet', 'TimeSformer',
     'STGCN', 'AGCN', 'ResNetAudio', 'SwinTransformer3D', 'VisionTransformer',
-    'EVL'
+    'MViT', 'EVL'
 ]
