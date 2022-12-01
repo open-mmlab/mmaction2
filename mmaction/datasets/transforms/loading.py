@@ -266,6 +266,91 @@ class SampleFrames(BaseTransform):
 
 
 @TRANSFORMS.register_module()
+class UniformSample(BaseTransform):
+    """Uniformly sample frames from the video. Currently used for Something-
+    Something V2 dataset. Modified from
+    https://github.com/facebookresearch/SlowFast/blob/64a
+    bcc90ccfdcbb11cf91d6e525bed60e92a8796/slowfast/datasets/ssv2.py#L159.
+
+    To sample an n-frame clip from the video. UniformSampleFrames basically
+    divides the video into n segments of equal length and randomly samples one
+    frame from each segment.
+
+    Required keys:
+
+    - total_frames
+    - start_index
+
+    Added keys:
+
+    - frame_inds
+    - clip_len
+    - frame_interval
+    - num_clips
+
+    Args:
+        clip_len (int): Frames of each sampled output clip.
+        num_clips (int): Number of clips to be sampled. Default: 1.
+        test_mode (bool): Store True when building test or validation dataset.
+            Default: False.
+    """
+
+    def __init__(self,
+                 clip_len: int,
+                 num_clips: int = 1,
+                 test_mode: bool = False) -> None:
+
+        self.clip_len = clip_len
+        self.num_clips = num_clips
+        self.test_mode = test_mode
+
+    def _get_sample_clips(self, num_frames: int) -> np.array:
+        """When video frames is shorter than target clip len, this strategy
+        would repeat sample frame, rather than loop sample in 'loop' mode. In
+        test mode, this strategy would sample the middle frame of each segment,
+        rather than set a random seed, and therefore only support sample 1
+        clip.
+
+        Args:
+            num_frames (int): Total number of frame in the video.
+        Returns:
+            seq (list): the indexes of frames of sampled from the video.
+        """
+        assert self.num_clips == 1
+        seg_size = float(num_frames - 1) / self.clip_len
+        inds = []
+        for i in range(self.clip_len):
+            start = int(np.round(seg_size * i))
+            end = int(np.round(seg_size * (i + 1)))
+            if not self.test_mode:
+                inds.append(np.random.randint(start, end + 1))
+            else:
+                inds.append((start + end) // 2)
+
+        return np.array(inds)
+
+    def transform(self, results: dict):
+        num_frames = results['total_frames']
+
+        inds = self._get_sample_clips(num_frames)
+        start_index = results['start_index']
+        inds = inds + start_index
+
+        results['frame_inds'] = inds.astype(np.int32)
+        results['clip_len'] = self.clip_len
+        results['frame_interval'] = None
+        results['num_clips'] = self.num_clips
+        return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'clip_len={self.clip_len}, '
+                    f'num_clips={self.num_clips}, '
+                    f'test_mode={self.test_mode}')
+        return repr_str
+
+
+@TRANSFORMS.register_module()
 class UntrimmedSampleFrames(BaseTransform):
     """Sample frames from the untrimmed video.
 

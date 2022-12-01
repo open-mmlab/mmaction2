@@ -1,6 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from abc import ABCMeta, abstractmethod
+from typing import Union
 
+import numpy as np
 import torch
 import torch.nn.functional as F
 from torch import Tensor
@@ -177,3 +179,69 @@ class CutmixBlending(BaseMiniBatchBlending):
         label = lam * label + (1 - lam) * label[rand_index, :]
 
         return imgs, label
+
+
+@MODELS.register_module()
+class RandomBatchAugment(BaseMiniBatchBlending):
+    """Randomly choose one batch augmentation to apply.
+
+    Args:
+        augments (dict | list): configs of batch
+            augmentations.
+        probs (float | List[float] | None): The probabilities of each batch
+            augmentations. If None, choose evenly. Defaults to None.
+
+    Example:
+        >>> augments_cfg = [
+        ...     dict(type='CutmixBlending', alpha=1., num_classes=10),
+        ...     dict(type='MixupBlending', alpha=1., num_classes=10)
+        ... ]
+        >>> batch_augment = RandomBatchAugment(augments_cfg, probs=[0.5, 0.3])
+        >>> imgs = torch.randn(16, 3, 8, 32, 32)
+        >>> label = torch.randint(0, 10, (16, ))
+        >>> imgs, label = batch_augment(imgs, label)
+
+    .. note ::
+
+        To decide which batch augmentation will be used, it picks one of
+        ``augments`` based on the probabilities. In the example above, the
+        probability to use CutmixBlending is 0.5, to use MixupBlending is 0.3,
+        and to do nothing is 0.2.
+    """
+
+    def __init__(self, augments: Union[dict, list], probs=None):
+        if not isinstance(augments, (tuple, list)):
+            augments = [augments]
+
+        self.augments = []
+        for aug in augments:
+            assert isinstance(aug, dict), \
+                f'blending augment config must be a dict. Got {type(aug)}'
+            self.augments.append(MODELS.build(aug))
+
+        self.num_classes = augments[0].get('num_classes')
+
+        if isinstance(probs, float):
+            probs = [probs]
+
+        if probs is not None:
+            assert len(augments) == len(probs), \
+                '``augments`` and ``probs`` must have same lengths. ' \
+                f'Got {len(augments)} vs {len(probs)}.'
+            assert sum(probs) <= 1, \
+                'The total probability of batch augments exceeds 1.'
+            self.augments.append(None)
+            probs.append(1 - sum(probs))
+
+        self.probs = probs
+
+    def do_blending(self, imgs: Tensor, label: Tensor, **kwargs) -> tuple:
+        """Randomly apply batch augmentations to the batch inputs and batch
+        data samples."""
+        aug_index = np.random.choice(len(self.augments), p=self.probs)
+        aug = self.augments[aug_index]
+
+        if aug is not None:
+            return aug.do_blending(imgs, label, **kwargs)
+        else:
+            return imgs, label
