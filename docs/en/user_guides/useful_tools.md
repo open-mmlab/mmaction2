@@ -15,7 +15,7 @@ Apart from training/testing scripts, We provide lots of useful tools under the `
     - [Print the entire config](#print-the-entire-config)
     - [Check videos](#check-videos)
     - [Multi-Stream Fusion](#multi-stream-fusion)
-  
+
 <!-- TOC -->
 
 ## Model Conversion
@@ -71,7 +71,7 @@ python tools/analysis_tools/print_config.py ${CONFIG} [-h] [--options ${OPTIONS 
 python tools/analysis_tools/check_videos.py ${CONFIG} [-h] [--options OPTIONS [OPTIONS ...]] [--cfg-options CFG_OPTIONS [CFG_OPTIONS ...]] [--output-file OUTPUT_FILE] [--split SPLIT] [--decoder DECODER] [--num-processes NUM_PROCESSES] [--remove-corrupted-videos]
 ```
 
-### Multi-Stream Fusion 
+### Multi-Stream Fusion
 
 `tools/analysis_tools/report_accuracy.py` uses the dumped results (by setting `--dump res.pkl` when testing) to fuse the multi-stream prediction scores, i.e., late fusion.
 
@@ -79,7 +79,8 @@ python tools/analysis_tools/check_videos.py ${CONFIG} [-h] [--options OPTIONS [O
 python tools/analysis_tools/report_accuracy.py [--preds ${RESULT_PKL_1 [RESULT_PKL_2 ...]}] [--coefficients ${COEFFICIENT_1 [COEFFICIENT_2, ...]}] [--apply-softmax]
 ```
 
-Take joint-bone fusion as an example, which is a general practice in the task of the skeleton-based action recognition, 
+Take joint-bone fusion as an example, which is a general practice in the task of the skeleton-based action recognition,
+
 ```shell
 python tools/analysis_tools/report_accuracy.py --preds demo/fuse/joint.pkl demo/fuse/bone.pkl --coefficients 1.0 1.0
 ```
