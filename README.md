@@ -115,6 +115,13 @@ Please refer to [install.md](https://mmaction2.readthedocs.io/en/1.x/get_started
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/videomae/README.md">VideoMAE</a> (NeurIPS'2022)</td>
   </tr>
   <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/dev-1.x/configs/recognition/mvit/README.md">MViT V2</a> (CVPR'2022)</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
     <td colspan="5" style="font-weight:bold;">Action Localization</td>
   </tr>
   <tr>
