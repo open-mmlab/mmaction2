@@ -64,7 +64,7 @@ The 1.x branch works with **PyTorch 1.6+**.
 
 - **Modular design**: We decompose a video understanding framework into different components. One can easily construct a customized video understanding framework by combining different modules.
 
-- **Support four major video understanding tasks**: MMAction2 implements various algorithms for multiple video understanding tasks, including action recognition, action localization, spatio-temporal action detection, and skeleton-based action detection. We support **27** different algorithms and **20** different datasets for the four major tasks.
+- **Support four major video understanding tasks**: MMAction2 implements various algorithms for multiple video understanding tasks, including action recognition, action localization, spatio-temporal action detection, and skeleton-based action detection.
 
 - **Well tested and documented**: We provide detailed documentation and API reference, as well as unit tests.
 
@@ -113,6 +113,13 @@ Please refer to [install.md](https://mmaction2.readthedocs.io/en/1.x/get_started
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/timesformer/README.md">TimeSformer</a> (ICML'2021)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/swin/README.md">VideoSwin</a> (CVPR'2022)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/1.x/configs/recognition/videomae/README.md">VideoMAE</a> (NeurIPS'2022)</td>
+  </tr>
+  <tr>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/dev-1.x/configs/recognition/mvit/README.md">MViT V2</a> (CVPR'2022)</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
   </tr>
   <tr>
     <td colspan="5" style="font-weight:bold;">Action Localization</td>
