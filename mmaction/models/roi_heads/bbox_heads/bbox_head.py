@@ -64,6 +64,8 @@ class BBoxHeadAVA(nn.Module):
             Defaults to ``(3, 5)``.
         multilabel (bool): Whether used for a multilabel task.
             Defaults to True.
+        mlp_head (bool): Whether to use an MLP as the classification head.
+            Defaults to False, i.e., using a single linear head.
     """
 
     def __init__(
@@ -77,7 +79,8 @@ class BBoxHeadAVA(nn.Module):
             dropout_ratio: float = 0,
             dropout_before_pool: bool = True,
             topk: Union[int, Tuple[int]] = (3, 5),
-            multilabel: bool = True) -> None:
+            multilabel: bool = True,
+            mlp_head: bool = False) -> None:
         super(BBoxHeadAVA, self).__init__()
         assert temporal_pool_type in ['max', 'avg']
         assert spatial_pool_type in ['max', 'avg']
@@ -123,12 +126,19 @@ class BBoxHeadAVA(nn.Module):
         if dropout_ratio > 0:
             self.dropout = nn.Dropout(dropout_ratio)
 
-        self.fc_cls = nn.Linear(in_channels, num_classes)
+        if mlp_head:
+            self.fc_cls = nn.Sequential(
+                nn.Linear(in_channels, in_channels), nn.ReLU(),
+                nn.Linear(in_channels, num_classes))
+        else:
+            self.fc_cls = nn.Linear(in_channels, num_classes)
 
     def init_weights(self) -> None:
         """Initialize the classification head."""
-        nn.init.normal_(self.fc_cls.weight, 0, 0.01)
-        nn.init.constant_(self.fc_cls.bias, 0)
+        for m in self.modules():
+            if isinstance(m, nn.Linear):
+                nn.init.xavier_normal_(m.weight)
+                nn.init.constant_(m.bias, 0)
 
     def forward(self, x: Tensor) -> Tensor:
         """Computes the classification logits given ROI features."""
