@@ -88,6 +88,8 @@ class GradCAM:
         """
         inputs['imgs'] = inputs['imgs'].clone()
 
+        # use score before softmax
+        self.model.test_cfg['average_clips'] = 'score'
         # model forward & backward
         preds = self.model(gradcam=True, **inputs)
         if use_labels:
