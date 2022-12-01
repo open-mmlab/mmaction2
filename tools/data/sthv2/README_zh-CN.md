@@ -15,12 +15,12 @@
 }
 ```
 
-用户可参考该数据集的 [官网](https://20bn.com/datasets/something-something/v2)，以获取数据集相关的基本信息。
+用户可参考该数据集的 [官网](https://developer.qualcomm.com/software/ai-datasets/something-something)，以获取数据集相关的基本信息。
 在数据集准备前，请确保命令行当前路径为 `$MMACTION2/tools/data/sthv2/`。
 
 ## 步骤 1. 下载标注文件
 
-首先，用户需要在 [官网](https://20bn.com/datasets/something-something/v2) 完成注册，才能下载标注文件。下载好的标注文件需要放在 `$MMACTION2/data/sthv2/annotations` 文件夹下。
+首先，用户需要在 [官网](https://developer.qualcomm.com/software/ai-datasets/something-something) 完成注册，才能下载标注文件。下载好的标注文件需要放在 `$MMACTION2/data/sthv2/annotations` 文件夹下。
 
 ## 步骤 2. 准备视频
 
