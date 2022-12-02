@@ -1,7 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .formatting import (FormatAudioShape, FormatGCNInput, FormatShape,
-                         JointToBone, PackActionInputs, PackLocalizationInputs,
-                         Transpose)
+                         PackActionInputs, PackLocalizationInputs, Transpose)
 from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
                       AudioFeatureSelector, BuildPseudoClip, DecordDecode,
                       DecordInit, DenseSampleFrames,
@@ -11,12 +10,14 @@ from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
                       PIMSInit, PyAVDecode, PyAVDecodeMotionVector, PyAVInit,
                       RawFrameDecode, SampleAVAFrames, SampleFrames,
                       UniformSample, UntrimmedSampleFrames)
-from .pose_loading import (GeneratePoseTarget, LoadKineticsPose,
-                           PaddingWithLoop, PoseDecode, UniformSampleFrames)
+from .pose_transforms import (GeneratePoseTarget, GenSkeFeat, JointToBone,
+                              LoadKineticsPose, MergeSkeFeat, PadTo,
+                              PoseCompact, PoseDecode, PreNormalize2D,
+                              PreNormalize3D, ToMotion, UniformSampleFrames)
 from .processing import (AudioAmplify, CenterCrop, ColorJitter, Flip, Fuse,
-                         MelSpectrogram, MultiScaleCrop, PoseCompact,
-                         RandomCrop, RandomRescale, RandomResizedCrop, Resize,
-                         TenCrop, ThreeCrop)
+                         MelSpectrogram, MultiScaleCrop, RandomCrop,
+                         RandomRescale, RandomResizedCrop, Resize, TenCrop,
+                         ThreeCrop)
 from .wrappers import ImgAug, PytorchVideoWrapper, TorchVisionWrapper
 
 __all__ = [
@@ -30,9 +31,10 @@ __all__ = [
     'AudioAmplify', 'MelSpectrogram', 'AudioDecode', 'FormatAudioShape',
     'LoadAudioFeature', 'AudioFeatureSelector', 'AudioDecodeInit',
     'ImageDecode', 'BuildPseudoClip', 'RandomRescale', 'PIMSDecode',
-    'PyAVDecodeMotionVector', 'UniformSample', 'UniformSampleFrames',
-    'PoseDecode', 'LoadKineticsPose', 'GeneratePoseTarget', 'PIMSInit',
-    'FormatGCNInput', 'PaddingWithLoop', 'ArrayDecode', 'JointToBone',
-    'PackActionInputs', 'PackLocalizationInputs', 'ImgAug',
-    'TorchVisionWrapper', 'PytorchVideoWrapper', 'PoseCompact'
+    'PyAVDecodeMotionVector', 'UniformSampleFrames', 'PoseDecode',
+    'LoadKineticsPose', 'GeneratePoseTarget', 'PIMSInit', 'FormatGCNInput',
+    'PadTo', 'ArrayDecode', 'JointToBone', 'PackActionInputs',
+    'PackLocalizationInputs', 'ImgAug', 'TorchVisionWrapper',
+    'PytorchVideoWrapper', 'PoseCompact', 'PreNormalize3D', 'ToMotion',
+    'MergeSkeFeat', 'GenSkeFeat', 'PreNormalize2D', 'UniformSample'
 ]

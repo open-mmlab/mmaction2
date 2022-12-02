@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Sequence
+from typing import Dict, Sequence
 
 import numpy as np
 import torch
@@ -12,11 +12,22 @@ from mmaction.structures import ActionDataSample
 
 @TRANSFORMS.register_module()
 class PackActionInputs(BaseTransform):
-    """Pack the inputs data for the recognition.
+    """Pack the input data for the recognition.
+
+    PackActionInputs first packs one of 'imgs', 'keypoint' and 'audios' into
+    the `packed_results['inputs']`, which are the three basic input modalities
+    for the task of rgb-based, skeleton-based and audio-based action
+    recognition, as well as spatio-temporal action detection in the case
+    of 'img'. Next, it prepares a `data_sample` for the task of action
+    recognition (only a single label of `torch.LongTensor` format, which is
+    saved in the `data_sample.gt_labels.item`) or spatio-temporal action
+    detection respectively. Then, it saves the meta keys defined in
+    the `meta_keys` in `data_sample.metainfo`, and packs the `data_sample`
+    into the `packed_results['data_samples']`.
 
     Args:
         meta_keys (Sequence[str]): The meta keys to saved in the
-            ``metainfo`` of the packed ``data_sample``.
+            `metainfo` of the `data_sample`.
             Defaults to ``('img_shape', 'img_key', 'video_id', 'timestamp')``.
     """
 
@@ -32,17 +43,14 @@ class PackActionInputs(BaseTransform):
     ) -> None:
         self.meta_keys = meta_keys
 
-    def transform(self, results: dict) -> dict:
-        """Method to pack the input data.
+    def transform(self, results: Dict) -> Dict:
+        """The transform function of :class:`PackActionInputs`.
 
         Args:
-            results (dict): Result dict from the data pipeline.
+            results (dict): The result dict.
 
         Returns:
-            dict:
-                - 'inputs' (torch.Tensor): The forward data of models.
-                - 'data_sample' (:obj:`ActionDataSample`): The annotation
-                  info of the sample.
+            dict: The result dict.
         """
         packed_results = dict()
         if 'imgs' in results:
@@ -308,127 +316,67 @@ class FormatAudioShape(BaseTransform):
 
 
 @TRANSFORMS.register_module()
-class JointToBone(BaseTransform):
-    """Convert the joint information to bone information.
-
-    Required keys are "keypoint" ,
-    added or modified keys are "keypoint".
-
-    Args:
-        dataset (str): Define the type of dataset: 'nturgb+d', 'openpose-18',
-            'coco'. Default: 'nturgb+d'.
-    """
-
-    def __init__(self, dataset='nturgb+d'):
-        self.dataset = dataset
-        if self.dataset not in ['nturgb+d', 'openpose-18', 'coco']:
-            raise ValueError(
-                f'The dataset type {self.dataset} is not supported')
-        if self.dataset == 'nturgb+d':
-            self.pairs = [(0, 1), (1, 20), (2, 20), (3, 2), (4, 20), (5, 4),
-                          (6, 5), (7, 6), (8, 20), (9, 8), (10, 9), (11, 10),
-                          (12, 0), (13, 12), (14, 13), (15, 14), (16, 0),
-                          (17, 16), (18, 17), (19, 18), (21, 22), (20, 20),
-                          (22, 7), (23, 24), (24, 11)]
-        elif self.dataset == 'openpose-18':
-            self.pairs = ((0, 0), (1, 0), (2, 1), (3, 2), (4, 3), (5, 1),
-                          (6, 5), (7, 6), (8, 2), (9, 8), (10, 9), (11, 5),
-                          (12, 11), (13, 12), (14, 0), (15, 0), (16, 14), (17,
-                                                                           15))
-        elif self.dataset == 'coco':
-            self.pairs = ((0, 0), (1, 0), (2, 0), (3, 1), (4, 2), (5, 0),
-                          (6, 0), (7, 5), (8, 6), (9, 7), (10, 8), (11, 0),
-                          (12, 0), (13, 11), (14, 12), (15, 13), (16, 14))
-
-    def transform(self, results):
-        """Performs the Bone formatting.
-
-        Args:
-            results (dict): The resulting dict to be modified and passed
-                to the next transform in pipeline.
-        """
-        keypoint = results['keypoint']
-        M, T, V, C = keypoint.shape
-        bone = np.zeros((M, T, V, C), dtype=np.float32)
-
-        assert C in [2, 3]
-        for v1, v2 in self.pairs:
-            bone[..., v1, :] = keypoint[..., v1, :] - keypoint[..., v2, :]
-            if C == 3 and self.dataset in ['openpose-18', 'coco']:
-                score = (keypoint[..., v1, 2] + keypoint[..., v2, 2]) / 2
-                bone[..., v1, 2] = score
-
-        results['keypoint'] = bone
-        return results
-
-    def __repr__(self):
-        repr_str = self.__class__.__name__
-        repr_str += f"(dataset_type='{self.dataset}')"
-        return repr_str
-
-
-@TRANSFORMS.register_module()
 class FormatGCNInput(BaseTransform):
-    """Format final skeleton shape to the given ``input_format``.
+    """Format final skeleton shape.
 
     Required Keys:
 
-    - keypoint
-    - keypoint_score (optional)
+        - keypoint
+        - keypoint_score (optional)
+        - num_clips (optional)
 
     Modified Key:
 
-    - keypoint
-
-    Added Key:
-
-    - input_shape
+        - keypoint
 
     Args:
-        input_format (str): Define the final skeleton format.
+        num_person (int): The maximum number of people. Defaults to 2.
+        mode (str): The padding mode. Defaults to ``'zero'``.
     """
 
-    def __init__(self, input_format: str, num_person: int = 2) -> None:
-        self.input_format = input_format
-        if self.input_format not in ['NCTVM']:
-            raise ValueError(
-                f'The input format {self.input_format} is invalid.')
+    def __init__(self, num_person: int = 2, mode: str = 'zero') -> None:
         self.num_person = num_person
+        assert mode in ['zero', 'loop']
+        self.mode = mode
 
-    def transform(self, results: dict) -> dict:
-        """Performs the FormatShape formatting.
+    def transform(self, results: Dict) -> Dict:
+        """The transform function of :class:`FormatGCNInput`.
 
         Args:
-            results (dict): The resulting dict to be modified and passed
-                to the next transform in pipeline.
+            results (dict): The result dict.
+
+        Returns:
+            dict: The result dict.
         """
         keypoint = results['keypoint']
-
         if 'keypoint_score' in results:
-            keypoint_confidence = results['keypoint_score']
-            keypoint_confidence = np.expand_dims(keypoint_confidence, -1)
-            keypoint_3d = np.concatenate((keypoint, keypoint_confidence),
-                                         axis=-1)
-        else:
-            keypoint_3d = keypoint
+            keypoint = np.concatenate(
+                (keypoint, results['keypoint_score'][..., None]), axis=-1)
 
-        keypoint_3d = np.transpose(keypoint_3d,
-                                   (3, 1, 2, 0))  # M T V C -> C T V M
-
-        if keypoint_3d.shape[-1] < self.num_person:
-            pad_dim = self.num_person - keypoint_3d.shape[-1]
+        cur_num_person = keypoint.shape[0]
+        if cur_num_person < self.num_person:
+            pad_dim = self.num_person - cur_num_person
             pad = np.zeros(
-                keypoint_3d.shape[:-1] + (pad_dim, ), dtype=keypoint_3d.dtype)
-            keypoint_3d = np.concatenate((keypoint_3d, pad), axis=-1)
-        elif keypoint_3d.shape[-1] > self.num_person:
-            keypoint_3d = keypoint_3d[:, :, :, :self.num_person]
+                (pad_dim, ) + keypoint.shape[1:], dtype=keypoint.dtype)
+            keypoint = np.concatenate((keypoint, pad), axis=0)
+            if self.mode == 'loop' and cur_num_person == 1:
+                for i in range(1, self.num_person):
+                    keypoint[i] = keypoint[0]
 
-        results['keypoint'] = keypoint_3d
-        results['input_shape'] = keypoint_3d.shape
+        elif cur_num_person > self.num_person:
+            keypoint = keypoint[:self.num_person]
+
+        M, T, V, C = keypoint.shape
+        nc = results.get('num_clips', 1)
+        assert T % nc == 0
+        keypoint = keypoint.reshape(
+            (M, nc, T // nc, V, C)).transpose(1, 0, 2, 3, 4)
+
+        results['keypoint'] = np.ascontiguousarray(keypoint)
         return results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         repr_str = (f'{self.__class__.__name__}('
-                    f'input_format={self.input_format}, '
-                    f'num_person={self.num_person})')
+                    f'num_person={self.num_person}, '
+                    f'mode={self.mode})')
         return repr_str
