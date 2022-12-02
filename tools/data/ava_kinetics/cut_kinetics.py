@@ -120,14 +120,14 @@ def run_cmd(cmd):
     return
 
 
-def remove_failed_video(vide_path: str) -> None:
+def remove_failed_video(video_path: str) -> None:
     """Given the path to the video, delete the video if it cannot be read or if
     the actual length of the video is 0.75 seconds shorter than expected."""
     try:
-        v = decord.VideoReader(vide_path)
+        v = decord.VideoReader(video_path)
         fps = v.get_avg_fps()
         num_frames = len(v)
-        x = vide_path.split('.')[0].split('_')
+        x = video_path.split('.')[0].split('_')
         time = int(x[-1]) - int(x[-2])
         if num_frames < (time - 3 / 4) * fps:
             os.remove(video_path)
