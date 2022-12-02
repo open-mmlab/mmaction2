@@ -37,5 +37,5 @@ __all__ = [
     'PadTo', 'ArrayDecode', 'JointToBone', 'PackActionInputs',
     'PackLocalizationInputs', 'ImgAug', 'TorchVisionWrapper',
     'PytorchVideoWrapper', 'PoseCompact', 'PreNormalize3D', 'ToMotion',
-    'MergeSkeFeat', 'Rename', 'GenSkeFeat', 'PreNormalize2D'
+    'MergeSkeFeat', 'Rename', 'GenSkeFeat', 'PreNormalize2D', 'UniformSample'
 ]
