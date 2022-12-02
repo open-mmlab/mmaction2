@@ -15,17 +15,13 @@ def parse_args():
         '--preds',
         nargs='+',
         help='list of predict result',
-        default=['demo/fuse/rgb.pkl', 'demo/fuse/flow.pkl'])
+        default=['demo/fuse/joint.pkl', 'demo/fuse/bone.pkl'])
     parser.add_argument(
         '--coefficients',
         nargs='+',
         type=float,
         help='coefficients of each score file',
         default=[1.0, 1.0])
-    parser.add_argument(
-        '--datalist',
-        help='list of testing data',
-        default='demo/fuse/data_list.txt')
     parser.add_argument('--apply-softmax', action='store_true')
     args = parser.parse_args()
     return args
