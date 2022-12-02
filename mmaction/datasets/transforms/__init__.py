@@ -10,7 +10,7 @@ from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
                       LoadProposals, OpenCVDecode, OpenCVInit, PIMSDecode,
                       PIMSInit, PyAVDecode, PyAVDecodeMotionVector, PyAVInit,
                       RawFrameDecode, SampleAVAFrames, SampleFrames,
-                      UntrimmedSampleFrames)
+                      UniformSample, UntrimmedSampleFrames)
 from .pose_transforms import (GeneratePoseTarget, GenSkeFeat, JointToBone,
                               LoadKineticsPose, MergeSkeFeat, PadTo,
                               PoseCompact, PoseDecode, PreNormalize2D,

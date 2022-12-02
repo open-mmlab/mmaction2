@@ -69,14 +69,22 @@ class Recognizer3D(BaseRecognizer):
                         feat, _ = self.neck(feat)
                     feats.append(feat)
                     view_ptr += max_testing_views
-                # should consider the case that feat is a tuple
+                # recursively traverse feats until it's a tensor, then concat
+
+                def recursively_cat(feats):
+                    out_feats = []
+                    for e_idx, elem in enumerate(feats[0]):
+                        batch_elem = [feat[e_idx] for feat in feats]
+                        if not isinstance(elem, torch.Tensor):
+                            batch_elem = recursively_cat(batch_elem)
+                        else:
+                            batch_elem = torch.cat(batch_elem)
+                        out_feats.append(batch_elem)
+
+                    return tuple(out_feats)
+
                 if isinstance(feats[0], tuple):
-                    len_tuple = len(feats[0])
-                    feats = [
-                        torch.cat([each[i] for each in feats])
-                        for i in range(len_tuple)
-                    ]
-                    x = tuple(feats)
+                    x = recursively_cat(feats)
                 else:
                     x = torch.cat(feats)
             else:
