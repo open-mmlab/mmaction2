@@ -71,7 +71,10 @@ class STGCNBlock(BaseModule):
 
 @MODELS.register_module()
 class STGCN(BaseModule):
-    """Backbone of spatial temporal graph convolutional networks.
+    """ STGCN
+    A PyTorch implement of : `Spatial Temporal Graph Convolutional
+    Networks for Skeleton-Based Action Recognition`  -
+        https://arxiv.org/abs/1801.07455
 
     Args:
         graph_cfg (dict): Config for building the graph.

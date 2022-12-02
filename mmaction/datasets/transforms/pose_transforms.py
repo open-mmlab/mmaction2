@@ -4,14 +4,13 @@ import pickle
 from typing import Dict, List, Tuple
 
 import numpy as np
-from mmcv.transforms import BaseTransform
+from mmcv.transforms import BaseTransform, KeyMapper
 from mmengine.dataset import Compose
 from mmengine.fileio import FileClient
 from scipy.stats import mode
 from torch.nn.modules.utils import _pair
 
 from mmaction.registry import TRANSFORMS
-from .formatting import Rename
 from .processing import Flip, _combine_quadruple
 
 
@@ -974,7 +973,7 @@ class GenSkeFeat(BaseTransform):
         ops = []
         if 'b' in feats or 'bm' in feats:
             ops.append(JointToBone(dataset=dataset, target='b'))
-        ops.append(Rename({'keypoint': 'j'}))
+        ops.append(KeyMapper(remapping={'keypoint': 'j'}))
         if 'jm' in feats:
             ops.append(ToMotion(dataset=dataset, source='j', target='jm'))
         if 'bm' in feats:

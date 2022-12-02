@@ -1,7 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .formatting import (FormatAudioShape, FormatGCNInput, FormatShape,
-                         PackActionInputs, PackLocalizationInputs, Rename,
-                         Transpose)
+                         PackActionInputs, PackLocalizationInputs, Transpose)
 from .loading import (ArrayDecode, AudioDecode, AudioDecodeInit,
                       AudioFeatureSelector, BuildPseudoClip, DecordDecode,
                       DecordInit, DenseSampleFrames,
@@ -37,5 +36,5 @@ __all__ = [
     'PadTo', 'ArrayDecode', 'JointToBone', 'PackActionInputs',
     'PackLocalizationInputs', 'ImgAug', 'TorchVisionWrapper',
     'PytorchVideoWrapper', 'PoseCompact', 'PreNormalize3D', 'ToMotion',
-    'MergeSkeFeat', 'Rename', 'GenSkeFeat', 'PreNormalize2D', 'UniformSample'
+    'MergeSkeFeat', 'GenSkeFeat', 'PreNormalize2D', 'UniformSample'
 ]

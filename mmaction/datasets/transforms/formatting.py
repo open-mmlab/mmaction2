@@ -145,44 +145,6 @@ class PackLocalizationInputs(BaseTransform):
 
 
 @TRANSFORMS.register_module()
-class Rename(BaseTransform):
-    """Rename the key in results.
-
-    Args:
-        mapping (dict): The keys in results that need to be renamed. The key of
-            the dict is the original name, while the value is the new name. If
-            the original name not found in results, do nothing.
-            Defaults to ``dict()``.
-    """
-
-    def __init__(self, mapping: Dict = dict()) -> None:
-        self.mapping = mapping
-
-    def transform(self, results: Dict) -> Dict:
-        """The transform function of :class:`Rename`.
-
-        Args:
-            results (dict): The result dict.
-
-        Returns:
-            dict: The result dict.
-        """
-        for key, value in self.mapping.items():
-            if key in results:
-                assert isinstance(key, str) and isinstance(value, str)
-                assert value not in results, ('the new name already exists in '
-                                              'results')
-                results[value] = results[key]
-                results.pop(key)
-        return results
-
-    def __repr__(self) -> str:
-        repr_str = (f'{self.__class__.__name__}('
-                    f'mapping={self.mapping})')
-        return repr_str
-
-
-@TRANSFORMS.register_module()
 class Transpose(BaseTransform):
     """Transpose image channels to a given order.
 
