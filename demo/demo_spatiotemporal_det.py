@@ -61,7 +61,7 @@ def visualize(frames, annotations, plate=plate_blue, max_num=5):
 
     assert max_num + 1 <= len(plate)
     plate = [x[::-1] for x in plate]
-    frames_ = cp.deepcopy(frames)
+    frames_out = cp.deepcopy(frames)
     nf, na = len(frames), len(annotations)
     assert nf % na == 0
     nfpa = len(frames) // len(annotations)
@@ -74,7 +74,7 @@ def visualize(frames, annotations, plate=plate_blue, max_num=5):
             continue
         for j in range(nfpa):
             ind = i * nfpa + j
-            frame = frames_[ind]
+            frame = frames_out[ind]
             for ann in anno:
                 box = ann[0]
                 label = ann[1]
@@ -99,7 +99,7 @@ def visualize(frames, annotations, plate=plate_blue, max_num=5):
                     cv2.putText(frame, text, location, FONTFACE, FONTSCALE,
                                 FONTCOLOR, THICKNESS, LINETYPE)
 
-    return frames_
+    return frames_out
 
 
 def frame_extraction(video_path):
