@@ -1,11 +1,11 @@
-_base_ = ['slowonly_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb.py']
+_base_ = ['slowfast_kinetics400-pretrained-r50_8xb16-4x16x1-20e_ava21-rgb.py']
 
 model = dict(
     backbone=dict(
         resample_rate=4,
         speed_ratio=4,
         slow_pathway=dict(fusion_kernel=7),
-        prtrained=(
+        pretrained=(
             'https://download.openmmlab.com/mmaction/recognition/slowfast/'
             'slowfast_r50_8x8x1_256e_kinetics400_rgb/'
             'slowfast_r50_8x8x1_256e_kinetics400_rgb_20200716-73547d2b.pth')))
