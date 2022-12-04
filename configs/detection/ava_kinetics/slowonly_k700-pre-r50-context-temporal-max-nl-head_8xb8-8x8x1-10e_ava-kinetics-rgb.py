@@ -1,4 +1,4 @@
-_base_ = ['slowonly_k700-pretrained-r50_8xb16-8x8x1-10e_ava-kinetics-rgb.py']
+_base_ = ['slowonly_k700-pre-r50_8xb8-8x8x1-10e_ava-kinetics-rgb.py']
 
 model = dict(
     roi_head=dict(
