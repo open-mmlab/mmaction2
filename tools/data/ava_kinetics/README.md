@@ -95,7 +95,7 @@ Arguments:
 - `avakinetics_root`: the directory to save the ava-kinetics dataset. Defaults to `$MMACTION2/data/ava_kinetics`.
 - `num_workers`: number of workers used to extract frames. Defaults to -1 and use all available cpus.
 
-If you have installed using denseflow, you can also use `build_rawframes.py` to extract RGB frames:
+If you have installed denseflow, you can also use `build_rawframes.py` to extract RGB frames:
 
 ```shell
 python3 ../build_rawframes.py ../../../data/ava_kinetics/videos/ ../../../data/ava_kinetics/rawframes/ --task rgb --level 1 --mixed-ext
