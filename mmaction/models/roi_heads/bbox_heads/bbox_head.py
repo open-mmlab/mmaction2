@@ -80,8 +80,7 @@ class BBoxHeadAVA(nn.Module):
             dropout_before_pool: bool = True,
             topk: Union[int, Tuple[int]] = (3, 5),
             multilabel: bool = True,
-            mlp_head: bool = False,
-            poly_loss: bool = False) -> None:
+            mlp_head: bool = False) -> None:
         super(BBoxHeadAVA, self).__init__()
         assert temporal_pool_type in ['max', 'avg']
         assert spatial_pool_type in ['max', 'avg']
@@ -98,7 +97,6 @@ class BBoxHeadAVA(nn.Module):
 
         self.focal_gamma = focal_gamma
         self.focal_alpha = focal_alpha
-        self.poly_loss = poly_loss
 
         if topk is None:
             self.topk = ()
@@ -283,8 +281,6 @@ class BBoxHeadAVA(nn.Module):
             # Compute loss
             loss = loss_func(cls_score, labels, reduction='none')
             pt = torch.exp(-loss)
-            if self.poly_loss:
-                loss = loss + pt - 1
             F_loss = self.focal_alpha * (1 - pt)**self.focal_gamma * loss
             losses['loss_action_cls'] = torch.mean(F_loss)
 
