@@ -35,6 +35,12 @@ Deep convolutional networks have achieved great success for visual recognition i
 |          1x1x8          | MultiStep | height 256 |  8   | ResNet50 | ImageNet |  32.55   |  63.27   | 25 clips x 10 crop | [config](/configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x8-50e_sthv2-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x8-50e_sthv2-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x8-50e_sthv2-rgb_20221122-ad2dbb37.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x8-50e_sthv2-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x8-50e_sthv2-rgb.log) |
 |         1x1x16          | MultiStep | height 256 |  8   | ResNet50 | ImageNet |  35.22   |  66.13   | 25 clips x 10 crop | [config](/configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x16-50e_sthv2-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x16-50e_sthv2-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x16-50e_sthv2-rgb_20221122-ee13c8e2.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x16-50e_sthv2-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x16-50e_sthv2-rgb.log) |
 
+### Moments in Time
+
+| frame sampling strategy | resolution | gpus | backbone | pretrain | top1 acc | top5 acc | testing protocol | FLOPs  | params |                config                |                ckpt                |                log                |
+| :---------------------: | :--------: | :--: | :------: | :------: | :------: | :------: | :--------------: | :----: | :----: | :----------------------------------: | :--------------------------------: | :-------------------------------: |
+|          1x1x6          |  224x224   |  8   | ResNet50 | ImageNet |  27.58   |  52.42   | 6 clips x 3 crop | 96.61G | 24.20M | [config](/configs/recognition/tsn/tsn_r50-in1k-pre_8xb16-1x1x6-100e_mit-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_r50-in1k-pre_8xb16-1x1x6-100e_mit-rgb/tsn_r50-in1k-pre_8xb16-1x1x6-100e_mit-rgb_20221204-baec0dbd.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_r50-in1k-pre_8xb16-1x1x6-100e_mit-rgb/tsn_r50-in1k-pre_8xb16-1x1x6-100e_mit-rgb.log) |
+
 ### Using backbones from 3rd-party in TSN
 
 It's possible and convenient to use a 3rd-party backbone for TSN under the framework of MMAction2, here we provide some examples for:

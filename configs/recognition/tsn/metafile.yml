@@ -232,3 +232,24 @@ Models:
         Top 5 Accuracy: 66.13
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x16-50e_sthv2-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x16-50e_sthv2-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x16-50e_sthv2-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x16-50e_sthv2-rgb_20221122-ee13c8e2.pth
+
+  - Name: tsn_r50-in1k-pre_8xb16-1x1x6-100e_mit-rgb
+    Config: configs/recognition/tsn/tsn_r50-in1k-pre_8xb16-1x1x6-100e_mit-rgb.py
+    In Collection: TSN
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 16
+      Epochs: 100
+      Pretrained: ImageNet
+      Resolution: 224x224
+      Training Data: Moments in Time
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: Moments in Time
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 27.58
+        Top 5 Accuracy: 52.42
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_r50-in1k-pre_8xb16-1x1x6-100e_mit-rgb/tsn_r50-in1k-pre_8xb16-1x1x6-100e_mit-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_r50-in1k-pre_8xb16-1x1x6-100e_mit-rgb/tsn_r50-in1k-pre_8xb16-1x1x6-100e_mit-rgb_20221204-baec0dbd.pth

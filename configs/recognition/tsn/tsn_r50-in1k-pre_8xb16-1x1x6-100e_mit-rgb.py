@@ -14,10 +14,10 @@ ann_file_train = 'data/mit/mit_train_list_videos.txt'
 ann_file_val = 'data/mit/mit_val_list_videos.txt'
 ann_file_test = 'data/mit/mit_val_list_videos.txt'
 
-file_client_args = dict(
-    io_backend='petrel',
-    path_mapping=dict({'data/mit': 's3://openmmlab/datasets/action/mit'}))
-# file_client_args = dict(io_backend='disk')
+# file_client_args = dict(
+#     io_backend='petrel',
+#     path_mapping=dict({'data/mit': 's3://openmmlab/datasets/action/mit'}))
+file_client_args = dict(io_backend='disk')
 train_pipeline = [
     dict(type='DecordInit', **file_client_args),
     dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=6),
