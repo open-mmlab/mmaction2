@@ -21,12 +21,13 @@ proposal_file_train = (f'{anno_root}/ava_dense_proposals_train.FAIR.'
                        'recall_93.9.pkl')
 proposal_file_val = f'{anno_root}/ava_dense_proposals_val.FAIR.recall_93.9.pkl'
 
-file_client_args = dict(
-    io_backend='petrel',
-    path_mapping=dict({
-        'data/ava_kinetics/rawframes/':
-        's3://openmmlab/datasets/action/ava/rawframes/'
-    }))
+# file_client_args = dict(
+#     io_backend='petrel',
+#     path_mapping=dict({
+#         'data/ava_kinetics/rawframes/':
+#         's3://openmmlab/datasets/action/ava/rawframes/'
+#     }))
+file_client_args = dict(io_backend='disk')
 
 train_pipeline = [
     dict(type='SampleAVAFrames', clip_len=4, frame_interval=16),
@@ -111,3 +112,9 @@ optim_wrapper = dict(
     clip_grad=dict(max_norm=40, norm_type=2))
 
 default_hooks = dict(checkpoint=dict(max_keep_ckpts=2))
+
+# Default setting for scaling LR automatically
+#   - `enable` means enable scaling LR automatically
+#       or not by default.
+#   - `base_batch_size` = (8 GPUs) x (8 samples per GPU).
+auto_scale_lr = dict(enable=False, base_batch_size=64)
