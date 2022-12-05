@@ -4,7 +4,6 @@ import os
 import os.path as osp
 
 import cv2
-import decord
 import numpy as np
 import torch
 import webcolors
@@ -104,6 +103,8 @@ def get_output(video_path,
         raise NotImplementedError
 
     try:
+        # In case of a segment fault when import decord in the head of demo
+        import decord
         from moviepy.editor import ImageSequenceClip
     except ImportError:
         raise ImportError('Please install moviepy to enable output file.')
