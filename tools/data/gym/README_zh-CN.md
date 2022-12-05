@@ -55,7 +55,7 @@ python trim_subaction.py
 
 如果用户仅使用 video loader，则可以跳过本步。
 
-在提取之前，请参考 [安装教程](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
+在提取之前，请参考 [安装教程](/docs/zh_cn/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
 用户可使用如下脚本同时抽取 RGB 帧和光流（提取光流时使用 tvl1 算法）：
 
@@ -106,4 +106,4 @@ mmaction2
 |   |   └── subaction_frames
 ```
 
-关于 GYM 数据集上的训练与测试，请参照 [基础教程](/docs_zh_CN/getting_started.md)。
+关于 GYM 数据集上的训练与测试，请参照 [基础教程](/docs/zh_cn/getting_started.md)。

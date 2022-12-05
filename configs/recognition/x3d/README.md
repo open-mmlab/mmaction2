@@ -34,7 +34,7 @@ This paper presents X3D, a family of efficient video networks that progressively
 
 :::
 
-For more details on data preparation, you can refer to Kinetics400 in [Data Preparation](/docs/data_preparation.md).
+For more details on data preparation, you can refer to Kinetics400 in [Data Preparation](/docs/en/data_preparation.md).
 
 ## Test
 
@@ -52,7 +52,7 @@ python tools/test.py configs/recognition/x3d/x3d_s_13x6x1_facebook_kinetics400_r
     --out result.json --average-clips prob
 ```
 
-For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+For more details, you can refer to **Test a dataset** part in [getting_started](/docs/en/getting_started.md#test-a-dataset).
 
 ## Citation
 

@@ -48,7 +48,7 @@
 
 \*MMAction2 在 [原始代码库](https://github.com/JJBOY/BMN-Boundary-Matching-Network) 上训练 BMN，并且在 [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) 的对应标签上评估时序动作候选生成和时序检测的结果。
 
-对于数据集准备的细节，用户可参考 [数据集准备文档](/docs_zh_CN/data_preparation.md) 中的 ActivityNet 特征部分。
+对于数据集准备的细节，用户可参考 [数据集准备文档](/docs/zh_cn/data_preparation.md) 中的 ActivityNet 特征部分。
 
 ## 如何训练
 
@@ -64,7 +64,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 python tools/train.py configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py
 ```
 
-更多训练细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#%E8%AE%AD%E7%BB%83%E9%85%8D%E7%BD%AE) 中的 **训练配置** 部分。
+更多训练细节，可参考 [基础教程](/docs/zh_cn/getting_started.md#训练配置) 中的 **训练配置** 部分。
 
 ## 如何测试
 
@@ -95,4 +95,4 @@ python tools/analysis/report_map.py --proposal path/to/proposal_file
    python tools/data/activitynet/convert_proposal_format.py
    ```
 
-更多测试细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#%E6%B5%8B%E8%AF%95%E6%9F%90%E4%B8%AA%E6%95%B0%E6%8D%AE%E9%9B%86) 中的 **测试某个数据集** 部分。
+更多测试细节，可参考 [基础教程](/docs/zh_cn/getting_started.md#测试某个数据集) 中的 **测试某个数据集** 部分。

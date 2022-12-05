@@ -6,14 +6,15 @@ you may run `python tools/analysis/print_config.py /PATH/TO/CONFIG` to see the c
 
 <!-- TOC -->
 
-- [Modify config through script arguments](#modify-config-through-script-arguments)
-- [Config File Structure](#config-file-structure)
-- [Config File Naming Convention](#config-file-naming-convention)
-  - [Config System for Action localization](#config-system-for-action-localization)
-  - [Config System for Action Recognition](#config-system-for-action-recognition)
-  - [Config System for Spatio-Temporal Action Detection](#config-system-for-spatio-temporal-action-detection)
-- [FAQ](#faq)
-  - [Use intermediate variables in configs](#use-intermediate-variables-in-configs)
+- [Tutorial 1: Learn about Configs](#tutorial-1-learn-about-configs)
+  - [Modify config through script arguments](#modify-config-through-script-arguments)
+  - [Config File Structure](#config-file-structure)
+  - [Config File Naming Convention](#config-file-naming-convention)
+    - [Config System for Action localization](#config-system-for-action-localization)
+    - [Config System for Action Recognition](#config-system-for-action-recognition)
+    - [Config System for Spatio-Temporal Action Detection](#config-system-for-spatio-temporal-action-detection)
+  - [FAQ](#faq)
+    - [Use intermediate variables in configs](#use-intermediate-variables-in-configs)
 
 <!-- TOC -->
 

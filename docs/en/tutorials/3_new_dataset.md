@@ -4,11 +4,12 @@ In this tutorial, we will introduce some methods about how to customize your own
 
 <!-- TOC -->
 
-- [Customize Datasets by Reorganizing Data](#customize-datasets-by-reorganizing-data)
-  - [Reorganize datasets to existing format](#reorganize-datasets-to-existing-format)
-  - [An example of a custom dataset](#an-example-of-a-custom-dataset)
-- [Customize Dataset by Mixing Dataset](#customize-dataset-by-mixing-dataset)
-  - [Repeat dataset](#repeat-dataset)
+- [Tutorial 3: Adding New Dataset](#tutorial-3-adding-new-dataset)
+  - [Customize Datasets by Reorganizing Data](#customize-datasets-by-reorganizing-data)
+    - [Reorganize datasets to existing format](#reorganize-datasets-to-existing-format)
+    - [An example of a custom dataset](#an-example-of-a-custom-dataset)
+  - [Customize Dataset by Mixing Dataset](#customize-dataset-by-mixing-dataset)
+    - [Repeat dataset](#repeat-dataset)
 
 <!-- TOC -->
 

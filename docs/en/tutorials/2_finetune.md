@@ -5,11 +5,12 @@ to finetune them on other datasets, so that better performance can be achieved.
 
 <!-- TOC -->
 
-- [Outline](#outline)
-- [Modify Head](#modify-head)
-- [Modify Dataset](#modify-dataset)
-- [Modify Training Schedule](#modify-training-schedule)
-- [Use Pre-Trained Model](#use-pre-trained-model)
+- [Tutorial 2: Finetuning Models](#tutorial-2-finetuning-models)
+  - [Outline](#outline)
+  - [Modify Head](#modify-head)
+  - [Modify Dataset](#modify-dataset)
+  - [Modify Training Schedule](#modify-training-schedule)
+  - [Use Pre-Trained Model](#use-pre-trained-model)
 
 <!-- TOC -->
 
@@ -91,7 +92,7 @@ checkpoint_config = dict(interval=5)
 ## Use Pre-Trained Model
 
 To use the pre-trained model for the whole network, the new config adds the link of pre-trained models in the `load_from`.
-We set `load_from=None` as default in `configs/_base_/default_runtime.py` and owing to [inheritance design](/docs/tutorials/1_config.md), users can directly change it by setting `load_from` in their configs.
+We set `load_from=None` as default in `configs/_base_/default_runtime.py` and owing to \[inheritance design\](/docs/en/tutorials/1_config.md), users can directly change it by setting `load_from` in their configs.
 
 ```python
 # use the pre-trained model for the whole TSN network

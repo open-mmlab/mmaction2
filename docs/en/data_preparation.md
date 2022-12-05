@@ -4,13 +4,14 @@ We provide some tips for MMAction2 data preparation in this file.
 
 <!-- TOC -->
 
-- [Notes on Video Data Format](#notes-on-video-data-format)
-- [Getting Data](#getting-data)
-  - [Prepare videos](#prepare-videos)
-  - [Extract frames](#extract-frames)
-    - [Alternative to denseflow](#alternative-to-denseflow)
-  - [Generate file list](#generate-file-list)
-  - [Prepare audio](#prepare-audio)
+- [Data Preparation](#data-preparation)
+  - [Notes on Video Data Format](#notes-on-video-data-format)
+  - [Getting Data](#getting-data)
+    - [Prepare videos](#prepare-videos)
+    - [Extract frames](#extract-frames)
+      - [Alternative to denseflow](#alternative-to-denseflow)
+    - [Generate file list](#generate-file-list)
+    - [Prepare audio](#prepare-audio)
 
 <!-- TOC -->
 

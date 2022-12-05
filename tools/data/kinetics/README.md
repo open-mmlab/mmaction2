@@ -72,7 +72,7 @@ You can also download from [Academic Torrents](https://academictorrents.com/) ([
 
 This part is **optional** if you only want to use the video loader.
 
-Before extracting, please refer to [install.md](/docs/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
+Before extracting, please refer to [install.md](/docs/en/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
 
 If you have plenty of SSD space, then we recommend extracting frames there for better I/O performance. And you can run the following script to soft link the extracted frames.
 
@@ -103,7 +103,7 @@ bash extract_frames.sh ${DATASET}
 ```
 
 The commands above can generate images with new short edge 256. If you want to generate images with short edge 320 (320p), or with fix size 340x256, you can change the args `--new-short 256` to `--new-short 320` or `--new-width 340 --new-height 256`.
-More details can be found in [data_preparation](/docs/data_preparation.md)
+More details can be found in [data_preparation](/docs/en/data_preparation.md)
 
 ## Step 4. Generate File List
 
@@ -147,4 +147,4 @@ mmaction2
 
 ```
 
-For training and evaluating on Kinetics, please refer to [getting_started](/docs/getting_started.md).
+For training and evaluating on Kinetics, please refer to [getting_started](/docs/en/getting_started.md).

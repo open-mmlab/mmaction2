@@ -24,7 +24,7 @@ sys.path.insert(0, os.path.abspath('..'))
 project = 'MMAction2'
 copyright = '2020, OpenMMLab'
 author = 'MMAction2 Authors'
-version_file = '../mmaction/version.py'
+version_file = '../../mmaction/version.py'
 
 
 def get_version():
@@ -67,21 +67,17 @@ source_suffix = {'.rst': 'restructuredtext', '.md': 'markdown'}
 # a list of builtin themes.
 #
 html_theme = 'pytorch_sphinx_theme'
-
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
-
 html_theme_path = [pytorch_sphinx_theme.get_html_theme_path()]
 html_theme_options = {
-    # 'logo_url': 'https://mmaction2.readthedocs.io/en/latest/',
+    # 'logo_url': 'https://mmocr.readthedocs.io/en/latest/',
     'menu': [
         {
             'name':
-            'Tutorial',
+            '教程',
             'url':
             'https://colab.research.google.com/github/'
-            'open-mmlab/mmaction2/blob/master/demo/mmaction2_tutorial.ipynb'
+            'open-mmlab/mmaction2/blob/master/demo/'
+            'mmaction2_tutorial_zh-CN.ipynb'
         },
         {
             'name': 'GitHub',
@@ -89,42 +85,42 @@ html_theme_options = {
         },
         {
             'name':
-            'Upstream',
+            '上游代码库',
             'children': [
                 {
                     'name': 'MMCV',
                     'url': 'https://github.com/open-mmlab/mmcv',
-                    'description': 'Foundational library for computer vision'
+                    'description': '计算机视觉基础库'
                 },
                 {
-                    'name':
-                    'MMClassification',
-                    'url':
-                    'https://github.com/open-mmlab/mmclassification',
-                    'description':
-                    'Open source image classification toolbox based on PyTorch'
+                    'name': 'MMClassification',
+                    'url': 'https://github.com/open-mmlab/mmclassification',
+                    'description': '图像分类代码库'
                 },
                 {
                     'name': 'MMDetection',
                     'url': 'https://github.com/open-mmlab/mmdetection',
-                    'description': 'Object detection toolbox and benchmark'
+                    'description': '物体检测代码库'
                 },
             ]
         },
     ],
     # Specify the language of shared menu
     'menu_lang':
-    'en'
+    'cn'
 }
 
-language = 'en'
-master_doc = 'index'
-
+# Add any paths that contain custom static files (such as style sheets) here,
+# relative to this directory. They are copied after the builtin static files,
+# so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 html_css_files = ['css/readthedocs.css']
 
 myst_enable_extensions = ['colon_fence']
 myst_heading_anchors = 3
+
+language = 'zh_CN'
+master_doc = 'index'
 
 
 def builder_inited_handler(app):

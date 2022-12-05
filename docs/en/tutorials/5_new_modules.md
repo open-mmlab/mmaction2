@@ -4,13 +4,14 @@ In this tutorial, we will introduce some methods about how to customize optimize
 
 <!-- TOC -->
 
-- [Customize Optimizer](#customize-optimizer)
-- [Customize Optimizer Constructor](#customize-optimizer-constructor)
-- [Develop New Components](#develop-new-components)
-  - [Add new backbones](#add-new-backbones)
-  - [Add new heads](#add-new-heads)
-  - [Add new loss](#add-new-loss)
-- [Add new learning rate scheduler (updater)](#add-new-learning-rate-scheduler--updater-)
+- [Tutorial 5: Adding New Modules](#tutorial-5-adding-new-modules)
+  - [Customize Optimizer](#customize-optimizer)
+  - [Customize Optimizer Constructor](#customize-optimizer-constructor)
+  - [Develop New Components](#develop-new-components)
+    - [Add new backbones](#add-new-backbones)
+    - [Add new heads](#add-new-heads)
+    - [Add new loss](#add-new-loss)
+  - [Add new learning rate scheduler (updater)](#add-new-learning-rate-scheduler-updater)
 
 <!-- TOC -->
 

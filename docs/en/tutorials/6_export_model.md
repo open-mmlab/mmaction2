@@ -4,11 +4,12 @@ Open Neural Network Exchange [(ONNX)](https://onnx.ai/) is an open ecosystem tha
 
 <!-- TOC -->
 
-- [Supported Models](#supported-models)
-- [Usage](#usage)
-  - [Prerequisite](#prerequisite)
-  - [Recognizers](#recognizers)
-  - [Localizers](#localizers)
+- [Tutorial 6: Exporting a model to ONNX](#tutorial-6-exporting-a-model-to-onnx)
+  - [Supported Models](#supported-models)
+  - [Usage](#usage)
+    - [Prerequisite](#prerequisite)
+    - [Recognizers](#recognizers)
+    - [Localizers](#localizers)
 
 <!-- TOC -->
 

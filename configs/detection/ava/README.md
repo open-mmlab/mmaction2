@@ -66,7 +66,7 @@ AVA, with its realistic scene and action complexity, exposes the intrinsic diffi
 
 :::
 
-For more details on data preparation, you can refer to AVA in [Data Preparation](/docs/data_preparation.md).
+For more details on data preparation, you can refer to AVA in [Data Preparation](/docs/en/data_preparation.md).
 
 ## Train
 
@@ -82,7 +82,7 @@ Example: train SlowOnly model on AVA with periodic validation.
 python tools/train.py configs/detection/ava/slowonly_kinetics_pretrained_r50_8x8x1_20e_ava_rgb.py --validate
 ```
 
-For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting) .
+For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/en/getting_started.md#training-setting) .
 
 ### Train Custom Classes From Ava Dataset
 
@@ -120,7 +120,7 @@ Example: test SlowOnly model on AVA and dump the result to a csv file.
 python tools/test.py configs/detection/ava/slowonly_kinetics_pretrained_r50_8x8x1_20e_ava_rgb.py checkpoints/SOME_CHECKPOINT.pth --eval mAP --out results.csv
 ```
 
-For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset) .
+For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/en/getting_started.md#test-a-dataset) .
 
 ## Citation
 

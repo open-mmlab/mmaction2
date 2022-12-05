@@ -80,7 +80,7 @@ python tools/train.py configs/detection/lfb/lfb_nl_kinetics_pretrained_slowonly_
   --validate --seed 0 --deterministic
 ```
 
-For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
+For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/en/getting_started.md#training-setting).
 
 ## Test
 
@@ -105,7 +105,7 @@ python tools/test.py configs/detection/lfb/lfb_nl_kinetics_pretrained_slowonly_r
     checkpoints/SOME_CHECKPOINT.pth --eval mAP --out results.csv
 ```
 
-For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+For more details, you can refer to **Test a dataset** part in [getting_started](/docs/en/getting_started.md#test-a-dataset).
 
 ## Citation
 

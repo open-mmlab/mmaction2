@@ -39,7 +39,7 @@ Temporal action proposal generation is an challenging and promising task which a
 
 \*We train BMN with the [official repo](https://github.com/JJBOY/BMN-Boundary-Matching-Network), evaluate its proposal generation and action detection performance with [anet_cuhk_2017](https://download.openmmlab.com/mmaction/localization/cuhk_anet17_pred.json) for label assigning.
 
-For more details on data preparation, you can refer to ActivityNet feature in [Data Preparation](/docs/data_preparation.md).
+For more details on data preparation, you can refer to ActivityNet feature in [Data Preparation](/docs/en/data_preparation.md).
 
 ## Train
 
@@ -55,7 +55,7 @@ Example: train BMN model on ActivityNet features dataset.
 python tools/train.py configs/localization/bmn/bmn_400x100_2x8_9e_activitynet_feature.py
 ```
 
-For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting) .
+For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/en/getting_started.md#training-setting) .
 
 ## Test
 
@@ -88,7 +88,7 @@ python tools/analysis/report_map.py --proposal path/to/proposal_file
 
 :::
 
-For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset) .
+For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/en/getting_started.md#test-a-dataset) .
 
 ## Citation
 

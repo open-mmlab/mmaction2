@@ -43,7 +43,7 @@ bash download_videos.sh
 
 This part is **optional** if you only want to use the video loader.
 
-Before extracting, please refer to [install.md](/docs/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
+Before extracting, please refer to [install.md](/docs/en/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
 
 You can use the following script to extract both RGB and Flow frames.
 
@@ -52,7 +52,7 @@ bash extract_frames.sh
 ```
 
 By default, we generate frames with short edge resized to 256.
-More details can be found in [data_preparation](/docs/data_preparation.md)
+More details can be found in \[data_preparation\](/docs/en/data_preparation.md)
 
 ## Step 4. Generate File List
 
@@ -120,4 +120,4 @@ mmaction2
 
 ```
 
-For training and evaluating on HVU, please refer to [getting_started](/docs/getting_started.md).
+For training and evaluating on HVU, please refer to \[getting_started\](/docs/en/getting_started.md).
