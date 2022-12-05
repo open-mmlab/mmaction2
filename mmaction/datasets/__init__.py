@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .activitynet_dataset import ActivityNetDataset
 from .audio_dataset import AudioDataset
-from .ava_dataset import AVADataset
+from .ava_dataset import AVADataset, AVAKineticsDataset
 from .base import BaseActionDataset
 from .pose_dataset import PoseDataset
 from .rawframe_dataset import RawframeDataset
@@ -12,6 +12,7 @@ __all__ = [
     'VideoDataset',
     'RawframeDataset',
     'AVADataset',
+    'AVAKineticsDataset',
     'PoseDataset',
     'BaseActionDataset',
     'ActivityNetDataset',
