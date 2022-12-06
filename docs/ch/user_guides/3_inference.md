@@ -1,8 +1,8 @@
-# 教程3：用现有的模型进行推理
+# 教程3：利用现有模型进行推理
 
-## 基于RGB的动作识别模型的推理
+## 基于 RGB 的动作识别模型的推理
 
-MMAction2 提供了预测一段视频识别结果的推理脚本，为了确保得到的预测结果在`[0,1]`之间，确保在配置文件中设置`model.cls_head.average_clips = 'prob'`。
+MMAction2 提供了一个预测单个视频的推理脚本，为了使预测分数都在`[0,1]`之间，请确保在配置文件中设置 `model.cls_head.average_clips = 'prob'`。
 
 ```python
 python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} ${LABEL_FILE} \
@@ -12,18 +12,19 @@ python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} ${LABEL_FILE
 
 可选参数：
 
-- `DEVICE_TYPE`: 设备的种类，允许的值为CUDA设备例如`'cuda:0'`或者`'cpu'`. 默认为`'cuda:0'`.
-- `FPS`: 输出视频的FPS，默认30.
-- `FONT_SCALE`: 视频中label的字体大小，默认为0.5.
-- `FONT_COLOR`: 视频中label的字体颜色，默认为 `'white'`.
-- `TARGET_RESOLUTION`: 使用视频作为输入时，用于调整输出前帧大小的分辨率（desired_width，desired_height）。如果未指定，则将为“无”，并通过保持现有纵横比来调整帧的大小。
-- `OUT_FILE`: 输出文件的路径，可以是视频格式或gif格式。如果未指定，则将设置为`None`，并且不会生成输出文件。
+- `DEVICE_TYPE`: 指定脚本运行设备，支持 cuda 设备（如 `cuda:0`）或 cpu（`cpu`）。默认为 `cuda:0`。
+- `FPS`: 使用帧目录作为输入时，代表输入的帧率。默认为 30。
+- `FONT_SCALE`: 输出视频上的字体缩放比例。默认为 0.5。
+- `FONT_COLOR`: 输出视频上的字体颜色，默认为白色（ `white`）。
+- `TARGET_RESOLUTION`: 输出视频的分辨率，如未指定，使用输入视频的分辨率。
+- `RESIZE_ALGORITHM`: 缩放视频时使用的插值方法，默认为 `bicubic`。
+- `OUT_FILE`: 输出视频的路径，如未指定，则不会生成输出视频。
 
-例子：
+示例：
 
-假设你位于`$MMACTION2`项目中，并且已经将检查点下载到`checkpoints/`目录，或者使用中的检查点url直接加载相应的检查点，该检查点将自动保存在`$HOME/.cache/thorse/checkpoints`中
+以下示例假设用户的当前目录为 `$MMACTION2`，并已经将所需的模型权重文件下载至目录 `checkpoints/` 下，用户也可以使用所提供的 URL 来直接加载模型权重，文件将会被默认下载至 `$HOME/.cache/torch/checkpoints`。
 
-1. 默认情况下，通过使用CUDA上的TSN模型将视频文件识别为输入。
+1. 在 cuda 设备上，使用 TSN 模型进行视频识别：
 
    ```shell
    # demo.mp4 和 label_map_k400.txt 均来自 Kinetics-400
@@ -32,7 +33,7 @@ python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} ${LABEL_FILE
        demo/demo.mp4 tools/data/kinetics/label_map_k400.txt
    ```
 
-2. 默认情况下，通过在CUDA上使用TSN模型，从url加载检查点，将视频文件识别为输入。
+2. 在 cuda 设备上，使用 TSN 模型进行视频识别，并利用 URL 加载模型权重文件：
 
    ```shell
    # demo.mp4 和 label_map_k400.txt 均来自 Kinetics-400
@@ -41,7 +42,7 @@ python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} ${LABEL_FILE
        demo/demo.mp4 tools/data/kinetics/label_map_k400.txt
    ```
 
-3. 通过使用TSN模型将视频文件识别为输入，然后生成mp4文件。
+3. 使用 TSN 模型进行视频识别，输出 MP4 格式的识别结果：
 
    ```shell
    # demo.mp4 和 label_map_k400.txt 均来自 Kinetics-400
@@ -71,17 +72,17 @@ python demo/demo_skeleton.py ${VIDEO_FILE} ${OUT_FILENAME} \
 
 可选参数：
 
-- `SKELETON_BASED_ACTION_RECOGNITION_CONFIG_FILE`: 基于骨骼的动作识别配置文件的路径
-- `SKELETON_BASED_ACTION_RECOGNITION_CHECKPOINT`: 基于骨骼的动作识别检查点文件路径或者url
-- `HUMAN_DETECTION_CONFIG_FILE`: 人物检测配置文件
-- `HUMAN_DETECTION_CHECKPOINT`: 人物检测模型检查点文件路径或url
-- `HUMAN_DETECTION_SCORE_THRE`: 人物检测阈值，默认为0.9
-- `HUMAN_DETECTION_CATEGORY_ID`: 人物检测的类别id，默认为0
+- `SKELETON_BASED_ACTION_RECOGNITION_CONFIG_FILE`: 基于骨骼的动作识别配置文件的路径。
+- `SKELETON_BASED_ACTION_RECOGNITION_CHECKPOINT`: 基于骨骼的动作识别检查点文件路径或者url。
+- `HUMAN_DETECTION_CONFIG_FILE`: 人物检测配置文件。
+- `HUMAN_DETECTION_CHECKPOINT`: 人物检测模型检查点文件路径或url。
+- `HUMAN_DETECTION_SCORE_THRE`: 人物检测阈值，默认为0.9。
+- `HUMAN_DETECTION_CATEGORY_ID`: 人物检测的类别id，默认为0。
 - `HUMAN_POSE_ESTIMATION_CONFIG_FILE`: 人体姿态估计配置文件的路径（在COCO-Keypoint数据集上训练过）
 - `HUMAN_POSE_ESTIMATION_CHECKPOINT`: 人体姿态估计检查点文件路径或者url（在COCO-Keypoint数据集上训练过）
-- `LABEL_MAP`: 使用的标签映射，默认为`'tools/data/skeleton/label_map_ntu60.txt'`.
-- `DEVICE`: 运行demo要用的设备，允许的值为CUDA设备如`'cuda:0'` 或者 `'cpu'`. 默认为`'cuda:0'`.
-- `SHORT_SIDE`: 帧提取时使用的较短边长度，默认为480
+- `LABEL_MAP`: 使用的标签映射，默认为`'tools/data/skeleton/label_map_ntu60.txt'`。
+- `DEVICE`: 运行demo要用的设备，允许的值为CUDA设备如`'cuda:0'` 或者 `'cpu'`. 默认为`'cuda:0'`。
+- `SHORT_SIDE`: 帧提取时使用的较短边长度，默认为480。
 
 例子：
 
