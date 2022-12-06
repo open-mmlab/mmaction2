@@ -34,6 +34,15 @@ def parse_args():
         help='specify fps value of the output video when using rawframes to '
         'generate file')
     parser.add_argument(
+        '--font-scale',
+        default=None,
+        type=float,
+        help='font scale of the text in output video')
+    parser.add_argument(
+        '--font-color',
+        default='white',
+        help='font color of the text in output video')
+    parser.add_argument(
         '--target-resolution',
         nargs=2,
         default=None,
@@ -52,6 +61,8 @@ def get_output(
     data_sample: str,
     labels: list,
     fps: int = 30,
+    font_scale: Optional[str] = None,
+    font_color: str = 'white',
     target_resolution: Optional[Tuple[int]] = None,
 ) -> None:
     """Get demo output using ``moviepy``.
@@ -66,6 +77,8 @@ def get_output(
         datasample (str): Predicted label of the generated file.
         labels (list): Label list of current dataset.
         fps (int): Number of picture frames to read per second. Defaults to 30.
+        font_scale (float): Font scale of the text. Defaults to None.
+        font_color (str): Font color of the text. Defaults to ``white``.
         target_resolution (Tuple[int], optional): Set to
             (desired_width desired_height) to have resized frames. If
             either dimension is None, the frames are resized by keeping
@@ -105,8 +118,17 @@ def get_output(
         vis_backends=vis_backends_cfg, save_dir='place_holder')
     visualizer.dataset_meta = dict(classes=labels)
 
+    text_cfg = {'colors': font_color}
+    if font_scale is not None:
+        text_cfg.update({'font_sizes': font_scale})
+
     visualizer.add_datasample(
-        out_filename, frames, data_sample, draw_pred=True, draw_gt=False)
+        out_filename,
+        frames,
+        data_sample,
+        draw_pred=True,
+        draw_gt=False,
+        text_cfg=text_cfg)
 
 
 def main():
@@ -152,7 +174,9 @@ def main():
             args.out_filename,
             pred_result,
             labels,
-            args.fps,
+            fps=args.fps,
+            font_scale=args.font_scale,
+            font_color=args.font_color,
             target_resolution=args.target_resolution)
 
 

@@ -27,13 +27,13 @@ class LocalVisBackend(LocalVisBackend):
             produced by the visualizer. If it is none, it means no data
             is stored.
         img_save_dir (str): The directory to save images.
-            Default to 'vis_image'.
+            Defaults to ``'vis_image'``.
         config_save_file (str): The file name to save config.
-            Default to 'config.py'.
+            Defaults to ``'config.py'``.
         scalar_save_file (str):  The file name to save scalar values.
-            Default to 'scalars.json'.
+            Defaults to ``'scalars.json'``.
         out_type (str): Output format type, choose from 'img', 'gif',
-            'video'. Default to 'img'
+            'video'. Defaults to ``'img'``.
         fps (int): Frames per second for saving video. Defaults to 5.
     """
 
