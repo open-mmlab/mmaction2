@@ -10,12 +10,12 @@ cat  ../../configs/skeleton/*/README_zh-CN.md  | sed "s/md#测/html#测/g" | sed
 cat  ../../tools/data/*/README_zh-CN.md | sed 's/# 准备/# /g' | sed 's/#/#&/' > prepare_data.md
 
 sed -i 's/(\/tools\/data\/activitynet\/README_zh-CN.md/(#activitynet/g' supported_datasets.md
-sed -i 's/(\/tools\/data\/kinetics\/README_zh-CN.md/(#kinetics-400-600-700/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/kinetics\/README_zh-CN.md/(#kinetics-400600700/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/mit\/README_zh-CN.md/(#moments-in-time/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/mmit\/README_zh-CN.md/(#multi-moments-in-time/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/sthv1\/README_zh-CN.md/(#something-something-v1/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/sthv2\/README_zh-CN.md/(#something-something-v2/g' supported_datasets.md
-sed -i 's/(\/tools\/data\/thumos14\/README_zh-CN.md/(#thumos-14/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/thumos14\/README_zh-CN.md/(#thumos14/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/ucf101\/README_zh-CN.md/(#ucf-101/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/ucf101_24\/README_zh-CN.md/(#ucf101-24/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/jhmdb\/README_zh-CN.md/(#jhmdb/g' supported_datasets.md
@@ -26,7 +26,7 @@ sed -i 's/(\/tools\/data\/ava\/README_zh-CN.md/(#ava/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/gym\/README_zh-CN.md/(#gym/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/omnisource\/README_zh-CN.md/(#omnisource/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/diving48\/README_zh-CN.md/(#diving48/g' supported_datasets.md
-sed -i 's/(\/tools\/data\/skeleton\/README_zh-CN.md/(#skeleton/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/skeleton\/README_zh-CN.md/(#skeleton-dataset/g' supported_datasets.md
 
 cat prepare_data.md >> supported_datasets.md
 sed -i 's/](\/docs\/zh_CN\//](/g' supported_datasets.md

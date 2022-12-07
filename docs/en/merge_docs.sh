@@ -17,12 +17,12 @@ cat  ../demo/README.md | sed "s/md#t/html#t/g" | sed 's=](/=](https://github.com
 cat  ../../tools/data/*/README.md | sed 's/# Preparing/# /g' | sed 's/#/#&/' > prepare_data.md
 
 sed -i 's/(\/tools\/data\/activitynet\/README.md/(#activitynet/g' supported_datasets.md
-sed -i 's/(\/tools\/data\/kinetics\/README.md/(#kinetics-400-600-700/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/kinetics\/README.md/(##kinetics-400600700/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/mit\/README.md/(#moments-in-time/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/mmit\/README.md/(#multi-moments-in-time/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/sthv1\/README.md/(#something-something-v1/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/sthv2\/README.md/(#something-something-v2/g' supported_datasets.md
-sed -i 's/(\/tools\/data\/thumos14\/README.md/(#thumos-14/g' supported_datasets.md
+sed -i "s/(\/tools\/data\/thumos14\/README.md/(#thumos14/g" supported_datasets.md
 sed -i 's/(\/tools\/data\/ucf101\/README.md/(#ucf-101/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/ucf101_24\/README.md/(#ucf101-24/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/jhmdb\/README.md/(#jhmdb/g' supported_datasets.md
@@ -33,7 +33,7 @@ sed -i 's/(\/tools\/data\/ava\/README.md/(#ava/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/gym\/README.md/(#gym/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/omnisource\/README.md/(#omnisource/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/diving48\/README.md/(#diving48/g' supported_datasets.md
-sed -i 's/(\/tools\/data\/skeleton\/README.md/(#skeleton/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/skeleton\/README.md/(#skeleton-dataset/g' supported_datasets.md
 
 
 cat prepare_data.md >> supported_datasets.md
