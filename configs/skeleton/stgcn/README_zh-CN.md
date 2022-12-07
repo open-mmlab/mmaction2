@@ -49,7 +49,7 @@ python tools/train.py configs/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint.py \
     --validate --seed 0 --deterministic
 ```
 
-更多训练细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#%E8%AE%AD%E7%BB%83%E9%85%8D%E7%BD%AE) 中的 **训练配置** 部分。
+更多训练细节，可参考 [基础教程](/docs/zh_cn/getting_started.md#训练配置) 中的 **训练配置** 部分。
 
 ## 如何测试
 
@@ -67,4 +67,4 @@ python tools/test.py configs/skeleton/stgcn/stgcn_80e_ntu60_xsub_keypoint.py \
     --out result.pkl
 ```
 
-更多测试细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#%E6%B5%8B%E8%AF%95%E6%9F%90%E4%B8%AA%E6%95%B0%E6%8D%AE%E9%9B%86) 中的 **测试某个数据集** 部分。
+更多测试细节，可参考 [基础教程](/docs/zh_cn/getting_started.md#测试某个数据集) 中的 **测试某个数据集** 部分。

@@ -14,16 +14,16 @@
 }
 ```
 
-用户可以参照数据集 [官网](https://20bn.com/datasets/jester/v1)，获取数据集相关的基本信息。
+用户可以参照数据集 [官网](https://developer.qualcomm.com/software/ai-datasets/jester)，获取数据集相关的基本信息。
 在准备数据集前，请确保命令行当前路径为 `$MMACTION2/tools/data/jester/`。
 
 ## 步骤 1. 下载标注文件
 
-首先，用户需要在 [官网](https://20bn.com/datasets/jester/v1) 完成注册，才能下载标注文件。下载好的标注文件需要放在 `$MMACTION2/data/jester/annotations` 文件夹下。
+首先，用户需要在 [官网](https://developer.qualcomm.com/software/ai-datasets/jester) 完成注册，才能下载标注文件。下载好的标注文件需要放在 `$MMACTION2/data/jester/annotations` 文件夹下。
 
 ## 步骤 2. 准备 RGB 帧
 
-[jester 官网](https://20bn.com/datasets/jester/v1) 并未提供原始视频文件，只提供了对原视频文件进行抽取得到的 RGB 帧，用户可在 [jester 官网](https://20bn.com/datasets/jester/v1) 直接下载。
+[jester 官网](https://developer.qualcomm.com/software/ai-datasets/jester) 并未提供原始视频文件，只提供了对原视频文件进行抽取得到的 RGB 帧，用户可在 [jester 官网](https://developer.qualcomm.com/software/ai-datasets/jester) 直接下载。
 
 将下载好的压缩文件放在 `$MMACTION2/data/jester/` 文件夹下，并使用以下脚本进行解压。
 
@@ -64,7 +64,7 @@ data = dict(
 
 如果用户只想使用 RGB 帧训练，则该部分是 **可选项**。
 
-在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
+在抽取视频帧和光流之前，请参考 [安装指南](/docs/zh_cn/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
 如果拥有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 中。
 
@@ -140,4 +140,4 @@ mmaction2
 
 ```
 
-关于对 jester 进行训练和验证，可以参考 [基础教程](/docs_zh_CN/getting_started.md)。
+关于对 jester 进行训练和验证，可以参考 [基础教程](/docs/zh_cn/getting_started.md)。

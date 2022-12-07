@@ -15,12 +15,12 @@
 }
 ```
 
-For basic dataset information, you can refer to the dataset [website](https://20bn.com/datasets/something-something/v2).
+For basic dataset information, you can refer to the dataset [website](https://developer.qualcomm.com/software/ai-datasets/something-something).
 Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/sthv2/`.
 
 ## Step 1. Prepare Annotations
 
-First of all, you have to sign in and download annotations to `$MMACTION2/data/sthv2/annotations` on the official [website](https://20bn.com/datasets/something-something/v2).
+First of all, you have to sign in and download annotations to `$MMACTION2/data/sthv2/annotations` on the official [website](https://developer.qualcomm.com/software/ai-datasets/something-something).
 
 ## Step 2. Prepare Videos
 
@@ -36,7 +36,7 @@ cd $MMACTION2/tools/data/sthv2/
 
 This part is **optional** if you only want to use the video loader.
 
-Before extracting, please refer to [install.md](/docs/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
+Before extracting, please refer to [install.md](/docs/en/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
 
 If you have plenty of SSD space, then we recommend extracting frames there for better I/O performance.
 
@@ -115,4 +115,4 @@ mmaction2
 
 ```
 
-For training and evaluating on Something-Something V2, please refer to [getting_started.md](/docs/getting_started.md).
+For training and evaluating on Something-Something V2, please refer to [getting_started.md](/docs/en/getting_started.md).

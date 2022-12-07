@@ -26,7 +26,7 @@ year = {2017}
    依据 [线性缩放规则](https://arxiv.org/abs/1706.02677)，当用户使用不同数量的 GPU 或者每块 GPU 处理不同视频个数时，需要根据批大小等比例地调节学习率。
    如，lr=0.01 对应 4 GPUs x 2 video/gpu，以及 lr=0.08 对应 16 GPUs x 4 video/gpu。
 2. 由于 SSN 在训练和测试阶段使用不同的结构化时序金字塔池化方法（structured temporal pyramid pooling methods），请分别参考 [ssn_r50_450e_thumos14_rgb_train](/configs/localization/ssn/ssn_r50_450e_thumos14_rgb_train.py) 和 [ssn_r50_450e_thumos14_rgb_test](/configs/localization/ssn/ssn_r50_450e_thumos14_rgb_test.py)。
-3. MMAction2 使用 TAG 的时序动作候选进行 SSN 模型的精度验证。关于数据准备的更多细节，用户可参考 [Data 数据集准备文档](/docs_zh_CN/data_preparation.md) 准备 thumos14 的 TAG 时序动作候选。
+3. MMAction2 使用 TAG 的时序动作候选进行 SSN 模型的精度验证。关于数据准备的更多细节，用户可参考 [Data 数据集准备文档](/docs/zh_cn/data_preparation.md) 准备 thumos14 的 TAG 时序动作候选。
 4. 参考代码的 SSN 模型是和 MMAction2 一样在 `ResNet50` 主干网络上验证的。注意，这里的 SSN 的初始设置与原代码库的 `BNInception` 骨干网络的设置相同。
 
 ## 如何训练
@@ -43,7 +43,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 python tools/train.py configs/localization/ssn/ssn_r50_450e_thumos14_rgb_train.py
 ```
 
-更多训练细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#%E8%AE%AD%E7%BB%83%E9%85%8D%E7%BD%AE) 中的 **训练配置** 部分。
+更多训练细节，可参考 [基础教程](/docs/zh_cn/getting_started.md#训练配置) 中的 **训练配置** 部分。
 
 ## 如何测试
 
@@ -60,4 +60,4 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 python tools/test.py configs/localization/ssn/ssn_r50_450e_thumos14_rgb_test.py checkpoints/SOME_CHECKPOINT.pth --eval mAP
 ```
 
-更多测试细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#%E6%B5%8B%E8%AF%95%E6%9F%90%E4%B8%AA%E6%95%B0%E6%8D%AE%E9%9B%86) 中的 **测试某个数据集** 部分。
+更多测试细节，可参考 [基础教程](/docs/zh_cn/getting_started.md#测试某个数据集) 中的 **测试某个数据集** 部分。

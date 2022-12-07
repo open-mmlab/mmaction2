@@ -72,7 +72,7 @@
    如，lr=0.01 对应 4 GPUs x 2 video/gpu，以及 lr=0.08 对应 16 GPUs x 4 video/gpu。
 2. **Context** 表示同时使用 RoI 特征与全局特征进行分类，可带来约 1% mAP 的提升。
 
-对于数据集准备的细节，用户可参考 [数据准备](/docs_zh_CN/data_preparation.md)。
+对于数据集准备的细节，用户可参考 [数据准备](/docs/zh_cn/data_preparation.md)。
 
 ## 如何训练
 
@@ -88,7 +88,7 @@ python tools/train.py ${CONFIG_FILE} [optional arguments]
 python tools/train.py configs/detection/ava/slowonly_kinetics_pretrained_r50_8x8x1_20e_ava_rgb.py --validate
 ```
 
-更多训练细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#%E8%AE%AD%E7%BB%83%E9%85%8D%E7%BD%AE) 中的 **训练配置** 部分。
+更多训练细节，可参考 [基础教程](/docs/zh_cn/getting_started.md#训练配置) 中的 **训练配置** 部分。
 
 ### 训练 AVA 数据集中的自定义类别
 
@@ -126,4 +126,4 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [optional arguments]
 python tools/test.py configs/detection/ava/slowonly_kinetics_pretrained_r50_8x8x1_20e_ava_rgb.py checkpoints/SOME_CHECKPOINT.pth --eval mAP --out results.csv
 ```
 
-更多测试细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#%E6%B5%8B%E8%AF%95%E6%9F%90%E4%B8%AA%E6%95%B0%E6%8D%AE%E9%9B%86) 中的 **测试某个数据集** 部分。
+更多测试细节，可参考 [基础教程](/docs/zh_cn/getting_started.md#测试某个数据集) 中的 **测试某个数据集** 部分。

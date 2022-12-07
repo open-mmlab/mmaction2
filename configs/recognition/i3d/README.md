@@ -45,7 +45,7 @@ The paucity of videos in current action classification datasets (UCF-101 and HMD
 
 :::
 
-For more details on data preparation, you can refer to Kinetics400 in [Data Preparation](/docs/data_preparation.md).
+For more details on data preparation, you can refer to Kinetics400 in [Data Preparation](/docs/en/data_preparation.md).
 
 ## Train
 
@@ -63,7 +63,7 @@ python tools/train.py configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rg
     --validate --seed 0 --deterministic
 ```
 
-For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
+For more details, you can refer to **Training setting** part in [getting_started](/docs/en/getting_started.md#training-setting).
 
 ## Test
 
@@ -81,7 +81,7 @@ python tools/test.py configs/recognition/i3d/i3d_r50_32x2x1_100e_kinetics400_rgb
     --out result.json --average-clips prob
 ```
 
-For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+For more details, you can refer to **Test a dataset** part in [getting_started](/docs/en/getting_started.md#test-a-dataset).
 
 ## Citation
 

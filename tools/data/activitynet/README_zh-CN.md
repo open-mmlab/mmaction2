@@ -78,7 +78,7 @@ bash download_bsn_videos.sh
 
 ### 步骤 3. 抽取 RGB 帧和光流
 
-在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
+在抽取视频帧和光流之前，请参考 [安装指南](/docs/zh_cn/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
 可使用以下命令抽取视频帧和光流。
 
@@ -87,7 +87,7 @@ bash extract_frames.sh
 ```
 
 以上脚本将会生成短边 256 分辨率的视频。如果用户想生成短边 320 分辨率的视频（即 320p），或者 340x256 的固定分辨率，用户可以通过改变参数由 `--new-short 256` 至 `--new-short 320`，或者 `--new-width 340 --new-height 256` 进行设置
-更多细节可参考 [数据准备指南](/docs_zh_CN/data_preparation.md)
+更多细节可参考 [数据准备指南](/docs/zh_cn/data_preparation.md)
 
 ### 步骤 4. 生成用于 ActivityNet 微调的文件列表
 
@@ -166,4 +166,4 @@ mmaction2
 
 ```
 
-关于对 ActivityNet 进行训练和验证，可以参考 [基础教程](/docs_zh_CN/getting_started.md).
+关于对 ActivityNet 进行训练和验证，可以参考 [基础教程](/docs/zh_cn/getting_started.md).

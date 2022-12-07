@@ -35,7 +35,7 @@ Temporal action proposal generation is an important yet challenging problem, sin
 
 :::
 
-For more details on data preparation, you can refer to ActivityNet feature in [Data Preparation](/docs/data_preparation.md).
+For more details on data preparation, you can refer to ActivityNet feature in [Data Preparation](/docs/en/data_preparation.md).
 
 ## Train
 
@@ -59,7 +59,7 @@ Examples:
    python tools/train.py configs/localization/bsn/bsn_pem_400x100_1x16_20e_activitynet_feature.py
    ```
 
-For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
+For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/en/getting_started.md#training-setting).
 
 ## Inference
 
@@ -158,7 +158,7 @@ Examples:
 
 :::
 
-For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/en/getting_started.md#test-a-dataset).
 
 ## Citation
 

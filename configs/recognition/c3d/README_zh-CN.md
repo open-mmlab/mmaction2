@@ -32,7 +32,7 @@ eid = {arXiv:1412.0767}
 3. 这里的 **推理时间** 是根据 [基准测试脚本](/tools/analysis/benchmark.py) 获得的，采用测试时的采帧策略，且只考虑模型的推理时间，
    并不包括 IO 时间以及预处理时间。对于每个配置，MMAction2 使用 1 块 GPU 并设置批大小（每块 GPU 处理的视频个数）为 1 来计算推理时间。
 
-对于数据集准备的细节，用户可参考 [数据集准备文档](/docs_zh_CN/data_preparation.md) 中的 UCF-101 部分。
+对于数据集准备的细节，用户可参考 [数据集准备文档](/docs/zh_cn/data_preparation.md) 中的 UCF-101 部分。
 
 ## 如何训练
 
@@ -49,7 +49,7 @@ python tools/train.py configs/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb
     --validate --seed 0 --deterministic
 ```
 
-更多训练细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#%E8%AE%AD%E7%BB%83%E9%85%8D%E7%BD%AE) 中的 **训练配置** 部分。
+更多训练细节，可参考 [基础教程](/docs/zh_cn/getting_started.md#训练配置) 中的 **训练配置** 部分。
 
 ## 如何测试
 
@@ -66,4 +66,4 @@ python tools/test.py configs/recognition/c3d/c3d_sports1m_16x1x1_45e_ucf101_rgb.
     checkpoints/SOME_CHECKPOINT.pth --eval top_k_accuracy
 ```
 
-更多测试细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#%E6%B5%8B%E8%AF%95%E6%9F%90%E4%B8%AA%E6%95%B0%E6%8D%AE%E9%9B%86) 中的 **测试某个数据集** 部分。
+更多测试细节，可参考 [基础教程](/docs/zh_cn/getting_started.md#测试某个数据集) 中的 **测试某个数据集** 部分。

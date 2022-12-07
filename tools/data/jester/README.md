@@ -14,18 +14,18 @@
 }
 ```
 
-For basic dataset information, you can refer to the dataset [website](https://20bn.com/datasets/jester/v1).
+For basic dataset information, you can refer to the dataset [website](https://developer.qualcomm.com/software/ai-datasets/jester).
 Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/jester/`.
 
 ## Step 1. Prepare Annotations
 
-First of all, you have to sign in and download annotations to `$MMACTION2/data/jester/annotations` on the official [website](https://20bn.com/datasets/jester/v1).
+First of all, you have to sign in and download annotations to `$MMACTION2/data/jester/annotations` on the official [website](https://developer.qualcomm.com/software/ai-datasets/jester).
 
 ## Step 2. Prepare RGB Frames
 
-Since the [jester website](https://20bn.com/datasets/jester/v1) doesn't provide the original video data and only extracted RGB frames are available, you have to directly download RGB frames from [jester website](https://20bn.com/datasets/jester/v1).
+Since the [jester website](https://developer.qualcomm.com/software/ai-datasets/jester) doesn't provide the original video data and only extracted RGB frames are available, you have to directly download RGB frames from [jester website](https://developer.qualcomm.com/software/ai-datasets/jester).
 
-You can download all RGB frame parts on [jester website](https://20bn.com/datasets/jester/v1) to `$MMACTION2/data/jester/` and use the following command to extract.
+You can download all RGB frame parts on [jester website](https://developer.qualcomm.com/software/ai-datasets/jester) to `$MMACTION2/data/jester/` and use the following command to extract.
 
 ```shell
 cd $MMACTION2/data/jester/
@@ -64,7 +64,7 @@ data = dict(
 
 This part is **optional** if you only want to use RGB frames.
 
-Before extracting, please refer to [install.md](/docs/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
+Before extracting, please refer to [install.md](/docs/en/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
 
 If you have plenty of SSD space, then we recommend extracting frames there for better I/O performance.
 
@@ -140,4 +140,4 @@ mmaction2
 
 ```
 
-For training and evaluating on Jester, please refer to [getting_started.md](/docs/getting_started.md).
+For training and evaluating on Jester, please refer to [getting_started.md](/docs/en/getting_started.md).

@@ -44,7 +44,7 @@ Group convolution has been shown to offer great computational savings in various
 
 :::
 
-For more details on data preparation, you can refer to Kinetics400 in [Data Preparation](/docs/data_preparation.md).
+For more details on data preparation, you can refer to Kinetics400 in [Data Preparation](/docs/en/data_preparation.md).
 
 ## Train
 
@@ -62,7 +62,7 @@ python tools/train.py configs/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1
     --validate --seed 0 --deterministic
 ```
 
-For more details, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
+For more details, you can refer to **Training setting** part in [getting_started](/docs/en/getting_started.md#training-setting).
 
 ## Test
 
@@ -80,7 +80,7 @@ python tools/test.py configs/recognition/csn/ircsn_ig65m_pretrained_r152_32x2x1_
     --out result.json --average-clips prob
 ```
 
-For more details, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+For more details, you can refer to **Test a dataset** part in [getting_started](/docs/en/getting_started.md#test-a-dataset).
 
 ## Citation
 

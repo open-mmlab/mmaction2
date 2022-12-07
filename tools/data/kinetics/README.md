@@ -15,7 +15,7 @@
 }
 ```
 
-For basic dataset information, please refer to the official [website](https://deepmind.com/research/open-source/open-source-datasets/kinetics/). The scripts can be used for preparing kinetics400, kinetics600, kinetics700. To prepare different version of kinetics, you need to replace `${DATASET}` in the following examples with the specific dataset name. The choices of dataset names are `kinetics400`, `kinetics600` and `kinetics700`.
+For basic dataset information, please refer to the official [website](https://www.deepmind.com/open-source/kinetics). The scripts can be used for preparing kinetics400, kinetics600, kinetics700. To prepare different version of kinetics, you need to replace `${DATASET}` in the following examples with the specific dataset name. The choices of dataset names are `kinetics400`, `kinetics600` and `kinetics700`.
 Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/${DATASET}/`.
 
 :::{note}
@@ -29,7 +29,7 @@ Because of the expirations of some YouTube links, the sizes of kinetics dataset 
 
 ## Step 1. Prepare Annotations
 
-First of all, you can run the following script to prepare annotations by downloading from the official [website](https://deepmind.com/research/open-source/open-source-datasets/kinetics/).
+First of all, you can run the following script to prepare annotations by downloading from the official [website](https://www.deepmind.com/open-source/kinetics).
 
 ```shell
 bash download_annotations.sh ${DATASET}
@@ -38,7 +38,7 @@ bash download_annotations.sh ${DATASET}
 Since some video urls are invalid, the number of video items in current official annotations are less than the original official ones.
 So we provide an alternative way to download the older one as a reference.
 Among these, the annotation files of Kinetics400 and Kinetics600 are from [official crawler](https://github.com/activitynet/ActivityNet/tree/199c9358907928a47cdfc81de4db788fddc2f91d/Crawler/Kinetics/data),
-the annotation files of Kinetics700 are from [website](https://deepmind.com/research/open-source/open-source-datasets/kinetics/) downloaded in 05/02/2021.
+the annotation files of Kinetics700 are from [website](https://www.deepmind.com/open-source/kinetics) downloaded in 05/02/2021.
 
 ```shell
 bash download_backup_annotations.sh ${DATASET}
@@ -72,7 +72,7 @@ You can also download from [Academic Torrents](https://academictorrents.com/) ([
 
 This part is **optional** if you only want to use the video loader.
 
-Before extracting, please refer to [install.md](/docs/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
+Before extracting, please refer to [install.md](/docs/en/install.md) for installing [denseflow](https://github.com/open-mmlab/denseflow).
 
 If you have plenty of SSD space, then we recommend extracting frames there for better I/O performance. And you can run the following script to soft link the extracted frames.
 
@@ -103,7 +103,7 @@ bash extract_frames.sh ${DATASET}
 ```
 
 The commands above can generate images with new short edge 256. If you want to generate images with short edge 320 (320p), or with fix size 340x256, you can change the args `--new-short 256` to `--new-short 320` or `--new-width 340 --new-height 256`.
-More details can be found in [data_preparation](/docs/data_preparation.md)
+More details can be found in [data_preparation](/docs/en/data_preparation.md)
 
 ## Step 4. Generate File List
 
@@ -147,4 +147,4 @@ mmaction2
 
 ```
 
-For training and evaluating on Kinetics, please refer to [getting_started](/docs/getting_started.md).
+For training and evaluating on Kinetics, please refer to [getting_started](/docs/en/getting_started.md).

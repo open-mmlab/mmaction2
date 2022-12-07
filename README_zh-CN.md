@@ -91,12 +91,12 @@ MMAction2 是一款基于 PyTorch 的视频理解开源工具箱，是 [OpenMMLa
 - (2021-10-25) 提供使用自定义数据集训练 PoseC3D 的 [教程](https://github.com/open-mmlab/mmaction2/blob/master/configs/skeleton/posec3d/custom_dataset_training.md)，此 PR 由用户 [bit-scientist](https://github.com/bit-scientist) 完成！
 - (2021-10-16) 在 UCF101, HMDB51 上支持 **PoseC3D**，仅用 2D 关键点就可分别达到 87.0% 和 69.3% 的识别准确率。两数据集的预提取骨架特征可以公开下载。
 
-v0.24.0 版本已于 2022 年 5 月 5 日发布，可通过查阅 [更新日志](/docs/changelog.md) 了解更多细节以及发布历史
+v0.24.0 版本已于 2022 年 5 月 5 日发布，可通过查阅[更新日志](/docs/en/changelog.md) 了解更多细节以及发布历史
 
 ## 安装
 
 MMAction2 依赖 [PyTorch](https://pytorch.org/), [MMCV](https://github.com/open-mmlab/mmcv), [MMDetection](https://github.com/open-mmlab/mmdetection)(可选), [MMPose](https://github.com/open-mmlab/mmpose)(可选)，以下是安装的简要步骤。
-更详细的安装指南请参考 [install.md](docs_zh_CN/install.md)。
+更详细的安装指南请参考 [install.md](docs/zh_cn/install.md)。
 
 ```shell
 conda create -n open-mmlab python=3.8 pytorch=1.10 cudatoolkit=11.3 torchvision -c pytorch -y
@@ -112,15 +112,15 @@ pip3 install -e .
 
 ## 教程
 
-请参考 [基础教程](/docs_zh_CN/getting_started.md) 了解 MMAction2 的基本使用。MMAction2也提供了其他更详细的教程:
+请参考 [基础教程](/docs/zh_cn/getting_started.md) 了解 MMAction2 的基本使用。MMAction2也提供了其他更详细的教程:
 
-- [如何编写配置文件](/docs_zh_CN/tutorials/1_config.md)
-- [如何微调模型](/docs_zh_CN/tutorials/2_finetune.md)
-- [如何增加新数据集](/docs_zh_CN/tutorials/3_new_dataset.md)
-- [如何设计数据处理流程](/docs_zh_CN/tutorials/4_data_pipeline.md)
-- [如何增加新模块](/docs_zh_CN/tutorials/5_new_modules.md)
-- [如何导出模型为 onnx 格式](/docs_zh_CN/tutorials/6_export_model.md)
-- [如何自定义模型运行参数](/docs_zh_CN/tutorials/7_customize_runtime.md)
+- [如何编写配置文件](/docs/zh_cn/tutorials/1_config.md)
+- [如何微调模型](/docs/zh_cn/tutorials/2_finetune.md)
+- [如何增加新数据集](/docs/zh_cn/tutorials/3_new_dataset.md)
+- [如何设计数据处理流程](/docs/zh_cn/tutorials/4_data_pipeline.md)
+- [如何增加新模块](/docs/zh_cn/tutorials/5_new_modules.md)
+- [如何导出模型为 onnx 格式](/docs/zh_cn/tutorials/6_export_model.md)
+- [如何自定义模型运行参数](/docs/zh_cn/tutorials/7_customize_runtime.md)
 
 MMAction2 也提供了相应的中文 Colab 教程，可以点击 [这里](https://colab.research.google.com/github/open-mmlab/mmaction2/blob/master/demo/mmaction2_tutorial_zh-CN.ipynb) 进行体验！
 
@@ -210,7 +210,7 @@ MMAction2 将跟进学界的最新进展，并支持更多算法和框架。如�
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/sthv1/README_zh-CN.md">SthV1</a> (<a href="https://20bn.com/datasets/something-something/v1/">主页</a>) (ICCV'2017)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/sthv2/README_zh-CN.md">SthV2</a> (<a href="https://20bn.com/datasets/something-something/">主页</a>) (ICCV'2017)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/diving48/README_zh-CN.md">Diving48</a> (<a href="http://www.svcl.ucsd.edu/projects/resound/dataset.html">主页</a>) (ECCV'2018)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/jester/README_zh-CN.md">Jester</a> (<a href="https://20bn.com/datasets/jester/v1">主页</a>) (ICCV'2019)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/jester/README_zh-CN.md">Jester</a> (<a href="https://developer.qualcomm.com/software/ai-datasets/jester">主页</a>) (ICCV'2019)</td>
   </tr>
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/mit/README_zh-CN.md">Moments in Time</a> (<a href="http://moments.csail.mit.edu/">主页</a>) (TPAMI'2019)</td>
@@ -257,15 +257,15 @@ MMAction2 将跟进学界的最新进展，并支持更多算法和框架。如�
 
 ## 基准测试
 
-为了验证 MMAction2 框架的高精度和高效率，开发成员将其与当前其他主流框架进行速度对比。更多详情可见 [基准测试](/docs_zh_CN/benchmark.md)
+为了验证 MMAction2 框架的高精度和高效率，开发成员将其与当前其他主流框架进行速度对比。更多详情可见 [基准测试](/docs/zh_cn/benchmark.md)
 
 ## 数据集准备
 
-请参考 [数据准备](/docs_zh_CN/data_preparation.md) 了解数据集准备概况。所有支持的数据集都列于 [数据集清单](/docs_zh_CN/supported_datasets.md) 中
+请参考 [数据准备](/docs/zh_cn/data_preparation.md) 了解数据集准备概况。所有支持的数据集都列于 [数据集清单](/docs/zh_cn/supported_datasets.md) 中
 
 ## 常见问题
 
-请参考 [FAQ](/docs_zh_CN/faq.md) 了解其他用户的常见问题
+请参考 [FAQ](/docs/zh_cn/faq.md) 了解其他用户的常见问题
 
 ## 相关工作
 

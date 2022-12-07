@@ -18,11 +18,11 @@
 
 ## 步骤 1. 下载标注文件
 
-首先，用户需要在 [官网](https://20bn.com/datasets/something-something/v1) 进行注册，才能下载标注文件。下载好的标注文件需要放在 `$MMACTION2/data/sthv1/annotations` 文件夹下。
+由于 Something-Something V1 的官方网站已经失效，用户需要通过第三方源下载原始数据集。下载好的标注文件需要放在 `$MMACTION2/data/sthv1/annotations` 文件夹下。
 
 ## 步骤 2. 准备 RGB 帧
 
-[官网](https://20bn.com/datasets/something-something/v1) 并未提供原始视频文件，只提供了对原视频文件进行抽取得到的 RGB 帧，用户可在 [官网](https://20bn.com/datasets/something-something/v1) 直接下载。
+官方数据集并未提供原始视频文件，只提供了对原视频文件进行抽取得到的 RGB 帧，用户可在第三方源直接下载视频帧。
 
 将下载好的压缩文件放在 `$MMACTION2/data/sthv1/` 文件夹下，并使用以下脚本进行解压。
 
@@ -63,7 +63,7 @@ data = dict(
 
 如果用户只想使用原 RGB 帧加载训练，则该部分是 **可选项**。
 
-在抽取视频帧和光流之前，请参考 [安装指南](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
+在抽取视频帧和光流之前，请参考 [安装指南](/docs/zh_cn/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
 如果拥有大量的 SSD 存储空间，则推荐将抽取的帧存储至 I/O 性能更优秀的 SSD 中。
 
@@ -139,4 +139,4 @@ mmaction2
 
 ```
 
-关于对 Something-Something V1 进行训练和验证，可以参考 [基础教程](/docs_zh_CN/getting_started.md)。
+关于对 Something-Something V1 进行训练和验证，可以参考 [基础教程](/docs/zh_cn/getting_started.md)。

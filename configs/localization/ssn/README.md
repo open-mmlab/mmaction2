@@ -28,7 +28,7 @@ Detecting actions in untrimmed videos is an important yet challenging task. In t
    According to the [Linear Scaling Rule](https://arxiv.org/abs/1706.02677), you may set the learning rate proportional to the batch size if you use different GPUs or videos per GPU,
    e.g., lr=0.01 for 4 GPUs x 2 video/gpu and lr=0.08 for 16 GPUs x 4 video/gpu.
 2. Since SSN utilizes different structured temporal pyramid pooling methods at training and testing, please refer to [ssn_r50_450e_thumos14_rgb_train](/configs/localization/ssn/ssn_r50_450e_thumos14_rgb_train.py) at training and [ssn_r50_450e_thumos14_rgb_test](/configs/localization/ssn/ssn_r50_450e_thumos14_rgb_test.py) at testing.
-3. We evaluate the action detection performance of SSN, using action proposals of TAG. For more details on data preparation, you can refer to thumos14 TAG proposals in [Data Preparation](/docs/data_preparation.md).
+3. We evaluate the action detection performance of SSN, using action proposals of TAG. For more details on data preparation, you can refer to thumos14 TAG proposals in [Data Preparation](/docs/en/data_preparation.md).
 4. The reference SSN in is evaluated with `ResNet50` backbone in MMAction, which is the same backbone with ours. Note that the original setting of MMAction SSN uses the `BNInception` backbone.
 
 :::
@@ -47,7 +47,7 @@ Example: train SSN model on thumos14 dataset.
 python tools/train.py configs/localization/ssn/ssn_r50_450e_thumos14_rgb_train.py
 ```
 
-For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/getting_started.md#training-setting).
+For more details and optional arguments infos, you can refer to **Training setting** part in [getting_started](/docs/en/getting_started.md#training-setting).
 
 ## Test
 
@@ -64,7 +64,7 @@ Example: test BMN on ActivityNet feature dataset.
 python tools/test.py configs/localization/ssn/ssn_r50_450e_thumos14_rgb_test.py checkpoints/SOME_CHECKPOINT.pth --eval mAP
 ```
 
-For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/getting_started.md#test-a-dataset).
+For more details and optional arguments infos, you can refer to **Test a dataset** part in [getting_started](/docs/en/getting_started.md#test-a-dataset).
 
 ## Citation
 

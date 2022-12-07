@@ -15,7 +15,7 @@
 }
 ```
 
-请参照 [官方网站](https://deepmind.com/research/open-source/open-source-datasets/kinetics/) 以获取数据集基本信息。此脚本用于准备数据集 kinetics400，kinetics600，kinetics700。为准备 kinetics 数据集的不同版本，用户需将脚本中的 `${DATASET}` 赋值为数据集对应版本名称，可选项为 `kinetics400`，`kinetics600`， `kinetics700`。
+请参照 [官方网站](https://www.deepmind.com/open-source/kinetics) 以获取数据集基本信息。此脚本用于准备数据集 kinetics400，kinetics600，kinetics700。为准备 kinetics 数据集的不同版本，用户需将脚本中的 `${DATASET}` 赋值为数据集对应版本名称，可选项为 `kinetics400`，`kinetics600`， `kinetics700`。
 在开始之前，用户需确保当前目录为 `$MMACTION2/tools/data/${DATASET}/`。
 
 **注**：由于部分 YouTube 链接失效，爬取的 Kinetics 数据集大小可能与原版不同。以下是我们所使用 Kinetics 数据集的大小：
@@ -26,7 +26,7 @@
 
 ## 1. 准备标注文件
 
-首先，用户可以使用如下脚本从 [Kinetics 数据集官网](https://deepmind.com/research/open-source/open-source-datasets/kinetics/)下载标注文件并进行预处理：
+首先，用户可以使用如下脚本从 [Kinetics 数据集官网](https://www.deepmind.com/open-source/kinetics)下载标注文件并进行预处理：
 
 ```shell
 bash download_annotations.sh ${DATASET}
@@ -34,7 +34,7 @@ bash download_annotations.sh ${DATASET}
 
 由于部分视频的 URL 不可用，当前官方标注中所含视频数量可能小于初始版本。所以 MMAction2 提供了另一种方式以获取初始版本标注作为参考。
 在这其中，Kinetics400 和 Kinetics600 的标注文件来自 [官方爬虫](https://github.com/activitynet/ActivityNet/tree/199c9358907928a47cdfc81de4db788fddc2f91d/Crawler/Kinetics/data)，
-Kinetics700 的标注文件于 05/02/2021 下载自 [网站](https://deepmind.com/research/open-source/open-source-datasets/kinetics/)。
+Kinetics700 的标注文件于 05/02/2021 下载自 [网站](https://www.deepmind.com/open-source/kinetics)。
 
 ```shell
 bash download_backup_annotations.sh ${DATASET}
@@ -66,7 +66,7 @@ python ../resize_videos.py ../../../data/${DATASET}/videos_train/ ../../../data/
 
 如果用户仅使用 video loader，则可以跳过本步。
 
-在提取之前，请参考 [安装教程](/docs_zh_CN/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
+在提取之前，请参考 [安装教程](/docs/zh_cn/install.md) 安装 [denseflow](https://github.com/open-mmlab/denseflow)。
 
 如果用户有足够的 SSD 空间，那么建议将视频抽取为 RGB 帧以提升 I/O 性能。用户可以使用以下脚本为抽取得到的帧文件夹建立软连接：
 
@@ -97,7 +97,7 @@ bash extract_frames.sh ${DATASET}
 ```
 
 以上的命令生成短边长度为 256 的 RGB 帧和光流帧。如果用户需要生成短边长度为 320 的帧 (320p)，或是固定分辨率为 340 x 256 的帧，可改变参数 `--new-short 256` 为 `--new-short 320` 或 `--new-width 340 --new-height 256`。
-更多细节可以参考 [数据准备](/docs_zh_CN/data_preparation.md)。
+更多细节可以参考 [数据准备](/docs/zh_cn/data_preparation.md)。
 
 ## 4. 生成文件列表
 
@@ -139,4 +139,4 @@ mmaction2
 
 ```
 
-关于 Kinetics 数据集上的训练与测试，请参照 [基础教程](/docs_zh_CN/getting_started.md)。
+关于 Kinetics 数据集上的训练与测试，请参照 [基础教程](/docs/zh_cn/getting_started.md)。

@@ -33,7 +33,7 @@
 2. MMAction2 保持与 [原代码](https://github.com/facebookresearch/TimeSformer) 的测试设置一致（three crop x 1 clip）。
 3. TimeSformer 使用的预训练模型 `vit_base_patch16_224.pth` 转换自 [vision_transformer](https://github.com/google-research/vision_transformer)。
 
-对于数据集准备的细节，用户可参考 [数据集准备文档](/docs_zh_CN/data_preparation.md) 中的 Kinetics400 部分。
+对于数据集准备的细节，用户可参考 [数据集准备文档](/docs/zh_cn/data_preparation.md) 中的 Kinetics400 部分。
 
 ## 如何训练
 
@@ -51,7 +51,7 @@ python tools/train.py configs/recognition/timesformer/timesformer_divST_8x32x1_1
     --validate --seed 0 --deterministic
 ```
 
-更多训练细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#%E8%AE%AD%E7%BB%83%E9%85%8D%E7%BD%AE) 中的 **训练配置** 部分。
+更多训练细节，可参考 [基础教程](/docs/zh_cn/getting_started.md#训练配置) 中的 **训练配置** 部分。
 
 ## 如何测试
 
@@ -69,4 +69,4 @@ python tools/test.py configs/recognition/timesformer/timesformer_divST_8x32x1_15
     --out result.json
 ```
 
-更多测试细节，可参考 [基础教程](/docs_zh_CN/getting_started.md#%E6%B5%8B%E8%AF%95%E6%9F%90%E4%B8%AA%E6%95%B0%E6%8D%AE%E9%9B%86) 中的 **测试某个数据集** 部分。
+更多测试细节，可参考 [基础教程](/docs/zh_cn/getting_started.md#测试某个数据集) 中的 **测试某个数据集** 部分。
