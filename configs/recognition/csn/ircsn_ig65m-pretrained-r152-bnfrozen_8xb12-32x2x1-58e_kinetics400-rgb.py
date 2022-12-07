@@ -21,8 +21,14 @@ ann_file_train = root + 'kinetics400_train_list_videos.txt'
 ann_file_val = root + 'kinetics400_val_list_videos.txt'
 ann_file_test = ann_file_val
 
+# file_client_args = dict(
+#      io_backend='petrel',
+#      path_mapping=dict(
+#          {'data/kinetics400': 's3://openmmlab/datasets/action/Kinetics400'}))
+file_client_args = dict(io_backend='disk')
+
 train_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(type='SampleFrames', clip_len=32, frame_interval=2, num_clips=1),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
@@ -33,7 +39,7 @@ train_pipeline = [
     dict(type='PackActionInputs')
 ]
 val_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(
         type='SampleFrames',
         clip_len=32,
@@ -47,7 +53,7 @@ val_pipeline = [
     dict(type='PackActionInputs')
 ]
 test_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(
         type='SampleFrames',
         clip_len=32,
