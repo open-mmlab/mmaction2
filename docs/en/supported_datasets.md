@@ -10,7 +10,7 @@
   - [Moments in Time](/tools/data/mit/README.md) \[ [Homepage](http://moments.csail.mit.edu/) \]
   - [Multi-Moments in Time](/tools/data/mmit/README.md) \[ [Homepage](http://moments.csail.mit.edu/challenge_iccv_2019.html) \]
   - [HVU](/tools/data/hvu/README.md) \[ [Homepage](https://github.com/holistic-video-understanding/HVU-Dataset) \]
-  - [Jester](/tools/data/jester/README.md) \[ [Homepage](https://20bn.com/datasets/jester/v1) \]
+  - [Jester](/tools/data/jester/README.md) \[ [Homepage](https://developer.qualcomm.com/software/ai-datasets/jester) \]
   - [GYM](/tools/data/gym/README.md) \[ [Homepage](https://sdolivia.github.io/FineGym/) \]
   - [ActivityNet](/tools/data/activitynet/README.md) \[ [Homepage](http://activity-net.org/) \]
   - [Diving48](/tools/data/diving48/README.md) \[ [Homepage](http://www.svcl.ucsd.edu/projects/resound/dataset.html) \]

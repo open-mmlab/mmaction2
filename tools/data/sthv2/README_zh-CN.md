@@ -15,7 +15,7 @@
 }
 ```
 
-用户可参考该数据集的 [官网](https://20bn.com/datasets/something-something/v2)，以获取数据集相关的基本信息。
+用户可参考该数据集的 [官网](https://developer.qualcomm.com/software/ai-datasets/something-something)，以获取数据集相关的基本信息。
 在数据集准备前，请确保命令行当前路径为 `$MMACTION2/tools/data/sthv2/`。
 
 ## 步骤 1. 下载标注文件

@@ -19,7 +19,7 @@
 
 MMAction2 支持两种数据类型：原始帧和视频。前者在过去的项目中经常出现，如 TSN。
 如果能把原始帧存储在固态硬盘上，处理帧格式的数据是非常快的，但对于大规模的数据集来说，原始帧需要占据大量的磁盘空间。
-（举例来说，最新版本的 [Kinetics](https://deepmind.com/research/open-source/open-source-datasets/kinetics/) 有 650K 个视频，其所有原始帧需要占据几个 TB 的磁盘空间。）
+（举例来说，最新版本的 [Kinetics](https://www.deepmind.com/open-source/kinetics) 有 650K 个视频，其所有原始帧需要占据几个 TB 的磁盘空间。）
 视频格式的数据能够节省很多空间，但在运行模型时，必须进行视频解码，算力开销很大。
 为了加速视频解码，MMAction2 支持了若干种高效的视频加载库，如 [decord](https://github.com/zhreshold/decord), [PyAV](https://github.com/PyAV-Org/PyAV) 等。
 

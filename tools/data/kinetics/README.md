@@ -15,7 +15,7 @@
 }
 ```
 
-For basic dataset information, please refer to the official [website](https://deepmind.com/research/open-source/open-source-datasets/kinetics/). The scripts can be used for preparing kinetics400, kinetics600, kinetics700. To prepare different version of kinetics, you need to replace `${DATASET}` in the following examples with the specific dataset name. The choices of dataset names are `kinetics400`, `kinetics600` and `kinetics700`.
+For basic dataset information, please refer to the official [website](https://www.deepmind.com/open-source/kinetics). The scripts can be used for preparing kinetics400, kinetics600, kinetics700. To prepare different version of kinetics, you need to replace `${DATASET}` in the following examples with the specific dataset name. The choices of dataset names are `kinetics400`, `kinetics600` and `kinetics700`.
 Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/${DATASET}/`.
 
 :::{note}
@@ -29,7 +29,7 @@ Because of the expirations of some YouTube links, the sizes of kinetics dataset 
 
 ## Step 1. Prepare Annotations
 
-First of all, you can run the following script to prepare annotations by downloading from the official [website](https://deepmind.com/research/open-source/open-source-datasets/kinetics/).
+First of all, you can run the following script to prepare annotations by downloading from the official [website](https://www.deepmind.com/open-source/kinetics).
 
 ```shell
 bash download_annotations.sh ${DATASET}
@@ -38,7 +38,7 @@ bash download_annotations.sh ${DATASET}
 Since some video urls are invalid, the number of video items in current official annotations are less than the original official ones.
 So we provide an alternative way to download the older one as a reference.
 Among these, the annotation files of Kinetics400 and Kinetics600 are from [official crawler](https://github.com/activitynet/ActivityNet/tree/199c9358907928a47cdfc81de4db788fddc2f91d/Crawler/Kinetics/data),
-the annotation files of Kinetics700 are from [website](https://deepmind.com/research/open-source/open-source-datasets/kinetics/) downloaded in 05/02/2021.
+the annotation files of Kinetics700 are from [website](https://www.deepmind.com/open-source/kinetics) downloaded in 05/02/2021.
 
 ```shell
 bash download_backup_annotations.sh ${DATASET}

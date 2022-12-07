@@ -18,11 +18,11 @@
 
 ## 步骤 1. 下载标注文件
 
-首先，用户需要在 [官网](https://20bn.com/datasets/something-something/v1) 进行注册，才能下载标注文件。下载好的标注文件需要放在 `$MMACTION2/data/sthv1/annotations` 文件夹下。
+由于 Something-Something V1 的官方网站已经失效，用户需要通过第三方源下载原始数据集。下载好的标注文件需要放在 `$MMACTION2/data/sthv1/annotations` 文件夹下。
 
 ## 步骤 2. 准备 RGB 帧
 
-[官网](https://20bn.com/datasets/something-something/v1) 并未提供原始视频文件，只提供了对原视频文件进行抽取得到的 RGB 帧，用户可在 [官网](https://20bn.com/datasets/something-something/v1) 直接下载。
+官方数据集并未提供原始视频文件，只提供了对原视频文件进行抽取得到的 RGB 帧，用户可在第三方源直接下载视频帧。
 
 将下载好的压缩文件放在 `$MMACTION2/data/sthv1/` 文件夹下，并使用以下脚本进行解压。
 

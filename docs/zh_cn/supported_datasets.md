@@ -10,7 +10,7 @@
   - [Moments in Time](/tools/data/mit/README_zh-CN.md) \[ [主页](http://moments.csail.mit.edu/) \]
   - [Multi-Moments in Time](/tools/data/mmit/README_zh-CN.md) \[ [主页](http://moments.csail.mit.edu/challenge_iccv_2019.html) \]
   - [HVU](/tools/data/hvu/README_zh-CN.md) \[ [主页](https://github.com/holistic-video-understanding/HVU-Dataset) \]
-  - [Jester](/tools/data/jester/README_zh-CN.md) \[ [主页](https://20bn.com/datasets/jester/v1) \]
+  - [Jester](/tools/data/jester/README_zh-CN.md) \[ [主页](https://developer.qualcomm.com/software/ai-datasets/jester) \]
   - [GYM](/tools/data/gym/README_zh-CN.md) \[ [主页](https://sdolivia.github.io/FineGym/) \]
   - [ActivityNet](/tools/data/activitynet/README_zh-CN.md) \[ [主页](http://activity-net.org/) \]
 

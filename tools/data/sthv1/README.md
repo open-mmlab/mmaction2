@@ -15,18 +15,18 @@
 }
 ```
 
-For basic dataset information, you can refer to the dataset [website](https://20bn.com/datasets/something-something/v1).
+For basic dataset information, you can refer to the dataset [paper](https://arxiv.org/pdf/1706.04261.pdf).
 Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/sthv1/`.
 
 ## Step 1. Prepare Annotations
 
-First of all, you have to sign in and download annotations to `$MMACTION2/data/sthv1/annotations` on the official [website](https://20bn.com/datasets/something-something/v1).
+Since the official [website](https://20bn.com/datasets/something-something/v1) of Something-Something V1 is currently unavailable, you can download the annotations from third-part source to `$MMACTION2/data/sthv1/` .
 
 ## Step 2. Prepare RGB Frames
 
-Since the [sthv1 website](https://20bn.com/datasets/something-something/v1) doesn't provide the original video data and only extracted RGB frames are available, you have to directly download RGB frames from [sthv1 website](https://20bn.com/datasets/something-something/v1).
+Since the official dataset doesn't provide the original video data and only extracted RGB frames are available, you have to directly download RGB frames.
 
-You can download all compressed file parts on [sthv1 website](https://20bn.com/datasets/something-something/v1) to `$MMACTION2/data/sthv1/` and use the following command to uncompress.
+You can download all compressed file parts from third-part source  to `$MMACTION2/data/sthv1/` and use the following command to uncompress.
 
 ```shell
 cd $MMACTION2/data/sthv1/

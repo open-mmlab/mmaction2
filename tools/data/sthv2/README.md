@@ -15,12 +15,12 @@
 }
 ```
 
-For basic dataset information, you can refer to the dataset [website](https://20bn.com/datasets/something-something/v2).
+For basic dataset information, you can refer to the dataset [website](https://developer.qualcomm.com/software/ai-datasets/something-something).
 Before we start, please make sure that the directory is located at `$MMACTION2/tools/data/sthv2/`.
 
 ## Step 1. Prepare Annotations
 
-First of all, you have to sign in and download annotations to `$MMACTION2/data/sthv2/annotations` on the official [website](https://20bn.com/datasets/something-something/v2).
+First of all, you have to sign in and download annotations to `$MMACTION2/data/sthv2/annotations` on the official [website](https://developer.qualcomm.com/software/ai-datasets/something-something).
 
 ## Step 2. Prepare Videos
 

@@ -209,7 +209,7 @@ MMAction2 将跟进学界的最新进展，并支持更多算法和框架。如�
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/sthv1/README_zh-CN.md">SthV1</a> (<a href="https://20bn.com/datasets/something-something/v1/">主页</a>) (ICCV'2017)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/sthv2/README_zh-CN.md">SthV2</a> (<a href="https://20bn.com/datasets/something-something/">主页</a>) (ICCV'2017)</td>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/diving48/README_zh-CN.md">Diving48</a> (<a href="http://www.svcl.ucsd.edu/projects/resound/dataset.html">主页</a>) (ECCV'2018)</td>
-    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/jester/README_zh-CN.md">Jester</a> (<a href="https://20bn.com/datasets/jester/v1">主页</a>) (ICCV'2019)</td>
+    <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/jester/README_zh-CN.md">Jester</a> (<a href="https://developer.qualcomm.com/software/ai-datasets/jester">主页</a>) (ICCV'2019)</td>
   </tr>
   <tr>
     <td><a href="https://github.com/open-mmlab/mmaction2/blob/master/tools/data/mit/README_zh-CN.md">Moments in Time</a> (<a href="http://moments.csail.mit.edu/">主页</a>) (TPAMI'2019)</td>
