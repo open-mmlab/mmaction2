@@ -95,7 +95,7 @@ v0.24.0 版本已于 2022 年 5 月 5 日发布，可通过查阅[更新日志](
 ## 安装
 
 MMAction2 依赖 [PyTorch](https://pytorch.org/), [MMCV](https://github.com/open-mmlab/mmcv), [MMDetection](https://github.com/open-mmlab/mmdetection)(可选), [MMPose](https://github.com/open-mmlab/mmpose)(可选)，以下是安装的简要步骤。
-更详细的安装指南请参考 [install.md](docs/zh_CN/install.md)。
+更详细的安装指南请参考 [install.md](docs/zh_cn/install.md)。
 
 ```shell
 conda create -n open-mmlab python=3.8 pytorch=1.10 cudatoolkit=11.3 torchvision -c pytorch -y
@@ -264,7 +264,7 @@ MMAction2 将跟进学界的最新进展，并支持更多算法和框架。如�
 
 ## 常见问题
 
-请参考 [FAQ](/docs/zh_CN/faq.md) 了解其他用户的常见问题
+请参考 [FAQ](/docs/zh_cn/faq.md) 了解其他用户的常见问题
 
 ## 相关工作
 

@@ -11,7 +11,7 @@ cat  ../../configs/skeleton/*/README.md  | sed "s/md#t/html#t/g" | sed "s/#/#&/"
 
 
 # demo
-cat  ../demo/README.md | sed "s/md#t/html#t/g" | sed 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' | sed "s/getting_started.html##t/getting_started.html#t/g" > demo.md
+cat  ../../demo/README.md | sed "s/md#t/html#t/g" | sed 's=](/=](https://github.com/open-mmlab/mmaction2/tree/master/=g' | sed "s/getting_started.html##t/getting_started.html#t/g" > demo.md
 
 # gather datasets
 cat  ../../tools/data/*/README.md | sed 's/# Preparing/# /g' | sed 's/#/#&/' > prepare_data.md

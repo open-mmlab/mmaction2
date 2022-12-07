@@ -26,7 +26,7 @@ sed -i 's/(\/tools\/data\/ava\/README_zh-CN.md/(#ava/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/gym\/README_zh-CN.md/(#gym/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/omnisource\/README_zh-CN.md/(#omnisource/g' supported_datasets.md
 sed -i 's/(\/tools\/data\/diving48\/README_zh-CN.md/(#diving48/g' supported_datasets.md
-sed -i 's/(\/tools\/data\/skeleton\/README_zh-CN.md/(#skeleton-dataset/g' supported_datasets.md
+sed -i 's/(\/tools\/data\/skeleton\/README_zh-CN.md/(#骨架数据集/g' supported_datasets.md
 
 cat prepare_data.md >> supported_datasets.md
 sed -i 's/](\/docs\/zh_CN\//](/g' supported_datasets.md
