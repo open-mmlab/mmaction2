@@ -131,3 +131,9 @@ optim_wrapper = dict(
 
 default_hooks = dict(checkpoint=dict(interval=2, max_keep_ckpts=5))
 find_unused_parameters = True
+
+# Default setting for scaling LR automatically
+#   - `enable` means enable scaling LR automatically
+#       or not by default.
+#   - `base_batch_size` = (8 GPUs) x (12 samples per GPU).
+auto_scale_lr = dict(enable=False, base_batch_size=96)

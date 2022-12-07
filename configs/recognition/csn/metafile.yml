@@ -13,8 +13,8 @@ Models:
       Architecture: ResNet152
       Batch Size: 12
       Epochs: 58
-      FLOPs: 98096676864
-      Parameters: 29703568
+      FLOPs: 74.76G
+      Parameters: 29.70M
       Pretrained: IG65M
       Resolution: 224x224
       Training Data: Kinetics-400
@@ -36,8 +36,8 @@ Models:
       Architecture: ResNet152
       Batch Size: 12
       Epochs: 58
-      FLOPs: 98096676864
-      Parameters: 29703568
+      FLOPs: 74.76G
+      Parameters: 29.70M
       Pretrained: IG65M
       Resolution: 224x224
       Training Data: Kinetics-400
@@ -59,8 +59,8 @@ Models:
       Architecture: ResNet50
       Batch Size: 12
       Epochs: 58
-      FLOPs: 56209211392
-      Parameters: 13131152
+      FLOPs: 42.80G
+      Parameters: 13.13M
       Pretrained: IG65M
       Resolution: 224x224
       Training Data: Kinetics-400
@@ -81,8 +81,8 @@ Models:
     Metadata:
       Architecture: ResNet152
       Epochs: 180
-      FLOPs: 110337228800
-      Parameters: 33016592
+      FLOPs: 84.13G
+      Parameters: 33.02M
       Pretrained: None
       Resolution: 224x224
       Training Data: Kinetics-400
@@ -104,8 +104,8 @@ Models:
     Metadata:
       Architecture: ResNet152
       Epochs: 180
-      FLOPs: 98096676864
-      Parameters: 29703568
+      FLOPs: 74.76G
+      Parameters: 29.70M
       Pretrained: None
       Resolution: 224x224
       Training Data: Kinetics-400
@@ -127,8 +127,8 @@ Models:
     Metadata:
       Architecture: ResNet152
       Epochs: 58
-      FLOPs: 98096676864
-      Parameters: 29703568
+      FLOPs: 84.13G
+      Parameters: 33.02M
       Pretrained: IG65M
       Resolution: 224x224
       Training Data: Kinetics-400
@@ -150,8 +150,8 @@ Models:
     Metadata:
       Architecture: ResNet152
       Epochs: 58
-      FLOPs: 110337228800
-      Parameters: 33016592
+      FLOPs: 84.13G
+      Parameters: 33.02M
       Pretrained: Sports1M
       Resolution: 224x224
       Training Data: Kinetics-400
@@ -173,8 +173,8 @@ Models:
     Metadata:
       Architecture: ResNet152
       Epochs: 58
-      FLOPs: 98096676864
-      Parameters: 29703568
+      FLOPs: 84.13G
+      Parameters: 33.02M
       Pretrained: Sports1M
       Resolution: 224x224
       Training Data: Kinetics-400
