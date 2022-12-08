@@ -3,7 +3,7 @@ _base_ = ['tsn_imagenet-pretrained-r50_8xb32-1x1x8-50e_sthv2-rgb.py']
 # file_client_args = dict(
 #      io_backend='petrel',
 #      path_mapping=dict(
-#          {'data/kinetics400': 's3://openmmlab/datasets/action/Kinetics400'}))
+#          {'data/sthv2': 's3://openmmlab/datasets/action/sthv2'}))
 file_client_args = dict(io_backend='disk')
 
 train_pipeline = [

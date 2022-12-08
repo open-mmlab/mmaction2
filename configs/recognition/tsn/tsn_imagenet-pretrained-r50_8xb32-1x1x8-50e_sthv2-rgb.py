@@ -15,7 +15,7 @@ ann_file_val = 'data/sthv2/sthv2_val_list_videos.txt'
 # file_client_args = dict(
 #      io_backend='petrel',
 #      path_mapping=dict(
-#          {'data/kinetics400': 's3://openmmlab/datasets/action/Kinetics400'}))
+#          {'data/sthv2': 's3://openmmlab/datasets/action/sthv2'}))
 file_client_args = dict(io_backend='disk')
 
 train_pipeline = [
