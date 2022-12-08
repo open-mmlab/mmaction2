@@ -208,8 +208,8 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 32.55
-        Top 5 Accuracy: 63.27
+        Top 1 Accuracy: 34.85
+        Top 5 Accuracy: 66.37
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x8-50e_sthv2-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x8-50e_sthv2-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x8-50e_sthv2-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x8-50e_sthv2-rgb_20221122-ad2dbb37.pth
 
@@ -231,7 +231,7 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 35.22
-        Top 5 Accuracy: 66.13
+        Top 1 Accuracy: 36.55
+        Top 5 Accuracy: 68.00
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x16-50e_sthv2-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x16-50e_sthv2-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x16-50e_sthv2-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x16-50e_sthv2-rgb_20221122-ee13c8e2.pth

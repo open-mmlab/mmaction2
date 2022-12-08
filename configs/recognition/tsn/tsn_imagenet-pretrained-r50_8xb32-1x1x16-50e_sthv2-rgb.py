@@ -56,4 +56,4 @@ train_dataloader = dict(dataset=dict(pipeline=train_pipeline))
 
 val_dataloader = dict(dataset=dict(pipeline=val_pipeline))
 
-test_dataloader = dict(pipeline=test_pipeline, test_mode=True)
+test_dataloader = dict(dataset=dict(pipeline=test_pipeline, test_mode=True))
