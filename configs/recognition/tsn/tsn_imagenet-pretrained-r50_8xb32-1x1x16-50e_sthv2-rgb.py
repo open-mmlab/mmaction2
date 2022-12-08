@@ -1,7 +1,13 @@
 _base_ = ['tsn_imagenet-pretrained-r50_8xb32-1x1x8-50e_sthv2-rgb.py']
 
+# file_client_args = dict(
+#      io_backend='petrel',
+#      path_mapping=dict(
+#          {'data/kinetics400': 's3://openmmlab/datasets/action/Kinetics400'}))
+file_client_args = dict(io_backend='disk')
+
 train_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(type='SampleFrames', clip_len=1, frame_interval=1, num_clips=16),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
@@ -18,7 +24,7 @@ train_pipeline = [
     dict(type='PackActionInputs')
 ]
 val_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(
         type='SampleFrames',
         clip_len=1,
@@ -32,7 +38,7 @@ val_pipeline = [
     dict(type='PackActionInputs')
 ]
 test_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(
         type='SampleFrames',
         clip_len=1,
