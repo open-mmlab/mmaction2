@@ -13,7 +13,7 @@ Models:
       Architecture: ResNet50
       Batch Size: 8
       Epochs: 256
-      FLOPs: 1090G
+      FLOPs: 36.3G
       Parameters: 34.5M
       Pretrained: None
       Resolution: 224x224
@@ -36,7 +36,7 @@ Models:
       Architecture: ResNet50
       Batch Size: 8
       Epochs: 256
-      FLOPs: 1982G
+      FLOPs: 66.1G
       Parameters: 34.6M
       Pretrained: None
       Resolution: 224x224
@@ -59,7 +59,7 @@ Models:
       Architecture: ResNet50
       Batch Size: 8
       Epochs: 256
-      FLOPs: 1982G
+      FLOPs: 66.1G
       Parameters: 34.6M
       Pretrained: None
       Resolution: 224x224
@@ -82,7 +82,7 @@ Models:
       Architecture: ResNet101
       Batch Size: 8
       Epochs: 256
-      FLOPs: 3805G
+      FLOPs: 126G
       Parameters: 62.9M
       Pretrained: None
       Resolution: 224x224
@@ -105,7 +105,7 @@ Models:
       Architecture: ResNet101 + ResNet50
       Batch Size: 8
       Epochs: 256
-      FLOPs: 1947G
+      FLOPs: 64.9G
       Parameters: 62.4M
       Pretrained: None
       Resolution: 224x224

@@ -13,7 +13,7 @@ Models:
       Architecture: c3d
       Batch Size: 30
       Epochs: 45
-      FLOPs: 385G
+      FLOPs: 38.5G
       Parameters: 78.4M
       Pretrained: sports1m
       Resolution: 112x112
