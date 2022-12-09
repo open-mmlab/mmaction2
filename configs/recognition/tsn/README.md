@@ -55,14 +55,8 @@ It's possible and convenient to use a 3rd-party backbone for TSN under the frame
 
 For more details on data preparation, you can refer to
 
-- [UCF101](/tools/data/ucf101/README.md)
 - [Kinetics](/tools/data/kinetics/README.md)
-- [Something-something V1](/tools/data/sthv1/README.md)
 - [Something-something V2](/tools/data/sthv2/README.md)
-- [MIT](/tools/data/mit/README.md)
-- [MMIT](/tools/data/mmit/README.md)
-- [HVU](/tools/data/hvu/README.md)
-- [HMDB51](/tools/data/hmdb51/README.md)
 
 ## Train
 
