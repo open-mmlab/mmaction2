@@ -194,6 +194,8 @@ class SampleFrames(BaseTransform):
             offset_between = max_offset / float(num_segments)
             clip_offsets = np.arange(num_clips) * offset_between
             clip_offsets = np.round(clip_offsets).astype(np.int32)
+            if self.twice_sample:
+                clip_offsets = clip_offsets.reshape(-1, 2).T.reshape(-1)
         else:
             clip_offsets = np.array([max_offset // 2])
         return clip_offsets
