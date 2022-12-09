@@ -53,6 +53,21 @@ class ActionDataSample(BaseDataElement):
         del self._pred_scores
 
     @property
+    def pred_labels(self):
+        """Property of `pred_labels`"""
+        return self._pred_labels
+
+    @pred_labels.setter
+    def pred_labels(self, value):
+        """Setter of `pred_labels`"""
+        self.set_field(value, '_pred_labels', LabelData)
+
+    @pred_labels.deleter
+    def pred_labels(self):
+        """Deleter of `pred_labels`"""
+        del self._pred_labels
+
+    @property
     def proposals(self):
         """Property of `proposals`"""
         return self._proposals
