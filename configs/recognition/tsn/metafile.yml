@@ -13,7 +13,7 @@ Models:
       Architecture: ResNet50
       Batch Size: 32
       Epochs: 100
-      FLOPs: 1027G
+      FLOPs: 102.7G
       Parameters: 24.33M
       Pretrained: ImageNet
       Resolution: 224x224
@@ -36,7 +36,7 @@ Models:
       Architecture: ResNet50
       Batch Size: 32
       Epochs: 100
-      FLOPs: 1027G
+      FLOPs: 102.7G
       Parameters: 24.33M
       Pretrained: ImageNet
       Resolution: 224x224
@@ -59,7 +59,7 @@ Models:
       Architecture: ResNet50
       Batch Size: 32
       Epochs: 100
-      FLOPs: 1027G
+      FLOPs: 102.7G
       Parameters: 24.33M
       Pretrained: ImageNet
       Resolution: 224x224
@@ -82,7 +82,7 @@ Models:
       Architecture: ResNet50
       Batch Size: 32
       Epochs: 100
-      FLOPs: 1027G
+      FLOPs: 102.7G
       Parameters: 24.33M
       Pretrained: ImageNet
       Resolution: 224x224
@@ -105,7 +105,7 @@ Models:
       Architecture: ResNet101
       Batch Size: 32
       Epochs: 100
-      FLOPs: 1958G
+      FLOPs: 195.8G
       Parameters: 43.32M
       Pretrained: ImageNet
       Resolution: 224x224
@@ -128,7 +128,7 @@ Models:
       Architecture: ResNext101
       Batch Size: 32
       Epochs: 100
-      FLOPs: 2003G
+      FLOPs: 200.3G
       Parameters: 42.95M
       Pretrained: ImageNet
       Resolution: 224x224
@@ -151,7 +151,7 @@ Models:
       Architecture: DenseNet161
       Batch Size: 32
       Epochs: 100
-      FLOPs: 1946G
+      FLOPs: 194.6G
       Parameters: 27.36M
       Pretrained: ImageNet
       Resolution: 224x224
@@ -174,7 +174,7 @@ Models:
       Architecture: ResNet50
       Batch Size: 32
       Epochs: 100
-      FLOPs: 3867G
+      FLOPs: 386.7G
       Parameters: 87.15M
       Pretrained: ImageNet
       Resolution: 224x224
@@ -197,7 +197,7 @@ Models:
       Architecture: ResNet50
       Batch Size: 32
       Epochs: 100
-      FLOPs: 1027G
+      FLOPs: 102.7G
       Parameters: 23.87M
       Pretrained: ImageNet
       Resolution: 224x224
@@ -220,7 +220,7 @@ Models:
       Architecture: ResNet50
       Batch Size: 32
       Epochs: 100
-      FLOPs: 1027G
+      FLOPs: 102.7G
       Parameters: 23.87M
       Pretrained: ImageNet
       Resolution: 224x224
