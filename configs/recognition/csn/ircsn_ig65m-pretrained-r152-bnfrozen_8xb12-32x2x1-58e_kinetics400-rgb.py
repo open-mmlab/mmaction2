@@ -120,11 +120,7 @@ param_scheduler = [
         milestones=[32, 48],
         gamma=0.1)
 ]
-"""
-The learning rate is for total_batch_size = 8 x 12 (num_gpus x batch_size)
-If you want to use other batch size or number of GPU settings, please update
-the learning rate with the linear scaling rule.
-"""
+
 optim_wrapper = dict(
     optimizer=dict(type='SGD', lr=5e-4, momentum=0.9, weight_decay=1e-4),
     clip_grad=dict(max_norm=40, norm_type=2))

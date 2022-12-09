@@ -13,7 +13,7 @@ Models:
       Architecture: ResNet152
       Batch Size: 12
       Epochs: 58
-      FLOPs: 2929G
+      FLOPs: 97.63G
       Parameters: 29.70M
       Pretrained: IG65M
       Resolution: 224x224
@@ -36,7 +36,7 @@ Models:
       Architecture: ResNet152
       Batch Size: 12
       Epochs: 58
-      FLOPs: 2929G
+      FLOPs: 97.63G
       Parameters: 29.70M
       Pretrained: IG65M
       Resolution: 224x224
@@ -59,7 +59,7 @@ Models:
       Architecture: ResNet50
       Batch Size: 12
       Epochs: 58
-      FLOPs: 1677G
+      FLOPs: 55.90G
       Parameters: 13.13M
       Pretrained: IG65M
       Resolution: 224x224
@@ -81,7 +81,7 @@ Models:
     Metadata:
       Architecture: ResNet152
       Epochs: 180
-      FLOPs: 3296G
+      FLOPs: 109.9G
       Parameters: 33.02M
       Pretrained: None
       Resolution: 224x224
@@ -104,7 +104,7 @@ Models:
     Metadata:
       Architecture: ResNet152
       Epochs: 180
-      FLOPs: 2929G
+      FLOPs: 97.63G
       Parameters: 29.70M
       Pretrained: None
       Resolution: 224x224
@@ -127,7 +127,7 @@ Models:
     Metadata:
       Architecture: ResNet152
       Epochs: 58
-      FLOPs: 3296G
+      FLOPs: 109.9G
       Parameters: 33.02M
       Pretrained: IG65M
       Resolution: 224x224
@@ -150,7 +150,7 @@ Models:
     Metadata:
       Architecture: ResNet152
       Epochs: 58
-      FLOPs: 3296G
+      FLOPs: 109.9G
       Parameters: 33.02M
       Pretrained: Sports1M
       Resolution: 224x224
@@ -173,7 +173,7 @@ Models:
     Metadata:
       Architecture: ResNet152
       Epochs: 58
-      FLOPs: 3296G
+      FLOPs: 109.9G
       Parameters: 33.02M
       Pretrained: Sports1M
       Resolution: 224x224
