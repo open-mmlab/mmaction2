@@ -139,10 +139,10 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-        Top 1 Accuracy: 0.0
-        Top 5 Accuracy: 0.0
+        Top 1 Accuracy: 72.95
+        Top 5 Accuracy: 90.36
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-rn101-32x4d_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-rn101-32x4d_8xb32-1x1x3-100e_kinetics400-rgb.log
-    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-rn101-32x4d_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-rn101-32x4d_8xb32-1x1x3-100e_kinetics400-rgb_20221209-de2d5615.pth
 
   - Name: tsn_imagenet-pretrained-dense161_8xb32-1x1x3-100e_kinetics400-rgb
     Config: configs/recognition/tsn/custom_backbones/tsn_imagenet-pretrained-dense161_8xb32-1x1x3-100e_kinetics400-rgb.py
