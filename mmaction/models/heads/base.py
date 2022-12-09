@@ -184,10 +184,14 @@ class BaseHead(BaseModule, metaclass=ABCMeta):
         """
         num_segs = cls_scores.shape[0] // len(data_samples)
         cls_scores = self.average_clip(cls_scores, num_segs=num_segs)
+        pred_labels = cls_scores.argmax(dim=-1, keepdim=True).detach()
 
-        for data_sample, score in zip(data_samples, cls_scores):
+        for data_sample, score, pred_lable in zip(data_samples, cls_scores,
+                                                  pred_labels):
             prediction = LabelData(item=score)
+            pred_label = LabelData(item=pred_lable)
             data_sample.pred_scores = prediction
+            data_sample.pred_labels = pred_label
         return data_samples
 
     def average_clip(self, cls_scores: Tensor, num_segs: int = 1) -> Tensor:

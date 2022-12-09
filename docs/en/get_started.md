@@ -119,9 +119,9 @@ video_file = 'demo/demo.mp4'
 label_file = 'tools/data/kinetics/label_map_k400.txt'
 register_all_modules()  # register all modules and set mmaction2 as the default scope.
 model = init_recognizer(config_file, checkpoint_file, device='cpu')  # or device='cuda:0'
-result = inference_recognizer(model, video_file)
+pred_result = inference_recognizer(model, video_file)
 
-pred_scores = result.pred_scores.item.tolist()
+pred_scores = pred_result.pred_scores.item.tolist()
 score_tuples = tuple(zip(range(len(pred_scores)), pred_scores))
 score_sorted = sorted(score_tuples, key=itemgetter(1), reverse=True)
 top5_label = score_sorted[:5]

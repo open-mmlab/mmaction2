@@ -15,7 +15,8 @@ from mmaction.utils import GradCAM, register_all_modules
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='MMAction2 GradCAM demo')
+    parser = argparse.ArgumentParser(
+        description='MMAction2 GradCAM Visualization')
     parser.add_argument('config', help='test config file path')
     parser.add_argument('checkpoint', help='checkpoint file/url')
     parser.add_argument('video', help='video file/url or rawframes directory')

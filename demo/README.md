@@ -40,10 +40,11 @@ python demo/demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${VIDEO_FILE} ${LABEL_FILE
 
 Optional arguments:
 
-- `DEVICE_TYPE`: Type of device to run the demo. Allowed values are cuda device like `'cuda:0'` or `'cpu'`. Defaults to `'cuda:0'`.
-- `FPS`: FPS value of the output video. Defaults to 30.
-- `FONT_SCALE`: Font scale of the label added in the video. Defaults to 0.5.
-- `FONT_COLOR`: Font color of the label added in the video. Defaults to `'white'`.
+- `--use-frames`: If specified, the demo will take rawframes as input. Otherwise, it will take a video as input.
+- `DEVICE_TYPE`: Type of device to run the demo. Allowed values are cuda device like `cuda:0` or `cpu`. If not specified, it will be set to `cuda:0`.
+- `FPS`: FPS value of the output video when using rawframes as input. If not specified, it will be set to 30.
+- `FONT_SCALE`: Font scale of the text added in the video. If not specified, it will be None.
+- `FONT_COLOR`: Font color of the text added in the video. If not specified, it will be `white`.
 - `TARGET_RESOLUTION`: Resolution(desired_width, desired_height) for resizing the frames before output when using a video as input. If not specified, it will be None and the frames are resized by keeping the existing aspect ratio.
 - `OUT_FILE`: Path to the output file which can be a video format or gif format. If not specified, it will be set to `None` and does not generate the output file.
 
