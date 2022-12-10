@@ -190,3 +190,45 @@ Models:
         Top 5 Accuracy: 92.55
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-swin-transformer_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-swin-transformer_8xb32-1x1x3-100e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-swin-transformer_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-swin-transformer_8xb32-1x1x3-100e_kinetics400-rgb_20220906-65ed814e.pth
+
+  - Name: tsn_imagenet-pretrained-r50_8xb32-1x1x8-50e_sthv2-rgb
+    Config: configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x8-50e_sthv2-rgb.py
+    In Collection: TSN
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 32
+      Epochs: 100
+      Pretrained: ImageNet
+      Resolution: height 256
+      Training Data: Kinetics-400
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 32.55
+        Top 5 Accuracy: 63.27
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x8-50e_sthv2-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x8-50e_sthv2-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x8-50e_sthv2-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x8-50e_sthv2-rgb_20221122-ad2dbb37.pth
+
+  - Name: tsn_imagenet-pretrained-r50_8xb32-1x1x16-50e_sthv2-rgb
+    Config: configs/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x16-50e_sthv2-rgb.py
+    In Collection: TSN
+    Metadata:
+      Architecture: ResNet50
+      Batch Size: 32
+      Epochs: 100
+      Pretrained: ImageNet
+      Resolution: height 256
+      Training Data: Kinetics-400
+      Training Resources: 8 GPUs
+    Modality: RGB
+    Results:
+    - Dataset: Kinetics-400
+      Task: Action Recognition
+      Metrics:
+        Top 1 Accuracy: 35.22
+        Top 5 Accuracy: 66.13
+    Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x16-50e_sthv2-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x16-50e_sthv2-rgb.log
+    Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x16-50e_sthv2-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x16-50e_sthv2-rgb_20221122-ee13c8e2.pth

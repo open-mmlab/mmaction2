@@ -7,9 +7,11 @@ import pytest
 import torch
 from mmengine.structures import InstanceData, LabelData
 from mmengine.testing import assert_dict_has_keys
+from numpy.testing import assert_array_equal
 
 from mmaction.datasets.transforms import (FormatAudioShape, FormatGCNInput,
-                                          FormatShape, Transpose)
+                                          FormatShape, PackActionInputs,
+                                          Transpose)
 from mmaction.registry import TRANSFORMS
 from mmaction.structures import ActionDataSample
 from mmaction.utils import register_all_modules
@@ -21,16 +23,14 @@ class TestPackActionInputs(unittest.TestCase):
 
     def test_transform(self):
         # keypoint input
-        data = dict(
-            keypoint=np.random.randn(3, 300, 17, 2),
-            label=[1],
-            filename='test.txt')
-
-        cfg = dict(type='PackActionInputs')
-        transform = TRANSFORMS.build(cfg)
-        results = transform(copy.deepcopy(data))
+        results = dict(keypoint=np.random.randn(1, 2, 300, 17, 3), label=1)
+        transform = PackActionInputs()
+        results = transform(results)
         self.assertIn('inputs', results)
+        self.assertIn('data_samples', results)
         self.assertIsInstance(results['inputs'], torch.Tensor)
+        self.assertEqual(results['data_samples'].gt_labels.item,
+                         torch.LongTensor([1]))
 
         # audio input
         data = dict(
@@ -216,31 +216,35 @@ def test_format_audio_shape():
 
 
 def test_format_gcn_input():
-    with pytest.raises(ValueError):
-        # invalid input format
-        FormatGCNInput('XXXX')
+    with pytest.raises(AssertionError):
+        FormatGCNInput(mode='invalid')
 
-    # 'NCTVM' input format
     results = dict(
-        keypoint=np.random.randn(2, 300, 17, 2),
-        keypoint_score=np.random.randn(2, 300, 17))
-    format_shape = FormatGCNInput('NCTVM', num_person=2)
-    assert format_shape(results)['input_shape'] == (3, 300, 17, 2)
-    assert repr(format_shape) == format_shape.__class__.__name__ + \
-        '(input_format=NCTVM, num_person=%d)' % 2
+        keypoint=np.random.randn(2, 10, 17, 2),
+        keypoint_score=np.random.randn(2, 10, 17))
+    format_shape = FormatGCNInput(num_person=2, mode='zero')
+    results = format_shape(results)
+    assert results['keypoint'].shape == (1, 2, 10, 17, 3)
+    assert repr(format_shape) == 'FormatGCNInput(num_person=2, mode=zero)'
 
-    # test real num_person < 2
-    results = dict(
-        keypoint=np.random.randn(1, 300, 17, 2),
-        keypoint_score=np.random.randn(1, 300, 17))
-    assert format_shape(results)['input_shape'] == (3, 300, 17, 2)
-    assert repr(format_shape) == format_shape.__class__.__name__ + \
-        '(input_format=NCTVM, num_person=%d)' % 2
+    results = dict(keypoint=np.random.randn(2, 40, 25, 3), num_clips=4)
+    format_shape = FormatGCNInput(num_person=2, mode='zero')
+    results = format_shape(results)
+    assert results['keypoint'].shape == (4, 2, 10, 25, 3)
 
-    # test real num_person > 2
-    results = dict(
-        keypoint=np.random.randn(3, 300, 17, 2),
-        keypoint_score=np.random.randn(3, 300, 17))
-    assert format_shape(results)['input_shape'] == (3, 300, 17, 2)
-    assert repr(format_shape) == format_shape.__class__.__name__ + \
-        '(input_format=NCTVM, num_person=%d)' % 2
+    results = dict(keypoint=np.random.randn(1, 10, 25, 3))
+    format_shape = FormatGCNInput(num_person=2, mode='zero')
+    results = format_shape(results)
+    assert results['keypoint'].shape == (1, 2, 10, 25, 3)
+    assert_array_equal(results['keypoint'][:, 1], np.zeros((1, 10, 25, 3)))
+
+    results = dict(keypoint=np.random.randn(1, 10, 25, 3))
+    format_shape = FormatGCNInput(num_person=2, mode='loop')
+    results = format_shape(results)
+    assert results['keypoint'].shape == (1, 2, 10, 25, 3)
+    assert_array_equal(results['keypoint'][:, 1], results['keypoint'][:, 0])
+
+    results = dict(keypoint=np.random.randn(3, 10, 25, 3))
+    format_shape = FormatGCNInput(num_person=2, mode='zero')
+    results = format_shape(results)
+    assert results['keypoint'].shape == (1, 2, 10, 25, 3)
