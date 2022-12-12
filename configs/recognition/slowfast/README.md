@@ -48,7 +48,7 @@ python tools/train.py configs/recognition/slowfast/slowfast_r50_8xb8-4x16x1-256e
     --seed=0 --deterministic
 ```
 
-For more details on data preparation, you can refer to [Kinetics400](/tools/data/kinetics/README.md).
+For more details, you can refer to the **Training** part in the [Training and Test Tutorial](/docs/en/user_guides/4_train_test.md).
 
 ## Test
 
