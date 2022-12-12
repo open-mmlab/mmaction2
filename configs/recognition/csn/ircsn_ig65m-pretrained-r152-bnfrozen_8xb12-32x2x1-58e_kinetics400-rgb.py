@@ -21,8 +21,14 @@ ann_file_train = root + 'kinetics400_train_list_videos.txt'
 ann_file_val = root + 'kinetics400_val_list_videos.txt'
 ann_file_test = ann_file_val
 
+# file_client_args = dict(
+#      io_backend='petrel',
+#      path_mapping=dict(
+#          {'data/kinetics400': 's3://openmmlab/datasets/action/Kinetics400'}))
+file_client_args = dict(io_backend='disk')
+
 train_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(type='SampleFrames', clip_len=32, frame_interval=2, num_clips=1),
     dict(type='DecordDecode'),
     dict(type='Resize', scale=(-1, 256)),
@@ -33,7 +39,7 @@ train_pipeline = [
     dict(type='PackActionInputs')
 ]
 val_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(
         type='SampleFrames',
         clip_len=32,
@@ -47,7 +53,7 @@ val_pipeline = [
     dict(type='PackActionInputs')
 ]
 test_pipeline = [
-    dict(type='DecordInit'),
+    dict(type='DecordInit', **file_client_args),
     dict(
         type='SampleFrames',
         clip_len=32,
@@ -114,14 +120,16 @@ param_scheduler = [
         milestones=[32, 48],
         gamma=0.1)
 ]
-"""
-The learning rate is for total_batch_size = 8 x 12 (num_gpus x batch_size)
-If you want to use other batch size or number of GPU settings, please update
-the learning rate with the linear scaling rule.
-"""
+
 optim_wrapper = dict(
     optimizer=dict(type='SGD', lr=5e-4, momentum=0.9, weight_decay=1e-4),
     clip_grad=dict(max_norm=40, norm_type=2))
 
 default_hooks = dict(checkpoint=dict(interval=2, max_keep_ckpts=5))
 find_unused_parameters = True
+
+# Default setting for scaling LR automatically
+#   - `enable` means enable scaling LR automatically
+#       or not by default.
+#   - `base_batch_size` = (8 GPUs) x (12 samples per GPU).
+auto_scale_lr = dict(enable=False, base_batch_size=96)
