@@ -13,10 +13,10 @@ Models:
       Architecture: ResNet152
       Batch Size: 12
       Epochs: 58
-      FLOPs: 98096676864
-      Parameters: 29703568
+      FLOPs: 97.63G
+      Parameters: 29.70M
       Pretrained: IG65M
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -24,8 +24,8 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-       Top 1 Accuracy: 82.66
-       Top 5 Accuracy: 95.82
+       Top 1 Accuracy: 82.87
+       Top 5 Accuracy: 95.90
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/csn/ircsn_ig65m-pretrained-r152_8xb12-32x2x1-58e_kinetics400-rgb/ircsn_ig65m-pretrained-r152_8xb12-32x2x1-58e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/csn/ircsn_ig65m-pretrained-r152_8xb12-32x2x1-58e_kinetics400-rgb/ircsn_ig65m-pretrained-r152_8xb12-32x2x1-58e_kinetics400-rgb_20220811-c7a3cc5b.pth
 
@@ -36,10 +36,10 @@ Models:
       Architecture: ResNet152
       Batch Size: 12
       Epochs: 58
-      FLOPs: 98096676864
-      Parameters: 29703568
+      FLOPs: 97.63G
+      Parameters: 29.70M
       Pretrained: IG65M
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -47,8 +47,8 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-       Top 1 Accuracy: 82.58
-       Top 5 Accuracy: 95.76
+       Top 1 Accuracy: 82.84
+       Top 5 Accuracy: 95.92
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/csn/ircsn_ig65m-pretrained-r152-bnfrozen_8xb12-32x2x1-58e_kinetics400-rgb/ircsn_ig65m-pretrained-r152-bnfrozen_8xb12-32x2x1-58e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/csn/ircsn_ig65m-pretrained-r152-bnfrozen_8xb12-32x2x1-58e_kinetics400-rgb/ircsn_ig65m-pretrained-r152-bnfrozen_8xb12-32x2x1-58e_kinetics400-rgb_20220811-7d1dacde.pth
 
@@ -59,10 +59,10 @@ Models:
       Architecture: ResNet50
       Batch Size: 12
       Epochs: 58
-      FLOPs: 56209211392
-      Parameters: 13131152
+      FLOPs: 55.90G
+      Parameters: 13.13M
       Pretrained: IG65M
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
       Training Resources: 8 GPUs
     Modality: RGB
@@ -70,8 +70,8 @@ Models:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-       Top 1 Accuracy: 79.17
-       Top 5 Accuracy: 94.14
+       Top 1 Accuracy: 79.44
+       Top 5 Accuracy: 94.26
     Training Log: https://download.openmmlab.com/mmaction/v1.0/recognition/csn/ircsn_ig65m-pretrained-r50-bnfrozen_8xb12-32x2x1-58e_kinetics400-rgb/ircsn_ig65m-pretrained-r50-bnfrozen_8xb12-32x2x1-58e_kinetics400-rgb.log
     Weights: https://download.openmmlab.com/mmaction/v1.0/recognition/csn/ircsn_ig65m-pretrained-r50-bnfrozen_8xb12-32x2x1-58e_kinetics400-rgb/ircsn_ig65m-pretrained-r50-bnfrozen_8xb12-32x2x1-58e_kinetics400-rgb_20220811-44395bae.pth
 
@@ -81,18 +81,18 @@ Models:
     Metadata:
       Architecture: ResNet152
       Epochs: 180
-      FLOPs: 110337228800
-      Parameters: 33016592
+      FLOPs: 109.9G
+      Parameters: 33.02M
       Pretrained: None
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
     Modality: RGB
     Results:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-       Top 1 Accuracy: 77.69
-       Top 5 Accuracy: 92.93
+       Top 1 Accuracy: 77.80
+       Top 5 Accuracy: 93.10
     Converted From:
       Weights: https://www.dropbox.com/s/3fihu6ti60047mu/ipCSN_152_kinetics_from_scratch_f129594342.pkl?dl=0
       Code: https://github.com/facebookresearch/VMZ/tree/b61b08194bc3273bef4c45fdfdd36c56c8579ff3
@@ -104,18 +104,18 @@ Models:
     Metadata:
       Architecture: ResNet152
       Epochs: 180
-      FLOPs: 98096676864
-      Parameters: 29703568
+      FLOPs: 97.63G
+      Parameters: 29.70M
       Pretrained: None
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
     Modality: RGB
     Results:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-       Top 1 Accuracy: 76.25
-       Top 5 Accuracy: 92.11
+       Top 1 Accuracy: 76.53
+       Top 5 Accuracy: 92.28
     Converted From:
       Weights: https://www.dropbox.com/s/46gcm7up60ssx5c/irCSN_152_kinetics_from_scratch_f98268019.pkl?dl=0
       Code: https://github.com/facebookresearch/VMZ/tree/b61b08194bc3273bef4c45fdfdd36c56c8579ff3
@@ -127,18 +127,18 @@ Models:
     Metadata:
       Architecture: ResNet152
       Epochs: 58
-      FLOPs: 98096676864
-      Parameters: 29703568
+      FLOPs: 109.9G
+      Parameters: 33.02M
       Pretrained: IG65M
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
     Modality: RGB
     Results:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-       Top 1 Accuracy: 82.51
-       Top 5 Accuracy: 95.52
+       Top 1 Accuracy: 82.68
+       Top 5 Accuracy: 95.69
     Converted From:
       Weights: https://www.dropbox.com/s/zpp3p0vn2i7bibl/ipCSN_152_ft_kinetics_from_ig65m_f133090949.pkl?dl=0
       Code: https://github.com/facebookresearch/VMZ/tree/b61b08194bc3273bef4c45fdfdd36c56c8579ff3
@@ -150,18 +150,18 @@ Models:
     Metadata:
       Architecture: ResNet152
       Epochs: 58
-      FLOPs: 110337228800
-      Parameters: 33016592
+      FLOPs: 109.9G
+      Parameters: 33.02M
       Pretrained: Sports1M
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
     Modality: RGB
     Results:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-       Top 1 Accuracy: 78.77
-       Top 5 Accuracy: 93.78
+       Top 1 Accuracy: 79.07
+       Top 5 Accuracy: 93.82
     Converted From:
       Weights: https://www.dropbox.com/s/ir7cr0hda36knux/ipCSN_152_ft_kinetics_from_sports1m_f111279053.pkl?dl=0
       Code: https://github.com/facebookresearch/VMZ/tree/b61b08194bc3273bef4c45fdfdd36c56c8579ff3
@@ -173,18 +173,18 @@ Models:
     Metadata:
       Architecture: ResNet152
       Epochs: 58
-      FLOPs: 98096676864
-      Parameters: 29703568
+      FLOPs: 109.9G
+      Parameters: 33.02M
       Pretrained: Sports1M
-      Resolution: short-side 320
+      Resolution: 224x224
       Training Data: Kinetics-400
     Modality: RGB
     Results:
     - Dataset: Kinetics-400
       Task: Action Recognition
       Metrics:
-       Top 1 Accuracy: 78.82
-       Top 5 Accuracy: 93.34
+       Top 1 Accuracy: 78.57
+       Top 5 Accuracy: 93.44
     Converted From:
       Weights: https://www.dropbox.com/s/zuoj1aqouh6bo6k/irCSN_152_ft_kinetics_from_sports1m_f101599884.pkl?dl=0
       Code: https://github.com/facebookresearch/VMZ/tree/b61b08194bc3273bef4c45fdfdd36c56c8579ff3
