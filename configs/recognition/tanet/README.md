@@ -20,9 +20,9 @@ Video data is with complex temporal dynamics due to various factors such as came
 
 ### Kinetics-400
 
-| frame sampling strategy | resolution | gpus | backbone | pretrain | top1 acc | top5 acc |      reference top1 acc      |      reference top5 acc       | testing protocol  | FLOPs | params |      config       |      ckpt       |      log       |
-| :---------------------: | :--------: | :--: | :------: | :------: | :------: | :------: | :--------------------------: | :---------------------------: | :---------------: | :---: | :----: | :---------------: | :-------------: | :------------: |
-|       dense-1x1x8       |  224x224   |  8   | ResNet50 | ImageNet |  76.25   |  92.41   | [76.22](https://github.com/liu-zhy/temporal-adaptive-module/blob/master/scripts/test_tam_kinetics_rgb_8f.sh) | [92.53](https://github.com/liu-zhy/temporal-adaptive-module/blob/master/scripts/test_tam_kinetics_rgb_8f.sh) | 10 clips x 3 crop | 43.0G | 25.6M  | [config](/configs/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb_20220919-a34346bc.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb.log) |
+| frame sampling strategy | resolution | gpus | backbone | pretrain | top1 acc | top5 acc |      reference top1 acc       |      reference top5 acc       | testing protocol | FLOPs | params |      config       |      ckpt       |      log       |
+| :---------------------: | :--------: | :--: | :------: | :------: | :------: | :------: | :---------------------------: | :---------------------------: | :--------------: | :---: | :----: | :---------------: | :-------------: | :------------: |
+|       dense-1x1x8       |  224x224   |  8   | ResNet50 | ImageNet |  76.25   |  92.41   | [76.22](https://github.com/liu-zhy/temporal-adaptive-module/blob/master/scripts/test_tam_kinetics_rgb_8f.sh) | [92.53](https://github.com/liu-zhy/temporal-adaptive-module/blob/master/scripts/test_tam_kinetics_rgb_8f.sh) | 8 clips x 3 crop | 43.0G | 25.6M  | [config](/configs/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb.py) | [ckpt](https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb_20220919-a34346bc.pth) | [log](https://download.openmmlab.com/mmaction/v1.0/recognition/tanet/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb/tanet_imagenet-pretrained-r50_8xb8-dense-1x1x8-100e_kinetics400-rgb.log) |
 
 ### Something-Something V1
 
@@ -37,7 +37,7 @@ Video data is with complex temporal dynamics due to various factors such as came
 
 For more details on data preparation, you can refer to
 
-- [Kinetics](/tools/data/kinetics/README.md)
+- [Kinetics400](/tools/data/kinetics/README.md)
 - [Something-something V1](/tools/data/sthv1/README.md)
 
 ## Train
