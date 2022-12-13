@@ -1,6 +1,6 @@
 # 教程3：利用现有模型进行推理
 
-MMAction2在[Model Zoo](../modelzoo.md)中提供预训练的视频理解模型。
+MMAction2 在 [Model Zoo](../modelzoo.md) 中提供预训练的视频理解模型。
 本教程将展示**如何使用现有模型对给定视频进行推理**。
 
 至于如何在标准数据集上测试现有模型，请参阅这该[指南](./4_train_test.md#test)
