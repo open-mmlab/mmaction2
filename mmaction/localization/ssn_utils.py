@@ -76,7 +76,7 @@ def load_localize_proposal_file(filename):
         video_id = video_info[offset]
         offset += 1
 
-        num_frames = int(float(video_info[1]) * float(video_info[2]))
+        num_frames = int(float(video_info[1]))# * float(video_info[2]))
         num_gts = int(video_info[3])
         offset = 4
 
