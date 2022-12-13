@@ -2,10 +2,6 @@ _base_ = ['tsm_imagenet-pretrained-r50_8xb16-1x1x8-50e_sthv2-rgb.py']
 
 model = dict(backbone=dict(num_segments=16), cls_head=dict(num_segments=16))
 
-# file_client_args = dict(
-#      io_backend='petrel',
-#      path_mapping=dict(
-#          {'data/sthv2': 's3://openmmlab/datasets/action/sthv2'}))
 file_client_args = dict(io_backend='disk')
 
 train_pipeline = [
