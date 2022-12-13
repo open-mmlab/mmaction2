@@ -137,7 +137,7 @@ for result in results:
 
 ### CUDA 版本
 
-安装PyTorch时，你可能需要提供特定的CUDA的版本。如果你不清楚选择哪个版本，请遵循我们的建议：
+安装 PyTorch 时，你可能需要安装特定的 CUDA 的版本。如果你不清楚应该选择哪个版本，请遵循我们的建议：
 
 - 对于 Ampere 架构的 NVIDIA GPU，例如 GeForce 30 series 以及 NVIDIA A100，CUDA 11 是必需的。
 - 对于更早的 NVIDIA GPU，CUDA 11 是向前兼容的，但 CUDA 10.2 能够提供更好的兼容性，也更加轻量。
